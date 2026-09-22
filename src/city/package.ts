@@ -130,6 +130,9 @@ export interface PackedFurniture {
   x: number
   z: number
   kind: 'metro' | 'fountain' | 'column' | 'kiosk' | 'bikeshare' | 'signals'
+    // and the American street's (SF_PLAN.md §6): a streetcar stop, a billboard, a stop sign, a bus stop, a post box,
+    // a fire hydrant
+    | 'tramstop' | 'billboard' | 'stop' | 'busstop' | 'postbox' | 'hydrant'
   /** a Wallace fountain, as opposed to any drinking tap */
   wallace?: true
 }

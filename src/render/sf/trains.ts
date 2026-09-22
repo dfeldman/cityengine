@@ -97,6 +97,66 @@ function cableCar(out: MeshBuilder): void {
   }
 }
 
+/**
+ * The California Street car: double-ended — an open grip section at each end, the enclosed saloon between them —
+ * and longer, 9.2 m; the line runs level-ish east to west along California Street over Nob Hill, so the car never
+ * turns round (there is no turntable: the gripman changes ends).
+ */
+function californiaCar(out: MeshBuilder): void {
+  const floor = 0.78
+  const half = 1.22
+  const end = 4.6
+  const inner = 1.7
+  const roofY = 2.98
+  box(out, 0, 0.4, 0, 0.85, 0.25, end - 0.8, DARK, FIXED)
+  box(out, 0, floor - 0.06, 0, half, 0.08, end - 0.1, WOOD, FIXED)
+  let k = 11
+  for (const e of [-1, 1]) {
+    // the dash and its lamp, the running boards, the outward benches, the poles, the riders standing and sitting
+    box(out, 0, floor + 0.55, e * (end - 0.05), half, 0.55, 0.06, CREAM, FIXED)
+    box(out, 0, floor + 0.2, e * (end - 0.02), half, 0.2, 0.04, [1, 1, 1])
+    box(out, 0, floor + 0.75, e * (end + 0.02), 0.5, 0.2, 0.01, [0.2, 0.3, 0.55], FIXED)
+    box(out, 0, floor + 0.4, e * (end + 0.04), 0.12, 0.12, 0.02, LAMP, EMIT)
+    for (const s of [-1, 1]) {
+      box(out, s * (half + 0.18), floor - 0.25, e * (end + inner) / 2, 0.2, 0.04, (end - inner) / 2, WOOD, FIXED)
+      box(out, s * 0.45, floor + 0.42, e * (end + inner) / 2, 0.32, 0.05, (end - inner) / 2 - 0.2, WOOD, FIXED)
+      for (const z of [end - 0.15, inner + 0.15]) box(out, s * (half - 0.05), (floor + roofY) / 2, e * z, 0.04, (roofY - floor) / 2, 0.04, [0.9, 0.9, 0.86], FIXED)
+      for (const z of [end - 0.6, inner + 0.6]) rider(out, s * (half + 0.22), floor - 0.22, e * z, k++, true)
+      rider(out, s * 0.62, floor + 0.47, e * (end + inner) / 2, k++, false)
+    }
+    box(out, 0, floor + 0.45, e * (end + inner) / 2, 0.12, 0.45, (end - inner) / 2 - 0.15, WOOD, FIXED)
+    box(out, 0.15, floor + 0.7, e * (end - 0.8), 0.04, 0.7, 0.04, BRASS, FIXED)
+    box(out, 0, floor + 1.35, e * inner, half, 0.55, 0.05, CREAM, FIXED)
+    box(out, 0, floor + 1.4, e * (inner + 0.01), 0.9, 0.36, 0.02, GLASS, FIXED)
+  }
+  // the saloon between the two open ends
+  box(out, 0, floor + 0.45, 0, half, 0.45, inner, [1, 1, 1])
+  for (const s of [-1, 1]) {
+    box(out, s * half, floor + 1.35, 0, 0.03, 0.5, inner, CREAM, FIXED)
+    for (let w = 0; w < 4; w++) box(out, s * (half + 0.045), floor + 1.38, -inner + 0.45 + w * 0.8, 0.01, 0.36, 0.3, GLASS, FIXED)
+    for (const z of [-0.8, 0.8]) rider(out, s * 0.7, floor + 0.45, z, k++, false)
+  }
+  // the roof, the clerestory, the lamps at both ends, the route boards
+  box(out, 0, roofY, 0, half + 0.12, 0.08, end + 0.05, WOOD, FIXED)
+  wedge(out, 0, roofY + 0.18, 0, half + 0.05, 0.1, end - 0.05, 0.4, [0.35, 0.22, 0.14], FIXED)
+  box(out, 0, roofY + 0.4, 0, 0.62, 0.18, inner + 0.3, WOOD, FIXED)
+  for (const s of [-1, 1]) box(out, s * 0.63, roofY + 0.42, 0, 0.01, 0.13, inner, CREAM, FIXED)
+  for (const e of [-1, 1]) prism(out, 0, e * (end - 1.2), roofY + 0.28, roofY + 0.5, 0.14, 8, LAMP, EMIT)
+}
+
+/**
+ * Whether a cable-car track is the California line: it runs along California Street (the local grid's z ≈ −90 m,
+ * the street's latitude, from Drumm to Van Ness) east–west, where the Powell lines only cross it.
+ */
+function californiaLine(points: { x: number; z: number }[]): number | null {
+  if (points.length < 2) return null
+  let near = 0
+  for (const p of points) if (Math.abs(p.z + 90) < 70) near++
+  const dx = Math.abs(points[points.length - 1].x - points[0].x)
+  const dz = Math.abs(points[points.length - 1].z - points[0].z)
+  return near / points.length > 0.8 && dx > 2 * dz ? 1 : 0
+}
+
 /** A PCC livery: the lower body, the belt, the window band and roof — each F-line car wears a city's */
 interface Livery { lower: Rgb; belt: Rgb; upper: Rgb; roof: Rgb; name: string }
 
@@ -262,19 +322,22 @@ export const SF_STOCK: RegionStock = {
   // the F-line's historic streetcars, in the liveries of the cities they came from
   // (each livery is its own model: a PCC's three tones will not come out of one tint)
   tram: {
-    mid: pcc(PCC_LIVERIES[0]), cars: 1, pitch: 15, speed: 6.5, colour: [1, 1, 1], shadow: [14.2, 2.7, 3.2], capacity: 12,
+    mid: pcc(PCC_LIVERIES[0]), cars: 1, pitch: 15, speed: 6.5, colour: [1, 1, 1], shadow: [14.2, 2.7, 3.2], capacity: 12, stops: true,
     variants: [
       ...PCC_LIVERIES.slice(1).map((l) => ({ mid: pcc(l) })),
       { mid: peterWitt, shadow: [13.8, 2.5, 3.3] as [number, number, number] },
     ],
   },
   cable: {
-    mid: cableCar, cars: 1, pitch: 9.5, speed: 4.2, colour: [0.5, 0.12, 0.12], shadow: [8.4, 2.5, 3.3], capacity: 24,
-    // Powell cars are maroon; the California line's blue; a few in the old green
-    liveries: [[0.5, 0.12, 0.12], [0.5, 0.12, 0.12], [0.18, 0.28, 0.5], [0.5, 0.12, 0.12], [0.24, 0.38, 0.3]],
+    mid: cableCar, cars: 1, pitch: 9.5, speed: 4.2, colour: [0.5, 0.12, 0.12], shadow: [8.4, 2.5, 3.3], capacity: 24, stops: true,
+    // Powell cars in maroon, a few in the 1950s Muni blue-and-cream or the old green
+    liveries: [[0.5, 0.12, 0.12], [0.5, 0.12, 0.12], [0.2, 0.3, 0.5], [0.5, 0.12, 0.12], [0.24, 0.38, 0.3]],
+    // the California line's double-ended cars, maroon
+    variants: [{ mid: californiaCar, pitch: 10, shadow: [9.2, 2.5, 3.3], liveries: [[0.48, 0.12, 0.12]] }],
+    variantFor: californiaLine,
   },
-  light: { mid: muniLRV, cars: 2, pitch: 23.2, speed: 11, colour: [0.82, 0.83, 0.85], shadow: [23, 2.7, 3.4], capacity: 24 },
+  light: { mid: muniLRV, cars: 2, pitch: 23.2, speed: 11, colour: [0.82, 0.83, 0.85], shadow: [23, 2.7, 3.4], capacity: 24, stops: true },
 }
 
 /** the models on their own, for the model viewer (src/model-showcase.ts: ?model=cableCar) */
-export const SF_VEHICLES = { cableCar, pccStreetcar: pcc(PCC_LIVERIES[0]), peterWitt, muniLRV }
+export const SF_VEHICLES = { cableCar, californiaCar, pccStreetcar: pcc(PCC_LIVERIES[0]), peterWitt, muniLRV }

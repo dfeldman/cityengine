@@ -1911,8 +1911,9 @@ export class City {
         : f.kind === 'fountain' ? (pf.fountain === 'wallace' || f.wallace ? wallaceFountain : drinkingTap)
         : f.kind === 'column' ? morrisColumn
         : f.kind === 'kiosk' ? (pf.kiosk === 'paris' ? parisNewsstand : kiosk)
-        : bikes
-      placeModel(furniture, model, f.x, 0.15, f.z, heading)
+        : f.kind === 'bikeshare' ? bikes
+        : null          // (drawn elsewhere, or not yet: tram stops, billboards, stop signs, post boxes, hydrants)
+      if (model) placeModel(furniture, model, f.x, 0.15, f.z, heading)
     }
 
     /*

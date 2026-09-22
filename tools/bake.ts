@@ -963,7 +963,13 @@ async function bake(spec: CitySpec): Promise<void> {
         : t.advertising === 'column' ? 'column'
         : t.shop === 'kiosk' || t.amenity === 'kiosk' ? 'kiosk'
         : t.amenity === 'bicycle_rental' ? 'bikeshare'
-        : t.highway === 'traffic_signals' ? 'signals' : null
+        : t.highway === 'traffic_signals' ? 'signals'
+        : t.railway === 'tram_stop' ? 'tramstop'
+        : t.advertising === 'billboard' ? 'billboard'
+        : t.highway === 'stop' ? 'stop'
+        : t.highway === 'bus_stop' ? 'busstop'
+        : t.amenity === 'post_box' ? 'postbox'
+        : t.emergency === 'fire_hydrant' ? 'hydrant' : null
       if (!kind) continue
       const p = proj.toLocal(n)
       const wallace = kind === 'fountain' && /wallace/i.test(`${t.name ?? ''} ${t.brand ?? ''} ${t.model ?? ''} ${t['fountain'] ?? ''} ${t.description ?? ''}`)
@@ -972,7 +978,8 @@ async function bake(spec: CitySpec): Promise<void> {
     const count = (k: string): number => furniture.filter((x) => x.kind === k).length
     console.log(`  furniture: ${count('metro')} métro entrances, ${count('fountain')} fountains `
       + `(${furniture.filter((x) => x.wallace).length} Wallace), ${count('column')} columns, ${count('kiosk')} kiosks, `
-      + `${count('bikeshare')} bike docks, ${count('signals')} signal nodes`)
+      + `${count('bikeshare')} bike docks, ${count('signals')} signal nodes, ${count('tramstop')} tram stops, `
+      + `${count('billboard')} billboards, ${count('stop')} stop signs, ${count('busstop')} bus stops, ${count('postbox')} post boxes, ${count('hydrant')} hydrants`)
   }
 
   const trees = nodes.filter((n) => n.tags.natural === 'tree')

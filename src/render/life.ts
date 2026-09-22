@@ -125,6 +125,8 @@ export class Life {
   private readonly trains: { rail: number; s: number; dir: 1 | -1; speed: number; v: number; wait: number; last: number; variant: number }[] = []
   /** the stations trains stop at (the métro viaduct's), in local metres */
   private readonly stations: { x: number; z: number }[]
+  /** the streetcar and cable-car stops (OSM railway=tram_stop), as the tiles bring them */
+  private readonly tramStops: { x: number; z: number }[] = []
   private readonly m = Matrix.Identity()
 
   constructor(scene: Scene, pkg: CityPackage, budget = { cars: 90, buses: 16, people: 3000 },
@@ -173,6 +175,22 @@ export class Life {
 
   private readonly railIds = new Set<number>()
 
+  /**
+   * Tram stops arriving with a tile's furniture: kept for the lines still to come, and matched to the lines already
+   * running (a stop and its line are often in different tiles).
+   */
+  addStops(points: { x: number; z: number }[]): void {
+    for (const p of points) {
+      if (this.tramStops.some((q) => Math.abs(q.x - p.x) < 0.5 && Math.abs(q.z - p.z) < 0.5)) continue
+      this.tramStops.push(p)
+      for (const r of this.rails) {
+        if (r.kind === 1 || r.kind === 0 || !this.stockPools[r.kind]?.kind.stops) continue
+        const s = stopAlong(r.points, p, 12)
+        if (s !== null) { r.stops.push(s); r.stops.sort((a, b) => a - b) }
+      }
+    }
+  }
+
   /** Railways arriving with streamed tiles, each once, with its trains. */
   addRails(rails: CityPackage['rails']): void {
     // Only the railways a rider can actually see. A subway is underground: putting a train on it would mean
@@ -195,21 +213,12 @@ export class Life {
       }
       if (length < this.stock.minLine) continue
       // the stations on this line: where along it each comes within 40 m
+      // the stations on this line: the métro viaduct's for the métro, the tram stops for everything on tram track
       const stops: number[] = []
       if (this.stockPools[kind].kind.stops) {
-        for (const st of this.stations) {
-          let best = { d: 40, s: -1 }
-          let acc = 0
-          for (let i = 1; i < points.length; i++) {
-            const a = points[i - 1]
-            const b = points[i]
-            const l = Math.hypot(b.x - a.x, b.z - a.z)
-            const t = l > 0 ? Math.max(0, Math.min(1, ((st.x - a.x) * (b.x - a.x) + (st.z - a.z) * (b.z - a.z)) / (l * l))) : 0
-            const d = Math.hypot(a.x + (b.x - a.x) * t - st.x, a.z + (b.z - a.z) * t - st.z)
-            if (d < best.d) best = { d, s: acc + t * l }
-            acc += l
-          }
-          if (best.s >= 0) stops.push(best.s)
+        for (const st of kind === 1 ? this.stations : this.tramStops) {
+          const s = stopAlong(points, st, kind === 1 ? 40 : 12)
+          if (s !== null) stops.push(s)
         }
         stops.sort((p, q) => p - q)
       }
@@ -354,7 +363,8 @@ export class Life {
         const target = Math.min(t.speed, Math.sqrt(2 * A * Math.max(0, brake)))
         t.v = t.v < target ? Math.min(target, t.v + A * dt) : target
         if (brake < 0.4 && t.v < 0.5) {
-          t.wait = 18 + (t.rail % 4) * 3
+          // a métro train stands twenty seconds or so; a streetcar or a cable car at its stop, a dozen
+          t.wait = rail.kind === 1 ? 18 + (t.rail % 4) * 3 : 8 + (t.rail % 3) * 3
           t.last = t.s + t.dir * brake
           t.v = 0
         }
@@ -401,6 +411,22 @@ export class Life {
 
     for (const p of this.pools()) p.end()
   }
+}
+
+/** How far along a line its nearest point to `st` is, if that is within `within` metres of it. */
+function stopAlong(points: { x: number; z: number }[], st: { x: number; z: number }, within: number): number | null {
+  let best = { d: within, s: -1 }
+  let acc = 0
+  for (let i = 1; i < points.length; i++) {
+    const a = points[i - 1]
+    const b = points[i]
+    const l = Math.hypot(b.x - a.x, b.z - a.z)
+    const t = l > 0 ? Math.max(0, Math.min(1, ((st.x - a.x) * (b.x - a.x) + (st.z - a.z) * (b.z - a.z)) / (l * l))) : 0
+    const d = Math.hypot(a.x + (b.x - a.x) * t - st.x, a.z + (b.z - a.z) * t - st.z)
+    if (d < best.d) best = { d, s: acc + t * l }
+    acc += l
+  }
+  return best.s >= 0 ? best.s : null
 }
 
 function along(points: { x: number; z: number }[], s: number): { x: number; z: number } {

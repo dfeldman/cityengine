@@ -127,6 +127,12 @@ export function furnitureQuery(b: Bbox): string {
   node["amenity"="kiosk"](${box});
   node["amenity"="bicycle_rental"](${box});
   node["highway"="traffic_signals"](${box});
+  node["railway"="tram_stop"](${box});
+  node["advertising"="billboard"](${box});
+  node["highway"="stop"](${box});
+  node["highway"="bus_stop"](${box});
+  node["amenity"="post_box"](${box});
+  node["emergency"="fire_hydrant"](${box});
 );
 out qt;`
 }

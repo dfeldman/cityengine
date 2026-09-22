@@ -40,6 +40,7 @@ import { ambientOcclusion } from './render/depth.ts'
 import { City, setupGroundLayers } from './render/city.ts'
 import { Crowd } from './sim/crowd.ts'
 import { Life } from './render/life.ts'
+import { OverheadLines } from './render/overhead.ts'
 import { Sky } from './render/sky.ts'
 import { Landmarks, landmarkManifest, packedIds } from './render/landmarks.ts'
 import { Statues, statueManifest } from './render/statues.ts'
@@ -327,7 +328,14 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   mark('crowd')
   crowd.setWater(wholeWater(pkg).map((a) => ({ ring: unpackPoints(a.ring), holes: (a.holes ?? []).map(unpackPoints) })))
   const life = new Life(scene, pkg as unknown as CityPackage, undefined, regionKit(pkg.region).stock, city.viaductStations)
-  onTile((a) => life.addRails(a.ready.rails))
+  // the wires over the electric tram track (render/overhead.ts)
+  const overhead = off.has('life') ? null : new OverheadLines(scene, city.terrain)
+  onTile((a) => {
+    // the tram stops first, so the tile's own lines find them
+    life.addStops((a.ready.furniture ?? []).filter((f) => f.kind === 'tramstop'))
+    life.addRails(a.ready.rails)
+    overhead?.addRails(a.ready.rails)
+  })
   mark('life')
   // `?without=rider` is how the city is compared with and without the avatar kit, which brings its own
   // lighting and image-processing opinions along with the body
