@@ -297,6 +297,15 @@ adds to the city-wide meshes (terraces, fringe, passages, quays, signs). Visual 
   the arches, three floors, top and antenna; OSM's 330 m block and its parts removed by a placeholder; the
   skyline stand-in hides within 1.3 km of the model. `docs/shots/LP-eiffel-trocadero.png`, `LP-eiffel-under.png`.
   Views for central Paris: `views/paris-centre.json` (20 places, air + street, and the tower's own).
+- ✅ Icons (2026-09-21), each shot from the street and above (`docs/shots/LP-*.png`): **Arc de Triomphe**
+  (`arcDeTriomphe`: real open great and small arches, sculpture groups, attic), **Louvre** (palace restyled to
+  25 m classical with slate roofs + `louvrePyramid`: Pei's lattice of diamonds, three small pyramids, basins),
+  **Notre-Dame** (`notreDameFull`: west front, towers, rose, Gallery of Kings, nave, transept roses, apse ringed
+  by flying buttresses, spire), **Invalides** (`invalidesDome`: drum with paired columns, gilded ribs and
+  trophies, lantern), **Orsay** (`museeOrsay`: arched river front, the two clocks, glass vault), **Garnier**
+  (`palaisGarnier`: steps and arches, loggia of paired dark columns, gilded groups, green dome, stage house).
+  Next of the A list: Concorde (obelisk, fountains), Grand/Petit Palais, Pont Alexandre III, Vendôme,
+  Madeleine, Palais-Royal (Buren), Sainte-Chapelle, Conciergerie, Pont Neuf, Institut, Chaillot, École Militaire.
 
 Tools for comparing: `tools/compare-shots.ts <before> <after>` (per-view % changed), `tools/pair.ts` (side by
 side), `tools/measure-load.ts`.

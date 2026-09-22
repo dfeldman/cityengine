@@ -578,5 +578,20 @@
     ],
     "front": 20,
     "note": "The Gare d'Orsay: river front with its great arched windows, the clock pavilions at each end, the glass vault; fitted to OSM's outline, front to the Seine."
+  },
+  {
+    "name": "Palais Garnier",
+    "procedural": "palaisGarnier",
+    "osm": [
+      "way/822291002",
+      "way/822290986",
+      "way/822290987",
+      "way/822290991",
+      "way/822290992",
+      "way/822291001",
+      "way/822290990"
+    ],
+    "front": 165,
+    "note": "Fitted to OSM's main footprint (way 822291002); front to the Place de l'Opéra (south-south-east); OSM's dome, stage and wing parts replaced."
   }
 ]

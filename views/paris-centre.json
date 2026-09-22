@@ -334,5 +334,17 @@
   "group": "landmark",
   "from": [48.8624, 2.326, 4],
   "to": [48.8601, 2.3268, 18]
+ },
+ {
+  "name": "Palais Garnier — from the place",
+  "group": "landmark",
+  "from": [48.8706, 2.3325, 1.8],
+  "to": [48.87183, 2.33183, 22]
+ },
+ {
+  "name": "Palais Garnier — from the Avenue de l'Opéra",
+  "group": "landmark",
+  "from": [48.868795, 2.333248, 2.2],
+  "to": [48.87183, 2.33183, 22]
  }
 ]
