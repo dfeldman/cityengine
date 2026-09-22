@@ -257,5 +257,23 @@
   "group": "landmark",
   "from": [48.863304, 2.366875, 2.2],
   "to": [48.863397, 2.367402, 8]
+ },
+ {
+  "name": "Rives de Seine at the Arsenal — street",
+  "group": "bug",
+  "from": [48.84975, 2.36125, 1.8],
+  "to": [48.84942, 2.36151, 0.5]
+ },
+ {
+  "name": "Rives de Seine at the Arsenal — above",
+  "group": "bug",
+  "from": [48.84995, 2.36105, 14],
+  "to": [48.84942, 2.36151, 0]
+ },
+ {
+  "name": "Hôtel de Sens — front",
+  "group": "landmark",
+  "from": [48.853473, 2.359411, 1.8],
+  "to": [48.853526, 2.358875, 8]
  }
 ]

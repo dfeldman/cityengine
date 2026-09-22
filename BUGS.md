@@ -14,13 +14,14 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 4 | fixed | The base ground plane under every tile stands at twice the terrain height | probe-view, 2026-09-21 |
 | 5 | fixed | Tour Saint-Jacques: the landmark model AND OSM's default building are both drawn | user, 2026-09-21 |
 | 6 | fixed | Cirque d'Hiver is turned wrong: its front should face the street | user, 2026-09-21 |
-| 7 | open | Hôtel de Sens needs work (reads poorly) | user, 2026-09-21 |
+| 7 | fixed | Hôtel de Sens needs work (reads poorly) | user, 2026-09-21 |
 | 8 | fixed | White monuments are flat pure white; they should read as white marble or pale stone/brick | user, 2026-09-21 |
 | 9 | open | The path by the Seine at 48.849419, 2.361508 is a dead end: it comes close to a road but does not join it | user, 2026-09-21 |
 | 10 | fixed | The Cirque d'Hiver's two horsemen stand in the road and block it | user, 2026-09-21 |
 | 11 | open | Café terraces are poor: chairs and tables in a line, not chairs round tables, and often tilted | user, 2026-09-21 |
 | 12 | open | News stands (kiosques) need improvement | user, 2026-09-21 |
 | 13 | fixed | Too many long gowns among the strangers; the other dresses never appear | user, 2026-09-21 |
+| 14 | open | Two ground levels: a transparent top surface with the asphalt about half a metre below it | user, 2026-09-21 |
 
 ---
 
@@ -134,6 +135,19 @@ the real building. Redo by the landmark method: reference photo first (Street Vi
 Rue de l'Hôtel de Ville), then the gist — the rough stone walls, the two corner turrets with pointed caps,
 the tall dormers with pinnacles, the square keep, the pointed gateway — and screenshot street + air.
 
+**Cause:** the model was built facing the wrong street — `front: "street"` picked the Rue de l'Hôtel de Ville
+frontage, while the famous front (turrets, gateway) is on the Rue du Figuier — and it did not match the
+photograph: both turrets at the extreme corners with stubby cones, no end gable, no central dormer.
+
+**Fix:** rebuilt from a photograph of the Figuier front (Wikimedia Commons, "Hôtel Sens - Paris IV -
+2022-02-17 - 1"): pale ashlar, the steep slate roof ending in a stone gable and chimney, a lower range to the
+right, the left turret at the corner and the right one beside the gateway with tall sharp cones on corbels,
+the big pointed carriage arch with an iron gate and the small pointed door, one pinnacled Flamboyant dormer,
+the keep behind. Manifest `front: 62` (the Rue du Figuier). New view "Hôtel de Sens — front".
+
+**Check:** ✅ `docs/shots/BUG7-sens-front.png`. Left: the small door is half sunk where the street rises to
+the right of the model's base (the base is the lowest ground under it) — small.
+
 ## 8. White monuments are pure white
 
 **Seen:** user, 2026-09-21. Most "white" landmarks (Saint-Paul's front, the Cirque d'Hiver, Saint-Denys's portico,
@@ -211,3 +225,14 @@ halter knee), one woman in three in a dress; the clothing palette is now a stree
 grey, cream, camel, olive, burgundy, denim; a quarter bright) with a per-person shade jitter of −16…+14%.
 
 **Check:** ✅ `docs/shots/BUG13-crowd.png`.
+
+## 14. Two ground levels
+
+**Seen:** user, 2026-09-21: "there appear to be two ground levels, the top transparent and the asphalt like
+half a meter below". Possibly a regression from #4 (the base plane moved from twice the terrain height to the
+terrain height).
+
+**Looked (not yet found):** four junction spots (`docs/shots/bug14-spots/`) and the Arsenal quay
+(`docs/shots/views/bug14/`) show one ground. Suspect: the tile's base plane (4 × 4 quads of 50 m, bilinear)
+and the distant ground (the 20 m grid) now sit at nearly the same height but interpolate differently, both in
+group 0. **Asked the user for a location (C in game copies it).**

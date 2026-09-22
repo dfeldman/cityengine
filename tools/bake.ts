@@ -611,7 +611,11 @@ async function bake(spec: CitySpec): Promise<void> {
   const datum = sampleGrid(ground, cols, rows, tx0, tz0, STEP, 0, 0)
   const datumRaw = datum
   for (let i = 0; i < ground.length; i++) ground[i] = Math.round((ground[i] - datum) * 100) / 100
-  const relief = Math.max(...ground) - Math.min(...ground)
+  // a loop, not a spread: central Paris's grid is 340 000 samples, past what a call's arguments can hold
+  let lo = Infinity
+  let hi = -Infinity
+  for (const g of ground) { if (g < lo) lo = g; if (g > hi) hi = g }
+  const relief = hi - lo
   console.log(`  ground sampled: ${cols}x${rows} at ${STEP} m, ${relief.toFixed(0)} m of relief (bare earth)`)
 
   const terrain: PackedTerrain = { x0: tx0, z0: tz0, step: STEP, cols, rows, heights: ground }
@@ -650,7 +654,7 @@ async function bake(spec: CitySpec): Promise<void> {
   const waterBodies = areas.filter((a) => a.kind === 'water').map((a) => {
     const ring = unpackPoints(a.ring)
     // one level for the whole body, the lowest ground it touches, as the renderer draws it
-    return { ring, level: Math.min(...ring.map((q) => groundAt(q.x, q.z))) }
+    return { ring, level: ring.reduce((m, q) => Math.min(m, groundAt(q.x, q.z)), Infinity) }
   })
   const decks = bridgeHeights(kept, { water: waterBodies, ground: groundAt, buried })
   /*

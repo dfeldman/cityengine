@@ -93,8 +93,9 @@
     ],
     "name": "Hôtel de Sens",
     "procedural": "hotelDeSens",
-    "front": "street",
-    "height": 26
+    "front": 62,
+    "height": 26,
+    "note": "Front on the Rue du Figuier (bearing 62°): the turrets and the gateway face it, not the Rue de l'Hôtel de Ville the frontage rule picked (BUGS.md #7)."
   },
   {
     "name": "Tour Saint-Jacques",
