@@ -181,6 +181,20 @@ export function restyles(entries: LandmarkEntry[], pkg: Pick<CityPackage, 'origi
   return out
 }
 
+/**
+ * A footprint in the model's own frame: world = centre + (x cos θ + z sin θ, −x sin θ + z cos θ).
+ *
+ * EVERY fitted landmark gets one (it used to be only a `court` entry's courtyard). A builder that raises the
+ * building from its own outline — the tower grammar, the piers — was being handed the fitted RECTANGLE in the
+ * city while the model viewer passed the real ring, so a flatiron was a flatiron in the shots and a box in the
+ * city (reported by the market-west batch, 2026-09-22).
+ */
+function inFrame(ring: { x: number; z: number }[], cx: number, cz: number, rotation: number): { x: number; z: number }[] {
+  const c = Math.cos(rotation)
+  const sn = Math.sin(rotation)
+  return ring.map((p) => ({ x: (p.x - cx) * c - (p.z - cz) * sn, z: (p.x - cx) * sn + (p.z - cz) * c }))
+}
+
 function pointInRing(x: number, z: number, ring: { x: number; z: number }[]): boolean {
   let inside = false
   for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
@@ -460,21 +474,13 @@ export class Landmarks {
       if (bearing !== undefined) {
         const f = fitSnug(ring!, bearing)
         cx = f.cx; cz = f.cz; rotation = f.rotation
-        fit = { hx: f.hx, hz: f.hz, height }
-        if (e.court) {
-          // the court's outline in the model's frame: world = c + (x cos θ + z sin θ, −x sin θ + z cos θ)
-          const c = Math.cos(rotation)
-          const sn = Math.sin(rotation)
-          fit.ring = ring!.map((p) => {
-            const dx = p.x - f.cx
-            const dz = p.z - f.cz
-            return { x: dx * c - dz * sn, z: dx * sn + dz * c }
-          })
-        }
+        fit = { hx: f.hx, hz: f.hz, height, ring: inFrame(ring!, f.cx, f.cz, rotation) }
       } else {
         const f = fitTo(building, height)
         cx = f.cx; cz = f.cz; fit = f.fit
         if (e.rotateDeg === undefined) rotation = f.rotation
+        // the outline too, so a builder raised from its own footprint (render/landmarks/tower.ts) has one
+        fit.ring = inFrame(ring!, f.cx, f.cz, rotation)
       }
     } else if (e.lat !== undefined && e.lon !== undefined) {
       const p = this.proj.toLocal({ lat: e.lat, lon: e.lon })
