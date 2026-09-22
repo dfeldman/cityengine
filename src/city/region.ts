@@ -36,7 +36,10 @@ export interface Region {
   id: string
   palettes: Partial<Record<StyleId, Palette[]>>
   /** `terraces`: café tables and chairs on the pavement in front of every named café (render/terraces.ts) */
-  furniture: { lampPosts: boolean; wallLamps: boolean; benches: boolean; bollards: Bollards | null; terraces?: boolean }
+  furniture: { lampPosts: boolean; wallLamps: boolean; benches: boolean; bollards: Bollards | null; terraces?: boolean
+    /** the busy pavement (SF): newspaper racks and cans at the corners, parking meters along commercial kerbs,
+     *  wooden utility poles and their wires down residential streets, and on brick streets the chain kerb */
+    clutter?: boolean }
   /** zebra: close-set bars; bands: Paris's broad bars, wider apart; continental: North America's; none */
   crossings: 'zebra' | 'bands' | 'continental' | 'none'
   /** the centre line: Europe's dashed white, or North America's solid double yellow (none on one-way streets) */

@@ -74,3 +74,33 @@ export function bartEntrance(out: MeshBuilder): void {
   box(out, px, 2.95, pz, 0.3, 0.12, 0.3, MUNI_RED, EMIT)
   box(out, px, 3.55, pz + 0.31, 0.18, 0.1, 0.005, [0.96, 0.96, 0.96], EMIT)     // "BART", as a white bar of type
 }
+
+/** San Francisco's public trash can: the dark green steel can with its domed lid and hooded slot. */
+export function sfTrashCan(out: MeshBuilder): void {
+  const green: Rgb = [0.1, 0.27, 0.17]
+  box(out, 0, 0.5, 0, 0.3, 0.5, 0.3, green, surfaceTag('metal'))
+  box(out, 0, 1.04, 0, 0.32, 0.05, 0.32, green, FIXED)
+  box(out, 0, 1.14, 0, 0.24, 0.07, 0.24, green, FIXED)
+  box(out, 0, 0.85, 0.31, 0.18, 0.06, 0.02, [0.03, 0.05, 0.04], FIXED)          // the slot
+}
+
+/** Market Street's kerb post: a short dark bollard; the placer hangs a sagging chain between them. */
+export function chainBollard(out: MeshBuilder): void {
+  const iron: Rgb = [0.12, 0.16, 0.15]
+  box(out, 0, 0.42, 0, 0.07, 0.42, 0.07, iron, FIXED)
+  box(out, 0, 0.87, 0, 0.09, 0.04, 0.09, iron, FIXED)
+}
+
+/** A pair of banners hung from a lamp post's bracket arms, 4–6 m up, in a campaign's two colours. */
+export function streetBanners(out: MeshBuilder, seed = 0): void {
+  const palettes: [Rgb, Rgb][] = [[[0.86, 0.3, 0.24], [0.12, 0.22, 0.45]], [[0.96, 0.7, 0.16], [0.1, 0.4, 0.5]],
+    [[0.16, 0.5, 0.36], [0.94, 0.9, 0.84]], [[0.55, 0.2, 0.5], [0.95, 0.6, 0.3]]]
+  const [a, b] = palettes[seed % palettes.length]
+  // the pole: Market's tall dark-green standard, which also carries the trolley wires
+  box(out, 0, 3.4, 0, 0.09, 3.4, 0.09, [0.12, 0.2, 0.16], FIXED)
+  box(out, 0, 0.35, 0, 0.16, 0.35, 0.16, [0.12, 0.2, 0.16], FIXED)
+  for (const [s, c] of [[-1, a], [1, b]] as const) {
+    box(out, s * 0.35, 6.1, 0, 0.35, 0.02, 0.02, [0.2, 0.2, 0.2], FIXED)
+    box(out, s * 0.4, 5.2, 0, 0.28, 0.8, 0.012, c, FIXED)
+  }
+}

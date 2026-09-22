@@ -272,6 +272,7 @@
     "signals": "mastArm"
   },
   "san-francisco": {
+    "furniture": { "clutter": true },
     "pointFurniture": { "metro": "bart", "american": true, "busStop": "muni" },
     "note": "Nob Hill: houses and small apartment blocks, with a few hotels on the crest. The building type decides first and the neighbours are asked over a shorter distance, because a hotel tower on the corner says nothing about the Victorians down the hill. The rest of the profile is item G.",
     "defaultLevels": {

@@ -14,7 +14,7 @@
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import type { Scene } from '@babylonjs/core/scene'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
-import { stopSign, uspsBox, billboard, muniStop, plainStop } from './us-furniture.ts'
+import { stopSign, uspsBox, billboard, muniStop, plainStop, newsRacks, parkingMeter, utilityPole } from './us-furniture.ts'
 import { MeshBuilder, buildBuilding, capPolygon, capPolygonWithHoles, type Arch, type AtlasManifest, type Ring } from './buildings.ts'
 import { archSize, passageArches } from './passages.ts'
 import { inOutline } from './bridge-structures.ts'
@@ -26,7 +26,7 @@ import { DAYLIGHT } from './facade-material.ts'
 import {
   bench, bikeDocks, bollard, hydrant, ctaEntrance, drinkingTap, genericEntrance, guimardEntrance, kiosk, lampPost,
   morrisColumn, nycSubwayEntrance, parisNewsstand, trafficLight, trafficLightMast, trafficLightParis, wallaceFountain,
-  wallLamp,
+  wallLamp, strut, FIXED,
 } from './models.ts'
 import { facesStreet, pavementDepth, streetIndex, type StreetIndex } from '../city/frontage.ts'
 import { region, type Region } from '../city/region.ts'
@@ -35,7 +35,7 @@ import { waterMaterial } from './water-material.ts'
 import { planFacade, type StyleId } from '../city/facade.ts'
 import { Terrain } from '../city/terrain.ts'
 import { Carriageways } from '../city/carriageways.ts'
-import { bartEntrance } from './sf/furniture.ts'
+import { bartEntrance, sfTrashCan, chainBollard, streetBanners } from './sf/furniture.ts'
 import { unpackPoints, type CityPackage, type PackedArea, type PackedBuilding, type PackedEdge, type PackedFurniture, type PackedRail } from '../city/package.ts'
 import { BRIDGE_STYLES, deck, isRaised, railDeck } from './bridges.ts'
 import { TILE, nearOf, tileKey, tileOf, tilesOfLine, type Near, type TileData, type TileSource } from '../city/tiles.ts'
@@ -1748,6 +1748,109 @@ export class City {
           }
           acc -= seg
           run += seg
+        }
+      }
+    }
+
+    /*
+     * The busy American pavement (region `furniture.clutter`; user, 2026-09-22: "there is SO MUCH street furniture…
+     * some places the sidewalk is quite cluttered with benches, newspaper boxes, ads, utility poles, and trees").
+     * Near each corner of a main street a bank of newspaper racks or a green can; parking meters down the kerbs of
+     * the commercial streets; wooden utility poles and their wires down the residential ones; and on a brick
+     * street (Market) the chain kerb and the bannered standards. Nothing where it would stand in a road.
+     */
+    if (this.region.furniture.clutter) {
+      const carriage = new Carriageways(groundEdges)
+      const brickNames = this.region.brickStreets?.names ?? []
+      const hash = (a: number, b: number): number => ((Math.imul(a ^ Math.imul(b, 0x27d4eb2d), 0x9e3779b1) >>> 0) % 1000) / 1000
+      const clear = (x: number, z: number): boolean => !carriage.inside(x, z, 0.15)
+      for (const e of groundEdges) {
+        if (e.foot || e.walk < 1.2 || !onSurface(e)) continue
+        const pts = unpackPoints(e.points)
+        let total = 0
+        for (let i = 1; i < pts.length; i++) total += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z)
+        const at = (s: number): { x: number; z: number; tx: number; tz: number } => {
+          let acc = 0
+          for (let i = 1; i < pts.length; i++) {
+            const dx = pts[i].x - pts[i - 1].x
+            const dz = pts[i].z - pts[i - 1].z
+            const L = Math.hypot(dx, dz)
+            if (acc + L >= s || i === pts.length - 1) {
+              const t = L > 0 ? Math.min(1, (s - acc) / L) : 0
+              return { x: pts[i - 1].x + dx * t, z: pts[i - 1].z + dz * t, tx: dx / (L || 1), tz: dz / (L || 1) }
+            }
+            acc += L
+          }
+          return { x: pts[0].x, z: pts[0].z, tx: 1, tz: 0 }
+        }
+        const put = (s: number, side: number, off: number, model: (o: MeshBuilder) => void, turn = 0): { x: number; z: number } | null => {
+          const p = at(s)
+          const x = p.x - p.tz * off * side
+          const z = p.z + p.tx * off * side
+          if (!clear(x, z)) return null
+          placeModel(furniture, model, x, 0.15, z, Math.atan2(p.tx, p.tz) + (side > 0 ? Math.PI : 0) + turn)
+          return { x, z }
+        }
+        const main = MAIN_STREETS.has(e.kind ?? '')
+        const brick = brickNames.includes(e.name ?? '')
+        // the corners: 9 m back from each end, a bank of racks or a can
+        if (main && total > 30 && e.walk >= 1.8) {
+          for (const [end, s] of [[0, 9], [1, total - 9]] as const) {
+            const h = hash(e.id, end + 7)
+            const side = h < 0.5 ? 1 : -1
+            if (h < 0.35 || (h > 0.5 && h < 0.8)) put(s, side, e.width / 2 + e.walk - 0.45, (o) => newsRacks(o, e.id * 3 + end), Math.PI / 2)
+            else put(s + 2, -side, e.width / 2 + 0.55, sfTrashCan)
+          }
+        }
+        // parking meters down the commercial kerbs (not Market, where nobody parks)
+        if (main && !brick && total > 30) {
+          for (const side of [-1, 1]) {
+            if (hash(e.id, side + 3) < 0.35) continue
+            for (let s = 12; s < total - 12; s += 6.5) put(s, side, e.width / 2 + 0.35, parkingMeter)
+          }
+        }
+        // utility poles and their wires down a residential street, one side
+        if (e.kind === 'residential' && total > 40 && hash(e.id, 11) < 0.7) {
+          const side = hash(e.id, 12) < 0.5 ? 1 : -1
+          let last: { x: number; z: number } | null = null
+          for (let s = 10; s < total - 6; s += 34) {
+            const here = put(s, side, e.width / 2 + 0.4, (o) => utilityPole(o, e.id + Math.round(s)), Math.PI / 2)
+            if (here && last) {
+              const ga = this.terrain.heightAt(last.x, last.z)
+              const gb = this.terrain.heightAt(here.x, here.z)
+              for (const k of [-1.05, 0.4, 1.05]) {
+                // the wires along the street, one per insulator, sagging 0.35 m between poles
+                const a3: [number, number, number] = [last.x, ga + 10.4 + 0.15, last.z]
+                const b3: [number, number, number] = [here.x, gb + 10.4 + 0.15, here.z]
+                const seg = 4
+                for (let q = 0; q < seg; q++) {
+                  const u0 = q / seg
+                  const u1 = (q + 1) / seg
+                  const P = (u: number): [number, number, number] => [a3[0] + (b3[0] - a3[0]) * u + k * 0.05, a3[1] + (b3[1] - a3[1]) * u - 0.35 * Math.sin(Math.PI * u), a3[2] + (b3[2] - a3[2]) * u]
+                  strut(furniture, P(u0), P(u1), 0.012, 0.012, [0.08, 0.08, 0.08], FIXED, false)
+                }
+              }
+            }
+            last = here ?? last
+          }
+        }
+        // Market: the chain kerb, and a bannered standard every 40 m each side
+        if (brick && total > 20) {
+          for (const side of [-1, 1]) {
+            let prev: { x: number; z: number } | null = null
+            for (let s = 10; s < total - 10; s += 2.6) {
+              const here = put(s, side, e.width / 2 + 0.3, chainBollard)
+              if (here && prev) {
+                const g0 = this.terrain.heightAt(prev.x, prev.z) + 0.15
+                const g1 = this.terrain.heightAt(here.x, here.z) + 0.15
+                const mid: [number, number, number] = [(prev.x + here.x) / 2, (g0 + g1) / 2 + 0.55, (prev.z + here.z) / 2]
+                strut(furniture, [prev.x, g0 + 0.72, prev.z], mid, 0.015, 0.015, [0.1, 0.1, 0.1], FIXED, false)
+                strut(furniture, mid, [here.x, g1 + 0.72, here.z], 0.015, 0.015, [0.1, 0.1, 0.1], FIXED, false)
+              }
+              prev = here
+            }
+            for (let s = 20; s < total - 10; s += 40) put(s + (side > 0 ? 0 : 20), side, e.width / 2 + 0.8, (o) => streetBanners(o, e.id + Math.round(s)), Math.PI / 2)
+          }
         }
       }
     }

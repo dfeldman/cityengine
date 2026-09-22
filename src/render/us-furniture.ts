@@ -117,3 +117,45 @@ export function uspsBox(out: MeshBuilder): void {
   box(out, 0, 1.0, 0.27, 0.18, 0.04, 0.01, [0.72, 0.72, 0.7], FIXED)
   box(out, 0, 0.6, 0.265, 0.12, 0.08, 0.005, WHITE, FIXED)                        // the eagle
 }
+
+/**
+ * A bank of newspaper racks at a corner: three to six boxes side by side, each a publication's colour, with its
+ * window and its coin box, some chained to the next. Along +x; the fronts toward +z (the street).
+ */
+export function newsRacks(out: MeshBuilder, seed = 0): void {
+  const r = (k: number): number => ((Math.imul(seed ^ (k * 0x9e3779b1), 0x85ebca6b) >>> 0) % 1000) / 1000
+  const colours: Rgb[] = [[0.12, 0.28, 0.6], [0.78, 0.12, 0.1], [0.95, 0.78, 0.12], [0.9, 0.9, 0.88], [0.1, 0.42, 0.24],
+    [0.1, 0.1, 0.11], [0.9, 0.45, 0.1], [0.45, 0.2, 0.55]]
+  const n = 3 + Math.floor(r(1) * 4)
+  for (let i = 0; i < n; i++) {
+    const x = (i - (n - 1) / 2) * 0.5
+    const c = colours[Math.floor(r(i + 2) * colours.length)]
+    const tall = r(i + 20) < 0.3 ? 0.62 : 0.52
+    box(out, x, tall, 0, 0.23, tall, 0.2, c, FIXED)
+    box(out, x, tall + 0.1, 0.205, 0.17, 0.2, 0.004, [0.62, 0.7, 0.74], FIXED)     // the window
+    box(out, x, tall * 2 + 0.03, -0.05, 0.12, 0.03, 0.1, STEEL, FIXED)             // the coin box
+  }
+}
+
+/** A single-space parking meter on its post (a grey head with its window), at the kerb. */
+export function parkingMeter(out: MeshBuilder): void {
+  box(out, 0, 0.6, 0, 0.035, 0.6, 0.035, [0.25, 0.26, 0.28], FIXED)
+  box(out, 0, 1.3, 0, 0.1, 0.14, 0.08, [0.42, 0.44, 0.47], FIXED)
+  box(out, 0, 1.36, 0.081, 0.07, 0.05, 0.003, [0.2, 0.26, 0.3], FIXED)
+}
+
+/**
+ * A wooden utility pole: the tarred pole, a crossarm with its insulators, a transformer can on one in three, a
+ * street-name sign sometimes. 11 m. The wires between poles are strung by the placer. The crossarm along ±x.
+ */
+export function utilityPole(out: MeshBuilder, seed = 0): void {
+  const wood: Rgb = [0.34, 0.26, 0.18]
+  strut(out, [0, 0, 0], [0, 11, 0], 0.14, 0.14, wood, FIXED)
+  box(out, 0, 10.2, 0, 1.2, 0.06, 0.06, wood, FIXED)
+  for (const x of [-1.05, -0.4, 0.4, 1.05]) box(out, x, 10.35, 0, 0.03, 0.09, 0.03, [0.6, 0.62, 0.6], FIXED)
+  box(out, 0, 9.3, 0, 0.9, 0.05, 0.05, wood, FIXED)
+  if (seed % 3 === 0) {
+    // the transformer: a grey can bolted to the pole
+    box(out, 0.28, 8.4, 0, 0.2, 0.45, 0.2, [0.52, 0.54, 0.55], FIXED)
+  }
+}
