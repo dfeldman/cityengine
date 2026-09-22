@@ -692,6 +692,11 @@ heap, not the collector's timing:
 2. **The whole city visited** (`docs/soak-sweep.log`, 32 stops over the 6.7 × 3.5 km box, 1 047 tiles): the
    heap levels at **541 MB**.
 
+**Re-run after everything else that landed that day** (posters, plants, quick marks, domes, the Line 6
+redesign, the chunked occluder): the 10-minute ride goes 124 → 226 MB, rising 4.6 MB/min over the second half,
+with meshes and textures flat (`docs/soak-10min.log`). The chunked occluder alone took a quarter of a gigabyte
+off the floor.
+
 That ceiling is a fifth of the 3 GB crash line, and it is the most any session in central Paris can hold,
 however long. Between collections the heap swings to ~1.3 GB, which is garbage, not growth. Guard: the
 `--profile` option names what is still alive by where it was allocated. The largest are the street levels for

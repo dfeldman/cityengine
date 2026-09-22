@@ -1,39 +1,13 @@
-  0.0 min  heap   377 MB  meshes  1589  mats   67  tex   76  geo  1583  tiles 225  0.00 km
-  1.0 min  heap   423 MB  meshes  1999  mats  224  tex  350  geo  1986  tiles 285  0.71 km
-  2.0 min  heap   434 MB  meshes  2198  mats  224  tex  348  geo  2186  tiles 316  1.30 km
-  3.0 min  heap   445 MB  meshes  2144  mats  227  tex  353  geo  2131  tiles 366  2.14 km
-  4.0 min  heap   444 MB  meshes  2153  mats  227  tex  351  geo  2141  tiles 402  2.85 km
-  5.0 min  heap   454 MB  meshes  2178  mats  227  tex  351  geo  2166  tiles 450  3.59 km
-  6.0 min  heap   467 MB  meshes  2062  mats  227  tex  351  geo  2050  tiles 468  4.31 km
-  7.0 min  heap   465 MB  meshes  2044  mats  229  tex  357  geo  2030  tiles 505  5.02 km
-  8.0 min  heap   473 MB  meshes  2022  mats  227  tex  351  geo  2010  tiles 551  5.66 km
-  9.0 min  heap   489 MB  meshes  2134  mats  227  tex  351  geo  2122  tiles 590  6.32 km
- 10.0 min  heap   476 MB  meshes  2086  mats  227  tex  351  geo  2074  tiles 605  6.93 km
-second half: heap 454 → 476 MB (4.3 MB/min), meshes 2178 → 2086, textures 351 → 351
-peak heap 489 MB
-allocated since the ride began and still alive: 125 MB
-     23 MB  (V8 API) :0
-     16 MB  fileGrade render/city.ts:698
-     15 MB  _getData deps/chunk-756CJIZD.js:1358
-      9 MB  ingest render/city.ts:734
-      8 MB  (anon) city/ridefile.ts:7
-      5 MB  set :0
-      4 MB  push :0
-      4 MB  unpackPoints city/package.ts:1
-      3 MB  join :0
-      2 MB  Zero deps/chunk-AXA7A23T.js:2133
-      2 MB  add :0
-      2 MB  TransformNode deps/chunk-BW3X7LG5.js:102
-      2 MB  AbstractMesh deps/chunk-756CJIZD.js:742
-      2 MB  _BoundingBox deps/chunk-KB2TO22O.js:34
-      2 MB  setVerticesData deps/chunk-756CJIZD.js:2524
-      1 MB  nearOf city/tiles.ts:212
-      1 MB  _Mesh deps/chunk-756CJIZD.js:4351
-      1 MB  addEdges city/graph.ts:7
-      1 MB  Identity deps/chunk-AXA7A23T.js:6478
-      1 MB  _Matrix deps/chunk-AXA7A23T.js:5374
-      1 MB  _MergeElement deps/chunk-KBG4LCWJ.js:823
-      1 MB  streetIndex city/frontage.ts:3
-      1 MB  _Observable deps/chunk-QVC3FGL3.js:88
-      1 MB  _InternalNodeDataInfo deps/chunk-KVNLJIP6.js:25
-      1 MB  _Vector3 deps/chunk-AXA7A23T.js:1136
+  0.0 min  heap   124 MB  meshes  2379  mats   74  tex   88  geo  1868  tiles 225  0.00 km
+  1.0 min  heap   174 MB  meshes  2846  mats  248  tex  393  geo  2322  tiles 285  0.71 km
+  2.0 min  heap   196 MB  meshes  3054  mats  248  tex  391  geo  2531  tiles 316  1.30 km
+  3.0 min  heap   195 MB  meshes  2986  mats  250  tex  393  geo  2463  tiles 366  2.14 km
+  4.0 min  heap   194 MB  meshes  3002  mats  251  tex  394  geo  2479  tiles 402  2.85 km
+  5.0 min  heap   203 MB  meshes  3025  mats  251  tex  394  geo  2502  tiles 450  3.59 km
+  6.0 min  heap   205 MB  meshes  2910  mats  251  tex  394  geo  2387  tiles 468  4.30 km
+  7.0 min  heap   213 MB  meshes  2887  mats  253  tex  400  geo  2362  tiles 505  5.02 km
+  8.0 min  heap   221 MB  meshes  2869  mats  251  tex  394  geo  2346  tiles 551  5.66 km
+  9.0 min  heap   226 MB  meshes  2982  mats  251  tex  394  geo  2459  tiles 590  6.32 km
+ 10.0 min  heap   226 MB  meshes  2931  mats  251  tex  394  geo  2408  tiles 605  6.93 km
+second half: heap 203 → 226 MB (4.6 MB/min), meshes 3025 → 2931, textures 394 → 394
+peak heap 226 MB
