@@ -116,6 +116,29 @@ void main(void) {
   vec4 w = texture2D(wallTex, vUV);
   vec4 a = texture2D(atlasTex, vUV);
   vec4 albedo = mix(w, a, step(0.5, vKind));
+  // 2 = a wrought-iron RAIL (BUGS.md #23): uv.x metres along it, uv.y 0 at its foot to 1 at its top. The
+  // openwork is cut here, not modelled: a top and bottom rail, bars every 11 cm, and a band of rings at
+  // mid-height, each antialiased by its own screen size — a bar thinner than a pixel coverage-fades and is
+  // dropped, so a far balcony reads as its two rails and the wall behind, never as a black band.
+  if (vKind > 1.5) {
+    float fu = max(fwidth(vUV.x), 1e-4);
+    float fv = max(fwidth(vUV.y), 1e-4);
+    float rails = max(1.0 - smoothstep(0.07 - fv, 0.07 + fv, vUV.y), smoothstep(0.9 - fv, 0.9 + fv, vUV.y));
+    float bu = abs(fract(vUV.x / 0.11) - 0.5) * 0.11;
+    // bars and rings are kept at least about a pixel wide, so the pattern still reads across the street
+    float bw = max(0.011, 0.5 * fu);
+    float bars = (1.0 - smoothstep(bw - fu, bw + fu, bu)) * step(0.62, vUV.y);
+    vec2 c = vec2((fract(vUV.x / 0.44) - 0.5) * 0.44, (vUV.y - 0.36) * 0.85);
+    float ring = abs(length(c) - 0.15);
+    float rings = (1.0 - smoothstep(bw - fu, bw + fu, ring)) * step(0.07, vUV.y) * step(vUV.y, 0.62);
+    float posts = (1.0 - smoothstep(bw - fu, bw + fu, abs(c.x))) * step(vUV.y, 0.62);
+    // a bar narrower than about a pixel drops out entirely: seen edge-on, fwidth grows and the smoothstep
+    // would otherwise count half the rail as iron — a black band down every side wall
+    float fine = 1.0 - smoothstep(0.035, 0.06, fu);
+    float cover = max(rails, max(max(bars, rings), posts) * fine);
+    if (cover < 0.5) discard;
+    albedo = vec4(1.0, 1.0, 1.0, 1.0);
+  }
 
   vec3 n = normalize(vNormal);
   vec3 view = normalize(vWorld - eye);
@@ -191,6 +214,8 @@ let registered = false
 /** How a vertex says which page it wants; written into the alpha of the colour attribute. */
 export const KIND_WALL = 0
 export const KIND_ATLAS = 1
+/** a wrought-iron rail, its openwork cut in the shader: uv.x in metres along, uv.y 0→1 up */
+export const KIND_RAIL = 2
 
 export interface SkyLook {
   sun: Vector3

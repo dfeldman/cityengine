@@ -30,7 +30,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 20 | open | Central Paris audit: 22 ride edges pass through buildings; 266 dead ends to triage | audit-ride, 2026-09-21 |
 | 21 | fixing | Notre-Dame needs real effort: the first pass is a sketch | user, 2026-09-21 |
 | 22 | open | The Place de la Concorde is drawn as grass; the real square is paved | views, 2026-09-21 |
-| 23 | open | Haussmann balconies read as solid dark lines, not ironwork | user, 2026-09-22 |
+| 23 | fixed | Haussmann balconies read as solid dark lines, not ironwork | user, 2026-09-22 |
 | 24 | fixed | Heavy z-fighting on the buildings on the left at central Paris's start point (48.860446, 2.331791) | user, 2026-09-22 |
 | 25 | fixed | Dormers and a chimney float in mid-air over a low building (48.857914, 2.347074) | user, 2026-09-22 |
 | 26 | fixed | Riding below the ground: the rider and road sink under the pavement (48.863689, 2.297469) | user, 2026-09-22 |
@@ -361,6 +361,16 @@ drawn as paving.
 **Seen:** user, 2026-09-22 (a to-do): the continuous balconies on the 2nd and 5th floors of Haussmann fronts
 are drawn as solid dark bands (see the Chicago and Paris shots). They want to read as wrought iron — a slab
 edge in stone, and a railing you can see through (a cut-out pattern of bars and scrolls, not a solid strip).
+
+**Cause/fix:** three things, found in turn from shots over the Passage Walter-Benjamin:
+1. the rail was one solid quad in the dark accent colour. It is now `KIND_RAIL` (facade-material.ts): the
+   shader cuts the openwork — top and bottom rails, bars every 11 cm, a band of rings — kept about a pixel wide
+   at mid distance and dropped (rails only) once it would crowd, so edge-on it never fills in solid;
+2. the slab was the same iron colour; it is stone now (the palette's trim);
+3. the real black line: EVERY band's top (cornices, string courses, balcony slabs) was wound facing down, so
+   from above the top was culled and the dark-lit soffit showed through. `MeshBuilder.quad` now winds itself
+   to face the normal it is given (the rule pushUpward measured). Landmark views compared before/after with
+   tools/compare-shots.ts: ≤0.2% of pixels changed (Invalides 1.3%, from cornices on the buildings behind).
 
 ## 24. Z-fighting at the central-Paris start
 

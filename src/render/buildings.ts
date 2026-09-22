@@ -22,7 +22,7 @@
  */
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData'
 import earcut from 'earcut'
-import { KIND_ATLAS, KIND_WALL } from './facade-material.ts'
+import { KIND_ATLAS, KIND_RAIL, KIND_WALL } from './facade-material.ts'
 import { planWall, rng, type Cell, type FacadePlan, type Feature } from '../city/facade.ts'
 import { addRoofscape, buildRoof, buildRoofAroundCourts, type Roofscape } from './roofs.ts'
 import type { RoofShape } from '../city/package.ts'
@@ -63,7 +63,16 @@ export class MeshBuilder {
       this.uvs.push(uv[i][0], uv[i][1])
       this.colors.push(tint[0], tint[1], tint[2], kind)
     }
-    this.indices.push(base, base + 1, base + 2, base, base + 2, base + 3)
+    // Wound to face its normal, whatever order the corners came in: the drawn side is the one where
+    // (p1 − p0) × (p2 − p0) points AGAINST it (see pushUpward). Every band's top — each cornice, string course
+    // and balcony slab in the city — came in wound the other way, so from above the top was culled and the
+    // dark soffit showed through it: a black line along every building (BUGS.md #23). A quad with no normal
+    // keeps its order.
+    const e1 = [p[1][0] - p[0][0], p[1][1] - p[0][1], p[1][2] - p[0][2]]
+    const e2 = [p[2][0] - p[0][0], p[2][1] - p[0][1], p[2][2] - p[0][2]]
+    const facing = (e1[1] * e2[2] - e1[2] * e2[1]) * n[0] + (e1[2] * e2[0] - e1[0] * e2[2]) * n[1] + (e1[0] * e2[1] - e1[1] * e2[0]) * n[2]
+    if (facing > 0) this.indices.push(base, base + 2, base + 1, base, base + 3, base + 2)
+    else this.indices.push(base, base + 1, base + 2, base, base + 2, base + 3)
   }
 
   get triangles(): number { return this.indices.length / 3 }
@@ -409,17 +418,19 @@ function feature(
     // Drawn as one it reads as a black stripe across the building, which is what it did on the first pass.
     const slabTop = f.y0 + 0.14
     const railTop = f.y0 + 0.95
-    const railTint = rgb(plan.palette.accent)
+    const railTint = tint
+    // the slab is STONE, the facade's trim — in the rail's dark iron it was a black band seen from any angle
+    const slab = rgb(plan.palette.trim)
     // the slab: edge, top, soffit
     out.quad([at(x0, f.y0, d), at(x1, f.y0, d), at(x1, slabTop, d), at(x0, slabTop, d)],
-      [nx, 0, nz], uvq, tint, KIND_WALL)
+      [nx, 0, nz], uvq, slab, KIND_WALL)
     out.quad([at(x0, slabTop, 0), at(x1, slabTop, 0), at(x1, slabTop, d), at(x0, slabTop, d)],
-      [0, 1, 0], uvq, tint, KIND_WALL)
+      [0, 1, 0], uvq, slab, KIND_WALL)
     out.quad([at(x0, f.y0, d), at(x1, f.y0, d), at(x1, f.y0, 0), at(x0, f.y0, 0)],
-      [0, -1, 0], uvq, tint, KIND_WALL)
+      [0, -1, 0], uvq, shadeRgb(slab, 0.8), KIND_WALL)
     // the rail, set at the slab's outer edge, with a lighter cap along the top
     out.quad([at(x0, slabTop, d), at(x1, slabTop, d), at(x1, railTop, d), at(x0, railTop, d)],
-      [nx, 0, nz], uvq, railTint, KIND_WALL)
+      [nx, 0, nz], [[x0, 0], [x1, 0], [x1, 1], [x0, 1]], railTint, KIND_RAIL)
     out.quad([at(x0, railTop, d - 0.05), at(x1, railTop, d - 0.05), at(x1, railTop, d), at(x0, railTop, d)],
       [0, 1, 0], uvq, rgb(plan.palette.trim), KIND_WALL)
     return
@@ -580,3 +591,5 @@ export function rectangle(width: number, depth: number, cx = 0, cz = 0): Ring {
 }
 
 
+
+const shadeRgb = (c: [number, number, number], k: number): [number, number, number] => [c[0] * k, c[1] * k, c[2] * k]
