@@ -42,6 +42,7 @@ import { Crowd } from './sim/crowd.ts'
 import { Life } from './render/life.ts'
 import { OverheadLines } from './render/overhead.ts'
 import { streetRailsLayer } from './render/street-rails.ts'
+import { stairsLayer } from './render/stairs.ts'
 import { Sky } from './render/sky.ts'
 import { Landmarks, landmarkManifest, packedIds } from './render/landmarks.ts'
 import { Statues, statueManifest } from './render/statues.ts'
@@ -331,6 +332,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const life = new Life(scene, pkg as unknown as CityPackage, undefined, regionKit(pkg.region).stock, city.viaductStations)
   // the tram track in the street, and the wires over the electric track (render/street-rails.ts, overhead.ts)
   city.addLayer(streetRailsLayer(scene, city.terrain))
+  // the public stairways as stairs (render/stairs.ts)
+  city.addLayer(stairsLayer(scene, city.terrain))
   const overhead = off.has('life') ? null : new OverheadLines(scene, city.terrain)
   onTile((a) => {
     // the tram stops first, so the tile's own lines find them

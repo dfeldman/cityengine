@@ -171,6 +171,21 @@ out geom qt;`
 }
 
 /**
+ * The public stairways (SF_PLAN.md §10: "there are SO MANY public stairs… we need to have a way to insert
+ * stairs"). `highway=steps` was never in the street query, so the city had none: its own query, so adding it
+ * does not change the street query's cache. Merged into the ways before the ride graph is built; the run graph
+ * takes them, the bike graph does not (you carry a bike up the Filbert Steps).
+ */
+export function stepsQuery(b: Bbox): string {
+  const box = `${b.south},${b.west},${b.north},${b.east}`
+  return `[out:json][timeout:120];
+(
+  way["highway"="steps"](${box});
+);
+out geom qt;`
+}
+
+/**
  * A query over a box too big for one request (central Paris is 7 × 3.5 km; one query timed out on every
  * server): the box cut into a grid of chunks about `step` metres a side, each fetched and cached on its own,
  * and the results merged by id — Overpass returns a way, node or relation whole even when only part of it

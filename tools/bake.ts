@@ -27,7 +27,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { CITIES, bboxOf, city, extentOf, type CitySpec } from './cities.ts'
 import { joinNearMisses } from './gaps.ts'
-import { bridgesQuery, squaresQuery, fringeQuery, cityQuery, furnitureQuery, innerRings, outerRings, overpassTiled, type Bbox, type OsmWay } from './overpass.ts'
+import { bridgesQuery, squaresQuery, stepsQuery, fringeQuery, cityQuery, furnitureQuery, innerRings, outerRings, overpassTiled, type Bbox, type OsmWay } from './overpass.ts'
 import { Elevation, ATTRIBUTION as TERRAIN_CREDIT } from './terrarium.ts'
 import { Terrain, type PackedTerrain } from '../src/city/terrain.ts'
 import { splitPackage, type CityIndex, type TileEntry } from '../src/city/tiles.ts'
@@ -158,6 +158,25 @@ async function bake(spec: CitySpec): Promise<void> {
   console.log(`\n${spec.name}`)
   const { ways, nodes, relations, copyright, timestamp } = await overpassTiled(cityQuery, bbox(spec))
   console.log(`  ${ways.length} ways, ${nodes.length} nodes, ${relations.length} relations`)
+  // the public stairways, from their own query (tools/overpass.ts stepsQuery), and the region's own where OSM
+  // has not mapped them — each a polyline, its ends joined to the paths beside them (joinNearMisses below)
+  {
+    const got = await overpassTiled(stepsQuery, bbox(spec)).catch((e) => {
+      console.warn(`  steps: not fetched (${String(e).slice(0, 120)})`)
+      return { ways: [] as OsmWay[] }
+    })
+    const have = new Set(ways.map((w) => w.id))
+    let n = 0
+    for (const w of got.ways) if (!have.has(w.id) && w.tags.highway === 'steps') { ways.push(w); n++ }
+    let own = 0
+    for (const [k, st] of (region(spec.region).stairways ?? []).entries()) {
+      const id = -(900000 + k)
+      ways.push({ type: 'way', id, tags: { highway: 'steps', name: st.name, ...(st.width ? { width: String(st.width) } : {}) },
+        nodes: st.points.map((_, i) => -(900000 + k) * 1000 - i), geometry: st.points.map(([lat, lon]) => ({ lat, lon })) } as unknown as OsmWay)
+      own++
+    }
+    console.log(`  ${n} stairways from OSM, ${own} of the region's own`)
+  }
 
   const proj = new Projection(spec.centre)
   const streetRegion = region(spec.region)

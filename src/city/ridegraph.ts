@@ -33,8 +33,13 @@ export interface RideGraph extends CityGraph { edges: Map<number, RideEdge> }
 /** Streets a bike is steered down. Pedestrian streets count: in Paris they ARE streets. */
 const BIKE = new Set(['primary', 'secondary', 'tertiary', 'primary_link', 'secondary_link', 'tertiary_link',
   'residential', 'unclassified', 'living_street', 'pedestrian', 'cycleway', 'service'])
-/** …and on foot, the paths as well. Steps stay out: a treadmill cannot climb them. */
-const RUN_EXTRA = new Set(['footway', 'path'])
+/**
+ * …and on foot, the paths as well — and the public stairways. They were left out once ("a treadmill cannot climb
+ * them"), but a runner on a treadmill climbs a virtual stair at their own pace like any hill, and in San
+ * Francisco the stairways ARE where people run (user, 2026-09-22: "there are SO MANY public stairs… we need to
+ * have a way to insert stairs"; the Filbert, Greenwich and Lyon Street steps). The bike graph still has none.
+ */
+const RUN_EXTRA = new Set(['footway', 'path', 'steps'])
 const NOT_A_STREET = new Set(['parking_aisle', 'driveway', 'drive-through', 'emergency_access'])
 
 /** Connector edges shorter than this, between two real junctions, are one junction drawn as several. */

@@ -31,8 +31,9 @@ describe('classify', () => {
     expect(classify([road, foot], 'bike').map((e) => e.id)).toEqual([road.id])
     expect(classify([road, foot], 'run').map((e) => e.id)).toEqual([road.id, foot.id])
   })
-  it('drops parking aisles, tunnels and steps', () => {
-    expect(classify([road, aisle, tunnel, steps], 'run').map((e) => e.id)).toEqual([road.id])
+  it('drops parking aisles and tunnels; steps only on foot', () => {
+    expect(classify([road, aisle, tunnel, steps], 'bike').map((e) => e.id)).toEqual([road.id])
+    expect(classify([road, aisle, tunnel, steps], 'run').map((e) => e.id)).toEqual([road.id, steps.id])
   })
   it('counts an edge with no kind as a street', () => {
     const { kind: _, ...bare } = edge(7, 8, [[0, 0], [10, 0]])

@@ -73,6 +73,8 @@ export interface Region {
    * Embarcadero to Octavia), and the brick's colour.
    */
   brickStreets?: { names: string[]; colour: [number, number, number] }
+  /** public stairways OSM does not have, by hand: each a polyline of [lat, lon] from one end to the other */
+  stairways?: { name: string; points: [number, number][]; width?: number }[]
   /** squares OSM maps only as lines (the Trocadéro's parvis): paved areas by hand, rings of [lat, lon] */
   pavedSquares?: { name: string; ring: [number, number][] }[]
   /** the steel of an elevated railway — the Loop's L is painted a dark green-black */
@@ -122,6 +124,7 @@ export function region(id: string | undefined): Region {
     elevatedWalks: own?.elevatedWalks ?? base.elevatedWalks,
     pavedSquares: own?.pavedSquares ?? base.pavedSquares,
     brickStreets: own?.brickStreets ?? base.brickStreets,
+    stairways: own?.stairways ?? base.stairways,
     pointFurniture: { ...base.pointFurniture, ...(own?.pointFurniture ?? {}) },
     landmarkPlate: { ...base.landmarkPlate, ...(own?.landmarkPlate ?? {}) },
     elevatedRailColour: own?.elevatedRailColour ?? base.elevatedRailColour,
