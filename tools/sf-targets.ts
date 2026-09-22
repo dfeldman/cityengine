@@ -26,8 +26,8 @@ for (const f of readdirSync(dir)) {
     seen.set(`${e.type}/${e.id}`, { ...e, center: p })
   }
 }
-const manifest = JSON.parse(readFileSync(resolve(import.meta.dirname, '..', 'public', 'landmarks', 'san-francisco.json'), 'utf8')) as { landmarks?: { osm?: string | string[] }[] } | { osm?: string | string[] }[]
-const list = Array.isArray(manifest) ? manifest : manifest.landmarks ?? []
+const { readManifestFile } = await import('../src/city/manifest.ts')
+const list = await readManifestFile<{ osm?: string | string[] }>(resolve(import.meta.dirname, '..', 'public', 'landmarks', 'san-francisco.json'))
 const done = new Set(list.flatMap((l) => (Array.isArray(l.osm) ? l.osm : l.osm ? [l.osm] : [])))
 const CIVIC_AMENITY = /^(townhall|courthouse|library|fire_station|police|community_centre|post_office|arts_centre|theatre|place_of_worship|school|college|university|hospital|social_facility)$/
 const CIVIC_BUILDING = /^(civic|government|public|cathedral|church|temple|train_station|transportation|museum)$/

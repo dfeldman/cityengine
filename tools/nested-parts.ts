@@ -13,7 +13,7 @@ const city = process.argv[2] ?? 'paris-marais'
 const pkg = JSON.parse(readFileSync(`public/cities/${city}.json`, 'utf8'))
 // the city's own manifest, else its region's (Paris's cities share public/landmarks/paris.json)
 const manifestFile = [`public/landmarks/${city}.json`, `public/landmarks/${city.split('-')[0]}.json`].find((f) => existsSync(f))!
-const manifest: LandmarkEntry[] = JSON.parse(readFileSync(manifestFile, 'utf8'))
+const manifest: LandmarkEntry[] = await (await import('../src/city/manifest.ts')).readManifestFile<LandmarkEntry>(manifestFile)
 const byId = new Map(pkg.buildings.map((b: { id: number }) => [b.id, b]))
 const inside = (x: number, z: number, r: number[]): boolean => {
   let o = false

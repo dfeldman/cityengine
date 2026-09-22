@@ -177,6 +177,32 @@ Shared where they are shared (Chicago and New York want them too), placed per re
 - **the rest:** parking meters, newspaper boxes, fire hydrants (they exist, and SF's are white-topped), trash
   cans, BART and Muni entrances on Market, the overhead trolleybus wires.
 
+**Clutter** (user, 2026-09-22: "there is SO MUCH street furniture. they really went overboard. some places the
+sidewalk is quite cluttered with benches, newspaper boxes, ads, utility poles, and trees"). An SF pavement is
+busy, and the region needs the full set, dense where the city is dense:
+- newspaper racks, in banks of three to six coloured boxes at corners;
+- wooden utility poles with crossarms and their wires (Nob Hill, the Mission, the Avenues);
+- the Muni poles;
+- the tall ad kiosks and bus-shelter ads;
+- parking meters;
+- benches;
+- trash cans (the green SF can);
+- bike racks and planters.
+
+**The station entrances** (user, 2026-09-22: "the stairways down to MUNI stations are huge and very distinctive
+glass structures, not the small stairways like Paris"). Market Street's BART/Muni entrances are long openings in
+the brick with a stair and an escalator side by side. Over them is a glass-and-steel canopy that slopes down with
+the stair and can be closed with a rolling gate, and a tall BART/Muni pylon stands at the head. That makes an SF
+entrance model in place of the generic one, sized to the stair's length (about 14 × 4 m). And the elevators (user: "there are also
+many elevators down to MUNI stations"): Market's glass-and-steel elevator towers, a square glass shaft about 3 m
+tall with a flat steel roof and the pylon sign, standing beside the stairs. OSM maps them as `highway=elevator` or
+`railway=subway_entrance` + `wheelchair=yes`.
+
+**Market Street** (user: "famous for its brick sidewalks and plazas"). Market's pavements are red brick from the
+Embarcadero to Octavia, with granite kerbs, the bands of the old tram-line palms, the green-and-gold "trolley"
+lamp standards, and its plazas: Hallidie, Justin Herman/Embarcadero, UN Plaza, Mechanics Monument and the
+Crocker. That means a surface for the Market Street edges, and the plazas as places.
+
 ## 7. Cable cars and streetcars
 
 - **Cable cars:** Powell–Hyde, Powell–Mason and California Street:

@@ -20,7 +20,11 @@ await page.goto(`http://localhost:${arg('port', '5200')}/?city=${city}&freeze=1&
 await page.waitForFunction('window.gameReady === true && window.riderReady === true', null, { timeout: 180_000 })
 const origin = await page.evaluate('window.__pkg.origin') as { lat: number; lon: number }
 // the landmark may be in a tile not yet in: look at it first
-const entry = (JSON.parse(readFileSync(resolve(import.meta.dirname, '..', 'public', 'landmarks', `${city.split('-')[0]}.json`), 'utf8')) as { name: string; lat?: number; lon?: number }[]).find((e) => e.name === name)
+const { existsSync } = await import('node:fs')
+const { readManifestFile } = await import('../src/city/manifest.ts')
+// the city's own manifest, else its region's; includes expanded (city/manifest.ts)
+const mf = [city, city.split('-')[0]].map((n) => resolve(import.meta.dirname, '..', 'public', 'landmarks', `${n}.json`)).find((f) => existsSync(f))!
+const entry = (await readManifestFile<{ name: string; lat?: number; lon?: number }>(mf)).find((e) => e.name === name)
 if (entry?.lat !== undefined) {
   await page.evaluate(`window.__view([${entry.lat}, ${entry.lon}, 200], [${entry.lat}, ${entry.lon}, 0])`)
   await page.waitForTimeout(3000)

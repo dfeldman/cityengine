@@ -4,7 +4,9 @@
  *
  *     ?model=goldenGateBridge          the model on water, in daylight
  *
- * `window.__modelView(alpha, beta, radius, tx, ty, tz)` moves the camera for tools/model-shots.ts.
+ * `window.__modelView(alpha, beta, radius, tx, ty, tz)` moves the camera for tools/model-shots.ts, and
+ * `window.__rebuild(fit)` builds the model again to a given fit — a real footprint (a tower-grammar building is
+ * its own outline raised), which the tool reads from the Overpass cache — and returns its bounds.
  */
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera'
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color'
@@ -33,10 +35,10 @@ export async function modelShowcase(canvas: HTMLCanvasElement, name: string, siz
   // a landmark builder, or a vehicle (the rolling stock's models, which take no fit)
   const vehicle = (SF_VEHICLES as Record<string, ((o: MeshBuilder) => void) | undefined>)[name]
   const build = PROCEDURAL[name] ?? (vehicle ? (o: MeshBuilder) => vehicle(o) : undefined)
-  const mb = new MeshBuilder()
+  let mb = new MeshBuilder()
   if (build) build(mb, { hx: size / 2, hz: size / 2, height: size })
   const m = new Mesh(name, scene)
-  mb.toVertexData().applyToMesh(m)
+  mb.toVertexData().applyToMesh(m, true)
   // vertex colours, the tag in alpha ignored
   // (a BODY-tagged panel — alpha 1 — takes a copy's livery in the game; here a maroon stands in for it)
   const cols = m.getVerticesData('color')
@@ -67,6 +69,17 @@ export async function modelShowcase(canvas: HTMLCanvasElement, name: string, siz
     camera.target = new Vector3(tx, ty, tz); camera.alpha = alpha; camera.beta = beta; camera.radius = radius
   }
   ;(window as unknown as Record<string, unknown>).__modelTris = mb.triangles
+  ;(window as unknown as Record<string, unknown>).__rebuild = (fit: { hx: number; hz: number; height: number; ring?: { x: number; z: number }[] }) => {
+    mb = new MeshBuilder()
+    if (build) build(mb, fit)
+    mb.toVertexData().applyToMesh(m, true)
+    const c = m.getVerticesData('color')
+    if (c) { for (let i = 3; i < c.length; i += 4) c[i] = 1; m.setVerticesData('color', c) }
+    m.refreshBoundingInfo()
+    const b = m.getBoundingInfo().boundingBox
+    ;(window as unknown as Record<string, unknown>).__modelTris = mb.triangles
+    return { min: b.minimumWorld.asArray(), max: b.maximumWorld.asArray(), triangles: mb.triangles }
+  }
   engine.runRenderLoop(() => scene.render())
   addEventListener('resize', () => engine.resize())
   await scene.whenReadyAsync()

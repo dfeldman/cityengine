@@ -1,0 +1,364 @@
+/**
+ * The tower grammar (SF_PLAN.md §10: every building of ten storeys and over, one by one). Most downtown buildings
+ * are their own footprint raised — OSM's outline is the building's — so what makes one recognisable is how it is
+ * dressed: the stone or the glass, how the windows are cut into it, where it steps in, the cornice, the podium
+ * and its shopfronts, the crown. A `TowerSpec` says that for one building, and this raises it from its fitted
+ * footprint. Shared: any city's towers.
+ *
+ * A spec is a stack of TIERS, bottom up, each with its own facade (`Face`), each drawn in from the one below by
+ * its `inset`; a `base` (podium, shopfronts, a canopy) under them; `cornice` ledges where a tier ends; and a
+ * `crown` on top. Heights are metres; a tier's `to` is a fraction of the building's height when ≤ 1.5, metres above.
+ *
+ * Faces, and what each costs (a 40-storey tower is 2–8k triangles):
+ * - `punched`  windows cut into a solid wall, one per bay per floor, with a reveal (the 1920s towers, the hotels);
+ * - `bands`    alternating strips of wall and glass a floor apart (the 1960s–80s slabs);
+ * - `fins`     vertical piers or fins proud of the glass (555 California, the Embarcadero Center);
+ * - `curtain`  glass with a thin mullion grid (the 2000s towers);
+ * - `xbrace`   a curtain wall behind exterior X-bracing, a brace per `pitch` bay per `brace` floors (One Maritime);
+ * - `blank`    solid wall (a garage, a service core, the back of a podium).
+ *
+ * Local frame: the fitted footprint's, +y up.
+ */
+import { capPolygon, type MeshBuilder } from '../buildings.ts'
+import { box, type Rgb } from '../models.ts'
+import type { Fit } from './fit.ts'
+
+type P2 = { x: number; z: number }
+
+export interface Face {
+  kind: 'punched' | 'bands' | 'fins' | 'curtain' | 'xbrace' | 'blank'
+  wall: Rgb
+  glass?: Rgb
+  /** floor to floor, metres (default 3.6) */
+  floor?: number
+  /** bay width, fin spacing, mullion spacing, metres (default 3) */
+  pitch?: number
+  /** the wall's share of each bay (punched, fins) or floor (bands), 0..1 */
+  solid?: number
+  /** how far fins or piers stand proud, metres (default 0.3) */
+  depth?: number
+  /** xbrace: floors per brace (default 6) */
+  brace?: number
+  /** punched: arched window heads (the 1910s–20s) */
+  arched?: boolean
+}
+
+export interface Tier {
+  /** the top of this tier: a fraction of the height (≤ 1.5) or metres */
+  to: number
+  face: Face
+  /** metres drawn in from the tier below (a setback) */
+  inset?: number
+  /** a cornice at the top of this tier: how far it projects (m), its colour (default the wall's) */
+  cornice?: { depth: number; height?: number; colour?: Rgb }
+}
+
+export type Crown =
+  | { kind: 'flat' }
+  | { kind: 'parapet'; height: number; colour?: Rgb }
+  | { kind: 'hip' | 'mansard'; height: number; inset: number; colour: Rgb }
+  | { kind: 'pyramid' | 'spire'; height: number; inset?: number; colour: Rgb }
+  | { kind: 'dome'; height: number; radius?: number; colour: Rgb; drum?: number }
+  | { kind: 'lantern'; height: number; inset: number; face: Face; cap?: Crown }
+  | { kind: 'stepped'; steps: number; height: number; inset: number; face?: Face }
+  | { kind: 'mast'; height: number; colour?: Rgb; width?: number }
+
+export interface TowerSpec {
+  /** used when the manifest's (OSM's) height is missing or implausible */
+  height: number
+  /** podium: shopfronts to `height`, an awning or canopy along the front */
+  base?: { height: number; face: Face; canopy?: { depth: number; colour: Rgb } }
+  tiers: Tier[]
+  roof?: Rgb
+  crown?: Crown
+  /** mechanical penthouse boxes on the roof: how many (default 0) */
+  penthouse?: number
+}
+
+const DARK_GLASS: Rgb = [0.22, 0.25, 0.29]
+
+/** The ring drawn in by d metres toward its centroid (near enough for a tower's setbacks). */
+export function insetRing(ring: P2[], d: number): P2[] {
+  let cx = 0
+  let cz = 0
+  for (const p of ring) { cx += p.x; cz += p.z }
+  cx /= ring.length
+  cz /= ring.length
+  return ring.map((p) => {
+    const dx = p.x - cx
+    const dz = p.z - cz
+    const l = Math.hypot(dx, dz) || 1
+    const k = Math.max(0.15, (l - d) / l)
+    return { x: cx + dx * k, z: cz + dz * k }
+  })
+}
+
+function centroid(ring: P2[]): P2 {
+  let cx = 0
+  let cz = 0
+  for (const p of ring) { cx += p.x; cz += p.z }
+  return { x: cx / ring.length, z: cz / ring.length }
+}
+
+const quadAt = (out: MeshBuilder, p: [number, number, number][], n: [number, number, number], c: Rgb): void =>
+  out.quad(p as [[number, number, number], [number, number, number], [number, number, number], [number, number, number]], n, [[0, 0], [1, 0], [1, 1], [0, 1]], c, 0)
+
+/** One face between y0 and y1 on every edge of the ring. */
+export function faceBand(out: MeshBuilder, ring: P2[], y0: number, y1: number, f: Face): void {
+  const glass = f.glass ?? DARK_GLASS
+  const floor = f.floor ?? 3.6
+  const pitch = f.pitch ?? 3
+  const depth = f.depth ?? 0.3
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i]
+    const b = ring[(i + 1) % ring.length]
+    const L = Math.hypot(b.x - a.x, b.z - a.z)
+    if (L < 0.2) continue
+    const tx = (b.x - a.x) / L
+    const tz = (b.z - a.z) / L
+    const nx = tz
+    const nz = -tx
+    const n: [number, number, number] = [nx, 0, nz]
+    /** a rectangle on this face: along u0..u1 metres, up ya..yb, `o` metres out */
+    const rect = (u0: number, u1: number, ya: number, yb: number, c: Rgb, o = 0): void => {
+      const P = (u: number, y: number): [number, number, number] => [a.x + tx * u + nx * o, y, a.z + tz * u + nz * o]
+      quadAt(out, [P(u0, ya), P(u1, ya), P(u1, yb), P(u0, yb)], n, c)
+    }
+    /** a block proud of the face by `o`: its front and two cheeks (and a top ledge when `top`) */
+    const proud = (u0: number, u1: number, ya: number, yb: number, c: Rgb, o: number, top = false): void => {
+      rect(u0, u1, ya, yb, c, o)
+      for (const [u, s] of [[u0, -1], [u1, 1]] as const) {
+        const x = a.x + tx * u
+        const z = a.z + tz * u
+        quadAt(out, [[x, ya, z], [x + nx * o, ya, z + nz * o], [x + nx * o, yb, z + nz * o], [x, yb, z]].map((q) => q) as [number, number, number][],
+          [tx * s, 0, tz * s], c)
+      }
+      if (top) {
+        const P = (u: number, oo: number): [number, number, number] => [a.x + tx * u + nx * oo, yb, a.z + tz * u + nz * oo]
+        quadAt(out, [P(u0, 0), P(u1, 0), P(u1, o), P(u0, o)], [0, 1, 0], c)
+      }
+    }
+    const floors = Math.max(1, Math.round((y1 - y0) / floor))
+    const fh = (y1 - y0) / floors
+    const bays = Math.max(1, Math.round(L / pitch))
+    const bw = L / bays
+    switch (f.kind) {
+      case 'blank':
+        rect(0, L, y0, y1, f.wall)
+        break
+      case 'punched': {
+        // the wall, then the windows set into it: a dark pane just behind a reveal, one per bay per floor
+        rect(0, L, y0, y1, f.wall)
+        const solid = f.solid ?? 0.45
+        const ww = bw * (1 - solid)
+        for (let fl = 0; fl < floors; fl++) {
+          const ya = y0 + fl * fh + fh * 0.22
+          const yb = y0 + fl * fh + fh * 0.84
+          for (let k = 0; k < bays; k++) {
+            const u0 = k * bw + (bw - ww) / 2
+            rect(u0, u0 + ww, ya, yb, glass, 0.03)
+            if (f.arched) rect(u0 + ww * 0.15, u0 + ww * 0.85, yb, yb + fh * 0.08, glass, 0.03)
+          }
+        }
+        break
+      }
+      case 'bands': {
+        const solid = f.solid ?? 0.45
+        for (let fl = 0; fl < floors; fl++) {
+          const ya = y0 + fl * fh
+          const ys = ya + fh * solid
+          proud(0, L, ya, ys, f.wall, 0.12, true)
+          rect(0, L, ys, ya + fh, glass)
+        }
+        break
+      }
+      case 'fins': {
+        const solid = f.solid ?? 0.35
+        rect(0, L, y0, y1, glass)
+        for (let k = 0; k <= bays; k++) {
+          const u = k * bw
+          const w = bw * solid / 2
+          proud(Math.max(0, u - w), Math.min(L, u + w), y0, y1, f.wall, depth)
+        }
+        // the spandrels between the fins, a floor apart, so it is not a set of stripes
+        for (let fl = 1; fl < floors; fl++) rect(0, L, y0 + fl * fh - 0.35, y0 + fl * fh + 0.35, f.wall, 0.02)
+        break
+      }
+      case 'curtain':
+      case 'xbrace': {
+        rect(0, L, y0, y1, glass)
+        const m = f.wall
+        for (let k = 1; k < bays; k++) rect(k * bw - 0.06, k * bw + 0.06, y0, y1, m, 0.04)
+        for (let fl = 1; fl < floors; fl++) rect(0, L, y0 + fl * fh - 0.1, y0 + fl * fh + 0.1, m, 0.04)
+        if (f.kind === 'xbrace') {
+          // the braces: a diagonal strut each way across each bay-and-a-half, `brace` floors tall
+          const span = (f.brace ?? 6) * fh
+          const w = Math.max(bw * 1.5, span * 0.9)
+          const nb = Math.max(1, Math.round(L / w))
+          const bwid = L / nb
+          for (let yb = y0; yb + span <= y1 + 0.01; yb += span) {
+            for (let k = 0; k < nb; k++) {
+              const u0 = k * bwid
+              const u1 = u0 + bwid
+              for (const [ua, ub] of [[u0, u1], [u1, u0]]) {
+                const P = (u: number, y: number, o: number): [number, number, number] => [a.x + tx * u + nx * o, y, a.z + tz * u + nz * o]
+                const t = 0.45
+                const dy = span
+                const du = ub - ua
+                const l = Math.hypot(du, dy)
+                const ox = (-dy / l) * t
+                const oy = (du / l) * t
+                quadAt(out, [P(ua + ox, yb + oy, 0.35), P(ub + ox, yb + dy + oy, 0.35), P(ub - ox, yb + dy - oy, 0.35), P(ua - ox, yb - oy, 0.35)], n, f.wall)
+              }
+            }
+          }
+        }
+        break
+      }
+    }
+  }
+}
+
+/** A cornice round the ring at y: a projecting slab `depth` out, `h` tall. */
+function cornice(out: MeshBuilder, ring: P2[], y: number, depth: number, h: number, c: Rgb): void {
+  const outer = insetRing(ring, -depth)
+  faceBand(out, outer, y - h, y, { kind: 'blank', wall: c })
+  // the soffit and the top, as rings between the two outlines
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i]
+    const b = ring[(i + 1) % ring.length]
+    const A = outer[i]
+    const B = outer[(i + 1) % ring.length]
+    quadAt(out, [[a.x, y, a.z], [b.x, y, b.z], [B.x, y, B.z], [A.x, y, A.z]], [0, 1, 0], c)
+    quadAt(out, [[A.x, y - h, A.z], [B.x, y - h, B.z], [b.x, y - h, b.z], [a.x, y - h, a.z]], [0, -1, 0], c)
+  }
+}
+
+/** A frustum from ring r0 at y0 to ring r1 at y1 (hip and mansard roofs, domes' courses, spires). */
+function frustum(out: MeshBuilder, r0: P2[], y0: number, r1: P2[], y1: number, c: Rgb): void {
+  for (let i = 0; i < r0.length; i++) {
+    const j = (i + 1) % r0.length
+    const a = r0[i]
+    const b = r0[j]
+    const e = { x: b.x - a.x, z: b.z - a.z }
+    const L = Math.hypot(e.x, e.z) || 1
+    const up = Math.max(0.2, (y1 - y0) / Math.max(0.5, Math.hypot(r1[i].x - a.x, r1[i].z - a.z)))
+    const n: [number, number, number] = [e.z / L, 1 / up, -e.x / L]
+    const nl = Math.hypot(n[0], n[1], n[2])
+    quadAt(out, [[a.x, y0, a.z], [b.x, y0, b.z], [r1[j].x, y1, r1[j].z], [r1[i].x, y1, r1[i].z]], [n[0] / nl, n[1] / nl, n[2] / nl], c)
+  }
+}
+
+function crown(out: MeshBuilder, ring: P2[], H: number, c: Crown, roof: Rgb): void {
+  const ctr = centroid(ring)
+  switch (c.kind) {
+    case 'flat':
+      return
+    case 'parapet': {
+      const inner = insetRing(ring, 0.35)
+      faceBand(out, ring, H, H + c.height, { kind: 'blank', wall: c.colour ?? roof })
+      for (let i = 0; i < ring.length; i++) {
+        const a = ring[i]
+        const b = ring[(i + 1) % ring.length]
+        const A = inner[i]
+        const B = inner[(i + 1) % ring.length]
+        quadAt(out, [[a.x, H + c.height, a.z], [b.x, H + c.height, b.z], [B.x, H + c.height, B.z], [A.x, H + c.height, A.z]], [0, 1, 0], c.colour ?? roof)
+      }
+      return
+    }
+    case 'hip':
+    case 'mansard': {
+      const top = insetRing(ring, c.inset)
+      frustum(out, ring, H, top, H + c.height, c.colour)
+      capPolygon(out, top, H + c.height, c.colour, 0)
+      return
+    }
+    case 'pyramid':
+    case 'spire': {
+      const base = c.inset ? insetRing(ring, c.inset) : ring
+      if (c.inset) capPolygon(out, ring, H, roof, 0)
+      frustum(out, base, H, base.map(() => ctr), H + c.height, c.colour)
+      return
+    }
+    case 'dome': {
+      const r = c.radius ?? Math.min(...ring.map((p) => Math.hypot(p.x - ctr.x, p.z - ctr.z))) * 0.8
+      const drum = c.drum ?? 0
+      const seg = 16
+      const circle = (rr: number): P2[] => Array.from({ length: seg }, (_, k) => ({ x: ctr.x + Math.cos((k / seg) * Math.PI * 2) * rr, z: ctr.z + Math.sin((k / seg) * Math.PI * 2) * rr }))
+      if (drum > 0) faceBand(out, circle(r), H, H + drum, { kind: 'blank', wall: c.colour })
+      const courses = 6
+      for (let k = 0; k < courses; k++) {
+        const a0 = (k / courses) * (Math.PI / 2)
+        const a1 = ((k + 1) / courses) * (Math.PI / 2)
+        frustum(out, circle(r * Math.cos(a0) + 0.001), H + drum + c.height * Math.sin(a0), circle(r * Math.cos(a1) + 0.001), H + drum + c.height * Math.sin(a1), c.colour)
+      }
+      return
+    }
+    case 'lantern': {
+      const r = insetRing(ring, c.inset)
+      faceBand(out, r, H, H + c.height, c.face)
+      capPolygon(out, r, H + c.height, roof, 0)
+      if (c.cap) crown(out, r, H + c.height, c.cap, roof)
+      return
+    }
+    case 'stepped': {
+      let r = ring
+      let y = H
+      const each = c.height / c.steps
+      for (let k = 0; k < c.steps; k++) {
+        r = insetRing(r, c.inset)
+        faceBand(out, r, y, y + each, c.face ?? { kind: 'blank', wall: roof })
+        y += each
+        capPolygon(out, r, y, roof, 0)
+      }
+      return
+    }
+    case 'mast':
+      box(out, ctr.x, H + c.height / 2, ctr.z, (c.width ?? 1) / 2, c.height / 2, (c.width ?? 1) / 2, c.colour ?? [0.6, 0.6, 0.62], 0)
+      return
+  }
+}
+
+/** The footprint, anticlockwise in (x, z) so each edge's (dz, −dx) is its outward normal. */
+export function towerRing(fit: Fit): P2[] {
+  const given = fit.ring && fit.ring.length >= 3
+    ? fit.ring
+    : [{ x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  let area = 0
+  for (let i = 0; i < given.length; i++) { const a = given[i]; const b = given[(i + 1) % given.length]; area += a.x * b.z - b.x * a.z }
+  return area >= 0 ? given : [...given].reverse()
+}
+
+export function tower(out: MeshBuilder, fit: Fit, spec: TowerSpec): void {
+  const ring0 = towerRing(fit)
+  // the building's own height from the manifest (OSM's) when it is plausible, the spec's when not
+  const H = fit.height > 0.6 * spec.height && fit.height < 1.6 * spec.height ? fit.height : spec.height
+  const roof = spec.roof ?? [0.42, 0.42, 0.44]
+  let y = 0
+  let ring = ring0
+  if (spec.base) {
+    faceBand(out, ring, 0, spec.base.height, spec.base.face)
+    if (spec.base.canopy) cornice(out, ring, spec.base.height - 0.4, spec.base.canopy.depth, 0.3, spec.base.canopy.colour)
+    y = spec.base.height
+  }
+  for (const t of spec.tiers) {
+    const top = t.to <= 1.5 ? t.to * H : t.to
+    if (t.inset) {
+      const next = insetRing(ring, t.inset)
+      // the ledge the setback leaves: the old outline's roof, where the new one does not cover it (drawn whole: the
+      // new tier's walls stand on it)
+      capPolygon(out, ring, y, roof, 0)
+      ring = next
+    }
+    if (top > y) faceBand(out, ring, y, top, t.face)
+    if (t.cornice) cornice(out, ring, top, t.cornice.depth, t.cornice.height ?? 0.8, t.cornice.colour ?? t.face.wall)
+    y = Math.max(y, top)
+  }
+  capPolygon(out, ring, y, roof, 0)
+  for (let k = 0; k < (spec.penthouse ?? 0); k++) {
+    const c = centroid(ring)
+    const s = Math.sqrt(Math.abs(ring.reduce((acc, p, i) => { const q = ring[(i + 1) % ring.length]; return acc + p.x * q.z - q.x * p.z }, 0)) / 2) * 0.22
+    box(out, c.x + (k - (spec.penthouse! - 1) / 2) * s * 1.3, y + 2, c.z, s / 2, 2, s / 2, [0.55, 0.55, 0.56], 0)
+  }
+  if (spec.crown) crown(out, ring, y, spec.crown, roof)
+}

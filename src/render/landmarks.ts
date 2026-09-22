@@ -28,6 +28,7 @@ import { DAYLIGHT } from './facade-material.ts'
 import { SHADOW_Y, addShadow, shadowMaterial, shadowOffset } from './shadows.ts'
 import { PROCEDURAL, type Fit } from './landmarks/procedural.ts'
 import { TILE, type TileData } from '../city/tiles.ts'
+import { expandIncludes } from '../city/manifest.ts'
 import { Projection } from '../city/geo.ts'
 import { unpackPoints, type CityPackage, type PackedBuilding, type PackedLandmark } from '../city/package.ts'
 import type { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial'
@@ -114,7 +115,13 @@ export async function landmarkManifest(base: string, city: string, region?: stri
       const r = await fetch(new URL(`landmarks/${name}.json`, base).href)
       const text = await r.text()
       // Vite answers a missing file with index.html and a 200
-      if (r.ok && text.trimStart().startsWith('[')) return JSON.parse(text) as LandmarkEntry[]
+      if (r.ok && text.trimStart().startsWith('[')) {
+        // (a manifest may be split in files: city/manifest.ts)
+        return expandIncludes<LandmarkEntry>(JSON.parse(text), async (p) => {
+          const got = await fetch(new URL(`landmarks/${p}`, base).href).then((q) => (q.ok ? q.text() : '')).catch(() => '')
+          return got.trimStart().startsWith('[') ? JSON.parse(got) as unknown[] : null
+        })
+      }
     } catch {
       // try the next
     }
