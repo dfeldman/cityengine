@@ -44,7 +44,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 34 | fixed | The trams are incredibly ugly | user, 2026-09-22 |
 | 35 | fixed | A building appears underwater (48.846324, 2.362785) | user, 2026-09-22 |
 | 36 | fixed | Z-fighting on a strange barrier in the river (48.848591, 2.359412) | user, 2026-09-22 |
-| 37 | fixing | The bridges need a lot of work to be usable and beautiful | user, 2026-09-22 |
+| 37 | fixed | The bridges need a lot of work to be usable and beautiful | user, 2026-09-22 |
 
 ---
 
@@ -630,6 +630,15 @@ The ways on a structured bridge draw only their running surfaces. Lessons, each 
 - the Alexandre III's arch reads too flat from the river;
 - that footway's bake height (tools/bridges.ts);
 - the Marais rebake, so its bridges get outlines too.
+
+**Done (2026-09-22):**
+- Bir-Hakeim has its upper deck: the métro viaduct on a colonnade of iron posts with the cast-iron arcade
+  between them, lined up with Line 6 (`metroDeck`). ✅ `docs/shots/BUG37-bir-hakeim.png`.
+- The Alexandre III's arch rise is 0.2.
+- The Marais is rebaked (6 outlines).
+
+Left for a later pass, not a bug: the footway on the Alexandre III baked at a flat 2.8 m (the structure ignores
+it now).
 
 **#24 fixed:** the Louvre (relation 3262297) and a separately mapped wing inside it (way 1359877263) shared their
 outer wall. `insetNested` pulls such a building in by a hand's width, but since streaming it ran per tile and

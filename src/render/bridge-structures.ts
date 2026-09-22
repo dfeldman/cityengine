@@ -71,6 +71,8 @@ export interface StructureStyle {
   gilt?: boolean
   /** a timber deck (the footbridges) */
   timber?: boolean
+  /** Bir-Hakeim: the métro's viaduct carried on a colonnade of iron posts down the middle of the road deck */
+  metroDeck?: { height: number; width: number }
 }
 
 const LIMESTONE: Rgb = [0.82, 0.78, 0.69]
@@ -82,11 +84,11 @@ export const PARIS_BRIDGES: Record<string, StructureStyle> = {
   'Pont Neuf': { kind: 'stone', span: 16, rise: 0.8, shape: 'round', cutwater: 'pointed', parapet: 'stone', lamps: 'candelabra', bastions: true, mascarons: true },
   'Pont Royal': { kind: 'stone', arches: 5, rise: 0.75, shape: 'round', cutwater: 'pointed', parapet: 'stone', lamps: 'lantern' },
   'Pont de la Concorde': { kind: 'stone', arches: 5, rise: 0.5, shape: 'segment', cutwater: 'round', parapet: 'balustrade', lamps: 'candelabra' },
-  'Pont Alexandre III': { kind: 'iron', arches: 1, rise: 0.12, shape: 'segment', parapet: 'balustrade', lamps: 'candelabra', ribs: 9, iron: [0.42, 0.47, 0.44], gilt: true, pylons: { height: 17, width: 4.2 } },
+  'Pont Alexandre III': { kind: 'iron', arches: 1, rise: 0.2, shape: 'segment', parapet: 'balustrade', lamps: 'candelabra', ribs: 9, iron: [0.42, 0.47, 0.44], gilt: true, pylons: { height: 17, width: 4.2 } },
   'Pont des Invalides': { kind: 'stone', arches: 4, rise: 0.55, shape: 'segment', cutwater: 'round', parapet: 'stone', lamps: 'lantern' },
   "Pont de l'Alma": { kind: 'girder', parapet: 'iron', lamps: 'modern', iron: [0.33, 0.35, 0.36] },
   "Pont d'Iéna": { kind: 'stone', arches: 5, rise: 0.5, shape: 'segment', cutwater: 'round', parapet: 'stone', lamps: 'lantern' },
-  'Pont de Bir-Hakeim': { kind: 'iron', span: 50, rise: 0.25, shape: 'segment', parapet: 'iron', lamps: 'lantern', ribs: 6, cutwater: 'round' },
+  'Pont de Bir-Hakeim': { kind: 'iron', span: 50, rise: 0.25, shape: 'segment', parapet: 'iron', lamps: 'lantern', ribs: 6, cutwater: 'round', metroDeck: { height: 7.5, width: 7.5 } },
   'Pont du Carrousel': { kind: 'stone', arches: 3, rise: 0.45, shape: 'segment', cutwater: 'round', parapet: 'iron', lamps: 'modern' },
   'Passerelle Léopold-Sédar-Senghor': { kind: 'iron', arches: 1, rise: 0.18, shape: 'segment', parapet: 'iron', lamps: 'none', ribs: 2, iron: [0.45, 0.43, 0.4], timber: true },
   'Pont des Arts': { kind: 'iron', arches: 7, rise: 0.35, shape: 'segment', cutwater: 'pointed', parapet: 'iron', lamps: 'lantern', ribs: 4, timber: true },
@@ -617,6 +619,39 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
         const off = side * (hw - (para === 'iron' ? 0.35 : 0.18))
         lampAt(out, W(s, off), top(s) + (para === 'iron' ? 0 : 1.02), lamp, iron)
       }
+    }
+  }
+
+  // ---- Bir-Hakeim's upper deck: the métro viaduct on its colonnade of paired iron posts down the middle, with
+  // the cast-iron arcade between them (the rail itself is drawn by the rail deck; this is the bridge's own)
+  if (style.metroDeck) {
+    const { height, width } = style.metroDeck
+    const hwm = width / 2
+    for (let s = 2; s <= L - 2 + 1e-6; s += 4) {
+      for (const side of [-1, 1]) {
+        const c = W(s, side * (hwm - 0.4))
+        blockAt(out, c, top(s), top(s) + height, 0.18, 0.18, ux, uz, iron)
+        // an arch between this post and the next, under the deck
+        if (s + 4 <= L - 2 + 1e-6) {
+          const n = 6
+          let prev: V3 | null = null
+          for (let k = 0; k <= n; k++) {
+            const t = k / n
+            const ss = s + 4 * t
+            const p = at(ss, side * (hwm - 0.4), top(ss) + height - 1.1 + Math.sin(Math.PI * t) * 0.8)
+            if (prev) member(out, prev, p, 0.07, iron)
+            prev = p
+          }
+        }
+      }
+    }
+    for (let s = 0; s < L - 1e-6; s += 1) {
+      const s1 = Math.min(L, s + 1)
+      quad([at(s, -hwm, top(s) + height), at(s1, -hwm, top(s1) + height), at(s1, hwm, top(s1) + height), at(s, hwm, top(s) + height)], [0, -1, 0], lighter(iron, 0.8))
+      for (const side of [-1, 1]) {
+        quad([at(s, side * hwm, top(s) + height), at(s1, side * hwm, top(s1) + height), at(s1, side * hwm, top(s1) + height + 0.9), at(s, side * hwm, top(s) + height + 0.9)], n0(side), iron)
+      }
+      quad([at(s, -hwm, top(s) + height + 0.9), at(s1, -hwm, top(s1) + height + 0.9), at(s1, hwm, top(s1) + height + 0.9), at(s, hwm, top(s) + height + 0.9)], [0, 1, 0], lighter(iron, 1.2))
     }
   }
 

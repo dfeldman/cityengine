@@ -2014,5 +2014,19 @@
    2.329414,
    20
   ]
+ },
+ {
+  "name": "Pont de Bir-Hakeim \u2014 from the river",
+  "group": "landmark",
+  "from": [
+   48.8572,
+   2.2916,
+   12
+  ],
+  "to": [
+   48.8556,
+   2.2878,
+   8
+  ]
  }
 ]
