@@ -39,7 +39,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 29 | fixed | Underground Métro station rooms drawn as 20 m buildings on the squares above (Place de la République) | views, 2026-09-22 |
 | 30 | fixed | The J paths overlay is ugly and needed all the time: want a subtle, usually-on path display (thin lines, no one-way marks, junctions highlighted) | user, 2026-09-22 |
 | 31 | fixed | Messy ground and the camera below ground near a bridge (48.846945, 2.366215) | user, 2026-09-22 |
-| 32 | open | An errant footbridge from OSM near 48.849195, 2.372189 | user, 2026-09-22 |
+| 32 | fixed | An errant footbridge from OSM near 48.849195, 2.372189 | user, 2026-09-22 |
 | 33 | fixed | The rider gets trapped in a very messy intersection and cannot get out (48.849354, 2.356970) | user, 2026-09-22 |
 | 34 | fixed | The trams are incredibly ugly | user, 2026-09-22 |
 | 35 | fixed | A building appears underwater (48.846324, 2.362785) | user, 2026-09-22 |
@@ -503,6 +503,15 @@ landmark bridge messing things up" (the Pont d'Austerlitz / Viaduc d'Austerlitz 
 
 **Seen:** user: an errant footbridge coded in OSM near the Pont Charles-de-Gaulle / Gare de Lyon side. Find its
 way id, and drop it (a placeholder or a bake exclusion list) if it is not a real crossing.
+
+**Cause/fix:** it is real: the Coulée Verte René-Dumont (the Promenade Plantée), crossing the Avenue Daumesnil
+on its way along the top of the Viaduc des Arts. OSM maps the walk with no height, so it ran at street level,
+hidden inside the viaduct, and only its street crossings stood up as lone footbridges, at 12 and 19 m.
+
+A region now lists its `elevatedWalks` (Paris: this one, 8.5 m). The bake lays each at that height over the
+ground; its pieces not over a building are bridges; the deck draws clipped hedges along both edges, with a
+shrub every 4.5 m. ✅ `docs/shots/BUG32-coulee-verte.png`. It stays a walk, not a bike route: bikes are not
+allowed on it.
 
 ## 33. Trapped in a junction (48.849354, 2.356970)
 
