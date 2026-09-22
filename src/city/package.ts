@@ -94,7 +94,7 @@ export interface PackedFringe {
 }
 
 export interface PackedArea {
-  kind: 'park' | 'grass' | 'water' | 'wood' | 'pitch'
+  kind: 'park' | 'grass' | 'water' | 'wood' | 'pitch' | 'paved'
   ring: number[]
   /** inner rings: the islands in a river, the courtyard in a park */
   holes?: number[][]

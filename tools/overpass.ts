@@ -147,6 +147,24 @@ out geom qt;`
 }
 
 /**
+ * The paved squares (BUGS.md #22): pedestrian areas, `area:highway` and `place=square` — the Concorde, the
+ * République, the parvis. The main query leaves `area=yes` highways out (they are not streets to ride), so
+ * without these a square with no mapped ground came out as the city's default grass. Its own query.
+ */
+export function squaresQuery(b: Bbox): string {
+  const box = `${b.south},${b.west},${b.north},${b.east}`
+  return `[out:json][timeout:120];
+(
+  way["highway"="pedestrian"]["area"="yes"](${box});
+  way["area:highway"~"^(pedestrian|footway|living_street)$"](${box});
+  way["place"="square"](${box});
+  relation["highway"="pedestrian"](${box});
+  relation["place"="square"](${box});
+);
+out geom qt;`
+}
+
+/**
  * A query over a box too big for one request (central Paris is 7 × 3.5 km; one query timed out on every
  * server): the box cut into a grid of chunks about `step` metres a side, each fetched and cached on its own,
  * and the results merged by id — Overpass returns a way, node or relation whole even when only part of it

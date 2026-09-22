@@ -19,7 +19,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 9 | fixed | The path by the Seine at 48.849419, 2.361508 is a dead end: it comes close to a road but does not join it | user, 2026-09-21 |
 | 10 | fixed | The Cirque d'Hiver's two horsemen stand in the road and block it | user, 2026-09-21 |
 | 11 | fixed | Café terraces are poor: chairs and tables in a line, not chairs round tables, and often tilted | user, 2026-09-21 |
-| 12 | open | News stands (kiosques) need improvement | user, 2026-09-21 |
+| 12 | fixed | News stands (kiosques) need improvement | user, 2026-09-21 |
 | 13 | fixed | Too many long gowns among the strangers; the other dresses never appear | user, 2026-09-21 |
 | 14 | fixed | Two ground levels: a transparent top surface with the asphalt about half a metre below it | user, 2026-09-21 |
 | 15 | fixed | Signs still z-fight with the walls they hang on | user, 2026-09-21 |
@@ -251,6 +251,11 @@ and a pattern colour from 13 (a band across seat and back); 60 cm round tops.
 **Seen:** user, 2026-09-21. The `parisNewsstand` kiosque (render/models.ts) reads poorly. Reference first (the
 green Davioud-style kiosque: hexagonal-ish body, the scalloped canopy, the dome with its finial, magazines
 pinned round the shutters), then the gist; screenshot close and from across the street.
+
+**Fix:** `parisNewsstand` redrawn on a hexagonal plan: the green body on a dark plinth; the day's papers across the
+counter and magazines pinned in two rows on the shutters; a frieze with a poster on every face; the canopy
+flaring out with a scalloped edge; a two-stage dome with its lantern and gilt finial. ✅ `docs/shots/BUG12-kiosque.png`
+(Rue Pavée). Poster slots for the per-city libraries (PARIS_EXPAND §6 item 9) are the frieze and the shutters.
 
 ## 13. Too many long gowns in the crowd
 

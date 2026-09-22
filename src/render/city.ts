@@ -106,6 +106,8 @@ const YELLOW: [number, number, number] = [0.89, 0.71, 0.0]
 const AREA_TINT: Record<PackedArea['kind'], [number, number, number]> = {
   park: [0.33, 0.44, 0.26], grass: [0.36, 0.47, 0.28], wood: [0.24, 0.34, 0.20],
   pitch: [0.32, 0.45, 0.30], water: [0.20, 0.30, 0.38],
+  // a paved square: warm stone setts and stabilised sand, paler than a pavement (BUGS.md #22)
+  paved: [0.62, 0.58, 0.51],
 }
 // Paving is grey, not white. The brighter value washed out every street it was laid in.
 const PAVEMENT: [number, number, number] = [0.52, 0.51, 0.485]
@@ -1359,7 +1361,9 @@ export class City {
       }
     }
 
-    for (const a of this.areasIn.get(k) ?? []) {
+    // the paved squares first: the lawns and pools mapped inside them are painted over them
+    const ordered = [...(this.areasIn.get(k) ?? [])].sort((p, q) => Number(q.kind === 'paved') - Number(p.kind === 'paved'))
+    for (const a of ordered) {
       if (a.kind === 'water') {
         /*
          * Flat, at the level of its lowest bank. Draped like the ground, a river followed every bump in

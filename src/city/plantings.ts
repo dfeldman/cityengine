@@ -43,7 +43,7 @@ export function plantCity(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'>, c
 
   // 2. parks, gardens and grass, scattered by rejection sampling inside the polygon
   for (const a of pkg.areas) {
-    if (a.kind === 'water' || a.kind === 'pitch') continue
+    if (a.kind === 'water' || a.kind === 'pitch' || a.kind === 'paved') continue
     const ring = unpackPoints(a.ring)
     let minx = Infinity; let maxx = -Infinity; let minz = Infinity; let maxz = -Infinity
     for (const p of ring) {

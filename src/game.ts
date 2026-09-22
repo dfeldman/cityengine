@@ -727,6 +727,12 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     held = { from: fromLL(from), to: fromLL(to) }
     if (!frozen) { frozen = true; orbit.active = true; debug.frozen(true) }
   }
+  // the same in local metres, heights above the ground (probes of things the city placed: tools/)
+  w.__viewLocal = (from: [number, number, number], to: [number, number, number]) => {
+    const v = (q: [number, number, number]): Vector3 => new Vector3(q[0], city.terrain.heightAt(q[0], q[2]) + q[1], q[2])
+    held = { from: v(from), to: v(to) }
+    if (!frozen) { frozen = true; orbit.active = true; debug.frozen(true) }
+  }
   w.__viewHere = () => {
     const f = camera.position
     const t = camera.getTarget()

@@ -315,6 +315,93 @@ export function cableCar(out: MeshBuilder): void {
   box(out, 0, 0.32, 0, 0.9, 0.2, 3.6, dark, FIXED)
 }
 
+/**
+ * A Paris tram (BUGS.md #34): an Alstom Citadis, as the RATP's T-lines run them — low floor, a long window
+ * band, a raked cab. Articulated: `citadisCab` at each end (nose toward +z) and `citadisMid` between, each
+ * module 8.2 m, the body tinted per instance (white, the RATP's pale grey).
+ */
+function citadisBody(out: MeshBuilder, doors: number[]): void {
+  const glass: Rgb = [0.16, 0.2, 0.23]
+  const dark: Rgb = [0.13, 0.13, 0.14]
+  const roof: Rgb = [0.62, 0.64, 0.66]
+  const accent: Rgb = [0.35, 0.6, 0.45]
+  box(out, 0, 0.95, 0, 1.32, 0.6, 4.08, [1, 1, 1])
+  box(out, 0, 2.02, 0, 1.325, 0.52, 3.96, glass, FIXED)
+  for (const k of [-1.33, 1.33]) box(out, k, 1.52, 0, 0.012, 0.03, 3.96, [0.85, 0.86, 0.87], FIXED)
+  box(out, 0, 2.78, 0, 1.32, 0.24, 4.08, [1, 1, 1])
+  box(out, 0, 3.07, 0, 1.18, 0.07, 4.0, roof, FIXED)
+  box(out, 0, 0.3, 0, 1.24, 0.14, 3.95, dark, FIXED)
+  // the livery's stripe low down, and the doors: dark glazed leaves in both sides
+  for (const k of [-1.33, 1.33]) box(out, k, 0.62, 0, 0.012, 0.06, 4.0, accent, FIXED)
+  for (const z of doors) for (const k of [-1.335, 1.335]) box(out, k, 1.45, z, 0.012, 1.0, 0.62, glass, FIXED)
+  // the gangway bellows at each end
+  for (const e of [-1, 1]) box(out, 0, 1.6, e * 4.14, 1.18, 1.25, 0.08, dark, FIXED)
+}
+
+export function citadisMid(out: MeshBuilder): void {
+  citadisBody(out, [-1.9, 1.9])
+  // the pantograph on its roof: a folded arm and the collector bar
+  const dark: Rgb = [0.13, 0.13, 0.14]
+  box(out, 0, 3.22, 0, 0.6, 0.08, 1.2, [0.5, 0.52, 0.54], FIXED)
+  box(out, 0, 3.55, -0.3, 0.04, 0.3, 0.04, dark, FIXED)
+  box(out, 0, 3.55, 0.3, 0.04, 0.3, 0.04, dark, FIXED)
+  box(out, 0, 3.87, 0, 0.8, 0.03, 0.08, dark, FIXED)
+}
+
+export function citadisCab(out: MeshBuilder): void {
+  citadisBody(out, [-1.2])
+  const glass: Rgb = [0.16, 0.2, 0.23]
+  // the raked nose: a lower face, the big windscreen leaning back, the roof carried over it
+  box(out, 0, 0.95, 4.45, 1.28, 0.6, 0.4, [1, 1, 1])
+  box(out, 0, 2.0, 4.35, 1.22, 0.5, 0.28, glass, FIXED)
+  box(out, 0, 2.72, 4.2, 1.26, 0.2, 0.2, [1, 1, 1])
+  box(out, 0, 0.5, 4.82, 1.1, 0.12, 0.05, [0.13, 0.13, 0.14], FIXED)
+  for (const x of [-0.85, 0.85]) box(out, x, 0.95, 4.86, 0.18, 0.07, 0.02, [1.0, 0.95, 0.8], EMIT)
+  // the destination board over the windscreen
+  box(out, 0, 2.62, 4.42, 0.7, 0.09, 0.02, [1.0, 0.72, 0.2], EMIT)
+}
+
+/**
+ * A Paris métro car on a viaduct (Line 6, MP 73, rubber-tyred): 15 m, boxy with a gently rounded roof, five
+ * doors a side, the body tinted per instance (RATP white) over a blue-green skirt. Faces +z.
+ */
+export function metroCar(out: MeshBuilder): void {
+  const glass: Rgb = [0.15, 0.19, 0.22]
+  const dark: Rgb = [0.12, 0.12, 0.13]
+  const band: Rgb = [0.12, 0.42, 0.5]
+  box(out, 0, 1.25, 0, 1.2, 0.95, 7.4, [1, 1, 1])
+  box(out, 0, 1.75, 0, 1.205, 0.38, 7.1, glass, FIXED)
+  box(out, 0, 2.28, 0, 1.12, 0.1, 7.35, [0.8, 0.81, 0.83], FIXED)
+  box(out, 0, 2.42, 0, 0.9, 0.06, 7.2, [0.72, 0.73, 0.75], FIXED)
+  for (const k of [-1.205, 1.205]) {
+    box(out, k, 0.62, 0, 0.012, 0.16, 7.4, band, FIXED)
+    for (const z of [-5.6, -2.8, 0, 2.8, 5.6]) box(out, k, 1.25, z, 0.013, 0.85, 0.55, glass, FIXED)
+  }
+  // the bogies' rubber tyres and guide wheels, dark under the floor
+  box(out, 0, 0.22, 0, 1.0, 0.2, 7.0, dark, FIXED)
+  for (const e of [-1, 1]) box(out, 0, 1.3, e * 7.45, 1.0, 0.9, 0.06, dark, FIXED)
+}
+
+/**
+ * A double-deck RER / Transilien car (Z 2N family): 24 m, two rows of windows, white with the blue and red
+ * band, the body tinted per instance. Faces +z.
+ */
+export function rerCar(out: MeshBuilder): void {
+  const glass: Rgb = [0.15, 0.19, 0.22]
+  const dark: Rgb = [0.12, 0.12, 0.13]
+  box(out, 0, 2.05, 0, 1.45, 1.6, 11.9, [1, 1, 1])
+  box(out, 0, 3.72, 0, 1.3, 0.12, 11.8, [0.7, 0.71, 0.73], FIXED)
+  for (const k of [-1.455, 1.455]) {
+    box(out, k, 1.45, 0, 0.012, 0.35, 9.4, glass, FIXED)
+    box(out, k, 2.85, 0, 0.012, 0.38, 9.4, glass, FIXED)
+    box(out, k, 0.85, 0, 0.012, 0.09, 11.9, [0.13, 0.25, 0.55], FIXED)
+    box(out, k, 0.7, 0, 0.012, 0.05, 11.9, [0.75, 0.12, 0.15], FIXED)
+    for (const z of [-10.2, 10.2]) box(out, k, 1.65, z, 0.013, 1.05, 0.7, glass, FIXED)
+  }
+  box(out, 0, 0.35, 0, 1.1, 0.3, 11.2, dark, FIXED)
+  for (const e of [-1, 1]) box(out, 0, 2.0, e * 11.95, 1.2, 1.4, 0.06, dark, FIXED)
+}
+
 export function carriage(out: MeshBuilder): void {
   const L = 8.5
   const W = 1.42
@@ -652,59 +739,61 @@ export function morrisColumn(out: MeshBuilder): void {
   prism(out, 0, 0, 3.4, 3.7, 0.12, 8, g, FIXED, 0)
 }
 
-/** A Paris news kiosk: a green octagon with a band of magazines round it and a domed roof. */
 /**
- * Today's Paris newsstand (the 2019 kiosque): a rectangular box of dark glossy green panels, 3.2 × 2 m, under
- * a ribbed barrel roof that overhangs it, with a poster on each end and the shuttered counter on the front.
- * Long side along the street (local ±z), the counter facing the pavement (+x).
+ * A Paris news kiosque, after Davioud's: hexagonal, dark green, a frieze of posters, a scalloped canopy and a
+ * small dome. Its counter faces the pavement (+x) and it stands along the street.
  */
 export function parisNewsstand(out: MeshBuilder): void {
-  const g: Rgb = [0.1, 0.24, 0.17]
-  const dark: Rgb = [0.06, 0.15, 0.11]
-  const trim: Rgb = [0.62, 0.64, 0.6]
-  const hz = 1.6
-  const hx = 1.0
-  box(out, 0, 1.25, 0, hx, 1.25, hz, g, FIXED)
-  // the panel joints: thin darker bands across the long sides
-  for (const z of [-0.8, 0, 0.8]) for (const sx of [-1, 1]) box(out, sx * (hx + 0.005), 1.25, z, 0.005, 1.2, 0.02, dark, FIXED)
-  box(out, 0, 0.9, 0, hx + 0.01, 0.015, hz + 0.01, dark, FIXED)
-  // the counter's shutter on the front, and the silver edge under the roof
-  box(out, hx + 0.01, 1.55, 0, 0.01, 0.55, hz * 0.7, dark, FIXED)
-  box(out, 0, 2.52, 0, hx + 0.12, 0.04, hz + 0.12, trim, FIXED)
-  // posters on the two ends, in bright colours
-  const posters: Rgb[] = [[0.92, 0.88, 0.8], [0.85, 0.35, 0.28]]
-  for (const sz of [-1, 1]) {
-    box(out, 0, 1.45, sz * (hz + 0.01), 0.62, 0.8, 0.005, posters[(sz + 1) / 2], FIXED)
-    box(out, 0, 1.25, sz * (hz + 0.012), 0.34, 0.42, 0.004, [0.3, 0.45, 0.62], FIXED)
+  // BUGS.md #12: the Davioud kiosque's gist — a hexagonal green body, magazines pinned round its shutters, a
+  // frieze of posters, a scalloped canopy, and a little dome with its lantern and finial
+  const g: Rgb = [0.1, 0.25, 0.18]
+  const dark: Rgb = [0.05, 0.14, 0.1]
+  const R = 1.2
+  const face = (k: number): { cx: number; cz: number; nx: number; nz: number; tx: number; tz: number } => {
+    const a = ((k + 0.5) / 6) * Math.PI * 2
+    const ap = R * Math.cos(Math.PI / 6)
+    return { cx: Math.sin(a) * ap, cz: Math.cos(a) * ap, nx: Math.sin(a), nz: Math.cos(a), tx: Math.cos(a), tz: -Math.sin(a) }
   }
-  // the barrel roof: a low arc across the width, overhanging, with ribs along its length
-  const n = 8
-  const rx = hx + 0.3
-  const rz = hz + 0.3
-  const rise = 0.42
-  const arc = (k: number): [number, number] => {
-    const a = Math.PI * (k / n)
-    return [-Math.cos(a) * rx, 2.56 + Math.sin(a) * rise]
+  prism(out, 0, 0, 0, 0.18, R + 0.06, 6, dark, FIXED)
+  prism(out, 0, 0, 0.18, 2.3, R, 6, g, FIXED)
+  const posterColours: Rgb[] = [[0.92, 0.86, 0.72], [0.82, 0.3, 0.24], [0.25, 0.42, 0.66], [0.95, 0.78, 0.3], [0.9, 0.9, 0.88], [0.55, 0.25, 0.45]]
+  const flat = (c: { cx: number; cz: number; nx: number; nz: number; tx: number; tz: number }, off: number, dx: number, y: number, hw: number, hh: number, col: Rgb, tag = FIXED): void => {
+    const x = c.cx + c.nx * off + c.tx * dx
+    const z = c.cz + c.nz * off + c.tz * dx
+    out.quad([[x - c.tx * hw, y - hh, z - c.tz * hw], [x + c.tx * hw, y - hh, z + c.tz * hw], [x + c.tx * hw, y + hh, z + c.tz * hw], [x - c.tx * hw, y + hh, z - c.tz * hw]],
+      [c.nx, 0, c.nz], [[0, 0], [1, 0], [1, 1], [0, 1]], col, tag)
   }
-  for (let k = 0; k < n; k++) {
-    const [x0, y0] = arc(k)
-    const [x1, y1] = arc(k + 1)
-    const nx = -(y1 - y0)
-    const ny = x1 - x0
-    const l = Math.hypot(nx, ny) || 1
-    out.quad([[x0, y0, rz], [x1, y1, rz], [x1, y1, -rz], [x0, y0, -rz]], [nx / l, ny / l, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], g, FIXED)
-    out.quad([[x0, y0, -rz], [x1, y1, -rz], [x1, y1, rz], [x0, y0, rz]], [-nx / l, -ny / l, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], dark, FIXED)
-    // the ribs, a thin raised line on every other facet
-    if (k % 2 === 0) box(out, (x0 + x1) / 2, (y0 + y1) / 2 + 0.02, 0, 0.03, 0.03, rz, dark, FIXED)
-  }
-  // the roof's ends, closed
-  for (const sz of [-1, 1]) {
-    for (let k = 0; k < n; k++) {
-      const [x0, y0] = arc(k)
-      const [x1, y1] = arc(k + 1)
-      out.quad([[x0, 2.56, sz * rz], [x1, 2.56, sz * rz], [x1, y1, sz * rz], [x0, y0, sz * rz]], [0, 0, sz], [[0, 0], [1, 0], [1, 1], [0, 1]], g, FIXED)
+  for (let k = 0; k < 6; k++) {
+    const c = face(k)
+    // the frieze: a poster on every face, framed in dark green
+    flat(c, 0.015, 0, 2.05, 0.5, 0.2, dark)
+    flat(c, 0.02, 0, 2.05, 0.46, 0.17, posterColours[k])
+    if (k === 1) {
+      // the front (+x): the counter's opening, a shelf, and the day's papers across it
+      flat(c, 0.02, 0, 1.3, 0.48, 0.55, [0.08, 0.08, 0.08])
+      box(out, c.cx + c.nx * 0.2, 0.8, c.cz + c.nz * 0.2, 0.45, 0.03, 0.2, dark, FIXED)
+      for (let i = 0; i < 4; i++) flat(c, 0.03, -0.33 + i * 0.22, 1.05, 0.09, 0.13, posterColours[(i + 2) % 6])
+    } else {
+      // the shutters, with magazines pinned in two rows
+      for (let r = 0; r < 2; r++) for (let i = 0; i < 3; i++) flat(c, 0.02, -0.3 + i * 0.3, 1.0 + r * 0.42, 0.12, 0.16, posterColours[(k + r * 2 + i) % 6])
     }
   }
+  // the canopy: flaring out over the frieze, with a scalloped edge hanging from it
+  prism(out, 0, 0, 2.3, 2.42, R + 0.05, 6, dark, FIXED, R + 0.42)
+  for (let k = 0; k < 12; k++) {
+    const a = (k / 12) * Math.PI * 2 + Math.PI / 12
+    const x = Math.sin(a) * (R + 0.36)
+    const z = Math.cos(a) * (R + 0.36)
+    const tx = Math.cos(a) * 0.17
+    const tz = -Math.sin(a) * 0.17
+    out.quad([[x - tx, 2.3, z - tz], [x + tx, 2.3, z + tz], [x, 2.14, z], [x, 2.14, z]], [Math.sin(a), 0, Math.cos(a)], [[0, 0], [1, 0], [1, 1], [0, 1]], g, FIXED)
+  }
+  // the dome: two stages curving in, the lantern, the finial
+  prism(out, 0, 0, 2.42, 2.7, R + 0.42, 6, g, FIXED, R * 0.72)
+  prism(out, 0, 0, 2.7, 2.95, R * 0.72, 6, g, FIXED, R * 0.36)
+  prism(out, 0, 0, 2.95, 3.25, 0.22, 6, dark, FIXED, 0.2)
+  prism(out, 0, 0, 3.25, 3.35, 0.3, 6, g, FIXED, 0.08)
+  prism(out, 0, 0, 3.35, 3.62, 0.05, 6, [0.72, 0.6, 0.3], FIXED, 0.015)
 }
 
 export function parisKiosk(out: MeshBuilder): void {

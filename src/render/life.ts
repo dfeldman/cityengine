@@ -14,7 +14,7 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import type { Scene } from '@babylonjs/core/scene'
 import { MeshBuilder } from './buildings.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
-import { box as boxModel, bus, cableCar, car, carriage, personArm, personBody, personHair, personHead, personLeg } from './models.ts'
+import { box as boxModel, bus, cableCar, car, carriage, citadisCab, citadisMid, metroCar, rerCar, personArm, personBody, personHair, personHead, personLeg } from './models.ts'
 import { DAYLIGHT } from './facade-material.ts'
 import { blobMaterial, blobQuad, shadowOffset } from './shadows.ts'
 import type { Vehicle } from '../sim/traffic.ts'
@@ -109,6 +109,9 @@ export class Life {
   private readonly buses: Pool
   private readonly carriages: Pool
   private readonly trams: Pool
+  private readonly tramCabs: Pool
+  private readonly metro: Pool
+  private readonly citadis: boolean
   private readonly bodies: Pool
   private readonly legs: Pool
   private readonly arms: Pool
@@ -117,15 +120,20 @@ export class Life {
   /** a stranger's bicycle, frame and wheels, facing +z */
   private readonly bikes: Pool
   private readonly blobs: Pool
-  private readonly rails: { points: { x: number; z: number }[]; length: number; tram: boolean; heights?: number[] }[] = []
+  private readonly rails: { points: { x: number; z: number }[]; length: number; tram: boolean; metro: boolean; heights?: number[] }[] = []
   private readonly trains: { rail: number; s: number; dir: 1 | -1; speed: number; cars: number }[] = []
   private readonly m = Matrix.Identity()
 
   constructor(scene: Scene, pkg: CityPackage, budget = { cars: 90, buses: 16, people: 3000 }) {
     this.cars = new Pool(scene, 'cars', build(car), budget.cars)
     this.buses = new Pool(scene, 'buses', build(bus), budget.buses)
-    this.carriages = new Pool(scene, 'carriages', build(carriage), 40)
-    this.trams = new Pool(scene, 'trams', build(cableCar), 24)
+    // Paris's own rolling stock: double-deck RER cars on the main lines, the métro's cars on its viaducts
+    this.carriages = new Pool(scene, 'carriages', build(pkg.region === 'paris' ? rerCar : carriage), 40)
+    this.metro = new Pool(scene, 'metro', build(metroCar), pkg.region === 'paris' ? 40 : 1)
+    // Paris runs Citadis trams, articulated; San Francisco's "trams" are its cable cars (BUGS.md #34)
+    this.citadis = pkg.region === 'paris'
+    this.trams = new Pool(scene, 'trams', build(this.citadis ? citadisMid : cableCar), this.citadis ? 48 : 24)
+    this.tramCabs = new Pool(scene, 'tramCabs', build(citadisCab), this.citadis ? 48 : 1)
     this.bodies = new Pool(scene, 'people', build(personBody), budget.people)
     this.legs = new Pool(scene, 'legs', build(personLeg), budget.people * 2)
     this.arms = new Pool(scene, 'arms', build(personArm), budget.people * 2)
@@ -155,21 +163,26 @@ export class Life {
     // a train sliding through the road surface, which is worse than no train at all.
     const from = this.rails.length
     for (const r of rails) {
-      if (r.kind === 'subway' || this.railIds.has(r.id)) continue
+      // …except where it comes up on a viaduct (the Paris métro's Lines 2, 5 and 6), which is the one place a
+      // rider sees a métro train
+      if ((r.kind === 'subway' && !r.heights) || this.railIds.has(r.id)) continue
       this.railIds.add(r.id)
       const points = unpackPoints(r.points)
       let length = 0
       for (let i = 1; i < points.length; i++) {
         length += Math.hypot(points[i].x - points[i - 1].x, points[i].z - points[i - 1].z)
       }
-      if (length < 60) continue
-      this.rails.push({ points, length, tram: r.kind === 'tram', heights: r.heights })
+      // a line, not a scrap: trains shuttling up and down 45 m of track at a tunnel mouth or a station throat
+      // (the RER C by the Quai Saint-Bernard) looked like toys (BUGS.md #34)
+      if (length < 400) continue
+      this.rails.push({ points, length, tram: r.kind === 'tram', metro: r.kind === 'subway', heights: r.heights })
     }
     this.rails.forEach((r, i) => {
       if (i < from) return
       // a tram is one car at a walking-plus pace; a cable car runs at about 15 km/h
       this.trains.push(r.tram
-        ? { rail: i, s: (i * 137) % r.length, dir: i % 2 ? 1 : -1, speed: 4.2, cars: 1 }
+        ? { rail: i, s: (i * 137) % r.length, dir: i % 2 ? 1 : -1, speed: this.citadis ? 7 : 4.2, cars: this.citadis ? 4 : 1 }
+        : r.metro ? { rail: i, s: (i * 137) % r.length, dir: i % 2 ? 1 : -1, speed: 11, cars: 5 }
         : { rail: i, s: (i * 137) % r.length, dir: i % 2 ? 1 : -1, speed: 14 + (i % 3) * 4, cars: 3 })
     })
   }
@@ -193,7 +206,7 @@ export class Life {
   update(dt: number, vehicles: readonly Vehicle[], walkers: readonly Walker[], at: { x: number; z: number },
          skip?: ReadonlySet<number>, terrain?: Terrain): void {
     const groundAt = (p: { x: number; z: number }): number => terrain?.heightAt(p.x, p.z) ?? 0
-    for (const p of [this.cars, this.buses, this.carriages, this.trams, this.bodies, this.legs, this.arms, this.heads, this.hairs, this.bikes, this.blobs]) p.begin()
+    for (const p of [this.cars, this.buses, this.carriages, this.trams, this.tramCabs, this.metro, this.bodies, this.legs, this.arms, this.heads, this.hairs, this.bikes, this.blobs]) p.begin()
     const sun = shadowOffset(DAYLIGHT.sun)
 
     /** Lay a blob under something `height` tall, `long` by `wide` on the ground, facing `heading`. */
@@ -271,7 +284,7 @@ export class Life {
       const head = along(rail.points, t.s)
       if (Math.hypot(head.x - at.x, head.z - at.z) > 420) continue
       for (let c = 0; c < t.cars; c++) {
-        const s = t.s - t.dir * c * (rail.tram ? 9.5 : 18.6)
+        const s = t.s - t.dir * c * (rail.tram ? (this.citadis ? 8.3 : 9.5) : rail.metro ? 15.2 : this.citadis ? 24.3 : 18.6)
         if (s < 0 || s > rail.length) continue
         const p = along(rail.points, s)
         // the rail's own direction from a chord that stays on it, then turned to the way of travel — the
@@ -283,20 +296,32 @@ export class Life {
         Matrix.ComposeToRef(Vector3.OneReadOnly,
           Quaternion.RotationYawPitchRoll(heading, 0, 0),
           new Vector3(p.x, 0.25 + (rail.heights ? profileAt(rail.points, rail.heights, s).y : groundAt(p)), p.z), this.m)
-        if (rail.tram) {
+        if (rail.tram && this.citadis) {
+          // the cab leads and trails (the last one turned round), the middle modules between; RATP white
+          const cab = c === 0 || c === t.cars - 1
+          if (cab && c === t.cars - 1) {
+            Matrix.ComposeToRef(Vector3.OneReadOnly, Quaternion.RotationYawPitchRoll(heading + Math.PI, 0, 0),
+              new Vector3(p.x, 0.25 + (rail.heights ? profileAt(rail.points, rail.heights, s).y : groundAt(p)), p.z), this.m)
+          }
+          ;(cab ? this.tramCabs : this.trams).push(this.m, 0.93, 0.94, 0.95)
+          blob(p, heading, 8.3, 2.8, 2.8)
+        } else if (rail.tram) {
           // maroon, the Powell Street livery
           this.trams.push(this.m, 0.52, 0.10, 0.12)
           blob(p, heading, 9, 2.6, 2.6)
+        } else if (rail.metro) {
+          this.metro.push(this.m, 0.94, 0.94, 0.95)
+          blob(p, heading, 15, 2.6, 2.6)
         } else {
-          this.carriages.push(this.m, 0.78, 0.79, 0.82)
-          blob(p, heading, 18, 3.4, 3.4)
+          this.carriages.push(this.m, this.citadis ? 0.93 : 0.78, this.citadis ? 0.93 : 0.79, this.citadis ? 0.94 : 0.82)
+          blob(p, heading, this.citadis ? 24 : 18, 3.4, 3.4)
         }
       }
     }
 
     if (this.riderBlob) blob(this.riderBlob.at, this.riderBlob.heading, 2.0, 0.7, 1.6)
 
-    for (const p of [this.cars, this.buses, this.carriages, this.trams, this.bodies, this.legs, this.arms, this.heads, this.hairs, this.bikes, this.blobs]) p.end()
+    for (const p of [this.cars, this.buses, this.carriages, this.trams, this.tramCabs, this.metro, this.bodies, this.legs, this.arms, this.heads, this.hairs, this.bikes, this.blobs]) p.end()
   }
 }
 

@@ -27,7 +27,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { CITIES, bboxOf, city, extentOf, type CitySpec } from './cities.ts'
 import { joinNearMisses } from './gaps.ts'
-import { bridgesQuery, fringeQuery, cityQuery, furnitureQuery, innerRings, outerRings, overpassTiled, type Bbox, type OsmWay } from './overpass.ts'
+import { bridgesQuery, squaresQuery, fringeQuery, cityQuery, furnitureQuery, innerRings, outerRings, overpassTiled, type Bbox, type OsmWay } from './overpass.ts'
 import { Elevation, ATTRIBUTION as TERRAIN_CREDIT } from './terrarium.ts'
 import { Terrain, type PackedTerrain } from '../src/city/terrain.ts'
 import { splitPackage, type CityIndex, type TileEntry } from '../src/city/tiles.ts'
@@ -438,7 +438,13 @@ async function bake(spec: CitySpec): Promise<void> {
   console.log(`  ${buildings.length} buildings`)
   if (streetRegion.streetWidth === 'carriageway') fitStreetsBetweenBuildings(kept, buildings)
 
-  // ---- the green and the wet
+  // ---- the green and the wet, and the paved squares (their own query: only as areas, never as streets)
+  const squares = await overpassTiled(squaresQuery, bbox(spec)).catch((e) => {
+    console.warn(`  squares: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
+    return { ways: [] as OsmWay[], relations: [] as typeof relations }
+  })
+  const areaWays = [...ways, ...squares.ways]
+  const areaRels = [...relations, ...squares.relations.filter((r) => r.tags.building === undefined)]
   const areas: PackedArea[] = []
   // and the water that runs underground: never drawn, but a "bridge" over it is at grade (tools/bridges.ts)
   const buried: { x: number; z: number }[][] = []
@@ -449,7 +455,7 @@ async function bake(spec: CitySpec): Promise<void> {
       buried.push(w.geometry.slice(0, -1).map((g) => proj.toLocal(g)))
     }
   }
-  for (const w of ways) {
+  for (const w of areaWays) {
     const kind = areaKind(w)
     if (!kind || !w.geometry || w.geometry.length < 4) continue
     const ring = w.geometry.slice(0, -1).map((g) => proj.toLocal(g))
@@ -459,7 +465,7 @@ async function bake(spec: CitySpec): Promise<void> {
   // Multipolygon relations: the Seine is one, and so is every courtyard block. Skipping them is why the
   // water shader had no water and why the Loop came back with half the buildings it should have.
   let fromRelations = 0
-  for (const rel of relations) {
+  for (const rel of areaRels) {
     const kind = areaKind({ tags: rel.tags } as OsmWay)
     const isBuilding = rel.tags.building !== undefined
     if (!kind && !isBuilding) continue
@@ -718,7 +724,9 @@ async function bake(spec: CitySpec): Promise<void> {
     const cum = [0]
     for (let i = 1; i < ps.length; i++) cum.push(cum[i - 1] + Math.hypot(ps[i].x - ps[i - 1].x, ps[i].z - ps[i - 1].z))
     const g = ps.map((q) => groundAt(q.x, q.z))
-    const lift = 6.5 + 5.5 * Math.max(0, (r.layer ?? 1) - 1)
+    // a metre and a half per layer at most: Paris's métro viaducts are layer 2, and 5.5 m a layer put Line 6
+    // twelve metres over the Boulevard de Grenelle, out of every view of it (BUGS.md #34)
+    const lift = 6.5 + 1.5 * Math.min(2, Math.max(0, (r.layer ?? 1) - 1))
     const high = ps.map((_, i) => {
       let m = g[i]
       for (let k = 0; k < ps.length; k++) if (Math.abs(cum[k] - cum[i]) <= 40) m = Math.max(m, g[k])
@@ -1163,6 +1171,7 @@ function areaKind(w: OsmWay): PackedArea['kind'] | null {
   if (t.leisure === 'park' || t.leisure === 'garden') return 'park'
   if (t.leisure === 'pitch') return 'pitch'
   if (t.landuse === 'grass' || t.landuse === 'meadow') return 'grass'
+  if ((t.highway === 'pedestrian' && (t.area === 'yes' || t.type === 'multipolygon')) || t['area:highway'] || t.place === 'square') return 'paved'
   return null
 }
 
