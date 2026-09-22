@@ -288,7 +288,7 @@ def strap_tuft(rnd: random.Random, S=512) -> Image.Image:
         ang = -math.pi / 2 + a * 1.55                     # up, to either side and a little below horizontal
         L = S * rnd.uniform(0.28, 0.4) * (1 - 0.25 * k)
         dead = k > 0.85 and rnd.random() < 0.6
-        col = jit(rnd, (140, 118, 72) if dead else lerp((64, 96, 42), (118, 140, 66), rnd.random()), 12)
+        col = jit(rnd, (140, 118, 72) if dead else lerp((104, 142, 62), (162, 184, 92), rnd.random()), 12)
         bend = (0.9 if a > 0 else -0.9) * k + (1.4 * (1 if a > 0 else -1) if dead else 0)
         curved_leaflet(d, (cx, cy), ang, L, rnd.uniform(5, 8), bend * 0.6, (*col, 255), (*lerp(col, (200, 200, 140), 0.25), 255), segs=8)
     return img

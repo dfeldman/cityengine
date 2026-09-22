@@ -57,7 +57,7 @@ export async function treeShowcase(canvas: HTMLCanvasElement, lod: 0 | 1 | 2): P
     x += 4
   }
   const palms = new URL('palms/', document.baseURI).href
-  for (const [kind, seed] of [['canary', 1], ['fan', 2], ['queen', 3], ['spiky', 4]] as [PalmKind, number][]) {
+  for (const [kind, seed] of [['canary', 1], ['fan', 2], ['queen', 3], ['spiky', 4], ['windmill', 5]] as [PalmKind, number][]) {
     row[`palm:${kind}`] = x + 4
     for (let i = 0; i < 2; i++) {
       const m = palmModel(scene, palms, kind, 1000 * seed + i * 7919)

@@ -50,7 +50,7 @@ const FORMS: Record<string, TreeForm> = {
   Cupressus: 'cypress', Juniperus: 'cypress', Cupressocyparis: 'cypress', Taxus: 'cypress', Sequoia: 'cypress',
   Calocedrus: 'cypress',
   // palms and palm-likes
-  Phoenix: 'canary', Washingtonia: 'fan', Trachycarpus: 'fan', Chamaerops: 'fan',
+  Phoenix: 'canary', Washingtonia: 'fan', Trachycarpus: 'windmill', Chamaerops: 'windmill',
   Syagrus: 'queen', Arecastrum: 'queen',
   Cordyline: 'spiky', Yucca: 'spiky', Dicksonia: 'spiky',
 }
@@ -80,6 +80,7 @@ export function sfHeight(form: TreeForm, dbh: number, r: number): number {
     case 'fan': return d ? Math.min(20, 8 + 0.5 * d) : 10 + r * 6
     case 'queen': return d ? Math.min(13, 6 + 0.4 * d) : 8 + r * 3
     case 'spiky': return 3 + r * 2.5
+    case 'windmill': return d ? Math.min(8, 3 + 0.35 * d) : 4 + r * 3
     case 'eucalyptus': return d ? Math.min(24, 5 + 0.55 * d) : 12 + r * 5
     case 'flowering': case 'blossom': case 'pear': case 'plum': case 'bottlebrush': return d ? Math.min(9, 3.5 + 0.35 * d) : 5 + r * 1.5
     case 'olive': return d ? Math.min(9, 3.5 + 0.3 * d) : 5 + r * 2

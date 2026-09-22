@@ -47,7 +47,9 @@ export const TREES_PER_KM2 = 1000
  * in place of step 3's guessed boulevard rows, and kept whole: the cap thins only
  * the park scatter then, since a tree that is really there is not one to thin.
  */
-export function plantCity(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'>, cap = TREE_CAP, street?: Planting[]): Planting[] {
+export function plantCity(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Partial<Pick<CityPackage, 'buildings'>>, cap = TREE_CAP,
+                          given?: Planting[]): Planting[] {
+  const street = given ? seatTrees(given, pkg) : undefined
   const out: Planting[] = []
   const r = mulberry(0x5eed ^ pkg.edges.length)
 
@@ -140,8 +142,9 @@ export function plantCity(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'>, c
   }
 
   // the ceiling: every k-th tree kept, evenly, so no one place is thinned more than another
-  if (street) return [...street, ...thin(out, cap)]
-  return thin(out, cap)
+  // (and none of them growing out of a building either, however it got there: BUGS.md #47)
+  const rest = pkg.buildings ? seatTrees(thin(out, cap), pkg, false) : thin(out, cap)
+  return street ? [...street, ...rest] : rest
 }
 
 function thin(out: Planting[], cap: number): Planting[] {
@@ -154,6 +157,125 @@ function thin(out: Planting[], cap: number): Planting[] {
     if (acc >= 1) { acc -= 1; kept.push(p) }
   }
   return kept
+}
+
+/**
+ * A city's own list of its street trees, seated in THIS city (BUGS.md #47).
+ *
+ * The list's points are surveyed and OSM's footprints and street widths are not, and the two disagree by a metre
+ * or three — which is the difference between a tree on the pavement and one growing out of a shopfront or the
+ * middle of the lane. Planted where the list said, one tree in nine stood inside a building.
+ *
+ * So a tree near a street is put where that street's trees go in the city as drawn: at the kerb, a little in from
+ * the carriageway's edge, on the side of the street it was on and at the same point along it — which is where
+ * the guessed boulevard rows always stood, and where a San Francisco street tree actually is. One that then lands
+ * in another carriageway (a corner) or in a building is dropped. A tree away from the streets (a median, a
+ * plaza, a front garden) keeps its place, pushed out of a building it has strayed a little way into, or dropped
+ * if it is deep inside one. With `kerb` false only that last part is done: the mapped and scattered trees.
+ */
+export function seatTrees(trees: Planting[], pkg: Pick<CityPackage, 'edges'> & Partial<Pick<CityPackage, 'buildings'>>, kerb = true): Planting[] {
+  interface Seg { ax: number; az: number; bx: number; bz: number; half: number; walk: number }
+  const CELL = 24
+  const grid = new Map<string, Seg[]>()
+  const key = (i: number, j: number): string => `${i},${j}`
+  for (const e of pkg.edges) {
+    if (e.foot || !onSurface(e)) continue
+    const p = unpackPoints(e.points)
+    for (let i = 1; i < p.length; i++) {
+      const s: Seg = { ax: p[i - 1].x, az: p[i - 1].z, bx: p[i].x, bz: p[i].z, half: e.width / 2, walk: e.walk }
+      const r = s.half + s.walk + 3
+      for (let gi = Math.floor((Math.min(s.ax, s.bx) - r) / CELL); gi <= Math.floor((Math.max(s.ax, s.bx) + r) / CELL); gi++) {
+        for (let gj = Math.floor((Math.min(s.az, s.bz) - r) / CELL); gj <= Math.floor((Math.max(s.az, s.bz) + r) / CELL); gj++) {
+          const l = grid.get(key(gi, gj)) ?? []
+          l.push(s)
+          grid.set(key(gi, gj), l)
+        }
+      }
+    }
+  }
+  const near = (x: number, z: number): { s: Seg; d: number; t: number; side: number }[] => {
+    const out: { s: Seg; d: number; t: number; side: number }[] = []
+    for (const s of grid.get(key(Math.floor(x / CELL), Math.floor(z / CELL))) ?? []) {
+      const dx = s.bx - s.ax
+      const dz = s.bz - s.az
+      const L2 = dx * dx + dz * dz
+      if (L2 < 1e-4) continue
+      const t = Math.max(0, Math.min(1, ((x - s.ax) * dx + (z - s.az) * dz) / L2))
+      const px = s.ax + dx * t
+      const pz = s.az + dz * t
+      const side = Math.sign(dx * (z - s.az) - dz * (x - s.ax)) || 1
+      out.push({ s, d: Math.hypot(x - px, z - pz), t, side })
+    }
+    return out
+  }
+  // the buildings, bucketed the same way
+  const rings = (pkg.buildings ?? []).map((b) => unpackPoints(b.ring))
+  const bgrid = new Map<string, number[]>()
+  rings.forEach((r, k) => {
+    let x0 = Infinity; let x1 = -Infinity; let z0 = Infinity; let z1 = -Infinity
+    for (const q of r) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+    for (let gi = Math.floor(x0 / CELL); gi <= Math.floor(x1 / CELL); gi++) {
+      for (let gj = Math.floor(z0 / CELL); gj <= Math.floor(z1 / CELL); gj++) {
+        const l = bgrid.get(key(gi, gj)) ?? []
+        l.push(k)
+        bgrid.set(key(gi, gj), l)
+      }
+    }
+  })
+  /** the ring a point is inside, and how far in it is (to the nearest wall) */
+  const inBuilding = (x: number, z: number): { depth: number; out: { x: number; z: number } } | null => {
+    for (const k of bgrid.get(key(Math.floor(x / CELL), Math.floor(z / CELL))) ?? []) {
+      const r = rings[k]
+      if (!inside(r, x, z)) continue
+      let best = Infinity
+      let exit = { x, z }
+      for (let i = 0, j = r.length - 1; i < r.length; j = i++) {
+        const a = r[j]
+        const b = r[i]
+        const dx = b.x - a.x
+        const dz = b.z - a.z
+        const L2 = dx * dx + dz * dz || 1
+        const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / L2))
+        const px = a.x + dx * t
+        const pz = a.z + dz * t
+        const d = Math.hypot(x - px, z - pz)
+        if (d < best) { best = d; exit = { x: px + ((px - x) / (d || 1)) * 1.2, z: pz + ((pz - z) / (d || 1)) * 1.2 } }
+      }
+      return { depth: best, out: exit }
+    }
+    return null
+  }
+  const inCarriageway = (x: number, z: number): boolean => near(x, z).some((n) => n.d < n.s.half + 0.3)
+
+  const out: Planting[] = []
+  for (const tree of trees) {
+    // the street it belongs to: the nearest whose pavement (and a little beyond, for the survey's slack) it is on
+    let best: { s: Seg; d: number; t: number; side: number } | null = null
+    if (kerb) for (const n of near(tree.x, tree.z)) if (n.d <= n.s.half + n.s.walk + 2.5 && (!best || n.d - n.s.half < best.d - best.s.half)) best = n
+    let x = tree.x
+    let z = tree.z
+    if (best) {
+      const { s, t, side } = best
+      const L = Math.hypot(s.bx - s.ax, s.bz - s.az)
+      const nx = -(s.bz - s.az) / L
+      const nz = (s.bx - s.ax) / L
+      // in from the kerb by the width of a tree basin, never past the middle of a narrow pavement
+      const off = s.half + Math.min(0.75, Math.max(0.35, s.walk * 0.4))
+      x = s.ax + (s.bx - s.ax) * t + nx * off * side
+      z = s.az + (s.bz - s.az) * t + nz * off * side
+      if (inCarriageway(x, z) || inBuilding(x, z)) continue
+    } else {
+      const b = inBuilding(x, z)
+      if (b) {
+        if (b.depth > 3) continue
+        x = b.out.x
+        z = b.out.z
+        if (inBuilding(x, z) || inCarriageway(x, z)) continue
+      }
+    }
+    out.push({ ...tree, x, z })
+  }
+  return out
 }
 
 /** Even-odd point in polygon. */

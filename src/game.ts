@@ -364,7 +364,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   if (!off.has('trees')) city.addLayer(trees.layer())
   mark('vegetation')
   // the models are a few megabytes, so the ride starts without them and they appear when they arrive
-  if (!off.has('trees')) void trees.load().catch((e) => console.warn('vegetation did not load:', e))
+  // (`treesReady`: the shot tools wait for it — SF's forms are forty-odd models and take a while)
+  if (!off.has('trees')) {
+    void trees.load().catch((e) => console.warn('vegetation did not load:', e))
+      .finally(() => { (window as unknown as Record<string, unknown>).treesReady = true })
+  } else (window as unknown as Record<string, unknown>).treesReady = true
   // the shrubs and flower beds in the parks (render/plants.ts, PARIS_EXPAND §6 item 8)
   const plants = new Plants(scene, city.terrain, new URL('plants/', document.baseURI).href)
   if (!off.has('trees') && !off.has('plants')) {
@@ -949,6 +953,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     const v = (q: [number, number, number]): Vector3 => new Vector3(q[0], city.terrain.heightAt(q[0], q[2]) + q[1], q[2])
     held = { from: v(from), to: v(to) }
     if (!frozen) { frozen = true; orbit.active = true; debug.frozen(true) }
+  }
+  // what is drawn at a pixel (tools: finding the mesh behind a visual bug): name, and where it was hit
+  w.__pick = (x: number, y: number) => {
+    const hit = scene.pick(x, y, (m) => m.isEnabled() && m.isVisible, false, camera)
+    return hit?.hit ? { mesh: hit.pickedMesh?.name, at: hit.pickedPoint?.asArray().map((v) => Math.round(v * 10) / 10) } : null
   }
   w.__viewHere = () => {
     const f = camera.position

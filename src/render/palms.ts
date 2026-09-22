@@ -11,6 +11,7 @@
  *   small round head of fan leaves, and under it the skirt of dead leaves the city never quite trims.
  * - **the queen palm** (Syagrus romanzoffiana): a slim smooth grey trunk, a green crownshaft, and soft plumed
  *   fronds that arch right over — the palm of the Mission's front yards and the Marina's medians.
+ * - **the windmill palm** (Trachycarpus; Chamaerops the same): the fan palm small, its trunk wrapped in fibre.
  * - **the cabbage tree** (Cordyline australis; yucca stands in the same): a short trunk forking into a few stems,
  *   each topped by a tuft of long strap leaves over its hanging dead ones.
  *
@@ -38,7 +39,7 @@ import { MeshBuilder } from './buildings.ts'
 import type { Rgb } from './models.ts'
 
 type V3 = [number, number, number]
-export type PalmKind = 'canary' | 'fan' | 'queen' | 'spiky'
+export type PalmKind = 'canary' | 'fan' | 'queen' | 'spiky' | 'windmill'
 
 const rng = (seed: number): (() => number) => {
   let s = seed >>> 0
@@ -273,22 +274,28 @@ export function palm(kind: PalmKind, seed: number, lod: 0 | 1 | 2): PalmBuild {
       stem(trunk, [0, h - 0.1, 0], tip, 0.13, 0.09, sides, 1.2, white)
       // the dead leaves hanging under each tuft
       stem(collar, add(tip, [0, -0.5, 0]), add(tip, [0, 0.05, 0]), 0.2, 0.14, sides, 0.8, white)
-      const tone = 0.9 + r() * 0.15
+      const tone = 0.88 + r() * 0.12
       tuft(leaves, tip, 2.4 + r() * 0.7, lod === 2 ? 2 : 4, r() * Math.PI, [tone, tone, tone])
     }
     return { trunk, collar, leaves, top: h + 2.9 }
   }
-  // the fan palm: tall and thin, a slight lean that grows with height
-  const h = 14 + r() * 8
+  // the fan palm: tall and thin, a slight lean that grows with height. The windmill palm (Trachycarpus) is the
+  // same plan small: a short trunk wrapped in brown fibre, a head nearly as big as a Washingtonia's on it
+  const small = kind === 'windmill'
+  const h = small ? 2.8 + r() * 3.5 : 14 + r() * 8
   const lean = (r() - 0.5) * 0.06
   const x = (y: number): number => lean * y * y / h
-  column(trunk, 0, 0.6, 0.42, 0.3, lod === 2 ? 5 : 9, 1, 1.2, 2, white, x)
-  column(trunk, 0.6, h - 0.1, 0.3, 0.21, lod === 2 ? 5 : 9, lod === 0 ? 6 : 2, 1.2, 2, white, x)
+  if (small) {
+    column(trunk, 0, h - 0.1, 0.17, 0.15, lod === 2 ? 5 : 8, lod === 0 ? 3 : 1, 0.9, 2, white, x)
+  } else {
+    column(trunk, 0, 0.6, 0.42, 0.3, lod === 2 ? 5 : 9, 1, 1.2, 2, white, x)
+    column(trunk, 0.6, h - 0.1, 0.3, 0.21, lod === 2 ? 5 : 9, lod === 0 ? 6 : 2, 1.2, 2, white, x)
+  }
   // the skirt of dead leaves under the head: not a cone but dead leaves hanging, each its own card folded down
   // against the trunk, of different lengths — so its outline is ragged and the light gets in between
   // three in five are trimmed to a short petticoat, as the city's street palms are; the rest keep a full skirt
-  const trimmed = r() < 0.6
-  const hang = lod === 0 ? 30 : lod === 1 ? 16 : 8
+  const trimmed = small || r() < 0.6
+  const hang = small ? 0 : lod === 0 ? 30 : lod === 1 ? 16 : 8
   for (let i = 0; i < hang; i++) {
     const a = (i / hang) * Math.PI * 2 + (r() - 0.5) * 0.3
     const L = trimmed ? 0.6 + r() * 0.7 : 2.2 + r() * 1.6
@@ -317,16 +324,18 @@ export function palm(kind: PalmKind, seed: number, lod: 0 | 1 | 2): PalmBuild {
     const tone = 0.88 + r() * 0.18
     const age = k * k * 0.5
     const c: Rgb = [tone * (1 + age * 0.4), tone, tone * (1 - age * 0.3)]
-    fanLeaf(leaves, [centre[0], h + 0.1 + (1 - k) * 0.5, centre[2]], centre, yaw, pitch, 1.5 + r() * 0.9, (0.9 + r() * 0.3) * (lod === 2 ? 1.25 : 1),
+    fanLeaf(leaves, [centre[0], h + 0.1 + (1 - k) * (small ? 0.25 : 0.5), centre[2]], centre, yaw, pitch,
+      small ? 0.9 + r() * 0.5 : 1.5 + r() * 0.9, (small ? 0.62 + r() * 0.15 : 0.9 + r() * 0.3) * (lod === 2 ? 1.25 : 1),
       0.25 + r() * 0.15, lod === 0 ? 5 : lod === 1 ? 3 : 2, c, [0.6, 0.62, 0.4], r() < 0.5, (r() - 0.5) * 2.2)
   }
-  return { trunk, collar, leaves, top: h + 1.8 }
+  return { trunk, collar, leaves, top: h + (small ? 1.2 : 1.8) }
 }
 
 const TEXTURES: Record<PalmKind, { trunk: string; collar: string; leaves: string[] }> = {
   canary: { trunk: 'canary-trunk.png', collar: 'canary-knob.png', leaves: ['canary-frond-a.png', 'canary-frond-b.png'] },
   fan: { trunk: 'fan-trunk.png', collar: 'fan-skirt.png', leaves: ['fan-leaf-a.png', 'fan-leaf-b.png'] },
   queen: { trunk: 'queen-trunk.png', collar: 'queen-trunk.png', leaves: ['queen-frond-a.png', 'queen-frond-b.png'] },
+  windmill: { trunk: 'fan-skirt.png', collar: 'fan-skirt.png', leaves: ['fan-leaf-a.png', 'fan-leaf-b.png'] },
   spiky: { trunk: 'fan-trunk.png', collar: 'fan-skirt.png', leaves: ['strap-tuft-a.png', 'strap-tuft-b.png'] },
 }
 
@@ -340,7 +349,9 @@ function material(scene: Scene, base: string, file: string, cutout: boolean): St
   m.diffuseTexture = t
   m.specularColor = new Color3(0.06, 0.07, 0.05)
   m.backFaceCulling = !cutout
-  m.twoSidedLighting = cutout
+  // (not for the tufts: their crossed cards carry a normal pointing up out of the tuft, and flipping it for the
+  // back face left every card seen from behind black)
+  m.twoSidedLighting = cutout && !file.startsWith('strap')
   if (cutout) {
     m.transparencyMode = 1         // Material.MATERIAL_ALPHATEST, as the tree library's foliage (vegetation.ts)
     m.alphaCutOff = 0.45
@@ -360,7 +371,7 @@ export function palmModel(scene: Scene, base: string, kind: PalmKind, seed: numb
     top = b.top
     const meshes: Mesh[] = []
     for (const [part, builder, file, cutout] of [
-      ['trunk', b.trunk, tex.trunk, false], ['collar', b.collar, tex.collar, kind === 'fan' || kind === 'spiky'], ['leaves', b.leaves, leafFile, true],
+      ['trunk', b.trunk, tex.trunk, false], ['collar', b.collar, tex.collar, kind === 'fan' || kind === 'spiky' || kind === 'windmill'], ['leaves', b.leaves, leafFile, true],
     ] as const) {
       if (builder.triangles === 0) continue
       const m = new Mesh(`palm:${kind}:${seed}:${lod}:${part}`, scene)

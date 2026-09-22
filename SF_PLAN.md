@@ -141,10 +141,30 @@ New Zealand Christmas tree (pōhutukawa) and palms:
 - Mexican fan palms;
 - king palms.
 
-Parks add Monterey cypress, eucalyptus and coast live oak. Planting follows the Paris design (a region
-species mix, `plantings.ts`) with a per-district palette: palms along the Embarcadero and in the Marina. The
-palms are the gap: the tree generator makes broadleaf and conifer trees, and a palm is a new form. Either
-`tools/treekit` grows a palm generator, or a model is sourced (MODELS_NEEDED.md).
+**Done (2026-09-22; user: "put tons of effort into the plants, they are key"):**
+- **The city's own list.** Every street tree Public Works keeps (DataSF tkzw-k3nq, `tools/sf-trees.ts`, 40,621 in
+  the box, 387 species) is planted where it stands, sized from its trunk. The guessed boulevard rows are gone.
+  `city/sf/trees.ts` maps each species to a FORM (`city/tree-forms.ts`, 23 of them, shared). The forms by count:
+  laurel 17%, evergreen 15%, plane 15%, ficus 11%, deciduous 8%, eucalyptus 5%, olive 5%, pear, myrtle,
+  blossom, weeping, plum, and the palms.
+- **Seated on the drawn city** (`seatTrees`, BUGS.md #47). Each tree goes to the kerb of its street as rendered,
+  or is dropped, rather than trunks landing in facades.
+- **SF's own species** (`tools/sftrees`: Trail Trainer's generator, SF species files, leaf pages and barks):
+  - plane and pollarded plane, with camouflage bark;
+  - ficus (the clipped dark dome);
+  - brisbane box, laurel, pōhutukawa with its crimson brushes;
+  - olive, bottlebrush, purple-leaf plum, pink cherry, white pear;
+  - gum, with pale bark and hanging leaves;
+  - mayten, pepper tree, jacaranda.
+  89 models, built into `public/sftrees/` (gitignored). `?trees=sf` and `tools/tree-shots.ts` show them.
+- **Palms** (`render/palms.ts`): Canary, Washingtonia, queen, windmill, and the cabbage tree/yucca.
+- Parks (not in the list) keep the scatter: Monterey cypress and pine, gum, coast live oak.
+
+**Still to do:**
+- the parks by hand (§10);
+- the season, since every blossom tree is in flower all year;
+- a real king palm;
+- tree ferns.
 
 ## 6. An American street
 
@@ -225,6 +245,22 @@ These make the world alive, as the Seine's boats did:
   the Music Concourse, the lakes), the Presidio's Main Post, Alamo Square, Lafayette Park, Alta Plaza, Washington
   Square, Union Square, Yerba Buena Gardens and Salesforce Park. A park gets a hand-made layout file, as the
   Paris landmarks get a manifest entry.
+- **Chinatown, building by building** (user, 2026-09-22: "chinatown should have many, many more unique buildings.
+  the whole area is full of zany architecture which is going to be impossible to fill in with a formula… We'll
+  want LOTS more like this"). The `chinatown` style and facade are a floor, not the answer. Chinatown gets a
+  district manifest of hand-built models, landmark-style (reference photos, then a procedural gist), street by
+  street along Grant, Stockton, Waverly Place, Ross Alley and Spofford Alley:
+  - **Portsmouth Square** (Washington & Kearny), the user's example: a plaza on the roof of a garage, on several
+    levels with stairs between them; the footbridge across Kearny to the Chinese Culture Center in the Hilton; the
+    clubhouse; the statues (the Goddess of Democracy, the Robert Louis Stevenson memorial); Chinese writing and
+    murals;
+  - the Dragon Gate at Grant and Bush;
+  - the pagoda-roofed corners: the Sing Chong and Sing Fat buildings at Grant and California;
+  - the painted balconies of Waverly Place and its temples (Tin How);
+  - Old St. Mary's, the Chinese Telephone Exchange, the Chinese Six Companies, Kong Chow Temple;
+  - the Stockton Street markets' awnings and produce, and the lanterns strung across Grant.
+  These are rideable places as well as facades: the square's levels and stairs are run graph, like Salesforce
+  Park's.
 - **Public sculptural art** (user: "sf has a lot of public sculptural art — these should be attempted if possible.
   not really as many statues like paris though"). OSM's `tourism=artwork` gives the positions; the abstract
   pieces suit procedural models: Cupid's Span, the Vaillancourt Fountain, Sea Change, Language of the Birds,

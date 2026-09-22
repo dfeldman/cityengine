@@ -29,6 +29,7 @@ export const TREE_FORMS = [
   'fan',          // fan palms: Washingtonia, windmill palm, Mediterranean fan palm
   'queen',        // queen palm: slim trunk, feather crown
   'spiky',        // cabbage tree, yucca, tree fern: a small tuft on a stem
+  'windmill',     // windmill palm, Mediterranean fan palm: a small fan palm, four to eight metres
 ] as const
 
 export type TreeForm = (typeof TREE_FORMS)[number]
@@ -37,4 +38,4 @@ export const formCode = (f: TreeForm): number => TREE_FORMS.indexOf(f)
 export const formOf = (code: number): TreeForm => TREE_FORMS[code] ?? ''
 
 /** the palm forms, drawn by render/palms.ts rather than from the tree library */
-export const PALM_FORMS: ReadonlySet<TreeForm> = new Set<TreeForm>(['canary', 'fan', 'queen', 'spiky'])
+export const PALM_FORMS: ReadonlySet<TreeForm> = new Set<TreeForm>(['canary', 'fan', 'queen', 'spiky', 'windmill'])

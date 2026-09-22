@@ -786,3 +786,36 @@ Perce's 71 m round a block stays. A lasso's tail left dead-ending under 40 m goe
 The audit's new dead ends are 4 real impasses (Saint-Sébastien, Saint-Claude, Jean Beausire, Cité de la
 Roquette) that had ended in a tiny loop, plus Rue Cloche Perce, whose own geometry doubles back. Paris
 rebaked: Marais 1137 → 892 edges, centre 6625. Shot: docs/shots/B44-after.png.
+
+## 45. A fire hydrant in the street (37.792745, -122.411188)
+
+**Seen:** user, 2026-09-22. And one levitating in a street at 37.793720, -122.409470.
+
+## 46. US-style crosswalks
+
+**Asked:** user, 2026-09-22: "we'll need us-style crosswalks". San Francisco's are two transverse white lines across
+the carriageway, and the high-visibility "continental" ladder of wide bars at busy crossings and near schools;
+not the Paris zebra of short dashes.
+
+## 47. Trees sprouting out of buildings (San Francisco)
+
+**Seen:** user, 2026-09-22, after the city's street-tree list replaced the guessed boulevard rows.
+
+## 48. A black polygon on the road under the trees (Cushman Street, Nob Hill)
+
+**Seen:** views/san-francisco.json "Trees — windmill palms", 2026-09-22. Goes with `?without=trees`, stays with
+`?without=plants`: the trees layer's shadow mesh, drawn solid black.
+
+## 49. Strangers flicker between their avoiding offset and their own path
+
+**Seen:** user, 2026-09-22: "something wrong with stranger avoidance - they flicker back and forth between offset
+and normal path". (Stranger avoidance: #42.)
+
+## 50. Protruding signs backward
+
+**Seen:** user, 2026-09-22: "many protruding signs are backward" (the blade signs standing out from facades).
+
+## 51. Too many crop tops on the strangers
+
+**Seen:** user, 2026-09-22: "too many people wearing crop tops, a real but uncommon item. most should wear colored
+t shirts".

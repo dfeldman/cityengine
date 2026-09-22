@@ -1299,6 +1299,29 @@ function areaKind(w: OsmWay): PackedArea['kind'] | null {
 async function main(): Promise<void> {
   const only = process.argv.slice(2).filter((a) => !a.startsWith('--'))
   const list = only.length > 0 ? only.map(city) : CITIES
+  // --replant: only the trees, on the package already baked (city/plantings.ts), and its tiles rewritten — for
+  // working on the plants without the hours a full bake spends waiting on Overpass
+  if (process.argv.includes('--replant')) {
+    const { readFileSync } = await import('node:fs')
+    for (const spec of list) {
+      const pkg = JSON.parse(readFileSync(resolve(OUT, `${spec.id}.json`), 'utf8')) as CityPackage
+      const proj = new Projection(pkg.origin)
+      const ex = extentOf(spec)
+      const km2 = ((ex.west + ex.east) * (ex.south + ex.north)) / 1e6
+      const cap = Math.max(TREE_CAP, Math.round(TREES_PER_KM2 * km2))
+      const street = spec.region === 'san-francisco'
+        ? await Promise.all([import('./sf-trees.ts'), import('../src/city/sf/trees.ts')])
+          // (clipped to the package's own extent: it may be from before the box grew)
+          .then(async ([t, f]) => f.sfPlantings(await t.fetchStreetTrees(bboxOf(spec)), (g) => proj.toLocal(g),
+            (x, z) => Math.abs(x) <= pkg.radius && Math.abs(z) <= pkg.radius))
+        : undefined
+      pkg.plantings = packPlantings(plantCity(pkg, cap, street))
+      console.log(`${spec.id}: ${pkg.plantings.length / 5} trees planted${street ? ` (${street.length} from the city's list)` : ''}`)
+      await writeFile(resolve(OUT, `${spec.id}.json`), JSON.stringify(pkg))
+      await writeTiles(pkg, region(spec.region).riverDrop ?? 0)
+    }
+    return
+  }
   for (const c of list) await bake(c)
   // what the page's city menu lists: every city in cities.ts that has been baked
   const { existsSync } = await import('node:fs')

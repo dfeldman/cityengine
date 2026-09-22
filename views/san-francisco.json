@@ -1,0 +1,121 @@
+[
+ {
+  "name": "Trees — Russian Hill maples and elms",
+  "group": "trees",
+  "from": [
+   37.797482,
+   -122.413656,
+   2.2
+  ],
+  "to": [
+   37.797925,
+   -122.413746,
+   5
+  ],
+  "note": "Acer, Ulmus, Pittosporum"
+ },
+ {
+  "name": "Trees — Nob Hill pittosporum",
+  "group": "trees",
+  "from": [
+   37.793736,
+   -122.414587,
+   2.2
+  ],
+  "to": [
+   37.793292,
+   -122.414499,
+   5
+  ],
+  "note": "Pittosporum, Metrosideros"
+ },
+ {
+  "name": "Trees — ficus block",
+  "group": "trees",
+  "from": [
+   37.792277,
+   -122.414875,
+   2.2
+  ],
+  "to": [
+   37.792205,
+   -122.415436,
+   5
+  ],
+  "note": "Ficus x28"
+ },
+ {
+  "name": "Trees — Chinatown edge",
+  "group": "trees",
+  "from": [
+   37.791269,
+   -122.407608,
+   2.2
+  ],
+  "to": [
+   37.791197,
+   -122.40817,
+   5
+  ],
+  "note": "Ficus, Callistemon, Platanus"
+ },
+ {
+  "name": "Trees — windmill palms",
+  "group": "trees",
+  "from": [
+   37.788834,
+   -122.419242,
+   2.2
+  ],
+  "to": [
+   37.788906,
+   -122.418681,
+   5
+  ],
+  "note": "Trachycarpus x12"
+ },
+ {
+  "name": "Trees — planes",
+  "group": "trees",
+  "from": [
+   37.792623,
+   -122.412149,
+   2.2
+  ],
+  "to": [
+   37.792551,
+   -122.412711,
+   5
+  ],
+  "note": "Platanus x17, Metrosideros"
+ },
+ {
+  "name": "Trees — podocarpus and pears",
+  "group": "trees",
+  "from": [
+   37.79309,
+   -122.408486,
+   2.2
+  ],
+  "to": [
+   37.79302,
+   -122.409048,
+   5
+  ],
+  "note": "Afrocarpus, Pyrus"
+ },
+ {
+  "name": "Trees — Nob Hill air",
+  "group": "trees",
+  "from": [
+   37.7885,
+   -122.4165,
+   70
+  ],
+  "to": [
+   37.7935,
+   -122.4125,
+   0
+  ]
+ }
+]

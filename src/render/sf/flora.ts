@@ -17,8 +17,10 @@ const PALMS: Partial<Record<District, number>> = {
 
 export function sfFlora(toLatLon: (x: number, z: number) => { lat: number; lon: number }): Flora {
   return {
-    street: [['maple', 3], ['oak', 2], ['ash', 2], ['birch', 1]],
-    park: [['cypress', 3], ['oak', 3], ['black_pine', 2], ['maple', 1]],
+    // (form 0: the trees OSM maps that the city's list does not have — plazas, courtyards — and the park scatter)
+    street: [['sf_brisbane', 2], ['sf_laurel', 2], ['sf_plane', 2], ['sf_ficus', 1]],
+    // Monterey cypress and pine, the blue gums, coast live oak (the library's oak), and the park's own laurels
+    park: [['cypress', 3], ['black_pine', 2], ['sf_gum', 2], ['oak', 2], ['sf_laurel', 1]],
     palms: [{ kind: 'canary', models: 4 }, { kind: 'fan', models: 3 }],
     // the street trees are the city's own list, each with its form (city/sf/trees.ts), drawn from SF's own
     // generated species (tools/sftrees) and the palms; the park scatter above is what is left to the old pools
@@ -45,6 +47,7 @@ export function sfFlora(toLatLon: (x: number, z: number) => { lat: number; lon: 
       fan: [['palm:fan', 1]],
       queen: [['palm:queen', 1]],
       spiky: [['palm:spiky', 1]],
+      windmill: [['palm:windmill', 1]],
     },
     formModels: { plane: 5, laurel: 4, evergreen: 4, ficus: 4, deciduous: 4, plum: 4, canary: 4, fan: 3, queen: 3, spiky: 3 },
     palmChance: (x, z) => {

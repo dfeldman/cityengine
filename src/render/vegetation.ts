@@ -40,7 +40,7 @@ import { palmModel, type PalmKind } from './palms.ts'
 import { formCode, type TreeForm } from '../city/tree-forms.ts'
 
 /** each palm kind's seed family, so the same kind is the same palms everywhere */
-const PALM_SEEDS: Record<PalmKind, number> = { canary: 1, fan: 2, queen: 3, spiky: 4 }
+const PALM_SEEDS: Record<PalmKind, number> = { canary: 1, fan: 2, queen: 3, spiky: 4, windmill: 5 }
 
 // The species a city plants come from its region (render/flora.ts): San Francisco's include generated palms.
 
@@ -198,11 +198,15 @@ export class Vegetation {
     // the generated palms (render/palms.ts), their textures beside the library's trees
     this.districtPalms = []
     for (const { kind, models: n } of this.flora.palms ?? []) for (let i = 0; i < n; i++) this.districtPalms.push(palmOf(kind, i))
-    const fileCache = new Map<string, Model | null>()
-    const loadEntry = async (entry: TreeEntry, park: boolean): Promise<Model | null> => {
+    // (a promise per file, so the forty-odd models load at once rather than one after another)
+    const fileCache = new Map<string, Promise<Model | null>>()
+    const loadEntry = (entry: TreeEntry, park: boolean): Promise<Model | null> => {
       const key = `${entry.base}${entry.file}:${park}`
-      if (fileCache.has(key)) return fileCache.get(key)!
-      fileCache.set(key, null)
+      let p = fileCache.get(key)
+      if (!p) { p = importEntry(entry, park); fileCache.set(key, p) }
+      return p
+    }
+    const importEntry = async (entry: TreeEntry, park: boolean): Promise<Model | null> => {
       const result = await SceneLoader.ImportMeshAsync('', entry.base ?? this.base, entry.file, this.scene)
       const all = result.meshes.filter((m): m is Mesh => m instanceof Mesh && m.getTotalVertices() > 0)
       /**
@@ -274,12 +278,11 @@ export class Vegetation {
       }
       const model: Model = { parts, far, farther, park, top: entry.bounds?.top ?? entry.height ?? 12 }
       models.push(model)
-      fileCache.set(key, model)
       return model
     }
-    for (const [entries, park] of [[pick(this.flora.street, 5), false], [pick(this.flora.park, 5), true]] as const) {
-      for (const entry of entries) await loadEntry(entry, park)
-    }
+    const loads: Promise<unknown>[] = []
+    const streetAndPark = Promise.all([...pick(this.flora.street, 5).map((e) => loadEntry(e, false)), ...pick(this.flora.park, 5).map((e) => loadEntry(e, true))])
+    loads.push(streetAndPark)
     // the forms: each its own pool, from the library or the palms
     this.formPools.clear()
     for (const [form, spec] of Object.entries(this.flora.forms ?? {}) as [TreeForm, [string, number][]][]) {
@@ -291,9 +294,20 @@ export class Vegetation {
         const want = Math.max(1, Math.round((w / spec.reduce((t, [, x]) => t + x, 0)) * n))
         for (let i = 0; i < want; i++) pool.push(palmOf(sp.slice(5) as PalmKind, i))
       }
-      if (trees.length > 0) for (const entry of pick(trees, n)) { const m = await loadEntry(entry, false); if (m) pool.push(m) }
-      if (pool.length > 0) this.formPools.set(formCode(form), pool)
+      // (in the order picked, not the order they arrive: a tree must get the same model every session)
+      if (trees.length > 0) {
+        const got = Promise.all(pick(trees, n).map((entry) => loadEntry(entry, false)))
+        loads.push(got.then((ms) => { for (const m of ms) if (m) pool.push(m) }))
+      }
+      this.formPools.set(formCode(form), pool)
     }
+    await Promise.all(loads)
+    for (const [k, pool] of this.formPools) if (pool.length === 0) this.formPools.delete(k)
+    // every model in a fixed order (the palms, the street and park pools as picked, then each form's), whatever
+    // order the files arrived in: the form-0 pools are filtered from this list, and a planting picks by index
+    const ordered = new Set<Model>([...this.districtPalms, ...(await streetAndPark).filter((m): m is Model => !!m), ...[...this.formPools.values()].flat()])
+    models.length = 0
+    models.push(...ordered)
     if (models.length === 0) return
     this.models = models
     this.dirty = true
@@ -330,7 +344,7 @@ export class Vegetation {
       // (a palm is its own height, give or take: a street palm is taller than the street trees, not squeezed to them)
       // (a palm of a known form was measured too: its height is the city's, within what the model can stretch to)
       const scale = model.palm
-        ? own ? Math.min(1.5, Math.max(0.55, p.height / model.top)) : 0.85 + ((h >>> 5) % 100) / 330
+        ? own ? Math.min(1.5, Math.max(0.25, p.height / model.top)) : 0.85 + ((h >>> 5) % 100) / 330
         : Math.min(2, Math.max(0.1, p.height / model.top))
       const matrix = Matrix.Compose(
         new Vector3(scale, scale, scale),
