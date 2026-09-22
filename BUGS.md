@@ -24,7 +24,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 14 | fixed | Two ground levels: a transparent top surface with the asphalt about half a metre below it | user, 2026-09-21 |
 | 15 | fixed | Signs still z-fight with the walls they hang on | user, 2026-09-21 |
 | 16 | open | On a narrow street with a curved awning the chase camera passes right through the awning (48.856762, 2.358575) | user, 2026-09-21 |
-| 17 | open | A rental bike station lies across the road instead of along it (48.855780, 2.357875) | user, 2026-09-21 |
+| 17 | fixed | A rental bike station lies across the road instead of along it (48.855780, 2.357875) | user, 2026-09-21 |
 | 18 | open | Café tables show no top surface (likely wound facing down) | user, 2026-09-21 |
 | 19 | fixed | The Colonne de Juillet at the Bastille is gone completely | user, 2026-09-21 |
 | 20 | open | Central Paris audit: 22 ride edges pass through buildings; 266 dead ends to triage | audit-ride, 2026-09-21 |
@@ -306,6 +306,10 @@ awnings) stand out over the pavement and are not in what it tests.
 **Seen:** user, 2026-09-21, at 48.855780, 2.357875: the Vélib' dock (`bikeshare` furniture) is laid out across
 the carriageway instead of along the kerb. Point furniture is turned by `City.streetBearing` — likely it took
 the bearing of a crossing street or footway, or the docks run perpendicular to the bearing by construction.
+
+**Cause/fix:** the dock stands in Rue Tiron, a pedestrian street; `streetBearing` skipped every foot edge and
+took the bearing of the road across its end. It now takes an optional `pedestrian` flag (pedestrian streets
+count, footways still do not), used for docks and Morris columns. Re-shot from above: along the street.
 
 ## 18. Café tables have no visible top
 

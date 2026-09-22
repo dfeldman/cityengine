@@ -1682,7 +1682,7 @@ export class City {
     const pf = this.region.pointFurniture
     const bikes = bikeDocks(hexRgb(pf.bikeColour))
     for (const f of this.pointsIn.get(k) ?? []) {
-      const heading = this.streetBearing(f.x, f.z)
+      const heading = this.streetBearing(f.x, f.z, f.kind === 'bikeshare' || f.kind === 'column')
       const model = f.kind === 'metro'
         ? ({ guimard: guimardEntrance, nyc: nycSubwayEntrance, cta: ctaEntrance, generic: genericEntrance })[pf.metro]
         : f.kind === 'fountain' ? (pf.fountain === 'wallace' || f.wallace ? wallaceFountain : drinkingTap)
@@ -1889,14 +1889,16 @@ export class City {
     return byWall.size === 0 ? undefined : (i) => byWall.get(i) ?? []
   }
 
-  streetBearing(x: number, z: number): number {
+  /** the bearing of the nearest carriageway — or, with `pedestrian`, of a pedestrian street too (a dock or
+   * stand in one follows it, not the road crossing its end: BUGS.md #17, Rue Tiron) */
+  streetBearing(x: number, z: number, pedestrian = false): number {
     const [tx, tz] = tileOf(x, z)
     let best = Infinity
     let heading = 0
     for (let dx = -1; dx <= 1; dx++) {
       for (let dz = -1; dz <= 1; dz++) {
         for (const e of this.edgesIn.get(key(tx + dx, tz + dz)) ?? []) {
-          if (e.foot) continue
+          if (e.foot && !(pedestrian && e.kind === 'pedestrian')) continue
           for (let i = 2; i < e.points.length; i += 2) {
             const ax = e.points[i - 2], az = e.points[i - 1], bx = e.points[i], bz = e.points[i + 1]
             const sx = bx - ax, sz = bz - az
