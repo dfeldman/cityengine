@@ -17,6 +17,7 @@
     "@babylonjs/core": "9.26.0",
     "@babylonjs/loaders": "^9.26.0",
     "@dandyhorse/avatarkit": "file:../dandyhorse/libs/avatarkit",
+    "@dandyhorse/gamekit": "file:../dandyhorse/libs/gamekit",
     "@types/earcut": "^3.0.0",
     "@types/pngjs": "^6.0.5",
     "earcut": "^3.2.3",

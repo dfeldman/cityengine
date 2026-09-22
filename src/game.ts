@@ -54,6 +54,8 @@ import { updateWater } from './render/water-material.ts'
 import { Hud } from './ui/hud.ts'
 import { Minimap } from './ui/minimap.ts'
 import { LocalControls, type Controls } from './controls.ts'
+import type { Platform } from './platform.ts'
+import { Tools } from '@babylonjs/core/Misc/tools'
 import { Navigator } from './sim/navigate.ts'
 import { Ride, cornerRadius } from './sim/ride.ts'
 import { addEdges, departureBearing, resolve, type CityGraph, type Edge } from './city/graph.ts'
@@ -88,6 +90,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * screenshots meant to differ by one change end up differing by fifty metres of street as well.
    */
   freeze?: boolean
+  /** on Dandyhorse: the session's controls, and what the game tells it (src/platform.ts) */
+  platform?: Platform
   /** `?paths=1`: start with the ride-graph overlay on (J toggles it; render/pathmap.ts) */
   paths?: boolean
   /**
@@ -357,7 +361,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     ;(window as unknown as Record<string, unknown>).__plants = plants
   }
 
-  const controls: Controls = new LocalControls(() => opts.device)
+  const controls: Controls = opts.platform ?? new LocalControls(() => opts.device)
   // ?start=<edgeId> drops the rider onto a particular street, which is how the shot harness samples the
   // city: road rendering goes wrong at junctions, and the start point is on a quiet straight.
   /*
@@ -405,7 +409,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     for (let m = 0; m < opts.advance; m += 0.25) nav.advance(Math.min(0.25, opts.advance - m), 4.2)
   }
   const ride = new Ride()
-  const hud = new Hud(document.getElementById('hud')!, () => nav.turnAround())
+  const hud = new Hud(document.getElementById('hud')!, () => (controls.press ? controls.press('back') : nav.turnAround()))
   // the landmark card (ui/landmark-card.ts): notes on the major landmark nearby, toggled with I
   const staticPlaces: { name: string; x: number; z: number }[] = []
   {
@@ -729,10 +733,12 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       // the surface of the actual street under the wheels, not of the longest piece of the ride edge
       const surface = graph.edges.get(nav.mapEdgeId())?.surface ?? edge.surface
       // frozen for debugging: the ride model is not stepped at all, so the rider is exactly where they were
-      const state = frozen && lastState ? { ...lastState, speed: 0 } : ride.step(dt, controls.measured(),
+      // and paused on the platform: frozen too, the gap not integrated (docs/GAME_AUTHORING.md "Paused")
+      const hold = frozen || controls.paused()
+      const state = hold && lastState ? { ...lastState, speed: 0 } : ride.step(dt, controls.measured(),
         opts.device, surface, ground.grade, radius, junction?.ahead ?? Infinity)
       lastState = state
-      if (!opts.freeze && !frozen) nav.advance(state.speed * dt, state.speed)
+      if (!opts.freeze && !hold) nav.advance(state.speed * dt, state.speed)
       controls.request(state.grade * 100)
 
       /*
@@ -836,6 +842,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       rider?.update(dt, at, heading, state.speed, state.crank, sm.lean, state.working, groundY)
       life.riderShadow(at, heading, groundY)
 
+      opts.platform?.frame()
       minimap.draw(at, heading, junction && !junction.passThrough ? rides.nodes.get(junction.nodeId)?.at ?? null : null)
 
       // a running count of what is actually on screen, which is the only way to tell an empty street from a
@@ -955,6 +962,24 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     void copyText(text).then((ok) => debug.toast(`${ok ? 'view copied' : 'could not copy'} — paste it into views/${opts.city}.json\n${text}`))
   })
   ;(window as unknown as { gameReady?: boolean }).gameReady = true
+
+  // on Dandyhorse: the session starts ticking now the rider is on the street (src/platform.ts)
+  if (opts.platform) {
+    const streets = new Set([...rides.edges.values()].flatMap((e) => e.over.map((o) => o.id))).size
+    opts.platform.attach({
+      city: opts.city,
+      streets,
+      where: () => {
+        const ll = proj.toLatLon(lastAt)
+        return { x: lastAt.x, y: nav.elevation().y, z: lastAt.z, lat: ll.lat, lon: ll.lon, edge: nav.mapEdgeId(), street: nav.edge.name }
+      },
+      grade: () => lastState?.grade ?? 0,
+      speed: () => lastState?.speed ?? 0,
+      travelled: () => nav.travelled,
+      // Babylon's own screenshot, not the canvas: a raw toDataURL comes back blank under WebGPU (INTEGRATION.md §8)
+      screenshot: () => Tools.CreateScreenshotAsync(engine, camera, { width: 640, height: 360 }, 'image/jpeg', 0.82).catch(() => null),
+    })
+  }
 }
 
 /**

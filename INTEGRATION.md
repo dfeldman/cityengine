@@ -4,8 +4,12 @@ What it takes to run Street Runner on the exercise platform (`~/dandyhorse`). It
 the two meet; the game's own rules are in [README.md](README.md). The platform's contract is
 `dandyhorse/docs/GAME_AUTHORING.md`.
 
-Nothing here is built yet. As with Trail Trainer it comes down to one new file — plus one genuinely new thing
-the platform has not had to carry before, which is §3.
+**Status (2026-09-22): the adapter is built and unit-tested; it has not yet run end to end** against a live
+server (that needs a logged-in console). `src/platform.ts` implements `Controls` on gamekit's `SessionClient`;
+`main.ts` makes it when `?session=` is in the URL (or `?dandyhorse=bike|run` for an ad-hoc debug session) and
+never loads the gamekit otherwise. `tests/platform.test.ts` covers the launch options, measured-not-requested,
+the d-pad mapping, the tick bodies for both machines, the paused grade and the achievements. The checklist in §9
+says what is left.
 
 ## 1. The shape of it
 
@@ -48,13 +52,14 @@ of traffic. So:
 "requestedInput": {
   "promptId": "steer",
   "prompt": "Turn",
-  "choices": ["left", "straight", "right", "back"],   // the d-pad's left, up, right and down
+  "choices": ["left", "up", "right", "down"],   // RemoteButton names; up = straight, down = turn round
   "layout": "dpad",
   "persistent": true
 }
 ```
 
-- **Down is "turn round here"** (`back`, the ↩ button and the U key standalone), so a rider on a trainer can
+- **Down is "turn round here"** (`back` in the game, the ↩ button and the U key standalone; the HUD's ↩ goes out
+  through `answerinput` on the platform, so it comes back the phone's way), so a rider on a trainer can
   get out of a wrong turn without a long press or a second control. **Up is straight**, which is the default
   anyway; its use is to cancel a turn already asked for, or to come back to the middle after a nudge.
 - **A press means a turn only near a junction** (PLAN item H). With the next junction more than six seconds
@@ -81,13 +86,10 @@ a phone are treated identically.
 
 ## 4. The grade request
 
-`setstate` carries the street's grade in percent, smoothed and stepped, exactly as Trail Trainer does. Today
-the baked package has **no elevation**, so the request is always 0 — the Marais is flat enough that this is
-not a lie, but Brooklyn Heights and any hilly city will need terrain before the grade means anything. That is
-the first thing to add after the prototype, and it is the same terrarium-tile path Trail Trainer already uses
-(`trailtrainer/tools/terrarium.ts`).
-
-Until then, declare the variants as driving grade anyway: the wire format is right and only the values change.
+`setstate` carries the street's grade in percent, smoothed over two seconds, exactly as Trail Trainer does. The
+cities are baked with terrain now, so it is real: Montmartre and Nob Hill are hills. A bike asks for `grade` and
+sends its virtual `speed` (so the server integrates the distance); a treadmill asks for `incline`, never below
+flat, and never sends `speed`. While paused both ease to 0, so a reconnecting machine starts still.
 
 ## 5. Save state: a position and a map of where you have been
 
@@ -95,13 +97,16 @@ Like Trail Trainer, what persists is **a position, not a score** — but a city 
 *where you have already been*:
 
 ```json
-{ "cities": { "paris-marais": {
-    "edgeId": 4182, "s": 61.4, "travelled": 38420, "visited": [4182, 4183, 921] } } }
+{ "cities": { "paris-centre": {
+    "at": { "lat": 48.857614, "lon": 2.362025 }, "travelled": 38420, "visited": [4182, 4183, 921] } } }
 ```
+
+- **`at` is a lat/lon, not an edge id**: a rebaked city renumbers its ride edges (BUGS.md #44 did), and a
+  position survives that. The game starts the next session there (`?at=`'s own path).
 
 - **`requestedDuration` ends the session, not the city.** A session ends `complete` when the time is up,
   wherever the rider happens to be. That is a success.
-- **`visited`** is the list of edge ids ridden. It is what makes "ride every street of the Marais" a real goal
+- **`visited`** is the list of MAP edge ids ridden (stable across ride-graph rebakes). It is what makes "ride every street of the Marais" a real goal
   and an achievement, and what a future map screen would draw. It is a few thousand integers at most.
 - Written every 5 s and on `pagehide`, so a closed tab is a paused ride rather than a lost one.
 
@@ -123,16 +128,24 @@ A draft is in [platform/metadata.json](platform/metadata.json).
 
 ## 8. Session image
 
-`sessionImage()` should use Babylon's `Tools.CreateScreenshotAsync(engine, camera, size)` rather than reading
-the canvas directly — `preserveDrawingBuffer` is WebGL-only and a raw `toDataURL` comes back blank under
-WebGPU. A good frame is the street ahead with the turn arrows in it.
+`sessionImage()` uses Babylon's `Tools.CreateScreenshotAsync(engine, camera, 640×360, JPEG)` rather than
+reading the canvas directly — `preserveDrawingBuffer` is WebGL-only and a raw `toDataURL` comes back blank under
+WebGPU. It is taken 20 s in, every two minutes after, and again at the end; gamekit's `sessionImage` callback is
+synchronous, so the latest one is kept ready.
 
 ## 9. Checklist
 
-1. `src/platform.ts`: `DandyhorseControls implements Controls`, including `steering()` off `getstate.inputs`.
-2. `main.ts`: use it when `?session=` is present; take the city and the resume point from `startsession`.
-3. `vite.config.ts`: `base: '/games/streetrunner/'`, the API proxy.
-4. Copy `platform/metadata.json` into place and add a `screenshot.jpg`.
-5. Confirm with the platform team that a **persistent d-pad prompt open for a whole session** is within what
+1. ✅ `src/platform.ts`: `Platform implements Controls`, `steering()` off the d-pad prompt's answers, save state,
+   achievements, pause card with the server's own message, the end of the workout.
+2. ✅ `main.ts`: `?session=` (and `?dandyhorse=bike|run` ad hoc); city, options and resume point from startsession;
+   the city menu and the Bike/Run switch hidden on the platform. An error card if startsession fails.
+3. ✅ Base path: `vite.config.ts` builds with `base: './'`, which serves from `/games/streetrunner/` unchanged. Still
+   to add when it moves into `dandyhorse/games/`: the dev proxy for `/gameapi` etc. (as in
+   `games/nightracer/vite.config.ts`), so `npm run dev` can talk to a local server. Not added here yet: a
+   config change restarts the running dev server.
+4. ✅ `platform/metadata.json` and `platform/screenshot.jpg` (1280×720) are ready to copy into place.
+5. ☐ Run it end to end: console → bridge (simulated bike, then simulated treadmill) → game → server, and check
+   the d-pad, the grade/incline, a pause, a resume from save, the History image.
+6. ☐ Confirm with the platform team that a **persistent d-pad prompt open for a whole session** is within what
    bridges expect, and that `inputs` is delivered reliably at the rate a steering rider generates it.
-6. Confirm that a `complete` session part-way through a city is recorded as a success.
+7. ☐ Confirm that a `complete` session part-way through a city is recorded as a success.

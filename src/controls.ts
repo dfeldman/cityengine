@@ -34,6 +34,8 @@ export interface Controls {
    * button presses can arrive faster than the game polls, and dropping one loses a turn the rider meant.
    */
   steering(): Steer[]
+  /** the game's own steering buttons, where they must go the platform's way round (platform.ts) */
+  press?(s: Steer): void
 }
 
 /** A turn at the next junction, or 'back': turn round where you are. */

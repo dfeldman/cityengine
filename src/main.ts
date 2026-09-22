@@ -6,6 +6,8 @@
  *   /?device=treadmill         run it instead
  *   /?showcase=1               the facade showcase, one building per style
  *   /?showcase=1&style=brick   eight of one style
+ *   /?session=<id>             on Dandyhorse: the bridge's session (src/platform.ts; INTEGRATION.md)
+ *   /?dandyhorse=bike|run      an ad-hoc debug session on a local Dandyhorse server
  */
 import { goTo, parseLatLon, type CityRef } from './ui/goto.ts'
 import { HUD_CSS } from './ui/hud.ts'
@@ -33,7 +35,34 @@ if (params.get('showcase')) {
   const cities = await fetch(new URL('cities/index.json', document.baseURI).href)
     .then((r) => r.json() as Promise<CityRef[]>)
     .catch(() => [] as CityRef[])
-  const city = params.get('city') ?? 'paris-marais'
+  /*
+   * On Dandyhorse the session starts before anything is built: the city, the machine, the options and where
+   * the rider left off all come from startsession. The gamekit is loaded only then, so the standalone game
+   * never fetches it.
+   */
+  const sessionId = params.get('session')
+  const adHoc = params.get('dandyhorse')
+  let platform: import('./platform.ts').Platform | null = null
+  if (sessionId || adHoc) {
+    const [{ startSession }, { Platform, GAME_ID }] = await Promise.all([import('@dandyhorse/gamekit'), import('./platform.ts')])
+    try {
+      const start = await startSession(sessionId ? { sessionId }
+        : { gameId: GAME_ID, variant: adHoc === 'run' ? 'run' : 'bike', debug: true, options: params.get('city') ? { city: params.get('city') } : undefined })
+      platform = new Platform(start, (line) => console.log('streetrunner:', line))
+    } catch (e) {
+      // say so, in the console's look, rather than sit on "loading…" for ever
+      const box = document.createElement('div')
+      box.className = 'sr-loading'
+      box.innerHTML = '<div class="sr-card"><span class="sr-pill">Dandyhorse</span><h1>Street Runner</h1><div class="city"></div>'
+        + '<div class="what"></div></div>'
+      box.querySelector('.city')!.textContent = 'Could not start the session'
+      box.querySelector('.what')!.textContent = `${e instanceof Error ? e.message : String(e)}. Opened outside Dandyhorse? `
+        + 'Without ?session= the game rides on its own.'
+      document.body.appendChild(box)
+      throw e
+    }
+  }
+  const city = platform?.city ?? params.get('city') ?? 'paris-marais'
   const link = (id: string): string => {
     const q = new URLSearchParams(location.search)
     q.set('city', id)
@@ -51,8 +80,8 @@ if (params.get('showcase')) {
     document.getElementById('label')!.textContent = ''
     throw new Error(`unknown city ${city}`)
   }
-  // the city menu, top centre
-  if (cities.length > 1) {
+  // the city menu, top centre (on Dandyhorse the launch chose the city)
+  if (cities.length > 1 && !platform) {
     const pick = document.createElement('select')
     pick.className = 'sr-city'
     pick.title = 'city'
@@ -64,8 +93,8 @@ if (params.get('showcase')) {
   }
   // bike or run (Trail Trainer's two machines): a switch under the menus; the other is another ride graph, so
   // switching reloads, keeping the city and the place
-  const device = params.get('device') === 'treadmill' ? 'treadmill' : 'bike'
-  {
+  const device = platform?.device ?? (params.get('device') === 'treadmill' ? 'treadmill' : 'bike')
+  if (!platform) {
     const box = document.createElement('div')
     box.className = 'sr-mode'
     box.setAttribute('role', 'radiogroup')
@@ -99,20 +128,21 @@ if (params.get('showcase')) {
   void game(canvas, {
     city,
     device,
-    traffic: (params.get('traffic') as 'none' | 'some' | 'busy') ?? undefined,
+    traffic: platform?.traffic ?? (params.get('traffic') as 'none' | 'some' | 'busy') ?? undefined,
     bodies: params.get('bodies') ? Number(params.get('bodies')) : undefined,
     // ?without=sky,life,trees — for isolating which subsystem is drawing something wrong
     without: new Set((params.get('without') ?? '').split(',').filter(Boolean)),
     startEdge: params.get('start') ? Number(params.get('start')) : undefined,
-    at: parseLatLon(params.get('at') ?? '') ?? undefined,
+    at: parseLatLon(params.get('at') ?? '') ?? platform?.resumeAt(city) ?? undefined,
     goTo: (text: string, here?: boolean) => goTo(text, cities, here ? city : undefined),
     view: params.get('view') === 'high' ? 'high' : 'ride',
     freeze: params.get('freeze') === '1',
     paths: params.get('paths') === '1',
-    time: (params.get('time') as 'dawn' | 'day' | 'dusk' | 'night') ?? undefined,
-    weather: (params.get('weather') as 'clear' | 'overcast' | 'rain') ?? undefined,
+    time: platform?.time ?? (params.get('time') as 'dawn' | 'day' | 'dusk' | 'night') ?? undefined,
+    weather: platform?.weather ?? (params.get('weather') as 'clear' | 'overcast' | 'rain') ?? undefined,
     advance: params.get('advance') ? Number(params.get('advance')) : undefined,
     cars: params.get('cars') === '1',
     turn: (params.get('turn') as 'left' | 'straight' | 'right') ?? undefined,
+    platform: platform ?? undefined,
   })
 }
