@@ -44,6 +44,8 @@ export class Hud {
       if (b && this.onExit) { this.onExit(Number(b.dataset.edge)); b.blur() }
     })
     addEventListener('keydown', (e) => {
+      // not while typing somewhere (the go-to box takes coordinates)
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
       const n = Number(e.key)
       if (!this.exitList.length || !Number.isInteger(n) || n < 1 || n > this.exitList.length || !this.onExit) return
       this.onExit(this.exitList[n - 1])

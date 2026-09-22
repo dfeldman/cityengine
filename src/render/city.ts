@@ -1791,6 +1791,14 @@ export class City {
      * from its edge to the ground, with a low parapet where the drop is more than a metre and a half.
      */
     if (!this.off.has('roads')) {
+      const pavedRings = (this.areasIn.get(k) ?? []).filter((a) => a.kind === 'paved').map((a) => a.ring)
+      const pavedHere = (x: number, z: number): boolean => pavedRings.some((r) => {
+        let o = false
+        for (let i = 0, j = r.length - 2; i < r.length; j = i, i += 2) {
+          if ((r[i + 1] > z) !== (r[j + 1] > z) && x < ((r[j] - r[i]) * (z - r[i + 1])) / (r[j + 1] - r[i + 1]) + r[i]) o = !o
+        }
+        return o
+      })
       const walls = new MeshBuilder()
       const stone: [number, number, number] = [0.6, 0.57, 0.51]
       const cap: [number, number, number] = [0.7, 0.67, 0.61]
@@ -1812,6 +1820,8 @@ export class City {
             const eb = { x: b.x + nx * half, z: b.z + nz * half }
             const mid = { x: (ea.x + eb.x) / 2 + nx * 0.6, z: (ea.z + eb.z) / 2 + nz * 0.6 }
             if (this.gradeAt(mid.x, mid.z) !== null) continue
+            // nor where a paved square is beside it: a square is graded level with its streets, never walled
+            if (pavedHere(mid.x, mid.z)) continue
             const ha = e.heights[i - 1]
             const hb = e.heights[i]
             const ga = this.terrain.rawHeightAt(ea.x + nx * 0.6, ea.z + nz * 0.6)
