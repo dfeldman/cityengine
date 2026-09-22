@@ -37,7 +37,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 27 | open | Paths near the Alma / Trocadéro are unrideable: near-parallel paths merge and diverge, the rider is swept along | user, 2026-09-22 |
 | 28 | open | Both banks of the Seine: 4–5 near-parallel OSM paths that periodically meet — confusing to ride | user, 2026-09-22 |
 | 29 | fixed | Underground Métro station rooms drawn as 20 m buildings on the squares above (Place de la République) | views, 2026-09-22 |
-| 30 | open | The J paths overlay is ugly and needed all the time: want a subtle, usually-on path display (thin lines, no one-way marks, junctions highlighted) | user, 2026-09-22 |
+| 30 | fixed | The J paths overlay is ugly and needed all the time: want a subtle, usually-on path display (thin lines, no one-way marks, junctions highlighted) | user, 2026-09-22 |
 | 31 | open | Messy ground and the camera below ground near a bridge (48.846945, 2.366215) | user, 2026-09-22 |
 | 32 | open | An errant footbridge from OSM near 48.849195, 2.372189 | user, 2026-09-22 |
 | 33 | open | The rider gets trapped in a very messy intersection and cannot get out (48.849354, 2.356970) | user, 2026-09-22 |
@@ -410,6 +410,11 @@ negative levels. Re-bake all Paris cities.
 **Seen:** user, 2026-09-22: "It's pretty hard to navigate without pressing J now, and it's ugly." Want: a quiet
 overlay on by default — slight lines along the ride graph, no one-way chevrons (they do not matter on a bike),
 junctions with a choice highlighted. J keeps the full diagnostic view.
+
+**Fix:** `PathMap` has modes `subtle` (default) / `full` / `off`, J cycles them. Subtle: 0.32 m translucent
+lines along the ride graph within 600 m (rebuilt every 150 m), a soft ring at each junction with a choice,
+and at the next junction only its ways on, the asked-for one clearest. No chevrons, no dead-end dots.
+**Check:** ✅ `docs/shots/BUG30-subtle-paths.png`.
 
 ## 31. Messy ground near a bridge; camera below ground (48.846945, 2.366215)
 

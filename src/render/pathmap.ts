@@ -60,6 +60,43 @@ void main(void) { gl_FragColor = vec4(vColour, 1.0); }`
   return mat
 }
 
+let softRegistered = false
+
+/** A translucent flat material, for the quiet everyday overlay: `alpha` of the vertex colour over the ground. */
+function softMaterial(scene: Scene, name: string, alpha: number, zOffset: number): ShaderMaterial {
+  if (!softRegistered) {
+    Effect.ShadersStore['pathsoftVertexShader'] = `
+precision highp float;
+attribute vec3 position;
+attribute vec4 color;
+uniform mat4 worldViewProjection;
+varying vec3 vColour;
+void main(void) { gl_Position = worldViewProjection * vec4(position, 1.0); vColour = color.rgb; }`
+    Effect.ShadersStore['pathsoftFragmentShader'] = `
+precision highp float;
+varying vec3 vColour;
+uniform float alpha;
+void main(void) { gl_FragColor = vec4(vColour, alpha); }`
+    softRegistered = true
+  }
+  const mat = new ShaderMaterial(name, scene, 'pathsoft', { attributes: ['position', 'color'], uniforms: ['worldViewProjection', 'alpha'], needAlphaBlending: true })
+  mat.setFloat('alpha', alpha)
+  mat.backFaceCulling = false
+  mat.depthFunction = Constants.LEQUAL
+  mat.disableDepthWrite = true
+  mat.zOffset = zOffset
+  return mat
+}
+
+const SOFT_LINE: Rgb = [0.97, 0.95, 0.88]
+const SOFT_JUNCTION: Rgb = [1.0, 0.86, 0.45]
+/** how far round the rider the quiet overlay is drawn, and how far they move before it is redrawn */
+const SOFT_REACH = 600
+const SOFT_REBUILD = 150
+
+/** subtle: the everyday overlay; full: the diagnostic one (colours, chevrons, dead ends); off */
+export type PathMode = 'subtle' | 'full' | 'off'
+
 const PLAIN: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
 
 export class PathMap {
@@ -73,6 +110,11 @@ export class PathMap {
   private readonly liveMat: ShaderMaterial
   private readonly baseMat: ShaderMaterial
   visible = false
+  mode: PathMode = 'off'
+  private softMesh: Mesh | null = null
+  private softAt: P | null = null
+  private readonly softMat: ShaderMaterial
+  private readonly softLiveMat: ShaderMaterial
 
   constructor(scene: Scene, g: CityGraph, terrain: Terrain,
               exitsOf: (g: CityGraph, node: number, arrived: number | null) => Exit[]) {
@@ -82,14 +124,65 @@ export class PathMap {
     this.exitsOf = exitsOf
     this.baseMat = flatMaterial(scene, 'pathmap', -2)
     this.liveMat = flatMaterial(scene, 'pathmap-live', -4)
+    this.softMat = softMaterial(scene, 'pathsoft', 0.28, -2)
+    this.softLiveMat = softMaterial(scene, 'pathsoft-live', 0.75, -3)
   }
 
-  toggle(on = !this.visible): void {
-    this.visible = on
-    if (on && !this.staticMesh) this.staticMesh = this.buildStatic()
-    this.staticMesh?.setEnabled(on)
-    this.liveMesh?.setEnabled(on)
-    if (!on) this.liveKey = ''
+  /** J: subtle → full → off → subtle */
+  cycle(): PathMode {
+    this.setMode(this.mode === 'subtle' ? 'full' : this.mode === 'full' ? 'off' : 'subtle')
+    return this.mode
+  }
+
+  setMode(mode: PathMode): void {
+    this.mode = mode
+    this.visible = mode !== 'off'
+    if (mode === 'full' && !this.staticMesh) this.staticMesh = this.buildStatic()
+    this.staticMesh?.setEnabled(mode === 'full')
+    this.softMesh?.setEnabled(mode === 'subtle')
+    this.liveMesh?.setEnabled(mode !== 'off')
+    this.liveKey = ''
+  }
+
+  toggle(on = !this.visible): void { this.setMode(on ? 'full' : 'off') }
+
+  /** The quiet overlay round the rider: thin translucent lines, a soft ring at each junction with a choice. */
+  private buildSoft(at: P): Mesh {
+    const out = new MeshBuilder()
+    const near = (p: P): boolean => Math.abs(p.x - at.x) < SOFT_REACH && Math.abs(p.z - at.z) < SOFT_REACH
+    for (const e of this.g.edges.values()) {
+      if (!e.points.some(near)) continue
+      this.ribbon(out, e, e.points, 0.32, SOFT_LINE)
+    }
+    for (const [id, node] of this.g.nodes) {
+      if (!near(node.at) || node.edges.length < 3) continue
+      if (!node.edges.some((arr) => this.exitsOf(this.g, id, arr).length >= 2)) continue
+      this.ring(out, node.at, 2.4, 0.35, SOFT_JUNCTION, 0.02)
+    }
+    const m = new Mesh('pathsoft', this.scene)
+    out.toVertexData().applyToMesh(m)
+    m.material = this.softMat
+    m.renderingGroupId = 3
+    m.isPickable = false
+    m.alwaysSelectAsActiveMesh = true
+    return m
+  }
+
+  /** A flat ring of radius r and width w at p. */
+  private ring(out: MeshBuilder, p: P, r: number, w: number, colour: Rgb, dy = 0, sides = 18): void {
+    const y = this.terrain.heightAt(p.x, p.z) + LIFT + dy
+    const at = (k: number, rr: number): [number, number, number] =>
+      [p.x + Math.cos((k / sides) * Math.PI * 2) * rr, y, p.z + Math.sin((k / sides) * Math.PI * 2) * rr]
+    for (let i = 0; i < sides; i++) out.quad([at(i, r - w / 2), at(i + 1, r - w / 2), at(i + 1, r + w / 2), at(i, r + w / 2)], [0, 1, 0], PLAIN, colour, 0)
+  }
+
+  /** Once a frame in subtle mode: redraw round the rider when they have moved far enough. */
+  follow(at: P): void {
+    if (this.mode !== 'subtle') return
+    if (this.softAt && Math.hypot(at.x - this.softAt.x, at.z - this.softAt.z) < SOFT_REBUILD) return
+    this.softMesh?.dispose()
+    this.softMesh = this.buildSoft(at)
+    this.softAt = { x: at.x, z: at.z }
   }
 
   /** The height of a point on an edge: the edge's own deck heights on a bridge, else the ground. */
@@ -216,6 +309,25 @@ export class PathMap {
     this.liveMesh?.dispose()
     const out = new MeshBuilder()
     const e = this.g.edges.get(edgeId)
+    if (this.mode === 'subtle') {
+      // quiet: only the next junction's ways on, the one asked for clearest
+      if (junction) {
+        for (const x of junction.exits) {
+          const xe = this.g.edges.get(x.edgeId)
+          if (!xe) continue
+          const on = x.turn === requested
+          this.ribbon(out, xe, this.leaving(xe, junction.nodeId, on ? 22 : 12), on ? 0.7 : 0.4, on ? [1, 0.93, 0.6] : SOFT_LINE, 0.05)
+        }
+      }
+      const m = new Mesh('pathsoft:live', this.scene)
+      out.toVertexData().applyToMesh(m)
+      m.material = this.softLiveMat
+      m.renderingGroupId = 3
+      m.isPickable = false
+      m.alwaysSelectAsActiveMesh = true
+      this.liveMesh = m
+      return
+    }
     if (e) this.ribbon(out, e, e.points, 1.6, RIDING, 0.06)
     if (junction) {
       this.disc(out, this.g.nodes.get(junction.nodeId)!.at, 2.6, JUNCTION, 0.08)

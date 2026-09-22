@@ -348,7 +348,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // the ride graph drawn on the ground, for seeing how a junction really works (J; render/pathmap.ts)
   const paths = new PathMap(scene, rides, city.terrain, rideExits)
   mark('pathmap')
-  if (opts.paths) paths.toggle(true)
+  // the quiet overlay is on by default (BUGS.md #30); ?paths=1 starts with the full one
+  paths.setMode(opts.paths ? 'full' : 'subtle')
   // `?advance=40&turn=right&freeze=1` photographs the rider part-way round a corner: frozen, nothing moves,
   // so the corner has to be ridden up to before the first frame
   if (opts.advance) {
@@ -417,11 +418,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     const text = prompt('Go to — paste "lat, lon" (from Street View or Google Maps):')
     if (text) { const why = opts.goTo!(text); if (why) debug.toast(why) }
   }), () => {
-    paths.toggle()
-    debug.toast(paths.visible
-      ? 'paths: blue streets, green paths, chevrons one-way; yellow = a junction with a choice, red = dead end;\n'
+    const mode = paths.cycle()
+    debug.toast(mode === 'full'
+      ? 'paths (full): blue streets, green paths, chevrons one-way; yellow = a junction with a choice, red = dead end;\n'
         + 'white = the edge you are on; the next junction\'s exits violet left, white straight, orange right'
-      : 'paths hidden')
+      : mode === 'subtle' ? 'paths: quiet (J again for the full view)' : 'paths hidden')
   })
   // and pasting coordinates anywhere on the page goes there too
   addEventListener('paste', (e) => {
@@ -511,6 +512,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       }
 
       const junction = nav.next()
+      paths.follow(nav.at())
       paths.update(nav.edge.id, junction, nav.requested)
       const edge = nav.edge
       // the corner the rider is approaching, if they are about to turn into one
