@@ -1,1 +1,23 @@
-[]
+[
+  {"osm": ["way/93420060"], "name": "Academy of Art University", "procedural": "academyOfArtUniversity", "front": "street", "height": 24, "note": "Edwardian bay-window block, New Montgomery St"},
+  {"osm": ["way/32866034"], "name": "Club Fugazi", "procedural": "clubFugazi", "front": "street", "height": 16, "note": "cream Beaux-Arts hall, colonnaded entrance"},
+  {"osm": ["way/32965865"], "name": "United States Appraisers Building", "restyle": "classical", "levels": 3, "height": 10, "note": "1940 Streamline Moderne federal block, grey granite"},
+  {"osm": ["way/256733182"], "name": "Great Star Theater", "procedural": "greatStarTheater", "front": "street", "height": 9, "note": "Chinatown pagoda-front theatre, red marquee"},
+  {"osm": ["way/113631370"], "name": "DMV San Francisco", "procedural": "dmvSanFrancisco", "front": "street", "height": 8, "note": "plain 1970s stucco government box"},
+  {"osm": ["way/35095789"], "name": "Tenderloin Police Station", "procedural": "tenderloinPoliceStation", "front": "street", "height": 6, "note": "squat 1970s concrete station house"},
+  {"osm": ["way/174076537"], "name": "The Independent", "procedural": "theIndependent", "front": "street", "height": 7, "note": "stucco hall, black marquee, Divisadero St"},
+  {"osm": ["way/256495545"], "name": "Glad Tidings Church", "procedural": "gladTidingsChurch", "front": "street", "height": 11, "note": "cream gable front, arched windows, blade sign"},
+  {"osm": ["way/260991572"], "name": "The Church For the Fellowship of All People", "procedural": "churchForFellowshipOfAllPeoples", "front": "street", "height": 18, "note": "tall white octagonal bell tower, 1943"},
+  {"osm": ["way/261128338"], "name": "Fo Guang Shan San Bao Temple", "restyle": "chinatown", "levels": 3, "height": 12, "note": "converted Chinatown storefront temple"},
+  {"osm": ["way/693627612"], "name": "1500 Mission", "procedural": "fifteenHundredMission", "front": "street", "height": 121, "note": "pale slender residential tower, sliced top corner"},
+  {"osm": ["way/36950390"], "name": "San Francisco Fire Station 10", "procedural": "sfFireStation10", "front": "street", "height": 10, "note": "small red-brick firehouse"},
+  {"osm": ["way/225384420"], "name": "1188 Mission Street", "procedural": "elevenEightyEightMission", "front": "street", "height": 87, "note": "blue-glass curtain-wall residential tower"},
+  {"osm": ["way/80296747"], "name": "W San Francisco", "procedural": "wSanFrancisco", "front": "street", "height": 96, "note": "grey precast punched tower, notched corners, stepped top"},
+  {"osm": ["way/332627661"], "name": "Hotel Zetta San Francisco", "procedural": "hotelZetta", "front": "street", "height": 62, "note": "1913 cream terracotta hotel (the Fredericks Building)"},
+  {"osm": ["way/226283225"], "name": "1190 Mission Street", "procedural": "elevenNinetyMission", "front": "street", "height": 62, "note": "light stucco apartment mid-rise"},
+  {"osm": ["way/192026934"], "name": "180 Howard Street", "procedural": "oneEightyHoward", "front": "street", "height": 57, "note": "1965 pale concrete-banded office slab"},
+  {"osm": ["way/260286437"], "name": "260 California Street", "procedural": "twoSixtyCalifornia", "front": "street", "height": 45, "note": "1980s red granite punched-grid tower"},
+  {"osm": ["way/151195285"], "name": "222 Kearny Street", "procedural": "twoTwentyTwoKearny", "front": "street", "height": 42, "note": "ordinary brick-and-stone Chicago-frame block"},
+  {"osm": ["way/260286436"], "name": "343 Sansome Street", "procedural": "threeFortyThreeSansome", "front": "street", "height": 41, "note": "1930 Stock Exchange Tower, buff terracotta deco setbacks"},
+  {"osm": ["way/113096845"], "name": "246 2nd Street", "procedural": "twoFortySixSecond", "front": "street", "height": 73, "note": "blue-green curtain-wall office tower"}
+]

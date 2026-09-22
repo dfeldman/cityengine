@@ -352,6 +352,16 @@ San Francisco and for the next city.
   at street junctions, and a way to ride from one level to the next. That means a level-aware graph, OSM `layer`
   and `level` tags, bridge=yes footways, and hand fixes where OSM is thin. Do it after the buildings those
   levels belong to are modelled.
+- **A round for the ten parks that matter** (user, 2026-09-22: "we can wait on the parks. but we should do a
+  separate round for like the 10 most important parks"). Union Square, Portsmouth Square, Washington Square,
+  Huntington Park, Alamo Square, Lafayette Park, Alta Plaza, Yerba Buena Gardens, Civic Center Plaza, and Golden
+  Gate Park's eastern end. Each is laid out as its designer laid it out — paving, walls, steps, terraces and
+  buildings — and NEVER plants: planting comes from the city's tree data.
+  **Golden Gate Park also needs the box to grow west** (user: "there should be a nice path through golden gate
+  park even though that is technically outside the box and also doesn't seem to have nice paths on OSM"): west to
+  about −122.480 takes in the Panhandle, the Conservatory of Flowers, the Music Concourse, the de Young, the
+  Japanese Tea Garden and Stow Lake (the box goes from 25 to ~37 km², a longer bake), and the park's own route
+  is hand-drawn as region `paths`, since OSM's paths there are poor.
 - **Public sculptural art** (user: "sf has a lot of public sculptural art — these should be attempted if possible.
   not really as many statues like paris though"). OSM's `tourism=artwork` gives the positions; the abstract
   pieces suit procedural models: Cupid's Span, the Vaillancourt Fountain, Sea Change, Language of the Birds,

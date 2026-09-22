@@ -9,6 +9,11 @@ export default defineConfig({
   server: {
     port: 5200,
     strictPort: true,
+    /*
+     * `NO_HMR=1 npm run dev` leaves an open page alone while the source changes underneath it, so the city can
+     * be explored while someone else is editing (user, 2026-09-22). Reload by hand to pick the changes up.
+     */
+    hmr: process.env.NO_HMR ? false : undefined,
     // @dandyhorse/avatarkit is a file: dependency outside this app's folder, and its worker is fetched by path
     fs: { allow: [resolve(import.meta.dirname, '..')] },
   },

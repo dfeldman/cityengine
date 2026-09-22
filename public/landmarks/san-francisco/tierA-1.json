@@ -1,1 +1,26 @@
-[]
+[
+  {"osm": ["way/66642926"], "name": "First Chinese Baptist Church", "procedural": "firstChineseBaptistChurch", "front": "street", "height": 14, "note": "Tower grammar (brick-loft): dark clinker brick, arched windows, for the 1908 Chinatown church."},
+  {"osm": ["way/449472826"], "name": "The Urban School of San Francisco", "restyle": "brick", "levels": 3, "height": 12, "note": "Ordinary Haight-district school building, restyled brick."},
+  {"osm": ["way/68862760"], "name": "850 Sacramento Street", "restyle": "chicago", "levels": 3, "height": 10, "note": "Community centre, ordinary Chinatown commercial block."},
+  {"osm": ["way/288487230"], "name": "San Francisco Fire Station 2", "restyle": "brick", "levels": 3, "height": 12, "note": "Classic red-brick firehouse."},
+  {"osm": ["way/162056246"], "name": "Chinatown / Him Mark Lai Branch Library", "restyle": "chicago", "levels": 3, "height": 12, "note": "Modest branch library, ordinary masonry block."},
+  {"osm": ["way/257014128"], "name": "Lady Shaw Senior Center", "restyle": "stucco", "levels": 3, "height": 12, "note": "Chinatown community/senior centre, stucco block."},
+  {"osm": ["way/258107724"], "name": "San Francisco Department of Emergency Management", "restyle": "brutalist", "levels": 4, "height": 13, "note": "Plain civic office building."},
+  {"osm": ["way/256584828"], "name": "Ella Hill Hutch Community Center", "restyle": "stucco", "levels": 2, "height": 8, "note": "Western Addition community centre, stucco block."},
+  {"osm": ["way/219783333"], "name": "Harbor Light Center", "restyle": "brick", "levels": 3, "height": 10, "note": "Salvation Army social-services building, ordinary brick."},
+  {"osm": ["way/243591036"], "name": "Holy Trinity Orthodox Cathedral", "procedural": "holyTrinityOrthodoxCathedral", "front": "street", "height": 12, "note": "Tower grammar + cupola parts: cream Georgian-balustraded block, a gilded onion dome on its drum, and a separate open bell tower."},
+  {"osm": ["way/257981293"], "name": "Hamilton Square Baptist Church", "procedural": "hamiltonSquareBaptistChurch", "front": "street", "height": 14, "note": "Tower grammar: cream stucco Mission-revival walls under a needle-thin spire."},
+  {"osm": ["way/112897758"], "name": "San Francisco Fire Department Headquarters", "restyle": "brick", "levels": 3, "height": 11, "note": "Civic brick headquarters building."},
+  {"osm": ["way/273575059"], "name": "Gadar Memorial", "restyle": "victorian", "levels": 2, "height": 8, "note": "Historic Victorian-era house (Yugantar Ashram / Ghadar Party memorial)."},
+  {"osm": ["way/28295229"], "name": "San Francisco 4th & King Street", "procedural": "sf4thKingStreetStation", "front": "street", "height": 8, "note": "Tower grammar: the plain glazed Caltrain station house under its light-blue steel canopy."},
+  {"osm": ["way/263420998"], "name": "Community Baptist Church", "restyle": "edwardian", "levels": 3, "height": 10, "note": "Ordinary Western Addition church building."},
+  {"osm": ["way/80296716"], "name": "SoMa curtain-wall tower (unnamed)", "procedural": "somaCurtainTower99m", "front": "street", "height": 99, "note": "Recipe glass-tower: blue-green curtain wall, flat top."},
+  {"osm": ["way/113347427"], "name": "75 Hawthorne Street (Hawthorne Plaza)", "procedural": "seventyFiveHawthorne", "front": "street", "height": 99, "note": "Recipe granite-eighties: 1987 pink-granite office tower, EPA Region 9 HQ."},
+  {"osm": ["way/944032189"], "name": "311 California Street (Robert Dollar Building)", "procedural": "robertDollarBuilding", "front": "street", "height": 51, "note": "Recipe edwardian-terracotta: 1910/1919 cream terracotta office building."},
+  {"osm": ["way/256066233"], "name": "115 Sansome Street", "procedural": "oneFifteenSansome", "front": "street", "height": 53, "note": "Recipe edwardian-terracotta: 1915 Beaux-Arts, sandstone base, buff brick shaft, copper cornice."},
+  {"osm": ["way/173237465"], "name": "1338 Mission Street", "procedural": "thirteenThirtyEightMission", "front": "street", "height": 55, "note": "Recipe hotel-punched: ordinary SoMa stucco mid-rise."},
+  {"osm": ["way/173237467"], "name": "1340 Mission Street", "procedural": "thirteenFortyMission", "front": "street", "height": 55, "note": "Recipe hotel-punched: the twin building next door."},
+  {"osm": ["way/151195272"], "name": "240;244 Kearny Street", "procedural": "twoFortyKearny", "front": "street", "height": 36, "note": "Recipe chicago-block: ordinary Financial District brick-and-stone block."},
+  {"osm": ["way/940206561"], "name": "The Civic", "procedural": "theCivic", "front": "street", "height": 44, "note": "Recipe glass-tower: 2020s glazed apartments over Polk Street."},
+  {"osm": ["way/256487834"], "name": "Martin Luther Tower", "procedural": "martinLutherTower", "front": "street", "height": 93, "note": "Recipe hotel-punched: 1960s precast senior-housing slab, Cathedral Hill."}
+]

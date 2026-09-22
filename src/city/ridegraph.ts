@@ -42,10 +42,17 @@ const BIKE = new Set(['primary', 'secondary', 'tertiary', 'primary_link', 'secon
 const RUN_EXTRA = new Set(['footway', 'path', 'steps'])
 const NOT_A_STREET = new Set(['parking_aisle', 'driveway', 'drive-through', 'emergency_access'])
 
-/** Connector edges shorter than this, between two real junctions, are one junction drawn as several. */
+/**
+ * Connector edges shorter than this, between two real junctions, are one junction drawn as several — and the
+ * cluster must fit inside the span. An American grid's junctions are far bigger than a European one's: a
+ * boulevard with service lanes (San Francisco's Octavia, the Embarcadero) is four or six nodes spread over
+ * forty metres, and at Paris's figures they stayed separate and the rider was asked three questions crossing
+ * one intersection (BUGS.md #52).
+ */
 export const CLUSTER_EDGE = 12
-/** …as long as the whole cluster fits inside this diagonal. */
 export const CLUSTER_SPAN = 30
+export const WIDE_CLUSTER_EDGE = 20
+export const WIDE_CLUSTER_SPAN = 48
 
 /** Hands out ids that cannot collide with OSM's: negative for nodes, a million upward for edges. */
 export class Ids {
@@ -160,7 +167,9 @@ function reattach(edges: RideEdge[], moved: Map<number, { id: number; at: Point 
  * edges between real junctions are unioned; a cluster that fits inside CLUSTER_SPAN becomes one node at its
  * centre. Never across layers — a bridge and the street under it are not a junction.
  */
-export function collapseClusters(edges: RideEdge[], ids = new Ids()): RideEdge[] {
+export function collapseClusters(edges: RideEdge[], ids = new Ids(), wide = false): RideEdge[] {
+  const clusterEdge = wide ? WIDE_CLUSTER_EDGE : CLUSTER_EDGE
+  const clusterSpan = wide ? WIDE_CLUSTER_SPAN : CLUSTER_SPAN
   const deg = degrees(edges)
   const layers = new Map<number, Set<number>>()
   const at = new Map<number, Point>()
@@ -179,7 +188,7 @@ export function collapseClusters(edges: RideEdge[], ids = new Ids()): RideEdge[]
   const uf = new UnionFind()
   const joined = new Set<number>()
   for (const e of edges) {
-    if (e.a === e.b || e.length >= CLUSTER_EDGE) continue
+    if (e.a === e.b || e.length >= clusterEdge) continue
     if ((deg.get(e.a) ?? 0) < 3 || (deg.get(e.b) ?? 0) < 3) continue
     if (!sameLayer(e.a, layerOf(e)) || !sameLayer(e.b, layerOf(e))) continue
     uf.union(e.a, e.b)
@@ -202,7 +211,7 @@ export function collapseClusters(edges: RideEdge[], ids = new Ids()): RideEdge[]
       x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z)
       sx += p.x; sz += p.z
     }
-    if (Math.hypot(x1 - x0, z1 - z0) >= CLUSTER_SPAN) continue
+    if (Math.hypot(x1 - x0, z1 - z0) >= clusterSpan) continue
     const c = { id: ids.nextNode(), at: { x: sx / members.length, z: sz / members.length } }
     for (const n of members) moved.set(n, c)
   }
@@ -641,6 +650,8 @@ export interface Roundabout { name: string; x: number; z: number; r: number; R: 
 
 export interface RideOverrides {
   roundabouts: Roundabout[]
+  /** an American grid: wider junction clusters (the region's `streetWidth` is 'carriageway') */
+  wideJunctions?: boolean
   /** building footprints on the ground (flat x,z rings): no synthetic link is laid through one */
   buildings?: number[][]
   /** the ground, for the new edges' heights (the navigator rides an edge's own profile) */
@@ -974,9 +985,9 @@ export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrid
   const blocked = overrides?.buildings ? footprintTest(overrides.buildings) : undefined
   const classified = mode === 'bike' ? joinDeadEnds(classify(edges, mode), edges, blocked) : classify(edges, mode)
   let es = pruneStubs(largest(mode === 'bike' ? dropSidePaths(classified, ids, blocked) : classified))
-  es = contract(collapseClusters(es, ids), ids)
+  es = contract(collapseClusters(es, ids, overrides?.wideJunctions), ids)
   es = mergeParallel(es, ids)
-  es = largest(contract(collapseClusters(es, ids), ids))
+  es = largest(contract(collapseClusters(es, ids, overrides?.wideJunctions), ids))
   for (const o of overrides?.roundabouts ?? []) es = applyRoundabout(es, o, ids, overrides!.heightAt)
   // and the stubs a dropped path leaves behind, pruned as the chain prunes them the first time
   if (overrides?.roundabouts.length) es = pruneStubs(largest(es))
@@ -995,6 +1006,14 @@ const DEG = Math.PI / 180
  * two exits within 20° of each other are one choice (two carriageways leaving side by side), and the named
  * one, then the longer, is kept.
  */
+/** A street's name without its type, so its carriageways and service lanes fold together. */
+const STREET_TYPE = /\s+(street|st|boulevard|blvd|avenue|ave|drive|dr|way|place|pl|road|rd|lane|ln|terrace|court|ct|alley|plaza|promenade|embarcadero)$/i
+export function trunkName(name: string | undefined): string | undefined {
+  if (!name) return undefined
+  const base = name.replace(STREET_TYPE, '').trim().toLowerCase()
+  return base.length >= 3 ? base : name.toLowerCase()
+}
+
 export function rideExits(g: CityGraph, nodeId: number, arrivedOn: number | null): Exit[] {
   const all = exits(g, nodeId, arrivedOn)
   let keep = all.filter((x) => Math.abs(x.angle) <= 150 * DEG)
@@ -1008,7 +1027,11 @@ export function rideExits(g: CityGraph, nodeId: number, arrivedOn: number | null
   /*
    * Star junctions (BUGS.md #40) are mostly artefacts of the data, and are untangled here, at the choice:
    * - two exits onto the SAME street within 50° are one choice (a boulevard's two carriageways, or its pieces
-   *   either side of a median, leaving side by side);
+   *   either side of a median, leaving side by side). The name is compared without its type, so "Octavia Street"
+   *   and "Octavia Boulevard" — the same street, its carriageway and its service lane — fold together
+   *   (San Francisco, BUGS.md #52);
+   * - a service road or alley that leaves within 35° of a named street beside it is that street's service lane,
+   *   not a choice of its own;
    * - a short unnamed link (under 40 m: the links across a split boulevard, a slip, a service mouth) is not
    *   offered where the junction already has three or more real streets to choose from.
    */
@@ -1016,11 +1039,22 @@ export function rideExits(g: CityGraph, nodeId: number, arrivedOn: number | null
   const offered = real.length >= 3 ? real : pref
   const chosen: Exit[] = []
   for (const x of offered) {
+    const e = g.edges.get(x.edgeId)!
     const b = departureBearing(g, x.edgeId, nodeId)
-    const name = g.edges.get(x.edgeId)!.name
+    const base = trunkName(e.name)
+    const lane = e.kind === 'service' || e.kind === 'alley'
     if (chosen.some((c) => {
+      const ce = g.edges.get(c.edgeId)!
       const d = Math.abs(angleDiff(departureBearing(g, c.edgeId, nodeId), b))
-      return d < 20 * DEG || (name !== undefined && g.edges.get(c.edgeId)!.name === name && d < 50 * DEG)
+      if (d < 20 * DEG) return true
+      if (base !== undefined && trunkName(ce.name) === base) {
+        // the same street: its carriageways leaving side by side, or a short stub of it round a bend — but never
+        // the other direction along it, which is a real choice
+        if (d < 50 * DEG) return true
+        if (d < 100 * DEG && Math.min(e.length, ce.length) < 30) return true
+      }
+      // a service lane beside a street it runs with
+      return (lane || ce.kind === 'service' || ce.kind === 'alley') && d < 35 * DEG && (!!ce.name || !!e.name)
     })) continue
     chosen.push(x)
   }

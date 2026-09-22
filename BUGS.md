@@ -880,3 +880,11 @@ the waist. Of eight women's tops, three showed a midriff.
 women's tops and five in eight of the men's, each tinted in the walker's colour. After those come sweaters, a
 hoodie, a polo and one blouse. Visual check pending: at chase distance the strangers are too small to judge from a
 shot, so this wants a look in the game.
+
+## 52. Cluttered, unnavigable junctions in San Francisco
+
+**Seen:** user, 2026-09-22: "we also need to do the same path simplification we did in paris, many intersections
+are unnavigable because they come out as cluttered messy places." The Paris work is #40 (star junctions:
+`rideExits` folds exits onto the same street within 50°, and hides short unnamed links) and #44 (`dropLoops`).
+San Francisco has its own artefacts: dual carriageways down the Embarcadero and Van Ness, slip roads, service
+alleys, and the ramps around the Bay Bridge approaches.
