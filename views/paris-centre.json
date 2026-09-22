@@ -1916,5 +1916,47 @@
    24.3
   ],
   "seeded": true
+ },
+ {
+  "name": "Palais de Chaillot \u2014 from the Pont d'I\u00e9na",
+  "group": "landmark",
+  "from": [
+   48.8596,
+   2.2926,
+   25
+  ],
+  "to": [
+   48.8624,
+   2.2878,
+   10
+  ]
+ },
+ {
+  "name": "Palais de Chaillot \u2014 parvis",
+  "group": "landmark",
+  "from": [
+   48.8615,
+   2.2892,
+   2
+  ],
+  "to": [
+   48.8624,
+   2.2879,
+   6
+  ]
+ },
+ {
+  "name": "Trocad\u00e9ro \u2014 on the parvis",
+  "group": "landmark",
+  "from": [
+   48.86248,
+   2.288,
+   1.8
+  ],
+  "to": [
+   48.8615,
+   2.2896,
+   4
+  ]
  }
 ]

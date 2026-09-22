@@ -24,6 +24,7 @@ import {
   UnionFind, buildGraph, departureBearing, exits, largestComponent, lengthOf,
   type CityGraph, type Edge, type Exit, type OverEntry,
 } from './graph.ts'
+import { onSurface } from './package.ts'
 
 export type RideMode = 'bike' | 'run'
 export type RideEdge = Edge & { over: OverEntry[] }
@@ -56,7 +57,7 @@ export function classify(edges: Edge[], mode: RideMode): RideEdge[] {
   return edges
     .filter((e) => {
       // tunnels and ways mapped below grade are not drawn (render/city.ts `onSurface`), so nobody rides them
-      if (e.a === e.b || e.tunnel || ((e.layer ?? 0) < 0 && !e.bridge)) return false
+      if (e.a === e.b || !onSurface(e)) return false
       const k = e.kind ?? 'residential'
       if (k === 'service' && e.service && NOT_A_STREET.has(e.service)) return false
       return BIKE.has(k) || (mode === 'run' && RUN_EXTRA.has(k))
@@ -78,7 +79,7 @@ export function joinDeadEnds(ridden: RideEdge[], all: Edge[], blocked?: (a: Poin
   const deg = degrees(ridden)
   // never a path through a building: a courtyard footway joined Passage Lhomme and Cité Popincourt through walls
   const clear = (e: Edge): boolean => !blocked || e.points.every((q, i) => i === 0 || !blocked(e.points[i - 1], q))
-  const paths = all.filter((e) => e.a !== e.b && !e.tunnel && !((e.layer ?? 0) < 0 && !e.bridge) && RUN_EXTRA.has(e.kind ?? '') && clear(e))
+  const paths = all.filter((e) => e.a !== e.b && onSurface(e) && RUN_EXTRA.has(e.kind ?? '') && clear(e))
   if (paths.length === 0) return ridden
   const at = new Map<number, Edge[]>()
   for (const e of paths) for (const n of [e.a, e.b]) (at.get(n) ?? at.set(n, []).get(n)!).push(e)
@@ -419,7 +420,9 @@ export function pruneStubs(edges: RideEdge[]): RideEdge[] {
     const dead = (e: RideEdge): boolean => (deg.get(e.a) ?? 0) === 1 || (deg.get(e.b) ?? 0) === 1
     // an unnamed service stub, or any dead end under 15 m — a scrap left where a street was cut or merged
     // (Rue de Birague's 6 m, Richard-Lenoir's 3 m), which announced "dead end, turning round" to nobody's benefit
-    const next = cur.filter((e) => !(dead(e) && ((e.kind === 'service' && !e.name) || e.length < 15)))
+    // and an unnamed dead end under 30 m of any kind: a courtyard's mouth, a lane's first metres (20 of the
+    // audit's dead ends, BUGS.md #20)
+    const next = cur.filter((e) => !(dead(e) && ((e.kind === 'service' && !e.name) || e.length < 15 || (!e.name && e.length < 30))))
     if (next.length === cur.length) return cur
     cur = next
   }

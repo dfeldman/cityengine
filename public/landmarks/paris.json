@@ -533,7 +533,11 @@
   {
     "name": "Notre-Dame",
     "procedural": "notreDameFull",
-    "offset": [0, 2.5, 0],
+    "offset": [
+      0,
+      2.5,
+      0
+    ],
     "osm": [
       "way/201611267",
       "relation/6551963",
@@ -621,5 +625,24 @@
       "way/62505817"
     ],
     "note": "Placeholder: OSM maps Danton's plinth as a 4 m building; the statue pool builds the pedestal."
+  },
+  {
+    "name": "Palais de Chaillot",
+    "osm": [
+      "relation/6826569"
+    ],
+    "restyle": "classical",
+    "roof": "flat",
+    "height": 24,
+    "levels": 4,
+    "note": "The two curved wings of 1937 (backlog, user 2026-09-22): OSM's 30 m massing in the pale classical stone dress, flat-roofed; the parvis and its gilded statues are `trocaderoParvis`."
+  },
+  {
+    "name": "Parvis du Trocadéro",
+    "procedural": "trocaderoParvis",
+    "lat": 48.86215,
+    "lon": 2.28845,
+    "rotateDeg": 134.3,
+    "note": "The eight gilded figures and the balustrade over the gardens; the axis points at the Eiffel Tower."
   }
 ]

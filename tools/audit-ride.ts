@@ -101,6 +101,6 @@ console.log(`${city}: ${g.edges.size} ride edges, ${choices} junctions with a ch
 console.log(`  dead ends inside the city: ${dead.length}`)
 console.log(`  ride edges passing through buildings: ${through.length}`)
 if (list) {
-  console.log('\n-- dead ends'); for (const d of dead.slice(0, 60)) console.log('  ' + d)
+  console.log('\n-- dead ends'); for (const d of dead.slice(0, process.argv.includes("--all") ? Infinity : 60)) console.log('  ' + d)
   console.log('\n-- through buildings'); for (const t of through.sort().slice(0, 60)) console.log('  ' + t)
 }

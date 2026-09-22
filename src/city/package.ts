@@ -237,8 +237,15 @@ export const wholeWater = (pkg: Pick<CityPackage, 'areas' | 'water'>): PackedAre
   pkg.water ?? pkg.areas.filter((a) => a.kind === 'water')
 
 /** On or above the ground: not a tunnel, not mapped below grade (a bridge over a cutting is still above it). */
-export const onSurface = (e: { tunnel?: boolean; layer?: number; bridge?: boolean }): boolean =>
-  !e.tunnel && ((e.layer ?? 0) >= 0 || !!e.bridge)
+/**
+ * Is a way on the open ground (drawn, and ridden)? Not a tunnel; and at layer −1 only a walk or a cycle track
+ * that is not a tunnel: the Seine's riverside promenades (the Berges, André Gorz) are layer −1 where they pass
+ * under the bridges, in the open, and dropping them made every bridge a dead end on the river path (BUGS.md
+ * #20). A layer −1 ROAD is an underpass or a car park's ramp, and stays out.
+ */
+const SHALLOW = new Set(['footway', 'path', 'pedestrian', 'cycleway'])
+export const onSurface = (e: { tunnel?: boolean; layer?: number; bridge?: boolean; kind?: string }): boolean =>
+  !e.tunnel && ((e.layer ?? 0) >= 0 || !!e.bridge || ((e.layer ?? 0) === -1 && SHALLOW.has(e.kind ?? '')))
 
 /**
  * The level of each body of water: its lowest bank less the region's drop — and ONE level for bodies that
