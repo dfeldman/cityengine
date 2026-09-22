@@ -3,5 +3,22 @@
   {"osm": ["way/431972186", "way/1560173288"], "name": "Salesforce Tower", "procedural": "salesforceTower", "front": 180, "height": 326, "note": "OSM maps it twice (the tower and its outline); both replaced by the one model."},
   {"osm": ["way/28824850"], "name": "Coit Tower", "procedural": "coitTower", "front": "street", "height": 64, "note": "On Telegraph Hill's crest; the foot building's entrance toward the parking circle. From photographs."},
   {"osm": ["way/558731934"], "name": "Ferry Building", "procedural": "ferryBuilding", "front": "street", "height": 75, "note": "The clock tower over the Embarcadero front (−z); the SAN FRANCISCO letters to the bay. From photographs."},
-  {"osm": ["relation/7261820"], "name": "San Francisco City Hall", "procedural": "cityHall", "front": 90, "height": 94, "note": "The Polk Street front, the portico, faces east onto Civic Center Plaza. From photographs."}
+  {"osm": ["relation/7261820"], "name": "San Francisco City Hall", "procedural": "cityHall", "front": 90, "height": 94, "note": "The Polk Street front, the portico, faces east onto Civic Center Plaza. From photographs."},
+  {"osm": ["way/288511106"], "name": "555 California Street", "procedural": "fiveFiveFiveCalifornia", "height": 237, "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."},
+  {"osm": ["way/32612608"], "name": "Embarcadero Center 1", "procedural": "embarcaderoCenter", "height": 173, "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."},
+  {"osm": ["way/32612520"], "name": "Embarcadero Center 2", "procedural": "embarcaderoCenter", "height": 130, "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."},
+  {"osm": ["way/32612538"], "name": "Embarcadero Center 3", "procedural": "embarcaderoCenter", "height": 130, "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."},
+  {"osm": ["way/616812910"], "name": "Embarcadero Center 4", "procedural": "embarcaderoCenter", "height": 174, "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."},
+  {"osm": ["way/32947500"], "name": "Embarcadero Center West", "procedural": "embarcaderoCenter", "height": 123, "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."},
+  {"osm": ["way/79375246"], "name": "Hilton San Francisco Union Square", "procedural": "hiltonUnionSquare", "height": 150, "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."},
+  {"osm": ["way/288512967"], "name": "Parc 55", "procedural": "parc55", "height": 125, "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."},
+  {"osm": ["way/72963089"], "name": "Millennium Tower", "procedural": "millenniumTower", "height": 197, "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."},
+  {"osm": ["way/445566153"], "name": "181 Fremont", "procedural": "fremont181", "height": 244, "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."},
+  {"osm": ["way/944990390"], "name": "One Rincon Hill", "procedural": "oneRinconHill", "height": 195, "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."},
+  {"osm": ["way/129142347"], "name": "Russ Building", "procedural": "russBuilding", "height": 133, "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."},
+  {"osm": ["way/260282390"], "name": "Shell Building", "procedural": "shellBuilding", "height": 115, "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."},
+  {"osm": ["relation/6483285"], "name": "San Francisco Marriott Marquis", "procedural": "marriottMarquis", "height": 133, "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."},
+  {"osm": ["way/435582543"], "name": "Westin St. Francis Tower", "procedural": "westinTower", "height": 120, "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."},
+  {"osm": ["way/1279505488"], "name": "101 California", "procedural": "oneOhOneCalifornia", "height": 183, "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."},
+  {"osm": ["way/28240176"], "name": "One Maritime Plaza", "procedural": "oneMaritimePlaza", "height": 121, "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."}
 ]

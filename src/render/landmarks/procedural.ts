@@ -22,6 +22,7 @@ import { salesforceTower } from './sf/salesforce-tower.ts'
 import { coitTower } from './sf/coit-tower.ts'
 import { ferryBuilding } from './sf/ferry-building.ts'
 import { cityHall } from './sf/city-hall.ts'
+import { TOWER_PRESETS } from './sf/ring-tower.ts'
 import { eiffelTowerFull } from './paris/eiffel-tower-full.ts'
 import { arcDeTriomphe } from './paris/arc-de-triomphe.ts'
 import { louvrePyramid } from './paris/louvre-pyramid.ts'
@@ -70,5 +71,6 @@ export type { Fit }
 export const PROCEDURAL: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   // San Francisco's (render/landmarks/sf/)
   goldenGateBridge, sutroTower, bayBridge, transamericaPyramid, salesforceTower, coitTower, ferryBuilding, cityHall,
+  ...TOWER_PRESETS,
   colonneDeJuillet, pompidou, eiffelTower, eiffelTowerFull, arcDeTriomphe, louvrePyramid, notreDameFull, invalidesDome, museeOrsay, palaisGarnier, placeConcorde, monumentRepublique, montparnasse, sacreCoeur, pantheon, notreDame, saintPaul, hotelDeSens, tourSaintJacques, hotelDeVille, operaArch, synagogueGuimard, synagogueTournelles, vosgesGarden, templeMarais, saintGervais, cirqueHiver, saintDenysPortico, saintLouisSpire, sullyCourt, soubiseCourt, carnavaletCourt, saintMerri, flamelHouse, trocaderoParvis, grandPalais, colonneVendome, sainteChapelle, madeleine, assembleePortico, institutDome, petitPalais, burenColumns, ecoleMilitairePortico, fontaineInnocents, fontaineSaintMichel, flammeLiberte, cornerDome, louisXIV, fochTrocadero,
 }
