@@ -62,6 +62,25 @@ export function tilePreparer(entries: LandmarkEntry[], index: Pick<CityIndex, 'o
     for (const l of t.landmarks) byKind.set(l.id, l.kind)
     // and for a building replaced by its parts, by the whole city's list (its parts may be in other tiles)
     const kindOf = allKinds
+    /*
+     * A small building standing in a park whose height nobody tagged is a kiosk, a buvette, a gardeners'
+     * shed — one storey. The level inference (tools/heights.ts) gave them their neighbours' six, and the
+     * Tuileries had narrow apartment towers standing among its lawns.
+     */
+    const parks = t.areas.filter((a) => a.kind === 'park' || a.kind === 'grass' || a.kind === 'wood' || a.kind === 'paved')
+    const inPark = (b: { ring: number[] }): boolean => {
+      let x = 0
+      let z = 0
+      for (let i = 0; i < b.ring.length; i += 2) { x += b.ring[i]; z += b.ring[i + 1] }
+      x /= b.ring.length / 2
+      z /= b.ring.length / 2
+      return parks.some((a) => inside(a.ring, x, z))
+    }
+    const footprint = (r: number[]): number => {
+      let a = 0
+      for (let i = 0, j = r.length - 2; i < r.length; j = i, i += 2) a += r[j] * r[i + 1] - r[i] * r[j + 1]
+      return Math.abs(a / 2)
+    }
     const QUICK: Record<string, StyleId> = { civic: 'classical', museum: 'classical', school: 'brick', historic: 'marais', church: 'classical' }
     // a church's own parts (its towers, its apse, mapped as building:parts) are the church too; a church's
     // storeys are tall — 10 m — so its walls have a few great windows, not rows of flats
@@ -81,6 +100,9 @@ export function tilePreparer(entries: LandmarkEntry[], index: Pick<CityIndex, 'o
       && (b.height ?? Infinity) - (b.minHeight ?? 0) > 0.5
       && !(restyled.get(b.id)?.dropParts && (b.minHeight ?? 0) > 2.5 && overGround(b) && !overPassage(b))).map((b) => {
       const e = restyled.get(b.id)
+      if (!e && b.levelsInferred && (b.minHeight ?? 0) < 1 && footprint(b.ring) < 300 && inPark(b)) {
+        return { ...b, levels: 1, height: 4.5, roof: 'hipped' as const, roofHeight: 2 }
+      }
       if (!e?.restyle) {
         const kind = byKind.get(b.id) ?? (b.partOf !== undefined ? kindOf.get(b.partOf) : undefined) ?? (churchRings.length && inChurch(b) ? 'church' : '')
         const quick = QUICK[kind]
