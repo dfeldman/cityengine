@@ -529,5 +529,33 @@
       "way/375076234"
     ],
     "note": "Placeholder: OSM maps the Pyramid as a 21.65 m building, drawn as a glass box round the model."
+  },
+  {
+    "name": "Notre-Dame",
+    "procedural": "notreDameFull",
+    "osm": [
+      "way/201611267",
+      "relation/6551963",
+      "way/201611264",
+      "way/201611266",
+      "way/201611269",
+      "way/201611270",
+      "way/201611272",
+      "way/201611273",
+      "way/201611274",
+      "way/201754177",
+      "way/201754180",
+      "way/201760114",
+      "way/201760116",
+      "way/201772730",
+      "way/1299835414",
+      "way/1299835415",
+      "way/1299835416",
+      "way/1340842277",
+      "way/1524308825"
+    ],
+    "front": 295,
+    "height": 96,
+    "note": "Fitted to OSM's whole-plan part (way 201611267), the west front toward the parvis; every OSM part of the cathedral and its duplicating relation (packed 13103927) replaced."
   }
 ]

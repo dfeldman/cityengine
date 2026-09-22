@@ -286,5 +286,23 @@
   "group": "landmark",
   "from": [48.86, 2.33, 90],
   "to": [48.861, 2.337, 10]
+ },
+ {
+  "name": "Notre-Dame — from the parvis",
+  "group": "landmark",
+  "from": [48.8534, 2.347, 1.8],
+  "to": [48.853, 2.3496, 30]
+ },
+ {
+  "name": "Notre-Dame — from the Seine (south-east)",
+  "group": "landmark",
+  "from": [48.8515, 2.3518, 3],
+  "to": [48.85296, 2.3499, 30]
+ },
+ {
+  "name": "Notre-Dame — from above",
+  "group": "landmark",
+  "from": [48.8512, 2.348, 90],
+  "to": [48.85296, 2.3499, 20]
  }
 ]
