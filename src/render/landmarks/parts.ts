@@ -337,7 +337,6 @@ export function spireOn(out: MeshBuilder, at: P2, y0: number, r: number, shaft: 
                         opts: { colour?: Rgb; spireColour?: Rgb; material?: Surface; spireMaterial?: Surface; sides?: number; belfry?: boolean } = {}): void {
   const c = opts.colour ?? [0.86, 0.84, 0.78]
   const sc = opts.spireColour ?? [0.35, 0.4, 0.42]
-  const tag = surfaceTag(opts.material ?? 'ashlar')
   const stag = surfaceTag(opts.spireMaterial ?? 'tile')
   const sides = opts.sides ?? 4
   const ring = (rr: number): P2[] => Array.from({ length: sides }, (_, k) => {
