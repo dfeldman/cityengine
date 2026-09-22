@@ -423,7 +423,10 @@ export class Landmarks {
     let rotation = ((e.rotateDeg ?? 0) * Math.PI) / 180
     let fit: Fit = { hx: (e.size?.[0] ?? 20) / 2, hz: (e.size?.[1] ?? 20) / 2, height }
     let ring: { x: number; z: number }[] | null = null
-    if (building) {
+    // a point AND a size: placed there at that size, whatever its buildings are — the Grand Palais is eight
+    // OSM parts, and fitted to the first it came out a third of its size, off to one side
+    const atPoint = e.lat !== undefined && e.lon !== undefined && e.size !== undefined
+    if (building && !atPoint) {
       ring = unpackPoints(building.ring)
       if (e.court) {
         // the largest courtyard, turned back to anticlockwise like an outline

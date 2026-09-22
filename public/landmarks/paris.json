@@ -649,9 +649,22 @@
     "name": "Grand Palais",
     "procedural": "grandPalais",
     "osm": [
-      "way/56185523"
+      "way/822470542",
+      "way/822470553",
+      "way/822470557",
+      "way/822470565",
+      "way/822470525",
+      "way/822470554",
+      "way/822470558",
+      "way/822470559"
     ],
-    "front": 90,
-    "note": "The glass nave and dome on green iron, the colonnade to the Avenue Winston-Churchill, the quadrigas; fitted to OSM's outline, front to the avenue (east)."
+    "note": "The glass nave and dome on green iron, the colonnade to the Avenue Winston-Churchill, the quadrigas; fitted to OSM's outline, front to the avenue (east). OSM maps it as eight building:parts (the outline way/56185523 is replaced by them at bake), all replaced by the model.",
+    "lat": 48.866149,
+    "lon": 2.312273,
+    "rotateDeg": 270,
+    "size": [
+      236,
+      159
+    ]
   }
 ]

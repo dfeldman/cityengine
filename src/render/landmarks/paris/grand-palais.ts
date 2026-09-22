@@ -35,8 +35,10 @@ export function grandPalais(out: MeshBuilder, fit: Fit): void {
   // ---- the stone body of the nave, and the Palais de la Découverte behind it
   block(out, -hx, hx, nz0, nz1, 0, wall, stone)
   block(out, -hx - 0.4, hx + 0.4, nz0 - 0.6, nz1 + 0.6, wall, wall + 1.4, deep)
-  block(out, -hx * 0.45, hx * 0.45, nz1, hz, 0, wall - 2, stone)
-  block(out, -hx * 0.45 - 0.4, hx * 0.45 + 0.4, nz1, hz + 0.6, wall - 2, wall - 0.8, deep)
+  // the Palais de la Découverte fills the whole west side, round two light courts either side of the transept
+  block(out, -hx, hx, nz1, hz, 0, wall - 2, stone)
+  block(out, -hx - 0.4, hx + 0.4, nz1, hz + 0.6, wall - 2, wall - 0.8, deep)
+  for (const sx of [-1, 1]) block(out, sx * hx * 0.55 - 22, sx * hx * 0.55 + 22, nz1 + 14, hz - 14, wall - 0.8, wall - 0.7, [0.34, 0.36, 0.36])
 
   // ---- the colonnade along the front: a raised base, paired columns, the entablature and balustrade
   const cz = front + 1.6
