@@ -103,8 +103,12 @@ export class Minimap {
   /** the whole ride graph, to draw the city beyond the streamed streets when zoomed out */
   private rideLines: Point[][] = []
   setRide(lines: Point[][]): void { this.rideLines = lines }
-  /** a click on the large map: the world point clicked (the game goes there) */
-  onPick: ((p: Point) => void) | null = null
+  /** a click on the large map: the world point clicked; `jump` with shift held (the game goes there),
+   *  else the game sets it as the GPS destination */
+  onPick: ((p: Point, jump: boolean) => void) | null = null
+  /** the GPS route and its destination (PARIS_EXPAND §6 item 11), drawn over the streets */
+  route: Point[] | null = null
+  destination: Point | null = null
 
   private listen(): void {
     let down: { x: number; y: number; px: number; pz: number } | null = null
@@ -132,7 +136,7 @@ export class Minimap {
       const cx = e.clientX - rect.left - rect.width / 2
       const cy = e.clientY - rect.top - rect.height / 2
       void start
-      this.onPick({ x: this.lastAt.x + this.panX + cx * k, z: this.lastAt.z + this.panZ - cy * k })
+      this.onPick({ x: this.lastAt.x + this.panX + cx * k, z: this.lastAt.z + this.panZ - cy * k }, e.shiftKey)
     })
     this.canvas.addEventListener('wheel', (e) => {
       if (!this.large) return
@@ -235,6 +239,30 @@ export class Minimap {
           named.set(e.name, { at: mid, text: e.name, angle: Math.atan2(-(b.z - a.z), b.x - a.x), d })
         }
       }
+    }
+
+    // the GPS route, over the streets and under the names; and the destination's pin
+    if (this.route && this.route.length > 1) {
+      ctx.lineCap = 'round'
+      ctx.lineJoin = 'round'
+      ctx.strokeStyle = 'rgba(12,14,18,0.8)'
+      ctx.lineWidth = this.large ? 7 : 6
+      ctx.beginPath()
+      this.route.forEach((p, i) => (i === 0 ? ctx.moveTo(...px(p)) : ctx.lineTo(...px(p))))
+      ctx.stroke()
+      ctx.strokeStyle = '#ff9a3c'
+      ctx.lineWidth = this.large ? 4 : 3.5
+      ctx.stroke()
+    }
+    if (this.destination) {
+      const [x, y] = px(this.destination)
+      ctx.beginPath()
+      ctx.arc(x, y, this.large ? 7 : 5, 0, Math.PI * 2)
+      ctx.fillStyle = '#ff5a3c'
+      ctx.fill()
+      ctx.lineWidth = 2
+      ctx.strokeStyle = '#fff'
+      ctx.stroke()
     }
 
     ctx.font = this.large ? '600 11px ui-monospace, SFMono-Regular, Menlo, monospace' : '600 9px ui-monospace, SFMono-Regular, Menlo, monospace'

@@ -50,6 +50,7 @@ import { Navigator } from './sim/navigate.ts'
 import { Ride, cornerRadius } from './sim/ride.ts'
 import { addEdges, departureBearing, resolve, type CityGraph, type Edge } from './city/graph.ts'
 import { locate, rideExits, type RideGraph } from './city/ridegraph.ts'
+import { planRoute, type Route } from './sim/route.ts'
 import { unpackPoints, wholeWater, type CityPackage, type PackedArea, type PackedRail } from './city/package.ts'
 import { loadRide, openCity } from './city/tilestore.ts'
 import { mapEdges } from './city/ridefile.ts'
@@ -370,11 +371,42 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   onTile((a) => minimap.addEdges(a.edges))
   // the whole city for the zoomed-out large map, and a click on it goes there (user: jump anywhere, for debugging)
   minimap.setRide([...rides.edges.values()].map((e) => e.points))
-  minimap.onPick = (p) => {
-    if (!opts.goTo) return
-    const ll = new Projection(pkg.origin).toLatLon(p)
-    const why = opts.goTo(`${ll.lat}, ${ll.lon}`, true)
-    if (why) debug.toast(why)
+  /*
+   * The GPS (PARIS_EXPAND §6 item 11): a click on the large map sets the destination, shift-click goes there.
+   * The route is re-planned from the rider every second (so a wrong turn is simply a new route), shown on the
+   * minimap, and at each junction it asks for its own exit — unless the rider has pressed a turn themselves
+   * for that junction, which always wins. Esc (or N) clears it.
+   */
+  let destination: { x: number; z: number } | null = null
+  let route: Route | null = null
+  let routedAt = 0
+  let ownChoiceAt: number | null = null
+  const replan = (): void => {
+    if (!destination) { route = null; minimap.route = null; minimap.destination = null; return }
+    route = planRoute(rides, nav.position, destination)
+    minimap.route = route?.line ?? null
+    minimap.destination = destination
+  }
+  const clearRoute = (): void => { destination = null; replan(); hud.gps(null) }
+  minimap.onPick = (p, jump) => {
+    if (jump) {
+      if (!opts.goTo) return
+      const ll = new Projection(pkg.origin).toLatLon(p)
+      const why = opts.goTo(`${ll.lat}, ${ll.lon}`, true)
+      if (why) debug.toast(why)
+      return
+    }
+    destination = p
+    replan()
+    if (!route) { debug.toast('no route there'); clearRoute(); return }
+    debug.toast(`destination set — ${(route.length / 1000).toFixed(1)} km (Esc clears; shift-click jumps)`)
+  }
+  addEventListener('keydown', (e) => { if (e.code === 'Escape' || e.code === 'KeyN') clearRoute() })
+  ;(window as unknown as Record<string, unknown>).__routeLeft = () => (route ? Math.round(route.length) : null)
+  ;(window as unknown as Record<string, unknown>).__route = (lat: number, lon: number) => {
+    destination = new Projection(pkg.origin).toLocal({ lat, lon })
+    replan()
+    return route ? { length: Math.round(route.length), junctions: route.nodes.length, turnRound: route.turnRound } : null
   }
   // everyone has subscribed: the tiles need not be kept for replaying any more
   keepArrived = false
@@ -515,10 +547,33 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           hud.note(t === 'left' ? '← nudge' : t === 'right' ? 'nudge →' : 'back to the middle')
         } else {
           nav.request(t)
+          // the rider's own choice for this junction wins over the GPS's
+          ownChoiceAt = ahead?.nodeId ?? null
         }
       }
 
       const junction = nav.next()
+      // the GPS: keep the route current, and ask for its exit at the junction ahead
+      if (destination && now - routedAt > 1000) {
+        routedAt = now
+        replan()
+        if (route && route.length < 20) { debug.toast('you have arrived'); clearRoute() }
+      }
+      if (route && junction && !junction.passThrough && ownChoiceAt !== junction.nodeId && !nav.isCommitted) {
+        const want = route.leave.get(junction.nodeId)
+        const exit = want === undefined ? undefined : junction.exits.find((x) => x.edgeId === want)
+        if (exit && nav.requested !== exit.turn) nav.request(exit.turn)
+      }
+      if (route) {
+        const want = junction ? route.leave.get(junction.nodeId) : undefined
+        const exit = want === undefined || !junction ? undefined : junction.exits.find((x) => x.edgeId === want)
+        const km = route.length >= 1000 ? `${(route.length / 1000).toFixed(1)} km` : `${Math.round(route.length / 10) * 10} m`
+        const street = exit ? rides.edges.get(exit.edgeId)?.name : undefined
+        const next = route.turnRound ? 'turn round' : exit && junction
+          ? `${exit.turn === 'straight' ? 'straight on' : exit.turn}${street ? ` onto ${street}` : ''} in ${Math.round(junction.ahead / 10) * 10} m`
+          : 'ahead'
+        hud.gps(`⌖ ${km} · ${next}`)
+      }
       paths.follow(nav.at())
       paths.update(nav.edge.id, junction, nav.requested)
       const edge = nav.edge

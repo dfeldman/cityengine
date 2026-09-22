@@ -19,11 +19,13 @@ export class Hud {
   private readonly turnsEl: HTMLElement
   private readonly nextEl: HTMLElement
   private readonly statsEl: HTMLElement
+  private readonly gpsEl: HTMLElement
 
   constructor(root: HTMLElement, onBack?: () => void) {
     this.root = root
     root.innerHTML = `
       <button class="sr-back" title="Turn around here (U)">↩</button>
+      <div class="sr-gps" hidden></div>
       <div class="sr-turns"></div>
       <div class="sr-next"></div>
       <div class="sr-stats"></div>`
@@ -34,6 +36,13 @@ export class Hud {
     this.turnsEl = root.querySelector('.sr-turns')!
     this.nextEl = root.querySelector('.sr-next')!
     this.statsEl = root.querySelector('.sr-stats')!
+    this.gpsEl = root.querySelector('.sr-gps')!
+  }
+
+  /** The GPS line (PARIS_EXPAND §6 item 11): distance to the destination and the next turn; null hides it. */
+  gps(text: string | null): void {
+    this.gpsEl.hidden = text === null
+    if (text !== null && this.gpsEl.textContent !== text) this.gpsEl.textContent = text
   }
 
   private landmark: string | null = null
@@ -114,5 +123,6 @@ export const HUD_CSS = `
   text-shadow: inherit; transition: opacity .12s }
 #hud .sr-back:hover { opacity: 1 }
 #hud .sr-next { font-size: 15px; opacity: .9; min-height: 1.4em }
+#hud .sr-gps { font-size: 14px; color: #ffc68a; background: rgba(18,20,24,.5); border-radius: 8px; padding: 2px 10px }
 #hud .sr-stats { font-size: 13px; opacity: .72; letter-spacing: .4px }
 `
