@@ -18,10 +18,11 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 8 | fixed | White monuments are flat pure white; they should read as white marble or pale stone/brick | user, 2026-09-21 |
 | 9 | open | The path by the Seine at 48.849419, 2.361508 is a dead end: it comes close to a road but does not join it | user, 2026-09-21 |
 | 10 | fixed | The Cirque d'Hiver's two horsemen stand in the road and block it | user, 2026-09-21 |
-| 11 | open | Café terraces are poor: chairs and tables in a line, not chairs round tables, and often tilted | user, 2026-09-21 |
+| 11 | fixed | Café terraces are poor: chairs and tables in a line, not chairs round tables, and often tilted | user, 2026-09-21 |
 | 12 | open | News stands (kiosques) need improvement | user, 2026-09-21 |
 | 13 | fixed | Too many long gowns among the strangers; the other dresses never appear | user, 2026-09-21 |
 | 14 | open | Two ground levels: a transparent top surface with the asphalt about half a metre below it | user, 2026-09-21 |
+| 15 | open | Signs still z-fight with the walls they hang on | user, 2026-09-21 |
 
 ---
 
@@ -199,6 +200,14 @@ by side FACING THE STREET (that part is right), tightly packed, some tables with
 Either a better generator (tables in a grid, chairs placed round each table with a small jitter, no roll or
 pitch) or models (user: "might be model candidates").
 
+**Fix:** the user's rules — pairs of chairs facing the street, colours and patterns varying a lot, tables always
+small and round. Each table gets two chairs side by side between it and the wall, facing out and turned 15°
+toward each other (one table in ten a conversation pair across the table), yaw jitter ±5°, level; the chair
+is four thin legs, a thin seat and a low back (the crossed-slab legs read as a block); each café picks a weave
+and a pattern colour from 13 (a band across seat and back); 60 cm round tops.
+
+**Check:** ✅ `docs/shots/BUG11-terrace.png` (views "Café terrace 1–3 — close").
+
 ## 12. News stands need improvement
 
 **Seen:** user, 2026-09-21. The `parisNewsstand` kiosque (render/models.ts) reads poorly. Reference first (the
@@ -236,3 +245,10 @@ terrain height).
 (`docs/shots/views/bug14/`) show one ground. Suspect: the tile's base plane (4 × 4 quads of 50 m, bilinear)
 and the distant ground (the 20 m grid) now sit at nearly the same height but interpolate differently, both in
 group 0. **Asked the user for a location (C in game copies it).**
+
+## 15. Signs z-fight
+
+**Seen:** user, 2026-09-21: "still have issues with z-fighting in signs". Shop boards (`board()` in
+render/signs.ts), plaques and plates sit a few centimetres proud of the wall; at distance the depth buffer
+cannot separate them. Candidates: stand them further out with distance-independent offset, or draw them with a
+depth bias (`zOffset`) on the sign materials (TextAtlas pages), which is the standard cure.

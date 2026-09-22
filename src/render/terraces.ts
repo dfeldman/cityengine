@@ -22,24 +22,38 @@ type Rgb = [number, number, number]
 const FIXED = 0
 // mostly pale marble tops; the weave mostly natural rattan, some in a café's colour
 const TOP: Rgb[] = [[0.82, 0.81, 0.77], [0.82, 0.81, 0.77], [0.2, 0.2, 0.22]]
-const WEAVE: Rgb[] = [[0.5, 0.36, 0.2], [0.5, 0.36, 0.2], [0.44, 0.3, 0.17], [0.16, 0.24, 0.36], [0.4, 0.12, 0.1], [0.16, 0.28, 0.2]]
+/*
+ * The woven chairs of a Paris terrace come in every colour and pattern (user, BUGS.md #11): a café picks a
+ * pair — the weave and the pattern woven into it — from these, so neighbouring terraces rarely match.
+ */
+const WEAVE: Rgb[] = [[0.5, 0.36, 0.2], [0.44, 0.3, 0.17], [0.16, 0.24, 0.36], [0.4, 0.12, 0.1], [0.16, 0.28, 0.2],
+  [0.82, 0.78, 0.68], [0.12, 0.12, 0.13], [0.62, 0.16, 0.14], [0.2, 0.36, 0.52], [0.78, 0.62, 0.22], [0.3, 0.45, 0.3],
+  [0.55, 0.2, 0.35], [0.9, 0.88, 0.84]]
 
 /** A bistro table: a round top on a single column and a cast foot. At the origin, 0.74 m high. */
 function table(out: MeshBuilder, top: Rgb): void {
   const iron: Rgb = [0.12, 0.12, 0.13]
   prism(out, 0, 0, 0, 0.04, 0.24, 6, iron)
   prism(out, 0, 0, 0.04, 0.71, 0.03, 4, iron)
-  prism(out, 0, 0, 0.71, 0.74, 0.3, 10, top)
+  // small and round, always: a 60 cm top
+  prism(out, 0, 0, 0.71, 0.735, 0.3, 14, top)
 }
 
-/** A woven bistro chair facing +z (toward the street): seat, back, four legs. */
-function chair(out: MeshBuilder, weave: Rgb): void {
-  const frame: Rgb = [weave[0] * 0.55, weave[1] * 0.55, weave[2] * 0.55]
-  // the legs as two thin crossed slabs (8 faces rather than 24): at pavement distance four legs read as two
-  box(out, 0, 0.22, 0, 0.18, 0.22, 0.012, frame, FIXED)
-  box(out, 0, 0.22, 0, 0.012, 0.22, 0.18, frame, FIXED)
-  box(out, 0, 0.45, 0, 0.21, 0.025, 0.21, weave, FIXED)
-  box(out, 0, 0.72, -0.2, 0.2, 0.25, 0.02, weave, FIXED)
+/**
+ * A woven bistro chair facing +z: four thin legs, a thin seat, a lower back on two uprights. The legs were
+ * two crossed slabs as wide as the seat, which from a bike read as a solid block (BUGS.md #11).
+ */
+function chair(out: MeshBuilder, weave: Rgb, pattern: Rgb): void {
+  const frame: Rgb = [weave[0] * 0.5, weave[1] * 0.5, weave[2] * 0.5]
+  for (const [lx, lz] of [[-0.17, -0.17], [0.17, -0.17], [-0.17, 0.17], [0.17, 0.17]]) {
+    box(out, lx, 0.22, lz, 0.016, 0.22, 0.016, frame, FIXED)
+  }
+  // the seat in the weave with a band of the pattern across it, the back striped the same way
+  box(out, 0, 0.455, 0, 0.2, 0.02, 0.2, weave, FIXED)
+  box(out, 0, 0.477, 0, 0.2, 0.004, 0.05, pattern, FIXED)
+  for (const lx of [-0.17, 0.17]) box(out, lx, 0.66, -0.18, 0.016, 0.2, 0.016, frame, FIXED)
+  box(out, 0, 0.75, -0.19, 0.19, 0.08, 0.012, weave, FIXED)
+  box(out, 0, 0.64, -0.19, 0.19, 0.03, 0.014, pattern, FIXED)
 }
 
 /** A copy of `part` turned by `h` and moved to (x, y, z). */
@@ -126,30 +140,44 @@ export function buildTerraces(scene: Scene, pkg: Pick<CityPackage, 'edges' | 'bu
     if (usable < 1.1) continue
     const rows = usable >= 2.6 ? 2 : 1
     const along = Math.min(best.len * 0.7, 9)
-    const per = Math.max(1, Math.floor(along / 1.5))
+    const per = Math.max(1, Math.floor(along / 1.6))
     let seed = Math.imul(Math.round(poi.x * 10) ^ Math.imul(Math.round(poi.z * 10), 0x27d4eb2d), 0x9e3779b1) >>> 0
     const rnd = (): number => ((seed = Math.imul(seed ^ (seed >>> 15), 0x2c1b3c6d) >>> 0) / 4294967296)
     const topColour = TOP[Math.floor(rnd() * TOP.length)]
     const weave = WEAVE[Math.floor(rnd() * WEAVE.length)]
+    let pattern = WEAVE[Math.floor(rnd() * WEAVE.length)]
+    if (pattern === weave) pattern = WEAVE[(WEAVE.indexOf(weave) + 5) % WEAVE.length]
     const t = new MeshBuilder()
     table(t, topColour)
     const ch = new MeshBuilder()
-    chair(ch, weave)
+    chair(ch, weave, pattern)
     // chairs face the street (+normal): heading so that local +z is the wall's outward normal
     const face = Math.atan2(best.nx, best.nz)
+    const along2 = Math.atan2(best.ux, best.uz)
+    const place = (cx: number, cz: number, h: number): void =>
+      stamp(out, ch, cx, terrain.heightAt(cx, cz) + 0.15, cz, h + (rnd() - 0.5) * 0.16)
+    /*
+     * Tables in rows along the front (BUGS.md #11), set the Paris way — two chairs side by side between table
+     * and wall, both looking out at the street, turned a little toward each other — and one in ten for a
+     * conversation, a chair either side across the table. Level, and turned only a few degrees at random: a
+     * larger turn read as chairs tipped over.
+     */
     for (let r = 0; r < rows; r++) {
-      const off = 0.75 + r * 1.35
+      const off = 0.9 + r * 1.45
       for (let i = 0; i < per; i++) {
         const a = -along / 2 + (i + 0.5) * (along / per)
         const x = best.x + best.ux * a + best.nx * off
         const z = best.z + best.uz * a + best.nz * off
-        const y = terrain.heightAt(x, z) + 0.15
-        stamp(out, t, x, y, z, 0)
-        // two chairs a table, side by side between it and the wall, both looking out at the street
-        for (const s of [-1, 1]) {
-          const cx = x + best.ux * s * 0.38 - best.nx * 0.42
-          const cz = z + best.uz * s * 0.38 - best.nz * 0.42
-          stamp(out, ch, cx, terrain.heightAt(cx, cz) + 0.15, cz, face + (rnd() - 0.5) * 0.5)
+        stamp(out, t, x, terrain.heightAt(x, z) + 0.15, z, 0)
+        if (rnd() < 0.9) {
+          for (const sd of [-1, 1]) {
+            place(x + best.ux * sd * 0.34 - best.nx * 0.46, z + best.uz * sd * 0.34 - best.nz * 0.46, face - sd * 0.26)
+          }
+        } else {
+          // across the table, along the front, each turned a little toward the street
+          for (const sd of [-1, 1]) {
+            place(x + best.ux * sd * 0.5, z + best.uz * sd * 0.5, along2 + (sd > 0 ? Math.PI : 0) + sd * 0.35)
+          }
         }
       }
     }
