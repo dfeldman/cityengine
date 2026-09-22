@@ -162,7 +162,7 @@ fountains, or really famous buildings like Notre Dame which likely have a variet
 A better strategy for these complex, not-procedurally-generatable shapes is to flag them for the user. The user
 has Tripo3D which can take pictures of a building and make a decent 3D model as a glb file. This should
 be used very sparingly as it is expensive and time-consuming, and the resulting models don't even really fit the 
-aesthetic of the app. But it can be done if necessary. An example use case is a 
+aesthetic of the app. But it can be done if necessary. An example use case is 
 famous statues which really need to be in the city, but are too complex to model. Tripo is very bad at 
 larger buildings, or structures with glass (rules out cars, trains, skyscrapers, etc). It could do a nice 
 average sized stone church though.

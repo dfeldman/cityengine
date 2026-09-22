@@ -390,13 +390,18 @@ export class Landmarks {
     const [tx, tz] = t.key.split(',').map(Number)
     this.pending = this.pending.filter((e) => {
       const ids = e.on ? packedIds({ name: e.name, osm: e.on }) : packedIds(e)
-      // the building it is fitted to is the FIRST named (the Hôtel de Ville lists its thirteen courtyard wings
-      // after its outline): placed on whichever came first, it was fitted to a wing
-      const ready = ids.length > 0 ? this.byId.has(ids[0])
-        : e.lat !== undefined && e.lon !== undefined && (() => {
+      /*
+       * An entry at its own point waits for the tile the point is in (the Colonne de Juillet: its ids are
+       * the base parts it replaces, and the first is not a building at all — waiting for it, it was never
+       * placed, BUGS.md #19). One fitted to a building waits for the FIRST it names (the Hôtel de Ville lists
+       * its thirteen courtyard wings after its outline: placed on whichever came first, it was fitted to a wing).
+       */
+      const ready = e.lat !== undefined && e.lon !== undefined
+        ? (() => {
           const p = this.proj.toLocal({ lat: e.lat!, lon: e.lon! })
           return Math.floor(p.x / TILE) === tx && Math.floor(p.z / TILE) === tz
         })()
+        : ids.length > 0 && this.byId.has(ids[0])
       if (!ready) return true
       this.place(e)
       return false
@@ -405,7 +410,8 @@ export class Landmarks {
 
   private place(e: LandmarkEntry): void {
     const onId = e.on ? packedIds({ name: e.name, osm: e.on })[0] : undefined
-    const building = onId !== undefined ? this.byId.get(onId) : this.byId.get(packedIds(e)[0])
+    const building = onId !== undefined ? this.byId.get(onId)
+      : this.byId.get(packedIds(e)[0]) ?? packedIds(e).map((id) => this.byId.get(id)).find((b) => b)
     const height = e.height ?? building?.height ?? 30
     let cx: number
     let cz: number

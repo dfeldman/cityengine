@@ -293,5 +293,23 @@
   "group": "street",
   "from": [48.855381, 2.359174, 1.7],
   "to": [48.855352, 2.359125, 0.5]
+ },
+ {
+  "name": "Downhill ground levels — street",
+  "group": "bug",
+  "from": [48.855451, 2.35775, 1.8],
+  "to": [48.855109, 2.357583, 0]
+ },
+ {
+  "name": "Downhill ground levels — low",
+  "group": "bug",
+  "from": [48.855451, 2.35775, 0.5],
+  "to": [48.855237, 2.357645, 0]
+ },
+ {
+  "name": "Square Louis-XIII (Place des Vosges garden) — air",
+  "group": "landmark",
+  "from": [48.8551, 2.3655, 45],
+  "to": [48.85563, 2.3655, 0]
  }
 ]

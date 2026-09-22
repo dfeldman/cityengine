@@ -28,8 +28,8 @@ export function plantHash(x: number, z: number): number {
 
 /** How many trees at most. A ceiling, so a city with a lot of mapped green does not become a forest. */
 export const TREE_CAP = 1900
-/** …and at most this many a square kilometre, for a big box (the Marais: 1,900 over 2.8 km²) */
-export const TREES_PER_KM2 = 700
+/** …and at most this many a square kilometre, for a big box (the first Marais box: 1,900 over 1.96 km²) */
+export const TREES_PER_KM2 = 1000
 
 export function plantCity(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'>, cap = TREE_CAP): Planting[] {
   const out: Planting[] = []

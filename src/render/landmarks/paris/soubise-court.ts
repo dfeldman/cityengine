@@ -15,7 +15,9 @@ export function soubiseCourt(out: MeshBuilder, fit: Fit): void {
   const trim = hex('#dacdb3')
   const dark = hex('#2e2d2b')
   const { hx, hz } = fit
-  const g = 0.5
+  // the model stands 0.5 m sunk; its own ground a little above the city's pavement (+0.15), which it
+  // replaces here — at 0.5 the pavement, drawn with depth now, hid the gravel and lawns (BUGS.md #14)
+  const g = 0.7
   block(out, -hx, hx, -hz, hz, 0, 0.56, hex('#d2c7b0'))                           // the gravel court
   // the palace front at the head of the court
   const q = new MeshBuilder()

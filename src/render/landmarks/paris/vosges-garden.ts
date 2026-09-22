@@ -12,7 +12,9 @@ const FIXED = 0
  * shapes, never modelled leaves. Model ground level is y = 0.5 (the loader sinks every base half a metre).
  */
 export function vosgesGarden(out: MeshBuilder): void {
-  const g = 0.5
+  // the model stands 0.5 m sunk; its own ground a little above the city's pavement (+0.15), which it
+  // replaces here — at 0.5 the pavement, drawn with depth now, hid the gravel and lawns (BUGS.md #14)
+  const g = 0.7
   const half = 55
   const iron = hex('#1d1f21')
   const gilt = hex('#c9a646')

@@ -21,8 +21,12 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 11 | fixed | Café terraces are poor: chairs and tables in a line, not chairs round tables, and often tilted | user, 2026-09-21 |
 | 12 | open | News stands (kiosques) need improvement | user, 2026-09-21 |
 | 13 | fixed | Too many long gowns among the strangers; the other dresses never appear | user, 2026-09-21 |
-| 14 | open | Two ground levels: a transparent top surface with the asphalt about half a metre below it | user, 2026-09-21 |
-| 15 | open | Signs still z-fight with the walls they hang on | user, 2026-09-21 |
+| 14 | fixed | Two ground levels: a transparent top surface with the asphalt about half a metre below it | user, 2026-09-21 |
+| 15 | fixed | Signs still z-fight with the walls they hang on | user, 2026-09-21 |
+| 16 | open | On a narrow street with a curved awning the chase camera passes right through the awning (48.856762, 2.358575) | user, 2026-09-21 |
+| 17 | open | A rental bike station lies across the road instead of along it (48.855780, 2.357875) | user, 2026-09-21 |
+| 18 | open | Café tables show no top surface (likely wound facing down) | user, 2026-09-21 |
+| 19 | fixed | The Colonne de Juillet at the Bastille is gone completely | user, 2026-09-21 |
 
 ---
 
@@ -246,9 +250,54 @@ terrain height).
 and the distant ground (the 20 m grid) now sit at nearly the same height but interpolate differently, both in
 group 0. **Asked the user for a location (C in game copies it).**
 
+**Cause (user's screenshot, 48.855451, 2.357750 downhill):** a building on a slope stands sunk to the lowest
+ground under it, so on the uphill side its wall runs on below the pavement. The pavement is painted with no
+depth write, and the depth-only terrain occluder that hides what is under the ground is sunk 0.6 m — so the
+band of wall between −0.6 m and the pavement (+0.15 m) drew through the pavement: a see-through ground over a
+lower one, on every hill.
+
+**Fix:** the pavement (`walks`, in the buildings' rendering group) now writes depth, so a wall under it stays
+under it; the buildings' copy of the occluder sits 0.15 m under the ground (the roads' keep 0.6 m). The garden
+and court landmarks lay their own ground just above the pavement (`g = 0.7` over the 0.5 m sink) — at ground
+level the pavement hid their gravel and lawns.
+
+**Check:** ✅ `docs/shots/views/bug14` → `bug14b` ("Downhill ground levels — low"): the doorway no longer runs
+on below the pavement; all views compared (`paris-marais-B14`, `B19`); Place des Vosges garden checked from
+above against `LP-vosges-garden.png`.
+
 ## 15. Signs z-fight
 
 **Seen:** user, 2026-09-21: "still have issues with z-fighting in signs". Shop boards (`board()` in
 render/signs.ts), plaques and plates sit a few centimetres proud of the wall; at distance the depth buffer
 cannot separate them. Candidates: stand them further out with distance-independent offset, or draw them with a
 depth bias (`zOffset`) on the sign materials (TextAtlas pages), which is the standard cure.
+
+**Fix:** every lettering page's material (`TextAtlas`: shop boards, hanging signs, plaques, blades, landmark
+plates) has a polygon offset (`zOffset = -2`, `zOffsetUnits = -4`): only the depth test moves, never where the
+sign is drawn. **Check:** ✅ `docs/shots/views/bug15/` — signs draw as before and do not show through the
+buildings in front of them; the flicker itself cannot be shown in a still — re-open if still seen.
+
+## 16. The camera goes through awnings
+
+**Seen:** user, 2026-09-21, at 48.856762, 2.358575: a narrow street with a curved awning; the chase camera rides
+through it. `City.clearBehind` keeps the camera out of buildings; awnings (render/city.ts, the curved café
+awnings) stand out over the pavement and are not in what it tests.
+
+## 17. Bike-share station across the road
+
+**Seen:** user, 2026-09-21, at 48.855780, 2.357875: the Vélib' dock (`bikeshare` furniture) is laid out across
+the carriageway instead of along the kerb. Point furniture is turned by `City.streetBearing` — likely it took
+the bearing of a crossing street or footway, or the docks run perpendicular to the bearing by construction.
+
+## 18. Café tables have no visible top
+
+**Seen:** user, 2026-09-21: the terrace tables' tops are not seen from above — likely the top cap of the
+`prism` in `table()` (render/terraces.ts) is wound facing down and culled.
+
+## 19. The Colonne de Juillet is gone
+
+**Cause:** a regression from streaming: landmarks were made to wait for the tile of the FIRST building they
+name (for the Hôtel de Ville), and the Colonne's first id is not a building in the package — its ids are the
+base parts it replaces — so it was never placed. **Fix:** an entry with a lat/lon waits for the tile its point
+is in; one fitted to a building waits for its first; fitting falls back to any it names.
+**Check:** ✅ the landmark views (`docs/shots/views/paris-marais-B19`) match the full-load set; the Colonne is back.

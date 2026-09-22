@@ -754,6 +754,13 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0): void {
     out.toVertexData().applyToMesh(m)
     m.material = mat
     m.renderingGroupId = group
+    /*
+     * Tighter for the buildings: 0.15 m under the ground, not 0.6. A building on a slope stands sunk to the
+     * lowest ground under it, so uphill its wall runs on below the pavement, and the 0.6 m band between the
+     * sunk occluder and the surface showed through as a second, lower ground (BUGS.md #14). Roads keep the
+     * wider margin: a draped street can dip a little under the grid between its points.
+     */
+    if (group === GROUP.building) m.position.y = 0.45
     m.isPickable = false
     m.alwaysSelectAsActiveMesh = true
     /*
@@ -1453,11 +1460,13 @@ export class City {
       builder.toVertexData().applyToMesh(m)
       // the concrete page is a neutral grain; the vertex tint does the rest. Its own material instance, not
       // the buildings' one, so that culling can be turned off for flat ground without affecting walls.
-      const groundMat = facadeMaterial(this.scene, 'brutalist', this.assets, 'ground')
+      const groundMat = facadeMaterial(this.scene, 'brutalist', this.assets, name === 'walks' ? 'pavement' : 'ground')
       groundMat.backFaceCulling = false
       // flat ground at grade hides nothing — the terrain occluder does that — and a park lapping over the
-      // river must not hide the river, which is depth-tested after it
-      groundMat.disableDepthWrite = true
+      // river must not hide the river, which is depth-tested after it. The PAVEMENT does write depth: it is
+      // in the buildings' group, and a wall running on under it (uphill, on a slope) must stay under it
+      // rather than show through as a second ground (BUGS.md #14).
+      groundMat.disableDepthWrite = name !== 'walks'
       m.material = groundMat
       m.renderingGroupId = group
       meshes.push(m)

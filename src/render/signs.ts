@@ -167,6 +167,13 @@ export class TextAtlas {
     mat.setFloat('night', NIGHT)
     mat.backFaceCulling = this.look.cull
     mat.depthFunction = Constants.LEQUAL
+    /*
+     * Pulled toward the eye in depth: a board a few centimetres proud of its wall is below what the depth
+     * buffer resolves at forty metres, and the wall's own pixels won half the time (BUGS.md #15). A polygon
+     * offset moves only the depth test, never where the sign is drawn.
+     */
+    mat.zOffset = -2
+    mat.zOffsetUnits = -4
     // cell 0 stays empty: the plain faces' cell
     const free: number[] = []
     for (let c = this.perPage - 1; c >= 1; c--) free.push(c)

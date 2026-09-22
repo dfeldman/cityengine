@@ -17,7 +17,9 @@ export function carnavaletCourt(out: MeshBuilder, fit: Fit): void {
   const bronze = hex('#3d4a40')
   const slate = hex('#6a7076')
   const { hx, hz } = fit
-  const g = 0.5
+  // the model stands 0.5 m sunk; its own ground a little above the city's pavement (+0.15), which it
+  // replaces here — at 0.5 the pavement, drawn with depth now, hid the gravel and lawns (BUGS.md #14)
+  const g = 0.7
   block(out, -hx, hx, -hz, hz, 0, 0.56, hex('#cfc6b3'))
   // the corps de logis at the head of the court: its own building, OSM has none here
   block(out, -hx - 2, hx + 2, hz, hz + 10, 0, 12, stone)
