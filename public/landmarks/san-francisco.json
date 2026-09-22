@@ -38,5 +38,7 @@
   {"include": "san-francisco/waterfront-1.json"},
   {"include": "san-francisco/waterfront-2.json"},
   {"include": "san-francisco/chinatown-1.json"},
-  {"include": "san-francisco/chinatown-2.json"}
+  {"include": "san-francisco/chinatown-2.json"},
+  {"include": "san-francisco/restyle-1.json"},
+  {"include": "san-francisco/restyle-2.json"}
 ]
