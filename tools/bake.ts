@@ -618,7 +618,29 @@ async function bake(spec: CitySpec): Promise<void> {
    * off the steps. Anything the size of a building goes; anything the size of a hill — Nob Hill is half a
    * kilometre across — survives.
    */
-  const ground = bareEarth(heights, cols, rows, 3)
+  /*
+   * …over LAND. Water samples are left out of the minimum: the river, a basin or a lock is metres below its
+   * quays, and the 60 m minimum dragged every street along the water down to it — so the bake ramped the
+   * streets round the Pont Morland up 3–4 m to their own bridge, over a place painted at the foot of the ramps
+   * (BUGS.md #31). The water keeps its own level (its lowest bank less the region's drop).
+   */
+  const wetRings = areas.filter((a) => a.kind === 'water').map((a) => ({ ring: a.ring, holes: a.holes ?? [] }))
+  const inRing = (r: number[], x: number, z: number): boolean => {
+    let o = false
+    for (let i = 0, j = r.length - 2; i < r.length; j = i, i += 2) {
+      if ((r[i + 1] > z) !== (r[j + 1] > z) && x < ((r[j] - r[i]) * (z - r[i + 1])) / (r[j + 1] - r[i + 1]) + r[i]) o = !o
+    }
+    return o
+  }
+  const wetMask: boolean[] = []
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const x = tx0 + c * STEP
+      const z = tz0 + r * STEP
+      wetMask.push(wetRings.some((w) => inRing(w.ring, x, z) && !w.holes.some((h) => inRing(h, x, z))))
+    }
+  }
+  const ground = bareEarth(heights, cols, rows, 3, wetMask)
   const datum = sampleGrid(ground, cols, rows, tx0, tz0, STEP, 0, 0)
   const datumRaw = datum
   for (let i = 0; i < ground.length; i++) ground[i] = Math.round((ground[i] - datum) * 100) / 100
@@ -662,11 +684,12 @@ async function bake(spec: CitySpec): Promise<void> {
    * heights — the ride graph's grade, the renderer's decks.
    */
   const groundAt = (x: number, z: number): number => sampleGrid(ground, cols, rows, tx0, tz0, STEP, x, z)
-  const waterBodies = areas.filter((a) => a.kind === 'water').map((a) => {
-    const ring = unpackPoints(a.ring)
-    // one level for the whole body, the lowest ground it touches, as the renderer draws it
-    return { ring, level: ring.reduce((m, q) => Math.min(m, groundAt(q.x, q.z)), Infinity) }
-  })
+  // the water's own surface, as the renderer draws it: one level per river, its lowest bank less the region's
+  // drop (city/package.ts waterLevels). Taken at bank level, every bridge over the Seine — and the Pont
+  // Morland over the Arsenal's mouth — was lifted the full clearance above its own quays (BUGS.md #31, #37)
+  const wetAreas = areas.filter((a) => a.kind === 'water')
+  const wetLevels = waterLevels(wetAreas, groundAt, streetRegion.riverDrop ?? 0)
+  const waterBodies = wetAreas.map((a, k) => ({ ring: unpackPoints(a.ring), level: wetLevels[k] }))
   const decks = bridgeHeights(kept, { water: waterBodies, ground: groundAt, buried })
   /*
    * Elevated railways (the Loop's L) by a direct rule rather than the street chains: an L structure runs at
@@ -1136,7 +1159,7 @@ function pointInRing(ring: { x: number; z: number }[], x: number, z: number): bo
 }
 
 /** Min over a square window of `r` cells, then max over the same, then two box blurs. */
-function bareEarth(h: number[], cols: number, rows: number, r: number): number[] {
+function bareEarth(h: number[], cols: number, rows: number, r: number, wet?: boolean[]): number[] {
   const at = (a: number[], c: number, w: number): number =>
     a[Math.max(0, Math.min(rows - 1, w)) * cols + Math.max(0, Math.min(cols - 1, c))]
   const pass = (src: number[], f: (a: number, b: number) => number, rad: number): number[] => {
@@ -1159,7 +1182,9 @@ function bareEarth(h: number[], cols: number, rows: number, r: number): number[]
     }
     return out
   }
-  const opened = pass(pass(h, Math.min, r), Math.max, r)
+  // water left out of the minimum (+∞) and the maximum (−∞); a cell with only water round it keeps its own
+  const lowered = pass(wet ? h.map((v, i) => (wet[i] ? Infinity : v)) : h, Math.min, r).map((v, i) => (Number.isFinite(v) ? v : h[i]))
+  const opened = pass(wet ? lowered.map((v, i) => (wet[i] ? -Infinity : v)) : lowered, Math.max, r).map((v, i) => (Number.isFinite(v) ? v : lowered[i]))
   const mean = (a: number, b: number): number => a + b
   let blurred = opened
   for (let i = 0; i < 2; i++) {

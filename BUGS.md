@@ -38,13 +38,13 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 28 | fixed | Both banks of the Seine: 4–5 near-parallel OSM paths that periodically meet — confusing to ride | user, 2026-09-22 |
 | 29 | fixed | Underground Métro station rooms drawn as 20 m buildings on the squares above (Place de la République) | views, 2026-09-22 |
 | 30 | fixed | The J paths overlay is ugly and needed all the time: want a subtle, usually-on path display (thin lines, no one-way marks, junctions highlighted) | user, 2026-09-22 |
-| 31 | open | Messy ground and the camera below ground near a bridge (48.846945, 2.366215) | user, 2026-09-22 |
+| 31 | fixed | Messy ground and the camera below ground near a bridge (48.846945, 2.366215) | user, 2026-09-22 |
 | 32 | open | An errant footbridge from OSM near 48.849195, 2.372189 | user, 2026-09-22 |
 | 33 | fixed | The rider gets trapped in a very messy intersection and cannot get out (48.849354, 2.356970) | user, 2026-09-22 |
 | 34 | open | The trams are incredibly ugly | user, 2026-09-22 |
 | 35 | fixed | A building appears underwater (48.846324, 2.362785) | user, 2026-09-22 |
 | 36 | fixed | Z-fighting on a strange barrier in the river (48.848591, 2.359412) | user, 2026-09-22 |
-| 37 | open | The bridges need a lot of work to be usable and beautiful | user, 2026-09-22 |
+| 37 | fixing | The bridges need a lot of work to be usable and beautiful | user, 2026-09-22 |
 
 ---
 
@@ -482,3 +482,13 @@ no quay wall is drawn where both sides are water. ✅ `docs/shots/BUG36-river.pn
 the draped ground and hid the rider's wheels. The pavement writes no depth again; the walls running on under
 it stay hidden by the buildings' occluder at 0.15 m under the ground (#14 re-checked, `docs/shots/views/bug26/`).
 ✅ `docs/shots/BUG26-alma.png`.
+
+**#31 fixed, and most of #37's heights (2026-09-22):** three faults in the bridge heights (tools/bridges.ts,
+tools/bake.ts). (1) A way JOINING a bridge (its own next piece, a cycle track meeting its end) counted as a way
+passing UNDER it, lifting the deck 5.5 m over its neighbour. (2) The water under a bridge was taken at the
+level of its banks, not its surface, so every bridge over the Seine got the full clearance above its own quays;
+it now uses the rendered river level (`waterLevels`), clearance 3.5 m above the water — a gentle hump of about
+1 m over Paris's quays. (3) The bare-earth minimum reached into the water and dragged the streets along it
+down; water is now left out of it. Central Paris ramps 761 → 409. The Pont Morland: a short 2.4% ramp, the place
+at street level. ✅ `docs/shots/BUG31-pont-morland.png`; Marais quais unchanged (`views/bridges-after`).
+#37 still wants the bridges' own designs and cleaner deck edges.

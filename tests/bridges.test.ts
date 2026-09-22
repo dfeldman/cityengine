@@ -11,17 +11,18 @@ describe('bridge heights', () => {
     bridgeHeights([e], { water: [river(-150, 150)], ground: flat })
     expect(e.heights![0]).toBeCloseTo(0)
     expect(e.heights![e.heights!.length - 1]).toBeCloseTo(0)
-    expect(Math.max(...e.heights!)).toBeCloseTo(5)   // clearance over the water, at the middle
+    expect(Math.max(...e.heights!)).toBeCloseTo(3.5)   // clearance over the water, at the middle
   })
 
   it('keeps a short steep span level and ramps the approaches instead', () => {
-    const e: BridgeEdge = { id: 1, a: 1, b: 2, points: [-50, 0, 0, 0, 50, 0], heights: [0, 0, 0], bridge: true, layer: 1 }
-    const approach: BridgeEdge = { id: 2, a: 3, b: 1, points: [-150, 0, -50, 0], heights: [0, 0] }
-    const r = bridgeHeights([e, approach], { water: [river(-40, 40)], ground: flat })
-    expect(e.heights!.every((h) => Math.abs(h - 5) < 1e-6)).toBe(true)
+    // 60 m: a 3.5 m hump in so short a span would be steeper than the 6% allowed
+    const e: BridgeEdge = { id: 1, a: 1, b: 2, points: [-30, 0, 0, 0, 30, 0], heights: [0, 0, 0], bridge: true, layer: 1 }
+    const approach: BridgeEdge = { id: 2, a: 3, b: 1, points: [-130, 0, -30, 0], heights: [0, 0] }
+    const r = bridgeHeights([e, approach], { water: [river(-25, 25)], ground: flat })
+    expect(e.heights!.every((h) => Math.abs(h - 3.5) < 1e-6)).toBe(true)
     expect(r.ramps).toBe(1)
     // the approach climbs to the deck at the bridge end, and is on the ground 60 m out
-    expect(approach.heights![1]).toBeCloseTo(5)
+    expect(approach.heights![1]).toBeCloseTo(3.5)
     expect(approach.heights![0]).toBeCloseTo(0)
   })
 
@@ -54,7 +55,7 @@ describe('a bridge in several pieces', () => {
     expect(pieces[0].heights![0]).toBeCloseTo(0)
     expect(pieces[2].heights![pieces[2].heights!.length - 1]).toBeCloseTo(0)
     // the middle piece carries the crown, and the joins agree
-    expect(Math.max(...pieces[1].heights!)).toBeCloseTo(5, 1)
+    expect(Math.max(...pieces[1].heights!)).toBeCloseTo(3.5, 1)
     expect(pieces[0].heights![pieces[0].heights!.length - 1]).toBeCloseTo(pieces[1].heights![pieces[1].heights!.length - 1])
   })
 })

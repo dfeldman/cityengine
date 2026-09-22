@@ -36,7 +36,8 @@ export interface BridgeWorld {
   buried?: Pt[][]
 }
 
-const CLEARANCE_WATER = 5
+/** above the water's surface: with Paris's 2.5 m drop to the river, a gentle 1 m hump over its quays */
+const CLEARANCE_WATER = 3.5
 const PER_LAYER = 5.5
 const RAMP = 60
 const MAX_HUMP_GRADE = 0.06
@@ -161,11 +162,21 @@ export function bridgeRise(e: BridgeEdge, all: BridgeEdge[], world: BridgeWorld,
   // a way on a lower layer passing under it
   const layer = e.layer ?? 1
   let need = -Infinity
+  let footOnlyUnder = false
   for (const o of all) {
     // a way below grade (a tunnel, the Pedway, Lower Wacker) is not drawn and needs no clearing: counting
     // it lifted the Loop's footbridges 11–16 m over corridors that are underground
     if (o.id === e.id || o.bridge || o.tunnel || (o.layer ?? 0) < 0 || (o.layer ?? 0) >= layer) continue
+    // a way that JOINS the bridge (its own continuation, a cycle track meeting its end) touches it and does not
+    // pass under it: counted, it lifted the Pont Morland 3.3 m over its own next piece (BUGS.md #31)
+    if (o.a === e.a || o.a === e.b || o.b === e.a || o.b === e.b) continue
     const q = pts(o.points)
+    if (o.foot && !e.foot) {
+      for (let i = 1; i < p.length && !footOnlyUnder; i++) {
+        for (let j = 1; j < q.length; j++) if (cross(p[i - 1], p[i], q[j - 1], q[j]) !== null) { footOnlyUnder = true; break }
+      }
+      continue
+    }
     for (let i = 1; i < p.length; i++) {
       for (let j = 1; j < q.length; j++) {
         if (cross(p[i - 1], p[i], q[j - 1], q[j]) === null) continue
@@ -175,6 +186,12 @@ export function bridgeRise(e: BridgeEdge, all: BridgeEdge[], world: BridgeWorld,
     }
   }
   if (need > -Infinity) return { rise: Math.max(0, need), over: 'way' }
+  /*
+   * Over nothing but footpaths — the Pont Morland over the Port de l'Arsenal promenade, which runs beneath in a
+   * vault the terrain cannot show: at grade. Lifted 5.5 m over the path, it stood on ramps 60 m long with the
+   * place round it painted at the foot of them (BUGS.md #31).
+   */
+  if (footOnlyUnder) return { rise: 0, over: 'nothing' }
   return { rise: 2, over: 'nothing' }
 }
 
