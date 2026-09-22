@@ -24,6 +24,7 @@ import { tilePreparer } from './render/prepare.ts'
 import { quaysLayer } from './render/quays.ts'
 import { Plants } from './render/plants.ts'
 import { quickMarksLayer } from './render/quickmarks.ts'
+import { postersLayer } from './render/posters.ts'
 import { bridgeStructuresLayer, PARIS_BRIDGES } from './render/bridge-structures.ts'
 import { passagesLayer } from './render/passages.ts'
 import { boatsLayer } from './render/boats.ts'
@@ -239,6 +240,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   city.addLayer(passagesLayer(scene, city.terrain))
   // the buildings people steer by, marked by their kind: flags on the civic ones, towers on the churches (BUGS.md #41)
   city.addLayer(quickMarksLayer(scene, city.terrain, pkg.region))
+  // the posters on the Morris columns, from the region's poster library (PARIS_EXPAND §6 item 9)
+  if (!off.has('furniture')) city.addLayer(postersLayer(scene, city.terrain, pkg.region))
   // the péniches moored along the river (render/boats.ts)
   city.addLayer(boatsLayer(scene))
   mark('passages')

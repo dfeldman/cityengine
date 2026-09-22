@@ -728,12 +728,7 @@ export function morrisColumn(out: MeshBuilder): void {
   const g = PARIS_GREEN
   prism(out, 0, 0, 0, 0.3, 0.72, 12, g)
   prism(out, 0, 0, 0.3, 2.7, 0.6, 12, [0.92, 0.9, 0.84])
-  const posters: Rgb[] = [[0.78, 0.2, 0.18], [0.95, 0.8, 0.3], [0.2, 0.35, 0.6], [0.9, 0.9, 0.86], [0.15, 0.15, 0.17], [0.5, 0.7, 0.4]]
-  for (let i = 0; i < 12; i++) {
-    const a = ((i + 0.5) / 12) * Math.PI * 2
-    const c = posters[(i * 5) % posters.length]
-    box(out, Math.sin(a) * 0.605, 1.35 + ((i % 3) - 1) * 0.35, Math.cos(a) * 0.605, 0.12, 0.45, 0.01, c, FIXED)
-  }
+  // (its posters are the region's poster library, pasted round the drum: render/posters.ts)
   prism(out, 0, 0, 2.7, 2.85, 0.7, 12, g)
   prism(out, 0, 0, 2.85, 3.4, 0.66, 12, g, FIXED, 0.22)
   prism(out, 0, 0, 3.4, 3.7, 0.12, 8, g, FIXED, 0)

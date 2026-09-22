@@ -204,12 +204,16 @@ Tooling carried over: `tools/nested-parts.ts` (parts to replace with a model), `
    machinery.
 10. **Animated fountains, later (user, 2026-09-21):** the fountains' water (the Concorde's, the Vosges', Saint-
    Michel, Saint-Sulpice…) moving; postponed — the modelled basins come first.
-9. **Posters and billboards, eventually (user, 2026-09-21):** a library per city of images at STANDARD sizes
+9. ✅ (2026-09-22, first version: `render/posters.ts`, the Morris columns) **Posters and billboards, eventually (user, 2026-09-21):** a library per city of images at STANDARD sizes
    (Paris: the Morris column wrap, the 4 × 3 m wall poster, the bus-shelter panel; US cities: the 14 × 48 ft
    bulletin, the 12 × 24 ft poster), made in advance, placed on columns, shelters, blank walls and rooftops
    by region (`regions.json`): Paris has posters everywhere, US cities billboards everywhere. Many street
    objects carry a standard poster slot — every news stand, Morris column and bus shelter — so the library
    fills slots on furniture as well as walls. Later, not now.
+   Done so far: one texture page per region of sixteen invented 2:3 posters (an event word in the region's
+   language, dates, a bold figure in a strong palette; never a real campaign), bent round every Morris column
+   in two staggered tiers of six. Still wanted: the kiosques' frieze and shutter slots, bus shelters, the 4 × 3
+   wall posters, and the US billboard sizes.
 8. ✅ (2026-09-22, first version: `render/plants.ts`) **Better plants (user, 2026-09-21):** the non-tree planting — flower beds, box hedges, planters, the
    gardens' shrubs — from Trail Trainer's library of low-poly plants (`~/trailtrainer/public/plants`, made by
    `~/trailtrainer/tools/plantgen`; symlinked the way the trees are), instanced per tile like the trees and
