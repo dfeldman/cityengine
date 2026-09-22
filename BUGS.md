@@ -25,7 +25,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 15 | fixed | Signs still z-fight with the walls they hang on | user, 2026-09-21 |
 | 16 | open | On a narrow street with a curved awning the chase camera passes right through the awning (48.856762, 2.358575) | user, 2026-09-21 |
 | 17 | fixed | A rental bike station lies across the road instead of along it (48.855780, 2.357875) | user, 2026-09-21 |
-| 18 | open | Café tables show no top surface (likely wound facing down) | user, 2026-09-21 |
+| 18 | fixed | Café tables show no top surface (likely wound facing down) | user, 2026-09-21 |
 | 19 | fixed | The Colonne de Juillet at the Bastille is gone completely | user, 2026-09-21 |
 | 20 | open | Central Paris audit: 22 ride edges pass through buildings; 266 dead ends to triage | audit-ride, 2026-09-21 |
 | 21 | fixing | Notre-Dame needs real effort: the first pass is a sketch | user, 2026-09-21 |
@@ -315,6 +315,9 @@ count, footways still do not), used for docks and Morris columns. Re-shot from a
 
 **Seen:** user, 2026-09-21: the terrace tables' tops are not seen from above — likely the top cap of the
 `prism` in `table()` (render/terraces.ts) is wound facing down and culled.
+
+**Cause/fix:** as guessed — `prism`'s caps run clockwise seen from above, so they faced down. Fixed by #23's
+change: `MeshBuilder.quad` winds every quad to face its normal. Re-shot the three Marais terrace views: tops.
 
 ## 19. The Colonne de Juillet is gone
 
