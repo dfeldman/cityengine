@@ -209,7 +209,10 @@ take, and the nearest of them is 8.6 m away. Three changes, each general:
 3. while checking, the Pont de l'Archevêché was a dead end as well: its approach way's last 0.3 m was dropped
    by the bake's half-metre rule, which only folded short pieces FORWARD. A trailing piece now folds back into
    the edge before it (tools/bake.ts). Bridge ends may also land on a ground-level way within 3 m (`LANDING`).
-Dead ends in central Paris: 233 → 196 (the audit); ride edges through buildings 6 → 8, to look at under #20. All five cities
+Dead ends in central Paris: 233 → 203. Rule 2 first let courtyard footways through walls (Passage Lhomme), so
+it now refuses any path crossing a footprint. Ride edges through buildings: 6 → 7. The new one is Cité
+Popincourt's own pedestrian way, 4 m under a building's entrance, which is real (an untagged porch). Short
+edges with more than 2.5 m of climb (a join across levels): 18 → 17, none new. All five cities
 rebaked; tests pass.
 
 ## 10. The Cirque d'Hiver's horsemen block the road
@@ -324,7 +327,8 @@ drawn only where the wall backs both its feet. Also:
 - `City.passageAt` gives the vault height over a point, so the camera drops below the arch inside a real
   passage and `clearBehind` lets it follow through;
 - `window.__cityObj` is exposed for probes.
-Re-shot the report and the Pavillon du Roi views: clean.
+Re-shot the report and the Pavillon du Roi views: clean. The camera under a vault, checked in the Rue de
+Bretonvilliers arch (Marais, 48.850843, 2.358969): it stays under the vault, behind the rider, through the portal.
 
 ## 17. Bike-share station across the road
 

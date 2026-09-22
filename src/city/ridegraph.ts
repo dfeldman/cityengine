@@ -74,9 +74,11 @@ export function classify(edges: Edge[], mode: RideMode): RideEdge[] {
  * footpath chain under `JOIN_PATH` metres that reaches another ridden node is let in.
  */
 export const JOIN_PATH = 100
-export function joinDeadEnds(ridden: RideEdge[], all: Edge[]): RideEdge[] {
+export function joinDeadEnds(ridden: RideEdge[], all: Edge[], blocked?: (a: Point, b: Point) => boolean): RideEdge[] {
   const deg = degrees(ridden)
-  const paths = all.filter((e) => e.a !== e.b && !e.tunnel && !((e.layer ?? 0) < 0 && !e.bridge) && RUN_EXTRA.has(e.kind ?? ''))
+  // never a path through a building: a courtyard footway joined Passage Lhomme and Cité Popincourt through walls
+  const clear = (e: Edge): boolean => !blocked || e.points.every((q, i) => i === 0 || !blocked(e.points[i - 1], q))
+  const paths = all.filter((e) => e.a !== e.b && !e.tunnel && !((e.layer ?? 0) < 0 && !e.bridge) && RUN_EXTRA.has(e.kind ?? '') && clear(e))
   if (paths.length === 0) return ridden
   const at = new Map<number, Edge[]>()
   for (const e of paths) for (const n of [e.a, e.b]) (at.get(n) ?? at.set(n, []).get(n)!).push(e)
@@ -926,8 +928,8 @@ export function linkCarriageways(edges: RideEdge[], ids: Ids): RideEdge[] {
 /** The whole chain. */
 export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrides): RideGraph {
   const ids = new Ids()
-  const classified = mode === 'bike' ? joinDeadEnds(classify(edges, mode), edges) : classify(edges, mode)
   const blocked = overrides?.buildings ? footprintTest(overrides.buildings) : undefined
+  const classified = mode === 'bike' ? joinDeadEnds(classify(edges, mode), edges, blocked) : classify(edges, mode)
   let es = pruneStubs(largest(mode === 'bike' ? dropSidePaths(classified, ids, blocked) : classified))
   es = contract(collapseClusters(es, ids), ids)
   es = mergeParallel(es, ids)
