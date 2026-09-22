@@ -174,7 +174,8 @@ export class Life {
       }
       // a line, not a scrap: trains shuttling up and down 45 m of track at a tunnel mouth or a station throat
       // (the RER C by the Quai Saint-Bernard) looked like toys (BUGS.md #34)
-      if (length < 400) continue
+      // (Paris only: Chicago's L is mapped in short pieces, and 400 m would take three trains in four off it)
+      if (length < (this.citadis ? 400 : 60)) continue
       this.rails.push({ points, length, tram: r.kind === 'tram', metro: r.kind === 'subway', heights: r.heights })
     }
     this.rails.forEach((r, i) => {

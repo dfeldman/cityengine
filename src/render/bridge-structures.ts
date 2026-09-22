@@ -348,9 +348,10 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
     return q ? Math.max(intrados(q, s), under(s)) : under(s) - 0.5
   }
 
-  // for probes (tools/*): what each structure was built from
-  const dbg = ((globalThis as { __bridges?: Record<string, unknown> }).__bridges ??= {})
-  dbg[`${b.name ?? b.id}`] = { L: +L.toFixed(1), hw: +hw.toFixed(1), O: [+O.x.toFixed(1), +O.z.toFixed(1)], u: [+ux.toFixed(3), +uz.toFixed(3)], kind: style.kind,
+  // for probes (tools/*, with ?probe in the URL): what each structure was built from
+  const probing = typeof location !== 'undefined' && location.search.includes('probe')
+  const dbg = probing ? ((globalThis as { __bridges?: Record<string, unknown> }).__bridges ??= {}) : {} as Record<string, unknown>
+  if (probing) dbg[`${b.name ?? b.id}`] = { L: +L.toFixed(1), hw: +hw.toFixed(1), O: [+O.x.toFixed(1), +O.z.toFixed(1)], u: [+ux.toFixed(3), +uz.toFixed(3)], kind: style.kind,
     arches: arches.map((q) => [+q.a.toFixed(1), +q.b.toFixed(1), +q.spring.toFixed(1), +q.rise.toFixed(1)]),
     top: Array.from({ length: 11 }, (_, i) => +top((L * i) / 10).toFixed(1)), low: Array.from({ length: 11 }, (_, i) => +(lowBins[Math.round(((n - 1) * i) / 10)] ?? NaN).toFixed(1)) }
 

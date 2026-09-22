@@ -326,5 +326,26 @@ adds to the city-wide meshes (terraces, fringe, passages, quays, signs). Visual 
   Next of the A list: Concorde (obelisk, fountains), Grand/Petit Palais, Pont Alexandre III, Vendôme,
   Madeleine, Palais-Royal (Buren), Sainte-Chapelle, Conciergerie, Pont Neuf, Institut, Chaillot, École Militaire.
 
+**2026-09-22, the Seine and its monuments (read with BUGS.md):**
+- **Bridges** are structures built once from their OSM outlines (`man_made=bridge`, own Overpass query),
+  in `render/bridge-structures.ts` `PARIS_BRIDGES` (26 designs: stone arches with cutwaters and voussoirs,
+  iron ribs, girders, balustrades and lamps; the Pont Neuf's bastions, the Alexandre III's pylons). Sized
+  from the ways on them, the heights the carriageway's median. `tools/bridge-views.ts` makes a side view of
+  every named bridge. Still: Bir-Hakeim's métro deck, the Alexandre III's arch (too flat).
+- **Paved squares:** the `paved` area kind from `squaresQuery` (the Concorde, République, the parvis).
+- **New icons:** Grand Palais (`grandPalais`, placed at its outline's centre and size: a manifest entry with
+  `lat`/`lon` AND `size` is placed there, whatever its buildings), Colonne Vendôme (with a ride circle round
+  it), Palais de Chaillot (restyle) and the Trocadéro parvis (`trocaderoParvis`: the gilded figures, the
+  balustrade). Notre-Dame pass 3: recessed portals, arched flyers, raised 2.5 m to the parvis.
+- **Rolling stock** (`render/models.ts`): Citadis, métro MP 73, RER Z 2N for Paris; rail viaducts drawn per
+  tile at 6.5 m + 1.5 m a layer, so Line 6 is seen over the Boulevard de Grenelle; trains only on lines of
+  400 m or more in Paris.
+- **Elevated walks** (region `elevatedWalks`): the Coulée Verte on the Viaduc des Arts, with its hedges.
+- **Ride graph:** dead ends joined by footpaths and at tunnel mouths, trailing half-metre stubs kept, bridge
+  ends land on their approach, Seine walks at layer −1 count, car-park ramps out. Audit: 144 dead ends (the
+  rest real), 6 edges through buildings (box edge, a real porch).
+- Open: BUGS #37 (Bir-Hakeim, Alexandre III). Next on the Seine: Petit Palais, Conciergerie, Institut,
+  Assemblée, the parvis lawn (the Place du Trocadéro's pedestrian ways have no `area=yes`).
+
 Tools for comparing: `tools/compare-shots.ts <before> <after>` (per-view % changed), `tools/pair.ts` (side by
 side), `tools/measure-load.ts`.
