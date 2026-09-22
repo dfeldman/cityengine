@@ -46,7 +46,19 @@ About 18 900 building ways in the box. What they carry:
 | `name` | 9%, `wikidata` 2% | the landmark candidates: about 440 with wikidata |
 | material, colour, roof, start_date, architecture | under 0.5% each | effectively absent |
 
-So a building's type comes from **its geometry, its place and what is inside it**.
+So a building's type comes from **its geometry, its place and what is inside it** — and, from the city's own
+open data, **its age** (user, 2026-09-22: "if we can get construction date on buildings, we could adjust style
+based on that"). DataSF's Land Use dataset carries, per parcel, `yrbuilt`, the land use (residential, mixed,
+office, retail, industrial…) and the unit count, with the parcel's outline. Joined to the building by where it
+stands (tools/sf-parcels.ts, cached like Overpass), the year sorts the city into its eras:
+- before 1906: Victorian;
+- 1906–1920: Edwardian and the post-quake rebuild;
+- 1920–1945: stucco, Deco and Mediterranean;
+- 1945–1975: mid-century and the redevelopment;
+- after 1975: modern.
+
+The land use says whether a building is a house, a flat block, an office or a warehouse, which is exactly what
+the geometry could only guess.
 
 ### Building-type inference (the classifier, `src/city/sf/btype.ts`, run at bake)
 
@@ -113,7 +125,11 @@ Placed and oriented from the manifest as in Paris (`public/landmarks/san-francis
   Transit Center and its rooftop park.
 - **Squares:** Union Square (the Dewey Monument), Portsmouth Square, Washington Square, Alamo Square,
   Lafayette Park, Alta Plaza, Justin Herman Plaza with the Vaillancourt Fountain, and the Chinatown Dragon Gate.
-- **Beyond the box:** the Golden Gate Bridge, Alcatraz, the Bay Bridge, Sutro Tower, as sky furniture.
+- **The three icons, the priority** (user, 2026-09-22): the Golden Gate Bridge, the Bay Bridge (the west span's
+  suspension towers and the east span's single tower) and Sutro Tower. Each gets a proper generator, modelled
+  from reference photographs ("for big well-known structures we should use images as references"). They are
+  seen from half the city, so they stand at their real positions and sizes: in the scene where they are near,
+  as sky furniture beyond the far plane. Alcatraz too, on the water.
 
 Quick restyles by kind for the hundreds more (hospitals, schools, hotels, churches), as Paris's #41 did.
 
@@ -171,7 +187,38 @@ These make the world alive, as the Seine's boats did:
 7. Cable cars and the F-line.
 8. Bay traffic and fog.
 
-## 10. Progress and decisions (kept current — read this first on a new session)
+## 10. Backlog (user asks, 2026-09-22; not all at once)
 
+- **It is a biking and running game** (user): freeways and road detail matter little. The places people go to
+  exercise off the road matter a lot: waterfront promenades, park paths, stairways, trails.
+- **The west, as a later phase:** Golden Gate Park ("even though it is more natural and less buildings"), the
+  Presidio, Crissy Field, Lands End and Ocean Beach. This means growing the box west to about −122.511 and south
+  to about 37.7635, 11 × 5.3 km, which takes in the Richmond between them. Or it could be a second city joined at
+  the edge. Decide when the core is done.
+- **The Lyon Street Steps** (just inside the box's west edge, at Broadway) and the Filbert and Greenwich Steps:
+  stairways are where SF runs, so the run graph must include them.
+- **Specific buildings the city is recognised by** — "they don't have to be architecturally famous or big tourist
+  attractions, just things that make the city feel like the city":
+  - the Moscone Center;
+  - Salesforce Tower and the Transamerica Pyramid;
+  - Fisherman's Wharf;
+  - the Hilton Union Square (the 46-storey tower on O'Farrell);
+  - Parc 55;
+  - and the rest of the big unique buildings of that kind: the Marriott Marquis ("the jukebox"), the
+    Embarcadero Center towers, the Hyatt Regency atrium, 101 California, One Maritime Plaza, the St. Regis,
+    the Four Seasons, the Federal Building, the Bank of America Center (555 California).
+- **The Golden Gate Bridge, the Bay Bridge and Sutro Tower:** good generators, made from reference photographs
+  (§4).
+- **Construction dates** from DataSF, to pick style by era (§2).
+- **Public sculptural art** (user: "sf has a lot of public sculptural art — these should be attempted if possible.
+  not really as many statues like paris though"). OSM's `tourism=artwork` gives the positions; the abstract
+  pieces suit procedural models: Cupid's Span, the Vaillancourt Fountain, Sea Change, Language of the Birds,
+  the Hearts, and the Embarcadero's pieces.
+
+## 11. Progress and decisions (kept current — read this first on a new session)
+
+- 2026-09-22: palms landed (render/palms.ts + tools/palmgen/paint.py; ?palms=1 and tools/palm-shots.ts). There
+  are Canary Island date palms and Mexican fan palms, textured frond cards, three levels of detail. SF's flora is
+  render/sf/flora.ts: palms by district, 85% of plantings on the Embarcadero.
 - 2026-09-22: the box grown to about 5.6 × 4.5 km and rebaked. The census tool is written, and the findings are
   in §2.

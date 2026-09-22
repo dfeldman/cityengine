@@ -348,7 +348,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       ;(window as unknown as { crowdReady?: boolean }).crowdReady = true
     })
   })
-  const trees = new Vegetation(scene, city.terrain, new URL('trees/', document.baseURI).href)
+  const floraOf = regionKit(pkg.region).flora
+  const trees = new Vegetation(scene, city.terrain, new URL('trees/', document.baseURI).href,
+    floraOf?.((x, z) => new Projection(pkg.origin).toLatLon({ x, z })))
   if (!off.has('trees')) city.addLayer(trees.layer())
   mark('vegetation')
   // the models are a few megabytes, so the ride starts without them and they appear when they arrive

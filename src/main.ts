@@ -23,7 +23,10 @@ const style = document.createElement('style')
 style.textContent = HUD_CSS + MINIMAP_CSS + THEME_CSS + LOADING_CSS + CARD_CSS
 document.head.appendChild(style)
 
-if (params.get('showcase')) {
+if (params.get('palms')) {
+  const { palmShowcase } = await import('./palm-showcase.ts')
+  void palmShowcase(canvas, (Number(params.get('lod') ?? 0) as 0 | 1 | 2), params.get('view') === 'close')
+} else if (params.get('showcase')) {
   const { showcase } = await import('./showcase.ts')
   void showcase(canvas, params.get('style') ?? undefined)
 } else {

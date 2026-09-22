@@ -35,12 +35,10 @@ import { Mesh as BMesh } from '@babylonjs/core/Meshes/mesh'
 import type { Terrain } from '../city/terrain.ts'
 import { plantHash, unpackPlantings, type Planting } from '../city/plantings.ts'
 import type { TileLayer } from './city.ts'
+import { DEFAULT_FLORA, type Flora } from './flora.ts'
+import { palmModel } from './palms.ts'
 
-/** The species a city plants, and how often relative to each other. */
-// Street trees are SMALL. A poplar or a mature elm on a pavement is a forest giant leaning over the road;
-// what a city actually plants is something that stays under the windows of the first floor.
-const STREET_TREES: [string, number][] = [['maple', 4], ['birch', 3], ['ash', 3], ['beech', 1]]
-const PARK_TREES: [string, number][] = [['oak', 4], ['beech', 3], ['birch', 3], ['maple', 3], ['willow', 1]]
+// The species a city plants come from its region (render/flora.ts): San Francisco's include generated palms.
 
 interface TreeEntry { species: string; file: string; height: number; bounds?: { top: number } }
 
@@ -66,14 +64,17 @@ export class Vegetation {
    * LOD0 when it has none) beyond `NEAR_LOD` metres (PARIS_EXPAND §6 item 7). LOD0 of every tree in view was
    * seven million triangles at the Concorde, half of all there were.
    */
-  private models: { parts: Mesh[]; far: Mesh[]; farther: Mesh[]; park: boolean; top: number }[] = []
+  private models: { parts: Mesh[]; far: Mesh[]; farther: Mesh[]; park: boolean; top: number; palm?: boolean }[] = []
   private focus: { x: number; z: number } | null = null
   private plantedAt: { x: number; z: number } | null = null
 
-  constructor(scene: Scene, terrain: Terrain, assetBase: string) {
+  private readonly flora: Flora
+
+  constructor(scene: Scene, terrain: Terrain, assetBase: string, flora: Flora = DEFAULT_FLORA) {
     this.scene = scene
     this.base = assetBase
     this.terrain = terrain
+    this.flora = flora
   }
 
   get count(): number { return this.plantings.length }
@@ -165,8 +166,15 @@ export class Vegetation {
     }
 
     // a model is a group of meshes that must be instanced together
-    const models: { parts: Mesh[]; far: Mesh[]; farther: Mesh[]; park: boolean; top: number }[] = []
-    for (const [entries, park] of [[pick(STREET_TREES, 5), false], [pick(PARK_TREES, 5), true]] as const) {
+    const models: { parts: Mesh[]; far: Mesh[]; farther: Mesh[]; park: boolean; top: number; palm?: boolean }[] = []
+    // the generated palms (render/palms.ts), their textures beside the library's trees
+    for (const { kind, models: n } of this.flora.palms ?? []) {
+      for (let i = 0; i < n; i++) {
+        const m = palmModel(this.scene, new URL('../palms/', this.base).href, kind, 1000 * (kind === 'canary' ? 1 : 2) + i * 7919)
+        models.push({ ...m, park: false, palm: true })
+      }
+    }
+    for (const [entries, park] of [[pick(this.flora.street, 5), false], [pick(this.flora.park, 5), true]] as const) {
       for (const entry of entries) {
         const result = await SceneLoader.ImportMeshAsync('', this.base, entry.file, this.scene)
         const all = result.meshes.filter((m): m is Mesh => m instanceof Mesh && m.getTotalVertices() > 0)
@@ -250,21 +258,28 @@ export class Vegetation {
   private plant(): void {
     const models = this.models
 
-    const street = models.filter((m) => !m.park)
+    const street = models.filter((m) => !m.park && !m.palm)
     const parkland = models.filter((m) => m.park)
+    const palms = models.filter((m) => m.palm)
     const buckets = new Map<Mesh, Matrix[]>()
 
     this.plantings.forEach((p) => {
-      const pool = p.park && parkland.length > 0 ? parkland : street.length > 0 ? street : models
+      // a palm where the region plants them (the Embarcadero's row), by the planting's own hash so it is the same
+      // tree every session; in parks at half the rate
+      const h = plantHash(p.x, p.z)
+      const palmHere = palms.length > 0 && this.flora.palmChance
+        ? ((h >>> 11) % 1000) / 1000 < this.flora.palmChance(p.x, p.z) * (p.park ? 0.5 : 1) : false
+      const pool = palmHere ? palms : p.park && parkland.length > 0 ? parkland : street.length > 0 ? street : models
       // by where it stands, not by its place in a list: a streamed tile picks the same model every time
-      const model = pool[plantHash(p.x, p.z) % pool.length]
+      const model = pool[h % pool.length]
       /*
        * Sized by HEIGHT. The models are generated forest trees, ten to twenty metres and all different, and
        * one scale range for all of them made some street trees as tall as the buildings — which is not what
        * a city plants. A street tree is six to nine metres; each model is scaled to reach its planting's
        * height from its own measured top.
        */
-      const scale = Math.min(2, Math.max(0.1, p.height / model.top))
+      // (a palm is its own height, give or take: a street palm is taller than the street trees, not squeezed to them)
+      const scale = model.palm ? 0.85 + ((h >>> 5) % 100) / 330 : Math.min(2, Math.max(0.1, p.height / model.top))
       const matrix = Matrix.Compose(
         new Vector3(scale, scale, scale),
         Quaternion.RotationAxis(Vector3.Up(), p.spin),
