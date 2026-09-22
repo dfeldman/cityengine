@@ -809,5 +809,20 @@
     ],
     "stone": true,
     "note": "The portico to the quai, the drum with its paired pilasters, the ribbed lead dome with gilded ribs, the lantern."
+  },
+  {
+    "name": "Petit Palais",
+    "procedural": "petitPalais",
+    "osm": [
+      "relation/2778854"
+    ],
+    "lat": 48.866044,
+    "lon": 2.314969,
+    "rotateDeg": 90,
+    "size": [
+      130,
+      90
+    ],
+    "note": "The Ionic colonnade, the great arched entrance with its gilded gate, the ribbed dome; front to the Avenue Winston-Churchill (west)."
   }
 ]

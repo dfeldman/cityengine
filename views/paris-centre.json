@@ -2072,20 +2072,6 @@
   ]
  },
  {
-  "name": "Petit Palais — from the avenue",
-  "group": "landmark",
-  "from": [
-   48.8653,
-   2.313,
-   4
-  ],
-  "to": [
-   48.866,
-   2.3148,
-   12
-  ]
- },
- {
   "name": "Palais-Royal — Buren columns",
   "group": "landmark",
   "from": [
@@ -2153,6 +2139,20 @@
    48.85725,
    2.33722,
    18
+  ]
+ },
+ {
+  "name": "Petit Palais — from the avenue",
+  "group": "landmark",
+  "from": [
+   48.865857,
+   2.313355,
+   4
+  ],
+  "to": [
+   48.866044,
+   2.314969,
+   14
   ]
  }
 ]
