@@ -31,7 +31,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 21 | fixing | Notre-Dame needs real effort: the first pass is a sketch | user, 2026-09-21 |
 | 22 | open | The Place de la Concorde is drawn as grass; the real square is paved | views, 2026-09-21 |
 | 23 | open | Haussmann balconies read as solid dark lines, not ironwork | user, 2026-09-22 |
-| 24 | open | Heavy z-fighting on the buildings on the left at central Paris's start point (48.860446, 2.331791) | user, 2026-09-22 |
+| 24 | fixed | Heavy z-fighting on the buildings on the left at central Paris's start point (48.860446, 2.331791) | user, 2026-09-22 |
 | 25 | open | Dormers and a chimney float in mid-air over a low building (48.857914, 2.347074) | user, 2026-09-22 |
 | 26 | fixed | Riding below the ground: the rider and road sink under the pavement (48.863689, 2.297469) | user, 2026-09-22 |
 | 27 | fixed | Paths near the Alma / Trocadéro are unrideable: near-parallel paths merge and diverge, the rider is swept along | user, 2026-09-22 |
@@ -492,3 +492,7 @@ it now uses the rendered river level (`waterLevels`), clearance 3.5 m above the 
 down; water is now left out of it. Central Paris ramps 761 → 409. The Pont Morland: a short 2.4% ramp, the place
 at street level. ✅ `docs/shots/BUG31-pont-morland.png`; Marais quais unchanged (`views/bridges-after`).
 #37 still wants the bridges' own designs and cleaner deck edges.
+
+**#24 fixed:** the Louvre (relation 3262297) and a separately mapped wing inside it (way 1359877263) shared their
+outer wall. `insetNested` pulls such a building in by a hand's width, but since streaming it ran per tile and
+the two were filed in different tiles. It now runs in the bake over the whole city. ✅ `docs/shots/BUG24-louvre-walls.png`.

@@ -58,6 +58,7 @@ const worthNaming = (t: Record<string, string>): boolean =>
   score(t) >= 2 || ['church', 'school', 'museum', 'civic'].includes(landmarkKind(t))
 import getBuildingParamsFromOSMTags from '../src/vendor/streets-gl/osm/getBuildingParamsFromOSMTags.ts'
 import { region } from '../src/city/region.ts'
+import { insetNested } from '../src/city/nesting.ts'
 import { NeighbourGrid, centroid, hasHeightTag, inferLevels, taggedLevels, type TaggedNeighbour } from './heights.ts'
 
 const OUT = resolve(import.meta.dirname, '..', 'public', 'cities')
@@ -881,6 +882,11 @@ async function bake(spec: CitySpec): Promise<void> {
    * (`src/render/city.ts`), which cannot fail, so the bake no longer computes them.
    */
 
+  // a building mapped inside another pulled in a hand's width, so their shared walls stop z-fighting — here,
+  // over the whole city: per streamed tile the pair were often in different tiles and never met (BUGS.md #24)
+  const nested = insetNested(buildings)
+  buildings.length = 0
+  buildings.push(...nested)
   const pkg: CityPackage = {
     id: spec.id, name: spec.name, origin: spec.centre, radius: spec.radius, ground: spec.ground, region: spec.region,
     box: { x0: -ext.west, x1: ext.east, z0: -ext.south, z1: ext.north },

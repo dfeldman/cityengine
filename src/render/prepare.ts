@@ -4,7 +4,6 @@
  * done once over the whole package at load, which a streamed city does not have.
  */
 import { style as styleOf, type StyleId } from '../city/facade.ts'
-import { insetNested } from '../city/nesting.ts'
 import type { CityIndex, TileData } from '../city/tiles.ts'
 import { replacedIds, restyles, type LandmarkEntry } from './landmarks.ts'
 
@@ -51,7 +50,8 @@ export function tilePreparer(entries: LandmarkEntry[], index: Pick<CityIndex, 'o
       for (let k = 0; k < passagePts.length; k += 2) if (inside(b.ring, passagePts[k], passagePts[k + 1])) return true
       return false
     }
-    const buildings = insetNested(t.buildings.filter((b) => !replaced.has(b.id)
+    // (nested buildings are pulled in at bake time, over the whole city: city/nesting.ts)
+    const buildings = (t.buildings.filter((b) => !replaced.has(b.id)
       // a part with no height (OSM's height = min_height, round the Vosges arcades) has no walls, but it drew
       // its cornice anyway — a stone band in mid-air, z-fighting with the facade behind it
       && (b.height ?? Infinity) - (b.minHeight ?? 0) > 0.5
