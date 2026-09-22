@@ -14,7 +14,8 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import type { Scene } from '@babylonjs/core/scene'
 import { MeshBuilder } from './buildings.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
-import { box as boxModel, bus, cableCar, car, carriage, citadisCab, citadisMid, metroCar, rerCar, personArm, personBody, personHair, personHead, personLeg } from './models.ts'
+import { box as boxModel, bus, car, personArm, personBody, personHair, personHead, personLeg } from './models.ts'
+import { DEFAULT_STOCK, type RegionStock, type TrainKind } from './rolling-stock.ts'
 import { DAYLIGHT } from './facade-material.ts'
 import { blobMaterial, blobQuad, shadowOffset } from './shadows.ts'
 import type { Vehicle } from '../sim/traffic.ts'
@@ -107,11 +108,9 @@ const build = (fn: (out: MeshBuilder) => void): MeshBuilder => {
 export class Life {
   private readonly cars: Pool
   private readonly buses: Pool
-  private readonly carriages: Pool
-  private readonly trams: Pool
-  private readonly tramCabs: Pool
-  private readonly metro: Pool
-  private readonly citadis: boolean
+  /** the trains' cars, by kind: middle, head and tail pools */
+  private readonly stockPools: { kind: TrainKind; mid: Pool; head: Pool | null; tail: Pool | null }[] = []
+  private readonly stock: RegionStock
   private readonly bodies: Pool
   private readonly legs: Pool
   private readonly arms: Pool
@@ -120,20 +119,30 @@ export class Life {
   /** a stranger's bicycle, frame and wheels, facing +z */
   private readonly bikes: Pool
   private readonly blobs: Pool
-  private readonly rails: { points: { x: number; z: number }[]; length: number; tram: boolean; metro: boolean; heights?: number[] }[] = []
-  private readonly trains: { rail: number; s: number; dir: 1 | -1; speed: number; cars: number }[] = []
+  private readonly rails: { points: { x: number; z: number }[]; length: number; kind: 0 | 1 | 2; heights?: number[]; stops: number[] }[] = []
+  /** a train: where its head is along the rail, which way, its running speed and speed now, its dwell */
+  private readonly trains: { rail: number; s: number; dir: 1 | -1; speed: number; v: number; wait: number; last: number }[] = []
+  /** the stations trains stop at (the métro viaduct's), in local metres */
+  private readonly stations: { x: number; z: number }[]
   private readonly m = Matrix.Identity()
 
-  constructor(scene: Scene, pkg: CityPackage, budget = { cars: 90, buses: 16, people: 3000 }) {
+  constructor(scene: Scene, pkg: CityPackage, budget = { cars: 90, buses: 16, people: 3000 },
+              stock: RegionStock = DEFAULT_STOCK, stations: { x: number; z: number }[] = []) {
     this.cars = new Pool(scene, 'cars', build(car), budget.cars)
     this.buses = new Pool(scene, 'buses', build(bus), budget.buses)
-    // Paris's own rolling stock: double-deck RER cars on the main lines, the métro's cars on its viaducts
-    this.carriages = new Pool(scene, 'carriages', build(pkg.region === 'paris' ? rerCar : carriage), 40)
-    this.metro = new Pool(scene, 'metro', build(metroCar), pkg.region === 'paris' ? 40 : 1)
-    // Paris runs Citadis trams, articulated; San Francisco's "trams" are its cable cars (BUGS.md #34)
-    this.citadis = pkg.region === 'paris'
-    this.trams = new Pool(scene, 'trams', build(this.citadis ? citadisMid : cableCar), this.citadis ? 48 : 24)
-    this.tramCabs = new Pool(scene, 'tramCabs', build(citadisCab), this.citadis ? 48 : 1)
+    // the region's own rolling stock (render/rolling-stock.ts; Paris's RER, métro and Citadis, SF's cable cars)
+    this.stock = stock
+    this.stations = stations
+    for (const [i, kind] of [stock.rail, stock.metro, stock.tram].entries()) {
+      if (!kind) { this.stockPools.push(null as never); continue }
+      const name = ['carriages', 'metro', 'trams'][i]
+      this.stockPools.push({
+        kind,
+        mid: new Pool(scene, name, build(kind.mid), kind.capacity),
+        head: kind.head ? new Pool(scene, `${name}:head`, build(kind.head), Math.ceil(kind.capacity / 2)) : null,
+        tail: kind.tail ? new Pool(scene, `${name}:tail`, build(kind.tail), Math.ceil(kind.capacity / 2)) : null,
+      })
+    }
     this.bodies = new Pool(scene, 'people', build(personBody), budget.people)
     this.legs = new Pool(scene, 'legs', build(personLeg), budget.people * 2)
     this.arms = new Pool(scene, 'arms', build(personArm), budget.people * 2)
@@ -166,25 +175,41 @@ export class Life {
       // …except where it comes up on a viaduct (the Paris métro's Lines 2, 5 and 6), which is the one place a
       // rider sees a métro train
       if ((r.kind === 'subway' && !r.heights) || this.railIds.has(r.id)) continue
+      const kind: 0 | 1 | 2 = r.kind === 'tram' ? 2 : r.kind === 'subway' ? 1 : 0
+      if (!this.stockPools[kind]) continue
       this.railIds.add(r.id)
       const points = unpackPoints(r.points)
       let length = 0
       for (let i = 1; i < points.length; i++) {
         length += Math.hypot(points[i].x - points[i - 1].x, points[i].z - points[i - 1].z)
       }
-      // a line, not a scrap: trains shuttling up and down 45 m of track at a tunnel mouth or a station throat
-      // (the RER C by the Quai Saint-Bernard) looked like toys (BUGS.md #34)
-      // (Paris only: Chicago's L is mapped in short pieces, and 400 m would take three trains in four off it)
-      if (length < (this.citadis ? 400 : 60)) continue
-      this.rails.push({ points, length, tram: r.kind === 'tram', metro: r.kind === 'subway', heights: r.heights })
+      if (length < this.stock.minLine) continue
+      // the stations on this line: where along it each comes within 40 m
+      const stops: number[] = []
+      if (this.stockPools[kind].kind.stops) {
+        for (const st of this.stations) {
+          let best = { d: 40, s: -1 }
+          let acc = 0
+          for (let i = 1; i < points.length; i++) {
+            const a = points[i - 1]
+            const b = points[i]
+            const l = Math.hypot(b.x - a.x, b.z - a.z)
+            const t = l > 0 ? Math.max(0, Math.min(1, ((st.x - a.x) * (b.x - a.x) + (st.z - a.z) * (b.z - a.z)) / (l * l))) : 0
+            const d = Math.hypot(a.x + (b.x - a.x) * t - st.x, a.z + (b.z - a.z) * t - st.z)
+            if (d < best.d) best = { d, s: acc + t * l }
+            acc += l
+          }
+          if (best.s >= 0) stops.push(best.s)
+        }
+        stops.sort((p, q) => p - q)
+      }
+      this.rails.push({ points, length, kind, heights: r.heights, stops })
     }
     this.rails.forEach((r, i) => {
       if (i < from) return
-      // a tram is one car at a walking-plus pace; a cable car runs at about 15 km/h
-      this.trains.push(r.tram
-        ? { rail: i, s: (i * 137) % r.length, dir: i % 2 ? 1 : -1, speed: this.citadis ? 7 : 4.2, cars: this.citadis ? 4 : 1 }
-        : r.metro ? { rail: i, s: (i * 137) % r.length, dir: i % 2 ? 1 : -1, speed: 11, cars: 5 }
-        : { rail: i, s: (i * 137) % r.length, dir: i % 2 ? 1 : -1, speed: 14 + (i % 3) * 4, cars: 3 })
+      const k = this.stockPools[r.kind].kind
+      const speed = r.kind === 0 ? k.speed * (0.8 + (i % 3) * 0.2) : k.speed
+      this.trains.push({ rail: i, s: (i * 137) % r.length, dir: i % 2 ? 1 : -1, speed, v: speed, wait: 0, last: -1 })
     })
   }
 
@@ -200,14 +225,30 @@ export class Life {
     void groundY
   }
 
+  /** where the trains are (tools/: the probes aim at them): head position, kind, speed now, dwell left */
+  trainInfo(): { kind: number; x: number; z: number; heading: number; v: number; wait: number; stops: number }[] {
+    return this.trains.map((t) => {
+      const r = this.rails[t.rail]
+      const p = along(r.points, t.s)
+      const q = along(r.points, Math.max(0, Math.min(r.length, t.s - t.dir * 5)))
+      return { kind: r.kind, x: p.x, z: p.z, heading: Math.atan2(p.x - q.x, p.z - q.z), v: t.v, wait: t.wait, stops: r.stops.length }
+    })
+  }
+
+  private pools(): Pool[] {
+    const out = [this.cars, this.buses, this.bodies, this.legs, this.arms, this.heads, this.hairs, this.bikes, this.blobs]
+    for (const k of this.stockPools) if (k) out.push(k.mid, ...(k.head ? [k.head] : []), ...(k.tail ? [k.tail] : []))
+    return out
+  }
+
   get stats(): { vehicles: number; people: number } {
     return { vehicles: this.cars.count + this.buses.count, people: this.bodies.count }
   }
 
   update(dt: number, vehicles: readonly Vehicle[], walkers: readonly Walker[], at: { x: number; z: number },
-         skip?: ReadonlySet<number>, terrain?: Terrain): void {
+         skip?: ReadonlySet<number>, terrain?: Terrain, focus = at): void {
     const groundAt = (p: { x: number; z: number }): number => terrain?.heightAt(p.x, p.z) ?? 0
-    for (const p of [this.cars, this.buses, this.carriages, this.trams, this.tramCabs, this.metro, this.bodies, this.legs, this.arms, this.heads, this.hairs, this.bikes, this.blobs]) p.begin()
+    for (const p of this.pools()) p.begin()
     const sun = shadowOffset(DAYLIGHT.sun)
 
     /** Lay a blob under something `height` tall, `long` by `wide` on the ground, facing `heading`. */
@@ -277,15 +318,39 @@ export class Life {
       }
     })
 
-    // trains: they run their line end to end and turn round, which is what a terminus looks like
+    // trains: they run their line end to end and turn round, which is what a terminus looks like; the métro
+    // on its viaduct slows into each station, stands there with its doors open, and pulls away
     for (const t of this.trains) {
       const rail = this.rails[t.rail]
-      t.s += t.dir * t.speed * dt
-      if (t.s < 0 || t.s > rail.length) { t.dir = (-t.dir) as 1 | -1; t.s = Math.max(0, Math.min(rail.length, t.s)) }
+      const kp = this.stockPools[rail.kind]
+      const k = kp.kind
+      const trainLen = (k.cars - 1) * k.pitch
+      if (t.wait > 0) {
+        t.wait -= dt
+      } else {
+        // the next stop ahead: the head stops half a train past the station, so the train stands along it
+        let brake = Infinity
+        for (const st of rail.stops) {
+          const at = st + t.dir * (trainLen / 2)
+          const ahead = (at - t.s) * t.dir
+          if (ahead >= -0.5 && ahead < brake && Math.abs(at - t.last) > 1) brake = ahead
+        }
+        const A = 0.9
+        const target = Math.min(t.speed, Math.sqrt(2 * A * Math.max(0, brake)))
+        t.v = t.v < target ? Math.min(target, t.v + A * dt) : target
+        if (brake < 0.4 && t.v < 0.5) {
+          t.wait = 18 + (t.rail % 4) * 3
+          t.last = t.s + t.dir * brake
+          t.v = 0
+        }
+        t.s += t.dir * Math.max(t.v, brake < Infinity ? 0.3 : 0) * dt
+      }
+      if (t.s < 0 || t.s > rail.length) { t.dir = (-t.dir) as 1 | -1; t.s = Math.max(0, Math.min(rail.length, t.s)); t.last = -1 }
       const head = along(rail.points, t.s)
-      if (Math.hypot(head.x - at.x, head.z - at.z) > 420) continue
-      for (let c = 0; c < t.cars; c++) {
-        const s = t.s - t.dir * c * (rail.tram ? (this.citadis ? 8.3 : 9.5) : rail.metro ? 15.2 : this.citadis ? 24.3 : 18.6)
+      // near where is being looked at: the rider, or a frozen view's focus
+      if (Math.hypot(head.x - focus.x, head.z - focus.z) > 420) continue
+      for (let c = 0; c < k.cars; c++) {
+        const s = t.s - t.dir * c * k.pitch
         if (s < 0 || s > rail.length) continue
         const p = along(rail.points, s)
         // the rail's own direction from a chord that stays on it, then turned to the way of travel — the
@@ -297,32 +362,15 @@ export class Life {
         Matrix.ComposeToRef(Vector3.OneReadOnly,
           Quaternion.RotationYawPitchRoll(heading, 0, 0),
           new Vector3(p.x, 0.25 + (rail.heights ? profileAt(rail.points, rail.heights, s).y : groundAt(p)), p.z), this.m)
-        if (rail.tram && this.citadis) {
-          // the cab leads and trails (the last one turned round), the middle modules between; RATP white
-          const cab = c === 0 || c === t.cars - 1
-          if (cab && c === t.cars - 1) {
-            Matrix.ComposeToRef(Vector3.OneReadOnly, Quaternion.RotationYawPitchRoll(heading + Math.PI, 0, 0),
-              new Vector3(p.x, 0.25 + (rail.heights ? profileAt(rail.points, rail.heights, s).y : groundAt(p)), p.z), this.m)
-          }
-          ;(cab ? this.tramCabs : this.trams).push(this.m, 0.93, 0.94, 0.95)
-          blob(p, heading, 8.3, 2.8, 2.8)
-        } else if (rail.tram) {
-          // maroon, the Powell Street livery
-          this.trams.push(this.m, 0.52, 0.10, 0.12)
-          blob(p, heading, 9, 2.6, 2.6)
-        } else if (rail.metro) {
-          this.metro.push(this.m, 0.94, 0.94, 0.95)
-          blob(p, heading, 15, 2.6, 2.6)
-        } else {
-          this.carriages.push(this.m, this.citadis ? 0.93 : 0.78, this.citadis ? 0.93 : 0.79, this.citadis ? 0.94 : 0.82)
-          blob(p, heading, this.citadis ? 24 : 18, 3.4, 3.4)
-        }
+        const pool = c === 0 && kp.head ? kp.head : c === k.cars - 1 && kp.tail ? kp.tail : kp.mid
+        pool.push(this.m, k.colour[0], k.colour[1], k.colour[2])
+        blob(p, heading, k.shadow[0], k.shadow[1], k.shadow[2])
       }
     }
 
     if (this.riderBlob) blob(this.riderBlob.at, this.riderBlob.heading, 2.0, 0.7, 1.6)
 
-    for (const p of [this.cars, this.buses, this.carriages, this.trams, this.tramCabs, this.metro, this.bodies, this.legs, this.arms, this.heads, this.hairs, this.bikes, this.blobs]) p.end()
+    for (const p of this.pools()) p.end()
   }
 }
 

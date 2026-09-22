@@ -32,7 +32,7 @@ import { bridgeStructuresLayer, PARIS_BRIDGES } from './render/bridge-structures
 import { passagesLayer } from './render/passages.ts'
 import { boatsLayer } from './render/boats.ts'
 import { RiverTraffic, riverLine } from './render/river-traffic.ts'
-import { PARIS_FLEET } from './render/paris/boats.ts'
+import { regionKit } from './render/region-kits.ts'
 import { metroSignsLayer } from './render/metrosigns.ts'
 import { PathMap } from './render/pathmap.ts'
 import { region } from './city/region.ts'
@@ -267,7 +267,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // …and the boats under way on it (render/river-traffic.ts)
   let river: RiverTraffic | null = null
   if (!off.has('life')) void riverLine(document.baseURI, opts.city).then((pts) => { if (pts) river = new RiverTraffic(scene, pts, (x, z) => city.waterLevelAt(x, z),
-    pkg.region === 'paris' ? PARIS_FLEET : undefined) })
+    regionKit(pkg.region).fleet) })
   mark('passages')
   // the MÉTROPOLITAIN lettering on the Guimard entrances (render/metrosigns.ts)
   if (region(pkg.region).pointFurniture.metro === 'guimard') {
@@ -322,7 +322,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const crowd = new Crowd(graph, crowdLevel)
   mark('crowd')
   crowd.setWater(wholeWater(pkg).map((a) => ({ ring: unpackPoints(a.ring), holes: (a.holes ?? []).map(unpackPoints) })))
-  const life = new Life(scene, pkg as unknown as CityPackage)
+  const life = new Life(scene, pkg as unknown as CityPackage, undefined, regionKit(pkg.region).stock, city.viaductStations)
   onTile((a) => life.addRails(a.ready.rails))
   mark('life')
   // `?without=rider` is how the city is compared with and without the avatar kit, which brings its own
@@ -766,8 +766,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         traffic.update(dt, at, near)
         crowd.update(dt, at, near)
         strangers?.update(dt, crowd.all, at, city.terrain)
-        life.update(dt, traffic.all, crowd.all, at, strangers?.drawn, city.terrain)
-        river?.update(dt, frozen ? (held ? held.to : orbit.look) : at)
+        const focus = frozen ? (held ? held.to : orbit.look) : at
+        life.update(dt, traffic.all, crowd.all, at, strangers?.drawn, city.terrain, focus)
+        river?.update(dt, focus)
       }
       sky?.update(dt, at)
       trees.update(camera.position)
@@ -939,6 +940,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   w.__placed = () => landmarks?.placed ?? []
   w.__landmarks = landmarks
   w.__boats = () => river?.positions() ?? []
+  w.__trains = () => life.trainInfo()
   // the prepared tiles, for probing what reached the city (tools/, debugging)
   w.__tiles = prepared.tiles
   // nothing left to stream round the camera's focus (render/city.ts `idle`)

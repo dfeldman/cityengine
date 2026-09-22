@@ -14,8 +14,8 @@ import { MeshBuilder } from './buildings.ts'
 
 export type Rgb = [number, number, number]
 
-const BODY = 1      // recoloured per copy
-const FIXED = 0     // keeps its built colour
+export const BODY = 1      // recoloured per copy
+export const FIXED = 0     // keeps its built colour
 /**
  * A light source: keeps its built colour, and glows after dark.
  *
@@ -23,7 +23,7 @@ const FIXED = 0     // keeps its built colour
  * heads on its lamp posts reads as a power cut, and the lamps are most of what gives a night street its
  * rhythm — a row of warm points receding down the road.
  */
-const EMIT = 0.5
+export const EMIT = 0.5
 
 /** An axis-aligned box from its centre and half-extents. Six quads, correctly wound and normalled. */
 export function box(out: MeshBuilder, cx: number, cy: number, cz: number,
@@ -287,121 +287,6 @@ export function bus(out: MeshBuilder): void {
  * domed and carries equipment, and the body tucks in above the solebar. Trains are seen end-on down a track
  * more often than side-on, so the nose is where the effort goes.
  */
-/**
- * A tram, drawn as a San Francisco cable car because that is the tram this game has: short, high, with
- * open platforms at both ends and a clerestory roof. The body takes its colour per copy (the livery);
- * the cream window band, the roof and the running gear keep theirs. Half the length of a train carriage —
- * which is what every tram line was drawn with before, a seventeen-metre white box grinding up Powell
- * Street at train speed.
- */
-export function cableCar(out: MeshBuilder): void {
-  const cream: Rgb = [0.90, 0.84, 0.68]
-  const roof: Rgb = [0.72, 0.70, 0.66]
-  const dark: Rgb = [0.12, 0.12, 0.13]
-  const glass: Rgb = [0.30, 0.36, 0.40]
-  // the enclosed saloon in the middle, the livery below the windows
-  box(out, 0, 0.95, 0, 1.18, 0.45, 2.6, [1, 1, 1])
-  box(out, 0, 1.75, 0, 1.19, 0.35, 2.61, cream, FIXED)
-  box(out, 0, 1.78, 0, 1.2, 0.22, 2.2, glass, FIXED)
-  box(out, 0, 2.2, 0, 1.18, 0.1, 2.6, [1, 1, 1])
-  // open platforms at each end: a floor, corner posts and the roof carried over them
-  for (const e of [-1, 1]) {
-    box(out, 0, 0.62, e * 3.45, 1.2, 0.12, 0.85, [1, 1, 1])
-    for (const x of [-1.1, 1.1]) box(out, x, 1.45, e * 4.2, 0.05, 0.8, 0.05, dark, FIXED)
-  }
-  box(out, 0, 2.45, 0, 1.25, 0.12, 4.3, roof, FIXED)
-  box(out, 0, 2.66, 0, 0.7, 0.1, 3.4, roof, FIXED)
-  // the running gear, dark under the floor
-  box(out, 0, 0.32, 0, 0.9, 0.2, 3.6, dark, FIXED)
-}
-
-/**
- * A Paris tram (BUGS.md #34): an Alstom Citadis, as the RATP's T-lines run them — low floor, a long window
- * band, a raked cab. Articulated: `citadisCab` at each end (nose toward +z) and `citadisMid` between, each
- * module 8.2 m, the body tinted per instance (white, the RATP's pale grey).
- */
-function citadisBody(out: MeshBuilder, doors: number[]): void {
-  const glass: Rgb = [0.16, 0.2, 0.23]
-  const dark: Rgb = [0.13, 0.13, 0.14]
-  const roof: Rgb = [0.62, 0.64, 0.66]
-  const accent: Rgb = [0.35, 0.6, 0.45]
-  box(out, 0, 0.95, 0, 1.32, 0.6, 4.08, [1, 1, 1])
-  box(out, 0, 2.02, 0, 1.325, 0.52, 3.96, glass, FIXED)
-  for (const k of [-1.33, 1.33]) box(out, k, 1.52, 0, 0.012, 0.03, 3.96, [0.85, 0.86, 0.87], FIXED)
-  box(out, 0, 2.78, 0, 1.32, 0.24, 4.08, [1, 1, 1])
-  box(out, 0, 3.07, 0, 1.18, 0.07, 4.0, roof, FIXED)
-  box(out, 0, 0.3, 0, 1.24, 0.14, 3.95, dark, FIXED)
-  // the livery's stripe low down, and the doors: dark glazed leaves in both sides
-  for (const k of [-1.33, 1.33]) box(out, k, 0.62, 0, 0.012, 0.06, 4.0, accent, FIXED)
-  for (const z of doors) for (const k of [-1.335, 1.335]) box(out, k, 1.45, z, 0.012, 1.0, 0.62, glass, FIXED)
-  // the gangway bellows at each end
-  for (const e of [-1, 1]) box(out, 0, 1.6, e * 4.14, 1.18, 1.25, 0.08, dark, FIXED)
-}
-
-export function citadisMid(out: MeshBuilder): void {
-  citadisBody(out, [-1.9, 1.9])
-  // the pantograph on its roof: a folded arm and the collector bar
-  const dark: Rgb = [0.13, 0.13, 0.14]
-  box(out, 0, 3.22, 0, 0.6, 0.08, 1.2, [0.5, 0.52, 0.54], FIXED)
-  box(out, 0, 3.55, -0.3, 0.04, 0.3, 0.04, dark, FIXED)
-  box(out, 0, 3.55, 0.3, 0.04, 0.3, 0.04, dark, FIXED)
-  box(out, 0, 3.87, 0, 0.8, 0.03, 0.08, dark, FIXED)
-}
-
-export function citadisCab(out: MeshBuilder): void {
-  citadisBody(out, [-1.2])
-  const glass: Rgb = [0.16, 0.2, 0.23]
-  // the raked nose: a lower face, the big windscreen leaning back, the roof carried over it
-  box(out, 0, 0.95, 4.45, 1.28, 0.6, 0.4, [1, 1, 1])
-  box(out, 0, 2.0, 4.35, 1.22, 0.5, 0.28, glass, FIXED)
-  box(out, 0, 2.72, 4.2, 1.26, 0.2, 0.2, [1, 1, 1])
-  box(out, 0, 0.5, 4.82, 1.1, 0.12, 0.05, [0.13, 0.13, 0.14], FIXED)
-  for (const x of [-0.85, 0.85]) box(out, x, 0.95, 4.86, 0.18, 0.07, 0.02, [1.0, 0.95, 0.8], EMIT)
-  // the destination board over the windscreen
-  box(out, 0, 2.62, 4.42, 0.7, 0.09, 0.02, [1.0, 0.72, 0.2], EMIT)
-}
-
-/**
- * A Paris métro car on a viaduct (Line 6, MP 73, rubber-tyred): 15 m, boxy with a gently rounded roof, five
- * doors a side, the body tinted per instance (RATP white) over a blue-green skirt. Faces +z.
- */
-export function metroCar(out: MeshBuilder): void {
-  const glass: Rgb = [0.15, 0.19, 0.22]
-  const dark: Rgb = [0.12, 0.12, 0.13]
-  const band: Rgb = [0.12, 0.42, 0.5]
-  box(out, 0, 1.25, 0, 1.2, 0.95, 7.4, [1, 1, 1])
-  box(out, 0, 1.75, 0, 1.205, 0.38, 7.1, glass, FIXED)
-  box(out, 0, 2.28, 0, 1.12, 0.1, 7.35, [0.8, 0.81, 0.83], FIXED)
-  box(out, 0, 2.42, 0, 0.9, 0.06, 7.2, [0.72, 0.73, 0.75], FIXED)
-  for (const k of [-1.205, 1.205]) {
-    box(out, k, 0.62, 0, 0.012, 0.16, 7.4, band, FIXED)
-    for (const z of [-5.6, -2.8, 0, 2.8, 5.6]) box(out, k, 1.25, z, 0.013, 0.85, 0.55, glass, FIXED)
-  }
-  // the bogies' rubber tyres and guide wheels, dark under the floor
-  box(out, 0, 0.22, 0, 1.0, 0.2, 7.0, dark, FIXED)
-  for (const e of [-1, 1]) box(out, 0, 1.3, e * 7.45, 1.0, 0.9, 0.06, dark, FIXED)
-}
-
-/**
- * A double-deck RER / Transilien car (Z 2N family): 24 m, two rows of windows, white with the blue and red
- * band, the body tinted per instance. Faces +z.
- */
-export function rerCar(out: MeshBuilder): void {
-  const glass: Rgb = [0.15, 0.19, 0.22]
-  const dark: Rgb = [0.12, 0.12, 0.13]
-  box(out, 0, 2.05, 0, 1.45, 1.6, 11.9, [1, 1, 1])
-  box(out, 0, 3.72, 0, 1.3, 0.12, 11.8, [0.7, 0.71, 0.73], FIXED)
-  for (const k of [-1.455, 1.455]) {
-    box(out, k, 1.45, 0, 0.012, 0.35, 9.4, glass, FIXED)
-    box(out, k, 2.85, 0, 0.012, 0.38, 9.4, glass, FIXED)
-    box(out, k, 0.85, 0, 0.012, 0.09, 11.9, [0.13, 0.25, 0.55], FIXED)
-    box(out, k, 0.7, 0, 0.012, 0.05, 11.9, [0.75, 0.12, 0.15], FIXED)
-    for (const z of [-10.2, 10.2]) box(out, k, 1.65, z, 0.013, 1.05, 0.7, glass, FIXED)
-  }
-  box(out, 0, 0.35, 0, 1.1, 0.3, 11.2, dark, FIXED)
-  for (const e of [-1, 1]) box(out, 0, 2.0, e * 11.95, 1.2, 1.4, 0.06, dark, FIXED)
-}
-
 export function carriage(out: MeshBuilder): void {
   const L = 8.5
   const W = 1.42
