@@ -263,6 +263,7 @@ WALLS = {
     'stucco': lambda s, r: wall_render(s, r, stipple=4),
     'sfapartment': lambda s, r: wall_render(s, r, stipple=6),
     'chinatown': wall_brick,
+    'edwardian': wall_siding,
 }
 
 
@@ -722,6 +723,7 @@ WINDOWS = {
     'stucco': win_arched,
     'sfapartment': win_sfapartment,
     'chinatown': win_chinatown,
+    'edwardian': win_sfapartment,
 }
 
 

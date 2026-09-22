@@ -37,6 +37,7 @@ describe('San Francisco building types from geometry and place (SF_PLAN.md §2)'
     ['a 2005 SoMa condo block', f(37.7780, -122.4020, { height: 30, area: 1800, frontage: 30, depth: 60, record: rec(2005, 'MRES', 'A', 80) }), 'contemporary'],
     ['a 1926 office tower downtown', f(37.7910, -122.4010, { height: 80, area: 1600, frontage: 35, depth: 45, record: rec(1926, 'COMO', 'A') }), 'prewarOffice'],
     ['a 1928 hotel tower', f(37.7880, -122.4090, { height: 75, area: 2000, frontage: 40, depth: 50, record: rec(1928, 'COMH', 'A') }), 'hotel'],
+    ['a 1912 flat, Pacific Heights', f(37.7925, -122.4340, { height: 10, frontage: 8, record: rec(1912, 'MRES', 'D', 2) }), 'edwardianHouse'],
   ]
   for (const [name, feat, want] of withRecords) it(name, () => expect(archetypeOf(feat).archetype).toBe(want))
 })

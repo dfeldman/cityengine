@@ -524,6 +524,39 @@
         { "wall": "#c8d4cc", "trim": "#b0302a", "roof": "#2f6a4a", "accent": "#b0302a" },
         { "wall": "#f0ece4", "trim": "#2f6a4a", "roof": "#6a6a6a", "accent": "#b0302a" }
       ]
+    },
+    {
+      "id": "edwardian",
+      "name": "Edwardian",
+      "note": "San Francisco, 1906–1924: the flats and houses that rebuilt the city after the fire — two and three storeys on the 25-foot lot, a boxy bay through the upper floors, a flat roof behind a bracketed, dentilled cornice rather than a gable, clapboard or stucco in muted colours, and a garage cut into the ground storey since.",
+      "levels": [2, 3],
+      "levelHeight": [3.0, 3.3],
+      "groundHeight": [3.35, 3.6],
+      "bayWidth": [1.7, 2.3],
+      "pier": [0.35, 0.55],
+      "window": {
+        "kind": "sash",
+        "widthFrac": [0.52, 0.62],
+        "heightFrac": [0.66, 0.76],
+        "sill": 0.1
+      },
+      "ground": "garage",
+      "top": "cornice",
+      "cornice": {
+        "depth": 0.55,
+        "height": 0.55
+      },
+      "stringCourse": false,
+      "features": { "bayWindows": true },
+      "palettes": [
+        { "wall": "#d8d2c4", "trim": "#f4f1ea", "roof": "#5a5a5a", "accent": "#3f4a52" },
+        { "wall": "#c9d0cf", "trim": "#f6f6f2", "roof": "#555555", "accent": "#2f3e46" },
+        { "wall": "#e3d7b8", "trim": "#f7f3e8", "roof": "#5a5a5a", "accent": "#5a4a3a" },
+        { "wall": "#b8c4b0", "trim": "#f3f1e8", "roof": "#555555", "accent": "#3e4a3a" },
+        { "wall": "#e8e2d6", "trim": "#b9a07a", "roof": "#5a5a5a", "accent": "#4a3a2a" },
+        { "wall": "#cdbfae", "trim": "#f4efe6", "roof": "#555555", "accent": "#6a3a2e" },
+        { "wall": "#dfe4e8", "trim": "#ffffff", "roof": "#5a5e62", "accent": "#2c3e50" }
+      ]
     }
   ]
 }

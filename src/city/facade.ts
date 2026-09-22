@@ -36,7 +36,7 @@ export type StyleId =
   | 'haussmann' | 'brownstone' | 'classical' | 'brick' | 'bauhaus' | 'brutalist' | 'skyscraper' | 'marais'
   | 'tenement' | 'chicago' | 'victorian' | 'vosges' | 'opera' | 'operaGlass'
   // San Francisco's own (SF_PLAN.md §3): the Marina's 1930s stucco, the Edwardian apartment block, Chinatown
-  | 'stucco' | 'sfapartment' | 'chinatown'
+  | 'stucco' | 'sfapartment' | 'chinatown' | 'edwardian'
 
 export type GroundKind = 'shopfront' | 'stoop' | 'arcade' | 'glazed' | 'recessed' | 'plain' | 'garage'
 export type TopKind = 'cornice' | 'parapet' | 'mansard' | 'entablature' | 'flatband' | 'crown' | 'gable'

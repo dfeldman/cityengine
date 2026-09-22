@@ -15,7 +15,7 @@ const CITY = [
 describe('the style table', () => {
   it('has every style the game names, each with palettes and a sane level range', () => {
     expect(STYLES.map((s) => s.id).sort()).toEqual(
-      ['bauhaus', 'brick', 'brownstone', 'brutalist', 'chicago', 'classical', 'haussmann', 'marais', 'opera', 'operaGlass', 'skyscraper', 'stucco', 'sfapartment', 'chinatown', 'tenement', 'victorian', 'vosges'].sort(),
+      ['bauhaus', 'brick', 'brownstone', 'brutalist', 'chicago', 'classical', 'haussmann', 'marais', 'opera', 'operaGlass', 'skyscraper', 'stucco', 'sfapartment', 'chinatown', 'edwardian', 'tenement', 'victorian', 'vosges'].sort(),
     )
     for (const s of STYLES) {
       expect(s.palettes.length, `${s.id} needs more than one palette or every one of them is identical`)

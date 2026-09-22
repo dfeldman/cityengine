@@ -13,7 +13,7 @@ import DISTRICTS from './districts.json' with { type: 'json' }
 
 export type Archetype =
   | 'rowhouse' | 'marinaHouse' | 'apartment' | 'chinatown' | 'loft' | 'prewarOffice' | 'tower' | 'modern'
-  | 'retailBox' | 'civic' | 'church' | 'hotel' | 'pier' | 'midcentury' | 'contemporary'
+  | 'retailBox' | 'civic' | 'church' | 'hotel' | 'pier' | 'midcentury' | 'contemporary' | 'edwardianHouse'
 
 export type District = keyof typeof DISTRICTS.districts
 
@@ -96,7 +96,8 @@ export function archetypeOf(f: Features): { archetype: Archetype; district: Dist
   // what the record says, where it says it
   if (era) {
     const house = use === 'SRES' || (use === 'MRES' && (rec!.units <= 4 || h <= 13))
-    if ((era === 'victorian' || era === 'edwardian') && wood && house && h <= 16) return a('rowhouse')
+    if (era === 'victorian' && wood && house && h <= 16) return a('rowhouse')
+    if (era === 'edwardian' && house && h <= 16) return a('edwardianHouse')
     if (era === 'interwar' && house && h <= 13) return a(wood && district !== 'marina' && district !== 'cowhollow' && f.roll < 0.35 ? 'rowhouse' : 'marinaHouse')
     if (use === 'IND' || ((masonry || use === 'COMM') && f.area > 500 && (era === 'victorian' || era === 'edwardian' || era === 'interwar')
       && (district === 'soma' || district === 'yerbabuena' || district === 'rincon' || district === 'embarcadero' || district === 'northbeach' || district === 'wharf' || district === 'fidi'))) return a('loft')
@@ -142,6 +143,7 @@ export const STYLE_OF: Record<Archetype, StyleId> = {
   church: 'classical',
   hotel: 'classical',
   pier: 'classical',
+  edwardianHouse: 'edwardian',
   midcentury: 'bauhaus',
   contemporary: 'bauhaus',
 }
