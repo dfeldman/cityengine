@@ -27,7 +27,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 17 | fixed | A rental bike station lies across the road instead of along it (48.855780, 2.357875) | user, 2026-09-21 |
 | 18 | fixed | Café tables show no top surface (likely wound facing down) | user, 2026-09-21 |
 | 19 | fixed | The Colonne de Juillet at the Bastille is gone completely | user, 2026-09-21 |
-| 20 | open | Central Paris audit: 22 ride edges pass through buildings; 266 dead ends to triage | audit-ride, 2026-09-21 |
+| 20 | fixed | Central Paris audit: 22 ride edges pass through buildings; 266 dead ends to triage | audit-ride, 2026-09-21 |
 | 21 | fixed | Notre-Dame needs real effort: the first pass is a sketch | user, 2026-09-21 |
 | 22 | fixed | The Place de la Concorde is drawn as grass; the real square is paved | views, 2026-09-21 |
 | 23 | fixed | Haussmann balconies read as solid dark lines, not ironwork | user, 2026-09-22 |
@@ -370,6 +370,19 @@ is in; one fitted to a building waits for its first; fitting falls back to any i
 **Seen:** `node --experimental-strip-types tools/audit-ride.ts paris-centre --list`: 22 ride edges through
 buildings, 266 dead ends inside the box. In the Marais the dead ends were nearly all real impasses, cours and
 villas; the through-building ones are passages OSM did not tag (see the Marais fix in PLAN item T).
+
+**Triage (2026-09-22):** 266 → 144 dead ends; 22 → 6 ride edges through buildings.
+- The Seine walks under the bridges (layer −1, open ground) count as surface (`onSurface`).
+- Unnamed dead-end scraps under 30 m are pruned.
+- Car-park ramps ("Accès/Sortie Parking…") are dropped.
+- Dead ends joined by footpaths (#9), and the Place Vendôme ringed round its new column (`colonneVendome`,
+  override circle).
+
+What remains is real:
+- impasses, cités, villas and private passages (Rue du Trésor, Rue Taylor, the Passages Communs of the
+  8th);
+- three links across boulevards and one service lane at the box's southern edge (lat 48.845–48.850);
+- the Cité Popincourt under its porch.
 
 ## 21. Notre-Dame needs real effort
 

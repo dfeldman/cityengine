@@ -666,5 +666,19 @@
       236,
       159
     ]
+  },
+  {
+    "name": "Colonne Vendôme",
+    "procedural": "colonneVendome",
+    "osm": [
+      "way/1458998019",
+      "way/227762241",
+      "way/227762240"
+    ],
+    "lat": 48.867492,
+    "lon": 2.329414,
+    "rotateDeg": 0,
+    "stone": false,
+    "note": "The bronze Trajan's column: pedestal and eagles, the spiral frieze, gallery, lantern, Napoleon; OSM's three column parts replaced."
   }
 ]

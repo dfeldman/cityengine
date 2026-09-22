@@ -60,6 +60,8 @@ export function classify(edges: Edge[], mode: RideMode): RideEdge[] {
       if (e.a === e.b || !onSurface(e)) return false
       const k = e.kind ?? 'residential'
       if (k === 'service' && e.service && NOT_A_STREET.has(e.service)) return false
+      // a car park's ramp down into it: a dead end into the ground (BUGS.md #20 — 20 of the audit's dead ends)
+      if (e.name && /^(Accès|Sortie|Entrée|Rampe)\b.*\b[Pp]arking|^Allée de [Pp]arking/.test(e.name)) return false
       return BIKE.has(k) || (mode === 'run' && RUN_EXTRA.has(k))
     })
     .map((e) => ({

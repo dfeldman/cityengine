@@ -22,6 +22,8 @@ export const RIDE_OVERRIDES: Record<string, { roundabouts: RoundaboutSpec[] }> =
       { name: 'Place de Varsovie', lat: 48.860491, lon: 2.290961, r: 24, R: 55 },
       { name: "Place de l'Alma", lat: 48.864463, lon: 2.301802, r: 30, R: 62 },
       { name: 'Carrefour du Pont de Sully', lat: 48.849354, lon: 2.356970, r: 16, R: 48 },
+      // the Place Vendôme is pedestrian in the middle, and its way ran straight through the column (BUGS.md #20)
+      { name: 'Place Vendôme', lat: 48.867492, lon: 2.329414, r: 9, R: 26 },
     ],
   },
 }
