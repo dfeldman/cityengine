@@ -259,6 +259,10 @@ WALLS = {
     'chicago': wall_terracotta,
     'victorian': wall_siding,
     'vosges': wall_brick,
+    # San Francisco's (SF_PLAN.md §3): smooth stucco, the apartment block's rougher render, Chinatown's painted brick
+    'stucco': lambda s, r: wall_render(s, r, stipple=4),
+    'sfapartment': lambda s, r: wall_render(s, r, stipple=6),
+    'chinatown': wall_brick,
 }
 
 
@@ -583,6 +587,76 @@ def win_vosges(size, rnd):
     return img
 
 
+def win_arched(size, rnd):
+    """The Marina's 1930s stucco: a round-headed casement window deep in a smooth wall — or, one in three, a
+    square steel-framed Deco window in small panes. The arch is what says Mediterranean."""
+    img, d = _bay(size, rnd, (246, 242, 234))
+    w = int(size * 0.46); x0 = (size - w) // 2; y0 = int(size * 0.2); y1 = int(size * 0.84)
+    f = (248, 246, 240)
+    if rnd.random() < 0.66:
+        r = w // 2
+        # the reveal: the arch's shadow, then the glass inside it, then the frame
+        d.pieslice([x0 - 3, y0 - 3, x0 + w + 3, y0 + 2 * r + 3], 180, 360, fill=(84, 80, 74, KEEP))
+        rect(d, [x0 - 3, y0 + r, x0 + w + 3, y1], (84, 80, 74), KEEP)
+        pane = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+        glass(pane, (x0 + 3, y0 + 3, x0 + w - 3, y1 - 3), rnd)
+        mask = Image.new('L', (size, size), 0)
+        md = ImageDraw.Draw(mask)
+        md.pieslice([x0 + 3, y0 + 3, x0 + w - 3, y0 + 2 * r - 3], 180, 360, fill=255)
+        md.rectangle([x0 + 3, y0 + r, x0 + w - 3, y1 - 3], fill=255)
+        img.paste(pane, (0, 0), mask)
+        rect(d, [x0 + w // 2 - 2, y0 + 6, x0 + w // 2 + 2, y1 - 3], f, KEEP)         # the mullion
+        line(d, [(x0 + 3, y0 + r), (x0 + w - 3, y0 + r)], f, KEEP, 3)                  # the transom at the springing
+        d.arc([x0, y0, x0 + w, y0 + 2 * r], 180, 360, fill=(*f, KEEP), width=4)
+    else:
+        reveal(d, (x0, y0 + 10, x0 + w, y1), 4)
+        glass(img, (x0 + 4, y0 + 14, x0 + w - 4, y1 - 4), rnd)
+        for t in (1 / 3, 2 / 3):
+            line(d, [(x0 + int(w * t), y0 + 14), (x0 + int(w * t), y1 - 4)], (60, 62, 64), KEEP, 2)
+        for t in (0.25, 0.5, 0.75):
+            y = int(y0 + 14 + (y1 - y0 - 18) * t)
+            line(d, [(x0 + 4, y), (x0 + w - 4, y)], (60, 62, 64), KEEP, 2)
+    rect(d, [x0 - 6, y1, x0 + w + 6, y1 + 7], (236, 230, 220), TINT)               # the sill
+    # a little iron balconette under one in four
+    if rnd.random() < 0.25:
+        for bx in range(x0 - 4, x0 + w + 6, 7):
+            line(d, [(bx, y1 - 22), (bx, y1)], (40, 38, 36), KEEP, 2)
+        line(d, [(x0 - 6, y1 - 22), (x0 + w + 6, y1 - 22)], (40, 38, 36), KEEP, 3)
+    return img
+
+
+def win_sfapartment(size, rnd):
+    """The Edwardian apartment block: a one-over-one sash in a plain moulded surround, a keystone over it."""
+    img = win_sash(size, rnd)
+    d = ImageDraw.Draw(img)
+    cx = size // 2
+    y = int(size * 0.13)
+    d.polygon([(cx - 10, y - 6), (cx + 10, y - 6), (cx + 7, y + 12), (cx - 7, y + 12)], fill=(250, 248, 242, TINT_HALF))
+    return img
+
+
+def win_chinatown(size, rnd):
+    """Chinatown: a sash window with its frame painted in the street's red or green, and one in three with a
+    little shrine's red lanterns or a pot of plants on the sill."""
+    img, d = _bay(size, rnd, (238, 232, 222))
+    w = int(size * 0.46); x0 = (size - w) // 2; y0 = int(size * 0.14); y1 = int(size * 0.8)
+    frame = rnd.choice([(170, 44, 38), (46, 104, 74), (236, 232, 222), (170, 44, 38)])
+    reveal(d, (x0, y0, x0 + w, y1), 4)
+    glass(img, (x0 + 4, y0 + 4, x0 + w - 4, y1 - 4), rnd, lit=0.3)
+    rect(d, [x0, (y0 + y1) // 2 - 2, x0 + w, (y0 + y1) // 2 + 2], frame, KEEP)
+    d.rectangle([x0, y0, x0 + w, y1], outline=(*frame, KEEP), width=5)
+    rect(d, [x0 - 8, y1, x0 + w + 8, y1 + 8], (232, 226, 214), TINT)
+    if rnd.random() < 0.35:
+        for lx in (x0 + w // 4, x0 + 3 * w // 4):
+            d.ellipse([lx - 9, y0 + 10, lx + 9, y0 + 32], fill=(206, 40, 30, KEEP))
+            line(d, [(lx, y0 + 32), (lx, y0 + 40)], (232, 190, 60), KEEP, 2)
+    elif rnd.random() < 0.3:
+        rect(d, [x0 + 6, y1 - 20, x0 + w - 6, y1 - 2], (120, 70, 48), KEEP)
+        for px0 in range(x0 + 8, x0 + w - 8, 12):
+            d.ellipse([px0, y1 - 34, px0 + 14, y1 - 16], fill=(62, 110, 52, KEEP))
+    return img
+
+
 def wall_opera(size: int, rnd: random.Random) -> Image.Image:
     """The Opéra's granite: big square slabs with fine dark joints, barely varied — a machined surface."""
     img = Image.new('RGBA', (size, size), (236, 236, 232, TINT))
@@ -645,6 +719,9 @@ WINDOWS = {
     'vosges': win_vosges,
     'opera': win_opera,
     'operaGlass': win_opera_glass,
+    'stucco': win_arched,
+    'sfapartment': win_sfapartment,
+    'chinatown': win_chinatown,
 }
 
 
@@ -948,9 +1025,66 @@ def ground_woodfront(size, rnd, accent):
     return img
 
 
+def ground_garage(size, rnd, accent):
+    """San Francisco's ground storey on a 25-foot lot: a garage door — the city was built before cars and
+    every house has since had one cut into its front — or, in the other painting, the front door up a short
+    stair under an arched hood. The grammar mixes the two along a street."""
+    img, d = _bay(size, rnd, (242, 238, 230))
+    # the two paintings alternate — garage, then door — so a street of them always has both
+    ground_garage.n = getattr(ground_garage, 'n', -1) + 1
+    if ground_garage.n % 2 == 0:
+        x0, x1 = int(size * 0.1), int(size * 0.9)
+        y0, y1 = int(size * 0.26), int(size * 0.94)
+        reveal(d, (x0, y0, x1, y1), 5)
+        door = rnd.choice([(232, 228, 218), (112, 76, 52), (196, 192, 184), (70, 74, 78), (150, 110, 70)])
+        rect(d, [x0 + 5, y0 + 5, x1 - 5, y1], door, KEEP)
+        for i in range(1, 5):                                                      # the sectional door's panels
+            y = y0 + 5 + int((y1 - y0 - 5) * i / 5)
+            line(d, [(x0 + 5, y), (x1 - 5, y)], shade(door, 0.78), KEEP, 2)
+        if rnd.random() < 0.4:                                                     # a row of little windows
+            gy = y0 + 5 + int((y1 - y0 - 5) * 0.2)
+            for gx in range(x0 + 14, x1 - 20, 30):
+                glass(img, (gx, gy - 12, gx + 20, gy - 2), rnd)
+        rect(d, [x0 - 8, y0 - 12, x1 + 8, y0 - 4], shade(accent, 1.0), KEEP)     # the lintel band
+    else:
+        dx0, dx1 = int(size * 0.3), int(size * 0.7)
+        dy0, dy1 = int(size * 0.18), int(size * 0.7)
+        r = (dx1 - dx0) // 2
+        d.pieslice([dx0 - 8, dy0 - 8, dx1 + 8, dy0 + 2 * r + 8], 180, 360, fill=(250, 248, 242, KEEP))
+        rect(d, [dx0, dy0 + r, dx1, dy1], (84, 80, 74), KEEP)
+        d.pieslice([dx0, dy0, dx1, dy0 + 2 * r], 180, 360, fill=(84, 80, 74, KEEP))
+        wood = rnd.choice([(96, 62, 40), (60, 70, 62), (40, 44, 52)])
+        rect(d, [dx0 + 5, dy0 + r, dx1 - 5, dy1], wood, KEEP)
+        glass(img, (dx0 + 12, dy0 + r + 8, dx1 - 12, dy0 + r + 50), rnd, lit=0.4)
+        for i in range(5):                                                         # the stair up to it
+            y = dy1 + i * ((int(size * 0.94) - dy1) // 5)
+            rect(d, [dx0 - 10 - i * 5, y, dx1 + 10 + i * 5, y + 8], shade((236, 232, 224), 1 - 0.03 * i), TINT)
+    rect(d, [0, int(size * 0.94), size, size], (206, 202, 196), TINT_HALF)
+    return img
+
+
+SIGN_WORDS_CHINATOWN = ['RESTAURANT', 'BAKERY', 'TEA', 'HERBS', 'JEWELRY', 'IMPORTS', 'DIM SUM', 'NOODLES',
+                        'SEAFOOD', 'GIFTS', 'MARKET', 'PHARMACY', 'BBQ', 'CAFE']
+
+
+def ground_chinatown(size, rnd, accent):
+    """Chinatown's shops: the ordinary shopfront, but its sign in the street's own colours — red on gold,
+    gold on red, white on green — and its awning striped the same way."""
+    img = ground_shopfront(size, rnd, (170, 44, 38), SIGN_WORDS_CHINATOWN)
+    d = ImageDraw.Draw(img)
+    # a pair of red lanterns under the fascia, one shop in two
+    if rnd.random() < 0.5:
+        for lx in (int(size * 0.2), int(size * 0.8)):
+            line(d, [(lx, int(size * 0.2)), (lx, int(size * 0.26))], (40, 36, 32), KEEP, 2)
+            d.ellipse([lx - 11, int(size * 0.26), lx + 11, int(size * 0.36)], fill=(214, 40, 30, KEEP))
+            rect(d, [lx - 5, int(size * 0.36), lx + 5, int(size * 0.38)], (232, 190, 60), KEEP)
+    return img
+
+
 GROUNDS = {
     'shopfront': ground_shopfront, 'stoop': ground_stoop, 'arcade': ground_arcade,
-    'glazed': ground_glazed, 'recessed': ground_recessed,
+    'glazed': ground_glazed, 'recessed': ground_recessed, 'garage': ground_garage,
+    'chinatown/shopfront': ground_chinatown,
     # a style's own painting of a ground kind, where it differs: `<style>/<kind>` wins over `<kind>`
     'marais/shopfront': ground_woodfront,
     # Haussmann is Paris's: its shops are named in French

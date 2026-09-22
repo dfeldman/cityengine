@@ -81,6 +81,8 @@ export interface PackedBuilding {
   holes?: number[][]
   /** nobody tagged a height and the bake guessed the level count (tools/heights.ts); for the report and debugging */
   levelsInferred?: true
+  /** what kind of building the region's classifier says it is (src/city/building-types.ts): 'rowhouse', 'loft'… */
+  archetype?: string
 }
 
 /**

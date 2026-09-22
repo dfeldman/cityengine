@@ -420,6 +420,100 @@
         { "wall": "#e4e7e8", "trim": "#eef0f0", "roof": "#c4c7c6", "accent": "#3a3f44" },
         { "wall": "#e0e4e6", "trim": "#eceeee", "roof": "#c0c3c2", "accent": "#383d42" }
       ]
+    },
+    {
+      "id": "stucco",
+      "name": "Marina stucco",
+      "note": "San Francisco, 1925–1940: the Marina and Cow Hollow rebuilt after 1915 — smooth pale stucco in cream, peach and mint, arched windows, a garage in the ground storey with the front door up a short stair beside it, a flat parapet with a tiled coping. Mediterranean and Art Deco, two or three storeys.",
+      "levels": [2, 3],
+      "levelHeight": [2.9, 3.2],
+      "groundHeight": [2.9, 3.2],
+      "bayWidth": [2.2, 3.0],
+      "pier": [0.5, 0.8],
+      "window": {
+        "kind": "casement",
+        "widthFrac": [0.5, 0.62],
+        "heightFrac": [0.62, 0.74],
+        "sill": 0.1
+      },
+      "ground": "garage",
+      "top": "parapet",
+      "cornice": {
+        "depth": 0.12,
+        "height": 0.45
+      },
+      "stringCourse": false,
+      "palettes": [
+        { "wall": "#efe4cf", "trim": "#b86a4a", "roof": "#9a5a3c", "accent": "#5a4636" },
+        { "wall": "#f1d6c2", "trim": "#f7efe4", "roof": "#a0604a", "accent": "#6b4a3a" },
+        { "wall": "#dfe8d8", "trim": "#f5f2ea", "roof": "#8d8a82", "accent": "#3f5a4a" },
+        { "wall": "#f4ecd9", "trim": "#d8c8a6", "roof": "#a05a3a", "accent": "#4a4038" },
+        { "wall": "#e8d9e2", "trim": "#f7f2f0", "roof": "#8a8580", "accent": "#5a4450" },
+        { "wall": "#f7f5ee", "trim": "#cfd8de", "roof": "#9a9690", "accent": "#3a4a5a" }
+      ]
+    },
+    {
+      "id": "sfapartment",
+      "name": "SF apartment",
+      "note": "San Francisco, 1906–1930: the Edwardian and 1920s apartment block that fills Nob Hill, Russian Hill, the Tenderloin and Pacific Heights — four to seven storeys of stucco or buff brick, bay windows in stacks up the front, a fire escape, a deep cornice, the entrance in a recess.",
+      "levels": [4, 7],
+      "levelHeight": [2.9, 3.2],
+      "groundHeight": [3.2, 3.8],
+      "bayWidth": [1.8, 2.4],
+      "pier": [0.45, 0.7],
+      "window": {
+        "kind": "sash",
+        "widthFrac": [0.52, 0.62],
+        "heightFrac": [0.62, 0.72],
+        "sill": 0.12
+      },
+      "ground": "recessed",
+      "top": "cornice",
+      "cornice": {
+        "depth": 0.7,
+        "height": 0.7
+      },
+      "stringCourse": true,
+      "features": { "bayWindows": "stacks", "fireEscape": true },
+      "palettes": [
+        { "wall": "#e9e1cf", "trim": "#f6f1e4", "roof": "#6a6a6a", "accent": "#4a4038" },
+        { "wall": "#d8cdb5", "trim": "#efe7d4", "roof": "#666666", "accent": "#3e3a34" },
+        { "wall": "#cfd3cf", "trim": "#f0efe8", "roof": "#626262", "accent": "#34403f" },
+        { "wall": "#e8d5b5", "trim": "#f4eadc", "roof": "#6a6660", "accent": "#5a3a2a" },
+        { "wall": "#dfe3e6", "trim": "#f7f7f4", "roof": "#5e6266", "accent": "#2f3e4e" },
+        { "wall": "#efe6d6", "trim": "#c9b99a", "roof": "#6a6a6a", "accent": "#4a3a30" }
+      ]
+    },
+    {
+      "id": "chinatown",
+      "name": "Chinatown",
+      "note": "San Francisco's Chinatown, rebuilt after 1906: three- to five-storey brick and stucco walk-ups painted in strong colours, iron balconies across the upper floors, shops and restaurants below under signs, and on the family-association buildings a green-tiled eave and red trim.",
+      "levels": [3, 5],
+      "levelHeight": [2.9, 3.2],
+      "groundHeight": [3.6, 4.2],
+      "bayWidth": [2.0, 2.6],
+      "pier": [0.5, 0.7],
+      "window": {
+        "kind": "sash",
+        "widthFrac": [0.5, 0.6],
+        "heightFrac": [0.6, 0.7],
+        "sill": 0.12
+      },
+      "ground": "shopfront",
+      "top": "cornice",
+      "cornice": {
+        "depth": 0.8,
+        "height": 0.6
+      },
+      "stringCourse": true,
+      "balcony": { "levels": [1, 2, 3, 4], "kind": "iron", "depth": 0.8, "continuous": true },
+      "palettes": [
+        { "wall": "#e8dcc0", "trim": "#b0302a", "roof": "#2f6a4a", "accent": "#2f6a4a" },
+        { "wall": "#d9b9a0", "trim": "#2f6a4a", "roof": "#2f6a4a", "accent": "#b0302a" },
+        { "wall": "#efe0a8", "trim": "#b0302a", "roof": "#6a6a6a", "accent": "#1f4a6a" },
+        { "wall": "#c8d4cc", "trim": "#b0302a", "roof": "#2f6a4a", "accent": "#b0302a" },
+        { "wall": "#f0ece4", "trim": "#2f6a4a", "roof": "#6a6a6a", "accent": "#b0302a" }
+      ]
     }
   ]
 }

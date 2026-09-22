@@ -35,8 +35,10 @@ import stylesData from './styles.json' with { type: 'json' }
 export type StyleId =
   | 'haussmann' | 'brownstone' | 'classical' | 'brick' | 'bauhaus' | 'brutalist' | 'skyscraper' | 'marais'
   | 'tenement' | 'chicago' | 'victorian' | 'vosges' | 'opera' | 'operaGlass'
+  // San Francisco's own (SF_PLAN.md §3): the Marina's 1930s stucco, the Edwardian apartment block, Chinatown
+  | 'stucco' | 'sfapartment' | 'chinatown'
 
-export type GroundKind = 'shopfront' | 'stoop' | 'arcade' | 'glazed' | 'recessed' | 'plain'
+export type GroundKind = 'shopfront' | 'stoop' | 'arcade' | 'glazed' | 'recessed' | 'plain' | 'garage'
 export type TopKind = 'cornice' | 'parapet' | 'mansard' | 'entablature' | 'flatband' | 'crown' | 'gable'
 export type WindowKind = 'french' | 'sash' | 'pedimented' | 'punched' | 'ribbon' | 'recessed' | 'curtain' | 'casement'
   | 'chicago' | 'vosges' | 'opera' | 'operaGlass'
@@ -63,7 +65,8 @@ export interface Style {
   setbacks?: boolean
   reveal?: number
   /** features beyond the bands every style has: New York's fire escapes, San Francisco's bay windows */
-  features?: { fireEscape?: boolean; bayWindows?: boolean }
+  /** bayWindows: true = a Victorian's one bay on its narrow front; 'stacks' = an apartment block's bays up a wide one */
+  features?: { fireEscape?: boolean; bayWindows?: boolean | 'stacks' }
   palettes: Palette[]
 }
 
@@ -414,7 +417,21 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number): Wa
    * a Victorian's lot is seven or eight metres wide and its long walls are party walls. Over the first two
    * bays, leaving the rest of the front for the door.
    */
-  if (st.features?.bayWindows && wallLength <= 9.5 && bays >= 2) {
+  /*
+   * …and the apartment block's: bays in stacks up a wide front, two window bays each with a flat bay between
+   * (the fire escape's, when there is one), from the first floor up — the ground storey is the entrance.
+   */
+  if (st.features?.bayWindows === 'stacks' && bays >= 4 && plan.storeys.length >= 3) {
+    const esc = st.features.fireEscape && bays >= 3 ? Math.floor((bays - 2) / 2) : -99
+    for (let b = 0; b + 2 <= bays; b += 3) {
+      if (b <= esc + 1 && b + 2 > esc) continue          // not across the fire escape
+      for (const s of plan.storeys) {
+        if (s.kind === 'ground') continue
+        features.push({ kind: 'bay', y0: s.y0, y1: s.y1, depth: 0.8, x0: margin + b * bayW, x1: margin + (b + 2) * bayW, colour: plan.palette.trim })
+      }
+    }
+  }
+  if (st.features?.bayWindows === true && wallLength <= 9.5 && bays >= 2) {
     const n = bays >= 3 ? 2 : 1
     for (const s of plan.storeys) {
       features.push({ kind: 'bay', y0: s.y0 + (s.kind === 'ground' ? 0.4 : 0), y1: s.y1, depth: 0.9,

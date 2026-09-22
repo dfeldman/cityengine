@@ -16,7 +16,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
 const BASE = process.env.SHOTS_BASE ?? 'http://localhost:5200'
-const STYLES = ['haussmann', 'brownstone', 'classical', 'brick', 'bauhaus', 'brutalist', 'skyscraper', 'marais', 'tenement', 'chicago', 'victorian']
+const STYLES = ['haussmann', 'brownstone', 'classical', 'brick', 'bauhaus', 'brutalist', 'skyscraper', 'marais', 'tenement', 'chicago', 'victorian', 'stucco', 'sfapartment', 'chinatown']
 
 const arg = (name: string, fallback = ''): string => {
   const hit = process.argv.slice(2).find((a) => a.startsWith(`--${name}=`))

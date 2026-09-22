@@ -133,11 +133,19 @@ export const CITIES: CitySpec[] = [
       + 'in triangles.',
   },
   {
+    /*
+     * San Francisco at Paris's scale (user, 2026-09-22: "roughly the size of the paris map"): the northeast of
+     * the city, from the Palace of Fine Arts and the Marina in the west to the Embarcadero and the Ferry
+     * Building in the east, Fisherman's Wharf and the north shore down past Market Street, Civic Center and
+     * Alamo Square's Painted Ladies. About 5.6 × 4.5 km. The origin stays on Nob Hill, where the ride starts —
+     * the hills are the point: Russian Hill, Telegraph Hill, Pacific Heights all touch 17% and more.
+     */
     id: 'san-francisco',
     region: 'san-francisco',
-    name: 'Nob Hill, San Francisco',
+    name: 'San Francisco',
     centre: { lat: 37.7930, lon: -122.4120 },
-    radius: 650,
+    radius: 3340,
+    box: { west: 3340, east: 2290, north: 1950, south: 2560 },
     ground: 'grass',
     styles: [
       { id: 'victorian', weight: 5 },
@@ -145,7 +153,7 @@ export const CITIES: CitySpec[] = [
       { id: 'classical', weight: 2 },
       { id: 'skyscraper', weight: 1 },
     ],
-    note: 'The hill. A grid laid over terrain that does not care about grids, which is the whole point of '
+    note: 'The hills. A grid laid over terrain that does not care about grids, which is the whole point of '
       + 'having elevation at all — the streets here touch 17% and riding them flat would be a lie about the '
       + 'place rather than a simplification of it.',
   },

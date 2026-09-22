@@ -1,0 +1,27 @@
+{
+  "_note": "San Francisco's districts for the building-type classifier (SF_PLAN.md §2): each has seed points (lat, lon) and a building is in the district of its nearest seed — a Voronoi map, rough at the edges on purpose, tuned by eye against the screenshots. `mix` is the district's prior over archetypes where the geometry leaves a choice.",
+  "districts": {
+    "fidi":         { "name": "Financial District", "seeds": [[37.7946, -122.3999], [37.7915, -122.4012], [37.7930, -122.4035], [37.7965, -122.4015]] },
+    "embarcadero":  { "name": "The Embarcadero", "seeds": [[37.7955, -122.3935], [37.7995, -122.3972], [37.8035, -122.4012], [37.8065, -122.4065], [37.7895, -122.3890], [37.7835, -122.3880]] },
+    "rincon":       { "name": "Rincon Hill", "seeds": [[37.7870, -122.3935], [37.7885, -122.3965]] },
+    "soma":         { "name": "South of Market", "seeds": [[37.7810, -122.3990], [37.7770, -122.4050], [37.7735, -122.4120], [37.7790, -122.3930], [37.7760, -122.3960]] },
+    "yerbabuena":   { "name": "Yerba Buena", "seeds": [[37.7845, -122.4010], [37.7825, -122.4040]] },
+    "unionsquare":  { "name": "Union Square", "seeds": [[37.7880, -122.4075], [37.7865, -122.4050], [37.7895, -122.4045]] },
+    "tenderloin":   { "name": "The Tenderloin", "seeds": [[37.7840, -122.4140], [37.7855, -122.4110], [37.7825, -122.4115]] },
+    "civic":        { "name": "Civic Center", "seeds": [[37.7795, -122.4185], [37.7805, -122.4155]] },
+    "hayes":        { "name": "Hayes Valley", "seeds": [[37.7762, -122.4245], [37.7745, -122.4215]] },
+    "western":      { "name": "Western Addition", "seeds": [[37.7800, -122.4330], [37.7765, -122.4345], [37.7790, -122.4420], [37.7830, -122.4280]] },
+    "japantown":    { "name": "Japantown", "seeds": [[37.7853, -122.4300]] },
+    "chinatown":    { "name": "Chinatown", "seeds": [[37.7941, -122.4078], [37.7960, -122.4065], [37.7925, -122.4060]] },
+    "northbeach":   { "name": "North Beach", "seeds": [[37.8000, -122.4100], [37.7985, -122.4072], [37.8015, -122.4125]] },
+    "telegraph":    { "name": "Telegraph Hill", "seeds": [[37.8022, -122.4052], [37.8005, -122.4030]] },
+    "nob":          { "name": "Nob Hill", "seeds": [[37.7925, -122.4150], [37.7915, -122.4110], [37.7905, -122.4180]] },
+    "russian":      { "name": "Russian Hill", "seeds": [[37.8000, -122.4190], [37.7978, -122.4222], [37.8025, -122.4175]] },
+    "polk":         { "name": "Polk Gulch", "seeds": [[37.7885, -122.4205], [37.7905, -122.4225]] },
+    "pacific":      { "name": "Pacific Heights", "seeds": [[37.7925, -122.4340], [37.7915, -122.4420], [37.7935, -122.4275]] },
+    "cowhollow":    { "name": "Cow Hollow", "seeds": [[37.7978, -122.4360], [37.7985, -122.4420]] },
+    "marina":       { "name": "The Marina", "seeds": [[37.8030, -122.4380], [37.8020, -122.4450], [37.8010, -122.4330]] },
+    "wharf":        { "name": "Fisherman's Wharf", "seeds": [[37.8080, -122.4150], [37.8072, -122.4185], [37.8085, -122.4110], [37.8062, -122.4225]] },
+    "fortmason":    { "name": "Fort Mason", "seeds": [[37.8055, -122.4305]] }
+  }
+}

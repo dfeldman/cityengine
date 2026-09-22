@@ -58,6 +58,7 @@ const worthNaming = (t: Record<string, string>): boolean =>
   score(t) >= 2 || ['church', 'school', 'museum', 'civic'].includes(landmarkKind(t))
 import getBuildingParamsFromOSMTags from '../src/vendor/streets-gl/osm/getBuildingParamsFromOSMTags.ts'
 import { region } from '../src/city/region.ts'
+import { classifierFor } from '../src/city/building-types.ts'
 import { insetNested } from '../src/city/nesting.ts'
 import { NeighbourGrid, centroid, hasHeightTag, inferLevels, taggedLevels, type TaggedNeighbour } from './heights.ts'
 
@@ -340,6 +341,7 @@ async function bake(spec: CitySpec): Promise<void> {
    * does everything else exactly as it would for a mapper's number.
    */
   const reg = region(spec.region)
+  const classify = classifierFor(spec.region)
   const taggedNear: TaggedNeighbour[] = []
   const ringOfWay = (w: OsmWay): { x: number; z: number }[] | null =>
     w.geometry && w.geometry.length >= 4 ? w.geometry.slice(0, -1).map((g) => proj.toLocal(g)) : null
@@ -418,7 +420,14 @@ async function bake(spec: CitySpec): Promise<void> {
       : tallest.has(owner.id) ? { ...owner.tags, 'building:levels': String(tallest.get(owner.id)) }
       : withLevels(owner.tags, ringOfWay(owner)).tags
     const ownerP = owner ? getBuildingParamsFromOSMTags(ownerTags!) as typeof p : undefined
-    const styleId = owner
+    // a region that knows its own city says what the building is (src/city/building-types.ts): SF's Victorians,
+    // lofts and towers from height, lot and district where OSM says only building=yes
+    const ownerRing = owner ? ringOfWay(owner) ?? ring : ring
+    const kind = classify?.(owner
+      ? { tags: owner.tags, ring: ownerRing, height: ownerP!.buildingHeight, levels: ownerP!.buildingLevels ?? tallest.get(owner.id),
+          lat: w.geometry[0].lat, lon: w.geometry[0].lon, id: owner.id, area: area(ownerRing) }
+      : { tags: w.tags, ring, height: p.buildingHeight, levels: p.buildingLevels, lat: w.geometry[0].lat, lon: w.geometry[0].lon, id: w.id, area: area(ring) }) ?? null
+    const styleId = kind ? styleFor(owner?.tags ?? w.tags, () => kind.style) : owner
       ? styleFor(owner.tags, () => chooseStyle({ levels: ownerP!.buildingLevels ?? tallest.get(owner.id),
         height: ownerP!.buildingHeight, material: ownerP!.buildingFacadeMaterial ?? p.buildingFacadeMaterial,
         building: owner.tags.building }, spec.styles, owner.id))
@@ -438,6 +447,7 @@ async function bake(spec: CitySpec): Promise<void> {
       minHeight: p.buildingMinHeight,
       ...roofFor(w.tags, p, styleId, ccwRing, w.id),
       ...(own.inferred ? { levelsInferred: true as const } : {}),
+      ...(kind ? { archetype: kind.archetype } : {}),
       // a part of a building whose outline its parts replace: that outline's id (a church's towers and apse
       // are the church, for its quick dress: render/prepare.ts)
       ...(ownerOf.has(w.id) && superseded.has(ownerOf.get(w.id)!.id) ? { partOf: ownerOf.get(w.id)!.id } : {}),
