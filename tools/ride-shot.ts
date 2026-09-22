@@ -9,6 +9,8 @@ const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=me
 const page = await browser.newPage({ viewport: { width: 1400, height: 800 } })
 await page.goto(`http://localhost:${arg('port', '5200')}/?city=${arg('city', 'paris-centre')}&at=${arg('at')}&freeze=1${process.argv.includes('--life') ? '' : '&without=life'}${arg('view') ? `&view=${arg('view')}` : ''}${arg('device') ? `&device=${arg('device')}` : ''}`)
 await page.waitForFunction('window.gameReady === true && window.riderReady === true', null, { timeout: 180_000 })
+if (process.argv.includes('--life')) await page.waitForFunction('window.crowdReady === true', null, { timeout: 180_000 }).catch(() => console.warn('(crowd still baking)'))
+await page.waitForFunction('window.treesReady === true', null, { timeout: 120_000 }).catch(() => {})
 // --clean: the interface off (for the console's screenshot.jpg)
 if (process.argv.includes('--clean')) await page.addStyleTag({ content: 'body > *:not(canvas):not(#app), #minimap { visibility: hidden !important }' })
 await page.waitForTimeout(2500)

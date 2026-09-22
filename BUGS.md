@@ -806,6 +806,10 @@ start. Shot: docs/shots/B45-after.png.
 the carriageway, and the high-visibility "continental" ladder of wide bars at busy crossings and near schools;
 not the Paris zebra of short dashes.
 
+**Closed, no change:** the user checked Street View, 2026-09-22: "the crossings are actually generally european,
+style, not us style. interesting". SF's crossings are the continental kind: wide bars across the crossing, the
+zebra the city already draws.
+
 ## 47. Trees sprouting out of buildings (San Francisco)
 
 **Seen:** user, 2026-09-22, after the city's street-tree list replaced the guessed boulevard rows.
@@ -849,3 +853,13 @@ from each face. Shot: docs/shots/B50-after.png ("SUE" at Sue's Hair Studio).
 
 **Seen:** user, 2026-09-22: "too many people wearing crop tops, a real but uncommon item. most should wear colored
 t shirts".
+
+**Cause:** the city wardrobe (src/render/crowd-baked.ts `CITY_WARDROBE`) had replaced the kit's beach clothes,
+but kept two items that are crops in fact. `ews_striped_shirt` is a long-sleeved crop top (tools/wardrobe.tsv:
+"Striped long-sleeve crop"), and it was in both the women's and the men's lists. Two peasant blouses also sit above
+the waist. Of eight women's tops, three showed a midriff.
+
+**Fix:** no crop tops. The t-shirt is weighted by repetition, since a pick is uniform, to about half of the
+women's tops and five in eight of the men's, each tinted in the walker's colour. After those come sweaters, a
+hoodie, a polo and one blouse. Visual check pending: at chase distance the strangers are too small to judge from a
+shot, so this wants a look in the game.

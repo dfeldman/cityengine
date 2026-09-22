@@ -387,11 +387,15 @@ function peopleLights(scene: Scene): void {
  * tights. The body, face and hair stay the kit's.
  */
 const CITY_WARDROBE = {
-  topsF: ['joepal_crude_t-shirt_female', 'mindfront_knitted_sweater_01', 'mindfront_knitted_sweater_02',
-    'elvs_ruffle_sleeve_peasant_blouse_1', 'punkduck_lace_up_blouse', 'ews_striped_shirt', 'elvs_hooded_sweat_jacket1',
-    'janexx_old_female_sweater'],
-  topsM: ['elvs_crude_t-shirt_male', 'namuhekam_male_polo_shirt', 'toigo_basic_tucked_t-shirt', 'mindfront_knitted_sweater_01',
-    'ews_striped_shirt', 'elvs_hooded_sweat_jacket1'],
+  // Mostly a plain t-shirt in a colour (the top is tinted with the walker's colour), by repetition: a pick is
+  // uniform. The striped "shirt" is a long-sleeved CROP top and the peasant blouses sit above the waist: a street
+  // where one woman in three — and some men — showed a midriff read as a beach (BUGS.md #51). One blouse in the
+  // list, for a little variety; no crop tops at all.
+  topsF: ['joepal_crude_t-shirt_female', 'joepal_crude_t-shirt_female', 'joepal_crude_t-shirt_female', 'joepal_crude_t-shirt_female',
+    'joepal_crude_t-shirt_female', 'mindfront_knitted_sweater_01', 'mindfront_knitted_sweater_02', 'elvs_hooded_sweat_jacket1',
+    'janexx_old_female_sweater', 'punkduck_lace_up_blouse'],
+  topsM: ['elvs_crude_t-shirt_male', 'elvs_crude_t-shirt_male', 'elvs_crude_t-shirt_male', 'toigo_basic_tucked_t-shirt',
+    'toigo_basic_tucked_t-shirt', 'namuhekam_male_polo_shirt', 'mindfront_knitted_sweater_01', 'elvs_hooded_sweat_jacket1'],
   bottomsF: ['mindfront_female_trousers_1', 'punkduck_female_tight_jeans', 'elvs_gored_midi_skirt', 'elvs_pencil_skirt',
     'punkduck_jeans_skirt', 'elvs_asymmetrical_skirt'],
   bottomsM: ['mindfront_male_trousers_1', 'mindfront_male_trousers_2', 'punkduck_male_classic_jeans', 'cortu_cargo_pants'],

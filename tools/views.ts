@@ -82,6 +82,7 @@ async function open(query: string): Promise<void> {
   await page.goto(`http://localhost:${port}/?${q}`)
   await page.waitForFunction('window.gameReady === true && window.riderReady === true', null, { timeout: 180_000 })
   await page.waitForFunction('window.treesReady === true', null, { timeout: 120_000 }).catch(() => console.warn('  (trees still loading)'))
+  if (arg('life')) await page.waitForFunction('window.crowdReady === true', null, { timeout: 180_000 }).catch(() => console.warn('  (crowd still baking)'))
   // the interface off: menus, HUD, minimap and toasts are not what is being judged
   await page.addStyleTag({ content: 'body > *:not(canvas):not(#app):not(.sr-keep), #minimap { visibility: hidden !important }' })
   await page.waitForTimeout(1500)
