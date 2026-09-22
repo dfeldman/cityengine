@@ -12,8 +12,9 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import type { Scene } from '@babylonjs/core/scene'
 import { MeshBuilder } from './buildings.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
-import { unpackPoints, wholeWater, type CityPackage } from '../city/package.ts'
+import { unpackPoints, waterLevels, wholeWater, type CityPackage } from '../city/package.ts'
 import type { TileLayer } from './city.ts'
+import { waterMaterial } from './water-material.ts'
 import type { Terrain } from '../city/terrain.ts'
 
 type Rgb = [number, number, number]
@@ -68,15 +69,13 @@ interface Water { ring: Point[]; holes: Point[][]; x0: number; x1: number; z0: n
 type Point = { x: number; z: number }
 
 function prepareWater(pkg: Pick<CityPackage, 'areas' | 'water'>, terrain: Terrain, drop: number): Water[] {
-  return wholeWater(pkg).map((a) => {
+  const bodies = wholeWater(pkg)
+  const levels = waterLevels(bodies, (x, z) => terrain.heightAt(x, z), drop)
+  return bodies.map((a, k) => {
     const ring = unpackPoints(a.ring)
     let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
-    let level = Infinity
-    for (const q of ring) {
-      x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z)
-      level = Math.min(level, terrain.heightAt(q.x, q.z))
-    }
-    return { ring, holes: (a.holes ?? []).map(unpackPoints), x0, x1, z0, z1, level: level - drop }
+    for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+    return { ring, holes: (a.holes ?? []).map(unpackPoints), x0, x1, z0, z1, level: levels[k] }
   })
 }
 
@@ -88,6 +87,7 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
   const wet = (x: number, z: number): boolean => water.some((w) => x >= w.x0 && x <= w.x1 && z >= w.z0 && z <= w.z1
     && inside(w.ring, x, z) && !w.holes.some((h) => inside(h, x, z)))
   const out = new MeshBuilder()
+  const seam = new MeshBuilder()
   let metres = 0
   for (const e of edges) {
     if (!e.name || !/^Quai /.test(e.name) || e.foot || e.bridge || e.tunnel) continue
@@ -158,6 +158,23 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
           const p0 = { x: a.x + ((b.x - a.x) * k) / n, z: a.z + ((b.z - a.z) * k) / n }
           const p1 = { x: a.x + ((b.x - a.x) * (k + 1)) / n, z: a.z + ((b.z - a.z) * (k + 1)) / n }
           if (!mine((p0.x + p1.x) / 2, (p0.z + p1.z) / 2)) continue
+          // not along a line between two bodies of water (the Seine is mapped as several polygons): water on
+          // both sides is no bank, and each body drew its own wall there, z-fighting in the river (BUGS.md #36)
+          {
+            const mx = (p0.x + p1.x) / 2
+            const mz = (p0.z + p1.z) / 2
+            const nx = (p1.z - p0.z) / (len / n)
+            const nz = -(p1.x - p0.x) / (len / n)
+            if (wet(mx + nx * 1.5, mz + nz * 1.5) && wet(mx - nx * 1.5, mz - nz * 1.5)) {
+              // …and the seam between the two polygons, which never quite meet, filled with a band of water
+              const lv = Math.min(level, ...water.filter((q) => q !== w && q.x0 <= mx && mx <= q.x1 && q.z0 <= mz && mz <= q.z1).map((q) => q.level))
+              const y = lv + 0.03
+              seam.quad([[p0.x - nx * 2.5, y, p0.z - nz * 2.5], [p1.x - nx * 2.5, y, p1.z - nz * 2.5],
+                [p1.x + nx * 2.5, y, p1.z + nz * 2.5], [p0.x + nx * 2.5, y, p0.z + nz * 2.5]], [0, 1, 0],
+                [[0, 0], [1, 0], [1, 1], [0, 1]], [0, 0, 0], 0)
+              continue
+            }
+          }
           const t0 = terrain.heightAt(p0.x, p0.z)
           const t1 = terrain.heightAt(p1.x, p1.z)
           if (Math.max(t0, t1) - level < 0.3) continue
@@ -167,7 +184,16 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
       }
     }
   }
-  if (out.triangles === 0) return null
+  const extra: Mesh[] = []
+  if (seam.triangles > 0) {
+    const sm = new Mesh(`${name}:seam`, scene)
+    seam.toVertexData().applyToMesh(sm)
+    sm.material = waterMaterial(scene)
+    sm.renderingGroupId = 1
+    sm.isPickable = false
+    extra.push(sm)
+  }
+  if (out.triangles === 0) return extra[0] ?? null
   const m = new Mesh(name, scene)
   out.toVertexData().applyToMesh(m)
   const mat = cartoonMaterial(scene, 'cartoonQuay', false)
@@ -178,5 +204,6 @@ function buildQuays(scene: Scene, edges: CityPackage['edges'], water: Water[], t
   m.isPickable = false
   m.freezeWorldMatrix()
   void metres
+  for (const e of extra) e.parent = m
   return m
 }

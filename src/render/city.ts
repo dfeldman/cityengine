@@ -50,7 +50,7 @@ export interface TileLayer {
 const BUILD_MS = 7
 /** The mid ring's reach in tiles (PARIS_EXPAND §2: massing out to ~1200 m). */
 export const MID = 6
-import { onSurface, wholeWater } from '../city/package.ts'
+import { onSurface, waterLevels, wholeWater } from '../city/package.ts'
 
 /** Tile size in metres: the ONE grid, shared with the bake (city/tiles.ts). */
 export { TILE }
@@ -675,17 +675,31 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0): void {
     return { ring, holes: (a.holes ?? []).map(unpackPoints), x0, x1, z0, z1, level: 0 }
   })
   const terrain = new Terrain(t)
-  for (const w of water) {
-    let lv = Infinity
-    for (const q of w.ring) lv = Math.min(lv, terrain.heightAt(q.x, q.z))
-    w.level = lv - drop
-  }
+  // one level per river, as the bake gave its pieces (city/package.ts waterLevels)
+  const levels = waterLevels(wholeWater(pkg), (x, z) => terrain.heightAt(x, z), drop)
+  water.forEach((w, k) => { w.level = levels[k] })
+  // the LOWEST level of every body at a point: OSM maps the Seine twice over in places (a riverbank and a
+  // natural=water polygon, with different lowest banks), and taking the first put the occluder above the lower
+  // water along their boundary — shards of ground across the river (BUGS.md #36)
   const wetAt = (x: number, z: number): number | null => {
-    for (const w of water) {
-      if (x < w.x0 || x > w.x1 || z < w.z0 || z > w.z1) continue
-      if (insideRing(w.ring, x, z) && !w.holes.some((h) => insideRing(h, x, z))) return w.level
+    const here = wetOnly(x, z)
+    if (here !== null) return here
+    // a thin dry seam between two water polygons that do not quite meet is river, not a bank: water on two
+    // opposite sides within 5 m (BUGS.md #36 — the occluder rose along the seam and cut shards out of the Seine)
+    for (const [dx, dz] of [[5, 0], [0, 5], [3.5, 3.5], [3.5, -3.5]]) {
+      const a = wetOnly(x + dx, z + dz)
+      const b = wetOnly(x - dx, z - dz)
+      if (a !== null && b !== null) return Math.min(a, b)
     }
     return null
+  }
+  const wetOnly = (x: number, z: number): number | null => {
+    let lv: number | null = null
+    for (const w of water) {
+      if (x < w.x0 || x > w.x1 || z < w.z0 || z > w.z1) continue
+      if (insideRing(w.ring, x, z) && !w.holes.some((h) => insideRing(h, x, z))) lv = lv === null ? w.level : Math.min(lv, w.level)
+    }
+    return lv
   }
   const occ = (x: number, z: number, lv: number | null): number => {
     const g = terrain.heightAt(x, z) - 0.6

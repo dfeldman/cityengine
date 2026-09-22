@@ -17,7 +17,7 @@
  * the terrain grid, the skyline, the named landmarks (menu, minimap), and the tile list.
  */
 import type {
-  CityPackage, PackedArea, PackedBuilding, PackedEdge, PackedFringe, PackedFurniture, PackedLandmark, PackedPoi, PackedRail,
+  CityPackage, PackedArea, PackedBoat, PackedBuilding, PackedEdge, PackedFringe, PackedFurniture, PackedLandmark, PackedPoi, PackedRail,
 } from './package.ts'
 import type { PackedTerrain } from './terrain.ts'
 
@@ -51,6 +51,8 @@ export interface TileData {
   rails: PackedRail[]
   /** the trees (city/plantings.ts), five numbers each */
   plantings: number[]
+  /** moored boats, by their centre (optional: tiles baked before boats have none) */
+  boats?: PackedBoat[]
 }
 
 export interface TileEntry {
@@ -156,12 +158,12 @@ export function tilesOfLine(flat: number[]): Set<string> {
  * Cut a package into tiles and an index. `waterLevel` gives a water area's level (the renderer's rule: the
  * lowest ground under the whole ring, less the region's river drop), worked out once for the whole body.
  */
-export function splitPackage(pkg: CityPackage, waterLevel: (ring: Point[]) => number | undefined): { index: Omit<CityIndex, 'tiles'>; tiles: Map<string, TileData> } {
+export function splitPackage(pkg: CityPackage, waterLevel: (ring: Point[], area: PackedArea) => number | undefined): { index: Omit<CityIndex, 'tiles'>; tiles: Map<string, TileData> } {
   const tiles = new Map<string, TileData>()
   const get = (k: string): TileData => {
     let t = tiles.get(k)
     if (!t) {
-      t = { key: k, edges: [], buildings: [], fringe: [], areas: [], trees: [], pois: [], furniture: [], landmarks: [], rails: [], plantings: [] }
+      t = { key: k, edges: [], buildings: [], fringe: [], areas: [], trees: [], pois: [], furniture: [], landmarks: [], rails: [], plantings: [], boats: [] }
       tiles.set(k, t)
     }
     return t
@@ -172,6 +174,7 @@ export function splitPackage(pkg: CityPackage, waterLevel: (ring: Point[]) => nu
   for (const r of pkg.rails) for (const k of tilesOfLine(r.points)) get(k).rails.push(r)
   for (const b of pkg.buildings) { const c = centre(b.ring); at(c.x, c.z).buildings.push(b) }
   for (const f of pkg.fringe ?? []) { const c = centre(f.ring); at(c.x, c.z).fringe.push(f) }
+  for (const b of pkg.boats ?? []) { const c = centre(b.ring); at(c.x, c.z).boats!.push(b) }
   for (const l of pkg.landmarks ?? []) at(l.x, l.z).landmarks.push(l)
   for (const p of pkg.pois) at(p.x, p.z).pois.push(p)
   for (const f of pkg.furniture ?? []) at(f.x, f.z).furniture.push(f)
@@ -184,7 +187,7 @@ export function splitPackage(pkg: CityPackage, waterLevel: (ring: Point[]) => nu
     if (ring.length < 3) return
     // a piece already cut from a whole body keeps that body's level
     const given = (a as Partial<TileArea>).level
-    const level = given !== undefined ? given : a.kind === 'water' ? waterLevel(ring) : undefined
+    const level = given !== undefined ? given : a.kind === 'water' ? waterLevel(ring, a) : undefined
     let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
     for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
     const [ta, tb] = tileOf(x0, z0)
@@ -232,7 +235,7 @@ export function joinTiles(index: Omit<CityIndex, 'tiles'> | CityIndex, tiles: It
     attribution: index.attribution, baked: index.baked,
     edges: [] as PackedEdge[], buildings: [] as PackedBuilding[], fringe: [] as PackedFringe[], areas: [] as TileArea[],
     trees: [] as number[], pois: [] as PackedPoi[], furniture: [] as PackedFurniture[], landmarks: [] as PackedLandmark[],
-    rails: [] as PackedRail[], plantings: [] as number[], water: index.water,
+    rails: [] as PackedRail[], plantings: [] as number[], water: index.water, boats: [] as PackedBoat[],
   }
   for (const t of tiles) {
     for (const e of t.edges) edges.set(e.id, e)
@@ -245,6 +248,7 @@ export function joinTiles(index: Omit<CityIndex, 'tiles'> | CityIndex, tiles: It
     out.furniture.push(...t.furniture)
     out.landmarks.push(...t.landmarks)
     for (const v of t.plantings) out.plantings.push(v)
+    out.boats.push(...(t.boats ?? []))
   }
   out.edges = [...edges.values()]
   out.rails = [...rails.values()]
@@ -265,7 +269,7 @@ export function nearOf(source: TileSource, key: string, exists: (k: string) => b
   const tile = source.get(key)
   if (!tile) return null
   const [tx, tz] = key.split(',').map(Number)
-  const around: Omit<TileData, 'key'> = { edges: [], buildings: [], fringe: [], areas: [], trees: [], pois: [], furniture: [], landmarks: [], rails: [], plantings: [] }
+  const around: Omit<TileData, 'key'> = { edges: [], buildings: [], fringe: [], areas: [], trees: [], pois: [], furniture: [], landmarks: [], rails: [], plantings: [], boats: [] }
   const edges = new Set<number>()
   const rails = new Set<number>()
   for (let dz = -1; dz <= 1; dz++) {
@@ -283,6 +287,7 @@ export function nearOf(source: TileSource, key: string, exists: (k: string) => b
       around.furniture.push(...t.furniture)
       around.landmarks.push(...t.landmarks)
       for (const v of t.plantings) around.plantings.push(v)
+      around.boats!.push(...(t.boats ?? []))
     }
   }
   return { key, tile, around }

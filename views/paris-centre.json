@@ -538,5 +538,65 @@
   "from": [48.862781, 2.2975, 160],
   "to": [48.8635, 2.2975, 0],
   "query": "paths=1"
+ },
+ {
+  "name": "Bug 31 bridge ground — air",
+  "group": "bug",
+  "from": [48.846406, 2.365669, 60],
+  "to": [48.846945, 2.366215, 0]
+ },
+ {
+  "name": "Bug 31 bridge ground — low",
+  "group": "bug",
+  "from": [48.84672, 2.36601, 3],
+  "to": [48.846945, 2.366215, 1]
+ },
+ {
+  "name": "Bug 35 building underwater — air",
+  "group": "bug",
+  "from": [48.845785, 2.362239, 60],
+  "to": [48.846324, 2.362785, 0]
+ },
+ {
+  "name": "Bug 35 building underwater — low",
+  "group": "bug",
+  "from": [48.846099, 2.36258, 3],
+  "to": [48.846324, 2.362785, 1]
+ },
+ {
+  "name": "Bug 36 river barrier — air",
+  "group": "bug",
+  "from": [48.848052, 2.358866, 60],
+  "to": [48.848591, 2.359412, 0]
+ },
+ {
+  "name": "Bug 36 river barrier — low",
+  "group": "bug",
+  "from": [48.848366, 2.359207, 3],
+  "to": [48.848591, 2.359412, 1]
+ },
+ {
+  "name": "Bug 32 Coulée Verte — air",
+  "group": "bug",
+  "from": [48.8484, 2.3713, 45],
+  "to": [48.849195, 2.372189, 5]
+ },
+ {
+  "name": "Bug 32 Coulée Verte — street",
+  "group": "bug",
+  "from": [48.8489, 2.3716, 2],
+  "to": [48.849195, 2.372189, 6]
+ },
+ {
+  "name": "Boats — Quai Saint-Bernard",
+  "group": "river",
+  "from": [48.8458, 2.3626, 12],
+  "to": [48.84627, 2.36313, 1]
+ },
+ {
+  "name": "Boats — Port de la Concorde",
+  "group": "river",
+  "from": [48.8625, 2.3215, 6],
+  "to": [48.86212, 2.32245, 1]
  }
 ]

@@ -23,6 +23,7 @@ import { MemoryTiles, TILE, tileKey, type CityIndex, type TileData } from './cit
 import { tilePreparer } from './render/prepare.ts'
 import { quaysLayer } from './render/quays.ts'
 import { passagesLayer } from './render/passages.ts'
+import { boatsLayer } from './render/boats.ts'
 import { metroSignsLayer } from './render/metrosigns.ts'
 import { PathMap } from './render/pathmap.ts'
 import { region } from './city/region.ts'
@@ -227,6 +228,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   mark('quays')
   // the arches and covered ways that take streets through buildings (render/passages.ts)
   city.addLayer(passagesLayer(scene, city.terrain))
+  // the péniches moored along the river (render/boats.ts)
+  city.addLayer(boatsLayer(scene))
   mark('passages')
   // the MÉTROPOLITAIN lettering on the Guimard entrances (render/metrosigns.ts)
   if (region(pkg.region).pointFurniture.metro === 'guimard') {

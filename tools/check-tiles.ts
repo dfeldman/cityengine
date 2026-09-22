@@ -34,6 +34,7 @@ for (const id of ids) {
   same('pois', pkg.pois.map((p) => `${p.x},${p.z},${p.name}`), j.pois.map((p) => `${p.x},${p.z},${p.name}`))
   same('furniture', (pkg.furniture ?? []).map((p) => `${p.x},${p.z},${p.kind}`), j.furniture.map((p) => `${p.x},${p.z},${p.kind}`))
   same('trees', [pkg.trees.length], [j.trees.length])
+  same('boats', (pkg.boats ?? []).map((b) => b.id), (j.boats ?? []).map((b) => b.id))
   same('plantings', [(pkg.plantings ?? []).length], [j.plantings.length])
   same('water', [pkg.areas.filter((a) => a.kind === 'water').length], [index.water.length])
   // every area with a real ring has at least one piece

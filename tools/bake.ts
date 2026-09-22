@@ -35,7 +35,7 @@ import { TREE_CAP, TREES_PER_KM2, packPlantings, plantCity } from '../src/city/p
 import { mapEdges, packRide, rideFor } from '../src/city/ridefile.ts'
 import { Projection, haversine } from '../src/city/geo.ts'
 import { chooseStyle, style as styleOf, type StyleId } from '../src/city/facade.ts'
-import { packPoints, unpackPoints, type CityPackage, type PackedPoi, type PackedArea, type PackedBuilding, type PackedFringe, type PackedEdge, type PackedFurniture, type PackedLandmark, type PackedRail, type RoofShape } from '../src/city/package.ts'
+import { packPoints, unpackPoints, waterLevels, type CityPackage, type PackedPoi, type PackedArea, type PackedBuilding, type PackedFringe, type PackedEdge, type PackedFurniture, type PackedLandmark, type PackedRail, type RoofShape } from '../src/city/package.ts'
 import { pavementFor } from '../src/city/pavement.ts'
 import { largestComponent, lengthOf, type Edge } from '../src/city/graph.ts'
 import { rideGraph, rideStats } from '../src/city/ridegraph.ts'
@@ -194,7 +194,10 @@ async function bake(spec: CitySpec): Promise<void> {
    */
   const belowGround = (t: Record<string, string>): boolean => t.location === 'underground' || t.indoor !== undefined
     || parseFloat(t.layer ?? '0') < 0 || (t.level !== undefined && t.level.split(';').every((v) => parseFloat(v) < 0))
-  const outlines = ways.filter((w) => w.tags.building && !w.tags['building:part'] && !canopy(w.tags) && !belowGround(w.tags))
+  // boats moored on the river are drawn as boats (render/boats.ts), not as twenty-metre blocks in the water
+  const isBoat = (t: Record<string, string>): boolean => t.building === 'boat' || t.building === 'houseboat'
+  const boatWays = ways.filter((w) => isBoat(w.tags) && w.geometry && w.geometry.length >= 4)
+  const outlines = ways.filter((w) => w.tags.building && !w.tags['building:part'] && !canopy(w.tags) && !belowGround(w.tags) && !isBoat(w.tags))
   const parts = ways.filter((w) => w.tags['building:part'] && !belowGround(w.tags))
   const partSeeds = parts
     .filter((w) => w.geometry && w.geometry.length >= 3)
@@ -871,6 +874,9 @@ async function bake(spec: CitySpec): Promise<void> {
     attribution: [copyright, `OSM base ${timestamp}`, TERRAIN_CREDIT],
     baked: new Date().toISOString().slice(0, 10),
   }
+  pkg.boats = boatWays.map((w) => ({ id: w.id, ring: packPoints(w.geometry.slice(0, -1).map((g) => proj.toLocal(g))),
+    ...(w.tags.name ? { name: w.tags.name } : {}) }))
+  console.log(`  ${pkg.boats.length} boats moored`)
   // every tree, decided here so a streamed tile always grows the same ones (city/plantings.ts)
   // a ceiling by AREA, not per city: 1,900 over the Marais's box is ~680 a square kilometre, and a city-wide
   // 1,900 would have left twenty square kilometres of central Paris almost bare
@@ -1190,11 +1196,11 @@ function sampleGrid(h: number[], cols: number, rows: number, ox: number, oz: num
 async function writeTiles(pkg: CityPackage, riverDrop: number): Promise<void> {
   const { rm } = await import('node:fs/promises')
   const terrain = new Terrain(pkg.terrain)
-  const { index, tiles } = splitPackage(pkg, (ring) => {
-    let level = Infinity
-    for (const q of ring) level = Math.min(level, terrain.heightAt(q.x, q.z))
-    return Number.isFinite(level) ? level - riverDrop : undefined
-  })
+  // one level per river, however many polygons OSM draws it as (city/package.ts waterLevels)
+  const water = pkg.areas.filter((a) => a.kind === 'water')
+  const levels = waterLevels(water, (x, z) => terrain.heightAt(x, z), riverDrop)
+  const byRing = new Map(water.map((a, k) => [a.ring, levels[k]]))
+  const { index, tiles } = splitPackage(pkg, (_ring, area) => byRing.get(area.ring))
   const dir = resolve(OUT, pkg.id)
   await rm(resolve(dir, 'tiles'), { recursive: true, force: true })
   await mkdir(resolve(dir, 'tiles'), { recursive: true })

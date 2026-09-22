@@ -42,8 +42,8 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 32 | open | An errant footbridge from OSM near 48.849195, 2.372189 | user, 2026-09-22 |
 | 33 | fixed | The rider gets trapped in a very messy intersection and cannot get out (48.849354, 2.356970) | user, 2026-09-22 |
 | 34 | open | The trams are incredibly ugly | user, 2026-09-22 |
-| 35 | open | A building appears underwater (48.846324, 2.362785) | user, 2026-09-22 |
-| 36 | open | Z-fighting on a strange barrier in the river (48.848591, 2.359412) | user, 2026-09-22 |
+| 35 | fixed | A building appears underwater (48.846324, 2.362785) | user, 2026-09-22 |
+| 36 | fixed | Z-fighting on a strange barrier in the river (48.848591, 2.359412) | user, 2026-09-22 |
 | 37 | open | The bridges need a lot of work to be usable and beautiful | user, 2026-09-22 |
 
 ---
@@ -465,3 +465,15 @@ and ring radii fitted to OSM's roadway): the Étoile, the Trocadéro, the Place 
 end of the Pont de Sully. `tools/ride-near.ts` lists ride edges at a point; `tools/rides.ts` rebuilds only the
 ride graphs in seconds. **Check:** ✅ `docs/shots/BUG27-ride-places.png`; audit 5 ride edges through buildings
 (8 before), tests 160/160 (the Marais spacing floor 60 → 55 m, see the test's note).
+
+**#35 fixed:** the "building underwater" was a boat — OSM maps the Seine's péniches (bars, homes, the river
+police, a fire station) as `building=boat|houseboat`, and with no height each came out as a 20 m block in the
+river (31 of them). The bake now keeps them apart (`CityPackage.boats`, per tile) and `render/boats.ts` draws each
+as a moored péniche fitted to its footprint and afloat at the river's level: hull, rubbing strake, deck, long
+cabin with windows, wheelhouse, planters and a parasol on the big ones. ✅ `docs/shots/BUG35-boat.png`.
+
+**#36 fixed:** the Seine here is two OSM polygons meeting along a line across the river, each drawn at its own
+level (its lowest bank): −8.6 and −7.6 m. The quays drew a wall along the seam (the "barrier"), and once that
+went, the depth occluder of the higher body cut triangles out of the lower (the shards). Now bodies that touch
+share one level, the lowest (`waterLevels` in city/package.ts, used by the bake, the occluder and the quays);
+no quay wall is drawn where both sides are water. ✅ `docs/shots/BUG36-river.png`.

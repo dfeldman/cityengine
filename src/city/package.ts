@@ -144,6 +144,14 @@ export interface PackedLandmark {
   totem?: { x: number; z: number }
 }
 
+/** A boat moored on a river (OSM `building=boat|houseboat`): the Seine's péniches — bars, homes, a fire station. */
+export interface PackedBoat {
+  id: number
+  /** its footprint, flattened x,z */
+  ring: number[]
+  name?: string
+}
+
 /** A railway, for the trains that run on it. Straight through; trains do not steer. */
 export interface PackedRail {
   id: number
@@ -187,6 +195,8 @@ export interface CityPackage {
   baked: string
   /** buildings beyond the box, as massing (optional: older packages have none) */
   fringe?: PackedFringe[]
+  /** moored boats (render/boats.ts); drawn afloat, never as buildings */
+  boats?: PackedBoat[]
   /** every tree, decided at bake time (city/plantings.ts): x, z, height, spin, park (0/1) per tree */
   plantings?: number[]
   /** the water bodies WHOLE, when `areas` are tile pieces (quays, the occluder and the crowd need the whole) */
@@ -219,3 +229,38 @@ export const wholeWater = (pkg: Pick<CityPackage, 'areas' | 'water'>): PackedAre
 /** On or above the ground: not a tunnel, not mapped below grade (a bridge over a cutting is still above it). */
 export const onSurface = (e: { tunnel?: boolean; layer?: number; bridge?: boolean }): boolean =>
   !e.tunnel && ((e.layer ?? 0) >= 0 || !!e.bridge)
+
+/**
+ * The level of each body of water: its lowest bank less the region's drop — and ONE level for bodies that
+ * touch, the lowest of them. OSM maps the Seine as several polygons meeting along lines across the river,
+ * each with its own lowest bank; drawn at their own levels they stepped a metre at the seam, and the depth
+ * occluder of the higher cut shards out of the lower (BUGS.md #36). Touching = a vertex of one within 3 m of
+ * a vertex of the other.
+ */
+export function waterLevels(water: PackedArea[], heightAt: (x: number, z: number) => number, drop: number): number[] {
+  const own = water.map((a) => {
+    let lv = Infinity
+    for (let i = 0; i < a.ring.length; i += 2) lv = Math.min(lv, heightAt(a.ring[i], a.ring[i + 1]))
+    return lv - drop
+  })
+  const parent = water.map((_, i) => i)
+  const find = (i: number): number => (parent[i] === i ? i : (parent[i] = find(parent[i])))
+  const CELL = 3
+  const grid = new Map<string, number[]>()
+  water.forEach((a, k) => {
+    for (let i = 0; i < a.ring.length; i += 2) {
+      const gx = Math.floor(a.ring[i] / CELL)
+      const gz = Math.floor(a.ring[i + 1] / CELL)
+      for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) {
+        for (const o of grid.get(`${gx + dx},${gz + dz}`) ?? []) if (o !== k) parent[find(o)] = find(k)
+      }
+      const key = `${gx},${gz}`
+      const list = grid.get(key)
+      if (!list) grid.set(key, [k])
+      else if (!list.includes(k)) list.push(k)
+    }
+  })
+  const low = new Map<number, number>()
+  own.forEach((lv, k) => { const r = find(k); low.set(r, Math.min(low.get(r) ?? Infinity, lv)) })
+  return own.map((_, k) => low.get(find(k))!)
+}
