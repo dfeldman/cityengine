@@ -7,7 +7,8 @@ import type { CityPackage } from '../src/city/package.ts'
 describe('the baked ride graph is the one the game would build (PARIS_EXPAND §3)', () => {
   const pkg = JSON.parse(readFileSync('public/cities/paris-marais.json', 'utf8')) as CityPackage
   const terrain = new Terrain(pkg.terrain)
-  const built = rideFor(pkg.id, pkg.origin, mapEdges(pkg.edges, terrain), 'bike', (x, z) => terrain.heightAt(x, z), pkg.region)
+  const built = rideFor(pkg.id, pkg.origin, mapEdges(pkg.edges, terrain), 'bike', (x, z) => terrain.heightAt(x, z), pkg.region,
+    pkg.buildings.filter((b) => (b.minHeight ?? 0) < 2).map((b) => b.ring))
 
   it('round-trips through the file', () => {
     const back = unpackRide(JSON.parse(JSON.stringify(packRide(built, 'bike'))) as RideFile)

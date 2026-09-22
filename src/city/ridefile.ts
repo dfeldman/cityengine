@@ -26,7 +26,7 @@ export function mapEdges(edges: PackedEdge[], terrain: { heightAt(x: number, z: 
 }
 
 export function rideFor(city: string, origin: CityPackage['origin'], edges: Edge[], mode: RideMode,
-  heightAt: (x: number, z: number) => number, region?: string): RideGraph {
+  heightAt: (x: number, z: number) => number, region?: string, buildings?: number[][]): RideGraph {
   const proj = new Projection(origin)
   return rideGraph(edges, mode, {
     roundabouts: ((RIDE_OVERRIDES[city] ?? (region ? RIDE_OVERRIDES[region] : undefined))?.roundabouts ?? []).map((r) => {
@@ -34,6 +34,7 @@ export function rideFor(city: string, origin: CityPackage['origin'], edges: Edge
       return { name: r.name, r: r.r, R: r.R, x: p.x, z: p.z }
     }),
     heightAt,
+    buildings,
   })
 }
 

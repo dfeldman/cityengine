@@ -371,5 +371,12 @@
   "group": "statue",
   "from": [48.863304, 2.366875, 2.2],
   "to": [48.863397, 2.367402, 5]
+ },
+ {
+  "name": "Ride graph — Rue Saint-Antoine",
+  "group": "ride",
+  "from": [48.854, 2.36, 140],
+  "to": [48.8552, 2.362, 0],
+  "query": "paths=1"
  }
 ]

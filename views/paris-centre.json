@@ -503,5 +503,19 @@
   "group": "bug",
   "from": [48.86735, 2.36382, 160],
   "to": [48.867498, 2.363817, 0]
+ },
+ {
+  "name": "Ride graph — Avenue de New York",
+  "group": "ride",
+  "from": [48.8617, 2.294, 160],
+  "to": [48.8635, 2.2975, 0],
+  "query": "paths=1"
+ },
+ {
+  "name": "Ride graph — Pont de Sully south",
+  "group": "ride",
+  "from": [48.848, 2.356, 130],
+  "to": [48.8494, 2.357, 0],
+  "query": "paths=1"
  }
 ]

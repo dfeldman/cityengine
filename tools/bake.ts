@@ -1223,7 +1223,8 @@ async function writeRides(pkg: CityPackage): Promise<void> {
   const terrain = new Terrain(pkg.terrain)
   const edges = mapEdges(pkg.edges, terrain)
   for (const mode of ['bike', 'run'] as const) {
-    const g = rideFor(pkg.id, pkg.origin, edges, mode, (x, z) => terrain.heightAt(x, z), pkg.region)
+    const g = rideFor(pkg.id, pkg.origin, edges, mode, (x, z) => terrain.heightAt(x, z), pkg.region,
+      pkg.buildings.filter((b) => (b.minHeight ?? 0) < 2).map((b) => b.ring))
     const text = JSON.stringify(packRide(g, mode))
     await writeFile(resolve(OUT, pkg.id, `ride-${mode}.json`), text)
     console.log(`  → public/cities/${pkg.id}/ride-${mode}.json  ${g.edges.size} edges, ${Math.round(text.length / 1024)} kB`)

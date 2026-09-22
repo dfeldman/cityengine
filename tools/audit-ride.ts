@@ -30,6 +30,7 @@ const g = rideGraph(edges, 'bike', {
     return { name: r.name, r: r.r, R: r.R, x: p.x, z: p.z }
   }),
   heightAt: (x, z) => terrain.heightAt(x, z),
+  buildings: pkg.buildings.filter((b) => (b.minHeight ?? 0) < 2).map((b) => b.ring),
 })
 const R = pkg.radius
 const B = pkg.box ?? { x0: -R, x1: R, z0: -R, z1: R }

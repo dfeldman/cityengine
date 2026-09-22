@@ -384,16 +384,159 @@ export function pruneStubs(edges: RideEdge[]): RideEdge[] {
  * into the street's chain and the rider rode down the pavement. A pedestrian edge running alongside a
  * same-named road (`isParallelPair`) goes; a pedestrian street on its own stays.
  */
-export function dropSidePaths(edges: RideEdge[]): RideEdge[] {
-  const roadsByName = new Map<string, RideEdge[]>()
+export function dropSidePaths(edges: RideEdge[], ids = new Ids(), blocked?: (a: Point, b: Point) => boolean): RideEdge[] {
+  /*
+   * A side path is a way that runs ALONGSIDE a street rather than being one: a pedestrian way or a cycle track
+   * named for the street it borders, and an unnamed cycle track or service lane beside any street. Paris maps
+   * its bidirectional cycle tracks separately — the Avenue de New York along the Seine came out as a primary
+   * and five cycleway pieces weaving round it, and the rider was "swept away" from junction to junction
+   * (BUGS.md #27, #28). The rider rides the street; the renderer still draws the track.
+   */
+  const CELL = 40
+  const grid = new Map<string, RideEdge[]>()
+  const isRoad = (e: RideEdge): boolean => !e.foot && e.kind !== 'pedestrian' && e.kind !== 'cycleway' && e.kind !== 'service'
   for (const e of edges) {
-    if (!e.name || e.kind === 'pedestrian' || e.foot) continue
-    roadsByName.set(e.name, [...(roadsByName.get(e.name) ?? []), e])
+    if (!isRoad(e)) continue
+    const seen = new Set<string>()
+    for (const q of e.points) {
+      const k = `${Math.floor(q.x / CELL)},${Math.floor(q.z / CELL)}`
+      if (seen.has(k)) continue
+      seen.add(k)
+      ;(grid.get(k) ?? grid.set(k, []).get(k)!).push(e)
+    }
   }
-  return edges.filter((e) => {
-    if (e.kind !== 'pedestrian' || !e.name) return true
-    return !(roadsByName.get(e.name) ?? []).some((r) => isParallelPair(e, r))
-  })
+  // how much of a street each kind is: a contre-allée (the lesser same-name road beside an avenue) is a side path
+  const RANK: Record<string, number> = { primary: 5, primary_link: 4, secondary: 4, secondary_link: 3, tertiary: 3,
+    tertiary_link: 2, unclassified: 2, residential: 2, living_street: 1, service: 1 }
+  const rank = (e: RideEdge): number => RANK[e.kind ?? 'residential'] ?? 2
+  const candidate = (e: RideEdge): boolean =>
+    (e.kind === 'pedestrian' && !!e.name) || e.kind === 'cycleway' || (e.kind === 'service' && !e.name) || (!!e.name && rank(e) <= 3)
+  const beside = (e: RideEdge): RideEdge | null => {
+    if (e.length < 6) return null
+    const near = new Set<RideEdge>()
+    for (const q of e.points) {
+      const gx = Math.floor(q.x / CELL)
+      const gz = Math.floor(q.z / CELL)
+      for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) for (const r of grid.get(`${gx + dx},${gz + dz}`) ?? []) near.add(r)
+    }
+    const be = bearing(e.points[0], e.points[e.points.length - 1])
+    const samples = resample(e.points, undefined, Math.max(3, Math.ceil(e.length / 3))).pts
+    for (const r of near) {
+      // a named pedestrian way only beside ITS street (a pedestrian avenue is a street of its own); a cycle
+      // track beside any — OSM's names lag (the Quai Branly track beside the renamed Quai Jacques Chirac)
+      if (e.kind === 'pedestrian' && e.name !== r.name) continue
+      // a named street only beside a MORE important road of its own name (the contre-allées of the Avenue de
+      // New York beside its carriageways)
+      const street = e.kind !== 'pedestrian' && e.kind !== 'cycleway' && !(e.kind === 'service' && !e.name)
+      if (street && (e.name !== r.name || rank(r) <= rank(e))) continue
+      // cycle tracks and lanes further out: along the Seine they run under the trees 20 m from the carriageway
+      const reach = e.kind === 'pedestrian' ? Math.max(14, r.width / 2 + r.walk + 9) : Math.max(24, r.width / 2 + r.walk + 12)
+      let alongside = 0
+      for (const p of samples) {
+        const q = project(r.points, p)
+        if (q.d >= reach) continue
+        // running the same way as the road there, not crossing it
+        const i = Math.min(r.points.length - 2, Math.max(0, Math.floor(q.t * (r.points.length - 1))))
+        const rb = bearing(r.points[i], r.points[i + 1])
+        const d = Math.abs(angleDiff(be, rb))
+        if (Math.min(d, Math.PI - d) < (25 * Math.PI) / 180 || e.length < 25) alongside++
+      }
+      if (alongside >= 0.7 * samples.length) return r
+    }
+    return null
+  }
+  const dropped = new Map<RideEdge, RideEdge>()
+  for (const e of edges) {
+    if (!candidate(e)) continue
+    const r = beside(e)
+    if (r) dropped.set(e, r)
+  }
+  let kept = edges.filter((e) => !dropped.has(e))
+  /*
+   * And the streets that met the side path rather than the road — a Marais street joined to the Rue de Rivoli's
+   * cycle track, not to its carriageway — are carried straight across to the road, which is split there;
+   * without it they became dead ends (Rue Pavée, Rue Charlemagne…).
+   */
+  const deg = new Map<number, number>()
+  for (const e of kept) { deg.set(e.a, (deg.get(e.a) ?? 0) + 1); deg.set(e.b, (deg.get(e.b) ?? 0) + 1) }
+  const endAt = (e: RideEdge, n: number): { at: Point; h?: number } => n === e.a
+    ? { at: e.points[0], h: e.heights?.[0] } : { at: e.points[e.points.length - 1], h: e.heights?.[e.heights.length - 1] }
+  // the current pieces of each road that has been split, so a second link finds the right piece
+  const pieces = new Map<number, RideEdge[]>()
+  const done = new Set<number>()
+  for (const [side, road] of dropped) {
+    for (const n of [side.a, side.b]) {
+      if (done.has(n) || !(deg.get(n) ?? 0) || n === road.a || n === road.b) continue
+      done.add(n)
+      const from = endAt(side, n)
+      const cand = pieces.get(road.id) ?? [road]
+      let best: { piece: RideEdge; q: ReturnType<typeof project> } | null = null
+      for (const piece of cand) {
+        if (!kept.includes(piece)) continue
+        const q = project(piece.points, from.at)
+        if (!best || q.d < best.q.d) best = { piece, q }
+      }
+      if (!best || best.q.d > 30) continue
+      const { piece, q } = best
+      if (blocked?.(from.at, pointAt(piece.points, q.s))) continue
+      const P = pointAt(piece.points, q.s)
+      const hAt = (e: RideEdge, sAt: number): number | undefined => {
+        if (!e.heights || e.heights.length !== e.points.length) return undefined
+        const k = Math.min(e.points.length - 1, Math.max(0, Math.round((sAt / Math.max(1e-6, e.length)) * (e.points.length - 1))))
+        return e.heights[k]
+      }
+      let target: number
+      // onto the road's own junction when one is near: a second junction a few metres from it is a question
+      // asked twice
+      if (q.s < 15) target = piece.a
+      else if (q.s > piece.length - 15) target = piece.b
+      else {
+        // split the piece at P
+        target = ids.nextNode()
+        const cut = (a: number, b: number): Point[] => {
+          const out: Point[] = []
+          let acc = 0
+          const pts = piece.points
+          if (a <= 0) out.push(pts[0])
+          for (let i = 1; i < pts.length; i++) {
+            const seg = Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z)
+            const t0 = acc
+            acc += seg
+            if (acc <= a || t0 >= b) continue
+            if (t0 < a) out.push(pointAt(pts, a))
+            out.push(acc <= b ? pts[i] : pointAt(pts, b))
+            if (acc >= b) break
+          }
+          return out
+        }
+        const hs = (sA: number, sB: number, n2: number): number[] | undefined => {
+          const h0 = hAt(piece, sA)
+          const h1 = hAt(piece, sB)
+          return h0 === undefined || h1 === undefined ? undefined : Array.from({ length: n2 }, (_, i) => h0 + ((h1 - h0) * i) / Math.max(1, n2 - 1))
+        }
+        const p1 = cut(0, q.s)
+        const p2 = cut(q.s, piece.length)
+        const total = piece.over.reduce((t, o) => t + o.length, 0) || piece.length
+        const k = q.s / piece.length
+        const e1: RideEdge = { ...piece, id: ids.nextEdge(), b: target, points: p1, length: lengthOf(p1), heights: hs(0, q.s, p1.length),
+          over: piece.over.map((o) => ({ ...o, length: (o.length / total) * total * k })) }
+        const e2: RideEdge = { ...piece, id: ids.nextEdge(), a: target, points: p2, length: lengthOf(p2), heights: hs(q.s, piece.length, p2.length),
+          over: piece.over.map((o) => ({ ...o, length: (o.length / total) * total * (1 - k) })) }
+        kept = kept.filter((x) => x !== piece)
+        kept.push(e1, e2)
+        pieces.set(road.id, [...(pieces.get(road.id) ?? [road]).filter((x) => x !== piece), e1, e2])
+      }
+      const hP = hAt(piece, q.s)
+      const snapped = target === piece.a ? piece.points[0] : target === piece.b ? piece.points[piece.points.length - 1] : P
+      const pts = [from.at, snapped]
+      kept.push({
+        id: ids.nextEdge(), a: n, b: target, points: pts, length: lengthOf(pts), surface: piece.surface, width: 4, walk: 0,
+        name: undefined, foot: false, kind: 'residential', oneway: false, over: [],
+        ...(from.h !== undefined && hP !== undefined ? { heights: [from.h, hP] } : {}),
+      })
+    }
+  }
+  return kept
 }
 
 /**
@@ -407,6 +550,8 @@ export interface Roundabout { name: string; x: number; z: number; r: number; R: 
 
 export interface RideOverrides {
   roundabouts: Roundabout[]
+  /** building footprints on the ground (flat x,z rings): no synthetic link is laid through one */
+  buildings?: number[][]
   /** the ground, for the new edges' heights (the navigator rides an edge's own profile) */
   heightAt: (x: number, z: number) => number
 }
@@ -736,7 +881,8 @@ export function linkCarriageways(edges: RideEdge[], ids: Ids): RideEdge[] {
 export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrides): RideGraph {
   const ids = new Ids()
   const classified = classify(edges, mode)
-  let es = pruneStubs(largest(mode === 'bike' ? dropSidePaths(classified) : classified))
+  const blocked = overrides?.buildings ? footprintTest(overrides.buildings) : undefined
+  let es = pruneStubs(largest(mode === 'bike' ? dropSidePaths(classified, ids, blocked) : classified))
   es = contract(collapseClusters(es, ids), ids)
   es = mergeParallel(es, ids)
   es = largest(contract(collapseClusters(es, ids), ids))
@@ -880,5 +1026,35 @@ export function rideStats(g: CityGraph): {
     edges: g.edges.size, km, decisions: decision.size, perKm: decision.size / Math.max(1e-9, km),
     medianSpacing: spans.length ? spans[Math.floor(spans.length / 2)] : 0,
     nearDuplicates: dup, rawNearDuplicates: rawDup,
+  }
+}
+
+/** Does the straight line a→b pass through any of these footprints (sampled every metre)? */
+function footprintTest(rings: number[][]): (a: Point, b: Point) => boolean {
+  const CELL = 50
+  const grid = new Map<string, number[][]>()
+  for (const r of rings) {
+    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+    for (let i = 0; i < r.length; i += 2) { x0 = Math.min(x0, r[i]); x1 = Math.max(x1, r[i]); z0 = Math.min(z0, r[i + 1]); z1 = Math.max(z1, r[i + 1]) }
+    for (let gx = Math.floor(x0 / CELL); gx <= Math.floor(x1 / CELL); gx++) {
+      for (let gz = Math.floor(z0 / CELL); gz <= Math.floor(z1 / CELL); gz++) (grid.get(`${gx},${gz}`) ?? grid.set(`${gx},${gz}`, []).get(`${gx},${gz}`)!).push(r)
+    }
+  }
+  const inside = (r: number[], x: number, z: number): boolean => {
+    let o = false
+    for (let i = 0, j = r.length - 2; i < r.length; j = i, i += 2) {
+      if ((r[i + 1] > z) !== (r[j + 1] > z) && x < ((r[j] - r[i]) * (z - r[i + 1])) / (r[j + 1] - r[i + 1]) + r[i]) o = !o
+    }
+    return o
+  }
+  return (a, b) => {
+    const n = Math.max(2, Math.ceil(distance(a, b)))
+    // not the last metre at either end: a street's end is often mapped a hand's breadth inside a wall
+    for (let k = 1; k < n - 1; k++) {
+      const x = a.x + ((b.x - a.x) * k) / n
+      const z = a.z + ((b.z - a.z) * k) / n
+      for (const r of grid.get(`${Math.floor(x / CELL)},${Math.floor(z / CELL)}`) ?? []) if (inside(r, x, z)) return true
+    }
+    return false
   }
 }

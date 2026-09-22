@@ -43,7 +43,9 @@ describe('riding Le Marais', () => {
   it('asks the rider a question at real junctions only', () => {
     const st = rideStats(graph)
     expect(st.perKm, 'decisions per road-km').toBeLessThanOrEqual(8)
-    expect(st.medianSpacing, 'median metres between decisions').toBeGreaterThanOrEqual(60)
+    // 55, not 60, since side streets that met a cycle track are joined to the road it ran beside (BUGS.md
+    // #27/#28): the Rue de Rivoli now offers turns into Rue Pavée and Rue Charlemagne, which are real choices
+    expect(st.medianSpacing, 'median metres between decisions').toBeGreaterThanOrEqual(55)
     expect(st.nearDuplicates).toBe(0)
   })
 
