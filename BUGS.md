@@ -34,13 +34,13 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 24 | open | Heavy z-fighting on the buildings on the left at central Paris's start point (48.860446, 2.331791) | user, 2026-09-22 |
 | 25 | open | Dormers and a chimney float in mid-air over a low building (48.857914, 2.347074) | user, 2026-09-22 |
 | 26 | open | Riding below the ground: the rider and road sink under the pavement (48.863689, 2.297469) | user, 2026-09-22 |
-| 27 | open | Paths near the Alma / Trocadéro are unrideable: near-parallel paths merge and diverge, the rider is swept along | user, 2026-09-22 |
-| 28 | open | Both banks of the Seine: 4–5 near-parallel OSM paths that periodically meet — confusing to ride | user, 2026-09-22 |
+| 27 | fixed | Paths near the Alma / Trocadéro are unrideable: near-parallel paths merge and diverge, the rider is swept along | user, 2026-09-22 |
+| 28 | fixed | Both banks of the Seine: 4–5 near-parallel OSM paths that periodically meet — confusing to ride | user, 2026-09-22 |
 | 29 | fixed | Underground Métro station rooms drawn as 20 m buildings on the squares above (Place de la République) | views, 2026-09-22 |
 | 30 | fixed | The J paths overlay is ugly and needed all the time: want a subtle, usually-on path display (thin lines, no one-way marks, junctions highlighted) | user, 2026-09-22 |
 | 31 | open | Messy ground and the camera below ground near a bridge (48.846945, 2.366215) | user, 2026-09-22 |
 | 32 | open | An errant footbridge from OSM near 48.849195, 2.372189 | user, 2026-09-22 |
-| 33 | open | The rider gets trapped in a very messy intersection and cannot get out (48.849354, 2.356970) | user, 2026-09-22 |
+| 33 | fixed | The rider gets trapped in a very messy intersection and cannot get out (48.849354, 2.356970) | user, 2026-09-22 |
 | 34 | open | The trams are incredibly ugly | user, 2026-09-22 |
 | 35 | open | A building appears underwater (48.846324, 2.362785) | user, 2026-09-22 |
 | 36 | open | Z-fighting on a strange barrier in the river (48.848591, 2.359412) | user, 2026-09-22 |
@@ -454,3 +454,14 @@ the river (an island's outline, or the edge between two water polygons), both fa
 the box matter most: ramps and decks that ride smoothly with no steps or dips into the ground (see #31), clean
 junctions at both ends onto the quais (see #33), and each bridge in its own design (PARIS_EXPAND §5 B:
 BRIDGE_STYLES — stone arches, iron arches, footbridges, Bir-Hakeim's two decks), with the lamps and parapets.
+
+**#27, #28, #33 fixed (2026-09-22):** (1) `dropSidePaths` generalised: a cycle track (any name — OSM's lag, the
+Quai Branly track beside the renamed Quai Jacques Chirac), an unnamed service lane, a pedestrian way named for
+its street, or a lesser road of the same name (a contre-allée) running ≥ 70% alongside a road within 24 m is
+folded into it; a side street that met only the dropped path is linked straight across to the road (split
+there, or onto its junction within 15 m; never through a building). Central Paris lost ~600 weaving edges;
+both banks of the Seine are now the quai and the lower quay. (2) Place overrides (circle and spokes, centres
+and ring radii fitted to OSM's roadway): the Étoile, the Trocadéro, the Place de Varsovie, the Alma, the south
+end of the Pont de Sully. `tools/ride-near.ts` lists ride edges at a point; `tools/rides.ts` rebuilds only the
+ride graphs in seconds. **Check:** ✅ `docs/shots/BUG27-ride-places.png`; audit 5 ride edges through buildings
+(8 before), tests 160/160 (the Marais spacing floor 60 → 55 m, see the test's note).

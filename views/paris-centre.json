@@ -505,17 +505,38 @@
   "to": [48.867498, 2.363817, 0]
  },
  {
-  "name": "Ride graph — Avenue de New York",
+  "name": "Ride graph — Étoile",
   "group": "ride",
-  "from": [48.8617, 2.294, 160],
-  "to": [48.8635, 2.2975, 0],
+  "from": [48.872727, 2.295004, 230],
+  "to": [48.87376, 2.295004, 0],
+  "query": "paths=1"
+ },
+ {
+  "name": "Ride graph — Trocadéro",
+  "group": "ride",
+  "from": [48.862202, 2.28715, 180],
+  "to": [48.86301, 2.28715, 0],
+  "query": "paths=1"
+ },
+ {
+  "name": "Ride graph — Alma",
+  "group": "ride",
+  "from": [48.863789, 2.301802, 150],
+  "to": [48.864463, 2.301802, 0],
   "query": "paths=1"
  },
  {
   "name": "Ride graph — Pont de Sully south",
   "group": "ride",
-  "from": [48.848, 2.356, 130],
-  "to": [48.8494, 2.357, 0],
+  "from": [48.848815, 2.35697, 120],
+  "to": [48.849354, 2.35697, 0],
+  "query": "paths=1"
+ },
+ {
+  "name": "Ride graph — Avenue de New York",
+  "group": "ride",
+  "from": [48.862781, 2.2975, 160],
+  "to": [48.8635, 2.2975, 0],
   "query": "paths=1"
  }
 ]
