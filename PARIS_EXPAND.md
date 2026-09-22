@@ -306,6 +306,19 @@ adds to the city-wide meshes (terraces, fringe, passages, quays, signs). Visual 
   by flying buttresses, spire), **Invalides** (`invalidesDome`: drum with paired columns, gilded ribs and
   trophies, lantern), **Orsay** (`museeOrsay`: arched river front, the two clocks, glass vault), **Garnier**
   (`palaisGarnier`: steps and arches, loggia of paired dark columns, gilded groups, green dome, stage house).
+  **Priority (user, 2026-09-22): the SEINE.** It is the most likely riding route, so the monuments along both
+  banks come first — including tier-2 and tier-3 ones that would otherwise wait: the Trocadéro and Chaillot,
+  the Pont d'Iéna, Bir-Hakeim, the Alma and the Flame, the Pont Alexandre III, the Grand and Petit Palais seen
+  from the river, the Assemblée nationale's portico, Orsay, the Pont Royal, the Pont des Arts and the Institut,
+  the Pont Neuf and the Vert-Galant, the Conciergerie's towers, the Hôtel de Ville from the quai, the bridges
+  themselves (PARIS_EXPAND §5 B), and the bouquinistes all along.
+  **Statues from the user's models (2026-09-22):** `public/landmarks/paris-statues.json` + `render/statues.ts`
+  (at most 3 GLBs in memory, nearest first, pedestals procedural), models packed by `tools/glb/pack.ts` from
+  `incoming_models/` into `public/models/paris/` (both gitignored; quantized + WebP, 4 MB → 0.6 MB each; the
+  second Cirque horseman is a true mirror image). `tools/glb/preview.ts` shows a model from four sides.
+  **Backlog (user, 2026-09-22): the Trocadéro and the Place Gustave-Eiffel** (around 48.8606, 2.2909) — the
+  Palais de Chaillot's two curved wings and its terrace statues, the Trocadéro fountains, the Gustave Eiffel
+  bust, and the other distinctive buildings round them.
   Next of the A list: Concorde (obelisk, fountains), Grand/Petit Palais, Pont Alexandre III, Vendôme,
   Madeleine, Palais-Royal (Buren), Sainte-Chapelle, Conciergerie, Pont Neuf, Institut, Chaillot, École Militaire.
 

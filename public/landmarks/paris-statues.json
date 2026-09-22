@@ -1,0 +1,212 @@
+[
+  {
+    "id": "genie-liberte",
+    "name": "Génie de la Liberté",
+    "model": "paris/genie-liberte.glb",
+    "front": "+x",
+    "height": 5.5,
+    "attach": {
+      "to": "Colonne de Juillet",
+      "at": [
+        0,
+        42.8,
+        0
+      ],
+      "bearing": 270
+    },
+    "range": 900,
+    "note": "On the lantern of the Colonne de Juillet"
+  },
+  {
+    "id": "cirque-horseman-left",
+    "name": "Cirque d'Hiver — left horseman",
+    "model": "paris/cirque-horseman-left.glb",
+    "front": "+x",
+    "height": 3.4,
+    "attach": {
+      "to": "Cirque d'Hiver",
+      "at": [
+        -9.6,
+        2.6,
+        -19.4
+      ],
+      "bearing": 180
+    },
+    "range": 260
+  },
+  {
+    "id": "cirque-horseman-right",
+    "name": "Cirque d'Hiver — right horseman",
+    "model": "paris/cirque-horseman-right.glb",
+    "front": "-x",
+    "height": 3.4,
+    "attach": {
+      "to": "Cirque d'Hiver",
+      "at": [
+        9.6,
+        2.6,
+        -19.4
+      ],
+      "bearing": 180
+    },
+    "range": 260,
+    "note": "A true mirror image of the left one (tools/glb/pack.ts mirror)"
+  },
+  {
+    "id": "marianne",
+    "name": "Marianne",
+    "model": "paris/marianne.glb",
+    "front": "+z",
+    "height": 9.5,
+    "attach": {
+      "to": "Monument à la République",
+      "at": [
+        0,
+        15.5,
+        0
+      ],
+      "bearing": 180
+    },
+    "range": 800
+  },
+  {
+    "id": "marianne-lion",
+    "name": "Lion of the Monument à la République",
+    "model": "paris/marianne-lion.glb",
+    "front": "-x",
+    "height": 3.0,
+    "attach": {
+      "to": "Monument à la République",
+      "at": [
+        0,
+        2.0,
+        -7.3
+      ],
+      "bearing": 180
+    },
+    "range": 300
+  },
+  {
+    "id": "henri-iv",
+    "name": "Henri IV",
+    "model": "paris/henri-iv.glb",
+    "front": "-x",
+    "height": 4.6,
+    "lat": 48.857136,
+    "lon": 2.340968,
+    "bearing": 115,
+    "plinth": [
+      2.4,
+      5.0,
+      4.2
+    ],
+    "plinthColour": "#b3ada2",
+    "range": 320,
+    "note": "Pont Neuf, facing the Place Dauphine"
+  },
+  {
+    "id": "jeanne-darc-pyramides",
+    "name": "Jeanne d'Arc",
+    "model": "paris/jeanne-darc-pyramides.glb",
+    "front": "+z",
+    "height": 5.2,
+    "lat": 48.863879,
+    "lon": 2.332187,
+    "bearing": 205,
+    "plinth": [
+      2.2,
+      4.4,
+      4.2
+    ],
+    "plinthColour": "#c9c2b2",
+    "range": 350,
+    "note": "Place des Pyramides, facing the Tuileries"
+  },
+  {
+    "id": "clemenceau",
+    "name": "Georges Clemenceau",
+    "model": "paris/clemenceau.glb",
+    "front": "+z",
+    "height": 3.6,
+    "lat": 48.867089,
+    "lon": 2.314395,
+    "bearing": 295,
+    "plinth": [
+      3.0,
+      3.0,
+      2.6
+    ],
+    "plinthColour": "#8f8a80",
+    "range": 260
+  },
+  {
+    "id": "de-gaulle",
+    "name": "Charles de Gaulle",
+    "model": "paris/de-gaulle.glb",
+    "front": "+z",
+    "height": 3.7,
+    "lat": 48.867491,
+    "lon": 2.313601,
+    "bearing": 115,
+    "plinth": [
+      2.6,
+      2.6,
+      2.2
+    ],
+    "plinthColour": "#9a948a",
+    "range": 260,
+    "note": "Striding down the Champs-Élysées"
+  },
+  {
+    "id": "charlemagne",
+    "name": "Charlemagne et ses Leudes",
+    "model": "paris/charlemagne.glb",
+    "front": "+z",
+    "height": 6.8,
+    "lat": 48.85309,
+    "lon": 2.348222,
+    "bearing": 290,
+    "plinth": [
+      6.0,
+      6.0,
+      2.4
+    ],
+    "plinthColour": "#a8a295",
+    "range": 350
+  },
+  {
+    "id": "etienne-marcel",
+    "name": "Étienne Marcel",
+    "model": "paris/etienne-marcel.glb",
+    "front": "+x",
+    "height": 5.0,
+    "lat": 48.855673,
+    "lon": 2.35212,
+    "bearing": 200,
+    "plinth": [
+      2.6,
+      5.4,
+      4.2
+    ],
+    "plinthColour": "#b8b1a4",
+    "range": 300
+  },
+  {
+    "id": "danton",
+    "name": "Danton",
+    "model": "paris/danton.glb",
+    "front": "+z",
+    "height": 3.6,
+    "lat": 48.852265,
+    "lon": 2.339143,
+    "bearing": 0,
+    "plinth": [
+      4.6,
+      4.6,
+      4.0
+    ],
+    "plinthColour": "#bdb6a8",
+    "range": 280,
+    "note": "Carrefour de l'Odéon; OSM's 4 m plinth building replaced (paris.json)"
+  }
+]

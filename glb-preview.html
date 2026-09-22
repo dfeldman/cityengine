@@ -1,0 +1,32 @@
+<!doctype html>
+<!-- Four views of a packed model (tools/glb/preview.ts): ?file=models/paris/x.glb. Development only. -->
+<html><head><meta charset="utf-8"><style>html,body{margin:0;background:#9fb3c8}canvas{width:800px;height:800px;display:block}</style></head>
+<body><canvas id="c" width="800" height="800"></canvas>
+<script type="module">
+import { Engine } from '@babylonjs/core/Engines/engine'
+import { Scene } from '@babylonjs/core/scene'
+import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera'
+import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight'
+import { DirectionalLight } from '@babylonjs/core/Lights/directionalLight'
+import { Vector3 } from '@babylonjs/core/Maths/math.vector'
+import { Color4 } from '@babylonjs/core/Maths/math.color'
+import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader'
+import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder'
+import '@babylonjs/loaders/glTF/2.0'
+import '@babylonjs/core/Materials/standardMaterial'
+import '@babylonjs/core/Materials/PBR/pbrMaterial'
+const file = new URLSearchParams(location.search).get('file')
+const engine = new Engine(document.getElementById('c'), true, { preserveDrawingBuffer: true })
+const scene = new Scene(engine)
+scene.clearColor = new Color4(0.62, 0.7, 0.78, 1)
+new HemisphericLight('h', new Vector3(0, 1, 0), scene).intensity = 0.9
+const sun = new DirectionalLight('s', new Vector3(-0.4, -0.8, 0.5), scene)
+sun.intensity = 1.6
+const cam = new ArcRotateCamera('c', 0, 1.25, 2.6, new Vector3(0, 0.5, 0), scene)
+// a marker on the +z side of the model: which way is its "front" in the file
+const m = MeshBuilder.CreateBox('mark', { size: 0.06 }, scene)
+m.position.set(0, 0.03, 0.62)
+await SceneLoader.ImportMeshAsync('', '/', file, scene)
+window.__shoot = async (alpha) => { cam.alpha = alpha; await scene.whenReadyAsync(); for (let i = 0; i < 3; i++) scene.render(); return document.getElementById('c').toDataURL('image/png') }
+window.__ready = true
+</script></body></html>

@@ -605,5 +605,20 @@
     "rotateDeg": 25.7,
     "stone": false,
     "note": "The obelisk at the midpoint of OSM's two pools, the fountains in them (64 m either side, the axis 25.7° east of north), the rostral columns; OSM's 0.3 m obelisk base replaced."
+  },
+  {
+    "name": "Monument à la République",
+    "procedural": "monumentRepublique",
+    "lat": 48.867498,
+    "lon": 2.363817,
+    "front": 225,
+    "note": "The pedestal: platform, drum with its bronze frieze, the three seated allegories, the shaft; Marianne and the lion are the user's models attached to it (paris-statues.json). Facing (225°) to be checked against a photograph."
+  },
+  {
+    "name": "Danton — OSM plinth",
+    "osm": [
+      "way/62505817"
+    ],
+    "note": "Placeholder: OSM maps Danton's plinth as a 4 m building; the statue pool builds the pedestal."
   }
 ]

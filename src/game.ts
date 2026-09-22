@@ -32,6 +32,7 @@ import { Crowd } from './sim/crowd.ts'
 import { Life } from './render/life.ts'
 import { Sky } from './render/sky.ts'
 import { Landmarks, landmarkManifest, packedIds } from './render/landmarks.ts'
+import { Statues, statueManifest } from './render/statues.ts'
 import { Traffic } from './sim/traffic.ts'
 import { BakedCrowd } from './render/crowd-baked.ts'
 import { Rider } from './render/rider.ts'
@@ -235,6 +236,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const landmarks = off.has('landmarks') ? null
     : new Landmarks(scene, pkg, landmarkList, city.terrain, new URL(`landmarks/${pkg.region ?? opts.city}/`, document.baseURI).href)
   // each fitted to its own building as the tile with it arrives — the building as baked, before prepare took it out
+  // the statues from the user's models, at most three in memory (render/statues.ts)
+  const statues = off.has('landmarks') ? null : new Statues(scene, await statueManifest(document.baseURI, opts.city, pkg.region),
+    pkg.origin, city.terrain, new URL('./', document.baseURI).href, () => landmarks?.placed ?? [])
+  ;(window as unknown as { __statues?: unknown }).__statues = statues
   if (landmarks) {
     for (const raw of seenRaw) landmarks.addTile(raw)
     anyTile.push((raw) => landmarks.addTile(raw))
@@ -609,6 +614,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       // glass and water are view-dependent, so they need the eye every frame; the chase camera is driven by
       // hand, so Babylon has no automatic for it
       landmarks?.update(camera.position)
+      statues?.update(camera.position)
       updateEye(scene, camera.position)
       updateCartoonEye(scene, camera.position)
       updateWater(scene, now / 1000, camera.position)

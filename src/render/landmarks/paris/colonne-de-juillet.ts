@@ -33,8 +33,7 @@ export function colonneDeJuillet(out: MeshBuilder): void {
   prism(out, 0, 0, y1, y1 + 1.2, 1.2, 16, bronze, FIXED, 1.8)          // the capital
   box(out, 0, y1 + 1.4, 0, 1.9, 0.2, 1.9, bronze, FIXED)                // the gallery
   prism(out, 0, 0, y1 + 1.6, y1 + 2.4, 0.9, 12, bronze, FIXED, 0.7)     // the lantern
-  prism(out, 0, 0, y1 + 2.4, y1 + 3.0, 0.6, 12, gold)                   // the globe (as a drum)
-  prism(out, 0, 0, y1 + 3.0, y1 + 5.2, 0.28, 8, gold, FIXED, 0.18)      // the figure
-  box(out, 0, y1 + 4.6, 0, 1.2, 0.08, 0.12, gold, FIXED)                // its outstretched wings
-  prism(out, 0, 0, y1 + 5.2, y1 + 5.9, 0.08, 6, gold, FIXED, 0)         // the torch
+  // the Génie de la Liberté on his globe is the user's model (public/landmarks/paris-statues.json), standing
+  // on the lantern's top at y1 + 2.4
+  void gold
 }

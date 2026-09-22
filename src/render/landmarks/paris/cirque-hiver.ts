@@ -1,6 +1,6 @@
 import type { MeshBuilder } from '../../buildings.ts'
 import { box, prism } from '../../models.ts'
-import { archedPane, beam, block, column, hex, pediment, shade } from '../kit.ts'
+import { archedPane, block, column, hex, pediment, shade } from '../kit.ts'
 
 const FIXED = 0
 
@@ -13,7 +13,6 @@ export function cirqueHiver(out: MeshBuilder): void {
   const trim = shade(stone, 1.06)
   const frieze = hex('#8a6b4a')
   const roofC = hex('#6b6e70')
-  const bronze = hex('#4f5a4e')
   const r = 20.5
   prism(out, 0, 0, 0, 15, r, 20, stone)
   prism(out, 0, 0, 11, 13.4, r + 0.12, 20, frieze)                       // the frieze band
@@ -38,10 +37,8 @@ export function cirqueHiver(out: MeshBuilder): void {
     // either side of the porch, against the curved wall — out at 5 m they stood in the road (BUGS.md #10)
     const x = sx * 9.6
     const z = -Math.sqrt(r * r - x * x) - 1.3
+    // the plinth; the bronze amazons on it are the user's models (public/landmarks/paris-statues.json),
+    // attached here at (±9.6, 2.6, −19.4)
     block(out, x - 1.4, x + 1.4, z - 1, z + 1, 0, 2.6, trim)
-    block(out, x - 1.1, x + 1.1, z - 0.35, z + 0.35, 3.8, 4.8, bronze)                   // the horse
-    for (const [lx, lz] of [[-0.9, -0.2], [-0.9, 0.2], [0.9, -0.2], [0.9, 0.2]]) block(out, x + lx - 0.1, x + lx + 0.1, z + lz - 0.1, z + lz + 0.1, 2.6, 3.9, bronze)
-    beam(out, [x + 1, 4.6, z], [x + 1.5, 5.6, z], 0.18, bronze)
-    prism(out, x - 0.1, z, 4.8, 6, 0.25, 8, bronze, FIXED, 0.2)                          // the rider
   }
 }

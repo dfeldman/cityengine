@@ -316,7 +316,7 @@ export class Landmarks {
   count = 0
   /** where each drawn landmark stands, for the jump-to menu */
   /** every landmark drawn, with its fitted half-sizes, turn and height where it has them (for tools/views.ts) */
-  readonly placed: { name: string; x: number; z: number; hx?: number; hz?: number; rotation?: number; height?: number }[] = []
+  readonly placed: { name: string; x: number; y?: number; z: number; hx?: number; hz?: number; rotation?: number; height?: number }[] = []
 
   private readonly scene: Scene
   private readonly base: string
@@ -486,7 +486,7 @@ export class Landmarks {
       m.renderingGroupId = 3
       m.isPickable = false
       this.count++
-      if (e.sign !== false) this.placed.push({ name: e.name, x: cx + ox, z: cz + oz, hx: fit.hx, hz: fit.hz, rotation, height: modelHeight(mb) })
+      if (e.sign !== false) this.placed.push({ name: e.name, x: cx + ox, y, z: cz + oz, hx: fit.hx, hz: fit.hz, rotation, height: modelHeight(mb) })
       // and its shadow, from the footprint it stands on, the height it reaches
       const shadows = new MeshBuilder()
       addShadow(shadows, under, modelHeight(mb) * 0.85, shadowOffset(DAYLIGHT.sun), SHADOW_Y)

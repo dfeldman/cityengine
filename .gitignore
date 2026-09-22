@@ -3,3 +3,5 @@ dist/
 tools/cache/
 .DS_Store
 docs/shots/views/
+incoming_models/
+public/models/

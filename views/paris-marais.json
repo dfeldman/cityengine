@@ -311,5 +311,65 @@
   "group": "landmark",
   "from": [48.8551, 2.3655, 45],
   "to": [48.85563, 2.3655, 0]
+ },
+ {
+  "name": "Henri IV — front",
+  "group": "statue",
+  "from": [48.857094, 2.341105, 1.8],
+  "to": [48.857136, 2.340968, 6.73]
+ },
+ {
+  "name": "Jeanne d'Arc — front",
+  "group": "statue",
+  "from": [48.863777, 2.332115, 1.8],
+  "to": [48.863879, 2.332187, 7.0600000000000005]
+ },
+ {
+  "name": "Georges Clemenceau — front",
+  "group": "statue",
+  "from": [48.867123, 2.314284, 1.8],
+  "to": [48.867089, 2.314395, 4.58]
+ },
+ {
+  "name": "Charles de Gaulle — front",
+  "group": "statue",
+  "from": [48.867457, 2.313712, 1.8],
+  "to": [48.867491, 2.313601, 4.235]
+ },
+ {
+  "name": "Charlemagne et ses Leudes — front",
+  "group": "statue",
+  "from": [48.85314, 2.348013, 1.8],
+  "to": [48.85309, 2.348222, 6.140000000000001]
+ },
+ {
+  "name": "Étienne Marcel — front",
+  "group": "statue",
+  "from": [48.855572, 2.352064, 1.8],
+  "to": [48.855673, 2.35212, 6.95]
+ },
+ {
+  "name": "Danton — front",
+  "group": "statue",
+  "from": [48.852346, 2.339143, 1.8],
+  "to": [48.852265, 2.339143, 5.98]
+ },
+ {
+  "name": "Génie de la Liberté — from the place",
+  "group": "statue",
+  "from": [48.853166, 2.368388, 28],
+  "to": [48.853166, 2.369139, 45]
+ },
+ {
+  "name": "Monument à la République — front",
+  "group": "statue",
+  "from": [48.867282, 2.363489, 3],
+  "to": [48.867498, 2.363817, 11]
+ },
+ {
+  "name": "Cirque d'Hiver horsemen — from Rue Amelot",
+  "group": "statue",
+  "from": [48.863304, 2.366875, 2.2],
+  "to": [48.863397, 2.367402, 5]
  }
 ]

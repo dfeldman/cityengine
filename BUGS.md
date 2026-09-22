@@ -30,6 +30,13 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 20 | open | Central Paris audit: 22 ride edges pass through buildings; 266 dead ends to triage | audit-ride, 2026-09-21 |
 | 21 | fixing | Notre-Dame needs real effort: the first pass is a sketch | user, 2026-09-21 |
 | 22 | open | The Place de la Concorde is drawn as grass; the real square is paved | views, 2026-09-21 |
+| 23 | open | Haussmann balconies read as solid dark lines, not ironwork | user, 2026-09-22 |
+| 24 | open | Heavy z-fighting on the buildings on the left at central Paris's start point (48.860446, 2.331791) | user, 2026-09-22 |
+| 25 | open | Dormers and a chimney float in mid-air over a low building (48.857914, 2.347074) | user, 2026-09-22 |
+| 26 | open | Riding below the ground: the rider and road sink under the pavement (48.863689, 2.297469) | user, 2026-09-22 |
+| 27 | open | Paths near the Alma / Trocadéro are unrideable: near-parallel paths merge and diverge, the rider is swept along | user, 2026-09-22 |
+| 28 | open | Both banks of the Seine: 4–5 near-parallel OSM paths that periodically meet — confusing to ride | user, 2026-09-22 |
+| 29 | fixing | Underground Métro station rooms drawn as 20 m buildings on the squares above (Place de la République) | views, 2026-09-22 |
 
 ---
 
@@ -336,3 +343,54 @@ portals want more depth (real recesses rather than layered panes).
 `ground` (grass); the Concorde is a paved place (OSM `place=square` / `area:highway`, not in the bake's area
 kinds). Paved squares need their own area kind (`paved`) from `highway=pedestrian` areas and `place=square`,
 drawn as paving.
+
+## 23. Balconies read as solid lines
+
+**Seen:** user, 2026-09-22 (a to-do): the continuous balconies on the 2nd and 5th floors of Haussmann fronts
+are drawn as solid dark bands (see the Chicago and Paris shots). They want to read as wrought iron — a slab
+edge in stone, and a railing you can see through (a cut-out pattern of bars and scrolls, not a solid strip).
+
+## 24. Z-fighting at the central-Paris start
+
+**Seen:** user, 2026-09-22, at 48.860446, 2.331791 (the drop point for central Paris, by the Louvre's west end):
+lots of z-fighting on the buildings on the left. Likely the Louvre restyle (`height: 25` over OSM's 12 m
+outline) now meeting OSM's own taller wing parts of the same palace inside it — two sets of walls in one place.
+
+## 25. Dormers in mid-air
+
+**Seen:** user, 2026-09-22, at 48.857914, 2.347074 (by the Châtelet métro): a one-storey building's roof is
+flat, but its row of stone dormers (and a chimney) stand in the air above it, at the height of the taller
+building behind. Likely the roofscape (dormers, chimneys) placed from a different storey count or height than
+the walls — a building whose `height` was changed (inference or insetNested) after its roof plan was made, or a
+part whose dormers are planned from its owner's eaves.
+
+## 26. Riding below ground level
+
+**Seen:** user, 2026-09-22, at 48.863689, 2.297469 (Avenue du Président Wilson / the Alma side): the rider rides
+on a road surface that sits below the pavement beside it; the pavement's edge stands up like a wall. Probably
+a street the bake marked as a raised/ramped edge (a tunnel approach — the Alma underpass is here) whose own
+height profile dips while the painted ground stays at grade, or the reverse.
+
+## 27. Tangled paths near the Alma and the Trocadéro
+
+**Seen:** user, 2026-09-22, at 48.865169, 2.298839; 48.863240, 2.296281; 48.860646, 2.290922: "multiple almost
+parallel paths come together and then diverge … I keep getting swept away" and "paths make zero sense". The
+avenues here are dual carriageways with service roads, tunnel ramps (the Alma underpass) and park paths; the
+ride graph offers them all. Wants: ride overrides for the Place de l'Alma and the Trocadéro (PARIS_EXPAND §3:
+circles and spokes), and `mergeParallel` / `dropSidePaths` to fold the service lanes into their avenue.
+
+## 28. Parallel paths along the Seine
+
+**Seen:** user, 2026-09-22: "we really should simplify the paths on both sides of the seine. often osm has 4 or 5
+parallel paths that periodically meet". Along each bank OSM maps the quai road, its pavements, a cycle track,
+the upper promenade, the lower quay (port) path and ramps. Wants: fold everything within ~25 m of and parallel
+to the quai into ONE upper route and ONE lower-quay route (PARIS_EXPAND §3: the two levels), linked only at the
+real ramps. Same machinery as #27 (`mergeParallel` widened for bundles of more than two).
+
+## 29. Métro stations' underground rooms drawn as buildings
+
+**Seen:** placing the Monument à la République: the square was full of small 20 m blocks (70 within 80 m).
+**Cause:** OSM's indoor mapping of the République station — corridors, stairways as `building:part` with
+`indoor=*`, `location=underground`, `layer` −1 to −3 — taken as buildings, their height inferred (20 m).
+**Fix:** the bake drops any building or part that is underground, indoor, on a negative layer, or only on
+negative levels. Re-bake all Paris cities.

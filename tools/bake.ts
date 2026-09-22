@@ -186,8 +186,16 @@ async function bake(spec: CitySpec): Promise<void> {
    * on the L is worse than the canopy being missing, so they are left out.
    */
   const canopy = (t: Record<string, string>): boolean => t.building === 'roof' && parseInt(t.layer ?? '0', 10) >= 1
-  const outlines = ways.filter((w) => w.tags.building && !w.tags['building:part'] && !canopy(w.tags))
-  const parts = ways.filter((w) => w.tags['building:part'])
+  /*
+   * Nothing below the ground and nothing indoors: OSM maps the Métro's big stations room by room — corridors,
+   * stairways, ticket halls as `building:part` with `indoor=*`, `location=underground` and negative layers —
+   * and each came out as a 20 m block on the square above it (the Place de la République was full of them,
+   * BUGS.md #29). A building standing at grade with a basement keeps its own non-negative layer.
+   */
+  const buried = (t: Record<string, string>): boolean => t.location === 'underground' || t.indoor !== undefined
+    || parseFloat(t.layer ?? '0') < 0 || (t.level !== undefined && t.level.split(';').every((v) => parseFloat(v) < 0))
+  const outlines = ways.filter((w) => w.tags.building && !w.tags['building:part'] && !canopy(w.tags) && !buried(w.tags))
+  const parts = ways.filter((w) => w.tags['building:part'] && !buried(w.tags))
   const partSeeds = parts
     .filter((w) => w.geometry && w.geometry.length >= 3)
     // the part's centre, not its first vertex: parts share the outline's edges, and a vertex exactly ON
