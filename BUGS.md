@@ -29,7 +29,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 19 | fixed | The Colonne de Juillet at the Bastille is gone completely | user, 2026-09-21 |
 | 20 | open | Central Paris audit: 22 ride edges pass through buildings; 266 dead ends to triage | audit-ride, 2026-09-21 |
 | 21 | fixed | Notre-Dame needs real effort: the first pass is a sketch | user, 2026-09-21 |
-| 22 | open | The Place de la Concorde is drawn as grass; the real square is paved | views, 2026-09-21 |
+| 22 | fixed | The Place de la Concorde is drawn as grass; the real square is paved | views, 2026-09-21 |
 | 23 | fixed | Haussmann balconies read as solid dark lines, not ironwork | user, 2026-09-22 |
 | 24 | fixed | Heavy z-fighting on the buildings on the left at central Paris's start point (48.860446, 2.331791) | user, 2026-09-22 |
 | 25 | fixed | Dormers and a chimney float in mid-air over a low building (48.857914, 2.347074) | user, 2026-09-22 |
@@ -406,6 +406,14 @@ portals want more depth (real recesses rather than layered panes).
 `ground` (grass); the Concorde is a paved place (OSM `place=square` / `area:highway`, not in the bake's area
 kinds). Paved squares need their own area kind (`paved`) from `highway=pedestrian` areas and `place=square`,
 drawn as paving.
+
+**Fix:** a `paved` area kind:
+- from its own Overpass query (`squaresQuery`: pedestrian areas, `area:highway`, `place=square`), fed only to the
+  area loops, never to the streets;
+- painted in warm stone paving before the other areas, so the lawns and pools mapped inside a square draw over it;
+- never planted with trees.
+
+Central Paris went from 1622 to 2665 areas. ✅ `docs/shots/BUG22-concorde-paved.png`.
 
 ## 23. Balconies read as solid lines
 

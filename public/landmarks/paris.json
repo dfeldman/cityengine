@@ -644,5 +644,14 @@
     "lon": 2.28845,
     "rotateDeg": 134.3,
     "note": "The eight gilded figures and the balustrade over the gardens; the axis points at the Eiffel Tower."
+  },
+  {
+    "name": "Grand Palais",
+    "procedural": "grandPalais",
+    "osm": [
+      "way/56185523"
+    ],
+    "front": 90,
+    "note": "The glass nave and dome on green iron, the colonnade to the Avenue Winston-Churchill, the quadrigas; fitted to OSM's outline, front to the avenue (east)."
   }
 ]
