@@ -17,7 +17,7 @@
  * the terrain grid, the skyline, the named landmarks (menu, minimap), and the tile list.
  */
 import type {
-  CityPackage, PackedArea, PackedBoat, PackedBuilding, PackedEdge, PackedFringe, PackedFurniture, PackedLandmark, PackedPoi, PackedRail,
+  CityPackage, PackedArea, PackedBoat, PackedBridge, PackedBuilding, PackedEdge, PackedFringe, PackedFurniture, PackedLandmark, PackedPoi, PackedRail,
 } from './package.ts'
 import type { PackedTerrain } from './terrain.ts'
 
@@ -53,6 +53,8 @@ export interface TileData {
   plantings: number[]
   /** moored boats, by their centre (optional: tiles baked before boats have none) */
   boats?: PackedBoat[]
+  /** bridge outlines, by their centre (optional, like boats) */
+  bridges?: PackedBridge[]
 }
 
 export interface TileEntry {
@@ -163,7 +165,7 @@ export function splitPackage(pkg: CityPackage, waterLevel: (ring: Point[], area:
   const get = (k: string): TileData => {
     let t = tiles.get(k)
     if (!t) {
-      t = { key: k, edges: [], buildings: [], fringe: [], areas: [], trees: [], pois: [], furniture: [], landmarks: [], rails: [], plantings: [], boats: [] }
+      t = { key: k, edges: [], buildings: [], fringe: [], areas: [], trees: [], pois: [], furniture: [], landmarks: [], rails: [], plantings: [], boats: [], bridges: [] }
       tiles.set(k, t)
     }
     return t
@@ -175,6 +177,17 @@ export function splitPackage(pkg: CityPackage, waterLevel: (ring: Point[], area:
   for (const b of pkg.buildings) { const c = centre(b.ring); at(c.x, c.z).buildings.push(b) }
   for (const f of pkg.fringe ?? []) { const c = centre(f.ring); at(c.x, c.z).fringe.push(f) }
   for (const b of pkg.boats ?? []) { const c = centre(b.ring); at(c.x, c.z).boats!.push(b) }
+  // a bridge in EVERY tile its outline touches, like an edge: an edge's tile must know the structure is there
+  // (render/bridges.ts draws only its surfaces then), and a 470 m bridge reaches two tiles from its centre
+  for (const b of pkg.bridges ?? []) {
+    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+    for (let i = 0; i < b.ring.length; i += 2) {
+      x0 = Math.min(x0, b.ring[i]); x1 = Math.max(x1, b.ring[i]); z0 = Math.min(z0, b.ring[i + 1]); z1 = Math.max(z1, b.ring[i + 1])
+    }
+    const [ax, az] = tileOf(x0, z0)
+    const [bx, bz] = tileOf(x1, z1)
+    for (let tz = az; tz <= bz; tz++) for (let tx = ax; tx <= bx; tx++) get(tileKey(tx, tz)).bridges!.push(b)
+  }
   for (const l of pkg.landmarks ?? []) at(l.x, l.z).landmarks.push(l)
   for (const p of pkg.pois) at(p.x, p.z).pois.push(p)
   for (const f of pkg.furniture ?? []) at(f.x, f.z).furniture.push(f)
@@ -229,13 +242,14 @@ export type JoinedCity = Omit<CityPackage, 'areas' | 'fringe' | 'landmarks' | 'f
 export function joinTiles(index: Omit<CityIndex, 'tiles'> | CityIndex, tiles: Iterable<TileData>): JoinedCity {
   const edges = new Map<number, PackedEdge>()
   const rails = new Map<number, PackedRail>()
+  const bridges = new Map<number, PackedBridge>()
   const out = {
     id: index.id, name: index.name, origin: index.origin, radius: index.radius, box: index.box, ground: index.ground,
     region: index.region, start: index.start, terrain: index.terrain, skyline: index.skyline,
     attribution: index.attribution, baked: index.baked,
     edges: [] as PackedEdge[], buildings: [] as PackedBuilding[], fringe: [] as PackedFringe[], areas: [] as TileArea[],
     trees: [] as number[], pois: [] as PackedPoi[], furniture: [] as PackedFurniture[], landmarks: [] as PackedLandmark[],
-    rails: [] as PackedRail[], plantings: [] as number[], water: index.water, boats: [] as PackedBoat[],
+    rails: [] as PackedRail[], plantings: [] as number[], water: index.water, boats: [] as PackedBoat[], bridges: [] as PackedBridge[],
   }
   for (const t of tiles) {
     for (const e of t.edges) edges.set(e.id, e)
@@ -249,8 +263,10 @@ export function joinTiles(index: Omit<CityIndex, 'tiles'> | CityIndex, tiles: It
     out.landmarks.push(...t.landmarks)
     for (const v of t.plantings) out.plantings.push(v)
     out.boats.push(...(t.boats ?? []))
+    for (const b of t.bridges ?? []) bridges.set(b.id, b)
   }
   out.edges = [...edges.values()]
+  out.bridges = [...bridges.values()]
   out.rails = [...rails.values()]
   return out
 }
@@ -269,9 +285,10 @@ export function nearOf(source: TileSource, key: string, exists: (k: string) => b
   const tile = source.get(key)
   if (!tile) return null
   const [tx, tz] = key.split(',').map(Number)
-  const around: Omit<TileData, 'key'> = { edges: [], buildings: [], fringe: [], areas: [], trees: [], pois: [], furniture: [], landmarks: [], rails: [], plantings: [], boats: [] }
+  const around: Omit<TileData, 'key'> = { edges: [], buildings: [], fringe: [], areas: [], trees: [], pois: [], furniture: [], landmarks: [], rails: [], plantings: [], boats: [], bridges: [] }
   const edges = new Set<number>()
   const rails = new Set<number>()
+  const bridgeIds = new Set<number>()
   for (let dz = -1; dz <= 1; dz++) {
     for (let dx = -1; dx <= 1; dx++) {
       const k = tileKey(tx + dx, tz + dz)
@@ -288,6 +305,7 @@ export function nearOf(source: TileSource, key: string, exists: (k: string) => b
       around.landmarks.push(...t.landmarks)
       for (const v of t.plantings) around.plantings.push(v)
       around.boats!.push(...(t.boats ?? []))
+      for (const b of t.bridges ?? []) if (!bridgeIds.has(b.id)) { bridgeIds.add(b.id); around.bridges!.push(b) }
     }
   }
   return { key, tile, around }

@@ -194,7 +194,7 @@ export function cartoonMaterial(scene: Scene, name = 'cartoon', instanced = true
   })
   applyCartoonLook(mat, DAYLIGHT)
   // the monuments' pale surfaces as dressed stone (BUGS.md #8); everything else stays flat
-  mat.setFloat('stone', name === 'cartoonLandmark' ? 1 : 0)
+  mat.setFloat('stone', name === 'cartoonLandmark' || name === 'cartoonBridge' ? 1 : 0)
   mat.backFaceCulling = true
   /**
    * An explicit depth function, so nothing inherits one.

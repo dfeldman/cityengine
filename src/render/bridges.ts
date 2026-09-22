@@ -83,7 +83,7 @@ function wall(out: MeshBuilder, f: Frame[], o: number, dy0: number, dy1: number,
 export { isRaised }
 
 /** One raised edge as a deck. */
-export function deck(out: MeshBuilder, e: PackedEdge, terrain: Terrain, walk = e.walk, drop = 0): void {
+export function deck(out: MeshBuilder, e: PackedEdge, terrain: Terrain, walk = e.walk, drop = 0, structured = false): void {
   const pts = unpackPoints(e.points)
   if (pts.length < 2 || !e.heights) return
   const f = frames(pts, e.heights)
@@ -102,6 +102,8 @@ export function deck(out: MeshBuilder, e: PackedEdge, terrain: Terrain, walk = e
     strip(out, f, -outer, outer, 0.05, PAVING)
   }
   const top = road > 0 ? 0.15 : 0.05
+  // on a bridge with its own outline the structure is drawn once, whole (render/bridge-structures.ts)
+  if (structured) return
   const style = e.bridge && e.name ? BRIDGE_STYLES[e.name] : undefined
   if (style) {
     // a named bridge in its own design: parapets as ever, and under the deck its arches (see `archSpans`)

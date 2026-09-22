@@ -132,6 +132,21 @@ out qt;`
 }
 
 /**
+ * The bridges' own outlines (`man_made=bridge`): the structure a Seine bridge is drawn from, one per bridge,
+ * where its carriageways, cycle tracks and pavements are each a way of their own (render/bridges.ts). Its own
+ * query, like the furniture's, so no city's main query changed and nothing else was fetched again.
+ */
+export function bridgesQuery(b: Bbox): string {
+  const box = `${b.south},${b.west},${b.north},${b.east}`
+  return `[out:json][timeout:120];
+(
+  way["man_made"="bridge"](${box});
+  relation["man_made"="bridge"](${box});
+);
+out geom qt;`
+}
+
+/**
  * A query over a box too big for one request (central Paris is 7 × 3.5 km; one query timed out on every
  * server): the box cut into a grid of chunks about `step` metres a side, each fetched and cached on its own,
  * and the results merged by id — Overpass returns a way, node or relation whole even when only part of it

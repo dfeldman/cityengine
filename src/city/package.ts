@@ -152,6 +152,14 @@ export interface PackedBoat {
   name?: string
 }
 
+/** A bridge's outline (OSM `man_made=bridge`), what render/bridges.ts builds its structure from. */
+export interface PackedBridge {
+  id: number
+  /** the outline, flattened x,z */
+  ring: number[]
+  name?: string
+}
+
 /** A railway, for the trains that run on it. Straight through; trains do not steer. */
 export interface PackedRail {
   id: number
@@ -197,6 +205,8 @@ export interface CityPackage {
   fringe?: PackedFringe[]
   /** moored boats (render/boats.ts); drawn afloat, never as buildings */
   boats?: PackedBoat[]
+  /** the bridges' outlines (render/bridges.ts) */
+  bridges?: PackedBridge[]
   /** every tree, decided at bake time (city/plantings.ts): x, z, height, spin, park (0/1) per tree */
   plantings?: number[]
   /** the water bodies WHOLE, when `areas` are tile pieces (quays, the occluder and the crowd need the whole) */

@@ -27,7 +27,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { CITIES, bboxOf, city, extentOf, type CitySpec } from './cities.ts'
 import { joinNearMisses } from './gaps.ts'
-import { fringeQuery, cityQuery, furnitureQuery, innerRings, outerRings, overpassTiled, type Bbox, type OsmWay } from './overpass.ts'
+import { bridgesQuery, fringeQuery, cityQuery, furnitureQuery, innerRings, outerRings, overpassTiled, type Bbox, type OsmWay } from './overpass.ts'
 import { Elevation, ATTRIBUTION as TERRAIN_CREDIT } from './terrarium.ts'
 import { Terrain, type PackedTerrain } from '../src/city/terrain.ts'
 import { splitPackage, type CityIndex, type TileEntry } from '../src/city/tiles.ts'
@@ -919,6 +919,24 @@ async function bake(spec: CitySpec): Promise<void> {
   pkg.boats = boatWays.map((w) => ({ id: w.id, ring: packPoints(w.geometry.slice(0, -1).map((g) => proj.toLocal(g))),
     ...(w.tags.name ? { name: w.tags.name } : {}) }))
   console.log(`  ${pkg.boats.length} boats moored`)
+  // the bridges' outlines, what each bridge's structure is built from (render/bridges.ts)
+  {
+    const got = await overpassTiled(bridgesQuery, bbox(spec)).catch((e) => {
+      console.warn(`  bridges: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
+      return null
+    })
+    const out: NonNullable<CityPackage['bridges']> = []
+    const ring = (g: { lat: number; lon: number }[], id: number, name?: string): void => {
+      const pts = g.map((q) => proj.toLocal(q))
+      if (pts.length > 2 && Math.hypot(pts[0].x - pts[pts.length - 1].x, pts[0].z - pts[pts.length - 1].z) < 0.5) pts.pop()
+      if (pts.length < 3) return
+      out.push({ id, ring: packPoints(pts), ...(name ? { name } : {}) })
+    }
+    for (const w of got?.ways ?? []) if (w.geometry && w.geometry.length >= 4) ring(w.geometry, w.id, w.tags?.name)
+    for (const r of got?.relations ?? []) for (const g of outerRings(r)) ring(g, r.id, r.tags?.name)
+    pkg.bridges = out
+    console.log(`  ${out.length} bridge outlines (${out.filter((b) => b.name).length} named)`)
+  }
   // every tree, decided here so a streamed tile always grows the same ones (city/plantings.ts)
   // a ceiling by AREA, not per city: 1,900 over the Marais's box is ~680 a square kilometre, and a city-wide
   // 1,900 would have left twenty square kilometres of central Paris almost bare

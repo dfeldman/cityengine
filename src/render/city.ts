@@ -16,6 +16,7 @@ import type { Scene } from '@babylonjs/core/scene'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { MeshBuilder, buildBuilding, capPolygon, capPolygonWithHoles, type Arch, type AtlasManifest, type Ring } from './buildings.ts'
 import { archSize, passageArches } from './passages.ts'
+import { inOutline } from './bridge-structures.ts'
 import { facadeMaterial } from './facade-material.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
 import { groundLayerMaterial, roadMaterial } from './road-material.ts'
@@ -827,6 +828,19 @@ export class City {
   readonly raisedIds = new Set<number>()
   /** raised footways that are a road bridge's own sidewalks, drawn by the road's deck */
   private readonly coveredDecks = new Set<number>()
+  /** the bridges' outlines (render/bridge-structures.ts): a way on one draws only its running surfaces */
+  private readonly outlines = new Map<number, { ring: { x: number; z: number }[]; x0: number; x1: number; z0: number; z1: number }>()
+  private structured(e: PackedEdge): boolean {
+    const n = e.points.length / 2
+    const k = Math.floor(n / 2)
+    const x = n % 2 ? e.points[2 * k] : (e.points[2 * k - 2] + e.points[2 * k]) / 2
+    const z = n % 2 ? e.points[2 * k + 1] : (e.points[2 * k - 1] + e.points[2 * k + 1]) / 2
+    for (const o of this.outlines.values()) {
+      if (x < o.x0 - 2 || x > o.x1 + 2 || z < o.z0 - 2 || z > o.z1 + 2) continue
+      if (inOutline(o.ring, x, z, 1.5)) return true
+    }
+    return false
+  }
   /** a road deck's pavement width, where it has been widened to take in its sidewalk footways */
   private readonly deckWalk = new Map<number, number>()
   /** elevated railways by tile */
@@ -898,6 +912,13 @@ export class City {
   ingest(t: TileData): void {
     if (this.ingested.has(t.key)) return
     this.ingested.add(t.key)
+    for (const b of t.bridges ?? []) {
+      if (this.outlines.has(b.id)) continue
+      const ring = unpackPoints(b.ring)
+      let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+      for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+      this.outlines.set(b.id, { ring, x0, x1, z0, z1 })
+    }
     for (const e of t.edges) {
       if (!onSurface(e) || this.edgeSeen.has(e.id)) continue
       this.edgeSeen.add(e.id)
@@ -1692,7 +1713,9 @@ export class City {
     if (!this.off.has('bridges')) {
       const decks = new MeshBuilder()
       for (const e of this.edgesIn.get(k) ?? []) {
-        if (this.raisedIds.has(e.id) && !this.coveredDecks.has(e.id)) deck(decks, e, this.terrain, this.deckWalk.get(e.id), this.region.riverDrop ?? 0)
+        if (this.raisedIds.has(e.id) && !this.coveredDecks.has(e.id)) {
+          deck(decks, e, this.terrain, this.deckWalk.get(e.id), this.region.riverDrop ?? 0, e.bridge === true && this.structured(e))
+        }
       }
       const railColour = hexRgb(this.region.elevatedRailColour)
       for (const r of this.railsIn.get(k) ?? []) railDeck(decks, r, this.terrain, railColour)
