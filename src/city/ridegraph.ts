@@ -432,6 +432,39 @@ export function pruneStubs(edges: RideEdge[]): RideEdge[] {
 }
 
 /**
+ * Two short edges joining the same two nodes (BUGS.md #44): a loop of a few metres at a junction — a
+ * boulevard's side-lane scrap and the link a dead end was joined back by, or the same way mapped twice
+ * (Rue Boulle, once named and once not). The rider was offered both ways round it. Kept: the named one, then
+ * the shorter. A long way round between the same nodes is a real street and stays.
+ */
+export function dropLoops(edges: RideEdge[]): RideEdge[] {
+  const pairs = new Map<string, RideEdge[]>()
+  for (const e of edges) {
+    const k = e.a < e.b ? `${e.a}:${e.b}` : `${e.b}:${e.a}`
+    const l = pairs.get(k)
+    if (l) l.push(e)
+    else pairs.set(k, [e])
+  }
+  const drop = new Set<number>()
+  for (const l of pairs.values()) {
+    if (l.length < 2 || Math.min(...l.map((e) => e.length)) >= 40) continue
+    const keep = [...l].sort((p, q) => (!!p.name !== !!q.name ? (p.name ? -1 : 1) : p.length - q.length))[0]
+    // a longer street round the other side of a small block is a real way (Rue Cloche Perce's 71 m beside
+    // Rue du Roi de Sicile's 37): only the short and the near-copies go
+    for (const e of l) if (e !== keep && (e.length < 40 || e.length < keep.length * 1.25)) drop.add(e.id)
+  }
+  if (drop.size === 0) return edges
+  let es = edges.filter((e) => !drop.has(e.id))
+  // a loop hung off the end of a street (a lasso) leaves its tail: a named scrap under 40 m going nowhere,
+  // which was only ever a way round and back — it goes too (Richard-Lenoir's 16 m, Rivoli's 18)
+  const ends = new Set<number>()
+  for (const e of edges) if (drop.has(e.id)) { ends.add(e.a); ends.add(e.b) }
+  const deg = degrees(es)
+  es = es.filter((e) => !(e.length < 40 && ((ends.has(e.a) && deg.get(e.a) === 1) || (ends.has(e.b) && deg.get(e.b) === 1))))
+  return es
+}
+
+/**
  * On a bike, the pedestrianised side of a street is not the street. OSM maps the wide paved half of Rue
  * Saint-Antoine as a pedestrian way beside the road, with the road's own name; contraction then stitched it
  * into the street's chain and the rider rode down the pavement. A pedestrian edge running alongside a
@@ -944,6 +977,8 @@ export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrid
   if (overrides?.roundabouts.length) es = pruneStubs(largest(es))
   // last, on the finished graph: the links across a split boulevard
   if (mode === 'bike') es = linkCarriageways(es, ids)
+  // and the little loops all that can leave (BUGS.md #44), and the stubs they leave in turn
+  es = pruneStubs(dropLoops(es))
   return buildGraph(es) as RideGraph
 }
 

@@ -774,4 +774,15 @@ Now 206 × 150 m, inside the avenue.
 
 **Seen:** user, 2026-09-22: the intersection near here has a loop.
 
-**Status:** open.
+**Cause:** two short ride edges between the same two nodes. Boulevard Richard-Lenoir's 11 m side-lane scrap and
+the 8 m link that joined its dead end back made a lasso at the junction with Rue Saint-Sabin (and again at Rue
+Bréguet). Rue Boulle was also mapped twice, once named and once not. There were 144 such pairs in the Marais
+alone, most of them a named edge and an unnamed copy of the same length.
+
+**Fix:** `dropLoops` (src/city/ridegraph.ts) runs last in the ride graph. Of a pair between the same nodes it
+keeps the named edge, else the shorter. Only short edges (under 40 m) and near-copies go, so Rue Cloche
+Perce's 71 m round a block stays. A lasso's tail left dead-ending under 40 m goes too.
+
+The audit's new dead ends are 4 real impasses (Saint-Sébastien, Saint-Claude, Jean Beausire, Cité de la
+Roquette) that had ended in a tiny loop, plus Rue Cloche Perce, whose own geometry doubles back. Paris
+rebaked: Marais 1137 → 892 edges, centre 6625. Shot: docs/shots/B44-after.png.
