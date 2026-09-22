@@ -837,6 +837,23 @@ itself blended. Reopen if a black shadow shows again. `tools/pick.ts --without=`
 **Seen:** user, 2026-09-22: "something wrong with stranger avoidance - they flicker back and forth between offset
 and normal path". (Stranger avoidance: #42.)
 
+**Cause:** one threshold. A walker under 1.6 m off the rider's line yields, which lets them step aside and 0.7 m
+onto the verge. Stepping aside takes them past 1.6 m, so the next frame they were no longer yielding. The verge
+allowance and the keep-to-your-side offset both SWITCHED off rather than easing, so the clamp put them back in
+the line at once, and they yielded again: the offset and the path, alternately, frame after frame. The side
+they stepped to could also flip when they stood nearly on the line. The same test found groups swapping sides in
+one frame when they turned round at a dead end, since the formation offset `across × dir` flips with the
+direction.
+
+**Fix (src/sim/crowd.ts):**
+- Hysteresis: once yielding, a walker stays yielding until the rider is 3 m past or 3.5 m clear.
+- The side (`yieldSide`) is fixed for the whole sidestep.
+- The verge allowance, the keep offset and the formation offset are eased at 1.2 m/s.
+
+Test (tests/crowd.test.ts): no walker moves across the path faster than 3 m/s, frame to frame. The same ride
+under the old code toggled yielding 880 times with 1.0 m jumps; now it toggles 40 times, once at each
+start and end, with 0.07 m at most.
+
 ## 50. Protruding signs backward
 
 **Seen:** user, 2026-09-22: "many protruding signs are backward" (the blade signs standing out from facades).

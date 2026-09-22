@@ -67,6 +67,15 @@ export interface Walker {
   nz?: number
   /** stepping aside for the rider (BUGS.md #42): allowed off the pavement's edge, onto the verge */
   yielding?: boolean
+  /** which way they are stepping (±1), fixed for the whole sidestep so it never swaps sides (BUGS.md #49) */
+  yieldSide?: number
+  /** how far onto the verge they may be, eased toward 0.7 m while yielding and back to 0 after */
+  verge?: number
+  /** keeping to their own side of a path: the offset now, eased (it is dropped while yielding) */
+  keepNow?: number
+  /** their place across the group's formation now (`across × dir`), eased: a group turning round at a dead end
+   * swapped sides in one frame */
+  formNow?: number
 }
 
 export interface CrowdConfig { perKm: number; range: number }
@@ -410,17 +419,27 @@ export class Crowd {
     this.lastRider = { x: rider.x, z: rider.z }
     const u = this.riderDir
     for (const w of this.walkers) {
+      /*
+       * Hysteresis (BUGS.md #49). Stepping aside takes them out past the 1.6 m that set them yielding, and with
+       * one threshold they stopped yielding the next frame, snapped back into the line, yielded again: a
+       * flicker between the sidestep and the path, every frame. Once yielding they go on until the rider is
+       * well past or well clear, and to the same side throughout.
+       */
+      const was = w.yielding === true
       w.yielding = false
-      if (!u || w.kind === 'cycle' || !w.at || w.nx === undefined || (w.leader !== undefined && byId.has(w.leader))) continue
+      if (!u || w.kind === 'cycle' || !w.at || w.nx === undefined || (w.leader !== undefined && byId.has(w.leader))) { w.yieldSide = undefined; continue }
       const rx = w.at.x - rider.x
       const rz = w.at.z - rider.z
       const ahead = rx * u.x + rz * u.z
       const lat = rx * -u.z + rz * u.x
-      if (ahead < -1.5 || ahead > 14 || Math.abs(lat) > 1.6) continue
+      const enter = ahead >= -1.5 && ahead <= 14 && Math.abs(lat) <= 1.6
+      const stay = was && ahead >= -3 && ahead <= 16 && Math.abs(lat) <= 3.5
+      if (!enter && !stay) { w.yieldSide = undefined; continue }
       const e = this.g.edges.get(w.edgeId)
       if (!e) continue
-      // away from the rider's line, measured along the walker's own across axis
-      const away = rx * w.nx! + rz * w.nz! >= 0 ? 1 : -1
+      // away from the rider's line, measured along the walker's own across axis — chosen once
+      const away = w.yieldSide ?? (rx * w.nx! + rz * w.nz! >= 0 ? 1 : -1)
+      w.yieldSide = away
       const halfWalk = e.foot ? Math.max(0.3, e.width / 2 - 0.3) : Math.max(0.2, e.walk / 2 - 0.25)
       const target = away * (halfWalk + 0.7)
       const goal = this.goals.get(w.id) ?? { dodge: 0, speed: w.speed }
@@ -491,14 +510,22 @@ export class Crowd {
         : this.bridge(eNow) ? Math.max(0.6, eNow.width / 2 - 0.5) : eNow.width / 2 + eNow.walk * 0.5
       // the group's formation and the sidestep, kept inside the pavement (or the path) — and a little past its
       // edge when stepping out of the rider's way
+      // (the verge allowance and the keep-to-your-side offset eased in and out, not switched: switched, the clamp
+      // put a walker back in the line the frame they stopped yielding — BUGS.md #49)
+      const vergeGoal = w.yielding ? 0.7 : 0
+      w.verge = (w.verge ?? 0) + Math.max(-dt * 1.2, Math.min(dt * 1.2, vergeGoal - (w.verge ?? 0)))
       const halfWalk = (w.kind === 'cycle' ? 0.4 : eNow.foot ? Math.max(0.3, eNow.width / 2 - 0.3) : Math.max(0.2, eNow.walk / 2 - 0.25))
-        + (w.yielding ? 0.7 : 0)
+        + w.verge
       /*
        * Not down the middle of a path: each keeps to their own side of it (their `side`), a third of the way
        * out, as people do — so a rider down the middle already misses most of them (BUGS.md #42).
        */
-      const keep = eNow.foot && w.kind !== 'cycle' && !w.yielding ? w.side * Math.max(0, eNow.width / 2 - 0.3) * 0.55 : 0
-      const off = Math.max(-halfWalk, Math.min(halfWalk, keep + w.dodge + w.across * w.dir))
+      const keepGoal = eNow.foot && w.kind !== 'cycle' && !w.yielding ? w.side * Math.max(0, eNow.width / 2 - 0.3) * 0.55 : 0
+      w.keepNow = w.keepNow === undefined ? keepGoal : w.keepNow + Math.max(-dt * 1.2, Math.min(dt * 1.2, keepGoal - w.keepNow))
+      const keep = w.keepNow
+      const formGoal = w.across * w.dir
+      w.formNow = w.formNow === undefined ? formGoal : w.formNow + Math.max(-dt * 1.2, Math.min(dt * 1.2, formGoal - w.formNow))
+      const off = Math.max(-halfWalk, Math.min(halfWalk, keep + w.dodge + w.formNow))
       // onto the pavement: `side` is relative to the STREET, so it does not change when they turn round
       const l = lane * w.side + off
       w.at = { x: p.x - dz * l, z: p.z + dx * l }

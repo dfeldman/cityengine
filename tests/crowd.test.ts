@@ -228,4 +228,29 @@ describe('strangers and the rider (BUGS.md #42)', () => {
     // hardly anyone walking into the rider's line as they pass
     expect(tooClose / passes).toBeLessThan(0.1)
   })
+
+  it('step aside smoothly, not flickering between the sidestep and their own line (BUGS.md #49)', () => {
+    const e: Edge = {
+      id: 1, a: 0, b: 1, points: Array.from({ length: 9 }, (_, i) => ({ x: 0, z: i * 50 })), length: 400,
+      surface: 'asphalt', width: 4, walk: 0, foot: true, name: 'Allée', kind: 'footway',
+    } as Edge
+    const g = buildGraph([e])
+    const crowd = new Crowd(g, 'crowded')
+    const near = [...g.edges.values()]
+    let rz = 130
+    crowd.update(0.01, { x: 0, z: rz }, near)
+    // across the path, a walker moves no faster than a quick sidestep (3 m/s) — frame to frame, at 30 fps
+    let worst = 0
+    const dt = 1 / 30
+    for (let t = 0; t < 20; t += dt) {
+      rz += 6 * dt
+      const before = new Map(crowd.all.map((w) => [w.id, w.at.x]))
+      crowd.update(dt, { x: 0, z: rz }, near)
+      for (const w of crowd.all) {
+        const b = before.get(w.id)
+        if (b !== undefined && w.kind !== 'cycle') worst = Math.max(worst, Math.abs(w.at.x - b))
+      }
+    }
+    expect(worst).toBeLessThan(3 * dt + 1e-6)
+  })
 })
