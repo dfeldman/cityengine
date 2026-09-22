@@ -299,6 +299,8 @@ export interface StreetFacing {
   main: boolean
   /** how far the pavement in front of this wall is above the building's base (a hillside's uphill side) */
   rise?: number
+  /** wall to kerb (m): an awning stops short of it, so a narrow street's blinds do not roof the road */
+  pavement?: number | null
 }
 
 const AWNING_COLOURS: [number, number, number][] = [
@@ -321,7 +323,9 @@ function awnings(out: MeshBuilder, cells: Cell[], plan: FacadePlan, seed: number
   const ground = plan.storeys.find((s) => s.index === 0)
   if (!ground || street.rate <= 0) return
   const fascia = Math.max(2.8, ground.y1 - 0.85)
-  const top = fascia - 0.47
+  // no higher than 3.1 m at the wall, however tall the shop: the chase camera rides at 3.5 m and passed
+  // under the cloth of a tall ground floor's blind (BUGS.md #16)
+  const top = Math.min(fascia - 0.47, 3.1)
   const valance = 0.25
   const off = (p: [number, number, number], d: number, dy: number): [number, number, number] =>
     [p[0] + nx * d, p[1] + dy, p[2] + nz * d]
@@ -338,6 +342,7 @@ function awnings(out: MeshBuilder, cells: Cell[], plan: FacadePlan, seed: number
     i = j
     if (r() >= street.rate) continue
     let depth = street.main ? 1.5 + r() * 0.7 : 0.9 + r() * 0.3
+    if (street.pavement != null) depth = Math.min(depth, Math.max(0.6, street.pavement - 0.3))
     // on a slope the uphill walls' shopfronts are partly buried; an awning there would lie on the pavement
     const room = top - valance - 2.3 - Math.max(0, street.rise ?? 0)
     if (room < 0.15) continue

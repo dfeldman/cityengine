@@ -617,7 +617,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       camBack += (room - camBack) * Math.min(1, dt * (room < camBack ? 12 : 3))
       // the camera rides the hill with the rider, looking at where the road actually goes
       const aheadY = city.terrain.heightAt(at.x + fx * 12, at.z + fz * 12)
-      camHeight += ((high ? 34 : 3.5) + groundY - camHeight) * Math.min(1, dt * 4)
+      // under a passage's vault, and behind the rider along it, the camera drops below the arch
+      const vault = high ? null : city.passageAt(at.x - fx * camBack, at.z - fz * camBack) ?? city.passageAt(at.x, at.z)
+      const lift = high ? 34 : vault === null ? 3.5 : Math.max(1.9, Math.min(3.5, vault - 1.0))
+      camHeight += (lift + groundY - camHeight) * Math.min(1, dt * (vault === null ? 4 : 8))
       if (!frozen) {
         camera.position.set(at.x - fx * camBack, camHeight, at.z - fz * camBack)
         camera.setTarget(new Vector3(at.x + fx * (high ? 26 : 9), (high ? 6 : 1.9) + aheadY,
@@ -733,6 +736,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   w.__tiles = prepared.tiles
   // nothing left to stream round the camera's focus (render/city.ts `idle`)
   w.__cityIdle = () => city.idle
+  w.__cityObj = city
   w.__Ray = Ray
   addEventListener('keydown', (e) => {
     if (e.code !== 'KeyV' || (e.target instanceof HTMLElement && e.target.closest('input, textarea, select'))) return

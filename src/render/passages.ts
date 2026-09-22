@@ -184,12 +184,27 @@ function buildPassages(scene: Scene, pkg: Pick<CityPackage, 'edges' | 'buildings
           out.quad([at(s0, g0, side * half, 0), at(s1, g1, side * half, 0), at(s1, g1, side * half, h * 0.7), at(s0, g0, side * half, h * 0.7)],
             [-nx * side, 0, -nz * side], UV, DARK, 0)
         }
+        /*
+         * The barrel stops at the building's outline on each side. A covered way along a facade — the arcade
+         * of edge 40125 by the Passage Walter-Benjamin — has its centreline inside the building but half its
+         * width out in the street, and its vault stood there as a grey curve over the road (BUGS.md #16).
+         */
+        const reach = (side: number): number => {
+          for (let o = half; o > 0.05; o -= 0.15) {
+            if (covered(s0.p.x + nx * side * o, s0.p.z + nz * side * o) !== null
+              && covered(s1.p.x + nx * side * o, s1.p.z + nz * side * o) !== null) return o
+          }
+          return 0
+        }
+        const lo = reach(-1)
+        const hi = reach(1)
         const seg = 6
         for (let i = 0; i < seg; i++) {
           const a0 = Math.PI * (i / seg)
           const a1 = Math.PI * ((i + 1) / seg)
-          const o0 = -Math.cos(a0) * half
-          const o1 = -Math.cos(a1) * half
+          const o0 = Math.max(-lo, Math.min(hi, -Math.cos(a0) * half))
+          const o1 = Math.max(-lo, Math.min(hi, -Math.cos(a1) * half))
+          if (Math.abs(o1 - o0) < 0.01) continue
           const y0 = h * 0.7 + Math.sin(a0) * h * 0.3
           const y1 = h * 0.7 + Math.sin(a1) * h * 0.3
           out.quad([at(s0, g0, o0, y0), at(s0, g0, o1, y1), at(s1, g1, o1, y1), at(s1, g1, o0, y0)], [0, -1, 0], UV, DARK, 0)
@@ -216,6 +231,11 @@ function buildPassages(scene: Scene, pkg: Pick<CityPackage, 'edges' | 'buildings
         const fz = c.uz * outward
         const face = { x: cross.x + fx * 0.08, z: cross.z + fz * 0.08 }
         const w = (o: number, y: number, d = 0): [number, number, number] => [face.x + nx * o + fx * d, g + y, face.z + nz * o + fz * d]
+        // only where the wall stands behind both feet: an arcade along a facade crosses the building line at
+        // a glancing angle, and its "portal" stood alone in the street (BUGS.md #16)
+        const backed = (side: number): boolean =>
+          covered(cross.x - fx * 0.4 + nx * side * (half + 0.2), cross.z - fz * 0.4 + nz * side * (half + 0.2)) !== null
+        if (!backed(-1) || !backed(1)) continue
         const spring = h * 0.7
         const n: [number, number, number] = [fx, 0, fz]
         // the stone ring round the opening — only the ring: the opening itself is open (the building cuts the

@@ -23,7 +23,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 13 | fixed | Too many long gowns among the strangers; the other dresses never appear | user, 2026-09-21 |
 | 14 | fixed | Two ground levels: a transparent top surface with the asphalt about half a metre below it | user, 2026-09-21 |
 | 15 | fixed | Signs still z-fight with the walls they hang on | user, 2026-09-21 |
-| 16 | open | On a narrow street with a curved awning the chase camera passes right through the awning (48.856762, 2.358575) | user, 2026-09-21 |
+| 16 | fixed | On a narrow street with a curved awning the chase camera passes right through the awning (48.856762, 2.358575) | user, 2026-09-21 |
 | 17 | fixed | A rental bike station lies across the road instead of along it (48.855780, 2.357875) | user, 2026-09-21 |
 | 18 | fixed | Café tables show no top surface (likely wound facing down) | user, 2026-09-21 |
 | 19 | fixed | The Colonne de Juillet at the Bastille is gone completely | user, 2026-09-21 |
@@ -300,6 +300,18 @@ buildings in front of them; the flicker itself cannot be shown in a still — re
 **Seen:** user, 2026-09-21, at 48.856762, 2.358575: a narrow street with a curved awning; the chase camera rides
 through it. `City.clearBehind` keeps the camera out of buildings; awnings (render/city.ts, the curved café
 awnings) stand out over the pavement and are not in what it tests.
+
+**Cause/fix:** the "curved awning" was a passage VAULT. Edge 40125 is a 70 m covered footway along the
+facade (an arcade), not through the building: its centreline lies inside the building, but the 1.5 m
+half-width barrel stood out over the street, and where it grazed the building line a lone portal arch stood in
+the road. In render/passages.ts the barrel is now clipped to the building outline on each side, and a portal is
+drawn only where the wall backs both its feet. Also:
+- awnings stop 0.3 m short of the kerb (`StreetFacing.pavement`) and top out at 3.1 m, under the chase camera's
+  3.5 m;
+- `City.passageAt` gives the vault height over a point, so the camera drops below the arch inside a real
+  passage and `clearBehind` lets it follow through;
+- `window.__cityObj` is exposed for probes.
+Re-shot the report and the Pavillon du Roi views: clean.
 
 ## 17. Bike-share station across the road
 

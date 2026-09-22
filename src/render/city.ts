@@ -15,7 +15,7 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import type { Scene } from '@babylonjs/core/scene'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { MeshBuilder, buildBuilding, capPolygon, capPolygonWithHoles, type Arch, type AtlasManifest, type Ring } from './buildings.ts'
-import { passageArches } from './passages.ts'
+import { archSize, passageArches } from './passages.ts'
 import { facadeMaterial } from './facade-material.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
 import { groundLayerMaterial, roadMaterial } from './road-material.ts'
@@ -26,7 +26,7 @@ import {
   morrisColumn, nycSubwayEntrance, parisNewsstand, trafficLight, trafficLightMast, trafficLightParis, wallaceFountain,
   wallLamp,
 } from './models.ts'
-import { facesStreet, streetIndex, type StreetIndex } from '../city/frontage.ts'
+import { facesStreet, pavementDepth, streetIndex, type StreetIndex } from '../city/frontage.ts'
 import { region, type Region } from '../city/region.ts'
 import { pointAlong } from '../sim/navigate.ts'
 import { waterMaterial } from './water-material.ts'
@@ -1128,6 +1128,8 @@ export class City {
     for (let d = step; d <= want; d += step) {
       const px = x + dx * d
       const pz = z + dz * d
+      // down a passage the building round it is not in the way: the camera follows through the vault
+      if (this.passageAt(px, pz) !== null) continue
       for (const b of near) {
         if (!withinRing(b.ring, px, pz, margin)) continue
         // back off to just before the wall, and never closer than a usable minimum
@@ -1135,6 +1137,37 @@ export class City {
       }
     }
     return want
+  }
+
+  /**
+   * The height of the vault over (x, z) when it is in a passage through a building (render/passages.ts), or
+   * null. The chase camera keeps under it: at its usual 3.5 m it sat in the barrel ceiling of the Passage
+   * Walter-Benjamin, which filled the screen as a grey curve (BUGS.md #16).
+   */
+  passageAt(x: number, z: number): number | null {
+    const [cx, cz] = tileOf(x, z)
+    let top: number | null = null
+    for (let dz = -1; dz <= 1; dz++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        for (const e of this.edgesIn.get(key(cx + dx, cz + dz)) ?? []) {
+          if (!e.passage) continue
+          let d = Infinity
+          for (let i = 2; i < e.points.length; i += 2) {
+            const ax = e.points[i - 2], az = e.points[i - 1], sx = e.points[i] - ax, sz = e.points[i + 1] - az
+            const t = Math.max(0, Math.min(1, ((x - ax) * sx + (z - az) * sz) / (sx * sx + sz * sz || 1)))
+            d = Math.min(d, Math.hypot(x - ax - sx * t, z - az - sz * t))
+          }
+          const probe = archSize(e, 99)
+          if (d > probe.half) continue
+          for (const b of this.buildingsIn.get(key(cx, cz)) ?? []) {
+            if ((b.minHeight ?? 0) > 0.5 || !withinRing(b.ring, x, z, 0)) continue
+            const h = archSize(e, b.height ?? (b.levels ? b.levels * 3.2 : 12)).top
+            top = top === null ? h : Math.min(top, h)
+          }
+        }
+      }
+    }
+    return top
   }
 
   /** How far a street is cut back at this node; 0 where it simply ends or bends. */
@@ -1799,8 +1832,9 @@ export class City {
             const f = (k + 0.5) / n
             return [a.x + (c.x - a.x) * f, a.z + (c.z - a.z) * f]
           }
-          for (let k = 0; k < n; k++) if (facesStreet(this.mainStreets!, ...t(k), nx, nz)) return { rate, main: true, rise }
-          for (let k = 0; k < n; k++) if (facesStreet(this.awningStreets, ...t(k), nx, nz)) return { rate: rate * 0.35, main: false, rise }
+          const pavement = (): number | null => pavementDepth(this.awningStreets!, (a.x + c.x) / 2, (a.z + c.z) / 2, nx, nz)
+          for (let k = 0; k < n; k++) if (facesStreet(this.mainStreets!, ...t(k), nx, nz)) return { rate, main: true, rise, pavement: pavement() }
+          for (let k = 0; k < n; k++) if (facesStreet(this.awningStreets, ...t(k), nx, nz)) return { rate: rate * 0.35, main: false, rise, pavement: pavement() }
           return null
         }, this.off.has('courts') ? [] : (b.holes ?? []).map(unpackPoints), this.archesFor(b, ring, plan.height))
       // the shadow this building throws across the street, as geometry; see shadows.ts
