@@ -584,7 +584,7 @@ way/35176305,"Phillip Burton Federal Building & United States Courthouse",tall,3
 way/260282396,"235 Pine Street",tall,37.791905,-122.400296,95,0,model,pine235,market-east,"1990: granite postmodern shaft with chevron bays. Tower grammar from Commons photographs."
 way/35176298,"Dolby Laboratories",tall,37.777597,-122.41552,95,0,model,dolbyBuilding,market-west,"Tower grammar + the DOLBY blades (market-west.ts) from a Commons photograph. Sixteen storeys; OSM's 95 m is too tall."
 way/32863494,"Grand Hyatt San Francisco",tall,37.789142,-122.407267,94,36,model,grandHyatt,union-square,"Tower grammar plus corner piers (union-square.ts), from Commons photographs: SOM's cream slab, blank corner piers running past the roof, window rows between."
-way/942664247,"Hunter-Dulin Building",tall,37.789669,-122.402487,94,0,model,hunterDulin,hard-1,"Bailed out by a recipe batch; done with the grammar's own crowns (docs/BUILDINGS.md)."
+way/942664247,"Hunter-Dulin Building",tall,37.789669,-122.402487,94,0,model,hunterDulinBuilding,market-mid,"Tower grammar: buff terracotta piers, setback arcaded storeys, steep red-and-copper roofs (Commons photograph)."
 way/132125165,"",tall,37.789703,-122.402561,94,0,todo,,,""
 way/192026938,"100 Spear Street",tall,37.792143,-122.394081,94,0,model,oneHundredSpear,fidi-2,"1984 glass curtain tower"
 way/1361492525,"InterContinental Mark Hopkins",tall,37.791566,-122.410387,93,0,todo,,,"building=yes"
