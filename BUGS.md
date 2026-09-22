@@ -837,6 +837,14 @@ and normal path". (Stranger avoidance: #42.)
 
 **Seen:** user, 2026-09-22: "many protruding signs are backward" (the blade signs standing out from facades).
 
+**Cause:** a blade's word is drawn turned a quarter clockwise (render/signs.ts `drawWord`), which reads top to bottom
+only with the letters' tops on the reader's right. That is toward the wall on one face and away from it on the
+other. Both faces were laid with the tops the same way along the wall's normal, so every blade read mirrored,
+upside-down letters running down it, from both sides.
+
+**Fix:** the blade's text cell is laid with u reversed. `tools/blade-shots.ts` photographs the first blade square-on
+from each face. Shot: docs/shots/B50-after.png ("SUE" at Sue's Hair Studio).
+
 ## 51. Too many crop tops on the strangers
 
 **Seen:** user, 2026-09-22: "too many people wearing crop tops, a real but uncommon item. most should wear colored

@@ -733,8 +733,11 @@ function projectingSigns(scene: Scene, atlas: TextAtlas, owner: string, hung: Hu
       top = yt
       reach = 0.75
     } else {
-      // the blade: 0.8 m out from the wall, 1.6 m tall, a thin iron edge round it
-      panel(0.18, 0.98, y0, y0 + 1.6, i, h.tint)
+      // the blade: 0.8 m out from the wall, 1.6 m tall, a thin iron edge round it. The word is drawn turned a
+      // quarter clockwise, which reads top to bottom only with the letters' tops on the reader's RIGHT: toward
+      // the wall on one face and away from it on the other. Both faces had them the same way along the wall's
+      // normal, so every blade read mirrored from both sides (BUGS.md #50) — the cell is laid with u reversed.
+      panel(0.18, 0.98, y0, y0 + 1.6, { u0: i.u1, v0: i.v0, u1: i.u0, v1: i.v1 }, h.tint)
       panel(0.14, 1.02, y0 - 0.04, y0, blank, iron)
       panel(0.14, 1.02, y0 + 1.6, y0 + 1.64, blank, iron)
       top = y0 + 1.64
