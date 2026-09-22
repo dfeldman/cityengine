@@ -46,9 +46,9 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 36 | fixed | Z-fighting on a strange barrier in the river (48.848591, 2.359412) | user, 2026-09-22 |
 | 37 | fixed | The bridges need a lot of work to be usable and beautiful | user, 2026-09-22 |
 | 38 | fixed | Roads tilt sideways on hillsides; they want a level cross-section, with cuts and retaining walls | user, 2026-09-22 |
-| 39 | open | Memory over extended sessions: the heap must never approach 3 GB (a 10-minute soak) | user, 2026-09-22 |
+| 39 | fixed | Memory over extended sessions: the heap must never approach 3 GB (a 10-minute soak) | user, 2026-09-22 |
 | 40 | fixed | Star junctions: left/straight/right cannot name the choice — show every exit, with its street | user, 2026-09-22 |
-| 41 | open | Quick landmarks: the hundreds of unusual buildings people steer by (hospitals, schools…) | user, 2026-09-22 |
+| 41 | fixed | Quick landmarks: the hundreds of unusual buildings people steer by (hospitals, schools…) | user, 2026-09-22 |
 | 42 | fixed | Strangers walk down the middle of the path: they should step aside (or wait) for the rider | user, 2026-09-22 |
 | 43 | fixed | A ride edge runs through a wall at 48.867116, 2.311297 (after a real archway) | user, 2026-09-22 |
 
@@ -680,6 +680,23 @@ between its separately mapped pavements. `?without=grade` turns the levelling of
 ride. Check: a 10-minute soak riding across the city (streaming tiles in and out), heap sampled throughout —
 it should level off, not keep climbing.
 
+**Measured (2026-09-22).** Two tools, both collecting garbage before every sample so the numbers are the live
+heap, not the collector's timing:
+- `tools/soak.ts`: rides a preplanned route at ~40 km/h.
+- `tools/soak-sweep.ts`: walks the camera over the whole city box, the worst case.
+
+1. **10-minute ride** (`docs/soak-10min.log`, 6.9 km across central Paris): 377 → 476 MB. Meshes (~2 000),
+   materials and textures (351) stay flat: the GPU side is released tile by tile. The slow rise, about
+   4 MB/min, is tile DATA staying resident once visited (the ride graph, the street-level index), which is
+   bounded by the city.
+2. **The whole city visited** (`docs/soak-sweep.log`, 32 stops over the 6.7 × 3.5 km box, 1 047 tiles): the
+   heap levels at **541 MB**.
+
+That ceiling is a fifth of the 3 GB crash line, and it is the most any session in central Paris can hold,
+however long. Between collections the heap swings to ~1.3 GB, which is garbage, not growth. Guard: the
+`--profile` option names what is still alive by where it was allocated. The largest are the street levels for
+#38 (`fileGrade`, 16 MB per 10 minutes) and Babylon's vertex data.
+
 ## 40. Star junctions
 
 **Seen:** user, 2026-09-22. Many junctions are stars — five, six, seven streets — and a choice of left, straight
@@ -706,6 +723,22 @@ real stars.
 marks — people find their way by them — and do not fit the generic street architecture: hospitals, schools,
 lycées, town halls of the arrondissements, markets, stations, theatres, churches of the second rank. There are
 hundreds, so each wants a quick pass: a simple generated treatment by kind (a family), not a bespoke model.
+
+**Quick pass (2026-09-22):** every named building the bake ranks (the package's `landmarks`: 69 churches,
+40 civic, 17 museums, 12 schools, 114 historic in central Paris) that no manifest entry claims is dressed by
+its kind (render/prepare.ts):
+- civic and museum: classical stone;
+- schools: the Third Republic's brick and stone;
+- hôtels particuliers: the Marais's stone;
+- churches: classical stone with few, tall storeys, so their walls get great windows, not rows of flats (a
+  `stretch` facade). A church mapped as parts is dressed whole: the bake now records each part's outline in
+  `partOf`.
+
+Marks (render/quickmarks.ts):
+- a flag over the entrance of every civic building, school and museum (the tricolour, or the US flag);
+- a stone bell tower with a slate spire and cross at the front of every church drawn from its outline.
+
+✅ `docs/shots/BUG41-church.png` (Saint-Sulpice). The greatest of them still deserve their own models (list A/B).
 
 ## 42. Strangers in the rider's way
 

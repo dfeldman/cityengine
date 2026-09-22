@@ -61,6 +61,10 @@ export interface PackedBuilding {
   levels?: number
   height?: number
   minHeight?: number
+  /** a part standing in for its building's outline (dropped at bake): the outline's id */
+  partOf?: number
+  /** few storeys, as tall as they need to be (a church's great windows): set by render/prepare.ts */
+  stretch?: boolean
   /** what the roof is, after OSM's own tags and the style's default have both had their say */
   roof: RoofShape
   /** how tall the roof is above the eaves, in metres */

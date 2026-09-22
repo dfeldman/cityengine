@@ -224,7 +224,7 @@ export function chooseStyle(
 export function planFacade(
   styleId: StyleId,
   seed: number,
-  osm: { levels?: number; height?: number; minHeight?: number },
+  osm: { levels?: number; height?: number; minHeight?: number; stretch?: boolean },
   /** a region's own palettes for this style, which replace the style's (Paris is cream) */
   palettes?: Palette[],
 ): FacadePlan {
@@ -271,7 +271,8 @@ export function planFacade(
   if (target !== undefined && target > 1) {
     let extent = storeys[storeys.length - 1].y1 - base
     let k = target / extent
-    if (k < 0.75 || k > 1.35) {
+    // (a monumental building — a church — keeps its few tall storeys however far they stretch)
+    if ((k < 0.75 || k > 1.35) && !osm.stretch) {
       levels = Math.max(1, Math.round((target - (aloft ? 0 : groundH - levelH)) / levelH))
       storeys = lay(levels)
       extent = storeys[storeys.length - 1].y1 - base

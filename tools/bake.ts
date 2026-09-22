@@ -438,6 +438,9 @@ async function bake(spec: CitySpec): Promise<void> {
       minHeight: p.buildingMinHeight,
       ...roofFor(w.tags, p, styleId, ccwRing, w.id),
       ...(own.inferred ? { levelsInferred: true as const } : {}),
+      // a part of a building whose outline its parts replace: that outline's id (a church's towers and apse
+      // are the church, for its quick dress: render/prepare.ts)
+      ...(ownerOf.has(w.id) && superseded.has(ownerOf.get(w.id)!.id) ? { partOf: ownerOf.get(w.id)!.id } : {}),
     })
     if (w.tags.name && worthNaming(w.tags)) named.push({ id: w.id, tags: w.tags, ring: ccwRing })
   }

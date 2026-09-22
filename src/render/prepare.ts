@@ -24,6 +24,7 @@ export function tilePreparer(entries: LandmarkEntry[], index: Pick<CityIndex, 'o
    * generated walls, its shadow and its shop signs all go with it (render/landmarks.ts).
    */
   const replaced = replacedIds(entries)
+  const allKinds = new Map<number, string>((index.landmarks ?? []).map((l) => [l.id, l.kind]))
   return (t) => {
     /*
      * And a restyle keeps its buildings but changes their dress — the Place des Vosges's brick and stone —
@@ -50,6 +51,29 @@ export function tilePreparer(entries: LandmarkEntry[], index: Pick<CityIndex, 'o
       for (let k = 0; k < passagePts.length; k += 2) if (inside(b.ring, passagePts[k], passagePts[k + 1])) return true
       return false
     }
+    /*
+     * Quick landmarks (BUGS.md #41): the buildings people steer by that no manifest entry names — schools,
+     * town halls and theatres, museums, the hôtels particuliers — dressed by their kind, so they stand out
+     * from the street: the civic ones in classical stone, the schools in the brick-and-stone of the Third
+     * Republic's écoles, the historic houses in the Marais's own stone. (Their flags and the churches' towers
+     * are render/quickmarks.ts.)
+     */
+    const byKind = new Map<number, string>()
+    for (const l of t.landmarks) byKind.set(l.id, l.kind)
+    // and for a building replaced by its parts, by the whole city's list (its parts may be in other tiles)
+    const kindOf = allKinds
+    const QUICK: Record<string, StyleId> = { civic: 'classical', museum: 'classical', school: 'brick', historic: 'marais', church: 'classical' }
+    // a church's own parts (its towers, its apse, mapped as building:parts) are the church too; a church's
+    // storeys are tall — 10 m — so its walls have a few great windows, not rows of flats
+    const churchRings = t.buildings.filter((b) => byKind.get(b.id) === 'church').map((b) => b.ring)
+    const inChurch = (b: { ring: number[] }): boolean => {
+      let x = 0
+      let z = 0
+      for (let i = 0; i < b.ring.length; i += 2) { x += b.ring[i]; z += b.ring[i + 1] }
+      x /= b.ring.length / 2
+      z /= b.ring.length / 2
+      return churchRings.some((r) => r !== b.ring && inside(r, x, z))
+    }
     // (nested buildings are pulled in at bake time, over the whole city: city/nesting.ts)
     const buildings = (t.buildings.filter((b) => !replaced.has(b.id)
       // a part with no height (OSM's height = min_height, round the Vosges arcades) has no walls, but it drew
@@ -57,7 +81,16 @@ export function tilePreparer(entries: LandmarkEntry[], index: Pick<CityIndex, 'o
       && (b.height ?? Infinity) - (b.minHeight ?? 0) > 0.5
       && !(restyled.get(b.id)?.dropParts && (b.minHeight ?? 0) > 2.5 && overGround(b) && !overPassage(b))).map((b) => {
       const e = restyled.get(b.id)
-      if (!e?.restyle) return b
+      if (!e?.restyle) {
+        const kind = byKind.get(b.id) ?? (b.partOf !== undefined ? kindOf.get(b.partOf) : undefined) ?? (churchRings.length && inChurch(b) ? 'church' : '')
+        const quick = QUICK[kind]
+        if (!quick) return b
+        if (kind === 'church') {
+          const h = b.height ?? 15
+          return { ...b, style: quick, levels: Math.max(1, Math.round((h - (b.minHeight ?? 0)) / 10)), stretch: true }
+        }
+        return (b.minHeight ?? 0) < 1 ? { ...b, style: quick } : b
+      }
       const st = ((b.minHeight ?? 0) > 2.5 && e.restyleAloft ? e.restyleAloft : e.restyle) as StyleId
       const pal = styleOf(st).palettes[0]
       const roof = e.roof === 'flat' ? { roof: 'flat' as const, roofHeight: 0 }

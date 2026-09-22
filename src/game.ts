@@ -22,6 +22,7 @@ import { MID, VIEW } from './render/city.ts'
 import { MemoryTiles, TILE, tileKey, type CityIndex, type TileData } from './city/tiles.ts'
 import { tilePreparer } from './render/prepare.ts'
 import { quaysLayer } from './render/quays.ts'
+import { quickMarksLayer } from './render/quickmarks.ts'
 import { bridgeStructuresLayer, PARIS_BRIDGES } from './render/bridge-structures.ts'
 import { passagesLayer } from './render/passages.ts'
 import { boatsLayer } from './render/boats.ts'
@@ -234,6 +235,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   mark('quays')
   // the arches and covered ways that take streets through buildings (render/passages.ts)
   city.addLayer(passagesLayer(scene, city.terrain))
+  // the buildings people steer by, marked by their kind: flags on the civic ones, towers on the churches (BUGS.md #41)
+  city.addLayer(quickMarksLayer(scene, city.terrain, pkg.region))
   // the péniches moored along the river (render/boats.ts)
   city.addLayer(boatsLayer(scene))
   mark('passages')
