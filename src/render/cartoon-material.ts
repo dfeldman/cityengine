@@ -77,13 +77,59 @@ uniform vec3 groundColour;
 uniform vec3 fogColour;
 uniform float fogDensity;
 uniform float night;
+uniform float stone;
+varying vec3 vWorld;
+// a hash that stays uniform at world coordinates in the thousands (sin-based ones do not, on a GPU)
+float hash2(vec2 p) {
+  vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+  p3 += dot(p3, p3.yzx + 33.33);
+  return fract((p3.x + p3.y) * p3.z);
+}
+float vnoise(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash2(i), hash2(i + vec2(1.0, 0.0)), f.x), mix(hash2(i + vec2(0.0, 1.0)), hash2(i + vec2(1.0, 1.0)), f.x), f.y);
+}
+// dressed limestone for the pale surfaces of a monument (BUGS 8): courses, staggered joints, a tone per block
+// and faint veins, all in world metres so every landmark is cut from the same stone
+vec3 dressed(vec3 c, vec3 n) {
+  float lum = dot(c, vec3(0.3, 0.59, 0.11));
+  float sat = max(c.r, max(c.g, c.b)) - min(c.r, min(c.g, c.b));
+  float pale = smoothstep(0.55, 0.75, lum) * (1.0 - smoothstep(0.1, 0.22, sat));
+  if (pale <= 0.0) return c;
+  vec3 an = abs(n);
+  float along = an.x > an.z ? vWorld.z : vWorld.x;
+  float y = vWorld.y;
+  vec2 pl = vWorld.xz;
+  float tone = 1.0;
+  float joint = 0.0;
+  if (an.y < 0.7) {
+    float row = floor(y / 0.55);
+    float u = along / 1.1 + 0.5 * mod(row, 2.0);
+    // how far from the middle of its block, up and along: a joint is the last 1.5 cm of a block's edge
+    float dy = abs(fract(y / 0.55) - 0.5) * 0.55;
+    float du = abs(fract(u) - 0.5) * 1.1;
+    float edge = max(smoothstep(0.255, 0.268, dy), smoothstep(0.535, 0.548, du));
+    // gone by 70 m, where a joint would only shimmer
+    joint = edge * (1.0 - smoothstep(35.0, 70.0, vDepth));
+    tone = 0.97 + 0.06 * hash2(vec2(row, floor(u)));
+    pl = vec2(along, y);
+  }
+  float vein = vnoise(pl * 1.7) * 0.6 + vnoise(pl * 6.0) * 0.4;
+  // white still, but stone: a touch warm (Paris is built of a cream limestone), with the texture in the tone
+  vec3 lime = c * vec3(1.0, 0.985, 0.955) * tone * (0.975 + 0.05 * vein);
+  lime *= 1.0 - 0.16 * joint;
+  return mix(c, lime, pale);
+}
 void main(void) {
   vec3 n = normalize(vNormal);
   float sun = max(dot(n, -normalize(sunDir)), 0.0);
   // banded rather than smooth: the step is what makes it read as drawn rather than rendered
   sun = smoothstep(0.0, 0.02, sun - 0.5) * 0.55 + sun * 0.45;
   float up = n.y * 0.5 + 0.5;
-  vec3 lit = vColour.rgb * (mix(groundColour, skyColour, up) + sunColour * sun);
+  vec3 base = stone > 0.5 ? dressed(vColour.rgb, n) : vColour.rgb;
+  vec3 lit = base * (mix(groundColour, skyColour, up) + sunColour * sun);
   // a rim light, so a dark shape never disappears into a dark background
   float rim = pow(1.0 - max(dot(n, -vView), 0.0), 3.0);
   // but mostly in the object's own brightness: added flat, it turned every thin dark thing (a bollard, a
@@ -111,8 +157,10 @@ varying vec3 vNormal;
 varying vec4 vColour;
 varying float vDepth;
 varying vec3 vView;
+varying vec3 vWorld;
 void main(void) {
   vec4 wp = world * vec4(position, 1.0);
+  vWorld = wp.xyz;
   gl_Position = viewProjection * wp;
   vNormal = normalize(mat3(world) * normal);
   vColour = vec4(color.rgb, step(0.4, color.a) * (1.0 - step(0.9, color.a)));
@@ -142,9 +190,11 @@ export function cartoonMaterial(scene: Scene, name = 'cartoon', instanced = true
       ? ['position', 'normal', 'color', 'world0', 'world1', 'world2', 'world3', 'instColor']
       : ['position', 'normal', 'color'],
     uniforms: ['world', 'viewProjection', 'eye', 'sunDir', 'sunColour', 'skyColour', 'groundColour',
-      'fogColour', 'fogDensity', 'night'],
+      'fogColour', 'fogDensity', 'night', 'stone'],
   })
   applyCartoonLook(mat, DAYLIGHT)
+  // the monuments' pale surfaces as dressed stone (BUGS.md #8); everything else stays flat
+  mat.setFloat('stone', name === 'cartoonLandmark' ? 1 : 0)
   mat.backFaceCulling = true
   /**
    * An explicit depth function, so nothing inherits one.

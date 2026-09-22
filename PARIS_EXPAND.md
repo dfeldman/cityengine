@@ -189,6 +189,18 @@ Tooling carried over: `tools/nested-parts.ts` (parts to replace with a model), `
 5. **The families (B)** — churches, palaces, bridges, monuments, gardens — working through the manifest.
 6. **Line 6** viaduct, Bir-Hakeim, trains.
 7. **Performance pass** with per-ring budgets, on the slowest target machine.
+9. **Posters and billboards, eventually (user, 2026-09-21):** a library per city of images at STANDARD sizes
+   (Paris: the Morris column wrap, the 4 × 3 m wall poster, the bus-shelter panel; US cities: the 14 × 48 ft
+   bulletin, the 12 × 24 ft poster), made in advance, placed on columns, shelters, blank walls and rooftops
+   by region (`regions.json`): Paris has posters everywhere, US cities billboards everywhere. Many street
+   objects carry a standard poster slot — every news stand, Morris column and bus shelter — so the library
+   fills slots on furniture as well as walls. Later, not now.
+8. **Better plants (user, 2026-09-21):** the non-tree planting — flower beds, box hedges, planters, the
+   gardens' shrubs — from Trail Trainer's library of low-poly plants (`~/trailtrainer/public/plants`, made by
+   `~/trailtrainer/tools/plantgen`; symlinked the way the trees are), instanced per tile like the trees and
+   decided at bake time with them (`src/city/plantings.ts`). **Bushes are hard** and the library may not have
+   good ones: if not, add a bush generator to plantgen (clumped leaf cards on a short multi-stem frame, clipped
+   box shapes for the formal gardens) before planting the Tuileries and the Palais-Royal.
 
 ## 7. Risks
 

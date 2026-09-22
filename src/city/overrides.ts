@@ -6,8 +6,9 @@ import type { Roundabout } from './ridegraph.ts'
 
 export interface RoundaboutSpec extends Omit<Roundabout, 'x' | 'z'> { lat: number; lon: number }
 
+/** by city id, else by region: Paris's places are Paris's whichever box they are in */
 export const RIDE_OVERRIDES: Record<string, { roundabouts: RoundaboutSpec[] }> = {
-  'paris-marais': {
+  paris: {
     roundabouts: [
       // the Place de la Bastille: a circle round the Colonne de Juillet on the ring road's own radius, and a
       // spoke to every street that leaves the place — cut beyond the outermost of its junctions (118 m: the

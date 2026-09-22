@@ -35,6 +35,8 @@ import type { Terrain } from '../city/terrain.ts'
 
 export interface LandmarkEntry {
   osm?: string | string[]
+  /** false: pale surfaces stay plain paint, not dressed stone (cartoon-material.ts `dressed`) */
+  stone?: boolean
   name: string
   procedural?: string
   file?: string
@@ -101,16 +103,23 @@ export function entryKind(e: LandmarkEntry): 'replace' | 'restyle' | 'standalone
 }
 
 /** The manifest, or nothing: a city with no landmarks file is an ordinary city. */
-export async function landmarkManifest(base: string, city: string): Promise<LandmarkEntry[]> {
-  try {
-    const r = await fetch(new URL(`landmarks/${city}.json`, base).href)
-    const text = await r.text()
-    // Vite answers a missing file with index.html and a 200
-    if (!r.ok || !text.trimStart().startsWith('[')) return []
-    return JSON.parse(text) as LandmarkEntry[]
-  } catch {
-    return []
+/**
+ * The manifest: the city's own (`landmarks/<city>.json`), else its region's (`landmarks/<region>.json`) — the
+ * Marais and central Paris are both Paris, and a landmark is where it is whichever box it falls in: every
+ * entry names its building by OSM id or its place by lat/lon, and one outside the box is simply never placed.
+ */
+export async function landmarkManifest(base: string, city: string, region?: string): Promise<LandmarkEntry[]> {
+  for (const name of region ? [city, region] : [city]) {
+    try {
+      const r = await fetch(new URL(`landmarks/${name}.json`, base).href)
+      const text = await r.text()
+      // Vite answers a missing file with index.html and a 200
+      if (r.ok && text.trimStart().startsWith('[')) return JSON.parse(text) as LandmarkEntry[]
+    } catch {
+      // try the next
+    }
   }
+  return []
 }
 
 /** Packed building ids an entry names: way/N → N, relation/N → N·2+1. Nothing, for an entry without `osm`. */
@@ -321,6 +330,14 @@ export class Landmarks {
   private readonly named: PackedLandmark[]
   private readonly proj: Projection
   private readonly mat: ShaderMaterial
+  private plain: ShaderMaterial | null = null
+  private plainMat(): ShaderMaterial {
+    if (!this.plain) {
+      this.plain = cartoonMaterial(this.scene, 'cartoonLandmarkPlain', false)
+      this.plain.backFaceCulling = false
+    }
+    return this.plain
+  }
 
   /**
    * The skyline now, the landmarks as their tiles arrive (`addTile`): a streamed city does not have every
@@ -450,7 +467,8 @@ export class Landmarks {
       build(mb, fit)
       const m = new Mesh(`landmark:${e.name}`, this.scene)
       mb.toVertexData().applyToMesh(m)
-      m.material = this.mat
+      // plain, not dressed stone, where the white is paint on steel (the Pompidou): `"stone": false`
+      m.material = e.stone === false ? this.plainMat() : this.mat
       m.position.set(cx + ox, y, cz + oz)
       m.rotation.y = rotation
       m.scaling.setAll(e.scale ?? 1)

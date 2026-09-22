@@ -131,6 +131,63 @@ export function furnitureQuery(b: Bbox): string {
 out qt;`
 }
 
+/**
+ * A query over a box too big for one request (central Paris is 7 × 3.5 km; one query timed out on every
+ * server): the box cut into a grid of chunks about `step` metres a side, each fetched and cached on its own,
+ * and the results merged by id — Overpass returns a way, node or relation whole even when only part of it
+ * is in the chunk, so nothing is cut. A box small enough for one request is one request, exactly as before
+ * (the same query, so its cache still answers).
+ */
+export async function overpassTiled(query: (b: Bbox) => string, b: Bbox, step = 1200, single = 2000): Promise<OverpassResult> {
+  const mLat = 111_320
+  const mLon = 111_320 * Math.cos((((b.south + b.north) / 2) * Math.PI) / 180)
+  const w = (b.east - b.west) * mLon
+  const h = (b.north - b.south) * mLat
+  if (w <= single && h <= single) return overpass(query(b))
+  const nx = Math.ceil(w / step)
+  const nz = Math.ceil(h / step)
+  const ways = new Map<number, OsmWay>()
+  const nodes = new Map<number, OsmNode>()
+  const relations = new Map<number, OsmRelation>()
+  let copyright = ''
+  let timestamp = ''
+  for (let j = 0; j < nz; j++) {
+    for (let i = 0; i < nx; i++) {
+      const chunk: Bbox = {
+        west: b.west + ((b.east - b.west) * i) / nx, east: b.west + ((b.east - b.west) * (i + 1)) / nx,
+        south: b.south + ((b.north - b.south) * j) / nz, north: b.south + ((b.north - b.south) * (j + 1)) / nz,
+      }
+      process.stderr.write(`  overpass: chunk ${j * nx + i + 1}/${nx * nz}\n`)
+      for (const r of await fetchSplitting(query, chunk, 2)) {
+        for (const x of r.ways) ways.set(x.id, x)
+        for (const x of r.nodes) nodes.set(x.id, x)
+        for (const x of r.relations) relations.set(x.id, x)
+        copyright ||= r.copyright
+        if (r.timestamp > timestamp) timestamp = r.timestamp
+      }
+    }
+  }
+  return { ways: [...ways.values()], nodes: [...nodes.values()], relations: [...relations.values()], copyright, timestamp }
+}
+
+/** One chunk; if every server times out on it, its four quarters instead (a dense chunk of the centre did). */
+async function fetchSplitting(query: (b: Bbox) => string, b: Bbox, depth: number): Promise<OverpassResult[]> {
+  try {
+    return [await overpass(query(b))]
+  } catch (e) {
+    if (depth <= 0) throw e
+    process.stderr.write('  overpass: chunk refused, fetching it in quarters\n')
+    const mx = (b.west + b.east) / 2
+    const mz = (b.south + b.north) / 2
+    const out: OverpassResult[] = []
+    for (const q of [
+      { west: b.west, east: mx, south: b.south, north: mz }, { west: mx, east: b.east, south: b.south, north: mz },
+      { west: b.west, east: mx, south: mz, north: b.north }, { west: mx, east: b.east, south: mz, north: b.north },
+    ]) out.push(...await fetchSplitting(query, q, depth - 1))
+    return out
+  }
+}
+
 /** Run an Overpass QL query, caching the raw JSON by query hash. */
 export async function overpass(query: string): Promise<OverpassResult> {
   mkdirSync(CACHE, { recursive: true })
@@ -157,6 +214,25 @@ export async function overpass(query: string): Promise<OverpassResult> {
         last = `${new URL(url).host}: ${(e as Error).message}`
       }
       process.stderr.write(`  overpass: ${last.split(':')[0]} failed, trying the next\n`)
+    }
+    if (got === null && !process.env.OVERPASS_NO_RETRY) {
+      // every server busy: one more round after a pause, which is what a 429 asks for
+      process.stderr.write('  overpass: all busy, waiting 30 s\n')
+      await new Promise((r) => setTimeout(r, 30_000))
+      for (const url of ENDPOINTS) {
+        try {
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': UA },
+            body: new URLSearchParams({ data: query }),
+          })
+          const body = await res.text()
+          if (res.ok && body.trimStart().startsWith('{')) { got = body; break }
+          last = `${new URL(url).host} ${res.status} ${res.statusText}: ${body.slice(0, 200)}`
+        } catch (e) {
+          last = `${new URL(url).host}: ${(e as Error).message}`
+        }
+      }
     }
     if (got === null) throw new Error(`overpass: every endpoint failed; last: ${last}`)
     text = got

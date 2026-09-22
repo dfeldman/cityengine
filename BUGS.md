@@ -15,7 +15,12 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 5 | fixed | Tour Saint-Jacques: the landmark model AND OSM's default building are both drawn | user, 2026-09-21 |
 | 6 | fixed | Cirque d'Hiver is turned wrong: its front should face the street | user, 2026-09-21 |
 | 7 | open | Hôtel de Sens needs work (reads poorly) | user, 2026-09-21 |
-| 8 | open | White monuments are flat pure white; they should read as white marble or pale stone/brick | user, 2026-09-21 |
+| 8 | fixed | White monuments are flat pure white; they should read as white marble or pale stone/brick | user, 2026-09-21 |
+| 9 | open | The path by the Seine at 48.849419, 2.361508 is a dead end: it comes close to a road but does not join it | user, 2026-09-21 |
+| 10 | open | The Cirque d'Hiver's two horsemen stand in the road and block it | user, 2026-09-21 |
+| 11 | open | Café terraces are poor: chairs and tables in a line, not chairs round tables, and often tilted | user, 2026-09-21 |
+| 12 | open | News stands (kiosques) need improvement | user, 2026-09-21 |
+| 13 | open | Too many long gowns among the strangers; the other dresses never appear | user, 2026-09-21 |
 
 ---
 
@@ -138,3 +143,55 @@ brick texture — dressed-stone courses, faint veining — through the cartoon m
 **Notes:** landmarks use `cartoonMaterial('cartoonLandmark')` with vertex colours only. A stone treatment wants
 a procedural pattern in that shader (world-space courses + noise), keyed by a vertex-alpha material code, the
 way the facade atlas keys glass; and the palette should move off pure white toward warm limestone (#e3dccb).
+
+**Fix:** the landmark material (`cartoonLandmark`) dresses every pale, unsaturated surface as stone in the
+shader (`dressed` in render/cartoon-material.ts): 0.55 m courses and 1.1 m blocks staggered in world metres,
+1.5 cm joints that fade out by 70 m, a ±3% tone per block, faint two-scale veins, a touch of warm tint — white
+still, but stone. A manifest entry can opt out with `"stone": false` (the Pompidou: its white is painted steel).
+First try came out 15% dark: the joint test was inverted (darkening everywhere but the joints) — now within
+2% of the plain brightness, measured on the same frame with the switch toggled.
+
+**Check:** ✅ `docs/shots/BUG8-stone.png` (Cirque d'Hiver from Rue Amelot), `docs/shots/views/bug8c/`.
+
+## 9. The Seine-side path is a dead end
+
+**Seen:** user, 2026-09-21, at 48.849419, 2.361508 (the riverside promenade below the Quai — the Rives de
+Seine / Port de l'Arsenal side). The path is marked as a dead end: its end comes close to a road but does not
+meet it, so the ride graph stops there.
+
+**Notes:** `tools/gaps.ts` joins near-miss path ends to the way beside them within some distance; this one
+is beyond it, or across a level (the lower quay is below the road). Check the two ends' distance and heights.
+
+## 10. The Cirque d'Hiver's horsemen block the road
+
+**Seen:** user, 2026-09-21. The two bronze horsemen on their plinths (part of `cirqueHiver`) stand out in
+Rue Amelot. They belong either side of the entrance, against the building. Since BUGS #6 turned the porch to
+the street, the statues' offset from the drum now puts them past the kerb.
+
+**Also (user):** these statues are a good candidate for a high-quality downloaded model (PARIS_EXPAND §5: a
+model is allowed for complex statues), in place of the box horsemen.
+
+## 11. Café terraces: chairs in a line, tilted
+
+**Seen:** user, 2026-09-21. `render/terraces.ts` stamps a row of tables with two chairs each between table and
+wall, all facing the street, with a random ±0.25 rad turn per chair — it reads as a line of furniture, and the
+turn reads as tilt. A Paris terrace: small round tables in rows along the front, two chairs per table side
+by side FACING THE STREET (that part is right), tightly packed, some tables with a chair on each side.
+Either a better generator (tables in a grid, chairs placed round each table with a small jitter, no roll or
+pitch) or models (user: "might be model candidates").
+
+## 12. News stands need improvement
+
+**Seen:** user, 2026-09-21. The `parisNewsstand` kiosque (render/models.ts) reads poorly. Reference first (the
+green Davioud-style kiosque: hexagonal-ish body, the scalloped canopy, the dome with its finial, magazines
+pinned round the shutters), then the gist; screenshot close and from across the street.
+
+## 13. Too many long gowns in the crowd
+
+**Seen:** user, 2026-09-21. Many women among the strangers wear a floor-length gown; a long gown on the street
+is rare. The other dresses in `CITY_WARDROBE.dresses` (render/crowd-baked.ts) never seem to be chosen.
+
+**Notes:** every other woman gets a dress (`women++ % 2`), and only ~10 variants are baked, so one variant in a
+dress is a big share of the crowd. Check which kit ids those four dresses really are (the "knee length" ones
+may be long in the kit, or missing and falling back), keep only short/midi everyday dresses, and give dresses
+a smaller share.

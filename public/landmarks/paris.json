@@ -73,7 +73,8 @@
     "procedural": "pompidou",
     "height": 42,
     "front": 291,
-    "note": "The piazza front faces WNW, square to the building's long axis (21° east of north). With front 270 the fit measured the rotated footprint across a north–south box: the model came out oversized and turned, through its neighbours and over the street."
+    "note": "The piazza front faces WNW, square to the building's long axis (21° east of north). With front 270 the fit measured the rotated footprint across a north–south box: the model came out oversized and turned, through its neighbours and over the street.",
+    "stone": false
   },
   {
     "osm": [

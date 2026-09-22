@@ -26,10 +26,10 @@ export function mapEdges(edges: PackedEdge[], terrain: { heightAt(x: number, z: 
 }
 
 export function rideFor(city: string, origin: CityPackage['origin'], edges: Edge[], mode: RideMode,
-  heightAt: (x: number, z: number) => number): RideGraph {
+  heightAt: (x: number, z: number) => number, region?: string): RideGraph {
   const proj = new Projection(origin)
   return rideGraph(edges, mode, {
-    roundabouts: (RIDE_OVERRIDES[city]?.roundabouts ?? []).map((r) => {
+    roundabouts: ((RIDE_OVERRIDES[city] ?? (region ? RIDE_OVERRIDES[region] : undefined))?.roundabouts ?? []).map((r) => {
       const p = proj.toLocal({ lat: r.lat, lon: r.lon })
       return { name: r.name, r: r.r, R: r.R, x: p.x, z: p.z }
     }),

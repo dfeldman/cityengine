@@ -27,11 +27,11 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { CITIES, bboxOf, city, extentOf, type CitySpec } from './cities.ts'
 import { joinNearMisses } from './gaps.ts'
-import { fringeQuery, cityQuery, furnitureQuery, innerRings, outerRings, overpass, type Bbox, type OsmWay } from './overpass.ts'
+import { fringeQuery, cityQuery, furnitureQuery, innerRings, outerRings, overpassTiled, type Bbox, type OsmWay } from './overpass.ts'
 import { Elevation, ATTRIBUTION as TERRAIN_CREDIT } from './terrarium.ts'
 import { Terrain, type PackedTerrain } from '../src/city/terrain.ts'
 import { splitPackage, type CityIndex, type TileEntry } from '../src/city/tiles.ts'
-import { TREE_CAP, packPlantings, plantCity } from '../src/city/plantings.ts'
+import { TREE_CAP, TREES_PER_KM2, packPlantings, plantCity } from '../src/city/plantings.ts'
 import { mapEdges, packRide, rideFor } from '../src/city/ridefile.ts'
 import { Projection, haversine } from '../src/city/geo.ts'
 import { chooseStyle, style as styleOf, type StyleId } from '../src/city/facade.ts'
@@ -154,7 +154,7 @@ const isFoot = (t: Record<string, string>): boolean =>
 
 async function bake(spec: CitySpec): Promise<void> {
   console.log(`\n${spec.name}`)
-  const { ways, nodes, relations, copyright, timestamp } = await overpass(cityQuery(bbox(spec)))
+  const { ways, nodes, relations, copyright, timestamp } = await overpassTiled(cityQuery, bbox(spec))
   console.log(`  ${ways.length} ways, ${nodes.length} nodes, ${relations.length} relations`)
 
   const proj = new Projection(spec.centre)
@@ -751,7 +751,7 @@ async function bake(spec: CitySpec): Promise<void> {
     const fringeWays: OsmWay[] = []
     const seen = new Set<number>()
     for (const strip of strips) {
-      const f = await overpass(fringeQuery(strip)).catch((e) => {
+      const f = await overpassTiled(fringeQuery, strip, 1500, 4000).catch((e) => {
         console.warn(`  fringe strip: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
         return { ways: [] as OsmWay[] }
       })
@@ -786,7 +786,7 @@ async function bake(spec: CitySpec): Promise<void> {
   const furniture: PackedFurniture[] = []
   {
     // optional: a busy Overpass must not stop a bake, it only leaves the street furniture out
-    const f = await overpass(furnitureQuery(bbox(spec))).catch((e) => {
+    const f = await overpassTiled(furnitureQuery, bbox(spec)).catch((e) => {
       console.warn(`  furniture: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
       return { nodes: [] as { lat: number; lon: number; tags: Record<string, string> }[] }
     })
@@ -860,8 +860,13 @@ async function bake(spec: CitySpec): Promise<void> {
     baked: new Date().toISOString().slice(0, 10),
   }
   // every tree, decided here so a streamed tile always grows the same ones (city/plantings.ts)
-  pkg.plantings = packPlantings(plantCity(pkg))
-  console.log(`  ${pkg.plantings.length / 5} trees planted (mapped, parks, boulevards; cap ${TREE_CAP})`)
+  // a ceiling by AREA, not per city: 1,900 over the Marais's box is ~680 a square kilometre, and a city-wide
+  // 1,900 would have left twenty square kilometres of central Paris almost bare
+  const ex = extentOf(spec)
+  const km2 = ((ex.west + ex.east) * (ex.south + ex.north)) / 1e6
+  const cap = Math.max(TREE_CAP, Math.round(TREES_PER_KM2 * km2))
+  pkg.plantings = packPlantings(plantCity(pkg, cap))
+  console.log(`  ${pkg.plantings.length / 5} trees planted (mapped, parks, boulevards; cap ${cap} over ${km2.toFixed(1)} km²)`)
   await mkdir(OUT, { recursive: true })
   const file = resolve(OUT, `${spec.id}.json`)
   await writeFile(file, JSON.stringify(pkg))
@@ -1206,7 +1211,7 @@ async function writeRides(pkg: CityPackage): Promise<void> {
   const terrain = new Terrain(pkg.terrain)
   const edges = mapEdges(pkg.edges, terrain)
   for (const mode of ['bike', 'run'] as const) {
-    const g = rideFor(pkg.id, pkg.origin, edges, mode, (x, z) => terrain.heightAt(x, z))
+    const g = rideFor(pkg.id, pkg.origin, edges, mode, (x, z) => terrain.heightAt(x, z), pkg.region)
     const text = JSON.stringify(packRide(g, mode))
     await writeFile(resolve(OUT, pkg.id, `ride-${mode}.json`), text)
     console.log(`  → public/cities/${pkg.id}/ride-${mode}.json  ${g.edges.size} edges, ${Math.round(text.length / 1024)} kB`)

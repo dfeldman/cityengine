@@ -98,12 +98,13 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   let lastMark = performance.now()
   const mark = (name: string): void => { const t = performance.now(); marks[name] = Math.round(t - lastMark); lastMark = t }
   ;(window as unknown as { __marks?: unknown }).__marks = marks
-  const [src, atlas, landmarkList] = await Promise.all([
+  const [src, atlas] = await Promise.all([
     // the index now, the tiles as the rider needs them (city/tilestore.ts); a single-package city is cut up
     openCity(document.baseURI, opts.city),
     fetch(`${ASSETS}atlas.json`).then((r) => r.json()) as Promise<AtlasManifest>,
-    landmarkManifest(document.baseURI, opts.city),
   ])
+  // the city's landmarks, or its region's (the Marais and central Paris share Paris's)
+  const landmarkList = await landmarkManifest(document.baseURI, opts.city, src.index.region)
   mark('fetched')
   const index = src.index
   // what the rest of the game reads of the city as a whole: the index's global part
@@ -208,7 +209,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   }
   const sky = off.has('sky') ? null : new Sky(scene)
   const landmarks = off.has('landmarks') ? null
-    : new Landmarks(scene, pkg, landmarkList, city.terrain, new URL(`landmarks/${opts.city}/`, document.baseURI).href)
+    : new Landmarks(scene, pkg, landmarkList, city.terrain, new URL(`landmarks/${pkg.region ?? opts.city}/`, document.baseURI).href)
   // each fitted to its own building as the tile with it arrives — the building as baked, before prepare took it out
   if (landmarks) onTile((a) => landmarks.addTile(a.raw))
   mark('landmarks')

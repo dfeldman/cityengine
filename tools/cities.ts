@@ -70,6 +70,36 @@ export const CITIES: CitySpec[] = [
       + 'of these, which makes it the one to test steering on.',
   },
   {
+    /*
+     * Central Paris (PARIS_EXPAND.md §1): the Étoile and the Trocadéro/Eiffel Tower in the west to past the
+     * Bastille in the east (2.378, so every street leaving the place goes somewhere — BUGS.md #2), the Opéra
+     * and Saint-Lazare edge in the north, Line 6's viaduct at Cambronne and La Motte-Picquet in the south.
+     * About 6.7 × 3.5 km. Centred on the Palais-Royal, so the ride starts in the middle of it.
+     */
+    id: 'paris-centre',
+    region: 'paris',
+    skyline: [
+      // placeholders on the horizon until each has its model (PARIS_EXPAND §6 step 4); those beyond the box stay
+      { name: 'Tour Eiffel', lat: 48.8584, lon: 2.2945, procedural: 'eiffelTower', heightM: 330 },
+      { name: 'Tour Montparnasse', lat: 48.8421, lon: 2.3220, procedural: 'montparnasse', heightM: 210 },
+      { name: 'Sacré-Cœur', lat: 48.8867, lon: 2.3431, procedural: 'sacreCoeur', heightM: 83 },
+      { name: 'Panthéon', lat: 48.8462, lon: 2.3464, procedural: 'pantheon', heightM: 83 },
+      { name: 'Notre-Dame', lat: 48.8530, lon: 2.3499, procedural: 'notreDame', heightM: 96 },
+    ],
+    name: 'Central Paris',
+    centre: { lat: 48.8605, lon: 2.3320 },
+    radius: 3400,
+    box: { west: 3370, east: 3370, north: 1725, south: 1725 },
+    ground: 'grass',
+    styles: [
+      // Haussmann's Paris: the boulevards and the west are his; the older centre keeps the Marais's mix
+      { id: 'haussmann', weight: 7 },
+      { id: 'classical', weight: 3 },
+      { id: 'marais', weight: 1 },
+    ],
+    note: 'The tourist centre as one rideable city: tiled and streamed (PARIS_EXPAND.md).',
+  },
+  {
     id: 'brooklyn-heights',
     region: 'new-york',
     name: 'Brooklyn Heights, New York',

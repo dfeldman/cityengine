@@ -57,7 +57,7 @@ describe('every procedural landmark', () => {
 
 it('the Place des Vosges restyle takes the houses round the square and nothing in its garden', () => {
   const pkg = JSON.parse(readFileSync('public/cities/paris-marais.json', 'utf8'))
-  const manifest: LandmarkEntry[] = JSON.parse(readFileSync('public/landmarks/paris-marais.json', 'utf8'))
+  const manifest: LandmarkEntry[] = JSON.parse(readFileSync('public/landmarks/paris.json', 'utf8'))
   const vosges = manifest.find((e) => e.restyle === 'vosges')!
   const taken = restyles([vosges], pkg)
   expect(taken.size).toBeGreaterThan(35)
