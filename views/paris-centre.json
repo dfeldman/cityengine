@@ -1824,5 +1824,97 @@
    2.349346,
    9
   ]
+ },
+ {
+  "name": "\u00c9glise Saint-Merri \u2014 street",
+  "group": "landmark",
+  "from": [
+   48.858722,
+   2.35205,
+   2.4
+  ],
+  "to": [
+   48.859026,
+   2.350832,
+   18.5
+  ],
+  "seeded": true,
+  "note": "line of sight 1/5 at 95 m"
+ },
+ {
+  "name": "\u00c9glise Saint-Merri \u2014 air",
+  "group": "landmark",
+  "from": [
+   48.858652,
+   2.352329,
+   90.2
+  ],
+  "to": [
+   48.859026,
+   2.350832,
+   18.5
+  ],
+  "seeded": true
+ },
+ {
+  "name": "Centre Pompidou \u2014 street",
+  "group": "landmark",
+  "from": [
+   48.859184,
+   2.352412,
+   2.4
+  ],
+  "to": [
+   48.860536,
+   2.352413,
+   20.4
+  ],
+  "seeded": true,
+  "note": "line of sight 5/5 at 151 m"
+ },
+ {
+  "name": "Centre Pompidou \u2014 air",
+  "group": "landmark",
+  "from": [
+   48.859372,
+   2.352413,
+   99.7
+  ],
+  "to": [
+   48.860536,
+   2.352413,
+   20.4
+  ],
+  "seeded": true
+ },
+ {
+  "name": "Tour Saint-Jacques \u2014 street",
+  "group": "landmark",
+  "from": [
+   48.858309,
+   2.34887,
+   3
+  ],
+  "to": [
+   48.85795,
+   2.34887,
+   24.3
+  ],
+  "seeded": true
+ },
+ {
+  "name": "Tour Saint-Jacques \u2014 air",
+  "group": "landmark",
+  "from": [
+   48.859335,
+   2.34887,
+   118.6
+  ],
+  "to": [
+   48.85795,
+   2.34887,
+   24.3
+  ],
+  "seeded": true
  }
 ]

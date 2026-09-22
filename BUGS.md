@@ -10,7 +10,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 |---|---|---|---|
 | 1 | fixed | Stranger cyclists are drawn as boxes, not avatar-kit bodies (walkers and runners are fine) | user, 2026-09-21 |
 | 2 | fixed | Streets near the Bastille are marked impassable though inside the rideable area; can't ride round the Bastille | user, 2026-09-21 |
-| 3 | open | West edge of the Marais box: Pompidou piazza, Saint-Merri and Tour Saint-Jacques stand in grass with no streets | views sheet, 2026-09-21 |
+| 3 | fixed | West edge of the Marais box: Pompidou piazza, Saint-Merri and Tour Saint-Jacques stand in grass with no streets | views sheet, 2026-09-21 |
 | 4 | fixed | The base ground plane under every tile stands at twice the terrain height | probe-view, 2026-09-21 |
 | 5 | fixed | Tour Saint-Jacques: the landmark model AND OSM's default building are both drawn | user, 2026-09-21 |
 | 6 | fixed | Cirque d'Hiver is turned wrong: its front should face the street | user, 2026-09-21 |
@@ -104,6 +104,10 @@ or areas — so everything round them is the default grass.
 
 **Fix:** PARIS_EXPAND step 2 (the big box) puts all three well inside. Re-shoot their views then; the Tour
 Saint-Jacques one needs a hand-made view (the seeder found no street near it inside the box).
+
+**Re-shot (2026-09-22) in central Paris:** the six Marais views of Saint-Merri, the Centre Pompidou and the Tour
+Saint-Jacques were copied into `views/paris-centre.json`. All three stand among their streets and buildings; the
+Pompidou's piazza is paved once #22's squares are baked.
 
 ## 4. The base ground plane stands at twice the terrain height
 
