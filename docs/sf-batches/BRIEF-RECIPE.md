@@ -89,6 +89,13 @@ rather than writing it twice.
 
 Some wild buildings will not fit the shared parts, and that is fine — write those out properly or bail out.
 
+## Never plant anything
+
+A builder draws a BUILDING. It never draws trees, palms, shrubs or grass, even in a plaza or a forecourt: the
+city plants itself from its own tree list (render/vegetation.ts), and a generator's plants always come out worse
+than its buildings (user, 2026-09-22). Ground, paving, steps, walls and furniture are yours; anything that grows
+is not.
+
 ## Two traps
 
 - A `restyle`'s `levels` does nothing on its own: give `height` as well (src/city/prepare.ts) or the building keeps

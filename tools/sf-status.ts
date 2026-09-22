@@ -17,7 +17,7 @@ import { resolve } from 'node:path'
 
 const ROOT = resolve(import.meta.dirname, '..')
 const targets = JSON.parse(readFileSync(resolve(ROOT, 'docs', 'sf-targets.json'), 'utf8')) as
-  { kind: string; id: string; name: string; height: number; levels: number; lat: number; lon: number; done: boolean; tags: string }[]
+  { kind: string; id: string; name: string; height: number; levels: number; lat: number; lon: number; done: boolean; part?: boolean; tags: string }[]
 
 interface Entry { osm?: string | string[]; name: string; procedural?: string; restyle?: string; note?: string; lat?: number; lon?: number; height?: number }
 const manifests: { district: string; entries: Entry[] }[] = []
@@ -58,7 +58,7 @@ for (const f of readdirSync(resolve(ROOT, 'docs', 'sf-batches'))) {
   }
 }
 
-const rows: string[] = [['osm', 'name', 'kind', 'lat', 'lon', 'height', 'levels', 'status', 'how', 'district', 'note'].join(',')]
+const rows: string[] = [['osm', 'name', 'kind', 'lat', 'lon', 'height', 'levels', 'status', 'how', 'district', 'part', 'note'].join(',')]
 const q = (s: string): string => `"${(s ?? '').replace(/"/g, '""')}"`
 const tally = new Map<string, number>()
 const todo: typeof targets = []
@@ -67,17 +67,17 @@ for (const t of targets) {
   seen.add(t.id)
   const got = byId.get(t.id)
   const h = hard.get(t.id)
-  const status = got?.e.procedural ? 'model' : got?.e.restyle ? 'restyle' : h ? 'hard' : 'todo'
+  const status = got?.e.procedural ? 'model' : got?.e.restyle ? 'restyle' : h ? 'hard' : t.part ? 'part' : 'todo'
   const how = got?.e.procedural ?? got?.e.restyle ?? ''
   if (status === 'todo') todo.push(t)
   tally.set(status, (tally.get(status) ?? 0) + 1)
-  rows.push([t.id, q(t.name), t.kind, t.lat, t.lon, t.height, t.levels, status, how, got?.district ?? h?.district ?? '', q(got?.e.note ?? h?.why ?? t.tags)].join(','))
+  rows.push([t.id, q(t.name), t.kind, t.lat, t.lon, t.height, t.levels, status, how, got?.district ?? h?.district ?? '', t.part ? 'part' : '', q(got?.e.note ?? h?.why ?? t.tags)].join(','))
 }
 // and anything modelled that the target list does not have (the piers, the bridges, the small landmarks)
 for (const [id, { district, e }] of byId) {
   if (seen.has(id)) continue
   tally.set('extra', (tally.get('extra') ?? 0) + 1)
-  rows.push([id, q(e.name), 'other', e.lat ?? '', e.lon ?? '', e.height ?? '', '', e.procedural ? 'model' : 'restyle', e.procedural ?? e.restyle ?? '', district, q(e.note ?? '')].join(','))
+  rows.push([id, q(e.name), 'other', e.lat ?? '', e.lon ?? '', e.height ?? '', '', e.procedural ? 'model' : 'restyle', e.procedural ?? e.restyle ?? '', district, '', q(e.note ?? '')].join(','))
 }
 writeFileSync(resolve(ROOT, 'docs', 'sf-buildings.csv'), rows.join('\n') + '\n')
 console.log(`${rows.length - 1} buildings → docs/sf-buildings.csv`)

@@ -73,6 +73,13 @@ shared kit now, and a building should be one line, or a spec plus two or three c
 - `parts.ts` — `edgeAt`, `longestEdge`, `edgeFacing`, `boxAlong`, `panelOn`, `signText`, `marquee`, `bladeSign`,
   `colonnade`, `arcade`, `quoins`, `cupola`, `stripRoof`, `faceOn`, `roundRing`, `simplifyRing`.
 
+## Never plant anything
+
+A builder draws a building, a plaza's paving, its steps and its walls — never a tree, a palm, a shrub or grass.
+The city's vegetation layer plants everything that grows, from the city's own tree list (SF's is DataSF's street
+tree register); a generator's plants always came out worse than its buildings. Notable planting — a square's own
+avenue of palms — is added to the tree data later, not to a builder.
+
 ## Never flat: the surfaces
 
 Faces carry a `material` from the landmark surface library (`render/cartoon-material.ts` `SURFACES`): `ashlar`,

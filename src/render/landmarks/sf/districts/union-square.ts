@@ -16,7 +16,6 @@ import { capPolygon } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { tower, towerRing, faceBand, insetRing, type TowerSpec, type Face } from '../../tower.ts'
 import { prism, strut, type Rgb } from '../../../models.ts'
-import { palm } from '../../../palms.ts'
 import { surfaceTag, type Surface } from '../../../cartoon-material.ts'
 
 type P2 = { x: number; z: number }
@@ -388,17 +387,6 @@ function diamonds(out: MeshBuilder, ring: P2[], y0: number, y1: number, w: numbe
   }
 }
 
-/** Another builder's mesh copied in at a point, in one colour (the palms, which are built white to be tinted). */
-function mergeInto(out: MeshBuilder, mb: MeshBuilder, x: number, y: number, z: number, c: Rgb, tag: number): void {
-  const base = out.positions.length / 3
-  for (let i = 0; i < mb.positions.length; i += 3) {
-    out.positions.push(mb.positions[i] + x, mb.positions[i + 1] + y, mb.positions[i + 2] + z)
-    out.normals.push(mb.normals[i], mb.normals[i + 1], mb.normals[i + 2])
-    out.colors.push(c[0], c[1], c[2], tag)
-  }
-  for (let i = 0; i < mb.uvs.length; i++) out.uvs.push(mb.uvs[i])
-  for (const k of mb.indices) out.indices.push(base + k)
-}
 
 /** A five-pointed star on a wall facing (nx, nz): Macy's. */
 function wallStar(out: MeshBuilder, f: Frame, cx: number, cz: number, nx: number, nz: number, y: number, r: number, c: Rgb, o = 0.3, tag = LIT): void {
@@ -1258,17 +1246,9 @@ function unionSquarePlaza(out: MeshBuilder, fit: Fit): void {
     gbox(out, f, px * k - 6, px * k + 6, pz * k - 4.5, pz * k + 4.5, deck, deck + 3.6, [0.45, 0.55, 0.58], surfaceTag('glass'))
     gbox(out, f, px * k - 6.6, px * k + 6.6, pz * k - 5.1, pz * k + 5.1, deck + 3.6, deck + 4.1, [0.85, 0.85, 0.84], surfaceTag('metal'))
   }
-  // the palms round the edges (the square's own; the city's tree layer plants the streets)
-  const TRUNK: Rgb = [0.45, 0.38, 0.3]
-  const FROND: Rgb = [0.27, 0.42, 0.24]
-  let seed = 7
-  for (const [px, pz] of [[-52, 32], [-30, 33], [-8, 33], [14, 33], [36, 33], [52, 32], [-52, -31], [-30, -32], [-8, -32], [14, -32], [36, -32], [52, -31]]) {
-    const b = palm('canary', (seed += 37), 2)
-    const at = f.at(px * k, pz * k)
-    mergeInto(out, b.trunk, at.x, deck, at.z, TRUNK, surfaceTag('clapboard'))
-    mergeInto(out, b.collar, at.x, deck, at.z, [0.4, 0.34, 0.24], surfaceTag('clapboard'))
-    mergeInto(out, b.leaves, at.x, deck, at.z, FROND, 0)
-  }
+  // No plants here. A builder never grows anything: the vegetation layer plants the city (render/vegetation.ts,
+  // the city's own tree list), and a generator's trees always came out worse than its buildings (user,
+  // 2026-09-22: "be sure that the generators don't do plants, it always does a bad job").
 }
 
 export const UNION_SQUARE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {

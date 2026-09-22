@@ -31,7 +31,7 @@ const list = await readManifestFile<{ osm?: string | string[] }>(resolve(import.
 const done = new Set(list.flatMap((l) => (Array.isArray(l.osm) ? l.osm : l.osm ? [l.osm] : [])))
 const CIVIC_AMENITY = /^(townhall|courthouse|library|fire_station|police|community_centre|post_office|arts_centre|theatre|place_of_worship|school|college|university|hospital|social_facility)$/
 const CIVIC_BUILDING = /^(civic|government|public|cathedral|church|temple|train_station|transportation|museum)$/
-const out: { kind: string; id: string; name: string; height: number; levels: number; lat: number; lon: number; done: boolean; tags: string }[] = []
+const out: { kind: string; id: string; name: string; height: number; levels: number; lat: number; lon: number; done: boolean; part: boolean; tags: string }[] = []
 for (const [id, e] of seen) {
   const t = e.tags!
   const levels = Number(t['building:levels']) || 0
@@ -42,7 +42,9 @@ for (const [id, e] of seen) {
   else if (b && (CIVIC_BUILDING.test(b) || CIVIC_AMENITY.test(t.amenity ?? '') || t.tourism === 'museum' || t.office === 'government')) kind = 'civic'
   else if (!b && (t.leisure === 'park' || t.leisure === 'garden' || t.leisure === 'playground') && t.name) kind = t.leisure
   if (!kind) continue
-  out.push({ kind, id, name: t.name ?? t['addr:housenumber'] ? `${t.name ?? ''}${t.name ? '' : `${t['addr:housenumber']} ${t['addr:street'] ?? ''}`}`.trim() : '', height: Math.round(height), levels, lat: +e.center!.lat.toFixed(6), lon: +e.center!.lon.toFixed(6), done: done.has(id),
+  // a `building:part` is a slice of a building, not a building: it is modelled with its parent, never on its own
+  const part = !t.building && !!t['building:part']
+  out.push({ kind, id, part, name: t.name ?? t['addr:housenumber'] ? `${t.name ?? ''}${t.name ? '' : `${t['addr:housenumber']} ${t['addr:street'] ?? ''}`}`.trim() : '', height: Math.round(height), levels, lat: +e.center!.lat.toFixed(6), lon: +e.center!.lon.toFixed(6), done: done.has(id),
     tags: [t.building && `building=${t.building}`, t.amenity && `amenity=${t.amenity}`, t.religion, t['building:material'] && `material=${t['building:material']}`, t['roof:shape'] && `roof=${t['roof:shape']}`].filter(Boolean).join(' ') })
 }
 out.sort((a, b) => (a.kind === b.kind ? b.height - a.height : a.kind.localeCompare(b.kind)))
