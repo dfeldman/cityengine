@@ -18,7 +18,7 @@ import { Projection } from './city/geo.ts'
 import { parseLatLon } from './ui/goto.ts'
 import { asMassing, fringeLayer, massing } from './render/fringe.ts'
 import { terracesLayer } from './render/terraces.ts'
-import { MID } from './render/city.ts'
+import { MID, VIEW } from './render/city.ts'
 import { MemoryTiles, TILE, tileKey, type CityIndex, type TileData } from './city/tiles.ts'
 import { tilePreparer } from './render/prepare.ts'
 import { quaysLayer } from './render/quays.ts'
@@ -96,7 +96,13 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    */
   const marks: Record<string, number> = {}
   let lastMark = performance.now()
-  const mark = (name: string): void => { const t = performance.now(); marks[name] = Math.round(t - lastMark); lastMark = t }
+  const heapMB = (): number => Math.round(((performance as unknown as { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize ?? 0) / 1e6)
+  const mark = (name: string): void => {
+    const t = performance.now()
+    marks[name] = Math.round(t - lastMark)
+    marks[`${name}MB`] = heapMB()
+    lastMark = t
+  }
   ;(window as unknown as { __marks?: unknown }).__marks = marks
   const [src, atlas] = await Promise.all([
     // the index now, the tiles as the rider needs them (city/tilestore.ts); a single-package city is cut up
@@ -155,34 +161,46 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     listeners.push(f)
     for (const a of arrived) f(a)
   }
-  const requested = new Set<string>()
-  const bring = async (k: string): Promise<void> => {
-    if (requested.has(k) || !src.has(k)) return
-    requested.add(k)
+  /*
+   * Two levels of a tile: FULL (streets, buildings, furniture, trees — taken in by the City) within VIEW + 2 of
+   * the focus, which is every tile a built tile or its neighbourhood reads, and MASSING (its buildings only,
+   * for the mid ring) out to MID + 1. Central Paris held a gigabyte with every tile full (PARIS_EXPAND §2).
+   */
+  const tileLevel = new Map<string, 'mid' | 'full'>()
+  let keepArrived = true
+  const bring = async (k: string, full: boolean): Promise<void> => {
+    const have = tileLevel.get(k)
+    if (have === 'full' || (have === 'mid' && !full) || !src.has(k)) return
+    tileLevel.set(k, full ? 'full' : 'mid')
     const raw = await src.load(k)
     if (!raw) return
     const ready = prepare(raw)
+    if (!full) {
+      // what the mid ring's massing needs, and nothing else
+      if (tileLevel.get(k) === 'mid') prepared.tiles.set(k, { ...ready, edges: [], areas: [], trees: [], pois: [], furniture: [], landmarks: [], rails: [], plantings: [] })
+      return
+    }
     prepared.tiles.set(k, ready)
     city.ingest(ready)
     const fresh = mapEdges(ready.edges.filter((e) => !graph.edges.has(e.id)), city.terrain)
     addEdges(graph, fresh)
     const a = { raw, ready, edges: fresh }
-    arrived.push(a)
+    if (keepArrived) arrived.push(a)
     for (const f of listeners) f(a)
   }
-  /** every tile within `reach` tiles of (x, z) asked for, nearest first; resolves when they are all in */
-  const wantTiles = (x: number, z: number, reach: number): Promise<void> => {
+  /** the tiles round (x, z) asked for, nearest first, full near and massing further; resolves when all are in */
+  const wantTiles = (x: number, z: number): Promise<void> => {
     const [cx, cz] = [Math.floor(x / TILE), Math.floor(z / TILE)]
-    const keys: string[] = []
-    for (let dz = -reach; dz <= reach; dz++) for (let dx = -reach; dx <= reach; dx++) keys.push(tileKey(cx + dx, cz + dz))
-    keys.sort((p, q) => {
-      const d = (k: string): number => { const [tx, tz] = k.split(',').map(Number); return Math.max(Math.abs(tx - cx), Math.abs(tz - cz)) }
-      return d(p) - d(q)
-    })
-    return Promise.all(keys.map(bring)).then(() => undefined)
+    const jobs: [string, boolean, number][] = []
+    for (let dz = -(MID + 1); dz <= MID + 1; dz++) for (let dx = -(MID + 1); dx <= MID + 1; dx++) {
+      const d = Math.max(Math.abs(dx), Math.abs(dz))
+      jobs.push([tileKey(cx + dx, cz + dz), d <= VIEW + 2, d])
+    }
+    jobs.sort((p, q) => p[2] - q[2])
+    return Promise.all(jobs.map(([k, full]) => bring(k, full))).then(() => undefined)
   }
   const first = startPoint(rides, index, opts)
-  await wantTiles(first.x, first.z, MID + 1)
+  await wantTiles(first.x, first.z)
   mark('city')
   city.pickable = new URLSearchParams(location.search).get('pick') === '1'
   // and the city beyond the box, as plain massing, so it does not stop at a field (render/fringe.ts)
@@ -328,6 +346,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const rideable = new Set([...rides.edges.values()].flatMap((e) => e.over.map((o) => o.id)))
   const minimap = new Minimap(document.getElementById('minimap') as HTMLCanvasElement, graph, {}, rideable)
   onTile((a) => minimap.addEdges(a.edges))
+  // everyone has subscribed: the tiles need not be kept for replaying any more
+  keepArrived = false
+  arrived.length = 0
   mark('minimap')
   minimap.landmarks = (pkg.landmarks ?? []).map((l) => ({ x: l.x, z: l.z, name: l.name, tier: l.tier }))
   const tier1 = (pkg.landmarks ?? []).filter((l) => l.tier === 1)
@@ -513,7 +534,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       if (now - lastWant > 250) {
         lastWant = now
         const f = frozen ? (held ? held.to : orbit.look) : at
-        void wantTiles(f.x, f.z, MID + 1)
+        void wantTiles(f.x, f.z)
       }
 
       // Everything alive. The traffic and the crowd are told which streets are near so they populate what

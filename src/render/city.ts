@@ -636,6 +636,7 @@ function distantGround(scene: Scene, terrain: Terrain, pkg: CityPackage, assets:
   void terrain
   const m = new Mesh('ground:distant', scene)
   out.toVertexData().applyToMesh(m)
+  m.geometry?.clearCachedData()
   m.material = roadMaterial(scene, pkg.ground, assets)
   m.renderingGroupId = GROUP.base
   m.isPickable = false
@@ -749,9 +750,19 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0): void {
    */
   // …and at the start of the carriageway's group, so land in front of a road hides it: on Nob Hill the
   // streets beyond a crest were painted over the hill in front of them
+  // one geometry for all three (clones share it): three copies of the whole grid held a quarter of a gigabyte
+  // in central Paris, and none of it needs a CPU copy once uploaded
+  let first: Mesh | null = null
   for (const group of [GROUP.areas, GROUP.road, GROUP.building]) {
-    const m = new Mesh(`ground:occluder:${group}`, scene)
-    out.toVertexData().applyToMesh(m)
+    let m: Mesh
+    if (!first) {
+      m = new Mesh(`ground:occluder:${group}`, scene)
+      out.toVertexData().applyToMesh(m)
+      m.geometry?.clearCachedData()
+      first = m
+    } else {
+      m = first.clone(`ground:occluder:${group}`)
+    }
     m.material = mat
     m.renderingGroupId = group
     /*

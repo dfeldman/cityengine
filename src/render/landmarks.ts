@@ -325,6 +325,7 @@ export class Landmarks {
 
   /** the city's buildings seen so far (city and fringe), by id, for fitting a landmark to its own */
   private readonly byId = new Map<number, Pick<PackedBuilding, 'id' | 'ring' | 'height' | 'holes'>>()
+  private readonly wanted = new Set<number>()
   /** entries not yet placed: each waits for the tile its building, or its point, is in */
   private pending: LandmarkEntry[]
   private readonly named: PackedLandmark[]
@@ -350,6 +351,7 @@ export class Landmarks {
     this.proj = new Projection(pkg.origin)
     this.named = pkg.landmarks ?? []
     this.pending = entries.filter((e) => entryKind(e) !== 'restyle' && entryKind(e) !== 'placeholder')
+    for (const e of this.pending) for (const id of [...packedIds(e), ...(e.on ? packedIds({ name: e.name, osm: e.on }) : [])]) this.wanted.add(id)
     const mat = cartoonMaterial(scene, 'cartoonLandmark', false)
     // drawn both sides: one mesh per landmark, and a builder's hand-wound quads need not all agree
     mat.backFaceCulling = false
@@ -386,7 +388,10 @@ export class Landmarks {
 
   /** A tile's data arrived: place every landmark that was waiting for it. */
   addTile(t: TileData): void {
-    for (const b of [...t.fringe, ...t.buildings]) this.byId.set(b.id, b)
+    if (this.pending.length === 0) return
+    // only the buildings some landmark is fitted to: a streamed city passes every one of them through here
+    for (const b of t.fringe) if (this.wanted.has(b.id)) this.byId.set(b.id, b)
+    for (const b of t.buildings) if (this.wanted.has(b.id)) this.byId.set(b.id, b)
     const [tx, tz] = t.key.split(',').map(Number)
     this.pending = this.pending.filter((e) => {
       const ids = e.on ? packedIds({ name: e.name, osm: e.on }) : packedIds(e)

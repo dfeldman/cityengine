@@ -14,6 +14,9 @@ export class TileStore {
   private readonly got = new Map<string, TileData>()
   private readonly pending = new Map<string, Promise<TileData | null>>()
 
+  /** keep what was fetched (for `loadWhole`); a streaming game prepares each tile and needs no raw copy */
+  keep = true
+
   constructor(base: string) { this.base = base }
 
   async open(): Promise<CityIndex | null> {
@@ -36,7 +39,7 @@ export class TileStore {
     const entry = this.index?.tiles.find((t) => t.key === key)
     if (!entry) return Promise.resolve(null)
     const p = fetch(`${this.base}tiles/${entry.tx}_${entry.tz}.json`).then((r) => r.json() as Promise<TileData>).then((t) => {
-      this.got.set(key, t)
+      if (this.keep) this.got.set(key, t)
       this.pending.delete(key)
       return t
     })
@@ -94,6 +97,7 @@ export async function openCity(base: string, id: string): Promise<CitySource> {
   const store = new TileStore(`${root}cities/${id}/`)
   const index = await store.open().catch(() => null)
   if (index) {
+    store.keep = false
     const keys = new Set(index.tiles.map((t) => t.key))
     return { index, has: (k) => keys.has(k), load: (k) => store.load(k) }
   }
