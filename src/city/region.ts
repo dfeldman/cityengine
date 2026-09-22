@@ -72,6 +72,11 @@ export interface Region {
   pavedSquares?: { name: string; ring: [number, number][] }[]
   /** the steel of an elevated railway — the Loop's L is painted a dark green-black */
   elevatedRailColour: string
+  /** the elevated railway's design: 'bent' (the Loop's L: steel bents) or 'paris' (the Métro's iron viaducts on
+   *  cast-iron columns and stone piers, with its stations: PARIS_EXPAND §5 C) */
+  viaduct?: 'bent' | 'paris'
+  /** the stations on the viaduct, where a platform and its glass canopy stand */
+  viaductStations?: { name: string; lat: number; lon: number }[]
   /** the name plate on a landmark building: Paris engraves dark capitals into a cream stone plate */
   landmarkPlate: { fill: string; text: string }
   /** how the city draws the furniture OSM maps at points (package `furniture`) */
@@ -110,6 +115,8 @@ export function region(id: string | undefined): Region {
     pointFurniture: { ...base.pointFurniture, ...(own?.pointFurniture ?? {}) },
     landmarkPlate: { ...base.landmarkPlate, ...(own?.landmarkPlate ?? {}) },
     elevatedRailColour: own?.elevatedRailColour ?? base.elevatedRailColour,
+    viaduct: own?.viaduct ?? base.viaduct,
+    viaductStations: own?.viaductStations ?? base.viaductStations,
     levelInference: {
       ...base.levelInference,
       ...(own?.levelInference ?? {}),

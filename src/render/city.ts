@@ -830,6 +830,8 @@ export class City {
   readonly raisedIds = new Set<number>()
   /** raised footways that are a road bridge's own sidewalks, drawn by the road's deck */
   private readonly coveredDecks = new Set<number>()
+  /** the viaduct's stations in local metres (region `viaductStations`), set by the game */
+  viaductStations: { x: number; z: number }[] = []
   /** the bridges' outlines (render/bridge-structures.ts): a way on one draws only its running surfaces */
   private readonly outlines = new Map<number, { ring: { x: number; z: number }[]; x0: number; x1: number; z0: number; z1: number }>()
   private structured(e: PackedEdge): boolean {
@@ -1841,7 +1843,8 @@ export class City {
       const railColour = hexRgb(this.region.elevatedRailColour)
       const [rtx, rtz] = k.split(',').map(Number)
       const railRect = { x0: rtx * TILE, z0: rtz * TILE, x1: (rtx + 1) * TILE, z1: (rtz + 1) * TILE }
-      for (const r of this.railsIn.get(k) ?? []) railDeck(decks, r, this.terrain, railColour, railRect)
+      const parisViaduct = this.region.viaduct === 'paris' ? { stations: this.viaductStations } : undefined
+      for (const r of this.railsIn.get(k) ?? []) railDeck(decks, r, this.terrain, railColour, railRect, parisViaduct)
       if (decks.triangles > 0) {
         const m = new Mesh(`decks:${k}`, this.scene)
         decks.toVertexData().applyToMesh(m)

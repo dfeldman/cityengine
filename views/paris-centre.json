@@ -2364,5 +2364,61 @@
    2.3264,
    7
   ]
+ },
+ {
+  "name": "Line 6 — Dupleix station",
+  "group": "landmark",
+  "from": [
+   48.850526,
+   2.293567,
+   3
+  ],
+  "to": [
+   48.850272,
+   2.294064,
+   7
+  ]
+ },
+ {
+  "name": "Line 6 — Cambronne station",
+  "group": "landmark",
+  "from": [
+   48.847909,
+   2.301917,
+   3
+  ],
+  "to": [
+   48.847663,
+   2.302423,
+   7
+  ]
+ },
+ {
+  "name": "Line 6 — above Dupleix",
+  "group": "landmark",
+  "from": [
+   48.849259,
+   2.293504,
+   80
+  ],
+  "to": [
+   48.850272,
+   2.294064,
+   0
+  ]
+ },
+ {
+  "name": "Line 6 — over the boulevard",
+  "group": "landmark",
+  "from": [
+   48.848584,
+   2.298686,
+   12
+  ],
+  "to": [
+   48.849104,
+   2.297745,
+   6
+  ]
  }
 ]

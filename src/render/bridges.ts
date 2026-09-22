@@ -17,7 +17,7 @@
  * 0.6 m deck and steel bents — two columns and a cross beam — every 15 m.
  */
 import { MeshBuilder } from './buildings.ts'
-import { box } from './models.ts'
+import { box, prism } from './models.ts'
 import type { Terrain } from '../city/terrain.ts'
 import { isRaised, unpackPoints, type PackedEdge, type PackedRail } from '../city/package.ts'
 
@@ -207,10 +207,12 @@ function pier(out: MeshBuilder, x: number, z: number, y0: number, y1: number, hx
  * wherever that tile was not built (BUGS.md #34).
  */
 export function railDeck(out: MeshBuilder, r: PackedRail, terrain: Terrain, colour: Rgb,
-                         rect?: { x0: number; z0: number; x1: number; z1: number }): void {
+                         rect?: { x0: number; z0: number; x1: number; z1: number },
+                         paris?: { stations: { x: number; z: number }[] }): void {
   const pts = unpackPoints(r.points)
   if (pts.length < 2 || !r.heights) return
   const f = frames(pts, r.heights)
+  if (paris) { parisViaduct(out, f, terrain, colour, rect, paris.stations); return }
   const half = 2.2
   const mine = (x: number, z: number): boolean => !rect || (x >= rect.x0 && x < rect.x1 && z >= rect.z0 && z < rect.z1)
   // the runs of consecutive segments in the rect
@@ -451,5 +453,112 @@ function ribSeg(out: MeshBuilder, a: [number, number, number], b: [number, numbe
   ]
   for (const [u0, w0, u1, w1, n] of faces) {
     out.quad([v(a, u0, w0), v(b, u0, w0), v(b, u1, w1), v(a, u1, w1)], n, [[0, 0], [1, 0], [1, 1], [0, 1]], c, FIXED)
+  }
+}
+
+/**
+ * The Paris Métro's viaduct (PARIS_EXPAND §5 C: Line 6 over the Boulevards de Grenelle and Garibaldi, Line 2
+ * over La Chapelle): iron girders with an ARCHED lower edge between the supports, the supports pairs of
+ * slender cast-iron columns with capitals — every fourth a stone pier — and at the stations a platform each
+ * side under a long glass canopy. Only the spans whose middle is in `rect` (a tile's share).
+ */
+function parisViaduct(out: MeshBuilder, f: Frame[], terrain: Terrain, iron: Rgb,
+                      rect: { x0: number; z0: number; x1: number; z1: number } | undefined, stations: { x: number; z: number }[]): void {
+  const half = 2.3
+  const mine = (x: number, z: number): boolean => !rect || (x >= rect.x0 && x < rect.x1 && z >= rect.z0 && z < rect.z1)
+  const total = f[f.length - 1].s
+  const SPAN = 20
+  const light: Rgb = [iron[0] * 1.35, iron[1] * 1.35, iron[2] * 1.35]
+  const stone: Rgb = [0.72, 0.68, 0.6]
+  const at = (s: number): Frame => frameAt(f, s)
+  // the deck: its top, and each side's girder plate from the rail down to an arch between the supports
+  for (let s = 0; s < total - 1e-6; s += 1) {
+    const s1 = Math.min(total, s + 1)
+    const a = at(s)
+    const b = at(s1)
+    if (!mine((a.x + b.x) / 2, (a.z + b.z) / 2)) continue
+    const depth = (q: number): number => {
+      const u = ((q % SPAN) + SPAN) % SPAN / SPAN
+      return 0.55 + 1.1 * Math.pow(Math.abs(u - 0.5) * 2, 2.2)
+    }
+    const P = (fr: Frame, o: number, dy: number): [number, number, number] => [fr.x + fr.nx * o, fr.y + dy, fr.z + fr.nz * o]
+    out.quad([P(a, -half, 0), P(a, half, 0), P(b, half, 0), P(b, -half, 0)], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], light, FIXED)
+    for (const side of [-1, 1]) {
+      const o = side * half
+      const q = [P(a, o, -depth(s)), P(b, o, -depth(s1)), P(b, o, 0.35), P(a, o, 0.35)]
+      if (side < 0) q.reverse()
+      out.quad(q as [number, number, number][], [a.nx * side, 0, a.nz * side], [[0, 0], [1, 0], [1, 1], [0, 1]], iron, FIXED)
+    }
+    out.quad([P(a, half, -0.5), P(a, -half, -0.5), P(b, -half, -0.5), P(b, half, -0.5)], [0, -1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], [iron[0] * 0.7, iron[1] * 0.7, iron[2] * 0.7], FIXED)
+  }
+  // the supports
+  let k = 0
+  for (let s = SPAN; s < total - 2; s += SPAN, k++) {
+    const fr = at(s)
+    if (!mine(fr.x, fr.z)) continue
+    const heading = Math.atan2(fr.nx, fr.nz)
+    if (k % 4 === 0) {
+      const g = terrain.heightAt(fr.x, fr.z)
+      pier(out, fr.x, fr.z, g - 0.3, fr.y - 1.6, 0.9, half + 0.5, heading)
+      box(out, fr.x, fr.y - 1.55, fr.z, 1.0, 0.12, 1.0, stone, FIXED)
+      continue
+    }
+    for (const side of [-1, 1]) {
+      const cx = fr.x + fr.nx * side * (half - 0.4)
+      const cz = fr.z + fr.nz * side * (half - 0.4)
+      const g = terrain.heightAt(cx, cz)
+      if (fr.y - g < 2) continue
+      prism(out, cx, cz, g, g + 0.5, 0.42, 8, iron, FIXED, 0.36)
+      prism(out, cx, cz, g + 0.5, fr.y - 2.1, 0.24, 8, light, FIXED, 0.2)
+      prism(out, cx, cz, fr.y - 2.1, fr.y - 1.6, 0.2, 8, iron, FIXED, 0.45)
+    }
+    pier(out, fr.x, fr.z, fr.y - 1.75, fr.y - 1.5, 0.25, half, heading)
+  }
+  // the stations: platforms either side and a long glass canopy over the tracks
+  for (const st of stations) {
+    // the nearest point of this viaduct to the station, within 40 m
+    let best: { s: number; d: number } | null = null
+    for (let s = 0; s <= total; s += 2) {
+      const fr = at(s)
+      const d = Math.hypot(fr.x - st.x, fr.z - st.z)
+      if (!best || d < best.d) best = { s, d }
+    }
+    if (!best || best.d > 40) continue
+    const glass: Rgb = [0.55, 0.66, 0.7]
+    for (let s = Math.max(0, best.s - 36); s < Math.min(total, best.s + 36) - 1e-6; s += 2) {
+      const s1 = Math.min(total, s + 2)
+      const a = at(s)
+      const b = at(s1)
+      if (!mine((a.x + b.x) / 2, (a.z + b.z) / 2)) continue
+      const P = (fr: Frame, o: number, dy: number): [number, number, number] => [fr.x + fr.nx * o, fr.y + dy, fr.z + fr.nz * o]
+      for (const side of [-1, 1]) {
+        // the platform, a step up from the rails, and its edge
+        const o0 = side * half
+        const o1 = side * (half + 2.8)
+        const lo = Math.min(o0, o1)
+        const hi = Math.max(o0, o1)
+        out.quad([P(a, lo, 0.9), P(a, hi, 0.9), P(b, hi, 0.9), P(b, lo, 0.9)], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], [0.62, 0.6, 0.56], FIXED)
+        const q = [P(a, o1, -0.6), P(b, o1, -0.6), P(b, o1, 0.9), P(a, o1, 0.9)]
+        if (side < 0) q.reverse()
+        out.quad(q as [number, number, number][], [a.nx * side, 0, a.nz * side], [[0, 0], [1, 0], [1, 1], [0, 1]], iron, FIXED)
+        // the canopy's columns every 6 m, at the platform's back
+        if (Math.round(s) % 6 === 0) {
+          const c = P(a, side * (half + 2.5), 0.9)
+          box(out, c[0], c[1] + 1.9, c[2], 0.07, 1.9, 0.07, iron, FIXED)
+        }
+      }
+      // the canopy: a shallow barrel of glass over the whole width, on iron ribs
+      const W = half + 2.8
+      const seg = 6
+      for (let i = 0; i < seg; i++) {
+        const t0 = i / seg
+        const t1 = (i + 1) / seg
+        const o0 = -W + 2 * W * t0
+        const o1 = -W + 2 * W * t1
+        const y0 = 4.7 + Math.sin(Math.PI * t0) * 1.2
+        const y1 = 4.7 + Math.sin(Math.PI * t1) * 1.2
+        out.quad([P(a, o0, y0), P(a, o1, y1), P(b, o1, y1), P(b, o0, y0)], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], glass, FIXED)
+      }
+    }
   }
 }

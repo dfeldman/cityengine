@@ -194,6 +194,14 @@
     "awnings": 0.9,
     "riverDrop": 2.5,
     "elevatedWalks": [{ "name": "Coulée Verte René-Dumont", "height": 8.5 }],
+    "viaduct": "paris",
+    "viaductStations": [
+      { "name": "Bir-Hakeim", "lat": 48.85393, "lon": 2.28935 },
+      { "name": "Dupleix", "lat": 48.85045, "lon": 2.29378 },
+      { "name": "La Motte-Picquet – Grenelle", "lat": 48.84915, "lon": 2.29840 },
+      { "name": "Cambronne", "lat": 48.84760, "lon": 2.30270 },
+      { "name": "Sèvres – Lecourbe", "lat": 48.84565, "lon": 2.30960 }
+    ],
     "pavedSquares": [
       { "name": "Parvis du Trocadéro", "ring": [[48.86279, 2.28727], [48.86192, 2.28604], [48.86143, 2.28680], [48.86168, 2.28940], [48.86224, 2.29008], [48.86301, 2.28894]] }
     ],

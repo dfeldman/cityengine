@@ -158,6 +158,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    */
   const prepared = new MemoryTiles(new Map())
   city.source = prepared
+  city.viaductStations = (region(pkg.region).viaductStations ?? []).map((q) => new Projection(pkg.origin).toLocal(q))
   city.exists = (k) => src.has(k)
   const graph: CityGraph = { nodes: new Map(), edges: new Map() }
   const arrived: { raw: TileData; ready: TileData; edges: Edge[] }[] = []
