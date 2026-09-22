@@ -35,7 +35,7 @@ import { planFacade, type StyleId } from '../city/facade.ts'
 import { Terrain } from '../city/terrain.ts'
 import { unpackPoints, type CityPackage, type PackedArea, type PackedBuilding, type PackedEdge, type PackedFurniture, type PackedRail } from '../city/package.ts'
 import { BRIDGE_STYLES, deck, isRaised, railDeck } from './bridges.ts'
-import { TILE, nearOf, tileKey, tileOf, type Near, type TileData, type TileSource } from '../city/tiles.ts'
+import { TILE, nearOf, tileKey, tileOf, tilesOfLine, type Near, type TileData, type TileSource } from '../city/tiles.ts'
 
 /** A subsystem drawn per tile: `build` returns the tile's meshes (disposed with the tile). */
 export interface TileLayer {
@@ -984,7 +984,12 @@ export class City {
     for (const r of t.rails) {
       if (!r.bridge || !r.heights || this.railSeen.has(r.id)) continue
       this.railSeen.add(r.id)
-      this.bucket(this.railsIn, r.points[0], r.points[1], r)
+      // in every tile it crosses: each draws its own spans of it (render/bridges.ts railDeck)
+      for (const tk of tilesOfLine(r.points)) {
+        const list = this.railsIn.get(tk)
+        if (list) list.push(r)
+        else this.railsIn.set(tk, [r])
+      }
     }
     // the tile's own clipped pieces of each area (city/tiles.ts): water carries its whole body's level
     this.areasIn.set(t.key, t.areas.map((a) => ({ ...a, level: a.level })))
@@ -1723,7 +1728,9 @@ export class City {
         }
       }
       const railColour = hexRgb(this.region.elevatedRailColour)
-      for (const r of this.railsIn.get(k) ?? []) railDeck(decks, r, this.terrain, railColour)
+      const [rtx, rtz] = k.split(',').map(Number)
+      const railRect = { x0: rtx * TILE, z0: rtz * TILE, x1: (rtx + 1) * TILE, z1: (rtz + 1) * TILE }
+      for (const r of this.railsIn.get(k) ?? []) railDeck(decks, r, this.terrain, railColour, railRect)
       if (decks.triangles > 0) {
         const m = new Mesh(`decks:${k}`, this.scene)
         decks.toVertexData().applyToMesh(m)

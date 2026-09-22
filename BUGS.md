@@ -41,7 +41,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 31 | fixed | Messy ground and the camera below ground near a bridge (48.846945, 2.366215) | user, 2026-09-22 |
 | 32 | open | An errant footbridge from OSM near 48.849195, 2.372189 | user, 2026-09-22 |
 | 33 | fixed | The rider gets trapped in a very messy intersection and cannot get out (48.849354, 2.356970) | user, 2026-09-22 |
-| 34 | open | The trams are incredibly ugly | user, 2026-09-22 |
+| 34 | fixed | The trams are incredibly ugly | user, 2026-09-22 |
 | 35 | fixed | A building appears underwater (48.846324, 2.362785) | user, 2026-09-22 |
 | 36 | fixed | Z-fighting on a strange barrier in the river (48.848591, 2.359412) | user, 2026-09-22 |
 | 37 | fixing | The bridges need a lot of work to be usable and beautiful | user, 2026-09-22 |
@@ -514,6 +514,23 @@ as circle and spokes, or a simplified junction) as for the Bastille.
 
 **Seen:** user. The tram model (`render/life.ts` pool `trams`) — replace with a proper Citadis-style tram
 (PARIS_EXPAND §5: Paris rolling stock), or a user model.
+
+**Fix (2026-09-22):** in Paris the "tram" was the San Francisco cable car in maroon, and central Paris has no tram
+lines at all. What the user saw was the trains:
+- the RER shuttling up and down 45–174 m scraps of track by the Quai Saint-Bernard, in the generic carriage;
+- nothing at all on the métro viaducts.
+
+Now:
+- Paris has its own rolling stock (render/models.ts): `citadisCab`/`citadisMid` (an articulated Citadis, four
+  modules), `metroCar` (an MP 73 in RATP white on a blue-green skirt, five cars), `rerCar` (a double-deck
+  Z 2N);
+- trains run only on lines of 400 m or more;
+- elevated subways carry métro trains;
+- the viaduct is drawn per tile (it was built whole by the tile of its first point, off screen), and stands
+  6.5 m + 1.5 m a layer over the ground, not 5.5 m a layer.
+
+San Francisco keeps its cable cars. Still wanted (PARIS_EXPAND §5 C): the Line 6 viaduct's own iron-and-stone
+design and its stations.
 
 ## 35. Building underwater (48.846324, 2.362785)
 

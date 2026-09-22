@@ -201,15 +201,29 @@ function pier(out: MeshBuilder, x: number, z: number, y0: number, y1: number, hx
 }
 
 /** An elevated railway: a 0.6 m deck under the track, and a steel bent every 15 m. */
-export function railDeck(out: MeshBuilder, r: PackedRail, terrain: Terrain, colour: Rgb): void {
+/**
+ * `rect`: only the spans whose middle is in it — a tile's share. A viaduct is kilometres long (Line 6 runs
+ * 2.4 km over the Boulevard de Grenelle) and drawn whole by the tile of its first point it was off the screen
+ * wherever that tile was not built (BUGS.md #34).
+ */
+export function railDeck(out: MeshBuilder, r: PackedRail, terrain: Terrain, colour: Rgb,
+                         rect?: { x0: number; z0: number; x1: number; z1: number }): void {
   const pts = unpackPoints(r.points)
   if (pts.length < 2 || !r.heights) return
   const f = frames(pts, r.heights)
   const half = 2.2
-  strip(out, f, -half, half, 0, [colour[0] * 1.3, colour[1] * 1.3, colour[2] * 1.3])
-  wall(out, f, -half, -0.6, 0, colour, -1)
-  wall(out, f, half, -0.6, 0, colour, 1)
-  strip(out, f, -half, half, -0.6, colour, true)
+  const mine = (x: number, z: number): boolean => !rect || (x >= rect.x0 && x < rect.x1 && z >= rect.z0 && z < rect.z1)
+  // the runs of consecutive segments in the rect
+  for (let i = 1; i < f.length;) {
+    if (!mine((f[i - 1].x + f[i].x) / 2, (f[i - 1].z + f[i].z) / 2)) { i++; continue }
+    const i0 = i - 1
+    while (i < f.length && mine((f[i - 1].x + f[i].x) / 2, (f[i - 1].z + f[i].z) / 2)) i++
+    const run = f.slice(i0, i)
+    strip(out, run, -half, half, 0, [colour[0] * 1.3, colour[1] * 1.3, colour[2] * 1.3])
+    wall(out, run, -half, -0.6, 0, colour, -1)
+    wall(out, run, half, -0.6, 0, colour, 1)
+    strip(out, run, -half, half, -0.6, colour, true)
+  }
   const total = f[f.length - 1].s
   for (let s = 7.5; s < total; s += 15) {
     let k = 1
@@ -220,6 +234,7 @@ export function railDeck(out: MeshBuilder, r: PackedRail, terrain: Terrain, colo
     const x = p.x + (q.x - p.x) * t
     const z = p.z + (q.z - p.z) * t
     const y = p.y + (q.y - p.y) * t - 0.6
+    if (!mine(x, z)) continue
     for (const side of [-1, 1]) {
       const cx = x + p.nx * side * (half + 0.3)
       const cz = z + p.nz * side * (half + 0.3)
