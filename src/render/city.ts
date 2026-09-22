@@ -1488,10 +1488,10 @@ export class City {
       const groundMat = facadeMaterial(this.scene, 'brutalist', this.assets, name === 'walks' ? 'pavement' : 'ground')
       groundMat.backFaceCulling = false
       // flat ground at grade hides nothing — the terrain occluder does that — and a park lapping over the
-      // river must not hide the river, which is depth-tested after it. The PAVEMENT does write depth: it is
-      // in the buildings' group, and a wall running on under it (uphill, on a slope) must stay under it
-      // rather than show through as a second ground (BUGS.md #14).
-      groundMat.disableDepthWrite = name !== 'walks'
+      // river must not hide the river, which is depth-tested after it. Nor the pavement: written into depth,
+      // its long quads stood above the ground on a slope and hid the rider's wheels (BUGS.md #26); the walls
+      // running on under it are hidden by the buildings' occluder, 0.15 m under the ground (#14).
+      groundMat.disableDepthWrite = true
       m.material = groundMat
       m.renderingGroupId = group
       meshes.push(m)

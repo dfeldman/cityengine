@@ -33,7 +33,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 23 | open | Haussmann balconies read as solid dark lines, not ironwork | user, 2026-09-22 |
 | 24 | open | Heavy z-fighting on the buildings on the left at central Paris's start point (48.860446, 2.331791) | user, 2026-09-22 |
 | 25 | open | Dormers and a chimney float in mid-air over a low building (48.857914, 2.347074) | user, 2026-09-22 |
-| 26 | open | Riding below the ground: the rider and road sink under the pavement (48.863689, 2.297469) | user, 2026-09-22 |
+| 26 | fixed | Riding below the ground: the rider and road sink under the pavement (48.863689, 2.297469) | user, 2026-09-22 |
 | 27 | fixed | Paths near the Alma / Trocadéro are unrideable: near-parallel paths merge and diverge, the rider is swept along | user, 2026-09-22 |
 | 28 | fixed | Both banks of the Seine: 4–5 near-parallel OSM paths that periodically meet — confusing to ride | user, 2026-09-22 |
 | 29 | fixed | Underground Métro station rooms drawn as 20 m buildings on the squares above (Place de la République) | views, 2026-09-22 |
@@ -477,3 +477,8 @@ level (its lowest bank): −8.6 and −7.6 m. The quays drew a wall along the se
 went, the depth occluder of the higher body cut triangles out of the lower (the shards). Now bodies that touch
 share one level, the lowest (`waterLevels` in city/package.ts, used by the bake, the occluder and the quays);
 no quay wall is drawn where both sides are water. ✅ `docs/shots/BUG36-river.png`.
+
+**#26 fixed:** caused by #14's fix: the pavement written into depth, and on a slope its long quads stand above
+the draped ground and hid the rider's wheels. The pavement writes no depth again; the walls running on under
+it stay hidden by the buildings' occluder at 0.15 m under the ground (#14 re-checked, `docs/shots/views/bug26/`).
+✅ `docs/shots/BUG26-alma.png`.
