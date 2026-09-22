@@ -27,6 +27,13 @@ export interface TrainKind {
   capacity: number
   /** it stops at the region's stations on its line (the métro's viaduct stations), dwelling there */
   stops?: boolean
+  /**
+   * Other models the same trains may be (the F-line runs PCC cars and Milan's Peter Witt trams; the California
+   * line runs double-ended cable cars): each its own pools and liveries. One is chosen per line, by
+   * `variantFor` where the region can tell (by the track's geometry), else round the variants in turn.
+   */
+  variants?: { mid: (out: MeshBuilder) => void; head?: (out: MeshBuilder) => void; tail?: (out: MeshBuilder) => void; liveries?: Rgb[]; pitch?: number; shadow?: [number, number, number] }[]
+  variantFor?: (points: { x: number; z: number }[]) => number | null
 }
 
 export interface RegionStock {

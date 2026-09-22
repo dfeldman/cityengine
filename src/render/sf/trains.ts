@@ -13,7 +13,7 @@
  * All face +z; the body panels take the livery per copy (the tag BODY), everything else keeps its colour.
  */
 import type { MeshBuilder } from '../buildings.ts'
-import { box, prism, wedge, EMIT, FIXED, type Rgb } from '../models.ts'
+import { box, prism, strut, wedge, wheel, EMIT, FIXED, type Rgb } from '../models.ts'
 import { DEFAULT_STOCK, type RegionStock } from '../rolling-stock.ts'
 
 const CREAM: Rgb = [0.9, 0.86, 0.72]
@@ -97,36 +97,147 @@ function cableCar(out: MeshBuilder): void {
   }
 }
 
-/** A PCC streetcar (1940s), the F-line's: 14.2 m, rounded at both ends, the trolley pole up. */
-function pccStreetcar(out: MeshBuilder): void {
-  const L = 7.1
-  const W = 1.3
-  // the body, lower (in its livery) and upper (the window band, cream), each rounded at the ends in three steps
-  const body = (y: number, h: number, c: Rgb, tag?: number): void => {
-    box(out, 0, y, 0, W, h, L - 1, c, tag)
-    for (const e of [-1, 1]) for (let k = 0; k < 3; k++) box(out, 0, y, e * (L - 1 + k * 0.33 + 0.17), W - k * 0.3, h, 0.17, c, tag)
+/** A PCC livery: the lower body, the belt, the window band and roof — each F-line car wears a city's */
+interface Livery { lower: Rgb; belt: Rgb; upper: Rgb; roof: Rgb; name: string }
+
+const PCC_LIVERIES: Livery[] = [
+  { name: 'Birmingham', lower: [0.14, 0.32, 0.22], belt: [0.84, 0.3, 0.14], upper: [0.9, 0.86, 0.72], roof: [0.88, 0.88, 0.84] },
+  { name: 'Muni "wings"', lower: [0.22, 0.4, 0.3], belt: [0.72, 0.15, 0.14], upper: [0.9, 0.87, 0.74], roof: [0.62, 0.64, 0.6] },
+  { name: 'Los Angeles', lower: [0.9, 0.72, 0.18], belt: [0.2, 0.35, 0.22], upper: [0.9, 0.72, 0.18], roof: [0.3, 0.34, 0.3] },
+  { name: 'Philadelphia', lower: [0.2, 0.36, 0.3], belt: [0.9, 0.86, 0.74], upper: [0.9, 0.86, 0.74], roof: [0.72, 0.72, 0.68] },
+  { name: 'Kansas City', lower: [0.66, 0.16, 0.14], belt: [0.9, 0.84, 0.66], upper: [0.9, 0.84, 0.66], roof: [0.56, 0.3, 0.26] },
+  { name: 'Chicago', lower: [0.3, 0.44, 0.3], belt: [0.94, 0.6, 0.2], upper: [0.92, 0.9, 0.8], roof: [0.62, 0.64, 0.6] },
+]
+
+/**
+ * A PCC streetcar (1946–52), the F-line's workhorse: 14.2 m. From the photographs (car 1077 in Birmingham's
+ * green, orange and cream; 1050, 1058, 1010):
+ * - rounded at both ends in plan, the front's three windscreen panes leaning back, the destination board over them;
+ * - the long window band with the small standee windows above it; the belt rail; the skirt over the trucks;
+ * - folding doors at the front and the middle on the right; the headlamp low on the nose, the anti-climber under it;
+ * - the roof with its ventilator hatch, the trolley pole trailing back to the wire, and its retriever.
+ */
+function pcc(liv: Livery): (out: MeshBuilder) => void {
+  return (out) => {
+    const L = 7.1
+    const W = 1.32
+    const F = FIXED
+    // body sections: skirt (lower colour, down over the trucks), lower panel, belt, window band — each carried round
+    // the rounded ends: the nose is a superellipse in plan, drawn as six slices narrowing toward the tip
+    const NOSE = 1.4
+    const STEPS = 6
+    const noseHalf = (k: number, inset: number): number => {
+      const t = (k + 1) / STEPS
+      return Math.max(0.2, (W - inset) * Math.pow(1 - Math.pow(t, 2.6), 1 / 2.6))
+    }
+    const section = (y: number, h: number, c: Rgb, inset = 0): void => {
+      box(out, 0, y, 0, W - inset, h, L - NOSE, c, F)
+      for (const e of [-1, 1]) {
+        for (let k = 0; k < STEPS; k++) {
+          const z = L - NOSE + (NOSE * (k + 0.5)) / STEPS
+          box(out, 0, y, e * z, noseHalf(k, inset), h, NOSE / STEPS / 2, c, F)
+        }
+      }
+    }
+    section(0.62, 0.2, liv.lower)                 // the skirt
+    section(1.12, 0.3, liv.lower)                 // the lower panel
+    section(1.5, 0.08, liv.belt)                  // the belt
+    section(1.66, 0.08, liv.upper)                // the sill
+    section(2.08, 0.34, liv.upper)                // the window band
+    section(2.5, 0.08, liv.upper)                 // over the windows, the standee strip
+    // the side windows: the long ones, the standee windows over them; the doors (right side, +x)
+    for (const s of [-1, 1]) {
+      for (let k = 0; k < 8; k++) {
+        const z = -L + 1.7 + k * 1.55
+        if (s > 0 && (k === 7 || k === 3)) continue       // the doors take these bays on the right
+        box(out, s * (W + 0.01), 2.06, z, 0.01, 0.28, 0.6, GLASS, F)
+        box(out, s * (W + 0.01), 2.52, z, 0.01, 0.05, 0.45, GLASS, F)
+      }
+    }
+    for (const z of [-L + 1.7 + 7 * 1.55, -L + 1.7 + 3 * 1.55]) {
+      box(out, W + 0.015, 1.5, z, 0.01, 0.95, 0.6, [0.2, 0.22, 0.24], F)
+      box(out, W + 0.02, 1.8, z - 0.3, 0.01, 0.55, 0.26, GLASS, F)
+      box(out, W + 0.02, 1.8, z + 0.3, 0.01, 0.55, 0.26, GLASS, F)
+    }
+    // the ends: the windscreen following the nose round — each slice's front glazed across the window band — and the
+    // destination board over it, the headlamp, the anti-climber
+    for (const e of [-1, 1]) {
+      for (let k = 2; k < STEPS; k++) {
+        const zf = L - NOSE + (NOSE * (k + 1)) / STEPS
+        const hw = noseHalf(k, 0)
+        const inner = k < STEPS - 1 ? noseHalf(k + 1, 0) : 0
+        // the glazed strip on this slice's front: from the next slice's edge out to this one's (the whole of the tip)
+        for (const s of k < STEPS - 1 ? [-1, 1] : [0]) {
+          const x0 = s === 0 ? -hw + 0.05 : s * inner
+          const x1 = s === 0 ? hw - 0.05 : s * (hw - 0.04)
+          box(out, (x0 + x1) / 2, 2.06, e * (zf + 0.005), Math.abs(x1 - x0) / 2, 0.3, 0.005, GLASS, F)
+        }
+      }
+      box(out, 0, 2.6, e * (L - 0.1), 0.42, 0.08, 0.03, [0.12, 0.12, 0.12], F)
+      box(out, 0, 2.6, e * (L - 0.07), 0.36, 0.05, 0.01, [0.98, 0.94, 0.8], EMIT)       // the destination, lit
+      box(out, 0, 0.95, e * (L + 0.01), 0.12, 0.12, 0.02, e > 0 ? LAMP : [0.9, 0.12, 0.08], EMIT)
+      box(out, 0, 0.5, e * (L + 0.06), 0.5, 0.06, 0.08, [0.55, 0.56, 0.58], F)          // the anti-climber
+    }
+    // the roof: domed, its ventilator hatch, the trolley pole and its base, the retriever on the back
+    // (the roof follows the nose round like the body, and domes only over the straight part)
+    section(2.63, 0.06, liv.roof)
+    wedge(out, 0, 2.75, 0, W - 0.1, 0.06, L - NOSE, 0.35, liv.roof, F)
+    box(out, 0, 2.86, -1.8, 0.55, 0.1, 1.6, liv.roof, F)
+    box(out, 0, 2.82, -L + 1.3, 0.22, 0.08, 0.3, DARK, F)
+    // the pole: up from its base at about 20°, trailing back behind the car to the wire, the wheel at its end
+    strut(out, [0, 2.9, -L + 1.3], [0, 5.55, -L - 5.8], 0.05, 0.05, DARK, F)
+    box(out, 0, 5.6, -L - 5.8, 0.03, 0.08, 0.08, [0.4, 0.4, 0.42], F)
+    box(out, 0, 1.3, -L - 0.12, 0.14, 0.14, 0.08, DARK, F)                              // the retriever
+    // the trucks under the skirt: dark, and the wheels
+    for (const e of [-1, 1]) {
+      box(out, 0, 0.35, e * (L - 2.3), 1.0, 0.22, 1.1, DARK, F)
+      for (const w of [-0.9, 0.9]) for (const x of [-0.72, 0.72]) wheel(out, x, 0.33, e * (L - 2.3) + w, 0.33, 0.06, [0.18, 0.18, 0.19])
+    }
+    // the riders at the windows
+    for (let k = 0; k < 10; k++) box(out, (k % 2 ? 1 : -1) * 0.8, 2.02, -L + 1.6 + k * 1.25, 0.1, 0.12, 0.1, SKIN[k % SKIN.length], F)
   }
-  body(1.05, 0.55, [1, 1, 1])
-  body(2.0, 0.4, CREAM, FIXED)
-  box(out, 0, 1.62, 0, W + 0.02, 0.07, L - 0.9, [0.3, 0.3, 0.3], FIXED)      // the belt rail
-  // the side windows, set into the cream band, and the windscreens in the rounded ends
+}
+
+/**
+ * A Milan Peter Witt tram (the "Ventotto", 1928), the F-line's other workhorse: 14 m, square-ended, orange with a
+ * cream line, the windows in pairs with transom lights over them, a dark monitor roof along its length, the trolley
+ * pole up; the trucks in plain view.
+ */
+function peterWitt(out: MeshBuilder): void {
+  const L = 6.9
+  const W = 1.2
+  const F = FIXED
+  const ORANGE: Rgb = [0.9, 0.5, 0.12]
+  box(out, 0, 1.25, 0, W, 0.55, L, ORANGE, F)
+  box(out, 0, 1.82, 0, W + 0.01, 0.03, L, [0.92, 0.88, 0.76], F)
+  box(out, 0, 2.2, 0, W, 0.38, L, ORANGE, F)
+  // the windows: eleven a side, big and close, narrow posts between them, the transom lights over them
   for (const s of [-1, 1]) {
-    for (let k = 0; k < 7; k++) box(out, s * (W + 0.01), 2.02, -L + 1.6 + k * 1.75, 0.01, 0.3, 0.62, GLASS, FIXED)
+    for (let k = 0; k < 11; k++) {
+      const z = -L + 0.75 + k * 1.24
+      box(out, s * (W + 0.01), 2.18, z, 0.01, 0.34, 0.52, GLASS, F)
+      box(out, s * (W + 0.01), 2.6, z, 0.01, 0.045, 0.52, GLASS, F)
+    }
   }
+  // the ends: three windows across, the destination and the big headlamp
   for (const e of [-1, 1]) {
-    box(out, 0, 2.02, e * (L + 0.01), 0.62, 0.3, 0.01, GLASS, FIXED)
-    for (const s of [-1, 1]) box(out, s * 0.95, 2.02, e * (L - 0.35), 0.01, 0.28, 0.25, GLASS, FIXED)
-    box(out, 0, 0.9, e * (L + 0.02), 0.14, 0.1, 0.02, LAMP, EMIT)
-    box(out, 0, 2.5, e * (L - 0.1), 0.35, 0.08, 0.02, [0.95, 0.9, 0.7], EMIT)      // the destination sign
+    for (const x of [-0.72, 0, 0.72]) box(out, x, 2.2, e * (L + 0.01), 0.3, 0.32, 0.01, GLASS, F)
+    box(out, 0, 2.7, e * (L + 0.01), 0.4, 0.07, 0.01, [0.95, 0.92, 0.8], EMIT)
+    box(out, 0, 1.3, e * (L + 0.03), 0.16, 0.16, 0.02, e > 0 ? LAMP : [0.9, 0.12, 0.08], EMIT)
+    box(out, 0, 0.72, e * (L + 0.08), 0.7, 0.07, 0.08, DARK, F)
   }
-  // the roof, domed
-  wedge(out, 0, 2.52, 0, W - 0.05, 0.12, L - 0.2, 0.35, [0.72, 0.72, 0.7], FIXED)
-  // the trolley pole: from the rear of the roof up and forward to the wire
-  box(out, 0, 3.3, -L + 3.2, 0.03, 0.03, 2.4, DARK, FIXED)
-  box(out, 0, 2.7, -L + 1.2, 0.2, 0.08, 0.3, DARK, FIXED)
-  box(out, 0, 0.35, 0, 1.0, 0.25, L - 1.5, DARK, FIXED)
-  // a few riders at the windows
-  for (let k = 0; k < 8; k++) box(out, (k % 2 ? 1 : -1) * 0.8, 1.95, -L + 1.8 + k * 1.5, 0.1, 0.12, 0.1, SKIN[k % SKIN.length], FIXED)
+  // the roof: its eaves, the monitor down the middle with its little windows, the pole
+  box(out, 0, 2.66, 0, W + 0.06, 0.07, L + 0.06, [0.36, 0.26, 0.2], F)
+  box(out, 0, 2.85, 0, 0.62, 0.14, L - 0.8, [0.36, 0.26, 0.2], F)
+  for (const s of [-1, 1]) box(out, s * 0.63, 2.85, 0, 0.01, 0.07, L - 1.2, GLASS, F)
+  strut(out, [0, 2.95, -L + 2.4], [0, 5.55, -L - 4.6], 0.05, 0.05, DARK, F)
+  // the trucks, open to view
+  for (const e of [-1, 1]) {
+    box(out, 0, 0.45, e * (L - 2), 0.95, 0.2, 1.0, DARK, F)
+    for (const w of [-0.8, 0.8]) for (const x of [-0.7, 0.7]) wheel(out, x, 0.38, e * (L - 2) + w, 0.36, 0.06, [0.18, 0.18, 0.19])
+  }
+  box(out, 0, 0.72, 0, 1.0, 0.1, L - 0.2, DARK, F)
+  for (let k = 0; k < 10; k++) box(out, (k % 2 ? 1 : -1) * 0.75, 2.12, -L + 1 + k * 1.3, 0.1, 0.12, 0.1, SKIN[(k + 1) % SKIN.length], F)
 }
 
 /** A Muni Metro light-rail car (Siemens S200SF): silver, a red band, its raked cab. 23 m. */
@@ -149,9 +260,13 @@ function muniLRV(out: MeshBuilder): void {
 export const SF_STOCK: RegionStock = {
   ...DEFAULT_STOCK,
   // the F-line's historic streetcars, in the liveries of the cities they came from
+  // (each livery is its own model: a PCC's three tones will not come out of one tint)
   tram: {
-    mid: pccStreetcar, cars: 1, pitch: 15, speed: 6.5, colour: [0.2, 0.45, 0.35], shadow: [14, 2.7, 3.2], capacity: 24,
-    liveries: [[0.2, 0.45, 0.35], [0.85, 0.72, 0.2], [0.72, 0.16, 0.14], [0.18, 0.3, 0.6], [0.9, 0.5, 0.2], [0.35, 0.55, 0.3], [0.82, 0.82, 0.78]],
+    mid: pcc(PCC_LIVERIES[0]), cars: 1, pitch: 15, speed: 6.5, colour: [1, 1, 1], shadow: [14.2, 2.7, 3.2], capacity: 12,
+    variants: [
+      ...PCC_LIVERIES.slice(1).map((l) => ({ mid: pcc(l) })),
+      { mid: peterWitt, shadow: [13.8, 2.5, 3.3] as [number, number, number] },
+    ],
   },
   cable: {
     mid: cableCar, cars: 1, pitch: 9.5, speed: 4.2, colour: [0.5, 0.12, 0.12], shadow: [8.4, 2.5, 3.3], capacity: 24,
@@ -162,4 +277,4 @@ export const SF_STOCK: RegionStock = {
 }
 
 /** the models on their own, for the model viewer (src/model-showcase.ts: ?model=cableCar) */
-export const SF_VEHICLES = { cableCar, pccStreetcar, muniLRV }
+export const SF_VEHICLES = { cableCar, pccStreetcar: pcc(PCC_LIVERIES[0]), peterWitt, muniLRV }

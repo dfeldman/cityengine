@@ -21,7 +21,7 @@
  * its bearing (N 7° W).
  */
 import type { MeshBuilder } from '../../buildings.ts'
-import { box, type Rgb } from '../../models.ts'
+import { box, strut, type Rgb } from '../../models.ts'
 import type { Fit } from '../fit.ts'
 
 type V3 = [number, number, number]
@@ -35,26 +35,9 @@ const LAMP: Rgb = [0.72, 0.7, 0.62]
 const PIER: Rgb = [0.6, 0.6, 0.58]
 const ANCHOR: Rgb = [0.66, 0.64, 0.6]
 
-/** A straight member of square section `w` × `h` from a to b (its cross-section's "up" is world up, or x for a vertical member). */
+/** A straight member of section `w` × `h` from a to b: the shared `strut` (render/models.ts). */
 export function beam(out: MeshBuilder, a: V3, b: V3, w: number, h: number, c: Rgb): void {
-  const d: V3 = [b[0] - a[0], b[1] - a[1], b[2] - a[2]]
-  const L = Math.hypot(d[0], d[1], d[2])
-  if (L < 1e-4) return
-  const t: V3 = [d[0] / L, d[1] / L, d[2] / L]
-  // a side vector perpendicular to the member and horizontal, unless the member is vertical
-  let s: V3 = Math.abs(t[1]) > 0.98 ? [1, 0, 0] : [t[2], 0, -t[0]]
-  const sl = Math.hypot(s[0], s[1], s[2])
-  s = [s[0] / sl, s[1] / sl, s[2] / sl]
-  const u: V3 = [t[1] * s[2] - t[2] * s[1], t[2] * s[0] - t[0] * s[2], t[0] * s[1] - t[1] * s[0]]
-  const P = (p: V3, i: number, j: number): V3 => [p[0] + s[0] * i * w / 2 + u[0] * j * h / 2, p[1] + s[1] * i * w / 2 + u[1] * j * h / 2, p[2] + s[2] * i * w / 2 + u[2] * j * h / 2]
-  const faces: [number, number][][] = [[[-1, -1], [1, -1]], [[1, -1], [1, 1]], [[1, 1], [-1, 1]], [[-1, 1], [-1, -1]]]
-  for (const [[i0, j0], [i1, j1]] of faces) {
-    const n: V3 = [s[0] * (i0 + i1) / 2 + u[0] * (j0 + j1) / 2, s[1] * (i0 + i1) / 2 + u[1] * (j0 + j1) / 2, s[2] * (i0 + i1) / 2 + u[2] * (j0 + j1) / 2]
-    out.quad([P(a, i0, j0), P(a, i1, j1), P(b, i1, j1), P(b, i0, j0)], n, [[0, 0], [1, 0], [1, 1], [0, 1]], c, F)
-  }
-  // the ends, for members seen end-on
-  out.quad([P(a, -1, -1), P(a, -1, 1), P(a, 1, 1), P(a, 1, -1)], [-t[0], -t[1], -t[2]], [[0, 0], [1, 0], [1, 1], [0, 1]], c, F)
-  out.quad([P(b, -1, -1), P(b, 1, -1), P(b, 1, 1), P(b, -1, 1)], t, [[0, 0], [1, 0], [1, 1], [0, 1]], c, F)
+  strut(out, a, b, w, h, c, F)
 }
 
 const MAIN = 1280

@@ -16,6 +16,7 @@ import { MeshBuilder } from './buildings.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
 import { box as boxModel, bus, car, personArm, personBody, personHair, personHead, personLeg } from './models.ts'
 import { DEFAULT_STOCK, type RegionStock, type TrainKind } from './rolling-stock.ts'
+import type { Rgb } from './models.ts'
 import { DAYLIGHT } from './facade-material.ts'
 import { blobMaterial, blobQuad, shadowOffset } from './shadows.ts'
 import type { Vehicle } from '../sim/traffic.ts'
@@ -108,8 +109,8 @@ const build = (fn: (out: MeshBuilder) => void): MeshBuilder => {
 export class Life {
   private readonly cars: Pool
   private readonly buses: Pool
-  /** the trains' cars, by kind: middle, head and tail pools */
-  private readonly stockPools: { kind: TrainKind; mid: Pool; head: Pool | null; tail: Pool | null }[] = []
+  /** the trains' cars, by kind and variant: middle, head and tail pools */
+  private readonly stockPools: { kind: TrainKind; variants: { mid: Pool; head: Pool | null; tail: Pool | null; liveries?: Rgb[]; pitch: number; shadow: [number, number, number] }[] }[] = []
   private readonly stock: RegionStock
   private readonly bodies: Pool
   private readonly legs: Pool
@@ -121,7 +122,7 @@ export class Life {
   private readonly blobs: Pool
   private readonly rails: { points: { x: number; z: number }[]; length: number; kind: 0 | 1 | 2 | 3 | 4; heights?: number[]; stops: number[] }[] = []
   /** a train: where its head is along the rail, which way, its running speed and speed now, its dwell */
-  private readonly trains: { rail: number; s: number; dir: 1 | -1; speed: number; v: number; wait: number; last: number }[] = []
+  private readonly trains: { rail: number; s: number; dir: 1 | -1; speed: number; v: number; wait: number; last: number; variant: number }[] = []
   /** the stations trains stop at (the métro viaduct's), in local metres */
   private readonly stations: { x: number; z: number }[]
   private readonly m = Matrix.Identity()
@@ -136,11 +137,17 @@ export class Life {
     for (const [i, kind] of [stock.rail, stock.metro, stock.tram, stock.cable ?? null, stock.light ?? null].entries()) {
       if (!kind) { this.stockPools.push(null as never); continue }
       const name = ['carriages', 'metro', 'trams', 'cablecars', 'lightrail'][i]
+      const models = [{ mid: kind.mid, head: kind.head, tail: kind.tail, liveries: kind.liveries, pitch: kind.pitch, shadow: kind.shadow }, ...(kind.variants ?? [])]
       this.stockPools.push({
         kind,
-        mid: new Pool(scene, name, build(kind.mid), kind.capacity),
-        head: kind.head ? new Pool(scene, `${name}:head`, build(kind.head), Math.ceil(kind.capacity / 2)) : null,
-        tail: kind.tail ? new Pool(scene, `${name}:tail`, build(kind.tail), Math.ceil(kind.capacity / 2)) : null,
+        variants: models.map((v, j) => ({
+          mid: new Pool(scene, `${name}:${j}`, build(v.mid), kind.capacity),
+          head: v.head ? new Pool(scene, `${name}:${j}:head`, build(v.head), Math.ceil(kind.capacity / 2)) : null,
+          tail: v.tail ? new Pool(scene, `${name}:${j}:tail`, build(v.tail), Math.ceil(kind.capacity / 2)) : null,
+          liveries: v.liveries ?? kind.liveries,
+          pitch: v.pitch ?? kind.pitch,
+          shadow: v.shadow ?? kind.shadow,
+        })),
       })
     }
     this.bodies = new Pool(scene, 'people', build(personBody), budget.people)
@@ -212,7 +219,11 @@ export class Life {
       if (i < from) return
       const k = this.stockPools[r.kind].kind
       const speed = r.kind === 0 ? k.speed * (0.8 + (i % 3) * 0.2) : k.speed
-      this.trains.push({ rail: i, s: (i * 137) % r.length, dir: i % 2 ? 1 : -1, speed, v: speed, wait: 0, last: -1 })
+      const kp = this.stockPools[r.kind]
+      const n = kp.variants.length
+      const chosen = k.variantFor?.(r.points)
+      const variant = chosen !== null && chosen !== undefined ? Math.max(0, Math.min(n - 1, chosen)) : i % n
+      this.trains.push({ rail: i, s: (i * 137) % r.length, dir: i % 2 ? 1 : -1, speed, v: speed, wait: 0, last: -1, variant })
     })
   }
 
@@ -240,7 +251,7 @@ export class Life {
 
   private pools(): Pool[] {
     const out = [this.cars, this.buses, this.bodies, this.legs, this.arms, this.heads, this.hairs, this.bikes, this.blobs]
-    for (const k of this.stockPools) if (k) out.push(k.mid, ...(k.head ? [k.head] : []), ...(k.tail ? [k.tail] : []))
+    for (const k of this.stockPools) if (k) for (const v of k.variants) out.push(v.mid, ...(v.head ? [v.head] : []), ...(v.tail ? [v.tail] : []))
     return out
   }
 
@@ -327,7 +338,8 @@ export class Life {
       const rail = this.rails[t.rail]
       const kp = this.stockPools[rail.kind]
       const k = kp.kind
-      const trainLen = (k.cars - 1) * k.pitch
+      const vp = kp.variants[t.variant]
+      const trainLen = (k.cars - 1) * vp.pitch
       if (t.wait > 0) {
         t.wait -= dt
       } else {
@@ -353,7 +365,7 @@ export class Life {
       // near where is being looked at: the rider, or a frozen view's focus
       if (Math.hypot(head.x - focus.x, head.z - focus.z) > 420) continue
       for (let c = 0; c < k.cars; c++) {
-        const s = t.s - t.dir * c * k.pitch
+        const s = t.s - t.dir * c * vp.pitch
         if (s < 0 || s > rail.length) continue
         const p = along(rail.points, s)
         // the rail's own direction from a chord that stays on it, then turned to the way of travel — the
@@ -362,13 +374,26 @@ export class Life {
         const a = along(rail.points, s0)
         const b = along(rail.points, s0 + 4)
         const heading = t.dir > 0 ? Math.atan2(b.x - a.x, b.z - a.z) : Math.atan2(a.x - b.x, a.z - b.z)
+        /*
+         * On the grade. A cable car on Hyde Street's 21% has its ends two metres apart in height: set level at its
+         * middle's height it buried its downhill end and hung its uphill end in the air. It takes the ground at its
+         * two ends, and is pitched between them (Babylon's positive pitch drops the nose, so uphill is negative).
+         */
+        const railY = (q: number): number => {
+          const qq = Math.max(0, Math.min(rail.length, q))
+          return rail.heights ? profileAt(rail.points, rail.heights, qq).y : groundAt(along(rail.points, qq))
+        }
+        const half = vp.shadow[0] / 2
+        const yF = railY(s + t.dir * half)
+        const yB = railY(s - t.dir * half)
+        const pitch = -Math.atan2(yF - yB, 2 * half)
         Matrix.ComposeToRef(Vector3.OneReadOnly,
-          Quaternion.RotationYawPitchRoll(heading, 0, 0),
-          new Vector3(p.x, 0.25 + (rail.heights ? profileAt(rail.points, rail.heights, s).y : groundAt(p)), p.z), this.m)
-        const pool = c === 0 && kp.head ? kp.head : c === k.cars - 1 && kp.tail ? kp.tail : kp.mid
-        const liv = k.liveries ? k.liveries[t.rail % k.liveries.length] : k.colour
+          Quaternion.RotationYawPitchRoll(heading, pitch, 0),
+          new Vector3(p.x, 0.25 + (yF + yB) / 2, p.z), this.m)
+        const pool = c === 0 && vp.head ? vp.head : c === k.cars - 1 && vp.tail ? vp.tail : vp.mid
+        const liv = vp.liveries ? vp.liveries[t.rail % vp.liveries.length] : k.colour
         pool.push(this.m, liv[0], liv[1], liv[2])
-        blob(p, heading, k.shadow[0], k.shadow[1], k.shadow[2])
+        blob(p, heading, vp.shadow[0], vp.shadow[1], vp.shadow[2])
       }
     }
 

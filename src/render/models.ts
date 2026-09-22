@@ -44,6 +44,30 @@ export function box(out: MeshBuilder, cx: number, cy: number, cz: number,
   }
 }
 
+/**
+ * A straight member of rectangular section from a to b: `w` across it horizontally, `h` in the vertical plane through
+ * it (for a vertical member, `w` along x). Beams, poles, cables, truss diagonals.
+ */
+export function strut(out: MeshBuilder, a: [number, number, number], b: [number, number, number], w: number, h: number, colour: Rgb, tag = FIXED): void {
+  const d = [b[0] - a[0], b[1] - a[1], b[2] - a[2]]
+  const L = Math.hypot(d[0], d[1], d[2])
+  if (L < 1e-4) return
+  const t = [d[0] / L, d[1] / L, d[2] / L]
+  let sv = Math.abs(t[1]) > 0.98 ? [1, 0, 0] : [t[2], 0, -t[0]]
+  const sl = Math.hypot(sv[0], sv[1], sv[2])
+  sv = [sv[0] / sl, sv[1] / sl, sv[2] / sl]
+  const u = [t[1] * sv[2] - t[2] * sv[1], t[2] * sv[0] - t[0] * sv[2], t[0] * sv[1] - t[1] * sv[0]]
+  const P = (p: [number, number, number], i: number, j: number): [number, number, number] =>
+    [p[0] + sv[0] * i * w / 2 + u[0] * j * h / 2, p[1] + sv[1] * i * w / 2 + u[1] * j * h / 2, p[2] + sv[2] * i * w / 2 + u[2] * j * h / 2]
+  const faces: [number, number, number, number][] = [[-1, -1, 1, -1], [1, -1, 1, 1], [1, 1, -1, 1], [-1, 1, -1, -1]]
+  for (const [i0, j0, i1, j1] of faces) {
+    const n: [number, number, number] = [sv[0] * (i0 + i1) / 2 + u[0] * (j0 + j1) / 2, sv[1] * (i0 + i1) / 2 + u[1] * (j0 + j1) / 2, sv[2] * (i0 + i1) / 2 + u[2] * (j0 + j1) / 2]
+    out.quad([P(a, i0, j0), P(a, i1, j1), P(b, i1, j1), P(b, i0, j0)], n, [[0, 0], [1, 0], [1, 1], [0, 1]], colour, tag)
+  }
+  out.quad([P(a, -1, -1), P(a, -1, 1), P(a, 1, 1), P(a, 1, -1)], [-t[0], -t[1], -t[2]], [[0, 0], [1, 0], [1, 1], [0, 1]], colour, tag)
+  out.quad([P(b, -1, -1), P(b, 1, -1), P(b, 1, 1), P(b, -1, 1)], [t[0], t[1], t[2]], [[0, 0], [1, 0], [1, 1], [0, 1]], colour, tag)
+}
+
 /** A box with its top face inset — a car roof, a bus front, anything that should not look like a brick. */
 export function wedge(out: MeshBuilder, cx: number, cy: number, cz: number,
                       hx: number, hy: number, hz: number, inset: number, colour: Rgb, tag = BODY): void {
