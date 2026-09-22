@@ -569,5 +569,14 @@
       "way/227662005"
     ],
     "note": "The drum, the gilded dome, lantern and spire, fitted to OSM's dome part (way 227662013); OSM's church below 34 m stays as mapped."
+  },
+  {
+    "name": "Musée d'Orsay",
+    "procedural": "museeOrsay",
+    "osm": [
+      "way/63178753"
+    ],
+    "front": 20,
+    "note": "The Gare d'Orsay: river front with its great arched windows, the clock pavilions at each end, the glass vault; fitted to OSM's outline, front to the Seine."
   }
 ]
