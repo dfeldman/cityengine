@@ -1,1 +1,23 @@
-[]
+[
+  {"osm": ["way/550652205"], "name": "Montgomery Street Station", "restyle": "chicago", "levels": 2, "height": 6, "note": "Small Muni/BART station entrance structure, no distinct architecture."},
+  {"osm": ["way/35266543"], "name": "San Francisco Fire Station 13", "restyle": "brick", "levels": 2, "height": 10, "note": "Classic red-brick firehouse."},
+  {"osm": ["way/260155574"], "name": "Larkin Street Youth Services", "restyle": "stucco", "levels": 3, "height": 12, "note": "Ordinary Tenderloin social-services building, plain stucco block."},
+  {"osm": ["way/114304294"], "name": "Boys & Girls Club", "restyle": "stucco", "levels": 3, "height": 10, "note": "Ordinary community-services building, stucco block."},
+  {"osm": ["way/260369760"], "name": "The Riley Center", "restyle": "stucco", "levels": 3, "height": 10, "note": "Ordinary social-services building, stucco block."},
+  {"osm": ["way/173886707"], "name": "American Bookbinders Museum", "restyle": "brick", "levels": 2, "height": 9, "note": "SoMa warehouse converted to a small museum, plain brick block."},
+  {"osm": ["way/172111621"], "name": "City College of San Francisco Alemany Campus", "restyle": "stucco", "levels": 4, "height": 15, "note": "Ordinary mid-century campus building, stucco block."},
+  {"osm": ["way/256060074"], "name": "Community Youth Center", "restyle": "stucco", "levels": 3, "height": 10, "note": "Ordinary community-services building, stucco block."},
+  {"osm": ["way/256765941"], "name": "New Liberation Presbyterian Church", "restyle": "stucco", "levels": 3, "height": 10, "note": "Ordinary neighbourhood church, plain stucco block."},
+  {"osm": ["way/259078177"], "name": "Golden Gate Valley Branch Library", "procedural": "goldenGateValleyLibrary", "front": "street", "height": 9, "note": "1918 Ernest Coxhead Carnegie library: cream Classical Revival, red tile hip roof, entrance colonnade."},
+  {"osm": ["way/161502029"], "name": "San Francisco Fire Station 8", "restyle": "brick", "levels": 2, "height": 10, "note": "Classic red-brick firehouse."},
+  {"osm": ["way/256993595"], "name": "Haas-Lilienthal House", "procedural": "haasLilienthalHouse", "front": "street", "height": 12, "note": "1886 Queen Anne Victorian, San Francisco Heritage's house museum: lavender-grey wood siding, round corner turret."},
+  {"osm": ["way/263349499"], "name": "First Apostolic Faith Church", "restyle": "stucco", "levels": 3, "height": 10, "note": "Ordinary storefront church, plain stucco block."},
+  {"osm": ["way/579664204"], "name": "1051 3rd Street", "procedural": "thirdStreetSubstation", "front": "street", "height": 7, "note": "Small Muni/rail substation, roof=pyramidal in OSM: brick box under a pyramid crown."},
+  {"osm": ["way/288645261"], "name": "83m tower", "procedural": "unnamedEightyThreeMeterTower", "front": "street", "height": 83, "note": "No name or type on record; recipe midcentury-slab used generically by height."},
+  {"osm": ["way/262586259"], "name": "Church of Christ", "restyle": "stucco", "levels": 4, "height": 16, "note": "Ordinary neighbourhood church, plain stucco block."},
+  {"osm": ["way/32839432"], "name": "Fontana East", "procedural": "fontanaEast", "front": "street", "height": 55, "note": "1963-64 twin white concrete slab at Aquatic Park; its bulk led to SF's 40-ft waterfront height limit."},
+  {"osm": ["way/1351029672"], "name": "Twelve Hundred California", "procedural": "twelveHundredCalifornia", "front": "street", "height": 88, "note": "2022 Nob Hill condo tower, blue-green glass curtain wall, flat top."},
+  {"osm": ["way/286098244"], "name": "Historic Fire Station #30", "restyle": "brick", "levels": 2, "height": 9, "note": "Classic red-brick firehouse."},
+  {"osm": ["way/256749839"], "name": "Nob Hill Community Apartments", "procedural": "nobHillCommunityApartments", "front": "street", "height": 74, "note": "1970s stucco residential tower, punched windows, flat top."},
+  {"osm": ["way/112774488"], "name": "Blu Condos", "procedural": "bluCondos", "front": "street", "height": 82, "note": "2000s blue-green curtain-wall condo tower, flat top."}
+]
