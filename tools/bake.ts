@@ -342,6 +342,11 @@ async function bake(spec: CitySpec): Promise<void> {
    */
   const reg = region(spec.region)
   const classify = classifierFor(spec.region)
+  // and the city's own records, where the region has them: SF's Assessor rolls (tools/sf-parcels.ts)
+  const recordOf = spec.region === 'san-francisco'
+    ? await import('./sf-parcels.ts').then(async (m) => m.parcelIndex(await m.fetchRolls(bboxOf(spec))))
+      .catch((e: unknown) => { console.warn(`  sf-parcels: not fetched (${String(e).slice(0, 120)})`); return null })
+    : null
   const taggedNear: TaggedNeighbour[] = []
   const ringOfWay = (w: OsmWay): { x: number; z: number }[] | null =>
     w.geometry && w.geometry.length >= 4 ? w.geometry.slice(0, -1).map((g) => proj.toLocal(g)) : null
@@ -424,9 +429,9 @@ async function bake(spec: CitySpec): Promise<void> {
     // lofts and towers from height, lot and district where OSM says only building=yes
     const ownerRing = owner ? ringOfWay(owner) ?? ring : ring
     const kind = classify?.(owner
-      ? { tags: owner.tags, ring: ownerRing, height: ownerP!.buildingHeight, levels: ownerP!.buildingLevels ?? tallest.get(owner.id),
+      ? { record: recordOf?.(ownerRing.map((q) => proj.toLatLon(q))) ?? undefined, tags: owner.tags, ring: ownerRing, height: ownerP!.buildingHeight, levels: ownerP!.buildingLevels ?? tallest.get(owner.id),
           lat: w.geometry[0].lat, lon: w.geometry[0].lon, id: owner.id, area: area(ownerRing) }
-      : { tags: w.tags, ring, height: p.buildingHeight, levels: p.buildingLevels, lat: w.geometry[0].lat, lon: w.geometry[0].lon, id: w.id, area: area(ring) }) ?? null
+      : { record: recordOf?.(w.geometry) ?? undefined, tags: w.tags, ring, height: p.buildingHeight, levels: p.buildingLevels, lat: w.geometry[0].lat, lon: w.geometry[0].lon, id: w.id, area: area(ring) }) ?? null
     const styleId = kind ? styleFor(owner?.tags ?? w.tags, () => kind.style) : owner
       ? styleFor(owner.tags, () => chooseStyle({ levels: ownerP!.buildingLevels ?? tallest.get(owner.id),
         height: ownerP!.buildingHeight, material: ownerP!.buildingFacadeMaterial ?? p.buildingFacadeMaterial,

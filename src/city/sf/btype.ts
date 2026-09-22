@@ -13,7 +13,7 @@ import DISTRICTS from './districts.json' with { type: 'json' }
 
 export type Archetype =
   | 'rowhouse' | 'marinaHouse' | 'apartment' | 'chinatown' | 'loft' | 'prewarOffice' | 'tower' | 'modern'
-  | 'retailBox' | 'civic' | 'church' | 'hotel' | 'pier'
+  | 'retailBox' | 'civic' | 'church' | 'hotel' | 'pier' | 'midcentury' | 'contemporary'
 
 export type District = keyof typeof DISTRICTS.districts
 
@@ -46,7 +46,19 @@ export interface Features {
   tags: Record<string, string>
   /** a 0..1 from the building's id, for the choices the data leaves open */
   roll: number
+  /**
+   * The Assessor's record of the parcels inside it (tools/sf-parcels.ts), where there is one: the year built
+   * (1900 is the Assessor's "before the 1906 fire"), the use (SRES single-family, MRES multi-family, COMM, COMO
+   * office, COMR retail, COMH hotel, IND, GOVT…), and the construction type (A steel frame, B reinforced
+   * concrete, C masonry, D wood frame).
+   */
+  record?: { year?: number; stories?: number; units: number; use?: string; construction?: string; parcels: number }
 }
+
+/** The city's building eras, by the year it was built. */
+export type Era = 'victorian' | 'edwardian' | 'interwar' | 'midcentury' | 'modern'
+export const eraOf = (year: number): Era =>
+  year <= 1905 ? 'victorian' : year <= 1924 ? 'edwardian' : year <= 1945 ? 'interwar' : year <= 1979 ? 'midcentury' : 'modern'
 
 const RESIDENTIAL = new Set<District>(['russian', 'nob', 'pacific', 'cowhollow', 'marina', 'western', 'hayes', 'polk',
   'telegraph', 'northbeach', 'japantown', 'fortmason'])
@@ -64,17 +76,40 @@ export function archetypeOf(f: Features): { archetype: Archetype; district: Dist
   if (t.man_made === 'pier' || /^Pier \d+/.test(t.name ?? '')) return a('pier')
   if (/^(civic|government|public|townhall|museum)$/.test(t.building ?? '') || t.amenity === 'townhall') return a('civic')
 
+  const rec = f.record
+  const era = rec?.year ? eraOf(rec.year) : undefined
+  const use = rec?.use ?? ''
+  const wood = rec?.construction === 'D' || rec?.construction === 'WOO'
+  const masonry = rec?.construction === 'C'
+
   // height decides first: nothing over 60 m is anything but a tower, and downtown the line is lower
   if (h >= 60 || (h >= 40 && DOWNTOWN.has(district))) {
-    // the pre-war office: narrow, under 90 m, on the old downtown grid (the Russ, the Shell, the Hunter-Dulin)
-    if ((district === 'fidi' || district === 'unionsquare') && h < 90 && f.area < 1100) return a('prewarOffice')
+    // the pre-war office: the Russ, the Shell, the Hunter-Dulin — by its date where the record has one, else by
+    // being narrow and under 90 m on the old downtown grid
+    if (era ? era === 'victorian' || era === 'edwardian' || era === 'interwar'
+      : (district === 'fidi' || district === 'unionsquare') && h < 90 && f.area < 1100) return a(use === 'COMH' ? 'hotel' : 'prewarOffice')
     return a('tower')
   }
+  if (use === 'COMH' && h >= 20) return a('hotel')
+  if (district === 'chinatown' && h < 26 && (!era || era === 'edwardian' || era === 'victorian' || era === 'interwar')) return a('chinatown')
+
+  // what the record says, where it says it
+  if (era) {
+    const house = use === 'SRES' || (use === 'MRES' && (rec!.units <= 4 || h <= 13))
+    if ((era === 'victorian' || era === 'edwardian') && wood && house && h <= 16) return a('rowhouse')
+    if (era === 'interwar' && house && h <= 13) return a(wood && district !== 'marina' && district !== 'cowhollow' && f.roll < 0.35 ? 'rowhouse' : 'marinaHouse')
+    if (use === 'IND' || ((masonry || use === 'COMM') && f.area > 500 && (era === 'victorian' || era === 'edwardian' || era === 'interwar')
+      && (district === 'soma' || district === 'yerbabuena' || district === 'rincon' || district === 'embarcadero' || district === 'northbeach' || district === 'wharf' || district === 'fidi'))) return a('loft')
+    if (era === 'midcentury' && h >= 12) return a(rec!.construction === 'B' && f.area > 1500 ? 'modern' : 'midcentury')
+    if (era === 'modern' && h >= 10) return a(f.area > 3000 && h >= 20 && DOWNTOWN.has(district) ? 'modern' : 'contemporary')
+    if ((use === 'MRES' || use === 'COMR') && h > 13 && era !== 'midcentury') return a(DOWNTOWN.has(district) && use !== 'MRES' ? 'prewarOffice' : 'apartment')
+    if (use === 'COMO' && h >= 15) return a(era === 'midcentury' || era === 'modern' ? 'contemporary' : 'prewarOffice')
+  }
+
   // the 1960s–80s superblocks: Golden Gateway and Embarcadero Center, the Western Addition's redevelopment
   if (f.area > 3000 && h >= 20 && (district === 'embarcadero' || district === 'fidi' || district === 'western' || district === 'japantown')) return a('modern')
   if (district === 'civic' && f.area > 2000 && h >= 15) return a('civic')
   if (t.tourism === 'hotel' && h >= 20) return a('hotel')
-  if (district === 'chinatown' && h < 26) return a('chinatown')
   // the big low box: a supermarket, a garage, a showroom
   if (h <= 8 && f.area > 1500) return a('retailBox')
   // SoMa and the old waterfront: brick warehouses and lofts
@@ -107,6 +142,8 @@ export const STYLE_OF: Record<Archetype, StyleId> = {
   church: 'classical',
   hotel: 'classical',
   pier: 'classical',
+  midcentury: 'bauhaus',
+  contemporary: 'bauhaus',
 }
 
 /** The smallest enclosing rectangle's sides, for frontage and depth (a ring in metres). */
@@ -133,10 +170,10 @@ export function lotSides(ring: { x: number; z: number }[]): { frontage: number; 
 }
 
 /** The bake's entry (src/city/building-types.ts): an archetype and its style, or null where a tagged material decides. */
-export function classifySF(b: { tags: Record<string, string>; ring: { x: number; z: number }[]; height?: number; levels?: number; lat: number; lon: number; id: number; area: number }): { archetype: Archetype; style: StyleId } | null {
+export function classifySF(b: { tags: Record<string, string>; ring: { x: number; z: number }[]; height?: number; levels?: number; lat: number; lon: number; id: number; area: number; record?: Features['record'] }): { archetype: Archetype; style: StyleId } | null {
   if (b.tags['building:material']) return null
   const { frontage, depth } = lotSides(b.ring)
   const roll = ((Math.imul(b.id ^ 0x2c1b3c6d, 0x297a2d39) >>> 0) % 1000) / 1000
-  const { archetype } = archetypeOf({ lat: b.lat, lon: b.lon, height: b.height, levels: b.levels, area: b.area, frontage, depth, tags: b.tags, roll })
+  const { archetype } = archetypeOf({ lat: b.lat, lon: b.lon, height: b.height, levels: b.levels, area: b.area, frontage, depth, tags: b.tags, roll, record: b.record })
   return { archetype, style: STYLE_OF[archetype] }
 }

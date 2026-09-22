@@ -16,6 +16,8 @@ export interface BuildingFacts {
   lon: number
   id: number
   area: number
+  /** the region's own records of the building, where it has them (SF's Assessor rolls: tools/sf-parcels.ts) */
+  record?: { year?: number; stories?: number; units: number; use?: string; construction?: string; parcels: number }
 }
 export type Classifier = (b: BuildingFacts) => { archetype: string; style: StyleId } | null
 

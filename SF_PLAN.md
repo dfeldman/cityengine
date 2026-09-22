@@ -210,6 +210,21 @@ These make the world alive, as the Seine's boats did:
 - **The Golden Gate Bridge, the Bay Bridge and Sutro Tower:** good generators, made from reference photographs
   (§4).
 - **Construction dates** from DataSF, to pick style by era (§2).
+- **Salesforce Park and its gondola** (user: "it would be AMAZING if we could go up to the salesforce park… And
+  the gondola!!!!"). The rooftop park on the Transit Center is about 21 m up and 450 m long. The ride graph already
+  carries raised edges (bridges, the métro viaducts), so its paths can be ride edges at roof height. The way up is
+  its ramps and stairs, and the gondola from Mission Street: a small funicular car, animated, which the rider can
+  take as a turn — "you should be able to ride the gondola!"
+- **Ride the cable cars up the steep hills** (user: "maybe even ride the streetcars up steep hills"): at a cable-car
+  stop the rider can hop on, stand on the running board and be carried up Nob Hill or Russian Hill. The session
+  keeps its clock but the effort is honestly zero, and the rider steps off at the top.
+- **The big parks are modelled by hand** (user: "the big parks should be carefully, specifically modeled since they
+  are designed as gardens. the map data won't be sufficient"). Each is laid out as its designer laid it out, from
+  plans and photographs: the lawns and their edges, the paths, the planting beds, the specimen trees, the
+  fountains and the buildings. That means Golden Gate Park (the Conservatory of Flowers, the Japanese Tea Garden,
+  the Music Concourse, the lakes), the Presidio's Main Post, Alamo Square, Lafayette Park, Alta Plaza, Washington
+  Square, Union Square, Yerba Buena Gardens and Salesforce Park. A park gets a hand-made layout file, as the
+  Paris landmarks get a manifest entry.
 - **Public sculptural art** (user: "sf has a lot of public sculptural art — these should be attempted if possible.
   not really as many statues like paris though"). OSM's `tourism=artwork` gives the positions; the abstract
   pieces suit procedural models: Cupid's Span, the Vaillancourt Fountain, Sea Change, Language of the Birds,
@@ -217,6 +232,9 @@ These make the world alive, as the Seine's boats did:
 
 ## 11. Progress and decisions (kept current — read this first on a new session)
 
+- 2026-09-22: the Assessor rolls are in (tools/sf-parcels.ts, 63 270 parcels in the box): year built,
+  use, units, stories and construction type join each building by the parcels inside it, and the classifier
+  decides by era and use first (src/city/sf/btype.ts; 19 tests). 1900 is the Assessor's "pre-1906".
 - 2026-09-22: palms landed (render/palms.ts + tools/palmgen/paint.py; ?palms=1 and tools/palm-shots.ts). There
   are Canary Island date palms and Mexican fan palms, textured frond cards, three levels of detail. SF's flora is
   render/sf/flora.ts: palms by district, 85% of plantings on the Embarcadero.

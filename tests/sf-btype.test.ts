@@ -26,4 +26,17 @@ describe('San Francisco building types from geometry and place (SF_PLAN.md §2)'
     ['Grace Cathedral', f(37.7919, -122.4133, { height: 40, area: 3000, tags: { building: 'cathedral', amenity: 'place_of_worship' } }), 'church'],
   ]
   for (const [name, feat, want] of cases) it(name, () => expect(archetypeOf(feat).archetype).toBe(want))
+
+  // and with the Assessor's record (tools/sf-parcels.ts), which decides where the geometry could only guess
+  const rec = (year: number, use: string, construction: string, units = 1) => ({ year, use, construction, units, parcels: 1 })
+  const withRecords: [string, Features, string][] = [
+    ['a pre-1906 wood house, wide lot, Russian Hill', f(37.7990, -122.4200, { height: 11, frontage: 14, area: 380, record: rec(1900, 'SRES', 'D') }), 'rowhouse'],
+    ['a 1932 Marina house', f(37.8025, -122.4400, { height: 9, frontage: 9, record: rec(1932, 'SRES', 'D') }), 'marinaHouse'],
+    ['a 1918 masonry warehouse in SoMa', f(37.7800, -122.4000, { height: 16, area: 1500, frontage: 25, depth: 60, record: rec(1918, 'IND', 'C') }), 'loft'],
+    ['a 1965 concrete slab block, Western Addition', f(37.7820, -122.4300, { height: 30, area: 3200, frontage: 40, depth: 80, record: rec(1965, 'MRES', 'B', 120) }), 'modern'],
+    ['a 2005 SoMa condo block', f(37.7780, -122.4020, { height: 30, area: 1800, frontage: 30, depth: 60, record: rec(2005, 'MRES', 'A', 80) }), 'contemporary'],
+    ['a 1926 office tower downtown', f(37.7910, -122.4010, { height: 80, area: 1600, frontage: 35, depth: 45, record: rec(1926, 'COMO', 'A') }), 'prewarOffice'],
+    ['a 1928 hotel tower', f(37.7880, -122.4090, { height: 75, area: 2000, frontage: 40, depth: 50, record: rec(1928, 'COMH', 'A') }), 'hotel'],
+  ]
+  for (const [name, feat, want] of withRecords) it(name, () => expect(archetypeOf(feat).archetype).toBe(want))
 })
