@@ -314,6 +314,29 @@ These make the world alive, as the Seine's boats did:
   than one building.
 - **The big green advertising signs** (user: "the big green advertising signs are very distinctive and very SF").
   To check on Street View: probably the dark-green painted steel frames of SF's billboards and wall boards.
+- **The next districts, every building decided** (user, 2026-09-22: "basically all of downtown/fidi, the waterfront,
+  and chinatown needs this detailed treatment. not every building needs a unique generator, but every one needs a
+  decision on whether to use one, and which generator if not"; "basically every single waterfront building is
+  distinctive, at least in the downtown area"; "we should try to get every civic building: theater, arena,
+  community center, museum"). After Market Street and Union Square (docs/sf-batches/), the next batches are:
+  - the Financial District, block by block;
+  - the waterfront from Rincon Park to Aquatic Park. Every building there is its own, and the **piers**
+    (user: "some are copies of each other") want a shared bulkhead generator with per-pier variants, like the
+    arcaded Beaux-Arts bulkheads of Piers 1–5 and 15–17 with their numbers. Also the Ferry Building's
+    neighbours, Pier 39, Hyde Street Pier, and the **Maritime Museum's blue buildings** (user) at Aquatic Park;
+  - Chinatown;
+  - every civic building in the box, from sf-targets' `civic` list: theatres, museums, community centres,
+    libraries, churches, and the arena.
+- **Giant signs visible from the street** (user: "The Ghirardelli sign of course. Any other giant signs visible
+  from street level"). Ghirardelli and the Wharf crab are done (sf/wharf.ts). Still to do: the Warfield, Golden
+  Gate and Orpheum marquees and blades (market-west), Macy's, the Hills Bros. Coffee sign, the pier numbers on
+  the bulkheads, City Lights and the North Beach neons (Condor, Vesuvio), the Chinatown blades, the Hotel
+  Whitcomb, the Sears Fine Food sign.
+- **Clock towers** (user: "embarcadero clocktower. any other clocktowers"). The Ferry Building's tower is done.
+  Still to do: the Chronicle (de Young) Building's clock tower at Kearny & Market (market-mid), Ghirardelli
+  Square's clock tower, the Clock Tower lofts at 2nd & Bryant, the Humboldt Bank's dome, the Southern Pacific
+  (One Market) clock, and the street clocks on posts (Lotta's, the Phelan's, Shreve's on Post).
+- **Statues** go in MODELS_NEEDED.md "San Francisco", for the user to make: the Yoda Fountain first.
 - **Public sculptural art** (user: "sf has a lot of public sculptural art — these should be attempted if possible.
   not really as many statues like paris though"). OSM's `tourism=artwork` gives the positions; the abstract
   pieces suit procedural models: Cupid's Span, the Vaillancourt Fountain, Sea Change, Language of the Birds,

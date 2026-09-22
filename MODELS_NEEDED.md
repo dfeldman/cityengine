@@ -34,3 +34,30 @@ Freestanding, at eye level or very prominent, on the main riding routes first:
 
 Not worth a model (procedural is enough, or too flat to gain): the Obelisk, the Colonne Vendôme's frieze, the
 Buren columns, the Innocents' reliefs, the Flamme de la Liberté.
+
+## San Francisco (SF_PLAN.md §10; user, 2026-09-22: "remember to produce a file of statues so I can create GLBs")
+
+SF has fewer statues than Paris, and the ones it has matter: they are what a place is remembered by. Positions
+are approximate (check on the map). Sizes are the figure's, and the plinth is procedural unless it says so.
+Each will go in `public/landmarks/sf-statues.json` the way Paris's do.
+
+| Priority | Where | What | Size | Notes |
+|---|---|---|---|---|
+| 1 | Letterman Digital Arts Center, Presidio (37.7987, −122.4493) | **the Yoda Fountain** (user: "amazing must-have") | Yoda ~1 m on a ~1.5 m fountain | bronze Yoda standing on a rock in a small basin, water from his feet; at the box's west edge |
+| 1 | Market & Battery, Mechanics Monument plaza (37.7910, −122.3990) | the Mechanics Monument (Douglas Tilden, 1901) | ~4 m group on a ~3 m plinth | five nude men straining at a huge punch press; on the main Market route |
+| 1 | Union Square (37.7880, −122.4075) | the Victory figure on the Dewey Monument | ~3 m, gilded bronze | on a 26 m granite column (procedural); trident and wreath, arms up |
+| 1 | Portsmouth Square (37.7948, −122.4056) | the Goddess of Democracy (replica, 1994) | ~3 m, bronze | torch held up in both hands; on the square's upper level |
+| 1 | Chinatown, everywhere | a pair of guardian lions (foo dogs), male with ball and female with cub | ~1.2 m each on plinths | ONE model pair placed dozens of times: the Dragon Gate, the banks, the family associations |
+| 2 | Civic Center, Fulton St (37.7797, −122.4163) | the Pioneer Monument (1894) | ~10 m, several groups | a big bronze column group with Eureka on top; between the Library and the Asian Art Museum |
+| 2 | City Hall steps (37.7791, −122.4185) | the seated Abraham Lincoln (Haig Patigian, 1928) | ~2.5 m seated | in front of City Hall on Polk |
+| 2 | St. Mary's Square (37.7918, −122.4054) | Sun Yat-sen (Beniamino Bufano, 1937) | ~4 m | a stainless-steel robe with a red granite head and hands: two-material, stylised |
+| 2 | Washington Square (37.8008, −122.4102) | the Volunteer Firemen memorial (Haig Patigian, 1933) and Benjamin Franklin (1879) | ~3 m each | the firemen carrying a woman; Franklin on a drinking-fountain plinth |
+| 2 | Pioneer Park, Coit Tower (37.8024, −122.4058) | Christopher Columbus (1957) | ~3.5 m bronze | in front of the tower, facing the bay |
+| 2 | Transamerica Redwood Park (37.7951, −122.4027) | the "Puddle Jumpers" children and the frog fountain | ~1 m figures, several | small bronzes among the redwoods |
+| 2 | Ferry Building plaza (37.7956, −122.3934) | Mahatma Gandhi (1988) | ~2.5 m bronze | walking with his staff |
+| 3 | UN Plaza (37.7806, −122.4138) | Simón Bolívar, equestrian | ~5 m | check its current position |
+| 3 | Chinatown (37.7930, −122.4072) | Confucius | ~3 m bronze | |
+
+**Not models: procedural, and on the plan (SF_PLAN.md §10 public art).** Cupid's Span, the Vaillancourt Fountain,
+Language of the Birds, the Hearts, Lotta's Fountain, the Robert Louis Stevenson memorial (a granite shaft with a
+galleon), the MLK waterfall at Yerba Buena.
