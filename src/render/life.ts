@@ -119,7 +119,7 @@ export class Life {
   /** a stranger's bicycle, frame and wheels, facing +z */
   private readonly bikes: Pool
   private readonly blobs: Pool
-  private readonly rails: { points: { x: number; z: number }[]; length: number; kind: 0 | 1 | 2; heights?: number[]; stops: number[] }[] = []
+  private readonly rails: { points: { x: number; z: number }[]; length: number; kind: 0 | 1 | 2 | 3 | 4; heights?: number[]; stops: number[] }[] = []
   /** a train: where its head is along the rail, which way, its running speed and speed now, its dwell */
   private readonly trains: { rail: number; s: number; dir: 1 | -1; speed: number; v: number; wait: number; last: number }[] = []
   /** the stations trains stop at (the métro viaduct's), in local metres */
@@ -133,9 +133,9 @@ export class Life {
     // the region's own rolling stock (render/rolling-stock.ts; Paris's RER, métro and Citadis, SF's cable cars)
     this.stock = stock
     this.stations = stations
-    for (const [i, kind] of [stock.rail, stock.metro, stock.tram].entries()) {
+    for (const [i, kind] of [stock.rail, stock.metro, stock.tram, stock.cable ?? null, stock.light ?? null].entries()) {
       if (!kind) { this.stockPools.push(null as never); continue }
-      const name = ['carriages', 'metro', 'trams'][i]
+      const name = ['carriages', 'metro', 'trams', 'cablecars', 'lightrail'][i]
       this.stockPools.push({
         kind,
         mid: new Pool(scene, name, build(kind.mid), kind.capacity),
@@ -175,7 +175,10 @@ export class Life {
       // …except where it comes up on a viaduct (the Paris métro's Lines 2, 5 and 6), which is the one place a
       // rider sees a métro train
       if ((r.kind === 'subway' && !r.heights) || this.railIds.has(r.id)) continue
-      const kind: 0 | 1 | 2 = r.kind === 'tram' ? 2 : r.kind === 'subway' ? 1 : 0
+      // (a cable-car or light-rail track takes its own stock where the region has one, else the tram's)
+      const kind: 0 | 1 | 2 | 3 | 4 = r.kind === 'tram'
+        ? (r.cable && this.stockPools[3] ? 3 : r.light && this.stockPools[4] ? 4 : 2)
+        : r.kind === 'subway' ? 1 : 0
       if (!this.stockPools[kind]) continue
       this.railIds.add(r.id)
       const points = unpackPoints(r.points)
@@ -363,7 +366,8 @@ export class Life {
           Quaternion.RotationYawPitchRoll(heading, 0, 0),
           new Vector3(p.x, 0.25 + (rail.heights ? profileAt(rail.points, rail.heights, s).y : groundAt(p)), p.z), this.m)
         const pool = c === 0 && kp.head ? kp.head : c === k.cars - 1 && kp.tail ? kp.tail : kp.mid
-        pool.push(this.m, k.colour[0], k.colour[1], k.colour[2])
+        const liv = k.liveries ? k.liveries[t.rail % k.liveries.length] : k.colour
+        pool.push(this.m, liv[0], liv[1], liv[2])
         blob(p, heading, k.shadow[0], k.shadow[1], k.shadow[2])
       }
     }

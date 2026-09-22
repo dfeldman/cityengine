@@ -179,6 +179,10 @@ export interface PackedRail {
   bridge?: boolean
   layer?: number
   heights?: number[]
+  /** a tram track with no power — San Francisco's cable cars (OSM electrified=no): its own rolling stock */
+  cable?: true
+  /** light rail (a modern tram on its own right of way, Muni Metro's surface lines), not a main-line railway */
+  light?: true
 }
 
 export interface CityPackage {

@@ -18,6 +18,7 @@ import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { MeshBuilder } from './render/buildings.ts'
 import { box } from './render/models.ts'
 import { PROCEDURAL } from './render/landmarks/procedural.ts'
+import { SF_VEHICLES } from './render/sf/trains.ts'
 
 export async function modelShowcase(canvas: HTMLCanvasElement, name: string, size: number): Promise<void> {
   const engine = new Engine(canvas, true, { antialias: true, preserveDrawingBuffer: true }, true)
@@ -29,14 +30,23 @@ export async function modelShowcase(canvas: HTMLCanvasElement, name: string, siz
   const sun = new DirectionalLight('sun', new Vector3(-0.45, -0.75, 0.5), scene)
   sun.intensity = 1.3
   sun.diffuse = new Color3(1, 0.96, 0.9)
-  const build = PROCEDURAL[name]
+  // a landmark builder, or a vehicle (the rolling stock's models, which take no fit)
+  const vehicle = (SF_VEHICLES as Record<string, ((o: MeshBuilder) => void) | undefined>)[name]
+  const build = PROCEDURAL[name] ?? (vehicle ? (o: MeshBuilder) => vehicle(o) : undefined)
   const mb = new MeshBuilder()
   if (build) build(mb, { hx: size / 2, hz: size / 2, height: size })
   const m = new Mesh(name, scene)
   mb.toVertexData().applyToMesh(m)
   // vertex colours, the tag in alpha ignored
+  // (a BODY-tagged panel — alpha 1 — takes a copy's livery in the game; here a maroon stands in for it)
   const cols = m.getVerticesData('color')
-  if (cols) { for (let i = 3; i < cols.length; i += 4) cols[i] = 1; m.setVerticesData('color', cols) }
+  if (cols) {
+    for (let i = 0; i < cols.length; i += 4) {
+      if (vehicle && cols[i + 3] > 0.9) { cols[i] *= 0.52; cols[i + 1] *= 0.14; cols[i + 2] *= 0.14 }
+      cols[i + 3] = 1
+    }
+    m.setVerticesData('color', cols)
+  }
   const mat = new StandardMaterial('model', scene)
   mat.specularColor = new Color3(0.08, 0.08, 0.08)
   m.material = mat

@@ -606,7 +606,9 @@ async function bake(spec: CitySpec): Promise<void> {
     const layer = parseInt(w.tags.layer ?? '', 10)
     rails.push({
       id: w.id, points: packPoints(pts),
-      kind: r === 'tram' ? 'tram' : r === 'subway' ? 'subway' : 'rail',
+      kind: r === 'tram' || r === 'light_rail' ? 'tram' : r === 'subway' ? 'subway' : 'rail',
+      ...(r === 'tram' && w.tags.electrified === 'no' ? { cable: true as const } : {}),
+      ...(r === 'light_rail' ? { light: true as const } : {}),
       ...(w.tags.bridge && w.tags.bridge !== 'no' ? { bridge: true } : {}),
       ...(Number.isFinite(layer) && layer !== 0 ? { layer } : {}),
     })

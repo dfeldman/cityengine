@@ -19,6 +19,8 @@ export interface TrainKind {
   /** m/s, running */
   speed: number
   colour: Rgb
+  /** liveries to choose from, one per train (the F-line's streetcars wear a dozen cities' colours) */
+  liveries?: Rgb[]
   /** the blob under each car: long, wide, height */
   shadow: [number, number, number]
   /** most cars drawn at once */
@@ -32,6 +34,10 @@ export interface RegionStock {
   /** the métro where it comes up on a viaduct; null where the region has none worth drawing */
   metro: TrainKind | null
   tram: TrainKind
+  /** cable-hauled tram track (PackedRail.cable: San Francisco's cable cars), where it differs from the tram */
+  cable?: TrainKind
+  /** light rail (PackedRail.light: Muni Metro's surface lines), where it differs from the tram */
+  light?: TrainKind
   /** the shortest line trains are put on, metres */
   minLine: number
 }
