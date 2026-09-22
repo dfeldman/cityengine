@@ -2072,20 +2072,6 @@
   ]
  },
  {
-  "name": "École Militaire — from the Champ de Mars",
-  "group": "landmark",
-  "from": [
-   48.853,
-   2.3013,
-   5
-  ],
-  "to": [
-   48.8515,
-   2.304,
-   12
-  ]
- },
- {
   "name": "Assemblée nationale — from the Pont de la Concorde",
   "group": "landmark",
   "from": [
@@ -2166,6 +2152,34 @@
   "to": [
    48.8636002,
    2.3370683,
+   0
+  ]
+ },
+ {
+  "name": "École Militaire — from the Champ de Mars",
+  "group": "landmark",
+  "from": [
+   48.853251,
+   2.30143,
+   16
+  ],
+  "to": [
+   48.85225,
+   2.3028,
+   14
+  ]
+ },
+ {
+  "name": "École Militaire — above",
+  "group": "landmark",
+  "from": [
+   48.852985,
+   2.302811,
+   220
+  ],
+  "to": [
+   48.852584,
+   2.303359,
    0
   ]
  }

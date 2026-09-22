@@ -861,5 +861,41 @@
     "levels": 4,
     "eaves": 17,
     "note": "The arcaded stone galleries round the garden and the Cour d'Honneur (Valois, Montpensier, Beaujolais) in place of generic Haussmann shopfronts."
+  },
+  {
+    "name": "École Militaire",
+    "restyle": "classical",
+    "within": [
+      [
+        48.852028,
+        2.301973
+      ],
+      [
+        48.853514,
+        2.304155
+      ],
+      [
+        48.853046,
+        2.304892
+      ],
+      [
+        48.85156,
+        2.30271
+      ]
+    ],
+    "take": "inside",
+    "note": "Gabriel's building on the Champ de Mars: the main block in the classical stone dress under slate; its square dome is OSM's own part, the portico `ecoleMilitairePortico`."
+  },
+  {
+    "name": "École Militaire — portico",
+    "procedural": "ecoleMilitairePortico",
+    "lat": 48.852678,
+    "lon": 2.303212,
+    "rotateDeg": 134,
+    "size": [
+      36,
+      16
+    ],
+    "note": "The central frontispiece: ten Corinthian columns over two storeys and the pediment, to the Champ de Mars."
   }
 ]
