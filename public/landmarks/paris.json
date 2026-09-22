@@ -967,5 +967,40 @@
     "take": "around",
     "margin": 22,
     "note": "Hardouin-Mansart's uniform facades round the octagonal place: arcaded ground floor, giant pilasters, mansard with dormers."
+  },
+  {
+    "name": "Fontaine des Innocents",
+    "procedural": "fontaineInnocents",
+    "osm": [
+      "way/52469222"
+    ],
+    "lat": 48.8606368,
+    "lon": 2.3480233,
+    "rotateDeg": 0,
+    "note": "Goujon's Renaissance pavilion on its cascading steps, in the square at Les Halles."
+  },
+  {
+    "name": "Fontaine Saint-Michel",
+    "procedural": "fontaineSaintMichel",
+    "lat": 48.85326,
+    "lon": 2.34361,
+    "front": 10,
+    "size": [
+      18,
+      8
+    ],
+    "note": "Davioud's triumphal-arch wall fountain closing the Place Saint-Michel, the archangel over the devil, dragons, red columns."
+  },
+  {
+    "name": "Flamme de la Liberté",
+    "procedural": "flammeLiberte",
+    "osm": [
+      "way/92316094"
+    ],
+    "lat": 48.8641848,
+    "lon": 2.3008761,
+    "rotateDeg": 0,
+    "stone": false,
+    "note": "The gilded flame on its black granite plinth above the Alma tunnel."
   }
 ]

@@ -2420,5 +2420,47 @@
    2.297745,
    6
   ]
+ },
+ {
+  "name": "Fontaine des Innocents — street",
+  "group": "landmark",
+  "from": [
+   48.860299,
+   2.347836,
+   5
+  ],
+  "to": [
+   48.8606368,
+   2.3480233,
+   5
+  ]
+ },
+ {
+  "name": "Fontaine Saint-Michel — street",
+  "group": "landmark",
+  "from": [
+   48.853658,
+   2.343717,
+   3
+  ],
+  "to": [
+   48.85326,
+   2.34361,
+   12
+  ]
+ },
+ {
+  "name": "Flamme de la Liberté — street",
+  "group": "landmark",
+  "from": [
+   48.863999,
+   2.300979,
+   2
+  ],
+  "to": [
+   48.8641848,
+   2.3008761,
+   4
+  ]
  }
 ]
