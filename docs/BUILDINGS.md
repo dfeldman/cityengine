@@ -103,6 +103,20 @@ So: cheap models with recipes for the ordinary tall buildings, a small model for
 strong model only for the bail-out list and for set pieces (a square, a station, a pier). The kit is what makes
 the cheap models good enough — every hour spent moving a loop into `parts.ts` pays for itself in the next batch.
 
+## Scaling out
+
+Expanding the box is cheaper than it looks: the density of notable buildings drops roughly tenfold outside the
+central business district (user, 2026-09-22). Beyond the core, most buildings are ordinary and want a reface
+sweep from a decision table, with a thin scatter of models for the landmarks — churches, theatres, a library, the
+one tower on the hill. So the cost of a district is mostly its sweep, and the register keeps the two apart
+automatically: `tools/sf-batches.ts --tier=A|B` scores every building by height, civic standing and distance
+from the routes people ride.
+
+The box itself has two extents (`tools/cities.ts`): the BOX, which reaches the places worth riding to, and the
+DETAIL box, which is as far as buildings and facades are modelled. San Francisco's box runs out to both bridges
+over 100 km²; its detail box is 38 km² over the city. The bake fetches roads, rails, water and motorway bridges
+over the box, and everything else over the detail box.
+
 ## Doing this for a new city
 
 1. Write the region's styles and palettes (`src/city/regions.json`, `src/city/styles.json`) — that is what the

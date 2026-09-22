@@ -126,6 +126,17 @@ export class Navigator {
     this.exitsOf = exitsOf
   }
 
+  /**
+   * Put the rider somewhere else on the graph, mid-ride: the landmark menu and a click on the map move them in
+   * place rather than reloading the page (BUGS.md #61). The trip's distance is kept — a jump is a change of
+   * scene, not a new session — and whatever turn was asked for is dropped.
+   */
+  placeAt(pos: Position): void {
+    this.pos = { ...pos }
+    this.wantEdge = null
+    this.committed = null
+  }
+
   /** The map edge under the rider — the ride edge's own id on a map graph. */
   mapEdgeId(): number {
     return mapEdgeAt(this.edge, this.pos.s)

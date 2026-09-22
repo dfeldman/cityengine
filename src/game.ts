@@ -958,6 +958,24 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     if (!frozen) { frozen = true; orbit.active = true; debug.frozen(true) }
   }
   // what is drawn at a pixel (tools: finding the mesh behind a visual bug): name, and where it was hit
+  /**
+   * Go somewhere in this city without reloading (BUGS.md #61): the rider is put on the rideable street nearest
+   * the point, the route and the tour are dropped, and the city streams round the new place. Returns false when
+   * there is no rideable street near enough, so the caller can fall back to a reload.
+   */
+  w.__jump = (lat: number, lon: number): boolean => {
+    const where = nearestStart({ lat, lon })
+    if (!where) return false
+    nav.placeAt(where)
+    destination = null
+    tour = null
+    clearRoute()
+    const at = nav.at()
+    city.update(at.x, at.z)
+    trees.update(new Vector3(at.x, 0, at.z))
+    hud.banner('Jumped', `${lat.toFixed(5)}, ${lon.toFixed(5)} · ${placeName(at)}`)
+    return true
+  }
   w.__pick = (x: number, y: number) => {
     const hit = scene.pick(x, y, (m) => m.isEnabled() && m.isVisible, false, camera)
     return hit?.hit ? { mesh: hit.pickedMesh?.name, at: hit.pickedPoint?.asArray().map((v) => Math.round(v * 10) / 10) } : null

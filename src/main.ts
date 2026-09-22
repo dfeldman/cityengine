@@ -143,7 +143,9 @@ if (params.get('model')) {
     without: new Set((params.get('without') ?? '').split(',').filter(Boolean)),
     startEdge: params.get('start') ? Number(params.get('start')) : undefined,
     at: parseLatLon(params.get('at') ?? '') ?? platform?.resumeAt(city) ?? undefined,
-    goTo: (text: string, here?: boolean) => goTo(text, cities, here ? city : undefined),
+    // the city's own in-place jump (game.ts `__jump`), so going to a place inside it does not reload the page
+    goTo: (text: string, here?: boolean) => goTo(text, cities, here ? city : undefined,
+      (ll) => (window as unknown as { __jump?: (lat: number, lon: number) => boolean }).__jump?.(ll.lat, ll.lon) ?? false),
     view: params.get('view') === 'high' ? 'high' : 'ride',
     freeze: params.get('freeze') === '1',
     paths: params.get('paths') === '1',

@@ -3,9 +3,10 @@
  * nearest street to it — in whichever baked city it falls in. Reached by G (asks for the coordinates) or
  * by simply pasting them anywhere on the page.
  *
- * It reloads with `?city=…&at=lat,lon` rather than moving the rider in place: a reload is the one path that
- * already puts everything (crowd, traffic, the minimap, a different city) in order, and the URL it leaves is
- * a link back to the same spot.
+ * Within the city it moves the rider in place (`jump`): a reload threw the whole scene away and took seconds,
+ * which made riding round to look at things miserable (BUGS.md #61). Changing city still reloads with
+ * `?city=…&at=lat,lon`, which is the one path that puts a different city's crowd, traffic and minimap in order,
+ * and the URL is a link back to the same spot either way.
  */
 
 export interface CityRef { id: string; name: string; lat?: number; lon?: number; radius?: number }
@@ -45,11 +46,20 @@ export function cityFor(ll: { lat: number; lon: number }, cities: CityRef[]): Ci
  * Go there, or say why not. Returns the message to show when it cannot. `here` keeps the current city
  * whatever the distance — the landmark menu, whose places are all in or beside it.
  */
-export function goTo(text: string, cities: CityRef[], here?: string): string | null {
+export function goTo(text: string, cities: CityRef[], here?: string, jump?: (ll: { lat: number; lon: number }) => boolean): string | null {
   const ll = parseLatLon(text)
   if (!ll) return `not a "lat, lon": ${text.slice(0, 60)}`
   const city = here ? { id: here, name: here } : cityFor(ll, cities)
   if (!city) return `${ll.lat.toFixed(6)}, ${ll.lon.toFixed(6)} is not in any baked city`
+  // in the city already: move the rider there, leave the page alone, and keep the URL pointing at the new place
+  if (jump && (here ? city.id === here : city.id === new URLSearchParams(location.search).get('city')) && jump(ll)) {
+    const u = new URLSearchParams(location.search)
+    u.set('city', city.id)
+    u.set('at', `${ll.lat.toFixed(6)},${ll.lon.toFixed(6)}`)
+    u.delete('start')
+    history.replaceState(null, '', `?${u}`.replace(/%2C/g, ','))
+    return null
+  }
   const q = new URLSearchParams(location.search)
   q.set('city', city.id)
   q.set('at', `${ll.lat.toFixed(6)},${ll.lon.toFixed(6)}`)
