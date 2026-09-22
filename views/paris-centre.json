@@ -1,0 +1,260 @@
+[
+ {
+  "name": "Arc de Triomphe — air",
+  "group": "place",
+  "from": [48.871983, 2.293401, 110],
+  "to": [48.87378, 2.29504, 0]
+ },
+ {
+  "name": "Arc de Triomphe — street",
+  "group": "place",
+  "from": [48.873151, 2.295381, 2.2],
+  "to": [48.87378, 2.29504, 12]
+ },
+ {
+  "name": "Trocadéro — air",
+  "group": "place",
+  "from": [48.861103, 2.285961, 110],
+  "to": [48.8629, 2.2876, 0]
+ },
+ {
+  "name": "Trocadéro — street",
+  "group": "place",
+  "from": [48.862271, 2.287941, 2.2],
+  "to": [48.8629, 2.2876, 12]
+ },
+ {
+  "name": "Tour Eiffel — air",
+  "group": "place",
+  "from": [48.856573, 2.292841, 110],
+  "to": [48.85837, 2.29448, 0]
+ },
+ {
+  "name": "Tour Eiffel — street",
+  "group": "place",
+  "from": [48.857741, 2.294821, 2.2],
+  "to": [48.85837, 2.29448, 12]
+ },
+ {
+  "name": "Champ de Mars — air",
+  "group": "place",
+  "from": [48.853833, 2.296951, 110],
+  "to": [48.85563, 2.29859, 0]
+ },
+ {
+  "name": "Champ de Mars — street",
+  "group": "place",
+  "from": [48.855001, 2.298931, 2.2],
+  "to": [48.85563, 2.29859, 12]
+ },
+ {
+  "name": "Invalides — air",
+  "group": "place",
+  "from": [48.853223, 2.310941, 110],
+  "to": [48.85502, 2.31258, 0]
+ },
+ {
+  "name": "Invalides — street",
+  "group": "place",
+  "from": [48.854391, 2.312921, 2.2],
+  "to": [48.85502, 2.31258, 12]
+ },
+ {
+  "name": "Grand Palais — air",
+  "group": "place",
+  "from": [48.864303, 2.310841, 110],
+  "to": [48.8661, 2.31248, 0]
+ },
+ {
+  "name": "Grand Palais — street",
+  "group": "place",
+  "from": [48.865471, 2.312821, 2.2],
+  "to": [48.8661, 2.31248, 12]
+ },
+ {
+  "name": "Place de la Concorde — air",
+  "group": "place",
+  "from": [48.863803, 2.319541, 110],
+  "to": [48.8656, 2.32118, 0]
+ },
+ {
+  "name": "Place de la Concorde — street",
+  "group": "place",
+  "from": [48.864971, 2.321521, 2.2],
+  "to": [48.8656, 2.32118, 12]
+ },
+ {
+  "name": "Palais Garnier — air",
+  "group": "place",
+  "from": [48.870173, 2.329961, 110],
+  "to": [48.87197, 2.3316, 0]
+ },
+ {
+  "name": "Palais Garnier — street",
+  "group": "place",
+  "from": [48.871341, 2.331941, 2.2],
+  "to": [48.87197, 2.3316, 12]
+ },
+ {
+  "name": "Place Vendôme — air",
+  "group": "place",
+  "from": [48.865703, 2.327761, 110],
+  "to": [48.8675, 2.3294, 0]
+ },
+ {
+  "name": "Place Vendôme — street",
+  "group": "place",
+  "from": [48.866871, 2.329741, 2.2],
+  "to": [48.8675, 2.3294, 12]
+ },
+ {
+  "name": "Louvre Pyramid — air",
+  "group": "place",
+  "from": [48.859223, 2.334201, 110],
+  "to": [48.86102, 2.33584, 0]
+ },
+ {
+  "name": "Louvre Pyramid — street",
+  "group": "place",
+  "from": [48.860391, 2.336181, 2.2],
+  "to": [48.86102, 2.33584, 12]
+ },
+ {
+  "name": "Musée d'Orsay — air",
+  "group": "place",
+  "from": [48.858203, 2.324921, 110],
+  "to": [48.86, 2.32656, 0]
+ },
+ {
+  "name": "Musée d'Orsay — street",
+  "group": "place",
+  "from": [48.859371, 2.326901, 2.2],
+  "to": [48.86, 2.32656, 12]
+ },
+ {
+  "name": "Pont Neuf — air",
+  "group": "place",
+  "from": [48.855193, 2.339391, 110],
+  "to": [48.85699, 2.34103, 0]
+ },
+ {
+  "name": "Pont Neuf — street",
+  "group": "place",
+  "from": [48.856361, 2.341371, 2.2],
+  "to": [48.85699, 2.34103, 12]
+ },
+ {
+  "name": "Notre-Dame — air",
+  "group": "place",
+  "from": [48.851163, 2.348261, 110],
+  "to": [48.85296, 2.3499, 0]
+ },
+ {
+  "name": "Notre-Dame — street",
+  "group": "place",
+  "from": [48.852331, 2.350241, 2.2],
+  "to": [48.85296, 2.3499, 12]
+ },
+ {
+  "name": "Châtelet — air",
+  "group": "place",
+  "from": [48.855803, 2.345361, 110],
+  "to": [48.8576, 2.347, 0]
+ },
+ {
+  "name": "Châtelet — street",
+  "group": "place",
+  "from": [48.856971, 2.347341, 2.2],
+  "to": [48.8576, 2.347, 12]
+ },
+ {
+  "name": "Place des Victoires — air",
+  "group": "place",
+  "from": [48.863903, 2.339661, 110],
+  "to": [48.8657, 2.3413, 0]
+ },
+ {
+  "name": "Place des Victoires — street",
+  "group": "place",
+  "from": [48.865071, 2.341641, 2.2],
+  "to": [48.8657, 2.3413, 12]
+ },
+ {
+  "name": "Palais-Royal — air",
+  "group": "place",
+  "from": [48.862003, 2.335561, 110],
+  "to": [48.8638, 2.3372, 0]
+ },
+ {
+  "name": "Palais-Royal — street",
+  "group": "place",
+  "from": [48.863171, 2.337541, 2.2],
+  "to": [48.8638, 2.3372, 12]
+ },
+ {
+  "name": "Bir-Hakeim viaduct — air",
+  "group": "place",
+  "from": [48.854003, 2.287261, 110],
+  "to": [48.8558, 2.2889, 0]
+ },
+ {
+  "name": "Bir-Hakeim viaduct — street",
+  "group": "place",
+  "from": [48.855171, 2.289241, 2.2],
+  "to": [48.8558, 2.2889, 12]
+ },
+ {
+  "name": "Place de la Bastille — air",
+  "group": "place",
+  "from": [48.851373, 2.367501, 110],
+  "to": [48.85317, 2.36914, 0]
+ },
+ {
+  "name": "Place de la Bastille — street",
+  "group": "place",
+  "from": [48.852541, 2.369481, 2.2],
+  "to": [48.85317, 2.36914, 12]
+ },
+ {
+  "name": "Saint-Germain-des-Prés — air",
+  "group": "place",
+  "from": [48.852203, 2.331861, 110],
+  "to": [48.854, 2.3335, 0]
+ },
+ {
+  "name": "Saint-Germain-des-Prés — street",
+  "group": "place",
+  "from": [48.853371, 2.333841, 2.2],
+  "to": [48.854, 2.3335, 12]
+ },
+ {
+  "name": "Champs-Élysées — air",
+  "group": "place",
+  "from": [48.868003, 2.305861, 110],
+  "to": [48.8698, 2.3075, 0]
+ },
+ {
+  "name": "Champs-Élysées — street",
+  "group": "place",
+  "from": [48.869171, 2.307841, 2.2],
+  "to": [48.8698, 2.3075, 12]
+ },
+ {
+  "name": "Tour Eiffel — from the Champ de Mars",
+  "group": "landmark",
+  "from": [48.8545, 2.2995, 1.8],
+  "to": [48.85826, 2.2945, 80]
+ },
+ {
+  "name": "Tour Eiffel — from under",
+  "group": "landmark",
+  "from": [48.8579, 2.2952, 1.8],
+  "to": [48.85826, 2.2945, 60]
+ },
+ {
+  "name": "Tour Eiffel — from the Trocadéro",
+  "group": "landmark",
+  "from": [48.8616, 2.289, 12],
+  "to": [48.85826, 2.2945, 120]
+ }
+]

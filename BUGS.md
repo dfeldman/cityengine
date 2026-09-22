@@ -27,6 +27,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 17 | open | A rental bike station lies across the road instead of along it (48.855780, 2.357875) | user, 2026-09-21 |
 | 18 | open | Café tables show no top surface (likely wound facing down) | user, 2026-09-21 |
 | 19 | fixed | The Colonne de Juillet at the Bastille is gone completely | user, 2026-09-21 |
+| 20 | open | Central Paris audit: 22 ride edges pass through buildings; 266 dead ends to triage | audit-ride, 2026-09-21 |
 
 ---
 
@@ -301,3 +302,9 @@ name (for the Hôtel de Ville), and the Colonne's first id is not a building in 
 base parts it replaces — so it was never placed. **Fix:** an entry with a lat/lon waits for the tile its point
 is in; one fitted to a building waits for its first; fitting falls back to any it names.
 **Check:** ✅ the landmark views (`docs/shots/views/paris-marais-B19`) match the full-load set; the Colonne is back.
+
+## 20. Central Paris ride audit
+
+**Seen:** `node --experimental-strip-types tools/audit-ride.ts paris-centre --list`: 22 ride edges through
+buildings, 266 dead ends inside the box. In the Marais the dead ends were nearly all real impasses, cours and
+villas; the through-building ones are passages OSM did not tag (see the Marais fix in PLAN item T).

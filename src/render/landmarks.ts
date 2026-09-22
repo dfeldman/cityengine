@@ -285,7 +285,7 @@ function fitTo(b: Pick<PackedBuilding, 'ring'>, height: number): { fit: Fit; cx:
 }
 
 /** A skyline landmark: its true position, and how much larger than true it is drawn (see skylineBoost). */
-interface SkyItem { mesh: Mesh; x: number; y: number; z: number; boost: number }
+interface SkyItem { name: string; mesh: Mesh; x: number; y: number; z: number; boost: number }
 
 /**
  * Far landmarks are drawn larger than true, growing with distance: 1× inside 1.5 km, 1.8× by 5 km. At its true
@@ -382,7 +382,7 @@ export class Landmarks {
       m.renderingGroupId = 0
       m.isPickable = false
       m.alwaysSelectAsActiveMesh = true
-      this.sky.push({ mesh: m, x: s.x, y: s.baseY ?? 0, z: s.z, boost: skylineBoost(d) })
+      this.sky.push({ name: s.name, mesh: m, x: s.x, y: s.baseY ?? 0, z: s.z, boost: skylineBoost(d) })
     }
   }
 
@@ -511,6 +511,12 @@ export class Landmarks {
   update(eye: Vector3): void {
     const R = 800
     for (const s of this.sky) {
+      // a skyline stand-in gives way to the landmark's own model within the camera's reach (the Eiffel Tower
+      // in central Paris): drawn behind everything, it showed through the lattice
+      const real = this.placed.find((p) => p.name === s.name)
+      const near = real !== undefined && Math.hypot(real.x - eye.x, real.z - eye.z) < 1300
+      s.mesh.setEnabled(!near)
+      if (near) continue
       const dx = s.x - eye.x
       const dy = s.y - eye.y
       const dz = s.z - eye.z

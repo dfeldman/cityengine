@@ -168,6 +168,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    */
   const tileLevel = new Map<string, 'mid' | 'full'>()
   let keepArrived = true
+  /** told of every tile's raw data, mid or full (the landmarks); the raw tiles seen before they subscribe */
+  const anyTile: ((raw: TileData) => void)[] = []
+  const seenRaw: TileData[] = []
+  anyTile.push((raw) => { if (keepArrived) seenRaw.push(raw) })
   const bring = async (k: string, full: boolean): Promise<void> => {
     const have = tileLevel.get(k)
     if (have === 'full' || (have === 'mid' && !full) || !src.has(k)) return
@@ -175,6 +179,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     const raw = await src.load(k)
     if (!raw) return
     const ready = prepare(raw)
+    // the landmarks from every tile, near or far: an icon is seen from a kilometre and more
+    for (const f of anyTile) f(raw)
     if (!full) {
       // what the mid ring's massing needs, and nothing else
       if (tileLevel.get(k) === 'mid') prepared.tiles.set(k, { ...ready, edges: [], areas: [], trees: [], pois: [], furniture: [], landmarks: [], rails: [], plantings: [] })
@@ -229,7 +235,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const landmarks = off.has('landmarks') ? null
     : new Landmarks(scene, pkg, landmarkList, city.terrain, new URL(`landmarks/${pkg.region ?? opts.city}/`, document.baseURI).href)
   // each fitted to its own building as the tile with it arrives — the building as baked, before prepare took it out
-  if (landmarks) onTile((a) => landmarks.addTile(a.raw))
+  if (landmarks) {
+    for (const raw of seenRaw) landmarks.addTile(raw)
+    anyTile.push((raw) => landmarks.addTile(raw))
+  }
   mark('landmarks')
   const rain = opts.weather === 'rain' && !off.has('rain') ? new Rain(scene) : null
   /*
@@ -349,6 +358,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // everyone has subscribed: the tiles need not be kept for replaying any more
   keepArrived = false
   arrived.length = 0
+  seenRaw.length = 0
   mark('minimap')
   minimap.landmarks = (pkg.landmarks ?? []).map((l) => ({ x: l.x, z: l.z, name: l.name, tier: l.tier }))
   const tier1 = (pkg.landmarks ?? []).filter((l) => l.tier === 1)

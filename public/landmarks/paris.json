@@ -444,5 +444,38 @@
     "height": 30,
     "sign": false,
     "note": "On the church (OSM's parts 330517677/330517682 are its massing), 6 m in from the frontage on the Rue Saint-Louis-en-l'Île; facing the street (29°) so the clock hangs out over it. Lifted to the 24 m roofline."
+  },
+  {
+    "name": "Tour Eiffel",
+    "procedural": "eiffelTowerFull",
+    "lat": 48.85826,
+    "lon": 2.2945,
+    "rotateDeg": 45,
+    "height": 330,
+    "stone": false,
+    "note": "At its own point, square to the Champ de Mars (faces NE–SW / NW–SE). Its OSM outline (330 m) and parts are removed by the placeholder below; the small pavilions at its foot stay."
+  },
+  {
+    "name": "Tour Eiffel — OSM outline and parts",
+    "osm": [
+      "way/5013364",
+      "way/308021389",
+      "way/308145239",
+      "way/308145258",
+      "way/308145259",
+      "way/308687744",
+      "way/308687745",
+      "way/308687748",
+      "way/308687752",
+      "way/308687753",
+      "way/308689164",
+      "way/308689165",
+      "way/308689166",
+      "way/308689167",
+      "way/1462597763",
+      "way/1462597764",
+      "way/1462597765"
+    ],
+    "note": "Placeholder: OSM's tower drawn as a 330 m windowed block and its stacked parts."
   }
 ]

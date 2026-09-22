@@ -282,7 +282,21 @@ adds to the city-wide meshes (terraces, fringe, passages, quays, signs). Visual 
   are worked out per tile. Views match the full-load set (only the intentional BUGS #5/#6 changes).
   Not yet: evicting tile DATA far behind the rider (meshes are dropped; data accumulates — fine for 20 km²,
   wants `City.forget` later), and landmark LOD (mid/full).
-- ⏭ **Step 2 next: grow the box** to the full area (§1), chunked Overpass fetches.
+- ✅ **Step 2 (2026-09-21): the box grown.** City `paris-centre` (tools/cities.ts): 6.7 × 3.5 km, lon 2.286–2.378,
+  lat 48.845–48.876, centred on the Palais-Royal. `overpassTiled` fetches big boxes in ~1.2 km chunks (a refused
+  chunk is split in quarters; all-busy waits 30 s), cached per chunk; the bake took 33 min cold (Overpass), 90 s
+  of CPU. 30 000 buildings, 73 000 map edges, 518 km of bike ride graph (6 561 edges), 404 métro entrances,
+  1 539 tiles (44 MB), index 2.1 MB. Landmark manifest and ride overrides are per REGION now
+  (`public/landmarks/paris.json`, `RIDE_OVERRIDES.paris`), shared by the Marais and central Paris.
+  Memory at load (headless): 462 MB JS heap after sharing the terrain occluder's geometry between its three
+  groups and dropping the CPU copies of it and the distant ground (982 MB before — `tools/heap-profile.ts`);
+  first frame 5.4 s. Full tile data within VIEW + 2, massing-only data to MID + 1.
+  Audit (`tools/audit-ride.ts paris-centre`): 266 dead ends, 22 ride edges through buildings — BUGS.md #20.
+- ⏭ Step 3 (ride-graph overrides: Étoile, Concorde, Trocadéro, Opéra, Châtelet, Saint-Michel) and step 4 (icons).
+- ✅ Step 4 started: **Tour Eiffel** (`eiffelTowerFull`): four braced lattice legs on the tower's own profile,
+  the arches, three floors, top and antenna; OSM's 330 m block and its parts removed by a placeholder; the
+  skyline stand-in hides within 1.3 km of the model. `docs/shots/LP-eiffel-trocadero.png`, `LP-eiffel-under.png`.
+  Views for central Paris: `views/paris-centre.json` (20 places, air + street, and the tower's own).
 
 Tools for comparing: `tools/compare-shots.ts <before> <after>` (per-view % changed), `tools/pair.ts` (side by
 side), `tools/measure-load.ts`.
