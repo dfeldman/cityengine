@@ -99,41 +99,43 @@ function tower(out: MeshBuilder, zc: number): void {
 }
 
 function deck(out: MeshBuilder): void {
-  const panel = 10
+  const panel = 20             // seen from across the city: the truss's rhythm, not its every member
   for (let z = -END; z < END; z += panel) {
     const za = z
     const zb = Math.min(END, z + panel)
     const zm = (za + zb) / 2
-    // the two roadways, one over the other
-    box(out, 0, DECK_TOP - 0.3, zm, 10, 0.3, (zb - za) / 2 + 0.02, ROAD, 0)
-    box(out, 0, DECK_TOP - TRUSS + 1.2, zm, 9.5, 0.3, (zb - za) / 2 + 0.02, ROAD, 0)
+    // the two roadways, one over the other, four panels at a time (the deck is level)
+    if (Math.round((za + END) / panel) % 4 === 0) {
+      const zg = Math.min(END, za + 4 * panel)
+      box(out, 0, DECK_TOP - 0.3, (za + zg) / 2, 10, 0.3, (zg - za) / 2 + 0.02, ROAD, 0)
+      box(out, 0, DECK_TOP - TRUSS + 1.2, (za + zg) / 2, 9.5, 0.3, (zg - za) / 2 + 0.02, ROAD, 0)
+      for (const side of [-1, 1]) box(out, side * 10.3, DECK_TOP + 0.6, (za + zg) / 2, 0.08, 0.6, (zg - za) / 2, STEEL, 0)
+    }
     const atTower = TOWERS.some((t) => Math.abs(zm - t) < 11)
     if (atTower) continue
     for (const side of [-1, 1]) {
       const x = side * 10.2
-      beam(out, [x, DECK_TOP, za], [x, DECK_TOP, zb], 0.8, 1, STEEL)
-      beam(out, [x, DECK_TOP - TRUSS, za], [x, DECK_TOP - TRUSS, zb], 0.8, 1, STEEL)
+      beam(out, [x, DECK_TOP, za], [x, DECK_TOP, zb], 0.8, 1, STEEL, false)
+      beam(out, [x, DECK_TOP - TRUSS, za], [x, DECK_TOP - TRUSS, zb], 0.8, 1, STEEL, false)
       const up = Math.round(za / panel) % 2 === 0
-      beam(out, [x, up ? DECK_TOP - TRUSS : DECK_TOP, za], [x, up ? DECK_TOP : DECK_TOP - TRUSS, zb], 0.5, 0.5, STEEL)
-      beam(out, [x, DECK_TOP - TRUSS, za], [x, DECK_TOP, za], 0.4, 0.4, STEEL_DARK)
-      // the upper deck's railing
-      box(out, side * 10.3, DECK_TOP + 0.6, zm, 0.08, 0.6, (zb - za) / 2, STEEL, 0)
+      beam(out, [x, up ? DECK_TOP - TRUSS : DECK_TOP, za], [x, up ? DECK_TOP : DECK_TOP - TRUSS, zb], 0.5, 0.5, STEEL, false)
+      beam(out, [x, DECK_TOP - TRUSS, za], [x, DECK_TOP, za], 0.4, 0.4, STEEL_DARK, false)
     }
   }
 }
 
 function cables(out: MeshBuilder): void {
-  const step = 8
+  const step = 16
   for (const x of [-CABLE_X, CABLE_X]) {
     for (let z = -END; z < END; z += step) {
       const z1 = Math.min(END, z + step)
       if (Math.abs(z) < ANCHOR_HALF && Math.abs(z1) < ANCHOR_HALF) continue      // into the anchorage
-      beam(out, [x, cableY(z), z], [x, cableY(z1), z1], 0.8, 0.8, STEEL)
-      beam(out, [x + Math.sign(x) * 0.9, cableY(z), z], [x + Math.sign(x) * 0.9, cableY(z1), z1], 0.8, 0.8, STEEL)
+      // (the two cables side by side, as one member two cables wide)
+      beam(out, [x + Math.sign(x) * 0.45, cableY(z), z], [x + Math.sign(x) * 0.45, cableY(z1), z1], 1.7, 0.8, STEEL, false)
     }
   }
   // the suspenders
-  for (let z = -END + 6; z < END - 6; z += 9) {
+  for (let z = -END + 6; z < END - 6; z += 18) {
     if (Math.abs(z) < ANCHOR_HALF + 4 || TOWERS.some((t) => Math.abs(z - t) < 11)) continue
     const top = cableY(z)
     if (top - DECK_TOP < 1.5) continue

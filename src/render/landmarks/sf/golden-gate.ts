@@ -36,8 +36,8 @@ const PIER: Rgb = [0.6, 0.6, 0.58]
 const ANCHOR: Rgb = [0.66, 0.64, 0.6]
 
 /** A straight member of section `w` × `h` from a to b: the shared `strut` (render/models.ts). */
-export function beam(out: MeshBuilder, a: V3, b: V3, w: number, h: number, c: Rgb): void {
-  strut(out, a, b, w, h, c, F)
+export function beam(out: MeshBuilder, a: V3, b: V3, w: number, h: number, c: Rgb, caps = true): void {
+  strut(out, a, b, w, h, c, F, caps)
 }
 
 const MAIN = 1280
@@ -119,11 +119,11 @@ function tower(out: MeshBuilder, zc: number, y0: number): void {
 /** The main cables over the whole length, as straight segments following the curve. */
 function cables(out: MeshBuilder): void {
   const ends = MAIN / 2 + SIDE
-  const step = 8
+  const step = 16
   for (const x of [-CABLE_X, CABLE_X]) {
     for (let z = -ends; z < ends; z += step) {
       const z1 = Math.min(ends, z + step)
-      beam(out, [x, cableY(z), z], [x, cableY(z1), z1], 0.95, 0.95, ORANGE)
+      beam(out, [x, cableY(z), z], [x, cableY(z1), z1], 0.95, 0.95, ORANGE, false)
     }
   }
 }
@@ -137,17 +137,14 @@ function suspenders(out: MeshBuilder): void {
     const top = cableY(z)
     const bottom = deckY(z) + 0.4
     if (top - bottom < 1.5) continue
-    for (const side of [-1, 1]) {
-      for (const d of [-0.18, 0.18]) {
-        box(out, side * (CABLE_X - 0.2), (top + bottom) / 2, z + d, 0.07, (top - bottom) / 2, 0.07, ORANGE, F)
-      }
-    }
+    // (the pair as one member: 36 cm apart, they are a single line from anywhere a rider stands)
+    for (const side of [-1, 1]) box(out, side * (CABLE_X - 0.2), (top + bottom) / 2, z, 0.07, (top - bottom) / 2, 0.25, ORANGE, F)
   }
 }
 
 /** The roadway and its stiffening trusses from z0 to z1, lamp standards along both edges. */
 function deck(out: MeshBuilder, z0: number, z1: number, lamps: boolean): void {
-  const panel = 7.62
+  const panel = 15.24          // two of the real 7.6 m panels: seen from kilometres, the rhythm is what shows
   const depth = 7.6
   for (let z = z0; z < z1; z += panel) {
     const za = z
@@ -158,23 +155,27 @@ function deck(out: MeshBuilder, z0: number, z1: number, lamps: boolean): void {
     const zm = (za + zb) / 2
     // skip the stretch that passes through a tower's legs
     const atTower = Math.abs(Math.abs(zm) - MAIN / 2) < 9
-    // the roadway slab and its curbs
-    box(out, 0, ym - 0.35, zm, DECK_HALF - 0.4, 0.35, (zb - za) / 2 + 0.02, ROAD, F)
-    box(out, 0, ym - 1.1, zm, DECK_HALF, 0.4, (zb - za) / 2 + 0.02, ORANGE_DARK, F)
+    // the roadway slab and its curbs, four panels at a time (the deck's curve is a few metres over a kilometre)
+    const group = Math.round(za / panel) % 4 === 0
+    if (group) {
+      const zg = Math.min(z1, za + 4 * panel)
+      const yg = deckY((za + zg) / 2)
+      box(out, 0, yg - 0.35, (za + zg) / 2, DECK_HALF - 0.4, 0.35, (zg - za) / 2 + 0.02, ROAD, F)
+      box(out, 0, yg - 1.1, (za + zg) / 2, DECK_HALF, 0.4, (zg - za) / 2 + 0.02, ORANGE_DARK, F)
+      for (const side of [-1, 1]) box(out, side * (DECK_HALF + 0.1), yg + 0.6, (za + zg) / 2, 0.06, 0.6, (zg - za) / 2, ORANGE, F)
+    }
     if (atTower) continue
     for (const side of [-1, 1]) {
       const x = side * (DECK_HALF - 0.2)
       // top and bottom chords
-      beam(out, [x, ya - 0.3, za], [x, yb - 0.3, zb], 0.7, 0.9, ORANGE)
-      beam(out, [x, ya - depth, za], [x, yb - depth, zb], 0.7, 0.9, ORANGE)
+      beam(out, [x, ya - 0.3, za], [x, yb - 0.3, zb], 0.7, 0.9, ORANGE, false)
+      beam(out, [x, ya - depth, za], [x, yb - depth, zb], 0.7, 0.9, ORANGE, false)
       // the Warren diagonals and a vertical at each panel point
       const up = Math.round(za / panel) % 2 === 0
-      beam(out, [x, (up ? ya - depth : ya - 0.3), za], [x, (up ? yb - 0.3 : yb - depth), zb], 0.45, 0.45, ORANGE)
-      beam(out, [x, ya - depth, za], [x, ya - 0.3, za], 0.35, 0.35, ORANGE)
-      // the railing
-      box(out, side * (DECK_HALF + 0.1), ym + 0.6, zm, 0.06, 0.6, (zb - za) / 2, ORANGE, F)
+      beam(out, [x, (up ? ya - depth : ya - 0.3), za], [x, (up ? yb - 0.3 : yb - depth), zb], 0.45, 0.45, ORANGE, false)
+      beam(out, [x, ya - depth, za], [x, ya - 0.3, za], 0.35, 0.35, ORANGE, false)
     }
-    // the lamp standards: every fourth panel, both sides, a tall post with its arm over the road
+    // the lamp standards, both sides every 61 m (the real ones stand closer; from the city they are the rhythm)
     if (lamps && Math.round(za / panel) % 4 === 0) {
       for (const side of [-1, 1]) {
         const x = side * (DECK_HALF - 1.2)

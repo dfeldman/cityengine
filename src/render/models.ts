@@ -48,7 +48,7 @@ export function box(out: MeshBuilder, cx: number, cy: number, cz: number,
  * A straight member of rectangular section from a to b: `w` across it horizontally, `h` in the vertical plane through
  * it (for a vertical member, `w` along x). Beams, poles, cables, truss diagonals.
  */
-export function strut(out: MeshBuilder, a: [number, number, number], b: [number, number, number], w: number, h: number, colour: Rgb, tag = FIXED): void {
+export function strut(out: MeshBuilder, a: [number, number, number], b: [number, number, number], w: number, h: number, colour: Rgb, tag = FIXED, caps = true): void {
   const d = [b[0] - a[0], b[1] - a[1], b[2] - a[2]]
   const L = Math.hypot(d[0], d[1], d[2])
   if (L < 1e-4) return
@@ -64,6 +64,7 @@ export function strut(out: MeshBuilder, a: [number, number, number], b: [number,
     const n: [number, number, number] = [sv[0] * (i0 + i1) / 2 + u[0] * (j0 + j1) / 2, sv[1] * (i0 + i1) / 2 + u[1] * (j0 + j1) / 2, sv[2] * (i0 + i1) / 2 + u[2] * (j0 + j1) / 2]
     out.quad([P(a, i0, j0), P(a, i1, j1), P(b, i1, j1), P(b, i0, j0)], n, [[0, 0], [1, 0], [1, 1], [0, 1]], colour, tag)
   }
+  if (!caps) return               // a thin member seen from afar: its ends are never seen
   out.quad([P(a, -1, -1), P(a, -1, 1), P(a, 1, 1), P(a, 1, -1)], [-t[0], -t[1], -t[2]], [[0, 0], [1, 0], [1, 1], [0, 1]], colour, tag)
   out.quad([P(b, -1, -1), P(b, 1, -1), P(b, 1, 1), P(b, -1, 1)], [t[0], t[1], t[2]], [[0, 0], [1, 0], [1, 1], [0, 1]], colour, tag)
 }
