@@ -185,32 +185,32 @@ export const HUD_CSS = `
  * another in every screenshot. The padding here reserves the label's band rather than the two guessing.
  */
 #hud { position: fixed; left: 0; right: 0; bottom: 0; padding: 18px 22px 46px;
-  font: 14px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; color: #f2efe9;
+  font: 600 15px/1.4 var(--font); color: var(--text); font-variant-numeric: tabular-nums;
   text-shadow: 0 1px 4px rgba(0,0,0,.8); pointer-events: none; display: flex;
   flex-direction: column; align-items: center; gap: 4px; }
 #hud .sr-turns { font-size: 40px; letter-spacing: 16px; line-height: 1; display: flex; gap: 4px }
 #hud .sr-arrow { transition: opacity .12s, color .12s, transform .12s; opacity: .22 }
 #hud .sr-arrow.on { opacity: .62 }
-#hud .sr-arrow.picked { opacity: 1; color: #ffd479; transform: translateY(-2px) }
-#hud .sr-arrow.locked { color: #8ef2a0 }
+#hud .sr-arrow.picked { opacity: 1; color: var(--c-amber); transform: translateY(-2px) }
+#hud .sr-arrow.locked { color: var(--c-lime) }
 #hud .sr-back { position: absolute; left: calc(50% - 150px); top: 18px; pointer-events: auto; cursor: pointer;
-  font: 26px/1 ui-monospace, SFMono-Regular, Menlo, monospace; color: #f2efe9; opacity: .55;
-  background: rgba(18,20,24,.45); border: 1px solid rgba(255,255,255,.18); border-radius: 8px; padding: 4px 9px;
+  font: 26px/1 var(--font); color: var(--text); opacity: .7;
+  background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px 11px;
   text-shadow: inherit; transition: opacity .12s }
 #hud .sr-back:hover { opacity: 1 }
 #hud .sr-next { font-size: 15px; opacity: .9; min-height: 1.4em }
 #hud .sr-exits { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 760px; pointer-events: auto }
-#hud .sr-exits button { font: 13px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; color: #f2efe9; cursor: pointer;
-  background: rgba(18,20,24,.6); border: 1px solid rgba(255,255,255,.2); border-radius: 8px; padding: 4px 9px; text-shadow: inherit }
-#hud .sr-exits button.picked { color: #ffd479; border-color: #ffd479 }
+#hud .sr-exits button { font: 600 14px/1.2 var(--font); color: var(--text); cursor: pointer; min-height: 36px;
+  background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px 12px; text-shadow: none; box-shadow: var(--shadow) }
+#hud .sr-exits button.picked { background: var(--c-amber); color: var(--on-amber); border-color: var(--c-amber) }
 #hud .sr-exit-arrow { display: inline-block; font-size: 15px }
-#hud .sr-gps { font-size: 14px; color: #ffc68a; background: rgba(18,20,24,.5); border-radius: 8px; padding: 2px 10px }
+#hud .sr-gps { font: 700 15px/1.3 var(--font); color: var(--on-page); background: var(--page); border-radius: 999px; padding: 6px 16px; text-shadow: none; box-shadow: var(--shadow) }
 #hud .sr-gps:not([hidden]) + .sr-back { top: 50px }
-.sr-banner { position: fixed; top: 132px; left: 50%; transform: translate(-50%, -12px); z-index: 6; opacity: 0;
-  pointer-events: none; transition: opacity .35s, transform .35s; text-align: center; color: #f7f3ea;
-  background: rgba(18,20,24,.78); border: 1px solid rgba(255,198,138,.45); border-radius: 14px; padding: 12px 26px;
-  font: 600 22px/1.25 ui-sans-serif, Helvetica, Arial, sans-serif; box-shadow: 0 8px 30px rgba(0,0,0,.35) }
+.sr-banner { position: fixed; top: 176px; left: 50%; transform: translate(-50%, -12px); z-index: 6; opacity: 0;
+  pointer-events: none; transition: opacity .35s, transform .35s; text-align: center; color: var(--text);
+  background: var(--panel); border: 2px solid var(--page); border-radius: var(--radius); padding: 14px 30px;
+  font: 800 24px/1.25 var(--font); box-shadow: var(--shadow); backdrop-filter: blur(8px) }
 .sr-banner.on { opacity: 1; transform: translate(-50%, 0) }
-.sr-banner-sub { font: 14px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; color: #ffc68a; margin-top: 4px }
+.sr-banner-sub { font: 600 15px/1.4 var(--font); color: var(--muted); margin-top: 4px }
 #hud .sr-stats { font-size: 13px; opacity: .72; letter-spacing: .4px }
 `

@@ -10,12 +10,14 @@
 import { goTo, parseLatLon, type CityRef } from './ui/goto.ts'
 import { HUD_CSS } from './ui/hud.ts'
 import { MINIMAP_CSS } from './ui/minimap.ts'
+import { THEME_CSS } from './ui/theme.ts'
+import { LOADING_CSS } from './ui/loading.ts'
 
 const params = new URLSearchParams(location.search)
 const canvas = document.getElementById('view') as HTMLCanvasElement
 
 const style = document.createElement('style')
-style.textContent = HUD_CSS + MINIMAP_CSS
+style.textContent = HUD_CSS + MINIMAP_CSS + THEME_CSS + LOADING_CSS
 document.head.appendChild(style)
 
 if (params.get('showcase')) {

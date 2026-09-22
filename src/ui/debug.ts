@@ -111,13 +111,13 @@ export class DebugPanel {
   constructor(onFreeze: () => void, onCopy: () => void, onGo?: () => void, onPaths?: () => void) {
     const panel = document.createElement('div')
     panel.style.cssText = 'position:fixed;left:14px;top:14px;display:flex;gap:6px;z-index:5;'
-      + 'font:12px ui-monospace,SFMono-Regular,Menlo,monospace'
+      + 'font:600 13px var(--font)'
     const button = (text: string, title: string, act: () => void): HTMLButtonElement => {
       const b = document.createElement('button')
       b.textContent = text
       b.title = title
-      b.style.cssText = 'background:rgba(18,20,24,.72);color:#efece4;border:1px solid rgba(255,255,255,.18);'
-        + 'border-radius:6px;padding:5px 9px;cursor:pointer;font:inherit'
+      b.style.cssText = 'background:var(--panel);color:var(--text);border:1px solid var(--border);'
+        + 'border-radius:var(--radius-sm);padding:7px 12px;cursor:pointer;font:inherit;box-shadow:var(--shadow)'
       b.addEventListener('click', (e) => { act(); (e.currentTarget as HTMLElement).blur() })
       panel.appendChild(b)
       return b
@@ -130,7 +130,7 @@ export class DebugPanel {
 
     this.toastEl = document.createElement('div')
     this.toastEl.style.cssText = 'position:fixed;left:14px;top:50px;z-index:5;padding:6px 10px;border-radius:6px;'
-      + 'background:rgba(18,20,24,.82);color:#efece4;font:12px ui-monospace,SFMono-Regular,Menlo,monospace;'
+      + 'background:var(--panel);color:var(--text);font:600 13px var(--font);border:1px solid var(--border);'
       + 'opacity:0;transition:opacity .2s;pointer-events:none;white-space:pre'
     document.body.appendChild(this.toastEl)
 

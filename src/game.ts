@@ -22,6 +22,7 @@ import { MID, VIEW } from './render/city.ts'
 import { MemoryTiles, TILE, tileKey, type CityIndex, type TileData } from './city/tiles.ts'
 import { tilePreparer } from './render/prepare.ts'
 import { quaysLayer } from './render/quays.ts'
+import { LoadingScreen } from './ui/loading.ts'
 import { Plants } from './render/plants.ts'
 import { quickMarksLayer } from './render/quickmarks.ts'
 import { postersLayer } from './render/posters.ts'
@@ -105,18 +106,23 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const marks: Record<string, number> = {}
   let lastMark = performance.now()
   const heapMB = (): number => Math.round(((performance as unknown as { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize ?? 0) / 1e6)
+  // the loading screen (ui/loading.ts) follows the stages; `?freeze=1` shots and probes skip it
+  let loading: LoadingScreen | null = opts.freeze ? null : new LoadingScreen(opts.city)
   const mark = (name: string): void => {
+    loading?.stage(name)
     const t = performance.now()
     marks[name] = Math.round(t - lastMark)
     marks[`${name}MB`] = heapMB()
     lastMark = t
   }
   ;(window as unknown as { __marks?: unknown }).__marks = marks
+  let firstFrameAt = 0
   const [src, atlas] = await Promise.all([
     // the index now, the tiles as the rider needs them (city/tilestore.ts); a single-package city is cut up
     openCity(document.baseURI, opts.city),
     fetch(`${ASSETS}atlas.json`).then((r) => r.json()) as Promise<AtlasManifest>,
   ])
+  loading?.city(src.index?.name ?? opts.city)
   // the city's landmarks, or its region's (the Marais and central Paris share Paris's)
   const landmarkList = await landmarkManifest(document.baseURI, opts.city, src.index.region)
   mark('fetched')
@@ -830,7 +836,12 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     }
     scene.render()
     // the first frame builds every tile in view at once: its cost is the stutter a new area would bring
-    if (marks.firstFrame === undefined) mark('firstFrame')
+    if (marks.firstFrame === undefined) { mark('firstFrame'); firstFrameAt = performance.now() }
+    // the loading screen stays until the streets round the rider are built, or four seconds at most
+    if (loading && marks.firstFrame !== undefined && (city.idle || performance.now() - firstFrameAt > 4000)) {
+      loading.hide()
+      loading = null
+    }
   })
 
   addEventListener('resize', () => engine.resize())

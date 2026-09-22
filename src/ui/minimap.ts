@@ -170,7 +170,7 @@ export class Minimap {
     if (this.large) ctx.roundRect(0, 0, s, s, 14)
     else ctx.arc(r, r, r - 1, 0, Math.PI * 2)
     ctx.clip()
-    ctx.fillStyle = this.large ? 'rgba(18,20,24,0.9)' : 'rgba(18,20,24,0.78)'
+    ctx.fillStyle = this.large ? 'rgba(13,17,42,0.92)' : 'rgba(13,17,42,0.8)'
     ctx.fillRect(0, 0, s, s)
 
     this.lastAt = at
@@ -265,7 +265,7 @@ export class Minimap {
       ctx.stroke()
     }
 
-    ctx.font = this.large ? '600 11px ui-monospace, SFMono-Regular, Menlo, monospace' : '600 9px ui-monospace, SFMono-Regular, Menlo, monospace'
+    ctx.font = this.large ? '600 11px -apple-system, system-ui, sans-serif' : '600 9px -apple-system, system-ui, sans-serif'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     const placed: [number, number][] = []
@@ -371,7 +371,7 @@ export class Minimap {
 
 export const MINIMAP_CSS = `
 #minimap { position: fixed; right: 18px; top: 18px; border-radius: 50%; pointer-events: none;
-  box-shadow: 0 4px 18px rgba(0,0,0,.45); z-index: 4; }
-#minimap.large { right: auto; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 14px; z-index: 6;
+  box-shadow: var(--shadow, 0 4px 18px rgba(0,0,0,.45)); outline: 2px solid var(--border, transparent); outline-offset: -1px; z-index: 4; }
+#minimap.large { right: auto; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: var(--radius, 14px); z-index: 6;
   pointer-events: auto; cursor: crosshair; touch-action: none; }
 `
