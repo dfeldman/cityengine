@@ -2072,20 +2072,6 @@
   ]
  },
  {
-  "name": "Palais-Royal — Buren columns",
-  "group": "landmark",
-  "from": [
-   48.864,
-   2.3375,
-   2
-  ],
-  "to": [
-   48.8637,
-   2.3368,
-   1
-  ]
- },
- {
   "name": "École Militaire — from the Champ de Mars",
   "group": "landmark",
   "from": [
@@ -2153,6 +2139,34 @@
    48.866044,
    2.314969,
    14
+  ]
+ },
+ {
+  "name": "Palais-Royal — Buren columns",
+  "group": "landmark",
+  "from": [
+   48.863487,
+   2.336822,
+   1.7
+  ],
+  "to": [
+   48.8636002,
+   2.3370683,
+   1
+  ]
+ },
+ {
+  "name": "Palais-Royal — Buren columns, above",
+  "group": "landmark",
+  "from": [
+   48.863712,
+   2.337364,
+   28
+  ],
+  "to": [
+   48.8636002,
+   2.3370683,
+   0
   ]
  }
 ]

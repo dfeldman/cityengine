@@ -52,9 +52,10 @@ import { sainteChapelle } from './paris/sainte-chapelle.ts'
 import { madeleine, assembleePortico } from './paris/temple-front.ts'
 import { institutDome } from './paris/institut-dome.ts'
 import { petitPalais } from './paris/petit-palais.ts'
+import { burenColumns } from './paris/buren-columns.ts'
 
 export type { Fit }
 
 export const PROCEDURAL: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  colonneDeJuillet, pompidou, eiffelTower, eiffelTowerFull, arcDeTriomphe, louvrePyramid, notreDameFull, invalidesDome, museeOrsay, palaisGarnier, placeConcorde, monumentRepublique, montparnasse, sacreCoeur, pantheon, notreDame, saintPaul, hotelDeSens, tourSaintJacques, hotelDeVille, operaArch, synagogueGuimard, synagogueTournelles, vosgesGarden, templeMarais, saintGervais, cirqueHiver, saintDenysPortico, saintLouisSpire, sullyCourt, soubiseCourt, carnavaletCourt, saintMerri, flamelHouse, trocaderoParvis, grandPalais, colonneVendome, sainteChapelle, madeleine, assembleePortico, institutDome, petitPalais,
+  colonneDeJuillet, pompidou, eiffelTower, eiffelTowerFull, arcDeTriomphe, louvrePyramid, notreDameFull, invalidesDome, museeOrsay, palaisGarnier, placeConcorde, monumentRepublique, montparnasse, sacreCoeur, pantheon, notreDame, saintPaul, hotelDeSens, tourSaintJacques, hotelDeVille, operaArch, synagogueGuimard, synagogueTournelles, vosgesGarden, templeMarais, saintGervais, cirqueHiver, saintDenysPortico, saintLouisSpire, sullyCourt, soubiseCourt, carnavaletCourt, saintMerri, flamelHouse, trocaderoParvis, grandPalais, colonneVendome, sainteChapelle, madeleine, assembleePortico, institutDome, petitPalais, burenColumns,
 }

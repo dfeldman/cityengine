@@ -824,5 +824,42 @@
       90
     ],
     "note": "The Ionic colonnade, the great arched entrance with its gilded gate, the ribbed dome; front to the Avenue Winston-Churchill (west)."
+  },
+  {
+    "name": "Colonnes de Buren",
+    "procedural": "burenColumns",
+    "lat": 48.8636002,
+    "lon": 2.3370683,
+    "rotateDeg": 0,
+    "stone": false,
+    "note": "Les Deux Plateaux: ~260 black-and-white striped octagonal columns on a grid across the Cour d'Honneur, stepping in height."
+  },
+  {
+    "name": "Palais-Royal — galleries",
+    "restyle": "classical",
+    "within": [
+      [
+        48.8633,
+        2.33655
+      ],
+      [
+        48.86335,
+        2.3376
+      ],
+      [
+        48.86655,
+        2.33815
+      ],
+      [
+        48.8666,
+        2.3364
+      ]
+    ],
+    "take": "around",
+    "margin": 14,
+    "roof": "hipped",
+    "levels": 4,
+    "eaves": 17,
+    "note": "The arcaded stone galleries round the garden and the Cour d'Honneur (Valois, Montpensier, Beaujolais) in place of generic Haussmann shopfronts."
   }
 ]
