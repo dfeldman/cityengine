@@ -21,8 +21,12 @@ import { MeshBuilder } from './render/buildings.ts'
 import { box } from './render/models.ts'
 import { PROCEDURAL } from './render/landmarks/procedural.ts'
 import { SF_VEHICLES } from './render/sf/trains.ts'
+import { cartoonMaterial, updateCartoonEye } from './render/cartoon-material.ts'
+import { DAYLIGHT, setTimeOfDay, type TimeOfDay } from './render/facade-material.ts'
 
-export async function modelShowcase(canvas: HTMLCanvasElement, name: string, size: number): Promise<void> {
+export async function modelShowcase(canvas: HTMLCanvasElement, name: string, size: number, time: TimeOfDay = 'day'): Promise<void> {
+  // (the hour first: the landmark material reads it when it is made)
+  setTimeOfDay(time)
   const engine = new Engine(canvas, true, { antialias: true, preserveDrawingBuffer: true }, true)
   const scene = new Scene(engine)
   scene.clearColor = new Color4(0.6, 0.73, 0.88, 1)
@@ -41,18 +45,24 @@ export async function modelShowcase(canvas: HTMLCanvasElement, name: string, siz
   mb.toVertexData().applyToMesh(m, true)
   // vertex colours, the tag in alpha ignored
   // (a BODY-tagged panel — alpha 1 — takes a copy's livery in the game; here a maroon stands in for it)
-  const cols = m.getVerticesData('color')
-  if (cols) {
-    for (let i = 0; i < cols.length; i += 4) {
-      if (vehicle && cols[i + 3] > 0.9) { cols[i] *= 0.52; cols[i + 1] *= 0.14; cols[i + 2] *= 0.14 }
-      cols[i + 3] = 1
+  if (vehicle) {
+    const cols = m.getVerticesData('color')
+    if (cols) {
+      for (let i = 0; i < cols.length; i += 4) {
+        if (cols[i + 3] > 0.9) { cols[i] *= 0.52; cols[i + 1] *= 0.14; cols[i + 2] *= 0.14 }
+        cols[i + 3] = 1
+      }
+      m.setVerticesData('color', cols)
     }
-    m.setVerticesData('color', cols)
+    const mat = new StandardMaterial('model', scene)
+    mat.specularColor = new Color3(0.08, 0.08, 0.08)
+    m.material = mat
+    m.useVertexColors = true
+  } else {
+    // a landmark in the game's own landmark material: its stone, its surfaces (brick, glass…), its lit windows
+    m.material = cartoonMaterial(scene, 'cartoonLandmark', false)
+    scene.clearColor = new Color4(DAYLIGHT.horizon.r, DAYLIGHT.horizon.g, DAYLIGHT.horizon.b, 1)
   }
-  const mat = new StandardMaterial('model', scene)
-  mat.specularColor = new Color3(0.08, 0.08, 0.08)
-  m.material = mat
-  m.useVertexColors = true
   const g = new MeshBuilder()
   box(g, 0, -0.5, 0, 6000, 0.5, 6000, [0.2, 0.32, 0.4], 0)
   const gm = new Mesh('water', scene)
@@ -73,14 +83,12 @@ export async function modelShowcase(canvas: HTMLCanvasElement, name: string, siz
     mb = new MeshBuilder()
     if (build) build(mb, fit)
     mb.toVertexData().applyToMesh(m, true)
-    const c = m.getVerticesData('color')
-    if (c) { for (let i = 3; i < c.length; i += 4) c[i] = 1; m.setVerticesData('color', c) }
     m.refreshBoundingInfo()
     const b = m.getBoundingInfo().boundingBox
     ;(window as unknown as Record<string, unknown>).__modelTris = mb.triangles
     return { min: b.minimumWorld.asArray(), max: b.maximumWorld.asArray(), triangles: mb.triangles }
   }
-  engine.runRenderLoop(() => scene.render())
+  engine.runRenderLoop(() => { updateCartoonEye(scene, camera.position); scene.render() })
   addEventListener('resize', () => engine.resize())
   await scene.whenReadyAsync()
   ;(window as unknown as { modelReady?: boolean }).modelReady = true

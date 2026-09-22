@@ -85,7 +85,7 @@ if (entryName) {
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist'] })
 const page = await browser.newPage({ viewport: { width: 1400, height: 800 } })
 page.on('pageerror', (e) => console.log('page error:', e.message.slice(0, 300)))
-await page.goto(`http://localhost:5200/?model=${model}${arg('size') ? `&size=${arg('size')}` : ''}`)
+await page.goto(`http://localhost:5200/?model=${model}${arg('size') ? `&size=${arg('size')}` : ''}${arg('time') ? `&time=${arg('time')}` : ''}`)
 await page.waitForFunction('window.modelReady === true', null, { timeout: 60_000 })
 if (fitFor) {
   const b = await page.evaluate(`window.__rebuild(${JSON.stringify(fitFor)})`) as { min: number[]; max: number[]; triangles: number }
@@ -100,7 +100,7 @@ console.log(model, await page.evaluate('window.__modelTris'), 'triangles')
 for (const [name, ...v] of views) {
   await page.evaluate(`window.__modelView(${v.join(',')})`)
   await page.waitForTimeout(700)
-  await page.screenshot({ path: `${out}/${model}-${name}.png` })
+  await page.screenshot({ path: `${out}/${model}-${name}${arg('time') ? `-${arg('time')}` : ''}.png` })
   console.log(' ', name)
 }
 await browser.close()

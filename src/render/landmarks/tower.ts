@@ -22,6 +22,7 @@
 import { capPolygon, type MeshBuilder } from '../buildings.ts'
 import { box, type Rgb } from '../models.ts'
 import type { Fit } from './fit.ts'
+import { surfaceTag, type Surface } from '../cartoon-material.ts'
 
 type P2 = { x: number; z: number }
 
@@ -41,6 +42,12 @@ export interface Face {
   brace?: number
   /** punched: arched window heads (the 1910s–20s) */
   arched?: boolean
+  /**
+   * What the wall is made of, from the landmark surface library (cartoon-material.ts SURFACES): drawn as a
+   * procedural pattern — courses of brick, ashlar blocks, granite panels, glazed terracotta, precast concrete,
+   * metal seams. Default by kind: punched ashlar, the rest concrete; the glass is always glass.
+   */
+  material?: Surface
 }
 
 export interface Tier {
@@ -100,8 +107,14 @@ function centroid(ring: P2[]): P2 {
   return { x: cx / ring.length, z: cz / ring.length }
 }
 
-const quadAt = (out: MeshBuilder, p: [number, number, number][], n: [number, number, number], c: Rgb): void =>
-  out.quad(p as [[number, number, number], [number, number, number], [number, number, number], [number, number, number]], n, [[0, 0], [1, 0], [1, 1], [0, 1]], c, 0)
+const quadAt = (out: MeshBuilder, p: [number, number, number][], n: [number, number, number], c: Rgb, tag = 0,
+                uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]): void =>
+  out.quad(p as [[number, number, number], [number, number, number], [number, number, number], [number, number, number]], n, uv, c, tag)
+
+const GLASS = surfaceTag('glass')
+/** a face's wall surface: its own, or the default for its kind */
+export const wallTag = (f: Face): number =>
+  surfaceTag(f.material ?? (f.kind === 'punched' ? 'ashlar' : f.kind === 'curtain' || f.kind === 'xbrace' ? 'metal' : 'concrete'))
 
 /** One face between y0 and y1 on every edge of the ring. */
 export function faceBand(out: MeshBuilder, ring: P2[], y0: number, y1: number, f: Face): void {
@@ -119,10 +132,18 @@ export function faceBand(out: MeshBuilder, ring: P2[], y0: number, y1: number, f
     const nx = tz
     const nz = -tx
     const n: [number, number, number] = [nx, 0, nz]
+    const floors = Math.max(1, Math.round((y1 - y0) / floor))
+    const fh = (y1 - y0) / floors
+    const bays = Math.max(1, Math.round(L / pitch))
+    const bw = L / bays
     /** a rectangle on this face: along u0..u1 metres, up ya..yb, `o` metres out */
-    const rect = (u0: number, u1: number, ya: number, yb: number, c: Rgb, o = 0): void => {
+    const W = wallTag(f)
+    // uv in ROOMS: bays along, floors up, so the landmark shader lights a whole window after dark (floor(uv) is
+    // the room) — see cartoon-material.ts, surface 6
+    const R = (u: number, y: number): [number, number] => [u / bw, (y - y0) / fh]
+    const rect = (u0: number, u1: number, ya: number, yb: number, c: Rgb, o = 0, tag = c === glass ? GLASS : W): void => {
       const P = (u: number, y: number): [number, number, number] => [a.x + tx * u + nx * o, y, a.z + tz * u + nz * o]
-      quadAt(out, [P(u0, ya), P(u1, ya), P(u1, yb), P(u0, yb)], n, c)
+      quadAt(out, [P(u0, ya), P(u1, ya), P(u1, yb), P(u0, yb)], n, c, tag, [R(u0, ya), R(u1, ya), R(u1, yb), R(u0, yb)])
     }
     /** a block proud of the face by `o`: its front and two cheeks (and a top ledge when `top`) */
     const proud = (u0: number, u1: number, ya: number, yb: number, c: Rgb, o: number, top = false): void => {
@@ -130,18 +151,13 @@ export function faceBand(out: MeshBuilder, ring: P2[], y0: number, y1: number, f
       for (const [u, s] of [[u0, -1], [u1, 1]] as const) {
         const x = a.x + tx * u
         const z = a.z + tz * u
-        quadAt(out, [[x, ya, z], [x + nx * o, ya, z + nz * o], [x + nx * o, yb, z + nz * o], [x, yb, z]].map((q) => q) as [number, number, number][],
-          [tx * s, 0, tz * s], c)
+        quadAt(out, [[x, ya, z], [x + nx * o, ya, z + nz * o], [x + nx * o, yb, z + nz * o], [x, yb, z]], [tx * s, 0, tz * s], c, W)
       }
       if (top) {
         const P = (u: number, oo: number): [number, number, number] => [a.x + tx * u + nx * oo, yb, a.z + tz * u + nz * oo]
-        quadAt(out, [P(u0, 0), P(u1, 0), P(u1, o), P(u0, o)], [0, 1, 0], c)
+        quadAt(out, [P(u0, 0), P(u1, 0), P(u1, o), P(u0, o)], [0, 1, 0], c, W)
       }
     }
-    const floors = Math.max(1, Math.round((y1 - y0) / floor))
-    const fh = (y1 - y0) / floors
-    const bays = Math.max(1, Math.round(L / pitch))
-    const bw = L / bays
     switch (f.kind) {
       case 'blank':
         rect(0, L, y0, y1, f.wall)
@@ -208,7 +224,7 @@ export function faceBand(out: MeshBuilder, ring: P2[], y0: number, y1: number, f
                 const l = Math.hypot(du, dy)
                 const ox = (-dy / l) * t
                 const oy = (du / l) * t
-                quadAt(out, [P(ua + ox, yb + oy, 0.35), P(ub + ox, yb + dy + oy, 0.35), P(ub - ox, yb + dy - oy, 0.35), P(ua - ox, yb - oy, 0.35)], n, f.wall)
+                quadAt(out, [P(ua + ox, yb + oy, 0.35), P(ub + ox, yb + dy + oy, 0.35), P(ub - ox, yb + dy - oy, 0.35), P(ua - ox, yb - oy, 0.35)], n, f.wall, W)
               }
             }
           }

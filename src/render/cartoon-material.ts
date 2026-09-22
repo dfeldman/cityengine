@@ -48,6 +48,8 @@ varying vec4 vColour;
 varying float vDepth;
 varying vec3 vView;
 varying vec3 vWorld;
+varying float vSurface;
+varying vec2 vUV;
 void main(void) {
   mat4 W = mat4(world0, world1, world2, world3);
   vec4 wp = W * vec4(position, 1.0);
@@ -61,6 +63,8 @@ void main(void) {
   vColour = vec4(mix(color.rgb, instColor.rgb, instColor.a * body), step(0.4, color.a) * (1.0 - body));
   vView = normalize(wp.xyz - eye);
   vDepth = gl_Position.w;
+  vSurface = 0.0;
+  vUV = vec2(0.0);
 }
 `
 
@@ -79,6 +83,8 @@ uniform float fogDensity;
 uniform float night;
 uniform float stone;
 varying vec3 vWorld;
+varying float vSurface;
+varying vec2 vUV;
 // a hash that stays uniform at world coordinates in the thousands (sin-based ones do not, on a GPU)
 float hash2(vec2 p) {
   vec3 p3 = fract(vec3(p.xyx) * 0.1031);
@@ -122,13 +128,131 @@ vec3 dressed(vec3 c, vec3 n) {
   lime *= 1.0 - 0.16 * joint;
   return mix(c, lime, pale);
 }
+
+// ---- the landmark surface library (SURFACES in cartoon-material.ts): each a procedural pattern in world metres
+// along the face, so every building is cut from the same brick and stone. Detail fades with distance, where it
+// would only shimmer. NOTE no semicolons in comments here.
+float nearFade(float a, float b) { return 1.0 - smoothstep(a, b, vDepth); }
+// how much of this fragment is a lit room after dark (set by surfaceLook, applied after the lighting, which a
+// lamp does not obey)
+float gEmit = 0.0;
+vec2 faceCoords(vec3 n) {
+  if (abs(n.y) > 0.7) return vWorld.xz;
+  vec2 t = normalize(vec2(-n.z, n.x));
+  return vec2(dot(vWorld.xz, t), vWorld.y);
+}
+vec3 skyReflect(vec3 n) {
+  vec3 r = reflect(normalize(vView), n);
+  // the sky above the horizon, the city below it: a dark band of buildings, then the street
+  vec3 skyTop = skyColour * 1.15;
+  vec3 skyLow = mix(skyColour, fogColour, 0.6) * 1.1;
+  vec3 sky = mix(skyLow, skyTop, clamp(r.y * 1.6, 0.0, 1.0));
+  float city = smoothstep(0.12, -0.02, r.y);
+  vec3 townband = mix(vec3(0.34, 0.35, 0.37), vec3(0.2, 0.21, 0.23), clamp(-r.y * 3.0, 0.0, 1.0));
+  vec3 col = mix(sky, townband, city);
+  // the sun's glint
+  float g = pow(max(dot(r, -normalize(sunDir)), 0.0), 60.0);
+  return col + sunColour * g * 1.4;
+}
+vec3 surfaceLook(vec3 c, vec3 n, float sid) {
+  vec2 p = faceCoords(n);
+  float vert = abs(n.y) < 0.7 ? 1.0 : 0.0;
+  if (sid < 1.5) {
+    // 1 ASHLAR: dressed stone blocks, 1.1 x 0.55 m
+    float row = floor(p.y / 0.55);
+    float u = p.x / 1.1 + 0.5 * mod(row, 2.0);
+    float edge = max(smoothstep(0.455, 0.49, abs(fract(p.y / 0.55) - 0.5)), smoothstep(0.475, 0.498, abs(fract(u) - 0.5))) * vert;
+    float tone = 0.95 + 0.1 * hash2(vec2(row, floor(u)));
+    float vein = vnoise(p * 1.7) * 0.6 + vnoise(p * 6.0) * 0.4;
+    return c * tone * (0.97 + 0.06 * vein) * (1.0 - 0.18 * edge * nearFade(35.0, 70.0));
+  }
+  if (sid < 2.5) {
+    // 2 BRICK: running bond, 0.24 x 0.086 m courses, each brick its own tone
+    float row = floor(p.y / 0.086);
+    float u = p.x / 0.24 + 0.5 * mod(row, 2.0);
+    float mortar = max(step(0.4, abs(fract(p.y / 0.086) - 0.5)), step(0.455, abs(fract(u) - 0.5))) * vert;
+    float tone = 0.84 + 0.28 * hash2(vec2(row, floor(u)));
+    float near = nearFade(18.0, 40.0);
+    vec3 b = c * mix(0.97, tone, near);
+    // farther off, the courses as a faint banding, then nothing
+    b *= 1.0 - 0.05 * (1.0 - near) * nearFade(40.0, 90.0) * step(0.3, abs(fract(p.y / 0.35) - 0.5));
+    return mix(b, vec3(0.7, 0.68, 0.63), mortar * 0.8 * near);
+  }
+  if (sid < 3.5) {
+    // 3 GRANITE: polished panels 1.5 x 0.9 m, speckled, a little of the sky in them
+    float edge = max(step(0.485, abs(fract(p.y / 0.9) - 0.5)), step(0.49, abs(fract(p.x / 1.5) - 0.5))) * vert * nearFade(30.0, 60.0);
+    float speck = (hash2(floor(p * 40.0)) - 0.5) * 0.16 * nearFade(8.0, 20.0);
+    float tone = 0.94 + 0.1 * hash2(floor(vec2(p.x / 1.5, p.y / 0.9)));
+    vec3 g = c * (tone + speck) * (1.0 - 0.25 * edge);
+    float fres = pow(1.0 - max(dot(n, -normalize(vView)), 0.0), 3.0) * 0.35;
+    return mix(g, skyReflect(n) * 0.8, fres);
+  }
+  if (sid < 4.5) {
+    // 4 TERRACOTTA: glazed blocks 0.6 x 0.45 m, fine joints, a glaze sheen
+    float edge = max(step(0.47, abs(fract(p.y / 0.45) - 0.5)), step(0.475, abs(fract(p.x / 0.6 + 0.5 * mod(floor(p.y / 0.45), 2.0)) - 0.5))) * vert * nearFade(20.0, 45.0);
+    float tone = 0.96 + 0.07 * hash2(floor(vec2(p.x / 0.6, p.y / 0.45)));
+    vec3 t = c * tone * (1.0 - 0.12 * edge);
+    float fres = pow(1.0 - max(dot(n, -normalize(vView)), 0.0), 4.0) * 0.22;
+    return mix(t, skyReflect(n), fres);
+  }
+  if (sid < 5.5) {
+    // 5 CONCRETE: precast panels 3 x 1.8 m, weathering streaks run down from the joints
+    float edge = max(step(0.49, abs(fract(p.y / 1.8) - 0.5)), step(0.492, abs(fract(p.x / 3.0) - 0.5))) * vert * nearFade(40.0, 80.0);
+    float streak = vnoise(vec2(p.x * 2.5, p.y * 0.15)) * vert;
+    float blot = vnoise(p * 0.6);
+    return c * (0.9 + 0.08 * blot) * (1.0 - 0.1 * streak) * (1.0 - 0.2 * edge);
+  }
+  if (sid < 6.5) {
+    // 6 GLASS: the sky and the city in it, more at a glancing angle, and lit rooms after dark
+    float facing = max(dot(n, -normalize(vView)), 0.0);
+    float fres = 0.3 + 0.6 * pow(1.0 - facing, 3.0);
+    vec3 refl = skyReflect(n);
+    // each pane a slightly different tilt: a checker of brightness breaks the mirror up
+    vec2 cell = floor(vec2(p.x / 1.5, p.y / 3.6));
+    float tilt = 0.9 + 0.2 * hash2(cell);
+    vec3 g = mix(c, refl * tilt, fres);
+    // after dark about a third of the rooms are lit, each its own warmth, a few cool office white. The room is
+    // the builder's cell: its uv counts bays along and floors up (tower.ts), so a pane lights whole
+    vec2 room = floor(vUV + 0.001) + floor(n.xz * 7.0) * 13.0;
+    gEmit = step(0.64, hash2(room + 17.0)) * night * vert * 0.9;
+    return g;
+  }
+  if (sid < 7.5) {
+    // 7 METAL: standing-seam panels 0.6 m wide, a sheen that moves with the eye
+    float seam = step(0.46, abs(fract(p.x / 0.6) - 0.5)) * vert * nearFade(20.0, 45.0);
+    float facing = max(dot(n, -normalize(vView)), 0.0);
+    vec3 m = c * (0.92 + 0.12 * facing) * (1.0 - 0.2 * seam);
+    return mix(m, skyReflect(n), 0.18 * pow(1.0 - facing, 2.0));
+  }
+  if (sid < 8.5) {
+    // 8 STUCCO: a fine trowelled noise and broader patches of repair and weather
+    float grain = (vnoise(p * 9.0) - 0.5) * 0.08 * nearFade(15.0, 35.0) + (vnoise(p * 1.3) - 0.5) * 0.06;
+    return c * (1.0 + grain);
+  }
+  if (sid < 9.5) {
+    // 9 COPPER: verdigris with dark streaks run down it
+    float streak = vnoise(vec2(p.x * 4.0, p.y * 0.3));
+    float blotch = vnoise(p * 2.0);
+    return mix(c, c * vec3(0.55, 0.62, 0.6), 0.35 * streak) * (0.92 + 0.12 * blotch);
+  }
+  if (sid < 10.5) {
+    // 10 ROOF TILE: rows of scalloped tiles, 0.3 m, a tone per tile
+    float row = floor(p.y / 0.3);
+    float u = p.x / 0.25 + 0.5 * mod(row, 2.0);
+    float shade = smoothstep(0.0, 0.3, fract(p.y / 0.3)) * 0.2 + 0.8;
+    return c * shade * (0.9 + 0.2 * hash2(vec2(row, floor(u)))) * mix(1.0, 0.95, nearFade(20.0, 50.0));
+  }
+  // 11 CLAPBOARD: horizontal boards 0.15 m, each with its shadow line
+  float board = fract(p.y / 0.15);
+  return c * (0.93 + 0.07 * smoothstep(0.0, 0.25, board)) * mix(1.0, 0.95 + 0.1 * hash2(vec2(floor(p.y / 0.15), floor(p.x / 4.0))), nearFade(15.0, 40.0));
+}
 void main(void) {
   vec3 n = normalize(vNormal);
   float sun = max(dot(n, -normalize(sunDir)), 0.0);
   // banded rather than smooth: the step is what makes it read as drawn rather than rendered
   sun = smoothstep(0.0, 0.02, sun - 0.5) * 0.55 + sun * 0.45;
   float up = n.y * 0.5 + 0.5;
-  vec3 base = stone > 0.5 ? dressed(vColour.rgb, n) : vColour.rgb;
+  vec3 base = stone > 0.5 ? (vSurface > 0.5 ? surfaceLook(vColour.rgb, n, vSurface) : dressed(vColour.rgb, n)) : vColour.rgb;
   vec3 lit = base * (mix(groundColour, skyColour, up) + sunColour * sun);
   // a rim light, so a dark shape never disappears into a dark background
   float rim = pow(1.0 - max(dot(n, -vView), 0.0), 3.0);
@@ -138,6 +262,12 @@ void main(void) {
   lit += skyColour * rim * (0.18 + 0.47 * lum);
   // a lamp head, a headlight, a traffic signal: bright by day, and the only thing lit after dark
   lit = mix(lit, vColour.rgb * (1.0 + 1.4 * night), vColour.a * (0.35 + 0.65 * night));
+  // a lit window of the surface library, bright whatever the light outside
+  if (gEmit > 0.0) {
+    float k = hash2(floor(vUV + 0.001) + floor(n.xz * 7.0) * 13.0 + 5.0);
+    vec3 room = k < 0.2 ? vec3(0.85, 0.92, 1.0) : mix(vec3(1.0, 0.78, 0.46), vec3(1.0, 0.9, 0.68), k);
+    lit = mix(lit, room * 1.1, gEmit);
+  }
 
   float fog = 1.0 - exp(-vDepth * fogDensity);
   gl_FragColor = vec4(mix(lit, fogColour, clamp(fog, 0.0, 1.0)), 1.0);
@@ -150,6 +280,7 @@ precision highp float;
 attribute vec3 position;
 attribute vec3 normal;
 attribute vec4 color;
+attribute vec2 uv;
 uniform mat4 world;
 uniform mat4 viewProjection;
 uniform vec3 eye;
@@ -158,18 +289,32 @@ varying vec4 vColour;
 varying float vDepth;
 varying vec3 vView;
 varying vec3 vWorld;
+varying float vSurface;
+varying vec2 vUV;
 void main(void) {
   vec4 wp = world * vec4(position, 1.0);
+  vUV = uv;
   vWorld = wp.xyz;
   gl_Position = viewProjection * wp;
   vNormal = normalize(mat3(world) * normal);
   vColour = vec4(color.rgb, step(0.4, color.a) * (1.0 - step(0.9, color.a)));
   vView = normalize(wp.xyz - eye);
   vDepth = gl_Position.w;
+  // a surface from the landmark library (SURFACES below), carried as a small alpha: id / 64
+  vSurface = color.a < 0.3 ? floor(color.a * 64.0 + 0.5) : 0.0;
 }
 `
 
 let registered = false
+
+/**
+ * The landmark surface library: what a face of a modelled building is made of, drawn procedurally by the
+ * landmark material (in world metres, so every building shares the same brick and stone). A builder passes
+ * `surfaceTag(SURFACES.brick)` as the quad's tag. Tag 0 is the old default, pale dressed stone by colour.
+ */
+export const SURFACES = { ashlar: 1, brick: 2, granite: 3, terracotta: 4, concrete: 5, glass: 6, metal: 7, stucco: 8, copper: 9, tile: 10, clapboard: 11 } as const
+export type Surface = keyof typeof SURFACES
+export const surfaceTag = (s: Surface): number => SURFACES[s] / 64
 
 /**
  * `instanced: false` gives the variant for a mesh drawn once, in place — street furniture baked into a tile,
@@ -188,7 +333,7 @@ export function cartoonMaterial(scene: Scene, name = 'cartoon', instanced = true
   const mat = new ShaderMaterial(name, scene, instanced ? 'cartoon' : 'cartoonStatic', {
     attributes: instanced
       ? ['position', 'normal', 'color', 'world0', 'world1', 'world2', 'world3', 'instColor']
-      : ['position', 'normal', 'color'],
+      : ['position', 'normal', 'color', 'uv'],
     uniforms: ['world', 'viewProjection', 'eye', 'sunDir', 'sunColour', 'skyColour', 'groundColour',
       'fogColour', 'fogDensity', 'night', 'stone'],
   })
