@@ -161,7 +161,8 @@ async function bake(spec: CitySpec): Promise<void> {
   // the public stairways, from their own query (tools/overpass.ts stepsQuery), and the region's own where OSM
   // has not mapped them — each a polyline, its ends joined to the paths beside them (joinNearMisses below)
   {
-    const got = await overpassTiled(stepsQuery, bbox(spec)).catch((e) => {
+    // (a light query: big chunks, so a busy Overpass is asked four times rather than twenty)
+    const got = await overpassTiled(stepsQuery, bbox(spec), 3200).catch((e) => {
       console.warn(`  steps: not fetched (${String(e).slice(0, 120)})`)
       return { ways: [] as OsmWay[] }
     })

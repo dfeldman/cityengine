@@ -233,6 +233,12 @@ These make the world alive, as the Seine's boats did:
 7. Cable cars and the F-line.
 8. Bay traffic and fog.
 
+## 9a. How the buildings are done
+
+The pattern — the register, the batches, restyle vs recipe vs own geometry, the shared kit, the surfaces, and
+which model to give a batch to — is written up in **docs/BUILDINGS.md**. It is meant to be reused for the rest of
+San Francisco and for the next city.
+
 ## 10. Backlog (user asks, 2026-09-22; not all at once)
 
 - **It is a biking and running game** (user): freeways and road detail matter little. The places people go to
