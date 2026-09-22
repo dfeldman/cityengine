@@ -346,5 +346,23 @@
   "group": "landmark",
   "from": [48.868795, 2.333248, 2.2],
   "to": [48.87183, 2.33183, 22]
+ },
+ {
+  "name": "Concorde — from the Champs-Élysées",
+  "group": "landmark",
+  "from": [48.8664, 2.3172, 2],
+  "to": [48.8656, 2.32118, 14]
+ },
+ {
+  "name": "Concorde — fountain close",
+  "group": "landmark",
+  "from": [48.86573, 2.32133, 2.0],
+  "to": [48.86584, 2.32142, 5]
+ },
+ {
+  "name": "Concorde — obelisk close",
+  "group": "landmark",
+  "from": [48.8652, 2.32145, 2.0],
+  "to": [48.865476, 2.321129, 18]
  }
 ]

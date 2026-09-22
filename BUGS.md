@@ -28,6 +28,8 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 18 | open | Café tables show no top surface (likely wound facing down) | user, 2026-09-21 |
 | 19 | fixed | The Colonne de Juillet at the Bastille is gone completely | user, 2026-09-21 |
 | 20 | open | Central Paris audit: 22 ride edges pass through buildings; 266 dead ends to triage | audit-ride, 2026-09-21 |
+| 21 | open | Notre-Dame needs real effort: the first pass is a sketch | user, 2026-09-21 |
+| 22 | open | The Place de la Concorde is drawn as grass; the real square is paved | views, 2026-09-21 |
 
 ---
 
@@ -308,3 +310,17 @@ is in; one fitted to a building waits for its first; fitting falls back to any i
 **Seen:** `node --experimental-strip-types tools/audit-ride.ts paris-centre --list`: 22 ride edges through
 buildings, 266 dead ends inside the box. In the Marais the dead ends were nearly all real impasses, cours and
 villas; the through-building ones are passages OSM did not tag (see the Marais fix in PLAN item T).
+
+## 21. Notre-Dame needs real effort
+
+**Seen:** user, 2026-09-21, on the first close-range pass (`notreDameFull`, `docs/shots/LP-notre-dame-*.png`).
+Work from reference photos of the west front, the south flank from the Seine and the apse; the portals'
+depth and statuary, the rose's tracery, the towers' belfry openings and their gallery, the gargoyle gallery,
+the flying buttresses' proportions, the lead roof and spire's ornament.
+
+## 22. The Concorde is grass
+
+**Seen:** views `Concorde — *`: the square between the roads is lawn. Unmapped ground defaults to the city's
+`ground` (grass); the Concorde is a paved place (OSM `place=square` / `area:highway`, not in the bake's area
+kinds). Paved squares need their own area kind (`paved`) from `highway=pedestrian` areas and `place=square`,
+drawn as paving.

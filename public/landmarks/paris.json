@@ -593,5 +593,17 @@
     ],
     "front": 165,
     "note": "Fitted to OSM's main footprint (way 822291002); front to the Place de l'Opéra (south-south-east); OSM's dome, stage and wing parts replaced."
+  },
+  {
+    "name": "Place de la Concorde",
+    "procedural": "placeConcorde",
+    "osm": [
+      "way/1034734819"
+    ],
+    "lat": 48.865476,
+    "lon": 2.321129,
+    "rotateDeg": 25.7,
+    "stone": false,
+    "note": "The obelisk at the midpoint of OSM's two pools, the fountains in them (64 m either side, the axis 25.7° east of north), the rostral columns; OSM's 0.3 m obelisk base replaced."
   }
 ]
