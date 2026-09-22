@@ -62,6 +62,11 @@ export interface Walker {
   across: number
   /** the sidestep being made round somebody, metres across the pavement, eased */
   dodge: number
+  /** the street's across direction at the walker this frame (where +off moves them), for the rider's dodge */
+  nx?: number
+  nz?: number
+  /** stepping aside for the rider (BUGS.md #42): allowed off the pavement's edge, onto the verge */
+  yielding?: boolean
 }
 
 export interface CrowdConfig { perKm: number; range: number }
@@ -122,6 +127,9 @@ export class Crowd {
   private readonly populated = new Set<number>()
   /** this frame's sidestep and pace for each group leader (see `update`) */
   private readonly goals = new Map<number, { dodge: number; speed: number }>()
+  /** where the rider was last frame: their direction of travel, for stepping out of their way */
+  private lastRider: Point | null = null
+  private riderDir: Point | null = null
 
   /** which edges cross water, worked out once per edge; see `bridge` */
   private readonly overWater = new Map<number, boolean>()
@@ -387,6 +395,44 @@ export class Crowd {
       }
     }
 
+    /*
+     * Out of the rider's way (BUGS.md #42). Nobody collides with anybody here — but a rider going through a
+     * crowd that does not move feels like they are mowing people down. So a leader ahead of the rider (within
+     * 14 m, under 1.6 m off their line) steps away from the line, as far as the pavement or path allows and a
+     * little onto the verge; if even that leaves them in the way, they stop and wait for the rider to pass.
+     */
+    if (this.lastRider) {
+      const mx = rider.x - this.lastRider.x
+      const mz = rider.z - this.lastRider.z
+      const m = Math.hypot(mx, mz)
+      if (m > 0.02) this.riderDir = { x: mx / m, z: mz / m }
+    }
+    this.lastRider = { x: rider.x, z: rider.z }
+    const u = this.riderDir
+    for (const w of this.walkers) {
+      w.yielding = false
+      if (!u || w.kind === 'cycle' || !w.at || w.nx === undefined || (w.leader !== undefined && byId.has(w.leader))) continue
+      const rx = w.at.x - rider.x
+      const rz = w.at.z - rider.z
+      const ahead = rx * u.x + rz * u.z
+      const lat = rx * -u.z + rz * u.x
+      if (ahead < -1.5 || ahead > 14 || Math.abs(lat) > 1.6) continue
+      const e = this.g.edges.get(w.edgeId)
+      if (!e) continue
+      // away from the rider's line, measured along the walker's own across axis
+      const away = rx * w.nx! + rz * w.nz! >= 0 ? 1 : -1
+      const halfWalk = e.foot ? Math.max(0.3, e.width / 2 - 0.3) : Math.max(0.2, e.walk / 2 - 0.25)
+      const target = away * (halfWalk + 0.7)
+      const goal = this.goals.get(w.id) ?? { dodge: 0, speed: w.speed }
+      // the leader's own formation offset is part of where they stand
+      goal.dodge = target - w.across * w.dir
+      // no room to clear the rider (a narrow path, the rider down its middle): stand aside and wait
+      const clear = Math.abs(lat + away * Math.abs(target - (w.dodge + w.across * w.dir))) > 1.1
+      if (!clear && ahead < 6) goal.speed = 0
+      this.goals.set(w.id, goal)
+      w.yielding = true
+    }
+
     const gone = new Set<number>()
     for (let i = this.walkers.length - 1; i >= 0; i--) {
       const w = this.walkers[i]
@@ -403,11 +449,13 @@ export class Crowd {
         w.side = lead.side
         w.s = Math.max(0, Math.min(le.length, lead.s - lead.dir * w.back))
         w.dodge = lead.dodge
-        w.phase += dt * lead.speed * 4.4
+        w.yielding = lead.yielding
+        w.phase += dt * (this.goals.get(lead.id)?.speed ?? lead.speed) * 4.4
       } else {
         const goal = this.goals.get(w.id) ?? { dodge: 0, speed: w.speed }
-        // eased: a sidestep over about a second, not a jump
-        w.dodge += Math.max(-dt * 0.8, Math.min(dt * 0.8, goal.dodge - w.dodge))
+        // eased: a sidestep over about a second, not a jump — quicker when it is the rider coming
+        const rate = w.yielding ? 2.2 : 0.8
+        w.dodge += Math.max(-dt * rate, Math.min(dt * rate, goal.dodge - w.dodge))
         w.s += w.dir * goal.speed * dt
         // the legs swing at a rate that suits the speed, or the walk looks like skating; a runner's faster
         w.phase += dt * goal.speed * (w.kind === 'run' ? 3.2 : w.kind === 'cycle' ? 1.6 : 4.4)
@@ -441,12 +489,21 @@ export class Crowd {
       const lane = w.kind === 'cycle' ? Math.max(0.7, eNow.width / 2 - 0.9)
         : eNow.foot ? 0
         : this.bridge(eNow) ? Math.max(0.6, eNow.width / 2 - 0.5) : eNow.width / 2 + eNow.walk * 0.5
-      // the group's formation and the sidestep, kept inside the pavement (or the path)
-      const halfWalk = w.kind === 'cycle' ? 0.4 : eNow.foot ? Math.max(0.3, eNow.width / 2 - 0.3) : Math.max(0.2, eNow.walk / 2 - 0.25)
-      const off = Math.max(-halfWalk, Math.min(halfWalk, w.dodge + w.across * w.dir))
+      // the group's formation and the sidestep, kept inside the pavement (or the path) — and a little past its
+      // edge when stepping out of the rider's way
+      const halfWalk = (w.kind === 'cycle' ? 0.4 : eNow.foot ? Math.max(0.3, eNow.width / 2 - 0.3) : Math.max(0.2, eNow.walk / 2 - 0.25))
+        + (w.yielding ? 0.7 : 0)
+      /*
+       * Not down the middle of a path: each keeps to their own side of it (their `side`), a third of the way
+       * out, as people do — so a rider down the middle already misses most of them (BUGS.md #42).
+       */
+      const keep = eNow.foot && w.kind !== 'cycle' && !w.yielding ? w.side * Math.max(0, eNow.width / 2 - 0.3) * 0.55 : 0
+      const off = Math.max(-halfWalk, Math.min(halfWalk, keep + w.dodge + w.across * w.dir))
       // onto the pavement: `side` is relative to the STREET, so it does not change when they turn round
       const l = lane * w.side + off
       w.at = { x: p.x - dz * l, z: p.z + dx * l }
+      w.nx = -dz
+      w.nz = dx
       // on a bridge, the pavement is 0.15 m above the deck's own height (render/bridges.ts)
       w.y = eNow.raised ? profileAt(eNow.points, eNow.heights, w.s).y + (eNow.foot ? 0.05 : 0.15) : undefined
 

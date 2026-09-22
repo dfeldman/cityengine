@@ -49,7 +49,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 39 | open | Memory over extended sessions: the heap must never approach 3 GB (a 10-minute soak) | user, 2026-09-22 |
 | 40 | fixed | Star junctions: left/straight/right cannot name the choice — show every exit, with its street | user, 2026-09-22 |
 | 41 | open | Quick landmarks: the hundreds of unusual buildings people steer by (hospitals, schools…) | user, 2026-09-22 |
-| 42 | open | Strangers walk down the middle of the path: they should step aside (or wait) for the rider | user, 2026-09-22 |
+| 42 | fixed | Strangers walk down the middle of the path: they should step aside (or wait) for the rider | user, 2026-09-22 |
 | 43 | fixed | A ride edge runs through a wall at 48.867116, 2.311297 (after a real archway) | user, 2026-09-22 |
 
 ---
@@ -713,6 +713,15 @@ hundreds, so each wants a quick pass: a simple generated treatment by kind (a fa
 Nudge them laterally so the rider misses more of them; as the rider comes up, they step out of the way if they
 can, and if it is too crowded they step aside and wait. No collisions — only so the rider never feels like a
 murderer.
+
+**Fix (2026-09-22), in `src/sim/crowd.ts`:**
+- On a path, people keep to their own side (a third of the way out), not the middle.
+- A walker (and their group) within 14 m ahead of the rider and under 1.6 m off the rider's line steps away
+  from it. They move quickly, as far as the path allows and 0.7 m onto the verge.
+- If even that leaves them in the way close up, they stop and wait for the rider to pass.
+
+No collisions, only manners. Test (`tests/crowd.test.ts`): a rider down the middle of a crowded 4 m path meets
+someone still walking in their line under 10% of the time, against 79% without.
 
 ## 43. Through a wall by the Grand Palais (48.867116, 2.311297)
 

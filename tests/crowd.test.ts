@@ -194,3 +194,38 @@ describe('strangers in company', () => {
     expect(close / Math.max(1, pairs)).toBeLessThan(0.002)
   })
 })
+
+describe('strangers and the rider (BUGS.md #42)', () => {
+  it('step out of the way of a rider coming down the middle of a path, or stop and wait', () => {
+    const e: Edge = {
+      id: 1, a: 0, b: 1, points: Array.from({ length: 9 }, (_, i) => ({ x: 0, z: i * 50 })), length: 400,
+      surface: 'asphalt', width: 4, walk: 0, foot: true, name: 'Allée', kind: 'footway',
+    } as Edge
+    const g = buildGraph([e])
+    const crowd = new Crowd(g, 'crowded')
+    const near = [...g.edges.values()]
+    // the crowd fills a street within its range of the rider: start near the middle
+    let rz = 130
+    crowd.update(0.01, { x: 0, z: rz }, near)
+    expect(crowd.all.length).toBeGreaterThan(3)
+    // the rider rides up the middle at 6 m/s; every walker the rider passes is either off the line or stopped
+    let passes = 0
+    let tooClose = 0
+    for (let t = 0; t < 22; t += 0.05) {
+      rz += 6 * 0.05
+      const before = new Map(crowd.all.map((w) => [w.id, { ...w.at }]))
+      crowd.update(0.05, { x: 0, z: rz }, near)
+      for (const w of crowd.all) {
+        if (w.kind === 'cycle') continue
+        if (Math.abs(w.at.z - rz) > 0.8) continue
+        passes++
+        const b = before.get(w.id)
+        const moving = b ? Math.hypot(w.at.x - b.x, w.at.z - b.z) > 0.01 : true
+        if (Math.abs(w.at.x) < 0.7 && moving) tooClose++
+      }
+    }
+    expect(passes).toBeGreaterThan(5)
+    // hardly anyone walking into the rider's line as they pass
+    expect(tooClose / passes).toBeLessThan(0.1)
+  })
+})
