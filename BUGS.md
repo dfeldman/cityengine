@@ -945,6 +945,10 @@ but no palette, so a whole district comes out in one colour.
 
 **Asked:** user, 2026-09-22: "Would like to jump anywhere on the map by clicking for testing and debugging."
 
+**Fix:** it was there but hidden behind shift-click ("i don't know how to click to travel on map. when i click,
+it sets a destination"). Double-click now goes there too, and the large map says so along its bottom edge:
+"click: set destination · double-click or shift-click: go there". With #61 the jump is instant.
+
 ## 64. Z-fighting on a building (37.789340, −122.401526)
 
 **Seen:** user riding, 2026-09-22: "tons of z fighting on this building". Market at Montgomery — two surfaces in

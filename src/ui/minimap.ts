@@ -138,6 +138,20 @@ export class Minimap {
       void start
       this.onPick({ x: this.lastAt.x + this.panX + cx * k, z: this.lastAt.z + this.panZ - cy * k }, e.shiftKey)
     })
+    /*
+     * Double-click goes there. Shift-click did it from the start, but nobody could be expected to guess that
+     * (user, 2026-09-22: "i don't know how to click to travel on map. when i click, it sets a destination"), and
+     * a jump no longer reloads the page (BUGS.md #61), so it is worth having a plain way to ask for it.
+     */
+    this.canvas.addEventListener('dblclick', (e) => {
+      if (!this.large || !this.onPick) return
+      e.preventDefault()
+      const rect = this.canvas.getBoundingClientRect()
+      const k = this.zoom / (this.size / 2)
+      const cx = e.clientX - rect.left - rect.width / 2
+      const cy = e.clientY - rect.top - rect.height / 2
+      this.onPick({ x: this.lastAt.x + this.panX + cx * k, z: this.lastAt.z + this.panZ - cy * k }, true)
+    })
     this.canvas.addEventListener('wheel', (e) => {
       if (!this.large) return
       e.preventDefault()
@@ -366,6 +380,22 @@ export class Minimap {
     ctx.strokeStyle = 'rgba(255,255,255,0.22)'
     ctx.lineWidth = 1
     ctx.stroke()
+
+    // what a click does, said on the map itself: nobody guesses shift-click
+    if (this.large) {
+      ctx.font = '600 11px -apple-system, system-ui, sans-serif'
+      const hint = 'click: set destination · double-click or shift-click: go there'
+      const w = ctx.measureText(hint).width
+      ctx.fillStyle = 'rgba(12,14,18,0.66)'
+      ctx.beginPath()
+      ctx.roundRect(s / 2 - w / 2 - 10, s - 30, w + 20, 20, 10)
+      ctx.fill()
+      ctx.fillStyle = 'rgba(255,255,255,0.86)'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText(hint, s / 2, s - 20)
+      ctx.textAlign = 'start'
+    }
   }
 }
 
