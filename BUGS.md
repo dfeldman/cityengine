@@ -20,7 +20,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 10 | open | The Cirque d'Hiver's two horsemen stand in the road and block it | user, 2026-09-21 |
 | 11 | open | Café terraces are poor: chairs and tables in a line, not chairs round tables, and often tilted | user, 2026-09-21 |
 | 12 | open | News stands (kiosques) need improvement | user, 2026-09-21 |
-| 13 | open | Too many long gowns among the strangers; the other dresses never appear | user, 2026-09-21 |
+| 13 | fixed | Too many long gowns among the strangers; the other dresses never appear | user, 2026-09-21 |
 
 ---
 
@@ -194,4 +194,15 @@ is rare. The other dresses in `CITY_WARDROBE.dresses` (render/crowd-baked.ts) ne
 **Notes:** every other woman gets a dress (`women++ % 2`), and only ~10 variants are baked, so one variant in a
 dress is a big share of the crowd. Check which kit ids those four dresses really are (the "knee length" ones
 may be long in the kit, or missing and falling back), keep only short/midi everyday dresses, and give dresses
-a smaller share.
+a smaller share. User adds: more recolouring of the strangers' clothes (more colours per garment, patterns
+toned down), since the variants are few and colour is what tells them apart.
+
+**Cause:** of the four dresses, `toigo_halter_dress_with_fluted_skirt` is floor-length and `…_midi` nearly so
+(checked on a contact sheet of the kit's thumbnails), and every other woman was dressed; with ~10 variants a
+single gown variant was a large share of the street.
+
+**Fix:** seven knee-length everyday dresses (shift, tweed, green, red halter, camisole with full skirt, flapper,
+halter knee), one woman in three in a dress; the clothing palette is now a street's (navy, black, charcoal,
+grey, cream, camel, olive, burgundy, denim; a quarter bright) with a per-person shade jitter of −16…+14%.
+
+**Check:** ✅ `docs/shots/BUG13-crowd.png`.

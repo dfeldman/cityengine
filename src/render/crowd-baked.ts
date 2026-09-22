@@ -383,7 +383,7 @@ function peopleLights(scene: Scene): void {
  * What people wear in a city street. The kit's random wardrobe is a beach's — swimming trunks, short denim
  * shorts, crop tops — and a crowd of strangers in what read, at twenty metres, as bikini bottoms is not a
  * Paris street (user report, 2026-09-21). So the top and the bottoms are replaced — mostly from everyday
- * clothes, two variants in ten from athletic kit (someone out for a run), and every other woman in a dress over
+ * clothes, two variants in ten from athletic kit (someone out for a run), and one woman in three in a dress over
  * tights. The body, face and hair stay the kit's.
  */
 const CITY_WARDROBE = {
@@ -397,11 +397,13 @@ const CITY_WARDROBE = {
   bottomsM: ['mindfront_male_trousers_1', 'mindfront_male_trousers_2', 'punkduck_male_classic_jeans', 'cortu_cargo_pants'],
   athleticTops: ['mindfront_tank_top_01', 'elvs_male_logo_tshirt1', 'elvs_lara_tank1'],
   athleticBottoms: ['elvs_male_swim_shorts1'],
-  dresses: ['toigo_halter_dress_knee_length', 'toigo_halter_dress_midi', 'toigo_halter_dress_with_fluted_skirt',
-    'elvs_halter_dress_knee_length'],
+  // everyday dresses to the knee: the fluted halter was a floor-length gown and the "midi" nearly one, and
+  // with so few variants baked one gown was a large share of the street (BUGS.md #13)
+  dresses: ['toigo_shift_dress', 'mindfront_f_dress_11', 'mindfront_f_dress_02', 'elvs_halter_dress_knee_length',
+    'toigo_camisole_dress_with_full_skirt', 'aethelraed_flapper_dress', 'toigo_halter_dress_knee_length'],
 }
 
-/** women dressed so far, so every other one gets a dress — a fixed share, not a dice roll that can come up none */
+/** women dressed so far, so one in three gets a dress — a fixed share, not a dice roll that can come up none */
 let women = 0
 
 function cityClothes(spec: AvatarSpec, seed: number, index: number): AvatarSpec {
@@ -418,7 +420,8 @@ function cityClothes(spec: AvatarSpec, seed: number, index: number): AvatarSpec 
   } else if (kind < 2) {
     clothes[0] = { ...clothes[0], id: pick(CITY_WARDROBE.athleticTops.filter((t) => fem || t !== 'elvs_lara_tank1')) }
     clothes[1] = { ...clothes[1], id: pick(CITY_WARDROBE.athleticBottoms) }
-  } else if (fem && women++ % 2 === 0) {
+  } else if (fem && women++ % 3 === 0) {
+    // one woman in three in a dress
     // the dress is the "top" (tinted with the walker's top colour) and tights the "bottoms"
     clothes[0] = { ...clothes[0], id: pick(CITY_WARDROBE.dresses) }
     clothes[1] = { ...clothes[1], id: 'kwnet_at_pantyhose01' }

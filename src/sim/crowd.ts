@@ -78,9 +78,23 @@ export const CROWD: Record<'none' | 'some' | 'busy' | 'crowded', CrowdConfig> = 
 const SKIN = ['#ffe3d3', '#fdd3bb', '#f3c3a2', '#e9b08b', '#dc9c70', '#c98657',
   '#b06f43', '#935933', '#784528', '#5e341e', '#472616']
 const HAIR = ['#16110e', '#2e1f17', '#4b3122', '#704628', '#94421f', '#d8a346', '#ecd394', '#8e8b88', '#e9e7e4']
-const TOPS = ['#1f6bff', '#22c7ee', '#14b8a6', '#12a874', '#ffd42a', '#f59e0b', '#e8690c', '#e03131',
-  '#e5157f', '#7c3aed', '#263066', '#1f2937', '#6b7280', '#d0d4e0', '#ffffff', '#111111', '#8b5a2b']
-const BOTTOMS = ['#111111', '#1f2937', '#263066', '#6b7280', '#8b5a2b', '#d0d4e0', '#0d1233']
+/*
+ * What a city street wears (BUGS.md #13, user: more recolouring): mostly the everyday colours — navy, black,
+ * charcoal, grey, white, cream, camel, olive, burgundy, denim — and a quarter bright, rather than the primary
+ * colours of a toy box. Each person's also shaded a little (`jitter`), so two strangers in the same garment
+ * and the same colour are still not the same.
+ */
+const TOPS = ['#1c2541', '#101114', '#2b2d31', '#4a4e57', '#8a8f98', '#f2f0ea', '#e8e0cf', '#c8a97e', '#a47148',
+  '#5b5f3a', '#6b2737', '#7a1f2b', '#3e5c76', '#6f8faf', '#b9c7d6', '#d9c3a5', '#3b3a36', '#556b2f',
+  '#1f6bff', '#e03131', '#ffd42a', '#12a874', '#e5157f', '#f59e0b', '#22c7ee', '#7c3aed']
+const BOTTOMS = ['#111111', '#1f2937', '#263066', '#0d1233', '#3b4a63', '#5a6f8f', '#6b7280', '#c8b596', '#8b5a2b',
+  '#4b4f3a', '#2e2a26', '#d0d4e0']
+/** a little darker or lighter, per person */
+const jitter = (r: () => number, hex: string): string => {
+  const k = 0.84 + r() * 0.3
+  const c = (i: number): string => Math.max(0, Math.min(255, Math.round(parseInt(hex.slice(i, i + 2), 16) * k))).toString(16).padStart(2, '0')
+  return `#${c(1)}${c(3)}${c(5)}`
+}
 
 const rgb = (hex: string): [number, number, number] =>
   [parseInt(hex.slice(1, 3), 16) / 255, parseInt(hex.slice(3, 5), 16) / 255, parseInt(hex.slice(5, 7), 16) / 255]
@@ -458,8 +472,8 @@ const SPORT_TOPS = ['#1f6bff', '#22c7ee', '#e03131', '#e5157f', '#ffd42a', '#12a
 const SPORT_BOTTOMS = ['#111111', '#1f2937', '#263066']
 
 function dressed(r: () => number, sport = false): Pick<Walker, 'shirt' | 'trousers' | 'skin' | 'hair' | 'look'> {
-  const look = { skin: pick(r, SKIN), hair: pick(r, HAIR), top: pick(r, sport ? SPORT_TOPS : TOPS),
-    bottom: pick(r, sport ? SPORT_BOTTOMS : BOTTOMS) }
+  const look = { skin: pick(r, SKIN), hair: pick(r, HAIR), top: jitter(r, pick(r, sport ? SPORT_TOPS : TOPS)),
+    bottom: jitter(r, pick(r, sport ? SPORT_BOTTOMS : BOTTOMS)) }
   return { look, skin: rgb(look.skin), hair: rgb(look.hair), shirt: rgb(look.top), trousers: rgb(look.bottom) }
 }
 
