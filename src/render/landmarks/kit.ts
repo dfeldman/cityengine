@@ -6,6 +6,7 @@
  * depth along +z, y up from the ground. Flat colours; the material's sun, rim and hemisphere do the shading.
  */
 import { MeshBuilder } from '../buildings.ts'
+import type { Fit } from './fit.ts'
 import { box, disc, prism, type Rgb } from '../models.ts'
 
 export { box, disc, prism }
@@ -286,5 +287,60 @@ export function courtFacade(out: MeshBuilder, len: number, eaves: number, o: {
       archedPane(out, -0.52, x, eaves + 3.2, 2.6, 1.3, o.trim)
       for (const s of [-1, 1]) prism(out, x + s * 1.25, -0.3, eaves + 3.4, eaves + 4.0, 0.14, 8, o.trim, 0, 0.14)
     }
+  }
+}
+
+/**
+ * A court's four facades, set on the court's walls facing in. `fit` is the court (hx across, hz deep, the
+ * street end at −z); each wall gets `facade` drawn in its own frame (see kit `courtFacade`).
+ */
+export function courtWalls(out: MeshBuilder, fit: Fit, facade: (q: MeshBuilder, len: number, which: 'far' | 'near' | 'side') => void): void {
+  const { hx, hz } = fit
+  /*
+   * On the court's real walls when the loader passed its outline: every edge of 4 m or more gets a facade,
+   * facing into the court. A court is rarely square, and a box's walls cut across the real ones.
+   */
+  if (fit.ring && fit.ring.length >= 3) {
+    // runs of nearly collinear short segments (OSM draws a curved or ragged wall as many) made into one wall
+    const src = fit.ring
+    const r: { x: number; z: number }[] = []
+    for (let i = 0; i < src.length; i++) {
+      const p = src[(i - 1 + src.length) % src.length]
+      const c = src[i]
+      const n = src[(i + 1) % src.length]
+      const a1 = Math.atan2(c.x - p.x, c.z - p.z)
+      const a2 = Math.atan2(n.x - c.x, n.z - c.z)
+      let d = Math.abs(a2 - a1)
+      if (d > Math.PI) d = 2 * Math.PI - d
+      if (d > 0.35) r.push(c)
+    }
+    for (let i = 0; i < r.length; i++) {
+      const a = r[i]
+      const b = r[(i + 1) % r.length]
+      const len = Math.hypot(b.x - a.x, b.z - a.z)
+      if (len < 4) continue
+      // anticlockwise court outline: its inward normal is (−ez, ex); the facade is drawn facing −z, so it is
+      // turned until −z points along that normal
+      const ex = (b.x - a.x) / len
+      const ez = (b.z - a.z) / len
+      const nx = -ez
+      const nz = ex
+      const angle = Math.atan2(-nx, -nz)
+      const mz = (a.z + b.z) / 2
+      const which = nz < -0.7 && mz < 0 ? 'near' : nz > 0.7 && mz > 0 ? 'far' : 'side'
+      const q = new MeshBuilder()
+      facade(q, len, which === 'near' ? 'near' : which === 'far' ? 'far' : 'side')
+      placed(out, q, angle, (a.x + b.x) / 2, (a.z + b.z) / 2)
+    }
+    return
+  }
+  const walls: [number, number, number, number, 'far' | 'near' | 'side'][] = [
+    [2 * hx, 0, 0, hz, 'far'], [2 * hx, Math.PI, 0, -hz, 'near'],
+    [2 * hz, -Math.PI / 2, -hx, 0, 'side'], [2 * hz, Math.PI / 2, hx, 0, 'side'],
+  ]
+  for (const [len, a, tx, tz, which] of walls) {
+    const q = new MeshBuilder()
+    facade(q, len, which)
+    placed(out, q, a, tx, tz)
   }
 }
