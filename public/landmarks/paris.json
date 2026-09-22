@@ -1002,5 +1002,77 @@
     "rotateDeg": 0,
     "stone": false,
     "note": "The gilded flame on its black granite plinth above the Alma tunnel."
+  },
+  {
+    "name": "Printemps — east dome",
+    "procedural": "cornerDome",
+    "lat": 48.87364,
+    "lon": 2.32958,
+    "rotateDeg": 0,
+    "size": [
+      13,
+      13
+    ],
+    "offset": [
+      0,
+      25,
+      0
+    ],
+    "stone": true,
+    "note": "A corner dome on the store's roof (PARIS_EXPAND §5 B): copper, gilded ribs, lantern; placed at the corner, at the eaves."
+  },
+  {
+    "name": "Printemps — west dome",
+    "procedural": "cornerDome",
+    "lat": 48.87364,
+    "lon": 2.32853,
+    "rotateDeg": 0,
+    "size": [
+      13,
+      13
+    ],
+    "offset": [
+      0,
+      25,
+      0
+    ],
+    "stone": true,
+    "note": "A corner dome on the store's roof (PARIS_EXPAND §5 B): copper, gilded ribs, lantern; placed at the corner, at the eaves."
+  },
+  {
+    "name": "Galeries Lafayette — corner dome",
+    "procedural": "cornerDome",
+    "lat": 48.8732,
+    "lon": 2.33298,
+    "rotateDeg": 0,
+    "size": [
+      12,
+      12
+    ],
+    "offset": [
+      0,
+      29,
+      0
+    ],
+    "stone": true,
+    "note": "A corner dome on the store's roof (PARIS_EXPAND §5 B): copper, gilded ribs, lantern; placed at the corner, at the eaves."
+  },
+  {
+    "name": "La Samaritaine — dome",
+    "procedural": "cornerDome",
+    "lat": 48.85979,
+    "lon": 2.3432,
+    "rotateDeg": 0,
+    "size": [
+      10,
+      10
+    ],
+    "offset": [
+      0,
+      27,
+      0
+    ],
+    "stone": true,
+    "note": "A corner dome on the store's roof (PARIS_EXPAND §5 B): copper, gilded ribs, lantern; placed at the corner, at the eaves."
   }
 ]
