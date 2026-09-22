@@ -34,6 +34,7 @@ import { pointAlong } from '../sim/navigate.ts'
 import { waterMaterial } from './water-material.ts'
 import { planFacade, type StyleId } from '../city/facade.ts'
 import { Terrain } from '../city/terrain.ts'
+import { Carriageways } from '../city/carriageways.ts'
 import { unpackPoints, type CityPackage, type PackedArea, type PackedBuilding, type PackedEdge, type PackedFurniture, type PackedRail } from '../city/package.ts'
 import { BRIDGE_STYLES, deck, isRaised, railDeck } from './bridges.ts'
 import { TILE, nearOf, tileKey, tileOf, tilesOfLine, type Near, type TileData, type TileSource } from '../city/tiles.ts'
@@ -1712,25 +1713,34 @@ export class City {
      * enough for one, 0.3 m in from the kerb. Small, red, and nowhere in Europe — a cheap, strong signal.
      */
     if (this.region.hydrants) {
+      // (not in the road: a street mapped as two parallel ways has one way's kerb in the other's lanes, and a
+      // hydrant near a junction was in the cross street — BUGS.md #45)
+      const roads = new Carriageways(groundEdges)
       for (const e of groundEdges) {
         if (e.foot || e.walk < 1.5) continue
         const pts = unpackPoints(e.points)
         const off = e.width / 2 + 0.3
+        let total = 0
+        for (let i = 1; i < pts.length; i++) total += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z)
         let acc = 20 + (e.id % 23)
+        let run = 0
         let n = 0
         for (let i = 1; i < pts.length; i++) {
           const dx = pts[i].x - pts[i - 1].x
           const dz = pts[i].z - pts[i - 1].z
           const seg = Math.hypot(dx, dz)
           while (acc < seg) {
+            if (run + acc > total - 12) break
             const t = acc / seg
             const side = (e.id + n) % 2 === 0 ? 1 : -1
-            placeModel(furniture, hydrant, pts[i - 1].x + dx * t + (-dz / seg) * off * side, 0.15,
-              pts[i - 1].z + dz * t + (dx / seg) * off * side, Math.atan2(dx, dz))
+            const hx = pts[i - 1].x + dx * t + (-dz / seg) * off * side
+            const hz = pts[i - 1].z + dz * t + (dx / seg) * off * side
+            if (!roads.inside(hx, hz, 0.2)) placeModel(furniture, hydrant, hx, 0.15, hz, Math.atan2(dx, dz))
             acc += 60
             n++
           }
           acc -= seg
+          run += seg
         }
       }
     }

@@ -791,6 +791,15 @@ rebaked: Marais 1137 → 892 edges, centre 6625. Shot: docs/shots/B44-after.png.
 
 **Seen:** user, 2026-09-22. And one levitating in a street at 37.793720, -122.409470.
 
+**Cause:** hydrants are placed every 60 m at each edge's kerb (render/city.ts), with no test of where that lands.
+Where OSM maps a street as two parallel ways (here the one at Powell's cable-car tracks), one way's kerb is in the
+other's lanes; the "levitating" one stood on the carriageway between the two. Near a junction the kerb of one
+street is in the cross street, and the far end of an edge was never kept clear.
+
+**Fix:** the carriageway test from #47 moved into src/city/carriageways.ts (`Carriageways`), shared: a hydrant
+spot inside any street's carriageway is skipped, and hydrants keep 12 m clear of an edge's far end as of its
+start. Shot: docs/shots/B45-after.png.
+
 ## 46. US-style crosswalks
 
 **Asked:** user, 2026-09-22: "we'll need us-style crosswalks". San Francisco's are two transverse white lines across
@@ -801,10 +810,23 @@ not the Paris zebra of short dashes.
 
 **Seen:** user, 2026-09-22, after the city's street-tree list replaced the guessed boulevard rows.
 
+**Cause:** the list's points are surveyed and OSM's footprints and street widths are not. The two disagree by a
+metre or three, and 279 of 2,623 trees in the old SF box had their trunk inside a building footprint.
+
+**Fix:** `seatTrees` (src/city/plantings.ts) seats each listed tree at the kerb of its street as drawn: the
+carriageway edge plus a basin's width, on the same side and at the same point along it. A tree that then lands in
+another carriageway (a corner) or a building is dropped (171 of 2,429, 7%). The mapped and scattered trees are
+pushed out of a building they have strayed into, or dropped if deep inside. Now 3 of 2,451 are inside a footprint
+(big multipolygon courtyards). Shot: docs/shots/B47-after.png.
+
 ## 48. A black polygon on the road under the trees (Cushman Street, Nob Hill)
 
 **Seen:** views/san-francisco.json "Trees — windmill palms", 2026-09-22. Goes with `?without=trees`, stays with
 `?without=plants`: the trees layer's shadow mesh, drawn solid black.
+
+**Status:** gone after #47 and not reproduced. The shadows under the trees that stood in the building and the
+carriageway were the black ones, so the likely cause is a shadow drawn under a facade or road piece that is
+itself blended. Reopen if a black shadow shows again. `tools/pick.ts --without=` isolates it.
 
 ## 49. Strangers flicker between their avoiding offset and their own path
 

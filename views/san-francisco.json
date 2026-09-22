@@ -1,6 +1,6 @@
 [
  {
-  "name": "Trees — Russian Hill maples and elms",
+  "name": "Trees \u2014 Russian Hill maples and elms",
   "group": "trees",
   "from": [
    37.797482,
@@ -15,7 +15,7 @@
   "note": "Acer, Ulmus, Pittosporum"
  },
  {
-  "name": "Trees — Nob Hill pittosporum",
+  "name": "Trees \u2014 Nob Hill pittosporum",
   "group": "trees",
   "from": [
    37.793736,
@@ -30,7 +30,7 @@
   "note": "Pittosporum, Metrosideros"
  },
  {
-  "name": "Trees — ficus block",
+  "name": "Trees \u2014 ficus block",
   "group": "trees",
   "from": [
    37.792277,
@@ -45,7 +45,7 @@
   "note": "Ficus x28"
  },
  {
-  "name": "Trees — Chinatown edge",
+  "name": "Trees \u2014 Chinatown edge",
   "group": "trees",
   "from": [
    37.791269,
@@ -60,7 +60,7 @@
   "note": "Ficus, Callistemon, Platanus"
  },
  {
-  "name": "Trees — windmill palms",
+  "name": "Trees \u2014 windmill palms",
   "group": "trees",
   "from": [
    37.788834,
@@ -75,7 +75,7 @@
   "note": "Trachycarpus x12"
  },
  {
-  "name": "Trees — planes",
+  "name": "Trees \u2014 planes",
   "group": "trees",
   "from": [
    37.792623,
@@ -90,7 +90,7 @@
   "note": "Platanus x17, Metrosideros"
  },
  {
-  "name": "Trees — podocarpus and pears",
+  "name": "Trees \u2014 podocarpus and pears",
   "group": "trees",
   "from": [
    37.79309,
@@ -105,7 +105,7 @@
   "note": "Afrocarpus, Pyrus"
  },
  {
-  "name": "Trees — Nob Hill air",
+  "name": "Trees \u2014 Nob Hill air",
   "group": "trees",
   "from": [
    37.7885,
@@ -116,6 +116,34 @@
    37.7935,
    -122.4125,
    0
+  ]
+ },
+ {
+  "name": "B45 hydrant in street",
+  "group": "bug",
+  "from": [
+   37.792655,
+   -122.411248,
+   4
+  ],
+  "to": [
+   37.792745,
+   -122.411188,
+   0.5
+  ]
+ },
+ {
+  "name": "B45 hydrant levitating",
+  "group": "bug",
+  "from": [
+   37.79363,
+   -122.40953,
+   4
+  ],
+  "to": [
+   37.79372,
+   -122.40947,
+   0.5
   ]
  }
 ]

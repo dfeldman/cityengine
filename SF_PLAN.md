@@ -261,6 +261,17 @@ These make the world alive, as the Seine's boats did:
   - the Stockton Street markets' awnings and produce, and the lanterns strung across Grant.
   These are rideable places as well as facades: the square's levels and stairs are run graph, like Salesforce
   Park's.
+- **The parks are weird, and that is the point** (user, 2026-09-22: "almost every park in SF is incredibly weird.
+  I guess they used space that couldn't be used for buildings due to steep slopes, and the result is interesting
+  concrete brutalist structures"). The terraced concrete parks on the slopes are Portsmouth Square, Huntington's
+  steps, Ina Coolbrith, Michelangelo, Jack Early and the Vallejo steps. Their retaining walls, stairs, landings
+  and ramps are the design, and each is modelled as a place with levels, like Chinatown's square.
+- **Playground equipment, shared** (user: "the same kind of slides and swings are used all over SF and all over the
+  US"). This is a shared kit in `render/`, not SF's: the modular post-and-deck play structure (coloured posts,
+  a deck, a tube slide and a wave slide, a climbing wall, the roof), the A-frame swing set with belt and bucket
+  seats, the spring rider, the see-saw, rubber surfacing and a sand pit. It is placed from OSM
+  `leisure=playground` areas and `playground=*` nodes, and where the nodes are missing a structure is set
+  in the middle of the area.
 - **Public sculptural art** (user: "sf has a lot of public sculptural art — these should be attempted if possible.
   not really as many statues like paris though"). OSM's `tourism=artwork` gives the positions; the abstract
   pieces suit procedural models: Cupid's Span, the Vaillancourt Fountain, Sea Change, Language of the Birds,

@@ -5,6 +5,7 @@
  * (PARIS_EXPAND §8); the rules are unchanged.
  */
 import { onSurface, unpackPoints, type CityPackage } from './package.ts'
+import { Carriageways, type Near } from './carriageways.ts'
 
 export interface Planting {
   x: number; z: number; height: number; spin: number; park: boolean
@@ -174,40 +175,10 @@ function thin(out: Planting[], cap: number): Planting[] {
  * if it is deep inside one. With `kerb` false only that last part is done: the mapped and scattered trees.
  */
 export function seatTrees(trees: Planting[], pkg: Pick<CityPackage, 'edges'> & Partial<Pick<CityPackage, 'buildings'>>, kerb = true): Planting[] {
-  interface Seg { ax: number; az: number; bx: number; bz: number; half: number; walk: number }
+  const roads = new Carriageways(pkg.edges)
+  const near = (x: number, z: number): Near[] => roads.near(x, z)
   const CELL = 24
-  const grid = new Map<string, Seg[]>()
   const key = (i: number, j: number): string => `${i},${j}`
-  for (const e of pkg.edges) {
-    if (e.foot || !onSurface(e)) continue
-    const p = unpackPoints(e.points)
-    for (let i = 1; i < p.length; i++) {
-      const s: Seg = { ax: p[i - 1].x, az: p[i - 1].z, bx: p[i].x, bz: p[i].z, half: e.width / 2, walk: e.walk }
-      const r = s.half + s.walk + 3
-      for (let gi = Math.floor((Math.min(s.ax, s.bx) - r) / CELL); gi <= Math.floor((Math.max(s.ax, s.bx) + r) / CELL); gi++) {
-        for (let gj = Math.floor((Math.min(s.az, s.bz) - r) / CELL); gj <= Math.floor((Math.max(s.az, s.bz) + r) / CELL); gj++) {
-          const l = grid.get(key(gi, gj)) ?? []
-          l.push(s)
-          grid.set(key(gi, gj), l)
-        }
-      }
-    }
-  }
-  const near = (x: number, z: number): { s: Seg; d: number; t: number; side: number }[] => {
-    const out: { s: Seg; d: number; t: number; side: number }[] = []
-    for (const s of grid.get(key(Math.floor(x / CELL), Math.floor(z / CELL))) ?? []) {
-      const dx = s.bx - s.ax
-      const dz = s.bz - s.az
-      const L2 = dx * dx + dz * dz
-      if (L2 < 1e-4) continue
-      const t = Math.max(0, Math.min(1, ((x - s.ax) * dx + (z - s.az) * dz) / L2))
-      const px = s.ax + dx * t
-      const pz = s.az + dz * t
-      const side = Math.sign(dx * (z - s.az) - dz * (x - s.ax)) || 1
-      out.push({ s, d: Math.hypot(x - px, z - pz), t, side })
-    }
-    return out
-  }
   // the buildings, bucketed the same way
   const rings = (pkg.buildings ?? []).map((b) => unpackPoints(b.ring))
   const bgrid = new Map<string, number[]>()
@@ -245,12 +216,12 @@ export function seatTrees(trees: Planting[], pkg: Pick<CityPackage, 'edges'> & P
     }
     return null
   }
-  const inCarriageway = (x: number, z: number): boolean => near(x, z).some((n) => n.d < n.s.half + 0.3)
+  const inCarriageway = (x: number, z: number): boolean => roads.inside(x, z)
 
   const out: Planting[] = []
   for (const tree of trees) {
     // the street it belongs to: the nearest whose pavement (and a little beyond, for the survey's slack) it is on
-    let best: { s: Seg; d: number; t: number; side: number } | null = null
+    let best: Near | null = null
     if (kerb) for (const n of near(tree.x, tree.z)) if (n.d <= n.s.half + n.s.walk + 2.5 && (!best || n.d - n.s.half < best.d - best.s.half)) best = n
     let x = tree.x
     let z = tree.z
