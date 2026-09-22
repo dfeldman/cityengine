@@ -91,6 +91,18 @@ Always give `"front": "street"` (it makes the fit carry the real footprint) and 
 building into `building:part`s, list the parts' ids in `osm` as well, so the parts are replaced too. Find them
 with the Overpass cache: `grep` or read `tools/cache/overpass-*.json`. The biggest file covers the whole box.
 
+## Materials: never flat
+
+The user wants the modelled buildings "not flat". The landmark material draws a procedural SURFACE per face,
+patterned in world metres: `ashlar`, `brick`, `granite`, `terracotta`, `concrete`, `metal`, `stucco`, `copper`,
+`tile` or `clapboard` (`SURFACES` in src/render/cartoon-material.ts). Glass automatically reflects the sky and
+the city, and whole windows light up at night.
+
+In the grammar, set each `Face`'s `material` to what the photo shows. In your own geometry, pass
+`surfaceTag('brick')` (from '../../../cartoon-material.ts') as a quad or box tag (the last argument). Theatre
+bulbs and neon use `EMIT` from models.ts. Check at night too: `tools/model-shots.ts … --time=night`. If a shot tool
+times out, `tools/page-errors.ts "?model=<builder>"` prints the page's errors.
+
 ## Checking your work
 
 - Photograph each model on its real footprint:
