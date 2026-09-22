@@ -17,7 +17,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 7 | open | Hôtel de Sens needs work (reads poorly) | user, 2026-09-21 |
 | 8 | fixed | White monuments are flat pure white; they should read as white marble or pale stone/brick | user, 2026-09-21 |
 | 9 | open | The path by the Seine at 48.849419, 2.361508 is a dead end: it comes close to a road but does not join it | user, 2026-09-21 |
-| 10 | open | The Cirque d'Hiver's two horsemen stand in the road and block it | user, 2026-09-21 |
+| 10 | fixed | The Cirque d'Hiver's two horsemen stand in the road and block it | user, 2026-09-21 |
 | 11 | open | Café terraces are poor: chairs and tables in a line, not chairs round tables, and often tilted | user, 2026-09-21 |
 | 12 | open | News stands (kiosques) need improvement | user, 2026-09-21 |
 | 13 | fixed | Too many long gowns among the strangers; the other dresses never appear | user, 2026-09-21 |
@@ -170,6 +170,11 @@ the street, the statues' offset from the drum now puts them past the kerb.
 
 **Also (user):** these statues are a good candidate for a high-quality downloaded model (PARIS_EXPAND §5: a
 model is allowed for complex statues), in place of the box horsemen.
+
+**Cause/fix:** they stood 5 m in front of the 20.5 m drum (25.5 m from its centre) and the porch projected 3 m,
+while Rue Amelot's centre line is 22 m out. Now each stands against the curved wall beside the porch
+(x ±9.6 on the drum, 1.3 m out) and the porch projects 1.6 m. ✅ `docs/shots/BUG10-horsemen.png`. The statue
+model is still wanted (PARIS_EXPAND §5, statues are where a download is allowed).
 
 ## 11. Café terraces: chairs in a line, tilted
 

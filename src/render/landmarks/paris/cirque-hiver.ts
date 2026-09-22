@@ -28,13 +28,16 @@ export function cirqueHiver(out: MeshBuilder): void {
   prism(out, 0, 0, 16, 21.5, r + 0.4, 20, roofC, FIXED, 3)
   prism(out, 0, 0, 21.5, 23, 3, 12, trim, FIXED, 2.2)
   // the porch, to the front (−z), with its pediment, and a horseman each side
-  block(out, -7, 7, -r - 3, -r + 3, 0, 13, stone)
-  pediment(out, -7.4, 7.4, -r - 3.3, 13, 3, 3, trim)
-  for (const x of [-5, -2, 2, 5]) column(out, x, -r - 3.4, 0.5, 12.2, 0.42, trim)
-  archedPane(out, -r - 3.02, 0, 0.5, 3, 6, hex('#2c2b29'))
+  // shallow: Rue Amelot runs right past the front, and a 3 m porch stood in the pavement
+  const d = 1.6
+  block(out, -7, 7, -r - d, -r + 3, 0, 13, stone)
+  pediment(out, -7.4, 7.4, -r - d - 0.3, 13, 3, 3, trim)
+  for (const x of [-5, -2, 2, 5]) column(out, x, -r - d - 0.4, 0.5, 12.2, 0.42, trim)
+  archedPane(out, -r - d - 0.02, 0, 0.5, 3, 6, hex('#2c2b29'))
   for (const sx of [-1, 1]) {
-    const x = sx * 11
-    const z = -r - 5
+    // either side of the porch, against the curved wall — out at 5 m they stood in the road (BUGS.md #10)
+    const x = sx * 9.6
+    const z = -Math.sqrt(r * r - x * x) - 1.3
     block(out, x - 1.4, x + 1.4, z - 1, z + 1, 0, 2.6, trim)
     block(out, x - 1.1, x + 1.1, z - 0.35, z + 0.35, 3.8, 4.8, bronze)                   // the horse
     for (const [lx, lz] of [[-0.9, -0.2], [-0.9, 0.2], [0.9, -0.2], [0.9, 0.2]]) block(out, x + lx - 0.1, x + lx + 0.1, z + lz - 0.1, z + lz + 0.1, 2.6, 3.9, bronze)
