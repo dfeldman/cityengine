@@ -23,6 +23,7 @@ import { MemoryTiles, TILE, tileKey, type CityIndex, type TileData } from './cit
 import { tilePreparer } from './render/prepare.ts'
 import { quaysLayer } from './render/quays.ts'
 import { LoadingScreen } from './ui/loading.ts'
+import { LandmarkCard } from './ui/landmark-card.ts'
 import { Plants } from './render/plants.ts'
 import { quickMarksLayer } from './render/quickmarks.ts'
 import { postersLayer } from './render/posters.ts'
@@ -388,6 +389,22 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   }
   const ride = new Ride()
   const hud = new Hud(document.getElementById('hud')!, () => nav.turnAround())
+  // the landmark card (ui/landmark-card.ts): notes on the major landmark nearby, toggled with I
+  const staticPlaces: { name: string; x: number; z: number }[] = []
+  {
+    const pr = new Projection(pkg.origin)
+    for (const e of landmarkList) {
+      if (!e.within) continue
+      const pts = e.within.map(([lat, lon]) => pr.toLocal({ lat, lon }))
+      staticPlaces.push({ name: e.name, x: pts.reduce((a, q) => a + q.x, 0) / pts.length, z: pts.reduce((a, q) => a + q.z, 0) / pts.length })
+    }
+    for (const l of pkg.landmarks ?? []) staticPlaces.push({ name: l.name, x: l.x, z: l.z })
+  }
+  const card = opts.freeze ? null : new LandmarkCard(function* () {
+    yield* landmarks?.placed ?? []
+    yield* staticPlaces
+  })
+  void card?.load(document.baseURI, pkg.region ? [opts.city, pkg.region] : [opts.city])
   hud.onExit = (edgeId) => {
     nav.requestEdge(edgeId)
     ownChoiceAt = nav.next()?.nodeId ?? null
@@ -829,6 +846,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         }
         hud.landmarkNear(best?.name ?? null, best?.side)
       }
+      card?.update(at, heading)
       hud.update(junction, nav.requested, nav.isCommitted, {
         speed: state.speed, power: state.power, distance: nav.travelled,
         street: edge.name, device: opts.device,
