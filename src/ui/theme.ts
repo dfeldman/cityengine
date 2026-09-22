@@ -47,6 +47,15 @@ select.sr-city { top: 14px; width: 250px; max-width: 70vw; }
 select.sr-landmarks { top: 66px; }
 select.sr-routes { top: 118px !important; }
 
+/* bike or run: a two-way switch under the menus (reloads into the other ride graph) */
+.sr-mode { position: fixed; top: 170px; left: 50%; transform: translateX(-50%); z-index: 5; display: flex;
+  background: var(--panel); border: 1px solid var(--border); border-radius: 999px; padding: 4px; box-shadow: var(--shadow);
+  backdrop-filter: blur(6px); }
+.sr-mode button { font: 700 14px/1 var(--font); color: var(--muted); background: none; border: none; border-radius: 999px;
+  padding: 9px 18px; min-height: 36px; cursor: pointer; }
+.sr-mode button.on { background: var(--page); color: var(--on-page); }
+.sr-mode button:focus-visible { outline: 3px solid var(--page); outline-offset: 2px; }
+
 #label { font: 12px/1.5 var(--font) !important; color: var(--muted) !important; }
 
 /* a card: the landmark box, the banners, the loading panel */

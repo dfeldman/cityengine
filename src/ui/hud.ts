@@ -141,8 +141,10 @@ export class Hud {
   }): void {
     const kmh = (stats.speed * 3.6).toFixed(1)
     const power = stats.power === null ? '—' : `${Math.round(stats.power)} W`
+    // a runner thinks in pace, minutes a kilometre; a rider in watts
+    const pace = stats.speed > 0.5 ? (() => { const t = Math.round(1000 / stats.speed); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')} /km` })() : '—:— /km'
     this.statsEl.textContent =
-      `${kmh} km/h   ${stats.device === 'bike' ? power : ''}   ${(stats.distance / 1000).toFixed(2)} km`
+      `${kmh} km/h   ${stats.device === 'bike' ? power : pace}   ${(stats.distance / 1000).toFixed(2)} km`
 
     this.turnsEl.innerHTML = (['left', 'straight', 'right'] as Turn[]).map((t) => {
       const offered = j?.turns.has(t) ?? false
@@ -206,7 +208,7 @@ export const HUD_CSS = `
 #hud .sr-exit-arrow { display: inline-block; font-size: 15px }
 #hud .sr-gps { font: 700 15px/1.3 var(--font); color: var(--on-page); background: var(--page); border-radius: 999px; padding: 6px 16px; text-shadow: none; box-shadow: var(--shadow) }
 #hud .sr-gps:not([hidden]) + .sr-back { top: 50px }
-.sr-banner { position: fixed; top: 176px; left: 50%; transform: translate(-50%, -12px); z-index: 6; opacity: 0;
+.sr-banner { position: fixed; top: 226px; left: 50%; transform: translate(-50%, -12px); z-index: 6; opacity: 0;
   pointer-events: none; transition: opacity .35s, transform .35s; text-align: center; color: var(--text);
   background: var(--panel); border: 2px solid var(--page); border-radius: var(--radius); padding: 14px 30px;
   font: 800 24px/1.25 var(--font); box-shadow: var(--shadow); backdrop-filter: blur(8px) }

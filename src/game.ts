@@ -111,7 +111,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   let lastMark = performance.now()
   const heapMB = (): number => Math.round(((performance as unknown as { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize ?? 0) / 1e6)
   // the loading screen (ui/loading.ts) follows the stages; `?freeze=1` shots and probes skip it
-  let loading: LoadingScreen | null = opts.freeze ? null : new LoadingScreen(opts.city)
+  let loading: LoadingScreen | null = opts.freeze ? null : new LoadingScreen(opts.city, opts.device)
   const mark = (name: string): void => {
     loading?.stage(name)
     const t = performance.now()
@@ -518,6 +518,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   addEventListener('keydown', (e) => { if (e.code === 'Escape' || e.code === 'KeyN') clearRoute() })
   ;(window as unknown as Record<string, unknown>).__routeLeft = () => (route ? Math.round(route.length) : null)
   ;(window as unknown as Record<string, unknown>).__travelled = () => nav.travelled
+  // where the rider is, for the bike/run switch to carry over (main.ts)
+  ;(window as unknown as Record<string, unknown>).__here = () => { const ll = proj.toLatLon(lastAt); return `${ll.lat.toFixed(6)},${ll.lon.toFixed(6)}` }
   ;(window as unknown as Record<string, unknown>).__route = (lat: number, lon: number) => {
     destination = new Projection(pkg.origin).toLocal({ lat, lon })
     replan()

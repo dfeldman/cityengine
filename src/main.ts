@@ -62,10 +62,43 @@ if (params.get('showcase')) {
     pick.addEventListener('keydown', (e) => e.stopPropagation())
     document.body.appendChild(pick)
   }
+  // bike or run (Trail Trainer's two machines): a switch under the menus; the other is another ride graph, so
+  // switching reloads, keeping the city and the place
+  const device = params.get('device') === 'treadmill' ? 'treadmill' : 'bike'
+  {
+    const box = document.createElement('div')
+    box.className = 'sr-mode'
+    box.setAttribute('role', 'radiogroup')
+    box.title = 'bike or run (R)'
+    const go = (d: 'bike' | 'treadmill'): void => {
+      if (d === device) return
+      const q = new URLSearchParams(location.search)
+      if (d === 'treadmill') q.set('device', 'treadmill')
+      else q.delete('device')
+      q.delete('start')
+      const here = (window as unknown as { __here?: () => string | null }).__here?.()
+      if (here) q.set('at', here)
+      location.search = `?${q}`.replace(/%2C/g, ',')
+    }
+    for (const [d, label] of [['bike', 'Bike'], ['treadmill', 'Run']] as const) {
+      const b = document.createElement('button')
+      b.textContent = label
+      b.setAttribute('role', 'radio')
+      b.setAttribute('aria-checked', String(d === device))
+      if (d === device) b.classList.add('on')
+      b.addEventListener('click', () => go(d))
+      box.appendChild(b)
+    }
+    addEventListener('keydown', (e) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) return
+      if (e.code === 'KeyR') go(device === 'bike' ? 'treadmill' : 'bike')
+    })
+    document.body.appendChild(box)
+  }
   const { game } = await import('./game.ts')
   void game(canvas, {
     city,
-    device: params.get('device') === 'treadmill' ? 'treadmill' : 'bike',
+    device,
     traffic: (params.get('traffic') as 'none' | 'some' | 'busy') ?? undefined,
     bodies: params.get('bodies') ? Number(params.get('bodies')) : undefined,
     // ?without=sky,life,trees — for isolating which subsystem is drawing something wrong

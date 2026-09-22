@@ -41,19 +41,22 @@ export class LoadingScreen {
   private readonly what: HTMLElement
   private done = 0
 
-  constructor(cityName: string) {
+  private readonly mode: string
+
+  constructor(cityName: string, device: 'bike' | 'treadmill' = 'bike') {
+    this.mode = device === 'treadmill' ? 'on foot' : 'by bike'
     this.root = document.createElement('div')
     this.root.className = 'sr-loading'
     this.root.innerHTML = `<div class="sr-card"><span class="sr-pill">Dandyhorse</span><h1>Street Runner</h1>
       <div class="city"></div><div class="bar"><div class="fill"></div></div><div class="what">Starting…</div></div>`
-    this.root.querySelector('.city')!.textContent = cityName
+    this.city(cityName)
     this.fill = this.root.querySelector('.fill')!
     this.what = this.root.querySelector('.what')!
     document.body.appendChild(this.root)
   }
 
   /** a name for the city, once the index has it */
-  city(name: string): void { this.root.querySelector('.city')!.textContent = name }
+  city(name: string): void { this.root.querySelector('.city')!.textContent = `${name} · ${this.mode}` }
 
   /** a load stage finished (game.ts `mark`) */
   stage(name: string): void {
