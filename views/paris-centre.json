@@ -2016,20 +2016,6 @@
   ]
  },
  {
-  "name": "Conciergerie — from the Quai de la Mégisserie",
-  "group": "landmark",
-  "from": [
-   48.85775,
-   2.3456,
-   6
-  ],
-  "to": [
-   48.8565,
-   2.345,
-   14
-  ]
- },
- {
   "name": "Sainte-Chapelle — air",
   "group": "landmark",
   "from": [
@@ -2545,6 +2531,34 @@
    48.854141,
    2.305748,
    1.5
+  ]
+ },
+ {
+  "name": "Conciergerie — from the Quai de la Mégisserie",
+  "group": "landmark",
+  "from": [
+   48.857541,
+   2.345724,
+   14
+  ],
+  "to": [
+   48.8565,
+   2.3453,
+   14
+  ]
+ },
+ {
+  "name": "Hôtel de la Marine — from the Concorde",
+  "group": "landmark",
+  "from": [
+   48.865723,
+   2.322044,
+   4
+  ],
+  "to": [
+   48.86705,
+   2.3224,
+   14
   ]
  }
 ]

@@ -202,7 +202,7 @@ Tooling carried over: `tools/nested-parts.ts` (parts to replace with a model), `
    there; set a DESTINATION and show the route on the minimap and the ground, with the distance left and the
    next turn — a shortest path on the ride graph. Later: **preplanned routes** (scenic loops) on the same
    machinery.
-10. **Animated fountains, later (user, 2026-09-21):** the fountains' water (the Concorde's, the Vosges', Saint-
+10. ⏸ (postponed by the user, 2026-09-22: "we will animate fountains in the future, but postpone that") **Animated fountains, later (user, 2026-09-21):** the fountains' water (the Concorde's, the Vosges', Saint-
    Michel, Saint-Sulpice…) moving; postponed — the modelled basins come first.
 9. ✅ (2026-09-22, first version: `render/posters.ts`, the Morris columns) **Posters and billboards, eventually (user, 2026-09-21):** a library per city of images at STANDARD sizes
    (Paris: the Morris column wrap, the 4 × 3 m wall poster, the bus-shelter panel; US cities: the 14 × 48 ft
@@ -364,6 +364,23 @@ adds to the city-wide meshes (terraces, fringe, passages, quays, signs). Visual 
   rest real), 6 edges through buildings (box edge, a real porch).
 - Open: BUGS #37 (Bir-Hakeim, Alexandre III). Next on the Seine: Petit Palais, Conciergerie, Institut,
   Assemblée, the parvis lawn (the Place du Trocadéro's pedestrian ways have no `area=yes`).
+
+**2026-09-22, later: the rest of A and B, and the user's new bugs (#38–#43, all fixed):**
+- **A, done:** Sainte-Chapelle, the Madeleine, the Assemblée's portico, the Institut (hemicycle and dome),
+  Petit Palais, the Buren columns and Palais-Royal galleries, École Militaire, the Concorde's twin palaces,
+  the Conciergerie and Palais de Justice (restyles). Tour Montparnasse stays skyline.
+- **B, done:**
+  - temples (`temple-front.ts`);
+  - fountains and monuments (Innocents, Saint-Michel, the Flame);
+  - department-store domes (`cornerDome`: Printemps, Galeries Lafayette, Samaritaine);
+  - the theatres and the Monnaie (restyles);
+  - restyles by area (Rivoli, Vendôme, Victoires, Rue Royale);
+  - quick landmarks by kind for the hundreds more (#41);
+  - gardens: kiosks one storey; shrubs and flower beds (item 8).
+- **C:** the Line 6 viaduct in the Paris design and its stations; Bir-Hakeim's upper deck; Paris rolling stock.
+- **Roads:** level cross-sections with retaining walls (#38). Star junctions untangled and named (#40).
+  Strangers step aside (#42). Memory ceiling measured at 541 MB (#39). GPS with banners and route lengths.
+- Statues still wanted from the user: MODELS_NEEDED.md.
 
 Tools for comparing: `tools/compare-shots.ts <before> <after>` (per-view % changed), `tools/pair.ts` (side by
 side), `tools/measure-load.ts`.

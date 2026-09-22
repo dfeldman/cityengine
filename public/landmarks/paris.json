@@ -1074,5 +1074,112 @@
     ],
     "stone": true,
     "note": "A corner dome on the store's roof (PARIS_EXPAND §5 B): copper, gilded ribs, lantern; placed at the corner, at the eaves."
+  },
+  {
+    "name": "Hôtel de la Marine and Hôtel de Crillon",
+    "osm": [
+      "relation/1060822",
+      "relation/1060804"
+    ],
+    "restyle": "classical",
+    "roof": "flat",
+    "height": 22,
+    "levels": 3,
+    "note": "Gabriel's twin palaces on the north side of the Concorde: the colonnade over an arcaded ground floor, balustraded, flat."
+  },
+  {
+    "name": "Palais de Justice and the Conciergerie",
+    "osm": [
+      "relation/536982"
+    ],
+    "restyle": "classical",
+    "roof": "mansard",
+    "levels": 4,
+    "note": "The Palais de Justice on the Île de la Cité; the Conciergerie's pepper-pot towers are OSM's own cone-roofed parts on the quai."
+  },
+  {
+    "name": "Théâtre du Châtelet and Théâtre de la Ville",
+    "osm": [
+      "way/53574718",
+      "way/53582122"
+    ],
+    "restyle": "classical",
+    "roof": "hipped",
+    "levels": 3,
+    "note": "Davioud's twin theatres facing each other across the Place du Châtelet: arcaded fronts, stone."
+  },
+  {
+    "name": "Hôtel de la Monnaie",
+    "osm": [
+      "relation/967664"
+    ],
+    "restyle": "classical",
+    "roof": "flat",
+    "levels": 3,
+    "note": "The Mint on the Quai de Conti, beside the Institut: a long plain classical front with its projecting centre."
+  },
+  {
+    "name": "Bourse de Commerce",
+    "osm": [
+      "way/19856722"
+    ],
+    "restyle": "classical",
+    "roof": "flat",
+    "levels": 2,
+    "note": "The round corn exchange by Les Halles."
+  },
+  {
+    "name": "Place des Victoires — facades",
+    "restyle": "classical",
+    "roof": "mansard",
+    "levels": 4,
+    "within": [
+      [
+        48.8661,
+        2.3407
+      ],
+      [
+        48.8661,
+        2.3417
+      ],
+      [
+        48.86515,
+        2.3417
+      ],
+      [
+        48.86515,
+        2.3407
+      ]
+    ],
+    "take": "around",
+    "margin": 20,
+    "note": "Hardouin-Mansart's uniform facades round the round place."
+  },
+  {
+    "name": "Rue Royale",
+    "restyle": "classical",
+    "roof": "mansard",
+    "levels": 5,
+    "within": [
+      [
+        48.8693,
+        2.3242
+      ],
+      [
+        48.866,
+        2.3224
+      ],
+      [
+        48.8659,
+        2.32262
+      ],
+      [
+        48.8692,
+        2.32442
+      ]
+    ],
+    "take": "around",
+    "margin": 14,
+    "note": "The uniform fronts of the Rue Royale between the Concorde and the Madeleine."
   }
 ]
