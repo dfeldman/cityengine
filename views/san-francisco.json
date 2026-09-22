@@ -1,6 +1,6 @@
 [
  {
-  "name": "Trees \u2014 Russian Hill maples and elms",
+  "name": "Trees — Russian Hill maples and elms",
   "group": "trees",
   "from": [
    37.797482,
@@ -15,7 +15,7 @@
   "note": "Acer, Ulmus, Pittosporum"
  },
  {
-  "name": "Trees \u2014 Nob Hill pittosporum",
+  "name": "Trees — Nob Hill pittosporum",
   "group": "trees",
   "from": [
    37.793736,
@@ -30,7 +30,7 @@
   "note": "Pittosporum, Metrosideros"
  },
  {
-  "name": "Trees \u2014 ficus block",
+  "name": "Trees — ficus block",
   "group": "trees",
   "from": [
    37.792277,
@@ -45,7 +45,7 @@
   "note": "Ficus x28"
  },
  {
-  "name": "Trees \u2014 Chinatown edge",
+  "name": "Trees — Chinatown edge",
   "group": "trees",
   "from": [
    37.791269,
@@ -60,7 +60,7 @@
   "note": "Ficus, Callistemon, Platanus"
  },
  {
-  "name": "Trees \u2014 windmill palms",
+  "name": "Trees — windmill palms",
   "group": "trees",
   "from": [
    37.788834,
@@ -75,7 +75,7 @@
   "note": "Trachycarpus x12"
  },
  {
-  "name": "Trees \u2014 planes",
+  "name": "Trees — planes",
   "group": "trees",
   "from": [
    37.792623,
@@ -90,7 +90,7 @@
   "note": "Platanus x17, Metrosideros"
  },
  {
-  "name": "Trees \u2014 podocarpus and pears",
+  "name": "Trees — podocarpus and pears",
   "group": "trees",
   "from": [
    37.79309,
@@ -105,7 +105,7 @@
   "note": "Afrocarpus, Pyrus"
  },
  {
-  "name": "Trees \u2014 Nob Hill air",
+  "name": "Trees — Nob Hill air",
   "group": "trees",
   "from": [
    37.7885,
@@ -144,6 +144,118 @@
    37.79372,
    -122.40947,
    0.5
+  ]
+ },
+ {
+  "name": "Market — Ferry Building",
+  "group": "market",
+  "from": [
+   37.793914,
+   -122.395804,
+   2.2
+  ],
+  "to": [
+   37.793594,
+   -122.395405,
+   5
+  ]
+ },
+ {
+  "name": "Market — One Market and the Southern Pacific",
+  "group": "market",
+  "from": [
+   37.792813,
+   -122.396142,
+   2.2
+  ],
+  "to": [
+   37.793153,
+   -122.396514,
+   5
+  ]
+ },
+ {
+  "name": "Market — Front and the SVB pavilion",
+  "group": "market",
+  "from": [
+   37.790269,
+   -122.400091,
+   2.2
+  ],
+  "to": [
+   37.790569,
+   -122.399668,
+   5
+  ]
+ },
+ {
+  "name": "Market — Montgomery and the Hobart",
+  "group": "market",
+  "from": [
+   37.789411,
+   -122.402093,
+   2.2
+  ],
+  "to": [
+   37.788968,
+   -122.402004,
+   5
+  ]
+ },
+ {
+  "name": "Market — the Palace Hotel",
+  "group": "market",
+  "from": [
+   37.787977,
+   -122.403056,
+   2.2
+  ],
+  "to": [
+   37.787659,
+   -122.403456,
+   5
+  ]
+ },
+ {
+  "name": "Market — Phelan and the Flood",
+  "group": "market",
+  "from": [
+   37.786581,
+   -122.404821,
+   2.2
+  ],
+  "to": [
+   37.786265,
+   -122.405226,
+   5
+  ]
+ },
+ {
+  "name": "Market — Powell and Hallidie Plaza",
+  "group": "market",
+  "from": [
+   37.784639,
+   -122.407344,
+   2.2
+  ],
+  "to": [
+   37.784341,
+   -122.407769,
+   5
+  ]
+ },
+ {
+  "name": "Market — the Warfield and Golden Gate",
+  "group": "market",
+  "from": [
+   37.782143,
+   -122.410574,
+   2.2
+  ],
+  "to": [
+   37.782587,
+   -122.41066,
+   5
   ]
  }
 ]

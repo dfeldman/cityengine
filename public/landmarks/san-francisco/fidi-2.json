@@ -1,1 +1,112 @@
-[]
+[
+ {
+  "osm": [
+   "way/1279447597"
+  ],
+  "name": "150 California Street",
+  "procedural": "oneFiftyCalifornia",
+  "front": "street",
+  "height": 101,
+  "note": "1988 pale granite tower"
+ },
+ {
+  "osm": [
+   "way/32947408"
+  ],
+  "name": "350 Sansome Street",
+  "procedural": "threeFiftySansome",
+  "front": "street",
+  "height": 99,
+  "note": "1928 Art Deco block"
+ },
+ {
+  "osm": [
+   "way/148741786"
+  ],
+  "name": "580 California Street",
+  "procedural": "fiveEightyCalifornia",
+  "front": "street",
+  "height": 98,
+  "note": "1984 postmodern granite, rooftop figures omitted"
+ },
+ {
+  "osm": [
+   "way/1309156966"
+  ],
+  "name": "301;305;315 Howard Street",
+  "procedural": "threeZeroOneHoward",
+  "front": "street",
+  "height": 97,
+  "note": "1980s blue glass office tower"
+ },
+ {
+  "osm": [
+   "way/192026938"
+  ],
+  "name": "100 Spear Street",
+  "procedural": "oneHundredSpear",
+  "front": "street",
+  "height": 94,
+  "note": "1984 glass curtain tower"
+ },
+ {
+  "osm": [
+   "way/256066232"
+  ],
+  "name": "Mills Tower",
+  "procedural": "millsTower",
+  "front": "street",
+  "height": 92,
+  "note": "1918 terracotta annex to the Mills Building"
+ },
+ {
+  "osm": [
+   "way/32946353"
+  ],
+  "name": "601 Montgomery Street",
+  "procedural": "sixZeroOneMontgomery",
+  "front": "street",
+  "height": 91,
+  "note": "1983 dark curtain-wall tower"
+ },
+ {
+  "osm": [
+   "way/260286865"
+  ],
+  "name": "290 Battery Street",
+  "procedural": "twoNinetyBattery",
+  "front": "street",
+  "height": 90,
+  "note": "1987 blue-green glass tower"
+ },
+ {
+  "osm": [
+   "way/256076607"
+  ],
+  "name": "555 Pine Street",
+  "procedural": "fiveFiveFivePine",
+  "front": "street",
+  "height": 90,
+  "note": "1961 midcentury slab"
+ },
+ {
+  "osm": [
+   "way/260286440"
+  ],
+  "name": "430;432;444 California Street",
+  "procedural": "fourThirtyCalifornia",
+  "front": "street",
+  "height": 89,
+  "note": "pre-war Chicago-frame block"
+ },
+ {
+  "osm": [
+   "way/149837280"
+  ],
+  "name": "25 Jessie Street",
+  "procedural": "twentyFiveJessie",
+  "front": "street",
+  "height": 83,
+  "note": "2019 slender glass residential tower"
+ }
+]
