@@ -256,5 +256,23 @@
   "group": "landmark",
   "from": [48.8616, 2.289, 12],
   "to": [48.85826, 2.2945, 120]
+ },
+ {
+  "name": "Arc de Triomphe — from the Champs-Élysées",
+  "group": "landmark",
+  "from": [48.8724, 2.2992, 1.8],
+  "to": [48.87378, 2.29504, 22]
+ },
+ {
+  "name": "Arc de Triomphe — from under",
+  "group": "landmark",
+  "from": [48.87368, 2.29535, 1.8],
+  "to": [48.8739, 2.2947, 12]
+ },
+ {
+  "name": "Arc de Triomphe — from above",
+  "group": "landmark",
+  "from": [48.873, 2.2964, 60],
+  "to": [48.87378, 2.29504, 20]
  }
 ]

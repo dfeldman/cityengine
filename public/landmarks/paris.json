@@ -477,5 +477,28 @@
       "way/1462597765"
     ],
     "note": "Placeholder: OSM's tower drawn as a 330 m windowed block and its stacked parts."
+  },
+  {
+    "name": "Arc de Triomphe",
+    "procedural": "arcDeTriomphe",
+    "osm": [
+      "way/226413514",
+      "way/226413509",
+      "way/226413510",
+      "way/226413511",
+      "way/226413512",
+      "way/226413513",
+      "way/226413515",
+      "way/226413516",
+      "way/226413519",
+      "way/226413520",
+      "way/226413521",
+      "way/226413522",
+      "way/226520145",
+      "way/226520146"
+    ],
+    "front": 116,
+    "height": 50,
+    "note": "Fitted to OSM's attic outline (way 226413514, 45 × 22 m), its front (the −z face) down the Champs-Élysées; every OSM part of the arch replaced."
   }
 ]

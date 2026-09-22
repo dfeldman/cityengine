@@ -15,6 +15,7 @@ import { colonneDeJuillet } from './paris/colonne-de-juillet.ts'
 import { pompidou } from './paris/pompidou.ts'
 import { eiffelTower } from './paris/eiffel-tower.ts'
 import { eiffelTowerFull } from './paris/eiffel-tower-full.ts'
+import { arcDeTriomphe } from './paris/arc-de-triomphe.ts'
 import { montparnasse } from './paris/montparnasse.ts'
 import { sacreCoeur } from './paris/sacre-coeur.ts'
 import { pantheon } from './paris/pantheon.ts'
@@ -41,5 +42,5 @@ import { flamelHouse } from './paris/flamel-house.ts'
 export type { Fit }
 
 export const PROCEDURAL: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  colonneDeJuillet, pompidou, eiffelTower, eiffelTowerFull, montparnasse, sacreCoeur, pantheon, notreDame, saintPaul, hotelDeSens, tourSaintJacques, hotelDeVille, operaArch, synagogueGuimard, synagogueTournelles, vosgesGarden, templeMarais, saintGervais, cirqueHiver, saintDenysPortico, saintLouisSpire, sullyCourt, soubiseCourt, carnavaletCourt, saintMerri, flamelHouse,
+  colonneDeJuillet, pompidou, eiffelTower, eiffelTowerFull, arcDeTriomphe, montparnasse, sacreCoeur, pantheon, notreDame, saintPaul, hotelDeSens, tourSaintJacques, hotelDeVille, operaArch, synagogueGuimard, synagogueTournelles, vosgesGarden, templeMarais, saintGervais, cirqueHiver, saintDenysPortico, saintLouisSpire, sullyCourt, soubiseCourt, carnavaletCourt, saintMerri, flamelHouse,
 }
