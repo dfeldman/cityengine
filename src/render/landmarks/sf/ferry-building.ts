@@ -69,7 +69,7 @@ export function ferryBuilding(out: MeshBuilder, fit: Fit): void {
     const cx = nx * (w + 0.12)
     const cz = tz + nz * (w + 0.12)
     const r = 3
-    // a round face (as a thin prism turned to face out), the dark ring round it
+    // a round face — a fan of wedges facing out — and the dark ring round it
     const disc = (rr: number, c: Rgb, off: number): void => {
       const n = 16
       for (let i = 0; i < n; i++) {
