@@ -29,5 +29,6 @@
   {"include": "san-francisco/market-east.json"},
   {"include": "san-francisco/market-mid.json"},
   {"include": "san-francisco/market-west.json"},
-  {"include": "san-francisco/union-square.json"}
+  {"include": "san-francisco/union-square.json"},
+  {"include": "san-francisco/piers.json"}
 ]

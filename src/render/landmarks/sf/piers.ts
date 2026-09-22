@@ -174,4 +174,15 @@ export const PIERS = {
   pier33: preset({ number: '33', style: 'beaux' }),
   pier35: preset({ number: '35', style: 'plain' }),
   pier45: preset({ number: '45', style: 'plain' }),
+  // south of the Bay Bridge: the 1910s bulkheads of Piers 26 and 28 under the viaduct, and the later sheds
+  pier24: preset({ number: '24', style: 'beaux', height: 10 }),
+  pier26: preset({ number: '26', style: 'beaux', height: 10 }),
+  pier28: preset({ number: '28', style: 'beaux', height: 10 }),
+  pier38: preset({ number: '38', style: 'plain', height: 9 }),
+  pier40: preset({ number: '40', style: 'plain', height: 9 }),
+  pier48: preset({ number: '48', style: 'plain', height: 13 }),
+  // Fort Mason's piers: long plain sheds on the water, the Herbst and Festival pavilions
+  fortMasonPier1: preset({ number: '1', style: 'plain', height: 10, wall: [0.8, 0.79, 0.75] }),
+  fortMasonPier2: preset({ number: '2', style: 'plain', height: 10, wall: [0.8, 0.79, 0.75] }),
+  fortMasonPier3: preset({ number: '3', style: 'plain', height: 10, wall: [0.8, 0.79, 0.75] }),
 }
