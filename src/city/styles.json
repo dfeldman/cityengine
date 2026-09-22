@@ -336,7 +336,17 @@
         { "wall": "#9fb4c7", "trim": "#f2f2ee", "roof": "#555555", "accent": "#3b4a5a" },
         { "wall": "#c7a4a0", "trim": "#f5efe8", "roof": "#5a5a5a", "accent": "#4d2f3a" },
         { "wall": "#b5c4a0", "trim": "#f3f1e6", "roof": "#555555", "accent": "#4a3b2a" },
-        { "wall": "#e6d7a8", "trim": "#fbf8ee", "roof": "#5a5a5a", "accent": "#2f4a5a" }
+        { "wall": "#e6d7a8", "trim": "#fbf8ee", "roof": "#5a5a5a", "accent": "#2f4a5a" },
+        { "wall": "#6f8fb0", "trim": "#f5f1e8", "roof": "#4a4a4a", "accent": "#8a2b3a" },
+        { "wall": "#a7c7a0", "trim": "#f7f2e6", "roof": "#4d4d4d", "accent": "#b14f5f" },
+        { "wall": "#e8c65a", "trim": "#f6f3ea", "roof": "#555555", "accent": "#3a5f46" },
+        { "wall": "#c45f5a", "trim": "#f3ecde", "roof": "#4a4a4a", "accent": "#2e4a5f" },
+        { "wall": "#8e7cb0", "trim": "#f4efe6", "roof": "#4a4a4a", "accent": "#d8a84a" },
+        { "wall": "#5c8a86", "trim": "#efe9da", "roof": "#4a4a4a", "accent": "#c9763e" },
+        { "wall": "#f0dfc4", "trim": "#7a4a3a", "roof": "#555555", "accent": "#2f5d6e" },
+        { "wall": "#d99a6c", "trim": "#f6f0e3", "roof": "#4d4d4d", "accent": "#355c4c" },
+        { "wall": "#b9c9d6", "trim": "#ffffff", "roof": "#555555", "accent": "#1f3b5a" },
+        { "wall": "#e7b8c0", "trim": "#fbf7f0", "roof": "#4d4d4d", "accent": "#5a7a4a" }
       ]
     },
     {
