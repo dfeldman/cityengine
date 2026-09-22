@@ -27,8 +27,10 @@ import { cartoonMaterial } from './cartoon-material.ts'
 import { DAYLIGHT } from './facade-material.ts'
 import { SHADOW_Y, addShadow, shadowMaterial, shadowOffset } from './shadows.ts'
 import { PROCEDURAL, type Fit } from './landmarks/procedural.ts'
+import { TILE, type TileData } from '../city/tiles.ts'
 import { Projection } from '../city/geo.ts'
-import { unpackPoints, type CityPackage, type PackedBuilding } from '../city/package.ts'
+import { unpackPoints, type CityPackage, type PackedBuilding, type PackedLandmark } from '../city/package.ts'
+import type { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial'
 import type { Terrain } from '../city/terrain.ts'
 
 export interface LandmarkEntry {
@@ -312,108 +314,29 @@ export class Landmarks {
 
   private readonly terrain: Terrain
 
-  constructor(scene: Scene, pkg: CityPackage, entries: LandmarkEntry[], terrain: Terrain, base: string) {
+  /** the city's buildings seen so far (city and fringe), by id, for fitting a landmark to its own */
+  private readonly byId = new Map<number, Pick<PackedBuilding, 'id' | 'ring' | 'height' | 'holes'>>()
+  /** entries not yet placed: each waits for the tile its building, or its point, is in */
+  private pending: LandmarkEntry[]
+  private readonly named: PackedLandmark[]
+  private readonly proj: Projection
+  private readonly mat: ShaderMaterial
+
+  /**
+   * The skyline now, the landmarks as their tiles arrive (`addTile`): a streamed city does not have every
+   * building at load, and a landmark is fitted to its own building's footprint.
+   */
+  constructor(scene: Scene, pkg: Pick<CityPackage, 'origin' | 'skyline' | 'landmarks'>, entries: LandmarkEntry[], terrain: Terrain, base: string) {
     this.terrain = terrain
     this.scene = scene
     this.base = base
-    const proj = new Projection(pkg.origin)
-    // the outer ring's buildings too: a landmark beyond the box (Saint-Merri) replaces one of those
-    const byId = new Map<number, Pick<PackedBuilding, 'id' | 'ring' | 'height' | 'holes'>>(
-      [...(pkg.fringe ?? []), ...pkg.buildings].map((b) => [b.id, b]))
+    this.proj = new Projection(pkg.origin)
+    this.named = pkg.landmarks ?? []
+    this.pending = entries.filter((e) => entryKind(e) !== 'restyle' && entryKind(e) !== 'placeholder')
     const mat = cartoonMaterial(scene, 'cartoonLandmark', false)
     // drawn both sides: one mesh per landmark, and a builder's hand-wound quads need not all agree
     mat.backFaceCulling = false
-
-    const shadows = new MeshBuilder()
-    const sunOff = shadowOffset(DAYLIGHT.sun)
-    for (const e of entries) {
-      const kind = entryKind(e)
-      if (kind === 'restyle' || kind === 'placeholder') continue
-      const onId = e.on ? packedIds({ name: e.name, osm: e.on })[0] : undefined
-      const building = onId !== undefined ? byId.get(onId) : packedIds(e).map((id) => byId.get(id)).find((b) => b)
-      const height = e.height ?? building?.height ?? 30
-      let cx: number
-      let cz: number
-      let rotation = ((e.rotateDeg ?? 0) * Math.PI) / 180
-      let fit: Fit = { hx: (e.size?.[0] ?? 20) / 2, hz: (e.size?.[1] ?? 20) / 2, height }
-      let ring: { x: number; z: number }[] | null = null
-      if (building) {
-        ring = unpackPoints(building.ring)
-        if (e.court) {
-          // the largest courtyard, turned back to anticlockwise like an outline
-          const holes = (building.holes ?? []).map(unpackPoints)
-          const area = (r: { x: number; z: number }[]): number => {
-            let a = 0
-            for (let i = 0; i < r.length; i++) { const j = (i + 1) % r.length; a += r[i].x * r[j].z - r[j].x * r[i].z }
-            return Math.abs(a / 2)
-          }
-          const big = holes.sort((p, q) => area(q) - area(p))[0]
-          if (!big) { console.warn(`landmark ${e.name}: no courtyard`); continue }
-          ring = [...big].reverse()
-        }
-        let bearing: number | undefined = typeof e.front === 'number' ? e.front : undefined
-        if (e.front === 'street') {
-          const l = pkg.landmarks?.find((x) => x.id === building.id)
-          if (l) bearing = (Math.atan2(l.frontage.nx, l.frontage.nz) * 180) / Math.PI
-        }
-        if (bearing !== undefined) {
-          const f = fitSnug(ring!, bearing)
-          cx = f.cx; cz = f.cz; rotation = f.rotation
-          fit = { hx: f.hx, hz: f.hz, height }
-          if (e.court) {
-            // the court's outline in the model's frame: world = c + (x cos θ + z sin θ, −x sin θ + z cos θ)
-            const c = Math.cos(rotation)
-            const sn = Math.sin(rotation)
-            fit.ring = ring!.map((p) => {
-              const dx = p.x - f.cx
-              const dz = p.z - f.cz
-              return { x: dx * c - dz * sn, z: dx * sn + dz * c }
-            })
-          }
-        } else {
-          const f = fitTo(building, height)
-          cx = f.cx; cz = f.cz; fit = f.fit
-          if (e.rotateDeg === undefined) rotation = f.rotation
-        }
-      } else if (e.lat !== undefined && e.lon !== undefined) {
-        const p = proj.toLocal({ lat: e.lat, lon: e.lon })
-        cx = p.x; cz = p.z
-        if (typeof e.front === 'number') rotation = ((e.front + 180) * Math.PI) / 180
-      } else continue
-      const [ox, oy, oz] = e.offset ?? [0, 0, 0]
-      // sunk to the lowest ground under it, as the city's own buildings are, so a slope shows no daylight
-      const under = ring ?? rectRing(cx, cz, fit.hx, fit.hz, rotation)
-      const y = Math.min(...under.map((q) => terrain.heightAt(q.x, q.z)), terrain.heightAt(cx, cz)) - 0.5 + oy
-
-      if (e.procedural) {
-        const build = PROCEDURAL[e.procedural]
-        if (!build) { console.warn(`landmark ${e.name}: no procedural builder "${e.procedural}"`); continue }
-        const mb = new MeshBuilder()
-        build(mb, fit)
-        const m = new Mesh(`landmark:${e.name}`, scene)
-        mb.toVertexData().applyToMesh(m)
-        m.material = mat
-        m.position.set(cx + ox, y, cz + oz)
-        m.rotation.y = rotation
-        m.scaling.setAll(e.scale ?? 1)
-        m.renderingGroupId = 3
-        m.isPickable = false
-        this.count++
-        if (e.sign !== false) this.placed.push({ name: e.name, x: cx + ox, z: cz + oz, hx: fit.hx, hz: fit.hz, rotation, height: modelHeight(mb) })
-        // and its shadow, from the footprint it stands on, the height it reaches
-        addShadow(shadows, under, modelHeight(mb) * 0.85, sunOff, SHADOW_Y)
-      } else if (e.file) {
-        void this.loadModel(e, cx + ox, y, cz + oz, rotation)
-      }
-    }
-    if (shadows.triangles > 0) {
-      const m = new Mesh('landmark:shadows', scene)
-      terrain.drape(shadows.positions)
-      shadows.toVertexData().applyToMesh(m)
-      m.material = shadowMaterial(scene)
-      m.renderingGroupId = 3
-      m.isPickable = false
-    }
+    this.mat = mat
 
     // ---- the skyline
     const skyMat = cartoonMaterial(scene, 'cartoonSkyline', false)
@@ -441,6 +364,113 @@ export class Landmarks {
       m.isPickable = false
       m.alwaysSelectAsActiveMesh = true
       this.sky.push({ mesh: m, x: s.x, y: s.baseY ?? 0, z: s.z, boost: skylineBoost(d) })
+    }
+  }
+
+  /** A tile's data arrived: place every landmark that was waiting for it. */
+  addTile(t: TileData): void {
+    for (const b of [...t.fringe, ...t.buildings]) this.byId.set(b.id, b)
+    const [tx, tz] = t.key.split(',').map(Number)
+    this.pending = this.pending.filter((e) => {
+      const ids = e.on ? packedIds({ name: e.name, osm: e.on }) : packedIds(e)
+      // the building it is fitted to is the FIRST named (the Hôtel de Ville lists its thirteen courtyard wings
+      // after its outline): placed on whichever came first, it was fitted to a wing
+      const ready = ids.length > 0 ? this.byId.has(ids[0])
+        : e.lat !== undefined && e.lon !== undefined && (() => {
+          const p = this.proj.toLocal({ lat: e.lat!, lon: e.lon! })
+          return Math.floor(p.x / TILE) === tx && Math.floor(p.z / TILE) === tz
+        })()
+      if (!ready) return true
+      this.place(e)
+      return false
+    })
+  }
+
+  private place(e: LandmarkEntry): void {
+    const onId = e.on ? packedIds({ name: e.name, osm: e.on })[0] : undefined
+    const building = onId !== undefined ? this.byId.get(onId) : this.byId.get(packedIds(e)[0])
+    const height = e.height ?? building?.height ?? 30
+    let cx: number
+    let cz: number
+    let rotation = ((e.rotateDeg ?? 0) * Math.PI) / 180
+    let fit: Fit = { hx: (e.size?.[0] ?? 20) / 2, hz: (e.size?.[1] ?? 20) / 2, height }
+    let ring: { x: number; z: number }[] | null = null
+    if (building) {
+      ring = unpackPoints(building.ring)
+      if (e.court) {
+        // the largest courtyard, turned back to anticlockwise like an outline
+        const holes = (building.holes ?? []).map(unpackPoints)
+        const area = (r: { x: number; z: number }[]): number => {
+          let a = 0
+          for (let i = 0; i < r.length; i++) { const j = (i + 1) % r.length; a += r[i].x * r[j].z - r[j].x * r[i].z }
+          return Math.abs(a / 2)
+        }
+        const big = holes.sort((p, q) => area(q) - area(p))[0]
+        if (!big) { console.warn(`landmark ${e.name}: no courtyard`); return }
+        ring = [...big].reverse()
+      }
+      let bearing: number | undefined = typeof e.front === 'number' ? e.front : undefined
+      if (e.front === 'street') {
+        const l = this.named.find((x) => x.id === building.id)
+        if (l) bearing = (Math.atan2(l.frontage.nx, l.frontage.nz) * 180) / Math.PI
+      }
+      if (bearing !== undefined) {
+        const f = fitSnug(ring!, bearing)
+        cx = f.cx; cz = f.cz; rotation = f.rotation
+        fit = { hx: f.hx, hz: f.hz, height }
+        if (e.court) {
+          // the court's outline in the model's frame: world = c + (x cos θ + z sin θ, −x sin θ + z cos θ)
+          const c = Math.cos(rotation)
+          const sn = Math.sin(rotation)
+          fit.ring = ring!.map((p) => {
+            const dx = p.x - f.cx
+            const dz = p.z - f.cz
+            return { x: dx * c - dz * sn, z: dx * sn + dz * c }
+          })
+        }
+      } else {
+        const f = fitTo(building, height)
+        cx = f.cx; cz = f.cz; fit = f.fit
+        if (e.rotateDeg === undefined) rotation = f.rotation
+      }
+    } else if (e.lat !== undefined && e.lon !== undefined) {
+      const p = this.proj.toLocal({ lat: e.lat, lon: e.lon })
+      cx = p.x; cz = p.z
+      if (typeof e.front === 'number') rotation = ((e.front + 180) * Math.PI) / 180
+    } else return
+    const [ox, oy, oz] = e.offset ?? [0, 0, 0]
+    // sunk to the lowest ground under it, as the city's own buildings are, so a slope shows no daylight
+    const under = ring ?? rectRing(cx, cz, fit.hx, fit.hz, rotation)
+    const y = Math.min(...under.map((q) => this.terrain.heightAt(q.x, q.z)), this.terrain.heightAt(cx, cz)) - 0.5 + oy
+
+    if (e.procedural) {
+      const build = PROCEDURAL[e.procedural]
+      if (!build) { console.warn(`landmark ${e.name}: no procedural builder "${e.procedural}"`); return }
+      const mb = new MeshBuilder()
+      build(mb, fit)
+      const m = new Mesh(`landmark:${e.name}`, this.scene)
+      mb.toVertexData().applyToMesh(m)
+      m.material = this.mat
+      m.position.set(cx + ox, y, cz + oz)
+      m.rotation.y = rotation
+      m.scaling.setAll(e.scale ?? 1)
+      m.renderingGroupId = 3
+      m.isPickable = false
+      this.count++
+      if (e.sign !== false) this.placed.push({ name: e.name, x: cx + ox, z: cz + oz, hx: fit.hx, hz: fit.hz, rotation, height: modelHeight(mb) })
+      // and its shadow, from the footprint it stands on, the height it reaches
+      const shadows = new MeshBuilder()
+      addShadow(shadows, under, modelHeight(mb) * 0.85, shadowOffset(DAYLIGHT.sun), SHADOW_Y)
+      if (shadows.triangles > 0) {
+        const sm = new Mesh(`landmark:shadow:${e.name}`, this.scene)
+        this.terrain.drape(shadows.positions)
+        shadows.toVertexData().applyToMesh(sm)
+        sm.material = shadowMaterial(this.scene)
+        sm.renderingGroupId = 3
+        sm.isPickable = false
+      }
+    } else if (e.file) {
+      void this.loadModel(e, cx + ox, y, cz + oz, rotation)
     }
   }
 

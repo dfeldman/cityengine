@@ -144,10 +144,19 @@ export class Life {
     this.blobs = new Pool(scene, 'blobs', build(blobQuad), budget.cars + budget.buses + budget.people + 48)
     this.blobs.mesh.material = blobMaterial(scene)
 
+    this.addRails(pkg.rails)
+  }
+
+  private readonly railIds = new Set<number>()
+
+  /** Railways arriving with streamed tiles, each once, with its trains. */
+  addRails(rails: CityPackage['rails']): void {
     // Only the railways a rider can actually see. A subway is underground: putting a train on it would mean
     // a train sliding through the road surface, which is worse than no train at all.
-    for (const r of pkg.rails) {
-      if (r.kind === 'subway') continue
+    const from = this.rails.length
+    for (const r of rails) {
+      if (r.kind === 'subway' || this.railIds.has(r.id)) continue
+      this.railIds.add(r.id)
       const points = unpackPoints(r.points)
       let length = 0
       for (let i = 1; i < points.length; i++) {
@@ -157,6 +166,7 @@ export class Life {
       this.rails.push({ points, length, tram: r.kind === 'tram', heights: r.heights })
     }
     this.rails.forEach((r, i) => {
+      if (i < from) return
       // a tram is one car at a walking-plus pace; a cable car runs at about 15 km/h
       this.trains.push(r.tram
         ? { rail: i, s: (i * 137) % r.length, dir: i % 2 ? 1 : -1, speed: 4.2, cars: 1 }

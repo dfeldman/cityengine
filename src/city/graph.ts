@@ -83,9 +83,17 @@ export interface CityGraph {
 }
 
 export function buildGraph(edges: Edge[]): CityGraph {
-  const nodes = new Map<number, Node>()
-  const byId = new Map<number, Edge>()
+  const g: CityGraph = { nodes: new Map(), edges: new Map() }
+  addEdges(g, edges)
+  return g
+}
+
+/** Add edges to a graph in place (a streamed city grows as its tiles arrive); an edge already in is skipped. */
+export function addEdges(g: CityGraph, edges: Edge[]): void {
+  const nodes = g.nodes
+  const byId = g.edges
   for (const e of edges) {
+    if (byId.has(e.id)) continue
     byId.set(e.id, e)
     for (const [id, at] of [[e.a, e.points[0]], [e.b, e.points[e.points.length - 1]]] as const) {
       const n = nodes.get(id as number) ?? { id: id as number, at: at as Point, edges: [] }
@@ -93,7 +101,6 @@ export function buildGraph(edges: Edge[]): CityGraph {
       nodes.set(id as number, n)
     }
   }
-  return { nodes, edges: byId }
 }
 
 /** The direction an edge leaves `nodeId` in — the bearing of its first few metres, not of its whole length. */

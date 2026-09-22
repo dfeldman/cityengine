@@ -257,13 +257,20 @@ adds to the city-wide meshes (terraces, fringe, passages, quays, signs). Visual 
 - ✅ 1d (ride graph at bake, §3): `src/city/ridefile.ts` (`rideFor` = the one builder with overrides, used by
   bake and game; `packRide`/`unpackRide`), `cities/<id>/ride-{bike,run}.json`; load stage 100 → 18 ms; views
   pixel-identical; `tests/ridefile.test.ts`.
-- ⏭ 1c (next): streaming. City ingests tiles incrementally (edges de-duplicated, nodes/arms, pads, buckets),
-  requests data for VIEW+1, builds a tile only when its 3×3 data is in, at most one or two builds a frame,
-  disposes far tiles. Then per-tile conversion of every city-wide subsystem, one at a time, each with a views
-  comparison: terraces, quays, passages, metrosigns, signs, vegetation (instances from near tiles), fringe →
-  mid-ring massing, landmarks (built when their tile arrives), life (rails from tiles), the map graph for
-  the crowd (incremental), minimap (from the ride graph). Only when all are per-tile does the game stop
-  fetching every tile.
+- ✅ 1c (2026-09-21): **streaming.** The game opens the index (`openCity`; a single-package city is cut up in
+  memory, one code path), loads the baked ride graph, finds the start on it, fetches the tiles within the mid
+  ring of the start before the first frame, and then keeps fetching round the focus (rider, or the frozen
+  camera's target) four times a second. Each tile is prepared (`render/prepare.ts`: landmarks' buildings out,
+  restyles, insets), ingested by the City (`City.ingest`: edges de-duplicated, junction arms, buckets), added
+  to the map graph (`addEdges`) and the minimap, and handed to the landmarks (placed when the tile with their
+  FIRST named building arrives) and the trains. The City builds a tile when its 3×3 is in, within 7 ms a
+  frame after the load, drops it past VIEW + 1; per-tile layers (terraces, quays, passages, métro lettering,
+  signs in the near ring with shared refcounted text atlases, trees, fringe) have their own ranges; a mid
+  ring (to MID = 6 tiles, 1.2 km) draws every building as massing. Lights, bridge sidewalks and junction pads
+  are worked out per tile. Views match the full-load set (only the intentional BUGS #5/#6 changes).
+  Not yet: evicting tile DATA far behind the rider (meshes are dropped; data accumulates — fine for 20 km²,
+  wants `City.forget` later), and landmark LOD (mid/full).
+- ⏭ **Step 2 next: grow the box** to the full area (§1), chunked Overpass fetches.
 
 Tools for comparing: `tools/compare-shots.ts <before> <after>` (per-view % changed), `tools/pair.ts` (side by
 side), `tools/measure-load.ts`.

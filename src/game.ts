@@ -16,11 +16,11 @@ import { Rain } from './render/rain.ts'
 import { DebugPanel, OrbitLook, copyText } from './ui/debug.ts'
 import { Projection } from './city/geo.ts'
 import { parseLatLon } from './ui/goto.ts'
-import { style as styleOf, type StyleId } from './city/facade.ts'
-import { insetNested } from './city/nesting.ts'
 import { asMassing, fringeLayer, massing } from './render/fringe.ts'
 import { terracesLayer } from './render/terraces.ts'
-import { MemoryTiles, splitPackage } from './city/tiles.ts'
+import { MID } from './render/city.ts'
+import { MemoryTiles, TILE, tileKey, type CityIndex, type TileData } from './city/tiles.ts'
+import { tilePreparer } from './render/prepare.ts'
 import { quaysLayer } from './render/quays.ts'
 import { passagesLayer } from './render/passages.ts'
 import { metroSignsLayer } from './render/metrosigns.ts'
@@ -31,7 +31,7 @@ import { City, setupGroundLayers } from './render/city.ts'
 import { Crowd } from './sim/crowd.ts'
 import { Life } from './render/life.ts'
 import { Sky } from './render/sky.ts'
-import { Landmarks, landmarkManifest, packedIds, replacedIds, restyles } from './render/landmarks.ts'
+import { Landmarks, landmarkManifest, packedIds } from './render/landmarks.ts'
 import { Traffic } from './sim/traffic.ts'
 import { BakedCrowd } from './render/crowd-baked.ts'
 import { Rider } from './render/rider.ts'
@@ -45,11 +45,11 @@ import { Minimap } from './ui/minimap.ts'
 import { LocalControls, type Controls } from './controls.ts'
 import { Navigator } from './sim/navigate.ts'
 import { Ride, cornerRadius } from './sim/ride.ts'
-import { buildGraph, departureBearing, resolve, type Edge } from './city/graph.ts'
-import { locate, rideExits } from './city/ridegraph.ts'
-import { unpackPoints, wholeWater, type CityPackage } from './city/package.ts'
-import { loadRide, loadWhole } from './city/tilestore.ts'
-import { rideFor } from './city/ridefile.ts'
+import { addEdges, departureBearing, resolve, type CityGraph, type Edge } from './city/graph.ts'
+import { locate, rideExits, type RideGraph } from './city/ridegraph.ts'
+import { unpackPoints, wholeWater, type CityPackage, type PackedArea, type PackedRail } from './city/package.ts'
+import { loadRide, openCity } from './city/tilestore.ts'
+import { mapEdges } from './city/ridefile.ts'
 import type { AtlasManifest } from './render/buildings.ts'
 
 const ASSETS = new URL('facades/', document.baseURI).href
@@ -98,89 +98,30 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   let lastMark = performance.now()
   const mark = (name: string): void => { const t = performance.now(); marks[name] = Math.round(t - lastMark); lastMark = t }
   ;(window as unknown as { __marks?: unknown }).__marks = marks
-  const [full, atlas, landmarkList] = await Promise.all([
-    // from its tiles, joined (city/tilestore.ts) — or its single package if baked before tiling
-    loadWhole(document.baseURI, opts.city),
+  const [src, atlas, landmarkList] = await Promise.all([
+    // the index now, the tiles as the rider needs them (city/tilestore.ts); a single-package city is cut up
+    openCity(document.baseURI, opts.city),
     fetch(`${ASSETS}atlas.json`).then((r) => r.json()) as Promise<AtlasManifest>,
     landmarkManifest(document.baseURI, opts.city),
   ])
   mark('fetched')
-  /*
-   * A landmark in the manifest REPLACES its OSM building: taken out here, before any tile is built, so its
-   * generated walls, its shadow and its shop signs all go with it (render/landmarks.ts).
-   */
-  const replaced = replacedIds(landmarkList)
-  /*
-   * And a restyle keeps its buildings but changes their dress — the Place des Vosges's brick and stone —
-   * with the steep slate roof that goes with it.
-   */
-  const restyled = restyles(landmarkList, full)
-  // and a building mapped inside another is pulled in a hand's width, so their shared walls stop z-fighting
-  /*
-   * `dropParts`: the parts OSM maps above the Vosges arcades that sit over a house already drawn whole. Only
-   * those — a part bridging an ARCH (the Pavillon du Roi over Rue de Birague) has nothing under it, and
-   * dropping it left a slot of sky through the pavilion.
-   */
-  const groundRings = full.buildings.filter((b) => (b.minHeight ?? 0) <= 0.5).map((b) => b.ring)
-  const overGround = (b: { ring: number[] }): boolean => {
-    let x = 0
-    let z = 0
-    for (let i = 0; i < b.ring.length; i += 2) { x += b.ring[i]; z += b.ring[i + 1] }
-    x /= b.ring.length / 2
-    z /= b.ring.length / 2
-    return groundRings.some((r) => {
-      let o = false
-      for (let i = 0, j = r.length - 2; i < r.length; j = i, i += 2) {
-        if ((r[i + 1] > z) !== (r[j + 1] > z) && x < ((r[j] - r[i]) * (z - r[i + 1])) / (r[j + 1] - r[i + 1]) + r[i]) o = !o
-      }
-      return o
-    })
+  const index = src.index
+  // what the rest of the game reads of the city as a whole: the index's global part
+  const pkg = {
+    id: index.id, name: index.name, origin: index.origin, region: index.region, ground: index.ground,
+    terrain: index.terrain, start: index.start, landmarks: index.landmarks, water: index.water, skyline: index.skyline,
+    areas: [] as PackedArea[], rails: [] as PackedRail[],
   }
-  // the passages' points: a part a passage runs under is the arch's upper storey, never dropped
-  const passagePts: number[] = full.edges.filter((e) => e.passage).flatMap((e) => e.points)
-  const overPassage = (b: { ring: number[] }): boolean => {
-    const r = b.ring
-    for (let k = 0; k < passagePts.length; k += 2) {
-      const x = passagePts[k]
-      const z = passagePts[k + 1]
-      let o = false
-      for (let i = 0, j = r.length - 2; i < r.length; j = i, i += 2) {
-        if ((r[i + 1] > z) !== (r[j + 1] > z) && x < ((r[j] - r[i]) * (z - r[i + 1])) / (r[j + 1] - r[i + 1]) + r[i]) o = !o
-      }
-      if (o) return true
-    }
-    return false
-  }
-  const pkg: CityPackage = { ...full, fringe: (full.fringe ?? []).filter((f) => !replaced.has(f.id)), buildings: insetNested(full.buildings.filter((b) => !replaced.has(b.id)
-      // a part with no height (OSM's height = min_height, round the Vosges arcades) has no walls, but it drew
-      // its cornice anyway — a stone band in mid-air, z-fighting with the facade behind it
-      && (b.height ?? Infinity) - (b.minHeight ?? 0) > 0.5
-      && !(restyled.get(b.id)?.dropParts && (b.minHeight ?? 0) > 2.5 && overGround(b) && !overPassage(b))).map((b) => {
-      const e = restyled.get(b.id)
-      if (!e?.restyle) return b
-      const st = ((b.minHeight ?? 0) > 2.5 && e.restyleAloft ? e.restyleAloft : e.restyle) as StyleId
-      const pal = styleOf(st).palettes[0]
-      const hexRgb = (h: string): [number, number, number] =>
-        [parseInt(h.slice(1, 3), 16) / 255, parseInt(h.slice(3, 5), 16) / 255, parseInt(h.slice(5, 7), 16) / 255]
-      const roof = e.roof === 'flat' ? { roof: 'flat' as const, roofHeight: 0 }
-        : e.roofHeight !== undefined ? { roof: e.roof ?? 'hipped' as const, roofHeight: e.roofHeight } : {}
-      const height = e.eaves !== undefined && b.height !== undefined && b.height > e.eaves && (b.minHeight ?? 0) < e.eaves
-        ? { height: e.eaves, levels: e.levels } : {}
-      return { ...b, style: st, ...roof, ...height, roofColour: hexRgb(e.roofColour ?? pal.roof) }
-    })) }
-
-  const edges: Edge[] = pkg.edges.map((e) => {
-    const points = unpackPoints(e.points)
-    let length = 0
-    for (let i = 1; i < points.length; i++) {
-      length += Math.hypot(points[i].x - points[i - 1].x, points[i].z - points[i - 1].z)
-    }
-    return { id: e.id, a: e.a, b: e.b, points, length, surface: e.surface, width: e.width, walk: e.walk,
-      name: e.name, foot: e.foot, crossing: e.crossing, heights: e.heights, kind: e.kind, service: e.service, oneway: e.oneway,
-      layer: e.layer, bridge: e.bridge, tunnel: e.tunnel, passage: e.passage }
-  })
-  const graph = buildGraph(edges)
-  mark('graph')
+  const prepare = tilePreparer(landmarkList, index)
+  /*
+   * The ride graph first: it is global and baked (city/ridefile.ts) — the rider is steered through it, its
+   * junctions carry the corner plaques — and it says where the ride starts, so the right tiles come first.
+   */
+  const mode = opts.device === 'treadmill' ? 'run' : 'bike'
+  const baked = await loadRide(document.baseURI, opts.city, mode)
+  if (!baked) throw new Error(`${opts.city} has no baked ride graph — npm run bake -- ${opts.city}`)
+  const rides: RideGraph = baked
+  mark('rideGraph')
 
   /*
    * Before anything is built. The materials read the look when they are created and the shadows are baked
@@ -195,25 +136,62 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   scene.clearColor = new Color4(DAYLIGHT.fogColour.r, DAYLIGHT.fogColour.g, DAYLIGHT.fogColour.b, 1)
   setupGroundLayers(scene)
   const city = new City(scene, { name: pkg.name, ground: pkg.ground, region: pkg.region, terrain: pkg.terrain,
-    water: wholeWater(pkg) }, atlas, ASSETS).omit(off)
+    water: pkg.water }, atlas, ASSETS).omit(off)
   /*
-   * The prepared city (landmarks taken out, restyles and insets applied) cut into tiles: the City takes
-   * them in (`ingest`) and its per-tile layers read them (render/city.ts `TileLayer`).
+   * Streaming (PARIS_EXPAND §2): each tile, when it arrives, is prepared (landmarks' buildings out, restyles
+   * in, render/prepare.ts), taken in by the City and its per-tile layers, added to the map graph the crowd
+   * walks, and handed to whatever else wants it (the landmarks, the trains, the minimap). The tiles within
+   * the mid ring of the start are in before the first frame; the rest follow the rider.
    */
-  const prepared = new MemoryTiles(splitPackage(pkg, () => undefined).tiles)
+  const prepared = new MemoryTiles(new Map())
   city.source = prepared
-  city.exists = (k) => prepared.tiles.has(k)
-  for (const t of prepared.tiles.values()) city.ingest(t)
+  city.exists = (k) => src.has(k)
+  const graph: CityGraph = { nodes: new Map(), edges: new Map() }
+  const arrived: { raw: TileData; ready: TileData; edges: Edge[] }[] = []
+  const listeners: ((a: { raw: TileData; ready: TileData; edges: Edge[] }) => void)[] = []
+  /** be told of every tile, the ones already in first */
+  const onTile = (f: (a: { raw: TileData; ready: TileData; edges: Edge[] }) => void): void => {
+    listeners.push(f)
+    for (const a of arrived) f(a)
+  }
+  const requested = new Set<string>()
+  const bring = async (k: string): Promise<void> => {
+    if (requested.has(k) || !src.has(k)) return
+    requested.add(k)
+    const raw = await src.load(k)
+    if (!raw) return
+    const ready = prepare(raw)
+    prepared.tiles.set(k, ready)
+    city.ingest(ready)
+    const fresh = mapEdges(ready.edges.filter((e) => !graph.edges.has(e.id)), city.terrain)
+    addEdges(graph, fresh)
+    const a = { raw, ready, edges: fresh }
+    arrived.push(a)
+    for (const f of listeners) f(a)
+  }
+  /** every tile within `reach` tiles of (x, z) asked for, nearest first; resolves when they are all in */
+  const wantTiles = (x: number, z: number, reach: number): Promise<void> => {
+    const [cx, cz] = [Math.floor(x / TILE), Math.floor(z / TILE)]
+    const keys: string[] = []
+    for (let dz = -reach; dz <= reach; dz++) for (let dx = -reach; dx <= reach; dx++) keys.push(tileKey(cx + dx, cz + dz))
+    keys.sort((p, q) => {
+      const d = (k: string): number => { const [tx, tz] = k.split(',').map(Number); return Math.max(Math.abs(tx - cx), Math.abs(tz - cz)) }
+      return d(p) - d(q)
+    })
+    return Promise.all(keys.map(bring)).then(() => undefined)
+  }
+  const first = startPoint(rides, index, opts)
+  await wantTiles(first.x, first.z, MID + 1)
   mark('city')
   city.pickable = new URLSearchParams(location.search).get('pick') === '1'
   // and the city beyond the box, as plain massing, so it does not stop at a field (render/fringe.ts)
-  city.addLayer(fringeLayer(scene, region(pkg.region), city.terrain, ASSETS, new Set(full.buildings.map((b) => b.id))))
+  // (the bake leaves out of the fringe every building the city itself has)
+  city.addLayer(fringeLayer(scene, region(pkg.region), city.terrain, ASSETS, new Set<number>()))
   mark('fringe')
   // café terraces on the pavement, where the region sets them out (render/terraces.ts)
   // the mid ring (PARIS_EXPAND §2): every building of a far tile as plain massing, so the city has a horizon
-  const own = new Set(full.buildings.map((b) => b.id))
   if (!off.has('fringe')) {
-    city.midBuild = (t) => massing(scene, [...t.buildings.map(asMassing), ...t.fringe.filter((f) => !own.has(f.id))],
+    city.midBuild = (t) => massing(scene, [...t.buildings.map(asMassing), ...t.fringe],
       region(pkg.region), city.terrain, ASSETS, `mid:${t.key}`)
   }
   if (region(pkg.region).furniture.terraces) city.addLayer(terracesLayer(scene, city.terrain))
@@ -228,11 +206,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   if (region(pkg.region).pointFurniture.metro === 'guimard') {
     city.addLayer(metroSignsLayer(scene, city.terrain, (x, z) => city.streetBearing(x, z)))
   }
-  // bridges and ramps are structures: what moves on them takes its height from the edge, not the ground
-  for (const e of edges) if (city.raisedIds.has(e.id)) e.raised = true
   const sky = off.has('sky') ? null : new Sky(scene)
   const landmarks = off.has('landmarks') ? null
-    : new Landmarks(scene, full, landmarkList, city.terrain, new URL(`landmarks/${opts.city}/`, document.baseURI).href)
+    : new Landmarks(scene, pkg, landmarkList, city.terrain, new URL(`landmarks/${opts.city}/`, document.baseURI).href)
+  // each fitted to its own building as the tile with it arrives — the building as baked, before prepare took it out
+  if (landmarks) onTile((a) => landmarks.addTile(a.raw))
   mark('landmarks')
   const rain = opts.weather === 'rain' && !off.has('rain') ? new Rain(scene) : null
   /*
@@ -245,11 +223,6 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * The ride graph, with the city's hand-made corrections: the Place de la Bastille is a tangle of lanes and
    * islands that no rule untangles, so inside it the graph is a circle and spokes (city/overrides.ts).
    */
-  // baked (city/ridefile.ts), or built here the same way for a city baked before that
-  const mode = opts.device === 'treadmill' ? 'run' : 'bike'
-  const rides = await loadRide(document.baseURI, opts.city, mode)
-    ?? rideFor(opts.city, pkg.origin, edges, mode, (x, z) => city.terrain.heightAt(x, z))
-  mark('rideGraph')
   const junctions: SignedJunction[] = []
   for (const [id, node] of rides.nodes) {
     if (!node.edges.some((arr) => rideExits(rides, id, arr).length >= 2)) continue
@@ -275,7 +248,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const crowd = new Crowd(graph, crowdLevel)
   mark('crowd')
   crowd.setWater(wholeWater(pkg).map((a) => ({ ring: unpackPoints(a.ring), holes: (a.holes ?? []).map(unpackPoints) })))
-  const life = new Life(scene, pkg)
+  const life = new Life(scene, pkg as unknown as CityPackage)
+  onTile((a) => life.addRails(a.ready.rails))
   mark('life')
   // `?without=rider` is how the city is compared with and without the avatar kit, which brings its own
   // lighting and image-processing opinions along with the body
@@ -352,6 +326,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const hud = new Hud(document.getElementById('hud')!, () => nav.turnAround())
   const rideable = new Set([...rides.edges.values()].flatMap((e) => e.over.map((o) => o.id)))
   const minimap = new Minimap(document.getElementById('minimap') as HTMLCanvasElement, graph, {}, rideable)
+  onTile((a) => minimap.addEdges(a.edges))
   mark('minimap')
   minimap.landmarks = (pkg.landmarks ?? []).map((l) => ({ x: l.x, z: l.z, name: l.name, tier: l.tier }))
   const tier1 = (pkg.landmarks ?? []).filter((l) => l.tier === 1)
@@ -369,6 +344,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * see each landmark from, and the city streams round what is looked at, as it does for the orbit look.
    */
   let held: { from: Vector3; to: Vector3 } | null = null
+  let lastWant = 0
   const debug = new DebugPanel(() => {
     held = null
     frozen = !frozen
@@ -532,6 +508,12 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       lastAt = at
       lastY = groundY
       if (!frozen) city.update(at.x, at.z)
+      // and the tiles to build them from, round wherever is being looked at, a few times a second
+      if (now - lastWant > 250) {
+        lastWant = now
+        const f = frozen ? (held ? held.to : orbit.look) : at
+        void wantTiles(f.x, f.z, MID + 1)
+      }
 
       // Everything alive. The traffic and the crowd are told which streets are near so they populate what
       // the rider can see and retire what they cannot, which is what bounds the cost.
@@ -705,4 +687,20 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     void copyText(text).then((ok) => debug.toast(`${ok ? 'view copied' : 'could not copy'} — paste it into views/${opts.city}.json\n${text}`))
   })
   ;(window as unknown as { gameReady?: boolean }).gameReady = true
+}
+
+/**
+ * Where the ride starts, before any tile is in: from `?at=`, from `?start=` or the city's own start edge (found
+ * on the ride graph through the map edges each ride edge was built from), or the first ride edge.
+ */
+function startPoint(rides: RideGraph, index: CityIndex, opts: { at?: { lat: number; lon: number }; startEdge?: number }): { x: number; z: number } {
+  if (opts.at) return new Projection(index.origin).toLocal(opts.at)
+  const onRide = (id: number): { x: number; z: number } | null => {
+    for (const e of rides.edges.values()) {
+      if (e.over.some((o) => o.id === id)) return e.points[Math.floor(e.points.length / 2)]
+    }
+    return null
+  }
+  return (opts.startEdge !== undefined ? onRide(opts.startEdge) : null) ?? onRide(index.start.edgeId)
+    ?? rides.edges.values().next().value!.points[0]
 }

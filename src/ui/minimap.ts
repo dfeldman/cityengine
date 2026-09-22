@@ -50,7 +50,15 @@ export class Minimap {
     this.resize()
     addEventListener('resize', () => { if (this.large) this.resize() })
 
-    for (const [id, e] of graph.edges) {
+    this.addEdges([...graph.edges.values()])
+  }
+
+  /** Streets arriving with a streamed tile (they are in the graph already): filed for drawing. */
+  addEdges(edges: { id: number; points: { x: number; z: number }[] }[]): void {
+    for (const e of edges) {
+      const id = e.id
+      if (this.filed.has(id)) continue
+      this.filed.add(id)
       for (const p of e.points) {
         const k = `${Math.floor(p.x / 200)},${Math.floor(p.z / 200)}`
         const list = this.grid.get(k)
@@ -58,6 +66,7 @@ export class Minimap {
       }
     }
   }
+  private readonly filed = new Set<number>()
 
   /** the size and range of the view in its current mode */
   private get size(): number { return this.large ? Math.floor(Math.min(innerWidth, innerHeight) * 0.86) : this.opts.size }

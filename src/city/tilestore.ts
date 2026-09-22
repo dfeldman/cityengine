@@ -4,7 +4,7 @@
  * does until each subsystem streams; a city baked before tiling falls back to its single package.
  */
 import type { CityPackage } from './package.ts'
-import { joinTiles, type CityIndex, type TileData } from './tiles.ts'
+import { joinTiles, splitPackage, type CityIndex, type TileData } from './tiles.ts'
 import { unpackRide, type RideFile } from './ridefile.ts'
 import type { RideGraph, RideMode } from './ridegraph.ts'
 
@@ -77,4 +77,31 @@ export async function loadRide(base: string, id: string, mode: RideMode): Promis
   const r = await fetch(new URL(`cities/${id}/ride-${mode}.json`, new URL('./', base)).href).catch(() => null)
   if (!r || !r.ok || !(r.headers.get('content-type') ?? '').includes('json')) return null
   return unpackRide(await r.json() as RideFile)
+}
+
+/**
+ * A city to stream from: its index and its tiles, each fetched when asked for. A city baked before tiling
+ * (one package) is cut into tiles in memory and served the same way, so the game has one code path.
+ */
+export interface CitySource {
+  index: CityIndex
+  has(key: string): boolean
+  load(key: string): Promise<TileData | null>
+}
+
+export async function openCity(base: string, id: string): Promise<CitySource> {
+  const root = new URL('./', base).href
+  const store = new TileStore(`${root}cities/${id}/`)
+  const index = await store.open().catch(() => null)
+  if (index) {
+    const keys = new Set(index.tiles.map((t) => t.key))
+    return { index, has: (k) => keys.has(k), load: (k) => store.load(k) }
+  }
+  const pkg = await fetch(`${root}cities/${id}.json`).then((r) => r.json()) as CityPackage
+  const { index: meta, tiles } = splitPackage(pkg, () => undefined)
+  const full: CityIndex = { ...meta, tiles: [...tiles.values()].map((t) => {
+    const [tx, tz] = t.key.split(',').map(Number)
+    return { key: t.key, tx, tz, bytes: 0, buildings: t.buildings.length, edges: t.edges.length }
+  }) }
+  return { index: full, has: (k) => tiles.has(k), load: async (k) => tiles.get(k) ?? null }
 }

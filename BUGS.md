@@ -14,6 +14,8 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 4 | fixed | The base ground plane under every tile stands at twice the terrain height | probe-view, 2026-09-21 |
 | 5 | fixed | Tour Saint-Jacques: the landmark model AND OSM's default building are both drawn | user, 2026-09-21 |
 | 6 | fixed | Cirque d'Hiver is turned wrong: its front should face the street | user, 2026-09-21 |
+| 7 | open | Hôtel de Sens needs work (reads poorly) | user, 2026-09-21 |
+| 8 | open | White monuments are flat pure white; they should read as white marble or pale stone/brick | user, 2026-09-21 |
 
 ---
 
@@ -119,3 +121,20 @@ footprint (bearing kept) and a turned rectangle (still snapped).
 
 **Check:** ✅ `docs/shots/BUG6-cirque-after.png` (the view "Cirque d'Hiver — from Rue Amelot"): the porch and
 horsemen face the street.
+
+## 7. Hôtel de Sens needs work
+
+**Seen:** user, 2026-09-21 (views `hotel-de-sens-street/air`): the procedural `hotelDeSens` does not read as
+the real building. Redo by the landmark method: reference photo first (Street View from Rue du Figuier and
+Rue de l'Hôtel de Ville), then the gist — the rough stone walls, the two corner turrets with pointed caps,
+the tall dormers with pinnacles, the square keep, the pointed gateway — and screenshot street + air.
+
+## 8. White monuments are pure white
+
+**Seen:** user, 2026-09-21. Most "white" landmarks (Saint-Paul's front, the Cirque d'Hiver, Saint-Denys's portico,
+the Pompidou's frame…) render as flat #fff-ish surfaces. They should carry a white marble, limestone or pale
+brick texture — dressed-stone courses, faint veining — through the cartoon material.
+
+**Notes:** landmarks use `cartoonMaterial('cartoonLandmark')` with vertex colours only. A stone treatment wants
+a procedural pattern in that shader (world-space courses + noise), keyed by a vertex-alpha material code, the
+way the facade atlas keys glass; and the palette should move off pure white toward warm limestone (#e3dccb).
