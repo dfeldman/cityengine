@@ -28,6 +28,7 @@ const SETS: Record<string, V[]> = {
     ['tower-close', -0.25, 1.45, 330, 0, 90, -383],
     ['broadside', 0.0, 1.5, 3200, 0, 80, 0],
   ],
+  tall: [['front', -1.57, 1.35, 520, 0, 160, 0], ['street', -1.2, 1.75, 180, 0, 160, 0]],
   mast: [['far', -1.57, 1.45, 900, 0, 150, 0], ['side', -1.05, 1.45, 700, 0, 150, 0], ['crossarm', -1.3, 1.3, 180, 0, 200, 0]],
 }
 const views = SETS[arg('views', 'tower')] ?? SETS.tower
