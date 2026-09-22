@@ -164,6 +164,8 @@ export function restyles(entries: LandmarkEntry[], pkg: Pick<CityPackage, 'origi
       x /= r.length / 2
       z /= r.length / 2
       const inside = pointInRing(x, z, ring)
+      // never over another entry's building (the Louvre along the Rue de Rivoli keeps its own dress)
+      if (out.has(b.id) && out.get(b.id) !== e) continue
       if (e.take === 'inside') { if (inside) out.set(b.id, e); continue }
       if (inside) continue
       if (near <= margin) out.set(b.id, e)

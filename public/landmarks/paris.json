@@ -897,5 +897,75 @@
       16
     ],
     "note": "The central frontispiece: ten Corinthian columns over two storeys and the pediment, to the Champ de Mars."
+  },
+  {
+    "name": "Rue de Rivoli — arcades",
+    "restyle": "classical",
+    "roof": "mansard",
+    "levels": 5,
+    "within": [
+      [
+        48.86655,
+        2.3224
+      ],
+      [
+        48.86578,
+        2.3262
+      ],
+      [
+        48.86443,
+        2.32998
+      ],
+      [
+        48.86328,
+        2.33392
+      ],
+      [
+        48.86316,
+        2.33388
+      ],
+      [
+        48.86431,
+        2.32994
+      ],
+      [
+        48.86566,
+        2.32616
+      ],
+      [
+        48.86643,
+        2.32236
+      ]
+    ],
+    "take": "around",
+    "margin": 14,
+    "note": "Percier and Fontaine's uniform arcaded fronts along the Tuileries, from the Concorde to the Louvre: stone, arcades at street level, the mansard over."
+  },
+  {
+    "name": "Place Vendôme — facades",
+    "restyle": "classical",
+    "roof": "mansard",
+    "levels": 4,
+    "within": [
+      [
+        48.86815,
+        2.32905
+      ],
+      [
+        48.86815,
+        2.3298
+      ],
+      [
+        48.86685,
+        2.3298
+      ],
+      [
+        48.86685,
+        2.32905
+      ]
+    ],
+    "take": "around",
+    "margin": 22,
+    "note": "Hardouin-Mansart's uniform facades round the octagonal place: arcaded ground floor, giant pilasters, mansard with dormers."
   }
 ]
