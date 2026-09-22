@@ -228,7 +228,7 @@
     "levelInference": {
       "maxLevels": 8
     },
-    "pointFurniture": {
+    "pointFurniture": { "american": true, "busStop": "plain",
       "metro": "nyc",
       "bikeColour": "#1f6fb8"
     },
@@ -258,7 +258,7 @@
       "percentile": 0.25,
       "maxLevels": 14
     },
-    "pointFurniture": {
+    "pointFurniture": { "american": true, "busStop": "plain",
       "metro": "cta",
       "bikeColour": "#3aa0d8"
     },
@@ -272,6 +272,7 @@
     "signals": "mastArm"
   },
   "san-francisco": {
+    "pointFurniture": { "metro": "generic", "american": true, "busStop": "muni" },
     "note": "Nob Hill: houses and small apartment blocks, with a few hotels on the crest. The building type decides first and the neighbours are asked over a shorter distance, because a hotel tower on the corner says nothing about the Victorians down the hill. The rest of the profile is item G.",
     "defaultLevels": {
       "residential": 3,

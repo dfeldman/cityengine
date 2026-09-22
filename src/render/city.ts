@@ -14,6 +14,7 @@
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import type { Scene } from '@babylonjs/core/scene'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
+import { stopSign, uspsBox, billboard, muniStop, plainStop } from './us-furniture.ts'
 import { MeshBuilder, buildBuilding, capPolygon, capPolygonWithHoles, type Arch, type AtlasManifest, type Ring } from './buildings.ts'
 import { archSize, passageArches } from './passages.ts'
 import { inOutline } from './bridge-structures.ts'
@@ -1912,8 +1913,16 @@ export class City {
         : f.kind === 'column' ? morrisColumn
         : f.kind === 'kiosk' ? (pf.kiosk === 'paris' ? parisNewsstand : kiosk)
         : f.kind === 'bikeshare' ? bikes
-        : null          // (drawn elsewhere, or not yet: tram stops, billboards, stop signs, post boxes, hydrants)
-      if (model) placeModel(furniture, model, f.x, 0.15, f.z, heading)
+        // the American street's (render/us-furniture.ts), in the regions that have one
+        : pf.american && f.kind === 'stop' ? stopSign
+        : pf.american && f.kind === 'postbox' ? uspsBox
+        : pf.american && f.kind === 'billboard' ? (o: MeshBuilder) => billboard(o, Math.round(f.x * 7 + f.z * 13))
+        : f.kind === 'busstop' && pf.busStop ? (pf.busStop === 'muni' ? muniStop : plainStop)
+        : null          // (drawn elsewhere: tram stops by the trams, hydrants along every pavement)
+      if (!model) continue
+      // a stop sign and a bus stop stand at the kerb, not in the road where OSM puts the node
+      const kerb = f.kind === 'stop' || f.kind === 'busstop' ? 5 : 0
+      placeModel(furniture, model, f.x + Math.cos(heading) * kerb, 0.15, f.z - Math.sin(heading) * kerb, heading)
     }
 
     /*

@@ -86,6 +86,10 @@ export interface Region {
     fountain: 'wallace' | 'tap'
     kiosk: 'paris' | 'plain'
     bikeColour: string
+    /** the American street's mapped furniture (render/us-furniture.ts): stop signs, post boxes, billboards */
+    american?: boolean
+    /** what a bus stop is: Muni's yellow-banded pole, or a plain pole with a flag */
+    busStop?: 'muni' | 'plain'
   }
 }
 
