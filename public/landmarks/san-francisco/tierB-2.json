@@ -1,1 +1,608 @@
-[]
+[
+  {
+    "osm": [
+      "way/243571728"
+    ],
+    "name": "Building 243571728",
+    "restyle": "skyscraper",
+    "height": 55,
+    "levels": 16,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/113505811"
+    ],
+    "name": "Foundry Square IV",
+    "restyle": "skyscraper",
+    "height": 46,
+    "levels": 13,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/165846552"
+    ],
+    "name": "UC Law San Francisco",
+    "restyle": "skyscraper",
+    "height": 45,
+    "levels": 14,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/256477865"
+    ],
+    "name": "601 Van Ness Avenue",
+    "restyle": "skyscraper",
+    "height": 73,
+    "levels": 12,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/35115839"
+    ],
+    "name": "Mission Substation",
+    "restyle": "brick",
+    "height": 36,
+    "levels": 10,
+    "note": "rule 7"
+  },
+  {
+    "osm": [
+      "way/25759123"
+    ],
+    "name": "Arthur A Dugoni School of Dentistry",
+    "restyle": "skyscraper",
+    "height": 46,
+    "levels": 13,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/1168879939"
+    ],
+    "name": "Building 1168879939",
+    "restyle": "stucco",
+    "note": "rule 10"
+  },
+  {
+    "osm": [
+      "way/35115837"
+    ],
+    "name": "California Institute of Integral Studies",
+    "restyle": "skyscraper",
+    "height": 43,
+    "levels": 12,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/227005944"
+    ],
+    "name": "The Margot",
+    "restyle": "brick",
+    "height": 40,
+    "levels": 11,
+    "note": "rule 7"
+  },
+  {
+    "osm": [
+      "way/259990934"
+    ],
+    "name": "Alexander Residence",
+    "restyle": "skyscraper",
+    "height": 43,
+    "levels": 12,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/105027010"
+    ],
+    "name": "501 Beale Street",
+    "restyle": "skyscraper",
+    "height": 75,
+    "levels": 22,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/260517113"
+    ],
+    "name": "850 Powell Street",
+    "restyle": "chinatown",
+    "height": 37,
+    "levels": 12,
+    "note": "rule 2"
+  },
+  {
+    "osm": [
+      "way/156123224"
+    ],
+    "name": "5th and Mission Garage",
+    "restyle": "brick",
+    "height": 36,
+    "levels": 10,
+    "note": "rule 7"
+  },
+  {
+    "osm": [
+      "way/256477867"
+    ],
+    "name": "Building 256477867",
+    "restyle": "skyscraper",
+    "height": 73,
+    "levels": 12,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/80296753"
+    ],
+    "name": "55 Hawthorne Street",
+    "restyle": "chicago",
+    "height": 57,
+    "levels": 9,
+    "note": "rule 8"
+  },
+  {
+    "osm": [
+      "way/256487823"
+    ],
+    "name": "Cathedral Hill Tower",
+    "restyle": "skyscraper",
+    "height": 90,
+    "levels": 27,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/79377152"
+    ],
+    "name": "199 New Montgomery Street",
+    "restyle": "skyscraper",
+    "height": 46,
+    "levels": 13,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/260140489"
+    ],
+    "name": "Oasis Apartments",
+    "restyle": "skyscraper",
+    "height": 41,
+    "levels": 12,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/112774489"
+    ],
+    "name": "303 Second Street",
+    "restyle": "skyscraper",
+    "height": 62,
+    "levels": 18,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "relation/3493147"
+    ],
+    "name": "Clock Tower Building",
+    "restyle": "skyscraper",
+    "height": 75,
+    "levels": 22,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/35024322"
+    ],
+    "name": "Gaylord Suites",
+    "restyle": "chicago",
+    "height": 38,
+    "levels": 11,
+    "note": "rule 8"
+  },
+  {
+    "osm": [
+      "way/151316276"
+    ],
+    "name": "Gramercy Towers",
+    "restyle": "skyscraper",
+    "height": 49,
+    "levels": 18,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/288645265"
+    ],
+    "name": "Building 288645265",
+    "restyle": "stucco",
+    "height": 4,
+    "levels": 1,
+    "note": "rule 10"
+  },
+  {
+    "osm": [
+      "way/24563077"
+    ],
+    "name": "Yerba Buena Center for the Arts",
+    "restyle": "brick",
+    "height": 36,
+    "levels": 10,
+    "note": "rule 7"
+  },
+  {
+    "osm": [
+      "way/288645264"
+    ],
+    "name": "Building 288645264",
+    "restyle": "stucco",
+    "height": 4,
+    "levels": 1,
+    "note": "rule 10"
+  },
+  {
+    "osm": [
+      "way/262552545"
+    ],
+    "name": "2238 Hyde Street",
+    "restyle": "skyscraper",
+    "height": 55,
+    "levels": 16,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/1392472204"
+    ],
+    "name": "The Comstock",
+    "restyle": "skyscraper",
+    "height": 62,
+    "levels": 16,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/256749453"
+    ],
+    "name": "1100 Sacramento Street",
+    "restyle": "chinatown",
+    "height": 37,
+    "levels": 11,
+    "note": "rule 2"
+  },
+  {
+    "osm": [
+      "way/288794272"
+    ],
+    "name": "170 Otis Street",
+    "restyle": "skyscraper",
+    "height": 45,
+    "levels": 13,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/939497446"
+    ],
+    "name": "Modera Rincon Hill",
+    "restyle": "skyscraper",
+    "height": 41,
+    "levels": 12,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/256755970"
+    ],
+    "name": "Court Royal",
+    "restyle": "skyscraper",
+    "height": 50,
+    "levels": 13,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/93817371"
+    ],
+    "name": "633 Folsom Street",
+    "restyle": "skyscraper",
+    "height": 48,
+    "levels": 20,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/151980105"
+    ],
+    "name": "832 Folsom Street",
+    "restyle": "brick",
+    "height": 37,
+    "levels": 10,
+    "note": "rule 7"
+  },
+  {
+    "osm": [
+      "way/681442044"
+    ],
+    "name": "Building 681442044",
+    "restyle": "skyscraper",
+    "height": 84,
+    "levels": 24,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/256045049"
+    ],
+    "name": "Symphony Towers",
+    "restyle": "skyscraper",
+    "height": 41,
+    "levels": 12,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/1108078698"
+    ],
+    "name": "Building 1108078698",
+    "restyle": "brick",
+    "note": "rule 7"
+  },
+  {
+    "osm": [
+      "way/259974367"
+    ],
+    "name": "666;670 Ellis Street",
+    "restyle": "brick",
+    "height": 38,
+    "levels": 11,
+    "note": "rule 7"
+  },
+  {
+    "osm": [
+      "way/288532297"
+    ],
+    "name": "Eastern Park Apartments",
+    "restyle": "brick",
+    "height": 36,
+    "levels": 10,
+    "note": "rule 7"
+  },
+  {
+    "osm": [
+      "way/1122568793"
+    ],
+    "name": "Vance",
+    "restyle": "skyscraper",
+    "height": 41,
+    "levels": 12,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/258017308"
+    ],
+    "name": "Western Park Apartments",
+    "restyle": "brick",
+    "height": 37,
+    "levels": 10,
+    "note": "rule 7"
+  },
+  {
+    "osm": [
+      "way/148428438"
+    ],
+    "name": "Building 148428438",
+    "restyle": "skyscraper",
+    "height": 68,
+    "levels": 20,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/148551346"
+    ],
+    "name": "229 Brannan Street",
+    "restyle": "skyscraper",
+    "height": 56,
+    "levels": 18,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/36810595"
+    ],
+    "name": "Trinity Towers",
+    "restyle": "chicago",
+    "height": 39,
+    "levels": 11,
+    "note": "rule 8"
+  },
+  {
+    "osm": [
+      "way/194908392"
+    ],
+    "name": "Coterie",
+    "restyle": "skyscraper",
+    "height": 44,
+    "levels": 13,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/261256050"
+    ],
+    "name": "The Terraces",
+    "restyle": "chicago",
+    "height": 37,
+    "levels": 11,
+    "note": "rule 8"
+  },
+  {
+    "osm": [
+      "way/259078183"
+    ],
+    "name": "1958 Vallejo Street",
+    "restyle": "skyscraper",
+    "height": 42,
+    "levels": 12,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/288647982"
+    ],
+    "name": "2 Townsend Street",
+    "restyle": "brick",
+    "height": 35,
+    "levels": 10,
+    "note": "rule 7"
+  },
+  {
+    "osm": [
+      "way/288648571"
+    ],
+    "name": "2 Townsend Street",
+    "restyle": "brick",
+    "height": 36,
+    "levels": 10,
+    "note": "rule 7"
+  },
+  {
+    "osm": [
+      "way/259252255"
+    ],
+    "name": "1960 Broadway",
+    "restyle": "sfapartment",
+    "height": 40,
+    "levels": 11,
+    "note": "rule 5"
+  },
+  {
+    "osm": [
+      "way/288671185"
+    ],
+    "name": "The Beacon",
+    "restyle": "skyscraper",
+    "height": 60,
+    "levels": 17,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/173886666"
+    ],
+    "name": "677 Harrison Street",
+    "restyle": "skyscraper",
+    "height": 6,
+    "levels": 15,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/256998550"
+    ],
+    "name": "Pacific Heights Towers",
+    "restyle": "skyscraper",
+    "height": 68,
+    "levels": 20,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/288670518"
+    ],
+    "name": "Avalon at Mission Bay Phase III",
+    "restyle": "skyscraper",
+    "height": 57,
+    "levels": 16,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/1204801756"
+    ],
+    "name": "The Canyon",
+    "restyle": "skyscraper",
+    "height": 73,
+    "levels": 23,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/256984944"
+    ],
+    "name": "Building 256984944",
+    "restyle": "skyscraper",
+    "height": 41,
+    "levels": 12,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/257946622"
+    ],
+    "name": "Building 257946622",
+    "restyle": "skyscraper",
+    "height": 41,
+    "levels": 12,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/939558002"
+    ],
+    "name": "Building 939558002",
+    "restyle": "skyscraper",
+    "height": 41,
+    "levels": 12,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/1204801749"
+    ],
+    "name": "Verde",
+    "restyle": "skyscraper",
+    "height": 73,
+    "levels": 23,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/288371295"
+    ],
+    "name": "Palace of Fine Arts",
+    "restyle": "skyscraper",
+    "height": 48,
+    "levels": 14,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/1315380002"
+    ],
+    "name": "John F. Kennedy Towers",
+    "restyle": "skyscraper",
+    "height": 41,
+    "levels": 12,
+    "note": "rule 4"
+  },
+  {
+    "osm": [
+      "way/1047709621"
+    ],
+    "name": "Uber Headquarters Building 1",
+    "restyle": "skyscraper",
+    "height": 54,
+    "levels": 12,
+    "note": "rule 4"
+  }
+]
