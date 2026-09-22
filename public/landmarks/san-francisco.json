@@ -1,4 +1,6 @@
 [
   {"osm": ["way/24222973"], "name": "Transamerica Pyramid", "procedural": "transamericaPyramid", "front": 180, "height": 260, "note": "The wings on the east and west faces (local ±x); the Montgomery Street front south-ish. From photographs, SF_PLAN.md §4."},
-  {"osm": ["way/431972186", "way/1560173288"], "name": "Salesforce Tower", "procedural": "salesforceTower", "front": 180, "height": 326, "note": "OSM maps it twice (the tower and its outline); both replaced by the one model."}
+  {"osm": ["way/431972186", "way/1560173288"], "name": "Salesforce Tower", "procedural": "salesforceTower", "front": 180, "height": 326, "note": "OSM maps it twice (the tower and its outline); both replaced by the one model."},
+  {"osm": ["way/28824850"], "name": "Coit Tower", "procedural": "coitTower", "front": "street", "height": 64, "note": "On Telegraph Hill's crest; the foot building's entrance toward the parking circle. From photographs."},
+  {"osm": ["way/558731934"], "name": "Ferry Building", "procedural": "ferryBuilding", "front": "street", "height": 75, "note": "The clock tower over the Embarcadero front (−z); the SAN FRANCISCO letters to the bay. From photographs."}
 ]
