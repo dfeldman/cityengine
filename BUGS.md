@@ -544,6 +544,27 @@ down; water is now left out of it. Central Paris ramps 761 → 409. The Pont Mor
 at street level. ✅ `docs/shots/BUG31-pont-morland.png`; Marais quais unchanged (`views/bridges-after`).
 #37 still wants the bridges' own designs and cleaner deck edges.
 
+**#37 designs (2026-09-22):** each bridge is now built ONCE from its OSM outline (`man_made=bridge`, its own
+Overpass query; `CityPackage.bridges`, filed in every tile it touches) by render/bridge-structures.ts, in its
+own design from `PARIS_BRIDGES` (26 named):
+- stone arches, round or segmental, with pointed or round cutwaters, voussoir rings and a cornice;
+- iron arch ribs with posts; a steel girder;
+- balustrade, stone or iron parapets; lanterns, candelabra, modern masts;
+- the Pont Neuf's half-moon bastions and mascarons, the Pont Marie's niches, the N medallions of the Pont au
+  Change and Saint-Michel, the Alexandre III's pylons with their gilded groups.
+
+The ways on a structured bridge draw only their running surfaces. Lessons, each seen in a shot:
+- the structure's length and width come from the ways, not the outline's rectangle (the Alexandre III's is
+  61 m wide, and stood a wall across the Cours la Reine);
+- the deck profile is the median of the carriageway's heights (a footway baked flat at 2.8 m over a −3.5 m
+  roadway hung a soffit over the rider).
+
+`tools/bridge-views.ts` writes a side view of every named bridge (group `bridge`, 30 views). Still to do:
+- Bir-Hakeim's metro colonnade;
+- the Alexandre III's arch reads too flat from the river;
+- that footway's bake height (tools/bridges.ts);
+- the Marais rebake, so its bridges get outlines too.
+
 **#24 fixed:** the Louvre (relation 3262297) and a separately mapped wing inside it (way 1359877263) shared their
 outer wall. `insetNested` pulls such a building in by a hand's width, but since streaming it ran per tile and
 the two were filed in different tiles. It now runs in the bake over the whole city. ✅ `docs/shots/BUG24-louvre-walls.png`.
