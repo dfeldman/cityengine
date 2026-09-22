@@ -1,0 +1,29 @@
+{
+ "name": "sf_laurel",
+ "extends": "tt:maple",
+ "about": "pittosporum, magnolia, bay: a dense dark glossy cone, branched almost to the ground",
+ "bark": "brown",
+ "leaves_page": "evergreen",
+ "height": [
+  8,
+  2
+ ],
+ "envelope": {
+  "base": 0.2,
+  "top": 1.04,
+  "width": 0.4,
+  "profile": [
+   0.9,
+   1.0,
+   0.9,
+   0.72,
+   0.48,
+   0.22
+  ]
+ },
+ "set": [
+  "levels.0.first=0.22",
+  "leaves.size=[0.09,0.015]"
+ ],
+ "compact": 2.2
+}

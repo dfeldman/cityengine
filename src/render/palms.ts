@@ -3,12 +3,16 @@
  * trouble getting decent looking palms in the past"). The tree library grows broadleaf trees and conifers, and a
  * palm is neither. Shared, because more cities than San Francisco have them.
  *
- * Two species:
+ * Four species (the first two the city's landmarks, the last two its side streets):
  * - **the Canary Island date palm** (Phoenix canariensis): the Embarcadero's row, and every grand avenue in
  *   California. A thick trunk patterned with diamond leaf scars, a knob of fresh orange leaf bases at the top,
  *   fifty-odd long feather fronds — the upper ones standing up, the lower arching right over.
  * - **the Mexican fan palm** (Washingtonia robusta): a trunk as thin as a lamp post rising twice as high, a
  *   small round head of fan leaves, and under it the skirt of dead leaves the city never quite trims.
+ * - **the queen palm** (Syagrus romanzoffiana): a slim smooth grey trunk, a green crownshaft, and soft plumed
+ *   fronds that arch right over — the palm of the Mission's front yards and the Marina's medians.
+ * - **the cabbage tree** (Cordyline australis; yucca stands in the same): a short trunk forking into a few stems,
+ *   each topped by a tuft of long strap leaves over its hanging dead ones.
  *
  * What goes into a palm that reads as a palm, learned the hard way on the ones that did not:
  * - **The leaflets are painted, not modelled** (tools/palmgen/paint.py): a frond is a CARD along its curved
@@ -34,7 +38,7 @@ import { MeshBuilder } from './buildings.ts'
 import type { Rgb } from './models.ts'
 
 type V3 = [number, number, number]
-export type PalmKind = 'canary' | 'fan'
+export type PalmKind = 'canary' | 'fan' | 'queen' | 'spiky'
 
 const rng = (seed: number): (() => number) => {
   let s = seed >>> 0
@@ -159,6 +163,39 @@ function fanLeaf(out: MeshBuilder, stalkBase: V3, centre: V3, yaw: number, pitch
   }
 }
 
+/** A straight tapering stem from a to b, any direction: the cabbage tree's branches. */
+function stem(out: MeshBuilder, a: V3, b: V3, r0: number, r1: number, sides: number, tile: number, c: Rgb): void {
+  const ax = norm(add(b, a, -1))
+  const ref: V3 = Math.abs(ax[1]) < 0.9 ? [0, 1, 0] : [1, 0, 0]
+  const u = norm(cross(ax, ref))
+  const v = cross(ax, u)
+  const L = Math.hypot(b[0] - a[0], b[1] - a[1], b[2] - a[2])
+  for (let i = 0; i < sides; i++) {
+    const t0 = (i / sides) * Math.PI * 2
+    const t1 = ((i + 1) / sides) * Math.PI * 2
+    const ring = (p: V3, r: number, t: number): V3 => add(add(p, u, Math.cos(t) * r), v, Math.sin(t) * r)
+    const n = norm(add(add([0, 0, 0], u, Math.cos((t0 + t1) / 2)), v, Math.sin((t0 + t1) / 2)))
+    quad(out, [ring(a, r0, t0), ring(a, r0, t1), ring(b, r1, t1), ring(b, r1, t0)],
+      [[i / sides, 0], [(i + 1) / sides, 0], [(i + 1) / sides, L / tile], [i / sides, L / tile]], n, c)
+  }
+}
+
+/** A tuft of strap leaves at `p`: crossed vertical cards wearing the painted tuft, its heart (0.5, 0.62) at p. */
+function tuft(out: MeshBuilder, p: V3, size: number, cards: number, spin: number, c: Rgb): void {
+  for (let k = 0; k < cards; k++) {
+    const a = spin + (k / cards) * Math.PI
+    const side: V3 = [Math.cos(a), 0, Math.sin(a)]
+    const lo = -0.38 * size
+    const hi = 0.62 * size
+    const A = add(add(p, side, -size / 2), [0, 1, 0], lo)
+    const B = add(add(p, side, size / 2), [0, 1, 0], lo)
+    const C = add(add(p, side, size / 2), [0, 1, 0], hi)
+    const D = add(add(p, side, -size / 2), [0, 1, 0], hi)
+    // (normal up and out: the tuft is lit as a ball, as the palms' heads are)
+    quad(out, [A, B, C, D], [[0, 0], [1, 0], [1, 1], [0, 1]], norm([Math.sin(a) * 0.3, 1, -Math.cos(a) * 0.3]), c)
+  }
+}
+
 export interface PalmBuild { trunk: MeshBuilder; collar: MeshBuilder; leaves: MeshBuilder; top: number }
 
 /** One palm at one level of detail (0 near, 1 mid, 2 far): the three builders and its height. */
@@ -198,6 +235,48 @@ export function palm(kind: PalmKind, seed: number, lod: 0 | 1 | 2): PalmBuild {
         (r() - 0.5) * 0.9, 0.3 + r() * 0.25, lod === 0 ? 9 : lod === 1 ? 5 : 3, c, 0)
     }
     return { trunk, collar, leaves, top: h + 3 }
+  }
+  if (kind === 'queen') {
+    // Syagrus: a slim smooth grey trunk, a short green crownshaft, a head of long plumed fronds that arch right over
+    const h = 8 + r() * 4
+    const lean = (r() - 0.5) * 0.05
+    const x = (y: number): number => lean * y * y / h
+    column(trunk, 0, 0.5, 0.3, 0.2, lod === 2 ? 5 : 9, 1, 1.4, 2, white, x)
+    column(trunk, 0.5, h - 1, 0.2, 0.17, lod === 2 ? 5 : 9, lod === 0 ? 5 : 2, 1.4, 2, white, x)
+    column(collar, h - 1, h + 0.2, 0.19, 0.24, lod === 2 ? 5 : 8, 1, 1.2, 1, [0.62, 0.78, 0.5], x)
+    const centre: V3 = [x(h), h + 0.3, 0]
+    const n = lod === 0 ? 24 : lod === 1 ? 16 : 10
+    for (let i = 0; i < n; i++) {
+      const k = i / n
+      const yaw = i * 2.39996323 + (r() - 0.5) * 0.4
+      const pitch = 0.85 - k * 0.9 + (r() - 0.5) * 0.2
+      const droop = 1.9 + k * 1.3 + r() * 0.4
+      const len = (4.4 + k * 0.9) * (0.9 + r() * 0.2)
+      const tone = 0.9 + r() * 0.15
+      const c: Rgb = [tone * (1 + k * k * 0.25), tone, tone * (1 - k * k * 0.2)]
+      featherFrond(leaves, [centre[0], centre[1] - k * 0.3, centre[2]], centre, yaw, pitch, droop, len, 0.8 * (lod === 2 ? 1.3 : lod === 1 ? 1.1 : 1),
+        (r() - 0.5) * 1.4, 0.55 + r() * 0.25, lod === 0 ? 9 : lod === 1 ? 5 : 3, c, 0)
+    }
+    return { trunk, collar, leaves, top: h + 2.4 }
+  }
+  if (kind === 'spiky') {
+    // the cabbage tree: a short fibrous trunk that forks into a few stems, each with its tuft of straps
+    const h = 1.6 + r() * 1.6
+    const sides = lod === 2 ? 4 : 7
+    stem(trunk, [0, 0, 0], [0, h, 0], 0.22, 0.16, sides, 1.2, white)
+    const forks = 2 + Math.floor(r() * 3)
+    for (let i = 0; i < forks; i++) {
+      const a = (i / forks) * Math.PI * 2 + r() * 0.8
+      const out = 0.5 + r() * 0.9
+      const up = 0.8 + r() * 1.4
+      const tip: V3 = [Math.cos(a) * out, h + up, Math.sin(a) * out]
+      stem(trunk, [0, h - 0.1, 0], tip, 0.13, 0.09, sides, 1.2, white)
+      // the dead leaves hanging under each tuft
+      stem(collar, add(tip, [0, -0.5, 0]), add(tip, [0, 0.05, 0]), 0.2, 0.14, sides, 0.8, white)
+      const tone = 0.9 + r() * 0.15
+      tuft(leaves, tip, 2.4 + r() * 0.7, lod === 2 ? 2 : 4, r() * Math.PI, [tone, tone, tone])
+    }
+    return { trunk, collar, leaves, top: h + 2.9 }
   }
   // the fan palm: tall and thin, a slight lean that grows with height
   const h = 14 + r() * 8
@@ -247,6 +326,8 @@ export function palm(kind: PalmKind, seed: number, lod: 0 | 1 | 2): PalmBuild {
 const TEXTURES: Record<PalmKind, { trunk: string; collar: string; leaves: string[] }> = {
   canary: { trunk: 'canary-trunk.png', collar: 'canary-knob.png', leaves: ['canary-frond-a.png', 'canary-frond-b.png'] },
   fan: { trunk: 'fan-trunk.png', collar: 'fan-skirt.png', leaves: ['fan-leaf-a.png', 'fan-leaf-b.png'] },
+  queen: { trunk: 'queen-trunk.png', collar: 'queen-trunk.png', leaves: ['queen-frond-a.png', 'queen-frond-b.png'] },
+  spiky: { trunk: 'fan-trunk.png', collar: 'fan-skirt.png', leaves: ['strap-tuft-a.png', 'strap-tuft-b.png'] },
 }
 
 function material(scene: Scene, base: string, file: string, cutout: boolean): StandardMaterial {
@@ -279,7 +360,7 @@ export function palmModel(scene: Scene, base: string, kind: PalmKind, seed: numb
     top = b.top
     const meshes: Mesh[] = []
     for (const [part, builder, file, cutout] of [
-      ['trunk', b.trunk, tex.trunk, false], ['collar', b.collar, tex.collar, kind === 'fan'], ['leaves', b.leaves, leafFile, true],
+      ['trunk', b.trunk, tex.trunk, false], ['collar', b.collar, tex.collar, kind === 'fan' || kind === 'spiky'], ['leaves', b.leaves, leafFile, true],
     ] as const) {
       if (builder.triangles === 0) continue
       const m = new Mesh(`palm:${kind}:${seed}:${lod}:${part}`, scene)

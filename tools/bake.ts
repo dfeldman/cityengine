@@ -1065,8 +1065,15 @@ async function bake(spec: CitySpec): Promise<void> {
   const ex = extentOf(spec)
   const km2 = ((ex.west + ex.east) * (ex.south + ex.north)) / 1e6
   const cap = Math.max(TREE_CAP, Math.round(TREES_PER_KM2 * km2))
-  pkg.plantings = packPlantings(plantCity(pkg, cap))
-  console.log(`  ${pkg.plantings.length / 5} trees planted (mapped, parks, boulevards; cap ${cap} over ${km2.toFixed(1)} km²)`)
+  // the city's own record of its street trees, where the region has one (SF: tools/sf-trees.ts), in place of the
+  // mapped and the guessed ones
+  const street = spec.region === 'san-francisco'
+    ? await Promise.all([import('./sf-trees.ts'), import('../src/city/sf/trees.ts')])
+      .then(async ([t, f]) => f.sfPlantings(await t.fetchStreetTrees(bboxOf(spec)), (g) => proj.toLocal(g), () => true))
+      .catch((e: unknown) => { console.warn(`  sf-trees: not fetched (${String(e).slice(0, 120)})`); return undefined })
+    : undefined
+  pkg.plantings = packPlantings(plantCity(pkg, cap, street))
+  console.log(`  ${pkg.plantings.length / 5} trees planted (${street ? `${street.length} street trees from the city's list, ` : ''}mapped, parks, boulevards; cap ${cap} over ${km2.toFixed(1)} km²)`)
   await mkdir(OUT, { recursive: true })
   const file = resolve(OUT, `${spec.id}.json`)
   await writeFile(file, JSON.stringify(pkg))

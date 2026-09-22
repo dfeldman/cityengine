@@ -1,0 +1,16 @@
+{
+ "name": "sf_jacaranda",
+ "extends": "tt:maple",
+ "about": "jacaranda, goldenrain, locust: an open spreading crown of fine fronds",
+ "bark": "maple",
+ "leaves_page": "feather",
+ "height": [
+  7,
+  1.5
+ ],
+ "envelope": {
+  "width": 0.6
+ },
+ "compact": 1.9,
+ "set": []
+}

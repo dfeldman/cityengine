@@ -36,11 +36,16 @@ import type { Terrain } from '../city/terrain.ts'
 import { plantHash, unpackPlantings, type Planting } from '../city/plantings.ts'
 import type { TileLayer } from './city.ts'
 import { DEFAULT_FLORA, type Flora } from './flora.ts'
-import { palmModel } from './palms.ts'
+import { palmModel, type PalmKind } from './palms.ts'
+import { formCode, type TreeForm } from '../city/tree-forms.ts'
+
+/** each palm kind's seed family, so the same kind is the same palms everywhere */
+const PALM_SEEDS: Record<PalmKind, number> = { canary: 1, fan: 2, queen: 3, spiky: 4 }
 
 // The species a city plants come from its region (render/flora.ts): San Francisco's include generated palms.
 
-interface TreeEntry { species: string; file: string; height: number; bounds?: { top: number } }
+interface TreeEntry { species: string; file: string; height: number; bounds?: { top: number }; season?: string; base?: string }
+type Model = { parts: Mesh[]; far: Mesh[]; farther: Mesh[]; park: boolean; top: number; palm?: boolean }
 
 /** Where a tree goes, worked out once at load and then never again. */
 /** `height` is the tree's height in METRES, not a scale: the models are forest trees of all sizes */
@@ -64,7 +69,11 @@ export class Vegetation {
    * LOD0 when it has none) beyond `NEAR_LOD` metres (PARIS_EXPAND §6 item 7). LOD0 of every tree in view was
    * seven million triangles at the Concorde, half of all there were.
    */
-  private models: { parts: Mesh[]; far: Mesh[]; farther: Mesh[]; park: boolean; top: number; palm?: boolean }[] = []
+  private models: Model[] = []
+  /** the models of each form (city/tree-forms.ts), by its code */
+  private formPools = new Map<number, Model[]>()
+  /** the palms `palmChance` puts in place of a form-0 planting */
+  private districtPalms: Model[] = []
   private focus: { x: number; z: number } | null = null
   private plantedAt: { x: number; z: number } | null = null
 
@@ -152,13 +161,20 @@ export class Vegetation {
       sun.excludeWithLayerMask = PEOPLE
     }
 
-    const index = (await (await fetch(`${this.base}index.json`)).json()) as { trees: TreeEntry[] }
+    // the library, and the region's own beside it; only trees in leaf: the library has autumn and snow-topped winter
+    // trees for Trail Trainer's forests, and a red maple or a bare one in a San Francisco street was a random draw
+    const libs = [this.base, ...(this.flora.library ? [new URL(`../${this.flora.library}/`, this.base).href] : [])]
+    const index: TreeEntry[] = []
+    for (const base of libs) {
+      const got = await fetch(`${base}index.json`).then((r) => (r.ok ? r.json() : { trees: [] })).catch(() => ({ trees: [] })) as { trees: TreeEntry[] }
+      for (const t of got.trees) if (!t.season || t.season === 'summer') index.push({ ...t, base })
+    }
 
     const pick = (spec: [string, number][], n: number): TreeEntry[] => {
       const out: TreeEntry[] = []
       const total = spec.reduce((t, [, w]) => t + w, 0)
       for (const [species, weight] of spec) {
-        const of = index.trees.filter((t) => t.species === species)
+        const of = index.filter((t) => t.species === species)
         const want = Math.max(1, Math.round((weight / total) * n))
         for (let i = 0; i < want && i < of.length; i++) out.push(of[(i * 7) % of.length])
       }
@@ -166,87 +182,117 @@ export class Vegetation {
     }
 
     // a model is a group of meshes that must be instanced together
-    const models: { parts: Mesh[]; far: Mesh[]; farther: Mesh[]; park: boolean; top: number; palm?: boolean }[] = []
-    // the generated palms (render/palms.ts), their textures beside the library's trees
-    for (const { kind, models: n } of this.flora.palms ?? []) {
-      for (let i = 0; i < n; i++) {
-        const m = palmModel(this.scene, new URL('../palms/', this.base).href, kind, 1000 * (kind === 'canary' ? 1 : 2) + i * 7919)
-        models.push({ ...m, park: false, palm: true })
+    const models: Model[] = []
+    const palmsBase = new URL('../palms/', this.base).href
+    const palmCache = new Map<string, Model>()
+    const palmOf = (kind: PalmKind, i: number): Model => {
+      const key = `${kind}:${i}`
+      let m = palmCache.get(key)
+      if (!m) {
+        m = { ...palmModel(this.scene, palmsBase, kind, 1000 * (PALM_SEEDS[kind] ?? 1) + i * 7919), park: false, palm: true }
+        palmCache.set(key, m)
+        models.push(m)
       }
+      return m
+    }
+    // the generated palms (render/palms.ts), their textures beside the library's trees
+    this.districtPalms = []
+    for (const { kind, models: n } of this.flora.palms ?? []) for (let i = 0; i < n; i++) this.districtPalms.push(palmOf(kind, i))
+    const fileCache = new Map<string, Model | null>()
+    const loadEntry = async (entry: TreeEntry, park: boolean): Promise<Model | null> => {
+      const key = `${entry.base}${entry.file}:${park}`
+      if (fileCache.has(key)) return fileCache.get(key)!
+      fileCache.set(key, null)
+      const result = await SceneLoader.ImportMeshAsync('', entry.base ?? this.base, entry.file, this.scene)
+      const all = result.meshes.filter((m): m is Mesh => m instanceof Mesh && m.getTotalVertices() > 0)
+      /**
+       * Only the closest level of detail.
+       *
+       * Each tree GLB carries three — `LOD0_primitive0`, `LOD1_primitive0` and so on as separate meshes —
+       * and instancing every mesh in the file drew each tree three times on top of itself. Worse, any LOD
+       * authored at a different scale then appeared at that scale, which is where the occasional tree
+       * bigger than the city came from. Using them as real LODs by distance is the improvement; picking
+       * one is the fix.
+       */
+      const lod0 = all.filter((m) => !/LOD[1-9]/i.test(m.name))
+      const parts = lod0.length > 0 ? lod0 : all
+      const lod1 = all.filter((m) => /LOD1/i.test(m.name))
+      const far = lod1.length > 0 ? lod1 : parts
+      const lod2 = all.filter((m) => /LOD2/i.test(m.name))
+      const farther = lod2.length > 0 ? lod2 : far
+      for (const m of all) if (!parts.includes(m) && !far.includes(m) && !farther.includes(m)) m.dispose()
+      if (parts.length === 0) return null
+      for (const m of new Set([...parts, ...far, ...farther])) {
+        m.isPickable = false
+        m.alwaysSelectAsActiveMesh = true
+        /**
+         * The loader's `__root__` transform is BAKED INTO THE VERTICES, not left on the node.
+         *
+         * glTF is right-handed and Babylon is not, so the loader parents everything it imports to a
+         * `__root__` scaled (1, 1, -1). A thin-instance matrix is combined with the mesh's world matrix,
+         * which means the translation in it is read in the PARENT's space — so every instance placed at
+         * (x, y, z) was actually planted at (x, y, -z), mirrored across the map.
+         *
+         * On a flat city that is invisible: the tree lands in the wrong block, but the ground is at the
+         * same height either way and nothing looks wrong. On Nob Hill, with a hundred metres of relief, a
+         * tree took the height of where it was MEANT to go and the position of somewhere else: of the 203
+         * street trees here, 19 landed within three metres of the ground, 125 were buried under it, and
+         * 59 were left hanging in the sky. Those are the trees floating over the skyline.
+         *
+         * `setParent(null)` moves the root's transform down into the mesh's own, and baking then moves it
+         * into the vertices, leaving the world matrix an identity — at which point a thin-instance matrix
+         * means exactly what it says. Babylon flips the winding itself when it bakes a negative
+         * determinant, so the handedness flip survives as geometry and the tree still faces the right way.
+         */
+        m.setParent(null)
+        m.bakeCurrentTransformIntoVertices()
+        // the same group as the buildings: the ground layers clear depth, and anything left in group 0 is
+        // either buried by the street or, where the street does not reach, shows through the grass
+        m.renderingGroupId = 3
+
+        /**
+         * Foliage is an alpha CUTOUT, not alpha blending.
+         *
+         * A leaf card is a texture with holes in it, and the kit's GLBs arrive with those materials set to
+         * blend. A blended mesh is not depth-sorted per pixel — it is sorted once, by the distance to its
+         * bounding box — and a thin-instanced tree's bounding box covers every copy of it in the city, a
+         * box well over a kilometre across. So the whole canopy of the neighbourhood sorted as a single
+         * object at the middle of the map and drew over everything in front of it: leaves across the
+         * grass, across the road, and a tree that appeared to be standing in front of the entire city.
+         *
+         * As a cutout the fragments are simply discarded where the texture is transparent, the mesh is
+         * opaque, and every leaf depth-tests like anything else.
+         */
+        const mat = m.material as { transparencyMode?: number | null; needDepthPrePass?: boolean
+          alphaCutOff?: number; separateCullingPass?: boolean } | null
+        if (mat) {
+          mat.transparencyMode = 1          // Material.MATERIAL_ALPHATEST
+          mat.alphaCutOff = 0.45
+          mat.needDepthPrePass = false
+        }
+        m.isPickable = false
+      }
+      const model: Model = { parts, far, farther, park, top: entry.bounds?.top ?? entry.height ?? 12 }
+      models.push(model)
+      fileCache.set(key, model)
+      return model
     }
     for (const [entries, park] of [[pick(this.flora.street, 5), false], [pick(this.flora.park, 5), true]] as const) {
-      for (const entry of entries) {
-        const result = await SceneLoader.ImportMeshAsync('', this.base, entry.file, this.scene)
-        const all = result.meshes.filter((m): m is Mesh => m instanceof Mesh && m.getTotalVertices() > 0)
-        /**
-         * Only the closest level of detail.
-         *
-         * Each tree GLB carries three — `LOD0_primitive0`, `LOD1_primitive0` and so on as separate meshes —
-         * and instancing every mesh in the file drew each tree three times on top of itself. Worse, any LOD
-         * authored at a different scale then appeared at that scale, which is where the occasional tree
-         * bigger than the city came from. Using them as real LODs by distance is the improvement; picking
-         * one is the fix.
-         */
-        const lod0 = all.filter((m) => !/LOD[1-9]/i.test(m.name))
-        const parts = lod0.length > 0 ? lod0 : all
-        const lod1 = all.filter((m) => /LOD1/i.test(m.name))
-        const far = lod1.length > 0 ? lod1 : parts
-        const lod2 = all.filter((m) => /LOD2/i.test(m.name))
-        const farther = lod2.length > 0 ? lod2 : far
-        for (const m of all) if (!parts.includes(m) && !far.includes(m) && !farther.includes(m)) m.dispose()
-        if (parts.length === 0) continue
-        for (const m of new Set([...parts, ...far, ...farther])) {
-          m.isPickable = false
-          m.alwaysSelectAsActiveMesh = true
-          /**
-           * The loader's `__root__` transform is BAKED INTO THE VERTICES, not left on the node.
-           *
-           * glTF is right-handed and Babylon is not, so the loader parents everything it imports to a
-           * `__root__` scaled (1, 1, -1). A thin-instance matrix is combined with the mesh's world matrix,
-           * which means the translation in it is read in the PARENT's space — so every instance placed at
-           * (x, y, z) was actually planted at (x, y, -z), mirrored across the map.
-           *
-           * On a flat city that is invisible: the tree lands in the wrong block, but the ground is at the
-           * same height either way and nothing looks wrong. On Nob Hill, with a hundred metres of relief, a
-           * tree took the height of where it was MEANT to go and the position of somewhere else: of the 203
-           * street trees here, 19 landed within three metres of the ground, 125 were buried under it, and
-           * 59 were left hanging in the sky. Those are the trees floating over the skyline.
-           *
-           * `setParent(null)` moves the root's transform down into the mesh's own, and baking then moves it
-           * into the vertices, leaving the world matrix an identity — at which point a thin-instance matrix
-           * means exactly what it says. Babylon flips the winding itself when it bakes a negative
-           * determinant, so the handedness flip survives as geometry and the tree still faces the right way.
-           */
-          m.setParent(null)
-          m.bakeCurrentTransformIntoVertices()
-          // the same group as the buildings: the ground layers clear depth, and anything left in group 0 is
-          // either buried by the street or, where the street does not reach, shows through the grass
-          m.renderingGroupId = 3
-
-          /**
-           * Foliage is an alpha CUTOUT, not alpha blending.
-           *
-           * A leaf card is a texture with holes in it, and the kit's GLBs arrive with those materials set to
-           * blend. A blended mesh is not depth-sorted per pixel — it is sorted once, by the distance to its
-           * bounding box — and a thin-instanced tree's bounding box covers every copy of it in the city, a
-           * box well over a kilometre across. So the whole canopy of the neighbourhood sorted as a single
-           * object at the middle of the map and drew over everything in front of it: leaves across the
-           * grass, across the road, and a tree that appeared to be standing in front of the entire city.
-           *
-           * As a cutout the fragments are simply discarded where the texture is transparent, the mesh is
-           * opaque, and every leaf depth-tests like anything else.
-           */
-          const mat = m.material as { transparencyMode?: number | null; needDepthPrePass?: boolean
-            alphaCutOff?: number; separateCullingPass?: boolean } | null
-          if (mat) {
-            mat.transparencyMode = 1          // Material.MATERIAL_ALPHATEST
-            mat.alphaCutOff = 0.45
-            mat.needDepthPrePass = false
-          }
-          m.isPickable = false
-        }
-        models.push({ parts, far, farther, park, top: entry.bounds?.top ?? entry.height ?? 12 })
+      for (const entry of entries) await loadEntry(entry, park)
+    }
+    // the forms: each its own pool, from the library or the palms
+    this.formPools.clear()
+    for (const [form, spec] of Object.entries(this.flora.forms ?? {}) as [TreeForm, [string, number][]][]) {
+      const n = this.flora.formModels?.[form] ?? 3
+      const pool: Model[] = []
+      const trees = spec.filter(([sp]) => !sp.startsWith('palm:'))
+      for (const [sp, w] of spec) {
+        if (!sp.startsWith('palm:')) continue
+        const want = Math.max(1, Math.round((w / spec.reduce((t, [, x]) => t + x, 0)) * n))
+        for (let i = 0; i < want; i++) pool.push(palmOf(sp.slice(5) as PalmKind, i))
       }
+      if (trees.length > 0) for (const entry of pick(trees, n)) { const m = await loadEntry(entry, false); if (m) pool.push(m) }
+      if (pool.length > 0) this.formPools.set(formCode(form), pool)
     }
     if (models.length === 0) return
     this.models = models
@@ -258,18 +304,21 @@ export class Vegetation {
   private plant(): void {
     const models = this.models
 
-    const street = models.filter((m) => !m.park && !m.palm)
+    // (the form-0 pools: the flora's street and park species and its district palms, not the forms' own)
+    const inForms = new Set([...this.formPools.values()].flat())
+    const street = models.filter((m) => !m.park && !m.palm && !inForms.has(m))
     const parkland = models.filter((m) => m.park)
-    const palms = models.filter((m) => m.palm)
+    const palms = this.districtPalms
     const buckets = new Map<Mesh, Matrix[]>()
 
     this.plantings.forEach((p) => {
       // a palm where the region plants them (the Embarcadero's row), by the planting's own hash so it is the same
       // tree every session; in parks at half the rate
       const h = plantHash(p.x, p.z)
-      const palmHere = palms.length > 0 && this.flora.palmChance
+      const own = p.form ? this.formPools.get(p.form) : undefined
+      const palmHere = !own && palms.length > 0 && this.flora.palmChance
         ? ((h >>> 11) % 1000) / 1000 < this.flora.palmChance(p.x, p.z) * (p.park ? 0.5 : 1) : false
-      const pool = palmHere ? palms : p.park && parkland.length > 0 ? parkland : street.length > 0 ? street : models
+      const pool = own ?? (palmHere ? palms : p.park && parkland.length > 0 ? parkland : street.length > 0 ? street : models)
       // by where it stands, not by its place in a list: a streamed tile picks the same model every time
       const model = pool[h % pool.length]
       /*
@@ -279,7 +328,10 @@ export class Vegetation {
        * height from its own measured top.
        */
       // (a palm is its own height, give or take: a street palm is taller than the street trees, not squeezed to them)
-      const scale = model.palm ? 0.85 + ((h >>> 5) % 100) / 330 : Math.min(2, Math.max(0.1, p.height / model.top))
+      // (a palm of a known form was measured too: its height is the city's, within what the model can stretch to)
+      const scale = model.palm
+        ? own ? Math.min(1.5, Math.max(0.55, p.height / model.top)) : 0.85 + ((h >>> 5) % 100) / 330
+        : Math.min(2, Math.max(0.1, p.height / model.top))
       const matrix = Matrix.Compose(
         new Vector3(scale, scale, scale),
         Quaternion.RotationAxis(Vector3.Up(), p.spin),

@@ -6,3 +6,6 @@ docs/shots/views/
 incoming_models/
 public/models/
 public/plants
+
+# generated SF street trees (tools/sftrees): rebuilt, never checked in
+public/sftrees/

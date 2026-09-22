@@ -1,0 +1,26 @@
+{
+ "name": "sf_plane_pollard",
+ "extends": "sf_plane",
+ "about": "pollarded plane (Civic Center, Market): short knuckled boughs, a boxy clipped crown",
+ "height": [
+  8,
+  1.5
+ ],
+ "envelope": {
+  "base": 0.35,
+  "width": 0.42,
+  "profile": [
+   0.85,
+   1.0,
+   1.0,
+   1.0,
+   0.95,
+   0.75
+  ]
+ },
+ "set": [
+  "levels.0.length_scale=0.55",
+  "levels.1.length_scale=0.7"
+ ],
+ "compact": 2.0
+}

@@ -228,6 +228,72 @@ def fan_trunk(rnd: random.Random, W=256, H=512) -> Image.Image:
     return img.filter(ImageFilter.GaussianBlur(0.5))
 
 
+def queen_frond(rnd: random.Random, W=1024, H=512) -> Image.Image:
+    """Syagrus romanzoffiana: a plumose frond along +u, 4 m of it, the leaflets long and soft, in several planes, so
+    from the side the frond is a feather boa rather than Phoenix's comb. v is 1.9 m across."""
+    img = Image.new('RGBA', (W, H), (70, 110, 40, 0))
+    d = ImageDraw.Draw(img)
+    cy = H / 2
+    pu, pv = W / 4.0, H / 1.9
+    base_col, tip_col = (58, 96, 36), (112, 146, 60)
+    s = 0.25
+    positions = []
+    while s < 3.95:
+        positions.append(s)
+        s += rnd.uniform(0.018, 0.032)
+    for s in reversed(positions):
+        t = s / 4.0
+        L = 0.85 * (math.sin(min(1.0, max(0.0, (t - 0.03) / 0.97)) * math.pi) ** 0.8) * rnd.uniform(0.75, 1.05) + 0.1
+        for side in (-1, 1):
+            for _ in range(2):   # leaflets in groups at two angles: the plume
+                ang = math.radians(rnd.uniform(45, 88)) * side
+                Lh = min(L, 0.9 / abs(math.sin(ang)), (3.98 - s) / max(0.2, math.cos(ang)) * 0.95)
+                col = jit(rnd, lerp(base_col, tip_col, min(1, t + rnd.uniform(-0.2, 0.2))), 12)
+                mid = lerp(col, (180, 190, 120), 0.3)
+                p0 = (s * pu, cy + side * 2)
+                a = math.atan2(math.sin(ang) * pv, math.cos(ang) * pu)
+                length_px = Lh * math.hypot(math.cos(ang) * pu, math.sin(ang) * pv)
+                # soft leaflets droop at their tips: a strong bend back toward the tip of the frond
+                curved_leaflet(d, p0, a, length_px, rnd.uniform(4, 7), -side * rnd.uniform(0.3, 0.8), (*col, 255), (*mid, 255))
+    for i in range(50):
+        t0, t1 = i / 50, (i + 1) / 50
+        tapered(d, (t0 * W, cy), (t1 * W, cy), 9 * (1 - t0) + 2, 9 * (1 - t1) + 2, (*lerp((130, 140, 80), (96, 124, 52), t0), 255))
+    return img
+
+
+def queen_trunk(rnd: random.Random, W=256, H=512) -> Image.Image:
+    """The queen palm's trunk: smooth, pale grey, the old leaf scars as faint wide-spaced rings."""
+    img = Image.new('RGBA', (W, H), (150, 146, 136, 255))
+    d = ImageDraw.Draw(img)
+    for x in range(0, W, 2):
+        d.line([(x, 0), (x, H)], fill=(*jit(rnd, (150, 146, 136), 7), 255), width=2)
+    y = 0.0
+    while y < H:
+        d.line([(0, y), (W, y + rnd.uniform(-3, 3))], fill=(*jit(rnd, (118, 114, 106), 8), 255), width=3)
+        y += rnd.uniform(22, 38)
+    return img.filter(ImageFilter.GaussianBlur(0.7))
+
+
+def strap_tuft(rnd: random.Random, S=512) -> Image.Image:
+    """Cordyline australis (and yucca): a tuft of long narrow strap leaves, seen from the side, the tuft's heart at
+    the bottom centre — the young leaves standing up, the older arching out, the dead ones hanging brown below."""
+    img = Image.new('RGBA', (S, S), (80, 100, 50, 0))
+    d = ImageDraw.Draw(img)
+    cx, cy = S / 2, S * 0.62
+    blades = []
+    for _ in range(70):
+        a = rnd.uniform(-1.0, 1.0)
+        blades.append((abs(a), a))
+    for k, a in sorted(blades, reverse=True):
+        ang = -math.pi / 2 + a * 1.55                     # up, to either side and a little below horizontal
+        L = S * rnd.uniform(0.28, 0.4) * (1 - 0.25 * k)
+        dead = k > 0.85 and rnd.random() < 0.6
+        col = jit(rnd, (140, 118, 72) if dead else lerp((64, 96, 42), (118, 140, 66), rnd.random()), 12)
+        bend = (0.9 if a > 0 else -0.9) * k + (1.4 * (1 if a > 0 else -1) if dead else 0)
+        curved_leaflet(d, (cx, cy), ang, L, rnd.uniform(5, 8), bend * 0.6, (*col, 255), (*lerp(col, (200, 200, 140), 0.25), 255), segs=8)
+    return img
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     rnd = random.Random(20260922)
@@ -240,6 +306,11 @@ def main() -> None:
         'canary-trunk': canary_trunk(random.Random(6)),
         'canary-knob': knob(random.Random(7)),
         'fan-trunk': fan_trunk(random.Random(8)),
+        'queen-frond-a': queen_frond(random.Random(9)),
+        'queen-frond-b': queen_frond(random.Random(10)),
+        'queen-trunk': queen_trunk(random.Random(11)),
+        'strap-tuft-a': strap_tuft(random.Random(12)),
+        'strap-tuft-b': strap_tuft(random.Random(13)),
     }
     for name, im in parts.items():
         im.save(OUT / f'{name}.png')

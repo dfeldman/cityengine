@@ -1,0 +1,29 @@
+{
+ "name": "sf_brisbane",
+ "extends": "tt:maple",
+ "about": "brisbane box / water gum: a straight trunk under an upright oval evergreen crown",
+ "bark": "brown",
+ "leaves_page": "evergreen",
+ "height": [
+  10,
+  2.5
+ ],
+ "envelope": {
+  "base": 0.38,
+  "top": 1.05,
+  "width": 0.36,
+  "profile": [
+   0.5,
+   0.85,
+   1.0,
+   0.95,
+   0.8,
+   0.5
+  ]
+ },
+ "set": [
+  "levels.0.angle_offset=-12",
+  "leaves.size=[0.09,0.015]"
+ ],
+ "compact": 1.8
+}

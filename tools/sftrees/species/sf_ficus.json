@@ -1,0 +1,61 @@
+{
+ "name": "sf_ficus",
+ "extends": "tt:maple",
+ "about": "Indian laurel fig: a low fork of pale grey stems under a clipped, dense, dark dome",
+ "bark": "ficus",
+ "bark_tile": 1.2,
+ "leaves_page": "glossy",
+ "height": [
+  8,
+  1.5
+ ],
+ "trunk": {
+  "radius": [
+   0.036,
+   0.004
+  ],
+  "splits": {
+   "count": [
+    2.6,
+    0.8
+   ],
+   "at": [
+    0.28,
+    0.06
+   ],
+   "angle": [
+    26,
+    8
+   ],
+   "length": [
+    0.9,
+    0.1
+   ],
+   "extend": true
+  }
+ },
+ "envelope": {
+  "base": 0.34,
+  "top": 1.0,
+  "width": 0.52,
+  "profile": [
+   0.72,
+   0.95,
+   1.0,
+   1.0,
+   0.94,
+   0.78,
+   0.45
+  ]
+ },
+ "set": [
+  "leaves.size=[0.075,0.01]",
+  "leaves.outward=0.8",
+  "leaves.first=0.1"
+ ],
+ "budget": [
+  3500,
+  5500
+ ],
+ "compact": 2.6
+}

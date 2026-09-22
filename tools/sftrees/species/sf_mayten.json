@@ -1,0 +1,21 @@
+{
+ "name": "sf_mayten",
+ "extends": "tt:willow",
+ "about": "mayten, peppermint willow: a small evergreen weeper, fine dark-green leaves in curtains",
+ "bark": "brown",
+ "leaves_page": "olive",
+ "height": [
+  8,
+  1.5
+ ],
+ "trunk": {
+  "lean": [
+   2,
+   3
+  ]
+ },
+ "set": [
+  "leaves.size=[0.07,0.015]"
+ ],
+ "compact": 1.6
+}

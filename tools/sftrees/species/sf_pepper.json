@@ -1,0 +1,13 @@
+{
+ "name": "sf_pepper",
+ "extends": "tt:willow",
+ "about": "California pepper tree: gnarled trunk, feathery weeping curtains",
+ "bark": "oak",
+ "leaves_page": "feather",
+ "height": [
+  9,
+  2
+ ],
+ "compact": 1.15,
+ "set": []
+}

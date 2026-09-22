@@ -26,6 +26,9 @@ document.head.appendChild(style)
 if (params.get('model')) {
   const { modelShowcase } = await import('./model-showcase.ts')
   void modelShowcase(canvas, params.get('model')!, Number(params.get('size') ?? 200))
+} else if (params.get('trees')) {
+  const { treeShowcase } = await import('./tree-showcase.ts')
+  void treeShowcase(canvas, (Number(params.get('lod') ?? 0) as 0 | 1 | 2))
 } else if (params.get('palms')) {
   const { palmShowcase } = await import('./palm-showcase.ts')
   void palmShowcase(canvas, (Number(params.get('lod') ?? 0) as 0 | 1 | 2), params.get('view') === 'close')

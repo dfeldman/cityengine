@@ -1,0 +1,13 @@
+{
+ "name": "sf_bottlebrush",
+ "extends": "tt:sapling",
+ "about": "callistemon: a small upright bush-tree, fine leaves, red brushes",
+ "bark": "brown",
+ "leaves_page": "bottlebrush",
+ "height": [
+  5,
+  1
+ ],
+ "set": [],
+ "compact": 2.0
+}

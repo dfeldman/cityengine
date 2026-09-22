@@ -4,6 +4,7 @@
  * file (render/paris/flora.ts, render/sf/flora.ts); a region without one gets the default here.
  */
 import type { PalmKind } from './palms.ts'
+import type { TreeForm } from '../city/tree-forms.ts'
 
 export interface Flora {
   /** library species (public/trees/index.json) and relative weights */
@@ -17,6 +18,16 @@ export interface Flora {
    * the same tree every session.
    */
   palmChance?: (x: number, z: number) => number
+  /** another tree library beside public/trees, by its folder under public/: the region's own species (SF: sftrees) */
+  library?: string
+  /**
+   * What draws each FORM (city/tree-forms.ts), where the bake knew a planting's: `[species, weight]`, a species
+   * being a library tree's, or `palm:<kind>` for a generated palm. A form with nothing here falls back to the
+   * street and park pools. A planting with a form never goes through `palmChance`: it is what it is.
+   */
+  forms?: Partial<Record<TreeForm, [string, number][]>>
+  /** how many models a form gets (default 3): variety against load time */
+  formModels?: Partial<Record<TreeForm, number>>
 }
 
 // Street trees are SMALL. A poplar or a mature elm on a pavement is a forest giant leaning over the road;

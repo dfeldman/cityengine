@@ -6,16 +6,27 @@
  */
 import { onSurface, unpackPoints, type CityPackage } from './package.ts'
 
-export interface Planting { x: number; z: number; height: number; spin: number; park: boolean }
+export interface Planting {
+  x: number; z: number; height: number; spin: number; park: boolean
+  /** the tree's form where the bake knows it (city/tree-forms.ts), 0 where it does not */
+  form?: number
+}
 
-/** Plantings as the package stores them: x, z, height, spin, park — five numbers a tree. */
+/**
+ * Plantings as the package stores them: x, z, height, spin, and park + 2 × form — five numbers a tree. (The fifth
+ * was park 0/1 alone before forms, which reads back as form 0, so an old package still plants.)
+ */
 export const packPlantings = (ps: Planting[]): number[] => ps.flatMap((p) => [
-  Math.round(p.x * 10) / 10, Math.round(p.z * 10) / 10, Math.round(p.height * 10) / 10, Math.round(p.spin * 100) / 100, p.park ? 1 : 0,
+  Math.round(p.x * 10) / 10, Math.round(p.z * 10) / 10, Math.round(p.height * 10) / 10, Math.round(p.spin * 100) / 100,
+  (p.park ? 1 : 0) + 2 * (p.form ?? 0),
 ])
 
 export const unpackPlantings = (flat: number[]): Planting[] => {
   const out: Planting[] = []
-  for (let i = 0; i + 4 < flat.length; i += 5) out.push({ x: flat[i], z: flat[i + 1], height: flat[i + 2], spin: flat[i + 3], park: flat[i + 4] === 1 })
+  for (let i = 0; i + 4 < flat.length; i += 5) {
+    const f = flat[i + 4]
+    out.push({ x: flat[i], z: flat[i + 1], height: flat[i + 2], spin: flat[i + 3], park: (f & 1) === 1, form: f >> 1 })
+  }
   return out
 }
 
@@ -31,13 +42,27 @@ export const TREE_CAP = 1900
 /** …and at most this many a square kilometre, for a big box (the first Marais box: 1,900 over 1.96 km²) */
 export const TREES_PER_KM2 = 1000
 
-export function plantCity(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'>, cap = TREE_CAP): Planting[] {
+/**
+ * `street`, where a region has its city's own record of its street trees (San Francisco: city/sf/trees.ts), is used
+ * in place of step 3's guessed boulevard rows, and kept whole: the cap thins only
+ * the park scatter then, since a tree that is really there is not one to thin.
+ */
+export function plantCity(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'>, cap = TREE_CAP, street?: Planting[]): Planting[] {
   const out: Planting[] = []
   const r = mulberry(0x5eed ^ pkg.edges.length)
 
-  // 1. the trees somebody actually mapped
+  // 1. the trees somebody actually mapped — with a city list, only those it does not have (a park's, a plaza's:
+  // the city's list is of its street trees), which are the ones not within 3 m of one of its own
+  const listed = new Set<string>()
+  const cell = (x: number, z: number): string => `${Math.floor(x / 3)},${Math.floor(z / 3)}`
+  for (const p of street ?? []) listed.add(cell(p.x, p.z))
+  const near = (x: number, z: number): boolean => {
+    for (let dx = -3; dx <= 3; dx += 3) for (let dz = -3; dz <= 3; dz += 3) if (listed.has(cell(x + dx, z + dz))) return true
+    return false
+  }
   const trees = pkg.trees
   for (let i = 0; i < trees.length; i += 2) {
+    if (street && near(trees[i], trees[i + 1])) continue
     out.push({ x: trees[i], z: trees[i + 1], height: 6.5 + r() * 3, spin: r() * 6.28, park: false })
   }
 
@@ -76,7 +101,7 @@ export function plantCity(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'>, c
    * fifteen metres came out bare. What actually decides whether a street is planted is whether there is
    * somewhere to plant: a pavement of about a metre and a half.
    */
-  for (const e of pkg.edges) {
+  for (const e of street ? [] : pkg.edges) {
     // A BOULEVARD, not every street with a kerb. Relaxing this to "anything with a pavement" planted five
     // thousand trees in the Loop, several of them within touching distance of the rider's own line — a
     // forest with a city somewhere behind it.
@@ -115,6 +140,11 @@ export function plantCity(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'>, c
   }
 
   // the ceiling: every k-th tree kept, evenly, so no one place is thinned more than another
+  if (street) return [...street, ...thin(out, cap)]
+  return thin(out, cap)
+}
+
+function thin(out: Planting[], cap: number): Planting[] {
   if (out.length <= cap) return out
   const keep = cap / out.length
   let acc = 0

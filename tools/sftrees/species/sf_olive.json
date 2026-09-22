@@ -1,0 +1,22 @@
+{
+ "name": "sf_olive",
+ "extends": "tt:oak",
+ "about": "olive, strawberry tree, melaleuca: a small gnarled tree with a loose grey-green crown",
+ "bark": "oak",
+ "leaves_page": "olive",
+ "height": [
+  6,
+  1
+ ],
+ "trunk": {
+  "gnarl": 0.6,
+  "wander": 0.2
+ },
+ "envelope": {
+  "width": 0.52
+ },
+ "set": [
+  "leaves.size=[0.1,0.02]"
+ ],
+ "compact": 2.0
+}
