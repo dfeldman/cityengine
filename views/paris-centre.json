@@ -294,12 +294,6 @@
   "to": [48.853, 2.3496, 30]
  },
  {
-  "name": "Notre-Dame — from the Seine (south-east)",
-  "group": "landmark",
-  "from": [48.8515, 2.3518, 3],
-  "to": [48.85296, 2.3499, 30]
- },
- {
   "name": "Notre-Dame — from above",
   "group": "landmark",
   "from": [48.8512, 2.348, 90],
@@ -356,13 +350,50 @@
  {
   "name": "Concorde — fountain close",
   "group": "landmark",
-  "from": [48.86573, 2.32133, 2.0],
+  "from": [48.86573, 2.32133, 2],
   "to": [48.86584, 2.32142, 5]
  },
  {
   "name": "Concorde — obelisk close",
   "group": "landmark",
-  "from": [48.8652, 2.32145, 2.0],
+  "from": [48.8652, 2.32145, 2],
   "to": [48.865476, 2.321129, 18]
+ },
+ {
+  "name": "Notre-Dame — model front",
+  "from": [48.853675, 2.348936, 1.8],
+  "to": [48.853395, 2.349346, 30],
+  "group": "landmark"
+ },
+ {
+  "name": "Notre-Dame — model three-quarter",
+  "from": [48.853102, 2.348041, 3.8],
+  "to": [48.85299, 2.34994, 30],
+  "group": "landmark"
+ },
+ {
+  "name": "Notre-Dame — model side",
+  "from": [48.852277, 2.348567, 3.8],
+  "to": [48.85299, 2.34994, 30],
+  "group": "landmark"
+ },
+ {
+  "name": "Notre-Dame — model back",
+  "from": [48.851964, 2.350746, 3.8],
+  "to": [48.85299, 2.34994, 30],
+  "group": "landmark"
+ },
+ {
+  "name": "Notre-Dame — model above",
+  "from": [48.853252, 2.347464, 124.28000000000002],
+  "to": [48.85299, 2.34994, 30],
+  "group": "landmark"
+ },
+ {
+  "name": "Notre-Dame — from the Quai de la Tournelle",
+  "group": "landmark",
+  "from": [48.85135, 2.3523, 5],
+  "to": [48.853, 2.3496, 28],
+  "note": "the viewpoint of the 2017 reference photo"
  }
 ]

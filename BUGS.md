@@ -28,7 +28,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 18 | open | Café tables show no top surface (likely wound facing down) | user, 2026-09-21 |
 | 19 | fixed | The Colonne de Juillet at the Bastille is gone completely | user, 2026-09-21 |
 | 20 | open | Central Paris audit: 22 ride edges pass through buildings; 266 dead ends to triage | audit-ride, 2026-09-21 |
-| 21 | open | Notre-Dame needs real effort: the first pass is a sketch | user, 2026-09-21 |
+| 21 | fixing | Notre-Dame needs real effort: the first pass is a sketch | user, 2026-09-21 |
 | 22 | open | The Place de la Concorde is drawn as grass; the real square is paved | views, 2026-09-21 |
 
 ---
@@ -317,6 +317,18 @@ villas; the through-building ones are passages OSM did not tag (see the Marais f
 Work from reference photos of the west front, the south flank from the Seine and the apse; the portals'
 depth and statuary, the rose's tracery, the towers' belfry openings and their gallery, the gargoyle gallery,
 the flying buttresses' proportions, the lead roof and spire's ornament.
+
+**Pass 2 (2026-09-22), from two photographs** (Wikimedia Commons: the west front 2014, the south-east flank
+2017): the front in its five bands between four buttresses — portals with stepped archivolts, tympana, jamb
+statues; the 28-niche Gallery of Kings; the rose with spoke and ring tracery, the paired lancets under their
+arches, the Virgin and angels; the open gallery of slender columns with the sky behind the middle bay; the
+towers with two tall belfry lancets on each face, corner buttresses, balustrades. Behind: clerestory and aisle
+lancets on both flanks, the transept fronts with their great roses, small gable roses and pinnacle turrets, a
+polygonal chevet with lancets, ARCHED flyers on pinnacled piers, a crocketed spire with its rooster and the
+green copper apostles. Shots: `docs/shots/LP-notre-dame-front.png`, `-flank.png`, `-chevet.png`.
+`tools/model-views.ts` makes views from the model's own axes, clear of buildings.
+**Still to do:** the chevet's flyers should be longer and lighter (they read as fins end-on); the front's
+portals want more depth (real recesses rather than layered panes).
 
 ## 22. The Concorde is grass
 
