@@ -15,8 +15,10 @@ Read `docs/sf-batches/BRIEF.md` only if something here is unclear — it is the 
 - `docs/sf-batches/<district>-hard.md` — the bail-out list (see below). Create it if you need it.
 - `docs/shots/models/<district>/` — your screenshots.
 
-Never edit anything else: not `tower.ts`, `recipes.ts`, `index.ts`, other districts, tests. Never run `git`, a
-bake, or a dev server (one runs already at http://localhost:5200). Other agents work in this tree at the same time.
+Never edit anything else: not `tower.ts`, `recipes.ts`, `index.ts`, other districts, tests. Never run `git` or a
+bake, and never start a dev server — one is already running at http://localhost:5200, and
+`tools/model-shots.ts` USES it (it does not start one). So you can and must take screenshots: that instruction
+never means "skip the visual check". Other agents work in this tree at the same time.
 
 ## The loop, per building
 
