@@ -25,6 +25,13 @@ export interface CitySpec {
    */
   box?: { west?: number; east?: number; south?: number; north?: number }
   /**
+   * The DETAIL box: how far the buildings, their facades and the street furniture are modelled, when that is
+   * smaller than the box itself. The box reaches the places worth riding to — San Francisco's goes out to both
+   * bridges — while the detail stays over the city (nobody wants Oakland's buildings baked because the Bay
+   * Bridge's far end is in the box). Absent sides fall back to the box's.
+   */
+  detail?: { west?: number; east?: number; south?: number; north?: number }
+  /**
    * What the ground is where OSM mapped nothing — yards, verges, the inside of a block. Most cities are green
    * there; a dry one is not. Painting it concrete makes every courtyard read as a car park.
    */
@@ -153,7 +160,14 @@ export const CITIES: CitySpec[] = [
     name: 'San Francisco',
     centre: { lat: 37.7930, lon: -122.4120 },
     radius: 3340,
-    box: { west: 3340, east: 2290, north: 1950, south: 2560 },
+    /*
+     * Out to the places worth riding to (user, 2026-09-22): east to the Bay Bridge's Oakland touchdown, west and
+     * north to the Golden Gate and its Marin end. Most of that is water, and the detail box below keeps the
+     * buildings over the city itself — Oakland is in the box only as roads and shoreline.
+     */
+    box: { west: 6200, east: 7800, north: 4600, south: 2600 },
+    /** the city, the waterfront, and the streets between the Presidio and Golden Gate Park */
+    detail: { west: 5200, east: 2400, north: 2400, south: 2600 },
     ground: 'grass',
     styles: [
       { id: 'victorian', weight: 5 },
@@ -178,6 +192,27 @@ export function extentOf(c: Pick<CitySpec, 'radius' | 'box'>, pad = 0): { west: 
   return {
     west: (c.box?.west ?? c.radius) + pad, east: (c.box?.east ?? c.radius) + pad,
     south: (c.box?.south ?? c.radius) + pad, north: (c.box?.north ?? c.radius) + pad,
+  }
+}
+
+/** The DETAIL extents: where buildings and facades are modelled (the box's, where there is no detail box). */
+export function detailOf(c: Pick<CitySpec, 'radius' | 'box' | 'detail'>, pad = 0): { west: number; east: number; south: number; north: number } {
+  const b = extentOf(c, 0)
+  const d = c.detail
+  return {
+    west: (d?.west ?? b.west) + pad, east: (d?.east ?? b.east) + pad,
+    south: (d?.south ?? b.south) + pad, north: (d?.north ?? b.north) + pad,
+  }
+}
+
+/** The detail box as a lat/lon rectangle. */
+export function detailBboxOf(c: Pick<CitySpec, 'radius' | 'box' | 'centre' | 'detail'>, pad = 0): { south: number; north: number; west: number; east: number } {
+  const e = detailOf(c, pad)
+  const mLat = 111_320
+  const mLon = 111_320 * Math.cos((c.centre.lat * Math.PI) / 180)
+  return {
+    south: c.centre.lat - e.south / mLat, north: c.centre.lat + e.north / mLat,
+    west: c.centre.lon - e.west / mLon, east: c.centre.lon + e.east / mLon,
   }
 }
 

@@ -888,3 +888,65 @@ are unnavigable because they come out as cluttered messy places." The Paris work
 `rideExits` folds exits onto the same street within 50°, and hides short unnamed links) and #44 (`dropLoops`).
 San Francisco has its own artefacts: dual carriageways down the Embarcadero and Van Ness, slip roads, service
 alleys, and the ramps around the Bay Bridge approaches.
+
+## 53. A hump in Kearny Street (37.794730, −122.404853)
+
+**Seen:** user riding, 2026-09-22: "grading is messed up on kearny, road has a huge hump". The terrain under the
+carriageway rises where it should not — the elevation data over Nob Hill's slope, or the drape.
+
+## 54. Chinatown's facade signs are behind the balconies
+
+**Seen:** user riding, 2026-09-22: "most signs on facades are covered by balconies in Chinatown". The `chinatown`
+facade style hangs balconies over the shopfront band the signs are drawn on.
+
+## 55. Trees half inside buildings (37.794225, −122.406647)
+
+**Seen:** user riding, 2026-09-22: "tons of trees half inside buildings". `seatTrees` (#47) puts a listed tree at
+its street's kerb and drops it if the trunk lands inside a footprint, but the CROWN still overlaps the building on
+a narrow Chinatown street, and the mapped/scattered trees are only pushed out of a footprint they are inside.
+
+## 56. A confused intersection on Kearny (37.795366, −122.404954)
+
+**Seen:** user riding, 2026-09-22. Kearny at Columbus/Broadway: several ways, a skew crossing, and the rider
+cannot tell which way they will go. (Junction simplification: #52.)
+
+## 57. Newspaper boxes in the street (37.796674, −122.405238)
+
+**Seen:** user riding, 2026-09-22. The clutter pass puts a rack bank at the kerb; here it lands in the carriageway.
+
+## 58. The waterfront's grading is wrong: the water is too far out and the piers stand on land
+
+**Seen:** user riding, 2026-09-22: "the grading is wrong on the waterfront - the water is way too far out. most of
+the piers appear on land. special buildings on the piers aren't appearing." The bay's edge is drawn from the
+terrain/water level rather than from the mapped shoreline, so the pier decks sit on dry ground, and the pier
+landmarks (render/landmarks/sf/piers.ts, 16 of them) are not placed at all.
+
+## 59. The Bay Bridge is OSM's two towers, not our generator
+
+**Seen:** user riding, 2026-09-22. `bayBridge` (render/landmarks/sf/bay-bridge.ts) is in the manifest but the
+city is drawing the OSM bridge structure instead.
+
+## 60. A building floating in midair (37.788772, −122.396218)
+
+**Seen:** user riding, 2026-09-22.
+
+## 61. Jumping to a landmark reloads the whole page
+
+**Seen:** user, 2026-09-22: "jumping to a landmark shouldn't require a full page reload". The landmark menu sets
+the URL and reloads; it should move the rider in place, as `__view` does.
+
+## 62. Every building round Union Square is the same cream
+
+**Seen:** user, 2026-09-22: "over by union square, every building is the same cream. I know these aren't modeled,
+but they could have random colors. or we could use the haiku refacing to do it." The restyle entries carry a style
+but no palette, so a whole district comes out in one colour.
+
+## 63. Click the map to jump anywhere (debugging)
+
+**Asked:** user, 2026-09-22: "Would like to jump anywhere on the map by clicking for testing and debugging."
+
+## 64. Z-fighting on a building (37.789340, −122.401526)
+
+**Seen:** user riding, 2026-09-22: "tons of z fighting on this building". Market at Montgomery — two surfaces in
+the same place: most likely a landmark model over the OSM building it should have replaced (the entry names one
+id and the bake kept another), or two entries on one building.

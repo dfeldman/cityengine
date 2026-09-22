@@ -352,6 +352,11 @@ San Francisco and for the next city.
   at street junctions, and a way to ride from one level to the next. That means a level-aware graph, OSM `layer`
   and `level` tags, bridge=yes footways, and hand fixes where OSM is thin. Do it after the buildings those
   levels belong to are modelled.
+- **Eventually, the whole City and County of San Francisco, minus the airport** (user, 2026-09-22: "eventually
+  (and maybe in months), we will expand to the entire City of San Francisco"). That is about 120 km² of land —
+  roughly three times today's detail box — so it wants the detail/extent split to keep paying off, tiles that
+  stream well, and the building pipeline (docs/BUILDINGS.md) running steadily in the background. Chicago and New
+  York are the same problem an order of magnitude bigger.
 - **A round for the ten parks that matter** (user, 2026-09-22: "we can wait on the parks. but we should do a
   separate round for like the 10 most important parks"). Union Square, Portsmouth Square, Washington Square,
   Huntington Park, Alamo Square, Lafayette Park, Alta Plaza, Yerba Buena Gardens, Civic Center Plaza, and Golden

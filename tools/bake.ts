@@ -25,9 +25,9 @@
  */
 import { mkdir, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { CITIES, bboxOf, city, extentOf, type CitySpec } from './cities.ts'
+import { CITIES, bboxOf, city, detailBboxOf, extentOf, type CitySpec } from './cities.ts'
 import { joinNearMisses } from './gaps.ts'
-import { bridgesQuery, squaresQuery, stepsQuery, fringeQuery, cityQuery, furnitureQuery, innerRings, outerRings, overpassTiled, type Bbox, type OsmWay } from './overpass.ts'
+import { bridgesQuery, squaresQuery, stepsQuery, wideQuery, fringeQuery, cityQuery, furnitureQuery, innerRings, outerRings, overpassTiled, type Bbox, type OsmWay } from './overpass.ts'
 import { Elevation, ATTRIBUTION as TERRAIN_CREDIT } from './terrarium.ts'
 import { Terrain, type PackedTerrain } from '../src/city/terrain.ts'
 import { splitPackage, type CityIndex, type TileEntry } from '../src/city/tiles.ts'
@@ -154,10 +154,31 @@ function pavementForNA(width: number): number {
 const isFoot = (t: Record<string, string>): boolean =>
   t.highway === 'footway' || t.highway === 'path' || t.highway === 'pedestrian' || t.highway === 'steps'
 
+/** two boxes the same, to the metre: then the wide fetch would only repeat the near one */
+const sameBox = (a: { south: number; north: number; west: number; east: number }, b: typeof a): boolean =>
+  Math.abs(a.south - b.south) < 1e-6 && Math.abs(a.north - b.north) < 1e-6 && Math.abs(a.west - b.west) < 1e-6 && Math.abs(a.east - b.east) < 1e-6
+
 async function bake(spec: CitySpec): Promise<void> {
   console.log(`\n${spec.name}`)
-  const { ways, nodes, relations, copyright, timestamp } = await overpassTiled(cityQuery, bbox(spec))
-  console.log(`  ${ways.length} ways, ${nodes.length} nodes, ${relations.length} relations`)
+  /*
+   * Two fetches, two boxes (tools/cities.ts `detail`): the city in detail over the blocks that are modelled, and
+   * the wide box — roads, rails, water, the coast and the motorway BRIDGES — over everything the box reaches.
+   * San Francisco's box runs out to both bridges so they can be ridden; its detail box stops at the city, so
+   * Oakland's buildings are never baked.
+   */
+  const detailBox = detailBboxOf(spec)
+  const wholeBox = bbox(spec)
+  const near = await overpassTiled(cityQuery, detailBox)
+  const wider = sameBox(detailBox, wholeBox) ? { ways: [], nodes: [], relations: [] } : await overpassTiled(wideQuery, wholeBox)
+  const seenWay = new Set(near.ways.map((w) => w.id))
+  const seenNode = new Set(near.nodes.map((n) => n.id))
+  const seenRel = new Set(near.relations.map((r) => r.id))
+  const ways = [...near.ways, ...wider.ways.filter((w) => !seenWay.has(w.id))]
+  const nodes = [...near.nodes, ...wider.nodes.filter((n) => !seenNode.has(n.id))]
+  const relations = [...near.relations, ...wider.relations.filter((r) => !seenRel.has(r.id))]
+  const { copyright, timestamp } = near
+  console.log(`  ${ways.length} ways, ${nodes.length} nodes, ${relations.length} relations`
+    + (wider.ways.length ? ` (${wider.ways.length} from the wide box)` : ''))
   // the public stairways, from their own query (tools/overpass.ts stepsQuery), and the region's own where OSM
   // has not mapped them — each a polyline, its ends joined to the paths beside them (joinNearMisses below)
   {
@@ -364,7 +385,7 @@ async function bake(spec: CitySpec): Promise<void> {
   const classify = classifierFor(spec.region)
   // and the city's own records, where the region has them: SF's Assessor rolls (tools/sf-parcels.ts)
   const recordOf = spec.region === 'san-francisco'
-    ? await import('./sf-parcels.ts').then(async (m) => m.parcelIndex(await m.fetchRolls(bboxOf(spec))))
+    ? await import('./sf-parcels.ts').then(async (m) => m.parcelIndex(await m.fetchRolls(detailBboxOf(spec))))
       .catch((e: unknown) => { console.warn(`  sf-parcels: not fetched (${String(e).slice(0, 120)})`); return null })
     : null
   const taggedNear: TaggedNeighbour[] = []
@@ -483,7 +504,7 @@ async function bake(spec: CitySpec): Promise<void> {
   if (streetRegion.streetWidth === 'carriageway') fitStreetsBetweenBuildings(kept, buildings)
 
   // ---- the green and the wet, and the paved squares (their own query: only as areas, never as streets)
-  const squares = await overpassTiled(squaresQuery, bbox(spec)).catch((e) => {
+  const squares = await overpassTiled(squaresQuery, detailBboxOf(spec)).catch((e) => {
     console.warn(`  squares: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
     return { ways: [] as OsmWay[], relations: [] as typeof relations }
   })
@@ -712,6 +733,33 @@ async function bake(spec: CitySpec): Promise<void> {
     }
   }
   const ground = bareEarth(heights, cols, rows, 3, wetMask)
+  /*
+   * The sea bed is not the ground (BUGS.md #58). The elevation tiles carry BATHYMETRY: off the Embarcadero the
+   * bay floor drops to −108 m, so the shoreline came out as a cliff, the water plane sat in a pit far out from
+   * the quays, and the piers — which stand on the bed — hung over a canyon or appeared to be on dry land.
+   * A bay is flat and shallow as far as a rider can tell: every wet sample well below the shore is brought up
+   * to just under the level of the land round it, which is what the water plane is drawn at.
+   */
+  {
+    const shoreline: number[] = []
+    for (let r = 1; r < rows - 1; r++) {
+      for (let c = 1; c < cols - 1; c++) {
+        const i = r * cols + c
+        if (wetMask[i]) continue
+        const wetBeside = wetMask[i - 1] || wetMask[i + 1] || wetMask[i - cols] || wetMask[i + cols]
+        if (wetBeside) shoreline.push(ground[i])
+      }
+    }
+    if (shoreline.length > 0) {
+      shoreline.sort((a, b) => a - b)
+      const shore = shoreline[Math.floor(shoreline.length * 0.35)]
+      let raised = 0
+      for (let i = 0; i < ground.length; i++) {
+        if (wetMask[i] && ground[i] < shore - 3) { ground[i] = shore - 1.5; raised++ }
+      }
+      if (raised > 0) console.log(`  sea bed flattened: ${raised} samples brought up to ${(shore - 1.5).toFixed(1)} m (shore ${shore.toFixed(1)} m)`)
+    }
+  }
   const datum = sampleGrid(ground, cols, rows, tx0, tz0, STEP, 0, 0)
   const datumRaw = datum
   for (let i = 0; i < ground.length; i++) ground[i] = Math.round((ground[i] - datum) * 100) / 100
@@ -926,8 +974,8 @@ async function bake(spec: CitySpec): Promise<void> {
      * In four strips round the box — north and south the full width, east and west between them — because
      * the whole 2.8 km square in one query timed out on every Overpass server. Each strip is cached on its own.
      */
-    const inner = bbox(spec)
-    const outer = bbox(spec, FRINGE)
+    const inner = detailBboxOf(spec)
+    const outer = detailBboxOf(spec, FRINGE)
     const strips: Bbox[] = [
       { south: inner.north, north: outer.north, west: outer.west, east: outer.east },
       { south: outer.south, north: inner.south, west: outer.west, east: outer.east },
@@ -972,7 +1020,7 @@ async function bake(spec: CitySpec): Promise<void> {
   const furniture: PackedFurniture[] = []
   {
     // optional: a busy Overpass must not stop a bake, it only leaves the street furniture out
-    const f = await overpassTiled(furnitureQuery, bbox(spec)).catch((e) => {
+    const f = await overpassTiled(furnitureQuery, detailBboxOf(spec)).catch((e) => {
       console.warn(`  furniture: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
       return { nodes: [] as { lat: number; lon: number; tags: Record<string, string> }[] }
     })
@@ -1090,7 +1138,7 @@ async function bake(spec: CitySpec): Promise<void> {
   // mapped and the guessed ones
   const street = spec.region === 'san-francisco'
     ? await Promise.all([import('./sf-trees.ts'), import('../src/city/sf/trees.ts')])
-      .then(async ([t, f]) => f.sfPlantings(await t.fetchStreetTrees(bboxOf(spec)), (g) => proj.toLocal(g), () => true))
+      .then(async ([t, f]) => f.sfPlantings(await t.fetchStreetTrees(detailBboxOf(spec)), (g) => proj.toLocal(g), () => true))
       .catch((e: unknown) => { console.warn(`  sf-trees: not fetched (${String(e).slice(0, 120)})`); return undefined })
     : undefined
   pkg.plantings = packPlantings(plantCity(pkg, cap, street))

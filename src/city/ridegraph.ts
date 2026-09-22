@@ -34,6 +34,13 @@ export interface RideGraph extends CityGraph { edges: Map<number, RideEdge> }
 const BIKE = new Set(['primary', 'secondary', 'tertiary', 'primary_link', 'secondary_link', 'tertiary_link',
   'residential', 'unclassified', 'living_street', 'pedestrian', 'cycleway', 'service'])
 /**
+ * …and the great bridges, which are motorways and would otherwise be left out with the rest of the freeway
+ * network (user, 2026-09-22: "we should expand the box to include the whole east span of the bay bridge. and the
+ * golden gate. i want to bike on them!!!"). Only a way that IS the bridge: the tools' wide query fetches
+ * motorways only where they are bridges, so nothing else of the freeway is in the graph to begin with.
+ */
+const RIDEABLE_MOTORWAY = new Set(['motorway', 'trunk', 'motorway_link', 'trunk_link'])
+/**
  * …and on foot, the paths as well — and the public stairways. They were left out once ("a treadmill cannot climb
  * them"), but a runner on a treadmill climbs a virtual stair at their own pace like any hill, and in San
  * Francisco the stairways ARE where people run (user, 2026-09-22: "there are SO MANY public stairs… we need to
@@ -74,7 +81,7 @@ export function classify(edges: Edge[], mode: RideMode): RideEdge[] {
       if (k === 'service' && e.service && NOT_A_STREET.has(e.service)) return false
       // a car park's ramp down into it: a dead end into the ground (BUGS.md #20 — 20 of the audit's dead ends)
       if (e.name && /^(Accès|Sortie|Entrée|Rampe)\b.*\b[Pp]arking|^Allée de [Pp]arking/.test(e.name)) return false
-      return BIKE.has(k) || (mode === 'run' && RUN_EXTRA.has(k))
+      return BIKE.has(k) || RIDEABLE_MOTORWAY.has(k) || (mode === 'run' && RUN_EXTRA.has(k))
     })
     .map((e) => ({
       ...e, points: [...e.points], heights: e.heights ? [...e.heights] : undefined,

@@ -73,6 +73,27 @@ export interface Bbox { south: number; west: number; north: number; east: number
  * driveways — because a city you can steer through is made of streets, and offering a left turn onto a
  * motorway slip road would be both wrong and unrideable.
  */
+/**
+ * The WIDE query: what a city needs far beyond the blocks it models in detail — the roads, the railways, the
+ * water and the coast (SF_PLAN.md: the box reaches the Bay Bridge and the Golden Gate so they can be ridden,
+ * but nobody wants Oakland's buildings). Motorways come in only where they are a BRIDGE: the two bridges'
+ * decks, not the freeway network, which a rider does not want and which clutters everything it touches.
+ */
+export function wideQuery(b: Bbox): string {
+  const box = `${b.south},${b.west},${b.north},${b.east}`
+  return `[out:json][timeout:240];
+(
+  way["highway"~"^(residential|living_street|unclassified|tertiary|secondary|primary|pedestrian|footway|path|cycleway|service)$"]["area"!~"yes"](${box});
+  way["highway"~"^(motorway|trunk|motorway_link|trunk_link)$"]["bridge"](${box});
+  way["railway"~"^(rail|light_rail|tram|subway)$"](${box});
+  way["natural"~"^(water|wood|coastline)$"](${box});
+  way["waterway"="riverbank"](${box});
+  way["man_made"="bridge"](${box});
+  relation["natural"="water"](${box});
+);
+out geom qt;`
+}
+
 export function cityQuery(b: Bbox): string {
   const box = `${b.south},${b.west},${b.north},${b.east}`
   return `[out:json][timeout:240];
