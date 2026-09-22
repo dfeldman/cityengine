@@ -500,5 +500,34 @@
     "front": 116,
     "height": 50,
     "note": "Fitted to OSM's attic outline (way 226413514, 45 × 22 m), its front (the −z face) down the Champs-Élysées; every OSM part of the arch replaced."
+  },
+  {
+    "name": "Palais du Louvre",
+    "osm": [
+      "relation/3262297"
+    ],
+    "restyle": "classical",
+    "roof": "hipped",
+    "roofHeight": 9,
+    "roofColour": "#4a5058",
+    "height": 25,
+    "levels": 5,
+    "note": "OSM maps the palace 12 m high: its walls to 25 m, the classical stone dress, steep slate roofs (the pavilions' own taller roofs are wanted next)."
+  },
+  {
+    "name": "Louvre Pyramid",
+    "procedural": "louvrePyramid",
+    "lat": 48.861025,
+    "lon": 2.335843,
+    "rotateDeg": 116,
+    "stone": false,
+    "note": "Pei's pyramid in the Cour Napoléon, square to the palace (the historic axis, bearing 116°), with the three small pyramids and the basins."
+  },
+  {
+    "name": "Louvre Pyramid — OSM building",
+    "osm": [
+      "way/375076234"
+    ],
+    "note": "Placeholder: OSM maps the Pyramid as a 21.65 m building, drawn as a glass box round the model."
   }
 ]

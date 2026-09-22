@@ -12,10 +12,10 @@ horsemen (two).
 
 | # | Statue | Where | lat, lon | Why |
 |---|---|---|---|---|
-| 1 | Jeanne d'Arc (Frémiet), gilded equestrian | Place des Pyramides, Rue de Rivoli | 48.8634, 2.3321 | Gold, at eye level on Rivoli, on the ride's main axis |
-| 2 | Henri IV, equestrian | Pont Neuf, above the Vert-Galant | 48.8570, 2.3413 | On the most-ridden bridge, at deck level |
-| 3 | Louis XIV, equestrian | Centre of the Place des Victoires | 48.8657, 2.3413 | The whole circular place is built round it |
-| 4 | Étienne Marcel, equestrian | Beside the Hôtel de Ville, on the Seine side | 48.8561, 2.3515 | Freestanding, on the rider's route along the quai |
+| X1 | Jeanne d'Arc (Frémiet), gilded equestrian | Place des Pyramides, Rue de Rivoli | 48.8634, 2.3321 | Gold, at eye level on Rivoli, on the ride's main axis |
+| X2 | Henri IV, equestrian | Pont Neuf, above the Vert-Galant | 48.8570, 2.3413 | On the most-ridden bridge, at deck level |
+| X3 | Louis XIV, equestrian | Centre of the Place des Victoires | 48.8657, 2.3413 | The whole circular place is built round it |
+| X4 - quality is poor | Étienne Marcel, equestrian | Beside the Hôtel de Ville, on the Seine side | 48.8561, 2.3515 | Freestanding, on the rider's route along the quai |
 | 5 | Louis XIV (after Bernini), equestrian | Cour Napoléon, beside the Louvre Pyramid | 48.8612, 2.3353 | Next to the Pyramid, eye level |
 | 6 | Charlemagne et ses Leudes, equestrian group | Parvis of Notre-Dame | 48.8535, 2.3486 | In front of Notre-Dame, eye level |
 | 7 | Marianne, Monument à la République (with the lion) | Place de la République | 48.8675, 2.3637 | Very prominent, tall plinth, in the box's north-east |

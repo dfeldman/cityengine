@@ -62,8 +62,11 @@ export function tilePreparer(entries: LandmarkEntry[], index: Pick<CityIndex, 'o
       const pal = styleOf(st).palettes[0]
       const roof = e.roof === 'flat' ? { roof: 'flat' as const, roofHeight: 0 }
         : e.roofHeight !== undefined ? { roof: e.roof ?? 'hipped' as const, roofHeight: e.roofHeight } : {}
-      const height = e.eaves !== undefined && b.height !== undefined && b.height > e.eaves && (b.minHeight ?? 0) < e.eaves
-        ? { height: e.eaves, levels: e.levels } : {}
+      // `height` sets the walls outright (the Louvre is mapped 12 m high and stands 25 m to its eaves); `eaves`
+      // only ever lowers them
+      const height = e.height !== undefined && (b.minHeight ?? 0) < 1 ? { height: e.height, levels: e.levels }
+        : e.eaves !== undefined && b.height !== undefined && b.height > e.eaves && (b.minHeight ?? 0) < e.eaves
+          ? { height: e.eaves, levels: e.levels } : {}
       return { ...b, style: st, ...roof, ...height, roofColour: hexRgb(e.roofColour ?? pal.roof) }
     }))
     return { ...t, buildings, fringe: t.fringe.filter((f) => !replaced.has(f.id)) }

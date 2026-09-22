@@ -274,5 +274,17 @@
   "group": "landmark",
   "from": [48.873, 2.2964, 60],
   "to": [48.87378, 2.29504, 20]
+ },
+ {
+  "name": "Louvre — from the Cour Napoléon",
+  "group": "landmark",
+  "from": [48.8606, 2.3372, 1.8],
+  "to": [48.861025, 2.335843, 10]
+ },
+ {
+  "name": "Louvre — from above the Carrousel",
+  "group": "landmark",
+  "from": [48.86, 2.33, 90],
+  "to": [48.861, 2.337, 10]
  }
 ]

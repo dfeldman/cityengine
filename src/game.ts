@@ -710,6 +710,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     return { name: '', group: '', from: toLL(f), to: toLL(to) }
   }
   w.__placed = () => landmarks?.placed ?? []
+  // the prepared tiles, for probing what reached the city (tools/, debugging)
+  w.__tiles = prepared.tiles
   // nothing left to stream round the camera's focus (render/city.ts `idle`)
   w.__cityIdle = () => city.idle
   w.__Ray = Ray

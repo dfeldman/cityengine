@@ -47,11 +47,11 @@ varying vec3 vNormal;
 varying vec4 vColour;
 varying float vDepth;
 varying vec3 vView;
-
-
+varying vec3 vWorld;
 void main(void) {
   mat4 W = mat4(world0, world1, world2, world3);
   vec4 wp = W * vec4(position, 1.0);
+  vWorld = wp.xyz;
   gl_Position = viewProjection * wp;
   vNormal = normalize(mat3(W) * normal);
   // instColor.a says how much of the instance colour replaces the mesh's own: 1 for a car's body panels,
