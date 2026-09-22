@@ -88,15 +88,19 @@ page.on('pageerror', (e) => console.log('page error:', e.message.slice(0, 300)))
 await page.goto(`http://localhost:5200/?model=${model}${arg('size') ? `&size=${arg('size')}` : ''}${arg('time') ? `&time=${arg('time')}` : ''}`)
 await page.waitForFunction('window.modelReady === true', null, { timeout: 60_000 })
 // --views=auto: framed on the model's own bounds, whatever it is (furniture, a vehicle, a landmark at --size)
+// --fit=hx,hz,height: a footprint by hand, for a builder whose shape depends on it (a pier: long and narrow)
+const byHand = arg('fit') ? arg('fit').split(',').map(Number) : null
+if (byHand) fitFor = { hx: byHand[0], hz: byHand[1], height: byHand[2] ?? 12, ring: [] as { x: number; z: number }[] }
 if (fitFor || arg('views') === 'auto') {
   const s0 = Number(arg('size', '200'))
-  const b = await page.evaluate(`window.__rebuild(${JSON.stringify(fitFor ?? { hx: s0 / 2, hz: s0 / 2, height: s0 })})`) as { min: number[]; max: number[]; triangles: number }
+  const fitNow = fitFor && fitFor.ring.length === 0 ? { hx: fitFor.hx, hz: fitFor.hz, height: fitFor.height } : fitFor
+  const b = await page.evaluate(`window.__rebuild(${JSON.stringify(fitNow ?? { hx: s0 / 2, hz: s0 / 2, height: s0 })})`) as { min: number[]; max: number[]; triangles: number }
   const H = b.max[1]
   const R = Math.max(b.max[0] - b.min[0], b.max[2] - b.min[2], H)
   const cy = H * 0.45
-  views = [['front', -Math.PI / 2, 1.42, R * 1.9, 0, cy, 0], ['corner', -Math.PI / 4, 1.3, R * 1.8, 0, cy, 0],
+  views = [['front', Math.PI / 2, 1.42, R * 1.9, 0, cy, 0], ['corner', Math.PI / 2 - 0.9, 1.3, R * 1.8, 0, cy, 0],
     // (from across the street: the target on the south face, the camera 28 m out from it, looking up)
-    ['street', -Math.PI / 2 - 0.35, 1.72, 28, 0, Math.min(14, H * 0.35), b.min[2]], ['top', 0.6, 0.8, R * 1.8, 0, cy, 0]]
+    ['street', Math.PI / 2 + 0.35, 1.72, 28, 0, Math.min(14, H * 0.35), b.max[2]], ['top', 0.6, 0.8, R * 1.8, 0, cy, 0]]
 }
 console.log(model, await page.evaluate('window.__modelTris'), 'triangles')
 for (const [name, ...v] of views) {
