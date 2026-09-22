@@ -45,12 +45,12 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 35 | fixed | A building appears underwater (48.846324, 2.362785) | user, 2026-09-22 |
 | 36 | fixed | Z-fighting on a strange barrier in the river (48.848591, 2.359412) | user, 2026-09-22 |
 | 37 | fixed | The bridges need a lot of work to be usable and beautiful | user, 2026-09-22 |
-| 38 | open | Roads tilt sideways on hillsides; they want a level cross-section, with cuts and retaining walls | user, 2026-09-22 |
+| 38 | fixed | Roads tilt sideways on hillsides; they want a level cross-section, with cuts and retaining walls | user, 2026-09-22 |
 | 39 | open | Memory over extended sessions: the heap must never approach 3 GB (a 10-minute soak) | user, 2026-09-22 |
 | 40 | open | Star junctions: left/straight/right cannot name the choice — show every exit, with its street | user, 2026-09-22 |
 | 41 | open | Quick landmarks: the hundreds of unusual buildings people steer by (hospitals, schools…) | user, 2026-09-22 |
 | 42 | open | Strangers walk down the middle of the path: they should step aside (or wait) for the rider | user, 2026-09-22 |
-| 43 | open | A ride edge runs through a wall at 48.867116, 2.311297 (after a real archway) | user, 2026-09-22 |
+| 43 | fixed | A ride edge runs through a wall at 48.867116, 2.311297 (after a real archway) | user, 2026-09-22 |
 
 ---
 
@@ -657,6 +657,22 @@ or right is very rare. A road that runs along a hillside (level along its length
 into the hill: a retaining wall on the uphill side, an embankment or wall on the downhill side. The elevation
 data never includes those regrades, so every such road is drawn tipped with the hill. Needed especially along
 the Seine (the quais above the river) and in San Francisco.
+
+**Fix (2026-09-22):**
+- **Bake:** each street's height at each point is the HIGHEST ground across its corridor, pavements included
+  (a fill, never a cut, so nothing the terrain occluder hides can hide it). Every end at a node takes the
+  highest of them, eased in over 12 m, so level streets meet without a step.
+- **Render:** the terrain's `grade` hook lifts whatever is draped inside a street's corridor (road, pavement,
+  kerbs, furniture, trees) to that street's level. Parks and squares stay on the raw ground. Where a street
+  stands 0.6 m or more above the ground outside its corridor, and no other street is there, a dressed stone
+  retaining wall runs from its edge down to the ground, with a parapet where the drop is over 1.5 m
+  (`retaining:<tile>`).
+- **Raised ways:** `isRaised` can no longer be inferred from heights off the terrain (every levelled street
+  would be a deck), so the bake marks ramps (`ramp: true`, from tools/bridges.ts).
+
+While checking: a street tagged `sidewalk=separate` with its lanes or width tagged is its carriageway only. The
+Pont Notre-Dame's two lanes had come out as one 2.8 m lane, Rue Balzac's too; the Champs-Élysées is 22 m of road
+between its separately mapped pavements. `?without=grade` turns the levelling off for comparisons.
 
 ## 39. Memory over an extended session
 

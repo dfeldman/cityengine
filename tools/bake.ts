@@ -286,7 +286,10 @@ async function bake(spec: CitySpec): Promise<void> {
           const foot = isFoot(w.tags)
           // mapped separately (`sidewalk=separate`, or its lanes counted): the tagged width is the carriageway —
           // the Pont Notre-Dame's two lanes came out as one 2.8 m lane between 4 m pavements
-          const separate = /^(separate|no|none)$/.test(w.tags.sidewalk ?? '') || w.tags['sidewalk:both'] === 'separate'
+          // …but only when the width IS the carriageway's, from its lanes or its own width: without them the
+          // class default is a whole corridor, and the Champs-Élysées' contre-allées spread over their pavements
+          const measured = w.tags.width !== undefined || w.tags.lanes !== undefined
+          const separate = measured && (/^(separate|no|none)$/.test(w.tags.sidewalk ?? '') || w.tags['sidewalk:both'] === 'separate')
           const walk = foot ? 0 : kerbToKerb ? pavementForNA(corridor) : separate ? 0.6 : pavementFor(corridor)
           edges.push({
             id: edgeId++, a: w.nodes[startIdx], b: w.nodes[i],

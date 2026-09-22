@@ -890,7 +890,7 @@ export class City {
     this.roadAssets = new URL('../roads/', assets).href
     this.terrain = new Terrain(pkg.terrain)
     // the streets' own level inside their corridors (BUGS.md #38); the occluder keeps the raw ground (its own Terrain)
-    this.terrain.grade = (x, z) => this.gradeAt(x, z)
+    this.terrain.grade = (x, z) => (this.off.has('grade') ? null : this.gradeAt(x, z))
     this.region = region(pkg.region)
     distantGround(scene, this.terrain, pkg, this.roadAssets)
     groundOccluder(scene, pkg, this.region.riverDrop ?? 0)
