@@ -68,6 +68,8 @@ export interface Region {
   /** walks laid on a viaduct's roof, by name, and how high (Paris: the Coulée Verte René-Dumont on the Viaduc
    *  des Arts, BUGS.md #32): OSM puts them at street level, where they ran hidden inside the viaduct */
   elevatedWalks?: { name: string; height: number }[]
+  /** squares OSM maps only as lines (the Trocadéro's parvis): paved areas by hand, rings of [lat, lon] */
+  pavedSquares?: { name: string; ring: [number, number][] }[]
   /** the steel of an elevated railway — the Loop's L is painted a dark green-black */
   elevatedRailColour: string
   /** the name plate on a landmark building: Paris engraves dark capitals into a cream stone plate */
@@ -104,6 +106,7 @@ export function region(id: string | undefined): Region {
     awnings: own?.awnings ?? base.awnings,
     riverDrop: own?.riverDrop ?? base.riverDrop,
     elevatedWalks: own?.elevatedWalks ?? base.elevatedWalks,
+    pavedSquares: own?.pavedSquares ?? base.pavedSquares,
     pointFurniture: { ...base.pointFurniture, ...(own?.pointFurniture ?? {}) },
     landmarkPlate: { ...base.landmarkPlate, ...(own?.landmarkPlate ?? {}) },
     elevatedRailColour: own?.elevatedRailColour ?? base.elevatedRailColour,

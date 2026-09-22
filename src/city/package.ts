@@ -98,6 +98,8 @@ export interface PackedArea {
   ring: number[]
   /** inner rings: the islands in a river, the courtyard in a park */
   holes?: number[][]
+  /** drawn over the other areas (a square paved by hand over the park OSM spreads across it) */
+  top?: boolean
 }
 
 /**

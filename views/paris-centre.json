@@ -2028,5 +2028,33 @@
    2.2878,
    8
   ]
+ },
+ {
+  "name": "Conciergerie \u2014 from the Quai de la M\u00e9gisserie",
+  "group": "landmark",
+  "from": [
+   48.85775,
+   2.3456,
+   6
+  ],
+  "to": [
+   48.8565,
+   2.345,
+   14
+  ]
+ },
+ {
+  "name": "Sainte-Chapelle \u2014 air",
+  "group": "landmark",
+  "from": [
+   48.857,
+   2.343,
+   70
+  ],
+  "to": [
+   48.8554,
+   2.345,
+   20
+  ]
  }
 ]

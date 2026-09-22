@@ -1367,7 +1367,9 @@ export class City {
     }
 
     // the paved squares first: the lawns and pools mapped inside them are painted over them
-    const ordered = [...(this.areasIn.get(k) ?? [])].sort((p, q) => Number(q.kind === 'paved') - Number(p.kind === 'paved'))
+    // …and a square paved by hand last, over the park OSM spreads across it
+    const rank = (a: { kind: string; top?: boolean }): number => (a.top ? 2 : a.kind === 'paved' ? 0 : 1)
+    const ordered = [...(this.areasIn.get(k) ?? [])].sort((p, q) => rank(p) - rank(q))
     for (const a of ordered) {
       if (a.kind === 'water') {
         /*

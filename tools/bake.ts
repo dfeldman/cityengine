@@ -462,6 +462,11 @@ async function bake(spec: CitySpec): Promise<void> {
     if (area(ring) < 40) continue
     areas.push({ kind, ring: packPoints(ccw(ring)) })
   }
+  // squares OSM draws only as lines, paved by hand from the region (the Trocadéro's parvis)
+  for (const sq of streetRegion.pavedSquares ?? []) {
+    const ring = sq.ring.map(([lat, lon]) => proj.toLocal({ lat, lon }))
+    areas.push({ kind: 'paved', ring: packPoints(ccw(ring)), top: true })
+  }
   // Multipolygon relations: the Seine is one, and so is every courtyard block. Skipping them is why the
   // water shader had no water and why the Loop came back with half the buildings it should have.
   let fromRelations = 0
