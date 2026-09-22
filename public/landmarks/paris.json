@@ -1181,5 +1181,23 @@
     "take": "around",
     "margin": 14,
     "note": "The uniform fronts of the Rue Royale between the Concorde and the Madeleine."
+  },
+  {
+    "name": "Louis XIV — Place des Victoires",
+    "procedural": "louisXIV",
+    "lat": 48.86565,
+    "lon": 2.34124,
+    "rotateDeg": 180,
+    "stone": false,
+    "note": "Stand-in for the user's model (MODELS_NEEDED.md): the rearing horseman on his pedestal in the middle of the place."
+  },
+  {
+    "name": "Foch — Place du Trocadéro",
+    "procedural": "fochTrocadero",
+    "lat": 48.8629,
+    "lon": 2.2874,
+    "rotateDeg": 134,
+    "stone": false,
+    "note": "Stand-in for the user's model (MODELS_NEEDED.md): Foch on horseback, facing the Eiffel Tower."
   }
 ]

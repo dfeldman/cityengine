@@ -2602,5 +2602,47 @@
    2.2885,
    2
   ]
+ },
+ {
+  "name": "Louis XIV — Place des Victoires",
+  "group": "landmark",
+  "from": [
+   48.865464,
+   2.341343,
+   3
+  ],
+  "to": [
+   48.86565,
+   2.34124,
+   9
+  ]
+ },
+ {
+  "name": "Foch — Place du Trocadéro",
+  "group": "landmark",
+  "from": [
+   48.862981,
+   2.287187,
+   2.5
+  ],
+  "to": [
+   48.8629,
+   2.2874,
+   6
+  ]
+ },
+ {
+  "name": "Pont Alexandre III — pylon",
+  "group": "landmark",
+  "from": [
+   48.86461,
+   2.313483,
+   8
+  ],
+  "to": [
+   48.8643,
+   2.3134,
+   18
+  ]
  }
 ]

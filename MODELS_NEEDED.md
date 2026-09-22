@@ -7,6 +7,17 @@ the user has already made (`incoming_models/`, `public/landmarks/paris-statues.j
 - Marianne and her lion;
 - Henri IV, Jeanne d'Arc (Pyramides), Clemenceau, de Gaulle, Charlemagne, Étienne Marcel, Danton.
 
+Every one of these has a PROCEDURAL STAND-IN in the city now (2026-09-22):
+- `louisXIV` and `fochTrocadero` (render/landmarks/paris/equestrian.ts);
+- the Alexandre III's winged horses in render/bridge-structures.ts;
+- the Concorde's figures in `placeConcorde`;
+- Apollo and the gilded groups in `palaisGarnier`;
+- Saint Michael in `fountains.ts`;
+- the Arc's groups in `arcDeTriomphe`.
+
+A model from the user replaces a stand-in through `public/landmarks/paris-statues.json`: take its manifest entry
+out, or make its builder leave the figure off.
+
 Freestanding, at eye level or very prominent, on the main riding routes first:
 
 | Priority | Where | What | Size | Notes |

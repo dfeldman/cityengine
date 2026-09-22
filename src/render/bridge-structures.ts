@@ -665,9 +665,26 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
         blockAt(out, c, g, g + 1.6, width / 2 + 0.3, width / 2 + 0.3, ux, uz, lighter(stone, 0.95))
         blockAt(out, c, g + 1.6, g + height - 1.2, width / 2, width / 2, ux, uz, stone)
         blockAt(out, c, g + height - 1.2, g + height - 0.6, width / 2 + 0.25, width / 2 + 0.25, ux, uz, lighter(stone, 1.05))
-        // the gilded Pegasus group, as a rearing mass of gold
-        blockAt(out, c, g + height - 0.6, g + height + 1.2, width * 0.28, width * 0.4, ux, uz, GOLD)
-        blockAt(out, { x: c.x + ux * width * 0.15, z: c.z + uz * width * 0.15 }, g + height + 1.2, g + height + 2.6, width * 0.14, width * 0.2, ux, uz, GOLD)
+        // the gilded group: a Renommée astride a rearing winged horse, facing out along the bridge
+        const gy = g + height - 0.6
+        const out2 = s < L / 2 ? -1 : 1
+        const P = (a: number, o: number, y: number): [number, number, number] => [c.x + ux * a * out2 + vx * o, gy + y, c.z + uz * a * out2 + vz * o]
+        member(out, P(-0.6, 0, 1.0), P(0.7, 0, 1.9), 0.42, GOLD)                                  // the body, rearing
+        member(out, P(0.7, 0, 1.9), P(1.1, 0, 2.9), 0.25, GOLD)                                   // neck
+        member(out, P(1.1, 0, 2.9), P(1.45, 0, 2.7), 0.16, GOLD)                                  // head
+        for (const o of [-0.25, 0.25]) {
+          member(out, P(-0.5, o, 0.8), P(-0.6, o, 0), 0.11, GOLD)                               // hind legs
+          member(out, P(0.7, o, 1.6), P(1.1, o, 1.2), 0.1, GOLD)                                // forelegs, raised
+          member(out, P(1.1, o, 1.2), P(1.25, o, 1.6), 0.09, GOLD)
+        }
+        for (const o of [-1, 1]) {
+          // the wings, swept up and back
+          member(out, P(0.2, o * 0.3, 2.1), P(-0.4, o * 1.3, 3.2), 0.12, GOLD)
+          member(out, P(-0.4, o * 1.3, 3.2), P(-1.2, o * 1.1, 3.6), 0.08, GOLD)
+          member(out, P(0.2, o * 0.3, 2.1), P(-0.9, o * 0.9, 2.5), 0.1, GOLD)
+        }
+        member(out, P(0.1, 0, 2.3), P(0.1, 0, 3.4), 0.2, GOLD)                                    // the rider
+        member(out, P(0.1, 0, 3.2), P(0.6, 0, 4.2), 0.06, GOLD)                                   // her raised trumpet arm
         // the smaller bronze figure at its foot, on the roadway side
         const f = W(s, side * (hw + width / 2 - 0.6 - width / 2 - 0.4))
         blockAt(out, f, g + 1.6, g + 3.6, 0.45, 0.6, ux, uz, [0.3, 0.34, 0.3])
