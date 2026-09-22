@@ -210,12 +210,17 @@ Tooling carried over: `tools/nested-parts.ts` (parts to replace with a model), `
    by region (`regions.json`): Paris has posters everywhere, US cities billboards everywhere. Many street
    objects carry a standard poster slot — every news stand, Morris column and bus shelter — so the library
    fills slots on furniture as well as walls. Later, not now.
-8. **Better plants (user, 2026-09-21):** the non-tree planting — flower beds, box hedges, planters, the
+8. ✅ (2026-09-22, first version: `render/plants.ts`) **Better plants (user, 2026-09-21):** the non-tree planting — flower beds, box hedges, planters, the
    gardens' shrubs — from Trail Trainer's library of low-poly plants (`~/trailtrainer/public/plants`, made by
    `~/trailtrainer/tools/plantgen`; symlinked the way the trees are), instanced per tile like the trees and
    decided at bake time with them (`src/city/plantings.ts`). **Bushes are hard** and the library may not have
    good ones: if not, add a bush generator to plantgen (clumped leaf cards on a short multi-stem frame, clipped
    box shapes for the formal gardens) before planting the Tuileries and the Palais-Royal.
+   Done so far: shrubs (bush_green, bush_flowering, rhododendron, hazel) along the edges of every park and of
+   the lawns inside one, and flower beds (tulip, daisy, wildflower, lupine, poppy: one kind a bed) in their
+   middles. Placed on a hashed lattice, so a tile grows the same plants every time, and drawn within two tiles
+   of the rider (`public/plants` → Trail Trainer's library, gitignored). Still wanted: the clipped box hedges
+   of the formal gardens (a bush generator in plantgen).
 
 ## 7. Risks
 

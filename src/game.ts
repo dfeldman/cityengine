@@ -22,6 +22,7 @@ import { MID, VIEW } from './render/city.ts'
 import { MemoryTiles, TILE, tileKey, type CityIndex, type TileData } from './city/tiles.ts'
 import { tilePreparer } from './render/prepare.ts'
 import { quaysLayer } from './render/quays.ts'
+import { Plants } from './render/plants.ts'
 import { quickMarksLayer } from './render/quickmarks.ts'
 import { bridgeStructuresLayer, PARIS_BRIDGES } from './render/bridge-structures.ts'
 import { passagesLayer } from './render/passages.ts'
@@ -321,6 +322,13 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   mark('vegetation')
   // the models are a few megabytes, so the ride starts without them and they appear when they arrive
   if (!off.has('trees')) void trees.load().catch((e) => console.warn('vegetation did not load:', e))
+  // the shrubs and flower beds in the parks (render/plants.ts, PARIS_EXPAND §6 item 8)
+  const plants = new Plants(scene, city.terrain, new URL('plants/', document.baseURI).href)
+  if (!off.has('trees') && !off.has('plants')) {
+    city.addLayer(plants.layer())
+    void plants.load().catch((e) => console.warn('plants did not load:', e))
+    ;(window as unknown as Record<string, unknown>).__plants = plants
+  }
 
   const controls: Controls = new LocalControls(() => opts.device)
   // ?start=<edgeId> drops the rider onto a particular street, which is how the shot harness samples the
@@ -719,6 +727,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       }
       sky?.update(dt, at)
       trees.update(camera.position)
+      plants.update()
 
       // Chase camera. Both the position and the look-at come from the SAME smoothed heading, so the rider
       // stays put in the frame and the camera swings round behind them through a turn. Deriving the two from

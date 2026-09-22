@@ -2504,5 +2504,33 @@
    2.2985,
    0
   ]
+ },
+ {
+  "name": "Tuileries — in the garden",
+  "group": "landmark",
+  "from": [
+   48.863862,
+   2.326938,
+   2
+  ],
+  "to": [
+   48.8638,
+   2.3264,
+   1
+  ]
+ },
+ {
+  "name": "Palais-Royal — the garden",
+  "group": "landmark",
+  "from": [
+   48.865098,
+   2.337707,
+   2.5
+  ],
+  "to": [
+   48.8647,
+   2.3376,
+   1
+  ]
  }
 ]
