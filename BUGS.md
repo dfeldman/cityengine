@@ -209,7 +209,7 @@ take, and the nearest of them is 8.6 m away. Three changes, each general:
 3. while checking, the Pont de l'Archevêché was a dead end as well: its approach way's last 0.3 m was dropped
    by the bake's half-metre rule, which only folded short pieces FORWARD. A trailing piece now folds back into
    the edge before it (tools/bake.ts). Bridge ends may also land on a ground-level way within 3 m (`LANDING`).
-Dead ends in central Paris: 233 → 196 (the audit), with no new edges through buildings. All five cities
+Dead ends in central Paris: 233 → 196 (the audit); ride edges through buildings 6 → 8, to look at under #20. All five cities
 rebaked; tests pass.
 
 ## 10. The Cirque d'Hiver's horsemen block the road
