@@ -20,5 +20,10 @@
   {"osm": ["relation/6483285"], "name": "San Francisco Marriott Marquis", "procedural": "marriottMarquis", "height": 133, "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."},
   {"osm": ["way/435582543"], "name": "Westin St. Francis Tower", "procedural": "westinTower", "height": 120, "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."},
   {"osm": ["way/1279505488"], "name": "101 California", "procedural": "oneOhOneCalifornia", "height": 183, "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."},
-  {"osm": ["way/28240176"], "name": "One Maritime Plaza", "procedural": "oneMaritimePlaza", "height": 121, "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."}
+  {"osm": ["way/28240176"], "name": "One Maritime Plaza", "procedural": "oneMaritimePlaza", "height": 121, "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."},
+  {"name": "Fisherman's Wharf sign", "procedural": "wharfSign", "lat": 37.80815, "lon": -122.41572, "front": 180, "size": [6, 1], "height": 8, "note": "The crab wheel at Jefferson and Taylor, facing south up Taylor Street."},
+  {"name": "Ghirardelli sign", "procedural": "ghirardelliSign", "lat": 37.80584, "lon": -122.42296, "front": 0, "size": [36, 2], "height": 6, "offset": [0, 24, 0], "sign": false, "note": "On the clock-tower block's roof, the letters to the bay (north)."},
+  {"osm": ["way/24306412"], "name": "Moscone Center West", "procedural": "mosconeWest", "height": 50, "note": "The glass box on Howard and Fourth."},
+  {"osm": ["way/109141774"], "name": "Moscone Center North", "procedural": "mosconeHall", "height": 20},
+  {"osm": ["way/109141776"], "name": "Moscone Center South", "procedural": "mosconeHall", "height": 12}
 ]

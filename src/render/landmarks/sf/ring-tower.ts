@@ -196,6 +196,10 @@ export const TOWER_PRESETS = {
   westinTower: preset({ height: 120, wall: [0.86, 0.86, 0.84], glass: [0.26, 0.3, 0.34], pattern: 'horizontal', pitch: 3, solid: 0.5, crown: 'flat' }),
   /** 101 California (1982): a faceted cylinder of glass bands and granite */
   oneOhOneCalifornia: preset({ height: 183, wall: [0.62, 0.56, 0.52], glass: [0.3, 0.34, 0.4], pattern: 'horizontal', pitch: 3.6, solid: 0.35, crown: 'flat' }),
+  /** Moscone West (2003): a three-storey glass box under a thin overhanging roof, the convention centre's face */
+  mosconeWest: preset({ height: 50, wall: [0.8, 0.82, 0.84], glass: [0.36, 0.5, 0.56], pattern: 'grid', pitch: 12, solid: 0.12, crown: 'flat' }),
+  /** Moscone North and South (1981, 1992, 2018): mostly under the ground; above it, low glass halls and pavilions */
+  mosconeHall: preset({ height: 20, wall: [0.86, 0.87, 0.88], glass: [0.4, 0.52, 0.58], pattern: 'grid', pitch: 7, solid: 0.15, crown: 'flat' }),
   /** One Maritime Plaza (1967): dark steel with its exterior X-bracing, white panels */
   oneMaritimePlaza: preset({ height: 121, wall: [0.3, 0.3, 0.32], glass: [0.5, 0.52, 0.55], pattern: 'grid', pitch: 3.6, solid: 0.3, crown: 'flat' }),
 }
