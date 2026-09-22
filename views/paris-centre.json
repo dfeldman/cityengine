@@ -1,6 +1,6 @@
 [
  {
-  "name": "Arc de Triomphe — air",
+  "name": "Arc de Triomphe \u2014 air",
   "group": "place",
   "from": [
    48.871983,
@@ -14,7 +14,7 @@
   ]
  },
  {
-  "name": "Arc de Triomphe — street",
+  "name": "Arc de Triomphe \u2014 street",
   "group": "place",
   "from": [
    48.873151,
@@ -28,7 +28,7 @@
   ]
  },
  {
-  "name": "Trocadéro — air",
+  "name": "Trocad\u00e9ro \u2014 air",
   "group": "place",
   "from": [
    48.861103,
@@ -42,7 +42,7 @@
   ]
  },
  {
-  "name": "Trocadéro — street",
+  "name": "Trocad\u00e9ro \u2014 street",
   "group": "place",
   "from": [
    48.862271,
@@ -56,7 +56,7 @@
   ]
  },
  {
-  "name": "Tour Eiffel — air",
+  "name": "Tour Eiffel \u2014 air",
   "group": "place",
   "from": [
    48.856573,
@@ -70,7 +70,7 @@
   ]
  },
  {
-  "name": "Tour Eiffel — street",
+  "name": "Tour Eiffel \u2014 street",
   "group": "place",
   "from": [
    48.857741,
@@ -84,7 +84,7 @@
   ]
  },
  {
-  "name": "Champ de Mars — street",
+  "name": "Champ de Mars \u2014 street",
   "group": "place",
   "from": [
    48.855001,
@@ -98,7 +98,7 @@
   ]
  },
  {
-  "name": "Invalides — air",
+  "name": "Invalides \u2014 air",
   "group": "place",
   "from": [
    48.853223,
@@ -112,7 +112,7 @@
   ]
  },
  {
-  "name": "Invalides — street",
+  "name": "Invalides \u2014 street",
   "group": "place",
   "from": [
    48.854391,
@@ -126,7 +126,7 @@
   ]
  },
  {
-  "name": "Grand Palais — street",
+  "name": "Grand Palais \u2014 street",
   "group": "place",
   "from": [
    48.865471,
@@ -140,7 +140,7 @@
   ]
  },
  {
-  "name": "Place de la Concorde — air",
+  "name": "Place de la Concorde \u2014 air",
   "group": "place",
   "from": [
    48.863803,
@@ -154,7 +154,7 @@
   ]
  },
  {
-  "name": "Place de la Concorde — street",
+  "name": "Place de la Concorde \u2014 street",
   "group": "place",
   "from": [
    48.864971,
@@ -168,7 +168,7 @@
   ]
  },
  {
-  "name": "Palais Garnier — air",
+  "name": "Palais Garnier \u2014 air",
   "group": "place",
   "from": [
    48.870173,
@@ -182,7 +182,7 @@
   ]
  },
  {
-  "name": "Palais Garnier — street",
+  "name": "Palais Garnier \u2014 street",
   "group": "place",
   "from": [
    48.871341,
@@ -196,7 +196,7 @@
   ]
  },
  {
-  "name": "Place Vendôme — air",
+  "name": "Place Vend\u00f4me \u2014 air",
   "group": "place",
   "from": [
    48.865703,
@@ -210,7 +210,7 @@
   ]
  },
  {
-  "name": "Place Vendôme — street",
+  "name": "Place Vend\u00f4me \u2014 street",
   "group": "place",
   "from": [
    48.866871,
@@ -224,7 +224,7 @@
   ]
  },
  {
-  "name": "Louvre Pyramid — air",
+  "name": "Louvre Pyramid \u2014 air",
   "group": "place",
   "from": [
    48.859223,
@@ -238,7 +238,7 @@
   ]
  },
  {
-  "name": "Louvre Pyramid — street",
+  "name": "Louvre Pyramid \u2014 street",
   "group": "place",
   "from": [
    48.860391,
@@ -252,7 +252,7 @@
   ]
  },
  {
-  "name": "Musée d'Orsay — air",
+  "name": "Mus\u00e9e d'Orsay \u2014 air",
   "group": "place",
   "from": [
    48.858203,
@@ -266,7 +266,7 @@
   ]
  },
  {
-  "name": "Musée d'Orsay — street",
+  "name": "Mus\u00e9e d'Orsay \u2014 street",
   "group": "place",
   "from": [
    48.859371,
@@ -280,7 +280,7 @@
   ]
  },
  {
-  "name": "Pont Neuf — air",
+  "name": "Pont Neuf \u2014 air",
   "group": "place",
   "from": [
    48.855193,
@@ -294,7 +294,7 @@
   ]
  },
  {
-  "name": "Pont Neuf — street",
+  "name": "Pont Neuf \u2014 street",
   "group": "place",
   "from": [
    48.856361,
@@ -308,7 +308,7 @@
   ]
  },
  {
-  "name": "Notre-Dame — air",
+  "name": "Notre-Dame \u2014 air",
   "group": "place",
   "from": [
    48.851163,
@@ -322,7 +322,7 @@
   ]
  },
  {
-  "name": "Notre-Dame — street",
+  "name": "Notre-Dame \u2014 street",
   "group": "place",
   "from": [
    48.852331,
@@ -336,7 +336,7 @@
   ]
  },
  {
-  "name": "Châtelet — air",
+  "name": "Ch\u00e2telet \u2014 air",
   "group": "place",
   "from": [
    48.855803,
@@ -350,7 +350,7 @@
   ]
  },
  {
-  "name": "Châtelet — street",
+  "name": "Ch\u00e2telet \u2014 street",
   "group": "place",
   "from": [
    48.856971,
@@ -364,7 +364,7 @@
   ]
  },
  {
-  "name": "Place des Victoires — air",
+  "name": "Place des Victoires \u2014 air",
   "group": "place",
   "from": [
    48.863903,
@@ -378,7 +378,7 @@
   ]
  },
  {
-  "name": "Place des Victoires — street",
+  "name": "Place des Victoires \u2014 street",
   "group": "place",
   "from": [
    48.865071,
@@ -392,7 +392,7 @@
   ]
  },
  {
-  "name": "Palais-Royal — air",
+  "name": "Palais-Royal \u2014 air",
   "group": "place",
   "from": [
    48.862003,
@@ -406,7 +406,7 @@
   ]
  },
  {
-  "name": "Palais-Royal — street",
+  "name": "Palais-Royal \u2014 street",
   "group": "place",
   "from": [
    48.863171,
@@ -420,7 +420,7 @@
   ]
  },
  {
-  "name": "Bir-Hakeim viaduct — air",
+  "name": "Bir-Hakeim viaduct \u2014 air",
   "group": "place",
   "from": [
    48.854003,
@@ -434,7 +434,7 @@
   ]
  },
  {
-  "name": "Bir-Hakeim viaduct — street",
+  "name": "Bir-Hakeim viaduct \u2014 street",
   "group": "place",
   "from": [
    48.855171,
@@ -448,7 +448,7 @@
   ]
  },
  {
-  "name": "Place de la Bastille — air",
+  "name": "Place de la Bastille \u2014 air",
   "group": "place",
   "from": [
    48.851373,
@@ -462,7 +462,7 @@
   ]
  },
  {
-  "name": "Place de la Bastille — street",
+  "name": "Place de la Bastille \u2014 street",
   "group": "place",
   "from": [
    48.852541,
@@ -476,7 +476,7 @@
   ]
  },
  {
-  "name": "Saint-Germain-des-Prés — air",
+  "name": "Saint-Germain-des-Pr\u00e9s \u2014 air",
   "group": "place",
   "from": [
    48.852203,
@@ -490,7 +490,7 @@
   ]
  },
  {
-  "name": "Saint-Germain-des-Prés — street",
+  "name": "Saint-Germain-des-Pr\u00e9s \u2014 street",
   "group": "place",
   "from": [
    48.853371,
@@ -504,7 +504,7 @@
   ]
  },
  {
-  "name": "Champs-Élysées — air",
+  "name": "Champs-\u00c9lys\u00e9es \u2014 air",
   "group": "place",
   "from": [
    48.868003,
@@ -518,7 +518,7 @@
   ]
  },
  {
-  "name": "Champs-Élysées — street",
+  "name": "Champs-\u00c9lys\u00e9es \u2014 street",
   "group": "place",
   "from": [
    48.869171,
@@ -532,7 +532,7 @@
   ]
  },
  {
-  "name": "Tour Eiffel — from the Champ de Mars",
+  "name": "Tour Eiffel \u2014 from the Champ de Mars",
   "group": "landmark",
   "from": [
    48.8545,
@@ -546,7 +546,7 @@
   ]
  },
  {
-  "name": "Tour Eiffel — from under",
+  "name": "Tour Eiffel \u2014 from under",
   "group": "landmark",
   "from": [
    48.8579,
@@ -560,7 +560,7 @@
   ]
  },
  {
-  "name": "Tour Eiffel — from the Trocadéro",
+  "name": "Tour Eiffel \u2014 from the Trocad\u00e9ro",
   "group": "landmark",
   "from": [
    48.8616,
@@ -574,7 +574,7 @@
   ]
  },
  {
-  "name": "Arc de Triomphe — from the Champs-Élysées",
+  "name": "Arc de Triomphe \u2014 from the Champs-\u00c9lys\u00e9es",
   "group": "landmark",
   "from": [
    48.8724,
@@ -588,7 +588,7 @@
   ]
  },
  {
-  "name": "Arc de Triomphe — from under",
+  "name": "Arc de Triomphe \u2014 from under",
   "group": "landmark",
   "from": [
    48.87368,
@@ -602,7 +602,7 @@
   ]
  },
  {
-  "name": "Arc de Triomphe — from above",
+  "name": "Arc de Triomphe \u2014 from above",
   "group": "landmark",
   "from": [
    48.873,
@@ -616,7 +616,7 @@
   ]
  },
  {
-  "name": "Louvre — from the Cour Napoléon",
+  "name": "Louvre \u2014 from the Cour Napol\u00e9on",
   "group": "landmark",
   "from": [
    48.8606,
@@ -630,7 +630,7 @@
   ]
  },
  {
-  "name": "Louvre — from above the Carrousel",
+  "name": "Louvre \u2014 from above the Carrousel",
   "group": "landmark",
   "from": [
    48.86,
@@ -644,7 +644,7 @@
   ]
  },
  {
-  "name": "Notre-Dame — from the parvis",
+  "name": "Notre-Dame \u2014 from the parvis",
   "group": "landmark",
   "from": [
    48.8534,
@@ -658,7 +658,7 @@
   ]
  },
  {
-  "name": "Notre-Dame — from above",
+  "name": "Notre-Dame \u2014 from above",
   "group": "landmark",
   "from": [
    48.8512,
@@ -672,7 +672,7 @@
   ]
  },
  {
-  "name": "Invalides — from the Place Vauban",
+  "name": "Invalides \u2014 from the Place Vauban",
   "group": "landmark",
   "from": [
    48.8534,
@@ -686,7 +686,7 @@
   ]
  },
  {
-  "name": "Invalides — from the esplanade",
+  "name": "Invalides \u2014 from the esplanade",
   "group": "landmark",
   "from": [
    48.859,
@@ -700,7 +700,7 @@
   ]
  },
  {
-  "name": "Invalides — dome close",
+  "name": "Invalides \u2014 dome close",
   "group": "landmark",
   "from": [
    48.8544,
@@ -714,7 +714,7 @@
   ]
  },
  {
-  "name": "Musée d'Orsay — from the Pont Royal",
+  "name": "Mus\u00e9e d'Orsay \u2014 from the Pont Royal",
   "group": "landmark",
   "from": [
    48.8617,
@@ -728,7 +728,7 @@
   ]
  },
  {
-  "name": "Musée d'Orsay — from across the Seine",
+  "name": "Mus\u00e9e d'Orsay \u2014 from across the Seine",
   "group": "landmark",
   "from": [
    48.8624,
@@ -742,7 +742,7 @@
   ]
  },
  {
-  "name": "Palais Garnier — from the place",
+  "name": "Palais Garnier \u2014 from the place",
   "group": "landmark",
   "from": [
    48.8706,
@@ -756,7 +756,7 @@
   ]
  },
  {
-  "name": "Palais Garnier — from the Avenue de l'Opéra",
+  "name": "Palais Garnier \u2014 from the Avenue de l'Op\u00e9ra",
   "group": "landmark",
   "from": [
    48.868795,
@@ -770,7 +770,7 @@
   ]
  },
  {
-  "name": "Concorde — from the Champs-Élysées",
+  "name": "Concorde \u2014 from the Champs-\u00c9lys\u00e9es",
   "group": "landmark",
   "from": [
    48.8664,
@@ -784,7 +784,7 @@
   ]
  },
  {
-  "name": "Concorde — fountain close",
+  "name": "Concorde \u2014 fountain close",
   "group": "landmark",
   "from": [
    48.86573,
@@ -798,7 +798,7 @@
   ]
  },
  {
-  "name": "Concorde — obelisk close",
+  "name": "Concorde \u2014 obelisk close",
   "group": "landmark",
   "from": [
    48.8652,
@@ -812,7 +812,7 @@
   ]
  },
  {
-  "name": "Notre-Dame — model front",
+  "name": "Notre-Dame \u2014 model front",
   "from": [
    48.853675,
    2.348936,
@@ -826,7 +826,7 @@
   "group": "landmark"
  },
  {
-  "name": "Notre-Dame — model three-quarter",
+  "name": "Notre-Dame \u2014 model three-quarter",
   "from": [
    48.853102,
    2.348041,
@@ -840,7 +840,7 @@
   "group": "landmark"
  },
  {
-  "name": "Notre-Dame — model side",
+  "name": "Notre-Dame \u2014 model side",
   "from": [
    48.852277,
    2.348567,
@@ -854,7 +854,7 @@
   "group": "landmark"
  },
  {
-  "name": "Notre-Dame — model back",
+  "name": "Notre-Dame \u2014 model back",
   "from": [
    48.851964,
    2.350746,
@@ -868,7 +868,7 @@
   "group": "landmark"
  },
  {
-  "name": "Notre-Dame — model above",
+  "name": "Notre-Dame \u2014 model above",
   "from": [
    48.853252,
    2.347464,
@@ -882,7 +882,7 @@
   "group": "landmark"
  },
  {
-  "name": "Notre-Dame — from the Quai de la Tournelle",
+  "name": "Notre-Dame \u2014 from the Quai de la Tournelle",
   "group": "landmark",
   "from": [
    48.85135,
@@ -897,7 +897,7 @@
   "note": "the viewpoint of the 2017 reference photo"
  },
  {
-  "name": "Henri IV — front",
+  "name": "Henri IV \u2014 front",
   "group": "statue",
   "from": [
    48.857094,
@@ -911,7 +911,7 @@
   ]
  },
  {
-  "name": "Jeanne d'Arc — front",
+  "name": "Jeanne d'Arc \u2014 front",
   "group": "statue",
   "from": [
    48.863777,
@@ -925,7 +925,7 @@
   ]
  },
  {
-  "name": "Georges Clemenceau — front",
+  "name": "Georges Clemenceau \u2014 front",
   "group": "statue",
   "from": [
    48.867123,
@@ -939,7 +939,7 @@
   ]
  },
  {
-  "name": "Charles de Gaulle — front",
+  "name": "Charles de Gaulle \u2014 front",
   "group": "statue",
   "from": [
    48.867457,
@@ -953,7 +953,7 @@
   ]
  },
  {
-  "name": "Charlemagne et ses Leudes — front",
+  "name": "Charlemagne et ses Leudes \u2014 front",
   "group": "statue",
   "from": [
    48.85314,
@@ -967,7 +967,7 @@
   ]
  },
  {
-  "name": "Étienne Marcel — front",
+  "name": "\u00c9tienne Marcel \u2014 front",
   "group": "statue",
   "from": [
    48.855572,
@@ -981,7 +981,7 @@
   ]
  },
  {
-  "name": "Danton — front",
+  "name": "Danton \u2014 front",
   "group": "statue",
   "from": [
    48.852346,
@@ -995,7 +995,7 @@
   ]
  },
  {
-  "name": "Génie de la Liberté — from the place",
+  "name": "G\u00e9nie de la Libert\u00e9 \u2014 from the place",
   "group": "statue",
   "from": [
    48.853166,
@@ -1009,7 +1009,7 @@
   ]
  },
  {
-  "name": "Cirque d'Hiver horsemen — from Rue Amelot",
+  "name": "Cirque d'Hiver horsemen \u2014 from Rue Amelot",
   "group": "statue",
   "from": [
    48.863304,
@@ -1023,7 +1023,7 @@
   ]
  },
  {
-  "name": "Monument à la République — above",
+  "name": "Monument \u00e0 la R\u00e9publique \u2014 above",
   "group": "statue",
   "from": [
    48.867,
@@ -1037,7 +1037,7 @@
   ]
  },
  {
-  "name": "Monument à la République — front",
+  "name": "Monument \u00e0 la R\u00e9publique \u2014 front",
   "group": "statue",
   "from": [
    48.86725,
@@ -1051,7 +1051,7 @@
   ]
  },
  {
-  "name": "Génie de la Liberté — close",
+  "name": "G\u00e9nie de la Libert\u00e9 \u2014 close",
   "group": "statue",
   "from": [
    48.85317,
@@ -1065,7 +1065,7 @@
   ]
  },
  {
-  "name": "Monument à la République — model front",
+  "name": "Monument \u00e0 la R\u00e9publique \u2014 model front",
   "from": [
    48.867053,
    2.363141,
@@ -1079,7 +1079,7 @@
   "group": "landmark"
  },
  {
-  "name": "Monument à la République — model three-quarter",
+  "name": "Monument \u00e0 la R\u00e9publique \u2014 model three-quarter",
   "from": [
    48.867032,
    2.363766,
@@ -1093,7 +1093,7 @@
   "group": "landmark"
  },
  {
-  "name": "Monument à la République — model side",
+  "name": "Monument \u00e0 la R\u00e9publique \u2014 model side",
   "from": [
    48.866893,
    2.364569,
@@ -1107,7 +1107,7 @@
   "group": "landmark"
  },
  {
-  "name": "Monument à la République — model back",
+  "name": "Monument \u00e0 la R\u00e9publique \u2014 model back",
   "from": [
    48.867694,
    2.36437,
@@ -1121,7 +1121,7 @@
   "group": "landmark"
  },
  {
-  "name": "Monument à la République — model above",
+  "name": "Monument \u00e0 la R\u00e9publique \u2014 model above",
   "from": [
    48.866957,
    2.3637,
@@ -1135,7 +1135,7 @@
   "group": "landmark"
  },
  {
-  "name": "République — straight down",
+  "name": "R\u00e9publique \u2014 straight down",
   "group": "bug",
   "from": [
    48.86735,
@@ -1149,7 +1149,7 @@
   ]
  },
  {
-  "name": "Ride graph — Étoile",
+  "name": "Ride graph \u2014 \u00c9toile",
   "group": "ride",
   "from": [
    48.872727,
@@ -1164,7 +1164,7 @@
   "query": "paths=1"
  },
  {
-  "name": "Ride graph — Trocadéro",
+  "name": "Ride graph \u2014 Trocad\u00e9ro",
   "group": "ride",
   "from": [
    48.862202,
@@ -1179,7 +1179,7 @@
   "query": "paths=1"
  },
  {
-  "name": "Ride graph — Alma",
+  "name": "Ride graph \u2014 Alma",
   "group": "ride",
   "from": [
    48.863789,
@@ -1194,7 +1194,7 @@
   "query": "paths=1"
  },
  {
-  "name": "Ride graph — Pont de Sully south",
+  "name": "Ride graph \u2014 Pont de Sully south",
   "group": "ride",
   "from": [
    48.848815,
@@ -1209,7 +1209,7 @@
   "query": "paths=1"
  },
  {
-  "name": "Ride graph — Avenue de New York",
+  "name": "Ride graph \u2014 Avenue de New York",
   "group": "ride",
   "from": [
    48.862781,
@@ -1224,7 +1224,7 @@
   "query": "paths=1"
  },
  {
-  "name": "Bug 31 bridge ground — air",
+  "name": "Bug 31 bridge ground \u2014 air",
   "group": "bug",
   "from": [
    48.846406,
@@ -1238,7 +1238,7 @@
   ]
  },
  {
-  "name": "Bug 31 bridge ground — low",
+  "name": "Bug 31 bridge ground \u2014 low",
   "group": "bug",
   "from": [
    48.84672,
@@ -1252,7 +1252,7 @@
   ]
  },
  {
-  "name": "Bug 35 building underwater — air",
+  "name": "Bug 35 building underwater \u2014 air",
   "group": "bug",
   "from": [
    48.845785,
@@ -1266,7 +1266,7 @@
   ]
  },
  {
-  "name": "Bug 35 building underwater — low",
+  "name": "Bug 35 building underwater \u2014 low",
   "group": "bug",
   "from": [
    48.846099,
@@ -1280,7 +1280,7 @@
   ]
  },
  {
-  "name": "Bug 36 river barrier — air",
+  "name": "Bug 36 river barrier \u2014 air",
   "group": "bug",
   "from": [
    48.848052,
@@ -1294,7 +1294,7 @@
   ]
  },
  {
-  "name": "Bug 36 river barrier — low",
+  "name": "Bug 36 river barrier \u2014 low",
   "group": "bug",
   "from": [
    48.848366,
@@ -1308,7 +1308,7 @@
   ]
  },
  {
-  "name": "Bug 32 Coulée Verte — air",
+  "name": "Bug 32 Coul\u00e9e Verte \u2014 air",
   "group": "bug",
   "from": [
    48.8484,
@@ -1322,7 +1322,7 @@
   ]
  },
  {
-  "name": "Bug 32 Coulée Verte — street",
+  "name": "Bug 32 Coul\u00e9e Verte \u2014 street",
   "group": "bug",
   "from": [
    48.8489,
@@ -1336,7 +1336,7 @@
   ]
  },
  {
-  "name": "Boats — Quai Saint-Bernard",
+  "name": "Boats \u2014 Quai Saint-Bernard",
   "group": "river",
   "from": [
    48.8458,
@@ -1350,7 +1350,7 @@
   ]
  },
  {
-  "name": "Boats — Port de la Concorde",
+  "name": "Boats \u2014 Port de la Concorde",
   "group": "river",
   "from": [
    48.8625,
@@ -1364,7 +1364,7 @@
   ]
  },
  {
-  "name": "Pont de Bir-Hakeim — side",
+  "name": "Pont de Bir-Hakeim \u2014 side",
   "group": "bridge",
   "from": [
    48.856349,
@@ -1378,7 +1378,7 @@
   ]
  },
  {
-  "name": "Pont Saint-Michel — side",
+  "name": "Pont Saint-Michel \u2014 side",
   "group": "bridge",
   "from": [
    48.854398,
@@ -1392,7 +1392,7 @@
   ]
  },
  {
-  "name": "Petit-Pont - Cardinal Lustiger — side",
+  "name": "Petit-Pont - Cardinal Lustiger \u2014 side",
   "group": "bridge",
   "from": [
    48.853547,
@@ -1406,7 +1406,7 @@
   ]
  },
  {
-  "name": "Pont Saint-Louis — side",
+  "name": "Pont Saint-Louis \u2014 side",
   "group": "bridge",
   "from": [
    48.852223,
@@ -1420,7 +1420,7 @@
   ]
  },
  {
-  "name": "Pont Louis-Philippe — side",
+  "name": "Pont Louis-Philippe \u2014 side",
   "group": "bridge",
   "from": [
    48.853389,
@@ -1434,7 +1434,7 @@
   ]
  },
  {
-  "name": "Pont de l'Archevêché — side",
+  "name": "Pont de l'Archev\u00each\u00e9 \u2014 side",
   "group": "bridge",
   "from": [
    48.851804,
@@ -1448,7 +1448,7 @@
   ]
  },
  {
-  "name": "Pont Marie — side",
+  "name": "Pont Marie \u2014 side",
   "group": "bridge",
   "from": [
    48.853246,
@@ -1462,7 +1462,7 @@
   ]
  },
  {
-  "name": "Pont de Sully — side",
+  "name": "Pont de Sully \u2014 side",
   "group": "bridge",
   "from": [
    48.848632,
@@ -1476,7 +1476,7 @@
   ]
  },
  {
-  "name": "Pont de la Tournelle — side",
+  "name": "Pont de la Tournelle \u2014 side",
   "group": "bridge",
   "from": [
    48.851148,
@@ -1490,7 +1490,7 @@
   ]
  },
  {
-  "name": "Pont d'Arcole — side",
+  "name": "Pont d'Arcole \u2014 side",
   "group": "bridge",
   "from": [
    48.855883,
@@ -1504,7 +1504,7 @@
   ]
  },
  {
-  "name": "Pont de Sully (146497603) — side",
+  "name": "Pont de Sully (146497603) \u2014 side",
   "group": "bridge",
   "from": [
    48.851308,
@@ -1518,7 +1518,7 @@
   ]
  },
  {
-  "name": "Pont-métro Morland — side",
+  "name": "Pont-m\u00e9tro Morland \u2014 side",
   "group": "bridge",
   "from": [
    48.846847,
@@ -1532,7 +1532,7 @@
   ]
  },
  {
-  "name": "Voie Mazas — side",
+  "name": "Voie Mazas \u2014 side",
   "group": "bridge",
   "from": [
    48.846992,
@@ -1546,7 +1546,7 @@
   ]
  },
  {
-  "name": "Pont d'Austerlitz — side",
+  "name": "Pont d'Austerlitz \u2014 side",
   "group": "bridge",
   "from": [
    48.845961,
@@ -1560,7 +1560,7 @@
   ]
  },
  {
-  "name": "Pont Morland — side",
+  "name": "Pont Morland \u2014 side",
   "group": "bridge",
   "from": [
    48.847417,
@@ -1574,7 +1574,7 @@
   ]
  },
  {
-  "name": "Passerelle Jim-Morrison — side",
+  "name": "Passerelle Jim-Morrison \u2014 side",
   "group": "bridge",
   "from": [
    48.849715,
@@ -1588,7 +1588,7 @@
   ]
  },
  {
-  "name": "Pont d'Iéna — side",
+  "name": "Pont d'I\u00e9na \u2014 side",
   "group": "bridge",
   "from": [
    48.860446,
@@ -1602,7 +1602,7 @@
   ]
  },
  {
-  "name": "Passerelle Debilly — side",
+  "name": "Passerelle Debilly \u2014 side",
   "group": "bridge",
   "from": [
    48.862261,
@@ -1616,7 +1616,7 @@
   ]
  },
  {
-  "name": "Pont de l'Alma — side",
+  "name": "Pont de l'Alma \u2014 side",
   "group": "bridge",
   "from": [
    48.863388,
@@ -1630,7 +1630,7 @@
   ]
  },
  {
-  "name": "Pont Alexandre III — side",
+  "name": "Pont Alexandre III \u2014 side",
   "group": "bridge",
   "from": [
    48.863463,
@@ -1644,7 +1644,7 @@
   ]
  },
  {
-  "name": "Pont des Invalides — side",
+  "name": "Pont des Invalides \u2014 side",
   "group": "bridge",
   "from": [
    48.863707,
@@ -1658,7 +1658,7 @@
   ]
  },
  {
-  "name": "Pont de la Concorde — side",
+  "name": "Pont de la Concorde \u2014 side",
   "group": "bridge",
   "from": [
    48.86398,
@@ -1672,7 +1672,7 @@
   ]
  },
  {
-  "name": "Pont Royal — side",
+  "name": "Pont Royal \u2014 side",
   "group": "bridge",
   "from": [
    48.859602,
@@ -1686,7 +1686,7 @@
   ]
  },
  {
-  "name": "Passerelle Léopold-Sédar-Senghor — side",
+  "name": "Passerelle L\u00e9opold-S\u00e9dar-Senghor \u2014 side",
   "group": "bridge",
   "from": [
    48.862339,
@@ -1700,7 +1700,7 @@
   ]
  },
  {
-  "name": "Pont des Arts — side",
+  "name": "Pont des Arts \u2014 side",
   "group": "bridge",
   "from": [
    48.85894,
@@ -1714,7 +1714,7 @@
   ]
  },
  {
-  "name": "Pont Neuf — side",
+  "name": "Pont Neuf \u2014 side",
   "group": "bridge",
   "from": [
    48.85611,
@@ -1728,7 +1728,7 @@
   ]
  },
  {
-  "name": "Pont Neuf (53574164) — side",
+  "name": "Pont Neuf (53574164) \u2014 side",
   "group": "bridge",
   "from": [
    48.857168,
@@ -1742,7 +1742,7 @@
   ]
  },
  {
-  "name": "Pont au Change — side",
+  "name": "Pont au Change \u2014 side",
   "group": "bridge",
   "from": [
    48.85633,
@@ -1756,7 +1756,7 @@
   ]
  },
  {
-  "name": "Pont Notre-Dame — side",
+  "name": "Pont Notre-Dame \u2014 side",
   "group": "bridge",
   "from": [
    48.85582,
@@ -1770,7 +1770,7 @@
   ]
  },
  {
-  "name": "Pont du Carrousel — side",
+  "name": "Pont du Carrousel \u2014 side",
   "group": "bridge",
   "from": [
    48.859828,
@@ -1784,7 +1784,7 @@
   ]
  },
  {
-  "name": "Notre-Dame — portals",
+  "name": "Notre-Dame \u2014 portals",
   "group": "landmark",
   "from": [
    48.853549,
@@ -1798,7 +1798,7 @@
   ]
  },
  {
-  "name": "Église Saint-Merri — street",
+  "name": "\u00c9glise Saint-Merri \u2014 street",
   "group": "landmark",
   "from": [
    48.858722,
@@ -1814,7 +1814,7 @@
   "note": "line of sight 1/5 at 95 m"
  },
  {
-  "name": "Église Saint-Merri — air",
+  "name": "\u00c9glise Saint-Merri \u2014 air",
   "group": "landmark",
   "from": [
    48.858652,
@@ -1829,7 +1829,7 @@
   "seeded": true
  },
  {
-  "name": "Centre Pompidou — street",
+  "name": "Centre Pompidou \u2014 street",
   "group": "landmark",
   "from": [
    48.859184,
@@ -1845,7 +1845,7 @@
   "note": "line of sight 5/5 at 151 m"
  },
  {
-  "name": "Centre Pompidou — air",
+  "name": "Centre Pompidou \u2014 air",
   "group": "landmark",
   "from": [
    48.859372,
@@ -1860,7 +1860,7 @@
   "seeded": true
  },
  {
-  "name": "Tour Saint-Jacques — street",
+  "name": "Tour Saint-Jacques \u2014 street",
   "group": "landmark",
   "from": [
    48.858309,
@@ -1875,7 +1875,7 @@
   "seeded": true
  },
  {
-  "name": "Tour Saint-Jacques — air",
+  "name": "Tour Saint-Jacques \u2014 air",
   "group": "landmark",
   "from": [
    48.859335,
@@ -1890,7 +1890,7 @@
   "seeded": true
  },
  {
-  "name": "Palais de Chaillot — from the Pont d'Iéna",
+  "name": "Palais de Chaillot \u2014 from the Pont d'I\u00e9na",
   "group": "landmark",
   "from": [
    48.8596,
@@ -1904,7 +1904,7 @@
   ]
  },
  {
-  "name": "Palais de Chaillot — parvis",
+  "name": "Palais de Chaillot \u2014 parvis",
   "group": "landmark",
   "from": [
    48.8615,
@@ -1918,7 +1918,7 @@
   ]
  },
  {
-  "name": "Trocadéro — on the parvis",
+  "name": "Trocad\u00e9ro \u2014 on the parvis",
   "group": "landmark",
   "from": [
    48.86248,
@@ -1932,7 +1932,7 @@
   ]
  },
  {
-  "name": "Grand Palais — from the Pont Alexandre III",
+  "name": "Grand Palais \u2014 from the Pont Alexandre III",
   "group": "landmark",
   "from": [
    48.8636,
@@ -1946,7 +1946,7 @@
   ]
  },
  {
-  "name": "Grand Palais — air",
+  "name": "Grand Palais \u2014 air",
   "group": "landmark",
   "from": [
    48.864,
@@ -1960,7 +1960,7 @@
   ]
  },
  {
-  "name": "Line 6 — Boulevard de Grenelle",
+  "name": "Line 6 \u2014 Boulevard de Grenelle",
   "group": "landmark",
   "from": [
    48.8508,
@@ -1974,7 +1974,7 @@
   ]
  },
  {
-  "name": "Coulée Verte — viaduct",
+  "name": "Coul\u00e9e Verte \u2014 viaduct",
   "group": "landmark",
   "from": [
    48.8485,
@@ -1988,7 +1988,7 @@
   ]
  },
  {
-  "name": "Colonne Vendôme — place",
+  "name": "Colonne Vend\u00f4me \u2014 place",
   "group": "landmark",
   "from": [
    48.86705,
@@ -2002,7 +2002,7 @@
   ]
  },
  {
-  "name": "Pont de Bir-Hakeim — from the river",
+  "name": "Pont de Bir-Hakeim \u2014 from the river",
   "group": "landmark",
   "from": [
    48.8572,
@@ -2016,7 +2016,7 @@
   ]
  },
  {
-  "name": "Sainte-Chapelle — air",
+  "name": "Sainte-Chapelle \u2014 air",
   "group": "landmark",
   "from": [
    48.857,
@@ -2030,7 +2030,7 @@
   ]
  },
  {
-  "name": "Sainte-Chapelle — from the court",
+  "name": "Sainte-Chapelle \u2014 from the court",
   "group": "landmark",
   "from": [
    48.85555,
@@ -2044,7 +2044,7 @@
   ]
  },
  {
-  "name": "Assemblée nationale — from the Pont de la Concorde",
+  "name": "Assembl\u00e9e nationale \u2014 from the Pont de la Concorde",
   "group": "landmark",
   "from": [
    48.863361,
@@ -2058,7 +2058,7 @@
   ]
  },
  {
-  "name": "Madeleine — from the Rue Royale",
+  "name": "Madeleine \u2014 from the Rue Royale",
   "group": "landmark",
   "from": [
    48.868987,
@@ -2072,7 +2072,7 @@
   ]
  },
  {
-  "name": "Institut de France — from the Pont des Arts",
+  "name": "Institut de France \u2014 from the Pont des Arts",
   "group": "landmark",
   "from": [
    48.858238,
@@ -2086,7 +2086,7 @@
   ]
  },
  {
-  "name": "Petit Palais — from the avenue",
+  "name": "Petit Palais \u2014 from the avenue",
   "group": "landmark",
   "from": [
    48.865857,
@@ -2100,7 +2100,7 @@
   ]
  },
  {
-  "name": "Palais-Royal — Buren columns",
+  "name": "Palais-Royal \u2014 Buren columns",
   "group": "landmark",
   "from": [
    48.863487,
@@ -2114,7 +2114,7 @@
   ]
  },
  {
-  "name": "Palais-Royal — Buren columns, above",
+  "name": "Palais-Royal \u2014 Buren columns, above",
   "group": "landmark",
   "from": [
    48.863712,
@@ -2128,7 +2128,7 @@
   ]
  },
  {
-  "name": "École Militaire — from the Champ de Mars",
+  "name": "\u00c9cole Militaire \u2014 from the Champ de Mars",
   "group": "landmark",
   "from": [
    48.853251,
@@ -2142,7 +2142,7 @@
   ]
  },
  {
-  "name": "École Militaire — above",
+  "name": "\u00c9cole Militaire \u2014 above",
   "group": "landmark",
   "from": [
    48.852985,
@@ -2156,7 +2156,7 @@
   ]
  },
  {
-  "name": "Church — Saint-Eustache",
+  "name": "Church \u2014 Saint-Eustache",
   "group": "church",
   "from": [
    48.862296,
@@ -2170,7 +2170,7 @@
   ]
  },
  {
-  "name": "Church — Saint-Roch",
+  "name": "Church \u2014 Saint-Roch",
   "group": "church",
   "from": [
    48.864151,
@@ -2184,7 +2184,7 @@
   ]
  },
  {
-  "name": "Church — Saint-Sulpice",
+  "name": "Church \u2014 Saint-Sulpice",
   "group": "church",
   "from": [
    48.849816,
@@ -2198,7 +2198,7 @@
   ]
  },
  {
-  "name": "Church — Sainte-Clotilde",
+  "name": "Church \u2014 Sainte-Clotilde",
   "group": "church",
   "from": [
    48.857119,
@@ -2212,7 +2212,7 @@
   ]
  },
  {
-  "name": "Church — Saint-Augustin",
+  "name": "Church \u2014 Saint-Augustin",
   "group": "church",
   "from": [
    48.874958,
@@ -2226,7 +2226,7 @@
   ]
  },
  {
-  "name": "Church — La Trinité",
+  "name": "Church \u2014 La Trinit\u00e9",
   "group": "church",
   "from": [
    48.876108,
@@ -2240,7 +2240,7 @@
   ]
  },
  {
-  "name": "Church — Saint-Séverin",
+  "name": "Church \u2014 Saint-S\u00e9verin",
   "group": "church",
   "from": [
    48.850922,
@@ -2254,7 +2254,7 @@
   ]
  },
  {
-  "name": "Church — Notre-Dame-de-Lorette",
+  "name": "Church \u2014 Notre-Dame-de-Lorette",
   "group": "church",
   "from": [
    48.875327,
@@ -2268,7 +2268,7 @@
   ]
  },
  {
-  "name": "Quick — Saint-Roch",
+  "name": "Quick \u2014 Saint-Roch",
   "group": "quick",
   "from": [
    48.864404,
@@ -2282,7 +2282,7 @@
   ]
  },
  {
-  "name": "Quick — Saint-Sulpice",
+  "name": "Quick \u2014 Saint-Sulpice",
   "group": "quick",
   "from": [
    48.851232,
@@ -2296,7 +2296,7 @@
   ]
  },
  {
-  "name": "Quick — Sainte-Clotilde",
+  "name": "Quick \u2014 Sainte-Clotilde",
   "group": "quick",
   "from": [
    48.857932,
@@ -2310,7 +2310,7 @@
   ]
  },
  {
-  "name": "Quick — Saint-Eustache",
+  "name": "Quick \u2014 Saint-Eustache",
   "group": "quick",
   "from": [
    48.862894,
@@ -2324,7 +2324,7 @@
   ]
  },
  {
-  "name": "Rue de Rivoli — arcades",
+  "name": "Rue de Rivoli \u2014 arcades",
   "group": "landmark",
   "from": [
    48.865184,
@@ -2338,7 +2338,7 @@
   ]
  },
  {
-  "name": "Line 6 — Dupleix station",
+  "name": "Line 6 \u2014 Dupleix station",
   "group": "landmark",
   "from": [
    48.850526,
@@ -2352,7 +2352,7 @@
   ]
  },
  {
-  "name": "Line 6 — Cambronne station",
+  "name": "Line 6 \u2014 Cambronne station",
   "group": "landmark",
   "from": [
    48.847909,
@@ -2366,7 +2366,7 @@
   ]
  },
  {
-  "name": "Line 6 — above Dupleix",
+  "name": "Line 6 \u2014 above Dupleix",
   "group": "landmark",
   "from": [
    48.849259,
@@ -2380,7 +2380,7 @@
   ]
  },
  {
-  "name": "Line 6 — over the boulevard",
+  "name": "Line 6 \u2014 over the boulevard",
   "group": "landmark",
   "from": [
    48.848584,
@@ -2394,7 +2394,7 @@
   ]
  },
  {
-  "name": "Fontaine des Innocents — street",
+  "name": "Fontaine des Innocents \u2014 street",
   "group": "landmark",
   "from": [
    48.860299,
@@ -2408,7 +2408,7 @@
   ]
  },
  {
-  "name": "Fontaine Saint-Michel — street",
+  "name": "Fontaine Saint-Michel \u2014 street",
   "group": "landmark",
   "from": [
    48.853658,
@@ -2422,7 +2422,7 @@
   ]
  },
  {
-  "name": "Flamme de la Liberté — street",
+  "name": "Flamme de la Libert\u00e9 \u2014 street",
   "group": "landmark",
   "from": [
    48.863999,
@@ -2436,7 +2436,7 @@
   ]
  },
  {
-  "name": "Printemps — air",
+  "name": "Printemps \u2014 air",
   "group": "landmark",
   "from": [
    48.872374,
@@ -2450,7 +2450,7 @@
   ]
  },
  {
-  "name": "La Samaritaine — air",
+  "name": "La Samaritaine \u2014 air",
   "group": "landmark",
   "from": [
    48.858463,
@@ -2464,7 +2464,7 @@
   ]
  },
  {
-  "name": "Tuileries — air",
+  "name": "Tuileries \u2014 air",
   "group": "landmark",
   "from": [
    48.86269,
@@ -2478,7 +2478,7 @@
   ]
  },
  {
-  "name": "Champ de Mars — air",
+  "name": "Champ de Mars \u2014 air",
   "group": "landmark",
   "from": [
    48.853536,
@@ -2492,7 +2492,7 @@
   ]
  },
  {
-  "name": "Tuileries — in the garden",
+  "name": "Tuileries \u2014 in the garden",
   "group": "landmark",
   "from": [
    48.863862,
@@ -2506,7 +2506,7 @@
   ]
  },
  {
-  "name": "Palais-Royal — the garden",
+  "name": "Palais-Royal \u2014 the garden",
   "group": "landmark",
   "from": [
    48.865098,
@@ -2520,7 +2520,7 @@
   ]
  },
  {
-  "name": "Morris column — posters",
+  "name": "Morris column \u2014 posters",
   "group": "furniture",
   "from": [
    48.854099,
@@ -2534,7 +2534,7 @@
   ]
  },
  {
-  "name": "Conciergerie — from the Quai de la Mégisserie",
+  "name": "Conciergerie \u2014 from the Quai de la M\u00e9gisserie",
   "group": "landmark",
   "from": [
    48.857541,
@@ -2548,7 +2548,7 @@
   ]
  },
  {
-  "name": "Hôtel de la Marine — from the Concorde",
+  "name": "H\u00f4tel de la Marine \u2014 from the Concorde",
   "group": "landmark",
   "from": [
    48.865723,
@@ -2562,7 +2562,7 @@
   ]
  },
  {
-  "name": "Check — parvis above",
+  "name": "Check \u2014 parvis above",
   "group": "check",
   "from": [
    48.853216,
@@ -2576,7 +2576,7 @@
   ]
  },
  {
-  "name": "Check — Concorde low",
+  "name": "Check \u2014 Concorde low",
   "group": "check",
   "from": [
    48.86512,
@@ -2590,7 +2590,7 @@
   ]
  },
  {
-  "name": "Check — Trocadéro low",
+  "name": "Check \u2014 Trocad\u00e9ro low",
   "group": "check",
   "from": [
    48.862159,
@@ -2604,7 +2604,7 @@
   ]
  },
  {
-  "name": "Louis XIV — Place des Victoires",
+  "name": "Louis XIV \u2014 Place des Victoires",
   "group": "landmark",
   "from": [
    48.865464,
@@ -2618,7 +2618,7 @@
   ]
  },
  {
-  "name": "Foch — Place du Trocadéro",
+  "name": "Foch \u2014 Place du Trocad\u00e9ro",
   "group": "landmark",
   "from": [
    48.862981,
@@ -2632,7 +2632,7 @@
   ]
  },
  {
-  "name": "Pont Alexandre III — pylon",
+  "name": "Pont Alexandre III \u2014 pylon",
   "group": "landmark",
   "from": [
    48.86461,
@@ -2643,6 +2643,62 @@
    48.8643,
    2.3134,
    18
+  ]
+ },
+ {
+  "name": "Fountain \u2014 Trocad\u00e9ro cannons",
+  "group": "fountain",
+  "from": [
+   48.861404,
+   2.289468,
+   14
+  ],
+  "to": [
+   48.861,
+   2.2902,
+   3
+  ]
+ },
+ {
+  "name": "Fountain \u2014 Innocents",
+  "group": "fountain",
+  "from": [
+   48.860417,
+   2.347902,
+   3
+  ],
+  "to": [
+   48.8606368,
+   2.3480233,
+   3
+  ]
+ },
+ {
+  "name": "Fountain \u2014 Saint-Michel",
+  "group": "fountain",
+  "from": [
+   48.853437,
+   2.343657,
+   2.5
+  ],
+  "to": [
+   48.85326,
+   2.34361,
+   4
+  ]
+ },
+ {
+  "name": "Fountain \u2014 Concorde north",
+  "group": "fountain",
+  "from": [
+   48.865791,
+   2.321396,
+   3
+  ],
+  "to": [
+   48.865994,
+   2.321508,
+   5
   ]
  }
 ]

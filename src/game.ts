@@ -27,6 +27,7 @@ import { LandmarkCard } from './ui/landmark-card.ts'
 import { Plants } from './render/plants.ts'
 import { quickMarksLayer } from './render/quickmarks.ts'
 import { postersLayer } from './render/posters.ts'
+import { Fountains, fountainManifest, wallaceLayer } from './render/fountains.ts'
 import { bridgeStructuresLayer, PARIS_BRIDGES } from './render/bridge-structures.ts'
 import { passagesLayer } from './render/passages.ts'
 import { boatsLayer } from './render/boats.ts'
@@ -247,6 +248,16 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   city.addLayer(passagesLayer(scene, city.terrain))
   // the buildings people steer by, marked by their kind: flags on the civic ones, towers on the churches (BUGS.md #41)
   city.addLayer(quickMarksLayer(scene, city.terrain, pkg.region))
+  // moving water: the region's fountains, and a trickle from every Wallace fountain (render/fountains.ts)
+  if (!off.has('fountains')) city.addLayer(wallaceLayer(scene, city.terrain))
+  let fountains: Fountains | null = null
+  if (!off.has('fountains')) {
+    void fountainManifest(document.baseURI, pkg.region ? [opts.city, pkg.region] : [opts.city]).then((specs) => {
+      const pr = new Projection(pkg.origin)
+      fountains = new Fountains(scene, specs, (lat, lon) => pr.toLocal({ lat, lon }), city.terrain,
+        (x, z) => city.waterLevelAt(x, z), () => landmarks?.placed ?? [])
+    })
+  }
   // the posters on the Morris columns, from the region's poster library (PARIS_EXPAND §6 item 9)
   if (!off.has('furniture')) city.addLayer(postersLayer(scene, city.terrain, pkg.region))
   // the péniches moored along the river (render/boats.ts)
@@ -805,6 +816,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       // hand, so Babylon has no automatic for it
       landmarks?.update(camera.position)
       statues?.update(camera.position)
+      fountains?.update()
       updateEye(scene, camera.position)
       updateCartoonEye(scene, camera.position)
       updateWater(scene, now / 1000, camera.position)
@@ -918,6 +930,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     return { name: '', group: '', from: toLL(f), to: toLL(to) }
   }
   w.__placed = () => landmarks?.placed ?? []
+  w.__landmarks = landmarks
   // the prepared tiles, for probing what reached the city (tools/, debugging)
   w.__tiles = prepared.tiles
   // nothing left to stream round the camera's focus (render/city.ts `idle`)

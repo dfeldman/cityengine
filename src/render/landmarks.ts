@@ -491,7 +491,8 @@ export class Landmarks {
       m.renderingGroupId = 3
       m.isPickable = false
       this.count++
-      if (e.sign !== false) this.placed.push({ name: e.name, x: cx + ox, y, z: cz + oz, hx: fit.hx, hz: fit.hz, rotation, height: modelHeight(mb) })
+      // every placed model is on the list (fountains, statues and the landmark card find their host by it)
+      this.placed.push({ name: e.name, x: cx + ox, y, z: cz + oz, hx: fit.hx, hz: fit.hz, rotation, height: modelHeight(mb) })
       // and its shadow, from the footprint it stands on, the height it reaches
       const shadows = new MeshBuilder()
       addShadow(shadows, under, modelHeight(mb) * 0.85, shadowOffset(DAYLIGHT.sun), SHADOW_Y)

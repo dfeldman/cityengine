@@ -202,7 +202,10 @@ Tooling carried over: `tools/nested-parts.ts` (parts to replace with a model), `
    there; set a DESTINATION and show the route on the minimap and the ground, with the distance left and the
    next turn — a shortest path on the ride graph. Later: **preplanned routes** (scenic loops) on the same
    machinery.
-10. ⏸ (postponed by the user, 2026-09-22: "we will animate fountains in the future, but postpone that") **Animated fountains, later (user, 2026-09-21):** the fountains' water (the Concorde's, the Vosges', Saint-
+10. ✅ (2026-09-22, `render/fountains.ts`, `public/landmarks/paris-fountains.json`) **Animated fountains, later (user, 2026-09-21):**
+   jets, arcing spouts, sheets over basin rims and foam, in one streaming-water shader. Done so far: the
+   Concorde's two, the Trocadéro's cannons and jets, the Innocents' cascades, Saint-Michel's dragons, the
+   Vosges' four, and a trickle from every Wallace fountain. the fountains' water (the Concorde's, the Vosges', Saint-
    Michel, Saint-Sulpice…) moving; postponed — the modelled basins come first.
 9. ✅ (2026-09-22, first version: `render/posters.ts`, the Morris columns) **Posters and billboards, eventually (user, 2026-09-21):** a library per city of images at STANDARD sizes
    (Paris: the Morris column wrap, the 4 × 3 m wall poster, the bus-shelter panel; US cities: the 14 × 48 ft

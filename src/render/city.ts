@@ -956,6 +956,20 @@ export class City {
       }
     }
   }
+  /** The surface of the water at (x, z), from the tile's water pieces (each carries its body's level), or null. */
+  waterLevelAt(x: number, z: number): number | null {
+    for (const a of this.areasIn.get(key(...tileOf(x, z))) ?? []) {
+      if (a.kind !== 'water' || a.level === undefined) continue
+      const r = a.ring
+      let o = false
+      for (let i = 0, j = r.length - 2; i < r.length; j = i, i += 2) {
+        if ((r[i + 1] > z) !== (r[j + 1] > z) && x < ((r[j] - r[i]) * (z - r[i + 1])) / (r[j + 1] - r[i + 1]) + r[i]) o = !o
+      }
+      if (o) return a.level + 0.03
+    }
+    return null
+  }
+
   /** The level of the street whose corridor (x, z) is in — the nearest, where two overlap — or null. */
   gradeAt(x: number, z: number): number | null {
     const list = this.gradeCells.get(`${Math.floor(x / 10)},${Math.floor(z / 10)}`)
