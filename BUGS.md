@@ -32,7 +32,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 22 | open | The Place de la Concorde is drawn as grass; the real square is paved | views, 2026-09-21 |
 | 23 | open | Haussmann balconies read as solid dark lines, not ironwork | user, 2026-09-22 |
 | 24 | fixed | Heavy z-fighting on the buildings on the left at central Paris's start point (48.860446, 2.331791) | user, 2026-09-22 |
-| 25 | open | Dormers and a chimney float in mid-air over a low building (48.857914, 2.347074) | user, 2026-09-22 |
+| 25 | fixed | Dormers and a chimney float in mid-air over a low building (48.857914, 2.347074) | user, 2026-09-22 |
 | 26 | fixed | Riding below the ground: the rider and road sink under the pavement (48.863689, 2.297469) | user, 2026-09-22 |
 | 27 | fixed | Paths near the Alma / Trocadéro are unrideable: near-parallel paths merge and diverge, the rider is swept along | user, 2026-09-22 |
 | 28 | fixed | Both banks of the Seine: 4–5 near-parallel OSM paths that periodically meet — confusing to ride | user, 2026-09-22 |
@@ -371,6 +371,11 @@ flat, but its row of stone dormers (and a chimney) stand in the air above it, at
 building behind. Likely the roofscape (dormers, chimneys) placed from a different storey count or height than
 the walls — a building whose `height` was changed (inference or insetNested) after its roof plan was made, or a
 part whose dormers are planned from its owner's eaves.
+
+**Cause/fix:** way 248804634, a 4 m one-storey pavilion given the Haussmann style, whose mansard (4.2 m) with
+its lucarnes was planned on top — and a mansard over a single storey does not form, so the dormers and chimney
+stood above a flat top. A mansard now needs walls of at least 7 m; below that the roof is flat, with no
+lucarnes (src/render/buildings.ts). Re-shot with `tools/ride-shot.ts --at=48.857914,2.347074`: clean.
 
 ## 26. Riding below ground level
 

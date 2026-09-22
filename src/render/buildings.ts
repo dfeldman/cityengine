@@ -547,10 +547,13 @@ export function buildBuilding(
     }
   })
   const eaves = baseY + plan.height
+  // no mansard on a single storey: on a 4 m pavilion by the Châtelet it did not form, and its dormers stood
+  // in the air over a flat top (BUGS.md #25) — a low building keeps a flat roof and no lucarnes
+  const low = plan.height < 7 && roofSpec?.shape === 'mansard'
   const spec = {
-    shape: roofSpec?.shape ?? 'flat',
+    shape: low ? 'flat' : roofSpec?.shape ?? 'flat',
     y: eaves,
-    height: roofSpec?.height ?? 0,
+    height: low ? 0 : roofSpec?.height ?? 0,
     direction: roofSpec?.direction,
     colour: roofSpec?.colour ?? rgb(plan.palette.roof),
   }
