@@ -189,7 +189,7 @@ Tooling carried over: `tools/nested-parts.ts` (parts to replace with a model), `
 5. **The families (B)** — churches, palaces, bridges, monuments, gardens — working through the manifest.
 6. **Line 6** viaduct, Bir-Hakeim, trains.
 7. **Performance pass** with per-ring budgets, on the slowest target machine.
-11. **Go anywhere, and a GPS (user, 2026-09-22):** pick any place on the map (the large map, M) and ride from
+11. ✅ (2026-09-22: `src/sim/route.ts`, the routes menu, `src/city/scenic.ts`, `tools/check-scenic.ts`) **Go anywhere, and a GPS (user, 2026-09-22):** pick any place on the map (the large map, M) and ride from
    there; set a DESTINATION and show the route on the minimap and the ground, with the distance left and the
    next turn — a shortest path on the ride graph. Later: **preplanned routes** (scenic loops) on the same
    machinery.

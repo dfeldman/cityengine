@@ -48,7 +48,21 @@ export class Terrain {
   /** True when the city was baked without elevation, in which case everything here returns zero. */
   get flat(): boolean { return this.t === null }
 
+  /**
+   * The streets' own level, where a street is (BUGS.md #38): the bake gives each street the highest ground
+   * across its corridor, and inside the corridor everything draped — the road, the pavement, the furniture,
+   * a street tree — stands at that level, not tipped with the hill. Null elsewhere.
+   */
+  grade: ((x: number, z: number) => number | null) | null = null
+
   heightAt(x: number, z: number): number {
+    const raw = this.rawHeightAt(x, z)
+    const g = this.grade?.(x, z)
+    return g === null || g === undefined ? raw : Math.max(raw, g)
+  }
+
+  /** The elevation data itself, without the streets' levelling. */
+  rawHeightAt(x: number, z: number): number {
     const t = this.t
     if (!t) return 0
     const fx = (x - t.x0) / t.step
@@ -79,6 +93,15 @@ export class Terrain {
     if (!this.t) return
     for (let i = 0; i < positions.length; i += 3) {
       positions[i + 1] += this.heightAt(positions[i], positions[i + 2])
+    }
+  }
+
+  /** Draped on the raw ground, ignoring the streets' levelling: a park's or a square's few, far-apart vertices
+   *  lifted to a street's level where they fall in its corridor made steep planes across the ground. */
+  drapeRaw(positions: number[]): void {
+    if (!this.t) return
+    for (let i = 0; i < positions.length; i += 3) {
+      positions[i + 1] += this.rawHeightAt(positions[i], positions[i + 2])
     }
   }
 }

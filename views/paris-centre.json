@@ -2182,5 +2182,117 @@
    2.303359,
    0
   ]
+ },
+ {
+  "name": "Church — Saint-Eustache",
+  "group": "church",
+  "from": [
+   48.862296,
+   2.344511,
+   40
+  ],
+  "to": [
+   48.863478,
+   2.345165,
+   12
+  ]
+ },
+ {
+  "name": "Church — Saint-Roch",
+  "group": "church",
+  "from": [
+   48.864151,
+   2.331941,
+   40
+  ],
+  "to": [
+   48.865333,
+   2.332595,
+   12
+  ]
+ },
+ {
+  "name": "Church — Saint-Sulpice",
+  "group": "church",
+  "from": [
+   48.849816,
+   2.334277,
+   40
+  ],
+  "to": [
+   48.850998,
+   2.334931,
+   12
+  ]
+ },
+ {
+  "name": "Church — Sainte-Clotilde",
+  "group": "church",
+  "from": [
+   48.857119,
+   2.318519,
+   40
+  ],
+  "to": [
+   48.858301,
+   2.319173,
+   12
+  ]
+ },
+ {
+  "name": "Church — Saint-Augustin",
+  "group": "church",
+  "from": [
+   48.874958,
+   2.318298,
+   40
+  ],
+  "to": [
+   48.87614,
+   2.318952,
+   12
+  ]
+ },
+ {
+  "name": "Church — La Trinité",
+  "group": "church",
+  "from": [
+   48.876108,
+   2.330778,
+   40
+  ],
+  "to": [
+   48.87729,
+   2.331432,
+   12
+  ]
+ },
+ {
+  "name": "Church — Saint-Séverin",
+  "group": "church",
+  "from": [
+   48.850922,
+   2.344971,
+   40
+  ],
+  "to": [
+   48.852104,
+   2.345625,
+   12
+  ]
+ },
+ {
+  "name": "Church — Notre-Dame-de-Lorette",
+  "group": "church",
+  "from": [
+   48.875327,
+   2.338299,
+   40
+  ],
+  "to": [
+   48.876509,
+   2.338953,
+   12
+  ]
  }
 ]

@@ -45,6 +45,12 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 35 | fixed | A building appears underwater (48.846324, 2.362785) | user, 2026-09-22 |
 | 36 | fixed | Z-fighting on a strange barrier in the river (48.848591, 2.359412) | user, 2026-09-22 |
 | 37 | fixed | The bridges need a lot of work to be usable and beautiful | user, 2026-09-22 |
+| 38 | open | Roads tilt sideways on hillsides; they want a level cross-section, with cuts and retaining walls | user, 2026-09-22 |
+| 39 | open | Memory over extended sessions: the heap must never approach 3 GB (a 10-minute soak) | user, 2026-09-22 |
+| 40 | open | Star junctions: left/straight/right cannot name the choice — show every exit, with its street | user, 2026-09-22 |
+| 41 | open | Quick landmarks: the hundreds of unusual buildings people steer by (hospitals, schools…) | user, 2026-09-22 |
+| 42 | open | Strangers walk down the middle of the path: they should step aside (or wait) for the rider | user, 2026-09-22 |
+| 43 | open | A ride edge runs through a wall at 48.867116, 2.311297 (after a real archway) | user, 2026-09-22 |
 
 ---
 
@@ -643,3 +649,49 @@ it now).
 **#24 fixed:** the Louvre (relation 3262297) and a separately mapped wing inside it (way 1359877263) shared their
 outer wall. `insetNested` pulls such a building in by a hand's width, but since streaming it ran per tile and
 the two were filed in different tiles. It now runs in the bake over the whole city. ✅ `docs/shots/BUG24-louvre-walls.png`.
+
+## 38. Roads tilt sideways on hillsides
+
+**Seen:** user, 2026-09-22. A road surface should be close to flat ACROSS its width — a road tipped to the left
+or right is very rare. A road that runs along a hillside (level along its length, the slope across it) is cut
+into the hill: a retaining wall on the uphill side, an embankment or wall on the downhill side. The elevation
+data never includes those regrades, so every such road is drawn tipped with the hill. Needed especially along
+the Seine (the quais above the river) and in San Francisco.
+
+## 39. Memory over an extended session
+
+**Seen:** user, 2026-09-22. The JS heap crashes the tab at 3 GB; it must never get near that, however long the
+ride. Check: a 10-minute soak riding across the city (streaming tiles in and out), heap sampled throughout —
+it should level off, not keep climbing.
+
+## 40. Star junctions
+
+**Seen:** user, 2026-09-22. Many junctions are stars — five, six, seven streets — and a choice of left, straight
+or right does not say which of them the rider will get. Either untangle them, or present every direction: a
+button per exit, with the street's name.
+
+**User, 2026-09-22 (on #40):** probably easiest to clean up the star junctions — most are data artifacts, not
+real stars.
+
+## 41. Quick landmarks for the buildings people steer by
+
+**Seen:** user, 2026-09-22. Beyond the famous monuments, a city is full of buildings that are literally land
+marks — people find their way by them — and do not fit the generic street architecture: hospitals, schools,
+lycées, town halls of the arrondissements, markets, stations, theatres, churches of the second rank. There are
+hundreds, so each wants a quick pass: a simple generated treatment by kind (a family), not a bespoke model.
+
+## 42. Strangers in the rider's way
+
+**Seen:** user, 2026-09-22. Most strangers walk down the middle of the path, so riding is like mowing them down.
+Nudge them laterally so the rider misses more of them; as the rider comes up, they step out of the way if they
+can, and if it is too crowded they step aside and wait. No collisions — only so the rider never feels like a
+murderer.
+
+## 43. Through a wall by the Grand Palais (48.867116, 2.311297)
+
+**Seen:** user, 2026-09-22: shortly after intentionally going through an archway, the ride goes through a wall.
+
+**Cause:** no OSM building there: the wall was the new `grandPalais` model, sized from the outline's rectangle
+(240 m north–south), whose north end stood over the pedestrian Avenue du Général-Eisenhower the ride runs along.
+Now 206 × 150 m, inside the avenue.
+

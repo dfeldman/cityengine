@@ -39,6 +39,35 @@ export class Hud {
     this.gpsEl = root.querySelector('.sr-gps')!
   }
 
+  private bannerEl: HTMLElement | null = null
+  private bannerTimer = 0
+  /**
+   * A card across the top of the screen for the GPS's moments — a destination set, a stop reached, arrival:
+   * a big title and a line under it, gone after a few seconds.
+   */
+  banner(title: string, sub = '', ms = 4500): void {
+    if (!this.bannerEl) {
+      this.bannerEl = document.createElement('div')
+      this.bannerEl.className = 'sr-banner'
+      document.body.appendChild(this.bannerEl)
+    }
+    const el = this.bannerEl
+    el.innerHTML = ''
+    const t = document.createElement('div')
+    t.className = 'sr-banner-title'
+    t.textContent = title
+    el.appendChild(t)
+    if (sub) {
+      const u = document.createElement('div')
+      u.className = 'sr-banner-sub'
+      u.textContent = sub
+      el.appendChild(u)
+    }
+    el.classList.add('on')
+    clearTimeout(this.bannerTimer)
+    this.bannerTimer = window.setTimeout(() => el.classList.remove('on'), ms)
+  }
+
   /** The GPS line (PARIS_EXPAND §6 item 11): distance to the destination and the next turn; null hides it. */
   gps(text: string | null): void {
     this.gpsEl.hidden = text === null
@@ -125,5 +154,11 @@ export const HUD_CSS = `
 #hud .sr-next { font-size: 15px; opacity: .9; min-height: 1.4em }
 #hud .sr-gps { font-size: 14px; color: #ffc68a; background: rgba(18,20,24,.5); border-radius: 8px; padding: 2px 10px }
 #hud .sr-gps:not([hidden]) + .sr-back { top: 50px }
+.sr-banner { position: fixed; top: 132px; left: 50%; transform: translate(-50%, -12px); z-index: 6; opacity: 0;
+  pointer-events: none; transition: opacity .35s, transform .35s; text-align: center; color: #f7f3ea;
+  background: rgba(18,20,24,.78); border: 1px solid rgba(255,198,138,.45); border-radius: 14px; padding: 12px 26px;
+  font: 600 22px/1.25 ui-sans-serif, Helvetica, Arial, sans-serif; box-shadow: 0 8px 30px rgba(0,0,0,.35) }
+.sr-banner.on { opacity: 1; transform: translate(-50%, 0) }
+.sr-banner-sub { font: 14px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; color: #ffc68a; margin-top: 4px }
 #hud .sr-stats { font-size: 13px; opacity: .72; letter-spacing: .4px }
 `

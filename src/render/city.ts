@@ -889,6 +889,8 @@ export class City {
     this.assets = assets
     this.roadAssets = new URL('../roads/', assets).href
     this.terrain = new Terrain(pkg.terrain)
+    // the streets' own level inside their corridors (BUGS.md #38); the occluder keeps the raw ground (its own Terrain)
+    this.terrain.grade = (x, z) => this.gradeAt(x, z)
     this.region = region(pkg.region)
     distantGround(scene, this.terrain, pkg, this.roadAssets)
     groundOccluder(scene, pkg, this.region.riverDrop ?? 0)
@@ -911,9 +913,53 @@ export class City {
    * the Loop's Pedway and Lower Wacker — painted at ground level shows through as a road where there is none,
    * and is populated with traffic and walkers, too, since `edgesNear` feeds both).
    */
+  /**
+   * The streets' corridors for the terrain's `grade` (BUGS.md #38): each segment of each street at grade, with
+   * its heights at both ends and its half-width with the pavements, filed in 10 m cells.
+   */
+  private readonly gradeCells = new Map<string, { ax: number; az: number; bx: number; bz: number; ha: number; hb: number; half: number }[]>()
+  private readonly gradeSeen = new Set<number>()
+  private fileGrade(e: PackedEdge): void {
+    if (this.gradeSeen.has(e.id) || !e.heights || e.bridge || e.tunnel) return
+    this.gradeSeen.add(e.id)
+    const half = (e.foot ? e.width / 2 : e.width / 2 + Math.max(e.walk, 0.6)) + 0.3
+    for (let i = 2; i < e.points.length; i += 2) {
+      const sg = { ax: e.points[i - 2], az: e.points[i - 1], bx: e.points[i], bz: e.points[i + 1], ha: e.heights[i / 2 - 1], hb: e.heights[i / 2], half }
+      const x0 = Math.floor((Math.min(sg.ax, sg.bx) - half) / 10)
+      const x1 = Math.floor((Math.max(sg.ax, sg.bx) + half) / 10)
+      const z0 = Math.floor((Math.min(sg.az, sg.bz) - half) / 10)
+      const z1 = Math.floor((Math.max(sg.az, sg.bz) + half) / 10)
+      for (let gx = x0; gx <= x1; gx++) for (let gz = z0; gz <= z1; gz++) {
+        const k = `${gx},${gz}`
+        const list = this.gradeCells.get(k)
+        if (list) list.push(sg)
+        else this.gradeCells.set(k, [sg])
+      }
+    }
+  }
+  /** The level of the street whose corridor (x, z) is in — the nearest, where two overlap — or null. */
+  gradeAt(x: number, z: number): number | null {
+    const list = this.gradeCells.get(`${Math.floor(x / 10)},${Math.floor(z / 10)}`)
+    if (!list) return null
+    let best: number | null = null
+    let bd = Infinity
+    for (const sg of list) {
+      const dx = sg.bx - sg.ax
+      const dz = sg.bz - sg.az
+      const l2 = dx * dx + dz * dz || 1e-9
+      const t = Math.max(0, Math.min(1, ((x - sg.ax) * dx + (z - sg.az) * dz) / l2))
+      const d = Math.hypot(x - sg.ax - dx * t, z - sg.az - dz * t)
+      if (d > sg.half || d >= bd) continue
+      bd = d
+      best = sg.ha + (sg.hb - sg.ha) * t
+    }
+    return best
+  }
+
   ingest(t: TileData): void {
     if (this.ingested.has(t.key)) return
     this.ingested.add(t.key)
+    for (const e of t.edges) if (onSurface(e)) this.fileGrade(e)
     for (const b of t.bridges ?? []) {
       if (this.outlines.has(b.id)) continue
       const ring = unpackPoints(b.ring)
@@ -1546,7 +1592,9 @@ export class City {
     for (const [builder, group, name] of [[areas, GROUP.areas, 'areas'], [walks, GROUP.walk, 'walks']] as const) {
       if (builder.triangles === 0 || this.off.has(name)) continue
       const m = new Mesh(`${name}:${k}`, this.scene)
-      this.terrain.drape(builder.positions)
+      // the parks and squares on the raw ground, the pavements at their streets' level (BUGS.md #38)
+      if (name === 'areas') this.terrain.drapeRaw(builder.positions)
+      else this.terrain.drape(builder.positions)
       builder.toVertexData().applyToMesh(m)
       // the concrete page is a neutral grain; the vertex tint does the rest. Its own material instance, not
       // the buildings' one, so that culling can be turned off for flat ground without affecting walls.
@@ -1714,6 +1762,67 @@ export class City {
         const bx = n.at.x + a.ux * (n.radius + 1.0)
         const bz = n.at.z + a.uz * (n.radius + 1.0)
         stopBar(markings, bx, bz, a.ux, a.uz, a.half * 1.9)
+      }
+    }
+
+    /*
+     * Retaining walls (BUGS.md #38): a street is level across its width at the highest ground under it, so on
+     * a hillside its downhill side stands above the slope. Where it stands more than 0.6 m above the ground
+     * just outside its corridor — and no other street's corridor is there — a dressed stone wall runs down
+     * from its edge to the ground, with a low parapet where the drop is more than a metre and a half.
+     */
+    if (!this.off.has('roads')) {
+      const walls = new MeshBuilder()
+      const stone: [number, number, number] = [0.6, 0.57, 0.51]
+      const cap: [number, number, number] = [0.7, 0.67, 0.61]
+      for (const e of groundEdges) {
+        if (!e.heights || e.tunnel) continue
+        const pts = unpackPoints(e.points)
+        const half = (e.foot ? e.width / 2 : e.width / 2 + Math.max(e.walk, 0.6)) + 0.3
+        for (let i = 1; i < pts.length; i++) {
+          const a = pts[i - 1]
+          const b = pts[i]
+          const l = Math.hypot(b.x - a.x, b.z - a.z)
+          if (l < 0.2) continue
+          const ux = (b.x - a.x) / l
+          const uz = (b.z - a.z) / l
+          for (const side of [-1, 1]) {
+            const nx = -uz * side
+            const nz = ux * side
+            const ea = { x: a.x + nx * half, z: a.z + nz * half }
+            const eb = { x: b.x + nx * half, z: b.z + nz * half }
+            const mid = { x: (ea.x + eb.x) / 2 + nx * 0.6, z: (ea.z + eb.z) / 2 + nz * 0.6 }
+            if (this.gradeAt(mid.x, mid.z) !== null) continue
+            const ha = e.heights[i - 1]
+            const hb = e.heights[i]
+            const ga = this.terrain.rawHeightAt(ea.x + nx * 0.6, ea.z + nz * 0.6)
+            const gb = this.terrain.rawHeightAt(eb.x + nx * 0.6, eb.z + nz * 0.6)
+            const drop = Math.max(ha - ga, hb - gb)
+            if (drop < 0.6) continue
+            const n: [number, number, number] = [nx, 0, nz]
+            const UV: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+            const q = (p0: { x: number; z: number }, p1: { x: number; z: number }, y00: number, y10: number, y11: number, y01: number, c: [number, number, number], nn = n): void => {
+              walls.quad([[p0.x, y00, p0.z], [p1.x, y10, p1.z], [p1.x, y11, p1.z], [p0.x, y01, p0.z]], nn, UV, c, 0)
+            }
+            const parapet = drop > 1.5 ? 0.9 : 0.12
+            // the face, down to just under the ground, and the parapet's outer face above the street
+            q(ea, eb, ga - 0.3, gb - 0.3, hb + parapet, ha + parapet, stone)
+            if (parapet > 0.2) {
+              const ia = { x: ea.x - nx * 0.3, z: ea.z - nz * 0.3 }
+              const ib = { x: eb.x - nx * 0.3, z: eb.z - nz * 0.3 }
+              q(ib, ia, hb, ha, ha + parapet, hb + parapet, stone, [-nx, 0, -nz])
+              walls.quad([[ea.x, ha + parapet, ea.z], [eb.x, hb + parapet, eb.z], [ib.x, hb + parapet, ib.z], [ia.x, ha + parapet, ia.z]], [0, 1, 0], UV, cap, 0)
+            }
+          }
+        }
+      }
+      if (walls.triangles > 0) {
+        const m = new Mesh(`retaining:${k}`, this.scene)
+        walls.toVertexData().applyToMesh(m)
+        m.material = cartoonMaterial(this.scene, 'cartoonLandmark', false)
+        m.renderingGroupId = GROUP.building
+        m.isPickable = false
+        meshes.push(m)
       }
     }
 

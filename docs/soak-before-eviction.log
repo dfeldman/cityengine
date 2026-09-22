@@ -1,0 +1,23 @@
+  0.0 min  heap   474 MB  meshes  1577  mats   67  tex   76  geo  1571  tiles 225  0.00 km
+  0.5 min  heap  1031 MB  meshes  2025  mats  222  tex  346  geo  2013  tiles 255  0.23 km
+  1.0 min  heap   529 MB  meshes  1916  mats  223  tex  349  geo  1903  tiles 285  0.47 km
+  1.5 min  heap   903 MB  meshes  2058  mats  225  tex  351  geo  2045  tiles 300  0.78 km
+  2.0 min  heap   799 MB  meshes  2103  mats  226  tex  350  geo  2091  tiles 332  1.17 km
+  2.5 min  heap  1036 MB  meshes  2118  mats  226  tex  350  geo  2106  tiles 347  1.52 km
+  3.0 min  heap   454 MB  meshes  2129  mats  227  tex  351  geo  2117  tiles 353  1.83 km
+  3.5 min  heap   922 MB  meshes  2089  mats  227  tex  351  geo  2077  tiles 383  2.20 km
+  4.0 min  heap   444 MB  meshes  2143  mats  227  tex  351  geo  2131  tiles 401  2.56 km
+  4.5 min  heap   465 MB  meshes  2143  mats  227  tex  351  geo  2131  tiles 401  2.87 km
+  5.0 min  heap   638 MB  meshes  2029  mats  227  tex  351  geo  2017  tiles 419  3.26 km
+  5.5 min  heap   764 MB  meshes  1998  mats  227  tex  351  geo  1986  tiles 423  3.59 km
+  6.0 min  heap   756 MB  meshes  1998  mats  227  tex  351  geo  1986  tiles 423  3.89 km
+  6.5 min  heap  1240 MB  meshes  1991  mats  229  tex  357  geo  1977  tiles 453  4.27 km
+  7.0 min  heap   872 MB  meshes  2018  mats  229  tex  357  geo  2004  tiles 472  4.59 km
+  7.5 min  heap  1139 MB  meshes  1821  mats  227  tex  351  geo  1809  tiles 487  4.89 km
+  8.0 min  heap   677 MB  meshes  2034  mats  227  tex  351  geo  2022  tiles 519  5.21 km
+  8.5 min  heap  1127 MB  meshes  2090  mats  227  tex  351  geo  2078  tiles 541  5.54 km
+  9.0 min  heap  1316 MB  meshes  2026  mats  227  tex  351  geo  2014  tiles 555  5.81 km
+  9.5 min  heap  1346 MB  meshes  2026  mats  227  tex  351  geo  2014  tiles 555  6.13 km
+ 10.0 min  heap   837 MB  meshes  2105  mats  227  tex  351  geo  2093  tiles 572  6.49 km
+second half: heap 638 → 837 MB (39.5 MB/min), meshes 2029 → 2105, textures 351 → 351
+peak heap 1346 MB

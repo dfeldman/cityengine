@@ -46,6 +46,8 @@ export interface PackedEdge {
   tunnel?: boolean
   /** through a building at grade (tunnel=building_passage, covered=yes): rideable, drawn as an arch */
   passage?: boolean
+  /** a way the bake lifted onto a bridge's deck (tools/bridges.ts): drawn as a structure, like the bridge */
+  ramp?: true
 }
 
 export type RoofShape = 'flat' | 'gabled' | 'hipped' | 'pyramidal' | 'skillion' | 'mansard' | 'dome'
@@ -225,13 +227,11 @@ export const packPoints = (pts: { x: number; z: number }[]): number[] =>
   pts.flatMap((p) => [Math.round(p.x * 100) / 100, Math.round(p.z * 100) / 100])
 
 /** A structure (a bridge, or a ramp standing off the ground) rather than painted ground. */
-export function isRaised(e: PackedEdge, terrain: { heightAt(x: number, z: number): number }): boolean {
-  if (e.bridge) return true
-  if (!e.heights) return false
-  for (let i = 0; i < e.heights.length; i++) {
-    if (Math.abs(e.heights[i] - terrain.heightAt(e.points[2 * i], e.points[2 * i + 1])) > 0.35) return true
-  }
-  return false
+export function isRaised(e: PackedEdge, _terrain?: { heightAt(x: number, z: number): number }): boolean {
+  // marked at bake (tools/bake.ts, from tools/bridges.ts): inferring it from how far the heights stand off the
+  // terrain stopped working once every street on a hillside was levelled above it (BUGS.md #38) — ordinary
+  // streets came out as decks on embankments
+  return !!e.bridge || !!e.ramp
 }
 
 /** The water bodies whole: from the index when `areas` are tile pieces, else the package's own. */

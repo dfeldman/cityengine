@@ -50,7 +50,7 @@ import { Navigator } from './sim/navigate.ts'
 import { Ride, cornerRadius } from './sim/ride.ts'
 import { addEdges, departureBearing, resolve, type CityGraph, type Edge } from './city/graph.ts'
 import { locate, rideExits, type RideGraph } from './city/ridegraph.ts'
-import { planRoute, type Route } from './sim/route.ts'
+import { nearestOnGraph, planRoute, type Route } from './sim/route.ts'
 import { SCENIC } from './city/scenic.ts'
 import { unpackPoints, wholeWater, type CityPackage, type PackedArea, type PackedRail } from './city/package.ts'
 import { loadRide, openCity } from './city/tilestore.ts'
@@ -392,6 +392,18 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // a preplanned route: its waypoints still to reach, and its name for the HUD
   let tour: { name: string; left: { x: number; z: number }[]; of: number } | null = null
   const clearRoute = (): void => { destination = null; tour = null; replan(); hud.gps(null) }
+  /** what a destination is called: the nearest landmark within 150 m, else the street it ends on */
+  const placeName = (p: { x: number; z: number }): string => {
+    let best: { name: string; d: number } | null = null
+    for (const l of [...(landmarks?.placed ?? []), ...(pkg.landmarks ?? [])]) {
+      const d = Math.hypot(l.x - p.x, l.z - p.z)
+      if (d < 150 && (!best || d < best.d)) best = { name: l.name, d }
+    }
+    if (best) return best.name.replace(/ — .*$/, '')
+    const street = route ? rides.edges.get(route.target.edgeId)?.name : undefined
+    return street ?? 'the pin'
+  }
+  const minutes = (m: number): string => `${Math.max(1, Math.round(m / (4.5 * 60)))} min at 16 km/h`
   const nextWaypoint = (): boolean => {
     if (!tour || tour.left.length === 0) return false
     destination = tour.left.shift()!
@@ -405,7 +417,18 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     menu.style.top = '88px'
     menu.title = 'ride a preplanned route'
     menu.add(new Option('routes…', ''))
-    for (const r of scenic) menu.add(new Option(r.name, r.name))
+    // each route's length, leg by leg along the ride graph from its first stop
+    const pr0 = new Projection(pkg.origin)
+    for (const r of scenic) {
+      const pts = r.waypoints.map(([lat, lon]) => pr0.toLocal({ lat, lon }))
+      let km = 0
+      for (let i = 1; i < pts.length; i++) {
+        const s0 = nearestOnGraph(rides, pts[i - 1])
+        const leg = s0 ? planRoute(rides, { edgeId: s0.edgeId, s: s0.s, reversed: false }, pts[i]) : null
+        km += (leg?.length ?? Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z) * 1.3) / 1000
+      }
+      menu.add(new Option(`${r.name} — ${km.toFixed(1)} km`, r.name))
+    }
     menu.addEventListener('keydown', (e) => e.stopPropagation())
     menu.addEventListener('change', () => {
       const r = scenic.find((q) => q.name === menu.value)
@@ -415,7 +438,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       const pr = new Projection(pkg.origin)
       tour = { name: r.name, left: r.waypoints.map(([lat, lon]) => pr.toLocal({ lat, lon })), of: r.waypoints.length }
       nextWaypoint()
-      debug.toast(`${r.name}: ${tour.of} stops`)
+      hud.banner(r.name, `${tour.of} stops · first: ${placeName(destination!)}, ${((route?.length ?? 0) / 1000).toFixed(1)} km away`)
     })
     document.body.appendChild(menu)
   }
@@ -428,12 +451,14 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       return
     }
     destination = p
+    tour = null
     replan()
-    if (!route) { debug.toast('no route there'); clearRoute(); return }
-    debug.toast(`destination set — ${(route.length / 1000).toFixed(1)} km (Esc clears; shift-click jumps)`)
+    if (!route) { hud.banner('No route there', 'the pin is off the streets that can be ridden'); clearRoute(); return }
+    hud.banner(`Destination: ${placeName(p)}`, `${(route.length / 1000).toFixed(1)} km · ${minutes(route.length)} · Esc clears`)
   }
   addEventListener('keydown', (e) => { if (e.code === 'Escape' || e.code === 'KeyN') clearRoute() })
   ;(window as unknown as Record<string, unknown>).__routeLeft = () => (route ? Math.round(route.length) : null)
+  ;(window as unknown as Record<string, unknown>).__travelled = () => nav.travelled
   ;(window as unknown as Record<string, unknown>).__route = (lat: number, lon: number) => {
     destination = new Projection(pkg.origin).toLocal({ lat, lon })
     replan()
@@ -589,8 +614,16 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         routedAt = now
         replan()
         if (route && route.length < 20) {
-          if (nextWaypoint()) debug.toast(`${tour!.name}: stop ${tour!.of - tour!.left.length} of ${tour!.of}`)
-          else { debug.toast('you have arrived'); clearRoute() }
+          const here = destination!
+          const reached = placeName(here)
+          if (tour && nextWaypoint()) {
+            const n = tour.of - tour.left.length
+            hud.banner(`${reached}`, `stop ${n - 1} of ${tour.of} · next: ${placeName(destination!)}, ${((route?.length ?? 0) / 1000).toFixed(1)} km`)
+          } else {
+            const name = tour?.name
+            hud.banner(name ? `${name} — complete` : `You have arrived: ${reached}`, name ? `the last stop: ${reached}` : '', 6000)
+            clearRoute()
+          }
         }
       }
       if (route && junction && !junction.passThrough && ownChoiceAt !== junction.nodeId && !nav.isCommitted) {

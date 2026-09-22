@@ -284,13 +284,16 @@ async function bake(spec: CitySpec): Promise<void> {
           const kerbToKerb = streetRegion.streetWidth === 'carriageway'
           const corridor = kerbToKerb ? widthOfNA(w.tags) : widthOf(w.tags)
           const foot = isFoot(w.tags)
-          const walk = foot ? 0 : kerbToKerb ? pavementForNA(corridor) : pavementFor(corridor)
+          // mapped separately (`sidewalk=separate`, or its lanes counted): the tagged width is the carriageway —
+          // the Pont Notre-Dame's two lanes came out as one 2.8 m lane between 4 m pavements
+          const separate = /^(separate|no|none)$/.test(w.tags.sidewalk ?? '') || w.tags['sidewalk:both'] === 'separate'
+          const walk = foot ? 0 : kerbToKerb ? pavementForNA(corridor) : separate ? 0.6 : pavementFor(corridor)
           edges.push({
             id: edgeId++, a: w.nodes[startIdx], b: w.nodes[i],
             points: packPoints(pts), surface: surfaceOf(w.tags),
             // the carriageway is the corridor less its two pavements, never narrower than a single lane —
             // or, where the region measures kerb to kerb, the width itself
-            width: foot || kerbToKerb ? corridor : Math.max(2.8, corridor - 2 * walk),
+            width: foot || kerbToKerb || separate ? corridor : Math.max(2.8, corridor - 2 * walk),
             walk,
             name: w.tags.name, foot,
             // OSM marks these itself, which is far better than guessing from where two ways overlap
@@ -701,7 +704,52 @@ async function bake(spec: CitySpec): Promise<void> {
     }
     e.points = packPoints(dense)
     const pts = unpackPoints(e.points)
-    e.heights = pts.map((p) => Math.round(sampleGrid(ground, cols, rows, tx0, tz0, STEP, p.x, p.z) * 100) / 100)
+    /*
+     * LEVEL across its width (BUGS.md #38): a street is flat from kerb to kerb, however the hillside falls
+     * across it — the elevation data never has the cut or the fill a real road sits on, and draped, every
+     * street along a slope was tipped towards the downhill side (the quais above the Seine, all of San
+     * Francisco). Its height at each point is the HIGHEST ground across its corridor, pavements included:
+     * a fill, never a cut, so the road stands at or above the ground on both sides and nothing the terrain
+     * hides (the ground occluder, just under the raw surface) can hide it. The renderer draws the downhill side's
+     * retaining wall (render/city.ts `retainingWalls`).
+     */
+    const half = e.foot ? e.width / 2 : e.width / 2 + Math.max(e.walk, 0.6)
+    e.heights = pts.map((p, i) => {
+      const a = pts[Math.max(0, i - 1)]
+      const b = pts[Math.min(pts.length - 1, i + 1)]
+      const l = Math.hypot(b.x - a.x, b.z - a.z) || 1
+      const nx = -(b.z - a.z) / l
+      const nz = (b.x - a.x) / l
+      let h = sampleGrid(ground, cols, rows, tx0, tz0, STEP, p.x, p.z)
+      for (const o of [-half, -half / 2, half / 2, half]) h = Math.max(h, sampleGrid(ground, cols, rows, tx0, tz0, STEP, p.x + nx * o, p.z + nz * o))
+      return h
+    })
+  }
+  // …and one height where streets meet: every end at a node takes the highest of them, eased in over 12 m, so
+  // the level streets join without a step (the rider's profile and the drawn surface both)
+  {
+    const nodeH = new Map<number, number>()
+    for (const e of kept) {
+      const h = e.heights!
+      nodeH.set(e.a, Math.max(nodeH.get(e.a) ?? -Infinity, h[0]))
+      nodeH.set(e.b, Math.max(nodeH.get(e.b) ?? -Infinity, h[h.length - 1]))
+    }
+    for (const e of kept) {
+      const pts = unpackPoints(e.points)
+      const h = e.heights!
+      const cum = [0]
+      for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z))
+      const L = cum[cum.length - 1]
+      const ha = nodeH.get(e.a)!
+      const hb = nodeH.get(e.b)!
+      const EASE = Math.min(12, L / 2)
+      e.heights = h.map((v, i) => {
+        let out = v
+        if (cum[i] < EASE) out = ha + (v - ha) * (cum[i] / EASE)
+        if (L - cum[i] < EASE) out = hb + (out - hb) * ((L - cum[i]) / EASE)
+        return Math.round(out * 100) / 100
+      })
+    }
   }
 
   /*
@@ -716,6 +764,8 @@ async function bake(spec: CitySpec): Promise<void> {
   const wetLevels = waterLevels(wetAreas, groundAt, streetRegion.riverDrop ?? 0)
   const waterBodies = wetAreas.map((a, k) => ({ ring: unpackPoints(a.ring), level: wetLevels[k] }))
   const decks = bridgeHeights(kept, { water: waterBodies, ground: groundAt, buried })
+  // the ways lifted onto a deck are ramps: said outright, for the renderer (city/package.ts isRaised)
+  for (const e of kept) if (decks.raised.has(e.id) && !e.bridge) e.ramp = true
   /*
    * Elevated railways (the Loop's L) by a direct rule rather than the street chains: an L structure runs at
    * a steady 6–7 m, and chained through a whole loop of track the street rule took the worst crossing

@@ -658,13 +658,13 @@
       "way/822470558",
       "way/822470559"
     ],
-    "note": "The glass nave and dome on green iron, the colonnade to the Avenue Winston-Churchill, the quadrigas; fitted to OSM's outline, front to the avenue (east). OSM maps it as eight building:parts (the outline way/56185523 is replaced by them at bake), all replaced by the model.",
+    "note": "The glass nave and dome on green iron, the colonnade to the Avenue Winston-Churchill, the quadrigas; fitted to OSM's outline, front to the avenue (east). Sized inside the Avenue du Général-Eisenhower (north) and the Cours la Reine: the outline's 240 m rectangle stood over the avenue the ride goes along (BUGS.md #43). OSM maps it as eight building:parts, all replaced.",
     "lat": 48.866149,
     "lon": 2.312273,
     "rotateDeg": 270,
     "size": [
-      236,
-      159
+      206,
+      150
     ]
   },
   {

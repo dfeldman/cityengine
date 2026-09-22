@@ -24,7 +24,7 @@ export function grandPalais(out: MeshBuilder, fit: Fit): void {
   const glass: Rgb = [0.48, 0.62, 0.68]
   const iron: Rgb = [0.26, 0.33, 0.3]
   const bronze: Rgb = [0.3, 0.42, 0.36]
-  const hx = Math.min(Math.max(fit.hx, 90), 118)
+  const hx = Math.min(Math.max(fit.hx, 90), 103)
   const hz = Math.min(Math.max(fit.hz, 50), 80)
   const front = -hz
   const naveW = 52
