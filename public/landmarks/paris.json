@@ -782,5 +782,32 @@
       20
     ],
     "note": "The Palais Bourbon's twelve-column portico and pediment to the Seine, standing on its quai front; the palace behind is OSM's massing."
+  },
+  {
+    "name": "Institut de France",
+    "osm": [
+      "relation/967665"
+    ],
+    "restyle": "classical",
+    "roof": "flat",
+    "height": 17,
+    "levels": 3,
+    "note": "Le Vau's hemicycle on the Quai de Conti: OSM's 30 m massing brought down to its real 17 m in the classical stone dress; the chapel front and dome are `institutDome`."
+  },
+  {
+    "name": "Institut de France — dome",
+    "procedural": "institutDome",
+    "osm": [
+      "relation/672452736"
+    ],
+    "lat": 48.85727,
+    "lon": 2.336976,
+    "rotateDeg": 180,
+    "size": [
+      22,
+      22
+    ],
+    "stone": true,
+    "note": "The portico to the quai, the drum with its paired pilasters, the ribbed lead dome with gilded ribs, the lantern."
   }
 ]

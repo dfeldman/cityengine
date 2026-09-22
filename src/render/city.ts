@@ -1809,7 +1809,9 @@ export class City {
     const byStyle = new Map<StyleId, MeshBuilder>()
     const sunOff = shadowOffset(DAYLIGHT.sun)
     for (const b of this.buildingsIn.get(k) ?? []) {
-      const ring = unpackPoints(b.ring) as Ring
+      // curves as chords a bay or more long: a hemicycle mapped in 3 m pieces had no wall wide enough for one
+      // window (the Institut de France's wings were blank)
+      const ring = simplifyRing(unpackPoints(b.ring)) as Ring
       /*
        * A building stands on a LEVEL pad, at the ground height under the middle of its footprint. Draping
        * its walls the way the road is draped would shear them: a terraced block on a San Francisco hill
@@ -2003,3 +2005,48 @@ export class City {
 function hexRgb(hex: string): [number, number, number] {
   return [parseInt(hex.slice(1, 3), 16) / 255, parseInt(hex.slice(3, 5), 16) / 255, parseInt(hex.slice(5, 7), 16) / 255]
 }
+
+/**
+ * A footprint with its curves straightened into chords (Douglas–Peucker, 0.35 m): every sharp corner stays,
+ * a gentle curve of short segments becomes a few long walls — the facade generator puts windows only on a wall
+ * at least a bay wide. On a 40 m radius a chord strays under 0.3 m from the true line.
+ */
+export function simplifyRing(ring: { x: number; z: number }[], tol = 0.35): { x: number; z: number }[] {
+  if (ring.length < 8) return ring
+  const dist = (p: { x: number; z: number }, a: { x: number; z: number }, b: { x: number; z: number }): number => {
+    const dx = b.x - a.x
+    const dz = b.z - a.z
+    const l2 = dx * dx + dz * dz || 1e-9
+    const t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.z - a.z) * dz) / l2))
+    return Math.hypot(a.x + dx * t - p.x, a.z + dz * t - p.z)
+  }
+  const keep = new Uint8Array(ring.length)
+  // split the closed ring at vertex 0 and the vertex farthest from it
+  let far = 0
+  let fd = -1
+  for (let i = 1; i < ring.length; i++) {
+    const d = Math.hypot(ring[i].x - ring[0].x, ring[i].z - ring[0].z)
+    if (d > fd) { fd = d; far = i }
+  }
+  keep[0] = 1
+  keep[far] = 1
+  const stack: [number, number][] = [[0, far], [far, ring.length]]
+  while (stack.length) {
+    const [i0, i1] = stack.pop()!
+    const a = ring[i0]
+    const b = ring[i1 % ring.length]
+    let best = -1
+    let bd = tol
+    for (let i = i0 + 1; i < i1; i++) {
+      const d = dist(ring[i], a, b)
+      if (d > bd) { bd = d; best = i }
+    }
+    if (best >= 0) {
+      keep[best] = 1
+      stack.push([i0, best], [best, i1])
+    }
+  }
+  const out = ring.filter((_, i) => keep[i])
+  return out.length >= 3 ? out : ring
+}
+

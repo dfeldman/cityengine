@@ -2072,20 +2072,6 @@
   ]
  },
  {
-  "name": "Institut de France — from the Pont des Arts",
-  "group": "landmark",
-  "from": [
-   48.8588,
-   2.3375,
-   6
-  ],
-  "to": [
-   48.8574,
-   2.3372,
-   18
-  ]
- },
- {
   "name": "Petit Palais — from the avenue",
   "group": "landmark",
   "from": [
@@ -2153,6 +2139,20 @@
    48.870028,
    2.324466,
    14
+  ]
+ },
+ {
+  "name": "Institut de France — from the Pont des Arts",
+  "group": "landmark",
+  "from": [
+   48.858238,
+   2.33722,
+   6
+  ],
+  "to": [
+   48.85725,
+   2.33722,
+   18
   ]
  }
 ]
