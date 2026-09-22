@@ -272,6 +272,22 @@ These make the world alive, as the Seine's boats did:
   seats, the spring rider, the see-saw, rubber surfacing and a sand pit. It is placed from OSM
   `leisure=playground` areas and `playground=*` nodes, and where the nodes are missing a structure is set
   in the middle of the area.
+- **Every building of 10+ storeys, every civic building and every park, one by one** (user, 2026-09-22: "we
+  should individually model every building over 10 stories, as well as every civic building/park. at least";
+  "just take the time to uniquely model as many buildings as you need, using street view as a source. there is
+  no time limit… this is the kind of stuff that will take it from 'ok' to WOW"; "you can use subagents to do a few
+  in parallel"). `tools/sf-targets.ts` lists them in `docs/sf-targets.json`: 501 tall buildings (plus 351
+  building:parts), 229 civic buildings and 101 parks and gardens. Two tiers:
+  - **Tier 1, hand-built gist geometry:** the distinctive silhouettes. That is the skyline at 30+ storeys, the civic
+    set, Chinatown and the slope parks.
+  - **Tier 2, a ring-tower preset per building, each looked at on Street View:** the 10–29-storey band, whose
+    footprint is already its shape.
+- **Washington Street's walls and walkways** (user: "washington st. has high walls and overhead walkways for a long
+  stretch. very distinctive"). The Golden Gateway / Maritime Plaza podium between Battery and Drumm has blank
+  walls and skybridges over the street. It is a structure landmark, walls and bridges spanning streets, rather
+  than one building.
+- **The big green advertising signs** (user: "the big green advertising signs are very distinctive and very SF").
+  To check on Street View: probably the dark-green painted steel frames of SF's billboards and wall boards.
 - **Public sculptural art** (user: "sf has a lot of public sculptural art — these should be attempted if possible.
   not really as many statues like paris though"). OSM's `tourism=artwork` gives the positions; the abstract
   pieces suit procedural models: Cupid's Span, the Vaillancourt Fountain, Sea Change, Language of the Birds,
