@@ -373,7 +373,22 @@ export class Landmarks {
     this.base = base
     this.proj = new Projection(pkg.origin)
     this.named = pkg.landmarks ?? []
-    this.pending = entries.filter((e) => entryKind(e) !== 'restyle' && entryKind(e) !== 'placeholder')
+    /*
+     * One entry per building. The districts are modelled in parallel and two batches can both claim a building on
+     * their boundary (reported 2026-09-22); placed twice, its two models stand in each other. The first entry
+     * wins, and the clash is logged so it can be taken out of a manifest.
+     */
+    const claimed = new Map<number, string>()
+    this.pending = entries.filter((e) => entryKind(e) !== 'restyle' && entryKind(e) !== 'placeholder').filter((e) => {
+      const ids = packedIds(e)
+      const clash = ids.find((id) => claimed.has(id))
+      if (clash !== undefined) {
+        console.warn(`landmark "${e.name}" claims a building already taken by "${claimed.get(clash)}" — the second is skipped`)
+        return false
+      }
+      for (const id of ids) claimed.set(id, e.name)
+      return true
+    })
     for (const e of this.pending) for (const id of [...packedIds(e), ...(e.on ? packedIds({ name: e.name, osm: e.on }) : [])]) this.wanted.add(id)
     const mat = cartoonMaterial(scene, 'cartoonLandmark', false)
     // drawn both sides: one mesh per landmark, and a builder's hand-wound quads need not all agree

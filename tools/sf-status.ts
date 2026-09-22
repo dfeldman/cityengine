@@ -35,9 +35,15 @@ try {
 } catch { /* ignore */ }
 
 const byId = new Map<string, { district: string; e: Entry }>()
+const clashes: string[] = []
 for (const m of manifests) {
   for (const e of m.entries) {
-    for (const id of Array.isArray(e.osm) ? e.osm : e.osm ? [e.osm] : []) byId.set(id, { district: m.district, e })
+    for (const id of Array.isArray(e.osm) ? e.osm : e.osm ? [e.osm] : []) {
+      const had = byId.get(id)
+      // two districts claiming one building: only the first is placed (render/landmarks.ts), so it wants fixing
+      if (had && had.e !== e) clashes.push(`${id}: "${had.e.name}" (${had.district}) and "${e.name}" (${m.district})`)
+      if (!had || (!had.e.procedural && e.procedural)) byId.set(id, { district: m.district, e })
+    }
   }
 }
 // the bail-outs: a row per building in docs/sf-batches/<district>-hard.md, "| name | osm | …"
@@ -76,6 +82,10 @@ for (const [id, { district, e }] of byId) {
 writeFileSync(resolve(ROOT, 'docs', 'sf-buildings.csv'), rows.join('\n') + '\n')
 console.log(`${rows.length - 1} buildings → docs/sf-buildings.csv`)
 console.log([...tally].sort().map(([k, v]) => `${k} ${v}`).join(', '))
+if (clashes.length > 0) {
+  console.log(`\n${clashes.length} buildings claimed by more than one entry — take the wrong one out:`)
+  for (const c of clashes) console.log(`  ${c}`)
+}
 if (process.argv.includes('--todo')) {
   for (const t of todo.sort((a, b) => b.height - a.height).slice(0, 60)) {
     console.log(`${String(t.height).padStart(4)} m  ${t.kind.padEnd(7)} ${t.id.padEnd(18)} ${t.name.slice(0, 44)}`)
