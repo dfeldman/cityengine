@@ -23,6 +23,7 @@ import { WATERFRONT_1 } from './districts/waterfront-1.ts'
 import { WATERFRONT_2 } from './districts/waterfront-2.ts'
 import { CHINATOWN_1 } from './districts/chinatown-1.ts'
 import { CHINATOWN_2 } from './districts/chinatown-2.ts'
+import { HARD_1 } from './districts/hard-1.ts'
 import { PIERS } from './piers.ts'
 import { MARKET_EAST } from './districts/market-east.ts'
 import { MARKET_MID } from './districts/market-mid.ts'
@@ -40,5 +41,6 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   ...WATERFRONT_2,
   ...CHINATOWN_1,
   ...CHINATOWN_2,
+  ...HARD_1,
   ...MARKET_EAST, ...MARKET_MID, ...MARKET_WEST, ...UNION_SQUARE,
 }

@@ -27,7 +27,8 @@ import { surfaceTag, type Surface } from '../cartoon-material.ts'
 type P2 = { x: number; z: number }
 
 export interface Face {
-  kind: 'punched' | 'bands' | 'fins' | 'curtain' | 'xbrace' | 'blank'
+  /** `bays`: projecting bay windows, one per bay, all the way up — San Francisco's own facade */
+  kind: 'punched' | 'bands' | 'fins' | 'curtain' | 'xbrace' | 'blank' | 'bays'
   wall: Rgb
   glass?: Rgb
   /** floor to floor, metres (default 3.6) */
@@ -42,6 +43,8 @@ export interface Face {
   brace?: number
   /** punched: arched window heads (the 1910s–20s) */
   arched?: boolean
+  /** bays: how far a bay projects (default 0.8 m), and whether it is angled (default) or rounded */
+  bay?: { depth?: number; round?: boolean }
   /**
    * What the wall is made of, from the landmark surface library (cartoon-material.ts SURFACES): drawn as a
    * procedural pattern — courses of brick, ashlar blocks, granite panels, glazed terracotta, precast concrete,
@@ -63,12 +66,18 @@ export interface Tier {
 export type Crown =
   | { kind: 'flat' }
   | { kind: 'parapet'; height: number; colour?: Rgb; material?: Surface }
-  | { kind: 'hip' | 'mansard'; height: number; inset: number; colour: Rgb; material?: Surface }
+  | { kind: 'hip' | 'mansard'; height: number; inset: number; colour: Rgb; material?: Surface; dormers?: number }
   | { kind: 'pyramid' | 'spire'; height: number; inset?: number; colour: Rgb; material?: Surface }
   | { kind: 'dome'; height: number; radius?: number; colour: Rgb; drum?: number; material?: Surface }
   | { kind: 'lantern'; height: number; inset: number; face: Face; cap?: Crown }
   | { kind: 'stepped'; steps: number; height: number; inset: number; face?: Face; material?: Surface }
   | { kind: 'mast'; height: number; colour?: Rgb; width?: number; material?: Surface }
+  /** a jagged parapet of points or battlements round the roof (201 Mission, 199 Fremont) */
+  | { kind: 'sawtooth'; height: number; pitch?: number; colour: Rgb; material?: Surface }
+  /** tapered needles standing off the roof: `n` of them along the long axis (345 California's twins) */
+  | { kind: 'spires'; height: number; n?: number; radius?: number; colour: Rgb; material?: Surface }
+  /** the roof sliced on a diagonal, to a ridge or a point (505 Montgomery) */
+  | { kind: 'sliced'; height: number; colour: Rgb; material?: Surface }
 
 export interface TowerSpec {
   /** used when the manifest's (OSM's) height is missing or implausible */
@@ -200,6 +209,43 @@ export function faceBand(out: MeshBuilder, ring: P2[], y0: number, y1: number, f
         for (let fl = 1; fl < floors; fl++) rect(0, L, y0 + fl * fh - 0.35, y0 + fl * fh + 0.35, f.wall, 0.02)
         break
       }
+      case 'bays': {
+        // the wall, then a bay window standing out of it in every bay: three faces if angled, five if rounded
+        rect(0, L, y0, y1, f.wall)
+        const d = f.bay?.depth ?? 0.8
+        const faces = f.bay?.round ? 5 : 3
+        for (let k = 0; k < bays; k++) {
+          const u0 = k * bw + bw * 0.12
+          const u1 = (k + 1) * bw - bw * 0.12
+          const pts: [number, number][] = []
+          for (let i = 0; i <= faces; i++) {
+            const t = i / faces
+            // a flat-sided or rounded plan, out to `d` in the middle
+            pts.push([u0 + (u1 - u0) * t, d * (f.bay?.round ? Math.sin(Math.PI * t) : Math.min(1, Math.min(t, 1 - t) * (faces / 1.2)))])
+          }
+          for (let i = 0; i < faces; i++) {
+            const [ua, oa] = pts[i]
+            const [ub, ob] = pts[i + 1]
+            const P = (u: number, o: number, y: number): [number, number, number] => [a.x + tx * u + nx * o, y, a.z + tz * u + nz * o]
+            const mx = (oa + ob) / 2
+            const nn: [number, number, number] = [nx * 0.85 + tx * (ob - oa) * 0.15, 0, nz * 0.85 + tz * (ob - oa) * 0.15]
+            // the bay's glass, floor by floor, and the spandrel between
+            for (let fl = 0; fl < floors; fl++) {
+              const ya = y0 + fl * fh
+              quadAt(out, [P(ua, oa, ya + fh * 0.18), P(ub, ob, ya + fh * 0.18), P(ub, ob, ya + fh * 0.86), P(ua, oa, ya + fh * 0.86)], nn, glass, GLASS)
+              quadAt(out, [P(ua, oa, ya + fh * 0.86), P(ub, ob, ya + fh * 0.86), P(ub, ob, ya + fh * 1.18), P(ua, oa, ya + fh * 1.18)], nn, f.wall, W)
+            }
+            void mx
+          }
+          // the bay's cheeks and its cap
+          const P = (u: number, o: number, y: number): [number, number, number] => [a.x + tx * u + nx * o, y, a.z + tz * u + nz * o]
+          for (const [u, o, sgn] of [[u0, 0, -1], [u1, 0, 1]] as const) {
+            quadAt(out, [P(u, o, y0), P(u, d * 0.0, y0), P(u, 0, y1), P(u, o, y1)], [tx * sgn, 0, tz * sgn], f.wall, W)
+          }
+          quadAt(out, [P(u0, 0, y1), P(u1, 0, y1), P(u1, d, y1), P(u0, d, y1)], [0, 1, 0], f.wall, W)
+        }
+        break
+      }
       case 'curtain':
       case 'xbrace': {
         rect(0, L, y0, y1, glass)
@@ -289,6 +335,23 @@ function crown(out: MeshBuilder, ring: P2[], H: number, c: Crown, roof: Rgb): vo
       const top = insetRing(ring, c.inset)
       frustum(out, ring, H, top, H + c.height, c.colour, tag)
       capPolygon(out, top, H + c.height, c.colour, tag)
+      // dormers set into the slope, evenly round the longest edges
+      for (let d = 0; d < (c.dormers ?? 0); d++) {
+        let best = { a: ring[0], b: ring[1], L: 0, i: 0 }
+        for (let i = 0; i < ring.length; i++) {
+          const a = ring[i]
+          const b = ring[(i + 1) % ring.length]
+          const L = Math.hypot(b.x - a.x, b.z - a.z)
+          if (L > best.L) best = { a, b, L, i }
+        }
+        const t = (d + 0.5) / (c.dormers ?? 1)
+        const px = best.a.x + (best.b.x - best.a.x) * t
+        const pz = best.a.z + (best.b.z - best.a.z) * t
+        const nx = (best.b.z - best.a.z) / best.L
+        const nz = -(best.b.x - best.a.x) / best.L
+        box(out, px + nx * 0.25, H + c.height * 0.45, pz + nz * 0.25, 0.7, 0.9, 0.7, c.colour, tag)
+        box(out, px + nx * 0.4, H + c.height * 0.45, pz + nz * 0.4, 0.45, 0.6, 0.06, [0.2, 0.22, 0.24], GLASS)
+      }
       return
     }
     case 'pyramid':
@@ -328,6 +391,63 @@ function crown(out: MeshBuilder, ring: P2[], H: number, c: Crown, roof: Rgb): vo
         faceBand(out, r, y, y + each, c.face ?? { kind: 'blank', wall: roof })
         y += each
         capPolygon(out, r, y, roof, 0)
+      }
+      return
+    }
+    case 'sawtooth': {
+      // a row of points along every edge, each a little pyramid of two faces
+      const pitch = c.pitch ?? 2.4
+      for (let i = 0; i < ring.length; i++) {
+        const a = ring[i]
+        const b = ring[(i + 1) % ring.length]
+        const L = Math.hypot(b.x - a.x, b.z - a.z)
+        const n = Math.max(1, Math.round(L / pitch))
+        for (let k = 0; k < n; k++) {
+          const t0 = k / n
+          const t1 = (k + 1) / n
+          const tm = (t0 + t1) / 2
+          const P = (t: number, y: number): [number, number, number] => [a.x + (b.x - a.x) * t, y, a.z + (b.z - a.z) * t]
+          const nx = (b.z - a.z) / (L || 1)
+          const nz = -(b.x - a.x) / (L || 1)
+          quadAt(out, [P(t0, H), P(tm, H + c.height), P(tm, H + c.height), P(t0, H)], [nx, 0.4, nz], c.colour, tag)
+          quadAt(out, [P(tm, H + c.height), P(t1, H), P(t1, H), P(tm, H + c.height)], [nx, 0.4, nz], c.colour, tag)
+          quadAt(out, [P(t0, H), P(t1, H), P(tm, H + c.height), P(tm, H + c.height)], [0, 1, 0], c.colour, tag)
+        }
+      }
+      return
+    }
+    case 'spires': {
+      const n = c.n ?? 2
+      const r = c.radius ?? 1.6
+      // along the ring's long axis, spaced evenly
+      let far = { a: ring[0], b: ring[0], d: 0 }
+      for (const p of ring) for (const q of ring) { const d = Math.hypot(p.x - q.x, p.z - q.z); if (d > far.d) far = { a: p, b: q, d } }
+      for (let i = 0; i < n; i++) {
+        const t = n === 1 ? 0.5 : 0.3 + (0.4 * i) / (n - 1)
+        const px = far.a.x + (far.b.x - far.a.x) * t
+        const pz = far.a.z + (far.b.z - far.a.z) * t
+        const base: P2[] = Array.from({ length: 6 }, (_, k) => ({ x: px + Math.cos((k / 6) * Math.PI * 2) * r, z: pz + Math.sin((k / 6) * Math.PI * 2) * r }))
+        frustum(out, base, H, base.map(() => ({ x: px, z: pz })), H + c.height, c.colour, tag)
+      }
+      return
+    }
+    case 'sliced': {
+      // the roof cut on a diagonal: one edge stays, the opposite rises
+      let far = { a: ring[0], b: ring[0], d: 0 }
+      for (const p of ring) for (const q of ring) { const d = Math.hypot(p.x - q.x, p.z - q.z); if (d > far.d) far = { a: p, b: q, d } }
+      const axis = { x: (far.b.x - far.a.x) / (far.d || 1), z: (far.b.z - far.a.z) / (far.d || 1) }
+      const at = (p: P2): number => ((p.x - far.a.x) * axis.x + (p.z - far.a.z) * axis.z) / (far.d || 1)
+      const top = ring.map((p) => ({ p, y: H + c.height * at(p) }))
+      for (let i = 0; i < ring.length; i++) {
+        const j = (i + 1) % ring.length
+        const a = top[i]
+        const b = top[j]
+        quadAt(out, [[a.p.x, H, a.p.z], [b.p.x, H, b.p.z], [b.p.x, b.y, b.p.z], [a.p.x, a.y, a.p.z]],
+          [(b.p.z - a.p.z), 0, -(b.p.x - a.p.x)], c.colour, tag)
+      }
+      for (let i = 1; i < top.length - 1; i++) {
+        quadAt(out, [[top[0].p.x, top[0].y, top[0].p.z], [top[i].p.x, top[i].y, top[i].p.z], [top[i + 1].p.x, top[i + 1].y, top[i + 1].p.z], [top[0].p.x, top[0].y, top[0].p.z]],
+          [0, 1, 0], c.colour, tag)
       }
       return
     }

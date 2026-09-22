@@ -40,5 +40,7 @@
   {"include": "san-francisco/chinatown-1.json"},
   {"include": "san-francisco/chinatown-2.json"},
   {"include": "san-francisco/restyle-1.json"},
-  {"include": "san-francisco/restyle-2.json"}
+  {"include": "san-francisco/restyle-2.json"},
+  {"include": "san-francisco/lowrise.json"},
+  {"include": "san-francisco/hard-1.json"}
 ]

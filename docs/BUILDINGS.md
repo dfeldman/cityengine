@@ -66,7 +66,8 @@ and its manifest entry:
 shared kit now, and a building should be one line, or a spec plus two or three calls:
 
 - `tower.ts` — the grammar: tiers of faces (`punched`, `bands`, `fins`, `curtain`, `xbrace`, `blank`), setbacks,
-  cornices, podiums, crowns (parapet, hip, mansard, pyramid, spire, dome, lantern, stepped, mast), penthouses.
+  cornices, podiums, crowns (parapet, hip and mansard with dormers, pyramid, spire, dome, lantern, stepped, mast,
+  sawtooth, spires, sliced), penthouses, and a `bays` face for projecting bay windows.
 - `recipes.ts` — ten building types: `edwardian-terracotta`, `deco-setback`, `chicago-block`, `midcentury-slab`,
   `concrete-piers`, `granite-eighties`, `glass-tower`, `modern-slender`, `brick-loft`, `hotel-punched`.
 - `parts.ts` — `edgeAt`, `longestEdge`, `edgeFacing`, `boxAlong`, `panelOn`, `signText`, `marquee`, `bladeSign`,

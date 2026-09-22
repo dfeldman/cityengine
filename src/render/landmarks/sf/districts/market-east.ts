@@ -450,6 +450,13 @@ const pgeAnnex = spec({ ...pgeTiers(52), tiers: [
 // ---------------------------------------------------------------------------------------------------------------
 // the Hyatt Regency (5 Embarcadero Center)
 
+/**
+ * The Hyatt's own footprint, in metres east and north of 37.794477, −122.395814 (OSM way/28319370). The bake
+ * drops an outline that its parts supersede, and the Hyatt's twenty parts do supersede it, so the entry is placed
+ * at a point instead of on a building — and then nothing hands the builder a ring. This is that ring.
+ */
+const HYATT_RING: P2[] = [{ x: -0.6, z: -62.7 }, { x: -1.7, z: -55.9 }, { x: 12.7, z: -42.0 }, { x: 66.9, z: 10.3 }, { x: 60.0, z: 17.4 }, { x: 50.5, z: 27.1 }, { x: 46.4, z: 26.5 }, { x: 42.5, z: 25.9 }, { x: 38.2, z: 25.2 }, { x: 34.3, z: 24.6 }, { x: 30.1, z: 24.0 }, { x: 26.3, z: 23.4 }, { x: 21.7, z: 22.6 }, { x: 18.2, z: 22.1 }, { x: 13.8, z: 21.4 }, { x: 9.4, z: 20.8 }, { x: 5.5, z: 20.2 }, { x: 2.0, z: 19.6 }, { x: -2.8, z: 18.9 }, { x: -6.3, z: 18.3 }, { x: -10.7, z: 17.7 }, { x: -18.8, z: 16.4 }, { x: -40.4, z: 13.1 }, { x: -44.8, z: 12.4 }, { x: -50.6, z: 11.5 }, { x: -49.0, z: 1.4 }, { x: -53.2, z: 0.8 }, { x: -51.7, z: -8.8 }, { x: -47.7, z: -8.2 }, { x: -38.4, z: -68.5 }, { x: -31.7, z: -67.4 }, { x: -28.4, z: -66.9 }]
+
 const HY_CONCRETE: Rgb = [0.75, 0.73, 0.68]
 const HY_TREAD: Rgb = [0.66, 0.64, 0.6]
 const HY_GLASS: Rgb = [0.2, 0.22, 0.24]
@@ -466,7 +473,7 @@ const HY_GLASS: Rgb = [0.2, 0.22, 0.24]
  * "Five Embarcardero Center.jpg".)
  */
 function hyattRegency(out: MeshBuilder, fit: Fit): void {
-  const ring = simplify(towerRing(fit))
+  const ring = simplify(fit.ring && fit.ring.length >= 3 ? towerRing(fit) : HYATT_RING)
   const H = heightOf(fit, 83)
   const fl = (H * 0.78) / 19
   const edges = ring.map((a, i) => { const b = ring[(i + 1) % ring.length]; return { a, b, L: Math.hypot(b.x - a.x, b.z - a.z), t: Math.atan2(b.z - a.z, b.x - a.x) } })

@@ -1,0 +1,570 @@
+[
+  {
+    "osm": [
+      "way/1469656012"
+    ],
+    "name": "Building 1469656012",
+    "restyle": "sfapartment",
+    "height": 34,
+    "levels": 10,
+    "note": "rule 4: Russian Hill/Nob Hill apartment with >= 5 levels"
+  },
+  {
+    "osm": [
+      "way/259078180"
+    ],
+    "name": "1960 Vallejo Street",
+    "restyle": "sfapartment",
+    "height": 34,
+    "levels": 11,
+    "note": "rule 4: Russian Hill/Nob Hill apartment with >= 5 levels"
+  },
+  {
+    "osm": [
+      "relation/6480365"
+    ],
+    "name": "2055 Sacramento Street",
+    "restyle": "chicago",
+    "height": 34,
+    "levels": 10,
+    "note": "rule 7: tall building (levels >= 8)"
+  },
+  {
+    "osm": [
+      "way/259234164"
+    ],
+    "name": "1360 Jones Street",
+    "restyle": "sfapartment",
+    "height": 34,
+    "levels": 10,
+    "note": "rule 4: Russian Hill/Nob Hill apartment with >= 5 levels"
+  },
+  {
+    "osm": [
+      "way/247562063"
+    ],
+    "name": "Konrad on the Park",
+    "restyle": "brick",
+    "height": 34,
+    "levels": 10,
+    "note": "rule 6: southern SF (lat < 37.7850)"
+  },
+  {
+    "osm": [
+      "way/693630795"
+    ],
+    "name": "Building 693630795",
+    "restyle": "chicago",
+    "height": 34,
+    "levels": 10,
+    "note": "rule 7: tall building (levels >= 8)"
+  },
+  {
+    "osm": [
+      "way/32947055"
+    ],
+    "name": "Brocklebank Apartments",
+    "restyle": "chinatown",
+    "height": 34,
+    "levels": 10,
+    "note": "rule 1: chinatown zone"
+  },
+  {
+    "osm": [
+      "way/1258748457"
+    ],
+    "name": "Building 1258748457",
+    "restyle": "chicago",
+    "height": 34,
+    "levels": 10,
+    "note": "rule 7: tall building (levels >= 8)"
+  },
+  {
+    "osm": [
+      "way/262689154"
+    ],
+    "name": "Building 262689154",
+    "restyle": "sfapartment",
+    "height": 34,
+    "levels": 10,
+    "note": "rule 4: Russian Hill/Nob Hill apartment with >= 5 levels"
+  },
+  {
+    "osm": [
+      "way/1420679237"
+    ],
+    "name": "Building 1420679237",
+    "restyle": "brick",
+    "height": 34,
+    "levels": 10,
+    "note": "rule 6: southern SF (lat < 37.7850)"
+  },
+  {
+    "osm": [
+      "way/944981401"
+    ],
+    "name": "Building 944981401",
+    "restyle": "chicago",
+    "height": 34,
+    "levels": 10,
+    "note": "rule 7: tall building (levels >= 8)"
+  },
+  {
+    "osm": [
+      "way/32862485"
+    ],
+    "name": "Army and Navy Y.M.C.A. Building",
+    "restyle": "chicago",
+    "height": 34,
+    "levels": 10,
+    "note": "rule 7: tall building (levels >= 8)"
+  },
+  {
+    "osm": [
+      "way/679283976"
+    ],
+    "name": "Building 679283976",
+    "restyle": "brick",
+    "height": 34,
+    "levels": 10,
+    "note": "rule 6: southern SF (lat < 37.7850)"
+  },
+  {
+    "osm": [
+      "way/939462517"
+    ],
+    "name": "Chorus",
+    "restyle": "brick",
+    "height": 34,
+    "levels": 10,
+    "note": "rule 6: southern SF (lat < 37.7850)"
+  },
+  {
+    "osm": [
+      "way/945365789"
+    ],
+    "name": "Building 945365789",
+    "restyle": "brick",
+    "height": 34,
+    "levels": 10,
+    "note": "rule 6: southern SF (lat < 37.7850)"
+  },
+  {
+    "osm": [
+      "way/945365796"
+    ],
+    "name": "Building 945365796",
+    "restyle": "brick",
+    "height": 34,
+    "levels": 10,
+    "note": "rule 6: southern SF (lat < 37.7850)"
+  },
+  {
+    "osm": [
+      "way/103383865"
+    ],
+    "name": "Hall of Justice",
+    "restyle": "brick",
+    "height": 33,
+    "note": "rule 6: southern SF (lat < 37.7850)"
+  },
+  {
+    "osm": [
+      "way/44106213"
+    ],
+    "name": "Rincon Annex",
+    "restyle": "chicago",
+    "height": 33,
+    "note": "rule 7: tall building (levels >= 8)"
+  },
+  {
+    "osm": [
+      "way/259266499"
+    ],
+    "name": "2200 Pacific Avenue",
+    "restyle": "sfapartment",
+    "height": 33,
+    "levels": 12,
+    "note": "rule 4: Russian Hill/Nob Hill apartment with >= 5 levels"
+  },
+  {
+    "osm": [
+      "way/32947040"
+    ],
+    "name": "The Masonic",
+    "restyle": "chicago",
+    "height": 31,
+    "note": "rule 7: tall building (levels >= 8)"
+  },
+  {
+    "osm": [
+      "way/80296763"
+    ],
+    "name": "Academy of Art University - Game Development",
+    "restyle": "chicago",
+    "height": 31,
+    "levels": 8,
+    "note": "rule 7: tall building (levels >= 8)"
+  },
+  {
+    "osm": [
+      "way/33808671"
+    ],
+    "name": "Comfort Inn By the Bay",
+    "restyle": "sfapartment",
+    "height": 31,
+    "levels": 11,
+    "note": "rule 4: Russian Hill/Nob Hill apartment with >= 5 levels"
+  },
+  {
+    "osm": [
+      "way/542375290"
+    ],
+    "name": "Salesforce Transit Center",
+    "restyle": "tenement",
+    "height": 30,
+    "levels": 5,
+    "note": "rule 8: medium building (levels >= 4)"
+  },
+  {
+    "osm": [
+      "way/288511103"
+    ],
+    "name": "Institute of Contemporary Art San Francisco",
+    "restyle": "chinatown",
+    "height": 30,
+    "note": "rule 1: chinatown zone"
+  },
+  {
+    "osm": [
+      "relation/6480430"
+    ],
+    "name": "Stanford Court San Francisco Hotel",
+    "restyle": "chinatown",
+    "height": 30,
+    "levels": 11,
+    "note": "rule 1: chinatown zone"
+  },
+  {
+    "osm": [
+      "way/394698460"
+    ],
+    "name": "Arden",
+    "restyle": "brick",
+    "height": 30,
+    "levels": 16,
+    "note": "rule 6: southern SF (lat < 37.7850)"
+  },
+  {
+    "osm": [
+      "way/215527391"
+    ],
+    "name": "Public Safety Building",
+    "restyle": "brick",
+    "height": 29,
+    "note": "rule 6: southern SF (lat < 37.7850)"
+  },
+  {
+    "osm": [
+      "way/262054095"
+    ],
+    "name": "1750 McAllister Street",
+    "restyle": "brick",
+    "height": 29,
+    "levels": 10,
+    "note": "rule 6: southern SF (lat < 37.7850)"
+  },
+  {
+    "osm": [
+      "way/24563073"
+    ],
+    "name": "Yerba Buena Center for the Arts Gallery",
+    "restyle": "chicago",
+    "height": 28,
+    "note": "rule 7: tall building (levels >= 8)"
+  },
+  {
+    "osm": [
+      "way/260137839"
+    ],
+    "name": "Earl Warren Building",
+    "restyle": "brick",
+    "height": 27,
+    "levels": 5,
+    "note": "rule 6: southern SF (lat < 37.7850)"
+  },
+  {
+    "osm": [
+      "relation/1735766"
+    ],
+    "name": "State of California Building",
+    "restyle": "brick",
+    "height": 27,
+    "levels": 6,
+    "note": "rule 6: southern SF (lat < 37.7850)"
+  },
+  {
+    "osm": [
+      "way/32947670"
+    ],
+    "name": "Saybrook University",
+    "restyle": "tenement",
+    "height": 26,
+    "note": "rule 8: medium building (levels >= 4)"
+  },
+  {
+    "osm": [
+      "way/108389188"
+    ],
+    "name": "San Francisco Civic Center Courthouse",
+    "restyle": "brick",
+    "height": 25,
+    "note": "rule 6: southern SF (lat < 37.7850)"
+  },
+  {
+    "osm": [
+      "way/256045018"
+    ],
+    "name": "Academy of Art University - School of Fashion",
+    "restyle": "brick",
+    "height": 25,
+    "note": "rule 6: southern SF (lat < 37.7850)"
+  },
+  {
+    "osm": [
+      "way/32859013"
+    ],
+    "name": "United States Customs House",
+    "restyle": "tenement",
+    "height": 25,
+    "note": "rule 8: medium building (levels >= 4)"
+  },
+  {
+    "osm": [
+      "way/41692824"
+    ],
+    "name": "San Francisco Museum of Modern Art",
+    "restyle": "tenement",
+    "height": 24,
+    "levels": 7,
+    "note": "rule 8: medium building (levels >= 4)"
+  },
+  {
+    "osm": [
+      "way/29902626"
+    ],
+    "name": "Saints Peter and Paul Church",
+    "restyle": "classical",
+    "height": 23,
+    "note": "rule 2: place of worship or church"
+  },
+  {
+    "osm": [
+      "way/114709401"
+    ],
+    "name": "Consulate General of Mexico, San Francisco",
+    "restyle": "tenement",
+    "height": 21,
+    "note": "rule 8: medium building (levels >= 4)"
+  },
+  {
+    "osm": [
+      "way/32965008"
+    ],
+    "name": "Temple Sherith Israel",
+    "restyle": "classical",
+    "height": 21,
+    "note": "rule 2: place of worship or church"
+  },
+  {
+    "osm": [
+      "way/71504452"
+    ],
+    "name": "Curran Theatre",
+    "restyle": "tenement",
+    "height": 21,
+    "note": "rule 8: medium building (levels >= 4)"
+  },
+  {
+    "osm": [
+      "way/66643085"
+    ],
+    "name": "Chinese Independent Baptist Church of San Francisco",
+    "restyle": "chinatown",
+    "height": 20,
+    "note": "rule 1: chinatown zone"
+  },
+  {
+    "osm": [
+      "way/263290569"
+    ],
+    "name": "Rhoda Goldman Plaza",
+    "restyle": "tenement",
+    "height": 20,
+    "note": "rule 8: medium building (levels >= 4)"
+  },
+  {
+    "osm": [
+      "way/32964914"
+    ],
+    "name": "Saint Dominic's Roman Catholic Church",
+    "restyle": "classical",
+    "height": 20,
+    "note": "rule 2: place of worship or church"
+  },
+  {
+    "osm": [
+      "way/256490574"
+    ],
+    "name": "Konko Church of San Francisco",
+    "restyle": "classical",
+    "height": 20,
+    "levels": 6,
+    "note": "rule 2: place of worship or church"
+  },
+  {
+    "osm": [
+      "way/35176281"
+    ],
+    "name": "Building 35176281",
+    "restyle": "brick",
+    "height": 20,
+    "note": "rule 6: southern SF (lat < 37.7850)"
+  },
+  {
+    "osm": [
+      "way/253057908"
+    ],
+    "name": "Saint Brigids",
+    "restyle": "classical",
+    "height": 19,
+    "note": "rule 2: place of worship or church"
+  },
+  {
+    "osm": [
+      "way/32610420"
+    ],
+    "name": "National Shrine of Saint Francis of Assisi",
+    "restyle": "chinatown",
+    "height": 19,
+    "note": "rule 1: chinatown zone"
+  },
+  {
+    "osm": [
+      "way/260520154"
+    ],
+    "name": "Old Saint Mary's Cathedral",
+    "restyle": "chinatown",
+    "height": 19,
+    "note": "rule 1: chinatown zone"
+  },
+  {
+    "osm": [
+      "way/261608752"
+    ],
+    "name": "Saint Vincent De Paul Roman Catholic Church",
+    "restyle": "classical",
+    "height": 19,
+    "note": "rule 2: place of worship or church"
+  },
+  {
+    "osm": [
+      "way/35536668"
+    ],
+    "name": "DeMarillac Academy",
+    "restyle": "brick",
+    "height": 19,
+    "note": "rule 6: southern SF (lat < 37.7850)"
+  },
+  {
+    "osm": [
+      "relation/7814696"
+    ],
+    "name": "Cathedral of Saint Mary of the Assumption",
+    "restyle": "classical",
+    "height": 19,
+    "note": "rule 2: place of worship or church"
+  },
+  {
+    "osm": [
+      "way/162056245"
+    ],
+    "name": "Central Police Station",
+    "restyle": "chinatown",
+    "height": 18,
+    "levels": 6,
+    "note": "rule 1: chinatown zone"
+  },
+  {
+    "osm": [
+      "way/257008588"
+    ],
+    "name": "Nuestra Senora De Guadalupe Church",
+    "restyle": "classical",
+    "height": 18,
+    "note": "rule 2: place of worship or church"
+  },
+  {
+    "osm": [
+      "way/260023952"
+    ],
+    "name": "Next Door Shelter",
+    "restyle": "tenement",
+    "height": 18,
+    "note": "rule 8: medium building (levels >= 4)"
+  },
+  {
+    "osm": [
+      "way/264348673"
+    ],
+    "name": "Saint Agnes Roman Catholic Church",
+    "restyle": "classical",
+    "height": 17,
+    "note": "rule 2: place of worship or church"
+  },
+  {
+    "osm": [
+      "way/256487840"
+    ],
+    "name": "Saint Mark's Lutheran Church",
+    "restyle": "classical",
+    "height": 17,
+    "note": "rule 2: place of worship or church"
+  },
+  {
+    "osm": [
+      "way/263404875"
+    ],
+    "name": "San Francisco Central Seven Day Adventist Church",
+    "restyle": "classical",
+    "height": 17,
+    "note": "rule 2: place of worship or church"
+  },
+  {
+    "osm": [
+      "way/260345927"
+    ],
+    "name": "Bayanihan Community Center",
+    "restyle": "brick",
+    "height": 17,
+    "note": "rule 6: southern SF (lat < 37.7850)"
+  },
+  {
+    "osm": [
+      "way/261303081"
+    ],
+    "name": "First Baptist Church",
+    "restyle": "classical",
+    "height": 17,
+    "note": "rule 2: place of worship or church"
+  },
+  {
+    "osm": [
+      "way/256984935"
+    ],
+    "name": "First Church of Christ, Scientist",
+    "restyle": "classical",
+    "height": 16,
+    "note": "rule 2: place of worship or church"
+  }
+]

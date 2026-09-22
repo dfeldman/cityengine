@@ -1,0 +1,62 @@
+[
+ {
+  "osm": [
+   "way/192883913"
+  ],
+  "name": "199 Fremont",
+  "procedural": "fremont199",
+  "front": "street",
+  "height": 115,
+  "note": "Bailed out by a recipe batch; done with the grammar's own crowns (docs/BUILDINGS.md)."
+ },
+ {
+  "osm": [
+   "way/32862919"
+  ],
+  "name": "Providian Financial Building (201 Mission)",
+  "procedural": "mission201",
+  "front": "street",
+  "height": 138,
+  "note": "Bailed out by a recipe batch; done with the grammar's own crowns (docs/BUILDINGS.md)."
+ },
+ {
+  "osm": [
+   "way/588355355"
+  ],
+  "name": "California Center (345 California)",
+  "procedural": "californiaCenter345",
+  "front": "street",
+  "height": 212,
+  "note": "Bailed out by a recipe batch; done with the grammar's own crowns (docs/BUILDINGS.md)."
+ },
+ {
+  "osm": [
+   "way/260925344"
+  ],
+  "name": "505 Montgomery Street",
+  "procedural": "montgomery505",
+  "front": "street",
+  "height": 134,
+  "note": "Bailed out by a recipe batch; done with the grammar's own crowns (docs/BUILDINGS.md)."
+ },
+ {
+  "osm": [
+   "way/132125159"
+  ],
+  "name": "101 Montgomery",
+  "procedural": "montgomery101",
+  "front": "street",
+  "height": 123,
+  "note": "Bailed out by a recipe batch; done with the grammar's own crowns (docs/BUILDINGS.md)."
+ },
+ {
+  "osm": [
+   "way/942664247"
+  ],
+  "name": "Hunter-Dulin Building",
+  "procedural": "hunterDulin",
+  "front": "street",
+  "height": 94,
+  "note": "Bailed out by a recipe batch; done with the grammar's own crowns (docs/BUILDINGS.md)."
+ }
+]

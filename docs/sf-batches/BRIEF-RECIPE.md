@@ -78,6 +78,10 @@ the kit now. Before you write a loop, look for it in `src/render/landmarks/parts
 - `roundRing(...)` — a footprint with rounded corners or a prow; `simplifyRing(...)` is applied for you
 - and from `tower.ts`: `tower`, `faceBand`, `insetRing`, `towerRing`
 
+The grammar also has a `bays` face (San Francisco's projecting bay windows, angled or rounded — `bay: { depth, round }`)
+and the crowns `sawtooth` (a jagged parapet), `spires` (tapered needles off the roof), `sliced` (a roof cut on a
+diagonal) and `mansard` with `dormers`. Those cover most of what earlier batches bailed out of.
+
 A typical building should be **one recipe line, or a spec plus two or three part calls**. Comment each builder
 with ONE line: the name, the year, and the one thing that makes it recognisable. If you find yourself writing a
 helper, ask whether the kit has it; if it genuinely does not and two buildings need it, say so in your report

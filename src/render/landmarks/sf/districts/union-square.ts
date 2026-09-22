@@ -67,12 +67,12 @@ interface Frame {
  * How the fit's ring lies against the building's outline in the grid frame (`ref`, flat x, z pairs about its
  * centroid): the turn that lays one on the other best, found by trying them all.
  *
- * Two things make this more than a fit. The city does NOT hand a landmark its footprint unless the entry is a
- * `court` one (landmarks.ts sets `fit.ring` only there), so in the game the ring is the fitted BOX, and a box
- * matches a rectangular building equally well four ways round. And `front: "street"` turns the model so that its
- * local −z faces the frontage the bake found (the longest wall with a carriageway in front of it). So where the
- * turns tie, the one that lays the building's own street front (`fx, fz` in the grid frame, worked out from the
- * OSM footprint and the streets round it) against local −z is the one the city means.
+ * One thing makes this more than a fit. A rectangular footprint matches its outline equally well four (or two)
+ * ways round, and the model shots and the city turn the ring differently: the shots hand it over as it lies on the
+ * map, while `front: "street"` turns it so the model's local −z faces the frontage the bake found (the longest wall
+ * with a carriageway in front of it). So where the turns tie, the one that lays the building's own street front
+ * (`fx, fz` in the grid frame, worked out from the OSM footprint and the streets round it) against local −z is the
+ * one the city means; where the footprint has a shape to it, the fit decides and the hint never comes into it.
  */
 function gridFrame(fit: Fit, ref: number[], fx = 0, fz = 0): Frame {
   const ring = towerRing(fit)
@@ -101,7 +101,7 @@ function gridFrame(fit: Fit, ref: number[], fx = 0, fz = 0): Frame {
   }
   if (minima.length === 0) minima.push({ d: 0, s: at[0] })
   const bestS = Math.min(...minima.map((m) => m.s))
-  const near = minima.filter((m) => m.s < bestS + 0.35)
+  const near = minima.filter((m) => m.s < bestS + 0.15)
   // of those, the one that turns the street front toward local −z (and, where that does not tell them apart, the closest fit)
   const aim = (m: { d: number }): number => {
     if (!fx && !fz) return 0
@@ -256,7 +256,7 @@ const GLYPHS: Record<string, string> = {
  * along the wall's outward normal (nx, nz), letters `h` tall with their foot at y. `vertical` stacks them (a blade).
  */
 function letters(out: MeshBuilder, f: Frame, text: string, x: number, z: number, ux: number, uz: number, nx: number, nz: number,
-                 y: number, h: number, c: Rgb, vertical = false, depth = 0.25): void {
+                 y: number, h: number, c: Rgb, vertical = false, depth = 0.25, tag = LIT): void {
   const px = h / 7
   const adv = vertical ? h * 1.25 : px * 6
   const P = (u: number, yy: number, o: number): V3 => { const p = f.at(x + ux * u + nx * o, z + uz * u + nz * o); return [p.x, yy, p.z] }
@@ -264,11 +264,11 @@ function letters(out: MeshBuilder, f: Frame, text: string, x: number, z: number,
   const t = f.dir(ux, uz)
   const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
   const plate = (u0: number, u1: number, y0: number, y1: number): void => {
-    out.quad([P(u0, y0, depth), P(u1, y0, depth), P(u1, y1, depth), P(u0, y1, depth)], [n.x, 0, n.z], uv, c, 0)
+    out.quad([P(u0, y0, depth), P(u1, y0, depth), P(u1, y1, depth), P(u0, y1, depth)], [n.x, 0, n.z], uv, c, tag)
     if (depth <= 0.08) return   // flat: painted on (one quad a run)
-    out.quad([P(u0, y1, 0), P(u1, y1, 0), P(u1, y1, depth), P(u0, y1, depth)], [0, 1, 0], uv, c, 0)
-    out.quad([P(u0, y0, 0), P(u0, y0, depth), P(u0, y1, depth), P(u0, y1, 0)], [-t.x, 0, -t.z], uv, c, 0)
-    out.quad([P(u1, y0, depth), P(u1, y0, 0), P(u1, y1, 0), P(u1, y1, depth)], [t.x, 0, t.z], uv, c, 0)
+    out.quad([P(u0, y1, 0), P(u1, y1, 0), P(u1, y1, depth), P(u0, y1, depth)], [0, 1, 0], uv, c, tag)
+    out.quad([P(u0, y0, 0), P(u0, y0, depth), P(u0, y1, depth), P(u0, y1, 0)], [-t.x, 0, -t.z], uv, c, tag)
+    out.quad([P(u1, y0, depth), P(u1, y0, 0), P(u1, y1, 0), P(u1, y1, depth)], [t.x, 0, t.z], uv, c, tag)
   }
   const chars = [...text.toUpperCase()]
   chars.forEach((ch, k) => {
@@ -291,11 +291,11 @@ function letters(out: MeshBuilder, f: Frame, text: string, x: number, z: number,
 const lettersWidth = (text: string, h: number): number => (h / 7) * (6 * text.length - 1)
 
 /** A word centred on the grid-frame point (cx, cz) of a wall facing (nx, nz), reading left to right from outside. */
-function wallText(out: MeshBuilder, f: Frame, text: string, cx: number, cz: number, nx: number, nz: number, y: number, h: number, c: Rgb, depth = 0.25): void {
+function wallText(out: MeshBuilder, f: Frame, text: string, cx: number, cz: number, nx: number, nz: number, y: number, h: number, c: Rgb, depth = 0.25, tag = LIT): void {
   const ux = -nz
   const uz = nx
   const w = lettersWidth(text, h)
-  letters(out, f, text, cx - ux * w / 2, cz - uz * w / 2, ux, uz, nx, nz, y, h, c, false, depth)
+  letters(out, f, text, cx - ux * w / 2, cz - uz * w / 2, ux, uz, nx, nz, y, h, c, false, depth, tag)
 }
 
 /** The model's own frame as a Frame (for features placed on the ring's edges, not by the street grid). */
@@ -401,7 +401,7 @@ function mergeInto(out: MeshBuilder, mb: MeshBuilder, x: number, y: number, z: n
 }
 
 /** A five-pointed star on a wall facing (nx, nz): Macy's. */
-function wallStar(out: MeshBuilder, f: Frame, cx: number, cz: number, nx: number, nz: number, y: number, r: number, c: Rgb, o = 0.3): void {
+function wallStar(out: MeshBuilder, f: Frame, cx: number, cz: number, nx: number, nz: number, y: number, r: number, c: Rgb, o = 0.3, tag = LIT): void {
   const ux = -nz
   const uz = nx
   const P = (a: number, rr: number): V3 => { const p = f.at(cx + ux * Math.sin(a) * rr + nx * o, cz + uz * Math.sin(a) * rr + nz * o); return [p.x, y + Math.cos(a) * rr, p.z] }
@@ -409,7 +409,7 @@ function wallStar(out: MeshBuilder, f: Frame, cx: number, cz: number, nx: number
   const C: V3 = (() => { const p = f.at(cx + nx * o, cz + nz * o); return [p.x, y, p.z] })()
   for (let k = 0; k < 5; k++) {
     const a = (k / 5) * Math.PI * 2
-    out.quad([C, P(a - Math.PI / 5, r * 0.4), P(a, r), P(a + Math.PI / 5, r * 0.4)], [d.x, 0, d.z], [[0, 0], [1, 0], [1, 1], [0, 1]], c, 0)
+    out.quad([C, P(a - Math.PI / 5, r * 0.4), P(a, r), P(a + Math.PI / 5, r * 0.4)], [d.x, 0, d.z], [[0, 0], [1, 0], [1, 1], [0, 1]], c, tag)
   }
 }
 
@@ -420,6 +420,8 @@ const DARK_GLASS: Rgb = [0.17, 0.19, 0.21]
 const COPPER_GREEN: Rgb = [0.24, 0.36, 0.3]
 const AWNING_RED: Rgb = [0.6, 0.12, 0.12]
 const GOLD_LEAF: Rgb = [0.78, 0.63, 0.25]
+/** a sign's tag: a colour the landmark material lights up after dark (cartoon-material.ts, alpha 0.4–0.9) */
+const LIT = 0.5
 
 // ---------------------------------------------------------------------------------------------------------------
 // the outlines, grid frame (tools: the Overpass cache, turned −9° so the streets run square)
@@ -564,9 +566,9 @@ const SUTTER450_REF = [-20.2, -23.7, -17.6, -23.7, 18.8, -23.9, 21.1, -23.9, 21.
 function fourFiftySutter(out: MeshBuilder, fit: Fit): void {
   const f = gridFrame(fit, SUTTER450_REF, 0, -1)
   const H = fit.height > 70 && fit.height < 140 ? fit.height : 105
-  const TC: Rgb = [0.79, 0.72, 0.66]
-  const ring = roundRing(f.ring, 3.2, 4)
-  const shaft: Face = { kind: 'fins', material: 'terracotta', wall: TC, glass: [0.3, 0.31, 0.34], pitch: 2.05, solid: 0.46, depth: 0.32, floor: 3.4 }
+  const TC: Rgb = [0.86, 0.78, 0.69]
+  const ring = roundRing(f.ring, 5, 5)
+  const shaft: Face = { kind: 'fins', material: 'terracotta', wall: TC, glass: [0.34, 0.35, 0.37], pitch: 2.35, solid: 0.56, depth: 0.32, floor: 3.4 }
   const s = (h: number): TowerSpec => ({
     height: h,
     base: { height: 7.5, face: { kind: 'punched', material: 'terracotta', wall: [0.74, 0.67, 0.6], glass: [0.2, 0.2, 0.2], pitch: 3.2, solid: 0.4, floor: 7.5 } },
@@ -680,7 +682,7 @@ function beaconGrand(out: MeshBuilder, fit: Fit): void {
   prism(out, c.x, c.z, main + 9, main + 16, 0.08, 4, [0.3, 0.3, 0.3], 0)
   const gold: Rgb = [0.85, 0.66, 0.2]
   const own = ownFrame(r2)
-  for (const [nx, nz] of [[0, 1], [0, -1], [1, 0], [-1, 0]]) wallStar(out, own, c.x, c.z, nx, nz, main + 15, 2.2, gold, 0.02)
+  for (const [nx, nz] of [[0, 1], [0, -1], [1, 0], [-1, 0]]) wallStar(out, own, c.x, c.z, nx, nz, main + 15, 2.2, gold, 0.02, surfaceTag('metal'))
 }
 
 /**
@@ -789,7 +791,7 @@ function tiffany(out: MeshBuilder, fit: Fit): void {
   const GRANITE: Rgb = [0.78, 0.77, 0.76]
   mass(out, f.ring, H, {
     height: H,
-    base: { height: 5.5, face: { kind: 'curtain', material: 'granite', wall: [0.5, 0.36, 0.34], glass: [0.16, 0.17, 0.18], pitch: 4, floor: 5.5 } },
+    base: { height: 5.5, face: { kind: 'curtain', material: 'granite', wall: [0.42, 0.41, 0.4], glass: [0.16, 0.17, 0.18], pitch: 4, floor: 5.5 } },
     tiers: [{ to: 1, face: { kind: 'punched', material: 'granite', wall: GRANITE, glass: [0.13, 0.14, 0.16], pitch: 3.1, solid: 0.42, floor: 3.4 } }],
     roof: [0.55, 0.55, 0.54],
     crown: { kind: 'parapet', height: 1.8, colour: GRANITE },
