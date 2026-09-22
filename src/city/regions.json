@@ -294,6 +294,7 @@
     "streetWidth": "carriageway",
     "streetSigns": "blade",
     "awnings": 0.35,
+    "brickStreets": { "names": ["Market Street"], "colour": [0.55, 0.32, 0.26] },
     "signals": "mastArm"
   }
 }

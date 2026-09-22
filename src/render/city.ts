@@ -1492,6 +1492,7 @@ export class City {
      * between streets meeting at an angle — the gaps that showed up as grass islands in the middle of a
      * seven-way junction.
      */
+    const brick = this.region.brickStreets
     for (const e of groundEdges) {
       const pts = unpackPoints(e.points)
       if (pts.length < 2) continue
@@ -1506,6 +1507,11 @@ export class City {
       // between them — but only a little. At seven metres of slop every square in the city became an ocean
       // of pale concrete, which is what made the whole place look washed out and flat.
       quadStrip(corridor, pts, e.width + 2 * e.walk + 4.5, 0.15, PAVEMENT)
+      // a brick street's pavements (San Francisco's Market Street), drawn over the concrete a hair higher so
+      // it wins every overlap the same way each frame — the kerb-to-wall width only, the carriageway is over it
+      if (brick && !e.foot && e.walk > 0 && brick.names.includes(e.name ?? '')) {
+        quadStrip(corridor, pts, e.width + 2 * e.walk + 1.5, 0.1505, brick.colour)
+      }
 
       if (e.foot) {
         /**
