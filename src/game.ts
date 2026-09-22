@@ -31,6 +31,8 @@ import { Fountains, fountainManifest, wallaceLayer } from './render/fountains.ts
 import { bridgeStructuresLayer, PARIS_BRIDGES } from './render/bridge-structures.ts'
 import { passagesLayer } from './render/passages.ts'
 import { boatsLayer } from './render/boats.ts'
+import { RiverTraffic, riverLine } from './render/river-traffic.ts'
+import { PARIS_FLEET } from './render/paris/boats.ts'
 import { metroSignsLayer } from './render/metrosigns.ts'
 import { PathMap } from './render/pathmap.ts'
 import { region } from './city/region.ts'
@@ -262,6 +264,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   if (!off.has('furniture')) city.addLayer(postersLayer(scene, city.terrain, pkg.region))
   // the péniches moored along the river (render/boats.ts)
   city.addLayer(boatsLayer(scene))
+  // …and the boats under way on it (render/river-traffic.ts)
+  let river: RiverTraffic | null = null
+  if (!off.has('life')) void riverLine(document.baseURI, opts.city).then((pts) => { if (pts) river = new RiverTraffic(scene, pts, (x, z) => city.waterLevelAt(x, z),
+    pkg.region === 'paris' ? PARIS_FLEET : undefined) })
   mark('passages')
   // the MÉTROPOLITAIN lettering on the Guimard entrances (render/metrosigns.ts)
   if (region(pkg.region).pointFurniture.metro === 'guimard') {
@@ -761,6 +767,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         crowd.update(dt, at, near)
         strangers?.update(dt, crowd.all, at, city.terrain)
         life.update(dt, traffic.all, crowd.all, at, strangers?.drawn, city.terrain)
+        river?.update(dt, frozen ? (held ? held.to : orbit.look) : at)
       }
       sky?.update(dt, at)
       trees.update(camera.position)
@@ -931,6 +938,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   }
   w.__placed = () => landmarks?.placed ?? []
   w.__landmarks = landmarks
+  w.__boats = () => river?.positions() ?? []
   // the prepared tiles, for probing what reached the city (tools/, debugging)
   w.__tiles = prepared.tiles
   // nothing left to stream round the camera's focus (render/city.ts `idle`)

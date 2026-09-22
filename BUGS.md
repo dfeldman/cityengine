@@ -769,3 +769,9 @@ someone still walking in their line under 10% of the time, against 79% without.
 (240 m north–south), whose north end stood over the pedestrian Avenue du Général-Eisenhower the ride runs along.
 Now 206 × 150 m, inside the avenue.
 
+
+## 44. A loop at a junction (48.856545, 2.370996)
+
+**Seen:** user, 2026-09-22: the intersection near here has a loop.
+
+**Status:** open.

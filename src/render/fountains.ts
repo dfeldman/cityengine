@@ -73,7 +73,9 @@ void main(void) {
   vec3 water = mix(vec3(0.55, 0.72, 0.82), vec3(0.95, 0.98, 1.0), 0.45 + 0.55 * streak);
   float a = 0.18 + 0.4 * streak + 0.3 * sparkle;
   // foam: whiter, churning
-  if (vKind > 1.5) { water = vec3(0.93, 0.96, 0.98); a = 0.35 + 0.45 * h(floor(vUV * 18.0) + floor(time * 8.0)); }
+  if (vKind > 1.5 && vKind < 2.5) { water = vec3(0.93, 0.96, 0.98); a = 0.35 + 0.45 * h(floor(vUV * 18.0) + floor(time * 8.0)); }
+  // a boat's wake (render/river-traffic.ts): pale streaks on the water, fading out behind it
+  if (vKind > 2.5) { water = vec3(0.88, 0.93, 0.96); a = (0.1 + 0.45 * streak + 0.2 * sparkle) * pow(1.0 - vUV.y, 1.5); }
   // thinner at the edges of a column or sheet
   a *= 1.0 - pow(abs(vUV.x * 2.0 - 1.0), 4.0) * 0.6;
   float fog = 1.0 - exp(-vDepth * fogDensity);
@@ -82,7 +84,8 @@ void main(void) {
 `
 
 let registered = false
-function waterMaterial(scene: Scene): ShaderMaterial {
+/** the moving-water material, shared: fountains, and the wakes of boats (colour r = kind, 3 = wake) */
+export function waterMaterial(scene: Scene): ShaderMaterial {
   const found = scene.materials.find((m) => m.name === 'fountainwater')
   if (found) return found as ShaderMaterial
   if (!registered) {
