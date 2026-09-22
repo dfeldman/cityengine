@@ -45,7 +45,7 @@ Each will go in `public/landmarks/sf-statues.json` the way Paris's do.
 |---|---|---|---|---|
 | 1 | Letterman Digital Arts Center, Presidio (37.7987, −122.4493) | **the Yoda Fountain** (user: "amazing must-have") | Yoda ~1 m on a ~1.5 m fountain | bronze Yoda standing on a rock in a small basin, water from his feet; at the box's west edge |
 | 1 | Market & Battery, Mechanics Monument plaza (37.7910, −122.3990) | the Mechanics Monument (Douglas Tilden, 1901) | ~4 m group on a ~3 m plinth | five nude men straining at a huge punch press; on the main Market route |
-| 1 | Union Square (37.7880, −122.4075) | the Victory figure on the Dewey Monument | ~3 m, gilded bronze | on a 26 m granite column (procedural); trident and wreath, arms up |
+| 1 | Union Square (37.7880, −122.4075) | the Victory figure on the Dewey Monument | ~3 m, gilded bronze | on a 26 m granite column (procedural); trident and wreath, arms up. **The figure must be a model** (user, 2026-09-22): what is in the game now is a procedural stand-in to be replaced |
 | 1 | Portsmouth Square (37.7948, −122.4056) | the Goddess of Democracy (replica, 1994) | ~3 m, bronze | torch held up in both hands; on the square's upper level |
 | 1 | Chinatown, everywhere | a pair of guardian lions (foo dogs), male with ball and female with cub | ~1.2 m each on plinths | ONE model pair placed dozens of times: the Dragon Gate, the banks, the family associations |
 | 2 | Civic Center, Fulton St (37.7797, −122.4163) | the Pioneer Monument (1894) | ~10 m, several groups | a big bronze column group with Eureka on top; between the Library and the Asian Art Museum |
@@ -57,6 +57,10 @@ Each will go in `public/landmarks/sf-statues.json` the way Paris's do.
 | 2 | Ferry Building plaza (37.7956, −122.3934) | Mahatma Gandhi (1988) | ~2.5 m bronze | walking with his staff |
 | 3 | UN Plaza (37.7806, −122.4138) | Simón Bolívar, equestrian | ~5 m | check its current position |
 | 3 | Chinatown (37.7930, −122.4072) | Confucius | ~3 m bronze | |
+
+**The rule** (user, 2026-09-22: "the actual dewey monument statue top should be modeled, not generated… any
+extremely prominent statues must be modeled"): a statue a rider stops and looks at gets a real model from the
+user. A procedural stand-in is allowed so the place is not empty, and must be listed here so it is replaced.
 
 **Not models: procedural, and on the plan (SF_PLAN.md §10 public art).** Cupid's Span, the Vaillancourt Fountain,
 Language of the Birds, the Hearts, Lotta's Fountain, the Robert Louis Stevenson memorial (a granite shaft with a
