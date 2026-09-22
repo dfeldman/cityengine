@@ -78,8 +78,35 @@ if (entryName) {
   const kx = 111320 * Math.cos((lat0 * Math.PI) / 180)
   let ring = geom.map((g) => ({ x: (g.lon - lon0) * kx, z: (g.lat - lat0) * 110540 }))
   if (Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  /*
+   * Turned into the model's own frame, as the city turns it (render/landmarks.ts fitAt): the front faces −z. The
+   * tool used to pass the footprint north-up, so a builder that dresses its front dressed whichever side happened
+   * to face north and the shots showed detail on the wrong side (reported by two batches, 2026-09-22).
+   *
+   * The front is the longest edge's outward side, which is what `front: "street"` comes to for a building that
+   * fronts a street; `--front=<bearing>` says otherwise.
+   */
+  let bearing = Number(arg('front', 'NaN'))
+  if (!Number.isFinite(bearing)) {
+    let longest = 0
+    for (let i = 0; i < ring.length; i++) {
+      const a = ring[i]
+      const b = ring[(i + 1) % ring.length]
+      const L = Math.hypot(b.x - a.x, b.z - a.z)
+      if (L > longest) { longest = L; bearing = (Math.atan2((b.z - a.z) / L, -(b.x - a.x) / L) * 180) / Math.PI }
+    }
+  }
+  const rot = (bearing * Math.PI) / 180 + Math.PI
+  const cosr = Math.cos(rot)
+  const sinr = Math.sin(rot)
+  const cx0 = ring.reduce((t, p) => t + p.x, 0) / ring.length
+  const cz0 = ring.reduce((t, p) => t + p.z, 0) / ring.length
+  ring = ring.map((p) => ({ x: (p.x - cx0) * cosr - (p.z - cz0) * sinr, z: (p.x - cx0) * sinr + (p.z - cz0) * cosr }))
   const xs = ring.map((p) => p.x)
   const zs = ring.map((p) => p.z)
+  const mx = (Math.max(...xs) + Math.min(...xs)) / 2
+  const mz = (Math.max(...zs) + Math.min(...zs)) / 2
+  ring = ring.map((p) => ({ x: p.x - mx, z: p.z - mz }))
   fitFor = { hx: (Math.max(...xs) - Math.min(...xs)) / 2, hz: (Math.max(...zs) - Math.min(...zs)) / 2, height: e.height ?? 30, ring }
 }
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist'] })

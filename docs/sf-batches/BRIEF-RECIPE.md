@@ -85,6 +85,13 @@ rather than writing it twice.
 
 Some wild buildings will not fit the shared parts, and that is fine — write those out properly or bail out.
 
+## Two traps
+
+- A `restyle`'s `levels` does nothing on its own: give `height` as well (src/city/prepare.ts) or the building keeps
+  OSM's storeys.
+- The scratch directory is shared with the other agents. Give any temporary file a name of your own
+  (`/tmp/<district>-x.jpg`), or another agent will overwrite it mid-run.
+
 ## Bailing out — important
 
 Some buildings cannot be done this way: a rotunda, a dome, a clock tower, a theatre marquee, a pyramid, a
