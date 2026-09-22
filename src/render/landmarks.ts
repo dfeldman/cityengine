@@ -432,17 +432,39 @@ export class Landmarks {
           const p = this.proj.toLocal({ lat: e.lat!, lon: e.lon! })
           return Math.floor(p.x / TILE) === tx && Math.floor(p.z / TILE) === tz
         })()
-        : ids.length > 0 && this.byId.has(ids[0])
+        : ids.length > 0 && (this.byId.has(ids[0]) || this.waitedEnough(e, ids))
       if (!ready) return true
       this.place(e)
       return false
     })
   }
 
+  /**
+   * The outline an entry names first is the one to fit to — but the bake DROPS an outline that its own
+   * `building:part`s supersede (tools/bake.ts), and an entry that led with such an outline waited for a building
+   * that never came and was never placed at all (reported by the market-east batch, 2026-09-22). So after a few
+   * tiles have gone by with some other part of it present, the entry is placed on what has arrived.
+   */
+  private readonly waited = new Map<LandmarkEntry, number>()
+  private waitedEnough(e: LandmarkEntry, ids: number[]): boolean {
+    if (!ids.some((id) => this.byId.has(id))) return false
+    const n = (this.waited.get(e) ?? 0) + 1
+    this.waited.set(e, n)
+    return n >= 4
+  }
+
   private place(e: LandmarkEntry): void {
     const onId = e.on ? packedIds({ name: e.name, osm: e.on })[0] : undefined
+    // of those that have arrived, the biggest footprint: the outline where there is one, else the largest part
+    const arrived = packedIds(e).map((id) => this.byId.get(id)).filter((b): b is PackedBuilding => !!b)
+    const area = (b: PackedBuilding): number => {
+      const r = unpackPoints(b.ring)
+      let a = 0
+      for (let i = 0; i < r.length; i++) { const p = r[i]; const q = r[(i + 1) % r.length]; a += p.x * q.z - q.x * p.z }
+      return Math.abs(a) / 2
+    }
     const building = onId !== undefined ? this.byId.get(onId)
-      : this.byId.get(packedIds(e)[0]) ?? packedIds(e).map((id) => this.byId.get(id)).find((b) => b)
+      : this.byId.get(packedIds(e)[0]) ?? arrived.sort((x, y) => area(y) - area(x))[0]
     const height = e.height ?? building?.height ?? 30
     let cx: number
     let cz: number

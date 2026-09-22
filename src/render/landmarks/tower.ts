@@ -62,13 +62,13 @@ export interface Tier {
 
 export type Crown =
   | { kind: 'flat' }
-  | { kind: 'parapet'; height: number; colour?: Rgb }
-  | { kind: 'hip' | 'mansard'; height: number; inset: number; colour: Rgb }
-  | { kind: 'pyramid' | 'spire'; height: number; inset?: number; colour: Rgb }
-  | { kind: 'dome'; height: number; radius?: number; colour: Rgb; drum?: number }
+  | { kind: 'parapet'; height: number; colour?: Rgb; material?: Surface }
+  | { kind: 'hip' | 'mansard'; height: number; inset: number; colour: Rgb; material?: Surface }
+  | { kind: 'pyramid' | 'spire'; height: number; inset?: number; colour: Rgb; material?: Surface }
+  | { kind: 'dome'; height: number; radius?: number; colour: Rgb; drum?: number; material?: Surface }
   | { kind: 'lantern'; height: number; inset: number; face: Face; cap?: Crown }
-  | { kind: 'stepped'; steps: number; height: number; inset: number; face?: Face }
-  | { kind: 'mast'; height: number; colour?: Rgb; width?: number }
+  | { kind: 'stepped'; steps: number; height: number; inset: number; face?: Face; material?: Surface }
+  | { kind: 'mast'; height: number; colour?: Rgb; width?: number; material?: Surface }
 
 export interface TowerSpec {
   /** used when the manifest's (OSM's) height is missing or implausible */
@@ -251,7 +251,7 @@ function cornice(out: MeshBuilder, ring: P2[], y: number, depth: number, h: numb
 }
 
 /** A frustum from ring r0 at y0 to ring r1 at y1 (hip and mansard roofs, domes' courses, spires). */
-function frustum(out: MeshBuilder, r0: P2[], y0: number, r1: P2[], y1: number, c: Rgb): void {
+function frustum(out: MeshBuilder, r0: P2[], y0: number, r1: P2[], y1: number, c: Rgb, tag = 0): void {
   for (let i = 0; i < r0.length; i++) {
     const j = (i + 1) % r0.length
     const a = r0[i]
@@ -261,39 +261,41 @@ function frustum(out: MeshBuilder, r0: P2[], y0: number, r1: P2[], y1: number, c
     const up = Math.max(0.2, (y1 - y0) / Math.max(0.5, Math.hypot(r1[i].x - a.x, r1[i].z - a.z)))
     const n: [number, number, number] = [e.z / L, 1 / up, -e.x / L]
     const nl = Math.hypot(n[0], n[1], n[2])
-    quadAt(out, [[a.x, y0, a.z], [b.x, y0, b.z], [r1[j].x, y1, r1[j].z], [r1[i].x, y1, r1[i].z]], [n[0] / nl, n[1] / nl, n[2] / nl], c)
+    quadAt(out, [[a.x, y0, a.z], [b.x, y0, b.z], [r1[j].x, y1, r1[j].z], [r1[i].x, y1, r1[i].z]], [n[0] / nl, n[1] / nl, n[2] / nl], c, tag)
   }
 }
 
 function crown(out: MeshBuilder, ring: P2[], H: number, c: Crown, roof: Rgb): void {
   const ctr = centroid(ring)
+  // the crown's own material (copper on a dome, tile on a hip, stone on a parapet), or none
+  const tag = 'material' in c && c.material ? surfaceTag(c.material) : 0
   switch (c.kind) {
     case 'flat':
       return
     case 'parapet': {
       const inner = insetRing(ring, 0.35)
-      faceBand(out, ring, H, H + c.height, { kind: 'blank', wall: c.colour ?? roof })
+      faceBand(out, ring, H, H + c.height, { kind: 'blank', wall: c.colour ?? roof, material: c.material })
       for (let i = 0; i < ring.length; i++) {
         const a = ring[i]
         const b = ring[(i + 1) % ring.length]
         const A = inner[i]
         const B = inner[(i + 1) % ring.length]
-        quadAt(out, [[a.x, H + c.height, a.z], [b.x, H + c.height, b.z], [B.x, H + c.height, B.z], [A.x, H + c.height, A.z]], [0, 1, 0], c.colour ?? roof)
+        quadAt(out, [[a.x, H + c.height, a.z], [b.x, H + c.height, b.z], [B.x, H + c.height, B.z], [A.x, H + c.height, A.z]], [0, 1, 0], c.colour ?? roof, tag)
       }
       return
     }
     case 'hip':
     case 'mansard': {
       const top = insetRing(ring, c.inset)
-      frustum(out, ring, H, top, H + c.height, c.colour)
-      capPolygon(out, top, H + c.height, c.colour, 0)
+      frustum(out, ring, H, top, H + c.height, c.colour, tag)
+      capPolygon(out, top, H + c.height, c.colour, tag)
       return
     }
     case 'pyramid':
     case 'spire': {
       const base = c.inset ? insetRing(ring, c.inset) : ring
       if (c.inset) capPolygon(out, ring, H, roof, 0)
-      frustum(out, base, H, base.map(() => ctr), H + c.height, c.colour)
+      frustum(out, base, H, base.map(() => ctr), H + c.height, c.colour, tag)
       return
     }
     case 'dome': {
@@ -301,12 +303,12 @@ function crown(out: MeshBuilder, ring: P2[], H: number, c: Crown, roof: Rgb): vo
       const drum = c.drum ?? 0
       const seg = 16
       const circle = (rr: number): P2[] => Array.from({ length: seg }, (_, k) => ({ x: ctr.x + Math.cos((k / seg) * Math.PI * 2) * rr, z: ctr.z + Math.sin((k / seg) * Math.PI * 2) * rr }))
-      if (drum > 0) faceBand(out, circle(r), H, H + drum, { kind: 'blank', wall: c.colour })
+      if (drum > 0) faceBand(out, circle(r), H, H + drum, { kind: 'blank', wall: c.colour, material: c.material })
       const courses = 6
       for (let k = 0; k < courses; k++) {
         const a0 = (k / courses) * (Math.PI / 2)
         const a1 = ((k + 1) / courses) * (Math.PI / 2)
-        frustum(out, circle(r * Math.cos(a0) + 0.001), H + drum + c.height * Math.sin(a0), circle(r * Math.cos(a1) + 0.001), H + drum + c.height * Math.sin(a1), c.colour)
+        frustum(out, circle(r * Math.cos(a0) + 0.001), H + drum + c.height * Math.sin(a0), circle(r * Math.cos(a1) + 0.001), H + drum + c.height * Math.sin(a1), c.colour, tag)
       }
       return
     }
@@ -330,15 +332,43 @@ function crown(out: MeshBuilder, ring: P2[], H: number, c: Crown, roof: Rgb): vo
       return
     }
     case 'mast':
-      box(out, ctr.x, H + c.height / 2, ctr.z, (c.width ?? 1) / 2, c.height / 2, (c.width ?? 1) / 2, c.colour ?? [0.6, 0.6, 0.62], 0)
+      box(out, ctr.x, H + c.height / 2, ctr.z, (c.width ?? 1) / 2, c.height / 2, (c.width ?? 1) / 2, c.colour ?? [0.6, 0.6, 0.62], tag)
       return
   }
 }
 
 /** The footprint, anticlockwise in (x, z) so each edge's (dz, −dx) is its outward normal. */
+/**
+ * An outline fit to build from: points closer than `min` metres merged, and a point dropped when it barely bends
+ * the line. An OSM footprint traced round a curve can be a hundred points, and a face per point is a hundred
+ * bands of facade — the Opera House came out at 95 (reported by the market-west batch).
+ */
+export function simplifyRing(ring: P2[], min = 1.5, bend = 0.06): P2[] {
+  const out: P2[] = []
+  for (const p of ring) {
+    const last = out[out.length - 1]
+    if (last && Math.hypot(p.x - last.x, p.z - last.z) < min) continue
+    out.push(p)
+  }
+  if (out.length > 3 && Math.hypot(out[0].x - out[out.length - 1].x, out[0].z - out[out.length - 1].z) < min) out.pop()
+  if (out.length < 4) return out.length >= 3 ? out : ring
+  const kept: P2[] = []
+  for (let i = 0; i < out.length; i++) {
+    const a = out[(i - 1 + out.length) % out.length]
+    const b = out[i]
+    const c = out[(i + 1) % out.length]
+    const a1 = Math.atan2(b.z - a.z, b.x - a.x)
+    const a2 = Math.atan2(c.z - b.z, c.x - b.x)
+    let d = Math.abs(a2 - a1)
+    if (d > Math.PI) d = Math.PI * 2 - d
+    if (d > bend) kept.push(b)
+  }
+  return kept.length >= 3 ? kept : out
+}
+
 export function towerRing(fit: Fit): P2[] {
   const given = fit.ring && fit.ring.length >= 3
-    ? fit.ring
+    ? simplifyRing(fit.ring)
     : [{ x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
   let area = 0
   for (let i = 0; i < given.length; i++) { const a = given[i]; const b = given[(i + 1) % given.length]; area += a.x * b.z - b.x * a.z }

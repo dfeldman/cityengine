@@ -59,6 +59,32 @@ bake, or a dev server (one runs already at http://localhost:5200). Other agents 
 6. Every ~8 buildings: `npx tsc --noEmit -p .` (ignore errors outside your district) and
    `npx vitest run tests/landmarks.test.ts` (every landmark must stay under 25k triangles).
 
+## Write SHORT builders: use the shared parts
+
+Output is what costs here, so a building should be a few lines, not fifty. The earlier batches spent a third of
+every file on hand-written coordinate loops — normals, tangents, `for` loops over corners — and those are all in
+the kit now. Before you write a loop, look for it in `src/render/landmarks/parts.ts`:
+
+- `edgeAt(ring, i)` — an edge's ends, direction, outward normal, length, heading, midpoint (no more tangent math)
+- `longestEdge(ring)`, `edgeFacing(ring, bearing)` — which side is the front
+- `boxAlong(...)` — a box turned to a heading; `panelOn(...)` — a flat panel on a wall
+- `signText(...)` — block letters on a wall, lit or not, horizontal or vertical
+- `marquee(...)` — a theatre marquee with its lit soffit, readerboard and bulbs
+- `bladeSign(...)` — a vertical blade with the name down it
+- `colonnade(...)`, `arcade(...)`, `quoins(...)`, `cupola(...)` — a portico, an arcaded base, stone corners, a
+  domed corner tower
+- `stripRoof(...)` — a pitched roof over a long building
+- `faceOn(...)` — a facade applied to ONE wall
+- `roundRing(...)` — a footprint with rounded corners or a prow; `simplifyRing(...)` is applied for you
+- and from `tower.ts`: `tower`, `faceBand`, `insetRing`, `towerRing`
+
+A typical building should be **one recipe line, or a spec plus two or three part calls**. Comment each builder
+with ONE line: the name, the year, and the one thing that makes it recognisable. If you find yourself writing a
+helper, ask whether the kit has it; if it genuinely does not and two buildings need it, say so in your report
+rather than writing it twice.
+
+Some wild buildings will not fit the shared parts, and that is fine — write those out properly or bail out.
+
 ## Bailing out — important
 
 Some buildings cannot be done this way: a rotunda, a dome, a clock tower, a theatre marquee, a pyramid, a
