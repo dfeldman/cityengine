@@ -128,6 +128,33 @@ export class PathMap {
     this.softLiveMat = softMaterial(scene, 'pathsoft-live', 0.75, -3)
   }
 
+  private routeMesh: Mesh | null = null
+  private routeKey = ''
+  /**
+   * The GPS route on the ground (PARIS_EXPAND §6 item 11): a soft orange ribbon along its edges, each at its own
+   * heights (over a bridge, on the deck). Rebuilt only when the route's edges change.
+   */
+  setRoute(edgeIds: number[] | null): void {
+    const key = edgeIds ? edgeIds.join(',') : ''
+    if (key === this.routeKey) return
+    this.routeKey = key
+    this.routeMesh?.dispose()
+    this.routeMesh = null
+    if (!edgeIds || edgeIds.length === 0) return
+    const out = new MeshBuilder()
+    for (const id of edgeIds) {
+      const e = this.g.edges.get(id)
+      if (e) this.ribbon(out, e, e.points, 0.9, [1.0, 0.6, 0.24], 0.03)
+    }
+    const m = new Mesh('gpsroute', this.scene)
+    out.toVertexData().applyToMesh(m)
+    m.material = this.softLiveMat
+    m.renderingGroupId = 3
+    m.isPickable = false
+    m.alwaysSelectAsActiveMesh = true
+    this.routeMesh = m
+  }
+
   /** J: subtle → full → off → subtle */
   cycle(): PathMode {
     this.setMode(this.mode === 'subtle' ? 'full' : this.mode === 'full' ? 'off' : 'subtle')

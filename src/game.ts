@@ -383,10 +383,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   let routedAt = 0
   let ownChoiceAt: number | null = null
   const replan = (): void => {
-    if (!destination) { route = null; minimap.route = null; minimap.destination = null; return }
+    if (!destination) { route = null; minimap.route = null; minimap.destination = null; paths.setRoute(null); return }
     route = planRoute(rides, nav.position, destination)
     minimap.route = route?.line ?? null
     minimap.destination = destination
+    paths.setRoute(route ? [nav.position.edgeId, ...route.nodes.map((n) => route!.leave.get(n)!).filter((x) => x !== undefined)] : null)
   }
   // a preplanned route: its waypoints still to reach, and its name for the HUD
   let tour: { name: string; left: { x: number; z: number }[]; of: number } | null = null
