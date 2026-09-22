@@ -741,6 +741,34 @@ async function bake(spec: CitySpec): Promise<void> {
     railDecks++
   }
   console.log(`  bridges: ${decks.bridges} deck edges, ${decks.ramps} ramps; ${railDecks} elevated rail ways`)
+  /*
+   * Walks on a viaduct's roof (BUGS.md #32): the Coulée Verte runs along the top of the Viaduc des Arts, which
+   * OSM gives no height; its ways came out at street level, inside the viaduct, with only its street crossings
+   * standing up as lone footbridges. Each runs at the region's height over the ground, smoothed along it, and
+   * where it is not over a building it is a bridge (render/bridges.ts draws the slab and piers).
+   */
+  const walks = new Map((streetRegion.elevatedWalks ?? []).map((w) => [w.name, w.height]))
+  let lifted = 0
+  if (walks.size) {
+    const overBuilding = (x: number, z: number): boolean => buildings.some((b) => {
+      const r = b.ring
+      let o = false
+      for (let i = 0, j = r.length - 2; i < r.length; j = i, i += 2) {
+        if ((r[i + 1] > z) !== (r[j + 1] > z) && x < ((r[j] - r[i]) * (z - r[i + 1])) / (r[j + 1] - r[i + 1]) + r[i]) o = !o
+      }
+      return o
+    })
+    for (const e of kept) {
+      const h = e.name ? walks.get(e.name) : undefined
+      if (h === undefined) continue
+      const ps = unpackPoints(e.points)
+      e.heights = ps.map((q) => Math.round((groundAt(q.x, q.z) + h) * 100) / 100)
+      const mid = ps[Math.floor(ps.length / 2)]
+      e.bridge = !overBuilding(mid.x, mid.z) || undefined
+      lifted++
+    }
+  }
+  if (lifted) console.log(`  ${lifted} walks lifted onto their viaduct`)
 
   // ---- named places, for the signs
   const FOOD = new Set(['cafe', 'restaurant', 'bar', 'pub', 'bakery'])

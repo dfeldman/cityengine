@@ -1718,7 +1718,8 @@ export class City {
       const decks = new MeshBuilder()
       for (const e of this.edgesIn.get(k) ?? []) {
         if (this.raisedIds.has(e.id) && !this.coveredDecks.has(e.id)) {
-          deck(decks, e, this.terrain, this.deckWalk.get(e.id), this.region.riverDrop ?? 0, e.bridge === true && this.structured(e))
+          deck(decks, e, this.terrain, this.deckWalk.get(e.id), this.region.riverDrop ?? 0, e.bridge === true && this.structured(e),
+            e.name !== undefined && (this.region.elevatedWalks ?? []).some((w) => w.name === e.name))
         }
       }
       const railColour = hexRgb(this.region.elevatedRailColour)

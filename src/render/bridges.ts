@@ -83,7 +83,8 @@ function wall(out: MeshBuilder, f: Frame[], o: number, dy0: number, dy1: number,
 export { isRaised }
 
 /** One raised edge as a deck. */
-export function deck(out: MeshBuilder, e: PackedEdge, terrain: Terrain, walk = e.walk, drop = 0, structured = false): void {
+export function deck(out: MeshBuilder, e: PackedEdge, terrain: Terrain, walk = e.walk, drop = 0, structured = false,
+                     hedged = false): void {
   const pts = unpackPoints(e.points)
   if (pts.length < 2 || !e.heights) return
   const f = frames(pts, e.heights)
@@ -102,6 +103,25 @@ export function deck(out: MeshBuilder, e: PackedEdge, terrain: Terrain, walk = e
     strip(out, f, -outer, outer, 0.05, PAVING)
   }
   const top = road > 0 ? 0.15 : 0.05
+  // a planted walk on a viaduct (the Coulée Verte, BUGS.md #32): clipped hedges along both edges, with a
+  // taller shrub every few metres
+  if (hedged) {
+    const green: Rgb = [0.22, 0.36, 0.2]
+    const dark: Rgb = [0.16, 0.28, 0.15]
+    for (const side of [-1, 1] as const) {
+      const o0 = side * outer
+      const o1 = side * (outer + 0.7)
+      wall(out, f, o0, top, top + 0.85, green, side === -1 ? 1 : -1)
+      wall(out, f, o1, top, top + 0.85, dark, side)
+      strip(out, f, Math.min(o0, o1), Math.max(o0, o1), top + 0.85, green)
+      const total = f[f.length - 1].s
+      for (let s = 2 + (side > 0 ? 1.5 : 0); s < total - 1; s += 4.5) {
+        const fr = frameAt(f, s)
+        const c = { x: fr.x + fr.nx * side * (outer + 0.35), z: fr.z + fr.nz * side * (outer + 0.35) }
+        box(out, c.x, fr.y + top + 1.3, c.z, 0.45, 0.5, 0.45, dark, FIXED)
+      }
+    }
+  }
   // on a bridge with its own outline the structure is drawn once, whole (render/bridge-structures.ts)
   if (structured) return
   const style = e.bridge && e.name ? BRIDGE_STYLES[e.name] : undefined

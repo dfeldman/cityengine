@@ -49,6 +49,9 @@ export function notreDameFull(out: MeshBuilder, fit: Fit): void {
   const L = Math.min(Math.max(fit.hz, 56), 66)
   const W = Math.min(Math.max(fit.hx, 20), 25)
   const zf = -L
+  // a stone plinth down into the ground: the manifest lifts the cathedral 2.5 m so the parvis meets its doors,
+  // and the island falls away towards the chevet
+  block(out, -W - 2, W + 2, zf - 0.5, L + 14, -4, 0.02, shade(stone, 0.8))
   const fw = Math.min(W, 20.5)          // half the west front
   const tIn = 5.5                        // the towers' inner edge (half the middle bay)
   const front = 12                       // the west block's depth
@@ -102,21 +105,81 @@ export function notreDameFull(out: MeshBuilder, fit: Fit): void {
     block(f, bx - 1.2, bx + 1.2, -1.1, 0, 15.5, 32.4, stone)
     prism(f, bx, -1.75, 5.2, 8.4, 0.45, 6, shadowStone, FIXED, 0.35)                           // a statue on it
   }
-  // the portals: stepped archivolts receding into the wall, the tympanum, the doors and the trumeau
+  /*
+   * The portals, as real recesses (BUGS.md #21): each a porch standing 1.6 m out from the wall between the
+   * buttresses, its face framing the outermost arch, and inside it five archivolts stepping back, each joined
+   * to the next by its reveal, down to the tympanum, the doors and the trumeau. The front wall hides anything
+   * behind z = 0, so the depth is built outward from it.
+   */
+  const archOutline = (w: number, h: number): [number, number][] => {
+    const spring = Math.max(0.5, h - w * 0.866)
+    const k = (h - spring) / (w * 0.866)
+    const pts: [number, number][] = [[-w / 2, 0], [-w / 2, spring]]
+    for (let i = 1; i <= 8; i++) {
+      const th = Math.PI - (i / 8) * (Math.PI / 3)
+      pts.push([w / 2 + w * Math.cos(th), spring + k * w * Math.sin(th)])
+    }
+    for (let i = 7; i >= 0; i--) {
+      const th = Math.PI - (i / 8) * (Math.PI / 3)
+      pts.push([-(w / 2 + w * Math.cos(th)), spring + k * w * Math.sin(th)])
+    }
+    pts.push([w / 2, 0])
+    return pts
+  }
+  // a band between two outlines of the same count at one depth (facing −z), or the same outline at two
+  // depths (a reveal, facing in towards the opening)
+  const band = (x: number, a: [number, number][], b: [number, number][], za: number, zb: number, c: Rgb): void => {
+    for (let i = 1; i < a.length; i++) {
+      const q: [number, number, number][] = [[x + a[i - 1][0], a[i - 1][1], za], [x + a[i][0], a[i][1], za], [x + b[i][0], b[i][1], zb], [x + b[i - 1][0], b[i - 1][1], zb]]
+      let n: [number, number, number]
+      if (za === zb) n = [0, 0, -1]
+      else {
+        // inward: towards the outline's middle
+        const mx = (a[i - 1][0] + a[i][0]) / 2
+        const my = (a[i - 1][1] + a[i][1]) / 2
+        const dx = -(a[i][1] - a[i - 1][1])
+        const dy = a[i][0] - a[i - 1][0]
+        const l = Math.hypot(dx, dy) || 1
+        const toward = dx * (0 - mx) + dy * ((a[0][1] + a[Math.floor(a.length / 2)][1]) / 2 - my) > 0 ? 1 : -1
+        n = [(dx / l) * toward, (dy / l) * toward, 0]
+      }
+      f.quad(q, n, [[0, 0], [1, 0], [1, 1], [0, 1]], c, FIXED)
+    }
+  }
   const portal = (x: number, w: number, h: number): void => {
     const steps = 5
+    const depth = 1.55
+    const outline = (k: number): [number, number][] => archOutline(w + (steps - k) * 0.6, h + (steps - k) * 0.6)
+    // the porch: its face round the outermost arch, as a rectangle-to-arch band, and its sides and top
+    const W0 = w + steps * 0.6 + 2.2
+    // under the Gallery of Kings, which starts at 15 m
+    const H0 = Math.min(14.6, h + steps * 0.6 + 0.8)
+    const o0 = outline(0)
+    const cy = H0 * 0.45
+    const rect = o0.map(([px, py]): [number, number] => {
+      const dx = px
+      const dy = py - cy
+      const t = Math.min(dx === 0 ? Infinity : (W0 / 2) / Math.abs(dx), dy === 0 ? Infinity : dy > 0 ? (H0 - cy) / dy : cy / -dy)
+      return [dx * t, cy + dy * t]
+    })
+    band(x, rect, o0, -depth, -depth, stone)
+    block(f, x - W0 / 2, x + W0 / 2, -depth, -0.02, H0, H0 + 0.35, shade(stone, 1.03))
+    // the archivolts stepping back: each face, then its reveal to the next
     for (let k = 0; k < steps; k++) {
-      const kw = w + (steps - k) * 0.55
-      const kh = h + (steps - k) * 0.55
-      pointedPane(f, -0.02 - k * 0.012, x, 0, kw, kh, k % 2 ? shadowStone : shade(stone, 0.9 - k * 0.03))
+      const z0 = -depth + (k * depth) / steps
+      const z1 = -depth + ((k + 1) * depth) / steps
+      const a = outline(k)
+      const b = outline(k + 1)
+      band(x, a, a, z0, z1, k % 2 ? shade(stone, 0.72) : shadowStone)
+      band(x, a, b, z1, z1, k % 2 ? shadowStone : shade(stone, 0.86 - k * 0.03))
     }
-    pointedPane(f, -0.1, x, 0, w, h, shade(stone, 0.93))                                       // the tympanum
-    pane(f, '-z', -0.11, x, 0, w, h * 0.42, dark, 0.01)                                        // the doors
-    pane(f, '-z', -0.12, x, h * 0.42, w, 0.5, shadowStone, 0.01)                                // the lintel
-    pane(f, '-z', -0.13, x, 0, 0.5, h * 0.42, stone, 0.01)                                      // the trumeau
-    // the jamb statues either side of the doorway
-    for (const s of [-1, 1]) {
-      for (let j = 0; j < 4; j++) prism(f, x + s * (w / 2 + 0.35 + j * 0.55), -0.3 - j * 0.1, 1.4, 4.3, 0.24, 6, shadowStone, FIXED, 0.2)
+    pointedPane(f, -0.06, x, 0, w, h, shade(stone, 0.93))                                      // the tympanum
+    pane(f, '-z', -0.07, x, 0, w, h * 0.42, dark, 0.01)                                        // the doors
+    pane(f, '-z', -0.08, x, h * 0.42, w, 0.5, shadowStone, 0.01)                                // the lintel
+    pane(f, '-z', -0.09, x, 0, 0.5, h * 0.42, stone, 0.01)                                      // the trumeau
+    // the jamb statues, standing in the reveals either side of the doorway
+    for (const sd of [-1, 1]) {
+      for (let j = 0; j < 4; j++) prism(f, x + sd * (w / 2 + 0.3 + j * 0.6), -0.3 - j * 0.3, 1.4, 4.3, 0.24, 6, shadowStone, FIXED, 0.2)
     }
   }
   portal(0, 7.2, 12.5)
@@ -241,6 +304,16 @@ export function notreDameFull(out: MeshBuilder, fit: Fit): void {
   prism(out, 0, zApse, eaves, eaves + 11, apseR + 0.5, 10, lead, FIXED, 0.4)
   prism(out, 0, zApse, 0, 19, W - 1.5, 14, stone, FIXED)
   prism(out, 0, zApse, 19, 22.5, W - 1.2, 14, lead, FIXED, apseR)
+  // the radiating chapels' lancets round the ambulatory, one a facet (the choir side has none)
+  for (let i = 0; i < 14; i++) {
+    const a = ((i + 0.5) / 14) * Math.PI * 2
+    if (Math.cos(a) < -0.3) continue
+    const w = new MeshBuilder()
+    pointedPane(w, -0.03, 0, 6, 2.2, 9, shadowStone)
+    pointedPane(w, -0.05, 0, 6.4, 1.6, 8.2, glass)
+    const r = (W - 1.5) * Math.cos(Math.PI / 14)
+    placed(out, w, a + Math.PI, Math.sin(a) * r, zApse + Math.cos(a) * r)
+  }
   for (let i = 0; i < 10; i++) {
     const a = ((i + 0.5) / 10) * Math.PI * 2
     if (Math.cos(a) < -0.2) continue                                                            // not into the choir
@@ -253,18 +326,31 @@ export function notreDameFull(out: MeshBuilder, fit: Fit): void {
   }
 
   // ---------- the flying buttresses: slender piers with pinnacles, and flyers ARCHED up to the high wall
-  const flyer = (px: number, pz: number, tx: number, tz: number): void => {
-    block(out, px - 0.7, px + 0.7, pz - 1.1, pz + 1.1, 0, 26, stone)
-    prism(out, px, pz, 26, 29, 0.7, 4, stone, FIXED, 0.55)
-    prism(out, px, pz, 29, 34.5, 0.55, 4, stone, FIXED, 0.03)
-    const n = 7
+  /*
+   * A pier and its flyer. The piers are slender and many-sided, stepping in with their pinnacles, and the
+   * flyer leaps from the pier's head up to the wall as a thin arched rib with a lighter strut above it: square
+   * blocks with a heavy flyer read as a ring of fins round the chevet, end-on (BUGS.md #21).
+   */
+  const flyer = (px: number, pz: number, tx: number, tz: number, head = 21): void => {
+    prism(out, px, pz, 0, head - 4, 0.95, 8, stone, FIXED, 0.8)
+    prism(out, px, pz, head - 4, head, 0.8, 8, stone, FIXED, 0.62)
+    prism(out, px, pz, head, head + 2.2, 0.62, 8, stone, FIXED, 0.5)
+    prism(out, px, pz, head + 2.2, head + 8, 0.5, 4, stone, FIXED, 0.02)
+    const n = 10
     let prev: [number, number, number] | null = null
+    let prevTop: [number, number, number] | null = null
     for (let i = 0; i <= n; i++) {
       const t = i / n
-      // from the pier at 24 m up to the wall at 31 m, sagging into an arc underneath
-      const p: [number, number, number] = [px + (tx - px) * t, 24 + 7 * t + Math.sin(t * Math.PI) * 1.6, pz + (tz - pz) * t]
-      if (prev) beam(out, prev, p, 0.32, stone)
+      // the rib: from the pier's head up to the wall at 29 m, arched underneath
+      const y = head - 0.5 + (29 - head + 0.5) * t + Math.sin(t * Math.PI) * 2.2
+      const p: [number, number, number] = [px + (tx - px) * t, y, pz + (tz - pz) * t]
+      // the coping strut above it, straight from the pinnacle's foot to the wall's head
+      const q: [number, number, number] = [p[0], head + 1.5 + (30.5 - head - 1.5) * t, p[2]]
+      if (prev) beam(out, prev, p, 0.22, stone)
+      if (prevTop) beam(out, prevTop, q, 0.14, stone)
+      if (i > 0 && i < n && i % 2 === 0) beam(out, p, q, 0.07, stone)
       prev = p
+      prevTop = q
     }
   }
   for (const sx of [-1, 1]) {
@@ -275,8 +361,10 @@ export function notreDameFull(out: MeshBuilder, fit: Fit): void {
   }
   for (let i = 0; i <= 8; i++) {
     const a = -Math.PI / 2 + (i / 8) * Math.PI
-    const R = W + 3.5
-    flyer(Math.sin(a) * R, zApse + Math.cos(a) * R * 0.95, Math.sin(a) * apseR, zApse + Math.cos(a) * apseR)
+    // the chevet's flyers are the long ones: a single leap of about fifteen metres from piers well out
+    // on the rim of the ambulatory, their heads clear of its lead roof (22.5 m)
+    const R = W - 1.0
+    flyer(Math.sin(a) * R, zApse + Math.cos(a) * R, Math.sin(a) * apseR, zApse + Math.cos(a) * apseR, 24)
   }
 
   // ---------- the spire over the crossing, with the green copper apostles round its foot

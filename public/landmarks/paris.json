@@ -533,6 +533,7 @@
   {
     "name": "Notre-Dame",
     "procedural": "notreDameFull",
+    "offset": [0, 2.5, 0],
     "osm": [
       "way/201611267",
       "relation/6551963",

@@ -193,6 +193,7 @@
     "streetSigns": "plaque",
     "awnings": 0.9,
     "riverDrop": 2.5,
+    "elevatedWalks": [{ "name": "Coulée Verte René-Dumont", "height": 8.5 }],
     "pointFurniture": {
       "metro": "guimard",
       "fountain": "wallace",

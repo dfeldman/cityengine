@@ -65,6 +65,9 @@ export interface Region {
   /** how far below its lowest bank a river's surface lies, metres: the elevation data smooths a walled river's
    *  drop away (Paris: the Seine runs ~2.5 m below the lower quays, ~7 m below the streets) */
   riverDrop?: number
+  /** walks laid on a viaduct's roof, by name, and how high (Paris: the Coulée Verte René-Dumont on the Viaduc
+   *  des Arts, BUGS.md #32): OSM puts them at street level, where they ran hidden inside the viaduct */
+  elevatedWalks?: { name: string; height: number }[]
   /** the steel of an elevated railway — the Loop's L is painted a dark green-black */
   elevatedRailColour: string
   /** the name plate on a landmark building: Paris engraves dark capitals into a cream stone plate */
@@ -100,6 +103,7 @@ export function region(id: string | undefined): Region {
     streetSigns: own?.streetSigns ?? base.streetSigns,
     awnings: own?.awnings ?? base.awnings,
     riverDrop: own?.riverDrop ?? base.riverDrop,
+    elevatedWalks: own?.elevatedWalks ?? base.elevatedWalks,
     pointFurniture: { ...base.pointFurniture, ...(own?.pointFurniture ?? {}) },
     landmarkPlate: { ...base.landmarkPlate, ...(own?.landmarkPlate ?? {}) },
     elevatedRailColour: own?.elevatedRailColour ?? base.elevatedRailColour,

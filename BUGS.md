@@ -28,7 +28,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 18 | fixed | Café tables show no top surface (likely wound facing down) | user, 2026-09-21 |
 | 19 | fixed | The Colonne de Juillet at the Bastille is gone completely | user, 2026-09-21 |
 | 20 | open | Central Paris audit: 22 ride edges pass through buildings; 266 dead ends to triage | audit-ride, 2026-09-21 |
-| 21 | fixing | Notre-Dame needs real effort: the first pass is a sketch | user, 2026-09-21 |
+| 21 | fixed | Notre-Dame needs real effort: the first pass is a sketch | user, 2026-09-21 |
 | 22 | open | The Place de la Concorde is drawn as grass; the real square is paved | views, 2026-09-21 |
 | 23 | fixed | Haussmann balconies read as solid dark lines, not ironwork | user, 2026-09-22 |
 | 24 | fixed | Heavy z-fighting on the buildings on the left at central Paris's start point (48.860446, 2.331791) | user, 2026-09-22 |
@@ -385,6 +385,16 @@ green copper apostles. Shots: `docs/shots/LP-notre-dame-front.png`, `-flank.png`
 `tools/model-views.ts` makes views from the model's own axes, clear of buildings.
 **Still to do:** the chevet's flyers should be longer and lighter (they read as fins end-on); the front's
 portals want more depth (real recesses rather than layered panes).
+**Pass 3 (2026-09-22):**
+- The chevet's piers are slender eight-sided shafts on the ambulatory's rim, stepping in to their pinnacles,
+  and each flyer is a thin arched rib with a coping strut above it and ties between them.
+- The ambulatory has its chapels' lancets.
+- The portals are real recesses: a porch 1.55 m deep framing five archivolts that step back, each joined to
+  the next by its reveal, down to the tympanum, the doors and the trumeau. No gables (Notre-Dame has none).
+- The cathedral stands 2.5 m higher (manifest `offset`) on a plinth reaching into the ground, so the parvis
+  meets its doors instead of burying them.
+
+✅ `docs/shots/BUG21-portals.png`, `docs/shots/BUG21-chevet.png`; view `Notre-Dame — portals` added.
 
 ## 22. The Concorde is grass
 
