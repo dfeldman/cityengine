@@ -1237,8 +1237,8 @@ function unionSquarePlaza(out: MeshBuilder, fit: Fit): void {
   gslab(out, f, -7.5, 7.5, zS, zN, deck + 0.08, PALE, GRAN)
 
   // the lawn panels at the Post and Geary ends: flat coloured ground, nothing planted on them
-  gslab(out, f, -30, 30, zN - 18, zN - 6, deck + 0.12, LAWN)
-  gslab(out, f, -30, 30, zS + 6, zS + 18, deck + 0.12, LAWN)
+  gslab(out, f, -30, 30, zN - 18, zN - 6, deck + 0.05, LAWN)
+  gslab(out, f, -30, 30, zS + 6, zS + 18, deck + 0.05, LAWN)
 
   // the broad flight down to Powell, and the one down to Geary: four granite treads, nested back to the deck
   for (let i = 0; i < 4; i++) {
@@ -1267,18 +1267,21 @@ function unionSquarePlaza(out: MeshBuilder, fit: Fit): void {
     for (const x of cutsX) gbox(out, f, x - 3.6, x + 3.6, zN, hz - 0.4 - i * 0.7, -0.3, y, i % 2 ? MID : PALE, GRAN)
   }
 
-  // the garage: its two vehicle ramps, down at opposite corners, each between concrete walls into a dark portal
+  /*
+   * The garage: a vehicle entrance at two opposite corners (Geary–Powell, Post–Stockton), each a dark portal in
+   * the deck's flank with its ramp sloping down to it between concrete parapets. Most of the ramp is below the
+   * street and the city's ground covers it; what a rider sees is the portal, the parapets and the dark mouth.
+   */
   for (const s of [-1, 1]) {
-    const x0 = s > 0 ? hx - 28 : -hx + 8
-    const x1 = s > 0 ? hx - 8 : -hx + 28
-    const z0 = s > 0 ? hz - 9.5 : -hz + 2
-    const z1 = s > 0 ? hz - 2 : -hz + 9.5
+    const zEdge = s > 0 ? zN : zS
+    const zOut = s > 0 ? hz - 0.5 : -hz + 0.5
+    const x0 = s > 0 ? 40 : -50
+    const x1 = s > 0 ? 50 : -40
+    gbox(out, f, x0 + 0.6, x1 - 0.6, Math.min(zEdge, zEdge + s * 0.7), Math.max(zEdge, zEdge + s * 0.7), -0.4, 1.45, [0.07, 0.07, 0.08], CONC)
+    for (const x of [x0, x1]) gbox(out, f, x - 0.5, x + 0.5, Math.min(zEdge, zOut), Math.max(zEdge, zOut), -0.6, 0.95, [0.58, 0.58, 0.57], CONC)
     const P = (x: number, y: number, z: number): V3 => { const p = f.at(x, z); return [p.x, y, p.z] }
-    const deep = -4.2
-    const [xa, xb] = s > 0 ? [x1, x0] : [x0, x1]                       // xa at the street, xb down at the portal
-    out.quad([P(xa, 0, z0), P(xa, 0, z1), P(xb, deep, z1), P(xb, deep, z0)], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], [0.2, 0.2, 0.21], CONC)
-    for (const z of [z0, z1]) gbox(out, f, x0, x1, z - 0.5, z + 0.5, deep, s > 0 ? 0.5 : 0.5, [0.55, 0.55, 0.54], CONC)
-    gbox(out, f, s > 0 ? x0 - 0.6 : x1, s > 0 ? x0 : x1 + 0.6, z0, z1, deep, 0.2, [0.08, 0.08, 0.09], CONC)
+    const q: V3[] = [P(x0 + 0.5, 0, zOut), P(x1 - 0.5, 0, zOut), P(x1 - 0.5, -3.2, zEdge), P(x0 + 0.5, -3.2, zEdge)]
+    out.quad((s > 0 ? [q[3], q[2], q[1], q[0]] : q) as V3[], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], [0.22, 0.22, 0.23], CONC)
   }
 
   // the Dewey Monument: the stepped base, the pedestal, the granite shaft, its Corinthian capital

@@ -1,1 +1,23 @@
-[]
+[
+  {"osm": ["way/773030142"], "name": "Embarcadero Station", "restyle": "brutalist", "levels": 1, "height": 5, "note": "BART/Muni station headhouse, plain concrete kiosk."},
+  {"osm": ["way/775660875"], "name": "Civic Center Station", "restyle": "brutalist", "levels": 1, "height": 5, "note": "BART/Muni station headhouse, plain concrete kiosk."},
+  {"osm": ["way/35065740"], "name": "North Beach Branch Library", "restyle": "bauhaus", "levels": 2, "height": 8, "note": "2013 flatiron library (LMS Architects): tall narrow windows, glazed corners, flat modern panels."},
+  {"osm": ["way/262574418"], "name": "San Francisco Evangelical Free Church", "restyle": "edwardian", "levels": 3, "height": 11, "note": "No clear reference photo found within budget; modest North Beach church building, ordinary period style."},
+  {"osm": ["way/261466912"], "name": "San Francisco Fire Station 21", "restyle": "brick", "levels": 3, "height": 9, "note": "Classic red-brick firehouse."},
+  {"osm": ["way/288394771"], "name": "Marina Branch Library", "restyle": "classical", "levels": 2, "height": 6, "note": "Small Carnegie-style branch library cottage."},
+  {"osm": ["way/85645142"], "name": "Redding Elementary School", "restyle": "brick", "levels": 4, "height": 14, "note": "Ordinary SF public school building, brick institutional block."},
+  {"osm": ["way/1028203748"], "name": "Tahanan", "restyle": "sfapartment", "levels": 8, "height": 24, "note": "2023 modular supportive-housing tower, plain stucco/panel midrise."},
+  {"osm": ["way/256877086"], "name": "Hall of Justice Service Station", "restyle": "brutalist", "levels": 1, "height": 4, "note": "Small plain garage/service building near the Hall of Justice."},
+  {"osm": ["way/261608748"], "name": "Saint Mary the Virgin Episcopal Church", "procedural": "stMaryTheVirginEpiscopalChurch", "front": "street", "height": 8, "note": "Tower grammar: rustic brown wood-shingle Arts & Crafts church (1891, Cow Hollow) under a hip roof."},
+  {"osm": ["way/308165312"], "name": "Buddhist Church of San Francisco", "procedural": "buddhistChurchOfSanFrancisco", "front": "street", "height": 12, "note": "Tower grammar + cupola: 1935 cream terracotta block with a gilded stupa on the roof."},
+  {"osm": ["way/218159535"], "name": "Transit Police Bureau SFK Substation", "restyle": "brutalist", "levels": 1, "height": 4, "note": "Small plain modern substation building."},
+  {"osm": ["way/263379850"], "name": "Golden Gate Community Church of the Nazarene", "restyle": "classical", "levels": 4, "height": 12, "note": "Converted early-20th-century masonry hall (former Masonic meeting hall)."},
+  {"osm": ["way/1361492525"], "name": "InterContinental Mark Hopkins", "procedural": "intercontinentalMarkHopkins", "front": "street", "height": 93, "note": "Recipe edwardian-terracotta: 1926 cream terracotta French Chateau/Spanish Renaissance tower, steep copper mansard."},
+  {"osm": ["way/32612487"], "name": "100 California Street", "procedural": "oneHundredCalifornia", "front": "street", "height": 59, "note": "Recipe midcentury-slab: 1960s pale precast office tower."},
+  {"osm": ["way/256067714"], "name": "233;241 Sansome Street", "procedural": "twoThirtyThreeSansome", "front": "street", "height": 53, "note": "Recipe midcentury-slab: Financial District precast office slab."},
+  {"osm": ["way/256066241"], "name": "Stock Exchange Tower", "procedural": "stockExchangeTower", "front": "street", "height": 55, "note": "Recipe deco-setback: 1930 grey granite Art Deco Moderne, Miller & Pflueger."},
+  {"osm": ["way/256733612"], "name": "1310 Mission Street", "procedural": "thirteenTenMission", "front": "street", "height": 55, "note": "Recipe glass-tower: contemporary SoMa residential tower, blue-green curtain wall."},
+  {"osm": ["way/151183782"], "name": "417 Montgomery Street", "procedural": "fourSeventeenMontgomery", "front": "street", "height": 41, "note": "Recipe edwardian-terracotta: early-20th-century Financial District office block."},
+  {"osm": ["way/256067738"], "name": "Royal Insurance Building", "procedural": "royalInsuranceBuilding", "front": "street", "height": 41, "note": "Recipe edwardian-terracotta: 1908 Renaissance Revival, granite base, cream terracotta shaft."},
+  {"osm": ["way/71504456"], "name": "Hotel Spero", "procedural": "hotelSpero", "front": "street", "height": 55, "note": "Recipe edwardian-terracotta: historic Financial District hotel tower, cream terracotta."}
+]
