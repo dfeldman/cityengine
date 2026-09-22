@@ -30,5 +30,13 @@
   {"include": "san-francisco/market-mid.json"},
   {"include": "san-francisco/market-west.json"},
   {"include": "san-francisco/union-square.json"},
-  {"include": "san-francisco/piers.json"}
+  {"include": "san-francisco/piers.json"},
+  {"include": "san-francisco/fidi-1.json"},
+  {"include": "san-francisco/fidi-2.json"},
+  {"include": "san-francisco/fidi-3.json"},
+  {"include": "san-francisco/fidi-4.json"},
+  {"include": "san-francisco/waterfront-1.json"},
+  {"include": "san-francisco/waterfront-2.json"},
+  {"include": "san-francisco/chinatown-1.json"},
+  {"include": "san-francisco/chinatown-2.json"}
 ]
