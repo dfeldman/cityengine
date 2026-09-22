@@ -965,10 +965,23 @@ export function rideExits(g: CityGraph, nodeId: number, arrivedOn: number | null
     if (!!ep.name !== !!eq.name) return ep.name ? -1 : 1
     return eq.length - ep.length
   })
+  /*
+   * Star junctions (BUGS.md #40) are mostly artefacts of the data, and are untangled here, at the choice:
+   * - two exits onto the SAME street within 50° are one choice (a boulevard's two carriageways, or its pieces
+   *   either side of a median, leaving side by side);
+   * - a short unnamed link (under 40 m: the links across a split boulevard, a slip, a service mouth) is not
+   *   offered where the junction already has three or more real streets to choose from.
+   */
+  const real = pref.filter((x) => { const e = g.edges.get(x.edgeId)!; return !!e.name || e.length >= 40 })
+  const offered = real.length >= 3 ? real : pref
   const chosen: Exit[] = []
-  for (const x of pref) {
+  for (const x of offered) {
     const b = departureBearing(g, x.edgeId, nodeId)
-    if (chosen.some((c) => Math.abs(angleDiff(departureBearing(g, c.edgeId, nodeId), b)) < 20 * DEG)) continue
+    const name = g.edges.get(x.edgeId)!.name
+    if (chosen.some((c) => {
+      const d = Math.abs(angleDiff(departureBearing(g, c.edgeId, nodeId), b))
+      return d < 20 * DEG || (name !== undefined && g.edges.get(c.edgeId)!.name === name && d < 50 * DEG)
+    })) continue
     chosen.push(x)
   }
   return chosen.sort((p, q) => Math.abs(p.angle) - Math.abs(q.angle))

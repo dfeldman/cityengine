@@ -367,6 +367,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   }
   const ride = new Ride()
   const hud = new Hud(document.getElementById('hud')!, () => nav.turnAround())
+  hud.onExit = (edgeId) => {
+    nav.requestEdge(edgeId)
+    ownChoiceAt = nav.next()?.nodeId ?? null
+  }
   const rideable = new Set([...rides.edges.values()].flatMap((e) => e.over.map((o) => o.id)))
   const minimap = new Minimap(document.getElementById('minimap') as HTMLCanvasElement, graph, {}, rideable)
   onTile((a) => minimap.addEdges(a.edges))
@@ -609,6 +613,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       }
 
       const junction = nav.next()
+      // a star junction's exits by name (BUGS.md #40): the one the rider (or the GPS) picked, else the turn's
+      if (junction && !junction.passThrough) {
+        const picked = nav.requestedEdge ?? resolve(junction.exits, nav.requested)?.edgeId ?? null
+        hud.exits(junction.exits.map((x) => ({ edgeId: x.edgeId, angle: x.angle, name: rides.edges.get(x.edgeId)?.name })), picked)
+      } else hud.exits(null, null)
       // the GPS: keep the route current, and ask for its exit at the junction ahead
       if (destination && now - routedAt > 1000) {
         routedAt = now
@@ -629,7 +638,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       if (route && junction && !junction.passThrough && ownChoiceAt !== junction.nodeId && !nav.isCommitted) {
         const want = route.leave.get(junction.nodeId)
         const exit = want === undefined ? undefined : junction.exits.find((x) => x.edgeId === want)
-        if (exit && nav.requested !== exit.turn) nav.request(exit.turn)
+        if (exit && nav.requestedEdge !== exit.edgeId) { nav.request(exit.turn); nav.requestEdge(exit.edgeId) }
       }
       if (route) {
         const want = junction ? route.leave.get(junction.nodeId) : undefined

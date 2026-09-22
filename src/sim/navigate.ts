@@ -103,6 +103,15 @@ export class Navigator {
   private pos: Position
   private intent: Turn = 'straight'
   private committed: Turn | null = null
+  /**
+   * A specific exit asked for by its edge (BUGS.md #40): at a star junction left/straight/right cannot name
+   * the street, so the HUD offers each exit by name and the GPS asks for its own edge. It wins over the turn
+   * when the junction reached offers it, and is spent there.
+   */
+  private wantEdge: number | null = null
+  /** ask for this exit (an edge leaving the junction ahead) */
+  requestEdge(edgeId: number | null): void { this.wantEdge = edgeId }
+  get requestedEdge(): number | null { return this.wantEdge }
   private lastNode: number | null = null
   /** the node where the rider last had to turn round, so the HUD can say so */
   turnedAroundAt: number | null = null
@@ -274,6 +283,7 @@ export class Navigator {
    */
   request(turn: Turn): void {
     this.intent = turn
+    this.wantEdge = null
   }
 
   /** Press-to-cycle, for a single-button bridge or a d-pad with only two keys wired. */
@@ -346,7 +356,9 @@ export class Navigator {
         this.pos = { edgeId: ne.id, s: rev ? ne.length : 0, reversed: rev }
         continue
       }
-      const chosen = resolve(xs, this.committed ?? this.intent)
+      const byEdge = this.wantEdge === null ? undefined : xs.find((x) => x.edgeId === this.wantEdge)
+      const chosen = byEdge ?? resolve(xs, this.committed ?? this.intent)
+      this.wantEdge = null
       crossed.push(nodeId)
       this.lastNode = nodeId
       // A turn is spent when it is taken, so the default returns to straight — UNLESS the rider pressed

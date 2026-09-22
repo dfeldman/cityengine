@@ -47,7 +47,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 37 | fixed | The bridges need a lot of work to be usable and beautiful | user, 2026-09-22 |
 | 38 | fixed | Roads tilt sideways on hillsides; they want a level cross-section, with cuts and retaining walls | user, 2026-09-22 |
 | 39 | open | Memory over extended sessions: the heap must never approach 3 GB (a 10-minute soak) | user, 2026-09-22 |
-| 40 | open | Star junctions: left/straight/right cannot name the choice — show every exit, with its street | user, 2026-09-22 |
+| 40 | fixed | Star junctions: left/straight/right cannot name the choice — show every exit, with its street | user, 2026-09-22 |
 | 41 | open | Quick landmarks: the hundreds of unusual buildings people steer by (hospitals, schools…) | user, 2026-09-22 |
 | 42 | open | Strangers walk down the middle of the path: they should step aside (or wait) for the rider | user, 2026-09-22 |
 | 43 | fixed | A ride edge runs through a wall at 48.867116, 2.311297 (after a real archway) | user, 2026-09-22 |
@@ -688,6 +688,17 @@ button per exit, with the street's name.
 
 **User, 2026-09-22 (on #40):** probably easiest to clean up the star junctions — most are data artifacts, not
 real stars.
+
+**Fix (2026-09-22), both halves:**
+- **Untangled at the choice** (`rideExits`): exits onto the same street within 50° are one (a boulevard's
+  carriageways leaving side by side); short unnamed links (under 40 m: the links across split boulevards,
+  slips) are not offered where three or more real streets are. Junctions with four or more choices went from
+  285 to 245 (`tools/stars.ts`). What is left is real: the Place de Clichy, Kléber, Magenta and Strasbourg,
+  the Martyrs du Vélodrome by Bir-Hakeim.
+- **Every exit by name where it matters:** at a junction with four or more exits the HUD shows each as a button,
+  an arrow pointing its way plus the street, numbered 1…n; click it or press its number
+  (`Navigator.requestEdge`). The GPS now asks for its exact edge too, not just a turn.
+  ✅ `docs/shots/BUG40-exits.png`.
 
 ## 41. Quick landmarks for the buildings people steer by
 

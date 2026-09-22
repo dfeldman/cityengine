@@ -27,6 +27,7 @@ export class Hud {
       <div class="sr-gps" hidden></div>
       <button class="sr-back" title="Turn around here (U)">↩</button>
       <div class="sr-turns"></div>
+      <div class="sr-exits" hidden></div>
       <div class="sr-next"></div>
       <div class="sr-stats"></div>`
     // its own element, outside the arrows, which are rewritten every frame and would swallow the click
@@ -37,6 +38,50 @@ export class Hud {
     this.nextEl = root.querySelector('.sr-next')!
     this.statsEl = root.querySelector('.sr-stats')!
     this.gpsEl = root.querySelector('.sr-gps')!
+    this.exitsEl = root.querySelector('.sr-exits')!
+    this.exitsEl.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLElement>('[data-edge]')
+      if (b && this.onExit) { this.onExit(Number(b.dataset.edge)); b.blur() }
+    })
+    addEventListener('keydown', (e) => {
+      const n = Number(e.key)
+      if (!this.exitList.length || !Number.isInteger(n) || n < 1 || n > this.exitList.length || !this.onExit) return
+      this.onExit(this.exitList[n - 1])
+    })
+  }
+
+  private readonly exitsEl: HTMLElement
+  private exitList: number[] = []
+  private exitKey = ''
+  /** a star junction's exit picked (by click, or its number key) */
+  onExit: ((edgeId: number) => void) | null = null
+  /**
+   * Star junctions (BUGS.md #40): every exit by name, as a row of buttons — an arrow pointing its way and the
+   * street — numbered 1…n for the keys. Hidden where left/straight/right already says it all.
+   */
+  exits(list: { edgeId: number; angle: number; name?: string }[] | null, picked: number | null): void {
+    const show = !!list && list.length >= 4
+    this.exitsEl.hidden = !show
+    if (!show) { this.exitList = []; this.exitKey = ''; return }
+    const key = list!.map((x) => x.edgeId).join(',') + '|' + picked
+    if (key === this.exitKey) return
+    this.exitKey = key
+    // left to right as they leave the junction
+    const sorted = [...list!].sort((a, b) => a.angle - b.angle)
+    this.exitList = sorted.map((x) => x.edgeId)
+    this.exitsEl.innerHTML = ''
+    sorted.forEach((x, i) => {
+      const b = document.createElement('button')
+      b.dataset.edge = String(x.edgeId)
+      b.className = x.edgeId === picked ? 'picked' : ''
+      const deg = (x.angle * 180) / Math.PI
+      const arrow = document.createElement('span')
+      arrow.className = 'sr-exit-arrow'
+      arrow.textContent = '↑'
+      arrow.style.transform = `rotate(${deg.toFixed(0)}deg)`
+      b.append(`${i + 1} `, arrow, ` ${x.name ?? 'on'}`)
+      this.exitsEl.appendChild(b)
+    })
   }
 
   private bannerEl: HTMLElement | null = null
@@ -152,6 +197,11 @@ export const HUD_CSS = `
   text-shadow: inherit; transition: opacity .12s }
 #hud .sr-back:hover { opacity: 1 }
 #hud .sr-next { font-size: 15px; opacity: .9; min-height: 1.4em }
+#hud .sr-exits { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 760px; pointer-events: auto }
+#hud .sr-exits button { font: 13px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; color: #f2efe9; cursor: pointer;
+  background: rgba(18,20,24,.6); border: 1px solid rgba(255,255,255,.2); border-radius: 8px; padding: 4px 9px; text-shadow: inherit }
+#hud .sr-exits button.picked { color: #ffd479; border-color: #ffd479 }
+#hud .sr-exit-arrow { display: inline-block; font-size: 15px }
 #hud .sr-gps { font-size: 14px; color: #ffc68a; background: rgba(18,20,24,.5); border-radius: 8px; padding: 2px 10px }
 #hud .sr-gps:not([hidden]) + .sr-back { top: 50px }
 .sr-banner { position: fixed; top: 132px; left: 50%; transform: translate(-50%, -12px); z-index: 6; opacity: 0;
