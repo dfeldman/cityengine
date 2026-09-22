@@ -68,11 +68,13 @@ the kit now. Before you write a loop, look for it in `src/render/landmarks/parts
 - `edgeAt(ring, i)` — an edge's ends, direction, outward normal, length, heading, midpoint (no more tangent math)
 - `longestEdge(ring)`, `edgeFacing(ring, bearing)` — which side is the front
 - `boxAlong(...)` — a box turned to a heading; `panelOn(...)` — a flat panel on a wall
-- `signText(...)` — block letters on a wall, lit or not, horizontal or vertical
+- `signText(...)`, `marquee(...)`, `bladeSign(...)` — block letters, a theatre marquee, a vertical blade. All three
+  take `heading` so they sit on ANY wall: pass `edgeAt(ring, i).heading` for the edge you want (0 faces +z)
 - `marquee(...)` — a theatre marquee with its lit soffit, readerboard and bulbs
 - `bladeSign(...)` — a vertical blade with the name down it
-- `colonnade(...)`, `arcade(...)`, `quoins(...)`, `cupola(...)` — a portico, an arcaded base, stone corners, a
-  domed corner tower
+- `colonnade(...)`, `arcade(...)`, `quoins(...)`, `cupola(...)`, `spireOn(...)` — a portico, an arcaded base,
+  stone corners, a domed corner tower, and a bell tower or campanile with its spire standing on ONE point (the
+  `spire` crown covers the whole footprint, which is not what a church's corner tower is)
 - `stripRoof(...)` — a pitched roof over a long building
 - `faceOn(...)` — a facade applied to ONE wall
 - `roundRing(...)` — a footprint with rounded corners or a prow; `simplifyRing(...)` is applied for you

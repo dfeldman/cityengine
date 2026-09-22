@@ -36,14 +36,27 @@ export const TIERA_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     cupola(out, { x: cx + 4, z: cz - 3 }, 8, 1.4, { drum: 5, dome: 2.5, colour: [0.88, 0.85, 0.78], domeColour: [0.7, 0.6, 0.2], domeMaterial: 'copper' })
   },
 
-  /** Hamilton Square Baptist Church (Geary at Franklin): cream stucco, a Mission-revival base under a needle-thin louvered spire. */
-  hamiltonSquareBaptistChurch: fromRecipe('hotel-punched', {
-    height: 14,
-    wall: [0.88, 0.84, 0.74],
-    material: 'stucco',
-    base: 0,
-    crown: { kind: 'spire', height: 16, inset: 3, colour: [0.88, 0.84, 0.74] },
-  }),
+  /** Hamilton Square Baptist Church (Geary at Franklin): cream stucco walls, a square corner tower rising into a needle-thin spire. */
+  hamiltonSquareBaptistChurch: (out: MeshBuilder, fit: Fit): void => {
+    tower(out, fit, {
+      height: 14,
+      tiers: [{ to: 1, face: { kind: 'punched', wall: [0.88, 0.84, 0.74], glass: [0.2, 0.22, 0.24], pitch: 2.6, solid: 0.5, floor: 3.5, material: 'stucco' } }],
+      roof: [0.88, 0.84, 0.74],
+      crown: { kind: 'flat' },
+    })
+    const ring = towerRing(fit)
+    const cx = ring.reduce((s, p) => s + p.x, 0) / ring.length
+    const cz = ring.reduce((s, p) => s + p.z, 0) / ring.length
+    // the square tower, off-centre toward the street corner, its spire piercing the skyline
+    const tw = 1.6
+    const towerRingPts = [{ x: cx - tw, z: cz - tw }, { x: cx + tw, z: cz - tw }, { x: cx + tw, z: cz + tw }, { x: cx - tw, z: cz + tw }]
+    tower(out, { ...fit, ring: towerRingPts, height: 20 }, {
+      height: 20,
+      tiers: [{ to: 1, face: { kind: 'punched', wall: [0.88, 0.84, 0.74], glass: [0.2, 0.22, 0.24], pitch: 1.6, solid: 0.5, floor: 4, material: 'stucco' } }],
+      roof: [0.88, 0.84, 0.74],
+      crown: { kind: 'spire', height: 16, colour: [0.88, 0.84, 0.74] },
+    })
+  },
 
   /** San Francisco 4th & King Street (1975/1999): a plain glazed station house under a light-blue steel canopy. */
   sf4thKingStreetStation: spec({

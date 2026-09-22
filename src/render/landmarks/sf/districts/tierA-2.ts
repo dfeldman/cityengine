@@ -6,7 +6,7 @@ import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { fromRecipe } from '../recipes.ts'
 import { tower, towerRing, type TowerSpec } from '../../tower.ts'
-import { marquee, bladeSign, colonnade, edgeFacing } from '../../parts.ts'
+import { marquee, bladeSign, edgeFacing } from '../../parts.ts'
 
 const spec = (s: TowerSpec) => (out: MeshBuilder, fit: Fit): void => tower(out, fit, s)
 
@@ -24,8 +24,7 @@ export const TIERA_2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
       crown: { kind: 'parapet', height: 1 },
     })
     const ring = towerRing(fit)
-    const e = edgeFacing(ring, 180)
-    colonnade(out, ring[e], ring[(e + 1) % ring.length], 0, 5, 2, { colour: [0.88, 0.85, 0.78], out: 1.4 })
+    const e = edgeFacing(ring, 0)
     bladeSign(out, (ring[e].x + ring[(e + 1) % ring.length].x) / 2, 8, (ring[e].z + ring[(e + 1) % ring.length].z) / 2, 3, 'CLUB FUGAZI', { width: 1.2 })
   },
 
@@ -42,7 +41,7 @@ export const TIERA_2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
       crown: { kind: 'hip', height: 2.5, inset: 1.5, colour: [0.3, 0.45, 0.4], material: 'tile' },
     })
     const ring = towerRing(fit)
-    const e = edgeFacing(ring, 180)
+    const e = edgeFacing(ring, 0)
     marquee(out, (ring[e].x + ring[(e + 1) % ring.length].x) / 2, 4.5, (ring[e].z + ring[(e + 1) % ring.length].z) / 2, 4.5, 2, 'GREAT STAR THEATER', { body: [0.75, 0.15, 0.13] })
     bladeSign(out, ring[e].x, 9.5, ring[e].z, 5, 'GREAT STAR', { width: 1.3 })
   },
@@ -62,7 +61,7 @@ export const TIERA_2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
       crown: { kind: 'parapet', height: 0.8 },
     })
     const ring = towerRing(fit)
-    const e = edgeFacing(ring, 180)
+    const e = edgeFacing(ring, 0)
     marquee(out, (ring[e].x + ring[(e + 1) % ring.length].x) / 2, 3.6, (ring[e].z + ring[(e + 1) % ring.length].z) / 2, 3.6, 1.6, 'THE INDEPENDENT', { body: [0.08, 0.08, 0.09] })
   },
 
@@ -75,7 +74,7 @@ export const TIERA_2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
       crown: { kind: 'hip', height: 2, inset: 1.5, colour: [0.85, 0.82, 0.74] },
     })
     const ring = towerRing(fit)
-    const e = edgeFacing(ring, 180)
+    const e = edgeFacing(ring, 0)
     bladeSign(out, ring[e].x, 10, ring[e].z, 6, 'GLAD TIDINGS', { width: 1.2, body: [0.15, 0.14, 0.14] })
   },
 

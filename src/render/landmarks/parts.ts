@@ -92,12 +92,13 @@ const GLYPHS: Record<string, string> = {
  * +x reads mirrored (BUGS.md #50). `lit` makes it a neon or bulb sign, bright after dark.
  */
 export function signText(out: MeshBuilder, text: string, cx: number, cy: number, z: number, h: number, c: Rgb,
-                         opts: { lit?: boolean; tag?: number; vertical?: boolean } = {}): void {
+                         opts: { lit?: boolean; tag?: number; vertical?: boolean; heading?: number } = {}): void {
   const cell = h / 5
   const w = cell * 3
   const gap = cell * 0.9
   const tag = opts.lit ? EMIT : opts.tag ?? 0
   const chars = text.toUpperCase().split('')
+  const cz0 = z
   const total = opts.vertical ? chars.length * (h + gap) : chars.length * (w + gap) - gap
   chars.forEach((ch, i) => {
     const g = GLYPHS[ch]
@@ -107,58 +108,96 @@ export function signText(out: MeshBuilder, text: string, cx: number, cy: number,
     for (let r = 0; r < 5; r++) {
       for (let k = 0; k < 3; k++) {
         if (g[r * 3 + k] !== '1') continue
-        box(out, x0 + (2.5 - k) * cell, y0 + (4.5 - r) * cell, z, cell / 2, cell / 2, 0.03, c, tag)
+        // `heading` turns the whole sign onto any wall (0 faces +z, as a box does)
+        if (opts.heading) {
+          const [tx, tz] = turned(cx, cz0, x0 + (2.5 - k) * cell, z, opts.heading)
+          boxAlong(out, tx, y0 + (4.5 - r) * cell, tz, cell / 2, cell / 2, 0.03, opts.heading, c, tag)
+        }
+        else box(out, x0 + (2.5 - k) * cell, y0 + (4.5 - r) * cell, z, cell / 2, cell / 2, 0.03, c, tag)
       }
     }
   })
 }
 
 /**
+ * A point on a wall that faces `heading`: the local (x, z) offsets from the anchor, turned. `heading` is the
+ * direction the wall's front faces, 0 being +z — the same convention `boxAlong` uses.
+ */
+function turned(ax: number, az: number, x: number, z: number, heading: number): [number, number] {
+  const s = Math.sin(heading)
+  const c = Math.cos(heading)
+  const dx = x - ax
+  const dz = z - az
+  return [ax + dx * c + dz * s, az - dx * s + dz * c]
+}
+
+/**
  * A theatre's marquee: the box out over the pavement with its lit soffit, a band of changeable letters on both
  * faces and the return, and the chaser bulbs round its edge. `w` is its half-width, `out_` how far it projects.
+ * `heading` puts it on any wall (0 faces +z; `edgeAt(ring, i).heading` for an edge of the footprint).
  */
 export function marquee(out: MeshBuilder, cx: number, y: number, z: number, w: number, out_: number, name: string,
-                        opts: { body?: Rgb; band?: Rgb; letters?: Rgb; bulbs?: Rgb; height?: number } = {}): void {
+                        opts: { body?: Rgb; band?: Rgb; letters?: Rgb; bulbs?: Rgb; height?: number; heading?: number } = {}): void {
   const body = opts.body ?? [0.72, 0.16, 0.14]
   const band = opts.band ?? [0.96, 0.95, 0.9]
   const letters = opts.letters ?? [0.1, 0.1, 0.12]
   const bulbs = opts.bulbs ?? [1, 0.92, 0.7]
   const h = opts.height ?? 2.2
+  const a = opts.heading ?? 0
   const metal = surfaceTag('metal')
+  /** a box in the marquee's own frame: u along the wall, v up, o out from it */
+  const put = (u: number, v: number, o: number, hu: number, hv: number, ho: number, c: Rgb, tag = 0): void => {
+    const [x, zz] = turned(cx, z, cx + u, z + o, a)
+    boxAlong(out, x, v, zz, hu, hv, ho, a, c, tag)
+  }
   // the box, and the soffit under it, lit
-  box(out, cx, y, z + out_ / 2, w, h / 2, out_ / 2, body, metal)
-  box(out, cx, y - h / 2 - 0.02, z + out_ / 2, w * 0.95, 0.03, out_ * 0.45, [1, 0.94, 0.78], EMIT)
-  // the readerboard: a pale band on the front and both returns, with the name on the front
-  box(out, cx, y, z + out_ + 0.02, w * 0.98, h * 0.34, 0.03, band, 0)
-  signText(out, name, cx, y, z + out_ + 0.06, h * 0.26, letters)
-  for (const s of [-1, 1]) box(out, cx + s * (w + 0.02), y, z + out_ / 2, 0.03, h * 0.34, out_ * 0.45, band, 0)
+  put(0, y, out_ / 2, w, h / 2, out_ / 2, body, metal)
+  put(0, y - h / 2 - 0.02, out_ / 2, w * 0.95, 0.03, out_ * 0.45, [1, 0.94, 0.78], EMIT)
+  // the readerboard on the front and both returns, with the name on the front
+  put(0, y, out_ + 0.02, w * 0.98, h * 0.34, 0.03, band)
+  const [sx, sz] = turned(cx, z, cx, z + out_ + 0.06, a)
+  signText(out, name, sx, y, sz, h * 0.26, letters, { heading: a })
+  for (const sgn of [-1, 1]) put(sgn * (w + 0.02), y, out_ / 2, 0.03, h * 0.34, out_ * 0.45, band)
   // the bulbs round the front edge
-  const n = Math.max(6, Math.round(w * 2 / 0.6))
+  const n = Math.max(6, Math.round((w * 2) / 0.6))
   for (let i = 0; i <= n; i++) {
-    const x = cx - w + (i * 2 * w) / n
-    box(out, x, y + h / 2 - 0.12, z + out_ + 0.04, 0.07, 0.07, 0.07, bulbs, EMIT)
-    box(out, x, y - h / 2 + 0.12, z + out_ + 0.04, 0.07, 0.07, 0.07, bulbs, EMIT)
+    const u = -w + (i * 2 * w) / n
+    put(u, y + h / 2 - 0.12, out_ + 0.04, 0.07, 0.07, 0.07, bulbs, EMIT)
+    put(u, y - h / 2 + 0.12, out_ + 0.04, 0.07, 0.07, 0.07, bulbs, EMIT)
   }
 }
 
 /**
  * A vertical blade sign on a facade: the tall board out from the wall on its frame, the name down it in lit
- * letters on both faces, and a crown of bulbs. (The Warfield, the Orpheum, the hotels.)
+ * letters on both faces, and a crown of bulbs. (The Warfield, the Orpheum, the hotels.) `heading` puts it on any
+ * wall (0 faces +z; `edgeAt(ring, i).heading` for an edge of the footprint).
  */
 export function bladeSign(out: MeshBuilder, cx: number, yTop: number, z: number, h: number, name: string,
-                          opts: { body?: Rgb; letters?: Rgb; width?: number; out?: number } = {}): void {
+                          opts: { body?: Rgb; letters?: Rgb; width?: number; out?: number; heading?: number } = {}): void {
   const body = opts.body ?? [0.1, 0.12, 0.16]
   const letters = opts.letters ?? [1, 0.86, 0.4]
   const w = opts.width ?? 1.5
   const o = opts.out ?? 1.2
+  const a = opts.heading ?? 0
   const metal = surfaceTag('metal')
-  box(out, cx, yTop - h / 2, z + o, w / 2, h / 2, 0.12, body, metal)
-  for (const s of [-1, 1]) signText(out, name, cx, yTop - h / 2, z + o + s * 0.14, Math.min(w * 0.62, h / (name.length * 1.25)), letters, { lit: true, vertical: true })
+  const put = (u: number, v: number, oo: number, hu: number, hv: number, ho: number, c: Rgb, tag = 0): void => {
+    const [x, zz] = turned(cx, z, cx + u, z + oo, a)
+    boxAlong(out, x, v, zz, hu, hv, ho, a, c, tag)
+  }
+  put(0, yTop - h / 2, o, w / 2, h / 2, 0.12, body, metal)
+  for (const sgn of [-1, 1]) {
+    const [tx, tz] = turned(cx, z, cx, z + o + sgn * 0.14, a)
+    signText(out, name, tx, yTop - h / 2, tz, Math.min(w * 0.62, h / (name.length * 1.25)), letters, { lit: true, vertical: true, heading: a })
+  }
   // the bracket back to the wall, and the bulbs down both edges
-  for (const y of [yTop - 0.4, yTop - h + 0.4]) strut(out, [cx, y, z], [cx, y, z + o], 0.06, 0.06, body, 0, false)
+  for (const v of [yTop - 0.4, yTop - h + 0.4]) {
+    const [ax, az] = turned(cx, z, cx, z, a)
+    const [bx, bz] = turned(cx, z, cx, z + o, a)
+    strut(out, [ax, v, az], [bx, v, bz], 0.06, 0.06, body, 0, false)
+  }
   const n = Math.max(4, Math.round(h / 0.8))
   for (let i = 0; i <= n; i++) {
-    for (const s of [-1, 1]) box(out, cx + s * (w / 2 + 0.03), yTop - (i * h) / n, z + o, 0.05, 0.05, 0.12, [1, 0.9, 0.6], EMIT)
+    for (const sgn of [-1, 1]) put(sgn * (w / 2 + 0.03), yTop - (i * h) / n, o, 0.05, 0.05, 0.12, [1, 0.9, 0.6], EMIT)
   }
 }
 
@@ -287,6 +326,43 @@ export function cupola(out: MeshBuilder, at: P2, y0: number, r: number, opts: { 
     faceBand(out, ring(r * 0.28), y0 + drum + dome, y0 + drum + dome + r * 0.5, { kind: 'blank', wall: c, material: opts.material ?? 'ashlar' })
     box(out, at.x, y0 + drum + dome + r * 0.72, at.z, r * 0.06, r * 0.22, r * 0.06, dc, dtag)
   }
+}
+
+/**
+ * A tower or spire standing on ONE point of the building — a church's corner bell tower, a campanile, a clock
+ * tower — rather than over the whole footprint, which is all a `spire` crown can do. The shaft is square or
+ * octagonal, with its belfry openings, and the spire tapers to a point with a finial.
+ */
+export function spireOn(out: MeshBuilder, at: P2, y0: number, r: number, shaft: number, spire: number,
+                        opts: { colour?: Rgb; spireColour?: Rgb; material?: Surface; spireMaterial?: Surface; sides?: number; belfry?: boolean } = {}): void {
+  const c = opts.colour ?? [0.86, 0.84, 0.78]
+  const sc = opts.spireColour ?? [0.35, 0.4, 0.42]
+  const tag = surfaceTag(opts.material ?? 'ashlar')
+  const stag = surfaceTag(opts.spireMaterial ?? 'tile')
+  const sides = opts.sides ?? 4
+  const ring = (rr: number): P2[] => Array.from({ length: sides }, (_, k) => {
+    const a = ((k + 0.5) / sides) * Math.PI * 2
+    return { x: at.x + Math.cos(a) * rr, z: at.z + Math.sin(a) * rr }
+  })
+  const shaftRing = ring(r)
+  faceBand(out, shaftRing, y0, y0 + shaft, { kind: 'blank', wall: c, material: opts.material ?? 'ashlar' })
+  if (opts.belfry !== false) {
+    // the belfry: a tall opening on each face, just under the top of the shaft
+    for (let i = 0; i < shaftRing.length; i++) {
+      const e = edgeAt(shaftRing, i)
+      boxAlong(out, e.mid.x + e.nx * 0.06, y0 + shaft - r * 1.1, e.mid.z + e.nz * 0.06, e.L * 0.28, r * 0.75, 0.06, e.heading, [0.12, 0.12, 0.14], 0)
+    }
+  }
+  // the spire: the shaft's ring tapering to a point, and a finial on it
+  const top = { x: at.x, z: at.z }
+  for (let i = 0; i < shaftRing.length; i++) {
+    const j = (i + 1) % shaftRing.length
+    const a = shaftRing[i]
+    const b = shaftRing[j]
+    out.quad([[a.x, y0 + shaft, a.z], [b.x, y0 + shaft, b.z], [top.x, y0 + shaft + spire, top.z], [top.x, y0 + shaft + spire, top.z]],
+      [(a.x + b.x) / 2 - at.x, spire / Math.max(1, r) * 0.2, (a.z + b.z) / 2 - at.z], [[0, 0], [1, 0], [1, 1], [0, 1]], sc, stag)
+  }
+  box(out, at.x, y0 + shaft + spire + r * 0.18, at.z, r * 0.05, r * 0.18, r * 0.05, sc, stag)
 }
 
 /** A pitched or hipped roof over a long strip (a shed, a theatre's auditorium), where an inset ring would collapse. */

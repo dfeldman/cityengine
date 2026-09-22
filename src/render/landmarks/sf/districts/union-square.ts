@@ -15,7 +15,7 @@ import type { MeshBuilder } from '../../../buildings.ts'
 import { capPolygon } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { tower, towerRing, faceBand, insetRing, type TowerSpec, type Face } from '../../tower.ts'
-import { prism, strut, type Rgb } from '../../../models.ts'
+import { prism, strut, EMIT, type Rgb } from '../../../models.ts'
 import { surfaceTag, type Surface } from '../../../cartoon-material.ts'
 
 type P2 = { x: number; z: number }
@@ -1180,75 +1180,172 @@ const iMagninGrant = spec({
   roof: [0.55, 0.54, 0.52],
 })
 
+/** A flat panel of ground in the grid frame (paving band, lawn panel): one upward quad, nothing more. */
+function gslab(out: MeshBuilder, f: Frame, x0: number, x1: number, z0: number, z1: number, y: number, c: Rgb, tag = 0): void {
+  const P = (x: number, z: number): V3 => { const p = f.at(x, z); return [p.x, y, p.z] }
+  out.quad([P(x0, z0), P(x1, z0), P(x1, z1), P(x0, z1)], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], c, tag)
+}
+
 /**
- * Union Square itself (laid out 1850; rebuilt over its garage in 2002 by April Philips and Michael Fotheringham):
- * a granite deck a metre and a half over Geary, stepped down to the street on the Geary side in a broad
- * amphitheatre, with four lawn panels, palms round the edges, a glass café pavilion at two corners, and in the
- * middle the Dewey Monument (1903, Robert Aitken and Newton Tharp): a tall granite Corinthian column on a stepped
- * pedestal carrying the bronze Victory, a wreath in one hand and a trident in the other. Drawn in the street-grid
- * frame at the square's own point: +x east along Geary, +z north along Powell. (Commons: "Dewey Monument, Union
- * Square.jpg", "San Francisco, Union Square (6).jpg", "Union Square, San Francisco December 2016.jpg".)
+ * Union Square (laid out 1850; rebuilt over its garage in 2002 by April Philips and Michael Fotheringham).
+ *
+ * What the model has to get right, from the photographs (Commons: "2015 Union Square, San Francisco.jpg" — the
+ * column from the paved deck, the maroon lamp standards with their steel globes, the café pavilion and the
+ * amphitheatre steps; "2017 Union Square San Francisco 1.jpg" — the banded granite paving, the broad stair with
+ * its steel handrails, the trellised pavilion): the square is a GRANITE DECK on the roof of its garage, about
+ * 1.5 m over the four streets, not a park at grade. Powell (−x) and Geary (−z) fall to the street in broad
+ * flights; Stockton (+x) and Post (+z) are held by a low granite wall with narrow stair cuts; the garage's
+ * vehicle ramps go down at two opposite corners. The middle is hard paving — an amphitheatre for the buskers and
+ * the art fair — with the lawn as flat panels at the Post and Geary ends, and the Dewey Monument (1903, Robert
+ * Aitken and Newton Tharp) on its stepped pedestal in the centre.
+ *
+ * The figure on the column is DELIBERATELY PLAIN: Victory is priority 1 in MODELS_NEEDED.md and gets a real model
+ * from the user; this is only a bronze mass so the column is not bare. And nothing grows here — the vegetation
+ * layer plants the square (docs/BUILDINGS.md, "Never plant anything"); the lawn is flat coloured ground.
+ *
+ * Grid frame: +x east to Stockton, −x west to Powell, +z north to Post, −z south to Geary.
  */
 function unionSquarePlaza(out: MeshBuilder, fit: Fit): void {
-  const R = [[-60.5, 26.3], [-60.4, -25.4], [-57.6, -32.2], [-54.2, -35.7], [-50.5, -37.9], [-46.0, -38.8], [46.4, -38.7], [51.3, -37.3], [55.3, -34.8], [58.4, -30.8], [60.0, -25.4], [59.9, 26.2], [58.9, 30.7], [56.5, 33.9], [52.2, 37.6], [45.1, 39.2], [-48.3, 39.0], [-51.9, 37.8], [-55.8, 35.0], [-58.9, 31.5]]
-  const k = Math.min(1.6, Math.max(0.6, fit.hx / 60))
-  const ring: P2[] = R.map(([x, z]) => ({ x: x * k, z: z * k }))
-  const f = ownFrame(ring)
-  const GRANITE: Rgb = [0.72, 0.7, 0.67]
-  const PALE: Rgb = [0.8, 0.78, 0.75]
-  const LAWN: Rgb = [0.34, 0.44, 0.26]
-  const BRONZE: Rgb = [0.33, 0.3, 0.22]
-  // the deck, and the steps down its four sides (the Geary flight the widest)
+  const hx = Math.min(72, Math.max(42, fit.hx || 60))
+  const hz = Math.min(50, Math.max(28, fit.hz || 39))
+  const f = ownFrame([{ x: -hx, z: -hz }, { x: hx, z: -hz }, { x: hx, z: hz }, { x: -hx, z: hz }])
+  const GRAN = surfaceTag('granite')
+  const CONC = surfaceTag('concrete')
+  const MET = surfaceTag('metal')
+  const GLS = surfaceTag('glass')
+  const DARK: Rgb = [0.44, 0.44, 0.43]
+  const MID: Rgb = [0.63, 0.62, 0.59]
+  const PALE: Rgb = [0.82, 0.8, 0.76]
+  const LAWN: Rgb = [0.33, 0.45, 0.25]
+  const BRONZE: Rgb = [0.3, 0.29, 0.22]
+  const MAROON: Rgb = [0.33, 0.16, 0.14]
+  const STEEL: Rgb = [0.86, 0.87, 0.89]
+  const STONE: Rgb = [0.88, 0.86, 0.82]
   const deck = 1.5
-  faceBand(out, ring, 0, deck, { kind: 'blank', material: 'granite', wall: GRANITE })
-  capPolygon(out, ring, deck, PALE, surfaceTag('granite'))
+  // the deck over the garage: back from Powell and Geary to leave room for their flights, close to Stockton and Post
+  const xW = -hx + 7
+  const xE = hx - 2.5
+  const zS = -hz + 7
+  const zN = hz - 2.5
+  gbox(out, f, xW, xE, zS, zN, -0.4, deck, MID, GRAN)
+
+  // the paving: bands of pale and dark granite across the deck, and the wide pale spine down the middle
+  for (let x = xW; x < xE; x += 5.5) {
+    gslab(out, f, x, Math.min(x + 5.5, xE), zS, zN, deck + 0.04, (Math.round((x - xW) / 5.5) % 2 ? MID : DARK), GRAN)
+  }
+  gslab(out, f, xW, xE, -6.5, 6.5, deck + 0.08, PALE, GRAN)
+  gslab(out, f, -7.5, 7.5, zS, zN, deck + 0.08, PALE, GRAN)
+
+  // the lawn panels at the Post and Geary ends: flat coloured ground, nothing planted on them
+  gslab(out, f, -30, 30, zN - 18, zN - 6, deck + 0.12, LAWN)
+  gslab(out, f, -30, 30, zS + 6, zS + 18, deck + 0.12, LAWN)
+
+  // the broad flight down to Powell, and the one down to Geary: four granite treads, nested back to the deck
   for (let i = 0; i < 4; i++) {
-    const r = insetRing(ring, -(i + 1) * 0.9)
-    const y = deck - (i + 1) * 0.37
-    faceBand(out, r, y, y + 0.37, { kind: 'blank', material: 'granite', wall: i % 2 ? GRANITE : PALE })
-    capPolygon(out, r, y + 0.37, i % 2 ? GRANITE : PALE, surfaceTag('granite'))
+    const y = (i + 1) * (deck / 4)
+    gbox(out, f, -hx + 1 + i * 1.5, xW, zS + 9, zN - 9, -0.3, y, i % 2 ? PALE : MID, GRAN)
+    gbox(out, f, xW + 12, xE - 12, -hz + 1 + i * 1.5, zS, -0.3, y, i % 2 ? PALE : MID, GRAN)
   }
-  // four lawn panels round the middle
-  for (const sx of [-1, 1]) {
-    for (const sz of [-1, 1]) {
-      gbox(out, f, sx * 13 * k, sx * 47 * k, sz * 9 * k, sz * 30 * k, deck, deck + 0.35, LAWN)
-    }
+  // their cheek walls, and the steel handrails that split the Geary flight
+  for (const z of [zS + 9, zN - 9]) gbox(out, f, -hx + 1, xW + 0.6, z - 0.55, z + 0.55, -0.3, deck + 0.75, DARK, GRAN)
+  for (const x of [xW + 12, xE - 12]) gbox(out, f, x - 0.55, x + 0.55, -hz + 1, zS + 0.6, -0.3, deck + 0.75, DARK, GRAN)
+  for (const x of [-18, 6]) gstrut(out, f, [x, deck + 1.0, zS + 0.4], [x, 0.95, -hz + 1.4], 0.05, 0.05, STEEL)
+  for (const z of [-12, 12]) gstrut(out, f, [xW + 0.4, deck + 1.0, z], [-hx + 1.4, 0.95, z], 0.05, 0.05, STEEL)
+
+  // Stockton and Post: the low granite wall along the deck's edge, cut by a narrow stair at two places each
+  const cutsX = [-22, 20]
+  const cutsZ = [-16, 16]
+  for (const [a, b] of [[zS, cutsZ[0] - 4], [cutsZ[0] + 4, cutsZ[1] - 4], [cutsZ[1] + 4, zN]] as [number, number][]) {
+    if (b > a) gbox(out, f, xE - 0.7, xE, a, b, deck, deck + 0.55, PALE, GRAN)
   }
-  // the Dewey Monument: three steps, the plinth, the fluted shaft, the capital, and Victory on top
-  const col = 29 * Math.min(1.2, k)
+  for (const [a, b] of [[xW, cutsX[0] - 4], [cutsX[0] + 4, cutsX[1] - 4], [cutsX[1] + 4, xE]] as [number, number][]) {
+    if (b > a) gbox(out, f, a, b, zN - 0.7, zN, deck, deck + 0.55, PALE, GRAN)
+  }
   for (let i = 0; i < 3; i++) {
-    const w = 6.5 - i * 0.9
-    gbox(out, f, -w, w, -w, w, deck + i * 0.4, deck + (i + 1) * 0.4, PALE, surfaceTag('granite'))
+    const y = (i + 1) * (deck / 3)
+    for (const z of cutsZ) gbox(out, f, xE, hx - 0.4 - i * 0.7, z - 3.6, z + 3.6, -0.3, y, i % 2 ? MID : PALE, GRAN)
+    for (const x of cutsX) gbox(out, f, x - 3.6, x + 3.6, zN, hz - 0.4 - i * 0.7, -0.3, y, i % 2 ? MID : PALE, GRAN)
   }
-  gbox(out, f, -2.6, 2.6, -2.6, 2.6, deck + 1.2, deck + 5.2, GRANITE, surfaceTag('granite'))
-  gbox(out, f, -3.0, 3.0, -3.0, 3.0, deck + 5.2, deck + 5.8, PALE, surfaceTag('granite'))
-  const c = f.at(0, 0)
-  prism(out, c.x, c.z, deck + 5.8, deck + col - 2.2, 1.2, 16, PALE, surfaceTag('granite'), 1.02)
-  // the capital: two courses, the upper one wider, and the abacus
-  prism(out, c.x, c.z, deck + col - 2.2, deck + col - 0.9, 1.15, 16, PALE, surfaceTag('granite'), 1.6)
-  gbox(out, f, -1.8, 1.8, -1.8, 1.8, deck + col - 0.9, deck + col - 0.3, PALE, surfaceTag('granite'))
-  // Victory: a standing bronze figure, the wreath out in one hand, the trident up in the other
-  const y0 = deck + col - 0.3
-  gbox(out, f, -0.9, 0.9, -0.9, 0.9, y0, y0 + 0.35, BRONZE, surfaceTag('metal'))
-  prism(out, c.x, c.z, y0 + 0.35, y0 + 2.2, 0.62, 8, BRONZE, surfaceTag('metal'), 0.34)
-  prism(out, c.x, c.z, y0 + 2.2, y0 + 3.0, 0.38, 8, BRONZE, surfaceTag('metal'), 0.3)
-  const head = f.at(0, 0)
-  prism(out, head.x, head.z, y0 + 3.0, y0 + 3.45, 0.3, 8, BRONZE, surfaceTag('metal'), 0.14)
-  gstrut(out, f, [0, y0 + 2.5, 0], [2.1, y0 + 2.2, 0.2], 0.16, 0.16, BRONZE)          // the arm with the wreath
-  const w = f.at(2.35, 0.2)
-  prism(out, w.x, w.z, y0 + 2.05, y0 + 2.15, 0.5, 8, BRONZE, surfaceTag('metal'), 0.5, false)
-  gstrut(out, f, [0, y0 + 2.5, 0], [-1.4, y0 + 3.3, -0.2], 0.16, 0.16, BRONZE)        // and the arm with the trident
-  gstrut(out, f, [-1.5, y0 + 1.2, -0.2], [-1.5, y0 + 5.4, -0.2], 0.11, 0.11, BRONZE)
-  // the wings, one either side
-  for (const sz of [-1, 1]) gstrut(out, f, [-0.2, y0 + 1.9, sz * 0.3], [-0.8, y0 + 3.9, sz * 0.85], 0.06, 0.8, BRONZE)
-  // the two glass café pavilions, at the south-west and north-east corners
-  for (const [px, pz] of [[-43, -17], [45, 20]]) {
-    gbox(out, f, px * k - 6, px * k + 6, pz * k - 4.5, pz * k + 4.5, deck, deck + 3.6, [0.45, 0.55, 0.58], surfaceTag('glass'))
-    gbox(out, f, px * k - 6.6, px * k + 6.6, pz * k - 5.1, pz * k + 5.1, deck + 3.6, deck + 4.1, [0.85, 0.85, 0.84], surfaceTag('metal'))
+
+  // the garage: its two vehicle ramps, down at opposite corners, each between concrete walls into a dark portal
+  for (const s of [-1, 1]) {
+    const x0 = s > 0 ? hx - 28 : -hx + 8
+    const x1 = s > 0 ? hx - 8 : -hx + 28
+    const z0 = s > 0 ? hz - 9.5 : -hz + 2
+    const z1 = s > 0 ? hz - 2 : -hz + 9.5
+    const P = (x: number, y: number, z: number): V3 => { const p = f.at(x, z); return [p.x, y, p.z] }
+    const deep = -4.2
+    const [xa, xb] = s > 0 ? [x1, x0] : [x0, x1]                       // xa at the street, xb down at the portal
+    out.quad([P(xa, 0, z0), P(xa, 0, z1), P(xb, deep, z1), P(xb, deep, z0)], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], [0.2, 0.2, 0.21], CONC)
+    for (const z of [z0, z1]) gbox(out, f, x0, x1, z - 0.5, z + 0.5, deep, s > 0 ? 0.5 : 0.5, [0.55, 0.55, 0.54], CONC)
+    gbox(out, f, s > 0 ? x0 - 0.6 : x1, s > 0 ? x0 : x1 + 0.6, z0, z1, deep, 0.2, [0.08, 0.08, 0.09], CONC)
   }
-  // No plants here. A builder never grows anything: the vegetation layer plants the city (render/vegetation.ts,
-  // the city's own tree list), and a generator's trees always came out worse than its buildings (user,
-  // 2026-09-22: "be sure that the generators don't do plants, it always does a bad job").
+
+  // the Dewey Monument: the stepped base, the pedestal, the granite shaft, its Corinthian capital
+  for (let i = 0; i < 3; i++) {
+    const w = 6.6 - i * 0.95
+    gbox(out, f, -w, w, -w, w, deck + i * 0.4, deck + (i + 1) * 0.4, STONE, GRAN)
+  }
+  gbox(out, f, -3.2, 3.2, -3.2, 3.2, deck + 1.2, deck + 4.6, STONE, GRAN)
+  gbox(out, f, -3.7, 3.7, -3.7, 3.7, deck + 4.6, deck + 5.2, STONE, GRAN)
+  gcol(out, f, 0, 0, deck + 5.2, deck + 23.2, 1.3, STONE, 24, 1.14, GRAN)
+  gcol(out, f, 0, 0, deck + 23.2, deck + 24.7, 1.16, STONE, 16, 2.0, GRAN)         // the capital's bell
+  gbox(out, f, -2.1, 2.1, -2.1, 2.1, deck + 24.7, deck + 25.3, STONE, GRAN)        // the abacus
+  /*
+   * Victory, as a PLACEHOLDER only (MODELS_NEEDED.md, SF priority 1: "the figure must be a model"): the bronze
+   * stands on its globe with one arm up, and no more shape than that, so it is obvious what is still to come.
+   */
+  const vy = deck + 25.3
+  gcol(out, f, 0, 0, vy, vy + 0.9, 0.5, BRONZE, 12, 0.85, MET)                     // the globe she stands on
+  gcol(out, f, 0, 0, vy + 0.9, vy + 1.3, 0.85, BRONZE, 12, 0.5, MET)
+  gcol(out, f, 0, 0, vy + 1.3, vy + 2.9, 0.42, BRONZE, 10, 0.5, MET)               // and the figure: a mass, no more
+  gcol(out, f, 0, 0, vy + 2.9, vy + 3.3, 0.5, BRONZE, 10, 0.26, MET)
+  gcol(out, f, 0, 0, vy + 3.3, vy + 3.7, 0.26, BRONZE, 8, 0.22, MET)
+  gstrut(out, f, [0.2, vy + 2.8, 0], [1.0, vy + 4.3, 0], 0.15, 0.15, BRONZE)
+
+  // the two glass café pavilions, at opposite corners, each under its metal trellis
+  for (const s of [-1, 1]) {
+    const cx = s * (hx - 16)
+    const cz = s * (hz - 13)
+    gbox(out, f, cx - 6.5, cx + 6.5, cz - 4.5, cz + 4.5, deck, deck + 3.6, [0.42, 0.52, 0.56], GLS)
+    gbox(out, f, cx - 6.9, cx + 6.9, cz - 4.9, cz + 4.9, deck + 3.6, deck + 4.1, [0.22, 0.22, 0.23], MET)
+    for (const dx of [-6.9, 6.9]) for (const dz of [-4.9, 4.9]) gcol(out, f, cx + dx, cz + dz, deck, deck + 4.1, 0.16, [0.22, 0.22, 0.23], 6, 0.16, MET)
+    // the trellis out over the tables, on its posts
+    const tz = cz - s * 8.5
+    gbox(out, f, cx - 6.9, cx + 6.9, Math.min(cz, tz) - 0.2, Math.max(cz, tz) + 0.2, deck + 4.0, deck + 4.16, [0.26, 0.26, 0.27], MET)
+    for (const dx of [-6.4, 0, 6.4]) gcol(out, f, cx + dx, tz, deck, deck + 4.0, 0.14, [0.22, 0.22, 0.23], 6, 0.14, MET)
+  }
+
+  // the stage terrace on the Powell side, two steps up off the plaza
+  for (let i = 0; i < 2; i++) gbox(out, f, xW + 3 - i * 0.9, xW + 17 + i * 0.9, -8 - i * 0.9, 8 + i * 0.9, deck, deck + 0.55 - i * 0.25, i ? MID : DARK, GRAN)
+  // and the seating bank in the Geary–Stockton corner, stepping up away from the plaza
+  for (let i = 0; i < 4; i++) gbox(out, f, 30, 50, zS + 3, zS + 14 - i * 2.4, deck, deck + 0.45 * (i + 1), i % 2 ? MID : DARK, GRAN)
+
+  // the granite benches down both sides of the spine, the bollards along the top of the two flights
+  for (const z of [-10.5, 10.5]) for (let x = -26; x <= 26; x += 10.5) gbox(out, f, x - 1.2, x + 1.2, z - 0.28, z + 0.28, deck, deck + 0.46, PALE, GRAN)
+  for (let z = zS + 10; z <= zN - 10; z += 6) gcol(out, f, xW + 0.9, z, deck, deck + 0.85, 0.17, [0.2, 0.2, 0.21], 8, 0.15, MET)
+  for (let x = xW + 13; x <= xE - 13; x += 6) gcol(out, f, x, zS + 0.9, deck, deck + 0.85, 0.17, [0.2, 0.2, 0.21], 8, 0.15, MET)
+
+  // the flag poles by the Post lawn
+  for (const x of [-13, 0, 13]) {
+    gbox(out, f, x - 0.7, x + 0.7, zN - 4.3, zN - 2.9, deck, deck + 0.5, PALE, GRAN)
+    gcol(out, f, x, zN - 3.6, deck + 0.5, deck + 16, 0.16, [0.9, 0.9, 0.89], 8, 0.09, MET)
+  }
+
+  /*
+   * The lamp standards round the deck: a maroon cast shaft carrying a steel globe, the square's own light
+   * (Commons "2015 Union Square, San Francisco.jpg"). Lit after dark.
+   */
+  const lamps: [number, number][] = []
+  for (let z = zS + 7; z <= zN - 7; z += 13) lamps.push([xW + 2.5, z], [xE - 2.5, z])
+  for (let x = xW + 14; x <= xE - 14; x += 15) lamps.push([x, zS + 2.5], [x, zN - 2.5])
+  for (const [x, z] of lamps) {
+    gcol(out, f, x, z, deck, deck + 0.35, 0.34, MAROON, 8, 0.26, MET)
+    gcol(out, f, x, z, deck + 0.35, deck + 4.3, 0.22, MAROON, 8, 0.17, MET)
+    gcol(out, f, x, z, deck + 4.3, deck + 4.72, 0.18, STEEL, 12, 0.46, MET)
+    gcol(out, f, x, z, deck + 4.72, deck + 5.14, 0.46, STEEL, 12, 0.18, MET)
+    gcol(out, f, x, z, deck + 4.6, deck + 4.84, 0.48, [1, 0.93, 0.76], 12, 0.48, EMIT)
+  }
 }
 
 export const UNION_SQUARE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
