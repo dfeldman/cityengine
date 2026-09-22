@@ -718,7 +718,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         life.update(dt, traffic.all, crowd.all, at, strangers?.drawn, city.terrain)
       }
       sky?.update(dt, at)
-      trees.update()
+      trees.update(camera.position)
 
       // Chase camera. Both the position and the look-at come from the SAME smoothed heading, so the rider
       // stays put in the frame and the camera swings round behind them through a turn. Deriving the two from

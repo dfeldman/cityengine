@@ -708,7 +708,16 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0): void {
     const g = terrain.heightAt(x, z) - 0.6
     return lv === null ? g : Math.min(g, lv - 0.4)
   }
-  const out = new MeshBuilder()
+  /*
+   * In chunks of 800 m, so what is off screen is culled (PARIS_EXPAND §6 item 7: the whole grid drawn three
+   * times was the biggest single cost in the frame, 4.8 million triangles at the Concorde), and only over the
+   * city and a margin round it: beyond that there is nothing to hide but the far massing and the skyline.
+   */
+  const CHUNK = 800
+  const box = pkg.box
+  const margin = 1500
+  const chunks = new Map<string, MeshBuilder>()
+  let out = new MeshBuilder()
   const quad = (p: [number, number, number][]): void => {
     out.quad(p, [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], [0, 0, 0], 0)
   }
@@ -716,6 +725,9 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0): void {
     for (let c = 0; c + 1 < t.cols; c++) {
       const x = t.x0 + c * t.step
       const z = t.z0 + r * t.step
+      if (box && (x < box.x0 - margin || x > box.x1 + margin || z < box.z0 - margin || z > box.z1 + margin)) continue
+      const ck = `${Math.floor(x / CHUNK)},${Math.floor(z / CHUNK)}`
+      out = chunks.get(ck) ?? chunks.set(ck, new MeshBuilder()).get(ck)!
       // does the cell straddle a bank? sample its corners and centre
       const probes = [[0, 0], [1, 0], [0, 1], [1, 1], [0.5, 0.5]].map(([u, v]) => wetAt(x + u * t.step, z + v * t.step))
       const allDry = probes.every((p) => p === null)
@@ -769,16 +781,17 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0): void {
   // streets beyond a crest were painted over the hill in front of them
   // one geometry for all three (clones share it): three copies of the whole grid held a quarter of a gigabyte
   // in central Paris, and none of it needs a CPU copy once uploaded
+  for (const [ck, piece] of chunks) {
   let first: Mesh | null = null
   for (const group of [GROUP.areas, GROUP.road, GROUP.building]) {
     let m: Mesh
     if (!first) {
-      m = new Mesh(`ground:occluder:${group}`, scene)
-      out.toVertexData().applyToMesh(m)
+      m = new Mesh(`ground:occluder:${group}:${ck}`, scene)
+      piece.toVertexData().applyToMesh(m)
       m.geometry?.clearCachedData()
       first = m
     } else {
-      m = first.clone(`ground:occluder:${group}`)
+      m = first.clone(`ground:occluder:${group}:${ck}`)
     }
     m.material = mat
     m.renderingGroupId = group
@@ -790,15 +803,19 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0): void {
      */
     if (group === GROUP.building) m.position.y = 0.45
     m.isPickable = false
-    m.alwaysSelectAsActiveMesh = true
-    /*
-     * The order within the group, stated rather than left to creation order: the occluder first, since
-     * everything after has to test against it; then, in the ground's group, parks BEFORE the pavement and
-     * paths — a footpath through a park painted first was buried under the grass, and the rider rode
-     * across what looked like an unbroken lawn.
-     */
-    const rank = (mesh: { name: string }): number =>
-      mesh === m ? 0 : mesh.name.startsWith('areas:') ? 1 : mesh.name.startsWith('corridor:') ? 2 : 3
+    // culled by the frustum now, chunk by chunk (it was one mesh, always drawn)
+    m.refreshBoundingInfo()
+  }
+  }
+  /*
+   * The order within each group, stated rather than left to creation order: the occluder first, since
+   * everything after has to test against it; then, in the ground's group, parks BEFORE the pavement and
+   * paths — a footpath through a park painted first was buried under the grass, and the rider rode
+   * across what looked like an unbroken lawn.
+   */
+  const rank = (mesh: { name: string }): number =>
+    mesh.name.startsWith('ground:occluder') ? 0 : mesh.name.startsWith('areas:') ? 1 : mesh.name.startsWith('corridor:') ? 2 : 3
+  for (const group of [GROUP.areas, GROUP.road, GROUP.building]) {
     scene.setRenderingOrder(group, (a, b) => rank(a.getMesh()) - rank(b.getMesh()))
   }
 }

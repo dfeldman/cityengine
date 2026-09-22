@@ -188,7 +188,16 @@ Tooling carried over: `tools/nested-parts.ts` (parts to replace with a model), `
    go overboard and try to copy statuary or other non-geometric detail.
 5. **The families (B)** — churches, palaces, bridges, monuments, gardens — working through the manifest.
 6. **Line 6** viaduct, Bir-Hakeim, trains.
-7. **Performance pass** with per-ring budgets, on the slowest target machine.
+7. ✅ (2026-09-22, first pass) **Performance pass** with per-ring budgets, on the slowest target machine.
+   `tools/perf-breakdown.ts` (triangles by mesh family) and `tools/perf.ts` (unthrottled frame time). Two
+   changes cut the Concorde's active triangles from 14 M to 4 M:
+   - trees at three levels of detail by distance (LOD0 within 90 m, LOD1 to 225 m, LOD2 beyond), re-planted
+     as the eye moves: 7 M → 1.5 M;
+   - the ground occluder in 800 m chunks, culled by the frustum and limited to the city plus 1.5 km:
+     4.8 M → 1.1 M.
+   Views are unchanged under 1%. What is left is fill at high DPI (21 ms at 3200 × 1800 headless): the ground's
+   painted layers and the AO pass. Next if needed: a resolution scale option, merging the mid ring's massing
+   per style.
 11. ✅ (2026-09-22: `src/sim/route.ts`, the routes menu, `src/city/scenic.ts`, `tools/check-scenic.ts`) **Go anywhere, and a GPS (user, 2026-09-22):** pick any place on the map (the large map, M) and ride from
    there; set a DESTINATION and show the route on the minimap and the ground, with the distance left and the
    next turn — a shortest path on the ride graph. Later: **preplanned routes** (scenic loops) on the same

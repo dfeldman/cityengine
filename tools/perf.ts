@@ -2,15 +2,18 @@
  * Frame time for one spot under one set of URL options, measured in a real (headless) GPU browser.
  * Absolute numbers are this machine's; the point is comparing two settings on the same spot.
  *   npx tsx tools/perf.ts --edge=5525 --q="bodies=6&bodyq=high"
+ *   node --experimental-strip-types tools/perf.ts --city=paris-centre --at=48.8606,2.3376 [--view=high]
+ * Unthrottled (no vsync, no frame-rate limit), so the frame time is the real cost, not 16.7 ms.
  */
 import { chromium } from 'playwright'
 const arg = (n: string, f = ''): string => {
   const h = process.argv.slice(2).find((a) => a.startsWith(`--${n}=`))
   return h ? h.slice(n.length + 3) : f
 }
-const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist'] })
+const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist', '--disable-gpu-vsync', '--disable-frame-rate-limit'] })
 const page = await browser.newPage({ viewport: { width: 1600, height: 900 }, deviceScaleFactor: 2 })
-await page.goto(`http://localhost:5200/?city=${arg('city', 'paris-marais')}&start=${arg('edge')}&freeze=1&${arg('q')}`)
+const where = arg('at') ? `at=${arg('at')}` : `start=${arg('edge')}`
+await page.goto(`http://localhost:5200/?city=${arg('city', 'paris-marais')}&${where}&freeze=1${arg('view') ? `&view=${arg('view')}` : ''}&${arg('q')}`)
 await page.waitForFunction('window.gameReady === true', null, { timeout: 60_000 })
 await page.waitForFunction('window.crowdReady === true || window.riderReady === true', null, { timeout: 90_000 }).catch(() => {})
 await page.waitForTimeout(Number(arg('wait', '6000')))   // bodies and trees arrive asynchronously

@@ -48,6 +48,9 @@ interface TreeEntry { species: string; file: string; height: number; bounds?: { 
 /** `height` is the tree's height in METRES, not a scale: the models are forest trees of all sizes */
 export type { Planting }
 
+/** metres from the eye within which a tree is drawn at its full detail */
+const NEAR_LOD = 90
+
 export class Vegetation {
   private readonly scene: Scene
   private readonly base: string
@@ -58,7 +61,14 @@ export class Vegetation {
   /** the trees of each tile built now (render/city.ts `TileLayer`): what the instance buffers hold */
   private readonly byTile = new Map<string, Planting[]>()
   private dirty = false
-  private models: { parts: Mesh[]; park: boolean; top: number }[] = []
+  /**
+   * Each model's parts at two levels of detail: `parts` (LOD0) near the eye, `far` (the file's own LOD1, or
+   * LOD0 when it has none) beyond `NEAR_LOD` metres (PARIS_EXPAND §6 item 7). LOD0 of every tree in view was
+   * seven million triangles at the Concorde, half of all there were.
+   */
+  private models: { parts: Mesh[]; far: Mesh[]; farther: Mesh[]; park: boolean; top: number }[] = []
+  private focus: { x: number; z: number } | null = null
+  private plantedAt: { x: number; z: number } | null = null
 
   constructor(scene: Scene, terrain: Terrain, assetBase: string) {
     this.scene = scene
@@ -87,8 +97,10 @@ export class Vegetation {
     }
   }
 
-  /** Once a frame: re-plant if the tiles changed and the models are here. */
-  update(): void {
+  /** Once a frame: re-plant if the tiles changed, or the eye moved far enough to change who is near. */
+  update(eye?: { x: number; z: number }): void {
+    if (eye) this.focus = { x: eye.x, z: eye.z }
+    if (this.focus && this.plantedAt && Math.hypot(this.focus.x - this.plantedAt.x, this.focus.z - this.plantedAt.z) > 30) this.dirty = true
     if (!this.dirty || this.models.length === 0) return
     this.dirty = false
     this.plantings = [...this.byTile.values()].flat()
@@ -153,7 +165,7 @@ export class Vegetation {
     }
 
     // a model is a group of meshes that must be instanced together
-    const models: { parts: Mesh[]; park: boolean; top: number }[] = []
+    const models: { parts: Mesh[]; far: Mesh[]; farther: Mesh[]; park: boolean; top: number }[] = []
     for (const [entries, park] of [[pick(STREET_TREES, 5), false], [pick(PARK_TREES, 5), true]] as const) {
       for (const entry of entries) {
         const result = await SceneLoader.ImportMeshAsync('', this.base, entry.file, this.scene)
@@ -169,9 +181,13 @@ export class Vegetation {
          */
         const lod0 = all.filter((m) => !/LOD[1-9]/i.test(m.name))
         const parts = lod0.length > 0 ? lod0 : all
-        for (const m of all) if (!parts.includes(m)) m.dispose()
+        const lod1 = all.filter((m) => /LOD1/i.test(m.name))
+        const far = lod1.length > 0 ? lod1 : parts
+        const lod2 = all.filter((m) => /LOD2/i.test(m.name))
+        const farther = lod2.length > 0 ? lod2 : far
+        for (const m of all) if (!parts.includes(m) && !far.includes(m) && !farther.includes(m)) m.dispose()
         if (parts.length === 0) continue
-        for (const m of parts) {
+        for (const m of new Set([...parts, ...far, ...farther])) {
           m.isPickable = false
           m.alwaysSelectAsActiveMesh = true
           /**
@@ -221,7 +237,7 @@ export class Vegetation {
           }
           m.isPickable = false
         }
-        models.push({ parts, park, top: entry.bounds?.top ?? entry.height ?? 12 })
+        models.push({ parts, far, farther, park, top: entry.bounds?.top ?? entry.height ?? 12 })
       }
     }
     if (models.length === 0) return
@@ -254,16 +270,19 @@ export class Vegetation {
         Quaternion.RotationAxis(Vector3.Up(), p.spin),
         // on the ground, not at sea level: a city with any relief left every tree hanging in the air
         new Vector3(p.x, 0.16 + this.terrain.heightAt(p.x, p.z), p.z))
-      for (const part of model.parts) {
+      // near the eye the full tree, beyond it the lighter one
+      const d = this.focus ? Math.hypot(p.x - this.focus.x, p.z - this.focus.z) : 0
+      for (const part of d < NEAR_LOD ? model.parts : d < 2.5 * NEAR_LOD ? model.far : model.farther) {
         const list = buckets.get(part) ?? []
         list.push(matrix)
         buckets.set(part, list)
       }
     })
+    this.plantedAt = this.focus ? { ...this.focus } : null
 
     // trees do not move, so the matrices are written once and never touched again
     for (const model of models) {
-      for (const part of model.parts) {
+      for (const part of new Set([...model.parts, ...model.far, ...model.farther])) {
         const list = buckets.get(part)
         if (!list || list.length === 0) {
           part.thinInstanceCount = 0
