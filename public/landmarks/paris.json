@@ -680,5 +680,17 @@
     "rotateDeg": 0,
     "stone": false,
     "note": "The bronze Trajan's column: pedestal and eagles, the spiral frieze, gallery, lantern, Napoleon; OSM's three column parts replaced."
+  },
+  {
+    "name": "Sainte-Chapelle",
+    "procedural": "sainteChapelle",
+    "osm": [
+      "relation/3344870",
+      "relation/124148156",
+      "way/248296374"
+    ],
+    "front": 290,
+    "height": 75,
+    "note": "The glass chapel: lancets between pinnacled buttresses, the apse, the steep lead roof with its gilded cresting and spire, the west rose and turrets; OSM's 75 m block and its parts replaced."
   }
 ]

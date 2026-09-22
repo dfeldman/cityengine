@@ -2056,5 +2056,19 @@
    2.345,
    20
   ]
+ },
+ {
+  "name": "Sainte-Chapelle \u2014 from the court",
+  "group": "landmark",
+  "from": [
+   48.85555,
+   2.34385,
+   2
+  ],
+  "to": [
+   48.8554,
+   2.345,
+   22
+  ]
  }
 ]
