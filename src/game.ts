@@ -51,6 +51,7 @@ import { Ride, cornerRadius } from './sim/ride.ts'
 import { addEdges, departureBearing, resolve, type CityGraph, type Edge } from './city/graph.ts'
 import { locate, rideExits, type RideGraph } from './city/ridegraph.ts'
 import { planRoute, type Route } from './sim/route.ts'
+import { SCENIC } from './city/scenic.ts'
 import { unpackPoints, wholeWater, type CityPackage, type PackedArea, type PackedRail } from './city/package.ts'
 import { loadRide, openCity } from './city/tilestore.ts'
 import { mapEdges } from './city/ridefile.ts'
@@ -387,7 +388,36 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     minimap.route = route?.line ?? null
     minimap.destination = destination
   }
-  const clearRoute = (): void => { destination = null; replan(); hud.gps(null) }
+  // a preplanned route: its waypoints still to reach, and its name for the HUD
+  let tour: { name: string; left: { x: number; z: number }[]; of: number } | null = null
+  const clearRoute = (): void => { destination = null; tour = null; replan(); hud.gps(null) }
+  const nextWaypoint = (): boolean => {
+    if (!tour || tour.left.length === 0) return false
+    destination = tour.left.shift()!
+    replan()
+    return true
+  }
+  const scenic = SCENIC[pkg.region ?? ''] ?? []
+  if (scenic.length) {
+    const menu = document.createElement('select')
+    menu.className = 'sr-city sr-landmarks sr-routes'
+    menu.style.top = '88px'
+    menu.title = 'ride a preplanned route'
+    menu.add(new Option('routes…', ''))
+    for (const r of scenic) menu.add(new Option(r.name, r.name))
+    menu.addEventListener('keydown', (e) => e.stopPropagation())
+    menu.addEventListener('change', () => {
+      const r = scenic.find((q) => q.name === menu.value)
+      menu.value = ''
+      menu.blur()
+      if (!r) return
+      const pr = new Projection(pkg.origin)
+      tour = { name: r.name, left: r.waypoints.map(([lat, lon]) => pr.toLocal({ lat, lon })), of: r.waypoints.length }
+      nextWaypoint()
+      debug.toast(`${r.name}: ${tour.of} stops`)
+    })
+    document.body.appendChild(menu)
+  }
   minimap.onPick = (p, jump) => {
     if (jump) {
       if (!opts.goTo) return
@@ -557,7 +587,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       if (destination && now - routedAt > 1000) {
         routedAt = now
         replan()
-        if (route && route.length < 20) { debug.toast('you have arrived'); clearRoute() }
+        if (route && route.length < 20) {
+          if (nextWaypoint()) debug.toast(`${tour!.name}: stop ${tour!.of - tour!.left.length} of ${tour!.of}`)
+          else { debug.toast('you have arrived'); clearRoute() }
+        }
       }
       if (route && junction && !junction.passThrough && ownChoiceAt !== junction.nodeId && !nav.isCommitted) {
         const want = route.leave.get(junction.nodeId)
@@ -572,7 +605,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         const next = route.turnRound ? 'turn round' : exit && junction
           ? `${exit.turn === 'straight' ? 'straight on' : exit.turn}${street ? ` onto ${street}` : ''} in ${Math.round(junction.ahead / 10) * 10} m`
           : 'ahead'
-        hud.gps(`⌖ ${km} · ${next}`)
+        hud.gps(`⌖ ${tour ? `${tour.of - tour.left.length}/${tour.of} · ` : ''}${km} · ${next}`)
       }
       paths.follow(nav.at())
       paths.update(nav.edge.id, junction, nav.requested)

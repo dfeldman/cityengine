@@ -146,7 +146,8 @@ export function planRoute(g: CityGraph, from: Position, target: P,
     const c = n === goal.a ? onGraph.s : n === goal.b ? goal.length - onGraph.s : Infinity
     return goal.id === here.id && n === aheadNode ? c + TURN_ROUND_COST : c
   }
-  let bestEnd = -1
+  // null, not −1: the ride graph's own synthetic nodes have negative ids (ridegraph.ts `Ids`)
+  let bestEnd: number | null = null
   let bestCost = Infinity
   while (heap.size) {
     const [d, n] = heap.pop()
@@ -181,20 +182,21 @@ export function planRoute(g: CityGraph, from: Position, target: P,
       return { target: onGraph, turnRound: true, leave: new Map(), nodes: [], line, length: direct }
     }
   }
-  if (bestEnd < 0) return null
+  if (bestEnd === null) return null
   // walk back from the end to the start node
-  const nodes: number[] = [bestEnd]
+  const end = bestEnd
+  const nodes: number[] = [end]
   const leave = new Map<number, number>()
-  for (let n = bestEnd; via.has(n);) {
+  for (let n = end; via.has(n);) {
     const v = via.get(n)!
     leave.set(v.prev, v.edge)
     nodes.unshift(v.prev)
     n = v.prev
   }
-  leave.set(bestEnd, goal.id)
+  leave.set(end, goal.id)
   // the shape: the rest of this edge (or the U-turn back along it), then each edge in turn, then into the goal
   const line: P[] = []
-  const startTurn = first.get(bestEnd) === 'behind'
+  const startTurn = first.get(end) === 'behind'
   const addEdge = (eid: number, fromNode: number, sEnd?: number): void => {
     const e = g.edges.get(eid)!
     const forward = e.a === fromNode
@@ -220,6 +222,6 @@ export function planRoute(g: CityGraph, from: Position, target: P,
     line.push(...pts)
   }
   for (let i = 0; i + 1 < nodes.length; i++) addEdge(leave.get(nodes[i])!, nodes[i])
-  addEdge(goal.id, bestEnd, onGraph.s)
+  addEdge(goal.id, end, onGraph.s)
   return { target: onGraph, turnRound: startTurn, leave, nodes, line, length: bestCost }
 }
