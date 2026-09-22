@@ -252,7 +252,8 @@ void main(void) {
   // banded rather than smooth: the step is what makes it read as drawn rather than rendered
   sun = smoothstep(0.0, 0.02, sun - 0.5) * 0.55 + sun * 0.45;
   float up = n.y * 0.5 + 0.5;
-  vec3 base = stone > 0.5 ? (vSurface > 0.5 ? surfaceLook(vColour.rgb, n, vSurface) : dressed(vColour.rgb, n)) : vColour.rgb;
+  // a surface a builder asked for, in any static material; the automatic pale-stone look only on the monuments
+  vec3 base = vSurface > 0.5 ? surfaceLook(vColour.rgb, n, vSurface) : stone > 0.5 ? dressed(vColour.rgb, n) : vColour.rgb;
   vec3 lit = base * (mix(groundColour, skyColour, up) + sunColour * sun);
   // a rim light, so a dark shape never disappears into a dark background
   float rim = pow(1.0 - max(dot(n, -vView), 0.0), 3.0);

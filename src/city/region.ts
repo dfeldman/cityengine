@@ -88,7 +88,7 @@ export interface Region {
   landmarkPlate: { fill: string; text: string }
   /** how the city draws the furniture OSM maps at points (package `furniture`) */
   pointFurniture: {
-    metro: 'guimard' | 'nyc' | 'cta' | 'generic'
+    metro: 'guimard' | 'nyc' | 'cta' | 'generic' | 'bart'
     /** a Paris drinking fountain is a Wallace fountain whether or not the mapper said so */
     fountain: 'wallace' | 'tap'
     kiosk: 'paris' | 'plain'

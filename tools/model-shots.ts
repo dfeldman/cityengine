@@ -87,8 +87,10 @@ const page = await browser.newPage({ viewport: { width: 1400, height: 800 } })
 page.on('pageerror', (e) => console.log('page error:', e.message.slice(0, 300)))
 await page.goto(`http://localhost:5200/?model=${model}${arg('size') ? `&size=${arg('size')}` : ''}${arg('time') ? `&time=${arg('time')}` : ''}`)
 await page.waitForFunction('window.modelReady === true', null, { timeout: 60_000 })
-if (fitFor) {
-  const b = await page.evaluate(`window.__rebuild(${JSON.stringify(fitFor)})`) as { min: number[]; max: number[]; triangles: number }
+// --views=auto: framed on the model's own bounds, whatever it is (furniture, a vehicle, a landmark at --size)
+if (fitFor || arg('views') === 'auto') {
+  const s0 = Number(arg('size', '200'))
+  const b = await page.evaluate(`window.__rebuild(${JSON.stringify(fitFor ?? { hx: s0 / 2, hz: s0 / 2, height: s0 })})`) as { min: number[]; max: number[]; triangles: number }
   const H = b.max[1]
   const R = Math.max(b.max[0] - b.min[0], b.max[2] - b.min[2], H)
   const cy = H * 0.45

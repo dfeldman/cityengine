@@ -337,6 +337,15 @@ These make the world alive, as the Seine's boats did:
   Square's clock tower, the Clock Tower lofts at 2nd & Bryant, the Humboldt Bank's dome, the Southern Pacific
   (One Market) clock, and the street clocks on posts (Lotta's, the Phelan's, Shreve's on Post).
 - **Statues** go in MODELS_NEEDED.md "San Francisco", for the user to make: the Yoda Fountain first.
+- **Foot overpasses and the multi-level city — a project on its own** (user, 2026-09-22: "areas with lots of foot
+  overpasses will need special care. these are extremely challenging in SF since they connect different levels of
+  different areas"). There are the skybridges over Washington and Clay at the Golden Gateway, the Embarcadero
+  Center's upper-level walkways between its towers, the Portsmouth Square footbridge to the Hilton, Salesforce
+  Park, the Transit Center's ramps, and the Yerba Buena gardens over Moscone. The ride graph needs levels:
+  edges with their own heights (as `raised` edges have now) that join at landings, stairs and ramps rather than
+  at street junctions, and a way to ride from one level to the next. That means a level-aware graph, OSM `layer`
+  and `level` tags, bridge=yes footways, and hand fixes where OSM is thin. Do it after the buildings those
+  levels belong to are modelled.
 - **Public sculptural art** (user: "sf has a lot of public sculptural art — these should be attempted if possible.
   not really as many statues like paris though"). OSM's `tourism=artwork` gives the positions; the abstract
   pieces suit procedural models: Cupid's Span, the Vaillancourt Fountain, Sea Change, Language of the Birds,

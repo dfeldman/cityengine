@@ -21,6 +21,7 @@ import { MeshBuilder } from './render/buildings.ts'
 import { box } from './render/models.ts'
 import { PROCEDURAL } from './render/landmarks/procedural.ts'
 import { SF_VEHICLES } from './render/sf/trains.ts'
+import { bartEntrance } from './render/sf/furniture.ts'
 import { cartoonMaterial, updateCartoonEye } from './render/cartoon-material.ts'
 import { DAYLIGHT, setTimeOfDay, type TimeOfDay } from './render/facade-material.ts'
 
@@ -38,7 +39,9 @@ export async function modelShowcase(canvas: HTMLCanvasElement, name: string, siz
   sun.diffuse = new Color3(1, 0.96, 0.9)
   // a landmark builder, or a vehicle (the rolling stock's models, which take no fit)
   const vehicle = (SF_VEHICLES as Record<string, ((o: MeshBuilder) => void) | undefined>)[name]
-  const build = PROCEDURAL[name] ?? (vehicle ? (o: MeshBuilder) => vehicle(o) : undefined)
+  // (and street furniture, drawn in the game's own static material: `?model=bartEntrance`)
+  const FURNITURE: Record<string, (o: MeshBuilder) => void> = { bartEntrance }
+  const build = PROCEDURAL[name] ?? (vehicle ? (o: MeshBuilder) => vehicle(o) : FURNITURE[name] ? (o: MeshBuilder) => FURNITURE[name](o) : undefined)
   let mb = new MeshBuilder()
   if (build) build(mb, { hx: size / 2, hz: size / 2, height: size })
   const m = new Mesh(name, scene)

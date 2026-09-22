@@ -35,6 +35,7 @@ import { waterMaterial } from './water-material.ts'
 import { planFacade, type StyleId } from '../city/facade.ts'
 import { Terrain } from '../city/terrain.ts'
 import { Carriageways } from '../city/carriageways.ts'
+import { bartEntrance } from './sf/furniture.ts'
 import { unpackPoints, type CityPackage, type PackedArea, type PackedBuilding, type PackedEdge, type PackedFurniture, type PackedRail } from '../city/package.ts'
 import { BRIDGE_STYLES, deck, isRaised, railDeck } from './bridges.ts'
 import { TILE, nearOf, tileKey, tileOf, tilesOfLine, type Near, type TileData, type TileSource } from '../city/tiles.ts'
@@ -1924,7 +1925,7 @@ export class City {
     for (const f of this.pointsIn.get(k) ?? []) {
       const heading = this.streetBearing(f.x, f.z, f.kind === 'bikeshare' || f.kind === 'column')
       const model = f.kind === 'metro'
-        ? ({ guimard: guimardEntrance, nyc: nycSubwayEntrance, cta: ctaEntrance, generic: genericEntrance })[pf.metro]
+        ? ({ guimard: guimardEntrance, nyc: nycSubwayEntrance, cta: ctaEntrance, generic: genericEntrance, bart: bartEntrance })[pf.metro]
         : f.kind === 'fountain' ? (pf.fountain === 'wallace' || f.wallace ? wallaceFountain : drinkingTap)
         : f.kind === 'column' ? morrisColumn
         : f.kind === 'kiosk' ? (pf.kiosk === 'paris' ? parisNewsstand : kiosk)
