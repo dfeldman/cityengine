@@ -204,7 +204,7 @@ export interface CityPackage {
   /** named buildings, for their name plates and totems */
   landmarks?: PackedLandmark[]
   /** far landmarks on the horizon, in local metres (tools/cities.ts `skyline`) */
-  skyline?: { name: string; x: number; z: number; procedural: string; heightM: number; baseY?: number }[]
+  skyline?: { name: string; x: number; z: number; procedural: string; heightM: number; baseY?: number; bearing?: number; boost?: number }[]
   /** mapped street furniture (tools/overpass.ts `furnitureQuery`); absent on a package baked before it */
   furniture?: PackedFurniture[]
   /** the ground, sampled on a grid; absent on a city baked flat */

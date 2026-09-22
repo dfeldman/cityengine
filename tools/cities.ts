@@ -37,7 +37,7 @@ export interface CitySpec {
    * plane cannot reach them, so they are sky furniture, not scene meshes. `procedural` names a builder in
    * src/render/landmarks/procedural.ts.
    */
-  skyline?: { name: string; lat: number; lon: number; procedural: string; heightM: number }[]
+  skyline?: { name: string; lat: number; lon: number; procedural: string; heightM: number; bearing?: number; boost?: number }[]
   note: string
 }
 
@@ -142,6 +142,14 @@ export const CITIES: CitySpec[] = [
      */
     id: 'san-francisco',
     region: 'san-francisco',
+    skyline: [
+      // the middle of the main span (between the towers at 37.8141,−122.4772 and 37.8255,−122.4792), N 7° W
+      { name: 'Golden Gate Bridge', lat: 37.81980, lon: -122.47822, procedural: 'goldenGateBridge', heightM: 227, bearing: -7.05, boost: 1.15 },
+      // on Mount Sutro, 254 m up: the ground under it comes from the terrain tiles, as Montmartre's does
+      // the west span's central anchorage, from the bridge's axis in OSM (bearing 40.2°) and the published spans
+      { name: 'Bay Bridge', lat: 37.79738, lon: -122.37870, procedural: 'bayBridge', heightM: 160, bearing: 40.24, boost: 1 },
+      { name: 'Sutro Tower', lat: 37.75523, lon: -122.45277, procedural: 'sutroTower', heightM: 298 },
+    ],
     name: 'San Francisco',
     centre: { lat: 37.7930, lon: -122.4120 },
     radius: 3340,

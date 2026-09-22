@@ -384,7 +384,10 @@ export class Landmarks {
       m.renderingGroupId = 0
       m.isPickable = false
       m.alwaysSelectAsActiveMesh = true
-      this.sky.push({ name: s.name, mesh: m, x: s.x, y: s.baseY ?? 0, z: s.z, boost: skylineBoost(d) })
+      // turned to its bearing (a bridge), degrees clockwise from north; local +z is the model's own axis
+      if (s.bearing) m.rotation.y = (s.bearing * Math.PI) / 180
+      // a long thing needs less of the distance boost a slender tower does (the Golden Gate is 2.7 km of it)
+      this.sky.push({ name: s.name, mesh: m, x: s.x, y: s.baseY ?? 0, z: s.z, boost: s.boost ?? skylineBoost(d) })
     }
   }
 

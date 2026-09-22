@@ -1022,7 +1022,8 @@ async function bake(spec: CitySpec): Promise<void> {
         const p = proj.toLocal(s)
         // Sacré-Cœur stands on Montmartre: the ground under a far landmark comes from the same tiles
         const baseY = Math.round((elevation.at(s) - datumRaw) * 10) / 10
-        return { name: s.name, x: Math.round(p.x), z: Math.round(p.z), procedural: s.procedural, heightM: s.heightM, baseY }
+        return { name: s.name, x: Math.round(p.x), z: Math.round(p.z), procedural: s.procedural, heightM: s.heightM, baseY,
+          ...(s.bearing !== undefined ? { bearing: s.bearing } : {}), ...(s.boost !== undefined ? { boost: s.boost } : {}) }
       }),
     } : {}),
     attribution: [copyright, `OSM base ${timestamp}`, TERRAIN_CREDIT],
