@@ -49,6 +49,7 @@ export class Minimap {
     this.ctx = ctx
     this.resize()
     addEventListener('resize', () => { if (this.large) this.resize() })
+    this.listen()
 
     this.addEdges([...graph.edges.values()])
   }
@@ -70,7 +71,7 @@ export class Minimap {
 
   /** the size and range of the view in its current mode */
   private get size(): number { return this.large ? Math.floor(Math.min(innerWidth, innerHeight) * 0.86) : this.opts.size }
-  private get range(): number { return this.large ? 760 : this.opts.range }
+  private get range(): number { return this.large ? this.zoom : this.opts.range }
 
   private resize(): void {
     this.dpr = Math.min(3, devicePixelRatio || 1)
@@ -89,8 +90,57 @@ export class Minimap {
    */
   toggle(): void {
     this.large = !this.large
+    this.panX = 0
+    this.panZ = 0
+    this.zoom = 760
     this.resize()
   }
+
+  /** the large map's own view: offset from the rider, and its range (drag to pan, wheel to zoom) */
+  private panX = 0
+  private panZ = 0
+  private zoom = 760
+  /** the whole ride graph, to draw the city beyond the streamed streets when zoomed out */
+  private rideLines: Point[][] = []
+  setRide(lines: Point[][]): void { this.rideLines = lines }
+  /** a click on the large map: the world point clicked (the game goes there) */
+  onPick: ((p: Point) => void) | null = null
+
+  private listen(): void {
+    let down: { x: number; y: number; px: number; pz: number } | null = null
+    let moved = false
+    this.canvas.addEventListener('pointerdown', (e) => {
+      if (!this.large) return
+      down = { x: e.clientX, y: e.clientY, px: this.panX, pz: this.panZ }
+      moved = false
+      this.canvas.setPointerCapture(e.pointerId)
+    })
+    this.canvas.addEventListener('pointermove', (e) => {
+      if (!down) return
+      const k = this.zoom / (this.size / 2)
+      if (Math.hypot(e.clientX - down.x, e.clientY - down.y) > 4) moved = true
+      this.panX = down.px - (e.clientX - down.x) * k
+      this.panZ = down.pz + (e.clientY - down.y) * k
+    })
+    this.canvas.addEventListener('pointerup', (e) => {
+      if (!down) return
+      const start = down
+      down = null
+      if (moved || !this.onPick) return
+      const rect = this.canvas.getBoundingClientRect()
+      const k = this.zoom / (this.size / 2)
+      const cx = e.clientX - rect.left - rect.width / 2
+      const cy = e.clientY - rect.top - rect.height / 2
+      void start
+      this.onPick({ x: this.lastAt.x + this.panX + cx * k, z: this.lastAt.z + this.panZ - cy * k })
+    })
+    this.canvas.addEventListener('wheel', (e) => {
+      if (!this.large) return
+      e.preventDefault()
+      this.zoom = Math.max(150, Math.min(5000, this.zoom * Math.exp(e.deltaY * 0.0015)))
+    }, { passive: false })
+  }
+  private lastAt: Point = { x: 0, z: 0 }
   get shown(): boolean { return this.visible }
   get isLarge(): boolean { return this.large }
 
@@ -119,12 +169,28 @@ export class Minimap {
     ctx.fillStyle = this.large ? 'rgba(18,20,24,0.9)' : 'rgba(18,20,24,0.78)'
     ctx.fillRect(0, 0, s, s)
 
+    this.lastAt = at
+    // the large map looks where it was panned to
+    const rider = at
+    if (this.large) at = { x: at.x + this.panX, z: at.z + this.panZ }
     ctx.translate(r, r)
     ctx.rotate(rot)              // heading up: +z (north) is up at heading 0, and the map turns with the rider
     ctx.translate(-at.x * scale, at.z * scale)
     // canvas y grows downward and world z grows "up" the map, so z is negated by the scale below
     const px = (p: Point): [number, number] => [p.x * scale, -p.z * scale]
 
+    // zoomed out on the large map, the whole city from the ride graph (the streets streamed so far are near only)
+    if (this.large && this.zoom > 900) {
+      ctx.strokeStyle = 'rgba(236,234,228,0.75)'
+      ctx.lineWidth = 1.2
+      ctx.beginPath()
+      for (const line of this.rideLines) {
+        const p0 = line[0]
+        if (Math.abs(p0.x - at.x) > this.zoom * 1.5 || Math.abs(p0.z - at.z) > this.zoom * 1.5) continue
+        line.forEach((p, i) => (i === 0 ? ctx.moveTo(...px(p)) : ctx.lineTo(...px(p))))
+      }
+      ctx.stroke()
+    }
     const cells: number[] = []
     const reach = Math.ceil(this.range / 200) + 1
     for (let dz = -reach; dz <= reach; dz++) {
@@ -158,7 +224,8 @@ export class Minimap {
        * name over and over down the same line. The nearest piece wins, since that is the piece of it the
        * rider can actually see.
        */
-      if (e.name && (e.width >= 7 || (this.large && e.width >= 5)) && e.length > 45) {
+      // (and none zoomed far out, where they would pile up; the landmarks carry the names there)
+      if (e.name && (e.width >= 7 || (this.large && e.width >= 5)) && e.length > 45 && this.range <= 1500) {
         const mid = e.points[Math.floor(e.points.length / 2)]
         const d = Math.hypot(mid.x - at.x, mid.z - at.z)
         const held = named.get(e.name)
@@ -218,7 +285,7 @@ export class Minimap {
       ctx.arc(x, y, l.tier === 1 ? 2.8 : 2, 0, Math.PI * 2)
       ctx.fillStyle = l.tier === 1 ? '#f0b8ff' : 'rgba(220,190,230,0.7)'
       ctx.fill()
-      if (l.tier === 1 && labelled < (this.large ? 40 : 3)) {
+      if (l.tier === 1 && labelled < (this.large ? (this.range > 1500 ? 18 : 40) : 3)) {
         ctx.save()
         ctx.translate(x, y)
         ctx.rotate(-rot)
@@ -249,9 +316,10 @@ export class Minimap {
     }
     ctx.restore()
 
-    // the rider, always at the centre: pointing up on the minimap, along their heading on the large map
+    // the rider, always at the centre: pointing up on the minimap, along their heading on the large map (where
+    // the map may be panned away from them)
     ctx.save()
-    ctx.translate(r, r)
+    ctx.translate(r + (rider.x - at.x) * scale, r - (rider.z - at.z) * scale)
     if (this.large) ctx.rotate(-heading)
     if (this.large) ctx.scale(1.5, 1.5)
     ctx.beginPath()
@@ -276,5 +344,6 @@ export class Minimap {
 export const MINIMAP_CSS = `
 #minimap { position: fixed; right: 18px; top: 18px; border-radius: 50%; pointer-events: none;
   box-shadow: 0 4px 18px rgba(0,0,0,.45); z-index: 4; }
-#minimap.large { right: auto; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 14px; z-index: 6; }
+#minimap.large { right: auto; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 14px; z-index: 6;
+  pointer-events: auto; cursor: crosshair; touch-action: none; }
 `

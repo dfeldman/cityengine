@@ -360,6 +360,14 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const rideable = new Set([...rides.edges.values()].flatMap((e) => e.over.map((o) => o.id)))
   const minimap = new Minimap(document.getElementById('minimap') as HTMLCanvasElement, graph, {}, rideable)
   onTile((a) => minimap.addEdges(a.edges))
+  // the whole city for the zoomed-out large map, and a click on it goes there (user: jump anywhere, for debugging)
+  minimap.setRide([...rides.edges.values()].map((e) => e.points))
+  minimap.onPick = (p) => {
+    if (!opts.goTo) return
+    const ll = new Projection(pkg.origin).toLatLon(p)
+    const why = opts.goTo(`${ll.lat}, ${ll.lon}`, true)
+    if (why) debug.toast(why)
+  }
   // everyone has subscribed: the tiles need not be kept for replaying any more
   keepArrived = false
   arrived.length = 0

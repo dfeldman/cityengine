@@ -73,7 +73,7 @@
     "id": "marianne-lion",
     "name": "Lion of the Monument à la République",
     "model": "paris/marianne-lion.glb",
-    "front": "-x",
+    "front": "+z",
     "height": 3.0,
     "attach": {
       "to": "Monument à la République",
@@ -84,7 +84,8 @@
       ],
       "bearing": 180
     },
-    "range": 300
+    "range": 300,
+    "note": "In profile beside the urn, its head turned to the front (the model's +z view)"
   },
   {
     "id": "henri-iv",

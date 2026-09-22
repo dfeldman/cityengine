@@ -36,7 +36,15 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 26 | open | Riding below the ground: the rider and road sink under the pavement (48.863689, 2.297469) | user, 2026-09-22 |
 | 27 | open | Paths near the Alma / Trocadéro are unrideable: near-parallel paths merge and diverge, the rider is swept along | user, 2026-09-22 |
 | 28 | open | Both banks of the Seine: 4–5 near-parallel OSM paths that periodically meet — confusing to ride | user, 2026-09-22 |
-| 29 | fixing | Underground Métro station rooms drawn as 20 m buildings on the squares above (Place de la République) | views, 2026-09-22 |
+| 29 | fixed | Underground Métro station rooms drawn as 20 m buildings on the squares above (Place de la République) | views, 2026-09-22 |
+| 30 | open | The J paths overlay is ugly and needed all the time: want a subtle, usually-on path display (thin lines, no one-way marks, junctions highlighted) | user, 2026-09-22 |
+| 31 | open | Messy ground and the camera below ground near a bridge (48.846945, 2.366215) | user, 2026-09-22 |
+| 32 | open | An errant footbridge from OSM near 48.849195, 2.372189 | user, 2026-09-22 |
+| 33 | open | The rider gets trapped in a very messy intersection and cannot get out (48.849354, 2.356970) | user, 2026-09-22 |
+| 34 | open | The trams are incredibly ugly | user, 2026-09-22 |
+| 35 | open | A building appears underwater (48.846324, 2.362785) | user, 2026-09-22 |
+| 36 | open | Z-fighting on a strange barrier in the river (48.848591, 2.359412) | user, 2026-09-22 |
+| 37 | open | The bridges need a lot of work to be usable and beautiful | user, 2026-09-22 |
 
 ---
 
@@ -394,3 +402,50 @@ real ramps. Same machinery as #27 (`mergeParallel` widened for bundles of more t
 `indoor=*`, `location=underground`, `layer` −1 to −3 — taken as buildings, their height inferred (20 m).
 **Fix:** the bake drops any building or part that is underground, indoor, on a negative layer, or only on
 negative levels. Re-bake all Paris cities.
+**Check:** ✅ central Paris 28 633 → 28 370 buildings; the Place de la République is open
+(`docs/shots/views/statues3/`).
+
+## 30. A subtle, usually-on path display
+
+**Seen:** user, 2026-09-22: "It's pretty hard to navigate without pressing J now, and it's ugly." Want: a quiet
+overlay on by default — slight lines along the ride graph, no one-way chevrons (they do not matter on a bike),
+junctions with a choice highlighted. J keeps the full diagnostic view.
+
+## 31. Messy ground near a bridge; camera below ground (48.846945, 2.366215)
+
+**Seen:** user: "I can't even get a good screenshot since the camera is below ground. I think this is the nearby
+landmark bridge messing things up" (the Pont d'Austerlitz / Viaduc d'Austerlitz end, Quai Saint-Bernard).
+
+## 32. Errant footbridge (48.849195, 2.372189)
+
+**Seen:** user: an errant footbridge coded in OSM near the Pont Charles-de-Gaulle / Gare de Lyon side. Find its
+way id, and drop it (a placeholder or a bake exclusion list) if it is not a real crossing.
+
+## 33. Trapped in a junction (48.849354, 2.356970)
+
+**Seen:** user: "avatar always gets trapped in this very messy intersection — it's impossible to get out" (the
+Quai Saint-Bernard by the Jardin des Plantes / Pont de Sully's south end). A ride-graph override (a place drawn
+as circle and spokes, or a simplified junction) as for the Bastille.
+
+## 34. Trams are ugly
+
+**Seen:** user. The tram model (`render/life.ts` pool `trams`) — replace with a proper Citadis-style tram
+(PARIS_EXPAND §5: Paris rolling stock), or a user model.
+
+## 35. Building underwater (48.846324, 2.362785)
+
+**Seen:** user, by the Seine at the Jardin des Plantes / Quai Saint-Bernard: a building drawn in the river — a
+quay-side building sunk with the water level, or a building footprint over the water polygon.
+
+## 36. Z-fighting on a barrier in the river (48.848591, 2.359412)
+
+**Seen:** user, 2026-09-22, in the Seine by the Pont de Sully / Quai Saint-Bernard: a strange barrier in the water
+z-fights. Probably the quay parapet or quay wall (render/quays.ts) drawn along a water ring's edge that lies in
+the river (an island's outline, or the edge between two water polygons), both faces in one place.
+
+## 37. Bridges: usable and beautiful
+
+**Seen:** user, 2026-09-22. With the Seine the main riding route (PARIS_EXPAND §8 priority), the ~25 bridges in
+the box matter most: ramps and decks that ride smoothly with no steps or dips into the ground (see #31), clean
+junctions at both ends onto the quais (see #33), and each bridge in its own design (PARIS_EXPAND §5 B:
+BRIDGE_STYLES — stone arches, iron arches, footbridges, Bir-Hakeim's two decks), with the lamps and parapets.
