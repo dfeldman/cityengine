@@ -304,5 +304,23 @@
   "group": "landmark",
   "from": [48.8512, 2.348, 90],
   "to": [48.85296, 2.3499, 20]
+ },
+ {
+  "name": "Invalides — from the Place Vauban",
+  "group": "landmark",
+  "from": [48.8534, 2.3126, 1.8],
+  "to": [48.85502, 2.31258, 55]
+ },
+ {
+  "name": "Invalides — from the esplanade",
+  "group": "landmark",
+  "from": [48.859, 2.3136, 2],
+  "to": [48.85502, 2.31258, 50]
+ },
+ {
+  "name": "Invalides — dome close",
+  "group": "landmark",
+  "from": [48.8544, 2.3133, 60],
+  "to": [48.85502, 2.31258, 62]
  }
 ]

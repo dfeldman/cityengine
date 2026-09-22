@@ -557,5 +557,17 @@
     "front": 295,
     "height": 96,
     "note": "Fitted to OSM's whole-plan part (way 201611267), the west front toward the parvis; every OSM part of the cathedral and its duplicating relation (packed 13103927) replaced."
+  },
+  {
+    "name": "Dôme des Invalides",
+    "procedural": "invalidesDome",
+    "osm": [
+      "way/227662013",
+      "way/1462443411",
+      "way/1462443412",
+      "way/227662012",
+      "way/227662005"
+    ],
+    "note": "The drum, the gilded dome, lantern and spire, fitted to OSM's dome part (way 227662013); OSM's church below 34 m stays as mapped."
   }
 ]
