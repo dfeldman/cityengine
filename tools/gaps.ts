@@ -22,6 +22,15 @@ export interface GapWay {
 
 /** How close a dangling end must be to another way to be joined to it, metres. */
 export const GAP_REACH = 5
+/**
+ * A surface way whose end only a TUNNEL continues is dangling too, as far as a rider is concerned — the
+ * tunnel is not drawn or ridden — and is joined with a longer reach, to a path as readily as a street: the
+ * Parc Rives de Seine promenade ends at the mouth of the Tunnel Henri IV, 8.6 m from the lower quay's
+ * footway on to Port Henri IV (BUGS.md #9).
+ */
+export const TUNNEL_REACH = 12
+/** how far a bridge's loose end reaches for the ground-level way it lands on */
+export const LANDING = 3
 /** Within this of an existing node, join to the node rather than insert a new one. */
 const SNAP_NODE = 2
 
@@ -46,6 +55,9 @@ export function joinNearMisses(ways: GapWay[], toLocal: (g: LatLon) => { x: numb
                                reach = GAP_REACH): number {
   const use = new Map<number, number>()
   for (const w of ways) for (const n of w.nodes) use.set(n, (use.get(n) ?? 0) + 1)
+  const tunnelled = (w: GapWay): boolean => level(w.tags).endsWith('|t')
+  const surfaceUse = new Map<number, number>()
+  for (const w of ways) if (!tunnelled(w)) for (const n of w.nodes) surfaceUse.set(n, (surfaceUse.get(n) ?? 0) + 1)
   // every segment, on a grid, in metres
   const CELL = 25
   type Seg = { w: GapWay; i: number; ax: number; az: number; bx: number; bz: number }
@@ -56,10 +68,10 @@ export function joinNearMisses(ways: GapWay[], toLocal: (g: LatLon) => { x: numb
     local.set(w, pts)
     for (let i = 1; i < pts.length; i++) {
       const s: Seg = { w, i, ax: pts[i - 1].x, az: pts[i - 1].z, bx: pts[i].x, bz: pts[i].z }
-      const x0 = Math.floor((Math.min(s.ax, s.bx) - reach) / CELL)
-      const x1 = Math.floor((Math.max(s.ax, s.bx) + reach) / CELL)
-      const z0 = Math.floor((Math.min(s.az, s.bz) - reach) / CELL)
-      const z1 = Math.floor((Math.max(s.az, s.bz) + reach) / CELL)
+      const x0 = Math.floor((Math.min(s.ax, s.bx) - Math.max(reach, TUNNEL_REACH)) / CELL)
+      const x1 = Math.floor((Math.max(s.ax, s.bx) + Math.max(reach, TUNNEL_REACH)) / CELL)
+      const z0 = Math.floor((Math.min(s.az, s.bz) - Math.max(reach, TUNNEL_REACH)) / CELL)
+      const z1 = Math.floor((Math.max(s.az, s.bz) + Math.max(reach, TUNNEL_REACH)) / CELL)
       for (let gx = x0; gx <= x1; gx++) {
         for (let gz = z0; gz <= z1; gz++) {
           const k = `${gx},${gz}`
@@ -80,25 +92,36 @@ export function joinNearMisses(ways: GapWay[], toLocal: (g: LatLon) => { x: numb
     const pts = local.get(w)!
     for (const end of [0, w.nodes.length - 1] as const) {
       const node = w.nodes[end]
-      if ((use.get(node) ?? 0) > 1) continue
+      const mouth = !tunnelled(w) && (use.get(node) ?? 0) > 1 && (surfaceUse.get(node) ?? 0) === 1
+      if ((use.get(node) ?? 0) > 1 && !mouth) continue
       const p = pts[end]
+      const r = mouth ? Math.max(reach, TUNNEL_REACH) : reach
       let best: { s: Seg; d: number; t: number } | null = null
       // a street joins a street: footways count only when no carriageway is in reach (the arcade footway
       // beside the Pavillon du Roi's arch took Rue de Birague's join, and a bike cannot ride on to it)
       const footy = (t: Record<string, string>): boolean => /^(footway|path|steps|pedestrian|corridor)$/.test(t.highway ?? '')
-      const wantStreet = !footy(w.tags)
+      const wantStreet = !footy(w.tags) && !mouth
       const candidates = (grid.get(`${Math.floor(p.x / CELL)},${Math.floor(p.z / CELL)}`) ?? [])
       const streetNear = wantStreet && candidates.some((s) => s.w !== w && !footy(s.w.tags) && level(s.w.tags) === level(w.tags)
-        && Math.hypot(p.x - (s.ax + s.bx) / 2, p.z - (s.az + s.bz) / 2) < reach + Math.hypot(s.bx - s.ax, s.bz - s.az))
+        && Math.hypot(p.x - (s.ax + s.bx) / 2, p.z - (s.az + s.bz) / 2) < r + Math.hypot(s.bx - s.ax, s.bz - s.az))
+      // a BRIDGE's loose end is where it lands on the bank: it may join a ground-level way there, within
+      // LANDING — the Pont de l'Archevêché stopped 0.3 m from its approach on the Quai de la Tournelle, on
+      // its own node, a dead end on the Seine route (BUGS.md #9). Only close: the lower quays pass under the
+      // abutments a few metres off.
+      const isBridge = (t: Record<string, string>): boolean => !!t.bridge && t.bridge !== 'no'
+      const ground = (t: Record<string, string>): boolean => level(t) === '0||'
       for (const s of candidates) {
-        if (s.w === w || level(s.w.tags) !== level(w.tags)) continue
+        if (s.w === w) continue
+        const landing = isBridge(w.tags) && ground(s.w.tags)
+        if (level(s.w.tags) !== level(w.tags) && !landing) continue
+        if (landing && Math.hypot(p.x - s.ax, p.z - s.az) > LANDING + Math.hypot(s.bx - s.ax, s.bz - s.az)) continue
         if (streetNear && footy(s.w.tags)) continue
         const dx = s.bx - s.ax
         const dz = s.bz - s.az
         const l2 = dx * dx + dz * dz || 1e-9
         const t = Math.max(0, Math.min(1, ((p.x - s.ax) * dx + (p.z - s.az) * dz) / l2))
         const d = Math.hypot(p.x - s.ax - dx * t, p.z - s.az - dz * t)
-        if (d <= reach && (!best || d < best.d)) best = { s, d, t }
+        if (d <= (landing ? Math.min(r, LANDING) : r) && (!best || d < best.d)) best = { s, d, t }
       }
       if (!best) continue
       const { s, t } = best

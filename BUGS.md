@@ -16,7 +16,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 6 | fixed | Cirque d'Hiver is turned wrong: its front should face the street | user, 2026-09-21 |
 | 7 | fixed | Hôtel de Sens needs work (reads poorly) | user, 2026-09-21 |
 | 8 | fixed | White monuments are flat pure white; they should read as white marble or pale stone/brick | user, 2026-09-21 |
-| 9 | open | The path by the Seine at 48.849419, 2.361508 is a dead end: it comes close to a road but does not join it | user, 2026-09-21 |
+| 9 | fixed | The path by the Seine at 48.849419, 2.361508 is a dead end: it comes close to a road but does not join it | user, 2026-09-21 |
 | 10 | fixed | The Cirque d'Hiver's two horsemen stand in the road and block it | user, 2026-09-21 |
 | 11 | fixed | Café terraces are poor: chairs and tables in a line, not chairs round tables, and often tilted | user, 2026-09-21 |
 | 12 | open | News stands (kiosques) need improvement | user, 2026-09-21 |
@@ -198,6 +198,19 @@ meet it, so the ride graph stops there.
 
 **Notes:** `tools/gaps.ts` joins near-miss path ends to the way beside them within some distance; this one
 is beyond it, or across a level (the lower quay is below the road). Check the two ends' distance and heights.
+
+**Cause/fix:** the promenade (a `service` way) ends at the mouth of the Tunnel Henri IV, the old expressway, and
+tunnels are not ridden. The lower quay carries on to Port Henri IV as unnamed footways, which a bike does not
+take, and the nearest of them is 8.6 m away. Three changes, each general:
+1. tools/gaps.ts: an end continued only by a tunnel counts as dangling, joined within `TUNNEL_REACH` (12 m),
+   to a path as readily as a street;
+2. city/ridegraph.ts `joinDeadEnds` (bike): from each dead end, the shortest footpath chain under 100 m that
+   reaches another ridden node is let in;
+3. while checking, the Pont de l'Archevêché was a dead end as well: its approach way's last 0.3 m was dropped
+   by the bake's half-metre rule, which only folded short pieces FORWARD. A trailing piece now folds back into
+   the edge before it (tools/bake.ts). Bridge ends may also land on a ground-level way within 3 m (`LANDING`).
+Dead ends in central Paris: 233 → 196 (the audit), with no new edges through buildings. All five cities
+rebaked; tests pass.
 
 ## 10. The Cirque d'Hiver's horsemen block the road
 

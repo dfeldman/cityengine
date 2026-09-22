@@ -67,6 +67,52 @@ export function classify(edges: Edge[], mode: RideMode): RideEdge[] {
     }))
 }
 
+/**
+ * Rule 1b (bike): a dead end that a short run of footpaths joins to another street is not a dead end. The
+ * Parc Rives de Seine promenade stops where the car tunnel under the Quai Henri IV begins, and the lower quay
+ * carries on to Port Henri IV as four unnamed footway scraps (BUGS.md #9): from each dead end, the shortest
+ * footpath chain under `JOIN_PATH` metres that reaches another ridden node is let in.
+ */
+export const JOIN_PATH = 100
+export function joinDeadEnds(ridden: RideEdge[], all: Edge[]): RideEdge[] {
+  const deg = degrees(ridden)
+  const paths = all.filter((e) => e.a !== e.b && !e.tunnel && !((e.layer ?? 0) < 0 && !e.bridge) && RUN_EXTRA.has(e.kind ?? ''))
+  if (paths.length === 0) return ridden
+  const at = new Map<number, Edge[]>()
+  for (const e of paths) for (const n of [e.a, e.b]) (at.get(n) ?? at.set(n, []).get(n)!).push(e)
+  const added = new Map<number, RideEdge>()
+  for (const [start, d] of deg) {
+    if (d !== 1 || !at.has(start)) continue
+    // Dijkstra over the paths, small: stop at the first ridden node reached
+    const dist = new Map<number, number>([[start, 0]])
+    const via = new Map<number, Edge>()
+    const open: number[] = [start]
+    let goal: number | null = null
+    while (open.length) {
+      open.sort((x, y) => dist.get(x)! - dist.get(y)!)
+      const n = open.shift()!
+      if (n !== start && deg.has(n)) { goal = n; break }
+      for (const e of at.get(n) ?? []) {
+        const m = e.a === n ? e.b : e.a
+        const nd = dist.get(n)! + e.length
+        if (nd > JOIN_PATH || nd >= (dist.get(m) ?? Infinity)) continue
+        dist.set(m, nd)
+        via.set(m, e)
+        open.push(m)
+      }
+    }
+    for (let n = goal; n !== null && n !== start;) {
+      const e = via.get(n)!
+      if (!added.has(e.id)) {
+        added.set(e.id, { ...e, points: [...e.points], heights: e.heights ? [...e.heights] : undefined,
+          over: e.over ?? [{ id: e.id, reversed: false, length: e.length }] } as RideEdge)
+      }
+      n = e.a === n ? e.b : e.a
+    }
+  }
+  return added.size ? [...ridden, ...added.values()] : ridden
+}
+
 /** Rule 2: the largest connected island, again — the filter can strand a courtyard's service road. */
 export const largest = <E extends Edge>(edges: E[]): E[] => largestComponent(edges)
 
@@ -880,7 +926,7 @@ export function linkCarriageways(edges: RideEdge[], ids: Ids): RideEdge[] {
 /** The whole chain. */
 export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrides): RideGraph {
   const ids = new Ids()
-  const classified = classify(edges, mode)
+  const classified = mode === 'bike' ? joinDeadEnds(classify(edges, mode), edges) : classify(edges, mode)
   const blocked = overrides?.buildings ? footprintTest(overrides.buildings) : undefined
   let es = pruneStubs(largest(mode === 'bike' ? dropSidePaths(classified, ids, blocked) : classified))
   es = contract(collapseClusters(es, ids), ids)

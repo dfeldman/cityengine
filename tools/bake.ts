@@ -269,6 +269,7 @@ async function bake(spec: CitySpec): Promise<void> {
   for (const w of streets) {
     if (!w.geometry || w.geometry.length < 2) continue
     let startIdx = 0
+    let last: PackedEdge | null = null
     for (let i = 1; i < w.nodes.length; i++) {
       const isJunction = (useCount.get(w.nodes[i]) ?? 0) > 1
       const isEnd = i === w.nodes.length - 1
@@ -297,8 +298,20 @@ async function bake(spec: CitySpec): Promise<void> {
               || w.tags.crossing !== undefined || w.tags.highway === 'crossing' || undefined,
             ...wayTags(w.tags),
           })
+          last = edges[edges.length - 1]
           emitted = true
         }
+      }
+      /*
+       * …and a piece under half a metre at the END of a way is folded BACK into the one before: there is no
+       * next one. Rue de l'Archevêché's last 0.3 m, from the footway crossing to the node the Pont de
+       * l'Archevêché starts from, was lost that way, and the bridge was a dead end (BUGS.md #9).
+       */
+      if (!emitted && isEnd && last && i > startIdx) {
+        const pts = unpackPoints(last.points)
+        pts.push(proj.toLocal(w.geometry[i]))
+        last.points = packPoints(pts)
+        last.b = w.nodes[i]
       }
       /*
        * A piece under half a metre is not dropped but folded into the next one: dropping it cut the graph.
