@@ -1,0 +1,60 @@
+import { describe, expect, it } from 'vitest'
+import { bridgeHeights, type BridgeEdge, type BridgeWorld } from '../tools/bridges.ts'
+
+const flat: BridgeWorld['ground'] = () => 0
+const river = (x0: number, x1: number): BridgeWorld['water'][number] =>
+  ({ ring: [{ x: x0, z: -500 }, { x: x1, z: -500 }, { x: x1, z: 500 }, { x: x0, z: 500 }], level: 0 })
+
+describe('bridge heights', () => {
+  it('humps a long span over water, with its ends on the ground', () => {
+    const e: BridgeEdge = { id: 1, a: 1, b: 2, points: [-200, 0, 0, 0, 200, 0], heights: [0, 0, 0], bridge: true, layer: 1 }
+    bridgeHeights([e], { water: [river(-150, 150)], ground: flat })
+    expect(e.heights![0]).toBeCloseTo(0)
+    expect(e.heights![e.heights!.length - 1]).toBeCloseTo(0)
+    expect(Math.max(...e.heights!)).toBeCloseTo(5)   // clearance over the water, at the middle
+  })
+
+  it('keeps a short steep span level and ramps the approaches instead', () => {
+    const e: BridgeEdge = { id: 1, a: 1, b: 2, points: [-50, 0, 0, 0, 50, 0], heights: [0, 0, 0], bridge: true, layer: 1 }
+    const approach: BridgeEdge = { id: 2, a: 3, b: 1, points: [-150, 0, -50, 0], heights: [0, 0] }
+    const r = bridgeHeights([e, approach], { water: [river(-40, 40)], ground: flat })
+    expect(e.heights!.every((h) => Math.abs(h - 5) < 1e-6)).toBe(true)
+    expect(r.ramps).toBe(1)
+    // the approach climbs to the deck at the bridge end, and is on the ground 60 m out
+    expect(approach.heights![1]).toBeCloseTo(5)
+    expect(approach.heights![0]).toBeCloseTo(0)
+  })
+
+  it('lifts an overpass 5.5 m above the way it crosses', () => {
+    const over: BridgeEdge = { id: 1, a: 1, b: 2, points: [-300, 0, 300, 0], heights: [0, 0], bridge: true, layer: 1 }
+    const under: BridgeEdge = { id: 2, a: 3, b: 4, points: [0, -50, 0, 50], heights: [0, 0] }
+    bridgeHeights([over, under], { water: [], ground: flat })
+    // a 600 m span can hump: its middle is 5.5 m up (the bridge was densified to have a middle at all)
+    expect(Math.max(...over.heights!)).toBeCloseTo(5.5)
+    expect(over.heights![0]).toBeCloseTo(0)
+    expect(under.heights).toEqual([0, 0])
+  })
+
+  it('touches nothing that is not a bridge or a ramp onto one', () => {
+    const road: BridgeEdge = { id: 1, a: 1, b: 2, points: [0, 0, 100, 0], heights: [1, 2] }
+    const r = bridgeHeights([road], { water: [river(-10, 200)], ground: flat })
+    expect(road.heights).toEqual([1, 2])
+    expect(r.raised.size).toBe(0)
+  })
+})
+
+describe('a bridge in several pieces', () => {
+  it('is one hump, not one per piece', () => {
+    const pieces: BridgeEdge[] = [
+      { id: 1, a: 1, b: 2, points: [-300, 0, -100, 0], heights: [0, 0], bridge: true, layer: 1 },
+      { id: 2, a: 3, b: 2, points: [100, 0, -100, 0], heights: [0, 0], bridge: true, layer: 1 },   // stored backwards
+      { id: 3, a: 3, b: 4, points: [100, 0, 300, 0], heights: [0, 0], bridge: true, layer: 1 },
+    ]
+    bridgeHeights(pieces, { water: [{ ring: [{ x: -250, z: -50 }, { x: 250, z: -50 }, { x: 250, z: 50 }, { x: -250, z: 50 }], level: 0 }], ground: () => 0 })
+    expect(pieces[0].heights![0]).toBeCloseTo(0)
+    expect(pieces[2].heights![pieces[2].heights!.length - 1]).toBeCloseTo(0)
+    // the middle piece carries the crown, and the joins agree
+    expect(Math.max(...pieces[1].heights!)).toBeCloseTo(5, 1)
+    expect(pieces[0].heights![pieces[0].heights!.length - 1]).toBeCloseTo(pieces[1].heights![pieces[1].heights!.length - 1])
+  })
+})

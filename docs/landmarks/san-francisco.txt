@@ -1,0 +1,662 @@
+Nob Hill, San Francisco — landmarks (113)
+Generated 2026-09-21 from OpenStreetMap (© OpenStreetMap contributors, ODbL).
+Most important first. A replacement model is keyed to the OSM id: "way/123" etc.
+
+* City Lights Booksellers
+    attraction, 9 m
+    osm: way/32858754   https://www.openstreetmap.org/way/32858754
+    at:  37.797635, -122.406573   https://www.google.com/maps?q=37.797635,-122.406573
+    wikipedia: en:City Lights Bookstore
+    wikidata: https://www.wikidata.org/wiki/Q2394278
+
+* Dragon Gate
+    ceremonial_gate
+    osm: node/65328703   https://www.openstreetmap.org/node/65328703
+    at:  37.790688, -122.405594   https://www.google.com/maps?q=37.790688,-122.405594
+    wikipedia: en:Dragon Gate (San Francisco)
+    wikidata: https://www.wikidata.org/wiki/Q40729318
+
+* The Masonic
+    building=yes, 31 m
+    osm: way/32947040   https://www.openstreetmap.org/way/32947040
+    at:  37.791178, -122.412971   https://www.google.com/maps?q=37.791178,-122.412971
+    wikipedia: en:SF Masonic Auditorium
+    wikidata: https://www.wikidata.org/wiki/Q7045580
+
+* The Huntington Hotel
+    hotel, 45 m
+    osm: way/151316281   https://www.openstreetmap.org/way/151316281
+    at:  37.791382, -122.412084   https://www.google.com/maps?q=37.791382,-122.412084
+    wikipedia: en:Huntington Hotel (San Francisco)
+    wikidata: https://www.wikidata.org/wiki/Q5945390
+
+* Four Fifty Sutter Building
+    building=commercial, 105 m, 29 levels
+    osm: way/1186086081   https://www.openstreetmap.org/way/1186086081
+    at:  37.789633, -122.407872   https://www.google.com/maps?q=37.789633,-122.407872
+    wikipedia: en:450 Sutter Street
+    wikidata: https://www.wikidata.org/wiki/Q4638113
+
+* The Olympic Club
+    building=yes, 27 m, 6 levels
+    osm: way/48995282   https://www.openstreetmap.org/way/48995282
+    at:  37.788253, -122.410998   https://www.google.com/maps?q=37.788253,-122.410998
+    wikipedia: en:Olympic Club
+    wikidata: https://www.wikidata.org/wiki/Q2416259
+
+* The Westin St. Francis
+    hotel, 60 m, 13 levels
+    osm: way/332378158   https://www.openstreetmap.org/way/332378158
+    at:  37.787757, -122.408976   https://www.google.com/maps?q=37.787757,-122.408976
+    wikipedia: en:Westin St. Francis
+    wikidata: https://www.wikidata.org/wiki/Q7988926
+
+* Notre Dame Des Victoires Church
+    place of worship (christian), 10 m
+    osm: way/260183822   https://www.openstreetmap.org/way/260183822
+    at:  37.790737, -122.406532   https://www.google.com/maps?q=37.790737,-122.406532
+    wikipedia: en:Notre-Dame-des-Victoires, San Francisco
+    wikidata: https://www.wikidata.org/wiki/Q3580405
+
+* Dewey Monument
+    historic monument, 25.9 m, built 1903
+    osm: way/616479962   https://www.openstreetmap.org/way/616479962
+    at:  37.787935, -122.407520   https://www.google.com/maps?q=37.787935,-122.407520
+    wikidata: https://www.wikidata.org/wiki/Q5268201
+
+* Grace Cathedral
+    historic building, 53 m
+    osm: way/32946942   https://www.openstreetmap.org/way/32946942
+    at:  37.791833, -122.413497   https://www.google.com/maps?q=37.791833,-122.413497
+    wikipedia: en:Grace Cathedral, San Francisco
+    wikidata: https://www.wikidata.org/wiki/Q3082361
+
+* Pacific Union Club
+    historic building, 18 m
+    osm: way/32947069   https://www.openstreetmap.org/way/32947069
+    at:  37.792236, -122.411401   https://www.google.com/maps?q=37.792236,-122.411401
+    wikipedia: en:Pacific-Union Club
+    wikidata: https://www.wikidata.org/wiki/Q6130704
+
+* Kong Chow Temple
+    place of worship (taoist), 16 m
+    osm: way/260523829   https://www.openstreetmap.org/way/260523829
+    at:  37.793893, -122.408082   https://www.google.com/maps?q=37.793893,-122.408082
+    wikipedia: en:Kong Chow Temple
+    wikidata: https://www.wikidata.org/wiki/Q6429111
+
+* Feusier Octagon House
+    historic house, 11 m
+    osm: way/256993234   https://www.openstreetmap.org/way/256993234
+    at:  37.798330, -122.416707   https://www.google.com/maps?q=37.798330,-122.416707
+    wikipedia: en:Feusier Octagon House
+    wikidata: https://www.wikidata.org/wiki/Q5446047
+
+* The Summit
+    building=yes, 80 m, 29 levels
+    osm: way/262480462   https://www.openstreetmap.org/way/262480462
+    at:  37.798460, -122.415217   https://www.google.com/maps?q=37.798460,-122.415217
+    wikipedia: en:The Summit (San Francisco)
+    wikidata: https://www.wikidata.org/wiki/Q7767281
+
+* Vesuvio
+    building=yes, 10 m
+    osm: way/35537202   https://www.openstreetmap.org/way/35537202
+    at:  37.797491, -122.406442   https://www.google.com/maps?q=37.797491,-122.406442
+    wikipedia: en:Vesuvio Cafe
+    wikidata: https://www.wikidata.org/wiki/Q7923521
+
+* Great Star Theater
+    building=yes, 9 m
+    osm: way/256733182   https://www.openstreetmap.org/way/256733182
+    at:  37.796361, -122.405804   https://www.google.com/maps?q=37.796361,-122.405804
+    wikipedia: en:Great Star Theater
+    wikidata: https://www.wikidata.org/wiki/Q44634130
+
+* Ma-Tsu Temple
+    place of worship (taoist), 11 m
+    osm: way/256733189   https://www.openstreetmap.org/way/256733189
+    at:  37.796489, -122.406313   https://www.google.com/maps?q=37.796489,-122.406313
+    wikipedia: en:Ma-Tsu Temple (San Francisco, California)
+    wikidata: https://www.wikidata.org/wiki/Q18351171
+
+* Hilton San Francisco Financial District
+    hotel, 111 m, 32 levels
+    osm: way/260922316   https://www.openstreetmap.org/way/260922316
+    at:  37.795154, -122.404292   https://www.google.com/maps?q=37.795154,-122.404292
+    wikipedia: en:Hilton San Francisco Financial District
+    wikidata: https://www.wikidata.org/wiki/Q14682267
+
+* Sentinel Building
+    historic building, 29 m, 7 levels
+    osm: way/288485994   https://www.openstreetmap.org/way/288485994
+    at:  37.796555, -122.405027   https://www.google.com/maps?q=37.796555,-122.405027
+    wikipedia: en:Columbus Tower (San Francisco)
+    wikidata: https://www.wikidata.org/wiki/Q5150141
+
+* Stanford Court San Francisco Hotel
+    hotel, 30 m, 11 levels
+    osm: relation/6480430   https://www.openstreetmap.org/relation/6480430
+    at:  37.791501, -122.409551   https://www.google.com/maps?q=37.791501,-122.409551
+    wikipedia: en:Stanford Court Hotel
+    wikidata: https://www.wikidata.org/wiki/Q7598736
+
+* The Fairmont San Francisco Hotel
+    hotel, 2 levels
+    osm: relation/16217497   https://www.openstreetmap.org/relation/16217497
+    at:  37.792449, -122.410044   https://www.google.com/maps?q=37.792449,-122.410044
+    wikipedia: en:Fairmont San Francisco
+    wikidata: https://www.wikidata.org/wiki/Q4272608
+
+* Top of the Mark
+    viewpoint
+    osm: node/1417639584   https://www.openstreetmap.org/node/1417639584
+    at:  37.791624, -122.410408   https://www.google.com/maps?q=37.791624,-122.410408
+    wikipedia: en:Top of the Mark
+    wikidata: https://www.wikidata.org/wiki/Q7824679
+
+* Sun Yat-sen's statue
+    memorial (statue)
+    osm: node/2496738466   https://www.openstreetmap.org/node/2496738466
+    at:  37.792019, -122.405490   https://www.google.com/maps?q=37.792019,-122.405490
+    wikipedia: en:Statue of Sun Yat-sen (San Francisco)
+    wikidata: https://www.wikidata.org/wiki/Q40732369
+
+* Tin How Temple
+    place of worship (taoist)
+    osm: node/2923578988   https://www.openstreetmap.org/node/2923578988
+    at:  37.794561, -122.407007   https://www.google.com/maps?q=37.794561,-122.407007
+    wikipedia: en:Tin How Temple
+    wikidata: https://www.wikidata.org/wiki/Q2135574
+
+* Goddess of Democracy
+    artwork, built 1994-06-04
+    osm: node/7177796746   https://www.openstreetmap.org/node/7177796746
+    at:  37.794684, -122.405435   https://www.google.com/maps?q=37.794684,-122.405435
+    wikipedia: en:Goddess of Democracy (San Francisco)
+    wikidata: https://www.wikidata.org/wiki/Q40733116
+
+* Fleur de Lys
+    building=yes
+    osm: way/247749446   https://www.openstreetmap.org/way/247749446
+    at:  37.788440, -122.413088   https://www.google.com/maps?q=37.788440,-122.413088
+    wikipedia: en:Fleur de Lys (restaurant)
+    wikidata: https://www.wikidata.org/wiki/Q5458873
+
+* Ruth Asawa’s San Francisco Fountain
+    artwork
+    osm: way/288512968   https://www.openstreetmap.org/way/288512968
+    at:  37.788880, -122.407075   https://www.google.com/maps?q=37.788880,-122.407075
+    wikipedia: en:Ruth Asawa's San Francisco Fountain
+    wikidata: https://www.wikidata.org/wiki/Q17026805
+
+* Jones Street tank
+    storage_tank
+    osm: way/247759163   https://www.openstreetmap.org/way/247759163
+    at:  37.792670, -122.415065   https://www.google.com/maps?q=37.792670,-122.415065
+    wikipedia: en:San Francisco Fire Department Auxiliary Water Supply System#Jones Street tank
+    wikidata: https://www.wikidata.org/wiki/Q128917707
+
+* Cable Car Powerhouse and Barn
+    museum
+    osm: way/30029681   https://www.openstreetmap.org/way/30029681
+    at:  37.794885, -122.411920   https://www.google.com/maps?q=37.794885,-122.411920
+    wikipedia: en:San Francisco Cable Car Museum
+    wikidata: https://www.wikidata.org/wiki/Q5496957
+
+* Golden Gate Fortune Cookie Factory
+    attraction
+    osm: node/1308317902   https://www.openstreetmap.org/node/1308317902
+    at:  37.795699, -122.407349   https://www.google.com/maps?q=37.795699,-122.407349
+    wikidata: https://www.wikidata.org/wiki/Q5579450
+
+* Beacon Grand
+    hotel, 62 m, 22 levels
+    osm: way/32863429   https://www.openstreetmap.org/way/32863429
+    at:  37.788980, -122.408266   https://www.google.com/maps?q=37.788980,-122.408266
+    wikidata: https://www.wikidata.org/wiki/Q27628578
+
+* San Francisco Marriott Union Square
+    hotel, 95 m, 28 levels
+    osm: way/32946774   https://www.openstreetmap.org/way/32946774
+    at:  37.789463, -122.408315   https://www.google.com/maps?q=37.789463,-122.408315
+    wikidata: https://www.wikidata.org/wiki/Q111393393
+
+* InterContinental Mark Hopkins
+    hotel, 92.97m m
+    osm: way/1361492525   https://www.openstreetmap.org/way/1361492525
+    at:  37.791473, -122.410217   https://www.google.com/maps?q=37.791473,-122.410217
+    wikidata: https://www.wikidata.org/wiki/Q6768099
+
+* Hotel Carlton
+    hotel, 38 m, 9 levels
+    osm: way/123646088   https://www.openstreetmap.org/way/123646088
+    at:  37.787750, -122.417963   https://www.google.com/maps?q=37.787750,-122.417963
+    wikidata: https://www.wikidata.org/wiki/Q96418576
+
+* Hotel Adagio
+    hotel, 47 m
+    osm: way/35024321   https://www.openstreetmap.org/way/35024321
+    at:  37.787086, -122.412540   https://www.google.com/maps?q=37.787086,-122.412540
+    wikidata: https://www.wikidata.org/wiki/Q111393407
+
+* The Adelaide Hostel
+    hostel, 14 m
+    osm: way/35024342   https://www.openstreetmap.org/way/35024342
+    at:  37.787427, -122.412134   https://www.google.com/maps?q=37.787427,-122.412134
+    wikidata: https://www.wikidata.org/wiki/Q111121529
+
+* Union Square Plaza Hotel
+    hotel, 24 m
+    osm: way/35024377   https://www.openstreetmap.org/way/35024377
+    at:  37.787277, -122.410396   https://www.google.com/maps?q=37.787277,-122.410396
+    wikidata: https://www.wikidata.org/wiki/Q111121539
+
+* JW Marriott
+    hotel, 73 m, 21 levels
+    osm: way/35537021   https://www.openstreetmap.org/way/35537021
+    at:  37.788316, -122.410484   https://www.google.com/maps?q=37.788316,-122.410484
+    wikidata: https://www.wikidata.org/wiki/Q111393399
+
+* Bohemian Club
+    building=yes, 27 m
+    osm: way/48995281   https://www.openstreetmap.org/way/48995281
+    at:  37.788249, -122.411470   https://www.google.com/maps?q=37.788249,-122.411470
+    wikidata: https://www.wikidata.org/wiki/Q1091018
+
+* Warwick San Francisco
+    hotel, 26 m
+    osm: way/71504455   https://www.openstreetmap.org/way/71504455
+    at:  37.787152, -122.411369   https://www.google.com/maps?q=37.787152,-122.411369
+    wikidata: https://www.wikidata.org/wiki/Q111393402
+
+* White Swan Inn
+    hotel, 17 m
+    osm: way/135620221   https://www.openstreetmap.org/way/135620221
+    at:  37.789618, -122.411240   https://www.google.com/maps?q=37.789618,-122.411240
+    wikidata: https://www.wikidata.org/wiki/Q108672449
+
+* Orchard Hotel
+    hotel, 32 m
+    osm: way/256499427   https://www.openstreetmap.org/way/256499427
+    at:  37.790033, -122.408340   https://www.google.com/maps?q=37.790033,-122.408340
+    wikidata: https://www.wikidata.org/wiki/Q111395295
+
+* Nob Hill Theatre
+    building=yes, 7 m
+    osm: way/256733821   https://www.openstreetmap.org/way/256733821
+    at:  37.789860, -122.409305   https://www.google.com/maps?q=37.789860,-122.409305
+    wikidata: https://www.wikidata.org/wiki/Q44634548
+
+* Hotel Emblem San Francisco
+    hotel, 22 m
+    osm: way/256733832   https://www.openstreetmap.org/way/256733832
+    at:  37.789363, -122.409816   https://www.google.com/maps?q=37.789363,-122.409816
+    wikidata: https://www.wikidata.org/wiki/Q111393395
+
+* Hotel G
+    hotel, 47 m, 13 levels
+    osm: way/332375981   https://www.openstreetmap.org/way/332375981
+    at:  37.787368, -122.409654   https://www.google.com/maps?q=37.787368,-122.409654
+    wikidata: https://www.wikidata.org/wiki/Q111393400
+
+* Grand Hyatt San Francisco
+    hotel, 94 m, 36 levels
+    osm: way/32863494   https://www.openstreetmap.org/way/32863494
+    at:  37.789124, -122.407240   https://www.google.com/maps?q=37.789124,-122.407240
+    wikidata: https://www.wikidata.org/wiki/Q5594662
+
+* Hotel Triton
+    hotel, 27 m, 8 levels
+    osm: way/135174116   https://www.openstreetmap.org/way/135174116
+    at:  37.790341, -122.405339   https://www.google.com/maps?q=37.790341,-122.405339
+    wikidata: https://www.wikidata.org/wiki/Q111393386
+
+* Union Square/Market Street Station
+    building=train_station, 1 levels
+    osm: way/616479968   https://www.openstreetmap.org/way/616479968
+    at:  37.787688, -122.407094   https://www.google.com/maps?q=37.787688,-122.407094
+    wikidata: https://www.wikidata.org/wiki/Q21016288
+
+* Orchard Garden Hotel
+    hotel, 31 m
+    osm: way/260279404   https://www.openstreetmap.org/way/260279404
+    at:  37.790896, -122.405246   https://www.google.com/maps?q=37.790896,-122.405246
+    wikidata: https://www.wikidata.org/wiki/Q111393383
+
+* Neiman Marcus
+    building=yes, 28 m, 5 levels
+    osm: way/332521036   https://www.openstreetmap.org/way/332521036
+    at:  37.787370, -122.405921   https://www.google.com/maps?q=37.787370,-122.405921
+    wikidata: https://www.wikidata.org/wiki/Q5123857
+
+* The White House Building
+    building=commercial, 32 m
+    osm: way/333827281   https://www.openstreetmap.org/way/333827281
+    at:  37.789436, -122.404779   https://www.google.com/maps?q=37.789436,-122.404779
+    wikidata: https://www.wikidata.org/wiki/Q108044442
+
+* Hotel Des Arts
+    hotel, 55 m
+    osm: way/474341709   https://www.openstreetmap.org/way/474341709
+    at:  37.790406, -122.404832   https://www.google.com/maps?q=37.790406,-122.404832
+    wikidata: https://www.wikidata.org/wiki/Q5912182
+
+* Nuestra Senora De Guadalupe Church
+    place of worship (christian), 18 m
+    osm: way/257008588   https://www.openstreetmap.org/way/257008588
+    at:  37.797484, -122.412359   https://www.google.com/maps?q=37.797484,-122.412359
+    wikidata: https://www.wikidata.org/wiki/Q60792939
+
+* Green Hill Tower
+    building=yes, 72 m, 22 levels
+    osm: way/262482835   https://www.openstreetmap.org/way/262482835
+    at:  37.798820, -122.416806   https://www.google.com/maps?q=37.798820,-122.416806
+    wikidata: https://www.wikidata.org/wiki/Q21548924
+
+* Old Saint Mary's Cathedral
+    place of worship (christian), 19 m
+    osm: way/260520154   https://www.openstreetmap.org/way/260520154
+    at:  37.792853, -122.405733   https://www.google.com/maps?q=37.792853,-122.405733
+    wikidata: https://www.wikidata.org/wiki/Q7084891
+
+* 650 California Street
+    building=yes, 142 m, 33 levels
+    osm: way/260520160   https://www.openstreetmap.org/way/260520160
+    at:  37.792867, -122.405219   https://www.google.com/maps?q=37.792867,-122.405219
+    wikidata: https://www.wikidata.org/wiki/Q4642077
+
+* National Shrine of Saint Francis of Assisi
+    place of worship (christian), 19 m
+    osm: way/32610420   https://www.openstreetmap.org/way/32610420
+    at:  37.799009, -122.407739   https://www.google.com/maps?q=37.799009,-122.407739
+    wikidata: https://www.wikidata.org/wiki/Q99510742
+
+* Green Tortoise Hostel
+    hostel, 11 m
+    osm: way/70077928   https://www.openstreetmap.org/way/70077928
+    at:  37.798271, -122.405307   https://www.google.com/maps?q=37.798271,-122.405307
+    wikidata: https://www.wikidata.org/wiki/Q111121525
+
+* The Ritz-Carlton
+    hotel, 30 m, 8 levels
+    osm: relation/14543549   https://www.openstreetmap.org/relation/14543549
+    at:  37.791864, -122.406817   https://www.google.com/maps?q=37.791864,-122.406817
+    wikidata: https://www.wikidata.org/wiki/Q111393385
+
+* Engine House Number 31
+    building=yes
+    osm: node/368172290   https://www.openstreetmap.org/node/368172290
+    at:  37.798818, -122.417193   https://www.google.com/maps?q=37.798818,-122.417193
+    wikidata: https://www.wikidata.org/wiki/Q60521329
+
+* WWII Pacific War Memorial Hall
+    museum
+    osm: node/6960980687   https://www.openstreetmap.org/node/6960980687
+    at:  37.793272, -122.406371   https://www.google.com/maps?q=37.793272,-122.406371
+    wikidata: https://www.wikidata.org/wiki/Q80382835
+
+* Robert Louis Stevenson
+    artwork
+    osm: node/9611042258   https://www.openstreetmap.org/node/9611042258
+    at:  37.795066, -122.405670   https://www.google.com/maps?q=37.795066,-122.405670
+    wikidata: https://www.wikidata.org/wiki/Q40699786
+
+* The Beat Museum
+    museum
+    osm: node/5581588797   https://www.openstreetmap.org/node/5581588797
+    at:  37.798064, -122.406184   https://www.google.com/maps?q=37.798064,-122.406184
+    wikidata: https://www.wikidata.org/wiki/Q43080164
+
+* Mithila Hotel
+    hotel
+    osm: way/179746882   https://www.openstreetmap.org/way/179746882
+    at:  37.788540, -122.416352   https://www.google.com/maps?q=37.788540,-122.416352
+    wikidata: https://www.wikidata.org/wiki/Q111121535
+
+* V.C. Morris Gift Shop Building
+    building=yes
+    osm: way/939466400   https://www.openstreetmap.org/way/939466400
+    at:  37.788274, -122.405907   https://www.google.com/maps?q=37.788274,-122.405907
+    wikidata: https://www.wikidata.org/wiki/Q12071866
+
+* Chinatown / Him Mark Lai Branch Library
+    building=yes, built 1921
+    osm: way/162056246   https://www.openstreetmap.org/way/162056246
+    at:  37.795226, -122.410216   https://www.google.com/maps?q=37.795226,-122.410216
+    wikidata: https://www.wikidata.org/wiki/Q66362947
+
+* Tiki Bob
+    historic yes
+    osm: node/410805203   https://www.openstreetmap.org/node/410805203
+    at:  37.787796, -122.411565   https://www.google.com/maps?q=37.787796,-122.411565
+
+* California and Powell streets
+    attraction
+    osm: node/4242437689   https://www.openstreetmap.org/node/4242437689
+    at:  37.792051, -122.409185   https://www.google.com/maps?q=37.792051,-122.409185
+
+* Bank of Canton (former Chinese Telephone Exchange)
+    attraction
+    osm: node/2579643653   https://www.openstreetmap.org/node/2579643653
+    at:  37.795073, -122.406267   https://www.google.com/maps?q=37.795073,-122.406267
+
+* Goddess of Victory
+    artwork, 2.7 m
+    osm: node/11699339397   https://www.openstreetmap.org/node/11699339397
+    at:  37.787934, -122.407520   https://www.google.com/maps?q=37.787934,-122.407520
+
+* Chinese Independent Baptist Church of San Francisco
+    place of worship (christian), 20 m
+    osm: way/66643085   https://www.openstreetmap.org/way/66643085
+    at:  37.794608, -122.409488   https://www.google.com/maps?q=37.794608,-122.409488
+
+* Saint Mary's Chinese Mission
+    place of worship (christian), 15 m
+    osm: way/256731627   https://www.openstreetmap.org/way/256731627
+    at:  37.794385, -122.408253   https://www.google.com/maps?q=37.794385,-122.408253
+
+* First Chinese Baptist Church
+    place of worship (christian), 14 m, built 1908
+    osm: way/66642926   https://www.openstreetmap.org/way/66642926
+    at:  37.793455, -122.406814   https://www.google.com/maps?q=37.793455,-122.406814
+
+* Confluence
+    artwork, built 2004
+    osm: node/6488849506   https://www.openstreetmap.org/node/6488849506
+    at:  37.788012, -122.409892   https://www.google.com/maps?q=37.788012,-122.409892
+
+* Skyward
+    artwork, built 2004
+    osm: node/6488849508   https://www.openstreetmap.org/node/6488849508
+    at:  37.788050, -122.409627   https://www.google.com/maps?q=37.788050,-122.409627
+
+* Climate change is real
+    artwork
+    osm: node/6959502925   https://www.openstreetmap.org/node/6959502925
+    at:  37.787651, -122.409791   https://www.google.com/maps?q=37.787651,-122.409791
+
+* Convergence: Commute Patterns
+    artwork
+    osm: node/10802402429   https://www.openstreetmap.org/node/10802402429
+    at:  37.787685, -122.407049   https://www.google.com/maps?q=37.787685,-122.407049
+
+* Labyrinthine Heart
+    artwork, built 2023
+    osm: node/10982692520   https://www.openstreetmap.org/node/10982692520
+    at:  37.787729, -122.406876   https://www.google.com/maps?q=37.787729,-122.406876
+
+* Butterflight
+    artwork
+    osm: node/12940072477   https://www.openstreetmap.org/node/12940072477
+    at:  37.787565, -122.408022   https://www.google.com/maps?q=37.787565,-122.408022
+
+* First Chinese Southern Baptist Church
+    place of worship (christian)
+    osm: node/358805057   https://www.openstreetmap.org/node/358805057
+    at:  37.792643, -122.417902   https://www.google.com/maps?q=37.792643,-122.417902
+
+* Chapel of Grace
+    place of worship (christian)
+    osm: node/358803230   https://www.openstreetmap.org/node/358803230
+    at:  37.791637, -122.413940   https://www.google.com/maps?q=37.791637,-122.413940
+
+* Chinese United Methodist Church
+    place of worship (christian)
+    osm: node/358803569   https://www.openstreetmap.org/node/358803569
+    at:  37.795061, -122.408261   https://www.google.com/maps?q=37.795061,-122.408261
+
+* Chi Sin Buddhist and Taoist Association
+    place of worship (buddhist)
+    osm: node/358804507   https://www.openstreetmap.org/node/358804507
+    at:  37.794421, -122.409804   https://www.google.com/maps?q=37.794421,-122.409804
+
+* True Sunshine Episcopal Church
+    place of worship (christian)
+    osm: node/358804944   https://www.openstreetmap.org/node/358804944
+    at:  37.796722, -122.411600   https://www.google.com/maps?q=37.796722,-122.411600
+
+* Cumberland Presbyterian Chinese Church
+    place of worship (christian)
+    osm: node/358805049   https://www.openstreetmap.org/node/358805049
+    at:  37.795573, -122.409479   https://www.google.com/maps?q=37.795573,-122.409479
+
+* Quong Ming Buddhism and Taoism Society
+    place of worship (buddhist)
+    osm: node/358805119   https://www.openstreetmap.org/node/358805119
+    at:  37.794929, -122.409415   https://www.google.com/maps?q=37.794929,-122.409415
+
+* KPOO-FM (San Francisco)
+    tower
+    osm: node/358814623   https://www.openstreetmap.org/node/358814623
+    at:  37.793127, -122.414219   https://www.google.com/maps?q=37.793127,-122.414219
+
+* Chinese Historical Society of America
+    museum
+    osm: node/806240639   https://www.openstreetmap.org/node/806240639
+    at:  37.793857, -122.408820   https://www.google.com/maps?q=37.793857,-122.408820
+
+* Resting Hermes
+    artwork
+    osm: node/7223598886   https://www.openstreetmap.org/node/7223598886
+    at:  37.792226, -122.408731   https://www.google.com/maps?q=37.792226,-122.408731
+
+* Grace Cathedral Labyrinth
+    artwork
+    osm: node/9010894444   https://www.openstreetmap.org/node/9010894444
+    at:  37.792127, -122.412833   https://www.google.com/maps?q=37.792127,-122.412833
+
+* Tony Bennett Commemorative Statue
+    artwork, built 2016-08-19
+    osm: node/11060777761   https://www.openstreetmap.org/node/11060777761
+    at:  37.792088, -122.410708   https://www.google.com/maps?q=37.792088,-122.410708
+
+* Ping Yuen Mural
+    artwork
+    osm: node/12578503301   https://www.openstreetmap.org/node/12578503301
+    at:  37.796394, -122.408254   https://www.google.com/maps?q=37.796394,-122.408254
+
+* Enter the Cafe
+    artwork
+    osm: node/12578526701   https://www.openstreetmap.org/node/12578526701
+    at:  37.797510, -122.410490   https://www.google.com/maps?q=37.797510,-122.410490
+
+* KJAZ-FM (Alameda)
+    tower
+    osm: node/358814399   https://www.openstreetmap.org/node/358814399
+    at:  37.798262, -122.417471   https://www.google.com/maps?q=37.798262,-122.417471
+
+* 3-way Russian Hill view
+    viewpoint
+    osm: node/5423541521   https://www.openstreetmap.org/node/5423541521
+    at:  37.798486, -122.417235   https://www.google.com/maps?q=37.798486,-122.417235
+
+* San Francisco Chinese Baptist Church
+    place of worship (christian)
+    osm: node/358804836   https://www.openstreetmap.org/node/358804836
+    at:  37.798818, -122.410249   https://www.google.com/maps?q=37.798818,-122.410249
+
+* Skyline
+    viewpoint
+    osm: node/5213680421   https://www.openstreetmap.org/node/5213680421
+    at:  37.798241, -122.413636   https://www.google.com/maps?q=37.798241,-122.413636
+
+* Ina Donna Coolbrith
+    memorial (stone)
+    osm: node/9432605688   https://www.openstreetmap.org/node/9432605688
+    at:  37.798067, -122.413624   https://www.google.com/maps?q=37.798067,-122.413624
+
+* Poet's Corner
+    memorial (stone)
+    osm: node/9432605692   https://www.openstreetmap.org/node/9432605692
+    at:  37.798400, -122.413621   https://www.google.com/maps?q=37.798400,-122.413621
+
+* Buddha's Universal Church
+    place of worship (buddhist)
+    osm: node/358804501   https://www.openstreetmap.org/node/358804501
+    at:  37.795398, -122.405284   https://www.google.com/maps?q=37.795398,-122.405284
+
+* Chinese Congregational Church
+    place of worship (christian)
+    osm: node/527744132   https://www.openstreetmap.org/node/527744132
+    at:  37.794742, -122.405927   https://www.google.com/maps?q=37.794742,-122.405927
+
+* Chinese-American World War Memorial
+    memorial (plaque)
+    osm: node/6960892845   https://www.openstreetmap.org/node/6960892845
+    at:  37.791964, -122.405249   https://www.google.com/maps?q=37.791964,-122.405249
+
+* Rose Pak Memorial Tree
+    memorial (tree), built 2017
+    osm: node/6960892859   https://www.openstreetmap.org/node/6960892859
+    at:  37.791851, -122.405190   https://www.google.com/maps?q=37.791851,-122.405190
+
+* First Public School in California
+    memorial (stone), built 1957
+    osm: node/7177796751   https://www.openstreetmap.org/node/7177796751
+    at:  37.794540, -122.405472   https://www.google.com/maps?q=37.794540,-122.405472
+
+* Guan Yin Citta
+    place of worship (buddhist)
+    osm: node/7177938158   https://www.openstreetmap.org/node/7177938158
+    at:  37.794266, -122.405721   https://www.google.com/maps?q=37.794266,-122.405721
+
+* Blooming on Fragrance Alley
+    artwork
+    osm: node/7223586218   https://www.openstreetmap.org/node/7223586218
+    at:  37.794008, -122.407495   https://www.google.com/maps?q=37.794008,-122.407495
+
+* 1st U.S. Flag Raised in San Francisco
+    historic memorial
+    osm: node/12497581503   https://www.openstreetmap.org/node/12497581503
+    at:  37.795093, -122.405599   https://www.google.com/maps?q=37.795093,-122.405599
+
+* The Birthplace of a Great City
+    historic memorial
+    osm: node/12497607303   https://www.openstreetmap.org/node/12497607303
+    at:  37.794559, -122.406461   https://www.google.com/maps?q=37.794559,-122.406461
+
+* Jazz mural
+    artwork
+    osm: node/6924250085   https://www.openstreetmap.org/node/6924250085
+    at:  37.797964, -122.407120   https://www.google.com/maps?q=37.797964,-122.407120
+
+* Language of Birds
+    artwork
+    osm: node/12578526601   https://www.openstreetmap.org/node/12578526601
+    at:  37.797960, -122.407077   https://www.google.com/maps?q=37.797960,-122.407077
+
+* Korean Methodist Church
+    place of worship (christian)
+    osm: way/259256019   https://www.openstreetmap.org/way/259256019
+    at:  37.795089, -122.410052   https://www.google.com/maps?q=37.795089,-122.410052
+
+* Gold Mountain Monastery
+    place of worship (buddhist)
+    osm: way/260524896   https://www.openstreetmap.org/way/260524896
+    at:  37.793552, -122.406370   https://www.google.com/maps?q=37.793552,-122.406370
+
+* Harmony
+    artwork
+    osm: way/1177244708   https://www.openstreetmap.org/way/1177244708
+    at:  37.793804, -122.406027   https://www.google.com/maps?q=37.793804,-122.406027

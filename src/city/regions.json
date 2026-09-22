@@ -1,0 +1,286 @@
+{
+  "_note": "Regional character, applied on top of a city's style mix. A city names its region in tools/cities.ts, which is baked into the package; anything a region leaves out comes from 'default'. Palettes replace a style's own palettes (styles.json) for that region; each palette is { wall, trim, roof, accent }.",
+  "default": {
+    "note": "What a North American downtown looks like: lamp posts along every pavement, benches here and there, zebra crossings at junctions.",
+    "palettes": {},
+    "furniture": {
+      "lampPosts": true,
+      "benches": true,
+      "bollards": null,
+      "wallLamps": false
+    },
+    "crossings": "zebra",
+    "shopNames": "en",
+    "defaultLevels": {
+      "residential": 4,
+      "commercial": 5,
+      "house": 3,
+      "industrial": 2
+    },
+    "levelInference": {
+      "radius": 60,
+      "minNeighbours": 3,
+      "percentile": 0.5,
+      "maxLevels": 12,
+      "types": {
+        "house": "house",
+        "detached": "house",
+        "semidetached_house": "house",
+        "bungalow": "house",
+        "terrace": 3,
+        "garage": 1,
+        "garages": 1,
+        "shed": 1,
+        "hut": 1,
+        "roof": 1,
+        "carport": 1,
+        "kiosk": 1,
+        "church": 5,
+        "cathedral": 5,
+        "chapel": 5,
+        "industrial": "industrial",
+        "warehouse": "industrial"
+      }
+    },
+    "roofscape": {
+      "chimneys": false,
+      "dormers": false
+    },
+    "streetSigns": "none",
+    "awnings": 0.2,
+    "pointFurniture": {
+      "metro": "generic",
+      "fountain": "tap",
+      "kiosk": "plain",
+      "bikeColour": "#3f464d"
+    },
+    "landmarkPlate": {
+      "fill": "#3b2f27",
+      "text": "#e6d9b8"
+    },
+    "elevatedRailColour": "#3a3d40",
+    "centreLine": "white",
+    "hydrants": false,
+    "streetWidth": "corridor",
+    "signals": "post"
+  },
+  "paris": {
+    "note": "Paris. Cream limestone almost everywhere (Haussmann's city is one colour, and that colour is what makes it Paris), slate-blue zinc roofs and black ironwork. No lamp posts on the pavement edge: Paris street lamps hang from the buildings. Black bollards (potelets) line the narrow pavements to keep cars off them. Crossings are the passage piéton: broad white bands, wider apart than a zebra (crossings: bands).",
+    "palettes": {
+      "haussmann": [
+        {
+          "wall": "#ece2cc",
+          "trim": "#dcd0b4",
+          "roof": "#6b7780",
+          "accent": "#1e2022"
+        },
+        {
+          "wall": "#e7dcc3",
+          "trim": "#d6c9ab",
+          "roof": "#707c85",
+          "accent": "#1c1e20"
+        },
+        {
+          "wall": "#f0e7d4",
+          "trim": "#e0d5bc",
+          "roof": "#66727b",
+          "accent": "#202224"
+        },
+        {
+          "wall": "#e3d6ba",
+          "trim": "#d1c3a2",
+          "roof": "#6e7a83",
+          "accent": "#1d1f21"
+        }
+      ],
+      "classical": [
+        {
+          "wall": "#eae0c9",
+          "trim": "#dacdb0",
+          "roof": "#6b7780",
+          "accent": "#1e2022"
+        },
+        {
+          "wall": "#e4d9bf",
+          "trim": "#d3c6a7",
+          "roof": "#707c85",
+          "accent": "#1c1e20"
+        },
+        {
+          "wall": "#efe6d2",
+          "trim": "#dfd3b9",
+          "roof": "#66727b",
+          "accent": "#202224"
+        }
+      ],
+      "bauhaus": [
+        {
+          "wall": "#ece5d6",
+          "trim": "#dcd3c0",
+          "roof": "#6f777d",
+          "accent": "#26282a"
+        },
+        {
+          "wall": "#e6ddc9",
+          "trim": "#d5cab2",
+          "roof": "#6a7278",
+          "accent": "#232527"
+        }
+      ],
+      "brutalist": [
+        {
+          "wall": "#ddd5c4",
+          "trim": "#cbc2ae",
+          "roof": "#6d7479",
+          "accent": "#2a2c2e"
+        },
+        {
+          "wall": "#d6cdba",
+          "trim": "#c4baa4",
+          "roof": "#697075",
+          "accent": "#27292b"
+        }
+      ],
+      "marais": [
+        {
+          "wall": "#e9e2d3",
+          "trim": "#d8cfbc",
+          "roof": "#5d646b",
+          "accent": "#2f4a36"
+        },
+        {
+          "wall": "#e3cfa5",
+          "trim": "#d4bf93",
+          "roof": "#5d646b",
+          "accent": "#5e2426"
+        },
+        {
+          "wall": "#dedad0",
+          "trim": "#cdc8bb",
+          "roof": "#5d646b",
+          "accent": "#2f4a36"
+        }
+      ]
+    },
+    "furniture": {
+      "lampPosts": false,
+      "benches": true,
+      "bollards": {
+        "colour": "#18191b",
+        "spacing": 1.7,
+        "height": 0.9,
+        "maxPavement": 2.6
+      },
+      "wallLamps": true,
+      "terraces": true
+    },
+    "crossings": "bands",
+    "shopNames": "fr",
+    "defaultLevels": {
+      "residential": 5,
+      "commercial": 6,
+      "house": 2,
+      "industrial": 2
+    },
+    "levelInference": {
+      "maxLevels": 8
+    },
+    "roofscape": {
+      "chimneys": true,
+      "dormers": true,
+      "pots": "terracotta"
+    },
+    "streetSigns": "plaque",
+    "awnings": 0.9,
+    "riverDrop": 2.5,
+    "pointFurniture": {
+      "metro": "guimard",
+      "fountain": "wallace",
+      "kiosk": "paris",
+      "bikeColour": "#4d5a60"
+    },
+    "landmarkPlate": {
+      "fill": "#e9e0cc",
+      "text": "#2a2622"
+    },
+    "signals": "paris"
+  },
+  "new-york": {
+    "note": "Brooklyn and Manhattan brownstone and walk-up country: four or five storeys, set by the row either side. Only the height method is set here so far; the rest of the New York profile is item G.",
+    "defaultLevels": {
+      "residential": 4,
+      "commercial": 5,
+      "house": 3,
+      "industrial": 2
+    },
+    "levelInference": {
+      "maxLevels": 8
+    },
+    "pointFurniture": {
+      "metro": "nyc",
+      "bikeColour": "#1f6fb8"
+    },
+    "centreLine": "doubleYellow",
+    "hydrants": true,
+    "crossings": "continental",
+    "streetWidth": "carriageway",
+    "streetSigns": "blade",
+    "awnings": 0.35,
+    "roofscape": {
+      "chimneys": false,
+      "dormers": false,
+      "waterTanks": true
+    },
+    "signals": "mastArm"
+  },
+  "chicago": {
+    "note": "The Loop: towers stand beside three-storey survivors, and the towers are the ones mappers tag. The median of the tagged neighbours would make every untagged walk-up a skyscraper, so the lower quartile is asked, and capped. The rest of the Chicago profile is item G.",
+    "defaultLevels": {
+      "residential": 6,
+      "commercial": 10,
+      "house": 2,
+      "industrial": 3
+    },
+    "levelInference": {
+      "radius": 80,
+      "percentile": 0.25,
+      "maxLevels": 14
+    },
+    "pointFurniture": {
+      "metro": "cta",
+      "bikeColour": "#3aa0d8"
+    },
+    "elevatedRailColour": "#1c2621",
+    "centreLine": "doubleYellow",
+    "hydrants": true,
+    "crossings": "continental",
+    "streetWidth": "carriageway",
+    "streetSigns": "blade",
+    "awnings": 0.35,
+    "signals": "mastArm"
+  },
+  "san-francisco": {
+    "note": "Nob Hill: houses and small apartment blocks, with a few hotels on the crest. The building type decides first and the neighbours are asked over a shorter distance, because a hotel tower on the corner says nothing about the Victorians down the hill. The rest of the profile is item G.",
+    "defaultLevels": {
+      "residential": 3,
+      "commercial": 4,
+      "house": 2,
+      "industrial": 2
+    },
+    "levelInference": {
+      "radius": 40,
+      "percentile": 0.4,
+      "maxLevels": 6,
+      "types": {
+        "apartments": 4
+      }
+    },
+    "centreLine": "doubleYellow",
+    "hydrants": true,
+    "crossings": "continental",
+    "streetWidth": "carriageway",
+    "streetSigns": "blade",
+    "awnings": 0.35,
+    "signals": "mastArm"
+  }
+}

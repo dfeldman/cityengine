@@ -1,0 +1,1731 @@
+Le Marais, Paris — landmarks (294)
+Generated 2026-09-21 from OpenStreetMap (© OpenStreetMap contributors, ODbL).
+Most important first. A replacement model is keyed to the OSM id: "way/123" etc.
+
+* Synagogue
+    place of worship (jewish), 5 levels, built 1913
+    osm: way/56040608   https://www.openstreetmap.org/way/56040608
+    at:  48.855932, 2.360679   https://www.google.com/maps?q=48.855932,2.360679
+    wikipedia: fr:Synagogue de la rue Pavée
+    wikidata: https://www.wikidata.org/wiki/Q1567790
+
+* Église Saint-Louis-en-l'Île
+    place of worship (christian), 1 levels
+    osm: way/55314295   https://www.openstreetmap.org/way/55314295
+    at:  48.851280, 2.357580   https://www.google.com/maps?q=48.851280,2.357580
+    wikipedia: fr:Église Saint-Louis-en-l'Île
+    wikidata: https://www.wikidata.org/wiki/Q1709616
+
+* Église Saint-Gervais
+    place of worship (christian), 7 levels
+    osm: way/55477164   https://www.openstreetmap.org/way/55477164
+    at:  48.855510, 2.354744   https://www.google.com/maps?q=48.855510,2.354744
+    wikipedia: fr:Église Saint-Gervais-Saint-Protais de Paris
+    wikidata: https://www.wikidata.org/wiki/Q427340
+
+* Hôtel de Ville
+    attraction, 40 m, 4 levels
+    osm: relation/284089   https://www.openstreetmap.org/relation/284089
+    at:  48.856426, 2.352527   https://www.google.com/maps?q=48.856426,2.352527
+    wikipedia: fr:Hôtel de ville de Paris
+    wikidata: https://www.wikidata.org/wiki/Q640968
+
+* Hôtel de Sens
+    historic castle, 3 levels, built 1519
+    osm: way/55541122   https://www.openstreetmap.org/way/55541122
+    at:  48.853526, 2.358873   https://www.google.com/maps?q=48.853526,2.358873
+    wikipedia: fr:Hôtel des archevêques de Sens
+    wikidata: https://www.wikidata.org/wiki/Q1374604
+
+* Centre Georges Pompidou  (Centre Pompidou)
+    museum, 42 m, built 1977
+    osm: way/55503397   https://www.openstreetmap.org/way/55503397
+    at:  48.860523, 2.352440   https://www.google.com/maps?q=48.860523,2.352440
+    wikipedia: fr:Centre national d'art et de culture Georges-Pompidou
+    wikidata: https://www.wikidata.org/wiki/Q178065
+
+* Colonne de Juillet  (July Column)
+    historic monument, 46.3 m, built 1840
+    osm: way/227757683   https://www.openstreetmap.org/way/227757683
+    at:  48.853166, 2.369139   https://www.google.com/maps?q=48.853166,2.369139
+    wikipedia: fr:Colonne de Juillet
+    wikidata: https://www.wikidata.org/wiki/Q269641
+
+* Hôtel de Sully
+    museum, 2 levels
+    osm: relation/403146   https://www.openstreetmap.org/relation/403146
+    at:  48.854635, 2.363813   https://www.google.com/maps?q=48.854635,2.363813
+    wikipedia: fr:Hôtel de Sully
+    wikidata: https://www.wikidata.org/wiki/Q1643144
+
+* Église Saint-Paul-Saint-Louis
+    place of worship (christian)
+    osm: way/56046786   https://www.openstreetmap.org/way/56046786
+    at:  48.854612, 2.361442   https://www.google.com/maps?q=48.854612,2.361442
+    wikipedia: fr:Église Saint-Paul-Saint-Louis
+    wikidata: https://www.wikidata.org/wiki/Q1247969
+
+* Maison de Nicolas Flamel
+    historic shelter, 5 levels, built 1407
+    osm: relation/550881   https://www.openstreetmap.org/relation/550881
+    at:  48.863525, 2.353134   https://www.google.com/maps?q=48.863525,2.353134
+    wikipedia: fr:Maison de Nicolas Flamel
+    wikidata: https://www.wikidata.org/wiki/Q3279512
+
+* Église Notre-Dame-des-Blancs-Manteaux
+    place of worship (christian), 1 levels
+    osm: way/55984117   https://www.openstreetmap.org/way/55984117
+    at:  48.858961, 2.357791   https://www.google.com/maps?q=48.858961,2.357791
+    wikipedia: fr:Église Notre-Dame-des-Blancs-Manteaux
+    wikidata: https://www.wikidata.org/wiki/Q1581988
+
+* Hôtel de Lamoignon
+    building=university, 15 m
+    osm: way/56040600   https://www.openstreetmap.org/way/56040600
+    at:  48.856869, 2.361896   https://www.google.com/maps?q=48.856869,2.361896
+    wikipedia: fr:Hôtel d'Angoulême Lamoignon
+    wikidata: https://www.wikidata.org/wiki/Q3145712
+
+* Église Saint-Denis du Saint-Sacrement
+    place of worship (christian), 2 levels
+    osm: way/58150045   https://www.openstreetmap.org/way/58150045
+    at:  48.859967, 2.365214   https://www.google.com/maps?q=48.859967,2.365214
+    wikipedia: fr:Église Saint-Denys-du-Saint-Sacrement
+    wikidata: https://www.wikidata.org/wiki/Q1328599
+
+* Hôtel Lafont
+    building=school, 3 levels
+    osm: way/49734641   https://www.openstreetmap.org/way/49734641
+    at:  48.855121, 2.366779   https://www.google.com/maps?q=48.855121,2.366779
+    wikipedia: fr:Hôtel Lafont
+    wikidata: https://www.wikidata.org/wiki/Q3145541
+
+* Cirque d'Hiver
+    yes, 4 levels, built 1852
+    osm: way/63647577   https://www.openstreetmap.org/way/63647577
+    at:  48.863536, 2.367592   https://www.google.com/maps?q=48.863536,2.367592
+    wikipedia: fr:Cirque d'hiver de Paris
+    wikidata: https://www.wikidata.org/wiki/Q1093108
+
+* Mémorial des Martyrs de la Déportation  (Memorial to the Martyrs of the Deportation)
+    memorial (memorial), built 1962-04-12
+    osm: relation/9396191   https://www.openstreetmap.org/relation/9396191
+    at:  48.851737, 2.352473   https://www.google.com/maps?q=48.851737,2.352473
+    wikipedia: fr:Mémorial des Martyrs de la Déportation
+    wikidata: https://www.wikidata.org/wiki/Q3333162
+
+* Hôtel Meiland
+    building=school
+    osm: way/55292127   https://www.openstreetmap.org/way/55292127
+    at:  48.851560, 2.358543   https://www.google.com/maps?q=48.851560,2.358543
+    wikipedia: fr:Hôtel Meiland
+    wikidata: https://www.wikidata.org/wiki/Q3145592
+
+* Église Luthérienne des Billettes
+    place of worship (christian)
+    osm: way/55942658   https://www.openstreetmap.org/way/55942658
+    at:  48.857981, 2.355148   https://www.google.com/maps?q=48.857981,2.355148
+    wikipedia: fr:Cloître et église des Billettes
+    wikidata: https://www.wikidata.org/wiki/Q2979783
+
+* Cour administrative d'appel
+    building=yes
+    osm: way/130742087   https://www.openstreetmap.org/way/130742087
+    at:  48.855236, 2.358294   https://www.google.com/maps?q=48.855236,2.358294
+    wikipedia: fr:Hôtel de Beauvais
+    wikidata: https://www.wikidata.org/wiki/Q1643105
+
+* Hôtel de Rohan
+    historic manor, 3 levels
+    osm: way/251136638   https://www.openstreetmap.org/way/251136638
+    at:  48.859647, 2.359647   https://www.google.com/maps?q=48.859647,2.359647
+    wikipedia: fr:Hôtel de Rohan (Paris)
+    wikidata: https://www.wikidata.org/wiki/Q1125932
+
+* Hôtel Fieubet
+    historic manor, 3 levels
+    osm: way/261732187   https://www.openstreetmap.org/way/261732187
+    at:  48.851684, 2.362321   https://www.google.com/maps?q=48.851684,2.362321
+    wikipedia: fr:Hôtel Fieubet
+    wikidata: https://www.wikidata.org/wiki/Q38571305
+
+* Temple du Marais
+    place of worship (christian), built 1634
+    osm: way/56206112   https://www.openstreetmap.org/way/56206112
+    at:  48.853305, 2.366236   https://www.google.com/maps?q=48.853305,2.366236
+    wikipedia: fr:Temple du Marais
+    wikidata: https://www.wikidata.org/wiki/Q1383413
+
+* Hôtel de Montbrun
+    historic manor, 3 levels
+    osm: way/49734495   https://www.openstreetmap.org/way/49734495
+    at:  48.856221, 2.364691   https://www.google.com/maps?q=48.856221,2.364691
+    wikipedia: fr:Hôtel de Montbrun
+    wikidata: https://www.wikidata.org/wiki/Q3145910
+
+* Hôtel de Montmorin
+    historic manor, 3 levels
+    osm: way/49734496   https://www.openstreetmap.org/way/49734496
+    at:  48.854984, 2.364721   https://www.google.com/maps?q=48.854984,2.364721
+    wikipedia: fr:Hôtel de Montmorin
+    wikidata: https://www.wikidata.org/wiki/Q3145916
+
+* Hôtel Pierrard
+    historic manor, 3 levels
+    osm: way/49734549   https://www.openstreetmap.org/way/49734549
+    at:  48.855488, 2.364434   https://www.google.com/maps?q=48.855488,2.364434
+    wikipedia: fr:Hôtel Pierrard
+    wikidata: https://www.wikidata.org/wiki/Q3145629
+
+* Hôtel de Chaulnes
+    historic manor, 3 levels
+    osm: way/49734550   https://www.openstreetmap.org/way/49734550
+    at:  48.855349, 2.364091   https://www.google.com/maps?q=48.855349,2.364091
+    wikipedia: fr:Hôtel de Chaulnes
+    wikidata: https://www.wikidata.org/wiki/Q3145795
+
+* Hôtel de la Salle
+    historic manor, 3 levels
+    osm: way/49734554   https://www.openstreetmap.org/way/49734554
+    at:  48.855088, 2.364448   https://www.google.com/maps?q=48.855088,2.364448
+    wikipedia: fr:Hôtel de la Salle
+    wikidata: https://www.wikidata.org/wiki/Q3146047
+
+* Hôtel Dyel des Hameaux
+    historic manor, 3 levels
+    osm: way/49734566   https://www.openstreetmap.org/way/49734566
+    at:  48.855686, 2.364447   https://www.google.com/maps?q=48.855686,2.364447
+    wikipedia: fr:Hôtel Dyel des Hameaux
+    wikidata: https://www.wikidata.org/wiki/Q3145482
+
+* Hôtel de Chabannes
+    historic manor, 3 levels
+    osm: way/49734570   https://www.openstreetmap.org/way/49734570
+    at:  48.856022, 2.364500   https://www.google.com/maps?q=48.856022,2.364500
+    wikipedia: fr:Hôtel de Chabannes
+    wikidata: https://www.wikidata.org/wiki/Q3145790
+
+* Hôtel Marchand
+    historic manor, 3 levels
+    osm: way/49734571   https://www.openstreetmap.org/way/49734571
+    at:  48.855903, 2.364336   https://www.google.com/maps?q=48.855903,2.364336
+    wikipedia: fr:Hôtel Marchand
+    wikidata: https://www.wikidata.org/wiki/Q3145584
+
+* Hôtel du Cardinal de Richelieu
+    historic manor, 4 levels
+    osm: relation/18812504   https://www.openstreetmap.org/relation/18812504
+    at:  48.856536, 2.365031   https://www.google.com/maps?q=48.856536,2.365031
+    wikipedia: fr:Hôtel du Cardinal de Richelieu
+    wikidata: https://www.wikidata.org/wiki/Q3146277
+
+* Hôtel de Marle
+    historic manor, 3 levels
+    osm: way/57781646   https://www.openstreetmap.org/way/57781646
+    at:  48.858170, 2.362138   https://www.google.com/maps?q=48.858170,2.362138
+    wikipedia: fr:Hôtel de Marle
+    wikidata: https://www.wikidata.org/wiki/Q3145891
+
+* Hôtel d'Asfeldt
+    historic manor, 3 levels
+    osm: way/49734634   https://www.openstreetmap.org/way/49734634
+    at:  48.855507, 2.366746   https://www.google.com/maps?q=48.855507,2.366746
+    wikipedia: fr:Hôtel d'Asfeldt
+    wikidata: https://www.wikidata.org/wiki/Q3145713
+
+* Synagogue de la rue des Tournelles
+    place of worship (jewish)
+    osm: way/49734642   https://www.openstreetmap.org/way/49734642
+    at:  48.855309, 2.366881   https://www.google.com/maps?q=48.855309,2.366881
+    wikipedia: fr:Synagogue de la rue des Tournelles
+    wikidata: https://www.wikidata.org/wiki/Q1129979
+
+* Hôtel de Clermont-Tonnerre
+    historic manor, 3 levels
+    osm: way/49734644   https://www.openstreetmap.org/way/49734644
+    at:  48.855641, 2.366780   https://www.google.com/maps?q=48.855641,2.366780
+    wikipedia: fr:Hôtel de Clermont-Tonnerre
+    wikidata: https://www.wikidata.org/wiki/Q3145810
+
+* Hôtel d'Angennes de Rambouillet
+    historic manor, 3 levels
+    osm: way/49734646   https://www.openstreetmap.org/way/49734646
+    at:  48.855769, 2.366770   https://www.google.com/maps?q=48.855769,2.366770
+    wikipedia: fr:Hôtel d'Angennes de Rambouillet
+    wikidata: https://www.wikidata.org/wiki/Q3145707
+
+* Hôtel d'Espinoy et Pavillon de la Reine
+    historic manor, 3 levels
+    osm: way/50591615   https://www.openstreetmap.org/way/50591615
+    at:  48.856278, 2.365970   https://www.google.com/maps?q=48.856278,2.365970
+    wikipedia: fr:Hôtel d'Espinoy
+    wikidata: https://www.wikidata.org/wiki/Q3145724
+
+* Cathédrale Sainte-Croix de Paris des Arméniens
+    place of worship (christian), built 1623
+    osm: way/57403533   https://www.openstreetmap.org/way/57403533
+    at:  48.860848, 2.360498   https://www.google.com/maps?q=48.860848,2.360498
+    wikipedia: fr:Cathédrale Sainte-Croix de Paris des Arméniens
+    wikidata: https://www.wikidata.org/wiki/Q2942475
+
+* Hôtel de Jassaud
+    historic manor, 4 levels
+    osm: relation/555834   https://www.openstreetmap.org/relation/555834
+    at:  48.852718, 2.355520   https://www.google.com/maps?q=48.852718,2.355520
+    wikipedia: fr:Hôtel de Jassaud
+    wikidata: https://www.wikidata.org/wiki/Q3145863
+
+* Hôtel Le Charron
+    historic manor, 4 levels
+    osm: relation/555839   https://www.openstreetmap.org/relation/555839
+    at:  48.852456, 2.356048   https://www.google.com/maps?q=48.852456,2.356048
+    wikipedia: fr:Hôtel Le Charron
+    wikidata: https://www.wikidata.org/wiki/Q3145550
+
+* Hôtel de Soubise
+    attraction
+    osm: relation/3371164   https://www.openstreetmap.org/relation/3371164
+    at:  48.860351, 2.357604   https://www.google.com/maps?q=48.860351,2.357604
+    wikipedia: fr:Hôtel de Soubise
+    wikidata: https://www.wikidata.org/wiki/Q917337
+
+* Hôtel Coulanges
+    historic manor, 3 levels
+    osm: relation/403147   https://www.openstreetmap.org/relation/403147
+    at:  48.854859, 2.364973   https://www.google.com/maps?q=48.854859,2.364973
+    wikipedia: fr:Hôtel Coulanges
+    wikidata: https://www.wikidata.org/wiki/Q3145465
+
+* Hôtel d'Almeyras
+    historic manor, 3 levels
+    osm: relation/551434   https://www.openstreetmap.org/relation/551434
+    at:  48.858254, 2.360067   https://www.google.com/maps?q=48.858254,2.360067
+    wikipedia: fr:Hôtel d'Almeyras
+    wikidata: https://www.wikidata.org/wiki/Q15720540
+
+* Hôtel de Tresmes
+    historic manor, 3 levels
+    osm: relation/411404   https://www.openstreetmap.org/relation/411404
+    at:  48.856327, 2.366408   https://www.google.com/maps?q=48.856327,2.366408
+    wikipedia: fr:Hôtel de Tresmes
+    wikidata: https://www.wikidata.org/wiki/Q3145987
+
+* Hôtel de Vitry
+    historic manor, 3 levels
+    osm: relation/411405   https://www.openstreetmap.org/relation/411405
+    at:  48.856235, 2.366726   https://www.google.com/maps?q=48.856235,2.366726
+    wikipedia: fr:Hôtel de Vitry
+    wikidata: https://www.wikidata.org/wiki/Q2413297
+
+* Hôtel de Fourcy
+    historic manor, 3 levels
+    osm: relation/571727   https://www.openstreetmap.org/relation/571727
+    at:  48.854871, 2.366480   https://www.google.com/maps?q=48.854871,2.366480
+    wikipedia: fr:Hôtel de Fourcy
+    wikidata: https://www.wikidata.org/wiki/Q3145840
+
+* Square Louis-XIII
+    attraction
+    osm: relation/571765   https://www.openstreetmap.org/relation/571765
+    at:  48.855616, 2.365543   https://www.google.com/maps?q=48.855616,2.365543
+    wikipedia: fr:Square Louis-XIII
+    wikidata: https://www.wikidata.org/wiki/Q288624
+
+* Maison européenne de la Photographie
+    museum
+    osm: node/323911913   https://www.openstreetmap.org/node/323911913
+    at:  48.855120, 2.358956   https://www.google.com/maps?q=48.855120,2.358956
+    wikipedia: fr:Maison européenne de la photographie
+    wikidata: https://www.wikidata.org/wiki/Q3100297
+
+* Musée de la Magie
+    museum
+    osm: node/7552537853   https://www.openstreetmap.org/node/7552537853
+    at:  48.853121, 2.361167   https://www.google.com/maps?q=48.853121,2.361167
+    wikipedia: fr:Musée de la Magie
+    wikidata: https://www.wikidata.org/wiki/Q3329918
+
+* Ruines de la Bastille  (Ruins of Bastille)
+    historic castle
+    osm: node/13411401985   https://www.openstreetmap.org/node/13411401985
+    at:  48.852699, 2.368777   https://www.google.com/maps?q=48.852699,2.368777
+    wikipedia: fr:Bastille
+    wikidata: https://www.wikidata.org/wiki/Q1865480
+
+* Fontaine de Jarente
+    historic monument, built 1783
+    osm: node/12574583330   https://www.openstreetmap.org/node/12574583330
+    at:  48.855745, 2.363463   https://www.google.com/maps?q=48.855745,2.363463
+    wikipedia: fr:Fontaine de Jarente
+    wikidata: https://www.wikidata.org/wiki/Q1435786
+
+* Maison de Victor Hugo
+    museum
+    osm: node/254033221   https://www.openstreetmap.org/node/254033221
+    at:  48.854799, 2.366136   https://www.google.com/maps?q=48.854799,2.366136
+    wikipedia: fr:Maison de Victor Hugo
+    wikidata: https://www.wikidata.org/wiki/Q2599177
+
+* Hôtel de Lauzun
+    historic manor, built 1657
+    osm: way/55292128   https://www.openstreetmap.org/way/55292128
+    at:  48.851565, 2.358963   https://www.google.com/maps?q=48.851565,2.358963
+    wikipedia: fr:Hôtel de Lauzun
+    wikidata: https://www.wikidata.org/wiki/Q534938
+
+* Le BHV Marais
+    building=yes, 9 levels
+    osm: way/29168869   https://www.openstreetmap.org/way/29168869
+    at:  48.857468, 2.353317   https://www.google.com/maps?q=48.857468,2.353317
+    wikipedia: fr:Bazar de l'Hôtel de Ville
+    wikidata: https://www.wikidata.org/wiki/Q2892394
+
+* Hôtel de Saint-Aignan
+    building=yes, 2 levels
+    osm: way/56687769   https://www.openstreetmap.org/way/56687769
+    at:  48.861234, 2.355475   https://www.google.com/maps?q=48.861234,2.355475
+    wikipedia: en:Hôtel de Saint-Aignan
+    wikidata: https://www.wikidata.org/wiki/Q1643130
+
+* Musée d'Art et d'Histoire du Judaïsme
+    museum
+    osm: way/56687783   https://www.openstreetmap.org/way/56687783
+    at:  48.861266, 2.355418   https://www.google.com/maps?q=48.861266,2.355418
+    wikipedia: fr:Musée d'Art et d'Histoire du judaïsme
+    wikidata: https://www.wikidata.org/wiki/Q977732
+
+* Fontaine des Haudriettes
+    building=service, 1 levels, built 1764
+    osm: way/56692683   https://www.openstreetmap.org/way/56692683
+    at:  48.861220, 2.357923   https://www.google.com/maps?q=48.861220,2.357923
+    wikipedia: fr:Fontaine des Haudriettes
+    wikidata: https://www.wikidata.org/wiki/Q765471
+
+* Musée de la chasse et de la nature
+    museum
+    osm: way/156973373   https://www.openstreetmap.org/way/156973373
+    at:  48.861256, 2.358782   https://www.google.com/maps?q=48.861256,2.358782
+    wikipedia: fr:Musée de la chasse et de la nature
+    wikidata: https://www.wikidata.org/wiki/Q1128657
+
+* Hôtel Genou de Guiberville
+    building=yes, 5 levels
+    osm: way/49734498   https://www.openstreetmap.org/way/49734498
+    at:  48.854811, 2.365660   https://www.google.com/maps?q=48.854811,2.365660
+    wikipedia: fr:Hôtel Genou de Guiberville
+    wikidata: https://www.wikidata.org/wiki/Q3145504
+
+* Pavillon du Roi
+    building=yes, 4 levels
+    osm: way/49734499   https://www.openstreetmap.org/way/49734499
+    at:  48.854886, 2.365476   https://www.google.com/maps?q=48.854886,2.365476
+    wikipedia: fr:Pavillon du Roi
+    wikidata: https://www.wikidata.org/wiki/Q3373109
+
+* Hôtel de l'Escalopier
+    building=apartments, 3 levels
+    osm: way/50591670   https://www.openstreetmap.org/way/50591670
+    at:  48.856315, 2.365541   https://www.google.com/maps?q=48.856315,2.365541
+    wikipedia: fr:Hôtel de l'Escalopier
+    wikidata: https://www.wikidata.org/wiki/Q3146010
+
+* Hôtel de Coulanges
+    building=apartments, 3 levels
+    osm: way/56003306   https://www.openstreetmap.org/way/56003306
+    at:  48.857696, 2.360242   https://www.google.com/maps?q=48.857696,2.360242
+    wikipedia: fr:Hôtel de Coulanges
+    wikidata: https://www.wikidata.org/wiki/Q14806211
+
+* Musée national Picasso-Paris
+    museum
+    osm: way/57745741   https://www.openstreetmap.org/way/57745741
+    at:  48.859878, 2.362090   https://www.google.com/maps?q=48.859878,2.362090
+    wikipedia: fr:Musée Picasso (Paris)
+    wikidata: https://www.wikidata.org/wiki/Q743206
+
+* Musée Cognacq-Jay
+    museum
+    osm: way/57781649   https://www.openstreetmap.org/way/57781649
+    at:  48.858122, 2.361663   https://www.google.com/maps?q=48.858122,2.361663
+    wikipedia: fr:Musée Cognacq-Jay
+    wikidata: https://www.wikidata.org/wiki/Q1572452
+
+* Institut suédois
+    museum
+    osm: way/243973065   https://www.openstreetmap.org/way/243973065
+    at:  48.858226, 2.361964   https://www.google.com/maps?q=48.858226,2.361964
+    wikipedia: fr:Centre culturel suédois
+    wikidata: https://www.wikidata.org/wiki/Q927844
+
+* Louis XIII
+    memorial (statue)
+    osm: way/948652816   https://www.openstreetmap.org/way/948652816
+    at:  48.855622, 2.365539   https://www.google.com/maps?q=48.855622,2.365539
+    wikipedia: fr:Statue équestre de Louis XIII
+    wikidata: https://www.wikidata.org/wiki/Q3497619
+
+* Hôtel de Châtillon
+    building=apartments, 3 levels
+    osm: way/49734640   https://www.openstreetmap.org/way/49734640
+    at:  48.855020, 2.366429   https://www.google.com/maps?q=48.855020,2.366429
+    wikipedia: fr:Hôtel de Châtillon
+    wikidata: https://www.wikidata.org/wiki/Q3145805
+
+* Hôtel de Laffemas
+    building=apartments, 3 levels
+    osm: way/49734651   https://www.openstreetmap.org/way/49734651
+    at:  48.855897, 2.366847   https://www.google.com/maps?q=48.855897,2.366847
+    wikipedia: fr:Hôtel Laffemas
+    wikidata: https://www.wikidata.org/wiki/Q3145540
+
+* Hôtel de Ribault
+    building=apartments, 3 levels
+    osm: way/56077594   https://www.openstreetmap.org/way/56077594
+    at:  48.855379, 2.366507   https://www.google.com/maps?q=48.855379,2.366507
+    wikipedia: fr:Hôtel de Ribault
+    wikidata: https://www.wikidata.org/wiki/Q3145941
+
+* Hôtel Mansart
+    historic manor
+    osm: way/56092465   https://www.openstreetmap.org/way/56092465
+    at:  48.855297, 2.367580   https://www.google.com/maps?q=48.855297,2.367580
+    wikipedia: fr:Hôtel de Sagonne
+    wikidata: https://www.wikidata.org/wiki/Q3145964
+
+* Mairie de Paris Centre
+    building=public, 3 levels
+    osm: way/57380586   https://www.openstreetmap.org/way/57380586
+    at:  48.863876, 2.361773   https://www.google.com/maps?q=48.863876,2.361773
+    wikipedia: fr:Mairie du 3e arrondissement de Paris
+    wikidata: https://www.wikidata.org/wiki/Q3278498
+
+* Hôtel d'Hallwyll
+    historic manor
+    osm: relation/550865   https://www.openstreetmap.org/relation/550865
+    at:  48.862774, 2.355151   https://www.google.com/maps?q=48.862774,2.355151
+    wikipedia: fr:Hôtel d'Hallwyll
+    wikidata: https://www.wikidata.org/wiki/Q3145730
+
+* Hôtel d'Ecquevilly
+    historic manor
+    osm: relation/551566   https://www.openstreetmap.org/relation/551566
+    at:  48.859159, 2.364895   https://www.google.com/maps?q=48.859159,2.364895
+    wikipedia: fr:Hôtel d'Ecquevilly
+    wikidata: https://www.wikidata.org/wiki/Q3145721
+
+* Musée Carnavalet  (Carnavalet Museum)
+    museum
+    osm: relation/2405955   https://www.openstreetmap.org/relation/2405955
+    at:  48.857682, 2.362715   https://www.google.com/maps?q=48.857682,2.362715
+    wikipedia: fr:Musée Carnavalet
+    wikidata: https://www.wikidata.org/wiki/Q640447
+
+* Fondation Henri Cartier-Bresson
+    museum
+    osm: relation/551459   https://www.openstreetmap.org/relation/551459
+    at:  48.863228, 2.359866   https://www.google.com/maps?q=48.863228,2.359866
+    wikipedia: fr:Fondation Henri Cartier-Bresson
+    wikidata: https://www.wikidata.org/wiki/Q60964146
+
+* Rue des Rosiers
+    attraction
+    osm: node/5504405621   https://www.openstreetmap.org/node/5504405621
+    at:  48.857789, 2.358137   https://www.google.com/maps?q=48.857789,2.358137
+    wikipedia: fr:Rue des Rosiers (Paris)
+    wikidata: https://www.wikidata.org/wiki/Q3176233
+
+* Synagogue Charles Liché
+    place of worship (jewish)
+    osm: node/4281854742   https://www.openstreetmap.org/node/4281854742
+    at:  48.855370, 2.366531   https://www.google.com/maps?q=48.855370,2.366531
+    wikipedia: fr:Synagogue Charles Liché
+    wikidata: https://www.wikidata.org/wiki/Q3507985
+
+* Édicule Guimard
+    artwork
+    osm: node/5313368608   https://www.openstreetmap.org/node/5313368608
+    at:  48.855622, 2.370095   https://www.google.com/maps?q=48.855622,2.370095
+    wikipedia: fr:Édicule Guimard
+    wikidata: https://www.wikidata.org/wiki/Q3579100
+
+* Hôtel d'Ourscamp
+    historic building, 3 levels
+    osm: way/55620201   https://www.openstreetmap.org/way/55620201
+    at:  48.855547, 2.357121   https://www.google.com/maps?q=48.855547,2.357121
+    wikipedia: fr:Hôtel d'Ourscamp
+    wikidata: https://www.wikidata.org/wiki/Q3279210
+
+* Hôtel Amelot de Bisseuil
+    building=apartments, built 1660
+    osm: way/55984130   https://www.openstreetmap.org/way/55984130
+    at:  48.858232, 2.357819   https://www.google.com/maps?q=48.858232,2.357819
+    wikipedia: fr:Hôtel Amelot de Bisseuil
+    wikidata: https://www.wikidata.org/wiki/Q1553420
+
+* Hôtel de Bonneval
+    historic manor, 6 levels
+    osm: way/57778731   https://www.openstreetmap.org/way/57778731
+    at:  48.859038, 2.362571   https://www.google.com/maps?q=48.859038,2.362571
+    wikipedia: fr:Hôtel de Bonneval
+    wikidata: https://www.wikidata.org/wiki/Q15950565
+
+* Temple protestant du Foyer de l'Âme
+    place of worship (christian)
+    osm: way/63648393   https://www.openstreetmap.org/way/63648393
+    at:  48.855897, 2.369702   https://www.google.com/maps?q=48.855897,2.369702
+    wikipedia: fr:Temple protestant du Foyer de l'Âme
+    wikidata: https://www.wikidata.org/wiki/Q3517708
+
+* Hôtel de Breteuil
+    historic manor, 2 levels
+    osm: relation/3370912   https://www.openstreetmap.org/relation/3370912
+    at:  48.859718, 2.357830   https://www.google.com/maps?q=48.859718,2.357830
+    wikipedia: fr:Hôtels d'Assy
+    wikidata: https://www.wikidata.org/wiki/Q108808095
+
+* Hôtel Duret de Chevry
+    historic manor, 3 levels
+    osm: relation/551528   https://www.openstreetmap.org/relation/551528
+    at:  48.858730, 2.363557   https://www.google.com/maps?q=48.858730,2.363557
+    wikipedia: fr:Hôtel Duret de Chevry
+    wikidata: https://www.wikidata.org/wiki/Q19849306
+
+* Hôtel Arnaud
+    building=yes
+    osm: relation/571726   https://www.openstreetmap.org/relation/571726
+    at:  48.854636, 2.366408   https://www.google.com/maps?q=48.854636,2.366408
+    wikipedia: fr:Hôtel de Rohan-Guémené
+    wikidata: https://www.wikidata.org/wiki/Q3145952
+
+* Brasserie Bofinger
+    attraction
+    osm: node/968153548   https://www.openstreetmap.org/node/968153548
+    at:  48.853910, 2.368043   https://www.google.com/maps?q=48.853910,2.368043
+    wikidata: https://www.wikidata.org/wiki/Q22921405
+
+* Maison à l'enseigne du Mouton
+    historic building, 4 levels, built early C16
+    osm: way/1123456866   https://www.openstreetmap.org/way/1123456866
+    at:  48.855843, 2.356891   https://www.google.com/maps?q=48.855843,2.356891
+    wikidata: https://www.wikidata.org/wiki/Q28524644
+
+* Hôtel de Chavigny
+    historic manor
+    osm: way/56040595   https://www.openstreetmap.org/way/56040595
+    at:  48.855792, 2.361814   https://www.google.com/maps?q=48.855792,2.361814
+    wikipedia: fr:Hôtel de Chavigny
+    wikidata: https://www.wikidata.org/wiki/Q13426612
+
+* Hôtel de Sandreville
+    building=apartments, 4 levels
+    osm: way/57748728   https://www.openstreetmap.org/way/57748728
+    at:  48.858079, 2.360750   https://www.google.com/maps?q=48.858079,2.360750
+    wikipedia: fr:Hôtel Mortier de Sandreville
+    wikidata: https://www.wikidata.org/wiki/Q22921281
+
+* Hôtel de Vigny
+    historic manor
+    osm: way/57778756   https://www.openstreetmap.org/way/57778756
+    at:  48.858815, 2.363227   https://www.google.com/maps?q=48.858815,2.363227
+    wikipedia: fr:Hôtel de Vigny
+    wikidata: https://www.wikidata.org/wiki/Q14629764
+
+* Hôtel de Jaucourt
+    historic manor
+    osm: relation/551405   https://www.openstreetmap.org/relation/551405
+    at:  48.859424, 2.358165   https://www.google.com/maps?q=48.859424,2.358165
+    wikipedia: fr:Hôtel de Jaucourt
+    wikidata: https://www.wikidata.org/wiki/Q108808104
+
+* Hôtel d'Aumont
+    historic manor
+    osm: relation/557981   https://www.openstreetmap.org/relation/557981
+    at:  48.854554, 2.358274   https://www.google.com/maps?q=48.854554,2.358274
+    wikipedia: fr:Hôtel d'Aumont
+    wikidata: https://www.wikidata.org/wiki/Q3145716
+
+* Académie du Climat
+    building=yes, 5 levels
+    osm: relation/558038   https://www.openstreetmap.org/relation/558038
+    at:  48.856132, 2.356009   https://www.google.com/maps?q=48.856132,2.356009
+    wikipedia: fr:Académie du Climat
+    wikidata: https://www.wikidata.org/wiki/Q111207085
+
+* Crédit Municipal de Paris
+    building=public, 4 levels
+    osm: relation/570126   https://www.openstreetmap.org/relation/570126
+    at:  48.859324, 2.357217   https://www.google.com/maps?q=48.859324,2.357217
+    wikipedia: fr:Crédit municipal de Paris
+    wikidata: https://www.wikidata.org/wiki/Q105012052
+
+* Pont Saint-Louis
+    bridge
+    osm: way/78329825   https://www.openstreetmap.org/way/78329825
+    at:  48.852762, 2.352768   https://www.google.com/maps?q=48.852762,2.352768
+    wikipedia: fr:Pont Saint-Louis
+    wikidata: https://www.wikidata.org/wiki/Q1140060
+
+* Fondation Azzedine Alaïa
+    museum
+    osm: node/9212188092   https://www.openstreetmap.org/node/9212188092
+    at:  48.857523, 2.355072   https://www.google.com/maps?q=48.857523,2.355072
+    wikidata: https://www.wikidata.org/wiki/Q56303934
+
+* Le Défenseur du temps
+    artwork, built 1979-10-08
+    osm: node/5486097650   https://www.openstreetmap.org/node/5486097650
+    at:  48.862262, 2.352696   https://www.google.com/maps?q=48.862262,2.352696
+    wikipedia: fr:Le Défenseur du Temps
+    wikidata: https://www.wikidata.org/wiki/Q1763620
+
+* Musée des Archives nationales
+    museum
+    osm: node/4664509356   https://www.openstreetmap.org/node/4664509356
+    at:  48.860450, 2.357812   https://www.google.com/maps?q=48.860450,2.357812
+    wikidata: https://www.wikidata.org/wiki/Q3330111
+
+* Le Génie de la Liberté  (The Genius of Liberty)
+    artwork, built 1836
+    osm: node/4679772364   https://www.openstreetmap.org/node/4679772364
+    at:  48.853166, 2.369139   https://www.google.com/maps?q=48.853166,2.369139
+    wikipedia: fr:Le Génie de la Liberté
+    wikidata: https://www.wikidata.org/wiki/Q15726563
+
+* La Fontaine de la Charité
+    artwork, built 1806
+    osm: node/9123101146   https://www.openstreetmap.org/node/9123101146
+    at:  48.857753, 2.363500   https://www.google.com/maps?q=48.857753,2.363500
+    wikipedia: fr:Fontaine de la Charité
+    wikidata: https://www.wikidata.org/wiki/Q16636583
+
+* Fontaine Dejean
+    artwork
+    osm: node/2482248710   https://www.openstreetmap.org/node/2482248710
+    at:  48.862962, 2.367059   https://www.google.com/maps?q=48.862962,2.367059
+    wikipedia: fr:Fontaine Dejean
+    wikidata: https://www.wikidata.org/wiki/Q3076013
+
+* Mémorial de la Shoah
+    museum
+    osm: way/124052479   https://www.openstreetmap.org/way/124052479
+    at:  48.854886, 2.356057   https://www.google.com/maps?q=48.854886,2.356057
+    wikidata: https://www.wikidata.org/wiki/Q479218
+
+* Maison à l'enseigne du Faucheur
+    attraction, 5 levels, built early C16
+    osm: way/1123456865   https://www.openstreetmap.org/way/1123456865
+    at:  48.855855, 2.356827   https://www.google.com/maps?q=48.855855,2.356827
+    wikidata: https://www.wikidata.org/wiki/Q28524614
+
+* Institut Supérieur Européen de Gestion
+    building=school, 2 levels
+    osm: way/57748688   https://www.openstreetmap.org/way/57748688
+    at:  48.858107, 2.360390   https://www.google.com/maps?q=48.858107,2.360390
+    wikidata: https://www.wikidata.org/wiki/Q1826384
+
+* Hôtel Regnouart
+    building=yes, 5 levels
+    osm: way/49734501   https://www.openstreetmap.org/way/49734501
+    at:  48.854833, 2.365897   https://www.google.com/maps?q=48.854833,2.365897
+    wikidata: https://www.wikidata.org/wiki/Q3146268
+
+* Jeu de Paume
+    building=yes, 2 levels
+    osm: relation/555837   https://www.openstreetmap.org/relation/555837
+    at:  48.852236, 2.356267   https://www.google.com/maps?q=48.852236,2.356267
+    wikidata: https://www.wikidata.org/wiki/Q22921944
+
+* Hôtel Passart
+    building=yes
+    osm: relation/550874   https://www.openstreetmap.org/relation/550874
+    at:  48.863234, 2.357327   https://www.google.com/maps?q=48.863234,2.357327
+    wikipedia: fr:Hôtel Passart
+    wikidata: https://www.wikidata.org/wiki/Q22921270
+
+* Hôtel Le Peletier de Saint-Fargeau
+    building=civic, 4 levels
+    osm: relation/551465   https://www.openstreetmap.org/relation/551465
+    at:  48.858021, 2.363090   https://www.google.com/maps?q=48.858021,2.363090
+    wikidata: https://www.wikidata.org/wiki/Q3145560
+
+* Hôtel de Gourgues
+    historic manor
+    osm: relation/551488   https://www.openstreetmap.org/relation/551488
+    at:  48.858448, 2.365067   https://www.google.com/maps?q=48.858448,2.365067
+    wikidata: https://www.wikidata.org/wiki/Q21088706
+
+* Chapelle de l'Humanité
+    place of worship (positivist)
+    osm: node/8274486117   https://www.openstreetmap.org/node/8274486117
+    at:  48.857784, 2.361972   https://www.google.com/maps?q=48.857784,2.361972
+    wikidata: https://www.wikidata.org/wiki/Q2746140
+
+* Hôtel Brulart
+    building=apartments
+    osm: way/55997006   https://www.openstreetmap.org/way/55997006
+    at:  48.857256, 2.358832   https://www.google.com/maps?q=48.857256,2.358832
+    wikidata: https://www.wikidata.org/wiki/Q22921416
+
+* Central téléphonique
+    building=service
+    osm: way/801801020   https://www.openstreetmap.org/way/801801020
+    at:  48.862498, 2.358011   https://www.google.com/maps?q=48.862498,2.358011
+    wikidata: https://www.wikidata.org/wiki/Q22980159
+
+* Hôtel Gégault de Crisenoy
+    building=apartments
+    osm: relation/551412   https://www.openstreetmap.org/relation/551412
+    at:  48.860849, 2.359632   https://www.google.com/maps?q=48.860849,2.359632
+    wikidata: https://www.wikidata.org/wiki/Q22921268
+
+* Mémorial Gilbert Baker
+    memorial (plaque), built 2019-06-19
+    osm: node/6846089848   https://www.openstreetmap.org/node/6846089848
+    at:  48.858096, 2.354506   https://www.google.com/maps?q=48.858096,2.354506
+    wikidata: https://www.wikidata.org/wiki/Q131303193
+
+* Daniel Defert
+    memorial (plaque)
+    osm: node/12787050330   https://www.openstreetmap.org/node/12787050330
+    at:  48.862491, 2.355041   https://www.google.com/maps?q=48.862491,2.355041
+    wikidata: https://www.wikidata.org/wiki/Q141416291
+
+* Ruya Grodnicki née Hedzberg
+    memorial (stolperstein), built 2023-04-09
+    osm: node/13063962653   https://www.openstreetmap.org/node/13063962653
+    at:  48.863855, 2.362603   https://www.google.com/maps?q=48.863855,2.362603
+    wikidata: https://www.wikidata.org/wiki/Q138796179
+
+* Hôtel de Lutèce
+    hotel, 5 levels
+    osm: way/55407736   https://www.openstreetmap.org/way/55407736
+    at:  48.852394, 2.354599   https://www.google.com/maps?q=48.852394,2.354599
+    wikidata: https://www.wikidata.org/wiki/Q111390672
+
+* Mur des Justes
+    memorial (plaque)
+    osm: way/55620179   https://www.openstreetmap.org/way/55620179
+    at:  48.854948, 2.356257   https://www.google.com/maps?q=48.854948,2.356257
+    wikidata: https://www.wikidata.org/wiki/Q3327981
+
+* duO
+    hotel, 6 levels
+    osm: way/55760877   https://www.openstreetmap.org/way/55760877
+    at:  48.858116, 2.352905   https://www.google.com/maps?q=48.858116,2.352905
+    wikidata: https://www.wikidata.org/wiki/Q111390721
+
+* Espace des Blancs-Manteaux
+    building=yes, 2 levels
+    osm: way/55997982   https://www.openstreetmap.org/way/55997982
+    at:  48.858128, 2.358596   https://www.google.com/maps?q=48.858128,2.358596
+    wikidata: https://www.wikidata.org/wiki/Q135684658
+
+* Résidence du Petit Rémouleur
+    building=yes, 6 levels
+    osm: way/56159569   https://www.openstreetmap.org/way/56159569
+    at:  48.854730, 2.358840   https://www.google.com/maps?q=48.854730,2.358840
+    wikidata: https://www.wikidata.org/wiki/Q112924118
+
+* Hôtel d'Assy
+    historic manor
+    osm: way/57720415   https://www.openstreetmap.org/way/57720415
+    at:  48.859824, 2.357662   https://www.google.com/maps?q=48.859824,2.357662
+    wikidata: https://www.wikidata.org/wiki/Q22921381
+
+* Résidence des Célestins
+    building=yes, 5 levels
+    osm: way/56163068   https://www.openstreetmap.org/way/56163068
+    at:  48.852930, 2.359649   https://www.google.com/maps?q=48.852930,2.359649
+    wikidata: https://www.wikidata.org/wiki/Q112924101
+
+* Les Nautes
+    building=yes, 2 levels
+    osm: way/56185426   https://www.openstreetmap.org/way/56185426
+    at:  48.852238, 2.360301   https://www.google.com/maps?q=48.852238,2.360301
+    wikidata: https://www.wikidata.org/wiki/Q108287019
+
+* Résidence de l'Ave Maria
+    building=yes, 6 levels
+    osm: way/56186918   https://www.openstreetmap.org/way/56186918
+    at:  48.852880, 2.360513   https://www.google.com/maps?q=48.852880,2.360513
+    wikidata: https://www.wikidata.org/wiki/Q112924107
+
+* Statue de Beaumarchais
+    historic statue, built 1895
+    osm: way/56080370   https://www.openstreetmap.org/way/56080370
+    at:  48.853556, 2.367116   https://www.google.com/maps?q=48.853556,2.367116
+    wikidata: https://www.wikidata.org/wiki/Q18156539
+
+* Uniqlo
+    building=retail, 3 levels
+    osm: way/56003317   https://www.openstreetmap.org/way/56003317
+    at:  48.857710, 2.359896   https://www.google.com/maps?q=48.857710,2.359896
+    wikidata: https://www.wikidata.org/wiki/Q22980177
+
+* Établissement d'hébergement pour personnes âgées dépendantes mutualiste Bastille
+    building=yes, 4 levels
+    osm: way/63642690   https://www.openstreetmap.org/way/63642690
+    at:  48.856937, 2.369118   https://www.google.com/maps?q=48.856937,2.369118
+    wikidata: https://www.wikidata.org/wiki/Q112989964
+
+* La chambre du Marais
+    hotel, 5 levels
+    osm: way/56700081   https://www.openstreetmap.org/way/56700081
+    at:  48.863613, 2.360835   https://www.google.com/maps?q=48.863613,2.360835
+    wikidata: https://www.wikidata.org/wiki/Q111390762
+
+* Hôtel du Petit Moulin
+    hotel, 5 levels
+    osm: way/57402648   https://www.openstreetmap.org/way/57402648
+    at:  48.861577, 2.362109   https://www.google.com/maps?q=48.861577,2.362109
+    wikidata: https://www.wikidata.org/wiki/Q111390751
+
+* Hôtel de Gillier
+    historic manor
+    osm: relation/554046   https://www.openstreetmap.org/relation/554046
+    at:  48.851819, 2.358335   https://www.google.com/maps?q=48.851819,2.358335
+    wikidata: https://www.wikidata.org/wiki/Q76668276
+
+* Hôtel de Chenizot
+    building=apartments, 4 levels
+    osm: relation/555259   https://www.openstreetmap.org/relation/555259
+    at:  48.851927, 2.355336   https://www.google.com/maps?q=48.851927,2.355336
+    wikidata: https://www.wikidata.org/wiki/Q3145799
+
+* Hôtel Dupond Smith
+    hotel, 5 levels
+    osm: relation/570127   https://www.openstreetmap.org/relation/570127
+    at:  48.857885, 2.357234   https://www.google.com/maps?q=48.857885,2.357234
+    wikidata: https://www.wikidata.org/wiki/Q111877092
+
+* Bourg Tibourg
+    hotel, 7 levels
+    osm: relation/570245   https://www.openstreetmap.org/relation/570245
+    at:  48.857241, 2.355891   https://www.google.com/maps?q=48.857241,2.355891
+    wikidata: https://www.wikidata.org/wiki/Q111877089
+
+* Hôtel de Guénégaud
+    building=yes, 2 levels
+    osm: relation/550905   https://www.openstreetmap.org/relation/550905
+    at:  48.861244, 2.358592   https://www.google.com/maps?q=48.861244,2.358592
+    wikidata: https://www.wikidata.org/wiki/Q3145859
+
+* Hôtel d’Albret
+    building=office, 3 levels
+    osm: relation/570449   https://www.openstreetmap.org/relation/570449
+    at:  48.857380, 2.360815   https://www.google.com/maps?q=48.857380,2.360815
+    wikidata: https://www.wikidata.org/wiki/Q1643168
+
+* Hôtel de Sauroy
+    building=apartments, 3 levels, built mid C17
+    osm: relation/551427   https://www.openstreetmap.org/relation/551427
+    at:  48.863382, 2.363669   https://www.google.com/maps?q=48.863382,2.363669
+    wikidata: https://www.wikidata.org/wiki/Q22921390
+
+* Pont Louis-Philippe
+    bridge, built 1860-08...1862-04
+    osm: way/145298932   https://www.openstreetmap.org/way/145298932
+    at:  48.853848, 2.354419   https://www.google.com/maps?q=48.853848,2.354419
+    wikidata: https://www.wikidata.org/wiki/Q1196667
+
+* Pont Marie
+    bridge
+    osm: way/145299650   https://www.openstreetmap.org/way/145299650
+    at:  48.852848, 2.357396   https://www.google.com/maps?q=48.852848,2.357396
+    wikidata: https://www.wikidata.org/wiki/Q963509
+
+* 9Confidentiel
+    hotel
+    osm: way/55988174   https://www.openstreetmap.org/way/55988174
+    at:  48.856938, 2.356318   https://www.google.com/maps?q=48.856938,2.356318
+    wikidata: https://www.wikidata.org/wiki/Q111877088
+
+* Chapelle
+    place of worship (christian)
+    osm: way/56159605   https://www.openstreetmap.org/way/56159605
+    at:  48.854220, 2.361311   https://www.google.com/maps?q=48.854220,2.361311
+
+* Hôtel Cornuel
+    building=apartments
+    osm: way/57401936   https://www.openstreetmap.org/way/57401936
+    at:  48.861226, 2.360275   https://www.google.com/maps?q=48.861226,2.360275
+    wikidata: https://www.wikidata.org/wiki/Q22921263
+
+* Hôtel Donon
+    building=yes
+    osm: relation/551407   https://www.openstreetmap.org/relation/551407
+    at:  48.858122, 2.361663   https://www.google.com/maps?q=48.858122,2.361663
+    wikidata: https://www.wikidata.org/wiki/Q3145831
+
+* Maison dite « de Jacques Cœur »
+    attraction, 3 levels
+    osm: way/1121066634   https://www.openstreetmap.org/way/1121066634
+    at:  48.858963, 2.356015   https://www.google.com/maps?q=48.858963,2.356015
+
+* Grands Dépôts
+    attraction, 2 levels
+    osm: way/251136641   https://www.openstreetmap.org/way/251136641
+    at:  48.860585, 2.358593   https://www.google.com/maps?q=48.860585,2.358593
+
+* Tour Montgomery
+    historic tower
+    osm: way/1029627185   https://www.openstreetmap.org/way/1029627185
+    at:  48.854077, 2.360752   https://www.google.com/maps?q=48.854077,2.360752
+
+* Synagogue Beit Yossef
+    place of worship (jewish)
+    osm: node/218145208   https://www.openstreetmap.org/node/218145208
+    at:  48.856972, 2.358868   https://www.google.com/maps?q=48.856972,2.358868
+
+* Chapelle Sainte-Marie
+    place of worship (christian)
+    osm: node/1014690269   https://www.openstreetmap.org/node/1014690269
+    at:  48.858730, 2.357128   https://www.google.com/maps?q=48.858730,2.357128
+
+* Église de Jésus-Christ des saints des derniers jours
+    place of worship (christian)
+    osm: node/4347317591   https://www.openstreetmap.org/node/4347317591
+    at:  48.859376, 2.353115   https://www.google.com/maps?q=48.859376,2.353115
+
+* Hôtel Nicolai
+    historic manor, 3 levels
+    osm: relation/574749   https://www.openstreetmap.org/relation/574749
+    at:  48.851896, 2.362015   https://www.google.com/maps?q=48.851896,2.362015
+
+* Première pierre
+    memorial (plaque)
+    osm: node/11102867820   https://www.openstreetmap.org/node/11102867820
+    at:  48.852929, 2.357280   https://www.google.com/maps?q=48.852929,2.357280
+
+* Jardin des Combattants-de-la-Nueve
+    memorial (plaque)
+    osm: node/5203388433   https://www.openstreetmap.org/node/5203388433
+    at:  48.855613, 2.352663   https://www.google.com/maps?q=48.855613,2.352663
+
+* Jacob Kaplan
+    memorial (plaque)
+    osm: node/702915148   https://www.openstreetmap.org/node/702915148
+    at:  48.856988, 2.358701   https://www.google.com/maps?q=48.856988,2.358701
+
+* ONU Corée
+    memorial (war_memorial)
+    osm: node/4523602718   https://www.openstreetmap.org/node/4523602718
+    at:  48.853938, 2.356623   https://www.google.com/maps?q=48.853938,2.356623
+
+* Hôtel de Châlon-Luxembourg
+    memorial (plaque)
+    osm: node/5200950552   https://www.openstreetmap.org/node/5200950552
+    at:  48.854971, 2.356709   https://www.google.com/maps?q=48.854971,2.356709
+
+* À René Laboudance
+    memorial (plaque)
+    osm: node/5201026072   https://www.openstreetmap.org/node/5201026072
+    at:  48.856371, 2.355795   https://www.google.com/maps?q=48.856371,2.355795
+
+* À la mémoire des petits enfants de cette école
+    memorial (plaque)
+    osm: node/8016758861   https://www.openstreetmap.org/node/8016758861
+    at:  48.855715, 2.356676   https://www.google.com/maps?q=48.855715,2.356676
+
+* À la mémoire des élèves
+    memorial (plaque)
+    osm: node/8554435096   https://www.openstreetmap.org/node/8554435096
+    at:  48.854940, 2.358097   https://www.google.com/maps?q=48.854940,2.358097
+
+* Ici a vécu
+    memorial (plaque)
+    osm: node/8642635735   https://www.openstreetmap.org/node/8642635735
+    at:  48.854013, 2.358499   https://www.google.com/maps?q=48.854013,2.358499
+
+* Aux Républicains espagnols
+    memorial (plaque)
+    osm: node/8716773854   https://www.openstreetmap.org/node/8716773854
+    at:  48.855143, 2.353360   https://www.google.com/maps?q=48.855143,2.353360
+
+* Enceinte Philippe Auguste
+    memorial (plaque)
+    osm: node/8784694851   https://www.openstreetmap.org/node/8784694851
+    at:  48.860335, 2.356301   https://www.google.com/maps?q=48.860335,2.356301
+
+* Fragment de la façade de l'ancien hôtel de Nouvion
+    historic ruins
+    osm: node/8932462421   https://www.openstreetmap.org/node/8932462421
+    at:  48.859782, 2.357142   https://www.google.com/maps?q=48.859782,2.357142
+
+* Permanence Paris Nord libération
+    memorial (plaque)
+    osm: node/8932462423   https://www.openstreetmap.org/node/8932462423
+    at:  48.858388, 2.358082   https://www.google.com/maps?q=48.858388,2.358082
+
+* 260 enfants juifs de cette école
+    memorial (plaque)
+    osm: node/9233564998   https://www.openstreetmap.org/node/9233564998
+    at:  48.857855, 2.358946   https://www.google.com/maps?q=48.857855,2.358946
+
+* Philippe de Champaigne
+    memorial (plaque)
+    osm: node/9233565003   https://www.openstreetmap.org/node/9233565003
+    at:  48.857086, 2.358893   https://www.google.com/maps?q=48.857086,2.358893
+
+* À Joseph Mignoret
+    memorial (plaque)
+    osm: node/9233565005   https://www.openstreetmap.org/node/9233565005
+    at:  48.857898, 2.359011   https://www.google.com/maps?q=48.857898,2.359011
+
+* Enceinte de Philippe Auguste
+    memorial (plaque)
+    osm: node/10027825203   https://www.openstreetmap.org/node/10027825203
+    at:  48.858348, 2.358541   https://www.google.com/maps?q=48.858348,2.358541
+
+* Hippolyte Perrau
+    memorial (plaque)
+    osm: node/10068761178   https://www.openstreetmap.org/node/10068761178
+    at:  48.858485, 2.353444   https://www.google.com/maps?q=48.858485,2.353444
+
+* Ici vécurent les Couperin
+    memorial (plaque)
+    osm: node/11194580051   https://www.openstreetmap.org/node/11194580051
+    at:  48.855781, 2.354657   https://www.google.com/maps?q=48.855781,2.354657
+
+* Passage amplifié
+    memorial (plaque)
+    osm: node/11635495804   https://www.openstreetmap.org/node/11635495804
+    at:  48.855128, 2.356091   https://www.google.com/maps?q=48.855128,2.356091
+
+* Maurice Grohar
+    memorial (plaque)
+    osm: node/8642635738   https://www.openstreetmap.org/node/8642635738
+    at:  48.860658, 2.354944   https://www.google.com/maps?q=48.860658,2.354944
+
+* Flamant Devergie
+    memorial (plaque)
+    osm: node/9708641336   https://www.openstreetmap.org/node/9708641336
+    at:  48.860693, 2.354840   https://www.google.com/maps?q=48.860693,2.354840
+
+* Edmond Louis Alexis Dubois Crance
+    memorial (plaque)
+    osm: node/12787050333   https://www.openstreetmap.org/node/12787050333
+    at:  48.862378, 2.355698   https://www.google.com/maps?q=48.862378,2.355698
+
+* Abraham Pfefer
+    memorial (stolperstein), built 2024-11-24
+    osm: node/13063962647   https://www.openstreetmap.org/node/13063962647
+    at:  48.860625, 2.354192   https://www.google.com/maps?q=48.860625,2.354192
+
+* Daniel Rajchgod
+    memorial (stolperstein), built 2023-04-09
+    osm: node/13063962649   https://www.openstreetmap.org/node/13063962649
+    at:  48.860980, 2.354373   https://www.google.com/maps?q=48.860980,2.354373
+
+* Chaja Rajchgod dite Hélène née Grodnicki
+    memorial (stolperstein), built 2023-04-09
+    osm: node/13063962650   https://www.openstreetmap.org/node/13063962650
+    at:  48.861510, 2.356380   https://www.google.com/maps?q=48.861510,2.356380
+
+* Hersz Rajchgod dit Henri
+    memorial (stolperstein), built 2023-04-09
+    osm: node/13063962651   https://www.openstreetmap.org/node/13063962651
+    at:  48.861509, 2.356379   https://www.google.com/maps?q=48.861509,2.356379
+
+* À la mémoire des élèves de cette école
+    memorial (plaque)
+    osm: node/8554435087   https://www.openstreetmap.org/node/8554435087
+    at:  48.853216, 2.359789   https://www.google.com/maps?q=48.853216,2.359789
+
+* François Rabelais
+    memorial (plaque)
+    osm: node/11114591285   https://www.openstreetmap.org/node/11114591285
+    at:  48.852665, 2.359962   https://www.google.com/maps?q=48.852665,2.359962
+
+* Antoine Louis Barye
+    memorial (plaque)
+    osm: node/11114591305   https://www.openstreetmap.org/node/11114591305
+    at:  48.851721, 2.361942   https://www.google.com/maps?q=48.851721,2.361942
+
+* Appel du 18 juin
+    memorial (plaque)
+    osm: node/5200893968   https://www.openstreetmap.org/node/5200893968
+    at:  48.853454, 2.368248   https://www.google.com/maps?q=48.853454,2.368248
+
+* Yvonne Lucienne Lemoine
+    memorial (stolperstein), built 2026-01-31
+    osm: node/13515858683   https://www.openstreetmap.org/node/13515858683
+    at:  48.851847, 2.367129   https://www.google.com/maps?q=48.851847,2.367129
+
+* Attentat du 9 août 1982
+    memorial (plaque)
+    osm: node/5163747598   https://www.openstreetmap.org/node/5163747598
+    at:  48.856860, 2.359890   https://www.google.com/maps?q=48.856860,2.359890
+
+* Tour de guet (enceinte Louis-Philippe)
+    historic ruins
+    osm: node/6210297059   https://www.openstreetmap.org/node/6210297059
+    at:  48.857058, 2.360283   https://www.google.com/maps?q=48.857058,2.360283
+
+* Plaque François-Vincent Raspail
+    memorial (plaque)
+    osm: node/6765318416   https://www.openstreetmap.org/node/6765318416
+    at:  48.855427, 2.361808   https://www.google.com/maps?q=48.855427,2.361808
+
+* Joseph Lakanal
+    memorial (plaque)
+    osm: node/7607950984   https://www.openstreetmap.org/node/7607950984
+    at:  48.854333, 2.365112   https://www.google.com/maps?q=48.854333,2.365112
+
+* Elias Zajdner
+    memorial (plaque)
+    osm: node/7972587897   https://www.openstreetmap.org/node/7972587897
+    at:  48.854047, 2.361873   https://www.google.com/maps?q=48.854047,2.361873
+
+* Shoah
+    memorial (stele)
+    osm: node/8642635739   https://www.openstreetmap.org/node/8642635739
+    at:  48.857020, 2.360215   https://www.google.com/maps?q=48.857020,2.360215
+
+* Théâtre du Marais
+    memorial (plaque)
+    osm: node/8987108175   https://www.openstreetmap.org/node/8987108175
+    at:  48.856070, 2.362304   https://www.google.com/maps?q=48.856070,2.362304
+
+* En 1829
+    memorial (plaque)
+    osm: node/9089019620   https://www.openstreetmap.org/node/9089019620
+    at:  48.859575, 2.362498   https://www.google.com/maps?q=48.859575,2.362498
+
+* À la mémoire des élèves de ce lycée
+    memorial (plaque)
+    osm: node/9123101156   https://www.openstreetmap.org/node/9123101156
+    at:  48.854136, 2.360968   https://www.google.com/maps?q=48.854136,2.360968
+
+* De 1942 à 1944
+    memorial (plaque)
+    osm: node/12787050321   https://www.openstreetmap.org/node/12787050321
+    at:  48.860372, 2.360211   https://www.google.com/maps?q=48.860372,2.360211
+
+* François Mansart
+    memorial (plaque)
+    osm: node/12804624080   https://www.openstreetmap.org/node/12804624080
+    at:  48.857731, 2.362042   https://www.google.com/maps?q=48.857731,2.362042
+
+* À la mémoire des enfants de cette école maternelle
+    memorial (plaque)
+    osm: node/12787050312   https://www.openstreetmap.org/node/12787050312
+    at:  48.855198, 2.366479   https://www.google.com/maps?q=48.855198,2.366479
+
+* Ici habita Raymond Gautier
+    memorial (plaque)
+    osm: node/14019771566   https://www.openstreetmap.org/node/14019771566
+    at:  48.859667, 2.368227   https://www.google.com/maps?q=48.859667,2.368227
+
+* Fonderie Rudier
+    memorial (plaque)
+    osm: node/8243533303   https://www.openstreetmap.org/node/8243533303
+    at:  48.863000, 2.363873   https://www.google.com/maps?q=48.863000,2.363873
+
+* Renée Lévy
+    memorial (plaque)
+    osm: node/9019374185   https://www.openstreetmap.org/node/9019374185
+    at:  48.863490, 2.364164   https://www.google.com/maps?q=48.863490,2.364164
+
+* Maurice Bassis
+    memorial (plaque)
+    osm: node/9409204066   https://www.openstreetmap.org/node/9409204066
+    at:  48.861708, 2.364200   https://www.google.com/maps?q=48.861708,2.364200
+
+* Odette Pipoul
+    memorial (plaque)
+    osm: node/10824177138   https://www.openstreetmap.org/node/10824177138
+    at:  48.863755, 2.361565   https://www.google.com/maps?q=48.863755,2.361565
+
+* Kouliche
+    memorial (plaque)
+    osm: node/12789644413   https://www.openstreetmap.org/node/12789644413
+    at:  48.860658, 2.364475   https://www.google.com/maps?q=48.860658,2.364475
+
+* David Grodnicki
+    memorial (stolperstein), built 2023-04-09
+    osm: node/13063962652   https://www.openstreetmap.org/node/13063962652
+    at:  48.863854, 2.362604   https://www.google.com/maps?q=48.863854,2.362604
+
+* En mémoire des victimes blessées et assassinées des attentats du 13 novembre 2015
+    memorial (stele)
+    osm: node/13387053002   https://www.openstreetmap.org/node/13387053002
+    at:  48.863321, 2.371431   https://www.google.com/maps?q=48.863321,2.371431
+
+* Hôtel de Fontenay
+    historic manor
+    osm: relation/19919581   https://www.openstreetmap.org/relation/19919581
+    at:  48.859622, 2.357967   https://www.google.com/maps?q=48.859622,2.357967
+
+* Denver the last dinosaur
+    artwork
+    osm: node/11112022138   https://www.openstreetmap.org/node/11112022138
+    at:  48.856480, 2.356623   https://www.google.com/maps?q=48.856480,2.356623
+
+* La Multiplication des pains
+    artwork
+    osm: node/11200286161   https://www.openstreetmap.org/node/11200286161
+    at:  48.858943, 2.357919   https://www.google.com/maps?q=48.858943,2.357919
+
+* La Mort de sainte Anne
+    artwork, built 1640
+    osm: node/11200286167   https://www.openstreetmap.org/node/11200286167
+    at:  48.858753, 2.357671   https://www.google.com/maps?q=48.858753,2.357671
+
+* Fernande Wajbrot 6 ans et Michel Wajbrot 10 ans , Lazare Szajnbuks 11 ans
+    artwork, built 2022-06
+    osm: node/12789644428   https://www.openstreetmap.org/node/12789644428
+    at:  48.857881, 2.355844   https://www.google.com/maps?q=48.857881,2.355844
+
+* Bernard Zajdner, 14 ans
+    artwork, built 2022-06
+    osm: node/12789644430   https://www.openstreetmap.org/node/12789644430
+    at:  48.858106, 2.356667   https://www.google.com/maps?q=48.858106,2.356667
+
+* Saint-Georges terrassant le dragon
+    artwork
+    osm: node/12941441105   https://www.openstreetmap.org/node/12941441105
+    at:  48.858025, 2.356608   https://www.google.com/maps?q=48.858025,2.356608
+
+* Huguette Goldblum, 13 ans
+    artwork, built 2022-06
+    osm: node/13090120114   https://www.openstreetmap.org/node/13090120114
+    at:  48.858102, 2.356664   https://www.google.com/maps?q=48.858102,2.356664
+
+* UP /SIDE / DOWN / TOWN
+    artwork
+    osm: node/708945753   https://www.openstreetmap.org/node/708945753
+    at:  48.862120, 2.357080   https://www.google.com/maps?q=48.862120,2.357080
+
+* La Justice
+    artwork
+    osm: node/715636071   https://www.openstreetmap.org/node/715636071
+    at:  48.860787, 2.358236   https://www.google.com/maps?q=48.860787,2.358236
+
+* Gallery of C14/Hapax
+    artwork
+    osm: node/1334424771   https://www.openstreetmap.org/node/1334424771
+    at:  48.863328, 2.356546   https://www.google.com/maps?q=48.863328,2.356546
+
+* Hommage à Paul Celan
+    artwork, built 2016
+    osm: node/5486097645   https://www.openstreetmap.org/node/5486097645
+    at:  48.861573, 2.354591   https://www.google.com/maps?q=48.861573,2.354591
+
+* Chat et Ecureuil
+    artwork
+    osm: node/9798941341   https://www.openstreetmap.org/node/9798941341
+    at:  48.861237, 2.358326   https://www.google.com/maps?q=48.861237,2.358326
+
+* Les Habitants de l'hôtel Saint-Aignan en 1939
+    artwork, built 1998
+    osm: node/11139538119   https://www.openstreetmap.org/node/11139538119
+    at:  48.861393, 2.355559   https://www.google.com/maps?q=48.861393,2.355559
+
+* Hommage au Capitaine Dreyfus
+    artwork
+    osm: node/11139538126   https://www.openstreetmap.org/node/11139538126
+    at:  48.861131, 2.355426   https://www.google.com/maps?q=48.861131,2.355426
+
+* Space Invader PA0769
+    artwork
+    osm: node/11176946193   https://www.openstreetmap.org/node/11176946193
+    at:  48.860749, 2.355215   https://www.google.com/maps?q=48.860749,2.355215
+
+* Esprit des Lieux
+    artwork, built 1996
+    osm: node/11177706147   https://www.openstreetmap.org/node/11177706147
+    at:  48.861760, 2.356940   https://www.google.com/maps?q=48.861760,2.356940
+
+* Naïade
+    artwork
+    osm: node/11180883722   https://www.openstreetmap.org/node/11180883722
+    at:  48.861223, 2.357946   https://www.google.com/maps?q=48.861223,2.357946
+
+* La femme, lumière de l'homme
+    artwork, built 2000
+    osm: node/11180883723   https://www.openstreetmap.org/node/11180883723
+    at:  48.861377, 2.357814   https://www.google.com/maps?q=48.861377,2.357814
+
+* Les nymphes accueillent Psyché avec des fleurs au seuil du palais de l'Amour
+    artwork
+    osm: node/11181446362   https://www.openstreetmap.org/node/11181446362
+    at:  48.860744, 2.358172   https://www.google.com/maps?q=48.860744,2.358172
+
+* Jupiter et Junon
+    artwork, built 1737
+    osm: node/11181554482   https://www.openstreetmap.org/node/11181554482
+    at:  48.860800, 2.358118   https://www.google.com/maps?q=48.860800,2.358118
+
+* La dispute de Minerve et de Neptune au sujet de la ville d'Athènes
+    artwork, built 1738
+    osm: node/11181554483   https://www.openstreetmap.org/node/11181554483
+    at:  48.860766, 2.358187   https://www.google.com/maps?q=48.860766,2.358187
+
+* L'Histoire en présence du Temps et de la Renommée
+    artwork
+    osm: node/11183774355   https://www.openstreetmap.org/node/11183774355
+    at:  48.860777, 2.358211   https://www.google.com/maps?q=48.860777,2.358211
+
+* La Musique
+    artwork
+    osm: node/11183774357   https://www.openstreetmap.org/node/11183774357
+    at:  48.860755, 2.358313   https://www.google.com/maps?q=48.860755,2.358313
+
+* La Poésie et la Peinture
+    artwork
+    osm: node/11183774358   https://www.openstreetmap.org/node/11183774358
+    at:  48.860717, 2.358303   https://www.google.com/maps?q=48.860717,2.358303
+
+* La Fable et la Vérité
+    artwork
+    osm: node/11183774359   https://www.openstreetmap.org/node/11183774359
+    at:  48.860697, 2.358279   https://www.google.com/maps?q=48.860697,2.358279
+
+* L'Épopée et la Tragédie
+    artwork
+    osm: node/11183774360   https://www.openstreetmap.org/node/11183774360
+    at:  48.860750, 2.358178   https://www.google.com/maps?q=48.860750,2.358178
+
+* L'Astronomie
+    artwork
+    osm: node/11183774361   https://www.openstreetmap.org/node/11183774361
+    at:  48.860715, 2.358177   https://www.google.com/maps?q=48.860715,2.358177
+
+* La géométrie
+    artwork
+    osm: node/11183774362   https://www.openstreetmap.org/node/11183774362
+    at:  48.860693, 2.358213   https://www.google.com/maps?q=48.860693,2.358213
+
+* La moucheture d'hermine
+    artwork
+    osm: node/11184381108   https://www.openstreetmap.org/node/11184381108
+    at:  48.860648, 2.358169   https://www.google.com/maps?q=48.860648,2.358169
+
+* L'hermine
+    artwork
+    osm: node/11184381109   https://www.openstreetmap.org/node/11184381109
+    at:  48.860696, 2.358078   https://www.google.com/maps?q=48.860696,2.358078
+
+* L'arbre foudroyé et le surgeon renaissant
+    artwork
+    osm: node/11184381110   https://www.openstreetmap.org/node/11184381110
+    at:  48.860707, 2.358145   https://www.google.com/maps?q=48.860707,2.358145
+
+* La macle
+    artwork
+    osm: node/11184381111   https://www.openstreetmap.org/node/11184381111
+    at:  48.860648, 2.358072   https://www.google.com/maps?q=48.860648,2.358072
+
+* Le Discernement
+    artwork
+    osm: node/11184381112   https://www.openstreetmap.org/node/11184381112
+    at:  48.860717, 2.358126   https://www.google.com/maps?q=48.860717,2.358126
+
+* Le Courage
+    artwork
+    osm: node/11184381113   https://www.openstreetmap.org/node/11184381113
+    at:  48.860699, 2.358162   https://www.google.com/maps?q=48.860699,2.358162
+
+* La Liberté
+    artwork
+    osm: node/11184381114   https://www.openstreetmap.org/node/11184381114
+    at:  48.860656, 2.358056   https://www.google.com/maps?q=48.860656,2.358056
+
+* La Prudence
+    artwork
+    osm: node/11184381115   https://www.openstreetmap.org/node/11184381115
+    at:  48.860636, 2.358094   https://www.google.com/maps?q=48.860636,2.358094
+
+* Mars et Vénus
+    artwork, built 1738
+    osm: node/11184381116   https://www.openstreetmap.org/node/11184381116
+    at:  48.860625, 2.358113   https://www.google.com/maps?q=48.860625,2.358113
+
+* Neptune et Amphitrite
+    artwork, built 1737
+    osm: node/11184381117   https://www.openstreetmap.org/node/11184381117
+    at:  48.860660, 2.358048   https://www.google.com/maps?q=48.860660,2.358048
+
+* L'Hymen d'Hercule et d'Hébé
+    artwork, built 1737
+    osm: node/11184381118   https://www.openstreetmap.org/node/11184381118
+    at:  48.860720, 2.358118   https://www.google.com/maps?q=48.860720,2.358118
+
+* Aurore et Céphale
+    artwork
+    osm: node/11184381119   https://www.openstreetmap.org/node/11184381119
+    at:  48.860688, 2.358184   https://www.google.com/maps?q=48.860688,2.358184
+
+* Psyché défaille de frayeur devant Vénus
+    artwork
+    osm: node/11186653165   https://www.openstreetmap.org/node/11186653165
+    at:  48.860695, 2.358264   https://www.google.com/maps?q=48.860695,2.358264
+
+* Psyché chez les bergers
+    artwork
+    osm: node/11186653170   https://www.openstreetmap.org/node/11186653170
+    at:  48.860726, 2.358301   https://www.google.com/maps?q=48.860726,2.358301
+
+* Psyché contemple son époux endormi
+    artwork
+    osm: node/11186653179   https://www.openstreetmap.org/node/11186653179
+    at:  48.860782, 2.358244   https://www.google.com/maps?q=48.860782,2.358244
+
+* Les Grâces présidant à l'éductation de l'Amour
+    artwork
+    osm: node/11188288407   https://www.openstreetmap.org/node/11188288407
+    at:  48.860625, 2.358112   https://www.google.com/maps?q=48.860625,2.358112
+
+* Minerve enseignant à une jeune fille l'art de la tapisserie
+    artwork
+    osm: node/11188288408   https://www.openstreetmap.org/node/11188288408
+    at:  48.860687, 2.358186   https://www.google.com/maps?q=48.860687,2.358186
+
+* La Guirlande
+    artwork
+    osm: node/11188288409   https://www.openstreetmap.org/node/11188288409
+    at:  48.860720, 2.358057   https://www.google.com/maps?q=48.860720,2.358057
+
+* Le Pasteur complaisant
+    artwork, built 1738
+    osm: node/11188288410   https://www.openstreetmap.org/node/11188288410
+    at:  48.860703, 2.358035   https://www.google.com/maps?q=48.860703,2.358035
+
+* Psyché montre ses trésors à ses soeurs
+    artwork
+    osm: node/11189747441   https://www.openstreetmap.org/node/11189747441
+    at:  48.860774, 2.358208   https://www.google.com/maps?q=48.860774,2.358208
+
+* Les nymphes retirent de l'eau le corps inanimé de Psyché
+    artwork
+    osm: node/11189747442   https://www.openstreetmap.org/node/11189747442
+    at:  48.860762, 2.358300   https://www.google.com/maps?q=48.860762,2.358300
+
+* Psyché recueillie par Zéphir
+    artwork
+    osm: node/11189747444   https://www.openstreetmap.org/node/11189747444
+    at:  48.860715, 2.358177   https://www.google.com/maps?q=48.860715,2.358177
+
+* Psyché ravie au ciel par l'amour
+    artwork
+    osm: node/11189747445   https://www.openstreetmap.org/node/11189747445
+    at:  48.860693, 2.358214   https://www.google.com/maps?q=48.860693,2.358214
+
+* La terre
+    artwork
+    osm: node/11193981993   https://www.openstreetmap.org/node/11193981993
+    at:  48.860822, 2.358149   https://www.google.com/maps?q=48.860822,2.358149
+
+* Le feu
+    artwork
+    osm: node/11193981994   https://www.openstreetmap.org/node/11193981994
+    at:  48.860788, 2.358212   https://www.google.com/maps?q=48.860788,2.358212
+
+* L'air
+    artwork
+    osm: node/11193981995   https://www.openstreetmap.org/node/11193981995
+    at:  48.860730, 2.358142   https://www.google.com/maps?q=48.860730,2.358142
+
+* L'eau
+    artwork
+    osm: node/11193981996   https://www.openstreetmap.org/node/11193981996
+    at:  48.860764, 2.358080   https://www.google.com/maps?q=48.860764,2.358080
+
+* Mercure donnant des leçons à l'Amour
+    artwork
+    osm: node/11193981997   https://www.openstreetmap.org/node/11193981997
+    at:  48.860778, 2.358200   https://www.google.com/maps?q=48.860778,2.358200
+
+* Les Caractères de Théophraste ou la Sincérité
+    artwork, built 1737
+    osm: node/11193981998   https://www.openstreetmap.org/node/11193981998
+    at:  48.860812, 2.358137   https://www.google.com/maps?q=48.860812,2.358137
+
+* Le Bûcheron et Mercure
+    artwork
+    osm: node/11193981999   https://www.openstreetmap.org/node/11193981999
+    at:  48.860760, 2.358180   https://www.google.com/maps?q=48.860760,2.358180
+
+* Phébus et Borée
+    artwork, built 1738
+    osm: node/11193982000   https://www.openstreetmap.org/node/11193982000
+    at:  48.860749, 2.358168   https://www.google.com/maps?q=48.860749,2.358168
+
+* Paysage au moulin
+    artwork
+    osm: node/11193982001   https://www.openstreetmap.org/node/11193982001
+    at:  48.860794, 2.358111   https://www.google.com/maps?q=48.860794,2.358111
+
+* Paysage au pêcheur
+    artwork, built 1738
+    osm: node/11193982002   https://www.openstreetmap.org/node/11193982002
+    at:  48.860783, 2.358097   https://www.google.com/maps?q=48.860783,2.358097
+
+* La Discrétion et la Prudence
+    artwork, built 1737
+    osm: node/11193982003   https://www.openstreetmap.org/node/11193982003
+    at:  48.860737, 2.358153   https://www.google.com/maps?q=48.860737,2.358153
+
+* L'Amitié de Castor et Pollux
+    artwork, built 1737
+    osm: node/11193982004   https://www.openstreetmap.org/node/11193982004
+    at:  48.860772, 2.358084   https://www.google.com/maps?q=48.860772,2.358084
+
+* Apollon enseignant à l'Amour à jouer de la lyre
+    artwork, built 1737
+    osm: node/11193982005   https://www.openstreetmap.org/node/11193982005
+    at:  48.860742, 2.358115   https://www.google.com/maps?q=48.860742,2.358115
+
+* Diane désarmant l'Amour
+    artwork, built 1737
+    osm: node/11193982006   https://www.openstreetmap.org/node/11193982006
+    at:  48.860752, 2.358095   https://www.google.com/maps?q=48.860752,2.358095
+
+* L'Amérique
+    artwork
+    osm: node/11193982007   https://www.openstreetmap.org/node/11193982007
+    at:  48.860677, 2.358010   https://www.google.com/maps?q=48.860677,2.358010
+
+* L'Afrique
+    artwork
+    osm: node/11193982008   https://www.openstreetmap.org/node/11193982008
+    at:  48.860564, 2.358054   https://www.google.com/maps?q=48.860564,2.358054
+
+* L'Europe
+    artwork
+    osm: node/11193982009   https://www.openstreetmap.org/node/11193982009
+    at:  48.860619, 2.358118   https://www.google.com/maps?q=48.860619,2.358118
+
+* L'Asie
+    artwork
+    osm: node/11193982010   https://www.openstreetmap.org/node/11193982010
+    at:  48.860620, 2.357939   https://www.google.com/maps?q=48.860620,2.357939
+
+* Vénus au bain
+    artwork
+    osm: node/11193982012   https://www.openstreetmap.org/node/11193982012
+    at:  48.860625, 2.358111   https://www.google.com/maps?q=48.860625,2.358111
+
+* Vénus à sa toilette
+    artwork, built 1738
+    osm: node/11193982013   https://www.openstreetmap.org/node/11193982013
+    at:  48.860563, 2.358037   https://www.google.com/maps?q=48.860563,2.358037
+
+* Statue de Louis XIV
+    artwork
+    osm: node/2358798690   https://www.openstreetmap.org/node/2358798690
+    at:  48.857134, 2.362643   https://www.google.com/maps?q=48.857134,2.362643
+
+* Graffiti  (Ceiling graffiti)
+    artwork
+    osm: node/9850203217   https://www.openstreetmap.org/node/9850203217
+    at:  48.854415, 2.362024   https://www.google.com/maps?q=48.854415,2.362024
+
+* Victoire de la fontaine du Palmier
+    artwork, built 1808
+    osm: node/10314657321   https://www.openstreetmap.org/node/10314657321
+    at:  48.857530, 2.362425   https://www.google.com/maps?q=48.857530,2.362425
+
+* Les Quatre Saisons
+    artwork
+    osm: node/10314657355   https://www.openstreetmap.org/node/10314657355
+    at:  48.857174, 2.362537   https://www.google.com/maps?q=48.857174,2.362537
+
+* Henri IV
+    artwork, built 1834
+    osm: node/10314657356   https://www.openstreetmap.org/node/10314657356
+    at:  48.857275, 2.362784   https://www.google.com/maps?q=48.857275,2.362784
+
+* L'Instant Rond
+    artwork, built 1989
+    osm: node/11194580268   https://www.openstreetmap.org/node/11194580268
+    at:  48.857399, 2.360779   https://www.google.com/maps?q=48.857399,2.360779
+
+* La jeune fille à la Mosaïque, Vermeer
+    artwork
+    osm: node/11198539773   https://www.openstreetmap.org/node/11198539773
+    at:  48.859941, 2.361022   https://www.google.com/maps?q=48.859941,2.361022
+
+* La tête de l'homme oiseau
+    artwork
+    osm: node/11846412282   https://www.openstreetmap.org/node/11846412282
+    at:  48.858169, 2.361918   https://www.google.com/maps?q=48.858169,2.361918
+
+* Space invader
+    artwork
+    osm: node/12789644446   https://www.openstreetmap.org/node/12789644446
+    at:  48.854052, 2.362320   https://www.google.com/maps?q=48.854052,2.362320
+
+* Saint-Paul
+    artwork
+    osm: node/13202130203   https://www.openstreetmap.org/node/13202130203
+    at:  48.859890, 2.364778   https://www.google.com/maps?q=48.859890,2.364778
+
+* Saint-Pierre
+    artwork
+    osm: node/13202130204   https://www.openstreetmap.org/node/13202130204
+    at:  48.860053, 2.364785   https://www.google.com/maps?q=48.860053,2.364785
+
+* PA_188
+    artwork
+    osm: node/13821019132   https://www.openstreetmap.org/node/13821019132
+    at:  48.857880, 2.360184   https://www.google.com/maps?q=48.857880,2.360184
+
+* Pomone
+    artwork
+    osm: node/14086358414   https://www.openstreetmap.org/node/14086358414
+    at:  48.858283, 2.363056   https://www.google.com/maps?q=48.858283,2.363056
+
+* Je Suis Charlie
+    artwork, built 2016
+    osm: node/7243679049   https://www.openstreetmap.org/node/7243679049
+    at:  48.858902, 2.370431   https://www.google.com/maps?q=48.858902,2.370431
+
+* Clotilde de Vaux
+    artwork
+    osm: node/12190679244   https://www.openstreetmap.org/node/12190679244
+    at:  48.857694, 2.368336   https://www.google.com/maps?q=48.857694,2.368336
+
+* Morel Simone
+    artwork
+    osm: node/13089325437   https://www.openstreetmap.org/node/13089325437
+    at:  48.858759, 2.370259   https://www.google.com/maps?q=48.858759,2.370259
+
+* Turenne enfant
+    artwork
+    osm: node/428151169   https://www.openstreetmap.org/node/428151169
+    at:  48.862462, 2.364494   https://www.google.com/maps?q=48.862462,2.364494
+
+* Dessin de Sempé
+    artwork
+    osm: node/13801089261   https://www.openstreetmap.org/node/13801089261
+    at:  48.861325, 2.366880   https://www.google.com/maps?q=48.861325,2.366880
+
+* PA_1244
+    artwork
+    osm: node/13907509267   https://www.openstreetmap.org/node/13907509267
+    at:  48.862654, 2.367478   https://www.google.com/maps?q=48.862654,2.367478
+
+* Hyls
+    artwork
+    osm: way/1460858742   https://www.openstreetmap.org/way/1460858742
+    at:  48.861989, 2.370328   https://www.google.com/maps?q=48.861989,2.370328
+
+
+Named bridges (5) — a model entry lists all of a bridge's ways, "fit": "span"
+
+* Métro 1
+    osm: way/859801254, way/922839350
+
+* Pont Louis-Philippe
+    osm: way/22972090
+
+* Pont Marie
+    osm: way/17249305
+
+* Pont Saint-Louis
+    osm: way/20444588
+
+* Rue Saint-Sabin
+    osm: way/791140079

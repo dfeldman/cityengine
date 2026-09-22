@@ -1,0 +1,418 @@
+/**
+ * Bridges, overpasses and the ramps up to them, as solid structures (IMPROVEMENTS §2.4).
+ *
+ * The ground is painted in layers with depth cleared between them (city.ts), which is right for a surface
+ * and wrong for anything with a road underneath it: a painted deck cannot let a street pass under it. So a
+ * raised edge — a bridge, or a ramp the bake lifted onto one (tools/bridges.ts) — is left out of every
+ * painted layer and built here instead, at its own heights, in the building group where it writes depth:
+ *
+ *        parapet ▐▌                              ▐▌ parapet (bridges only)
+ *        pavement ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ +0.15
+ *                     carriageway
+ *        slab     ███████████████████████████████████ 0.9 m deep
+ *                         ▐█▌ pier every 25 m, down to the ground (bridges)
+ *                   or a retaining wall down to the ground on each side (ramps)
+ *
+ * Never draped: the deck's heights are its own. Elevated rails (the Loop's L) are the same idea with a
+ * 0.6 m deck and steel bents — two columns and a cross beam — every 15 m.
+ */
+import { MeshBuilder } from './buildings.ts'
+import { box } from './models.ts'
+import type { Terrain } from '../city/terrain.ts'
+import { isRaised, unpackPoints, type PackedEdge, type PackedRail } from '../city/package.ts'
+
+type Rgb = [number, number, number]
+const FIXED = 0
+const ASPHALT: Rgb = [0.2, 0.2, 0.21]
+const PAVING: Rgb = [0.6, 0.58, 0.54]
+const STONE: Rgb = [0.72, 0.68, 0.6]
+const UNDER: Rgb = [0.36, 0.35, 0.33]
+
+interface Frame { x: number; z: number; y: number; nx: number; nz: number; s: number }
+
+/** Per-vertex frames along a polyline with heights: position, height, and a mitred sideways normal. */
+function frames(pts: { x: number; z: number }[], hs: number[]): Frame[] {
+  const out: Frame[] = []
+  let s = 0
+  for (let i = 0; i < pts.length; i++) {
+    if (i > 0) s += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z)
+    const a = pts[Math.max(0, i - 1)]
+    const b = pts[Math.min(pts.length - 1, i + 1)]
+    let dx = b.x - a.x
+    let dz = b.z - a.z
+    const len = Math.hypot(dx, dz) || 1
+    dx /= len
+    dz /= len
+    // right of the direction a→b is (dz, −dx)
+    out.push({ x: pts[i].x, z: pts[i].z, y: hs[i], nx: dz, nz: -dx, s })
+  }
+  return out
+}
+
+/** A strip between two sideways offsets, at a height offset, facing up (or down, with `down`). */
+function strip(out: MeshBuilder, f: Frame[], o0: number, o1: number, dy: number, tint: Rgb, down = false): void {
+  for (let i = 1; i < f.length; i++) {
+    const p = f[i - 1]
+    const q = f[i]
+    const c = (fr: Frame, o: number): [number, number, number] => [fr.x + fr.nx * o, fr.y + dy, fr.z + fr.nz * o]
+    const quad: [number, number, number][] = [c(p, o0), c(p, o1), c(q, o1), c(q, o0)]
+    if (down) quad.reverse()
+    out.quad(quad, [0, down ? -1 : 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], tint, FIXED)
+  }
+}
+
+/** A vertical wall along an offset, from dy0 to dy1 relative to the deck (or down to the ground). */
+function wall(out: MeshBuilder, f: Frame[], o: number, dy0: number, dy1: number, tint: Rgb, facing: 1 | -1,
+              ground?: (x: number, z: number) => number): void {
+  for (let i = 1; i < f.length; i++) {
+    const p = f[i - 1]
+    const q = f[i]
+    const at = (fr: Frame, dy: number, toGround: boolean): [number, number, number] => {
+      const x = fr.x + fr.nx * o
+      const z = fr.z + fr.nz * o
+      return [x, toGround && ground ? ground(x, z) - 0.3 : fr.y + dy, z]
+    }
+    const lo = ground !== undefined
+    const quad: [number, number, number][] = [at(p, dy0, lo), at(q, dy0, lo), at(q, dy1, false), at(p, dy1, false)]
+    if (facing < 0) quad.reverse()
+    out.quad(quad, [p.nx * facing, 0, p.nz * facing], [[0, 0], [1, 0], [1, 1], [0, 1]], tint, FIXED)
+  }
+}
+
+/** Is this edge a structure rather than a painted surface? A bridge, or lifted clear of the ground. */
+export { isRaised }
+
+/** One raised edge as a deck. */
+export function deck(out: MeshBuilder, e: PackedEdge, terrain: Terrain, walk = e.walk, drop = 0): void {
+  const pts = unpackPoints(e.points)
+  if (pts.length < 2 || !e.heights) return
+  const f = frames(pts, e.heights)
+  const road = e.foot ? 0 : e.width / 2
+  const outer = e.foot ? e.width / 2 : e.width / 2 + Math.max(0.6, walk)
+  const ground = (x: number, z: number): number => terrain.heightAt(x, z)
+  // the running surfaces, a hair above the heights so the rider's wheels are on them
+  if (road > 0) {
+    strip(out, f, -road, road, 0.02, ASPHALT)
+    strip(out, f, -outer, -road, 0.15, PAVING)
+    strip(out, f, road, outer, 0.15, PAVING)
+    // the kerb faces
+    wall(out, f, -road, 0.02, 0.15, PAVING, 1)
+    wall(out, f, road, 0.02, 0.15, PAVING, -1)
+  } else {
+    strip(out, f, -outer, outer, 0.05, PAVING)
+  }
+  const top = road > 0 ? 0.15 : 0.05
+  const style = e.bridge && e.name ? BRIDGE_STYLES[e.name] : undefined
+  if (style) {
+    // a named bridge in its own design: parapets as ever, and under the deck its arches (see `archSpans`)
+    for (const side of [-1, 1] as const) {
+      const o0 = side * outer
+      const o1 = side * (outer + 0.3)
+      const parapet = style.kind === 'steel' ? style.colour : STONE
+      if (style.kind === 'steel') {
+        // an openwork iron railing: a top rail and posts, not a stone wall
+        wall(out, f, o1, top + 0.95, top + 1.1, parapet, side)
+        strip(out, f, Math.min(o0, o1), Math.max(o0, o1), top + 1.1, parapet)
+      } else {
+        wall(out, f, o0, top, top + 1.1, parapet, side === -1 ? 1 : -1)
+        wall(out, f, o1, top, top + 1.1, parapet, side)
+        strip(out, f, Math.min(o0, o1), Math.max(o0, o1), top + 1.1, parapet)
+      }
+    }
+    // down to the water, which lies `drop` below the ground the elevation data gives under the river
+    archSpans(out, f, style, outer + 0.3, top, (x, z) => terrain.heightAt(x, z) - drop)
+  } else if (e.bridge) {
+    // the slab's fascia and soffit
+    wall(out, f, -outer - 0.3, -0.9, top, STONE, -1)
+    wall(out, f, outer + 0.3, -0.9, top, STONE, 1)
+    strip(out, f, -outer - 0.3, outer + 0.3, -0.9, UNDER, true)
+    // the parapets: 0.3 m wide, 1.1 m above the pavement, with their tops
+    for (const side of [-1, 1] as const) {
+      const o0 = side * outer
+      const o1 = side * (outer + 0.3)
+      wall(out, f, o0, top, top + 1.1, STONE, side === -1 ? 1 : -1)
+      wall(out, f, o1, top, top + 1.1, STONE, side)
+      strip(out, f, Math.min(o0, o1), Math.max(o0, o1), top + 1.1, STONE)
+    }
+    // piers every 25 m, down to the ground or the river bed
+    const total = f[f.length - 1].s
+    for (let s = 12.5; s < total - 6; s += 25) {
+      let k = 1
+      while (k < f.length - 1 && f[k].s < s) k++
+      const p = f[k - 1]
+      const q = f[k]
+      const t = (s - p.s) / Math.max(1e-6, q.s - p.s)
+      const x = p.x + (q.x - p.x) * t
+      const z = p.z + (q.z - p.z) * t
+      const yTop = p.y + (q.y - p.y) * t - 0.9
+      const yBot = ground(x, z) - 1 - drop
+      if (yTop - yBot < 1.2) continue
+      const w = Math.max(1.2, (outer * 2) / 3) / 2
+      // piers stand across the deck: long side along the deck's width
+      pier(out, x, z, yBot, yTop, 0.6, w, Math.atan2(p.nx, p.nz))
+    }
+  } else {
+    // a ramp on an embankment: retaining walls from the deck edge down to the ground
+    wall(out, f, -outer, 0, top, STONE, -1, ground)
+    wall(out, f, outer, 0, top, STONE, 1, ground)
+  }
+}
+
+/** An upright box rotated to `heading`, from y0 to y1, half-extents hx (along heading) and hz (across). */
+function pier(out: MeshBuilder, x: number, z: number, y0: number, y1: number, hx: number, hz: number, heading: number): void {
+  const tmp = new MeshBuilder()
+  box(tmp, 0, (y0 + y1) / 2, 0, hx, (y1 - y0) / 2, hz, UNDER, FIXED)
+  const c = Math.cos(heading)
+  const s = Math.sin(heading)
+  const base = out.positions.length / 3
+  for (let i = 0; i < tmp.positions.length; i += 3) {
+    const px = tmp.positions[i]
+    const pz = tmp.positions[i + 2]
+    out.positions.push(x + px * c + pz * s, tmp.positions[i + 1], z - px * s + pz * c)
+    const nx = tmp.normals[i]
+    const nz = tmp.normals[i + 2]
+    out.normals.push(nx * c + nz * s, tmp.normals[i + 1], -nx * s + nz * c)
+  }
+  out.uvs.push(...tmp.uvs)
+  out.colors.push(...tmp.colors)
+  for (const idx of tmp.indices) out.indices.push(base + idx)
+}
+
+/** An elevated railway: a 0.6 m deck under the track, and a steel bent every 15 m. */
+export function railDeck(out: MeshBuilder, r: PackedRail, terrain: Terrain, colour: Rgb): void {
+  const pts = unpackPoints(r.points)
+  if (pts.length < 2 || !r.heights) return
+  const f = frames(pts, r.heights)
+  const half = 2.2
+  strip(out, f, -half, half, 0, [colour[0] * 1.3, colour[1] * 1.3, colour[2] * 1.3])
+  wall(out, f, -half, -0.6, 0, colour, -1)
+  wall(out, f, half, -0.6, 0, colour, 1)
+  strip(out, f, -half, half, -0.6, colour, true)
+  const total = f[f.length - 1].s
+  for (let s = 7.5; s < total; s += 15) {
+    let k = 1
+    while (k < f.length - 1 && f[k].s < s) k++
+    const p = f[k - 1]
+    const q = f[k]
+    const t = (s - p.s) / Math.max(1e-6, q.s - p.s)
+    const x = p.x + (q.x - p.x) * t
+    const z = p.z + (q.z - p.z) * t
+    const y = p.y + (q.y - p.y) * t - 0.6
+    for (const side of [-1, 1]) {
+      const cx = x + p.nx * side * (half + 0.3)
+      const cz = z + p.nz * side * (half + 0.3)
+      const g = terrain.heightAt(cx, cz)
+      if (y - g < 1) continue
+      pier(out, cx, cz, g, y, 0.2, 0.2, 0)
+    }
+    // the cross beam
+    pier(out, x, z, y - 0.5, y, 0.25, half + 0.5, Math.atan2(p.nx, p.nz))
+  }
+}
+
+/**
+ * The Seine's bridges, each drawn as itself (PLAN item P). OSM names them; the generic deck — a slab on square
+ * piers — made Pont Marie, a hump of five round stone arches from 1635, look like a motorway flyover.
+ *   stone: `arches` round arches of pale limestone between piers with pointed cutwaters, a lighter voussoir
+ *          ring round each arch, the spandrel walls filled to the parapet; `niches` puts the empty statue
+ *          niches in the piers (Pont Marie's).
+ *   steel: a footbridge on two shallow iron arch ribs with posts up to the deck (Pont Saint-Louis).
+ */
+export interface BridgeStyle {
+  kind: 'stone' | 'steel'
+  arches: number
+  /** how high each arch rises, as a share of its half-span: 1 is a semicircle */
+  rise: number
+  niches?: boolean
+  colour: Rgb
+}
+
+export const BRIDGE_STYLES: Record<string, BridgeStyle> = {
+  'Pont Marie': { kind: 'stone', arches: 5, rise: 0.85, niches: true, colour: [0.78, 0.73, 0.63] },
+  'Pont Louis-Philippe': { kind: 'stone', arches: 3, rise: 0.55, colour: [0.8, 0.76, 0.67] },
+  'Pont Saint-Louis': { kind: 'steel', arches: 1, rise: 1, colour: [0.24, 0.29, 0.28] },
+}
+
+/** A frame interpolated at distance `s` along the deck. */
+function frameAt(f: Frame[], s: number): Frame {
+  let k = 1
+  while (k < f.length - 1 && f[k].s < s) k++
+  const p = f[k - 1]
+  const q = f[k]
+  const t = Math.max(0, Math.min(1, (s - p.s) / Math.max(1e-6, q.s - p.s)))
+  return { x: p.x + (q.x - p.x) * t, z: p.z + (q.z - p.z) * t, y: p.y + (q.y - p.y) * t, nx: p.nx, nz: p.nz, s }
+}
+
+function archSpans(out: MeshBuilder, f: Frame[], st: BridgeStyle, half: number, top: number,
+                   ground: (x: number, z: number) => number): void {
+  const L = f[f.length - 1].s
+  if (L < 10) return
+  // the water (or the quay) under the bridge: the lowest ground along it, and never less than 3 m of arch
+  let low = Infinity
+  for (let s = 0; s <= L; s += 2) {
+    const fr = frameAt(f, s)
+    low = Math.min(low, ground(fr.x, fr.z))
+  }
+  const at = (s: number, o: number, y: number): [number, number, number] => {
+    const fr = frameAt(f, s)
+    return [fr.x + fr.nx * o, y, fr.z + fr.nz * o]
+  }
+  const deckY = (s: number): number => frameAt(f, s).y + top
+
+  if (st.kind === 'steel') {
+    // two ribs, one under each edge: springing low at the abutments, meeting the deck at mid-span
+    const c = st.colour
+    let deckMin = Infinity
+    for (let s = 0; s <= L; s += 2) deckMin = Math.min(deckMin, deckY(s))
+    // springing just above the water: anything lower is hidden under the river's surface
+    const spring = Math.max(low + 0.8, deckMin - 4)
+    // the deck's own steel fascia, a dark plate under the walkway on each side
+    for (const side of [-1, 1]) {
+      const o = side * half
+      for (let s = 0; s < L - 1e-6; s += 1.5) {
+        const s1 = Math.min(L, s + 1.5)
+        const q: [number, number, number][] = [at(s, o, deckY(s) - 0.9), at(s1, o, deckY(s1) - 0.9), at(s1, o, deckY(s1) - 0.05), at(s, o, deckY(s) - 0.05)]
+        out.quad(q, [0, 0, 1], [[0, 0], [1, 0], [1, 1], [0, 1]], c, FIXED)
+      }
+    }
+    for (const side of [-1, 1]) {
+      const o = side * (half - 0.4)
+      let prev: [number, number, number] | null = null
+      for (let s = 0; s <= L + 1e-6; s += L / 24) {
+        const d = deckY(s) - 0.9
+        const y = spring + (d - spring) * Math.sin((Math.PI * s) / L)
+        const p = at(s, o, y)
+        if (prev) ribSeg(out, prev, p, 0.4, c)
+        // posts from the rib up to the deck, every other step
+        if (prev && Math.round(s / (L / 24)) % 2 === 0 && d - y > 0.4) ribSeg(out, p, at(s, o, d), 0.08, c)
+        prev = p
+      }
+    }
+    return
+  }
+
+  // stone: abutments of 6 m at each end, piers between the arches
+  const n = st.arches
+  const abut = Math.min(8, L * 0.08)
+  const pier = Math.max(2.5, (L - 2 * abut) * 0.08)
+  const span = (L - 2 * abut - (n - 1) * pier) / n
+  if (span < 3) return
+  const r = span / 2
+  // the springing line: as low as the water allows, but the crown must stay under the deck
+  const minDeck = Math.min(...Array.from({ length: 20 }, (_, i) => deckY(abut + ((L - 2 * abut) * i) / 19)))
+  const spring = Math.max(low + 0.5, Math.min(low + 2.5, minDeck - 1.2 - r * st.rise))
+  const arch = (k: number): { a: number; b: number } => {
+    const a = abut + k * (span + pier)
+    return { a, b: a + span }
+  }
+  /*
+   * Each arch's own rise, kept under the deck above it: the springing is shared, but a humped deck is lower
+   * over its end arches than over the middle, and an arch sized for the middle rose through the road at the
+   * ends — the rider rode through the barrel of Pont Louis-Philippe's first arch (user report).
+   */
+  const riseOf: number[] = []
+  for (let k = 0; k < n; k++) {
+    const { a, b } = arch(k)
+    let deckMin = Infinity
+    for (let q = 0; q <= 12; q++) deckMin = Math.min(deckMin, deckY(a + ((b - a) * q) / 12))
+    riseOf.push(Math.max(0.8, Math.min(r * st.rise, deckMin - 1.1 - spring)))
+  }
+  /** the underside of the stone at `s`: the intrados over an arch, the water elsewhere */
+  const under = (s: number): number => {
+    for (let k = 0; k < n; k++) {
+      const { a, b } = arch(k)
+      if (s > a && s < b) {
+        const u = (s - (a + b) / 2) / r
+        // and never closer than 0.6 m under the deck, whatever the arithmetic above says
+        return Math.min(deckY(s) - 0.6, spring + riseOf[k] * Math.sqrt(Math.max(0, 1 - u * u)))
+      }
+    }
+    return low - 0.5
+  }
+  const stone = st.colour
+  const ring: Rgb = [Math.min(1, stone[0] * 1.08), Math.min(1, stone[1] * 1.08), Math.min(1, stone[2] * 1.08)]
+  const step = 0.6
+  for (const side of [-1, 1] as const) {
+    const o = side * half
+    // the spandrel wall, from the underside up to the deck's top, facing out
+    for (let s = 0; s < L - 1e-6; s += step) {
+      const s1 = Math.min(L, s + step)
+      const q: [number, number, number][] = [at(s, o, under(s)), at(s1, o, under(s1)), at(s1, o, deckY(s1)), at(s, o, deckY(s))]
+      if (side < 0) q.reverse()
+      const fr = frameAt(f, s)
+      out.quad(q, [fr.nx * side, 0, fr.nz * side], [[0, 0], [1, 0], [1, 1], [0, 1]], stone, FIXED)
+      // the voussoir ring: a lighter band just proud of the wall, following each arch
+      if (under(s) > low && under(s1) > low) {
+        const b0 = under(s)
+        const b1 = under(s1)
+        const rq: [number, number, number][] = [at(s, o + side * 0.06, b0), at(s1, o + side * 0.06, b1), at(s1, o + side * 0.06, b1 + 0.7), at(s, o + side * 0.06, b0 + 0.7)]
+        if (side < 0) rq.reverse()
+        out.quad(rq, [fr.nx * side, 0, fr.nz * side], [[0, 0], [1, 0], [1, 1], [0, 1]], ring, FIXED)
+      }
+    }
+  }
+  // the barrel of each arch, across the bridge, facing down
+  for (let k = 0; k < n; k++) {
+    const { a, b } = arch(k)
+    for (let s = a; s < b - 1e-6; s += step / 2) {
+      const s1 = Math.min(b, s + step / 2)
+      const q: [number, number, number][] = [at(s, -half, under(s)), at(s1, -half, under(s1)), at(s1, half, under(s1)), at(s, half, under(s))]
+      out.quad(q, [0, -1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], [stone[0] * 0.55, stone[1] * 0.55, stone[2] * 0.55], FIXED)
+    }
+  }
+  // the piers' cutwaters: a pointed prow each side, from the water to the springing, and a niche above
+  for (let k = 0; k < n - 1; k++) {
+    const mid = arch(k).b + pier / 2
+    for (const side of [-1, 1]) {
+      const tip = at(mid, side * (half + pier * 0.9), 0)
+      const l = at(mid - pier / 2, side * half, 0)
+      const rr = at(mid + pier / 2, side * half, 0)
+      const y0 = low - 0.5
+      const y1 = spring + 0.4
+      for (const [p, q] of [[l, tip], [tip, rr]] as const) {
+        const quad: [number, number, number][] = [[p[0], y0, p[2]], [q[0], y0, q[2]], [q[0], y1, q[2]], [p[0], y1, p[2]]]
+        const nx = (q[2] - p[2])
+        const nz = -(q[0] - p[0])
+        if (side < 0) quad.reverse()
+        out.quad(quad, [nx * side, 0, nz * side], [[0, 0], [1, 0], [1, 1], [0, 1]], stone, FIXED)
+      }
+      // the cutwater's cap: a little pyramid to the wall
+      // two sloping triangles from the prow's edges up to a point on the pier's face (degenerate quads)
+      const apex: [number, number, number] = [(l[0] + rr[0]) / 2, y1 + pier * 0.6, (l[2] + rr[2]) / 2]
+      const capC: Rgb = [stone[0] * 0.9, stone[1] * 0.9, stone[2] * 0.9]
+      out.quad([[l[0], y1, l[2]], [tip[0], y1, tip[2]], apex, apex], [0, 0.6, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], capC, FIXED)
+      out.quad([[tip[0], y1, tip[2]], [rr[0], y1, rr[2]], apex, apex], [0, 0.6, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], capC, FIXED)
+      if (st.niches) {
+        // an empty statue niche in the pier's face, above the cutwater
+        const fr = frameAt(f, mid)
+        const o = side * (half + 0.04)
+        const w = pier * 0.22
+        const ny0 = y1 + pier * 0.7
+        const ny1 = Math.min(deckY(mid) - 1, ny0 + 2.6)
+        if (ny1 - ny0 > 1) {
+          const q: [number, number, number][] = [at(mid - w, o, ny0), at(mid + w, o, ny0), at(mid + w, o, ny1), at(mid - w, o, ny1)]
+          if (side < 0) q.reverse()
+          out.quad(q, [fr.nx * side, 0, fr.nz * side], [[0, 0], [1, 0], [1, 1], [0, 1]], [0.32, 0.3, 0.27], FIXED)
+        }
+      }
+    }
+  }
+}
+
+/** A square iron member between two points (for the steel ribs and posts). */
+function ribSeg(out: MeshBuilder, a: [number, number, number], b: [number, number, number], r: number, c: Rgb): void {
+  const dx = b[0] - a[0]
+  const dz = b[2] - a[2]
+  const l = Math.hypot(dx, dz) || 1
+  const sx = (-dz / l) * r
+  const sz = (dx / l) * r
+  const v = (p: [number, number, number], u: number, w: number): [number, number, number] => [p[0] + sx * u, p[1] + w * r, p[2] + sz * u]
+  // top, bottom, and the two sides, each with its own normal so the sun shades the member
+  const faces: [number, number, number, number, [number, number, number]][] = [
+    [-1, 1, 1, 1, [0, 1, 0]], [1, -1, -1, -1, [0, -1, 0]],
+    [-1, -1, -1, 1, [-sx / r, 0, -sz / r]], [1, 1, 1, -1, [sx / r, 0, sz / r]],
+  ]
+  for (const [u0, w0, u1, w1, n] of faces) {
+    out.quad([v(a, u0, w0), v(b, u0, w0), v(b, u1, w1), v(a, u1, w1)], n, [[0, 0], [1, 0], [1, 1], [0, 1]], c, FIXED)
+  }
+}

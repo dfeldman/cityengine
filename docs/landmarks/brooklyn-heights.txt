@@ -1,0 +1,350 @@
+Brooklyn Heights, New York — landmarks (59)
+Generated 2026-09-21 from OpenStreetMap (© OpenStreetMap contributors, ODbL).
+Most important first. A replacement model is keyed to the OSM id: "way/123" etc.
+
+* Center for Brooklyn History
+    museum, 27.7 m
+    osm: way/241833034   https://www.openstreetmap.org/way/241833034
+    at:  40.694791, -73.992411   https://www.google.com/maps?q=40.694791,-73.992411
+    wikipedia: en:Center for Brooklyn History
+    wikidata: https://www.wikidata.org/wiki/Q4974851
+
+* Saint James Cathedral
+    place of worship (christian), 17.4 m
+    osm: way/250372681   https://www.openstreetmap.org/way/250372681
+    at:  40.697071, -73.986600   https://www.google.com/maps?q=40.697071,-73.986600
+    wikipedia: en:Cathedral Basilica of St. James (Brooklyn)
+    wikidata: https://www.wikidata.org/wiki/Q5052191
+
+* Brooklyn Bridge
+    bridge, 41 m, built 1883-05-24
+    osm: way/375157262   https://www.openstreetmap.org/way/375157262
+    at:  40.705691, -73.996357   https://www.google.com/maps?q=40.705691,-73.996357
+    wikipedia: en:Brooklyn Bridge
+    wikidata: https://www.wikidata.org/wiki/Q125006
+
+* Manhattan Bridge
+    bridge, 41 m, built 1909-12-31
+    osm: relation/17233746   https://www.openstreetmap.org/relation/17233746
+    at:  40.707080, -73.990512   https://www.google.com/maps?q=40.707080,-73.990512
+    wikipedia: en:Manhattan Bridge
+    wikidata: https://www.wikidata.org/wiki/Q125050
+
+* Unity
+    artwork, 6.7 m, built 1999
+    osm: node/9035436348   https://www.openstreetmap.org/node/9035436348
+    at:  40.696206, -73.989175   https://www.google.com/maps?q=40.696206,-73.989175
+    wikipedia: en:Unity (Thomas)
+    wikidata: https://www.wikidata.org/wiki/Q86753845
+
+* Saint Francis College
+    building=school, 41.2 m
+    osm: way/241839661   https://www.openstreetmap.org/way/241839661
+    at:  40.693078, -73.992024   https://www.google.com/maps?q=40.693078,-73.992024
+    wikipedia: en:St. Francis College
+    wikidata: https://www.wikidata.org/wiki/Q530424
+
+* Sts. Constantine and Helen Greek Orthodox Cathedral
+    place of worship (christian), 17.1 m
+    osm: way/245113504   https://www.openstreetmap.org/way/245113504
+    at:  40.690592, -73.991197   https://www.google.com/maps?q=40.690592,-73.991197
+    wikipedia: en:Sts. Constantine and Helen Greek Orthodox Cathedral
+    wikidata: https://www.wikidata.org/wiki/Q7626112
+
+* Brooklyn Borough Hall
+    building=yes, 41.3 m
+    osm: way/241846064   https://www.openstreetmap.org/way/241846064
+    at:  40.692771, -73.990306   https://www.google.com/maps?q=40.692771,-73.990306
+    wikipedia: en:Brooklyn Borough Hall
+    wikidata: https://www.wikidata.org/wiki/Q929403
+
+* 110 Livingston
+    building=yes, 70.7 m, 20 levels
+    osm: way/245113580   https://www.openstreetmap.org/way/245113580
+    at:  40.690809, -73.990024   https://www.google.com/maps?q=40.690809,-73.990024
+    wikipedia: en:110 Livingston Street
+    wikidata: https://www.wikidata.org/wiki/Q4547258
+
+* Saint Ann's School
+    building=school, 47.2 m
+    osm: way/241836309   https://www.openstreetmap.org/way/241836309
+    at:  40.695218, -73.992208   https://www.google.com/maps?q=40.695218,-73.992208
+    wikipedia: en:Saint Ann's School (Brooklyn)
+    wikidata: https://www.wikidata.org/wiki/Q7400951
+
+* Plymouth Church
+    place of worship (christian), 19.1 m
+    osm: way/241852892   https://www.openstreetmap.org/way/241852892
+    at:  40.699290, -73.993088   https://www.google.com/maps?q=40.699290,-73.993088
+    wikipedia: en:Plymouth Church (Brooklyn)
+    wikidata: https://www.wikidata.org/wiki/Q7205773
+
+* Theodore Roosevelt United States Courthouse
+    building=public, 78.6 m, 15 levels
+    osm: way/250373215   https://www.openstreetmap.org/way/250373215
+    at:  40.697029, -73.989409   https://www.google.com/maps?q=40.697029,-73.989409
+    wikipedia: en:Theodore Roosevelt United States Courthouse
+    wikidata: https://www.wikidata.org/wiki/Q56553942
+
+* Conrad B. Duberstein United States Bankruptcy Courthouse
+    building=yes, 53.9 m
+    osm: relation/3262986   https://www.openstreetmap.org/relation/3262986
+    at:  40.695572, -73.989519   https://www.google.com/maps?q=40.695572,-73.989519
+    wikipedia: en:Federal Building and Post Office (Brooklyn)
+    wikidata: https://www.wikidata.org/wiki/Q5440041
+
+* Eagle Warehouse & Storage Company
+    historic building, 36.2 m
+    osm: relation/3314082   https://www.openstreetmap.org/relation/3314082
+    at:  40.702282, -73.993655   https://www.google.com/maps?q=40.702282,-73.993655
+    wikipedia: en:Eagle Warehouse & Storage Company
+    wikidata: https://www.wikidata.org/wiki/Q5325301
+
+* Brooklyn Friends Meetinghouse
+    place of worship (christian)
+    osm: node/357618728   https://www.openstreetmap.org/node/357618728
+    at:  40.690054, -73.989489   https://www.google.com/maps?q=40.690054,-73.989489
+    wikipedia: en:Friends Meetinghouse and School
+    wikidata: https://www.wikidata.org/wiki/Q5504194
+
+* Statue of Christopher Columbus
+    artwork, built 1867
+    osm: node/6575759972   https://www.openstreetmap.org/node/6575759972
+    at:  40.693917, -73.989915   https://www.google.com/maps?q=40.693917,-73.989915
+    wikipedia: en:Statue of Christopher Columbus (Brooklyn)
+    wikidata: https://www.wikidata.org/wiki/Q42389751
+
+* Henry Ward Beecher Monument
+    historic monument
+    osm: node/4726782722   https://www.openstreetmap.org/node/4726782722
+    at:  40.694876, -73.990108   https://www.google.com/maps?q=40.694876,-73.990108
+    wikidata: https://www.wikidata.org/wiki/Q16892234
+
+* Squibb Park Bridge
+    bridge
+    osm: way/1256929304   https://www.openstreetmap.org/way/1256929304
+    at:  40.701022, -73.996032   https://www.google.com/maps?q=40.701022,-73.996032
+    wikipedia: en:Squibb Park Bridge
+    wikidata: https://www.wikidata.org/wiki/Q85802785
+
+* Brooklyn Heights Promenade
+    attraction
+    osm: node/5039268173   https://www.openstreetmap.org/node/5039268173
+    at:  40.695630, -73.998325   https://www.google.com/maps?q=40.695630,-73.998325
+    wikidata: https://www.wikidata.org/wiki/Q15205111
+
+* Joralemon Street Tunnel Ventilation Shaft
+    building=ventilation_shaft, 13.0 m
+    osm: way/241822723   https://www.openstreetmap.org/way/241822723
+    at:  40.693414, -73.997410   https://www.google.com/maps?q=40.693414,-73.997410
+    wikidata: https://www.wikidata.org/wiki/Q4640887
+
+* Our Lady of Lebanon Roman Catholic Church
+    place of worship (christian), 29.2 m
+    osm: way/241833035   https://www.openstreetmap.org/way/241833035
+    at:  40.694207, -73.994125   https://www.google.com/maps?q=40.694207,-73.994125
+    wikidata: https://www.wikidata.org/wiki/Q16931620
+
+* Montague-Court Building
+    building=yes, 136.5 m
+    osm: way/241833135   https://www.openstreetmap.org/way/241833135
+    at:  40.693598, -73.990848   https://www.google.com/maps?q=40.693598,-73.990848
+    wikidata: https://www.wikidata.org/wiki/Q3322381
+
+* Saint Ann's and the Holy Trinity Episcopal Church
+    place of worship (christian), 22.0 m
+    osm: way/241833036   https://www.openstreetmap.org/way/241833036
+    at:  40.694574, -73.992698   https://www.google.com/maps?q=40.694574,-73.992698
+    wikidata: https://www.wikidata.org/wiki/Q7586980
+
+* Hotel Bossert
+    building=hotel, 53.5 m, 14 levels
+    osm: way/241833149   https://www.openstreetmap.org/way/241833149
+    at:  40.694809, -73.995787   https://www.google.com/maps?q=40.694809,-73.995787
+    wikidata: https://www.wikidata.org/wiki/Q5911277
+
+* Justice Ruth Bader Ginsburg Municipal Building
+    building=public, 71.3 m, built 1924
+    osm: way/245113449   https://www.openstreetmap.org/way/245113449
+    at:  40.692123, -73.990512   https://www.google.com/maps?q=40.692123,-73.990512
+    wikidata: https://www.wikidata.org/wiki/Q101095763
+
+* German Evangelical Lutheran Zion Church
+    place of worship (christian), 22.6 m
+    osm: way/241836157   https://www.openstreetmap.org/way/241836157
+    at:  40.696773, -73.993070   https://www.google.com/maps?q=40.696773,-73.993070
+    wikidata: https://www.wikidata.org/wiki/Q205394
+
+* First Unitarian Universalist Congregational Society
+    place of worship (unitarian_universalist), 21.1 m
+    osm: way/241836317   https://www.openstreetmap.org/way/241836317
+    at:  40.695379, -73.992626   https://www.google.com/maps?q=40.695379,-73.992626
+    wikidata: https://www.wikidata.org/wiki/Q5453957
+
+* One Clinton
+    building=construction, 125 m, 38 levels
+    osm: way/700018143   https://www.openstreetmap.org/way/700018143
+    at:  40.695730, -73.991462   https://www.google.com/maps?q=40.695730,-73.991462
+    wikidata: https://www.wikidata.org/wiki/Q24204551
+
+* NYU CUSP
+    building=school, 59.2 m, 13 levels
+    osm: way/241846072   https://www.openstreetmap.org/way/241846072
+    at:  40.692821, -73.987725   https://www.google.com/maps?q=40.692821,-73.987725
+    wikidata: https://www.wikidata.org/wiki/Q27988196
+
+* New York Marriott at the Brooklyn Bridge
+    hotel, 6 levels
+    osm: way/241846076   https://www.openstreetmap.org/way/241846076
+    at:  40.693844, -73.988019   https://www.google.com/maps?q=40.693844,-73.988019
+    wikidata: https://www.wikidata.org/wiki/Q111395085
+
+* Brooklyn Friends School
+    building=school, 37.7 m
+    osm: way/241846097   https://www.openstreetmap.org/way/241846097
+    at:  40.692790, -73.987893   https://www.google.com/maps?q=40.692790,-73.987893
+    wikidata: https://www.wikidata.org/wiki/Q4974832
+
+* Jay Street Substation
+    building=service, 11.7 m
+    osm: way/250374489   https://www.openstreetmap.org/way/250374489
+    at:  40.698108, -73.987287   https://www.google.com/maps?q=40.698108,-73.987287
+    wikidata: https://www.wikidata.org/wiki/Q6134973
+
+* 1 Hotel Brooklyn Bridge
+    hotel, 10 levels
+    osm: way/607163908   https://www.openstreetmap.org/way/607163908
+    at:  40.702274, -73.995518   https://www.google.com/maps?q=40.702274,-73.995518
+    wikidata: https://www.wikidata.org/wiki/Q111395081
+
+* New York Transit Museum
+    museum
+    osm: node/368061648   https://www.openstreetmap.org/node/368061648
+    at:  40.690518, -73.989980   https://www.google.com/maps?q=40.690518,-73.989980
+    wikidata: https://www.wikidata.org/wiki/Q1503777
+
+* Brooklyn Tabernacle
+    place of worship (christian)
+    osm: way/689253137   https://www.openstreetmap.org/way/689253137
+    at:  40.690776, -73.987173   https://www.google.com/maps?q=40.690776,-73.987173
+    wikidata: https://www.wikidata.org/wiki/Q4974900
+
+* Henry Ward Beecher
+    historic monument
+    osm: node/5967511585   https://www.openstreetmap.org/node/5967511585
+    at:  40.699340, -73.993418   https://www.google.com/maps?q=40.699340,-73.993418
+
+* William Jay Gaynor
+    historic monument, built 1926
+    osm: node/7377084843   https://www.openstreetmap.org/node/7377084843
+    at:  40.699540, -73.990512   https://www.google.com/maps?q=40.699540,-73.990512
+
+* Kayak Brooklyn
+    attraction
+    osm: node/4305803394   https://www.openstreetmap.org/node/4305803394
+    at:  40.699556, -73.997566   https://www.google.com/maps?q=40.699556,-73.997566
+
+* Brooklyn Heights Synagogue
+    place of worship (jewish), 18.3 m, built 1959
+    osm: way/241833063   https://www.openstreetmap.org/way/241833063
+    at:  40.693953, -73.993192   https://www.google.com/maps?q=40.693953,-73.993192
+
+* Congregation B'nai Avraham
+    place of worship (jewish), 16.1 m
+    osm: way/241833154   https://www.openstreetmap.org/way/241833154
+    at:  40.694060, -73.993625   https://www.google.com/maps?q=40.694060,-73.993625
+
+* Saint Charles Borromeo Church
+    place of worship (christian), 37.4 m
+    osm: way/241839720   https://www.openstreetmap.org/way/241839720
+    at:  40.692488, -73.994023   https://www.google.com/maps?q=40.692488,-73.994023
+
+* Antioch Pentacostal Church
+    place of worship (christian), 7.1 m
+    osm: way/245112384   https://www.openstreetmap.org/way/245112384
+    at:  40.690070, -73.992692   https://www.google.com/maps?q=40.690070,-73.992692
+
+* Grace Church
+    place of worship (christian), 20.2 m
+    osm: way/241822941   https://www.openstreetmap.org/way/241822941
+    at:  40.693928, -73.996999   https://www.google.com/maps?q=40.693928,-73.996999
+
+* First Presbyterian Church
+    place of worship (christian), 28.2 m
+    osm: way/241825946   https://www.openstreetmap.org/way/241825946
+    at:  40.697089, -73.993723   https://www.google.com/maps?q=40.697089,-73.993723
+
+* Oratory Parish of the Assumption
+    place of worship (christian), 21.5 m
+    osm: way/248138019   https://www.openstreetmap.org/way/248138019
+    at:  40.699890, -73.992795   https://www.google.com/maps?q=40.699890,-73.992795
+
+* Brooklyn War Memorial
+    memorial (war_memorial), 11.2 m, built 1951
+    osm: way/250373213   https://www.openstreetmap.org/way/250373213
+    at:  40.698443, -73.990626   https://www.google.com/maps?q=40.698443,-73.990626
+
+* NYC Emergency Management Headquarters
+    building=government, 16.0 m, 4 levels
+    osm: way/250373216   https://www.openstreetmap.org/way/250373216
+    at:  40.699066, -73.989319   https://www.google.com/maps?q=40.699066,-73.989319
+
+* Korean War Veterans Plaza Wall of Honor
+    memorial (war_memorial), 2 m
+    osm: relation/14727220   https://www.openstreetmap.org/relation/14727220
+    at:  40.696010, -73.990650   https://www.google.com/maps?q=40.696010,-73.990650
+
+* Old Pier 1 Piles
+    viewpoint
+    osm: node/11153536406   https://www.openstreetmap.org/node/11153536406
+    at:  40.700848, -73.996708   https://www.google.com/maps?q=40.700848,-73.996708
+
+* Walk-in Kaleidoscope
+    artwork
+    osm: node/11153606214   https://www.openstreetmap.org/node/11153606214
+    at:  40.698253, -73.999403   https://www.google.com/maps?q=40.698253,-73.999403
+
+* Turning Stone
+    artwork
+    osm: node/11154466921   https://www.openstreetmap.org/node/11154466921
+    at:  40.698139, -73.999100   https://www.google.com/maps?q=40.698139,-73.999100
+
+* Den Danske Sømandskirke  (The Danish Seamen's Church)
+    place of worship (christian)
+    osm: node/357618758   https://www.openstreetmap.org/node/357618758
+    at:  40.697954, -73.995696   https://www.google.com/maps?q=40.697954,-73.995696
+
+* Balanced Cylinders
+    artwork, built 1984
+    osm: node/4557501544   https://www.openstreetmap.org/node/4557501544
+    at:  40.694023, -73.986870   https://www.google.com/maps?q=40.694023,-73.986870
+
+* Robert F. Kennedy Memorial
+    memorial (bust), built 1972-11-02
+    osm: node/6575759973   https://www.openstreetmap.org/node/6575759973
+    at:  40.693663, -73.990015   https://www.google.com/maps?q=40.693663,-73.990015
+
+* Washington A. Roebling
+    memorial (plaque), built 1973
+    osm: node/8309551645   https://www.openstreetmap.org/node/8309551645
+    at:  40.693613, -73.989887   https://www.google.com/maps?q=40.693613,-73.989887
+
+* Granite Prospect
+    viewpoint
+    osm: node/3351167989   https://www.openstreetmap.org/node/3351167989
+    at:  40.701995, -73.997408   https://www.google.com/maps?q=40.701995,-73.997408
+
+* Akua
+    artwork, built 2025-05-06
+    osm: node/12860605930   https://www.openstreetmap.org/node/12860605930
+    at:  40.702478, -73.996352   https://www.google.com/maps?q=40.702478,-73.996352
+
+* Fat Boy
+    artwork
+    osm: node/11565984816   https://www.openstreetmap.org/node/11565984816
+    at:  40.701649, -73.987510   https://www.google.com/maps?q=40.701649,-73.987510
+
+* Triple Cantilever
+    bridge
+    osm: way/1119519666   https://www.openstreetmap.org/way/1119519666
+    at:  40.697108, -73.997324   https://www.google.com/maps?q=40.697108,-73.997324

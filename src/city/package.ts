@@ -1,0 +1,221 @@
+/**
+ * What a baked city is, on disk and in memory.
+ *
+ * The rule Trail Trainer set and this game keeps: **the game touches no network service while it runs.** Everything
+ * comes from Overpass once, offline, and ships as a static file. A rider halfway through a session does not
+ * want a tile server outage, and a platform that runs on a machine in a garage may not have internet at all.
+ *
+ * JSON rather than a binary format, for now: a square kilometre of Paris is about a megabyte and gzips to
+ * a fraction of that, and being able to read a city package in a text editor while debugging is worth more
+ * at this stage than the bytes. If a city ever gets big enough for that to hurt, the geometry arrays are
+ * already shaped so they can become typed arrays without touching anything that reads them.
+ */
+import type { StyleId } from './facade.ts'
+import type { PackedTerrain } from './terrain.ts'
+
+export interface PackedEdge {
+  id: number
+  a: number
+  b: number
+  /** flattened x,z pairs in local metres */
+  points: number[]
+  surface: 'asphalt' | 'concrete' | 'cobblestone' | 'gravel' | 'dirt' | 'wood'
+  /**
+   * The CARRIAGEWAY, not the corridor. The pavement is carved out of what OSM calls the street's width
+   * rather than added outside it, so that `width + 2 * walk` is the building-to-building corridor and every
+   * street that should have a pavement visibly has one. Adding it outside instead made the carriageway fill
+   * the gap between the buildings on Paris's narrow streets and squeezed the pavement to nothing.
+   */
+  width: number
+  /** the pavement either side, in metres; 0 on a lane too narrow to have one */
+  walk: number
+  name?: string
+  foot: boolean
+  /** a marked place where a footway crosses a carriageway — drawn as a zebra rather than as pavement */
+  crossing?: boolean
+  /** ground height at each point of `points`, in metres; absent on a city baked flat */
+  heights?: number[]
+  /** the OSM `highway` value — what kind of way this is, which decides whether the rider is steered down it */
+  kind: string
+  /** OSM `service=*`: a parking aisle or a driveway is not a street */
+  service?: string
+  oneway?: boolean
+  /** OSM `layer`, for keeping a bridge and the street under it apart */
+  layer?: number
+  bridge?: boolean
+  tunnel?: boolean
+  /** through a building at grade (tunnel=building_passage, covered=yes): rideable, drawn as an arch */
+  passage?: boolean
+}
+
+export type RoofShape = 'flat' | 'gabled' | 'hipped' | 'pyramidal' | 'skillion' | 'mansard' | 'dome'
+
+export interface PackedBuilding {
+  /** the OSM way id, which is also the seed: a re-bake leaves every building exactly as it was */
+  id: number
+  /** flattened x,z pairs, counter-clockwise, first point not repeated */
+  ring: number[]
+  style: StyleId
+  levels?: number
+  height?: number
+  minHeight?: number
+  /** what the roof is, after OSM's own tags and the style's default have both had their say */
+  roof: RoofShape
+  /** how tall the roof is above the eaves, in metres */
+  roofHeight: number
+  /** the ridge bearing in radians, where a shape has a ridge */
+  roofDirection?: number
+  /** rgb 0–1 */
+  roofColour: [number, number, number]
+  /**
+   * Courtyards: the inner rings of a multipolygon building, flattened x,z pairs, CLOCKWISE — so the wall
+   * builder's outward normal for each points into the court. 726 of the Marais's 730 building relations have
+   * one; without them every courtyard was roofed over.
+   */
+  holes?: number[][]
+  /** nobody tagged a height and the bake guessed the level count (tools/heights.ts); for the report and debugging */
+  levelsInferred?: true
+}
+
+/**
+ * A building beyond the rideable box, drawn as plain massing so the city does not end in a field (the
+ * "fringe", render/fringe.ts). Only what massing needs: footprint, height, the style whose far page and
+ * palette it wears, and its roof.
+ */
+export interface PackedFringe {
+  ring: number[]
+  height: number
+  style: StyleId
+  roof: RoofShape
+  roofHeight: number
+  roofColour: [number, number, number]
+  /** the OSM way id: the seed for its palette */
+  id: number
+}
+
+export interface PackedArea {
+  kind: 'park' | 'grass' | 'water' | 'wood' | 'pitch'
+  ring: number[]
+  /** inner rings: the islands in a river, the courtyard in a park */
+  holes?: number[][]
+}
+
+/**
+ * A named place — a café, a pharmacy, a museum. OSM has thousands of these and almost none of them has a
+ * modelled building, which is precisely why they are worth drawing: a name on a fascia needs no building to
+ * hang on and does more for "this is the Marais" than another window variant would.
+ */
+export interface PackedPoi {
+  x: number
+  z: number
+  name: string
+  kind: 'shop' | 'food' | 'culture' | 'service'
+}
+
+/**
+ * A piece of street furniture OSM mapped at a point: the things that say which city this is. Placed where
+ * the mapper put it; the renderer turns it to face the nearest street.
+ */
+export interface PackedFurniture {
+  x: number
+  z: number
+  kind: 'metro' | 'fountain' | 'column' | 'kiosk' | 'bikeshare' | 'signals'
+  /** a Wallace fountain, as opposed to any drinking tap */
+  wallace?: true
+}
+
+/**
+ * A named building worth naming on the street (item K): a church, a school, a museum, a town hall. Ranked by
+ * tools/landmark-rank.ts; placed by src/city/landmark-place.ts.
+ */
+export interface PackedLandmark {
+  /** the packed building id it belongs to */
+  id: number
+  name: string
+  kind: 'church' | 'school' | 'museum' | 'civic' | 'shop' | 'historic' | 'other'
+  /** 1: a big plate and a totem on the pavement; 2: a smaller plate */
+  tier: 1 | 2
+  /** the building's centre */
+  x: number
+  z: number
+  /** the wall the plate hangs on: its midpoint, outward normal and length */
+  frontage: { x: number; z: number; nx: number; nz: number; len: number }
+  /** where the totem stands, tier 1 only, when there is a pavement to stand it on */
+  totem?: { x: number; z: number }
+}
+
+/** A railway, for the trains that run on it. Straight through; trains do not steer. */
+export interface PackedRail {
+  id: number
+  points: number[]
+  kind: 'rail' | 'tram' | 'subway'
+  /** an elevated structure — the Loop's L — and how high it runs (tools/bridges.ts) */
+  bridge?: boolean
+  layer?: number
+  heights?: number[]
+}
+
+export interface CityPackage {
+  id: string
+  name: string
+  origin: { lat: number; lon: number }
+  radius: number
+  /** the rideable box in local metres (x east, z north); absent on an older package, which is ±radius */
+  box?: { x0: number; x1: number; z0: number; z1: number }
+  /** what the ground is where nothing is mapped */
+  ground: 'grass' | 'sand' | 'dirt'
+  /** regional character (src/city/regions.json) */
+  region?: string
+  /** where a session starts: an edge id and how far along it */
+  start: { edgeId: number; s: number }
+  edges: PackedEdge[]
+  buildings: PackedBuilding[]
+  areas: PackedArea[]
+  /** x,z pairs of individual mapped trees */
+  trees: number[]
+  rails: PackedRail[]
+  pois: PackedPoi[]
+  /** named buildings, for their name plates and totems */
+  landmarks?: PackedLandmark[]
+  /** far landmarks on the horizon, in local metres (tools/cities.ts `skyline`) */
+  skyline?: { name: string; x: number; z: number; procedural: string; heightM: number; baseY?: number }[]
+  /** mapped street furniture (tools/overpass.ts `furnitureQuery`); absent on a package baked before it */
+  furniture?: PackedFurniture[]
+  /** the ground, sampled on a grid; absent on a city baked flat */
+  terrain?: PackedTerrain
+  attribution: string[]
+  baked: string
+  /** buildings beyond the box, as massing (optional: older packages have none) */
+  fringe?: PackedFringe[]
+  /** every tree, decided at bake time (city/plantings.ts): x, z, height, spin, park (0/1) per tree */
+  plantings?: number[]
+  /** the water bodies WHOLE, when `areas` are tile pieces (quays, the occluder and the crowd need the whole) */
+  water?: PackedArea[]
+}
+
+export const unpackPoints = (flat: number[]): { x: number; z: number }[] => {
+  const out: { x: number; z: number }[] = []
+  for (let i = 0; i < flat.length; i += 2) out.push({ x: flat[i], z: flat[i + 1] })
+  return out
+}
+
+export const packPoints = (pts: { x: number; z: number }[]): number[] =>
+  pts.flatMap((p) => [Math.round(p.x * 100) / 100, Math.round(p.z * 100) / 100])
+
+/** A structure (a bridge, or a ramp standing off the ground) rather than painted ground. */
+export function isRaised(e: PackedEdge, terrain: { heightAt(x: number, z: number): number }): boolean {
+  if (e.bridge) return true
+  if (!e.heights) return false
+  for (let i = 0; i < e.heights.length; i++) {
+    if (Math.abs(e.heights[i] - terrain.heightAt(e.points[2 * i], e.points[2 * i + 1])) > 0.35) return true
+  }
+  return false
+}
+
+/** The water bodies whole: from the index when `areas` are tile pieces, else the package's own. */
+export const wholeWater = (pkg: Pick<CityPackage, 'areas' | 'water'>): PackedArea[] =>
+  pkg.water ?? pkg.areas.filter((a) => a.kind === 'water')
+
+/** On or above the ground: not a tunnel, not mapped below grade (a bridge over a cutting is still above it). */
+export const onSurface = (e: { tunnel?: boolean; layer?: number; bridge?: boolean }): boolean =>
+  !e.tunnel && ((e.layer ?? 0) >= 0 || !!e.bridge)

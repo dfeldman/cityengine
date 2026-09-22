@@ -1,0 +1,446 @@
+[
+  {
+    "osm": [
+      "relation/550881"
+    ],
+    "name": "Maison de Nicolas Flamel",
+    "procedural": "flamelHouse",
+    "front": "street",
+    "height": 19
+  },
+  {
+    "osm": [
+      "way/55742120"
+    ],
+    "name": "Église Saint-Merri",
+    "procedural": "saintMerri",
+    "front": 270,
+    "height": 41,
+    "note": "In the outer ring (beyond the box): its fringe building is replaced. West front on the Rue Saint-Martin."
+  },
+  {
+    "name": "Musée Carnavalet — the court",
+    "procedural": "carnavaletCourt",
+    "lat": 48.8576731,
+    "lon": 2.3627461,
+    "front": 117,
+    "size": [
+      20,
+      26
+    ],
+    "height": 14,
+    "sign": false,
+    "note": "Standalone in the court between the U's arms of OSM's way 57832953; −z toward the entrance wing and the Rue de Sévigné (ESE). The corps de logis at the head of the court is drawn by the model — OSM leaves that end open."
+  },
+  {
+    "name": "Hôtel de Soubise — the cour d’honneur",
+    "procedural": "soubiseCourt",
+    "on": "relation/3371164",
+    "court": true,
+    "front": 180,
+    "height": 16,
+    "sign": false,
+    "note": "The horseshoe colonnade court and the palace front, in the building's courtyard; the gate end toward the Rue des Francs-Bourgeois (south)."
+  },
+  {
+    "name": "Hôtel de Sully — the court",
+    "procedural": "sullyCourt",
+    "on": "relation/403146",
+    "court": true,
+    "front": 206,
+    "height": 12,
+    "sign": false,
+    "note": "Drawn on the building's own courtyard; the building (OSM relation 403146, stone-dressed by the hôtels-particuliers restyle) stays."
+  },
+  {
+    "osm": [
+      "way/227757683",
+      "way/78271167",
+      "way/227757687",
+      "way/227757691"
+    ],
+    "name": "Colonne de Juillet",
+    "procedural": "colonneDeJuillet",
+    "lat": 48.853166,
+    "lon": 2.369139,
+    "note": "A monument: its column is not a building in OSM, but its base is mapped as three building parts (78271167, 227757687, 227757691) which the generated city would draw as a glass box round the foot of the column — so they are replaced too, and it stands at its own coordinates."
+  },
+  {
+    "osm": [
+      "way/55503397"
+    ],
+    "name": "Centre Pompidou",
+    "procedural": "pompidou",
+    "height": 42,
+    "front": 291,
+    "note": "The piazza front faces WNW, square to the building's long axis (21° east of north). With front 270 the fit measured the rotated footprint across a north–south box: the model came out oversized and turned, through its neighbours and over the street."
+  },
+  {
+    "osm": [
+      "way/56046786"
+    ],
+    "name": "Église Saint-Paul-Saint-Louis",
+    "procedural": "saintPaul",
+    "front": 23,
+    "height": 55,
+    "note": "The facade faces Rue Saint-Antoine (NNE). Not 'street': the baked frontage is the longest street-facing wall, which for this church is its east flank on Rue Saint-Paul."
+  },
+  {
+    "osm": [
+      "way/55541122",
+      "way/1484102361"
+    ],
+    "name": "Hôtel de Sens",
+    "procedural": "hotelDeSens",
+    "front": "street",
+    "height": 26
+  },
+  {
+    "name": "Tour Saint-Jacques",
+    "procedural": "tourSaintJacques",
+    "lat": 48.85795,
+    "lon": 2.34887,
+    "front": 0,
+    "size": [
+      14,
+      14
+    ],
+    "height": 54,
+    "note": "Standalone, outside the box: nothing in the package to replace. The model includes its square (lawn, paths, trees)."
+  },
+  {
+    "name": "Tour Saint-Jacques — OSM footprint",
+    "osm": [
+      "way/20326709"
+    ],
+    "note": "Placeholder: removes OSM's own 52 m tower (a fringe building, drawn as dark 'skyscraper' massing inside the model — BUGS.md #5). The model is placed by lat/lon above."
+  },
+  {
+    "osm": [
+      "relation/284089",
+      "way/331242775",
+      "way/1204205154",
+      "way/331242768",
+      "way/331242770",
+      "way/1204205146",
+      "way/331242767",
+      "way/331242769",
+      "way/331242774",
+      "way/331242776",
+      "way/331242778",
+      "way/1204205151",
+      "way/1204205152",
+      "way/1204205153"
+    ],
+    "name": "Hôtel de Ville",
+    "procedural": "hotelDeVille",
+    "front": 270,
+    "height": 55,
+    "note": "Main front west onto the Place; the rider mostly sees the east (back) and south fronts, so the back has its pavilions too. The ways after the relation are its courtyard wings, mapped separately with their centres inside the outline; the model covers them."
+  },
+  {
+    "name": "Place des Vosges",
+    "restyle": "vosges",
+    "within": [
+      [
+        48.8549982,
+        2.3661029
+      ],
+      [
+        48.8559906,
+        2.3664764
+      ],
+      [
+        48.8562376,
+        2.3649813
+      ],
+      [
+        48.8552452,
+        2.3646078
+      ]
+    ],
+    "margin": 16,
+    "note": "Every house fronting the square (the Square Louis-XIII's garden, as a rectangle; a building is taken if a corner is within 16 m of it) takes the brick-and-stone style, two storeys over the arcade (eaves 14 m) and a steep 8 m slate roof, as the real pavilions have — OSM's heights of 16–20 m include the roofs. 16 m takes 55 — 14 missed the Hôtel de Chaulnes (no. 9), whose front stands 15 m from the garden; 10 takes none (the street round the garden is ~12 m).",
+    "eaves": 14,
+    "roofHeight": 8,
+    "levels": 3,
+    "dropParts": true
+  },
+  {
+    "name": "Opéra Bastille",
+    "restyle": "opera",
+    "take": "inside",
+    "roof": "flat",
+    "within": [
+      [
+        48.8525981,
+        2.3706846
+      ],
+      [
+        48.8526617,
+        2.3706376
+      ],
+      [
+        48.8527261,
+        2.3704384
+      ],
+      [
+        48.852712,
+        2.3700942
+      ],
+      [
+        48.8528936,
+        2.3699796
+      ],
+      [
+        48.8527572,
+        2.3698409
+      ],
+      [
+        48.8526573,
+        2.3699557
+      ],
+      [
+        48.8525185,
+        2.3697927
+      ],
+      [
+        48.8523639,
+        2.3697453
+      ],
+      [
+        48.8514246,
+        2.3701527
+      ],
+      [
+        48.8515395,
+        2.3701437
+      ],
+      [
+        48.851585,
+        2.3703224
+      ],
+      [
+        48.8515497,
+        2.3703526
+      ],
+      [
+        48.8515175,
+        2.3702662
+      ],
+      [
+        48.8514639,
+        2.3703123
+      ],
+      [
+        48.8513503,
+        2.3702186
+      ],
+      [
+        48.8511897,
+        2.3702501
+      ],
+      [
+        48.851057,
+        2.3704418
+      ],
+      [
+        48.8510019,
+        2.3708231
+      ],
+      [
+        48.8508381,
+        2.3704069
+      ],
+      [
+        48.8508406,
+        2.3704495
+      ],
+      [
+        48.8502092,
+        2.3707229
+      ],
+      [
+        48.8502658,
+        2.3710168
+      ],
+      [
+        48.8506434,
+        2.3708605
+      ],
+      [
+        48.8508863,
+        2.3710746
+      ],
+      [
+        48.8510406,
+        2.371009
+      ],
+      [
+        48.8517375,
+        2.3715432
+      ],
+      [
+        48.8518547,
+        2.3715627
+      ],
+      [
+        48.8519433,
+        2.3715058
+      ],
+      [
+        48.8519759,
+        2.3713431
+      ],
+      [
+        48.8520413,
+        2.3712886
+      ],
+      [
+        48.852066,
+        2.3713549
+      ],
+      [
+        48.8525981,
+        2.3706846
+      ]
+    ],
+    "note": "OSM maps the Opéra as 61 parts with real heights — the 50 m stage house, the stepped terraces of the curved front — so the massing is kept and only the dress changes: every part whose centre is inside the outline (way/78149064, simplified to 3 m) takes the granite-and-glass grid style with a flat roof. The parts that start above the ground — the stepped tiers of the curved front — take the pale glass curtain instead, and the blocks that stand on the ground the white granite: the building's black-and-white look (Street View, May 2018).",
+    "restyleAloft": "operaGlass"
+  },
+  {
+    "name": "Opéra Bastille — the arch",
+    "procedural": "operaArch",
+    "lat": 48.852735,
+    "lon": 2.369997,
+    "front": 300,
+    "size": [
+      20,
+      8
+    ],
+    "height": 19,
+    "sign": false,
+    "note": "Standalone, where OSM maps it (the 15 m parts 255526605/606 and the 2.5 m steps 255526607/608, removed by the placeholder below), facing north-west to the Place. The building itself is the restyle entry above."
+  },
+  {
+    "name": "Opéra Bastille — arch parts",
+    "osm": [
+      "way/255526605",
+      "way/255526606",
+      "way/255526607",
+      "way/255526608"
+    ],
+    "note": "Placeholder: removes OSM's arch and steps, which the procedural arch replaces."
+  },
+  {
+    "osm": [
+      "way/56040608"
+    ],
+    "name": "Synagogue de la rue Pavée",
+    "procedural": "synagogueGuimard",
+    "front": "street",
+    "height": 24,
+    "note": "Hector Guimard, 1913. The baked frontage is the rue Pavée front (WNW)."
+  },
+  {
+    "osm": [
+      "way/49734642"
+    ],
+    "name": "Synagogue de la rue des Tournelles",
+    "procedural": "synagogueTournelles",
+    "front": "street",
+    "height": 27,
+    "note": "Varcollier, 1876. The baked frontage is the rue des Tournelles front (east)."
+  },
+  {
+    "name": "Square Louis-XIII",
+    "procedural": "vosgesGarden",
+    "lat": 48.8556179,
+    "lon": 2.3655421,
+    "front": 193.8,
+    "size": [
+      20,
+      20
+    ],
+    "height": 9,
+    "sign": false,
+    "note": "The garden inside the Place des Vosges, at the centre of the park rectangle, turned 13.8° with it (the rectangle's sides run at 13.8°). Size is only the shadow's footprint: the statue's, not the garden's."
+  },
+  {
+    "osm": [
+      "way/56206112",
+      "way/1197828191",
+      "way/1197828192",
+      "way/1197828194",
+      "way/1197828195"
+    ],
+    "name": "Temple du Marais",
+    "procedural": "templeMarais",
+    "front": 20,
+    "height": 36,
+    "note": "Temple Sainte-Marie (François Mansart, 1632), 17 rue Saint-Antoine — on the south side of the street, so its porch faces north. Not 'street': the baked frontage is its flank. The ways after the first are its drum, dome and porch, mapped as parts inside the outline; they drew through the model."
+  },
+  {
+    "osm": [
+      "way/55477164"
+    ],
+    "name": "Église Saint-Gervais",
+    "procedural": "saintGervais",
+    "front": 270,
+    "height": 43,
+    "note": "The classical front faces west, onto the Place Saint-Gervais behind the Hôtel de Ville; the baked frontage is the south flank."
+  },
+  {
+    "osm": [
+      "way/1081618315"
+    ],
+    "name": "Cirque d'Hiver",
+    "procedural": "cirqueHiver",
+    "lat": 48.863397,
+    "lon": 2.367402,
+    "front": 260,
+    "size": [
+      42,
+      42
+    ],
+    "height": 23,
+    "note": "Hittorff, 1852. OSM's outline was replaced by this part; placed at the landmark's own point, entrance to the west (rue des Filles-du-Calvaire)."
+  },
+  {
+    "osm": [
+      "way/58150045"
+    ],
+    "name": "Église Saint-Denys-du-Saint-Sacrement",
+    "procedural": "saintDenysPortico",
+    "front": 270,
+    "height": 22,
+    "note": "Godde, 1835: the Ionic portico faces west onto the rue de Turenne."
+  },
+  {
+    "name": "Hôtels particuliers",
+    "restyle": "classical",
+    "named": "^H[ôo]tel (de |d[’']|du |des )",
+    "roofHeight": 7,
+    "note": "The Marais's 17th-century mansions — Sully, Soubise, Lamoignon, Rohan, Carnavalet and seventy more named in OSM — wear pale dressed stone and a steep slate roof instead of the neighbourhood's random mix. The Hôtel de Ville and the Hôtel de Sens have models of their own and are excluded by the regular expression's position (they are replaced, so not restyled).",
+    "roofColour": "#4e555d"
+  },
+  {
+    "name": "Saint-Louis-en-l'Île — spire and clock",
+    "procedural": "saintLouisSpire",
+    "lat": 48.8512934,
+    "lon": 2.3576489,
+    "front": 29,
+    "offset": [
+      0,
+      24.5,
+      0
+    ],
+    "size": [
+      5,
+      5
+    ],
+    "height": 30,
+    "sign": false,
+    "note": "On the church (OSM's parts 330517677/330517682 are its massing), 6 m in from the frontage on the Rue Saint-Louis-en-l'Île; facing the street (29°) so the clock hangs out over it. Lifted to the 24 m roofline."
+  }
+]

@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "id": "streetrunner",
+  "name": "Street Runner",
+  "version": "0.1.0",
+  "entry": "index.html",
+  "screenshot": "screenshot.jpg",
+  "capabilities": {
+    "seed": false,
+    "input": true,
+    "saveState": true,
+    "ghosts": false
+  },
+  "options": {
+    "city": {
+      "label": "City",
+      "enum": [
+        "paris-marais",
+        "brooklyn-heights",
+        "chicago-loop",
+        "san-francisco"
+      ],
+      "default": "paris-marais"
+    },
+    "traffic": {
+      "label": "Other people",
+      "enum": [
+        "none",
+        "some",
+        "busy"
+      ],
+      "default": "some"
+    },
+    "time": {
+      "label": "Time of day",
+      "enum": [
+        "day",
+        "dawn",
+        "dusk",
+        "night"
+      ],
+      "default": "day"
+    },
+    "weather": {
+      "label": "Weather",
+      "enum": [
+        "clear",
+        "overcast",
+        "rain"
+      ],
+      "default": "clear"
+    }
+  },
+  "achievements": {
+    "first-turn": {
+      "name": "Your own way",
+      "description": "Took a turn you chose."
+    },
+    "ten-km": {
+      "name": "Ten kilometres",
+      "description": "Rode 10 km through a real city."
+    },
+    "every-street": {
+      "name": "Knows the neighbourhood",
+      "description": "Rode every street of one city."
+    }
+  },
+  "variants": [
+    {
+      "id": "bike",
+      "name": "Street Runner (Bike)",
+      "deviceTypes": [
+        "bike"
+      ],
+      "defaultDuration": 1800,
+      "controls": {
+        "bike": "grade"
+      }
+    },
+    {
+      "id": "run",
+      "name": "Street Runner (Run)",
+      "deviceTypes": [
+        "treadmill"
+      ],
+      "defaultDuration": 1800,
+      "controls": {
+        "treadmill": "incline"
+      }
+    }
+  ]
+}

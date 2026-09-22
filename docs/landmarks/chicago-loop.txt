@@ -1,0 +1,1501 @@
+The Loop, Chicago — landmarks (228)
+Generated 2026-09-21 from OpenStreetMap (© OpenStreetMap contributors, ODbL).
+Most important first. A replacement model is keyed to the OSM id: "way/123" etc.
+
+* Singer Building
+    building=office, 9 levels
+    osm: way/147613453   https://www.openstreetmap.org/way/147613453
+    at:  41.880158, -87.628137   https://www.google.com/maps?q=41.880158,-87.628137
+    wikipedia: en:Singer Building (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q7523388
+
+* Old Colony Building
+    historic building, 66 m, 17 levels
+    osm: way/73650872   https://www.openstreetmap.org/way/73650872
+    at:  41.876616, -87.628995   https://www.google.com/maps?q=41.876616,-87.628995
+    wikipedia: en:The Arc at Old Colony
+    wikidata: https://www.wikidata.org/wiki/Q14687991
+
+* Monadnock Building
+    historic building, 60 m, 17 levels
+    osm: way/73671128   https://www.openstreetmap.org/way/73671128
+    at:  41.877539, -87.629550   https://www.google.com/maps?q=41.877539,-87.629550
+    wikipedia: en:Monadnock Building
+    wikidata: https://www.wikidata.org/wiki/Q1199833
+
+* Fisher Building
+    building=office, 84 m, 20 levels
+    osm: way/73672919   https://www.openstreetmap.org/way/73672919
+    at:  41.877206, -87.629003   https://www.google.com/maps?q=41.877206,-87.629003
+    wikipedia: en:Fisher Building (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q5454770
+
+* The Rookery
+    historic building, 55 m, 12 levels
+    osm: way/73706154   https://www.openstreetmap.org/way/73706154
+    at:  41.879083, -87.631831   https://www.google.com/maps?q=41.879083,-87.631831
+    wikipedia: en:Rookery Building
+    wikidata: https://www.wikidata.org/wiki/Q3441853
+
+* McClurg Building
+    building=office, 9 levels
+    osm: way/148043648   https://www.openstreetmap.org/way/148043648
+    at:  41.878879, -87.626594   https://www.google.com/maps?q=41.878879,-87.626594
+    wikipedia: en:McClurg Building (Chicago, Illinois)
+    wikidata: https://www.wikidata.org/wiki/Q6800407
+
+* Oliver Building
+    building=office, 7 levels
+    osm: way/124873928   https://www.openstreetmap.org/way/124873928
+    at:  41.884946, -87.629239   https://www.google.com/maps?q=41.884946,-87.629239
+    wikipedia: en:Oliver Building (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q7087428
+
+* Residence Inn Chicago Downtown/Loop
+    hotel, 138 m, 37 levels
+    osm: way/147096407   https://www.openstreetmap.org/way/147096407
+    at:  41.881686, -87.631951   https://www.google.com/maps?q=41.881686,-87.631951
+    wikipedia: en:Roanoke Building
+    wikidata: https://www.wikidata.org/wiki/Q7339772
+
+* Gage Building
+    building=office, 12 levels
+    osm: way/124865450   https://www.openstreetmap.org/way/124865450
+    at:  41.881475, -87.624954   https://www.google.com/maps?q=41.881475,-87.624954
+    wikipedia: en:Gage Group Buildings
+    wikidata: https://www.wikidata.org/wiki/Q3094314
+
+* Chicago Theatre
+    historic building, 6 levels, built 1921-10-26
+    osm: way/124873919   https://www.openstreetmap.org/way/124873919
+    at:  41.885415, -87.627304   https://www.google.com/maps?q=41.885415,-87.627304
+    wikipedia: en:Chicago Theatre
+    wikidata: https://www.wikidata.org/wiki/Q642866
+
+* Jewelers Building
+    building=office, 5 levels
+    osm: way/147478106   https://www.openstreetmap.org/way/147478106
+    at:  41.881624, -87.625683   https://www.google.com/maps?q=41.881624,-87.625683
+    wikipedia: en:Jewelers Building (1882)
+    wikidata: https://www.wikidata.org/wiki/Q6189527
+
+* Heald Square Monument
+    historic monument
+    osm: way/210671754   https://www.openstreetmap.org/way/210671754
+    at:  41.887203, -87.626847   https://www.google.com/maps?q=41.887203,-87.626847
+    wikipedia: en:Heald Square Monument
+    wikidata: https://www.wikidata.org/wiki/Q5690185
+
+* Chicago Building
+    building=office, 14 levels
+    osm: way/147613457   https://www.openstreetmap.org/way/147613457
+    at:  41.881858, -87.628180   https://www.google.com/maps?q=41.881858,-87.628180
+    wikipedia: en:Chicago Building
+    wikidata: https://www.wikidata.org/wiki/Q5095518
+
+* Begin Route 66
+    attraction
+    osm: node/5401536922   https://www.openstreetmap.org/node/5401536922
+    at:  41.879615, -87.624630   https://www.google.com/maps?q=41.879615,-87.624630
+    wikipedia: en:U.S. Route 66
+    wikidata: https://www.wikidata.org/wiki/Q79934
+
+* Page Brothers Building
+    building=commercial
+    osm: way/124873930   https://www.openstreetmap.org/way/124873930
+    at:  41.885497, -87.627598   https://www.google.com/maps?q=41.885497,-87.627598
+    wikipedia: en:Page Brothers Building
+    wikidata: https://www.wikidata.org/wiki/Q7124227
+
+* Brooks Building
+    building=commercial, 12 levels
+    osm: way/73766157   https://www.openstreetmap.org/way/73766157
+    at:  41.877885, -87.634795   https://www.google.com/maps?q=41.877885,-87.634795
+    wikipedia: en:Brooks Building
+    wikidata: https://www.wikidata.org/wiki/Q4974982
+
+* 235 West Van Buren Street
+    building=apartments, 150 m, 46 levels
+    osm: way/74267847   https://www.openstreetmap.org/way/74267847
+    at:  41.876596, -87.634658   https://www.google.com/maps?q=41.876596,-87.634658
+    wikipedia: en:235 Van Buren
+    wikidata: https://www.wikidata.org/wiki/Q4631505
+
+* Chicago Mercantile Exchange Center
+    building=commercial, 10 levels
+    osm: way/217881356   https://www.openstreetmap.org/way/217881356
+    at:  41.881259, -87.637530   https://www.google.com/maps?q=41.881259,-87.637530
+    wikipedia: en:Chicago Mercantile Exchange Center
+    wikidata: https://www.wikidata.org/wiki/Q2187086
+
+* 111 South Wacker
+    building=commercial, 208 m, 51 levels
+    osm: way/64887962   https://www.openstreetmap.org/way/64887962
+    at:  41.880290, -87.636317   https://www.google.com/maps?q=41.880290,-87.636317
+    wikipedia: en:111 South Wacker Drive
+    wikidata: https://www.wikidata.org/wiki/Q170442
+
+* 200 South Wacker
+    building=commercial, 152 m, 41 levels
+    osm: way/64888042   https://www.openstreetmap.org/way/64888042
+    at:  41.879035, -87.637383   https://www.google.com/maps?q=41.879035,-87.637383
+    wikipedia: en:200 South Wacker Drive
+    wikidata: https://www.wikidata.org/wiki/Q2739407
+
+* Northern Trust Bank
+    building=commercial, 126 m, 30 levels
+    osm: way/147350191   https://www.openstreetmap.org/way/147350191
+    at:  41.879727, -87.636404   https://www.google.com/maps?q=41.879727,-87.636404
+    wikipedia: en:Northern Trust
+    wikidata: https://www.wikidata.org/wiki/Q970695
+
+* Harold Washington Library Center
+    building=library, 10 levels
+    osm: way/28292694   https://www.openstreetmap.org/way/28292694
+    at:  41.876321, -87.628215   https://www.google.com/maps?q=41.876321,-87.628215
+    wikipedia: en:Harold Washington Library
+    wikidata: https://www.wikidata.org/wiki/Q3127656
+
+* John Marshall Law School
+    building=university, 62 m, 12 levels
+    osm: way/73736266   https://www.openstreetmap.org/way/73736266
+    at:  41.877954, -87.628062   https://www.google.com/maps?q=41.877954,-87.628062
+    wikipedia: en:University of Illinois Chicago School of Law
+    wikidata: https://www.wikidata.org/wiki/Q6246903
+
+* The Kimpton Gray Hotel
+    hotel, 14 levels
+    osm: way/147486327   https://www.openstreetmap.org/way/147486327
+    at:  41.880890, -87.631763   https://www.google.com/maps?q=41.880890,-87.631763
+    wikipedia: en:New York Life Insurance Building (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q7013714
+
+* Consumers Building
+    building=office, 19 levels
+    osm: way/147613442   https://www.openstreetmap.org/way/147613442
+    at:  41.879014, -87.628161   https://www.google.com/maps?q=41.879014,-87.628161
+    wikipedia: en:Consumers Building
+    wikidata: https://www.wikidata.org/wiki/Q83303180
+
+* Century Building
+    building=office, 16 levels
+    osm: way/147613447   https://www.openstreetmap.org/way/147613447
+    at:  41.879310, -87.628090   https://www.google.com/maps?q=41.879310,-87.628090
+    wikipedia: en:Century Building (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q85751292
+
+* Amalgamated Bank
+    building=office, 6 levels
+    osm: way/147613458   https://www.openstreetmap.org/way/147613458
+    at:  41.880478, -87.628152   https://www.google.com/maps?q=41.880478,-87.628152
+    wikipedia: en:Amalgamated Bank of Chicago
+    wikidata: https://www.wikidata.org/wiki/Q4739342
+
+* Chicago Board of Trade Building
+    building=office, 184 m, 45 levels
+    osm: way/28951633   https://www.openstreetmap.org/way/28951633
+    at:  41.877506, -87.631783   https://www.google.com/maps?q=41.877506,-87.631783
+    wikipedia: en:Chicago Board of Trade Building
+    wikidata: https://www.wikidata.org/wiki/Q2224700
+
+* Kluczynski Federal Building
+    building=government, 166 m, 45 levels
+    osm: way/64391487   https://www.openstreetmap.org/way/64391487
+    at:  41.878455, -87.629898   https://www.google.com/maps?q=41.878455,-87.629898
+    wikipedia: en:Kluczynski Federal Building
+    wikidata: https://www.wikidata.org/wiki/Q2058889
+
+* Federal Reserve Bank of Chicago
+    building=office, 15 levels
+    osm: way/64888136   https://www.openstreetmap.org/way/64888136
+    at:  41.878451, -87.633027   https://www.google.com/maps?q=41.878451,-87.633027
+    wikipedia: en:Federal Reserve Bank of Chicago
+    wikidata: https://www.wikidata.org/wiki/Q965251
+
+* Wintrust Financial Corparation
+    building=office, 93 m, 20 levels
+    osm: way/64888155   https://www.openstreetmap.org/way/64888155
+    at:  41.878486, -87.631521   https://www.google.com/maps?q=41.878486,-87.631521
+    wikipedia: en:Continental Illinois
+    wikidata: https://www.wikidata.org/wiki/Q5165293
+
+* South La Salle Street Building
+    building=commercial, 87 m, 21 levels
+    osm: way/64888193   https://www.openstreetmap.org/way/64888193
+    at:  41.879078, -87.633022   https://www.google.com/maps?q=41.879078,-87.633022
+    wikipedia: en:Continental and Commercial National Bank
+    wikidata: https://www.wikidata.org/wiki/Q48850400
+
+* Dirksen Federal Building and US Courthouse
+    building=government, 117 m, 30 levels
+    osm: way/73693773   https://www.openstreetmap.org/way/73693773
+    at:  41.878818, -87.628962   https://www.google.com/maps?q=41.878818,-87.628962
+    wikipedia: en:Everett McKinley Dirksen United States Courthouse
+    wikidata: https://www.wikidata.org/wiki/Q5417036
+
+* Metropolitan Correctional Center
+    building=yes, 27 levels
+    osm: way/73729265   https://www.openstreetmap.org/way/73729265
+    at:  41.876622, -87.630398   https://www.google.com/maps?q=41.876622,-87.630398
+    wikipedia: en:Metropolitan Correctional Center, Chicago
+    wikidata: https://www.wikidata.org/wiki/Q6825064
+
+* The National Building
+    building=office, 20 levels
+    osm: way/124865447   https://www.openstreetmap.org/way/124865447
+    at:  41.879787, -87.630346   https://www.google.com/maps?q=41.879787,-87.630346
+    wikipedia: en:The National, Chicago
+    wikidata: https://www.wikidata.org/wiki/Q55635411
+
+* Marquette Building
+    building=office, 17 levels
+    osm: way/124865455   https://www.openstreetmap.org/way/124865455
+    at:  41.879794, -87.629758   https://www.google.com/maps?q=41.879794,-87.629758
+    wikipedia: en:Marquette Building (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q6772574
+
+* Computing and Digital Media Center
+    building=university, 10 levels
+    osm: way/35601477   https://www.openstreetmap.org/way/35601477
+    at:  41.878490, -87.625605   https://www.google.com/maps?q=41.878490,-87.625605
+    wikipedia: en:DePaul University
+    wikidata: https://www.wikidata.org/wiki/Q1179603
+
+* 333 South Wabash
+    building=office, 4 levels, built 1972
+    osm: way/124865485   https://www.openstreetmap.org/way/124865485
+    at:  41.877401, -87.625582   https://www.google.com/maps?q=41.877401,-87.625582
+    wikipedia: en:333 South Wabash
+    wikidata: https://www.wikidata.org/wiki/Q961346
+
+* One Congress Center
+    building=university, 8 levels
+    osm: way/124873929   https://www.openstreetmap.org/way/124873929
+    at:  41.876317, -87.627200   https://www.google.com/maps?q=41.876317,-87.627200
+    wikipedia: en:Second Leiter Building
+    wikidata: https://www.wikidata.org/wiki/Q3477008
+
+* Railway Exchange Building
+    building=office, 17 levels
+    osm: way/124873931   https://www.openstreetmap.org/way/124873931
+    at:  41.878606, -87.624914   https://www.google.com/maps?q=41.878606,-87.624914
+    wikipedia: en:Railway Exchange Building (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q7419507
+
+* Chicago Club
+    building=commercial, 7 levels
+    osm: way/124873940   https://www.openstreetmap.org/way/124873940
+    at:  41.876807, -87.624870   https://www.google.com/maps?q=41.876807,-87.624870
+    wikipedia: en:Chicago Club
+    wikidata: https://www.wikidata.org/wiki/Q5095544
+
+* The Buckingham
+    building=apartments, 93 m, 27 levels
+    osm: way/145204661   https://www.openstreetmap.org/way/145204661
+    at:  41.876771, -87.625421   https://www.google.com/maps?q=41.876771,-87.625421
+    wikipedia: en:Buckingham Building
+    wikidata: https://www.wikidata.org/wiki/Q16985591
+
+* Symphony Center  (Theodore Thomas Orchestra Hall)
+    building=commercial, 9 levels
+    osm: way/145493030   https://www.openstreetmap.org/way/145493030
+    at:  41.878983, -87.625096   https://www.google.com/maps?q=41.878983,-87.625096
+    wikipedia: en:Symphony Center
+    wikidata: https://www.wikidata.org/wiki/Q2154167
+
+* 333 Wacker Drive
+    building=office, 148 m, 36 levels
+    osm: way/116017092   https://www.openstreetmap.org/way/116017092
+    at:  41.886142, -87.635984   https://www.google.com/maps?q=41.886142,-87.635984
+    wikipedia: en:333 Wacker Drive
+    wikidata: https://www.wikidata.org/wiki/Q225835
+
+* 155 North Wacker
+    building=office, 194 m, 45 levels
+    osm: way/136662656   https://www.openstreetmap.org/way/136662656
+    at:  41.884828, -87.636320   https://www.google.com/maps?q=41.884828,-87.636320
+    wikipedia: en:155 North Wacker
+    wikidata: https://www.wikidata.org/wiki/Q4550543
+
+* 110 North Wacker
+    building=office, 249 m, 57 levels
+    osm: way/137127809   https://www.openstreetmap.org/way/137127809
+    at:  41.883754, -87.637465   https://www.google.com/maps?q=41.883754,-87.637465
+    wikipedia: en:110 North Wacker
+    wikidata: https://www.wikidata.org/wiki/Q85341956
+
+* 191 North Wacker
+    building=office, 157 m, 37 levels
+    osm: way/147013355   https://www.openstreetmap.org/way/147013355
+    at:  41.885371, -87.636483   https://www.google.com/maps?q=41.885371,-87.636483
+    wikipedia: en:191 North Wacker
+    wikidata: https://www.wikidata.org/wiki/Q2731989
+
+* UBS Tower
+    building=office, 198 m, 50 levels
+    osm: way/147013360   https://www.openstreetmap.org/way/147013360
+    at:  41.882331, -87.636142   https://www.google.com/maps?q=41.882331,-87.636142
+    wikipedia: en:One North Wacker
+    wikidata: https://www.wikidata.org/wiki/Q1876150
+
+* Merchandise Mart
+    building=commercial, 18 levels
+    osm: way/28293211   https://www.openstreetmap.org/way/28293211
+    at:  41.888533, -87.635486   https://www.google.com/maps?q=41.888533,-87.635486
+    wikipedia: en:Merchandise Mart
+    wikidata: https://www.wikidata.org/wiki/Q1921426
+
+* 151 North Franklin
+    building=office, 183 m, 36 levels
+    osm: way/676025639   https://www.openstreetmap.org/way/676025639
+    at:  41.884831, -87.634893   https://www.google.com/maps?q=41.884831,-87.634893
+    wikipedia: en:151 North Franklin
+    wikidata: https://www.wikidata.org/wiki/Q60763905
+
+* Salesforce Tower
+    building=office, 255 m, 61 levels
+    osm: way/839664090   https://www.openstreetmap.org/way/839664090
+    at:  41.887386, -87.637660   https://www.google.com/maps?q=41.887386,-87.637660
+    wikipedia: en:Salesforce Tower Chicago
+    wikidata: https://www.wikidata.org/wiki/Q17039466
+
+* River North Point
+    building=office, 3 levels
+    osm: way/149215043   https://www.openstreetmap.org/way/149215043
+    at:  41.888536, -87.637672   https://www.google.com/maps?q=41.888536,-87.637672
+    wikipedia: en:350 North Orleans
+    wikidata: https://www.wikidata.org/wiki/Q4635474
+
+* Wolf Point East
+    building=apartments, 207 m, 60 levels
+    osm: way/509957160   https://www.openstreetmap.org/way/509957160
+    at:  41.887792, -87.636761   https://www.google.com/maps?q=41.887792,-87.636761
+    wikipedia: en:Wolf Point East Tower
+    wikidata: https://www.wikidata.org/wiki/Q26710810
+
+* 77 West Wacker
+    building=office, 203.61 m, 49 levels
+    osm: way/64391028   https://www.openstreetmap.org/way/64391028
+    at:  41.886518, -87.630551   https://www.google.com/maps?q=41.886518,-87.630551
+    wikipedia: en:77 West Wacker Drive
+    wikidata: https://www.wikidata.org/wiki/Q268559
+
+* Richard J. Daley Center
+    building=public, 197.5 m, 32 levels, built 1965
+    osm: way/64888389   https://www.openstreetmap.org/way/64888389
+    at:  41.884096, -87.630206   https://www.google.com/maps?q=41.884096,-87.630206
+    wikipedia: en:Richard J. Daley Center
+    wikidata: https://www.wikidata.org/wiki/Q1766475
+
+* Three First National Plaza
+    building=office, 16 m
+    osm: way/64888429   https://www.openstreetmap.org/way/64888429
+    at:  41.882334, -87.629854   https://www.google.com/maps?q=41.882334,-87.629854
+    wikipedia: en:Three First National Plaza
+    wikidata: https://www.wikidata.org/wiki/Q1787391
+
+* One North LaSalle
+    building=office, 161 m, 48 levels
+    osm: way/64888440   https://www.openstreetmap.org/way/64888440
+    at:  41.882320, -87.632027   https://www.google.com/maps?q=41.882320,-87.632027
+    wikipedia: en:One North LaSalle
+    wikidata: https://www.wikidata.org/wiki/Q2565075
+
+* Cook County Building
+    building=public, 12 levels
+    osm: way/108240968   https://www.openstreetmap.org/way/108240968
+    at:  41.883849, -87.631395   https://www.google.com/maps?q=41.883849,-87.631395
+    wikipedia: en:City Hall-County Building
+    wikidata: https://www.wikidata.org/wiki/Q295396
+
+* Builders Building
+    building=office, 104 m, 26 levels
+    osm: way/124865436   https://www.openstreetmap.org/way/124865436
+    at:  41.886513, -87.633253   https://www.google.com/maps?q=41.886513,-87.633253
+    wikipedia: en:Builders Building
+    wikidata: https://www.wikidata.org/wiki/Q96095716
+
+* 10 South LaSalle
+    building=office, 153 m, 37 levels
+    osm: way/124865439   https://www.openstreetmap.org/way/124865439
+    at:  41.881602, -87.632745   https://www.google.com/maps?q=41.881602,-87.632745
+    wikipedia: en:10 South LaSalle
+    wikidata: https://www.wikidata.org/wiki/Q2598533
+
+* 181 West Madison
+    building=office, 207 m, 50 levels
+    osm: way/124865458   https://www.openstreetmap.org/way/124865458
+    at:  41.881580, -87.633358   https://www.google.com/maps?q=41.881580,-87.633358
+    wikipedia: en:181 West Madison Street
+    wikidata: https://www.wikidata.org/wiki/Q200780
+
+* OneEleven
+    building=apartments, 192 m, 60 levels
+    osm: way/124865463   https://www.openstreetmap.org/way/124865463
+    at:  41.886512, -87.631456   https://www.google.com/maps?q=41.886512,-87.631456
+    wikipedia: en:OneEleven
+    wikidata: https://www.wikidata.org/wiki/Q2302438
+
+* Burnham Center
+    building=office, 91 m, 22 levels
+    osm: way/124873920   https://www.openstreetmap.org/way/124873920
+    at:  41.882863, -87.631420   https://www.google.com/maps?q=41.882863,-87.631420
+    wikipedia: en:Burnham Center
+    wikidata: https://www.wikidata.org/wiki/Q18589155
+
+* Madison Plaza
+    building=commercial, 182 m, 44 levels
+    osm: way/124873925   https://www.openstreetmap.org/way/124873925
+    at:  41.882314, -87.634343   https://www.google.com/maps?q=41.882314,-87.634343
+    wikipedia: en:200 West Madison
+    wikidata: https://www.wikidata.org/wiki/Q2672118
+
+* Century Tower
+    building=apartments, 102.4 m, 28 levels
+    osm: way/124873936   https://www.openstreetmap.org/way/124873936
+    at:  41.886054, -87.633659   https://www.google.com/maps?q=41.886054,-87.633659
+    wikipedia: en:Century Tower (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q5063211
+
+* First United Methodist Church of Chicago
+    place of worship (christian), 23 levels
+    osm: way/137060374   https://www.openstreetmap.org/way/137060374
+    at:  41.882859, -87.630615   https://www.google.com/maps?q=41.882859,-87.630615
+    wikipedia: en:First United Methodist Church of Chicago
+    wikidata: https://www.wikidata.org/wiki/Q14687499
+
+* Chicago Title & Trust Building
+    building=office, 230 m, 50 levels
+    osm: way/144846547   https://www.openstreetmap.org/way/144846547
+    at:  41.884911, -87.630522   https://www.google.com/maps?q=41.884911,-87.630522
+    wikipedia: en:Grant Thornton Tower
+    wikidata: https://www.wikidata.org/wiki/Q934401
+
+* St. Peter's Church
+    place of worship (christian), 7 levels
+    osm: way/145080937   https://www.openstreetmap.org/way/145080937
+    at:  41.882325, -87.631480   https://www.google.com/maps?q=41.882325,-87.631480
+    wikipedia: en:St. Peter's in the Loop
+    wikidata: https://www.wikidata.org/wiki/Q65040703
+
+* Loop Synagogue
+    place of worship (jewish), 5 levels
+    osm: way/145080938   https://www.openstreetmap.org/way/145080938
+    at:  41.881589, -87.631260   https://www.google.com/maps?q=41.881589,-87.631260
+    wikipedia: en:Loop Synagogue
+    wikidata: https://www.wikidata.org/wiki/Q54952911
+
+* Inland Steel Building
+    building=office, 24 levels
+    osm: way/145203366   https://www.openstreetmap.org/way/145203366
+    at:  41.881061, -87.629012   https://www.google.com/maps?q=41.881061,-87.629012
+    wikipedia: en:Inland Steel Building
+    wikidata: https://www.wikidata.org/wiki/Q3151358
+
+* Goodman Theatre Center
+    building=commercial, 0 levels
+    osm: way/145208575   https://www.openstreetmap.org/way/145208575
+    at:  41.885111, -87.629928   https://www.google.com/maps?q=41.885111,-87.629928
+    wikipedia: en:Goodman Theatre
+    wikidata: https://www.wikidata.org/wiki/Q5583472
+
+* 120 North LaSalle
+    building=office, 153 m, 39 levels
+    osm: way/147013357   https://www.openstreetmap.org/way/147013357
+    at:  41.883711, -87.632964   https://www.google.com/maps?q=41.883711,-87.632964
+    wikipedia: en:120 North LaSalle
+    wikidata: https://www.wikidata.org/wiki/Q2259283
+
+* Michael A. Bilandic Building
+    building=office, 83.5 m, 20 levels
+    osm: way/147013781   https://www.openstreetmap.org/way/147013781
+    at:  41.884816, -87.632920   https://www.google.com/maps?q=41.884816,-87.632920
+    wikipedia: en:Bilandic Building
+    wikidata: https://www.wikidata.org/wiki/Q4907547
+
+* Washington Block
+    building=office, 5 levels
+    osm: way/147013784   https://www.openstreetmap.org/way/147013784
+    at:  41.882969, -87.634088   https://www.google.com/maps?q=41.882969,-87.634088
+    wikipedia: en:Washington Block
+    wikidata: https://www.wikidata.org/wiki/Q7971689
+
+* Randolph Tower
+    building=apartments, 140.8 m, 45 levels
+    osm: way/147013786   https://www.openstreetmap.org/way/147013786
+    at:  41.884835, -87.633632   https://www.google.com/maps?q=41.884835,-87.633632
+    wikipedia: en:Randolph Tower
+    wikidata: https://www.wikidata.org/wiki/Q7291873
+
+* I Am Temple
+    place of worship (ascended_master_teachings), 15 levels
+    osm: way/147096409   https://www.openstreetmap.org/way/147096409
+    at:  41.883477, -87.633363   https://www.google.com/maps?q=41.883477,-87.633363
+    wikipedia: en:"I AM" Activity
+    wikidata: https://www.wikidata.org/wiki/Q3312310
+
+* Cadillac Palace Theatre
+    building=theatre, 22 levels
+    osm: way/210671540   https://www.openstreetmap.org/way/210671540
+    at:  41.884118, -87.633173   https://www.google.com/maps?q=41.884118,-87.633173
+    wikipedia: en:Cadillac Palace Theatre
+    wikidata: https://www.wikidata.org/wiki/Q5016482
+
+* Chase Tower
+    building=office, 260 m, 60 levels, built 1969
+    osm: way/230613007   https://www.openstreetmap.org/way/230613007
+    at:  41.881619, -87.630141   https://www.google.com/maps?q=41.881619,-87.630141
+    wikipedia: en:Chase Tower (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q291304
+
+* Google Center
+    building=construction, 94 m, 15 levels
+    osm: way/230926922   https://www.openstreetmap.org/way/230926922
+    at:  41.885119, -87.631682   https://www.google.com/maps?q=41.885119,-87.631682
+    wikipedia: en:James R. Thompson Center
+    wikidata: https://www.wikidata.org/wiki/Q3161356
+
+* ABC TV Studios
+    building=office, 6 levels
+    osm: way/1177963192   https://www.openstreetmap.org/way/1177963192
+    at:  41.885316, -87.628600   https://www.google.com/maps?q=41.885316,-87.628600
+    wikipedia: en:WLS-TV
+    wikidata: https://www.wikidata.org/wiki/Q3050972
+
+* Two Prudential Plaza
+    building=office, 303 m, 64 levels
+    osm: way/64388666   https://www.openstreetmap.org/way/64388666
+    at:  41.885418, -87.622720   https://www.google.com/maps?q=41.885418,-87.622720
+    wikipedia: en:Two Prudential Plaza
+    wikidata: https://www.wikidata.org/wiki/Q1121971
+
+* Kemper Building
+    building=office, 159 m, 41 levels
+    osm: way/64389514   https://www.openstreetmap.org/way/64389514
+    at:  41.886527, -87.627430   https://www.google.com/maps?q=41.886527,-87.627430
+    wikipedia: en:Kemper Building (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q2793789
+
+* Macy's
+    building=retail, 13 levels
+    osm: way/114824291   https://www.openstreetmap.org/way/114824291
+    at:  41.883863, -87.627055   https://www.google.com/maps?q=41.883863,-87.627055
+    wikipedia: en:Marshall Field and Company Building
+    wikidata: https://www.wikidata.org/wiki/Q6773573
+
+* 35 East Wacker
+    historic building, 160.65 m, 40 levels
+    osm: way/124865488   https://www.openstreetmap.org/way/124865488
+    at:  41.886528, -87.626792   https://www.google.com/maps?q=41.886528,-87.626792
+    wikipedia: en:35 East Wacker
+    wikidata: https://www.wikidata.org/wiki/Q2816312
+
+* Old Republic Building
+    building=office, 24 levels
+    osm: way/127107033   https://www.openstreetmap.org/way/127107033
+    at:  41.887089, -87.624191   https://www.google.com/maps?q=41.887089,-87.624191
+    wikipedia: en:Old Republic Building
+    wikidata: https://www.wikidata.org/wiki/Q65073426
+
+* Cloud Gate
+    artwork, 10 m
+    osm: way/137060274   https://www.openstreetmap.org/way/137060274
+    at:  41.882686, -87.623341   https://www.google.com/maps?q=41.882686,-87.623341
+    wikipedia: en:Cloud Gate
+    wikidata: https://www.wikidata.org/wiki/Q589099
+
+* Seventeenth Church of Christ Scientist
+    place of worship (christian), 5 levels
+    osm: way/144846554   https://www.openstreetmap.org/way/144846554
+    at:  41.887095, -87.625908   https://www.google.com/maps?q=41.887095,-87.625908
+    wikipedia: en:Seventeenth Church of Christ, Scientist
+    wikidata: https://www.wikidata.org/wiki/Q7457651
+
+* Stevens Building
+    building=office, 20 levels
+    osm: way/147776394   https://www.openstreetmap.org/way/147776394
+    at:  41.882654, -87.626741   https://www.google.com/maps?q=41.882654,-87.626741
+    wikipedia: en:Chas A. Stevens
+    wikidata: https://www.wikidata.org/wiki/Q5087018
+
+* Silversmith Hotel Chicago Downtown
+    hotel, 10 levels, built 1897
+    osm: way/148164105   https://www.openstreetmap.org/way/148164105
+    at:  41.881652, -87.626655   https://www.google.com/maps?q=41.881652,-87.626655
+    wikipedia: en:Silversmith Hotel
+    wikidata: https://www.wikidata.org/wiki/Q7516777
+
+* Sullivan Center
+    building=office, 12 levels, built 1899
+    osm: way/148164109   https://www.openstreetmap.org/way/148164109
+    at:  41.881486, -87.627271   https://www.google.com/maps?q=41.881486,-87.627271
+    wikipedia: en:Sullivan Center
+    wikidata: https://www.wikidata.org/wiki/Q1324863
+
+* Heyworth Building
+    building=office, 86m m, 19 levels, built 1904
+    osm: way/148164130   https://www.openstreetmap.org/way/148164130
+    at:  41.881873, -87.626703   https://www.google.com/maps?q=41.881873,-87.626703
+    wikipedia: en:Heyworth Building
+    wikidata: https://www.wikidata.org/wiki/Q14687545
+
+* Crain Communications Building
+    building=office, 177 m, 39 levels, built 1984
+    osm: way/210671717   https://www.openstreetmap.org/way/210671717
+    at:  41.884826, -87.624972   https://www.google.com/maps?q=41.884826,-87.624972
+    wikipedia: en:Crain Communications Building
+    wikidata: https://www.wikidata.org/wiki/Q2444330
+
+* Two Illinois Center
+    building=office, 32 levels
+    osm: way/236770799   https://www.openstreetmap.org/way/236770799
+    at:  41.886955, -87.623054   https://www.google.com/maps?q=41.886955,-87.623054
+    wikipedia: en:Illinois Center
+    wikidata: https://www.wikidata.org/wiki/Q5999368
+
+* Staypineapple, An Iconic Hotel, The Loop
+    hotel, 14 levels
+    osm: way/124865461   https://www.openstreetmap.org/way/124865461
+    at:  41.883042, -87.628233   https://www.google.com/maps?q=41.883042,-87.628233
+    wikipedia: en:Reliance Building
+    wikidata: https://www.wikidata.org/wiki/Q786387
+
+* One Illinois Center
+    building=office, 110 m, 30 levels
+    osm: way/144710189   https://www.openstreetmap.org/way/144710189
+    at:  41.887690, -87.623577   https://www.google.com/maps?q=41.887690,-87.623577
+    wikipedia: en:Illinois Center
+    wikidata: https://www.wikidata.org/wiki/Q123574408
+
+* ABC Building
+    building=office, 13 levels
+    osm: way/145208573   https://www.openstreetmap.org/way/145208573
+    at:  41.885403, -87.628472   https://www.google.com/maps?q=41.885403,-87.628472
+    wikipedia: en:WLS-TV
+    wikidata: https://www.wikidata.org/wiki/Q3050972
+
+* Reliance Building
+    building=hotel, 61.5 m m, 15 levels
+    osm: way/145625877   https://www.openstreetmap.org/way/145625877
+    at:  41.882864, -87.628538   https://www.google.com/maps?q=41.882864,-87.628538
+    wikipedia: en:Reliance Building
+    wikidata: https://www.wikidata.org/wiki/Q786387
+
+* Hyatt Regency Chicago
+    hotel, 33 levels
+    osm: way/235920251   https://www.openstreetmap.org/way/235920251
+    at:  41.887492, -87.622234   https://www.google.com/maps?q=41.887492,-87.622234
+    wikipedia: en:Hyatt Regency Chicago
+    wikidata: https://www.wikidata.org/wiki/Q5952876
+
+* Reid-Murdoch Center
+    building=office, 11 levels
+    osm: way/117996137   https://www.openstreetmap.org/way/117996137
+    at:  41.888114, -87.631747   https://www.google.com/maps?q=41.888114,-87.631747
+    wikipedia: en:Reid, Murdoch & Co. Building
+    wikidata: https://www.wikidata.org/wiki/Q7309929
+
+* 321 North Clark
+    building=office, 155 m, 35 levels, built 1987
+    osm: way/118061326   https://www.openstreetmap.org/way/118061326
+    at:  41.888252, -87.630618   https://www.google.com/maps?q=41.888252,-87.630618
+    wikipedia: en:321 North Clark
+    wikidata: https://www.wikidata.org/wiki/Q2308936
+
+* 300 North LaSalle
+    building=office, 2 levels
+    osm: way/1274706595   https://www.openstreetmap.org/way/1274706595
+    at:  41.888223, -87.633141   https://www.google.com/maps?q=41.888223,-87.633141
+    wikipedia: en:300 North LaSalle
+    wikidata: https://www.wikidata.org/wiki/Q223788
+
+* 330 North Wabash
+    building=office, 211.84 m, 52 levels, built 1971
+    osm: way/64596068   https://www.openstreetmap.org/way/64596068
+    at:  41.888655, -87.627595   https://www.google.com/maps?q=41.888655,-87.627595
+    wikipedia: en:330 North Wabash
+    wikidata: https://www.wikidata.org/wiki/Q225731
+
+* 333 North Michigan
+    building=office, 121 m, 38 levels
+    osm: way/144710192   https://www.openstreetmap.org/way/144710192
+    at:  41.887811, -87.624210   https://www.google.com/maps?q=41.887811,-87.624210
+    wikipedia: en:333 North Michigan
+    wikidata: https://www.wikidata.org/wiki/Q2816206
+
+* Club Quarters Hotel, Wacker at Michigan
+    hotel, 158 m, 41 levels
+    osm: way/147399564   https://www.openstreetmap.org/way/147399564
+    at:  41.887616, -87.625442   https://www.google.com/maps?q=41.887616,-87.625442
+    wikipedia: en:Mather Tower
+    wikidata: https://www.wikidata.org/wiki/Q3117510
+
+* London Guarantee Building
+    building=hotel, 97 m, 21 levels
+    osm: way/147399567   https://www.openstreetmap.org/way/147399567
+    at:  41.887956, -87.625098   https://www.google.com/maps?q=41.887956,-87.625098
+    wikipedia: en:London Guarantee Building
+    wikidata: https://www.wikidata.org/wiki/Q3258962
+
+* London House Chicago
+    hotel, 97.5 m, 21 levels
+    osm: way/330535225   https://www.openstreetmap.org/way/330535225
+    at:  41.887755, -87.625305   https://www.google.com/maps?q=41.887755,-87.625305
+    wikipedia: en:London House (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q7748047
+
+* 300 W Adams
+    building=office, 12 levels, built 1927
+    osm: relation/15930575   https://www.openstreetmap.org/relation/15930575
+    at:  41.879716, -87.635696   https://www.google.com/maps?q=41.879716,-87.635696
+    wikipedia: en:300 West Adams Building
+    wikidata: https://www.wikidata.org/wiki/Q24061021
+
+* Chicago Cultural Center
+    building=public, 5 levels
+    osm: relation/15899437   https://www.openstreetmap.org/relation/15899437
+    at:  41.883880, -87.624985   https://www.google.com/maps?q=41.883880,-87.624985
+    wikipedia: en:Chicago Cultural Center
+    wikidata: https://www.wikidata.org/wiki/Q2398614
+
+* Flamingo
+    artwork, built 1974
+    osm: node/1299823016   https://www.openstreetmap.org/node/1299823016
+    at:  41.878807, -87.629681   https://www.google.com/maps?q=41.878807,-87.629681
+    wikipedia: en:Flamingo (sculpture)
+    wikidata: https://www.wikidata.org/wiki/Q3073296
+
+* Home Insurance Building Site
+    memorial (plaque)
+    osm: node/2465607685   https://www.openstreetmap.org/node/2465607685
+    at:  41.879764, -87.631885   https://www.google.com/maps?q=41.879764,-87.631885
+    wikipedia: en:Home Insurance Building
+    wikidata: https://www.wikidata.org/wiki/Q944544
+
+* Money Museum
+    museum
+    osm: node/2979738790   https://www.openstreetmap.org/node/2979738790
+    at:  41.878330, -87.632568   https://www.google.com/maps?q=41.878330,-87.632568
+    wikipedia: en:Federal Reserve Bank of Chicago
+    wikidata: https://www.wikidata.org/wiki/Q965251
+
+* Sir Georg Solti Bust
+    artwork
+    osm: node/3554700407   https://www.openstreetmap.org/node/3554700407
+    at:  41.877868, -87.623633   https://www.google.com/maps?q=41.877868,-87.623633
+    wikipedia: en:Bust of Georg Solti
+    wikidata: https://www.wikidata.org/wiki/Q29601566
+
+* Cubi VII
+    artwork
+    osm: node/7147377822   https://www.openstreetmap.org/node/7147377822
+    at:  41.880484, -87.623803   https://www.google.com/maps?q=41.880484,-87.623803
+    wikipedia: en:Cubi VII
+    wikidata: https://www.wikidata.org/wiki/Q5192229
+
+* Hector Guimard Metro entrance
+    artwork
+    osm: node/8118655889   https://www.openstreetmap.org/node/8118655889
+    at:  41.876951, -87.623881   https://www.google.com/maps?q=41.876951,-87.623881
+    wikipedia: en:Paris Métro entrances by Hector Guimard
+    wikidata: https://www.wikidata.org/wiki/Q3579100
+
+* Pritzker Military Museum & Library
+    museum
+    osm: node/10958109386   https://www.openstreetmap.org/node/10958109386
+    at:  41.880620, -87.624663   https://www.google.com/maps?q=41.880620,-87.624663
+    wikipedia: en:Pritzker Military Museum & Library
+    wikidata: https://www.wikidata.org/wiki/Q588030
+
+* Site of the Sauganash Hotel/Wigwam
+    memorial (plaque)
+    osm: node/9906890910   https://www.openstreetmap.org/node/9906890910
+    at:  41.885602, -87.636879   https://www.google.com/maps?q=41.885602,-87.636879
+    wikipedia: en:Wigwam (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q7999741
+
+* Eastland Disaster Memorial
+    memorial (plaque)
+    osm: node/4955881230   https://www.openstreetmap.org/node/4955881230
+    at:  41.887038, -87.632194   https://www.google.com/maps?q=41.887038,-87.632194
+    wikipedia: en:SS Eastland
+    wikidata: https://www.wikidata.org/wiki/Q1278272
+
+* Chicago Picasso Braille Model
+    artwork
+    osm: node/13196100903   https://www.openstreetmap.org/node/13196100903
+    at:  41.883377, -87.629829   https://www.google.com/maps?q=41.883377,-87.629829
+    wikipedia: en:Chicago Picasso
+    wikidata: https://www.wikidata.org/wiki/Q5095736
+
+* Cow
+    artwork
+    osm: node/3566992170   https://www.openstreetmap.org/node/3566992170
+    at:  41.883357, -87.624819   https://www.google.com/maps?q=41.883357,-87.624819
+    wikipedia: en:CowParade
+    wikidata: https://www.wikidata.org/wiki/Q628812
+
+* Vietnam Veterans Memorial
+    memorial (war_memorial)
+    osm: node/3572924493   https://www.openstreetmap.org/node/3572924493
+    at:  41.887066, -87.627155   https://www.google.com/maps?q=41.887066,-87.627155
+    wikipedia: en:Vietnam Veterans Memorial (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q29347189
+
+* We Will Chicago
+    artwork
+    osm: node/9878390037   https://www.openstreetmap.org/node/9878390037
+    at:  41.884423, -87.625466   https://www.google.com/maps?q=41.884423,-87.625466
+    wikipedia: en:We Will
+    wikidata: https://www.wikidata.org/wiki/Q30686880
+
+* Chicago Architecture Center
+    museum
+    osm: node/6423952898   https://www.openstreetmap.org/node/6423952898
+    at:  41.888013, -87.623623   https://www.google.com/maps?q=41.888013,-87.623623
+    wikipedia: en:Chicago Architecture Center
+    wikidata: https://www.wikidata.org/wiki/Q2963292
+
+* Irv Kupcinet
+    artwork
+    osm: node/9777365617   https://www.openstreetmap.org/node/9777365617
+    at:  41.887701, -87.626232   https://www.google.com/maps?q=41.887701,-87.626232
+    wikipedia: en:Statue of Irv Kupcinet
+    wikidata: https://www.wikidata.org/wiki/Q30603273
+
+* 311 South Wacker Drive
+    building=commercial
+    osm: way/147350208   https://www.openstreetmap.org/way/147350208
+    at:  41.877464, -87.635900   https://www.google.com/maps?q=41.877464,-87.635900
+    wikipedia: en:311 South Wacker Drive
+    wikidata: https://www.wikidata.org/wiki/Q224563
+
+* Willis Tower
+    building=commercial, built 1973
+    osm: way/380868216   https://www.openstreetmap.org/way/380868216
+    at:  41.878735, -87.635962   https://www.google.com/maps?q=41.878735,-87.635962
+    wikipedia: en:Willis Tower
+    wikidata: https://www.wikidata.org/wiki/Q29294
+
+* Van Buren Street Bridge
+    bridge
+    osm: way/705230848   https://www.openstreetmap.org/way/705230848
+    at:  41.876808, -87.637414   https://www.google.com/maps?q=41.876808,-87.637414
+    wikipedia: en:Van Buren Street Bridge (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q20486942
+
+* Jackson Boulevard Bridge
+    bridge
+    osm: way/746755324   https://www.openstreetmap.org/way/746755324
+    at:  41.878073, -87.637721   https://www.google.com/maps?q=41.878073,-87.637721
+    wikipedia: en:Jackson Boulevard Bridge
+    wikidata: https://www.wikidata.org/wiki/Q20486919
+
+* Adams Street Bridge
+    bridge
+    osm: way/746755328   https://www.openstreetmap.org/way/746755328
+    at:  41.879343, -87.638110   https://www.google.com/maps?q=41.879343,-87.638110
+    wikipedia: en:Adams Street Bridge
+    wikidata: https://www.wikidata.org/wiki/Q20312187
+
+* Citadel Center
+    building=office
+    osm: way/145625874   https://www.openstreetmap.org/way/145625874
+    at:  41.879807, -87.628561   https://www.google.com/maps?q=41.879807,-87.628561
+    wikipedia: en:Citadel Center
+    wikidata: https://www.wikidata.org/wiki/Q2456156
+
+* Benson & Rixon Building
+    building=office
+    osm: way/147613441   https://www.openstreetmap.org/way/147613441
+    at:  41.878679, -87.628076   https://www.google.com/maps?q=41.878679,-87.628076
+    wikipedia: en:Benson & Rixon Building
+    wikidata: https://www.wikidata.org/wiki/Q85746625
+
+* 190 South Lasalle
+    building=office
+    osm: way/64393495   https://www.openstreetmap.org/way/64393495
+    at:  41.879753, -87.632720   https://www.google.com/maps?q=41.879753,-87.632720
+    wikipedia: en:U.S. Bank Building (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q1886439
+
+* Field Building
+    building=office
+    osm: way/64888258   https://www.openstreetmap.org/way/64888258
+    at:  41.879769, -87.631568   https://www.google.com/maps?q=41.879769,-87.631568
+    wikipedia: en:Field Building (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q3756447
+
+* 55 West Monroe
+    building=office
+    osm: way/124865497   https://www.openstreetmap.org/way/124865497
+    at:  41.880389, -87.629848   https://www.google.com/maps?q=41.880389,-87.629848
+    wikipedia: de:Xerox Center
+    wikidata: https://www.wikidata.org/wiki/Q2598025
+
+* Mid-Continental Plaza
+    building=commercial
+    osm: way/64391613   https://www.openstreetmap.org/way/64391613
+    at:  41.880173, -87.625648   https://www.google.com/maps?q=41.880173,-87.625648
+    wikipedia: en:Mid-Continental Plaza
+    wikidata: https://www.wikidata.org/wiki/Q2783742
+
+* Fine Arts Building Annex
+    building=office
+    osm: way/145204660   https://www.openstreetmap.org/way/145204660
+    at:  41.876656, -87.624865   https://www.google.com/maps?q=41.876656,-87.624865
+    wikipedia: en:Fine Arts Building (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q5450045
+
+* Chapin & Gore Building
+    building=office, 9 levels
+    osm: way/145493033   https://www.openstreetmap.org/way/145493033
+    at:  41.879339, -87.625455   https://www.google.com/maps?q=41.879339,-87.625455
+    wikidata: https://www.wikidata.org/wiki/Q5073178
+
+* The Palmer House Hilton
+    hotel
+    osm: way/147489619   https://www.openstreetmap.org/way/147489619
+    at:  41.880335, -87.626952   https://www.google.com/maps?q=41.880335,-87.626952
+    wikipedia: en:The Palmer House Hilton
+    wikidata: https://www.wikidata.org/wiki/Q7755965
+
+* Lion “in an attitude of defiance”
+    artwork
+    osm: way/210671752   https://www.openstreetmap.org/way/210671752
+    at:  41.879395, -87.624144   https://www.google.com/maps?q=41.879395,-87.624144
+    wikipedia: en:Lions (Kemeys)
+    wikidata: https://www.wikidata.org/wiki/Q29335007
+
+* Lion "on the prowl"
+    artwork
+    osm: way/210671756   https://www.openstreetmap.org/way/210671756
+    at:  41.879727, -87.624151   https://www.google.com/maps?q=41.879727,-87.624151
+    wikipedia: en:Lions (Kemeys)
+    wikidata: https://www.wikidata.org/wiki/Q29335007
+
+* Van Buren Street Station
+    building=train_station
+    osm: way/235977276   https://www.openstreetmap.org/way/235977276
+    at:  41.877044, -87.623184   https://www.google.com/maps?q=41.877044,-87.623184
+    wikipedia: en:Van Buren Street station
+    wikidata: https://www.wikidata.org/wiki/Q3554388
+
+* Ryerson & Burnham Libraries
+    building=yes
+    osm: way/765296578   https://www.openstreetmap.org/way/765296578
+    at:  41.879389, -87.623669   https://www.google.com/maps?q=41.879389,-87.623669
+    wikipedia: en:Ryerson & Burnham Libraries
+    wikidata: https://www.wikidata.org/wiki/Q7385031
+
+* Civic Opera House
+    building=commercial
+    osm: way/124865443   https://www.openstreetmap.org/way/124865443
+    at:  41.882560, -87.637489   https://www.google.com/maps?q=41.882560,-87.637489
+    wikipedia: en:Civic Opera House (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q1833594
+
+* Washington Street Bridge
+    bridge
+    osm: way/750296164   https://www.openstreetmap.org/way/750296164
+    at:  41.883201, -87.638099   https://www.google.com/maps?q=41.883201,-87.638099
+    wikipedia: en:Washington Boulevard Bridge
+    wikidata: https://www.wikidata.org/wiki/Q20486946
+
+* Randolph Street Bridge
+    bridge
+    osm: way/750299441   https://www.openstreetmap.org/way/750299441
+    at:  41.884465, -87.637962   https://www.google.com/maps?q=41.884465,-87.637962
+    wikipedia: en:Randolph Street Bridge
+    wikidata: https://www.wikidata.org/wiki/Q20486935
+
+* Lake Street Bridge
+    bridge
+    osm: way/750299453   https://www.openstreetmap.org/way/750299453
+    at:  41.885733, -87.637721   https://www.google.com/maps?q=41.885733,-87.637721
+    wikipedia: en:Lake Street Bridge (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q20486924
+
+* Franklin Street Bridge
+    bridge
+    osm: way/659567054   https://www.openstreetmap.org/way/659567054
+    at:  41.887375, -87.635809   https://www.google.com/maps?q=41.887375,-87.635809
+    wikipedia: en:Franklin Street Bridge
+    wikidata: https://www.wikidata.org/wiki/Q5491875
+
+* Leo Burnett Building
+    building=office
+    osm: way/64390087   https://www.openstreetmap.org/way/64390087
+    at:  41.886282, -87.629074   https://www.google.com/maps?q=41.886282,-87.629074
+    wikipedia: en:Leo Burnett Building
+    wikidata: https://www.wikidata.org/wiki/Q2556762
+
+* Chicago City Hall
+    building=public
+    osm: way/108240964   https://www.openstreetmap.org/way/108240964
+    at:  41.883845, -87.631953   https://www.google.com/maps?q=41.883845,-87.631953
+    wikipedia: en:City Hall-County Building
+    wikidata: https://www.wikidata.org/wiki/Q295396
+
+* Chicago Picasso
+    artwork, built 1967
+    osm: way/124865476   https://www.openstreetmap.org/way/124865476
+    at:  41.883623, -87.629979   https://www.google.com/maps?q=41.883623,-87.629979
+    wikipedia: en:Chicago Picasso
+    wikidata: https://www.wikidata.org/wiki/Q5095736
+
+* Miro's Chicago
+    artwork
+    osm: way/145625872   https://www.openstreetmap.org/way/145625872
+    at:  41.883069, -87.630377   https://www.google.com/maps?q=41.883069,-87.630377
+    wikipedia: en:Miró's Chicago
+    wikidata: https://www.wikidata.org/wiki/Q3054192
+
+* Monument With Standing Beast
+    artwork
+    osm: way/145626300   https://www.openstreetmap.org/way/145626300
+    at:  41.884741, -87.631214   https://www.google.com/maps?q=41.884741,-87.631214
+    wikipedia: en:Monument with Standing Beast
+    wikidata: https://www.wikidata.org/wiki/Q6906917
+
+* Four Seasons
+    artwork
+    osm: way/145626581   https://www.openstreetmap.org/way/145626581
+    at:  41.881094, -87.629789   https://www.google.com/maps?q=41.881094,-87.629789
+    wikipedia: en:Four Seasons (Chagall)
+    wikidata: https://www.wikidata.org/wiki/Q5475476
+
+* Joffrey Tower
+    building=apartments, built 2008
+    osm: way/124873943   https://www.openstreetmap.org/way/124873943
+    at:  41.884840, -87.627504   https://www.google.com/maps?q=41.884840,-87.627504
+    wikipedia: en:Joffrey Tower
+    wikidata: https://www.wikidata.org/wiki/Q931979
+
+* Legacy at Millennium Park
+    building=apartments
+    osm: way/147478372   https://www.openstreetmap.org/way/147478372
+    at:  41.881329, -87.625664   https://www.google.com/maps?q=41.881329,-87.625664
+    wikipedia: en:Legacy at Millennium Park
+    wikidata: https://www.wikidata.org/wiki/Q1812350
+
+* Haskell Building
+    building=office
+    osm: way/148164098   https://www.openstreetmap.org/way/148164098
+    at:  41.881482, -87.626646   https://www.google.com/maps?q=41.881482,-87.626646
+    wikipedia: en:Haskell-Barker-Atwater Buildings
+    wikidata: https://www.wikidata.org/wiki/Q118896140
+
+* Barker Building
+    building=office
+    osm: way/148164123   https://www.openstreetmap.org/way/148164123
+    at:  41.881369, -87.626644   https://www.google.com/maps?q=41.881369,-87.626644
+    wikipedia: en:Haskell-Barker-Atwater Buildings
+    wikidata: https://www.wikidata.org/wiki/Q118896140
+
+* J.P. Atwater
+    building=office
+    osm: way/148164127   https://www.openstreetmap.org/way/148164127
+    at:  41.881259, -87.626641   https://www.google.com/maps?q=41.881259,-87.626641
+    wikipedia: en:Haskell-Barker-Atwater Buildings
+    wikidata: https://www.wikidata.org/wiki/Q118896140
+
+* Pendry Chicago
+    hotel
+    osm: way/148544831   https://www.openstreetmap.org/way/148544831
+    at:  41.886526, -87.625008   https://www.google.com/maps?q=41.886526,-87.625008
+    wikipedia: en:Carbide & Carbon Building
+    wikidata: https://www.wikidata.org/wiki/Q1925179
+
+* Block 37 Shops
+    building=retail
+    osm: way/124865494   https://www.openstreetmap.org/way/124865494
+    at:  41.883863, -87.628711   https://www.google.com/maps?q=41.883863,-87.628711
+    wikipedia: en:Block 37
+    wikidata: https://www.wikidata.org/wiki/Q4546763
+
+* Jay Pritzker Pavilion
+    building=pavilion
+    osm: way/126978545   https://www.openstreetmap.org/way/126978545
+    at:  41.883508, -87.621890   https://www.google.com/maps?q=41.883508,-87.621890
+    wikipedia: en:Jay Pritzker Pavilion
+    wikidata: https://www.wikidata.org/wiki/Q3180096
+
+* Joan W. and Irving B. Harris Theater for Music and Dance
+    building=commercial
+    osm: way/234847962   https://www.openstreetmap.org/way/234847962
+    at:  41.883893, -87.621902   https://www.google.com/maps?q=41.883893,-87.621902
+    wikipedia: en:Harris Theater (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q3127746
+
+* Bataan-Corregidor Memorial Bridge
+    bridge
+    osm: way/548928267   https://www.openstreetmap.org/way/548928267
+    at:  41.887543, -87.628015   https://www.google.com/maps?q=41.887543,-87.628015
+    wikipedia: en:State Street Bridge (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q20486903
+
+* Dearborn Street Bridge
+    bridge
+    osm: way/548928400   https://www.openstreetmap.org/way/548928400
+    at:  41.887504, -87.629544   https://www.google.com/maps?q=41.887504,-87.629544
+    wikipedia: en:Dearborn Street Bridge
+    wikidata: https://www.wikidata.org/wiki/Q5246975
+
+* Clark Street Bridge
+    bridge
+    osm: way/548929212   https://www.openstreetmap.org/way/548929212
+    at:  41.887484, -87.631032   https://www.google.com/maps?q=41.887484,-87.631032
+    wikipedia: en:Clark Street Bridge
+    wikidata: https://www.wikidata.org/wiki/Q5127391
+
+* Marshall Suloway Bridge
+    bridge
+    osm: way/548930512   https://www.openstreetmap.org/way/548930512
+    at:  41.887495, -87.632510   https://www.google.com/maps?q=41.887495,-87.632510
+    wikipedia: en:La Salle Street Bridge (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q6465142
+
+* Wells Street Bridge
+    bridge
+    osm: way/548930513   https://www.openstreetmap.org/way/548930513
+    at:  41.887529, -87.633987   https://www.google.com/maps?q=41.887529,-87.633987
+    wikipedia: en:Wells Street Bridge (Chicago)
+    wikidata: https://www.wikidata.org/wiki/Q7981703
+
+* Irv Kupcinet Bridge
+    bridge
+    osm: way/548267120   https://www.openstreetmap.org/way/548267120
+    at:  41.887887, -87.626863   https://www.google.com/maps?q=41.887887,-87.626863
+    wikipedia: en:Wabash Avenue Bridge
+    wikidata: https://www.wikidata.org/wiki/Q7958629
+
+* The Art Institute of Chicago
+    museum
+    osm: relation/1870546   https://www.openstreetmap.org/relation/1870546
+    at:  41.879559, -87.622568   https://www.google.com/maps?q=41.879559,-87.622568
+    wikipedia: en:Art Institute of Chicago
+    wikidata: https://www.wikidata.org/wiki/Q239303
+
+* 122 South Michigan
+    building=office
+    osm: relation/15953438   https://www.openstreetmap.org/relation/15953438
+    at:  41.879912, -87.624946   https://www.google.com/maps?q=41.879912,-87.624946
+    wikipedia: en:Peoples Gas Building
+    wikidata: https://www.wikidata.org/wiki/Q7166063
+
+* SkyDeck Chicago Willis Tower
+    attraction
+    osm: node/2311635030   https://www.openstreetmap.org/node/2311635030
+    at:  41.878505, -87.635887   https://www.google.com/maps?q=41.878505,-87.635887
+    wikidata: https://www.wikidata.org/wiki/Q84047380
+
+* Ralph H. Metcalfe Federal Building
+    building=government, 121 m, 27 levels
+    osm: way/73696288   https://www.openstreetmap.org/way/73696288
+    at:  41.877696, -87.630436   https://www.google.com/maps?q=41.877696,-87.630436
+    wikidata: https://www.wikidata.org/wiki/Q131339054
+
+* Bankers Building
+    building=hotel, 145 m, 41 levels
+    osm: way/73711002   https://www.openstreetmap.org/way/73711002
+    at:  41.879089, -87.631184   https://www.google.com/maps?q=41.879089,-87.631184
+    wikidata: https://www.wikidata.org/wiki/Q18347828
+
+* Union League Club
+    hotel, 22 levels
+    osm: way/73717433   https://www.openstreetmap.org/way/73717433
+    at:  41.877871, -87.630023   https://www.google.com/maps?q=41.877871,-87.630023
+    wikidata: https://www.wikidata.org/wiki/Q7885811
+
+* Steger Building
+    building=office, 19 levels
+    osm: way/148043650   https://www.openstreetmap.org/way/148043650
+    at:  41.878409, -87.626491   https://www.google.com/maps?q=41.878409,-87.626491
+    wikidata: https://www.wikidata.org/wiki/Q96942466
+
+* One South Wacker
+    building=office, 167 m, 40 levels
+    osm: way/147013359   https://www.openstreetmap.org/way/147013359
+    at:  41.881568, -87.636152   https://www.google.com/maps?q=41.881568,-87.636152
+    wikidata: https://www.wikidata.org/wiki/Q2259682
+
+* One South Dearborn
+    building=office, 174 m, 39 levels
+    osm: way/124865479   https://www.openstreetmap.org/way/124865479
+    at:  41.881652, -87.628733   https://www.google.com/maps?q=41.881652,-87.628733
+    wikidata: https://www.wikidata.org/wiki/Q2736389
+
+* LaSalle - Wacker Building
+    building=office, 156 m, 41 levels
+    osm: way/124873924   https://www.openstreetmap.org/way/124873924
+    at:  41.886514, -87.632003   https://www.google.com/maps?q=41.886514,-87.632003
+    wikidata: https://www.wikidata.org/wiki/Q1960267
+
+* Delaware Building
+    building=office, 8 levels
+    osm: way/124873941   https://www.openstreetmap.org/way/124873941
+    at:  41.884696, -87.629232   https://www.google.com/maps?q=41.884696,-87.629232
+    wikidata: https://www.wikidata.org/wiki/Q3021484
+
+* 19 South LaSalle Street
+    building=office, 17 levels
+    osm: way/131670518   https://www.openstreetmap.org/way/131670518
+    at:  41.881463, -87.631862   https://www.google.com/maps?q=41.881463,-87.631862
+    wikidata: https://www.wikidata.org/wiki/Q4595705
+
+* 33 North LaSalle
+    building=office, 146 m, 38 levels
+    osm: way/145625873   https://www.openstreetmap.org/way/145625873
+    at:  41.882854, -87.632026   https://www.google.com/maps?q=41.882854,-87.632026
+    wikidata: https://www.wikidata.org/wiki/Q131375297
+
+* Pittsfield Building
+    building=office, 38 levels
+    osm: way/124865459   https://www.openstreetmap.org/way/124865459
+    at:  41.882953, -87.625736   https://www.google.com/maps?q=41.882953,-87.625736
+    wikidata: https://www.wikidata.org/wiki/Q2056267
+
+* One Prudential Plaza
+    building=office, 278 m, 41 levels
+    osm: way/127107034   https://www.openstreetmap.org/way/127107034
+    at:  41.884926, -87.623140   https://www.google.com/maps?q=41.884926,-87.623140
+    wikidata: https://www.wikidata.org/wiki/Q643334
+
+* Virgin Hotels Chicago
+    hotel, 25 levels
+    osm: way/147397545   https://www.openstreetmap.org/way/147397545
+    at:  41.886064, -87.626029   https://www.google.com/maps?q=41.886064,-87.626029
+    wikidata: https://www.wikidata.org/wiki/Q3350186
+
+* The Heritage at Millennium Park
+    building=apartments, 192 m, 57 levels
+    osm: way/147397547   https://www.openstreetmap.org/way/147397547
+    at:  41.884000, -87.625763   https://www.google.com/maps?q=41.884000,-87.625763
+    wikidata: https://www.wikidata.org/wiki/Q376658
+
+* Metropolitan Tower
+    building=apartments, 37 levels
+    osm: relation/17414022   https://www.openstreetmap.org/relation/17414022
+    at:  41.877965, -87.624896   https://www.google.com/maps?q=41.877965,-87.624896
+    wikidata: https://www.wikidata.org/wiki/Q6825278
+
+* Flying Dragon
+    artwork
+    osm: node/3554701711   https://www.openstreetmap.org/node/3554701711
+    at:  41.880289, -87.623703   https://www.google.com/maps?q=41.880289,-87.623703
+    wikidata: https://www.wikidata.org/wiki/Q5463397
+
+* Large Interior Form
+    artwork
+    osm: node/3554702496   https://www.openstreetmap.org/node/3554702496
+    at:  41.880583, -87.623954   https://www.google.com/maps?q=41.880583,-87.623954
+    wikidata: https://www.wikidata.org/wiki/Q6489055
+
+* American Writers Museum
+    museum
+    osm: node/5169949885   https://www.openstreetmap.org/node/5169949885
+    at:  41.885561, -87.624991   https://www.google.com/maps?q=41.885561,-87.624991
+    wikidata: https://www.wikidata.org/wiki/Q19864096
+
+* 71 South Wacker
+    building=office
+    osm: way/148685510   https://www.openstreetmap.org/way/148685510
+    at:  41.880996, -87.636046   https://www.google.com/maps?q=41.880996,-87.636046
+    wikidata: https://www.wikidata.org/wiki/Q1639792
+
+* The Masonic Building
+    building=commercial
+    osm: way/145203363   https://www.openstreetmap.org/way/145203363
+    at:  41.884850, -87.628867   https://www.google.com/maps?q=41.884850,-87.628867
+    wikidata: https://www.wikidata.org/wiki/Q3077068
+
+* Millennium Monument
+    historic monument
+    osm: way/231253695   https://www.openstreetmap.org/way/231253695
+    at:  41.884025, -87.623819   https://www.google.com/maps?q=41.884025,-87.623819
+
+* The Ledge
+    attraction
+    osm: node/10945307447   https://www.openstreetmap.org/node/10945307447
+    at:  41.878890, -87.636323   https://www.google.com/maps?q=41.878890,-87.636323
+
+* Weather Bell
+    attraction
+    osm: node/4839412823   https://www.openstreetmap.org/node/4839412823
+    at:  41.880611, -87.630701   https://www.google.com/maps?q=41.880611,-87.630701
+
+* Paris Metro Entryway (Metra)
+    attraction
+    osm: way/765779257   https://www.openstreetmap.org/way/765779257
+    at:  41.876979, -87.623946   https://www.google.com/maps?q=41.876979,-87.623946
+
+* Ceres
+    artwork, 9.4 m
+    osm: node/6424301702   https://www.openstreetmap.org/node/6424301702
+    at:  41.877631, -87.632271   https://www.google.com/maps?q=41.877631,-87.632271
+
+* Downtown Islamic Center
+    place of worship (muslim), 7 levels
+    osm: way/148043641   https://www.openstreetmap.org/way/148043641
+    at:  41.878698, -87.627268   https://www.google.com/maps?q=41.878698,-87.627268
+
+* CTA Tower 18
+    tower, 1 levels
+    osm: way/1176300336   https://www.openstreetmap.org/way/1176300336
+    at:  41.885793, -87.634043   https://www.google.com/maps?q=41.885793,-87.634043
+
+* In the Heart of this Infinite Particle of Galactic Dust
+    artwork
+    osm: node/10945307448   https://www.openstreetmap.org/node/10945307448
+    at:  41.878885, -87.636371   https://www.google.com/maps?q=41.878885,-87.636371
+
+* Color Factory
+    museum
+    osm: node/10945307458   https://www.openstreetmap.org/node/10945307458
+    at:  41.878375, -87.635806   https://www.google.com/maps?q=41.878375,-87.635806
+
+* The Town-Ho's Story
+    artwork
+    osm: node/12498993808   https://www.openstreetmap.org/node/12498993808
+    at:  41.878034, -87.630586   https://www.google.com/maps?q=41.878034,-87.630586
+
+* Chicago Board of Trade Building Museum
+    museum
+    osm: node/12990167037   https://www.openstreetmap.org/node/12990167037
+    at:  41.877989, -87.632068   https://www.google.com/maps?q=41.877989,-87.632068
+
+* Black Tiberinus
+    artwork
+    osm: node/7025601431   https://www.openstreetmap.org/node/7025601431
+    at:  41.886033, -87.637189   https://www.google.com/maps?q=41.886033,-87.637189
+
+* Old Post Office Site
+    memorial (plaque)
+    osm: node/10938039393   https://www.openstreetmap.org/node/10938039393
+    at:  41.885886, -87.637076   https://www.google.com/maps?q=41.885886,-87.637076
+
+* Aaron Montgomery Ward
+    artwork
+    osm: node/2884032862   https://www.openstreetmap.org/node/2884032862
+    at:  41.887857, -87.635529   https://www.google.com/maps?q=41.887857,-87.635529
+
+* Edward Albert Filene
+    artwork
+    osm: node/2884032863   https://www.openstreetmap.org/node/2884032863
+    at:  41.887858, -87.635457   https://www.google.com/maps?q=41.887858,-87.635457
+
+* George Huntington Hartford
+    artwork
+    osm: node/2884032864   https://www.openstreetmap.org/node/2884032864
+    at:  41.887858, -87.635384   https://www.google.com/maps?q=41.887858,-87.635384
+
+* John Wanamaker
+    artwork
+    osm: node/2884032865   https://www.openstreetmap.org/node/2884032865
+    at:  41.887860, -87.635310   https://www.google.com/maps?q=41.887860,-87.635310
+
+* Marshall Field
+    artwork
+    osm: node/2884032866   https://www.openstreetmap.org/node/2884032866
+    at:  41.887861, -87.635165   https://www.google.com/maps?q=41.887861,-87.635165
+
+* Julius Rosenwald
+    artwork
+    osm: node/2884032867   https://www.openstreetmap.org/node/2884032867
+    at:  41.887863, -87.635092   https://www.google.com/maps?q=41.887863,-87.635092
+
+* Frank W. Woolworth
+    artwork
+    osm: node/2884032868   https://www.openstreetmap.org/node/2884032868
+    at:  41.887863, -87.635019   https://www.google.com/maps?q=41.887863,-87.635019
+
+* Robert E. Wood
+    artwork
+    osm: node/2884032869   https://www.openstreetmap.org/node/2884032869
+    at:  41.887864, -87.634946   https://www.google.com/maps?q=41.887864,-87.634946
+
+* Interconnected
+    artwork
+    osm: node/1633465278   https://www.openstreetmap.org/node/1633465278
+    at:  41.881485, -87.623382   https://www.google.com/maps?q=41.881485,-87.623382
+
+* Museum of Illusions
+    museum
+    osm: node/8978674855   https://www.openstreetmap.org/node/8978674855
+    at:  41.883060, -87.626843   https://www.google.com/maps?q=41.883060,-87.626843
+
+* 150
+    artwork
+    osm: node/10933483768   https://www.openstreetmap.org/node/10933483768
+    at:  41.884688, -87.624749   https://www.google.com/maps?q=41.884688,-87.624749
+
+* Yader "Yak" Castaneda
+    memorial (ghost_bike), built 2025-08-03
+    osm: node/13056107985   https://www.openstreetmap.org/node/13056107985
+    at:  41.884631, -87.624468   https://www.google.com/maps?q=41.884631,-87.624468
+
+* First Bridge at North Dearborn Street
+    memorial (plaque)
+    osm: node/10942494311   https://www.openstreetmap.org/node/10942494311
+    at:  41.887909, -87.629398   https://www.google.com/maps?q=41.887909,-87.629398
+
+* The Radiance of Being
+    artwork
+    osm: node/11780160054   https://www.openstreetmap.org/node/11780160054
+    at:  41.888331, -87.625522   https://www.google.com/maps?q=41.888331,-87.625522
+
+* 100
+    artwork
+    osm: way/1178187728   https://www.openstreetmap.org/way/1178187728
+    at:  41.880050, -87.637140   https://www.google.com/maps?q=41.880050,-87.637140
+
+* atmospheric Wave Wall
+    artwork
+    osm: way/1178213009   https://www.openstreetmap.org/way/1178213009
+    at:  41.878193, -87.636296   https://www.google.com/maps?q=41.878193,-87.636296
+
+* Agriculture
+    artwork
+    osm: way/1189225981   https://www.openstreetmap.org/way/1189225981
+    at:  41.877987, -87.631878   https://www.google.com/maps?q=41.877987,-87.631878
+
+* Industry
+    artwork
+    osm: way/1189225982   https://www.openstreetmap.org/way/1189225982
+    at:  41.877989, -87.631802   https://www.google.com/maps?q=41.877989,-87.631802
+
+* CTA Tower 12
+    tower
+    osm: way/59405615   https://www.openstreetmap.org/way/59405615
+    at:  41.876982, -87.626006   https://www.google.com/maps?q=41.876982,-87.626006
+
+* Jackson Bridge
+    bridge
+    osm: way/763246741   https://www.openstreetmap.org/way/763246741
+    at:  41.878307, -87.622754   https://www.google.com/maps?q=41.878307,-87.622754
+
+* Van Buren Pedestrian Bridge
+    bridge
+    osm: way/763246742   https://www.openstreetmap.org/way/763246742
+    at:  41.877038, -87.622729   https://www.google.com/maps?q=41.877038,-87.622729
+
+* Untitled
+    artwork
+    osm: way/765245586   https://www.openstreetmap.org/way/765245586
+    at:  41.880665, -87.623531   https://www.google.com/maps?q=41.880665,-87.623531
+
+* Eternal Flame
+    memorial (war_memorial)
+    osm: way/1175466045   https://www.openstreetmap.org/way/1175466045
+    at:  41.883605, -87.629713   https://www.google.com/maps?q=41.883605,-87.629713
+
+* Loop Da Loop
+    artwork
+    osm: way/1177752227   https://www.openstreetmap.org/way/1177752227
+    at:  41.885943, -87.627962   https://www.google.com/maps?q=41.885943,-87.627962
+
+* The Gentlemen Statues
+    artwork
+    osm: way/1272363178   https://www.openstreetmap.org/way/1272363178
+    at:  41.888129, -87.627454   https://www.google.com/maps?q=41.888129,-87.627454

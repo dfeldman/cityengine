@@ -1,0 +1,261 @@
+[
+ {
+  "name": "Église Saint-Merri — street",
+  "group": "landmark",
+  "from": [48.858722, 2.35205, 2.4],
+  "to": [48.859026, 2.350832, 18.5],
+  "seeded": true,
+  "note": "line of sight 1/5 at 95 m"
+ },
+ {
+  "name": "Église Saint-Merri — air",
+  "group": "landmark",
+  "from": [48.858652, 2.352329, 90.2],
+  "to": [48.859026, 2.350832, 18.5],
+  "seeded": true
+ },
+ {
+  "name": "Colonne de Juillet — street",
+  "group": "landmark",
+  "from": [48.852556, 2.369313, 2.4],
+  "to": [48.853167, 2.369139, 20.8],
+  "seeded": true,
+  "note": "line of sight 5/5 at 69 m"
+ },
+ {
+  "name": "Colonne de Juillet — air",
+  "group": "landmark",
+  "from": [48.851998, 2.369471, 101.9],
+  "to": [48.853167, 2.369139, 20.8],
+  "seeded": true
+ },
+ {
+  "name": "Centre Pompidou — street",
+  "group": "landmark",
+  "from": [48.859184, 2.352412, 2.4],
+  "to": [48.860536, 2.352413, 20.4],
+  "seeded": true,
+  "note": "line of sight 5/5 at 151 m"
+ },
+ {
+  "name": "Centre Pompidou — air",
+  "group": "landmark",
+  "from": [48.859372, 2.352413, 99.7],
+  "to": [48.860536, 2.352413, 20.4],
+  "seeded": true
+ },
+ {
+  "name": "Église Saint-Paul-Saint-Louis — street",
+  "group": "landmark",
+  "from": [48.855292, 2.361825, 2.4],
+  "to": [48.854595, 2.361424, 25],
+  "seeded": true,
+  "note": "line of sight 5/5 at 83 m"
+ },
+ {
+  "name": "Église Saint-Paul-Saint-Louis — air",
+  "group": "landmark",
+  "from": [48.855929, 2.362193, 122.1],
+  "to": [48.854595, 2.361424, 25],
+  "seeded": true
+ },
+ {
+  "name": "Hôtel de Sens — street",
+  "group": "landmark",
+  "from": [48.853508, 2.358191, 2.4],
+  "to": [48.853527, 2.358875, 11.9],
+  "seeded": true,
+  "note": "line of sight 5/5 at 50 m"
+ },
+ {
+  "name": "Hôtel de Sens — air",
+  "group": "landmark",
+  "from": [48.853497, 2.357811, 60],
+  "to": [48.853527, 2.358875, 11.9],
+  "seeded": true
+ },
+ {
+  "name": "Tour Saint-Jacques — street",
+  "group": "landmark",
+  "from": [48.858309, 2.34887, 3],
+  "to": [48.85795, 2.34887, 24.3],
+  "seeded": true
+ },
+ {
+  "name": "Tour Saint-Jacques — air",
+  "group": "landmark",
+  "from": [48.859335, 2.34887, 118.6],
+  "to": [48.85795, 2.34887, 24.3],
+  "seeded": true
+ },
+ {
+  "name": "Hôtel de Ville — street",
+  "group": "landmark",
+  "from": [48.857592, 2.351506, 2.4],
+  "to": [48.856426, 2.352532, 25],
+  "seeded": true,
+  "note": "line of sight 5/5 at 150 m"
+ },
+ {
+  "name": "Hôtel de Ville — air",
+  "group": "landmark",
+  "from": [48.857663, 2.351444, 122.3],
+  "to": [48.856426, 2.352532, 25],
+  "seeded": true
+ },
+ {
+  "name": "Temple du Marais — street",
+  "group": "landmark",
+  "from": [48.853528, 2.366636, 2.4],
+  "to": [48.853303, 2.366215, 14.1],
+  "seeded": true,
+  "note": "line of sight 5/5 at 40 m"
+ },
+ {
+  "name": "Temple du Marais — air",
+  "group": "landmark",
+  "from": [48.853813, 2.367167, 69.2],
+  "to": [48.853303, 2.366215, 14.1],
+  "seeded": true
+ },
+ {
+  "name": "Église Saint-Gervais — street",
+  "group": "landmark",
+  "from": [48.85575, 2.354131, 2.4],
+  "to": [48.855496, 2.354728, 19.4],
+  "seeded": true,
+  "note": "line of sight 5/5 at 52 m"
+ },
+ {
+  "name": "Église Saint-Gervais — air",
+  "group": "landmark",
+  "from": [48.856099, 2.353312, 95],
+  "to": [48.855496, 2.354728, 19.4],
+  "seeded": true
+ },
+ {
+  "name": "Cirque d'Hiver — street",
+  "group": "landmark",
+  "from": [48.863069, 2.367197, 2.4],
+  "to": [48.863329, 2.367488, 10.4],
+  "seeded": true,
+  "note": "line of sight 5/5 at 36 m"
+ },
+ {
+  "name": "Cirque d'Hiver — air",
+  "group": "landmark",
+  "from": [48.862764, 2.366858, 60],
+  "to": [48.863329, 2.367488, 10.4],
+  "seeded": true
+ },
+ {
+  "name": "Église Saint-Denys-du-Saint-Sacrement — street",
+  "group": "landmark",
+  "from": [48.860014, 2.364382, 2.4],
+  "to": [48.859964, 2.365214, 9.9],
+  "seeded": true,
+  "note": "line of sight 5/5 at 61 m"
+ },
+ {
+  "name": "Église Saint-Denys-du-Saint-Sacrement — air",
+  "group": "landmark",
+  "from": [48.860027, 2.364153, 60],
+  "to": [48.859964, 2.365214, 9.9],
+  "seeded": true
+ },
+ {
+  "name": "Maison de Nicolas Flamel — street",
+  "group": "landmark",
+  "from": [48.863522, 2.353484, 2.4],
+  "to": [48.863526, 2.353133, 8.6],
+  "seeded": true,
+  "note": "line of sight 0/5 at 26 m"
+ },
+ {
+  "name": "Maison de Nicolas Flamel — air",
+  "group": "landmark",
+  "from": [48.863512, 2.354198, 60],
+  "to": [48.863526, 2.353133, 8.6],
+  "seeded": true
+ },
+ {
+  "name": "Synagogue de la rue Pavée — street",
+  "group": "landmark",
+  "from": [48.856243, 2.360619, 2.4],
+  "to": [48.85593, 2.36069, 10.6],
+  "seeded": true,
+  "note": "line of sight 0/5 at 35 m"
+ },
+ {
+  "name": "Synagogue de la rue Pavée — air",
+  "group": "landmark",
+  "from": [48.856623, 2.360533, 60],
+  "to": [48.85593, 2.36069, 10.6],
+  "seeded": true
+ },
+ {
+  "name": "Synagogue de la rue des Tournelles — street",
+  "group": "landmark",
+  "from": [48.855026, 2.365574, 2.4],
+  "to": [48.855309, 2.366914, 12.2],
+  "seeded": true,
+  "note": "line of sight 1/5 at 103 m"
+ },
+ {
+  "name": "Synagogue de la rue des Tournelles — air",
+  "group": "landmark",
+  "from": [48.855095, 2.3659, 60],
+  "to": [48.855309, 2.366914, 12.2],
+  "seeded": true
+ },
+ {
+  "name": "Quai des Célestins — street",
+  "group": "river",
+  "from": [48.85198, 2.361392, 2.4],
+  "to": [48.851678, 2.361878, 1.2]
+ },
+ {
+  "name": "Quai de l'Hôtel de Ville — street",
+  "group": "river",
+  "from": [48.853733, 2.356672, 2.4],
+  "to": [48.853527, 2.357263, 1.2]
+ },
+ {
+  "name": "Quai de Bourbon — street",
+  "group": "river",
+  "from": [48.853623, 2.353309, 2.4],
+  "to": [48.853229, 2.353011, 1.2]
+ },
+ {
+  "name": "Seine and the quays — air",
+  "group": "river",
+  "from": [48.853502, 2.359731, 90],
+  "to": [48.852065, 2.357683, 0]
+ },
+ {
+  "name": "Pavillon du Roi arch — street",
+  "group": "fun",
+  "from": [48.854594, 2.365139, 2.2],
+  "to": [48.854988, 2.365297, 3],
+  "note": "Rue de Birague rides through the arch into the Place des Vosges"
+ },
+ {
+  "name": "Pavillon du Roi arch — through",
+  "group": "fun",
+  "from": [48.854872, 2.36525, 2],
+  "to": [48.855249, 2.365401, 2]
+ },
+ {
+  "name": "Cirque d'Hiver — top",
+  "group": "landmark",
+  "from": [48.8628, 2.367402, 130],
+  "to": [48.863397, 2.367402, 0],
+  "note": "north up"
+ },
+ {
+  "name": "Cirque d'Hiver — from Rue Amelot",
+  "group": "landmark",
+  "from": [48.863304, 2.366875, 2.2],
+  "to": [48.863397, 2.367402, 8]
+ }
+]

@@ -1,0 +1,34 @@
+{
+  "name": "streetrunner",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "node tools/typecheck.js && vite build && node tools/link-assets.js dist",
+    "preview": "vite preview",
+    "typecheck": "node tools/typecheck.js",
+    "test": "vitest run",
+    "bake": "node --experimental-strip-types tools/bake.ts",
+    "shots": "node --experimental-strip-types tools/shots.ts",
+    "landmarks": "node --experimental-strip-types tools/landmarks.ts"
+  },
+  "dependencies": {
+    "@babylonjs/core": "9.26.0",
+    "@babylonjs/loaders": "^9.26.0",
+    "@dandyhorse/avatarkit": "file:../dandyhorse/libs/avatarkit",
+    "@types/earcut": "^3.0.0",
+    "@types/pngjs": "^6.0.5",
+    "earcut": "^3.2.3",
+    "pngjs": "^7.0.0",
+    "polybooljs": "^1.2.2",
+    "polygon-clipping": "^0.15.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24",
+    "playwright": "^1.63.0",
+    "typescript": "^5.8",
+    "vite": "^7",
+    "vitest": "^3.2"
+  }
+}
