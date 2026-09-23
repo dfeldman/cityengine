@@ -55,6 +55,21 @@ Three rules matter more than the table:
 - **Escalation is never automatic.** A bail-out only moves up if the building clears the next cut; below it
   the classifier keeps it, which is right for an ordinary building on a back street.
 
+## 3a. Downtown is MODELLED, not refaced (owner, 2026-09-23)
+
+*"yeah I think nearly every downtown building needs to be modeled, not just refaced. outside downtown,
+refacing is fine."* And: *"we should feel ok with redoing downtown buildings that are refaced but never
+modeled."*
+
+So the tier cuts are not uniform across the city. **In the downtown core the floor is a model**, whatever a
+building's height or priority score says, because refacing puts a style on a building without looking at it
+and downtown is where that shows: a glass museum in Chinatown brick (#91), a skyscraper wearing classical
+columns (#81), a 1970s facade on a 1925 tower (#92). Outside the core, refacing remains the right tool and
+is untouched.
+
+A building already refaced but never modelled is therefore **not done**, and re-doing it is expected rather
+than wasteful.
+
 ## 3b. A RESEARCH step before modelling — PROPOSED, UNPROVEN (2026-09-22)
 
 **Nothing below has been validated. This is not a change to the ladder; it is a possible extra step for the
