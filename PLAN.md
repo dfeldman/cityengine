@@ -1165,6 +1165,106 @@ in triangles or in fill (the sister project measured itself and found it fill-bo
 the same may or may not be true here, and assuming it is would be how this gets optimised in the wrong
 place). Bug #86 (frame rate on a fast descent) is the first evidence and the natural test case.
 
+### AC. Next iteration: from "good enough" to amazing (user, 2026-09-22)
+
+The user, after an evening comparing Street View against the game: *"it's basically good enough right now, I
+just want to make it amazing."* Three observations, and one of them turns out to change the economics of the
+whole ladder.
+
+> 1. "SF has a CRAZY number of highly distinctive unique buildings downtown. we probably only got half of
+>    them with our existing rules. These are buildings that are totally memorable and recognizable, but we're
+>    never going to get with just a refacing script."
+> 2. "we probably do need a neoclassical style since SF has SO MANY neoclassical buildings. Or we could
+>    individually model them, not sure."
+> 3. "We're getting pretty good at modeling quickly at low cost with Sonnet, so I do think we can afford more
+>    individual models."
+
+#### The finding that matters: modelling is now CHEAPER than refacing
+
+From our own measured table in [LADDER.md](docs/LADDER.md) §8:
+
+| tier | tokens each |
+|---|---|
+| refaced — haiku, two photographs | **~4.5k** |
+| modelled — sonnet, recipes + kit | **~4.2k** |
+| modelled — opus / by hand | ~14k |
+
+**A Sonnet model costs less than a Haiku reface.** The ladder's tier cuts were calibrated when a model cost
+~14k — 3.3× more — and the recipes and the parts kit have since brought it down to 4.2k and about 2.4 lines
+of code per building. The reason to reface rather than model was cost, and that reason is gone.
+
+So the answer to (3) is yes, and more strongly than asked: **the modelling cut should be re-drawn, not
+nudged.** There is no longer an economic argument for refacing anything that is worth photographing at all.
+Refacing keeps one job — buildings not worth a photograph — and that is a much smaller set than 75%.
+
+#### The real limit is what enters the queue, not what a model costs
+
+LADDER.md already says this: "The lever is not per-building cost — it is how many buildings enter the queue
+at all." The register holds **894** buildings for a city of 26,312, and the user's estimate is that we caught
+about half the distinctive ones downtown.
+
+A count over the local extract, downtown only (−122.412..−122.390, 37.780..37.800):
+
+| | count |
+|---|---|
+| buildings | 3,254 |
+| **carrying a `wikidata` tag** | **207** |
+| carrying a name | 581 |
+| `architect` tagged | 22 |
+| `heritage` / `historic` | 15 |
+
+**A `wikidata` tag is a free, deterministic signal that somebody thought a building notable enough to write
+about** — 207 of them in the downtown box alone, against 894 in the register for the whole city. `architect`
+and `heritage` are rarer but almost never wrong. None of these currently feed the priority formula, which is
+height + civic + corridor distance. Adding them is free and would pull exactly the class of building the user
+says we are missing.
+
+Worth doing before any more modelling: run that cross-check properly — which `wikidata`-tagged buildings are
+NOT in the register — and use the answer to size the work.
+
+#### Neoclassical: both, and in this order
+
+The question was recipe *or* individual models. It is both, and the order is what makes it affordable:
+
+1. **Item Z — decent columns in the shared kit.** Everything else waits on this. Today `colonnade()` draws
+   square posts, so a neoclassical anything is built on sand.
+2. **Item AA — the neoclassical recipe.** Not an alternative to modelling: it is the SUBSTRATE that makes
+   modelling cheap. The measured drop from 14k to 4.2k tokens came precisely from recipes plus a parts kit,
+   so a neoclassical recipe is what makes forty individual bank temples affordable rather than a substitute
+   for them.
+3. **Then model individually on top**, per building, from photographs — the overrides being the order, the
+   column count, the cornice line, the stone. [docs/sf-batches/banks.md](docs/sf-batches/banks.md) is the
+   first batch.
+
+#### What today's reports say about where the weakness is
+
+Not in the modelling — in the SELECTION. Every one of these is a style assigned without anyone looking at
+the building:
+
+- **#91** — the Institute of Contemporary Art, a modernist glass pavilion, given Chinatown brick by "rule 1:
+  chinatown zone", a purely geographic rule. Its queue priority was **125**, near the top of the city, and it
+  was marked **done**. A cheap rule closed a top-band building.
+- **#81** — 285 Market: "a skyscraper with classical columns".
+- **#90** — full-height white piers modelled as a punched grid, though `kind: 'fins'` exists and a neighbour
+  uses it correctly.
+- **banks.md** — Wells Fargo and the Bank of America Building placed in the `chicago` family (steel frame,
+  wide bays, no order) by a model reading one line of text. Three more bank temples have no entry at all.
+- **#82, #89** — One Maritime Plaza and 555 California carry `procedural:` names that look like hand models
+  and are one-line `preset(...)` calls. **The manifest cannot tell a preset from a model**, so every count of
+  "how much is modelled" we have produced is overstated by an unknown amount.
+
+That last one is worth fixing first: it is a reporting fault, and it means we do not currently know how much
+of the city is actually modelled.
+
+#### Suggested order for the iteration
+
+1. Make the register able to distinguish a preset from a model, and re-count. (We are flying blind.)
+2. Add `wikidata` / `architect` / `heritage` to the priority formula; re-run the queue; see what appears.
+3. Item Z (columns), then AA (neoclassical recipe).
+4. Re-draw the modelling cut downward now that a model is cheaper than a reface.
+5. Work the banks batch, then the rest of what step 2 turns up.
+6. Audit what zone rules closed at high priority (#91 is one; how many more?).
+
 ### X. Plant Salesforce Park by hand (user request, 2026-09-22)
 
 The deck has no plants, and the general planting system cannot give it any: a `Planting` carries no `y`, a
