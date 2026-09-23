@@ -1,16 +1,6 @@
 [
   {
     "osm": [
-      "way/1469656012"
-    ],
-    "name": "Building 1469656012",
-    "restyle": "sfapartment",
-    "height": 34,
-    "levels": 10,
-    "note": "rule 4: Russian Hill/Nob Hill apartment with >= 5 levels"
-  },
-  {
-    "osm": [
       "way/259078180"
     ],
     "name": "1960 Vallejo Street",
@@ -78,16 +68,6 @@
     "height": 34,
     "levels": 10,
     "note": "rule 7: tall building (levels >= 8)"
-  },
-  {
-    "osm": [
-      "way/262689154"
-    ],
-    "name": "Building 262689154",
-    "restyle": "sfapartment",
-    "height": 34,
-    "levels": 10,
-    "note": "rule 4: Russian Hill/Nob Hill apartment with >= 5 levels"
   },
   {
     "osm": [
@@ -215,16 +195,6 @@
     "height": 31,
     "levels": 11,
     "note": "rule 4: Russian Hill/Nob Hill apartment with >= 5 levels"
-  },
-  {
-    "osm": [
-      "way/542375290"
-    ],
-    "name": "Salesforce Transit Center",
-    "restyle": "tenement",
-    "height": 30,
-    "levels": 5,
-    "note": "rule 8: medium building (levels >= 4)"
   },
   {
     "osm": [

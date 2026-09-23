@@ -1,0 +1,208 @@
+[
+  {
+    "osm": [
+      "way/260318176"
+    ],
+    "name": "One Hawthorne Street",
+    "restyle": "towerblock",
+    "wall": "#d4c8b8",
+    "by": "haiku",
+    "image": "way-260318176.jpg",
+    "note": "tan concrete, punched windows in regular grid, not glass skin",
+    "height": 93
+  },
+  {
+    "osm": [
+      "way/196108167"
+    ],
+    "name": "Clayton Street Post Office",
+    "restyle": "victorian",
+    "wall": "#4a7ba7",
+    "trim": "#f4f2ea",
+    "accent": "#2d5a7a",
+    "by": "haiku",
+    "image": "way-196108167.jpg",
+    "note": "victorian style confirmed, but bright blue paint with white trim and darker accent",
+    "height": 6
+  },
+  {
+    "osm": [
+      "way/944039725"
+    ],
+    "name": "300 Montgomery Street",
+    "restyle": "chicago",
+    "wall": "#d4c8b0",
+    "by": "haiku",
+    "image": "way-944039725.jpg",
+    "note": "tall with vertical ribbing/mullions, regular pattern; photo badly aimed but features clear",
+    "height": 58
+  },
+  {
+    "osm": [
+      "way/32945902"
+    ],
+    "name": "49 South Van Ness Avenue",
+    "restyle": "chicago",
+    "wall": "#c4b8a8",
+    "by": "haiku",
+    "image": "way-32945902.jpg",
+    "note": "tall with very wide window bays, regular grid pattern in tan render",
+    "height": 58
+  },
+  {
+    "osm": [
+      "way/32839422"
+    ],
+    "name": "Fontana West",
+    "restyle": "chicago",
+    "wall": "#d9cfc0",
+    "by": "haiku",
+    "image": "way-32839422.jpg",
+    "note": "tall with prominent vertical ribbing, regular window pattern, classic chicago proportions",
+    "height": 55
+  },
+  {
+    "osm": [
+      "way/243794014"
+    ],
+    "name": "550 California Street",
+    "restyle": "chicago",
+    "wall": "#e8dfd0",
+    "by": "haiku",
+    "image": "way-243794014.jpg",
+    "note": "tall with regular wide window bays and vertical emphasis",
+    "height": 55
+  },
+  {
+    "osm": [
+      "way/243357053"
+    ],
+    "name": "The Sanctuary",
+    "restyle": "towerblock",
+    "wall": "#f0ede8",
+    "by": "haiku",
+    "image": "way-243357053-2.jpg",
+    "note": "white/pale rendered wall with regular grid of punched windows, flat roof",
+    "height": 9
+  },
+  {
+    "osm": [
+      "way/179496056"
+    ],
+    "name": "SF LGBT Center",
+    "restyle": "sfapartment",
+    "wall": "#8B5A8E",
+    "groundWall": "#5a5a5a",
+    "by": "haiku",
+    "image": "way-179496056-2.jpg",
+    "note": "bright purple building with prominent bay windows, dark shopfront ground floor",
+    "height": 10
+  },
+  {
+    "osm": [
+      "way/35174714"
+    ],
+    "name": "1360 Mission Street",
+    "restyle": "towerblock",
+    "wall": "#E8D9C8",
+    "by": "haiku",
+    "image": "way-35174714-2.jpg",
+    "note": "pale rendered building with regular individual window grid, not glass skin",
+    "height": 55
+  },
+  {
+    "osm": [
+      "way/35174715"
+    ],
+    "name": "1366;1370;1372 Mission Street",
+    "restyle": "towerblock",
+    "wall": "#E0D5C8",
+    "by": "haiku",
+    "image": "way-35174715-2.jpg",
+    "note": "pale rendered facade with individual window grid pattern",
+    "height": 55
+  },
+  {
+    "osm": [
+      "way/173237459"
+    ],
+    "name": "1328 Mission Street",
+    "restyle": "towerblock",
+    "wall": "#DDD5CA",
+    "by": "haiku",
+    "image": "way-173237459-2.jpg",
+    "note": "mostly pale rendered with some modern glazing, primary facade not glass-dominated",
+    "height": 55
+  },
+  {
+    "osm": [
+      "way/261443889"
+    ],
+    "name": "Second Union Baptist Church",
+    "restyle": "brick",
+    "wall": "#E8D9CA",
+    "by": "haiku",
+    "image": "way-261443889.jpg",
+    "note": "simple painted church with gabled roof",
+    "height": 10
+  },
+  {
+    "osm": [
+      "way/30029681"
+    ],
+    "name": "Cable Car Powerhouse and Barn",
+    "restyle": "brick",
+    "wall": "#8B5A3C",
+    "by": "haiku",
+    "image": "way-30029681.jpg",
+    "note": "red-brown brick industrial building with arched windows"
+  },
+  {
+    "osm": [
+      "way/33570646"
+    ],
+    "name": "Alcazar Theatre",
+    "restyle": "classical",
+    "wall": "#d4b896",
+    "trim": "#8B7355",
+    "by": "haiku",
+    "image": "way-33570646-2.jpg",
+    "note": "pale stone building with arched windows and ornate architectural details"
+  },
+  {
+    "osm": [
+      "way/261302127"
+    ],
+    "name": "Uptown Church of Christ",
+    "restyle": "brick",
+    "wall": "#7FA8D0",
+    "by": "haiku",
+    "image": "way-261302127-2.jpg",
+    "note": "simple blue painted church building with regular windows"
+  },
+  {
+    "osm": [
+      "way/71504442"
+    ],
+    "name": "The Clift Royal Sonesta San Francisco",
+    "restyle": "sfapartment",
+    "height": 64,
+    "wall": "#c9b89c",
+    "by": "haiku",
+    "image": "way-71504442.jpg",
+    "note": "stacked bay windows and fire escape, classic SF apartment"
+  },
+  {
+    "osm": [
+      "way/243571728"
+    ],
+    "name": "(unnamed)",
+    "restyle": "sfapartment",
+    "wall": "#F5F3F0",
+    "accent": "#A0522D",
+    "by": "haiku",
+    "image": "way-243571728-2.jpg",
+    "note": "white building with bay windows and distinctive red/rust vertical stripe accent",
+    "height": 55
+  }
+]

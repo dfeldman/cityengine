@@ -25,6 +25,11 @@ export interface TrainKind {
   shadow: [number, number, number]
   /** most cars drawn at once */
   capacity: number
+  /**
+   * How high its floor is above the rail, in metres — where a rider carried on it stands (sim/transit.ts).
+   * Left out, a rider rides at axle height, which is inside the saloon.
+   */
+  deck?: number
   /** it stops at the region's stations on its line (the métro's viaduct stations), dwelling there */
   stops?: boolean
   /**
@@ -66,7 +71,7 @@ export function turned(f: (out: MeshBuilder) => void): (out: MeshBuilder) => voi
 }
 
 export const DEFAULT_STOCK: RegionStock = {
-  rail: { mid: carriage, cars: 3, pitch: 18.6, speed: 18, colour: [0.78, 0.79, 0.82], shadow: [18, 3.4, 3.4], capacity: 40 },
+  rail: { mid: carriage, cars: 3, pitch: 18.6, speed: 18, colour: [0.78, 0.79, 0.82], shadow: [18, 3.4, 3.4], capacity: 150 },
   metro: null,
   tram: { mid: carriage, cars: 1, pitch: 18.6, speed: 6, colour: [0.78, 0.79, 0.82], shadow: [18, 3.4, 3.4], capacity: 16 },
   // (Chicago's L is mapped in short pieces, and 400 m would take three trains in four off it)

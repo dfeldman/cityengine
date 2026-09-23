@@ -43,13 +43,16 @@ export function sfFlora(toLatLon: (x: number, z: number) => { lat: number; lon: 
       eucalyptus: [['sf_gum', 1]],
       pine: [['black_pine', 1], ['scots_pine', 1]],
       cypress: [['cypress', 1]],
+      // the park oak (city/sf/parks.ts). The street Quercus is a clipped 'evergreen' and stays one; this is
+      // the coast live oak standing on its own in a meadow, which is a different tree to look at.
+      oak: [['oak', 1]],
       canary: [['palm:canary', 1]],
       fan: [['palm:fan', 1]],
       queen: [['palm:queen', 1]],
       spiky: [['palm:spiky', 1]],
       windmill: [['palm:windmill', 1]],
     },
-    formModels: { plane: 5, laurel: 4, evergreen: 4, ficus: 4, deciduous: 4, plum: 4, canary: 4, fan: 3, queen: 3, spiky: 3 },
+    formModels: { oak: 4, cypress: 4, pine: 4, eucalyptus: 3, plane: 5, laurel: 4, evergreen: 4, ficus: 4, deciduous: 4, plum: 4, canary: 4, fan: 3, queen: 3, spiky: 3 },
     palmChance: (x, z) => {
       const { lat, lon } = toLatLon(x, z)
       return PALMS[districtOf(lat, lon)] ?? 0.03

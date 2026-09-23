@@ -1,0 +1,92 @@
+[
+  {
+    "osm": [
+      "way/80296709"
+    ],
+    "name": "Unnamed 99 m tower",
+    "procedural": "unnamedNinetyNineMeterTower",
+    "front": "street",
+    "height": 99,
+    "note": "no name on record; pale-pier curtain glass tower by height and classification"
+  },
+  {
+    "osm": [
+      "way/263828910"
+    ],
+    "name": "Ebenezer Baptist Church",
+    "procedural": "ebenezerBaptistChurch",
+    "front": "street",
+    "height": 6,
+    "note": "small cream stucco storefront church"
+  },
+  {
+    "osm": [
+      "way/288500664"
+    ],
+    "name": "Grosvenor Suites",
+    "procedural": "grosvenorSuites",
+    "front": "street",
+    "height": 78,
+    "note": "899 Pine St; cream terracotta Edwardian tower, 20 OSM levels — street photo shows only its lower storeys"
+  },
+  {
+    "osm": [
+      "way/1122226053"
+    ],
+    "name": "Unnamed 85 m tower",
+    "procedural": "unnamedEightyFiveMeterTower",
+    "front": "street",
+    "height": 85,
+    "note": "no name on record; dark glass tower behind pale piers"
+  },
+  {
+    "osm": [
+      "way/260318174"
+    ],
+    "name": "633;639 Howard Street",
+    "procedural": "howardStreetTower",
+    "front": "street",
+    "height": 93,
+    "note": "tan precast mid-century slab"
+  },
+  {
+    "osm": [
+      "way/80296721"
+    ],
+    "name": "Unnamed 93 m tower",
+    "procedural": "unnamedNinetyThreeMeterTower",
+    "front": "street",
+    "height": 93,
+    "note": "no name on record; generic blue-green glass tower by height and classification"
+  },
+  {
+    "osm": [
+      "way/260131753"
+    ],
+    "name": "Great American Music Hall",
+    "procedural": "greatAmericanMusicHall",
+    "front": "street",
+    "height": 12,
+    "note": "859 O'Farrell St; cream Edwardian venue with a lit blade/marquee sign"
+  },
+  {
+    "osm": [
+      "way/32963425"
+    ],
+    "name": "Saint Patrick Catholic Church",
+    "procedural": "stPatrickChurch",
+    "front": "street",
+    "height": 46,
+    "note": "756 Mission St; Gothic Revival red brick, corner tower and spire, amid Yerba Buena towers"
+  },
+  {
+    "osm": [
+      "way/284932384"
+    ],
+    "name": "1400 Mission",
+    "procedural": "fourteenHundredMission",
+    "front": "street",
+    "height": 46,
+    "note": "green-glass affordable housing tower over ground-floor retail"
+  }
+]

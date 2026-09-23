@@ -27,7 +27,15 @@ export function edgeAt(ring: P2[], i: number): { a: P2; b: P2; tx: number; tz: n
   const L = Math.hypot(b.x - a.x, b.z - a.z) || 1
   const tx = (b.x - a.x) / L
   const tz = (b.z - a.z) / L
-  return { a, b, tx, tz, nx: tz, nz: -tx, L, heading: Math.atan2(tx, tz), mid: { x: (a.x + b.x) / 2, z: (a.z + b.z) / 2 } }
+  /*
+   * `heading` is the direction the wall FACES — the same convention boxAlong, turned, signText, marquee and
+   * bladeSign all use, where 0 faces +z. It used to be atan2(tx, tz), the direction the wall RUNS, which is a
+   * quarter turn from what every one of those helpers expects. Everything that took an edge's heading was
+   * therefore rotated 90 degrees: protruding signs came out backwards, a marquee collapsed to an invisible
+   * sliver, a parapet shot off across its terrace, a submarine's conning tower sat athwart the hull. Use `tx`
+   * and `tz` to move ALONG the wall; use `heading` to turn something onto it.
+   */
+  return { a, b, tx, tz, nx: tz, nz: -tx, L, heading: Math.atan2(tz, -tx), mid: { x: (a.x + b.x) / 2, z: (a.z + b.z) / 2 } }
 }
 
 /** The ring's longest edge: usually the front of a slab, the side a colonnade or a marquee belongs on. */
@@ -117,6 +125,55 @@ export function signText(out: MeshBuilder, text: string, cx: number, cy: number,
       }
     }
   })
+}
+
+/**
+ * The same block letters, but spelled out in LIGHT BULBS on a frame — which is what a sign like Ghirardelli's
+ * actually is, and why painted letters never look right for it: at a distance you read a constellation of
+ * points, and after dark the points are the whole sign.
+ *
+ * Each glyph cell becomes a bulb on its own short stalk, with a slim frame behind. `spacing` is the bulb
+ * pitch in metres, so the letter height follows from it (a glyph is five cells tall). `lit` makes the bulbs
+ * emit, which is what they do at night; by day they are off-white glass on a steel frame.
+ *
+ * Shared because San Francisco is full of them: Ghirardelli, the theatre marquees on Market Street, the blade
+ * signs, the crab wheel at the Wharf.
+ */
+export function bulbText(out: MeshBuilder, text: string, cx: number, cy: number, cz: number, spacing: number,
+                         opts: { heading?: number; bulb?: Rgb; frame?: Rgb; lit?: boolean; gap?: number } = {}): void {
+  const a = opts.heading ?? 0
+  const bulb = opts.bulb ?? [1, 0.96, 0.86]
+  const frame = opts.frame ?? [0.3, 0.31, 0.33]
+  const gapCells = opts.gap ?? 1.2
+  const chars = text.toUpperCase().split('')
+  const cols = chars.length * (3 + gapCells) - gapCells
+  const r = spacing * 0.34
+  chars.forEach((ch, i) => {
+    const g = GLYPHS[ch]
+    if (!g) return
+    const u0 = (cols / 2 - i * (3 + gapCells)) * spacing
+    for (let row = 0; row < 5; row++) {
+      for (let k = 0; k < 3; k++) {
+        if (g[row * 3 + k] !== '1') continue
+        const u = u0 - k * spacing
+        const y = cy + (4 - row) * spacing - 2 * spacing
+        const [bx, bz] = turned(cx, cz, cx + u, cz, a)
+        // the stalk holding the bulb off the frame, then the bulb itself
+        boxAlong(out, bx, y, bz, r * 0.25, r * 0.25, spacing * 0.22, a, frame, 0)
+        boxAlong(out, bx, y, bz, r, r, r, a, bulb, opts.lit === false ? 0 : EMIT)
+      }
+    }
+  })
+  // the frame the bulbs are mounted on: an upright each side and a rail top and bottom
+  const halfW = (cols / 2) * spacing + spacing
+  const halfH = 2.5 * spacing + spacing * 0.6
+  for (const sgn of [-1, 1]) {
+    const [px, pz] = turned(cx, cz, cx + sgn * halfW, cz, a)
+    boxAlong(out, px, cy, pz, spacing * 0.12, halfH, spacing * 0.12, a, frame, 0)
+  }
+  for (const sgn of [-1, 1]) {
+    boxAlong(out, cx, cy + sgn * halfH, cz, halfW, spacing * 0.1, spacing * 0.1, a, frame, 0)
+  }
 }
 
 /**
@@ -228,7 +285,9 @@ export function colonnade(out: MeshBuilder, a: P2, b: P2, y0: number, height: nu
   // the entablature over them
   const mx = a.x + tx * (L / 2) + nx * o
   const mz = a.z + tz * (L / 2) + nz * o
-  const ang = Math.atan2(tx, tz)
+  // boxAlong wants the direction the entablature FACES, not the direction it runs: atan2(tx, tz) turned it a
+  // quarter step and it came out as a bar jutting sideways out of the portico (seen on two civic buildings)
+  const ang = Math.atan2(nx, nz)
   boxAlong(out, mx, y0 + height + ent / 2 + 0.2, mz, L / 2, ent / 2, o * 0.8, ang, c, tag)
 }
 
@@ -263,7 +322,8 @@ export function arcade(out: MeshBuilder, a: P2, b: P2, y0: number, height: numbe
   const tz = (b.z - a.z) / L
   const nx = tz
   const nz = -tx
-  const ang = Math.atan2(tx, tz)
+  // the direction it FACES, not the direction it runs — see colonnade above
+  const ang = Math.atan2(nx, nz)
   const bay = L / n
   for (let i = 0; i <= n; i++) {
     const u = i * bay

@@ -1,0 +1,78 @@
+[
+  {
+    "osm": [
+      "way/288670518"
+    ],
+    "name": "Avalon at Mission Bay Phase III",
+    "restyle": "towerblock",
+    "wall": "#8b5a3c",
+    "trim": "#a8a8a8",
+    "by": "haiku",
+    "image": "way-288670518-2.jpg",
+    "note": "rust-red rendered walls with grey balconies, modern residential",
+    "height": 57
+  },
+  {
+    "osm": [
+      "way/288670524"
+    ],
+    "name": "Avalon at Mission Bay Phase II",
+    "restyle": "towerblock",
+    "wall": "#c0bab0",
+    "by": "haiku",
+    "image": "way-288670524-2.jpg",
+    "note": "pale grey-taupe rendered walls, modern residential tower",
+    "height": 57
+  },
+  {
+    "osm": [
+      "way/48569995"
+    ],
+    "name": "Arterra",
+    "restyle": "towerblock",
+    "wall": "#f5f5f5",
+    "trim": "#ff9900",
+    "accent": "#1e90ff",
+    "by": "haiku",
+    "image": "way-48569995-2.jpg",
+    "note": "white render with orange vertical accent bands and blue window elements",
+    "height": 57
+  },
+  {
+    "osm": [
+      "way/945538326"
+    ],
+    "name": "255 King Street",
+    "restyle": "towerblock",
+    "wall": "#a8c5d1",
+    "by": "haiku",
+    "image": "way-945538326-2.jpg",
+    "note": "pale blue-grey rendered walls with subtle rounded corner",
+    "height": 50
+  },
+  {
+    "osm": [
+      "way/262137991"
+    ],
+    "name": "2500 Steiner Street",
+    "restyle": "towerblock",
+    "wall": "#f0ead5",
+    "by": "haiku",
+    "image": "way-262137991-2.jpg",
+    "note": "pale cream rendered walls, individual punched windows",
+    "height": 50
+  },
+  {
+    "osm": [
+      "way/1047709621"
+    ],
+    "name": "Uber Headquarters Building 1",
+    "restyle": "skyscraper",
+    "wall": "#4a90c8",
+    "groundWall": "#d4a574",
+    "by": "haiku",
+    "image": "way-1047709621-2.jpg",
+    "note": "glass-skin building with blue-tinted glass and golden base elements",
+    "height": 54
+  }
+]

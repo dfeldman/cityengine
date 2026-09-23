@@ -55,7 +55,9 @@ export interface LandmarkEntry {
   sign?: boolean
   /**
    * The bearing, in degrees, that the model's main facade faces (0 north, 90 east), or "street" to take it
-   * from the building's baked frontage. The builder is written with its front facing local −z.
+   * from the building's baked frontage. The builder is written with its front facing local +z — that is what
+   * `edgeFacing(ring, 0)` returns and what every district builder assumes. (Said −z until 2026-09-22; checked
+   * empirically, the comment was wrong, not the code.)
    */
   front?: number | 'street'
   /** a restyle entry: these buildings (its `osm` ids, and every one near `within`) take this facade style */
@@ -89,6 +91,16 @@ export interface LandmarkEntry {
   court?: boolean
   /** a restyle's roof colour, where the style's own would be wrong (Paris slate for the hôtels particuliers) */
   roofColour?: string
+  /*
+   * A restyle's own paint, where the style's palette is not this building's colour. San Francisco's houses are
+   * defined by it — a blue Victorian is a blue Victorian, and the style alone will not get you there (user,
+   * 2026-09-22: "that blue victorian really needs the blue color"). Hex, any or all of them.
+   */
+  wall?: string
+  trim?: string
+  accent?: string
+  /** the ground floor where it is painted differently from the rest — a dark shopfront under pale flats */
+  groundWall?: string
   /** for a standalone model: its footprint, for the shadow and the fit, in metres (width × depth) */
   size?: [number, number]
   note?: string
@@ -149,7 +161,14 @@ export function restyles(entries: LandmarkEntry[], pkg: Pick<CityPackage, 'origi
   const proj = new Projection(pkg.origin)
   for (const e of entries) {
     if (!e.restyle) continue
-    for (const id of packedIds(e)) out.set(id, e)
+    /*
+     * FIRST entry wins, exactly as the procedural claim does in the constructor. The manifest's includes are
+     * ordered strongest-first — the hand-modelled districts, then what the strong model refaced, then the
+     * cheap sweep — so a level only ever fills in what the level above it left alone (user, 2026-09-22: "we
+     * can just have separate files for each level and merge"). Last-wins here quietly let the cheapest pass
+     * overwrite work that had been looked at properly.
+     */
+    for (const id of packedIds(e)) if (!out.has(id)) out.set(id, e)
     if (e.named) {
       const re = new RegExp(e.named, 'i')
       // never over another entry's building: a replaced or specially restyled landmark keeps its own treatment

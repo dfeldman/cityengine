@@ -14,6 +14,7 @@ import DISTRICTS from './districts.json' with { type: 'json' }
 export type Archetype =
   | 'rowhouse' | 'marinaHouse' | 'apartment' | 'chinatown' | 'loft' | 'prewarOffice' | 'tower' | 'modern'
   | 'retailBox' | 'civic' | 'church' | 'hotel' | 'pier' | 'midcentury' | 'contemporary' | 'edwardianHouse'
+  | 'apartmentTower'
 
 export type District = keyof typeof DISTRICTS.districts
 
@@ -64,17 +65,23 @@ const RESIDENTIAL = new Set<District>(['russian', 'nob', 'pacific', 'cowhollow',
   'telegraph', 'northbeach', 'japantown', 'fortmason'])
 const DOWNTOWN = new Set<District>(['fidi', 'rincon', 'soma', 'yerbabuena', 'embarcadero', 'unionsquare'])
 
-export function archetypeOf(f: Features): { archetype: Archetype; district: District } {
+/**
+ * Every rule carries a short name, and the name travels with the building into docs/sf-archetypes.csv at bake
+ * time. That is what makes a wrong style fixable in bulk (user, 2026-09-22: "I hope we recorded which buildings
+ * were refaced and by which method so that we can fix ones that are consistently wrong"): the answer to "why is
+ * this a glass tower" is one column, and every other building that rule touched is one grep away.
+ */
+export function archetypeOf(f: Features): { archetype: Archetype; district: District; rule: string } {
   const district = districtOf(f.lat, f.lon)
   const t = f.tags
   const h = f.height ?? (f.levels !== undefined ? f.levels * 3.3 : 10)
-  const a = (archetype: Archetype): { archetype: Archetype; district: District } => ({ archetype, district })
+  const a = (archetype: Archetype, rule: string): { archetype: Archetype; district: District; rule: string } => ({ archetype, district, rule })
 
   // what the mapper said, when they said anything
-  if (t.amenity === 'place_of_worship' || /^(church|cathedral|chapel|synagogue|temple)$/.test(t.building ?? '')) return a('church')
-  if (t.building === 'parking' || t.amenity === 'parking') return a('retailBox')
-  if (t.man_made === 'pier' || /^Pier \d+/.test(t.name ?? '')) return a('pier')
-  if (/^(civic|government|public|townhall|museum)$/.test(t.building ?? '') || t.amenity === 'townhall') return a('civic')
+  if (t.amenity === 'place_of_worship' || /^(church|cathedral|chapel|synagogue|temple)$/.test(t.building ?? '')) return a('church', 'worship')
+  if (t.building === 'parking' || t.amenity === 'parking') return a('retailBox', 'parking')
+  if (t.man_made === 'pier' || /^Pier \d+/.test(t.name ?? '')) return a('pier', 'pier-tag')
+  if (/^(civic|government|public|townhall|museum)$/.test(t.building ?? '') || t.amenity === 'townhall') return a('civic', 'civic-tag')
 
   const rec = f.record
   const era = rec?.year ? eraOf(rec.year) : undefined
@@ -82,50 +89,61 @@ export function archetypeOf(f: Features): { archetype: Archetype; district: Dist
   const wood = rec?.construction === 'D' || rec?.construction === 'WOO'
   const masonry = rec?.construction === 'C'
 
+  /*
+   * A block of flats is not an office block, however tall it is. The height rule below sent every tower to
+   * `tower` and so to the glass curtain wall, which put downtown on top of Russian Hill, Nob Hill and the
+   * Marina — the crests where San Francisco's post-war apartment towers actually stand (user, 2026-09-22:
+   * "the style of The Royal Towers and nearby buildings is very wrong"). The Assessor says MRES, and OSM
+   * often says apartments; either is enough.
+   */
+  const homes = use === 'MRES' || t.building === 'apartments' || t.building === 'residential'
+  // (over 3000 m2 is not a tower but a redevelopment slab, which the superblock rule below already handles)
+  if (homes && h >= 30 && f.area <= 3000 && !DOWNTOWN.has(district)) return a('apartmentTower', 'residential-tower')
+
   // height decides first: nothing over 60 m is anything but a tower, and downtown the line is lower
   if (h >= 60 || (h >= 40 && DOWNTOWN.has(district))) {
     // the pre-war office: the Russ, the Shell, the Hunter-Dulin — by its date where the record has one, else by
     // being narrow and under 90 m on the old downtown grid
     if (era ? era === 'victorian' || era === 'edwardian' || era === 'interwar'
-      : (district === 'fidi' || district === 'unionsquare') && h < 90 && f.area < 1100) return a(use === 'COMH' ? 'hotel' : 'prewarOffice')
-    return a('tower')
+      : (district === 'fidi' || district === 'unionsquare') && h < 90 && f.area < 1100) return a(use === 'COMH' ? 'hotel' : 'prewarOffice', 'prewar-office-tall')
+    return a('tower', 'tall')
   }
-  if (use === 'COMH' && h >= 20) return a('hotel')
-  if (district === 'chinatown' && h < 26 && (!era || era === 'edwardian' || era === 'victorian' || era === 'interwar')) return a('chinatown')
+  if (use === 'COMH' && h >= 20) return a('hotel', 'hotel-use')
+  if (district === 'chinatown' && h < 26 && (!era || era === 'edwardian' || era === 'victorian' || era === 'interwar')) return a('chinatown', 'chinatown')
 
   // what the record says, where it says it
   if (era) {
     const house = use === 'SRES' || (use === 'MRES' && (rec!.units <= 4 || h <= 13))
-    if (era === 'victorian' && wood && house && h <= 16) return a('rowhouse')
-    if (era === 'edwardian' && house && h <= 16) return a('edwardianHouse')
-    if (era === 'interwar' && house && h <= 13) return a(wood && district !== 'marina' && district !== 'cowhollow' && f.roll < 0.35 ? 'rowhouse' : 'marinaHouse')
+    if (era === 'victorian' && wood && house && h <= 16) return a('rowhouse', 'victorian-house')
+    if (era === 'edwardian' && house && h <= 16) return a('edwardianHouse', 'edwardian-house')
+    if (era === 'interwar' && house && h <= 13) return a(wood && district !== 'marina' && district !== 'cowhollow' && f.roll < 0.35 ? 'rowhouse' : 'marinaHouse', 'interwar-house')
     if (use === 'IND' || ((masonry || use === 'COMM') && f.area > 500 && (era === 'victorian' || era === 'edwardian' || era === 'interwar')
-      && (district === 'soma' || district === 'yerbabuena' || district === 'rincon' || district === 'embarcadero' || district === 'northbeach' || district === 'wharf' || district === 'fidi'))) return a('loft')
-    if (era === 'midcentury' && h >= 12) return a(rec!.construction === 'B' && f.area > 1500 ? 'modern' : 'midcentury')
-    if (era === 'modern' && h >= 10) return a(f.area > 3000 && h >= 20 && DOWNTOWN.has(district) ? 'modern' : 'contemporary')
-    if ((use === 'MRES' || use === 'COMR') && h > 13 && era !== 'midcentury') return a(DOWNTOWN.has(district) && use !== 'MRES' ? 'prewarOffice' : 'apartment')
-    if (use === 'COMO' && h >= 15) return a(era === 'midcentury' || era === 'modern' ? 'contemporary' : 'prewarOffice')
+      && (district === 'soma' || district === 'yerbabuena' || district === 'rincon' || district === 'embarcadero' || district === 'northbeach' || district === 'wharf' || district === 'fidi'))) return a('loft', 'industrial-loft')
+    if (era === 'midcentury' && h >= 12) return a(rec!.construction === 'B' && f.area > 1500 ? 'modern' : 'midcentury', 'midcentury-tall')
+    if (era === 'modern' && h >= 10) return a(f.area > 3000 && h >= 20 && DOWNTOWN.has(district) ? 'modern' : 'contemporary', 'modern-tall')
+    if ((use === 'MRES' || use === 'COMR') && h > 13 && era !== 'midcentury') return a(DOWNTOWN.has(district) && use !== 'MRES' ? 'prewarOffice' : 'apartment', 'mres-comr-mid')
+    if (use === 'COMO' && h >= 15) return a(era === 'midcentury' || era === 'modern' ? 'contemporary' : 'prewarOffice', 'office-use')
   }
 
   // the 1960s–80s superblocks: Golden Gateway and Embarcadero Center, the Western Addition's redevelopment
-  if (f.area > 3000 && h >= 20 && (district === 'embarcadero' || district === 'fidi' || district === 'western' || district === 'japantown')) return a('modern')
-  if (district === 'civic' && f.area > 2000 && h >= 15) return a('civic')
-  if (t.tourism === 'hotel' && h >= 20) return a('hotel')
+  if (f.area > 3000 && h >= 20 && (district === 'embarcadero' || district === 'fidi' || district === 'western' || district === 'japantown')) return a('modern', 'superblock')
+  if (district === 'civic' && f.area > 2000 && h >= 15) return a('civic', 'civic-big')
+  if (t.tourism === 'hotel' && h >= 20) return a('hotel', 'hotel-tag')
   // the big low box: a supermarket, a garage, a showroom
-  if (h <= 8 && f.area > 1500) return a('retailBox')
+  if (h <= 8 && f.area > 1500) return a('retailBox', 'big-low-box')
   // SoMa and the old waterfront: brick warehouses and lofts
   if ((district === 'soma' || district === 'yerbabuena' || district === 'rincon' || district === 'embarcadero'
-    || (district === 'northbeach' && f.lon > -122.405) || district === 'wharf') && f.area > 500) return a('loft')
-  if (DOWNTOWN.has(district)) return a(h >= 20 ? 'prewarOffice' : district === 'soma' ? 'loft' : 'apartment')
-  if (district === 'tenderloin') return a(h >= 9 ? 'apartment' : 'rowhouse')
+    || (district === 'northbeach' && f.lon > -122.405) || district === 'wharf') && f.area > 500) return a('loft', 'soma-warehouse')
+  if (DOWNTOWN.has(district)) return a(h >= 20 ? 'prewarOffice' : district === 'soma' ? 'loft' : 'apartment', 'downtown-default')
+  if (district === 'tenderloin') return a(h >= 9 ? 'apartment' : 'rowhouse', 'tenderloin')
   // the 25-foot lot: a house, of the Victorian city or of the Marina's 1930s
   if (f.frontage <= 11 && h <= 15) {
-    if (district === 'marina') return a('marinaHouse')
-    if (district === 'cowhollow' && f.roll < 0.4) return a('marinaHouse')
-    return a('rowhouse')
+    if (district === 'marina') return a('marinaHouse', 'marina-lot')
+    if (district === 'cowhollow' && f.roll < 0.4) return a('marinaHouse', 'cowhollow-lot')
+    return a('rowhouse', 'narrow-lot')
   }
-  if (RESIDENTIAL.has(district) || district === 'wharf') return a(h <= 9 && f.area < 400 ? 'rowhouse' : 'apartment')
-  return a('apartment')
+  if (RESIDENTIAL.has(district) || district === 'wharf') return a(h <= 9 && f.area < 400 ? 'rowhouse' : 'apartment', 'residential-district')
+  return a('apartment', 'default')
 }
 
 /** The style each archetype wears (SF_PLAN.md §3). */
@@ -144,6 +162,7 @@ export const STYLE_OF: Record<Archetype, StyleId> = {
   hotel: 'classical',
   pier: 'classical',
   edwardianHouse: 'edwardian',
+  apartmentTower: 'towerblock',
   midcentury: 'bauhaus',
   contemporary: 'bauhaus',
 }
@@ -172,10 +191,10 @@ export function lotSides(ring: { x: number; z: number }[]): { frontage: number; 
 }
 
 /** The bake's entry (src/city/building-types.ts): an archetype and its style, or null where a tagged material decides. */
-export function classifySF(b: { tags: Record<string, string>; ring: { x: number; z: number }[]; height?: number; levels?: number; lat: number; lon: number; id: number; area: number; record?: Features['record'] }): { archetype: Archetype; style: StyleId } | null {
+export function classifySF(b: { tags: Record<string, string>; ring: { x: number; z: number }[]; height?: number; levels?: number; lat: number; lon: number; id: number; area: number; record?: Features['record'] }): { archetype: Archetype; style: StyleId; district: District; rule: string } | null {
   if (b.tags['building:material']) return null
   const { frontage, depth } = lotSides(b.ring)
   const roll = ((Math.imul(b.id ^ 0x2c1b3c6d, 0x297a2d39) >>> 0) % 1000) / 1000
-  const { archetype } = archetypeOf({ lat: b.lat, lon: b.lon, height: b.height, levels: b.levels, area: b.area, frontage, depth, tags: b.tags, roll, record: b.record })
-  return { archetype, style: STYLE_OF[archetype] }
+  const { archetype, district, rule } = archetypeOf({ lat: b.lat, lon: b.lon, height: b.height, levels: b.levels, area: b.area, frontage, depth, tags: b.tags, roll, record: b.record })
+  return { archetype, style: STYLE_OF[archetype], district, rule }
 }

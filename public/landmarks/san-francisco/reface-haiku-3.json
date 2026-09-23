@@ -1,0 +1,89 @@
+[
+  {
+    "osm": [
+      "way/256067734"
+    ],
+    "name": "(unnamed)",
+    "restyle": "chicago",
+    "wall": "#a89a7f",
+    "trim": "#f5f0e8",
+    "by": "haiku",
+    "image": "way-256067734-2.jpg",
+    "note": "Tall office building with ornamental cornice and regular window grid; chicago style rather than skyscraper",
+    "height": 48
+  },
+  {
+    "osm": [
+      "relation/2280956"
+    ],
+    "name": "Hills Brothers Building",
+    "restyle": "brutalist",
+    "wall": "#808080",
+    "by": "haiku",
+    "image": "relation-2280956.jpg",
+    "note": "Raw grey concrete with deep-set windows and floor slabs showing as horizontal bands",
+    "height": 56
+  },
+  {
+    "osm": [
+      "way/113505811"
+    ],
+    "name": "Foundry Square IV",
+    "restyle": "towerblock",
+    "wall": "#d0ccc4",
+    "by": "haiku",
+    "image": "way-113505811-2.jpg",
+    "note": "Individual punched windows in rendered wall with modern glass sections; towerblock not skyscraper",
+    "height": 46
+  },
+  {
+    "osm": [
+      "way/32947380"
+    ],
+    "name": "Wells Fargo",
+    "restyle": "chicago",
+    "wall": "#e8e4d8",
+    "trim": "#f5f2ed",
+    "by": "haiku",
+    "image": "way-32947380-2.jpg",
+    "note": "Cream facade with regular window grid and ornamental cornice; chicago style rather than skyscraper",
+    "height": 41
+  },
+  {
+    "osm": [
+      "way/35174716"
+    ],
+    "name": "SOMA Self Storage",
+    "restyle": "towerblock",
+    "wall": "#a8956f",
+    "by": "haiku",
+    "image": "way-35174716.jpg",
+    "note": "Tan brick building with regular window/door pattern; towerblock not glass-skin skyscraper",
+    "height": 46
+  },
+  {
+    "osm": [
+      "way/1258806534"
+    ],
+    "name": "(unnamed)",
+    "restyle": "towerblock",
+    "wall": "#a8896b",
+    "by": "haiku",
+    "image": "way-1258806534-2.jpg",
+    "note": "Mixed tan/brick residential tower with individual windows in rendered wall; towerblock not skyscraper",
+    "height": 58
+  },
+  {
+    "osm": [
+      "way/35115837"
+    ],
+    "name": "California Institute of Integral Studies",
+    "restyle": "towerblock",
+    "wall": "#c4a868",
+    "trim": "#e8dcc8",
+    "by": "haiku",
+    "image": "way-35115837-2.jpg",
+    "note": "Tan rendered institutional building with punched windows; towerblock not skyscraper",
+    "height": 43
+  }
+]

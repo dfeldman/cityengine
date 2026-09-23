@@ -1,0 +1,114 @@
+[
+  {
+    "osm": [
+      "way/262226218"
+    ],
+    "name": "Saint John Coltrane African Orthodox Church",
+    "procedural": "stJohnColtraneChurch",
+    "front": "street",
+    "levels": 1,
+    "by": "human",
+    "image": "docs/shots/refs/manual/way-262226218-user.webp",
+    "note": "1286 Fillmore: two-tone timber hall church, steep shingled gable, square corner tower with a brown broach spire"
+  },
+  {
+    "osm": [
+      "way/256477865"
+    ],
+    "name": "Opera Plaza tower (256477865)",
+    "procedural": "operaPlazaTower",
+    "front": "street",
+    "height": 73,
+    "by": "human",
+    "note": "601 Van Ness: one of three pale precast towers with rounded corners over the perimeter block"
+  },
+  {
+    "osm": [
+      "way/256477866"
+    ],
+    "name": "Opera Plaza tower (256477866)",
+    "procedural": "operaPlazaTower",
+    "front": "street",
+    "height": 73,
+    "by": "human",
+    "note": "601 Van Ness: one of three pale precast towers with rounded corners over the perimeter block"
+  },
+  {
+    "osm": [
+      "way/256477867"
+    ],
+    "name": "Opera Plaza tower (256477867)",
+    "procedural": "operaPlazaTower",
+    "front": "street",
+    "height": 73,
+    "by": "human",
+    "note": "601 Van Ness: one of three pale precast towers with rounded corners over the perimeter block"
+  },
+  {
+    "osm": [
+      "way/256477868"
+    ],
+    "name": "Opera Plaza block (256477868)",
+    "procedural": "operaPlazaBlock",
+    "front": "street",
+    "height": 21,
+    "by": "human",
+    "note": "601 Van Ness: five storeys of flats on columns over an open ground floor — car park, cinema and the way into the courtyard"
+  },
+  {
+    "osm": [
+      "way/256477869"
+    ],
+    "name": "Opera Plaza block (256477869)",
+    "procedural": "operaPlazaBlock",
+    "front": "street",
+    "height": 21,
+    "by": "human",
+    "note": "601 Van Ness: five storeys of flats on columns over an open ground floor — car park, cinema and the way into the courtyard"
+  },
+  {
+    "osm": [
+      "way/256477870"
+    ],
+    "name": "Opera Plaza block (256477870)",
+    "procedural": "operaPlazaBlock",
+    "front": "street",
+    "height": 21,
+    "by": "human",
+    "note": "601 Van Ness: five storeys of flats on columns over an open ground floor — car park, cinema and the way into the courtyard"
+  },
+  {
+    "name": "Opera Plaza courtyard",
+    "procedural": "operaPlazaCourtyard",
+    "lat": 37.781337,
+    "lon": -122.421446,
+    "size": [
+      54,
+      44
+    ],
+    "by": "human",
+    "note": "601 Van Ness: the raised garden deck between the six OSM ways — terrace, planters, conservatory and pool"
+  },
+  {
+    "osm": [
+      "way/165601339"
+    ],
+    "name": "USS Pampanito",
+    "procedural": "ussPampanito",
+    "front": "street",
+    "height": 8,
+    "by": "human",
+    "note": "Pier 45: Balao-class submarine — black hull, casing deck, grey sail with periscopes, deck gun forward"
+  },
+  {
+    "osm": [
+      "way/288388853"
+    ],
+    "name": "Ghirardelli Square clock tower block",
+    "procedural": "ghirardelliClockTower",
+    "front": "street",
+    "height": 22,
+    "by": "human",
+    "note": "The old chocolate factory under the roof sign: red brick with white stone surrounds and a dentilled cornice, and the corner clock tower with its steep spire"
+  }
+]

@@ -1,11 +1,36 @@
 node_modules/
 dist/
-tools/cache/
 .DS_Store
-docs/shots/views/
 incoming_models/
-public/models/
-public/plants
 
-# generated SF street trees (tools/sftrees): rebuilt, never checked in
+# ---- generated, never committed -------------------------------------------------
+# The repo is kept under 100 MB. Everything below is rebuilt by a tool, and what to
+# run is in docs/ASSETS.md. docs/shots and public/cities alone were 705 MB of the
+# 772 MB that used to be tracked.
+#
+# NOTE: gitignore has no inline comments — a trailing "# ..." becomes part of the
+# pattern and silently matches nothing. Keep every comment on its own line.
+
+# every screenshot: model shots, contact sheets, references
+docs/shots/
+# baked city packages and their streamed tiles (npm run bake)
+public/cities/
+# generated GLBs, signgen's included (npm run signs)
+public/models/
+# generated SF street trees (tools/sftrees/library.py)
 public/sftrees/
+public/plants/
+public/trees/*.glb
+scratchpad/
+# OSM extracts, Overpass chunks, Mapillary tiles and photos
+tools/cache/
+# reference photographs gathered for hand modelling
+statues_to_model/
+
+# ---- secrets --------------------------------------------------------------------
+.mapillary-token
+.mapillary-app
+.mapillary_token
+
+__pycache__/
+*.pyc

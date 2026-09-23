@@ -19,6 +19,7 @@ import type { Fit } from '../../fit.ts'
 import { faceBand, insetRing, tower, towerRing, type Face, type TowerSpec } from '../../tower.ts'
 import { prism, type Rgb } from '../../../models.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
+import { boxAlong, edgeAt, longestEdge } from '../../parts.ts'
 
 type P2 = { x: number; z: number }
 const FIXED = 0
@@ -395,12 +396,66 @@ export const MARKET_WEST: Record<string, (out: MeshBuilder, fit: Fit) => void> =
    * The Warfield's auditorium (1922) behind the office block: a plain stucco box the colour of the terracotta,
    * lower, with the fly tower at its back. Nothing on it but the fire escapes and some murals.
    */
-  warfieldAuditorium: spec({
-    height: 22,
-    tiers: [{ to: 1, face: { kind: 'blank', material: 'stucco', wall: [0.8, 0.77, 0.7] }, cornice: { depth: 0.3, height: 0.6 } }],
-    roof: [0.5, 0.49, 0.47],
-    crown: { kind: 'parapet', height: 0.8, colour: [0.78, 0.75, 0.68] },
-  }),
+  warfieldAuditorium: (out: MeshBuilder, fit: Fit): void => {
+    /*
+     * Rebuilt 2026-09-22. It was a blank stucco box, which is defensible — a theatre's auditorium really is
+     * windowless — and read as a featureless slab on the contact sheet. The back of a 1922 theatre has a
+     * SHAPE: a brick wall articulated by buttress strips between the structural bays, a FLYTOWER standing
+     * higher than the rest over the stage, roof plant, and a fire escape zig-zagging down to the alley. Those
+     * cost a few lines and turn a slab into a building you can tell is a theatre from behind.
+     */
+    const ring = towerRing(fit)
+    const BRICK: [number, number, number] = [0.66, 0.53, 0.44]
+    const TRIM: [number, number, number] = [0.74, 0.71, 0.64]
+    const H = 22
+    faceBand(out, ring, 0, 3.2, { kind: 'blank', wall: [0.42, 0.4, 0.38], material: 'brick' })
+    faceBand(out, ring, 3.2, H, { kind: 'blank', wall: BRICK, material: 'brick' })
+    faceBand(out, ring, H, H + 1.0, { kind: 'blank', wall: TRIM, material: 'ashlar' })
+    capPolygon(out, ring, H + 1.0, [0.46, 0.45, 0.43], 0)
+    // buttress strips between the bays, on every side
+    for (let i = 0; i < ring.length; i++) {
+      const e = edgeAt(ring, i)
+      const n = Math.max(2, Math.round(e.L / 6))
+      for (let k = 1; k < n; k++) {
+        const t = k / n
+        boxAlong(out, e.a.x + e.tx * e.L * t + e.nx * 0.2, (3.2 + H) / 2, e.a.z + e.tz * e.L * t + e.nz * 0.2,
+          0.5, (H - 3.2) / 2, 0.2, e.heading, [0.6, 0.48, 0.4], surfaceTag('brick'))
+      }
+    }
+    /*
+     * The flytower over the stage: a real VOLUME over one end of the plan. Slicing the first half of the
+     * ring's vertices gives a sliver, not half the area — an irregular footprint's vertices are not evenly
+     * spread — so this takes the plan's bounding box and builds a rectangle over the deeper end of it.
+     */
+    const xs = ring.map((p2) => p2.x)
+    const zs = ring.map((p2) => p2.z)
+    const x0 = Math.min(...xs) + 1.5
+    const x1 = Math.max(...xs) - 1.5
+    const z0 = Math.min(...zs) + 1.5
+    const z1 = Math.max(...zs) - 1.5
+    const deep = (x1 - x0) > (z1 - z0)
+    const fly = deep
+      ? [{ x: x0, z: z0 }, { x: x0 + (x1 - x0) * 0.45, z: z0 }, { x: x0 + (x1 - x0) * 0.45, z: z1 }, { x: x0, z: z1 }]
+      : [{ x: x0, z: z0 }, { x: x1, z: z0 }, { x: x1, z: z0 + (z1 - z0) * 0.45 }, { x: x0, z: z0 + (z1 - z0) * 0.45 }]
+    faceBand(out, fly, H, H + 7, { kind: 'blank', wall: BRICK, material: 'brick' })
+    faceBand(out, fly, H + 7, H + 7.8, { kind: 'blank', wall: TRIM, material: 'ashlar' })
+    capPolygon(out, fly, H + 7.8, [0.44, 0.43, 0.41], 0)
+    // roof plant, and the fire escape down the longest wall
+    const e0 = edgeAt(ring, longestEdge(ring))
+    for (const f of [-0.2, 0.15]) {
+      boxAlong(out, e0.mid.x + e0.tx * e0.L * f, H + 1.9, e0.mid.z + e0.tz * e0.L * f, 1.6, 0.9, 1.2, e0.heading, [0.5, 0.5, 0.5], surfaceTag('metal'))
+    }
+    // the fire escape: landings down the wall, with the uprights that carry them
+    for (let k = 0; k < 5; k++) {
+      const y = 5.5 + k * 3.4
+      boxAlong(out, e0.mid.x + e0.nx * 1.1, y, e0.mid.z + e0.nz * 1.1, 2.4, 0.09, 1.1, e0.heading, [0.22, 0.22, 0.24], surfaceTag('metal'))
+      boxAlong(out, e0.mid.x + e0.nx * 1.1, y + 0.55, e0.mid.z + e0.nz * 1.1, 2.4, 0.5, 0.06, e0.heading, [0.22, 0.22, 0.24], surfaceTag('metal'))
+    }
+    for (const sgn of [-1, 1]) {
+      boxAlong(out, e0.mid.x + e0.tx * sgn * 2.3 + e0.nx * 1.1, 11.5, e0.mid.z + e0.tz * sgn * 2.3 + e0.nz * 1.1,
+        0.08, 8.5, 0.08, e0.heading, [0.22, 0.22, 0.24], surfaceTag('metal'))
+    }
+  },
 
   /**
    * The Golden Gate Theatre (1922, G. Albert Lansburgh), 1 Taylor at Market and Golden Gate Avenue: the theatre

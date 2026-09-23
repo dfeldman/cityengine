@@ -85,6 +85,14 @@ export interface TowerSpec {
   /** podium: shopfronts to `height`, an awning or canopy along the front */
   base?: { height: number; face: Face; canopy?: { depth: number; colour: Rgb } }
   tiers: Tier[]
+  /**
+   * Free-standing cornice ledges at chosen heights, for bands that do not fall at a tier's top —
+   * Ghirardelli's stone band under its parapet, Opera Plaza's line along the podium. `at` follows the same
+   * convention as a tier's `to`: <= 1.5 is a fraction of the building's height, above that is metres. Each
+   * one is drawn against the outline actually in force at that height, so a band below a setback follows
+   * the wider footprint rather than the narrow one above it.
+   */
+  cornices?: { at: number; depth: number; height?: number; colour?: Rgb }[]
   roof?: Rgb
   crown?: Crown
   /** mechanical penthouse boxes on the roof: how many (default 0) */
@@ -502,9 +510,13 @@ export function tower(out: MeshBuilder, fit: Fit, spec: TowerSpec): void {
   const roof = spec.roof ?? [0.42, 0.42, 0.44]
   let y = 0
   let ring = ring0
+  // the outline in force over each height band, so a free-standing cornice below a setback follows the wider
+  // footprint it actually sits on rather than the narrow one above it
+  const bands: { from: number; to: number; ring: P2[] }[] = []
   if (spec.base) {
     faceBand(out, ring, 0, spec.base.height, spec.base.face)
     if (spec.base.canopy) cornice(out, ring, spec.base.height - 0.4, spec.base.canopy.depth, 0.3, spec.base.canopy.colour)
+    bands.push({ from: 0, to: spec.base.height, ring })
     y = spec.base.height
   }
   for (const t of spec.tiers) {
@@ -518,7 +530,14 @@ export function tower(out: MeshBuilder, fit: Fit, spec: TowerSpec): void {
     }
     if (top > y) faceBand(out, ring, y, top, t.face)
     if (t.cornice) cornice(out, ring, top, t.cornice.depth, t.cornice.height ?? 0.8, t.cornice.colour ?? t.face.wall)
+    if (top > y) bands.push({ from: y, to: top, ring })
     y = Math.max(y, top)
+  }
+  for (const c of spec.cornices ?? []) {
+    const at = c.at <= 1.5 ? c.at * H : c.at
+    // the band containing it, or the nearest outline below it (a cornice right at the roofline)
+    const band = bands.find((b) => at >= b.from && at <= b.to) ?? bands[bands.length - 1]
+    cornice(out, band?.ring ?? ring, at, c.depth, c.height ?? 0.8, c.colour ?? roof)
   }
   capPolygon(out, ring, y, roof, 0)
   for (let k = 0; k < (spec.penthouse ?? 0); k++) {

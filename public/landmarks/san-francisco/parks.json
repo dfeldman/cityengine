@@ -1,0 +1,18 @@
+[
+  {"osm": ["way/30675038"], "name": "Conservatory of Flowers", "procedural": "conservatoryOfFlowers", "front": "street", "height": 15, "note": "1878 white Victorian glasshouse, domed central pavilion over two barrel-vault-ish wings."},
+  {"osm": ["way/28695389"], "name": "California Academy of Sciences", "procedural": "californiaAcademyOfSciences", "front": "street", "height": 11, "note": "Renzo Piano 2008: flat glass box, undulating green living roof, planetarium and rainforest domes, overhanging glass canopy."},
+  {"osm": ["way/34221099"], "name": "Japanese Tea Garden Pagoda", "procedural": "japaneseTeaGardenPagoda", "front": "street", "height": 8, "note": "Two-tier red and green pagoda, deep tiled eaves."},
+  {"osm": ["way/136888948"], "name": "Japanese Tea Garden South Gate", "procedural": "japaneseTeaGardenGate", "front": "street", "height": 6, "note": "Red timber gate, green tiled pyramid roof."},
+  {"osm": ["way/34220947"], "name": "Japanese Tea Garden Tea House", "procedural": "japaneseTeaGardenTeaHouse", "front": "street", "height": 5, "note": "Dark timber tea house, green tiled hip roof."},
+  {"osm": ["way/287921407"], "name": "Dutch Windmill", "procedural": "dutchWindmill", "front": "street", "height": 18, "note": "1902 brick-based Dutch windmill at the park's ocean end, four sails on a peaked cap."},
+  {"osm": ["way/287927026"], "name": "Murphy Windmill", "procedural": "murphyWindmill", "front": "street", "height": 14, "note": "1907 brick-based Dutch windmill, smaller companion to the Dutch Windmill."},
+  {"osm": ["way/28691595"], "name": "Beach Chalet", "procedural": "beachChalet", "front": "street", "height": 12, "note": "1925 Willis Polk, cream stucco, two storeys, red-brown hipped tile roof."},
+  {"osm": ["way/30896932"], "name": "Spreckels Temple of Music", "procedural": "spreckelsTempleOfMusic", "front": "street", "height": 12, "note": "1900 stone bandshell on the Music Concourse, colonnaded front, curved stone back wall."},
+  {"osm": ["way/32775201"], "name": "Presidio Officers' Club", "procedural": "presidioOfficersClub", "front": "street", "height": 7, "note": "White Spanish colonial, arcaded front, red tile hip roof; oldest building in San Francisco (adobe core)."},
+  {"osm": ["way/288342511"], "name": "Presidio Main Post — Former Post Hospital", "restyle": "brick", "levels": 3, "height": 11, "note": "Main Post row: long red brick block with white trim."},
+  {"osm": ["way/288342516"], "name": "Presidio Main Post barracks A", "restyle": "brick", "levels": 2, "height": 7, "note": "Main Post row: red brick block with white trim."},
+  {"osm": ["way/288342517"], "name": "Presidio Main Post barracks B (Serra Preschool)", "restyle": "brick", "levels": 2, "height": 7, "note": "Main Post row: red brick block with white trim."},
+  {"osm": ["way/288342518"], "name": "Presidio Main Post barracks C", "restyle": "brick", "levels": 2, "height": 7, "note": "Main Post row: red brick block with white trim."},
+  {"osm": ["way/288340247"], "name": "Presidio Main Post barracks D", "restyle": "brick", "levels": 3, "height": 9, "note": "Main Post row facing the parade ground: red brick block with white trim."},
+  {"osm": ["way/288340248"], "name": "Presidio Main Post barracks E", "restyle": "brick", "levels": 3, "height": 11, "note": "Main Post row facing the parade ground: red brick block with white trim."}
+]

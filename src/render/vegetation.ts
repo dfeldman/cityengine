@@ -63,6 +63,18 @@ export class Vegetation {
   private readonly terrain: Terrain
   /** the trees of each tile built now (render/city.ts `TileLayer`): what the instance buffers hold */
   private readonly byTile = new Map<string, Planting[]>()
+  /**
+   * Each tile's trees already worked out: the model each one stands on and its 16-float world matrix, laid
+   * end to end.
+   *
+   * A tree never moves, so its matrix is the same every time — but `plant()` runs again every thirty metres
+   * the eye travels, because WHICH level of detail each tree is drawn at changes, and it used to rebuild
+   * every matrix from scratch to find that out. That cost nothing while a tile held a dozen street trees. It
+   * costs 8 ms a rebuild in Golden Gate Park, where a 7 × 7 block of tiles holds fifteen thousand
+   * (city/park-planting.ts) — a visible hitch every few seconds. Composing them once a tile and only
+   * re-sorting them into buckets afterwards is the same picture for 1 ms.
+   */
+  private readonly seated = new Map<string, { mats: Float32Array; model: Model[] }>()
   private dirty = false
   /**
    * Each model's parts at two levels of detail: `parts` (LOD0) near the eye, `far` (the file's own LOD1, or
@@ -103,7 +115,7 @@ export class Vegetation {
         const shadow = this.castShadows(ps, `shadow:trees:${near.key}`)
         return shadow ? [shadow] : []
       },
-      release: (k) => { if (this.byTile.delete(k)) this.dirty = true },
+      release: (k) => { this.seated.delete(k); if (this.byTile.delete(k)) this.dirty = true },
     }
   }
 
@@ -310,22 +322,28 @@ export class Vegetation {
     models.push(...ordered)
     if (models.length === 0) return
     this.models = models
+    // anything seated against an earlier set of models is stale
+    this.seated.clear()
     this.dirty = true
     this.update()
   }
 
-  /** Every tree of the tiles present on its model: the instance buffers, rewritten whole. */
-  private plant(): void {
+  /**
+   * Which model each of a tile's trees stands on, and where — composed once, when the tile arrives.
+   *
+   * Everything here depends only on the planting and the loaded models, never on the eye, which is what
+   * makes it worth keeping.
+   */
+  private seat(ps: Planting[]): { mats: Float32Array; model: Model[] } {
     const models = this.models
-
     // (the form-0 pools: the flora's street and park species and its district palms, not the forms' own)
     const inForms = new Set([...this.formPools.values()].flat())
     const street = models.filter((m) => !m.park && !m.palm && !inForms.has(m))
     const parkland = models.filter((m) => m.park)
     const palms = this.districtPalms
-    const buckets = new Map<Mesh, Matrix[]>()
-
-    this.plantings.forEach((p) => {
+    const mats = new Float32Array(ps.length * 16)
+    const model: Model[] = []
+    ps.forEach((p, i) => {
       // a palm where the region plants them (the Embarcadero's row), by the planting's own hash so it is the same
       // tree every session; in parks at half the rate
       const h = plantHash(p.x, p.z)
@@ -334,7 +352,7 @@ export class Vegetation {
         ? ((h >>> 11) % 1000) / 1000 < this.flora.palmChance(p.x, p.z) * (p.park ? 0.5 : 1) : false
       const pool = own ?? (palmHere ? palms : p.park && parkland.length > 0 ? parkland : street.length > 0 ? street : models)
       // by where it stands, not by its place in a list: a streamed tile picks the same model every time
-      const model = pool[h % pool.length]
+      const m = pool[h % pool.length]
       /*
        * Sized by HEIGHT. The models are generated forest trees, ten to twenty metres and all different, and
        * one scale range for all of them made some street trees as tall as the buildings — which is not what
@@ -343,22 +361,39 @@ export class Vegetation {
        */
       // (a palm is its own height, give or take: a street palm is taller than the street trees, not squeezed to them)
       // (a palm of a known form was measured too: its height is the city's, within what the model can stretch to)
-      const scale = model.palm
-        ? own ? Math.min(1.5, Math.max(0.25, p.height / model.top)) : 0.85 + ((h >>> 5) % 100) / 330
-        : Math.min(2, Math.max(0.1, p.height / model.top))
-      const matrix = Matrix.Compose(
+      const scale = m.palm
+        ? own ? Math.min(1.5, Math.max(0.25, p.height / m.top)) : 0.85 + ((h >>> 5) % 100) / 330
+        : Math.min(2, Math.max(0.1, p.height / m.top))
+      Matrix.Compose(
         new Vector3(scale, scale, scale),
         Quaternion.RotationAxis(Vector3.Up(), p.spin),
         // on the ground, not at sea level: a city with any relief left every tree hanging in the air
-        new Vector3(p.x, 0.16 + this.terrain.heightAt(p.x, p.z), p.z))
-      // near the eye the full tree, beyond it the lighter one
-      const d = this.focus ? Math.hypot(p.x - this.focus.x, p.z - this.focus.z) : 0
-      for (const part of d < NEAR_LOD ? model.parts : d < 2.5 * NEAR_LOD ? model.far : model.farther) {
-        const list = buckets.get(part) ?? []
-        list.push(matrix)
-        buckets.set(part, list)
-      }
+        new Vector3(p.x, 0.16 + this.terrain.heightAt(p.x, p.z), p.z)).copyToArray(mats, i * 16)
+      model.push(m)
     })
+    return { mats, model }
+  }
+
+  /** Every tree of the tiles present on its model: the instance buffers, rewritten whole. */
+  private plant(): void {
+    const models = this.models
+    const buckets = new Map<Mesh, Float32Array[]>()
+
+    for (const [k, ps] of this.byTile) {
+      let seat = this.seated.get(k)
+      if (!seat || seat.model.length !== ps.length) { seat = this.seat(ps); this.seated.set(k, seat) }
+      ps.forEach((p, i) => {
+        const model = seat!.model[i]
+        // near the eye the full tree, beyond it the lighter one
+        const d = this.focus ? Math.hypot(p.x - this.focus.x, p.z - this.focus.z) : 0
+        const mat = seat!.mats.subarray(i * 16, i * 16 + 16)
+        for (const part of d < NEAR_LOD ? model.parts : d < 2.5 * NEAR_LOD ? model.far : model.farther) {
+          const list = buckets.get(part) ?? []
+          list.push(mat)
+          buckets.set(part, list)
+        }
+      })
+    }
     this.plantedAt = this.focus ? { ...this.focus } : null
 
     // trees do not move, so the matrices are written once and never touched again
@@ -374,7 +409,7 @@ export class Vegetation {
           continue
         }
         const buf = new Float32Array(list.length * 16)
-        list.forEach((m, i) => m.copyToArray(buf, i * 16))
+        for (let i = 0; i < list.length; i++) buf.set(list[i], i * 16)
         part.thinInstanceSetBuffer('matrix', buf, 16)
         // the box round every copy, or the whole model is culled by where its first trees stood
         part.thinInstanceRefreshBoundingInfo(false)

@@ -1,0 +1,49 @@
+[
+  {
+    "osm": [
+      "way/256477867"
+    ],
+    "name": "Unnamed 73 m tower",
+    "procedural": "unnamedSeventyThreeMeterTower",
+    "front": "street",
+    "height": 73,
+    "note": "no name on record; cream stucco residential punched-window tower",
+    "superseded": "2026-09-22: a generic guess at one of Opera Plaza's three towers, before the complex was understood as six OSM ways; replaced by operaPlazaTower in manual-1"
+  },
+  {
+    "osm": [
+      "way/256477866"
+    ],
+    "name": "Unnamed tower (256477866)",
+    "procedural": "unnamedTower256477866",
+    "front": "street",
+    "height": 73,
+    "note": "no address found; modelled generically from queue archetype (tower/skyscraper)",
+    "superseded": "2026-09-22: a generic guess at one of Opera Plaza's three towers, before the complex was understood as six OSM ways; replaced by operaPlazaTower in manual-1"
+  },
+  {
+    "osm": [
+      "way/255958555"
+    ],
+    "name": "San Francisco Unified School District Administration",
+    "restyle": "classical",
+    "wall": "#dcc8b0",
+    "trim": "#f2f0ea",
+    "by": "haiku",
+    "image": "way-255958555.jpg",
+    "note": "pale building with columns and pediments visible",
+    "height": 10,
+    "superseded": "2026-09-22: refaced by the cheap tier, then modelled properly in civic-1"
+  },
+  {
+    "osm": [
+      "way/542375290"
+    ],
+    "name": "Salesforce Transit Center",
+    "restyle": "tenement",
+    "height": 30,
+    "levels": 5,
+    "note": "rule 8: medium building (levels >= 4)",
+    "superseded": "2026-09-22: an automated sweep gave the Salesforce Transit Center a tenement facade on 'rule 8: medium building (levels >= 4)'. It is a 440 m Pelli Clarke Pelli transit hall under a perforated white aluminium skin with a 5.4-acre park on its roof; it also carries layer=-1 and so was never in the package for the restyle to reach. Modelled as salesforceTransitCenter in transbay."
+  }
+]

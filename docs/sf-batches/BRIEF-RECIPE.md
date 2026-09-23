@@ -22,11 +22,49 @@ never means "skip the visual check". Other agents work in this tree at the same 
 
 ## The loop, per building
 
-1. **Look at it.** One photo is enough:
+1. **Look at it.** FIRST check whether the photographs have already been fetched for you: the queue's photo
+   pipeline (`tools/sf-photos.ts`) downloads street-level views for every building it schedules, into
+   `docs/shots/refs/<batch>/`, named `<osm-id>.jpg` and `<osm-id>-2.jpg` with `/` replaced by `-` — so
+   way/32839686 is `way-32839686.jpg`. Your list names them where they exist. Those are worth more than
+   anything you will find by searching: they are street-level, reprojected flat from 360 panoramas, aimed at
+   the building's nearest wall with the line of sight checked, and two viewpoints are given so a street tree
+   in one is usually clear in the other. Use them.
+
+   If your building has none, fetch one:
+
+       node --experimental-strip-types tools/sf-photos.ts --osm=way/123 --each=2 --out=docs/shots/refs/mine
+
+   and only then fall back to Commons. One photo is enough:
    `curl -s "https://commons.wikimedia.org/w/api.php?action=query&list=search&srnamespace=6&srsearch=<name>+San+Francisco&format=json&srlimit=5"`
    then `curl -sL -A "streetrunner-ref/0.1" -o /tmp/x.jpg "https://commons.wikimedia.org/wiki/Special:FilePath/<File>?width=900"`
    and Read it. If Commons has nothing, one WebSearch for "<name> San Francisco building" and read a description
    (year, architect, material, storeys). Do not spend more than two fetches on one building.
+   **For a TALL building, lead with a web search, not the photograph.** This is the same reason tall buildings
+   skip refacing altogether: street-level imagery photographs them badly. A ninety-metre tower does not fit in
+   the frame, and in a dense downtown it is usually standing behind something shorter — so the picture shows
+   the low building in front of it. Above about sixty metres, search the name and the address first (architect,
+   date, material, storey count, crown, and usually a photograph taken from far enough away to show the whole
+   building), and use the street views only to confirm it and for what they genuinely do show well: the ground
+   floor, the material at street level, the colour.
+
+   **The photograph is not always of the right building.** The aiming is good but not perfect: it can land on
+   the building in front of your target, across the junction from it, or on a neighbour. Check what you see
+   against what you know — above all the HEIGHT on your list. If the list says 90 m and the picture shows a
+   four-storey brick block with a fire escape, the picture is wrong, not the list. Two viewpoints are given;
+   if they disagree about what the building is, that is the same signal.
+
+   **You are free to search the web.** Most buildings above priority 45 have been written about — a name, an
+   address, an architect, a date, a photograph on a property or heritage site. A web search is often faster
+   and more reliable than squinting at a street-level frame, especially for a tall building, which street
+   imagery photographs badly. Use it to confirm what you think you are looking at, and to settle material,
+   date and crown.
+
+   **You may reject the job.** If the evidence genuinely does not add up — a thirty-storey building whose
+   photographs show a house, nothing findable under the name or address, two viewpoints of two different
+   buildings — do NOT invent a model. Add a row to `docs/sf-batches/<district>-hard.md` saying what does not
+   add up, and move on. A wrong building modelled confidently is far more expensive than one left for later:
+   nobody will ever re-examine it. This is a legitimate and expected outcome, not a failure.
+
 2. **Decide.**
    - An ordinary low building whose look is one of the city's styles → a **restyle** entry, no code:
      `{"osm": ["way/123"], "name": "…", "restyle": "chicago", "levels": 6, "note": "why"}`

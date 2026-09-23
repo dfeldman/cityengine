@@ -1,0 +1,25 @@
+[
+  {
+    "osm": [
+      "way/616479968"
+    ],
+    "name": "Union Square Market Street Headhouse",
+    "procedural": "unionSquareHeadhouse",
+    "front": 180,
+    "height": 3,
+    "note": "The north head house of Union Square/Market Street Station on Geary at Stockton, Central Subway 2022: granite pavilion, dark perforated awning over the mouth, glass lift behind Hughen/Starkweather's Convergence art glass, roof terrace. Fitted to way/616479968, the ABOVE-ground structure (building=train_station, building:levels=1) — NOT the list's way/184956226, which is the underground station box. front=180 (not \"street\"): the entrance node/10185148562's footway link leaves it due south, so the mouth faces Geary."
+  },
+  {
+    "name": "Powell Street Station Canopy",
+    "procedural": "powellStreetCanopy",
+    "lat": 37.785441,
+    "lon": -122.406462,
+    "size": [
+      16,
+      14
+    ],
+    "front": 130,
+    "height": 5.2,
+    "note": "The Market & Ellis entrance to Powell Street Station (subway_entrance node/5318198803, BART ref A2), Perkins Eastman's 2018 canopy: a flat champagne plane on four slim columns over frameless glass screens, with the POWELL STREET pylon. STANDALONE, not fitted to way/160331904: that way is the station's UNDERGROUND box (location=underground, 300 m long), which bake.ts drops."
+  }
+]

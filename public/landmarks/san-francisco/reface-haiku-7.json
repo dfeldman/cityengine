@@ -1,0 +1,161 @@
+[
+  {
+    "osm": [
+      "way/194908392"
+    ],
+    "name": "Coterie",
+    "restyle": "skyscraper",
+    "wall": "#5a8fb5",
+    "trim": "#1a1a1a",
+    "by": "haiku",
+    "image": "way-194908392.jpg",
+    "note": "floor-to-ceiling glass panes with thin metal frames, clearly glass skin",
+    "height": 44
+  },
+  {
+    "osm": [
+      "way/256998543"
+    ],
+    "name": "San Francisco Fire Station 38",
+    "restyle": "victorian",
+    "wall": "#f4f1ea",
+    "accent": "#8b6b47",
+    "by": "haiku",
+    "image": "way-256998543.jpg",
+    "note": "bay windows, ornament, cream painted, 3-4 storeys",
+    "height": 8
+  },
+  {
+    "osm": [
+      "way/256487872"
+    ],
+    "name": "(unnamed)",
+    "restyle": "towerblock",
+    "wall": "#c5c5c5",
+    "by": "haiku",
+    "image": "way-256487872.jpg",
+    "note": "44m is 14 storeys, too tall for sfapartment; pale rendered walls with individual punched windows",
+    "height": 44
+  },
+  {
+    "osm": [
+      "way/288531122"
+    ],
+    "name": "1545 Pine Street",
+    "restyle": "towerblock",
+    "wall": "#ebe6da",
+    "accent": "#5a6b7a",
+    "by": "haiku",
+    "image": "way-288531122.jpg",
+    "note": "41m is 13 storeys, exceeds sfapartment ceiling; cream rendered with modern aesthetic",
+    "height": 41
+  },
+  {
+    "osm": [
+      "way/208346633"
+    ],
+    "name": "1285 Van Ness Avenue",
+    "restyle": "towerblock",
+    "wall": "#e5e3dd",
+    "by": "haiku",
+    "image": "way-208346633.jpg",
+    "note": "35m is 11 storeys, well above sfapartment range (4-7); pale cream walls with regular window grid",
+    "height": 35
+  },
+  {
+    "osm": [
+      "way/288511716"
+    ],
+    "name": "San Francisco Towers",
+    "restyle": "towerblock",
+    "wall": "#d0ccc5",
+    "by": "haiku",
+    "image": "way-288511716.jpg",
+    "note": "41m is 13 storeys; modern residential with individual punched windows and balconies",
+    "height": 41
+  },
+  {
+    "osm": [
+      "way/256479507"
+    ],
+    "name": "(unnamed)",
+    "restyle": "towerblock",
+    "wall": "#d8d5d0",
+    "by": "haiku",
+    "image": "way-256479507.jpg",
+    "note": "40m is 13 storeys, exceeds sfapartment; pale rendered with regular window pattern",
+    "height": 40
+  },
+  {
+    "osm": [
+      "way/256984944"
+    ],
+    "name": "(unnamed)",
+    "restyle": "towerblock",
+    "wall": "#e0ddd8",
+    "by": "haiku",
+    "image": "way-256984944.jpg",
+    "note": "41m is 13 storeys; pale walls with modern apartment fenestration",
+    "height": 41
+  },
+  {
+    "osm": [
+      "way/259269878"
+    ],
+    "name": "2100 Pacific Avenue",
+    "restyle": "towerblock",
+    "wall": "#d9d6d0",
+    "by": "haiku",
+    "image": "way-259269878.jpg",
+    "note": "44m is 14 storeys; only towerblock/chicago/brutalist/skyscraper can carry this height; appears to be pale rendered towerblock",
+    "height": 44
+  },
+  {
+    "osm": [
+      "way/197463897"
+    ],
+    "name": "(unnamed)",
+    "restyle": "towerblock",
+    "wall": "#f0edea",
+    "by": "haiku",
+    "image": "way-197463897.jpg",
+    "note": "40m is 13 storeys; pale modern walls with individual windows",
+    "height": 40
+  },
+  {
+    "osm": [
+      "way/257946622"
+    ],
+    "name": "(unnamed)",
+    "restyle": "towerblock",
+    "wall": "#d5d2cd",
+    "by": "haiku",
+    "image": "way-257946622.jpg",
+    "note": "41m is 13 storeys; pale walls with modern balconies/recessed features",
+    "height": 41
+  },
+  {
+    "osm": [
+      "way/160833249"
+    ],
+    "name": "Presidio Branch Library",
+    "restyle": "stucco",
+    "wall": "#f2efe9",
+    "by": "haiku",
+    "image": "way-160833249.jpg",
+    "note": "10m suggests 2-3 storeys, too high for current sfapartment; pale stucco rendered, arched or distinctive windows",
+    "height": 10
+  },
+  {
+    "osm": [
+      "way/939558002"
+    ],
+    "name": "(unnamed)",
+    "restyle": "towerblock",
+    "wall": "#f0ede7",
+    "by": "haiku",
+    "image": "way-939558002.jpg",
+    "note": "41m is 13 storeys; cream/pale walls with mixed glass and solid upper portion",
+    "height": 41
+  }
+]

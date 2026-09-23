@@ -246,6 +246,35 @@ def wall_terracotta(size: int, rnd: random.Random) -> Image.Image:
     return wall_ashlar(size, rnd, course_px=size // 12, joint=1)
 
 
+def wall_precast(size: int, rnd: random.Random) -> Image.Image:
+    """The post-war residential tower: precast concrete panels, one to a storey-and-a-bay, with the recessed
+    joint between them. Where brutalism shows the shuttering boards, this shows the PANEL — a grid of wide
+    joints with a fine aggregate face between, which is what reads on a hillside tower from half a mile off."""
+    img = Image.new('RGBA', (size, size), (223, 220, 212, TINT))
+    d = ImageDraw.Draw(img)
+    panel = size // 4
+    for i in range(0, size, panel):
+        for j in range(0, size, panel):
+            v = rnd.randint(-5, 5)
+            d.rectangle([j + 2, i + 2, j + panel - 3, i + panel - 3], fill=(223 + v, 220 + v, 212 + v, TINT))
+        d.line([(0, i), (size, i)], fill=(199, 196, 189, TINT))            # the recessed joint
+        d.line([(0, i + 2), (size, i + 2)], fill=(238, 236, 229, TINT))    # and the light on its lower lip
+    for j in range(0, size, panel):
+        d.line([(j, 0), (j, size)], fill=(203, 200, 193, TINT))
+        d.line([(j + 2, 0), (j + 2, size)], fill=(236, 234, 227, TINT))
+    grain(img, rnd, 5)
+    blotches(img, rnd, 10, 10, 20, 50)
+    return img
+
+
+def wall_pressedbrick(size: int, rnd: random.Random) -> Image.Image:
+    """The tenement's brick: a darker, tighter, more regular machine-pressed brick than the workhorse wall,
+    so a five-storey walk-up does not come out identical to every other brick building in the city."""
+    img = wall_brick(size, rnd)
+    dark = Image.new('RGBA', (size, size), (150, 96, 78, 70))
+    return Image.alpha_composite(img, dark)
+
+
 WALLS = {
     'haussmann': lambda s, r: wall_ashlar(s, r, course_px=s // 9),
     'classical': lambda s, r: wall_ashlar(s, r, course_px=s // 7),
@@ -255,7 +284,7 @@ WALLS = {
     'brutalist': wall_concrete,
     'skyscraper': wall_spandrel,
     'marais': wall_plaster,
-    'tenement': wall_brick,
+    'tenement': wall_pressedbrick,
     'chicago': wall_terracotta,
     'victorian': wall_siding,
     'vosges': wall_brick,
@@ -264,6 +293,8 @@ WALLS = {
     'sfapartment': lambda s, r: wall_render(s, r, stipple=6),
     'chinatown': wall_brick,
     'edwardian': wall_siding,
+    # the post-war tower's precast panels — NOT brutalism's board-marked concrete
+    'towerblock': wall_precast,
 }
 
 
@@ -724,6 +755,7 @@ WINDOWS = {
     'sfapartment': win_sfapartment,
     'chinatown': win_chinatown,
     'edwardian': win_sfapartment,
+    'towerblock': win_punched,
 }
 
 

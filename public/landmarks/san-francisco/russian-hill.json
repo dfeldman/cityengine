@@ -1,0 +1,19 @@
+[
+  {"osm": ["way/257026417", "way/940057617"], "name": "Royal Towers", "procedural": "royalTowers", "front": "street", "height": 100, "note": "1965 midcentury slab, tan concrete, floor-to-ceiling glass"},
+  {"osm": ["way/262480462"], "name": "The Summit", "procedural": "theSummit", "front": "street", "height": 80, "note": "1965 midcentury slab, taupe concrete, central pier of round-topped niches"},
+  {"osm": ["way/259065179"], "name": "Bellaire Tower", "procedural": "bellaireTower", "front": "street", "height": 70, "note": "1930 white Spanish-deco terracotta, ornate base"},
+  {"osm": ["way/262482831"], "name": "1000 Green Street", "procedural": "oneThousandGreen", "front": "street", "height": 45, "note": "1950 plain white midcentury slab pair"},
+  {"osm": ["way/262741037"], "name": "1080 Chestnut Street", "procedural": "tenEightyChestnut", "front": "street", "height": 62, "note": "1962 cream punched-window midcentury tower"},
+  {"osm": ["way/262482835"], "name": "Green Hill Tower", "restyle": "sfapartment", "height": 72, "levels": 22, "note": "white 1960s apartment tower, not glass"},
+  {"osm": ["way/262741035"], "name": "1090 Chestnut Street", "restyle": "sfapartment", "height": 49, "levels": 13, "note": "cream midcentury apartment building"},
+  {"osm": ["way/262480460"], "name": "945 Green Street", "restyle": "sfapartment", "height": 56, "levels": 14, "note": "white midcentury apartment tower"},
+  {"osm": ["way/262552545"], "name": "2238 Hyde Street", "restyle": "sfapartment", "height": 55, "levels": 16, "note": "white midcentury apartment tower"},
+  {"osm": ["way/262741028"], "name": "1000 Chestnut Street", "restyle": "sfapartment", "height": 44, "levels": 15, "note": "cream midcentury apartment building"},
+  {"osm": ["way/262685646"], "name": "1100 Union Street", "restyle": "sfapartment", "height": 40, "levels": 11, "note": "stucco apartment block, not a Chicago commercial frame"},
+  {"osm": ["way/262716122"], "name": "1201 Greenwich Street", "restyle": "sfapartment", "height": 39, "note": "stucco apartment block"},
+  {"osm": ["way/262559457"], "name": "Crystal Tower Apartments", "restyle": "sfapartment", "height": 39, "levels": 13, "note": "cream apartment tower, not glass"},
+  {"osm": ["way/262480459"], "name": "947 Green Street", "restyle": "sfapartment", "height": 39, "note": "already sfapartment, kept"},
+  {"osm": ["way/262552551"], "name": "Building 262552551", "restyle": "sfapartment", "height": 35, "levels": 10, "note": "stucco apartment block, not a Chicago commercial frame"},
+  {"osm": ["way/1469656012"], "name": "Building 1469656012", "restyle": "sfapartment", "height": 34, "levels": 10, "note": "confirmed against photo: stucco apartment block"},
+  {"osm": ["way/262689154"], "name": "Building 262689154", "restyle": "sfapartment", "height": 34, "levels": 10, "note": "confirmed against photo: stucco apartment block"}
+]

@@ -1,0 +1,67 @@
+[
+  {
+    "osm": [
+      "way/260358486"
+    ],
+    "name": "United Playaz",
+    "restyle": "brick",
+    "height": 0,
+    "wall": "#0047ab",
+    "trim": "#f5f5f5",
+    "by": "haiku",
+    "image": "way-260358486.jpg",
+    "note": "bright blue-painted brick building",
+    "why": "no height known (the queue has none either)"
+  },
+  {
+    "osm": [
+      "way/259256019"
+    ],
+    "name": "Korean Methodist Church",
+    "restyle": "stucco",
+    "wall": "#f5f3f0",
+    "by": "haiku",
+    "image": "way-259256019.jpg",
+    "note": "pale stucco with garage door at pavement level",
+    "why": "no height known (the queue has none either)"
+  },
+  {
+    "osm": [
+      "way/260358486"
+    ],
+    "name": "United Playaz",
+    "restyle": "brick",
+    "wall": "#1a5a9f",
+    "accent": "#4a3d35",
+    "by": "haiku",
+    "image": "way-260358486.jpg",
+    "note": "bright blue painted brick, dark wooden doors/frames",
+    "why": "no height known (the queue has none either)"
+  },
+  {
+    "osm": [
+      "way/260523200"
+    ],
+    "name": "(unnamed)",
+    "restyle": "tenement",
+    "height": 68,
+    "wall": "#a0522d",
+    "by": "haiku",
+    "image": "way-260523200.jpg",
+    "note": "red brick walk-up with deep window openings",
+    "why": "68 m is ~22 storeys; tenement tops out around 6"
+  },
+  {
+    "osm": [
+      "way/1389914425"
+    ],
+    "name": "230 Folsom Street",
+    "restyle": "brick",
+    "wall": "#A0522D",
+    "by": "haiku",
+    "image": "way-1389914425-2.jpg",
+    "note": "tall building with brick/render facade and regular punched windows",
+    "height": 58,
+    "why": "58 m is ~19 storeys; brick tops out around 6"
+  }
+]

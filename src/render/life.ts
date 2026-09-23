@@ -51,11 +51,13 @@ class Pool {
 
   begin(): void { this.used = 0 }
 
-  push(m: Matrix, r: number, g: number, b: number, mix = 1): void {
-    if ((this.used + 1) * 16 > this.matrices.length) return
+  /** False when the pool is full and the copy was dropped — the caller must then drop its shadow too. */
+  push(m: Matrix, r: number, g: number, b: number, mix = 1): boolean {
+    if ((this.used + 1) * 16 > this.matrices.length) return false
     m.copyToArray(this.matrices, this.used * 16)
     this.colours.set([r, g, b, mix], this.used * 4)
     this.used++
+    return true
   }
 
   end(): void {
@@ -167,7 +169,9 @@ export class Life {
      * the way a low sun stretches everything. Without one a car sits on the road like a sticker, which is
      * the single clearest way an object can fail to look part of a scene.
      */
-    this.blobs = new Pool(scene, 'blobs', build(blobQuad), budget.cars + budget.buses + budget.people + 48)
+    // every carriage in every stock pool can want a shadow at once (a rail yard stands them all in one place)
+    const trainCap = this.stockPools.reduce((n, p) => n + (p ? p.variants.length * p.kind.capacity : 0), 0)
+    this.blobs = new Pool(scene, 'blobs', build(blobQuad), budget.cars + budget.buses + budget.people + trainCap + 48)
     this.blobs.mesh.material = blobMaterial(scene)
 
     this.addRails(pkg.rails)
@@ -248,14 +252,33 @@ export class Life {
     void groundY
   }
 
-  /** where the trains are (tools/: the probes aim at them): head position, kind, speed now, dwell left */
-  trainInfo(): { kind: number; x: number; z: number; heading: number; v: number; wait: number; stops: number }[] {
-    return this.trains.map((t) => {
-      const r = this.rails[t.rail]
-      const p = along(r.points, t.s)
-      const q = along(r.points, Math.max(0, Math.min(r.length, t.s - t.dir * 5)))
-      return { kind: r.kind, x: p.x, z: p.z, heading: Math.atan2(p.x - q.x, p.z - q.z), v: t.v, wait: t.wait, stops: r.stops.length }
-    })
+  /** the terrain the last `update` was given, so `trainInfo` can say how high a train's track is */
+  private terrain: Terrain | undefined
+
+  /**
+   * Where the trains are (tools/: the probes aim at them; sim/transit.ts: the rider gets on one): head
+   * position and deck height, kind, speed now, dwell left.
+   *
+   * `id` is the train's index, which is stable for the life of the session — `this.trains` is only ever
+   * appended to, as tiles bring their rails in. A rider aboard one holds that id.
+   */
+  trainInfo(): { id: number; kind: number; x: number; z: number; y: number; heading: number; v: number; wait: number; stops: number }[] {
+    return this.trains.map((t, i) => ({ ...this.train(i)!, id: i, kind: this.rails[t.rail].kind }))
+  }
+
+  /** One train, without building the whole list — what the game asks for every frame while a rider is aboard. */
+  train(id: number): { id: number; kind: number; x: number; z: number; y: number; heading: number; v: number; wait: number; stops: number } | null {
+    const t = this.trains[id]
+    if (!t) return null
+    const r = this.rails[t.rail]
+    const p = along(r.points, t.s)
+    const q = along(r.points, Math.max(0, Math.min(r.length, t.s - t.dir * 5)))
+    const s = Math.max(0, Math.min(r.length, t.s))
+    const y = r.heights ? profileAt(r.points, r.heights, s).y : (this.terrain?.heightAt(p.x, p.z) ?? 0)
+    // the FLOOR, not the axle: a rider carried by this vehicle stands on its deck (render/rolling-stock.ts
+    // `deck`), which on a cable car is most of a metre above the rail
+    return { id, kind: r.kind, x: p.x, z: p.z, y: y + 0.25 + (this.stockPools[r.kind]?.kind.deck ?? 0.9), heading: Math.atan2(p.x - q.x, p.z - q.z),
+      v: t.v, wait: t.wait, stops: r.stops.length }
   }
 
   private pools(): Pool[] {
@@ -270,6 +293,7 @@ export class Life {
 
   update(dt: number, vehicles: readonly Vehicle[], walkers: readonly Walker[], at: { x: number; z: number },
          skip?: ReadonlySet<number>, terrain?: Terrain, focus = at): void {
+    this.terrain = terrain
     const groundAt = (p: { x: number; z: number }): number => terrain?.heightAt(p.x, p.z) ?? 0
     for (const p of this.pools()) p.begin()
     const sun = shadowOffset(DAYLIGHT.sun)
@@ -402,7 +426,9 @@ export class Life {
           new Vector3(p.x, 0.25 + (yF + yB) / 2, p.z), this.m)
         const pool = c === 0 && vp.head ? vp.head : c === k.cars - 1 && vp.tail ? vp.tail : vp.mid
         const liv = vp.liveries ? vp.liveries[t.rail % vp.liveries.length] : k.colour
-        pool.push(this.m, liv[0], liv[1], liv[2])
+        // a full pool drops the carriage; its shadow has to go with it, or a rail yard is full of trains that
+        // are not there (user, 2026-09-22: "trains that randomly disappear - but leave their shadow")
+        if (!pool.push(this.m, liv[0], liv[1], liv[2])) continue
         blob(p, heading, vp.shadow[0], vp.shadow[1], vp.shadow[2])
       }
     }

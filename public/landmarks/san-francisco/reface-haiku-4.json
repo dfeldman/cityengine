@@ -1,0 +1,90 @@
+[
+  {
+    "osm": [
+      "way/242940296"
+    ],
+    "name": "Foundry Square III",
+    "restyle": "towerblock",
+    "wall": "#c0bcb5",
+    "by": "haiku",
+    "image": "way-242940296.jpg",
+    "height": 44
+  },
+  {
+    "osm": [
+      "way/35176304"
+    ],
+    "name": "Hiram W. Johnson State Office Building",
+    "restyle": "brutalist",
+    "wall": "#878783",
+    "by": "haiku",
+    "image": "way-35176304.jpg",
+    "height": 54
+  },
+  {
+    "osm": [
+      "way/197354891"
+    ],
+    "name": "747 Post Street",
+    "restyle": "chicago",
+    "wall": "#c27d6f",
+    "by": "haiku",
+    "image": "way-197354891.jpg",
+    "height": 54
+  },
+  {
+    "osm": [
+      "way/256877082"
+    ],
+    "name": "Women's Resource Center",
+    "restyle": "stucco",
+    "wall": "#f2ede5",
+    "by": "haiku",
+    "image": "way-256877082.jpg",
+    "height": 7
+  },
+  {
+    "osm": [
+      "way/256058407"
+    ],
+    "name": "Courtyard San Francisco Union Square",
+    "restyle": "towerblock",
+    "wall": "#d0c8bc",
+    "by": "haiku",
+    "image": "way-256058407.jpg",
+    "height": 54
+  },
+  {
+    "osm": [
+      "way/79377152"
+    ],
+    "name": "199 New Montgomery Street",
+    "restyle": "chicago",
+    "wall": "#a85645",
+    "by": "haiku",
+    "image": "way-79377152.jpg",
+    "height": 46
+  },
+  {
+    "osm": [
+      "way/259925713"
+    ],
+    "name": "(unnamed)",
+    "restyle": "towerblock",
+    "wall": "#c8bfb5",
+    "by": "haiku",
+    "image": "way-259925713.jpg",
+    "height": 41
+  },
+  {
+    "osm": [
+      "way/260183824"
+    ],
+    "name": "665 Pine Street",
+    "restyle": "tenement",
+    "wall": "#b85545",
+    "by": "haiku",
+    "image": "way-260183824.jpg",
+    "height": 35
+  }
+]

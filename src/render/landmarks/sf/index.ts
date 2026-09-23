@@ -23,6 +23,15 @@ import { WATERFRONT_1 } from './districts/waterfront-1.ts'
 import { WATERFRONT_2 } from './districts/waterfront-2.ts'
 import { CHINATOWN_1 } from './districts/chinatown-1.ts'
 import { CHINATOWN_2 } from './districts/chinatown-2.ts'
+import { CIVIC_1 } from './districts/civic-1.ts'
+import { STATIONS } from './districts/stations.ts'
+import { MODEL_TALL } from './districts/model-tall.ts'
+import { MANUAL_1 } from './districts/manual-1.ts'
+import { MODEL_OPUS } from './districts/model-opus.ts'
+import { MODEL_1 } from './districts/model-1.ts'
+import { MODEL_2 } from './districts/model-2.ts'
+import { MODEL_3 } from './districts/model-3.ts'
+import { RUSSIAN_HILL } from './districts/russian-hill.ts'
 import { HARD_1 } from './districts/hard-1.ts'
 import { TIERA_1 } from './districts/tierA-1.ts'
 import { TIERA_2 } from './districts/tierA-2.ts'
@@ -39,6 +48,9 @@ import { MARKET_EAST } from './districts/market-east.ts'
 import { MARKET_MID } from './districts/market-mid.ts'
 import { MARKET_WEST } from './districts/market-west.ts'
 import { UNION_SQUARE } from './districts/union-square.ts'
+import { PARKS } from './districts/parks.ts'
+import { TRANSBAY } from './districts/transbay.ts'
+import { ART } from './art.ts'
 
 export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   goldenGateBridge, sutroTower, bayBridge, transamericaPyramid, salesforceTower, coitTower, ferryBuilding, cityHall,
@@ -62,5 +74,17 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   ...TIERA_9,
   ...TIERA_10,
   ...HARD_1,
+  ...CIVIC_1,
+  ...STATIONS,
+  ...MODEL_TALL,
+  ...MANUAL_1,
+  ...MODEL_OPUS,
+  ...MODEL_1,
+  ...MODEL_2,
+  ...MODEL_3,
+  ...RUSSIAN_HILL,
   ...MARKET_EAST, ...MARKET_MID, ...MARKET_WEST, ...UNION_SQUARE,
+  ...PARKS,
+  ...TRANSBAY,
+  ...ART,
 }

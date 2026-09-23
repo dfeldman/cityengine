@@ -1,5 +1,13 @@
 # Modelling San Francisco one building at a time — the brief for a district batch
 
+**Reference photographs are already fetched.** `tools/sf-photos.ts` downloads street-level views for every
+building the queue schedules, into `docs/shots/refs/<batch>/<osm-id>.jpg` (and `-2.jpg` for the second
+viewpoint), with `/` replaced by `-`. They are aimed at the building's nearest wall, reprojected flat from 360
+panoramas with the line of sight checked, and they beat anything a search will turn up. Look for yours before
+fetching anything; if it is missing, run
+
+    node --experimental-strip-types tools/sf-photos.ts --osm=way/123 --each=2 --out=docs/shots/refs/mine
+
 Street Runner is a cycling/running game (Vite + TS + Babylon) with a cartoon-flat, stylised look. Paris is done,
 and San Francisco is being built out to the same standard. The user's words (2026-09-22):
 

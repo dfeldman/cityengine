@@ -1,0 +1,116 @@
+[
+  {
+    "osm": [
+      "way/32839686"
+    ],
+    "name": "National Maritime Museum",
+    "restyle": "bauhaus",
+    "height": 10,
+    "wall": "#f5f5dc",
+    "trim": "#505050",
+    "by": "haiku",
+    "image": "way-32839686.jpg",
+    "note": "modernist with horizontal ribbon windows, not brick"
+  },
+  {
+    "osm": [
+      "way/80296721"
+    ],
+    "name": "(unnamed)",
+    "restyle": "towerblock",
+    "height": 93,
+    "wall": "#d4c8b8",
+    "by": "haiku",
+    "image": "way-80296721.jpg",
+    "note": "residential tower with punched windows, not skyscraper"
+  },
+  {
+    "osm": [
+      "way/256587847"
+    ],
+    "name": "501 Fulton Street",
+    "restyle": "bauhaus",
+    "height": 9,
+    "wall": "#7fb3d5",
+    "by": "haiku",
+    "image": "way-256587847.jpg",
+    "note": "modern glass with horizontal ribbons"
+  },
+  {
+    "osm": [
+      "way/260318176"
+    ],
+    "name": "One Hawthorne Street",
+    "restyle": "towerblock",
+    "height": 93,
+    "wall": "#d9d2c3",
+    "trim": "#808080",
+    "by": "haiku",
+    "image": "way-260318176.jpg",
+    "note": "residential tower with punched windows and floor bands, not skyscraper"
+  },
+  {
+    "osm": [
+      "way/196108167"
+    ],
+    "name": "Clayton Street Post Office",
+    "restyle": "victorian",
+    "height": 6,
+    "wall": "#4a70b8",
+    "trim": "#fffaf0",
+    "accent": "#2d3e5f",
+    "by": "haiku",
+    "image": "way-196108167.jpg",
+    "note": "blue victorian with classic bay windows"
+  },
+  {
+    "osm": [
+      "way/32945902"
+    ],
+    "name": "49 South Van Ness Avenue",
+    "restyle": "towerblock",
+    "height": 58,
+    "wall": "#d4c4b0",
+    "trim": "#808080",
+    "by": "haiku",
+    "image": "way-32945902.jpg",
+    "note": "modern residential tower with gridded windows"
+  },
+  {
+    "osm": [
+      "way/243794014"
+    ],
+    "name": "550 California Street",
+    "restyle": "chicago",
+    "height": 55,
+    "wall": "#d4c9b5",
+    "by": "haiku",
+    "image": "way-243794014.jpg",
+    "note": "classical/chicago with ornamental street-level arches"
+  },
+  {
+    "osm": [
+      "way/944039725"
+    ],
+    "name": "300 Montgomery Street",
+    "restyle": "chicago",
+    "height": 58,
+    "wall": "#dac5a0",
+    "by": "haiku",
+    "image": "way-944039725.jpg",
+    "note": "tall ornamental early commercial tower"
+  },
+  {
+    "osm": [
+      "way/256730074"
+    ],
+    "name": "Mandarin Tower",
+    "restyle": "chicago",
+    "height": 57,
+    "wall": "#cbb8a0",
+    "accent": "#8b5a2b",
+    "by": "haiku",
+    "image": "way-256730074.jpg",
+    "note": "ornamental building with arched windows and curved bays, Chicago style"
+  }
+]

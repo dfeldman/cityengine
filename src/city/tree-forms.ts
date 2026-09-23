@@ -30,6 +30,7 @@ export const TREE_FORMS = [
   'queen',        // queen palm: slim trunk, feather crown
   'spiky',        // cabbage tree, yucca, tree fern: a small tuft on a stem
   'windmill',     // windmill palm, Mediterranean fan palm: a small fan palm, four to eight metres
+  'oak',          // the park oak: a big spreading deciduous or coast live oak, not the clipped street Quercus
 ] as const
 
 export type TreeForm = (typeof TREE_FORMS)[number]

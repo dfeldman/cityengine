@@ -1,0 +1,102 @@
+[
+  {
+    "osm": [
+      "way/259920940"
+    ],
+    "name": "Cathedral Apartments",
+    "procedural": "cathedralApartments",
+    "front": "street",
+    "height": 73,
+    "note": "1927 Charles Weeks, Gothic Revival, cream terracotta"
+  },
+  {
+    "osm": [
+      "way/80296718"
+    ],
+    "name": "680 Folsom Street",
+    "procedural": "sixEightyFolsom",
+    "front": "street",
+    "height": 70,
+    "note": "1964, reclad by SOM 2014, dark green glass over patterned podium"
+  },
+  {
+    "osm": [
+      "way/71209418"
+    ],
+    "name": "The Hamilton",
+    "procedural": "theHamilton",
+    "front": "street",
+    "height": 70,
+    "note": "1929 Art Deco Moderne, 18 storeys, 631 O'Farrell St"
+  },
+  {
+    "osm": [
+      "way/93817366"
+    ],
+    "name": "611 Folsom Street",
+    "procedural": "sixElevenFolsom",
+    "front": "street",
+    "height": 71,
+    "note": "telco/office tower, pale precast punched wall, glazed corner"
+  },
+  {
+    "osm": [
+      "way/105027010"
+    ],
+    "name": "501 Beale Street",
+    "procedural": "fiveOOneBeale",
+    "front": "street",
+    "height": 75,
+    "note": "\"The Watermark\", 2006, 22-storey condo tower"
+  },
+  {
+    "osm": [
+      "way/256487870"
+    ],
+    "name": "Unnamed tower (256487870)",
+    "procedural": "unnamedTower256487870",
+    "front": "street",
+    "height": 105,
+    "note": "no address found; tan colonnaded shaft with glazed crown band"
+  },
+  {
+    "osm": [
+      "way/288499675"
+    ],
+    "name": "Clay-Jones Apartments",
+    "procedural": "clayJonesApartments",
+    "front": "street",
+    "height": 70,
+    "note": "1927-30 Art Deco, 22 storeys, 121ft roof antenna, 1250 Jones St"
+  },
+  {
+    "osm": [
+      "way/112774489"
+    ],
+    "name": "303 Second Street",
+    "procedural": "threeOThreeSecondStreet",
+    "front": "street",
+    "height": 62,
+    "note": "1988 SoMa office complex over a plaza podium"
+  },
+  {
+    "osm": [
+      "way/256487823"
+    ],
+    "name": "Cathedral Hill Tower",
+    "procedural": "cathedralHillTower",
+    "front": "street",
+    "height": 90,
+    "note": "1966, 25 storeys, 1200 Gough St, crenellated parapet"
+  },
+  {
+    "osm": [
+      "relation/3493147"
+    ],
+    "name": "Clock Tower Building",
+    "procedural": "clockTowerBuilding",
+    "front": "street",
+    "height": 75,
+    "note": "Schmidt Lithograph Co. 1907-08, steel-frame corner clock tower"
+  }
+]

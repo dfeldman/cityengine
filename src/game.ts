@@ -59,7 +59,8 @@ import { Minimap } from './ui/minimap.ts'
 import { LocalControls, type Controls } from './controls.ts'
 import type { Platform } from './platform.ts'
 import { Tools } from '@babylonjs/core/Misc/tools'
-import { Navigator } from './sim/navigate.ts'
+import { Navigator, pointAlong } from './sim/navigate.ts'
+import { Transit, type Placer, type TransitKind, type VehicleView } from './sim/transit.ts'
 import { Ride, cornerRadius } from './sim/ride.ts'
 import { addEdges, departureBearing, resolve, type CityGraph, type Edge } from './city/graph.ts'
 import { locate, rideExits, type RideGraph } from './city/ridegraph.ts'
@@ -558,6 +559,82 @@ export async function game(canvas: HTMLCanvasElement, opts: {
 
   addEventListener('keydown', (e) => { if (e.code === 'KeyM') minimap.toggle() })
 
+  /*
+   * Public transport (src/sim/transit.ts). The vehicles are the ones `Life` is already running along the
+   * baked rails; all that happens here is that the rider is allowed onto one of them, and their position
+   * comes from the vehicle instead of from the graph until they get off.
+   *
+   * Only the surface streetcar and cable-car track — kinds 2 and 3 in `Life` (tram track, and tram track
+   * with no power). Kind 0 is the main line, kind 1 the métro, kind 4 Muni Metro's light rail: none of
+   * those is something a rider wheels a bike onto.
+   */
+  const transit = new Transit()
+  const BOARDABLE = new Map<number, TransitKind>([[2, 'streetcar'], [3, 'cable']])
+  const vehicleView = (t: { id: number; kind: number; x: number; z: number; y: number; heading: number; v: number; wait: number }): VehicleView => ({
+    id: String(t.id), kind: BOARDABLE.get(t.kind) ?? 'streetcar', x: t.x, z: t.z, y: t.y,
+    heading: t.heading, speed: t.v, dwelling: t.wait > 0,
+  })
+  /** every vehicle worth offering — or, while aboard, just the one being ridden */
+  function transitViews(): VehicleView[] {
+    const on = transit.aboard
+    if (on) {
+      const t = life.train(Number(on.id))
+      return t ? [vehicleView(t)] : []
+    }
+    // a line with no stops never dwells, so it can never be boarded: leave it out of the search entirely
+    return life.trainInfo().filter((t) => BOARDABLE.has(t.kind) && t.stops > 0).map(vehicleView)
+  }
+  /**
+   * Back onto the ride graph, facing the way the vehicle was going. `reversed` is chosen by comparing the
+   * edge's own direction with the vehicle's heading, so a rider put down on Hyde Street is not facing back
+   * up the hill they just came down.
+   */
+  const placeOnGraph: Placer = (p, heading) => {
+    const got = nearestOnGraph(rides, p)
+    if (!got) return null
+    const e = rides.edges.get(got.edgeId)!
+    const a = pointAlong(e.points, Math.max(0, got.s - 2))
+    const b = pointAlong(e.points, Math.min(e.length, got.s + 2))
+    const along = Math.atan2(b.x - a.x, b.z - a.z)
+    let d = heading - along
+    while (d > Math.PI) d -= 2 * Math.PI
+    while (d < -Math.PI) d += 2 * Math.PI
+    return { pos: { edgeId: got.edgeId, s: got.s, reversed: Math.abs(d) > Math.PI / 2 }, d: got.d }
+  }
+  /** Put the rider back on the street at `pos`, and let the city stream round where they now are. */
+  function backOnStreet(pos: { edgeId: number; s: number; reversed: boolean }): void {
+    nav.placeAt(pos)
+    const p = nav.at()
+    city.update(p.x, p.z)
+    camHeading = nav.heading()
+  }
+  addEventListener('keydown', (e) => {
+    if (e.target instanceof HTMLElement && e.target.closest('input, textarea, select')) return
+    if (e.code === 'Escape' && transit.aboard) {
+      // the escape hatch: off, here, whatever it takes (sim/transit.ts `abandon`)
+      const pos = transit.abandon(placeOnGraph)
+      if (pos) backOnStreet(pos)
+      hud.banner('Off the transit', 'put back on the nearest street')
+      return
+    }
+    if (e.code !== 'KeyB') return
+    if (transit.aboard) {
+      const r = transit.alight(placeOnGraph)
+      if (r.status === 'ok') { backOnStreet(r.pos); hud.banner('Off you get', placeName(nav.at())) }
+      else if (r.status === 'moving') hud.note('wait for the next stop')
+      else hud.note('no street to get off onto here')
+      return
+    }
+    const v = transit.boardable
+    if (!v) return
+    if (transit.board(nav.position)) {
+      destination = null
+      tour = null
+      clearRoute()
+      hud.banner(`Aboard the ${v.name ?? (v.kind === 'cable' ? 'cable car' : 'streetcar')}`, 'B at any stop to get off · Esc to get off anywhere')
+    }
+  })
+
   // debugging: freeze and look around, and copy where you are (see ui/debug.ts)
   const orbit = new OrbitLook(canvas)
   const proj = new Projection(pkg.origin)
@@ -673,7 +750,29 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     last = now
 
     if (!controls.paused()) {
-      for (const t of controls.steering()) {
+      /*
+       * The transit (sim/transit.ts): which vehicle is near enough to get on, or where the one being ridden
+       * has got to. Every frame while aboard — the rider's position comes from it — and a few times a second
+       * otherwise, because the search is over every train in the city.
+       */
+      if (transit.aboard || frames % 6 === 0) {
+        transit.update({ x: lastAt.x, z: lastAt.z, speed: lastState?.speed ?? 0 }, transitViews())
+        // the vehicle stopped being reported (its line was rebuilt): put the rider down rather than let
+        // them follow a ghost
+        if (transit.vehicleLost) {
+          const pos = transit.abandon(placeOnGraph)
+          if (pos) backOnStreet(pos)
+          hud.banner('Off the transit', 'the vehicle is no longer running')
+        }
+      }
+      const prompt = transit.prompt()
+      if (prompt) hud.transit(prompt)
+      else hud.transit(null)
+
+      // Always drained, even aboard the transit: `steering()` empties a queue, and presses kept while the
+      // rider was on a cable car would all fire the frame they stepped off — including a U-turn.
+      const steers = controls.steering()
+      for (const t of transit.aboard ? [] : steers) {
         if (t === 'back') { nav.turnAround(); continue }
         /*
          * Item H: a press with the next junction more than six seconds away is a NUDGE across the
@@ -692,7 +791,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         }
       }
 
-      const junction = nav.next()
+      const junction = transit.aboard ? null : nav.next()
       // a star junction's exits by name (BUGS.md #40): the one the rider (or the GPS) picked, else the turn's
       if (junction && !junction.passThrough) {
         const picked = nav.requestedEdge ?? resolve(junction.exits, nav.requested)?.edgeId ?? null
@@ -753,12 +852,18 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       const surface = graph.edges.get(nav.mapEdgeId())?.surface ?? edge.surface
       // frozen for debugging: the ride model is not stepped at all, so the rider is exactly where they were
       // and paused on the platform: frozen too, the gap not integrated (docs/GAME_AUTHORING.md "Paused")
-      const hold = frozen || controls.paused()
-      const state = hold && lastState ? { ...lastState, speed: 0 } : ride.step(dt, controls.measured(),
-        opts.device, surface, ground.grade, radius, junction?.ahead ?? Infinity)
+      /*
+       * Aboard a cable car or a streetcar, the rider is not riding: the ride model is not stepped, the
+       * navigator is not advanced, and the trainer is asked for no resistance at all. The vehicle carries
+       * them, at its own speed, and the distance it covers is the vehicle's, not theirs.
+       */
+      const riding = transit.aboard !== null
+      const hold = frozen || controls.paused() || riding
+      const state = hold && lastState ? { ...lastState, speed: 0, power: riding ? 0 : lastState.power, grade: riding ? 0 : lastState.grade }
+        : ride.step(dt, controls.measured(), opts.device, surface, ground.grade, radius, junction?.ahead ?? Infinity)
       lastState = state
       if (!opts.freeze && !hold) nav.advance(state.speed * dt, state.speed)
-      controls.request(state.grade * 100)
+      controls.request(riding ? 0 : state.grade * 100)
 
       /*
        * Where the rider is DRAWN: round the corner on an arc (Navigator.smoothed), not snapping 90° at the
@@ -768,10 +873,17 @@ export async function game(canvas: HTMLCanvasElement, opts: {
        */
       const sm = nav.smoothed()
       const centre = nav.at()
-      const at = sm.point
-      const heading = sm.heading
-      const groundY = sm.lean === 0 ? ground.y
+      let at = sm.point
+      let heading = sm.heading
+      let groundY = sm.lean === 0 ? ground.y
         : ground.y + city.terrain.heightAt(at.x, at.z) - city.terrain.heightAt(centre.x, centre.z)
+      // …unless they are on the transit, in which case they are wherever the vehicle is, on its deck
+      const onBoard = transit.at
+      if (onBoard) {
+        at = { x: onBoard.x, z: onBoard.z }
+        heading = onBoard.heading
+        groundY = onBoard.y
+      }
       lastAt = at
       lastY = groundY
       if (!frozen) city.update(at.x, at.z)
@@ -832,14 +944,20 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         // the city streams around the focus, so walking the view away does not walk off the built area
         city.update(l.x, l.z)
       }
-      const want = high ? 46 : 7.5
-      const room = high ? want : city.clearBehind(at.x, at.z, -fx, -fz, want)
+      /*
+       * Aboard, the camera has to clear the vehicle it is riding on. A PCC is fourteen metres long and the
+       * chase camera's usual 7.5 m puts the eye inside the saloon, looking at the roof; standing it back
+       * behind the car and a little higher makes the ride what it is meant to be — the view from the
+       * running board.
+       */
+      const want = high ? 46 : riding ? 22 : 7.5
+      const room = high || riding ? want : city.clearBehind(at.x, at.z, -fx, -fz, want)
       camBack += (room - camBack) * Math.min(1, dt * (room < camBack ? 12 : 3))
       // the camera rides the hill with the rider, looking at where the road actually goes
       const aheadY = city.terrain.heightAt(at.x + fx * 12, at.z + fz * 12)
       // under a passage's vault, and behind the rider along it, the camera drops below the arch
       const vault = high ? null : city.passageAt(at.x - fx * camBack, at.z - fz * camBack) ?? city.passageAt(at.x, at.z)
-      const lift = high ? 34 : vault === null ? 3.5 : Math.max(1.9, Math.min(3.5, vault - 1.0))
+      const lift = high ? 34 : riding ? 6.5 : vault === null ? 3.5 : Math.max(1.9, Math.min(3.5, vault - 1.0))
       camHeight += (lift + groundY - camHeight) * Math.min(1, dt * (vault === null ? 4 : 8))
       if (!frozen) {
         camera.position.set(at.x - fx * camBack, camHeight, at.z - fz * camBack)
@@ -895,7 +1013,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         hud.landmarkNear(best?.name ?? null, best?.side)
       }
       card?.update(at, heading)
-      hud.update(junction, nav.requested, nav.isCommitted, {
+      hud.update(riding ? null : junction, nav.requested, nav.isCommitted, {
         speed: state.speed, power: state.power, distance: nav.travelled,
         street: edge.name, device: opts.device,
       })
@@ -992,6 +1110,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   w.__landmarks = landmarks
   w.__boats = () => river?.positions() ?? []
   w.__trains = () => life.trainInfo()
+  // the transit (sim/transit.ts): the vehicle simulation and the boarding state, for probing the wiring
+  // without a bake — `__life.addStops([{x, z}])` puts a stop on a line that has none
+  w.__life = life
+  w.__transit = transit
+  w.__board = () => (transit.boardable ? transit.board(nav.position) : false)
   // the prepared tiles, for probing what reached the city (tools/, debugging)
   w.__tiles = prepared.tiles
   // nothing left to stream round the camera's focus (render/city.ts `idle`)

@@ -165,9 +165,16 @@ export const CITIES: CitySpec[] = [
      * north to the Golden Gate and its Marin end. Most of that is water, and the detail box below keeps the
      * buildings over the city itself — Oakland is in the box only as roads and shoreline.
      */
-    box: { west: 6200, east: 7800, north: 4600, south: 2600 },
-    /** the city, the waterfront, and the streets between the Presidio and Golden Gate Park */
-    detail: { west: 5200, east: 2400, north: 2400, south: 2600 },
+    box: { west: 9800, east: 7800, north: 4600, south: 3600 },
+    /*
+     * West to the ocean and south past Golden Gate Park. The park runs five kilometres from Stanyan Street to
+     * Ocean Beach and the Presidio fills the north-west corner; a game whose players spend their time riding
+     * and running in parks cannot stop a third of the way along the biggest one (user, 2026-09-22: "I
+     * definitely want to walk or run through the big parks"). The detail box now reaches the same way west,
+     * because the parks have buildings in them worth drawing. Some of Marin and Daly City fall inside the
+     * corners; nothing is spent on them.
+     */
+    detail: { west: 9800, east: 2400, north: 2400, south: 3600 },
     ground: 'grass',
     styles: [
       { id: 'victorian', weight: 5 },

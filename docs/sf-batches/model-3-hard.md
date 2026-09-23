@@ -1,0 +1,3 @@
+| name | osm | height | lat, lon | what makes it hard | reference photo URL |
+|---|---|---|---|---|---|
+| (unnamed) | way/148428438 | 68 m | n/a (not looked up) | No identifying name or address on the list to lead a web search with, and both street photographs (way-148428438.jpg, -2.jpg) show only an ordinary Nob-Hill-style street of low Victorian/Edwardian rowhouses — no tower anywhere in either frame, front or back. Two viewpoints agree with each other but disagree completely with the 68 m on the list, which is the same "photo aimed at the wrong thing" signal the brief warns about, except here there is nothing tall in shot at all to even be the wrong building. Without a name there is nothing to search for either. | docs/shots/refs/model3/way-148428438.jpg |

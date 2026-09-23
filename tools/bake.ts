@@ -59,10 +59,12 @@ const worthNaming = (t: Record<string, string>): boolean =>
 import getBuildingParamsFromOSMTags from '../src/vendor/streets-gl/osm/getBuildingParamsFromOSMTags.ts'
 import { region } from '../src/city/region.ts'
 import { classifierFor } from '../src/city/building-types.ts'
+import { buildSigns } from './signs.ts'
 import { insetNested } from '../src/city/nesting.ts'
 import { NeighbourGrid, centroid, hasHeightTag, inferLevels, taggedLevels, type TaggedNeighbour } from './heights.ts'
 
 const OUT = resolve(import.meta.dirname, '..', 'public', 'cities')
+const DOCS = resolve(import.meta.dirname, '..', 'docs')
 /** how far beyond the box the fringe of plain massing reaches, metres */
 const FRINGE = 700
 
@@ -151,8 +153,11 @@ function pavementForNA(width: number): number {
   return 3.8
 }
 
+// track/bridleway added alongside footway/path/pedestrian/steps: a Presidio fire road or a park bridle path
+// IS the trail, with no separate pavement to carve out of a phantom carriageway either side of it
 const isFoot = (t: Record<string, string>): boolean =>
   t.highway === 'footway' || t.highway === 'path' || t.highway === 'pedestrian' || t.highway === 'steps'
+  || t.highway === 'track' || t.highway === 'bridleway'
 
 /** two boxes the same, to the metre: then the wide fetch would only repeat the near one */
 const sameBox = (a: { south: number; north: number; west: number; east: number }, b: typeof a): boolean =>
@@ -382,7 +387,12 @@ async function bake(spec: CitySpec): Promise<void> {
    * does everything else exactly as it would for a mapper's number.
    */
   const reg = region(spec.region)
+  // the city's own sign lettering (tools/signgen): generated, never checked in
+  buildSigns(spec.id)
+
   const classify = classifierFor(spec.region)
+  /** one row per building: what the classifier decided and which rule decided it (written out below) */
+  const audit: string[] = []
   // and the city's own records, where the region has them: SF's Assessor rolls (tools/sf-parcels.ts)
   const recordOf = spec.region === 'san-francisco'
     ? await import('./sf-parcels.ts').then(async (m) => m.parcelIndex(await m.fetchRolls(detailBboxOf(spec))))
@@ -481,8 +491,23 @@ async function bake(spec: CitySpec): Promise<void> {
         { levels: p.buildingLevels, height: p.buildingHeight, material: p.buildingFacadeMaterial,
           building: w.tags.building },
         spec.styles, w.id))
+    /*
+     * The audit row: which rule gave this building its look. Without it a systematically wrong style — every
+     * residential tower drawn as a glass office block — can only be found by riding past one (user,
+     * 2026-09-22). With it, `docs/<city>-archetypes.csv` groups the whole city by rule.
+     */
+    audit.push([owner?.id ?? w.id, w.geometry[0].lat.toFixed(6), w.geometry[0].lon.toFixed(6),
+      Math.round((owner ? ownerP!.buildingHeight : p.buildingHeight) ?? 0), Math.round(area(ownerRing)),
+      kind?.district ?? '', kind?.archetype ?? '', kind ? kind.rule : 'chooseStyle',
+      styleId, styleId !== (kind?.style ?? styleId) ? 'overridden' : ''].join(','))
     const raised = raiseTo.get(w.id)
     const tall = raised !== undefined && raised > (p.buildingHeight ?? 0)
+    /*
+     * Mark the buildings whose storeys we GUESSED. Every building leaves the bake with a height, so nothing
+     * downstream can otherwise tell a surveyed twelve metres from an invented one — and a refacing entry that
+     * counted the floors in a photograph should be allowed to correct the invention while never touching the
+     * survey (src/render/prepare.ts).
+     */
     buildings.push({
       id: w.id,
       ring: packPoints(ccwRing),
@@ -1087,6 +1112,13 @@ async function bake(spec: CitySpec): Promise<void> {
 
   // a building mapped inside another pulled in a hand's width, so their shared walls stop z-fighting — here,
   // over the whole city: per streamed tile the pair were often in different tiles and never met (BUGS.md #24)
+  // the audit trail, grouped by rule so a systematically wrong style is one sort away (docs/BUILDINGS.md)
+  await writeFile(resolve(DOCS, `${spec.id}-archetypes.csv`),
+    ['osm,lat,lon,height,area,district,archetype,rule,style,note', ...audit].join('\n') + '\n')
+  const byRule = new Map<string, number>()
+  for (const row of audit) { const r = row.split(',')[7]; byRule.set(r, (byRule.get(r) ?? 0) + 1) }
+  console.log(`  ${audit.length} buildings classified by ${byRule.size} rules → docs/${spec.id}-archetypes.csv`)
+
   const nested = insetNested(buildings)
   buildings.length = 0
   buildings.push(...nested)
@@ -1141,7 +1173,11 @@ async function bake(spec: CitySpec): Promise<void> {
       .then(async ([t, f]) => f.sfPlantings(await t.fetchStreetTrees(detailBboxOf(spec)), (g) => proj.toLocal(g), () => true))
       .catch((e: unknown) => { console.warn(`  sf-trees: not fetched (${String(e).slice(0, 120)})`); return undefined })
     : undefined
-  pkg.plantings = packPlantings(plantCity(pkg, cap, street))
+  // what grows INSIDE the parks, where the city's street tree list stops (city/park-planting.ts)
+  const parks = spec.region === 'san-francisco'
+    ? await import('../src/city/sf/parks.ts').then((m) => m.sfParkRule((g) => proj.toLocal(g)))
+    : undefined
+  pkg.plantings = packPlantings(plantCity(pkg, cap, street, parks))
   console.log(`  ${pkg.plantings.length / 5} trees planted (${street ? `${street.length} street trees from the city's list, ` : ''}mapped, parks, boulevards; cap ${cap} over ${km2.toFixed(1)} km²)`)
   await mkdir(OUT, { recursive: true })
   const file = resolve(OUT, `${spec.id}.json`)
@@ -1358,9 +1394,12 @@ function areaKind(w: OsmWay): PackedArea['kind'] | null {
     || Number(t.layer ?? 0) < 0) return null
   if (t.natural === 'water' || t.waterway === 'riverbank') return 'water'
   if (t.natural === 'wood' || t.landuse === 'forest') return 'wood'
-  if (t.leisure === 'park' || t.leisure === 'garden') return 'park'
+  // nature_reserve: most of the Presidio's wild edge and Lands End are tagged this way and nothing else
+  if (t.leisure === 'park' || t.leisure === 'garden' || t.leisure === 'nature_reserve') return 'park'
   if (t.leisure === 'pitch') return 'pitch'
-  if (t.landuse === 'grass' || t.landuse === 'meadow') return 'grass'
+  // scrub is the dune and coastal-bluff planting of the Presidio and Lands End: grass to look at, and the
+  // park rule plants it thinly rather than as forest
+  if (t.landuse === 'grass' || t.landuse === 'meadow' || t.natural === 'scrub') return 'grass'
   if ((t.highway === 'pedestrian' && (t.area === 'yes' || t.type === 'multipolygon')) || t['area:highway'] || t.place === 'square') return 'paved'
   return null
 }
@@ -1384,7 +1423,10 @@ async function main(): Promise<void> {
           .then(async ([t, f]) => f.sfPlantings(await t.fetchStreetTrees(bboxOf(spec)), (g) => proj.toLocal(g),
             (x, z) => Math.abs(x) <= pkg.radius && Math.abs(z) <= pkg.radius))
         : undefined
-      pkg.plantings = packPlantings(plantCity(pkg, cap, street))
+      const parks = spec.region === 'san-francisco'
+        ? await import('../src/city/sf/parks.ts').then((m) => m.sfParkRule((g) => proj.toLocal(g)))
+        : undefined
+      pkg.plantings = packPlantings(plantCity(pkg, cap, street, parks))
       console.log(`${spec.id}: ${pkg.plantings.length / 5} trees planted${street ? ` (${street.length} from the city's list)` : ''}`)
       await writeFile(resolve(OUT, `${spec.id}.json`), JSON.stringify(pkg))
       await writeTiles(pkg, region(spec.region).riverDrop ?? 0)

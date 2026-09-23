@@ -1,0 +1,63 @@
+[
+  {
+    "osm": [
+      "way/80296729"
+    ],
+    "name": "201 Third Street",
+    "restyle": "towerblock",
+    "wall": "#d9b88f",
+    "groundWall": "#8b7355",
+    "by": "haiku",
+    "image": "way-80296729-2.jpg",
+    "note": "Cream/tan rendered wall with dark shopfront",
+    "height": 46
+  },
+  {
+    "osm": [
+      "way/288794277"
+    ],
+    "name": "150 Otis Street",
+    "restyle": "towerblock",
+    "wall": "#dab59a",
+    "by": "haiku",
+    "image": "way-288794277-2.jpg",
+    "note": "Tan/cream rendered facade with punched windows",
+    "height": 48
+  },
+  {
+    "osm": [
+      "way/273538821"
+    ],
+    "name": "Sagebrook",
+    "restyle": "towerblock",
+    "wall": "#e8e5dc",
+    "by": "haiku",
+    "image": "way-273538821-2.jpg",
+    "note": "Small cream/pale commercial block with modern facade",
+    "height": 11
+  },
+  {
+    "osm": [
+      "way/151316281"
+    ],
+    "name": "The Huntington Hotel",
+    "restyle": "classical",
+    "wall": "#f5f3ed",
+    "by": "haiku",
+    "image": "way-151316281.jpg",
+    "note": "White rendered facade with regular fenestration",
+    "height": 45
+  },
+  {
+    "osm": [
+      "way/93817371"
+    ],
+    "name": "633 Folsom Street",
+    "restyle": "bauhaus",
+    "wall": "#bfbbb3",
+    "by": "haiku",
+    "image": "way-93817371-2.jpg",
+    "note": "Modern building with horizontal window bands",
+    "height": 48
+  }
+]

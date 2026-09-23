@@ -1,0 +1,20 @@
+[
+  {
+    "osm": [
+      "way/542375290",
+      "relation/8524888"
+    ],
+    "name": "Salesforce Transit Center",
+    "procedural": "salesforceTransitCenter",
+    "lat": 37.7891166,
+    "lon": -122.3968718,
+    "size": [
+      438,
+      56
+    ],
+    "front": 45,
+    "height": 21,
+    "stone": false,
+    "note": "Pelli Clarke Pelli 2018, with PWP's Salesforce Park on the roof, the Mission Street gondola and the bridge from Salesforce Tower. Placed at a point with a size, not on its OSM footprint: way/542375290 carries layer=-1 and relation/8524888 level=3, and the bake drops both — there is no building and no park polygon in the package here. front 45 turns the model's +z (its front) to bearing 315, the Mission/Minna side, where the gondola and the bridge are."
+  }
+]

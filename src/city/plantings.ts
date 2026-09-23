@@ -6,6 +6,7 @@
  */
 import { onSurface, unpackPoints, type CityPackage } from './package.ts'
 import { Carriageways, type Near } from './carriageways.ts'
+import { GREEN, inside, plantParks, type ParkRule } from './park-planting.ts'
 
 export interface Planting {
   x: number; z: number; height: number; spin: number; park: boolean
@@ -49,7 +50,7 @@ export const TREES_PER_KM2 = 1000
  * the park scatter then, since a tree that is really there is not one to thin.
  */
 export function plantCity(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Partial<Pick<CityPackage, 'buildings'>>, cap = TREE_CAP,
-                          given?: Planting[]): Planting[] {
+                          given?: Planting[], parks?: ParkRule): Planting[] {
   const street = given ? seatTrees(given, pkg) : undefined
   const out: Planting[] = []
   const r = mulberry(0x5eed ^ pkg.edges.length)
@@ -69,9 +70,18 @@ export function plantCity(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & 
     out.push({ x: trees[i], z: trees[i + 1], height: 6.5 + r() * 3, spin: r() * 6.28, park: false })
   }
 
-  // 2. parks, gardens and grass, scattered by rejection sampling inside the polygon
-  for (const a of pkg.areas) {
-    if (a.kind === 'water' || a.kind === 'pitch' || a.kind === 'paved') continue
+  /*
+   * 2. Parks, gardens and grass.
+   *
+   * With a region's own park rule (San Francisco: city/sf/parks.ts) the interiors get the real pass in
+   * city/park-planting.ts — density, species and clumping by where you are standing, nothing on the paths,
+   * a ceiling per tile — and those trees are kept out of the city-wide thinning below: a park that is a
+   * forest is a forest, and decimating it to make room for boulevard rows is how it stopped being one.
+   * Without a rule, the old rejection scatter, which is what Paris is tuned for.
+   */
+  const parked = parks ? plantParks(pkg, parks) : []
+  for (const a of parks ? [] : pkg.areas) {
+    if (!GREEN.has(a.kind)) continue
     const ring = unpackPoints(a.ring)
     let minx = Infinity; let maxx = -Infinity; let minz = Infinity; let maxz = -Infinity
     for (const p of ring) {
@@ -145,7 +155,10 @@ export function plantCity(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & 
   // the ceiling: every k-th tree kept, evenly, so no one place is thinned more than another
   // (and none of them growing out of a building either, however it got there: BUGS.md #47)
   const rest = pkg.buildings ? seatTrees(thin(out, cap), pkg, false) : thin(out, cap)
-  return street ? [...street, ...rest] : rest
+  // the park pass has already kept off the roads and the paths; it still goes through seatTrees for the
+  // buildings, which the park polygons happily cover (the Conservatory, the de Young, the Main Post)
+  const inParks = parked.length > 0 && pkg.buildings ? seatTrees(parked, pkg, false) : parked
+  return [...(street ?? []), ...rest, ...inParks]
 }
 
 function thin(out: Planting[], cap: number): Planting[] {
@@ -247,17 +260,6 @@ export function seatTrees(trees: Planting[], pkg: Pick<CityPackage, 'edges'> & P
     out.push({ ...tree, x, z })
   }
   return out
-}
-
-/** Even-odd point in polygon. */
-function inside(ring: { x: number; z: number }[], x: number, z: number): boolean {
-  let hit = false
-  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
-    const a = ring[i]
-    const b = ring[j]
-    if ((a.z > z) !== (b.z > z) && x < ((b.x - a.x) * (z - a.z)) / (b.z - a.z) + a.x) hit = !hit
-  }
-  return hit
 }
 
 function mulberry(seed: number): () => number {

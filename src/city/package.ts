@@ -74,6 +74,12 @@ export interface PackedBuilding {
   /** rgb 0–1 */
   roofColour: [number, number, number]
   /**
+   * Paint forced by a landmark entry, in place of the style's own seeded palette — this is what a reface
+   * writes. Set in render/prepare.ts and read in render/city.ts; it was working only because the packed
+   * city arrives as untyped JSON, so neither end was ever checked against this interface.
+   */
+  palette?: { wall: string; trim: string; roof: string; accent: string; ground?: string }
+  /**
    * Courtyards: the inner rings of a multipolygon building, flattened x,z pairs, CLOCKWISE — so the wall
    * builder's outward normal for each points into the court. 726 of the Marais's 730 building relations have
    * one; without them every courtyard was roofed over.
@@ -97,6 +103,8 @@ export interface PackedFringe {
   roof: RoofShape
   roofHeight: number
   roofColour: [number, number, number]
+  /** paint forced by a landmark entry, in place of the style's own seeded palette */
+  palette?: { wall: string; trim: string; roof: string; accent: string; ground?: string }
   /** the OSM way id: the seed for its palette */
   id: number
 }

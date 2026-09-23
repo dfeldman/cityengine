@@ -121,8 +121,23 @@ export function tilePreparer(entries: LandmarkEntry[], index: Pick<CityIndex, 'o
       // only ever lowers them
       const height = e.height !== undefined && (b.minHeight ?? 0) < 1 ? { height: e.height, levels: e.levels }
         : e.eaves !== undefined && b.height !== undefined && b.height > e.eaves && (b.minHeight ?? 0) < e.eaves
-          ? { height: e.eaves, levels: e.levels } : {}
-      return { ...b, style: st, ...roof, ...height, roofColour: hexRgb(e.roofColour ?? pal.roof) }
+          ? { height: e.eaves, levels: e.levels }
+        /*
+         * Storeys counted off a photograph, for the buildings OSM describes with neither a height nor a floor
+         * count — churches, halls, theatres, the cable car barn: 56 of them in San Francisco. The bake guesses
+         * for those, and a guess is what puts three floors of windows on a building with one tall room. A
+         * model cannot judge metres from a picture but it can count floors, which is the one dimension where
+         * looking beats the data. It only ever replaces a GUESS: `levelsInferred` marks the 5,616 buildings
+         * the bake invented storeys for, and an entry's `levels` is ignored on every other building, so it can
+         * never overwrite what OSM actually surveyed.
+         */
+          : e.levels !== undefined && b.levelsInferred && (b.minHeight ?? 0) < 1
+            ? { levels: e.levels, height: e.levels * 3.4 } : {}
+      // paint named on the entry wins over the style's seeded palette; anything not named keeps the style's
+      const paint = e.wall || e.trim || e.accent || e.groundWall
+        ? { palette: { wall: e.wall ?? pal.wall, trim: e.trim ?? pal.trim, roof: e.roofColour ?? pal.roof, accent: e.accent ?? pal.accent, ...(e.groundWall ? { ground: e.groundWall } : {}) } }
+        : {}
+      return { ...b, style: st, ...roof, ...height, ...paint, roofColour: hexRgb(e.roofColour ?? pal.roof) }
     }))
     return { ...t, buildings, fringe: t.fringe.filter((f) => !replaced.has(f.id)) }
   }

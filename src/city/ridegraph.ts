@@ -46,7 +46,16 @@ const RIDEABLE_MOTORWAY = new Set(['motorway', 'trunk', 'motorway_link', 'trunk_
  * Francisco the stairways ARE where people run (user, 2026-09-22: "there are SO MANY public stairs… we need to
  * have a way to insert stairs"; the Filbert, Greenwich and Lyon Street steps). The bike graph still has none.
  */
-const RUN_EXTRA = new Set(['footway', 'path', 'steps'])
+/**
+ * `track` and `bridleway` joined footway/path/steps here for the Presidio and Golden Gate Park (user,
+ * 2026-09-22: "the stairs down to the Presidio (and trail) are also huge for runners"): a fire road or a
+ * bridle path is exactly the kind of ground a runner covers, and until now `classify` would have dropped
+ * either even once `tools/overpass.ts` started fetching them. Left out of BIKE on purpose — the handful of
+ * `track` ways found in the Presidio box carry `tracktype=grade4`/`grade5` and one is tagged `bicycle=no`,
+ * so calling them rideable for a bike would be a guess this data does not support; a bike is still steered
+ * down `cycleway`/`pedestrian`/`service` as before.
+ */
+const RUN_EXTRA = new Set(['footway', 'path', 'steps', 'track', 'bridleway'])
 const NOT_A_STREET = new Set(['parking_aisle', 'driveway', 'drive-through', 'emergency_access'])
 
 /**

@@ -25,6 +25,7 @@ export class Hud {
     this.root = root
     root.innerHTML = `
       <div class="sr-gps" hidden></div>
+      <div class="sr-transit" hidden></div>
       <button class="sr-back" title="Turn around here (U)">↩</button>
       <div class="sr-turns"></div>
       <div class="sr-exits" hidden></div>
@@ -38,6 +39,7 @@ export class Hud {
     this.nextEl = root.querySelector('.sr-next')!
     this.statsEl = root.querySelector('.sr-stats')!
     this.gpsEl = root.querySelector('.sr-gps')!
+    this.transitEl = root.querySelector('.sr-transit')!
     this.exitsEl = root.querySelector('.sr-exits')!
     this.exitsEl.addEventListener('click', (e) => {
       const b = (e.target as HTMLElement).closest<HTMLElement>('[data-edge]')
@@ -113,6 +115,16 @@ export class Hud {
     el.classList.add('on')
     clearTimeout(this.bannerTimer)
     this.bannerTimer = window.setTimeout(() => el.classList.remove('on'), ms)
+  }
+
+  private readonly transitEl: HTMLElement
+  /**
+   * The transit line (src/sim/transit.ts): a cable car standing at the stop you are near, or the fact that
+   * you are on one. Its own line, above the GPS — it is not a turn and it is not a destination.
+   */
+  transit(text: string | null): void {
+    this.transitEl.hidden = text === null
+    if (text !== null && this.transitEl.textContent !== text) this.transitEl.textContent = text
   }
 
   /** The GPS line (PARIS_EXPAND §6 item 11): distance to the destination and the next turn; null hides it. */
@@ -208,6 +220,8 @@ export const HUD_CSS = `
 #hud .sr-exit-arrow { display: inline-block; font-size: 15px }
 #hud .sr-gps { font: 700 15px/1.3 var(--font); color: var(--on-page); background: var(--page); border-radius: 999px; padding: 6px 16px; text-shadow: none; box-shadow: var(--shadow) }
 #hud .sr-gps:not([hidden]) + .sr-back { top: 50px }
+#hud .sr-transit { align-self: center; font: 700 15px/1.3 var(--font); color: var(--on-amber); background: var(--c-amber);
+  border-radius: 999px; padding: 6px 16px; text-shadow: none; box-shadow: var(--shadow) }
 .sr-banner { position: fixed; top: 226px; left: 50%; transform: translate(-50%, -12px); z-index: 6; opacity: 0;
   pointer-events: none; transition: opacity .35s, transform .35s; text-align: center; color: var(--text);
   background: var(--panel); border: 2px solid var(--page); border-radius: var(--radius); padding: 14px 30px;

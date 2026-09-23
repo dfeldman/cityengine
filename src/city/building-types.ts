@@ -19,7 +19,7 @@ export interface BuildingFacts {
   /** the region's own records of the building, where it has them (SF's Assessor rolls: tools/sf-parcels.ts) */
   record?: { year?: number; stories?: number; units: number; use?: string; construction?: string; parcels: number }
 }
-export type Classifier = (b: BuildingFacts) => { archetype: string; style: StyleId } | null
+export type Classifier = (b: BuildingFacts) => { archetype: string; style: StyleId; district: string; rule: string } | null
 
 const CLASSIFIERS: Record<string, Classifier> = { 'san-francisco': classifySF }
 

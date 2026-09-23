@@ -322,21 +322,21 @@ export const SF_STOCK: RegionStock = {
   // the F-line's historic streetcars, in the liveries of the cities they came from
   // (each livery is its own model: a PCC's three tones will not come out of one tint)
   tram: {
-    mid: pcc(PCC_LIVERIES[0]), cars: 1, pitch: 15, speed: 6.5, colour: [1, 1, 1], shadow: [14.2, 2.7, 3.2], capacity: 12, stops: true,
+    mid: pcc(PCC_LIVERIES[0]), cars: 1, pitch: 15, speed: 6.5, deck: 0.95, colour: [1, 1, 1], shadow: [14.2, 2.7, 3.2], capacity: 12, stops: true,
     variants: [
       ...PCC_LIVERIES.slice(1).map((l) => ({ mid: pcc(l) })),
       { mid: peterWitt, shadow: [13.8, 2.5, 3.3] as [number, number, number] },
     ],
   },
   cable: {
-    mid: cableCar, cars: 1, pitch: 9.5, speed: 4.2, colour: [0.5, 0.12, 0.12], shadow: [8.4, 2.5, 3.3], capacity: 24, stops: true,
+    mid: cableCar, cars: 1, pitch: 9.5, speed: 4.2, deck: 0.78, colour: [0.5, 0.12, 0.12], shadow: [8.4, 2.5, 3.3], capacity: 24, stops: true,
     // Powell cars in maroon, a few in the 1950s Muni blue-and-cream or the old green
     liveries: [[0.5, 0.12, 0.12], [0.5, 0.12, 0.12], [0.2, 0.3, 0.5], [0.5, 0.12, 0.12], [0.24, 0.38, 0.3]],
     // the California line's double-ended cars, maroon
     variants: [{ mid: californiaCar, pitch: 10, shadow: [9.2, 2.5, 3.3], liveries: [[0.48, 0.12, 0.12]] }],
     variantFor: californiaLine,
   },
-  light: { mid: muniLRV, cars: 2, pitch: 23.2, speed: 11, colour: [0.82, 0.83, 0.85], shadow: [23, 2.7, 3.4], capacity: 24, stops: true },
+  light: { mid: muniLRV, cars: 2, pitch: 23.2, speed: 11, deck: 0.95, colour: [0.82, 0.83, 0.85], shadow: [23, 2.7, 3.4], capacity: 24, stops: true },
 }
 
 /** the models on their own, for the model viewer (src/model-showcase.ts: ?model=cableCar) */

@@ -1,0 +1,52 @@
+[
+  {
+    "osm": [
+      "way/693630796"
+    ],
+    "name": "MIRA",
+    "procedural": "mira",
+    "front": "street",
+    "height": 129,
+    "note": "Studio Gang 2020, 40 storeys: its own geometry, a stack of triangular bay windows whose apexes slide floor by floor so the bays spiral (the grammar's `bays` face draws one fixed plan on every floor). way/693630796 is the tower part inside the MIRA outline way/939499092, which carries the mid-rise wing (see \"MIRA (Folsom wing)\"). Web: 400 ft, ten bay geometries, 14 ft wide, 6.5 ft deep, thirty per level; white metal and glass."
+  },
+  {
+    "osm": [
+      "way/939499092"
+    ],
+    "name": "MIRA (Folsom wing)",
+    "procedural": "miraPodium",
+    "front": "street",
+    "height": 129,
+    "note": "Tower grammar: MIRA's six-storey wing on Folsom, cream and dark-red panels over a dark-red base (street views way-939499092.jpg, way-693630796.jpg). The OSM outline is tagged 129 m because it contains the tower part; the wing itself is ~22 m."
+  },
+  {
+    "osm": [
+      "way/260922316"
+    ],
+    "name": "Hilton San Francisco Financial District",
+    "procedural": "hiltonFinancialDistrict",
+    "front": "street",
+    "height": 111,
+    "note": "Tower grammar (concrete-piers): Clement Chen with John Carl Warnecke, 1971, the Brutalist hotel slab over Portsmouth Square — tan concrete piers, slot windows, deep parapet, two roof boxes. OSM says 111 m / 32 levels; it is 27 storeys and 298 ft, so 91 m (Wikipedia, confirmed by the street views)."
+  },
+  {
+    "osm": [
+      "way/80296740"
+    ],
+    "name": "101 Second Street",
+    "procedural": "oneOhOneSecond",
+    "front": "street",
+    "height": 108,
+    "note": "Tower grammar + a limestone shaft: SOM 1999, 26 storeys, 108 m — a pale green glass office volume beside the stone service core, which rises past the roof under a glass veil over the plant. OSM leaves it unnamed and splits the complex into parts (this is the tall one)."
+  },
+  {
+    "osm": [
+      "way/256072715"
+    ],
+    "name": "655 Montgomery Street",
+    "procedural": "montgomeryWashingtonTower",
+    "front": "street",
+    "height": 103,
+    "note": "Tower grammar (granite-eighties): the Montgomery-Washington Tower, 1984, 26 storeys — buff precast, dark teal glass, the top storeys stepping back to their terraces (street view way-256072715.jpg for the buff panels and the dark canopy; way-256072715-2.jpg is aimed at the Transamerica Pyramid, not this building)."
+  }
+]

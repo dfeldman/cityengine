@@ -1,0 +1,189 @@
+/**
+ * Taking the cable car.
+ *
+ * A rider who has just dragged a bike up Hyde Street should be able to put it on the next car and ride down,
+ * and that has to feel like catching a cable car rather than like a teleport: **the vehicle keeps its own
+ * timetable and the rider waits for it.** Nothing here moves a vehicle, speeds one up, or summons one. The
+ * whole module is a state machine over vehicles somebody else is already simulating (`src/render/life.ts`
+ * runs the trains along the baked rails, stops them at their stops and stands them there) plus two verbs the
+ * rider presses: board, and get off.
+ *
+ *     off ──(a boardable vehicle dwelling within BOARD_NEAR, rider nearly stopped, B)──▶ aboard
+ *     aboard ──(the vehicle is dwelling at a stop again, B)──▶ off, placed back on the ride graph
+ *
+ * Two things this is careful about, because both are the kind of fault that hides:
+ *
+ * 1. **Nothing may strand the rider off the graph.** Alighting asks a placer for the nearest ride-graph
+ *    position; if the nearest is further than `MAX_DROP` the rider STAYS ABOARD and is told so, rather than
+ *    being dropped into a rail yard with no street under them. `abandon()` is the escape hatch — it takes the
+ *    best place it can get, and failing that the position the rider boarded from, which is by construction a
+ *    real graph position.
+ * 2. **A vehicle can vanish.** The line it runs on is streamed; a view can be rebuilt. If the vehicle the
+ *    rider is on is not in the list any more, they are put off at its last known point on the next `alight`
+ *    or `abandon`, never left following a ghost.
+ *
+ * The contract with the world is `VehicleView[]`, deliberately: the trains come from `Life.trainInfo()`, but
+ * the Salesforce Park gondola is not a train on a rail and will be modelled elsewhere. Anything that can
+ * report where it is and whether its doors are open can be ridden.
+ */
+
+/** What a rider may get on. Buses and the underground metro are not here, on purpose. */
+export type TransitKind = 'cable' | 'streetcar' | 'gondola'
+
+/** A vehicle as the boarding logic sees it. `id` must be stable for as long as the vehicle exists. */
+export interface VehicleView {
+  id: string
+  kind: TransitKind
+  x: number
+  z: number
+  /** the deck height, in metres — a cable car on Hyde Street is metres above the rider who let it pass */
+  y: number
+  heading: number
+  /** m/s now */
+  speed: number
+  /** standing at a stop with its doors open: the only moment boarding or alighting is offered */
+  dwelling: boolean
+  /** what to call it on the HUD: "Powell–Hyde cable car" */
+  name?: string
+}
+
+/** A position on the ride graph, as `sim/navigate.ts` means it. */
+export interface GraphPosition { edgeId: number; s: number; reversed: boolean }
+
+/** Where the rider can be put back on the graph near `p`, and how far away that is. */
+export type Placer = (p: { x: number; z: number }, heading: number) => { pos: GraphPosition; d: number } | null
+
+/** Close enough to step on, once it has stopped. */
+export const BOARD_NEAR = 10
+/** Near enough to be told it is there and worth waiting for. */
+export const SEE_NEAR = 70
+/** A rider still rolling is not boarding anything: m/s. */
+export const BOARD_SPEED = 1.2
+/** The furthest a rider may be put from where they got off. Beyond this they stay aboard. */
+export const MAX_DROP = 30
+
+const NAMES: Record<TransitKind, string> = { cable: 'cable car', streetcar: 'streetcar', gondola: 'gondola' }
+
+export type AlightResult =
+  | { status: 'ok'; pos: GraphPosition }
+  /** the vehicle is between stops — you cannot step off a moving cable car */
+  | { status: 'moving' }
+  /** nowhere to put the rider: they stay aboard */
+  | { status: 'no-street' }
+
+export class Transit {
+  /** the vehicle the rider is on, as it was last seen */
+  private on: VehicleView | null = null
+  /** the graph position the rider boarded from — the last-resort place to put them back */
+  private from: GraphPosition | null = null
+  /** the best candidate to board, this frame */
+  private candidate: VehicleView | null = null
+  /** near enough to be worth mentioning, this frame */
+  private seen: VehicleView | null = null
+  /** true once the vehicle being ridden stopped being reported */
+  private lost = false
+
+  get aboard(): VehicleView | null { return this.on }
+  get boardable(): VehicleView | null { return this.candidate }
+  get vehicleLost(): boolean { return this.lost }
+  /** where the rider is, when aboard: the vehicle's own place */
+  get at(): { x: number; z: number; y: number; heading: number } | null {
+    return this.on ? { x: this.on.x, z: this.on.z, y: this.on.y, heading: this.on.heading } : null
+  }
+
+  /**
+   * Take in the world. Called every frame with the rider and every vehicle that could be ridden; vehicles of
+   * other kinds simply need not be in the list, but a kind that is not boardable is ignored here too so a
+   * caller cannot accidentally offer a BART train.
+   */
+  update(rider: { x: number; z: number; speed: number }, vehicles: readonly VehicleView[]): void {
+    if (this.on) {
+      const still = vehicles.find((v) => v.id === this.on!.id)
+      if (still) { this.on = still; this.lost = false } else this.lost = true
+      this.candidate = null
+      this.seen = null
+      return
+    }
+    let best: { v: VehicleView; d: number } | null = null
+    let near: { v: VehicleView; d: number } | null = null
+    for (const v of vehicles) {
+      if (!(v.kind in NAMES)) continue
+      const d = Math.hypot(v.x - rider.x, v.z - rider.z)
+      if (d > SEE_NEAR) continue
+      if (!near || d < near.d) near = { v, d }
+      if (!v.dwelling || d > BOARD_NEAR || rider.speed > BOARD_SPEED) continue
+      if (!best || d < best.d) best = { v, d }
+    }
+    this.candidate = best?.v ?? null
+    this.seen = near?.v ?? null
+    this.seenAt = near?.d ?? 0
+  }
+
+  private seenAt = 0
+
+  /**
+   * The one line the HUD shows. Two stages on purpose: a rider who can see a cable car standing at Hyde and
+   * Lombard should be told it is there while they still have the legs to reach it, and only told which key
+   * boards it once they are beside it and stopped.
+   */
+  prompt(): string | null {
+    if (this.on) {
+      if (this.lost) return `aboard the ${NAMES[this.on.kind]} · Esc to get off`
+      return this.on.dwelling ? `B · get off the ${NAMES[this.on.kind]}` : `aboard the ${this.on.name ?? NAMES[this.on.kind]}`
+    }
+    if (this.candidate) return `B · board the ${this.candidate.name ?? NAMES[this.candidate.kind]}`
+    if (this.seen) {
+      const what = this.seen.name ?? NAMES[this.seen.kind]
+      return this.seen.dwelling
+        ? `${what} at the stop · ${Math.round(this.seenAt)} m`
+        : `${what} · ${Math.round(this.seenAt)} m`
+    }
+    return null
+  }
+
+  /**
+   * Get on. `from` is where the rider is on the graph now, kept for the whole journey so there is always
+   * somewhere real to put them back. Refused unless `update` found a vehicle to board this frame.
+   */
+  board(from: GraphPosition): boolean {
+    if (!this.candidate) return false
+    this.on = this.candidate
+    this.from = { ...from }
+    this.candidate = null
+    this.seen = null
+    this.lost = false
+    return true
+  }
+
+  /**
+   * Get off — only where the vehicle is standing, and only onto a street. A refusal leaves the rider exactly
+   * where they were, aboard, which is the whole point: there is no path through here that ends with a rider
+   * in a field.
+   */
+  alight(place: Placer): AlightResult {
+    const v = this.on
+    if (!v) return { status: 'no-street' }
+    if (!this.lost && !v.dwelling) return { status: 'moving' }
+    const got = place({ x: v.x, z: v.z }, v.heading)
+    if (!got || got.d > MAX_DROP) return { status: 'no-street' }
+    this.on = null
+    this.from = null
+    this.lost = false
+    return { status: 'ok', pos: got.pos }
+  }
+
+  /**
+   * The escape hatch: get off wherever, now. The nearest graph position however far it is, and failing even
+   * that, the position boarded from. Used when the rider insists (Escape) and when the vehicle has gone.
+   */
+  abandon(place: Placer): GraphPosition | null {
+    const v = this.on
+    if (!v) return null
+    const got = place({ x: v.x, z: v.z }, v.heading)
+    const pos = got?.pos ?? this.from
+    this.on = null
+    this.from = null
+    this.lost = false
+    return pos ? { ...pos } : null
+  }
+}

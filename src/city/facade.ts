@@ -37,13 +37,27 @@ export type StyleId =
   | 'tenement' | 'chicago' | 'victorian' | 'vosges' | 'opera' | 'operaGlass'
   // San Francisco's own (SF_PLAN.md §3): the Marina's 1930s stucco, the Edwardian apartment block, Chinatown
   | 'stucco' | 'sfapartment' | 'chinatown' | 'edwardian'
+  // shared: the post-war residential tower, which every city has and which is NOT an office block
+  | 'towerblock'
 
 export type GroundKind = 'shopfront' | 'stoop' | 'arcade' | 'glazed' | 'recessed' | 'plain' | 'garage'
 export type TopKind = 'cornice' | 'parapet' | 'mansard' | 'entablature' | 'flatband' | 'crown' | 'gable'
 export type WindowKind = 'french' | 'sash' | 'pedimented' | 'punched' | 'ribbon' | 'recessed' | 'curtain' | 'casement'
   | 'chicago' | 'vosges' | 'opera' | 'operaGlass'
 
-export interface Palette { wall: string; trim: string; roof: string; accent: string }
+export interface Palette {
+  wall: string
+  trim: string
+  roof: string
+  accent: string
+  /*
+   * The ground floor, where it is painted differently from the rest — which it very often is: a shopfront in
+   * a dark colour under pale flats, a stone or tiled base under render, a garage front (user, 2026-09-22:
+   * "many buildings have a first floor in a different color from the upper floors"). Absent means the wall's
+   * own colour, as before.
+   */
+  ground?: string
+}
 
 export interface Style {
   id: StyleId
@@ -179,6 +193,19 @@ export function chooseStyle(
 ): StyleId {
   const r = rng(seed ^ 0x5f356495)
   const levels = tags.levels ?? (tags.height ? Math.max(1, Math.round(tags.height / 3.5)) : undefined)
+
+  /*
+   * What the building is FOR comes before how tall it is. A thirty-storey block of flats is not an office
+   * tower, and inferring one from height alone put a glass curtain wall on every hill crest in San Francisco
+   * — Russian Hill, Nob Hill, the Marina (user, 2026-09-22: "the style of The Royal Towers and nearby
+   * buildings is very wrong"). OSM does tag this, on `building`, and we were throwing it away.
+   */
+  const home = tags.building
+  if (levels !== undefined && levels >= 9 && home !== undefined &&
+      ['apartments', 'residential', 'dormitory', 'hotel'].includes(home)) {
+    const tb = cityStyles.find((c) => c.id === 'towerblock')
+    if (tb) return 'towerblock'
+  }
 
   // Height decides before anything else: nothing tall is a row house, nothing short is a curtain wall —
   // except that in a city of Chicago School towers (10–20 storeys of terracotta, not glass) tall can be either

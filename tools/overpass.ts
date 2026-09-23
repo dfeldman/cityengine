@@ -12,6 +12,7 @@
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { localAnswer, regionFor, type Region as LocalRegion } from './osm-local.ts'
 
 /**
  * The main instance first, then the public mirrors: overpass-api.de answers 504 when it is busy, which can
@@ -72,6 +73,14 @@ export interface Bbox { south: number; west: number; north: number; east: number
  * `highway` is filtered to what a person can actually ride or run on — no motorways, no slip roads, no
  * driveways — because a city you can steer through is made of streets, and offering a left turn onto a
  * motorway slip road would be both wrong and unrideable.
+ *
+ * `track` and `bridleway` joined the list for San Francisco's parks (user, 2026-09-22: "the stairs down to
+ * the Presidio (and trail) are also huge for runners"): the Presidio's unpaved fire roads are `highway=track`
+ * (five in the Presidio/Golden Gate Park box, mostly `tracktype=grade4/5`, one explicitly `bicycle=no`) and
+ * without them here they were never fetched at all, regardless of what the ride graph would have done with
+ * them. `bridleway` is added for the same reason though none actually exist tagged that way inside this box
+ * today (Golden Gate Park's bridle trails are mapped as plain `footway`/`path`, not `highway=bridleway`) — it
+ * costs nothing to ask for and stops a future edit from silently dropping one.
  */
 /**
  * The WIDE query: what a city needs far beyond the blocks it models in detail — the roads, the railways, the
@@ -83,7 +92,7 @@ export function wideQuery(b: Bbox): string {
   const box = `${b.south},${b.west},${b.north},${b.east}`
   return `[out:json][timeout:240];
 (
-  way["highway"~"^(residential|living_street|unclassified|tertiary|secondary|primary|pedestrian|footway|path|cycleway|service)$"]["area"!~"yes"](${box});
+  way["highway"~"^(residential|living_street|unclassified|tertiary|secondary|primary|pedestrian|footway|path|track|bridleway|cycleway|service)$"]["area"!~"yes"](${box});
   way["highway"~"^(motorway|trunk|motorway_link|trunk_link)$"]["bridge"](${box});
   way["railway"~"^(rail|light_rail|tram|subway)$"](${box});
   way["natural"~"^(water|wood|coastline)$"](${box});
@@ -98,13 +107,13 @@ export function cityQuery(b: Bbox): string {
   const box = `${b.south},${b.west},${b.north},${b.east}`
   return `[out:json][timeout:240];
 (
-  way["highway"~"^(residential|living_street|unclassified|tertiary|secondary|primary|pedestrian|footway|path|cycleway|service)$"]["area"!~"yes"](${box});
+  way["highway"~"^(residential|living_street|unclassified|tertiary|secondary|primary|pedestrian|footway|path|track|bridleway|cycleway|service)$"]["area"!~"yes"](${box});
   way["railway"~"^(rail|light_rail|tram|subway)$"](${box});
   way["building"](${box});
   way["building:part"](${box});
-  way["leisure"~"^(park|garden|pitch)$"](${box});
+  way["leisure"~"^(park|garden|pitch|nature_reserve)$"](${box});
   way["landuse"~"^(grass|forest|meadow)$"](${box});
-  way["natural"~"^(water|wood)$"](${box});
+  way["natural"~"^(water|wood|scrub)$"](${box});
   way["waterway"="riverbank"](${box});
   node["natural"="tree"](${box});
   node["name"]["shop"](${box});
@@ -112,7 +121,11 @@ export function cityQuery(b: Bbox): string {
   node["name"]["tourism"~"^(museum|gallery|hotel|attraction)$"](${box});
   relation["natural"="water"](${box});
   relation["waterway"="riverbank"](${box});
-  relation["leisure"~"^(park|garden)$"](${box});
+  relation["leisure"~"^(park|garden|nature_reserve)$"](${box});
+  // the Presidio's forest blocks and Golden Gate Park's woods are multipolygons; without these the two
+  // biggest woods in the city arrived as a single flat lawn (city/park-planting.ts)
+  relation["landuse"~"^(grass|forest|meadow)$"](${box});
+  relation["natural"~"^(wood|scrub)$"](${box});
   relation["building"](${box});
 );
 out geom qt;`
@@ -218,9 +231,33 @@ export async function overpassTiled(query: (b: Bbox) => string, b: Bbox, step = 
   const mLon = 111_320 * Math.cos((((b.south + b.north) / 2) * Math.PI) / 180)
   const w = (b.east - b.west) * mLon
   const h = (b.north - b.south) * mLat
-  if (w <= single && h <= single) return overpass(query(b))
-  const nx = Math.ceil(w / step)
-  const nz = Math.ceil(h / step)
+  if (w <= single && h <= single) return overpass(query(b), regionFor(b))
+  /*
+   * Chunks snap to a FIXED grid of whole degrees/`CELL`, not to the box (user, 2026-09-22: "we should cache OSM
+   * data since it takes hours to fetch"). The cache is keyed by the query text, which contains the chunk's
+   * bbox, so a box that moves or grows used to miss every entry and refetch the lot — hours, against servers
+   * that answer one request in five. Aligned, a chunk's key is the same whatever box asked for it, so growing
+   * San Francisco's box west to the park refetches the new cells only.
+   */
+  // the pitch is rounded to a fixed 0.005 deg, and its longitude stretch taken at a WHOLE degree of latitude, so
+  // the grid depends only on `step` and roughly where on earth we are -- not on the box that happens to ask
+  const q = (v: number): number => Math.max(0.005, Math.round(v / 0.005) * 0.005)
+  const cell = q(step / mLat)         // the grid's pitch in degrees of latitude
+  const cellLon = q(step / (111_320 * Math.cos((Math.round((b.south + b.north) / 2) * Math.PI) / 180)))
+  const r6 = (v: number): number => Math.round(v * 1e6) / 1e6
+  const w0 = Math.floor(b.west / cellLon) * cellLon
+  const s0 = Math.floor(b.south / cell) * cell
+  const nx = Math.ceil((b.east - w0) / cellLon)
+  const nz = Math.ceil((b.north - s0) / cell)
+  /*
+   * One local cut for the WHOLE grid, not one per chunk: the grid is snapped to fixed cells and so reaches a
+   * little outside `b`, and a chunk must be answered with everything Overpass would have returned for it —
+   * otherwise a truncated edge chunk would sit in the cache forever. Null when there is no osmium, no extract
+   * covering the grid, or the data simply is not local: every chunk then goes to the network as before.
+   */
+  const region = regionFor({
+    west: r6(w0), east: r6(w0 + nx * cellLon), south: r6(s0), north: r6(s0 + nz * cell),
+  })
   const ways = new Map<number, OsmWay>()
   const nodes = new Map<number, OsmNode>()
   const relations = new Map<number, OsmRelation>()
@@ -228,12 +265,13 @@ export async function overpassTiled(query: (b: Bbox) => string, b: Bbox, step = 
   let timestamp = ''
   for (let j = 0; j < nz; j++) {
     for (let i = 0; i < nx; i++) {
+      // the cell's own bounds, rounded to a fixed number of places so the text (and so the cache key) is stable
       const chunk: Bbox = {
-        west: b.west + ((b.east - b.west) * i) / nx, east: b.west + ((b.east - b.west) * (i + 1)) / nx,
-        south: b.south + ((b.north - b.south) * j) / nz, north: b.south + ((b.north - b.south) * (j + 1)) / nz,
+        west: r6(w0 + i * cellLon), east: r6(w0 + (i + 1) * cellLon),
+        south: r6(s0 + j * cell), north: r6(s0 + (j + 1) * cell),
       }
       process.stderr.write(`  overpass: chunk ${j * nx + i + 1}/${nx * nz}\n`)
-      for (const r of await fetchSplitting(query, chunk, 2)) {
+      for (const r of await fetchSplitting(query, chunk, 2, region)) {
         for (const x of r.ways) ways.set(x.id, x)
         for (const x of r.nodes) nodes.set(x.id, x)
         for (const x of r.relations) relations.set(x.id, x)
@@ -246,9 +284,9 @@ export async function overpassTiled(query: (b: Bbox) => string, b: Bbox, step = 
 }
 
 /** One chunk; if every server times out on it, its four quarters instead (a dense chunk of the centre did). */
-async function fetchSplitting(query: (b: Bbox) => string, b: Bbox, depth: number): Promise<OverpassResult[]> {
+async function fetchSplitting(query: (b: Bbox) => string, b: Bbox, depth: number, region?: LocalRegion | null): Promise<OverpassResult[]> {
   try {
-    return [await overpass(query(b))]
+    return [await overpass(query(b), region)]
   } catch (e) {
     if (depth <= 0) throw e
     process.stderr.write('  overpass: chunk refused, fetching it in quarters\n')
@@ -258,19 +296,31 @@ async function fetchSplitting(query: (b: Bbox) => string, b: Bbox, depth: number
     for (const q of [
       { west: b.west, east: mx, south: b.south, north: mz }, { west: mx, east: b.east, south: b.south, north: mz },
       { west: b.west, east: mx, south: mz, north: b.north }, { west: mx, east: b.east, south: mz, north: b.north },
-    ]) out.push(...await fetchSplitting(query, q, depth - 1))
+    ]) out.push(...await fetchSplitting(query, q, depth - 1, region))
     return out
   }
 }
 
-/** Run an Overpass QL query, caching the raw JSON by query hash. */
-export async function overpass(query: string): Promise<OverpassResult> {
+/**
+ * Run an Overpass QL query, caching the raw JSON by query hash.
+ *
+ * Three sources, in order: the disk cache, the local extract (osm-local.ts — osmium over a Geofabrik file,
+ * which is why a bake no longer takes hours), and only then the public servers. `region` is an already-cut
+ * local region to answer from, which is how `overpassTiled` cuts once for a whole box instead of once per
+ * chunk. A local answer is written into the very same cache file, in the very same shape.
+ */
+export async function overpass(query: string, region?: LocalRegion | null): Promise<OverpassResult> {
   mkdirSync(CACHE, { recursive: true })
   const file = resolve(CACHE, `overpass-${createHash('sha1').update(query).digest('hex').slice(0, 16)}.json`)
   let text: string
+  let local: string | null = null
   if (existsSync(file)) {
     text = readFileSync(file, 'utf8')
     process.stderr.write('  overpass: cached\n')
+  } else if ((local = localAnswer(query, region ?? null)) !== null) {
+    text = local
+    process.stderr.write('  overpass: local extract\n')
+    writeFileSync(file, text)
   } else {
     process.stderr.write(`  overpass: fetching (${query.length} chars)…\n`)
     let got: string | null = null

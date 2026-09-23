@@ -1,5 +1,9 @@
 # Giving a city's buildings their own look
 
+> **The pipeline that runs all of this is documented in [LADDER.md](LADDER.md)** — the classifier, the queue,
+> the four tiers, the photograph tooling, the validator, what it costs and how to set it up for a new city.
+> This file is the modelling craft: how a single building gets built once it has been assigned to someone.
+
 How Street Runner turns a box of OSM outlines into a city where the buildings are recognisably themselves. It was
 worked out on San Francisco (SF_PLAN.md §10) and is meant to be reused: the rest of SF, and the next city.
 
@@ -102,6 +106,107 @@ Measured on San Francisco, per building:
 So: cheap models with recipes for the ordinary tall buildings, a small model for mechanical restyle sweeps, and a
 strong model only for the bail-out list and for set pieces (a square, a station, a pier). The kit is what makes
 the cheap models good enough — every hour spent moving a loop into `parts.ts` pays for itself in the next batch.
+
+## The queue: which buildings, in what order, by whom
+
+`tools/sf-queue.ts` derives the outstanding work from the register and writes `docs/sf-queue.csv`. Priority is
+**geometry and place only** — height, a bonus for being civic, and a discount for distance from the routes
+people ride (`tools/sf-corridors.ts`, shared with the batch cutter). There is deliberately no term for having a
+name: OSM names a small minority of buildings, and a missing name is if anything a reason to look harder.
+
+Four stages, and the first is the important one:
+
+| stage | who | when |
+|---|---|---|
+| **manual** | by hand, with as many references as it takes | the top 20 outstanding, always |
+| sonnet | a model | anything over 60 m, and escalations with priority ≥ 45 |
+| haiku | a cheap model, two photographs, mostly writing nothing | everything else |
+| opus | the strong model | escalated again, priority ≥ 75 |
+
+**A tall building is never refaced.** Over about sixty metres a building goes straight to a model, whatever
+else the queue would have said (`--tall-model=`). Two reasons, and the second is the one that is easy to miss:
+
+- there are very few of them. San Francisco had ten buildings over ninety metres left to do and thirty-five
+  over sixty, so the cheap stage saves almost nothing;
+- **they cannot be photographed from the street.** A ninety-metre tower does not fit in a street-level frame,
+  and in a dense downtown it is the thing most likely to be standing behind something shorter — so the
+  reference photograph comes back showing the building in front of it. Every aiming fix in the section below
+  still leaves those cases broken, because the problem is not the aim.
+
+This barely matters in Paris, where the height limit means almost nothing is tall enough to hit the rule. It
+matters enormously in Chicago and New York, where a large share of everything worth doing is over sixty metres
+and the street-level imagery of it is mostly unusable. Expect the cheap stage to cover a much smaller fraction
+of those cities than it does here, and budget for modelling accordingly.
+
+**The top of the list never goes to the ladder.** A cheap model with one photograph is right for the nine
+hundredth building and wrong for the one everybody recognises; Notre Dame is not a refacing job. An escalation
+is also never automatic — a bail-out only moves up if the building clears the next cut, and below it the
+classifier keeps the building, which is the right answer for an ordinary building on a back street.
+
+State is `docs/sf-queue-log.csv`, append-only: one row per building per stage, with the outcome and the
+photograph it was decided from. The manifest fragments are ordered strongest-first in
+`public/landmarks/san-francisco.json` — `reface-opus`, the hand-modelled districts, `reface-sonnet`,
+`reface-haiku` — and **first entry wins**, so a cheap pass can only fill in what the passes above it left alone.
+
+## Finding the photograph
+
+No photograph, no reface. `tools/photo.ts` finds one from a COORDINATE, not a name, and `tools/sf-photos.ts`
+fetches a whole batch up front so that the model's only job is to look at a file on disk.
+
+What was learned getting this working, because all of it cost time:
+
+- **Commons geosearch is not evidence.** It returns what is geotagged within 90 m, which in a dense city is
+  street festivals, interiors and somebody's lunch. A batch of twenty scored "20 of 20 found" and not one
+  image was of the building asked for. It is a last resort, never a confirmation.
+- **OSM's own `image`/`wikimedia_commons`/`wikidata` tags** only exist on buildings that are already famous —
+  the ones that least need help.
+- **Mapillary's `images?bbox=` endpoint is unusable here.** San Francisco holds so many frames that it answers
+  "please reduce the amount of data" for a box twenty metres across, and `limit` does not help. Use the VECTOR
+  TILES (`tiles.mapillary.com/maps/vtp/mly1_public/2/{z}/{x}/{y}`) at z14: one tile is ~2.4 km and ~150k
+  frames, about 10 MB, cached once and serving a whole district.
+- **The tile carries only the raw `compass_angle`** — the phone's magnetometer, tens of degrees out among steel
+  buildings. `computed_compass_angle`, Mapillary's own estimate, is on the per-image endpoint, which we call
+  anyway for the thumbnail.
+- **Most frames are 360° panoramas**, and a pano has no direction: the building is somewhere in a distorted
+  strip. Since x/W maps to azimuth = heading + (x/W − ½)·360, the building sits at **(want − heading)** degrees
+  from the middle, so the strip is cut down to a 90° window facing it. Get that sign wrong and the crop shows
+  the far side of the street — which is how a church came back as the car park opposite.
+- Requests are serialised, spaced and cached on disk (`tools/cache/mapillary/`), and a 429 backs off.
+
+A token goes in `.mapillary-token` (gitignored); `tools/mapillary-login.ts` does the OAuth exchange if the
+account only offers the app flow.
+
+### Still to do in the bake
+
+- **Keep the original outlines' ids.** The bake replaces a building's outline with its `building:part`s, so the
+  id on a work list is often absent from the package — `tools/sf-photos.ts` has to go back to Overpass for the
+  footprint, which is a request per batch it should not need. The package should carry the outline id and ring
+  alongside the parts.
+- Re-bake after the classifier changes of 2026-09-22 (`towerblock`, the `apartmentTower` rule, the audit CSV).
+
+## Two registers, and why both exist
+
+The **individually decided** buildings are in `docs/<city>-buildings.csv` (tools/sf-status.ts): the ones with a
+manifest entry, with `status`, `how` and the district — and so the batch — that decided them.
+
+The other twenty-six thousand are decided at bake time by the region's classifier (`src/city/sf/btype.ts`), and
+they are the ones a systematic error hides in. So every rule in that classifier carries a NAME, the name is
+written out with the building, and `docs/<city>-archetypes.csv` holds a row per building: archetype, style, and
+the rule that chose them. `tools/sf-rules.ts` reads it back:
+
+    tools/sf-rules.ts                     every rule, by how many buildings it decided
+    tools/sf-rules.ts --rule=tall         what one rule did, tallest first
+    tools/sf-rules.ts --style=skyscraper  every building wearing one style
+    tools/sf-rules.ts --guessing          the ones that fell through to a fallback
+
+This exists because a wrong style is never wrong once. `h >= 60 → tower → skyscraper` put a glass curtain wall
+on every apartment tower in San Francisco, and it was found by riding past one of them. With the audit trail the
+question "why is this a glass tower" is answered by one column, and the other four hundred buildings that rule
+touched are one grep away. **Fix the rule, not the building.**
+
+`--guessing` is the queue worth spending a model on: no district record, no useful OSM tag, a fallback rule
+fired. A cheap model CAN look at a photograph — they are multimodal — and that is the only thing it brings that
+a rules table does not. A reface sweep given nothing but a line of text is strictly worse than the classifier.
 
 ## Scaling out
 

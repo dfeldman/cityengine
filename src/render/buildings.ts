@@ -129,6 +129,11 @@ function wall(
 
   const w = planWall(plan, len, seed)
   const tint = rgb(plan.palette.wall)
+  // the ground storey's own paint, where the palette gives one: its cells are the ones drawn with the style's
+  // ground element (a shopfront, an arcade, a stoop, a glazed front) rather than the wall's
+  const groundTint = plan.palette.ground ? rgb(plan.palette.ground) : tint
+  const groundEls = new Set([`${plan.style}/${plan.ground}`, `${plan.style}/carriage`])
+  const tintOf = (el: string): [number, number, number] => (groundEls.has(el) ? groundTint : tint)
   const at = (t: number, y: number): [number, number, number] => [a.x + ux * t, baseY + y, a.z + uz * t]
 
   // the cells an arch passes through are left out: the opening is a real hole, and what is left of those cells
@@ -148,7 +153,7 @@ function wall(
         [at(c.x0, c.y0), at(c.x1, c.y0), at(c.x1, c.y1), at(c.x0, c.y1)],
         [nx, 0, nz],
         [[uv.u0, uv.v1], [uv.u1, uv.v1], [uv.u1, uv.v0], [uv.u0, uv.v0]],
-        tint, KIND_ATLAS,
+        tintOf(c.element), KIND_ATLAS,
       )
     } else {
       // No painting for this element: fall back to the seamless wall page, in metres so it tiles honestly.
@@ -157,7 +162,7 @@ function wall(
         [at(c.x0, c.y0), at(c.x1, c.y0), at(c.x1, c.y1), at(c.x0, c.y1)],
         [nx, 0, nz],
         [[c.x0 / s, c.y1 / s], [c.x1 / s, c.y1 / s], [c.x1 / s, c.y0 / s], [c.x0 / s, c.y0 / s]],
-        tint, KIND_WALL,
+        tintOf(c.element), KIND_WALL,
       )
     }
   }

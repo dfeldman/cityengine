@@ -1,62 +1,255 @@
 [
-  {"osm": ["way/616479965"], "name": "Building 616479965", "restyle": "stucco", "note": "rule 10"},
-  {"osm": ["way/256068384"], "name": "Building 256068384", "height": 39, "levels": 11, "restyle": "chicago", "note": "rule 8"},
-  {"osm": ["way/260162805"], "name": "GEDEC Family Housing", "height": 41, "levels": 12, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/35174716"], "name": "SOMA Self Storage", "height": 46, "levels": 13, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/80296718"], "name": "680 Folsom Street", "height": 70, "levels": 15, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/71209418"], "name": "The Hamilton", "height": 70, "levels": 22, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/192883977"], "name": "Embarcadero Substation", "height": 51, "levels": 15, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/242940296"], "name": "Foundry Square III", "height": 44, "levels": 12, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/93817366"], "name": "611 Folsom Street", "height": 71, "levels": 18, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/1116703327"], "name": "Building 1116703327", "restyle": "stucco", "note": "rule 10"},
-  {"osm": ["way/262482835"], "name": "Green Hill Tower", "height": 72, "levels": 22, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/35115844"], "name": "Building 35115844", "height": 42, "levels": 10, "restyle": "chicago", "note": "rule 8"},
-  {"osm": ["way/173725078"], "name": "San Francisco Public Utilities Commission Headquarters", "height": 57, "levels": 12, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/262480460"], "name": "945 Green Street", "height": 56, "levels": 14, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/243358586"], "name": "959;965 Mission Street", "height": 35, "levels": 10, "restyle": "chicago", "note": "rule 8"},
-  {"osm": ["way/256477866"], "name": "Building 256477866", "height": 73, "levels": 12, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/288499675"], "name": "Clay-Jones Apartments", "height": 70, "levels": 20, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/260320985"], "name": "Sailors' Union of the Pacific", "height": 54, "levels": 15, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/260126019"], "name": "Ellis Garden", "height": 44, "levels": 13, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/260142634"], "name": "Mosser Towers", "height": 41, "levels": 12, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/32946942"], "name": "Grace Cathedral", "height": 53, "restyle": "classical", "note": "rule 1"},
-  {"osm": ["way/112774492"], "name": "The Clancy, Autograph Collection", "height": 50, "levels": 17, "restyle": "chicago", "note": "rule 3"},
-  {"osm": ["way/256487870"], "name": "Building 256487870", "height": 105, "levels": 30, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/262741028"], "name": "1000 Chestnut Street", "height": 44, "levels": 15, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/192328858"], "name": "The Bay Area Metro Center", "height": 43, "levels": 7, "restyle": "tenement", "note": "rule 9"},
-  {"osm": ["way/147808261"], "name": "The Beverly Apartments", "height": 41, "levels": 12, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/421816058"], "name": "333 Main Street", "height": 35, "levels": 8, "restyle": "chicago", "note": "rule 8"},
-  {"osm": ["way/243356609"], "name": "Canopy by Hilton San Francisco SoMa", "height": 41, "levels": 12, "restyle": "chicago", "note": "rule 3"},
-  {"osm": ["way/256054993"], "name": "573;575;577 O'Farrell Street", "height": 41, "levels": 12, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/262482831"], "name": "1000 Green Street", "height": 45, "levels": 14, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/256045052"], "name": "555;575 Polk Street", "height": 41, "levels": 12, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/259266718"], "name": "1190 Sacramento Street", "height": 37, "levels": 11, "restyle": "chicago", "note": "rule 8"},
-  {"osm": ["way/113347426"], "name": "95 Hawthorne Street", "height": 39, "levels": 11, "restyle": "chicago", "note": "rule 8"},
-  {"osm": ["way/259781639"], "name": "1221 Jones Street", "height": 44, "levels": 13, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/262685646"], "name": "1100 Union Street", "height": 40, "levels": 11, "restyle": "chicago", "note": "rule 8"},
-  {"osm": ["way/617990577"], "name": "Building 617990577", "height": 37, "levels": 11, "restyle": "chicago", "note": "rule 8"},
-  {"osm": ["way/114709400"], "name": "77 Dow Place", "height": 42, "levels": 12, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/256914069"], "name": "66 Cleary Court", "height": 54, "levels": 16, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/148428437"], "name": "1200 Van Ness Avenue", "height": 68, "levels": 3, "restyle": "stucco", "note": "rule 10"},
-  {"osm": ["way/123646088"], "name": "Hotel Carlton", "height": 38, "levels": 9, "restyle": "chicago", "note": "rule 3"},
-  {"osm": ["way/288716389"], "name": "Building 288716389", "height": 40, "levels": 11, "restyle": "chicago", "note": "rule 8"},
-  {"osm": ["way/262552551"], "name": "Building 262552551", "height": 35, "levels": 10, "restyle": "chicago", "note": "rule 8"},
-  {"osm": ["way/256757161"], "name": "1510 Eddy Street", "height": 49, "levels": 14, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/260022006"], "name": "931;935 Geary Street", "height": 36, "levels": 10, "restyle": "chicago", "note": "rule 8"},
-  {"osm": ["way/256736508"], "name": "Building 256736508", "height": 38, "levels": 11, "restyle": "brick", "note": "rule 7"},
-  {"osm": ["way/256756308"], "name": "Building 256756308", "height": 39, "levels": 11, "restyle": "brick", "note": "rule 7"},
-  {"osm": ["way/208346633"], "name": "1285 Van Ness Avenue", "height": 35, "levels": 13, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/256479444"], "name": "1 Daniel Burnham Court", "height": 37, "levels": 10, "restyle": "chicago", "note": "rule 8"},
-  {"osm": ["way/149253142"], "name": "250 King Street", "height": 60, "levels": 17, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/259252283"], "name": "1998 Broadway", "height": 36, "levels": 10, "restyle": "chicago", "note": "rule 8"},
-  {"osm": ["way/69707525"], "name": "Building 69707525", "restyle": "stucco", "note": "rule 10"},
-  {"osm": ["way/259237551"], "name": "2190 Broadway", "height": 35, "levels": 10, "restyle": "chicago", "note": "rule 8"},
-  {"osm": ["way/288670524"], "name": "Avalon at Mission Bay Phase II", "height": 57, "levels": 16, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/256989711"], "name": "1835 Franklin Street", "height": 46, "levels": 13, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/197463897"], "name": "Building 197463897", "height": 40, "levels": 12, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/256987424"], "name": "1890 Clay Street", "height": 38, "levels": 11, "restyle": "chicago", "note": "rule 8"},
-  {"osm": ["way/945538326"], "name": "255 King Street", "height": 50, "levels": 16, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/257004420"], "name": "2006 Washington Street", "height": 42, "levels": 11, "restyle": "chicago", "note": "rule 8"},
-  {"osm": ["way/257004416"], "name": "Washington Tower", "height": 36, "levels": 12, "restyle": "skyscraper", "note": "rule 4"},
-  {"osm": ["way/256987436"], "name": "Building 256987436", "height": 35, "levels": 10, "restyle": "chicago", "note": "rule 8"}
+  {
+    "osm": [
+      "way/616479965"
+    ],
+    "name": "Building 616479965",
+    "restyle": "stucco",
+    "note": "rule 10"
+  },
+  {
+    "osm": [
+      "way/256068384"
+    ],
+    "name": "Building 256068384",
+    "height": 39,
+    "levels": 11,
+    "restyle": "chicago",
+    "note": "rule 8"
+  },
+  {
+    "osm": [
+      "way/1116703327"
+    ],
+    "name": "Building 1116703327",
+    "restyle": "stucco",
+    "note": "rule 10"
+  },
+  {
+    "osm": [
+      "way/35115844"
+    ],
+    "name": "Building 35115844",
+    "height": 42,
+    "levels": 10,
+    "restyle": "chicago",
+    "note": "rule 8"
+  },
+  {
+    "osm": [
+      "way/243358586"
+    ],
+    "name": "959;965 Mission Street",
+    "height": 35,
+    "levels": 10,
+    "restyle": "chicago",
+    "note": "rule 8"
+  },
+  {
+    "osm": [
+      "way/32946942"
+    ],
+    "name": "Grace Cathedral",
+    "height": 53,
+    "restyle": "classical",
+    "note": "rule 1"
+  },
+  {
+    "osm": [
+      "way/112774492"
+    ],
+    "name": "The Clancy, Autograph Collection",
+    "height": 50,
+    "levels": 17,
+    "restyle": "chicago",
+    "note": "rule 3"
+  },
+  {
+    "osm": [
+      "way/192328858"
+    ],
+    "name": "The Bay Area Metro Center",
+    "height": 43,
+    "levels": 7,
+    "restyle": "tenement",
+    "note": "rule 9"
+  },
+  {
+    "osm": [
+      "way/421816058"
+    ],
+    "name": "333 Main Street",
+    "height": 35,
+    "levels": 8,
+    "restyle": "chicago",
+    "note": "rule 8"
+  },
+  {
+    "osm": [
+      "way/243356609"
+    ],
+    "name": "Canopy by Hilton San Francisco SoMa",
+    "height": 41,
+    "levels": 12,
+    "restyle": "chicago",
+    "note": "rule 3"
+  },
+  {
+    "osm": [
+      "way/259266718"
+    ],
+    "name": "1190 Sacramento Street",
+    "height": 37,
+    "levels": 11,
+    "restyle": "chicago",
+    "note": "rule 8"
+  },
+  {
+    "osm": [
+      "way/113347426"
+    ],
+    "name": "95 Hawthorne Street",
+    "height": 39,
+    "levels": 11,
+    "restyle": "chicago",
+    "note": "rule 8"
+  },
+  {
+    "osm": [
+      "way/617990577"
+    ],
+    "name": "Building 617990577",
+    "height": 37,
+    "levels": 11,
+    "restyle": "chicago",
+    "note": "rule 8"
+  },
+  {
+    "osm": [
+      "way/148428437"
+    ],
+    "name": "1200 Van Ness Avenue",
+    "height": 68,
+    "levels": 3,
+    "restyle": "stucco",
+    "note": "rule 10"
+  },
+  {
+    "osm": [
+      "way/123646088"
+    ],
+    "name": "Hotel Carlton",
+    "height": 38,
+    "levels": 9,
+    "restyle": "chicago",
+    "note": "rule 3"
+  },
+  {
+    "osm": [
+      "way/288716389"
+    ],
+    "name": "Building 288716389",
+    "height": 40,
+    "levels": 11,
+    "restyle": "chicago",
+    "note": "rule 8"
+  },
+  {
+    "osm": [
+      "way/260022006"
+    ],
+    "name": "931;935 Geary Street",
+    "height": 36,
+    "levels": 10,
+    "restyle": "chicago",
+    "note": "rule 8"
+  },
+  {
+    "osm": [
+      "way/256736508"
+    ],
+    "name": "Building 256736508",
+    "height": 38,
+    "levels": 11,
+    "restyle": "brick",
+    "note": "rule 7"
+  },
+  {
+    "osm": [
+      "way/256756308"
+    ],
+    "name": "Building 256756308",
+    "height": 39,
+    "levels": 11,
+    "restyle": "brick",
+    "note": "rule 7"
+  },
+  {
+    "osm": [
+      "way/256479444"
+    ],
+    "name": "1 Daniel Burnham Court",
+    "height": 37,
+    "levels": 10,
+    "restyle": "chicago",
+    "note": "rule 8"
+  },
+  {
+    "osm": [
+      "way/259252283"
+    ],
+    "name": "1998 Broadway",
+    "height": 36,
+    "levels": 10,
+    "restyle": "chicago",
+    "note": "rule 8"
+  },
+  {
+    "osm": [
+      "way/69707525"
+    ],
+    "name": "Building 69707525",
+    "restyle": "stucco",
+    "note": "rule 10"
+  },
+  {
+    "osm": [
+      "way/259237551"
+    ],
+    "name": "2190 Broadway",
+    "height": 35,
+    "levels": 10,
+    "restyle": "chicago",
+    "note": "rule 8"
+  },
+  {
+    "osm": [
+      "way/256987424"
+    ],
+    "name": "1890 Clay Street",
+    "height": 38,
+    "levels": 11,
+    "restyle": "chicago",
+    "note": "rule 8"
+  },
+  {
+    "osm": [
+      "way/257004420"
+    ],
+    "name": "2006 Washington Street",
+    "height": 42,
+    "levels": 11,
+    "restyle": "chicago",
+    "note": "rule 8"
+  },
+  {
+    "osm": [
+      "way/256987436"
+    ],
+    "name": "Building 256987436",
+    "height": 35,
+    "levels": 10,
+    "restyle": "chicago",
+    "note": "rule 8"
+  }
 ]

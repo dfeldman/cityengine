@@ -2118,7 +2118,7 @@ export class City {
        */
       const foot = Math.min(pad, lowest) - 0.3
       const plan = planFacade(b.style, b.id, { levels: b.levels, height: b.height, minHeight: b.minHeight, stretch: b.stretch },
-        this.region.palettes[b.style])
+        b.palette ? [b.palette] : this.region.palettes[b.style])
       const out = byStyle.get(b.style) ?? new MeshBuilder()
       byStyle.set(b.style, out)
       if (this.pickable) {

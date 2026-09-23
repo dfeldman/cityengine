@@ -1,0 +1,29 @@
+[
+  {
+    "osm": ["way/255958555"],
+    "name": "San Francisco Unified School District Administration",
+    "restyle": "brick",
+    "height": 10,
+    "by": "haiku",
+    "image": "way-255958555.jpg",
+    "note": "Red brick institutional building with classical cornice and proportions"
+  },
+  {
+    "osm": ["way/260523200"],
+    "name": "(unnamed)",
+    "restyle": "brick",
+    "height": 68,
+    "by": "haiku",
+    "image": "way-260523200.jpg",
+    "note": "Dark red/maroon brick loft/warehouse building"
+  },
+  {
+    "osm": ["way/71504442"],
+    "name": "The Clift Royal Sonesta San Francisco",
+    "restyle": "towerblock",
+    "height": 64,
+    "by": "haiku",
+    "image": "way-71504442.jpg",
+    "note": "Residential apartment tower with horizontal window pattern and curved corner, not glass office tower"
+  }
+]
