@@ -115,6 +115,37 @@ Federal Building, a Masonic Temple, a Hall of Justice, a First National Bank. **
 does not fix this**, because the search is full-text and a page about the Rhode Island building may well
 mention San Francisco somewhere. Only the coordinates settle it.
 
+**Name search alone MISSES buildings whose file is titled by address.** The Strand Theatre returned nothing
+at all by name — yet Commons has a photograph of it, geotagged, called
+`2017 ACT The Strand 1127 Market Street.jpg`. No name query was ever going to find that reliably.
+
+**So run GEOSEARCH as well, and match on the TITLE.** Geosearch asks "what files are near this point", which
+is the one question that finds an address-titled file:
+
+```bash
+curl -s -G -H "User-Agent: $UA" 'https://commons.wikimedia.org/w/api.php' \
+  --data-urlencode 'action=query' --data-urlencode 'list=geosearch' \
+  --data-urlencode 'gscoord=37.779601|-122.412875' --data-urlencode 'gsradius=120' \
+  --data-urlencode 'gslimit=20' --data-urlencode 'gsnamespace=6' --data-urlencode 'format=json'
+```
+
+Its PRECISION is dreadful on its own — that call returned twenty files of which ONE was the building: the
+other nineteen were Pride parade photographs, Muni stairway construction, quarantine street scenes and
+people drinking beer. This is exactly why a bare geosearch once scored "20 of 20 found" with nothing
+correct.
+
+**But the titles are informative, so filter them in code, not by eye.** Keep only results whose FILENAME
+contains the building's name, its street number, or its street. `2017 ACT The Strand 1127 Market Street.jpg`
+matches on all three. That is plain text matching — no model, no judgement, no cost — and it turns a
+1-in-20 haystack into a single right answer.
+
+**The two searches fail in opposite directions, so run both:**
+
+| | finds | misses |
+|---|---|---|
+| name search + geotag check | files titled by name | files titled by address |
+| geosearch + title match | files titled by address or street | files with an uninformative title |
+
 **A second junk class: `File:` is not "image".** The namespace also holds PDFs, DjVu scans and books. The
 same query returned five scanned volumes — *San Francisco and thereabout*, a 1916 Jewish blue book, a set of
 earthquake articles. Filter results to real image extensions (`.jpg`, `.jpeg`, `.png`, `.tif`, `.webp`)
