@@ -69,6 +69,10 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 80 | open | 45 Main Street is missing | user, 2026-09-22 |
 | 81 | open | 285 Market Street looks nothing like the real building | user, 2026-09-22 |
 | 82 | open | One Maritime Plaza is a plain box (no X-bracing) and z-fights | user, 2026-09-22 |
+| 83 | open | No way back to 'straight' after choosing a turn (ArrowUp is power; straight is S) | user, 2026-09-22 |
+| 84 | open | Want a key to open Google Street View at the camera's location | user, 2026-09-22 |
+| 85 | open | The Bay Bridge may not be drawn (check after the re-bake) | user, 2026-09-22 |
+| 86 | open | Frame rate drops on a fast descent (~50 km/h) | user, 2026-09-22 |
 
 ---
 
@@ -1301,3 +1305,60 @@ Worth noting as a class: a preset entry reads like a model in the manifest and i
 drawn over an OSM building that should have been claimed — the fault of #5 and #64), or the `layer=2` tag,
 which is unusual on a building and is there because the tower stands over a podium that is mapped separately.
 Look before fixing.
+
+## 83. Once you choose left or right there is no way to choose straight again
+
+**Seen:** user riding, 2026-09-22: "once you choose to turn left or right there is no way to choose straight
+again."
+
+**There is a way, and nothing tells you: it is `S`.** From `src/controls.ts`:
+
+    case 'ArrowUp':    bike ? (this.watts += 15) : (this.belt += 0.15)
+    case 'ArrowLeft':  this.pending.push('left')
+    case 'ArrowRight': this.pending.push('right')
+    case 'KeyS':       this.pending.push('straight')
+
+`ArrowUp` is POWER — watts on a bike, belt speed on a treadmill — not steering. Meanwhile the junction HUD
+draws ← ↑ → as the three choices, so it says to press Up, and Up does something else entirely (and silently
+changes your effort while you are trying to steer). The model underneath is fine: `nav.request('straight')`
+clears `wantEdge` and cancels the pending turn exactly as it should. On the Dandyhorse d-pad this all works
+— `DPAD` in `src/platform.ts` maps `up: 'straight'` — so it is keyboard-only.
+
+**Fix wants a decision, not just a key.** Arrow keys for BOTH steering and power is the root problem. Options:
+give straight its own arrow and move power to `+`/`-` or `W`/`S`; or leave power on the arrows and change the
+HUD to show the key it actually wants. The first is better — the HUD's three arrows are the natural mental
+model and they should simply work — but it moves a control the user already has in their fingers, so ask.
+
+## 84. A key to open Google Street View at the camera's location
+
+**Asked:** user, 2026-09-22: "I'd love a key that would freeze and open a google street view of the current
+camera location in a new tab for checking."
+
+Freeze the game (the debug freeze already exists — `OrbitLook`, `src/ui/debug.ts`), then open
+`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=<lat>,<lon>&heading=<deg>` in a new tab. The
+camera's lat/lon and heading are all to hand (`Projection.toLatLon`, `camHeading`), and `src/ui/debug.ts`
+already copies the current position, so this is a few lines beside it.
+
+Worth having because it is the project's own modelling method made one keypress long: look at the real place
+first, then judge the model against it. It would have shortened nearly every landmark bug in this file.
+
+## 85. The Bay Bridge may not be drawn
+
+**Seen:** user, 2026-09-22: "the bay bridge may not be showing up (may just need the rebake)."
+
+Unconfirmed, and the user's own guess is the likely one — the package predates a lot of work. **Check after
+the current re-bake before investigating.** Left open so it is not forgotten if the re-bake does not fix it;
+`goldenGateBridge` and `bayBridge` are both real builders and both pass the geometry test.
+
+## 86. Frame rate drops on a fast descent
+
+**Seen:** user riding, 2026-09-22: "it's really really fun to roll down california street at full speed...
+performance struggles a bit at 50 km/h though."
+
+Logged as a bug as well as a design goal (README, "The descent is a headline feature"), because it is a
+defect and not merely an aspiration: 50 km/h is 14 m/s, and streaming, LOD and culling have to feed the
+camera much faster than a level ride demands.
+
+**Measure downhill at speed.** A steady thirty on the flat proves nothing about this. See
+`docs/` and the sister project's finding that it was fill-bound rather than triangle-bound — the same may or
+may not hold here, and assuming it does is how this gets fixed in the wrong place.
