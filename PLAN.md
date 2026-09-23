@@ -1483,6 +1483,64 @@ the larger population by far.
 Worth doing AFTER the framing simulation, and worth measuring the same way: what fraction of facades clear
 the sampling-distance gate.
 
+### AH. A kit shaped for the way a model reads a building
+
+The owner, 2026-09-23: *"maybe we could make some kit functions that are easier for the LLM to use. like
+ones that force it to specify pediment, first floor, main section, penthouse, and roof (and let it set one
+to null if it isn't used). or functions for making the big corner columns which are a major element of many
+modern buildings."*
+
+**This addresses the failure we actually measured.** Every fault across nine runs was an OMISSION — no
+ground-floor arcade at Leidesdorff, no colonnade at the Pacific Exchange, no distinct glazed top storey at
+550 California, no corner piers at the ICA. `tower()` makes every one of those optional, so a model that
+never considers them produces a legal, silent, wrong building. Nothing asks the question.
+
+#### The design principle: required keys, nullable values
+
+Not optional keys. A slot that must be filled with `null` forces a decision; a key that can be left out
+invites an omission nobody notices — including the model itself.
+
+```ts
+facade(out, fit, {
+  ground:  { kind: 'arcade', arches: 5, order: 'doric' },   // or 'shopfront' | 'rusticated' | 'plain' | null
+  shaft:   { storeys: 7, windows: 'wide', material: 'ashlar' },
+  top:     { kind: 'glazed' },                              // a floor-to-ceiling top storey, or 'attic' | 'setback' | null
+  cornice: { depth: 0.9 },                                  // or null
+  crown:   { kind: 'parapet', height: 1.2 },                // or null
+  corners: { kind: 'pier', width: 3.5, material: 'granite' },// or null
+})
+```
+
+Three properties make this easier for a model than what exists now:
+
+1. **The slots mirror how a building is READ from the street** — ground floor, shaft, top, cornice, crown,
+   corners — rather than how the renderer is built (tiers, faces, fractions of height). A model looking at a
+   photograph is answering exactly these questions.
+2. **Vocabulary instead of numbers.** `windows: 'wide'` maps internally to `solid: 0.25`. A model can choose
+   between *wide windows with narrow piers* and *small holes in a lot of wall* from a photograph; it cannot
+   judge 0.25 against 0.45, and the evidence is that it defaults to the middle every time.
+3. **Discriminated unions**, so every slot's options are enumerable and typechecked. A model cannot invent
+   `kind: 'colonnaded'` and have it silently do nothing — which is close to what happened with `arcade`.
+
+This does not replace `tower()`; it sits on top of it, the way the recipes do. Hand-modelled landmarks keep
+the lower-level API.
+
+#### Corner piers as a first-class part
+
+The owner's second idea, and it is the right one to start with: **big corner columns are the signature of a
+great many modern buildings** and there is nothing in the kit for them. We have already met three in one
+session — One Maritime Plaza's exoskeleton, the ICA's massive stone corner piers framing recessed glazing,
+and 300 Montgomery's colonnaded corner. Each was hand-rolled or missed.
+
+`corners: { kind: 'pier' | 'column' | 'chamfer' | 'round', width, material }` would cover most of them, and
+it is cheap: a pier at each ring corner, the glazing inset between them. **The ICA is exactly "dark stone
+corner piers with the wall recessed behind" and not one run expressed it** — E2 came closest by
+hand-rolling.
+
+**Do item AG's catalogue first**, and let E10 say whether documentation alone fixes the omissions. If it
+does not — if models still skip the ground floor even when they can see what `arcade()` draws — then the
+omissions are structural and this item is the answer.
+
 ### AG. Expand the kit — but AFTER proving the existing one gets used
 
 The owner, 2026-09-23: *"I do think we'll eventually need to expand the kit. don't be afraid to do that. but
