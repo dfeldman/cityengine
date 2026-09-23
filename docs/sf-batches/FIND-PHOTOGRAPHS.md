@@ -15,17 +15,28 @@ But this image is hard to find."*
 
 **Two to four images**, saved to the output directory you are given, and a `photos.md` beside them.
 
-The most valuable single image is a **three-quarter / corner view**: one that shows TWO elevations and the
-corner between them at once. A building's massing, its depth and how its corners are treated are invisible
-in a flat-on elevation, and those are exactly what a modeller needs. If you get only one good picture, make
-it that one.
+**Which view is best depends on where the building STANDS.** Work this out first — from the footprint, a
+map, or the pictures themselves — because asking for the wrong kind of view wastes the whole search.
 
-After that, in order of usefulness:
+**A building on a corner site** (its footprint meets two streets — the end of a block, an intersection):
+a **three-quarter / corner view** showing both elevations and the corner between them is the best possible
+image. Massing, depth and corner treatment are all visible at once, and for some buildings the corner IS the
+building.
 
-1. a three-quarter view from the opposite corner, so the whole block is accounted for;
-2. a flat-on elevation of the main front, for proportions and bay spacing;
-3. a detail of the ground floor or the entrance, where a rider's eye actually goes;
-4. anything showing the top — a crown, a parapet, plant — which street-level views usually cut off.
+**A building mid-block** (neighbours on both sides): ask for a **front-on elevation of its street face**.
+There is no corner to see and its flanks are buried against its neighbours, so a front-on shot is not a
+compromise — it is the whole of what a rider will ever see. Do not go hunting for a three-quarter view that
+cannot exist.
+
+**A very large building, or one with a complicated footprint**: an **aerial or oblique aerial** is worth
+having in addition, for the massing, the roof and the shape of the plan. A street-level camera cannot see
+any of those on a big building, and the roof of a low building is visible from the towers around it.
+
+Then, in rough order of usefulness once you have the main view:
+
+1. the opposite side, if the building presents two different faces;
+2. a detail of the ground floor or the entrance, where a rider's eye actually goes;
+3. anything showing the top — a crown, a parapet, plant — which street-level views usually cut off.
 
 **Reject** pictures that are: mostly trees, cars or scaffolding; night shots; heavily wide-angle or
 fish-eyed; interiors; the wrong building; so distant the building is a smudge; or historic, if the building

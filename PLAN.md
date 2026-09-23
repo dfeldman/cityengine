@@ -1415,13 +1415,21 @@ photograph, not the model.** Cheap modelling is only cheap if the reference is i
 
 Four concrete improvements, in order of value:
 
-1. **Aim at the CORNER for a compact building, at the face for a long one.** `tools/photo.ts` deliberately
-   aims at the nearest point on the boundary rather than a corner, and its comment gives the reason: "for a
-   long building the nearest corner is its END, so the view swings along the facade and off the building
-   altogether." That is right for a slab and wrong for a block. **An edge-on three-quarter view shows two
-   faces and the corner treatment at once** — for the ICA, whose corner piers ARE the building, a face-on
-   view could never have shown what matters. Choose by the footprint's aspect ratio: near-square gets the
-   corner, elongated gets the face.
+1. **Aim by the SITE, not by the building.** `tools/photo.ts` aims at the nearest point on the boundary
+   rather than a corner, and its comment gives the reason: "for a long building the nearest corner is its
+   END, so the view swings along the facade and off the building altogether." Right for a mid-block
+   building, wrong for one on a corner.
+
+   The distinction is not the building's shape but **where it stands**, and it is computable: a building
+   whose footprint meets TWO streets is on a corner site, and a three-quarter view shows both elevations and
+   the corner treatment at once — for the ICA, whose corner piers ARE the building, no face-on view could
+   have shown what matters. A building mid-block has no visible corner at all: its flanks are buried against
+   its neighbours, so a front-on elevation is not a compromise but the whole of what a rider will ever see.
+   **Asking for a corner view of a mid-block building is asking for a photograph that cannot exist.**
+
+   We already have what is needed to decide: footprints, and the street network. A very large or
+   complicated building wants an oblique AERIAL as well, for massing, roof and plan shape, none of which a
+   street camera can see.
 2. **Google Street View is the source that actually has these pictures.** The image that settled this
    building looks like Street View, and BUGS.md #84 already asks for a key that opens Street View at the
    camera's position. Worth going further and making it a fetch step in the reference pipeline, not just a
