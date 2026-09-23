@@ -22,6 +22,58 @@ silently**:
 **Five of the six are API-shaped.** The model never decided not to draw an arcade — it never considered the
 ground floor at all, because `tower()` does not require it to.
 
+## 1b. What the kit HAS that nobody knew about — including me
+
+Auditing `Face` to answer "what parts are missing?" turned up two kinds that **I left out of both briefs**:
+
+| kind | what it does | consequence of my omission |
+|---|---|---|
+| **`bays`** | projecting bay windows, one per bay, all the way up, with `bay: { depth, round }` — the source calls it *"San Francisco's own facade"* | the single most characteristic SF residential facade, unavailable to every run |
+| **`xbrace`** | an external braced frame, with `brace` = floors per brace | **exactly what One Maritime Plaza needed.** That run hand-rolled the entire exoskeleton from `beam` calls because my brief did not say this existed |
+
+`Face` also carries `depth` (how far fins or piers stand proud) and `arched` (round-headed window heads),
+neither of which I explained.
+
+**So the first missing part was documentation of the parts that exist.** This is the same failure the whole
+report is about, committed by the person writing the report — which is itself evidence for how the failure
+happens: you write a summary, you list what you remember, and what you leave out becomes invisible.
+
+## 1c. What is genuinely missing
+
+Answering the owner's question — *"windows? size and distance between windows? supporting internal columns
+on the facade? corner columns?"* — against what `Face`, `parts.ts` and `kit.ts` actually provide:
+
+**Windows: mostly covered, badly calibrated.** `pitch` is the distance between them, `solid` their share of
+each bay, `arched` their heads, `bays` the projecting kind. The gap is not capability but **calibration** —
+both are free numbers and every run wrote the middle of the range (§2). What is missing outright: a
+**Chicago window** (wide fixed centre flanked by narrow sashes — a Financial District signature), **paired
+or coupled** windows, and any **window surround** — lintel, sill, moulded architrave, a pediment over an
+opening.
+
+**Facade columns: only the modern kind.** `fins` gives vertical piers standing proud — right for a 1960s
+precast frame, wrong for a 1910s classical one. There is **no pilaster** — an engaged classical column with
+a base and capital, flat against the wall. That is the commonest classical facade element there is, and the
+word appears twice in the codebase, both in comments.
+
+**Corner columns: entirely missing, and this is the biggest gap.** Nothing in the kit treats a corner at
+all — no pier, no chamfer, no rounding, no quoins-as-a-face-option (`quoins()` exists as a separate part but
+must be placed by hand). Three buildings in one session needed it: the ICA's massive stone corner piers, One
+Maritime's braced corners, 300 Montgomery's colonnaded corner. **A corner is also the most visible part of a
+downtown building**, because it is what you see from across the junction.
+
+**And five more that recur on these streets:**
+
+| missing | why it matters here |
+|---|---|
+| **An entrance** | every building has one, it is at eye level, and a rider passes within metres. Nothing in the kit marks a door |
+| **String / belt courses** | thin horizontal bands between floors, distinct from a cornice — the main horizontal rhythm on a pre-war block |
+| **Chamfered corner entrance** | a diagonal corner with the door in it: a San Francisco commercial cliché, on hundreds of corners |
+| **Balustrade** | a parapet of little posts rather than a solid wall — the top of most classical buildings |
+| **Fire escapes** | zigzag iron on the front of half the older buildings in the city, and unmistakably San Francisco |
+
+**Ranked by what would change the most buildings**: corner treatment first, then an entrance, then
+pilasters, then string courses. The first two are also the two a rider is physically closest to.
+
 ## 2. The three properties that separate what gets used from what does not
 
 We have direct evidence, not speculation:
