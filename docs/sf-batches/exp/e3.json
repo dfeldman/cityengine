@@ -1,0 +1,42 @@
+[
+  {
+    "osm": ["way/944039725"],
+    "name": "300 Montgomery Street",
+    "procedural": "e3_300Montgomery",
+    "front": "street",
+    "height": 58,
+    "note": "Classical Chicago-style commercial tower with regular punched windows and prominent classical base. Photos 2-3 show clear facade with light tan ashlar, regular grid of windows, about 12 stories. Modeled using chicago-block recipe with custom wall color and base treatment."
+  },
+  {
+    "osm": ["way/243794014"],
+    "name": "550 California Street",
+    "procedural": "e3_550California",
+    "front": "street",
+    "height": 55,
+    "note": "Mid-century modern building with distinctive arched base openings and vertical ribbed wall/fins above. Photos 2-3 show cream/tan color with vertical ribbing running full height. About 11-12 stories. Modeled with arched base tier and vertical fins for main tower."
+  },
+  {
+    "osm": ["way/256067734"],
+    "name": "Modern Tower with Vertical Fins",
+    "procedural": "e3_modernTowerFins",
+    "front": "street",
+    "height": 48,
+    "note": "Contemporary glass tower with prominent vertical dark blue/metal fins and dark glass curtain wall. Photos 1 and 3 show the narrow slab-like form with strong vertical rhythm. About 10 stories. Modeled as modern glass tower with tall vertical fins."
+  },
+  {
+    "osm": ["way/288511103"],
+    "name": "Institute of Contemporary Art, 345 Montgomery Street",
+    "procedural": "e3_ica_345Montgomery",
+    "front": "street",
+    "height": 30,
+    "note": "Modern minimalist building with distinctive dark stone base featuring large arched openings and recessed glazed wall above. Photos 1 and 3 show the dark material and arched entrance. About 6 stories. Modeled with arched base and recessed curtain wall above."
+  },
+  {
+    "osm": ["way/690663633"],
+    "name": "Alvinza Hayward Building, 400 Montgomery Street",
+    "procedural": "e3_hayward_400Montgomery",
+    "front": "street",
+    "height": 36,
+    "note": "Beaux-Arts classical tower with prominent columns/pilasters, horizontal banding, and regular punched window grid. Photos 1 and 3 show light tan facade with classical base treatment and cornice detailing. About 9 stories. Modeled using chicago-block recipe with classical ashlar material."
+  }
+]

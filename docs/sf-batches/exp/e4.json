@@ -1,0 +1,17 @@
+[
+  { "osm": ["way/944039725"], "name": "300 Montgomery Street",
+    "procedural": "e4_montgomery_300", "front": "street", "height": 58,
+    "note": "Pre-war stone office block: colonnaded corner base, punched masonry shaft, heavy cornice, flat parapet. From photos way-944039725-02.jpg and -03.jpg." },
+  { "osm": ["way/243794014"], "name": "550 California Street",
+    "procedural": "e4_california_550", "front": "street", "height": 55,
+    "note": "Tan ashlar tower with arched storefront entries at street level and plain punched windows above. From photos way-243794014-03.jpg and -05.jpg; -01/-02 show the neighbouring round-cornered curtain tower instead and were not used." },
+  { "osm": ["way/256067734"], "name": "(no address)",
+    "procedural": "e4_darkFinTower_256067734", "front": "street", "height": 48,
+    "note": "Dark modern curtain tower, black vertical fin mullions over tinted glass, Chase bank at ground floor. From photos way-256067734-01.jpg and -03.jpg." },
+  { "osm": ["way/288511103"], "name": "Institute of Contemporary Art San Francisco",
+    "procedural": "e4_ica_345Montgomery", "front": "street", "height": 22,
+    "note": "Low glass pavilion with dark bronze stone piers framing a recessed curtain wall. From photos way-288511103-01.jpg and -03.jpg (both agree); -02.jpg is a different building (Monte's Bar) and was not used. Height overridden down from OSM's 30 m: the photos show a squat 3-4 storey pavilion, clearly shorter than its stone neighbours, not a 30 m building." },
+  { "osm": ["way/690663633"], "name": "Alvinza Hayward Building",
+    "procedural": "e4_alvinzaHayward_400Montgomery", "front": "street", "height": 36,
+    "note": "Narrow dark grey stone office tower, punched windows, ornate bracketed cornice/parapet. From photo way-690663633-02.jpg (clearest view of the upper storeys and crown); -01.jpg and -03.jpg agree on colour and rhythm but are partly occluded." }
+]
