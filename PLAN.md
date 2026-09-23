@@ -1363,6 +1363,46 @@ Two consequences:
 for the handful of buildings a tool cannot photograph — a set-back pavilion, a courtyard, something behind a
 tower — and the wrong thing for the other 95%.
 
+#### What the photograph hunt actually learned (2026-09-22, measured: 75.5k tokens, 22 tool calls)
+
+A research agent found two genuinely good corner views of the ICA, one of them better than the photograph
+the owner had found by hand. **It cost 75,508 tokens to obtain one picture.** Both facts matter.
+
+**What worked, and this is the reusable part:**
+
+- **The ADDRESS beat the NAME.** `"345 Montgomery Street San Francisco building exterior"` was the single
+  most productive query. Buildings get renamed and re-tenanted; addresses do not. The museum's own name
+  returned far less.
+- **A news article's header image was the best find of the session** — the SF Standard's piece on the ICA
+  moving downtown. Press photography is high quality, recent, and shot from the angle a photographer chose,
+  which is usually the three-quarter view a modeller wants.
+- Getty's direct JPEG was reachable without an account.
+- Adding a word like `exterior` or `corner` to an address query is cheap and steers the results hard.
+
+**What failed, which is equally worth keeping:**
+
+- **`tools/sf-photos.ts` (Mapillary) returned two images and NEITHER was usable** — one distant and
+  off-axis, one not clearly of the building. For this building the built-in pipeline did not earn its place.
+- The architect's own project page exposed only 140 px CMS thumbnails; the real photographs are lazy-loaded
+  and not in the static HTML.
+- A commercial listing site returned HTTP 403 to a bot.
+- Wikipedia's article on the neighbouring tower has no image of this building at all.
+
+**The cost is the problem, not the result.** 75k tokens per photograph is 60M for the 800 corridor
+buildings, which is more than the entire modelling programme was estimated at. Three ways down, in order of
+how much they save:
+
+1. **Make the fetch deterministic** (see the section above): compute the corner camera position from the
+   footprint and fetch. Near-zero tokens, and it is the same arithmetic `photo.ts` already does.
+2. **Turn the learned query pattern into a TOOL.** The expensive part is the model's search-and-judge loop,
+   not the judging. A script that runs `<address> <city> building exterior` plus two variants, fetches a
+   dozen candidates and lays them out leaves a model with one cheap job: look and pick. That is a few
+   thousand tokens, not seventy-five.
+3. **Batch it.** One agent researching twenty buildings shares its setup twenty ways.
+
+A research AGENT should be reserved for what a tool cannot do: a building set back behind a tower, in a
+courtyard, or one where the first dozen candidates are all wrong.
+
 #### The bottleneck is RESEARCH, not modelling (user, 2026-09-22)
 
 After seeing a clear street-level photograph of the ICA, the owner: *"given THIS image, I'm pretty confident
