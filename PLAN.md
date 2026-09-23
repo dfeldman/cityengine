@@ -1011,6 +1011,26 @@ Done in the last stretch (details in R and LANDMARKS_PARIS.md):
   corners where two arms' crossings meet.
 - **Plane fighting on some facades** — seen in play, not yet reproduced in a still.
 
+### X. Plant Salesforce Park by hand (user request, 2026-09-22)
+
+The deck has no plants, and the general planting system cannot give it any: a `Planting` carries no `y`, a
+`PackedArea` no `level`, and a `ParkRule` is `(x, z, kind)`, so nothing in the pipeline can place a tree 21 m
+above the street. Salesforce Park is `level=3`.
+
+**Decision (user):** do NOT generalise. "We should have custom logic to put plants in salesforce park only, it
+is a world-unique area." It is a 5.4-acre botanical garden on a roof, laid out in thirteen named gardens along
+its length — there is nothing else like it to share a rule with, and a general rooftop-planting feature is a
+much bigger change for one place.
+
+So: the builder plants itself. `salesforceTransitCenter` already draws the deck, the beds and the paths, so it
+knows where every bed is and how high; it should place the trees and shrubs directly, in deck coordinates,
+choosing from the existing tree and plant libraries. Roughly west to east the real park runs through a palm
+garden, redwoods, a wetland, a prairie, a California garden and an amphitheatre — enough to vary what goes in
+each bed rather than scatter one species down 438 m.
+
+Depends on nothing else. Worth doing with #66 (the deck standing on a rectangle rather than its real ring),
+since both are in the same builder.
+
 ### V. Venues are invisible to the building pipeline (2026-09-22)
 
 Oracle Park was missing from every register and manifest, and it turned out not to be an oversight. The

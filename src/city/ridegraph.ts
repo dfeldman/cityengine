@@ -1006,7 +1006,10 @@ export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrid
   es = largest(contract(collapseClusters(es, ids, overrides?.wideJunctions), ids))
   for (const o of overrides?.roundabouts ?? []) es = applyRoundabout(es, o, ids, overrides!.heightAt)
   // and the stubs a dropped path leaves behind, pruned as the chain prunes them the first time
-  if (overrides?.roundabouts.length) es = pruneStubs(largest(es))
+  // `?.` on roundabouts too: the optional chain stops at `overrides`, so an overrides object without the field
+  // threw here. `roundabouts` is required by the interface, but a caller that casts its way past the compiler
+  // can still omit it — tools/bake.ts did, with `as never`, and every San Francisco bake died at this line.
+  if (overrides?.roundabouts?.length) es = pruneStubs(largest(es))
   // last, on the finished graph: the links across a split boulevard
   if (mode === 'bike') es = linkCarriageways(es, ids)
   // and the little loops all that can leave (BUGS.md #44), and the stubs they leave in turn

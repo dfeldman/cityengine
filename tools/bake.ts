@@ -1087,7 +1087,17 @@ async function bake(spec: CitySpec): Promise<void> {
   let covered = new Set<number>()
   for (const mode of ['bike', 'run'] as const) {
     // an American grid's junctions are wide: a boulevard with service lanes is one junction, not four (BUGS.md #52)
-    const rg = rideGraph(asEdges, mode, { wideJunctions: streetRegion.streetWidth === 'carriageway' } as never)
+    /*
+     * For the STATS and the coverage set only; the ride files themselves are written from `rideFor` below,
+     * which supplies the region's roundabouts. `as never` used to stand where the real type goes, and it hid
+     * a missing `roundabouts` from the compiler — every San Francisco bake then died inside rideGraph.
+     */
+    const rg = rideGraph(asEdges, mode, {
+      roundabouts: [],
+      wideJunctions: streetRegion.streetWidth === 'carriageway',
+      // only ever called to give a roundabout's new edges their heights, and there are none here
+      heightAt: () => 0,
+    })
     const st = rideStats(rg)
     console.log(`  ride graph (${mode}): ${st.edges} edges over ${st.km.toFixed(1)} km, `
       + `${st.perKm.toFixed(1)} decisions/km, median ${st.medianSpacing.toFixed(0)} m between them, `

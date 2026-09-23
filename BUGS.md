@@ -55,6 +55,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 66 | open | Salesforce Park sits slightly wrong and cuts through neighbouring buildings | user, 2026-09-22 |
 | 67 | open | Z-fighting across Salesforce Park | user, 2026-09-22 |
 | 68 | open | Minimised landmark box disappears for good when clicked | user, 2026-09-22 |
+| 69 | open | Street-sign text is occluded by its own pole | user, 2026-09-22 |
 
 ---
 
@@ -1023,3 +1024,13 @@ disappears completely and never comes back."
 So the minimised chip's click handler is removing the element (or setting a hidden state with nothing left to
 toggle it) instead of restoring the panel. There is then no way back short of a reload. Wants the minimised
 form to be a toggle: click restores the box.
+
+## 69. Street-sign text is occluded by its own pole
+
+**Seen:** user riding, 2026-09-22: "on street signs, the text itself is occluded by the pole (making the sign
+pointless)."
+
+The blade is centred on the pole rather than hung off it, so the pole stands in front of the lettering from
+the side the rider reads it. A real street blade is cantilevered clear of its post, or the post stops below
+the blade. Wants the sign offset along its own normal by at least the pole's radius, both faces, so the name
+is readable from both directions — the whole point of the sign.
