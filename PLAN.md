@@ -1011,6 +1011,32 @@ Done in the last stretch (details in R and LANDMARKS_PARIS.md):
   corners where two arms' crossings meet.
 - **Plane fighting on some facades** — seen in play, not yet reproduced in a still.
 
+### Y. The game is embedded, not a page: strip the chrome (user requests, 2026-09-22)
+
+Four requests that are really one decision. Street Runner is loaded by a wrapper web app which already knows
+who is riding, on what, and where — so the controls that let a player change those things are not merely
+clutter, they contradict the way it is actually used.
+
+- **City is fixed for the life of the app.** "city will be chosen at startup and stay constant for the life
+  of the app, no need to have a selector." Take it from the URL; remove the selector.
+- **Bike/run is fixed too, and DEFAULTS TO BIKE.** "that will be set with a URL param from the wrapper web
+  app and stay constant for the entire game." Remove the toggle. Note this also removes a question the ride
+  model currently has to answer mid-session.
+- **The landmark menu should not be always visible** — "it's mostly pointless" as a permanent fixture. It
+  belongs behind the search below. (See also #68: its minimised form currently vanishes for good.)
+- **Search for a landmark with `/`.** The fast path to anywhere, replacing the menu. `/` is the natural key
+  and nothing uses it. Should match on name, and jump the way the map's double-click already does — in
+  place, not by reloading the page (#61).
+
+**First-person mode** is the fifth and is a mode, not chrome: "the bike isn't shown at all, you just zoom
+around with no avatar." Cheap to add — the rider already has `?without=rider` — but it wants its own
+camera placement at eye height rather than the third-person rig pulled in to zero, and the avatar and bike
+should not be built at all, which is a real saving on a weak machine. Given the descent is the headline
+feature (README), a first-person descent of California Street is likely the best the game has to offer, and
+it is also the cheapest frame it can draw.
+
+Worth doing together: they are all in `src/game.ts` and `src/ui/`, and the first four all delete code.
+
 ### X. Plant Salesforce Park by hand (user request, 2026-09-22)
 
 The deck has no plants, and the general planting system cannot give it any: a `Planting` carries no `y`, a

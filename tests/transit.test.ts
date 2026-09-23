@@ -26,18 +26,23 @@ describe('who may be boarded', () => {
     expect(t.prompt()).toMatch(/board/)
   })
 
-  it('does not offer one that is still moving', () => {
+  /*
+   * Boarding is NEAR ENOUGH, and nothing else. It used to need the vehicle dwelling at a stop and the rider
+   * nearly stopped beside it; with no brakes and no paths to the stops that combination essentially never
+   * occurred, and no cable car in San Francisco was ever offered. These two tests asserted the old rule, so
+   * they are the ones that had to change when it did.
+   */
+  it('offers one that is still moving', () => {
     const t = new Transit()
     t.update(rider(), [car({ dwelling: false, speed: 4 })])
-    expect(t.boardable).toBeNull()
-    // …but it still says there is one about, so the rider knows to wait
-    expect(t.prompt()).toMatch(/cable car/)
+    expect(t.boardable?.id).toBe('c1')
+    expect(t.prompt()).toMatch(/board/)
   })
 
-  it('does not offer one the rider is riding past', () => {
+  it('offers one to a rider going full tilt past it', () => {
     const t = new Transit()
-    t.update(rider({ speed: BOARD_SPEED + 0.5 }), [car()])
-    expect(t.boardable).toBeNull()
+    t.update(rider({ speed: BOARD_SPEED + 12 }), [car({ dwelling: false, speed: 4 })])
+    expect(t.boardable?.id).toBe('c1')
   })
 
   it('does not offer one that is too far to step onto', () => {
@@ -45,6 +50,7 @@ describe('who may be boarded', () => {
     t.update(rider({ z: BOARD_NEAR + 5 }), [car()])
     expect(t.boardable).toBeNull()
     expect(t.prompt()).toMatch(/at the stop/)
+    expect(t.prompt()).toMatch(/m$/)
   })
 
   it('says nothing at all about one beyond sight', () => {
@@ -63,7 +69,8 @@ describe('who may be boarded', () => {
 describe('boarding', () => {
   it('refuses when nothing was offered', () => {
     const t = new Transit()
-    t.update(rider(), [car({ dwelling: false })])
+    // out of reach: distance is the only thing that refuses a boarding now
+    t.update(rider(), [car({ z: BOARD_NEAR + 5 })])
     expect(t.board(START)).toBe(false)
     expect(t.aboard).toBeNull()
   })

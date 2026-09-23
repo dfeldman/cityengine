@@ -581,8 +581,13 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       const t = life.train(Number(on.id))
       return t ? [vehicleView(t)] : []
     }
-    // a line with no stops never dwells, so it can never be boarded: leave it out of the search entirely
-    return life.trainInfo().filter((t) => BOARDABLE.has(t.kind) && t.stops > 0).map(vehicleView)
+    /*
+     * Every boardable vehicle, stops or no stops. It used to require `t.stops > 0`, on the reasoning that a
+     * line which never dwells can never be boarded — true while boarding meant "standing beside it at a
+     * stop", and wrong since boarding became "near enough" (sim/transit.ts `update`). It was also a second
+     * silent way to be offered nothing at all, on top of the dwelling test.
+     */
+    return life.trainInfo().filter((t) => BOARDABLE.has(t.kind)).map(vehicleView)
   }
   /**
    * Back onto the ride graph, facing the way the vehicle was going. `reversed` is chosen by comparing the
@@ -746,10 +751,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   let lastState: ReturnType<typeof ride.step> | null = null
   /*
    * The SIMULATED clock (`window.__clock`, tools/route-movie.ts). Not `performance.now()`: dt is clamped to
-   * 0.1 s, so a headless Chromium grinding through San Francisco at 8 fps lives in slow motion — a minute of
-   * wall clock is forty seconds of riding. A tool that wants to photograph the ride every two seconds of
-   * IN-GAME time, or to report how long a route took a rider, has to read the same seconds the ride model
-   * was stepped with. Advanced only where the rider actually moves, so a freeze, a pause and a cable-car
+   * 0.1 s, so any frame slower than that is time the rider never gets — on a machine drawing 8 fps a minute of
+   * wall clock would be forty seconds of riding. A tool that photographs the ride every two seconds of IN-GAME
+   * time, or reports how long a route took a rider, has to read the same seconds the ride model was stepped
+   * with, whatever the frame rate happened to be. Advanced only where the rider actually moves, so a freeze, a pause and a cable-car
    * ride cost the rider no time at all.
    */
   let simSeconds = 0

@@ -8,7 +8,7 @@
  * runs the trains along the baked rails, stops them at their stops and stands them there) plus two verbs the
  * rider presses: board, and get off.
  *
- *     off ──(a boardable vehicle dwelling within BOARD_NEAR, rider nearly stopped, B)──▶ aboard
+ *     off ──(a boardable vehicle within BOARD_NEAR — moving or standing, at any speed — and B)──▶ aboard
  *     aboard ──(the vehicle is dwelling at a stop again, B)──▶ off, placed back on the ride graph
  *
  * Two things this is careful about, because both are the kind of fault that hides:
@@ -53,11 +53,18 @@ export interface GraphPosition { edgeId: number; s: number; reversed: boolean }
 /** Where the rider can be put back on the graph near `p`, and how far away that is. */
 export type Placer = (p: { x: number; z: number }, heading: number) => { pos: GraphPosition; d: number } | null
 
-/** Close enough to step on, once it has stopped. */
-export const BOARD_NEAR = 10
+/**
+ * Close enough to swing aboard. Generous on purpose: the rider has no brakes, so at 14 m/s a ten-metre
+ * window went past between one search and the next (the search runs every sixth frame while on foot).
+ */
+export const BOARD_NEAR = 20
 /** Near enough to be told it is there and worth waiting for. */
 export const SEE_NEAR = 70
-/** A rider still rolling is not boarding anything: m/s. */
+/**
+ * No longer a boarding condition — kept because the HUD and the tests still talk about a rider being "nearly
+ * stopped", and because it is the threshold below which the rider counts as standing. Boarding stopped
+ * requiring it on 2026-09-22; see `update`.
+ */
 export const BOARD_SPEED = 1.2
 /** The furthest a rider may be put from where they got off. Beyond this they stay aboard. */
 export const MAX_DROP = 30
@@ -111,7 +118,16 @@ export class Transit {
       const d = Math.hypot(v.x - rider.x, v.z - rider.z)
       if (d > SEE_NEAR) continue
       if (!near || d < near.d) near = { v, d }
-      if (!v.dwelling || d > BOARD_NEAR || rider.speed > BOARD_SPEED) continue
+      /*
+       * NEAR IS ENOUGH. This used to require the vehicle to be DWELLING at a stop and the rider to be nearly
+       * stopped beside it, which read well and was unplayable: the rider has no brakes by design (README,
+       * "The descent is a headline feature"), and the stops have no paths to them, so meeting a cable car at
+       * a stop at under 1.2 m/s was something that essentially never happened. User, 2026-09-22, after
+       * riding past several: "I was NOT prompted to board any cable car... just get near a transit vehicle
+       * to board it." So: near is the whole test. You can swing aboard a moving cable car, which is both
+       * more fun and, as it happens, what people actually used to do.
+       */
+      if (d > BOARD_NEAR) continue
       if (!best || d < best.d) best = { v, d }
     }
     this.candidate = best?.v ?? null
@@ -122,9 +138,9 @@ export class Transit {
   private seenAt = 0
 
   /**
-   * The one line the HUD shows. Two stages on purpose: a rider who can see a cable car standing at Hyde and
-   * Lombard should be told it is there while they still have the legs to reach it, and only told which key
-   * boards it once they are beside it and stopped.
+   * The one line the HUD shows. Two stages on purpose: a rider who can see a cable car ahead on Hyde Street
+   * should be told it is there while they can still get to it, and told which key boards it once they are
+   * alongside.
    */
   prompt(): string | null {
     if (this.on) {

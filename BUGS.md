@@ -57,6 +57,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 68 | open | Minimised landmark box disappears for good when clicked | user, 2026-09-22 |
 | 69 | open | Street-sign text is occluded by its own pole | user, 2026-09-22 |
 | 70 | open | Kearny Street is bumpy, not flat (huge bump at 37.795302 −122.404934) | user, 2026-09-22 |
+| 71 | open | A wall across the road at 37.792190, −122.415121 | user, 2026-09-22 |
 
 ---
 
@@ -1060,3 +1061,20 @@ a good place to start but the fix is a whole-street one.
 
 Note the ride model brakes for corners but the RIDER HAS NO BRAKES by design (README, "The descent is a
 headline feature"), so a bump on a fast descent is felt hard and cannot be ridden around.
+
+## 71. A wall across the road at 37.792190, −122.415121
+
+**Seen:** user riding, 2026-09-22, two points three metres apart — "wall across the road at 37.792190,
+−122.415121" and "and 37.792164, −122.415116" — so it is one wall, spanning the carriageway rather than a
+stray object beside it.
+
+On Sacramento Street near Franklin, on the western shoulder of Nob Hill: a steep block.
+
+**Suspected: a retaining wall from the hillside road cut** (the feature added for #38, "roads tilt sideways on
+hillsides; they want a level cross-section, with cuts and retaining walls"). A wall built along the edge of a
+cut will cross the carriageway wherever the cut's edge is computed across the road rather than beside it —
+which happens where the road changes direction on a grade, and Sacramento at Franklin is exactly that. The
+alternative is a landmark or building footprint overlapping the street, which #66 shows is possible.
+
+**To check:** what is drawn there — retaining wall, building, or landmark — before assuming. If it is the
+cut, the wall's polyline wants clipping to the road corridor the way the road ground layer already is.
