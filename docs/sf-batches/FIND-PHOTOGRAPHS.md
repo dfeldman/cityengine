@@ -115,6 +115,17 @@ Federal Building, a Masonic Temple, a Hall of Justice, a First National Bank. **
 does not fix this**, because the search is full-text and a page about the Rhode Island building may well
 mention San Francisco somewhere. Only the coordinates settle it.
 
+**Search the ADDRESS as a QUOTED PHRASE — this is the single most precise query found.** Commons files are
+very often titled with the street number, and a quoted phrase search cuts straight to them:
+
+| query | what came back |
+|---|---|
+| `1127 Market Street San Francisco` | the right file first, then five scanned PDFs |
+| **`"1127 Market" San Francisco`** | **exactly one result, and it was the building** |
+
+Quote the number and the street name together and leave off "Street"/"Avenue", which is often abbreviated or
+missing in a title. One call, near-perfect precision, no sifting. **Try this before anything else.**
+
 **Name search alone MISSES buildings whose file is titled by address.** The Strand Theatre returned nothing
 at all by name — yet Commons has a photograph of it, geotagged, called
 `2017 ACT The Strand 1127 Market Street.jpg`. No name query was ever going to find that reliably.
@@ -141,10 +152,14 @@ matches on all three. That is plain text matching — no model, no judgement, no
 
 **The two searches fail in opposite directions, so run both:**
 
-| | finds | misses |
+| query | finds | misses |
 |---|---|---|
-| name search + geotag check | files titled by name | files titled by address |
-| geosearch + title match | files titled by address or street | files with an uninformative title |
+| **quoted address** `"1127 Market" San Francisco` | files titled by street number — very precise | files titled only by name |
+| name + geotag check | files titled by name | files titled by address |
+| geosearch + filename match | files titled by address or street | files with an uninformative title |
+
+Run them in that order and stop when one works. The quoted address is one call and usually decisive;
+geosearch is the dragnet for what the other two miss.
 
 **A second junk class: `File:` is not "image".** The namespace also holds PDFs, DjVu scans and books. The
 same query returned five scanned volumes — *San Francisco and thereabout*, a 1916 Jewish blue book, a set of
