@@ -78,7 +78,9 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 89 | needs a coordinate | 350 and 433 California, and a tower complex too black — addresses not found in OSM | user, 2026-09-22 |
 | 90 | open | Full-height white piers modelled as a punched grid (425/388 Market, PG&E) | user, 2026-09-22 |
 | 91 | open | Institute of Contemporary Art rendered as Chinatown brick (a zone rule closed a priority-125 building) | user, 2026-09-22 |
-| 92 | open | 245 Market and 77 Beale share one procedural builder; the 1925 tower wears a 1970s facade | found 2026-09-22 |
+| 92 | open | pgeBuilding is claimed by two entries; 77 Beale wears 245 Market's 1925 design | found 2026-09-22 |
+| 93 | open | Trees grow inside buildings; choose species by the clearance available | user, 2026-09-22 |
+| 94 | open | Ground cannot decide its height at 37.793488, −122.405218 (see #70, #71, #72) | user, 2026-09-22 |
 
 ---
 
@@ -1561,13 +1563,22 @@ It is poorly done because it is being drawn as a different building.
 | `public/landmarks/san-francisco/market-east.json` | `way/1279504251` | **245 Market**, 83 m, Bakewell & Brown **1925**, grey terracotta, arcaded base | `pgeBuilding` |
 | `public/landmarks/san-francisco/fidi-1.json` | `way/260291405` | **77 Beale**, 154 m, a **1970s** tower | `pgeBuilding` |
 
-`pgeBuilding` is defined once, in `src/render/landmarks/sf/districts/fidi-1.ts`:
+**CORRECTION, 2026-09-22 — the collision resolves the OTHER way round.** First written up here as the 1925
+building wearing the 1970s facade. Two models sent at this independently both found the reverse, and it
+checks out: `src/render/landmarks/sf/index.ts` spreads `...FIDI_1` at line 59 and `...MARKET_EAST` at line
+87, and **the later spread wins**. There are two definitions —
 
-    pgeBuilding: fromRecipe('granite-eighties', { height: 154, wall: [0.85, 0.81, 0.71], … })
+    fidi-1.ts:        pgeBuilding: fromRecipe('granite-eighties', { height: 154, … })   // 77 Beale, 1970s
+    market-east.ts:   const pgeBuilding = spec(pgeTiers(83))                            // 245 Market, 1925
 
-So a 1925 neoclassical office building wears a 1970s granite curtain wall. Both are called "the PG&E
-building" in life, which is how it happened — but they are fifty years and one architectural revolution
-apart.
+— so `pgeBuilding` resolves to market-east's, which is a real purpose-built neoclassical spec (arcaded base,
+punched shaft, stepped-back crown). **245 Market gets the right builder; 77 Beale, a 154 m 1970s tower, is
+the one wearing an 83 m 1925 neoclassical design.** Both are called "the PG&E building" in life, which is how
+it happened — but they are fifty years and one architectural revolution apart.
+
+The lesson is sharper for being backwards: a silent collision does not merely mean "one of them is wrong",
+it means **you cannot tell which one is wrong without reading the merge order of the registry**. Neither
+building's own file gives any clue.
 
 **The class bug is that nothing detects this.** `PROCEDURAL` is a plain record keyed by name; a second entry
 naming the same key silently gets the first builder, with no warning at bake or at run time. The manifest
@@ -1603,3 +1614,48 @@ Related: #82 and #89 found `procedural:` names that are one-line presets rather 
 cannot currently tell a preset from a model, and now cannot tell a shared builder from a dedicated one
 either. Both are reporting faults, and together they mean **we do not know how much of the city is actually
 modelled**.
+
+## 93. Trees grow inside buildings; pick a small tree when a big one will not fit
+
+**Seen:** user riding, 2026-09-22 at 37.792405, −122.413863: "many trees inside buildings here" and "really
+just need to work on our tree algorithm. trees often grow right into buildings when that isnt possible. pick
+small trees when big wont fit."
+
+Two faults, and the second is the interesting one.
+
+1. **A tree is placed where its trunk intersects a building.** Placement is testing a POINT against the
+   pavement, not the tree's own footprint against what is around it.
+2. **Species is chosen before the space is known.** The fix the user asks for is the right one and is more
+   than a collision test: measure the clearance at the spot first, then choose a tree that fits it. A
+   forty-foot London plane wants several metres of clear radius; a small ornamental — a cherry, a magnolia,
+   a bottlebrush, all of which line real San Francisco streets — wants about a metre and a half. San
+   Francisco's street trees ARE mostly small for exactly this reason, so choosing by clearance would make
+   the city more accurate as well as fixing the bug.
+
+**Where to look:** `src/city/plantings.ts` and `src/render/vegetation.ts`, with the SF species list in
+`tools/sftrees/`. Note the bake already computes building footprints for other purposes — `rideGraph` takes a
+`buildings` override of flat rings precisely so no synthetic link is laid through one, so the data needed for
+a clearance test is already to hand and already packed.
+
+Worth doing as: at each planting point, find the distance to the nearest building edge (and kerb), then pick
+from the species whose mature radius fits, rather than picking a species and hoping. A point with less than
+about a metre of clearance should get nothing at all.
+
+## 94. The ground cannot decide where it is at 37.793488, −122.405218
+
+**Seen:** user riding, 2026-09-22: "grade issues here it can't decide where the ground is."
+
+Montgomery at Washington/Clay, on the steep east face of Nob Hill — the same hillside as #70 (Kearny is
+bumpy) and #71/#72 (the raised alley and its wall). **Treat all four as one investigation.** They are within
+a few hundred metres of each other, all on ground that falls hard across the street grid, and the two
+candidate mechanisms already written up cover this one too:
+
+- the terrain OPENING (`tools/bake.ts` ~line 724) removing buildings from a surface model, tuned on the flat
+  six-storey Marais and applied to a hillside of towers;
+- the LEVEL-ACROSS-WIDTH rule (#38), which takes the HIGHEST ground across a way's corridor — a fill, never a
+  cut — and has the renderer build a retaining wall to hold it up.
+
+"Cannot decide where the ground is" is the symptom that most directly suggests the second: two adjacent ways
+each level across their own width, meeting at a junction where their levels disagree, is exactly a ground
+that jumps. Worth sampling the baked terrain and the ride-edge heights along Montgomery and Washington and
+plotting where they part company, rather than looking at the one point.

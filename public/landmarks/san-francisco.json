@@ -232,12 +232,14 @@
   },
   {
     "osm": [
-      "way/28240176"
+      "way/28240176",
+      "way/1391009943"
     ],
     "name": "One Maritime Plaza",
     "procedural": "oneMaritimePlaza",
+    "front": "street",
     "height": 121,
-    "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."
+    "note": "The Alcoa Building (SOM, 1967), modelled in districts/market-east.ts: the exterior seismic frame \u2014 dark steel belts and a row of X-braces between each pair \u2014 standing proud of a dark curtain wall. From Mapillary street views. The garage podium under it is OSM way/1177704958 and is left to the city."
   },
   {
     "name": "Fisherman's Wharf sign",

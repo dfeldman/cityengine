@@ -1,13 +1,102 @@
 [
-  {"osm": ["way/72013921"], "name": "Carillon Tower", "procedural": "carillonTower", "front": "street", "height": 74, "note": "1964 round white concrete tower, 1100 Gough"},
-  {"osm": ["way/1392472204"], "name": "The Comstock", "procedural": "comstock", "front": "street", "height": 62, "note": "1961 modernist tower, 1333 Jones"},
-  {"osm": ["way/681442044"], "name": "Fox Plaza", "procedural": "foxPlaza", "front": "street", "height": 84, "note": "1966 Victor Gruen bronze tower, 1390 Market; OSM height 84m vs Wikipedia's 108m, kept OSM's per list"},
-  {"osm": ["way/256757158"], "name": "1475 O'Farrell Street", "procedural": "ofarrell1475", "front": "street", "height": 61, "note": "cream stucco apartment tower with roof mast"},
-  {"osm": ["way/149253142"], "name": "250 King Street", "procedural": "king250", "front": "street", "height": 60, "note": "The Beacon complex, mid-rise stucco/glass condo"},
-  {"osm": ["way/288671185"], "name": "The Beacon", "procedural": "theBeacon", "front": "street", "height": 60, "note": "sister block of 250 King Street, same development"},
-  {"osm": ["way/256998550"], "name": "Pacific Heights Towers", "procedural": "pacificHeightsTowers", "front": "street", "height": 68, "note": "1964 mid-century slab, 2200 Sacramento"},
-  {"osm": ["way/1204801756"], "name": "The Canyon", "procedural": "theCanyon", "front": "street", "height": 73, "note": "2023 MVRDV, Mission Rock, rust jagged bay windows"},
-  {"osm": ["way/1204801749"], "name": "Verde", "procedural": "verde", "front": "street", "height": 73, "note": "2024 Studio Gang, Mission Rock, green tile"},
-  {"osm": ["way/1204801755"], "name": "Visa", "procedural": "visaMissionRock", "front": "street", "height": 64, "note": "2022 Henning Larsen, Mission Rock, faceted stone office block"},
-  {"osm": ["way/142845124"], "name": "Madrone Mission Bay", "procedural": "madroneMissionBay", "front": "street", "height": 61, "note": "2012 Perkins & Will / Bosa, glass residential tower"}
+ {
+  "osm": [
+   "way/72013921"
+  ],
+  "name": "Carillon Tower",
+  "procedural": "carillonTower",
+  "front": "street",
+  "height": 74,
+  "note": "1964 round white concrete tower, 1100 Gough"
+ },
+ {
+  "osm": [
+   "way/1392472204"
+  ],
+  "name": "The Comstock",
+  "procedural": "comstock",
+  "front": "street",
+  "height": 62,
+  "note": "1961 modernist tower, 1333 Jones"
+ },
+ {
+  "osm": [
+   "way/256757158"
+  ],
+  "name": "1475 O'Farrell Street",
+  "procedural": "ofarrell1475",
+  "front": "street",
+  "height": 61,
+  "note": "cream stucco apartment tower with roof mast"
+ },
+ {
+  "osm": [
+   "way/149253142"
+  ],
+  "name": "250 King Street",
+  "procedural": "king250",
+  "front": "street",
+  "height": 60,
+  "note": "The Beacon complex, mid-rise stucco/glass condo"
+ },
+ {
+  "osm": [
+   "way/288671185"
+  ],
+  "name": "The Beacon",
+  "procedural": "theBeacon",
+  "front": "street",
+  "height": 60,
+  "note": "sister block of 250 King Street, same development"
+ },
+ {
+  "osm": [
+   "way/256998550"
+  ],
+  "name": "Pacific Heights Towers",
+  "procedural": "pacificHeightsTowers",
+  "front": "street",
+  "height": 68,
+  "note": "1964 mid-century slab, 2200 Sacramento"
+ },
+ {
+  "osm": [
+   "way/1204801756"
+  ],
+  "name": "The Canyon",
+  "procedural": "theCanyon",
+  "front": "street",
+  "height": 73,
+  "note": "2023 MVRDV, Mission Rock, rust jagged bay windows"
+ },
+ {
+  "osm": [
+   "way/1204801749"
+  ],
+  "name": "Verde",
+  "procedural": "verde",
+  "front": "street",
+  "height": 73,
+  "note": "2024 Studio Gang, Mission Rock, green tile"
+ },
+ {
+  "osm": [
+   "way/1204801755"
+  ],
+  "name": "Visa",
+  "procedural": "visaMissionRock",
+  "front": "street",
+  "height": 64,
+  "note": "2022 Henning Larsen, Mission Rock, faceted stone office block"
+ },
+ {
+  "osm": [
+   "way/142845124"
+  ],
+  "name": "Madrone Mission Bay",
+  "procedural": "madroneMissionBay",
+  "front": "street",
+  "height": 61,
+  "note": "2012 Perkins & Will / Bosa, glass residential tower"
+ }
 ]

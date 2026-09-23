@@ -98,35 +98,13 @@ export function vaillancourtFountain(out: MeshBuilder, _fit?: Fit): void {
 }
 
 // ---------------------------------------------------------------------------------------------------------------
-// Lotta's Fountain, Market at Kearny/Geary (37.7884, -122.4029): a slim cast-iron column ~8 m, lion-head spouts
-// into a basin, a lamp on top. Gift of Lotta Crabtree, 1875 — the oldest monument in the city.
+// Lotta's Fountain is NOT here. A version was written in this file on 2026-09-22 without noticing that
+// districts/market-mid.ts already had one — two builders under the same PROCEDURAL key, and two manifest
+// entries sixty metres apart, so the city had two fountains. The market-mid one is kept: it is bronze rather
+// than grey iron, has the lion heads with their gables, the banded drums and the glass lantern, and it cites
+// the photograph it was drawn from. See BUGS.md #92 and the naming rule in docs/sf-batches/BRIEF.md.
 // ---------------------------------------------------------------------------------------------------------------
-export function lottasFountain(out: MeshBuilder, _fit?: Fit): void {
-  const basinR = 2.6
-  basin(out, 0, 0, basinR, 0.55, GRANITE, GRAN_TAG)
-  // four lion-head spouts round the basin wall, simple blocky muzzles
-  for (let i = 0; i < 4; i++) {
-    const a = (i / 4) * Math.PI * 2 + Math.PI / 4
-    const x = Math.cos(a) * basinR, z = Math.sin(a) * basinR
-    box(out, x, 0.45, z, 0.3, 0.22, 0.22, IRON, METAL_TAG)
-  }
-  // the column: a stepped iron base, a long fluted-looking taper (approximated with a few tapered prism drums),
-  // decorative bands, and a small lamp/torch finial
-  box(out, 0, 0.7, 0, 1.1, 0.15, 1.1, GRANITE_DK, GRAN_TAG)
-  prism(out, 0, 0, 0.85, 1.7, 0.75, 8, IRON, METAL_TAG, 0.6)
-  prism(out, 0, 0, 1.7, 1.95, 0.62, 8, IRON, METAL_TAG, 0.62)          // a decorative band, near-cylindrical
-  prism(out, 0, 0, 1.95, 6.2, 0.5, 12, IRON, METAL_TAG, 0.28)          // the long tapering shaft
-  for (const y of [2.4, 3.6, 4.8]) prism(out, 0, 0, y, y + 0.15, 0.42, 12, [0.2, 0.22, 0.24], METAL_TAG, 0.42) // bands
-  prism(out, 0, 0, 6.2, 6.55, 0.5, 12, IRON, METAL_TAG, 0.34)          // capital, flares slightly
-  box(out, 0, 6.75, 0, 0.55, 0.2, 0.55, IRON, METAL_TAG)
-  prism(out, 0, 0, 6.95, 7.6, 0.32, 8, [0.24, 0.24, 0.22], METAL_TAG, 0.06) // small dome/lamp top
-  box(out, 0, 7.75, 0, 0.1, 0.15, 0.1, [0.85, 0.75, 0.3], 0)           // the light at the very top
-}
 
-// ---------------------------------------------------------------------------------------------------------------
-// Cupid's Span, Rincon Park (37.7910, -122.3899): a giant bow and part-buried arrow, ~18 m — Claes Oldenburg &
-// Coosje van Bruggen, 2002. A simple unmistakable silhouette: a curved bow standing on end, a taut string, and
-// a long arrow shaft plunging into the lawn at an angle with its fletching still up in the air.
 // ---------------------------------------------------------------------------------------------------------------
 export function cupidsSpan(out: MeshBuilder, _fit?: Fit): void {
   const PINK: Rgb = [0.66, 0.16, 0.22]
@@ -322,6 +300,6 @@ export function stevensonMemorial(out: MeshBuilder, _fit?: Fit): void {
 }
 
 export const ART: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  vaillancourtFountain, lottasFountain, cupidsSpan, asawaMermaidFountain, redwoodParkBronzes, mlkWaterfall,
+  vaillancourtFountain, cupidsSpan, asawaMermaidFountain, redwoodParkBronzes, mlkWaterfall,
   heartsInSanFrancisco, languageOfTheBirds, francisScottKeyCanopy, stevensonMemorial,
 }

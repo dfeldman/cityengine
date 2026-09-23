@@ -1,13 +1,122 @@
 [
-  {"lat": 37.7946, "lon": -122.3946, "size": [20, 20], "height": 12, "procedural": "vaillancourtFountain", "name": "Vaillancourt Fountain", "note": "Justin Herman Plaza, brutalist square-tube concrete tangle over a basin. Not models — built as a fountain (MODELS_NEEDED.md)."},
-  {"lat": 37.7884, "lon": -122.4029, "size": [7, 7], "height": 8, "procedural": "lottasFountain", "name": "Lotta's Fountain", "note": "Market/Kearny/Geary, cast-iron column with lion-head spouts over a basin, the oldest monument in the city."},
-  {"lat": 37.7910, "lon": -122.3899, "size": [22, 12], "height": 18, "procedural": "cupidsSpan", "name": "Cupid's Span", "note": "Rincon Park, giant bow and part-buried arrow (Oldenburg/van Bruggen 2002)."},
-  {"lat": 37.8058, "lon": -122.4230, "size": [12, 12], "height": 3.5, "procedural": "asawaMermaidFountain", "name": "Ruth Asawa Mermaid Fountain", "note": "Ghirardelli Square: basin only, figures coming from the owner. Round stepped basin and a central plinth for the hand-modelled mermaid group."},
-  {"lat": 37.7951, "lon": -122.4027, "size": [10, 10], "height": 1.5, "procedural": "redwoodParkBronzes", "name": "Redwood Park pool", "note": "Transamerica Redwood Park: basin only, figures coming from the owner. Small granite-rimmed pool and nearby puddle discs for the hand-modelled frog and Puddle Jumpers children."},
-  {"lat": 37.7853, "lon": -122.4029, "size": [28, 8], "height": 9, "procedural": "mlkWaterfall", "name": "MLK Memorial Waterfall", "note": "Yerba Buena Gardens, wide granite waterfall wall, walkable behind."},
-  {"lat": 37.7880, "lon": -122.4075, "size": [3, 3], "height": 3, "procedural": "heartsInSanFrancisco", "name": "Hearts in San Francisco (Union Square)", "note": "ONE heart model, several placements round the city; recolour per instance."},
-  {"lat": 37.7889, "lon": -122.4066, "size": [3, 3], "height": 3, "procedural": "heartsInSanFrancisco", "name": "Hearts in San Francisco (Ferry Building)", "note": "second placement of the same heart model."},
-  {"lat": 37.7978, "lon": -122.4069, "size": [8, 8], "height": 6, "procedural": "languageOfTheBirds", "name": "Language of the Birds", "note": "Broadway and Columbus, translucent books suspended on poles over the pavement."},
-  {"lat": 37.7707, "lon": -122.4671, "size": [7, 7], "height": 6, "procedural": "francisScottKeyCanopy", "name": "Francis Scott Key Monument canopy", "note": "Golden Gate Park: the stone canopy only — the figure is a real model placed separately."},
-  {"lat": 37.7948, "lon": -122.4054, "size": [3, 3], "height": 5, "procedural": "stevensonMemorial", "name": "Robert Louis Stevenson Memorial", "note": "Portsmouth Square, granite shaft with a small bronze galleon on top."}
+ {
+  "lat": 37.7946,
+  "lon": -122.3946,
+  "size": [
+   20,
+   20
+  ],
+  "height": 12,
+  "procedural": "vaillancourtFountain",
+  "name": "Vaillancourt Fountain",
+  "note": "Justin Herman Plaza, brutalist square-tube concrete tangle over a basin. Not models — built as a fountain (MODELS_NEEDED.md)."
+ },
+ {
+  "lat": 37.791,
+  "lon": -122.3899,
+  "size": [
+   22,
+   12
+  ],
+  "height": 18,
+  "procedural": "cupidsSpan",
+  "name": "Cupid's Span",
+  "note": "Rincon Park, giant bow and part-buried arrow (Oldenburg/van Bruggen 2002)."
+ },
+ {
+  "lat": 37.8058,
+  "lon": -122.423,
+  "size": [
+   12,
+   12
+  ],
+  "height": 3.5,
+  "procedural": "asawaMermaidFountain",
+  "name": "Ruth Asawa Mermaid Fountain",
+  "note": "Ghirardelli Square: basin only, figures coming from the owner. Round stepped basin and a central plinth for the hand-modelled mermaid group."
+ },
+ {
+  "lat": 37.7951,
+  "lon": -122.4027,
+  "size": [
+   10,
+   10
+  ],
+  "height": 1.5,
+  "procedural": "redwoodParkBronzes",
+  "name": "Redwood Park pool",
+  "note": "Transamerica Redwood Park: basin only, figures coming from the owner. Small granite-rimmed pool and nearby puddle discs for the hand-modelled frog and Puddle Jumpers children."
+ },
+ {
+  "lat": 37.7853,
+  "lon": -122.4029,
+  "size": [
+   28,
+   8
+  ],
+  "height": 9,
+  "procedural": "mlkWaterfall",
+  "name": "MLK Memorial Waterfall",
+  "note": "Yerba Buena Gardens, wide granite waterfall wall, walkable behind."
+ },
+ {
+  "lat": 37.788,
+  "lon": -122.4075,
+  "size": [
+   3,
+   3
+  ],
+  "height": 3,
+  "procedural": "heartsInSanFrancisco",
+  "name": "Hearts in San Francisco (Union Square)",
+  "note": "ONE heart model, several placements round the city; recolour per instance."
+ },
+ {
+  "lat": 37.7889,
+  "lon": -122.4066,
+  "size": [
+   3,
+   3
+  ],
+  "height": 3,
+  "procedural": "heartsInSanFrancisco",
+  "name": "Hearts in San Francisco (Ferry Building)",
+  "note": "second placement of the same heart model."
+ },
+ {
+  "lat": 37.7978,
+  "lon": -122.4069,
+  "size": [
+   8,
+   8
+  ],
+  "height": 6,
+  "procedural": "languageOfTheBirds",
+  "name": "Language of the Birds",
+  "note": "Broadway and Columbus, translucent books suspended on poles over the pavement."
+ },
+ {
+  "lat": 37.7707,
+  "lon": -122.4671,
+  "size": [
+   7,
+   7
+  ],
+  "height": 6,
+  "procedural": "francisScottKeyCanopy",
+  "name": "Francis Scott Key Monument canopy",
+  "note": "Golden Gate Park: the stone canopy only — the figure is a real model placed separately."
+ },
+ {
+  "lat": 37.7948,
+  "lon": -122.4054,
+  "size": [
+   3,
+   3
+  ],
+  "height": 5,
+  "procedural": "stevensonMemorial",
+  "name": "Robert Louis Stevenson Memorial",
+  "note": "Portsmouth Square, granite shaft with a small bronze galleon on top."
+ }
 ]
