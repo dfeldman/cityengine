@@ -56,6 +56,23 @@ is for.
 Where they agree, the table saves you counting. Where they do not, the photograph is the evidence and OSM is
 somebody's guess from years ago.
 
+**But the photograph is only an authority on what it can SEE.** A street-level shot of a mid-block building
+shows you the front and nothing else — you cannot tell from it how deep the building runs, what its plan
+does at the back, or where it abuts its neighbours. So the two sources divide cleanly:
+
+| the PHOTOGRAPH decides | the FOOTPRINT decides |
+|---|---|
+| how many storeys, and their heights | how deep the building is |
+| the material and colour | the shape of the plan |
+| the facade's rhythm — bay width, solid vs glass | which walls are party walls and never seen |
+| the base, the crown, the cornice line | which corner, if any, is exposed |
+| the style, and what makes it recognisable | how it sits against its neighbours |
+
+This is precisely why `tower()` raises the OSM ring rather than a box you type: **depth comes free and
+correct**, from the one source that actually knows it, while you supply what only a picture can tell you.
+Where the front is all you can see, model the front properly and let the outline carry the rest — a plain
+flank on a real plan is right, because that flank is a party wall nobody will ever look at.
+
 The footprint is the one thing you cannot override — `tower()` raises the OSM outline whatever its faults —
 so if the outline is plainly wrong for the building in the photograph (a courtyard filled in, two buildings
 merged, a shape that does not match), **that is a reason to bail out** and say which way is wrong. A good
