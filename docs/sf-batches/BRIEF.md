@@ -34,6 +34,27 @@ right. Never photoreal.
 - Your own scratch directory for reference images (make one under `/private/tmp/…/scratchpad/refs-<district>/`,
   or use `$TMPDIR`).
 
+### Every `procedural` name must be UNIQUE across the whole city
+
+`PROCEDURAL` is one flat record keyed by name, shared by every district. **A second builder registered under
+a name that already exists silently replaces nothing and silently wins nothing — one of them is simply used
+for both buildings, and NOTHING WARNS.** Not the bake, not the typechecker, not the tests.
+
+This has already happened and shipped (BUGS.md #92): 245 Market (Bakewell & Brown, 1925, grey terracotta)
+and 77 Beale (a 1970s tower) were both entered as `pgeBuilding`, because both are called "the PG&E building"
+in life. One builder existed, `fromRecipe('granite-eighties', { height: 154 })`, so the 1925 neoclassical
+tower wore a 1970s granite curtain wall. The manifest even carried the right note on the right entry; the
+wiring lost it.
+
+So: **name a builder after its ADDRESS or its OSM way, not after its occupant.** An occupant's name is shared
+between buildings, changes over time, and is exactly what led to the collision above — `twoFortyFiveMarket`
+is unambiguous where `pgeBuilding` is not. Before you register a name, grep for it:
+
+    grep -rn "yourBuilderName" src/render/landmarks/
+
+If it exists, pick another. The same applies to an entry's `name` in the manifest, which the shot tools use
+to find a building: two entries with one name and only the first is reachable.
+
 Do NOT edit any other file: not `tower.ts`, `styles.json`, `index.ts`, `procedural.ts`, other districts, or tests.
 Other agents are working in parallel on other districts in the same tree. If you need something from a shared
 file (a grammar feature, a new facade style, a palette), write it in your final report. Where you can, get by in
