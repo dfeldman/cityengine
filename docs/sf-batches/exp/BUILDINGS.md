@@ -41,8 +41,25 @@ whether a corner treatment is even visible. `way/256067726` at 10 × 29 m is a s
 neighbours — most of it is party wall and only one end is ever seen. `way/944039725` at 38 × 84 m is a whole
 block face.
 
-**Use the height from this table** — it is what the bake will use, and a model built to a different height
-will not match the massing around it.
+## OSM is a HINT, not an authority
+
+**In many cases OSM is simply wrong**, and the table above inherits whatever it says. Heights are missing,
+guessed, or in the wrong unit; storey counts are often stale or absent; a footprint can be a rough box drawn
+from an aerial, or the outline of the whole block rather than this building, or split into parts that do not
+match what stands there.
+
+**So when the PHOTOGRAPH disagrees with the table, believe the photograph.** Count the storeys in the
+picture. If you count eight and the table says twelve, the table is wrong, and you should say so in your
+report and use what you saw — your manifest entry's `height` field overrides OSM, which is exactly what it
+is for.
+
+Where they agree, the table saves you counting. Where they do not, the photograph is the evidence and OSM is
+somebody's guess from years ago.
+
+The footprint is the one thing you cannot override — `tower()` raises the OSM outline whatever its faults —
+so if the outline is plainly wrong for the building in the photograph (a courtyard filled in, two buildings
+merged, a shape that does not match), **that is a reason to bail out** and say which way is wrong. A good
+model on a wrong footprint is still a wrong building.
 
 ## Two known things about this stretch
 
