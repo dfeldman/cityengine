@@ -19,6 +19,8 @@ import { box, prism, type Rgb } from '../../../models.ts'
 import type { Fit } from '../../fit.ts'
 import { surfaceTag, type Surface } from '../../../cartoon-material.ts'
 import { faceBand, insetRing, tower, towerRing, type Face, type TowerSpec } from '../../tower.ts'
+import { beam } from '../../kit.ts'
+import { edgeAt } from '../../parts.ts'
 
 type P2 = { x: number; z: number }
 type Build = (out: MeshBuilder, fit: Fit) => void
@@ -1024,8 +1026,104 @@ function plazaKiosk(out: MeshBuilder, fit: Fit): void {
 }
 
 // ---------------------------------------------------------------------------------------------------------------
+// One Maritime Plaza (300 Clay Street)
+
+const OMP_STEEL: Rgb = [0.16, 0.14, 0.12]
+const OMP_GLASS: Rgb = [0.47, 0.54, 0.62]
+const OMP_SPANDREL: Rgb = [0.3, 0.31, 0.33]
+
+/**
+ * One Maritime Plaza, the Alcoa Building (SOM, 1967), 27 storeys and 121 m over the Golden Gateway garage deck.
+ * The one thing anybody names about it is that its seismic frame is OUTSIDE the curtain wall: dark steel belts
+ * every few floors, and between each pair of belts a row of great X-braces, so the long faces read as a lattice
+ * of diamonds rather than as glass. Without the braces it is an anonymous 1960s slab, which is what the generic
+ * `grid` preset made of it (BUGS.md #82).
+ *
+ * The model is the footprint (a ~64 × 33 m rectangle, the long faces to Battery and Front) raised as a dark
+ * curtain wall, with the exoskeleton drawn on top of it in `beam` members standing 0.75 m proud: a column at
+ * each corner and at each brace node, a belt at each band boundary, and a full X in every module. Five bands of
+ * braces over the braced height — that is what the photographs show; the usual description of "eight storeys per
+ * X" would give four. Three X's on each long face, two on each end, from a single module width so the lattice
+ * carries round the corners.
+ *
+ * The garage podium under it is separately mapped (OSM way/1177704958) and covers the whole superblock, so it is
+ * not this entry's to draw; the bracing starts at 9 m, clear of it.
+ *
+ * (Mapillary street views of way/28240176 from Clay Street, fetched by tools/sf-photos.ts: the lattice against
+ * dark blue-grey glass, near black in shade and warm bronze in the sun.)
+ */
+function oneMaritimePlaza(out: MeshBuilder, fit: Fit): void {
+  const ring = towerRing(fit)
+  const H = heightOf(fit, 121)
+  const PODIUM = 9          // the plaza deck over the garage: the braces start clear of it
+  const PARAPET = 2.4
+  // the top belt runs just under the parapet, so the frame reaches the top of the glass rather than stopping
+  // short of it
+  const top = H - 0.9
+
+  // the glass box: a dark curtain wall on a recessed lobby storey, flat parapet
+  tower(out, fit, {
+    height: 121,
+    base: { height: PODIUM, face: { kind: 'blank', wall: [0.22, 0.21, 0.2], material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'curtain', wall: OMP_SPANDREL, glass: OMP_GLASS, floor: 4.1, pitch: 3.4, material: 'metal' } }],
+    roof: [0.3, 0.3, 0.31],
+    crown: { kind: 'parapet', height: PARAPET, colour: OMP_STEEL, material: 'metal' },
+  })
+
+  // the mechanical penthouse, drawn here rather than by the grammar's `penthouse`, whose box is a hard-coded
+  // pale grey (tower.ts) and read as a white lid on a near-black tower
+  let cx = 0
+  let cz = 0
+  for (const p of ring) { cx += p.x; cz += p.z }
+  cx /= ring.length
+  cz /= ring.length
+  box(out, cx, top + 2.4, cz, 7, 2.4, 5, [0.26, 0.25, 0.25], T('metal'))
+
+  // the module: set by the long face, three X's wide, and reused on the ends so the lattice reads as one frame
+  let longest = 0
+  for (let i = 0; i < ring.length; i++) longest = Math.max(longest, edgeAt(ring, i).L)
+  const module = longest / 3
+  const BANDS = 5
+  const span = (top - PODIUM) / BANDS
+  const OUT = 0.75         // how far the frame stands off the glass
+  const DEEP = 0.45        // out-of-plane half-thickness of a member
+  const WIDE = 0.55        // in-plane half-width of a diagonal
+
+  for (let i = 0; i < ring.length; i++) {
+    const e = edgeAt(ring, i)
+    if (e.L < 6) continue
+    const n = Math.max(1, Math.round(e.L / module))
+    const bw = e.L / n
+    // a point on this wall, u metres along it from a, y up, standing OUT proud of the glass
+    const P = (u: number, y: number): [number, number, number] => [e.a.x + e.tx * u + e.nx * OUT, y, e.a.z + e.tz * u + e.nz * OUT]
+    // the belts, one at each band boundary and one on top: they carry the braces' thrust and draw the storeys
+    for (let k = 0; k <= BANDS; k++) {
+      const y = PODIUM + k * span
+      beam(out, P(0, y), P(e.L, y), DEEP, OMP_STEEL, k === 0 || k === BANDS ? 0.75 : 0.5)
+    }
+    // a column at every brace node, the corner ones heavier
+    for (let k = 0; k <= n; k++) {
+      const r = k === 0 || k === n ? 0.6 : 0.38
+      beam(out, P(k * bw, PODIUM), P(k * bw, top), r, OMP_STEEL)
+    }
+    // and the X in each module of each band
+    for (let b = 0; b < BANDS; b++) {
+      const y0 = PODIUM + b * span
+      const y1 = y0 + span
+      for (let k = 0; k < n; k++) {
+        const u0 = k * bw
+        const u1 = u0 + bw
+        beam(out, P(u0, y0), P(u1, y1), DEEP, OMP_STEEL, WIDE)
+        beam(out, P(u1, y0), P(u0, y1), DEEP, OMP_STEEL, WIDE)
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------
 
 export const MARKET_EAST: Record<string, Build> = {
+  oneMaritimePlaza,
   crownZellerbach,
   bushPlazaPavilion,
   southernPacificBuilding,

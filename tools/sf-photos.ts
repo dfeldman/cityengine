@@ -265,7 +265,9 @@ if (list) {
     'least 15 m apart, the first ones from the same side of the building and the later ones from other',
     'elevations, so where one is spoiled by a tree or a lorry the others usually are not. **Some frames will',
     'be junk** — the wrong building, or a van in the way. Discard those and use the ones that are good;',
-    'photos.csv gives each frame\'s distance, bearing and score.\n',
+    'photos.csv gives each frame\'s distance, bearing and score, plus `visible` (how much of the',
+    'building\'s height clears its neighbours) and `framed` (how much of it the cut holds) — those',
+    'two are the columns to read first.\n',
     `Photographs: \`${dir.replace(ROOT + '/', '')}\`\n`,
     '| # | osm | name | size | archetype | style now | photos |', '|---|---|---|---|---|---|---|']
   Array.from(byBuilding.entries()).forEach(([osm, v], i) => {

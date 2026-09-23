@@ -200,6 +200,10 @@ export const TOWER_PRESETS = {
   mosconeWest: preset({ height: 50, wall: [0.8, 0.82, 0.84], glass: [0.36, 0.5, 0.56], pattern: 'grid', pitch: 12, solid: 0.12, crown: 'flat' }),
   /** Moscone North and South (1981, 1992, 2018): mostly under the ground; above it, low glass halls and pavilions */
   mosconeHall: preset({ height: 20, wall: [0.86, 0.87, 0.88], glass: [0.4, 0.52, 0.58], pattern: 'grid', pitch: 7, solid: 0.15, crown: 'flat' }),
-  /** One Maritime Plaza (1967): dark steel with its exterior X-bracing, white panels */
-  oneMaritimePlaza: preset({ height: 121, wall: [0.3, 0.3, 0.32], glass: [0.5, 0.52, 0.55], pattern: 'grid', pitch: 3.6, solid: 0.3, crown: 'flat' }),
+  /*
+   * One Maritime Plaza was here as a `grid` preset — a plain curtain wall, with nothing of the exterior
+   * X-bracing that is the only reason anyone recognises it (BUGS.md #82). It is now modelled properly in
+   * districts/market-east.ts under the same name; a preset that reads like a model in the manifest is exactly
+   * the trap #82 names, so the line is gone rather than left to be shadowed.
+   */
 }

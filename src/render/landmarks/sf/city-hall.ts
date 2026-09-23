@@ -49,7 +49,8 @@ export function cityHall(out: MeshBuilder, fit: Fit): void {
       for (let i = 0; i <= n; i++) {
         const u = -len + 12 + ((2 * len - 24) * i) / n
         const [x, , z] = at(u, 0, 0.5)
-        column(out, x, z, base + 0.5, eaves - 0.2, 0.55, GRANITE)
+        // engaged against the wall and there are ~90 of them: the mid tier, not the full capital (PLAN Z)
+        column(out, x, z, base + 0.5, eaves - 0.2, 0.55, GRANITE, { order: 'doric', tier: 'mid' })
         if (i < n) {
           const um = u + (2 * len - 24) / n / 2
           const [wx, , wz] = at(um, 0, -0.95)
@@ -75,7 +76,8 @@ export function cityHall(out: MeshBuilder, fit: Fit): void {
   const pz = -hz - 5
   // the wall behind the columns, in the portico's shade
   box(out, 0, (base + eaves) / 2, -hz - 1.1, 14.5, (eaves - base) / 2, 0.1, SHADOW, 0)
-  for (let i = 0; i < 6; i++) column(out, -12.5 + i * 5, pz, base, eaves, 0.9, GRANITE)
+  // the six of the portico ARE the building's face: the near tier, Doric as they are
+  for (let i = 0; i < 6; i++) column(out, -12.5 + i * 5, pz, base, eaves, 0.9, GRANITE, { order: 'doric', tier: 'near' })
   box(out, 0, eaves + 0.9, pz + 2.5, 15, 0.9, 3.5, GRANITE, 0)
   box(out, 0, eaves - 0.15, pz - 1.02, 15, 0.15, 0.02, SHADOW, 0)          // the shadow line under the entablature
   box(out, 0, base / 2, pz + 2.5, 15, base / 2, 3.5, RUSTIC, 0)
@@ -87,7 +89,7 @@ export function cityHall(out: MeshBuilder, fit: Fit): void {
   prism(out, 0, 0, attic + 4, attic + 18, 16, 24, SHADOW, 0)
   for (let i = 0; i < 24; i++) {
     const a = ((i + 0.5) / 24) * Math.PI * 2
-    column(out, Math.sin(a) * 17, Math.cos(a) * 17, attic + 4, attic + 17, 0.6, GRANITE)
+    column(out, Math.sin(a) * 17, Math.cos(a) * 17, attic + 4, attic + 17, 0.6, GRANITE, { order: 'corinthian', tier: 'mid' })
   }
   prism(out, 0, 0, attic + 17, attic + 19.5, 18, 24, GRANITE, 0)
   prism(out, 0, 0, attic + 19.5, attic + 25, 15.5, 24, GRANITE, 0)
@@ -98,7 +100,7 @@ export function cityHall(out: MeshBuilder, fit: Fit): void {
   prism(out, 0, 0, ly, ly + 7, 3.2, 12, SHADOW, 0)
   for (let i = 0; i < 8; i++) {
     const a = (i / 8) * Math.PI * 2
-    column(out, Math.sin(a) * 3.6, Math.cos(a) * 3.6, ly, ly + 7, 0.3, GRANITE)
+    column(out, Math.sin(a) * 3.6, Math.cos(a) * 3.6, ly, ly + 7, 0.3, GRANITE, { order: 'corinthian', tier: 'mid' })
   }
   dome(out, 0, 0, ly + 7, 4, 4, GOLD, 12)
   prism(out, 0, 0, ly + 10.5, 94, 0.5, 6, GOLD, 0, 0.05)

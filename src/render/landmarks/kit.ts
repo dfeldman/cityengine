@@ -8,8 +8,11 @@
 import { MeshBuilder } from '../buildings.ts'
 import type { Fit } from './fit.ts'
 import { box, disc, prism, type Rgb } from '../models.ts'
+import { classicalColumn, type ColumnOpts } from './column.ts'
 
 export { box, disc, prism }
+export { classicalColumn, lathe, tierFor } from './column.ts'
+export type { ColumnOpts, ColumnOrder, ColumnTier } from './column.ts'
 export type { Rgb }
 
 const FIXED = 0
@@ -105,11 +108,15 @@ export function pointedPane(out: MeshBuilder, plane: number, t: number, y0: numb
     [0, 0, -1], [[0, 0], [1, 0], [1, 1], [0, 1]], colour, FIXED)
 }
 
-/** A column with a base and a capital. */
-export function column(out: MeshBuilder, x: number, z: number, y0: number, y1: number, r: number, colour: Rgb): void {
-  box(out, x, y0 + 0.2, z, r * 1.4, 0.2, r * 1.4, colour, FIXED)
-  prism(out, x, z, y0 + 0.4, y1 - 0.5, r, 10, colour, FIXED, r * 0.9)
-  box(out, x, y1 - 0.25, z, r * 1.5, 0.25, r * 1.5, colour, FIXED)
+/**
+ * A column. Since 2026-09-22 this is a thin wrapper on the shared classical primitive (column.ts) — round,
+ * with entasis, a real base and a capital of its order — instead of the 10-sided prism between two boxes it
+ * used to be. The signature is unchanged and the optional `opts` is new, so every existing caller (Garnier,
+ * SF City Hall, Saint-Paul, Saint-Gervais, the Marais temple, Soubise, Hôtel de Ville, …) improved in place.
+ */
+export function column(out: MeshBuilder, x: number, z: number, y0: number, y1: number, r: number, colour: Rgb,
+                       opts: ColumnOpts = {}): void {
+  classicalColumn(out, x, z, y0, y1, r, colour, opts)
 }
 
 /** A triangular pediment standing on y0 across [x0,x1], its face at z (facing −z), `depth` deep. */

@@ -12,6 +12,7 @@ import type { MeshBuilder } from '../buildings.ts'
 import { box, strut, EMIT, type Rgb } from '../models.ts'
 import { surfaceTag, type Surface } from '../cartoon-material.ts'
 import { faceBand, insetRing, simplifyRing, type Face } from './tower.ts'
+import { classicalColumn, type ColumnOrder, type ColumnTier } from './column.ts'
 
 export { simplifyRing, insetRing }
 
@@ -263,7 +264,8 @@ export function bladeSign(out: MeshBuilder, cx: number, yTop: number, z: number,
  * proud, under an entablature. (The Opera House, the Asian Art Museum, a bank's portico.)
  */
 export function colonnade(out: MeshBuilder, a: P2, b: P2, y0: number, height: number, n: number,
-                          opts: { radius?: number; out?: number; colour?: Rgb; material?: Surface; entablature?: number } = {}): void {
+                          opts: { radius?: number; out?: number; colour?: Rgb; material?: Surface; entablature?: number;
+                                  order?: ColumnOrder; tier?: ColumnTier; flutes?: boolean; trim?: Rgb } = {}): void {
   const r = opts.radius ?? 0.55
   const o = opts.out ?? 1.2
   const c = opts.colour ?? [0.86, 0.84, 0.78]
@@ -274,20 +276,28 @@ export function colonnade(out: MeshBuilder, a: P2, b: P2, y0: number, height: nu
   const nx = tz
   const nz = -tx
   const ent = opts.entablature ?? 1.4
+  // boxAlong wants the direction the entablature FACES, not the direction it runs: atan2(tx, tz) turned it a
+  // quarter step and it came out as a bar jutting sideways out of the portico (seen on two civic buildings)
+  const ang = Math.atan2(nx, nz)
+  /*
+   * The columns themselves are the shared primitive (render/landmarks/column.ts) — round, with entasis and a
+   * capital of its order — where this used to draw three SQUARE BOXES per column. The far tier costs FEWER
+   * triangles than those boxes did, so a street of bank fronts got cheaper as well as better; the tier follows
+   * the column's height unless the caller names one.
+   */
   for (let i = 0; i < n; i++) {
     const u = ((i + 0.5) / n) * L
     const x = a.x + tx * u + nx * o
     const z = a.z + tz * u + nz * o
-    box(out, x, y0 + height / 2, z, r, height / 2, r, c, tag)
-    box(out, x, y0 + height + 0.12, z, r * 1.25, 0.12, r * 1.25, c, tag)      // the capital
-    box(out, x, y0 + 0.15, z, r * 1.25, 0.15, r * 1.25, c, tag)               // the base
+    // + 0.2 so the abacus meets the entablature, whose underside is at y0 + height + 0.2 (the old square
+    // capital poked 0.04 into it; a column stopping at y0 + height leaves the entablature floating)
+    classicalColumn(out, x, z, y0, y0 + height + 0.24, r, c, {
+      order: opts.order, tier: opts.tier, tag, heading: ang, flutes: opts.flutes, trim: opts.trim,
+    })
   }
   // the entablature over them
   const mx = a.x + tx * (L / 2) + nx * o
   const mz = a.z + tz * (L / 2) + nz * o
-  // boxAlong wants the direction the entablature FACES, not the direction it runs: atan2(tx, tz) turned it a
-  // quarter step and it came out as a bar jutting sideways out of the portico (seen on two civic buildings)
-  const ang = Math.atan2(nx, nz)
   boxAlong(out, mx, y0 + height + ent / 2 + 0.2, mz, L / 2, ent / 2, o * 0.8, ang, c, tag)
 }
 
@@ -312,7 +322,8 @@ export function boxAlong(out: MeshBuilder, cx: number, cy: number, cz: number, h
 
 /** An arcade of round arches along an edge: the piers, and the arch heads drawn as short chords. */
 export function arcade(out: MeshBuilder, a: P2, b: P2, y0: number, height: number, n: number,
-                       opts: { depth?: number; colour?: Rgb; material?: Surface; shade?: Rgb } = {}): void {
+                       opts: { depth?: number; colour?: Rgb; material?: Surface; shade?: Rgb;
+                               piers?: boolean; order?: ColumnOrder; tier?: ColumnTier; trim?: Rgb } = {}): void {
   const c = opts.colour ?? [0.85, 0.83, 0.77]
   const tag = surfaceTag(opts.material ?? 'ashlar')
   const shade = opts.shade ?? [0.12, 0.12, 0.13]
@@ -325,9 +336,24 @@ export function arcade(out: MeshBuilder, a: P2, b: P2, y0: number, height: numbe
   // the direction it FACES, not the direction it runs — see colonnade above
   const ang = Math.atan2(nx, nz)
   const bay = L / n
+  /*
+   * The piers. An arcade of this kind — the Ferry Building's, the Palace of Fine Arts', a park loggia — stands
+   * on COLUMNS with the arches springing off their capitals, so that is the default now: the shared primitive
+   * (column.ts) up to the springing, then a short impost block carrying the arch. `piers: true` keeps the old
+   * rectangular piers for an arcade that really is a wall pierced by arches.
+   */
+  const spring = y0 + height * 0.72
   for (let i = 0; i <= n; i++) {
     const u = i * bay
-    boxAlong(out, a.x + tx * u + nx * d / 2, y0 + height / 2, a.z + tz * u + nz * d / 2, bay * 0.14, height / 2, d / 2, ang, c, tag)
+    const px = a.x + tx * u + nx * d / 2
+    const pz = a.z + tz * u + nz * d / 2
+    if (opts.piers) {
+      boxAlong(out, px, y0 + height / 2, pz, bay * 0.14, height / 2, d / 2, ang, c, tag)
+      continue
+    }
+    classicalColumn(out, px, pz, y0, spring, bay * 0.13, c,
+      { order: opts.order, tier: opts.tier, tag, heading: ang, trim: opts.trim })
+    boxAlong(out, px, (spring + y0 + height) / 2, pz, bay * 0.14, (y0 + height - spring) / 2, d / 2, ang, c, tag)
   }
   for (let i = 0; i < n; i++) {
     const u = (i + 0.5) * bay

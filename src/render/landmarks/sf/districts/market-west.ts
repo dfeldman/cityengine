@@ -20,6 +20,7 @@ import { faceBand, insetRing, tower, towerRing, type Face, type TowerSpec } from
 import { prism, type Rgb } from '../../../models.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
 import { boxAlong, edgeAt, longestEdge } from '../../parts.ts'
+import { classicalColumn } from '../../column.ts'
 
 type P2 = { x: number; z: number }
 const FIXED = 0
@@ -349,9 +350,12 @@ function colonnade(out: MeshBuilder, e: Edge, u0: number, u1: number, y0: number
       const u = u0 + k * step + d
       if (u < u0 - 0.01 || u > u1 + 0.01) continue
       const p = at(e, u, o)
-      prism(out, p.x, p.z, y0, y0 + 0.6, r * 1.35, 6, c, tag)
-      prism(out, p.x, p.z, y0 + 0.6, y1 - 0.7, r, 8, c, tag, r * 0.88)
-      prism(out, p.x, p.z, y1 - 0.7, y1, r * 1.3, 6, c, tag, r * 1.4)
+      /*
+       * The shared classical column (render/landmarks/column.ts, PLAN.md item Z) rather than three stacked
+       * prisms — entasis, a moulded base, a real capital. The MID tier deliberately: Market Street is lined
+       * with these, and the near tier's modelled capital is for the portico that IS the building.
+       */
+      classicalColumn(out, p.x, p.z, y0, y1, r, c, { order: 'doric', tier: 'mid', tag, heading: Math.atan2(e.nx, e.nz) })
     }
   }
   // the entablature over them

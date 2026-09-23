@@ -40,6 +40,14 @@ import { TIERA_4 } from './districts/tierA-4.ts'
 import { TIERA_5 } from './districts/tierA-5.ts'
 import { TIERA_6 } from './districts/tierA-6.ts'
 import { TIERA_7 } from './districts/tierA-7.ts'
+import { EXP_1 } from './experiments/e1.ts'
+import { EXP_2 } from './experiments/e2.ts'
+import { EXP_3 } from './experiments/e3.ts'
+import { EXP_4 } from './experiments/e4.ts'
+import { EXP_5 } from './experiments/e5.ts'
+import { EXP_6 } from './experiments/e6.ts'
+import { EXP_7 } from './experiments/e7.ts'
+import { EXP_8 } from './experiments/e8.ts'
 import { TIERA_8 } from './districts/tierA-8.ts'
 import { TIERA_9 } from './districts/tierA-9.ts'
 import { TIERA_10 } from './districts/tierA-10.ts'
@@ -71,6 +79,14 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   ...TIERA_5,
   ...TIERA_6,
   ...TIERA_7,
+  ...EXP_1,
+  ...EXP_2,
+  ...EXP_3,
+  ...EXP_4,
+  ...EXP_5,
+  ...EXP_6,
+  ...EXP_7,
+  ...EXP_8,
   ...TIERA_8,
   ...TIERA_9,
   ...TIERA_10,

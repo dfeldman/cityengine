@@ -1623,6 +1623,66 @@ never were. Measured on four buildings: ICA 4–5 usable of 10, Fugazi 3 of 10, 
 One Maritime Plaza 4 of 10 **with the roofline and sky in frame**. Two of Fugazi's three good frames came
 from the second tier, which the old 50-degree cut discarded outright.
 
+**Done 2026-09-23 — CHOOSING THE VIEWPOINT, by simulating the cut before downloading anything.** The owner:
+*"We can simulate many different angles before downloading anything, and see which keeps the building in frame
+the best. I bet this is what google does for its static building images."* That is now what `photo.ts` does,
+and it replaces the distance/bearing/occlusion heuristics wholesale — they were proxies for "does the building
+land well in frame", and the framing can be computed directly.
+
+- **A 360 frame is no longer accepted, it is CUT.** For every candidate pano the footprint's corners are
+  projected into a hypothetical view — the exact inverse of `rectilinear` — and the lens is CHOSEN: aimed at
+  the middle of the silhouette, opened just wide enough to hold it (45–100°, sides kept within 1.9:1 so the
+  perspective does not lean), tilted to the middle of its elevation. `fetchPhoto` then renders exactly that
+  cut. The fixed 85° lens and fixed tilt are gone.
+- **The occlusion test is WIRED, and it is 3D.** `sf-photos.ts` now indexes every `buildings[]` and `fringe[]`
+  footprint with its height in a 100 m grid and passes the neighbours in — nothing ever passed `blockers`
+  before, so every occlusion term in `photo.ts` was dead code. A blocker no longer answers yes/no: similar
+  triangles give how much of the target's HEIGHT clears it, over three rays across the facing wall, and the
+  cut then starts at the hidden height rather than at the pavement — looking up over a podium, exactly the
+  case One Maritime Plaza fails on. A building's own parts are excluded by containment either way, or the bake's
+  split podium hides its own tower.
+- **`computed_geometry`, in a second pass.** Pass one scores on tile metadata and spreads (15 m apart) to a
+  36-frame shortlist; pass two asks Mapillary for each, and re-runs the whole simulation on the SfM-corrected
+  position and heading. Across this city's cached metadata the correction moves a camera by **up to 65 m**, so
+  the hard near rejection is applied only AFTER it — which is what kills Fugazi's "23 m" wall-from-five-metres.
+  An uncorrected frame (23 of 177 here) is ranked below a corrected one.
+- **Distance barely appears in the score any more**, which was the point: too far is a resolution penalty
+  (panorama pixels across the building), too near is a fill penalty, and a 150 m frame that sees the whole
+  tower beats a 70 m one that sees a third of it by about seventy points.
+
+Measured on the same four buildings, frames a modeller can use: **One Maritime Plaza 6–7 of 10 (was 4)**, with
+the top four all showing the whole tower; **ICA 5–6 of 10 (was 4–5)**; **Old Federal Reserve 5 of 10 (was 4 of
+8)**; **Fugazi 3–4 of 10 (was 3)**. The top two or three — what a modeller actually reads — are good on three of
+the four, and a frame the simulation knows is junk (nothing visible, or a quarter of the silhouette in shot) is
+now moved to the BACK of the list rather than sitting at rank 3.
+
+Still weak, and what the silhouette pass should know:
+
+- **POSE ERROR is now the dominant failure, and it is undetectable from geometry.** Every remaining bad frame
+  scores `visible 1, framed 1` — the simulation is satisfied and the picture is of somewhere else. Checked
+  against the cached tile and graph metadata for three of them: Old Fed's rank 3 has the tile compass and
+  `computed_compass_angle` **88.5° apart**, Fugazi's rank 1 **39° apart**, both with the SfM position moving
+  under a metre — so those are heading, not position. ICA's rank 2 is neither: 7.6° apart, no position shift,
+  and still a photograph of the masonry building next door, which means a residual error nothing here
+  measures. **The silhouette overlay is the only instrument that can catch any of them**: when the outline
+  lands on a blank wall the reader sees the frame is junk at a glance. That is precisely the argument for
+  item 1, and it is now the single biggest remaining win.
+- **Pass one is heading-INDEPENDENT, and the overlay inherits that property.** `yaw` is `centre − heading` and
+  the projection's `rel` is `b − heading`, so the tile's compass cancels out of the shortlist entirely and only
+  pass two's corrected heading touches the actual cut. That is why a shortlist built on a compass tens of
+  degrees out is still sound.
+- **Unmapped obstructions — trees, poles, lorries, scaffolding — are invisible to a footprint test** and cost
+  Fugazi three frames. Nothing here can fix that; spreading the viewpoints is the only defence and it works.
+- A camera can stand under somebody's arcade and photograph their soffit. `indoors()` penalises it, but not
+  when the arcade belongs to the TARGET, since the target's own parts are excluded as blockers.
+- `photos.csv` now carries `visible`, `framed`, `fill` and `sfm` per frame — the simulation's own verdict, so
+  a reader can see why a frame ranked where it did. Note `fill` sits at ~0.36 for every well-framed shot BY
+  CONSTRUCTION (the lens is opened to put the silhouette at 62% of the frame); it only says anything when the
+  lens clamps at 45° or 100°, so `visible` and `framed` are the columns to read.
+- The metadata budget went from ~12 requests a building to at most 36 (`PHOTO_SHORTLIST`), because the
+  simulation has to be re-run on each shortlisted frame's corrected pose. They are cached forever and gapped at
+  350 ms, so a twenty-building batch is about four minutes of metadata once and nothing thereafter.
+
 **Item 1, the silhouette, is still open and is still the heart of it.** `mark()` draws its fixed centre band
 and is often pointing at the neighbour — in several otherwise excellent frames the building is plainly there
 and the marks are not on it. Everything the projection needs is now stashed on `Photo` by the time the image

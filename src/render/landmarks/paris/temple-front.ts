@@ -1,6 +1,6 @@
 import type { MeshBuilder } from '../../buildings.ts'
-import { box, prism, type Rgb } from '../../models.ts'
-import { block, hex, shade } from '../kit.ts'
+import { prism, type Rgb } from '../../models.ts'
+import { block, classicalColumn, hex, shade } from '../kit.ts'
 import type { Fit } from '../fit.ts'
 
 const FIXED = 0
@@ -46,26 +46,30 @@ function temple(out: MeshBuilder, fit: Fit, t: TempleSpec): void {
     // the cella: the solid wall inside the colonnade, in shadow
     block(out, -hx + 4, hx - 4, front + 5, hz - 4, y0, y0 + ent - 1, deep)
   }
-  // the columns: base, fluted shaft (as a 12-sided prism), a Corinthian capital as a flaring block
-  const colAt = (x: number, z: number): void => {
-    box(out, x, y0 + 0.3, z, r * 1.5, 0.3, r * 1.5, stone, FIXED)
-    prism(out, x, z, y0 + 0.6, y0 + cap - 1.2, r, 12, stone, FIXED, r * 0.86)
-    prism(out, x, z, y0 + cap - 1.2, y0 + cap - 0.25, r * 0.9, 8, shade(stone, 1.04), FIXED, r * 1.35)
-    box(out, x, y0 + cap - 0.12, z, r * 1.5, 0.12, r * 1.5, stone, FIXED)
+  /*
+   * The columns. This file used to carry the best column in the project as a private helper; it is now the
+   * SHARED primitive (render/landmarks/column.ts), so everything else that wanted a Corinthian column got it
+   * at the same time. The front row is the subject of the building, so it is modelled at the near tier with
+   * real flutes; the back row and a peripteral temple's flanks are mid, which is the whole point of the tiers
+   * — the Madeleine has 42 of them.
+   */
+  const colAt = (x: number, z: number, tier: 'near' | 'mid' = 'near'): void => {
+    classicalColumn(out, x, z, y0, y0 + cap, r, stone,
+      { order: 'corinthian', tier, tag: FIXED, flutes: tier === 'near', trim: shade(stone, 1.03) })
   }
   const across = (i: number): number => -hx + 1 + ((2 * hx - 2) * i) / (t.front - 1)
   for (let i = 0; i < t.front; i++) colAt(across(i), front + 1)
   if (t.peripteral) {
-    for (let i = 0; i < t.front; i++) colAt(across(i), hz - 1)
+    for (let i = 0; i < t.front; i++) colAt(across(i), hz - 1, 'mid')
     const side = Math.round((t.front * hz) / hx)
     for (let j = 1; j < side - 1; j++) {
       const z = front + 1 + ((2 * hz - 2) * j) / (side - 1)
-      colAt(-hx + 1, z)
-      colAt(hx - 1, z)
+      colAt(-hx + 1, z, 'mid')
+      colAt(hx - 1, z, 'mid')
     }
   } else {
     // a second row behind the first, and the wall of the building behind the portico, in shadow
-    for (let i = 0; i < t.front; i++) colAt(across(i), front + 5)
+    for (let i = 0; i < t.front; i++) colAt(across(i), front + 5, 'mid')
     block(out, -hx, hx, front + 9, front + 10, y0, y0 + ent, shadow)
   }
   // the entablature: architrave, frieze, cornice
