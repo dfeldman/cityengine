@@ -55,6 +55,45 @@ Three rules matter more than the table:
 - **Escalation is never automatic.** A bail-out only moves up if the building clears the next cut; below it
   the classifier keeps it, which is right for an ordinary building on a back street.
 
+## 3b. A RESEARCH step before modelling — PROPOSED, UNPROVEN (2026-09-22)
+
+**Nothing below has been validated. This is not a change to the ladder; it is a possible extra step for the
+buildings already judged too important to reface, taken BEFORE they are modelled.** The refacing tier is
+untouched by it.
+
+**Why it is being considered.** Two models were asked to model the ICA — a distinctive building — from a
+one-line description, because the photograph fetch had returned nothing. Both produced a featureless box and
+both reported success. Shown one good street-level photograph afterwards, the owner's verdict was that "even
+Haiku could do a good model" from it. So the binding constraint on a modelled building appears to be the
+REFERENCE, not the model doing the modelling.
+
+**The proposed step**, for a batch of about ten buildings at a time:
+
+1. Run the existing Mapillary fetch (`tools/sf-photos.ts`) for every building in the batch. Free.
+2. A cheap model (Haiku) OPENS what came back and judges it: could a modeller get the massing, the corner
+   treatment and the proportions from this?
+3. Only where the answer is no, it searches the web — several query forms, **always with the city** —
+   preferring a three-quarter/corner view.
+4. It keeps two to four good images per building and **deletes everything else**, because whatever remains
+   is handed to the modelling agent as reference.
+5. The modelling agent then works from real pictures instead of a description.
+
+See [FIND-PHOTOGRAPHS.md](sf-batches/FIND-PHOTOGRAPHS.md) for the brief, and
+[MODEL-ONE-BUILDING.md](sf-batches/MODEL-ONE-BUILDING.md) for the modelling one.
+
+**What is genuinely unknown, and must be measured before this becomes policy:**
+
+- **Cost.** One research agent spent **75.5k tokens finding a single photograph**. At that rate this step
+  costs more than the modelling it feeds. The batch is meant to amortise the setup, and a deterministic
+  corner-view fetch would remove most of the need — neither is proven.
+- **Whether Haiku can judge an image** well enough to tell a usable reference from a poor one.
+- **Whether good references actually fix the modelling.** The obvious next test, not yet run.
+- **What fraction of buildings Mapillary already serves.** If most, this step is rare and cheap; if few, the
+  built-in fetch is not earning its place. On the one building measured so far it returned two images and
+  neither was usable — a sample of one.
+
+**Do not fold this into §3's tier table until those numbers exist.**
+
 ## 4. Photographs are a tool's job, not a model's
 
 `tools/photo.ts` and `tools/sf-photos.ts`. **No photograph, no reface.** Everything here was learned the hard
