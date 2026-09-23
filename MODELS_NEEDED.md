@@ -82,7 +82,7 @@ are marked *(basin procedural)*.
 | 2 | Washington Square (37.8008, −122.4102) | the **Volunteer Firemen memorial** (Patigian, 1933) | ~3 m | firemen carrying a woman |
 | 3 | Washington Square (37.8007, −122.4103) | **Benjamin Franklin** (1879) | ~2.5 m | stands on a drinking-fountain plinth *(basin procedural)* |
 | 3 | Pioneer Park, below Coit Tower (37.8024, −122.4058) | **Christopher Columbus** (1957) | ~3.5 m bronze | removed in 2020 — model only if the city is set before then; say so in its entry |
-| 3 | Chinatown (37.7930, −122.4072) | **Confucius** | ~3 m bronze | |
+| — | ~~Chinatown~~ | ~~**Confucius**~~ | — | **DOES NOT EXIST.** Checked 2026-09-22 while gathering reference photographs: there is no Confucius statue in San Francisco. The St. Mary's Square location given for it holds Bufano's Sun Yat-sen, already row 2 above. Confucius statues exist in San Jose and New York. Struck rather than deleted so nobody adds it back. |
 
 ### Golden Gate Park — the Music Concourse and the drives
 
