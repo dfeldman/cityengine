@@ -238,6 +238,22 @@ And the pattern in who used `colonnade()` is decisive:
 Everyone used `Face.kind`, which the briefs document with a table of what each kind LOOKS like. Nobody used
 `arcade`, which appears only as a word in a list.
 
+### The working vocabulary is five functions out of forty-five
+
+Counted across the whole shared kit — `parts.ts`, `kit.ts`, `tower.ts`, `column.ts` — there are **45
+exported building functions**. The nine runs used **five**:
+
+    edgeAt (7 uses)   colonnade (5)   towerRing (3)   longestEdge (1)   arcade (1)
+
+Everything else — `quoins`, `cupola`, `spireOn`, `marquee`, `bladeSign`, `pediment`, `archedPane`,
+`stripRoof`, `faceOn`, `turret`, `pinnacle`, `courtFacade` — went untouched. And this is not only a
+cheap-model problem: across the entire hand-directed SF district corpus, `arcade` is used once, `quoins`
+three times, and **`pediment` has never been used at all**, anywhere in the project.
+
+So the kit is not short of parts. **It is short of a way to find out what the parts are.** A name like
+`quoins` or `spireOn` or `faceOn` conveys nothing without a picture, and there is no document anywhere that
+shows what any of them draw.
+
 **So this is not a capability gap, it is a documentation gap, and it is the most actionable finding here.**
 An API surface listed by name does not get used; one with a signature and a sentence about what it draws
 does. The fix costs nothing and would have changed the outcome on at least three of these ten buildings.
