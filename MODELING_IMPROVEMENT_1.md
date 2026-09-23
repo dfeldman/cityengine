@@ -82,9 +82,56 @@ that were told not to go exploring. **An API summary that lists names without si
 looks.** The fix is to give the import line and one complete literal per type, which is what the worked
 example does and is why the worked example matters more than the reference table.
 
-## Results
+## Results — cost
 
-*(pending)*
+| # | model | batch | brief | tokens | tool calls | modelled | bailed | **tokens per building modelled** |
+|---|---|---|---|---|---|---|---|---|
+| E6 | Sonnet | **1** | fast | 81,951 | 25 | 1 | 0 | **81,951** |
+| E3 | Haiku | 5 | standard | 99,476 | 43 | 5 | 0 | **19,895** |
+| E4 | Sonnet | 5 | standard | 104,376 | 34 | 5 | 0 | **20,875** |
+| E2 | Sonnet | 10 | standard | 127,113 | 43 | 9 | 1 | **14,124** |
+| E8 | Sonnet | 10 | **fast** | 102,427 | 35 | 9 | 1 | **11,381** |
+| E1 | Haiku | 10 | standard | *running* | | | | |
+| E5 | Haiku | 1 | fast | *running* | | | | |
+| E7 | Haiku | 10 | fast | *running* | | | | |
+
+### Batching is the single biggest lever, and it is not close
+
+**One building in its own session costs 82k tokens. The same work inside a batch of ten costs 11–14k.** A
+seven-fold difference, and it comes from the fixed cost of a session — reading the brief, learning the API,
+finding the files, running the tests — being paid once instead of ten times. Nothing else measured here
+comes close to that ratio.
+
+This also retires the old figure. `docs/LADDER.md` quotes ~4.2k tokens for a Sonnet-modelled building; that
+is a MARGINAL number from inside a large batch and it is not what a dispatched agent costs. **A batch of ten
+costs about 11–14k per building all-in**, which is the number to plan with.
+
+### A better prompt is worth about 20%
+
+E8 against E2 — same model, same ten buildings, same photographs, differing only in the brief:
+
+| | tokens | per building |
+|---|---|---|
+| E2, standard brief (two files, cross-referenced) | 127,113 | 14,124 |
+| E8, **fast brief** (one self-contained file) | 102,427 | **11,381** |
+
+**19% cheaper for the same output**, and both modelled nine and bailed on one. The saving is orientation:
+the fast brief inlines the API, the building table and a skeleton, so nothing has to be looked up. Cheap to
+replicate — it is one document.
+
+### Bail-outs happened, and both were the right call
+
+Two of the five completed runs bailed on exactly one building each, and **neither guessed**:
+
+- **E2 bailed on the Curb Exchange (350 Bush)**: "All three usable Mapillary frames are dominated by an
+  adjacent tall Gothic-terracotta tower that fills the frame; none clearly isolates the actual 16 m building
+  … I could not confirm which storefront belongs to this small building versus its neighbour."
+- **E8 bailed on the ICA**: the frames showed a bronze-and-glass angular tower that did not match the
+  dark-stone description, "too ambiguous to model with confidence".
+
+Both are correct readings of a genuinely bad reference set, and both are the behaviour the brief asks for.
+**The bail-out instruction works** — which matters more than the two buildings, because it is what makes a
+cheap model safe to use at scale.
 
 ## Conclusions
 
