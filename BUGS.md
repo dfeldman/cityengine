@@ -82,6 +82,8 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 93 | open | Trees grow inside buildings; choose species by the clearance available | user, 2026-09-22 |
 | 94 | open | Ground cannot decide its height at 37.793488, −122.405218 (see #70, #71, #72) | user, 2026-09-22 |
 | 95 | open | Zany intersection at Geary/Laguna: three parallel carriageways plus a pedestrian mall | user, 2026-09-22 |
+| 96 | open | arcade() draws no arches — the arch head is never filled | kit catalogue, 2026-09-23 |
+| 97 | open | classicalColumn silently discards `order` below 6 m | kit catalogue, 2026-09-23 |
 
 ---
 
@@ -1689,3 +1691,34 @@ further west. This is purely the parallel-carriageway merge.
 handles THREE parallel ways (it was written for two), and whether a `service`-tagged way sharing its name
 with a `footway` is being joined to it. Worth comparing against #65 (spun off onto a side street at
 Jones/Sacramento), which may be the same machinery failing on a simpler case.
+
+## 96. `arcade()` draws no arches — the arch head is never filled
+
+**Found by the kit catalogue, 2026-09-23**, and photographed at
+`docs/shots/kit/kit_arcade_vs_colonnade.png` — the arcade on the left, a working colonnade on the right.
+
+The opening is drawn with centre `y0 + height*0.36` and half-height `height*0.36`, so its top is a **flat
+line exactly at the springing**, and the tympanum above it is never filled dark. All that remains of an arch
+is five `bay*0.07` chord boxes floating over a rectangular hole. **At every scale and with every argument it
+renders as a picket fence over black slots.** The fix is to fill the arch head, not to add more chords.
+
+**This explains a modelling failure we had blamed on the models.** Experiment E9 called `arcade()` three
+times — correctly identifying that Leidesdorff Place, the Curb Exchange and others have arcaded ground
+floors — and every one came out as a floating white bar with sticks beneath. The model was right and the
+part was broken. It also explains why `arcade()` has been used exactly ONCE in the entire hand-written
+corpus: anyone who tried it saw the result and went back to a punched face.
+
+`colonnade()` by contrast survives a naive call — slender and doric, but unmistakably a colonnade. So this
+is not symmetrical neglect: one part works blind and the other does not.
+
+## 97. `classicalColumn` silently discards `order` below 6 m
+
+**Found by the kit catalogue, 2026-09-23.** `tierFor` selects the `far` tier for a short column, and the
+`far` tier draws a **tuscan slab whatever order was asked for**. Nothing warns.
+
+That is every shopfront-height column a model will ever write. It explains E5's report of placing "4
+Corinthian columns" on a building whose render has no columns of any order, and the flat sticks in several
+other runs.
+
+Either the `far` tier should honour the order at least crudely, or asking for an order it cannot draw should
+be a visible no-op — but silently returning a different order is the worst of the three.

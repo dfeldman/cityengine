@@ -50,6 +50,7 @@ import { EXP_7 } from './experiments/e7.ts'
 import { EXP_8 } from './experiments/e8.ts'
 import { EXP_9 } from './experiments/e9.ts'
 import { EXP_10 } from './experiments/e10.ts'
+import { KIT_DEMO } from './experiments/kit-demo.ts'
 import { TIERA_8 } from './districts/tierA-8.ts'
 import { TIERA_9 } from './districts/tierA-9.ts'
 import { TIERA_10 } from './districts/tierA-10.ts'
@@ -91,6 +92,7 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   ...EXP_8,
   ...EXP_9,
   ...EXP_10,
+  ...KIT_DEMO,
   ...TIERA_8,
   ...TIERA_9,
   ...TIERA_10,

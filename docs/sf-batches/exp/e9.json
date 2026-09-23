@@ -1,0 +1,22 @@
+[
+  { "osm": ["way/944039725"], "name": "300 Montgomery", "procedural": "e9_300Montgomery", "front": "street", "height": 58, "note": "Edwardian office block with colonnade base; from way-944039725-02.jpg" },
+  { "osm": ["way/243794014"], "name": "550 California", "procedural": "e9_550California", "front": "street", "height": 55, "note": "Midcentury corner tower with colonnade; from way-243794014-01.jpg" },
+  { "osm": ["way/256067734"], "name": "Unnamed mid-rise", "procedural": "e9_256067734", "front": "street", "height": 48, "note": "Modern glass tower, 17-corner plan; from way-256067734-02.jpg" },
+  { "osm": ["way/288511103"], "name": "Institute of Contemporary Art", "procedural": "e9_ICA_345Montgomery", "front": "street", "height": 30, "note": "Dark stone with arcade openings; from way-288511103-02.jpg" },
+  { "osm": ["way/690663633"], "name": "Alvinza Hayward Building", "procedural": "e9_AlvinzaHayward_400Montgomery", "front": "street", "height": 36, "note": "1900s buff terracotta with colonnade; from way-690663633-02.jpg" },
+  { "osm": ["way/1309156123"], "name": "Exchange Block Building", "procedural": "e9_ExchangeBlock_369Pine", "front": "street", "height": 31, "note": "Cream masonry with arcade; from way-1309156123-02.jpg" },
+  { "osm": ["way/260283286"], "name": "Leidesdorff Place", "procedural": "e9_LeidesdorffPlace_340Pine", "front": "street", "height": 31, "note": "Neoclassical with Ionic colonnade; from way-260283286-02.jpg" },
+  { "osm": ["way/256066230"], "name": "Pacific Exchange", "procedural": "e9_PacificExchange_301Pine", "front": "street", "height": 16, "note": "Neoclassical with Doric colonnade; from way-256066230-02.jpg" },
+  { "osm": ["way/256067726"], "name": "Unnamed sliver", "procedural": "e9_348Pine", "front": "street", "height": 28, "note": "Narrow party wall facade; from way-256067726-01.jpg" },
+  { "osm": ["way/151185875"], "name": "Curb Exchange", "procedural": "e9_CurbExchange_350Bush", "front": "street", "height": 16, "note": "Neoclassical with round arch arcade; from way-151185875-02.jpg" },
+  { "osm": ["way/132125164"], "name": "Crocker Galleria", "procedural": "e9_CrockerGalleria", "front": "street", "height": 15, "note": "Modern with arched glass rotunda; from way-132125164-01.jpg" },
+  { "osm": ["way/32947380"], "name": "Wells Fargo", "procedural": "e9_WellsFargo", "front": "street", "height": 48, "note": "Neoclassical with tall Corinthian colonnade; from way-32947380-01.jpg" },
+  { "osm": ["way/256076599"], "name": "AT&T Building", "procedural": "e9_ATT_430Bush", "front": "street", "height": 32, "note": "Modern curved tower with base colonnade; from way-256076599-02.jpg" },
+  { "osm": ["way/260280326"], "name": "W&J Sloane Building", "procedural": "e9_WJSloane_222Sutter", "front": "street", "height": 42, "note": "Edwardian cream terracotta; from way-260280326-02.jpg" },
+  { "osm": ["way/260283290"], "name": "Unnamed modernist", "procedural": "e9_260283290", "front": "street", "height": 33, "note": "Concrete piers tower; from way-260283290-01.jpg" },
+  { "osm": ["way/104627922"], "name": "St. Mary's Square", "procedural": null, "front": "street", "height": 0, "note": "BAILOUT: photographs show only park, no distinct building visible" },
+  { "osm": ["way/132125160"], "name": "Galleria Park Hotel", "procedural": "e9_GalleriaParKHotel_191Sutter", "front": "street", "height": 32, "note": "Edwardian cream facade; from way-132125160-02.jpg" },
+  { "osm": ["way/1432655283"], "name": "Unnamed Edwardian", "procedural": "e9_141Kearny", "front": "street", "height": 27, "note": "Cream masonry, punched windows; from way-1432655283-02.jpg" },
+  { "osm": ["way/260286446"], "name": "Unnamed Edwardian", "procedural": "e9_400California", "front": "street", "height": 22, "note": "Cream masonry building; from way-260286446-02.jpg" },
+  { "osm": ["way/32947542"], "name": "350 Sansome", "procedural": "e9_350Sansome", "front": "street", "height": 41, "note": "Neoclassical with Ionic colonnade; from way-32947542-02.jpg" }
+]
