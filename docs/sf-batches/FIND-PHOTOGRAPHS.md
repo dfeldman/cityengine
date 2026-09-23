@@ -159,12 +159,27 @@ file. **A clean 800 px three-quarter view beats a 4000 px one you spent ten tool
 
 **Hosts known not to work, as of 2026-09-22 — do not spend attempts on them:**
 
+**Assume a PHOTOGRAPHY site will not serve you.** Flickr, the stock libraries, the print-sales sites and
+most galleries now block automated fetches as a matter of policy. Do not plan a search around them.
+
 | host | what happens |
 |---|---|
-| **Flickr** | blocks automated fetches. Skip its results entirely; do not try to derive the file URL |
-| LoopNet | HTTP 403 to bots |
-| an architect's own CMS site (e.g. SOM) | serves 140 px lazy-loaded thumbnails; the real photographs are not in the static HTML |
-| Getty | the detail page is heavy, but a direct `media.gettyimages.com` JPEG has worked |
+| **Flickr and photo-sharing sites generally** | block automated fetches. Skip the results; do not try to derive a file URL |
+| **Bing image search, fetched directly** | serves a DECOY: a query about a San Francisco building returned a page of rabbit photographs. It is not a block page, it just ignores the query, so it looks like it worked. Tested 2026-09-22 |
+| stock libraries (Getty, Alamy, Shutterstock …) | detail pages are heavy and usually gated; a direct `media.gettyimages.com` JPEG has worked once |
+| LoopNet and listing sites | HTTP 403 to bots |
+| an architect's own CMS site (e.g. SOM) | 140 px lazy-loaded thumbnails; the real photographs are not in the static HTML |
+
+**So aim at pages that are not primarily about photographs**, because those are the ones that still serve:
+
+- **news and local press** — an article about the building, whose `og:image` is the lead photograph. This has
+  been the single richest source so far;
+- **Wikimedia Commons and Wikipedia**, which serve bots by design and are freely licensed;
+- a city, heritage or landmark register;
+- the building owner's or occupant's own site, where it is not a lazy-loaded gallery.
+
+There is no image search available to you, so you cannot skim thumbnails — you are choosing a PAGE and
+hoping its lead image is good. Choose pages accordingly.
 
 **One attempt per host, then move on.** If two or three fetches in a row fail for a building, keep the best
 image you already have, note it, and go to the next building. The cost of this exercise is being measured,
