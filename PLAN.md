@@ -1077,6 +1077,47 @@ lose its private copy. That is the point of the exercise — not one good column
 cities getting it at once. `colonnade` and `arcade` are also where the recent `atan2` orientation bugs lived,
 so they will be read closely anyway.
 
+### AA. A neoclassical recipe family (user request, 2026-09-22)
+
+"SF actually has many, many neoclassical buildings. these do need individual modeling, but not much of it
+since neoclassical is just building blocks. both sides of 37.787062, -122.404906 are neoclassical for
+example."
+
+That is the right reading, and it is what `src/render/landmarks/sf/recipes.ts` exists for: a spec per
+building TYPE, so a building is a recipe plus a few overrides from a photograph rather than a spec written
+from nothing. **There are ten recipes and not one of them is neoclassical** — `edwardian-terracotta`,
+`deco-setback`, `chicago-block`, `midcentury-slab`, `concrete-piers`, `granite-eighties`, `glass-tower`,
+`modern-slender`, `brick-loft`, `hotel-punched`. So every bank temple downtown currently falls to whichever
+of those fits worst.
+
+**Neoclassical really is building blocks**, which is why one recipe family goes a long way:
+
+- a rusticated base, usually one or two storeys, often with arched openings
+- a giant order above it — columns or engaged pilasters running several storeys
+- an entablature: architrave, frieze (sometimes lettered with the bank's name), dentils
+- a heavy projecting cornice, which is the single most recognisable part
+- an attic storey above the cornice, sometimes balustraded
+- optional: a pediment, a corner dome or a banking-hall dome behind the parapet
+
+The variables between one and the next are few — the order, how many columns, whether they are free-standing
+or engaged, where the cornice sits, and the stone's colour. That is a recipe with overrides, exactly as the
+file's own docstring describes.
+
+**Depends on item Z** (decent columns in the shared kit). A neoclassical recipe built on square posts would
+be pointless, and conversely the columns work has no better proving ground than this.
+
+**The examples at the point given**, from OSM, all at Market/Grant/Kearny — the bank-temple corner:
+
+| building | |
+|---|---|
+| Savings Union Bank Building | 1 Grant Ave, 1910: an Ionic colonnade and a domed banking hall — the purest of them |
+| Union Trust Bank Building | Market at Grant |
+| Central Tower (formerly the Spreckels/Call Building, 91 m) | Beaux-Arts, remodelled |
+| Hibernia Bank, the Old Federal Reserve on Battery, and others nearby | |
+
+Worth doing this as a batch in the usual way (`docs/sf-batches/BRIEF.md`): photographs first, then the recipe,
+then the handful of per-building overrides.
+
 ### X. Plant Salesforce Park by hand (user request, 2026-09-22)
 
 The deck has no plants, and the general planting system cannot give it any: a `Planting` carries no `y`, a
