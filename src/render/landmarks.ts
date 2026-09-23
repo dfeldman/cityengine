@@ -497,8 +497,17 @@ export class Landmarks {
       for (let i = 0; i < r.length; i++) { const p = r[i]; const q = r[(i + 1) % r.length]; a += p.x * q.z - q.x * p.z }
       return Math.abs(a) / 2
     }
+    /*
+     * The first id that RESOLVES, not the first id listed. An entry names every way of its building, and
+     * OSM's order is nobody's design: the Federal Reserve Bank listed `way/944098106` first, which is a
+     * `building:part`, and parts are dropped at bake. So the lookup missed, the entry drew nothing, and
+     * because the claim had already taken the real building out of the massing the result was the building's
+     * own footprint as bare grass — with its name plate still standing on it, names being drawn by another
+     * path entirely. A label on a lawn where a 66 m tower should be.
+     */
     const building = onId !== undefined ? this.byId.get(onId)
-      : this.byId.get(packedIds(e)[0]) ?? arrived.sort((x, y) => area(y) - area(x))[0]
+      : packedIds(e).map((id) => this.byId.get(id)).find((b) => b !== undefined)
+        ?? arrived.sort((x, y) => area(y) - area(x))[0]
     const height = e.height ?? building?.height ?? 30
     let cx: number
     let cz: number

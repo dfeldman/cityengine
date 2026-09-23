@@ -1,52 +1,521 @@
 [
-  {"osm": ["way/93817367"], "name": "Crown Zellerbach Building", "procedural": "crownZellerbach", "front": "street", "height": 99, "note": "One Bush Plaza (SOM 1959): green glass slab on pilotis and its dark tile service tower toward Market (own geometry on the footprint's axes). From Commons photographs."},
-  {"osm": ["way/93817360"], "name": "Bush Plaza Pavilion", "procedural": "bushPlazaPavilion", "front": "street", "height": 6, "note": "The round glass pavilion with the copper folded-plate roof (SVB Experience Center; OSM name 'svb', 532 Market). Own geometry, from artandarchitecture-sf.com's photograph."},
-  {"osm": ["way/132238425"], "name": "Southern Pacific Building", "procedural": "southernPacificBuilding", "front": "street", "height": 60, "note": "One Market (Bliss & Faville 1916): cream arched base, red brick shaft, cream colonnade and deep cornice. Tower grammar from Commons photographs."},
-  {"osm": ["way/148710884"], "name": "Postal Telegraph Building", "procedural": "postalTelegraphBuilding", "front": "street", "height": 55, "note": "22 Battery on the Mechanics Monument plaza (Lewis Hobart 1908): brown brick, arcaded top storeys. Tower grammar from Commons photographs."},
-  {"osm": ["way/944095688", "way/944095689", "way/944095690", "way/944095691", "way/944095692", "way/944095693", "way/944095694", "way/944095695", "way/944095696", "way/944095697", "way/944095698", "way/944095699", "way/944095700", "way/944095701", "way/944095702", "way/944095703", "way/944095704", "way/944095705", "way/944095706", "way/944095707", "way/28319370"], "name": "Hyatt Regency San Francisco", "procedural": "hyattRegency", "height": 83, "note": "Portman 1973: the two room slabs, the atrium roof stepping down to the plaza, the service tower with the Equinox restaurant's square frames. Own geometry on the building's own outline (carried in the builder: the bake drops an outline its parts supersede, so this entry is placed at a point and the twenty parts are replaced).", "lat": 37.794477, "lon": -122.395814, "size": [140, 100], "front": 180},
-  {"osm": ["way/260291409", "way/1279504249", "way/1279504250"], "name": "Matson Building", "procedural": "matsonBuilding", "front": "street", "height": 83, "note": "215 Market (Bliss & Faville 1924): cream terracotta, columned base, arched top storey, lantern. Tower grammar from Commons photographs."},
-  {"osm": ["way/1279504252", "way/1279504251", "way/1279504253"], "name": "PG&E General Office Building", "procedural": "pgeBuilding", "front": "street", "height": 83, "note": "245 Market (Bakewell & Brown 1925): grey terracotta, arcaded base, top four storeys stepped back. Tower grammar from Commons photographs and Wikipedia."},
-  {"osm": ["way/1279504256", "way/260291406"], "name": "PG&E General Office Building Annex", "procedural": "pgeAnnex", "front": "street", "height": 52, "note": "The 1945 annex on Beale, matching the General Office Building. OSM's 83 m is the main building's; 13 storeys is about 52 m."},
-  {"osm": ["way/288505729"], "name": "333 Market", "procedural": "market333", "front": "street", "height": 149, "note": "1979: bronze glass between beige piers, stepped corners. Tower grammar from Commons photographs."},
-  {"osm": ["way/288505730", "way/1279504526", "way/288505726"], "name": "388 Market", "procedural": "market388", "front": "street", "height": 118, "note": "SOM 1987: red granite and glass ribbons round a flatiron with a cylindrical prow. Tower grammar from Commons photographs."},
-  {"osm": ["way/32946526"], "name": "425 Market", "procedural": "market425", "front": "street", "height": 156, "note": "SOM 1973: white aluminium grid, blank plant storeys on top. Tower grammar from Commons photographs."},
-  {"osm": ["way/32946570"], "name": "First Market Tower", "procedural": "firstMarketTower", "front": "street", "height": 169, "note": "525 Market (1973): fine cream mullions. Tower grammar from Commons photographs."},
-  {"osm": ["way/32946577"], "name": "555 Market Street", "procedural": "market555", "front": "street", "height": 104, "note": "SOM 1964: plain grey concrete grid. Tower grammar from Commons photographs."},
-  {"osm": ["way/32963382"], "name": "Chevron Tower", "procedural": "chevronTower", "front": "street", "height": 175, "note": "575 Market (1975): the taller twin of 555's grid. Tower grammar from Commons photographs."},
-  {"osm": ["way/148710877"], "name": "One Front Street", "procedural": "oneFrontStreet", "front": "street", "height": 171, "note": "SOM 1979: white bands and dark glass, the Market corner cut into steps (the notched footprint). Tower grammar from Commons photographs."},
-  {"osm": ["way/942665599", "way/32963344", "way/1547826803", "way/1547826804", "way/1547826805", "way/1547826806", "way/1547826807", "way/1547826808", "way/1547826809", "way/1547826810"], "name": "One Sansome Street", "procedural": "oneSansomeTower", "front": "street", "height": 171, "note": "Citicorp Center tower (1984): pale granite, teal ribbon windows, chamfered corners. Modelled on the tower part; the old bank hall beside it is its own entry."},
-  {"osm": ["way/690644023", "way/32963370", "way/690644020", "way/690644018", "way/690644019", "way/690644021", "way/690644022"], "name": "44 Montgomery Street", "procedural": "montgomery44", "front": "street", "height": 172, "note": "1967: dark glass behind close white fins. Tower grammar from Commons photographs; the tower part, its two-storey podium and their roof parts are all replaced."},
-  {"osm": ["way/132125158"], "name": "Flatiron Building (544 Market)", "procedural": "flatiron544", "front": "street", "height": 38, "note": "Havens & Toepke 1913: the small cream wedge at Market, Sutter and Sansome. Tower grammar."},
-  {"osm": ["way/32946628"], "name": "Hobart Building", "procedural": "hobartBuilding", "front": "street", "height": 86, "note": "Willis Polk 1914: the block on Market and the slender arcaded tower with the oval prow and tiled cap over its Montgomery end. Own geometry on the footprint plus the tower grammar."},
-  {"osm": ["way/944098106", "way/32612362", "way/944098107", "way/944098109"], "name": "Federal Reserve Bank of San Francisco", "procedural": "federalReserve", "front": "street", "height": 66, "note": "101 Market (SOM 1983): banded pink granite over the barrel-vaulted Market Street arcade. Tower grammar from Commons photographs."},
-  {"osm": ["way/32612471"], "name": "One California Street", "procedural": "oneCalifornia", "front": "street", "height": 140, "note": "1969: white piers, dark blue glass, clipped corners, heavy podium cornice. Tower grammar from Commons photographs."},
-  {"osm": ["way/132125161"], "name": "One Sansome banking hall", "procedural": "oneSansomeHall", "front": "street", "height": 14, "note": "The Anglo & London Paris National Bank shell (Pissis 1910) kept as the glass-roofed court at the foot of One Sansome. Own geometry."},
-  {"osm": ["way/32612484"], "name": "50 California Street", "procedural": "california50", "front": "street", "height": 159, "note": "1972: close cream fins, clipped corners. Tower grammar from Commons photographs."},
-  {"osm": ["way/32946535"], "name": "45 Fremont Center", "procedural": "fremont45", "front": "street", "height": 149, "note": "1978: white horizontal bands. Tower grammar from Commons photographs."},
-  {"osm": ["way/944025918"], "name": "100 Pine Center", "procedural": "pine100", "front": "street", "height": 145, "note": "1972: bronze-tan bands, notched corners, one setback at the top. Tower grammar from Commons photographs."},
-  {"osm": ["way/942665601"], "name": "225 Bush Street", "procedural": "bush225", "front": "street", "height": 100, "note": "The old Standard Oil Building (Kelham 1922): granite palazzo, arcaded base, colonnaded top. Tower grammar from Commons photographs."},
-  {"osm": ["way/256067709"], "name": "201 California Street", "procedural": "california201", "front": "street", "height": 69, "note": "Providian Financial Building (1985): cream bands, rounded corner tower. Tower grammar from Commons photographs."},
-  {"osm": ["way/260282396"], "name": "235 Pine Street", "procedural": "pine235", "front": "street", "height": 95, "note": "1990: granite postmodern shaft with chevron bays. Tower grammar from Commons photographs."},
-  {"osm": ["way/260282389"], "name": "Adam Grant Building", "procedural": "adamGrant", "front": "street", "height": 58, "note": "114 Sansome (Meyer & O'Brien 1908, raised 1926): white terracotta Classical Revival. Tower grammar."},
-  {"osm": ["way/260282398"], "name": "Heineman Building", "procedural": "heinemanBuilding", "front": "street", "height": 34, "note": "130 Bush: the narrowest building downtown, a Gothic front with a gold bay window the full height. Own geometry, from the Commons photograph."},
-  {"osm": ["way/1313339504"], "name": "525 Market plaza kiosk", "procedural": "plazaKiosk", "front": "street", "height": 5, "note": "The glass pavilion with the skillion roof in the sunken plaza at 525 Market (OSM material=glass). Own geometry from its OSM shape and tags."},
-  {"osm": ["way/148712640"], "name": "570 Market Street", "restyle": "chicago", "levels": 9, "note": "Ten-storey 1900s commercial block on the north side of Market; Chicago School terracotta fits the run."},
-  {"osm": ["way/148712645"], "name": "576-580 Market Street", "restyle": "chicago", "levels": 7, "note": "Its neighbour, same run of early commercial blocks."},
-  {"osm": ["way/148712642"], "name": "554 Market Street", "restyle": "chicago", "levels": 4},
-  {"osm": ["way/148712643"], "name": "558 Market Street", "restyle": "chicago", "levels": 3},
-  {"osm": ["way/148712647"], "name": "562 Market Street", "restyle": "chicago", "levels": 4},
-  {"osm": ["way/148712649"], "name": "566 Market Street", "restyle": "chicago", "levels": 3},
-  {"osm": ["way/148712646"], "name": "572 Market Street", "restyle": "chicago", "levels": 3},
-  {"osm": ["way/148710881"], "name": "32 Battery Street", "restyle": "chicago", "levels": 5, "note": "Low block on the Mechanics Monument plaza, beside the Postal Telegraph Building."},
-  {"osm": ["way/148710885"], "name": "Battery Street infill", "restyle": "chicago", "levels": 4},
-  {"osm": ["way/149840697"], "name": "Stevenson Street block", "restyle": "brick", "levels": 6, "note": "Low brick block behind 555 Market, on Stevenson."},
-  {"osm": ["way/260318172"], "name": "Stevenson Street shops", "restyle": "brick", "levels": 3},
-  {"osm": ["way/436484312"], "name": "Market at Fremont infill", "restyle": "skyscraper", "levels": 6},
-  {"osm": ["way/436484074"], "name": "Citibank, Market at Drumm", "restyle": "skyscraper", "levels": 4},
-  {"osm": ["way/148710880"], "name": "Battery Street tower (north)", "restyle": "skyscraper", "levels": 24},
-  {"osm": ["way/148710883"], "name": "Battery Street tower (south)", "restyle": "skyscraper", "levels": 24},
-  {"osm": ["way/260298022"], "name": "Jessie Street tower", "restyle": "skyscraper", "levels": 28},
-  {"osm": ["way/149840694"], "name": "Stevenson Place", "restyle": "skyscraper", "levels": 29, "note": "71 Stevenson (1970s), behind 525 Market."},
-  {"osm": ["way/149837256"], "name": "49 Stevenson Street", "restyle": "skyscraper", "levels": 17},
-  {"osm": ["way/1410934053"], "name": "Oceanwide Center site", "restyle": "skyscraper", "levels": 7, "note": "OSM carries a 160 m building:part on the stalled Oceanwide Center site at First and Market; nothing of that tower was built, so this keeps it to the seven storeys of the outline (way/159280395)."}
+ {
+  "osm": [
+   "way/93817367"
+  ],
+  "name": "Crown Zellerbach Building",
+  "procedural": "crownZellerbach",
+  "front": "street",
+  "height": 99,
+  "note": "One Bush Plaza (SOM 1959): green glass slab on pilotis and its dark tile service tower toward Market (own geometry on the footprint's axes). From Commons photographs."
+ },
+ {
+  "osm": [
+   "way/93817360"
+  ],
+  "name": "Bush Plaza Pavilion",
+  "procedural": "bushPlazaPavilion",
+  "front": "street",
+  "height": 6,
+  "note": "The round glass pavilion with the copper folded-plate roof (SVB Experience Center; OSM name 'svb', 532 Market). Own geometry, from artandarchitecture-sf.com's photograph."
+ },
+ {
+  "osm": [
+   "way/132238425"
+  ],
+  "name": "Southern Pacific Building",
+  "procedural": "southernPacificBuilding",
+  "front": "street",
+  "height": 60,
+  "note": "One Market (Bliss & Faville 1916): cream arched base, red brick shaft, cream colonnade and deep cornice. Tower grammar from Commons photographs."
+ },
+ {
+  "osm": [
+   "way/148710884"
+  ],
+  "name": "Postal Telegraph Building",
+  "procedural": "postalTelegraphBuilding",
+  "front": "street",
+  "height": 55,
+  "note": "22 Battery on the Mechanics Monument plaza (Lewis Hobart 1908): brown brick, arcaded top storeys. Tower grammar from Commons photographs."
+ },
+ {
+  "osm": [
+   "way/944095688",
+   "way/944095689",
+   "way/944095690",
+   "way/944095691",
+   "way/944095692",
+   "way/944095693",
+   "way/944095694",
+   "way/944095695",
+   "way/944095696",
+   "way/944095697",
+   "way/944095698",
+   "way/944095699",
+   "way/944095700",
+   "way/944095701",
+   "way/944095702",
+   "way/944095703",
+   "way/944095704",
+   "way/944095705",
+   "way/944095706",
+   "way/944095707",
+   "way/28319370"
+  ],
+  "name": "Hyatt Regency San Francisco",
+  "procedural": "hyattRegency",
+  "height": 83,
+  "note": "Portman 1973: the two room slabs, the atrium roof stepping down to the plaza, the service tower with the Equinox restaurant's square frames. Own geometry on the building's own outline (carried in the builder: the bake drops an outline its parts supersede, so this entry is placed at a point and the twenty parts are replaced).",
+  "lat": 37.794477,
+  "lon": -122.395814,
+  "size": [
+   140,
+   100
+  ],
+  "front": 180
+ },
+ {
+  "osm": [
+   "way/260291409",
+   "way/1279504249",
+   "way/1279504250"
+  ],
+  "name": "Matson Building",
+  "procedural": "matsonBuilding",
+  "front": "street",
+  "height": 83,
+  "note": "215 Market (Bliss & Faville 1924): cream terracotta, columned base, arched top storey, lantern. Tower grammar from Commons photographs."
+ },
+ {
+  "osm": [
+   "way/1279504252",
+   "way/1279504251",
+   "way/1279504253"
+  ],
+  "name": "PG&E General Office Building",
+  "procedural": "pgeBuilding",
+  "front": "street",
+  "height": 83,
+  "note": "245 Market (Bakewell & Brown 1925): grey terracotta, arcaded base, top four storeys stepped back. Tower grammar from Commons photographs and Wikipedia."
+ },
+ {
+  "osm": [
+   "way/1279504256",
+   "way/260291406"
+  ],
+  "name": "PG&E General Office Building Annex",
+  "procedural": "pgeAnnex",
+  "front": "street",
+  "height": 52,
+  "note": "The 1945 annex on Beale, matching the General Office Building. OSM's 83 m is the main building's; 13 storeys is about 52 m."
+ },
+ {
+  "osm": [
+   "way/288505729"
+  ],
+  "name": "333 Market",
+  "procedural": "market333",
+  "front": "street",
+  "height": 149,
+  "note": "1979: bronze glass between beige piers, stepped corners. Tower grammar from Commons photographs."
+ },
+ {
+  "osm": [
+   "way/288505730",
+   "way/1279504526",
+   "way/288505726"
+  ],
+  "name": "388 Market",
+  "procedural": "market388",
+  "front": "street",
+  "height": 118,
+  "note": "SOM 1987: red granite and glass ribbons round a flatiron with a cylindrical prow. Tower grammar from Commons photographs."
+ },
+ {
+  "osm": [
+   "way/32946526"
+  ],
+  "name": "425 Market",
+  "procedural": "market425",
+  "front": "street",
+  "height": 156,
+  "note": "SOM 1973: white aluminium grid, blank plant storeys on top. Tower grammar from Commons photographs."
+ },
+ {
+  "osm": [
+   "way/32946570"
+  ],
+  "name": "First Market Tower",
+  "procedural": "firstMarketTower",
+  "front": "street",
+  "height": 169,
+  "note": "525 Market (1973): fine cream mullions. Tower grammar from Commons photographs."
+ },
+ {
+  "osm": [
+   "way/32946577"
+  ],
+  "name": "555 Market Street",
+  "procedural": "market555",
+  "front": "street",
+  "height": 104,
+  "note": "SOM 1964: plain grey concrete grid. Tower grammar from Commons photographs."
+ },
+ {
+  "osm": [
+   "way/32963382"
+  ],
+  "name": "Chevron Tower",
+  "procedural": "chevronTower",
+  "front": "street",
+  "height": 175,
+  "note": "575 Market (1975): the taller twin of 555's grid. Tower grammar from Commons photographs."
+ },
+ {
+  "osm": [
+   "way/148710877"
+  ],
+  "name": "One Front Street",
+  "procedural": "oneFrontStreet",
+  "front": "street",
+  "height": 171,
+  "note": "SOM 1979: white bands and dark glass, the Market corner cut into steps (the notched footprint). Tower grammar from Commons photographs."
+ },
+ {
+  "osm": [
+   "way/942665599",
+   "way/32963344",
+   "way/1547826803",
+   "way/1547826804",
+   "way/1547826805",
+   "way/1547826806",
+   "way/1547826807",
+   "way/1547826808",
+   "way/1547826809",
+   "way/1547826810"
+  ],
+  "name": "One Sansome Street",
+  "procedural": "oneSansomeTower",
+  "front": "street",
+  "height": 171,
+  "note": "Citicorp Center tower (1984): pale granite, teal ribbon windows, chamfered corners. Modelled on the tower part; the old bank hall beside it is its own entry."
+ },
+ {
+  "osm": [
+   "way/690644023",
+   "way/32963370",
+   "way/690644020",
+   "way/690644018",
+   "way/690644019",
+   "way/690644021",
+   "way/690644022"
+  ],
+  "name": "44 Montgomery Street",
+  "procedural": "montgomery44",
+  "front": "street",
+  "height": 172,
+  "note": "1967: dark glass behind close white fins. Tower grammar from Commons photographs; the tower part, its two-storey podium and their roof parts are all replaced."
+ },
+ {
+  "osm": [
+   "way/132125158"
+  ],
+  "name": "Flatiron Building (544 Market)",
+  "procedural": "flatiron544",
+  "front": "street",
+  "height": 38,
+  "note": "Havens & Toepke 1913: the small cream wedge at Market, Sutter and Sansome. Tower grammar."
+ },
+ {
+  "osm": [
+   "way/32946628"
+  ],
+  "name": "Hobart Building",
+  "procedural": "hobartBuilding",
+  "front": "street",
+  "height": 86,
+  "note": "Willis Polk 1914: the block on Market and the slender arcaded tower with the oval prow and tiled cap over its Montgomery end. Own geometry on the footprint plus the tower grammar."
+ },
+ {
+  "osm": [
+   "way/32612362",
+   "way/944098106",
+   "way/944098107",
+   "way/944098109"
+  ],
+  "name": "Federal Reserve Bank of San Francisco",
+  "procedural": "federalReserve",
+  "front": "street",
+  "height": 66,
+  "note": "101 Market (SOM 1983): banded pink granite over the barrel-vaulted Market Street arcade. Tower grammar from Commons photographs. The OUTLINE way is listed first on purpose: building:part ways are dropped at bake, and a part at the head of this list is what left the building as bare grass with only its name plate."
+ },
+ {
+  "osm": [
+   "way/32612471"
+  ],
+  "name": "One California Street",
+  "procedural": "oneCalifornia",
+  "front": "street",
+  "height": 140,
+  "note": "1969: white piers, dark blue glass, clipped corners, heavy podium cornice. Tower grammar from Commons photographs."
+ },
+ {
+  "osm": [
+   "way/132125161"
+  ],
+  "name": "One Sansome banking hall",
+  "procedural": "oneSansomeHall",
+  "front": "street",
+  "height": 14,
+  "note": "The Anglo & London Paris National Bank shell (Pissis 1910) kept as the glass-roofed court at the foot of One Sansome. Own geometry."
+ },
+ {
+  "osm": [
+   "way/32612484"
+  ],
+  "name": "50 California Street",
+  "procedural": "california50",
+  "front": "street",
+  "height": 159,
+  "note": "1972: close cream fins, clipped corners. Tower grammar from Commons photographs."
+ },
+ {
+  "osm": [
+   "way/32946535"
+  ],
+  "name": "45 Fremont Center",
+  "procedural": "fremont45",
+  "front": "street",
+  "height": 149,
+  "note": "1978: white horizontal bands. Tower grammar from Commons photographs."
+ },
+ {
+  "osm": [
+   "way/944025918"
+  ],
+  "name": "100 Pine Center",
+  "procedural": "pine100",
+  "front": "street",
+  "height": 145,
+  "note": "1972: bronze-tan bands, notched corners, one setback at the top. Tower grammar from Commons photographs."
+ },
+ {
+  "osm": [
+   "way/942665601"
+  ],
+  "name": "225 Bush Street",
+  "procedural": "bush225",
+  "front": "street",
+  "height": 100,
+  "note": "The old Standard Oil Building (Kelham 1922): granite palazzo, arcaded base, colonnaded top. Tower grammar from Commons photographs."
+ },
+ {
+  "osm": [
+   "way/256067709"
+  ],
+  "name": "201 California Street",
+  "procedural": "california201",
+  "front": "street",
+  "height": 69,
+  "note": "Providian Financial Building (1985): cream bands, rounded corner tower. Tower grammar from Commons photographs."
+ },
+ {
+  "osm": [
+   "way/260282396"
+  ],
+  "name": "235 Pine Street",
+  "procedural": "pine235",
+  "front": "street",
+  "height": 95,
+  "note": "1990: granite postmodern shaft with chevron bays. Tower grammar from Commons photographs."
+ },
+ {
+  "osm": [
+   "way/260282389"
+  ],
+  "name": "Adam Grant Building",
+  "procedural": "adamGrant",
+  "front": "street",
+  "height": 58,
+  "note": "114 Sansome (Meyer & O'Brien 1908, raised 1926): white terracotta Classical Revival. Tower grammar."
+ },
+ {
+  "osm": [
+   "way/260282398"
+  ],
+  "name": "Heineman Building",
+  "procedural": "heinemanBuilding",
+  "front": "street",
+  "height": 34,
+  "note": "130 Bush: the narrowest building downtown, a Gothic front with a gold bay window the full height. Own geometry, from the Commons photograph."
+ },
+ {
+  "osm": [
+   "way/1313339504"
+  ],
+  "name": "525 Market plaza kiosk",
+  "procedural": "plazaKiosk",
+  "front": "street",
+  "height": 5,
+  "note": "The glass pavilion with the skillion roof in the sunken plaza at 525 Market (OSM material=glass). Own geometry from its OSM shape and tags."
+ },
+ {
+  "osm": [
+   "way/148712640"
+  ],
+  "name": "570 Market Street",
+  "restyle": "chicago",
+  "levels": 9,
+  "note": "Ten-storey 1900s commercial block on the north side of Market; Chicago School terracotta fits the run."
+ },
+ {
+  "osm": [
+   "way/148712645"
+  ],
+  "name": "576-580 Market Street",
+  "restyle": "chicago",
+  "levels": 7,
+  "note": "Its neighbour, same run of early commercial blocks."
+ },
+ {
+  "osm": [
+   "way/148712642"
+  ],
+  "name": "554 Market Street",
+  "restyle": "chicago",
+  "levels": 4
+ },
+ {
+  "osm": [
+   "way/148712643"
+  ],
+  "name": "558 Market Street",
+  "restyle": "chicago",
+  "levels": 3
+ },
+ {
+  "osm": [
+   "way/148712647"
+  ],
+  "name": "562 Market Street",
+  "restyle": "chicago",
+  "levels": 4
+ },
+ {
+  "osm": [
+   "way/148712649"
+  ],
+  "name": "566 Market Street",
+  "restyle": "chicago",
+  "levels": 3
+ },
+ {
+  "osm": [
+   "way/148712646"
+  ],
+  "name": "572 Market Street",
+  "restyle": "chicago",
+  "levels": 3
+ },
+ {
+  "osm": [
+   "way/148710881"
+  ],
+  "name": "32 Battery Street",
+  "restyle": "chicago",
+  "levels": 5,
+  "note": "Low block on the Mechanics Monument plaza, beside the Postal Telegraph Building."
+ },
+ {
+  "osm": [
+   "way/148710885"
+  ],
+  "name": "Battery Street infill",
+  "restyle": "chicago",
+  "levels": 4
+ },
+ {
+  "osm": [
+   "way/149840697"
+  ],
+  "name": "Stevenson Street block",
+  "restyle": "brick",
+  "levels": 6,
+  "note": "Low brick block behind 555 Market, on Stevenson."
+ },
+ {
+  "osm": [
+   "way/260318172"
+  ],
+  "name": "Stevenson Street shops",
+  "restyle": "brick",
+  "levels": 3
+ },
+ {
+  "osm": [
+   "way/436484312"
+  ],
+  "name": "Market at Fremont infill",
+  "restyle": "skyscraper",
+  "levels": 6
+ },
+ {
+  "osm": [
+   "way/436484074"
+  ],
+  "name": "Citibank, Market at Drumm",
+  "restyle": "skyscraper",
+  "levels": 4
+ },
+ {
+  "osm": [
+   "way/148710880"
+  ],
+  "name": "Battery Street tower (north)",
+  "restyle": "skyscraper",
+  "levels": 24
+ },
+ {
+  "osm": [
+   "way/148710883"
+  ],
+  "name": "Battery Street tower (south)",
+  "restyle": "skyscraper",
+  "levels": 24
+ },
+ {
+  "osm": [
+   "way/260298022"
+  ],
+  "name": "Jessie Street tower",
+  "restyle": "skyscraper",
+  "levels": 28
+ },
+ {
+  "osm": [
+   "way/149840694"
+  ],
+  "name": "Stevenson Place",
+  "restyle": "skyscraper",
+  "levels": 29,
+  "note": "71 Stevenson (1970s), behind 525 Market."
+ },
+ {
+  "osm": [
+   "way/149837256"
+  ],
+  "name": "49 Stevenson Street",
+  "restyle": "skyscraper",
+  "levels": 17
+ },
+ {
+  "osm": [
+   "way/1410934053"
+  ],
+  "name": "Oceanwide Center site",
+  "restyle": "skyscraper",
+  "levels": 7,
+  "note": "OSM carries a 160 m building:part on the stalled Oceanwide Center site at First and Market; nothing of that tower was built, so this keeps it to the seven storeys of the outline (way/159280395)."
+ }
 ]

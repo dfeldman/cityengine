@@ -64,6 +64,10 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 75 | open | Streetcars pass through each other | user, 2026-09-22 |
 | 76 | open | Streetcars turn around like a bus instead of reversing | user, 2026-09-22 |
 | 77 | open | Rider is steered down the middle of streetcar streets, into the cars | user, 2026-09-22 |
+| 78 | fixed (needs re-bake) | Federal Reserve Bank is a green square with a name plate on it | user, 2026-09-22 |
+| 79 | open | Landmark name signs: box drawn over the text, and hides the building | user, 2026-09-22 |
+| 80 | open | 45 Main Street is missing | user, 2026-09-22 |
+| 81 | open | 285 Market Street looks nothing like the real building | user, 2026-09-22 |
 
 ---
 
@@ -1205,3 +1209,70 @@ should offset to the side of it, the way a real cyclist rides outside the tracks
 thing to do in reality, since a wheel in a rail groove is how cyclists come off.
 
 Related to #75: passing through a streetcar is only possible because the rider is in its path to begin with.
+
+## 78. The Federal Reserve Bank is a green square with a name plate on it — FIXED, needs a re-bake
+
+**Seen:** user riding, 2026-09-22: "i think we forgot the Federal Reserve Bank entirely, it's just an empty
+green square", and then a screenshot showing the name plate FEDERAL RESERVE BANK OF SAN FRANCISCO standing on
+a lawn with nothing behind it.
+
+Nothing was forgotten. `federalReserve` is a real builder (686 triangles, banded granite over an arcaded
+base — photographed at `docs/shots/models/federalReserve-corner.png`, it builds correctly), registered in
+`public/landmarks/san-francisco/market-east.json`.
+
+**Cause: the entry named a `building:part` FIRST.** Its ids were
+
+    ["way/944098106", "way/32612362", "way/944098107", "way/944098109"]
+
+and `way/944098106` is `building:part=yes`. Parts are dropped at bake (they stand in for their outline —
+`partOf` in the package), so `this.byId.get(packedIds(e)[0])` missed. The entry drew nothing, and because
+claiming the building had already removed it from the massing, what was left was the footprint as bare
+ground. The name plate still appeared because names are drawn by a different path — hence a label on a lawn
+where a 66 m tower should be.
+
+**Fixed twice over:**
+
+1. `src/render/landmarks.ts` now takes the first id that RESOLVES rather than the first id listed. OSM's
+   order within a building's ways is nobody's design, so no entry should depend on it.
+2. The Fed's own entry lists the outline first anyway.
+
+Needs a re-bake before it can be called fixed. Worth checking the other entries with several ids for the same
+shape, now that the renderer no longer cares.
+
+## 79. Landmark name signs: the box is drawn over the text, and hides the building
+
+**Seen:** user, 2026-09-22: "many landmark signs have the box OVER the text" and "i think that hides the
+other half of the building though."
+
+Two complaints in one: the backing board covers the lettering it is supposed to carry, and the board is big
+enough to hide the building behind it. `src/render/signs.ts` draws the board as a tint and the lettering as
+the texture's alpha (`mix(board, ink, t.a)`), and pulls the board toward the eye in depth so it clears its
+wall — so a depth pull applied to the board but not the glyphs, or a second backing quad in front, would do
+exactly this. Not yet traced.
+
+## 80. 45 Main Street is missing too
+
+**Seen:** user, 2026-09-22: "45 main street, adjacent to the fed, is not showing up either."
+
+Next door to #78, so check whether it is the same cause before looking further — that whole block is one
+landmark claim away from being bare ground.
+
+Checked and NOT the cause: its neighbour `w260291408` carries `height=151 m` with the unit spelled out, and
+the vendored `parseMeters` handles a trailing `m` correctly (it would have been a good suspect).
+
+## 81. 285 Market Street looks nothing like the real building
+
+**Seen:** user, 2026-09-22: "285 Market, across the street, doesn't look much at all like the real version."
+
+**What is wrong, from the user:** "it is a skyscraper with classical columns." So the style it was given is
+plainly the wrong family — a tall tower wearing a classical order, which is the signature of the refacing
+ladder guessing from a line of text rather than a photograph. 285 Market is a 1920s-30s commercial tower;
+its classicism is in its base and crown, not columns up its height.
+
+Worth using as a test case for the ladder rather than hand-fixing one building: a tall building dressed in a
+low-rise classical style is exactly the failure the priority system is supposed to catch and send up a tier.
+Note that tall buildings (>60 m) skip refacing by design and go straight to modelling, so either this one is
+under that cut or it did not reach it.
+
+Wants the project's own method (docs, and the landmark brief): find real photographs FIRST, then build a
+procedural gist from them — recognisable rather than accurate — and check the result against a screenshot.
