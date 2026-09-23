@@ -1322,6 +1322,41 @@ description — which is exactly what the REFACING tier does, and it produced ex
 The brief now symlinks the token. **Worth re-running before drawing conclusions about modelling quality: so
 far this compares two models at doing refacing, not at doing modelling.**
 
+#### The bottleneck is RESEARCH, not modelling (user, 2026-09-22)
+
+After seeing a clear street-level photograph of the ICA, the owner: *"given THIS image, I'm pretty confident
+that even Haiku could do a good model. But this image is hard to find… that's a clear picture showing the
+building edge-on. We may just need to get better at doing research."*
+
+That reframes the whole cost question. Two models produced a featureless box from a one-line description; the
+same models with one good photograph should manage a decent building. **So the scarce thing is the
+photograph, not the model.** Cheap modelling is only cheap if the reference is in hand.
+
+Four concrete improvements, in order of value:
+
+1. **Aim at the CORNER for a compact building, at the face for a long one.** `tools/photo.ts` deliberately
+   aims at the nearest point on the boundary rather than a corner, and its comment gives the reason: "for a
+   long building the nearest corner is its END, so the view swings along the facade and off the building
+   altogether." That is right for a slab and wrong for a block. **An edge-on three-quarter view shows two
+   faces and the corner treatment at once** — for the ICA, whose corner piers ARE the building, a face-on
+   view could never have shown what matters. Choose by the footprint's aspect ratio: near-square gets the
+   corner, elongated gets the face.
+2. **Google Street View is the source that actually has these pictures.** The image that settled this
+   building looks like Street View, and BUGS.md #84 already asks for a key that opens Street View at the
+   camera's position. Worth going further and making it a fetch step in the reference pipeline, not just a
+   debugging key.
+3. **Escalate to the web when the street-level fetch is thin.** Already added to
+   [MODEL-ONE-BUILDING.md](docs/sf-batches/MODEL-ONE-BUILDING.md) §6: the tool, then a web search by name,
+   address and architect, and only then general knowledge — declared as such.
+4. **Do not rely on OSM's metadata to find the notable ones.** The ICA carries **no `wikidata`, no
+   `wikipedia`, no `image` and no `wikimedia_commons` tag at all** — so the very signals proposed above for
+   raising a building's priority would have missed it entirely. They are a good way to FIND candidates and a
+   bad way to find references.
+
+**Measure the pipeline by this**: what fraction of queued buildings end up with a photograph a person would
+call clear. Nobody has counted, and the queue log already records the outcome per building, so it is a query
+rather than a project.
+
 #### Model every building on the major corridors (user, 2026-09-22)
 
 *"I think we should model essentially EVERY building on major streets like Market, California, Washington
