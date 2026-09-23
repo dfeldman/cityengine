@@ -1057,7 +1057,7 @@ temple-front's private Corinthian 84. **The far tier is CHEAPER than the square 
 Guarded by `tests/column.test.ts` (`COLUMN_COST=1` prints the table).
 
 **Converted**: `parts.colonnade()` and `parts.arcade()` (arcade now springs its arches off columns;
-`piers: true` keeps the old rectangular piers), `kit.column()` (delegates — all 14 landmark call sites
+`piers: true` keeps the old rectangular piers), `kit.column()` (delegates — all 17 landmark call sites
 improved in place), `paris/temple-front.ts` (private copy deleted; front row near + fluted, back rows mid),
 `sf/districts/market-west.ts`'s own private colonnade, and `sf/city-hall.ts` given explicit tiers (its ~90
 engaged columns at the near tier would have cost 24.6k of the 25k budget; it is 13.6k with tiers).
@@ -1244,6 +1244,39 @@ modelling subagents ("both manual and sonnet modelling processes") came later in
 
 Which means the two tiers differ mostly in **who is charged for looking at the building**, not in how much
 work each does. Any re-measure has to count images on both sides or it will keep producing this artefact.
+
+#### The tier cuts rest on two UNTESTED assumptions — experiment running 2026-09-22
+
+The user, naming it: *"we've been quietly assuming Haiku is not smart enough for modeling at all, and Sonnet
+is not smart enough for modeling the most complex buildings."* And: *"we don't know."*
+
+Those two assumptions are what the whole tier table is built on, and neither has ever been checked. The
+user's working cost figures, by tier:
+
+| tier | tokens | cost weight | product |
+|---|---|---|---|
+| opus modelling | ~150k | 0.67 | ~100 |
+| sonnet modelling | ~15k | 0.47 | ~7 |
+| haiku refacing | ~5k | ~0.05 | ~0.25 |
+
+**Roughly an order of magnitude between each.** So the question is not academic: if Sonnet can model a
+genuinely complex building, the opus tier shrinks to almost nothing and the cost of the whole programme
+falls by ~14×. If HAIKU can model at all, it falls by another order again — and the user's target follows:
+*"if we could get the cost down to 1-10%, we could reasonably do most buildings downtown."* At 1–10% of the
+opus figure, the 514–813 corridor buildings below stop being a budget question.
+
+**The experiment.** One Maritime Plaza was just modelled by Opus — real X-bracing, 2,018 triangles, built
+from Mapillary photographs, and good. It is a hard case: the thing that makes it recognisable is an
+exoskeleton no recipe provides. Sonnet and Haiku are now running the **identical brief** in isolated git
+worktrees cut from HEAD, which does NOT contain the Opus builder, so neither can see the answer.
+
+Judged on: triangle count, whether the X-bracing reads from the street in a shot the model looked at itself,
+whether it used real photographs, and what it admits it got wrong.
+
+Whatever comes back, the cuts should be re-drawn against evidence rather than against an assumption nobody
+has tested. Note also that the interesting failure is not "it produced nothing" but "it produced something
+plausible that is wrong" — which is exactly what the reface tier has been doing (#81, #90, #91), and is why
+**cost per CORRECT building** is the only figure worth deciding on.
 
 #### Model every building on the major corridors (user, 2026-09-22)
 
