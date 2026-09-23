@@ -1037,7 +1037,33 @@ it is also the cheapest frame it can draw.
 
 Worth doing together: they are all in `src/game.ts` and `src/ui/`, and the first four all delete code.
 
-### Z. Decent classical columns in the shared kit (user request, 2026-09-22)
+### Z. ✅ DONE (2026-09-22) — Decent classical columns in the shared kit (user request)
+
+**Built**: `src/render/landmarks/column.ts` — one `lathe()` (a surface of revolution) and one
+`classicalColumn()` on top of it, so entasis, the base mouldings and every capital are just profiles. Round
+shaft with a CURVED taper, plinth + torus + fillet base, a capital per order (Doric echinus + abacus, Ionic
+bolster with a scroll volute each side, Corinthian bell with two rings of leaves), and flutes as a 20-sided
+shaft with an alternating radius. Three explicit TIERS, chosen by the caller or by height (>= 12 m near,
+>= 6 m mid, else far):
+
+| tier | tuscan | doric | ionic | corinthian |
+|---|---|---|---|---|
+| far  | 28 | 28 | 28 | 28 |
+| mid  | 96 | 96 | 140 | 120 |
+| near | 248 | 248 | 276 | 352 |
+
+(fluted adds ~50–65.) For comparison the three it replaced: parts.ts's square post 36, kit's prism 54,
+temple-front's private Corinthian 84. **The far tier is CHEAPER than the square post it replaces and round.**
+Guarded by `tests/column.test.ts` (`COLUMN_COST=1` prints the table).
+
+**Converted**: `parts.colonnade()` and `parts.arcade()` (arcade now springs its arches off columns;
+`piers: true` keeps the old rectangular piers), `kit.column()` (delegates — all 14 landmark call sites
+improved in place), `paris/temple-front.ts` (private copy deleted; front row near + fluted, back rows mid),
+`sf/districts/market-west.ts`'s own private colonnade, and `sf/city-hall.ts` given explicit tiers (its ~90
+engaged columns at the near tier would have cost 24.6k of the 25k budget; it is 13.6k with tiers).
+All signatures are backwards compatible — every new argument is an optional `opts` field.
+
+The original brief, kept because it is the design:
 
 "We should improve our builder kit to be able to do decent classical columns. they come up all over the
 place. definitely on that one building, but there are thousands of places they're needed."
@@ -1206,6 +1232,55 @@ have not been revisited since. So the cuts probably SHOULD move — but on evide
   Chinatown brick on a glass museum (#91) cost 4.5k and produced a wrong building; a model that produces a
   recognisable one at 8k is the better buy. **Cost per CORRECT building is the figure that matters**, and we
   have never computed it.
+
+#### Why the reface number is bigger: we are billing the image to Haiku and not to Sonnet
+
+The user's explanation, 2026-09-22: *"I think we're billing Haiku for processing the input image, and not
+Sonnet."* That fits everything. A reface is a cheap model plus TWO street-level photographs, and the images
+are most of its 4.5k. The sonnet modelling figure was measured when the modelling batches were working from
+the brief and the kit rather than from photographs — the request to hand the downloaded images to the
+modelling subagents ("both manual and sonnet modelling processes") came later in the same session. So the
+4.2k is very likely a number from before models received images at all.
+
+Which means the two tiers differ mostly in **who is charged for looking at the building**, not in how much
+work each does. Any re-measure has to count images on both sides or it will keep producing this artefact.
+
+#### Model every building on the major corridors (user, 2026-09-22)
+
+*"I think we should model essentially EVERY building on major streets like Market, California, Washington
+etc. After all it's a biking game and the whole point is you're biking through streets mostly in a line. This
+might double or triple our modeling cost, but we already have a good fraction done."*
+
+This is the right shape for this game, and it is what the priority formula is already gesturing at with its
+corridor term — except that today distance from a corridor is a PENALTY applied to a mostly-height-driven
+score, rather than the corridor being the thing that selects. In a game where the rider travels along lines,
+the corridor is the product. A perfect building 300 m off Market is worth less than an ordinary one on it.
+
+**Sized against `tools/sf-corridors.ts`'s own routes** (the Embarcadero, Market, the FiDi grid, Union
+Square, Grant/Stockton to the Wharf, the Panhandle), counting the census by distance to the nearest corridor:
+
+| band | buildings | already claimed by an entry | outstanding |
+|---|---|---|---|
+| within 20 m | 393 | — | — |
+| within 30 m | 568 | — | — |
+| **within 40 m** (fronting the street) | **739** | 225 (30%) | **514** |
+| within 60 m | 1,125 | 312 (28%) | **813** |
+| within 100 m | 1,922 | — | — |
+
+So "every building on the major streets" is **514 more buildings at 40 m, or 813 at 60 m**, against roughly
+250 modelled today. That is 3–4× the modelled count — **the user's "double or triple" was about right**, and
+it is a bounded, knowable number rather than an open-ended ambition.
+
+Two things make it cheaper than it looks:
+
+- **30% are already claimed**, so the corridor bands are not starting from nothing.
+- The buildings on a corridor are exactly the ones a street-level photograph CAN see, which is the case the
+  photograph pipeline handles best (a tall tower set back is the case it handles worst — see §3's rule that
+  a tall building is never refaced).
+
+Worth adding 40 m and 60 m corridor bands to `tools/sf-queue.ts` as a selector in their own right, so the
+work can be cut as "everything fronting Market" rather than by a priority threshold that mixes corridors
+with height.
 
 #### The real limit is what enters the queue, not what a model costs
 
