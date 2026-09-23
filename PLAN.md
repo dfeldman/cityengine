@@ -1483,6 +1483,33 @@ the larger population by far.
 Worth doing AFTER the framing simulation, and worth measuring the same way: what fraction of facades clear
 the sampling-distance gate.
 
+### AG. Expand the kit — but AFTER proving the existing one gets used
+
+The owner, 2026-09-23: *"I do think we'll eventually need to expand the kit. don't be afraid to do that. but
+first, of course, make sure the kit is actually being used effectively."*
+
+That is the right order, and the evidence for it is stark: the kit exports **45 building functions and nine
+modelling runs used five**. Adding a forty-sixth to a kit nobody can discover changes nothing. The visual
+catalogue (`docs/KIT.md`) comes first; item AH measures whether it changed the output.
+
+**But the backlog is real, and it was written by the runs themselves.** Every request below came from an
+agent that hit the wall while modelling, which makes them better evidence than anything designed in advance:
+
+| asked for | by | why |
+|---|---|---|
+| **A neoclassical / colonnaded-bank recipe** | E1, E2, E3, E4, E7, E8 — nearly every run | "I wrote the same shape three times via `chicago-block` overrides." Downtown is full of them (`docs/sf-batches/banks.md`) |
+| `RecipeOverrides` cannot reach a face's `arched` flag, or the base's `kind` | E2 | a recipe's base is fixed to `curtain` even where the photograph shows an arcaded stone base; approximated by raising `solid` |
+| **`terracotta` as a material** | E8 | substituted `tile` on three buildings that are plainly terracotta |
+| A low **glass-pavilion / podium-only** recipe | E4 | every recipe assumes a shaft with many storeys; the ICA is a squat pavilion |
+| A `fins`-reading **dark glass tower** variant | E2 | approximated with a very tight `curtain` pitch |
+| **`arcade()` against an EXISTING wall** | the One Maritime run | it only makes a free-standing colonnade, so on an outline it came out as a brick picket fence |
+| An **arc / curve primitive** | the Oracle Park run | the bowl, the field fan and the ellipse were all hand-rolled loops |
+| A **per-instance colour** on a procedural builder | the public-art run | `PROCEDURAL[name]` takes `(out, fit)` with no styling channel, so two placements of one sculpture render identically |
+
+**The two at the top are worth more than the rest combined**, because they are the ones a whole district
+needs: a neoclassical recipe would serve the bank temples, the exchanges and half of Civic Center, and
+`arcade()` on a real wall is the single most requested shape on a downtown ground floor.
+
 ### AE. A reference for EVERY building — and a way to know when we have one
 
 The owner, 2026-09-23: *"I think with enough polish on these two different scripts, we can get good
