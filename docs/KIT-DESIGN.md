@@ -57,6 +57,29 @@ That single choice is the whole mechanism. A model must write `corners: null` �
 while looking at a photograph — where today it writes nothing and never looks. TypeScript enforces it, so
 the omission becomes a compile error rather than a silent box.
 
+### `ground` is the slot to build first
+
+The owner, 2026-09-23: *"decorative first floors are very common (arcade or colonnade), certainly not
+mandatory, but we should make it easy and make the agent consider it."*
+
+Both halves matter, and they are exactly what a required-nullable slot does: **make it easy**, and **make it
+considered**.
+
+The evidence that this is the highest-value slot:
+
+- **E9 judged 11 of its 19 downtown buildings to have a decorative ground floor** — an arcade or a
+  colonnade. A majority, not an exception.
+- It is the part of a building a rider passes closest to and looks at most.
+- It is where eight of nine runs failed, because nothing asked.
+- And it is *optional in reality*, which is precisely why an optional PARAMETER fails: a plain shopfront is
+  a perfectly normal answer, so the API cannot distinguish "no decorative ground floor" from "never looked
+  at the ground floor". A required slot can: one is `null`, the other will not compile.
+
+**`null` must be easy and unembarrassing.** Most streets outside the core are plain shopfronts or nothing at
+all, and a model that feels pressure to fill the slot will invent arcades. The type should make `null` a
+first-class answer, the documentation should say plainly that it is the common case outside downtown, and
+the examples should include one.
+
 ### Slots named for the photograph, not the renderer
 
 `tower()` speaks in tiers, faces and fractions of height. That is how the geometry is built, and a model
