@@ -1037,6 +1037,46 @@ it is also the cheapest frame it can draw.
 
 Worth doing together: they are all in `src/game.ts` and `src/ui/`, and the first four all delete code.
 
+### Z. Decent classical columns in the shared kit (user request, 2026-09-22)
+
+"We should improve our builder kit to be able to do decent classical columns. they come up all over the
+place. definitely on that one building, but there are thousands of places they're needed."
+
+**There are three column implementations today, and the one used most is the worst:**
+
+| where | what it draws |
+|---|---|
+| `colonnade()` in `render/landmarks/parts.ts` | **square boxes** — a row of square posts with a flat slab for a capital |
+| `column()` in `render/landmarks/kit.ts` | a 10-sided prism, slight taper, box base, box capital |
+| `temple()` in `render/landmarks/paris/temple-front.ts` | 12-sided tapered shaft, flaring capital, abacus — the best of the three, and stuck in one Paris file |
+
+So the good one is local and private, the shared one is square, and `arcade()` is a fourth path again.
+
+**What a decent column wants**, roughly in order of how much it buys per triangle:
+
+1. **Round, and tapered with entasis** — a shaft that narrows toward the top on a slight curve, not a cone
+   and certainly not a box. This alone fixes most of it.
+2. **A real capital per order.** Doric: echinus and square abacus. Ionic: the volutes, which read at a
+   distance as two scrolls either side. Corinthian: a bell with two rows of leaves — at city scale a flared
+   bell with a suggestion of foliage is enough, and it is what the Madeleine, the Panthéon and half of
+   Civic Center are wearing.
+3. **A base**: plinth, torus, and a fillet under the shaft. Cheap, and it stops the column looking pushed
+   into the ground.
+4. **Flutes.** Expensive as geometry and the first thing to drop at distance. A 16- or 20-sided shaft reads
+   as fluted at any distance a rider sees it from; keep real flutes for the handful of buildings where the
+   column is the subject.
+
+**The constraint that shapes this: there are thousands of them.** A column primitive that costs 400
+triangles is fine on the Panthéon's portico and ruinous down a street of bank fronts. So it wants explicit
+tiers — a near tier with the capital modelled, a far tier that is a tapered prism with a slab — chosen by
+the caller or by distance, in the same spirit as the tree LODs. Bear the descent goal in mind (README): this
+geometry will be streaming past at 14 m/s.
+
+**Then make the existing callers use it**: `colonnade()` and `arcade()` in `parts.ts`, and `temple()` should
+lose its private copy. That is the point of the exercise — not one good column, but every portico in both
+cities getting it at once. `colonnade` and `arcade` are also where the recent `atan2` orientation bugs lived,
+so they will be read closely anyway.
+
 ### X. Plant Salesforce Park by hand (user request, 2026-09-22)
 
 The deck has no plants, and the general planting system cannot give it any: a `Planting` carries no `y`, a
