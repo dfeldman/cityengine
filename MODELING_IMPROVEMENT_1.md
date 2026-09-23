@@ -155,7 +155,14 @@ cheap model safe to use at scale.
 ## Results — quality
 
 Every run's builders were rendered by `tools/exp-shots.ts` onto the building's real footprint and judged from
-one sheet, by one pair of eyes. Sheets are in `docs/shots/exp/e<N>.png`.
+one sheet, by one pair of eyes. Sheets are in `docs/shots/exp/e<N>.png` — `e1` and `e7` are Haiku's ten,
+`e2` and `e8` Sonnet's nine, `e5` and `e6` the single-building pair on the Pacific Exchange.
+
+**Why the runs did not render their own work.** They were explicitly told not to, and this was the design,
+not an oversight. Earlier in the project two models each built a featureless box, looked at their own
+screenshot, and reported a glass pavilion — with two of three attempts unused because neither was
+dissatisfied. Self-assessment has not once been evidence here. Rendering centrally also makes the comparison
+fair: one server, one camera, one judge, no run advantaged by spending tokens on prettier screenshots.
 
 ### The controlled comparison: one building, four runs
 
