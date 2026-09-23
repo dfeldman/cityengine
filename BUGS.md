@@ -56,6 +56,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 67 | open | Z-fighting across Salesforce Park | user, 2026-09-22 |
 | 68 | open | Minimised landmark box disappears for good when clicked | user, 2026-09-22 |
 | 69 | open | Street-sign text is occluded by its own pole | user, 2026-09-22 |
+| 70 | open | Kearny Street is bumpy, not flat (huge bump at 37.795302 −122.404934) | user, 2026-09-22 |
 
 ---
 
@@ -1034,3 +1035,28 @@ The blade is centred on the pole rather than hung off it, so the pole stands in 
 the side the rider reads it. A real street blade is cantilevered clear of its post, or the post stops below
 the blade. Wants the sign offset along its own normal by at least the pole's radius, both faces, so the name
 is readable from both directions — the whole point of the sign.
+
+## 70. A huge bump in Kearny Street (37.795302, −122.404934), and most of Kearny is not flat
+
+**Seen:** user riding, 2026-09-22: "huge bump in the road at 37.795302, −122.404934" and, a moment later,
+"actually most of kearny is not flat."
+
+The second report is the important one: it is not one bad node, it is a whole street. Kearny runs north from
+Market through the densest, tallest blocks in the city and then over the shoulder of Telegraph Hill.
+
+**Suspected: the terrain opening is not removing the buildings here.** The elevation tiles are a SURFACE
+model, so a 30 m pixel over a block of towers reads several metres above the pixel over the street beside it
+(see the long note at `tools/bake.ts` ~line 724). The bake removes that with a morphological OPENING — a
+minimum over ~60 m to bring a block down to its streets, a maximum to put real slopes back, then a blur.
+That was tuned on the Marais, which is six storeys and flat. Downtown San Francisco is neither: the buildings
+are far taller, so the surface model sits much higher above the street, and the hills are real, so the
+maximum that restores genuine slope may also be restoring the buildings the minimum just removed. A street
+running between tower blocks — which is exactly Kearny — is the worst case for that.
+
+**To check:** sample the baked terrain along Kearny and compare with the street's own elevation; look at
+whether the ~60 m window is wide enough for a Financial District block, and whether the opening should use a
+larger radius (or the street network itself) where `streetWidth === 'carriageway'`. The single point given is
+a good place to start but the fix is a whole-street one.
+
+Note the ride model brakes for corners but the RIDER HAS NO BRAKES by design (README, "The descent is a
+headline feature"), so a bump on a fast descent is felt hard and cannot be ridden around.

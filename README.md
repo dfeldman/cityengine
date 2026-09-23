@@ -86,6 +86,23 @@ still, and you cover no ground at all. A runner never gets a metre for free.
 What a city adds is **corners**: a junction cannot be taken at forty, so the model brakes to `√(a·r)` on the
 approach. It only ever takes speed away.
 
+### The descent is a headline feature, and that is a design goal
+
+**There are no brakes, on purpose.** Rolling down California Street at full speed is the most enjoyable thing
+in the game, and nothing should be added that lets a rider scrub speed off a hill — no brake control, no cap,
+no "safety" slowdown. Corners already take speed away where physics says they must, and that is the only
+thing that may.
+
+Two consequences follow, and they bind the rest of the project:
+
+- **The engine has to keep up with it.** 50 km/h is 14 m/s, so streaming, level of detail and culling must
+  feed the camera far faster than a flat ride ever asks. A stutter on a fast descent costs more than a
+  stutter anywhere else, because it lands on the best moment the game has. Treat it as a first-class bug.
+- **Measure downhill, at speed.** A steady thirty on the flat proves nothing about the case that matters.
+  Any performance claim about this game should come from a fast descent or it is not evidence.
+
+Hills are therefore an asset, not a terrain problem to be smoothed away.
+
 ## Where it comes from
 
 Everything is fetched **once, offline** by `npm run bake`, which writes one file per city into
