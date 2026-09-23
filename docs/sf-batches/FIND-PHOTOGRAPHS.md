@@ -137,6 +137,18 @@ modelled.
 
 ## Preview resolution is enough, and some hosts will not serve you
 
+**There is no image-search tool.** You have `WebSearch`, which returns page titles and URLs, and
+`WebFetch`/`curl`, which fetch a URL. There is no thumbnail grid to skim. So the actual loop per candidate
+is: search → open a promising PAGE → find an image URL in it → fetch that image → look at it. That is
+several calls per picture, and it is the reason this step is expensive.
+
+Two things make it cheaper:
+
+- **Go for the page's `og:image` / preview first.** Most news and museum pages declare one, it is already
+  preview-sized, and it is usually the article's lead photograph — which is the picture you wanted anyway.
+- **Search for pages likely to have ONE good photograph** rather than galleries. A news article about the
+  building beats an image-heavy listing site you then have to dig through.
+
 **You are not making a print.** A modelling reference has to show massing, proportions, the corner
 treatment and the colour, and all of that is readable at roughly **600–1200 px on the long edge**. The image
 the search result hands you, or a page's `og:image` preview, is almost always sufficient. Take it and move
