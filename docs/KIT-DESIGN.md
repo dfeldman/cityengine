@@ -131,6 +131,42 @@ shaft:   { windows: 'continuous', inset: 1.2 },   // the wall set back behind th
 frame is close to free once something draws the frame. **That one addition would have given every run the
 ICA**, which was the hardest building on the list and the one eight of nine got wrong.
 
+## 1f. The general idea is a FRAME around a recessed wall
+
+The owner, 2026-09-23: *"ICA frames the curtain wall with columns and roof. This is unusual, but it's not
+unusual for either the columns or the roof to frame a wall."*
+
+That is the right generalisation, and it is more useful than "corner columns" — which is one instance of it.
+The recurring move is: **a frame stands forward, and a wall sits back inside it.** The frame can be
+
+- **vertical only** — piers or columns between bays, the wall recessed behind. An expressed structural
+  frame; most 1950s–70s commercial buildings;
+- **horizontal only** — a deep overhanging roof band and a base, with continuous glazing between. The
+  midcentury pavilion, and half the shopfronts on any street;
+- **both** — a full surround. Rarer, and it is what makes the ICA striking.
+
+So one slot covers all three:
+
+```ts
+frame: {
+  verticals:   { kind: 'pier', width: 4, at: 'corners' | 'bays' } | null,
+  horizontals: { top: 2.5, base: 1.0 } | null,     // depth of the bands, metres
+  recess:      1.2,                                 // how far the wall sits back
+  material:    'granite',
+} | null
+```
+
+**Why this matters more than it sounds: the frame is what reads at distance.** A rider at 25 km/h sees the
+frame's silhouette and shadow; the wall behind it is secondary, and at dusk it is barely there at all. That
+is precisely why a box with windows fails — not because the windows are wrong, but because **it has no
+frame, so there is nothing to read**. Every one of the buildings we got wrong has a frame of some kind, and
+every model we built has none.
+
+It also explains a quieter failure across the sheets: the models are *flat*. Everything sits in one plane,
+because every part we documented adds pattern to a surface and nothing stands proud of it. A frame is the
+cheapest possible depth — a handful of boxes — and it buys the shadow that makes a facade read as built
+rather than printed.
+
 ## 2. The three properties that separate what gets used from what does not
 
 We have direct evidence, not speculation:
