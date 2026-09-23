@@ -1,0 +1,82 @@
+[
+  {
+    "osm": ["way/944039725"],
+    "name": "300 Montgomery",
+    "procedural": "e7_300Montgomery",
+    "front": "street",
+    "height": 58,
+    "note": "from way-944039725-01.jpg; modern horizontal banding, dark frame"
+  },
+  {
+    "osm": ["way/243794014"],
+    "name": "550 California",
+    "procedural": "e7_550California",
+    "front": "street",
+    "height": 55,
+    "note": "from way-243794014-01.jpg; vertical piers, punched windows"
+  },
+  {
+    "osm": ["way/256067734"],
+    "name": "Unnamed mid-rise",
+    "procedural": "e7_unnamedMidRise_256067734",
+    "front": "street",
+    "height": 48,
+    "note": "from way-256067734-01.jpg; modern glass and banding"
+  },
+  {
+    "osm": ["way/288511103"],
+    "name": "345 Montgomery (ICA)",
+    "procedural": "e7_ICA_345Montgomery",
+    "front": "street",
+    "height": 30,
+    "note": "from way-288511103-01.jpg; dark stone, recessed glazing"
+  },
+  {
+    "osm": ["way/690663633"],
+    "name": "400 Montgomery",
+    "procedural": "e7_alvinzaHayward_400Montgomery",
+    "front": "street",
+    "height": 36,
+    "note": "from way-690663633-01.jpg; Alvinza Hayward Building, Edwardian terracotta"
+  },
+  {
+    "osm": ["way/1309156123"],
+    "name": "369 Pine",
+    "procedural": "e7_exchangeBlock_369Pine",
+    "front": "street",
+    "height": 31,
+    "note": "from way-1309156123-01.jpg; Exchange Block Building, cream stone"
+  },
+  {
+    "osm": ["way/260283286"],
+    "name": "340 Pine",
+    "procedural": "e7_leidesdorffPlace_340Pine",
+    "front": "street",
+    "height": 31,
+    "note": "from way-260283286-01.jpg; Leidesdorff Place, neoclassical columns"
+  },
+  {
+    "osm": ["way/256066230"],
+    "name": "301 Pine",
+    "procedural": "e7_pacificExchange_301Pine",
+    "front": "street",
+    "height": 16,
+    "note": "from way-256066230-01.jpg; Pacific Exchange, small neoclassical"
+  },
+  {
+    "osm": ["way/256067726"],
+    "name": "348 Pine",
+    "procedural": "e7_sliver_348Pine",
+    "front": "street",
+    "height": 28,
+    "note": "from way-256067726-01.jpg; sliver building with arched windows"
+  },
+  {
+    "osm": ["way/151185875"],
+    "name": "350 Bush",
+    "procedural": "e7_curbExchange_350Bush",
+    "front": "street",
+    "height": 16,
+    "note": "from way-151185875-01.jpg; Curb Exchange, small neoclassical"
+  }
+]

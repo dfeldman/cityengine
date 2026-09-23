@@ -1,0 +1,37 @@
+[
+  { "osm": ["way/944039725"], "name": "300 Montgomery",
+    "procedural": "e8_300Montgomery", "front": "street", "height": 58,
+    "note": "from way-944039725-02.jpg: pale-grey pre-war block, colonnaded base, punched shaft" },
+
+  { "osm": ["way/243794014"], "name": "550 California",
+    "procedural": "e8_550California", "front": "street", "height": 55,
+    "note": "from way-243794014-02.jpg: modern corner tower, grey/white banded spandrels" },
+
+  { "osm": ["way/256067734"], "name": null,
+    "procedural": "e8_curvedPierMidrise_256067734", "front": "street", "height": 48,
+    "note": "from way-256067734-01/02.jpg: 17-corner curved plan, fluted piers, deep dark glazing, round arches at base" },
+
+  { "osm": ["way/690663633"], "name": "Alvinza Hayward Building",
+    "procedural": "e8_alvinzaHayward_400_Montgomery", "front": "street", "height": 36,
+    "note": "from way-690663633-01.jpg" },
+
+  { "osm": ["way/1309156123"], "name": "Exchange Block Building",
+    "procedural": "e8_exchangeBlock_369_Pine", "front": "street", "height": 31,
+    "note": "from way-1309156123-02.jpg: giant-order colonnade base, tan shaft above" },
+
+  { "osm": ["way/260283286"], "name": "Leidesdorff Place",
+    "procedural": "e8_leidesdorffPlace_340_Pine", "front": "street", "height": 31,
+    "note": "from way-260283286-01.jpg: terracotta front, round-arched storefronts, decorative roundels" },
+
+  { "osm": ["way/256066230"], "name": "Pacific Exchange",
+    "procedural": "e8_pacificExchange_301_Pine", "front": "street", "height": 16,
+    "note": "from way-256066230-01/02.jpg: giant fluted colonnade across the whole front" },
+
+  { "osm": ["way/256067726"], "name": null,
+    "procedural": "e8_pineSliver_348_Pine", "front": "street", "height": 28,
+    "note": "from way-256067726-01.jpg only (02 shows a neighbour); a sliver, mostly party wall" },
+
+  { "osm": ["way/151185875"], "name": "Curb Exchange",
+    "procedural": "e8_curbExchange_350_Bush", "front": "street", "height": 16,
+    "note": "from way-151185875-01/02.jpg: buff terracotta, round-arched base, Gothic-flavoured tracery above" }
+]

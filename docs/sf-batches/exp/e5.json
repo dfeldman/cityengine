@@ -1,0 +1,10 @@
+[
+  {
+    "osm": ["way/256066230"],
+    "name": "Pacific Exchange Building",
+    "procedural": "e5_pacificExchange_301_Pine",
+    "front": "street",
+    "height": 16,
+    "note": "from way-256066230-01.jpg: neoclassical with Corinthian columns, light granite facade"
+  }
+]

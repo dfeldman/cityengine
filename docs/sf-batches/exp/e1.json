@@ -1,0 +1,82 @@
+[
+  {
+    "osm": ["way/944039725"],
+    "name": "300 Montgomery Street",
+    "procedural": "e1_300Montgomery",
+    "front": "street",
+    "height": 58,
+    "note": "Classical Beaux-Arts tower with tan granite and punched windows. Photos 01-03 show the full building clearly from street level with prominent cornice."
+  },
+  {
+    "osm": ["way/243794014"],
+    "name": "550 California Street",
+    "procedural": "e1_550California",
+    "front": "street",
+    "height": 55,
+    "note": "Modernist tower with vertical fins and arched base. Photos 01-02 clearly show the facade character and architectural rhythm."
+  },
+  {
+    "osm": ["way/256067734"],
+    "name": "Unnamed tower",
+    "procedural": "e1_modernTowerFins",
+    "front": "street",
+    "height": 48,
+    "note": "Modern dark glass curtain wall with vertical fins. Photos 01-03 show the sleek facade and contemporary design clearly."
+  },
+  {
+    "osm": ["way/288511103"],
+    "name": "Institute of Contemporary Art San Francisco",
+    "procedural": "e1_ica_345Montgomery",
+    "front": "street",
+    "height": 30,
+    "note": "Modern minimalist building with dark base and recessed glazing above. Photos 01-02 show the distinctive arched openings and horizontal banding."
+  },
+  {
+    "osm": ["way/690663633"],
+    "name": "Alvinza Hayward Building",
+    "procedural": "e1_hayward_400Montgomery",
+    "front": "street",
+    "height": 36,
+    "note": "Classical Beaux-Arts building with tan granite, regular punched grid, and ornamental cornice. Photos 01-02 clearly show the architectural character."
+  },
+  {
+    "osm": ["way/1309156123"],
+    "name": "Exchange Block Building",
+    "procedural": "e1_exchangeBlock_369Pine",
+    "front": "street",
+    "height": 31,
+    "note": "1980s postmodern granite building with polished stone facade and regular punched windows. Photos 01-02 show the clean geometric facade."
+  },
+  {
+    "osm": ["way/260283286"],
+    "name": "Leidesdorff Place",
+    "procedural": "e1_leidesdorff_340Pine",
+    "front": "street",
+    "height": 31,
+    "note": "Classical granite building with distinctive arched window openings on lower level. Photos 01-02 show the elegant arched arcade base."
+  },
+  {
+    "osm": ["way/256066230"],
+    "name": "San Francisco Pacific Exchange Building",
+    "procedural": "e1_pacificExchange_301Pine",
+    "front": "street",
+    "height": 16,
+    "note": "Classical 1930 banking hall with grey granite, rusticated base, and heavy ornamental cornice. Photos 01-02 show the masterful neoclassical composition."
+  },
+  {
+    "osm": ["way/256067726"],
+    "name": "Unnamed sliver building",
+    "procedural": "e1_sliver_348Pine",
+    "front": "street",
+    "height": 28,
+    "note": "Narrow wedge-shaped building with mixed red and tan brick and arched window openings. Photos 01-02 show the distinctive mixed-brick facade."
+  },
+  {
+    "osm": ["way/151185875"],
+    "name": "San Francisco Curb Exchange Building",
+    "procedural": "e1_curbExchange_350Bush",
+    "front": "street",
+    "height": 16,
+    "note": "Classical banking building with golden-tan stone, arched lower arcade, and ornamental cornice. Photos 01-02 show the distinctive neoclassical character."
+  }
+]

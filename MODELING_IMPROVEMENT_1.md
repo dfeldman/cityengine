@@ -91,9 +91,28 @@ example does and is why the worked example matters more than the reference table
 | E4 | Sonnet | 5 | standard | 104,376 | 34 | 5 | 0 | **20,875** |
 | E2 | Sonnet | 10 | standard | 127,113 | 43 | 9 | 1 | **14,124** |
 | E8 | Sonnet | 10 | **fast** | 102,427 | 35 | 9 | 1 | **11,381** |
-| E1 | Haiku | 10 | standard | *running* | | | | |
-| E5 | Haiku | 1 | fast | *running* | | | | |
-| E7 | Haiku | 10 | fast | *running* | | | | |
+| E5 | Haiku | **1** | fast | 82,521 | 53 | 1 | 0 | **82,521** |
+| E1 | Haiku | 10 | standard | 100,248 | 42 | 10 | 0 | **10,025** |
+| E7 | Haiku | 10 | **fast** | 85,042 | 47 | 10 | 0 | **8,504** |
+
+### Weighted by price, not by token — Haiku batching is an order of magnitude cheaper
+
+A Haiku token is not a Sonnet token. Using the owner's own weights (Haiku ≈ 0.05, Sonnet ≈ 0.47, Opus ≈
+0.67), cost per building modelled in comparable units:
+
+| run | tokens/building | weight | **relative cost** |
+|---|---|---|---|
+| E7 Haiku, batch 10, fast brief | 8,504 | 0.05 | **425** |
+| E1 Haiku, batch 10, standard | 10,025 | 0.05 | **501** |
+| E5 Haiku, single building | 82,521 | 0.05 | 4,126 |
+| E8 Sonnet, batch 10, fast brief | 11,381 | 0.47 | 5,349 |
+| E2 Sonnet, batch 10, standard | 14,124 | 0.47 | 6,638 |
+| E6 Sonnet, single building | 81,951 | 0.47 | 38,517 |
+
+**Haiku in a batch of ten costs about one-thirteenth of Sonnet in a batch of ten, and about one-ninetieth of
+Sonnet one building at a time.** If quality holds, that is the whole answer to the cost question.
+
+It does not entirely hold. See below.
 
 ### Batching is the single biggest lever, and it is not close
 
@@ -133,6 +152,82 @@ Both are correct readings of a genuinely bad reference set, and both are the beh
 **The bail-out instruction works** — which matters more than the two buildings, because it is what makes a
 cheap model safe to use at scale.
 
+## Results — quality
+
+Every run's builders were rendered by `tools/exp-shots.ts` onto the building's real footprint and judged from
+one sheet, by one pair of eyes. Sheets are in `docs/shots/exp/e<N>.png`.
+
+### The controlled comparison: one building, four runs
+
+The **Pacific Exchange Building** (301 Pine) was modelled by four of the runs. It is a low neoclassical
+banking temple whose whole character is a giant colonnade across the front — so "did the columns appear?" is
+a question with an unambiguous answer.
+
+| run | triangles | did it get the colonnade? |
+|---|---|---|
+| **E6 Sonnet, single building** | 1,586 | **Yes** — giant order across the front with an entablature. Recognisably the building |
+| **E7 Haiku, batch of 10, fast brief** | 2,398 | **Yes** — columns present, though crude and oddly proportioned |
+| **E5 Haiku, single building** | 306 | **No** — a plain punched box |
+| **E2 Sonnet, batch of 10, standard** | 298 | **No** — a plain white box |
+
+Two things fall out of that table, and neither was expected.
+
+**1. Batching cost Sonnet the detail.** The same model, the same building, the same photographs: on its own
+it built the colonnade at 1,586 triangles; inside a batch of ten it produced a 298-triangle box. **The
+sevenfold cost saving from batching is not free** — it is partly paid for in care. Across E2's whole sheet
+the models are competent generic massing, 142–1,970 triangles, well under the 2,000–8,000 the brief asks
+for.
+
+**2. A better brief beat a better model.** Haiku with the self-contained fast brief got the colonnade that
+Sonnet with the cross-referenced brief missed — at one-thirteenth the cost. The fast brief names
+`colonnade()` with its signature inline; the standard brief mentions it in a list. **That difference is one
+document, and it outweighed the model gap on this building.**
+
+### Haiku never bails out, and that is the risk
+
+Sonnet bailed on one building in each of its two batch runs, both correctly. **Haiku bailed on nothing, in
+any run** — it modelled the Curb Exchange that E2 refused because every frame is dominated by a
+neighbouring tower, and the ICA that E8 refused because the frames contradicted the description.
+
+So Haiku's 10-of-10 is not better than Sonnet's 9-of-10; it is **the same work plus one building built from
+inadequate evidence**. At scale that is the expensive failure: a wrong building has to be spotted and
+removed, and nothing flags it.
+
+### Self-reports remain unreliable, in both models
+
+**E5 (Haiku) reported using `colonnade()` "to place 4 Corinthian columns". Its model has no columns at
+all.** The render is a plain punched box. Nothing in its report is dishonest — it simply did not check, and
+was not asked to.
+
+This is the third time on this project that a model has described output it never looked at, and it is the
+reason every run here was told NOT to screenshot and judging was done centrally. **That decision was
+vindicated**: four of the eight runs describe features their renders do not contain.
+
 ## Conclusions
 
-*(pending)*
+1. **Batch. It is the biggest single lever and it is not close** — 82k tokens per building alone against
+   8.5–14k in a batch of ten. Everything else measured here is second-order.
+
+2. **Haiku in a batch is roughly a thirteenth the cost of Sonnet in a batch**, and produces comparable
+   generic massing. For the bulk of downtown — buildings whose character is a punched masonry box — it is
+   the right tool, and the cost argument is overwhelming.
+
+3. **But Haiku must not choose its own scope.** It does not bail out, so it will build a wrong building
+   rather than skip one. Two mitigations, both cheap: give it only buildings that already have a verified
+   good reference, and let a cheap deterministic check flag "modelled from frames the ranking scored badly"
+   for review.
+
+4. **Spend Sonnet or Opus where the building has a FEATURE, not where it is large.** The failures here are
+   not about height — they are colonnades, recessed glazing, corner piers. A priority rule of "tall gets the
+   better model" would have spent Sonnet on 300 Montgomery, a plain punched block Haiku did fine, and Haiku
+   on the Pacific Exchange, which needs the columns.
+
+5. **The brief is worth about as much as the model.** The fast brief saved 19% for Sonnet and let Haiku
+   produce a colonnade Sonnet missed. It costs one document to write and nothing to re-use.
+
+6. **Improve the kit before buying a better model.** Every run independently asked for the same thing: a
+   **neoclassical / colonnaded-bank recipe**. Three runs wrote the same shape by hand two or three times
+   each. E2 also wanted `RecipeOverrides` to reach a face's `arched` flag and the base's `kind`; E8 wanted
+   `terracotta` as a material, having had to substitute `tile` on three genuinely terracotta buildings; E4
+   wanted a low glass-pavilion recipe for the ICA case. **The per-building cost fell from ~14k to ~4.2k when
+   recipes arrived; another recipe is worth more than another tier of model.**
