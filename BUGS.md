@@ -58,6 +58,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 69 | open | Street-sign text is occluded by its own pole | user, 2026-09-22 |
 | 70 | open | Kearny Street is bumpy, not flat (huge bump at 37.795302 −122.404934) | user, 2026-09-22 |
 | 71 | open | A wall across the road at 37.792190, −122.415121 | user, 2026-09-22 |
+| 72 | open | A large structure partly underground at 37.791994, −122.416009 (Nob Hill alleys) | user, 2026-09-22 |
 
 ---
 
@@ -1068,7 +1069,9 @@ headline feature"), so a bump on a fast descent is felt hard and cannot be ridde
 −122.415121" and "and 37.792164, −122.415116" — so it is one wall, spanning the carriageway rather than a
 stray object beside it.
 
-On Sacramento Street near Franklin, on the western shoulder of Nob Hill: a steep block.
+**Correction:** first written up as "Sacramento Street near Franklin" — wrong. It is on NOB HILL, between
+Leavenworth and Jones, a block from Grace Cathedral. Almost certainly the same object as #72 below, which is
+80 m away.
 
 **Suspected: a retaining wall from the hillside road cut** (the feature added for #38, "roads tilt sideways on
 hillsides; they want a level cross-section, with cuts and retaining walls"). A wall built along the edge of a
@@ -1078,3 +1081,34 @@ alternative is a landmark or building footprint overlapping the street, which #6
 
 **To check:** what is drawn there — retaining wall, building, or landmark — before assuming. If it is the
 cut, the wall's polyline wants clipping to the road corridor the way the road ground layer already is.
+
+## 72. A large structure at 37.791994, −122.416009, partly underground
+
+**Seen:** user riding, 2026-09-22: "some large weird structure at 37.791994, −122.416009, I think this is an
+elevated footpath encoded in OSM, but it's displayed somewhat underground."
+
+80 m from #71, so treat them as one fault until shown otherwise.
+
+**What OSM actually has there** (measured from the local extract, not guessed):
+
+| way | nodes | length | tags |
+|---|---|---|---|
+| `w8921606` Kimball Place | **3** | 92 m | `highway=service, service=alley` |
+| `w8919361` Golden Court | **2** | 48 m | `highway=footway, surface=concrete` |
+
+Neither is tagged `bridge`, `layer` or `level`, so nothing in OSM says "elevated" — that is the game's doing.
+
+**The thing they have in common is that they have almost no vertices.** Both are mid-block ways running
+straight up the steep north face of Nob Hill: 92 m of alley described by three points, 48 m of footway by
+two. Anything that takes its height from a way's OWN vertices — rather than resampling it and draping the
+samples — draws a straight ramp between the ends and ignores the hill in between. On this slope that is
+metres of error at the midpoint, in whichever direction the ground bulges: buried where the hill rises, in
+the air where it falls. That matches both reports exactly, including the one that reads as a wall across the
+road, which is what the end of such a ramp looks like where it meets the street.
+
+`src/city/ridegraph.ts` has a `resample` used in several places; the question is whether the road/path
+geometry is resampled BEFORE its heights are taken. If not, every sparsely-mapped way on a steep street has
+this, and San Francisco has hundreds — it would be a city-wide fault reported as two points.
+
+**To check:** what is actually drawn there (path deck, kerb, retaining wall?) before fixing anything, then
+whether edge heights come from resampled points. Do not fix from this note alone.
