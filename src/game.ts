@@ -744,6 +744,15 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   if (!off.has('ao')) ambientOcclusion(scene, camera)
 
   let lastState: ReturnType<typeof ride.step> | null = null
+  /*
+   * The SIMULATED clock (`window.__clock`, tools/route-movie.ts). Not `performance.now()`: dt is clamped to
+   * 0.1 s, so a headless Chromium grinding through San Francisco at 8 fps lives in slow motion — a minute of
+   * wall clock is forty seconds of riding. A tool that wants to photograph the ride every two seconds of
+   * IN-GAME time, or to report how long a route took a rider, has to read the same seconds the ride model
+   * was stepped with. Advanced only where the rider actually moves, so a freeze, a pause and a cable-car
+   * ride cost the rider no time at all.
+   */
+  let simSeconds = 0
   engine.runRenderLoop(() => {
     const now = performance.now()
     const dt = Math.min(0.1, (now - last) / 1000)
@@ -862,7 +871,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       const state = hold && lastState ? { ...lastState, speed: 0, power: riding ? 0 : lastState.power, grade: riding ? 0 : lastState.grade }
         : ride.step(dt, controls.measured(), opts.device, surface, ground.grade, radius, junction?.ahead ?? Infinity)
       lastState = state
-      if (!opts.freeze && !hold) nav.advance(state.speed * dt, state.speed)
+      if (!opts.freeze && !hold) { nav.advance(state.speed * dt, state.speed); simSeconds += dt }
       controls.request(riding ? 0 : state.grade * 100)
 
       /*
@@ -1046,6 +1055,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     return { mesh: hit.pickedMesh.name, face: hit.faceId, building: id, at: hit.pickedPoint?.asArray().map((v) => Math.round(v * 10) / 10) }
   }
   ;(window as unknown as { __heightAt?: unknown }).__heightAt = (x: number, z: number) => city.terrain.heightAt(x, z)
+  // the ride's own clock: seconds the ride model was actually stepped, metres covered, and the speed now
+  // (tools/route-movie.ts — the time-lapse keys its frames and its captions off these seconds)
+  ;(window as unknown as Record<string, unknown>).__clock = () => ({
+    seconds: simSeconds, travelled: nav.travelled, speed: lastState?.speed ?? 0,
+  })
   ;(window as unknown as { __ride?: unknown }).__ride = () => ({
     x: lastAt.x, z: lastAt.z, y: lastY, terrain: city.terrain.heightAt(lastAt.x, lastAt.z), edge: nav.mapEdgeId(),
     elevation: nav.elevation().y,

@@ -50,6 +50,7 @@ import { MARKET_WEST } from './districts/market-west.ts'
 import { UNION_SQUARE } from './districts/union-square.ts'
 import { PARKS } from './districts/parks.ts'
 import { TRANSBAY } from './districts/transbay.ts'
+import { VENUES } from './districts/venues.ts'
 import { ART } from './art.ts'
 
 export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
@@ -86,5 +87,6 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   ...MARKET_EAST, ...MARKET_MID, ...MARKET_WEST, ...UNION_SQUARE,
   ...PARKS,
   ...TRANSBAY,
+  ...VENUES,
   ...ART,
 }

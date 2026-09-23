@@ -27,6 +27,9 @@
     "include": "san-francisco/transbay.json"
   },
   {
+    "include": "san-francisco/venues.json"
+  },
+  {
     "include": "san-francisco/art.json"
   },
   {
@@ -40,7 +43,7 @@
     "procedural": "transamericaPyramid",
     "front": 180,
     "height": 260,
-    "note": "The wings on the east and west faces (local ±x); the Montgomery Street front south-ish. From photographs, SF_PLAN.md §4."
+    "note": "The wings on the east and west faces (local \u00b1x); the Montgomery Street front south-ish. From photographs, SF_PLAN.md \u00a74."
   },
   {
     "osm": [
@@ -71,7 +74,7 @@
     "procedural": "ferryBuilding",
     "front": "street",
     "height": 75,
-    "note": "The clock tower over the Embarcadero front (−z); the SAN FRANCISCO letters to the bay. From photographs."
+    "note": "The clock tower over the Embarcadero front (\u2212z); the SAN FRANCISCO letters to the bay. From photographs."
   },
   {
     "osm": [
