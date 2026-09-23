@@ -1179,23 +1179,33 @@ whole ladder.
 > 3. "We're getting pretty good at modeling quickly at low cost with Sonnet, so I do think we can afford more
 >    individual models."
 
-#### The finding that matters: modelling is now CHEAPER than refacing
+#### Is modelling now as cheap as refacing? Not proven — the numbers we have do not compare
 
-From our own measured table in [LADDER.md](docs/LADDER.md) §8:
+First written up here as "a Sonnet model costs less than a Haiku reface", from [LADDER.md](docs/LADDER.md)
+§8's ~4.2k against ~4.5k. **That comparison does not hold, and the user was right to doubt it.** Three
+reasons:
 
-| tier | tokens each |
-|---|---|
-| refaced — haiku, two photographs | **~4.5k** |
-| modelled — sonnet, recipes + kit | **~4.2k** |
-| modelled — opus / by hand | ~14k |
+1. **§3 gives the sonnet tier as `4–14k tokens`**, not 4.2k. The 4.2k in §8 is the BEST case — a building
+   that a recipe plus the parts kit covers almost entirely.
+2. **The 4.2k is a MARGINAL cost inside a batch.** §8's own phrasing is "~4.2k and 2.4 lines per building":
+   that is what one more building costs once the brief, the kit documentation, the recipe list and the
+   reference photographs are already in the context and shared across twenty. The reface's 4.5k is a
+   per-building figure that includes its own two photographs, which amortise across nothing.
+3. **Images dominate the reface number.** Two street-level photographs are a large share of that 4.5k, so
+   the comparison was really "text output against a shared prompt" versus "two images plus a prompt".
 
-**A Sonnet model costs less than a Haiku reface.** The ladder's tier cuts were calibrated when a model cost
-~14k — 3.3× more — and the recipes and the parts kit have since brought it down to 4.2k and about 2.4 lines
-of code per building. The reason to reface rather than model was cost, and that reason is gone.
+**What is true, and is still the point:** modelling has come down from ~14k to ~4.2k marginal, a 3.3×
+improvement, and it came from the recipes and the parts kit. The tier cuts were drawn at the old cost and
+have not been revisited since. So the cuts probably SHOULD move — but on evidence, not on this comparison.
 
-So the answer to (3) is yes, and more strongly than asked: **the modelling cut should be re-drawn, not
-nudged.** There is no longer an economic argument for refacing anything that is worth photographing at all.
-Refacing keeps one job — buildings not worth a photograph — and that is a much smaller set than 75%.
+**To settle it, measure the two properly**, which nobody has done:
+
+- take one batch of 20 refaces and one batch of 20 sonnet models, and record TOTAL tokens for each batch
+  including the shared prompt and every image, then divide. That is the number that decides a cut.
+- and record the outcome, not only the cost. A reface that puts a classical order on a skyscraper (#81) or
+  Chinatown brick on a glass museum (#91) cost 4.5k and produced a wrong building; a model that produces a
+  recognisable one at 8k is the better buy. **Cost per CORRECT building is the figure that matters**, and we
+  have never computed it.
 
 #### The real limit is what enters the queue, not what a model costs
 
@@ -1261,7 +1271,8 @@ of the city is actually modelled.
 1. Make the register able to distinguish a preset from a model, and re-count. (We are flying blind.)
 2. Add `wikidata` / `architect` / `heritage` to the priority formula; re-run the queue; see what appears.
 3. Item Z (columns), then AA (neoclassical recipe).
-4. Re-draw the modelling cut downward now that a model is cheaper than a reface.
+4. Measure a reface batch and a model batch end to end — total tokens including the shared prompt and every
+   image, and cost per CORRECT building — then re-draw the modelling cut on that evidence.
 5. Work the banks batch, then the rest of what step 2 turns up.
 6. Audit what zone rules closed at high priority (#91 is one; how many more?).
 
