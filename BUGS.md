@@ -59,6 +59,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 70 | open | Kearny Street is bumpy, not flat (huge bump at 37.795302 −122.404934) | user, 2026-09-22 |
 | 71 | open | A wall across the road at 37.792190, −122.415121 | user, 2026-09-22 |
 | 72 | open | A large structure partly underground at 37.791994, −122.416009 (Nob Hill alleys) | user, 2026-09-22 |
+| 73 | open | The PCC streetcar model is crude: boxy body, no destination board, headlamp or trucks | user, 2026-09-22 |
 
 ---
 
@@ -1098,17 +1099,51 @@ elevated footpath encoded in OSM, but it's displayed somewhat underground."
 
 Neither is tagged `bridge`, `layer` or `level`, so nothing in OSM says "elevated" — that is the game's doing.
 
-**The thing they have in common is that they have almost no vertices.** Both are mid-block ways running
-straight up the steep north face of Nob Hill: 92 m of alley described by three points, 48 m of footway by
-two. Anything that takes its height from a way's OWN vertices — rather than resampling it and draping the
-samples — draws a straight ramp between the ends and ignores the hill in between. On this slope that is
-metres of error at the midpoint, in whichever direction the ground bulges: buried where the hill rises, in
-the air where it falls. That matches both reports exactly, including the one that reads as a wall across the
-road, which is what the end of such a ramp looks like where it meets the street.
+**First hypothesis, and it is WRONG — recorded so nobody spends the afternoon on it.** The obvious reading is
+that heights are taken at a way's own vertices, so a two-node way draws a straight chord through the hill.
+The bake already does exactly the right thing here: `tools/bake.ts` (~line 806) densifies EVERY kept edge to a
+point at least every 8 m BEFORE sampling heights, and its comment names this very hill — "on Nob Hill a block
+is one 100 m segment, and the chord across a convex hill runs metres under the ground". Golden Court and
+Kimball Place are therefore resampled to a dozen points each. Sparse vertices are not the cause.
 
-`src/city/ridegraph.ts` has a `resample` used in several places; the question is whether the road/path
-geometry is resampled BEFORE its heights are taken. If not, every sparsely-mapped way on a steep street has
-this, and San Francisco has hundreds — it would be a city-wide fault reported as two points.
+**Better hypothesis: the level-across-width rule and its retaining wall.** Right after the resampling, a
+street is made LEVEL from kerb to kerb (#38) by taking the HIGHEST ground across its corridor — "a fill,
+never a cut, so the road stands at or above the ground on both sides" — and `render/city.ts retainingWalls`
+draws the wall that holds that fill up on the downhill side. That rule was written for streets on a side
+slope. These are narrow mid-block ways running straight UP the fall line between two streets, where a fill
+that keeps the way above the ground along its whole length is a raised causeway, and the wall that holds it
+up is exactly the "wall across the road" of #71 where it reaches the cross street. An elevated-looking path,
+and a wall where it lands, from one rule.
+
+That is a hypothesis too. It has not been looked at.
 
 **To check:** what is actually drawn there (path deck, kerb, retaining wall?) before fixing anything, then
 whether edge heights come from resampled points. Do not fix from this note alone.
+
+## 73. The PCC streetcar model is crude
+
+**Seen:** user, 2026-09-22, after the boarding fix: "streetcar works great. we do need to improve our
+streetcar model though, it looks pretty ugly."
+
+Photographed at `docs/shots/models/pccStreetcar-{front,corner}.png`. The builder's own docstring
+(`src/render/sf/trains.ts`) already describes the right car — "rounded at both ends in plan, the front's
+three windscreen panes leaning back, the destination board over them; the long window band with the small
+standee windows above it; the belt rail; the skirt over the trucks; the headlamp low on the nose, the
+anti-climber under it" — so this is a shortfall against a known intent, not a missing spec.
+
+What the render actually shows:
+
+- **The body is a box.** The PCC is famous for being streamlined: rounded in plan at both ends, a domed
+  roof, and tumblehome — sides that curve inward toward the skirt. Ours has flat slab sides, square
+  vertical corners and a flat roof, which is most of why it reads as ugly. The front IS faceted, so the
+  nose is the best part of it; the sides and roof are the problem.
+- **No destination board** over the windscreen. On the F line that board is the single most recognisable
+  thing about the car and it carries the route letter.
+- **No headlamp**, though the docstring calls for one low on the nose.
+- **No trucks or wheels** — the skirt runs to the ground, so the car appears to slide rather than roll.
+- **The trolley pole is a bare stick** at a fixed angle: no sprung base, no shoe at the wire, no retriever
+  rope down to the roof. It is also the tallest thing on the car, so it is what the eye finds first.
+
+NOT a fault, checked while writing this: the liveries are already varied. `variants` rotates six real ones
+(Birmingham, Muni wings, Los Angeles, Philadelphia, Kansas City, Chicago) plus a Peter Witt, so the F line's
+every-car-different character is there.
