@@ -125,12 +125,31 @@ signatures and said earlier runs had ignored them. The result:
 **One paragraph moved usage of a part from once-in-nine-runs to eleven-in-one.** That is the documentation
 hypothesis confirmed before the catalogue was even built.
 
-### But calling the right function badly is not better
+### The calls come out wrong — but the model is doing the right thing
 
-The renders tell the other half of the story. E9's arcades and colonnades appear as **thin white horizontal
-bars with stick-like fragments hanging beneath, floating at the base of the building** — on Leidesdorff, the
-Exchange Block, the Curb Exchange and 350 Sansome. They are recognisably *something*, and they are not
-arcades.
+The renders show E9's arcades and colonnades as **thin white horizontal bars with stick-like fragments
+beneath, floating at the base of the building** — on Leidesdorff, the Exchange Block, the Curb Exchange and
+350 Sansome.
+
+**This is not a competence failure and it should not be read as one.** The owner, watching it: *"it hasn't
+seen the render. it's specifying a colonnade, when technically an arcade or something may be more
+appropriate, but it's trying."* That is exactly right, and the model's behaviour is encouraging rather than
+otherwise. It:
+
+1. noticed the ground floor was distinctive — the thing eight earlier runs never did;
+2. reached for a shared part rather than defaulting to a punched box;
+3. chose between two similarly-named parts it had never seen;
+4. had no way to discover that the result was wrong.
+
+Three of those four are what we wanted. **The failures belong to the kit and to my instructions, not to the
+model:** `colonnade` and `arcade` are near-synonyms in ordinary English, nothing showed what either draws,
+the defaults do not survive a naive call, and I had forbidden it to look.
+
+**A specific consequence for the catalogue:** the arcade/colonnade distinction must be made *visually*
+obvious, because it cannot be inferred from the names. An **arcade** is round arches springing between
+supports — a wall pierced by openings. A **colonnade** is free-standing columns carrying a flat entablature
+— a row of posts in front of a wall. Leidesdorff wants the first; the Pacific Exchange wants the second.
+Side-by-side pictures settle it in a second and no amount of prose will.
 
 So naming the part got it called; nothing told the model what a correct call looks like, and the defaults do
 not rescue a naive one. **This splits the documentation problem in two**: discovery (solved by naming, and
