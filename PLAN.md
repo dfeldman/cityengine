@@ -1278,6 +1278,50 @@ has tested. Note also that the interesting failure is not "it produced nothing" 
 plausible that is wrong" — which is exactly what the reface tier has been doing (#81, #90, #91), and is why
 **cost per CORRECT building** is the only figure worth deciding on.
 
+#### Experiment result, 2026-09-22: the prompt fixed the process, not the judgement
+
+Two rounds, both on the identical brief, isolated worktrees, Sonnet against Haiku.
+
+**Round 1 (245 Market) was void.** Both models found there was nothing to model — a purpose-built
+neoclassical builder already existed and the real fault was a name collision (#92). Both diagnosed it
+correctly, and both corrected MY write-up of which building was wrong. That tests diagnosis, not modelling.
+It also cost 122k (Sonnet) and 122k (Haiku) tokens, and Haiku never took a screenshot, reported an ESTIMATED
+triangle count, and gave a verdict on a model it had not seen.
+
+**The brief** ([MODEL-ONE-BUILDING.md](docs/sf-batches/MODEL-ONE-BUILDING.md)) was written in response:
+exactly two editable files, the kit API inline, copy-pasteable commands, and explicit bail-out rules.
+
+**Round 2 (the ICA, never modelled):**
+
+| | Sonnet | Haiku |
+|---|---|---|
+| tokens | 82k | **65k** |
+| tool calls | 25 | 29 |
+| attempts used | 1 of 3 | 1 of 3 |
+| triangles | 210, measured | 232, **measured** |
+| screenshot taken and read | yes | **yes** |
+| result | a dark box with vertical lines | a grey box with vertical lines |
+
+**What the brief fixed:** Haiku now screenshots, measures rather than estimates, and finishes in 65k — fewer
+tokens than Sonnet. Neither spun. On process, the cheap model became usable, which is the result the cost
+argument needed.
+
+**What it did not fix, and this is the important part: neither model can judge its own work.** Both produced
+a featureless box and both described it in glowing terms — Haiku's report calls its opaque grey box
+"unmistakably a simple rectangular glass enclosure… reading as a transparent box", and Sonnet's calls its
+dark slab "clearly a glass pavilion". Both had two attempts left. Neither used them, because neither was
+dissatisfied.
+
+So "take a screenshot and look at it" does not work as a quality gate when the model grades its own
+homework. **Review has to be external** — the contact sheets, or a rider. That is an argument for building
+the review instrument out, not for choosing a different model.
+
+**And the round was confounded, by my error.** `tools/sf-photos.ts` returned nothing for both, because
+`.mapillary_token` is gitignored and therefore absent from a worktree. Both modelled from a one-line
+description — which is exactly what the REFACING tier does, and it produced exactly what refacing produces.
+The brief now symlinks the token. **Worth re-running before drawing conclusions about modelling quality: so
+far this compares two models at doing refacing, not at doing modelling.**
+
 #### Model every building on the major corridors (user, 2026-09-22)
 
 *"I think we should model essentially EVERY building on major streets like Market, California, Washington
