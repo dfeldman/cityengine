@@ -31,6 +31,18 @@ After that, in order of usefulness:
 fish-eyed; interiors; the wrong building; so distant the building is a smudge; or historic, if the building
 has since changed. A wrong picture is worse than none, because somebody will model from it.
 
+### Beware a TEMPORARY surface
+
+Buildings get wrapped. Decals, advertising wraps, scaffolding shrouds, banners, art installations and
+seasonal decoration all photograph well and all disappear. The ICA's building was covered in decals for a
+period, and a good many of the pictures on the web show that version — model it and you have modelled a
+poster, not a building.
+
+**So cross-check across images taken at different dates.** If a striking surface treatment appears in some
+photographs and not others, it is temporary and you want the pictures WITHOUT it. Prefer the version that
+several images from different sources and different years agree on, and say in `photos.md` if you saw a
+wrapped version, so the modeller knows not to go looking for it.
+
 ---
 
 ## Where to look, in order
@@ -45,10 +57,18 @@ has since changed. A wrong picture is worse than none, because somebody will mod
 
 2. **The web** — this is where the good pictures are, and you are expected to go here, not to treat it as a
    fallback. Search on, in roughly this order:
-   - the building's NAME plus the city;
-   - the street ADDRESS plus the city (often better than the name — buildings get renamed, addresses do not);
+   - the street ADDRESS plus the city, plus a word like `exterior` or `corner`. **Try this first.** It beat
+     every name-based query on the ICA, because buildings get renamed and re-tenanted and addresses do not;
+   - the building's NAME — **always with the city**. Institutional names repeat across cities: an
+     "Institute of Contemporary Art" exists in Boston, London, Philadelphia, Los Angeles and Miami, and a
+     search without "San Francisco" returns somebody else's building entirely;
    - the ARCHITECT plus the building, if OSM or Wikipedia names one;
    - any former name (`old_name`, `alt_name` in OSM).
+
+   **News and press photography is the richest source found so far.** A newspaper's article about the
+   building — an opening, a sale, a tenant moving in — carries a header image that is recent, high
+   resolution, and shot from the angle a professional photographer chose, which is usually the
+   three-quarter view a modeller wants. The best image of the ICA came from exactly that.
 
    **Go SEVERAL results deep, and do not stop at the first hit.** Our web search is Bing-backed, not
    Google, and the two rank differently: the best available photograph of the ICA is the SIXTH image on
