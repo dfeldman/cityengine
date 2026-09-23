@@ -13,6 +13,12 @@ about 15,000. Read the files this document names and no others.
   clear bail-out is a good outcome and is worth far more than a fourth attempt. Do not spin.
 - **Never report on a model you have not seen.** You must take a screenshot and LOOK at it with the Read
   tool before saying anything about how it reads. "It should look like X" is not a finding.
+- **Judge it by a CONCRETE test, not by whether you like it.** Before you build, write down the three things
+  that make this building recognisable — the features someone would use to point it out from across the
+  street. After the screenshot, check each one: is it visibly there? **If your model shows none of them, it
+  has failed, however tidy it looks.** Two models graded their own work on this building on 2026-09-22; both
+  produced a plain box with vertical lines and both called it a success, with two attempts left unused. A
+  box with a grid on it is the default failure, not an outcome.
 - **Never claim a photograph you did not open.** If the reference fetch fails, say so and work from general
   knowledge — that is an acceptable outcome, honestly reported.
 - **Aim for a gist, not accuracy.** This is a game seen from a bicycle at 25 km/h. Get the massing, the
@@ -170,9 +176,18 @@ pavilion should be well under 2,000. If you are near the cap, you are modelling 
     node --experimental-strip-types tools/sf-photos.ts --osm=way/<ID> --out=/tmp/refs-<yourname>
 
 Images land in that directory as `<osm>.jpg` (and `-2.jpg` …), with a `photos.csv` saying what was found.
-**Open them with the Read tool and look.** If nothing usable comes
-back, say so in your report and work from general knowledge — that is a legitimate outcome. Do not invent a
-photograph, and do not spend more than a few minutes here.
+**Open them with the Read tool and look.**
+
+**If nothing comes back, or what comes back does not clearly show the building, SEARCH THE WEB.** Use your
+web search and fetch tools: the building's name, its address, its architect, "photo", Wikipedia, the
+architect's own site. Street-level fetches miss plenty — a building set back behind a tower, a pavilion in a
+plaza, anything photographed mostly from angles a car never drives. **Going to the web is expected, not a
+last resort.**
+
+Only after BOTH the tool and a web search have failed may you work from general knowledge, and then you must
+say so plainly in your report. A model built from a one-line description comes out as a featureless box —
+that happened on 2026-09-22 to two different models on this very building, and both then described their box
+as though it were the real thing.
 
 ---
 
