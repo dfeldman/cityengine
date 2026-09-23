@@ -1460,6 +1460,27 @@ What `tools/photo.ts` does today, and what is wrong with it:
 | `mark()` draws a fixed band `0.2 × width` at the centre | it marks the middle of the picture, NOT the building. It cannot say "the building is the left third, behind that tree" |
 | `score` still adds `+6` for a pano | dead weight: flat frames are already banned, so every candidate is a pano |
 
+**Favour RECALL over precision** (owner, 2026-09-22): *"some images won't work, mapillary doesn't have
+perfect geodata or angles, and neither does OSM. But I bet we can get a few good shots of any building (along
+with some junk)."*
+
+That is a design decision, not a caveat. Mapillary's `compass_angle` is tens of degrees out — `photo.ts`
+says so in its own comments — its GPS drifts, and OSM footprints are approximate too. **A rule that rejects
+a frame because those numbers disagree throws away good pictures on bad arithmetic.** So: rank rather than
+reject, keep the uncertain frames and order them lower, and record a score or a note in `photos.csv` rather
+than omitting silently.
+
+A modelling agent can look at twelve pictures and discard eight in a moment. What it cannot do is recover a
+good frame our scoring quietly dropped. **Twelve frames of which four are good is a success; one frame we
+were confident about is the failure mode we already have.**
+
+The one rejection worth keeping is the near-distance rule (`dist < max(8, height × 0.5)`), because that is
+geometry rather than a guess: a photograph taken from ten metres genuinely cannot contain a tall building.
+
+This also raises the value of the silhouette overlay below. With imperfect geodata, the outline IS the
+quality signal — if it lands on a blank wall or off the edge of the frame, that frame is junk and a reader
+can see it at a glance instead of puzzling over which building was meant.
+
 **The change, in order of value:**
 
 1. **Project the building INTO the frame.** We know the camera's position, the reprojection (yaw, pitch,
