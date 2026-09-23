@@ -1011,6 +1011,44 @@ Done in the last stretch (details in R and LANDMARKS_PARIS.md):
   corners where two arms' crossings meet.
 - **Plane fighting on some facades** — seen in play, not yet reproduced in a still.
 
+### V. Venues are invisible to the building pipeline (2026-09-22)
+
+Oracle Park was missing from every register and manifest, and it turned out not to be an oversight. The
+pipeline is keyed on `building=*`; OSM maps a stadium as `leisure=stadium`, often with no building tag at
+all. Oracle Park has two relations — a named `leisure=stadium` with no building tag, and an unnamed
+`building=stadium` — and fell between them. Oracle Park and Chase Center are now modelled (item above).
+
+**Still missing, all `leisure=stadium` with no building tag, none in `docs/sf-buildings.csv`:**
+
+| | |
+|---|---|
+| **Kezar Stadium** | `way/30675203` — in Golden Gate Park, on a scenic route |
+| **Golden Gate Park Polo Field** | `way/476267889` — likewise |
+| George M. Rush Stadium (CCSF) | `way/1457105303` |
+| Negoesco Stadium (USF) | a node |
+| Boxer Soccer Stadium, Mayer Family Field, Passanisi Memorial Stadium, SI Football Field | |
+| the three West Sunset diamonds, the West Sunset tennis courts, the AP Giannini track | |
+| | `relation/6328942` |
+
+Also **Galileo Gymnasium** (`way/32839512`), which has `building=yes` but is not in the register either.
+Moscone Center is already in (5 rows). The Cow Palace is in Daly City, outside the box.
+
+The first two matter most: they are in Golden Gate Park, which the rider now has a route through, and they
+are exactly the "exercise places" worth having. The rest are school pitches and can stay flat.
+
+**The real fix is upstream**: the census should take `leisure=stadium|pitch|track` as well as `building=*`,
+so this class stops being invisible. Until then every one of these has to be found by hand.
+
+### W. A building outside the detail box cannot be claimed (2026-09-22)
+
+Chase Center is `building=yes` and still absent from `pkg.buildings`: it is outside the DETAIL box, so it
+lives in `pkg.fringe` as coarse massing. A manifest entry that claims its OSM id can therefore **delete** it
+(`entryKind` → `replace`, and `prepare.ts` filters `t.fringe`) but can never **stand on** it — there is no
+footprint to fit to, so the entry must carry its own lat/lon and size. Chase Center does.
+
+This bites anything notable in Mission Bay, Dogpatch or the Bayview. Either widen the detail box east, or
+let a landmark entry fit to a fringe building's ring the way it fits to a real one.
+
 ### U. Rewrite the git history to drop the generated assets (2026-09-22)
 
 The working tree is down from 772 MB to 68 MB: `docs/shots/` (515 MB of screenshots) and `public/cities/`
