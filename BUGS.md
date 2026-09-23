@@ -75,6 +75,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 86 | open | Frame rate drops on a fast descent (~50 km/h) | user, 2026-09-22 |
 | 87 | open | Macy's, Saks and Neiman Marcus signs are ugly block-bitmap letters | user, 2026-09-22 |
 | 88 | open | Z-fighting across Neiman Marcus (painted diamonds 0.04 m off the wall) | user, 2026-09-22 |
+| 89 | needs a coordinate | 350 and 433 California, and a tower complex too black — addresses not found in OSM | user, 2026-09-22 |
 
 ---
 
@@ -1405,3 +1406,33 @@ offset is the better answer, being what the rest of the codebase already does, a
 silhouette. Worth checking whether the other painted-on patterns in this file use the same 0.04 — if so this
 is a family of bugs, and #64 and #67 (z-fighting at Market/Montgomery and across Salesforce Park) may be the
 same thing.
+
+## 89. Three California Street buildings: 350, 433, and the "black instead of sand" complex
+
+**Seen:** user riding, 2026-09-22: "350 California is another building that we modeled, but not very well.
+and 433 California is another distinctive neoclassical. 134 California is a huge, very unique tower complex —
+which we modeled well, but made it mostly black instead of mostly sand colored marble."
+
+**The addresses need confirming before work starts.** Searched the local extract for every `building=*` on
+California Street between Market and Chinatown. OSM's address tags there run 1, 50, 100, 101, 150, 200;210,
+201, 212;214, 220;230, 240;242, 244;252;256, 260, 311, 345, 351, 400;410, 401;425, 430;432;444, 500, 550,
+555, 580, 600, 601, 650, 660, 675, 717 — **there is no 350, no 433 and no 134**. Either OSM has them under a
+neighbouring number (several ways carry ranges, e.g. `430;432;444`), or the numbers are slightly off. Ask for
+a lat/lon, which is unambiguous and is how every other report in this file was pinned.
+
+**The "mostly black" one is most likely 555 California** (`way/288511106`, 237 m, the Bank of America
+Center — tower, plaza and banking pavilion, which fits "tower complex"). Its colours are
+
+    fiveFiveFiveCalifornia: preset({ wall: [0.36, 0.2, 0.18], glass: [0.16, 0.14, 0.15], … })
+
+— a very dark red-brown wall with near-black glass, which would read as black. Note two things before
+changing it: the REAL 555 California is dark carnelian granite rather than sand-coloured marble, so if that
+is the building the colour is arguably right and the complaint is about it reading too dark; and it is a
+`preset`, not a hand model, so "we modeled it well" does not fit it — which suggests it may not be the
+building meant.
+
+The other candidate is **345 California Center** (`way/588355355`, 212 m, twin towers linked by skybridges —
+genuinely unique). That one has its own builder and is `fromRecipe('granite-eighties', …)` with
+`wall: [0.55, 0.5, 0.47]`, a mid grey-brown — not black.
+
+**Do not guess.** Get the coordinate, then fix the colour from a photograph as the project's method requires.
