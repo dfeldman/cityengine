@@ -1581,6 +1581,24 @@ base, top four storeys stepped back"), so the knowledge was there and the wiring
    listing every `procedural` claimed by two entries. Cheap, and it would say immediately how many more of
    these exist — this one was found by accident.
 
+**The scan #92 asked for has now been run**, over every manifest. Twelve names are claimed by more than one
+entry, and **most are legitimate** — one builder deliberately serving identical twins or the parts of one
+complex: `nemaTower`/`nemaPodium` (North and South), `embarcaderoCenter` (five towers), `mosconeHall` (North
+and South), `operaPlazaTower`/`operaPlazaBlock` (three OSM ways each), `cornerDome` (four Paris department
+store domes), `heartsInSanFrancisco` (two placements). A naive "no duplicates" rule would be wrong.
+
+The signal that matters is **two DIFFERENT buildings, usually in different manifest files**:
+
+| name | entries | |
+|---|---|---|
+| `pgeBuilding` | Pacific Gas & Electric Building `[fidi-1]`, PG&E General Office Building `[market-east]` | **this bug** |
+| `greenGlassTower` | 1155 Market (LightHouse), 1150 Market `[both market-west]` | two different buildings on one generic builder — check whether deliberate |
+| `foxPlaza` | Fox Plaza `[market-west]`, Fox Plaza `[model-3]` | **same name in two files — probably a duplicate ENTRY.** Manifest precedence is first-wins, so the second is dead code |
+| `lottasFountain` | same name across two files | same as above |
+
+So a useful check is not "is this name used twice" but "is this name used by entries with different names, or
+by entries in different files". Worth wiring into `tools/sf-check.ts` with that rule.
+
 Related: #82 and #89 found `procedural:` names that are one-line presets rather than models. The manifest
 cannot currently tell a preset from a model, and now cannot tell a shared builder from a dedicated one
 either. Both are reporting faults, and together they mean **we do not know how much of the city is actually

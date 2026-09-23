@@ -57,12 +57,13 @@ model later. Bailing out is correct; a heroic dome is worth less than three good
 fiftyCalifornia: fromRecipe('midcentury-slab', { height: 106, wall: [0.8, 0.79, 0.76], glass: [0.26, 0.3, 0.35] }),
 ```
 
-**Name it after the ADDRESS, as above — never after the occupant.** `PROCEDURAL` is one flat record keyed by
-name across the whole city, and a name used twice means one builder draws both buildings with no warning
-from the bake, the typechecker or the tests. That is BUGS.md #92: 245 Market (Bakewell & Brown, 1925) and 77
-Beale (a 1970s tower) were both entered as `pgeBuilding`, since both are "the PG&E building" in life, and the
-1925 terracotta tower ended up wearing a 1970s granite curtain wall. An occupant moves; an address does not.
-Grep the name before you use it.
+**Keep the meaningful name and add the address when it could be ambiguous** — `pgeBuilding_245_Market`, in
+digits rather than words. `PROCEDURAL` is one flat record keyed by name across the whole city, so a name used
+twice means one builder draws both buildings with no warning from the bake, the typechecker or the tests.
+That is BUGS.md #92: 245 Market (1925, terracotta) and 77 Beale (1970s) were both `pgeBuilding`, since both
+are "the PG&E building" in life, and the older tower ended up in a granite curtain wall. Sharing a builder
+deliberately — twins, the Embarcadero Center towers — is correct; say so in the note. Existing names that do
+not fit the convention are fine and stay.
 
 and its manifest entry:
 

@@ -34,26 +34,41 @@ right. Never photoreal.
 - Your own scratch directory for reference images (make one under `/private/tmp/…/scratchpad/refs-<district>/`,
   or use `$TMPDIR`).
 
-### Every `procedural` name must be UNIQUE across the whole city
+### Naming a builder: keep the meaningful name, add the address
 
 `PROCEDURAL` is one flat record keyed by name, shared by every district. **A second builder registered under
-a name that already exists silently replaces nothing and silently wins nothing — one of them is simply used
-for both buildings, and NOTHING WARNS.** Not the bake, not the typechecker, not the tests.
+a name that already exists means ONE of them draws BOTH buildings, and nothing warns** — not the bake, not
+the typechecker, not the tests.
 
-This has already happened and shipped (BUGS.md #92): 245 Market (Bakewell & Brown, 1925, grey terracotta)
-and 77 Beale (a 1970s tower) were both entered as `pgeBuilding`, because both are called "the PG&E building"
-in life. One builder existed, `fromRecipe('granite-eighties', { height: 154 })`, so the 1925 neoclassical
-tower wore a 1970s granite curtain wall. The manifest even carried the right note on the right entry; the
-wiring lost it.
+This has already shipped (BUGS.md #92): 245 Market (Bakewell & Brown, 1925, grey terracotta) and 77 Beale (a
+1970s tower) were both entered as `pgeBuilding`, because both are "the PG&E building" in life. One builder
+existed — `fromRecipe('granite-eighties', { height: 154 })` — so the 1925 neoclassical tower wore a 1970s
+granite curtain wall.
 
-So: **name a builder after its ADDRESS or its OSM way, not after its occupant.** An occupant's name is shared
-between buildings, changes over time, and is exactly what led to the collision above — `twoFortyFiveMarket`
-is unambiguous where `pgeBuilding` is not. Before you register a name, grep for it:
+**The convention for NEW builders: a meaningful name, disambiguated by the address in digits.**
+
+    pgeBuilding_245_Market        not  pgeBuilding
+    transamericaPyramid           fine — there is only one
+    greenGlassTower_1150_Market   not  greenGlassTower
+
+Meaningful names are wanted where they are genuinely unambiguous; the address is there to settle the cases
+where they are not. **Digits, not words** — `twoFortyFiveMarket` and `fiveOOneBeale` are hard to read and
+hard to grep. (An identifier cannot begin with a digit, which is why the spelled-out forms grew up; the
+underscore solves it.)
+
+**Existing names that do not fit are fine and should be left alone.** There are 88 spelled-out ones and they
+work; this is a rule for what you add, not a migration.
+
+Before registering a name, grep it:
 
     grep -rn "yourBuilderName" src/render/landmarks/
 
-If it exists, pick another. The same applies to an entry's `name` in the manifest, which the shot tools use
-to find a building: two entries with one name and only the first is reachable.
+**Sharing ONE builder between several entries is correct and common** — identical twins (NEMA North and
+South), the five Embarcadero Center towers, the parts of one complex. The fault is only when two DIFFERENT
+buildings end up on one builder by accident. If you are sharing deliberately, say so in the entry's note.
+
+The same applies to an entry's `name` in the manifest: the shot tools find a building by name, so two
+entries sharing one leaves the second unreachable.
 
 Do NOT edit any other file: not `tower.ts`, `styles.json`, `index.ts`, `procedural.ts`, other districts, or tests.
 Other agents are working in parallel on other districts in the same tree. If you need something from a shared
