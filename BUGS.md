@@ -68,6 +68,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 79 | open | Landmark name signs: box drawn over the text, and hides the building | user, 2026-09-22 |
 | 80 | open | 45 Main Street is missing | user, 2026-09-22 |
 | 81 | open | 285 Market Street looks nothing like the real building | user, 2026-09-22 |
+| 82 | open | One Maritime Plaza is a plain box (no X-bracing) and z-fights | user, 2026-09-22 |
 
 ---
 
@@ -1276,3 +1277,27 @@ under that cut or it did not reach it.
 
 Wants the project's own method (docs, and the landmark brief): find real photographs FIRST, then build a
 procedural gist from them — recognisable rather than accurate — and check the result against a screenshot.
+
+## 82. One Maritime Plaza is a plain box, and z-fights
+
+**Seen:** user riding, 2026-09-22, at 37.795118, −122.399156: "tons of z fighting on this building. it is
+also a very distinctive building with X shaped beams and we model it as a box, we should re-model that one."
+
+`way/28240176` — One Maritime Plaza, old_name Alcoa Building, SOM 1967, 27 levels, 121 m, `layer=2`.
+
+**The box is confirmed by reading.** The entry does have a `procedural: "oneMaritimePlaza"`, which looks like
+a bespoke model and is not one — it is a single-line preset in `src/render/landmarks/sf/ring-tower.ts`:
+
+    oneMaritimePlaza: preset({ height: 121, wall: …, glass: …, pattern: 'grid', pitch: 3.6, solid: 0.3, crown: 'flat' })
+
+A generic curtain-wall grid. There is no X-bracing anywhere in the code. This is one of the most recognisable
+towers in San Francisco precisely BECAUSE of what is missing: its seismic bracing is on the OUTSIDE of the
+glass, eight storeys tall per X, in dark steel across each long face. Without it the building is anonymous.
+
+Worth noting as a class: a preset entry reads like a model in the manifest and in every report, so other
+"modelled" landmarks may be presets too. The manifest cannot currently tell the two apart.
+
+**The z-fighting is not yet traced.** Two candidates, in order: two surfaces in the same place (the landmark
+drawn over an OSM building that should have been claimed — the fault of #5 and #64), or the `layer=2` tag,
+which is unusual on a building and is there because the tower stands over a podium that is mapped separately.
+Look before fixing.
