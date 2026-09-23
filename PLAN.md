@@ -1118,6 +1118,18 @@ be pointless, and conversely the columns work has no better proving ground than 
 Worth doing this as a batch in the usual way (`docs/sf-batches/BRIEF.md`): photographs first, then the recipe,
 then the handful of per-building overrides.
 
+**The batch is written: [docs/sf-batches/banks.md](docs/sf-batches/banks.md)** — eleven bank buildings with
+what each one gets today. The user asked for every bank in the area to be marked, "as they are nearly all
+neoclassical, and that's the whole vibe of the area", which is also the argument for doing them together:
+one right bank among generic neighbours would barely register.
+
+Worth knowing what that audit turned up. THREE of them have no manifest entry at all (Fugazi Bank, the Old
+Federal Reserve on Battery, the Anglo Bank Building). Two more — the Bank of America Building and Wells
+Fargo — are in the `chicago` family, which is a different architecture entirely: steel-framed, wide bays, no
+order. Wells Fargo got there through `reface-haiku-3.json`, i.e. from a model reading one line of text, and
+a bank's NAME says nothing about its architecture. Three more are `restyle → classical`, which is a facade
+style rather than a model and is as far as the ladder can take them.
+
 ### AB. Building LOD: boxes until you get close (user request, 2026-09-22)
 
 "We will need buildings with low and high LOD eventually. SF is one thing, NYC has thousands of visible
