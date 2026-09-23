@@ -210,6 +210,38 @@ This is the third time on this project that a model has described output it neve
 reason every run here was told NOT to screenshot and judging was done centrally. **That decision was
 vindicated**: four of the eight runs describe features their renders do not contain.
 
+### The owner's verdict, which is harsher than mine and correct
+
+> I feel like none of these are all that impressive. For the ICA building, it looks like E2 was the only one
+> that even got close. On Leidesdorff, the defining feature of the building is the first floor arcade and no
+> one got that. The curb exchange is a beautiful neoclassical building, the right answer was do that or bail
+> out, and most didn't bail out.
+
+All three hold up, and the third is the most damaging. **Eight of the nine runs modelled the Curb Exchange
+or the ICA anyway** — buildings where the honest answer was either a careful model or a refusal. Only
+Sonnet refused, once each. The generic punched box is not a partial success; on a building whose whole
+character is an order of columns or a recessed glass wall, it is a wrong building that now has to be found
+and removed.
+
+### The kit HAS the parts. Nobody reached for them.
+
+`arcade()` is in `parts.ts` with a full signature — arches springing off columns, with `order`, `tier` and
+`piers` options. **Not one of the nine runs used it**, which is why Leidesdorff Place has no arcade.
+
+And the pattern in who used `colonnade()` is decisive:
+
+| brief | runs | used `colonnade()` |
+|---|---|---|
+| standard — parts listed as bare names in a sentence | E1, E2, E3, E4 | **0 of 4** |
+| fast — `colonnade(out, a, b, y0, h, n, { order, tier })` given inline | E5, E6, E7, E8 | **3 of 4** |
+
+Everyone used `Face.kind`, which the briefs document with a table of what each kind LOOKS like. Nobody used
+`arcade`, which appears only as a word in a list.
+
+**So this is not a capability gap, it is a documentation gap, and it is the most actionable finding here.**
+An API surface listed by name does not get used; one with a signature and a sentence about what it draws
+does. The fix costs nothing and would have changed the outcome on at least three of these ten buildings.
+
 ## Conclusions
 
 1. **Batch. It is the biggest single lever and it is not close** — 82k tokens per building alone against
@@ -232,7 +264,10 @@ vindicated**: four of the eight runs describe features their renders do not cont
 5. **The brief is worth about as much as the model.** The fast brief saved 19% for Sonnet and let Haiku
    produce a colonnade Sonnet missed. It costs one document to write and nothing to re-use.
 
-6. **Improve the kit before buying a better model.** Every run independently asked for the same thing: a
+6. **Fix the DOCUMENTATION before buying a better model.** `arcade()` already exists and went unused by all
+   nine runs; `colonnade()` was used only by the four runs whose brief gave its signature. Give every shared
+   part a signature and one line about what it draws, as `Face.kind` already has, and three of these ten
+   buildings would have come out better for no extra tokens. **Then** improve the kit — Every run independently asked for the same thing: a
    **neoclassical / colonnaded-bank recipe**. Three runs wrote the same shape by hand two or three times
    each. E2 also wanted `RecipeOverrides` to reach a face's `arched` flag and the base's `kind`; E8 wanted
    `terracotta` as a material, having had to substitute `tile` on three genuinely terracotta buildings; E4
