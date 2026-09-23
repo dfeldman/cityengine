@@ -74,6 +74,63 @@ downtown building**, because it is what you see from across the junction.
 **Ranked by what would change the most buildings**: corner treatment first, then an entrance, then
 pilasters, then string courses. The first two are also the two a rider is physically closest to.
 
+## 1d. Vertical sections each have their OWN windows, and mouldings between them
+
+The owner, 2026-09-23: *"often windows are one style on the pediment, one on the main section, one on the
+top. often there are separating mouldings on the facade."*
+
+This is the classical tripartite composition — **base, shaft, crown**, designed deliberately like a column —
+and it governs most of what stands downtown. It is also the single best argument for slots, because the
+sections are not decoration: they are how the building is COMPOSED, and each one is a different facade.
+
+| section | typically |
+|---|---|
+| base / podium | one or two tall storeys; arched or rusticated; shopfronts or an arcade; the grandest openings |
+| shaft | the repeating middle; plain punched windows, the cheapest storeys, often many of them |
+| top | one to three storeys that differ — arched again, smaller, paired, or fully glazed; then the cornice |
+
+And **the boundaries are marked**: a string course or belt moulding at the top of the base, another under
+the top storeys, the cornice above. Those thin horizontal lines are what make a pre-war building read as
+composed rather than extruded, and **the kit has no string course at all** (§1c).
+
+So the slot design should not give a building ONE window treatment. Each section carries its own:
+
+```ts
+facade(out, fit, {
+  base:    { storeys: 2, windows: 'arched-tall', ground: { kind: 'arcade', arches: 5 } },
+  shaft:   { storeys: 8, windows: 'balanced' },
+  top:     { storeys: 2, windows: 'paired-arched' },
+  bands:   { belowShaft: 'string', belowTop: 'string', above: 'cornice' },   // or null each
+  crown:   { kind: 'balustrade' },
+  corners: { kind: 'pier', width: 3.5 },
+})
+```
+
+`tower()` can already express different tiers with different faces — E9 did it — but nothing NAMES the
+pattern, so a model produces one uniform grid and stops. **Naming the three sections makes the question
+unavoidable**, which is the whole thesis of this document.
+
+## 1e. Curtain wall: the face exists; the composition does not
+
+The owner asked whether we support glass curtain wall faces, "like the ICA needs". **`Face.kind: 'curtain'`
+already exists** — continuous glass with mullions — and several runs used it correctly on the modern towers.
+
+But that is not what the ICA needs, and the distinction matters. The ICA is **a heavy stone frame with the
+glazed wall set back BEHIND it**: massive corner piers, a deep top band cantilevering over, and the curtain
+wall recessed in shadow between them. The glass is the easy part. What is missing is the FRAME — the corner
+piers (§1c) and the recess.
+
+So this is a composition gap rather than a face gap, and it is expressible the moment corners exist:
+
+```ts
+corners: { kind: 'pier', width: 4, material: 'granite' },
+shaft:   { windows: 'continuous', inset: 1.2 },   // the wall set back behind the piers
+```
+
+`inset` on a tier already exists in `tower()` — it is how setbacks are done — so recessing a face behind a
+frame is close to free once something draws the frame. **That one addition would have given every run the
+ICA**, which was the hardest building on the list and the one eight of nine got wrong.
+
 ## 2. The three properties that separate what gets used from what does not
 
 We have direct evidence, not speculation:
