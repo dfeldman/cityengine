@@ -78,6 +78,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 89 | needs a coordinate | 350 and 433 California, and a tower complex too black — addresses not found in OSM | user, 2026-09-22 |
 | 90 | open | Full-height white piers modelled as a punched grid (425/388 Market, PG&E) | user, 2026-09-22 |
 | 91 | open | Institute of Contemporary Art rendered as Chinatown brick (a zone rule closed a priority-125 building) | user, 2026-09-22 |
+| 92 | open | 245 Market and 77 Beale share one procedural builder; the 1925 tower wears a 1970s facade | found 2026-09-22 |
 
 ---
 
@@ -1311,6 +1312,45 @@ drawn over an OSM building that should have been claimed — the fault of #5 and
 which is unusual on a building and is there because the tower stands over a podium that is mapped separately.
 Look before fixing.
 
+**Modelled, 2026-09-22.** `oneMaritimePlaza` is now a real builder in `sf/districts/market-east.ts` (2 018
+triangles) and the preset line is gone from `ring-tower.ts`. It is the footprint raised as a dark curtain wall
+with the seismic frame drawn on top of it in `kit.beam` members standing 0.75 m proud: a belt at each band
+boundary, a column at each brace node, and a full X in every module — five bands from the 9 m plaza deck to the
+parapet, three X's on each 64 m long face and two on each 33 m end, from one module width so the lattice carries
+round the corners. Five bands (not the four that "eight storeys per X" implies) is what the Mapillary street
+views of way/28240176 show. Shots: `docs/shots/models/market-east/oneMaritimePlaza-*.png`; at night the lit
+windows glow through the lattice.
+
+**The z-fighting, as far as it was traced — the cause is NOT yet proven, so nothing was fixed for it directly.**
+
+- **Candidate (b), `layer=2`, is dead.** `layer` on a building is consumed in exactly two places in
+  `tools/bake.ts`: a NEGATIVE layer drops the building as underground, and `building=roof` with `layer >= 1`
+  becomes a canopy. A positive `layer` on an ordinary building does nothing at all — it does not raise it, and it
+  does not reach the renderer. The podium has no effect through this tag.
+- **Candidate (a) is dead for the tower itself.** `way/28240176` is listed in the entry, so it is claimed
+  (`landmarks.ts`, `packedIds`/`wanted`) and the OSM box is not drawn under the landmark.
+- **Two unclaimed neighbours do overlap it, and neither is coincident.** `way/1177704958` (Golden Gateway
+  Garage, baked at 8 m) wholly CONTAINS the tower footprint — it is the podium, and it covers the whole
+  190 × 100 m superblock, so it cannot be claimed by this entry without deleting the plaza deck under Allsteel,
+  Bar Sprezzatura and way/132121557 as well. Nearest wall-to-wall distance to the tower is 3.0 m.
+  `way/1391009943` (Bar Sprezzatura, baked at 12 m) lies wholly INSIDE the tower footprint, 1.1 m from its
+  glass; it has been added to the entry's `osm` list so it is claimed and no longer drawn inside the tower.
+  Neither gap is small enough to be classic depth-buffer flicker.
+- **No coincident surface was found on the tower's own geometry, and the cause is NOT traced.** `ringTower`
+  was read line by line: it does not extrude a solid wall and then dress it — `band()` is the only thing that
+  draws the facade, and within it the spandrel (`ya..ys`, 0.15 m proud), the mullions (`ys..yb`, 0.1 m) and the
+  glass (`ys..yb`, 0 m) are adjacent in y and in u, never overlapping. `tower()` is the same: `faceBand` plus
+  `capPolygon`, no wall behind the tiers. So the obvious "two surfaces in the same place" is not there, in the
+  old builder or the new one. If the flicker survives the remodel, the next thing to look at is the material's
+  `backFaceCulling = false` (landmarks.ts) against a 121 m box — the far wall's inside face and the near wall's
+  outside face are 33 m apart, which is not flicker, but nothing else on the tower is a candidate at all.
+- **Not confirmed in the running city.** The full SF bake was running, and `tools/look-at.ts` with a ride-edge
+  id for `--start` (what `tools/ride-near.ts` prints) put the camera on Taylor Street, not at 300 Clay — the
+  `start=` URL parameter does not take an edge id. `tools/near-mesh.ts` is no help either: it reads
+  `getVerticesData('position')`, which for a landmark mesh is LOCAL, so a landmark never shows up at a world
+  point (only its `landmark:shadow:` mesh did). Next person: ride to 300 Clay and look, and fix `near-mesh.ts`
+  to transform by the mesh's world matrix while you are there.
+
 ## 83. Once you choose left or right there is no way to choose straight again
 
 **Seen:** user riding, 2026-09-22: "once you choose to turn left or right there is no way to choose straight
@@ -1508,3 +1548,40 @@ Two faults, then, and the second is the expensive one:
 
 Note the user's own verdict on the block otherwise: "close to perfect." That is the standard the ICA is
 falling short of, not a general complaint.
+
+## 92. Two different buildings share one procedural builder, silently
+
+**Found while choosing a subject for the model-tier experiment, 2026-09-22.** The user: "that one across the
+street from the Federal Reserve — 245 Market St, neoclassical tall building, very prominent" — poorly done.
+
+It is poorly done because it is being drawn as a different building.
+
+| manifest | OSM | building | `procedural` |
+|---|---|---|---|
+| `public/landmarks/san-francisco/market-east.json` | `way/1279504251` | **245 Market**, 83 m, Bakewell & Brown **1925**, grey terracotta, arcaded base | `pgeBuilding` |
+| `public/landmarks/san-francisco/fidi-1.json` | `way/260291405` | **77 Beale**, 154 m, a **1970s** tower | `pgeBuilding` |
+
+`pgeBuilding` is defined once, in `src/render/landmarks/sf/districts/fidi-1.ts`:
+
+    pgeBuilding: fromRecipe('granite-eighties', { height: 154, wall: [0.85, 0.81, 0.71], … })
+
+So a 1925 neoclassical office building wears a 1970s granite curtain wall. Both are called "the PG&E
+building" in life, which is how it happened — but they are fifty years and one architectural revolution
+apart.
+
+**The class bug is that nothing detects this.** `PROCEDURAL` is a plain record keyed by name; a second entry
+naming the same key silently gets the first builder, with no warning at bake or at run time. The manifest
+carries the right note on the right entry ("245 Market (Bakewell & Brown 1925): grey terracotta, arcaded
+base, top four storeys stepped back"), so the knowledge was there and the wiring lost it.
+
+**Two fixes, both worth doing:**
+
+1. This building gets its own builder. (It is the subject of the model-tier experiment; see PLAN item AC.)
+2. **Warn on a name used by more than one entry.** A check in `tools/sf-check.ts` or at registry build time,
+   listing every `procedural` claimed by two entries. Cheap, and it would say immediately how many more of
+   these exist — this one was found by accident.
+
+Related: #82 and #89 found `procedural:` names that are one-line presets rather than models. The manifest
+cannot currently tell a preset from a model, and now cannot tell a shared builder from a dedicated one
+either. Both are reporting faults, and together they mean **we do not know how much of the city is actually
+modelled**.
