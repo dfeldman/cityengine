@@ -1481,6 +1481,35 @@ This also raises the value of the silhouette overlay below. With imperfect geoda
 quality signal — if it lands on a blank wall or off the edge of the frame, that frame is junk and a reader
 can see it at a glance instead of puzzling over which building was meant.
 
+**Simulate the framing BEFORE downloading** (owner, 2026-09-23): *"I KNOW we can get better shots from
+Mapillary. We can simulate many different angles before downloading anything, and see which keeps the
+building in frame the best. I bet this is what google does for its static building images."*
+
+This is the right architecture and it supersedes the distance/bearing/occlusion heuristics. **A 360 panorama
+can be cut any way**, so the question is not "is this frame good?" but "is there a CUT of this panorama that
+frames the building well?" — and that is arithmetic over metadata we already hold, before a byte is
+downloaded.
+
+For every candidate pano, from the vector tiles alone: project the footprint and height into a hypothetical
+view (the exact inverse of `rectilinear`), try several cuts — varying yaw, pitch and field of view, because
+we are choosing the LENS as well as the direction — and score the resulting framing:
+
+- is the whole silhouette inside the frame, or clipped at an edge?
+- what fraction of the frame does it fill? Too small is useless; filling all of it means the shape cannot be
+  read;
+- is it reasonably centred?
+- how much of its HEIGHT clears the buildings in between (their heights are in the package too)?
+
+Then rank panos by their best cut and download only the top ten or twelve, rendering exactly that cut.
+
+**This explains every failure observed so far.** Fugazi's top frame was a wall from five metres — the
+simulation shows a silhouette filling the frame with nothing readable. One Maritime's podium shots at
+113-143 m — the simulation shows the tower clipped off the top at the fixed 85° field of view, and a
+different cut fixes it. The old heuristics were proxies for "does the building land well in frame"; this
+computes it.
+
+It also subsumes the silhouette-overlay work below, since it IS the projection.
+
 **The change, in order of value:**
 
 1. **Project the building INTO the frame.** We know the camera's position, the reprojection (yaw, pitch,
@@ -1498,6 +1527,38 @@ can see it at a glance instead of puzzling over which building was meant.
 
 If this works, the web step becomes the rare exception it should be — and the whole research problem goes
 back to being a tool rather than an agent.
+
+**Done 2026-09-22 — items 2, 3, 4, 5, plus two the diagnosis did not name.** `--osm=` now works for a
+building that is NOT in the queue (the bake, then Overpass, then OSM's own API when Overpass 429s), which it
+never did; ten to twelve frames are kept in two tiers, the same-side ones first and other elevations after;
+the tilt and the output aspect are computed from the roofline's elevation so nothing is cropped off the top;
+the dead `+6` pano term is gone; the search radius scales with height instead of capping at 90 m. Two more
+that mattered as much: panoramas are fetched at **2048** rather than 1024 (a 360 at 1024 is 2.8 px per
+degree, and the softness alone made frames unreadable), and the panorama BYTES are now cached, which they
+never were. Measured on four buildings: ICA 4–5 usable of 10, Fugazi 3 of 10, Old Federal Reserve 4 of 8,
+One Maritime Plaza 4 of 10 **with the roofline and sky in frame**. Two of Fugazi's three good frames came
+from the second tier, which the old 50-degree cut discarded outright.
+
+**Item 1, the silhouette, is still open and is still the heart of it.** `mark()` draws its fixed centre band
+and is often pointing at the neighbour — in several otherwise excellent frames the building is plainly there
+and the marks are not on it. Everything the projection needs is now stashed on `Photo` by the time the image
+is written: `camLat`/`camLon`/`camAlt`, the true `heading`, and the virtual camera's `pitch`/`fov`/`outW`/
+`outH`. The footprint ring is the one thing still missing at that point — `fetchPhoto` takes a `Photo` and
+never sees it, so that pass needs either the ring on `Photo` or a `ring` argument.
+
+Three things that pass will need and that this one learned:
+
+- **`camAlt` is not eye height.** `computed_altitude`/`altitude` are heights above the ellipsoid, not above
+  the pavement, so turning one into an eye height needs a terrain model. Assume ~2.5 m (a car roof) instead.
+- **Use `computed_geometry`, not the vector tile's position.** Fugazi's top-ranked frame is recorded at 23 m
+  and is a wall from about five metres: the tile's GPS drifts badly in that canyon. The graph API's
+  `computed_geometry` is Mapillary's SfM-corrected position, the match to the corrected heading we already
+  fetch, and a projection has to stand on it.
+- **The projection is the exact inverse of `rectilinear`**: world point → bearing relative to `heading`
+  (the panorama's longitude) and elevation (its latitude) → unit ray → undo the yaw rotation → undo the
+  pitch rotation → `px = x/z`, `py = -y/z` → `i = (px/f + 1)/2 · outW`, `j = (py/(f·outH/outW) + 1)/2 · outH`,
+  with `f = tan(hfov/2)`. Anything with `z <= 0` after the rotations is BEHIND the camera and must be
+  clipped, not drawn — getting that sign wrong is how a church once came back as the car park opposite.
 
 #### The bottleneck is RESEARCH, not modelling (user, 2026-09-22)
 
