@@ -1403,6 +1403,40 @@ how much they save:
 A research AGENT should be reserved for what a tool cannot do: a building set back behind a tower, in a
 courtyard, or one where the first dozen candidates are all wrong.
 
+#### The web is closing, which makes OUR OWN camera the asset (2026-09-22)
+
+Tested and confirmed today, and it changes where the effort should go:
+
+- **There is no image-search tool available.** Only `WebSearch`, which returns page titles and URLs, and
+  `WebFetch`. So a picture costs: search → open a candidate PAGE → find an image URL in it → fetch it →
+  look. Several calls each, which is why one photograph cost 75k tokens.
+- **Fetching Bing's image search directly returns a DECOY** — a query about a San Francisco building came
+  back as a page of rabbit photographs. Not a block, not a captcha: it ignores the query while looking like
+  it worked, which is the most dangerous failure of the lot.
+- **Photography sites now block bots as a matter of policy** (the owner: "ALMOST NO photography sites will
+  serve bots now"). Flickr, the stock libraries, the listing sites. What still serves is news pages,
+  Wikimedia, and registers — pages that are not primarily about photographs.
+
+**So web research is fragile, expensive, and getting worse, and it is the wrong thing to build on.**
+
+**Mapillary is ours.** We hold a token, the imagery is licensed for this, there is no bot-blocking, no
+ranking to fight, no decoy — and `tools/photo.ts` can already reproject a 360 frame to any heading we ask
+for. It failed on the ICA not because the imagery was absent but because of **where we pointed the camera**:
+it aims square at the nearest face, which is right for a mid-block building and wrong for one on a corner,
+and the ICA's corner piers are the building.
+
+**The highest-value work is therefore fixing the aim, not building a research pipeline:**
+
+1. Decide the site from the footprint and the street network — does it meet two streets? Both are already in
+   the bake.
+2. **Corner site** → stand back along the corner bisector for a three-quarter view. **Mid-block** → stand
+   square to the street face, as now. **Large or complex** → an aerial as well.
+3. Re-run the fetch across the register and count what fraction now yields something a person would call
+   usable. That number decides whether a research agent is needed at all.
+
+A web-research agent then costs almost nothing, because it is reserved for the residue: a building behind a
+tower, in a courtyard, or one the camera car never passed.
+
 #### The bottleneck is RESEARCH, not modelling (user, 2026-09-22)
 
 After seeing a clear street-level photograph of the ICA, the owner: *"given THIS image, I'm pretty confident
