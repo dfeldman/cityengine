@@ -1118,6 +1118,41 @@ be pointless, and conversely the columns work has no better proving ground than 
 Worth doing this as a batch in the usual way (`docs/sf-batches/BRIEF.md`): photographs first, then the recipe,
 then the handful of per-building overrides.
 
+### AB. Building LOD: boxes until you get close (user request, 2026-09-22)
+
+"We will need buildings with low and high LOD eventually. SF is one thing, NYC has thousands of visible
+buildings at once. We'll need to render as boxes until you get close."
+
+**Two thirds of this already exists, in pieces, and the job is mostly joining them up.**
+
+- `src/render/fringe.ts` already draws plain massing — one quad per wall wearing the style's FAR page — for
+  buildings beyond the detail box. That IS the low LOD. What it is not is distance-based: it is chosen at
+  BAKE time by where the building sits, so a building 900 m ahead inside the box gets full facades and one
+  30 m behind the box edge gets a box.
+- `src/render/vegetation.ts` already does the distance-based part properly: `NEAR_LOD = 90`, LOD0 near the
+  eye and the model's own LOD1 beyond. That is the pattern to copy, and its comments record the traps —
+  instancing every mesh in a file drew each tree three times on top of itself.
+
+So the work is: let a building be drawn at either detail, chosen by DISTANCE at run time rather than by the
+box at bake time, with the fringe's massing as the far tier.
+
+**Things that will bite, from what the codebase already knows:**
+
+- **Z-fighting when both tiers draw.** `fringe.ts` has this exact bug in its history — a building belonged to
+  both the city and the fringe and was drawn twice in the same place, the plain walls fighting the real
+  facades (reported at 48.850638, 2.367262). `own` exists to prevent it. Any distance switch must guarantee
+  exactly one tier draws, and the switch must be atomic per building.
+- **The switch must not pop.** A rider descending California Street at 14 m/s (README, the descent goal)
+  crosses any threshold fast; hysteresis, or a switch hidden behind the streaming tile boundary, will matter
+  more here than in a game where you walk.
+- **New York is the case that forces it.** Thousands visible at once, and the buildings are tall, so far more
+  of them are in view at once than in San Francisco — where a hill usually hides the next quarter.
+
+Worth measuring before designing: how many buildings are actually in view downtown, and whether the cost is
+in triangles or in fill (the sister project measured itself and found it fill-bound, not triangle-bound —
+the same may or may not be true here, and assuming it is would be how this gets optimised in the wrong
+place). Bug #86 (frame rate on a fast descent) is the first evidence and the natural test case.
+
 ### X. Plant Salesforce Park by hand (user request, 2026-09-22)
 
 The deck has no plants, and the general planting system cannot give it any: a `Planting` carries no `y`, a
