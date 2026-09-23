@@ -1437,6 +1437,44 @@ and the ICA's corner piers are the building.
 A web-research agent then costs almost nothing, because it is reserved for the residue: a building behind a
 tower, in a courtyard, or one the camera car never passed.
 
+### AE. A reference for EVERY building — and a way to know when we have one
+
+The owner, 2026-09-23: *"I think with enough polish on these two different scripts, we can get good
+candidates for EVERY building. It will take a lot of work though, this is a very challenging problem."*
+
+Agreed on the architecture: **Mapillary with simulated framing, plus a deterministic Commons search**, are
+between them the only two sources that scale — one is ours outright and the other is an API that serves
+bots. Everything else (web search, photography sites, HABS via loc.gov) is expensive, blocked, or both.
+
+**But "every building" needs a definition and a measurement, or the polishing is guesswork.** Every
+judgement so far — "4 of 10 usable", "Mapillary did not earn its place" — comes from opening images by hand
+on four buildings. That is enough to find bugs and not enough to know whether we are at 60% or 95%.
+
+**Build the harness before the polish:**
+
+1. Run both tools over the whole register and record, per building: frames returned, best simulated framing
+   score, whether Commons found anything, and which query found it.
+2. Define "usable" mechanically from the simulation — silhouette fully in frame, filling a sensible fraction
+   of it, most of its height clear of occluders — and report the fraction of buildings with at least one.
+3. **Check the mechanical score against human judgement on a sample of 30**, once. If they agree, the score
+   becomes the metric and the polishing can be measured. If they disagree, the score is the first thing to
+   fix.
+
+Then each change is worth a number instead of an anecdote, and we can see where the remaining failures are
+concentrated rather than fixing whichever one was last looked at.
+
+**Where it will still fail, predicted now so the result is not a surprise:**
+
+- buildings set back from the street, in courtyards, or behind a tower — no camera ever had a sightline;
+- alleys and private ways the camera car never drove;
+- very tall buildings in narrow canyons, where even the best cut cannot get far enough back;
+- **street trees**, which in San Francisco are everywhere and sit exactly at the height of the ground floor;
+- buildings with no name and no address, which Commons cannot be asked about at all.
+
+For that residue, an agent doing web research is the right tool precisely because it is a small set — which
+is the opposite of how it was being used today, and only becomes affordable once the measurement says how
+small.
+
 ### AD. Get much better at Mapillary — one source, many frames, the building outlined
 
 The owner, 2026-09-22, after using Mapillary's own website: *"I can get at least 10 decent shots of the ICA
