@@ -73,6 +73,8 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 84 | open | Want a key to open Google Street View at the camera's location | user, 2026-09-22 |
 | 85 | open | The Bay Bridge may not be drawn (check after the re-bake) | user, 2026-09-22 |
 | 86 | open | Frame rate drops on a fast descent (~50 km/h) | user, 2026-09-22 |
+| 87 | open | Macy's, Saks and Neiman Marcus signs are ugly block-bitmap letters | user, 2026-09-22 |
+| 88 | open | Z-fighting across Neiman Marcus (painted diamonds 0.04 m off the wall) | user, 2026-09-22 |
 
 ---
 
@@ -1362,3 +1364,44 @@ camera much faster than a level ride demands.
 **Measure downhill at speed.** A steady thirty on the flat proves nothing about this. See
 `docs/` and the sister project's finding that it was fill-bound rather than triangle-bound — the same may or
 may not hold here, and assuming it does is how this gets fixed in the wrong place.
+
+## 87. The Macy's, Saks and Neiman Marcus signs are very ugly
+
+**Seen:** user riding, 2026-09-22: "the macy's, saks, and neiman marcus signs are really really ugly."
+
+They are drawn with a **5×7 bitmap block font** — a private `GLYPHS` table in
+`src/render/landmarks/sf/districts/union-square.ts`, a second copy of the 3×5 one in `parts.ts`. Blocky
+capitals on a grid, where the real ones are the stores' own lettering and are the most looked-at thing on
+Union Square.
+
+**The tool for this already exists and these are exactly what it was built for.** `tools/signgen/` renders a
+word in a REAL typeface, extruded, as a GLB; its own README states the rule — "block font for the many, a
+real typeface for the few" — and these three are the few. `tools/signgen/signs.json` currently builds only
+two signs for San Francisco (Ghirardelli, and the Ripley's "Believe It or Not!"), so the work is: add
+Macy's, Saks Fifth Avenue and Neiman Marcus, choose a font apiece, and have the builders load the GLB by
+`file` instead of calling `letters()`.
+
+Note the three are genuinely different and should not share a font: Macy's is a red italic script with its
+star, Saks is a restrained serif, Neiman Marcus a wide roman. Getting those three right IS the shopfront.
+
+## 88. Z-fighting across the Neiman Marcus building
+
+**Seen:** user riding, 2026-09-22: "there is also a lot of z fighting on neiman marcus building."
+
+**Cause found by reading, and it is a number.** Its granite is drawn as a harlequin chequer by `diamonds()`
+in `src/render/landmarks/sf/districts/union-square.ts`, and each diamond is placed **0.04 m** proud of the
+wall:
+
+    const P = (u, y) => [e.a.x + e.t.x * u + e.n.x * 0.04, y, e.a.z + e.t.z * u + e.n.z * 0.04]
+
+Four centimetres is below what the depth buffer resolves at the range a rider sees this from. The project
+already knows this exactly — `src/render/signs.ts` carries the note "a board a few centimetres proud of its
+wall is below what the depth buffer resolves at forty metres, and the wall's own pixels won half the time
+(BUGS.md #15)" — and solves it with `mat.zOffset = -2`, a polygon offset that moves only the depth test and
+not where the thing is drawn.
+
+So: either give the diamonds the same `zOffset` treatment, or stand them further off the wall. The polygon
+offset is the better answer, being what the rest of the codebase already does, and it does not change the
+silhouette. Worth checking whether the other painted-on patterns in this file use the same 0.04 — if so this
+is a family of bugs, and #64 and #67 (z-fighting at Market/Montgomery and across Salesforce Park) may be the
+same thing.
