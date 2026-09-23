@@ -274,6 +274,70 @@ Given `height` from the fit and `storeys` from the photograph, storey height is 
 should never compute `floor`, `pitch` or tier fractions. Every number a model supplies is a number it can
 get wrong.
 
+## 3b. Validating the slots against all ten test buildings
+
+A design that cannot express the sample is not worth building. Ten buildings, worked through individually.
+
+### The proposed set
+
+```ts
+facade(out, fit, {
+  ground:   Ground  | null,   // what the street-level storeys do
+  shaft:    Shaft   | null,   // the repeating middle. NULLABLE — some buildings are all ground
+  top:      Top     | null,   // storeys that differ from the shaft
+  bands:    Bands   | null,   // the horizontal lines between sections, and the cornice
+  crown:    Crown   | null,   // above the cornice
+  frame:    Frame   | null,   // verticals and/or horizontals standing proud, wall recessed behind
+  material: Material,         // the wall's substance; sections may override
+})
+```
+
+### What each building needs
+
+| # | building | ground | shaft | top | frame | the thing that would have been missed |
+|---|---|---|---|---|---|---|
+| 1 | 300 Montgomery, 58 m | `colonnade` at the corner base | punched, balanced, 10 st | — | — | the colonnaded base |
+| 2 | 550 California, 55 m | `arched` openings | punched, **wide** | **`glazed`** | — | wide windows AND the floor-to-ceiling top storey |
+| 3 | unnamed, 48 m | `glazed` bank front | `continuous` + fins | — | verticals only | that the fins ARE the frame |
+| 4 | **ICA**, 30 m | `recessed` | `continuous`, inset | — | **verticals + horizontals** | the whole building |
+| 5 | Alvinza Hayward, 36 m | plain / shopfronts | punched, balanced, 8 st | — | — | the heavy bracketed cornice (a `bands` concern) |
+| 6 | Exchange Block, 31 m | dark podium | punched, balanced | — | — | the podium being a different material |
+| 7 | **Leidesdorff**, 31 m | **`arcade`, 5 arches** | punched, balanced | — | — | the arcade |
+| 8 | **Pacific Exchange**, 16 m | **`colonnade`, giant order** | **`null`** | — | — | that the colonnade is nearly the whole building |
+| 9 | 348 Pine sliver, 28 m | `arched` | punched, small, brick | — | — | it is 10 m wide — mostly party wall |
+| 10 | Curb Exchange, 16 m | **`arcade`, arched** | punched, small | — | — | the arched terracotta detail |
+
+### What the exercise changed in the design
+
+**1. `shaft` must be nullable.** The Pacific Exchange is a 16 m temple whose colonnade runs nearly the full
+height — there is no repeating middle. A design with a mandatory shaft forces the model to invent one, which
+is exactly how it became a box. **Any of the three sections may be null; what is required is that the model
+says so.**
+
+**2. Sections need a `storeys` count, not a height fraction.** A model can count storeys in a photograph. It
+cannot judge that the base occupies 0.18 of the height. Give it `storeys: 2` and let the kit divide.
+
+**3. `ground` must accept a height that dominates.** Not just "the bottom two floors": for #8 the ground
+section IS the building. So `ground: { kind: 'colonnade', columns: 10, order: 'ionic', storeys: 4 }` where
+storeys is most of the building's total.
+
+**4. `frame` is genuinely orthogonal** and cannot be folded into the sections — #3 has vertical framing over
+a curtain shaft, #4 has both over a recessed one. It sits alongside them, not inside.
+
+**5. `bands` earns its place from #5 alone.** Alvinza Hayward's defining feature is an ornate bracketed
+cornice, and three more of the ten have a string course marking the top of the base. A cornice is not a
+crown — the crown is what happens ABOVE it.
+
+**6. Material belongs per-section, not per-building.** #6's dark green podium under cream terracotta, #9's
+mixed brick, #4's stone frame around glass. A single `material` would flatten all three.
+
+### Coverage
+
+**All ten are expressible**, and the four that every run got wrong (#2, #4, #7, #8) are precisely the four
+whose defining feature lives in a slot that does not exist today: a distinct glazed top, a frame, an arcade,
+and a colonnade that is not a footnote to a shaft. That is the strongest evidence for this design — **the
+slots that are missing are exactly the buildings that failed.**
+
 ## 4. Forcing the thinking — four mechanisms, weakest to strongest
 
 **(a) Required nullable slots.** Above. Converts omission into an explicit `null`.
