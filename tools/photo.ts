@@ -77,7 +77,37 @@ export interface Photo {
   height?: number
   /** a FLAT frame: degrees from the middle of the picture to the building, signed (right is positive) */
   dev?: number
+  /** the Mapillary frame id, so an image can be cached and cited by it */
+  id?: string
+  /** where the camera stood */
+  camLat?: number
+  camLon?: number
+  /** the camera's altitude in metres, where Mapillary computed one — the eye height the projection needs */
+  camAlt?: number
+  /** the camera's TRUE heading (computed_compass_angle), degrees — absolute, unlike `yaw` which is relative */
+  heading?: number
+  /** the bearing from the camera to the point we aimed at, degrees */
+  want?: number
+  /*
+   * The pose the flat image was rendered with, filled in by fetchPhoto. Everything a footprint projection
+   * needs is here: camera position and altitude above, and the virtual camera's yaw/pitch/fov/size below.
+   */
+  pitch?: number
+  fov?: number
+  outW?: number
+  outH?: number
+  /** the fraction of the building's HEIGHT that clears whatever stands between it and the camera, 0..1 */
+  vis?: number
+  /** the fraction of the building's silhouette the chosen cut actually holds, 0..1 */
+  framed?: number
+  /** how much of the frame the building fills, 0..1 — too small is a speck, too large is a wall */
+  fill?: number
+  /** did the camera position come from Mapillary's SfM correction, or only from the vector tile? */
+  fixed?: boolean
 }
+
+/** A neighbouring building, as a footprint and a height: what can stand between a camera and the target. */
+export interface Blocker { ring: [number, number][]; height: number }
 
 /*
  * Mapillary is somebody else's service and we are going over thousands of buildings, so: every reply is kept on
@@ -135,57 +165,6 @@ export const mapillaryToken = (): string => {
     if (existsSync(f)) return readFileSync(f, 'utf8').trim()
   }
   return ''
-}
-
-const bearing = (from: [number, number], to: [number, number]): number => {
-  const dLon = ((to[1] - from[1]) * Math.PI) / 180
-  const la0 = (from[0] * Math.PI) / 180
-  const la1 = (to[0] * Math.PI) / 180
-  const y = Math.sin(dLon) * Math.cos(la1)
-  const x = Math.cos(la0) * Math.sin(la1) - Math.sin(la0) * Math.cos(la1) * Math.cos(dLon)
-  return ((Math.atan2(y, x) * 180) / Math.PI + 360) % 360
-}
-
-/**
- * The point on a footprint's BOUNDARY nearest the camera — projected onto the edges, not snapped to a corner.
- *
- * This is the wall the camera can actually see, and it is what to point at. The two obvious alternatives are
- * both wrong: a corner is the building's END, so aiming there swings the view along the facade and off it,
- * and the centroid is inside the block, so from a pavement beside a big building you aim THROUGH it at
- * whatever stands on the far side. Projecting onto the edge gives the piece of wall directly in front of the
- * camera, which is the only part of the building it can photograph.
- */
-const nearestOf = (ring: [number, number][], la: number, lo: number): { at: [number, number]; facing: number } | null => {
-  if (ring.length === 0) return null
-  const K = 0.79                                    // longitude's share of a degree of latitude, hereabouts
-  let best: { at: [number, number]; facing: number } | null = null
-  let bd = Infinity
-  for (let i = 0; i < ring.length; i++) {
-    const a = ring[i]
-    const b = ring[(i + 1) % ring.length]
-    const ax = (a[1] - lo) * K
-    const az = a[0] - la
-    const bx = (b[1] - a[1]) * K
-    const bz = b[0] - a[0]
-    const t = Math.max(0, Math.min(1, -(ax * bx + az * bz) / (bx * bx + bz * bz || 1e-18)))
-    const px = ax + bx * t
-    const pz = az + bz * t
-    const d = px * px + pz * pz
-    if (d < bd) {
-      bd = d
-      /*
-       * How squarely the camera faces this piece of wall. A frame taken from along the street looks at the
-       * facade edge-on and shows almost nothing of it — the picture is the row of buildings beyond. `facing`
-       * is |cos| between the wall's normal and the line to the camera: 1 is straight on, 0 is edge-on.
-       */
-      const len = Math.hypot(bx, bz) || 1e-9
-      const nxw = bz / len
-      const nzw = -bx / len
-      const dl = Math.hypot(px, pz) || 1e-9
-      best = { at: [a[0] + bz * t, a[1] + (b[1] - a[1]) * t], facing: Math.abs((-px / dl) * nxw + (-pz / dl) * nzw) }
-    }
-  }
-  return best
 }
 
 const metres = (a: [number, number], b: [number, number]): number =>
@@ -272,9 +251,32 @@ async function tileFrames(tx: number, ty: number): Promise<Frame[]> {
  * is Mapillary's own estimate, reconstructed from the imagery, and only the per-image endpoint has it. It is a
  * tiny reply and it is cached, so it costs little.
  */
-async function frameInfo(id: string): Promise<{ thumb: string; angle?: number }> {
-  const body = await mapillaryApi(`https://graph.mapillary.com/${id}?fields=thumb_1024_url,computed_compass_angle`) as { thumb_1024_url?: string; computed_compass_angle?: number } | null
-  return { thumb: body?.thumb_1024_url ?? '', angle: body?.computed_compass_angle }
+/*
+ * 2048, not 1024. An equirectangular frame spreads a whole turn across its width, so a 1024-wide pano is
+ * 2.8 pixels per degree — an 85-degree cut is about 240 source pixels stretched up to a 768-wide picture, and
+ * that softness on its own makes frames unreadable. 2048 doubles it. `thumb_original_url` would be better
+ * still (often 5760 wide) but runs to several megabytes a frame, and at a dozen frames a building that is a
+ * download budget we have been asked not to spend.
+ */
+/*
+ * `computed_geometry`, not the vector tile's point. The tile carries the RAW GPS, and in a street of steel
+ * towers it drifts fifteen metres and more: Fugazi Bank's top-ranked frame was recorded at 23 m from the
+ * building and is a wall from about five. `computed_geometry` is Mapillary's SfM-corrected position — the
+ * match to the `computed_compass_angle` we already take — and every distance, bearing and projection here
+ * stands on it. It is GeoJSON, so its coordinates are [lon, lat], in that order.
+ */
+async function frameInfo(id: string): Promise<{ thumb: string; angle?: number; alt?: number; lat?: number; lon?: number; fixed?: boolean }> {
+  const body = await mapillaryApi(`https://graph.mapillary.com/${id}?fields=thumb_2048_url,thumb_1024_url,computed_compass_angle,computed_altitude,altitude,computed_geometry,geometry`) as
+    { thumb_2048_url?: string; thumb_1024_url?: string; computed_compass_angle?: number; computed_altitude?: number; altitude?: number
+      computed_geometry?: { coordinates?: [number, number] }; geometry?: { coordinates?: [number, number] } } | null
+  const c = body?.computed_geometry?.coordinates
+  const g = c ?? body?.geometry?.coordinates
+  return {
+    thumb: body?.thumb_2048_url ?? body?.thumb_1024_url ?? '',
+    angle: body?.computed_compass_angle,
+    alt: body?.computed_altitude ?? body?.altitude,
+    lat: g?.[1], lon: g?.[0], fixed: c !== undefined,
+  }
 }
 
 /**
@@ -294,33 +296,72 @@ async function frameInfo(id: string): Promise<{ thumb: string; angle?: number }>
  * this walks the line from the camera to the target wall and asks whether it crosses any other footprint.
  * `blockers` is every other building nearby, as rings.
  */
-const blocked = (from: [number, number], to: [number, number], blockers: [number, number][][]): boolean => {
-  const K = 0.79
-  const cross = (ax: number, az: number, bx: number, bz: number): number => ax * bz - az * bx
-  const x0 = (from[1]) * K
-  const z0 = from[0]
-  const x1 = (to[1]) * K
-  const z1 = to[0]
-  for (const r of blockers) {
+/*
+ * IN 3D, NOT IN PLAN. The old test asked "does the line from the camera to the wall cross another footprint",
+ * and answered yes for almost every good photograph of a tall building: a 121 m tower behind a 30 m neighbour
+ * is VISIBLE — its top two thirds are — and in plan it is completely blocked. The question worth asking is how
+ * much of the HEIGHT clears, which is ordinary similar triangles: a blocker `hb` tall at `d` metres hides
+ * everything on the target below `eye + (hb - eye) * D / d`. A frame that sees the top 80% is excellent; one
+ * that sees the bottom 20% is the wall-from-five-metres case.
+ */
+type P2 = [number, number]
+
+/** How high up the target the sightline from `eye` first clears everything in the way. Metres, local frame. */
+const clearsAbove = (cam: P2, eye: number, to: P2, blockers: { ring: P2[]; height: number }[]): number => {
+  const D = Math.hypot(to[0] - cam[0], to[1] - cam[1])
+  if (D < 1e-6) return 0
+  const cross = (ax: number, ay: number, bx: number, by: number): number => ax * by - ay * bx
+  let hid = 0
+  for (const bl of blockers) {
+    if (bl.height <= eye) continue                     // lower than the camera: it cannot hide anything above it
+    let near = Infinity
+    const r = bl.ring
     for (let i = 0; i < r.length; i++) {
       const a = r[i]
       const b = r[(i + 1) % r.length]
-      const ax = a[1] * K
-      const az = a[0]
-      const bx = b[1] * K
-      const bz = b[0]
-      const d1 = cross(x1 - x0, z1 - z0, ax - x0, az - z0)
-      const d2 = cross(x1 - x0, z1 - z0, bx - x0, bz - z0)
-      const d3 = cross(bx - ax, bz - az, x0 - ax, z0 - az)
-      const d4 = cross(bx - ax, bz - az, x1 - ax, z1 - az)
-      if (((d1 > 0) !== (d2 > 0)) && ((d3 > 0) !== (d4 > 0))) return true
+      const d1 = cross(to[0] - cam[0], to[1] - cam[1], a[0] - cam[0], a[1] - cam[1])
+      const d2 = cross(to[0] - cam[0], to[1] - cam[1], b[0] - cam[0], b[1] - cam[1])
+      const d3 = cross(b[0] - a[0], b[1] - a[1], cam[0] - a[0], cam[1] - a[1])
+      const d4 = cross(b[0] - a[0], b[1] - a[1], to[0] - a[0], to[1] - a[1])
+      if ((d1 > 0) === (d2 > 0) || (d3 > 0) === (d4 > 0)) continue
+      const t = d3 / (d3 - d4)                         // where along camera→target the edge is crossed
+      const d = t * D
+      if (d > 1.5 && d < D - 1.5 && d < near) near = d
     }
+    if (near === Infinity) continue
+    hid = Math.max(hid, eye + (bl.height - eye) * (D / near))
   }
-  return false
+  return hid
+}
+
+/**
+ * Where a world point lands in a hypothetical cut of the panorama — the exact inverse of `rectilinear`.
+ *
+ * This is what makes the whole search possible: a 360 frame can be cut ANY way, so the question is never "is
+ * this frame good" but "is there a cut of this panorama that frames the building well", and that is arithmetic
+ * over metadata, answerable before a single image is downloaded. A point BEHIND the camera (z <= 0 once the
+ * rotations are undone) must be clipped rather than drawn — getting that sign wrong is how a church once came
+ * back as the car park opposite.
+ */
+const project = (lonDeg: number, latDeg: number, yaw: number, pitch: number, f: number, aspect: number):
+  { i: number; j: number } | null => {
+  const R = Math.PI / 180
+  const cl = Math.cos(latDeg * R)
+  const v: [number, number, number] = [cl * Math.sin(lonDeg * R), Math.sin(latDeg * R), cl * Math.cos(lonDeg * R)]
+  const cz = Math.cos(yaw * R)
+  const sz = Math.sin(yaw * R)
+  const x = v[0] * cz - v[2] * sz                      // undo the yaw rotation
+  const zy = v[0] * sz + v[2] * cz
+  const cy = Math.cos(-pitch * R)
+  const sy = Math.sin(-pitch * R)
+  const y = v[1] * cy + zy * sy                        // undo the pitch rotation
+  const z = -v[1] * sy + zy * cy
+  if (z <= 1e-6) return null                           // behind the camera
+  return { i: ((x / z) / f + 1) / 2, j: ((-y / z) / (f * aspect) + 1) / 2 }   // both in 0..1 of the frame
 }
 
 export async function mapillary(lat: number, lon: number, radius = 60, height = 0, ring: [number, number][] = [],
-                                blockers: [number, number][][] = []): Promise<Photo[]> {
+                                blockers: Blocker[] = []): Promise<Photo[]> {
   if (!mapillaryToken()) return []
   const d = radius / 111320
   const dl = d / Math.cos((lat * Math.PI) / 180)
@@ -331,100 +372,285 @@ export async function mapillary(lat: number, lon: number, radius = 60, height = 
     const [tx, ty] = t.split(',').map(Number)
     for (const f of await tileFrames(tx, ty)) frames.push(f)
   }
-  const scored: (Photo & { id: string; pano: boolean; want: number; lat?: number; lon?: number })[] = []
-  for (const f of frames) {
-    /*
-     * Point at the CENTROID, but measure to the nearest WALL.
-     *
-     * Aiming at the nearest corner seemed the obvious improvement and was badly wrong: for a long building the
-     * nearest corner is its END, so the view swings along the facade and off the building altogether. The
-     * centroid is what centres a building in frame. The distance is a different question — it decides how far
-     * up to tilt and which frames are a good stand-off — and there the nearest wall is right, because that is
-     * the surface we can actually see.
-     */
-    /*
-     * 360 frames ONLY. A flat frame cannot be re-aimed: we get whatever the camera happened to point at, which
-     * in practice is a street with half a dozen buildings in it and no way to say which one is meant (user,
-     * 2026-09-22: "we should just ban flat images"). A panorama contains every direction, so it can always be
-     * turned to face the building and projected flat. Coverage costs a little; the alternative is handing a
-     * model a picture and hoping.
-     */
-    if (!f.pano) continue
-    const near = nearestOf(ring, f.lat, f.lon)
-    // edge-on frames show the street, not the building
-    if (near && near.facing < 0.5) continue
-    const dist = metres([f.lat, f.lon], near?.at ?? [lat, lon])
-    const aim = near?.at ?? [lat, lon] as [number, number]
-    // nothing else may stand in the way (the wall we aim at is pulled a metre towards the camera so the
-    // target's own footprint does not count as its own blocker)
-    if (blockers.length > 0) {
-      const back: [number, number] = [aim[0] + (f.lat - aim[0]) * 0.02, aim[1] + (f.lon - aim[1]) * 0.02]
-      if (blocked([f.lat, f.lon], back, blockers)) continue
+
+  /*
+   * One local metre frame for everything that follows — x east, y north, z up, origin at the building. Degrees
+   * are hopeless for this: a sightline, a silhouette and an eye height have to be in the same units before any
+   * of the arithmetic below means anything.
+   */
+  const mLat = 111320
+  const mLon = 111320 * Math.cos((lat * Math.PI) / 180)
+  const toM = (p: [number, number]): P2 => [(p[1] - lon) * mLon, (p[0] - lat) * mLat]
+  const ringM = ring.length >= 3 ? ring.map(toM)
+    // no footprint (photo.ts run by hand on a bare lat/lon): stand in a nominal 16 m box so the simulation still runs
+    : ([[-8, -8], [8, -8], [8, 8], [-8, 8]] as P2[])
+  const blockM = blockers.map((b) => ({ ring: b.ring.map(toM), height: b.height }))
+  const H = height > 0 ? height : 12
+  const EYE = 2.5                                      // a car roof: `computed_altitude` is above the ELLIPSOID, not the pavement
+  const PANO_W = 2048                                  // what `frameInfo` asks for — it bounds how sharp a narrow cut can be
+
+  /*
+   * A camera can be INSIDE a building — under an arcade, in a porte-cochere, beneath a podium soffit — and that
+   * is invisible to any sightline test, because nothing crosses the line: the obstruction is directly overhead.
+   * One Maritime Plaza's own colonnade produced exactly this, a frame whose upper half is a concrete ceiling
+   * with the tower glimpsed underneath it. The footprints say where those places are, so ask.
+   */
+  const indoors = (c: P2): boolean => blockM.some((b) => {
+    let hit = false
+    const r = b.ring
+    for (let i = 0, j = r.length - 1; i < r.length; j = i++) {
+      if ((r[i][1] > c[1]) !== (r[j][1] > c[1]) &&
+          c[0] < ((r[j][0] - r[i][0]) * (c[1] - r[i][1])) / (r[j][1] - r[i][1]) + r[i][0]) hit = !hit
     }
+    return hit
+  })
+
+  /** The nearest point on the footprint's boundary, and how squarely the camera faces that wall. */
+  const nearM = (c: P2): { at: P2; facing: number; wall: [P2, P2] } | null => {
+    if (ringM.length < 2) return null
+    let best: { at: P2; facing: number; wall: [P2, P2] } | null = null
+    let bd = Infinity
+    for (let i = 0; i < ringM.length; i++) {
+      const a = ringM[i]
+      const b = ringM[(i + 1) % ringM.length]
+      const bx = b[0] - a[0]
+      const by = b[1] - a[1]
+      const t = Math.max(0, Math.min(1, ((c[0] - a[0]) * bx + (c[1] - a[1]) * by) / (bx * bx + by * by || 1e-12)))
+      const at: P2 = [a[0] + bx * t, a[1] + by * t]
+      const dd = (at[0] - c[0]) ** 2 + (at[1] - c[1]) ** 2
+      if (dd >= bd) continue
+      bd = dd
+      const len = Math.hypot(bx, by) || 1e-9
+      const dl2 = Math.sqrt(dd) || 1e-9
+      best = { at, facing: Math.abs(((c[0] - at[0]) / dl2) * (by / len) + ((c[1] - at[1]) / dl2) * (-bx / len)), wall: [a, b] }
+    }
+    return best
+  }
+
+  /**
+   * THE SIMULATION. Given where a camera stood and which way it looked, work out the best cut of its panorama
+   * for this building, and how good that cut is — silhouette inside the frame, filling a sensible share of it,
+   * centred, and with as much of the height as possible clear of whatever stands in front.
+   */
+  const simulate = (cam: P2, heading: number): {
+    score: number; yaw: number; pitch: number; hfov: number; aspect: number
+    vis: number; framed: number; fill: number; dist: number; want: number
+  } | null => {
+    const near = nearM(cam)
+    if (!near) return null
+    const dist = Math.hypot(near.at[0] - cam[0], near.at[1] - cam[1])
+    const want = (Math.atan2(near.at[0] - cam[0], near.at[1] - cam[1]) * 180) / Math.PI
     /*
-     * Far enough back to actually SEE it. A ninety-metre tower photographed from twenty metres is a picture of
-     * whatever low building you are standing beside — the ray to the tower's nearest corner is clear, so no
-     * occlusion test catches it, but the tower is behind the loft in front of you. You need roughly half the
-     * building's height of distance before it is in the frame at all.
+     * THREE RAYS, not one. A single sightline to the nearest point is fragile: a neighbour can clip it at an
+     * oblique angle while four fifths of the facade is in plain view. The aim point and a quarter of the wall
+     * either side of it average that out.
      */
-    if (dist < Math.max(8, height * 0.5) || dist > radius) continue
-    const want = bearing([f.lat, f.lon], aim)
-    const off = f.pano ? 0 : f.angle === undefined ? 90 : Math.abs(((f.angle - want + 540) % 360) - 180)
-    if (off > 40) continue
+    const w = near.wall
+    const wl = Math.hypot(w[1][0] - w[0][0], w[1][1] - w[0][1]) || 1
+    const ux = (w[1][0] - w[0][0]) / wl
+    const uy = (w[1][1] - w[0][1]) / wl
+    const step = Math.min(wl * 0.25, 15)
+    let hid = 0
+    for (const s of [-step, 0, step]) {
+      hid += clearsAbove(cam, EYE, [near.at[0] + ux * s, near.at[1] + uy * s], blockM) / 3
+    }
+    const vis = Math.max(0, Math.min(1, (H - hid) / H))
+
     /*
-     * How far away the best view is depends on how tall the building is: a 90 m tower photographed from twelve
-     * metres is a picture of its doorway. Roughly the building's own height, within what a street allows.
+     * The silhouette's angular extent, from the footprint's corners at ground and at roof level. The BOTTOM of
+     * the cut starts at whatever is hidden rather than at the pavement — which is exactly the owner's point
+     * about looking up over a podium: if the lower thirty metres are behind a neighbour there is no reason to
+     * spend frame on them.
      */
-    const ideal = Math.max(20, Math.min(70, height > 0 ? height * 0.9 : 28))
-    const score = off + Math.abs(dist - ideal) * 0.6 + (f.pano ? 6 : 0) + (1 - f.quality) * 20
+    let loMin = Infinity
+    let loMax = -Infinity
+    let laMin = Infinity
+    let laMax = -Infinity
+    for (const v of ringM) {
+      const dx = v[0] - cam[0]
+      const dy = v[1] - cam[1]
+      const b = (Math.atan2(dx, dy) * 180) / Math.PI
+      const rel = ((b - want + 540) % 360) - 180       // unwrapped about the aim, so a wide building does not wrap
+      loMin = Math.min(loMin, rel)
+      loMax = Math.max(loMax, rel)
+      const flat = Math.max(1, Math.hypot(dx, dy))
+      laMin = Math.min(laMin, (Math.atan2(Math.max(0, hid) - EYE, flat) * 180) / Math.PI)
+      laMax = Math.max(laMax, (Math.atan2(H - EYE, flat) * 180) / Math.PI)
+    }
+    if (!Number.isFinite(loMin) || !Number.isFinite(laMax)) return null
+    const spanW = Math.max(1, loMax - loMin)
+    const spanH = Math.max(1, laMax - laMin)
+
     /*
-     * An equirectangular frame runs a full turn across its width, with the camera's own heading in the middle.
-     * So the building sits at a known fraction of the way round, and the strip can be cut down to it — which
-     * turns "the building is somewhere in this fisheye" into an ordinary photograph of a facade.
+     * Choose the LENS, do not accept one. The cut is aimed at the middle of the silhouette and opened just wide
+     * enough to hold it with room to spare — which is what a static-imagery service does and what the old fixed
+     * 85-degree, fixed-tilt cut could never do. Beyond about 100 degrees a perspective view stretches
+     * unusably at its edges, so that is the real ceiling; below 45 the 2048-wide panorama has too few pixels in
+     * the cut to survive being blown up.
      */
-    scored.push({ source: 'mapillary', url: '', ref: `mapillary:${f.id}${f.pano ? ' (360)' : ''}`, distance: Math.round(dist), off: Math.round(off), score: Math.round(score), id: f.id, pano: f.pano, want, lat: f.lat, lon: f.lon })
+    const FILL = 0.62                                   // the share of the frame the silhouette should occupy
+    const vfov = Math.max(40, Math.min(100, spanH / FILL))
+    /*
+     * The frame may be tall, but not a letterbox on end. A narrow cut under a very tall one — 45 degrees across
+     * and 100 up — is a 1:3 picture in which the perspective leans hard at the top and bottom, and it reads as
+     * a building falling over. Widening the lens to keep the sides within about 1.9:1 costs a little size in
+     * frame and buys a photograph somebody can look at.
+     */
+    const hfov = Math.max(45, vfov / 1.9, Math.min(100, spanW / FILL))
+    const yaw = ((loMin + loMax) / 2 + want - heading + 540) % 360 - 180
+    const pitch = Math.max(-20, Math.min(60, (laMin + laMax) / 2))
+    const aspect = Math.tan((vfov * Math.PI) / 360) / Math.tan((hfov * Math.PI) / 360)
+    const f = Math.tan((hfov * Math.PI) / 360)
+
+    /*
+     * Now MEASURE the cut we just chose, rather than trusting it. Projecting the corners is the same arithmetic
+     * the silhouette overlay will use, and it is the only thing that can say "the tower is clipped off the top
+     * of this frame" — the failure that put four podium shots at the head of One Maritime Plaza's list.
+     */
+    let inside = 0
+    let total = 0
+    let iMin = Infinity
+    let iMax = -Infinity
+    let jMin = Infinity
+    let jMax = -Infinity
+    for (const v of ringM) {
+      const dx = v[0] - cam[0]
+      const dy = v[1] - cam[1]
+      const b = (Math.atan2(dx, dy) * 180) / Math.PI
+      const rel = ((b - heading + 540) % 360) - 180
+      const flat = Math.max(1, Math.hypot(dx, dy))
+      for (const z of [Math.max(0, hid), H]) {
+        const e = (Math.atan2(z - EYE, flat) * 180) / Math.PI
+        const q = project(rel, e, yaw, pitch, f, aspect)
+        total++
+        if (!q) continue
+        if (q.i >= 0 && q.i <= 1 && q.j >= 0 && q.j <= 1) inside++
+        iMin = Math.min(iMin, q.i); iMax = Math.max(iMax, q.i)
+        jMin = Math.min(jMin, q.j); jMax = Math.max(jMax, q.j)
+      }
+    }
+    if (total === 0 || !Number.isFinite(iMin)) return null
+    const framed = inside / total
+    const fill = Math.max(0, Math.min(1, iMax - iMin)) * Math.max(0, Math.min(1, jMax - jMin))
+    const centre = Math.hypot((iMin + iMax) / 2 - 0.5, (jMin + jMax) / 2 - 0.5)
+
+    /*
+     * The ranking. Visibility first, because a picture of the building in front of the one we want is worthless
+     * however well it is composed; then whether the cut holds the whole silhouette; then how big it is in
+     * frame. Distance barely appears, and that is the point: being far away is rarely the problem and being
+     * close almost always is. A 150 m frame that sees the whole tower must beat a 70 m one that sees a third of
+     * it, and here it does by roughly seventy points.
+     */
+    const px = (PANO_W * spanW) / 360                  // source pixels across the building, before any blow-up
+    const score =
+      (1 - vis) * 110                                  // hidden behind a neighbour
+      + (1 - framed) * 55                              // clipped by the edge of the frame
+      + (fill < 0.10 ? (0.10 - fill) * 220 : 0)        // a speck in the middle of a street
+      + (fill > 0.80 ? (fill - 0.80) * 160 : 0)        // a wall: too close to read anything
+      + Math.max(0, 150 - px) * 0.22                   // too few panorama pixels to blow up
+      + centre * 30
+      + (1 - near.facing) * 16                         // edge-on: ranked down, never thrown away
+      + (indoors(cam) ? 45 : 0)                        // shot from under somebody's arcade, looking at its ceiling
+      + Math.max(0, dist - radius) * 0.5
+    return { score, yaw, pitch, hfov, aspect, vis, framed, fill, dist, want: (want + 360) % 360 }
+  }
+
+  /*
+   * PASS ONE, on the vector tile's own coordinates: cheap, no requests, and only there to cut thousands of
+   * frames down to a shortlist worth asking about. The tile's GPS drifts badly in a canyon, so nothing is
+   * REJECTED here on a threshold that correction could move — the near rule waits for pass two.
+   */
+  const coarse: { f: Frame; s: number }[] = []
+  for (const f of frames) {
+    if (!f.pano) continue                              // a flat frame cannot be re-aimed; only a 360 can be cut
+    const cam = toM([f.lat, f.lon])
+    const dd = Math.hypot(cam[0], cam[1])
+    if (dd > radius + 40) continue
+    const sim = simulate(cam, f.angle ?? 0)
+    if (!sim) continue
+    if (sim.dist < Math.max(4, height * 0.25)) continue
+    coarse.push({ f, s: sim.score + (1 - f.quality) * 12 })
+  }
+  coarse.sort((a, b) => a.s - b.s)
+  const SPREAD = Number(process.env.PHOTO_SPREAD ?? 12)
+  const SHORT = Number(process.env.PHOTO_SHORTLIST ?? 36)
+  /*
+   * Spread BEFORE the shortlist, not after. The best-scoring frames are consecutive shots from one car metres
+   * apart, so an unspread shortlist is thirty-six photographs of the same tree; and since every one of them
+   * costs a metadata request, spreading afterwards would spend the whole budget on one kerb.
+   */
+  const short: Frame[] = []
+  for (const c of coarse) {
+    if (short.length >= SHORT) break
+    const cm = toM([c.f.lat, c.f.lon])
+    if (short.every((k) => Math.hypot(...toM([k.lat, k.lon]).map((v, i) => v - cm[i]) as [number, number]) > 15)) short.push(c.f)
+  }
+
+  /*
+   * PASS TWO. Now, and only now, we ask Mapillary about each shortlisted frame — which buys the SfM-corrected
+   * position and heading, and those move a camera far enough to change every answer above. So the simulation is
+   * run again on the corrected pose, and the hard near rejection is applied HERE: Fugazi's frame recorded at
+   * 23 m and actually five metres from the wall has to die after correction, not before it.
+   */
+  const scored: (Photo & { id: string; want: number; lat: number; lon: number })[] = []
+  for (const f of short) {
+    const info = await frameInfo(f.id)
+    if (!info.thumb || info.angle === undefined) continue      // without a corrected heading a pano cannot be cut
+    const la = info.lat ?? f.lat
+    const lo = info.lon ?? f.lon
+    const cam = toM([la, lo])
+    const sim = simulate(cam, info.angle)
+    if (!sim) continue
+    // the one hard rejection worth keeping: a photograph from ten metres genuinely cannot contain a tall building
+    if (sim.dist < Math.max(8, height * 0.5)) continue
+    /*
+     * A frame Mapillary has NOT reconstructed keeps its raw GPS, and across this city's cached metadata the
+     * correction moves a camera by up to 65 m — which is the difference between the building opposite and the
+     * one we asked for. Every simulation above is only as good as the position it stands on, so an uncorrected
+     * frame is ranked below a corrected one rather than trusted equally.
+     */
+    const score = sim.score + (1 - f.quality) * 12 + (info.fixed ? 0 : 10)
+    scored.push({
+      source: 'mapillary', url: info.thumb, ref: `mapillary:${f.id} (360)`, id: f.id,
+      distance: Math.round(sim.dist), off: 0, score: Math.round(score), want: sim.want,
+      lat: la, lon: lo, camLat: la, camLon: lo, camAlt: info.alt, heading: info.angle, fixed: info.fixed,
+      yaw: sim.yaw, pitch: sim.pitch, fov: sim.hfov, height,
+      vis: Math.round(sim.vis * 100) / 100, framed: Math.round(sim.framed * 100) / 100,
+      fill: Math.round(sim.fill * 100) / 100,
+      outW: 1024, outH: Math.round(1024 * sim.aspect),
+    })
   }
   scored.sort((a, b) => a.score! - b.score!)
+  if (scored.length === 0) return []
+
   /*
-   * Spread the candidates out. The best-scoring frames are nearly always consecutive shots from one car going
-   * past, metres apart — so if a street tree hides the building in the first, it hides it in all of them, and
-   * we hand over four pictures of a tree (user, 2026-09-22: "it didn't work at all since a tree is in the
-   * way"). Taking the best frame from each of several SEPARATE viewpoints gives a real second chance: an
-   * obstruction belongs to where the camera stood, not to the building.
+   * TWO TIERS, not one cut. A pair chosen on score alone once came back as two different elevations and read as
+   * two different buildings, so the same-side frames come FIRST and a reader who looks at only two or three
+   * sees them. But a hard cut also threw away the other face of a corner building, so the far-side frames are
+   * kept after them rather than dropped.
    */
+  const anchor = scored[0]
+  const turnedFrom = (c: typeof scored[number]): number => Math.abs(((c.want - anchor.want + 540) % 360) - 180)
   const apart: typeof scored = []
+  const room = (c: typeof scored[number]): boolean =>
+    apart.every((k) => metres([k.lat, k.lon], [c.lat, c.lon]) > 15)
   for (const c of scored) {
-    if (apart.length === 0) { apart.push(c); continue }
-    /*
-     * Far enough apart to see past a tree, but looking from the SAME SIDE. Two cameras on opposite sides of a
-     * block both have a perfectly good bearing to its centroid, and each sees whatever building stands in
-     * front of it from where it is — so a pair chosen on distance alone came back as two different buildings
-     * (user, 2026-09-22: "we're sending in two images, but they are completely different directions"). The
-     * bearing to the target is what says which side you are on: within 50 degrees is a second look at the
-     * same facade, beyond that is a different elevation or a different building altogether.
-     */
-    const first = apart[0]
-    const turned = Math.abs(((c.want - first.want + 540) % 360) - 180)
-    if (turned > 50) continue
-    if (apart.every((k) => metres([k.lat!, k.lon!], [c.lat!, c.lon!]) > 18)) apart.push(c)
-    if (apart.length >= 4) break
+    if (apart.length >= Math.ceil(SPREAD * 0.6)) break
+    if (turnedFrom(c) <= 50 && room(c)) apart.push(c)
   }
-  const out: Photo[] = []
-  for (const p of apart) {
-    const info = await frameInfo(p.id)
-    if (!info.thumb) continue
-    // the corrected heading decides where in the strip the building is; without one a pano cannot be cut
-    /*
-     * x/W maps to azimuth = heading + (x/W - 1/2) * 360, so the building sits at (want - heading) degrees from
-     * the middle of the strip. Getting this sign wrong points the crop at the far side of the street, which is
-     * how a church came back as the multi-storey car park opposite it.
-     */
-    const turn = info.angle !== undefined ? ((p.want - info.angle + 540) % 360) - 180 : undefined
-    if (p.pano && turn === undefined) continue
-    // a flat frame cannot be re-aimed, but we can still say where in it the building is
-    out.push({ ...p, url: info.thumb, yaw: p.pano ? turn : undefined, dev: p.pano ? undefined : turn, height })
+  for (const c of scored) {
+    if (apart.length >= SPREAD) break
+    if (turnedFrom(c) > 50 && room(c)) apart.push(c)
   }
-  return out
+  /*
+   * The tiers decide which SIDE of the building a reader sees first; they must not put a frame the simulation
+   * knows is junk above one it knows is good. A frame with nothing of the building visible, or a quarter of the
+   * silhouette in shot, goes to the back of the queue whichever elevation it came from — kept, because some
+   * junk among the good ones is the agreed bargain, but never in the first three, which is what a modeller
+   * actually reads.
+   */
+  const good = (p: Photo): boolean => (p.vis ?? 1) >= 0.35 && (p.framed ?? 1) >= 0.6
+  return [...apart.filter(good), ...apart.filter((p) => !good(p))].map((p) => ({ ...p }))
 }
 
 /** Files geotagged near a point. No key and no name — but no promise the photo is OF the building. */
@@ -456,11 +682,30 @@ export async function commonsName(name: string): Promise<Photo[]> {
  * Fetch one candidate to a file, cutting a 360 frame down to the part that faces the building. Returns false
  * when there was nothing usable at the other end.
  */
-export async function fetchPhoto(p: Photo, file: string): Promise<boolean> {
+/*
+ * The panorama's BYTES, cached by frame id. Metadata and tiles were already kept on disk but the image itself
+ * was fetched afresh every time — so re-running the tool over the same buildings, or changing how the flat
+ * view is cut, re-downloaded every panorama. Now a frame is pulled once, ever.
+ */
+async function panoBytes(p: Photo): Promise<Buffer | null> {
+  mkdirSync(CACHE, { recursive: true })
+  const key = p.id ? `pano-${p.id}` : `pano-${createHash('sha1').update(p.url).digest('hex')}`
+  const cached = resolve(CACHE, `${key}.jpg`)
+  if (existsSync(cached)) {
+    const buf = readFileSync(cached)
+    if (buf.length >= 4000) return buf
+  }
   const r = await fetch(p.url, { headers: { 'User-Agent': UA } })
-  if (!r.ok) return false
+  if (!r.ok) return null
   const buf = Buffer.from(await r.arrayBuffer())
-  if (buf.length < 4000) return false                 // an error page, not a photograph
+  if (buf.length < 4000) return null                  // an error page, not a photograph
+  writeFileSync(cached, buf)
+  return buf
+}
+
+export async function fetchPhoto(p: Photo, file: string): Promise<boolean> {
+  const buf = await panoBytes(p)
+  if (!buf) return false
   if (p.yaw === undefined) {
     // a flat frame keeps its own framing; all we add is the corridor, placed by the camera's field of view
     const sharp = (await import('sharp')).default
@@ -468,12 +713,48 @@ export async function fetchPhoto(p: Photo, file: string): Promise<boolean> {
     writeFileSync(file, await mark(buf, meta.width ?? 0, meta.height ?? 0, p.dev))
     return true
   }
-  // tilt up by about half the angle to the building's top, so a tall facade fits without pointing at sky
-  const up = p.height && p.distance ? (Math.atan(p.height / p.distance) * 180) / Math.PI : 12
-  const view = 768
-  const flat = await rectilinear(buf, p.yaw, Math.min(40, up * 0.55), 85, view)
-  const h = Math.round(view * 0.85)
-  writeFileSync(file, await mark(flat, view, h))
+  /*
+   * THE CUT WAS ALREADY CHOSEN, by simulation, before this panorama was downloaded — `mapillary()` tried the
+   * building in many hypothetical views of this frame and kept the one that framed it best. So render exactly
+   * that: re-deriving a pose here would throw away the reason this frame was picked over the two hundred
+   * others.
+   */
+  if (p.fov !== undefined && p.pitch !== undefined && p.outW && p.outH) {
+    const flat = await rectilinear(buf, p.yaw, p.pitch, p.fov, p.outW, p.outH)
+    writeFileSync(file, await mark(flat, p.outW, p.outH))
+    return true
+  }
+  /*
+   * LOOK UP, AND KEEP THE SKY. The fallback, for a Photo with no simulated cut on it — `photo.ts` run by hand
+   * on a bare lat/lon has no footprint, so there is no silhouette to frame and the roofline's elevation is the
+   * only thing to aim by.
+   *
+   * This used to tilt `min(40, up * 0.55)` and then hand `mark()` a height of `view * 0.85` while
+   * `rectilinear` ALSO cut its output to 0.85 — between them a tall building was guaranteed to be
+   * decapitated: under-tilted, then cropped where the roof was. The owner's observation is the fix: a
+   * skyscraper is perfectly visible in a 360 frame if you look up.
+   *
+   * So compute it rather than guessing. `up` is the elevation of the roofline; `DOWN` is how much pavement
+   * to keep below the horizon so the building has a base and a sense of scale. The view is then pointed at
+   * the middle of that span and made TALL ENOUGH to hold all of it, instead of a fixed 4:3.4 letterbox.
+   * The near-side rejection (dist >= height/2) bounds `up` at atan(2) = 63 degrees, so the vertical field
+   * never gets wide enough to stretch badly at the edges.
+   */
+  const up = p.height && p.distance ? (Math.atan(p.height / p.distance) * 180) / Math.PI : 20
+  const DOWN = 10                                     // degrees of pavement below the horizon
+  const TOP = 7                                       // a little sky above the roofline, so the roof reads as a roof
+  const pitch = Math.max(0, Math.min(55, (up + TOP - DOWN) / 2))
+  const vfov = Math.max(58, Math.min(105, up + TOP + DOWN))
+  const hfov = 85
+  const view = 1024
+  // the output's aspect IS the ratio of the two fields of view; anything else is a lie about what is in frame
+  const outH = Math.round((view * Math.tan((vfov * Math.PI) / 360)) / Math.tan((hfov * Math.PI) / 360))
+  const flat = await rectilinear(buf, p.yaw, pitch, hfov, view, outH)
+  p.pitch = pitch
+  p.fov = hfov
+  p.outW = view
+  p.outH = outH
+  writeFileSync(file, await mark(flat, view, outH))
   return true
 }
 
@@ -491,13 +772,12 @@ export async function fetchPhoto(p: Photo, file: string): Promise<boolean> {
  * much of the world the flat picture covers — beyond about 90 degrees a perspective view stretches horribly at
  * its edges, which is the one real limit of doing this.
  */
-async function rectilinear(pano: Buffer, yaw: number, pitch: number, fov: number, out = 768): Promise<Buffer> {
+async function rectilinear(pano: Buffer, yaw: number, pitch: number, fov: number, out = 768, outH = Math.round(out * 0.85)): Promise<Buffer> {
   const sharp = (await import('sharp')).default
   const { data, info } = await sharp(pano).removeAlpha().raw().toBuffer({ resolveWithObject: true })
   const W = info.width
   const H = info.height
   const ch = info.channels
-  const outH = Math.round(out * 0.85)
   const dst = Buffer.alloc(out * outH * 3)
   const f = Math.tan((fov * Math.PI) / 360)
   const cy = Math.cos((-pitch * Math.PI) / 180)
@@ -572,7 +852,7 @@ async function mark(piece: Buffer, w: number, h: number, dev?: number): Promise<
 
 /** Every candidate, best source first. */
 export async function photosFor(lat: number, lon: number, name = '', radius = 60, height = 0, ring: [number, number][] = [],
-                                blockers: [number, number][][] = []): Promise<Photo[]> {
+                                blockers: Blocker[] = []): Promise<Photo[]> {
   /*
    * MAPILLARY ONLY. Commons was the fallback when no street-level frame could be found, and across 36
    * buildings it fired twice and returned rubbish both times: a postcard of San Jose, and the programme of a
@@ -583,7 +863,13 @@ export async function photosFor(lat: number, lon: number, name = '', radius = 60
    * for looking something up by hand, and are deliberately not wired into a batch.
    */
   void name
-  return mapillary(lat, lon, Math.max(radius, Math.min(90, height)), height, ring, blockers)
+  /*
+   * How far to look. This is the outer bound on `dist` in the scoring too, so capping it at 90 m was the
+   * other half of the tall-building problem: a 120 m tower is best seen from a block away, and frames a block
+   * away were never candidates. A tall building gets a proportionally wider search; a short one is unchanged.
+   */
+  const far = Math.max(radius, Math.min(220, height * 1.8), height > 0 ? 70 : 0)
+  return mapillary(lat, lon, far, height, ring, blockers)
 }
 
 if (process.argv[1]?.endsWith('photo.ts')) {

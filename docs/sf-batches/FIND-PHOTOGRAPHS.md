@@ -158,9 +158,17 @@ people drinking beer. This is exactly why a bare geosearch once scored "20 of 20
 correct.
 
 **But the titles are informative, so filter them in code, not by eye.** Keep only results whose FILENAME
-contains the building's name, its street number, or its street. `2017 ACT The Strand 1127 Market Street.jpg`
-matches on all three. That is plain text matching — no model, no judgement, no cost — and it turns a
-1-in-20 haystack into a single right answer.
+contains the building's **name or its street NUMBER**. `2017 ACT The Strand 1127 Market Street.jpg` matches
+both. Plain text matching — no model, no judgement, no cost — and it turns a 1-in-20 haystack into a single
+right answer.
+
+**Do NOT match on the street name alone. Tested, and it fails.** A street is shared by a hundred buildings
+and every one of them is inside the radius, so the geotag cannot break the tie. Matching "Montgomery" for
+the ICA kept four files, all geotagged within 50 m and all of something else — the Russ Building twice and
+two views *down* Montgomery Street. With street matching removed the ICA correctly returns nothing.
+
+**A house number under three digits needs its street beside it.** A bare `1` matches
+`panoramio (1).jpg` and every date in every title, so require `1 bush` rather than `1`.
 
 **The two searches fail in opposite directions, so run both:**
 
@@ -205,6 +213,21 @@ spacing. Use a descriptive `User-Agent`, leave **4–5 s between calls**, and ba
 
 Proximity is not a guarantee of usefulness: a geotagged hit may be an interior, a mural or a detail. Open it
 and look, as always.
+
+## What the geotag filter costs, measured
+
+Over 81 candidate titles across nine buildings, **58 (72%) had no geotag at all** and were therefore
+dropped. Of the 23 that did, 22 were in San Francisco and the single outlier was in San Diego — the
+wrong-city trap the filter exists for.
+
+So the filter works, and its price is real: roughly **one building in ten is lost to it**. The clean example
+is the Medico-Dental Building, of which Commons holds thirteen files literally titled "Medico-Dental
+Building" — **every one ungeotagged**, so all thirteen were discarded, while the only geotagged file of that
+name is in San Diego.
+
+That trade is still right. A wrong photograph is worse than none, because somebody models from it. But when
+a building plainly ought to have coverage and comes back empty, an ungeotagged file is the likely reason,
+and that is a case for a human to look rather than for the filter to be loosened.
 
 ## Wikimedia Commons and HABS — excellent when they hit, but they rarely hit
 
