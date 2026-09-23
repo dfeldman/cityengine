@@ -77,6 +77,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 88 | open | Z-fighting across Neiman Marcus (painted diamonds 0.04 m off the wall) | user, 2026-09-22 |
 | 89 | needs a coordinate | 350 and 433 California, and a tower complex too black — addresses not found in OSM | user, 2026-09-22 |
 | 90 | open | Full-height white piers modelled as a punched grid (425/388 Market, PG&E) | user, 2026-09-22 |
+| 91 | open | Institute of Contemporary Art rendered as Chinatown brick (a zone rule closed a priority-125 building) | user, 2026-09-22 |
 
 ---
 
@@ -1470,3 +1471,40 @@ a style assigned without looking at the building.
 **Possible lead for #89:** the nearest named neighbours at the working point are `350 Sansome` and
 Embarcadero Center West. #89 could not find "350 California" in OSM — **350 Sansome** may be the building
 meant. Worth putting to the user rather than assumed.
+
+## 91. The Institute of Contemporary Art is rendered as a low brick building
+
+**Seen:** user riding, 2026-09-22: "This block is close to perfect actually: 37.792642, −122.403287. The
+missing thing is the Institute of Contemporary Art, a highly distinctive modernist glass structure that's
+just rendered as a low brick building."
+
+`way/288511103`, 345 Montgomery, 30 m — the glass pavilion at the foot of 555 California.
+
+**What happened, from our own records:**
+
+    docs/sf-buildings.csv:
+      way/288511103,"Institute of Contemporary Art San Francisco",civic,…,30,0,restyle,chinatown,lowrise,,"rule 1: chinatown zone"
+
+    docs/sf-queue.csv:
+      way/288511103,…,civic,…,30,0,125,done
+
+So a **modernist glass pavilion was given Chinatown brick because of where it stands** — "rule 1: chinatown
+zone" is a purely geographic rule in the deterministic classifier, and it looked at the building's
+coordinates and nothing else.
+
+**The part worth taking seriously is the queue.** Its priority was **125** — height 30 plus the named-civic
+bonus of 95 — which puts it near the top of the whole city. And it is marked **done**. A building in the top
+band was closed out by a zone rule, not modelled and never sent up the ladder.
+
+Two faults, then, and the second is the expensive one:
+
+1. The ICA needs a model: a low modernist glass box, transparent, with a fine mullion grid and a flat roof —
+   about as far from Chinatown brick as a building gets.
+2. **A deterministic zone rule can close a high-priority building.** The ladder's whole design is that
+   priority decides how much effort a building gets, and here a cheap rule marked a 125 done. Worth checking
+   how many other high-priority buildings were retired by a zone rule rather than by a model. "rule 1:
+   chinatown zone" itself only reaches 7 buildings, so the blast radius of THIS rule is small — but it
+   caught a glass museum, which says the rules are not checking what they are looking at.
+
+Note the user's own verdict on the block otherwise: "close to perfect." That is the standard the ICA is
+falling short of, not a general complaint.
