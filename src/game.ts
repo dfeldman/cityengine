@@ -626,7 +626,6 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     if (transit.aboard) {
       const r = transit.alight(placeOnGraph)
       if (r.status === 'ok') { backOnStreet(r.pos); hud.banner('Off you get', placeName(nav.at())) }
-      else if (r.status === 'moving') hud.note('wait for the next stop')
       else hud.note('no street to get off onto here')
       return
     }
@@ -636,7 +635,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       destination = null
       tour = null
       clearRoute()
-      hud.banner(`Aboard the ${v.name ?? (v.kind === 'cable' ? 'cable car' : 'streetcar')}`, 'B at any stop to get off · Esc to get off anywhere')
+      hud.banner(`Aboard the ${v.name ?? (v.kind === 'cable' ? 'cable car' : 'streetcar')}`, 'B to get off anywhere there is a street')
     }
   })
 

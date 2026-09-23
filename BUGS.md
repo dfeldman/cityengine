@@ -60,6 +60,10 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 71 | open | A wall across the road at 37.792190, −122.415121 | user, 2026-09-22 |
 | 72 | open | A large structure partly underground at 37.791994, −122.416009 (Nob Hill alleys) | user, 2026-09-22 |
 | 73 | open | The PCC streetcar model is crude: boxy body, no destination board, headlamp or trucks | user, 2026-09-22 |
+| 74 | open | Streetcar and cable-car stops are never drawn (nothing renders 'tramstop') | user, 2026-09-22 |
+| 75 | open | Streetcars pass through each other | user, 2026-09-22 |
+| 76 | open | Streetcars turn around like a bus instead of reversing | user, 2026-09-22 |
+| 77 | open | Rider is steered down the middle of streetcar streets, into the cars | user, 2026-09-22 |
 
 ---
 
@@ -1147,3 +1151,57 @@ What the render actually shows:
 NOT a fault, checked while writing this: the liveries are already varied. `variants` rotates six real ones
 (Birmingham, Muni wings, Los Angeles, Philadelphia, Kansas City, Chicago) plus a Peter Witt, so the F line's
 every-car-different character is there.
+
+## 74. Streetcar and cable-car stops are never drawn
+
+**Seen:** user, 2026-09-22: "i'm not even sure streetcar stops work, I never saw one."
+
+**Confirmed by reading, not guessed.** `tramstop` appears exactly twice in `src/`: once in the furniture kind
+union (`src/city/package.ts`), and once in `src/game.ts` —
+
+    life.addStops((a.ready.furniture ?? []).filter((f) => f.kind === 'tramstop'))
+
+— which tells the trains where to pause. **No renderer draws one.** The bake collects them (212 in San
+Francisco) and they work, invisibly: a car really does stand at each. There is simply nothing to see.
+
+Wants a model. A Muni F-line stop is a boarding island in the roadway with a kerb, a pole, a flag sign and
+often a shelter; a cable-car stop is little more than a painted board and a sign. Worth having both, because
+they are also what tells a rider where a line runs.
+
+## 75. Streetcars pass through each other
+
+**Seen:** user riding, 2026-09-22: "streetcars often pass through each other. must be slightly too wide."
+
+Two cars occupying the same place at once. The likely cause is not width but that nothing keeps vehicles
+apart: `src/render/life.ts` runs each car along its rail by its own clock, and if there is no separation
+rule, a faster car simply overtakes a slower one through its body. Width would only matter for cars on
+PARALLEL tracks, which is a different and much rarer case — worth checking which of the two is actually
+being seen before fixing either.
+
+A following-distance rule on a shared rail is the fix if it is the first: a car may not advance past the
+tail of the car ahead, and it waits rather than telescoping.
+
+## 76. Streetcars turn around like a bus instead of reversing
+
+**Seen:** user riding, 2026-09-22: "They also turn around like a bus instead of switching direction."
+
+At the end of a line the car swings through a curve as though it had a steering wheel. A streetcar cannot do
+that: a double-ended car changes direction in place (the driver walks to the other end), and a single-ended
+PCC uses a loop or a wye. The F line famously has both — a loop at Fisherman's Wharf, and Market Street's
+end.
+
+Cheapest honest fix: at the end of a rail, reverse the car in place rather than curving it. It is also what
+the cable cars do at the Powell Street turntable, which is its own piece of theatre worth having eventually.
+
+## 77. The rider is steered down the middle of streetcar streets, into the cars
+
+**Asked:** user, 2026-09-22: "we should also adjust our paths so you don't go straight down the middle of any
+of the streets with streetcars and hit (pass through) them. lateral offset should work."
+
+The ride graph puts the rider on the centreline, which on Market or the Embarcadero is exactly where the rail
+is. Item H already gives the rider a standing lateral offset within the carriageway (it is how a merged dual
+carriageway puts them on the right-hand side), so the machinery exists: a ride edge that carries a tram rail
+should offset to the side of it, the way a real cyclist rides outside the tracks — which is also the correct
+thing to do in reality, since a wheel in a rail groove is how cyclists come off.
+
+Related to #75: passing through a streetcar is only possible because the rider is in its path to begin with.

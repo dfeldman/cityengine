@@ -102,11 +102,15 @@ describe('alighting', () => {
     return t
   }
 
-  it('is refused between stops, and the rider stays aboard', () => {
+  /*
+   * Stepping off between stops is ALLOWED, the mirror of boarding being allowed anywhere. The only refusal
+   * left is having nowhere to land, which the next test covers — and that one must never be relaxed.
+   */
+  it('is allowed between stops, on a moving car', () => {
     const t = boarded()
     t.update(rider(), [car({ x: 50, dwelling: false, speed: 4 })])
-    expect(t.alight(placerAt(2)).status).toBe('moving')
-    expect(t.aboard).not.toBeNull()
+    expect(t.alight(placerAt(2)).status).toBe('ok')
+    expect(t.aboard).toBeNull()
   })
 
   it('places the rider on the graph at a stop', () => {

@@ -9,7 +9,7 @@
  * rider presses: board, and get off.
  *
  *     off ──(a boardable vehicle within BOARD_NEAR — moving or standing, at any speed — and B)──▶ aboard
- *     aboard ──(the vehicle is dwelling at a stop again, B)──▶ off, placed back on the ride graph
+ *     aboard ──(B, anywhere there is a street within MAX_DROP)──▶ off, placed back on the ride graph
  *
  * Two things this is careful about, because both are the kind of fault that hides:
  *
@@ -73,9 +73,7 @@ const NAMES: Record<TransitKind, string> = { cable: 'cable car', streetcar: 'str
 
 export type AlightResult =
   | { status: 'ok'; pos: GraphPosition }
-  /** the vehicle is between stops — you cannot step off a moving cable car */
-  | { status: 'moving' }
-  /** nowhere to put the rider: they stay aboard */
+  /** nowhere to put the rider: they stay aboard. The only refusal left — see `alight` */
   | { status: 'no-street' }
 
 export class Transit {
@@ -145,7 +143,8 @@ export class Transit {
   prompt(): string | null {
     if (this.on) {
       if (this.lost) return `aboard the ${NAMES[this.on.kind]} · Esc to get off`
-      return this.on.dwelling ? `B · get off the ${NAMES[this.on.kind]}` : `aboard the ${this.on.name ?? NAMES[this.on.kind]}`
+      // you may step off anywhere, so the key is always worth showing
+      return `${this.on.name ?? NAMES[this.on.kind]} · B to get off`
     }
     if (this.candidate) return `B · board the ${this.candidate.name ?? NAMES[this.candidate.kind]}`
     if (this.seen) {
@@ -172,14 +171,22 @@ export class Transit {
   }
 
   /**
-   * Get off — only where the vehicle is standing, and only onto a street. A refusal leaves the rider exactly
-   * where they were, aboard, which is the whole point: there is no path through here that ends with a rider
-   * in a field.
+   * Get off — ANYWHERE, so long as there is a street to step onto. A refusal leaves the rider exactly where
+   * they were, aboard, which is the whole point: there is no path through here that ends with a rider in a
+   * field.
+   *
+   * Waiting for a stop used to be required. It was the mirror of the boarding rule and went the same way,
+   * for the same reason (user, 2026-09-22: "I think you should be able to get off a streetcar anywhere you
+   * want, it is too restrictive to wait for a stop"). Once you can swing aboard a moving car it is strange
+   * not to be able to swing off one, and being carried past where you wanted to go — with no brakes to
+   * correct with afterwards — is worse than the small oddity of stepping off between stops.
+   *
+   * `MAX_DROP` still governs: off a viaduct, over water, or through a yard there is no street within reach
+   * and the rider stays aboard and is told so. That is the part that must not be relaxed.
    */
   alight(place: Placer): AlightResult {
     const v = this.on
     if (!v) return { status: 'no-street' }
-    if (!this.lost && !v.dwelling) return { status: 'moving' }
     const got = place({ x: v.x, z: v.z }, v.heading)
     if (!got || got.d > MAX_DROP) return { status: 'no-street' }
     this.on = null
