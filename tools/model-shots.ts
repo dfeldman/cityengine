@@ -48,9 +48,17 @@ type FitFor = { hx: number; hz: number; height: number; ring: { x: number; z: nu
  * keep ONE browser for hundreds of models instead of launching one per building — the launch, not the
  * rendering, is what made a contact sheet of the whole city take hours.
  */
-export async function fitForEntry(entryName: string, cityArg = 'san-francisco', frontArg = ''): Promise<{ model: string; fit: FitFor }> {
+/*
+ * `spin` is the rotation the CITY applies to this model (render/landmarks.ts): rotateDeg, or front+180 where
+ * the entry gives a bearing. A camera must turn by -spin to see the face the street sees. Without it the shot
+ * tools photographed the unrotated model, so any builder whose front is turned by its manifest entry — the
+ * Assemblee nationale's portico, the Ecole Militaire's — was photographed from BEHIND and came back as a
+ * featureless dark slab, on the very contact sheet meant to catch exactly that kind of fault.
+ */
+export async function fitForEntry(entryName: string, cityArg = 'san-francisco', frontArg = ''): Promise<{ model: string; fit: FitFor; spin: number }> {
   let model = ''
   let fitFor: FitFor | null = null
+  let spin = 0
   const arg = (n: string, f = ''): string => (n === 'city' ? cityArg : n === 'front' ? (frontArg || f) : f)
   {
   const { readManifestFile } = await import('../src/city/manifest.ts')
@@ -58,7 +66,7 @@ export async function fitForEntry(entryName: string, cityArg = 'san-francisco', 
   const { resolve } = await import('node:path')
   const city = arg('city', 'san-francisco')
   const mf = [city, city.split('-')[0]].map((n) => resolve(import.meta.dirname, '..', 'public', 'landmarks', `${n}.json`)).find((f) => existsSync(f))!
-  const e = (await readManifestFile<{ name: string; osm?: string | string[]; procedural?: string; height?: number; size?: [number, number]; lat?: number; lon?: number }>(mf)).find((x) => x.name === entryName)
+  const e = (await readManifestFile<{ name: string; osm?: string | string[]; procedural?: string; height?: number; size?: [number, number]; lat?: number; lon?: number; rotateDeg?: number; front?: number | string }>(mf)).find((x) => x.name === entryName)
   if (!e?.procedural) throw new Error(`no procedural entry "${entryName}"`)
   model = e.procedural
   const ids = (Array.isArray(e.osm) ? e.osm : e.osm ? [e.osm] : [])
@@ -135,8 +143,11 @@ export async function fitForEntry(entryName: string, cityArg = 'san-francisco', 
   const mz = (Math.max(...zs) + Math.min(...zs)) / 2
   ring = ring.map((p) => ({ x: p.x - mx, z: p.z - mz }))
   fitFor = { hx: (Math.max(...xs) - Math.min(...xs)) / 2, hz: (Math.max(...zs) - Math.min(...zs)) / 2, height: e.height ?? 30, ring }
+  // the same rotation render/landmarks.ts gives a standalone entry, so the cameras below can undo it
+  spin = e.rotateDeg !== undefined ? (e.rotateDeg * Math.PI) / 180
+    : typeof e.front === 'number' ? ((e.front + 180) * Math.PI) / 180 : 0
   }
-  return { model, fit: fitFor! }
+  return { model, fit: fitFor!, spin }
 }
 
 /*
@@ -147,10 +158,13 @@ export async function fitForEntry(entryName: string, cityArg = 'san-francisco', 
 if (process.argv[1]?.endsWith('model-shots.ts')) {
   const entryName = arg('entry')
   let fitFor: FitFor | null = null
+  // the city's own rotation for this entry, undone by the cameras so 'front' really is the front (see fitForEntry)
+  let spin = 0
   if (entryName) {
     const got = await fitForEntry(entryName, arg('city', 'san-francisco'), arg('front'))
     model = got.model
     fitFor = got.fit
+    spin = got.spin
   }
   const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist'] })
   const page = await browser.newPage({ viewport: { width: 1400, height: 800 } })
@@ -168,9 +182,9 @@ if (process.argv[1]?.endsWith('model-shots.ts')) {
     const H = b.max[1]
     const R = Math.max(b.max[0] - b.min[0], b.max[2] - b.min[2], H)
     const cy = H * 0.45
-    views = [['front', Math.PI / 2, 1.42, R * 1.9, 0, cy, 0], ['corner', Math.PI / 2 - 0.9, 1.3, R * 1.8, 0, cy, 0],
+    views = [['front', Math.PI / 2 - spin, 1.42, R * 1.9, 0, cy, 0], ['corner', Math.PI / 2 - 0.9 - spin, 1.3, R * 1.8, 0, cy, 0],
       // (from across the street: the target on the south face, the camera 28 m out from it, looking up)
-      ['street', Math.PI / 2 + 0.35, 1.72, 28, 0, Math.min(14, H * 0.35), b.max[2]], ['top', 0.6, 0.8, R * 1.8, 0, cy, 0]]
+      ['street', Math.PI / 2 + 0.35 - spin, 1.72, 28, 0, Math.min(14, H * 0.35), b.max[2]], ['top', 0.6 - spin, 0.8, R * 1.8, 0, cy, 0]]
   }
   console.log(model, await page.evaluate('window.__modelTris'), 'triangles')
   for (const [name, ...v] of views) {

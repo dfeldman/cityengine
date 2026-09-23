@@ -1438,7 +1438,9 @@ async function main(): Promise<void> {
   const { existsSync } = await import('node:fs')
   // with where each one is, so a pasted "lat, lon" (the page's go-to) can find the city it falls in
   const { readFileSync } = await import('node:fs')
-  const index = CITIES.filter((c) => existsSync(resolve(OUT, `${c.id}.json`))).map((c) => {
+  // `live` gates the menu, not the bake: an unfinished city's package can sit in public/cities without being
+  // offered to the player, so baking one to look at it does not put it in front of anybody.
+  const index = CITIES.filter((c) => c.live && existsSync(resolve(OUT, `${c.id}.json`))).map((c) => {
     const pkg = JSON.parse(readFileSync(resolve(OUT, `${c.id}.json`), 'utf8')) as CityPackage
     return { id: c.id, name: c.name, lat: pkg.origin.lat, lon: pkg.origin.lon, radius: pkg.radius }
   })

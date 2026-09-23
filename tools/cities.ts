@@ -32,6 +32,13 @@ export interface CitySpec {
    */
   detail?: { west?: number; east?: number; south?: number; north?: number }
   /**
+   * Whether the city is offered to the player. The work has gone into San Francisco and Central Paris, and a
+   * half-built city in the menu is worse than no city: the others keep their specs (the boxes, the style
+   * weights, the skylines are all real work worth keeping) but stay out of the menu until they are finished.
+   * `npm run bake <id>` still bakes one by name — this gates only what index.json lists.
+   */
+  live?: boolean
+  /**
    * What the ground is where OSM mapped nothing — yards, verges, the inside of a block. Most cities are green
    * there; a dry one is not. Painting it concrete makes every courtyard read as a car park.
    */
@@ -84,6 +91,7 @@ export const CITIES: CitySpec[] = [
      * About 6.7 × 3.5 km. Centred on the Palais-Royal, so the ride starts in the middle of it.
      */
     id: 'paris-centre',
+    live: true,
     region: 'paris',
     skyline: [
       // placeholders on the horizon until each has its model (PARIS_EXPAND §6 step 4); those beyond the box stay
@@ -148,6 +156,7 @@ export const CITIES: CitySpec[] = [
      * the hills are the point: Russian Hill, Telegraph Hill, Pacific Heights all touch 17% and more.
      */
     id: 'san-francisco',
+    live: true,
     region: 'san-francisco',
     skyline: [
       // the middle of the main span (between the towers at 37.8141,−122.4772 and 37.8255,−122.4792), N 7° W
