@@ -22,6 +22,9 @@ import { resolve } from 'node:path'
 import { chromium } from 'playwright'
 import { fitForEntry } from './model-shots.ts'
 
+/* The dev server to drive; SHOTS_BASE lets a worktree agent point at its own port. */
+const BASE = process.env.SHOTS_BASE ?? 'http://localhost:5200'
+
 const ROOT = resolve(import.meta.dirname, '..')
 const arg = (n: string, f = ''): string => (process.argv.find((a) => a.startsWith(`--${n}=`)) ?? `=${f}`).split('=').slice(1).join('=')
 
@@ -86,7 +89,7 @@ let failed = 0
 for (const j of jobs) {
   try {
     const { model, fit, spin } = await fitForEntry(j.name, city)
-    await page.goto(`http://localhost:5200/?model=${model}`)
+    await page.goto(`${BASE}/?model=${model}`)
     await page.waitForFunction('window.modelReady === true', null, { timeout: 30_000 })
     const b = await page.evaluate(`window.__rebuild(${JSON.stringify(fit)})`) as { min: number[]; max: number[] }
     const H = b.max[1]

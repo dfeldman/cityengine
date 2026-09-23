@@ -4,6 +4,9 @@
  *   node --experimental-strip-types tools/model-shots.ts --model=goldenGateBridge --views=bridge [--out=docs/shots/models]
  */
 import { chromium } from 'playwright'
+
+/* The dev server to drive; SHOTS_BASE lets a worktree agent point at its own port. */
+const BASE = process.env.SHOTS_BASE ?? 'http://localhost:5200'
 import { mkdirSync } from 'node:fs'
 const arg = (n: string, f = ''): string => (process.argv.find((a) => a.startsWith(`--${n}=`)) ?? `=${f}`).split('=').slice(1).join('=')
 let model = arg('model')
@@ -169,7 +172,7 @@ if (process.argv[1]?.endsWith('model-shots.ts')) {
   const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist'] })
   const page = await browser.newPage({ viewport: { width: 1400, height: 800 } })
   page.on('pageerror', (e) => console.log('page error:', e.message.slice(0, 300)))
-  await page.goto(`http://localhost:5200/?model=${model}${arg('size') ? `&size=${arg('size')}` : ''}${arg('time') ? `&time=${arg('time')}` : ''}`)
+  await page.goto(`${BASE}/?model=${model}${arg('size') ? `&size=${arg('size')}` : ''}${arg('time') ? `&time=${arg('time')}` : ''}`)
   await page.waitForFunction('window.modelReady === true', null, { timeout: 60_000 })
   // --views=auto: framed on the model's own bounds, whatever it is (furniture, a vehicle, a landmark at --size)
   // --fit=hx,hz,height: a footprint by hand, for a builder whose shape depends on it (a pier: long and narrow)
