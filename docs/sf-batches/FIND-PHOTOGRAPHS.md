@@ -50,6 +50,12 @@ has since changed. A wrong picture is worse than none, because somebody will mod
    - the ARCHITECT plus the building, if OSM or Wikipedia names one;
    - any former name (`old_name`, `alt_name` in OSM).
 
+   **Go SEVERAL results deep, and do not stop at the first hit.** Our web search is Bing-backed, not
+   Google, and the two rank differently: the best available photograph of the ICA is the SIXTH image on
+   Google Images, while Bing's first is merely acceptable. The good picture is routinely below the fold. Pull
+   a dozen candidates, open them, and choose on the VIEW — a lower-ranked three-quarter shot beats a
+   top-ranked flat elevation every time. Ranking reflects popularity, not usefulness for modelling.
+
 3. **Sources worth trying by name**, roughly in order of how reliable the pictures are:
    Wikipedia and Wikimedia Commons (check the article, not just a geosearch — see the warning below);
    the building's own or its owner's site; architecture press and databases; a city or heritage register;
