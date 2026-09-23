@@ -45,6 +45,43 @@ wrapped version, so the modeller knows not to go looking for it.
 
 ---
 
+## Batch mode — several buildings in one session
+
+You will usually be given a LIST of buildings, because the setup cost is the same for one as for ten and
+paying it ten times is the main thing that makes this expensive. Work them in order, and keep each
+building's images in its own directory under the output root:
+
+    <OUT>/<osm-id>/            the kept images and that building's photos.md
+    <OUT>/REPORT.md            one table for the whole batch
+
+**Do the cheap thing first, for every building, before any web searching:**
+
+    node --experimental-strip-types tools/sf-photos.ts --osm=way/<ID> --out=<OUT>/<osm-id>
+
+Then **open what it returned and judge it**: is this good enough to model a building from? Be strict — the
+test is whether a modeller could get the massing, the corner treatment and the proportions from it. Mapillary
+is a dashcam-and-phone corpus; it is often distant, off-axis, or pointed at the wrong side of the street.
+
+- **Good enough** → keep it, note it, move to the next building. You are done and it cost nothing.
+- **Not good enough** → go to the web for THAT building, as below.
+
+Report which buildings needed the web and which did not. That ratio is the single most useful number this
+exercise produces, because it says whether the built-in fetch is earning its place.
+
+## Keep the good, DELETE the rest
+
+**Every file left in the output directory will be handed to a modelling agent as if it were reference.** So
+an unusable image is not neutral, it is actively harmful: it wastes the modeller's attention and may get
+modelled.
+
+- Delete images that are distant, off-axis, obstructed, of the wrong building, or simply worse than
+  something else you kept. `rm` them — do not leave them "just in case".
+- Two to four good images per building. If you have six, keep the best three.
+- If a building ends with NOTHING usable, that is a legitimate result: leave its directory empty, say so in
+  `photos.md`, and flag it in the report. Do not pad it with weak images.
+
+---
+
 ## Where to look, in order
 
 1. **`tools/sf-photos.ts`** — the project's own street-level fetch, from Mapillary.
