@@ -51,6 +51,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 41 | fixed | Quick landmarks: the hundreds of unusual buildings people steer by (hospitals, schools…) | user, 2026-09-22 |
 | 42 | fixed | Strangers walk down the middle of the path: they should step aside (or wait) for the rider | user, 2026-09-22 |
 | 43 | fixed | A ride edge runs through a wall at 48.867116, 2.311297 (after a real archway) | user, 2026-09-22 |
+| 65 | open | Spun off onto a side street at the Jones/Sacramento junction, 37.793041 −122.401990 | user, 2026-09-22 |
 
 ---
 
@@ -954,3 +955,21 @@ it sets a destination"). Double-click now goes there too, and the large map says
 **Seen:** user riding, 2026-09-22: "tons of z fighting on this building". Market at Montgomery — two surfaces in
 the same place: most likely a landmark model over the OSM building it should have replaced (the entry names one
 id and the bake kept another), or two entries on one building.
+
+## 65. Spun off onto a side street at the Jones/Sacramento junction (37.793041, −122.401990)
+
+**Seen:** user riding, 2026-09-22: "the intersection at 37.793041, −122.401990 is messed up, so if you're zooming
+down the hill, you spin off onto a side street."
+
+On Nob Hill, a block from the city's own start point, so it is on the way out of almost every SF ride — which is
+why it is worth fixing early even though it is one junction.
+
+**Suspected:** the ride graph's choice of continuation through the junction, not the steering. Going straight
+should stay on the same named way; taking the side street means the through edge either is not the straightest
+continuation by bearing, or is not there at all (the two arms may have been merged or pruned). Speed coming down
+the hill makes it worse, because item H turns a press inside six seconds of a junction into a turn request, and
+at speed the whole junction is inside six seconds.
+
+**To check:** `tools/audit-ride.ts` and `tools/ride-near.ts` at that point; compare the edge bearings leaving the
+junction against the OSM ways, and check whether `mergeParallel` or the dead-end prune touched it. Re-test after
+the current re-bake, since the ride graph is rebuilt by it.
