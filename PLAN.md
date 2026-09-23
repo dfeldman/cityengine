@@ -1322,6 +1322,47 @@ description — which is exactly what the REFACING tier does, and it produced ex
 The brief now symlinks the token. **Worth re-running before drawing conclusions about modelling quality: so
 far this compares two models at doing refacing, not at doing modelling.**
 
+#### Count the WHOLE cost: measured agent sessions, 2026-09-22
+
+The owner: *"Ok we need to count tokens. Now we've already burnt 65k tokens JUST on researching a good
+picture."* Correct, and the accounting in [LADDER.md](docs/LADDER.md) §8 does not survive it.
+
+**Every agent session run today, measured:**
+
+| task | model | tokens | tool calls |
+|---|---|---|---|
+| Columns in the shared kit | Opus | 190k | 108 |
+| One Maritime Plaza, modelled | Opus | 179k | 103 |
+| 245 Market | Sonnet | 122k | 54 |
+| 245 Market | Haiku | 122k | 78 |
+| ICA, first attempt | Sonnet | 82k | 25 |
+| ICA, first attempt | Haiku | **65k** | 29 |
+| Finding ONE photograph | Sonnet | running | — |
+
+**LADDER.md's ~4.2k for a sonnet model and ~14k for an opus one are not session costs.** They count the
+model's output for a building inside a batch that already had the brief, the kit and the photographs loaded.
+A standalone agent doing one building end to end — reading the brief, fetching references, writing the
+builder, starting a server, screenshotting, verifying — costs **65k–190k**. That is 15–45× the figure the
+tier table is built on, and it is the figure that matters when the work is dispatched one building at a time.
+
+Two consequences:
+
+1. **Batching is not an optimisation, it is the whole economy.** The 4.2k marginal number is real, but only
+   inside a batch. Twenty buildings in one session share the brief, the kit and the tooling setup; twenty
+   sessions pay for all of it twenty times. Any plan to model 500+ corridor buildings must batch, and the
+   per-building cost to plan with is the marginal one ONLY if the batch is real.
+2. **Research must become a TOOL, not an agent.** Paying a model 65k tokens to find one photograph cannot
+   scale to 800 buildings. And it should not be necessary: the camera position for a good three-quarter view
+   is COMPUTABLE — take the footprint, pick the corner most open to the street, stand back along the
+   bisector, and fetch. That is arithmetic we already do in `tools/photo.ts`, which aims at a face today for
+   a documented reason that is right for slabs and wrong for blocks. **A deterministic corner-view fetch
+   would cost approximately zero tokens and produce exactly the image that was hard to find by hand.**
+   Bug #84 (a Street View key) is the same idea aimed at debugging; this is it aimed at the pipeline.
+
+**So the order of work is: fix the fetch, then batch the modelling.** A research agent is the right thing
+for the handful of buildings a tool cannot photograph — a set-back pavilion, a courtyard, something behind a
+tower — and the wrong thing for the other 95%.
+
 #### The bottleneck is RESEARCH, not modelling (user, 2026-09-22)
 
 After seeing a clear street-level photograph of the ICA, the owner: *"given THIS image, I'm pretty confident
