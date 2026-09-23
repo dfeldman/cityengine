@@ -76,6 +76,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 87 | open | Macy's, Saks and Neiman Marcus signs are ugly block-bitmap letters | user, 2026-09-22 |
 | 88 | open | Z-fighting across Neiman Marcus (painted diamonds 0.04 m off the wall) | user, 2026-09-22 |
 | 89 | needs a coordinate | 350 and 433 California, and a tower complex too black — addresses not found in OSM | user, 2026-09-22 |
+| 90 | open | Full-height white piers modelled as a punched grid (425/388 Market, PG&E) | user, 2026-09-22 |
 
 ---
 
@@ -1436,3 +1437,36 @@ genuinely unique). That one has its own builder and is `fromRecipe('granite-eigh
 `wall: [0.55, 0.5, 0.47]`, a mid grey-brown — not black.
 
 **Do not guess.** Get the coordinate, then fix the colour from a photograph as the project's method requires.
+
+## 90. Full-height white piers modelled as a punched grid, losing the effect
+
+**Seen:** user riding, 2026-09-22 at 37.792396, −122.397366: "many of the buildings here have distinctive
+floor-to-roof white columns. we modeled them, but as a traditional grid, losing the effect." And then, at
+37.793967, −122.400830: "we DO have one building that worked on... so we understood that style."
+
+**The kit already does this and the buildings are not asking for it.** `Face` has a `kind: 'fins'` —
+vertical piers running the height of a tier — and the `concrete-piers` recipe is built from it. Some
+buildings use it and look right; their neighbours ask for `punched` or `bands` instead and come out as a
+grid. Checked in `src/render/landmarks/sf/districts/market-east.ts`:
+
+| building | asks for | should be |
+|---|---|---|
+| **425 Market** (156 m) | `punched` — a grid of holes | `fins` |
+| **388 Market** (118 m) | `bands` — horizontal, the opposite reading | probably `fins` |
+| 333 Market (149 m) | **`fins`** | ✅ already right — this is the one that works |
+| **PG&E Building**, 77 Beale (154 m) | `fromRecipe('granite-eighties')` | `concrete-piers` — the real building is white vertical piers |
+| **50 Beale** (105 m) | `fromRecipe('glass-tower')`, dark | worth a look; the real one is pale and vertical |
+
+Near the point where it DOES work stands Embarcadero Center West (123 m), whose towers are exactly this
+idiom, so the style is understood and applied — just not consistently.
+
+**So this is not a kit gap; it is an assignment problem, and it is cheap to fix.** A `punched` grid and a run
+of full-height piers are the same triangle count and one word apart. Worth sweeping every SF tower of that
+era for `punched`/`bands` where a photograph shows verticals, rather than fixing the two reported.
+
+Related: the same failure in a different family is #81 (285 Market, "a skyscraper with classical columns") —
+a style assigned without looking at the building.
+
+**Possible lead for #89:** the nearest named neighbours at the working point are `350 Sansome` and
+Embarcadero Center West. #89 could not find "350 California" in OSM — **350 Sansome** may be the building
+meant. Worth putting to the user rather than assumed.
