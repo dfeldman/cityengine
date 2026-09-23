@@ -258,6 +258,17 @@ shows what any of them draw.
 An API surface listed by name does not get used; one with a signature and a sentence about what it draws
 does. The fix costs nothing and would have changed the outcome on at least three of these ten buildings.
 
+### Why Opus was not tested
+
+Deliberate. The owner: *"for fairness, once we have some sonnet runs that are actually working, we should
+compare with opus. opus-low is only about 50% more expensive than sonnet. but the actual goal is to lower
+costs here, so opus experiments don't give us a huge amount of new information."*
+
+We already know Opus models these buildings well — One Maritime Plaza, built by Opus earlier in the same
+session, has real X-bracing from real photographs. The open question was whether anything CHEAPER works, and
+an Opus run would have answered a question nobody asked. Worth running once the Sonnet path produces
+genuinely good buildings, as a ceiling to measure against rather than a candidate.
+
 ## Conclusions
 
 1. **Batch. It is the biggest single lever and it is not close** — 82k tokens per building alone against
