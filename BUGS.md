@@ -52,6 +52,9 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 42 | fixed | Strangers walk down the middle of the path: they should step aside (or wait) for the rider | user, 2026-09-22 |
 | 43 | fixed | A ride edge runs through a wall at 48.867116, 2.311297 (after a real archway) | user, 2026-09-22 |
 | 65 | open | Spun off onto a side street at the Jones/Sacramento junction, 37.793041 −122.401990 | user, 2026-09-22 |
+| 66 | open | Salesforce Park sits slightly wrong and cuts through neighbouring buildings | user, 2026-09-22 |
+| 67 | open | Z-fighting across Salesforce Park | user, 2026-09-22 |
+| 68 | open | Minimised landmark box disappears for good when clicked | user, 2026-09-22 |
 
 ---
 
@@ -973,3 +976,50 @@ at speed the whole junction is inside six seconds.
 **To check:** `tools/audit-ride.ts` and `tools/ride-near.ts` at that point; compare the edge bearings leaving the
 junction against the OSM ways, and check whether `mergeParallel` or the dead-end prune touched it. Re-test after
 the current re-bake, since the ride graph is rebuilt by it.
+
+## 66. Salesforce Park sits slightly wrong and cuts through neighbouring buildings
+
+**Seen:** user riding, 2026-09-22: "salesforce park is in slightly the wrong place, it intersects a bunch of
+buildings (or the buildings are incorrect records)."
+
+**NOT a misplacement — measured, 2026-09-22.** The entry is
+`{"lat": 37.7891166, "lon": -122.3968718, "size": [438, 56], "front": 45}`. Fitting a minimum-area box to the
+real OSM footprint of `way/542375290` (227 points, from the local extract) gives **436.5 x 55.3 m at 44.7 deg,
+centred 37.7891072, -122.3968767**. The entry matches that to about a metre and a degree. Whoever placed it
+measured it properly.
+
+**The real cause: the transit centre is not a rectangle, and the entry can only be one.** It curves and tapers
+over its 438 m; its min-area box is a poor cover, which is why the ring centroid (37.7889977, -122.3970237)
+sits 19 m from the box centre. A straight rectangle around a curved building necessarily swallows ground the
+building does not occupy, and at the ends that ground has other people's buildings on it. That is the brick
+building the rider sees the deck pass through.
+
+**Fix:** stop standing a rectangle in for it — build on the actual ring. The entry already names
+`way/542375290` and `relation/8524888`, but `atPoint` in render/landmarks.ts (`e.lat && e.lon && e.size`) makes
+point-and-size win over the footprint. The note explains why that was done: fitting to the FIRST of several
+parts came out a third of the size and off to one side. So the fix is to fit the whole relation (or the named
+way, which is the full outline) rather than to fall back to a hand-placed box. Compare Oracle Park, which hit
+the same problem and solved it by matching its own embedded survey outline against the baked ring.
+
+**Related and separate: the deck has no plants** ("no plants and it goes through a building"). That is the
+rooftop-planting gap, not this bug: `Planting` carries no `y`, `PackedArea` no `level`, and a `ParkRule` is
+`(x, z, kind)`, so nothing can place a tree 21 m up. Salesforce Park is `level=3`. The city's trees load fine
+(they are visible at the far end of the deck in the rider's own screenshot); it is this deck that cannot have
+any.
+
+## 67. Z-fighting across Salesforce Park
+
+**Seen:** user riding, 2026-09-22: "the park has a lot of z fighting."
+
+Two surfaces at the same height over the roof deck: most likely the park's own ground plane against the transit
+centre's roof cap, or the planting beds drawn at exactly deck level. Wants a few centimetres of separation, or
+one of the two surfaces removing. Related to #64, which is the same symptom on a building at Market/Montgomery.
+
+## 68. Dismissing the landmark box minimises it, and clicking the minimised form loses it for good
+
+**Seen:** user, 2026-09-22: "you can dismiss the landmarks hud box, but if you click the minimized form, it
+disappears completely and never comes back."
+
+So the minimised chip's click handler is removing the element (or setting a hidden state with nothing left to
+toggle it) instead of restoring the panel. There is then no way back short of a reload. Wants the minimised
+form to be a toggle: click restores the box.
