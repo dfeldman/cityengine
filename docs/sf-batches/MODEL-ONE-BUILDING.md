@@ -184,7 +184,12 @@ Run these in order, from your worktree root:
 ```bash
 ln -s /Users/dfeldman/streetrunner/node_modules node_modules
 ln -s /Users/dfeldman/streetrunner/tools/cache tools/cache 2>/dev/null || true
+ln -s /Users/dfeldman/streetrunner/.mapillary_token .mapillary_token 2>/dev/null || true
 ```
+
+**Do the `.mapillary_token` symlink BEFORE §6.** The token is gitignored, so it is not in your worktree, and
+without it the photograph fetch returns nothing — a run on 2026-09-22 modelled a building from a one-line
+description for exactly this reason and produced a featureless box.
 
 Then add a private Vite cache dir to `vite.config.ts` in YOUR worktree — **this matters**: Vite's optimized
 deps live in `node_modules/.vite`, and a second server sharing it will corrupt the running one (every `.glb`
