@@ -93,6 +93,53 @@ modelled.
 
 ---
 
+## Try WIKIMEDIA COMMONS FIRST — it is an API, not a web search
+
+**This is the cheapest and most reliable source found, and it should be your first move after Mapillary.**
+Commons serves bots by design, is public domain, needs no key, and — crucially — its **HABS collection**
+(the Historic American Buildings Survey) holds large-format architectural photographs of exactly the kind of
+building we model. Their filenames state the view: *"EXTERIOR, CORNER DETAIL VIEW, LOOKING NORTHWEST"*.
+
+Three calls. Find the category, list its files, get a JPEG thumbnail.
+
+```bash
+UA='streetrunner-refs/1.0 (research)'
+
+# 1. find a category or file — try the building name, the address, and "HABS"
+curl -s -G -H "User-Agent: $UA" 'https://commons.wikimedia.org/w/api.php' \
+  --data-urlencode 'action=query' --data-urlencode 'list=search' \
+  --data-urlencode 'srsearch=Anglo London Paris National Bank San Francisco' \
+  --data-urlencode 'srnamespace=6|14' --data-urlencode 'format=json'
+
+# 2. list the files in a category
+curl -s -G -H "User-Agent: $UA" 'https://commons.wikimedia.org/w/api.php' \
+  --data-urlencode 'action=query' --data-urlencode 'list=categorymembers' \
+  --data-urlencode 'cmtitle=Category:<NAME>' --data-urlencode 'cmtype=file' \
+  --data-urlencode 'cmlimit=50' --data-urlencode 'format=json'
+
+# 3. get a PREVIEW-SIZED JPEG — this works for TIFFs too, which is the trick
+curl -s -G -H "User-Agent: $UA" 'https://commons.wikimedia.org/w/api.php' \
+  --data-urlencode 'action=query' --data-urlencode 'prop=imageinfo' \
+  --data-urlencode 'titles=File:<EXACT NAME>.tif' \
+  --data-urlencode 'iiprop=url|size|mime' --data-urlencode 'iiurlwidth=1280' \
+  --data-urlencode 'format=json'
+# → imageinfo[0].thumburl, a .jpg even when the original is a .tif. Then curl -L -o that URL.
+```
+
+**Do not be put off by a TIFF.** `iiurlwidth` makes Commons render any file to a JPEG of the width you ask
+for, so a 200 MB HABS scan becomes a 300 KB 1280 px JPEG. A research run on 2026-09-22 found a 33-image HABS
+collection for a building and abandoned it as "large format, preview JPEGs not accessible" — they were three
+API calls away, and one of them turned out to be the best photograph of that building anywhere.
+
+**Read the filename before downloading.** HABS names say the view, so you can pick the corner or elevation
+shot without fetching everything. Prefer `GENERAL VIEW` and `ELEVATION` over `DETAIL` and any `INTERIOR`.
+
+The photographs are often decades old, so **check nothing important has changed** — but for a stone bank
+built in 1909, a 1960s survey photograph is frequently better than anything taken since, and it is properly
+lit, square-on and unobstructed.
+
+---
+
 ## Where to look, in order
 
 1. **`tools/sf-photos.ts`** — the project's own street-level fetch, from Mapillary.
