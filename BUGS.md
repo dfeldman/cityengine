@@ -81,6 +81,7 @@ Status: **open** · **fixing** · **fixed** (with proof) · **wontfix** (with wh
 | 92 | open | pgeBuilding is claimed by two entries; 77 Beale wears 245 Market's 1925 design | found 2026-09-22 |
 | 93 | open | Trees grow inside buildings; choose species by the clearance available | user, 2026-09-22 |
 | 94 | open | Ground cannot decide its height at 37.793488, −122.405218 (see #70, #71, #72) | user, 2026-09-22 |
+| 95 | open | Zany intersection at Geary/Laguna: three parallel carriageways plus a pedestrian mall | user, 2026-09-22 |
 
 ---
 
@@ -1659,3 +1660,32 @@ candidate mechanisms already written up cover this one too:
 each level across their own width, meeting at a junction where their levels disagree, is exactly a ground
 that jumps. Worth sampling the baked terrain and the ride-edge heights along Montgomery and Washington and
 plotting where they part company, rather than looking at the one point.
+
+## 95. Zany intersection at Geary/Laguna, 37.785027, −122.428014
+
+**Seen:** user riding, 2026-09-22: "zany intersection here."
+
+Geary Boulevard at Laguna and Buchanan, in Japantown. What OSM has there, from the local extract:
+
+| way | tag | |
+|---|---|---|
+| `w84654229`, `w84733284`, `w84733260` | `primary`, 3 + 3 + 4 lanes | **Geary as THREE parallel carriageways** — the through lanes and a frontage road either side |
+| `w84733265` | `service`, "Buchanan Street" | |
+| `w148481453`, `w546510349` | `footway`, "Buchanan Street" | the Japantown pedestrian mall |
+| `w12437584` | `pedestrian`, "Osaka Way" | |
+| `w12430007`, `w97337363` | `service`, "Hemlock Street" | |
+
+**This is the hardest shape the ride graph has to deal with, and all of it at one junction:** a boulevard
+that is three separate ways rather than one, crossed by a street that is *partly a service road and partly a
+pedestrian mall carrying the same name*. `mergeParallel` exists to fold a dual carriageway into one ride
+edge, and `collapseClusters` with `wideJunctions` exists because "an American grid's junctions are wide: a
+boulevard with service lanes is one junction, not four" (#52). Both are being asked to do their job at once,
+on three carriageways instead of two.
+
+Note there is NO `bridge`, `tunnel` or `layer` here, so the Geary underpass is not the cause — that is
+further west. This is purely the parallel-carriageway merge.
+
+**To check:** `tools/audit-ride.ts` and `tools/ride-near.ts` at the point; then whether `mergeParallel`
+handles THREE parallel ways (it was written for two), and whether a `service`-tagged way sharing its name
+with a `footway` is being joined to it. Worth comparing against #65 (spun off onto a side street at
+Jones/Sacramento), which may be the same machinery failing on a simpler case.
