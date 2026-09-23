@@ -50,6 +50,16 @@ model later. Bailing out is correct; a heroic dome is worth less than three good
    lit windows. `tests/landmarks.test.ts` holds every builder under 25k triangles.
 7. **Refresh the register** and commit.
 
+## Photographs are reference, never material
+
+**No photograph reaches the game.** References — Mapillary frames, Commons images, an orthorectified facade —
+exist so that a person or a model can SEE the building, and what they produce is geometry and a palette. A
+photograph is never used as a texture, a decal, a billboard or a facade page.
+
+The reason is consistency rather than licensing: the city is drawn in one stylised idiom, and a single
+photographic building standing among stylised neighbours reads as a mistake however good the photograph is.
+A city that is 99% renders and 1% reprojected photographs looks worse than one that is 100% renders.
+
 ## Writing a builder
 
 ```ts

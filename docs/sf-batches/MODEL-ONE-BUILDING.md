@@ -21,6 +21,10 @@ about 15,000. Read the files this document names and no others.
   box with a grid on it is the default failure, not an outcome.
 - **Never claim a photograph you did not open.** If the reference fetch fails, say so and work from general
   knowledge — that is an acceptable outcome, honestly reported.
+- **The photographs are REFERENCE, never material.** Look at them, then build geometry and choose colours.
+  Never use a photograph as a texture, a decal or a billboard in the city: it is drawn in one stylised idiom,
+  and a single photographic building among stylised neighbours reads as a mistake however good the
+  photograph is.
 - **Aim for a gist, not accuracy.** This is a game seen from a bicycle at 25 km/h. Get the massing, the
   proportions, the colour and the one thing that makes the building recognisable. Skip everything else.
 

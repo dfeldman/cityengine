@@ -1,6 +1,9 @@
 # Find photographs of ONE building
 
-Your whole job is to come back with **pictures good enough to model a building from**. You do not model
+Your whole job is to come back with **pictures good enough to model a building from**. They are reference
+for a modeller's eye and nothing else — **no photograph ever ends up in the game**, as a texture or
+otherwise, because the city is drawn in one stylised idiom and a photographic building among stylised
+neighbours reads as a mistake. What you find becomes geometry and a palette, never pixels on a wall. You do not model
 anything, and you do not describe the architecture — a separate agent does that, and it must do its own
 seeing. Judge the PICTURE, not the building.
 

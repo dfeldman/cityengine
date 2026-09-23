@@ -1443,6 +1443,15 @@ The owner, 2026-09-23: *"theoretically, we could even apply filters to orthorect
 a square-on view (like a tilt-shift photo or photoshop skew). it's not going to work at all for a supertall
 skyscraper, but for a smaller building that's all in frame, it might work."*
 
+**A PHOTOGRAPH NEVER REACHES THE GAME.** The owner, 2026-09-23: *"I do not want to use photos in the final
+result. a city that's 99% renders and 1% reprojected photos will look awful, even if the photos are fine.
+The orthorectification is only to get a better quality image to feed to refacing or modeling."*
+
+So a rectified facade is **an input to a person or a model, and never a texture, a decal or a billboard in
+the city**. The reason is consistency, not licensing: the city is drawn in one stylised idiom, and a single
+photographic building among stylised neighbours reads as a mistake however good the photograph is — it would
+look worse than the render it replaced. Everything the pipeline produces ends as GEOMETRY and a palette.
+
 **This is nearly free once item AD's simulated framing exists**, because it is the same projection. If we can
 compute where a facade's four corners fall in the image, we can compute the homography that maps them to a
 rectangle — that is all a perspective crop is. Four point pairs, one 3×3 matrix, one warp.
