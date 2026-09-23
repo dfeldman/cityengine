@@ -66,6 +66,22 @@ collide.
 - **What the kit was missing** — named recipes, missing parts. The project's per-building cost fell from
   ~14k tokens to ~4.2k when recipes and a parts kit arrived, so this may matter more than the model choice.
 
+## Findings so far
+
+### The briefs under-specify the API in two ways that cost every run iterations
+
+Caught by typechecking the experiment files while the runs were still working:
+
+- **`fromRecipe`'s import path is never given.** `MODEL-A-BATCH.md` lists the recipe names and the call
+  shape but not the module, and E2 imported it from `tower.ts`, where it does not exist.
+- **`Crown` needs more than a `kind`.** Both briefs list the twelve crown kinds as if the kind were enough;
+  `{ kind: 'parapet' }` does not typecheck because `height` is required. E2 and E8 both wrote exactly that.
+
+Neither is a modelling mistake — both are a documentation gap, and both cost a compile-fix cycle in runs
+that were told not to go exploring. **An API summary that lists names without signatures buys less than it
+looks.** The fix is to give the import line and one complete literal per type, which is what the worked
+example does and is why the worked example matters more than the reference table.
+
 ## Results
 
 *(pending)*
