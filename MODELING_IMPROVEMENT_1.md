@@ -94,6 +94,48 @@ example does and is why the worked example matters more than the reference table
 | E5 | Haiku | **1** | fast | 82,521 | 53 | 1 | 0 | **82,521** |
 | E1 | Haiku | 10 | standard | 100,248 | 42 | 10 | 0 | **10,025** |
 | E7 | Haiku | 10 | **fast** | 85,042 | 47 | 10 | 0 | **8,504** |
+| E9 | Haiku | **20** | fast + parts named | 135,682 | 59 | 19 | 1 | **7,141** |
+
+### Twenty is cheaper than ten, and quality did not fall off
+
+E9 modelled nineteen of twenty at **7,141 tokens each** — the cheapest run — and bailed correctly on the
+twentieth (St Mary's Square, which is a park over a garage, not a building). The per-building cost keeps
+falling with batch size:
+
+| batch | tokens/building |
+|---|---|
+| 1 | 82,000 |
+| 5 | ~20,000 |
+| 10 | 8,500–14,000 |
+| **20** | **7,141** |
+
+The curve is flattening, as it should — the fixed cost is nearly amortised by ten, and twenty mostly buys
+the last of it. **There is no sign of attention decaying across a longer list**, which was the risk.
+
+### Naming two functions in the prompt changed the output immediately
+
+E9's prompt differed from E7's in one paragraph: it named `arcade()` and `colonnade()` with their
+signatures and said earlier runs had ignored them. The result:
+
+| | `arcade()` | `colonnade()` |
+|---|---|---|
+| E1–E8 (nine runs, 65 buildings) | **1** | 5 |
+| **E9 alone** (one run, 19 buildings) | **3** | **8** |
+
+**One paragraph moved usage of a part from once-in-nine-runs to eleven-in-one.** That is the documentation
+hypothesis confirmed before the catalogue was even built.
+
+### But calling the right function badly is not better
+
+The renders tell the other half of the story. E9's arcades and colonnades appear as **thin white horizontal
+bars with stick-like fragments hanging beneath, floating at the base of the building** — on Leidesdorff, the
+Exchange Block, the Curb Exchange and 350 Sansome. They are recognisably *something*, and they are not
+arcades.
+
+So naming the part got it called; nothing told the model what a correct call looks like, and the defaults do
+not rescue a naive one. **This splits the documentation problem in two**: discovery (solved by naming, and
+better by the catalogue) and correct use (needs a worked example per part, sane defaults, and ideally a
+render the model can compare against).
 
 ### Weighted by price, not by token — Haiku batching is an order of magnitude cheaper
 
