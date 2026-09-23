@@ -135,6 +135,31 @@ modelled.
 
 ---
 
+## Preview resolution is enough, and some hosts will not serve you
+
+**You are not making a print.** A modelling reference has to show massing, proportions, the corner
+treatment and the colour, and all of that is readable at roughly **600–1200 px on the long edge**. The image
+the search result hands you, or a page's `og:image` preview, is almost always sufficient. Take it and move
+on.
+
+Do NOT chase a full-resolution original, hunt for a CDN path, or try to get round a paywall for a bigger
+file. **A clean 800 px three-quarter view beats a 4000 px one you spent ten tool calls failing to fetch.**
+
+**Hosts known not to work, as of 2026-09-22 — do not spend attempts on them:**
+
+| host | what happens |
+|---|---|
+| **Flickr** | blocks automated fetches. Skip its results entirely; do not try to derive the file URL |
+| LoopNet | HTTP 403 to bots |
+| an architect's own CMS site (e.g. SOM) | serves 140 px lazy-loaded thumbnails; the real photographs are not in the static HTML |
+| Getty | the detail page is heavy, but a direct `media.gettyimages.com` JPEG has worked |
+
+**One attempt per host, then move on.** If two or three fetches in a row fail for a building, keep the best
+image you already have, note it, and go to the next building. The cost of this exercise is being measured,
+and time spent fighting a host is the exact waste to avoid.
+
+---
+
 ## Verify every image is actually the building
 
 **This is the part that has gone wrong before.** A Commons geosearch on this project once scored "20 of 20
