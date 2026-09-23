@@ -1437,6 +1437,47 @@ and the ICA's corner piers are the building.
 A web-research agent then costs almost nothing, because it is reserved for the residue: a building behind a
 tower, in a courtyard, or one the camera car never passed.
 
+### AD. Get much better at Mapillary — one source, many frames, the building outlined
+
+The owner, 2026-09-22, after using Mapillary's own website: *"I can get at least 10 decent shots of the ICA
+building. Yes it's a bit obscured by trees, but it's not bad. I can also see tall skyscrapers in frame by
+looking UP. Same with Fugazi Bank, there were actually whole images of it from across the street rather than
+right next to it. If we stick to the 360 degree Mapillary captures, and improve our code GREATLY to take
+many images from Mapillary and highlight where the building SHOULD be in the images based on our lot data to
+the modeling agent, I think we may be able to get by with that one source."*
+
+**The imagery is there. Our extraction is what is failing.** That is a much better problem to have than a
+closing web, and it is ours to fix: no blocking, no ranking, no decoy, a token we hold, and a 360 frame that
+can be re-aimed anywhere.
+
+What `tools/photo.ts` does today, and what is wrong with it:
+
+| now | the fault |
+|---|---|
+| returns one or two frames | the owner found TEN good ones by hand. One bad pick sinks the building |
+| `ideal` distance caps at **70 m**, and rejects anything under `height × 0.5` | a tall building needs to be seen from ACROSS THE STREET or a block away. The cap fights exactly the shot that works |
+| tilts up `min(40, up × 0.55)`, then crops to 0.85 of frame height | **under-tilts and then cuts the top off.** The owner's point that you can see a skyscraper "by looking UP" is precisely what this prevents |
+| `mark()` draws a fixed band `0.2 × width` at the centre | it marks the middle of the picture, NOT the building. It cannot say "the building is the left third, behind that tree" |
+| `score` still adds `+6` for a pano | dead weight: flat frames are already banned, so every candidate is a pano |
+
+**The change, in order of value:**
+
+1. **Project the building INTO the frame.** We know the camera's position, the reprojection (yaw, pitch,
+   FOV, size) and the footprint and height from the bake. So project the footprint's corners at ground and
+   at roof level and draw the actual silhouette — a quadrilateral, not a band. That tells a modelling agent
+   "this is the building, that is its neighbour, the bottom two storeys are behind a tree", which is the
+   difference between a useful frame and a confusing one. **This is the heart of the proposal.**
+2. **Return MANY frames, from several viewpoints** — eight or a dozen, deliberately spread around the
+   building rather than clustered. Let the modeller choose; it can see.
+3. **Fix the distance rule.** Prefer across-the-street and further for anything tall; raise the cap well
+   above 70 m; keep the near-rejection, which is sound.
+4. **Fix the tilt and the crop** so a tall building fits: tilt to include the roofline, and stop cropping the
+   sky away.
+5. Drop the dead pano penalty.
+
+If this works, the web step becomes the rare exception it should be — and the whole research problem goes
+back to being a tool rather than an agent.
+
 #### The bottleneck is RESEARCH, not modelling (user, 2026-09-22)
 
 After seeing a clear street-level photograph of the ICA, the owner: *"given THIS image, I'm pretty confident
