@@ -161,6 +161,32 @@ not rescue a naive one. **This splits the documentation problem in two**: discov
 better by the catalogue) and correct use (needs a worked example per part, sane defaults, and ideally a
 render the model can compare against).
 
+### The parts were broken. The models were right.
+
+Building the visual catalogue rendered all 53 parts in isolation, and two of them are **bugs that explain
+the failures this report had been attributing to the models**:
+
+- **`arcade()` draws no arches at all** (BUGS.md #96). The arch head is never filled, so it renders as a
+  picket fence over black rectangular slots — at every scale, with every argument. Photographed beside a
+  working colonnade at `docs/shots/kit/kit_arcade_vs_colonnade.png`.
+- **`classicalColumn` silently discards `order` below 6 m** (#97). `tierFor` picks the `far` tier, which
+  draws a tuscan slab whatever was asked for. That is every shopfront-height column a model will ever write.
+
+So E9 called `arcade()` three times, correctly identifying arcaded ground floors on Leidesdorff and the
+Curb Exchange, and got floating white bars because the function is broken. And E5 reported placing "four
+Corinthian columns" on a building whose render has none — **which I recorded as an unreliable self-report,
+and which was actually the kit discarding the order and drawing nothing at that scale.** I owe that run a
+correction.
+
+It also explains the statistic this whole report is built on. **`arcade()` has been used once in the entire
+hand-written corpus** — not because nobody could find it, but because anyone who tried it saw the result and
+went back to a punched face. A part that produces garbage teaches everyone to avoid it, and then looks like
+a discovery problem.
+
+`colonnade()` by contrast survives a naive call — slender and doric, but unmistakably a colonnade. **The
+asymmetry is the evidence**: one part works blind, the other does not, and the usage statistics follow
+exactly.
+
 ### I got the no-screenshot rule half wrong
 
 The owner: *"it doesn't KNOW the colonnades render wrong."* Correct, and it is my doing — every run was told
