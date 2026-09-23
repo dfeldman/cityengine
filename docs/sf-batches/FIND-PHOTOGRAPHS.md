@@ -126,6 +126,15 @@ very often titled with the street number, and a quoted phrase search cuts straig
 Quote the number and the street name together and leave off "Street"/"Avenue", which is often abbreviated or
 missing in a title. One call, near-perfect precision, no sifting. **Try this before anything else.**
 
+**Do NOT drop the street name to dodge spelling.** Tested — searching the number alone (`345 San Francisco`)
+to avoid Street/St/Avenue/Ave variation returns twelve images every time and **none of them within 200 m**,
+for four different buildings. A bare number matches anything that happens to contain it. The street name is
+what makes the query specific, so keep it and vary the SUFFIX instead if a first attempt misses.
+
+**Measured across ten buildings** with a quoted address plus a geotag check: four were verified outright,
+two returned images whose geotags placed them elsewhere (correctly rejected), and four returned no images at
+all. So expect this to work for roughly a third to a half, which is worth one cheap call every time.
+
 **Name search alone MISSES buildings whose file is titled by address.** The Strand Theatre returned nothing
 at all by name — yet Commons has a photograph of it, geotagged, called
 `2017 ACT The Strand 1127 Market Street.jpg`. No name query was ever going to find that reliably.
