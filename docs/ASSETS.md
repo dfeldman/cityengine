@@ -88,4 +88,5 @@ licences belong to Wikimedia and Mapillary, so the repo is not the right place t
 Untracking a file stops it growing the repo from here on; it does **not** shrink `.git`, which still holds
 every version ever committed. `.git` is around 730 MB for that reason. Getting it down means rewriting history
 with `git filter-repo` or BFG, which changes every commit hash and must be coordinated with anyone else who
-has a clone. That is a deliberate decision, not a cleanup — it is not done here.
+has a clone. That is a deliberate decision, not a cleanup — it is not done here. It is written up as a work
+item, with the commands and the caveats, in [PLAN.md](../PLAN.md) under "U. Rewrite the git history".

@@ -1011,6 +1011,32 @@ Done in the last stretch (details in R and LANDMARKS_PARIS.md):
   corners where two arms' crossings meet.
 - **Plane fighting on some facades** — seen in play, not yet reproduced in a still.
 
+### U. Rewrite the git history to drop the generated assets (2026-09-22)
+
+The working tree is down from 772 MB to 68 MB: `docs/shots/` (515 MB of screenshots) and `public/cities/`
+(190 MB of baked packages) are untracked and gitignored, and `docs/ASSETS.md` says how to rebuild everything
+that is no longer carried. That stops the repo GROWING.
+
+It does not shrink it. **`.git` is still about 730 MB**, because history holds every version of every PNG and
+every tile ever committed, and a fresh clone pays for all of it. Only a history rewrite gets that back.
+
+What it involves:
+
+- `git filter-repo --path docs/shots --path public/cities --invert-paths` (or BFG). filter-repo is the
+  maintained tool; `filter-branch` is deprecated and far slower.
+- Check first for anything else large that was ever committed and has since been deleted — it is still in
+  there. `git rev-list --objects --all | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' | sort -k3 -nr | head -40`
+  will name the biggest blobs. Likely candidates beyond the two above: `public/models/`, `public/sftrees/`,
+  `statues_to_model/`, the `__pycache__` `.pyc`, and any facade atlas revisions.
+- Then `git reflog expire --expire=now --all && git gc --prune=now --aggressive`.
+
+**Why it is not done yet, and the one thing to be careful about:** a rewrite changes EVERY commit hash. Every
+existing clone, branch and checkout of this repo becomes unrelated history and has to be re-cloned; anything
+referring to a commit by SHA (a note, a bug report, a pinned dependency) stops resolving. That is a decision
+about the repo, not a cleanup, so it wants to be done deliberately, at a moment when no other work is in
+flight, with a full backup copy of the directory taken first. Nothing in the working tree changes — only the
+history — so there is no risk to the current state of the game.
+
 ---
 
 ## Soon
