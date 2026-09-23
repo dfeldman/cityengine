@@ -1437,6 +1437,43 @@ and the ICA's corner piers are the building.
 A web-research agent then costs almost nothing, because it is reserved for the residue: a building behind a
 tower, in a courtyard, or one the camera car never passed.
 
+### AF. Orthorectify a facade — square it up like a tilt-shift
+
+The owner, 2026-09-23: *"theoretically, we could even apply filters to orthorectify a whole building so it's
+a square-on view (like a tilt-shift photo or photoshop skew). it's not going to work at all for a supertall
+skyscraper, but for a smaller building that's all in frame, it might work."*
+
+**This is nearly free once item AD's simulated framing exists**, because it is the same projection. If we can
+compute where a facade's four corners fall in the image, we can compute the homography that maps them to a
+rectangle — that is all a perspective crop is. Four point pairs, one 3×3 matrix, one warp.
+
+**What it buys, and why it is worth more than a tidier picture:** a rectified facade is MEASURABLE. Bay
+spacing, storey heights, window proportions and the solid-to-glass fraction can all be read straight off it
+instead of being guessed at through foreshortening. Those are exactly the parameters `Face` takes — `pitch`,
+`floor`, `solid` — which the classifier currently infers from OSM levels and a style's defaults. So this is
+not only a better reference for a modelling agent; it is a possible input to the FACADE GENERATOR, and to
+the refacing tier, which today works from two photographs and a line of text.
+
+**The honest limits:**
+
+- **Rectification cannot add information.** Stretching a foreshortened far end does not recover detail that
+  was never sampled. So compute the WORST ground sampling distance across the facade — metres per pixel at
+  the far corner — and reject below a threshold. That is a mechanical gate of the same family as the framing
+  score, and it is what tells us a building is too tall or too oblique before we waste the warp.
+- **A homography assumes a PLANE.** Curved fronts, bay windows, deep setbacks and corner towers will smear.
+  San Francisco has bay windows on a large fraction of its housing stock, so expect this to work best on
+  commercial and civic fronts and worst on exactly the residential streets that are most of the city.
+- **Occluders smear with everything else** — a street tree becomes a green streak across three bays.
+- **Supertall is hopeless**, as the owner says: the top is far away, heavily foreshortened and sampled at a
+  fraction of the pixels per metre of the base.
+
+**Where it should work well:** low and mid-rise, whole facade in frame, roughly planar — which is most of the
+city outside downtown, and precisely the buildings that get a classifier style rather than a model. That is
+the larger population by far.
+
+Worth doing AFTER the framing simulation, and worth measuring the same way: what fraction of facades clear
+the sampling-distance gate.
+
 ### AE. A reference for EVERY building — and a way to know when we have one
 
 The owner, 2026-09-23: *"I think with enough polish on these two different scripts, we can get good
