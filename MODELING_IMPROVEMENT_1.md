@@ -49,10 +49,15 @@ it a glass pavilion, with two attempts left unused. Self-assessment is not evide
 | E2 | Sonnet | 10 | standard | all ten |
 | E3 | Haiku | 5 | standard | 1–5 |
 | E4 | Sonnet | 5 | standard | 1–5 |
-| E5 | Haiku | 1 | standard | #8 Pacific Exchange |
-| E6 | Sonnet | 1 | standard | #8 Pacific Exchange |
-| E7 | Haiku | 10 | tightened | all ten |
-| E8 | Sonnet | 10 | tightened | all ten |
+| E5 | Haiku | 1 | fast | #8 Pacific Exchange |
+| E6 | Sonnet | 1 | fast | #8 Pacific Exchange |
+| E7 | Haiku | 10 | fast | all ten |
+| E8 | Sonnet | 10 | fast | all ten |
+| E9 | Haiku | **20** | fast, with `arcade()`/`colonnade()` named | twenty |
+| E10 | Haiku | 10 | fast + the new visual catalogue | all ten |
+
+E10 is the test of the documentation fix, and it also lifts the no-screenshot rule — see "I got the
+no-screenshot rule half wrong" below.
 
 Each run owns one file, `src/render/landmarks/sf/experiments/e<N>.ts`, already registered, so they cannot
 collide.
