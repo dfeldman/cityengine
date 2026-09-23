@@ -93,6 +93,46 @@ modelled.
 
 ---
 
+## Commons: search by NAME, then verify by GEOTAG
+
+**Corrected again, 2026-09-22.** The 0.5% below measures how often OSM LINKS to Commons, not what Commons
+holds — and the link is the rare thing, not the picture. Searching Commons directly finds far more: of 20
+named buildings sampled from the register, 13 returned some image.
+
+**But a name search on its own is dangerous, because almost nothing on Commons is geotagged into a
+building.** Measured on that sample, the misses are confident and absurd: "Vance" returned a photograph of
+an American footballer, "McCoppin Hub" returned a plate of tacos, the Museum of Modern Art returned a view
+of Alcatraz, and "Royal Towers" returned an 1878 panorama. Raw hits 65%, genuinely correct perhaps 20%. This
+is the same failure that once scored "20 of 20 found" with not one right answer.
+
+**The fix — the owner's, and it tests well: verify the geotag.** Search by name for recall, then keep only
+results whose coordinates are within about 150 m of the building. Two API calls, and the coordinates come
+back for up to fifty titles at once:
+
+```bash
+UA='streetrunner-refs/1.0 (research)'
+# 1. recall: search File: namespace by name + city
+curl -s -G -H "User-Agent: $UA" 'https://commons.wikimedia.org/w/api.php' \
+  --data-urlencode 'action=query' --data-urlencode 'list=search' \
+  --data-urlencode 'srsearch=<NAME> San Francisco' --data-urlencode 'srnamespace=6' \
+  --data-urlencode 'srlimit=8' --data-urlencode 'format=json'
+
+# 2. precision: coordinates for all of those titles in ONE call, pipe-separated
+curl -s -G -H "User-Agent: $UA" 'https://commons.wikimedia.org/w/api.php' \
+  --data-urlencode 'action=query' --data-urlencode 'prop=coordinates' \
+  --data-urlencode 'titles=File:A.jpg|File:B.jpg|…' --data-urlencode 'format=json'
+```
+
+Measured on five buildings: three had a geotagged result within 150 m and **every one was the right
+building**; two had no geotagged results at all and correctly yielded nothing. **Keeping nothing is the right
+answer** — a wrong photograph is worse than none.
+
+**Rate limits are the real constraint.** Commons returned HTTP 429 after about ten requests at 1.2 s
+spacing. Use a descriptive `User-Agent`, leave **4–5 s between calls**, and batch the coordinate lookup.
+
+Proximity is not a guarantee of usefulness: a geotagged hit may be an interior, a mural or a detail. Open it
+and look, as always.
+
 ## Wikimedia Commons and HABS — excellent when they hit, but they rarely hit
 
 **Worth ONE cheap attempt for a historic or listed building, and not worth more than that.** Coverage is
