@@ -93,12 +93,29 @@ modelled.
 
 ---
 
-## Try WIKIMEDIA COMMONS FIRST — it is an API, not a web search
+## Wikimedia Commons and HABS — excellent when they hit, but they rarely hit
 
-**This is the cheapest and most reliable source found, and it should be your first move after Mapillary.**
-Commons serves bots by design, is public domain, needs no key, and — crucially — its **HABS collection**
-(the Historic American Buildings Survey) holds large-format architectural photographs of exactly the kind of
-building we model. Their filenames state the view: *"EXTERIOR, CORNER DETAIL VIEW, LOOKING NORTHWEST"*.
+**Worth ONE cheap attempt for a historic or listed building, and not worth more than that.** Coverage is
+the problem, and it is severe. Counted over the 3,254 buildings in downtown San Francisco:
+
+| tag | buildings | share |
+|---|---|---|
+| `wikidata` | 207 | 6.4% |
+| **`wikimedia_commons`** | **15** | **0.5%** |
+| `image` | 5 | 0.2% |
+| `heritage` / `historic` | 15 | 0.5% |
+
+So **the overwhelming majority of buildings have nothing here**, and HABS is narrower still — it documents
+surveyed historic structures, mostly older and mostly listed. Quality is variable, and many plates are
+interiors, details or measured drawings rather than the elevation you want.
+
+Two further cautions: the Library of Congress, which hosts HABS itself, restricts automated access, and the
+fetch that worked was from **Wikimedia's own thumbnail service**, which mirrors the plates and does serve
+bots. Prefer Commons over loc.gov for that reason.
+
+**When it does hit, it is superb** — a large-format survey photograph, square-on, unobstructed, properly lit,
+with a filename that states the view: *"EXTERIOR, CORNER DETAIL VIEW, LOOKING NORTHWEST"*. For a 1909 stone
+bank that beats anything taken since. Just do not expect it: try once, and move on quickly when it misses.
 
 Three calls. Find the category, list its files, get a JPEG thumbnail.
 
