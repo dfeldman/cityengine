@@ -137,6 +137,26 @@ not rescue a naive one. **This splits the documentation problem in two**: discov
 better by the catalogue) and correct use (needs a worked example per part, sane defaults, and ideally a
 render the model can compare against).
 
+### I got the no-screenshot rule half wrong
+
+The owner: *"it doesn't KNOW the colonnades render wrong."* Correct, and it is my doing — every run was told
+not to screenshot, so **E9 repeated a broken call eleven times with no way to notice.** One look would very
+likely have fixed it.
+
+The decision conflated two different uses of the same action:
+
+| | verdict |
+|---|---|
+| Self-assessment as **evidence** — "is this good?" | **Unreliable, keep central.** Four runs described features their renders do not contain; E5 reported Corinthian columns it never drew |
+| Self-inspection as **feedback** — "did the thing I called appear?" | **Necessary, and I removed it.** This is not a judgement call, it is an observation, and it is exactly what was missing |
+
+The fix is to allow the second and keep the first central, with the check made **objective rather than
+aesthetic**: *"you called `arcade()` — open the render and confirm arches are visible along the ground
+floor"* is checkable and cheap. *"Is it a good building?"* is not, and is where models flatter themselves.
+
+Cost is not the obstacle: one screenshot per building is a few hundred tokens against the 7,000 a building
+now costs. **The eleven broken arcades are the price of the rule I wrote**, and E10 removes it.
+
 ### Weighted by price, not by token — Haiku batching is an order of magnitude cheaper
 
 A Haiku token is not a Sonnet token. Using the owner's own weights (Haiku ≈ 0.05, Sonnet ≈ 0.47, Opus ≈
