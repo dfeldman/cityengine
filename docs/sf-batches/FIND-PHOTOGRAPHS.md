@@ -99,11 +99,26 @@ modelled.
 holds — and the link is the rare thing, not the picture. Searching Commons directly finds far more: of 20
 named buildings sampled from the register, 13 returned some image.
 
-**But a name search on its own is dangerous, because almost nothing on Commons is geotagged into a
-building.** Measured on that sample, the misses are confident and absurd: "Vance" returned a photograph of
-an American footballer, "McCoppin Hub" returned a plate of tacos, the Museum of Modern Art returned a view
-of Alcatraz, and "Royal Towers" returned an 1878 panorama. Raw hits 65%, genuinely correct perhaps 20%. This
-is the same failure that once scored "20 of 20 found" with not one right answer.
+**But a name search on its own is dangerous.** Measured on that sample, the misses are confident: "Vance"
+returned a photograph of an American footballer, "McCoppin Hub" a plate of tacos, the Museum of Modern Art a
+view of Alcatraz, "Royal Towers" an 1878 panorama. Raw hits 65%, genuinely correct perhaps 20% — the same
+failure that once scored "20 of 20 found" with not one right answer.
+
+**The dangerous misses are not the absurd ones. They are the PLAUSIBLE ones.** A plate of tacos gets caught
+by anyone looking. What does not get caught is **the right building in the wrong city**: searching the Army
+and Navy Y.M.C.A. Building returns the one in Newport, Rhode Island, which is a genuine Army and Navy YMCA
+building, correctly named, photographed from the street. Nothing about it looks wrong. A model checking
+"does this look like an Army and Navy YMCA?" says yes and models the wrong continent.
+
+Institutional, civic and corporate names repeat across American cities constantly — every city has a YMCA, a
+Federal Building, a Masonic Temple, a Hall of Justice, a First National Bank. **Adding the city to the query
+does not fix this**, because the search is full-text and a page about the Rhode Island building may well
+mention San Francisco somewhere. Only the coordinates settle it.
+
+**A second junk class: `File:` is not "image".** The namespace also holds PDFs, DjVu scans and books. The
+same query returned five scanned volumes — *San Francisco and thereabout*, a 1916 Jewish blue book, a set of
+earthquake articles. Filter results to real image extensions (`.jpg`, `.jpeg`, `.png`, `.tif`, `.webp`)
+before doing anything else with them.
 
 **The fix — the owner's, and it tests well: verify the geotag.** Search by name for recall, then keep only
 results whose coordinates are within about 150 m of the building. Two API calls, and the coordinates come
