@@ -244,6 +244,24 @@ export class Navigator {
     return { y: p.y, grade: this.pos.reversed ? -p.grade : p.grade }
   }
 
+  /**
+   * How high the ROAD is `ahead` metres along, on the rider's own side of the junction — the height the
+   * camera should be looking at, and the only honest answer on a bridge (BUGS.md #207).
+   *
+   * The chase camera used to take this from the terrain grid, which under the Golden Gate Bridge is the SEA
+   * BED: measured mid-span, the eye sat at -29 m and the aim at -85 m, a pitch of -73°, so the camera stared
+   * through the deck and into the bridge's own structure for the whole crossing. The deck's height lives in
+   * the ride edge's profile, exactly like the grade the trainer is given, so it is taken from there.
+   *
+   * Clamped to this edge rather than followed round the corner: at a junction the two edges agree at the
+   * node, so the error is the grade over a few metres, and the caller eases it anyway.
+   */
+  elevationAhead(ahead: number): number {
+    const e = this.edge
+    const s = this.pos.reversed ? this.pos.s - ahead : this.pos.s + ahead
+    return profileAt(e.points, e.heights, Math.max(0, Math.min(e.length, s))).y
+  }
+
   /** Where the rider actually is: their side of the road, which is the right one. */
   ridePoint(): Point {
     const p = this.at()

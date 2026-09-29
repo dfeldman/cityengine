@@ -166,9 +166,13 @@ export class Crowd {
     return v
   }
 
-  constructor(graph: CityGraph, level: keyof typeof CROWD = 'some') {
+  /*
+   * A preset name, or a config of its own — `?crowd=`/`?traffic=` take a NUMBER for a quick density test
+   * beyond the named levels (src/game.ts). The presets are what the game ships; a number is for measuring.
+   */
+  constructor(graph: CityGraph, level: keyof typeof CROWD | CrowdConfig = 'some') {
     this.g = graph
-    this.cfg = CROWD[level]
+    this.cfg = typeof level === 'string' ? CROWD[level] : level
   }
 
   /**

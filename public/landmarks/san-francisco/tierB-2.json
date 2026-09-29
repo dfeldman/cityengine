@@ -82,10 +82,9 @@
       "way/24563077"
     ],
     "name": "Yerba Buena Center for the Arts",
-    "restyle": "brick",
     "height": 36,
-    "levels": 10,
-    "note": "rule 7"
+    "note": "The THEATRE, checked before use: it shares an edge with way/24563073 (the galleries), carries the same wikidata=Q1884883 with amenity=arts_centre and height=36 (a fly tower), its far end is 31 m off Howard Street and its long side 2 m off the Esplanade footway. Modelled 2026-09-23 from the owner's own STREET photograph and a second from inside the pedestrian passage on the east side: three masses along the frontage \u2014 a glazed lobby cube with a bright red entrance canopy, a near-black matt-panelled mass, a small pale block and the tall pale FLY TOWER \u2014 over broad shallow steps, with the walkway up to garden level at the left. The east wall is sheer panelled grid on a dark base course, full height to the passage floor. The plan is cut at its two narrowest stations; the fly tower is the larger end band and the lobby the smaller, which puts the lobby at the Howard Street end. NO RAKE: the owner first described 'one side sloped steeply down' but neither photograph shows a slope, so it is not modelled \u2014 see the builder's comment. GROUND FLOOR IS LEVEL 2 (docs/YERBA-BUENA.md), so features start at the gardens builder's exported DECK_H and the steps climb to it. See src/render/landmarks/sf/ybca.ts; renders in docs/shots/models/ybca-theatre-street and -east.",
+    "procedural": "ybcaTheatre_24563077"
   },
   {
     "osm": [

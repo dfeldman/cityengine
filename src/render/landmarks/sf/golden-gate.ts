@@ -21,7 +21,7 @@
  * its bearing (N 7° W).
  */
 import type { MeshBuilder } from '../../buildings.ts'
-import { box, strut, type Rgb } from '../../models.ts'
+import { box, boxSubdivided, strut, type Rgb } from '../../models.ts'
 import type { Fit } from '../fit.ts'
 
 type V3 = [number, number, number]
@@ -34,6 +34,25 @@ const ROAD: Rgb = [0.2, 0.2, 0.21]
 const LAMP: Rgb = [0.72, 0.7, 0.62]
 const PIER: Rgb = [0.6, 0.6, 0.58]
 const ANCHOR: Rgb = [0.66, 0.64, 0.6]
+
+/**
+ * The NEAR level (BUGS.md #211). The owner: *"the current FAR model actually LOOKS fine, the towers are
+ * great. The issue is that its polys are huge so depth mapping fails. The CLOSE LOD could just be a
+ * tessellated version of the FAR LOD."* So there is no second model and no retopology: the same builder,
+ * with every box subdivided to `NEAR_EDGE` metres instead of drawn as one quad per face.
+ *
+ * A module-level flag rather than a parameter because every helper below takes the out-buffer and nothing
+ * else, and threading a flag through eight of them buys nothing — the builders run synchronously, one at a
+ * time, from `Landmarks`' own constructor and `place()`.
+ */
+let NEAR = false
+const NEAR_EDGE = 4
+
+/** `box`, subdivided when this is the near level: the one change that makes the depth buffer work at 2 m. */
+function bx(out: MeshBuilder, cx: number, cy: number, cz: number, hx: number, hy: number, hz: number, c: Rgb, f: number): void {
+  if (NEAR) boxSubdivided(out, cx, cy, cz, hx, hy, hz, c, f, NEAR_EDGE)
+  else box(out, cx, cy, cz, hx, hy, hz, c, f)
+}
 
 /** A straight member of section `w` × `h` from a to b: the shared `strut` (render/models.ts). */
 export function beam(out: MeshBuilder, a: V3, b: V3, w: number, h: number, c: Rgb, caps = true): void {
@@ -48,10 +67,21 @@ const LEG_X = 16.2            // the legs' centres either side of the axis (the 
 const CABLE_X = 13.9          // the cable planes: over the inner half of the legs, straight down to the trusses
 const DECK_HALF = 13.7
 
-/** the roadway's height at z: 69.5 m at the towers, sagging to 67 m at mid-span, falling gently along the side spans */
+/**
+ * The roadway's height at z: 69.5 m at the towers, sagging to 68.95 m at mid-span, falling gently along the
+ * side spans.
+ *
+ * The sag and the side-span fall were 2.5 m and 0.004/m — the real bridge's — until 2026-09-24, when this
+ * model became the thing the rider actually rides ON (BUGS.md #211). The ride graph's own height profile
+ * across the span is essentially FLAT (west sidewalk, edge 1002983: -33.7 m at the south anchorage, -32.9 m
+ * mid-span, -34.8 m at the north — 1.9 m over 2 km, because tools/bridges.ts sets bridge heights by a rule
+ * rather than from the structure). A 2.5 m sag against a flat path puts the camera INSIDE the slab near the
+ * towers. Fitted to that profile instead: 0.55 m of sag and 0.001/m of fall hold the model's roadway within
+ * ±0.58 m of the ridden path over the whole bridge, which is as close as a rider can tell.
+ */
 const deckY = (z: number): number => {
   const t = Math.min(1, Math.abs(z) / (MAIN / 2))
-  return 69.5 - 2.5 * t * t + (Math.abs(z) > MAIN / 2 ? -0.004 * (Math.abs(z) - MAIN / 2) : 0)
+  return 69.5 - 0.55 * t * t + (Math.abs(z) > MAIN / 2 ? -0.001 * (Math.abs(z) - MAIN / 2) : 0)
 }
 
 /** the main cable's height at z (a parabola across the main span; flatter parabolas down the side spans) */
@@ -81,30 +111,30 @@ function tower(out: MeshBuilder, zc: number, y0: number): void {
       const along = 17 - i * 1.25               // and along it
       const inner = LEG_X - 5.2
       const cx = side * (inner + across / 2)
-      box(out, cx, (ya + yb) / 2, zc, across / 2, (yb - ya) / 2, along / 2, ORANGE, F)
+      bx(out, cx, (ya + yb) / 2, zc, across / 2, (yb - ya) / 2, along / 2, ORANGE, F)
       // the flutes: two proud ribs up each broad face, which is what makes the leg read as a tall bundle
       for (const f of [-1, 1]) {
-        box(out, cx + f * across * 0.24, (ya + yb) / 2, zc + (along / 2 + 0.25), across * 0.12, (yb - ya) / 2 - 0.4, 0.3, ORANGE_DARK, F)
-        box(out, cx + f * across * 0.24, (ya + yb) / 2, zc - (along / 2 + 0.25), across * 0.12, (yb - ya) / 2 - 0.4, 0.3, ORANGE_DARK, F)
+        bx(out, cx + f * across * 0.24, (ya + yb) / 2, zc + (along / 2 + 0.25), across * 0.12, (yb - ya) / 2 - 0.4, 0.3, ORANGE_DARK, F)
+        bx(out, cx + f * across * 0.24, (ya + yb) / 2, zc - (along / 2 + 0.25), across * 0.12, (yb - ya) / 2 - 0.4, 0.3, ORANGE_DARK, F)
       }
       // the setback's ledge
-      box(out, cx, yb - 0.4, zc, across / 2 + 0.35, 0.4, along / 2 + 0.35, ORANGE, F)
+      bx(out, cx, yb - 0.4, zc, across / 2 + 0.35, 0.4, along / 2 + 0.35, ORANGE, F)
     }
     // the cap over the saddle
     const cx = side * (LEG_X - 5.2 + (11 - 6 * 0.9) / 2)
-    box(out, cx, TOWER_TOP - 3, zc, 3.4, 3, 5, ORANGE, F)
-    box(out, cx, TOWER_TOP + 0.6, zc, 2, 0.6, 3, ORANGE_DARK, F)
+    bx(out, cx, TOWER_TOP - 3, zc, 3.4, 3, 5, ORANGE, F)
+    bx(out, cx, TOWER_TOP + 0.6, zc, 2, 0.6, 3, ORANGE_DARK, F)
   }
   // the portal struts above the deck, the openings between them growing shorter to the top
   const inner = LEG_X - 5.2
   for (const [ya, yb] of [[105, 113], [142, 149], [174, 180], [202, 208], [212, TOWER_TOP - 2]] as const) {
-    box(out, 0, (ya + yb) / 2, zc, inner + 0.5, (yb - ya) / 2, 5.5, ORANGE, F)
+    bx(out, 0, (ya + yb) / 2, zc, inner + 0.5, (yb - ya) / 2, 5.5, ORANGE, F)
     // the strut's own recessed panel, front and back
-    box(out, 0, (ya + yb) / 2, zc + 5.6, inner - 1.5, (yb - ya) / 2 - 1.2, 0.2, ORANGE_DARK, F)
-    box(out, 0, (ya + yb) / 2, zc - 5.6, inner - 1.5, (yb - ya) / 2 - 1.2, 0.2, ORANGE_DARK, F)
+    bx(out, 0, (ya + yb) / 2, zc + 5.6, inner - 1.5, (yb - ya) / 2 - 1.2, 0.2, ORANGE_DARK, F)
+    bx(out, 0, (ya + yb) / 2, zc - 5.6, inner - 1.5, (yb - ya) / 2 - 1.2, 0.2, ORANGE_DARK, F)
   }
   // under the deck: the portal the road sits on, and two X's down to the pier
-  box(out, 0, deck - 9.5, zc, inner + 0.5, 1.8, 5, ORANGE, F)
+  bx(out, 0, deck - 9.5, zc, inner + 0.5, 1.8, 5, ORANGE, F)
   const yTop = deck - 11.5
   const yMid = (y0 + yTop) / 2
   for (const [ya, yb] of [[y0 + 2, yMid], [yMid, yTop]] as const) {
@@ -112,7 +142,7 @@ function tower(out: MeshBuilder, zc: number, y0: number): void {
       beam(out, [-inner, ya, zc + zf], [inner, yb, zc + zf], 2.2, 2.2, ORANGE)
       beam(out, [inner, ya, zc + zf], [-inner, yb, zc + zf], 2.2, 2.2, ORANGE)
     }
-    box(out, 0, yb, zc, inner, 1.2, 5, ORANGE, F)
+    bx(out, 0, yb, zc, inner, 1.2, 5, ORANGE, F)
   }
 }
 
@@ -138,7 +168,7 @@ function suspenders(out: MeshBuilder): void {
     const bottom = deckY(z) + 0.4
     if (top - bottom < 1.5) continue
     // (the pair as one member: 36 cm apart, they are a single line from anywhere a rider stands)
-    for (const side of [-1, 1]) box(out, side * (CABLE_X - 0.2), (top + bottom) / 2, z, 0.07, (top - bottom) / 2, 0.25, ORANGE, F)
+    for (const side of [-1, 1]) bx(out, side * (CABLE_X - 0.2), (top + bottom) / 2, z, 0.07, (top - bottom) / 2, 0.25, ORANGE, F)
   }
 }
 
@@ -146,6 +176,33 @@ function suspenders(out: MeshBuilder): void {
 function deck(out: MeshBuilder, z0: number, z1: number, lamps: boolean): void {
   const panel = 15.24          // two of the real 7.6 m panels: seen from kilometres, the rhythm is what shows
   const depth = 7.6
+  /*
+   * DECLARE THE ROADWAY AS A DECK (BUGS.md #217).
+   *
+   * The rider crosses this bridge EIGHTEEN METRES BELOW it — measured in the package (the walkways profile
+   * at -30..-35 against a deck near -17) and confirmed riding, 114 cam-probe samples with the eye at -36 to
+   * -38. Three bakes chased it through the bake's own height rules and none moved the number, because the
+   * bridge's roadway is not in our edge set at all to be followed: `cityQuery` never asks for motorways
+   * (#218a), so along the whole corridor there are 32 cycleways, 4 footways, 3 paths and NO carriageway.
+   *
+   * `out.decks` is how a model tells the world where a walkable surface it carries actually is — built for
+   * the skyparks (Moscone, Salesforce Park; docs/SKYPARKS.md) and already plumbed through `landmarks.ts`.
+   * The bridge always knew where its roadway was and simply never said so. Saying so is this block; a
+   * consumer that lifts raised ways inside a deck's own thin y band onto it is the other half, and is not
+   * written yet.
+   *
+   * NOT the model's full y extent, which is what `coversRaised` publishes and which spans pier bottoms to
+   * tower tops — a street passing UNDER the bridge is inside that and must never be lifted.
+   */
+  for (let z = z0; z < z1; z += 200) {
+    const za = z
+    const zb = Math.min(z1, z + 200)
+    const y = (deckY(za) + deckY(zb)) / 2
+    out.decks.push({
+      ring: [{ x: -DECK_HALF, z: za }, { x: DECK_HALF, z: za }, { x: DECK_HALF, z: zb }, { x: -DECK_HALF, z: zb }],
+      y,
+    })
+  }
   for (let z = z0; z < z1; z += panel) {
     const za = z
     const zb = Math.min(z1, z + panel)
@@ -159,10 +216,18 @@ function deck(out: MeshBuilder, z0: number, z1: number, lamps: boolean): void {
     const group = Math.round(za / panel) % 4 === 0
     if (group) {
       const zg = Math.min(z1, za + 4 * panel)
-      const yg = deckY((za + zg) / 2)
-      box(out, 0, yg - 0.35, (za + zg) / 2, DECK_HALF - 0.4, 0.35, (zg - za) / 2 + 0.02, ROAD, F)
-      box(out, 0, yg - 1.1, (za + zg) / 2, DECK_HALF, 0.4, (zg - za) / 2 + 0.02, ORANGE_DARK, F)
-      for (const side of [-1, 1]) box(out, side * (DECK_HALF + 0.1), yg + 0.6, (za + zg) / 2, 0.06, 0.6, (zg - za) / 2, ORANGE, F)
+      const zgm = (za + zg) / 2
+      const yg = deckY(zgm)
+      // the roadway slab: a rider crosses this deck, metres above it (BUGS.md #154). Graded, not uniform:
+      // the MAIN span is over open water nobody swims out to, so 16 m is plenty there (same target as the
+      // shore-banded water fix); the SIDE spans, towers and approaches are close to shore, to the piers and
+      // to the towers' own steel, so the depth buffer has to work much harder there — 6 m, the same instinct
+      // as the water bake clipping rings to its 200 m tiles, just applied to a deck instead of a shoreline.
+      const nearShore = Math.abs(zgm) > MAIN / 2 - 20
+      const maxEdge = NEAR ? NEAR_EDGE : nearShore ? 6 : 16
+      boxSubdivided(out, 0, yg - 0.35, zgm, DECK_HALF - 0.4, 0.35, (zg - za) / 2 + 0.02, ROAD, F, maxEdge)
+      boxSubdivided(out, 0, yg - 1.1, zgm, DECK_HALF, 0.4, (zg - za) / 2 + 0.02, ORANGE_DARK, F, maxEdge)
+      for (const side of [-1, 1]) bx(out, side * (DECK_HALF + 0.1), yg + 0.6, (za + zg) / 2, 0.06, 0.6, (zg - za) / 2, ORANGE, F)
     }
     if (atTower) continue
     for (const side of [-1, 1]) {
@@ -179,8 +244,8 @@ function deck(out: MeshBuilder, z0: number, z1: number, lamps: boolean): void {
     if (lamps && Math.round(za / panel) % 4 === 0) {
       for (const side of [-1, 1]) {
         const x = side * (DECK_HALF - 1.2)
-        box(out, x, ym + 4.5, zm, 0.15, 4.5, 0.15, LAMP, F)
-        box(out, x - side * 0.8, ym + 9, zm, 0.8, 0.12, 0.2, LAMP, F)
+        bx(out, x, ym + 4.5, zm, 0.15, 4.5, 0.15, LAMP, F)
+        bx(out, x - side * 0.8, ym + 9, zm, 0.8, 0.12, 0.2, LAMP, F)
       }
     }
   }
@@ -193,9 +258,19 @@ function pylon(out: MeshBuilder, zc: number, y0: number): void {
     for (let i = 0; i < 4; i++) {
       const ya = y0 + ((top - y0) * i) / 4
       const yb = y0 + ((top - y0) * (i + 1)) / 4
-      box(out, side * (DECK_HALF + 5), (ya + yb) / 2, zc, 5 - i * 0.7, (yb - ya) / 2, 7 - i * 0.9, CONCRETE, F)
+      bx(out, side * (DECK_HALF + 5), (ya + yb) / 2, zc, 5 - i * 0.7, (yb - ya) / 2, 7 - i * 0.9, CONCRETE, F)
     }
   }
+}
+
+/**
+ * The NEAR level: the same bridge, tessellated (see `NEAR`). Registered as its own `procedural` so the
+ * manifest entry that stands at the bridge's own place picks it, while `tools/cities.ts`'s skyline entry —
+ * the FAR level, untouched — keeps the cheap one.
+ */
+export function goldenGateBridgeNear(out: MeshBuilder, fit?: Fit): void {
+  NEAR = true
+  try { goldenGateBridge(out, fit) } finally { NEAR = false }
 }
 
 export function goldenGateBridge(out: MeshBuilder, _fit?: Fit): void {
@@ -203,13 +278,13 @@ export function goldenGateBridge(out: MeshBuilder, _fit?: Fit): void {
   const zN = MAIN / 2
   // the south tower's pier and its oval fender in the strait; the north tower on its rock footing
   // (the fender is a low wall at the water line, weathered grey, round the pier — not a stadium)
-  box(out, 0, 6, zS, 24, 6, 14, PIER, F)
+  bx(out, 0, 6, zS, 24, 6, 14, PIER, F)
   for (let i = 0; i < 28; i++) {
     const a0 = (i / 28) * Math.PI * 2
     const a1 = ((i + 1) / 28) * Math.PI * 2
     beam(out, [Math.cos(a0) * 62, 2.2, zS + Math.sin(a0) * 34], [Math.cos(a1) * 62, 2.2, zS + Math.sin(a1) * 34], 3, 4.4, PIER)
   }
-  box(out, 0, 7, zN, 23, 7, 13, PIER, F)
+  bx(out, 0, 7, zN, 23, 7, 13, PIER, F)
   tower(out, zS, 12)
   tower(out, zN, 14)
   cables(out)
@@ -221,8 +296,8 @@ export function goldenGateBridge(out: MeshBuilder, _fit?: Fit): void {
   const zNa = MAIN / 2 + SIDE
   pylon(out, zSa, 0)
   pylon(out, zNa, 0)
-  box(out, 0, 30, zSa - 30, 24, 30, 26, ANCHOR, F)
-  box(out, 0, 30, zNa + 30, 24, 30, 26, ANCHOR, F)
+  bx(out, 0, 30, zSa - 30, 24, 30, 26, ANCHOR, F)
+  bx(out, 0, 30, zNa + 30, 24, 30, 26, ANCHOR, F)
   // the Fort Point arch: a steel arch of 97 m over the old fort, carrying the deck on posts
   const a0 = zSa - 60
   const a1 = a0 - 97
@@ -240,14 +315,25 @@ export function goldenGateBridge(out: MeshBuilder, _fit?: Fit): void {
   }
   deck(out, a1 - 20, zSa, false)
   pylon(out, a1 - 20, 10)
-  // the approach viaducts: the deck on steel bents down to the land
-  deck(out, a1 - 220, a1 - 20, true)
+  /*
+   * The approach viaducts: the deck on steel bents down to the land.
+   *
+   * THE SOUTH ONE IS SHORT ON PURPOSE (BUGS.md #218b). The owner, with aerials: *"In real life, the real
+   * bridge only starts at the very edge of the water. There is a curved elevated segment of 1 that is a
+   * connecting road, taking cars in from the bridge and onto land... In our version, the bridge starts much
+   * further onto land."* At 220 m this structure ran well up the hillside, where the real roadway has left
+   * the bridge and swung east on an ordinary curved road — and because our deck is STRAIGHT, every path
+   * surveyed against that curve ended up in mid-air beside it. Ending the steel near the anchorage lets the
+   * ordinary road network carry on from there, which is both what is really built and what the paths expect.
+   */
+  const SOUTH_APPROACH = 60
+  deck(out, a1 - SOUTH_APPROACH, a1 - 20, true)
   deck(out, zNa, zNa + 260, true)
-  for (const [za, zb] of [[a1 - 220, a1 - 20], [zNa + 30, zNa + 260]] as const) {
+  for (const [za, zb] of [[a1 - SOUTH_APPROACH, a1 - 20], [zNa + 30, zNa + 260]] as const) {
     for (let z = za; z <= zb; z += 40) {
       const top = deckY(z) - 8
-      for (const side of [-1, 1]) box(out, side * (DECK_HALF - 2), top / 2 + 10, z, 1, top / 2 - 10, 1, ORANGE, F)
-      box(out, 0, top - 0.5, z, DECK_HALF - 1, 0.6, 1, ORANGE, F)
+      for (const side of [-1, 1]) bx(out, side * (DECK_HALF - 2), top / 2 + 10, z, 1, top / 2 - 10, 1, ORANGE, F)
+      bx(out, 0, top - 0.5, z, DECK_HALF - 1, 0.6, 1, ORANGE, F)
     }
   }
 }

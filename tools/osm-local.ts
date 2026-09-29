@@ -35,6 +35,14 @@ export const KEPT_KEYS = [
   // `area` is here for squaresQuery's `["highway"="pedestrian"]["area"="yes"]`: a POSITIVE clause, so the key
   // has to survive the cut (without it the squares query fell back to Overpass, silently and slowly)
   'area',
+  /*
+   * `surface` is here for sandQuery's `["surface"~"^(sand)$"]["area"="yes"]` (BUGS.md #200). Without it that
+   * ONE clause made the whole beach query unanswerable locally, so the query that decides whether Ocean
+   * Beach is sand or lawn went to a public Overpass instance — and the bake's own handling of that is a
+   * `console.warn` and an empty result. The beach is too important to hang on a donated server answering.
+   * The cut's cache key includes this list, so adding a key simply re-cuts.
+   */
+  'surface',
 ]
 
 // ---------------------------------------------------------------------------------------------- extracts

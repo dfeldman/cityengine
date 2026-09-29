@@ -178,6 +178,51 @@ Corinthian columns" on a building whose render has none — **which I recorded a
 and which was actually the kit discarding the order and drawing nothing at that scale.** I owe that run a
 correction.
 
+### The brief forbade the right answer. The models obeyed.
+
+A second correction, of the same kind and larger. Every brief in this series says **use the kit**, and its
+only escape clause is *bail out if the photographs do not show the building*. That is a rule about missing
+**information**. There was no rule for missing **tools**.
+
+So a model looking at the Pacific Exchange — a neoclassical banking temple whose facade simply *is* a row of
+columns, with no wall behind to put a face on — had exactly two legal moves: bail, or wrap it in a punched
+box. Both are wrong, and **neither was a modelling failure**. The runs that bailed obeyed the escape clause;
+the runs that boxed obeyed the main instruction. The owner's verdict on this report, that the right answer
+"was do that or bail out," assumed doing it was permitted. It was not.
+
+That withdraws two of the harsher judgements recorded above — on the **Pacific Exchange** and the **Curb
+Exchange**, the two frankly neoclassical buildings in the set. It leaves the judgements on 550 California,
+the ICA and Leidesdorff standing, because those three are flat-walled buildings the kit could have expressed
+and the models did not.
+
+The fix is a **third path, stated as plainly as the other two**: bail only for missing information, never for
+missing tools — if you can see the form and the kit cannot say it, model it with primitives. And the choice
+must be **written down per building before any code is generated**, one line of `kit | custom | bail`, whose
+reason names a feature visible in the photograph (a curved plan, an all-columns front, per-bay depth) rather
+than a difficulty word. Otherwise triage becomes the new easy way out, and every building is declared
+kit-shaped.
+
+This also reframes what the kit is for. It is a grammar for **flat-walled, roughly rectangular masonry
+blocks**, which is most of a city and about half of downtown San Francisco. The other half — round and
+curved plans, twisted or tapering towers, checkerboard in-out grid facades, full temple fronts — was never
+going to fit, and stretching the slots to cover it would damage the common case to serve the rare one. Those
+buildings go to a stronger model and raw primitives. **The Transamerica Pyramid is the proof that this
+works**: 260 m, a tapering triangular shaft with two wings, hand-written in `sf/transamerica.ts`, and
+nothing in the kit comes close to saying it.
+
+### The sample cannot test this
+
+Worth saying before E10 runs: **these ten buildings do not exercise the custom path.** Seven of them — 300
+Montgomery, 550 California, the 17-corner block, Alvinza Hayward, the Exchange Block, Leidesdorff and 348
+Pine — are flat-walled masonry, which is exactly what the kit is for. The ICA is the `frame` slot's reason
+for existing. Only the **Pacific Exchange** and the **Curb Exchange** are the half of downtown that the kit
+cannot say.
+
+So E10 is a clean A/B against E1–E8 on the seven buildings the kit applies to, and close to silent on the
+question of whether a model will correctly choose to leave the kit behind. Results below are therefore
+reported **by path** — kit buildings and custom buildings scored separately — and the custom path needs its
+own sample. Crocker Galleria, a barrel-vaulted arcade, is already in the second ten and is where that starts.
+
 It also explains the statistic this whole report is built on. **`arcade()` has been used once in the entire
 hand-written corpus** — not because nobody could find it, but because anyone who tried it saw the result and
 went back to a punched face. A part that produces garbage teaches everyone to avoid it, and then looks like

@@ -186,6 +186,18 @@ if (want) {
     console.log(`${String(Math.round(i.priority)).padStart(4)}  ${String(i.height).padStart(4)} m  ${i.kind.padEnd(6)} ${i.osm.padEnd(17)} ${i.lat.toFixed(5)},${i.lon.toFixed(5)}  ${i.name || '(unnamed)'}`)
   }
 } else {
+  // BUGS.md #137. docs/sf-queue.csv is HAND-MAINTAINED now: the owner's review verdicts, the manual
+  // re-stagings and the Yerba Buena rows are typed in, not derived. This writer would replace all of it with
+  // formula output, and it cannot even round-trip the stages the hand edits use — its vocabulary is
+  // manual|haiku|sonnet|opus|done, with no `pending` and no `scratch`. Refuse unless asked twice.
+  const existing = resolve(ROOT, 'docs', 'sf-queue.csv')
+  if (existsSync(existing) && !process.argv.includes('--overwrite-hand-edits')) {
+    const rows = readFileSync(existing, 'utf8').trim().split('\n').length - 1
+    console.error(`REFUSING to overwrite docs/sf-queue.csv (${rows} rows, hand-maintained — BUGS.md #137).`)
+    console.error('Hand-set stages `pending` and `scratch` cannot survive this writer; review verdicts would be lost.')
+    console.error('If you are certain, re-run with --overwrite-hand-edits.')
+    process.exit(1)
+  }
   writeFileSync(resolve(ROOT, 'docs', 'sf-queue.csv'),
     ['osm,name,kind,lat,lon,height,levels,priority,stage',
       ...items.map((i) => [i.osm, `"${i.name.replace(/"/g, '""')}"`, i.kind, i.lat, i.lon, i.height, i.levels, Math.round(i.priority), i.stage].join(','))].join('\n') + '\n')

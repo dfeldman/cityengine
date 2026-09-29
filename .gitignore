@@ -13,8 +13,13 @@ incoming_models/
 
 # every screenshot: model shots, contact sheets, references
 docs/shots/
-# baked city packages and their streamed tiles (npm run bake)
+# baked city packages and their streamed tiles (npm run bake), and their map-format-v3
+# conversions (npm run map:v3, written to public/cities/<id>/v3/). THE BAKE IS NEVER COMMITTED.
+# What IS committed is what is applied on top of it: public/patches/ (MAP-FORMAT section 8) and
+# the landmark manifests in public/landmarks/ - hand-made, small, and not reproducible by a tool.
 public/cities/
+# the bake's per-building audit trail (tools/bake.ts writes docs/<city>-archetypes.csv)
+docs/*-archetypes.csv
 # generated GLBs, signgen's included (npm run signs)
 public/models/
 # generated SF street trees (tools/sftrees/library.py)
@@ -26,6 +31,12 @@ scratchpad/
 tools/cache/
 # reference photographs gathered for hand modelling
 statues_to_model/
+# the automated render-review pages (tools/review-page.ts): Mapillary references, renders,
+# the generated HTML and its reports. Regenerated on demand; nothing in it is hand-made.
+docs/review/
+# per-session scratch output from tools and one-off scripts
+*.log
+!docs/soak-*.log
 
 # ---- secrets --------------------------------------------------------------------
 .mapillary-token

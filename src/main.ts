@@ -13,14 +13,14 @@ import { goTo, parseLatLon, type CityRef } from './ui/goto.ts'
 import { HUD_CSS } from './ui/hud.ts'
 import { MINIMAP_CSS } from './ui/minimap.ts'
 import { THEME_CSS } from './ui/theme.ts'
-import { LOADING_CSS } from './ui/loading.ts'
+import { LOADING_CSS, WELCOME_CSS } from './ui/loading.ts'
 import { CARD_CSS } from './ui/landmark-card.ts'
 
 const params = new URLSearchParams(location.search)
 const canvas = document.getElementById('view') as HTMLCanvasElement
 
 const style = document.createElement('style')
-style.textContent = HUD_CSS + MINIMAP_CSS + THEME_CSS + LOADING_CSS + CARD_CSS
+style.textContent = HUD_CSS + MINIMAP_CSS + THEME_CSS + LOADING_CSS + WELCOME_CSS + CARD_CSS
 document.head.appendChild(style)
 
 if (params.get('model')) {
@@ -71,7 +71,9 @@ if (params.get('model')) {
       throw e
     }
   }
-  const city = platform?.city ?? params.get('city') ?? 'paris-marais'
+  // BUGS.md #166: the default was `paris-marais`, a stale bake the owner reports as no longer existing.
+  // San Francisco is the city under active development and the only one kept current.
+  const city = platform?.city ?? params.get('city') ?? 'san-francisco'
   const link = (id: string): string => {
     const q = new URLSearchParams(location.search)
     q.set('city', id)
@@ -131,7 +133,13 @@ if (params.get('model')) {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) return
       if (e.code === 'KeyR') go(device === 'bike' ? 'treadmill' : 'bike')
     })
-    document.body.appendChild(box)
+    /*
+     * Not on screen for the whole ride (owner, 2026-09-24: "we do not need the bike/run toggle to always be
+     * visible, just once at the beginning"). It is handed to the welcome screen (ui/loading.ts), which is the
+     * one moment the choice is worth making; R still switches at any time.
+     */
+    box.classList.add('sr-mode-welcome')
+    ;(window as unknown as { __modeSwitch?: HTMLElement }).__modeSwitch = box
   }
   const { game } = await import('./game.ts')
   void game(canvas, {
@@ -153,6 +161,10 @@ if (params.get('model')) {
     weather: platform?.weather ?? (params.get('weather') as 'clear' | 'overcast' | 'rain') ?? undefined,
     advance: params.get('advance') ? Number(params.get('advance')) : undefined,
     cars: params.get('cars') === '1',
+    // ?veg=3 — how many times the baked count a closed wood grows to (render/infill.ts); ?vegmerge=0 turns
+    // off the material and far-tier merging of BUGS.md #205, so the two can be measured against each other
+    veg: params.get('veg') ? Number(params.get('veg')) : undefined,
+    vegMerge: params.get('vegmerge') !== '0',
     turn: (params.get('turn') as 'left' | 'straight' | 'right') ?? undefined,
     platform: platform ?? undefined,
   })

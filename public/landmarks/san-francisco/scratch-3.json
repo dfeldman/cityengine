@@ -1,0 +1,30 @@
+[
+  {
+    "osm": ["way/1282042031"],
+    "procedural": "clementinaScallopedTower",
+    "name": "320-330 Clementina scalloped balcony tower",
+    "height": 52,
+    "note": "Kit batch 9 escalation: stacked/scalloped projecting balconies wrapping every floor, a 158-vertex reconstructed ring rotating continuously. sf/scratch-3.ts: roundRing over the baked ring, then faceBand's bays kind (round: true) draws a projecting rounded bay in every position on every floor. From docs/shots/refs/sf-mapillary/way-1282042031-01.jpg and -03.jpg (both show the same continuous stacked-balcony curve; -02.jpg under this id is an unrelated storefront a few doors down and was not used for shape)."
+  },
+  {
+    "osm": ["way/1410182008"],
+    "procedural": "uberHqCorner",
+    "name": "Uber HQ, 1455 Market curved corner",
+    "height": 48,
+    "note": "Kit batch 9 escalation: curved corner, a 12-facet run, chords 2.3-9.9 m, continuous ~30 degree rotation. sf/scratch-3.ts: roundRing smooths the whole ring, a dark curtain-glass shaft over a perforated metal-screen podium, an orange cornice band at the setback (per docs/shots/refs/sf-mapillary/way-1410182008-01/02/03.jpg)."
+  },
+  {
+    "osm": ["way/1410183655"],
+    "procedural": "uberHqWing",
+    "name": "Uber HQ, 700 3rd St curved wing",
+    "height": 44,
+    "note": "Kit batch 9 escalation: curved plan, TWO separate curved runs in the ring. sf/scratch-3.ts: same curtain-glass/orange-cornice treatment as way/1410182008 (the other wing of the same block) on the sharper curve, plus a band of raked diagonal timber fins on the ring's second, gentler curved run -- the brown zigzag brise-soleil visible in docs/shots/refs/sf-mapillary/way-1410183655-01.jpg and -03.jpg."
+  },
+  {
+    "osm": ["way/1474571838"],
+    "procedural": "clementinaCurvedTurret",
+    "name": "Clementina curved corner turret",
+    "height": 52,
+    "note": "Kit batch 9 escalation: curved corner, judged primarily FROM THE PHOTOGRAPHS because the OSM way is coarsely noded and could be misread as a rotated rectangle. sf/scratch-3.ts: roundRing applied with a generous radius so the round turret reads round regardless of the way's coarse nodes; cream stucco punched-window shaft over a darker base, per docs/shots/refs/sf-mapillary/way-1474571838-01/02/03.jpg (a bowed corner turret rising the full height, seen from three different corners of the block)."
+  }
+]

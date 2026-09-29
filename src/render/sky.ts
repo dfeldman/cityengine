@@ -105,7 +105,17 @@ export class Sky {
 
   constructor(scene: Scene, opts: Partial<SkyOptions> = {}) {
     this.scene = scene
-    const o: SkyOptions = { clouds: 34, birds: 7, planes: 2, ...opts }
+    /*
+     * CLOUDS ARE OFF (owner, 2026-09-23: "the clouds are really bad. we should delete those and figure out
+     * atmosphere later"). They drew as flat pale ellipses pasted on the dome — visible in every render taken
+     * today, and worse than an empty sky.
+     *
+     * The machinery is LEFT IN PLACE, not deleted: the instanced mesh, the drift and the per-cloud colour all
+     * work, and the fault is what a cloud LOOKS like, not how it is placed. Atmosphere wants doing properly
+     * one day — haze with distance, a sun that colours the sky it sits in, cloud shadow on the ground — and
+     * that will reuse this. `new Sky(scene, { clouds: 34 })` brings them back for anyone experimenting.
+     */
+    const o: SkyOptions = { clouds: 0, birds: 7, planes: 2, ...opts }
 
     if (!domeRegistered) {
       Effect.ShadersStore['skyDomeVertexShader'] = DOME_VERTEX
@@ -197,6 +207,25 @@ export class Sky {
     return m
   }
 
+  /**
+   * Hand a filled matrix buffer to an instanced mesh and show it — or, when there is NOTHING to draw,
+   * leave it disabled.
+   *
+   * The zero case is not hypothetical: clouds have been off since 2026-09-23 (`clouds: 0` above), so
+   * `cloudBuf` is a `Float32Array(0)`. Setting an empty thin-instance buffer leaves `thinInstanceCount`
+   * at 0, and Babylon then draws the mesh as an ORDINARY, non-instanced mesh — but the vertex array still
+   * carries `world0..world3` and `instColor` as instanced attributes bound to zero-length GPU buffers.
+   * Every vertex of that draw reads past the end of them, which is
+   * `GL_INVALID_OPERATION: glDrawElements: attempt to access out of range vertices in attribute N`,
+   * once per frame for the whole session (BUGS.md #169). A mesh with no instances must not be drawn at all.
+   */
+  private show(m: Mesh, matrix: Float32Array, color: Float32Array): void {
+    if (matrix.length === 0) { m.setEnabled(false); return }
+    m.thinInstanceSetBuffer('matrix', matrix, 16)
+    m.thinInstanceSetBuffer('instColor', color, 4)
+    m.setEnabled(true)
+  }
+
   /** `at` is the rider, so the sky furniture follows them and never runs out. */
   update(dt: number, at: { x: number; z: number }): void {
     this.t += dt
@@ -216,9 +245,7 @@ export class Sky {
     })
     // every entry of these buffers is rewritten above, so the whole array is always valid; see the note in
     // life.ts about what happens when it is not
-    this.cloudMesh.thinInstanceSetBuffer('matrix', this.cloudBuf, 16)
-    this.cloudMesh.thinInstanceSetBuffer('instColor', this.cloudCol, 4)
-    this.cloudMesh.setEnabled(true)
+    this.show(this.cloudMesh, this.cloudBuf, this.cloudCol)
 
     // birds: each flock circles a drifting centre, every bird on its own phase round the ring
     let b = 0
@@ -243,9 +270,7 @@ export class Sky {
         b++
       }
     }
-    this.birdMesh.thinInstanceSetBuffer('matrix', this.birdBuf, 16)
-    this.birdMesh.thinInstanceSetBuffer('instColor', this.birdCol, 4)
-    this.birdMesh.setEnabled(true)
+    this.show(this.birdMesh, this.birdBuf, this.birdCol)
 
     this.planes.forEach((p, i) => {
       p.x += Math.sin(p.heading) * p.speed * dt
@@ -259,9 +284,7 @@ export class Sky {
       m.copyToArray(this.planeBuf, i * 16)
       this.planeCol.set([1, 1, 1, 0], i * 4)
     })
-    this.planeMesh.thinInstanceSetBuffer('matrix', this.planeBuf, 16)
-    this.planeMesh.thinInstanceSetBuffer('instColor', this.planeCol, 4)
-    this.planeMesh.setEnabled(true)
+    this.show(this.planeMesh, this.planeBuf, this.planeCol)
   }
 }
 

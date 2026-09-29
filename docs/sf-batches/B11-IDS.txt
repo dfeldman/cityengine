@@ -1,0 +1,23 @@
+# osm,name,kind,height_m,priority   — height_m EMPTY means UNKNOWN: read the OSM tags or OMIT it, never guess
+way/259118885,"Metro Theatre",civic,,300.0
+way/847856761,"Mile Rocks Lighthouse",civic,,300.0
+way/179746882,"Mithila Hotel",civic,,300.0
+way/24433389,"Model Industries Building",civic,,300.0
+way/28000041,"Morgue",civic,,300.0
+way/34313544,"Naval Station Treasure Island",civic,,300.0
+way/24433395,"New Industries Building",civic,,300.0
+way/256733821,"Nob Hill Theatre",civic,,300.0
+way/288365547,"Ocean Climate Center",civic,,300.0
+way/132238424,"One Market Plaza",civic,,300.0
+way/260279404,"Orchard Garden Hotel",civic,,300.0
+way/27996732,"Post Exchange & Officers' Club",civic,,300.0
+way/27996721,"Powerhouse",civic,,300.0
+way/644986118,"Quarters ",civic,,300.0
+way/291188933,"Quarters 1",civic,,300.0
+way/291188936,"Quarters 2",civic,,300.0
+way/291188941,"Quarters 3",civic,,300.0
+way/291188937,"Quarters 4",civic,,300.0
+way/291188938,"Quarters 5",civic,,300.0
+way/291188939,"Quarters 6",civic,,300.0
+way/291188940,"Quarters 7",civic,,300.0
+way/291188963,"Quarters 9",civic,,300.0

@@ -1,0 +1,8 @@
+[
+  { "osm": ["way/256730074"], "procedural": "b2_tower_256730074", "name": "Mandarin Tower", "height": 57 },
+  { "osm": ["way/112878589"], "procedural": "b2_prewarOffice_112878589", "name": "Aronson Building", "height": 55 },
+  { "osm": ["way/256029744"], "procedural": "b2_college_256029744", "name": "City College of San Francisco Downtown Campus", "height": 54 },
+  { "osm": ["way/256029750"], "procedural": "b2_office_256029750", "name": "Way 256029750", "height": 54 },
+  { "osm": ["way/136104349"], "procedural": "b2_office_136104349", "name": "Foundry Square II", "height": 55 },
+  { "osm": ["way/944986473"], "procedural": "b2_loft_944986473", "name": "Way 944986473", "height": 14 }
+]

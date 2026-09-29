@@ -14,6 +14,13 @@ import { box, prism, type Rgb } from '../../models.ts'
 import { boxAlong } from '../parts.ts'
 import { beam } from './golden-gate.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
+/*
+ * The MLK Memorial waterfall is built in `./yerba-buena.ts` with the rest of its block, because it is not a
+ * free-standing piece of art on its own ground: it is CUT INTO a level change, and it needs that file's deck
+ * height and the OSM polylines of the wall and the pools. It stays a member of `ART` so it keeps its
+ * nonbuilding marking (tools/nonbuildings.ts marks the whole record) and its own manifest entry.
+ */
+import { mlkWaterfall } from './yerba-buena.ts'
 
 type V3 = [number, number, number]
 
@@ -158,38 +165,6 @@ export function redwoodParkBronzes(out: MeshBuilder, _fit?: Fit): void {
   basin(out, -1.6, -1.2, 1.3, 0.22, GRANITE_DK, GRAN_TAG)
   // a couple of flat paving/puddle discs nearby, where the "Puddle Jumpers" figures will be placed
   for (const [x, z] of [[1.0, 0.2], [0.3, 1.7], [2.0, -0.6]]) disc(out, x, 0.03, z, 0, 0.5, [0.55, 0.65, 0.7], 12)
-}
-
-// ---------------------------------------------------------------------------------------------------------------
-// MLK Memorial waterfall, Yerba Buena Gardens (37.7853, -122.4029): a wide granite waterfall wall, ~9 m tall and
-// walkable-behind. Water sheets down the front of a long stacked-granite-block wall built on a ring so a rider
-// can pass through the gap behind it.
-// ---------------------------------------------------------------------------------------------------------------
-export function mlkWaterfall(out: MeshBuilder, _fit?: Fit): void {
-  const halfW = 12
-  const h = 9
-  const thick = 1.4
-  const gap = 3 // the walkway behind
-  // front face: courses of rough granite blocks, water sheeting down over most of it
-  const courses = 10
-  const ch = h / courses
-  for (let i = 0; i < courses; i++) {
-    const y0 = i * ch
-    const blocks = 9
-    for (let k = 0; k < blocks; k++) {
-      const x0 = -halfW + (k * 2 * halfW) / blocks
-      const w = (2 * halfW) / blocks
-      const shade: Rgb = (i + k) % 2 === 0 ? GRANITE : GRANITE_DK
-      box(out, x0 + w / 2, y0 + ch / 2, thick / 2, w / 2 - 0.05, ch / 2 - 0.03, thick / 2, shade, GRAN_TAG)
-    }
-  }
-  // water sheet over the face, just proud of it
-  box(out, 0, h * 0.42, thick + 0.08, halfW - 0.6, h * 0.42, 0.06, [0.6, 0.74, 0.78], 0)
-  // back wall (plain granite, no water) and the two end walls closing the walkway
-  box(out, 0, h / 2, thick + gap + thick / 2, halfW, h / 2, thick / 2, GRANITE_DK, GRAN_TAG)
-  for (const s of [-1, 1]) box(out, s * halfW, h / 2, thick + gap / 2, thick / 2, h / 2, gap / 2, GRANITE_DK, GRAN_TAG)
-  // a plain granite walkway floor between the two walls
-  box(out, 0, 0.05, thick + gap / 2, halfW - thick, 0.05, gap / 2 - 0.1, GRANITE, GRAN_TAG)
 }
 
 // ---------------------------------------------------------------------------------------------------------------

@@ -1,0 +1,32 @@
+[
+  {
+    "osm": ["way/29902626"],
+    "name": "Saints Peter and Paul Church",
+    "procedural": "saintsPeterAndPaul",
+    "lat": 37.801592,
+    "lon": -122.410166,
+    "size": [30, 52],
+    "front": 180,
+    "height": 23,
+    "note": "church kit: twin front towers with spires, rose window, triple portal, facing south across Washington Square. Placed by point and size, at the CHURCH's own centre: the OSM way is one 49 x 53 m outline covering the church and its school to the west, and its centroid is 9 m west of the church."
+  },
+  {
+    "osm": ["way/260520154"],
+    "name": "Old Saint Mary's Cathedral",
+    "procedural": "oldSaintMarysCathedral",
+    "lat": 37.792811,
+    "lon": -122.405854,
+    "size": [24, 40],
+    "front": 180,
+    "height": 19,
+    "note": "church kit: 1854 brick, one square front tower with a flat parapet and no spire, facing south onto California Street. Replaces the rule 1 chinatown restyle. Placed by point and size at the CHURCH's own centre: the OSM way (45 x 49 m) merges the cathedral with its parish house to the east."
+  },
+  {
+    "osm": ["way/32963425"],
+    "name": "Saint Patrick Catholic Church",
+    "procedural": "saintPatrickChurch",
+    "front": 135,
+    "height": 46,
+    "note": "756 Mission St; church kit: red brick, one square front-centre tower with an open belfry under a castellated parapet and corner pinnacles, no spire; single portal, traceried lancet over it; arcaded nave, clerestory over aisles, polygonal apse. Replaces the old stPatrickChurch tower()+spireOn() model, which read as a flat-roofed office block with a spire punched through the roof plane. Fitted to the OSM way itself (~49 x 26.5 m) — the church alone: the four-storey rectory seen sharing its wall in docs/shots/refs/model1/way-32963425.jpg is way/118480406, an untagged 'building=yes' next door, not part of this outline. front:135 is the bearing of the outward normal of the front wall's two longest facets (the ones either side of the tower's forward step), computed from the way's own ring, not the direction those edges run in."
+  }
+]

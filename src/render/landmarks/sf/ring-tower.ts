@@ -172,8 +172,12 @@ export function ringTower(out: MeshBuilder, fit: Fit, p: TowerPreset): void {
 const preset = (p: TowerPreset) => (out: MeshBuilder, fit: Fit): void => ringTower(out, fit, p)
 
 export const TOWER_PRESETS = {
-  /** 555 California (the Bank of America Center, 1969): carnelian granite in sawtooth bays up every face */
-  fiveFiveFiveCalifornia: preset({ height: 237, wall: [0.36, 0.2, 0.18], glass: [0.16, 0.14, 0.15], pattern: 'vertical', pitch: 3, solid: 0.55, crown: 'flat' }),
+  /*
+   * 555 California was here as a `vertical` preset — a flat box with fins, which reviewed 0 (BUGS.md #120):
+   * the building IS its sawtooth of projecting bays, and this grammar varies depth per storey, never per
+   * bay. It is modelled in sf/five-five-five-california.ts under the same name; the line is gone rather
+   * than left to shadow it from the spread in sf/index.ts.
+   */
   /** Embarcadero Center 1–4 (1971–82): slabs of white precast concrete, deep vertical fins, windows between */
   embarcaderoCenter: preset({ height: 170, wall: [0.86, 0.85, 0.82], glass: [0.3, 0.33, 0.37], pattern: 'vertical', pitch: 3.2, solid: 0.45, crown: 'flat' }),
   /** Hilton San Francisco Union Square, Tower 2 (1971): cream concrete, piers up the faces, a stepped top */
@@ -190,16 +194,24 @@ export const TOWER_PRESETS = {
   russBuilding: preset({ height: 133, wall: [0.86, 0.8, 0.68], glass: [0.3, 0.3, 0.3], pattern: 'vertical', pitch: 2.2, solid: 0.55, setbacks: [[0.72, 4], [0.86, 4]], crown: 'stepped' }),
   /** the Shell Building (1929): Art Deco terracotta, setbacks to a crowned top */
   shellBuilding: preset({ height: 116, wall: [0.86, 0.8, 0.66], glass: [0.3, 0.3, 0.31], pattern: 'vertical', pitch: 2.2, solid: 0.6, setbacks: [[0.75, 3], [0.88, 3]], crown: 'lantern' }),
-  /** the Marriott Marquis (1989), "the jukebox": mirrored blue glass stepping back in tiers */
-  marriottMarquis: preset({ height: 133, wall: [0.7, 0.72, 0.74], glass: [0.3, 0.42, 0.56], pattern: 'horizontal', pitch: 3.2, solid: 0.25, setbacks: [[0.55, 4], [0.72, 4], [0.86, 4]], crown: 'stepped' }),
   /** Westin St. Francis tower (1972): white, banded, beside the old hotel */
   westinTower: preset({ height: 120, wall: [0.86, 0.86, 0.84], glass: [0.26, 0.3, 0.34], pattern: 'horizontal', pitch: 3, solid: 0.5, crown: 'flat' }),
   /** 101 California (1982): a faceted cylinder of glass bands and granite */
   oneOhOneCalifornia: preset({ height: 183, wall: [0.62, 0.56, 0.52], glass: [0.3, 0.34, 0.4], pattern: 'horizontal', pitch: 3.6, solid: 0.35, crown: 'flat' }),
   /** Moscone West (2003): a three-storey glass box under a thin overhanging roof, the convention centre's face */
   mosconeWest: preset({ height: 50, wall: [0.8, 0.82, 0.84], glass: [0.36, 0.5, 0.56], pattern: 'grid', pitch: 12, solid: 0.12, crown: 'flat' }),
-  /** Moscone North and South (1981, 1992, 2018): mostly under the ground; above it, low glass halls and pavilions */
-  mosconeHall: preset({ height: 20, wall: [0.86, 0.87, 0.88], glass: [0.4, 0.52, 0.58], pattern: 'grid', pitch: 7, solid: 0.15, crown: 'flat' }),
+  /*
+   * `mosconeHall` was here — a 20 m glass-box preset claiming `way/109141776` (Moscone South). Removed
+   * 2026-09-23 (docs/MOSCONE-SOUTH.md, "THE LEVEL MODEL"): that way's real hall is LEVEL 1, running under
+   * the whole block and visible only from Howard Street; the public deck ON TOP of it (level 3) is a
+   * separate raised surface, `mosconeSouthDeck` in `sf/yerba-buena.ts`, which already caps the way properly.
+   * A generic 20 m box standing on the same footprint duplicated that deck's own surface and put a wall
+   * across the one open skybridge landing that reaches it (the report this fixes). Lowering the box's height
+   * was tried first and did not resolve the collision — the box was standing where the deck's own surface
+   * and parapet already are, at any height. The Howard-facing mass that IS visible above ground belongs to
+   * a DIFFERENT way (`way/426708093`, "George R Moscone Convention Center", queued `manual` in
+   * docs/MOSCONE-SOUTH.md) and is not this preset's or this way's to draw.
+   */
   /*
    * One Maritime Plaza was here as a `grid` preset — a plain curtain wall, with nothing of the exterior
    * X-bracing that is the only reason anyone recognises it (BUGS.md #82). It is now modelled properly in

@@ -12,6 +12,17 @@ export interface Planting {
   x: number; z: number; height: number; spin: number; park: boolean
   /** the tree's form where the bake knows it (city/tree-forms.ts), 0 where it does not */
   form?: number
+  /**
+   * An EXPLICIT height, absent for every tree the bake places. A tree on the ground takes its height from
+   * the terrain, which is right for every street and park in the city.
+   *
+   * It exists for the one shape the terrain cannot express — a tree on a RAISED DECK (docs/SKYPARKS.md).
+   * The ground is a heightfield, one elevation per x/z, so a tree on Salesforce Park's roof has nowhere to
+   * say it is 21 m up and sinks into the road below. The same optional `y` `Planted` (render/plants.ts)
+   * carries for the shrubs, so one deck entry serves both layers. It is never packed: a deck is built by a
+   * landmark at run time, not baked.
+   */
+  y?: number
 }
 
 /**

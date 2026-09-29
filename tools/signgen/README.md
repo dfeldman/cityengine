@@ -1,8 +1,14 @@
-# signgen — extruded sign lettering in a real typeface
+# signgen — EXTRUDED sign lettering in a real typeface
+
+> **Read this first: most signs do not belong here.** A building's name is normally a `flat` sign —
+> `sign({ type: 'flat', ... })` in the builder (src/render/landmarks/signage.ts), one quad with a texture and
+> an alpha channel, the letters rendered by the browser in a real typeface. **Two triangles, no Blender, no
+> asset, no bake.** This directory is the other path: letters that genuinely stand off the wall and catch the
+> light. Measured, 2026-09-23: `Ghirardelli` is **116,560 triangles** here and 2 there.
 
 Makes a GLB of a word in a real font, extruded, optionally with light bulbs along the letters. For the signs
-that ARE the landmark: Ghirardelli, a theatre's name across a marquee, a hotel on a roof, a painted warehouse
-name on the waterfront.
+whose letters are REALLY three-dimensional: Ghirardelli's bulbs, a deep channel-letter sign, a roof sign read
+against the sky.
 
 ```
 blender -b -P tools/signgen/gen.py -- \
@@ -19,7 +25,10 @@ blender -b -P tools/signgen/gen.py -- \
 | `--bevel=` | a small chamfer on the letter edges, which is what catches the light on metal lettering |
 | `--bulbs=` | bulb spacing in metres along the letter outlines; omit or `0` for plain letters |
 | `--font=` | any TTF/OTF on the machine |
-| `--out=` | the GLB, under `public/` so a landmark entry can name it in `file` |
+| `--colour=` | `#rrggbb` for the letters — painted lettering is not the default polished steel |
+| `--metallic=`, `--roughness=` | what they are made of: paint is metallic 0 and rough, gilt or steel the opposite |
+| `--lit=` | the `lit` of `signage.ts`; only `self` changes the GLB (the letter faces emit) |
+| `--out=` | the GLB, under `public/models/` — a builder names it in `sign({ type: 'extruded', model: … })`, a landmark entry as `models/signs/x.glb` |
 
 The mesh comes out centred on the origin in x and y with its front face at z = 0 and the extrusion going back
 into −z, so a builder can put a scaffold behind it without hunting for an offset.
@@ -27,8 +36,9 @@ into −z, so a builder can put a scaffold behind it without hunting for an offs
 ## The GLBs are not checked in
 
 `public/models/` is gitignored: **the assets are generated, and the code that generates them is what is kept.**
-`npm run signs` rebuilds every sign the city needs from `tools/signgen/build.sh`, so add a line there when you
-add a sign rather than leaving a GLB lying in a directory nobody can reproduce.
+`npm run signs` rebuilds every extruded sign the city needs from the recipes in `signs.json` (via
+`tools/signs.ts`, which the bake also calls), so add a recipe there rather than leaving a GLB lying in a
+directory nobody can reproduce.
 
 ## Why this exists
 
@@ -56,6 +66,11 @@ The script is deliberately small and meant to be edited:
   lettering comes from here.
 
 ## Cost
+
+Measured 2026-09-23: `Ghirardelli` (11 letters, bulbs at 0.5 m) is **116,560 triangles and 4.4 MB**;
+`Believe It or Not!` (18 characters, no bulbs) is **41,600 triangles and 1.0 MB** — about 2,300 a letter. The
+same two words as `flat` signs are two triangles each and a texture made at load. That ratio is the whole
+argument for the two types.
 
 A word is a few thousand triangles per letter at the default bevel, and the bulbs are eight-segment spheres.
 Ghirardelli at `--bulbs=0.5` is 385 bulbs and about 2 MB. That is fine for a handful of landmarks and would

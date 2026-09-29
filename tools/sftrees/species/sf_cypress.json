@@ -1,0 +1,60 @@
+{
+ "name": "sf_cypress",
+ "extends": "ttc:black_pine",
+ "about": "Monterey cypress: the tree Golden Gate Park and the Presidio were planted with. NOT the columnar Italian cypress the library's `cypress` is \u2014 a mature one is as wide as it is tall, flat-topped where the wind has cut it, with heavy level limbs and dense dark sprays of scale foliage.",
+ "kind": "conifer",
+ "needles": true,
+ "bark": "cedar",
+ "bark_tile": 1.1,
+ "leaves_page": "larch",
+ "height": [
+  17,
+  4
+ ],
+ "leaf_share": 0.66,
+ "trunk": {
+  "lean": [
+   4,
+   4
+  ],
+  "wander": 0.12,
+  "gnarl": 0.3,
+  "splits": {
+   "count": [
+    1.8,
+    0.6
+   ],
+   "at": [
+    0.42,
+    0.1
+   ],
+   "angle": [
+    34,
+    10
+   ]
+  }
+ },
+ "envelope": {
+  "base": 0.3,
+  "top": 1.0,
+  "width": 0.52,
+  "profile": [
+   0.55,
+   0.85,
+   1.0,
+   1.0,
+   0.92,
+   0.55
+  ]
+ },
+ "set": [
+  "levels.0.angle.curve=[88,86,80,70]",
+  "levels.0.length_abs.curve=[0.3,0.36,0.34,0.22]",
+  "levels.0.tropism.curve=[-0.15,0.0,0.25]",
+  "levels.0.step=[0.7,0.2]",
+  "levels.1.density=3.2",
+  "leaves.droop=-0.25",
+  "leaves.spacing=0.6",
+  "leaves.tint=[0.78,0.88,0.74]"
+ ]
+}

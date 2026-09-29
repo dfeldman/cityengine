@@ -12,6 +12,7 @@
  */
 import type { StyleId } from './facade.ts'
 import type { PackedTerrain } from './terrain.ts'
+import type { RingForm } from './ring-forms.ts'
 
 export interface PackedEdge {
   id: number
@@ -29,6 +30,12 @@ export interface PackedEdge {
   width: number
   /** the pavement either side, in metres; 0 on a lane too narrow to have one */
   walk: number
+  /**
+   * This way runs through open country — a big park, a forest, a nature reserve — and is drawn by the park's
+   * rules rather than the street's (city/park-area.ts). Not baked: set per tile as it arrives, from the park
+   * polygons the tile carries, so it costs nothing in the package and follows a re-bake automatically.
+   */
+  park?: boolean
   name?: string
   foot: boolean
   /** a marked place where a footway crosses a carriageway — drawn as a zebra rather than as pavement */
@@ -89,6 +96,22 @@ export interface PackedBuilding {
   levelsInferred?: true
   /** what kind of building the region's classifier says it is (src/city/building-types.ts): 'rowhouse', 'loft'… */
   archetype?: string
+  /**
+   * **The slot kit cannot express this building's form** — route it up to from-scratch modelling, treatment
+   * 4 or 5 in docs/LADDER.md §3c. Written by the bake from the FOOTPRINT alone (src/city/ring-forms.ts), for
+   * every building in every city, before any model is spent: the scan costs nothing per building and needs
+   * no photograph, which is what makes it affordable at the scale of hundreds across many cities.
+   *
+   * It carries WHICH score fired and all of the values, not a boolean: `arc` (a smooth curve), `stair` (a
+   * curve some mapper digitised as a staircase) and `saw` (per-bay depth) mean different things and a later
+   * reader needs to know which one to trust.
+   *
+   * Absent means only "the footprint does not say so". A twist, a taper, a vault and a temple front are all
+   * invisible from above, and per-bay depth is caught only where a mapper drew the bays — so this is a cheap
+   * first pass and never a complete answer. A `building:part` carries its OWNER's flag: the outline is what
+   * was scored, and the bake may have dropped it.
+   */
+  form?: RingForm
 }
 
 /**
@@ -110,12 +133,24 @@ export interface PackedFringe {
 }
 
 export interface PackedArea {
-  kind: 'park' | 'grass' | 'water' | 'wood' | 'pitch' | 'paved'
+  /**
+   * `sand` and `dirt` were missing and the beach was a lawn (BUGS.md #200). The owner: *"the beach should
+   * also have sand"*, and *"as a natural area with millions of plants and lots of dirt, it needs fairly
+   * different mechanics"*. `sand` is `natural=sand|beach|shingle|dune`; `dirt` is `natural=bare_rock|
+   * mud|earth` and `landuse=landfill|quarry` — the ground OSM says outright is not growing anything.
+   * Neither is GREEN and neither is planted.
+   */
+  kind: 'park' | 'grass' | 'water' | 'wood' | 'pitch' | 'paved' | 'sand' | 'dirt'
   ring: number[]
   /** inner rings: the islands in a river, the courtyard in a park */
   holes?: number[][]
   /** drawn over the other areas (a square paved by hand over the park OSM spreads across it) */
   top?: boolean
+  /**
+   * This is the sea: built from `natural=coastline` rather than a mapped polygon. Its surface is sea level
+   * by definition and must NOT be inferred from the ground under it — see `waterLevels` (BUGS.md #161).
+   */
+  sea?: boolean
 }
 
 /**
@@ -128,6 +163,22 @@ export interface PackedPoi {
   z: number
   name: string
   kind: 'shop' | 'food' | 'culture' | 'service'
+}
+
+/**
+ * A fitted sports court (BUGS.md #214, city/sports.ts): where it is, which way it points, and how big the
+ * kit decided it could honestly be. `render/sports.ts` draws it; nothing downstream needs the polygon.
+ */
+export interface PackedCourt {
+  sport: 'tennis' | 'pickleball' | 'basketball' | 'four_square' | 'volleyball'
+  x: number
+  z: number
+  /** the long axis, radians: the court's length runs along (cos h, sin h) */
+  heading: number
+  len: number
+  wid: number
+  /** a basketball half-court: one hoop, one key, no centre line */
+  half?: boolean
 }
 
 /**
@@ -181,6 +232,23 @@ export interface PackedBridge {
   name?: string
 }
 
+/**
+ * A mapped hard edge: `barrier=retaining_wall` or `seawall`, as a polyline.
+ *
+ * Fetched for ONE thing at present, and it is the beach's first band (docs/PARKS.md "Beaches are BANDS",
+ * BUGS.md #200). The rip-rap holding up the top of Ocean Beach is mapped as a retaining wall - 33 ways
+ * along that strip - and is nowhere tagged as natural ground, so the revetment can be PLACED from data
+ * while the sand's own bands are GENERATED from distance to the coastline. Optional: a package baked
+ * before this field simply has no revetment.
+ */
+export interface PackedWall {
+  id: number
+  /** x,z pairs */
+  points: number[]
+  /** a seawall as such, as opposed to any retaining wall (a terraced garden's is one too) */
+  sea?: true
+}
+
 /** A railway, for the trains that run on it. Straight through; trains do not steer. */
 export interface PackedRail {
   id: number
@@ -207,11 +275,19 @@ export interface CityPackage {
   ground: 'grass' | 'sand' | 'dirt'
   /** regional character (src/city/regions.json) */
   region?: string
+  /**
+   * The sea's surface in this package's datum frame (BUGS.md #161), or absent where nothing is sea. Baked
+   * as `shore − 1.5 − datum`, the level `tools/bake.ts` flattened the sea bed to, so the water plane and the
+   * bed beneath it are the same surface. NOT metres above sea level — see `waterLevels`.
+   */
+  seaLevel?: number | null
   /** where a session starts: an edge id and how far along it */
   start: { edgeId: number; s: number }
   edges: PackedEdge[]
   buildings: PackedBuilding[]
   areas: PackedArea[]
+  /** mapped retaining walls and seawalls (optional: absent on a package baked before them) */
+  walls?: PackedWall[]
   /** x,z pairs of individual mapped trees */
   trees: number[]
   rails: PackedRail[]
@@ -222,8 +298,25 @@ export interface CityPackage {
   skyline?: { name: string; x: number; z: number; procedural: string; heightM: number; baseY?: number; bearing?: number; boost?: number }[]
   /** mapped street furniture (tools/overpass.ts `furnitureQuery`); absent on a package baked before it */
   furniture?: PackedFurniture[]
+  /**
+   * SPORTS COURTS (BUGS.md #214): one record per pitch the kit claims, POINT-like rather than a polygon.
+   *
+   * The fit has to happen on the WHOLE ring, at bake time: `splitPackage` clips an area at every tile
+   * border, and a court straddling one would otherwise be fitted twice, to two half-polygons, and come out
+   * as two wrong little courts. So the bake fits the court once (city/sports.ts) and files the result by
+   * its centre, exactly as a piece of furniture is filed. Absent on a package baked before the kit, which
+   * then renders pitches as the flat coloured polygons they were.
+   */
+  courts?: PackedCourt[]
   /** the ground, sampled on a grid; absent on a city baked flat */
   terrain?: PackedTerrain
+  /**
+   * The FINE ground grid (BUGS.md #206c), over the rideable box and a ring's margin only. `splitPackage`
+   * cuts it into one block per tile and it NEVER reaches the index — at step 4 it is 511 MB for San
+   * Francisco, against 19 KB a tile. Absent from a city baked before per-tile terrain, which then falls
+   * back to `terrain` everywhere, exactly as it did.
+   */
+  terrainFine?: PackedTerrain
   attribution: string[]
   baked: string
   /** buildings beyond the box, as massing (optional: older packages have none) */
@@ -276,8 +369,28 @@ export const onSurface = (e: { tunnel?: boolean; layer?: number; bridge?: boolea
  * each with its own lowest bank; drawn at their own levels they stepped a metre at the seam, and the depth
  * occluder of the higher cut shards out of the lower (BUGS.md #36). Touching = a vertex of one within 3 m of
  * a vertex of the other.
+ *
+ * HEIGHTS HERE ARE IN THE DATUM FRAME, NOT METRES ABOVE SEA LEVEL. `tools/bake.ts` stores the ground as
+ * `raw − datum`, where the datum is the elevation at local (0, 0) — the rider's start. In San Francisco that
+ * is lower Nob Hill, so **local 0 is about 82 m above mean sea level** and the sea is near −82. Do not write
+ * a sea level of 0 into this function: it would put the bay 82 m up and drown the Embarcadero. Measured on
+ * `index.json`: Ferry Building −84.7, Ocean Beach −82.4, Civic Center −81.4, Alamo Square −81.4.
+ *
+ * THE SEA IS PINNED, and measurement is why. Once `natural=coastline` became a water area (BUGS.md #159) the
+ * bay entered the bake's `wetMask` and the sea-bed flattening of #58 applied to it for the first time, which
+ * very nearly sufficed. But a bake reported the three sea components at −94.1, −86.3 and −99.1 m against a
+ * flattened bed at −85.0: one right, the other two leaking 9 and 14 m low, and disagreeing with each other —
+ * a step at the waterline and a seam between the ocean and the bay. The cause is at the BOX EDGE, where the
+ * polygon is clipped but the terrain grid runs `tpad` further and a vertex lying on the edge samples ground
+ * that `inRing` never marked wet, so `min` takes the unflattened value.
+ *
+ * So `seaLevel` — `shore − 1.5` in the datum frame, the very number #58 flattened the bed to — is passed in,
+ * and any component containing sea water takes it. Pinning rather than taking the component minimum is the
+ * point: one leaking vertex must not drag the bay down, and all three components must agree, because they are
+ * one body of water.
  */
-export function waterLevels(water: PackedArea[], heightAt: (x: number, z: number) => number, drop: number): number[] {
+export function waterLevels(water: PackedArea[], heightAt: (x: number, z: number) => number, drop: number,
+  seaLevel: number | null = null): number[] {
   const own = water.map((a) => {
     let lv = Infinity
     for (let i = 0; i < a.ring.length; i += 2) lv = Math.min(lv, heightAt(a.ring[i], a.ring[i + 1]))
@@ -302,5 +415,8 @@ export function waterLevels(water: PackedArea[], heightAt: (x: number, z: number
   })
   const low = new Map<number, number>()
   own.forEach((lv, k) => { const r = find(k); low.set(r, Math.min(low.get(r) ?? Infinity, lv)) })
-  return own.map((_, k) => low.get(find(k))!)
+  // a component that reaches the sea IS the sea: it takes the sea's level rather than its lowest member
+  const salt = new Set<number>()
+  if (seaLevel !== null) water.forEach((a, k) => { if (a.sea) salt.add(find(k)) })
+  return own.map((_, k) => (salt.has(find(k)) ? seaLevel! : low.get(find(k))!))
 }

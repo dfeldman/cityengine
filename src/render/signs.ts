@@ -351,8 +351,17 @@ export class Signs implements TileLayer {
   private readonly plates: TextAtlas
   private readonly counts = new Map<string, { count: number; plaques: number; named: number; blank: number; projecting: number }>()
 
+  /**
+   * `inPark`: a corner in open country gets no name blade. The owner, of Golden Gate Park: *"there are
+   * almost no signs."* The only sign in either reference photograph is a 25 mph plate on the one lamppost
+   * on MLK Drive — no street-name blades, no destination signs, no regulatory clutter. A national park does
+   * not label itself, and at rider speed under a canopy an absent sign is invisible where a wrong one is
+   * not. Passed in rather than tested for here, so the park's rule stays in one place (city/park-area.ts).
+   */
+  private readonly inPark: (x: number, z: number) => boolean
   constructor(scene: Scene, cityId: string, reg: Region, terrain: Terrain, junctions: SignedJunction[] = [],
-              noSign: Set<number> = new Set()) {
+              noSign: Set<number> = new Set(), inPark: (x: number, z: number) => boolean = () => false) {
+    this.inPark = inPark
     this.scene = scene
     this.reg = reg
     this.terrain = terrain
@@ -380,7 +389,7 @@ export class Signs implements TileLayer {
     const meshes: Mesh[] = []
     const c = { count: 0, plaques: 0, named: 0, blank: 0, projecting: 0 }
     const index = buildingIndex(near.around.buildings)
-    const js = this.junctionsIn.get(k) ?? []
+    const js = (this.junctionsIn.get(k) ?? []).filter((j) => !this.inPark(j.at.x, j.at.z))
     if (this.corners && js.length > 0) {
       if (reg.streetSigns === 'plaque') {
         const r = plaques(this.scene, this.corners, k, js, index, terrain)

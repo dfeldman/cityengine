@@ -9,7 +9,11 @@
  * and the URL is a link back to the same spot either way.
  */
 
-export interface CityRef { id: string; name: string; lat?: number; lon?: number; radius?: number }
+export interface CityRef {
+  id: string; name: string; lat?: number; lon?: number; radius?: number
+  /** the BAKED extent in local metres round `lat`/`lon` (index.json `box`) — the truth about what exists */
+  box?: { x0: number; x1: number; z0: number; z1: number }
+}
 
 /** "48.854774, 2.362375", "48.854774 2.362375", "(48.85, 2.36)" — or null. */
 export function parseLatLon(text: string): { lat: number; lon: number } | null {
@@ -37,7 +41,24 @@ export function cityFor(ll: { lat: number; lon: number }, cities: CityRef[]): Ci
   for (const c of cities) {
     if (c.lat === undefined || c.lon === undefined) continue
     const d = metres(ll, { lat: c.lat, lon: c.lon })
-    if (d <= (c.radius ?? 700) * 1.5 && (!best || d < best.d)) best = { c, d }
+    /*
+     * THE BAKED BOX, NOT `radius` (BUGS.md #163).
+     *
+     * `radius` is one number for a city that is not round. San Francisco's is 3 340 m while its box is
+     * 17 600 x 8 200 m, so everything west of Twin Peaks and everything south of Mission Bay — Ocean Beach,
+     * the Sunset, Candlestick — was "not in any baked city" although it is baked and rideable. That is the
+     * OLD BOX the owner keeps hitting: not a stale file, an extent measured the wrong way.
+     */
+    const inside = c.box
+      ? (() => {
+          const k = Math.cos((((c.lat! + ll.lat) / 2) * Math.PI) / 180)
+          const x = (ll.lon - c.lon!) * 111_320 * k
+          const z = (ll.lat - c.lat!) * 110_574
+          const pad = 400   // the rider starts on the nearest street anyway, and landmarks sit on the rim
+          return x >= c.box.x0 - pad && x <= c.box.x1 + pad && z >= c.box.z0 - pad && z <= c.box.z1 + pad
+        })()
+      : d <= (c.radius ?? 700) * 1.5
+    if (inside && (!best || d < best.d)) best = { c, d }
   }
   return best?.c ?? null
 }

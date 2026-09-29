@@ -120,7 +120,15 @@ const entasis = (r: number, t: number): number => r * (1 - 0.18 * Math.pow(t, 1.
 export function classicalColumn(out: MeshBuilder, x: number, z: number, y0: number, y1: number, r: number,
                                 colour: Rgb, opts: ColumnOpts = {}): void {
   const H = Math.max(0.2, y1 - y0)
-  const tier = opts.tier ?? tierFor(H)
+  /*
+   * BUGS.md #97: the `far` tier draws a tuscan slab whatever order was asked for, and it used to be CHOSEN
+   * silently for anything under 6 m — every shopfront-height column a model will ever write. An order asked for
+   * explicitly is now honoured by promoting the automatic tier to `mid`, which draws a real capital for about
+   * 100 triangles. A caller who names `tier: 'far'` still gets `far`: that is a stated cost decision, not an
+   * omission, and a row of bank fronts at distance still costs 28 triangles a column.
+   */
+  const asked = opts.order && opts.order !== 'tuscan'
+  const tier = opts.tier ?? (asked && tierFor(H) === 'far' ? 'mid' : tierFor(H))
   const tag = opts.tag ?? FIXED
   const trim = opts.trim ?? colour
   const order: ColumnOrder = tier === 'far' ? 'tuscan' : opts.order ?? 'doric'

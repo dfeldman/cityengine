@@ -34,10 +34,12 @@ import { addShadow, shadowMaterial, shadowOffset, SHADOW_Y } from './shadows.ts'
 import { Mesh as BMesh } from '@babylonjs/core/Meshes/mesh'
 import type { Terrain } from '../city/terrain.ts'
 import { plantHash, unpackPlantings, type Planting } from '../city/plantings.ts'
+import { deckPlantings } from '../city/park-planting.ts'
 import type { TileLayer } from './city.ts'
 import { DEFAULT_FLORA, type Flora } from './flora.ts'
 import { palmModel, type PalmKind } from './palms.ts'
 import { formCode, type TreeForm } from '../city/tree-forms.ts'
+import { thicken } from './infill.ts'
 
 /** each palm kind's seed family, so the same kind is the same palms everywhere */
 const PALM_SEEDS: Record<PalmKind, number> = { canary: 1, fan: 2, queen: 3, spiky: 4, windmill: 5 }
@@ -91,11 +93,22 @@ export class Vegetation {
 
   private readonly flora: Flora
 
-  constructor(scene: Scene, terrain: Terrain, assetBase: string, flora: Flora = DEFAULT_FLORA) {
+  /**
+   * How many times the baked count a closed wood ends up with (`?veg=`, render/infill.ts). 1 is the package
+   * as it was baked; the default closes the canopy, which is what the park actually looks like.
+   */
+  private readonly thickness: number
+
+  /** the merging of BUGS.md #205, off with `?vegmerge=0` so the two can be measured against each other */
+  private readonly merge: boolean
+
+  constructor(scene: Scene, terrain: Terrain, assetBase: string, flora: Flora = DEFAULT_FLORA, thickness = 1, merge = true) {
     this.scene = scene
     this.base = assetBase
     this.terrain = terrain
     this.flora = flora
+    this.thickness = thickness
+    this.merge = merge
   }
 
   get count(): number { return this.plantings.length }
@@ -109,7 +122,7 @@ export class Vegetation {
     return {
       name: 'trees',
       build: (near) => {
-        const ps = unpackPlantings(near.tile.plantings)
+        const ps = thicken(unpackPlantings(near.tile.plantings), near.tile.edges, this.thickness)
         this.byTile.set(near.key, ps)
         this.dirty = true
         const shadow = this.castShadows(ps, `shadow:trees:${near.key}`)
@@ -117,6 +130,27 @@ export class Vegetation {
       },
       release: (k) => { this.seated.delete(k); if (this.byTile.delete(k)) this.dirty = true },
     }
+  }
+
+  /** how many decks have been planted, so game.ts adds only the new ones (the same bookkeeping Plants does) */
+  private decks = 0
+
+  /**
+   * Plant a raised deck (`Landmarks.decks`, docs/SKYPARKS.md) — Salesforce Park, and any skypark after it.
+   *
+   * Everything a ground tile does, on a ring instead: the same `plantParks` scatter (city/park-planting.ts
+   * `deckPlantings`), the same `seat()`, the same models and the same thin-instance buffers. The only thing
+   * a deck adds is `y` on each planting, which `seat()` uses instead of the terrain. Held for good rather
+   * than streamed: a hand-modelled landmark does not come and go the way a tile does.
+   */
+  addDeck(ring: { x: number; z: number }[], y: number): void {
+    const ps = deckPlantings(ring, y)
+    if (!ps.length) return
+    const key = `deck:${this.decks++}`
+    this.byTile.set(key, ps)
+    this.seated.delete(key)
+    this.dirty = true
+    this.castShadows(ps, `shadow:trees:${key}`, y)
   }
 
   /** Once a frame: re-plant if the tiles changed, or the eye moved far enough to change who is near. */
@@ -182,11 +216,19 @@ export class Vegetation {
       for (const t of got.trees) if (!t.season || t.season === 'summer') index.push({ ...t, base })
     }
 
+    // species named by the flora but absent from every index it loaded: a silent empty pick is exactly how a
+    // typo or a library mismatch made a species (and the trees planted with it) invisible without a single
+    // line printed anywhere, which is what happened here — so this is loud instead of quiet.
+    const missingSpecies = new Set<string>()
     const pick = (spec: [string, number][], n: number): TreeEntry[] => {
       const out: TreeEntry[] = []
       const total = spec.reduce((t, [, w]) => t + w, 0)
       for (const [species, weight] of spec) {
         const of = index.filter((t) => t.species === species)
+        if (of.length === 0 && !missingSpecies.has(species)) {
+          missingSpecies.add(species)
+          console.warn(`vegetation: species '${species}' matches nothing in ${libs.join(', ')} — it will plant nothing`)
+        }
         const want = Math.max(1, Math.round((weight / total) * n))
         for (let i = 0; i < want && i < of.length; i++) out.push(of[(i * 7) % of.length])
       }
@@ -240,7 +282,6 @@ export class Vegetation {
       if (parts.length === 0) return null
       for (const m of new Set([...parts, ...far, ...farther])) {
         m.isPickable = false
-        m.alwaysSelectAsActiveMesh = true
         /**
          * The loader's `__root__` transform is BAKED INTO THE VERTICES, not left on the node.
          *
@@ -320,12 +361,90 @@ export class Vegetation {
     const ordered = new Set<Model>([...this.districtPalms, ...(await streetAndPark).filter((m): m is Model => !!m), ...[...this.formPools.values()].flat()])
     models.length = 0
     models.push(...ordered)
-    if (models.length === 0) return
+    if (models.length === 0) {
+      // `load()` resolving cleanly with nothing to plant looks identical to success everywhere else — draw()
+      // just returns early on an empty `models` array — so this is the one place left to say so out loud.
+      console.warn('vegetation: load() finished with zero models; no trees will be drawn')
+      return
+    }
     this.models = models
+    if (this.merge) { this.mergeMaterials(models); this.collapseFarTiers() }
     // anything seated against an earlier set of models is stale
     this.seated.clear()
     this.dirty = true
     this.update()
+  }
+
+  /**
+   * One material per material, not one per FILE — the first half of the merge BUGS.md #205 asks for.
+   *
+   * A generated tree GLB carries two materials, a bark and a leaf, and they are shared by NAME across the
+   * library: every `oak_0NN.glb` has the same `bark_oak` and `leaves_broad`, built by the same generator
+   * from the same textures. The loader has no way to know that, so forty oak files arrive as forty pairs of
+   * identical materials, and #205 measured 170 of them alive in one square of Golden Gate Park. Each is a
+   * separate shader binding, a separate set of texture uploads and a separate thing for Babylon to check
+   * every frame, which is a large part of the ~7 ms that is paid whether or not a plant is visible.
+   *
+   * Keyed on the material's NAME and the url of its base-colour texture together. The name alone would fold
+   * two genuinely different materials that happened to share one, which is how a library with a `bark`
+   * called `bark` in two generators would quietly lose one of its textures.
+   *
+   * Then frozen. A tree's material never changes after this — nothing tints, dissolves or animates it — so
+   * the per-frame work of deciding that again is pure waste, and so is recomputing a world matrix for a
+   * mesh whose instances carry their own.
+   */
+  private mergeMaterials(models: Model[]): void {
+    const byKey = new Map<string, { freeze(): void; name: string }>()
+    let folded = 0
+    for (const model of models) {
+      for (const m of new Set([...model.parts, ...model.far, ...model.farther])) {
+        const mat = m.material as (Mesh['material'] & { albedoTexture?: { url?: string }; freeze(): void }) | null
+        if (!mat) continue
+        const tex = (mat as { albedoTexture?: { url?: string }; diffuseTexture?: { url?: string } })
+        const key = `${mat.name}|${tex.albedoTexture?.url ?? tex.diffuseTexture?.url ?? ''}`
+        const first = byKey.get(key)
+        if (!first) { byKey.set(key, mat as unknown as { freeze(): void; name: string }); continue }
+        if (first !== (mat as unknown as { freeze(): void })) { m.material = first as unknown as Mesh['material']; folded++ }
+      }
+    }
+    for (const mat of byKey.values()) mat.freeze()
+    for (const model of models) {
+      for (const m of new Set([...model.parts, ...model.far, ...model.farther])) m.freezeWorldMatrix()
+    }
+    console.info(`vegetation: ${byKey.size} materials over ${models.length} models (${folded} folded)`)
+  }
+
+  /**
+   * Beyond ninety metres, one tree of a species stands for all of them — the second half of the merge.
+   *
+   * #205's long tail is the real cost: *"36 meshes draw ONE instance, 63 draw 2–4, 101 draw 5–16. Two
+   * hundred of the 324 drawn meshes exist to draw sixteen plants or fewer."* That is not an accident of the
+   * planting, it is arithmetic. A form has four or five variants and each carries three levels of detail in
+   * two parts, so a form that is planted at all lights up thirty meshes, and the trees are then divided
+   * among them by distance as well as by variant — a handful each.
+   *
+   * The variants are worth their cost where they are seen. PARKS.md: *"a park that repeats four models
+   * every 4.5 m reads as wallpaper at rider speed"* — at rider speed, in the near ring. At two hundred
+   * metres, under this park's own canopy and its fog, a tree is a dark shape and which of five oaks it is
+   * cannot be told. So the near ring keeps every variant and the two far tiers of a pool are all redirected
+   * to ONE member of it: the variants stop multiplying with the distance bands, and the tail goes.
+   *
+   * The representative is the pool's MEDIAN by height rather than its first, because a planting's matrix is
+   * scaled from the model it was seated on (`seat()`) and a far tier drawn from a different model is drawn
+   * at a slightly wrong size. Taking the median makes the worst case the spread of the pool rather than the
+   * distance from one end of it to the other, and it happens at ninety metres in fog.
+   */
+  private collapseFarTiers(): void {
+    const pools: Model[][] = [...this.formPools.values()]
+    const inForms = new Set(pools.flat())
+    pools.push(this.models.filter((m) => !m.palm && !inForms.has(m) && !m.park))
+    pools.push(this.models.filter((m) => !m.palm && !inForms.has(m) && m.park))
+    for (const pool of pools) {
+      const trees = pool.filter((m) => !m.palm)
+      if (trees.length < 2) continue
+      const rep = [...trees].sort((a, b) => a.top - b.top)[Math.floor(trees.length / 2)]
+      for (const m of trees) { m.far = rep.far; m.farther = rep.farther }
+    }
   }
 
   /**
@@ -367,8 +486,10 @@ export class Vegetation {
       Matrix.Compose(
         new Vector3(scale, scale, scale),
         Quaternion.RotationAxis(Vector3.Up(), p.spin),
-        // on the ground, not at sea level: a city with any relief left every tree hanging in the air
-        new Vector3(p.x, 0.16 + this.terrain.heightAt(p.x, p.z), p.z)).copyToArray(mats, i * 16)
+        // on the ground, not at sea level: a city with any relief left every tree hanging in the air — unless
+        // the planting carries its own height, which is a tree on a raised deck (docs/SKYPARKS.md) and must
+        // NOT be lifted by the terrain under it: the ground there is the street, twenty metres below.
+        new Vector3(p.x, p.y !== undefined ? p.y + 0.02 : 0.16 + this.terrain.heightAt(p.x, p.z), p.z)).copyToArray(mats, i * 16)
       model.push(m)
     })
     return { mats, model }
@@ -429,7 +550,7 @@ export class Vegetation {
    * One mesh for the whole city rather than one per tile. Trees do not move, the shadows are flat, and two
    * thousand small polygons in a single buffer is cheaper than the bookkeeping of streaming them.
    */
-  private castShadows(plantings: Planting[], name: string): BMesh | null {
+  private castShadows(plantings: Planting[], name: string, lift?: number): BMesh | null {
     const off = shadowOffset(DAYLIGHT.sun)
     const out = new MeshBuilder()
     for (const p of plantings) {
@@ -444,7 +565,11 @@ export class Vegetation {
       addShadow(out, ring, height, off, SHADOW_Y)
     }
     if (out.triangles === 0) return null
-    this.terrain.drape(out.positions)
+    // `drape()` rewrites every vertex wholesale — it ADDS the terrain under each one — so a deck's shadows
+    // cannot opt out with a flag on a planting. They are built as their own mesh instead and lifted by the
+    // deck's height in place of the ground's.
+    if (lift === undefined) this.terrain.drape(out.positions)
+    else for (let i = 1; i < out.positions.length; i += 3) out.positions[i] += lift
     const m = new BMesh(name, this.scene)
     out.toVertexData().applyToMesh(m)
     m.material = shadowMaterial(this.scene)

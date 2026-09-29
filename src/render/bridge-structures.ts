@@ -127,7 +127,7 @@ function inside(r: P[], x: number, z: number): boolean {
 
 /** Structures as a per-tile layer: each outline built by the tile its centre is in, whole. */
 export function bridgeStructuresLayer(scene: Scene, pkg: Pick<CityPackage, 'areas' | 'water'>, terrain: Terrain, drop: number,
-  styles: Record<string, StructureStyle>): TileLayer {
+  styles: Record<string, StructureStyle>, covered?: (id: number) => boolean): TileLayer {
   const bodies = wholeWater(pkg)
   const levels = waterLevels(bodies, (x, z) => terrain.heightAt(x, z), drop)
   const water: Water[] = bodies.map((a, k) => {
@@ -149,6 +149,8 @@ export function bridgeStructuresLayer(scene: Scene, pkg: Pick<CityPackage, 'area
     build(near, rect) {
       const out = new MeshBuilder()
       for (const b of near.tile.bridges ?? []) {
+        // a bridge a landmark hand-models is drawn once, by the landmark (City.coverRaised, BUGS.md #136)
+        if (covered?.(b.id)) continue
         const ring = unpackPoints(b.ring)
         let cx = 0, cz = 0
         for (const q of ring) { cx += q.x; cz += q.z }

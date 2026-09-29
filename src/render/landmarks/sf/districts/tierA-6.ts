@@ -32,6 +32,22 @@ export const TIERA_6: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** 1051 3rd Street (Muni/rail substation, roof=pyramidal): a plain brick box under a pyramidal roof. */
   thirdStreetSubstation: fromRecipe('brick-loft', { height: 7, base: 0, wall: [0.5, 0.32, 0.27], crown: { kind: 'pyramid', height: 3, colour: [0.35, 0.32, 0.3], material: 'tile' } }),
 
+  /**
+   * Fairmont Hotel Tower, 950 Mason St (1961, Mario Gaidano): the 23-storey cream-concrete slab raised behind
+   * the 1907 Fairmont on Nob Hill — a modern addition to the hotel, not the hotel itself; way/436477702 is the
+   * tower's own OSM outline (`building:part=yes`, no `building=*`), separate from the Edwardian block's, and
+   * binds to its own footprint. Punched windows in even ranks, a plain flat top, a flagpole from the photograph.
+   */
+  fairmontHotelTower: fromRecipe('hotel-punched', {
+    height: 108,
+    wall: [0.86, 0.85, 0.8],
+    glass: [0.22, 0.24, 0.27],
+    solid: 0.5,
+    base: 4,
+    baseWall: [0.3, 0.29, 0.28],
+    crown: { kind: 'mast', height: 6, width: 0.15, colour: [0.85, 0.85, 0.85] },
+  }),
+
   /** Unnamed 83 m tower (way/288645261), no name or use on record: a plain pale mid-century slab, generic by height. */
   unnamedEightyThreeMeterTower: fromRecipe('midcentury-slab', { height: 83, wall: [0.8, 0.79, 0.76], glass: [0.28, 0.32, 0.36] }),
 

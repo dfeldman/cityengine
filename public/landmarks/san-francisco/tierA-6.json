@@ -17,6 +17,7 @@
   {"osm": ["way/262586259"], "name": "Church of Christ", "restyle": "stucco", "levels": 4, "height": 16, "note": "Ordinary neighbourhood church, plain stucco block."},
   {"osm": ["way/32839432"], "name": "Fontana East", "procedural": "fontanaEast", "front": "street", "height": 55, "note": "1963-64 twin white concrete slab at Aquatic Park; its bulk led to SF's 40-ft waterfront height limit."},
   {"osm": ["way/1351029672"], "name": "Twelve Hundred California", "procedural": "twelveHundredCalifornia", "front": "street", "height": 88, "note": "2022 Nob Hill condo tower, blue-green glass curtain wall, flat top."},
+  {"osm": ["way/436477702"], "name": "Fairmont Hotel Tower", "procedural": "fairmontHotelTower", "front": "street", "height": 108, "note": "1961 tower behind the 1907 Fairmont, own building:part footprint on Nob Hill; cream concrete, punched windows, flat top with flagpole."},
   {"osm": ["way/286098244"], "name": "Historic Fire Station #30", "restyle": "brick", "levels": 2, "height": 9, "note": "Classic red-brick firehouse."},
   {"osm": ["way/256749839"], "name": "Nob Hill Community Apartments", "procedural": "nobHillCommunityApartments", "front": "street", "height": 74, "note": "1970s stucco residential tower, punched windows, flat top."},
   {"osm": ["way/112774488"], "name": "Blu Condos", "procedural": "bluCondos", "front": "street", "height": 82, "note": "2000s blue-green curtain-wall condo tower, flat top."}

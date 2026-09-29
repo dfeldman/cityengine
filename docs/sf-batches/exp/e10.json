@@ -1,0 +1,82 @@
+[
+  {
+    "osm": ["way/944039725"],
+    "name": "300 Montgomery",
+    "procedural": "e10_pacificExchange_300Montgomery",
+    "front": "street",
+    "height": 58,
+    "note": "kit; giant ground colonnade, balanced window grid, cornice bands"
+  },
+  {
+    "osm": ["way/243794014"],
+    "name": "550 California",
+    "procedural": "e10_corner_550California",
+    "front": "street",
+    "height": 55,
+    "note": "custom; rounded corner chamfer with curved piers, flat faces done with facade()"
+  },
+  {
+    "osm": ["way/256067734"],
+    "name": "Unnamed mid-rise",
+    "procedural": "e10_unnamedMidRise_256067734",
+    "front": "street",
+    "height": 48,
+    "note": "kit; 17-corner faceted plan, continuous glass, on:'all'"
+  },
+  {
+    "osm": ["way/288511103"],
+    "name": "345 Montgomery (ICA)",
+    "procedural": "e10_ica_345Montgomery",
+    "front": "street",
+    "height": 30,
+    "note": "kit; frame slot with verticals+horizontals and deep recess"
+  },
+  {
+    "osm": ["way/690663633"],
+    "name": "400 Montgomery (Alvinza Hayward)",
+    "procedural": "e10_alvinzaHayward_400Montgomery",
+    "front": "street",
+    "height": 36,
+    "note": "kit; dark stone, rusticated base, balanced small windows"
+  },
+  {
+    "osm": ["way/1309156123"],
+    "name": "369 Pine (Exchange Block)",
+    "procedural": "e10_exchangeBlock_369Pine",
+    "front": "street",
+    "height": 31,
+    "note": "kit; dark rusticated base under cream terracotta shaft, bay piers"
+  },
+  {
+    "osm": ["way/260283286"],
+    "name": "340 Pine (Leidesdorff Place)",
+    "procedural": "e10_leidesdorffPlace_340Pine",
+    "front": "street",
+    "height": 31,
+    "note": "kit; rusticated base with centre arch portal"
+  },
+  {
+    "osm": ["way/256066230"],
+    "name": "301 Pine (Pacific Exchange)",
+    "procedural": "e10_pacificExchange_301Pine",
+    "front": "street",
+    "height": 16,
+    "note": "kit; temple front, ground portico with shaft:null"
+  },
+  {
+    "osm": ["way/256067726"],
+    "name": "348 Pine (sliver)",
+    "procedural": "e10_sliver_348Pine",
+    "front": "street",
+    "height": 28,
+    "note": "kit; one end seen, colonnade base, small balanced windows"
+  },
+  {
+    "osm": ["way/151185875"],
+    "name": "350 Bush (Curb Exchange)",
+    "procedural": "e10_curbExchange_350Bush",
+    "front": "street",
+    "height": 16,
+    "note": "kit; pedimented temple front, only frame 03 showed the right building"
+  }
+]

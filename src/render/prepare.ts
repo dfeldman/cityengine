@@ -5,7 +5,9 @@
  */
 import { style as styleOf, type StyleId } from '../city/facade.ts'
 import type { CityIndex, TileData } from '../city/tiles.ts'
-import { replacedIds, restyles, type LandmarkEntry } from './landmarks.ts'
+import { isReplaced, replacedIds, restyles, type LandmarkEntry } from './landmarks.ts'
+import { parkTile, type ParkMap } from '../city/park-area.ts'
+import { region } from '../city/region.ts'
 
 const hexRgb = (h: string): [number, number, number] =>
   [parseInt(h.slice(1, 3), 16) / 255, parseInt(h.slice(3, 5), 16) / 255, parseInt(h.slice(5, 7), 16) / 255]
@@ -18,14 +20,26 @@ const inside = (r: number[], x: number, z: number): boolean => {
   return o
 }
 
-export function tilePreparer(entries: LandmarkEntry[], index: Pick<CityIndex, 'origin' | 'landmarks'>): (t: TileData) => TileData {
+export function tilePreparer(entries: LandmarkEntry[], index: Pick<CityIndex, 'origin' | 'landmarks' | 'region'>, parkMap?: ParkMap): (t: TileData) => TileData {
+  /*
+   * OPEN COUNTRY IS DECIDED HERE, once per tile, before anything reads a way's width (city/park-area.ts).
+   * One place rather than a test inside every consumer: the road surface, the kerb, the centre line, the
+   * street plantings, the sign reach and the ride graph all take `width` and `walk` from the tile this
+   * returns, so correcting the style once corrects all of them and cannot fall out of step with itself.
+   */
+  const parkStyle = region(index.region).park
   /*
    * A landmark in the manifest REPLACES its OSM building: taken out here, before any tile is built, so its
    * generated walls, its shadow and its shop signs all go with it (render/landmarks.ts).
    */
   const replaced = replacedIds(entries)
+  // an entry naming an outline the bake replaced with its own parts takes those parts too (`isReplaced`,
+  // BUGS.md #100): without it the parts stayed in the massing and a plain box stood in the landmark's place
+
   const allKinds = new Map<number, string>((index.landmarks ?? []).map((l) => [l.id, l.kind]))
-  return (t) => {
+  return (t0) => {
+    parkMap?.add(t0.key, t0.areas, t0.buildings.length)
+    const t = parkTile(t0, parkStyle)
     /*
      * And a restyle keeps its buildings but changes their dress — the Place des Vosges's brick and stone —
      * with the steep slate roof that goes with it.
@@ -81,7 +95,23 @@ export function tilePreparer(entries: LandmarkEntry[], index: Pick<CityIndex, 'o
       for (let i = 0, j = r.length - 2; i < r.length; j = i, i += 2) a += r[j] * r[i + 1] - r[i] * r[j + 1]
       return Math.abs(a / 2)
     }
-    const QUICK: Record<string, StyleId> = { civic: 'classical', museum: 'classical', school: 'brick', historic: 'marais', church: 'classical' }
+    /*
+     * `historic` USED TO BE HARD-CODED TO `marais` (BUGS.md #221a). That is a PARIS style, and this table is
+     * shared by every city — so a historic building anywhere in San Francisco was dressed in a Marais facade,
+     * complete with the French shopfronts baked into that page. The owner found it at Fort Point, which is a
+     * National Historic Site: `{mesh: 'b:marais:-29,9', material: 'facade:marais'}`. It is invisible in the
+     * bake's own audit, because the style is assigned HERE, at load, not by the classifier — the baked tile
+     * for that square holds two `stucco` buildings and one `brick`, and none of them is marais.
+     *
+     * The other four entries happen to be styles every city has. `historic` is the one that named a place.
+     */
+    const HISTORIC: Record<string, StyleId> = {
+      paris: 'marais', 'san-francisco': 'victorian', 'new-york': 'brownstone', chicago: 'brick',
+    }
+    const QUICK: Record<string, StyleId> = {
+      civic: 'classical', museum: 'classical', school: 'brick', church: 'classical',
+      historic: HISTORIC[index.region ?? ''] ?? 'classical',
+    }
     // a church's own parts (its towers, its apse, mapped as building:parts) are the church too; a church's
     // storeys are tall — 10 m — so its walls have a few great windows, not rows of flats
     const churchRings = t.buildings.filter((b) => byKind.get(b.id) === 'church').map((b) => b.ring)
@@ -94,7 +124,7 @@ export function tilePreparer(entries: LandmarkEntry[], index: Pick<CityIndex, 'o
       return churchRings.some((r) => r !== b.ring && inside(r, x, z))
     }
     // (nested buildings are pulled in at bake time, over the whole city: city/nesting.ts)
-    const buildings = (t.buildings.filter((b) => !replaced.has(b.id)
+    const buildings = (t.buildings.filter((b) => !isReplaced(replaced, b)
       // a part with no height (OSM's height = min_height, round the Vosges arcades) has no walls, but it drew
       // its cornice anyway — a stone band in mid-air, z-fighting with the facade behind it
       && (b.height ?? Infinity) - (b.minHeight ?? 0) > 0.5
@@ -139,6 +169,6 @@ export function tilePreparer(entries: LandmarkEntry[], index: Pick<CityIndex, 'o
         : {}
       return { ...b, style: st, ...roof, ...height, ...paint, roofColour: hexRgb(e.roofColour ?? pal.roof) }
     }))
-    return { ...t, buildings, fringe: t.fringe.filter((f) => !replaced.has(f.id)) }
+    return { ...t, buildings, fringe: t.fringe.filter((f) => !isReplaced(replaced, f)) }
   }
 }

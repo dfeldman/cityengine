@@ -17,8 +17,9 @@
  * `fit.ring`, so what `tools/model-shots.ts` photographs is what the city gets.
  *
  * Nothing here plants a tree (docs/BUILDINGS.md, "Never plant anything"). The beds, the lawns, the meadow and
- * the reed flats are drawn as ground; what grows on them is the vegetation layer's business — and today it
- * cannot reach a roof. The note in docs/sf-batches/transbay.md says what would be needed.
+ * the reed flats are drawn as ground; what grows on them is the vegetation layer's business — and it now
+ * reaches up here, through the one `out.decks` entry `park()` pushes (docs/SKYPARKS.md): the shrubs from
+ * render/plants.ts and, since 2026-09-23, the trees from render/vegetation.ts.
  */
 import { capPolygon, type MeshBuilder } from '../../../buildings.ts'
 import { box, prism, type Rgb } from '../../../models.ts'
@@ -147,8 +148,21 @@ function transitCenter(out: MeshBuilder, fit: Fit): void {
   const ring = skinRing(hx, hz)
   const lip = skinRing(hx, hz, 0.8)
 
-  // ---- the ground floor: a dark glass wall set well back, and the white columns that carry the skin
-  faceBand(out, skinRing(hx, hz, 3.2, 26), 0, GROUND, { kind: 'blank', wall: DARK_GLASS, material: 'glass' })
+  /*
+   * ---- the ground floor: OPEN, on columns, with a soffit overhead.
+   *
+   * There used to be a continuous dark-glass wall here, set back behind the colonnade and running the whole
+   * 435 m. The owner rode into it: *"You cannot actually go under salesforce park smoothly, there are walls
+   * in the way (that of course you can go right through)"*, and `window.__pick` named this very model. The
+   * streets that cross the block — Fremont, 1st — pass UNDER the centre in life, so a wall on its full
+   * perimeter is a glitch standing across three roads.
+   *
+   * Drawn open instead: the soffit stays, so there is a ceiling over the rider and the building still reads
+   * as standing on its colonnade, and the columns stay, so it is obviously carried rather than floating.
+   * The real ground floor IS glazed in stretches, and putting that glass back means cutting it where a
+   * street crosses — which needs the streets, so it belongs with the rest of the block's work
+   * (docs/SALESFORCE-PARK.md). An open colonnade is the closer of the two approximations meanwhile.
+   */
   capPolygon(out, skinRing(hx, hz, 3.2, 26), GROUND, [0.34, 0.34, 0.33], STONE)
   const col = skinRing(hx, hz, 0.9, 34)
   for (const p of col) prism(out, p.x, p.z, 0, SKIN_BOT + 0.4, 0.55, 6, SKIN, METAL)
@@ -190,7 +204,7 @@ function transitCenter(out: MeshBuilder, fit: Fit): void {
  * Salesforce Park's ground plane: the path loop round the edge and the gardens strung along the length,
  * Beale end to Second Street end — desert, palms, the plaza and the amphitheatre, the great lawn, the play
  * area and the redwoods, the meadow, and the wetland at the far end. Everything is drawn as SURFACE. The
- * trees the real park has (600 of them) are for the vegetation layer, which cannot yet reach up here.
+ * trees the real park has (600 of them) are the vegetation layer's, which reaches up here through `decks`.
  */
 function park(out: MeshBuilder, fit: Fit): void {
   const hx = Math.max(60, fit.hx)
@@ -201,6 +215,11 @@ function park(out: MeshBuilder, fit: Fit): void {
   // the deck itself, and the glass windscreen standing round its edge
   capPolygon(out, deck, DECK, PAVING, STONE)
   faceBand(out, deck, DECK, DECK + 1.3, { kind: 'blank', wall: PALE_GLASS, material: 'glass' })
+
+  // thousands of plants live up here (docs/SKYPARKS.md "Planting"): the same ring the deck's own paving is
+  // capped with, at the same DECK height — never a size or height typed again, just what is already drawn.
+  // Both planting layers read this one entry: the shrubs (render/plants.ts) and the trees (render/vegetation.ts)
+  out.decks.push({ ring: deck, y: DECK })
 
   // ---- the path loop: a half-mile of paving following the edge the whole way round
   const outer = skinRing(hx, hz, 4.0)

@@ -4,20 +4,45 @@ import { defineConfig } from 'vite'
 // base './' so a build runs from any folder; on Dandyhorse it becomes '/games/streetrunner/'.
 export default defineConfig({
   base: './',
+  /*
+   * A DEV SERVER STARTED FOR TESTING MUST NOT SHARE THE LIVE SERVER'S DEP CACHE.
+   *
+   * `node_modules/.vite` is shared by every Vite in this folder. A second server — an agent's test run, a
+   * `--force` — rewrites the pre-bundled deps underneath the server the owner has open, and the live page
+   * then fetches chunk URLs that no longer exist: `504 (Outdated Optimize Dep)`, or an uncaught "Failed to
+   * fetch dynamically imported module". Babylon imports its shaders lazily, so what breaks is whatever
+   * happened to be loading — a missing avatar, missing trees — and never the code being blamed for it.
+   * This has now cost two separate days (BUGS.md #184, and 2026-09-21's phantom shader error).
+   *
+   * So: `VITE_CACHE=<name> npm run dev` gives that server its own cache and leaves the owner's alone.
+   * The CLI has no --cacheDir flag; it has to come from here.
+   */
+  cacheDir: process.env.VITE_CACHE ? `node_modules/.vite-${process.env.VITE_CACHE}` : 'node_modules/.vite',
   // the avatar kit builds bodies in a module worker, which rules out the default iife workers
   worker: { format: 'es' },
   server: {
     port: 5200,
-    strictPort: true,
+    strictPort: false,
     /*
-     * `NO_HMR=1 npm run dev` leaves an open page alone while the source changes underneath it, so the city can
-     * be explored while someone else is editing (user, 2026-09-22). Reload by hand to pick the changes up.
+     * HMR IS OFF, ALWAYS (user, 2026-09-23: "we just never want hot reloading in this entire streetrunner
+     * app, it takes way too long to reload and we make tons of tiny changes"). Reload by hand to pick changes
+     * up. `HMR=1 npm run dev` restores it if it is ever wanted.
+     *
+     * Two reasons, and the second is the expensive one:
+     *
+     *  - A city takes seconds to load and stream its tiles, so an automatic reload on every keystroke-sized
+     *    edit costs far more than it saves.
+     *  - **It silently destroys offline render batches.** `tools/review-page.ts`, `tools/views.ts` and the
+     *    shot tools hold one page open and jump the camera across hundreds of buildings. Any edit under
+     *    `src/` by anyone — and several agents edit this repo at once — reloads that page mid-batch and every
+     *    subsequent shot fails with `window.__view is not a function`. That cost 178 renders on 2026-09-23
+     *    before it was diagnosed, and the render loops now carry a re-wait guard because of it.
      */
-    hmr: process.env.NO_HMR ? false : undefined,
+    hmr: process.env.HMR ? undefined : false,
     // @dandyhorse/avatarkit is a file: dependency outside this app's folder, and its worker is fetched by path
     fs: { allow: [resolve(import.meta.dirname, '..')] },
   },
-  preview: { port: 5201, strictPort: true },
+  preview: { port: 5201, strictPort: false },
   /*
    * Pre-bundle everything up front. Left to discover dependencies as the browser asks for them, Vite
    * found some only mid-session — the avatar kit is a linked package outside this folder, so its imports

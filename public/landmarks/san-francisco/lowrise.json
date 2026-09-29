@@ -153,9 +153,10 @@
       "way/44106213"
     ],
     "name": "Rincon Annex",
-    "restyle": "chicago",
-    "height": 33,
-    "note": "rule 7: tall building (levels >= 8)"
+    "procedural": "rinconAnnex",
+    "front": "street",
+    "height": 22,
+    "note": "1940 Streamline Moderne former post office, deco piers over a granite base. OSM's 33 m (levels >= 8) is far taller than the photograph's squat block (BUGS.md #126) \u2014 believed the photo."
   },
   {
     "osm": [
@@ -201,9 +202,10 @@
       "way/288511103"
     ],
     "name": "Institute of Contemporary Art San Francisco",
-    "restyle": "chinatown",
     "height": 30,
-    "note": "rule 1: chinatown zone"
+    "note": "Hand-modelled 2026-09-23 to the owner's own description of the structure: a black glass curtain-wall box, four red rectangular columns projecting diagonally out past its corners, and a flat red roof that overhangs the box but stops halfway along the columns, their tops flush with it. Was restyle 'chinatown' from 'rule 1: chinatown zone' (BUGS.md #118), which is what the owner saw as 'just a low brick building'.",
+    "procedural": "ica_345_montgomery",
+    "front": "street"
   },
   {
     "osm": [
@@ -249,9 +251,9 @@
       "way/24563073"
     ],
     "name": "Yerba Buena Center for the Arts Gallery",
-    "restyle": "chicago",
-    "height": 28,
-    "note": "rule 7: tall building (levels >= 8)"
+    "height": 16,
+    "note": "Modelled from the OWNER'S OWN STRUCTURAL DESCRIPTION (2026-09-23) plus the front elevation he supplied, after two bails: the Metreon is across the street and in every photograph, every Mapillary frame shows the rear (BUGS.md #128), and this way is ONE polygon with no building:parts. An L-shaped, one-tall-level, windowless box of corrugated pale metal on a dark stone base, three glazed barrel vaults breaking the roofline at one end of the Mission Street front, the entrance at the far end, and a patio cut out of the far corner with the 'boat pitched down' glass structure and the rectangular fountain. Everything is derived from the ring: the L and the patio are the two biggest empty bounding-box corners, the front is the longer of the two arms flanking the re-entrant quadrant, and the three tangent vaults have radius = a sixth of the bay's front. No `front` bearing on purpose (BUGS.md #117): the builder uses no axis names. See src/render/landmarks/sf/ybca.ts; references in docs/shots/refs/sf-commons/24563073/. HEIGHT: OSM says 28 m; the owner's own description is ONE TALL LEVEL and the entrance photograph's canopy and doors scale a box of about sixteen metres, so 16 is used here, the same call as Rincon Annex above (BUGS.md #126, believed the photograph). At 28 the vault crowns cannot clear the parapet and the blank box reads as a warehouse. GROUND FLOOR IS LEVEL 2, the garden level (docs/YERBA-BUENA.md, the authoritative level model): the cladding, glazing and entrance start at the gardens builder's exported DECK_H and everything below it is the retaining face the entrance steps climb.",
+    "procedural": "ybcaGalleries_24563073"
   },
   {
     "osm": [
@@ -287,9 +289,10 @@
       "way/108389188"
     ],
     "name": "San Francisco Civic Center Courthouse",
-    "restyle": "brick",
+    "procedural": "sfCivicCenterCourthouse_108389188",
+    "front": "street",
     "height": 25,
-    "note": "rule 6: southern SF (lat < 37.7850)"
+    "note": "Rusticated podium, tall round-arched windows, plain upper storeys, balustraded roofline (Mapillary way-108389188-0{1,2,3}.jpg, all kept). The building's rounded corner pavilion carries a small dome the kit has no per-corner crown for; left off rather than invented as a whole-roof dome."
   },
   {
     "osm": [
@@ -305,28 +308,31 @@
       "way/32859013"
     ],
     "name": "United States Customs House",
-    "restyle": "tenement",
+    "procedural": "usCustomHouse_32859013",
+    "front": "street",
     "height": 25,
-    "note": "rule 8: medium building (levels >= 4)"
+    "note": "Rusticated stone block, giant composite pilasters at the corners, dentilled cornice, pedimented windows (Mapillary way-32859013-0{1,2,3}.jpg, all kept, corridor confirmed at the Washington/Battery corner in frame 03). Previously restyled 'tenement', which is plainly wrong for a monumental federal building."
   },
   {
     "osm": [
       "way/41692824"
     ],
     "name": "San Francisco Museum of Modern Art",
-    "restyle": "tenement",
     "height": 24,
     "levels": 7,
-    "note": "rule 8: medium building (levels >= 4)"
+    "note": "Hand-modelled 2026-09-23 (owner: 'SF MOMA absolutely needs to be hand-modeled, it is not a tenement building'). Botta's stepped brick mass with the sliced striped drum, Snohetta's rippled pale wing above and behind. Was restyle 'tenement' from 'rule 8: medium building (levels >= 4)'.",
+    "procedural": "sfmoma_151_third",
+    "front": 45
   },
   {
     "osm": [
-      "way/29902626"
+      "way/24307421"
     ],
-    "name": "Saints Peter and Paul Church",
-    "restyle": "classical",
-    "height": 23,
-    "note": "rule 2: place of worship or church"
+    "name": "Metreon",
+    "height": 50,
+    "levels": 0,
+    "note": "Hand-modelled 2026-09-23 (owner: 'This is an important, but very strange area. We should do custom modeling.'). A blank pale metal-panel street elevation with a wall-sized METREON wordmark, a Target bullseye and an AMC/IMAX corner over a perforated dot panel, and an entirely different long glazed wall on the Yerba Buena Gardens side, which stands on the raised deck over Moscone Center (BUGS.md #130) \u2014 the garden glazing starts partway up the wall over a blank retaining wall to grade. Was `pending` in docs/sf-queue.csv, unclaimed.",
+    "procedural": "metreon_135_fourth"
   },
   {
     "osm": [
@@ -415,15 +421,6 @@
       "way/32610420"
     ],
     "name": "National Shrine of Saint Francis of Assisi",
-    "restyle": "chinatown",
-    "height": 19,
-    "note": "rule 1: chinatown zone"
-  },
-  {
-    "osm": [
-      "way/260520154"
-    ],
-    "name": "Old Saint Mary's Cathedral",
     "restyle": "chinatown",
     "height": 19,
     "note": "rule 1: chinatown zone"
@@ -536,5 +533,21 @@
     "restyle": "classical",
     "height": 16,
     "note": "rule 2: place of worship or church"
+  },
+  {
+    "osm": ["way/256442765"],
+    "name": "Old Mission Dolores",
+    "procedural": "missionDolores",
+    "front": "street",
+    "height": 8,
+    "note": "Hand-modelled 2026-09-24: 1776 adobe, the oldest building in San Francisco. Very plain, very low, church() with front: 'mission' for the flat espadana parapet and bell niches. Not the neighbouring Mission Dolores Basilica (way/256442760), a separate, much larger building left untouched. No usable street photograph (Mapillary marked junk); form from the building's well-documented history."
+  },
+  {
+    "osm": ["way/262435071"],
+    "name": "Bimbo's 365 Club",
+    "procedural": "bimbos365Club",
+    "front": "street",
+    "height": 6,
+    "note": "Hand-modelled 2026-09-24: 1931 nightclub, 1025 Columbus Avenue. Low flat-roofed box, cream wall covered in a pierced circle-motif breeze-block screen (approximated as a dense punched grid), corner blade sign 'BIMBO'S' and a lit readerboard marquee at the entrance. No usable Mapillary frame (marked junk); confirmed by name via Wikimedia Commons (Bimbo's365Blade.jpg, Bimbo's Marquee.jpg, both at 1025 Columbus)."
   }
 ]

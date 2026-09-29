@@ -99,6 +99,35 @@ their own, so look for these first:
 - **a fire escape** — iron stairs zig-zagging down the FRONT of the building;
 - **very wide window bays** — a big fixed pane with a narrow sash each side, repeated up a tall grid.
 
+### 0. STOP FIRST: is this an institution? Then do not reface it at all.
+
+**Before question 1**, check what the building *is*. If it is a **place of worship of any kind** (church,
+cathedral, chapel, synagogue, mosque, temple), a **museum or gallery**, a **library**, a **university or
+college building**, or a **cultural centre or theatre** — **do not choose a style.** Write
+`SKIP — institution` and the OSM id, and move on.
+
+**Why**, measured 2026-09-23 from the owner's review of 240 renders (BUGS.md #118):
+
+- Refaced buildings needed rework **57%** of the time against **25%** for modelled ones.
+- **Churches failed under every rule that touched them** — Old Saint Mary's Cathedral, Saint Agnes, Nuestra
+  Señora de Guadalupe, the Shrine of St Francis of Assisi, the Chinese Independent Baptist Church.
+- The **ICA**, a modernist glass museum, and **Kong Chow Temple** were the two worst scores in the sample.
+
+The reason is structural, not a mis-tuned threshold. **An institution's architecture is chosen to DIFFER
+from its neighbourhood** — that is what makes it a landmark — so a decision tree reading the neighbourhood
+reads the wrong signal. And a church's problem is **massing**, not style: it is a gabled hall with a tower,
+and there is no style in the table with a tower, a spire or a gable in it. Old Saint Mary's is not a
+Chinatown building because it stands in Chinatown.
+
+These go to a model, not a style — see `docs/INSTITUTIONS.md`. **301 institutional buildings** exist in San
+Francisco and only 42 are modelled.
+
+**The exception, and check for it:** plenty of `amenity=place_of_worship` tags sit on **ordinary buildings
+with a congregation inside** — a shopfront, an office floor, a converted hall. If the photograph shows an
+ordinary street building, reface it normally. The test is what the **photograph** shows, never the tag.
+
+---
+
 1. **Is the wall mostly glass?** Floor-to-ceiling panes with only thin metal between them, so the building
    reads as a glass skin rather than a wall with holes in it — and usually many narrow vertical strips running
    the full height. → **`skyscraper`** (offices; if you cannot see glass, it is not this)

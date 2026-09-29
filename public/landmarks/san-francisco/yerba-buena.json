@@ -1,0 +1,71 @@
+[
+ {
+  "lat": 37.78465,
+  "lon": -122.402404,
+  "size": [
+   169,
+   187
+  ],
+  "height": 5,
+  "procedural": "yerbaBuenaGardens",
+  "name": "Yerba Buena Gardens",
+  "kind": "garden",
+  "note": "BUGS.md #130: the lawn is raised ground, not a park on a roof. Deck at 4 m (building:min_level=1 on the kiosks that stand on it x the bake's 4 m level height), retaining edge all round, terraced grass-and-paved esplanade on the Mission Street frontage, precast wall with a pergola and the gate on Howard. Polygon is OSM way/28842443; placed by lat/lon because a leisure=park never reaches a builder as a fit.ring."
+ },
+ {
+  "osm": [
+   "way/109141774"
+  ],
+  "rotateDeg": 0,
+  "height": 12.75,
+  "procedural": "mosconeNorth",
+  "name": "Moscone Center North",
+  "note": "OSM gives this 25 m and its own fixme says the building extends below the gardens. Claiming the way stops the bake drawing a 25 m brick box in the middle of the lawn; what a rider sees is the two-storey glazed entrance pavilion on Howard, which is all this builds. rotateDeg 0 so fit.ring arrives in the city's own axes and the street face can be found geometrically."
+ },
+ {
+  "lat": 37.7843374,
+  "lon": -122.4014136,
+  "size": [
+   40,
+   40
+  ],
+  "height": 12,
+  "procedural": "mosconeSkybridge",
+  "name": "Moscone Skybridge",
+  "kind": "bridge",
+  "note": "way/940154716, the ENCLOSED glazed tube over Howard Street. Pale panelled soffit with a deep fascia — the face a rider passing underneath looks up into — and glass flanks with fine mullions. Placed on way/940154716's own centre (nodes 37.784478,-122.4015891 → 37.7841968,-122.401238). It stood 40 m south-west of it — 43 m off Howard's centre line, where the open bridge is 19 m — so the model was not over the street and the OSM way was drawn beside it (BUGS.md #136). coversRaised: this model IS that way, so the ride graph's deck and piers under it are suppressed.",
+  "coversRaised": true
+ },
+ {
+  "lat": 37.783786,
+  "lon": -122.402,
+  "size": [
+   38,
+   26
+  ],
+  "height": 10,
+  "procedural": "mosconeOpenBridge",
+  "name": "Moscone Open Bridge",
+  "kind": "bridge",
+  "note": "way/1116462961 (deck polygon way/1116462960), the UNCOVERED deck over Howard parallel to the glazed tube: flat slab, solid parapets, tapered columns. The two bridges look nothing alike and a rider passes under both. coversRaised: this model IS the OSM bridge way, so the ride graph's own deck and piers under it are suppressed (BUGS.md #136).\nOFFSET, measured 2026-09-23 (docs/MOSCONE-SOUTH.md's report, sf/ms-gardens.ts's own note): this entry's terrain-derived base put the bridge's deck at world -67.189, 0.23 m above `mosconeSouthDeck`'s own PATIO_H=8 surface at -67.419 (the same surface `ms-gardens.json`'s offset already lines its wall-walk up with). The bridge's horizontal placement is correct and untouched (its SE end is the exact midpoint of its own OSM way) - only the vertical datum needed the same kind of nudge ms-gardens.json already used, so the bridge's deck and the block it lands on are the same height, not a 0.23 m step.",
+  "offset": [
+   0,
+   -0.23,
+   0
+  ],
+  "coversRaised": true
+ },
+ {
+  "lat": 37.783867,
+  "lon": -122.401253,
+  "size": [
+   93,
+   93
+  ],
+  "height": 9,
+  "procedural": "mosconeSouthDeck",
+  "name": "Moscone South Deck",
+  "kind": "garden",
+  "note": "The SECOND raised ground on this block: the public deck on top of Moscone South (way/109141776), one level higher than the gardens opposite. Surface, retaining edge, parapet, the broad flight up and the terraced planting. The things standing on it keep their own entries."
+ }
+]

@@ -1,0 +1,130 @@
+[
+  {
+    "osm": [
+      "way/132238424"
+    ],
+    "procedural": "h4_oneMarketPlaza",
+    "name": "One Market Plaza",
+    "height": 28
+  },
+  {
+    "osm": [
+      "way/924360762"
+    ],
+    "procedural": "h4_queenAnneHotel",
+    "name": "Queen Anne Hotel"
+  },
+  {
+    "osm": [
+      "way/79377184"
+    ],
+    "procedural": "h4_spurUrbanCenter",
+    "name": "SPUR Urban Center",
+    "height": 17
+  },
+  {
+    "osm": [
+      "way/151185875"
+    ],
+    "procedural": "h4_curbExchange",
+    "name": "San Francisco Curb Exchange Building",
+    "height": 16
+  },
+  {
+    "osm": [
+      "way/257004417"
+    ],
+    "procedural": "h4_spreckelsMansion",
+    "name": "Spreckels Mansion",
+    "height": 15
+  },
+  {
+    "osm": [
+      "way/35024342"
+    ],
+    "procedural": "h4_adelaideHostel",
+    "name": "The Adelaide Hostel",
+    "height": 14
+  },
+  {
+    "osm": [
+      "way/193054136"
+    ],
+    "procedural": "h4_audiffredBuilding",
+    "name": "The Audiffred Building"
+  },
+  {
+    "osm": [
+      "way/288391070"
+    ],
+    "procedural": "h4_cannery",
+    "name": "The Cannery"
+  },
+  {
+    "osm": [
+      "way/192305909"
+    ],
+    "procedural": "h4_folgerCoffee",
+    "name": "The Folger Coffee Company Building"
+  },
+  {
+    "osm": [
+      "way/79377217"
+    ],
+    "procedural": "h4_theMontgomery",
+    "name": "The Montgomery",
+    "height": 33
+  },
+  {
+    "osm": [
+      "way/220614203"
+    ],
+    "procedural": "h4_redVictorian",
+    "name": "The Red Victorian"
+  },
+  {
+    "osm": [
+      "way/160705972"
+    ],
+    "procedural": "h4_smithKettlewell",
+    "name": "The Smith-Kettlewell Eye Research Institute",
+    "height": 12
+  },
+  {
+    "osm": [
+      "way/934659297"
+    ],
+    "procedural": "h4_tideGaugeHouse",
+    "name": "Tide Gauge House"
+  },
+  {
+    "osm": [
+      "way/288374434"
+    ],
+    "procedural": "h4_tidesConverge",
+    "name": "Tides Converge"
+  },
+  {
+    "osm": [
+      "way/35024377"
+    ],
+    "procedural": "h4_unionSquarePlazaHotel",
+    "name": "Union Square Plaza Hotel",
+    "height": 24
+  },
+  {
+    "osm": [
+      "way/71504455"
+    ],
+    "procedural": "h4_warwickSF",
+    "name": "Warwick San Francisco",
+    "height": 26
+  },
+  {
+    "osm": [
+      "way/724838113"
+    ],
+    "procedural": "h4_wasteland",
+    "name": "Wasteland"
+  }
+]

@@ -70,6 +70,96 @@ is untouched.
 A building already refaced but never modelled is therefore **not done**, and re-doing it is expected rather
 than wasteful.
 
+## 3c. Six treatments, and the floors under them (owner, 2026-09-23)
+
+The four tiers in §3 describe *which model*. What actually varies is the **treatment**, and there are six,
+in increasing cost:
+
+| # | treatment | what it means |
+|---|---|---|
+| 0 | **nothing** | the classifier's procedural facade, from OSM tags alone |
+| 1 | **reface** | a style applied from a rules table, or a cheap model with a photograph |
+| 2 | **haiku + kit** | modelled, by the cheapest model, through `facade()` and the shared parts |
+| 3 | **sonnet + kit** | the same, by a stronger model |
+| 4 | **sonnet from scratch** | raw primitives, the kit used only where it happens to fit |
+| 5 | **opus from scratch** | the same, by the strongest model |
+
+Two **floors** the owner has set, which matter more than the ceiling:
+
+- **Every downtown building gets at least treatment 2** — modelled with the kit, never merely refaced.
+  This is §3a restated in the new vocabulary.
+- **The most important buildings, and every non-rectangular building, get at least treatment 4** — modelled
+  from scratch. Non-rectangular is not a judgement call: it is the criteria in
+  `docs/sf-batches/exp/BUILDINGS-CUSTOM.md`, and a curved plan is detectable from the footprint for free.
+
+### What is measured and what is not
+
+**Measured** (MODELING_IMPROVEMENT_1.md): batching dominates cost — 82k tokens per building at batch 1,
+7.1k at batch 20. Prompt quality is worth about 19%. Haiku in a batch is roughly 1/13 the weighted cost of
+Sonnet, and **never bails out**, which is its real risk: it will build a wrong building rather than admit it
+cannot see one.
+
+**Not measured, and the owner is explicitly unsure:** whether **3 is better than 2** at all. Nine runs
+produced generic boxes from both, and we now know two separate causes that were not the models — a broken
+`arcade()` (#96) and a brief whose only escape clause was for missing *information*, never missing *tools*.
+Until those are fixed and re-run, any ranking of 2 against 3 is unfounded. E10 is that re-run.
+
+**Also not measured:** the cost of 4 and 5 relative to 2 and 3. Modelling from scratch should cost more; how
+much more is what decides how large a downtown core can afford it.
+
+### Why the choice cannot be left to the model alone
+
+A model asked to pick its own treatment will declare almost everything kit-shaped, because that is the
+cheapest path that satisfies the instruction. So the choice is made in two places, neither of them free-form:
+
+1. **Before any code**, one written line per building — `kit | custom | bail` — whose reason names a form
+   feature visible in the photograph or the footprint, never a difficulty word.
+2. **After rendering**, by a human scan of real photograph against render, which is the only step that
+   catches a confident wrong answer. That is what the review page exists for.
+
+The page is `tools/review-page.ts` — `node --experimental-strip-types tools/review-page.ts --city=<city>`,
+then `--render` for the renders (resumable, one browser session on the dev server). It writes
+`docs/review/<city>/index.html`: one row per building, photograph beside render, judged with single keys —
+`0` fine, `2`/`3`/`4`/`5` the treatment it should be promoted to, `x` wrong building or bad data, `n` a note.
+Most prominent first, so a scan abandoned halfway has still covered what matters. Export is
+`{city, verdicts: [{id, verdict, note, noRef, noRender}]}`, and that file is the input to the next round.
+`docs/review/<city>/missing-refs.txt` is the photograph backlog, highest priority first.
+
+## 3d. The 485 — what the core floor actually costs (owner, 2026-09-23)
+
+Measured: **485 downtown-core buildings have no model** — 229 refaced-but-never-modelled, 256 with only the
+classifier. Full list at `docs/review/san-francisco-uncovered.txt`; the queue now carries them as `pending`
+(725 → 945 rows, BUGS.md #105).
+
+The owner's read, and the plan:
+
+> *"ALL 485 core buildings eventually need a model (assuming they really don't already have one). I'm not too
+> surprised, we only added the rule 3a requiring core buildings to have models recently, so various bits of
+> our code didn't know that. Most of the 485 will get just a kit haiku model, which is barely more expensive
+> than a reface. A few ultra-important ones like SFMOMA need an opus from-scratch model."*
+
+So the 485 are **not** 485 expensive jobs:
+
+| treatment | roughly how many | why |
+|---|---|---|
+| **2 — haiku + kit** | the large majority | in a batch, ~1/13 the weighted cost of Sonnet; barely more than a reface |
+| **3 — sonnet + kit** | where Haiku's output fails review | escalation, not a default |
+| **4/5 — from scratch** | a handful | forms the slots cannot say, and the few buildings everybody recognises |
+
+**§3a was written only on 2026-09-23**, which is why the rest of the pipeline did not know about it — the
+queue went on marking core buildings `done` after a reface, and 250 of them said `done` with no model at all.
+That is a policy-without-enforcement failure, not a modelling failure, and the fix belongs in the gates
+(PIPELINE.md §3) rather than in anyone's judgement.
+
+**Two things this plan depends on, neither yet established:**
+
+1. **That Haiku can model at all.** It has never been tested on a batch with a working kit and a brief that
+   permits the right answer, and it has **never bailed out in any run** — which is the real risk at the core
+   floor, because a model that cannot decline will build a wrong building rather than admit it cannot see
+   one. `docs/sf-batches/exp/EXPERIMENT-2-DESIGN.md` arm E12 is that test, and it gates the plan.
+2. **That photographs exist.** Only **124 of the 485** have two or more frames on disk today. The backfill is
+   running; until it lands, most of the 485 cannot be modelled from a photograph at any price.
+
 ## 3b. A RESEARCH step before modelling — PROPOSED, UNPROVEN (2026-09-22)
 
 **Nothing below has been validated. This is not a change to the ladder; it is a possible extra step for the
@@ -189,6 +279,27 @@ Outcomes: `confirm` (write nothing — the most common right answer), `restyle`,
 `no-image`. Only `restyle` writes an entry. Colours are `wall`, `trim`, `accent` and `groundWall`; `height` is
 never written by a model, and `levels` only where the survey has none.
 
+## 5a. Nothing developed is allowed to go unrendered, and the bake says so EARLY
+
+`tools/bake-audit.ts`, run by `tools/bake.ts` at three points and standalone as `npm run audit:bake --
+--city=<id>`. Sixty-nine landmark entries — Transamerica, Coit Tower, the Ferry Building — named an outline
+the bake had dropped and were never built, and **nobody noticed for months**.
+
+Two directions, opposite meanings, never summed:
+
+- **A — developed but not rendered.** Wasted money. Every `procedural` AND every `restyle` entry whose target
+  is not being rendered as intended, **named in full, never ranked and never truncated**: that a builder or a
+  chosen style EXISTS is the human judgement that the building matters. Gated against
+  `docs/bake-audit-baseline.json`, so a manifest edit that breaks one more than today's known breakage stops
+  the bake.
+- **B — conspicuous but never developed.** Unspent money, and never a failure. Prominence-ranked within the
+  register's own boundary (§2), with the refaced-but-never-modelled set called out separately because §3a
+  says that is NOT DONE in the core.
+
+It fails **early**: stage 1 (manifests alone) runs before the first Overpass call, stage 2 (entries against
+the buildings that will exist) the moment supersession is decided, and only stage 3 waits for the tiles. A
+missing builder must never cost four hours to discover.
+
 ## 6. Nothing is trusted; everything is checked
 
 `tools/sf-check.ts` runs over every entry:
@@ -262,3 +373,94 @@ classifier can do without help.
 - Aim still fails occasionally where a tall building is behind a low one and the ray to its nearest wall is
   clear. `wrong-image` exists for that, and its rate is the measure of aim quality: **1 in 20 after the fixes
   above**, from a batch where it was visibly failing before.
+
+
+## Federal buildings (owner's rule, 2026-09-24)
+
+> *"all federal buildings old or new pretty much need custom renders except post offices. federal reserve,
+> mint, courts, etc"*
+
+Federal buildings do not enter the kit tiers at all. A courthouse, mint, federal reserve, customs house,
+appraisers' building or federal office block goes straight to a modelling tier regardless of how plain its
+footprint is; **post offices are exempt** and take the ordinary ladder.
+
+Evidence for the rule, all found on 2026-09-24:
+- **Old San Francisco Mint** (`way/32863779`), a National Historic Landmark, was a kit `facade()` call whose
+  own comment read "No photograph. Built BLIND" — a rusticated box with an attic and a 4-step portal, in
+  place of a giant Doric portico on a high rusticated basement above a broad flight of steps.
+- **United States Customs House** (`way/32859013`) was refaced in the `tenement` style.
+- **US Court of Appeals, 9th Circuit** (`relation/19306325`) was marked `done` in `docs/sf-queue.csv` and has
+  **no manifest entry at all** — nothing models it, and the queue said the work was finished.
+
+The last of those is also a queue-integrity lesson: `done` in the queue means a stage reported completion, not
+that a building is modelled. The check that matters is whether an id appears in a manifest with a `procedural`
+that resolves.
+
+
+## What we are actually selecting for (owner, 2026-09-24)
+
+> *"SF has tens of thousands of buildings. We're never even going to get 5%. We're JUST trying to get
+> significant OR prominent OR weird buildings, OR buildings the user is extremely likely to bike by (eg Market
+> Street). And even most of those can either be a restyle or a recipe or a kit build, they don't take much
+> effort."*
+
+This is the selection rule for the whole project, and it is four ORs, not an AND:
+
+1. **Significant** — the building matters historically or culturally.
+2. **Prominent** — it is big, or it is visible from a long way off.
+3. **Weird** — it looks strange. This one is independent of the other three and is often the best reason: an
+   octagon house is neither large nor famous, and it is worth modelling because a rider will notice it.
+4. **On a route** — the rider will pass it. Market Street, the Embarcadero, Golden Gate Park, the Presidio,
+   the waterfront. A dull building on Market beats a fine one on a street nobody rides down.
+
+**And the second sentence matters as much as the first.** Most buildings that pass those tests still only need
+a restyle, a recipe or a kit build. Custom geometry is for the ones whose defining feature the kit vocabulary
+cannot say — see `docs/RECIPE-BUILT.md`. Coverage is not the goal and completeness is not achievable: at tens
+of thousands of buildings, 5% is out of reach, so the work is SELECTION, not enumeration.
+
+**The failure this rule prevents** is the one that happened on 2026-09-24: an audit found every building in
+the box carrying a `wikipedia` tag and queued them, which conflated *historically important* with *worth
+looking at*. A landmarked brick warehouse is the first and not the second.
+
+## When OSM footprints are a fine scaffold, and when they are not
+
+Owner, 2026-09-24, on the Embarcadero Center plazas:
+
+> *"The OSM footprints are incorrect, of course. I think part of the issue is we're using footprints from OSM
+> and hoping it will work."*
+>
+> *"like, we need to not rely on OSM data for a structure that OSM doesn't even have the language to model"*
+
+and then, correcting an over-general reading of that:
+
+> *"Yerba Buena is ok with OSM footprints because we're basically overriding one whole block at a time (for
+> two blocks). Embarcadero is a large structure that winds through 5 blocks total, and we're not starting
+> from scratch on ALL of those blocks, they have some towers in the right places already. It also crosses
+> right over roads so thinking about it in blocks will be hard."*
+
+**The deciding question is not "can OSM express this?" but "am I taking over a whole block?"**
+
+*Where a block is overridden entirely* — Yerba Buena, Moscone — OSM footprints are a perfectly good scaffold.
+The structure OSM cannot describe (the levels, the decks, the bridges, which stair reaches what) is authored
+on top, but the block's outlines are a reasonable frame to hang it on, because everything inside the block is
+being replaced at once and only has to agree with itself.
+
+*Where a structure threads THROUGH blocks it does not own*, the scaffold fails, and the Embarcadero Center is
+the clear case: it winds through five blocks; several of those blocks already have towers standing in the
+right places that we are keeping; and it crosses over public roads, so there is no block boundary that
+contains it. Thinking about it block by block will not work. It has to be authored as ONE CONTINUOUS
+STRUCTURE in its own coordinates, and then reconciled with the towers already standing — not assembled from
+five separate per-block overrides.
+
+That is also why its symptoms did not converge when chased one at a time: a deck fitted per-block to OSM
+rings lands slightly wrong in each block, and then the connections BETWEEN blocks — which are the whole point
+of the thing — have nothing consistent to attach to.
+
+The manifest supports authored geometry directly: a standalone entry carries its own `size` + `lat` + `lon`
+and no OSM id (`fitForEntry` in `tools/model-shots.ts`). The owner's annotated aerials are the source of
+record, which is why `docs/EMBARCADERO-CENTER.md` and `docs/YERBA-BUENA.md` exist and quote them directly.
+
+**Corollary for verification.** These structures are hemmed in by towers — *"it is hard to get clear shots
+(even in real life)"* — so a city view cannot show whether they are right. They need to be rendered TOGETHER
+and ALONE, in their real footprints, with nothing else in the scene: a third instrument, distinct from
+`model-shots.ts` (one entry) and `views.ts` (the whole city).

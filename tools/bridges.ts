@@ -25,6 +25,8 @@ export interface BridgeEdge {
   tunnel?: boolean
   layer?: number
   foot?: boolean
+  /** OSM `highway`, so a freeway chain can be told from an ordinary bridge (BUGS.md #157) */
+  kind?: string
 }
 
 export interface BridgeWorld {
@@ -41,6 +43,15 @@ const CLEARANCE_WATER = 3.5
 const PER_LAYER = 5.5
 const RAMP = 60
 const MAX_HUMP_GRADE = 0.06
+/** A freeway through a city runs elevated or in a cut, not at grade (BUGS.md #157). */
+const FREEWAY = new Set(['motorway', 'trunk', 'motorway_link', 'trunk_link'])
+/** An urban freeway's minimum clearance where nothing under it says otherwise: a plain overcrossing, not a
+ *  culvert's 2 m default (the `over: 'nothing'` case in `bridgeRise`, tuned for a footbridge). */
+const FREEWAY_MIN_RISE = 6
+/** A freeway chain longer than this is a viaduct, not a hump: ease up near a real at-grade end and hold a
+ *  level deck between, rather than crest once in the middle (see `bridgeHeights`). */
+const VIADUCT_LENGTH = 200
+const VIADUCT_EASE = 80
 
 const pts = (flat: number[]): Pt[] => {
   const out: Pt[] = []
@@ -196,11 +207,41 @@ export function bridgeRise(e: BridgeEdge, all: BridgeEdge[], world: BridgeWorld,
 }
 
 /**
+ * OSM tags `bridge=yes`/`layer` on some ways of a viaduct and not others — the same physical structure comes
+ * through as bridge / gap / bridge (BUGS.md #157: I-280 through Mission Bay and Potrero is one continuous
+ * elevated run in reality — confirmed against Caltrans' own road log and Street View, not assumed — but a
+ * couple of its OSM ways carry no `bridge` or `layer` at all). Treated independently, the untagged way falls
+ * back to bare ground height and the deck appears to touch down and take off again mid-run: jagged, and the
+ * freeway "never changes level" because every such gap resets it to the one level it never left.
+ *
+ * Closed only when the gap is SANDWICHED between two bridge-tagged edges of the same freeway chain — an edge
+ * at the OUTSIDE end of a chain is left alone, because that is the one place (I-280 lowering onto King
+ * Street) the road genuinely does return to grade.
+ */
+function closeFreewayGaps(edges: BridgeEdge[]): void {
+  const freeway = edges.filter((e) => FREEWAY.has(e.kind ?? ''))
+  if (freeway.length === 0) return
+  for (const chain of chains(freeway)) {
+    for (let i = 1; i < chain.length - 1; i++) {
+      const e = chain[i].e
+      if (e.bridge) continue
+      if (chain[i - 1].e.bridge && chain[i + 1].e.bridge) {
+        e.bridge = true
+        e.layer = e.layer ?? Math.max(chain[i - 1].e.layer ?? 1, chain[i + 1].e.layer ?? 1)
+      }
+    }
+  }
+}
+
+/**
  * Give every bridge edge its heights, and ramp the ways that lead onto a raised deck. Mutates `edges`;
  * returns the ids it raised (bridges and ramps), for the report and for the renderer's own test.
  */
 export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridges: number; ramps: number; raised: Set<number> } {
+  closeFreewayGaps(edges)
   const raised = new Set<number>()
+  /** chains too short to profile on their own — revisited after the loop, in case they are inside a bridge */
+  const shortChain = new Set<number>()
   // the deck height at each bridge end node, for the ramps
   const deckAt = new Map<number, number>()
   let bridges = 0
@@ -226,12 +267,28 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
     let rise = 0
     // a bridge chain of a few metres is a culvert or a scrap of a bridge's pavement: it follows the ground
     if (L >= 12) for (const sg of segs) rise = Math.max(rise, bridgeRise(sg.e, edges, world, [h0, h1]).rise)
+    // …unless it turns out to sit inside a structure the rest of this loop raises: see the second pass below
+    else for (const sg of segs) shortChain.add(sg.e.id)
+    const isFreeway = chain.every(({ e }) => FREEWAY.has(e.kind ?? ''))
+    if (isFreeway) rise = Math.max(rise, FREEWAY_MIN_RISE)
     const top = Math.max(h0, h1) + rise
     const hump = Math.PI * rise / Math.max(1, L) <= MAX_HUMP_GRADE
+    // a viaduct holds a level deck and eases only near a genuine at-grade end — a single mid-span crest
+    // (right, for a Seine bridge a few hundred metres long) would put a several-hundred-metre-tall hill under
+    // a kilometres-long freeway run instead of the flat elevated run it actually is
+    const viaduct = isFreeway && L > VIADUCT_LENGTH
+    const ease = Math.min(VIADUCT_EASE, L / 3)
     segs.forEach((sg, k) => {
       const cum = cumulative(sg.p)
       const hs = cum.map((c) => {
         const t = L > 0 ? (starts[k] + c) / L : 0
+        if (viaduct) {
+          const d = starts[k] + c
+          let v = top
+          if (d < ease) v = h0 + (top - h0) * (1 - Math.cos(Math.PI * (d / ease))) / 2
+          else if (L - d < ease) v = h1 + (top - h1) * (1 - Math.cos(Math.PI * ((L - d) / ease))) / 2
+          return Math.round(v * 100) / 100
+        }
         const base = h0 + (h1 - h0) * t
         const v = hump ? base + (top - base) * (1 - Math.cos(2 * Math.PI * t)) / 2 : top
         return Math.round(v * 100) / 100
@@ -250,6 +307,100 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
       for (const node of [a, b]) deckAt.set(node, Math.max(deckAt.get(node) ?? -Infinity, top))
     }
   }
+
+  /*
+   * ---- A BRIDGE'S FOOTWAYS BELONG TO ITS ROADWAY (BUGS.md #217, second pass)
+   *
+   * The Golden Gate's two sidewalks came out at -30 to -35 while its deck sits near -17: THIRTEEN TO
+   * EIGHTEEN METRES BELOW the structure they are bolted to, and 12 m apart from each other. The owner rode
+   * it — *"on the west side you're actually biking meters underneath the bridge"*.
+   *
+   * The cause is that every chain is profiled in its own right above: its own end heights from the ground,
+   * its own rise from `bridgeRise`, its own hump-or-level decision. A suspension bridge's carriageway gets
+   * a rise worth hundreds of metres of span; a footway bolted to its side, split by OSM into its own ways,
+   * gets whatever its own ends happen to say. Two footways and a carriageway that are physically ONE
+   * STRUCTURE end up with three unrelated profiles.
+   *
+   * So: a raised FOOT chain takes its height from the nearest raised CARRIAGEWAY point, where one runs
+   * alongside it. Proximity and nothing else — a footway that merely crosses a bridge is metres away at one
+   * point and far away at the rest, so it never qualifies; a sidewalk runs within a deck's half-width for
+   * its whole length. This is the "they are one structure" idea that `coversRaised` expresses for drawing,
+   * applied to heights.
+   */
+  const ALONGSIDE = 25
+  const carriage: { x: number; z: number; y: number }[] = []
+  for (const e of deckEdges) {
+    if (e.foot || !raised.has(e.id) || !e.heights) continue
+    const p = pts(e.points)
+    for (let i = 0; i < p.length; i++) carriage.push({ x: p[i].x, z: p[i].z, y: e.heights[i] })
+  }
+  let adopted = 0
+  if (carriage.length > 0) {
+    for (const e of deckEdges) {
+      if (!e.foot || !raised.has(e.id) || !e.heights) continue
+      const p = pts(e.points)
+      const next: number[] = []
+      let hits = 0
+      for (let i = 0; i < p.length; i++) {
+        let best = Infinity
+        let y = e.heights[i]
+        for (const c of carriage) {
+          const d = Math.hypot(c.x - p[i].x, c.z - p[i].z)
+          if (d < best) { best = d; y = c.y }
+        }
+        if (best <= ALONGSIDE) { hits++; next.push(Math.round(y * 100) / 100) } else next.push(e.heights[i])
+      }
+      // most of it has to run alongside, or it is a footway crossing the bridge rather than part of it
+      if (hits >= p.length * 0.6) {
+        const before = e.heights[Math.floor(e.heights.length / 2)]
+        e.heights = next
+        if (Math.abs(next[Math.floor(next.length / 2)] - before) > 0.5) adopted++
+      }
+    }
+  }
+  if (adopted > 0) console.log(`  ${adopted} bridge footways lifted onto their own roadway (BUGS #217)`)
+
+  /*
+   * ---- SHORT FRAGMENTS INSIDE A RAISED STRUCTURE ARE NOT CULVERTS (BUGS.md #217)
+   *
+   * The `L >= 12` test above is right in general — a two-metre bridge way really is a culvert or a scrap of
+   * pavement, and it should follow the ground. It is wrong for a SHORT FRAGMENT OF A LONG BRIDGE. OSM splits
+   * a deck at every node another way touches, so the Golden Gate's east sidewalk comes through as chains of
+   * wildly different lengths, and the short ones were draped on the sea bed: that is where its -46.7 m
+   * sample came from, 12 m below its own neighbours, while the west sidewalk stayed flat. The rider floated
+   * over one and not the other.
+   *
+   * So: a short chain whose ends meet edges that the loop above RAISED is part of that structure. Take its
+   * height from those neighbours rather than from the ground. This has to be a second pass, because the
+   * neighbours' heights are not known until the first one has finished.
+   */
+  const heightAtNode = new Map<number, number[]>()
+  for (const e of deckEdges) {
+    if (!raised.has(e.id) || !e.heights || e.heights.length === 0) continue
+    if (shortChain.has(e.id)) continue
+    const push = (n: number, v: number): void => { heightAtNode.set(n, [...(heightAtNode.get(n) ?? []), v]) }
+    push(e.a, e.heights[0])
+    push(e.b, e.heights[e.heights.length - 1])
+  }
+  let lifted = 0
+  for (const e of deckEdges) {
+    if (!shortChain.has(e.id) || !e.heights) continue
+    const mean = (n: number): number | null => {
+      const v = heightAtNode.get(n)
+      return v && v.length > 0 ? v.reduce((a, b) => a + b, 0) / v.length : null
+    }
+    const ha = mean(e.a)
+    const hb = mean(e.b)
+    if (ha === null && hb === null) continue
+    const y0 = ha ?? hb!
+    const y1 = hb ?? ha!
+    const cum = cumulative(pts(e.points))
+    const L = cum[cum.length - 1]
+    const before = e.heights[Math.floor(e.heights.length / 2)]
+    e.heights = cum.map((c) => Math.round((y0 + (y1 - y0) * (L > 0 ? c / L : 0)) * 100) / 100)
+    if (Math.abs(e.heights[Math.floor(e.heights.length / 2)] - before) > 0.5) lifted++
+  }
+  if (lifted > 0) console.log(`  ${lifted} short bridge fragments lifted onto their neighbours' deck (BUGS #217)`)
 
   // ---- the ramps: outward from every raised bridge end, along ways that are not bridges, over RAMP metres
   const byNode = new Map<number, BridgeEdge[]>()

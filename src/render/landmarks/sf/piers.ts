@@ -185,4 +185,9 @@ export const PIERS = {
   fortMasonPier1: preset({ number: '1', style: 'plain', height: 10, wall: [0.8, 0.79, 0.75] }),
   fortMasonPier2: preset({ number: '2', style: 'plain', height: 10, wall: [0.8, 0.79, 0.75] }),
   fortMasonPier3: preset({ number: '3', style: 'plain', height: 10, wall: [0.8, 0.79, 0.75] }),
+  // Pier 39: no `building=yes` tag in OSM (BUGS.md #181), so it is placed by lat/lon + size rather than
+  // claimed by way id, same as the three standalone piers in s1.json. A big double-deck shopping pier with
+  // a marina either side, of which a rider sees only the bulkhead and the deck's edge from the Embarcadero
+  // -- the same shed this kit already draws, wider than the plain Piers 33/35 sheds either side of it.
+  pier39: preset({ number: '39', style: 'plain', height: 12, wall: [0.86, 0.83, 0.74] }),
 }

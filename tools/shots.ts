@@ -4,6 +4,7 @@
  *   npm run shots                     every style, plus the whole street, into docs/shots/<date>/
  *   npm run shots -- --style=brick    eight of one style, to see whether they vary enough
  *   npm run shots -- --out=before     a named folder rather than today's date
+ *   npm run shots -- --query=map=v3   extra URL parameters, appended to every page
  *
  * Playwright rather than the app's own browser pane, because that pane stops delivering animation frames
  * while it is hidden and a WebGL canvas captured from it comes back blank or half-drawn.
@@ -54,7 +55,7 @@ async function main(): Promise<void> {
     if (isSpot) {
       const [, city, edge] = style.split(':')
       // frozen: the same frame every time, so two shots differ only by what changed
-      url = `${BASE}/?city=${city}&start=${edge}&freeze=1${without ? `&without=${without}` : ''}`
+      url = `${BASE}/?city=${city}&start=${edge}&freeze=1${without ? `&without=${without}` : ''}${arg('query') ? `&${arg('query')}` : ''}`
         + (arg('view') ? `&view=${arg('view')}` : '') + (arg('time') ? `&time=${arg('time')}` : '')
         + (arg('weather') ? `&weather=${arg('weather')}` : '') + (arg('q') ? `&q=${arg('q')}` : '')
         + (arg('advance') ? `&advance=${arg('advance')}` : '') + (arg('turn') ? `&turn=${arg('turn')}` : '')

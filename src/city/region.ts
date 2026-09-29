@@ -32,6 +32,28 @@ export interface LevelInference {
   types: Record<string, number | 'house' | 'industrial'>
 }
 
+/**
+ * What a way looks like inside open country — a big park, a forest, a nature reserve — where the city's
+ * defaults are not merely turned down but INVERTED (city/park-area.ts, docs/PARKS.md). Selected by AREA and
+ * not by city, so it serves Golden Gate Park, the Presidio, Central Park and the Bois de Boulogne alike.
+ */
+export interface ParkStyle {
+  /** a tile's piece of park must cover at least this, m², to count — keeps pocket squares out */
+  minPieceM2: number
+  /** pavements beside a park road: there are none, and what OSM calls one is the detached trail */
+  pavements: boolean
+  /** a park road is one narrow strip, whatever OSM's lane count says */
+  maxRoadWidth: number
+  /** a trail is as wide as it is mapped, up to this — the rider rides it, so it is not narrowed away */
+  maxTrailWidth: number
+  /** the only mapped furniture a national park has; everything else is suppressed inside the area */
+  keepFurniture: string[]
+  /** how far you can see: *"There are almost no long sight lines, due to hills or trees."* */
+  far: number
+  /** and how thick the air is at that distance — heavier than the city's, and more accurate for it */
+  fogDensity: number
+}
+
 export interface Region {
   id: string
   palettes: Partial<Record<StyleId, Palette[]>>
@@ -46,6 +68,8 @@ export interface Region {
   centreLine: 'white' | 'doubleYellow'
   /** red fire hydrants along the pavements */
   hydrants: boolean
+  /** open country inside this region: see `ParkStyle`. Every region has one; `default`'s is the park rule. */
+  park: ParkStyle
   /** what a traffic signal looks like: a slim Paris post, or a North American mast arm over the lanes */
   signals: 'post' | 'paris' | 'mastArm'
   /**
@@ -116,6 +140,7 @@ export function region(id: string | undefined): Region {
     crossings: own?.crossings ?? base.crossings,
     centreLine: own?.centreLine ?? base.centreLine,
     hydrants: own?.hydrants ?? base.hydrants,
+    park: { ...base.park, ...(own?.park ?? {}) },
     signals: own?.signals ?? base.signals,
     streetWidth: own?.streetWidth ?? base.streetWidth,
     shopNames: own?.shopNames ?? base.shopNames,

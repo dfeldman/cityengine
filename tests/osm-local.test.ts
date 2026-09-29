@@ -59,7 +59,9 @@ describe('the Overpass QL subset', () => {
   it('refuses anything outside the subset', () => {
     expect(parseQuery('[out:json];(way(around:50,1,2););out geom qt;')).toBeNull()          // recursion
     expect(parseQuery('[out:json][timeout:10];(way["highway"](37,-122,38,-121););out meta;')).toBeNull() // out meta
-    expect(parseQuery('[out:json][timeout:10];(way["surface"="asphalt"](1,2,3,4););out geom qt;')).toBeNull() // key not in the cut
+    // a key not in the cut: `surface` used to be the example here and is now KEPT, for sandQuery (#200)
+    expect(parseQuery('[out:json][timeout:10];(way["width"="4"](1,2,3,4););out geom qt;')).toBeNull()
+    expect(parseQuery('[out:json][timeout:10];(way["surface"="sand"](1,2,3,4););out geom qt;')).not.toBeNull()
   })
 })
 

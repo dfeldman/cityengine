@@ -62,7 +62,20 @@
     "centreLine": "white",
     "hydrants": false,
     "streetWidth": "corridor",
-    "signals": "post"
+    "signals": "post",
+    "park": {
+      "_note": "Open country, selected by AREA rather than by city (city/park-area.ts): a tile whose park or wood polygon covers at least a quarter of it is drawn by these rules instead of the street's. The defaults INVERT here — no pavements, no furniture but a lamppost, one narrow strip of road — because a big park was built to read as countryside and every city default fights that. Shared by every city, which is the point: Golden Gate Park, the Presidio, Central Park and the Bois de Boulogne take the same rule.",
+      "minPieceM2": 10000,
+      "pavements": false,
+      "maxRoadWidth": 6.5,
+      "maxTrailWidth": 3.0,
+      "keepFurniture": ["lamp", "fountain", "stop"],
+      "_furnitureNote": "The kinds actually baked inside Golden Gate Park are stop, busstop, hydrant, food, fountain and signals - there is no mapped `lamp`. A park lamppost is PROCEDURAL, placed along a kerb by region.furniture.lampPosts and driven by `walk`, so zeroing `walk` here took the park's lampposts away with the pavements. DONE 2026-09-25: the park now has a planting of its own in render/city.ts - one side, every ~70 m, out on the verge, and not on a through-route.",
+      "_stopNote": "`stop` was added 2026-09-25 AGAINST the rule written the night before, because a photograph disagreed with it. Mapillary frame 174022498724513, on MLK Drive East at 37.76769 -122.47958, has a red STOP sign and a small green street-name blade at the junction - in a park whose standing instruction is `there are almost no signs`. Both things are true: there is almost nothing along the RUNS, and a junction where two park drives meet is signed like any other, because a driver has to be told to stop. Suppressing it does not make the park more rural, it makes the junction unreadable. The name BLADES stay suppressed, which is the owner's explicit call rather than the photograph's - see BUGS.md.",
+      "far": 420,
+      "_fogNote": "The city's daylight look ships 0.0026 (render/facade-material.ts); 0.006 is 2.3x that, half-faded at about 115 m, which is where the road disappears into trunks in ~/Downloads/ggp-rural-road.png. Measured against the shipped value rather than guessed at in the abstract.",
+      "fogDensity": 0.006
+    }
   },
   "paris": {
     "note": "Paris. Cream limestone almost everywhere (Haussmann's city is one colour, and that colour is what makes it Paris), slate-blue zinc roofs and black ironwork. No lamp posts on the pavement edge: Paris street lamps hang from the buildings. Black bollards (potelets) line the narrow pavements to keep cars off them. Crossings are the passage piéton: broad white bands, wider apart than a zebra (crossings: bands).",
@@ -296,6 +309,13 @@
     "streetSigns": "blade",
     "awnings": 0.35,
     "brickStreets": { "names": ["Market Street"], "colour": [0.55, 0.32, 0.26] },
-    "signals": "mastArm"
+    "signals": "mastArm",
+    "stairways": [
+      {
+        "name": "Embarcadero Center 3-4 crossing",
+        "points": [[37.795210, -122.396908], [37.795273, -122.396557]],
+        "width": 3
+      }
+    ]
   }
 }

@@ -1,0 +1,10 @@
+[
+ {
+  "osm": ["way/288511103"],
+  "name": "345 Montgomery (Institute of Contemporary Art)",
+  "procedural": "ica_345_montgomery",
+  "front": "street",
+  "height": 30,
+  "note": "hand-modelled rebuild to the owner's structure: black glass box, four red corner columns projecting on the diagonal, flat red roof stopping halfway along them"
+ }
+]

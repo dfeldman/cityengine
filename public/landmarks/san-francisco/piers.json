@@ -7,7 +7,8 @@
   "procedural": "pier1",
   "front": "street",
   "height": 11,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated."
+  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
+  "deckAbove": 3.5
  },
  {
   "osm": [
@@ -17,7 +18,8 @@
   "procedural": "pier5",
   "front": "street",
   "height": 11,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated."
+  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
+  "deckAbove": 3.5
  },
  {
   "osm": [
@@ -27,7 +29,8 @@
   "procedural": "pier9",
   "front": "street",
   "height": 11,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated."
+  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
+  "deckAbove": 3.5
  },
  {
   "osm": [
@@ -37,7 +40,8 @@
   "procedural": "pier15",
   "front": "street",
   "height": 12,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated."
+  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
+  "deckAbove": 3.5
  },
  {
   "osm": [
@@ -47,7 +51,8 @@
   "procedural": "pier17",
   "front": "street",
   "height": 12,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated."
+  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
+  "deckAbove": 3.5
  },
  {
   "osm": [
@@ -57,7 +62,8 @@
   "procedural": "pier33",
   "front": "street",
   "height": 11,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated."
+  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
+  "deckAbove": 3.5
  },
  {
   "osm": [
@@ -67,7 +73,8 @@
   "procedural": "pier35",
   "front": "street",
   "height": 11,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated."
+  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
+  "deckAbove": 3.5
  },
  {
   "osm": [
@@ -77,7 +84,8 @@
   "procedural": "pier24",
   "front": "street",
   "height": 10,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated."
+  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
+  "deckAbove": 3.5
  },
  {
   "osm": [
@@ -87,7 +95,8 @@
   "procedural": "pier26",
   "front": "street",
   "height": 10,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated."
+  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
+  "deckAbove": 3.5
  },
  {
   "osm": [
@@ -97,7 +106,8 @@
   "procedural": "pier28",
   "front": "street",
   "height": 10,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated."
+  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
+  "deckAbove": 3.5
  },
  {
   "osm": [
@@ -107,7 +117,8 @@
   "procedural": "pier38",
   "front": "street",
   "height": 9,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated."
+  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
+  "deckAbove": 3.5
  },
  {
   "osm": [
@@ -117,7 +128,8 @@
   "procedural": "pier40",
   "front": "street",
   "height": 9,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated."
+  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
+  "deckAbove": 3.5
  },
  {
   "osm": [
@@ -127,7 +139,8 @@
   "procedural": "pier48",
   "front": "street",
   "height": 13,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated."
+  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
+  "deckAbove": 3.5
  },
  {
   "osm": [
@@ -137,7 +150,8 @@
   "procedural": "fortMasonPier1",
   "front": "street",
   "height": 10,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated."
+  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
+  "deckAbove": 3.5
  },
  {
   "osm": [
@@ -147,7 +161,8 @@
   "procedural": "fortMasonPier2",
   "front": "street",
   "height": 10,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated."
+  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
+  "deckAbove": 3.5
  },
  {
   "osm": [
@@ -157,6 +172,7 @@
   "procedural": "fortMasonPier3",
   "front": "street",
   "height": 10,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated."
+  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
+  "deckAbove": 3.5
  }
 ]

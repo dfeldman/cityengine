@@ -75,20 +75,4 @@ export const MODEL_OPUS: Record<string, (out: MeshBuilder, fit: Fit) => void> = 
       { colour: [0.74, 0.75, 0.71], spireColour: [0.52, 0.53, 0.5], material: 'brick', spireMaterial: 'tile' })
   },
 
-  /**
-   * Children's Creativity Museum (Zeum, 1998, Adèle Naudé Santos), 221 Fourth over Moscone: two storeys of pale
-   * mauve stucco on the Yerba Buena roof terrace, with deep flat eyebrow canopies cantilevered off the upper
-   * floor on their lens-shaped soffits. (The murals and steps below it are the garden's, not the building's.)
-   */
-  childrensCreativityMuseum: spec({
-    height: 10,
-    base: { height: 4.6, face: { kind: 'punched', wall: [0.78, 0.71, 0.73], glass: [0.2, 0.24, 0.28], pitch: 3.6, solid: 0.58, floor: 4.6, material: 'stucco' } },
-    tiers: [
-      { to: 1, face: { kind: 'punched', wall: [0.82, 0.75, 0.77], glass: [0.24, 0.3, 0.34], pitch: 3.2, solid: 0.42, floor: 5.4, material: 'stucco' },
-        // the eyebrow: the deep flat canopy that runs right round the upper floor
-        cornice: { depth: 1.7, height: 0.35, colour: [0.86, 0.82, 0.81] } },
-    ],
-    roof: [0.62, 0.58, 0.58],
-    crown: { kind: 'parapet', height: 0.5, colour: [0.82, 0.75, 0.77], material: 'stucco' },
-  }),
 }

@@ -1,0 +1,31 @@
+# osm,name,kind,height_m,priority   — height_m EMPTY means UNKNOWN: read the OSM tags or OMIT it, never guess
+way/287927001,"Anglers Lodge",civic,,300.0
+way/25372348,"Argonaut Hotel",civic,,300.0
+way/421294976,"Battery Chamberlin",civic,,300.0
+way/291686827,"Battery Yates",civic,,300.0
+way/48995281,"Bohemian Club",civic,,300.0
+way/291189021,"Building ",civic,,300.0
+way/262730402,"California Historical Society",civic,,300.0
+way/1554375367,"Carousel",civic,,300.0
+way/229326454,"Castagnola's",civic,,300.0
+way/197374076,"Clay Theatre",civic,,300.0
+way/24433437,"Dining Hall",civic,,300.0
+way/288391828,"Dolphin Club",civic,,300.0
+way/256733177,"East Ping Yuen",civic,,300.0
+way/104599975,"Ferry Station Post Office Building",civic,,300.0
+way/769605624,"Former Military Chapel",civic,,300.0
+way/32946083,"Fugazi Bank Building",civic,,300.0
+way/132125160,"Galleria Park Hotel",civic,,300.0
+way/288340243,"Golden Gate Club",civic,,300.0
+way/70077928,"Green Tortoise Hostel",civic,,300.0
+way/288387353,"HI San Francisco Fisherman's Wharf",civic,,300.0
+way/193054138,"Harbor Court Hotel",civic,,300.0
+way/587670476,"Health Right 60",civic,,300.0
+way/700791868,"Hilton San Francisco Union Square",civic,,300.0
+way/93422615,"Hotel Riu Plaza Fisherman´s Wharf",civic,,300.0
+way/135174116,"Hotel Triton",civic,,300.0
+way/171178110,"Hotel Union",civic,,300.0
+way/148547438,"Hotel VIA",civic,,300.0
+way/288340256,"Inn at the Presidio",civic,,300.0
+way/262079667,"Julius' Castle",civic,,300.0
+way/288632202,"Langley Porter Psychiatric Institute",civic,,300.0

@@ -21,6 +21,8 @@ import { prism, type Rgb } from '../../../models.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
 import { boxAlong, edgeAt, longestEdge } from '../../parts.ts'
 import { classicalColumn } from '../../column.ts'
+import { column } from '../../kit.ts'
+import { fromRecipe } from '../recipes.ts'
 
 type P2 = { x: number; z: number }
 const FIXED = 0
@@ -1155,6 +1157,103 @@ export const MARKET_WEST: Record<string, (out: MeshBuilder, fit: Fit) => void> =
     panel(out, front, front.L / 2 - 2.6, front.L / 2 + 2.6, 0.65, 12, 18, [0.26, 0.3, 0.26], T.glass)
     void g
   },
+
+  /**
+   * CCSF Civic Center, 1170 Market (1960s college block): the owner's own words are "ugly, but unique with a
+   * curved corner and arcades", and those two features are the whole model. Mapillary way-403951329-01/02/03.jpg
+   * (all kept) show pale concrete, 6 storeys, a single corner rounded into a drum that rises a little past the
+   * roofline into an open colonnade (a loggia under the flat roof, columns visible against the sky), plain
+   * round-arched punched windows on the shaft, and big arched openings recessed at the pavement. No `facade()`
+   * slot draws a curved plan, so this is hand-built on a `roundRing`-rounded footprint rather than the flat
+   * `towerRing` `facade()` requires.
+   */
+  ccsfCivicCenter: (out: MeshBuilder, fit: Fit): void => {
+    const raw = towerRing(fit)
+    // only ONE corner is curved in the reference (the street corner), the rest of the plan stays square —
+    // round just the sharpest corner rather than every corner `roundRing` would touch
+    const ring = roundOneCorner(raw, sharpestCorner(raw), Math.min(7, longestEdgeLen(raw) * 0.3), 8)
+    const H = fit.height || 22 // OSM carries no height/levels tag beyond the manifest's 6 storeys
+    const storeys = 6
+    const floorH = H / storeys
+    const wall: Rgb = [0.78, 0.77, 0.72]
+    const glass: Rgb = [0.15, 0.17, 0.19]
+    const dark: Rgb = [0.13, 0.13, 0.14]
+    const groundH = floorH * 1.15
+    const loggiaH = floorH * 0.9
+    // the shaft: plain round-arched punched windows, the ordinary storeys either side of the two features
+    faceBand(out, ring, groundH, H - loggiaH, { kind: 'punched', wall, glass, pitch: 3.2, floor: floorH, solid: 0.44, material: 'concrete', arched: true })
+    // the ground floor: big arched openings recessed behind the wall plane
+    faceBand(out, insetRing(ring, 0.35), 0, groundH, { kind: 'punched', wall: dark, glass: dark, pitch: 4.5, floor: groundH, solid: 0.15, material: 'concrete', arched: true })
+    // the loggia: a recessed dark backdrop with free-standing columns in front of it, open to the sky above
+    const loggiaRing = insetRing(ring, 1.1)
+    faceBand(out, loggiaRing, H - loggiaH, H, { kind: 'blank', wall: dark, material: 'concrete' })
+    for (let i = 0; i < loggiaRing.length; i++) {
+      const e = edgeAt(loggiaRing, i)
+      if (e.L < 1.5) continue
+      const n = Math.max(1, Math.round(e.L / 3.2))
+      for (let k = 0; k < n; k++) {
+        const u = (k + 0.5) / n
+        const x = e.a.x + e.tx * (e.L * u) + e.nx * 0.15
+        const z = e.a.z + e.tz * (e.L * u) + e.nz * 0.15
+        column(out, x, z, H - loggiaH, H, 0.28, wall)
+      }
+    }
+    capPolygon(out, ring, H, wall, 0)
+  },
+
+  /**
+   * CCSF, 33 Gough Street: a two-storey administrative office building (per public reporting on CCSF's Gough
+   * Street headquarters — no photograph, no distinctive feature reported anywhere, just "a two-story
+   * administrative building"). Nothing here argues against the plain recipe outcome the owner has said is the
+   * right result whenever a building has no feature the recipe vocabulary lacks a word for.
+   */
+  ccsfGoughStreet: fromRecipe('hotel-punched', { height: 8, wall: [0.8, 0.78, 0.72], glass: [0.24, 0.26, 0.28], base: 0 }),
+}
+
+/** The longest edge's length, ignoring which one it is. */
+function longestEdgeLen(ring: { x: number; z: number }[]): number {
+  return edgeAt(ring, longestEdge(ring)).L
+}
+
+/** The index of the corner turning through the sharpest angle — the one a curved-corner building rounds. */
+function sharpestCorner(ring: { x: number; z: number }[]): number {
+  let best = 0
+  let bestDot = 2
+  for (let i = 0; i < ring.length; i++) {
+    const p = ring[i]
+    const prev = ring[(i - 1 + ring.length) % ring.length]
+    const next = ring[(i + 1) % ring.length]
+    const ax = p.x - prev.x, az = p.z - prev.z
+    const bx = next.x - p.x, bz = next.z - p.z
+    const al = Math.hypot(ax, az) || 1, bl = Math.hypot(bx, bz) || 1
+    const dot = (ax * bx + az * bz) / (al * bl)
+    if (dot < bestDot) { bestDot = dot; best = i }
+  }
+  return best
+}
+
+/** `roundRing`, but only at ONE named corner — the rest of the polygon stays exactly as given. */
+function roundOneCorner(ring: { x: number; z: number }[], i: number, r: number, n = 8): { x: number; z: number }[] {
+  const p = ring[i]
+  const prev = ring[(i - 1 + ring.length) % ring.length]
+  const next = ring[(i + 1) % ring.length]
+  const d0 = Math.hypot(p.x - prev.x, p.z - prev.z) || 1
+  const d1 = Math.hypot(next.x - p.x, next.z - p.z) || 1
+  const rr = Math.min(r, d0 / 2, d1 / 2)
+  const a = { x: p.x + ((prev.x - p.x) / d0) * rr, z: p.z + ((prev.z - p.z) / d0) * rr }
+  const b = { x: p.x + ((next.x - p.x) / d1) * rr, z: p.z + ((next.z - p.z) / d1) * rr }
+  const arc: { x: number; z: number }[] = []
+  for (let k = 0; k <= n; k++) {
+    const t = k / n
+    const u = 1 - t
+    arc.push({ x: u * u * a.x + 2 * u * t * p.x + t * t * b.x, z: u * u * a.z + 2 * u * t * p.z + t * t * b.z })
+  }
+  const out: { x: number; z: number }[] = []
+  for (let k = 0; k < ring.length; k++) {
+    if (k === i) { out.push(...arc); continue }
+    out.push(ring[k])
+  }
+  return out
 }
 
 /** The two War Memorial buildings: the same front, one with the Opera's stage house behind it. */

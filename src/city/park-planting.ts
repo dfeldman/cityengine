@@ -33,7 +33,7 @@
 import { tileKey, tileOf } from './tiles.ts'
 import { Carriageways } from './carriageways.ts'
 import { formCode, type TreeForm } from './tree-forms.ts'
-import { unpackPoints, type CityPackage, type PackedArea } from './package.ts'
+import { packPoints, unpackPoints, type CityPackage, type PackedArea } from './package.ts'
 import type { Planting } from './plantings.ts'
 
 /** A species in a park's mix: its form (tree-forms.ts), its share, and how tall it grows HERE. */
@@ -361,3 +361,56 @@ function mulberry(seed: number): () => number {
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296
   }
 }
+
+/**
+ * The trees of a RAISED DECK — a skypark (docs/SKYPARKS.md): Salesforce Park first, and any deck after it.
+ *
+ * The same `plantParks` scatter the ground parks get, over the deck's own ring and nothing else: a synthetic
+ * one-area package, no edges (a deck has no carriageways in the package — its paths are drawn by the
+ * landmark), and the deck's height stamped onto every result. That `y` is what `Vegetation` honours in place
+ * of the terrain, exactly as `Plants.addDeck` does for the shrubs.
+ *
+ * `keepOff` metres inside the ring are left bare, because a deck's outer band IS its path loop and its
+ * parapet — and `plantParks` deliberately THICKENS a park's boundary planting, which here put trunks down
+ * the middle of the half-mile loop the rider rides. Salesforce Park's loop lies between 1.8 m and 6.2 m
+ * inside the ring this is given (`skinRing` insets 4.0 and 8.4 against the deck's own 2.2), so 6.5 m is the
+ * loop plus a little; the first render was taken at 4 m and had trees standing on the path.
+ */
+export function deckPlantings(ring: { x: number; z: number }[], y: number, keepOff = 6.5,
+                              rule: ParkRule = DECK_PLANTING): Planting[] {
+  if (ring.length < 3) return []
+  const pkg = { areas: [{ kind: 'park' as const, ring: packPoints(ring) }], edges: [] }
+  const edges = new SegGrid(ring, [])
+  return plantParks(pkg, rule, 0x5ca1eb1e)
+    .filter((p) => edges.distance(p.x, p.z) > keepOff)
+    .map((p) => ({ ...p, y }))
+}
+
+/**
+ * What grows on a skypark, where nothing says otherwise.
+ *
+ * Salesforce Park's real planting is thirteen zoned gardens — desert, palms, a great lawn, an oak meadow,
+ * redwoods, a wetland. The zones live in the landmark's LOCAL frame and a deck ring arrives here already in
+ * world space, so this is a GENERAL mix of what the whole park is made of rather than a zoning of it: coast
+ * live oak in the lead, with redwood, olive and laurel under it and a few palms, which is the species list
+ * the aerials show and the same forms the city's own parks use (city/sf/parks.ts).
+ *
+ * The density is the point of the place, and it is `MAX_DENSITY` — the most park-planting.ts will accept,
+ * set by what a 7 × 7 block of tiles can afford. The real park has 600 trees over about 22 000 m², which is
+ * 0.027 a square metre, three and a half times the ceiling: matching it is not on offer at any framerate.
+ * What this asks for is 0.0078, a trunk every eleven metres, which over the deck's plantable core comes out
+ * at about 130 trees. With crowns of eight to seventeen metres that closes over from above, which is what
+ * the aerials read as, and it is a twentieth of the 2 500-odd trees a Presidio tile block already carries.
+ * Lightly clumped rather than even, so the great lawn keeps a clearing or two in it.
+ */
+export const DECK_PLANTING: ParkRule = () => ({
+  density: MAX_DENSITY,
+  clump: 0.1,
+  species: [
+    { form: 'oak', weight: 4, h: [8, 13] },
+    { form: 'cypress', weight: 2, h: [11, 17] },
+    { form: 'olive', weight: 2, h: [5, 8] },
+    { form: 'laurel', weight: 2, h: [6, 10] },
+    { form: 'queen', weight: 1, h: [7, 11] },
+  ],
+})

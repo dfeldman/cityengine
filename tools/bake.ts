@@ -24,24 +24,30 @@
  * the same every session, which is what makes two rides down the same street comparable.
  */
 import { mkdir, writeFile } from 'node:fs/promises'
+import { spawnSync } from 'node:child_process'
+import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import { CITIES, bboxOf, city, detailBboxOf, extentOf, type CitySpec } from './cities.ts'
 import { joinNearMisses } from './gaps.ts'
-import { bridgesQuery, squaresQuery, stepsQuery, wideQuery, fringeQuery, cityQuery, furnitureQuery, innerRings, outerRings, overpassTiled, type Bbox, type OsmWay } from './overpass.ts'
-import { Elevation, ATTRIBUTION as TERRAIN_CREDIT } from './terrarium.ts'
+import { bridgesQuery, sandQuery, wallsQuery, squaresQuery, stepsQuery, wideQuery, fringeQuery, cityQuery, furnitureQuery, innerRings, outerRings, overpassTiled, type Bbox, type OsmWay, type LatLon } from './overpass.ts'
+import { Elevation, ATTRIBUTION as TERRAIN_CREDIT, metresPerPixel } from './terrarium.ts'
 import { Terrain, type PackedTerrain } from '../src/city/terrain.ts'
-import { splitPackage, type CityIndex, type TileEntry } from '../src/city/tiles.ts'
+import { TILE, splitPackage, type CityIndex, type TileEntry } from '../src/city/tiles.ts'
+import { waterLookup } from '../src/render/watermask.ts'
 import { TREE_CAP, TREES_PER_KM2, packPlantings, plantCity } from '../src/city/plantings.ts'
 import { mapEdges, packRide, rideFor } from '../src/city/ridefile.ts'
 import { Projection, haversine } from '../src/city/geo.ts'
+import { COURT_MAX_M2, courtEligible, courtSport, fitCourt, ringArea } from '../src/city/sports.ts'
 import { chooseStyle, style as styleOf, type StyleId } from '../src/city/facade.ts'
-import { packPoints, unpackPoints, waterLevels, type CityPackage, type PackedPoi, type PackedArea, type PackedBuilding, type PackedFringe, type PackedEdge, type PackedFurniture, type PackedLandmark, type PackedRail, type RoofShape } from '../src/city/package.ts'
+import { packPoints, unpackPoints, waterLevels, type CityPackage, type PackedPoi, type PackedArea, type PackedBuilding, type PackedFringe, type PackedEdge, type PackedCourt, type PackedFurniture, type PackedLandmark, type PackedRail, type RoofShape } from '../src/city/package.ts'
 import { pavementFor } from '../src/city/pavement.ts'
+import { ringForm, thresholds, type RingForm } from '../src/city/ring-forms.ts'
 import { largestComponent, lengthOf, type Edge } from '../src/city/graph.ts'
 import { rideGraph, rideStats } from '../src/city/ridegraph.ts'
 import { frontageOf, totemPoint } from '../src/city/landmark-place.ts'
 import { landmarkKind, score } from './landmark-rank.ts'
 import { bridgeHeights } from './bridges.ts'
+import { cityParkMask, parkEdge, roadFix } from '../src/city/park-area.ts'
 
 /**
  * A church is not a row of shops. Places of worship take the classical style — its ground floor is an arcade,
@@ -49,7 +55,26 @@ import { bridgeHeights } from './bridges.ts'
  */
 const worship = (t: Record<string, string>): boolean =>
   t.amenity === 'place_of_worship' || /^(church|cathedral|chapel|basilica|synagogue|mosque|temple)$/.test(t.building ?? '')
-const styleFor = (t: Record<string, string>, pick: () => StyleId): StyleId => (worship(t) ? 'classical' : pick())
+/*
+ * And a hospital is not a walk-up. The owner, flying over UCSF Parnassus 2026-09-23: "the buildings are all
+ * generic, but someone on OSM did a good job, they are all the right shapes. They are coded as TENEMENTS
+ * though - that's wrong... let's just make sure the buildings are refaced to look like hospitals in that
+ * campus."
+ *
+ * The shapes were right because OSM's footprints are good there; the STYLE came from the neighbourhood's
+ * weighted mix, which for the Inner Sunset includes `tenement` — a five-storey walk-up, fire escapes and
+ * all, hung on a hospital block.
+ *
+ * So medical and university buildings take a plain modern institutional style whatever the mix would have
+ * given them, exactly as places of worship take `classical`. SCHOOLS ARE DELIBERATELY LEFT OUT: they are
+ * 182 of the 330 buildings this would otherwise catch, San Francisco's are genuinely various (brick,
+ * classical, stucco), and nobody has complained about them.
+ */
+const institution = (t: Record<string, string>): boolean =>
+  /^(hospital|university|college)$/.test(t.building ?? '')
+  || /^(hospital|clinic|university|college|doctors)$/.test(t.amenity ?? '')
+const styleFor = (t: Record<string, string>, pick: () => StyleId): StyleId =>
+  (worship(t) ? 'classical' : institution(t) ? 'bauhaus' : pick())
 
 /** How many landmark name plates a city gets: the cells in the plate texture (render/signs.ts). */
 const LANDMARK_CAP = 256
@@ -67,6 +92,15 @@ const OUT = resolve(import.meta.dirname, '..', 'public', 'cities')
 const DOCS = resolve(import.meta.dirname, '..', 'docs')
 /** how far beyond the box the fringe of plain massing reaches, metres */
 const FRINGE = 700
+/*
+ * How big a `park`/`wood` polygon has to be before the bake treats it as open country: four hectares, a
+ * 200 m square. Deliberately far above the per-TILE threshold the renderer uses (10 000 m², `default.park.
+ * minPieceM2`), and for a different reason — a tile holds a clipped fragment and asks "how much of me is
+ * park", while the bake holds whole polygons and asks "is this thing a park at all". Golden Gate Park is
+ * 4.1 km², the Presidio 6 km², and a residential square is a few hundred square metres, so nothing lives
+ * anywhere near this line.
+ */
+const PARK_RING_M2 = 40000
 
 const bbox = (c: CitySpec, pad = 0): Bbox => bboxOf(c, pad)
 
@@ -163,8 +197,35 @@ const isFoot = (t: Record<string, string>): boolean =>
 const sameBox = (a: { south: number; north: number; west: number; east: number }, b: typeof a): boolean =>
   Math.abs(a.south - b.south) < 1e-6 && Math.abs(a.north - b.north) < 1e-6 && Math.abs(a.west - b.west) < 1e-6 && Math.abs(a.east - b.east) < 1e-6
 
+/**
+ * The landmark audit, spawned under vite-node because it needs the REAL selection code from
+ * src/render/landmarks.ts and that imports Babylon with extensionless specifiers, which plain node — the
+ * bake's own runtime — cannot resolve.
+ *
+ * Staged, and the early stages are the point (owner, 2026-09-23: *"hopefully it terminates EARLY because we
+ * don't want to get errors at the end of a 4 hour bake job"*). A stage that FAILS stops the bake there; a
+ * stage that could not RUN AT ALL also stops it, because a check that quietly skipped is how Paris printed
+ * green for weeks (BUGS.md #101).
+ *
+ *   `npm run bake -- --no-audit`  skips it, for working on the bake itself.
+ */
+function auditStage(stage: string, spec: CitySpec, extra: string[] = []): void {
+  if (process.argv.includes('--no-audit')) return
+  const bin = resolve(import.meta.dirname, '..', 'node_modules', '.bin', 'vite-node')
+  const r = spawnSync(bin, [resolve(import.meta.dirname, 'bake-audit.ts'), '--', `--city=${spec.id}`,
+    `--stage=${stage}`, ...extra], { stdio: 'inherit' })
+  if (r.status === 0) return
+  console.error(`\n  !! BAKE AUDIT stage ${stage} DID NOT PASS for ${spec.id}`
+    + `${r.error ? ` — it could not even run: ${r.error.message}` : ''}`)
+  console.error('     Nothing below this point has been baked. Fix the manifest, or re-run with --no-audit.')
+  process.exit(1)
+}
+
 async function bake(spec: CitySpec): Promise<void> {
   console.log(`\n${spec.name}`)
+  // BEFORE a single Overpass call: every check that needs nothing but the manifests. A landmark entry naming
+  // a builder that does not exist must never cost four hours to discover.
+  auditStage('1', spec)
   /*
    * Two fetches, two boxes (tools/cities.ts `detail`): the city in detail over the blocks that are modelled, and
    * the wide box — roads, rails, water, the coast and the motorway BRIDGES — over everything the box reaches.
@@ -245,7 +306,20 @@ async function bake(spec: CitySpec): Promise<void> {
   // boats moored on the river are drawn as boats (render/boats.ts), not as twenty-metre blocks in the water
   const isBoat = (t: Record<string, string>): boolean => t.building === 'boat' || t.building === 'houseboat'
   const boatWays = ways.filter((w) => isBoat(w.tags) && w.geometry && w.geometry.length >= 4)
-  const outlines = ways.filter((w) => w.tags.building && !w.tags['building:part'] && !canopy(w.tags) && !belowGround(w.tags) && !isBoat(w.tags))
+  /*
+   * BUGS.md #150, #151. Infrastructure wearing a building tag. The Bay Bridge's four western-span suspension
+   * towers carry `building=tower` beside `bridge:support=pylon`, so they were extruded as buildings and drawn
+   * ON TOP of the `bayBridge` builder's own towers (owner: "bay bridge pier buildings are still showing up as
+   * buildings"). They also reached a kit batch, where four consecutive 160 m ids over water looked like a
+   * development — the same trap as the three Oracle Park floodlight masts in #127.
+   *
+   * NAMED masts and towers are kept: Sutro Tower is a landmark and is drawn as one. It is the UNNAMED ones
+   * that are never worth a building.
+   */
+  const isInfrastructure = (t: Record<string, string>): boolean => t['bridge:support'] !== undefined
+    || (t.name === undefined && (t.power !== undefined || t['tower:type'] !== undefined
+      || /^(tower|mast|chimney|silo|storage_tank|water_tower|communications_tower)$/.test(t.man_made ?? '')))
+  const outlines = ways.filter((w) => w.tags.building && !w.tags['building:part'] && !canopy(w.tags) && !belowGround(w.tags) && !isBoat(w.tags) && !isInfrastructure(w.tags))
   const parts = ways.filter((w) => w.tags['building:part'] && !belowGround(w.tags))
   const partSeeds = parts
     .filter((w) => w.geometry && w.geometry.length >= 3)
@@ -261,6 +335,9 @@ async function bake(spec: CitySpec): Promise<void> {
   const superseded = new Set<number>()
   // which outline each part belongs to, so the parts of one building can be dressed as one building
   const ownerOf = new Map<number, OsmWay>()
+  // which RELATION outline a part belongs to (a relation has no OsmWay-shaped tags/geometry to dress with,
+  // so this only ever feeds `partOf` — the part keeps dressing itself, as it already did)
+  const relOwnerOf = new Map<number, number>()
   // outlines kept alongside parts that float above them, and the height they must reach
   const raiseTo = new Map<number, number>()
   for (const w of outlines) {
@@ -301,6 +378,46 @@ async function bake(spec: CitySpec): Promise<void> {
         void q
       }
       if (top > 0) raiseTo.set(w.id, top)
+    }
+  }
+  /*
+   * The same supersession, for a building outline mapped as a RELATION (a multipolygon) rather than a way —
+   * Simple 3D Buildings does not care which one carries the footprint, but this pipeline, until now, only
+   * ever looked at ways: `outlines` above is `ways.filter(...)`, so a relation outline's `building:part`
+   * ways were never marked superseded or given an owner, and stood inside it unclaimed. The relation itself
+   * is emitted separately below (the `areaRels` loop, "Multipolygon relations"), so the result was the
+   * relation's own crude box AND every one of its parts, both drawn, coincident walls and all — the "old
+   * generic model showing through the new model" the owner reported for the Marriott Marquis, whose
+   * `building:part`s (three `chicago`-styled 24 m boxes) sit inside `relation/6483285`'s footprint with no
+   * way outline to claim them (BUGS.md #171). Packed as `rel.id * 2 + 1`, the same id space `packedIds` and
+   * the `areaRels` loop below already use for a relation, so the manifest's `isReplaced`/`claims` (which
+   * follow a part's `partOf` to its owner) reach these exactly as they do a superseded way's parts.
+   */
+  for (const rel of relations) {
+    if (rel.tags.building === undefined) continue
+    const relId = rel.id * 2 + 1
+    for (const ring of outerRings(rel)) {
+      const pts = ring.slice(0, -1).map((g) => proj.toLocal(g))
+      if (pts.length < 3) continue
+      let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+      for (const p of pts) {
+        if (p.x < x0) x0 = p.x
+        if (p.x > x1) x1 = p.x
+        if (p.z < z0) z0 = p.z
+        if (p.z > z1) z1 = p.z
+      }
+      let covered = 0
+      let grounded = false
+      for (const { way, at: s } of partSeeds) {
+        if (ownerOf.has(way.id)) continue // a way outline already claims it; a relation never overrides that
+        if (s.x < x0 || s.x > x1 || s.z < z0 || s.z > z1) continue
+        if (!pointInRing(pts, s.x, s.z)) continue
+        relOwnerOf.set(way.id, relId)
+        covered += area(way.geometry!.slice(0, -1).map((g) => proj.toLocal(g)))
+        const t = way.tags
+        if (!t.min_height && !t['building:min_level']) grounded = true
+      }
+      if (grounded && covered >= 0.5 * area(pts)) superseded.add(relId)
     }
   }
   const buildingWays = [...outlines.filter((w) => !superseded.has(w.id)), ...parts]
@@ -441,6 +558,21 @@ async function bake(spec: CitySpec): Promise<void> {
     if (lv !== undefined) tallest.set(owner.id, Math.max(tallest.get(owner.id) ?? 0, lv))
   }
   const buildings: PackedBuilding[] = []
+  /*
+   * The footprint-form scan (src/city/ring-forms.ts, PLAN §Soon.0): which buildings the slot kit cannot
+   * express, so the queue routes them to from-scratch modelling (LADDER §3c treatment 4+) instead of
+   * flattening them into the kit. A stage of the classifier rather than a script somebody remembers to run:
+   * it costs nothing per building and needs no photograph, which is what makes it affordable across the
+   * hundreds the owner expects in future cities.
+   *
+   * Scored ONCE PER OUTLINE and cached. A building:part is dressed as its owner (see below) and must be
+   * flagged as its owner too — an outline the bake replaces with its parts never becomes a PackedBuilding at
+   * all, so a flag that lived only on outlines would miss exactly the towers that most need it.
+   */
+  const FORM = thresholds(spec.ringForms)
+  const formOf = new Map<number, RingForm | null>()
+  const formed: { id: number; name: string; h: number; f: RingForm }[] = []
+  let formScanned = 0
   // named buildings worth a name plate on the street (item K), gathered as they are packed — plus the
   // outlines replaced by their parts, which carry the name the parts do not (Saint-Louis-en-l'Île)
   const named: { id: number; tags: Record<string, string>; ring: { x: number; z: number }[] }[] = []
@@ -491,6 +623,15 @@ async function bake(spec: CitySpec): Promise<void> {
         { levels: p.buildingLevels, height: p.buildingHeight, material: p.buildingFacadeMaterial,
           building: w.tags.building },
         spec.styles, w.id))
+    const formKey = owner?.id ?? w.id
+    if (!formOf.has(formKey)) {
+      const fh = (owner ? ownerP!.buildingHeight : p.buildingHeight) ?? 0
+      if (fh >= FORM.minHeight) formScanned++
+      const f = ringForm(ownerRing, fh, FORM)
+      formOf.set(formKey, f)
+      if (f) formed.push({ id: formKey, name: (owner?.tags ?? w.tags).name ?? '—', h: fh, f })
+    }
+    const form = formOf.get(formKey) ?? undefined
     /*
      * The audit row: which rule gave this building its look. Without it a systematically wrong style — every
      * residential tower drawn as a glass office block — can only be found by riding past one (user,
@@ -499,7 +640,11 @@ async function bake(spec: CitySpec): Promise<void> {
     audit.push([owner?.id ?? w.id, w.geometry[0].lat.toFixed(6), w.geometry[0].lon.toFixed(6),
       Math.round((owner ? ownerP!.buildingHeight : p.buildingHeight) ?? 0), Math.round(area(ownerRing)),
       kind?.district ?? '', kind?.archetype ?? '', kind ? kind.rule : 'chooseStyle',
-      styleId, styleId !== (kind?.style ?? styleId) ? 'overridden' : ''].join(','))
+      styleId, styleId !== (kind?.style ?? styleId) ? 'overridden' : '',
+      // and whether the slot kit can express this building's form at all (LADDER §3c): the column the queue
+      // reads to route a building to from-scratch modelling. Appended, so the readers that index by
+      // position (tools/sf-rules.ts, tools/review-page.ts) are untouched.
+      form ? `${form.fired}:${form[form.fired]}` : ''].join(','))
     const raised = raiseTo.get(w.id)
     const tall = raised !== undefined && raised > (p.buildingHeight ?? 0)
     /*
@@ -519,13 +664,16 @@ async function bake(spec: CitySpec): Promise<void> {
       ...roofFor(w.tags, p, styleId, ccwRing, w.id),
       ...(own.inferred ? { levelsInferred: true as const } : {}),
       ...(kind ? { archetype: kind.archetype } : {}),
+      ...(form ? { form } : {}),
       // a part of a building whose outline its parts replace: that outline's id (a church's towers and apse
       // are the church, for its quick dress: render/prepare.ts)
-      ...(ownerOf.has(w.id) && superseded.has(ownerOf.get(w.id)!.id) ? { partOf: ownerOf.get(w.id)!.id } : {}),
+      ...(ownerOf.has(w.id) && superseded.has(ownerOf.get(w.id)!.id) ? { partOf: ownerOf.get(w.id)!.id }
+        : relOwnerOf.has(w.id) && superseded.has(relOwnerOf.get(w.id)!) ? { partOf: relOwnerOf.get(w.id)! } : {}),
     })
     if (w.tags.name && worthNaming(w.tags)) named.push({ id: w.id, tags: w.tags, ring: ccwRing })
   }
   console.log(`  ${buildings.length} buildings`)
+  reportRingForms(formScanned, formed, FORM)
   if (streetRegion.streetWidth === 'carriageway') fitStreetsBetweenBuildings(kept, buildings)
 
   // ---- the green and the wet, and the paved squares (their own query: only as areas, never as streets)
@@ -533,8 +681,14 @@ async function bake(spec: CitySpec): Promise<void> {
     console.warn(`  squares: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
     return { ways: [] as OsmWay[], relations: [] as typeof relations }
   })
-  const areaWays = [...ways, ...squares.ways]
-  const areaRels = [...relations, ...squares.relations.filter((r) => r.tags.building === undefined)]
+  // the bare ground — sand and dirt — on its own query, so the street query's cache is untouched (#200)
+  const bare = await overpassTiled(sandQuery, detailBboxOf(spec)).catch((e) => {
+    console.warn(`  sand: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
+    return { ways: [] as OsmWay[], relations: [] as typeof relations }
+  })
+  const areaWays = [...ways, ...squares.ways, ...bare.ways]
+  const areaRels = [...relations, ...squares.relations.filter((r) => r.tags.building === undefined),
+    ...bare.relations.filter((r) => r.tags.building === undefined)]
   const areas: PackedArea[] = []
   // and the water that runs underground: never drawn, but a "bridge" over it is at grade (tools/bridges.ts)
   const buried: { x: number; z: number }[][] = []
@@ -552,6 +706,94 @@ async function bake(spec: CitySpec): Promise<void> {
     if (area(ring) < 40) continue
     areas.push({ kind, ring: packPoints(ccw(ring)) })
   }
+  /*
+   * ---- THE SPORTS-PITCH KIT (BUGS.md #214, src/city/sports.ts, src/render/sports.ts)
+   *
+   * 779 of the box's 1,421 sports areas are the same object — a flat rectangle with painted lines — so the
+   * bake fits a correctly-proportioned court inside each eligible pitch and files it as a POINT. It has to
+   * happen here, on the whole ring: `splitPackage` clips areas at every tile border, and a court straddling
+   * one would be fitted twice to two half-polygons.
+   *
+   * The exclusion is #214a's measured threshold — unnamed, under 5,000 m², not a stadium — plus the name of
+   * any `leisure=sports_centre`/`stadium` polygon that CONTAINS the pitch (Beach Chalet Soccer Fields is a
+   * sports_centre with `courts=4` whose inner pitches are unnamed).
+   *
+   * **A known gap, deliberately not closed today:** `cityQuery` in tools/overpass.ts fetches
+   * `leisure~^(park|garden|pitch|nature_reserve)$` and does NOT fetch `sports_centre` or `stadium`, so
+   * `venues` below is empty in practice and the enclosure test cannot fire. Widening the query invalidates
+   * every cached Overpass response and every osmium cut, which is not a thing to do while a four-hour bake
+   * is running. The size threshold still catches the big venues on its own: no basketball, tennis,
+   * pickleball or four-square polygon in the San Francisco cut exceeds 5,000 m², and the 21 soccer and 8
+   * baseball areas that do are not drawn by the `court` part at all.
+   */
+  const venues = areaWays.filter((w) => (w.tags.leisure === 'sports_centre' || w.tags.leisure === 'stadium')
+    && (w.tags.name ?? '') !== '' && w.geometry && w.geometry.length >= 4)
+    .map((w) => ({ name: w.tags.name!, ring: w.geometry!.slice(0, -1).map((g) => proj.toLocal(g)) }))
+  const sportsCourts: PackedCourt[] = []
+  const courtsBySport = new Map<string, number>()
+  let courtsExcluded = 0
+  for (const w of areaWays) {
+    if (w.tags.leisure !== 'pitch' || !w.geometry || w.geometry.length < 4) continue
+    const sport = courtSport(w.tags.sport)
+    if (!sport) continue
+    const ring = w.geometry.slice(0, -1).map((g) => proj.toLocal(g))
+    const m2 = ringArea(ring)
+    const c = { x: ring.reduce((s, p) => s + p.x, 0) / ring.length, z: ring.reduce((s, p) => s + p.z, 0) / ring.length }
+    const venue = venues.find((v) => pointInRing(v.ring, c.x, c.z))
+    if (!courtEligible(w.tags, m2, venue?.name)) { courtsExcluded++; continue }
+    const fit = fitCourt(ring, sport)
+    if (!fit) { courtsExcluded++; continue }
+    sportsCourts.push({
+      sport: fit.sport, x: Math.round(fit.x * 100) / 100, z: Math.round(fit.z * 100) / 100,
+      heading: Math.round(fit.heading * 10000) / 10000,
+      len: Math.round(fit.len * 100) / 100, wid: Math.round(fit.wid * 100) / 100,
+      ...(fit.half ? { half: true as const } : {}),
+    })
+    courtsBySport.set(fit.sport, (courtsBySport.get(fit.sport) ?? 0) + 1)
+  }
+  if (sportsCourts.length || courtsExcluded) {
+    console.log(`  ${sportsCourts.length} sports courts (${[...courtsBySport].map(([s, n]) => `${s} ${n}`).join(', ')}), `
+      + `${courtsExcluded} pitches excluded (named, over ${COURT_MAX_M2} m², a venue, or too small to fit a court)`)
+  }
+  // the ocean and the bay (BUGS.md #159): natural=coastline, stitched/clipped/closed against the box -- see
+  // coastlineWater's own comment for how
+  {
+    const { areas: coastAreas, islandsSkipped } = coastlineWater(ways, wholeBox, proj)
+    for (const a of coastAreas) areas.push({ kind: 'water', sea: true, ...a })
+    if (coastAreas.length > 0 || islandsSkipped > 0) {
+      console.log(`  ${coastAreas.length} coastline water area(s) from natural=coastline`
+        + (islandsSkipped > 0 ? `, ${islandsSkipped} island(s) straddling the box left un-subtracted` : ''))
+    }
+    /*
+     * BUGS.md #159/#161: a warning nobody reads is not a safety net. "1 chain skipped, the rest of the water
+     * is built" read like a footnote the first time this shipped, and it was actually a total loss -- the
+     * ocean and most of the bay, gone, with three tiny areas left standing in for them. If a city's own
+     * `natural=coastline` data exists at all, the built sea has to actually reach toward the edges of the box
+     * it was clipped to; a sea that covers only a sliver of the box is exactly the failure mode a skipped
+     * chain produces, and it must fail loudly, not log a line that looks like routine bookkeeping.
+     */
+    if (coastAreas.length > 0) {
+      const bx0 = proj.toLocal({ lat: proj.origin.lat, lon: wholeBox.west }).x
+      const bx1 = proj.toLocal({ lat: proj.origin.lat, lon: wholeBox.east }).x
+      const bz0 = proj.toLocal({ lat: wholeBox.south, lon: proj.origin.lon }).z
+      const bz1 = proj.toLocal({ lat: wholeBox.north, lon: proj.origin.lon }).z
+      let sx0 = Infinity, sx1 = -Infinity, sz0 = Infinity, sz1 = -Infinity
+      for (const a of coastAreas) for (let i = 0; i < a.ring.length; i += 2) {
+        sx0 = Math.min(sx0, a.ring[i]); sx1 = Math.max(sx1, a.ring[i])
+        sz0 = Math.min(sz0, a.ring[i + 1]); sz1 = Math.max(sz1, a.ring[i + 1])
+      }
+      const tol = 500 // metres: how close the sea must come to the box edge to count as "reaching" it
+      const reachesX = sx0 <= bx0 + tol && sx1 >= bx1 - tol
+      const reachesZ = sz0 <= bz0 + tol && sz1 >= bz1 - tol
+      if (!reachesX && !reachesZ) {
+        console.error(`  !! FAILED BAKE: the coastline water does not reach across the box (box x `
+          + `${bx0.toFixed(0)}..${bx1.toFixed(0)} z ${bz0.toFixed(0)}..${bz1.toFixed(0)}, sea x `
+          + `${sx0.toFixed(0)}..${sx1.toFixed(0)} z ${sz0.toFixed(0)}..${sz1.toFixed(0)}) -- a skipped or `
+          + 'mis-stitched coastline chain almost certainly left most of the ocean/bay unbuilt (BUGS.md #159). '
+          + 'Do not trust this bake\'s water.')
+      }
+    }
+  }
   // squares OSM draws only as lines, paved by hand from the region (the Trocadéro's parvis)
   for (const sq of streetRegion.pavedSquares ?? []) {
     const ring = sq.ring.map(([lat, lon]) => proj.toLocal({ lat, lon }))
@@ -567,6 +809,12 @@ async function bake(spec: CitySpec): Promise<void> {
     for (const ring of outerRings(rel)) {
       const pts = ring.slice(0, -1).map((g) => proj.toLocal(g))
       if (pts.length < 3 || area(pts) < 40) continue
+      if (isBuilding && superseded.has(rel.id * 2 + 1)) {
+        // its `building:part`s cover it (see the loop by `outlines` above): drop the crude box, exactly as
+        // a superseded way outline is dropped, and leave the parts (already pushed, with `partOf` set) to
+        // stand for it
+        continue
+      }
       if (isBuilding) {
         const own = withLevels(rel.tags, pts)
         if (own.inferred) inferredCount++
@@ -609,6 +857,23 @@ async function bake(spec: CitySpec): Promise<void> {
   }
   if (fromRelations > 0) console.log(`  ${fromRelations} more from relations (multipolygons)`)
   reportLevels(buildings, inferredCount)
+
+  /*
+   * The EARLIEST point at which "does every landmark entry name a building that will exist?" can be asked:
+   * supersession has been decided and the relations are in, so the set of building ids is final. Everything
+   * after this — terrain, tiles, textures, trees — is the expensive part, and this is the check that caught
+   * the sixty-nine of BUGS.md #100 and the thirty-six restyles of #102.
+   *
+   * Handed over as a FILE of ids rather than by re-reading the tiles: the audit's own tile scan is 2.3 s
+   * unloaded but was measured at 190 s against a disk a bake was thrashing, and the early gate must be cheap.
+   */
+  {
+    const ids = buildings.map((b) => b.id)
+    const partOf = [...new Set(buildings.map((b) => b.partOf).filter((x): x is number => x !== undefined))]
+    const f = resolve(tmpdir(), `bake-ids-${spec.id}.json`)
+    await writeFile(f, JSON.stringify({ ids, partOf }))
+    auditStage('2', spec, [`--ids=${f}`])
+  }
 
   /*
    * And the streets that run under a building without saying so: OSM draws a porte cochère or an arcade
@@ -690,15 +955,49 @@ async function bake(spec: CitySpec): Promise<void> {
    */
   // the whole grid, which reaches a box's largest half-width beyond it (below)
   const box = bbox(spec, Math.max(...Object.values(extentOf(spec))))
-  const elevation = new Elevation(12)
+  /*
+   * TWO grids, from TWO zooms, and the pairing is the whole of BUGS.md #206.
+   *
+   * **The coarse grid**, zoom 12 at `STEP` 20 m, over the whole footprint — out past the box to the
+   * skyline objects twenty kilometres away. It goes in the index. It is what answers for everywhere the
+   * rider is not, and it is what `distantGround` and `groundOccluder` walk cell by cell at load; making it
+   * finer would multiply their quad counts by 25 and undo the load-time fix of #179.
+   *
+   * **The fine grid**, zoom 15 at `FINE_STEP` 4 m, over the rideable box and a ring's margin — cut up into
+   * the tiles, so the client only ever holds the ~225 of them round the rider (#206c: 19 KB a tile, 4.3 MB
+   * resident, against 511 MB if this went in the index, which no browser would parse).
+   *
+   * Both numbers or neither (#206). `terrarium.ts`'s header used to claim zoom 12 is native and more zoom
+   * "only interpolates" — true for SRTM, WRONG over the United States, where the model is USGS 3DEP at 1/3
+   * arc-second, lidar-derived. Measured on a transect across Golden Gate Park, roughness triples from zoom
+   * 12 to 15 while total relief is unchanged, which is the signature of real detail arriving.
+   *
+   * And zoom 15 is the FLOOR: zoom 16 is a 404 on this pyramid, so 3.78 m per pixel here is the finest the
+   * source has and a grid finer than 4 m would store interpolation, not data (#206e). 3DEP's 1 m lidar over
+   * San Francisco exists but is not in these tiles; `TileTerrain.step` is per tile so it can be taken where
+   * it exists later without re-architecting (#206f).
+   */
+  const COARSE_ZOOM = 12
+  const FINE_ZOOM = 15
+  const elevation = new Elevation(COARSE_ZOOM)
   elevation.require({ minLat: box.south, maxLat: box.north, minLon: box.west, maxLon: box.east })
   // and the ground under each far landmark on the skyline, kilometres outside the box
   for (const s of spec.skyline ?? []) {
     elevation.require({ minLat: s.lat - 0.001, maxLat: s.lat + 0.001, minLon: s.lon - 0.001, maxLon: s.lon + 0.001 })
   }
+  /*
+   * The fine grid reaches a ring's width beyond the rideable box, not the whole footprint: the rider cannot
+   * leave the box, and tiles stream 1.5 km round them. Everything further away is the coarse grid's job.
+   */
+  const FINE_MARGIN = 1500
+  const fineBox = bbox(spec, FINE_MARGIN)
+  const fineElev = new Elevation(FINE_ZOOM)
+  fineElev.require({ minLat: fineBox.south, maxLat: fineBox.north, minLon: fineBox.west, maxLon: fineBox.east })
   await elevation.load()
+  await fineElev.load()
 
   const STEP = 20
+  const FINE_STEP = 4
   /*
    * Sampled well beyond the city itself. The grid is what the distant ground is built from, and anything
    * outside it has no ground under it — on Nob Hill that left the trees on the far crest standing in open
@@ -719,6 +1018,68 @@ async function bake(spec: CitySpec): Promise<void> {
       heights.push(elevation.at(proj.toLatLon({ x, z })))
     }
   }
+  /*
+   * The fine grid, snapped so its posts fall on the TILE lattice: `city/tiles.ts` cuts a block per tile
+   * whose samples are `tx * TILE + c * FINE_STEP`, so the origin must be a whole number of tiles and
+   * `FINE_STEP` must divide `TILE`, or the block would be resampled and the tiles would no longer share
+   * their edge posts exactly — which is what keeps the ground from cracking along every border.
+   */
+  /*
+   * …and CLAMPED INSIDE the coarse grid, which is not the formality it looks like. The coarse grid reaches
+   * the box's own largest half-width beyond it, so in San Francisco (9.8 km) it dwarfs box + 1.5 km — but in
+   * a small city (Brooklyn Heights: a 700 m radius, so a 700 m pad) the fine box is the LARGER of the two.
+   * Where the fine grid poked out, every check against the coarse grid below was comparing against its
+   * clamped edge value: the NODATA guard replaced thousands of perfectly good samples with one repeated
+   * number, and the agreement check would have compared a real surface with a constant.
+   */
+  const cx1 = tx0 + (cols - 1) * STEP
+  const cz1 = tz0 + (rows - 1) * STEP
+  const fx0 = Math.max(Math.ceil(tx0 / TILE) * TILE, Math.floor((-ext.west - FINE_MARGIN) / TILE) * TILE)
+  const fz0 = Math.max(Math.ceil(tz0 / TILE) * TILE, Math.floor((-ext.south - FINE_MARGIN) / TILE) * TILE)
+  const fx1 = Math.min(cx1, ext.east + FINE_MARGIN)
+  const fz1 = Math.min(cz1, ext.north + FINE_MARGIN)
+  const fcols = Math.floor((fx1 - fx0) / FINE_STEP) + 1
+  const frows = Math.floor((fz1 - fz0) / FINE_STEP) + 1
+  // typed, not `number[]`: 14 million JS numbers is 115 MB per array and `bareEarth` makes several
+  const fine = new Float64Array(fcols * frows)
+  for (let r = 0; r < frows; r++) {
+    for (let c = 0; c < fcols; c++) {
+      fine[r * fcols + c] = fineElev.at(proj.toLatLon({ x: fx0 + c * FINE_STEP, z: fz0 + r * FINE_STEP }))
+    }
+  }
+  /*
+   * ---- NODATA, which zoom 12 hid and zoom 15 does not.
+   *
+   * The terrarium pyramid has holes, and the coarser levels average them away. Measured over a 4.4 km box
+   * on Brooklyn Heights, 4 449 of 1.2 M zoom-15 samples differ from zoom 12 by more than 100 m and the
+   * minimum reads **-22 626 m** — a NODATA pixel, not bathymetry. One of those is not a cosmetic problem:
+   * `bareEarth` is an OPENING, which removes peaks and PRESERVES pits, so a single bad pixel survives as a
+   * 20 m crater in the ground with a street running into it.
+   *
+   * The coarse grid is the trusted large-scale surface, so a fine sample that disagrees with it by more
+   * than `NODATA_GAP` is replaced by it. The threshold is taken from measurement, not taste: over San
+   * Francisco (9.0 M samples) the largest GENUINE disagreement between the two zooms is 9.7 m and the
+   * 99.9th percentile is 6.3 m, so 30 m is three times the worst real difference and still catches every
+   * Brooklyn hole. This fires zero times in San Francisco — it is here so that New York, which #176 names
+   * as where this is all going, does not bake a cratered city in silence.
+   */
+  const inFineGrid = (x: number, z: number): boolean =>
+    x >= fx0 && z >= fz0 && x <= fx0 + (fcols - 1) * FINE_STEP && z <= fz0 + (frows - 1) * FINE_STEP
+  const NODATA_GAP = 30
+  {
+    let fixed = 0
+    for (let r = 0; r < frows; r++) {
+      for (let c = 0; c < fcols; c++) {
+        const i = r * fcols + c
+        const ref = sampleGrid(heights, cols, rows, tx0, tz0, STEP, fx0 + c * FINE_STEP, fz0 + r * FINE_STEP)
+        if (Math.abs(fine[i] - ref) > NODATA_GAP) { fine[i] = ref; fixed++ }
+      }
+    }
+    if (fixed > 0) {
+      console.log(`  WARNING: ${fixed} of ${fcols * frows} fine samples (${(100 * fixed / (fcols * frows)).toFixed(2)}%) disagreed with zoom ${COARSE_ZOOM} by over ${NODATA_GAP} m and were replaced by it — NODATA in the zoom ${FINE_ZOOM} tiles`)
+    }
+  }
+  console.log(`  fine ground sampled: ${fcols}x${frows} at ${FINE_STEP} m from zoom ${FINE_ZOOM} (${(fcols * frows / 1e6).toFixed(1)} M samples)`)
   // everything is relative to where the rider starts, so the numbers stay small and the HUD reads sensibly
   /**
    * Bare earth, not rooftops.
@@ -757,7 +1118,41 @@ async function bake(spec: CitySpec): Promise<void> {
       wetMask.push(wetRings.some((w) => inRing(w.ring, x, z) && !w.holes.some((h) => inRing(h, x, z))))
     }
   }
+  /*
+   * The same mask on the fine grid, through the INDEX rather than a linear scan. The loop above is 2.6 M
+   * samples against 49 rings; the fine grid is 14 M, and San Francisco's bay ring is ~2 600 points whose
+   * bounding box covers the whole city, so nothing rejects it — that is BUGS.md #179's ten-billion-edge-test
+   * disaster, relocated from the browser into the bake. `waterLookup` is the exact index that fixed it
+   * there (verified: 4 005 327 probes, zero differing answers, 81x faster), so it is reused here rather
+   * than written again.
+   */
+  const wetIndex = waterLookup(wetRings.map((w) => {
+    const ring = unpackPoints(w.ring)
+    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+    for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+    return { ring, holes: w.holes.map(unpackPoints), x0, x1, z0, z1, level: 0 }
+  }))
+  const fineWet = new Uint8Array(fine.length)
+  for (let r = 0; r < frows; r++) {
+    for (let c = 0; c < fcols; c++) {
+      fineWet[r * fcols + c] = wetIndex(fx0 + c * FINE_STEP, fz0 + r * FINE_STEP) === null ? 0 : 1
+    }
+  }
   const ground = bareEarth(heights, cols, rows, 3, wetMask)
+  /*
+   * The opening is a PHYSICAL 60 m, not three cells: it exists to take a block of buildings down to the
+   * level of the streets round it (a surface model reads rooftops), and a building is the size it is
+   * whatever the grid step. At `FINE_STEP` 4 that is a radius of 15, not 3 — and getting this wrong would
+   * have been silent, since a 12 m opening still looks like an opening.
+   *
+   * MEASURED cost of keeping it (Golden Gate Park transect, high-pass relief below 120 m, all at 4 m
+   * spacing): raw zoom-15 detail is 1.182 m; the 60 m opening leaves 0.808 m; a 24 m opening would leave
+   * 0.974 m and none at all 1.116 m. Today's pipeline leaves 0.572 m, so this is still a 1.41x gain, but
+   * the opening is eating about a third of what zoom 15 buys. Shrinking it is NOT free — a 24 m kernel
+   * cannot take the top off a 40 m city block, which is the green-ceiling bug this was written for — so it
+   * stays at 60 m until it can be made conditional on there being buildings there at all.
+   */
+  const fineGround = bareEarthF(fine, fcols, frows, Math.round(60 / FINE_STEP), fineWet)
   /*
    * The sea bed is not the ground (BUGS.md #58). The elevation tiles carry BATHYMETRY: off the Embarcadero the
    * bay floor drops to −108 m, so the shoreline came out as a cliff, the water plane sat in a pit far out from
@@ -765,6 +1160,13 @@ async function bake(spec: CitySpec): Promise<void> {
    * A bay is flat and shallow as far as a rider can tell: every wet sample well below the shore is brought up
    * to just under the level of the land round it, which is what the water plane is drawn at.
    */
+  /*
+   * `shore` is hoisted because the SEA'S SURFACE is the same number (BUGS.md #161). Note the frame: this runs
+   * BEFORE the datum subtraction below, so `shore` and `shore − 1.5` are RAW elevations — true metres above
+   * sea level, which is why `shore` reads a sensible 0.6 m on a coastline. Converting it to the datum frame
+   * is done once, at the datum, and nowhere else.
+   */
+  let shoreRaw: number | null = null
   {
     const shoreline: number[] = []
     for (let r = 1; r < rows - 1; r++) {
@@ -778,16 +1180,108 @@ async function bake(spec: CitySpec): Promise<void> {
     if (shoreline.length > 0) {
       shoreline.sort((a, b) => a - b)
       const shore = shoreline[Math.floor(shoreline.length * 0.35)]
+      shoreRaw = shore
       let raised = 0
       for (let i = 0; i < ground.length; i++) {
         if (wetMask[i] && ground[i] < shore - 3) { ground[i] = shore - 1.5; raised++ }
       }
+      // the SAME shore, on the fine grid: two grids flattened to two different levels is a step at the
+      // waterline and a seam between the ocean and the bay, which is exactly what BUGS.md #161 cost a day to
+      for (let i = 0; i < fineGround.length; i++) {
+        if (fineWet[i] && fineGround[i] < shore - 3) fineGround[i] = shore - 1.5
+      }
       if (raised > 0) console.log(`  sea bed flattened: ${raised} samples brought up to ${(shore - 1.5).toFixed(1)} m (shore ${shore.toFixed(1)} m)`)
     }
   }
-  const datum = sampleGrid(ground, cols, rows, tx0, tz0, STEP, 0, 0)
+  /*
+   * ONE datum for both grids, taken from the FINE one (BUGS.md #161: local 0 is the origin's ground, about
+   * 82 m above sea level here, not sea level). If the coarse grid and the tiles were normalised against
+   * different datums the city would STEP at the edge of every loaded tile — and by the height of a house,
+   * because the two grids disagree about the ground at the origin by whatever the fine detail there is.
+   */
+  const datum = sampleGridF(fineGround, fcols, frows, fx0, fz0, FINE_STEP, 0, 0)
   const datumRaw = datum
   for (let i = 0; i < ground.length; i++) ground[i] = Math.round((ground[i] - datum) * 100) / 100
+  for (let i = 0; i < fineGround.length; i++) fineGround[i] = Math.round((fineGround[i] - datum) * 100) / 100
+  /*
+   * ---- and the coarse grid is DERIVED from the fine one where the fine one reaches.
+   *
+   * Two independent samplings of one noisy source disagree by exactly the amount of noise, and the seam
+   * between them would sit at the edge of the loaded ring, all the way round the rider. Averaging the fine
+   * samples in each coarse cell (rather than taking the one that lands on the post) is a low-pass before a
+   * downsample — the textbook order, and the reason matters here: the roads read the coarse grid, and a
+   * decimation that ALIASES the 4 m detail onto 20 m posts would put a ripple into every street in the box
+   * (BUGS.md #206d). Averaged, the coarse grid stays as smooth as it is today and simply agrees with the
+   * fine one about the big shape.
+   */
+  {
+    // a WHOLE number of fine cells either side of the post: `n / 2` would be 2.5 here, and a fractional
+    // index into a `Float64Array` is `undefined`, so the average came out NaN and the decimation silently
+    // did nothing at all while still reporting every post done
+    const half = Math.floor(Math.round(STEP / FINE_STEP) / 2)
+    let done = 0
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const gx = Math.round((tx0 + c * STEP - fx0) / FINE_STEP)
+        const gz = Math.round((tz0 + r * STEP - fz0) / FINE_STEP)
+        if (gx - half < 0 || gz - half < 0 || gx + half >= fcols || gz + half >= frows) continue
+        let sum = 0
+        let k = 0
+        for (let dz = -half; dz <= half; dz++) for (let dx = -half; dx <= half; dx++) {
+          sum += fineGround[(gz + dz) * fcols + (gx + dx)]
+          k++
+        }
+        ground[r * cols + c] = Math.round((sum / k) * 100) / 100
+        done++
+      }
+    }
+    /*
+     * And CHECK it, because the failure above was invisible: the bake logged every post done, the city
+     * looked plausible, and the only symptom was the coarse grid sitting a house's height away from the
+     * tiles — which nothing would have noticed until a rider crossed the edge of the loaded ring.
+     */
+    const gaps: number[] = []
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const x = tx0 + c * STEP
+        const z = tz0 + r * STEP
+        if (!inFineGrid(x, z)) continue
+        gaps.push(Math.abs(ground[r * cols + c] - sampleGridF(fineGround, fcols, frows, fx0, fz0, FINE_STEP, x, z)))
+      }
+    }
+    gaps.sort((a, b) => a - b)
+    const at = (q: number): number => gaps[Math.min(gaps.length - 1, Math.floor(gaps.length * q))]
+    /*
+     * The MEDIAN, not the maximum. What this is guarding against is the two grids being in different
+     * FRAMES — the failure it was written for put a constant ~25 m between them everywhere — and a median
+     * catches that outright. A maximum cannot be the test: a 20 m box average legitimately differs from a
+     * point sample by metres on a cliff, and by more than that next to a NODATA hole the guard above only
+     * partly cleaned up. Those are single posts; a frame error moves all of them.
+     */
+    console.log(`  coarse grid: ${done} of ${cols * rows} posts averaged down from the fine grid `
+      + `(post-for-post gap: p50 ${at(0.5).toFixed(2)} p99 ${at(0.99).toFixed(2)} max ${at(1).toFixed(2)} m)`)
+    if (!Number.isFinite(at(0.5)) || at(0.5) > 2) {
+      throw new Error(`the coarse grid and the fine one are not in the same frame (median gap ${at(0.5).toFixed(2)} m) — the decimation is broken`)
+    }
+  }
+  /*
+   * The sea's surface in the DATUM frame, for `waterLevels` (BUGS.md #161). `shoreRaw − 1.5` is exactly the
+   * level #58 flattened the bed to, so the water plane and the bed it covers are by construction the same
+   * surface. The conversion happens here and only here, because here is where the datum exists.
+   */
+  /*
+   * THE SEA IS AT MEAN SEA LEVEL, which in this datum frame is exactly `-datumRaw`. Nothing else is needed.
+   *
+   * This started as `shoreRaw - 1.5 - datumRaw`, a proxy: take the shoreline's 35th percentile and drop a
+   * metre and a half. That was reasonable while the only water was ponds and a sliver of bay, and it broke
+   * the moment BUGS.md #159 was properly fixed and the WHOLE coast entered `wetMask` — the shoreline sample
+   * set changed underneath it and `shoreRaw` fell from +0.6 m to -1.4 m, putting the sea 2.9 m too low.
+   *
+   * Measured on the bake that exposed it: the Ferry Building plaza stood 5.7 m above the water where it
+   * should stand about 3, the Embarcadero at Green Street 5.0 m, Pier 39 4.8 m. A render could not show this
+   * — pier sheds genuinely do stand over water, so "too low" and "correct" look alike from the shore.
+   */
+  const seaLevel = shoreRaw === null ? null : Math.round(-datumRaw * 100) / 100
   // a loop, not a spread: central Paris's grid is 340 000 samples, past what a call's arguments can hold
   let lo = Infinity
   let hi = -Infinity
@@ -795,7 +1289,35 @@ async function bake(spec: CitySpec): Promise<void> {
   const relief = hi - lo
   console.log(`  ground sampled: ${cols}x${rows} at ${STEP} m, ${relief.toFixed(0)} m of relief (bare earth)`)
 
-  const terrain: PackedTerrain = { x0: tx0, z0: tz0, step: STEP, cols, rows, heights: ground }
+  const terrain: PackedTerrain = {
+    x0: tx0, z0: tz0, step: STEP, cols, rows, heights: ground,
+    src: `terrarium z${COARSE_ZOOM}+z${FINE_ZOOM}`, resM: Math.round(metresPerPixel(spec.centre.lat, COARSE_ZOOM) * 10) / 10,
+  }
+  /*
+   * The fine grid as a package field. `splitPackage` cuts it into the tiles and it never reaches the index
+   * — that is the whole point (#176: terrain was 20.5 MB of a 26.2 MB index, 78% of it, parsed on the main
+   * thread before anything renders). `resM` is the SOURCE's resolution, not `step`: a tile must never
+   * overstate its data, because everything downstream believes it.
+   */
+  const terrainFine: PackedTerrain = {
+    x0: fx0, z0: fz0, step: FINE_STEP, cols: fcols, rows: frows, heights: Array.from(fineGround),
+    src: `terrarium z${FINE_ZOOM}`, resM: Math.round(metresPerPixel(spec.centre.lat, FINE_ZOOM) * 100) / 100,
+  }
+
+  /**
+   * The ground the way the GAME will see it: the fine grid where it reaches, the coarse one beyond.
+   *
+   * This must be the same rule as `Terrain.rawHeightAt` (city/terrain.ts), or the street the rider follows
+   * and the ground it is drawn on would come from different surfaces — which is the one thing BUGS.md #38
+   * was written to prevent ("two samplings of one noisy source disagree by exactly the amount of noise").
+   *
+   * Note what does NOT use it: `groundAt` below, which the bridges read. A bridge's clearance is tuned
+   * against the water level (#31, #37), it spans water where the fine and coarse grids are both the
+   * flattened sea bed and agree by construction, and it is not worth disturbing for no gain.
+   */
+  const groundFine = (x: number, z: number): number => (inFineGrid(x, z)
+    ? sampleGridF(fineGround, fcols, frows, fx0, fz0, FINE_STEP, x, z)
+    : sampleGrid(ground, cols, rows, tx0, tz0, STEP, x, z))
 
   /*
    * Street heights come from the SAME grid, not from the tiles directly. Two samplings of one noisy
@@ -830,16 +1352,43 @@ async function bake(spec: CitySpec): Promise<void> {
      * retaining wall (render/city.ts `retainingWalls`).
      */
     const half = e.foot ? e.width / 2 : e.width / 2 + Math.max(e.walk, 0.6)
-    e.heights = pts.map((p, i) => {
+    /*
+     * From the FINE grid where it reaches, because the ground the street is drawn on is now the fine grid:
+     * a street levelled from the 20 m grid would sit up to a metre off the ground beside it, and the whole
+     * point of the corridor maximum is that the road is a FILL and never a cut.
+     */
+    const centre = pts.map((p) => groundFine(p.x, p.z))
+    const raw = pts.map((p, i) => {
       const a = pts[Math.max(0, i - 1)]
       const b = pts[Math.min(pts.length - 1, i + 1)]
       const l = Math.hypot(b.x - a.x, b.z - a.z) || 1
       const nx = -(b.z - a.z) / l
       const nz = (b.x - a.x) / l
-      let h = sampleGrid(ground, cols, rows, tx0, tz0, STEP, p.x, p.z)
-      for (const o of [-half, -half / 2, half / 2, half]) h = Math.max(h, sampleGrid(ground, cols, rows, tx0, tz0, STEP, p.x + nx * o, p.z + nz * o))
+      let h = centre[i]
+      for (const o of [-half, -half / 2, half / 2, half]) h = Math.max(h, groundFine(p.x + nx * o, p.z + nz * o))
       return h
     })
+    /*
+     * ---- and then SMOOTHED along its length (BUGS.md #206d).
+     *
+     * The corridor statistic is a MAXIMUM, and a maximum can only rise as the sampling gets finer — by a
+     * different amount at each point, because what it seizes on (a kerb, a tree mound, a berm, the lip of a
+     * path) is in a different place at each point. At 20 m that noise was averaged away by the source; at
+     * 4 m from lidar-derived 3DEP it is real and it is sharp, and it would put a ripple into a street that
+     * is smooth today. California Street downhill at speed is how this game is judged.
+     *
+     * A [1,2,1] pass over points that are at most 8 m apart is a ~16 m window — shorter than anything a
+     * rider reads as a gradient (the ride model's own window is 20 m either side) and long enough to take
+     * out point-to-point chatter. Then the maximum against the CENTRELINE is restored, so smoothing can
+     * never turn the fill into a cut: the road still stands at or above the real ground under itself, and
+     * the downhill side gets its retaining wall as before.
+     */
+    const smooth = raw.map((v, i) => {
+      const a = raw[Math.max(0, i - 1)]
+      const b = raw[Math.min(raw.length - 1, i + 1)]
+      return Math.max((a + 2 * v + b) / 4, centre[i])
+    })
+    e.heights = smooth
   }
   // …and one height where streets meet: every end at a node takes the highest of them, eased in over 12 m, so
   // the level streets join without a step (the rider's profile and the drawn surface both)
@@ -877,8 +1426,23 @@ async function bake(spec: CitySpec): Promise<void> {
   // drop (city/package.ts waterLevels). Taken at bank level, every bridge over the Seine — and the Pont
   // Morland over the Arsenal's mouth — was lifted the full clearance above its own quays (BUGS.md #31, #37)
   const wetAreas = areas.filter((a) => a.kind === 'water')
-  const wetLevels = waterLevels(wetAreas, groundAt, streetRegion.riverDrop ?? 0)
+  const wetLevels = waterLevels(wetAreas, groundAt, streetRegion.riverDrop ?? 0, seaLevel)
   const waterBodies = wetAreas.map((a, k) => ({ ring: unpackPoints(a.ring), level: wetLevels[k] }))
+  /*
+   * Where the SEA ends up, against where #58 put the sea bed (the "sea bed flattened" line above) and against
+   * true mean sea level, which in this datum frame is −datumRaw. All three should agree within a metre or two.
+   * If the sea comes out tens of metres low, a ring vertex on the BOX EDGE is sampling unflattened bathymetry
+   * — the terrain grid extends past the box, and `inRing` on a vertex exactly on the edge is ambiguous — and
+   * the union-find's minimum then sinks the whole bay. This line is how we find that out from a bake log
+   * instead of from a render, which cannot tell "water too low" from "water missing" (BUGS.md #161).
+   */
+  {
+    const seas = wetAreas.map((a, k) => [a, wetLevels[k]] as const).filter(([a]) => a.sea)
+    if (seas.length > 0) {
+      console.log(`  sea level: ${seas.map(([, lv]) => lv.toFixed(1)).join(', ')} m`
+        + ` (true MSL in this frame is ${(-datumRaw).toFixed(1)} m)`)
+    }
+  }
   const decks = bridgeHeights(kept, { water: waterBodies, ground: groundAt, buried })
   // the ways lifted onto a deck are ramps: said outright, for the renderer (city/package.ts isRaised)
   for (const e of kept) if (decks.raised.has(e.id) && !e.bridge) e.ramp = true
@@ -1058,7 +1622,19 @@ async function bake(spec: CitySpec): Promise<void> {
         : t.amenity === 'bicycle_rental' ? 'bikeshare'
         : t.highway === 'traffic_signals' ? 'signals'
         : t.railway === 'tram_stop' ? 'tramstop'
-        : t.advertising === 'billboard' ? 'billboard'
+        /*
+         * BUGS.md #152. OSM's `advertising=billboard` covers everything from a highway bulletin to a poster
+         * frame screwed to a wall, and us-furniture.ts draws ONE thing: a 14.6 x 4.3 m freestanding bulletin
+         * on a steel post. San Francisco's cut has 103 of these nodes and only 19 are tagged as standing on
+         * their own (`support=ground|pole|pedestal`); 15 say outright they are on a wall or roof, and 69 say
+         * nothing. Drawing all of them put big roadside hoardings all over a city where, as the owner puts
+         * it, "freestanding billboards are rare".
+         *
+         * So the freestanding form is drawn only where OSM says it stands freely. The rest are dropped
+         * rather than guessed at — a wall-mounted ad wants to be painted on the wall it is on, which is the
+         * mural path (SignSource {kind:'image'}), and that is still dead code.
+         */
+        : t.advertising === 'billboard' && /^(ground|pole|pedestal)$/.test(t.support ?? '') ? 'billboard'
         : t.highway === 'stop' ? 'stop'
         : t.highway === 'bus_stop' ? 'busstop'
         : t.amenity === 'post_box' ? 'postbox'
@@ -1078,6 +1654,67 @@ async function bake(spec: CitySpec): Promise<void> {
   const trees = nodes.filter((n) => n.tags.natural === 'tree')
     .flatMap((n) => { const p = proj.toLocal(n); return [Math.round(p.x * 10) / 10, Math.round(p.z * 10) / 10] })
   console.log(`  ${areas.length} areas, ${trees.length / 2} mapped trees`)
+
+  /*
+   * ---- OPEN COUNTRY, AT SOURCE (docs/PARKS.md; BUGS.md #201, #202).
+   *
+   * The park already has its own rendering path (`src/city/park-area.ts`), applied per tile as it streams
+   * in, and it will stay: it is what makes the rule true of a package baked before the rule existed. But a
+   * package that ships a sixteen-metre carriageway with 3.8 m of pavement either side through the middle of
+   * Golden Gate Park is shipping a wrong answer and asking the renderer to correct it every time, and every
+   * other consumer of the package — the ride graph built four lines below, the audits, anything written
+   * later — reads the wrong number. So the SAME functions run here, over the whole city, and the bake emits
+   * what the place actually is.
+   *
+   * Why the same functions and not a second implementation of the rule: two copies of "how wide is a park
+   * road" drift, and the drift is invisible until somebody stands in a square and cannot say which layer is
+   * lying. `parkEdge` is imported, not reimplemented; the photographed corrections in `park-roads.json` are
+   * read by it, so a row added to that table corrects the bake and the renderer together.
+   *
+   * The mask is per RING here rather than per tile (`cityParkMask`), because a bake holds whole parks.
+   */
+  {
+    const style = reg.park
+    const mask = cityParkMask(areas, PARK_RING_M2)
+    if (mask) {
+      const midIn = (points: number[]): boolean => {
+        const i = ((points.length / 2) >> 1) * 2
+        return mask(points[i], points[i + 1])
+      }
+      let touched = 0
+      let fixed = 0
+      for (let i = 0; i < kept.length; i++) {
+        if (!midIn(kept[i].points)) continue
+        if (roadFix(kept[i])) fixed++
+        // `park` is a per-tile render-time flag by contract (city/package.ts) and is not baked into the file
+        const { park: _park, ...e } = parkEdge(kept[i], style)
+        kept[i] = e
+        touched++
+      }
+      /*
+       * And the furniture. The owner counted *"thousands of parking meters"* in the park — those are
+       * procedural and are already gone with the pavements — but what IS baked here is stop signs, bus
+       * stops, hydrants and signal nodes, and a national park has none of them. `keepFurniture` is the
+       * "unless something says otherwise" half of the inverted default, and it is the region's list, not
+       * this file's.
+       */
+      const keep = new Set(style.keepFurniture)
+      const before = furniture.length
+      /*
+       * SIGNALS ARE LEFT IN, and that is not an oversight. A `highway=traffic_signals` node is not drawn
+       * where it stands; `render/city.ts` uses it to decide whether a JUNCTION is lit, and the park's rule
+       * keeps the lights where a classified through-route crosses — Crossover Drive really does have
+       * signals. Dropping the nodes here would empty `signalGrid` inside the park and take those lights
+       * with them, which is precisely the bake/render drift this whole block exists to avoid. The bake does
+       * not have the junction context to make that call, so it does not make it.
+       */
+      const outside = furniture.filter((f) => keep.has(f.kind) || f.kind === 'signals' || !mask(f.x, f.z))
+      furniture.length = 0
+      furniture.push(...outside)
+      console.log(`  open country: ${touched} ways restyled at source (${fixed} from a photographed row in `
+        + `city/park-roads.json), ${before - outside.length} pieces of street furniture dropped inside it`)
+    }
+  }
 
   // ---- the ride graph, built here only to be measured (the game builds its own at load, IMPROVEMENTS §2.2)
   const asEdges: Edge[] = kept.map((e) => {
@@ -1124,7 +1761,7 @@ async function bake(spec: CitySpec): Promise<void> {
   // over the whole city: per streamed tile the pair were often in different tiles and never met (BUGS.md #24)
   // the audit trail, grouped by rule so a systematically wrong style is one sort away (docs/BUILDINGS.md)
   await writeFile(resolve(DOCS, `${spec.id}-archetypes.csv`),
-    ['osm,lat,lon,height,area,district,archetype,rule,style,note', ...audit].join('\n') + '\n')
+    ['osm,lat,lon,height,area,district,archetype,rule,style,note,form', ...audit].join('\n') + '\n')
   const byRule = new Map<string, number>()
   for (const row of audit) { const r = row.split(',')[7]; byRule.set(r, (byRule.get(r) ?? 0) + 1) }
   console.log(`  ${audit.length} buildings classified by ${byRule.size} rules → docs/${spec.id}-archetypes.csv`)
@@ -1134,9 +1771,11 @@ async function bake(spec: CitySpec): Promise<void> {
   buildings.push(...nested)
   const pkg: CityPackage = {
     id: spec.id, name: spec.name, origin: spec.centre, radius: spec.radius, ground: spec.ground, region: spec.region,
+    seaLevel,
     box: { x0: -ext.west, x1: ext.east, z0: -ext.south, z1: ext.north },
     start: { edgeId: start.e.id, s: 0 },
-    edges: kept, buildings, areas, trees, rails, pois, furniture, landmarks, terrain, fringe,
+    edges: kept, buildings, areas, trees, rails, pois, furniture, landmarks, terrain, terrainFine, fringe,
+    ...(sportsCourts.length ? { courts: sportsCourts } : {}),
     ...(spec.skyline ? {
       skyline: spec.skyline.map((s) => {
         const p = proj.toLocal(s)
@@ -1152,6 +1791,27 @@ async function bake(spec: CitySpec): Promise<void> {
   pkg.boats = boatWays.map((w) => ({ id: w.id, ring: packPoints(w.geometry.slice(0, -1).map((g) => proj.toLocal(g))),
     ...(w.tags.name ? { name: w.tags.name } : {}) }))
   console.log(`  ${pkg.boats.length} boats moored`)
+  /*
+   * The seawall (docs/PARKS.md "Beaches are BANDS", BUGS.md #200). The rip-rap band at the top of Ocean
+   * Beach is mapped as `barrier=retaining_wall` and as nothing else - there is no `natural=shingle` and no
+   * `natural=bare_rock` along that shore - so the revetment is PLACED from this while the sand's wet and
+   * dry bands are GENERATED from distance to the coastline. Its own query, so the street query's cache is
+   * untouched; `barrier` is a kept key in the local extract, so it costs no network.
+   */
+  {
+    const got = await overpassTiled(wallsQuery, detailBboxOf(spec)).catch((e) => {
+      console.warn(`  walls: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
+      return null
+    })
+    const walls: NonNullable<CityPackage['walls']> = []
+    for (const w of got?.ways ?? []) {
+      if (!w.geometry || w.geometry.length < 2) continue
+      const pts = w.geometry.map((g) => proj.toLocal(g))
+      walls.push({ id: w.id, points: packPoints(pts), ...(w.tags?.barrier === 'seawall' ? { sea: true as const } : {}) })
+    }
+    pkg.walls = walls
+    console.log(`  ${walls.length} retaining/sea walls`)
+  }
   // the bridges' outlines, what each bridge's structure is built from (render/bridges.ts)
   {
     const got = await overpassTiled(bridgesQuery, bbox(spec)).catch((e) => {
@@ -1191,11 +1851,22 @@ async function bake(spec: CitySpec): Promise<void> {
   console.log(`  ${pkg.plantings.length / 5} trees planted (${street ? `${street.length} street trees from the city's list, ` : ''}mapped, parks, boulevards; cap ${cap} over ${km2.toFixed(1)} km²)`)
   await mkdir(OUT, { recursive: true })
   const file = resolve(OUT, `${spec.id}.json`)
-  await writeFile(file, JSON.stringify(pkg))
+  /*
+   * The monolith goes out WITHOUT the fine grid — but `writeTiles` below is given the package that still
+   * has it, because cutting it into the tiles is the only thing it is for.
+   *
+   * `terrainFine` is 14.4 M samples in San Francisco: about +100 MB on a 346 MB file, and a 14.4 M-element
+   * array pushed through `JSON.stringify` for a field nothing reads from here. Measured on Brooklyn
+   * Heights, which is a fortieth of the size: 3 174 kB -> 6 333 kB.
+   */
+  await writeFile(file, JSON.stringify(withoutFineGrid(pkg)))
   const kb = Math.round((await import('node:fs')).statSync(file).size / 1024)
   console.log(`  → public/cities/${spec.id}.json  ${kb} kB`)
   await writeTiles(pkg, streetRegion.riverDrop ?? 0)
   await writeRides(pkg)
+  // and last, the checks that genuinely need the finished tiles: direction A confirmed against what was
+  // actually written, and direction B — what is standing in the city with nothing but the classifier
+  auditStage('3', spec)
 }
 
 
@@ -1403,6 +2074,14 @@ function areaKind(w: OsmWay): PackedArea['kind'] | null {
   if ((t.tunnel && t.tunnel !== 'no') || t.location === 'underground' || t.covered === 'yes'
     || Number(t.layer ?? 0) < 0) return null
   if (t.natural === 'water' || t.waterway === 'riverbank') return 'water'
+  /*
+   * THE BARE GROUND FIRST, before the greens (BUGS.md #200). Ocean Beach is mapped as `natural=beach`
+   * INSIDE the Golden Gate Park and Ocean Beach `leisure=park`/`nature_reserve` polygons, and Baker Beach
+   * the same inside the Presidio's — so whichever test runs first decides, and for years the park test ran
+   * first and the beach was a lawn. Sand is the more specific statement about the ground and wins.
+   */
+  if (/^(beach|sand|shingle|dune)$/.test(t.natural ?? '') || t.surface === 'sand') return 'sand'
+  if (/^(scree|bare_rock|mud|earth)$/.test(t.natural ?? '') || t.landuse === 'quarry') return 'dirt'
   if (t.natural === 'wood' || t.landuse === 'forest') return 'wood'
   // nature_reserve: most of the Presidio's wild edge and Lands End are tagged this way and nothing else
   if (t.leisure === 'park' || t.leisure === 'garden' || t.leisure === 'nature_reserve') return 'park'
@@ -1414,9 +2093,278 @@ function areaKind(w: OsmWay): PackedArea['kind'] | null {
   return null
 }
 
+/**
+ * The ocean and the bay (BUGS.md #159). OSM never maps a coastline as a closed polygon the way a pond is
+ * mapped: `natural=coastline` is a pile of open ways, split arbitrarily, each carrying land on its LEFT and
+ * water on its RIGHT in the direction it was drawn — the standard OSM convention, maintained by editors, so a
+ * way is never flipped here (flipping would swap which side is water). `areaKind`/the water loop above only
+ * ever look at closed rings, so the coast was fetched (tools/overpass.ts's wide query) and never used.
+ *
+ * Three steps:
+ *  1. **Stitch** the ways end-to-end into chains, by matching endpoints — exactly San Francisco's coastline
+ *     turned out to be almost entirely ONE chain (the bay shore, the Golden Gate, and Ocean Beach are one
+ *     continuous OSM way sequence), plus a handful of separate closed rings.
+ *  2. **Clip** each chain to the city box. `Projection.toLocal` is linear in lat (z) and lon (x), so the box
+ *     is an exact axis-aligned rectangle in local metres — clipping is plain segment-vs-rectangle, no
+ *     projection distortion to worry about at this scale.
+ *  3. **Close** each clipped run into a polygon by tracing the box boundary from where it leaves the box to
+ *     where the next run enters. The direction matters: naively following the SHORT way round encloses the
+ *     LAND (verified against San Francisco's own data — that ring contains the Ferry Building and the
+ *     Presidio); the correct closure is the LONG way round, which is what "water is on the right" actually
+ *     means once the coastline hits an artificial box edge instead of more coastline.
+ *
+ * A CLOSED coastline ring is an island (Alcatraz, Treasure Island, Yerba Buena Island here) — the opposite
+ * winding from a lake, since the sea is on the outside of it rather than the inside — and becomes a hole in
+ * the sea, never water of its own. One entirely inside the box is used as a hole outright (fixing its winding
+ * to be opposite the outer ring's, the usual hole convention); one that straddles the box edge is left alone
+ * (not subtracted) and logged, since properly clipping a hole is a different problem from clipping the
+ * outer ring and none of San Francisco's islands need it. A box corner sitting entirely at sea, or a chain
+ * that crosses the box more than once, both fall out of the same general algorithm — nothing here treats the
+ * single-crossing case specially — but they are exercised for San Francisco: `natural=coastline` clips into
+ * one run entering and leaving near the Golden Gate/Lands End corner and a second run of two pieces where it
+ * crosses the box's east edge twice, near Alcatraz/Angel Island.
+ */
+export function coastlineWater(ways: OsmWay[], box: Bbox, proj: Projection): { areas: { ring: number[]; holes?: number[][] }[]; islandsSkipped: number } {
+  const coast = ways.filter((w) => w.tags.natural === 'coastline' && w.geometry && w.geometry.length >= 2)
+  if (coast.length === 0) return { areas: [], islandsSkipped: 0 }
+  const same = (a: LatLon, b: LatLon): boolean => Math.abs(a.lat - b.lat) < 1e-7 && Math.abs(a.lon - b.lon) < 1e-7
+
+  // stitch, direction-preserving: never flip a way, since flipping would swap land and water
+  const parts = coast.map((w) => w.geometry!.filter(Boolean))
+  const used = new Array(parts.length).fill(false)
+  const chains: LatLon[][] = []
+  for (let i = 0; i < parts.length; i++) {
+    if (used[i]) continue
+    used[i] = true
+    let chain = [...parts[i]]
+    let grew = true
+    while (grew) {
+      grew = false
+      const tail = chain[chain.length - 1]
+      if (same(tail, chain[0]) && chain.length > 3) break
+      for (let j = 0; j < parts.length; j++) {
+        if (used[j]) continue
+        if (same(tail, parts[j][0])) { chain.push(...parts[j].slice(1)); used[j] = true; grew = true; break }
+      }
+    }
+    grew = true
+    while (grew) {
+      grew = false
+      const head = chain[0]
+      if (same(head, chain[chain.length - 1]) && chain.length > 3) break
+      for (let j = 0; j < parts.length; j++) {
+        if (used[j]) continue
+        const p = parts[j]
+        if (same(p[p.length - 1], head)) { chain = [...p.slice(0, -1), ...chain]; used[j] = true; grew = true; break }
+      }
+    }
+    chains.push(chain)
+  }
+  const closedChains = chains.filter((c) => same(c[0], c[c.length - 1]))
+  const openChains = chains.filter((c) => !same(c[0], c[c.length - 1]))
+  if (openChains.length === 0) return { areas: [], islandsSkipped: 0 }
+
+  type Pt = { x: number; z: number }
+  const local = (p: LatLon): Pt => proj.toLocal(p)
+  // the box as an exact axis-aligned rectangle in local metres (toLocal is linear in lon/lat separately)
+  const x0 = proj.toLocal({ lat: proj.origin.lat, lon: box.west }).x
+  const x1 = proj.toLocal({ lat: proj.origin.lat, lon: box.east }).x
+  const z0 = proj.toLocal({ lat: box.south, lon: proj.origin.lon }).z
+  const z1 = proj.toLocal({ lat: box.north, lon: proj.origin.lon }).z
+  const inside = (p: Pt): boolean => p.x >= x0 && p.x <= x1 && p.z >= z0 && p.z <= z1
+
+  // clip a polyline (local coords) to the box, one crossing at a time; every maximal inside run comes out as
+  // its own arc, so a chain that dips in and out of the box more than once yields more than one arc
+  function boundaryHit(a: Pt, b: Pt): Pt {
+    const ts: number[] = []
+    if (b.x !== a.x) { ts.push((x0 - a.x) / (b.x - a.x)); ts.push((x1 - a.x) / (b.x - a.x)) }
+    if (b.z !== a.z) { ts.push((z0 - a.z) / (b.z - a.z)); ts.push((z1 - a.z) / (b.z - a.z)) }
+    let best = -1
+    for (const t of ts) {
+      if (t < -1e-9 || t > 1 + 1e-9) continue
+      const q = { x: a.x + (b.x - a.x) * t, z: a.z + (b.z - a.z) * t }
+      if (q.x >= x0 - 1e-6 && q.x <= x1 + 1e-6 && q.z >= z0 - 1e-6 && q.z <= z1 + 1e-6) {
+        if (best < 0 || Math.abs(t - 0.5) < Math.abs(best - 0.5)) best = t
+      }
+    }
+    const t = best < 0 ? 0.5 : best
+    return { x: a.x + (b.x - a.x) * t, z: a.z + (b.z - a.z) * t }
+  }
+  function clipChain(chain: Pt[]): Pt[][] {
+    const segs: Pt[][] = []
+    let cur: Pt[] = []
+    for (let i = 0; i < chain.length; i++) {
+      const p = chain[i]
+      const pin = inside(p)
+      if (i === 0) { if (pin) cur.push(p); continue }
+      const prev = chain[i - 1]
+      const prevIn = inside(prev)
+      if (prevIn && pin) cur.push(p)
+      else if (prevIn && !pin) { cur.push(boundaryHit(prev, p)); segs.push(cur); cur = [] }
+      else if (!prevIn && pin) cur = [boundaryHit(prev, p), p]
+      // both outside: at this scale no coastline segment clips a corner without an intervening inside point
+    }
+    if (cur.length >= 2) segs.push(cur)
+    return segs
+  }
+
+  const arcs: Pt[][] = []
+  for (const chain of openChains) for (const seg of clipChain(chain.map(local))) if (seg.length >= 2) arcs.push(seg)
+  if (arcs.length === 0) return { areas: [], islandsSkipped: 0 }
+
+  // the box perimeter, walked counter-clockwise (NW -> SW -> SE -> NE -> NW) as a single 0..perim parameter
+  const W = x1 - x0, H = z1 - z0, perim = 2 * W + 2 * H
+  const clampV = (v: number, lo: number, hi: number): number => Math.max(lo, Math.min(hi, v))
+  const tOf = (p: Pt): number => {
+    const dTop = Math.abs(p.z - z1), dBot = Math.abs(p.z - z0), dRight = Math.abs(p.x - x1), dLeft = Math.abs(p.x - x0)
+    const m = Math.min(dTop, dBot, dRight, dLeft)
+    if (m === dLeft) return clampV(z1 - p.z, 0, H)
+    if (m === dBot) return H + clampV(p.x - x0, 0, W)
+    if (m === dRight) return H + W + clampV(p.z - z0, 0, H)
+    return H + W + H + clampV(x1 - p.x, 0, W)
+  }
+  const CORNERS: { t: number; p: Pt }[] = [
+    { t: 0, p: { x: x0, z: z1 } }, { t: H, p: { x: x0, z: z0 } },
+    { t: H + W, p: { x: x1, z: z0 } }, { t: H + W + H, p: { x: x1, z: z1 } },
+  ]
+  // the corners crossed walking FORWARD (increasing t) from tFrom to tTo (tTo > tFrom, already unwrapped)
+  function cornersForward(tFrom: number, tTo: number): Pt[] {
+    return CORNERS
+      .map((c) => { let ct = c.t; while (ct <= tFrom) ct += perim; return { ct, p: c.p } })
+      .filter((c) => c.ct < tTo)
+      .sort((a, b) => a.ct - b.ct)
+      .map((c) => c.p)
+  }
+
+  if (process.env.COASTLINE_DEBUG) console.error('box', { x0, x1, z0, z1, W, H, perim })
+  const withT = arcs.map((a) => ({ arc: a, tIn: tOf(a[0]), tOut: tOf(a[a.length - 1]) }))
+  type Break = { t: number; kind: 'in' | 'out'; arc: number }
+  const breaks: Break[] = []
+  withT.forEach((w, i) => { breaks.push({ t: w.tIn, kind: 'in', arc: i }); breaks.push({ t: w.tOut, kind: 'out', arc: i }) })
+  breaks.sort((a, b) => a.t - b.t)
+  const posOfOut = new Map<number, number>()
+  breaks.forEach((b, k) => { if (b.kind === 'out') posOfOut.set(b.arc, k) })
+
+  /*
+   * Merge every arc's entry and exit into one sequence sorted around the perimeter: an entry and an exit
+   * alternate around it (each crossing flips inside/outside), so from an arc's exit, the box connector runs
+   * to the ENTRY that is its immediate neighbour in this merged order — not the entry that happens to belong
+   * to the "next" arc by its own tIn, which is a different (and wrong) pairing when arcs' own tIn/tOut are not
+   * in perimeter order. And the connector goes the LONG way round (backward in this parameterization) — see
+   * the function comment for why the short way encloses land instead of water.
+   */
+  const visited = new Array(withT.length).fill(false)
+  const rings: Pt[][] = []
+  let skipped = 0
+  for (let s = 0; s < withT.length; s++) {
+    if (visited[s]) continue
+    const ring: Pt[] = []
+    let cur = s
+    do {
+      visited[cur] = true
+      const w = withT[cur]
+      ring.push(...w.arc)
+      const pos = posOfOut.get(cur)!
+      const next = breaks[(pos - 1 + breaks.length) % breaks.length]
+      if (next.kind !== 'in') {
+        /*
+         * BUGS.md #159. One malformed chain must not cost us the whole ocean.
+         *
+         * The alternation invariant above is correct, and REAL DATA still breaks it: a way digitised
+         * backwards (land-left/water-right reversed), a chain whose end the extract cut so it dangles
+         * inside the box, or an arc whose entry and exit coincide at a corner. Each is a single-chain
+         * problem, so abandoning that one ring is safe.
+         *
+         * This was a `throw`, which aborted the entire bake — and the state it aborted into is the one San
+         * Francisco is in today: NO bay and NO ocean at all, because `natural=coastline` was never consumed.
+         * Nine chains of water beat zero. Skip the bad one, say so loudly enough that it is not forgotten,
+         * and keep the rest.
+         */
+        if (process.env.COASTLINE_DEBUG) {
+          console.error('breaks:', breaks.map((b) => `${b.kind}${b.arc}@${b.t.toFixed(0)}`).join(' '))
+          console.error('arcs:', withT.map((a, i) => `#${i} len=${a.arc.length} tIn=${a.tIn.toFixed(0)} tOut=${a.tOut.toFixed(0)} start=${JSON.stringify(proj.toLatLon(a.arc[0]))} end=${JSON.stringify(proj.toLatLon(a.arc[a.arc.length - 1]))}`).join('\n'))
+        }
+        const at = proj.toLatLon(w.arc[w.arc.length - 1])
+        console.warn(`  coastline: SKIPPED a chain — no entry precedes arc ${cur}'s exit near `
+          + `${at.lat.toFixed(5)},${at.lon.toFixed(5)} (non-alternating crossings). `
+          + `Set COASTLINE_DEBUG=1 for the crossing list.`)
+        skipped++
+        ring.length = 0
+        break
+      }
+      const fwd = cornersForward(next.t, next.t <= w.tOut ? w.tOut : w.tOut + perim)
+      ring.push(...[...fwd].reverse())
+      cur = next.arc
+    } while (cur !== s)
+    if (ring.length >= 3) rings.push(ring)
+  }
+  if (skipped > 0) console.warn(`  coastline: ${skipped} chain(s) skipped; the rest of the water is built`)
+
+  const pointInRing = (pt: Pt, poly: Pt[]): boolean => {
+    let inRing = false
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const xi = poly[i].x, zi = poly[i].z, xj = poly[j].x, zj = poly[j].z
+      if (((zi > pt.z) !== (zj > pt.z)) && (pt.x < ((xj - xi) * (pt.z - zi)) / (zj - zi) + xi)) inRing = !inRing
+    }
+    return inRing
+  }
+  const ringArea = (poly: Pt[]): number => {
+    let a = 0
+    for (let i = 0; i < poly.length; i++) { const p = poly[i], q = poly[(i + 1) % poly.length]; a += p.x * q.z - q.x * p.z }
+    return a / 2
+  }
+
+  // islands: a closed ring entirely inside the box becomes a hole (opposite winding from the outer ring, the
+  // usual convention); one straddling the box edge is left un-subtracted and counted, rather than clipped as
+  // if it were open coastline -- none of San Francisco's islands need it, and clipping a hole ring correctly
+  // is a different problem from clipping the outer ring
+  let islandsSkipped = 0
+  const holesByRing: number[][][] = rings.map(() => [])
+  for (const isl of closedChains) {
+    const pts = isl.map(local)
+    const allIn = pts.every(inside)
+    const anyIn = pts.some(inside)
+    if (!anyIn) continue
+    if (!allIn) { islandsSkipped++; continue }
+    for (let r = 0; r < rings.length; r++) {
+      if (!pointInRing(pts[0], rings[r])) continue
+      const outerCCW = ringArea(rings[r]) > 0
+      const holeCCW = ringArea(pts) > 0
+      const hole = outerCCW === holeCCW ? [...pts].reverse() : pts
+      holesByRing[r].push(packPoints(hole))
+      break
+    }
+  }
+
+  // outward-facing CCW, like every other area (ccw() above) -- flip both the ring and its holes together if not
+  const areas = rings.map((ring, r) => {
+    const ccwOut = ringArea(ring) > 0
+    const outRing = ccwOut ? ring : [...ring].reverse()
+    const holes = holesByRing[r].map((h) => ccwOut ? h : [...unpackPoints(h)].reverse().flatMap((p) => [p.x, p.z]))
+    return { ring: packPoints(outRing), ...(holes.length ? { holes } : {}) }
+  })
+  return { areas, islandsSkipped }
+}
+
 async function main(): Promise<void> {
   const only = process.argv.slice(2).filter((a) => !a.startsWith('--'))
   const list = only.length > 0 ? only.map(city) : CITIES
+  /*
+   * --rides: only the ride files, rewritten from the package already baked. The ride graph is built entirely
+   * from `pkg.edges` (`writeRides` → `rideFor`), so a change to `src/city/ridegraph.ts` — the junction
+   * clustering, the exits, the roundabouts — reaches the game through two minutes of this rather than four
+   * hours of Overpass. Nothing else in the package is touched. (BUGS.md #183: the collapseClusters fix that
+   * stops a rider being shunted off California Street landed mid-bake and needed exactly this.)
+   */
+  if (process.argv.includes('--rides')) {
+    const { readFileSync } = await import('node:fs')
+    for (const spec of list) {
+      const pkg = JSON.parse(readFileSync(resolve(OUT, `${spec.id}.json`), 'utf8')) as CityPackage
+      console.log(`${spec.id}:`)
+      await writeRides(pkg)
+    }
+    return
+  }
   // --replant: only the trees, on the package already baked (city/plantings.ts), and its tiles rewritten — for
   // working on the plants without the hours a full bake spends waiting on Overpass
   if (process.argv.includes('--replant')) {
@@ -1438,7 +2386,7 @@ async function main(): Promise<void> {
         : undefined
       pkg.plantings = packPlantings(plantCity(pkg, cap, street, parks))
       console.log(`${spec.id}: ${pkg.plantings.length / 5} trees planted${street ? ` (${street.length} from the city's list)` : ''}`)
-      await writeFile(resolve(OUT, `${spec.id}.json`), JSON.stringify(pkg))
+      await writeFile(resolve(OUT, `${spec.id}.json`), JSON.stringify(withoutFineGrid(pkg)))
       await writeTiles(pkg, region(spec.region).riverDrop ?? 0)
     }
     return
@@ -1452,13 +2400,41 @@ async function main(): Promise<void> {
   // offered to the player, so baking one to look at it does not put it in front of anybody.
   const index = CITIES.filter((c) => c.live && existsSync(resolve(OUT, `${c.id}.json`))).map((c) => {
     const pkg = JSON.parse(readFileSync(resolve(OUT, `${c.id}.json`), 'utf8')) as CityPackage
-    return { id: c.id, name: c.name, lat: pkg.origin.lat, lon: pkg.origin.lon, radius: pkg.radius }
+    // `box` as well as `radius`: the go-to decides what is in the city from the box (BUGS.md #163)
+    return { id: c.id, name: c.name, lat: pkg.origin.lat, lon: pkg.origin.lon, radius: pkg.radius, box: pkg.box }
   })
   await writeFile(resolve(OUT, 'index.json'), JSON.stringify(index, null, 2) + '\n')
   console.log(`\n  → public/cities/index.json  ${index.length} cities`)
 }
 
-main().catch((e) => { console.error(e); process.exit(1) })
+if (process.argv[1] && import.meta.url === new URL(process.argv[1], 'file:').href) {
+  main().catch((e) => { console.error(e); process.exit(1) })
+}
+
+/**
+ * What the footprint-form scan found (src/city/ring-forms.ts). Printed on every bake of every city, named,
+ * because the point of moving this out of a hand-run script is that nobody has to remember to look.
+ *
+ * Deliberately not a bare count. `arc`, `stair` and `saw` are different findings — a smooth curve, a curve
+ * drawn as a staircase, and per-bay depth — and the thresholds are printed with them because they are
+ * per-city (`CitySpec.ringForms`) and a new city's mapping conventions will want them checked.
+ */
+function reportRingForms(scanned: number, formed: { id: number; name: string; h: number; f: RingForm }[],
+  t: ReturnType<typeof thresholds>): void {
+  const by = (k: RingForm['fired']): number => formed.filter((x) => x.f.fired === k).length
+  console.log(`  ring forms: ${scanned} outlines over ${t.minHeight} m scanned, ${formed.length} the slot kit `
+    + `cannot express (arc ${by('arc')}, stair ${by('stair')}, saw ${by('saw')}) `
+    + `— route to from-scratch modelling, LADDER §3c treatment 4+`)
+  console.log(`    thresholds: curved arc+stair >= ${t.curvedM} m, saw >= ${t.sawM} m, `
+    + `stair >= ${t.stairMinRun} steps under ${t.stairMaxMean} m, saw ${t.sawMinMean}-${t.sawMaxMean} m teeth, `
+    + `cv < ${t.sawMaxCv} (per-city: CitySpec.ringForms)`)
+  const CAP = 40
+  for (const x of [...formed].sort((a, b) => b.h - a.h).slice(0, CAP)) {
+    console.log(`      way/${String(x.id).padEnd(11)} ${String(Math.round(x.h)).padStart(4)} m  ${x.f.fired.padEnd(5)} `
+      + `arc=${x.f.arc}m stair=${x.f.stair}m saw=${x.f.saw}m ortho=${x.f.ortho}%  ${x.name}`)
+  }
+  if (formed.length > CAP) console.log(`      …and ${formed.length - CAP} more (docs/<city>-archetypes.csv, column \`form\`)`)
+}
 
 /** Even-odd point in polygon, for deciding whether a part sits inside an outline. */
 function pointInRing(ring: { x: number; z: number }[], x: number, z: number): boolean {
@@ -1509,6 +2485,77 @@ function bareEarth(h: number[], cols: number, rows: number, r: number, wet?: boo
   return blurred
 }
 
+/**
+ * `bareEarth` on a typed grid — the fine grid is 14 million samples and this makes several working copies,
+ * which as `number[]` is 115 MB each and enough allocation churn to matter in a four-hour bake.
+ *
+ * `r` is a radius in CELLS: the caller converts from metres, because the physical size of a building does
+ * not change when the grid step does (see the call site).
+ */
+function bareEarthF(h: Float64Array, cols: number, rows: number, r: number, wet?: Uint8Array): Float64Array {
+  const at = (a: Float64Array, c: number, w: number): number =>
+    a[Math.max(0, Math.min(rows - 1, w)) * cols + Math.max(0, Math.min(cols - 1, c))]
+  const pass = (src: Float64Array, f: (a: number, b: number) => number, rad: number): Float64Array => {
+    const tmp = new Float64Array(src.length)
+    for (let w = 0; w < rows; w++) {
+      for (let c = 0; c < cols; c++) {
+        let v = at(src, c, w)
+        for (let k = -rad; k <= rad; k++) v = f(v, at(src, c + k, w))
+        tmp[w * cols + c] = v
+      }
+    }
+    const out = new Float64Array(src.length)
+    for (let w = 0; w < rows; w++) {
+      for (let c = 0; c < cols; c++) {
+        let v = at(tmp, c, w)
+        for (let k = -rad; k <= rad; k++) v = f(v, at(tmp, c, w + k))
+        out[w * cols + c] = v
+      }
+    }
+    return out
+  }
+  const masked = (src: Float64Array, fill: number): Float64Array => {
+    if (!wet) return src
+    const out = new Float64Array(src.length)
+    for (let i = 0; i < src.length; i++) out[i] = wet[i] ? fill : src[i]
+    return out
+  }
+  const restore = (out: Float64Array, was: Float64Array): Float64Array => {
+    for (let i = 0; i < out.length; i++) if (!Number.isFinite(out[i])) out[i] = was[i]
+    return out
+  }
+  const lowered = restore(pass(masked(h, Infinity), Math.min, r), h)
+  let blurred = restore(pass(masked(lowered, -Infinity), Math.max, r), lowered)
+  for (let i = 0; i < 2; i++) {
+    const sum = pass(blurred, (a, b) => a + b, 1)
+    for (let k = 0; k < sum.length; k++) sum[k] /= 16
+    blurred = sum
+  }
+  return blurred
+}
+
+/** `sampleGrid` on a typed grid. */
+function sampleGridF(h: Float64Array, cols: number, rows: number, ox: number, oz: number, step: number,
+                     x: number, z: number): number {
+  const fx = (x - ox) / step
+  const fz = (z - oz) / step
+  const ix = Math.floor(fx)
+  const iz = Math.floor(fz)
+  const tx = fx - ix
+  const tz = fz - iz
+  const g = (c: number, w: number): number =>
+    h[Math.max(0, Math.min(rows - 1, w)) * cols + Math.max(0, Math.min(cols - 1, c))]
+  const a = g(ix, iz) * (1 - tx) + g(ix + 1, iz) * tx
+  const b = g(ix, iz + 1) * (1 - tx) + g(ix + 1, iz + 1) * tx
+  return a * (1 - tz) + b * tz
+}
+
+/** The package as it ships as one file: everything except the fine ground grid, which only the tiles want. */
+function withoutFineGrid(pkg: CityPackage): CityPackage {
+  const { terrainFine: _fine, ...rest } = pkg
+  return rest as CityPackage
+}
+
 /** Bilinear sample of a height grid at world metres. */
 function sampleGrid(h: number[], cols: number, rows: number, ox: number, oz: number, step: number,
                     x: number, z: number): number {
@@ -1536,7 +2583,7 @@ async function writeTiles(pkg: CityPackage, riverDrop: number): Promise<void> {
   const terrain = new Terrain(pkg.terrain)
   // one level per river, however many polygons OSM draws it as (city/package.ts waterLevels)
   const water = pkg.areas.filter((a) => a.kind === 'water')
-  const levels = waterLevels(water, (x, z) => terrain.heightAt(x, z), riverDrop)
+  const levels = waterLevels(water, (x, z) => terrain.heightAt(x, z), riverDrop, pkg.seaLevel ?? null)
   const byRing = new Map(water.map((a, k) => [a.ring, levels[k]]))
   const { index, tiles } = splitPackage(pkg, (_ring, area) => byRing.get(area.ring))
   const dir = resolve(OUT, pkg.id)
@@ -1551,12 +2598,37 @@ async function writeTiles(pkg: CityPackage, riverDrop: number): Promise<void> {
     total += text.length
     entries.push({ key: t.key, tx, tz, bytes: text.length, buildings: t.buildings.length, edges: t.edges.length })
   }
-  const full: CityIndex = { ...index, tiles: entries }
+  /*
+   * ---- the coarse grid leaves the index as a BINARY SIDECAR (BUGS.md #176).
+   *
+   * Even reduced to its coarse self, the grid was 20.5 MB of San Francisco's 26.2 MB index — 78% of a file
+   * the client fetches and `JSON.parse`s on the main thread before anything renders, measured at 330 ms of
+   * parse and 20 MB of heap held for the whole session. As `Int16` decimetres it is 5.2 MB, an
+   * `ArrayBuffer`, and costs NO parse at all: the numbers were only ever stored to a centimetre and a
+   * decimetre is finer than anything the DISTANT ground and the depth occluder — the only two things that
+   * read it — can show.
+   *
+   * The index keeps the grid's shape and drops only the numbers, so a reader that does not know about the
+   * sidecar sees an empty grid rather than a wrong one.
+   */
+  let sidecar = 0
+  const packed = index.terrain
+  if (packed && packed.heights.length > 0) {
+    const dm = new Int16Array(packed.heights.length)
+    for (let i = 0; i < dm.length; i++) dm[i] = Math.max(-32768, Math.min(32767, Math.round(packed.heights[i] * 10)))
+    await writeFile(resolve(dir, 'terrain.bin'), Buffer.from(dm.buffer))
+    sidecar = dm.byteLength
+  }
+  const full: CityIndex = {
+    ...index, tiles: entries,
+    ...(sidecar ? { terrain: { ...packed!, heights: [], bin: 'terrain.bin' } } : {}),
+  }
   const text = JSON.stringify(full)
   await writeFile(resolve(dir, 'index.json'), text)
   const biggest = entries.reduce((m, e) => Math.max(m, e.bytes), 0)
   console.log(`  → public/cities/${pkg.id}/  ${entries.length} tiles, ${Math.round(total / 1024)} kB `
-    + `(largest ${Math.round(biggest / 1024)} kB), index ${Math.round(text.length / 1024)} kB`)
+    + `(largest ${Math.round(biggest / 1024)} kB), index ${Math.round(text.length / 1024)} kB`
+    + (sidecar ? `, terrain.bin ${Math.round(sidecar / 1024)} kB` : ''))
 }
 
 /**

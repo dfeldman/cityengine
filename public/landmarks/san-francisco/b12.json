@@ -1,0 +1,59 @@
+[
+  {
+    "osm": ["way/135620221"],
+    "procedural": "b12_whiteSwanInn_135620221",
+    "name": "White Swan Inn",
+    "height": 17
+  },
+  {
+    "osm": ["way/291189057"],
+    "procedural": "b12_yerbaBuenaIslandLighthouse_291189057",
+    "name": "Yerba Buena Island Lighthouse",
+    "height": 8,
+    "size": [4.4, 4.4],
+    "lat": 37.80731335,
+    "lon": -122.362282025
+  },
+  {
+    "osm": ["way/165846552"],
+    "procedural": "b12_ucLawSfTower_165846552",
+    "name": "UC Law San Francisco",
+    "height": 45
+  },
+  {
+    "osm": ["way/165846555"],
+    "procedural": "b12_ucLawSf198McAllister_165846555",
+    "name": "UC Law San Francisco (198 McAllister)",
+    "height": 19
+  },
+  {
+    "osm": ["way/397007754"],
+    "procedural": "b12_ucLawSfCotchett_397007754",
+    "name": "UC Law San Francisco Cotchett Law Center",
+    "height": 19
+  },
+  {
+    "osm": ["way/73348851"],
+    "procedural": "b12_millenniumLofts_73348851",
+    "name": "Millennium Lofts",
+    "height": 44
+  },
+  {
+    "osm": ["way/32947542"],
+    "procedural": "b12_350sansome_32947542",
+    "name": "350 Sansome",
+    "height": 41
+  },
+  {
+    "osm": ["way/288794272"],
+    "procedural": "b12_170otisStreet_288794272",
+    "name": "170 Otis Street",
+    "height": 45
+  },
+  {
+    "osm": ["way/288633744"],
+    "procedural": "b12_kalmanovitzLibrary_288633744",
+    "name": "Kalmanovitz Library",
+    "height": 15
+  }
+]

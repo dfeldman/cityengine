@@ -1,29 +1,38 @@
 [
-  {
-    "osm": [
-      "relation/7330762",
-      "relation/7325085",
-      "way/24352572"
-    ],
-    "name": "Oracle Park",
-    "procedural": "oraclePark",
-    "height": 45,
-    "note": "The Giants' ballpark (HOK, 2000), open to the sky: the city drew it as a 30 m solid extrusion because relation/7325085 (named, leisure=stadium, height=45) carries no building tag and relation/7330762 (building=stadium) is unnamed, so it reached neither the register nor any manifest. The builder derives its own frame from the footprint's longest edge \u2014 the 124 m right-field wall on McCovey Cove \u2014 so no `front` is given: the relation is unnamed, so \"street\" would find no frontage anyway and the loader falls back to the footprint's long axis, which the builder does not depend on."
-  },
-  {
-    "osm": [
-      "way/579646390"
-    ],
-    "lat": 37.767888,
-    "lon": -122.387421,
-    "size": [
-      158,
-      159
-    ],
-    "front": 180,
-    "height": 38,
-    "name": "Chase Center",
-    "procedural": "chaseCenter",
-    "note": "The Warriors' arena (Manica, 2019). Tagged building=yes, but it falls outside the bake's DETAIL box, so it is in pkg.fringe as coarse massing and the loader can find no ring for it \u2014 hence a lat/lon/size entry; the OSM way is named only so the fringe lump is removed. front=180 puts the model's +x east, so the two office blocks and the garage stand on the Third Street (west) side and the entrance canopy faces north to Warriors Way."
-  }
+ {
+  "osm": [
+   "relation/7330762",
+   "relation/7325085",
+   "way/24352572",
+   "way/499568642",
+   "way/499568643",
+   "way/499568644",
+   "way/499568645",
+   "way/499568646",
+   "way/499568647",
+   "way/499568648",
+   "way/499568649",
+   "way/499568652"
+  ],
+  "name": "Oracle Park",
+  "procedural": "oraclePark",
+  "height": 45,
+  "note": "The Giants' ballpark (HOK, 2000), open to the sky: the city drew it as a 30 m solid extrusion because relation/7325085 (named, leisure=stadium, height=45) carries no building tag and relation/7330762 (building=stadium) is unnamed, so it reached neither the register nor any manifest. The builder derives its own frame from the footprint's longest edge \u2014 the 124 m right-field wall on McCovey Cove \u2014 so no `front` is given: the relation is unnamed, so \"street\" would find no frontage anyway and the loader falls back to the footprint's long axis, which the builder does not depend on. BUGS.md #156: the 4995686xx building:parts were NOT claimed here, so they drew ON TOP of this builder - w499568642 alone is 60 m over 33,567 m2, which is the 'huge generic building' the owner saw covering the park (2026-09-23). 646/647/648/649 are the floodlight masts that also reached a Haiku batch (#127). All nine now claimed so supersession removes them."
+ },
+ {
+  "osm": [
+   "way/579646390"
+  ],
+  "lat": 37.767888,
+  "lon": -122.387421,
+  "size": [
+   158,
+   159
+  ],
+  "front": 180,
+  "height": 38,
+  "name": "Chase Center",
+  "procedural": "chaseCenter",
+  "note": "The Warriors' arena (Manica, 2019). Tagged building=yes, but it falls outside the bake's DETAIL box, so it is in pkg.fringe as coarse massing and the loader can find no ring for it \u2014 hence a lat/lon/size entry; the OSM way is named only so the fringe lump is removed. front=180 puts the model's +x east, so the two office blocks and the garage stand on the Third Street (west) side and the entrance canopy faces north to Warriors Way."
+ }
 ]

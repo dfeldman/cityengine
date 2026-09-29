@@ -10,9 +10,13 @@
     "typecheck": "node tools/typecheck.js",
     "test": "vitest run",
     "bake": "node --max-old-space-size=12288 --experimental-strip-types tools/bake.ts",
+    "map:v3": "node --max-old-space-size=8192 --experimental-strip-types tools/map-v3.ts",
     "shots": "node --experimental-strip-types tools/shots.ts",
     "movie": "node --experimental-strip-types tools/route-movie.ts",
     "landmarks": "node --experimental-strip-types tools/landmarks.ts",
+    "audit:builders": "vite-node tools/audit-builders.ts",
+    "audit:bake": "vite-node tools/bake-audit.ts --",
+    "audit:nonbuildings": "vite-node tools/nonbuildings.ts --",
     "osm:fetch": "node --experimental-strip-types tools/osm-fetch.ts",
     "osm:compare": "node --experimental-strip-types tools/osm-compare.ts",
     "signs": "sh tools/signgen/build.sh"

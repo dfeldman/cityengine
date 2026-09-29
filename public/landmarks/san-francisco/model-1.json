@@ -71,16 +71,6 @@
   },
   {
     "osm": [
-      "way/32963425"
-    ],
-    "name": "Saint Patrick Catholic Church",
-    "procedural": "stPatrickChurch",
-    "front": "street",
-    "height": 46,
-    "note": "756 Mission St; Gothic Revival red brick, corner tower and spire, amid Yerba Buena towers"
-  },
-  {
-    "osm": [
       "way/284932384"
     ],
     "name": "1400 Mission",

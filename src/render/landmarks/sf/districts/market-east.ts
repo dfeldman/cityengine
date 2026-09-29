@@ -527,8 +527,12 @@ function hyattRegency(out: MeshBuilder, fit: Fit): void {
         const p = pc[i]
         const q = pc[(i + 1) % pc.length]
         if (Math.hypot(q.x - p.x, q.z - p.z) < 0.3) continue
+        // j starts at 4, not 2: aK(3) is 0, which is dN's value on the ring's own north edge (the plaza/water
+        // front, the low end of the steps), so testing j=3 here flagged that real outline edge as an interior
+        // atrium cut and skipped its wall — the building's water-facing facade was never drawn (BUGS.md-class:
+        // the lowest tread's own outer edge coincided with its interior threshold).
         let interior = false
-        for (let j = 2; j <= 19 && !interior; j++) interior = on(p, q, dN, aK(j)) || on(p, q, dS, bK(j))
+        for (let j = 4; j <= 19 && !interior; j++) interior = on(p, q, dN, aK(j)) || on(p, q, dS, bK(j))
         interior ||= on(p, q, dW, WW) || on(p, q, dS, SW) || on(p, q, dN, CN)
         if (!interior) faceBand(out, [p, q], 0, y, wing)
       }

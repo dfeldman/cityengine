@@ -1,0 +1,103 @@
+# Owner's review export, 2026-09-24T08:56Z. Verdict vocabulary IS the ladder (docs/LADDER.md):
+# 0 fine · 2 haiku+kit · 3 sonnet+kit · 4 sonnet from scratch · 5 opus from scratch · x wrong building
+# Only NON-ZERO verdicts are recorded here; everything else in the export passed.
+verdict	osm	name	owner note
+5	way/260922316	Hilton San Francisco Financial District	THE HILTON NEAR PORTSMOUTH — named in the standing goal. OWNER 2026-09-24, after a rebuild attempt: "It is a single wing, no multiple wings. BUT it is a Y with the two legs going to the ground, narrowing into a tower. Think of turning a Y upside down, then extruding it. The two Y shaped faces are plain concrete, while the windows are on the extruded sides. this is a unique (ugly) building but extremely prominent because it adjoins Portsmouth, the open space in the center of Chinatown. Think Fermilab". So: an inverted-Y PROFILE extruded horizontally, with a real void at ground level between the two splayed legs; blank concrete on the two profile faces, glazing on the swept sides. Zero reference frames exist for this id anywhere in docs/shots/refs — the first rebuild invented a three-winged Y in plan, the second invented a plain slab, both from a web search that said "rectangular" (which described the PLAN). A photograph would settle it; see docs/PHOTOS-NEEDED.md.
+5	way/35182441	The Jay, Autograph Collection
+5	way/288511103	Institute of Contemporary Art San Francisco
+5	way/260523829	Kong Chow Temple	currently only a reface
+4	way/32947510	Old Federal Reserve Bank	major landmark. research by name. 8 giant columns supporting a FLAT portico, esplanade stairs, tower behind with tall black window verticals
+4	way/24588037	Asian Art Museum	landmark, needs the fascinating mid-building columns I have never seen anywhere before
+4	way/32865161	War Memorial Opera House	we can do better. looks little like the real building. major landmark
+4	way/32946683	Savings Union Bank Building	major landmark, neoclassical bank temple with domed roof
+4	relation/3492808	Mills Building	has a large tower and classical facades that we are missing
+4	way/332374374	Academy of Art University - Liberal Arts	former church in bank-temple neoclassical style with huge columns. our pics are not accurate. CAREFUL with searches, common name
+4	way/32862485	Army and Navy Y.M.C.A. Building	unique modern, curved facade and setbacks. DO NOT web search, many buildings share the name
+4	way/149757919	Dior building (way/149757919)	beautiful unique glass cube with white structure visible under the glass
+4	way/287921407	Dutch Windmill	BUG: the blades are lying FLAT in our render, not in a circle
+4	way/287927026	Murphy Windmill	(same family as the Dutch Windmill)
+4	way/142845124	Madrone Mission Bay	glass cube with 3 sides covered by steel bars
+4	way/256720199	San Francisco Ballet	mostly a white cube, but the corner facing the street corner is cut out, very unique modern/art deco entrance
+4	way/403951329	CCSF Civic Center	ugly, but unique with a curved corner and arcades
+4	way/35115844	Building 35115844	across from the Mint — needs to be good for the view from that famous building
+4	way/35537015	Medico-Dental Building	landmark building we do not have good pictures of — MAY NEED A PHOTO
+5*	way/115944818	San Francisco Mint (the current "New Mint", 155 Hermann St) — NOT the Granite Lady	OWNER: "both of those mint buildings should be todos. they are so famous, there are a million pictures." Builder b5_civic_115944818 also says "No photograph. Built BLIND" — that was the MAPILLARY fetch finding nothing, not an absence of references. Web search sanctioned.
+5*	way/32863779	Old San Francisco Mint ("The Granite Lady", 88 Fifth St, NHL)	OWNER 2026-09-24: "check that we have a custom for the sf mint, very important". Reviewed as 0, but the builder b5_civic_32863779 says in its own comment it was Built BLIND with No photograph: a rusticated box with an attic and a 4-step portal. The real building is a giant Doric portico on a high rusticated basement with a broad flight of steps. The 0 was the render flattering it. Raised to the top tier by hand.
+4	way/256066230	San Francisco Pacific Exchange Building
+4	way/690663633	Alvinza Hayward Building (Kohl Building)
+4	way/206662303	Alhambra Theatre
+4	way/259872761	San Francisco Circus Center
+4	way/24446086	San Francisco Main Library
+4	way/1072899109	Serif (960 Market Street)
+4	way/35174721	New Conservatory Theatre Center
+4	way/288804930	1600 Market Street
+4	way/397183505	NEMA North podium
+4	way/332378158	The Westin St. Francis
+4	way/256993595	Haas-Lilienthal House
+4	way/333827281	The White House Building
+4	way/1028203748	Tahanan
+4	way/397182870	1401;1415 Mission Street
+4	way/149335979	1 Kearny Street
+4	way/260282389	Adam Grant Building
+4	way/256730074	Mandarin Tower
+4	way/172111621	CCSF Alemany Campus
+4	way/253057908	Saint Brigids
+4	way/32964914	Saint Dominic's Roman Catholic Church
+4	way/32965008	Temple Sherith Israel
+4	way/256487840	Saint Mark's Lutheran Church
+4	way/260520154	Old Saint Mary's Cathedral
+4	way/66643085	Chinese Independent Baptist Church of San Francisco
+4	way/32610420	National Shrine of Saint Francis of Assisi
+4	way/257008588	Nuestra Senora De Guadalupe Church
+4	way/264348673	Saint Agnes Roman Catholic Church
+4	way/262574418	San Francisco Evangelical Free Church
+4	way/24563073	Yerba Buena Center for the Arts Gallery
+4	way/44106213	Rincon Annex
+4	way/32863953	San Francisco Federal Building
+4	way/35176305	Phillip Burton Federal Building & US Courthouse
+4	way/32612362	Federal Reserve Bank of San Francisco
+4	way/256029743	Intercontinental San Francisco
+4	way/944990390	One Rincon Hill	no render in the review
+4	way/288505730	388 Market
+4	way/148710880	Battery Street tower (north)
+4	way/148710883	Battery Street tower (south)
+4	way/112928951	799 Market Street
+4	way/308162685	1455 Market Street tower
+4	way/679283973	NEMA North Tower
+4	way/255960461	Strand Theatre
+4	way/611390934	Park Tower at Transbay
+4	way/260283289	401;425 California Street
+4	way/32859357	Commercial Union Assurance Building
+4	way/1309156966	301;305;315 Howard Street
+4	way/192026938	100 Spear Street
+4	way/79377186	St. Regis Museum Tower
+4	way/421816060	LUMINA I
+4	way/421816059	LUMINA II
+4	way/288647269	The Metropolitan Tower I
+4	way/288647262	The Metropolitan Tower II
+4	way/93817368	2 Folsom Street
+4	way/113347427	75 Hawthorne Street (Hawthorne Plaza)
+4	way/32965865	United States Appraisers Building
+4	way/693627612	1500 Mission
+4	way/225384420	1188 Mission Street
+4	way/227005952	Canon Kip Community House
+4	way/260155574	Larkin Street Youth Services
+4	way/196108167	Clayton Street Post Office
+4	way/30029681	Cable Car Powerhouse and Barn
+4	way/35536668	DeMarillac Academy
+4	way/1420679237	Building 1420679237
+3	way/70?	SEE NOTE — verdict-3 rows are the sonnet+kit tier; the notable ones with notes follow
+3	way/256495545	Glad Tidings Church	needs a gable roof
+3	way/84805700	J David Gladstone Institutes	small building but a significant local landmark
+3	way/25759123	Arthur A Dugoni School of Dentistry	glass cube on concrete columns
+3	way/192883977	Embarcadero Substation	windowless power substation
+3	way/35115839	Mission Substation	windowless power substation with interesting facade
+3	way/940206560	The Bowes Center	it is white and has an interesting penthouse
+3	way/243358586	959;965 Mission Street	classical brick building but painted pitch black
+3	relation/15336268	85 2nd Street	it is a neoclassical
+3	way/35536720	FIDM San Francisco	not that prominent but important
+3	way/1360?	(see export for the remaining verdict-3 rows)
+2	way/973?	(see export for verdict-2 rows)
+# HEIGHT/DATA BUGS the owner flagged in passing:
+#   way/243466327  973 Market Street — 7 storeys, we have it lower
+#   way/332381174  70 4th Street — a tiny building coded as a tower

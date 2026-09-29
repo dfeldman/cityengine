@@ -1,0 +1,49 @@
+[
+  {
+    "osm": [
+      "way/259118885"
+    ],
+    "procedural": "b11_metroTheatre_259118885",
+    "name": "Metro Theatre",
+    "height": 12
+  },
+  {
+    "osm": [
+      "way/847856761"
+    ],
+    "procedural": "b11_mileRocksLighthouse_847856761",
+    "name": "Mile Rocks Lighthouse",
+    "height": 15
+  },
+  {
+    "osm": [
+      "way/179746882"
+    ],
+    "procedural": "b11_mithilaHotel_179746882",
+    "name": "Mithila Hotel"
+  },
+  {
+    "osm": [
+      "way/256733821"
+    ],
+    "procedural": "b11_nobHillTheatre_256733821",
+    "name": "Nob Hill Theatre",
+    "height": 7
+  },
+  {
+    "osm": [
+      "way/288365547"
+    ],
+    "procedural": "b11_oceanClimateCenter_288365547",
+    "name": "Ocean Climate Center",
+    "height": 7
+  },
+  {
+    "osm": [
+      "way/260279404"
+    ],
+    "procedural": "b11_orchardGardenHotel_260279404",
+    "name": "Orchard Garden Hotel",
+    "height": 31
+  }
+]

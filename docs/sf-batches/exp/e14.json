@@ -1,0 +1,20 @@
+[
+  {
+    "osm": ["way/320721969"],
+    "procedural": "e14_residentialTower_320721969",
+    "name": "Residential Tower with Balconies",
+    "height": 128
+  },
+  {
+    "osm": ["way/260318176"],
+    "procedural": "e14_ribbonTower_260318176",
+    "name": "Ribbon Glass Tower",
+    "height": 93
+  },
+  {
+    "osm": ["way/1249412094"],
+    "procedural": "e14_mixedUseTower_1249412094",
+    "name": "Mixed-Use Tower",
+    "height": 67
+  }
+]

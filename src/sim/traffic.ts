@@ -95,9 +95,13 @@ export class Traffic {
   /** edges that already have their traffic, so a street is not repopulated every frame */
   private readonly populated = new Set<number>()
 
-  constructor(graph: CityGraph, level: keyof typeof TRAFFIC = 'some') {
+  /*
+   * A preset name, or a config of its own — `?crowd=`/`?traffic=` take a NUMBER for a quick density test
+   * beyond the named levels (src/game.ts). The presets are what the game ships; a number is for measuring.
+   */
+  constructor(graph: CityGraph, level: keyof typeof TRAFFIC | TrafficConfig = 'some') {
     this.g = graph
-    this.cfg = TRAFFIC[level]
+    this.cfg = typeof level === 'string' ? TRAFFIC[level] : level
   }
 
   get all(): readonly Vehicle[] { return this.vehicles }

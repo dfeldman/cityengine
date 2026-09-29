@@ -28,6 +28,9 @@ import { DAYLIGHT } from './facade-material.ts'
 import { SHADOW_Y, addShadow, shadowMaterial, shadowOffset } from './shadows.ts'
 import { PROCEDURAL, type Fit } from './landmarks/procedural.ts'
 import { TILE, type TileData } from '../city/tiles.ts'
+import { MID } from './city.ts'
+import { signCut, type PlacedSign } from './landmarks/signage.ts'
+import { flatSignMesh } from './sign-plates.ts'
 import { expandIncludes } from '../city/manifest.ts'
 import { Projection } from '../city/geo.ts'
 import { unpackPoints, type CityPackage, type PackedBuilding, type PackedLandmark } from '../city/package.ts'
@@ -54,12 +57,30 @@ export interface LandmarkEntry {
   /** false: no name sign for it (item K) */
   sign?: boolean
   /**
+   * A NONBUILDING, and which kind — a fountain, a plaza, a pier, a bridge, a statue, a sign, a vessel. Not
+   * read at run time: the category exists for the checks in `tools/nonbuildings.ts`, which otherwise derives
+   * it from the builder's own module (`ART`, `PIERS`) or from the explicit list there. This key is the
+   * override, so a new entry can declare itself and a wrong default can be corrected in the data.
+   */
+  kind?: string
+  /**
    * The bearing, in degrees, that the model's main facade faces (0 north, 90 east), or "street" to take it
    * from the building's baked frontage. The builder is written with its front facing local +z — that is what
    * `edgeFacing(ring, 0)` returns and what every district builder assumes. (Said −z until 2026-09-22; checked
    * empirically, the comment was wrong, not the code.)
    */
   front?: number | 'street'
+  /**
+   * This model draws its OWN raised structure — a skybridge, a canopy, a skywalk, a pergola — over the
+   * footprint it is placed on (BUGS.md #136). OSM maps those structures too, as `bridge=yes` ways the ride
+   * graph raises and `city.ts` gives a deck and generic piers, so without this the thing renders twice.
+   *
+   * Declared here rather than inferred from geometry: an entry that hand-builds a bridge should say so, and
+   * a way id cannot be used — `PackedEdge` carries no OSM id (BUGS.md #136 CORRECTION). What it suppresses
+   * is worked out geometrically by `City.coverRaised`: any raised edge whose midpoint falls inside the
+   * placed footprint at a comparable height, and any baked bridge outline centred in it.
+   */
+  coversRaised?: boolean
   /** a restyle entry: these buildings (its `osm` ids, and every one near `within`) take this facade style */
   restyle?: string
   /** and the parts of them that start above the ground take this one instead — the Opéra's glass tiers */
@@ -103,6 +124,28 @@ export interface LandmarkEntry {
   groundWall?: string
   /** for a standalone model: its footprint, for the shadow and the fit, in metres (width × depth) */
   size?: [number, number]
+  /**
+   * A structure standing on piles over water (a pier, a boathouse, a floating dock) does NOT sit on the
+   * terrain under it — that terrain is the sea bed, flattened below the waterline by `tools/bake.ts`, and
+   * draping the model on it submerges the whole thing (BUGS.md #181). This gives the model's own y=0 origin
+   * instead: metres above the package's `seaLevel` (its datum-frame sea surface), a sensible freeboard for a
+   * real pier deck being about 3–5 m. Takes precedence over the terrain-draped placement below.
+   */
+  deckAbove?: number
+  /**
+   * The model's own y = 0, in DATUM metres, instead of draping it on the terrain under it (BUGS.md #211).
+   *
+   * `deckAbove` is the same idea measured off the sea, and would be the right knob — but the city INDEX
+   * carries no `seaLevel` (the bake writes one, `tools/bake.ts`, and neither `index.json` nor
+   * `src/city/tiles.ts` passes it on), so at run time it is null and `deckAbove` silently falls through to
+   * the drape. This is the absolute form, which needs nothing from the bake.
+   *
+   * It exists for the Golden Gate Bridge, whose footprint is 2.7 km long and whose terrain is the sea bed:
+   * draped, the whole bridge stands 70 m under the water. The number is not the real water line either — it
+   * is fitted so the model's ROADWAY meets the ride graph's own height profile, because the rider rides the
+   * profile and must not be inside the slab.
+   */
+  baseY?: number
   note?: string
 }
 
@@ -151,7 +194,26 @@ export function packedIds(e: LandmarkEntry): number[] {
 }
 
 /**
- * The restyles: building id → the entry restyling it. A building is taken if the entry names it, or if its
+ * The same entry with its MASSING overrides taken off, for a `building:part` claimed through its outline.
+ *
+ * `height`, `eaves` and `levels` are the whole building's, and `render/prepare.ts` applies them to every
+ * grounded building the entry takes. Handed to the parts of a superseded outline that would be badly wrong:
+ * a tower's entry says 58 m, and its 4 m canopy is a part too.
+ *
+ * `dropParts` goes too, and it is the dangerous one. It means "OSM maps this house twice, whole and again as
+ * parts above the arcade — draw the house, drop the parts". A superseded outline has NO whole house: the
+ * parts are all there is, and its aloft parts stand over their own grounded siblings, which is exactly what
+ * `dropParts` deletes. Only the Place des Vosges sets it today, on a `within` entry that names no ids and so
+ * cannot reach this path at all — but the flag is meaningless here, not merely unused.
+ */
+function styleOnly(e: LandmarkEntry): LandmarkEntry {
+  const { height: _h, eaves: _e, levels: _l, dropParts: _d, ...rest } = e
+  return rest
+}
+
+/**
+ * The restyles: building id → the entry restyling it. A building is taken if the entry names it, or if it is
+ * a `building:part` of an outline the entry names and the bake replaced (`claims`, BUGS.md #102), or if its
  * centre is outside the entry's `within` ring and its nearest corner no further from it than `margin` — the
  * houses fronting a square, however deep they run back, and not whatever stands in its garden. Applied when
  * the package is loaded, before any tile is built, so a restyle needs no re-bake.
@@ -159,6 +221,9 @@ export function packedIds(e: LandmarkEntry): number[] {
 export function restyles(entries: LandmarkEntry[], pkg: Pick<CityPackage, 'origin' | 'buildings' | 'landmarks'>): Map<number, LandmarkEntry> {
   const out = new Map<number, LandmarkEntry>()
   const proj = new Projection(pkg.origin)
+  // only a `building:part` can be claimed through its outline, and a tile holds few of them — so the parts
+  // are picked out once and each entry walks those, not all of a tile's buildings (BUGS.md #102)
+  const parted = pkg.buildings.filter((b) => b.partOf !== undefined)
   for (const e of entries) {
     if (!e.restyle) continue
     /*
@@ -169,6 +234,24 @@ export function restyles(entries: LandmarkEntry[], pkg: Pick<CityPackage, 'origi
      * overwrite work that had been looked at properly.
      */
     for (const id of packedIds(e)) if (!out.has(id)) out.set(id, e)
+    /*
+     * And an id that names an OUTLINE the bake replaced with its `building:part`s claims those parts instead
+     * — the same rule `isReplaced` gives the replace path (BUGS.md #100), applied here for BUGS.md #102: 36
+     * of San Francisco's 600 restyles named such an outline and silently did nothing, so the building kept
+     * the classifier's glass box instead of the style somebody chose for it. `partOf` is stamped ONLY on the
+     * parts of an outline the bake actually superseded, so this can never reach the parts of one it kept.
+     *
+     * The MASSING overrides are dropped on the way (`styleOnly`): `height`, `eaves` and `levels` describe the
+     * whole building, and every grounded part would take them — the United States Appraisers Building's entry
+     * says 10 m over a 72 m part, and 300 Montgomery's says 58 m over a 4 m canopy. Each part carries OSM's
+     * own height already; what the entry has to give a part is its DRESS.
+     */
+    if (parted.length) {
+      const mine = new Set(packedIds(e))
+      let only: LandmarkEntry | undefined
+      // `claims` is `isReplaced`'s rule, named once and used by both paths
+      for (const b of parted) if (!out.has(b.id) && claims(mine, b)) out.set(b.id, (only ??= styleOnly(e)))
+    }
     if (e.named) {
       const re = new RegExp(e.named, 'i')
       // never over another entry's building: a replaced or specially restyled landmark keeps its own treatment
@@ -243,6 +326,28 @@ export function replacedIds(entries: LandmarkEntry[]): Set<number> {
 }
 
 /**
+ * **The rule, in one place.** Do these manifest ids name this building? Its own id — or the id of the
+ * OUTLINE it is a part of.
+ *
+ * `tools/bake.ts` drops an outline whose grounded `building:part`s cover it (`superseded`) and stamps each
+ * part with `partOf: <that outline's id>`. An entry naming only the outline therefore matched nothing: on the
+ * replace path the classifier's plain box stood where the landmark should be — sixty-nine of them, the
+ * Transamerica Pyramid and the Ferry Building among them (BUGS.md #100) — and on the restyle path the
+ * building kept the classifier's dress instead of the style somebody chose for it (BUGS.md #102).
+ *
+ * `partOf` is set ONLY for a superseded outline's parts, so this can never reach the parts of an outline the
+ * bake kept. That property is what makes it safe, and both paths rely on it.
+ */
+export function claims(ids: { has(id: number): boolean }, b: { id: number; partOf?: number }): boolean {
+  return ids.has(b.id) || (b.partOf !== undefined && ids.has(b.partOf))
+}
+
+/** Is this building one the manifest removes? `claims`, against the replace entries' ids. */
+export function isReplaced(replaced: Set<number>, b: { id: number; partOf?: number }): boolean {
+  return claims(replaced, b)
+}
+
+/**
  * Fit a footprint to a facing: the model's local −z faces `bearing` (degrees), so it is rotated by
  * bearing + 180°; the ring is measured across (local x) and along (local z) that facing, and the centre is
  * the middle of that box. Babylon's rotation.y = θ sends local +x to (cos θ, −sin θ) and +z to (sin θ, cos θ).
@@ -295,8 +400,7 @@ function fitAt(ring: { x: number; z: number }[], bearing: number)
 }
 
 /** A footprint's long axis, half-extents along and across it, its centre, and the rotation to stand on it. */
-function fitTo(b: Pick<PackedBuilding, 'ring'>, height: number): { fit: Fit; cx: number; cz: number; rotation: number } {
-  const ring = unpackPoints(b.ring)
+function fitTo(ring: { x: number; z: number }[], height: number): { fit: Fit; cx: number; cz: number; rotation: number } {
   let best = 0
   let dir = 0
   for (let i = 0; i < ring.length; i++) {
@@ -305,6 +409,29 @@ function fitTo(b: Pick<PackedBuilding, 'ring'>, height: number): { fit: Fit; cx:
     const len = Math.hypot(c.x - a.x, c.z - a.z)
     if (len > best) { best = len; dir = Math.atan2(c.z - a.z, c.x - a.x) }
   }
+  return fitAlong(ring, dir, height)
+}
+
+/**
+ * The MINIMUM-AREA box round a footprint, by the rotating-calipers fact that one of its sides lies along an
+ * edge of the convex hull. For the union of a building's `building:part`s (below), where `fitTo`'s longest
+ * edge means nothing: Salesforce Tower's ten wedges give a hull of short chords, and the longest of them is
+ * whichever the geometry happened to leave — the hand fix in the manifest measured this box instead.
+ */
+function fitMinArea(hull: { x: number; z: number }[], height: number): { fit: Fit; cx: number; cz: number; rotation: number } {
+  let best: ReturnType<typeof fitAlong> | null = null
+  for (let i = 0; i < hull.length; i++) {
+    const a = hull[i]
+    const c = hull[(i + 1) % hull.length]
+    if (Math.hypot(c.x - a.x, c.z - a.z) < 1e-6) continue
+    const f = fitAlong(hull, Math.atan2(c.z - a.z, c.x - a.x), height)
+    if (!best || f.fit.hx * f.fit.hz < best.fit.hx * best.fit.hz - 1e-9) best = f
+  }
+  return best ?? fitTo(hull, height)
+}
+
+/** The box round a footprint on a given axis: local +x along it, +z across it. */
+function fitAlong(ring: { x: number; z: number }[], dir: number, height: number): { fit: Fit; cx: number; cz: number; rotation: number } {
   const ux = Math.cos(dir)
   const uz = Math.sin(dir)
   let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
@@ -326,6 +453,105 @@ function fitTo(b: Pick<PackedBuilding, 'ring'>, height: number): { fit: Fit; cx:
   }
 }
 
+/*
+ * ---- a building the bake replaced with its own `building:part`s (BUGS.md #100)
+ *
+ * The outline is not in the package; only the parts are, each stamped `partOf: <the outline's id>`. An entry
+ * naming the outline must therefore claim all of them and be fitted to their UNION. Fitting to one is the
+ * trap: each Salesforce part is a ~250 m² wedge and the tower would stand a quarter of its size.
+ */
+export type PartLike = Pick<PackedBuilding, 'id' | 'ring' | 'height' | 'minHeight'>
+
+/**
+ * The parts that carry the building's FOOTPRINT: the ones that start at the ground, which is the bake's own
+ * notion (`tools/bake.ts`: a part is grounded when it has neither `min_height` nor `building:min_level`, and
+ * packs that as `minHeight`; the 2 m threshold is what the rest of the code uses). Unioning a roof plate or a
+ * cantilevered upper storey with the podium gives a footprint the building does not have. Every part with no
+ * grounded one among them — nothing else to go on.
+ */
+export function groundedParts(parts: PartLike[]): PartLike[] {
+  const grounded = parts.filter((p) => (p.minHeight ?? 0) < 2)
+  return grounded.length > 0 ? grounded : parts
+}
+
+/** The convex hull of some points (Andrew's monotone chain), anticlockwise in the city's x/z frame. */
+export function convexHull(pts: { x: number; z: number }[]): { x: number; z: number }[] {
+  if (pts.length < 3) return [...pts]
+  const p = [...pts].sort((a, b) => a.x - b.x || a.z - b.z)
+  const cross = (o: typeof p[0], a: typeof p[0], b: typeof p[0]): number =>
+    (a.x - o.x) * (b.z - o.z) - (a.z - o.z) * (b.x - o.x)
+  const lower: typeof p = []
+  for (const q of p) {
+    while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], q) <= 0) lower.pop()
+    lower.push(q)
+  }
+  const upper: typeof p = []
+  for (let i = p.length - 1; i >= 0; i--) {
+    while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], p[i]) <= 0) upper.pop()
+    upper.push(p[i])
+  }
+  lower.pop(); upper.pop()
+  return lower.concat(upper)
+}
+
+/** The union of a building's parts: the hull of the grounded ones' rings, and the tallest part's height. */
+export function partsUnion(parts: PartLike[]): { hull: { x: number; z: number }[]; height: number } | null {
+  if (parts.length === 0) return null
+  const hull = convexHull(groundedParts(parts).flatMap((p) => unpackPoints(p.ring)))
+  if (hull.length < 3) return null
+  // the WHOLE building's height, from every part: the crown is usually not a grounded one
+  return { hull, height: Math.max(...parts.map((p) => p.height ?? 0)) }
+}
+
+/**
+ * How far outside the parts seen so far another part of the same building could start, metres. A part
+ * narrower than this could sit across a tile boundary without its ring reaching into the bbox — buildings are
+ * filed by their CENTRE (city/tiles.ts), so the tile a part is in says nothing about where its neighbours are.
+ */
+const PART_REACH = 30
+
+/**
+ * Are all of this building's parts here? A part that has not arrived is in a tile that has not arrived — a
+ * tile's buildings all come at once — so the answer is yes exactly when every tile the parts' bounding box
+ * reaches into, grown by `PART_REACH`, has been seen. The Ferry Building is 200 m long and Madrone spans
+ * three tiles; placed on the first two parts to land, they would be built a fraction of their size.
+ */
+export function partsComplete(parts: PartLike[], seenTiles: ReadonlySet<string>): boolean {
+  const t = partsTiles(parts)
+  if (!t) return false
+  for (let tx = t.tx0; tx <= t.tx1; tx++) for (let tz = t.tz0; tz <= t.tz1; tz++) if (!seenTiles.has(`${tx},${tz}`)) return false
+  return true
+}
+
+/** The tiles a building's parts reach into, `PART_REACH` included. Null when there are no parts. */
+export function partsTiles(parts: PartLike[]): { tx0: number; tx1: number; tz0: number; tz1: number } | null {
+  if (parts.length === 0) return null
+  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+  for (const p of parts) {
+    for (let i = 0; i < p.ring.length; i += 2) {
+      x0 = Math.min(x0, p.ring[i]); x1 = Math.max(x1, p.ring[i])
+      z0 = Math.min(z0, p.ring[i + 1]); z1 = Math.max(z1, p.ring[i + 1])
+    }
+  }
+  return {
+    tx0: Math.floor((x0 - PART_REACH) / TILE), tx1: Math.floor((x1 + PART_REACH) / TILE),
+    tz0: Math.floor((z0 - PART_REACH) / TILE), tz1: Math.floor((z1 + PART_REACH) / TILE),
+  }
+}
+
+/**
+ * Is this tile in the building's own neighbourhood — within `slack` tiles of the ones its parts reach into?
+ *
+ * The backstop below counts only these. A tile arriving a kilometre away says nothing about whether the rest
+ * of THIS building is coming; counting every tile, a landmark seen once from across the city was placed on
+ * whichever part happened to be loaded (303 Second Street: one part of seven), and stayed that size. When
+ * the neighbourhood itself has streamed and a tile the building reaches into still has not, it never will.
+ */
+export function tileNearParts(parts: PartLike[], tx: number, tz: number, slack = 2): boolean {
+  const t = partsTiles(parts)
+  return t !== null && tx >= t.tx0 - slack && tx <= t.tx1 + slack && tz >= t.tz0 - slack && tz <= t.tz1 + slack
+}
+
 /** A skyline landmark: its true position, and how much larger than true it is drawn (see skylineBoost). */
 interface SkyItem { name: string; mesh: Mesh; x: number; y: number; z: number; boost: number }
 
@@ -336,6 +562,23 @@ interface SkyItem { name: string; mesh: Mesh; x: number; y: number; z: number; b
  */
 export function skylineBoost(d: number): number {
   return 1 + 0.8 * Math.min(1, Math.max(0, (d - 1500) / 3500))
+}
+
+/**
+ * How far a point is from a placed model's own footprint rectangle (0 inside it). The rectangle is the
+ * landmark's `hx`/`hz` turned by its `rotation`; a model with no fitted size falls back to its centre.
+ */
+function distanceToPlaced(p: { x: number; z: number; hx?: number; hz?: number; rotation?: number }, x: number, z: number): number {
+  if (p.hx === undefined || p.hz === undefined) return Math.hypot(p.x - x, p.z - z)
+  const r = p.rotation ?? 0
+  const c = Math.cos(r)
+  const s = Math.sin(r)
+  const dx = x - p.x
+  const dz = z - p.z
+  // into the model's own frame, the inverse of the placement in `place()`
+  const lx = Math.abs(dx * c - dz * s) - p.hx
+  const lz = Math.abs(dx * s + dz * c) - p.hz
+  return Math.hypot(Math.max(0, lx), Math.max(0, lz))
 }
 
 /** A rectangle footprint for a standalone model, rotated like the model. */
@@ -360,13 +603,49 @@ export class Landmarks {
   /** every landmark drawn, with its fitted half-sizes, turn and height where it has them (for tools/views.ts) */
   readonly placed: { name: string; x: number; y?: number; z: number; hx?: number; hz?: number; rotation?: number; height?: number }[] = []
 
+  /**
+   * Every raised deck a procedural landmark planted on itself (`MeshBuilder.decks`, docs/SKYPARKS.md), turned
+   * from the model's local frame into world metres by the same rotation/translation/scale the model itself
+   * got. render/plants.ts reads this list (via game.ts) to lattice-plant a skypark exactly where its deck
+   * actually is — including any standing placement error, which this deliberately does not correct.
+   */
+  readonly decks: { ring: { x: number; z: number }[]; y: number }[] = []
+
+  /**
+   * Every footprint a landmark declared it draws its own raised structure over (`coversRaised`), in world
+   * metres, with the band of heights the model occupies. BUGS.md #136.
+   *
+   * Handed STRAIGHT ON to whoever is listening (`onCover`, game.ts wires it to `City.coverRaised`) rather
+   * than drained on a later frame. Landmarks and tiles stream in either order, and the two orders are what
+   * caused #100: a per-frame drain would let `city.update()` report `idle` — which the shot tools wait on —
+   * with a tile still holding the duplicate. Published synchronously, the suppression is in place before the
+   * call that placed the landmark returns, and `coverRaised` corrects any tile already built.
+   */
+  readonly covers: { ring: { x: number; z: number }[]; y0: number; y1: number }[] = []
+  /** told of each cover the instant it is placed; set by game.ts before any tile is handed over */
+  onCover: ((c: { ring: { x: number; z: number }[]; y0: number; y1: number }) => void) | null = null
+
+  /**
+   * Every sign a model put on itself (render/landmarks/signage.ts), with the distance beyond which it is not
+   * drawn. Signs are LOD-gated exactly the way the trees are (render/vegetation.ts `NEAR_LOD`, plants.ts):
+   * one distance per copy, tested against the eye each frame and switched with `setEnabled`. There is no
+   * Babylon `addLODLevel` anywhere in this project and this is not the place to introduce one.
+   */
+  private readonly signs: { mesh: Mesh; x: number; z: number; cut: number; on: boolean }[] = []
+
   private readonly scene: Scene
   private readonly base: string
 
   private readonly terrain: Terrain
+  /** the package's sea surface, datum-frame metres (BUGS.md #181) — null where the city has no sea */
+  private seaLevel: number | null = null
 
   /** the city's buildings seen so far (city and fringe), by id, for fitting a landmark to its own */
-  private readonly byId = new Map<number, Pick<PackedBuilding, 'id' | 'ring' | 'height' | 'holes'>>()
+  private readonly byId = new Map<number, Pick<PackedBuilding, 'id' | 'ring' | 'height' | 'holes' | 'minHeight'>>()
+  /** and the `building:part`s of a wanted OUTLINE the bake replaced with them: outline id → part id → part */
+  private readonly partsOf = new Map<number, Map<number, PartLike>>()
+  /** every tile that has arrived, so `partsComplete` can tell "not here yet" from "not there" */
+  private readonly seenTiles = new Set<string>()
   private readonly wanted = new Set<number>()
   /** entries not yet placed: each waits for the tile its building, or its point, is in */
   private pending: LandmarkEntry[]
@@ -386,12 +665,13 @@ export class Landmarks {
    * The skyline now, the landmarks as their tiles arrive (`addTile`): a streamed city does not have every
    * building at load, and a landmark is fitted to its own building's footprint.
    */
-  constructor(scene: Scene, pkg: Pick<CityPackage, 'origin' | 'skyline' | 'landmarks'>, entries: LandmarkEntry[], terrain: Terrain, base: string) {
+  constructor(scene: Scene, pkg: Pick<CityPackage, 'origin' | 'skyline' | 'landmarks' | 'seaLevel'>, entries: LandmarkEntry[], terrain: Terrain, base: string) {
     this.terrain = terrain
     this.scene = scene
     this.base = base
     this.proj = new Projection(pkg.origin)
     this.named = pkg.landmarks ?? []
+    this.seaLevel = pkg.seaLevel ?? null
     /*
      * One entry per building. The districts are modelled in parallel and two batches can both claim a building on
      * their boundary (reported 2026-09-22); placed twice, its two models stand in each other. The first entry
@@ -448,10 +728,19 @@ export class Landmarks {
 
   /** A tile's data arrived: place every landmark that was waiting for it. */
   addTile(t: TileData): void {
+    this.seenTiles.add(t.key)
     if (this.pending.length === 0) return
     // only the buildings some landmark is fitted to: a streamed city passes every one of them through here
     for (const b of t.fringe) if (this.wanted.has(b.id)) this.byId.set(b.id, b)
-    for (const b of t.buildings) if (this.wanted.has(b.id)) this.byId.set(b.id, b)
+    for (const b of t.buildings) {
+      if (this.wanted.has(b.id)) this.byId.set(b.id, b)
+      // …and the parts of a wanted outline the bake dropped: they ARE the building (BUGS.md #100)
+      if (b.partOf !== undefined && this.wanted.has(b.partOf)) {
+        const got = this.partsOf.get(b.partOf) ?? new Map<number, PartLike>()
+        got.set(b.id, b)
+        this.partsOf.set(b.partOf, got)
+      }
+    }
     const [tx, tz] = t.key.split(',').map(Number)
     this.pending = this.pending.filter((e) => {
       const ids = e.on ? packedIds({ name: e.name, osm: e.on }) : packedIds(e)
@@ -466,7 +755,14 @@ export class Landmarks {
           const p = this.proj.toLocal({ lat: e.lat!, lon: e.lon! })
           return Math.floor(p.x / TILE) === tx && Math.floor(p.z / TILE) === tz
         })()
-        : ids.length > 0 && (this.byId.has(ids[0]) || this.waitedEnough(e, ids))
+        /*
+         * An entry that names an outline the bake replaced with its parts waits for the PARTS — all of them
+         * — however many other buildings it names, because the union of them is what it is fitted to and
+         * what `replacedIds` takes out of the massing (BUGS.md #100). Every other entry is unchanged.
+         */
+        : ids.length > 0 && (this.claims(ids).length > 0
+          ? this.partsReady(e, ids, tx, tz)
+          : this.byId.has(ids[0]) || this.waitedEnough(e, ids))
       if (!ready) return true
       this.place(e)
       return false
@@ -479,6 +775,51 @@ export class Landmarks {
    * that never came and was never placed at all (reported by the market-east batch, 2026-09-22). So after a few
    * tiles have gone by with some other part of it present, the entry is placed on what has arrived.
    */
+  /**
+   * The parts of an outline the bake dropped. The entry is ready when they are ALL here — every tile their
+   * union reaches into has arrived (`partsComplete`) — because the union is what it is fitted to and a
+   * half-arrived union is a half-sized building.
+   *
+   * With a backstop, because `render/prepare.ts` has already taken the parts out of the massing by the time
+   * this is asked: an entry that never becomes ready leaves bare ground where the building was, which is
+   * worse than a building fitted to most of itself. After forty-eight tiles of ITS OWN NEIGHBOURHOOD have
+   * gone by (`tileNearParts`) with one still missing, it is placed on what is here and says so — a tile that
+   * has not come while the streets round it have, over and over, is one the loader is not going to send.
+   * Deliberately patient: placing short is permanent, and bare ground a block away is not yet visible.
+   */
+  private readonly partsSince = new Map<LandmarkEntry, number>()
+
+  /**
+   * Everything an entry's ids claim once one of them is an outline the bake replaced: the parts carrying that
+   * outline's id, AND any building the entry names outright. Fourteen entries name both — the Federal Reserve
+   * Bank names three of its own parts beside the outline, One Sansome nine — and taking the parts out of the
+   * massing while fitting to one named part would leave a small model in a hole. Empty when no id names such
+   * an outline, which is how every other entry keeps its old path.
+   */
+  private claims(ids: number[]): PartLike[] {
+    if (!ids.some((id) => this.partsOf.has(id))) return []
+    const out = new Map<number, PartLike>()
+    for (const id of ids) {
+      for (const p of this.partsOf.get(id)?.values() ?? []) out.set(p.id, p)
+      const own = this.byId.get(id)
+      if (own) out.set(own.id, own)
+    }
+    return [...out.values()]
+  }
+
+  private partsReady(e: LandmarkEntry, ids: number[], tx: number, tz: number): boolean {
+    const parts = this.claims(ids)
+    if (parts.length === 0) return false
+    if (partsComplete(parts, this.seenTiles)) return true
+    if (!tileNearParts(parts, tx, tz)) return false
+    const n = (this.partsSince.get(e) ?? 0) + 1
+    this.partsSince.set(e, n)
+    if (n < 48) return false
+    console.warn(`landmark "${e.name}": placed on the ${parts.length} part(s) that arrived — a tile its `
+      + 'building reaches into never did, so it may be fitted short')
+    return true
+  }
+
   private readonly waited = new Map<LandmarkEntry, number>()
   private waitedEnough(e: LandmarkEntry, ids: number[]): boolean {
     if (!ids.some((id) => this.byId.has(id))) return false
@@ -508,7 +849,18 @@ export class Landmarks {
     const building = onId !== undefined ? this.byId.get(onId)
       : packedIds(e).map((id) => this.byId.get(id)).find((b) => b !== undefined)
         ?? arrived.sort((x, y) => area(y) - area(x))[0]
-    const height = e.height ?? building?.height ?? 30
+    /*
+     * Unless one of its ids is an outline the bake replaced with the building's own `building:part`s, which
+     * are in the package carrying that outline's id in `partOf`. Then the entry claims ALL of them — and any
+     * building it names outright — and is fitted to their union, which is exactly what `replacedIds` takes
+     * out of the massing (BUGS.md #100). The Federal Reserve Bank names three of its parts beside the
+     * outline, and fitting to the first of those would put a third of the building in a hole the size of the
+     * whole one. An entry that names its own lat/lon, or stands `on` a host, is placed exactly as before.
+     */
+    const unionId = onId !== undefined || (e.lat !== undefined && e.lon !== undefined)
+      ? undefined : packedIds(e).find((id) => this.partsOf.has(id))
+    const union = unionId === undefined ? null : partsUnion(this.claims(packedIds(e)))
+    const height = e.height ?? (union ? union.height : building?.height) ?? 30
     let cx: number
     let cz: number
     let rotation = ((e.rotateDeg ?? 0) * Math.PI) / 180
@@ -517,9 +869,10 @@ export class Landmarks {
     // a point AND a size: placed there at that size, whatever its buildings are — the Grand Palais is eight
     // OSM parts, and fitted to the first it came out a third of its size, off to one side
     const atPoint = e.lat !== undefined && e.lon !== undefined && e.size !== undefined
-    if (building && !atPoint) {
-      ring = unpackPoints(building.ring)
-      if (e.court) {
+    if ((building || union) && !atPoint) {
+      ring = union ? union.hull : unpackPoints(building!.ring)
+      if (e.court && union) { console.warn(`landmark ${e.name}: no courtyard (its outline is only parts)`); return }
+      if (e.court && building) {
         // the largest courtyard, turned back to anticlockwise like an outline
         const holes = (building.holes ?? []).map(unpackPoints)
         const area = (r: { x: number; z: number }[]): number => {
@@ -533,7 +886,9 @@ export class Landmarks {
       }
       let bearing: number | undefined = typeof e.front === 'number' ? e.front : undefined
       if (e.front === 'street') {
-        const l = this.named.find((x) => x.id === building.id)
+        // by the OUTLINE's id where the bake kept only the parts: it keeps a superseded outline's name and
+        // frontage in the package's `landmarks` precisely because the parts do not carry them
+        const l = this.named.find((x) => x.id === (union ? unionId : building!.id))
         if (l) bearing = (Math.atan2(l.frontage.nx, l.frontage.nz) * 180) / Math.PI
       }
       if (bearing !== undefined) {
@@ -541,7 +896,9 @@ export class Landmarks {
         cx = f.cx; cz = f.cz; rotation = f.rotation
         fit = { hx: f.hx, hz: f.hz, height, ring: inFrame(ring!, f.cx, f.cz, rotation) }
       } else {
-        const f = fitTo(building, height)
+        // a union has no long edge worth the name — its hull is chords of a dozen parts — so the box round
+        // it is the minimum-area one, which is what the manifest's hand-written Salesforce fix measured
+        const f = union ? fitMinArea(ring!, height) : fitTo(ring!, height)
         cx = f.cx; cz = f.cz; fit = f.fit
         if (e.rotateDeg === undefined) rotation = f.rotation
         // the outline too, so a builder raised from its own footprint (render/landmarks/tower.ts) has one
@@ -553,9 +910,33 @@ export class Landmarks {
       if (typeof e.front === 'number') rotation = ((e.front + 180) * Math.PI) / 180
     } else return
     const [ox, oy, oz] = e.offset ?? [0, 0, 0]
-    // sunk to the lowest ground under it, as the city's own buildings are, so a slope shows no daylight
     const under = ring ?? rectRing(cx, cz, fit.hx, fit.hz, rotation)
-    const y = Math.min(...under.map((q) => this.terrain.heightAt(q.x, q.z)), this.terrain.heightAt(cx, cz)) - 0.5 + oy
+    // a structure on piles takes its own deck datum off the sea, not the sea bed under it (BUGS.md #181):
+    // the terrain there is deliberately below the waterline, and draping the model on it submerges it
+    const y = e.baseY !== undefined
+      ? e.baseY + oy
+      : e.deckAbove !== undefined && this.seaLevel !== null
+      ? this.seaLevel + e.deckAbove + oy
+      // sunk to the lowest ground under it, as the city's own buildings are, so a slope shows no daylight
+      : Math.min(...under.map((q) => this.terrain.heightAt(q.x, q.z)), this.terrain.heightAt(cx, cz)) - 0.5 + oy
+
+    /*
+     * A model that draws its own raised structure — a skybridge, a canopy, a skywalk, a pergola — claims
+     * whatever OSM mapped under it as a bridge way, because that way IS this same object and only one of
+     * them may be drawn (BUGS.md #136). `City.coverRaised` does the matching, geometrically: a way id
+     * cannot be used, since `PackedEdge` carries none.
+     *
+     * What is claimed is the model's OWN extent, not `size`: `size` is a fitting hint a builder may ignore
+     * (`mosconeSkybridge` takes no `fit` at all), so the box round the vertices it actually wrote is the
+     * honest footprint and the tightest claim that still binds. For a `file` entry, whose glTF is loaded
+     * later, the entry's own rectangle and height are all there is.
+     */
+    const publishCover = (ring: { x: number; z: number }[], y0: number, y1: number): void => {
+      const cover = { ring, y0, y1 }
+      this.covers.push(cover)
+      this.onCover?.(cover)
+    }
+    if (e.coversRaised && e.file) publishCover(under.map((q) => ({ x: q.x + ox, z: q.z + oz })), y, y + (e.height ?? 30))
 
     if (e.procedural) {
       const build = PROCEDURAL[e.procedural]
@@ -572,11 +953,47 @@ export class Landmarks {
       m.renderingGroupId = 3
       m.isPickable = false
       this.count++
+      // any deck the builder planted on itself, turned into world metres by the same transform as the mesh
+      const scale = e.scale ?? 1
+      const cosR = Math.cos(rotation)
+      const sinR = Math.sin(rotation)
+      for (const d of mb.decks) {
+        const ring = d.ring.map((p) => ({
+          x: cx + ox + (p.x * cosR + p.z * sinR) * scale,
+          z: cz + oz + (-p.x * sinR + p.z * cosR) * scale,
+        }))
+        this.decks.push({ ring, y: y + d.y * scale })
+      }
+      // and the footprint it claims from the ride graph, measured off the mesh it just wrote and turned
+      // into world metres by the same transform as the decks above (BUGS.md #136)
+      if (e.coversRaised) {
+        let lx0 = Infinity, lx1 = -Infinity, lz0 = Infinity, lz1 = -Infinity, ly0 = Infinity, ly1 = -Infinity
+        for (let i = 0; i < mb.positions.length; i += 3) {
+          lx0 = Math.min(lx0, mb.positions[i]); lx1 = Math.max(lx1, mb.positions[i])
+          ly0 = Math.min(ly0, mb.positions[i + 1]); ly1 = Math.max(ly1, mb.positions[i + 1])
+          lz0 = Math.min(lz0, mb.positions[i + 2]); lz1 = Math.max(lz1, mb.positions[i + 2])
+        }
+        if (lx0 <= lx1) {
+          const corners = [[lx0, lz0], [lx1, lz0], [lx1, lz1], [lx0, lz1]].map(([px, pz]) => ({
+            x: cx + ox + (px * cosR + pz * sinR) * scale,
+            z: cz + oz + (-px * sinR + pz * cosR) * scale,
+          }))
+          publishCover(corners, y + ly0 * scale, y + ly1 * scale)
+        }
+      }
+      // the names the model asked for, as their own meshes, gated by distance (`signs` above)
+      this.raiseSigns(mb.signs, m, e.name)
       // every placed model is on the list (fountains, statues and the landmark card find their host by it)
       this.placed.push({ name: e.name, x: cx + ox, y, z: cz + oz, hx: fit.hx, hz: fit.hz, rotation, height: modelHeight(mb) })
-      // and its shadow, from the footprint it stands on, the height it reaches
+      /*
+       * And its shadow, from the footprint it STANDS ON, the height it reaches — which is why a model given
+       * its own datum (`baseY`) gets none. The shadow is draped on the terrain, and a model floated to a
+       * datum of its own is not standing on that terrain: the Golden Gate's would be a 130 × 2 650 m dark
+       * rectangle draped from the sea bed up onto the headlands at either end, reaching y -12.8 m — above
+       * the deck the rider is on. A bridge over water casts its shadow on the water, which we do not draw.
+       */
       const shadows = new MeshBuilder()
-      addShadow(shadows, under, modelHeight(mb) * 0.85, shadowOffset(DAYLIGHT.sun), SHADOW_Y)
+      if (e.baseY === undefined) addShadow(shadows, under, modelHeight(mb) * 0.85, shadowOffset(DAYLIGHT.sun), SHADOW_Y)
       if (shadows.triangles > 0) {
         const sm = new Mesh(`landmark:shadow:${e.name}`, this.scene)
         this.terrain.drape(shadows.positions)
@@ -591,17 +1008,83 @@ export class Landmarks {
   }
 
   /**
+   * The signs a model asked for, as meshes PARENTED to it — so each one keeps the landmark's position, turn
+   * and scale without any of that arithmetic being repeated, and the builder's coordinates stay local.
+   *
+   * A flat sign is two triangles and a texture made here and now (render/sign-plates.ts), with no asset and
+   * no Blender. An extruded one is the GLB tools/signgen baked, loaded like any other model; when it is
+   * missing — Blender was not on the PATH at bake time — the landmark simply has no sign, which is the same
+   * bargain tools/signs.ts already makes.
+   */
+  private raiseSigns(signs: PlacedSign[], host: Mesh, name: string): void {
+    for (const p of signs) {
+      // never drawn beyond the ring the city itself is drawing at (§Soon.0a: that ring is a Paris number)
+      const cut = signCut(p.spec.h, MID * TILE)
+      if (p.spec.type === 'flat') {
+        const m = flatSignMesh(this.scene, p, `sign:${name}:${p.spec.text}`)
+        if (!m) continue
+        m.parent = host
+        m.renderingGroupId = 3
+        this.signs.push({ mesh: m, x: host.position.x, z: host.position.z, cut, on: true })
+      } else if (p.spec.model) {
+        void this.loadSignModel(p, host, name, cut)
+      } else {
+        console.warn(`landmark ${name}: an extruded sign "${p.spec.text}" with no \`model\` (see tools/signgen/signs.json)`)
+      }
+    }
+  }
+
+  private async loadSignModel(p: PlacedSign, host: Mesh, name: string, cut: number): Promise<void> {
+    try {
+      const [root, file] = this.modelUrl(`models/${p.spec.model!}`)
+      const r = await SceneLoader.ImportMeshAsync('', root, file, this.scene)
+      for (const m of r.meshes) {
+        if (!(m instanceof Mesh) || m.getTotalVertices() === 0) continue
+        m.setParent(null)
+        m.bakeCurrentTransformIntoVertices()
+        m.parent = host
+        // signgen writes the lettering facing +z with its front face at z = 0, which is this file's
+        // convention too, so the heading is the only turn it needs
+        m.position.set(p.x, p.y, p.z)
+        m.rotation.y = p.heading
+        m.renderingGroupId = 3
+        m.isPickable = false
+        this.signs.push({ mesh: m, x: host.position.x, z: host.position.z, cut, on: true })
+      }
+      for (const m of r.meshes) if (m.name === '__root__') m.dispose()
+    } catch (err) {
+      console.warn(`landmark ${name}: sign model ${p.spec.model} did not load (npm run signs)`, err)
+    }
+  }
+
+  /**
    * Every frame: each skyline landmark moved to 800 m along its true direction from the camera and scaled by
    * 800 / its true distance. Uniform scaling about the eye preserves every angle, so the tower is exactly
    * where and exactly as big as it would be at five kilometres.
    */
   update(eye: Vector3): void {
+    /*
+     * The signs, first: a name too far to read is not drawn at all. A 5 % band round the cut, so a rider
+     * sitting exactly on it does not make the sign flicker on and off between frames.
+     */
+    for (const s of this.signs) {
+      const d = Math.hypot(s.x - eye.x, s.z - eye.z)
+      const on = s.on ? d < s.cut * 1.05 : d < s.cut
+      if (on !== s.on) { s.on = on; s.mesh.setEnabled(on) }
+    }
     const R = 800
     for (const s of this.sky) {
       // a skyline stand-in gives way to the landmark's own model within the camera's reach (the Eiffel Tower
       // in central Paris): drawn behind everything, it showed through the lattice
+      /*
+       * ...measured to the model's own EXTENT, not to its centre. Written for a point landmark (the Eiffel
+       * Tower), a centre test puts the switch 1.3 km from the middle of a 2.7 km bridge — which is halfway
+       * along its own side span, in mid-air over the strait, exactly where a rider crossing at speed is
+       * (BUGS.md #211). Against the rectangle, a rider anywhere on the bridge is 0 m away and has the real
+       * model; the stand-in comes back 1.3 km clear of the structure, where the swap cannot be seen.
+       */
       const real = this.placed.find((p) => p.name === s.name)
-      const near = real !== undefined && Math.hypot(real.x - eye.x, real.z - eye.z) < 1300
+      const near = real !== undefined && distanceToPlaced(real, eye.x, eye.z) < 1300
       s.mesh.setEnabled(!near)
       if (near) continue
       const dx = s.x - eye.x
@@ -623,10 +1106,27 @@ export class Landmarks {
     }
   }
 
+  /**
+   * Where a model's file actually lives, as [rootUrl, filename].
+   *
+   * A landmark's own model is next to its manifest, in `landmarks/<region>/`. A SIGN is not: tools/signs.ts
+   * writes the generated lettering into `models/signs/`, shared by every city, and a `file` that began
+   * "signs/" was being looked for under the region's own directory — so both of the signs the project had
+   * (Ghirardelli's and Ripley's) 404ed and silently drew nothing. Anything named "models/..." is resolved
+   * from the site root instead.
+   */
+  private modelUrl(file: string): [string, string] {
+    const base = file.startsWith('models/') ? new URL('../../', this.base).href : this.base
+    const url = new URL(file, base).href
+    const cut = url.lastIndexOf('/') + 1
+    return [url.slice(0, cut), url.slice(cut)]
+  }
+
   /** A downloaded model: imported, its glTF `__root__` baked into the vertices (see vegetation.ts), placed. */
   private async loadModel(e: LandmarkEntry, x: number, y: number, z: number, rotation: number): Promise<void> {
     try {
-      const r = await SceneLoader.ImportMeshAsync('', this.base, e.file!, this.scene)
+      const [root, file] = this.modelUrl(e.file!)
+      const r = await SceneLoader.ImportMeshAsync('', root, file, this.scene)
       for (const m of r.meshes) {
         if (!(m instanceof Mesh) || m.getTotalVertices() === 0) continue
         m.setParent(null)

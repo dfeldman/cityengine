@@ -1,0 +1,62 @@
+[
+ {
+  "lat": 37.794127,
+  "lon": -122.400136,
+  "size": [67, 67],
+  "height": 8,
+  "rotateDeg": 0,
+  "procedural": "embarcaderoUnit1",
+  "coversRaised": true,
+  "name": "Embarcadero Center — plaza deck (West / One)",
+  "kind": "plaza",
+  "note": "docs/EMBARCADERO-CENTER.md. Re-authored 2026-09-24 as ONE CONTINUOUS STRUCTURE: this lat/lon is now DERIVED from src/render/landmarks/sf/embarcadero.ts's own network table (`unitLatLon('West-EC1')`), not typed independently — code and manifest read the same TOWERS table so they cannot drift apart. Between Embarcadero Center West (way/32947500) and Embarcadero Center 1 (way/32612608), the widest gap of the four units. `size` is the ring's own axis-aligned bounding box (the ring itself sits at an angle to the city grid). Deck height (8 m) and hole position/depth are still inferred, not measured — see the file header."
+ },
+ {
+  "lat": 37.794729,
+  "lon": -122.399119,
+  "size": [49, 59],
+  "height": 8,
+  "rotateDeg": 0,
+  "procedural": "embarcaderoUnit2",
+  "coversRaised": true,
+  "name": "Embarcadero Center — plaza deck (One / Two)",
+  "kind": "plaza",
+  "note": "Between Embarcadero Center 1 (way/32612608) and Embarcadero Center 2 (way/32612520). Derived the same way as unit 1, from the same shared network table — see embarcadero.ts header."
+ },
+ {
+  "lat": 37.795066,
+  "lon": -122.397939,
+  "size": [40, 47],
+  "height": 8,
+  "rotateDeg": 0,
+  "procedural": "embarcaderoUnit3",
+  "coversRaised": true,
+  "name": "Embarcadero Center — plaza deck (Two / Three)",
+  "kind": "plaza",
+  "note": "Between Embarcadero Center 2 (way/32612520) and Embarcadero Center 3 (way/32612538) — the narrowest gap of the four, so genuinely the smallest deck and hole, not a scaled copy of the others."
+ },
+ {
+  "lat": 37.795239,
+  "lon": -122.396697,
+  "size": [37, 48],
+  "height": 8,
+  "rotateDeg": 0,
+  "procedural": "embarcaderoUnit4",
+  "coversRaised": true,
+  "name": "Embarcadero Center — plaza deck (Three / Four)",
+  "kind": "plaza",
+  "note": "Between Embarcadero Center 3 (way/32612538) and Embarcadero Center 4 (way/616812910). Nearest unit to the Hyatt Regency and the Vaillancourt Fountain block; does not touch either (districts/market-east.ts and sf/art.ts untouched). BUGS.md #180 ('an old model that is too tall, and does not fit') is about EC4's OWN tower massing (the shared `embarcaderoCenter` preset in ring-tower.ts on this footprint), not this deck — not fixed in this pass; height 174 m over EC4's footprint confirmed correct by the owner, so the fix is to the preset/massing, not the number."
+ },
+ {
+  "lat": 37.795553,
+  "lon": -122.399686,
+  "size": [26, 34],
+  "height": 8,
+  "rotateDeg": 0,
+  "procedural": "oneMaritimeGrassCourt",
+  "coversRaised": true,
+  "name": "One Maritime Plaza Park",
+  "kind": "plaza",
+  "note": "BUGS.md #180: the lawn with sculptures on the podium roof west of the One Maritime Plaza tower (way/28240176 — `embarcadero-maritime-aerial.png`), previously missing entirely. Placed by measuring way/28240176's own centroid/extent from the Overpass cache and offsetting west by its own half-width plus this court's half-width plus a small gap — not typed by eye. This is a FIFTH unit on its own footprint (a single tower over a garage), not one of the four `gapQuad` units, per the file header. The other half of #180 — the small brick building rendered sunken into the plaza — is a height-datum problem in whatever places that building on the ground instead of the deck; no such building is built by this file, so it is reported, not fixed here."
+ }
+]

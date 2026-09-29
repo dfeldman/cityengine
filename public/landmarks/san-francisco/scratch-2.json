@@ -1,0 +1,10 @@
+[
+  {
+    "osm": ["way/288340246"],
+    "name": "Walt Disney Family Museum",
+    "procedural": "waltDisneyFamilyMuseum",
+    "front": "street",
+    "height": 14,
+    "note": "sf/scratch-2.ts, facade() with the new Shaft.by per-edge override (../facade.ts): proof that the kit gap kit batch 6 escalated ('no PER-EDGE material or shaft', docs/sf-batches/ESCALATIONS.md) is closed. 24-vertex baked ring, strictly orthogonal, two-wing 1897 brick Army barracks -- brick arched-window shaft on the parade-ground (longest-edge) front and the short return walls, a 2009 glass curtain wall on the opposite long face via shaft.by, one facade() call, no double-drawn shared walls. No photograph on file (docs/shots/refs/sf-fetch/done.csv marks the one Mapillary frame for this id 'junk'); built restrained from the escalation's own researched description."
+  }
+]

@@ -1,0 +1,14 @@
+[
+  { "osm": ["way/71504443"], "procedural": "b5_office_71504443", "name": "Nextdoor", "height": 18 },
+  { "osm": ["way/147808261"], "procedural": "b5_apartment_147808261", "name": "The Beverly Apartments", "height": 37 },
+  { "osm": ["way/211118823"], "procedural": "b5_office_211118823", "name": "Adobe Systems", "height": 17 },
+  { "osm": ["way/259979000"], "procedural": "b5_hotel_259979000", "name": "Cadillac Hotel", "height": 17 },
+  { "osm": ["way/260194175"], "procedural": "b5_community_260194175", "name": "The Women's Building", "height": 17 },
+  { "osm": ["way/1206216224"], "procedural": "b5_cinema_1206216224", "name": "Castro Theatre", "height": 25 },
+  { "osm": ["way/32863779"], "procedural": "b5_civic_32863779", "name": "Old San Francisco Mint", "height": 16 },
+  { "osm": ["way/256066230"], "procedural": "b5_bank_256066230", "name": "San Francisco Pacific Exchange Building", "height": 16 },
+  { "osm": ["way/115944818"], "procedural": "b5_civic_115944818", "name": "San Francisco Mint", "height": 15 },
+  { "osm": ["way/257338714"], "procedural": "b5_industrial_257338714", "name": "Union Iron Works Office", "height": 15 },
+  { "osm": ["way/288342510"], "procedural": "b5_school_288342510", "name": "Bay School of San Francisco", "height": 14 },
+  { "osm": ["way/259872761"], "procedural": "b5_school_259872761", "name": "San Francisco Circus Center", "height": 14 }
+]

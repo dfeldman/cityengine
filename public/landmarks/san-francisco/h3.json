@@ -1,0 +1,127 @@
+[
+  {
+    "osm": [
+      "way/32650734"
+    ],
+    "procedural": "h3_firestationQ_32650734",
+    "name": "San Francisco Fire Station Q",
+    "height": 6
+  },
+  {
+    "osm": [
+      "way/112073353"
+    ],
+    "procedural": "h3_harveyMilkRecreational_112073353",
+    "name": "Harvey Milk Recreational Arts Center",
+    "height": 9
+  },
+  {
+    "osm": [
+      "way/115433822"
+    ],
+    "procedural": "h3_firestation6_115433822",
+    "name": "San Francisco Fire Station 6",
+    "height": 10
+  },
+  {
+    "osm": [
+      "way/120481448"
+    ],
+    "procedural": "h3_goldenGateParkAid_120481448",
+    "name": "Golden Gate Park Aid Station",
+    "height": 6
+  },
+  {
+    "osm": [
+      "way/135620203"
+    ],
+    "procedural": "h3_fireChiefsResidence_135620203",
+    "name": "Fire Chief's Residence",
+    "height": 12
+  },
+  {
+    "osm": [
+      "way/161504247"
+    ],
+    "procedural": "h3_firestation12_161504247",
+    "name": "San Francisco Fire Station 12",
+    "height": 9
+  },
+  {
+    "osm": [
+      "way/161504250"
+    ],
+    "procedural": "h3_firestation14_161504250",
+    "name": "San Francisco Fire Station 14"
+  },
+  {
+    "osm": [
+      "way/162470913"
+    ],
+    "procedural": "h3_firestation23_162470913",
+    "name": "San Francisco Fire Station #23",
+    "height": 8
+  },
+  {
+    "osm": [
+      "way/218148097"
+    ],
+    "procedural": "h3_firestation29_218148097",
+    "name": "San Francisco Fire Station 29",
+    "height": 10
+  },
+  {
+    "osm": [
+      "way/242973686"
+    ],
+    "procedural": "h3_oldMissionPolicStation_242973686",
+    "name": "Old Mission Police Station",
+    "height": 11
+  },
+  {
+    "osm": [
+      "way/256461082"
+    ],
+    "procedural": "h3_bryantStreetStation_256461082",
+    "name": "Bryant Street Station",
+    "height": 6
+  },
+  {
+    "osm": [
+      "way/260327749"
+    ],
+    "procedural": "h3_missionPolicStation_260327749",
+    "name": "Mission Police Station",
+    "height": 9
+  },
+  {
+    "osm": [
+      "way/261105865"
+    ],
+    "procedural": "h3_odcTheater_261105865",
+    "name": "ODC Theater",
+    "height": 10
+  },
+  {
+    "osm": [
+      "way/415417770"
+    ],
+    "procedural": "h3_dorraineZiefLaw_415417770",
+    "name": "Dorraine Zief Law Library"
+  },
+  {
+    "osm": [
+      "way/1186109887"
+    ],
+    "procedural": "h3_firestation5_1186109887",
+    "name": "San Francisco Fire Station 5"
+  },
+  {
+    "osm": [
+      "way/32946359"
+    ],
+    "procedural": "h3_aliotoveronese_32946359",
+    "name": "Alioto - Veronese Building",
+    "height": 11
+  }
+]

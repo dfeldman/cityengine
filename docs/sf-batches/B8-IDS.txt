@@ -1,0 +1,23 @@
+way/1025679431,"",core,12,850
+way/1025679456,"",core,16,845
+way/24335195,"Moscone Center Garage",core,17,820
+way/80296749,"690 Folsom Street",core,9,800
+way/30675203,"Kezar Stadium",civic,14,750
+way/476267889,"Golden Gate Park Polo Field and Stadium",civic,10,750
+way/934681747,"Fort Point Coast Guard Station",civic,10,750
+way/288391070,"The Cannery",civic,14,740
+way/27104689,"Pier 45",core,14,740
+way/62362767,"Aquatic Park",civic,8,740
+way/575233151,"Pier 27 Cruise Terminal",core,14,740
+way/27570851,"Pier 39 Garage",core,12,740
+way/1330586852,"",core,225,225
+way/260320982,"",core,195,195
+way/432712476,"",tall,160,160
+way/432712478,"",tall,160,160
+way/432712477,"",tall,160,160
+way/432712479,"",tall,160,160
+way/436648569,"",tall,137,137
+way/783200255,"",core,92,92
+way/494810839,"",core,80,80
+way/435831007,"",tall,78,78
+way/1411169908,"",core,76,76

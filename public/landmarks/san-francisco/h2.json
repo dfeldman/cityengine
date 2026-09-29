@@ -1,0 +1,176 @@
+[
+  {
+    "osm": [
+      "way/287927001"
+    ],
+    "procedural": "anglersLodge",
+    "name": "Anglers Lodge"
+  },
+  {
+    "osm": [
+      "way/25372348"
+    ],
+    "procedural": "argonautHotel",
+    "name": "Argonaut Hotel"
+  },
+  {
+    "osm": [
+      "way/48995281"
+    ],
+    "procedural": "bohemianClub",
+    "name": "Bohemian Club"
+  },
+  {
+    "osm": [
+      "way/262730402"
+    ],
+    "procedural": "californiaHistoricalSociety",
+    "name": "California Historical Society"
+  },
+  {
+    "osm": [
+      "way/1554375367"
+    ],
+    "procedural": "carousel",
+    "name": "Carousel",
+    "height": 12
+  },
+  {
+    "osm": [
+      "way/229326454"
+    ],
+    "procedural": "castagnolaS",
+    "name": "Castagnola's"
+  },
+  {
+    "osm": [
+      "way/197374076"
+    ],
+    "procedural": "clayTheatre",
+    "name": "Clay Theatre"
+  },
+  {
+    "osm": [
+      "way/288391828"
+    ],
+    "procedural": "dolphinClub",
+    "name": "Dolphin Club"
+  },
+  {
+    "osm": [
+      "way/256733177"
+    ],
+    "procedural": "eastPingYuen",
+    "name": "East Ping Yuen"
+  },
+  {
+    "osm": [
+      "way/104599975"
+    ],
+    "procedural": "ferryStationPostOffice",
+    "name": "Ferry Station Post Office Building"
+  },
+  {
+    "osm": [
+      "way/32946083"
+    ],
+    "procedural": "fugaziBank",
+    "name": "Fugazi Bank Building"
+  },
+  {
+    "osm": [
+      "way/132125160"
+    ],
+    "procedural": "galleriaParallelHotel",
+    "name": "Galleria Park Hotel"
+  },
+  {
+    "osm": [
+      "way/288340243"
+    ],
+    "procedural": "goldenGateClub",
+    "name": "Golden Gate Club"
+  },
+  {
+    "osm": [
+      "way/70077928"
+    ],
+    "procedural": "greenTortoiseHostel",
+    "name": "Green Tortoise Hostel"
+  },
+  {
+    "osm": [
+      "way/288387353"
+    ],
+    "procedural": "hiSanFranciscoFishermansWharf",
+    "name": "HI San Francisco Fisherman's Wharf"
+  },
+  {
+    "osm": [
+      "way/193054138"
+    ],
+    "procedural": "harborCourtHotel",
+    "name": "Harbor Court Hotel"
+  },
+  {
+    "osm": [
+      "way/587670476"
+    ],
+    "procedural": "healthRight60",
+    "name": "Health Right 60",
+    "height": 20
+  },
+  {
+    "osm": [
+      "way/93422615"
+    ],
+    "procedural": "hotelRiuPlazaFishermansWharf",
+    "name": "Hotel Riu Plaza Fisherman's Wharf",
+    "height": 30
+  },
+  {
+    "osm": [
+      "way/135174116"
+    ],
+    "procedural": "hotelTriton",
+    "name": "Hotel Triton",
+    "height": 25
+  },
+  {
+    "osm": [
+      "way/171178110"
+    ],
+    "procedural": "hotelUnion",
+    "name": "Hotel Union"
+  },
+  {
+    "osm": [
+      "way/148547438"
+    ],
+    "procedural": "hotelVia",
+    "name": "Hotel VIA",
+    "height": 22
+  },
+  {
+    "osm": [
+      "way/288340256"
+    ],
+    "procedural": "innAtThePresidio",
+    "name": "Inn at the Presidio"
+  },
+  {
+    "osm": [
+      "way/262079667"
+    ],
+    "procedural": "juliesCastle",
+    "name": "Julius' Castle"
+  },
+  {
+    "osm": [
+      "way/288632202"
+    ],
+    "procedural": "langleyPorterPsychiatricInstitute",
+    "name": "Langley Porter Psychiatric Institute",
+    "height": 30
+  }
+]

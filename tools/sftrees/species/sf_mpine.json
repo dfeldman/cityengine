@@ -1,0 +1,43 @@
+{
+ "name": "sf_mpine",
+ "extends": "ttc:scots_pine",
+ "about": "Monterey pine: the third of the three trees the park was planted with, and the tallest. A long bare trunk and an open, rounded, rather ragged crown high up \u2014 nothing like the alpine spruce and firs the library was built for.",
+ "kind": "conifer",
+ "needles": true,
+ "bark": "knotted",
+ "bark_tile": 1.2,
+ "leaves_page": "pine",
+ "height": [
+  23,
+  5
+ ],
+ "leaf_share": 0.6,
+ "trunk": {
+  "lean": [
+   3,
+   4
+  ],
+  "wander": 0.1,
+  "gnarl": 0.18
+ },
+ "envelope": {
+  "base": 0.46,
+  "top": 1.02,
+  "width": 0.4,
+  "profile": [
+   0.5,
+   0.82,
+   1.0,
+   0.96,
+   0.72,
+   0.3
+  ]
+ },
+ "set": [
+  "levels.0.angle.curve=[78,70,58,44]",
+  "levels.0.length_abs.curve=[0.26,0.32,0.28,0.16]",
+  "leaves.spacing=0.72",
+  "levels.1.density=3.0",
+  "leaves.overlap=2.3"
+ ]
+}

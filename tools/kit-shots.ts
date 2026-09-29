@@ -27,16 +27,42 @@ const ALL = [...src.matchAll(/^ {2}(kit_\w+):/gm)].map((m) => m[1])
 /** the doc's sections, in the order KIT.md uses them; anything unlisted lands in `other` */
 const SECTIONS: [string, string[]][] = [
   ['ground-floor', ['kit_arcade_vs_colonnade', 'kit_arcade', 'kit_arcade_naive', 'kit_arcade_piers', 'kit_colonnade', 'kit_colonnade_naive', 'kit_marquee', 'kit_panelOn']],
+  ['facade-api', ['kit_facade_arcaded', 'kit_facade_temple', 'kit_facade_framed', 'kit_facade_plain',
+    'kit_facade_pilastered', 'kit_facade_corner',
+    'kit_facade_giant_order', 'kit_facade_in_antis', 'kit_facade_aedicules', 'kit_facade_quoins']],
   ['facade', ['kit_face_punched', 'kit_face_punched_arched', 'kit_face_curtain', 'kit_face_fins', 'kit_face_bands',
     'kit_face_blank', 'kit_face_xbrace', 'kit_face_bays', 'kit_faceOn', 'kit_quoins', 'kit_windows', 'kit_pane',
     'kit_archedPane', 'kit_pointedPane', 'kit_courtFacade']],
   ['crown', ['kit_crown_parapet', 'kit_crown_hip', 'kit_crown_mansard', 'kit_crown_pyramid', 'kit_crown_spire',
     'kit_crown_dome', 'kit_crown_lantern', 'kit_crown_stepped', 'kit_crown_mast', 'kit_crown_sawtooth',
-    'kit_crown_spires', 'kit_crown_sliced', 'kit_cupola', 'kit_spireOn', 'kit_stripRoof', 'kit_dome',
+    'kit_crown_spires', 'kit_crown_sliced', 'kit_crown_balustrade', 'kit_cupola', 'kit_spireOn', 'kit_stripRoof', 'kit_dome',
     'kit_pinnacle', 'kit_turret', 'kit_roundRing']],
-  ['signs', ['kit_signText', 'kit_signText_lit', 'kit_bulbText', 'kit_bladeSign']],
+  ['church', ['kit_church_before_stmarys', 'kit_church_stmarys', 'kit_church_before_ssp', 'kit_church_ssp',
+    'kit_church_gothic', 'kit_church_brick', 'kit_church_baroque', 'kit_church_mission',
+    'kit_church_basilica', 'kit_church_hall',
+    'kit_church_gableRoof', 'kit_church_gableRoof_hip', 'kit_church_gableEnd', 'kit_church_crossFinial',
+    'kit_church_roseWindow', 'kit_church_lancet', 'kit_church_lancetRow', 'kit_church_buttress',
+    'kit_church_flyingButtress', 'kit_church_portal', 'kit_church_bellNiche', 'kit_church_curvedGable',
+    'kit_church_spire', 'kit_church_churchTower', 'kit_church_churchTower_parapet',
+    'kit_church_churchTower_lantern', 'kit_church_apse', 'kit_church_pagodaRoof']],
+  ['signs', ['kit_sign_flat', 'kit_sign_script', 'kit_sign_engraved', 'kit_sign_roman', 'kit_sign_panel',
+    'kit_sign_halo', 'kit_sign_vertical', 'kit_sign_slab',
+    'kit_signText', 'kit_signText_lit', 'kit_bulbText', 'kit_bladeSign']],
+  ['shape', ['kit_notch', 'kit_notch_edge', 'kit_vault', 'kit_vault_along', 'kit_vault_solid', 'kit_rake', 'kit_rake_batter',
+    'kit_deckCut', 'kit_deckCut_rooflight', 'kit_deckCut_vault', 'kit_ybca_galleries', 'kit_ybca_theatre']],
+  /*
+   * The stair and railing demos. EVERY ONE is shot from a LOW OBLIQUE at rider's eye height, because both
+   * defects these parts exist to prevent are invisible in a front elevation: the YBCA theatre's steps read
+   * correctly in elevation and were floating louvres from the pavement, and #134a's pale mullions 0.34 m proud
+   * of the glass read as a palisade only from where a rider stands. `kit_stair_under` is shot from BELOW the
+   * flight, which is the only angle an unclosed underside shows up in — the same reason `deckCut` needed a
+   * camera case of its own.
+   */
+  ['stairs', ['kit_stair', 'kit_stair_splay', 'kit_stair_under', 'kit_yb_theatre_steps', 'kit_esplanade',
+    'kit_terrace', 'kit_railing', 'kit_facade_stoop',
+    'kit_arc_stair', 'kit_arc_esplanade', 'kit_folsom_stair', 'kit_ramp']],
   ['classical', ['kit_column', 'kit_classicalColumn_tuscan', 'kit_classicalColumn_doric',
-    'kit_classicalColumn_ionic', 'kit_classicalColumn_corinthian', 'kit_pediment', 'kit_beam']],
+    'kit_classicalColumn_ionic', 'kit_classicalColumn_corinthian', 'kit_pediment', 'kit_friezes', 'kit_beam']],
 ]
 const listed = new Set(SECTIONS.flatMap(([, v]) => v))
 const missing = ALL.filter((k) => !listed.has(k))
@@ -70,11 +96,48 @@ for (const name of ALL) {
     const wide = name === 'kit_arcade_vs_colonnade'
     // a parapet is a low wall round the roof EDGE: from the standard raised camera it hides behind the roof
     const low = name === 'kit_crown_parapet'
+    // a hole cut through a deck is edge-on and invisible from the standard camera: these look DOWN on it
+    const down = /^kit_(deckCut|ybca_galleries)/.test(name)
     const cap = name.startsWith('kit_classicalColumn')
-    if (cap) await page.evaluate(`window.__modelView(${-1.15},${1.38},${6.4},${cx},${7.4},${cz})`)
-    else if (low) await page.evaluate(`window.__modelView(${-1.15},${1.29},${R * 1.55},${cx},${H * 0.66},${cz})`)
+    /*
+     * Stairs and railings: a LOW OBLIQUE from rider's eye. beta near 1.5 is nearly horizontal, the target is
+     * at 1.6 m, and the radius is tight, so the shot is what a rider actually sees — daylight between treads,
+     * or a fine repeated vertical standing proud of its wall. A front elevation hides both.
+     *
+     * alpha is squarer than the catalogue's own −1.15: at −1.15 the flight's END WALL faces the camera and
+     * the risers are edge-on, which is the one thing these shots exist to show.
+     */
+    const eye = /^kit_(stair|yb_theatre_steps|esplanade|terrace|railing|facade_stoop|arc_|folsom_|ramp)/.test(name)
+    // and one from UNDER the flight, looking up: the only view an unclosed underside fails in
+    const under = name === 'kit_stair_under'
+
+    /*
+     * A whole church built by `church()` faces +z, the convention a CITY builder uses, while every part demo
+     * (and every other demo in the file) faces −z. So the church views stand on the other side — and the
+     * scene's sun comes from the −z side, so these six come out in shade. Tried and rejected: alpha 0.62 and
+     * 2.1, both of which turn the front away again without gaining light.
+     */
+    const plusZ = /^kit_church_(stmarys|ssp|gothic|brick|baroque|mission|basilica|hall)$/.test(name)
+    const alpha = plusZ ? 1.15 : -1.15
+    // the under-view stands at 1 m and looks UP: beta past pi/2 with a radius small enough that the camera
+    // does not sink below the showcase's ground box, which is where the first attempt put it (a black frame)
+    if (under) await page.evaluate(`window.__modelView(${alpha},${1.72},${24},${cx},${3.4},${cz})`)
+    // a wide flight (an esplanade, a terrace, a run of railing) needs the standard three-quarter and more
+    // distance or it fills the frame; a single entrance flight needs the squarer one or its risers are edge-on
+    // a fan is a wide SHALLOW dish: at rider's eye its concentric treads foreshorten into a flat disc, so the
+    // arc demos are raised just enough to read while staying an oblique, never an elevation
+    // a ramp lies ON a deck: from rider's eye on the ground the deck's own edge hides it, so this one looks
+    // down, the way `deckCut` has to
+    else if (name === 'kit_ramp') await page.evaluate(`window.__modelView(${-1.15},${1.02},${R * 1.2},${cx},${H * 0.6},${cz})`)
+    else if (/arc_/.test(name)) await page.evaluate(`window.__modelView(${-1.15},${1.28},${R * 1.15},${cx},${H * 0.4},${cz})`)
+    else if (eye) await page.evaluate(/terrace|railing|yb_theatre/.test(name)
+      ? `window.__modelView(${-1.15},${1.46},${R * 1.5},${cx},${1.6},${cz})`
+      : `window.__modelView(${-1.42},${1.53},${R * 1.05},${cx},${1.6},${cz})`)
+    else if (cap) await page.evaluate(`window.__modelView(${alpha},${1.38},${6.4},${cx},${7.4},${cz})`)
+    else if (low) await page.evaluate(`window.__modelView(${alpha},${1.29},${R * 1.55},${cx},${H * 0.66},${cz})`)
+    else if (down) await page.evaluate(`window.__modelView(${alpha},${0.72},${R * 1.75},${cx},${H * 0.5},${cz})`)
     else if (wide) await page.evaluate(`window.__modelView(${-1.28},${1.24},${33},${cx},${5.2},${cz})`)
-    else await page.evaluate(`window.__modelView(${-1.15},${1.2},${R * 1.9},${cx},${H * 0.5},${cz})`)
+    else await page.evaluate(`window.__modelView(${alpha},${1.2},${R * 1.9},${cx},${H * 0.5},${cz})`)
     await page.waitForTimeout(220)
     await page.screenshot({ path: resolve(out, `${name}.png`) })
     done.set(name, b.triangles)

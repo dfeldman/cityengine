@@ -103,6 +103,12 @@ export class Minimap {
   /** the whole ride graph, to draw the city beyond the streamed streets when zoomed out */
   private rideLines: Point[][] = []
   setRide(lines: Point[][]): void { this.rideLines = lines }
+  /**
+   * The baked box (BUGS.md #163). The map used to show no boundary at all, so the edge of what had streamed
+   * read as the edge of the world and the owner could not tell whether the Chase Center was even in the city.
+   * Drawn from `index.json`'s `box`, which is the real extent of the bake.
+   */
+  box: { x0: number; x1: number; z0: number; z1: number } | null = null
   /** a click on the large map: the world point clicked; `jump` with shift held (the game goes there),
    *  else the game sets it as the GPS destination */
   onPick: ((p: Point, jump: boolean) => void) | null = null
@@ -155,10 +161,16 @@ export class Minimap {
     this.canvas.addEventListener('wheel', (e) => {
       if (!this.large) return
       e.preventDefault()
-      this.zoom = Math.max(150, Math.min(5000, this.zoom * Math.exp(e.deltaY * 0.0015)))
+      this.zoom = Math.max(150, Math.min(this.maxZoom, this.zoom * Math.exp(e.deltaY * 0.0015)))
     }, { passive: false })
   }
   private lastAt: Point = { x: 0, z: 0 }
+  /** far enough out that the WHOLE baked box fits on the large map; 5 km used to be the cap, and SF's box
+   *  is 17.6 km across, so the city could not be seen whole. */
+  private get maxZoom(): number {
+    if (!this.box) return 5000
+    return Math.max(5000, (Math.max(this.box.x1 - this.box.x0, this.box.z1 - this.box.z0) / 2) * 1.15)
+  }
   get shown(): boolean { return this.visible }
   get isLarge(): boolean { return this.large }
 
@@ -208,6 +220,16 @@ export class Minimap {
         line.forEach((p, i) => (i === 0 ? ctx.moveTo(...px(p)) : ctx.lineTo(...px(p))))
       }
       ctx.stroke()
+    }
+    // the baked box: the edge of the world, so a jump to somewhere outside it is plainly outside it
+    if (this.large && this.box) {
+      const b = this.box
+      ctx.save()
+      ctx.strokeStyle = 'rgba(255,154,60,0.55)'
+      ctx.lineWidth = 2
+      ctx.setLineDash([9, 7])
+      ctx.strokeRect(b.x0 * scale, -b.z1 * scale, (b.x1 - b.x0) * scale, (b.z1 - b.z0) * scale)
+      ctx.restore()
     }
     const cells: number[] = []
     const reach = Math.ceil(this.range / 200) + 1

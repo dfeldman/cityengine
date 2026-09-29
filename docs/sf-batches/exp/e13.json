@@ -1,0 +1,50 @@
+[
+  {
+    "osm": ["way/35182441"],
+    "name": "The Jay, Autograph Collection",
+    "procedural": "e13_theJay_35182441",
+    "front": "street",
+    "height": 24,
+    "note": "kit; two-storey Ionic portico over rusticated ground, attic above, dentilled cornice + balustrade"
+  },
+  {
+    "osm": ["way/260922316"],
+    "name": "Hilton San Francisco Financial District",
+    "procedural": "e13_hiltonFinancialDistrict_260922316",
+    "front": "street",
+    "height": 96,
+    "note": "custom; jagged in/out zigzag crown of four stepped notches over a vertical-pier concrete body"
+  },
+  {
+    "osm": ["way/32612362"],
+    "name": "Federal Reserve Bank of San Francisco",
+    "procedural": "e13_federalReserveBank_32612362",
+    "front": "street",
+    "height": 44,
+    "note": "kit; giant Doric order in antis over glazed ground, punched granite shaft, set-back attic"
+  },
+  {
+    "osm": ["way/32965865"],
+    "name": "United States Appraisers Building",
+    "procedural": "e13_usAppraisersBuilding_32965865",
+    "front": "street",
+    "height": 34,
+    "note": "custom; hand-built banded rustication with bracketed balconettes, facade() shaft/crown above"
+  },
+  {
+    "osm": ["way/32863953"],
+    "name": "San Francisco Federal Building",
+    "procedural": "e13_federalBuilding_32863953",
+    "front": "street",
+    "height": 58,
+    "note": "custom; leaning perforated-screen skin standing proud of a set-back glass curtain body"
+  },
+  {
+    "osm": ["way/611390934"],
+    "name": "Park Tower at Transbay",
+    "procedural": "e13_parkTowerTransbay_611390934",
+    "front": "street",
+    "height": 220,
+    "note": "custom; facade() glass tower with a hand-built diagonal stack of cantilevered notch balconies"
+  }
+]

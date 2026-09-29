@@ -74,3 +74,68 @@ export class LoadingScreen {
     setTimeout(() => this.root.remove(), 800)
   }
 }
+
+/**
+ * The welcome screen (BUGS.md #165). The game used to drop the player straight into a city with no title, no
+ * controls and nothing to do next — fine for an agent taking screenshots, hopeless for anyone shown the game
+ * for the first time. So: the name, one line of what this is, and the handful of keys worth knowing, over the
+ * city itself, gone at the first key or click.
+ *
+ * Deliberately NOT a state of `LoadingScreen`: holding the loading screen open until a keypress would spoil
+ * the load timings being measured against it. This is its own overlay, shown once the loading screen goes.
+ */
+const CONTROLS: [string, string][] = [
+  ['pedal / ↑', 'ride — the bike or treadmill drives you, arrows if you have neither'],
+  ['← →', 'steer at the junctions'],
+  ['M', 'the map — click to set a destination, double-click to go there'],
+  ['R', 'bike or run'],
+  ['M, then search', 'the map: search a landmark ("Chase Center"), Enter to go'],
+  ['F', 'freeze and fly: WASD, Q/E, drag to look'],
+  ['P  [  ]', 'photo mode: fog off, draw distance in and out'],
+  ['G', 'go to a "lat, lon" — or just paste one'],
+]
+
+export const WELCOME_CSS = `
+.sr-welcome { position: fixed; inset: 0; z-index: 40; display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at 50% 35%, rgba(27,36,96,.82) 0%, rgba(11,15,36,.9) 70%);
+  backdrop-filter: blur(3px); transition: opacity .45s ease; }
+.sr-welcome.gone { opacity: 0; pointer-events: none; }
+.sr-welcome .sr-card { width: min(560px, 88vw); padding: 30px 34px 26px; text-align: center;
+  background: var(--panel-solid); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+.sr-welcome h1 { margin: 8px 0 4px; font: 800 40px/1.1 var(--font); letter-spacing: -.01em; }
+.sr-welcome .lede { font: 600 16px/1.5 var(--font); color: var(--muted); margin: 0 0 20px; }
+.sr-welcome table { width: 100%; border-collapse: collapse; text-align: left; }
+.sr-welcome td { padding: 6px 0; font: 15px/1.35 var(--font); color: var(--text); vertical-align: baseline; }
+.sr-welcome td.k { width: 118px; white-space: nowrap; }
+.sr-welcome kbd { font: 700 13px/1 var(--mono); background: var(--panel-2); border: 1px solid var(--border);
+  border-radius: 6px; padding: 5px 8px; display: inline-block; color: var(--text); }
+.sr-welcome td.d { color: var(--muted); padding-left: 14px; }
+.sr-welcome .sr-mode-welcome { position: static; transform: none; margin: 20px auto 0; display: inline-flex; }
+.sr-welcome .go { margin-top: 16px; font: 700 15px/1 var(--font); color: var(--page); }
+`
+
+/** Show it, and take it away at the first key or click. */
+export function welcomeScreen(cityName: string): void {
+  const root = document.createElement('div')
+  root.className = 'sr-welcome'
+  const rows = CONTROLS.map(([k, d]) => `<tr><td class="k"><kbd>${k}</kbd></td><td class="d">${d}</td></tr>`).join('')
+  root.innerHTML = `<div class="sr-card"><span class="sr-pill">Dandyhorse</span><h1>Street Runner</h1>
+    <p class="lede">Ride ${cityName} for real — every street, every building, where they actually are.</p>
+    <table>${rows}</table><div class="go">press any key to ride</div></div>`
+  /*
+   * The bike/run switch lives here now, and only here (main.ts builds it): choosing the machine is a thing
+   * you do once, at the start, not a control that sits over the city for the whole ride.
+   */
+  const mode = (window as unknown as { __modeSwitch?: HTMLElement }).__modeSwitch
+  if (mode) root.querySelector('.go')!.before(mode)
+  document.body.appendChild(root)
+  const dismiss = (): void => {
+    root.classList.add('gone')
+    setTimeout(() => root.remove(), 600)
+    removeEventListener('keydown', dismiss)
+    removeEventListener('pointerdown', dismiss)
+  }
+  // never preventDefault: the paste handler and the trainer's own input must go on working underneath
+  addEventListener('keydown', dismiss)
+  addEventListener('pointerdown', dismiss)
+}

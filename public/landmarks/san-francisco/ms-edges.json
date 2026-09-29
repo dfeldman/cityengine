@@ -1,0 +1,36 @@
+[
+ {
+  "lat": 37.78375,
+  "lon": -122.39952,
+  "size": [82, 20],
+  "height": 8,
+  "procedural": "msThirdStreetEsplanade",
+  "name": "Moscone South, 3rd Street entrance esplanade",
+  "note": "CORRECTED 2026-09-23: was hand-placed near Moscone South's own Howard corner, off the block's actual 3rd Street frontage by roughly a full building - see ms-edges.ts file header. docs/MOSCONE-SOUTH.md: the block's set piece - a long shallow arc cut into the Moscone Ballroom's 3rd Street frontage, stepped seating terraces on arcStair (added for this block), planted beds along the curve, a glazed canopy on slender columns with exposed diagonal bracing the length of the arc, and a railing at the wall top. The chord is way/288716387 (Moscone Ballroom)'s own OSM ring from vertex 21 to vertex 22 (38.6 m, the single real edge closest to 3rd Street, hard-coded in ms-edges.ts because a second manifest entry against an already-claimed way gets no fit.ring - see that file's header), swept to a 9 m sagitta arc. Placed by lat/lon; size is indicative only since the builder ignores fit and works off its own hard-coded chord."
+ },
+ {
+  "lat": 37.78361,
+  "lon": -122.40034,
+  "size": [41, 20],
+  "height": 4,
+  "procedural": "msFolsomMonumentalStair",
+  "name": "Moscone South, monumental Folsom stair",
+  "note": "CORRECTED 2026-09-23: was hand-placed near Moscone South's own Howard corner, nowhere near the ice-rink canyon - see ms-edges.ts file header. docs/MOSCONE-SOUTH.md: a broad flight full depth from Folsom to garden level (LEVELS.garden = 4) in one continuous run, in the canyon between the ice rink (west, ms-west.ts) and the Moscone Ballroom (east), with a plain paved ramp running parallel on the west side - a stair-and-walk pair, not one object - and the Ballroom wall beside it in big white concrete piers at regular bays with stepped planted terraces between them. stair() (solid, closed ends and underside) and ramp() on way/288716387 (Moscone Ballroom)'s own vertex-34-to-35 OSM edge (85.0 m, its closest approach to the ice rink, 14.3 m), hard-coded in ms-edges.ts for the same reason as the esplanade. Placed by lat/lon; size indicative only."
+ },
+ {
+  "lat": 37.78361,
+  "lon": -122.40034,
+  "size": [34, 16],
+  "height": 8,
+  "procedural": "veranda",
+  "name": "The Veranda San Francisco",
+  "note": "CORRECTED 2026-09-23: was hand-placed near Moscone South's own Howard corner, far from the ice rink it should stand beside - see ms-edges.ts file header. docs/MOSCONE-SOUTH.md: the pink events venue standing on top of the level-1 Moscone hall (LEVELS.wall, 8 m). Owner: the Moscone halls, ice rink and Veranda are 'all pretty basic cubical structures', so kept CHEAP - two stacked boxes for the stepped plan, salmon-pink rendered walls (stucco surface), a flat dark roof cap, a pink-walled roof-plant enclosure at the north end, and a curved pale canopy with a low curved wall at the south end over the entrance. No OSM way of its own; set back from the SAME Folsom-facing Moscone Ballroom edge (way/288716387, vertex 34 to 35) used by the monumental stair, hard-coded in ms-edges.ts, so it shares that edge's origin. Placed by lat/lon; size indicative only."
+ },
+ {
+  "osm": ["way/288716387"],
+  "height": 22,
+  "procedural": "mosconeBallroom",
+  "name": "Moscone Ballroom",
+  "note": "docs/MOSCONE-SOUTH.md: 'all pretty basic cubical structures' - built cheap, matching the Howard hall's language (open undercroft, recessed blue-green glazed band, white parapet, solar arrays on the roof) but as ONE plain mass per edge rather than mosconeHallHoward's three stepping sub-buildings, since nobody asked to see this one closely. Real fit.ring from way/288716387 (41-vertex OSM polygon). Height 22 is proportional against UNDERCROFT_H (8) and LEVELS.upper (12) plus a parapet allowance, inferred - OSM's height=12 is the pre-existing placeholder the surroundings audit flagged."
+ }
+]

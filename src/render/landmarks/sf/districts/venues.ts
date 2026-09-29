@@ -28,7 +28,7 @@ import { box, prism, EMIT, type Rgb } from '../../../models.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
 import type { Fit } from '../../fit.ts'
 import { faceBand } from '../../tower.ts'
-import { edgeAt, faceOn, signText, boxAlong } from '../../parts.ts'
+import { edgeAt, faceOn, sign, signText, boxAlong } from '../../parts.ts'
 
 type P2 = { x: number; z: number }
 
@@ -519,7 +519,16 @@ function chaseCenter(out: MeshBuilder, fit: Fit): void {
   box(out, 0, 9.0, hz * 1.05, 22, 0.5, hz * 0.1, SKIN, T_METAL)
   for (const k of [-1, 1]) box(out, k * 18, 4.6, hz * 1.13, 0.5, 4.6, 0.5, STEEL, T_METAL)
   box(out, 0, 4.2, hz * 1.0, 20, 4.2, 0.9, [0.24, 0.36, 0.46], T_GLASS)
-  signText(out, 'CHASE CENTER', 0, 33.2, hz * 1.04, 3.0, [0.10, 0.22, 0.48], { lit: true })
+  /*
+   * The name across the fascia, in a real typeface on one quad (render/landmarks/signage.ts) instead of the
+   * 3 x 5 block font it used to be spelled out in. `self` because it is a lit sign at night.
+   *
+   * The standoff is 2.4 m rather than the usual 6 cm, and deliberately: the sign is a flat chord across a
+   * drum, so its ENDS are the part that sinks into the wall, and the sag across twenty metres of an ellipse
+   * this size is a metre and a half. Standing it off the fascia is also what the real one does.
+   */
+  sign(out, { type: 'flat', text: 'CHASE CENTER', h: 2.4, face: 'grotesque', weight: 'bold',
+    colour: [0.10, 0.22, 0.48], lit: 'self', standoff: 2.4 }, { x: 0, y: 33.2, z: hz * 1.026, heading: 0 })
 
   /*
    * The two Uber blocks and the garage on the Third Street side are NOT drawn: they are ordinary

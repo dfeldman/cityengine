@@ -26,6 +26,7 @@ import { KIND_ATLAS, KIND_RAIL, KIND_WALL } from './facade-material.ts'
 import { planWall, rng, type Cell, type FacadePlan, type Feature } from '../city/facade.ts'
 import { addRoofscape, buildRoof, buildRoofAroundCourts, type Roofscape } from './roofs.ts'
 import type { RoofShape } from '../city/package.ts'
+import type { PlacedSign } from './landmarks/signage.ts'
 
 /** How many metres of wall one tile of the seamless wall page covers. */
 export const WALL_PAGE_METRES = 2.4
@@ -47,6 +48,26 @@ export class MeshBuilder {
   readonly uvs: number[] = []
   readonly colors: number[] = []
   readonly indices: number[] = []
+
+  /**
+   * Signs the model asked for (render/landmarks/signage.ts), which are NOT geometry.
+   *
+   * A sign is its own mesh with its own textured, alpha-blended material, because it has to be gated by
+   * distance and a landmark's geometry is one mesh that never is. So `sign()` records the request here and
+   * whoever placed the model realises it: render/landmarks.ts in the city, model-showcase.ts under `?model=`.
+   * Empty and untouched for everything else that builds a mesh, including the whole facade generator.
+   */
+  readonly signs: PlacedSign[] = []
+
+  /**
+   * A raised deck this model plants (render/plants.ts, docs/SKYPARKS.md): a ring in the model's own local
+   * frame and the height its ground sits at, LOCAL to the model's own origin (before it is placed and scaled
+   * into the city). A skypark's ground is not the terrain — Salesforce Park is 21 m up, on the Transit
+   * Center's roof — so a builder that draws such a deck records it here, and whoever places the model
+   * (render/landmarks.ts) turns it into world-space planting the same way it turns the mesh itself into a
+   * placed landmark: same rotation, same translation, same scale. Empty and untouched for everything else.
+   */
+  readonly decks: { ring: { x: number; z: number }[]; y: number }[] = []
 
   /** One quad, wound so its face points along `n`. `uv` is the four corners, in order bl, br, tr, tl. */
   quad(
@@ -470,7 +491,7 @@ function feature(
  */
 export function capPolygonWithHoles(out: MeshBuilder, rings: { x: number; z: number }[][], y: number,
                                     tint: [number, number, number], kind: number,
-                                    uvScale = WALL_PAGE_METRES): void {
+                                    uvScale = WALL_PAGE_METRES, maxEdge?: number): void {
   if (rings.length === 0 || rings[0].length < 3) return
   const flat: number[] = []
   const holes: number[] = []
@@ -492,7 +513,59 @@ export function capPolygonWithHoles(out: MeshBuilder, rings: { x: number; z: num
   // depending on, the normals here are set explicitly to point up so lighting does not care, and when the
   // winding did go the other way the entire road network and every pavement in the city became invisible
   // while remaining present, ready and in the active mesh list — which is a very expensive thing to debug.
+  const indexStart = out.indices.length
   pushUpward(out, base, tris, all)
+  if (maxEdge) subdivideLastTriangles(out, indexStart, y, tint, kind, uvScale, maxEdge)
+}
+
+/**
+ * Earcut on a flat polygon gives the MINIMAL triangulation — a 200 m water tile becomes two triangles
+ * 200 m+ on a side. That is fine far out on open water (nobody gets there, nothing occludes anything) but
+ * breaks depth precision and per-vertex interpolation right at a shoreline, where the rider actually is
+ * (BUGS.md #154). This is opt-in (`maxEdge` on `capPolygonWithHoles`) rather than automatic, because the
+ * same function draws every park, plaza and paved area in the city, and those do not need it.
+ *
+ * Splits every triangle just pushed (from `base` to the end of `out.indices`) whose longest edge exceeds
+ * `maxEdge`, by repeated longest-edge bisection — the standard scheme that always terminates and never
+ * produces a sliver worse than its parent. The surface is flat, so this adds no silhouette detail, only
+ * resolution: every new vertex is a plain interpolation of x/z (and therefore y, uv, colour) along an edge
+ * that was already perfectly straight.
+ */
+function subdivideLastTriangles(out: MeshBuilder, indexStart: number, y: number, tint: [number, number, number],
+                                kind: number, uvScale: number, maxEdge: number): void {
+  const oldIndices = out.indices.splice(indexStart, out.indices.length - indexStart)
+  const get = (i: number): { x: number; z: number } => ({ x: out.positions[i * 3], z: out.positions[i * 3 + 2] })
+  const bisect = (a: { x: number; z: number }, b: { x: number; z: number }, c: { x: number; z: number },
+                  depth: number): { x: number; z: number }[][] => {
+    const dAB = Math.hypot(a.x - b.x, a.z - b.z)
+    const dBC = Math.hypot(b.x - c.x, b.z - c.z)
+    const dCA = Math.hypot(c.x - a.x, c.z - a.z)
+    const m = Math.max(dAB, dBC, dCA)
+    if (m <= maxEdge || depth > 12) return [[a, b, c]]
+    if (m === dAB) {
+      const mid = { x: (a.x + b.x) / 2, z: (a.z + b.z) / 2 }
+      return [...bisect(a, mid, c, depth + 1), ...bisect(mid, b, c, depth + 1)]
+    }
+    if (m === dBC) {
+      const mid = { x: (b.x + c.x) / 2, z: (b.z + c.z) / 2 }
+      return [...bisect(b, mid, a, depth + 1), ...bisect(mid, c, a, depth + 1)]
+    }
+    const mid = { x: (c.x + a.x) / 2, z: (c.z + a.z) / 2 }
+    return [...bisect(c, mid, b, depth + 1), ...bisect(mid, a, b, depth + 1)]
+  }
+  for (let i = 0; i < oldIndices.length; i += 3) {
+    const a = get(oldIndices[i]), b = get(oldIndices[i + 1]), c = get(oldIndices[i + 2])
+    for (const [p0, p1, p2] of bisect(a, b, c, 0)) {
+      const nbase = out.positions.length / 3
+      for (const p of [p0, p1, p2]) {
+        out.positions.push(p.x, y, p.z)
+        out.normals.push(0, 1, 0)
+        out.uvs.push(p.x / uvScale, p.z / uvScale)
+        out.colors.push(tint[0], tint[1], tint[2], kind)
+      }
+      out.indices.push(nbase, nbase + 1, nbase + 2)
+    }
+  }
 }
 
 /**

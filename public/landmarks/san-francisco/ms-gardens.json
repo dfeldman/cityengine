@@ -1,0 +1,20 @@
+[
+ {
+  "lat": 37.783392,
+  "lon": -122.400841,
+  "size": [
+   148.9,
+   108.4
+  ],
+  "height": 12,
+  "procedural": "msGardens",
+  "name": "Yerba Buena Public Square and Children's Garden",
+  "kind": "garden",
+  "note": "BUGS.md #146, 2026-09-23: this entry was at 37.7834131/-122.4010875 with size [160,160] - 22 m west of the park and the wrong shape. It is now way/613665502 (place=square, name='Yerba Buena Public Square', 59 nodes, 148.9 x 108.4 m): lat/lon is that way's own bbox CENTRE and size is its own bbox, so the lat/lon and the ring the builder carries cannot drift apart. The builder embeds the real ring (PARK_RING in sf/ms-gardens.ts) the way yerbaBuenaGardens and mosconeSouthDeck embed theirs, because a park polygon never reaches a builder as a fit.ring - size here is only the fitting hint render/landmarks.ts wants, and the builder ignores it. No rotateDeg, so the model's own axes are the city's (+x east, +z north) and the 45 deg block frame is derived inside the builder.\ndocs/MOSCONE-SOUTH.md, THE LEVEL MODEL: the park level of the Moscone South block and the walkable heights through it, every one from LEVELS in sf/moscone-south.ts - garden 4, mezzanine 6, wall 8, upper 12. THE JOIN: the ring shares three corners with way/109141776, and its north-west boundary over u -29.0..+12.6 IS Moscone South's south-east face. mosconeSouthDeck caps that way at PATIO_H = 8 = LEVELS.wall, and the open skybridge lands on it, so the curved wall's top walk is put ON that join and the wedge between its arc and the join line is capped at 8 as well - the surface at 8 is continuous from the deck to the walk along the whole 41.6 m. From the walk a rider takes the concrete ramp down to the Children's Garden at 6 or either curved esplanade down to the grassy circle at 4. The amphitheatre is the banded (alternate) stepped terraces, the mezzanine is capPolygonWithHoles so the ponds read as depth, and three step-up flights climb out of the bowl on to the walk. Planted areas go to MeshBuilder.decks; nothing is hand-placed.\nOFFSET, measured 2026-09-23, not tuned: render/landmarks.ts sits a lat/lon landmark on the MINIMUM terrain under its size box, minus 0.5. Two of this park's bbox corners are not park at all - the south-east one (world 1056.1,-1123.7) is Folsom Street at -77.16, 1.7 m below anything the polygon touches - so the box rule put the model's base at -77.664 and LEVELS.wall at -69.664, while mosconeSouthDeck's own PATIO_H = 8 sits at -67.419. That is the 2.25 m step the owner saw between the blocks. The terrain under PARK_RING itself runs -75.44..-74.77. offset [0, 2.25, 0] puts LEVELS.wall exactly on the deck's 8 (-67.419) and leaves the model's base at -75.414, still at or below the lowest ground the park stands on, so no apron shows daylight. The open bridge's own deck is at -67.189, 0.23 m above the deck it lands on; that difference and the 5.7 m of air between the bridge's south-east end and way/109141776 are both in sf/yerba-buena.ts and are reported, not fixed here.",
+  "offset": [
+   0,
+   2.25,
+   0
+  ]
+ }
+]

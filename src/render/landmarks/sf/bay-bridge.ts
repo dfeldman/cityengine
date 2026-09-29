@@ -16,7 +16,7 @@
  * middle of the central anchorage at the water line.
  */
 import type { MeshBuilder } from '../../buildings.ts'
-import { box, type Rgb } from '../../models.ts'
+import { box, boxSubdivided, type Rgb } from '../../models.ts'
 import type { Fit } from '../fit.ts'
 import { beam } from './golden-gate.ts'
 
@@ -39,6 +39,15 @@ const CABLE_X = 11.5
 /** the towers' positions along the bridge */
 const TOWERS = [-(ANCHOR_HALF + SIDE + MAIN), -(ANCHOR_HALF + SIDE), ANCHOR_HALF + SIDE, ANCHOR_HALF + SIDE + MAIN]
 const END = ANCHOR_HALF + SIDE + MAIN + SIDE
+
+/**
+ * True over open water in the middle of one of the two 704 m main spans, well clear of any tower — the
+ * one stretch of this bridge nobody is ever close to anything else near (BUGS.md #154: graded, not uniform,
+ * subdivision — see golden-gate.ts for the same rule on the other bridge).
+ */
+function isMainSpan(z: number): boolean {
+  return (z > TOWERS[0] + 20 && z < TOWERS[1] - 20) || (z > TOWERS[2] + 20 && z < TOWERS[3] - 20)
+}
 
 /** the cable's height at z: parabolas over the main spans, flatter curves down the side spans */
 function cableY(z: number): number {
@@ -107,9 +116,16 @@ function deck(out: MeshBuilder): void {
     // the two roadways, one over the other, four panels at a time (the deck is level)
     if (Math.round((za + END) / panel) % 4 === 0) {
       const zg = Math.min(END, za + 4 * panel)
-      box(out, 0, DECK_TOP - 0.3, (za + zg) / 2, 10, 0.3, (zg - za) / 2 + 0.02, ROAD, 0)
-      box(out, 0, DECK_TOP - TRUSS + 1.2, (za + zg) / 2, 9.5, 0.3, (zg - za) / 2 + 0.02, ROAD, 0)
-      for (const side of [-1, 1]) box(out, side * 10.3, DECK_TOP + 0.6, (za + zg) / 2, 0.08, 0.6, (zg - za) / 2, STEEL, 0)
+      const zgm = (za + zg) / 2
+      // the east span (lower deck here) carries the bike path (owner: wants to ride it). Graded, not
+      // uniform, tessellation (BUGS.md #154): 16 m out over the open middle of a main span, where nothing
+      // else is nearby to fight the depth buffer; 6 m near a tower, the anchorage or a shore approach, where
+      // the rider is close to other structure and the water below reads shallow — see golden-gate.ts for the
+      // same rule on the other bridge.
+      const maxEdge = isMainSpan(zgm) ? 16 : 6
+      boxSubdivided(out, 0, DECK_TOP - 0.3, zgm, 10, 0.3, (zg - za) / 2 + 0.02, ROAD, 0, maxEdge)
+      boxSubdivided(out, 0, DECK_TOP - TRUSS + 1.2, zgm, 9.5, 0.3, (zg - za) / 2 + 0.02, ROAD, 0, maxEdge)
+      for (const side of [-1, 1]) box(out, side * 10.3, DECK_TOP + 0.6, zgm, 0.08, 0.6, (zg - za) / 2, STEEL, 0)
     }
     const atTower = TOWERS.some((t) => Math.abs(zm - t) < 11)
     if (atTower) continue

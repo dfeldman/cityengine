@@ -30,13 +30,60 @@ const SETS: Record<string, V[]> = {
     ['coit', -1.1, 1.38, 2600, 0, 60, 0],
     ['tower-close', -0.25, 1.45, 330, 0, 90, -383],
     ['broadside', 0.0, 1.5, 3200, 0, 80, 0],
+    // rider-height, on the east span's deck near a tower (BUGS.md #154): the near view that shows whether
+    // the deck's own subdivision actually broke up the depth-fighting up close
+    ['deck-near-tower', -0.4, 1.52, 40, 0, 74, -383],
   ],
   tall: [['front', -1.57, 1.35, 520, 0, 160, 0], ['street', -1.2, 1.75, 180, 0, 160, 0]],
   small: [['front', -1.57, 1.45, 120, 0, 32, 0], ['three-quarter', -0.9, 1.35, 110, 0, 32, 0], ['top', -1.3, 1.25, 40, 0, 56, 0]],
   long: [['city-front', -1.57, 1.45, 260, 0, 25, 0], ['back', 1.57, 1.45, 260, 0, 25, 0], ['three-quarter', -0.9, 1.35, 240, 0, 25, 0], ['tower', -1.4, 1.4, 90, 0, 45, -20]],
   sign: [['front', -1.57, 1.5, 14, 0, 4.5, 0], ['three-quarter', -1.0, 1.45, 16, 0, 4.5, 0]],
   vehicle: [['side', 0.1, 1.45, 14, 0, 1.5, 0], ['front-three-quarter', 0.9, 1.35, 12, 0, 1.5, 1], ['high', 0.6, 0.95, 16, 0, 1, 0]],
-  mast: [['far', -1.57, 1.45, 900, 0, 150, 0], ['side', -1.05, 1.45, 700, 0, 150, 0], ['crossarm', -1.3, 1.3, 180, 0, 200, 0]],
+  /*
+   * RIDER'S EYE, for between-levels work. A stair, a ramp, a terraced bowl or a raised walkway is the one
+   * kind of thing the auto views cannot show: they frame the model's bounding box from outside it, and from
+   * up there a flat plane and a terraced park look the same. These four stand a rider ON the model, close,
+   * with the camera barely above the horizontal, and they target the model's own ORIGIN — which is where a
+   * builder of a piece of landscape puts the thing the landscape is about.
+   */
+  rider: [
+    ['bowl', -2.36, 1.50, 32, 0, 5, 0],
+    ['wall', 0.79, 1.50, 46, 0, 6, 0],
+    ['walk', 0.79, 1.30, 78, 0, 8, 0],
+    ['along', 0.79, 1.46, 130, 0, 6, 0],
+  ],
+  mast: [['far', -1.57, 1.45, 900, 0, 150, 0], ['side', -1.05, 1.45, 700, 0, 150, 0], ['crossarm', -1.3, 1.3, 180, 0, 200, 0],
+    // rider-height, close to a leg's foot (BUGS.md #154 extended to Sutro Tower, 2026-09-24): the near view
+    // that shows whether the leg/frame subdivision actually broke up the long thin quads up close
+    ['base-close', 0.4, 1.48, 22, 0, 10, 0]],
+  /*
+   * A STAIRWAY run (BUGS.md #213a): long, narrow and steep, so the useful views are DOWN THE AXIS from the
+   * head — which is the shot that decides whether the hedges step — plus one rider-height view of a single
+   * flight and one broadside that shows the green staircase against the stone one.
+   */
+  // NOTE the targets are tuned to `lyonStreetSteps`' own bounds (a 145 m run dropping 31 m northward).
+  // Another stairway needs its own numbers, or `--views=auto`: on a shorter run these all look at the sky.
+  steps: [
+    // down the axis from the head, which is the view the stairway exists for
+    ['axis-down', 1.5708, 1.287, 125, 0, 10, -30],
+    ['axis-head', 1.5708, 1.270, 61, 0, 14, 10],
+    // looking UP one flight from its foot: the framing of the reference photographs
+    ['flight-up', -1.5708, 1.51, 25, 0, 20, 40],
+    ['terrace', 1.1, 1.30, 30, 0, 17, 0],
+    // broadside, where a hedge that steps and one that ramps are told apart at a glance
+    ['broadside', 0.02, 1.42, 140, 0, 17, 0],
+  ],
+  /*
+   * A SPORTS COURT (BUGS.md #214): flat, so the view that matters is the PLAN — it is the only one that
+   * shows whether the markings table is right and whether the court sits square inside the traced polygon
+   * drawn round it. Then a three-quarter for the net and the hoops, and a rider's eye from the baseline,
+   * which is the height a court is actually passed at.
+   */
+  court: [
+    ['plan', -1.57, 0.04, 34, 0, 0, 0],
+    ['three-quarter', -0.9, 1.15, 34, 0, 1, 0],
+    ['rider', 0.45, 1.50, 26, 0, 1.4, 0],
+  ],
 }
 let views = SETS[arg('views', 'tower')] ?? SETS.tower
 /**
@@ -113,6 +160,23 @@ export async function fitForEntry(entryName: string, cityArg = 'san-francisco', 
   let ring = geom.map((g) => ({ x: (g.lon - lon0) * kx, z: (g.lat - lat0) * 110540 }))
   if (Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
   /*
+   * BUGS.md #160. `Fit.ring` is documented anticlockwise (`landmarks/fit.ts:8`) and `faceBand` relies on it:
+   * a clockwise ring turns every wall's normal inward, so backface culling makes the walls INVISIBLE while
+   * the roof and anything hand-placed still draw.
+   *
+   * `tools/bake.ts` normalises (its `ccw()` at :526, :539, :645), and so does `tools/footprint.ts` (:123) —
+   * so the LIVE GAME is fine. This path does not: it builds the ring straight from Overpass geometry, whose
+   * winding OSM does not guarantee. So only the RENDER TOOL was affected, which is the worst place for it:
+   * a run on 2026-09-24 rendered the SF Armory, saw no walls, and had to diagnose a winding bug before it
+   * could trust its own evidence. A render that lies costs more than a render that is missing.
+   */
+  let twice = 0
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length]
+    twice += a.x * b.z - b.x * a.z
+  }
+  if (twice < 0) ring = ring.reverse()
+  /*
    * Turned into the model's own frame, as the city turns it (render/landmarks.ts fitAt). The FRONT FACES +z:
    * `edgeFacing(ring, 0)` is the street front, which is what the `front` and `street` cameras look at and what
    * every district builder uses. (This comment and the one in render/landmarks.ts both said −z until
@@ -178,16 +242,39 @@ if (process.argv[1]?.endsWith('model-shots.ts')) {
   // --fit=hx,hz,height: a footprint by hand, for a builder whose shape depends on it (a pier: long and narrow)
   const byHand = arg('fit') ? arg('fit').split(',').map(Number) : null
   if (byHand) fitFor = { hx: byHand[0], hz: byHand[1], height: byHand[2] ?? 12, ring: [] as { x: number; z: number }[] }
+  /*
+   * An EXPLICIT `--views` wins over the entry's auto-framed set. It used to be silently discarded whenever
+   * `--entry` was given, so there was no way to aim a camera at anything but the model's bounding box — and
+   * a 190 m park's four auto views are all from outside it, which is the one place a level change cannot be
+   * seen from (docs/RENDERING.md: fix the tool, do not fork it). `--views=sign` and `--views=vehicle` are
+   * now usable as rider's-eye sets on a landmark entry, since both target the model's own origin up close.
+   */
+  /*
+   * `--view=<name>:<alpha>,<beta>,<radius>,<tx>,<ty>,<tz>` — ONE camera, said outright. The named sets and
+   * the auto framing both aim at the model's centre or its bounding box, and a landscape model's interesting
+   * part (a ramp off a wall, a stair between two decks) is neither. Added rather than forked, and rather
+   * than adding a park-shaped entry to SETS that no other model could use.
+   */
+  const one = arg('view')
+  const viewsAsked = (arg('views') !== '' && arg('views') !== 'auto') || one !== ''
   if (fitFor || arg('views') === 'auto') {
     const s0 = Number(arg('size', '200'))
     const fitNow = fitFor && fitFor.ring.length === 0 ? { hx: fitFor.hx, hz: fitFor.hz, height: fitFor.height } : fitFor
+    // the rebuild happens whatever the views are: the model has to stand on its own footprint either way
     const b = await page.evaluate(`window.__rebuild(${JSON.stringify(fitNow ?? { hx: s0 / 2, hz: s0 / 2, height: s0 })})`) as { min: number[]; max: number[]; triangles: number }
     const H = b.max[1]
     const R = Math.max(b.max[0] - b.min[0], b.max[2] - b.min[2], H)
     const cy = H * 0.45
-    views = [['front', Math.PI / 2 - spin, 1.42, R * 1.9, 0, cy, 0], ['corner', Math.PI / 2 - 0.9 - spin, 1.3, R * 1.8, 0, cy, 0],
+    const auto: V[] = [['front', Math.PI / 2 - spin, 1.42, R * 1.9, 0, cy, 0], ['corner', Math.PI / 2 - 0.9 - spin, 1.3, R * 1.8, 0, cy, 0],
       // (from across the street: the target on the south face, the camera 28 m out from it, looking up)
       ['street', Math.PI / 2 + 0.35 - spin, 1.72, 28, 0, Math.min(14, H * 0.35), b.max[2]], ['top', 0.6 - spin, 0.8, R * 1.8, 0, cy, 0]]
+    if (!viewsAsked) views = auto
+  }
+  if (one) {
+    const [nm, nums] = one.includes(':') ? [one.split(':')[0], one.split(':')[1]] : ['view', one]
+    const n = nums.split(',').map(Number)
+    if (n.length < 3 || n.some((q) => !Number.isFinite(q))) throw new Error('--view=<name>:<alpha>,<beta>,<radius>[,<tx>,<ty>,<tz>]')
+    views = [[nm, n[0], n[1], n[2], n[3] ?? 0, n[4] ?? 0, n[5] ?? 0]]
   }
   console.log(model, await page.evaluate('window.__modelTris'), 'triangles')
   for (const [name, ...v] of views) {

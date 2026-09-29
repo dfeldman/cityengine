@@ -7,6 +7,7 @@
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { fromRecipe } from '../recipes.ts'
+import { tower, type Tier } from '../../tower.ts'
 
 export const FIDI_3: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** 488 Folsom / Lumina Tower 1 (2015): all-glass curved slender tower, mid-blue glass, balconies, a mast on the flat top. */
@@ -53,8 +54,43 @@ export const FIDI_3: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   gatewayEastTower: fromRecipe('concrete-piers', { height: 67, wall: [0.76, 0.74, 0.7], glass: [0.26, 0.28, 0.3], base: 4 }),
   /** 350 Bush Street (1986): blue-green glass office tower rising over the preserved 1920s Curb Exchange facade (the classical portico base is not modelled). */
   threeFiftyBush: fromRecipe('glass-tower', { height: 65, wall: [0.4, 0.44, 0.46], glass: [0.28, 0.4, 0.44], base: 9, baseWall: [0.55, 0.5, 0.44] }),
-  /** CCSF Chinatown / North Beach Campus (2011): tan precast panels, dark horizontal sunshade louvers, flat top. */
-  ccsfChinatownNorthBeach: fromRecipe('midcentury-slab', { height: 65, wall: [0.72, 0.62, 0.48], glass: [0.18, 0.19, 0.2], base: 4, baseWall: [0.6, 0.52, 0.4] }),
+  /**
+   * CCSF Chinatown / North Beach Campus, 808 Kearny (2012), 14 storeys: the owner's own catch, "missed" —
+   * `midcentury-slab` drew a plain precast box, but Mapillary way-256072706-02.jpg and -03.jpg (kept, the
+   * street corner confirmed) show a 2012 tower with a distinctly LAYERED, patterned skin: alternating bands
+   * running the full width, each a few storeys tall, stepping between a paler sun-shaded band and a darker
+   * glazed band, all under a roofline that slopes down off a sharp prow corner. No slot in `facade()` says a
+   * repeating alternation of two different tiers, so this is hand-stacked `tower()` tiers rather than one
+   * `shaft`.
+   */
+  ccsfChinatownNorthBeach: (out: MeshBuilder, fit: Fit): void => {
+    const H = fit.height || 65
+    const storeys = 14
+    const groups = 7 // pairs of storeys, alternating band treatments
+    const paleWall: [number, number, number] = [0.74, 0.68, 0.56]
+    const paleGlass: [number, number, number] = [0.2, 0.21, 0.22]
+    const darkWall: [number, number, number] = [0.4, 0.37, 0.34]
+    const darkGlass: [number, number, number] = [0.16, 0.17, 0.19]
+    const tiers: Tier[] = []
+    for (let g = 0; g < groups; g++) {
+      const to = (g + 1) / groups
+      const pale = g % 2 === 0
+      tiers.push({
+        to,
+        face: pale
+          ? { kind: 'punched', wall: paleWall, glass: paleGlass, pitch: 3.4, floor: H / storeys, solid: 0.42, material: 'stucco' }
+          : { kind: 'bands', wall: darkWall, glass: darkGlass, pitch: 3.4, floor: H / storeys, solid: 0.3, depth: 0.35, material: 'concrete' },
+      })
+    }
+    tower(out, fit, {
+      height: H,
+      base: { height: H / storeys, face: { kind: 'punched', wall: darkWall, glass: darkGlass, pitch: 4, floor: H / storeys, solid: 0.3, material: 'concrete' } },
+      tiers,
+      roof: darkWall,
+      // the sliced parapet reads as the sharp, sloped prow corner in both kept frames
+      crown: { kind: 'sliced', height: H * 0.03, colour: darkWall },
+    })
+  },
   /** California Bank and Trust / former American Trust Company (1959): pale midcentury office tower, punched window grid, flat top. */
   californiaBankAndTrust: fromRecipe('midcentury-slab', { height: 61, wall: [0.8, 0.78, 0.73], glass: [0.24, 0.26, 0.29], base: 5 }),
 }

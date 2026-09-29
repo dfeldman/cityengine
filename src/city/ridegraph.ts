@@ -159,6 +159,43 @@ function degrees(edges: Edge[]): Map<number, number> {
   return d
 }
 
+/**
+ * BUGS.md #194. An endpoint moved to a cluster centre can land PAST the vertices next to it: the centre of a
+ * junction cluster is up to a span away, and on a 10 m stub or the last few metres of a street into the
+ * junction it overshoots the neighbouring vertex. Nothing removed the vertices it passed, so the polyline
+ * ran out and came back — 43 vertices on 41 SF ride edges turned more than 120°, a rider riding the same
+ * ground twice, and a hazard on a fast descent. (Trimming rather than capping the move: a cap would leave
+ * the edge short of the junction, which is a gap, and the junction's own position is what #52 depends on.)
+ *
+ * So: after moving an end, drop the vertices that are now behind it — those the new endpoint has stepped
+ * back over (the step onto the endpoint reverses the line by more than 120°), and only within the distance
+ * the endpoint moved, so a real hairpin further along the street is never touched. Heights go with them.
+ */
+const REVERSE = Math.cos(120 * (Math.PI / 180)) // dot below this is a doubling back, not a bend
+function trimBehind(points: Point[], heights: number[] | undefined, fromStart: boolean, moved: number)
+  : { points: Point[]; heights?: number[] } {
+  if (SPIKE_ARM <= 0) return { points, heights }
+  const pts = fromStart ? [...points].reverse() : [...points]
+  const hs = heights && heights.length === points.length ? (fromStart ? [...heights].reverse() : [...heights]) : undefined
+  // pts ends at the moved endpoint; drop the vertex before it while the last step doubles back over it
+  for (let guard = 0; guard < 8 && pts.length > 2; guard++) {
+    const end = pts[pts.length - 1]
+    const v = pts[pts.length - 2]
+    const prev = pts[pts.length - 3]
+    const inx = v.x - prev.x, inz = v.z - prev.z
+    const outx = end.x - v.x, outz = end.z - v.z
+    const li = Math.hypot(inx, inz), lo = Math.hypot(outx, outz)
+    if (li < 1e-6 || lo < 1e-6) break
+    if ((inx * outx + inz * outz) / (li * lo) > REVERSE) break
+    if (distance(v, end) > moved + 1) break // beyond the reach of the move: the street's own line
+    pts.splice(pts.length - 2, 1)
+    hs?.splice(hs.length - 2, 1)
+  }
+  return fromStart
+    ? { points: pts.reverse(), heights: hs?.reverse() }
+    : { points: pts, heights: hs }
+}
+
 /** Every edge with a node remapped moved onto its new node; edges left joining a node to itself go. */
 function reattach(edges: RideEdge[], moved: Map<number, { id: number; at: Point }>): RideEdge[] {
   const out: RideEdge[] = []
@@ -169,10 +206,24 @@ function reattach(edges: RideEdge[], moved: Map<number, { id: number; at: Point 
     const a = na?.id ?? e.a
     const b = nb?.id ?? e.b
     if (a === b) continue // a connector inside the cluster, or a stub across a median: it is the junction now
-    const points = [...e.points]
-    if (na) points[0] = na.at
-    if (nb) points[points.length - 1] = nb.at
-    out.push({ ...e, a, b, points, length: lengthOf(points) })
+    let points = [...e.points]
+    let heights = e.heights && e.heights.length === e.points.length ? [...e.heights] : e.heights
+    if (na) {
+      const d = distance(points[0], na.at)
+      points[0] = na.at
+      const t = trimBehind(points, heights?.length === points.length ? heights : undefined, true, d)
+      points = t.points
+      if (t.heights) heights = t.heights
+    }
+    if (nb) {
+      const d = distance(points[points.length - 1], nb.at)
+      points[points.length - 1] = nb.at
+      const t = trimBehind(points, heights?.length === points.length ? heights : undefined, false, d)
+      points = t.points
+      if (t.heights) heights = t.heights
+    }
+    out.push({ ...e, a, b, points, length: lengthOf(points),
+      heights: heights && heights.length === points.length ? heights : undefined })
   }
   return out
 }
@@ -228,7 +279,79 @@ export function collapseClusters(edges: RideEdge[], ids = new Ids(), wide = fals
       sx += p.x; sz += p.z
     }
     if (Math.hypot(x1 - x0, z1 - z0) >= clusterSpan) continue
-    const c = { id: ids.nextNode(), at: { x: sx / members.length, z: sz / members.length } }
+    /*
+     * BUGS.md #183. The centre is the members' centroid PUT BACK ON THE THROUGH STREET'S AXIS.
+     *
+     * The bare centroid is what shunted a rider off California Street. California crosses Leidesdorff at one
+     * clean OSM node, but Leidesdorff's two junction nodes 9 m apart cluster, and the centroid of the pair
+     * sits 4.7 m to the SIDE of California. Moving California's two edge-ends onto that point leaves each
+     * with a short kinked stub, `departureBearing` reads the kink over its first 8 m, and California's own
+     * continuation is offered at 64° while the alley is offered at 57° — so "straight on" took the alley,
+     * every time, downhill at speed.
+     *
+     * So: find the cluster's through axis — the pair of arms leaving most nearly opposite one another,
+     * longest first — and slide the centroid along the perpendicular onto it. The centre stays inside the
+     * junction (it only moves within the cluster's own span) and the street that runs through it stays
+     * straight, which is what the rider is steering by.
+     */
+    const inCluster = new Set(members)
+    const arms: { dir: Point; len: number; from: Point }[] = []
+    for (const e of edges) {
+      const aIn = inCluster.has(e.a)
+      const bIn = inCluster.has(e.b)
+      if (aIn === bIn) continue
+      const pts = aIn ? e.points : [...e.points].reverse()
+      let i = 1
+      while (i < pts.length - 1 && distance(pts[0], pts[i]) < 12) i++
+      const dx = pts[i].x - pts[0].x
+      const dz = pts[i].z - pts[0].z
+      const len = Math.hypot(dx, dz)
+      if (len > 1e-6) arms.push({ dir: { x: dx / len, z: dz / len }, len: e.length, from: pts[0] })
+    }
+    let axis: Point | null = null
+    let bestLen = 0
+    for (let i = 0; i < arms.length; i++) {
+      for (let j = i + 1; j < arms.length; j++) {
+        // near-opposite: the two halves of one street through the junction
+        const dot = arms[i].dir.x * arms[j].dir.x + arms[i].dir.z * arms[j].dir.z
+        if (dot > -Math.cos(25 * DEG)) continue
+        const len = Math.min(arms[i].len, arms[j].len)
+        if (len <= bestLen) continue
+        bestLen = len
+        const dx = arms[i].dir.x - arms[j].dir.x
+        const dz = arms[i].dir.z - arms[j].dir.z
+        const n = Math.hypot(dx, dz)
+        axis = { x: dx / n, z: dz / n }
+      }
+    }
+    let cx = sx / members.length
+    let cz = sz / members.length
+    if (axis !== null) {
+      const ax = axis
+      /*
+       * The line to put the centre on runs through the MEAN of the ends of every arm that runs along the
+       * axis, not through any one member. That distinction is what keeps a dual carriageway working: its
+       * four lane-ends are symmetric about the median, so their mean is on the median and the centre stays
+       * exactly where #52 put it. Anchoring on a single member would slide the junction onto ONE lane's
+       * line and hand the other a full median's worth of kink — the very defect this is fixing.
+       */
+      let ax0 = 0
+      let az0 = 0
+      let n = 0
+      for (const arm of arms) {
+        if (Math.abs(arm.dir.x * ax.x + arm.dir.z * ax.z) < Math.cos(25 * DEG)) continue
+        ax0 += arm.from.x
+        az0 += arm.from.z
+        n++
+      }
+      if (n > 0) {
+        const anchor = { x: ax0 / n, z: az0 / n }
+        const t = (cx - anchor.x) * ax.x + (cz - anchor.z) * ax.z
+        cx = anchor.x + ax.x * t
+        cz = anchor.z + ax.z * t
+      }
+    }
+    const c = { id: ids.nextNode(), at: { x: cx, z: cz } }
     for (const n of members) moved.set(n, c)
   }
   return reattach(edges, moved)
@@ -249,14 +372,86 @@ function join(e1: RideEdge, e2: RideEdge, node: number, id: number): RideEdge {
   const p = e1.b === node ? e1 : reverseEdge(e1)
   const q = e2.a === node ? e2 : reverseEdge(e2)
   const points = [...p.points, ...q.points.slice(1)]
+  let heights = p.heights && q.heights && p.heights.length === p.points.length && q.heights.length === q.points.length
+    ? [...p.heights, ...q.heights.slice(1)] : undefined
   const longer = p.length >= q.length ? p : q
+  if (heights && heights.length !== points.length) heights = undefined
   return {
     ...longer,
     id, a: p.a, b: q.b, points, length: lengthOf(points),
-    heights: p.heights && q.heights ? [...p.heights, ...q.heights.slice(1)] : undefined,
+    heights,
     name: p.name ?? q.name,
     over: [...p.over, ...q.over],
   }
+}
+
+/**
+ * BUGS.md #194, the last pass: no ride edge doubles back on itself.
+ *
+ * `reattach` trims the vertices an endpoint stepped over as it moves (above), but a TWO-point stub has no
+ * interior vertex to trim — its reversal only appears once `contract` makes that endpoint an interior vertex
+ * of a longer edge, and the same is true of the split points `dropSidePaths` and `linkCarriageways` make. So
+ * the finished polylines are swept once: where a vertex turns more than 120°, the SHORT arm of the spike is
+ * the scrap and its outer vertex goes.
+ *
+ * The short-arm test is what keeps a real switchback: Lombard's hairpins and the Presidio's zig-zags turn
+ * this far too, but both of their arms are a street long. Only a spike with an arm under `SPIKE_ARM` metres
+ * — an overshot junction centre, a stub folded into one — is removed, and never an endpoint, so no node
+ * moves and the graph's topology is untouched.
+ */
+/*
+ * The threshold, and why it is read this way. 30 m comes from the measurement: every one of San Francisco's
+ * 43 spikes had an arm under 30 m except three, and those three (Montgomery on Telegraph Hill, a Presidio
+ * service road, a Twin Peaks service road) turn on 32 m arms and read as surveyed switchbacks. Raising it
+ * further buys one more edge and starts eating real hairpins, so this is where the line is drawn.
+ *
+ * `process` DOES NOT EXIST IN THE BROWSER, and this module is loaded by the game, not only by the bake: a
+ * bare `process.env` here threw `ReferenceError: process is not defined` at load and took the whole app
+ * down. A tuning knob in shared code has to be read in a way that works on both sides — hence
+ * `globalThis.process`, which is simply undefined in a browser and gives the default.
+ */
+const SPIKE_ARM = Number(
+  (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env?.SPIKE_ARM ?? 30,
+)
+export function despike(edges: RideEdge[]): RideEdge[] {
+  if (SPIKE_ARM <= 0) return edges // the counterfactual: SPIKE_ARM=0 measures the graph as it was before #194
+  return edges.map((e) => {
+    const pts = [...e.points]
+    const hs = e.heights && e.heights.length === e.points.length ? [...e.heights] : undefined
+    /*
+     * A PATH is allowed its zigzags. Of the run graph's 168 reversals, 121 are on footways, steps, paths and
+     * pedestrian ways, and a stairway or a hillside trail is genuinely mapped as single-vertex zigzags with
+     * 5-25 m landings — the Filbert Steps, the Presidio switchbacks. Cutting those corners would send the
+     * runner across the hillside instead of down the path, so on a path only a short scrap goes; the 30 m
+     * figure is for streets, where a 20 m single-vertex reversal is always an artefact.
+     */
+    const arm = e.foot || RUN_EXTRA.has(e.kind ?? '') ? Math.min(SPIKE_ARM, 8) : SPIKE_ARM
+    let cut = 0
+    for (let guard = 0; guard < 64; guard++) {
+      let found = -1
+      let drop = -1
+      for (let i = 1; i < pts.length - 1; i++) {
+        const inx = pts[i].x - pts[i - 1].x, inz = pts[i].z - pts[i - 1].z
+        const outx = pts[i + 1].x - pts[i].x, outz = pts[i + 1].z - pts[i].z
+        const li = Math.hypot(inx, inz), lo = Math.hypot(outx, outz)
+        if (li < 1e-6 || lo < 1e-6) continue
+        if ((inx * outx + inz * outz) / (li * lo) > REVERSE) continue
+        if (Math.min(li, lo) > arm) continue // a surveyed hairpin, not a scrap
+        // the outer end of the short arm is the overshoot; an endpoint is a junction and stays, so then the
+        // spike vertex itself goes
+        const outer = li <= lo ? i - 1 : i + 1
+        drop = outer > 0 && outer < pts.length - 1 ? outer : i
+        found = i
+        break
+      }
+      if (found < 0 || pts.length <= 2) break
+      pts.splice(drop, 1)
+      hs?.splice(drop, 1)
+      cut++
+    }
+    if (cut === 0) return e
+    return { ...e, points: pts, length: lengthOf(pts), heights: hs }
+  })
 }
 
 /**
@@ -995,15 +1190,43 @@ export function linkCarriageways(edges: RideEdge[], ids: Ids): RideEdge[] {
   return out
 }
 
+/**
+ * Two edges at one node must start from the same point. `buildGraph` takes a node's position from the FIRST
+ * edge that claims it, so where two ends disagree the rider crossing that junction jumps from one to the
+ * other — a 3.3 m teleport at one Marais node (found while measuring #194: San Francisco has none, the
+ * Marais one is left over from a synthetic link made early in the chain). Each node's ends are averaged and
+ * both edges are pulled onto it; it is a hand's breadth, and it cannot be seen except as the jump it stops.
+ */
+export function snapEnds(edges: RideEdge[]): RideEdge[] {
+  const sum = new Map<number, { x: number; z: number; n: number }>()
+  const add = (n: number, p: Point): void => {
+    const s = sum.get(n) ?? { x: 0, z: 0, n: 0 }
+    s.x += p.x; s.z += p.z; s.n++
+    sum.set(n, s)
+  }
+  for (const e of edges) { add(e.a, e.points[0]); add(e.b, e.points[e.points.length - 1]) }
+  const at = new Map<number, Point>()
+  for (const [n, s] of sum) at.set(n, { x: s.x / s.n, z: s.z / s.n })
+  return edges.map((e) => {
+    const A = at.get(e.a)!
+    const B = at.get(e.b)!
+    if (distance(A, e.points[0]) < 0.01 && distance(B, e.points[e.points.length - 1]) < 0.01) return e
+    const points = [...e.points]
+    points[0] = A
+    points[points.length - 1] = B
+    return { ...e, points, length: lengthOf(points) }
+  })
+}
+
 /** The whole chain. */
 export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrides): RideGraph {
   const ids = new Ids()
   const blocked = overrides?.buildings ? footprintTest(overrides.buildings) : undefined
   const classified = mode === 'bike' ? joinDeadEnds(classify(edges, mode), edges, blocked) : classify(edges, mode)
   let es = pruneStubs(largest(mode === 'bike' ? dropSidePaths(classified, ids, blocked) : classified))
-  es = contract(collapseClusters(es, ids, overrides?.wideJunctions), ids)
+  es = despike(contract(collapseClusters(es, ids, overrides?.wideJunctions), ids))
   es = mergeParallel(es, ids)
-  es = largest(contract(collapseClusters(es, ids, overrides?.wideJunctions), ids))
+  es = largest(despike(contract(collapseClusters(es, ids, overrides?.wideJunctions), ids)))
   for (const o of overrides?.roundabouts ?? []) es = applyRoundabout(es, o, ids, overrides!.heightAt)
   // and the stubs a dropped path leaves behind, pruned as the chain prunes them the first time
   // `?.` on roundabouts too: the optional chain stops at `overrides`, so an overrides object without the field
@@ -1014,6 +1237,8 @@ export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrid
   if (mode === 'bike') es = linkCarriageways(es, ids)
   // and the little loops all that can leave (BUGS.md #44), and the stubs they leave in turn
   es = pruneStubs(dropLoops(es))
+  // and last of all, no edge doubling back on itself (BUGS.md #194), and every edge meeting its junction
+  es = despike(snapEnds(es))
   return buildGraph(es) as RideGraph
 }
 

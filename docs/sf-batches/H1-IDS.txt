@@ -1,0 +1,29 @@
+way/135103715,"UCSF Weill Institute for Neuroscience (Mission Bay)",civic,,700.0
+way/274542537,"UCSF Nancy and Stephen Grand Building (Mission Bay)",civic,,700.0
+way/1243657270,"UCSF Nancy Friend Pritzker Psychiatry Building (Mission Bay)",civic,,700.0
+way/256633745,"UCSF Medical Center at Mount Zion",civic,,700.0
+way/108409080,"Headlands Center for the Arts",civic,,400.0
+way/112433952,"Sharon Art Studio",civic,,400.0
+way/145027140,"Community Living Center",civic,,400.0
+way/165420859,"Julius Kahn Clubhouse",civic,,400.0
+way/167176657,"Third Space",civic,,400.0
+way/206652621,"Chinatown Public Health Center",civic,,400.0
+way/218258617,"USPS Townsend Street úcility",civic,,400.0
+way/256633744,"Hellman Building",civic,,400.0
+way/256633746,"Helen Diller úmily Comprehensive Cancer Center",civic,,400.0
+way/260462493,"Boys & Girls Club",civic,,400.0
+way/261102266,"Mission Neighborhood Health Center",civic,,400.0
+way/261105868,"Seven Tepees Youth Program",civic,,400.0
+way/261113157,"Laborers International Union",civic,,400.0
+way/264494855,"The Waller Center",civic,,400.0
+way/267692250,"San Francisco Fire Station ",civic,,,,,300.0,pending
+way/276861490,San Francisco Mandarin Baptist Church Chinese School"",civic,,400.0
+way/276880798,"Jewish úmily and Children's Services",civic,,400.0
+way/278113978,"Self Help for the Elderly",civic,,400.0
+way/287700862,"Talisman Banquet Hall",civic,,400.0
+way/403167643,"Chinese Hospital",civic,,400.0
+way/862431309,"EBMUD Outfall Transition/Drop Structure",civic,,400.0
+way/960975186,"Noisebridge",civic,,400.0
+way/1164266280,"USS Pampanito íucation Office",civic,,400.0
+way/1164266281,"USS Pampanito Admissions",civic,,400.0
+way/1252742107,"Bayfront Medical Building",civic,,400.0

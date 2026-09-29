@@ -44,8 +44,27 @@ select.sr-city {
 }
 select.sr-city:focus-visible { outline: 3px solid var(--page); outline-offset: 2px; }
 select.sr-city { top: 14px; width: 250px; max-width: 70vw; }
-select.sr-landmarks { top: 66px; }
-select.sr-routes { top: 118px !important; }
+/*
+ * The landmarks menu used to sit at 66px and the routes menu below it at 118px. The menu is gone (#168) but
+ * its ROW was still reserved, so the routes menu hung 52px below the city menu with nothing between them
+ * (owner: "we still have the spot for the landmarks dropdown, even though it is empty"). These are fixed
+ * elements with their own tops, not a stack, so closing the gap means moving routes up into the free row.
+ */
+
+/*
+ * The landmark SEARCH (BUGS.md #168), over the top of the large map and only there: a dropdown of several
+ * hundred names is unusable, and the owner did not want it sitting over the city all ride either.
+ */
+input.sr-mapsearch {
+  position: fixed; left: 50%; top: 50%; transform: translate(-50%, calc(-50% - 43vmin - 26px)); z-index: 7;
+  display: none; width: min(330px, 70vw); font: 600 15px/1.2 var(--font); color: var(--text);
+  background: var(--panel-solid); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 10px 14px; min-height: var(--tap); box-shadow: var(--shadow); appearance: none; -webkit-appearance: none;
+}
+input.sr-mapsearch.on { display: block; }
+input.sr-mapsearch::placeholder { color: var(--muted); }
+input.sr-mapsearch:focus-visible { outline: 3px solid var(--page); outline-offset: 2px; }
+select.sr-routes { top: 66px !important; }
 
 /* bike or run: a two-way switch under the menus (reloads into the other ride graph) */
 .sr-mode { position: fixed; top: 170px; left: 50%; transform: translateX(-50%); z-index: 5; display: flex;

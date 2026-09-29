@@ -5,10 +5,8 @@
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { fromRecipe } from '../recipes.ts'
-import { tower, towerRing, type TowerSpec } from '../../tower.ts'
+import { tower, towerRing } from '../../tower.ts'
 import { marquee, bladeSign, edgeFacing } from '../../parts.ts'
-
-const spec = (s: TowerSpec) => (out: MeshBuilder, fit: Fit): void => tower(out, fit, s)
 
 export const TIERA_2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** Academy of Art University, New Montgomery St (1907-ish): a tan Edwardian block with white-trimmed bay windows, floor after floor. */
@@ -77,14 +75,6 @@ export const TIERA_2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     const e = edgeFacing(ring, 0)
     bladeSign(out, ring[e].x, 10, ring[e].z, 6, 'GLAD TIDINGS', { width: 1.2, body: [0.15, 0.14, 0.14] })
   },
-
-  /** Church for the Fellowship of All Peoples (1943, Larkin St): a tall white octagonal bell tower over three arched doors. */
-  churchForFellowshipOfAllPeoples: spec({
-    height: 18,
-    tiers: [{ to: 1, face: { kind: 'punched', wall: [0.9, 0.88, 0.82], glass: [0.2, 0.22, 0.24], pitch: 2.6, solid: 0.6, floor: 4.5, arched: true, material: 'stucco' } }],
-    roof: [0.4, 0.15, 0.13],
-    crown: { kind: 'pyramid', height: 4, inset: 1, colour: [0.4, 0.15, 0.13] },
-  }),
 
   /** Fo Guang Shan San Bao Temple: a modest converted Chinatown storefront. */
   foGuangShanSanBaoTemple: fromRecipe('chicago-block', { height: 12, wall: [0.78, 0.2, 0.18], material: 'stucco', baseWall: [0.15, 0.12, 0.1] }),

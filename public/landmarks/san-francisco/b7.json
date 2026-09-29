@@ -1,0 +1,13 @@
+[
+  { "osm": ["way/257974844"], "procedural": "b7_school_257974844", "name": "Kinmon Gakuen", "height": 11 },
+  { "osm": ["way/247749446"], "procedural": "b7_restaurant_247749446", "name": "Fleur de Lys", "height": 14 },
+  { "osm": ["way/256054993"], "procedural": "b7_midrise_256054993", "name": "573-577 O'Farrell Street", "height": 41 },
+  { "osm": ["way/939497446"], "procedural": "b7_apartments_939497446", "name": "Modera Rincon Hill", "height": 40 },
+  { "osm": ["way/256045052"], "procedural": "b7_midrise_256045052", "name": "555-575 Polk Street", "height": 41 },
+  { "osm": ["way/256755970"], "procedural": "b7_apartments_256755970", "name": "Court Royal", "height": 50 },
+  { "osm": ["way/148428438"], "procedural": "b7_apartments_148428438", "name": "Unnamed apartment tower (way/148428438)", "height": 68 },
+  { "osm": ["way/1247989050"], "procedural": "b7_apartments_1247989050", "name": "Quincy", "height": 49 },
+  { "osm": ["way/259078183"], "procedural": "b7_midrise_259078183", "name": "1958 Vallejo Street", "height": 42 },
+  { "osm": ["way/256989711"], "procedural": "b7_midrise_256989711", "name": "1835 Franklin Street", "height": 46 },
+  { "osm": ["way/257004416"], "procedural": "b7_apartments_257004416", "name": "Washington Tower", "height": 36 }
+]

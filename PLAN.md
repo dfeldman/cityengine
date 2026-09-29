@@ -8,6 +8,23 @@ Anything marked **bug** is something visibly broken, not merely missing.
 
 ---
 
+## ⚑ Change of direction, 2026-09-28 — read [DIRECTION.md](DIRECTION.md) first
+
+Street Runner is becoming a **bike food-delivery game** over more, larger cities, with buildings made from
+**facade clusters** rather than a model per building, and a new map format with **patches** so a street fix
+no longer needs a re-bake. Where this file's goals conflict with DIRECTION.md, DIRECTION.md wins; this file
+stays the record of what was built and the list of known defects.
+
+**Now:** the map format, [docs/MAP-FORMAT.md](docs/MAP-FORMAT.md) — step 1 of its §12 is done (spec, `src/map/`,
+`npm run map:v3`, `?map=v3`, patches). **Next is §12 step 2**: convert the landmark manifests into the first
+patch sets and have `prepare.ts` apply patches. The owner's rule for this phase: *refactor the bake and the
+renderer to fit the new plans, without major changes to what the game does yet.*
+
+The per-building modelling queue (SF_PLAN.md §10, docs/sf-queue.csv, docs/LADDER.md's refacing ladder) is
+**paused as the default method**, not deleted — landmarks that need a model still get one.
+
+---
+
 ## User feedback, 2026-09-21 (steers the order below)
 
 - **Keep prioritising Paris.** Paris is "pretty good"; SF and New York are "ok, not realistic but sort of
@@ -2025,6 +2042,131 @@ history — so there is no risk to the current state of the game.
 ---
 
 ## Soon
+
+### 0a. Building LOD is a Paris number, and flat cities will break it
+Owner, 2026-09-23: *"buildings are visible from much longer distances — buildings are taller, the ground is
+flatter. So it's important to have LOD, and better models generally."*
+
+**This corrects my framing.** I had the hard-city problem down as photography — that a 300 m tower cannot be
+photographed from street level. The owner expects the improved Mapillary framing to handle most tall
+buildings. The real difference is **sightlines**: flat ground plus tall buildings means you see the city
+from kilometres away, and everything downstream of that changes.
+
+What exists today (`src/render/city.ts`, `src/render/landmarks.ts`):
+
+- **`VIEW = 3` tiles** built at full detail around the rider.
+- **`MID = 6` tiles — "massing out to ~1200 m"**, from PARIS_EXPAND §2.
+- A **skyline** system: distant landmarks moved to 800 m along their true bearing and scaled by
+  `skylineBoost(d)`, giving way to the real model as the rider approaches.
+
+So there are two building levels, full and massing, plus billboards **for named landmarks only**. Ordinary
+buildings get nothing beyond 1200 m.
+
+**1200 m is a Paris number.** Paris is six storeys and has relief; beyond the mid ring there is genuinely
+little to see. Chicago and New York are the opposite case — flat ground, 200–400 m towers — where the
+skyline is the defining view and it starts at 5 km, four times past where the massing ring stops.
+
+Three consequences, in the order they probably need doing:
+
+1. **The mid ring's reach must be a property of the city, not a constant.** It should follow from the
+   building stock — something like the height of the tallest few buildings and the terrain's relief — rather
+   than being tuned once for the Marais.
+2. **Two levels is not enough over that range.** Between full detail and flat massing there needs to be at
+   least one more, and the skyline stand-in mechanism should probably extend to ordinary tall buildings, not
+   just named landmarks.
+3. **"Better models" means better SILHOUETTES, which inverts the modelling priority.** At two kilometres a
+   rider sees massing, crown and colour — never an arcade, never a window rhythm, never a material. All the
+   slot-kit work serves the near field. The far field is served by getting the top of the building and its
+   overall mass right, which is cheap and which nothing currently checks. Worth noting that the review page's
+   verdicts will be near-field judgements unless it also shows a distant view.
+
+**Measure before building.** The honest first step is a distant shot of downtown SF from 2–5 km with the
+current settings, to see what the massing ring actually produces — SF is tall enough and has enough flat
+ground near the waterfront to show the problem without waiting for a harder city. See
+[[streetrunner-city-pipeline]] for why the fix has to be per-city rather than a retune.
+
+### 0b. A flags and banners library — BACKLOG (owner, 2026-09-23)
+
+> *"Eventually we will need a library for flags and banners, which are EVERYWHERE in SF. Mainly US flags but
+> of course there are buildings with flags of many countries."*
+
+Not started. Recorded now so the **signage** work leaves room for it, because they are the same mechanism:
+a textured quad with alpha, LOD-gated, applied to a building. A flag is a sign that moves.
+
+**The kinds, which differ in rigging rather than in texture:**
+
+- **Pole from the facade**, angled up and out over the pavement — the commonest by far, on hotels, clubs and
+  civic buildings.
+- **Roof mast**, vertical, read against the sky and therefore visible from much further than anything at
+  street level.
+- **A row of poles** — consulates, hotels and convention centres fly three or more, often one national and
+  two others. The row is the recognisable thing, not any one flag.
+- **Hanging banners** — museum and theatre banners down a facade, and civic banners on lamp posts. Vertical,
+  fabric, usually a name or an exhibition.
+
+**Design notes for whoever builds it:**
+
+- **Mostly US flags**, so make that the cheap default and other countries a named option. A small atlas of
+  flag textures, not a mesh each.
+- **Do not simulate cloth.** A gently pre-curved quad reads as a flag at riding speed and costs nothing; a
+  simulation costs everything and is invisible. If any motion is wanted, it should be a shader wobble on a
+  static mesh.
+- **LOD-gated like signs**, and note the same inversion the signage work found: a roof mast against the sky
+  is visible far beyond the distance at which a facade flag is worth drawing.
+- **Reuse the flat-sign path** (`tools/signgen`, the flat alpha-texture type and its atlas). If a flag needs
+  a parallel mechanism, something is wrong with the sign path's shape.
+
+### 0. Triage: which buildings the kit cannot express
+Decided 2026-09-23. The slot-based `facade()` API is aimed at about 90% of downtown buildings; the rest are
+meant to go to **Opus for bespoke modelling with raw primitives**, and that is a deliberate outcome rather
+than a gap to close. What is missing is the **triage step that identifies them**, so they are routed away
+from the kit instead of being flattened into it.
+
+The forms the kit cannot say, and should not be stretched to:
+
+- **Curved or round plans** — a slot facade is flat walls on polygon edges by construction.
+- **Twisted or tapering towers** — Salesforce Tower is the worked example (hand-modelled, 2026-09-23).
+- **Checkerboard in–out grid facades** — depth varying per bay, not per storey.
+- **Full temple fronts** where the facade *is* the columns, with no wall behind to slot into.
+
+Two things follow. First, **the classifier needs a flag for these** — from the footprint plus the
+photograph — so the queue can send them up a tier instead of down.
+
+**Measured 2026-09-23, and it settles the design.** `tools/ring-forms.ts` scored 621 downtown SF buildings
+and flagged 4; all of its core hits were buildings already hand-modelled by eye — 101 California, 555
+California, 388 Market, and Salesforce Tower and the Transit Center when widened. It rediscovers from ring
+geometry alone, with no name and no photograph, exactly the buildings people routed off the kit. So the
+detection works and **San Francisco is nearly exhausted**: one genuinely new building out of 621.
+
+The owner's read (2026-09-23): *"outside SF, there are very few custom buildings anyway. But there WILL be
+hundreds more."* That is the whole case for automating this. A hand-curated sample is the right tool for a
+handful in one city and the wrong tool for hundreds across many, so **`ring-forms.ts` should stop being an
+analysis script and become a stage of the classifier** — run per city during the bake, writing a flag onto
+the building record, so triage happens for free on every building before any model is spent. The scan costs
+nothing per building and needs no photograph, which is what makes it affordable at that scale.
+
+Two known limits to carry into that work, both self-reported by the sweep:
+
+- **Counting vertices is worthless.** Downtown is full of 40-vertex outlines that are pure right-angle jogs,
+  and the roundest building in the core scores 75% orthogonal with zero arc because a mapper drew the
+  cylinder as a hundred 1 m steps. OSM's *representation* of a curve varies more than curves do, so the
+  `stair` score exists specifically to catch that, and a new city will need it checked again.
+- **Per-bay depth is badly under-detected.** 555 California is visible only because a mapper happened to
+  draw its bays; a Chinatown building's bay windows are just as real and completely absent from its ring.
+  Footprint geometry cannot be the only input.
+
+**DONE 2026-09-23.** The scoring half of `tools/ring-forms.ts` is now `src/city/ring-forms.ts` and the BAKE
+runs it on every building in every city, writing `PackedBuilding.form` — `{ fired, arc, stair, saw, ortho }`,
+which score fired and all the values, not a boolean — and a `form` column on `docs/<city>-archetypes.csv`.
+The tool still prints its report and its output is byte-identical to before the extraction, which is the
+proof that no threshold moved. Every number is in `RingFormThresholds` and a city overrides any of them
+through `CitySpec.ringForms`, because the first limit above is about mapping CONVENTIONS and those are
+per-city. The second limit is unchanged and the flag does not pretend otherwise: it is a cheap first pass.
+
+Second, **`facade()` must stay optional**: a model told to ALWAYS use the kit produces a generic box
+on a distinctive building, which is exactly the failure the kit exists to fix. Sonnet is capable of detailed
+custom modelling when told to do it; the brief has to permit that, and mixing `facade()` with hand-placed
+parts on one building has to work.
 
 ### 1. A library of houses
 Everything is an unlimited-length facade, which is right for a terrace and wrong for anywhere with detached

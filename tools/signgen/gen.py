@@ -12,6 +12,10 @@ height asked for, and write a GLB.
     blender -b -P tools/signgen/gen.py -- --text=Ghirardelli --height=5 \
         --font="/System/Library/Fonts/Supplemental/Georgia.ttf" --out=public/models/signs/ghirardelli.glb
 
+Only for letters that genuinely STAND OFF the wall and catch the light. Almost every sign is flat, and a flat
+sign is two triangles and a texture made in the browser with no Blender at all -- see render/sign-plates.ts
+and the `flat` type in render/landmarks/signage.ts. This path costs thousands of triangles per word.
+
 The mesh is Y-up, centred on the origin in x and y, with its front face at z = 0 and the extrusion going back
 into -z, so a landmark entry can place it against a scaffold without fiddling with offsets.
 """
@@ -26,6 +30,14 @@ def arg(name: str, default: str = '') -> str:
         if a.startswith(f'--{name}='):
             return a.split('=', 1)[1]
     return default
+
+
+def colour(text: str, default: tuple) -> tuple:
+    """#rrggbb to linear-ish floats; empty gives the default."""
+    t = text.strip().lstrip('#')
+    if len(t) != 6:
+        return default
+    return tuple((int(t[i:i + 2], 16) / 255.0) ** 2.2 for i in (0, 2, 4))
 
 
 def main() -> None:
@@ -129,9 +141,17 @@ def main() -> None:
     mat = bpy.data.materials.new('sign')
     mat.use_nodes = True
     bsdf = mat.node_tree.nodes['Principled BSDF']
-    bsdf.inputs['Base Color'].default_value = (0.80, 0.80, 0.81, 1)
-    bsdf.inputs['Metallic'].default_value = 0.6
-    bsdf.inputs['Roughness'].default_value = 0.45
+    # the letters' own colour, and what they are made of. Painted wooden or plastic letters want metallic 0
+    # and a high roughness; polished steel or gilt wants the opposite, which is the default here.
+    col = colour(arg('colour', ''), (0.80, 0.80, 0.81))
+    bsdf.inputs['Base Color'].default_value = (col[0], col[1], col[2], 1)
+    bsdf.inputs['Metallic'].default_value = float(arg('metallic', '0.6'))
+    bsdf.inputs['Roughness'].default_value = float(arg('roughness', '0.45'))
+    # `--lit=self`: the letter FACES emit, which is what a channel-letter or neon sign does after dark. The
+    # bulbs already emit on their own. (Rigged with the flat path's `lit` field; there is no night view yet.)
+    if arg('lit', 'none') == 'self':
+        bsdf.inputs['Emission Color'].default_value = (col[0], col[1], col[2], 1)
+        bsdf.inputs['Emission Strength'].default_value = 2.0
     ob.data.materials.append(mat)
     bpy.context.view_layer.objects.active = ob
 

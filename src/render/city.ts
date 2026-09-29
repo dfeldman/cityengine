@@ -20,6 +20,7 @@ import { archSize, passageArches } from './passages.ts'
 import { inOutline } from './bridge-structures.ts'
 import { facadeMaterial } from './facade-material.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
+import { court } from './sports.ts'
 import { groundLayerMaterial, roadMaterial } from './road-material.ts'
 import { addShadow, shadowMaterial, shadowOffset, SHADOW_Y } from './shadows.ts'
 import { DAYLIGHT } from './facade-material.ts'
@@ -36,7 +37,10 @@ import { planFacade, type StyleId } from '../city/facade.ts'
 import { Terrain } from '../city/terrain.ts'
 import { Carriageways } from '../city/carriageways.ts'
 import { bartEntrance, sfTrashCan, chainBollard, streetBanners } from './sf/furniture.ts'
-import { unpackPoints, type CityPackage, type PackedArea, type PackedBuilding, type PackedEdge, type PackedFurniture, type PackedRail } from '../city/package.ts'
+import { waterLookup } from './watermask.ts'
+import { beachTint, buildShore, revetmentBand, shoreDistance, type ShoreIndex } from './shore.ts'
+import { plog } from '../profile.ts'
+import { unpackPoints, type CityPackage, type PackedArea, type PackedCourt, type PackedBuilding, type PackedEdge, type PackedFurniture, type PackedRail } from '../city/package.ts'
 import { BRIDGE_STYLES, deck, isRaised, railDeck } from './bridges.ts'
 import { TILE, nearOf, tileKey, tileOf, tilesOfLine, type Near, type TileData, type TileSource } from '../city/tiles.ts'
 
@@ -55,6 +59,7 @@ const BUILD_MS = 7
 /** The mid ring's reach in tiles (PARIS_EXPAND §2: massing out to ~1200 m). */
 export const MID = 6
 import { onSurface, waterLevels, wholeWater } from '../city/package.ts'
+import { buildingFooting, simplifyRing } from '../map/footing.ts'
 
 /** Tile size in metres: the ONE grid, shared with the bake (city/tiles.ts). */
 export { TILE }
@@ -93,12 +98,23 @@ interface Junction {
   radius: number
   walk: number
   edges: number
+  /** every way meeting here runs through open country (city/park-area.ts), so it gets no concrete apron */
+  park: boolean
   /** one per street leaving here; `foot` arms shape the pavement but never the carriageway */
   arms: { ux: number; uz: number; half: number; foot: boolean; surface: string; raised?: boolean }[]
 }
 
 /** What the city needs up front: the index's global part (city/tiles.ts `CityIndex`). */
-export type CityMeta = Pick<CityPackage, 'name' | 'ground' | 'region' | 'terrain' | 'water'>
+export type CityMeta = Pick<CityPackage, 'name' | 'ground' | 'region' | 'terrain' | 'water' | 'box' | 'walls'>
+  & {
+    /**
+     * Where the city's CONTENT actually is, in local metres, from the index's own tile list (BUGS.md #225,
+     * #230): the bbox of every tile that holds a building or an edge, at 200 m granularity, which is far finer
+     * than a ground occluder needs. `game.ts` computes it; absent, the ground falls back to the box and its
+     * margin exactly as it always did.
+     */
+    contentBox?: { x0: number; x1: number; z0: number; z1: number }
+  }
 
 const key = tileKey
 
@@ -107,11 +123,31 @@ const YELLOW: [number, number, number] = [0.89, 0.71, 0.0]
 /** The colours of the ground, which are not part of any building's palette. The carriageway is not here:
  * its colour comes from its own painted surface page, through `src/render/road-material.ts`. */
 const AREA_TINT: Record<PackedArea['kind'], [number, number, number]> = {
-  park: [0.33, 0.44, 0.26], grass: [0.36, 0.47, 0.28], wood: [0.24, 0.34, 0.20],
+  park: [0.33, 0.44, 0.26], grass: [0.36, 0.47, 0.28],
+  /*
+   * A FOREST FLOOR IS NOT A LAWN. `wood` was the darkest of the greens, which is what a wood looks like
+   * from the air and not at all what it looks like from inside one. Under the cypress and eucalyptus in
+   * Golden Gate Park the ground is bare brown duff — needles, bark and fallen leaves — and the owner's
+   * complaint that the park *"needs a lot of dirt"* and that the ground is a uniform mown lawn everywhere
+   * is largely this one colour. Olive-brown rather than brown: there is still growth in it.
+   */
+  wood: [0.27, 0.25, 0.17],
+  // the beach (BUGS.md #200): pale dry sand above the tide line, not the wet strip, which is what is seen
+  sand: [0.80, 0.75, 0.62],
+  // bare earth and duff mapped as such: the same ground the wood has, where OSM says so outright
+  dirt: [0.34, 0.29, 0.21],
   pitch: [0.32, 0.45, 0.30], water: [0.20, 0.30, 0.38],
   // a paved square: warm stone setts and stabilised sand, paler than a pavement (BUGS.md #22)
   paved: [0.62, 0.58, 0.51],
 }
+/**
+ * Sand is capped finer than the rest of the ground (BUGS.md #200). The bands are a per-VERTEX colour, and
+ * a vertex colour is interpolated across its triangle: at the general area step (two terrain cells, 8 m at
+ * best) a nine-metre wet band would be a gradient over the whole beach rather than a tide line. Four metres
+ * is enough to put two or three vertices across the band, and beaches are a rounding error in the city's
+ * triangle budget — there is one strip of sand in San Francisco, not a network of them.
+ */
+const SAND_MAX_EDGE = 4
 // Paving is grey, not white. The brighter value washed out every street it was laid in.
 const PAVEMENT: [number, number, number] = [0.52, 0.51, 0.485]
 
@@ -584,6 +620,53 @@ export function setupGroundLayers(scene: Scene): void {
  *
  * It costs one mesh of a few thousand triangles and it is what gives a hilly city a skyline.
  */
+/*
+ * WHERE THE GROUND HAS TO BE DRAWN: the bbox of everything that is actually built, not the rideable box.
+ *
+ * BUGS.md #225 (owner, 2026-09-24: "I can see at least 20 buildings THROUGH the hill... on the other side of
+ * the hill", at 37.850150,-122.480760 — Sausalito, which he then asked for detail in, because that is where
+ * the Golden Gate Bridge lands: "we'll need detail there so people can bike over the bridge").
+ *
+ * Both ground passes below used `pkg.box` plus a flat 1500 m. That is the RIDEABLE box, and in San Francisco
+ * it is a different rectangle from the one the bake fills: the detail box reaches 1000 m further north, and
+ * Overpass returns whole ways, so content spills further still. Measured on the baked package:
+ *
+ *            occluder reached      content reaches
+ *   north        6100                  7491     1391 m of built ground with NO occluder over it
+ *   south       -5100                 -6043      943 m the same, over Daly City
+ *   east         9300                  4661     4639 m of occluder over empty bay
+ *
+ * Buildings draw in GROUP.building = 3 and the ground in GROUP.base = 0, and Babylon CLEARS THE DEPTH BUFFER
+ * BETWEEN RENDERING GROUPS, so terrain cannot hide a building on its own — this occluder mesh is the only
+ * thing that does. Past its edge every building behind a hill shows through it. Sausalito's buildings sit at
+ * z 6366, 266 m outside it.
+ *
+ * The bounds are the UNION of the old box + 1500 and the content + 400, never just the content: the baked
+ * terrain grid runs east to 17620, so dropping the east strip to where the buildings stop would leave the
+ * ground undrawn from 5061 out to the grid's edge — and the skirt below only starts BEYOND the grid, so
+ * nothing would cover it. Oakland's shoreline is in that strip and is visible from the Bay Bridge deck, a
+ * tier-1 route. The union costs about 29% more ground than the constant did and strictly grows coverage, so
+ * it cannot take anything away that was drawing before.
+ *
+ * Self-maintaining: no city's ground bounds can drift from its content again, and no re-bake is needed to
+ * pick it up, because it is measured from the package that is already loaded.
+ */
+function contentBounds(pkg: CityPackage): { x0: number; x1: number; z0: number; z1: number } | null {
+  const B = pkg.box
+  const BOX = 1500
+  const box = B ? { x0: B.x0 - BOX, x1: B.x1 + BOX, z0: B.z0 - BOX, z1: B.z1 + BOX } : null
+  const c = (pkg as CityPackage & CityMeta).contentBox
+  if (!c) return box
+  // a hill just BEHIND the last building still has to occlude it, so carry on a little past the content
+  const PAD = 400
+  const grown = { x0: c.x0 - PAD, x1: c.x1 + PAD, z0: c.z0 - PAD, z1: c.z1 + PAD }
+  return box === null ? grown : {
+    x0: Math.min(grown.x0, box.x0), x1: Math.max(grown.x1, box.x1),
+    z0: Math.min(grown.z0, box.z0), z1: Math.max(grown.z1, box.z1),
+  }
+}
+
+
 function distantGround(scene: Scene, terrain: Terrain, pkg: CityPackage, assets: string): Mesh | null {
   const t = pkg.terrain
   if (!t) return null
@@ -592,10 +675,24 @@ function distantGround(scene: Scene, terrain: Terrain, pkg: CityPackage, assets:
   // the occluder on slopes, and buildings beyond the box stood on nothing, their bases hidden (user report)
   const stride = 1
   const step = t.step * stride
+  /*
+   * BUGS.md #164/#169/#179: bounded to the rideable box + margin, exactly like `groundOccluder` below is
+   * already bounded — the occluder was never the expensive one. This loop had NO such bound, so it walked
+   * the WHOLE baked terrain grid (San Francisco: 2 588 651 samples) at full resolution on every load, one
+   * `quad()` per cell. Measured: `new City(...)` — almost entirely this call — took 86 s and grew the heap by
+   * 2.5 GB on its own (`window.__marks`, `city` stage), dwarfing every other load stage combined (a few
+   * hundred ms each) and the per-tile `bring()` chain that was the original suspect (93 ms total over 121
+   * tiles, see `window.__bringStats()`). The margin matches the occluder's so the two keep meeting past the
+   * box edge; the skirt below still carries the ground on out to the horizon beyond that.
+   */
+  const box = contentBounds(pkg)
+  const boxMargin = 0
   for (let r = 0; r + stride < t.rows; r += stride) {
     for (let c = 0; c + stride < t.cols; c += stride) {
       const x = t.x0 + c * t.step
       const z = t.z0 + r * t.step
+      if (box && (x + step < box.x0 - boxMargin || x > box.x1 + boxMargin
+        || z + step < box.z0 - boxMargin || z > box.z1 + boxMargin)) continue
       const h = (cx: number, cz: number): number => t.heights[cz * t.cols + cx]
       out.quad(
         [[x, h(c, r), z], [x + step, h(c + stride, r), z],
@@ -640,6 +737,7 @@ function distantGround(scene: Scene, terrain: Terrain, pkg: CityPackage, assets:
       [[0, 0], [far, 0], [far, far], [0, far]], [0.5, 0.5, 0.5], 0)
   }
   void terrain
+  plog('distantGround quads', out.indices.length / 6, 'verts', out.positions.length / 3)
   const m = new Mesh('ground:distant', scene)
   out.toVertexData().applyToMesh(m)
   m.geometry?.clearCachedData()
@@ -699,14 +797,15 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0): void {
     }
     return null
   }
-  const wetOnly = (x: number, z: number): number | null => {
-    let lv: number | null = null
-    for (const w of water) {
-      if (x < w.x0 || x > w.x1 || z < w.z0 || z > w.z1) continue
-      if (insideRing(w.ring, x, z) && !w.holes.some((h) => insideRing(h, x, z))) lv = lv === null ? w.level : Math.min(lv, w.level)
-    }
-    return lv
-  }
+  /*
+   * BUGS.md #179: the same lookup, indexed rather than linear (render/watermask.ts). This used to walk every
+   * one of the 49 bodies' rings point by point, and San Francisco's bay ring is 2 648 points with a bounding
+   * box over the whole city, so nothing rejected it — 4 million probes x ~2 700 edge tests, and this loop was
+   * about two minutes of the cold load. The index is EXACT (a +x ray only meets edges straddling the query's
+   * z, and a 200 m broad phase answers points away from water outright), so the geometry below is unchanged:
+   * measured over all 578 391 cells, 4 005 327 probes, zero differing answers, 81x faster.
+   */
+  const wetOnly = waterLookup(water)
   const occ = (x: number, z: number, lv: number | null): number => {
     const g = terrain.heightAt(x, z) - 0.6
     return lv === null ? g : Math.min(g, lv - 0.4)
@@ -714,11 +813,12 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0): void {
   /*
    * In chunks of 800 m, so what is off screen is culled (PARIS_EXPAND §6 item 7: the whole grid drawn three
    * times was the biggest single cost in the frame, 4.8 million triangles at the Concorde), and only over the
-   * city and a margin round it: beyond that there is nothing to hide but the far massing and the skyline.
+   * ground that has something standing on it (see `contentBounds`: the box and margin, unioned with the
+   * content's own bbox, because in San Francisco the bake fills a different rectangle from the ride box).
    */
   const CHUNK = 800
-  const box = pkg.box
-  const margin = 1500
+  const box = contentBounds(pkg)
+  const margin = 0
   const chunks = new Map<string, MeshBuilder>()
   let out = new MeshBuilder()
   const quad = (p: [number, number, number][]): void => {
@@ -848,8 +948,16 @@ export class City {
   private readonly pointsIn = new Map<string, PackedFurniture[]>()
   /** edges that are structures (bridges, ramps) rather than painted ground; see render/bridges.ts */
   readonly raisedIds = new Set<number>()
-  /** raised footways that are a road bridge's own sidewalks, drawn by the road's deck */
+  /** raised footways that are a road bridge's own sidewalks, drawn by the road's deck — and (BUGS.md #136)
+   *  raised ways a hand-modelled landmark draws itself */
   private readonly coveredDecks = new Set<number>()
+  /**
+   * The footprints landmarks declared they draw their own raised structure over (`coversRaised`,
+   * render/landmarks.ts), in world metres with the band of heights each model occupies. BUGS.md #136.
+   */
+  private readonly coverAreas: { ring: { x: number; z: number }[]; y0: number; y1: number; x0: number; x1: number; z0: number; z1: number }[] = []
+  /** baked bridge outlines (`t.bridges`) inside one of those footprints: bridge-structures.ts skips them */
+  private readonly coveredOutlines = new Set<number>()
   /** the viaduct's stations in local metres (region `viaductStations`), set by the game */
   viaductStations: { x: number; z: number }[] = []
   /** the bridges' outlines (render/bridge-structures.ts): a way on one draws only its running surfaces */
@@ -870,6 +978,8 @@ export class City {
   /** elevated railways by tile */
   private readonly railsIn = new Map<string, PackedRail[]>()
   private readonly buildingsIn = new Map<string, PackedBuilding[]>()
+  /** fitted sports courts by tile (BUGS.md #214, city/sports.ts) */
+  private readonly courtsIn = new Map<string, PackedCourt[]>()
   private readonly region: Region
   private streets: StreetIndex | undefined
   /** the through streets only, where the shops have deep café awnings */
@@ -910,12 +1020,16 @@ export class City {
     this.atlas = atlas
     this.assets = assets
     this.roadAssets = new URL('../roads/', assets).href
-    this.terrain = new Terrain(pkg.terrain)
+    this.terrain = new Terrain(pkg.terrain, TILE)
     // the streets' own level inside their corridors (BUGS.md #38); the occluder keeps the raw ground (its own Terrain)
     this.terrain.grade = (x, z) => (this.off.has('grade') ? null : this.gradeAt(x, z))
     this.region = region(pkg.region)
+    const __tg0 = performance.now()
     distantGround(scene, this.terrain, pkg, this.roadAssets)
+    plog('distantGround total', Math.round(performance.now() - __tg0))
+    const __tg1 = performance.now()
     groundOccluder(scene, pkg, this.region.riverDrop ?? 0)
+    plog('groundOccluder total', Math.round(performance.now() - __tg1))
   }
 
   /** which tiles' data are in */
@@ -995,6 +1109,17 @@ export class City {
   ingest(t: TileData): void {
     if (this.ingested.has(t.key)) return
     this.ingested.add(t.key)
+    /*
+     * The tile's own fine ground FIRST, before anything reads a height (BUGS.md #206c). `build()` is gated
+     * on all nine neighbours having been ingested (`ready`), so by the time a tile's meshes are draped its
+     * own block and its neighbours' are all registered — which is what keeps a building pad or a junction
+     * apron that spills over the border off the coarse fallback and onto the same fine ground as the tile
+     * it spills into.
+     */
+    {
+      const [tx, tz] = t.key.split(',').map(Number)
+      this.terrain.addTile(tx, tz, t.terrain)
+    }
     for (const e of t.edges) if (onSurface(e)) this.fileGrade(e)
     for (const b of t.bridges ?? []) {
       if (this.outlines.has(b.id)) continue
@@ -1028,10 +1153,13 @@ export class City {
         if (got) {
           got.radius = Math.max(got.radius, r)
           got.walk = Math.max(got.walk, e.walk)
+          // a junction is in the park only if every way meeting there is: a park road meeting a city street
+          // at the Stanyan Street gate still needs the city's apron on the city's side
+          got.park = got.park && !!e.park
           got.edges++
           got.arms.push(arm)
         } else {
-          this.nodes.set(id, { at: from, radius: r, walk: e.walk, edges: 1, arms: [arm] })
+          this.nodes.set(id, { at: from, radius: r, walk: e.walk, edges: 1, arms: [arm], park: !!e.park })
           this.bucket(this.nodesIn, from.x, from.z, id)
         }
       }
@@ -1075,6 +1203,8 @@ export class City {
     }
     // the tile's own clipped pieces of each area (city/tiles.ts): water carries its whole body's level
     this.areasIn.set(t.key, t.areas.map((a) => ({ ...a, level: a.level })))
+    // the sports courts whose CENTRE is in this tile (BUGS.md #214): fitted whole at bake, never clipped
+    if (t.courts && t.courts.length > 0) this.courtsIn.set(t.key, t.courts)
   }
 
   /** Every tile round k has its data in (the ones the city has at all), so k can be built. */
@@ -1115,6 +1245,21 @@ export class City {
       if (!byRule && !signalled(n)) continue
       if (d < 3 && big.some(([, b]) => Math.hypot(b.at.x - n.at.x, b.at.z - n.at.z) < 25)) continue
       if (d < 2) continue
+      /*
+       * NO TRAFFIC LIGHTS IN THE PARK, and this is a THIRD path — the one the furniture rule and the sign
+       * rule both miss. The owner, 2026-09-25: *"it has parking meters and traffic lights everywhere, which
+       * don't exist in GGP."* A signal is not drawn from the furniture bucket like a post box; it is drawn
+       * per ARM at a junction, from `pads`, so suppressing `signals` in the tile's furniture never touched
+       * it. (The `byRule` half is already dead in a park, because the rule wants a pavement and the park has
+       * none — what survives is the mapped `highway=traffic_signals` node, and GGP has plenty of those.)
+       *
+       * The exception is real and is the same one the widths use: where a classified THROUGH-route crosses
+       * the park — Crossover Drive, the Great Highway — the lights genuinely exist and the junction is a
+       * proper signalled crossroads. A park lane is capped at 6.5 m so its widest arm is 3.25 m of
+       * half-width; a through-route keeps its own 13-14 m. Five metres of half-width separates them
+       * cleanly, and it separates them by what the road IS rather than by its name.
+       */
+      if (n.park && !n.arms.some((a) => !a.foot && a.half >= 5)) continue
       lit.push([id, n])
     }
     const out = new Set<number>()
@@ -1136,6 +1281,156 @@ export class City {
    * BRIDGE_STYLES) takes in the unnamed footways OSM maps along it, as a road deck takes its sidewalks — else
    * they drew the generic piers over its arch ribs. Worked out over the tile and its neighbours.
    */
+  /**
+   * A hand-modelled structure claims the OSM ways under it (BUGS.md #136).
+   *
+   * `sf/yerba-buena.ts` builds both Howard Street skybridges; OSM has them as way/940154716 and
+   * way/1116462961, and every raised ride-graph edge gets a deck here and generic piers in bridges.ts — so
+   * each bridge rendered twice, and the duplicate's piers were the dark column under the glazed one. A way
+   * id cannot be matched (`PackedEdge` carries none: the bake discards it), so the match is GEOMETRIC: the
+   * edge's midpoint inside the declared footprint, at a height inside the model's own band.
+   *
+   * ORDER. Landmarks and tiles arrive in either order, and both are handled, so neither can be wrong:
+   *   - tile first: this scans every edge already filed, and DROPS any built tile that drew one of them, so
+   *     `update()` builds it again without the duplicate. Synchronous, so a shot tool waiting on `idle`
+   *     cannot catch the intermediate state.
+   *   - landmark first: `coverEdges()` runs at every tile build against the areas standing then.
+   * The two are the same test; only when it runs differs.
+   */
+  coverRaised(c: { ring: { x: number; z: number }[]; y0: number; y1: number }): void {
+    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+    for (const q of c.ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+    const a = { ...c, x0, x1, z0, z1 }
+    this.coverAreas.push(a)
+    const stale = new Set<string>()
+    for (const [k, list] of this.edgesIn) {
+      for (const e of list) if (this.takeEdge(a, e)) stale.add(k)
+    }
+    // …and the OSM `building:part` stacks of the structure itself, which are buildings, not raised edges
+    for (const [k, list] of this.buildingsIn) {
+      if (list.some((b) => this.coversBuilding(b))) stale.add(k)
+    }
+    // and the bake's own bridge polygon, which bridge-structures.ts builds whole from the tile its centre is
+    // in: way/1116462960 is the open bridge's deck, and left alone it doubles the model on its own
+    for (const [id, o] of this.outlines) {
+      if (this.coveredOutlines.has(id)) continue
+      let mx = 0, mz = 0
+      for (const q of o.ring) { mx += q.x; mz += q.z }
+      mx /= o.ring.length
+      mz /= o.ring.length
+      if (mx < a.x0 - 2 || mx > a.x1 + 2 || mz < a.z0 - 2 || mz > a.z1 + 2) continue
+      if (!inOutline(a.ring, mx, mz, 2)) continue
+      this.coveredOutlines.add(id)
+      console.info(`cover: bridge outline ${id} is drawn by a hand-built landmark`)
+      const [tx, tz] = tileOf(mx, mz)
+      stale.add(key(tx, tz))
+    }
+    let dropped = 0
+    for (const k of stale) if (this.rebuild(k)) dropped++
+    if (stale.size > 0) console.info(`cover: ${stale.size} tile(s) touched, ${dropped} already built and dropped to be built again`)
+  }
+
+  /**
+   * Is this baked bridge outline drawn by a landmark instead? (render/bridge-structures.ts asks)
+   *
+   * Answered against the footprints standing NOW, not only against the ones `coverRaised` scanned: an
+   * outline ingested after its landmark was placed — a tile that streams in later — is in neither set and
+   * would otherwise be drawn. This is to outlines what `coverEdges` is to edges, so both are order-free.
+   */
+  coversOutline(id: number): boolean {
+    if (this.coveredOutlines.has(id)) return true
+    const o = this.outlines.get(id)
+    if (!o || this.coverAreas.length === 0) return false
+    let mx = 0, mz = 0
+    for (const q of o.ring) { mx += q.x; mz += q.z }
+    mx /= o.ring.length
+    mz /= o.ring.length
+    for (const a of this.coverAreas) {
+      if (mx < a.x0 - 2 || mx > a.x1 + 2 || mz < a.z0 - 2 || mz > a.z1 + 2) continue
+      if (!inOutline(a.ring, mx, mz, 2)) continue
+      this.coveredOutlines.add(id)
+      console.info(`cover: bridge outline ${id} is drawn by a hand-built landmark`)
+      return true
+    }
+    return false
+  }
+
+  /**
+   * Is this building part of a structure a landmark draws itself? (BUGS.md #211)
+   *
+   * The Golden Gate and Bay Bridge towers are mapped in OSM as stacks of `building:part=yes` steel pieces
+   * — `description=leg_1`, `top_mast_3`, `bridge:support=pier` — each with its own `height` and
+   * `min_height`. The classifier gives them a facade, so they stand over the water as the tallest
+   * "buildings" in the city (BUGS.md #182 found 63 of them) AND the bridge's own model draws the towers a
+   * second time. The owner, 2026-09-24: *"We don't really need anything from OSM except the footprint and
+   * the path. The OSM having a somewhat okay representation of the structure is a pure accident, it's not
+   * good enough to actually use."*
+   *
+   * So a building inside a `coversRaised` footprint goes — but only one that is STRUCTURE: stacked
+   * (`minHeight > 0`, which every segment above the bottom of a stack is) or tall enough to be part of a
+   * bridge rather than under it (> 45 m, #182's own threshold). Fort Point, the Roundhouse and the toll
+   * plaza sit under the south approach at a dozen metres and are real buildings; they stay.
+   */
+  coversBuilding(b: Pick<PackedBuilding, 'ring' | 'height' | 'minHeight'>): boolean {
+    if (this.coverAreas.length === 0) return false
+    /*
+     * Structure, by three signs, any one of which is enough: STACKED (`minHeight > 0` — every segment above
+     * the bottom of a `building:part` stack), TALL (> 45 m, #182's own threshold, which no building under a
+     * bridge reaches), or PAPER-THIN (a tagged height under half a metre: the south tower's pier and its
+     * fender come through at 0.01 m, which is not a building at any threshold). A building with no tagged
+     * height at all is NOT thin — it is an ordinary building the bake will give storeys to.
+     */
+    const tall = (b.height ?? 0) > 45
+    const thin = b.height !== undefined && b.height < 0.5
+    if ((b.minHeight ?? 0) <= 0 && !tall && !thin) return false
+    const r = unpackPoints(b.ring)
+    let mx = 0, mz = 0
+    for (const q of r) { mx += q.x; mz += q.z }
+    mx /= r.length
+    mz /= r.length
+    for (const a of this.coverAreas) {
+      if (mx < a.x0 - 2 || mx > a.x1 + 2 || mz < a.z0 - 2 || mz > a.z1 + 2) continue
+      if (inOutline(a.ring, mx, mz, 2)) return true
+    }
+    return false
+  }
+
+  /** one raised edge against one declared footprint; true when it was taken */
+  private takeEdge(a: { ring: { x: number; z: number }[]; y0: number; y1: number; x0: number; x1: number; z0: number; z1: number }, e: PackedEdge): boolean {
+    if (!this.raisedIds.has(e.id) || this.coveredDecks.has(e.id)) return false
+    const mid = Math.floor(e.points.length / 4) * 2
+    const mx = e.points[mid]
+    const mz = e.points[mid + 1]
+    if (mx < a.x0 - 2 || mx > a.x1 + 2 || mz < a.z0 - 2 || mz > a.z1 + 2) return false
+    if (!inOutline(a.ring, mx, mz, 2)) return false
+    // at a COMPARABLE height: a street-level way crossing under a skywalk is not the skywalk. 3 m of slack,
+    // because the graph's bridge heights come from a rule in tools/bridges.ts, not from this structure.
+    const my = e.heights?.[mid / 2]
+    if (my !== undefined && (my < a.y0 - 3 || my > a.y1 + 3)) return false
+    this.coveredDecks.add(e.id)
+    console.info(`cover: raised edge ${e.id} is drawn by a hand-built landmark`)
+    return true
+  }
+
+  /** every raised edge filed in this tile against the footprints declared so far (the landmark-first order) */
+  private coverEdges(k: string): void {
+    if (this.coverAreas.length === 0) return
+    for (const e of this.edgesIn.get(k) ?? []) {
+      for (const a of this.coverAreas) if (this.takeEdge(a, e)) break
+    }
+  }
+
+  /** drop a built tile so `update()` builds it again — the same disposal as going out of range */
+  private rebuild(k: string): boolean {
+    const t = this.tiles.get(k)
+    if (!t) return false
+    for (const m of t.meshes) m.dispose()
+    for (const [name, ms] of t.layers) { for (const m of ms) m.dispose(); this.layerByName.get(name)?.release?.(k) }
+    this.tiles.delete(k)
+    this.nearCache.delete(k)
+    return true
+  }
+
   private decksNear(k: string): void {
     const [tx, tz] = k.split(',').map(Number)
     const edges: PackedEdge[] = []
@@ -1173,6 +1468,72 @@ export class City {
    * the crossing's own midpoint — which is the street it is a crossing of.
    */
   private waterRings: { ring: Point[]; holes: Point[][]; x0: number; x1: number; z0: number; z1: number }[] | null = null
+
+  /**
+   * The coastline, indexed, for the beach bands (render/shore.ts, BUGS.md #200). Built ONCE for the city
+   * rather than per tile: a tile's clipped piece of the sea carries invented edges along the tile border,
+   * and sand beside one would paint itself wet. `undefined` = not built yet, `null` = this city has no sea.
+   */
+  private shore: ShoreIndex | null | undefined = undefined
+
+  /**
+   * BAND 1: the revetment, filed by tile (render/shore.ts, BUGS.md #200). A mapped `barrier=retaining_wall`
+   * becomes a rip-rap band ONLY where it is a sea defence, because the same tag holds up a terraced garden
+   * in Noe Valley and a grey rubble strip across somebody's front steps would be worse than nothing. TWO
+   * gates, both from data and neither a list of beach names: within `REVETMENT_OF_SHORE` of the coastline
+   * (measured: the Ocean Beach walls sit 80-210 m from it, because the beach is wide), and — at draw time —
+   * in a tile that has SAND in it. A wall between a beach and the road is a revetment; a wall 200 m from
+   * the water with no sand near it is a wall.
+   */
+  private revetmentIn: Map<string, Point[][]> | null = null
+
+  private revetments(k: string): Point[][] {
+    if (!this.revetmentIn) {
+      const REVETMENT_OF_SHORE = 250
+      this.revetmentIn = new Map()
+      const shore = this.shoreIndex()
+      for (const w of this.pkg.walls ?? []) {
+        const pts = unpackPoints(w.points)
+        if (pts.length < 2) continue
+        if (!w.sea) {
+          if (!shore) continue
+          // the wall's own midpoint answers for it: these ways are tens of metres long, not kilometres
+          const m = pts[Math.floor(pts.length / 2)]
+          if (shoreDistance(shore, m.x, m.z) >= REVETMENT_OF_SHORE) continue
+        }
+        // filed by the tile each PIECE falls in, so a long wall is drawn in all of them and only once each
+        let run: Point[] = [pts[0]]
+        let at = key(...tileOf(pts[0].x, pts[0].z))
+        const flush = (): void => {
+          if (run.length > 1) {
+            const list = this.revetmentIn!.get(at) ?? []
+            list.push(run)
+            this.revetmentIn!.set(at, list)
+          }
+        }
+        for (let i = 1; i < pts.length; i++) {
+          const t = key(...tileOf(pts[i].x, pts[i].z))
+          run.push(pts[i])
+          if (t !== at) { flush(); at = t; run = [pts[i]] }
+        }
+        flush()
+      }
+    }
+    return this.revetmentIn.get(k) ?? []
+  }
+
+  private shoreIndex(): ShoreIndex | null {
+    if (this.shore === undefined) {
+      const sea = wholeWater(this.pkg).filter((a) => a.sea)
+      const rings: { x: number; z: number }[][] = []
+      for (const a of sea) {
+        rings.push(unpackPoints(a.ring))
+        for (const h of a.holes ?? []) rings.push(unpackPoints(h))
+      }
+      this.shore = rings.length > 0 ? buildShore(rings, this.pkg.box) : null
+    }
+    return this.shore
+  }
 
   /** Does the middle of this line lie on water (and not on an island in it)? */
   private overWater(pts: Point[]): boolean {
@@ -1398,6 +1759,7 @@ export class City {
 
   private build(k: string): void {
     const meshes: Mesh[] = []
+    this.coverEdges(k)
     this.decksNear(k)
     const lights = this.lightsIn(k)
     // the junctions to pave: a node where two or more streets meet on the ground (a node with only raised
@@ -1450,8 +1812,34 @@ export class City {
 
     // the paved squares first: the lawns and pools mapped inside them are painted over them
     // …and a square paved by hand last, over the park OSM spreads across it
-    const rank = (a: { kind: string; top?: boolean }): number => (a.top ? 2 : a.kind === 'paved' ? 0 : 1)
-    const ordered = [...(this.areasIn.get(k) ?? [])].sort((p, q) => rank(p) - rank(q))
+    /*
+     * Paved squares first, the lawns and pools mapped inside them over the top; then the BARE ground, which
+     * is painted over the greens because it is the more specific statement about the same piece of land —
+     * Ocean Beach is mapped as `natural=beach` inside the park polygon, so without this the park wins by
+     * arriving first and the beach is a lawn again at the last moment (BUGS.md #200); then a square paved
+     * by hand, last, over the park OSM spreads across it.
+     */
+    const rank = (a: { kind: string; top?: boolean }): number =>
+      a.top ? 3 : a.kind === 'paved' ? 0 : a.kind === 'sand' || a.kind === 'dirt' ? 2 : 1
+    const areasHere = this.areasIn.get(k) ?? []
+    const ordered = [...areasHere].sort((p, q) => rank(p) - rank(q))
+    /*
+     * Shore vs. open water (BUGS.md #154, owner: "you can't go out on the water so much of it CAN be huge
+     * triangles. but close to shore, it has to be small triangles"). A tile is "shore" — worth the cost of
+     * fine subdivision — if there is anything in it a rider could be near: buildings, roads, or another kind
+     * of area (park, paving) sharing the tile with the water. A tile that is pure water and nothing else is
+     * open ocean/bay as far as this test is concerned, however big the polygon: nobody reaches it and there
+     * is nothing there to occlude. This is a static, build-time classification, not a per-frame LOD.
+     */
+    const isShoreTile = (this.buildingsIn.get(k) ?? []).length > 0 || groundEdges.length > 0 ||
+      areasHere.some((a) => a.kind !== 'water')
+    const WATER_SHORE_MAX_EDGE = 16
+    /*
+     * Twice the ground grid's step, so a park surface can follow the terrain instead of chording across it,
+     * and no finer: the drape cannot show detail the grid does not carry, and every halving quadruples the
+     * triangles. Taken from the tile's own block, which is where the step now lives (city/terrain.ts).
+     */
+    const AREA_MAX_EDGE = Math.max(8, (this.terrain.stepIn(k) ?? 20) * 2)
     for (const a of ordered) {
       if (a.kind === 'water') {
         /*
@@ -1461,12 +1849,58 @@ export class City {
          * river cut into many tiles is the same height in all of them.
          */
         capPolygonWithHoles(water, [unpackPoints(a.ring), ...(a.holes ?? []).map(unpackPoints)],
-          0.03 + (a.level ?? 0), [0, 0, 0], 0, 2.4)
+          0.03 + (a.level ?? 0), [0, 0, 0], 0, 2.4, isShoreTile ? WATER_SHORE_MAX_EDGE : undefined)
       }
       else {
+        /*
+         * Subdivided to about two grid cells (BUGS.md #206c). Earcut gives the MINIMAL triangulation, so a
+         * park's piece of a tile was a handful of triangles up to 200 m on a side, draped only at their
+         * corners. That was defensible while the ground grid was 20 m and could not represent a hill 30 m
+         * across anyway — `subdivideLastTriangles`' own note that parks "do not need it" was written for
+         * that world. With a 4 m grid it is the difference between having the fine terrain and being able
+         * to SEE it: Golden Gate Park's hollows are tens of metres across, and a flat triangle over the
+         * top of one hides exactly the thing this whole change is for.
+         */
+        /*
+         * A BEACH IS BANDS (docs/PARKS.md, BUGS.md #200). Sand is capped FINELY — the wet band is about
+         * nine metres wide and a vertex colour interpolated across an 8 m triangle would turn it into a
+         * gradient across the whole beach — and then every vertex just laid down is retinted by its
+         * distance from the coastline: wet at the surf, pale dry sand above the tide line, dune grass at
+         * the landward edge. Nothing else about the polygon changes, which is the point: the shoreline's
+         * apparent shape is drawn by the WET BAND, not by geometry, so it costs one pass over the colours.
+         */
+        const beach = a.kind === 'sand' ? this.shoreIndex() : null
+        const base = areas.positions.length / 3
         capPolygonWithHoles(areas, [unpackPoints(a.ring), ...(a.holes ?? []).map(unpackPoints)],
-          0.02, AREA_TINT[a.kind], 0, 2.4)
+          0.02, AREA_TINT[a.kind], 0, 2.4, beach ? Math.min(AREA_MAX_EDGE, SAND_MAX_EDGE) : AREA_MAX_EDGE)
+        if (beach) {
+          const n = areas.positions.length / 3
+          for (let v = base; v < n; v++) {
+            const x = areas.positions[v * 3], z = areas.positions[v * 3 + 2]
+            const t = beachTint(AREA_TINT.sand, shoreDistance(beach, x, z), x, z)
+            areas.colors[v * 4] = t[0]; areas.colors[v * 4 + 1] = t[1]; areas.colors[v * 4 + 2] = t[2]
+          }
+        }
       }
+    }
+    /*
+     * BAND 1, over the areas: the rip-rap revetment along the mapped seawall (docs/PARKS.md). Drawn LAST of
+     * the ground areas so it sits over the sand and the scrub it armours, and into the same builder so it is
+     * draped with them. NOT scattered boulders — a revetment is a continuous armoured slope, and the
+     * deferred rock system (docs/SCOPE-GOLDEN-GATE.md) is for natural outcrops, which is a different thing.
+     */
+    const armoured = areasHere.some((a) => a.kind === 'sand')
+    for (const wall of armoured ? this.revetments(k) : []) {
+      revetmentBand(wall, 0.025,
+        (x, y, z, c) => {
+          const i = areas.positions.length / 3
+          areas.positions.push(x, y, z)
+          areas.normals.push(0, 1, 0)
+          areas.uvs.push(x / 2.4, z / 2.4)
+          areas.colors.push(c[0], c[1], c[2], 0)
+          return i
+        },
+        (a, b, c) => { areas.indices.push(a, b, c) })
     }
 
     /**
@@ -1507,7 +1941,15 @@ export class City {
       // Wider than the corridor strictly is, so two parallel ways do not leave a ribbon of bare ground
       // between them — but only a little. At seven metres of slop every square in the city became an ocean
       // of pale concrete, which is what made the whole place look washed out and flat.
-      quadStrip(corridor, pts, e.width + 2 * e.walk + 4.5, 0.15, PAVEMENT)
+      /*
+       * NOT IN A PARK (`e.park`, city/park-area.ts). The 4.5 m of slop above is a city fix — it keeps a
+       * wedge of grass from showing between two ways that meet at a shallow angle — and in a park it is the
+       * single most un-park-like thing in the frame: eleven metres of pale concrete beside a road that in
+       * the reference photographs (`~/Downloads/ggp-rural-road.png`) has no kerb at all and gives way
+       * straight from worn asphalt to a dirt-and-leaf shoulder. There is no wedge of grass to hide out here
+       * because grass is what the park IS, so the layer has nothing to do and everything to spoil.
+       */
+      if (!e.park) quadStrip(corridor, pts, e.width + 2 * e.walk + 4.5, 0.15, PAVEMENT)
       // a brick street's pavements (San Francisco's Market Street), drawn over the concrete a hair higher so
       // it wins every overlap the same way each frame — the kerb-to-wall width only, the carriageway is over it
       if (brick && !e.foot && e.walk > 0 && brick.names.includes(e.name ?? '')) {
@@ -1573,7 +2015,8 @@ export class City {
 
       // Generously wider than the carriageway hull: the corridor layer's job is to leave no bare ground
       // anywhere near a junction, and being painted rather than unioned it can overlap as much as it likes.
-      capPolygon(corridor, junctionHull(n.arms, n.at, n.walk + 3), 0.15, PAVEMENT, 0, 2.4)
+      // no concrete apron where a park's ways meet (see `e.park` above) — in the park the ways simply cross
+      if (!n.park) capPolygon(corridor, junctionHull(n.arms, n.at, n.walk + 3), 0.15, PAVEMENT, 0, 2.4)
 
       /**
        * A carriageway hull is only drawn where one is actually needed, and in the surface the streets that
@@ -1614,12 +2057,24 @@ export class City {
        * The centre line is regional: a dashed white line in Europe, a solid double yellow in North America —
        * which is none at all on a one-way street, and that absence is as much a signal as the line.
        */
-      if (this.region.centreLine === 'doubleYellow') {
-        if (!e.oneway) for (const side of [-1, 1]) dashedLine(markings, pts, side * 0.1, 0.063, 0.1, 1, 1, YELLOW)
-      } else {
-        dashedLine(markings, pts, 0, 0.063, 0.12, 3, 9)
+      /*
+       * NOT IN A PARK, except on a road wide enough to be a real through-route (BUGS.md #213e).
+       *
+       * A park drive is marked the way a country lane is: nothing, or at most a worn centre line. The owner's
+       * own references show it — Middle Drive and the Presidio's roads carry no paint at all, and a double
+       * yellow with white edge lines is the single loudest thing that says CITY on a road through a wood.
+       * The width test keeps the genuine arterials that cross the parks — the Great Highway, Crossover Drive —
+       * which really are marked, and which the park rule already exempts elsewhere.
+       */
+      const parkLane = e.park && e.width < 9
+      if (!parkLane) {
+        if (this.region.centreLine === 'doubleYellow') {
+          if (!e.oneway) for (const side of [-1, 1]) dashedLine(markings, pts, side * 0.1, 0.063, 0.1, 1, 1, YELLOW)
+        } else {
+          dashedLine(markings, pts, 0, 0.063, 0.12, 3, 9)
+        }
+        for (const side of [-1, 1]) dashedLine(markings, pts, side * (e.width / 2 - 0.5), 0.063, 0.10, 1, 1)
       }
-      for (const side of [-1, 1]) dashedLine(markings, pts, side * (e.width / 2 - 0.5), 0.063, 0.10, 1, 1)
     }
 
     if (corridor.triangles > 0 && !this.off.has('walks')) {
@@ -1649,6 +2104,23 @@ export class City {
       groundMat.disableDepthWrite = true
       m.material = groundMat
       m.renderingGroupId = group
+      meshes.push(m)
+    }
+    /*
+     * THE SPORTS COURTS (BUGS.md #214). Its own mesh in the `walk` rendering group, for the same reason the
+     * road markings are: Babylon clears the depth buffer between groups, so the court sits cleanly over the
+     * `pitch` area in the `areas` group instead of z-fighting it — a 1 cm offset does not survive at the
+     * distance a park is seen from. Draped RAW, like the area it stands on and unlike the road markings:
+     * a court is on the ground the park is on, not at a street's level (BUGS.md #38).
+     */
+    const courts = new MeshBuilder()
+    if (!this.off.has('courts')) for (const c of this.courtsIn.get(k) ?? []) court(courts, c)
+    if (courts.triangles > 0) {
+      const m = new Mesh(`courts:${k}`, this.scene)
+      this.terrain.drapeRaw(courts.positions)
+      courts.toVertexData().applyToMesh(m)
+      m.material = cartoonMaterial(this.scene, 'cartoonStatic', false)
+      m.renderingGroupId = GROUP.walk
       meshes.push(m)
     }
     if (markings.triangles > 0 && !this.off.has('roads')) {
@@ -1684,6 +2156,58 @@ export class City {
     // and there. Both are cheap boxes, and a street without them reads as a rendering of a street: they are
     // the small evidence that somebody maintains the place.
     const furniture = new MeshBuilder()
+    /*
+     * THE PARK'S OWN LAMPPOSTS (BUGS.md #202, docs/PARKS.md). The owner: *"Almost [no] sidewalks or street
+     * furniture except a few classic lampposts."* — an exception written into a list of removals, and the
+     * park lost it by accident: every lamppost in the city is planted by the loop below, which is gated on
+     * `e.walk >= 1.2`, and the park rule sets `walk` to zero. Taking the pavements away took the lampposts
+     * with them, along with the meters and the newsracks that were the point.
+     *
+     * So the park plants its own, and the planting says what the references say rather than what a city
+     * kerb says: ONE side of the road, not alternating; every seventy-odd metres rather than every twenty;
+     * out on the verge past where the kerb would be, because in `~/Downloads/ggp-mlk-dr.png` the one
+     * lamppost in the frame stands in the grass between the carriageway and the detached trail. Roads only
+     * — nobody lights a dirt trail through a wood.
+     */
+    for (const e of groundEdges) {
+      if (!e.park || e.foot || this.off.has('furniture')) continue
+      if (!this.region.furniture.lampPosts) continue
+      const pts = unpackPoints(e.points)
+      const side = e.id % 2 === 0 ? 1 : -1
+      const off = e.width / 2 + 1.4
+      let acc = 20 + (e.id % 31)
+      let n = 0
+      for (let i = 1; i < pts.length; i++) {
+        const dx = pts[i].x - pts[i - 1].x
+        const dz = pts[i].z - pts[i - 1].z
+        const seg = Math.hypot(dx, dz)
+        while (acc < seg) {
+          const t = acc / seg
+          const px = pts[i - 1].x + dx * t + (-dz / seg) * off * side
+          const pz = pts[i - 1].z + dz * t + (dx / seg) * off * side
+          placeModel(furniture, lampPost, px, 0.15, pz, Math.atan2(dx, dz) + (side > 0 ? Math.PI : 0))
+          acc += 70 + ((e.id + n) % 23)
+          n++
+        }
+        acc -= seg
+      }
+    }
+    /*
+     * NOT IN A STAIRWAY'S MOUTH (BUGS.md #213d). The Lyon Street Steps' own view up the flight from Vallejo
+     * had a lamppost planted dead centre in the approach, splitting the one thing the landmark exists to be
+     * looked at. A stairway meets the pavement head-on, so the street's regular spacing will sooner or later
+     * put a post right in front of it, on any named stairway in the city. The steps' own ends are the thing
+     * to keep clear — not the whole flight, which climbs away from the street anyway.
+     */
+    const stairMouths: { x: number; z: number }[] = []
+    for (const e of groundEdges) {
+      if (e.kind !== 'steps') continue
+      const q = unpackPoints(e.points)
+      if (q.length > 0) stairMouths.push(q[0], q[q.length - 1])
+    }
+    const nearStairMouth = (x: number, z: number): boolean =>
+      stairMouths.some((m) => Math.abs(m.x - x) < 6 && Math.abs(m.z - z) < 6)
+
     for (const e of groundEdges) {
       if (e.foot) continue
       if (e.walk < 1.2) continue
@@ -1706,7 +2230,7 @@ export class City {
           // a bench only where the pavement has room to sit on it, and not at every other lamp post
           if ((e.id + n) % 14 === 0 && walk >= 2.5) {
             if (this.region.furniture.benches) placeModel(furniture, bench, px, 0.15, pz, heading)
-          } else if (this.region.furniture.lampPosts) {
+          } else if (this.region.furniture.lampPosts && !nearStairMouth(px, pz)) {
             placeModel(furniture, lampPost, px, 0.15, pz, heading)
           }
           acc += 22 + ((e.id + n) % 9)
@@ -1937,6 +2461,27 @@ export class City {
       const walls = new MeshBuilder()
       const stone: [number, number, number] = [0.6, 0.57, 0.51]
       const cap: [number, number, number] = [0.7, 0.67, 0.61]
+      /*
+       * A FLAT CARRIAGEWAY over the draped one, where the street is not on the ground (BUGS.md #221c/#221d).
+       *
+       * The road surface is pooled by surface and draped in one call — `heightAt` added at EVERY vertex,
+       * including the kerb edges. On a road benched into a hillside that tilts the asphalt by the whole
+       * cross-slope: measured 6.2 m across 24 m at Marine Drive, a 26% fall, while the markings, kerbs,
+       * pavements and retaining wall all ride the street's own levelled height (BUGS.md #38). The paint
+       * floats clear of the tarmac it is painted on, which is what the owner photographed.
+       *
+       * Rather than unpick the pooled drape — the most-used path in the renderer — this draws the
+       * carriageway a second time, flat, at the street's own heights, in the WALK group. Babylon clears the
+       * depth buffer between rendering groups, so a later group covers an earlier one whatever their depths:
+       * the same trick the sports courts use to sit over their pitch. So the flat ribbon hides the draped
+       * one on both sides, the uphill half included, where a depth test would have let it through.
+       *
+       * Only segments that are genuinely off the ground get one, by the same measure the wall uses — and
+       * BOTH WAYS, unlike the wall: `ha - ga` is a fill (an embankment, which is what the wall marks) and
+       * `ga - ha` is a cut (a bench into the slope, which nothing marked before).
+       */
+      const flat = new Map<string, MeshBuilder>()
+      const FLAT_MIN = 0.6
       for (const e of groundEdges) {
         if (!e.heights || e.tunnel) continue
         const pts = unpackPoints(e.points)
@@ -1948,6 +2493,48 @@ export class City {
           if (l < 0.2) continue
           const ux = (b.x - a.x) / l
           const uz = (b.z - a.z) / l
+          if (!e.foot && e.width > 0) {
+            const ha = e.heights[i - 1]
+            const hb = e.heights[i]
+            const hw = e.width / 2
+            const px = -uz
+            const pz = ux
+            let off = 0
+            for (const sd of [-1, 1]) {
+              const gx = a.x + px * hw * sd
+              const gz = a.z + pz * hw * sd
+              const g = this.terrain.rawHeightAt(gx, gz)
+              off = Math.max(off, Math.abs(ha - g))
+            }
+            if (off >= FLAT_MIN) {
+              const out = flat.get(e.surface) ?? new MeshBuilder()
+              flat.set(e.surface, out)
+              /*
+               * TESSELLATED, and lifted a hair (BUGS.md #221d). One quad the full width of the carriageway
+               * z-fought with the markings, which share this rendering group — the owner: *"it often has z
+               * culling issues. maybe it needs more tesselation"*. A big quad interpolates depth across its
+               * whole span, so at distance it trades pixels with anything within a few centimetres; cutting
+               * it into ~2 m cells keeps the interpolated depth close to the real surface everywhere. The
+               * 4 cm lift puts it clear of the draped carriageway beneath without reaching the markings,
+               * which sit 6.3 cm up.
+               */
+              const LIFT = 0.04
+              const nu = Math.max(1, Math.round((hw * 2) / 2))
+              const nv = Math.max(1, Math.round(l / 2))
+              const at = (u: number, v: number): [number, number, number] => {
+                const t = v / nv
+                const y = ha + (hb - ha) * t + LIFT
+                const sd = -1 + (2 * u) / nu
+                return [a.x + (b.x - a.x) * t + px * hw * sd, y, a.z + (b.z - a.z) * t + pz * hw * sd]
+              }
+              for (let u = 0; u < nu; u++) {
+                for (let v = 0; v < nv; v++) {
+                  out.quad([at(u, v), at(u, v + 1), at(u + 1, v + 1), at(u + 1, v)], [0, 1, 0],
+                    [[0, 0], [0, 1], [1, 1], [1, 0]], [0.5, 0.5, 0.5], 0)
+                }
+              }
+            }
+          }
           for (const side of [-1, 1]) {
             const nx = -uz * side
             const nz = ux * side
@@ -1979,6 +2566,19 @@ export class City {
             }
           }
         }
+      }
+      for (const [surface, out] of flat) {
+        if (out.triangles === 0) continue
+        const m = new Mesh(`flatroad:${surface}:${k}`, this.scene)
+        out.toVertexData().applyToMesh(m)
+        m.material = surface === this.pkg.ground
+          ? roadMaterial(this.scene, surface, this.roadAssets)
+          : groundLayerMaterial(this.scene, this.roadAssets, surface, 'carriage')
+        // the WALK group, not the road group: the depth buffer is cleared between groups, so this covers the
+        // draped carriageway whatever their relative heights — including the uphill half of a cut
+        m.renderingGroupId = GROUP.walk
+        m.isPickable = false
+        meshes.push(m)
       }
       if (walls.triangles > 0) {
         const m = new Mesh(`retaining:${k}`, this.scene)
@@ -2092,6 +2692,8 @@ export class City {
     const byStyle = new Map<StyleId, MeshBuilder>()
     const sunOff = shadowOffset(DAYLIGHT.sun)
     for (const b of this.buildingsIn.get(k) ?? []) {
+      // a `building:part` of a bridge a landmark draws itself (BUGS.md #211)
+      if (this.coversBuilding(b)) continue
       // curves as chords a bay or more long: a hemicycle mapped in 3 m pieces had no wall wide enough for one
       // window (the Institut de France's wings were blank)
       const ring = simplifyRing(unpackPoints(b.ring)) as Ring
@@ -2101,22 +2703,32 @@ export class City {
        * would lean, and its windows with it. Real buildings on a slope are cut into it, which is what a pad
        * is — and it puts a small step at the door, which is also what happens.
        */
-      let padX = 0
-      let padZ = 0
-      let lowest = Infinity
-      for (const q of ring) {
-        padX += q.x
-        padZ += q.z
-        lowest = Math.min(lowest, this.terrain.heightAt(q.x, q.z))
-      }
-      const pad = this.terrain.heightAt(padX / ring.length, padZ / ring.length)
+      /*
+       * The pad's floor is a LOW PERCENTILE of the ground under the footprint, not its minimum (BUGS.md
+       * #206d). A minimum is precisely the statistic that degrades as sampling gets finer: a 20 m grid puts
+       * about three samples under a typical footprint and a 4 m grid about thirty, and the minimum of
+       * thirty samples of a real surface — which at 4 m carries kerbs, area steps and tree mounds — sits
+       * systematically lower than the minimum of three. Every building would sink and grow a taller plinth
+       * on its downhill side, worse the bigger the footprint and the steeper the hill.
+       *
+       * MEASURED on 7 481 buildings across the steep grid from Nob Hill to the waterfront, comparing the
+       * shipped 20 m grid with a zoom-15 4 m one: under a raw minimum the base sinks by a mean of 0.63 m,
+       * p90 1.77 m, p99 3.34 m and worst 10.27 m. The 15th percentile of the outline takes that to a mean
+       * of 0.37 m, p90 1.52 m, p99 2.92 m — it removes about 40%, which is the part that WAS sampling
+       * noise. The rest is the two surfaces genuinely disagreeing about where the ground is, and no
+       * statistic should remove that; the finer one is the better measurement.
+       *
+       * The intent is kept — the building meets the ground low, not at its average — without inheriting the
+       * noise floor. A ring with under eight samples keeps the true minimum: there is no distribution to
+       * take a percentile of, and those are the footprints where the minimum was never the problem.
+       */
       /*
        * The walls start at the LOWEST ground the footprint touches, not at the pad. On a hill the downhill
        * side of a level pad hangs in the air, and a street of buildings on plinths with daylight under them
        * is worse than no terrain at all. Starting low buries the difference in the hillside, which is what
        * a real building cut into a slope does.
        */
-      const foot = Math.min(pad, lowest) - 0.3
+      const { foot, pad } = buildingFooting(ring, (x, z) => this.terrain.heightAt(x, z))
       const plan = planFacade(b.style, b.id, { levels: b.levels, height: b.height, minHeight: b.minHeight, stretch: b.stretch },
         b.palette ? [b.palette] : this.region.palettes[b.style])
       const out = byStyle.get(b.style) ?? new MeshBuilder()
@@ -2289,47 +2901,5 @@ function hexRgb(hex: string): [number, number, number] {
   return [parseInt(hex.slice(1, 3), 16) / 255, parseInt(hex.slice(3, 5), 16) / 255, parseInt(hex.slice(5, 7), 16) / 255]
 }
 
-/**
- * A footprint with its curves straightened into chords (Douglas–Peucker, 0.35 m): every sharp corner stays,
- * a gentle curve of short segments becomes a few long walls — the facade generator puts windows only on a wall
- * at least a bay wide. On a 40 m radius a chord strays under 0.3 m from the true line.
- */
-export function simplifyRing(ring: { x: number; z: number }[], tol = 0.35): { x: number; z: number }[] {
-  if (ring.length < 8) return ring
-  const dist = (p: { x: number; z: number }, a: { x: number; z: number }, b: { x: number; z: number }): number => {
-    const dx = b.x - a.x
-    const dz = b.z - a.z
-    const l2 = dx * dx + dz * dz || 1e-9
-    const t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.z - a.z) * dz) / l2))
-    return Math.hypot(a.x + dx * t - p.x, a.z + dz * t - p.z)
-  }
-  const keep = new Uint8Array(ring.length)
-  // split the closed ring at vertex 0 and the vertex farthest from it
-  let far = 0
-  let fd = -1
-  for (let i = 1; i < ring.length; i++) {
-    const d = Math.hypot(ring[i].x - ring[0].x, ring[i].z - ring[0].z)
-    if (d > fd) { fd = d; far = i }
-  }
-  keep[0] = 1
-  keep[far] = 1
-  const stack: [number, number][] = [[0, far], [far, ring.length]]
-  while (stack.length) {
-    const [i0, i1] = stack.pop()!
-    const a = ring[i0]
-    const b = ring[i1 % ring.length]
-    let best = -1
-    let bd = tol
-    for (let i = i0 + 1; i < i1; i++) {
-      const d = dist(ring[i], a, b)
-      if (d > bd) { bd = d; best = i }
-    }
-    if (best >= 0) {
-      keep[best] = 1
-      stack.push([i0, best], [best, i1])
-    }
-  }
-  const out = ring.filter((_, i) => keep[i])
-  return out.length >= 3 ? out : ring
-}
+export { simplifyRing }
 

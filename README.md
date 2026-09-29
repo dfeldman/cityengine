@@ -192,6 +192,9 @@ crossings and roofs; ordered ground layers with convex-hull junctions; the stree
 model; the minimap; the avatar kit rider; and a streaming city populated with traffic, pedestrians, street
 furniture, vegetation and sky.
 
+**Where it is going next is [DIRECTION.md](DIRECTION.md)** (2026-09-28): a bike food-delivery game, more and
+larger cities, buildings from facade clusters, and a new map format with patches ([docs/MAP-FORMAT.md](docs/MAP-FORMAT.md)).
+
 **The running list of what is wrong and what is missing is [PLAN.md](PLAN.md).**
 
 Running it on the platform is [INTEGRATION.md](INTEGRATION.md).

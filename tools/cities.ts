@@ -11,6 +11,7 @@
  * so this is the local knowledge the data cannot supply. The weights are relative.
  */
 import type { StyleId } from '../src/city/facade.ts'
+import type { RingFormThresholds } from '../src/city/ring-forms.ts'
 
 export interface CitySpec {
   id: string
@@ -52,6 +53,17 @@ export interface CitySpec {
    * src/render/landmarks/procedural.ts.
    */
   skyline?: { name: string; lat: number; lon: number; procedural: string; heightM: number; bearing?: number; boost?: number }[]
+  /**
+   * Overrides for the footprint-form scan that flags buildings the slot kit cannot express
+   * (`src/city/ring-forms.ts`, run by the bake, LADDER §3c treatment 4+). Absent means the defaults, which
+   * are the numbers the San Francisco sweep of 621 downtown buildings was run with.
+   *
+   * These are per-city and not constants for a measured reason: OSM's REPRESENTATION of a curve varies far
+   * more than curves do — 101 California is a cylinder somebody drew as a hundred 1 m steps, which is why
+   * the `stair` score exists at all — and a new city's mappers will have different habits. Expect to check
+   * the tallies on a new city's first bake and to move a number or two here, rather than editing the scorer.
+   */
+  ringForms?: Partial<RingFormThresholds>
   note: string
 }
 
@@ -174,7 +186,17 @@ export const CITIES: CitySpec[] = [
      * north to the Golden Gate and its Marin end. Most of that is water, and the detail box below keeps the
      * buildings over the city itself — Oakland is in the box only as roads and shoreline.
      */
-    box: { west: 9800, east: 7800, north: 4600, south: 3600 },
+    /*
+     * NORTH 8000 REACHES SAUSALITO (owner, 2026-09-24, on seeing buildings through a hill there: "i didn't
+     * realize. we'll need detail there so people can bike over the bridge").
+     *
+     * 4600 stopped at lat 37.8343, 145 m past the Marin end of the bridge — you could ride over and land with
+     * nothing to ride on. Measured on the baked package, the graph ALREADY reached z 7418 (37.8596, Alexander
+     * Ave down to the ferry), because Overpass returns whole ways and the detail box reached 5600; what it did
+     * not have was anything `pkg.box` governs — `buildShore` (render/city.ts), the minimap's bounds and goto,
+     * so Sausalito had roads and no shore and could not be teleported to. 8000 = 37.865 clears the town.
+     */
+    box: { west: 9800, east: 7800, north: 8000, south: 3600 },
     /*
      * West to the ocean and south past Golden Gate Park. The park runs five kilometres from Stanyan Street to
      * Ocean Beach and the Presidio fills the north-west corner; a game whose players spend their time riding
@@ -183,7 +205,36 @@ export const CITIES: CitySpec[] = [
      * because the parks have buildings in them worth drawing. Some of Marin and Daly City fall inside the
      * corners; nothing is spent on them.
      */
-    detail: { west: 9800, east: 2400, north: 2400, south: 3600 },
+    /*
+     * EAST AND NORTH REACH THE ISLANDS (owner, 2026-09-25: "omg we should have Treasure Island... how cool
+     * would it be to bike across the bay bridge and turn off onto YB island / Treasure Island").
+     *
+     * Yerba Buena Island sits at local 4047, 1837 and Treasure Island at 3695, 3395 — both comfortably
+     * inside the RIDE box (east 7800, north 4600), which is why the Bay Bridge already crosses them. They
+     * were outside the DETAIL box at 2400, so the detailed city query never covered them: the baked ride
+     * graph has ONE edge within 900 m of Yerba Buena and NONE on Treasure Island, and their buildings were
+     * never classified at all. Eighteen finished builders for them have been sitting parked (BUGS.md #175)
+     * for want of these two numbers.
+     *
+     * 4500 east clears the Yerba Buena quarters, whose outlines reach 4313 m (measured, not guessed — an
+     * earlier estimate of 3900 would have missed them by 400 m and cost a four-hour bake to discover).
+     * Most of the added area is bay, so it carries very little.
+     */
+    /*
+     * North also reaches the MARIN HEADLANDS (2026-09-25). At 4200 the detail box stopped at lat 37.8307
+     * and the headlands run to about 37.842, so every detail-only query — sand and dirt, furniture, the
+     * city query itself — stopped short of ground the wider box was already building tiles for. That is
+     * why the headlands came out "spartan": #208 found 96% of their tiles were drawn with city rules, and
+     * no sand or dirt would have been fetched for them even after that fix. 5600 clears 37.8425 with a
+     * margin and stops short of Sausalito at 37.85.
+     */
+    /*
+     * DETAIL NORTH 8000 TOO (2026-09-24). At 5600 every detail-ONLY layer stopped at 37.8433: the sand and
+     * dirt (bake.ts 680/685), street furniture (1612), walls (1802), plantings (1843) and the parcel rolls
+     * (515) all take `detailBboxOf`. Sausalito therefore had buildings — they reach z 6366, which is how the
+     * owner came to see them through a hill — with no ground cover, no furniture and no walls at all.
+     */
+    detail: { west: 9800, east: 4500, north: 8000, south: 3600 },
     ground: 'grass',
     styles: [
       { id: 'victorian', weight: 5 },

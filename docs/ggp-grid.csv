@@ -1,0 +1,34 @@
+square,centre_lat,centre_lon,south,west,north,east,status,notes
+G1A,37.765546,-122.508159,37.763300,-122.511000,37.767792,-122.505318,pending,
+G1B,37.765546,-122.502477,37.763300,-122.505318,37.767792,-122.499636,pending,
+G1C,37.765546,-122.496795,37.763300,-122.499636,37.767792,-122.493954,pending,
+G1D,37.765546,-122.491113,37.763300,-122.493954,37.767792,-122.488272,pending,
+G1E,37.765546,-122.485431,37.763300,-122.488272,37.767792,-122.482590,pending,
+G1F,37.765546,-122.479749,37.763300,-122.482590,37.767792,-122.476908,pending,
+G1G,37.765546,-122.474067,37.763300,-122.476908,37.767792,-122.471226,pending,
+G1H,37.765546,-122.468385,37.763300,-122.471226,37.767792,-122.465544,pending,
+G1I,37.765546,-122.462703,37.763300,-122.465544,37.767792,-122.459862,pending,
+G1J,37.765546,-122.457021,37.763300,-122.459862,37.767792,-122.454180,pending,
+G1K,37.765546,-122.453590,37.763300,-122.454180,37.767792,-122.453000,pending,
+G2A,37.770037,-122.508159,37.767792,-122.511000,37.772283,-122.505318,in progress,canopy closed over JFK Drive and the understorey is in (#215). Monterey cypress in place of the library's Italian pencil. STILL: ground is lawn not sand (needs the bake); the pale apron south of the drive is outside the park polygon.
+G2B,37.770037,-122.502477,37.767792,-122.505318,37.772283,-122.499636,in progress,"reads as forest: trunks both sides of the drive with the canopy meeting over it, which is the ggp-rural-road reference. Sand and the duff floor still need the bake."
+G2C,37.770037,-122.496795,37.767792,-122.499636,37.772283,-122.493954,in progress,"forest, with an understorey under it and none on the open grass. The best square in the row. Ground still uniform lawn (bake)."
+G2D,37.770037,-122.491113,37.767792,-122.493954,37.772283,-122.488272,in progress,"Polo Field correctly BARE - no trees and no scrub on the field, the wood kept to its edge (#215's neighbour rule). Still no grandstand and no track (#198b)."
+G2E,37.770037,-122.485431,37.767792,-122.488272,37.772283,-122.482590,in progress,Music Concourse unchanged and correct (it really is a broad paved oval). The pencil cypresses that lined it are now Monterey cypress.
+G2F,37.770037,-122.479749,37.767792,-122.482590,37.772283,-122.476908,in progress,big cypresses read as cypresses at last; understorey under them. Duff and the retaining wall (#192) still want the bake.
+G2G,37.770037,-122.474067,37.767792,-122.476908,37.772283,-122.471226,in progress,"NOW READS AS FOREST. Canopy closed, correct species, understorey present, and the measurement square for #215."
+G2H,37.770037,-122.468385,37.767792,-122.471226,37.772283,-122.465544,in progress,meadow correctly bare. The palms are still the wrong species here (a district palmChance reaching into the park) - next.
+G2I,37.770037,-122.462703,37.767792,-122.465544,37.772283,-122.459862,in progress,understorey landed; Nancy Pelosi Drive unchanged. Poppies and scrub where the photograph shows them.
+G2J,37.770037,-122.457021,37.767792,-122.459862,37.772283,-122.454180,in progress,understorey under the east-end wood; the blossom species is still wrong for here.
+G2K,37.770037,-122.453590,37.767792,-122.454180,37.772283,-122.453000,in progress,"Stanyan Street end - city, correctly, not park. Unchanged and should stay so."
+G3A,37.773642,-122.508159,37.772283,-122.511000,37.775000,-122.505318,pending,
+G3B,37.773642,-122.502477,37.772283,-122.505318,37.775000,-122.499636,pending,
+G3C,37.773642,-122.496795,37.772283,-122.499636,37.775000,-122.493954,pending,
+G3D,37.773642,-122.491113,37.772283,-122.493954,37.775000,-122.488272,pending,
+G3E,37.773642,-122.485431,37.772283,-122.488272,37.775000,-122.482590,pending,
+G3F,37.773642,-122.479749,37.772283,-122.482590,37.775000,-122.476908,pending,
+G3G,37.773642,-122.474067,37.772283,-122.476908,37.775000,-122.471226,pending,
+G3H,37.773642,-122.468385,37.772283,-122.471226,37.775000,-122.465544,pending,
+G3I,37.773642,-122.462703,37.772283,-122.465544,37.775000,-122.459862,pending,
+G3J,37.773642,-122.457021,37.772283,-122.459862,37.775000,-122.454180,pending,
+G3K,37.773642,-122.453590,37.772283,-122.454180,37.775000,-122.453000,pending,

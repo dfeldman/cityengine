@@ -1,0 +1,20 @@
+[
+ {
+  "osm": [
+   "way/426708093"
+  ],
+  "height": 20,
+  "procedural": "mosconeHallHoward",
+  "name": "Moscone Center South Hall, Howard",
+  "note": "docs/MOSCONE-SOUTH.md, the Howard side. The corner of Howard and 3rd: 80 m of Howard frontage by 50 m deep. Three sub-buildings stepping in height, an 8 m OPEN UNDERCROFT (2 x DECK_H, the height both Howard crossings leave the north block at), a recessed blue-green glazed band, a white parapet with a fine fin band, solar arrays on the flat roof, and a pale perforated chequer screen over the end elevation away from 3rd. Height 20 is proportional off ms-moscone-hall-1-howard.webp with the undercroft pinned at 8; OSM's height=12 is wrong for a hall the brief calls 6-7 levels. No rotateDeg and no front: the builder finds its frontage with longestEdge() so it is correct in either fitting frame."
+ },
+ {
+  "osm": [
+   "way/27572497"
+  ],
+  "height": 18,
+  "procedural": "yerbaBuenaIceRink",
+  "name": "Yerba Buena Ice Skating Center",
+  "note": "docs/MOSCONE-SOUTH.md: the only easy building on this block - 'a box with a smaller box on top and a roof'. Kit-sayable, so facade() raises it and three hand parts finish it: the pale silver standing-seam ribbed roof over the whole plan, the tall blank cream wall at the end away from the monumental Folsom stair, and the low white service blocks along the base. Height 18 against OSM's 15, because the ribbed roof stands clear above the wall head in ms-veranda-pink-and-ice-rink.webp. Queue row re-staged manual -> pending so it would not absorb scratch-tier effort."
+ }
+]

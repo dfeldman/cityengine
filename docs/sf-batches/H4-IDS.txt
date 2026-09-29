@@ -1,0 +1,31 @@
+# osm,name,kind,height_m,priority   — height_m EMPTY means UNKNOWN: read the OSM tags or OMIT it, never guess
+way/288365551,"1890 Boathouse",civic,,300.0
+way/165579428,"Alma",civic,,300.0
+way/291189021,"Building ",civic,,300.0
+way/24433437,"Dining Hall",civic,,300.0
+way/769605624,"Former Military Chapel",civic,,300.0
+way/700791868,"Hilton San Francisco Union Square",civic,,300.0
+way/34313544,"Naval Station Treasure Island",civic,,300.0
+way/132238424,"One Market Plaza",civic,,300.0
+way/27996732,"Post Exchange & Officers' Club",civic,,300.0
+way/924360762,"Queen Anne Hotel",civic,,300.0
+way/79377184,"SPUR Urban Center",civic,,300.0
+way/1280748838,"SS Jeremiah O'Brien",civic,,300.0
+way/151185875,"San Francisco Curb Exchange Building",civic,,300.0
+way/288365552,"Shop and Garage",civic,,300.0
+way/257004417,"Spreckels Mansion",civic,,300.0
+way/35024342,"The Adelaide Hostel",civic,,300.0
+way/193054136,"The Audiffred Building",civic,,300.0
+way/288391070,"The Cannery",civic,,300.0
+way/192305909,"The Folger Coffee Company Building",civic,,300.0
+way/79377217,"The Montgomery",civic,,300.0
+way/220614203,"The Red Victorian",civic,,300.0
+way/160705972,"The Smith-Kettlewell Eye Research Institute",civic,,300.0
+way/934659297,"Tide Gauge House",civic,,300.0
+way/288374434,"Tides Converge",civic,,300.0
+way/37126084,"Torpedo Assembly Building",civic,,300.0
+way/35024377,"Union Square Plaza Hotel",civic,,300.0
+way/27996789,"Warden's House",civic,,300.0
+way/71504455,"Warwick San Francisco",civic,,300.0
+way/724838113,"Wasteland",civic,,300.0
+way/660870452,"Water Tower",civic,,300.0

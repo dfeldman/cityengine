@@ -1,0 +1,18 @@
+[
+  { "osm": ["way/260162805"], "procedural": "b3_hotel_260162805", "name": "GEDEC Family Housing", "height": 41 },
+  { "osm": ["way/84805700"], "procedural": "b3_lab_84805700", "name": "J David Gladstone Institutes", "height": 41 },
+  { "osm": ["way/71739084"], "procedural": "b3_prewarTower_71739084", "name": "Way 71739084", "height": 50 },
+  { "osm": ["way/25759123"], "procedural": "b3_university_25759123", "name": "Arthur A Dugoni School of Dentistry", "height": 46 },
+  { "osm": ["way/256763516"], "procedural": "b3_mixedUse_256763516", "name": "Webster Tower & Terrace", "height": 15 },
+  { "osm": ["way/192883977"], "procedural": "b3_substation_192883977", "name": "Embarcadero Substation", "height": 51 },
+  { "osm": ["way/259925716"], "procedural": "b3_apartment_259925716", "name": "La Galleria", "height": 44 },
+  { "osm": ["way/35024321"], "procedural": "b3_hotel_35024321", "name": "Hotel Adagio", "height": 47 },
+  { "osm": ["way/259990934"], "procedural": "b3_residence_259990934", "name": "Alexander Residence", "height": 43 },
+  { "osm": ["way/192883909"], "procedural": "b3_midrise_192883909", "name": "Way 192883909", "height": 30 },
+  { "osm": ["way/1204801750"], "procedural": "b3_office_1204801750", "name": "Way 1204801750", "height": 33 },
+  { "osm": ["way/251511538"], "procedural": "b3_clinic_251511538", "name": "Kaiser Permanente Mission Bay", "height": 24 },
+  { "osm": ["way/556047031"], "procedural": "b3_apartment_556047031", "name": "The Rise", "height": 33 },
+  { "osm": ["way/941563175"], "procedural": "b3_apartment_941563175", "name": "222 Taylor", "height": 30 },
+  { "osm": ["way/941568179"], "procedural": "b3_condo_941568179", "name": "Crescent Nob Hill", "height": 30 },
+  { "osm": ["way/690663633"], "procedural": "b3_bank_690663633", "name": "Alvinza Hayward Building (Kohl Building)", "height": 36 }
+]

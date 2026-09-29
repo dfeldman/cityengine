@@ -1,0 +1,13 @@
+{
+  "_": "What tools/bake-audit.ts's early gates are allowed to find today. The gate is a REGRESSION gate: today's known breakage does not stop a bake and one more than today's does. Lower a number when you fix something; raise one only deliberately, and say why. `--strict` ignores this file and demands zero.",
+  "san-francisco": {
+    "stage1": 0,
+    "stage2": 4,
+    "why": "Was 36 (BUGS.md #102). The 32 that named an outline the bake replaced with its building:parts now resolve through those parts — restyles() got the same `claims()` rule the replace path has had since #100, fixed 2026-09-23. What is left is the 4 ids the bake has nothing at all for: Embarcadero, Civic Center and Montgomery Street stations, and way/616479965 (BUGS.md #113, a data question, deliberately still failing so the audit keeps reporting them). Procedural entries: 0 (BUGS.md #100 is fixed)."
+  },
+  "paris-centre": {
+    "stage1": 0,
+    "stage2": 0,
+    "why": "Was 2 — Théâtre du Châtelet / Théâtre de la Ville and the Bourse de Commerce, both superseded outlines, both fixed by BUGS.md #102 on 2026-09-23. Clean, and it stays clean."
+  }
+}

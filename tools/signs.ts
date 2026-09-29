@@ -1,5 +1,9 @@
 /**
- * Generate a city's sign lettering (tools/signgen) for every sign it needs.
+ * Generate a city's EXTRUDED sign lettering (tools/signgen) for every sign that needs it.
+ *
+ * Nearly every sign in the city is FLAT — one quad, a texture with an alpha channel, made in the browser with
+ * no Blender and no asset (src/render/sign-plates.ts). Nothing here is needed for those. This builds the few
+ * whose letters genuinely stand off the wall and catch the light.
  *
  * Signs whose LETTERING is the landmark get real letterforms from a real typeface rather than the 3x5 block
  * font — see tools/signgen/README.md for why, and for how to change the look. The recipes live in
@@ -21,7 +25,13 @@ import SIGNS from './signgen/signs.json' with { type: 'json' }
 
 const ROOT = resolve(import.meta.dirname, '..')
 
-interface Sign { out: string; text: string; font?: string; height?: number; depth?: number; bulbs?: number; bevel?: number }
+interface Sign {
+  out: string; text: string; font?: string; height?: number; depth?: number; bulbs?: number; bevel?: number
+  /** the letters' own colour, #rrggbb, and what they are made of */
+  colour?: string; metallic?: number; roughness?: number
+  /** the `lit` of render/landmarks/signage.ts: only `self` changes the GLB (the letter faces emit) */
+  lit?: 'none' | 'front' | 'back' | 'self'
+}
 
 export function buildSigns(city: string, force = false): void {
   const spec = SIGNS as { fonts: Record<string, string>; cities: Record<string, Sign[]> }
@@ -44,6 +54,8 @@ export function buildSigns(city: string, force = false): void {
     const args = ['-b', '-P', resolve(ROOT, 'tools', 'signgen', 'gen.py'), '--',
       `--text=${s.text}`, `--out=${out}`, `--height=${s.height ?? 5}`, `--depth=${s.depth ?? 0.35}`,
       ...(s.bulbs ? [`--bulbs=${s.bulbs}`] : []), ...(s.bevel ? [`--bevel=${s.bevel}`] : []),
+      ...(s.colour ? [`--colour=${s.colour}`] : []), ...(s.metallic !== undefined ? [`--metallic=${s.metallic}`] : []),
+      ...(s.roughness !== undefined ? [`--roughness=${s.roughness}`] : []), ...(s.lit ? [`--lit=${s.lit}`] : []),
       ...(font ? [`--font=${font}`] : [])]
     const r = spawnSync('blender', args, { encoding: 'utf8' })
     const line = (r.stdout ?? '').split('\n').find((l) => l.startsWith('signgen: "'))

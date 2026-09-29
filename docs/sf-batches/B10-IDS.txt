@@ -1,0 +1,23 @@
+# osm,name,kind,height_m,priority   — height_m EMPTY means UNKNOWN: read the OSM tags or OMIT it, never guess
+way/32650734,"San Francisco Fire Station Q",civic,,300.0
+way/34313513,"Harvey Milk Memorial Administration Building",civic,,300.0
+way/112073353,"Harvey Milk Recreational Arts Center",civic,,300.0
+way/115433822,"San Francisco Fire Station 6",civic,,300.0
+way/120481448,"Golden Gate Park Aid Station",civic,,300.0
+way/135620203,"Fire Chief's Residence",civic,,300.0
+way/161504247,"San Francisco Fire Station ",civic,,300.0
+way/161504250,"San Francisco Fire Station ",civic,,300.0
+way/162470913,"San Francisco Fire Station #",civic,,300.0
+way/218148097,"San Francisco Fire Station )",civic,,300.0
+way/242973686,"Old Mission Police Station",civic,,300.0
+way/256461082,"Bryant Street Station",civic,,300.0
+way/260327749,"Mission Police Station",civic,,300.0
+way/261105865,"ODC Theater",civic,,300.0
+way/415417770,"Dorraine Zief Law Library",civic,,300.0
+way/764313741,"San Francisco Fire Station H",civic,,300.0
+way/1038340434,"Injector Station",civic,,300.0
+way/1186109887,"San Francisco Fire Station 5",civic,,300.0
+way/288365551,"1890 Boathouse",civic,,300.0
+way/99202294,"Alcatraz Island Lighthouse",civic,,300.0
+way/32946359,"Alioto - Veronese Building",civic,,300.0
+way/165579428,"Alma",civic,,300.0

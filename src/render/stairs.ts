@@ -16,6 +16,7 @@ import { cartoonMaterial, surfaceTag } from './cartoon-material.ts'
 import type { TileLayer } from './city.ts'
 import type { Terrain } from '../city/terrain.ts'
 import { unpackPoints } from '../city/package.ts'
+import { stairway, type NamedStairway, type StairPoint } from './landmarks/stairway.ts'
 
 const CONCRETE: Rgb = [0.68, 0.67, 0.64]
 const NOSING: Rgb = [0.58, 0.57, 0.55]
@@ -23,7 +24,13 @@ const RAIL: Rgb = [0.2, 0.22, 0.2]
 const TREAD = 0.32
 const RISER = 0.17
 
-export function stairsLayer(scene: Scene, terrain: Terrain): TileLayer {
+/**
+ * `named` is the region's table of stairways built as LANDMARKS (render/landmarks/stairway.ts), keyed by the
+ * OSM name on the way — San Francisco's is `landmarks/sf/stairways.ts`, passed in by `game.ts` so this shared
+ * layer never imports a city's own builders (feedback-region-files). Everything not in it gets the generic
+ * treatment below, unchanged.
+ */
+export function stairsLayer(scene: Scene, terrain: Terrain, named: Record<string, NamedStairway> = {}): TileLayer {
   const concrete = surfaceTag('concrete')
   return {
     name: 'stairs',
@@ -36,6 +43,26 @@ export function stairsLayer(scene: Scene, terrain: Terrain): TileLayer {
       for (const e of flights) {
         const pts = unpackPoints(e.points)
         if (pts.length < 2) continue
+        /*
+         * A NAMED landmark stairway. Built WHOLE, from the way's own polyline, and anchored on the tile its
+         * midpoint falls in rather than clipped per tread: the flights, the cheek walls' stepped coping and
+         * the decoration only make sense as one object, and a piece of a flight is worse than none. The ways
+         * are short (the Lyon Street run is six of them over 140 m) and the layer's reach is three tiles, so
+         * nothing is ever far enough outside its anchor tile to pop.
+         */
+        const spec = e.name ? named[e.name] : undefined
+        if (spec) {
+          const mid = pts[Math.floor(pts.length / 2)]
+          if (!inRect(mid.x, mid.z)) continue
+          /*
+           * The heights are the RIDE EDGE'S OWN PROFILE where the bake gave it one, which is what the runner's
+           * feet follow (BUGS.md #207) — the terrain grid is only the fallback for a city baked flat.
+           */
+          const line: StairPoint[] = pts.map((p, i) => ({ x: p.x, z: p.z, y: e.heights?.[i] ?? terrain.heightAt(p.x, p.z) }))
+          const res = stairway(out, line, spec.width ?? Math.max(1.6, e.width || 2.4), spec.style)
+          spec.decorate?.(out, res)
+          continue
+        }
         const half = Math.max(0.8, Math.min(3, (e.width || 2.4) / 2))
         // resample the polyline at the tread's pitch
         const at: { x: number; z: number; dx: number; dz: number }[] = []

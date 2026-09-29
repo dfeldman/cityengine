@@ -20,7 +20,7 @@ export function sfFlora(toLatLon: (x: number, z: number) => { lat: number; lon: 
     // (form 0: the trees OSM maps that the city's list does not have — plazas, courtyards — and the park scatter)
     street: [['sf_brisbane', 2], ['sf_laurel', 2], ['sf_plane', 2], ['sf_ficus', 1]],
     // Monterey cypress and pine, the blue gums, coast live oak (the library's oak), and the park's own laurels
-    park: [['cypress', 3], ['black_pine', 2], ['sf_gum', 2], ['oak', 2], ['sf_laurel', 1]],
+    park: [['sf_cypress', 3], ['sf_mpine', 2], ['sf_gum', 2], ['oak', 2], ['sf_laurel', 1]],
     palms: [{ kind: 'canary', models: 4 }, { kind: 'fan', models: 3 }],
     // the street trees are the city's own list, each with its form (city/sf/trees.ts), drawn from SF's own
     // generated species (tools/sftrees) and the palms; the park scatter above is what is left to the old pools
@@ -41,8 +41,22 @@ export function sfFlora(toLatLon: (x: number, z: number) => { lat: number; lon: 
       columnar: [['poplar', 1]],
       weeping: [['sf_mayten', 2], ['sf_pepper', 1]],
       eucalyptus: [['sf_gum', 1]],
-      pine: [['black_pine', 1], ['scots_pine', 1]],
-      cypress: [['cypress', 1]],
+      /*
+       * Monterey pine and Monterey cypress, generated for this city (tools/sftrees, `library-monterey.json`).
+       *
+       * What stood here before was the LIBRARY's `cypress` — which is a columnar Italian cypress, measured
+       * at a crown one eleventh of its height and never more than twelve metres tall — and `scots_pine`,
+       * which is alpine. They are the two heaviest species in every Golden Gate Park and Presidio zone in
+       * city/sf/parks.ts, so the park was planted almost entirely in dark pencils: the owner's *"the plants
+       * are wrong for the area (not a surprise since our tree kit was developed for the swiss alps!)"*.
+       *
+       * A Monterey cypress is as wide as it is tall (measured: crown 0.53 of height against 0.09), which is
+       * why this is not only a species correction but most of the canopy: a pencil cannot close over a road
+       * at any density, and thickening the planting without this would only have made the pencils thicker.
+       * A little black pine is kept in the mix, for the city's own pines away from the coast.
+       */
+      pine: [['sf_mpine', 3], ['black_pine', 1]],
+      cypress: [['sf_cypress', 1]],
       // the park oak (city/sf/parks.ts). The street Quercus is a clipped 'evergreen' and stays one; this is
       // the coast live oak standing on its own in a meadow, which is a different tree to look at.
       oak: [['oak', 1]],
@@ -52,7 +66,7 @@ export function sfFlora(toLatLon: (x: number, z: number) => { lat: number; lon: 
       spiky: [['palm:spiky', 1]],
       windmill: [['palm:windmill', 1]],
     },
-    formModels: { oak: 4, cypress: 4, pine: 4, eucalyptus: 3, plane: 5, laurel: 4, evergreen: 4, ficus: 4, deciduous: 4, plum: 4, canary: 4, fan: 3, queen: 3, spiky: 3 },
+    formModels: { oak: 4, cypress: 6, pine: 6, eucalyptus: 4, plane: 5, laurel: 4, evergreen: 4, ficus: 4, deciduous: 4, plum: 4, canary: 4, fan: 3, queen: 3, spiky: 3 },
     palmChance: (x, z) => {
       const { lat, lon } = toLatLon(x, z)
       return PALMS[districtOf(lat, lon)] ?? 0.03

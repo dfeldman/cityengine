@@ -125,7 +125,7 @@ export class Platform implements Controls {
 
   // --- what the launch chose --------------------------------------------------------------------
 
-  get city(): string { return option(this.start.options, 'city', ['paris-centre', 'paris-marais', 'brooklyn-heights', 'chicago-loop', 'san-francisco'], 'paris-centre') }
+  get city(): string { return option(this.start.options, 'city', ['paris-centre', 'paris-marais', 'brooklyn-heights', 'chicago-loop', 'san-francisco'], 'san-francisco') }
   get traffic(): 'none' | 'some' | 'busy' { return option(this.start.options, 'traffic', ['none', 'some', 'busy'], 'some') as 'none' | 'some' | 'busy' }
   get time(): 'day' | 'dawn' | 'dusk' | 'night' { return option(this.start.options, 'time', ['day', 'dawn', 'dusk', 'night'], 'day') as 'day' }
   get weather(): 'clear' | 'overcast' | 'rain' { return option(this.start.options, 'weather', ['clear', 'overcast', 'rain'], 'clear') as 'clear' }

@@ -44,11 +44,26 @@ export function inferLevels(
   if (hasHeightTag(tags)) return undefined
 
   // a shed is a shed, whatever stands next to it
-  if (ringArea(ring) < 30) return 1
+  const area = ringArea(ring)
+  if (area < 30) return 1
+
+  /*
+   * BUGS.md #155, second pass. The footprint cap was first applied ONLY inside the neighbour branch, and
+   * the bake then still gave "The Bike Hut" (7 x 5 m, way/572156641) three storeys — because that building
+   * never reaches the neighbour branch at all. With too few tagged neighbours it falls through to the
+   * regional default, and with a matching `building=*` it takes `method.types`. Both were uncapped.
+   *
+   * So the cap belongs on EVERY inferred answer, not one branch. A building cannot plausibly be tall on a
+   * plan this small however we arrived at the guess. Calibrated against `bake-heights.test.ts`, which infers
+   * on a 15 x 12 m ring (180 m2) and rightly expects 6 storeys in Paris and 8 in the Loop — an ordinary
+   * apartment block — so the caps only bite well below that.
+   */
+  const cap = area < 50 ? 1 : area < 100 ? 2 : area < 150 ? 3 : method.maxLevels
+  const capped = (v: number): number => Math.max(1, Math.min(method.maxLevels, cap, v))
 
   const type = tags.building ?? 'yes'
   const byType = method.types[type]
-  if (byType !== undefined) return typeof byType === 'number' ? byType : defaults[byType]
+  if (byType !== undefined) return capped(typeof byType === 'number' ? byType : defaults[byType])
 
   const c = centroid(ring)
   const near: number[] = []
@@ -61,10 +76,28 @@ export function inferLevels(
   if (near.length >= method.minNeighbours) {
     near.sort((a, b) => a - b)
     const v = near[Math.min(near.length - 1, Math.floor(method.percentile * near.length))]
-    return Math.max(1, Math.min(method.maxLevels, v))
+    /*
+     * BUGS.md #155. The neighbour guess knew nothing about how big the building is, so a shack standing
+     * among towers inherited a tower's height. The owner found three of them beside Pier 40 — "a few small
+     * shacks around it. these are rendering as tall buildings" — including "The Bike Hut" at 7 x 5 m, which
+     * came out the height of the South Beach residential blocks around it.
+     *
+     * The shed rule above (< 30 m2 => 1) missed them: the Bike Hut is 35 m2, the next 100 m2, the next 216.
+     * Rather than nudge that threshold, cap the NEIGHBOUR guess by footprint — a building cannot plausibly
+     * be tall on a plan that small, whatever stands next to it.
+     *
+     * CALIBRATION MATTERS HERE and my first attempt was far too tight (a < 300 => 4). `bake-heights.test.ts`
+     * infers on a 15 x 12 m ring — 180 m2 — and expects 6 storeys in Paris and 8 in the Loop, which is an
+     * ordinary apartment block and exactly right. A small footprint is NOT evidence of a low building: a
+     * narrow San Francisco house is ~7 x 15 m and three storeys, and plenty of towers stand on 200 m2.
+     *
+     * So cap only where the plan is too small for anything else to be plausible, and leave everything from a
+     * normal town house upward to the neighbours. These only ever reduce a guess, never raise one.
+     */
+    return capped(v)
   }
 
-  return COMMERCIAL.has(type) ? defaults.commercial : defaults.residential
+  return capped(COMMERCIAL.has(type) ? defaults.commercial : defaults.residential)
 }
 
 /**

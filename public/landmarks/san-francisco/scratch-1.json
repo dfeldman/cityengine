@@ -1,0 +1,34 @@
+[
+  {
+    "osm": ["way/1458363734"],
+    "name": "Peace Pagoda",
+    "procedural": "peacePagoda",
+    "front": "street",
+    "height": 30,
+    "note": "sf/scratch-1.ts, hand primitives via new ./pagoda-kit.ts (pagodaTier/pagodaFinial): building=pagoda, a freestanding five-tier tapering spire on a 49-vertex near-circular plan, height tag a nonsense 0.01 so no baked ring exists at all (confirmed absent from every tiles/*.json) -- built round from a fixed radius/height instead of a measured ring. No photograph; restrained to the plain tier taper and eave overhang, height set from the real building's known ~30m. Escalated on FORM: the roof form IS the building, a known kit gap (tiered round taper) recorded in pagoda-kit.ts for reuse by the Japanese Tea Garden's pagoda later."
+  },
+  {
+    "osm": ["way/35973054"],
+    "name": "San Francisco Armory",
+    "procedural": "sfArmory",
+    "front": "street",
+    "height": 19,
+    "note": "sf/scratch-1.ts, hand primitives (faceBand over the real baked ring + hand-built castellated corner towers): Moorish Revival brick fortress, 19m tag, no photograph. Escalated on measured plan evidence -- the baked 17-vertex ring already carries two 2-3m bump-outs flanked by chamfered corners on the long north wall -- so the main mass is faceBand run straight over fit.ring (every bump/chamfer comes through as baked), with a castellated brick tower rising above the roofline at each end of the ring's own longest wall and a crenellated parapet between them."
+  },
+  {
+    "osm": ["way/288717109"],
+    "name": "Woolf House",
+    "procedural": "woolfHouse",
+    "front": "street",
+    "height": 25,
+    "note": "sf/scratch-1.ts, hand primitives (faceBand over the real 132-point ring + an explicit per-edge loop): owner note 'simple repeating but interesting'. The repeat (a diagonal sawtooth of short alternating chords, measured against the baked ring in tiles/4_-6.json, in metres, never raw lat/lon) is already the ring itself, so faceBand over the real fit.ring reproduces the massing exactly; a second loop over every ring edge finds each short 'return' chord of the sawtooth and drops a thin balcony rail across it so the repeating unit reads at a glance. Ring is CONCAVE -- offsetRing used for the cornice inset, never insetRing."
+  },
+  {
+    "osm": ["way/112072207"],
+    "name": "Round House Café",
+    "procedural": "roundHouseCafe",
+    "front": "street",
+    "height": 5,
+    "note": "sf/scratch-1.ts, hand primitives (prism cylinders, no faceted ring): a literally circular plan, 34-vertex ring, continuous 360deg heading sweep, 1.4-1.9m chords. Built round -- only the ring's centroid and mean radius are taken from fit.ring, then drawn as true 32-sided prism cylinders, never the baked 34-gon's own facets. 16m height tag corrected down to a plain one-storey drum (a single-room diner, not a multi-storey building); no photograph."
+  }
+]

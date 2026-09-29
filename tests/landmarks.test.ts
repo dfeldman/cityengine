@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { entryKind, fitFront, packedIds, replacedIds, restyles, type LandmarkEntry } from '../src/render/landmarks.ts'
+import { entryKind, fitFront, groundedParts, isReplaced, packedIds, partsComplete, partsUnion, replacedIds, restyles, tileNearParts, type LandmarkEntry } from '../src/render/landmarks.ts'
 import { PROCEDURAL } from '../src/render/landmarks/procedural.ts'
 import { MeshBuilder } from '../src/render/buildings.ts'
 
@@ -40,8 +40,70 @@ describe('manifest entries', () => {
     expect(entryKind(entries[2])).toBe('standalone')
     expect(packedIds(entries[2])).toEqual([])
     expect([...replacedIds(entries)]).toEqual([1])
+    // and the parts of an outline it names go with it, wherever the bake dropped the outline (BUGS.md #100)
+    const replaced = replacedIds(entries)
+    expect(isReplaced(replaced, { id: 9 })).toBe(false)
+    expect(isReplaced(replaced, { id: 9, partOf: 1 })).toBe(true)
+    expect(isReplaced(replaced, { id: 9, partOf: 2 })).toBe(false)
   })
 })
+
+describe('a restyle naming an outline the bake replaced with its parts (BUGS.md #102)', () => {
+  const pkg = (bs: { id: number; partOf?: number }[]) =>
+    ({ origin: { lat: 0, lon: 0 }, buildings: bs.map((b) => ({ ...b, ring: [0, 0, 10, 0, 10, 10, 0, 10] })), landmarks: [] }) as never
+
+  it('takes every part of it, with the style and NOT the whole building\'s massing', () => {
+    const e: LandmarkEntry = { name: 'Grace Cathedral', osm: 'way/200', restyle: 'classical', height: 53, levels: 11, eaves: 40, dropParts: true }
+    const taken = restyles([e], pkg([{ id: 201, partOf: 200 }, { id: 202, partOf: 200 }, { id: 9 }]))
+    expect([...taken.keys()].sort((a, b) => a - b)).toEqual([200, 201, 202]) // 200 itself is not in the bake
+    expect(taken.has(9)).toBe(false)
+    // the dress is the entry's; `height`/`eaves`/`levels` describe the WHOLE building and every grounded
+    // part would take them — 53 m onto a 4 m canopy
+    expect(taken.get(201)!.restyle).toBe('classical')
+    expect(taken.get(201)!.height).toBeUndefined()
+    expect(taken.get(201)!.eaves).toBeUndefined()
+    expect(taken.get(201)!.levels).toBeUndefined()
+    // and `dropParts` above all: the parts ARE the building, and it would delete the aloft ones
+    expect(taken.get(201)!.dropParts).toBeUndefined()
+  })
+
+  it('never reaches the parts of an outline the bake KEPT, and an exact id keeps its own entry', () => {
+    const outline: LandmarkEntry = { name: 'outline', osm: 'way/200', restyle: 'classical' }
+    const part: LandmarkEntry = { name: 'a part', osm: 'way/201', restyle: 'brick' }
+    // way/300 is in the bake, so nothing carries partOf: 300 and it claims only itself
+    const kept: LandmarkEntry = { name: 'kept', osm: 'way/300', restyle: 'chicago' }
+    const taken = restyles([part, outline, kept], pkg([{ id: 201, partOf: 200 }, { id: 202, partOf: 200 }, { id: 300 }]))
+    expect(taken.get(201)!.restyle).toBe('brick')      // FIRST entry wins, as everywhere else
+    expect(taken.get(202)!.restyle).toBe('classical')
+    expect(taken.get(300)!.restyle).toBe('chicago')
+    expect(taken.get(300)!.height).toBeUndefined()
+  })
+})
+
+/*
+ * 25,000 triangles is the right ceiling for a BUILDING. It is the wrong ceiling for a suspension bridge
+ * two and a half kilometres long, and on 2026-09-24 it actively blocked a fix: the owner reported that huge
+ * polygons on the bridges and the bay wreck depth precision ("it's hard to even tell where the water line
+ * is", BUGS.md #154), and the Golden Gate's deck could not be subdivided to the 16 m target because doing so
+ * reached 26,168 triangles. It was left at 32 m — barely subdivided — purely to satisfy this number.
+ *
+ * So a few named landmarks get their own ceiling. This is deliberately a SHORT list with a reason each:
+ * the test still guards every other builder at 25,000, and adding a name here should require justifying why
+ * the thing is genuinely not a building.
+ */
+const BIG: Record<string, number> = {
+  // 2.7 km of deck, towers and cables, and a surface the rider crosses at eye level, so its long spans must
+  // be finely subdivided or the depth buffer cannot sort the deck against the water beneath it
+  goldenGateBridge: 40_000,
+  /*
+   * And its NEAR level (BUGS.md #211) is the same builder with every box subdivided to 4 m, because the
+   * rider is now ON it: this is the model the path runs over, so the far level's huge quads — the thing the
+   * owner actually reported, *"its polys are huge so depth mapping fails"* — are what it exists to replace.
+   * Twice the far level, for the one object in the city that is ridden and also seen from eight kilometres.
+   */
+  goldenGateBridgeNear: 80_000,
+  bayBridge: 40_000,
+}
 
 describe('every procedural landmark', () => {
   for (const [name, build] of Object.entries(PROCEDURAL)) {
@@ -50,7 +112,7 @@ describe('every procedural landmark', () => {
       build(out, { hx: 25, hz: 35, height: 40 })
       expect(out.positions.length).toBeGreaterThan(0)
       for (const v of out.positions) expect(Number.isFinite(v)).toBe(true)
-      expect(out.triangles).toBeLessThan(25_000)
+      expect(out.triangles).toBeLessThan(BIG[name] ?? 25_000)
     })
   }
 })
@@ -80,5 +142,79 @@ describe('fitSnug (BUGS.md #6)', () => {
     const ring = [[-30, -10], [30, -10], [30, 10], [-30, 10]].map(([x, z]) => ({ x: x * Math.cos(t) + z * Math.sin(t), z: -x * Math.sin(t) + z * Math.cos(t) }))
     const f = fitSnug(ring, 0)
     expect(f.hx * f.hz).toBeLessThan(310)
+  })
+})
+
+/*
+ * BUGS.md #100: an entry naming an outline the bake replaced with the building's own `building:part`s. The
+ * outline is not in the package — only the parts, each carrying `partOf: <its id>` — so the entry must claim
+ * them and be fitted to their UNION. Fitting to one part is the whole trap: each Salesforce Tower part is a
+ * ~250 m² wedge and the tower would have been built a quarter of its size.
+ */
+describe('a building the bake replaced with its own parts (BUGS.md #100)', () => {
+  const ring = (x0: number, z0: number, x1: number, z1: number): number[] => [x0, z0, x1, z0, x1, z1, x0, z1]
+  // a 60 x 20 m building mapped as three grounded parts in a row, plus a roof plate that starts at 30 m
+  const parts = [
+    { id: 1, ring: ring(0, 0, 20, 20), height: 30 },
+    { id: 2, ring: ring(20, 0, 40, 20), height: 30 },
+    { id: 3, ring: ring(40, 0, 60, 20), height: 30 },
+    { id: 4, ring: ring(0, 0, 60, 20), height: 34, minHeight: 30 },
+  ]
+
+  it('unions the grounded parts and takes the tallest part\'s height', () => {
+    expect(groundedParts(parts).map((p) => p.id)).toEqual([1, 2, 3])
+    const u = partsUnion(parts)!
+    expect(u.height).toBe(34)
+    const xs = u.hull.map((p) => p.x)
+    const zs = u.hull.map((p) => p.z)
+    expect(Math.min(...xs)).toBe(0)
+    expect(Math.max(...xs)).toBe(60)
+    expect(Math.min(...zs)).toBe(0)
+    expect(Math.max(...zs)).toBe(20)
+  })
+
+  /** The roof plate alone would give the same footprint here; a part that overhangs would not. */
+  it('does not let an ungrounded part widen the footprint', () => {
+    const over = [...parts.slice(0, 3), { id: 5, ring: ring(-15, -15, 75, 35), height: 40, minHeight: 25 }]
+    const u = partsUnion(over)!
+    expect(Math.min(...u.hull.map((p) => p.x))).toBe(0)
+    expect(u.height).toBe(40)
+  })
+
+  /*
+   * And the readiness: tiles stream, and a building 60 m long straddles a 200 m tile boundary. Placed on the
+   * parts of the first tile to arrive, the Ferry Building (200 m, seven parts) would stand a third of its
+   * length. A part that has not arrived is in a tile that has not arrived — a tile's buildings all come at
+   * once — so every tile the parts reach into, with a margin for one that starts just beyond them, must be in.
+   */
+  describe('waiting for the parts that are still in another tile', () => {
+    const left = [{ id: 1, ring: ring(150, 50, 199, 70), height: 30 }]
+    const right = [{ id: 2, ring: ring(201, 50, 260, 70), height: 30 }]
+    it('is not complete while a tile the building reaches into is missing', () => {
+      expect(partsComplete(left, new Set(['0,0']))).toBe(false)
+      expect(partsComplete([...left, ...right], new Set(['0,0']))).toBe(false)
+    })
+    it('is complete once every tile it reaches into has arrived', () => {
+      expect(partsComplete([...left, ...right], new Set(['0,0', '1,0']))).toBe(true)
+    })
+    /** the seam case: a part ending ON the boundary does not reach into the next tile by its ring alone */
+    it('still waits for the tile just beyond a part that ends on the boundary', () => {
+      expect(partsComplete(left, new Set(['0,0', '0,1']))).toBe(false)
+    })
+    it('nothing is never complete', () => {
+      expect(partsComplete([], new Set(['0,0']))).toBe(false)
+    })
+    /*
+     * And the backstop only counts tiles of the building's OWN neighbourhood: a tile arriving a kilometre
+     * away says nothing about whether the rest of this building is coming. Counting every tile, a landmark
+     * the camera passed once from across the city was placed on whatever single part happened to be loaded.
+     */
+    it('knows which arriving tiles are its own neighbourhood', () => {
+      expect(tileNearParts(left, 0, 0)).toBe(true)
+      expect(tileNearParts(left, 2, 1)).toBe(true)
+      expect(tileNearParts(left, 5, 0)).toBe(false)
+      expect(tileNearParts(left, 0, -4)).toBe(false)
+      expect(tileNearParts([], 0, 0)).toBe(false)
+    })
   })
 })

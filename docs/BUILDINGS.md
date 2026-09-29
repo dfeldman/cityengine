@@ -92,7 +92,8 @@ shared kit now, and a building should be one line, or a spec plus two or three c
   sawtooth, spires, sliced), penthouses, and a `bays` face for projecting bay windows.
 - `recipes.ts` — ten building types: `edwardian-terracotta`, `deco-setback`, `chicago-block`, `midcentury-slab`,
   `concrete-piers`, `granite-eighties`, `glass-tower`, `modern-slender`, `brick-loft`, `hotel-punched`.
-- `parts.ts` — `edgeAt`, `longestEdge`, `edgeFacing`, `boxAlong`, `panelOn`, `signText`, `marquee`, `bladeSign`,
+- `parts.ts` — `sign` (a building's NAME in a real typeface, two triangles — reach for this before anything
+  else for signage; see docs/KIT.md), `edgeAt`, `longestEdge`, `edgeFacing`, `boxAlong`, `panelOn`, `signText`, `marquee`, `bladeSign`,
   `colonnade`, `arcade`, `quoins`, `cupola`, `stripRoof`, `faceOn`, `roundRing`, `simplifyRing`.
 
 ## Never plant anything

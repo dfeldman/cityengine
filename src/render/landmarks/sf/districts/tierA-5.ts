@@ -5,8 +5,9 @@
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { fromRecipe } from '../recipes.ts'
-import { tower, towerRing } from '../../tower.ts'
+import { tower, towerRing, insetRing } from '../../tower.ts'
 import { signText, longestEdge, edgeAt } from '../../parts.ts'
+import { pinnacle } from '../../kit.ts'
 
 /** A small SFFD fire station: a dark brick apparatus base under a painted wall band with the company number. */
 function fireStation(wall: [number, number, number], number: string): (out: MeshBuilder, fit: Fit) => void {
@@ -33,8 +34,46 @@ export const TIERA_5: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** SFFD Engine Co. 16, the same kit in a plainer cream wall. */
   fireStation16: fireStation([0.78, 0.74, 0.66], '16'),
 
-  /** UC Law SF McAllister Tower (1930): tan Gothic-deco brick, tall pointed-arch base, a jagged stepped crown (Commons photograph). */
-  mcallisterTower: fromRecipe('deco-setback', { height: 114, wall: [0.82, 0.76, 0.6], glass: [0.18, 0.22, 0.22], base: 15, baseWall: [0.72, 0.66, 0.5], crown: { kind: 'stepped', steps: 3, height: 10, inset: 2 } }),
+  /**
+   * UC Law SF McAllister Tower (1930, the former Empire Hotel / Methodist temple): tan Gothic Art Deco brick,
+   * 114 m (Mapillary way-256042681-03.jpg, kept, confirmed on McAllister Street: a slab tower, plain punched
+   * windows on the shaft, a stepped-back crown with vertical fin piers rising past the roofline into pointed
+   * caps, and a slim central finial silhouetted against the sky). The recipe `deco-setback` said the setbacks
+   * but had no word for the fins or the finial, which are what make the skyline silhouette read as Gothic
+   * rather than plain deco — hand-added at the crown, on top of `tower()`'s ordinary shaft and steps.
+   */
+  mcallisterTower: (out: MeshBuilder, fit: Fit): void => {
+    const wall: [number, number, number] = [0.82, 0.76, 0.6]
+    const baseWall: [number, number, number] = [0.72, 0.66, 0.5]
+    const glass: [number, number, number] = [0.18, 0.22, 0.22]
+    const H = fit.height || 114
+    const crownH = H * 0.09
+    const steps = 3
+    tower(out, fit, {
+      height: H,
+      base: { height: 15, face: { kind: 'punched', wall: baseWall, glass, pitch: 3, floor: 4, solid: 0.42, material: 'ashlar' } },
+      tiers: [{ to: 1 - crownH / H, face: { kind: 'punched', wall, glass, pitch: 3, floor: 3.4, solid: 0.55, material: 'brick' } }],
+      roof: wall,
+      crown: { kind: 'stepped', steps, height: crownH, inset: 2.4,
+        face: { kind: 'punched', wall, glass, pitch: 2.6, floor: 3, solid: 0.35, material: 'brick' } },
+    })
+    // Walk the same inset/step sequence tower()'s 'stepped' crown just drew, to find each step's own ring —
+    // a fin pier stands at every corner of every step, tallest at the base step and shortest at the top.
+    let r = towerRing(fit)
+    let y = H
+    const each = crownH / steps
+    for (let k = 0; k < steps; k++) {
+      r = insetRing(r, 2.4)
+      const finH = each * (1.6 - k * 0.3)
+      for (const p of r) pinnacle(out, p.x, p.z, y, finH, 1.5 - k * 0.2, wall)
+      y += each
+    }
+    // the slim central finial the reference silhouette shows above the topmost step
+    let cx = 0, cz = 0
+    for (const p of r) { cx += p.x; cz += p.z }
+    cx /= r.length; cz /= r.length
+    pinnacle(out, cx, cz, y, each * 1.8, 1.1, wall)
+  },
 
   /** Phillip Burton Federal Building (1959): a grey precast tower with deep vertical piers in shadow, flat top, blank podium (Commons photograph). */
   phillipBurtonFederal: fromRecipe('concrete-piers', { height: 95, wall: [0.72, 0.72, 0.7], glass: [0.2, 0.22, 0.25], baseWall: [0.68, 0.67, 0.64] }),

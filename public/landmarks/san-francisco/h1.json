@@ -1,0 +1,205 @@
+[
+  {
+    "osm": [
+      "way/135103715"
+    ],
+    "procedural": "h1_ucsf_weill",
+    "name": "UCSF Weill Institute for Neuroscience",
+    "height": 29
+  },
+  {
+    "osm": [
+      "way/274542537"
+    ],
+    "procedural": "h1_ucsf_grand",
+    "name": "UCSF Nancy and Stephen Grand Building",
+    "height": 9
+  },
+  {
+    "osm": [
+      "way/1243657270"
+    ],
+    "procedural": "h1_ucsf_pritzker",
+    "name": "UCSF Nancy Friend Pritzker Psychiatry Building"
+  },
+  {
+    "osm": [
+      "way/256633745"
+    ],
+    "procedural": "h1_ucsf_mountZion",
+    "name": "UCSF Medical Center at Mount Zion",
+    "height": 29
+  },
+  {
+    "osm": [
+      "way/112433952"
+    ],
+    "procedural": "h1_sharonArtStudio",
+    "name": "Sharon Art Studio",
+    "height": 8
+  },
+  {
+    "osm": [
+      "way/145027140"
+    ],
+    "procedural": "h1_communityLivingCenter",
+    "name": "Community Living Center",
+    "height": 18
+  },
+  {
+    "osm": [
+      "way/165420859"
+    ],
+    "procedural": "h1_juliusKahnClubhouse",
+    "name": "Julius Kahn Clubhouse",
+    "height": 5
+  },
+  {
+    "osm": [
+      "way/167176657"
+    ],
+    "procedural": "h1_thirdSpace",
+    "name": "Third Space",
+    "height": 9
+  },
+  {
+    "osm": [
+      "way/206652621"
+    ],
+    "procedural": "h1_chinatownPublicHealth",
+    "name": "Chinatown Public Health Center",
+    "height": 18
+  },
+  {
+    "osm": [
+      "way/218258617"
+    ],
+    "procedural": "h1_uspsToyndsend",
+    "name": "USPS Townsend Street Facility",
+    "height": 7
+  },
+  {
+    "osm": [
+      "way/256633744"
+    ],
+    "procedural": "h1_hellmanBuilding",
+    "name": "Hellman Building",
+    "height": 19
+  },
+  {
+    "osm": [
+      "way/256633746"
+    ],
+    "procedural": "h1_helenDillerCancerCenter",
+    "name": "Helen Diller Family Comprehensive Cancer Center"
+  },
+  {
+    "osm": [
+      "way/260462493"
+    ],
+    "procedural": "h1_boysGirlsClub",
+    "name": "Boys & Girls Club",
+    "height": 9
+  },
+  {
+    "osm": [
+      "way/261102266"
+    ],
+    "procedural": "h1_missionNeighborhoodHealth",
+    "name": "Mission Neighborhood Health Center",
+    "height": 7
+  },
+  {
+    "osm": [
+      "way/261105868"
+    ],
+    "procedural": "h1_sevenTepeesYouth",
+    "name": "Seven Tepees Youth Program",
+    "height": 9
+  },
+  {
+    "osm": [
+      "way/261113157"
+    ],
+    "procedural": "h1_laborersUnion",
+    "name": "Laborers International Union",
+    "height": 6
+  },
+  {
+    "osm": [
+      "way/264494855"
+    ],
+    "procedural": "h1_wallerCenter",
+    "name": "The Waller Center",
+    "height": 10
+  },
+  {
+    "osm": [
+      "way/267692250"
+    ],
+    "procedural": "h1_sfFireStation",
+    "name": "San Francisco Fire Station",
+    "height": 7
+  },
+  {
+    "osm": [
+      "way/276861490"
+    ],
+    "procedural": "h1_mandarinBaptistSchool",
+    "name": "San Francisco Mandarin Baptist Church Chinese School",
+    "height": 5
+  },
+  {
+    "osm": [
+      "way/276880798"
+    ],
+    "procedural": "h1_jewishFamilyChildren",
+    "name": "Jewish Family and Children's Services",
+    "height": 6
+  },
+  {
+    "osm": [
+      "way/278113978"
+    ],
+    "procedural": "h1_selfHelpElderly",
+    "name": "Self Help for the Elderly",
+    "height": 6
+  },
+  {
+    "osm": [
+      "way/287700862"
+    ],
+    "procedural": "h1_talismanBanquetHall",
+    "name": "Talisman Banquet Hall",
+    "height": 5
+  },
+  {
+    "osm": [
+      "way/403167643"
+    ],
+    "procedural": "h1_chineseHospital",
+    "name": "Chinese Hospital",
+    "height": 30
+  },
+  {
+    "osm": [
+      "way/960975186"
+    ],
+    "procedural": "h1_noisebridge",
+    "name": "Noisebridge"
+  },
+  {
+    "osm": [
+      "way/1164266280"
+    ],
+    "procedural": "h1_ussPampanitEducation",
+    "name": "USS Pampanito Education Office"
+  },
+  {
+    "osm": [
+      "way/1252742107"
+    ],
+    "procedural": "h1_bayfrontMedical",
+    "name": "Bayfront Medical Building"
+  }
+]

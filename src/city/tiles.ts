@@ -17,9 +17,9 @@
  * the terrain grid, the skyline, the named landmarks (menu, minimap), and the tile list.
  */
 import type {
-  CityPackage, PackedArea, PackedBoat, PackedBridge, PackedBuilding, PackedEdge, PackedFringe, PackedFurniture, PackedLandmark, PackedPoi, PackedRail,
+  CityPackage, PackedArea, PackedBoat, PackedBridge, PackedCourt, PackedBuilding, PackedEdge, PackedFringe, PackedFurniture, PackedLandmark, PackedPoi, PackedRail,
 } from './package.ts'
-import type { PackedTerrain } from './terrain.ts'
+import type { PackedTerrain, TileTerrain } from './terrain.ts'
 
 /** Tile size in metres. Small enough that a tile is cheap to build, big enough not to thrash. */
 export const TILE = 200
@@ -53,8 +53,18 @@ export interface TileData {
   plantings: number[]
   /** moored boats, by their centre (optional: tiles baked before boats have none) */
   boats?: PackedBoat[]
+  /**
+   * Sports courts (BUGS.md #214), filed by their CENTRE like furniture and never clipped: a court is fitted
+   * once, to the whole polygon, before the tiling runs. Optional — tiles baked before the kit have none.
+   */
+  courts?: PackedCourt[]
   /** bridge outlines, by their centre (optional, like boats) */
   bridges?: PackedBridge[]
+  /**
+   * This tile's own patch of ground (BUGS.md #176, #206c), overlapping each neighbour by one sample.
+   * Optional: a city baked before per-tile terrain has none and falls back to the index's coarse grid.
+   */
+  terrain?: TileTerrain
 }
 
 export interface TileEntry {
@@ -76,12 +86,21 @@ export interface CityIndex {
   ground: CityPackage['ground']
   region?: string
   start: CityPackage['start']
+  /**
+   * The COARSE grid, over the whole footprint out to the skyline objects. The FINE ground now lives in the
+   * tiles (`TileData.terrain`); this is what answers for everywhere no tile is loaded, and what the distant
+   * ground mesh and the depth occluder are built from. Keeping it at step 20 is deliberate — see
+   * `Terrain.coarse` and BUGS.md #179.
+   */
   terrain?: PackedTerrain
   skyline?: CityPackage['skyline']
   /** every named landmark, for the menu and the minimap (they are also in their tiles, for the plates) */
   landmarks: PackedLandmark[]
   /** the water bodies whole: quays, the ground occluder and the crowd need the river, not its tile pieces */
   water: PackedArea[]
+  /** mapped retaining walls and seawalls, whole: small, global, and the beach's revetment band is built
+   * from them (render/shore.ts, BUGS.md #200). Optional — a city baked before them has none. */
+  walls?: CityPackage['walls']
   attribution: string[]
   baked: string
   tile: number
@@ -161,11 +180,12 @@ export function tilesOfLine(flat: number[]): Set<string> {
  * lowest ground under the whole ring, less the region's river drop), worked out once for the whole body.
  */
 export function splitPackage(pkg: CityPackage, waterLevel: (ring: Point[], area: PackedArea) => number | undefined): { index: Omit<CityIndex, 'tiles'>; tiles: Map<string, TileData> } {
+  const fine = (pkg as CityPackage & { terrainFine?: PackedTerrain }).terrainFine
   const tiles = new Map<string, TileData>()
   const get = (k: string): TileData => {
     let t = tiles.get(k)
     if (!t) {
-      t = { key: k, edges: [], buildings: [], fringe: [], areas: [], trees: [], pois: [], furniture: [], landmarks: [], rails: [], plantings: [], boats: [], bridges: [] }
+      t = { key: k, edges: [], buildings: [], fringe: [], areas: [], trees: [], pois: [], furniture: [], landmarks: [], rails: [], plantings: [], boats: [], bridges: [], courts: [] }
       tiles.set(k, t)
     }
     return t
@@ -191,6 +211,7 @@ export function splitPackage(pkg: CityPackage, waterLevel: (ring: Point[], area:
   for (const l of pkg.landmarks ?? []) at(l.x, l.z).landmarks.push(l)
   for (const p of pkg.pois) at(p.x, p.z).pois.push(p)
   for (const f of pkg.furniture ?? []) at(f.x, f.z).furniture.push(f)
+  for (const c of pkg.courts ?? []) (at(c.x, c.z).courts ??= []).push(c)
   for (let i = 0; i < pkg.trees.length; i += 2) at(pkg.trees[i], pkg.trees[i + 1]).trees.push(pkg.trees[i], pkg.trees[i + 1])
   const pl = pkg.plantings ?? []
   for (let i = 0; i + 4 < pl.length; i += 5) at(pl[i], pl[i + 1]).plantings.push(pl[i], pl[i + 1], pl[i + 2], pl[i + 3], pl[i + 4])
@@ -224,10 +245,49 @@ export function splitPackage(pkg: CityPackage, waterLevel: (ring: Point[], area:
     }
   })
 
+  /*
+   * ---- the ground, cut into the tiles (BUGS.md #206c)
+   *
+   * Done LAST, and it is the only thing here that CREATES tiles rather than filing into existing ones: a
+   * tile with no buildings and no streets still has ground, and if it is absent from the index the store's
+   * `has()` says the city does not have it and the rider rides onto a hole. So every tile the fine grid
+   * covers gets an entry, empty or not.
+   *
+   * The block overlaps each neighbour by one sample — `cols = TILE / step + 1` — because two independently
+   * sampled grids that merely abut disagree in the last digit and the ground cracks along every border.
+   * Here the shared row is literally the same grid post read twice, so they cannot disagree at all.
+   */
+  if (fine && fine.heights.length > 0) {
+    const step = fine.step
+    const cols = Math.round(TILE / step) + 1
+    if (!Number.isInteger(Math.round(TILE / step)) || Math.abs(TILE / step - Math.round(TILE / step)) > 1e-9) {
+      throw new Error(`terrain step ${step} does not divide the ${TILE} m tile`)
+    }
+    // the tiles fully inside the fine grid; a tile only half covered would read clamped edge samples
+    const ta = Math.ceil(fine.x0 / TILE)
+    const tb = Math.ceil(fine.z0 / TILE)
+    const tc = Math.floor((fine.x0 + (fine.cols - 1) * fine.step) / TILE) - 1
+    const td = Math.floor((fine.z0 + (fine.rows - 1) * fine.step) / TILE) - 1
+    for (let tx = ta; tx <= tc; tx++) {
+      for (let tz = tb; tz <= td; tz++) {
+        const dm: number[] = []
+        for (let r = 0; r < cols; r++) {
+          const gz = Math.round((tz * TILE + r * step - fine.z0) / fine.step)
+          for (let c = 0; c < cols; c++) {
+            const gx = Math.round((tx * TILE + c * step - fine.x0) / fine.step)
+            dm.push(Math.round(fine.heights[gz * fine.cols + gx] * 10))
+          }
+        }
+        get(tileKey(tx, tz)).terrain = { step, cols, dm, ...(fine.src ? { src: fine.src } : {}), ...(fine.resM ? { resM: fine.resM } : {}) }
+      }
+    }
+  }
+
   const index: Omit<CityIndex, 'tiles'> = {
     id: pkg.id, name: pkg.name, origin: pkg.origin, radius: pkg.radius, box: pkg.box, ground: pkg.ground,
     region: pkg.region, start: pkg.start, terrain: pkg.terrain, skyline: pkg.skyline, landmarks: pkg.landmarks ?? [],
     water: pkg.areas.filter((a) => a.kind === 'water'),
+    ...(pkg.walls && pkg.walls.length > 0 ? { walls: pkg.walls } : {}),
     attribution: pkg.attribution, baked: pkg.baked, tile: TILE,
   }
   return { index, tiles }
@@ -247,10 +307,11 @@ export function joinTiles(index: Omit<CityIndex, 'tiles'> | CityIndex, tiles: It
   const out = {
     id: index.id, name: index.name, origin: index.origin, radius: index.radius, box: index.box, ground: index.ground,
     region: index.region, start: index.start, terrain: index.terrain, skyline: index.skyline,
-    attribution: index.attribution, baked: index.baked,
+    attribution: index.attribution, baked: index.baked, walls: index.walls,
     edges: [] as PackedEdge[], buildings: [] as PackedBuilding[], fringe: [] as PackedFringe[], areas: [] as TileArea[],
     trees: [] as number[], pois: [] as PackedPoi[], furniture: [] as PackedFurniture[], landmarks: [] as PackedLandmark[],
     rails: [] as PackedRail[], plantings: [] as number[], water: index.water, boats: [] as PackedBoat[], bridges: [] as PackedBridge[],
+    courts: [] as PackedCourt[],
   }
   for (const t of tiles) {
     for (const e of t.edges) edges.set(e.id, e)
@@ -264,6 +325,7 @@ export function joinTiles(index: Omit<CityIndex, 'tiles'> | CityIndex, tiles: It
     out.landmarks.push(...t.landmarks)
     for (const v of t.plantings) out.plantings.push(v)
     out.boats.push(...(t.boats ?? []))
+    out.courts.push(...(t.courts ?? []))
     for (const b of t.bridges ?? []) bridges.set(b.id, b)
   }
   out.edges = [...edges.values()]

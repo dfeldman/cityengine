@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { GREEN, TILE_TREES, plantParks, treesPerTile, type ParkRule, type ParkSpot } from '../src/city/park-planting.ts'
+import { DECK_PLANTING, GREEN, TILE_TREES, deckPlantings, plantParks, treesPerTile, type ParkRule, type ParkSpot } from '../src/city/park-planting.ts'
 import { formCode } from '../src/city/tree-forms.ts'
 import type { PackedArea, PackedEdge } from '../src/city/package.ts'
 
@@ -91,5 +91,49 @@ describe('what grows inside a park (city/park-planting.ts)', () => {
 
   it('knows which area kinds are green', () => {
     expect([...GREEN].sort()).toEqual(['grass', 'park', 'wood'])
+  })
+})
+
+/**
+ * A skypark's trees (docs/SKYPARKS.md). The specific failure this guards against is not "no trees" but trees
+ * at the WRONG height: before the explicit `y`, a tree on Salesforce Park's deck sank 21 m to Mission Street.
+ */
+describe('deckPlantings', () => {
+  // Salesforce Park's deck, roughly: 430 m by 46 m, rounded at the ends, well away from the origin so a
+  // world-space ring is what is being tested
+  const ring: { x: number; z: number }[] = []
+  for (let i = 0; i < 96; i++) {
+    const t = (i / 96) * Math.PI * 2
+    ring.push({ x: 4000 + Math.cos(t) * 215, z: -2500 + Math.sin(t) * 23 })
+  }
+
+  it('stamps the deck height on every tree and plants none on the ground', () => {
+    const got = deckPlantings(ring, 21)
+    expect(got.length).toBeGreaterThan(80)
+    expect(got.length).toBeLessThan(220)
+    expect(got.every((p) => p.y === 21)).toBe(true)
+    expect(got.some((p) => p.y === undefined)).toBe(false)
+  })
+
+  it('keeps the trees inside the deck and off its path loop', () => {
+    for (const p of deckPlantings(ring, 21)) {
+      const u = (p.x - 4000) / 215
+      const v = (p.z + 2500) / 23
+      expect(u * u + v * v).toBeLessThan(1)
+      // the default 6.5 m kept clear inside the ring is the park's path loop: at the deck's waist that is
+      // exactly what this bounds, and the first render of this change had trunks standing on the path
+      expect(Math.abs(p.z + 2500)).toBeLessThan(23 - 6.5)
+    }
+  })
+
+  it('leaves the ground planting alone: no y anywhere the bake places a tree', () => {
+    const got = plantParks({ areas: [square('park', 0, 0, 400)], edges: [] }, rule)
+    expect(got.some((p) => p.y !== undefined)).toBe(false)
+  })
+
+  it('plants a mix rather than one species', () => {
+    const forms = new Set(deckPlantings(ring, 21).map((p) => p.form))
+    expect(forms.size).toBeGreaterThan(2)
+    expect(DECK_PLANTING(0, 0, 'park')!.density).toBeLessThanOrEqual(0.0078)
   })
 })

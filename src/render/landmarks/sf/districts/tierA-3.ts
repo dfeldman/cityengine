@@ -9,14 +9,6 @@ import { tower, towerRing } from '../../tower.ts'
 import { cupola } from '../../parts.ts'
 
 export const TIERA_3: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  /** St Mary the Virgin Episcopal Church (1891, Cow Hollow): rustic brown wood-shingle Arts & Crafts, a hip roof. */
-  stMaryTheVirginEpiscopalChurch: fromRecipe('brick-loft', {
-    height: 8,
-    wall: [0.42, 0.32, 0.22],
-    material: 'stucco',
-    crown: { kind: 'hip', height: 3, inset: 2, colour: [0.3, 0.22, 0.18] },
-  }),
-
   /** Buddhist Church of San Francisco (1935, Pine Street): cream terracotta over a steel frame, a gilded stupa on the roof. */
   buddhistChurchOfSanFrancisco: (out: MeshBuilder, fit: Fit): void => {
     tower(out, fit, {

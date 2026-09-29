@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "osm": [
+      "way/288485994"
+    ],
+    "name": "Columbus Tower (Sentinel Building)",
+    "procedural": "columbusTower_916_kearny",
+    "front": "street",
+    "height": 29,
+    "note": "From scratch: copper-green 1907 flatiron, 916 Kearny at Columbus. The prow is a drum least-squares fitted to the footprint's own arc (r derived, not typed); banded round windows up it, SF bay windows on both street flanks, stucco party wall, domed cupola and gilt finial on the drum. Commons photographs way-288485994-02/-03 (geotagged 33/34 m)."
+  }
+]

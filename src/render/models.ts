@@ -45,6 +45,78 @@ export function box(out: MeshBuilder, cx: number, cy: number, cz: number,
 }
 
 /**
+ * A planar quad, subdivided into a grid so no single triangle's edge exceeds `maxEdge`. Only for a face big
+ * enough that depth precision or per-vertex interpolation actually suffers — a bridge deck slab, not a car
+ * roof (BUGS.md #154: huge polygons on the bay bridge and the water break depth sorting and smear
+ * per-vertex lighting across the middle of the triangle). `p` are the four corners, wound as `quad()` wants.
+ */
+function quadGrid(
+  out: MeshBuilder,
+  p: [number, number, number][],
+  n: [number, number, number],
+  uv: [number, number][],
+  tint: [number, number, number],
+  kind: number,
+  maxEdge: number,
+): void {
+  const lenU = Math.hypot(p[1][0] - p[0][0], p[1][1] - p[0][1], p[1][2] - p[0][2])
+  const lenV = Math.hypot(p[3][0] - p[0][0], p[3][1] - p[0][1], p[3][2] - p[0][2])
+  const nu = Math.max(1, Math.ceil(lenU / maxEdge))
+  const nv = Math.max(1, Math.ceil(lenV / maxEdge))
+  const at = (i: number, j: number): [number, number, number] => {
+    const u = i / nu
+    const v = j / nv
+    // bilinear on the quad's four corners (p0..p3 in bl, br, tr, tl order, per quad()'s own convention)
+    const bx = (1 - u) * (1 - v)
+    const by = u * (1 - v)
+    const cx2 = u * v
+    const dx = (1 - u) * v
+    return [
+      p[0][0] * bx + p[1][0] * by + p[2][0] * cx2 + p[3][0] * dx,
+      p[0][1] * bx + p[1][1] * by + p[2][1] * cx2 + p[3][1] * dx,
+      p[0][2] * bx + p[1][2] * by + p[2][2] * cx2 + p[3][2] * dx,
+    ]
+  }
+  const uvAt = (i: number, j: number): [number, number] => {
+    const u = i / nu
+    const v = j / nv
+    return [
+      uv[0][0] * (1 - u) * (1 - v) + uv[1][0] * u * (1 - v) + uv[2][0] * u * v + uv[3][0] * (1 - u) * v,
+      uv[0][1] * (1 - u) * (1 - v) + uv[1][1] * u * (1 - v) + uv[2][1] * u * v + uv[3][1] * (1 - u) * v,
+    ]
+  }
+  for (let j = 0; j < nv; j++) {
+    for (let i = 0; i < nu; i++) {
+      out.quad(
+        [at(i, j), at(i + 1, j), at(i + 1, j + 1), at(i, j + 1)],
+        n, [uvAt(i, j), uvAt(i + 1, j), uvAt(i + 1, j + 1), uvAt(i, j + 1)], tint, kind,
+      )
+    }
+  }
+}
+
+/**
+ * A box like `box()`, but its top and bottom faces — the only ones ever wide AND long enough to matter — are
+ * subdivided so no triangle's edge exceeds `maxEdge`. For long flat things: a bridge deck slab, not a strut.
+ */
+export function boxSubdivided(out: MeshBuilder, cx: number, cy: number, cz: number,
+                              hx: number, hy: number, hz: number, colour: Rgb, tag = BODY, maxEdge = 20): void {
+  const P = (sx: number, sy: number, sz: number): [number, number, number] => [cx + sx * hx, cy + sy * hy, cz + sz * hz]
+  // the four side faces: always thin in one dimension (hy, the slab's own thickness), so left alone
+  const sides: [[number, number, number][], [number, number, number]][] = [
+    [[[1, -1, 1], [1, -1, -1], [1, 1, -1], [1, 1, 1]], [1, 0, 0]],
+    [[[-1, -1, -1], [-1, -1, 1], [-1, 1, 1], [-1, 1, -1]], [-1, 0, 0]],
+  ]
+  for (const [corners, n] of sides) {
+    out.quad(corners.map(([sx, sy, sz]) => P(sx, sy, sz)), n, [[0, 0], [1, 0], [1, 1], [0, 1]], colour, tag)
+  }
+  quadGrid(out, [P(-1, 1, 1), P(1, 1, 1), P(1, 1, -1), P(-1, 1, -1)], [0, 1, 0],
+    [[0, 0], [1, 0], [1, 1], [0, 1]], colour, tag, maxEdge)
+  quadGrid(out, [P(-1, -1, -1), P(1, -1, -1), P(1, -1, 1), P(-1, -1, 1)], [0, -1, 0],
+    [[0, 0], [1, 0], [1, 1], [0, 1]], colour, tag, maxEdge)
+}
+
+/**
  * A straight member of rectangular section from a to b: `w` across it horizontally, `h` in the vertical plane through
  * it (for a vertical member, `w` along x). Beams, poles, cables, truss diagonals.
  */

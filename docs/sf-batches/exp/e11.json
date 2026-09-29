@@ -1,0 +1,9 @@
+[
+  {
+    "osm": ["way/288511106"],
+    "name": "555 California Street",
+    "procedural": "fiveFiveFiveCalifornia",
+    "height": 237,
+    "note": "custom model: sawtooth of projecting faceted bays, carnelian granite (BUGS.md #120)"
+  }
+]

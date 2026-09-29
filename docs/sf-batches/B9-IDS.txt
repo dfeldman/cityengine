@@ -1,0 +1,13 @@
+way/1249412094,"",tall,67,67,3 frames
+way/1487223700,"",tall,60,60,3 frames
+way/135103722,"",tall,60,60,3 frames
+way/1474571838,"",tall,52,52,3 frames
+way/1282042031,"",tall,52,52,3 frames
+way/1410182008,"",tall,48,48,3 frames
+way/899281899,"",tall,48,48,3 frames
+way/574616994,"",tall,48,48,3 frames
+way/135103725,"",tall,47,47,3 frames
+way/135103710,"",tall,47,47,3 frames
+way/1410183655,"",tall,44,44,3 frames
+way/274428408,"Saint John the Baptist Serbian Orthodox Church",civic,6,33,3 frames
+way/262577281,"Swedenborgian Church of San Francisco",civic,0,-76,3 frames

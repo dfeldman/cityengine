@@ -2,10 +2,11 @@
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { tower, towerRing } from '../../tower.ts'
-import { boxAlong, edgeAt, edgeFacing, longestEdge, roundRing, spireOn, stripRoof } from '../../parts.ts'
+import { boxAlong, edgeAt, edgeFacing, longestEdge, roundRing, spireOn, stripRoof, bladeSign, marquee } from '../../parts.ts'
 import { faceBand, insetRing } from '../../tower.ts'
 import { capPolygon } from '../../../buildings.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
+import { church } from '../../church.ts'
 
 const PRECAST: [number, number, number] = [0.86, 0.85, 0.81]
 const PRECAST_DARK: [number, number, number] = [0.6, 0.59, 0.56]
@@ -200,5 +201,54 @@ export const MANUAL_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     const corner = edgeAt(ring, edgeFacing(ring, 0)).a
     spireOn(out, corner, 0, 2.6, 15.5, 7.5,
       { colour: sage, spireColour: [0.42, 0.24, 0.16], material: 'clapboard', spireMaterial: 'metal', sides: 4 })
+  },
+
+  /**
+   * Mission San Francisco de Asis / Old Mission Dolores, way/256442765 (1776) — the oldest standing building
+   * in San Francisco. Not to be confused with the much larger Mission Dolores Basilica next door
+   * (way/256442760), which is a separate building and stays untouched. No usable street photograph (Mapillary
+   * marked junk), but the form is unambiguous and well documented: a very plain, very low adobe hall with a
+   * flat parapet front pierced by bell niches — the classic mission `espadaña` — no aisles, no transept, no
+   * tower. `church()`'s own `front: { kind: 'mission' }` is that exact shape (its doc comment names this
+   * building), so this is the kit end to end.
+   */
+  missionDolores: (out, fit) => {
+    church(out, fit, {
+      nave: { bays: 4, storeys: 1, roof: 'gable', pitch: 'low' },
+      aisles: null,
+      transept: null,
+      chancel: { kind: 'square' },
+      tower: null,
+      front: { kind: 'mission', portal: 'single', window: 'none', steps: 2 },
+      walls: { material: 'stucco', openings: 'square', buttresses: 'none' },
+    })
+  },
+
+  /**
+   * Bimbo's 365 Club, way/262435071, 1025 Columbus Avenue — a 1931 nightclub, low and flat-roofed. No usable
+   * Mapillary frame (marked junk), but the building is famous enough that a short, name-confirmed Commons look
+   * settled it (`Bimbo's365Blade.jpg`, `Bimbo's Marquee.jpg`, both plainly 1025 Columbus): a single storey,
+   * cream-walled, its whole street face covered in a decorative PIERCED SCREEN — a fine circle-motif breeze
+   * block, not glazing — between plain corner piers, under a flat parapet roof. No slot in `facade()` reads as
+   * "the wall itself is an ornamental screen", so the screen is a dense grid of small dark punches standing in
+   * for the pierced pattern. The real fixture people actually recognise the building by is the corner sign:
+   * a tall black vertical blade reading "BIMBO'S 365" over a lit readerboard marquee at the door — both of
+   * which `parts.ts` already has words for.
+   */
+  bimbos365Club: (out, fit) => {
+    const ring = towerRing(fit)
+    const H = fit.height || 6
+    const cream: [number, number, number] = [0.86, 0.84, 0.78]
+    const dark: [number, number, number] = [0.14, 0.14, 0.15]
+    // the pierced breeze-block screen: a dense grid of small dark punches over the pale wall
+    tower(out, fit, {
+      height: H,
+      tiers: [{ to: 1, face: { kind: 'punched', wall: cream, glass: dark, pitch: 1.1, floor: H * 0.9, solid: 0.72, material: 'concrete' } }],
+      crown: { kind: 'parapet', height: H * 0.15, colour: cream, material: 'concrete' },
+    })
+    // the corner sign: BIMBO'S down a vertical blade, and the lit readerboard marquee at the entrance below it
+    const corner = edgeAt(ring, edgeFacing(ring, 0))
+    bladeSign(out, corner.a.x, H * 1.9, corner.a.z, H * 1.1, "BIMBO'S", { heading: corner.heading, width: 1.4, out: 1 })
+    marquee(out, corner.mid.x, H * 0.55, corner.mid.z, 2.6, 1.1, '365', { heading: corner.heading })
   },
 }

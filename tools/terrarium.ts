@@ -6,8 +6,22 @@
  *
  * The data underneath is the usual public collection — SRTM and NASADEM worldwide, the USGS 3DEP national
  * elevation dataset over the United States, EU-DEM over Europe, and national models elsewhere — all of it
- * public domain or openly licensed. Zoom 12 is ~38 m per pixel at the equator and ~27 m at 45° north, which
- * is the native resolution of the models themselves; asking for more zoom only interpolates.
+ * public domain or openly licensed. Zoom 12 is ~38 m per pixel at the equator and ~27 m at 45° north.
+ *
+ * **This header used to say zoom 12 "is the native resolution of the models themselves; asking for more
+ * zoom only interpolates". That is true for SRTM and NASADEM and WRONG over the United States**, and the
+ * mistake cost San Francisco its terrain: 3DEP is 1/3 arc-second (about 10 m) and lidar-derived, so zooms
+ * 13, 14 and 15 carry real measured ground there. Measured on a 1.6 km transect across Golden Gate Park,
+ * roughness triples from zoom 12 to zoom 15 while total relief is unchanged — the signature of detail
+ * arriving rather than of interpolation (BUGS.md #206).
+ *
+ * **Zoom 15 is the FLOOR of this pyramid**: 3.78 m per pixel at San Francisco's latitude, and zoom 16 is a
+ * 404. A grid finer than about 4 m from these tiles stores interpolation, not data (#206e). Finer ground
+ * than that needs a different source — 3DEP's 1 m lidar exists over San Francisco but is not here (#206f).
+ *
+ * **The deep zooms have NODATA HOLES that the coarse ones average away.** Over Brooklyn Heights, 4 449 of
+ * 1.2 M zoom-15 samples disagree with zoom 12 by more than 100 m and the minimum reads −22 626 m. A caller
+ * sampling zoom 14 or 15 must check its samples against a coarser grid; `tools/bake.ts` does.
  *
  * Tiles are cached under tools/cache/ (gitignored), so a route rebakes offline.
  */

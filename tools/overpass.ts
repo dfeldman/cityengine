@@ -103,30 +103,61 @@ export function wideQuery(b: Bbox): string {
 out geom qt;`
 }
 
+/**
+ * The city in detail. WIDENED 2026-09-25 (owner: "we need motorways. as well as anything else form osm you
+ * can think of that could possibly be useful").
+ *
+ * Motorways were excluded because a freeway is useless on a bike — true of RIDING one, every one is
+ * `bicycle=no`, and false of DRAWING one. Their absence cost real work: the Golden Gate's walkways sit 18 m
+ * below its deck and the fix (follow the carriageway you are bolted to) had nothing to follow, because along
+ * the whole corridor we had 32 cycleways, 4 footways and NO roadway (BUGS.md #217, #218a). The Bay Bridge
+ * works precisely BECAUSE its approaches are elevated motorways, which the wide query already carried.
+ *
+ * Also added, from the tag audit (#216) and the week's bugs: the sports enclosures the court kit needs
+ * (#214a), sand/beach/shingle/bare_rock/reef/cliff for the beaches and the coast (#200, #206i), streams and
+ * ditches for the culverts phantom overpasses cross (#189), retaining walls for the rip-rap (#200b), piers
+ * and breakwaters, forts and batteries, and the 1,161 mapped street lamps we had been ignoring while
+ * generating our own off the pavement width (#202).
+ *
+ * NOTHING IN THE QUERY STRING MAY BE A COMMENT. `tools/osm-local.ts` parses this text to answer from the
+ * local extract, and its parser does not know block comments — a commented query silently falls through to
+ * PUBLIC OVERPASS, which on the first attempt meant 108 chunks of a 5.7 KB query against a 429ing server.
+ * explanation lives here, above the string, for exactly that reason.
+ */
 export function cityQuery(b: Bbox): string {
   const box = `${b.south},${b.west},${b.north},${b.east}`
   return `[out:json][timeout:240];
 (
-  way["highway"~"^(residential|living_street|unclassified|tertiary|secondary|primary|pedestrian|footway|path|track|bridleway|cycleway|service)$"]["area"!~"yes"](${box});
-  way["railway"~"^(rail|light_rail|tram|subway)$"](${box});
+  way["highway"~"^(motorway|motorway_link|trunk|trunk_link|residential|living_street|unclassified|tertiary|secondary|primary|primary_link|secondary_link|tertiary_link|pedestrian|footway|path|steps|track|bridleway|cycleway|service|busway)$"]["area"!~"yes"](${box});
+  way["railway"~"^(rail|light_rail|tram|subway|funicular|narrow_gauge)$"](${box});
   way["building"](${box});
   way["building:part"](${box});
-  way["leisure"~"^(park|garden|pitch|nature_reserve)$"](${box});
-  way["landuse"~"^(grass|forest|meadow)$"](${box});
-  way["natural"~"^(water|wood|scrub)$"](${box});
-  way["waterway"="riverbank"](${box});
-  node["natural"="tree"](${box});
+  way["leisure"~"^(park|garden|pitch|nature_reserve|sports_centre|stadium|track|swimming_pool|playground|dog_park|marina|bandstand)$"](${box});
+  way["landuse"~"^(grass|forest|meadow|cemetery|orchard|vineyard|recreation_ground|village_green)$"](${box});
+  way["natural"~"^(water|wood|scrub|sand|beach|shingle|bare_rock|reef|cliff|heath|grassland|wetland)$"](${box});
+  way["waterway"~"^(riverbank|stream|ditch|canal|dam|weir)$"](${box});
+  way["barrier"~"^(retaining_wall|city_wall|hedge)$"](${box});
+  way["man_made"~"^(pier|breakwater|bridge|lighthouse|water_tower|storage_tank|chimney|windmill|obelisk)$"](${box});
+  way["historic"~"^(fort|battery|ruins|memorial|monument|naval|castle)$"](${box});
+  node["natural"~"^(tree|rock|spring)$"](${box});
+  node["highway"~"^(street_lamp|traffic_signals|crossing|elevator|motorway_junction)$"](${box});
+  node["amenity"~"^(waste_basket|bench|drinking_water|toilets|bicycle_parking|fountain|clock|shelter)$"](${box});
+  node["man_made"~"^(lighthouse|water_tower|flagpole|obelisk|cross)$"](${box});
+  node["historic"~"^(memorial|monument|fort|battery|ruins|wayside_cross|boundary_stone)$"](${box});
+  node["railway"="level_crossing"](${box});
+  node["tourism"~"^(artwork|viewpoint|information)$"](${box});
   node["name"]["shop"](${box});
   node["name"]["amenity"~"^(cafe|restaurant|bar|pub|pharmacy|bank|bakery|theatre|cinema|library|museum|post_office|hotel)$"](${box});
   node["name"]["tourism"~"^(museum|gallery|hotel|attraction)$"](${box});
   relation["natural"="water"](${box});
   relation["waterway"="riverbank"](${box});
   relation["leisure"~"^(park|garden|nature_reserve)$"](${box});
-  // the Presidio's forest blocks and Golden Gate Park's woods are multipolygons; without these the two
-  // biggest woods in the city arrived as a single flat lawn (city/park-planting.ts)
   relation["landuse"~"^(grass|forest|meadow)$"](${box});
-  relation["natural"~"^(wood|scrub)$"](${box});
+  relation["natural"~"^(wood|scrub|sand|beach|heath|grassland|wetland|bare_rock)$"](${box});
   relation["building"](${box});
+  relation["leisure"~"^(pitch|sports_centre|stadium|track|swimming_pool|playground)$"](${box});
+  relation["historic"~"^(fort|battery|ruins|castle)$"](${box});
+  relation["man_made"~"^(pier|breakwater|bridge)$"](${box});
 );
 out geom qt;`
 }
@@ -191,6 +222,56 @@ out geom qt;`
  * République, the parvis. The main query leaves `area=yes` highways out (they are not streets to ride), so
  * without these a square with no mapped ground came out as the city's default grass. Its own query.
  */
+/**
+ * The BARE ground: sand and dirt (BUGS.md #200).
+ *
+ * The owner: *"the beach should also have sand"*, and Ocean Beach, Baker Beach and China Beach have been
+ * rendering as bright mown lawn — the single most obviously wrong thing at the west end of the park. The
+ * bake painted `park`, `grass`, `wood`, `pitch`, `paved` and `water` and had no `sand` kind at all.
+ *
+ * ITS OWN QUERY, AND THAT IS THE WHOLE POINT OF THE FILE IT IS IN. These tags could have gone into
+ * `cityQuery` in one line, and doing so would change that query's text, which is its cache key — so every
+ * Overpass chunk of every city already on disk would be refetched, over a tiled query that takes the best
+ * part of an hour for San Francisco. A new query caches on its own and leaves the street query's cache
+ * untouched, exactly as `squaresQuery` and `stepsQuery` were added.
+ *
+ * `natural=beach` and `natural=sand` are the beaches and the dunes; `shingle` is a pebble beach and reads
+ * the same at rider height; `scree` and `bare_rock` are the coastal bluffs. `mud` is the bay's tidal flats.
+ */
+export function sandQuery(b: Bbox): string {
+  const box = `${b.south},${b.west},${b.north},${b.east}`
+  return `[out:json][timeout:180];
+(
+  way["natural"~"^(beach|sand|shingle|dune|scree|bare_rock|mud)$"](${box});
+  way["surface"~"^(sand)$"]["area"="yes"](${box});
+  relation["natural"~"^(beach|sand|shingle|dune|scree|bare_rock|mud)$"](${box});
+);
+out geom qt;`
+}
+
+/**
+ * THE SEAWALL, for the beach's first band (docs/PARKS.md "Beaches are BANDS", BUGS.md #200).
+ *
+ * The rip-rap at the top of Ocean Beach is not natural ground and OSM does not tag it as any: counted in the
+ * Ocean Beach strip (37.758-37.780, -122.516 to -122.506) there is NO `natural=shingle` and NO
+ * `natural=bare_rock` anywhere along it — but there are **33 `barrier=retaining_wall` ways**, which is the
+ * seawall itself and is exactly where the revetment belongs. That is the usual split: the man-made edge is
+ * mapped because somebody built it, and the natural gradient below it is not mapped because nobody drew it,
+ * so band 1 comes from data and bands 2-4 are generated from the coastline.
+ *
+ * Its own query for the same reason as `sandQuery`: adding a line to `cityQuery` changes that query's text,
+ * which is its cache key, and would refetch every chunk of every city on disk. `barrier` is already in
+ * `osm-local.ts`'s `KEPT_KEYS`, so this answers from the local extract and never touches the network.
+ */
+export function wallsQuery(b: Bbox): string {
+  const box = `${b.south},${b.west},${b.north},${b.east}`
+  return `[out:json][timeout:180];
+(
+  way["barrier"~"^(retaining_wall|seawall)$"](${box});
+);
+out geom qt;`
+}
+
 export function squaresQuery(b: Bbox): string {
   const box = `${b.south},${b.west},${b.north},${b.east}`
   return `[out:json][timeout:120];

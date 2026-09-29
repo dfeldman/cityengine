@@ -1,0 +1,301 @@
+/**
+ * The nonbuildings — fountains, plazas, piers, bridges, statues, art, signs — checked on every `npm test`.
+ *
+ * They need their own test because they fall out of the only human check this project has. `tools/review-page.ts`
+ * pairs a street photograph with a render and asks "is this the right building"; there is no Mapillary frame of
+ * a fountain and no right-building question to ask of a plaza, so the whole category has never been reviewed by
+ * anybody. They also fail in ways a building does not — the wrong place, cutting through its neighbours, a
+ * z-fighting slab, a mirrored GLB, a second entry for the same thing — and every one of those is a defect that
+ * has actually been reported here (BUGS.md #66, #67, #85, #99, and now #108–#112).
+ *
+ * The policy is `tests/audit-builders.test.ts`'s, deliberately: **known findings are listed explicitly against
+ * BUGS.md numbers, and the assertion fails in BOTH directions.** A new finding fails because it is not on the
+ * list; a listed finding that stops reproducing fails because it is no longer found. The list can shrink and
+ * cannot rot, and nobody can quietly stop checking.
+ *
+ * What is NOT here: whether any of it looks right. That is the contact sheet
+ * (`npx vite-node tools/nonbuildings.ts --city=<c> --seed-views`, then
+ * `node --experimental-strip-types tools/views.ts --city=<c> --group=nonbuilding`), and it is a human's job.
+ */
+import { describe, expect, it } from 'vitest'
+import {
+  AUDITED, allNonbuildings, classifiedBuilders, kindOfBuilder, BUILDINGS_OK, EXPLICIT, issueKey, inspectGlb, buildIt,
+} from '../tools/nonbuildings.ts'
+import { namedBuilders } from '../tools/nonbuildings.ts'
+
+const all = await allNonbuildings()
+/** Every builder a manifest or a skyline names in the audited cities, from the audit that already loads them. */
+const manifestNamed = (): string[] => [...new Set(namedBuilders())].sort()
+const city = (id: string) => all.find((c) => c.city === id)!
+
+/**
+ * Every finding that reproduces today, keyed `<check> | <name>`, with the BUGS.md number it is logged under.
+ * Shrink this list by fixing things; never grow it to make a run green.
+ */
+const KNOWN: Record<string, string[]> = {
+  'paris-centre': [
+    // #108 — a nonbuilding standing in its neighbours' footprints. Several of these are a monument on a place
+    // whose OSM square overlaps the buildings round it, and are probably fine; they need the contact sheet.
+    'intersects | Musée Carnavalet — the court',
+    'intersects | Tour Saint-Jacques',
+    'intersects | Opéra Bastille — the arch',
+    'intersects | Tour Eiffel',
+    'intersects | Louvre Pyramid',
+    'intersects | Colonnes de Buren',
+    'intersects | Danton',
+    // #109 — the ground under it
+    'height | Square Louis-XIII',
+    'ground | Étienne Marcel',
+    // #110 — z-fighting candidates
+    'coplanar | Square Louis-XIII',
+    'coplanar | Tour Eiffel',
+    // #112 — a skyline stand-in inside the box with no model to hand over to
+    'skyline | Panthéon',
+  ],
+  'san-francisco': [
+    // Embarcadero Center plaza decks (docs/EMBARCADERO-CENTER.md, 2026-09-24): each deck's well genuinely
+    // drops below the deck into the `building:part` shop levels the brief calls "four layers of shops" — the
+    // well floor sits at -2.80 m in the model's own frame (a `deckCut`, PLAZA_H 8 m minus a 10.8 m well),
+    // which the checker reads as "sunk below ground", and the deck's footprint deliberately overlaps those
+    // same small building parts it stands over. Both are the shape the real complex is, not a placement bug.
+    'height | Embarcadero Center — plaza deck (West / One)',
+    'height | Embarcadero Center — plaza deck (One / Two)',
+    'height | Embarcadero Center — plaza deck (Two / Three)',
+    'height | Embarcadero Center — plaza deck (Three / Four)',
+    'intersects | Embarcadero Center — plaza deck (West / One)',
+    'intersects | Embarcadero Center — plaza deck (One / Two)',
+    'intersects | Embarcadero Center — plaza deck (Two / Three)',
+    'intersects | Embarcadero Center — plaza deck (Three / Four)',
+    // #108 — standing in footprints it does not claim
+    'intersects | Opera Plaza courtyard',
+    'intersects | Powell Street Station Canopy',
+    'intersects | Ruth Asawa Mermaid Fountain',
+    'intersects | Redwood Park pool',
+    'intersects | Hearts in San Francisco (Ferry Building)',
+    'intersects | Ghirardelli sign',
+    'intersects | Union Square',
+    // #109 — not on the ground. The Opera Plaza courtyard's +3.80 m is a RAISED DECK and is probably right;
+    // Union Square sunk 3.20 m with 6.0 m of relief across 120 × 78 m is the one to look at first.
+    'height | Opera Plaza courtyard',
+    'ground | Opera Plaza courtyard',
+    'height | Union Square Market Street Headhouse',
+    'height | Powell Street Station Canopy',
+    "height | Cupid's Span",
+    'height | Ruth Asawa Mermaid Fountain',
+    'height | Redwood Park pool',
+    'height | Union Square',
+    'ground | Union Square',
+    'ground | Ruth Asawa Mermaid Fountain',
+    // #110 — z-fighting candidates
+    'coplanar | Opera Plaza courtyard',
+    'coplanar | Union Square Market Street Headhouse',
+    'coplanar | Powell Street Station Canopy',
+    'coplanar | Oracle Park',
+    'coplanar | Bush Plaza Pavilion',
+    'coplanar | Union Square',
+    'coplanar | Golden Gate Bridge',
+    // #111 — duplicates, which the claim loop structurally cannot see
+    'duplicate | heartsInSanFrancisco',
+    'duplicate | Ruth Asawa Mermaid Fountain / Ghirardelli sign',
+    'duplicate | Hearts in San Francisco (Union Square) / Union Square',
+    /*
+     * Portsmouth Square (docs/SKYPARKS.md), 2026-09-24. The deck's own lat/lon sits inside the square, a few
+     * metres from the existing Robert Louis Stevenson Memorial (sf/art.ts) — expected, not a collision, the
+     * memorial genuinely stands on the square. Ground relief and the height mismatch are also expected: the
+     * square is a raised deck over Portsmouth Square Garage with real hillside relief (level access from
+     * Walter U Lum Place, walled on the other three sides — the whole point of the entry), and the manifest's
+     * `height: 4.4` is the deck's own datum, not the pagodas' roof height, same convention as the Embarcadero
+     * Center decks above.
+     */
+    'duplicate | Robert Louis Stevenson Memorial / Portsmouth Square — deck, pagodas and the skybridge to the Hilton',
+    'intersects | Portsmouth Square — deck, pagodas and the skybridge to the Hilton',
+    'ground | Portsmouth Square — deck, pagodas and the skybridge to the Hilton',
+    'height | Portsmouth Square — deck, pagodas and the skybridge to the Hilton',
+    /*
+     * #130 — the Yerba Buena block, where the ground is deliberately NOT where the terrain says it is.
+     * Every one of these is the audit correctly describing a raised deck and a bridge over a street, and
+     * each is expected rather than outstanding:
+     *
+     *  - `intersects`: the two decks are ground, and ground covers the footprints of the things buried
+     *    under it (Moscone North and South, the YBCA halls). That is the point of them, not a defect.
+     *  - `height`: the MLK memorial stands at +4 m because the lawn is at +4 m, and the enclosed skybridge
+     *    at +7.6 m because it crosses Howard Street two storeys up. Both are floating ON PURPOSE, which is
+     *    the one thing the `height` check cannot distinguish.
+     *
+     * The `duplicate | Moscone Skybridge / Moscone South Deck` finding that used to sit here is GONE, and
+     * deliberately: the skybridge was standing 40 m south-west of its own OSM way (way/940154716), 43 m off
+     * Howard's centre line and all but on top of the south deck. BUGS.md #136 put it on the way, where it
+     * crosses the street and lands on the deck's north edge instead of overlapping its middle.
+     */
+    'intersects | Yerba Buena Gardens',
+    /*
+     * The park level of the Moscone South block. Every deck park on these two blocks overlaps the buildings
+     * it stands ON, and this one overlaps NINE — among them way/109141776, capped by `mosconeSouthDeck` in
+     * sf/yerba-buena.ts (its manifest entry now builds nothing — `mosconeSouthClaimed` — since the
+     * `mosconeHall` preset that used to stand there was removed 2026-09-23, not lowered again), way/288716388
+     * (the Children's Creativity Museum) and way/109141782 (the Bowling Center). Reported rather than
+     * claimed: the entry is placed by lat/lon precisely because it is landscape over other people's
+     * buildings.
+     */
+    "intersects | Yerba Buena Public Square and Children's Garden",
+    /*
+     * And 3.3 m of terrain relief under it, which is SoMa's real slope across 165 m of block, not a fault in
+     * the entry: the park is a DECK, its lowest surface is `LEVELS.garden` = 4 m above the street, and the
+     * level-1 Moscone hall that carries it is sf/moscone-south.ts'.
+     */
+    "ground | Yerba Buena Public Square and Children's Garden",
+    'intersects | Moscone South Deck',
+    'intersects | Moscone Skybridge',
+    'intersects | MLK Memorial Waterfall',
+    'height | MLK Memorial Waterfall',
+    'height | Moscone Skybridge',
+    /*
+     * `coplanar` is a HEURISTIC (tools/nonbuildings.ts §coplanarSlabs) and this is a candidate, not a
+     * defect. A public garden IS layered surfaces a few centimetres apart — the paved deck, the checker
+     * band over it, the ring path round the lawn, the lawn itself, the walkway on the terrace garden. They
+     * were spread from 1 cm to 5–14 cm apart until the flag went quiet on every pair but one; the last is
+     * the ring path against the terrace walkway, 2 cm, and the renders in docs/shots/views/san-francisco/
+     * show no shimmer between them. Left flagged rather than pushed further apart, because a 20 cm step
+     * where a path meets a lawn is a worse defect than the one being avoided.
+     */
+    'coplanar | Yerba Buena Gardens',
+    /*
+     * The Golden Gate now has a NEAR level too (BUGS.md #211): the same builder, tessellated, placed as a
+     * standalone entry at the bridge's own point, which is what takes it off the `skyline` list. What it
+     * gains instead is `intersects` — like Pier 39 and the Moscone decks, a 2.7 km structure placed by
+     * lat/lon stands over other people's ground by design, and its `coversRaised` footprint is exactly the
+     * declaration that it does.
+     */
+    'intersects | Golden Gate Bridge',
+    /*
+     * And `coplanar`, which is the heuristic (§coplanarSlabs) counting ADJACENT roadway panels as one
+     * surface, not two surfaces fighting. The deck is laid in 61 m groups along 2.7 km, and #211 flattened
+     * its sag from 2.5 m to 0.55 m to meet the ride graph's own near-flat height profile — so neighbouring
+     * groups now sit within the heuristic's 1 cm bucket and are counted together. They are end to end, not
+     * one over the other; there is nothing for the depth buffer to choose between.
+     */
+    'coplanar | Golden Gate Bridge',
+    // #112 — the Bay Bridge is still far-only
+    'skyline | Bay Bridge',
+  ],
+}
+
+describe.each(AUDITED)('nonbuildings — %s', (id) => {
+  const c = city(id)
+
+  /*
+   * FIRST, and before any finding is believed: the checks had their inputs. A city whose manifest or bake
+   * cannot be found returns an empty issue list, which reads exactly like a clean run — failure J in
+   * docs/PIPELINE.md, and how Paris went unchecked for months.
+   */
+  it('resolved its manifest, its bake and some nonbuildings', () => {
+    expect(c.manifest).not.toBe(null)
+    expect(c.items.length).toBeGreaterThan(0)
+    expect(c.issues.filter((i) => i.detail.includes('every positional check SKIPPED'))).toEqual([])
+  })
+
+  /*
+   * The category's population, so a manifest edit that loses half of it is loud. These are floors, not exact
+   * counts: adding a fountain must not fail the suite.
+   */
+  it('has at least the nonbuildings it had when this was written', () => {
+    expect(c.items.length).toBeGreaterThanOrEqual(id === 'san-francisco' ? 44 : 31)
+  })
+
+  /** Every nonbuilding's builder produces real, finite geometry. No known findings — this must stay empty. */
+  it('every nonbuilding builds non-empty, finite geometry', () => {
+    expect(c.issues.filter((i) => i.check === 'geometry').map((i) => `${i.name}: ${i.detail}`)).toEqual([])
+  })
+
+  /**
+   * Every GLB either loads or is honestly PENDING. "Declared but not modelled yet" is a legitimate state
+   * (MODELS_NEEDED.md) and is reported with `pending: true`; a corrupt or mirrored asset is not.
+   */
+  it('no GLB asset is broken or mirrored in the file', () => {
+    expect(c.issues.filter((i) => i.check === 'asset' && !i.pending).map((i) => `${i.name}: ${i.detail}`)).toEqual([])
+  })
+
+  /** A `kind` in the JSON that is not one of the sub-kinds — a typo that would otherwise pass silently. */
+  it('no entry declares a kind that does not exist', () => {
+    expect(c.issues.filter((i) => i.check === 'unclassified').map((i) => `${i.name}: ${i.detail}`)).toEqual([])
+  })
+
+  /** A fountain overlay or statue attached to a host nothing places never appears at all. */
+  it('every attached statue and fountain names a host that exists', () => {
+    expect(c.issues.filter((i) => i.check === 'host').map((i) => `${i.name}: ${i.detail}`)).toEqual([])
+  })
+
+  /*
+   * And the whole finding set, both directions. `toEqual` on sorted arrays rather than a subset test: a
+   * finding that disappears is as important as one that arrives, because that is how the BUGS #100 fix was
+   * confirmed to have worked rather than merely believed.
+   */
+  it('finds exactly the known outstanding defects — no more, and no fewer', () => {
+    expect(c.issues.map(issueKey).sort()).toEqual([...KNOWN[id]].sort())
+  })
+})
+
+describe('the category is marked, and the marking is maintained', () => {
+  /*
+   * The honest part of the design: some of this IS an explicit list, because "is this a building" is a fact
+   * about the world and no key in the data carries it. What keeps the list from rotting is this test — a
+   * builder a manifest names that is neither classified as a nonbuilding nor on `BUILDINGS_OK` is a judgement
+   * nobody has made, and every name in `EXPLICIT` must still exist in the registry.
+   */
+  /*
+   * THE GUARD THAT MAKES THE EXPLICIT LIST HONEST. A builder whose NAME says fountain, plaza, statue,
+   * monument, memorial, pagoda, windmill, kiosk, obelisk, column or head house, that a manifest names, and
+   * that is neither marked nor exempted, is a judgement nobody has made — so the category cannot grow in
+   * silence. Words that are commonly part of a BUILDING's name (tower, park, bridge, gate, square, court,
+   * arch, sign) are deliberately not in the pattern: they would fail on eighty real buildings and a guard
+   * that always fails is a guard nobody keeps.
+   */
+  it('no manifest names a nonbuilding-shaped builder that nobody has classified', () => {
+    const RE = /fountain|plaza|statue|monument|memorial|pagoda|windmill|kiosk|obelisk|column|headhouse|pavilion|parvis|pyramid|canopy/i
+    /*
+     * Scoped to what a MANIFEST or a skyline actually names. `kit_*` (the catalogue) and `e<n>_*` (the
+     * modelling experiments) are built straight out of the registry by a tool and are nobody's landmark, and
+     * asking whether `kit_classicalColumn_ionic` is a nonbuilding is a question with no answer.
+     */
+    const loose = manifestNamed()
+      .filter((k) => RE.test(k) && kindOfBuilder(k) === undefined && !BUILDINGS_OK.includes(k))
+    expect(loose).toEqual([])
+  })
+
+  it('every explicitly marked builder still exists and still builds', () => {
+    const gone = Object.keys(EXPLICIT).filter((k) => buildIt(k) === null)
+    expect(gone).toEqual([])
+  })
+
+  it('no builder is classified twice with different answers', () => {
+    const marked = classifiedBuilders()
+    for (const [k, v] of Object.entries(marked)) expect(kindOfBuilder(k)).toBe(v)
+  })
+
+  /** The exemption list is only meaningful while its names are real. */
+  it('the BUILDINGS_OK exemptions are real builders and are not also marked as nonbuildings', () => {
+    for (const k of BUILDINGS_OK) {
+      expect(buildIt(k), `${k} is exempted but is not a registered builder`).not.toBe(null)
+      expect(kindOfBuilder(k), `${k} is both exempted and marked`).toBeUndefined()
+    }
+  })
+
+  /** Both cities really did contribute: a run that silently covered one of them proves nothing about the other. */
+  it('covers every audited city', () => {
+    expect(all.map((c) => c.city).sort()).toEqual([...AUDITED].sort())
+  })
+})
+
+describe('the GLB reader itself', () => {
+  /*
+   * A check nobody has tested is a check nobody should trust. `inspectGlb` is the only piece here that parses
+   * a binary format, and its two answers ("missing" and "mirrored") are the two that carry consequences —
+   * missing means wait for the owner, mirrored means a statue facing inside out that no thumbnail reveals.
+   */
+  it('says so when a file is not there, and reads a real one', () => {
+    expect(inspectGlb('/nowhere/at/all.glb')).toEqual({ ok: false, reason: 'file does not exist' })
+    const g = inspectGlb(new URL('../public/models/paris/henri-iv.glb', import.meta.url).pathname)
+    expect(g.ok).toBe(true)
+    expect(g.nodes).toBeGreaterThan(0)
+  })
+})

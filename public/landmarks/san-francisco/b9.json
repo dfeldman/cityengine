@@ -1,0 +1,9 @@
+[
+  { "osm": ["way/1249412094"], "procedural": "b9_tower_1249412094", "name": "Isle House", "height": 67 },
+  { "osm": ["way/1487223700"], "procedural": "b9_tower_1487223700", "name": "Unnamed apartment tower (way/1487223700)", "height": 60 },
+  { "osm": ["way/135103722"], "procedural": "b9_office_135103722", "name": "Unnamed office building (way/135103722)", "height": 60 },
+  { "osm": ["way/899281899"], "procedural": "b9_office_899281899", "name": "Unnamed office building (way/899281899)", "height": 48 },
+  { "osm": ["way/574616994"], "procedural": "b9_midrise_574616994", "name": "Unnamed building (way/574616994)", "height": 48 },
+  { "osm": ["way/135103725"], "procedural": "b9_office_135103725", "name": "Unnamed office building (way/135103725)", "height": 47 },
+  { "osm": ["way/135103710"], "procedural": "b9_office_135103710", "name": "Unnamed office building (way/135103710)", "height": 47 }
+]

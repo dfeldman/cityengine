@@ -3,7 +3,7 @@ import { capPolygon, type MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { fromRecipe } from '../recipes.ts'
 import { faceBand, towerRing, tower, type TowerSpec } from '../../tower.ts'
-import { boxAlong, edgeAt, longestEdge } from '../../parts.ts'
+import { boxAlong, edgeAt, longestEdge, offsetRing } from '../../parts.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
 import type { Rgb } from '../../../models.ts'
 
@@ -127,40 +127,92 @@ export const MODEL_TALL: Record<string, (out: MeshBuilder, fit: Fit) => void> = 
   }),
 
   /**
-   * Hilton San Francisco Financial District, 750 Kearny (Clement Chen with John Carl Warnecke, 1971): the
-   * Brutalist hotel slab over Portsmouth Square — tan concrete piers, slot windows, two plant boxes on the roof.
+   * Hilton San Francisco Financial District, 750 Kearny (Clement Chen with John Carl Warnecke & Associates,
+   * opened 1970/71).
+   *
+   * REBUILT TWICE on 2026-09-24 (owner verdict 5, docs/LADDER.md tier 5).
+   *
+   * Pass 1 killed the 2026-09-22 three-winged-Y-in-PLAN (invented with no reference frame — none exists for
+   * this way in docs/shots/refs/{sf-fetch/done.csv,sf-mapillary,sf-commons}) but replaced it with a plain
+   * rectangular slab, reading "rectangular" out of the web sources (Wikipedia; SF YIMBY; Docomomo NorCal) as a
+   * PLAN shape. The owner corrected this: the sources' "rectangular" was the footprint, and the ELEVATION is
+   * anything but. Their words: "It is a single wing, no multiple wings. BUT it is a Y with the two legs going
+   * to the ground, narrowing into a tower. Think of turning a Y upside down, then extruding it. The two Y
+   * shaped faces are plain concrete, while the windows are on the extruded sides... Think Fermilab" (Wilson
+   * Hall: two converging concrete towers, blank structural faces on one axis, glazing on the other).
+   *
+   * So: an inverted-Y PROFILE (two legs splayed apart at the ground, leaning together, merging into one shaft
+   * partway up) drawn in the (z, y) plane, EXTRUDED along x. Concretely, at any height y the cross-section is
+   * either two separate bands in z (below the merge) or one centred band (above it) — the extrusion length in
+   * x never changes, only the z-footprint does, so this is built as a stack of z-shifted rectangular tiers,
+   * not `setbackTiers` (which insets a whole ring symmetrically and was the wrong tool for a shape that leans
+   * to one side and back).
+   *
+   * WHICH AXIS AND WHICH FACE: `edgeAt()`/longest-edge logic on the REAL Overpass ring for way/260922316 (not
+   * the cleaned-up rectangle below) gives a "front" bearing of ~172° and a long axis (fit.hx, 38.8 m) versus a
+   * short one (fit.hz, 19.0 m) — so the building is more than twice as long as it is deep. Portsmouth Square's
+   * centre sits at bearing ~250° from this building, only ~12° off the LOCAL -x AXIS's world bearing (~262°,
+   * i.e. `front ± 90°`), and nowhere near +z/-z (172°/352°). So the square looks at one of the building's
+   * SHORT ENDS, not a long flank — and the short ends (hz-wide, hx apart) are exactly where the extrusion
+   * profile is legible end-on. Extruding along LOCAL X (the long axis) therefore puts the blank Y-profile
+   * faces at x=±hx, facing along the square's sightline — which is what "extremely prominent... adjoins
+   * Portsmouth Square" requires: the square sees the blank concrete Y, not a glazed flank. The glazed extruded
+   * sides run along z=const for the tiers' current z-span for the full 2×hx length.
+   *
+   * The rectangle-not-the-raw-ring fix from pass 1 is kept: the real OSM way is a noisy, many-notched polygon
+   * (porte-cochère steps, survey jitter) that self-intersected under an offset (BUGS.md #160 is the winding
+   * trap, this was a different, reflex-corner one) — but it is now only the EXTRUSION FOOTPRINT, sized from
+   * `fit.hx`/`fit.hz`, not the building's massing, which the tiers below fully override.
    */
   hiltonFinancialDistrict: (out: MeshBuilder, fit: Fit): void => {
-    /*
-     * 750 Kearny (Clement Chen with John Carl Warnecke, 1971). Rebuilt by hand 2026-09-22: the first pass was
-     * `concrete-piers` on the footprint, i.e. a big box, and the one thing everybody knows about this tower is
-     * that it is NOT a box — it is a three-winged Y in plan, three slabs meeting at a core, which is why it
-     * reads so differently from every angle as you ride round Portsmouth Square.
-     */
-    const R = Math.max(fit.hx, fit.hz)
-    const arm = R * 0.98
-    const halfW = R * 0.34
     const H = 91
     const wall: [number, number, number] = [0.79, 0.74, 0.66]
-    const dark: [number, number, number] = [0.72, 0.68, 0.61]
-    // three wings at 120 degrees, each a slab of its own, overlapping at the core
-    for (let k = 0; k < 3; k++) {
-      const a = (k * 2 * Math.PI) / 3
-      const ux = Math.sin(a)
-      const uz = Math.cos(a)
-      const nx = uz
-      const nz = -ux
-      const ring: { x: number; z: number }[] = [
-        { x: ux * arm + nx * halfW, z: uz * arm + nz * halfW },
-        { x: ux * arm - nx * halfW, z: uz * arm - nz * halfW },
-        { x: -ux * halfW * 0.6 - nx * halfW, z: -uz * halfW * 0.6 - nz * halfW },
-        { x: -ux * halfW * 0.6 + nx * halfW, z: -uz * halfW * 0.6 + nz * halfW },
-      ]
-      faceBand(out, ring, 0, 11, { kind: 'blank', wall: dark, material: 'concrete' })
-      faceBand(out, ring, 11, H, { kind: 'punched', wall, glass: [0.24, 0.24, 0.26], pitch: 3.0, floor: 3.1, solid: 0.55, material: 'concrete' })
-      faceBand(out, ring, H, H + 3.5, { kind: 'blank', wall: dark, material: 'concrete' })
-      capPolygon(out, ring, H + 3.5, [0.74, 0.7, 0.63], 0)
+    const dark: [number, number, number] = [0.66, 0.62, 0.56]
+    const glass: [number, number, number] = [0.24, 0.24, 0.26]
+    const blankFace = { kind: 'blank' as const, wall: dark, material: 'concrete' as const }
+    const glazedFace = { kind: 'punched' as const, wall, glass, pitch: 3.0, floor: 3.15, solid: 0.55, material: 'concrete' as const }
+
+    const hx = fit.hx
+    const T = fit.hz * 0.28 // leg/shaft half-thickness, held constant so the two legs become the shaft exactly
+    const outerZ0 = fit.hz - T // each leg's centre at the ground: its outer face sits on the real footprint edge
+    const convergeY = H * 0.52 // height at which the two legs' centrelines both reach z=0 and fully coincide
+
+    // a rectangle of the extrusion's full length (x) and the tier's own z-span, centred on `c`
+    const tierRing = (c: number): { x: number; z: number }[] => [
+      { x: -hx, z: c - T }, { x: hx, z: c - T }, { x: hx, z: c + T }, { x: -hx, z: c + T },
+    ]
+    // edges 1 and 3 (x = +hx and x = -hx) are the profile ends; edges 0 and 2 (z = const) are the swept sides
+    const drawTier = (c: number, y0: number, y1: number): void => {
+      const ring = tierRing(c)
+      faceBand(out, ring, y0, y1, blankFace, [1, 3])
+      faceBand(out, ring, y0, y1, glazedFace, [0, 2])
     }
+
+    // the two legs, splayed apart at the ground and leaning together — staircased into LEG_TIERS steps so the
+    // gap between them (the "inverted V of open air") closes gradually rather than in one jump. Each tier
+    // keeps the WIDER (lower) footprint for its whole height, like `setbackTiers`, so a step always faces up.
+    const LEG_TIERS = 10
+    for (const side of [-1, 1] as const) {
+      for (let i = 0; i < LEG_TIERS; i++) {
+        const t0 = i / LEG_TIERS
+        const y0 = t0 * convergeY
+        const y1 = ((i + 1) / LEG_TIERS) * convergeY
+        const c = side * outerZ0 * (1 - t0) // lerp from the leg's ground position to 0, taken at the tier's base
+        drawTier(c, y0, y1)
+      }
+    }
+
+    // above the merge the two legs have become one shaft, centred, T half-thick, up to a small crown
+    const crownStart = H - 6
+    drawTier(0, convergeY, crownStart)
+
+    // a small parapet, per Wikipedia's "flares out in pagoda style" at the old roof-pool level — modest here
+    // since the shaft itself is already narrow (T, not the full footprint)
+    const crownRing = tierRing(0)
+    const flareRing = offsetRing(crownRing, 1.1)
+    faceBand(out, flareRing, crownStart, H, blankFace, [1, 3])
+    faceBand(out, flareRing, crownStart, H, glazedFace, [0, 2])
+    capPolygon(out, flareRing, H, [0.7, 0.66, 0.6], 0)
   },
 
   /**

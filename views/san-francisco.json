@@ -1,6 +1,21 @@
 [
  {
-  "name": "Trees — Russian Hill maples and elms",
+  "name": "Marriott Marquis \u2014 from Mission St (BUGS #171)",
+  "group": "landmark",
+  "from": [
+   37.78485,
+   -122.40445,
+   2
+  ],
+  "to": [
+   37.78538,
+   -122.40442,
+   60
+  ],
+  "note": "double-draw / flying geometry / massing check, in the city not isolated"
+ },
+ {
+  "name": "Trees \u2014 Russian Hill maples and elms",
   "group": "trees",
   "from": [
    37.797482,
@@ -15,7 +30,7 @@
   "note": "Acer, Ulmus, Pittosporum"
  },
  {
-  "name": "Trees — Nob Hill pittosporum",
+  "name": "Trees \u2014 Nob Hill pittosporum",
   "group": "trees",
   "from": [
    37.793736,
@@ -30,7 +45,7 @@
   "note": "Pittosporum, Metrosideros"
  },
  {
-  "name": "Trees — ficus block",
+  "name": "Trees \u2014 ficus block",
   "group": "trees",
   "from": [
    37.792277,
@@ -45,7 +60,7 @@
   "note": "Ficus x28"
  },
  {
-  "name": "Trees — Chinatown edge",
+  "name": "Trees \u2014 Chinatown edge",
   "group": "trees",
   "from": [
    37.791269,
@@ -60,7 +75,7 @@
   "note": "Ficus, Callistemon, Platanus"
  },
  {
-  "name": "Trees — windmill palms",
+  "name": "Trees \u2014 windmill palms",
   "group": "trees",
   "from": [
    37.788834,
@@ -75,7 +90,7 @@
   "note": "Trachycarpus x12"
  },
  {
-  "name": "Trees — planes",
+  "name": "Trees \u2014 planes",
   "group": "trees",
   "from": [
    37.792623,
@@ -90,7 +105,7 @@
   "note": "Platanus x17, Metrosideros"
  },
  {
-  "name": "Trees — podocarpus and pears",
+  "name": "Trees \u2014 podocarpus and pears",
   "group": "trees",
   "from": [
    37.79309,
@@ -105,7 +120,7 @@
   "note": "Afrocarpus, Pyrus"
  },
  {
-  "name": "Trees — Nob Hill air",
+  "name": "Trees \u2014 Nob Hill air",
   "group": "trees",
   "from": [
    37.7885,
@@ -147,7 +162,7 @@
   ]
  },
  {
-  "name": "Market — Ferry Building",
+  "name": "Market \u2014 Ferry Building",
   "group": "market",
   "from": [
    37.793914,
@@ -161,7 +176,7 @@
   ]
  },
  {
-  "name": "Market — One Market and the Southern Pacific",
+  "name": "Market \u2014 One Market and the Southern Pacific",
   "group": "market",
   "from": [
    37.792813,
@@ -175,7 +190,7 @@
   ]
  },
  {
-  "name": "Market — Front and the SVB pavilion",
+  "name": "Market \u2014 Front and the SVB pavilion",
   "group": "market",
   "from": [
    37.790269,
@@ -189,7 +204,7 @@
   ]
  },
  {
-  "name": "Market — Montgomery and the Hobart",
+  "name": "Market \u2014 Montgomery and the Hobart",
   "group": "market",
   "from": [
    37.789411,
@@ -203,7 +218,7 @@
   ]
  },
  {
-  "name": "Market — the Palace Hotel",
+  "name": "Market \u2014 the Palace Hotel",
   "group": "market",
   "from": [
    37.787977,
@@ -217,7 +232,7 @@
   ]
  },
  {
-  "name": "Market — Phelan and the Flood",
+  "name": "Market \u2014 Phelan and the Flood",
   "group": "market",
   "from": [
    37.786581,
@@ -231,7 +246,7 @@
   ]
  },
  {
-  "name": "Market — Powell and Hallidie Plaza",
+  "name": "Market \u2014 Powell and Hallidie Plaza",
   "group": "market",
   "from": [
    37.784639,
@@ -245,7 +260,7 @@
   ]
  },
  {
-  "name": "Market — the Warfield and Golden Gate",
+  "name": "Market \u2014 the Warfield and Golden Gate",
   "group": "market",
   "from": [
    37.782143,
@@ -257,5 +272,1691 @@
    -122.41066,
    5
   ]
+ },
+ {
+  "name": "Salesforce Tower \u2014 from the bay",
+  "group": "landmark",
+  "from": [
+   37.791191,
+   -122.385859,
+   120
+  ],
+  "to": [
+   37.789754,
+   -122.396929,
+   170
+  ],
+  "note": "~1 km east, over the water: the whole silhouette against the sky, which is how the tallest thing in the city is actually seen."
+ },
+ {
+  "name": "Salesforce Tower \u2014 from the south-west",
+  "group": "landmark",
+  "from": [
+   37.7865,
+   -122.404,
+   30
+  ],
+  "to": [
+   37.789754,
+   -122.396929,
+   150
+  ],
+  "note": "~850 m: the taper and the crown among the rest of the skyline."
+ },
+ {
+  "name": "#100 Transamerica Pyramid \u2014 W",
+  "group": "bug100",
+  "from": [
+   37.7938,
+   -122.406436,
+   130
+  ],
+  "to": [
+   37.795166,
+   -122.402786,
+   117
+  ]
+ },
+ {
+  "name": "#100 Transamerica Pyramid \u2014 NW",
+  "group": "bug100",
+  "from": [
+   37.797899,
+   -122.404707,
+   234
+  ],
+  "to": [
+   37.795166,
+   -122.402786,
+   104
+  ]
+ },
+ {
+  "name": "#100 Coit Tower \u2014 W",
+  "group": "bug100",
+  "from": [
+   37.802041,
+   -122.406732,
+   35
+  ],
+  "to": [
+   37.802377,
+   -122.405834,
+   28.8
+  ]
+ },
+ {
+  "name": "#100 Coit Tower \u2014 NW",
+  "group": "bug100",
+  "from": [
+   37.80305,
+   -122.406307,
+   57.6
+  ],
+  "to": [
+   37.802377,
+   -122.405834,
+   25.6
+  ]
+ },
+ {
+  "name": "#100 Ferry Building \u2014 W",
+  "group": "bug100",
+  "from": [
+   37.794768,
+   -122.395488,
+   37.5
+  ],
+  "to": [
+   37.795538,
+   -122.39343,
+   33.8
+  ]
+ },
+ {
+  "name": "#100 Ferry Building \u2014 NW",
+  "group": "bug100",
+  "from": [
+   37.797079,
+   -122.394513,
+   67.5
+  ],
+  "to": [
+   37.795538,
+   -122.39343,
+   30
+  ]
+ },
+ {
+  "name": "#100 333 Bush \u2014 W",
+  "group": "bug100",
+  "from": [
+   37.789785,
+   -122.405187,
+   75.5
+  ],
+  "to": [
+   37.790579,
+   -122.403067,
+   68
+  ]
+ },
+ {
+  "name": "#100 333 Bush \u2014 NW",
+  "group": "bug100",
+  "from": [
+   37.792166,
+   -122.404183,
+   135.9
+  ],
+  "to": [
+   37.790579,
+   -122.403067,
+   60.4
+  ]
+ },
+ {
+  "name": "#100 Madrone Mission Bay \u2014 W",
+  "group": "bug100",
+  "from": [
+   37.771072,
+   -122.39008,
+   35
+  ],
+  "to": [
+   37.771599,
+   -122.388672,
+   27.5
+  ]
+ },
+ {
+  "name": "#100 Madrone Mission Bay \u2014 NW",
+  "group": "bug100",
+  "from": [
+   37.772654,
+   -122.389413,
+   55
+  ],
+  "to": [
+   37.771599,
+   -122.388672,
+   24.4
+  ]
+ },
+ {
+  "name": "#100 Madrone Mission Bay \u2014 far",
+  "group": "bug100",
+  "from": [
+   37.769267,
+   -122.392425,
+   120
+  ],
+  "to": [
+   37.771602,
+   -122.388673,
+   30
+  ]
+ },
+ {
+  "name": "NB \u2014 Vaillancourt Fountain",
+  "group": "nonbuilding",
+  "from": [
+   37.794323,
+   -122.39495,
+   7.199999999999999
+  ],
+  "to": [
+   37.7946,
+   -122.3946,
+   4.199999999999999
+  ],
+  "note": "art \u00b7 manifest \u00b7 vaillancourtFountain"
+ },
+ {
+  "name": "NB \u2014 Cupid's Span",
+  "group": "nonbuilding",
+  "from": [
+   37.790696,
+   -122.390285,
+   10.799999999999999
+  ],
+  "to": [
+   37.791,
+   -122.3899,
+   6.3
+  ],
+  "note": "art \u00b7 manifest \u00b7 cupidsSpan"
+ },
+ {
+  "name": "NB \u2014 Ruth Asawa Mermaid Fountain",
+  "group": "nonbuilding",
+  "from": [
+   37.805634,
+   -122.42321,
+   3
+  ],
+  "to": [
+   37.8058,
+   -122.423,
+   1.5
+  ],
+  "note": "art \u00b7 manifest \u00b7 asawaMermaidFountain"
+ },
+ {
+  "name": "NB \u2014 Redwood Park pool",
+  "group": "nonbuilding",
+  "from": [
+   37.794962,
+   -122.402875,
+   3
+  ],
+  "to": [
+   37.7951,
+   -122.4027,
+   1.5
+  ],
+  "note": "art \u00b7 manifest \u00b7 redwoodParkBronzes"
+ },
+ {
+  "name": "NB \u2014 MLK Memorial Waterfall",
+  "group": "nonbuilding",
+  "from": [
+   37.784913,
+   -122.40339,
+   5.3999999999999995
+  ],
+  "to": [
+   37.7853,
+   -122.4029,
+   3.15
+  ],
+  "note": "art \u00b7 manifest \u00b7 mlkWaterfall"
+ },
+ {
+  "name": "NB \u2014 Hearts in San Francisco (Union Square)",
+  "group": "nonbuilding",
+  "from": [
+   37.787862,
+   -122.407675,
+   3
+  ],
+  "to": [
+   37.788,
+   -122.4075,
+   1.5
+  ],
+  "note": "art \u00b7 manifest \u00b7 heartsInSanFrancisco"
+ },
+ {
+  "name": "NB \u2014 Hearts in San Francisco (Ferry Building)",
+  "group": "nonbuilding",
+  "from": [
+   37.788762,
+   -122.406775,
+   3
+  ],
+  "to": [
+   37.7889,
+   -122.4066,
+   1.5
+  ],
+  "note": "art \u00b7 manifest \u00b7 heartsInSanFrancisco"
+ },
+ {
+  "name": "NB \u2014 Language of the Birds",
+  "group": "nonbuilding",
+  "from": [
+   37.797662,
+   -122.407075,
+   3.5999999999999996
+  ],
+  "to": [
+   37.7978,
+   -122.4069,
+   2.0999999999999996
+  ],
+  "note": "art \u00b7 manifest \u00b7 languageOfTheBirds"
+ },
+ {
+  "name": "NB \u2014 Francis Scott Key Monument canopy",
+  "group": "nonbuilding",
+  "from": [
+   37.770562,
+   -122.467275,
+   3.5999999999999996
+  ],
+  "to": [
+   37.7707,
+   -122.4671,
+   2.0999999999999996
+  ],
+  "note": "art \u00b7 manifest \u00b7 francisScottKeyCanopy"
+ },
+ {
+  "name": "NB \u2014 Robert Louis Stevenson Memorial",
+  "group": "nonbuilding",
+  "from": [
+   37.794662,
+   -122.405575,
+   3
+  ],
+  "to": [
+   37.7948,
+   -122.4054,
+   1.75
+  ],
+  "note": "art \u00b7 manifest \u00b7 stevensonMemorial"
+ },
+ {
+  "name": "NB \u2014 Fisherman's Wharf sign",
+  "group": "nonbuilding",
+  "from": [
+   37.808012,
+   -122.415895,
+   4.8
+  ],
+  "to": [
+   37.80815,
+   -122.41572,
+   2.8
+  ],
+  "note": "sign \u00b7 manifest \u00b7 wharfSign"
+ },
+ {
+  "name": "NB \u2014 Ghirardelli sign",
+  "group": "nonbuilding",
+  "from": [
+   37.805342,
+   -122.42359,
+   3.5999999999999996
+  ],
+  "to": [
+   37.80584,
+   -122.42296,
+   2.0999999999999996
+  ],
+  "note": "sign \u00b7 manifest \u00b7 ghirardelliSign"
+ },
+ {
+  "name": "NB \u2014 Golden Gate Bridge",
+  "group": "nonbuilding",
+  "from": [
+   37.817516,
+   -122.481111,
+   136.2
+  ],
+  "to": [
+   37.8198,
+   -122.47822,
+   79.44999999999999
+  ],
+  "note": "bridge \u00b7 skyline \u00b7 goldenGateBridge"
+ },
+ {
+  "name": "NB \u2014 Bay Bridge",
+  "group": "nonbuilding",
+  "from": [
+   37.79577,
+   -122.380737,
+   96
+  ],
+  "to": [
+   37.79738,
+   -122.3787,
+   56
+  ],
+  "note": "bridge \u00b7 skyline \u00b7 bayBridge"
+ },
+ {
+  "name": "NB \u2014 Sutro Tower",
+  "group": "nonbuilding",
+  "from": [
+   37.752232,
+   -122.456562,
+   178.79999999999998
+  ],
+  "to": [
+   37.75523,
+   -122.45277,
+   104.3
+  ],
+  "note": "tower \u00b7 skyline \u00b7 sutroTower"
+ },
+ {
+  "name": "NB \u2014 Union Square Market Street Headhouse",
+  "group": "nonbuilding",
+  "from": [
+   37.787428,
+   -122.407416,
+   3
+  ],
+  "to": [
+   37.78767305323135,
+   -122.40710665143588,
+   1.5
+  ],
+  "note": "station \u00b7 manifest \u00b7 unionSquareHeadhouse"
+ },
+ {
+  "name": "NB \u2014 Japanese Tea Garden Pagoda",
+  "group": "nonbuilding",
+  "from": [
+   37.769954,
+   -122.470598,
+   4.8
+  ],
+  "to": [
+   37.77011085159899,
+   -122.47039966991639,
+   2.8
+  ],
+  "note": "structure \u00b7 manifest \u00b7 japaneseTeaGardenPagoda"
+ },
+ {
+  "name": "NB \u2014 Japanese Tea Garden South Gate",
+  "group": "nonbuilding",
+  "from": [
+   37.769571,
+   -122.469978,
+   3.5999999999999996
+  ],
+  "to": [
+   37.769716672655406,
+   -122.46979366815408,
+   2.0999999999999996
+  ],
+  "note": "structure \u00b7 manifest \u00b7 japaneseTeaGardenGate"
+ },
+ {
+  "name": "NB \u2014 Dutch Windmill",
+  "group": "nonbuilding",
+  "from": [
+   37.770191,
+   -122.509732,
+   10.799999999999999
+  ],
+  "to": [
+   37.77044398213177,
+   -122.50941170444825,
+   6.3
+  ],
+  "note": "structure \u00b7 manifest \u00b7 dutchWindmill"
+ },
+ {
+  "name": "NB \u2014 Pier 1",
+  "group": "nonbuilding",
+  "from": [
+   37.794364,
+   -122.398123,
+   6.6
+  ],
+  "to": [
+   37.79721834678078,
+   -122.39451031390698,
+   3.8499999999999996
+  ],
+  "note": "pier \u00b7 manifest \u00b7 pier1"
+ },
+ {
+  "name": "NB \u2014 Pier 5",
+  "group": "nonbuilding",
+  "from": [
+   37.797503,
+   -122.397473,
+   6.6
+  ],
+  "to": [
+   37.7983673344113,
+   -122.39637927551358,
+   3.8499999999999996
+  ],
+  "note": "pier \u00b7 manifest \u00b7 pier5"
+ },
+ {
+  "name": "NB \u2014 Pier 9",
+  "group": "nonbuilding",
+  "from": [
+   37.797101,
+   -122.401544,
+   6.6
+  ],
+  "to": [
+   37.80031171397772,
+   -122.39748119229306,
+   3.8499999999999996
+  ],
+  "note": "pier \u00b7 manifest \u00b7 pier9"
+ },
+ {
+  "name": "NB \u2014 Pier 15",
+  "group": "nonbuilding",
+  "from": [
+   37.798198,
+   -122.40187,
+   7.199999999999999
+  ],
+  "to": [
+   37.80140586089456,
+   -122.39781041209703,
+   4.199999999999999
+  ],
+  "note": "pier \u00b7 manifest \u00b7 pier15"
+ },
+ {
+  "name": "NB \u2014 Pier 17",
+  "group": "nonbuilding",
+  "from": [
+   37.799401,
+   -122.401471,
+   7.199999999999999
+  ],
+  "to": [
+   37.80237022397892,
+   -122.3977128037496,
+   4.199999999999999
+  ],
+  "note": "pier \u00b7 manifest \u00b7 pier17"
+ },
+ {
+  "name": "NB \u2014 Pier 33",
+  "group": "nonbuilding",
+  "from": [
+   37.803334,
+   -122.40972,
+   6.6
+  ],
+  "to": [
+   37.80707644628099,
+   -122.40498288534788,
+   3.8499999999999996
+  ],
+  "note": "pier \u00b7 manifest \u00b7 pier33"
+ },
+ {
+  "name": "NB \u2014 Pier 35",
+  "group": "nonbuilding",
+  "from": [
+   37.803326,
+   -122.412375,
+   6.6
+  ],
+  "to": [
+   37.80803582628295,
+   -122.40641373725691,
+   3.8499999999999996
+  ],
+  "note": "pier \u00b7 manifest \u00b7 pier35"
+ },
+ {
+  "name": "NB \u2014 Pier 24",
+  "group": "nonbuilding",
+  "from": [
+   37.788412,
+   -122.389034,
+   6
+  ],
+  "to": [
+   37.78942612288897,
+   -122.3877502896813,
+   3.5
+  ],
+  "note": "pier \u00b7 manifest \u00b7 pier24"
+ },
+ {
+  "name": "NB \u2014 Pier 26",
+  "group": "nonbuilding",
+  "from": [
+   37.78603,
+   -122.391235,
+   6
+  ],
+  "to": [
+   37.78920016006272,
+   -122.3872234971555,
+   3.5
+  ],
+  "note": "pier \u00b7 manifest \u00b7 pier26"
+ },
+ {
+  "name": "NB \u2014 Pier 28",
+  "group": "nonbuilding",
+  "from": [
+   37.785279,
+   -122.390556,
+   6
+  ],
+  "to": [
+   37.78810132950054,
+   -122.38698510574193,
+   3.5
+  ],
+  "note": "pier \u00b7 manifest \u00b7 pier28"
+ },
+ {
+  "name": "NB \u2014 Pier 38",
+  "group": "nonbuilding",
+  "from": [
+   37.778526,
+   -122.392284,
+   5.3999999999999995
+  ],
+  "to": [
+   37.7825222107438,
+   -122.38722745841824,
+   3.15
+  ],
+  "note": "pier \u00b7 manifest \u00b7 pier38"
+ },
+ {
+  "name": "NB \u2014 Pier 40",
+  "group": "nonbuilding",
+  "from": [
+   37.779909,
+   -122.388603,
+   5.3999999999999995
+  ],
+  "to": [
+   37.78171979428674,
+   -122.38631253461384,
+   3.15
+  ],
+  "note": "pier \u00b7 manifest \u00b7 pier40"
+ },
+ {
+  "name": "NB \u2014 Pier 48",
+  "group": "nonbuilding",
+  "from": [
+   37.772579,
+   -122.390701,
+   7.8
+  ],
+  "to": [
+   37.77562379509131,
+   -122.386848935289,
+   4.55
+  ],
+  "note": "pier \u00b7 manifest \u00b7 pier48"
+ },
+ {
+  "name": "NB \u2014 Fort Mason Pier 1",
+  "group": "nonbuilding",
+  "from": [
+   37.806157,
+   -122.434721,
+   6
+  ],
+  "to": [
+   37.80797957839262,
+   -122.43241452971957,
+   3.5
+  ],
+  "note": "pier \u00b7 manifest \u00b7 fortMasonPier1"
+ },
+ {
+  "name": "NB \u2014 Fort Mason Pier 2 (Herbst Pavilion)",
+  "group": "nonbuilding",
+  "from": [
+   37.805908,
+   -122.434515,
+   6
+  ],
+  "to": [
+   37.80838006262512,
+   -122.43138592432128,
+   3.5
+  ],
+  "note": "pier \u00b7 manifest \u00b7 fortMasonPier2"
+ },
+ {
+  "name": "NB \u2014 Fort Mason Pier 3 (Festival Pavilion)",
+  "group": "nonbuilding",
+  "from": [
+   37.805875,
+   -122.433366,
+   6
+  ],
+  "to": [
+   37.80835905497664,
+   -122.43022239762476,
+   3.5
+  ],
+  "note": "pier \u00b7 manifest \u00b7 fortMasonPier3"
+ },
+ {
+  "name": "NB \u2014 Opera Plaza courtyard",
+  "group": "nonbuilding",
+  "from": [
+   37.78059,
+   -122.422391,
+   4.8
+  ],
+  "to": [
+   37.781337,
+   -122.421446,
+   2.8
+  ],
+  "note": "garden \u00b7 manifest \u00b7 operaPlazaCourtyard"
+ },
+ {
+  "name": "NB \u2014 Powell Street Station Canopy",
+  "group": "nonbuilding",
+  "from": [
+   37.78522,
+   -122.406742,
+   3.12
+  ],
+  "to": [
+   37.785441,
+   -122.406462,
+   1.8199999999999998
+  ],
+  "note": "station \u00b7 manifest \u00b7 powellStreetCanopy"
+ },
+ {
+  "name": "NB \u2014 Oracle Park",
+  "group": "nonbuilding",
+  "from": [
+   37.774238,
+   -122.394812,
+   27
+  ],
+  "to": [
+   37.778326846243345,
+   -122.38963824487729,
+   15.749999999999998
+  ],
+  "note": "structure \u00b7 manifest \u00b7 oraclePark"
+ },
+ {
+  "name": "NB \u2014 Bush Plaza Pavilion",
+  "group": "nonbuilding",
+  "from": [
+   37.790283,
+   -122.400722,
+   3.5999999999999996
+  ],
+  "to": [
+   37.79059852334753,
+   -122.40032257503483,
+   2.0999999999999996
+  ],
+  "note": "structure \u00b7 manifest \u00b7 bushPlazaPavilion"
+ },
+ {
+  "name": "NB \u2014 525 Market plaza kiosk",
+  "group": "nonbuilding",
+  "from": [
+   37.790209,
+   -122.39969,
+   3
+  ],
+  "to": [
+   37.79037264941909,
+   -122.39948336396432,
+   1.75
+  ],
+  "note": "structure \u00b7 manifest \u00b7 plazaKiosk"
+ },
+ {
+  "name": "NB \u2014 Lotta's Fountain",
+  "group": "nonbuilding",
+  "from": [
+   37.787798,
+   -122.403479,
+   4.8
+  ],
+  "to": [
+   37.787936,
+   -122.403304,
+   2.8
+  ],
+  "note": "fountain \u00b7 manifest \u00b7 lottasFountain"
+ },
+ {
+  "name": "NB \u2014 Union Square",
+  "group": "nonbuilding",
+  "from": [
+   37.786273,
+   -122.409615,
+   18
+  ],
+  "to": [
+   37.787933,
+   -122.407514,
+   10.5
+  ],
+  "note": "plaza \u00b7 manifest \u00b7 unionSquarePlaza"
+ },
+ {
+  "name": "NB \u2014 Murphy Windmill",
+  "group": "nonbuilding",
+  "from": [
+   37.764681,
+   -122.509101,
+   8.4
+  ],
+  "to": [
+   37.765001437297876,
+   -122.50869659350505,
+   4.8999999999999995
+  ],
+  "note": "structure \u00b7 manifest \u00b7 murphyWindmill"
+ },
+ {
+  "name": "NB \u2014 Spreckels Temple of Music",
+  "group": "nonbuilding",
+  "from": [
+   37.769239,
+   -122.469369,
+   7.199999999999999
+  ],
+  "to": [
+   37.76985922081871,
+   -122.4685838209984,
+   4.199999999999999
+  ],
+  "note": "structure \u00b7 manifest \u00b7 spreckelsTempleOfMusic"
+ },
+ {
+  "name": "#102 Avalon at Mission Bay III (skyscraper -> towerblock) \u2014 W",
+  "group": "bug102",
+  "from": [
+   37.774713,
+   -122.397359,
+   45
+  ],
+  "to": [
+   37.774713,
+   -122.395426,
+   27
+  ],
+  "note": "BUGS.md #102: a restyle entry naming an outline the bake replaced with its building:parts"
+ },
+ {
+  "name": "#102 Avalon at Mission Bay III (skyscraper -> towerblock) \u2014 SW",
+  "group": "bug102",
+  "from": [
+   37.773644,
+   -122.396779,
+   45
+  ],
+  "to": [
+   37.774713,
+   -122.395426,
+   27
+  ],
+  "note": "BUGS.md #102: a restyle entry naming an outline the bake replaced with its building:parts"
+ },
+ {
+  "name": "#102 49 South Van Ness (skyscraper -> chicago) \u2014 W",
+  "group": "bug102",
+  "from": [
+   37.774395,
+   -122.420052,
+   50
+  ],
+  "to": [
+   37.774395,
+   -122.418006,
+   30.6
+  ],
+  "note": "BUGS.md #102: a restyle entry naming an outline the bake replaced with its building:parts"
+ },
+ {
+  "name": "#102 49 South Van Ness (skyscraper -> chicago) \u2014 SW",
+  "group": "bug102",
+  "from": [
+   37.773263,
+   -122.419438,
+   50
+  ],
+  "to": [
+   37.774395,
+   -122.418006,
+   30.6
+  ],
+  "note": "BUGS.md #102: a restyle entry naming an outline the bake replaced with its building:parts"
+ },
+ {
+  "name": "#102 SFMOMA (brick -> tenement) \u2014 W",
+  "group": "bug102",
+  "from": [
+   37.785944,
+   -122.40242,
+   60
+  ],
+  "to": [
+   37.785944,
+   -122.400715,
+   12.6
+  ],
+  "note": "BUGS.md #102: a restyle entry naming an outline the bake replaced with its building:parts"
+ },
+ {
+  "name": "#102 SFMOMA (brick -> tenement) \u2014 SW",
+  "group": "bug102",
+  "from": [
+   37.785001,
+   -122.401909,
+   60
+  ],
+  "to": [
+   37.785944,
+   -122.400715,
+   12.6
+  ],
+  "note": "BUGS.md #102: a restyle entry naming an outline the bake replaced with its building:parts"
+ },
+ {
+  "name": "ICA \u2014 345 Montgomery from the corner",
+  "group": "landmark",
+  "from": [
+   37.79214,
+   -122.40312,
+   2.2
+  ],
+  "to": [
+   37.792399,
+   -122.402803,
+   12
+  ],
+  "note": "way/288511103, hand-modelled 2026-09-23: the black glass box with a red column breaking out past the street corner, and the red roof stopping halfway along it. Was refaced 'chinatown' (BUGS.md #118). Framing not yet checked.",
+  "seeded": true
+ },
+ {
+  "name": "ICA \u2014 345 Montgomery down California",
+  "group": "landmark",
+  "from": [
+   37.792699,
+   -122.403203,
+   2.2
+  ],
+  "to": [
+   37.792399,
+   -122.402803,
+   12
+  ],
+  "note": "way/288511103: the second elevation and a second red corner column. Framing not yet checked.",
+  "seeded": true
+ },
+ {
+  "name": "YB \u2014 the gardens gate from Mission Street",
+  "group": "yerbabuena",
+  "from": [
+   37.785485,
+   -122.403059,
+   2.2
+  ],
+  "to": [
+   37.785374,
+   -122.402926,
+   3.6
+  ],
+  "note": "the Mission Street frontage: retaining wall, pergola comb, piers, grille and the lettering"
+ },
+ {
+  "name": "YB \u2014 Moscone North frontage from the pavement",
+  "group": "yerbabuena",
+  "from": [
+   37.784084,
+   -122.401653,
+   2.2
+  ],
+  "to": [
+   37.784273,
+   -122.401736,
+   6
+  ],
+  "note": "two-storey green curtain wall, MOSCONE CENTER high on the glass, MOSCONE NORTH on the band"
+ },
+ {
+  "name": "YB \u2014 under the glazed skybridge",
+  "group": "yerbabuena",
+  "from": [
+   37.784399,
+   -122.401485,
+   1.8
+  ],
+  "to": [
+   37.784286,
+   -122.40136,
+   7.4
+  ],
+  "note": "the soffit and fascia a rider looks up into"
+ },
+ {
+  "name": "YB \u2014 both bridges along Howard",
+  "group": "yerbabuena",
+  "from": [
+   37.783577,
+   -122.402269,
+   2.6
+  ],
+  "to": [
+   37.78434,
+   -122.401417,
+   9
+  ],
+  "note": "the enclosed tube and the open deck crossing Howard in parallel"
+ },
+ {
+  "name": "YB \u2014 across the lawn to St Patrick's",
+  "group": "yerbabuena",
+  "from": [
+   37.785005,
+   -122.402565,
+   5.6
+  ],
+  "to": [
+   37.78558,
+   -122.403554,
+   22
+  ],
+  "note": "the sightline the open space makes"
+ },
+ {
+  "name": "YB \u2014 the MLK memorial from the lawn",
+  "group": "yerbabuena",
+  "from": [
+   37.784735,
+   -122.402357,
+   5.6
+  ],
+  "to": [
+   37.784583,
+   -122.402165,
+   7.5
+  ],
+  "note": "the pier wall, the water falling between the piers, the pool, the stepping stones and the paving"
+ },
+ {
+  "name": "YB \u2014 the esplanade from Mission Street",
+  "group": "yerbabuena",
+  "from": [
+   37.78537,
+   -122.40346,
+   2.2
+  ],
+  "to": [
+   37.785162,
+   -122.403209,
+   4.5
+  ],
+  "note": "alternating grass treads and paved nosings climbing to the lawn"
+ },
+ {
+  "name": "YB \u2014 the whole block from above",
+  "group": "yerbabuena",
+  "from": [
+   37.783927,
+   -122.401769,
+   190
+  ],
+  "to": [
+   37.784376,
+   -122.401996,
+   4
+  ],
+  "note": "both decks, the two bridges and the street between them"
+ },
+ {
+  "name": "Salesforce Park \u2014 the deck, planted",
+  "group": "landmark",
+  "from": [
+   37.7889441064922,
+   -122.39690814647089,
+   21.6
+  ],
+  "to": [
+   37.78927199157091,
+   -122.39744925239737,
+   21.3
+  ],
+  "note": "On the Transit Center's roof, looking along the park's spine (docs/SKYPARKS.md): should show thousands of shrubs and flower beds along the path loop, not bare paving."
+ },
+ {
+  "name": "Salesforce Park \u2014 the deck, trees",
+  "group": "landmark",
+  "from": [
+   37.7888,
+   -122.3966,
+   22.6
+  ],
+  "to": [
+   37.78935,
+   -122.3976,
+   23.5
+  ],
+  "note": "Standing on the deck at rider height, looking west along the spine (docs/SKYPARKS.md): the trees the vegetation layer now reaches up here, at deck level and not sunk into Mission Street."
+ },
+ {
+  "name": "Salesforce Park \u2014 the canopy from above",
+  "group": "landmark",
+  "from": [
+   37.7876,
+   -122.3956,
+   150
+  ],
+  "to": [
+   37.7894,
+   -122.3979,
+   21
+  ],
+  "note": "An oblique over the roof: whether the park reads as continuous canopy from the air, the way the Google Earth obliques do, and whether any tree stands in the street below instead."
+ },
+ {
+  "name": "Salesforce Transit Center \u2014 from Mission Street",
+  "group": "landmark",
+  "from": [
+   37.788481392279444,
+   -122.39719333059804,
+   2.2
+  ],
+  "to": [
+   37.788767235753696,
+   -122.39683160867524,
+   15
+  ],
+  "note": "From the street below, looking up at the gondola side: the building the park sits on, and whether the planting on the roof reads without making the standing misplacement (BUGS.md) worse."
+ },
+ {
+  "name": "YB \u2014 the passage and the terrace garden",
+  "group": "yerbabuena",
+  "from": [
+   37.784888,
+   -122.401473,
+   1.8
+  ],
+  "to": [
+   37.784753,
+   -122.401655,
+   3.5
+  ],
+  "note": "the cut beside the YBCA theatre: stepped planted tiers climbing to deck level, the railing and walkway on top, and the light mesh-canopied walkway over the passage"
+ },
+ {
+  "name": "YB \u2014 both bridges from Howard, up the street",
+  "group": "yerbabuena",
+  "from": [
+   37.78346,
+   -122.402194,
+   2.6
+  ],
+  "to": [
+   37.78434,
+   -122.401417,
+   9
+  ],
+  "note": "BUGS.md #136: standing on Howard below the open deck, looking up the street at the glazed tube. Both crossings in one street-level frame, each drawn ONCE \u2014 the OSM ways under them are suppressed."
+ },
+ {
+  "name": "YB \u2014 along the open bridge to the Public Square wall",
+  "group": "yerbabuena",
+  "from": [
+   37.783854,
+   -122.402188,
+   9.8
+  ],
+  "to": [
+   37.783581,
+   -122.401212,
+   8
+  ],
+  "note": "BUGS.md #146: the decisive low view. From the open skybridge's north-west end, along its own axis, over the Moscone South deck at 8 to the wall plaza at 8 and the amphitheatre beyond. A step or a gap in the surface at 8 shows here and nowhere else."
+ },
+ {
+  "name": "YB \u2014 across the Moscone South deck to the wall plaza",
+  "group": "yerbabuena",
+  "from": [
+   37.783718,
+   -122.401811,
+   9.8
+  ],
+  "to": [
+   37.783713,
+   -122.401045,
+   8
+  ],
+  "note": "BUGS.md #146: standing at the bridge's landing, looking south-east along the join. Shows the 41.6 m line where mosconeSouthDeck meets the wall plaza, and mosconeSouthDeck's own parapet standing on it."
+ },
+ {
+  "name": "YB \u2014 the Public Square join from the air",
+  "group": "yerbabuena",
+  "from": [
+   37.783074,
+   -122.402394,
+   95
+  ],
+  "to": [
+   37.783478,
+   -122.400916,
+   6
+  ],
+  "note": "BUGS.md #146: the whole of the block the open bridge serves, from over Howard \u2014 the bridge, the Moscone South deck, the 41.6 m join, the wall plaza at 8, the amphitheatre and the Children's Garden beyond."
+ },
+ {
+  "name": "YB \u2014 the Public Square from overhead",
+  "group": "yerbabuena",
+  "from": [
+   37.78258,
+   -122.401769,
+   150
+  ],
+  "to": [
+   37.783388,
+   -122.400837,
+   6
+  ],
+  "note": "BUGS.md #146: the park on way/613665502, near top-down \u2014 the join line, the wall plaza, the bowl and the Children's Garden in one frame."
+ },
+ {
+  "name": "YB \u2014 the wall plaza on the join, close",
+  "group": "yerbabuena",
+  "from": [
+   37.783029,
+   -122.401542,
+   42
+  ],
+  "to": [
+   37.78355,
+   -122.401144,
+   8
+  ],
+  "note": "BUGS.md #146: low and close on the 41.6 m join itself \u2014 the wall plaza at 8 on one side, mosconeSouthDeck at 8 on the other."
+ },
+ {
+  "name": "Yerba Buena \u2014 Moscone South block, esplanade/stair/Veranda check",
+  "group": "yerbabuena",
+  "from": [
+   37.78195072200533,
+   -122.3980176409756,
+   190
+  ],
+  "to": [
+   37.78329819493151,
+   -122.40017751757286,
+   5
+  ],
+  "note": "2026-09-23 fix check: msThirdStreetEsplanade on the Ballroom's 3rd St corner, msFolsomMonumentalStair + veranda in the ice-rink canyon"
+ },
+ {
+  "name": "BUGS154 \u2014 Golden Gate waterline",
+  "group": "bridge",
+  "from": [
+   37.81406576379265,
+   -122.47669205361679,
+   4
+  ],
+  "to": [
+   37.81534240288063,
+   -122.47752213565963,
+   70
+  ],
+  "note": "rider-height shoreline shot for BUGS.md #154 (water/bridge tessellation)"
+ },
+ {
+  "name": "BUGS154 \u2014 Bay Bridge east span deck",
+  "group": "bridge",
+  "from": [
+   37.79992510060041,
+   -122.37634659320717,
+   4
+  ],
+  "to": [
+   37.80046574696936,
+   -122.37539525526404,
+   72
+  ],
+  "note": "rider-height shot near a tower for BUGS.md #154 (water/bridge tessellation)"
+ },
+ {
+  "name": "BUGS154 \u2014 shore water tessellation (largest baked pond)",
+  "group": "nonbuilding",
+  "from": [
+   37.77413043829943,
+   -122.3941443001704,
+   2
+  ],
+  "to": [
+   37.77439993288466,
+   -122.39346223387652,
+   0.5
+  ],
+  "note": "demonstrates shore-banded water subdivision at rider height, since the coastline/bay itself has no baked water yet (BUGS.md #159)"
+ },
+ {
+  "name": "BUGS159 \u2014 Embarcadero facing the bay",
+  "group": "nonbuilding",
+  "from": [
+   37.7955,
+   -122.3923,
+   3
+  ],
+  "to": [
+   37.7955,
+   -122.39,
+   1
+  ],
+  "note": "rider-height, on the Embarcadero just east of the Ferry Building, facing east into the bay: BUGS.md #159 after the coastline fix"
+ },
+ {
+  "name": "BUGS159 \u2014 Ocean Beach facing the Pacific",
+  "group": "nonbuilding",
+  "from": [
+   37.7698,
+   -122.5115,
+   3
+  ],
+  "to": [
+   37.7698,
+   -122.515,
+   0.5
+  ],
+  "note": "rider-height, on the Great Highway at Ocean Beach, facing west into the Pacific: BUGS.md #159 after the coastline fix"
+ },
+ {
+  "name": "BUG park trees \u2014 Presidio forest interior",
+  "group": "bug",
+  "from": [
+   37.7989,
+   -122.467,
+   2.2
+  ],
+  "to": [
+   37.7989,
+   -122.4662,
+   5
+  ],
+  "note": "reported: shadows with no trees"
+ },
+ {
+  "name": "BUG park trees \u2014 Golden Gate Park interior",
+  "group": "bug",
+  "from": [
+   37.7694,
+   -122.487,
+   2.2
+  ],
+  "to": [
+   37.7694,
+   -122.4862,
+   5
+  ],
+  "note": "reported: shadows with no trees"
+ },
+ {
+  "name": "BUG park trees \u2014 GGP east dense wood",
+  "group": "bug",
+  "from": [
+   37.77,
+   -122.455,
+   2.2
+  ],
+  "to": [
+   37.77,
+   -122.4542,
+   5
+  ],
+  "note": "reported: shadows with no trees, ggp-east wood zone"
+ },
+ {
+  "name": "bug-park-trees-presidio (BUGS #169)",
+  "group": "bug",
+  "from": [
+   37.79875,
+   -122.4646,
+   2.2
+  ],
+  "to": [
+   37.7991,
+   -122.4637,
+   4
+  ],
+  "note": "dark flat quad on the ground among the trees?"
+ },
+ {
+  "name": "bug-park-trees-golden-gate-park (BUGS #169)",
+  "group": "bug",
+  "from": [
+   37.7696,
+   -122.4862,
+   2.2
+  ],
+  "to": [
+   37.76995,
+   -122.4853,
+   4
+  ],
+  "note": "dark flat quad on the ground among the trees?"
+ },
+ {
+  "name": "GGP G2A",
+  "group": "ggp",
+  "from": [
+   37.770037,
+   -122.508159,
+   2
+  ],
+  "to": [
+   37.770037,
+   -122.50740900000001,
+   3
+  ],
+  "note": "Golden Gate Park square G2A, rider height, looking east"
+ },
+ {
+  "name": "GGP G2B",
+  "group": "ggp",
+  "from": [
+   37.770037,
+   -122.502477,
+   2
+  ],
+  "to": [
+   37.770037,
+   -122.501727,
+   3
+  ],
+  "note": "Golden Gate Park square G2B, rider height, looking east"
+ },
+ {
+  "name": "GGP G2C",
+  "group": "ggp",
+  "from": [
+   37.770037,
+   -122.496795,
+   2
+  ],
+  "to": [
+   37.770037,
+   -122.49604500000001,
+   3
+  ],
+  "note": "Golden Gate Park square G2C, rider height, looking east"
+ },
+ {
+  "name": "GGP G2D",
+  "group": "ggp",
+  "from": [
+   37.770037,
+   -122.491113,
+   2
+  ],
+  "to": [
+   37.770037,
+   -122.490363,
+   3
+  ],
+  "note": "Golden Gate Park square G2D, rider height, looking east"
+ },
+ {
+  "name": "GGP G2E",
+  "group": "ggp",
+  "from": [
+   37.770037,
+   -122.485431,
+   2
+  ],
+  "to": [
+   37.770037,
+   -122.48468100000001,
+   3
+  ],
+  "note": "Golden Gate Park square G2E, rider height, looking east"
+ },
+ {
+  "name": "GGP G2F",
+  "group": "ggp",
+  "from": [
+   37.770037,
+   -122.479749,
+   2
+  ],
+  "to": [
+   37.770037,
+   -122.478999,
+   3
+  ],
+  "note": "Golden Gate Park square G2F, rider height, looking east"
+ },
+ {
+  "name": "GGP G2G",
+  "group": "ggp",
+  "from": [
+   37.770037,
+   -122.474067,
+   2
+  ],
+  "to": [
+   37.770037,
+   -122.47331700000001,
+   3
+  ],
+  "note": "Golden Gate Park square G2G, rider height, looking east"
+ },
+ {
+  "name": "GGP G2H",
+  "group": "ggp",
+  "from": [
+   37.770037,
+   -122.468385,
+   2
+  ],
+  "to": [
+   37.770037,
+   -122.467635,
+   3
+  ],
+  "note": "Golden Gate Park square G2H, rider height, looking east"
+ },
+ {
+  "name": "GGP G2I",
+  "group": "ggp",
+  "from": [
+   37.770037,
+   -122.462703,
+   2
+  ],
+  "to": [
+   37.770037,
+   -122.46195300000001,
+   3
+  ],
+  "note": "Golden Gate Park square G2I, rider height, looking east"
+ },
+ {
+  "name": "GGP G2J",
+  "group": "ggp",
+  "from": [
+   37.770037,
+   -122.457021,
+   2
+  ],
+  "to": [
+   37.770037,
+   -122.456271,
+   3
+  ],
+  "note": "Golden Gate Park square G2J, rider height, looking east"
+ },
+ {
+  "name": "GGP G2K",
+  "group": "ggp",
+  "from": [
+   37.770037,
+   -122.45359,
+   2
+  ],
+  "to": [
+   37.770037,
+   -122.45284000000001,
+   3
+  ],
+  "note": "Golden Gate Park square G2K, rider height, looking east"
+ },
+ {
+  "name": "GGP Academy of Sciences",
+  "group": "ggp-lm",
+  "from": [
+   37.76975,
+   -122.4674,
+   2
+  ],
+  "to": [
+   37.76983,
+   -122.4664,
+   12
+  ],
+  "note": "BUGS #195 park landmarks placement check"
+ },
+ {
+  "name": "GGP Conservatory of Flowers",
+  "group": "ggp-lm",
+  "from": [
+   37.77215,
+   -122.46085,
+   2
+  ],
+  "to": [
+   37.77258,
+   -122.4602,
+   10
+  ],
+  "note": "BUGS #195 park landmarks placement check"
+ },
+ {
+  "name": "GGP de Young",
+  "group": "ggp-lm",
+  "from": [
+   37.7713,
+   -122.4694,
+   2
+  ],
+  "to": [
+   37.77155,
+   -122.4686,
+   14
+  ],
+  "note": "BUGS #195 park landmarks placement check"
+ },
+ {
+  "name": "GGP Music Concourse",
+  "group": "ggp-lm",
+  "from": [
+   37.7703,
+   -122.467,
+   2
+  ],
+  "to": [
+   37.7708,
+   -122.4662,
+   8
+  ],
+  "note": "BUGS #195 park landmarks placement check"
+ },
+ {
+  "name": "Lyon Street Steps \u2014 down the axis from Broadway (BUGS #213a)",
+  "group": "landmark",
+  "from": [
+   37.793,
+   -122.44647,
+   2.0
+  ],
+  "to": [
+   37.79471,
+   -122.4467,
+   8.0
+  ],
+  "note": "the shot the stairway exists for: do the hedges STEP with the flights (clipped level per flight) rather than ramp down the slope, and does the green frame hold the view north over the Palace of Fine Arts and the bay"
+ },
+ {
+  "name": "Lyon Street Steps \u2014 up the flight from Vallejo (BUGS #213a)",
+  "group": "landmark",
+  "from": [
+   37.79377,
+   -122.44658,
+   1.7
+  ],
+  "to": [
+   37.7933,
+   -122.44652,
+   8.0
+  ],
+  "note": "the framing of Mapillary 916849129608977: newel pedestals at the flight foot, stepped cheek coping, the hedge mass either side"
+ },
+ {
+  "name": "GGB \u2014 the SF end join (BUGS #218b)",
+  "group": "nonbuilding",
+  "from": [
+   37.806,
+   -122.473,
+   120.0
+  ],
+  "to": [
+   37.81,
+   -122.4772,
+   55.0
+  ],
+  "note": "Looking north-west at the south anchorage: does the steel now end near the water, and does the road carry on from it without a gap? The south approach viaduct was cut from 220 m to 60 m."
  }
 ]

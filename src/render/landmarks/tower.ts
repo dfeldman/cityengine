@@ -43,6 +43,14 @@ export interface Face {
   brace?: number
   /** punched: arched window heads (the 1910s–20s) */
   arched?: boolean
+  /**
+   * punched: an AEDICULE round every window — a moulded architrave standing proud of the wall, a cornice
+   * over it, and on `'pediment'`/`'segmental'` a little gable above that, carried on two brackets. The
+   * single most visible neoclassical detail after the columns (the US Appraisers Building's piano nobile,
+   * every bank and courthouse). Drawn in the FACE's own frame, so it aligns exactly with the openings this
+   * same switch cuts — the arithmetic is shared rather than repeated, which is what went wrong in #96.
+   */
+  head?: 'architrave' | 'pediment' | 'segmental'
   /** bays: how far a bay projects (default 0.8 m), and whether it is angled (default) or rounded */
   bay?: { depth?: number; round?: boolean }
   /**
@@ -61,11 +69,27 @@ export interface Tier {
   inset?: number
   /** a cornice at the top of this tier: how far it projects (m), its colour (default the wall's) */
   cornice?: { depth: number; height?: number; colour?: Rgb }
+  /**
+   * PARTITION overrides: each entry draws its own `face` on exactly the ring edges it names (indices into
+   * `towerRing`), in place of the tier's own `face` there. Edges no override names still get `face` — so an
+   * empty or absent `faceOverrides` draws exactly as before this existed, and a tier is never drawn twice
+   * (each edge belongs to `face` or to exactly one override, never both). This is what lets a builder put one
+   * material on a building's front and a different one on its rear without a second `facade()`/`tower()` call
+   * double-drawing the shared ring — see `docs/sf-batches/ESCALATIONS.md`'s "no PER-EDGE material or shaft"
+   * gap (the Walt Disney Family Museum: brick front, glass curtain rear, one ring).
+   */
+  faceOverrides?: { edges: number[]; face: Face }[]
 }
 
 export type Crown =
   | { kind: 'flat' }
   | { kind: 'parapet'; height: number; colour?: Rgb; material?: Surface }
+  /**
+   * a parapet of little turned POSTS rather than a solid wall, on a plinth and under a rail: what caps a
+   * very large fraction of classical buildings (the Curb Exchange's runs the whole front, above its
+   * dentilled cornice). `pier` puts a solid block at every corner, which is how a real one is built.
+   */
+  | { kind: 'balustrade'; height: number; colour?: Rgb; material?: Surface; pier?: boolean }
   | { kind: 'hip' | 'mansard'; height: number; inset: number; colour: Rgb; material?: Surface; dormers?: number }
   | { kind: 'pyramid' | 'spire'; height: number; inset?: number; colour: Rgb; material?: Surface }
   | { kind: 'dome'; height: number; radius?: number; colour: Rgb; drum?: number; material?: Surface }
@@ -133,13 +157,17 @@ const GLASS = surfaceTag('glass')
 export const wallTag = (f: Face): number =>
   surfaceTag(f.material ?? (f.kind === 'punched' ? 'ashlar' : f.kind === 'curtain' || f.kind === 'xbrace' ? 'metal' : 'concrete'))
 
-/** One face between y0 and y1 on every edge of the ring. */
-export function faceBand(out: MeshBuilder, ring: P2[], y0: number, y1: number, f: Face): void {
+/**
+ * One face between y0 and y1 on every edge of the ring, or (given `edges`) only the named ones — the subset a
+ * `Tier.faceOverrides` entry draws. Omitted, it is every edge, exactly as before `edges` existed.
+ */
+export function faceBand(out: MeshBuilder, ring: P2[], y0: number, y1: number, f: Face, edges?: number[]): void {
   const glass = f.glass ?? DARK_GLASS
   const floor = f.floor ?? 3.6
   const pitch = f.pitch ?? 3
   const depth = f.depth ?? 0.3
-  for (let i = 0; i < ring.length; i++) {
+  const idxs = edges ?? ring.map((_, i) => i)
+  for (const i of idxs) {
     const a = ring[i]
     const b = ring[(i + 1) % ring.length]
     const L = Math.hypot(b.x - a.x, b.z - a.z)
@@ -175,6 +203,61 @@ export function faceBand(out: MeshBuilder, ring: P2[], y0: number, y1: number, f
         quadAt(out, [P(u0, 0), P(u1, 0), P(u1, o), P(u0, o)], [0, 1, 0], c, W)
       }
     }
+    /**
+     * One window's AEDICULE: a moulded architrave up the jambs, a cornice slab over the head on two
+     * brackets, and — for `'pediment'` and `'segmental'` — a little gable standing on that cornice.
+     *
+     * Drawn IN THE FACE'S FRAME and given the same `u0`/`ww`/`ya`/`yb` the opening itself was cut with, so
+     * it cannot drift off its window. It faces the wall's own outward normal, which is the +z convention,
+     * so no rotation correction applies (cf. `pediment()` in kit.ts, which draws on −z).
+     */
+    const aedicule = (u0: number, ww: number, ya: number, yb: number, fh: number): void => {
+      const t = Math.min(0.34, ww * 0.16)          // the architrave's width
+      const d = Math.min(0.18, ww * 0.1)           // how far the whole thing stands proud
+      const uc = u0 + ww / 2
+      const c = f.wall
+      // the jambs, and a sill under the opening
+      proud(u0 - t, u0, ya - t * 0.6, yb + t, c, d)
+      proud(u0 + ww, u0 + ww + t, ya - t * 0.6, yb + t, c, d)
+      proud(u0 - t * 1.4, u0 + ww + t * 1.4, ya - t * 1.1, ya - t * 0.4, c, d * 1.3, true)
+      // the cornice over the head, on two brackets at the jambs
+      const cy = yb + t
+      proud(u0 - t * 0.4, u0 + t * 0.6, cy - t * 0.9, cy, c, d * 1.5)
+      proud(u0 + ww - t * 0.6, u0 + ww + t * 0.4, cy - t * 0.9, cy, c, d * 1.5)
+      const ch = Math.min(0.3, fh * 0.05)
+      proud(u0 - t * 1.6, u0 + ww + t * 1.6, cy, cy + ch, c, d * 1.7, true)
+      if (f.head === 'architrave') return
+      // the gable on top of it: a filled tympanum in the wall's plane, proud with the cornice
+      const hw = ww / 2 + t * 1.6
+      const rise = f.head === 'pediment' ? hw * 0.5 : hw * 0.3
+      const o = d * 1.7
+      const y0g = cy + ch
+      const P = (u: number, y: number, oo = o): [number, number, number] => [a.x + tx * u + nx * oo, y, a.z + tz * u + nz * oo]
+      /*
+       * The gable is drawn as a tympanum in its own plane PLUS the sloping top surface behind it, raking back
+       * to the wall. The top surface is what makes it read: a flat triangle in the wall plane has the wall's
+       * own normal, shades identically to it, and is invisible — which is exactly how the first version of
+       * this came out on screen. `up` is an up-and-out normal, so the rake catches the sun.
+       */
+      const up: [number, number, number] = [n[0] * 0.45, 0.89, n[2] * 0.45]
+      if (f.head === 'pediment') {
+        quadAt(out, [P(uc - hw, y0g), P(uc + hw, y0g), P(uc, y0g + rise), P(uc, y0g + rise)], n, c, W)
+        quadAt(out, [P(uc - hw, y0g), P(uc - hw, y0g, 0), P(uc, y0g + rise, 0), P(uc, y0g + rise)], up, c, W)
+        quadAt(out, [P(uc, y0g + rise), P(uc, y0g + rise, 0), P(uc + hw, y0g, 0), P(uc + hw, y0g)], up, c, W)
+      } else {
+        const seg = 5
+        for (let k = 0; k < seg; k++) {
+          const a0 = Math.PI * (k / seg)
+          const a1 = Math.PI * ((k + 1) / seg)
+          const u0s = uc - hw * Math.cos(a0)
+          const u1s = uc - hw * Math.cos(a1)
+          const y0s = y0g + rise * Math.sin(a0)
+          const y1s = y0g + rise * Math.sin(a1)
+          quadAt(out, [P(u0s, y0g), P(u1s, y0g), P(u1s, y1s), P(u0s, y0s)], n, c, W)
+          quadAt(out, [P(u0s, y0s), P(u0s, y0s, 0), P(u1s, y1s, 0), P(u1s, y1s)], up, c, W)
+        }
+      }
+    }
     switch (f.kind) {
       case 'blank':
         rect(0, L, y0, y1, f.wall)
@@ -190,7 +273,10 @@ export function faceBand(out: MeshBuilder, ring: P2[], y0: number, y1: number, f
           for (let k = 0; k < bays; k++) {
             const u0 = k * bw + (bw - ww) / 2
             rect(u0, u0 + ww, ya, yb, glass, 0.03)
-            if (f.arched) rect(u0 + ww * 0.15, u0 + ww * 0.85, yb, yb + fh * 0.08, glass, 0.03)
+            if (f.arched && !f.head) rect(u0 + ww * 0.15, u0 + ww * 0.85, yb, yb + fh * 0.08, glass, 0.03)
+            // the aedicule round the opening: too small to read below about a metre of window, where it
+            // would only be noise and triangles
+            if (f.head && ww > 0.9 && fh > 2.2) aedicule(u0, ww, ya, yb, fh)
           }
         }
         break
@@ -335,6 +421,40 @@ function crown(out: MeshBuilder, ring: P2[], H: number, c: Crown, roof: Rgb): vo
         const A = inner[i]
         const B = inner[(i + 1) % ring.length]
         quadAt(out, [[a.x, H + c.height, a.z], [b.x, H + c.height, b.z], [B.x, H + c.height, B.z], [A.x, H + c.height, A.z]], [0, 1, 0], c.colour ?? roof, tag)
+      }
+      return
+    }
+    case 'balustrade': {
+      /*
+       * A plinth, a row of posts, a rail. The posts are two stacked boxes with a waist between them — at any
+       * distance a rider sees a balustrade from, that is exactly what a turned baluster looks like, and it
+       * costs 24 triangles rather than a lathe's 200. The pitch is derived from each edge's length, so a
+       * short return gets fewer posts rather than squashed ones; the whole thing is symmetric in plan, so
+       * there is no facing convention to get wrong.
+       */
+      const col = c.colour ?? roof
+      const h = c.height
+      const plinth = h * 0.18
+      const rail = h * 0.16
+      faceBand(out, ring, H, H + plinth, { kind: 'blank', wall: col, material: c.material })
+      faceBand(out, ring, H + h - rail, H + h, { kind: 'blank', wall: col, material: c.material })
+      for (let i = 0; i < ring.length; i++) {
+        const A = ring[i]
+        const B = ring[(i + 1) % ring.length]
+        const L = Math.hypot(B.x - A.x, B.z - A.z)
+        if (L < 0.4) continue
+        const n = Math.max(1, Math.round(L / Math.max(0.5, h * 0.62)))
+        const r = Math.min(h * 0.17, (L / n) * 0.3)
+        const y0 = H + plinth
+        const y1 = H + h - rail
+        for (let k = 0; k < n; k++) {
+          const t = (k + 0.5) / n
+          const x = A.x + (B.x - A.x) * t
+          const z = A.z + (B.z - A.z) * t
+          box(out, x, y0 + (y1 - y0) * 0.27, z, r, (y1 - y0) * 0.27, r, col, tag)
+          box(out, x, y0 + (y1 - y0) * 0.78, z, r * 0.66, (y1 - y0) * 0.22, r * 0.66, col, tag)
+        }
+        if (c.pier !== false) box(out, A.x, (y0 + y1) / 2, A.z, r * 1.5, (y1 - y0) / 2, r * 1.5, col, tag)
       }
       return
     }
@@ -528,7 +648,18 @@ export function tower(out: MeshBuilder, fit: Fit, spec: TowerSpec): void {
       capPolygon(out, ring, y, roof, 0)
       ring = next
     }
-    if (top > y) faceBand(out, ring, y, top, t.face)
+    if (top > y) {
+      if (t.faceOverrides && t.faceOverrides.length) {
+        // partition, not overlay: every override edge is drawn ONCE, in its own face, never also in t.face
+        const covered = new Set<number>()
+        for (const ov of t.faceOverrides) for (const e of ov.edges) covered.add(e)
+        const rest = ring.map((_, i) => i).filter((i) => !covered.has(i))
+        if (rest.length) faceBand(out, ring, y, top, t.face, rest)
+        for (const ov of t.faceOverrides) if (ov.edges.length) faceBand(out, ring, y, top, ov.face, ov.edges)
+      } else {
+        faceBand(out, ring, y, top, t.face)
+      }
+    }
     if (t.cornice) cornice(out, ring, top, t.cornice.depth, t.cornice.height ?? 0.8, t.cornice.colour ?? t.face.wall)
     if (top > y) bands.push({ from: y, to: top, ring })
     y = Math.max(y, top)

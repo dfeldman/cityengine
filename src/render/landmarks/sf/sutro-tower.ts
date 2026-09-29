@@ -22,6 +22,21 @@ const RED: Rgb = [0.6, 0.27, 0.22]           // aviation red, faded by fifty yea
 const WHITE: Rgb = [0.86, 0.85, 0.82]
 const GREY: Rgb = [0.55, 0.56, 0.57]
 
+/**
+ * `beam()`, chopped into consecutive shorter struts so no single quad's long edge exceeds `maxLen` — the
+ * same defect as the bridges (BUGS.md #154, extended to Sutro Tower by the owner, 2026-09-24: *"you can get
+ * pretty close to it, it's no longer a distant horizon object"*). A leg band or a crossarm chord was one
+ * strut the full length of the member; up close that is exactly the "huge polygon" the bridges were fixed
+ * for, just thin rather than wide. Interior caps are skipped — the segments butt against each other, so an
+ * end cap between them is never seen.
+ */
+function beamChopped(out: MeshBuilder, a: V3, b: V3, w: number, h: number, c: Rgb, maxLen: number): void {
+  const len = Math.hypot(b[0] - a[0], b[1] - a[1], b[2] - a[2])
+  const n = Math.max(1, Math.ceil(len / maxLen))
+  const at = (t: number): V3 => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]
+  for (let i = 0; i < n; i++) beam(out, at(i / n), at((i + 1) / n), w, h, c, i === 0 || i === n - 1)
+}
+
 /** the three legs' centre line, radius from the axis at height y (the waist at 150 m) */
 const legR = (y: number): number => {
   if (y <= 150) return 19 - (19 - 11) * (y / 150)
@@ -37,16 +52,20 @@ export function sutroTower(out: MeshBuilder, _fit?: Fit): void {
   // the legs, banded: seven bands to the crossarm, alternating red and white, each a square lattice column (a solid
   // core, and its four corner chords proud of it so the edge breaks up against the sky)
   const bands = 7
+  // the legs and their corner chords are what a rider now walks right up to (owner, 2026-09-24: the box has
+  // grown south and west and Sutro Tower "is no longer a distant horizon object") — chopped to 5 m so no
+  // single quad on a leg spans most of a band, same fix as the bridges' deck slabs (BUGS.md #154).
+  const LEG_MAX = 5
   for (let k = 0; k < 3; k++) {
     for (let b = 0; b < bands; b++) {
       const y0 = (TOP_LEG * b) / bands
       const y1 = (TOP_LEG * (b + 1)) / bands
       const c = b % 2 === 0 ? RED : WHITE
       const w = 3.4 - b * 0.12
-      beam(out, at(k, y0), at(k, y1), w, w, c)
+      beamChopped(out, at(k, y0), at(k, y1), w, w, c, LEG_MAX)
       for (const [dx, dz] of [[1, 1], [1, -1], [-1, 1], [-1, -1]]) {
         const o = (p: V3): V3 => [p[0] + dx * w * 0.55, p[1], p[2] + dz * w * 0.55]
-        beam(out, o(at(k, y0)), o(at(k, y1)), 0.35, 0.35, c)
+        beamChopped(out, o(at(k, y0)), o(at(k, y1)), 0.35, 0.35, c, LEG_MAX)
       }
     }
   }
@@ -55,7 +74,9 @@ export function sutroTower(out: MeshBuilder, _fit?: Fit): void {
     for (let k = 0; k < 3; k++) {
       const a = at(k, y, legR(y) + reach)
       const b = at((k + 1) % 3, y, legR(y) + reach)
-      beam(out, a, b, 1.6, depth, c)
+      // the chord between two legs is ~33 m in one strut otherwise — the same "long thin polygon" defect,
+      // chopped the same way as the legs (BUGS.md #154)
+      beamChopped(out, a, b, 1.6, depth, c, LEG_MAX)
       // its lattice: a zigzag of diagonals under the chord
       const n = 6
       for (let i = 0; i < n; i++) {

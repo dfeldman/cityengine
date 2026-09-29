@@ -1,0 +1,175 @@
+{
+ "about": "Monterey cypress and Monterey pine \u2014 the trees Golden Gate Park and the Presidio were planted with (docs/PARKS.md). Built into public/sftrees beside the street trees; the index merges. One nominal height per species on purpose: a planting is scaled to its own height, so a spread here would only make the shared far tier (collapseFarTiers) pop at the LOD boundary.",
+ "total": 13,
+ "trees": [
+  {
+   "species": "sf_cypress",
+   "seed": 6100,
+   "name": "sf_cypress_01",
+   "set": [
+    "height=[17.0,1.02]",
+    "envelope.width_scale=0.9",
+    "envelope.profile=[0.55, 0.85, 1.0, 1.0, 0.92, 0.55]",
+    "leaves.size_scale=0.974",
+    "trunk.lean=[4.5,3]",
+    "leaves.light_var=0.17"
+   ]
+  },
+  {
+   "species": "sf_cypress",
+   "seed": 6101,
+   "name": "sf_cypress_02",
+   "set": [
+    "height=[17.0,1.02]",
+    "envelope.width_scale=1.176",
+    "envelope.profile=[0.6, 0.95, 0.85, 1.0, 0.8, 0.35]",
+    "leaves.size_scale=1.04",
+    "trunk.lean=[4.6,3]",
+    "leaves.light_var=0.16"
+   ]
+  },
+  {
+   "species": "sf_cypress",
+   "seed": 6102,
+   "name": "sf_cypress_03",
+   "set": [
+    "height=[17.0,1.02]",
+    "envelope.width_scale=1.099",
+    "envelope.profile=[0.7, 1.0, 0.95, 0.8, 0.55, 0.2]",
+    "leaves.size_scale=0.93",
+    "trunk.lean=[4.3,3]",
+    "leaves.light_var=0.16"
+   ]
+  },
+  {
+   "species": "sf_cypress",
+   "seed": 6103,
+   "name": "sf_cypress_04",
+   "set": [
+    "height=[17.0,1.02]",
+    "envelope.width_scale=0.974",
+    "envelope.profile=[0.7, 1.0, 0.95, 0.8, 0.55, 0.2]",
+    "leaves.size_scale=1.044",
+    "trunk.lean=[5.2,3]",
+    "leaves.light_var=0.19"
+   ]
+  },
+  {
+   "species": "sf_cypress",
+   "seed": 6104,
+   "name": "sf_cypress_05",
+   "set": [
+    "height=[17.0,1.02]",
+    "envelope.width_scale=0.832",
+    "envelope.profile=[0.6, 0.95, 0.85, 1.0, 0.8, 0.35]",
+    "leaves.size_scale=0.963",
+    "trunk.lean=[4.1,3]",
+    "leaves.light_var=0.17"
+   ]
+  },
+  {
+   "species": "sf_cypress",
+   "seed": 6105,
+   "name": "sf_cypress_06",
+   "set": [
+    "height=[17.0,1.02]",
+    "envelope.width_scale=0.988",
+    "envelope.profile=[0.6, 0.95, 0.85, 1.0, 0.8, 0.35]",
+    "leaves.size_scale=0.953",
+    "trunk.lean=[5.6,3]",
+    "leaves.light_var=0.15"
+   ]
+  },
+  {
+   "species": "sf_cypress",
+   "seed": 6106,
+   "name": "sf_cypress_07",
+   "set": [
+    "height=[17.0,1.02]",
+    "envelope.width_scale=1.136",
+    "envelope.profile=[0.6, 0.95, 0.85, 1.0, 0.8, 0.35]",
+    "leaves.size_scale=1.043",
+    "trunk.lean=[0.9,3]",
+    "leaves.light_var=0.09"
+   ]
+  },
+  {
+   "species": "sf_mpine",
+   "seed": 6200,
+   "name": "sf_mpine_01",
+   "set": [
+    "height=[24.0,1.44]",
+    "envelope.width_scale=0.92",
+    "envelope.profile=[0.7, 1.0, 0.95, 0.8, 0.55, 0.2]",
+    "leaves.size_scale=1.078",
+    "trunk.lean=[1.1,3]",
+    "leaves.light_var=0.14"
+   ]
+  },
+  {
+   "species": "sf_mpine",
+   "seed": 6201,
+   "name": "sf_mpine_02",
+   "set": [
+    "height=[24.0,1.44]",
+    "envelope.width_scale=0.854",
+    "envelope.profile=[0.6, 0.95, 0.85, 1.0, 0.8, 0.35]",
+    "leaves.size_scale=1.066",
+    "trunk.lean=[1.6,3]",
+    "leaves.light_var=0.12"
+   ]
+  },
+  {
+   "species": "sf_mpine",
+   "seed": 6202,
+   "name": "sf_mpine_03",
+   "set": [
+    "height=[24.0,1.44]",
+    "envelope.width_scale=0.876",
+    "envelope.profile=[0.6, 0.95, 0.85, 1.0, 0.8, 0.35]",
+    "leaves.size_scale=0.977",
+    "trunk.lean=[4.2,3]",
+    "leaves.light_var=0.18"
+   ]
+  },
+  {
+   "species": "sf_mpine",
+   "seed": 6203,
+   "name": "sf_mpine_04",
+   "set": [
+    "height=[24.0,1.44]",
+    "envelope.width_scale=0.951",
+    "envelope.profile=[0.55, 0.85, 1.0, 1.0, 0.92, 0.55]",
+    "leaves.size_scale=0.974",
+    "trunk.lean=[3.9,3]",
+    "leaves.light_var=0.14"
+   ]
+  },
+  {
+   "species": "sf_mpine",
+   "seed": 6204,
+   "name": "sf_mpine_05",
+   "set": [
+    "height=[24.0,1.44]",
+    "envelope.width_scale=1.094",
+    "envelope.profile=[0.7, 1.0, 0.95, 0.8, 0.55, 0.2]",
+    "leaves.size_scale=1.094",
+    "trunk.lean=[4.3,3]",
+    "leaves.light_var=0.13"
+   ]
+  },
+  {
+   "species": "sf_mpine",
+   "seed": 6205,
+   "name": "sf_mpine_06",
+   "set": [
+    "height=[24.0,1.44]",
+    "envelope.width_scale=0.88",
+    "envelope.profile=[0.55, 0.85, 1.0, 1.0, 0.92, 0.55]",
+    "leaves.size_scale=0.99",
+    "trunk.lean=[1.4,3]",
+    "leaves.light_var=0.15"
+   ]
+  }
+ ]
+}

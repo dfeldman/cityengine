@@ -21,8 +21,10 @@ import { terracesLayer } from './render/terraces.ts'
 import { MID, VIEW } from './render/city.ts'
 import { MemoryTiles, TILE, tileKey, type CityIndex, type TileData } from './city/tiles.ts'
 import { tilePreparer } from './render/prepare.ts'
+import { ParkMap } from './city/park-area.ts'
+import { plog } from './profile.ts'
 import { quaysLayer } from './render/quays.ts'
-import { LoadingScreen } from './ui/loading.ts'
+import { LoadingScreen, welcomeScreen } from './ui/loading.ts'
 import { LandmarkCard } from './ui/landmark-card.ts'
 import { Plants } from './render/plants.ts'
 import { quickMarksLayer } from './render/quickmarks.ts'
@@ -43,6 +45,7 @@ import { Life } from './render/life.ts'
 import { OverheadLines } from './render/overhead.ts'
 import { streetRailsLayer } from './render/street-rails.ts'
 import { stairsLayer } from './render/stairs.ts'
+import { SF_STAIRWAYS } from './render/landmarks/sf/stairways.ts'
 import { Sky } from './render/sky.ts'
 import { Landmarks, landmarkManifest, packedIds } from './render/landmarks.ts'
 import { Statues, statueManifest } from './render/statues.ts'
@@ -55,6 +58,8 @@ import { updateCartoonEye } from './render/cartoon-material.ts'
 import { DAYLIGHT, updateEye } from './render/facade-material.ts'
 import { updateWater } from './render/water-material.ts'
 import { Hud } from './ui/hud.ts'
+import { photoMode, setRegionFog } from './render/photo.ts'
+import { watchHeap } from './render/heap.ts'
 import { Minimap } from './ui/minimap.ts'
 import { LocalControls, type Controls } from './controls.ts'
 import type { Platform } from './platform.ts'
@@ -72,6 +77,16 @@ import { mapEdges } from './city/ridefile.ts'
 import type { AtlasManifest } from './render/buildings.ts'
 
 const ASSETS = new URL('facades/', document.baseURI).href
+
+/**
+ * How thick a closed wood is drawn, against what the bake put there (`?veg=`, render/infill.ts).
+ *
+ * The bake's ceiling is `TILE_TREES = 380` a 200 m tile, set when the vegetation was thought to be what the
+ * frame was spent on. BUGS.md #205 decomposed that and found ~7 ms of it was per-mesh overhead paid whether
+ * a plant was drawn or not, and only ~0.12 ms per thousand plants — so the density the bake was capped at is
+ * several times below what can be afforded. Until a bake raises the cap, the canopy is closed here.
+ */
+const CANOPY = 3
 
 export async function game(canvas: HTMLCanvasElement, opts: {
   city: string; device: 'bike' | 'treadmill'; traffic?: 'none' | 'some' | 'busy'
@@ -106,6 +121,14 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   view?: 'ride' | 'high'
   /** road traffic (cars and buses): off unless asked for */
   cars?: boolean
+  /**
+   * How many times the baked tree count a CLOSED wood grows to at render time (render/infill.ts). The park
+   * is thickened by default — *"parts of the real park feel like a forest"* — and `?veg=1` is the package
+   * exactly as it was baked, which is what the before-and-after measurement wants.
+   */
+  veg?: number
+  /** the merging of BUGS.md #205 (`?vegmerge=0` to measure without it) */
+  vegMerge?: boolean
   /** debugging: ride this many metres from the start (at 15 km/h, asking for `turn`) before anything draws */
   advance?: number
   turn?: 'left' | 'straight' | 'right'
@@ -145,7 +168,23 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     terrain: index.terrain, start: index.start, landmarks: index.landmarks, water: index.water, skyline: index.skyline,
     areas: [] as PackedArea[], rails: [] as PackedRail[],
   }
-  const prepare = tilePreparer(landmarkList, index)
+  /*
+   * Where the open country is (city/park-area.ts), filled as tiles arrive and asked of the rider each frame:
+   * a park is a place with its own air and its own rules, selected by AREA rather than by city so the same
+   * seam serves the Presidio, Central Park and the Bois de Boulogne.
+   */
+  const parkStyle = region(index.region).park
+  const parkMap = new ParkMap(parkStyle.minPieceM2)
+  /** the rider's side of the park's edge, so the fog is rewritten on the crossing and not every frame */
+  let inPark = false
+  /*
+   * And caught up every couple of seconds while the rider is IN the park: materials are created lazily as
+   * tiles stream in, so one built after the crossing would otherwise keep the city's thin air and its tile
+   * would be the one clear patch in a fogged wood. `photo.ts` solves the identical problem the identical
+   * way, and the walk is a few dozen materials.
+   */
+  setInterval(() => { if (inPark) setRegionFog(scene, parkStyle.fogDensity) }, 2000)
+  const prepare = tilePreparer(landmarkList, index, parkMap)
   /*
    * The ride graph first: it is global and baked (city/ridefile.ts) — the rider is steered through it, its
    * junctions carry the corner plaques — and it says where the ride starts, so the right tiles come first.
@@ -164,12 +203,39 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // and then the weather on top of it, for the same reason and in this order: it modifies the hour it is
   setWeather(opts.weather ?? 'clear')
 
+  const __t0 = performance.now()
   const engine = new Engine(canvas, true, { antialias: true }, true)
+  plog('engine', Math.round(performance.now() - __t0))
+  const __t1 = performance.now()
   const scene = new Scene(engine)
   scene.clearColor = new Color4(DAYLIGHT.fogColour.r, DAYLIGHT.fogColour.g, DAYLIGHT.fogColour.b, 1)
   setupGroundLayers(scene)
+  plog('scene+ground', Math.round(performance.now() - __t1))
+  const __t2 = performance.now()
+  /*
+   * WHERE THE CONTENT IS, for the ground and the depth occluder (BUGS.md #225, #230).
+   *
+   * Not from geometry: `City` has none at construction — its `pkg` is this meta with `edges: []`, and
+   * buildings arrive per tile. The index's own tile list answers it instead, and better: every tile that
+   * holds a building or an edge, at 200 m granularity, which is far finer than an occluder needs and costs
+   * one pass over a list already in memory. In San Francisco the content reaches ~1.3 km past the box's
+   * north edge, because Overpass returns whole ways — see #225, where Sausalito's buildings sat 265 m
+   * outside the ground that was being drawn and showed straight through the hill in front of them.
+   */
+  const contentBox = ((): { x0: number; x1: number; z0: number; z1: number } | undefined => {
+    let x0 = Infinity; let x1 = -Infinity; let z0 = Infinity; let z1 = -Infinity
+    for (const t of index.tiles ?? []) {
+      if (t.buildings === 0 && t.edges === 0) continue
+      if (t.tx * TILE < x0) x0 = t.tx * TILE
+      if ((t.tx + 1) * TILE > x1) x1 = (t.tx + 1) * TILE
+      if (t.tz * TILE < z0) z0 = t.tz * TILE
+      if ((t.tz + 1) * TILE > z1) z1 = (t.tz + 1) * TILE
+    }
+    return Number.isFinite(x0) ? { x0, x1, z0, z1 } : undefined
+  })()
   const city = new City(scene, { name: pkg.name, ground: pkg.ground, region: pkg.region, terrain: pkg.terrain,
-    water: pkg.water }, atlas, ASSETS).omit(off)
+    water: pkg.water, box: index.box, walls: index.walls, contentBox }, atlas, ASSETS).omit(off)
+  plog('City ctor', Math.round(performance.now() - __t2))
   /*
    * Streaming (PARIS_EXPAND §2): each tile, when it arrives, is prepared (landmarks' buildings out, restyles
    * in, render/prepare.ts), taken in by the City and its per-tile layers, added to the map graph the crowd
@@ -199,41 +265,198 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const anyTile: ((raw: TileData) => void)[] = []
   const seenRaw: TileData[] = []
   anyTile.push((raw) => { if (keepArrived) seenRaw.push(raw) })
+  /*
+   * The tile's own ground, for EVERY tile fetched — mid ring as well as full (BUGS.md #206k).
+   *
+   * `bringNow` returns before `city.ingest` for a mid tile, so registering the block there would have left
+   * the fine ground stopping at the full ring: the mid ring's massing would stand on the coarse grid and
+   * then jump when the tile was promoted, and the fine/coarse seam would sit a couple of hundred metres
+   * from the rider rather than out at the edge of what is loaded. A block is 5 kB as `Int16`, so all 225
+   * of them are about 1.2 MB — nothing against the 3 GB ceiling (#177), and `wantTiles` drops them with
+   * the tile.
+   */
+  anyTile.push((raw) => {
+    const [tx, tz] = raw.key.split(',').map(Number)
+    city.terrain.addTile(tx, tz, raw.terrain)
+  })
+  // BUGS.md #164/#169/#179: per-tile timing, to find where `bring()` spends the load. Cheap (a handful of
+  // performance.now() calls per tile) and left in — `window.__bringStats()` prints the summary on demand.
+  const bringStats = { count: 0, loadMs: 0, prepareMs: 0, ingestMs: 0, mapEdgesMs: 0, addEdgesMs: 0,
+    tailMs: 0, deferred: 0, worst: { key: '', ms: 0 } }
+  ;(window as unknown as { __bringStats?: unknown }).__bringStats = () => ({ ...bringStats })
+  /*
+   * HOW MANY TILES MAY BE IN THE AIR, AND HOW MUCH OF A FRAME THEY MAY HAVE (BUGS.md #179).
+   *
+   * `wantTiles` used to fire `bring()` at every tile of the ring at once through one `Promise.all` — 225 at
+   * the start, and about 30 every time a riding focus crosses a tile boundary. Nothing bounded them, so
+   * every one of those tiles finished its fetch within a few milliseconds of the others and ran its
+   * synchronous tail — prepare, ingest, mapEdges, addEdges, and then every listener (the landmarks, the
+   * minimap, the vegetation, the crowd) — inside a single frame. That burst is the stutter: jumping across
+   * the city measured p50 52 ms / p95 223 ms / max 1067 ms, a full one-second stall.
+   *
+   * Two bounds, and no change to WHAT is fetched:
+   *   - at most `INFLIGHT` tiles between the request and the finished tail, so the tails are spread out;
+   *   - at most `BUDGET` ms of tile work per animation frame, after which a tile waits for the next frame.
+   * A tile is never dropped, only deferred, so the ring still fills — it fills over several frames instead
+   * of inside one. The budget is off during the initial load, where there is no frame to protect yet and
+   * waiting on rAF would only lengthen the loading screen.
+   */
+  // `?burst=1` restores the old unbounded behaviour, which is how the two are measured against each other
+  const unbounded = new URLSearchParams(location.search).get('burst') === '1'
+  /*
+   * Twelve, not four. Bounding the in-flight count bounds the FETCH as well as the tail, and a tile's fetch
+   * is a second or more of waiting on the server while costing the main thread nothing (measured: 2.9 s of
+   * `loadMs` per tile against 5.9 ms of actual work). At four, the ring filled so slowly that the city took
+   * 229 s to be ready against 37 s unbounded. Twelve — `TileStore.loadMany`'s own figure — keeps the fetches
+   * saturated; it is the frame budget below, not this number, that protects the frame.
+   */
+  const INFLIGHT = unbounded ? Infinity : 12
+  const BUDGET = unbounded ? Infinity : 6
+  let inflight = 0
+  const waiting: (() => void)[] = []
+  const slot = (): Promise<void> => {
+    if (inflight < INFLIGHT) { inflight++; return Promise.resolve() }
+    return new Promise<void>((res) => waiting.push(res))
+  }
+  /** hand the slot straight to the next waiter, so the count never dips and lets a burst through */
+  const freeSlot = (): void => { const n = waiting.shift(); if (n) n(); else inflight-- }
+  let streaming = false
+  let spent = 0
+  const tick = (): void => { spent = 0; requestAnimationFrame(tick) }
+  requestAnimationFrame(tick)
+  const nextFrame = (): Promise<void> => new Promise<void>((res) => requestAnimationFrame(() => res()))
+
   const bring = async (k: string, full: boolean): Promise<void> => {
     const have = tileLevel.get(k)
     if (have === 'full' || (have === 'mid' && !full) || !src.has(k)) return
     tileLevel.set(k, full ? 'full' : 'mid')
+    await slot()
+    try {
+      await bringNow(k, full)
+    } finally {
+      freeSlot()
+    }
+  }
+  const bringNow = async (k: string, full: boolean): Promise<void> => {
+    const t0 = performance.now()
     const raw = await src.load(k)
+    let t1 = performance.now()
     if (!raw) return
+    // the tile is here; the work it costs waits for a frame that can afford it
+    if (streaming && spent > BUDGET) { bringStats.deferred++; await nextFrame(); t1 = performance.now() }
     const ready = prepare(raw)
+    const t2 = performance.now()
     // the landmarks from every tile, near or far: an icon is seen from a kilometre and more
     for (const f of anyTile) f(raw)
     if (!full) {
       // what the mid ring's massing needs, and nothing else
       if (tileLevel.get(k) === 'mid') prepared.tiles.set(k, { ...ready, edges: [], areas: [], trees: [], pois: [], furniture: [], landmarks: [], rails: [], plantings: [] })
+      spent += performance.now() - t1
       return
     }
     prepared.tiles.set(k, ready)
     city.ingest(ready)
+    const t3 = performance.now()
     const fresh = mapEdges(ready.edges.filter((e) => !graph.edges.has(e.id)), city.terrain)
+    const t4 = performance.now()
     addEdges(graph, fresh)
+    const t5 = performance.now()
+    bringStats.count++
+    bringStats.loadMs += t1 - t0
+    bringStats.prepareMs += t2 - t1
+    bringStats.ingestMs += t3 - t2
+    bringStats.mapEdgesMs += t4 - t3
+    bringStats.addEdgesMs += t5 - t4
+    const total = t5 - t0
+    if (total > bringStats.worst.ms) bringStats.worst = { key: k, ms: Math.round(total) }
     const a = { raw, ready, edges: fresh }
     if (keepArrived) arrived.push(a)
     for (const f of listeners) f(a)
+    /*
+     * What this tile actually cost the frame — INCLUDING the listeners. `bringStats` stops at `addEdges`,
+     * which is why the chain looked cheap (~215 ms over a 77-tile jump) while the frame stalled for a
+     * second: the landmarks, the minimap, the vegetation and the crowd all run here, untimed. The budget
+     * above counts the whole tail, so it throttles the real cost rather than the measured part of it.
+     */
+    const cost = performance.now() - t1
+    spent += cost
+    bringStats.tailMs += cost
   }
   /** the tiles round (x, z) asked for, nearest first, full near and massing further; resolves when all are in */
-  const wantTiles = (x: number, z: number): Promise<void> => {
+  let wasAt: { x: number; z: number } | null = null
+  const wantTiles = (x: number, z: number, radius = MID + 1): Promise<void> => {
     const [cx, cz] = [Math.floor(x / TILE), Math.floor(z / TILE)]
+    /*
+     * ASK FOR WHAT IS AHEAD FIRST (BUGS.md #179). The ring is the same ring — extending it forward would
+     * fetch tiles that the `keep` sweep below then drops again — but with the number of tiles in flight now
+     * bounded, the ORDER decides what is ready when the rider gets there. Sorted by distance to the focus,
+     * a tile entering the ring behind the rider competes with the one they are about to ride onto, and on a
+     * fast descent (docs/DEMO.md corridor 1, California Street downhill) that is the tile that is late.
+     *
+     * The direction comes from where the focus has moved since the last call, a quarter of a second ago —
+     * no heading convention to get wrong, and it is right for the orbit camera and the transit too. Half a
+     * ring ahead: enough to win the tie, not so far that the tiles behind never come.
+     */
+    let lx = x, lz = z
+    if (wasAt) {
+      const dx = x - wasAt.x
+      const dz = z - wasAt.z
+      const d = Math.hypot(dx, dz)
+      if (d > 1) { lx = x + (dx / d) * TILE * 2; lz = z + (dz / d) * TILE * 2 }
+    }
+    wasAt = { x, z }
     const jobs: [string, boolean, number][] = []
-    for (let dz = -(MID + 1); dz <= MID + 1; dz++) for (let dx = -(MID + 1); dx <= MID + 1; dx++) {
+    for (let dz = -radius; dz <= radius; dz++) for (let dx = -radius; dx <= radius; dx++) {
       const d = Math.max(Math.abs(dx), Math.abs(dz))
-      jobs.push([tileKey(cx + dx, cz + dz), d <= VIEW + 2, d])
+      // the ring's membership and its level are the focus's; only the order is the direction of travel's
+      const tx = (cx + dx) * TILE + TILE / 2
+      const tz = (cz + dz) * TILE + TILE / 2
+      jobs.push([tileKey(cx + dx, cz + dz), d <= VIEW + 2, Math.hypot(tx - lx, tz - lz)])
     }
     jobs.sort((p, q) => p[2] - q[2])
+    /*
+     * DROP WHAT IS OUT OF RANGE (BUGS.md #121). `TileStore.got` keeps the parsed JSON of every tile it has
+     * ever fetched — buildings with their rings, streets, areas, the lot — and `forget()` existed but was
+     * called from NOWHERE, so the raw data of every tile ever visited was retained for the session. Riding
+     * hides it, because a rider crosses tiles slowly; JUMPING exposes it, because `__jump` and `?at=` sweep
+     * in tiles from all over the city in seconds. Chrome's heap is a hard ~3 GB with no flag to raise it, so
+     * the tab simply dies (owner, 2026-09-23: "it is crashing the game right now").
+     *
+     * Dropped one ring beyond the furthest thing that reads a tile (MID + 1), so a rider oscillating across a
+     * boundary does not thrash: `bring()` refetches from the network cache if it comes back.
+     */
+    const keep = MID + 2
+    for (const k of [...tileLevel.keys()]) {
+      const [kx, kz] = k.split(',').map(Number)
+      if (Math.max(Math.abs(kx - cx), Math.abs(kz - cz)) > keep) {
+        tileLevel.delete(k)
+        src.forget(k)
+        prepared.tiles.delete(k)
+        const [dx, dz] = k.split(',').map(Number)
+        city.terrain.dropTile(dx, dz)
+      }
+    }
     return Promise.all(jobs.map(([k, full]) => bring(k, full))).then(() => undefined)
   }
   const first = startPoint(rides, index, opts)
-  await wantTiles(first.x, first.z)
+  /*
+   * START ON THE TILES YOU ARE STANDING ON, NOT ON ALL OF THEM (BUGS.md #164).
+   *
+   * This used to `await wantTiles(first.x, first.z)` at the default radius of MID + 1 = 7, which is a 15 x 15
+   * block — 225 tiles fetched, parsed and ingested before the first frame could be drawn. The owner: "Loading
+   * takes so long Chrome shows a dialog asking if you want to kill the process."
+   *
+   * Nine tiles is enough to stand on and to see the street you start on. The remaining 216 are exactly the
+   * same call, unawaited: `bring()` already ingests each tile as it lands and notifies its listeners, because
+   * tiles were always meant to stream — that is what the ring-dropping logic above exists for. So the rest of
+   * the city fills in behind the player instead of in front of the loading screen.
+   */
+  const __t3 = performance.now()
+  await wantTiles(first.x, first.z, 1)
+  plog('wantTiles(radius1)', Math.round(performance.now() - __t3))
+  void wantTiles(first.x, first.z)
+  // from here on there is a frame to protect, so the tile work takes its slice of each one rather than all of it
+  streaming = true
   mark('city')
   city.pickable = new URLSearchParams(location.search).get('pick') === '1'
   // and the city beyond the box, as plain massing, so it does not stop at a field (render/fringe.ts)
@@ -252,7 +475,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   city.addLayer(quaysLayer(scene, pkg, city.terrain, region(pkg.region).riverDrop ?? 0))
   // the bridges, each built once from its outline in its own design (render/bridge-structures.ts, BUGS.md #37)
   city.addLayer(bridgeStructuresLayer(scene, pkg, city.terrain, region(pkg.region).riverDrop ?? 0,
-    pkg.region === 'paris' ? PARIS_BRIDGES : {}))
+    pkg.region === 'paris' ? PARIS_BRIDGES : {}, (id) => city.coversOutline(id)))
   mark('quays')
   // the arches and covered ways that take streets through buildings (render/passages.ts)
   city.addLayer(passagesLayer(scene, city.terrain))
@@ -290,6 +513,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     pkg.origin, city.terrain, new URL('./', document.baseURI).href, () => landmarks?.placed ?? [])
   ;(window as unknown as { __statues?: unknown }).__statues = statues
   if (landmarks) {
+    // a landmark that hand-builds a bridge or canopy suppresses the OSM way under it, the moment it is
+    // placed and before any tile is handed over — see Landmarks.covers / City.coverRaised (BUGS.md #136)
+    landmarks.onCover = (c) => city.coverRaised(c)
     for (const raw of seenRaw) landmarks.addTile(raw)
     anyTile.push((raw) => landmarks.addTile(raw))
   }
@@ -314,7 +540,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   }
   // the names of real places, on boards above the shopfronts, and the streets' own names at the corners
   const noSign = new Set(landmarkList.filter((e) => e.sign === false).flatMap(packedIds))
-  const signs = off.has('signs') ? null : new Signs(scene, pkg.id, region(pkg.region), city.terrain, junctions, noSign)
+  const signs = off.has('signs') ? null : new Signs(scene, pkg.id, region(pkg.region), city.terrain, junctions, noSign,
+    (x, z) => parkMap.contains(x, z, TILE))
   if (signs) city.addLayer(signs)
   mark('signs')
   const level = opts.traffic ?? 'some'
@@ -324,17 +551,49 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * cable cars still run (they are drawn by Life from the rails, not by Traffic). `?cars=1` brings the road
    * traffic back for anyone working on it.
    */
-  const traffic = new Traffic(graph, opts.cars ? level : 'none')
+  /*
+   * `?traffic=<n>` and `?crowd=<n>` take a NUMBER — a density, beyond the named levels — for measuring what
+   * this renderer can carry (owner, 2026-09-26: "can we up traffic to much larger numbers of people and cars?
+   * Just for a quick test"). `busy` is density 11 and `crowded` is 95 per km; a number replaces those and the
+   * range is widened with it, because packing more into the same 220 m only fills the near band.
+   *
+   * The RENDER POOLS are sized from the same numbers below. Left at their defaults (90 cars, 3000 people) a
+   * raised density silently caps at the pool and nothing says so, which would make the measurement a lie.
+   */
+  const numArg = (name: string): number | null => {
+    const v = new URLSearchParams(location.search).get(name)
+    const n = v === null ? NaN : Number(v)
+    return Number.isFinite(n) && n > 0 ? n : null
+  }
+  const trafficN = numArg('traffic')
+  const traffic = new Traffic(graph, trafficN !== null
+    ? { density: trafficN, range: Math.max(220, 40 * Math.sqrt(trafficN)), clearance: 7 }
+    : opts.cars ? level : 'none')
   // the crowd's own density: `?crowd=crowded` for a Saturday; the traffic level otherwise
+  const crowdN = numArg('crowd')
   const crowdLevel = (new URLSearchParams(location.search).get('crowd') as 'none' | 'some' | 'busy' | 'crowded' | null) ?? level
-  const crowd = new Crowd(graph, crowdLevel)
+  const crowd = new Crowd(graph, crowdN !== null
+    ? { perKm: crowdN, range: Math.max(260, 26 * Math.sqrt(crowdN)) }
+    : crowdLevel)
   mark('crowd')
   crowd.setWater(wholeWater(pkg).map((a) => ({ ring: unpackPoints(a.ring), holes: (a.holes ?? []).map(unpackPoints) })))
-  const life = new Life(scene, pkg as unknown as CityPackage, undefined, regionKit(pkg.region).stock, city.viaductStations)
+  /*
+   * The pools follow the density asked for (see `numArg` above), with the shipped defaults when nothing is.
+   * Generous multiples of the density, because the count is over the whole populated RANGE, not per km.
+   */
+  const budget = (trafficN !== null || crowdN !== null)
+    ? {
+        cars: Math.min(20000, Math.max(90, Math.round((trafficN ?? 11) * 120))),
+        buses: Math.min(2000, Math.max(16, Math.round((trafficN ?? 11) * 8))),
+        people: Math.min(40000, Math.max(3000, Math.round((crowdN ?? 95) * 60))),
+      }
+    : undefined
+  if (budget) console.log('[density] pools', budget, 'traffic', trafficN, 'crowd', crowdN)
+  const life = new Life(scene, pkg as unknown as CityPackage, budget, regionKit(pkg.region).stock, city.viaductStations)
   // the tram track in the street, and the wires over the electric track (render/street-rails.ts, overhead.ts)
   city.addLayer(streetRailsLayer(scene, city.terrain))
   // the public stairways as stairs (render/stairs.ts)
-  city.addLayer(stairsLayer(scene, city.terrain))
+  city.addLayer(stairsLayer(scene, city.terrain, pkg.region === 'san-francisco' ? SF_STAIRWAYS : {}))
   const overhead = off.has('life') ? null : new OverheadLines(scene, city.terrain)
   onTile((a) => {
     // the tram stops first, so the tile's own lines find them
@@ -364,7 +623,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   })
   const floraOf = regionKit(pkg.region).flora
   const trees = new Vegetation(scene, city.terrain, new URL('trees/', document.baseURI).href,
-    floraOf?.((x, z) => new Projection(pkg.origin).toLatLon({ x, z })))
+    floraOf?.((x, z) => new Projection(pkg.origin).toLatLon({ x, z })), opts.veg ?? CANOPY, opts.vegMerge !== false)
   if (!off.has('trees')) city.addLayer(trees.layer())
   mark('vegetation')
   // the models are a few megabytes, so the ride starts without them and they appear when they arrive
@@ -380,6 +639,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     void plants.load().catch((e) => console.warn('plants did not load:', e))
     ;(window as unknown as Record<string, unknown>).__plants = plants
   }
+  // skyparks (docs/SKYPARKS.md): a landmark builder can plant a raised deck on itself (Salesforce Park, on
+  // the Transit Center's roof); its ring only exists once the landmark's own tile has arrived, so this is
+  // drained a few at a time below rather than read once here
+  let decksPlanted = 0
 
   const controls: Controls = opts.platform ?? new LocalControls(() => opts.device)
   // ?start=<edgeId> drops the rider onto a particular street, which is how the shot harness samples the
@@ -393,12 +656,26 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     : opts.startEdge && graph.edges.has(opts.startEdge)
       ? locate(rides, graph, opts.startEdge, graph.edges.get(opts.startEdge)!.length * 0.35) : null
   /** The rideable street nearest a lat/lon, and how far along it, for `?at=`. */
+  /*
+   * THE WHOLE CITY, NOT THE TILES YOU HAVE ALREADY LOADED (BUGS.md #178).
+   *
+   * This searched `graph.edges` — the STREAMED city graph, which holds only the tiles fetched so far — so a
+   * jump could only ever land somewhere already loaded. The large map draws the whole city from the baked
+   * ride graph (`minimap.setRide`), so the Embarcadero and Chase Center are plainly visible on it and simply
+   * would not accept a jump. The owner: "the map window seems to show the much older box... I can't jump to
+   * Embarcadero or Chase Center on the map as they are outside the OLD box." There was no old box; there was
+   * the edge of what had streamed, which looks just like one.
+   *
+   * `rides` is global and baked, and carries every edge's points, so the nearest rideable point can be found
+   * anywhere in the city without a tile being present. `locate()` cannot help here — it resolves a STREAMED
+   * map edge back to its ride edge and returns null when the tile is absent — so the ride edge is used
+   * directly, which is what `placeAt` wants anyway. Tiles for the destination stream in straight after, from
+   * the `city.update` that follows the jump.
+   */
   function nearestStart(ll: { lat: number; lon: number }): ReturnType<typeof locate> {
     const p = new Projection(pkg.origin).toLocal(ll)
-    const onRide = new Set([...rides.edges.values()].flatMap((e) => e.over.map((o) => o.id)))
-    let best: { id: number; s: number; d: number } | null = null
-    for (const e of graph.edges.values()) {
-      if (!onRide.has(e.id)) continue
+    let onRide: { id: number; s: number; d: number } | null = null
+    for (const e of rides.edges.values()) {
       let run = 0
       for (let i = 1; i < e.points.length; i++) {
         const a = e.points[i - 1]
@@ -408,12 +685,14 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         const len = Math.hypot(dx, dz) || 1e-6
         const t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.z - a.z) * dz) / (len * len)))
         const d = Math.hypot(p.x - a.x - dx * t, p.z - a.z - dz * t)
-        if (!best || d < best.d) best = { id: e.id, s: run + len * t, d }
+        if (!onRide || d < onRide.d) onRide = { id: e.id, s: run + len * t, d }
         run += len
       }
     }
-    return best ? locate(rides, graph, best.id, best.s) : null
+    return onRide ? { edgeId: onRide.id, s: onRide.s, reversed: false } : null
   }
+
+
   const start = wanted ?? locate(rides, graph, pkg.start.edgeId, pkg.start.s)
     ?? { edgeId: rides.edges.keys().next().value!, s: 0, reversed: false }
   const nav = new Navigator(rides, start, rideExits)
@@ -455,6 +734,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   onTile((a) => minimap.addEdges(a.edges))
   // the whole city for the zoomed-out large map, and a click on it goes there (user: jump anywhere, for debugging)
   minimap.setRide([...rides.edges.values()].map((e) => e.points))
+  // the baked box, so the map shows where the world actually ends (BUGS.md #163)
+  minimap.box = index.box ?? null
   /*
    * The GPS (PARIS_EXPAND §6 item 11): a click on the large map sets the destination, shift-click goes there.
    * The route is re-planned from the rider every second (so a wrong turn is simply a new route), shown on the
@@ -496,8 +777,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const scenic = SCENIC[pkg.region ?? ''] ?? []
   if (scenic.length) {
     const menu = document.createElement('select')
-    menu.className = 'sr-city sr-landmarks sr-routes'
-    menu.style.top = '88px'
+    menu.className = 'sr-city sr-routes'
     menu.title = 'ride a preplanned route'
     menu.add(new Option('routes…', ''))
     // each route's length, leg by leg along the ride graph from its first stop
@@ -557,7 +837,17 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   minimap.landmarks = (pkg.landmarks ?? []).map((l) => ({ x: l.x, z: l.z, name: l.name, tier: l.tier }))
   const tier1 = (pkg.landmarks ?? []).filter((l) => l.tier === 1)
 
-  addEventListener('keydown', (e) => { if (e.code === 'KeyM') minimap.toggle() })
+  addEventListener('keydown', (e) => {
+    if (e.code !== 'KeyM' || (e.target instanceof HTMLElement && e.target.closest('input, textarea, select'))) return
+    minimap.toggle()
+    // the landmark search belongs to the large map: it arrives with it and leaves with it
+    if (mapSearch) {
+      mapSearch.classList.toggle('on', minimap.isLarge)
+      // focused on the NEXT tick: focusing inside the keydown puts the M itself into the field
+      if (minimap.isLarge) { const f = mapSearch; setTimeout(() => f.focus(), 0) }
+      else { mapSearch.value = ''; mapSearch.blur() }
+    }
+  })
 
   /*
    * Public transport (src/sim/transit.ts). The vehicles are the ones `Life` is already running along the
@@ -697,6 +987,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * Jump to a landmark: a menu beside the city menu of every modelled landmark, restyled place and named
    * building, which goes there by the same road as a pasted "lat, lon" (ui/goto.ts).
    */
+  /** the landmark search, shown with the large map (M) */
+  let mapSearch: HTMLInputElement | null = null
   if (opts.goTo) {
     const where = new Map<string, { x: number; z: number }>()
     for (const l of landmarks?.placed ?? []) where.set(l.name, l)
@@ -705,21 +997,54 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       const pts = e.within.map(([lat, lon]) => proj.toLocal({ lat, lon }))
       where.set(e.name, { x: pts.reduce((a, q) => a + q.x, 0) / pts.length, z: pts.reduce((a, q) => a + q.z, 0) / pts.length })
     }
-    for (const l of (pkg.landmarks ?? []).filter((q) => q.tier === 1)) if (!where.has(l.name)) where.set(l.name, l)
-    const pick = document.createElement('select')
-    pick.className = 'sr-city sr-landmarks'
-    pick.title = 'go to a landmark'
-    pick.add(new Option('landmarks…', ''))
-    for (const name of [...where.keys()].sort((a, b) => a.localeCompare(b, 'fr'))) pick.add(new Option(name, name))
-    pick.addEventListener('keydown', (e) => e.stopPropagation())
-    pick.addEventListener('change', () => {
-      const p = where.get(pick.value)
-      if (!p) return
-      const ll = proj.toLatLon(p)
+    // every named landmark, not only tier 1: a search copes with hundreds of names where a menu could not
+    for (const l of pkg.landmarks ?? []) if (!where.has(l.name)) where.set(l.name, l)
+    /*
+     * A SEARCH, not a dropdown (BUGS.md #168). Several hundred names in a `<select>` is a scroll nobody
+     * finishes; typing "chase" and pressing Enter is the whole interaction. A `<datalist>` gives the
+     * browser's own prefix/substring matching for free, so this stays a dozen lines.
+     */
+    const pick = document.createElement('input')
+    pick.type = 'search'
+    /*
+     * ON THE MAP, not over the city (owner, 2026-09-24: "we do not need the landmarks dropdown to always be
+     * visible, it can be on the map"). It appears with the large map (M) and goes with it.
+     */
+    pick.className = 'sr-mapsearch'
+    pick.title = 'search the landmarks and go there'
+    pick.placeholder = `search ${where.size} landmarks…`
+    pick.autocomplete = 'off'
+    const list = document.createElement('datalist')
+    list.id = 'sr-landmark-list'
+    for (const name of [...where.keys()].sort((a, b) => a.localeCompare(b, 'fr'))) list.appendChild(new Option(name, name))
+    pick.setAttribute('list', list.id)
+    const goToName = (): void => {
+      const typed = pick.value.trim()
+      if (!typed) return
+      // exact match first, else the first name that contains what was typed — Enter should just work
+      const key = where.has(typed) ? typed
+        : [...where.keys()].find((n) => n.toLowerCase().includes(typed.toLowerCase()))
+      if (!key) { debug.toast(`no landmark matching "${typed}"`); return }
+      const ll = proj.toLatLon(where.get(key)!)
+      pick.value = ''
+      pick.blur()
       const why = opts.goTo!(`${ll.lat}, ${ll.lon}`, true)
-      if (why) debug.toast(why)
+      if (why) { debug.toast(why); return }
+      // and the map gets out of the way: you asked to go there in order to LOOK at it
+      if (minimap.isLarge) { minimap.toggle(); pick.classList.remove('on') }
+      hud.banner(key, 'M for the map')
+    }
+    // the ride's keys (M, F, G, N, Escape…) must not fire while a name is being typed
+    pick.addEventListener('keydown', (e) => {
+      e.stopPropagation()
+      if (e.key === 'Enter') goToName()
+      if (e.key === 'Escape') { pick.value = ''; pick.blur() }
     })
+    // picking from the datalist fires `change` without an Enter
+    pick.addEventListener('change', () => { if (where.has(pick.value.trim())) goToName() })
+    document.body.appendChild(list)
     document.body.appendChild(pick)
+    mapSearch = pick
   }
 
   const label = document.getElementById('label')
@@ -734,6 +1059,14 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   camera.fov = 1.02
   scene.activeCamera = camera
 
+  /*
+   * Photo mode (src/render/photo.ts): P toggles fog off for clean aerial screenshots, [ and ] pull the draw
+   * distance in and push it out. `?fog=off&far=6000` does the same from the URL for an unattended run.
+   */
+  photoMode(scene, camera, (s) => hud.banner(s))
+  // Chrome's ~3 GB ceiling is fatal and silent (BUGS.md #121): say so while there is still a tab to say it in
+  watchHeap((m) => hud.banner('memory', m))
+
   let last = performance.now()
   let frames = 0
   // The camera lags the rider in HEADING only, never in distance. Easing its position toward a moving target
@@ -743,6 +1076,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   let camHeading = nav.heading()
   let camHeight = 3.6
   let camBack = 7.5
+  // where the camera is LOOKING, in height: the road's own profile ahead, eased (BUGS.md #207)
+  let aimY = nav.elevationAhead(12)
 
   // Contact shadows for everything, without teaching a single shader about them. `?without=ao` turns it off.
   if (!off.has('ao')) ambientOcclusion(scene, camera)
@@ -886,6 +1221,16 @@ export async function game(canvas: HTMLCanvasElement, opts: {
        */
       const sm = nav.smoothed()
       const centre = nav.at()
+      /*
+       * The park's air, on crossing in or out of it (render/photo.ts `setRegionFog`, docs/PARKS.md). Asked
+       * of the rider's own position, which is in a loaded tile by definition, and acted on only when the
+       * answer CHANGES — the material walk is a few dozen materials and has no business in every frame.
+       */
+      const nowInPark = parkMap.contains(centre.x, centre.z, TILE)
+      if (nowInPark !== inPark) {
+        inPark = nowInPark
+        setRegionFog(scene, inPark ? parkStyle.fogDensity : null)
+      }
       let at = sm.point
       let heading = sm.heading
       let groundY = sm.lean === 0 ? ground.y
@@ -923,6 +1268,16 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         river?.update(dt, focus)
       }
       sky?.update(dt, at)
+      // the raised decks (docs/SKYPARKS.md), drained before both layers update: a deck arrives when its
+      // landmark's tile streams in, so a one-time hookup at startup would miss every one of them. Trees and
+      // shrubs read the same `landmarks.decks` entries.
+      if (landmarks && decksPlanted < landmarks.decks.length) {
+        for (; decksPlanted < landmarks.decks.length; decksPlanted++) {
+          const d = landmarks.decks[decksPlanted]
+          plants.addDeck(d.ring, d.y)
+          trees.addDeck(d.ring, d.y)
+        }
+      }
       trees.update(camera.position)
       plants.update()
 
@@ -966,8 +1321,27 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       const want = high ? 46 : riding ? 22 : 7.5
       const room = high || riding ? want : city.clearBehind(at.x, at.z, -fx, -fz, want)
       camBack += (room - camBack) * Math.min(1, dt * (room < camBack ? 12 : 3))
-      // the camera rides the hill with the rider, looking at where the road actually goes
-      const aheadY = city.terrain.heightAt(at.x + fx * 12, at.z + fz * 12)
+      /*
+       * The camera rides the hill with the rider, looking at where the ROAD actually goes — from the road's
+       * own profile (`nav.elevationAhead`), not from the terrain grid.
+       *
+       * BUGS.md #207: on a bridge the terrain under the rider is the SEA BED. Measured mid-span on the
+       * Golden Gate with `tools/cam-probe.ts`, the eye was at -29 m and the aim at -85 m, a steady pitch of
+       * -73° for the whole crossing — the camera staring down through the deck into the bridge's own
+       * structure, which is exactly what the owner reported. The deck's height is in the ride edge's
+       * profile, where the rider's own height and the trainer's grade already come from.
+       *
+       * Aboard a streetcar there is no ride edge under the rider, so the terrain is still the best answer
+       * there; and the aim is eased, because crossing a junction changes which edge the profile comes from
+       * and the step at the node would otherwise flick the view.
+       */
+      // …and the terrain where there is no profile to read: aboard a streetcar there is no ride edge under
+      // the rider at all, and an edge whose heights did not survive the chain would otherwise read as y=0,
+      // which in San Francisco's datum is 82 m in the air
+      const onProfile = !riding && nav.edge.heights !== undefined
+      aimY += ((onProfile ? nav.elevationAhead(12) : city.terrain.heightAt(at.x + fx * 12, at.z + fz * 12)) - aimY)
+        * Math.min(1, dt * 6)
+      const aheadY = aimY
       // under a passage's vault, and behind the rider along it, the camera drops below the arch
       const vault = high ? null : city.passageAt(at.x - fx * camBack, at.z - fz * camBack) ?? city.passageAt(at.x, at.z)
       const lift = high ? 34 : riding ? 6.5 : vault === null ? 3.5 : Math.max(1.9, Math.min(3.5, vault - 1.0))
@@ -1038,6 +1412,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     if (loading && marks.firstFrame !== undefined && (city.idle || performance.now() - firstFrameAt > 4000)) {
       loading.hide()
       loading = null
+      // and the welcome screen over the city, gone at the first key (BUGS.md #165)
+      if (!opts.freeze) welcomeScreen(src.index?.name ?? opts.city)
     }
   })
 
@@ -1059,6 +1435,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     return { mesh: hit.pickedMesh.name, face: hit.faceId, building: id, at: hit.pickedPoint?.asArray().map((v) => Math.round(v * 10) / 10) }
   }
   ;(window as unknown as { __heightAt?: unknown }).__heightAt = (x: number, z: number) => city.terrain.heightAt(x, z)
+  /* how much fine ground is resident, against how many tiles are held: the per-tile terrain's heap report */
+  ;(window as unknown as Record<string, unknown>).__terrainStats = () => ({
+    blocks: city.terrain.blockCount, tilesHeld: tileLevel.size, coarse: !!city.terrain.coarse,
+  })
   // the ride's own clock: seconds the ride model was actually stepped, metres covered, and the speed now
   // (tools/route-movie.ts — the time-lapse keys its frames and its captions off these seconds)
   ;(window as unknown as Record<string, unknown>).__clock = () => ({
@@ -1083,15 +1463,34 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     return new Vector3(p.x, city.terrain.heightAt(p.x, p.z) + v[2], p.z)
   }
   const w = window as unknown as Record<string, unknown>
+  /*
+   * STREAM WHERE THE CAMERA IS LOOKING, not only where the rider stands (BUGS.md #220).
+   *
+   * Holding the camera used to do nothing else, and tile streaming follows the RIDER — so a view a kilometre
+   * from the rider photographed the terrain, the landmarks and the skyline, all of which are always drawn,
+   * and almost none of the per-tile city: no roads, no kerbs, no furniture, no bridge structures. Worse,
+   * `tools/views.ts` waits for `__cityIdle()` first, which was true immediately because nothing near the
+   * camera had been requested — the wait CONFIRMED the empty frame instead of catching it. The Golden Gate
+   * renders came out cleaner than the owner's own ride for exactly this reason.
+   *
+   * The rider is deliberately left where they are: streaming round the LOOK POINT is what the picture needs,
+   * and moving the rider would drop the route and the tour (see `__jump`).
+   */
+  const streamAt = (p: Vector3): void => {
+    city.update(p.x, p.z)
+    trees.update(new Vector3(p.x, 0, p.z))
+  }
   w.__view = (from: [number, number, number], to: [number, number, number]) => {
     held = { from: fromLL(from), to: fromLL(to) }
     if (!frozen) { frozen = true; orbit.active = true; debug.frozen(true) }
+    streamAt(held.to)
   }
   // the same in local metres, heights above the ground (probes of things the city placed: tools/)
   w.__viewLocal = (from: [number, number, number], to: [number, number, number]) => {
     const v = (q: [number, number, number]): Vector3 => new Vector3(q[0], city.terrain.heightAt(q[0], q[2]) + q[1], q[2])
     held = { from: v(from), to: v(to) }
     if (!frozen) { frozen = true; orbit.active = true; debug.frozen(true) }
+    streamAt(held.to)
   }
   // what is drawn at a pixel (tools: finding the mesh behind a visual bug): name, and where it was hit
   /**

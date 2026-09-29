@@ -1,15 +1,15 @@
 [
  {
-  "lat": 37.7946,
-  "lon": -122.3946,
+  "lat": 37.79542,
+  "lon": -122.39537,
   "size": [
-   20,
-   20
+   39,
+   27
   ],
   "height": 12,
   "procedural": "vaillancourtFountain",
   "name": "Vaillancourt Fountain",
-  "note": "Justin Herman Plaza, brutalist square-tube concrete tangle over a basin. Not models — built as a fountain (MODELS_NEEDED.md)."
+  "note": "Embarcadero (Justin Herman) Plaza, brutalist square-tube concrete tangle over a basin. POSITION CORRECTED 2026-09-23: was 37.7946/-122.3946, which is 111 m south-east of the real thing and outside the plaza (owner). Now the centre of way/27146056, the fountain's own concrete area in OSM (x 1445.8..1484.8, z 256.1..282.8 in city world metres)."
  },
  {
   "lat": 37.791,
@@ -48,16 +48,16 @@
   "note": "Transamerica Redwood Park: basin only, figures coming from the owner. Small granite-rimmed pool and nearby puddle discs for the hand-modelled frog and Puddle Jumpers children."
  },
  {
-  "lat": 37.7853,
-  "lon": -122.4029,
+  "lat": 37.784583,
+  "lon": -122.402165,
   "size": [
-   28,
-   8
+   48,
+   48
   ],
-  "height": 9,
+  "height": 11,
   "procedural": "mlkWaterfall",
   "name": "MLK Memorial Waterfall",
-  "note": "Yerba Buena Gardens, wide granite waterfall wall, walkable behind."
+  "note": "Yerba Buena Gardens, cut into the level change. Position CORRECTED from 37.7853/-122.4029 (103 m out, in the north-west corner of the park where there is nothing) to the centre of OSM way/25298444, amenity=fountain natural=water, which is the memorial's own water. The pier wall follows way/684190996; the pools are way/1167668187 and way/1326136219. Built in landmarks/sf/yerba-buena.ts with the rest of the block."
  },
  {
   "lat": 37.788,
@@ -105,7 +105,7 @@
   "height": 6,
   "procedural": "francisScottKeyCanopy",
   "name": "Francis Scott Key Monument canopy",
-  "note": "Golden Gate Park: the stone canopy only — the figure is a real model placed separately."
+  "note": "Golden Gate Park: the stone canopy only \u2014 the figure is a real model placed separately."
  },
  {
   "lat": 37.7948,

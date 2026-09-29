@@ -1,0 +1,23 @@
+# osm,name,kind,height_m,priority   — height_m EMPTY means UNKNOWN: read the OSM tags or OMIT it, never guess
+way/135620221,"White Swan Inn",civic,,300.0
+way/291189057,"Yerba Buena Island Lighthouse",civic,,300.0
+way/165846552,"UC Law San Francisco",tall,45,250.0
+way/165846555,"UC Law San Francisco (198 McAllister)",civic,,250.0
+way/397007754,"UC Law San Francisco Cotchett Law Center",civic,,250.0
+way/73348851,"Millennium Lofts",tall,44,44
+way/32947542,"350 Sansome",tall,41,41
+way/261301014,"Third Baptist Church",civic,12,35
+way/274428408,"Saint John the Baptist Serbian Orthodox Church",civic,6,33
+way/12960861,"Stanford Court San Francisco Hotel",core,30,30
+way/260320985,"Sailors' Union of the Pacific",tall,54,26
+way/19474123,"Hilton",core,24,24
+way/257934707,"Hotel Majestic",core,19,19
+way/15629393,"Cathedral of Saint Mary of the Assumption",core,19,19
+way/11009073,"Fort Point",core,15,15
+way/288633744,"Kalmanovitz Library",core,15,15
+way/286277781,"Alexandria",core,15,15
+way/288794272,"170 Otis Street",tall,45,12
+way/7309505,"Temple Emanu-el",core,12,12
+way/273587509,"Richard A Gleeson Library",core,12,12
+way/7657843,"San Francisco Day School",core,12,12
+way/6878543,"San Francisco Zen Center",core,12,12

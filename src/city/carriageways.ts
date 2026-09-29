@@ -15,9 +15,16 @@ const CELL = 24
 export class Carriageways {
   private readonly grid = new Map<string, Seg[]>()
 
-  constructor(edges: Pick<PackedEdge, 'id' | 'points' | 'width' | 'walk' | 'foot' | 'tunnel' | 'layer' | 'bridge' | 'kind'>[]) {
+  /**
+   * `includeFoot` takes the FOOTWAYS in as well, which the kerb-side callers must not have — a hydrant is
+   * placed relative to a street, and a park trail is not a street. It exists for the opposite question,
+   * "is this point on something built?" (`onPaving`), where a concrete trail counts as much as a road:
+   * BUGS.md #196, small plants growing up through the asphalt in Golden Gate Park.
+   */
+  constructor(edges: Pick<PackedEdge, 'id' | 'points' | 'width' | 'walk' | 'foot' | 'tunnel' | 'layer' | 'bridge' | 'kind'>[],
+    includeFoot = false) {
     for (const e of edges) {
-      if (e.foot || !onSurface(e)) continue
+      if ((e.foot && !includeFoot) || !onSurface(e)) continue
       const p = unpackPoints(e.points)
       for (let i = 1; i < p.length; i++) {
         const s: Seg = { ax: p[i - 1].x, az: p[i - 1].z, bx: p[i].x, bz: p[i].z, half: e.width / 2, walk: e.walk, edge: e.id }
@@ -52,5 +59,15 @@ export class Carriageways {
   /** in some street's carriageway (within `margin` of its edge) */
   inside(x: number, z: number, margin = 0.3): boolean {
     return this.near(x, z).some((n) => n.d < n.s.half + margin)
+  }
+
+  /**
+   * On anything BUILT — the carriageway or the pavement beside it. The wider test of the two, and the one a
+   * planter wants: nothing grows through asphalt or concrete, whichever of the two it is. Built with
+   * `includeFoot` it also covers the park's trails, which are footways and are exactly where the owner saw
+   * plants standing in the path (BUGS.md #196, 37.759199 -122.509773).
+   */
+  onPaving(x: number, z: number, margin = 0.4): boolean {
+    return this.near(x, z).some((n) => n.d < n.s.half + n.s.walk + margin)
   }
 }

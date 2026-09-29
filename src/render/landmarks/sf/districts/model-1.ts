@@ -2,8 +2,7 @@
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { fromRecipe } from '../recipes.ts'
-import { tower, towerRing } from '../../tower.ts'
-import { spireOn, longestEdge } from '../../parts.ts'
+import { tower } from '../../tower.ts'
 
 export const MODEL_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** Unnamed 99 m tower (way/80296709), Financial District corner: pale piers with dark curtain glass between, flat top. */
@@ -38,17 +37,7 @@ export const MODEL_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
 
   /** Saint John Coltrane African Orthodox Church (way/262226218): BAILED — see model-1-hard.md. */
 
-  /** Saint Patrick Catholic Church (way/32963425): red brick Gothic Revival amid the Yerba Buena towers, a pointed corner tower and spire. */
-  stPatrickChurch: (out: MeshBuilder, fit: Fit): void => {
-    tower(out, fit, {
-      height: 20,
-      tiers: [{ to: 1, face: { kind: 'punched', wall: [0.5, 0.3, 0.24], glass: [0.18, 0.18, 0.2], pitch: 3, solid: 0.6, arched: true, floor: 6, material: 'brick' } }],
-      roof: [0.35, 0.3, 0.28],
-      crown: { kind: 'parapet', height: 1.2, colour: [0.5, 0.3, 0.24] },
-    })
-    const ring = towerRing(fit)
-    spireOn(out, ring[longestEdge(ring)], 20, 2.4, 14, 12, { colour: [0.5, 0.3, 0.24], spireColour: [0.3, 0.27, 0.26], sides: 4, belfry: true, spireMaterial: 'tile' })
-  },
+  /** Saint Patrick Catholic Church (way/32963425): moved to churches-1.ts (`saintPatrickChurch`), built with the church kit. */
 
   /** 1400 Mission (way/284932384): a 2010s green-glass affordable housing tower over ground-floor retail. */
   fourteenHundredMission: fromRecipe('glass-tower', { height: 46, wall: [0.42, 0.48, 0.42], glass: [0.28, 0.42, 0.36], base: 5, baseWall: [0.24, 0.22, 0.2] }),
