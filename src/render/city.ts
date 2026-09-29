@@ -60,6 +60,7 @@ const BUILD_MS = 7
 export const MID = 6
 import { onSurface, waterLevels, wholeWater } from '../city/package.ts'
 import { buildingFooting, simplifyRing } from '../map/footing.ts'
+import { StreetGrade } from '../city/grade.ts'
 
 /** Tile size in metres: the ONE grid, shared with the bake (city/tiles.ts). */
 export { TILE }
@@ -1053,26 +1054,8 @@ export class City {
    * The streets' corridors for the terrain's `grade` (BUGS.md #38): each segment of each street at grade, with
    * its heights at both ends and its half-width with the pavements, filed in 10 m cells.
    */
-  private readonly gradeCells = new Map<string, { ax: number; az: number; bx: number; bz: number; ha: number; hb: number; half: number }[]>()
-  private readonly gradeSeen = new Set<number>()
-  private fileGrade(e: PackedEdge): void {
-    if (this.gradeSeen.has(e.id) || !e.heights || e.bridge || e.tunnel) return
-    this.gradeSeen.add(e.id)
-    const half = (e.foot ? e.width / 2 : e.width / 2 + Math.max(e.walk, 0.6)) + 0.3
-    for (let i = 2; i < e.points.length; i += 2) {
-      const sg = { ax: e.points[i - 2], az: e.points[i - 1], bx: e.points[i], bz: e.points[i + 1], ha: e.heights[i / 2 - 1], hb: e.heights[i / 2], half }
-      const x0 = Math.floor((Math.min(sg.ax, sg.bx) - half) / 10)
-      const x1 = Math.floor((Math.max(sg.ax, sg.bx) + half) / 10)
-      const z0 = Math.floor((Math.min(sg.az, sg.bz) - half) / 10)
-      const z1 = Math.floor((Math.max(sg.az, sg.bz) + half) / 10)
-      for (let gx = x0; gx <= x1; gx++) for (let gz = z0; gz <= z1; gz++) {
-        const k = `${gx},${gz}`
-        const list = this.gradeCells.get(k)
-        if (list) list.push(sg)
-        else this.gradeCells.set(k, [sg])
-      }
-    }
-  }
+  private readonly grade = new StreetGrade()
+  private fileGrade(e: PackedEdge): void { this.grade.add(e) }
   /** The surface of the water at (x, z), from the tile's water pieces (each carries its body's level), or null. */
   waterLevelAt(x: number, z: number): number | null {
     for (const a of this.areasIn.get(key(...tileOf(x, z))) ?? []) {
@@ -1088,23 +1071,7 @@ export class City {
   }
 
   /** The level of the street whose corridor (x, z) is in — the nearest, where two overlap — or null. */
-  gradeAt(x: number, z: number): number | null {
-    const list = this.gradeCells.get(`${Math.floor(x / 10)},${Math.floor(z / 10)}`)
-    if (!list) return null
-    let best: number | null = null
-    let bd = Infinity
-    for (const sg of list) {
-      const dx = sg.bx - sg.ax
-      const dz = sg.bz - sg.az
-      const l2 = dx * dx + dz * dz || 1e-9
-      const t = Math.max(0, Math.min(1, ((x - sg.ax) * dx + (z - sg.az) * dz) / l2))
-      const d = Math.hypot(x - sg.ax - dx * t, z - sg.az - dz * t)
-      if (d > sg.half || d >= bd) continue
-      bd = d
-      best = sg.ha + (sg.hb - sg.ha) * t
-    }
-    return best
-  }
+  gradeAt(x: number, z: number): number | null { return this.grade.at(x, z) }
 
   ingest(t: TileData): void {
     if (this.ingested.has(t.key)) return
@@ -2728,7 +2695,23 @@ export class City {
        * is worse than no terrain at all. Starting low buries the difference in the hillside, which is what
        * a real building cut into a slope does.
        */
-      const { foot, pad } = buildingFooting(ring, (x, z) => this.terrain.heightAt(x, z))
+      /*
+       * EXPLICIT Z (map format v3): a baked city says where each building's walls start (`baseY`), and the
+       * renderer takes it rather than sampling the ground. A v2 city has none and is placed exactly as before.
+       * `?zcheck=1` computes the old way too and records how far the two disagree (window.__zcheck).
+       */
+      let foot: number
+      let pad: number
+      if (b.baseY === undefined) {
+        ({ foot, pad } = buildingFooting(ring, (x, z) => this.terrain.heightAt(x, z)))
+      } else {
+        foot = b.baseY
+        let cx = 0
+        let cz = 0
+        for (const q of ring) { cx += q.x; cz += q.z }
+        pad = this.terrain.heightAt(cx / ring.length, cz / ring.length)
+        if (ZCHECK) zcheck(b.id, foot, buildingFooting(ring, (x, z) => this.terrain.heightAt(x, z)).foot)
+      }
       const plan = planFacade(b.style, b.id, { levels: b.levels, height: b.height, minHeight: b.minHeight, stretch: b.stretch },
         b.palette ? [b.palette] : this.region.palettes[b.style])
       const out = byStyle.get(b.style) ?? new MeshBuilder()
@@ -2902,4 +2885,16 @@ function hexRgb(hex: string): [number, number, number] {
 }
 
 export { simplifyRing }
+
+const ZCHECK = typeof location !== 'undefined' && new URLSearchParams(location.search).get('zcheck') === '1'
+/** `?zcheck=1`: baked building feet against the ones the renderer would have computed, for measuring map v3 */
+function zcheck(id: number, baked: number, computed: number): void {
+  const w = window as unknown as { __zcheck?: { n: number; sumAbs: number; max: number; worst: number; over5cm: number } }
+  const s = (w.__zcheck ??= { n: 0, sumAbs: 0, max: 0, worst: 0, over5cm: 0 })
+  const d = Math.abs(baked - computed)
+  s.n++
+  s.sumAbs += d
+  if (d > 0.05) s.over5cm++
+  if (d > s.max) { s.max = d; s.worst = id }
+}
 

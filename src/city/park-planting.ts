@@ -10,7 +10,7 @@
  *
  * So the park interiors get their own pass, here, at bake time like everything else about a tree
  * (city/plantings.ts). A region supplies a RULE — a function of where you are standing and what kind of green
- * it is, answering with a density, a clumpiness and a species mix (San Francisco's is city/sf/parks.ts) — and
+ * it is, answering with a density, a clumpiness and a species mix (now from ZONES: city/zone-planting.ts, data/zones/<region>.json) — and
  * this file turns that into trees:
  *
  *   * **jittered grid, not rejection sampling.** A grid cell per tree at the target spacing, the point jittered
@@ -393,7 +393,7 @@ export function deckPlantings(ring: { x: number; z: number }[], y: number, keepO
  * redwoods, a wetland. The zones live in the landmark's LOCAL frame and a deck ring arrives here already in
  * world space, so this is a GENERAL mix of what the whole park is made of rather than a zoning of it: coast
  * live oak in the lead, with redwood, olive and laurel under it and a few palms, which is the species list
- * the aerials show and the same forms the city's own parks use (city/sf/parks.ts).
+ * the aerials show and the same forms the city's own parks use (data/zones/san-francisco.json).
  *
  * The density is the point of the place, and it is `MAX_DENSITY` — the most park-planting.ts will accept,
  * set by what a 7 × 7 block of tiles can afford. The real park has 600 trees over about 22 000 m², which is

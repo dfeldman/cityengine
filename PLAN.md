@@ -15,9 +15,12 @@ Street Runner is becoming a **bike food-delivery game** over more, larger cities
 no longer needs a re-bake. Where this file's goals conflict with DIRECTION.md, DIRECTION.md wins; this file
 stays the record of what was built and the list of known defects.
 
-**Now:** the map format, [docs/MAP-FORMAT.md](docs/MAP-FORMAT.md) — step 1 of its §12 is done (spec, `src/map/`,
-`npm run map:v3`, `?map=v3`, patches). **Next is §12 step 2**: convert the landmark manifests into the first
-patch sets and have `prepare.ts` apply patches. The owner's rule for this phase: *refactor the bake and the
+**Now:** the map format, [docs/MAP-FORMAT.md](docs/MAP-FORMAT.md). Done (§12 steps 1, 3, 4): the bake writes v3
+from a zone-driven terrain model (`data/zones/`), the game reads v3 by default with baked heights, patches load
+from `public/patches/`. `npm run bake -- sf-mini` is a 15-second test area. **Next:** planting reads zones (§12
+4b), real zone data to replace the starter rectangles, stable refs from OSM ids in the bake, then the landmark
+manifests into patch sets (step 2). San Francisco's own tiles are converted, not re-baked — its v3 still has
+fine ground everywhere until the next full bake. The owner's rule for this phase: *refactor the bake and the
 renderer to fit the new plans, without major changes to what the game does yet.*
 
 The per-building modelling queue (SF_PLAN.md §10, docs/sf-queue.csv, docs/LADDER.md's refacing ladder) is

@@ -7,7 +7,7 @@
  * everywhere — and anything that simply multiplies the density fixes the first and makes the second worse.
  *
  * The density itself is baked (`city/park-planting.ts`: `MAX_DENSITY`, `TILE_TREES`, the zone rules of
- * `city/sf/parks.ts`) and the package cannot be re-baked here. So the canopy is closed the other way round:
+ * the park zones (data/zones/)) and the package cannot be re-baked here. So the canopy is closed the other way round:
  * every baked tree is given SATELLITES, a handful of trunks a few metres off it, and how many it gets
  * depends on how many neighbours it already has.
  *

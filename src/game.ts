@@ -73,6 +73,7 @@ import { nearestOnGraph, planRoute, type Route } from './sim/route.ts'
 import { SCENIC } from './city/scenic.ts'
 import { unpackPoints, wholeWater, type CityPackage, type PackedArea, type PackedRail } from './city/package.ts'
 import { loadRide, openCity } from './city/tilestore.ts'
+import { PlantZones } from './city/zone-planting.ts'
 import { mapEdges } from './city/ridefile.ts'
 import type { AtlasManifest } from './render/buildings.ts'
 
@@ -634,6 +635,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   } else (window as unknown as Record<string, unknown>).treesReady = true
   // the shrubs and flower beds in the parks (render/plants.ts, PARIS_EXPAND §6 item 8)
   const plants = new Plants(scene, city.terrain, new URL('plants/', document.baseURI).href)
+  // which shrubs grow where, by zone (map format v3; a v2 city has none and gets the defaults everywhere)
+  if (index.zones?.length) plants.zones = new PlantZones(index.zones)
   if (!off.has('trees') && !off.has('plants')) {
     city.addLayer(plants.layer())
     void plants.load().catch((e) => console.warn('plants did not load:', e))

@@ -431,6 +431,9 @@ Two separate declarations, easily confused:
 
 ## 11. Trees
 
+> **2026-09-28:** planting is now by ZONE — data/zones/<region>.json, docs/MAP-FORMAT.md §7 *Planting by zone*.
+> `src/city/sf/parks.ts` is gone (converted into zone data); the rest of this section still describes the machinery.
+
 Every tree is decided **once, at bake time** (`src/city/plantings.ts`), so a streamed tile always gets the same
 trees. Five numbers each: `x, z, height, spin, park + 2×form`. Four sources:
 

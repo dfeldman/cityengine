@@ -1,0 +1,2341 @@
+{
+ "v": 1,
+ "_note": "STARTER zones, 2026-09-28: rough rectangles drawn by hand to get the terrain model working. Replace with real zone data. Rings are [lat, lon]; props per docs/MAP-FORMAT.md section 7. Terrain only decides at tile (200 m) granularity. The plant-* zones were converted mechanically from src/city/sf/parks.ts (2026-09-28), first-match-wins becoming priority; plant-city is the old CITY_PARK/LAWN/WOOD default. ggp-* meadow zones and plant-sausalito added by hand the same day: rough rectangles, to be corrected.",
+ "zones": [
+  {
+   "ref": "ggp",
+   "name": "Golden Gate Park",
+   "priority": 1,
+   "props": {
+    "terrain": "fine"
+   },
+   "ring": [
+    [
+     37.7655,
+     -122.511
+    ],
+    [
+     37.7655,
+     -122.4538
+    ],
+    [
+     37.7738,
+     -122.4538
+    ],
+    [
+     37.7738,
+     -122.511
+    ]
+   ]
+  },
+  {
+   "ref": "panhandle",
+   "name": "The Panhandle",
+   "priority": 1,
+   "props": {
+    "terrain": "fine"
+   },
+   "ring": [
+    [
+     37.7714,
+     -122.4538
+    ],
+    [
+     37.7714,
+     -122.441
+    ],
+    [
+     37.7731,
+     -122.441
+    ],
+    [
+     37.7731,
+     -122.4538
+    ]
+   ]
+  },
+  {
+   "ref": "buena-vista",
+   "name": "Buena Vista Park",
+   "priority": 1,
+   "props": {
+    "terrain": "fine"
+   },
+   "ring": [
+    [
+     37.7658,
+     -122.4452
+    ],
+    [
+     37.7658,
+     -122.4378
+    ],
+    [
+     37.7708,
+     -122.4378
+    ],
+    [
+     37.7708,
+     -122.4452
+    ]
+   ]
+  },
+  {
+   "ref": "presidio",
+   "name": "The Presidio",
+   "priority": 1,
+   "props": {
+    "terrain": "fine"
+   },
+   "ring": [
+    [
+     37.7865,
+     -122.485
+    ],
+    [
+     37.7865,
+     -122.446
+    ],
+    [
+     37.811,
+     -122.446
+    ],
+    [
+     37.811,
+     -122.485
+    ]
+   ]
+  },
+  {
+   "ref": "lands-end",
+   "name": "Lands End and Sutro Heights",
+   "priority": 1,
+   "props": {
+    "terrain": "fine"
+   },
+   "ring": [
+    [
+     37.776,
+     -122.516
+    ],
+    [
+     37.776,
+     -122.493
+    ],
+    [
+     37.79,
+     -122.493
+    ],
+    [
+     37.79,
+     -122.516
+    ]
+   ]
+  },
+  {
+   "ref": "ocean-beach",
+   "name": "Ocean Beach",
+   "priority": 1,
+   "props": {
+    "terrain": "fine"
+   },
+   "ring": [
+    [
+     37.735,
+     -122.514
+    ],
+    [
+     37.735,
+     -122.507
+    ],
+    [
+     37.776,
+     -122.507
+    ],
+    [
+     37.776,
+     -122.514
+    ]
+   ]
+  },
+  {
+   "ref": "mount-sutro",
+   "name": "Mount Sutro",
+   "priority": 1,
+   "props": {
+    "terrain": "fine"
+   },
+   "ring": [
+    [
+     37.758,
+     -122.462
+    ],
+    [
+     37.758,
+     -122.453
+    ],
+    [
+     37.764,
+     -122.453
+    ],
+    [
+     37.764,
+     -122.462
+    ]
+   ]
+  },
+  {
+   "ref": "twin-peaks",
+   "name": "Twin Peaks",
+   "priority": 1,
+   "props": {
+    "terrain": "fine"
+   },
+   "ring": [
+    [
+     37.748,
+     -122.453
+    ],
+    [
+     37.748,
+     -122.442
+    ],
+    [
+     37.758,
+     -122.442
+    ],
+    [
+     37.758,
+     -122.453
+    ]
+   ]
+  },
+  {
+   "ref": "marin-headlands",
+   "name": "Marin Headlands",
+   "priority": 1,
+   "props": {
+    "terrain": "fine"
+   },
+   "ring": [
+    [
+     37.82,
+     -122.54
+    ],
+    [
+     37.82,
+     -122.475
+    ],
+    [
+     37.844,
+     -122.475
+    ],
+    [
+     37.844,
+     -122.54
+    ]
+   ]
+  },
+  {
+   "ref": "plant-city",
+   "name": "San Francisco (default planting)",
+   "priority": 0,
+   "props": {
+    "plant": {
+     "wood": {
+      "density": 0.006,
+      "clump": 0.7,
+      "species": [
+       {
+        "form": "eucalyptus",
+        "weight": 4,
+        "h": [
+         16,
+         28
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 2,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 2,
+        "h": [
+         12,
+         21
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 1,
+        "h": [
+         7,
+         12
+        ]
+       }
+      ]
+     },
+     "park": {
+      "density": 0.0026,
+      "clump": 0.5,
+      "species": [
+       {
+        "form": "oak",
+        "weight": 3,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 3,
+        "h": [
+         7,
+         12
+        ]
+       },
+       {
+        "form": "plane",
+        "weight": 2,
+        "h": [
+         11,
+         18
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 2,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "blossom",
+        "weight": 2,
+        "h": [
+         5,
+         8
+        ]
+       },
+       {
+        "form": "olive",
+        "weight": 1,
+        "h": [
+         5,
+         9
+        ]
+       },
+       {
+        "form": "myrtle",
+        "weight": 1,
+        "h": [
+         7,
+         12
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0.0005,
+      "clump": 0.5,
+      "species": [
+       {
+        "form": "oak",
+        "weight": 3,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "plane",
+        "weight": 2,
+        "h": [
+         11,
+         18
+        ]
+       },
+       {
+        "form": "blossom",
+        "weight": 2,
+        "h": [
+         5,
+         8
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 1,
+        "h": [
+         7,
+         12
+        ]
+       }
+      ]
+     },
+     "street": "register"
+    }
+   },
+   "ring": [
+    [
+     37.6,
+     -122.6
+    ],
+    [
+     37.6,
+     -122.3
+    ],
+    [
+     37.9,
+     -122.3
+    ],
+    [
+     37.9,
+     -122.6
+    ]
+   ]
+  },
+  {
+   "ref": "plant-presidio-forest",
+   "name": "presidio-forest",
+   "priority": 100,
+   "props": {
+    "plant": {
+     "wood": {
+      "density": 0.0075,
+      "clump": 0.7,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 4,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "eucalyptus",
+        "weight": 4,
+        "h": [
+         16,
+         28
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 3,
+        "h": [
+         12,
+         21
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 1,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 1,
+        "h": [
+         7,
+         12
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0.0011,
+      "clump": 0.5,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 2,
+        "h": [
+         12,
+         21
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "olive",
+        "weight": 1,
+        "h": [
+         5,
+         9
+        ]
+       }
+      ]
+     },
+     "shrubs": {
+      "density": 1.2,
+      "shrubs": [
+       "bracken",
+       "fern",
+       "juniper_scrub",
+       "bush_green"
+      ]
+     }
+    }
+   },
+   "ring": [
+    [
+     37.788,
+     -122.488
+    ],
+    [
+     37.788,
+     -122.456
+    ],
+    [
+     37.8055,
+     -122.456
+    ],
+    [
+     37.8055,
+     -122.488
+    ]
+   ]
+  },
+  {
+   "ref": "plant-presidio-shore",
+   "name": "presidio-shore",
+   "priority": 99,
+   "props": {
+    "plant": {
+     "wood": {
+      "density": 0.0018,
+      "clump": 0.85,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 4,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 2,
+        "h": [
+         12,
+         21
+        ]
+       },
+       {
+        "form": "olive",
+        "weight": 2,
+        "h": [
+         5,
+         9
+        ]
+       },
+       {
+        "form": "myrtle",
+        "weight": 1,
+        "h": [
+         7,
+         12
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0.0004,
+      "clump": 0.6,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 2,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       },
+       {
+        "form": "olive",
+        "weight": 1,
+        "h": [
+         5,
+         9
+        ]
+       }
+      ]
+     }
+    }
+   },
+   "ring": [
+    [
+     37.8035,
+     -122.475
+    ],
+    [
+     37.8035,
+     -122.438
+    ],
+    [
+     37.813,
+     -122.438
+    ],
+    [
+     37.813,
+     -122.475
+    ]
+   ]
+  },
+  {
+   "ref": "plant-presidio-east",
+   "name": "presidio-east",
+   "priority": 98,
+   "props": {
+    "plant": {
+     "wood": {
+      "density": 0.006,
+      "clump": 0.65,
+      "species": [
+       {
+        "form": "eucalyptus",
+        "weight": 3,
+        "h": [
+         16,
+         28
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 2,
+        "h": [
+         12,
+         21
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 2,
+        "h": [
+         7,
+         12
+        ]
+       },
+       {
+        "form": "blossom",
+        "weight": 1,
+        "h": [
+         5,
+         8
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0.0009,
+      "clump": 0.5,
+      "species": [
+       {
+        "form": "oak",
+        "weight": 3,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 2,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "plane",
+        "weight": 1,
+        "h": [
+         11,
+         18
+        ]
+       },
+       {
+        "form": "blossom",
+        "weight": 1,
+        "h": [
+         5,
+         8
+        ]
+       }
+      ]
+     }
+    }
+   },
+   "ring": [
+    [
+     37.7885,
+     -122.456
+    ],
+    [
+     37.7885,
+     -122.44
+    ],
+    [
+     37.806,
+     -122.44
+    ],
+    [
+     37.806,
+     -122.456
+    ]
+   ]
+  },
+  {
+   "ref": "plant-ggp-west",
+   "name": "ggp-west",
+   "priority": 97,
+   "props": {
+    "plant": {
+     "wood": {
+      "density": 0.007,
+      "clump": 0.6,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 5,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 4,
+        "h": [
+         12,
+         21
+        ]
+       },
+       {
+        "form": "eucalyptus",
+        "weight": 2,
+        "h": [
+         16,
+         28
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 1,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "olive",
+        "weight": 1,
+        "h": [
+         5,
+         9
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0.0007,
+      "clump": 0.55,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 2,
+        "h": [
+         12,
+         21
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 1,
+        "h": [
+         10,
+         17
+        ]
+       }
+      ]
+     }
+    }
+   },
+   "ring": [
+    [
+     37.764,
+     -122.513
+    ],
+    [
+     37.764,
+     -122.477
+    ],
+    [
+     37.776,
+     -122.477
+    ],
+    [
+     37.776,
+     -122.513
+    ]
+   ]
+  },
+  {
+   "ref": "plant-ggp-middle",
+   "name": "ggp-middle",
+   "priority": 96,
+   "props": {
+    "plant": {
+     "wood": {
+      "density": 0.005,
+      "clump": 0.55,
+      "species": [
+       {
+        "form": "eucalyptus",
+        "weight": 3,
+        "h": [
+         16,
+         28
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 2,
+        "h": [
+         12,
+         21
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 2,
+        "h": [
+         7,
+         12
+        ]
+       },
+       {
+        "form": "plane",
+        "weight": 2,
+        "h": [
+         11,
+         18
+        ]
+       },
+       {
+        "form": "deciduous",
+        "weight": 1,
+        "h": [
+         11,
+         18
+        ]
+       },
+       {
+        "form": "spiky",
+        "weight": 1,
+        "h": [
+         3,
+         6
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0.0008,
+      "clump": 0.45,
+      "species": [
+       {
+        "form": "plane",
+        "weight": 3,
+        "h": [
+         11,
+         18
+        ]
+       },
+       {
+        "form": "deciduous",
+        "weight": 2,
+        "h": [
+         11,
+         18
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "blossom",
+        "weight": 1,
+        "h": [
+         5,
+         8
+        ]
+       }
+      ]
+     },
+     "shrubs": {
+      "shrubs": [
+       "rhododendron",
+       "fern",
+       "bush_green",
+       "hazel"
+      ]
+     }
+    }
+   },
+   "ring": [
+    [
+     37.7645,
+     -122.477
+    ],
+    [
+     37.7645,
+     -122.464
+    ],
+    [
+     37.776,
+     -122.464
+    ],
+    [
+     37.776,
+     -122.477
+    ]
+   ]
+  },
+  {
+   "ref": "plant-ggp-east",
+   "name": "ggp-east",
+   "priority": 95,
+   "props": {
+    "plant": {
+     "wood": {
+      "density": 0.0075,
+      "clump": 0.6,
+      "species": [
+       {
+        "form": "eucalyptus",
+        "weight": 4,
+        "h": [
+         16,
+         28
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 2,
+        "h": [
+         12,
+         21
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 3,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 3,
+        "h": [
+         7,
+         12
+        ]
+       },
+       {
+        "form": "plane",
+        "weight": 2,
+        "h": [
+         11,
+         18
+        ]
+       },
+       {
+        "form": "deciduous",
+        "weight": 1,
+        "h": [
+         11,
+         18
+        ]
+       },
+       {
+        "form": "blossom",
+        "weight": 2,
+        "h": [
+         5,
+         8
+        ]
+       },
+       {
+        "form": "myrtle",
+        "weight": 1,
+        "h": [
+         7,
+         12
+        ]
+       },
+       {
+        "form": "spiky",
+        "weight": 1,
+        "h": [
+         3,
+         6
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0.001,
+      "clump": 0.45,
+      "species": [
+       {
+        "form": "oak",
+        "weight": 3,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "plane",
+        "weight": 2,
+        "h": [
+         11,
+         18
+        ]
+       },
+       {
+        "form": "deciduous",
+        "weight": 2,
+        "h": [
+         11,
+         18
+        ]
+       },
+       {
+        "form": "blossom",
+        "weight": 2,
+        "h": [
+         5,
+         8
+        ]
+       },
+       {
+        "form": "myrtle",
+        "weight": 1,
+        "h": [
+         7,
+         12
+        ]
+       }
+      ]
+     },
+     "shrubs": {
+      "shrubs": [
+       "rhododendron",
+       "rhododendron",
+       "fern",
+       "bush_flowering",
+       "hazel"
+      ],
+      "flowers": [
+       "tulip",
+       "daisy",
+       "poppy"
+      ]
+     }
+    }
+   },
+   "ring": [
+    [
+     37.765,
+     -122.464
+    ],
+    [
+     37.765,
+     -122.441
+    ],
+    [
+     37.7745,
+     -122.441
+    ],
+    [
+     37.7745,
+     -122.464
+    ]
+   ]
+  },
+  {
+   "ref": "plant-the-hills",
+   "name": "the-hills",
+   "priority": 94,
+   "props": {
+    "plant": {
+     "wood": {
+      "density": 0.0068,
+      "clump": 0.7,
+      "species": [
+       {
+        "form": "eucalyptus",
+        "weight": 5,
+        "h": [
+         16,
+         28
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 2,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 2,
+        "h": [
+         12,
+         21
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 2,
+        "h": [
+         7,
+         12
+        ]
+       },
+       {
+        "form": "spiky",
+        "weight": 1,
+        "h": [
+         3,
+         6
+        ]
+       }
+      ]
+     },
+     "park": {
+      "density": 0.0022,
+      "clump": 0.6,
+      "species": [
+       {
+        "form": "eucalyptus",
+        "weight": 2,
+        "h": [
+         16,
+         28
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 3,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 2,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "plane",
+        "weight": 2,
+        "h": [
+         11,
+         18
+        ]
+       },
+       {
+        "form": "blossom",
+        "weight": 2,
+        "h": [
+         5,
+         8
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 1,
+        "h": [
+         7,
+         12
+        ]
+       },
+       {
+        "form": "olive",
+        "weight": 1,
+        "h": [
+         5,
+         9
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0.0008,
+      "clump": 0.5,
+      "species": [
+       {
+        "form": "eucalyptus",
+        "weight": 2,
+        "h": [
+         16,
+         28
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 1,
+        "h": [
+         12,
+         20
+        ]
+       }
+      ]
+     }
+    }
+   },
+   "ring": [
+    [
+     37.738,
+     -122.465
+    ],
+    [
+     37.738,
+     -122.425
+    ],
+    [
+     37.772,
+     -122.425
+    ],
+    [
+     37.772,
+     -122.465
+    ]
+   ]
+  },
+  {
+   "ref": "plant-lands-end",
+   "name": "lands-end",
+   "priority": 93,
+   "props": {
+    "plant": {
+     "wood": {
+      "density": 0.0065,
+      "clump": 0.75,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 5,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 3,
+        "h": [
+         12,
+         21
+        ]
+       },
+       {
+        "form": "eucalyptus",
+        "weight": 2,
+        "h": [
+         16,
+         28
+        ]
+       },
+       {
+        "form": "olive",
+        "weight": 1,
+        "h": [
+         5,
+         9
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0.0006,
+      "clump": 0.6,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     },
+     "shrubs": {
+      "shrubs": [
+       "juniper_scrub",
+       "sagebrush",
+       "bush_green"
+      ],
+      "flowers": [
+       "poppy",
+       "lupine",
+       "wildflower"
+      ]
+     }
+    }
+   },
+   "ring": [
+    [
+     37.774,
+     -122.52
+    ],
+    [
+     37.774,
+     -122.493
+    ],
+    [
+     37.788,
+     -122.493
+    ],
+    [
+     37.788,
+     -122.52
+    ]
+   ]
+  },
+  {
+   "ref": "ggp-sharon-meadow",
+   "name": "Sharon Meadow (Robin Williams Meadow)",
+   "priority": 150,
+   "props": {
+    "plant": {
+     "wood": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     },
+     "park": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     }
+    }
+   },
+   "ring": [
+    [
+     37.7694,
+     -122.4572
+    ],
+    [
+     37.7694,
+     -122.4543
+    ],
+    [
+     37.7711,
+     -122.4543
+    ],
+    [
+     37.7711,
+     -122.4572
+    ]
+   ]
+  },
+  {
+   "ref": "ggp-hellman-hollow",
+   "name": "Hellman Hollow (Speedway Meadow)",
+   "priority": 150,
+   "props": {
+    "plant": {
+     "wood": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     },
+     "park": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     }
+    }
+   },
+   "ring": [
+    [
+     37.7699,
+     -122.4832
+    ],
+    [
+     37.7699,
+     -122.4772
+    ],
+    [
+     37.7716,
+     -122.4772
+    ],
+    [
+     37.7716,
+     -122.4832
+    ]
+   ]
+  },
+  {
+   "ref": "ggp-lindley-meadow",
+   "name": "Lindley Meadow",
+   "priority": 150,
+   "props": {
+    "plant": {
+     "wood": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     },
+     "park": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     }
+    }
+   },
+   "ring": [
+    [
+     37.7689,
+     -122.4882
+    ],
+    [
+     37.7689,
+     -122.4842
+    ],
+    [
+     37.7705,
+     -122.4842
+    ],
+    [
+     37.7705,
+     -122.4882
+    ]
+   ]
+  },
+  {
+   "ref": "ggp-marx-meadow",
+   "name": "Marx Meadow",
+   "priority": 150,
+   "props": {
+    "plant": {
+     "wood": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     },
+     "park": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     }
+    }
+   },
+   "ring": [
+    [
+     37.7714,
+     -122.4892
+    ],
+    [
+     37.7714,
+     -122.4858
+    ],
+    [
+     37.7728,
+     -122.4858
+    ],
+    [
+     37.7728,
+     -122.4892
+    ]
+   ]
+  },
+  {
+   "ref": "ggp-polo-field",
+   "name": "The Polo Field",
+   "priority": 150,
+   "props": {
+    "plant": {
+     "wood": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     },
+     "park": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     }
+    }
+   },
+   "ring": [
+    [
+     37.7668,
+     -122.4945
+    ],
+    [
+     37.7668,
+     -122.4878
+    ],
+    [
+     37.7697,
+     -122.4878
+    ],
+    [
+     37.7697,
+     -122.4945
+    ]
+   ]
+  },
+  {
+   "ref": "ggp-bison-paddock",
+   "name": "The Bison Paddock",
+   "priority": 150,
+   "props": {
+    "plant": {
+     "wood": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     },
+     "park": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     }
+    }
+   },
+   "ring": [
+    [
+     37.7705,
+     -122.4995
+    ],
+    [
+     37.7705,
+     -122.4952
+    ],
+    [
+     37.7721,
+     -122.4952
+    ],
+    [
+     37.7721,
+     -122.4995
+    ]
+   ]
+  },
+  {
+   "ref": "ggp-big-rec",
+   "name": "Big Rec ball fields",
+   "priority": 150,
+   "props": {
+    "plant": {
+     "wood": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     },
+     "park": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     }
+    }
+   },
+   "ring": [
+    [
+     37.7662,
+     -122.4658
+    ],
+    [
+     37.7662,
+     -122.4618
+    ],
+    [
+     37.7681,
+     -122.4618
+    ],
+    [
+     37.7681,
+     -122.4658
+    ]
+   ]
+  },
+  {
+   "ref": "plant-sausalito",
+   "name": "Sausalito (no street tree register)",
+   "priority": 110,
+   "props": {
+    "plant": {
+     "street": {
+      "spacing": 14,
+      "jitter": 3,
+      "minWalk": 1.2,
+      "minWidth": 5,
+      "species": [
+       {
+        "form": "oak",
+        "weight": 3,
+        "h": [
+         8,
+         13
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 2,
+        "h": [
+         6,
+         10
+        ]
+       },
+       {
+        "form": "deciduous",
+        "weight": 2,
+        "h": [
+         8,
+         12
+        ]
+       },
+       {
+        "form": "olive",
+        "weight": 1,
+        "h": [
+         5,
+         8
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         10,
+         16
+        ]
+       }
+      ]
+     }
+    }
+   },
+   "ring": [
+    [
+     37.848,
+     -122.505
+    ],
+    [
+     37.848,
+     -122.47
+    ],
+    [
+     37.872,
+     -122.47
+    ],
+    [
+     37.872,
+     -122.505
+    ]
+   ]
+  }
+ ]
+}

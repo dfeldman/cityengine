@@ -16,6 +16,20 @@ import { convertIndex, FloorScan } from '../src/map/convert-city.ts'
 import { adaptIndex, adaptTile } from '../src/map/adapt.ts'
 import { ITEM_STRIDE, type MapTile } from '../src/map/format.ts'
 import { applyPatches, indexPatches, type PatchOp } from '../src/map/patch.ts'
+import { StreetGrade } from '../src/city/grade.ts'
+import { onSurface, unpackPoints } from '../src/city/package.ts'
+import { buildingFooting, simplifyRing } from '../src/map/footing.ts'
+
+/** the explicit-Z fields v2 never had: compared on their own (below), not in the round trip */
+const withoutZ = (t: TileData): TileData => {
+  const { plantingY: _y, ...rest } = t
+  return {
+    ...rest,
+    buildings: t.buildings.map(({ baseY: _b, ...b }) => b),
+    fringe: t.fringe.map(({ baseY: _b, ...f }) => f),
+    furniture: t.furniture.map(({ y: _f, ...f }) => f),
+  } as TileData
+}
 
 
 /** numbers equal within `tol`, everything else structurally; `path` for the message */
@@ -57,7 +71,14 @@ describe.each(['san-francisco', 'paris-centre'])('map v3 round trip (%s fixture)
   for (const t of tiles) { const [tx, tz] = t.key.split(',').map(Number); terrain.addTile(tx, tz, t.terrain) }
   const dict = new DictBuilder()
   const stats = newStats()
-  const ctx = { zFloor: floor.zFloor, dict, heightAt: (x: number, z: number) => terrain.rawHeightAt(x, z), edgeRef: (e: { id: number }) => refs.get(e.id)!, stats }
+  // the renderer's levelling, over every street at grade — what tools/v3-writer.ts gives the converter
+  const grade = new StreetGrade()
+  for (const t of tiles) for (const e of t.edges) if (onSurface(e)) grade.add(e)
+  terrain.grade = (x, z) => grade.at(x, z)
+  const ctx = {
+    zFloor: floor.zFloor, dict, heightAt: (x: number, z: number) => terrain.rawHeightAt(x, z),
+    groundAt: (x: number, z: number) => terrain.heightAt(x, z), edgeRef: (e: { id: number }) => refs.get(e.id)!, stats,
+  }
   const v3 = tiles.map((t) => convertTile(t, ctx))
   const idx3 = convertIndex(index, floor.zFloor, dict.dict, v3.map((m, i) => ({ key: m.key, tx: m.tx, ty: m.ty, bytes: 0, buildings: index.tiles[i].buildings, edges: index.tiles[i].edges })))
 
@@ -70,8 +91,31 @@ describe.each(['san-francisco', 'paris-centre'])('map v3 round trip (%s fixture)
       const norm = (t: TileData): TileData => ({
         ...t, buildings: byId(t.buildings), boats: t.boats ?? [], bridges: t.bridges ?? [], courts: t.courts ?? [],
       })
-      const d = near(norm(back), norm(was), TOL, was.key)
+      const d = near(norm(withoutZ(back)), norm(was), TOL, was.key)
       expect(d).toBeNull()
+    }
+  })
+
+  it('bakes every building foot exactly where the renderer would have put it', () => {
+    let n = 0
+    for (let i = 0; i < tiles.length; i++) {
+      const back = adaptTile(JSON.parse(JSON.stringify(v3[i])), idx3)
+      for (const b of back.buildings) {
+        const want = buildingFooting(simplifyRing(unpackPoints(b.ring)), (x, z) => terrain.heightAt(x, z)).foot
+        // one centimetre: the integer the foot is stored as
+        expect(Math.abs(b.baseY! - want), `building ${b.id}`).toBeLessThanOrEqual(0.005 + 1e-9)
+        n++
+      }
+    }
+    expect(n).toBeGreaterThan(20)
+  })
+
+  it('bakes the ground under every tree and furniture item', () => {
+    for (let i = 0; i < tiles.length; i++) {
+      const back = adaptTile(JSON.parse(JSON.stringify(v3[i])), idx3)
+      expect(back.plantingY?.length ?? 0).toBe(back.plantings.length / 5)
+      back.plantingY?.forEach((y, k) => expect(Math.abs(y - terrain.heightAt(back.plantings[5 * k], back.plantings[5 * k + 1]))).toBeLessThanOrEqual(0.005 + 1e-9))
+      for (const f of back.furniture) expect(Math.abs(f.y! - terrain.heightAt(f.x, f.z))).toBeLessThanOrEqual(0.005 + 1e-9)
     }
   })
 
@@ -150,8 +194,8 @@ describe.each(['san-francisco', 'paris-centre'])('map v3 round trip (%s fixture)
       expect(back.buildings.some((q) => q.id === b.seed)).toBe(false)
       expect(back.buildings.length).toBe(was.buildings.length - 1)
       expect(back.edges.some((e) => e.id === s.id)).toBe(false)
-      const others = was.buildings.filter((q) => q.id !== b.seed)
-      expect(near([...back.buildings].sort((a, c) => a.id - c.id || a.ring[0] - c.ring[0]), [...others].sort((a, c) => a.id - c.id || a.ring[0] - c.ring[0]), TOL)).toBeNull()
+      const others = withoutZ(was).buildings.filter((q) => q.id !== b.seed)
+      expect(near([...withoutZ(back).buildings].sort((a, c) => a.id - c.id || a.ring[0] - c.ring[0]), [...others].sort((a, c) => a.id - c.id || a.ring[0] - c.ring[0]), TOL)).toBeNull()
     })
 
     it('restyles a building by name, extending the dictionary for a style the bake never used', () => {

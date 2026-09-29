@@ -112,6 +112,12 @@ export interface PackedBuilding {
    * was scored, and the bake may have dropped it.
    */
   form?: RingForm
+  /**
+   * EXPLICIT Z (map format v3, docs/MAP-FORMAT.md rule 3): where the walls start, metres in this package's datum
+   * frame, as the bake decided it. When present the renderer uses it and does not sample the ground itself;
+   * absent on a city read from v2, which is placed as it always was (src/map/footing.ts).
+   */
+  baseY?: number
 }
 
 /**
@@ -130,6 +136,8 @@ export interface PackedFringe {
   palette?: { wall: string; trim: string; roof: string; accent: string; ground?: string }
   /** the OSM way id: the seed for its palette */
   id: number
+  /** explicit Z (map format v3): its foot, metres, datum frame — the lowest corner less 0.3 m, as render/fringe.ts */
+  baseY?: number
 }
 
 export interface PackedArea {
@@ -194,6 +202,8 @@ export interface PackedFurniture {
     | 'tramstop' | 'billboard' | 'stop' | 'busstop' | 'postbox' | 'hydrant'
   /** a Wallace fountain, as opposed to any drinking tap */
   wallace?: true
+  /** explicit Z (map format v3): the ground at the point, metres, datum frame */
+  y?: number
 }
 
 /**

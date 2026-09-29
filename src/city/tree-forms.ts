@@ -40,3 +40,19 @@ export const formOf = (code: number): TreeForm => TREE_FORMS[code] ?? ''
 
 /** the palm forms, drawn by render/palms.ts rather than from the tree library */
 export const PALM_FORMS: ReadonlySet<TreeForm> = new Set<TreeForm>(['canary', 'fan', 'queen', 'spiky', 'windmill'])
+
+/**
+ * How wide a form's crown is: its RADIUS as a fraction of the tree's height. For keeping a planted tree's crown out
+ * of a building (city/plantings.ts, owner 2026-09-28: "we have to not plant very close to buildings where the plant
+ * would intersect the building"). Rough and deliberately generous — a Monterey cypress was measured at a crown 0.53
+ * of its height across (render/sf/flora.ts), so 0.27 radius; a columnar poplar or a fan palm's head is narrow.
+ */
+export const CROWN: Record<TreeForm, number> = {
+  '': 0.3, plane: 0.3, evergreen: 0.22, laurel: 0.22, ficus: 0.25, myrtle: 0.3, olive: 0.3, bottlebrush: 0.25,
+  plum: 0.3, blossom: 0.35, pear: 0.2, flowering: 0.3, deciduous: 0.3, columnar: 0.08, weeping: 0.3,
+  eucalyptus: 0.2, pine: 0.25, cypress: 0.27, canary: 0.3, fan: 0.12, queen: 0.15, spiky: 0.15, windmill: 0.12,
+  oak: 0.35,
+}
+
+/** a planting's crown radius, metres */
+export const crownRadius = (form: number | undefined, height: number): number => (CROWN[formOf(form ?? 0)] ?? 0.3) * height

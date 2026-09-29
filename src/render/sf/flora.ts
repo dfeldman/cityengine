@@ -47,7 +47,7 @@ export function sfFlora(toLatLon: (x: number, z: number) => { lat: number; lon: 
        * What stood here before was the LIBRARY's `cypress` — which is a columnar Italian cypress, measured
        * at a crown one eleventh of its height and never more than twelve metres tall — and `scots_pine`,
        * which is alpine. They are the two heaviest species in every Golden Gate Park and Presidio zone in
-       * city/sf/parks.ts, so the park was planted almost entirely in dark pencils: the owner's *"the plants
+       * the park zones (then city/sf/parks.ts, now data/zones/san-francisco.json), so the park was planted almost entirely in dark pencils: the owner's *"the plants
        * are wrong for the area (not a surprise since our tree kit was developed for the swiss alps!)"*.
        *
        * A Monterey cypress is as wide as it is tall (measured: crown 0.53 of height against 0.09), which is
@@ -57,7 +57,7 @@ export function sfFlora(toLatLon: (x: number, z: number) => { lat: number; lon: 
        */
       pine: [['sf_mpine', 3], ['black_pine', 1]],
       cypress: [['sf_cypress', 1]],
-      // the park oak (city/sf/parks.ts). The street Quercus is a clipped 'evergreen' and stays one; this is
+      // the park oak (data/zones/san-francisco.json). The street Quercus is a clipped 'evergreen' and stays one; this is
       // the coast live oak standing on its own in a meadow, which is a different tree to look at.
       oak: [['oak', 1]],
       canary: [['palm:canary', 1]],

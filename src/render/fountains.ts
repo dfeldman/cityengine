@@ -259,7 +259,7 @@ export function wallaceLayer(scene: Scene, terrain: Terrain): TileLayer {
       for (const f of near.tile.furniture) {
         if (f.kind !== 'fountain' || !(f as { wallace?: boolean }).wallace) continue
         if (f.x < rect.x0 || f.x >= rect.x1 || f.z < rect.z0 || f.z >= rect.z1) continue
-        const g = terrain.heightAt(f.x, f.z) + 0.15
+        const g = (f.y ?? terrain.heightAt(f.x, f.z)) + 0.15
         buildPieces(out, [{ kind: 'jet', at: [0, 0.35, 0], height: 1.25, r: 0.025 }].map((q) => ({ ...q, kind: 'arc' as const, from: [0, 1.6, 0] as V3, to: [0.02, 0.35, 0] as V3, rise: 0, r: 0.022 })), ([x, y, z]) => [f.x + x, g + y, f.z + z])
       }
       if (out.triangles === 0) return []

@@ -4,10 +4,10 @@ The tile format for the delivery game and every city after San Francisco. Writte
 project changed direction ([DIRECTION.md](../DIRECTION.md)). This is the spec; `src/map/format.ts` is the same
 thing as types, and the two must not drift.
 
-**Status (2026-09-28).** Specified, with a converter from today's baked tiles (`npm run map:v3 -- <city>`), a
-reader that turns a v3 tile back into today's `TileData` (so the renderer is unchanged), and the patch layer.
-The game reads v3 only behind `?map=v3`. The bake does not write v3 natively yet; §12 is the order things move
-in, and §13 is what the first step measured.
+**Status (2026-09-28, evening).** The bake writes v3 natively (from a zone-driven terrain model), the game
+reads v3 by default and places buildings, far massing and trees at their baked heights, and older bakes convert
+with `npm run map:v3 -- <city>`. §12 is the order things move in, §13–§14 what was measured. `sf-mini` is a
+500 m test area of San Francisco that bakes in about 15 s (`npm run bake -- sf-mini`).
 
 Code: `src/map/` — `format.ts` (these types), `convert.ts` + `convert-city.ts` (v2 → v3), `adapt.ts` (v3 → v2),
 `patch.ts`, `store.ts` (the `?map=v3` loader), `footing.ts` (the building-foot rule, shared with the renderer).
@@ -305,12 +305,25 @@ TileGround = { step, cols, z: number[] }    // cm above zFloor, row-major from t
 Same rules as v2 (and they are load-bearing): the block overlaps each neighbour by one sample, `step` divides
 the tile, the grid origin is a whole number of tiles.
 
-**Resolution varies by tile, deliberately.** Parks are where the ground is seen, so park tiles are fine and
-street tiles are coarse. Allowed steps: **1, 2, 4, 8, 20** m, chosen per tile by the bake. Where a fine tile
-meets a coarse one the fine tile's border samples must equal the coarse tile's line interpolated between its
-own posts — the bake enforces this ("border conformity"), so the renderer never has to stitch. Until it does,
-every tile uses one step. 1 m is for LIDAR (3DEP has it over SF); `src`/`resM` say where a grid came from, as
-today, so a tile cannot overstate its data.
+**The terrain model: fine only where a zone asks (owner, 2026-09-28).** *"We want to only get fine grain terrain
+in certain specified zones (certain parks and coastline) while mostly having coarse terrain (so buildings and
+roads aren't bumpy)."* So the bake builds ONE ground model (`src/map/ground.ts`, `GroundModel`):
+
+- a tile touching a zone with `terrain: 'fine'` ships its 4 m block; every other tile ships the coarse grid's
+  own 20 m posts (11 × 11, which is also far smaller);
+- a fine block eases into the coarse surface over its outer 24 m wherever it meets a coarse tile (`BLEND`),
+  reaching it exactly on the border — so the renderer never stitches, and `tests/ground-model.test.ts` holds
+  that there is no step;
+- the model's `heightAt` IS the renderer's `Terrain.rawHeightAt` over exactly the blocks shipped, at the
+  decimetres they ship at. The bake levels the streets on it and bakes every height from it, so the bake and
+  the game cannot disagree about the ground.
+
+**This lives in the terrain model, not in the Z computation** (owner: *"that should be in the terrain model,
+not in the z computation"*). Zones decide the model; nothing that samples it knows zones exist.
+
+The fine grid is still SAMPLED over the whole detail box — the coarse grid is averaged down from it — only
+what each tile ships changes. Allowed steps are 1, 2, 4, 8 and 20 m; 1 m is for LIDAR (3DEP has it over SF).
+`src`/`resM` say where a block came from, as before, so a tile cannot overstate its data.
 
 ---
 
@@ -350,6 +363,18 @@ A zone is a closed way, not from OSM, that carries style for everything inside i
 Zone = { ref, ring: number[] /* x,y in CITY centimetres, not tile-local */, priority?, props: ZoneProps }
 ```
 
+**Zones are the universal area mechanism** (owner, 2026-09-28): *"our universal way to distinguish
+neighborhoods, towns, large parks, distinct areas with different properties."* Terrain resolution reads them
+today; planting is next (the `plant` property below). Any behaviour that depends on WHERE — never a rule keyed
+on a place's name, never a per-city code hook.
+
+**They are bake input**, authored in lat/lon in `data/zones/<region>.json` then `data/zones/<city>.json` (a
+city's zone of the same `ref` replaces its region's), read by `tools/bake.ts` (`loadZones`,
+`src/map/zones.ts`), and written into the v3 index in city centimetres. **Patches cannot change them** — a zone
+that changes the ground changes every height baked from it, which only a bake can redo. `data/zones/
+san-francisco.json` is a STARTER set of rough rectangles (the big parks, the coast) to be replaced with real
+zone data.
+
 Zones live in the index, whole: there are few of them, they are city-wide as often as not ("hydrants are yellow
 in this city"), and every tile needs the ones over it. `priority` orders overlapping zones (higher wins).
 
@@ -357,6 +382,8 @@ in this city"), and every tile needs the ones over it. `priority` orders overlap
 
 | key | means | today it is… |
 |---|---|---|
+| `terrain: 'fine' \| 'coarse'` | the ground here ships at the fine step (§5.7) | **read by the bake** — `'fine'` only so far: a `'coarse'` pocket inside a fine zone (a car park in a park) is not honoured yet |
+| `plant` | everything planted here — see *Planting by zone* below | **read by the bake** (trees) and the renderer (shrubs) |
 | `itemColour: { [type]: 0xRRGGBB }` | default colour for an item type | `regions.json` hydrant colour |
 | `palette: { [style]: … }` | a style's palettes here | `regions.json` palettes |
 | `crowd: number` | pedestrian density multiplier | constant |
@@ -366,6 +393,41 @@ in this city"), and every tile needs the ones over it. `priority` orders overlap
 | `park: ParkStyle` | the open-country rules | `region.park`, one per region |
 | `furniture: {…}` | lamp, bench, meter densities | `region.furniture` |
 
+### Planting by zone (2026-09-28)
+
+Plants are by far the most common objects in the city and the biggest share of its storage and memory, and the
+owner's rule is that planting follows zones — *"30% palms, 70% deciduous trees, tropical shrubs"* — with no
+special cases by area. `src/city/zone-planting.ts`, `src/city/plantings.ts` (`plantZoned`):
+
+```jsonc
+"plant": {
+  "wood":  { "density": 0.0075, "clump": 0.6, "species": [{ "form": "cypress", "weight": 5, "h": [12, 20] }, …] },
+  "park":  { … },     // leisure=park; absent = planted like "wood" (Golden Gate Park and the Presidio ARE forest)
+  "lawn":  { … },     // mown grass inside a park: specimens, far apart
+  "street": "register" | false | { "spacing": 14, "jitter": 3, "minWalk": 1.2, "minWidth": 5, "species": [ … ] },
+  "shrubs": { "density": 1.2, "shrubs": ["rhododendron", "fern"], "flowers": ["poppy"] }
+}
+```
+
+- **Species are FORMS** (`src/city/tree-forms.ts`: `canary`, `fan`, `deciduous`, `cypress`…), never models: each
+  region's flora says which models draw a form. 30% palms is weights 3 : 7.
+- **Resolution is per key**: the highest-priority zone that says anything about `wood`, `lawn`, `street` or
+  `shrubs` answers for it, so a town zone can say only how its streets are planted. `park` pairs with `wood`.
+- **`street: 'register'`** means the city's own survey covers these streets (San Francisco: DataSF, chosen by
+  `CitySpec.streetTrees`, not by the city's name) and nothing is invented; **a rule** invents tree-lined streets
+  where no register reaches (Sausalito); **`false`** plants none.
+- **In order, and never on top of each other**: register → OSM-mapped → invented street rows → parks, each tree
+  kept only if nothing already planted stands within 2.5 m (`MIN_SPACING`), and every PARK tree's crown kept out
+  of every building (`CROWN` in tree-forms.ts: trunk-to-wall ≥ crown radius) — the Conservatory, the de Young.
+  The bake logs what it placed and what it turned away.
+- **Shrubs stay runtime** (render/plants.ts): the zone's `shrubs` picks which library models grow there and
+  scales the lattice. A species the plant library does not have is warned about and skipped — the library is
+  Trail Trainer's, and has warm-climate plants (palm, yucca, fern, prickly pear) but nothing truly tropical yet.
+- **Density is the owner's lever**, in the zone file; nothing here was tuned down. San Francisco's planting was
+  converted from `city/sf/parks.ts` mechanically (10 000 points × 3 kinds, every answer equal) before the
+  meadows of Golden Gate Park (the Polo Field, Hellman Hollow, Lindley, Marx, Sharon, the bison paddock, Big Rec)
+  were added as their own open zones. A city with no planting zones (Paris) keeps the old rules.
+
 `regions.json` becomes the city-wide zone (a ring round the whole box at priority 0) rather than a separate
 mechanism. Not migrated yet; the table says where each field lands when it is.
 
@@ -374,7 +436,8 @@ mechanism. Not migrated yet; the table says where each field lands when it is.
 ## 8. Patches
 
 A patch set is JSON for a whole city, applied **after** the bake. It can **suppress, override or add** any
-building, part, way, item, deck, zone or place, and nothing needs re-baking to change it.
+building, part, way, item, deck or place, and nothing needs re-baking to change it. **Not zones** (§7): they
+are bake input.
 
 ```ts
 PatchSet = { v: 1, city, ops: PatchOp[] }
@@ -455,7 +518,7 @@ The point of lowering system requirements (DIRECTION §6) is deciding what is re
 | patch set | always | < 1 MB by construction |
 | tiles in the ring (`MID = 6`) | while in the ring | ~10 MB parsed downtown |
 | per-tile derived indexes | **with their tile, freed on eviction** | BUGS.md #226: today they never are |
-| ride graph | always, today | 13 MB of JSON — to be tiled like everything else |
+| ride graph | always, today | 13 MB of JSON. **Staying** (owner, 2026-09-28): steering, the global map and the delivery game's routes all need it. When it grows too big it can be tiled, or derived per tile from the v3 street ways, which carry everything it is built from — not a change to make before it hurts |
 
 Eviction must free everything built from a tile. A binary format does not fix a leak (TILE-V2 §4).
 
@@ -491,10 +554,13 @@ Each step leaves the game working and is checkable on its own.
    Paris. The game reads v3 behind `?map=v3` and draws the same (§13).
 2. **The landmark manifest becomes the first patch set** (`tools/manifest-to-patches.ts`), resolved to refs.
    `prepare.ts` applies patches instead of the manifest.
-3. **The renderer reads `z`.** Buildings first (the foot), then furniture and items, then streets. Each drops a
-   `heightAt` call. The ground itself keeps using the terrain, as it must.
-4. **The bake writes v3 natively**, including the street levelling in building feet, `datumMsl`, and stable
-   refs for streets from the OSM way.
+3. ✅ **The renderer reads `z`** (2026-09-28) — see §14 for exactly which paths take a baked height and which
+   drape, and why.
+4. ✅ **The bake writes v3 natively** (2026-09-28): `v3/` beside the v2 tiles, from the terrain model it
+   shipped, with the street levelling in every foot, the zones in the index and `datumMsl`. **The game reads v3
+   by default** when a city has it (`?map=v2` for the old tiles). Still to do in this step: stable refs from
+   the OSM way for streets, areas and point things (the bake has the ids; v2 dropped them).
+4b. **Planting reads zones** (the `plant` property) instead of `sf/parks.ts` and `ParkStyle`.
 5. **A renderer for parts** — buildings drawn whole, parts included, so every renderer that knows buildings
    knows parts (DIRECTION §4).
 6. **Zones replace `regions.json`**, the `sf/` hooks and the city-named code.
@@ -535,3 +601,33 @@ Each step leaves the game working and is checkable on its own.
   tolerances above, 4 streets with their own junction z. The full city (111 000 tiles, 632 MB) has not been
   written to disk; the tool streams three rows at a time and should manage it in minutes.
 
+---
+
+## 14. Explicit Z in the renderer
+
+A v3 tile says where things stand; the adapter hands it to the renderer as `baseY` / `y` / `plantingY` on the
+v2-shaped records, and the renderer takes it instead of sampling the ground:
+
+| what | baked Z used | check |
+|---|---|---|
+| building walls (every part) | `baseY` — the foot, street levelling included | `?zcheck=1` → `window.__zcheck` |
+| far massing | `baseY` — its own rule, the lowest corner less 0.3 m | |
+| trees | `plantingY` (trees a deck carries keep their own `y`) | |
+| a Wallace fountain's water | the item's `y` | |
+
+**Where Z does not make sense, and stays with the terrain** (owner: *"there are some where it won't make
+sense"*): anything DRAPED vertex by vertex — road surfaces, pavements, markings, areas, shadows, and the point
+furniture meshes (they share one draped mesh with the benches and lamps the renderer invents); things placed at
+DERIVED positions — a sign on a wall, a métro sign moved to the pavement, trees `thicken()` invents; and the
+ground itself. A street's own heights were explicit already (`PackedEdge.heights`).
+
+Measured in the game with `?zcheck=1` (the renderer computes the old foot too and records the difference):
+
+| city | source | buildings | mean | worst |
+|---|---|---|---|---|
+| sf-mini | native bake | 1 678 | 0.23 cm | 0.5 cm |
+| central Paris | converted | 2 326 | 0.24 cm | 1.2 cm |
+| San Francisco | converted | 4 232 | 0.24 cm | 0.5 cm |
+
+— the centimetre a z is stored as. Paris's 1.2 cm is v2 rings off the centimetre grid moving a footing sample.
+Frozen shots of `sf-mini`, v2 against v3, differ by tree canopies shifting by millimetres and nothing else.

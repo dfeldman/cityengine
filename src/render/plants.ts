@@ -21,6 +21,7 @@ import type { TileArea } from '../city/tiles.ts'
 import type { PackedEdge } from '../city/package.ts'
 import { woodAt } from './infill.ts'
 import { unpackPlantings, type Planting } from '../city/plantings.ts'
+import type { PlantZones } from '../city/zone-planting.ts'
 
 interface PlantEntry { species: string; file: string; height: number }
 /**
@@ -79,7 +80,9 @@ function edgeDistance(r: number[], x: number, z: number): number {
  * where the plants were standing. Optional, so the deck planter and any older caller are unchanged.
  */
 export function plantTile(areas: TileArea[], rect: { x0: number; z0: number; x1: number; z1: number },
-  edges?: PackedEdge[], trees?: Planting[]): Planted[] {
+  edges?: PackedEdge[], trees?: Planting[], zones?: PlantZones | null): Planted[] {
+  // how thick the zone here asks for it (ZonePlant.shrubs.density, 1 where no zone says): scales every keep chance
+  const thick = (x: number, z: number): number => zones?.shrubs(x, z)?.density ?? 1
   const out: Planted[] = []
   const STEP = 4.5
   /*
@@ -133,7 +136,7 @@ export function plantTile(areas: TileArea[], rect: { x0: number; z0: number; x1:
         if (!inside(a.ring, jx, jz) || (a.holes ?? []).some((h) => inside(h, jx, jz))) continue
         if (built(jx, jz)) continue
         const edge = edgeDistance(a.ring, jx, jz)
-        const r = hash(x, z, 3)
+        const r = hash(x, z, 3) / Math.max(1e-6, thick(jx, jz))
         // under the canopy first: most of the lattice is kept, and what it grows is undergrowth rather than
         // a gardener's shrub — smaller, and scattered instead of lining a path
         const w = wood ? wood(jx, jz) : 0
@@ -170,7 +173,9 @@ export class Plants {
   private readonly terrain: Terrain
   private readonly base: string
   readonly byTile = new Map<string, Planted[]>()
-  models: { kind: 'shrub' | 'flower'; parts: Mesh[]; top: number }[] = []
+  models: { kind: 'shrub' | 'flower'; species: string; parts: Mesh[]; top: number }[] = []
+  /** the city's planting zones, when it has them (map format v3): which shrubs and flowers grow where */
+  zones: PlantZones | null = null
   private dirty = false
 
   constructor(scene: Scene, terrain: Terrain, assetBase: string) {
@@ -206,7 +211,7 @@ export class Plants {
       name: 'plants',
       range: 2,
       build: (near, rect) => {
-        this.byTile.set(near.key, plantTile(near.tile.areas, rect, near.tile.edges, unpackPlantings(near.tile.plantings)))
+        this.byTile.set(near.key, plantTile(near.tile.areas, rect, near.tile.edges, unpackPlantings(near.tile.plantings), this.zones))
         this.dirty = true
         return []
       },
@@ -221,10 +226,16 @@ export class Plants {
     } catch {
       return
     }
-    for (const [kind, list] of [['shrub', SHRUBS], ['flower', FLOWERS]] as const) {
+    // the defaults, and every species a zone names (a zone's "tropical shrubs"): all loaded once, up front
+    const wanted = { shrub: new Set<string>(SHRUBS), flower: new Set<string>(FLOWERS) }
+    for (const s of this.zones?.allShrubs() ?? []) {
+      for (const n of s.shrubs ?? []) wanted.shrub.add(n)
+      for (const n of s.flowers ?? []) wanted.flower.add(n)
+    }
+    for (const [kind, list] of [['shrub', [...wanted.shrub]], ['flower', [...wanted.flower]]] as const) {
       for (const species of list) {
         const e = index.trees.find((t) => t.species === species)
-        if (!e) continue
+        if (!e) { console.warn(`plants: a zone asks for "${species}", which the plant library does not have`); continue }
         const r = await SceneLoader.ImportMeshAsync('', this.base, e.file, this.scene)
         const all = r.meshes.filter((m): m is Mesh => m instanceof Mesh && m.getTotalVertices() > 0)
         const lod = all.filter((m) => /LOD1/i.test(m.name))
@@ -241,7 +252,7 @@ export class Plants {
           if (mat) { mat.transparencyMode = 1; mat.alphaCutOff = 0.45; mat.needDepthPrePass = false }
           m.setEnabled(false)
         }
-        if (parts.length) this.models.push({ kind, parts, top: e.height || 1 })
+        if (parts.length) this.models.push({ kind, species, parts, top: e.height || 1 })
       }
     }
     this.dirty = true
@@ -253,7 +264,11 @@ export class Plants {
     const buckets = new Map<Mesh, Matrix[]>()
     for (const list of this.byTile.values()) {
       for (const p of list) {
-        const pool = this.models.filter((m) => m.kind === p.kind)
+        // the zone's own species where it names them, else the defaults
+        const z = this.zones?.shrubs(p.x, p.z)
+        const names = p.kind === 'shrub' ? z?.shrubs : z?.flowers
+        let pool = names && names.length ? this.models.filter((m) => m.kind === p.kind && names.includes(m.species)) : []
+        if (!pool.length) pool = this.models.filter((m) => m.kind === p.kind && (p.kind === 'shrub' ? SHRUBS : FLOWERS).includes(m.species))
         if (!pool.length) continue
         // a flower bed is one kind: pick by the bed's rounded position, a shrub by its own
         const key = p.kind === 'flower' ? hash(Math.round(p.x / 4) * 4, Math.round(p.z / 4) * 4, 11) : hash(p.x, p.z, 12)

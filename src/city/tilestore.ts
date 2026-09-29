@@ -155,11 +155,16 @@ export interface CitySource {
 
 export async function openCity(base: string, id: string): Promise<CitySource> {
   const root = new URL('./', base).href
-  // map format v3 (docs/MAP-FORMAT.md), read through the adapter, only when asked for while it is being proved
-  if (typeof location !== 'undefined' && new URLSearchParams(location.search).get('map') === 'v3') {
+  /*
+   * MAP FORMAT v3 (docs/MAP-FORMAT.md) whenever the city has it: the bake writes it beside v2, with every height
+   * baked, and the patch sets are applied as each tile lands. `?map=v2` reads the old tiles instead, for
+   * comparing the two; a city baked before v3 (and not converted) simply has none and is read as v2.
+   */
+  const want = typeof location !== 'undefined' ? new URLSearchParams(location.search).get('map') : null
+  if (want !== 'v2') {
     const v3 = await openV3(root, id)
     if (v3) return v3
-    console.warn(`?map=v3: ${id} has no v3 conversion (npm run map:v3 -- ${id}) — reading v2`)
+    if (want === 'v3') console.warn(`?map=v3: ${id} has no v3 (re-bake, or npm run map:v3 -- ${id}) — reading v2`)
   }
   const store = new TileStore(`${root}cities/${id}/`)
   const index = await store.open().catch(() => null)

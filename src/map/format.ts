@@ -36,6 +36,10 @@ export interface Zone {
 }
 
 export interface ZoneProps {
+  /** the ground here ships at the fine step (MAP-FORMAT §5.7); everywhere else is coarse */
+  terrain?: 'fine' | 'coarse'
+  /** what grows here (docs/MAP-FORMAT.md §7, src/city/zone-planting.ts) — the whole planting, winner-takes-all */
+  plant?: ZonePlant
   itemColour?: Record<string, number>
   palette?: Record<string, unknown>
   crowd?: number
@@ -44,6 +48,47 @@ export interface ZoneProps {
   water?: 'calm' | 'waves'
   park?: Record<string, unknown>
   furniture?: Record<string, unknown>
+}
+
+/**
+ * A patch of planting: how thick, how clumped, and what grows — the shape city/park-planting.ts has always taken
+ * (`ParkSpot`), as data. `species` is by FORM (city/tree-forms.ts), never by model: "30% palms, 70% deciduous" is
+ * `[{ form: 'canary', weight: 3 }, { form: 'deciduous', weight: 7 }]`, and each region's flora says which models
+ * draw a form.
+ */
+export interface PlantSpot {
+  /** trees a square metre before clumping: 0.0075 a closed wood, 0.0007 an open lawn with specimens */
+  density: number
+  /** 0 an even orchard, 1 all thicket and glade */
+  clump: number
+  species: { form: string; weight: number; h: [number, number] }[]
+}
+
+/**
+ * Street trees in a zone. `'register'`: the city's own survey covers the streets here (San Francisco's DataSF list),
+ * so nothing is invented along them. An object: no register, so tree-lined streets are invented — along any street
+ * with a pavement at least `minWalk` wide and a carriageway at least `minWidth`, a tree each side every `spacing`
+ * metres (± `jitter`). `false`: no street trees at all.
+ */
+export type StreetPlant = 'register' | false | {
+  spacing: number
+  jitter?: number
+  minWalk: number
+  minWidth: number
+  species: { form: string; weight: number; h: [number, number] }[]
+}
+
+/** Everything a zone says about planting. Absent keys fall to the next zone down (by priority) that has `plant`. */
+export interface ZonePlant {
+  /** `natural=wood` and forest */
+  wood?: PlantSpot
+  /** `leisure=park` — absent: a park here is planted like `wood` (Golden Gate Park and the Presidio are forest) */
+  park?: PlantSpot
+  /** mown grass drawn inside a park: specimens, far apart */
+  lawn?: PlantSpot
+  street?: StreetPlant
+  /** the runtime shrub and flower layer (render/plants.ts): model names from the plant library, and how thick */
+  shrubs?: { density?: number; shrubs?: string[]; flowers?: string[] }
 }
 
 /** A facade cluster (MAP-FORMAT §6.1): one look, shared by many buildings and jittered by seed. */

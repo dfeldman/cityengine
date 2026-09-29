@@ -39,6 +39,15 @@ export interface CitySpec {
    * `npm run bake <id>` still bakes one by name — this gates only what index.json lists.
    */
   live?: boolean
+  /** a small test area cut from a real city (sf-mini): skips the landmark-manifest audit, which cannot apply */
+  test?: boolean
+  /**
+   * The city's own register of its STREET trees, when it has one (owner, 2026-09-28: "for certain cities we will
+   * have official tree data for streets only"): 'datasf' is San Francisco's Street Tree List (tools/sf-trees.ts).
+   * Where zones say `street: 'register'`, nothing is invented along the streets; elsewhere (Sausalito, in the
+   * same box) the zone's invented rows are.
+   */
+  streetTrees?: 'datasf'
   /**
    * What the ground is where OSM mapped nothing — yards, verges, the inside of a block. Most cities are green
    * there; a dry one is not. Painting it concrete makes every courtyard read as a car park.
@@ -170,6 +179,7 @@ export const CITIES: CitySpec[] = [
     id: 'san-francisco',
     live: true,
     region: 'san-francisco',
+    streetTrees: 'datasf',
     skyline: [
       // the middle of the main span (between the towers at 37.8141,−122.4772 and 37.8255,−122.4792), N 7° W
       { name: 'Golden Gate Bridge', lat: 37.81980, lon: -122.47822, procedural: 'goldenGateBridge', heightM: 227, bearing: -7.05, boost: 1.15 },
@@ -245,6 +255,51 @@ export const CITIES: CitySpec[] = [
     note: 'The hills. A grid laid over terrain that does not care about grids, which is the whole point of '
       + 'having elevation at all — the streets here touch 17% and riding them flat would be a lie about the '
       + 'place rather than a simplification of it.',
+  },
+  /*
+   * A TEST CITY (owner, 2026-09-28: "have a 'city' defined that's just a select small area"). A 500 m circle of
+   * San Francisco that bakes in a couple of minutes rather than hours, chosen to hold every case the map
+   * format has to get right at once: the east end of Golden Gate Park and the Panhandle (fine-terrain zones),
+   * Haight-Ashbury's streets (coarse ground, steep grades), Buena Vista Park's hill. Region san-francisco, so
+   * it takes SF's classifier, trees, parks and landmark manifest exactly as the full city does.
+   */
+  {
+    id: 'sf-mini',
+    live: true,
+    test: true,
+    region: 'san-francisco',
+    streetTrees: 'datasf',
+    name: 'SF test area (Haight)',
+    centre: { lat: 37.7700, lon: -122.4500 },
+    radius: 500,
+    ground: 'grass',
+    styles: [
+      { id: 'victorian', weight: 5 },
+      { id: 'brownstone', weight: 2 },
+      { id: 'classical', weight: 2 },
+    ],
+    note: 'A test area, not a destination: small enough to re-bake in minutes while the bake is being changed.',
+  },
+  /*
+   * A second test area: downtown Sausalito, inside San Francisco's box but OUTSIDE the city whose street tree
+   * register the bake reads — the case where the zones must invent tree-lined streets (data/zones/
+   * san-francisco.json, plant-sausalito). Region san-francisco, so it gets the same zones as the full city.
+   */
+  {
+    id: 'sausalito-mini',
+    live: true,
+    test: true,
+    region: 'san-francisco',
+    name: 'Sausalito test area',
+    centre: { lat: 37.8580, lon: -122.4850 },
+    radius: 400,
+    ground: 'grass',
+    styles: [
+      { id: 'victorian', weight: 3 },
+      { id: 'stucco', weight: 3 },
+      { id: 'brick', weight: 1 },
+    ],
+    note: 'A test area: the street-row planting where no register reaches.',
   },
 ]
 

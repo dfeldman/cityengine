@@ -31,6 +31,15 @@ export function adaptIndex(m: MapIndex): CityIndex {
     landmarks: m.legacy.landmarks, water: m.legacy.water, ...(m.legacy.walls ? { walls: m.legacy.walls } : {}),
     attribution: m.attribution, baked: m.baked, tile: m.tile,
     tiles: m.tiles.map((t) => ({ key: t.key, tx: t.tx, tz: t.ty, bytes: t.bytes, buildings: t.buildings, edges: t.edges })),
+    // city centimetres, x east y north → local metres, x east z north (the code frame)
+    ...(m.zones.length ? {
+      zones: m.zones.map((zn) => {
+        const ring = zn.ring.map((v) => v / 100)
+        let x0 = Infinity, z0 = Infinity, x1 = -Infinity, z1 = -Infinity
+        for (let i = 0; i < ring.length; i += 2) { x0 = Math.min(x0, ring[i]); x1 = Math.max(x1, ring[i]); z0 = Math.min(z0, ring[i + 1]); z1 = Math.max(z1, ring[i + 1]) }
+        return { ref: zn.ref, ring, priority: zn.priority ?? 0, props: zn.props, bbox: [x0, z0, x1, z1] as [number, number, number, number] }
+      }),
+    } : {}),
   }
 }
 
@@ -111,6 +120,8 @@ export function adaptTile(m: MapTile, idx: Pick<MapIndex, 'zFloor' | 'dict' | 't
     if (b.levelsInferred) p.levelsInferred = true
     if (b.archetype !== undefined) p.archetype = dict.archetypes[b.archetype]
     if (b.form) p.form = b.form
+    // explicit Z: the foot the bake decided, so the renderer need not sample the ground for it
+    if (b.z > 0) p.baseY = H(b.z)
     return p
   }
   for (const b of m.buildings) {
@@ -124,6 +135,7 @@ export function adaptTile(m: MapTile, idx: Pick<MapIndex, 'zFloor' | 'dict' | 't
       t.fringe.push({
         ring: flat(b.way!), height: b.h! / 100, style: dict.styles[b.style!] as StyleId, id: b.seed,
         roof: r.shape, roofHeight: r.h / 100, roofColour: intToRgb(r.colour), ...(b.palette ? { palette: b.palette } : {}),
+        ...(b.z > 0 ? { baseY: H(b.z) } : {}),
       })
       continue
     }
@@ -154,11 +166,13 @@ export function adaptTile(m: MapTile, idx: Pick<MapIndex, 'zFloor' | 'dict' | 't
         if (form < 0) form = /^f\d+$/.test(name) ? Number(name.slice(1)) : 0
         const park = (it.flags?.[k] ?? 0) & IF.park ? 1 : 0
         t.plantings.push(x, z, d[i + 5] / 100, r2(d[i + 3] * CDEG_TO_RAD), park + 2 * form)
+        ;(t.plantingY ??= []).push(d[i + 2] > 0 ? H(d[i + 2]) : Number.NaN)
         continue
       }
       const f: PackedFurniture = type === 'fountain.wallace'
         ? { x, z, kind: 'fountain', wallace: true }
         : { x, z, kind: (FURNITURE_KIND.get(type) ?? type) as PackedFurniture['kind'] }
+      if (d[i + 2] > 0) f.y = H(d[i + 2])
       t.furniture.push(f)
     }
   }

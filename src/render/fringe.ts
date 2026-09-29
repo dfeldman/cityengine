@@ -57,9 +57,13 @@ export function massing(scene: Scene, list: PackedFringe[], reg: Region, terrain
     const palettes: Palette[] = reg.palettes[f.style] ?? styleOf(f.style).palettes
     const pal = palettes[Math.abs(f.id) % palettes.length]
     const tint = rgb(pal.wall)
+    // explicit Z (map format v3) when the city was baked with it: the same rule, decided at bake
     let foot = Infinity
-    for (const q of ring) foot = Math.min(foot, terrain.heightAt(q.x, q.z))
-    foot -= 0.3
+    if (f.baseY !== undefined) foot = f.baseY
+    else {
+      for (const q of ring) foot = Math.min(foot, terrain.heightAt(q.x, q.z))
+      foot -= 0.3
+    }
     const top = foot + f.height
     // a part standing on another (a city building's upper storeys): its walls start at its own floor
     foot += (f as { minHeight?: number }).minHeight ?? 0

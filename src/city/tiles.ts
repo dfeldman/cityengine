@@ -51,6 +51,8 @@ export interface TileData {
   rails: PackedRail[]
   /** the trees (city/plantings.ts), five numbers each */
   plantings: number[]
+  /** explicit Z (map format v3): the ground under each planting, metres, parallel to `plantings` (one per tree) */
+  plantingY?: number[]
   /** moored boats, by their centre (optional: tiles baked before boats have none) */
   boats?: PackedBoat[]
   /**
@@ -105,6 +107,11 @@ export interface CityIndex {
   baked: string
   tile: number
   tiles: TileEntry[]
+  /**
+   * The city's ZONES (map format v3 only; docs/MAP-FORMAT.md §7), in local metres, code frame — what the runtime
+   * layers that depend on WHERE read (the shrubs: render/plants.ts). Absent on a city read from v2.
+   */
+  zones?: import('../map/zones.ts').LocalZone[]
 }
 
 /**
@@ -179,8 +186,14 @@ export function tilesOfLine(flat: number[]): Set<string> {
  * Cut a package into tiles and an index. `waterLevel` gives a water area's level (the renderer's rule: the
  * lowest ground under the whole ring, less the region's river drop), worked out once for the whole body.
  */
-export function splitPackage(pkg: CityPackage, waterLevel: (ring: Point[], area: PackedArea) => number | undefined): { index: Omit<CityIndex, 'tiles'>; tiles: Map<string, TileData> } {
-  const fine = (pkg as CityPackage & { terrainFine?: PackedTerrain }).terrainFine
+/**
+ * `ground`, when given, is the TERRAIN MODEL's blocks by tile key (src/map/ground.ts, docs/MAP-FORMAT.md §5.7):
+ * fine where a zone asks for it, coarse elsewhere, already cut and already agreeing at every border. It replaces
+ * cutting `pkg.terrainFine` uniformly, which is what a package baked before the model still gets.
+ */
+export function splitPackage(pkg: CityPackage, waterLevel: (ring: Point[], area: PackedArea) => number | undefined,
+  ground?: Map<string, TileTerrain>): { index: Omit<CityIndex, 'tiles'>; tiles: Map<string, TileData> } {
+  const fine = ground ? undefined : (pkg as CityPackage & { terrainFine?: PackedTerrain }).terrainFine
   const tiles = new Map<string, TileData>()
   const get = (k: string): TileData => {
     let t = tiles.get(k)
@@ -257,6 +270,8 @@ export function splitPackage(pkg: CityPackage, waterLevel: (ring: Point[], area:
    * sampled grids that merely abut disagree in the last digit and the ground cracks along every border.
    * Here the shared row is literally the same grid post read twice, so they cannot disagree at all.
    */
+  // every tile the model has ground for gets an entry, empty or not, for the same reason as below
+  for (const [k, b] of ground ?? []) get(k).terrain = b
   if (fine && fine.heights.length > 0) {
     const step = fine.step
     const cols = Math.round(TILE / step) + 1

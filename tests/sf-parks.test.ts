@@ -1,10 +1,17 @@
 import { describe, expect, it } from 'vitest'
 import { Projection } from '../src/city/geo.ts'
-import { sfParkRule } from '../src/city/sf/parks.ts'
+import { readFileSync } from 'node:fs'
 import { MAX_DENSITY } from '../src/city/park-planting.ts'
+import { PlantZones, zonePlantRule } from '../src/city/zone-planting.ts'
+import { localZones, type ZoneFile } from '../src/map/zones.ts'
 
+/*
+ * San Francisco's park planting is ZONE DATA now (data/zones/san-francisco.json, 2026-09-28), converted from the
+ * code in city/sf/parks.ts that these tests were written against; they hold the data to the same account.
+ */
 const proj = new Projection({ lat: 37.7930, lon: -122.4120 })
-const rule = sfParkRule((g) => proj.toLocal(g))
+const file = JSON.parse(readFileSync('data/zones/san-francisco.json', 'utf8')) as ZoneFile
+const rule = zonePlantRule(new PlantZones(localZones(file.zones, (lat, lon) => proj.toLocal({ lat, lon }))))
 const at = (lat: number, lon: number, kind: 'park' | 'wood' | 'grass' = 'park'): ReturnType<typeof rule> => {
   const { x, z } = proj.toLocal({ lat, lon })
   return rule(x, z, kind)
@@ -12,10 +19,11 @@ const at = (lat: number, lon: number, kind: 'park' | 'wood' | 'grass' = 'park'):
 /** a forest: a trunk about every twelve metres or closer */
 const FOREST = 0.004
 
-describe('what San Francisco plants in its parks (city/sf/parks.ts)', () => {
+describe('what San Francisco plants in its parks (data/zones/san-francisco.json)', () => {
   it('makes a forest of Golden Gate Park and the Presidio', () => {
     for (const [name, lat, lon] of [
-      ['Golden Gate Park, the east end', 37.7700, -122.4560],
+      // (was −122.4560, which is Sharon Meadow — an open field, now its own zone: 2026-09-28)
+      ['Golden Gate Park, the east end', 37.7700, -122.4610],
       ['Golden Gate Park, by Stow Lake', 37.7690, -122.4730],
       ['Golden Gate Park, the ocean end', 37.7690, -122.4980],
       ['the Presidio, above Baker Beach', 37.7950, -122.4750],

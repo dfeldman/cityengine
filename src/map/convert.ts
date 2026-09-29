@@ -36,8 +36,14 @@ export interface ConvertContext {
   /** cm, v2 datum frame */
   zFloor: number
   dict: DictBuilder
-  /** the raw ground, v2 frame metres — fine blocks where loaded, the coarse grid elsewhere */
+  /** the raw ground, v2 frame metres — the shipped terrain model; what AREAS are draped on */
   heightAt: (x: number, z: number) => number
+  /**
+   * The ground things STAND on: the raw ground raised to a street's level inside its corridor (city/grade.ts) —
+   * exactly `Terrain.heightAt` in the renderer, which is what building feet and point things have always been
+   * placed with. Defaults to `heightAt` (a converter run without the streets' levelling).
+   */
+  groundAt?: (x: number, z: number) => number
   /** the stable ref of a street (needs every edge in the city to number dual carriageways consistently) */
   edgeRef: (e: PackedEdge) => string
   /** counters for the report */
@@ -103,7 +109,9 @@ export function convertTile(t: TileData, ctx: ConvertContext): MapTile {
     if (v < 1 && ctx.stats) ctx.stats.belowFloor++
     return v
   }
-  const ground = (x: number, z: number): number => zc(ctx.heightAt(x, z))
+  const standAt = ctx.groundAt ?? ctx.heightAt
+  const ground = (x: number, z: number): number => zc(standAt(x, z))
+  const rawGround = (x: number, z: number): number => zc(ctx.heightAt(x, z))
 
   const nodes: number[] = []
   const nodeIds: Record<number, number> = {}
@@ -127,8 +135,10 @@ export function convertTile(t: TileData, ctx: ConvertContext): MapTile {
   }
   /** a way over a flat x,z list, every node its own, z from the ground */
   const ringWay = (flat: number[], role: Way['role']): Way => {
+    // areas are draped on the raw ground (terrain.drapeRaw); everything else stands on the levelled ground
+    const g = role === 'area' || role === 'hole' ? rawGround : ground
     const ns: number[] = []
-    for (let i = 0; i < flat.length; i += 2) ns.push(node(flat[i], flat[i + 1], ground(flat[i], flat[i + 1])))
+    for (let i = 0; i < flat.length; i += 2) ns.push(node(flat[i], flat[i + 1], g(flat[i], flat[i + 1])))
     return { role, nodes: ns }
   }
 
@@ -199,7 +209,7 @@ export function convertTile(t: TileData, ctx: ConvertContext): MapTile {
   const footOf = (ring: number[]): number => {
     const pts: { x: number; z: number }[] = []
     for (let i = 0; i < ring.length; i += 2) pts.push({ x: ring[i], z: ring[i + 1] })
-    return zc(buildingFoot(simplifyRing(pts), ctx.heightAt))
+    return zc(buildingFoot(simplifyRing(pts), standAt))
   }
   const centreOf = (ring: number[]): [number, number] => {
     let x = 0
@@ -257,8 +267,11 @@ export function convertTile(t: TileData, ctx: ConvertContext): MapTile {
   for (const f of t.fringe as PackedFringe[]) {
     const way = addWay(ringWay(f.ring, 'footprint'))
     const [cx, cz] = centreOf(f.ring)
+    // far massing keeps its own, cheaper rule (render/fringe.ts): the lowest CORNER, less 0.3 m
+    let low = Infinity
+    for (let i = 0; i < f.ring.length; i += 2) low = Math.min(low, standAt(f.ring[i], f.ring[i + 1]))
     buildings.push({
-      ref: `b${f.id}`, kind: f.palette ? 'restyled' : 'generic', lod: 'far', way, cx: lx(cx), cy: ly(cz), z: footOf(f.ring),
+      ref: `b${f.id}`, kind: f.palette ? 'restyled' : 'generic', lod: 'far', way, cx: lx(cx), cy: ly(cz), z: zc(low - 0.3),
       h: Math.round(f.height * 100), roof: roofOf(f), style: dict.id('styles', f.style), seed: f.id,
       ...(f.palette ? { palette: f.palette } : {}),
     })

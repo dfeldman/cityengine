@@ -24,6 +24,7 @@
  * the same every session, which is what makes two rides down the same street comparable.
  */
 import { mkdir, writeFile } from 'node:fs/promises'
+import { existsSync, readFileSync } from 'node:fs'
 import { spawnSync } from 'node:child_process'
 import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
@@ -34,7 +35,8 @@ import { Elevation, ATTRIBUTION as TERRAIN_CREDIT, metresPerPixel } from './terr
 import { Terrain, type PackedTerrain } from '../src/city/terrain.ts'
 import { TILE, splitPackage, type CityIndex, type TileEntry } from '../src/city/tiles.ts'
 import { waterLookup } from '../src/render/watermask.ts'
-import { TREE_CAP, TREES_PER_KM2, packPlantings, plantCity } from '../src/city/plantings.ts'
+import { MIN_SPACING, TREE_CAP, TREES_PER_KM2, newPlantReport, packPlantings, plantCity, type PlantReport } from '../src/city/plantings.ts'
+import { PlantZones } from '../src/city/zone-planting.ts'
 import { mapEdges, packRide, rideFor } from '../src/city/ridefile.ts'
 import { Projection, haversine } from '../src/city/geo.ts'
 import { COURT_MAX_M2, courtEligible, courtSport, fitCourt, ringArea } from '../src/city/sports.ts'
@@ -86,6 +88,9 @@ import { region } from '../src/city/region.ts'
 import { classifierFor } from '../src/city/building-types.ts'
 import { buildSigns } from './signs.ts'
 import { insetNested } from '../src/city/nesting.ts'
+import { GroundModel } from '../src/map/ground.ts'
+import { writeV3 } from './v3-writer.ts'
+import { localZones, zoneTouchesRect, type LocalZone, type ZoneFile } from '../src/map/zones.ts'
 import { NeighbourGrid, centroid, hasHeightTag, inferLevels, taggedLevels, type TaggedNeighbour } from './heights.ts'
 
 const OUT = resolve(import.meta.dirname, '..', 'public', 'cities')
@@ -211,6 +216,9 @@ const sameBox = (a: { south: number; north: number; west: number; east: number }
  */
 function auditStage(stage: string, spec: CitySpec, extra: string[] = []): void {
   if (process.argv.includes('--no-audit')) return
+  // a test area is a small cut of a real city: its region's manifest names buildings mostly outside it, so the
+  // manifest audit cannot pass there and says nothing about the city it came from
+  if (spec.test) { console.log(`  (bake audit stage ${stage} skipped: ${spec.id} is a test area)`); return }
   const bin = resolve(import.meta.dirname, '..', 'node_modules', '.bin', 'vite-node')
   const r = spawnSync(bin, [resolve(import.meta.dirname, 'bake-audit.ts'), '--', `--city=${spec.id}`,
     `--stage=${stage}`, ...extra], { stdio: 'inherit' })
@@ -1300,7 +1308,8 @@ async function bake(spec: CitySpec): Promise<void> {
    * overstate its data, because everything downstream believes it.
    */
   const terrainFine: PackedTerrain = {
-    x0: fx0, z0: fz0, step: FINE_STEP, cols: fcols, rows: frows, heights: Array.from(fineGround),
+    // only its provenance is used now (the shipped model's fine blocks carry it); the tiles are cut from `shipped`
+    x0: fx0, z0: fz0, step: FINE_STEP, cols: fcols, rows: frows, heights: [],
     src: `terrarium z${FINE_ZOOM}`, resM: Math.round(metresPerPixel(spec.centre.lat, FINE_ZOOM) * 100) / 100,
   }
 
@@ -1315,9 +1324,45 @@ async function bake(spec: CitySpec): Promise<void> {
    * against the water level (#31, #37), it spans water where the fine and coarse grids are both the
    * flattened sea bed and agree by construction, and it is not worth disturbing for no gain.
    */
-  const groundFine = (x: number, z: number): number => (inFineGrid(x, z)
-    ? sampleGridF(fineGround, fcols, frows, fx0, fz0, FINE_STEP, x, z)
-    : sampleGrid(ground, cols, rows, tx0, tz0, STEP, x, z))
+  /*
+   * ---- THE TERRAIN MODEL (docs/MAP-FORMAT.md §5.7, owner 2026-09-28).
+   *
+   * Fine ground only where a ZONE asks for it — the big parks, the coast — and the coarse grid everywhere else,
+   * so the streets and the buildings stand on smooth ground rather than on every kerb and mound the 4 m
+   * samples carry. The fine grid above is still sampled over the whole detail box, because the coarse grid is
+   * averaged down from it; what changes is only which of the two each tile SHIPS.
+   *
+   * Everything baked from here on — the streets' levels below, and every height map format v3 writes — reads
+   * `shipped`, which is the renderer's own sampler over exactly the blocks the tiles carry. Zones decide the
+   * model; nothing that samples it knows zones exist.
+   */
+  const zones = loadZones(spec, (lat, lon) => proj.toLocal({ lat, lon }))
+  const blockTiles: [number, number][] = []
+  const fineTiles = new Set<string>()
+  {
+    // the tiles fully inside the fine grid, as `splitPackage` has always cut them
+    const ta = Math.ceil(fx0 / TILE)
+    const tb = Math.ceil(fz0 / TILE)
+    const tc = Math.floor((fx0 + (fcols - 1) * FINE_STEP) / TILE) - 1
+    const td = Math.floor((fz0 + (frows - 1) * FINE_STEP) / TILE) - 1
+    const fineZones = zones.filter((zn) => zn.props.terrain === 'fine')
+    for (let tx = ta; tx <= tc; tx++) for (let tz = tb; tz <= td; tz++) {
+      blockTiles.push([tx, tz])
+      const r = [tx * TILE, tz * TILE, (tx + 1) * TILE, (tz + 1) * TILE] as const
+      if (fineZones.some((zn) => zoneTouchesRect(zn, ...r))) fineTiles.add(`${tx},${tz}`)
+    }
+  }
+  const shipped = new GroundModel({
+    coarse: { x0: tx0, z0: tz0, step: STEP, cols, rows, h: ground },
+    fine: { x0: fx0, z0: fz0, step: FINE_STEP, cols: fcols, rows: frows, h: fineGround },
+    fineTiles, tiles: blockTiles, fineStep: FINE_STEP, tile: TILE,
+  })
+  for (const [k, b] of shipped.blocks) {
+    if (shipped.fineTiles.has(k)) { b.src = terrainFine.src; b.resM = terrainFine.resM } else { b.src = terrain.src; b.resM = terrain.resM }
+  }
+  console.log(`  terrain model: ${zones.length} zone(s); ${fineTiles.size} of ${blockTiles.length} tiles ship fine ground `
+    + `(${FINE_STEP} m), the rest coarse (${STEP} m)`)
+  const groundFine = (x: number, z: number): number => shipped.heightAt(x, z)
 
   /*
    * Street heights come from the SAME grid, not from the tiles directly. Two samplings of one noisy
@@ -1774,7 +1819,7 @@ async function bake(spec: CitySpec): Promise<void> {
     seaLevel,
     box: { x0: -ext.west, x1: ext.east, z0: -ext.south, z1: ext.north },
     start: { edgeId: start.e.id, s: 0 },
-    edges: kept, buildings, areas, trees, rails, pois, furniture, landmarks, terrain, terrainFine, fringe,
+    edges: kept, buildings, areas, trees, rails, pois, furniture, landmarks, terrain, fringe,
     ...(sportsCourts.length ? { courts: sportsCourts } : {}),
     ...(spec.skyline ? {
       skyline: spec.skyline.map((s) => {
@@ -1838,17 +1883,17 @@ async function bake(spec: CitySpec): Promise<void> {
   const cap = Math.max(TREE_CAP, Math.round(TREES_PER_KM2 * km2))
   // the city's own record of its street trees, where the region has one (SF: tools/sf-trees.ts), in place of the
   // mapped and the guessed ones
-  const street = spec.region === 'san-francisco'
+  const street = spec.streetTrees === 'datasf'
     ? await Promise.all([import('./sf-trees.ts'), import('../src/city/sf/trees.ts')])
       .then(async ([t, f]) => f.sfPlantings(await t.fetchStreetTrees(detailBboxOf(spec)), (g) => proj.toLocal(g), () => true))
       .catch((e: unknown) => { console.warn(`  sf-trees: not fetched (${String(e).slice(0, 120)})`); return undefined })
     : undefined
-  // what grows INSIDE the parks, where the city's street tree list stops (city/park-planting.ts)
-  const parks = spec.region === 'san-francisco'
-    ? await import('../src/city/sf/parks.ts').then((m) => m.sfParkRule((g) => proj.toLocal(g)))
-    : undefined
-  pkg.plantings = packPlantings(plantCity(pkg, cap, street, parks))
-  console.log(`  ${pkg.plantings.length / 5} trees planted (${street ? `${street.length} street trees from the city's list, ` : ''}mapped, parks, boulevards; cap ${cap} over ${km2.toFixed(1)} km²)`)
+  // everything else by ZONE (src/city/zone-planting.ts): the parks' planting, and invented street rows wherever a
+  // zone says the register does not reach. A city with no planting zones keeps the old rules.
+  const plantZones = new PlantZones(zones)
+  const planted = newPlantReport()
+  pkg.plantings = packPlantings(plantCity(pkg, cap, street, plantZones, planted))
+  logPlanting(pkg.plantings.length / 5, planted, plantZones.count, cap, km2)
   await mkdir(OUT, { recursive: true })
   const file = resolve(OUT, `${spec.id}.json`)
   /*
@@ -1862,7 +1907,7 @@ async function bake(spec: CitySpec): Promise<void> {
   await writeFile(file, JSON.stringify(withoutFineGrid(pkg)))
   const kb = Math.round((await import('node:fs')).statSync(file).size / 1024)
   console.log(`  → public/cities/${spec.id}.json  ${kb} kB`)
-  await writeTiles(pkg, streetRegion.riverDrop ?? 0)
+  await writeTiles(pkg, streetRegion.riverDrop ?? 0, shipped, zones, datumRaw)
   await writeRides(pkg)
   // and last, the checks that genuinely need the finished tiles: direction A confirmed against what was
   // actually written, and direction B — what is standing in the city with nothing but the classifier
@@ -2375,16 +2420,16 @@ async function main(): Promise<void> {
       const ex = extentOf(spec)
       const km2 = ((ex.west + ex.east) * (ex.south + ex.north)) / 1e6
       const cap = Math.max(TREE_CAP, Math.round(TREES_PER_KM2 * km2))
-      const street = spec.region === 'san-francisco'
+      const street = spec.streetTrees === 'datasf'
         ? await Promise.all([import('./sf-trees.ts'), import('../src/city/sf/trees.ts')])
           // (clipped to the package's own extent: it may be from before the box grew)
           .then(async ([t, f]) => f.sfPlantings(await t.fetchStreetTrees(bboxOf(spec)), (g) => proj.toLocal(g),
             (x, z) => Math.abs(x) <= pkg.radius && Math.abs(z) <= pkg.radius))
         : undefined
-      const parks = spec.region === 'san-francisco'
-        ? await import('../src/city/sf/parks.ts').then((m) => m.sfParkRule((g) => proj.toLocal(g)))
-        : undefined
-      pkg.plantings = packPlantings(plantCity(pkg, cap, street, parks))
+      const plantZones = new PlantZones(loadZones(spec, (lat, lon) => proj.toLocal({ lat, lon })))
+      const planted = newPlantReport()
+      pkg.plantings = packPlantings(plantCity(pkg, cap, street, plantZones, planted))
+      logPlanting(pkg.plantings.length / 5, planted, plantZones.count, cap, km2)
       console.log(`${spec.id}: ${pkg.plantings.length / 5} trees planted${street ? ` (${street.length} from the city's list)` : ''}`)
       await writeFile(resolve(OUT, `${spec.id}.json`), JSON.stringify(withoutFineGrid(pkg)))
       await writeTiles(pkg, region(spec.region).riverDrop ?? 0)
@@ -2550,6 +2595,41 @@ function sampleGridF(h: Float64Array, cols: number, rows: number, ox: number, oz
   return a * (1 - tz) + b * tz
 }
 
+/** One line for the planting, and a second for what it turned away. */
+function logPlanting(n: number, r: PlantReport, zoneCount: number, cap: number, km2: number): void {
+  if (!r.zoned) {
+    console.log(`  ${n} trees planted by the old rules (no planting zones for this city); `
+      + `${r.tooClose} turned away within ${MIN_SPACING} m of a tree already planted`)
+    return
+  }
+  console.log(`  ${n} trees planted by ${zoneCount} planting zone(s): ${r.register} from the city's register, ${r.mapped} mapped, `
+    + `${r.streetRows} invented along streets, ${r.parks} in parks`)
+  console.log(`    turned away: ${r.tooClose} within ${MIN_SPACING} m of a tree already planted, `
+    + `${r.crownInBuilding} whose crown would have reached into a building`
+    + (r.capped ? `, ${r.capped} by the old city-wide ceiling of ${cap} (${km2.toFixed(1)} km²) — a zone's density is being overruled` : ''))
+}
+
+/**
+ * The city's zones (src/map/zones.ts): `data/zones/<region>.json` then `data/zones/<city>.json`, both optional,
+ * in local metres. A test area cut from a city (sf-mini) gets its region's zones exactly as the city does.
+ */
+function loadZones(spec: CitySpec, toLocal: (lat: number, lon: number) => { x: number; z: number }): LocalZone[] {
+  const out: LocalZone[] = []
+  const seen = new Set<string>()
+  for (const name of [...(spec.region && spec.region !== spec.id ? [spec.region] : []), spec.id]) {
+    const f = resolve(import.meta.dirname, '..', 'data', 'zones', `${name}.json`)
+    if (!existsSync(f)) continue
+    const file = JSON.parse(readFileSync(f, 'utf8')) as ZoneFile
+    for (const zn of localZones(file.zones, toLocal)) {
+      // a city's zone of the same ref replaces its region's
+      if (seen.has(zn.ref)) out.splice(out.findIndex((q) => q.ref === zn.ref), 1)
+      seen.add(zn.ref)
+      out.push(zn)
+    }
+  }
+  return out
+}
+
 /** The package as it ships as one file: everything except the fine ground grid, which only the tiles want. */
 function withoutFineGrid(pkg: CityPackage): CityPackage {
   const { terrainFine: _fine, ...rest } = pkg
@@ -2578,14 +2658,19 @@ function sampleGrid(h: number[], cols: number, rows: number, ox: number, oz: num
  * `public/cities/<id>/index.json` and `public/cities/<id>/tiles/<tx>_<tz>.json`. The old tiles are cleared
  * first, so a smaller box leaves none behind.
  */
-async function writeTiles(pkg: CityPackage, riverDrop: number): Promise<void> {
+/*
+ * `shipped` is absent only on the replant-only path (`--trees`), which rebuilds tiles from the saved monolith: that
+ * never held per-tile ground (the fine grid was always left out of it), so those tiles carry none, as before, and
+ * no v3 is written from them.
+ */
+async function writeTiles(pkg: CityPackage, riverDrop: number, shipped?: GroundModel, zones: LocalZone[] = [], datumRaw?: number): Promise<void> {
   const { rm } = await import('node:fs/promises')
   const terrain = new Terrain(pkg.terrain)
   // one level per river, however many polygons OSM draws it as (city/package.ts waterLevels)
   const water = pkg.areas.filter((a) => a.kind === 'water')
   const levels = waterLevels(water, (x, z) => terrain.heightAt(x, z), riverDrop, pkg.seaLevel ?? null)
   const byRing = new Map(water.map((a, k) => [a.ring, levels[k]]))
-  const { index, tiles } = splitPackage(pkg, (_ring, area) => byRing.get(area.ring))
+  const { index, tiles } = splitPackage(pkg, (_ring, area) => byRing.get(area.ring), shipped?.blocks)
   const dir = resolve(OUT, pkg.id)
   await rm(resolve(dir, 'tiles'), { recursive: true, force: true })
   await mkdir(resolve(dir, 'tiles'), { recursive: true })
@@ -2625,6 +2710,19 @@ async function writeTiles(pkg: CityPackage, riverDrop: number): Promise<void> {
   }
   const text = JSON.stringify(full)
   await writeFile(resolve(dir, 'index.json'), text)
+  /*
+   * ---- and the same city in MAP FORMAT v3 (docs/MAP-FORMAT.md), beside it in `v3/`: integer centimetres, every
+   * height baked from the terrain model the tiles ship (`shipped`), the zones in the index, the datum's true
+   * elevation recorded. The game reads v3 when it is there.
+   */
+  if (shipped) {
+    const v3 = writeV3(dir, { ...full, terrain: full.terrain ? { ...full.terrain, heights: index.terrain!.heights } : undefined },
+      [...tiles.values()], { raw: (x, z) => shipped.heightAt(x, z), zones, datumMsl: datumRaw })
+    console.log(`  → public/cities/${pkg.id}/v3/  ${v3.index.tiles.length} tiles, ${Math.round(v3.bytes / 1024)} kB · zFloor ${v3.index.zFloor} cm, `
+      + `datum ${v3.index.datumMsl} m above sea level · ${v3.stats.zOverrides} streets with their own junction z, `
+      + `${v3.stats.belowFloor} heights below the floor`)
+    if (v3.stats.belowFloor > 0) throw new Error('map v3: a real height fell at or below zFloor, where it would read as "no height"')
+  }
   const biggest = entries.reduce((m, e) => Math.max(m, e.bytes), 0)
   console.log(`  → public/cities/${pkg.id}/  ${entries.length} tiles, ${Math.round(total / 1024)} kB `
     + `(largest ${Math.round(biggest / 1024)} kB), index ${Math.round(text.length / 1024)} kB`

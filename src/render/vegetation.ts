@@ -122,7 +122,7 @@ export class Vegetation {
     return {
       name: 'trees',
       build: (near) => {
-        const ps = thicken(unpackPlantings(near.tile.plantings), near.tile.edges, this.thickness)
+        const ps = thicken(unpackPlantings(near.tile.plantings, near.tile.plantingY), near.tile.edges, this.thickness)
         this.byTile.set(near.key, ps)
         this.dirty = true
         const shadow = this.castShadows(ps, `shadow:trees:${near.key}`)
@@ -489,7 +489,8 @@ export class Vegetation {
         // on the ground, not at sea level: a city with any relief left every tree hanging in the air — unless
         // the planting carries its own height, which is a tree on a raised deck (docs/SKYPARKS.md) and must
         // NOT be lifted by the terrain under it: the ground there is the street, twenty metres below.
-        new Vector3(p.x, p.y !== undefined ? p.y + 0.02 : 0.16 + this.terrain.heightAt(p.x, p.z), p.z)).copyToArray(mats, i * 16)
+        // (and the ground itself is baked, map format v3, where the city has it)
+        new Vector3(p.x, p.y !== undefined ? p.y + 0.02 : 0.16 + (p.ground ?? this.terrain.heightAt(p.x, p.z)), p.z)).copyToArray(mats, i * 16)
       model.push(m)
     })
     return { mats, model }
