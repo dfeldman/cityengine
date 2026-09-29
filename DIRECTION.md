@@ -99,5 +99,9 @@ From the owner, 2026-09-28. The game is playable; these are the worst of it:
 2. **Occlusion defects.** Rendering-group ordering (ARCHITECTURE-MAP §14: Babylon clears depth between
    groups, so terrain cannot hide a building) and the ground occluder's reach. Baked z (MAP-FORMAT rule 3)
    removes one class of these; the group scheme is the rest.
+2b. **Traffic** (done 2026-09-29, README "Traffic"): dense cars under lights and stop signs, the rider held behind
+   them, rare junction collisions with a tip-over, brakes. A very basic delivery loop exists (README "The delivery game, version 0"):
+   one offer, two buildings named by intersection, pickup then drop-off. Next: restaurants, values and tips,
+   points (collisions cost), several offers to choose between, the compass.
 3. **Some custom-modelled buildings are bad.** Under §3 most of them should become clustered generics or
    restyles rather than be modelled again.

@@ -8,7 +8,7 @@ because you felt like it, and you are on Rue Payenne.
 npm install && npm run dev
 ```
 
-Then <http://localhost:5200>. `?time=night` (or `dawn`, `dusk`) changes the hour, and `?weather=rain` (or `overcast`) the sky. Arrow **up/down** set the effort, **space** coasts, **←/→** ask for a turn at the
+Then <http://localhost:5200>. `?time=night` (or `dawn`, `dusk`) changes the hour, and `?weather=rain` (or `overcast`) the sky. Arrow **up/down** set the effort, **space** stops pedalling (the brake comes on after a moment), **←/→** ask for a turn at the
 junction ahead, **P** pauses. `?city=brooklyn-heights` goes somewhere else; `?device=treadmill` runs it;
 `?showcase=1` shows the facades on their own.
 
@@ -88,12 +88,11 @@ approach. It only ever takes speed away.
 
 ### The descent is a headline feature, and that is a design goal
 
-**There are no brakes, on purpose.** Rolling down California Street at full speed is the most enjoyable thing
-in the game, and nothing should be added that lets a rider scrub speed off a hill — no brake control, no cap,
-no "safety" slowdown. Corners already take speed away where physics says they must, and that is the only
-thing that may.
-
-Two consequences follow, and they bind the rest of the project:
+Rolling down California Street at full speed is the most enjoyable thing in the game. **Since 2026-09-29 the bike
+has brakes** (the owner: *"if power goes to 0 then it should go 'negative' and that should be a brake"*): with dense
+traffic and timed lights, a bike that could not slow was unfair. Stop pedalling for more than about half a second
+and the brake comes on (up to 3 m/s², more than any hill here pulls); keep pedalling, however lightly, and a descent
+is as fast as ever. Cars ahead of a descending rider make way rather than hold them.
 
 - **The engine has to keep up with it.** 50 km/h is 14 m/s, so streaming, level of detail and culling must
   feed the camera far faster than a flat ride ever asks. A stutter on a fast descent costs more than a
@@ -102,6 +101,39 @@ Two consequences follow, and they bind the rest of the project:
   Any performance claim about this game should come from a fast descent or it is not evidence.
 
 Hills are therefore an asset, not a terrain problem to be smoothed away.
+
+## The delivery game, version 0 (2026-09-29)
+
+A job offer pops up on the left a few seconds into the ride: **pick up** near one intersection, **deliver** near
+another — two real buildings, both within a kilometre of you, named for now by the nearest intersection of two named
+streets. **Y** (or click) takes it, **X** turns it down. Ride to the first building, then the second — arriving is
+getting within about 20 m of its walls — and a banner says you delivered it. **Ignore it and nothing happens at
+all**: the offer goes away after 30 s, the ride stays a free ride, and another offer comes along later.
+
+No route is drawn and there is no pointer yet (a compass comes later): reading the street signs and the minimap is
+the game. The logic is its own module, `src/game/delivery.ts` (no Babylon, no DOM; `tests/delivery.test.ts`); the
+card is `src/ui/delivery-card.ts`; `game.ts` only answers its questions about the city (buildings near a point, the
+nearest named intersection, how far a footprint is from a rideable street).
+
+## Traffic (2026-09-29)
+
+The city is full of cars, mostly slow — the delivery game's joke is that the bike is faster. `src/sim/traffic.ts`:
+
+- **Intelligent Driver Model** car-following (smooth starts, speed-dependent gaps, early gentle braking,
+  stop-and-go waves), every driver with their own acceleration, braking, time gap and standstill gap.
+- **Junctions** (`src/sim/signals.ts`): timed **lights** wherever the renderer draws them (two groups alternating,
+  15 s green, 3 s amber, 2.5 s all-red; live lamps in `render/lamps.ts`), **all-way** and **two-way stops**, and
+  uncontrolled joins. Left turns yield to oncoming traffic, clear on the amber, and lose patience after 8 s. Nobody
+  enters a junction without room to leave it. Turns follow curves, not the junction's centre point.
+- **The rider**: held behind a car on a narrow street (and behind anything standing in their path), alongside on a
+  wide one; never stuck for good (held 20 s by one vehicle, they squeeze past). Cars never run into the rider along
+  a street and never pull into a junction the rider is in or about to reach — **collisions come only from moving
+  cross traffic**, mostly when the rider runs a red. A collision is a slapstick tip-over, a message, and on you go
+  (`render/rider.ts` `tumble`; points later).
+- **Never in view**: cars appear and vanish only out of the rider's sight; at a dead end they turn round.
+- **Density** `dense` = 80 cars per km of street, times a zone's `traffic` multiplier — measured with
+  `tools/traffic-soak.ts` on real streets: 60 flows, 80 queues and recovers, 100 locks solid. `?cars=0` turns it off,
+  `?traffic=<n>` sets a density for measuring.
 
 ## Where it comes from
 

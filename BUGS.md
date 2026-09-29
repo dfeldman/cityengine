@@ -9850,3 +9850,16 @@ package without tile counts takes that path, so it is not a live bug; note it if
 
 **Lesson:** an A/B experiment must hold everything but the one variable. Both arms here shared the adapted
 index, which was the variable that mattered.
+
+### #232 On steep hills the road, its markings and the paths draw at different heights
+
+**Reported by the owner, 2026-09-29**, while watching the new traffic: *"some funny rendering glitches on steep
+hills where the road, lines, and paths all appear on different heights. this was likely preexisting."*
+
+Not investigated yet. Likely cause, from ARCHITECTURE-MAP §9 and §14: the ground is several near-coplanar
+layers separated by rendering ORDER, each draped on the terrain by its own vertices — the draped asphalt, the
+"artificial flat carriageway" laid over it at ~2 m cells, markings in short dashes, paths with `drapeRaw` —
+and on a steep grade those surfaces are sampled at different points (and some at the street's levelled grade,
+some at the raw ground), so their chords diverge by more than the layering can hide. Needs a place and a
+screenshot to start from; `tools/views.ts` on the steepest `sf-mini` streets (Masonic, Frederick ~16%) is
+the obvious harness.

@@ -11,6 +11,7 @@
  */
 import { goTo, parseLatLon, type CityRef } from './ui/goto.ts'
 import { HUD_CSS } from './ui/hud.ts'
+import { DELIVERY_CSS } from './ui/delivery-card.ts'
 import { MINIMAP_CSS } from './ui/minimap.ts'
 import { THEME_CSS } from './ui/theme.ts'
 import { LOADING_CSS, WELCOME_CSS } from './ui/loading.ts'
@@ -20,7 +21,7 @@ const params = new URLSearchParams(location.search)
 const canvas = document.getElementById('view') as HTMLCanvasElement
 
 const style = document.createElement('style')
-style.textContent = HUD_CSS + MINIMAP_CSS + THEME_CSS + LOADING_CSS + WELCOME_CSS + CARD_CSS
+style.textContent = HUD_CSS + MINIMAP_CSS + THEME_CSS + LOADING_CSS + WELCOME_CSS + CARD_CSS + DELIVERY_CSS
 document.head.appendChild(style)
 
 if (params.get('model')) {
@@ -160,7 +161,8 @@ if (params.get('model')) {
     time: platform?.time ?? (params.get('time') as 'dawn' | 'day' | 'dusk' | 'night') ?? undefined,
     weather: platform?.weather ?? (params.get('weather') as 'clear' | 'overcast' | 'rain') ?? undefined,
     advance: params.get('advance') ? Number(params.get('advance')) : undefined,
-    cars: params.get('cars') === '1',
+    // road traffic is ON by default since 2026-09-29 (the delivery game's gridlock); ?cars=0 turns it off
+    cars: params.get('cars') !== '0',
     // ?veg=3 — how many times the baked count a closed wood grows to (render/infill.ts); ?vegmerge=0 turns
     // off the material and far-tier merging of BUGS.md #205, so the two can be measured against each other
     veg: params.get('veg') ? Number(params.get('veg')) : undefined,

@@ -169,6 +169,38 @@ export class Rider {
   }
 
   /** Out of sight, for a recycled body with nobody to be. */
+  /**
+   * A collision (owner, 2026-09-29): "maybe the bike and avatar tip over… we don't want the player to think they've
+   * been seriously injured — it's a fun game, not GTA." A slapstick topple onto one side, a beat on the ground, and
+   * back up. `side` is +1 or −1, which way to fall (away from the car). No ragdoll, nothing dramatic.
+   */
+  tumble(side: 1 | -1): void {
+    if (this.tumbleT >= 0) return
+    this.tumbleT = 0
+    this.tumbleSide = side
+  }
+  /** still going over, lying there, or getting up: the game holds the ride until this is false */
+  get tumbling(): boolean { return this.tumbleT >= 0 }
+  private tumbleT = -1
+  private tumbleSide: 1 | -1 = 1
+  private static readonly FALL = 0.35
+  private static readonly DOWN = 0.9
+  private static readonly RISE = 0.6
+  /** the roll this frame while tumbling, radians; null when not */
+  private tumbleRoll(dt: number): number | null {
+    if (this.tumbleT < 0) return null
+    this.tumbleT += dt
+    const t = this.tumbleT
+    const over = 1.35 * this.tumbleSide
+    const { FALL, DOWN, RISE } = Rider
+    let k: number
+    if (t < FALL) k = (t / FALL) ** 2                                     // gravity: slow, then all at once
+    else if (t < FALL + DOWN) k = 1 - 0.04 * Math.sin((t - FALL) * 18) * Math.exp(-(t - FALL) * 6)  // a little bounce
+    else if (t < FALL + DOWN + RISE) { const u = (t - FALL - DOWN) / RISE; k = 1 - u * u * (3 - 2 * u) }
+    else { this.tumbleT = -1; return null }
+    return over * k
+  }
+
   hide(): void { this.root.setEnabled(false) }
   show(): void { this.root.setEnabled(true) }
 
@@ -186,8 +218,11 @@ export class Rider {
          lean: number, working: boolean, groundY = 0): void {
     this.root.position.set(at.x, 0.05 + groundY, at.z)
     this.root.rotationQuaternion = Quaternion.RotationYawPitchRoll(heading, 0, 0)
+    // a tip-over, after a collision, is the cornering lean carried all the way: the bike and the rider roll onto
+    // their side about the tyres' contact with the road, stay down a moment, and get up
+    const roll = this.tumbleRoll(dt)
     this.body.rotationQuaternion = Quaternion.RotationAxis(
-      Vector3.Forward(), Math.max(-0.35, Math.min(0.35, lean)))
+      Vector3.Forward(), roll ?? Math.max(-0.35, Math.min(0.35, lean)))
 
     // Enforced every frame, not once at build. The kit re-asserts it as materials are created — clothes and
     // hair arrive over several seconds — so setting it once left the city washed out again a moment later.

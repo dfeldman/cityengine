@@ -52,10 +52,20 @@ export interface RideState {
   crank: number
 }
 
+/** watts at or under which the rider is not pedalling */
+export const ZERO_POWER = 10
+/** seconds of no power before the brake comes on, and how long it takes to come on fully */
+export const BRAKE_DELAY = 0.6
+export const BRAKE_RAMP = 0.5
+/** m/s², the brake fully on */
+export const BRAKE_HARD = 3
+
 export class Ride {
   private v = 0
   private crank = 0
   private braking = false
+  /** seconds at (near) zero power: the brake comes on after a moment of it */
+  private idle = 0
   private readonly cfg: RideConfig
 
   constructor(cfg: Partial<RideConfig> = {}) {
@@ -63,6 +73,9 @@ export class Ride {
   }
 
   get speed(): number { return this.v }
+
+  /** Stop dead — a collision (sim/traffic.ts): not animated, the rider simply stops and rides on. */
+  halt(): void { this.v = 0 }
 
   /**
    * One step. `grade` is rise over run; `cornerRadius` is the radius of the bend the rider is approaching,
@@ -76,6 +89,13 @@ export class Ride {
     grade: number,
     cornerRadius = Infinity,
     distanceToCorner = Infinity,
+    /**
+     * The vehicle ahead in the rider's lane, if any (sim/traffic.ts `leaderFor`): its speed and the clear road to
+     * its tail. The owner, 2026-09-29: on a narrow street the rider is stuck behind the car, so the virtual speed
+     * is held to its speed — a cap like the corner's, only ever downward. Absent on a descent (the traffic makes
+     * way instead), so the descent stays the rider's.
+     */
+    leader: { speed: number; gap: number } | null = null,
   ): RideState {
     if (deviceType === 'treadmill') {
       // The belt is the truth. Smoothing is for the eye only: the machine reports once a second and the
@@ -104,9 +124,21 @@ export class Ride {
     this.v += ((drive - gravity - rolling - drag) / mass) * dt
     if (this.v < 0) this.v = 0
 
+    /*
+     * BRAKES (owner, 2026-09-29): *"if power goes to 0 then it should go 'negative' and that should be a brake."*
+     * With dense traffic and timed lights a bike that could not slow was unfair — a red light it could not stop
+     * for, a car it could not avoid. Stop pedalling and the brake comes on: after 0.6 s of (near) zero power,
+     * because a trainer reports once a second and can read zero for a beat between strokes, easing in over half a
+     * second to 3 m/s² — more than any hill here pulls, so a rider can always stop. Keep pedalling and a descent
+     * is as fast as ever.
+     */
+    this.idle = power <= ZERO_POWER ? this.idle + dt : 0
+    const squeeze = Math.min(1, Math.max(0, (this.idle - BRAKE_DELAY) / BRAKE_RAMP))
+    if (squeeze > 0 && this.v > 0) this.v = Math.max(0, this.v - BRAKE_HARD * squeeze * dt)
+
     // The corner cap. A bend of radius r may be taken at √(a·r); if the rider is going faster than that and
     // the corner is close, they brake. Only ever downward.
-    this.braking = false
+    this.braking = squeeze > 0 && this.v > 0.1
     if (Number.isFinite(cornerRadius) && cornerRadius > 0) {
       const vMax = Math.sqrt(this.cfg.cornerAccel * cornerRadius)
       if (this.v > vMax) {
@@ -119,10 +151,20 @@ export class Ride {
       }
     }
 
+    // held behind the vehicle ahead: brake towards its speed as the gap closes, never through it
+    if (leader && this.v > leader.speed) {
+      const needed = (this.v * this.v - leader.speed * leader.speed) / (2 * this.cfg.brakeDecel)
+      if (leader.gap <= needed + 2) {
+        this.v = Math.max(leader.speed, this.v - this.cfg.brakeDecel * 2 * dt)
+        if (leader.gap < 0.5) this.v = Math.min(this.v, leader.speed)
+        this.braking = true
+      }
+    }
+
     this.crank += (power > 10 ? (this.v > 0.5 ? this.v * 0.9 : 1.2) : 0) * dt
     return {
       speed: this.v, grade, power: m.power, working: power > 10,
-      coasting: power <= 10 && this.v > 0.3, braking: this.braking, crank: this.crank,
+      coasting: power <= ZERO_POWER && this.v > 0.3 && !this.braking, braking: this.braking, crank: this.crank,
     }
   }
 }

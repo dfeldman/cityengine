@@ -49,7 +49,13 @@ import { SF_STAIRWAYS } from './render/landmarks/sf/stairways.ts'
 import { Sky } from './render/sky.ts'
 import { Landmarks, landmarkManifest, packedIds } from './render/landmarks.ts'
 import { Statues, statueManifest } from './render/statues.ts'
-import { Traffic } from './sim/traffic.ts'
+import { Traffic, onEdge, type RiderNow } from './sim/traffic.ts'
+import { Signals } from './sim/signals.ts'
+import { SignalLamps } from './render/lamps.ts'
+import { DEFAULTS as DELIVERY_DEFAULTS, Delivery, type DeliveryEvent } from './game/delivery.ts'
+import { DeliveryCard } from './ui/delivery-card.ts'
+import { SIZE, boxOf } from './sim/collide.ts'
+import { inRing } from './map/zones.ts'
 import { BakedCrowd } from './render/crowd-baked.ts'
 import { Rider } from './render/rider.ts'
 import { Signs, type SignedJunction } from './render/signs.ts'
@@ -120,7 +126,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * look built rather than generated lives up there.
    */
   view?: 'ride' | 'high'
-  /** road traffic (cars and buses): off unless asked for */
+  /** road traffic (cars and buses): on unless `?cars=0` (2026-09-29) */
   cars?: boolean
   /**
    * How many times the baked tree count a CLOSED wood grows to at render time (render/infill.ts). The park
@@ -547,10 +553,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   mark('signs')
   const level = opts.traffic ?? 'some'
   /*
-   * No cars, by the user's decision (2026-09-21): "this is a fantasy with no cars" — the boxy models and
-   * their straight-line driving looked wrong, and a city without them is a better ride. Trains, trams and
-   * cable cars still run (they are drawn by Life from the rails, not by Traffic). `?cars=1` brings the road
-   * traffic back for anyone working on it.
+   * CARS ARE BACK, and dense (owner, 2026-09-29), reversing 2026-09-21's "this is a fantasy with no cars": the
+   * delivery game is a spoof of gridlock. Dense traffic that turns at junctions under lights and stop signs, the
+   * rider held behind cars on narrow streets, and collisions in junctions (sim/traffic.ts, sim/signals.ts; the
+   * rules are in memory streetrunner-traffic-rules). `?cars=0` turns road traffic off; trains, trams and cable
+   * cars run either way (they are drawn by Life from the rails, not by Traffic).
    */
   /*
    * `?traffic=<n>` and `?crowd=<n>` take a NUMBER — a density, beyond the named levels — for measuring what
@@ -567,9 +574,29 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     return Number.isFinite(n) && n > 0 ? n : null
   }
   const trafficN = numArg('traffic')
-  const traffic = new Traffic(graph, trafficN !== null
-    ? { density: trafficN, range: Math.max(220, 40 * Math.sqrt(trafficN)), clearance: 7 }
-    : opts.cars ? level : 'none')
+  // who may go at each junction: the renderer's lit junctions are the timed ones (sim/signals.ts)
+  const signals = new Signals(graph, (id) => city.lit.has(id), (id) => city.litDecided(id))
+  // how thick the traffic is, by zone (ZoneProps.traffic, a multiplier): Chinatown gridlocked, the Presidio quiet
+  const trafficZones = (index.zones ?? []).filter((z) => typeof z.props.traffic === 'number').sort((a, b) => b.priority - a.priority)
+  const zoneFactor = (p: { x: number; z: number }): number => {
+    for (const z of trafficZones) {
+      const [x0, z0, x1, z1] = z.bbox
+      if (p.x >= x0 && p.x <= x1 && p.z >= z0 && p.z <= z1 && inRing(z.ring, p.x, p.z)) return z.props.traffic!
+    }
+    return 1
+  }
+  const trafficLevel = trafficN !== null
+    ? { density: trafficN, range: Math.max(220, 40 * Math.sqrt(trafficN)) }
+    : !opts.cars ? 'none' as const
+    : (opts.traffic && opts.traffic !== 'some' ? opts.traffic : 'dense' as const)
+  const traffic = new Traffic(graph, trafficLevel, { signals, zoneFactor })
+  let lastRider: RiderNow | null = null
+  // the lights' live lamps, on the SAME clock the traffic obeys (with the traffic off, the lights still cycle)
+  const lamps = off.has('furniture') ? null : new SignalLamps(scene)
+  let lightClock = 0
+  let collisions = 0
+  // a few seconds' grace after a collision: knocked down twice in a row while getting up is not fun
+  let graceUntil = 0
   // the crowd's own density: `?crowd=crowded` for a Saturday; the traffic level otherwise
   const crowdN = numArg('crowd')
   const crowdLevel = (new URLSearchParams(location.search).get('crowd') as 'none' | 'some' | 'busy' | 'crowded' | null) ?? level
@@ -582,13 +609,18 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * The pools follow the density asked for (see `numArg` above), with the shipped defaults when nothing is.
    * Generous multiples of the density, because the count is over the whole populated RANGE, not per km.
    */
+  /*
+   * Dense traffic needs pools to match: the default 90 cars silently capped it (a pool that is full just stops
+   * drawing). A few kilometres of street are in range at once, and a zone can triple the density.
+   */
+  const dense = trafficN === null && opts.cars && trafficLevel !== 'none'
   const budget = (trafficN !== null || crowdN !== null)
     ? {
         cars: Math.min(20000, Math.max(90, Math.round((trafficN ?? 11) * 120))),
         buses: Math.min(2000, Math.max(16, Math.round((trafficN ?? 11) * 8))),
         people: Math.min(40000, Math.max(3000, Math.round((crowdN ?? 95) * 60))),
       }
-    : undefined
+    : dense ? { cars: 900, buses: 80, people: 3000 } : undefined
   if (budget) console.log('[density] pools', budget, 'traffic', trafficN, 'crowd', crowdN)
   const life = new Life(scene, pkg as unknown as CityPackage, budget, regionKit(pkg.region).stock, city.viaductStations)
   // the tram track in the street, and the wires over the electric track (render/street-rails.ts, overhead.ts)
@@ -712,6 +744,111 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   }
   const ride = new Ride()
   const hud = new Hud(document.getElementById('hud')!, () => (controls.press ? controls.press('back') : nav.turnAround()))
+
+  /*
+   * THE DELIVERY GAME (src/game/delivery.ts, 2026-09-29): a job offer pops up — pick up at one building, deliver to
+   * another, both within a kilometre — and the rider takes it (Y) or not (X, or just ignore it: then it is a free
+   * ride and nothing at all happens). The logic is its own module; what it asks of the city is answered here.
+   */
+  const shorten = (n: string): string => n.replace(/\bStreet\b/, 'St').replace(/\bAvenue\b/, 'Ave')
+    .replace(/\bBoulevard\b/, 'Blvd').replace(/\bDrive\b/, 'Dr').replace(/\bPlace\b/, 'Pl').replace(/\bTerrace\b/, 'Ter')
+  // the named intersections, gridded, rebuilt when the street graph has grown (tiles stream in)
+  let junctionGrid = new Map<string, { x: number; z: number; name: string }[]>()
+  let gridFor = -1
+  const namedJunctions = (): Map<string, { x: number; z: number; name: string }[]> => {
+    if (gridFor === graph.nodes.size) return junctionGrid
+    gridFor = graph.nodes.size
+    junctionGrid = new Map()
+    for (const n of graph.nodes.values()) {
+      const named: { name: string; w: number }[] = []
+      for (const id of n.edges) {
+        const e = graph.edges.get(id)
+        if (!e || e.foot || !e.name) continue
+        const nm = shorten(e.name)
+        if (!named.some((q) => q.name === nm)) named.push({ name: nm, w: e.width })
+      }
+      if (named.length < 2) continue
+      named.sort((a, b) => b.w - a.w)
+      const k = `${Math.floor(n.at.x / 100)},${Math.floor(n.at.z / 100)}`
+      const l = junctionGrid.get(k) ?? junctionGrid.set(k, []).get(k)!
+      l.push({ x: n.at.x, z: n.at.z, name: `${named[0].name} & ${named[1].name}` })
+    }
+    return junctionGrid
+  }
+  const delivery = new Delivery({
+    buildingsNear: (x, z, r) => {
+      const out: { id: number; ring: number[] }[] = []
+      for (const t of prepared.tiles.values()) {
+        for (const b of t.buildings) {
+          if ((b.minHeight ?? 0) > 1 || b.ring.length < 6) continue
+          if (Math.hypot(b.ring[0] - x, b.ring[1] - z) > r + 60) continue
+          out.push({ id: b.id, ring: b.ring })
+        }
+      }
+      return out
+    },
+    // the nearest street the rider can ride (not a tunnel, not a raised deck) to any wall of the footprint
+    streetDistance: (ring) => {
+      let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+      for (let i = 0; i < ring.length; i += 2) { x0 = Math.min(x0, ring[i]); x1 = Math.max(x1, ring[i]); z0 = Math.min(z0, ring[i + 1]); z1 = Math.max(z1, ring[i + 1]) }
+      let best = Infinity
+      for (const e of graph.edges.values()) {
+        if (e.raised || e.tunnel) continue
+        const p = e.points
+        for (let k = 1; k < p.length; k++) {
+          const a = p[k - 1]
+          const b = p[k]
+          // a cheap reject: the segment is nowhere near the footprint's box
+          if (Math.min(a.x, b.x) > x1 + 40 || Math.max(a.x, b.x) < x0 - 40 || Math.min(a.z, b.z) > z1 + 40 || Math.max(a.z, b.z) < z0 - 40) continue
+          for (let i = 0; i < ring.length; i += 2) {
+            const dx = b.x - a.x
+            const dz = b.z - a.z
+            const l2 = dx * dx + dz * dz || 1e-9
+            const t = Math.max(0, Math.min(1, ((ring[i] - a.x) * dx + (ring[i + 1] - a.z) * dz) / l2))
+            best = Math.min(best, Math.hypot(a.x + dx * t - ring[i], a.z + dz * t - ring[i + 1]))
+          }
+        }
+      }
+      return best
+    },
+    junctionNear: (x, z, reach) => {
+      const grid = namedJunctions()
+      let best: { name: string; d: number } | null = null
+      const cells = Math.ceil(reach / 100)
+      const cx = Math.floor(x / 100)
+      const cz = Math.floor(z / 100)
+      for (let i = -cells; i <= cells; i++) for (let j = -cells; j <= cells; j++) {
+        for (const q of grid.get(`${cx + i},${cz + j}`) ?? []) {
+          const d = Math.hypot(q.x - x, q.z - z)
+          if (d <= reach && (!best || d < best.d)) best = { name: q.name, d }
+        }
+      }
+      return best
+    },
+  })
+  const deliveryCard = new DeliveryCard()
+  const onDelivery = (events: DeliveryEvent[]): void => {
+    for (const ev of events) {
+      if (ev.kind === 'offer') {
+        deliveryCard.offer(ev.job, DELIVERY_DEFAULTS.offerLasts, () => onDelivery(delivery.accept()), () => onDelivery(delivery.decline()))
+      } else if (ev.kind === 'offerExpired' || ev.kind === 'declined') {
+        deliveryCard.hideOffer()
+      } else if (ev.kind === 'accepted') {
+        deliveryCard.hideOffer()
+        deliveryCard.going(`1 · Pick up near ${ev.job.pickup.label}`)
+        hud.banner('Go!', `pick up near ${ev.job.pickup.label}`, 3000)
+      } else if (ev.kind === 'pickedUp') {
+        deliveryCard.going(`2 · Deliver near ${ev.job.dropoff.label}`)
+        hud.banner('Picked up!', `now deliver near ${ev.job.dropoff.label}`, 3000)
+      } else if (ev.kind === 'delivered') {
+        deliveryCard.going(null)
+        const m = Math.floor(ev.seconds / 60)
+        hud.banner('Delivered!', `in ${m}:${String(Math.round(ev.seconds % 60)).padStart(2, '0')} · nice riding`, 5000)
+      }
+    }
+  }
+  addEventListener('keydown', (e) => { if (deliveryCard.key(e.code)) e.preventDefault() })
+  ;(window as unknown as Record<string, unknown>).__delivery = delivery
   // the landmark card (ui/landmark-card.ts): notes on the major landmark nearby, toggled with I
   const staticPlaces: { name: string; x: number; z: number }[] = []
   {
@@ -1096,6 +1233,12 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    */
   let simSeconds = 0
   engine.runRenderLoop(() => {
+    /*
+     * Nothing to draw into: a hidden or collapsed pane leaves the canvas a pixel or so tall, render targets scaled
+     * from it round to zero, and WebGL logs "Framebuffer is incomplete: Attachment has zero size" every frame (the
+     * owner saw it, 2026-09-29). Skip the frame, and move the clock on so the first real one is not a huge step.
+     */
+    if (engine.getRenderWidth() < 4 || engine.getRenderHeight() < 4) { last = performance.now(); return }
     const now = performance.now()
     const dt = Math.min(0.1, (now - last) / 1000)
     last = now
@@ -1209,9 +1352,12 @@ export async function game(canvas: HTMLCanvasElement, opts: {
        * them, at its own speed, and the distance it covers is the vehicle's, not theirs.
        */
       const riding = transit.aboard !== null
-      const hold = frozen || controls.paused() || riding
+      // …and while the rider is picking themselves up after a collision (render/rider.ts `tumble`)
+      const hold = frozen || controls.paused() || riding || !!rider?.tumbling
       const state = hold && lastState ? { ...lastState, speed: 0, power: riding ? 0 : lastState.power, grade: riding ? 0 : lastState.grade }
-        : ride.step(dt, controls.measured(), opts.device, surface, ground.grade, radius, junction?.ahead ?? Infinity)
+        : ride.step(dt, controls.measured(), opts.device, surface, ground.grade, radius, junction?.ahead ?? Infinity,
+          // held behind the car ahead in the rider's lane (none on a descent: the traffic makes way instead)
+          lastRider ? traffic.leaderFor(lastRider) : null)
       lastState = state
       if (!opts.freeze && !hold) { nav.advance(state.speed * dt, state.speed); simSeconds += dt }
       controls.request(riding ? 0 : state.grade * 100)
@@ -1263,7 +1409,50 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         if (e) near.push(e)
       }
       if (!off.has('life')) {
-        traffic.update(dt, at, near)
+        // the rider, placed on their STREET (the traffic's graph, not the navigator's ride graph)
+        const mapId = nav.mapEdgeId()
+        const street = graph.edges.get(mapId)
+        const onIt = street ? onEdge(street, at, heading) : null
+        const riderNow: RiderNow | null = street && onIt ? {
+          at, heading, speed: lastState?.speed ?? 0, edgeId: mapId, s: onIt.s, dir: onIt.dir, grade: nav.elevation().grade,
+          box: boxOf(at.x, at.z, heading, opts.device === 'treadmill' ? SIZE.runner : SIZE.bike),
+        } : null
+        lastRider = riderNow
+        const hits = traffic.update(dt, riderNow ?? at, near)
+        // the delivery game: its clock runs with the ride (not while frozen or paused), and it watches the rider
+        if (!hold) onDelivery(delivery.update(dt, at))
+        ;(window as unknown as Record<string, unknown>).__traffic = { traffic, rider: riderNow, state: lastState, hold, speedNow: ride.speed }
+        lightClock = trafficLevel === 'none' ? lightClock + dt : traffic.time
+        lamps?.update(now, city.heads.values(), (node, edge) => signals.aspect(node, edge, lightClock))
+        /*
+         * A COLLISION, in a junction (owner, 2026-09-29): not animated. The bike stops dead, the car stops too
+         * (sim/traffic.ts), a message says so, and both carry on. In the game proper it costs points.
+         */
+        if (hits.length > 0 && now >= graceUntil) {
+          graceUntil = now + 4000
+          collisions += 1
+          ride.halt()
+          // topple away from the car: onto the side it is not on
+          const hv = hits[0].vehicle
+          const side = Math.sin(heading) * (hv.at.z - at.z) - Math.cos(heading) * (hv.at.x - at.x) > 0 ? 1 : -1
+          rider?.tumble(side)
+          const lines = ['Oops!', 'Whoa there!', 'Bonk!', 'Oof!']
+          hud.banner(lines[collisions % lines.length], `bumped a ${hv.kind} in the junction · ${collisions} this ride`, 2600)
+          ;(window as unknown as Record<string, unknown>).__collisions = collisions
+          // what happened, for tuning (read by the shot tools): who was going where, under which light
+          const log = ((window as unknown as Record<string, unknown>).__collisionLog ??= []) as unknown[]
+          for (const h of hits) {
+            const v = h.vehicle
+            log.push({
+              kind: v.kind, turn: v.inBox?.turn, vFrom: v.inBox?.from, vEdge: v.edgeId, vSpeed: +v.speed.toFixed(1),
+              riderEdge: riderNow?.edgeId, riderSpeed: +(riderNow?.speed ?? 0).toFixed(1),
+              sameArm: v.inBox?.from === riderNow?.edgeId,
+              vLight: v.inBox ? signals.aspect(h.nodeId, v.inBox.from, traffic.time) : null,
+              riderLight: riderNow ? signals.aspect(h.nodeId, riderNow.edgeId, traffic.time) : null,
+              kindAt: signals.control(h.nodeId).kind,
+            })
+          }
+        }
         crowd.update(dt, at, near)
         strangers?.update(dt, crowd.all, at, city.terrain)
         const focus = frozen ? (held ? held.to : orbit.look) : at

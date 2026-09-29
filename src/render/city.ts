@@ -60,6 +60,7 @@ const BUILD_MS = 7
 export const MID = 6
 import { onSurface, waterLevels, wholeWater } from '../city/package.ts'
 import { buildingFooting, simplifyRing } from '../map/footing.ts'
+import { signalLamps, type SignalHead } from './lamps.ts'
 import { StreetGrade } from '../city/grade.ts'
 
 /** Tile size in metres: the ONE grid, shared with the bake (city/tiles.ts). */
@@ -102,7 +103,7 @@ interface Junction {
   /** every way meeting here runs through open country (city/park-area.ts), so it gets no concrete apron */
   park: boolean
   /** one per street leaving here; `foot` arms shape the pavement but never the carriageway */
-  arms: { ux: number; uz: number; half: number; foot: boolean; surface: string; raised?: boolean }[]
+  arms: { ux: number; uz: number; half: number; foot: boolean; surface: string; raised?: boolean; edgeId?: number }[]
 }
 
 /** What the city needs up front: the index's global part (city/tiles.ts `CityIndex`). */
@@ -1114,7 +1115,7 @@ export class City {
         const dx = to.x - from.x
         const dz = to.z - from.z
         const len = Math.hypot(dx, dz) || 1
-        const arm = { ux: dx / len, uz: dz / len, half: e.width / 2, foot: e.foot, surface: e.surface, raised }
+        const arm = { ux: dx / len, uz: dz / len, half: e.width / 2, foot: e.foot, surface: e.surface, raised, edgeId: e.id }
         const r = e.width / 2 + 0.7
         const got = this.nodes.get(id)
         if (got) {
@@ -1186,6 +1187,17 @@ export class City {
 
   /** which tiles the city has at all (the index's list); a missing neighbour past the edge is not waited for */
   exists: ((k: string) => boolean) | null = null
+
+  /** every signal head drawn, by tile: which approach it controls and where its red, amber and green lamps are */
+  readonly heads = new Map<string, SignalHead[]>()
+  /** every junction the renderer has drawn lights at, for the traffic's signal timing (sim/signals.ts) */
+  readonly lit = new Set<number>()
+  private readonly litTiles = new Set<string>()
+  /** has the renderer decided yet whether this junction has lights (its tile has been built)? */
+  litDecided(nodeId: number): boolean {
+    const n = this.nodes.get(nodeId)
+    return !!n && this.litTiles.has(key(...tileOf(n.at.x, n.at.z)))
+  }
 
   /** The junctions of tile k that carry lights: mapped signals within 15 m, or the rule (see below). */
   private lightsIn(k: string): Set<number> {
@@ -1395,6 +1407,7 @@ export class City {
     for (const [name, ms] of t.layers) { for (const m of ms) m.dispose(); this.layerByName.get(name)?.release?.(k) }
     this.tiles.delete(k)
     this.nearCache.delete(k)
+    this.heads.delete(k)
     return true
   }
 
@@ -1657,6 +1670,7 @@ export class City {
         for (const [name, ms] of t.layers) { for (const m of ms) m.dispose(); this.layerByName.get(name)?.release?.(k) }
         this.tiles.delete(k)
         this.nearCache.delete(k)
+        this.heads.delete(k)
       }
     }
     // the layers, each out to its own range
@@ -1729,6 +1743,9 @@ export class City {
     this.coverEdges(k)
     this.decksNear(k)
     const lights = this.lightsIn(k)
+    // published for the traffic (sim/signals.ts): what is drawn with lights is what is timed
+    for (const id of lights) this.lit.add(id)
+    this.litTiles.add(k)
     // the junctions to pave: a node where two or more streets meet on the ground (a node with only raised
     // edges is in mid-air, the middle of a bridge); bends get one too, closing the seam between segments
     const pads = (this.nodesIn.get(k) ?? []).filter((id) => {
@@ -2402,7 +2419,23 @@ export class City {
         // the region's own signal: a Paris post, or a North American mast arm out over this arm's lanes
         const signal = this.region.signals === 'mastArm' ? trafficLightMast(a.half * 1.1 + n.walk * 0.55)
           : this.region.signals === 'paris' ? trafficLightParis : trafficLight
-        placeModel(furniture, signal, px, 0.15, pz, Math.atan2(-a.ux, -a.uz))
+        const facing = Math.atan2(-a.ux, -a.uz)
+        placeModel(furniture, signal, px, 0.15, pz, facing)
+        // where this head's lamps are, for the live lamps (render/lamps.ts): the traffic it stops arrives along
+        // this arm, so its light is that arm's
+        if (a.edgeId !== undefined) {
+          const ground = this.terrain.heightAt(px, pz) + 0.15
+          const lamps = signalLamps(this.region.signals, a.half * 1.1 + n.walk * 0.55)
+          const cos = Math.cos(facing)
+          const sin = Math.sin(facing)
+          const list = this.heads.get(k) ?? this.heads.set(k, []).get(k)!
+          for (const l of lamps) {
+            list.push({
+              nodeId: id, edgeId: a.edgeId, facing, scale: l.scale,
+              at: l.at.map(([lx, ly, lz]) => [px + lx * cos + lz * sin, ground + ly, pz - lx * sin + lz * cos]) as SignalHead['at'],
+            })
+          }
+        }
         // the stop bar across this arm's carriageway
         const bx = n.at.x + a.ux * (n.radius + 1.0)
         const bz = n.at.z + a.uz * (n.radius + 1.0)

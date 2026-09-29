@@ -164,16 +164,28 @@ describe('riding', () => {
     expect(after.coasting).toBe(true)
   })
 
-  it('speeds up coasting downhill and slows coasting uphill', () => {
+  // (Until 2026-09-29 this was "speeds up COASTING downhill": zero power coasted. The bike has brakes now —
+  // zero power brakes (sim/ride.ts) — so rolling downhill means pedalling, however lightly.)
+  it('speeds up soft-pedalling downhill and slows uphill', () => {
     const down = new Ride()
     const up = new Ride()
     for (let i = 0; i < 20; i++) down.step(0.1, { ...NO_READING, power: 150 }, 'bike', 'asphalt', 0)
     for (let i = 0; i < 20; i++) up.step(0.1, { ...NO_READING, power: 150 }, 'bike', 'asphalt', 0)
     const v0 = down.speed
-    for (let i = 0; i < 30; i++) down.step(0.1, { ...NO_READING, power: 0 }, 'bike', 'asphalt', -0.06)
-    for (let i = 0; i < 30; i++) up.step(0.1, { ...NO_READING, power: 0 }, 'bike', 'asphalt', 0.06)
+    for (let i = 0; i < 30; i++) down.step(0.1, { ...NO_READING, power: 20 }, 'bike', 'asphalt', -0.06)
+    for (let i = 0; i < 30; i++) up.step(0.1, { ...NO_READING, power: 20 }, 'bike', 'asphalt', 0.06)
     expect(down.speed).toBeGreaterThan(v0)
     expect(up.speed).toBeLessThan(v0)
+  })
+
+  it('brakes to a stop when the rider stops pedalling, even on a steep descent (owner, 2026-09-29)', () => {
+    const r = new Ride()
+    for (let i = 0; i < 200; i++) r.step(0.1, { ...NO_READING, power: 250 }, 'bike', 'asphalt', -0.15)
+    expect(r.speed).toBeGreaterThan(10)
+    let braking = false
+    for (let i = 0; i < 150; i++) braking = r.step(0.1, { ...NO_READING, power: 0 }, 'bike', 'asphalt', -0.15).braking || braking
+    expect(braking).toBe(true)
+    expect(r.speed).toBeLessThan(0.5)
   })
 
   it('gives a runner nothing for free: the belt is the speed, downhill or not', () => {

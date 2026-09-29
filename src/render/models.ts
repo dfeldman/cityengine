@@ -564,10 +564,11 @@ export function trafficLight(out: MeshBuilder): void {
   box(out, 0, 0.1, 0, 0.14, 0.1, 0.14, iron, FIXED)                      // base
   box(out, 0, 1.6, 0, 0.055, 1.5, 0.055, iron, FIXED)                    // post
   box(out, 0, 3.35, 0, 0.16, 0.42, 0.11, [0.1, 0.11, 0.12], FIXED)       // the head
-  // red, amber, green, each in its own hood
-  const lamps: [number, Rgb][] = [[3.66, [0.86, 0.14, 0.12]], [3.35, [0.92, 0.66, 0.12]], [3.04, [0.18, 0.78, 0.3]]]
+  // red, amber, green, each in its own hood — DARK lenses: the lit one is drawn live over it (render/lamps.ts),
+  // because the lights are timed now (sim/signals.ts) and all three glowing at once could not be read
+  const lamps: [number, Rgb][] = [[3.66, [0.22, 0.06, 0.05]], [3.35, [0.24, 0.17, 0.05]], [3.04, [0.05, 0.2, 0.09]]]
   for (const [y, colour] of lamps) {
-    box(out, 0, y, 0.12, 0.085, 0.085, 0.03, colour, EMIT)
+    box(out, 0, y, 0.12, 0.085, 0.085, 0.03, colour, FIXED)
     box(out, 0, y + 0.11, 0.15, 0.1, 0.02, 0.06, [0.08, 0.09, 0.1], FIXED)   // the hood above it
   }
 }
@@ -839,9 +840,10 @@ function signalHead(out: MeshBuilder, x: number, y: number, z: number, housing: 
   const s = scale
   box(out, x, y, z, 0.15 * s, 0.46 * s, 0.12 * s, housing, FIXED)
   if (backplate) box(out, x, y, z - 0.13 * s, 0.26 * s, 0.56 * s, 0.01, [0.06, 0.06, 0.07], FIXED)
-  const lamps: [number, Rgb][] = [[0.29, [0.9, 0.12, 0.1]], [0, [0.95, 0.68, 0.1]], [-0.29, [0.15, 0.82, 0.32]]]
+  // dark lenses: the lit one is drawn live over it (render/lamps.ts)
+  const lamps: [number, Rgb][] = [[0.29, [0.22, 0.05, 0.04]], [0, [0.24, 0.17, 0.04]], [-0.29, [0.04, 0.2, 0.08]]]
   for (const [dy, c] of lamps) {
-    disc(out, x, y + dy * s, z + 0.121 * s, 0.1 * s, c, EMIT)
+    disc(out, x, y + dy * s, z + 0.121 * s, 0.1 * s, c, FIXED)
     // the hood over each lens: a little roof and two cheeks
     box(out, x, y + (dy + 0.12) * s, z + 0.19 * s, 0.12 * s, 0.012 * s, 0.07 * s, housing, FIXED)
     for (const sx of [-1, 1]) box(out, x + sx * 0.115 * s, y + (dy + 0.04) * s, z + 0.19 * s, 0.006, 0.08 * s, 0.07 * s, housing, FIXED)

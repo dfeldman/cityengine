@@ -78,9 +78,12 @@ describe('planting by zone', () => {
     const got = plantCity(pkg, 100000, register, z, report)
 
     it('never plants a tree on top of another', () => {
+      // one assertion on the closest pair (an expect per pair timed out under the full suite's load)
+      let closest = Infinity
       for (let i = 0; i < got.length; i++) for (let j = i + 1; j < got.length; j++) {
-        expect(Math.hypot(got[i].x - got[j].x, got[i].z - got[j].z)).toBeGreaterThanOrEqual(MIN_SPACING)
+        closest = Math.min(closest, Math.hypot(got[i].x - got[j].x, got[i].z - got[j].z))
       }
+      expect(closest).toBeGreaterThanOrEqual(MIN_SPACING)
       expect(report.register).toBe(1)
       expect(report.mapped).toBe(0)
     })
