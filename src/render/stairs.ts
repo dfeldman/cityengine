@@ -40,9 +40,24 @@ export function stairsLayer(scene: Scene, terrain: Terrain, named: Record<string
       if (flights.length === 0) return []
       const out = new MeshBuilder()
       const inRect = (x: number, z: number): boolean => x >= rect.x0 && x < rect.x1 && z >= rect.z0 && z < rect.z1
+      // the carriageways round about: a flight must stop at their kerb (below)
+      // (not one passing over or under: a flight beneath a ramp is not on it)
+      const roads = (near.around.edges ?? []).filter((r) => !r.foot && r.kind !== 'steps' && (r.width ?? 0) > 0 && !r.tunnel && !r.bridge && !r.ramp && !r.layer)
+        .map((r) => ({ half: r.width / 2, pts: unpackPoints(r.points) }))
       for (const e of flights) {
-        const pts = unpackPoints(e.points)
-        if (pts.length < 2) continue
+        const raw = unpackPoints(e.points)
+        if (raw.length < 2) continue
+        /*
+         * STOP AT THE KERB (owner, 2026-09-29, the Macondray Lane steps at Taylor Street: "stairs extend into the
+         * street, visually blocking it… we need to prevent this in our stairs renderer"). OSM ends a stairway on the
+         * street's centre line, where the footway joins it, so the last half-street of the flight was built across
+         * the carriageway. Each end is cut back to where it leaves every carriageway's corridor.
+         */
+        // (a NAMED landmark stairway is hand-built and decorated to its own ends: left as it is)
+        const heights = raw.map((p, i) => e.heights?.[i] ?? terrain.heightAt(p.x, p.z))
+        const cut = e.name && named[e.name] ? { pts: raw, ys: heights } : kerbTrim(raw, heights, roads)
+        if (!cut) continue
+        const pts = cut.pts
         /*
          * A NAMED landmark stairway. Built WHOLE, from the way's own polyline, and anchored on the tile its
          * midpoint falls in rather than clipped per tread: the flights, the cheek walls' stepped coping and
@@ -58,7 +73,7 @@ export function stairsLayer(scene: Scene, terrain: Terrain, named: Record<string
            * The heights are the RIDE EDGE'S OWN PROFILE where the bake gave it one, which is what the runner's
            * feet follow (BUGS.md #207) — the terrain grid is only the fallback for a city baked flat.
            */
-          const line: StairPoint[] = pts.map((p, i) => ({ x: p.x, z: p.z, y: e.heights?.[i] ?? terrain.heightAt(p.x, p.z) }))
+          const line: StairPoint[] = pts.map((p, i) => ({ x: p.x, z: p.z, y: cut.ys[i] }))
           const res = stairway(out, line, spec.width ?? Math.max(1.6, e.width || 2.4), spec.style)
           spec.decorate?.(out, res)
           continue
@@ -135,4 +150,52 @@ export function stairsLayer(scene: Scene, terrain: Terrain, named: Record<string
       return [m]
     },
   }
+}
+
+/** distance from a point to a polyline */
+function toLine(x: number, z: number, pts: { x: number; z: number }[]): number {
+  let best = Infinity
+  for (let i = 1; i < pts.length; i++) {
+    const a = pts[i - 1]
+    const dx = pts[i].x - a.x
+    const dz = pts[i].z - a.z
+    const l2 = dx * dx + dz * dz || 1e-9
+    const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / l2))
+    best = Math.min(best, Math.hypot(a.x + dx * t - x, a.z + dz * t - z))
+  }
+  return best
+}
+
+/**
+ * A flight's polyline (with its heights) cut back at each end to where it leaves every carriageway: the first
+ * point, walking in from that end, more than the street's half-width (plus a kerb's 0.3 m) from its centre line.
+ * Null when nothing is left (a "flight" wholly on a street).
+ */
+export function kerbTrim(pts: { x: number; z: number }[], ys: number[], roads: { half: number; pts: { x: number; z: number }[] }[]):
+  { pts: { x: number; z: number }[]; ys: number[] } | null {
+  const onRoad = (x: number, z: number): boolean => roads.some((r) => toLine(x, z, r.pts) < r.half + 0.3)
+  // cumulative distance along the flight
+  const cum = [0]
+  for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z))
+  const total = cum[cum.length - 1]
+  const at = (d: number): { x: number; z: number; y: number } => {
+    let i = 1
+    while (i < pts.length - 1 && cum[i] < d) i++
+    const t = Math.max(0, Math.min(1, (d - cum[i - 1]) / (cum[i] - cum[i - 1] || 1)))
+    return { x: pts[i - 1].x + (pts[i].x - pts[i - 1].x) * t, z: pts[i - 1].z + (pts[i].z - pts[i - 1].z) * t, y: ys[i - 1] + (ys[i] - ys[i - 1]) * t }
+  }
+  let d0 = 0
+  while (d0 < total && onRoad(at(d0).x, at(d0).z)) d0 += 0.25
+  let d1 = total
+  while (d1 > d0 && onRoad(at(d1).x, at(d1).z)) d1 -= 0.25
+  if (d1 - d0 < 1) return null
+  if (d0 === 0 && d1 === total) return { pts, ys }
+  const a = at(d0)
+  const b = at(d1)
+  const out = [{ x: a.x, z: a.z }]
+  const oy = [a.y]
+  for (let i = 1; i < pts.length - 1; i++) if (cum[i] > d0 && cum[i] < d1) { out.push(pts[i]); oy.push(ys[i]) }
+  out.push({ x: b.x, z: b.z })
+  oy.push(b.y)
+  return { pts: out, ys: oy }
 }

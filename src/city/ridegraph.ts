@@ -84,10 +84,16 @@ const layerOf = (e: Edge): number => e.layer ?? 0
 export function classify(edges: Edge[], mode: RideMode): RideEdge[] {
   return edges
     .filter((e) => {
-      // tunnels and ways mapped below grade are not drawn (render/city.ts `onSurface`), so nobody rides them
-      if (e.a === e.b || !onSurface(e)) return false
+      // tunnels and ways mapped below grade are not drawn (render/city.ts `onSurface`), so nobody rides them — except
+      // a street tunnel under a hill (`bore`, tools/tunnels.ts), which is drawn as a tunnel and ridden through
+      if (e.a === e.b || (!onSurface(e) && !e.bore)) return false
       const k = e.kind ?? 'residential'
       if (k === 'service' && e.service && NOT_A_STREET.has(e.service)) return false
+      // an unnamed service road on a bridge is a garage's own ramp or a loading bridge — San Francisco's beside the
+      // Stockton Tunnel's south portal climbs from the Sutter-Stockton garage to Bush Street. Nothing to ride to
+      // (owner, 2026-09-29: "parking structures are useless in this game"); the stub left joining it to the street
+      // goes with the driveways (`pruneStubs`)
+      if (k === 'service' && !e.name && e.bridge) return false
       // a car park's ramp down into it: a dead end into the ground (BUGS.md #20 — 20 of the audit's dead ends)
       if (e.name && /^(Accès|Sortie|Entrée|Rampe)\b.*\b[Pp]arking|^Allée de [Pp]arking/.test(e.name)) return false
       return BIKE.has(k) || RIDEABLE_MOTORWAY.has(k) || (mode === 'run' && RUN_EXTRA.has(k))
@@ -114,8 +120,21 @@ export function joinDeadEnds(ridden: RideEdge[], all: Edge[], blocked?: (a: Poin
   const at = new Map<number, Edge[]>()
   for (const e of paths) for (const n of [e.a, e.b]) (at.get(n) ?? at.set(n, []).get(n)!).push(e)
   const added = new Map<number, RideEdge>()
+  // the dead ends of driveways are not rescued: an unnamed service stub goes (`pruneStubs`); joined up by footways,
+  // the Sutter-Stockton garage's ramp came in as a street down into the Stockton Tunnel's mouth (2026-09-29)
+  const driveway = new Set<number>()
+  for (const e of ridden) if (e.kind === 'service' && !e.name) { driveway.add(e.a); driveway.add(e.b) }
+  // …nor a street's dead end just outside a TUNNEL MOUTH: the mouth is below the streets round it, and a 2 m piece of
+  // Stockton beside the Stockton Tunnel's mouth was joined by its pavement up to Bush Street, 4 m above
+  const mouths = new Set<number>()
+  for (const e of ridden) if (e.bore) { mouths.add(e.a); mouths.add(e.b) }
+  for (const e of ridden) {
+    if (e.bore) continue
+    if (mouths.has(e.a) && (deg.get(e.b) ?? 0) === 1) driveway.add(e.b)
+    if (mouths.has(e.b) && (deg.get(e.a) ?? 0) === 1) driveway.add(e.a)
+  }
   for (const [start, d] of deg) {
-    if (d !== 1 || !at.has(start)) continue
+    if (d !== 1 || !at.has(start) || driveway.has(start)) continue
     // Dijkstra over the paths, small: stop at the first ridden node reached
     const dist = new Map<number, number>([[start, 0]])
     const via = new Map<number, Edge>()
@@ -124,7 +143,8 @@ export function joinDeadEnds(ridden: RideEdge[], all: Edge[], blocked?: (a: Poin
     while (open.length) {
       open.sort((x, y) => dist.get(x)! - dist.get(y)!)
       const n = open.shift()!
-      if (n !== start && deg.has(n)) { goal = n; break }
+      // (nor rescued INTO one: a join ending on a driveway leads nowhere either)
+      if (n !== start && deg.has(n) && !driveway.has(n)) { goal = n; break }
       for (const e of at.get(n) ?? []) {
         const m = e.a === n ? e.b : e.a
         const nd = dist.get(n)! + e.length
@@ -695,6 +715,17 @@ export function dropLoops(edges: RideEdge[]): RideEdge[] {
  * into the street's chain and the rider rode down the pavement. A pedestrian edge running alongside a
  * same-named road (`isParallelPair`) goes; a pedestrian street on its own stays.
  */
+/** two ways more than 2.5 m apart in height anywhere they run side by side (one over the other, not beside it) */
+function apart(e: RideEdge, r: RideEdge): boolean {
+  if (!e.heights || !r.heights) return false
+  for (let i = 0; i < e.points.length; i++) {
+    const q = project(r.points, e.points[i])
+    const k = Math.min(r.heights.length - 1, Math.max(0, Math.round(q.t * (r.heights.length - 1))))
+    if (Math.abs(e.heights[i] - r.heights[k]) > 2.5) return true
+  }
+  return false
+}
+
 export function dropSidePaths(edges: RideEdge[], ids = new Ids(), blocked?: (a: Point, b: Point) => boolean): RideEdge[] {
   /*
    * A side path is a way that runs ALONGSIDE a street rather than being one: a pedestrian way or a cycle track
@@ -740,6 +771,9 @@ export function dropSidePaths(edges: RideEdge[], ids = new Ids(), blocked?: (a: 
       // New York beside its carriageways)
       const street = e.kind !== 'pedestrian' && e.kind !== 'cycleway' && !(e.kind === 'service' && !e.name)
       if (street && (e.name !== r.name || rank(r) <= rank(e))) continue
+      // never beside a road on another LEVEL (Stockton at Bush, 2026-09-29): the surface street north of Bush was
+      // dropped as a "side path" of lower Stockton, 4 m below it in its cut, and of the tunnel under it
+      if (layerOf(e) !== layerOf(r) || !!e.bore !== !!r.bore || (street && apart(e, r))) continue
       // cycle tracks and lanes further out: along the Seine they run under the trees 20 m from the carriageway
       const reach = e.kind === 'pedestrian' ? Math.max(14, r.width / 2 + r.walk + 9) : Math.max(24, r.width / 2 + r.walk + 12)
       let alongside = 0

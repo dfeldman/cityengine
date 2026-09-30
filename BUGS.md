@@ -9863,3 +9863,87 @@ and on a steep grade those surfaces are sampled at different points (and some at
 some at the raw ground), so their chords diverge by more than the layering can hide. Needs a place and a
 screenshot to start from; `tools/views.ts` on the steepest `sf-mini` streets (Masonic, Frederick ~16%) is
 the obvious harness.
+
+**2026-09-29, after the pavement fix in #234** (the corridor strip split across wherever the ground bows off its
+chord by more than 0.15 m): the three steepest rideable streets in `sf-mini` — Masonic 16.4% (edge 119),
+Frederick 15.4% (edge 5), Willard 13.6% (edge 469) — looked down from their tops show road, paint and pavements
+together. Not reproduced; the owner's next sighting needs its coordinates (C copies them).
+
+### #233 Vallejo Street steps (Russian Hill) stick out into the street
+
+**Reported by the owner, 2026-09-29:** *"at 37.799341, -122.414032, stairs extend into the street, visually
+blocking it. odd look. we need to prevent this in our stairs renderer."* So the fix belongs in
+`src/render/stairs.ts` for every city: a flight must stop at the kerb of any carriageway it meets (clip it
+against the road polygons, or end it at the footway) rather than run on across the road surface.
+
+**Fixed 2026-09-29.** The flight is OSM way 63478 (Macondray Lane), ending at (−179.2, 708.6): the node ON Taylor
+Street's centre line, so its last 4.6 m (half of Taylor's 9.2 m) were built across the carriageway. OSM ends
+stairways where the footway joins the street, so every city has these. `kerbTrim` cuts each end of a flight back
+to where it leaves every carriageway's corridor (half-width + 0.3 m), heights interpolated; `tests/stairs.test.ts`.
+Views `bug233-*` in `views/san-francisco.json` show it ending at the pavement.
+
+### #234 Very bumpy ground by the Vallejo steps, walkers wading through it
+
+**Reported by the owner, 2026-09-29:** *"at 37.798930, -122.413949 the ground is very messed up, people walking
+right through a very bumpy ground mesh."* The corner of Taylor and Green (code frame ≈ (−171, 660)), at the foot
+of the Green Street steps; Taylor falls 19% here. The owner also still sees *"odd rendering glitches on steep
+terrain changes"* — see #232. Views `bug234-*` in `views/san-francisco.json`.
+
+**Partly fixed 2026-09-29.** Two things were drawn there:
+
+1. **The retaining wall's sawtooth — fixed.** The walls along a levelled street (#38) were decided per SEGMENT:
+   a wall came and went wherever the drop wavered round 0.6 m, and its parapet jumped between 0.12 m and 0.9 m
+   wherever it wavered round 1.5 m — a jagged grey strip along the kerb. Now decided once per side of a street
+   (render/city.ts): walled where it stands 0.3 m clear if the drop reaches 0.6 m anywhere, parapet from the
+   side's worst drop.
+2. **Grey lumps along Green Street's north pavement — diagnosed, NOT fixed.** They are the TREE SHADOWS
+   (`shadow:trees:*`: hiding them removes the lumps; hiding the building shadows does not). The shadow vertices
+   sit exactly 0.17 m over `heightAt`, as designed — it is the PAVEMENT (`corridor:*`) that is wrong: picked at
+   (−139.4, 667.6) it is 0.5 m above the ground, its long chords spanning a concave slope. The shadows on the
+   true ground then show through it at another height. Subdividing the tree shadows made it WORSE (they hugged
+   bumps the pavement does not follow) and was reverted. The fix is in the pavement: tessellate the corridor
+   the way the flat carriageway already is (#221d), or drape the tree shadows on the corridor's own chords. The
+   same chord-vs-ground disagreement is the likeliest cause of #232.
+
+### #235 Cars drive through each other in junctions — partly fixed
+
+**Reported by the owner, 2026-09-29:** *"I still see vehicles going through other vehicles, especially at
+intersections."* `tools/traffic-soak.ts` now counts overlapping pairs and DEEP ones (both boxes shrunk to 70%
+still overlap). On `sf-mini`, 900 s, dense: 1109 deep pair-seconds / 507 distinct pairs before; **845 / 412
+after** a junction look-ahead (sim/traffic.ts `drive`): near and in a box, each vehicle sweeps its own box a few
+metres ahead and stops for a MOVING vehicle in the same junction (nodes joined by streets under 12 m count as one
+junction, `cluster`), lower id first, never for one waiting for it, off for 4 s after standing 2 s.
+
+**What did not work** (each measured, 600–900 s): yielding to STANDING box cars too, or sweeping straight and far —
+the city gridlocked after ~10 min (rings of "no room beyond"); admitting only when no car stands anywhere in a
+cluster — gridlock in 4 min; sweeping only before entry — no effect (the conflicts arise inside the box).
+
+**What is left:** a car moving into a box where another stands waiting for its way out, mostly in clusters of
+7–10 m edges (one real intersection split into several OSM nodes, e.g. around e250/e358/e1766 in sf-mini). The
+real fix is junction admission at the cluster level with "room beyond" measured to the cluster's exit street.
+
+### #236 A way below building level at 37.789949, -122.406985
+
+**Reported by the owner, 2026-09-29:** *"37.789949, -122.406985 has a way that's below building level not sure
+what's going on there. i think the building also has paths you can go through underneath."* The
+south mouth of the **Stockton Tunnel** under Bush Street; the owner's screenshot of the same junction (lines,
+pedestrians, roads and the rider "at different depths") is the same place.
+
+**Diagnosed 2026-09-29.** Grade separation, not slope. Stockton runs in a cut from Sutter to the tunnel mouth, 6–7 m
+below Bush Street, which crosses over it; the raw terrain has the cut (−55.8 m under lower Stockton, −48 m at Bush).
+But the bake had lifted lower Stockton to −48.7 m at the mouth: a one-way SERVICE BRIDGE beside it (OSM 28843606,
+`bridge=yes layer=1`, the Sutter-Stockton garage's ramp up to Bush) got a deck, and `bridgeHeights` ramped every way
+within 60 m of its ends up to that deck — through the footways, onto Stockton. Everything draped on Stockton rose
+with it, to within a metre of Bush, in other rendering groups.
+
+**Fixed (re-bake):** ramps spread only along roads, and stop at a tunnel mouth (`tools/bridges.ts`,
+`tests/bridges.test.ts`); an unnamed service road on a bridge is not a street to ride (`src/city/ridegraph.ts`, the
+garage ramp). And the tunnel itself is now a street tunnel you ride through — README "Street tunnels".
+
+### #237 The Chinatown Public Health Center stands across Broadway in front of the Broadway Tunnel's east mouth
+
+**Found 2026-09-29** while shooting the tunnel portals (`views/san-francisco.json`, "portal Broadway-60888-A"):
+the landmark model `Chinatown Public Health Center` (picked at about (63, 475) in the code frame) stands on the
+carriageway of Broadway right in front of the east portal, hiding it — a rider rides into the building's face. The
+real building is beside the tunnel approach, not over the road. Needs its placement (or footprint) checked against
+the street. Not investigated yet.

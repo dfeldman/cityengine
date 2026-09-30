@@ -50,7 +50,18 @@ from its own OSM way id as a seed, so a street is varied and a re-bake changes n
 
 ## Steering, and why it works the way it does
 
-At the platform's once-a-second poll, a rider at 25 km/h covers seven metres between a button press and the
+There are two input modes (`?input=`), because a keyboard and a trainer want opposite things:
+
+- **`fast`** — the default in a browser. **Hold ← / →** (or A / D) and the bike steers across the street, 3 m/s
+  sideways, never onto the pavement. **Hold a direction as you reach a corner and you turn there**: the choice is
+  made where the corner starts, about 0.9 s out, and a tap just before it counts too. Nothing held is straight on
+  (or the GPS's exit). A hold that has just taken a corner does not take the next one until let go. **U** turns
+  round; up/down is still power.
+- **`slow`** — for trainers, and the default on Dandyhorse, where the phone's d-pad arrives on a one-second poll.
+  Described below: a press declares the turn at the next junction well before it. **↑ (or S, or the d-pad's up)
+  cancels a signalled turn** that has not latched yet, instead of adding power.
+
+The slow model, and why it exists. At the platform's once-a-second poll, a rider at 25 km/h covers seven metres between a button press and the
 game hearing about it. A game that asked you to press LEFT *at* the corner would be unplayable — and on a
 trainer, hands on the bars and out of breath, unpleasant even if it worked.
 
@@ -105,15 +116,26 @@ Hills are therefore an asset, not a terrain problem to be smoothed away.
 ## The delivery game, version 0 (2026-09-29)
 
 A job offer pops up on the left a few seconds into the ride: **pick up** near one intersection, **deliver** near
-another — two real buildings, both within a kilometre of you, named for now by the nearest intersection of two named
-streets. **Y** (or click) takes it, **X** turns it down. Ride to the first building, then the second — arriving is
-getting within about 20 m of its walls — and a banner says you delivered it. **Ignore it and nothing happens at
-all**: the offer goes away after 30 s, the ride stays a free ride, and another offer comes along later.
+another — two real buildings a few blocks apart (120–350 m hops, everything within 600 m of you), named for now by
+the nearest intersection of two named streets. **Y** (or click) takes it, **X** turns it down. Ride to the first
+building, then the second — arriving is getting within about 25 m of its walls — and a banner says you delivered
+it. **Ignore it and nothing happens at all**: the offer goes away after 30 s, the ride stays a free ride, and
+another offer comes along later.
 
-No route is drawn and there is no pointer yet (a compass comes later): reading the street signs and the minimap is
-the game. The logic is its own module, `src/game/delivery.ts` (no Babylon, no DOM; `tests/delivery.test.ts`); the
-card is `src/ui/delivery-card.ts`; `game.ts` only answers its questions about the city (buildings near a point, the
-nearest named intersection, how far a footprint is from a rideable street).
+**Where to go, without a route** (finding the way is the game): the stop you are riding to NOW has colour on every
+screen — **1 · pickup is amber, 2 · drop-off is green** — and nothing else does:
+
+- the **building lights up** (`render/beacon.ts`): a glowing shell round its walls, a beam up from its roof over the
+  rooftops, and a column on the street at its door — the nearest rideable point, where arriving counts;
+- a **compass**, the **distance** as the crow flies and a big **clock** counting up, by the top bar;
+- the stop's **pin on the minimap and the large map** (M); the drop-off waits as a small grey 2 until the pickup is
+  made. No line between them.
+
+A whole run was ridden end to end by a probe steering with the GPS: three jobs in 98–176 s, 2–6 junctions a leg.
+The logic is its own module, `src/game/delivery.ts` (no Babylon, no DOM; `tests/delivery.test.ts`); the card and
+the compass are `src/ui/delivery-card.ts`; `game.ts` only answers its questions about the city (buildings near a
+point, the nearest named intersection, how far a footprint is from a rideable street). `__routeXZ(x, z)` routes
+the GPS to a point, for probes.
 
 ## Traffic (2026-09-29)
 
@@ -125,15 +147,54 @@ The city is full of cars, mostly slow — the delivery game's joke is that the b
   15 s green, 3 s amber, 2.5 s all-red; live lamps in `render/lamps.ts`), **all-way** and **two-way stops**, and
   uncontrolled joins. Left turns yield to oncoming traffic, clear on the amber, and lose patience after 8 s. Nobody
   enters a junction without room to leave it. Turns follow curves, not the junction's centre point.
-- **The rider**: held behind a car on a narrow street (and behind anything standing in their path), alongside on a
-  wide one; never stuck for good (held 20 s by one vehicle, they squeeze past). Cars never run into the rider along
-  a street and never pull into a junction the rider is in or about to reach — **collisions come only from moving
-  cross traffic**, mostly when the rider runs a red. A collision is a slapstick tip-over, a message, and on you go
-  (`render/rider.ts` `tumble`; points later).
+- **The rider KEEPS RIGHT**, 1.2 m in from the kerb and never on the pavement; to the middle only before a left
+  turn; back to the right 2 s after steering by hand (`Navigator.home`).
+- **The rider WEAVES** (`Traffic.weave`): past anything standing or crawling their way (under 6 m/s) they steer
+  to the free strip nearest their own line on the right, down the centre line between two stopped lanes included
+  (0.2 m of air each side) — the bike in gridlock. Anything under 3 m/s stops for a rider in its path (the right
+  hook, once the rider kept right), and a car under 2 m/s touching them is no crash. Measured on `sf-mini` in dense traffic: 75–95% of the free-ride speed, one stall over 3 s
+  in 300 s. Held only when there is no strip at all; never for good (5 s behind a standing vehicle, 20 s behind a
+  moving one — under 2 m/s counts as standing — then they squeeze past); after 8 s held, the HUD says **U turns you round**. In fast input a held
+  arrow steers across the street; in slow input **A** and **D** nudge across at any time and the arrows nudge when
+  the next junction is far and ask for a turn near one (see "Steering").
+- **Collisions** come only from MOVING cross traffic (mostly when the rider runs a red), and from a pedestrian
+  stepping into a moving bike — never from riding into a standing car. A slapstick tip-over and a message; the
+  rider then waits until the car that hit them is clear of their way (no riding off through it), and cars stop for
+  a rider who is down or stopped in their path (no second hit). Points later.
+- **The bike steers** (`game.ts` `bikePose`): it points where it is going, leans by tan φ = v·ω/g and turns its
+  bars (tan δ = L·ω/v, drawn ×2.5) — eased in and out, the same for corners, nudges and weaving. The bars, fork and
+  front wheel turn about the head tube (avatar kit `Bike.steer`).
+- **In a junction** every vehicle also looks a few metres ahead and stops for a moving one in the same junction
+  (streets under 12 m joined into one), so fewer drive through each other — BUGS.md #235 has the numbers and what
+  is left.
 - **Never in view**: cars appear and vanish only out of the rider's sight; at a dead end they turn round.
 - **Density** `dense` = 80 cars per km of street, times a zone's `traffic` multiplier — measured with
   `tools/traffic-soak.ts` on real streets: 60 flows, 80 queues and recovers, 100 locks solid. `?cars=0` turns it off,
   `?traffic=<n>` sets a density for measuring.
+
+## Street tunnels (2026-09-29)
+
+Street tunnels under a hill are ridden, driven and walked through — San Francisco's Stockton Tunnel (Bush to
+Sacramento, under Nob Hill), the Broadway Tunnel and the Baker-Barry Tunnel. Highway and railway tunnels are
+still left out.
+
+- **The bake** (`tools/tunnels.ts`) finds a *bore*: a chain of tunnel carriageways of an ordinary street class with
+  two mouths, under ground that is never below it and well above it somewhere (not an underpass). It gets its own
+  heights, straight from mouth to mouth at the streets outside — the explicit Z, not the hill above — and
+  `bore: true`, which lets it into the ride graph and the traffic. Its pavements come with it. The bake log says
+  why each other tunnel was left out.
+- **Mouths under a street** (the Stockton Tunnel's south portal is right under Bush Street): the mouth goes at
+  least 6.5 m under the street crossing over it, and the street leading in is sloped down to it; a street's last
+  30 m into any mouth follows the ground along its centre line (a cut), and a tunnel's own heights never raise the
+  junction at its mouth.
+- **Levels kept apart in the bake and the ride graph**: a bridge's ramps spread only along roads and stop at a
+  tunnel mouth; an unnamed service road on a bridge (a garage ramp) is not ridden; footway joins never rescue a
+  driveway or a dead end at a tunnel mouth; a way on another layer, or a named street 2.5 m above or below, is
+  never another street's "side path".
+- **The renderer** (`src/render/tunnels.ts`): the city is drawn in rendering groups with the depth cleared between
+  them, so nothing under the ground can be drawn while the camera is above it. The tube (road, pavements, tiled
+  walls, arch, lamps) is shown only while the camera is inside it; from outside, each mouth is a headwall on the
+  hillside with a dark opening. Cars and walkers inside a tunnel are hidden until the camera follows them in.
 
 ## Where it comes from
 

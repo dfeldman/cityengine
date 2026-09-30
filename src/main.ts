@@ -163,6 +163,10 @@ if (params.get('model')) {
     advance: params.get('advance') ? Number(params.get('advance')) : undefined,
     // road traffic is ON by default since 2026-09-29 (the delivery game's gridlock); ?cars=0 turns it off
     cars: params.get('cars') !== '0',
+    // ?input=fast (held arrows steer, the turn is taken at the corner) is the default; ?input=slow declares turns
+    // ahead, for trainers — and is the default on Dandyhorse, where the phone's d-pad arrives on a 1 s poll
+    input: params.get('input') === 'slow' || params.get('input') === 'fast' ? params.get('input') as 'fast' | 'slow'
+      : platform ? 'slow' : 'fast',
     // ?veg=3 — how many times the baked count a closed wood grows to (render/infill.ts); ?vegmerge=0 turns
     // off the material and far-tier merging of BUGS.md #205, so the two can be measured against each other
     veg: params.get('veg') ? Number(params.get('veg')) : undefined,

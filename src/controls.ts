@@ -36,6 +36,11 @@ export interface Controls {
   steering(): Steer[]
   /** the game's own steering buttons, where they must go the platform's way round (platform.ts) */
   press?(s: Steer): void
+  /**
+   * FAST INPUT (src/sim/navigate.ts): the direction held right now, −1 left, 0 none, +1 right — for an input that
+   * can be held and read every frame, which a keyboard can and the platform's once-a-second poll cannot.
+   */
+  steerAxis?(): -1 | 0 | 1
 }
 
 /** A turn at the next junction, or 'back': turn round where you are. */
@@ -49,6 +54,13 @@ export class LocalControls implements Controls {
   private paused_ = false
   private grade = 0
   private pending: Steer[] = []
+  /**
+   * Slow input: is a turn signalled and not yet latched? Then ↑ cancels it — a 'straight' — instead of adding
+   * power (owner, 2026-09-29: "there is no way to cancel a turn instruction once issued"). Set by the game.
+   */
+  turnPending: (() => boolean) | null = null
+  /** the steering keys held down: ArrowLeft/KeyA, ArrowRight/KeyD */
+  private readonly down = new Set<string>()
 
   private readonly deviceType: () => 'bike' | 'treadmill'
 
@@ -56,15 +68,31 @@ export class LocalControls implements Controls {
     this.deviceType = deviceType
     addEventListener('keydown', (e) => this.key(e, true))
     addEventListener('keyup', (e) => this.key(e, false))
+    // a key released while the window had no focus never sends its keyup: forget them all
+    addEventListener('blur', () => this.down.clear())
+  }
+
+  steerAxis(): -1 | 0 | 1 {
+    const l = this.down.has('ArrowLeft') || this.down.has('KeyA')
+    const r = this.down.has('ArrowRight') || this.down.has('KeyD')
+    return l === r ? 0 : l ? -1 : 1
   }
 
   private key(e: KeyboardEvent, down: boolean): void {
     const bike = this.deviceType() === 'bike'
     if (e.code === 'Space') { this.coasting = down; e.preventDefault(); return }
+    if (e.code === 'ArrowLeft' || e.code === 'ArrowRight' || e.code === 'KeyA' || e.code === 'KeyD') {
+      if (down) this.down.add(e.code); else this.down.delete(e.code)
+    }
     if (!down) return
     const big = e.shiftKey ? 4 : 1
     switch (e.code) {
-      case 'ArrowUp': bike ? (this.watts += 15 * big) : (this.belt += 0.15 * big); e.preventDefault(); break
+      case 'ArrowUp':
+        if (this.turnPending?.()) this.pending.push('straight')
+        else if (bike) this.watts += 15 * big
+        else this.belt += 0.15 * big
+        e.preventDefault()
+        break
       case 'ArrowDown': bike ? (this.watts -= 15 * big) : (this.belt -= 0.15 * big); e.preventDefault(); break
       case 'ArrowLeft': this.pending.push('left'); e.preventDefault(); break
       case 'ArrowRight': this.pending.push('right'); e.preventDefault(); break

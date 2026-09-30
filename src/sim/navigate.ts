@@ -23,6 +23,19 @@
  * The commit distance is in seconds rather than metres — two seconds of travel at the current speed — because
  * the point is to be beyond the rider's reaction time, and a fixed twenty metres is an age at walking pace
  * and no warning at all at forty kilometres an hour.
+ *
+ * **FAST INPUT** (`fast = true`; owner, 2026-09-29: "this feels odd and unnatural for keyboard players, who are
+ * used to real-time inputs — you press left, you go left immediately"). The slow model above stays for trainers
+ * and the phone bridge, where a press can be a second late. On a keyboard:
+ *
+ *   * HOLDING a direction (`hold`) steers across the carriageway, 3 m/s sideways, and letting go leaves the rider
+ *     where they are — no nudges in steps, no drifting back;
+ *   * the TURN is decided at the corner, not before it: whatever is held — or was tapped a moment ago (`tap`) —
+ *     when the rider reaches the start of the corner (`FAST_COMMIT_SECONDS`, never more than a 90° corner's own
+ *     run-in) is the way they go; nothing held is straight on (or the GPS's exit);
+ *   * a hold that has just taken a corner does not take the next one too until it is let go — the Haight's
+ *     blocks are a few metres apart at some junctions;
+ *   * still a path game: the rider never leaves the street, and a U-turn is still its own button.
  */
 import { distance, type Point } from '../city/geo.ts'
 import { profileAt } from '../city/terrain.ts'
@@ -97,12 +110,29 @@ const MAX_LEAN = (20 * Math.PI) / 180
 export const COMMIT_SECONDS = 1.6
 /** …but never less than this, or a stopped rider could never commit at all. */
 export const COMMIT_MIN_METRES = 6
+/** Fast input: the choice is made at the corner itself — this long before it, between these distances. */
+export const FAST_COMMIT_SECONDS = 0.9
+export const FAST_COMMIT_MIN = 4
+/** a 90° corner's run-in (`cornerRadius(π/2)` · tan 45°): the arc starts no further back than this */
+export const FAST_COMMIT_MAX = 7
+/** Fast input: sideways speed while a direction is held, m/s (slow input's nudges ease at 1.5). */
+export const FAST_LATERAL = 3
+/** Fast input: a tap counts for this long before the corner, seconds of travel. */
+export const FAST_TAP_SECONDS = 0.6
 
 export class Navigator {
   private readonly g: CityGraph
   private pos: Position
   private intent: Turn = 'straight'
   private committed: Turn | null = null
+  /** fast input (see the top of the file); slow — the trainer's declared intentions — otherwise */
+  fast = false
+  /** fast input: the direction held now, −1 left, +1 right */
+  private held: -1 | 0 | 1 = 0
+  /** …spent: it has taken a corner, and counts again only once let go */
+  private heldSpent = false
+  /** fast input: the last tap, and how far the rider had travelled when it came */
+  private tapped: { dir: -1 | 1; at: number } | null = null
   /**
    * A specific exit asked for by its edge (BUGS.md #40): at a star junction left/straight/right cannot name
    * the street, so the HUD offers each exit by name and the GPS asks for its own edge. It wins over the turn
@@ -177,20 +207,58 @@ export class Navigator {
     this.pos = { ...this.pos, reversed: !this.pos.reversed }
     this.intent = 'straight'
     this.committed = null
+    this.tapped = null
     this.swap = 1
   }
   get edge() { return this.g.edges.get(this.pos.edgeId)! }
   /** the turn the rider has asked for, or has been locked into */
-  get requested(): Turn { return this.committed ?? this.intent }
+  get requested(): Turn { return this.committed ?? this.choice() }
+
+  /** what the rider is asking for now: slow, the intent; fast, the hold, else a fresh tap, else the intent */
+  private choice(): Turn {
+    if (!this.fast) return this.intent
+    if (this.held !== 0 && !this.heldSpent) return this.held < 0 ? 'left' : 'right'
+    if (this.tapped && this.travelled - this.tapped.at <= Math.max(3, this.speed * FAST_TAP_SECONDS)) return this.tapped.dir < 0 ? 'left' : 'right'
+    return this.intent
+  }
+
+  /** where the choice latches, metres before the junction */
+  private commitDistance(speed: number): number {
+    return this.fast
+      ? Math.min(FAST_COMMIT_MAX, Math.max(FAST_COMMIT_MIN, speed * FAST_COMMIT_SECONDS))
+      : Math.max(COMMIT_MIN_METRES, speed * COMMIT_SECONDS)
+  }
+
+  /**
+   * Fast input: the direction held now (−1 left, 0 none, +1 right), every frame. Steers across the street while
+   * held (see `advance`) and is the turn taken at the corner. Letting go stops the rider where they are.
+   */
+  hold(dir: -1 | 0 | 1): void {
+    if (dir === 0) {
+      // let go: stay put a moment, then ease back to the right (`home`)
+      if (this.held !== 0) { this.offsetTarget = this.offset; this.manualUntil = this.clock + Navigator.MANUAL_SECONDS }
+      this.heldSpent = false
+    } else {
+      // the rider's own hand beats the GPS's exit at the junction ahead
+      this.wantEdge = null
+    }
+    this.held = dir
+  }
+
+  /** Fast input: a quick press — a turn at a corner just ahead, however briefly it was held. */
+  tap(dir: -1 | 1): void {
+    this.tapped = { dir, at: this.travelled }
+    this.wantEdge = null
+  }
   get isCommitted(): boolean { return this.committed !== null }
 
   /**
-   * How far right of the centre line the rider rides: not at all, now.
+   * How far right of the centre line the rider rides: `offset` (steered, woven, or resting at `home`, the right-hand
+   * side since 2026-09-29) plus the carriageway's own offset from the drawn line (`lane`, a boulevard drawn twice).
    *
-   * Keeping right was the plan, and it kept going wrong in play — after a turn the rider came out on the
-   * wrong side, close to the buildings, on streets whose OSM centre line is not in the middle of the
-   * carriageway. Straight down the middle is simpler and never wrong in a way anyone notices, and the
-   * traffic stops for the rider anyway. Kept as a function, so keeping right can come back per city.
+   * History: keeping right was tried once and went wrong in play — the rider came out of turns on the wrong side,
+   * close to the buildings, on streets whose OSM centre line is off-centre — so from 2026-09-21 the rider rode
+   * the middle. Now back, 1.2 m in from the kerb rather than at the 0.8 m limit, for that off-centre slack.
    */
   private lateral(): number {
     return this.offset + (this.edge.lane ?? 0)
@@ -202,17 +270,69 @@ export class Navigator {
   }
 
   /**
+   * KEEP RIGHT (owner, 2026-09-29: "the bike should stay to the right of the road, not the center… we need to
+   * avoid the sidewalk though"): where the rider rides when nothing else decides — 1.2 m in from the right kerb,
+   * a little inside the 0.8 m limit, because some streets' OSM centre line is not quite mid-carriageway (the
+   * reason riding down the middle was chosen once, `lateral`). The weaving aims for it too (`preferShift`).
+   */
+  private get home(): number {
+    return Math.max(0, Math.min(this.maxOffset, this.edge.width / 2 - 1.2))
+  }
+
+  /** after steering by hand (a hold, a nudge), this many seconds before the rider eases back to `home` */
+  private static readonly MANUAL_SECONDS = 2
+  /** riding seconds (only moving counts), and until when the rider's own steering stands */
+  private clock = 0
+  private manualUntil = 0
+
+  /**
+   * Where the rider would like to be, as a shift from where they are (for `Traffic.weave`): their own steering while
+   * it stands, the middle before a left turn, and otherwise `home`, the right-hand side.
+   */
+  get preferShift(): number {
+    if (this.clock < this.manualUntil || (this.fast && this.held !== 0)) return 0
+    return this.restingTarget() - this.offset
+  }
+
+  /** where the rider rests with no hand on the bars and no traffic in the way */
+  private restingTarget(): number {
+    const j = this.next()
+    const commit = this.commitDistance(this.speed)
+    const turning = !!j && !j.passThrough && (this.fast ? this.isCommitted : j.ahead < 2 * commit + 4)
+    // a left turn is made from the middle of the road, as a cyclist does; a right one from the right
+    return turning && this.requested === 'left' ? 0 : this.home
+  }
+
+  /**
    * Drift across the carriageway (item H): 1.5 m a press, eased over about a second, never nearer the kerb
    * than 0.8 m. It is free steering only where free steering is harmless — the game sends a press here only
    * when the next junction is well away — and it re-centres on the approach to a junction, so a corner
    * always starts from the line. `0` asks to come back to the middle.
    */
   nudge(dir: -1 | 0 | 1): void {
-    this.offsetTarget = dir === 0 ? 0 : Math.max(-this.maxOffset, Math.min(this.maxOffset, this.offsetTarget + 1.5 * dir))
+    // `0`: back to the rider's own line (keep right), at once
+    if (dir === 0) { this.manualUntil = 0; this.offsetTarget = this.home; return }
+    this.offsetTarget = Math.max(-this.maxOffset, Math.min(this.maxOffset, this.offsetTarget + 1.5 * dir))
+    this.manualUntil = this.clock + Navigator.MANUAL_SECONDS
   }
 
   /** Where the rider has been nudged to, in metres right of the line. */
   get nudged(): number { return this.offset }
+
+  /** How far the rider may move across from where they are now: `left` ≤ 0, `right` ≥ 0, metres (for weaving). */
+  get room(): { left: number; right: number } {
+    return { left: -this.maxOffset - this.offset, right: this.maxOffset - this.offset }
+  }
+
+  /**
+   * WEAVING (sim/traffic.ts `weave`): steer across to this offset, metres right of the line — past stopped traffic —
+   * overriding the nudge and the re-centring before a junction while it is set; null lets go and the rider stays
+   * wherever they are across the street.
+   */
+  weaveTo(offset: number | null): void {
+    this.weaveTarget = offset === null ? null : Math.max(-this.maxOffset, Math.min(this.maxOffset, offset))
+  }
+  private weaveTarget: number | null = null
 
   /**
    * Where the rider is, in local metres — on the centre line.
@@ -332,16 +452,30 @@ export class Navigator {
     // the nudge: toward its target at 1.5 m/s of travel-time, back to the middle near a junction, and never
     // wider than this street allows (a new street may be narrower than the last)
     const j = this.next()
-    const commit = Math.max(COMMIT_MIN_METRES, speed * COMMIT_SECONDS)
-    if (j && !j.passThrough && j.ahead < 2 * commit + 4) this.offsetTarget = 0
+    const commit = this.commitDistance(speed)
+    /*
+     * Back to the middle before a junction only when TURNING there: a corner starts from the line. Going straight
+     * on keeps the rider where they chose to be — re-centring before every junction undid nearly every nudge on
+     * short blocks (owner, 2026-09-29: "nudging also doesn't actually work a lot of the time").
+     */
+    // fast input: a held direction pulls the target along ahead of the rider, so the drift is steady and stops
+    // the moment it is let go (`hold`); the rider's hand wins over the automatic weave
+    const steering = this.fast && this.held !== 0
+    if (speed > 0.1) this.clock += metres / speed
+    if (steering) this.offsetTarget = this.offset + this.held * 1.5
+    else if (this.weaveTarget !== null) this.offsetTarget = this.weaveTarget
+    // the rider's own steering stands a moment; after that, back to the right (or the middle, for a left turn)
+    else if (this.clock >= this.manualUntil) this.offsetTarget = this.restingTarget()
+    void j; void commit
     this.offsetTarget = Math.max(-this.maxOffset, Math.min(this.maxOffset, this.offsetTarget))
-    // 1.5 m/s sideways; the step's duration is recovered from how far it went at what speed
-    const stepMax = speed > 0.1 ? 1.5 * (metres / speed) : 0
+    // sideways at 1.5 m/s (3 m/s under a held key); the step's duration is recovered from how far it went at
+    // what speed — so there is no steering at a standstill
+    const stepMax = speed > 0.1 ? (steering ? FAST_LATERAL : 1.5) * (metres / speed) : 0
     this.offset += Math.max(-stepMax, Math.min(stepMax, this.offsetTarget - this.offset))
     this.offset = Math.max(-this.maxOffset, Math.min(this.maxOffset, this.offset))
     const target = this.lateral()
     if (this.shown === null) this.shown = target
-    else this.shown += Math.max(-0.3 * metres, Math.min(0.3 * metres, target - this.shown))
+    else this.shown += Math.max(-0.6 * metres, Math.min(0.6 * metres, target - this.shown))
     this.prepareArc(speed)
     // off the corner just taken: forget it
     if (this.arcBehind) {
@@ -386,14 +520,19 @@ export class Navigator {
         continue
       }
       const byEdge = this.wantEdge === null ? undefined : xs.find((x) => x.edgeId === this.wantEdge)
-      const chosen = byEdge ?? resolve(xs, this.committed ?? this.intent)
+      const chosen = byEdge ?? resolve(xs, this.committed ?? this.choice())
+      // fast input: the hold that took this corner is spent until let go, and a tap is used up
+      if (this.fast && (this.committed ?? this.choice()) !== 'straight') {
+        if (this.held !== 0) this.heldSpent = true
+        this.tapped = null
+      }
       this.wantEdge = null
       crossed.push(nodeId)
       this.lastNode = nodeId
       // A turn is spent when it is taken, so the default returns to straight — UNLESS the rider pressed
       // after the choice had already latched. That press was meant, it just arrived inside the last second
       // and a half, and carrying it to the next junction is what a rider on a real street would do.
-      const late = this.committed !== null && this.intent !== this.committed
+      const late = !this.fast && this.committed !== null && this.intent !== this.committed
       this.committed = null
       this.intent = late ? this.intent : 'straight'
 
@@ -421,13 +560,13 @@ export class Navigator {
   /** Latch the choice once the rider is inside the commit distance, so the turn cannot flip under them. */
   private latch(speed: number): void {
     if (this.committed !== null) return
-    const commit = Math.max(COMMIT_MIN_METRES, speed * COMMIT_SECONDS)
+    const commit = this.commitDistance(speed)
     // measured to the next REAL junction: a pass-through node on the way is not where the choice is made
     const e = this.edge
     const toEnd = this.pos.reversed ? this.pos.s : e.length - this.pos.s
     if (toEnd > commit) return
     const j = this.next()
-    if (j && !j.passThrough && j.ahead <= commit) this.committed = this.intent
+    if (j && !j.passThrough && j.ahead <= commit) this.committed = this.choice()
   }
 
   get lastJunction(): number | null { return this.lastNode }
@@ -451,11 +590,11 @@ export class Navigator {
     const toEnd = this.pos.reversed ? this.pos.s : e.length - this.pos.s
     if (this.arcAhead && this.arcAhead.nodeId === nodeId) return
     this.arcAhead = null
-    const commit = Math.max(COMMIT_MIN_METRES, speed * COMMIT_SECONDS)
+    const commit = this.commitDistance(speed)
     if (toEnd > commit) return
     const xs = this.exitsOf(this.g, nodeId, e.id)
     if (xs.length === 0) return
-    const chosen = isPassThrough(xs) ? xs[0] : resolve(xs, this.committed ?? this.intent)
+    const chosen = isPassThrough(xs) ? xs[0] : resolve(xs, this.committed ?? this.choice())
     if (!chosen) return
     const theta = Math.abs(chosen.angle)
     if (theta < ARC_MIN || theta > Math.PI - 0.05) return

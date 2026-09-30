@@ -166,7 +166,8 @@ export interface Way {
 }
 
 /** Street flag bits (MAP-FORMAT §5.5). */
-export const SF = { foot: 1, oneway: 2, bridge: 4, tunnel: 8, passage: 16, ramp: 32, crossing: 64, park: 128 } as const
+// `bore`: a street tunnel under a hill, ridden and drawn as a tunnel (tools/tunnels.ts, render/tunnels.ts)
+export const SF = { foot: 1, oneway: 2, bridge: 4, tunnel: 8, passage: 16, ramp: 32, crossing: 64, park: 128, bore: 256, cut: 512 } as const
 /** Rail flag bits. */
 export const RF = { bridge: 1, cable: 2, light: 4 } as const
 

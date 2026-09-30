@@ -70,6 +70,8 @@ export interface Vehicle {
   still?: number
   /** the rider squeezed past it after being held for too long: no longer an obstacle to them */
   passed?: true
+  /** until when the junction look-ahead is off for it (the never-stuck valve in `drive`), sim seconds */
+  lookOff?: number
   /** this driver's own habits (IDM): acceleration, comfortable braking, time gap, standstill gap */
   driver: { a: number; b: number; T: number; s0: number }
 }
@@ -124,6 +126,10 @@ export interface Collision { vehicle: Vehicle; nodeId: number; at: Point }
 
 /** grade below which the rider is on a descent: cars ahead get out of the way instead of holding them */
 export const DESCENT = -0.04
+/** m/s: traffic going the rider's way slower than this is woven round, not followed */
+export const CRAWL = 6
+/** metres: the grid cell for finding the vehicles near one */
+const NEAR_CELL = 16
 
 // Saturated, flat, and a few of them deliberately drab, because a street where every car is a jellybean
 // looks like a toy rather than a city.
@@ -156,7 +162,9 @@ function rng(seed: number): () => number {
 }
 
 /** may this edge be driven in this direction */
-const allowed = (e: Edge, dir: 1 | -1): boolean => drives(e) && !(e.oneway && dir < 0)
+// never into a tunnel that is not a street tunnel under a hill (`bore`): a motorway tunnel is not drawn, and cars
+// that drove into one were drawn along the ground above it
+const allowed = (e: Edge, dir: 1 | -1): boolean => drives(e) && !(e.tunnel && !e.bore) && !(e.oneway && dir < 0)
 /** the lane: right of the centre, half a lane out, less on a narrow street */
 const laneOf = (e: Edge): number => Math.min(2.6, e.width * 0.24)
 
@@ -173,6 +181,9 @@ export class Traffic {
   private lastDt = 0
   private heldBy: Vehicle | null = null
   private heldFor = 0
+  private readonly near = new Map<string, Vehicle[]>()
+  /** the junction look-ahead in `drive` (off only to measure it: tools/traffic-soak.ts LOOKAHEAD=0) */
+  private readonly lookAhead: boolean
   /** this frame's lanes, for the look-ahead into the street a car is turning into */
   private laneCache = new Map<string, Vehicle[]>()
   /** where the rider is and which way they face, for "can the rider see this" */
@@ -182,7 +193,8 @@ export class Traffic {
   private readonly r = rng(0xc0ffee)
 
   constructor(graph: CityGraph, level: keyof typeof TRAFFIC | TrafficConfig = 'some',
-    opt: { signals?: Signals; zoneFactor?: (p: Point) => number } = {}) {
+    opt: { signals?: Signals; zoneFactor?: (p: Point) => number; lookAhead?: boolean } = {}) {
+    this.lookAhead = opt.lookAhead ?? true
     this.g = graph
     this.cfg = typeof level === 'string' ? TRAFFIC[level] : level
     this.signals = opt.signals ?? null
@@ -210,6 +222,13 @@ export class Traffic {
     this.laneCache = lanes
     const boxes = this.occupancy()
 
+    // who is near whom, for the look-ahead at junctions (`drive`)
+    this.near.clear()
+    for (const v of this.vehicles) {
+      const k = `${Math.floor(v.at.x / NEAR_CELL)},${Math.floor(v.at.z / NEAR_CELL)}`
+      const l = this.near.get(k)
+      if (l) l.push(v); else this.near.set(k, [v])
+    }
     for (const v of this.vehicles) this.drive(v, dt, lanes, boxes, who)
 
     const hits: Collision[] = []
@@ -224,8 +243,13 @@ export class Traffic {
        * rider cannot see breaks the ring, and it drains.
        */
       v.still = v.speed < 0.1 ? (v.still ?? 0) + dt : 0
+      // a collision or a squeeze-past is forgiven once the two are well apart: a car that hit the rider must not
+      // ignore them for the rest of the ride (it would never stop for them again, nor ever hit them)
+      if ((v.bumped || v.passed) && who && Math.hypot(v.at.x - who.at.x, v.at.z - who.at.z) > 40) { v.bumped = undefined; v.passed = undefined }
       if ((v.still ?? 0) > 45 && this.hidden(v.at)) { this.vehicles.splice(i, 1); continue }
-      if (who && v.inBox && !v.bumped && overlap(who.box, this.boxOf(v))) {
+      // only a MOVING car hits the rider: riding into a standing one (or one squeezed past) is not a crash, and nor
+      // is a car creeping at walking pace touching them (two such "crashes" in 100 s, measured, at 1–1.9 m/s)
+      if (who && v.inBox && !v.bumped && !v.passed && v.speed > 2 && overlap(who.box, this.boxOf(v))) {
         // the rider stops (game.ts); the vehicle drives on, and from now on the two ignore each other
         v.bumped = true
         hits.push({ vehicle: v, nodeId: v.inBox.nodeId, at: { ...v.at } })
@@ -234,8 +258,78 @@ export class Traffic {
     return hits
   }
 
-  /** The vehicle ahead of the rider in the rider's lane, for the ride model's cap — or null. */
-  leaderFor(rider: RiderNow): { gap: number; speed: number } | null {
+  /**
+   * WEAVING (owner, 2026-09-29): *"we need to be able to weave through intersections when traffic is stopped. that's
+   * the whole advantage of a bike in a gridlocked city."* Looking along the rider's path, which strips across it are
+   * blocked by stopped or crawling vehicles, and which is the free strip nearest where the rider already is.
+   *
+   * `left`/`right` are how far the rider may move across (negative left, positive right, metres) — the street's own
+   * room, from the navigator. The answer is a SHIFT from where they are: 0 to stay; null when every strip is
+   * blocked (then they are held, `leaderFor`). Moving traffic is not woven round — a car driving away needs no
+   * avoiding, and cross traffic is what a rider has to judge for themselves.
+   */
+  weave(rider: RiderNow, left: number, right: number, prefer = 0): number | null {
+    const look = Math.max(10, rider.speed * 3)
+    const fx = Math.sin(rider.heading)
+    const fz = Math.cos(rider.heading)
+    const rx = Math.cos(rider.heading)
+    const rz = -Math.sin(rider.heading)
+    // 0.2 m of air each side, not 0.5: on a 6–9 m street two opposing stopped lanes leave ~1.1 m down the centre
+    // line, and filtering down it IS the bike in gridlock (owner, 2026-09-29: "zooming around gridlocked cars and
+    // only occasionally have to wait for them"); must stay above `leaderFor`'s lane tolerance (0.15)
+    const margin = SIZE.bike.wid / 2 + 0.2
+    const blocked: [number, number][] = []
+    for (const v of this.vehicles) {
+      if (Math.hypot(v.at.x - rider.at.x, v.at.z - rider.at.z) > look + 14) continue
+      // standing traffic, and traffic crawling the rider's way (a jam creeping at walking pace holds nobody on a
+      // bike); cross traffic that is moving is the rider's own judgement
+      if (v.speed > 2 && (v.speed > CRAWL || Math.cos(v.heading - rider.heading) < 0.5)) continue
+      // the vehicle's corners in the rider's frame: along (f) and across (l)
+      const b = this.boxOf(v)
+      const bf = [Math.sin(b.heading), Math.cos(b.heading)]
+      const br = [Math.cos(b.heading), -Math.sin(b.heading)]
+      let f0 = Infinity, f1 = -Infinity, l0 = Infinity, l1 = -Infinity
+      for (const [a, c] of [[1, 1], [1, -1], [-1, 1], [-1, -1]]) {
+        const x = b.x + bf[0] * b.halfLen * a + br[0] * b.halfWid * c - rider.at.x
+        const z = b.z + bf[1] * b.halfLen * a + br[1] * b.halfWid * c - rider.at.z
+        const f = x * fx + z * fz
+        const l = x * rx + z * rz
+        f0 = Math.min(f0, f); f1 = Math.max(f1, f); l0 = Math.min(l0, l); l1 = Math.max(l1, l)
+      }
+      if (f1 < -SIZE.bike.len / 2 || f0 > look) continue
+      blocked.push([l0 - margin, l1 + margin])
+    }
+    const free = (l: number): boolean => blocked.every(([a, b]) => l < a || l > b)
+    /*
+     * PATHFINDING ACROSS ONE STREET (owner, 2026-09-29: "the bike should stay to the right of the road… this often
+     * isn't possible with cars on narrower roads, so we need to do some pathfinding on individual edges too"): of
+     * the free strips — where the rider is, where they would like to be (`prefer`, the right-hand side), and the
+     * edges of every blocked interval — the one nearest where they would like to be, with a little weight on not
+     * moving at all so they do not dither between two.
+     */
+    const want = Math.max(left, Math.min(right, prefer))
+    if (free(want) && free(0) && Math.abs(want) < 0.05) return 0
+    let best: number | null = null
+    let cost = Infinity
+    for (const l of [0, want, ...blocked.flatMap(([a, b]) => [a - 0.01, b + 0.01])]) {
+      if (l < left - 1e-9 || l > right + 1e-9 || !free(l)) continue
+      const c = Math.abs(l - want) + 0.3 * Math.abs(l)
+      if (c < cost) { cost = c; best = l }
+    }
+    return best
+  }
+
+  /**
+   * The vehicle ahead of the rider in the rider's lane, for the ride model's cap — or null. `shift` is where the rider
+   * is weaving to (`weave`): the hold is judged along the strip they are heading for, so a gap means they keep rolling.
+   * `probe`: a second look in the same frame (game.ts's swing cap) that must not run the never-stuck valve's clock.
+   */
+  leaderFor(rider: RiderNow, shift = 0, probe = false): { gap: number; speed: number } | null {
+    if (shift !== 0) {
+      const rx = Math.cos(rider.heading)
+      const rz = -Math.sin(rider.heading)
+      rider = { ...rider, at: { x: rider.at.x + rx * shift, z: rider.at.z + rz * shift }, box: { ...rider.box, x: rider.box.x + rx * shift, z: rider.box.z + rz * shift } }
+    }
     if (rider.grade < DESCENT) return null
     const e = this.g.edges.get(rider.edgeId)
     if (!e) return null
@@ -244,10 +338,10 @@ export class Traffic {
     // which vehicle it is, for the never-stuck valve below
     let bestV: Vehicle | null = null
     for (const v of this.vehicles) {
-      if (v.edgeId !== e.id || v.dir !== rider.dir || v.bumped || v.passed) continue
+      if (v.edgeId !== e.id || v.dir !== rider.dir || v.bumped || v.passed || v.why === 'rider in lane') continue
       const gap = (v.s - rider.s) * rider.dir
       if (gap <= 0) continue
-      if (Math.abs(v.lane * v.dir - lat) > this.halfWid(v) + SIZE.bike.wid / 2 + 0.3) continue
+      if (Math.abs(v.lane * v.dir - lat) > this.halfWid(v) + SIZE.bike.wid / 2 + 0.15) continue
       // nose of the rider to the tail of the car
       const clear = gap - this.halfLen(v) - SIZE.bike.len / 2
       if (!best || clear < best.gap) { best = { gap: clear, speed: v.speed }; bestV = v }
@@ -261,7 +355,9 @@ export class Traffic {
     const fx = Math.sin(rider.heading)
     const fz = Math.cos(rider.heading)
     for (const v of this.vehicles) {
-      if (v.bumped || v.passed || Math.hypot(v.at.x - rider.at.x, v.at.z - rider.at.z) > 32) continue
+      // …never by a vehicle that is itself waiting for the rider: a car and a rider face to face on a narrow street
+      // each waited for the other for ever (owner, 2026-09-29)
+      if (v.bumped || v.passed || v.why === 'rider in lane' || Math.hypot(v.at.x - rider.at.x, v.at.z - rider.at.z) > 32) continue
       // standing, or going the rider's way (a car ahead turning off still has to be cleared — the rider ran into
       // the back of one): CROSS traffic is left out on purpose, so running a red can still cost you
       if (v.speed > 1.5 && Math.cos(v.heading - rider.heading) < 0.5) continue
@@ -276,14 +372,17 @@ export class Traffic {
       }
     }
     /*
-     * NEVER STUCK FOR GOOD: held by the same vehicle for 20 s, the rider squeezes past it, as a cyclist would, and
-     * it stops counting as an obstacle to them. Waiting out a red in a queue is the game; waiting for ever is a bug,
-     * and there were several (a car that believed it was still in a junction, a ring of queues).
+     * NEVER STUCK FOR GOOD: held by the same vehicle for a while, the rider squeezes past it, as a cyclist would, and
+     * it stops counting as an obstacle to them. Waiting for ever is a bug, and there were several (a car that believed
+     * it was still in a junction, a ring of queues). 5 s behind a car that is STANDING (gridlock is for zooming
+     * round, owner 2026-09-29 — 20 s at every junction was "very slow") or crawling under 2 m/s (a car creeping at
+     * 0.4 m/s held a rider 12 s, measured), 20 s behind one that is moving.
      */
+    if (probe) return best
     const holder = best ? bestV : null
     if (holder && holder === this.heldBy) {
       this.heldFor += this.lastDt
-      if (this.heldFor > 20) { holder.passed = true; this.heldBy = null; this.heldFor = 0; return null }
+      if (this.heldFor > (holder.speed < 2 ? 5 : 20)) { holder.passed = true; this.heldBy = null; this.heldFor = 0; return null }
     } else { this.heldBy = holder; this.heldFor = 0 }
     return best
   }
@@ -309,6 +408,41 @@ export class Traffic {
 
   private halfLen(v: Vehicle): number { return (v.kind === 'bus' ? SIZE.bus : SIZE.car).len / 2 }
   private halfWid(v: Vehicle): number { return (v.kind === 'bus' ? SIZE.bus : SIZE.car).wid / 2 }
+  /**
+   * One intersection that OSM split into several nodes a few metres apart (a divided street, a skewed crossing): the
+   * nodes joined by streets shorter than 12 m are one junction, for the look-ahead. Its smallest node id names it.
+   * The Haight's worst overlaps were all in one such cluster of 7–9 m edges, a car in it in two "junctions" at once.
+   */
+  private cluster(node: number): number {
+    // streets stream in with tiles: a cluster worked out before its neighbours arrived may have grown
+    if (this.g.edges.size !== this.clusteredAt) { this.clusters.clear(); this.clusteredAt = this.g.edges.size }
+    const hit = this.clusters.get(node)
+    if (hit !== undefined) return hit
+    const seen = new Set<number>([node])
+    const todo = [node]
+    while (todo.length) {
+      const n = todo.pop()!
+      for (const id of this.g.nodes.get(n)?.edges ?? []) {
+        const e = this.g.edges.get(id)
+        if (!e || e.length >= 12) continue
+        for (const m of [e.a, e.b]) if (!seen.has(m) && seen.size < 12) { seen.add(m); todo.push(m) }
+      }
+    }
+    const name = Math.min(...seen)
+    for (const n of seen) this.clusters.set(n, name)
+    return name
+  }
+  private readonly clusters = new Map<number, number>()
+  private clusteredAt = -1
+
+  /** how far `v` can move straight ahead (its own `box`) before touching `other`, up to `reach`; −1 if never */
+  private sweep(v: Vehicle, box: Box, reach: number, other: Box): number {
+    const fx = Math.sin(v.heading)
+    const fz = Math.cos(v.heading)
+    for (let d = 0.25; d <= reach; d += 0.75) if (overlap({ ...box, x: box.x + fx * d, z: box.z + fz * d }, other)) return d
+    return -1
+  }
+
   boxOf(v: Vehicle): Box { return boxOf(v.at.x, v.at.z, v.heading, v.kind === 'bus' ? SIZE.bus : SIZE.car) }
 
   /** a point's signed distance to the right of an edge's a→b centre line, at `s` */
@@ -628,6 +762,70 @@ export class Traffic {
       // a car AHEAD of a descending rider in their lane gets out of the way
       const behind = (v.s - rider.s) * rider.dir
       if (rider.dir === v.dir && rider.grade < DESCENT && behind > 0 && behind < 60) v0 = Math.max(v0, rider.speed + 1.5)
+    }
+    /*
+     * LOOK-AHEAD AT JUNCTIONS (owner, 2026-09-29: "I still see vehicles going through other vehicles, especially at
+     * intersections"; the soak counted 900 pair-seconds of two cars in one box overlapping in 300 s). The rules
+     * decide who may ENTER a box, but a car that went in and then found its way out full stands in the box, and
+     * cross traffic on its green drove through it. So near and in a junction every vehicle also sweeps its own box
+     * forward and stops for ANY vehicle there. Never for one that is waiting for IT (a car in the box waiting for
+     * the last car on its way out, which was sweeping into it: both stood for ever); two that would each stop for
+     * the other: the lower id goes first. Longer rings of waiting are broken by time: standing 2 s, a vehicle stops
+     * looking ahead and goes as the rules let it (a rare overlap, as before, rather than a city-wide gridlock).
+     */
+    // only against vehicles IN the same junction, and only a few metres ahead along the heading it has now (in the
+    // box that follows its arc): swept straight and far, a turning car stopped for the queue across the street and
+    // the whole city seized up
+    const boxNode = v.inBox ? v.inBox.nodeId : toGo < 8 ? node : null
+    // (the valve holds for 4 s: `still` resets the moment it creeps, so on its own it re-armed at once and the car
+    // crawled for ever instead of going)
+    // 2 s, not 6: stopping in a box for each other for longer kept boxes full, and in a 600 s soak rings of queues
+    // locked the whole city
+    if ((v.still ?? 0) > 2) v.lookOff = this.t + 4
+    if (this.lookAhead && boxNode !== null && this.t >= (v.lookOff ?? 0)) {
+      const box = this.boxOf(v)
+      const reach = Math.min(8, 3 + v.speed)
+      const cx = Math.floor(v.at.x / NEAR_CELL)
+      const cz = Math.floor(v.at.z / NEAR_CELL)
+      let best: [number, number, Vehicle] | null = null
+      for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) {
+        for (const o of this.near.get(`${cx + i},${cz + j}`) ?? []) {
+          // the car ahead in the same lane is IDM's already
+          if (o === v || (o.edgeId === v.edgeId && o.dir === v.dir)) continue
+          if (!o.inBox || this.cluster(o.inBox.nodeId) !== this.cluster(boxNode)) continue
+          // only a MOVING one: waiting in a box for a car standing in it (itself waiting for its way out) filled boxes
+          // and rings of queues locked the city after ten minutes of soak
+          if (o.speed < 0.5) continue
+          if (o.why === `car ${v.id}` || o.why === `next-street car ${v.id}` || o.why === `box car ${v.id}`) continue
+          if (Math.abs(o.at.x - v.at.x) > reach + 10 || Math.abs(o.at.z - v.at.z) > reach + 10) continue
+          const hit = this.sweep(v, box, reach, this.boxOf(o))
+          if (hit < 0 || (best && hit >= best[0])) continue
+          // mutual: the lower id has the way
+          if (v.id < o.id && this.sweep(o, this.boxOf(o), Math.min(8, 3 + o.speed), box) >= 0) continue
+          best = [hit, Math.max(0, o.speed * Math.cos(o.heading - v.heading)), o]
+        }
+      }
+      if (best) { obstacles.push([Math.max(0, best[0] - 0.75), best[1]]); whys.push(`car ${best[2].id}`) }
+    }
+    /*
+     * A rider STOPPED or DOWN anywhere in its path — in a junction above all — is waited for, whatever street each is
+     * on (owner, 2026-09-29: "you can often get hit multiple times in one intersection"). Swept forward with the
+     * vehicle's own box. Only a rider at a standstill: one riding across a red is still theirs to judge. The why is
+     * 'rider in lane', which the rider's own hold (`leaderFor`) ignores, so the two never wait for each other.
+     */
+    // …and by any vehicle going slowly enough to stop for them anyway (under 3 m/s: a car creeping through a jammed
+    // box, and above all one turning RIGHT across a rider keeping right — the right hook, measured once keeping
+    // right came in)
+    if (rider && !v.bumped && !v.passed && (rider.speed < 1.5 || v.speed < 3) && Math.hypot(rider.at.x - v.at.x, rider.at.z - v.at.z) < 26) {
+      const box = this.boxOf(v)
+      const fx = Math.sin(v.heading)
+      const fz = Math.cos(v.heading)
+      for (let dd = 0.5; dd <= 20; dd += 0.75) {
+        if (overlap({ ...box, x: box.x + fx * dd, z: box.z + fz * dd }, rider.box)) {
+          obstacles.push([Math.max(0, dd - 1.5), 0]); whys.push('rider in lane')
+          break
+        }
+      }
     }
 
     // the junction ahead. A car can still be clearing the junction BEHIND it while it comes up to this one — the

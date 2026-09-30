@@ -44,6 +44,35 @@ describe('bridge heights', () => {
   })
 })
 
+describe('ramps stop where they should (Stockton at Bush, 2026-09-29)', () => {
+  // a short road bridge 3.5 m up, ending at node 1
+  const deck = (): BridgeEdge => ({ id: 1, a: 1, b: 2, points: [-30, 0, 0, 0, 30, 0], heights: [0, 0, 0], bridge: true, layer: 1 })
+  const world = { water: [river(-25, 25)], ground: flat }
+
+  it('never ramps along a footway', () => {
+    const path: BridgeEdge = { id: 2, a: 3, b: 1, points: [-60, 0, -30, 0], heights: [0, 0], foot: true }
+    bridgeHeights([deck(), path], world)
+    expect(path.heights).toEqual([0, 0])
+  })
+
+  it('never ramps through a footway onto a street beyond it', () => {
+    const path: BridgeEdge = { id: 2, a: 3, b: 1, points: [-40, 0, -30, 0], heights: [0, 0], foot: true }
+    const street: BridgeEdge = { id: 3, a: 4, b: 3, points: [-60, 0, -40, 0], heights: [0, 0] }
+    bridgeHeights([deck(), path, street], world)
+    expect(street.heights).toEqual([0, 0])
+  })
+
+  it('ramps a street up to the deck, but not on past a tunnel mouth', () => {
+    const near: BridgeEdge = { id: 2, a: 3, b: 1, points: [-40, 0, -30, 0], heights: [0, 0] }
+    const beyond: BridgeEdge = { id: 3, a: 4, b: 3, points: [-60, 0, -40, 0], heights: [0, 0] }
+    const tunnel: BridgeEdge = { id: 4, a: 3, b: 5, points: [-40, 0, -40, 200], heights: [0, 0], tunnel: true, layer: -2 }
+    bridgeHeights([deck(), near, beyond, tunnel], world)
+    expect(near.heights![1]).toBeGreaterThan(3)     // the approach still climbs to the deck…
+    expect(beyond.heights).toEqual([0, 0])          // …but the street past the tunnel mouth is left alone
+    expect(tunnel.heights).toEqual([0, 0])
+  })
+})
+
 describe('a bridge in several pieces', () => {
   it('is one hump, not one per piece', () => {
     const pieces: BridgeEdge[] = [

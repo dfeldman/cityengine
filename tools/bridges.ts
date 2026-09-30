@@ -412,6 +412,12 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
     }
   }
   let ramps = 0
+  /*
+   * Where a ramp must stop (San Francisco, Stockton at Bush, 2026-09-29): a node where a way goes UNDERGROUND — a
+   * tunnel mouth. A garage's service bridge beside the Stockton Tunnel's south portal ramped the carriageway going
+   * into the tunnel up to its deck, 6 m above the cut the street runs in, and everything drawn along it with it.
+   */
+  const mouth = (n: number): boolean => (byNode.get(n) ?? []).some((o) => o.tunnel || (o.layer ?? 0) < 0)
   for (const [start, deck] of deckAt) {
     // breadth-first by distance; each visited point gets max(current, the ramp's height there)
     const queue: { node: number; dist: number }[] = [{ node: start, dist: 0 }]
@@ -419,7 +425,9 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
     while (queue.length > 0) {
       const { node, dist } = queue.shift()!
       for (const e of byNode.get(node) ?? []) {
-        if (e.bridge) continue
+        // only along ROADS: a road bridge's deck is reached by road. Through the footways round it the same ramp
+        // reached a street the bridge never touches (only road bridges ramp at all — see `deckAt`)
+        if (e.bridge || e.foot || e.tunnel) continue
         const p = pts(e.points)
         const cum = cumulative(p)
         const L = cum[cum.length - 1]
@@ -441,7 +449,7 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
         }
         const other = fromA ? e.b : e.a
         const d = dist + L
-        if (d < RAMP && (seen.get(other) ?? Infinity) > d) {
+        if (d < RAMP && !mouth(other) && (seen.get(other) ?? Infinity) > d) {
           seen.set(other, d)
           queue.push({ node: other, dist: d })
         }

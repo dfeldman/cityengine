@@ -122,7 +122,7 @@ describe('the traffic, headless', () => {
       expect(r.poppedInView).toBe(0)
       // nobody waits forever: a light's wait is under a cycle; a stop's queue clears
       expect(r.longestWait).toBeLessThan(lit ? CYCLE + 10 : 60)
-    })
+    }, 60_000)   // 200 simulated seconds of a busy crossroads: ~5 s of work, more under load
   }
 
   it('never drives into a rider standing in the junction', () => {
@@ -132,3 +132,64 @@ describe('the traffic, headless', () => {
     expect(r.hits).toEqual([])
   }, 60_000)
 })
+
+describe('weaving past stopped traffic (Traffic.weave)', () => {
+  // a single long street along +z, the rider heading north at the centre line
+  const street = (width: number) => buildGraph([{ id: 1, a: 0, b: 1, points: [{ x: 0, z: 0 }, { x: 0, z: 400 }], length: 400, surface: 'asphalt', width, walk: 2, foot: false }])
+  const rider = (): RiderNow => ({ at: { x: 0, z: 100 }, heading: 0, speed: 5, edgeId: 1, s: 100, dir: 1, grade: 0, box: boxOf(0, 100, 0, SIZE.bike) })
+  const park = (t: Traffic, x: number, z: number, speed = 0): void => {
+    ;(t.all as unknown as Record<string, unknown>[]).push({ id: 900 + t.all.length, kind: 'car', edgeId: 1, s: z, dir: 1, speed, cruise: 5, lane: x, colour: [1, 1, 1], waiting: true, at: { x, z }, heading: 0, driver: { a: 1.5, b: 2, T: 1.2, s0: 2 } })
+  }
+
+  it('steers round a stopped car dead ahead, to the nearer side', () => {
+    const t = new Traffic(street(14), 'dense')
+    park(t, 0.4, 110)   // a little right of the centre line
+    const shift = t.weave(rider(), -6, 6)
+    expect(shift).not.toBeNull()
+    expect(shift!).toBeLessThan(0)          // the car sits right: the gap on the left is nearer
+    expect(Math.abs(shift!)).toBeGreaterThan(1)   // the car's near side (−0.55) plus 0.5 m: half the bike and 0.2 m of air
+    // and along that strip the rider is not held by it
+    expect(t.leaderFor(rider(), shift!)).toBeNull()
+    expect(t.leaderFor(rider(), 0)).not.toBeNull()
+  })
+
+  it('finds no way through a street blocked kerb to kerb, and holds the rider', () => {
+    const t = new Traffic(street(6), 'dense')
+    park(t, -1.3, 110)
+    park(t, 1.3, 111)
+    expect(t.weave(rider(), -2.2, 2.2)).toBeNull()
+  })
+
+  it('does not weave round a car driving away, but does round one crawling', () => {
+    const t = new Traffic(street(14), 'dense')
+    park(t, 0, 110, 8)
+    expect(t.weave(rider(), -6, 6)).toBe(0)
+    const c = new Traffic(street(14), 'dense')
+    park(c, 0, 110, 3)
+    expect(c.weave(rider(), -6, 6)).not.toBe(0)
+  })
+
+  it('keeps right when it can: an open road takes the rider to the right-hand side it prefers', () => {
+    const t = new Traffic(street(14), 'dense')
+    expect(t.weave(rider(), -6, 6, 5.8)).toBeCloseTo(5.8)
+  })
+
+  it('pulls out round a car standing on the right, and no further than it must', () => {
+    const t = new Traffic(street(14), 'dense')
+    park(t, 5, 110)   // on the right-hand side, 10 m ahead (its left flank at 4.05)
+    const shift = t.weave(rider(), -6, 6, 5.8)!
+    // not behind it on the right, and not far across: just outside its left flank (4.05 − 0.5 of bike and air)
+    expect(shift).toBeLessThan(4.05 - 0.49)
+    expect(shift).toBeGreaterThan(2.5)
+  })
+
+  it('filters down the centre line between two stopped lanes of a 9 m street', () => {
+    const t = new Traffic(street(9), 'dense')
+    park(t, 1.7, 110)    // the rider's lane…
+    park(t, -1.7, 114)   // …and the oncoming one, standing: 1.5 m between them
+    const shift = t.weave(rider(), -3.7, 3.7)
+    expect(shift).not.toBeNull()
+    expect(t.leaderFor(rider(), shift!)).toBeNull()
+  })
+})
+

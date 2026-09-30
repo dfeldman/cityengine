@@ -3,12 +3,12 @@
  *
  *   * a POPUP offers a job: two buildings, a pickup and a drop-off, each named for now by its nearest
  *     intersection ("Haight St & Cole St");
- *   * both are close to the rider and close to each other — everything within a 1 km circle;
+ *   * both are close to the rider and close to each other — a few blocks, everything within a 600 m circle;
  *   * accept it, ride to the first, then the second, and a message says you did it;
  *   * ignore it, and nothing at all happens: it is a free ride. An unanswered offer goes away by itself and another
  *     comes along later.
  *
- * No route is drawn: finding the way is the game (a compass pointer comes later). No Babylon and no DOM here — the
+ * No route is drawn: finding the way is the game, with a compass, the stops on the map and the building lit up. No Babylon and no DOM here — the
  * game (src/game.ts) answers two questions about the city and turns the events into a card and banners
  * (src/ui/delivery-card.ts), so this can be tested headless.
  *
@@ -18,7 +18,7 @@
 /** What the game logic needs to know about the city. */
 export interface DeliveryWorld {
   /** buildings whose centre is within `r` metres of (x, z): their id and footprint (flat x, z pairs) */
-  buildingsNear(x: number, z: number, r: number): { id: number; ring: number[] }[]
+  buildingsNear(x: number, z: number, r: number): { id: number; ring: number[]; height?: number; baseY?: number }[]
   /** the nearest intersection of two or more NAMED streets within `reach` metres, or null */
   junctionNear(x: number, z: number, reach: number): { name: string; d: number } | null
   /**
@@ -36,6 +36,9 @@ export interface Stop {
   ring: number[]
   /** how the player is told where it is: the nearest intersection, for now */
   label: string
+  /** the building's height and where its walls start, metres, when the game knows them (for lighting it up) */
+  height?: number
+  baseY?: number
 }
 
 export interface Job {
@@ -74,7 +77,12 @@ export interface DeliveryConfig {
 }
 
 export const DEFAULTS: DeliveryConfig = {
-  radius: 1000, minHop: 150, maxHop: 650, arrive: 22, labelReach: 140,
+  // `labelReach` 70, not 140: "near Clayton St & Page St" with the building 140 m from that corner, down any of
+  // four streets, was a building the owner could not find (2026-09-29) — the lit building and the compass are the
+  // real answer, but "near" should also mean near
+  // short hops (owner, 2026-09-29: "a few turns, we're starting with very short deliveries"): 120–280 m as the
+  // crow flies is two or three blocks in the Haight (at 350 m a probe's legs ran to 6 junctions and 680 m)
+  radius: 600, minHop: 120, maxHop: 280, arrive: 26, labelReach: 70,
   firstOffer: 8, offerLasts: 30, afterDecline: 45, afterDelivery: 8,
 }
 
@@ -148,7 +156,10 @@ export class Delivery {
     this.nextOfferAt = this.cfg.firstOffer
   }
 
-  /** where the player should be heading now, or null (for the HUD line, and later the compass) */
+  /** seconds since the job was taken (the big timer), or null with no job under way */
+  get elapsed(): number | null { return this.phase === 'toPickup' || this.phase === 'toDropoff' ? this.t - this.startedAt : null }
+
+  /** where the player should be heading now, or null (for the HUD line, the compass and the lit building) */
   get target(): Stop | null {
     if (!this.job) return null
     return this.phase === 'toPickup' ? this.job.pickup : this.phase === 'toDropoff' ? this.job.dropoff : null
@@ -205,7 +216,7 @@ export class Delivery {
   }
 
   /** a stop at a building, if it is a sensible one: a real footprint, standing near a named intersection */
-  private stopAt(b: { id: number; ring: number[] }): Stop | null {
+  private stopAt(b: { id: number; ring: number[]; height?: number; baseY?: number }): Stop | null {
     if (b.ring.length < 6) return null
     const a = area(b.ring)
     if (a < 60 || a > 20000) return null
@@ -213,7 +224,8 @@ export class Delivery {
     if (this.world.streetDistance && this.world.streetDistance(b.ring) > this.cfg.arrive - 4) return null
     const j = this.world.junctionNear(c.x, c.z, this.cfg.labelReach)
     if (!j) return null
-    return { buildingId: b.id, x: c.x, z: c.z, ring: b.ring, label: j.name }
+    return { buildingId: b.id, x: c.x, z: c.z, ring: b.ring, label: j.name,
+      ...(b.height !== undefined ? { height: b.height } : {}), ...(b.baseY !== undefined ? { baseY: b.baseY } : {}) }
   }
 
   /** A job near the rider: pickup and drop-off both within `radius` of here, each a hop of min–max metres. */

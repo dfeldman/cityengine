@@ -154,7 +154,13 @@ export class Terrain {
    */
   grade: ((x: number, z: number) => number | null) | null = null
 
+  /** the level of a street in a cut here (render/city.ts: StreetGrade `cutAt`), which wins over the ground */
+  cut: ((x: number, z: number) => number | null) | null = null
+
   heightAt(x: number, z: number): number {
+    // in a street's cut (into a tunnel mouth) what is drawn follows the street, below the ground
+    const c = this.cut?.(x, z)
+    if (c !== null && c !== undefined) return c
     const raw = this.rawHeightAt(x, z)
     const g = this.grade?.(x, z)
     return g === null || g === undefined ? raw : Math.max(raw, g)

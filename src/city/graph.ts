@@ -61,6 +61,8 @@ export interface Edge {
   layer?: number
   bridge?: boolean
   tunnel?: boolean
+  /** a street tunnel under a hill, ridden and drawn as a tunnel (tools/tunnels.ts) */
+  bore?: boolean
   /**
    * On a RIDE graph (ridegraph.ts), the map edges this edge was built from, in order from its `a` end, with
    * `reversed` true where that map edge runs b→a inside it. Absent on the map graph.

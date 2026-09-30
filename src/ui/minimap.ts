@@ -115,6 +115,13 @@ export class Minimap {
   /** the GPS route and its destination (PARIS_EXPAND §6 item 11), drawn over the streets */
   route: Point[] | null = null
   destination: Point | null = null
+  /**
+   * The delivery's two stops (src/game/delivery.ts), as numbered pins — and NO route between them (owner,
+   * 2026-09-29: "show start and dest locations on the map and minimap, WITHOUT showing a shortest path route").
+   * On the small round map a stop beyond its edge is held at the rim, in its true direction.
+   */
+  /** the delivery's stops: `next` is where to ride now (in its colour, like the beacon); the other is a small grey pin */
+  jobPins: { at: Point; n: 1 | 2; next?: boolean }[] = []
 
   private listen(): void {
     let down: { x: number; y: number; px: number; pz: number } | null = null
@@ -209,14 +216,21 @@ export class Minimap {
     // canvas y grows downward and world z grows "up" the map, so z is negated by the scale below
     const px = (p: Point): [number, number] => [p.x * scale, -p.z * scale]
 
-    // zoomed out on the large map, the whole city from the ride graph (the streets streamed so far are near only)
-    if (this.large && this.zoom > 900) {
-      ctx.strokeStyle = 'rgba(236,234,228,0.75)'
-      ctx.lineWidth = 1.2
+    /*
+     * The large map's streets: the WHOLE ride graph, at every zoom, one width for all of it (owner, 2026-09-29: the
+     * core — the streets streamed so far — drew thick, and between zooms 760 and 900 nothing outside it drew at
+     * all, since this layer only came in past 900). The streamed edges below add the footways and the names.
+     */
+    const baseWidth = Math.max(1.2, Math.min(4, 9 * scale))
+    if (this.large && this.rideLines.length) {
+      ctx.strokeStyle = 'rgba(236,234,228,0.85)'
+      ctx.lineWidth = baseWidth
+      ctx.lineCap = 'round'
+      ctx.lineJoin = 'round'
       ctx.beginPath()
       for (const line of this.rideLines) {
         const p0 = line[0]
-        if (Math.abs(p0.x - at.x) > this.zoom * 1.5 || Math.abs(p0.z - at.z) > this.zoom * 1.5) continue
+        if (Math.abs(p0.x - at.x) > this.zoom * 1.5 + 400 || Math.abs(p0.z - at.z) > this.zoom * 1.5 + 400) continue
         line.forEach((p, i) => (i === 0 ? ctx.moveTo(...px(p)) : ctx.lineTo(...px(p))))
       }
       ctx.stroke()
@@ -247,14 +261,17 @@ export class Minimap {
       seen.add(id)
       const e = this.g.edges.get(id)
       if (!e) continue
-      // wider streets are drawn heavier, which is what makes a map readable at a glance
-      ctx.lineWidth = Math.max(1, Math.min(5, e.width * 0.42 * scale * 3))
-      // the streets the rider can take stand out; the rest of the map is there for orientation
+      // the streets the rider can take stand out; the rest of the map is there for orientation. On the large map
+      // the rideable ones are already drawn, whole-city, above — drawing them again here made the core heavy
       const rideable = this.ride ? this.ride.has(id) : !e.foot
-      ctx.strokeStyle = rideable ? 'rgba(236,234,228,0.9)' : e.foot ? 'rgba(150,150,160,0.4)' : 'rgba(170,170,176,0.55)'
-      ctx.beginPath()
-      e.points.forEach((p, i) => (i === 0 ? ctx.moveTo(...px(p)) : ctx.lineTo(...px(p))))
-      ctx.stroke()
+      if (!(this.large && rideable && this.rideLines.length)) {
+        // wider streets are drawn heavier on the minimap, which is what makes it readable at a glance
+        ctx.lineWidth = this.large ? Math.max(1, baseWidth * 0.6) : Math.max(1, Math.min(5, e.width * 0.42 * scale * 3))
+        ctx.strokeStyle = rideable ? 'rgba(236,234,228,0.9)' : e.foot ? 'rgba(150,150,160,0.4)' : 'rgba(170,170,176,0.55)'
+        ctx.beginPath()
+        e.points.forEach((p, i) => (i === 0 ? ctx.moveTo(...px(p)) : ctx.lineTo(...px(p))))
+        ctx.stroke()
+      }
 
       // Only the major streets get a name. Labelling every alley in the Marais would be unreadable, and the
       // point of a name is to answer "which street is that", which only matters for ones worth turning onto.
@@ -299,6 +316,32 @@ export class Minimap {
       ctx.lineWidth = 2
       ctx.strokeStyle = '#fff'
       ctx.stroke()
+    }
+
+    for (const pin of [...this.jobPins].sort((a, b) => Number(!!a.next) - Number(!!b.next))) {
+      let [x, y] = px(pin.at)
+      if (!this.large) {
+        // held at the rim of the round map when it is further than the map shows
+        const [cx0, cy0] = px(at)
+        const rim = Math.min(ctx.canvas.width, ctx.canvas.height) / 2 / (window.devicePixelRatio || 1) - 12
+        const dx = x - cx0
+        const dy = y - cy0
+        const d = Math.hypot(dx, dy)
+        if (d > rim) { x = cx0 + (dx / d) * rim; y = cy0 + (dy / d) * rim }
+      }
+      const r = (this.large ? 10 : 8) * (pin.next ? 1 : 0.75)
+      ctx.beginPath()
+      ctx.arc(x, y, r, 0, Math.PI * 2)
+      ctx.fillStyle = !pin.next ? '#9aa3ad' : pin.n === 1 ? '#ffb020' : '#34d27a'
+      ctx.fill()
+      ctx.lineWidth = 2
+      ctx.strokeStyle = '#fff'
+      ctx.stroke()
+      ctx.fillStyle = '#111'
+      ctx.font = `800 ${(this.large ? 12 : 10) * (pin.next ? 1 : 0.8)}px -apple-system, system-ui, sans-serif`
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText(String(pin.n), x, y + 0.5)
     }
 
     ctx.font = this.large ? '600 11px -apple-system, system-ui, sans-serif' : '600 9px -apple-system, system-ui, sans-serif'

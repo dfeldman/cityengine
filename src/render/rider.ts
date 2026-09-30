@@ -212,10 +212,11 @@ export class Rider {
 
   /**
    * `at` is already the rider's own side of the road — `Navigator.ridePoint()` puts them there — so nothing
-   * here offsets anything. `lean` is how hard they are cornering.
+   * here offsets anything. `lean` is how hard they are cornering (negative to the right), `steer` the bars' angle
+   * (positive to the right) — both from the game's steering model (game.ts `bikePose`).
    */
   update(dt: number, at: { x: number; z: number }, heading: number, speed: number, crank: number,
-         lean: number, working: boolean, groundY = 0): void {
+         lean: number, working: boolean, groundY = 0, steer = 0): void {
     this.root.position.set(at.x, 0.05 + groundY, at.z)
     this.root.rotationQuaternion = Quaternion.RotationYawPitchRoll(heading, 0, 0)
     // a tip-over, after a collision, is the cornering lean carried all the way: the bike and the rider roll onto
@@ -249,7 +250,9 @@ export class Rider {
       const cadence = working ? Math.max(40, Math.min(110, speed * 9)) : 0
       avatar.setMotion({ mode: 'cycle', speed, crank, cadence, effort: working ? 0.45 : 0.15 })
       // the kit's own wheels and cranks, driven by the same angle the legs follow
-      this.bike?.update(avatar.animator.crank, this.travelled)
+      // (the distance since the last frame: it was handed the running total, so the wheels spun ever faster)
+      this.bike?.update(avatar.animator.crank, speed * dt)
+      this.bike?.steer(steer)
     } else {
       // 'walk' becomes a run of its own accord above about 2.6 m/s, which is what someone on a pavement
       // should do and what someone on a treadmill should not

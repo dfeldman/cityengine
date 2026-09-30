@@ -101,7 +101,8 @@ From the owner, 2026-09-28. The game is playable; these are the worst of it:
    removes one class of these; the group scheme is the rest.
 2b. **Traffic** (done 2026-09-29, README "Traffic"): dense cars under lights and stop signs, the rider held behind
    them, rare junction collisions with a tip-over, brakes. A very basic delivery loop exists (README "The delivery game, version 0"):
-   one offer, two buildings named by intersection, pickup then drop-off. Next: restaurants, values and tips,
-   points (collisions cost), several offers to choose between, the compass.
+   one offer, two buildings named by intersection, pickup then drop-off; the target lit up, a compass, a clock, the
+   stops on the maps, the bike weaving through stopped traffic (2026-09-29). Next: restaurants, values and tips,
+   points (collisions cost), several offers to choose between.
 3. **Some custom-modelled buildings are bad.** Under §3 most of them should become clustered generics or
    restyles rather than be modelled again.

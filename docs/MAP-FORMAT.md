@@ -287,6 +287,8 @@ A way's booleans pack into `flags`:
 | 32 | ramp | |
 | 64 | crossing | |
 | 128 | park (set at load from the tile's areas, as today — never baked) | |
+| 256 | bore: a street tunnel under a hill, ridden and drawn as a tunnel (tools/tunnels.ts; 2026-09-29) | |
+| 512 | cut: a street running down into a tunnel mouth, drawn at its own level below the ground (2026-09-29) | |
 
 ### 5.6 Areas and places
 

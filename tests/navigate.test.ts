@@ -247,26 +247,36 @@ describe('dead ends', () => {
   })
 })
 
+// KEEP RIGHT (owner, 2026-09-29: "the bike should stay to the right of the road, not the center"), 1.2 m in from the
+// kerb: on these 7 m streets, 3.5 − 1.2 = 2.3 m right of the line. (Down the middle from 2026-09-21 until then.)
+const HOME = 7 / 2 - 1.2
+
 describe('which side of the road', () => {
-  // Down the middle, by the user's decision (2026-09-21): keeping right kept putting the rider on the wrong
-  // side after a turn, against the buildings, on streets whose OSM centre line is off-centre.
-  it('puts the rider on the centre line, whichever way they are going', () => {
+  it('rides on the right, whichever way it is going', () => {
     const g = crossroads()
     const north = new Navigator(g, { edgeId: 1, s: 10, reversed: false })
-    expect(north.ridePoint().x).toBeCloseTo(north.at().x)
-    expect(north.ridePoint().z).toBeCloseTo(north.at().z)
+    north.advance(20, 5)
+    // heading north, right is east
+    expect(north.ridePoint().x - north.at().x).toBeCloseTo(HOME)
     const south = new Navigator(g, { edgeId: 1, s: 90, reversed: true })
-    expect(south.ridePoint().x).toBeCloseTo(south.at().x)
+    south.advance(20, 5)
+    expect(south.ridePoint().x - south.at().x).toBeCloseTo(-HOME)
   })
 
-  it('stays on the centre line through a U-turn', () => {
+  it('crosses to the new right through a U-turn — smoothly, never in a jump', () => {
     const g = crossroads()
-    const n = new Navigator(g, { edgeId: 1, s: 50, reversed: false })
+    const n = new Navigator(g, { edgeId: 1, s: 30, reversed: false })
+    n.advance(20, 5)
     n.turnAround()
-    for (let i = 0; i < 12; i++) {
+    let prev = n.ridePoint().x - n.at().x
+    for (let i = 0; i < 30; i++) {
       n.advance(1, 5)
-      expect(Math.abs(n.ridePoint().x - n.at().x)).toBeLessThan(1e-9)
+      const x = n.ridePoint().x - n.at().x
+      expect(Math.abs(x - prev), `metre ${i}`).toBeLessThan(0.8)
+      prev = x
     }
+    // now heading south, whose right is west
+    expect(prev).toBeCloseTo(-HOME, 1)
   })
 })
 
@@ -297,12 +307,12 @@ describe('rounded corners', () => {
     expect(leaned, 'leaning right, into the corner').toBeLessThan(0)
   })
 
-  it('is exactly the centre line on a straight', () => {
+  it('is the rider\'s own line on a straight, upright', () => {
     const g = crossroads()
     const n = new Navigator(g, { edgeId: 1, s: 10, reversed: false })
     n.advance(20, 5)
     const sm = n.smoothed()
-    expect(sm.point.x).toBeCloseTo(n.at().x)
+    expect(sm.point.x).toBeCloseTo(n.at().x + HOME)
     expect(sm.point.z).toBeCloseTo(n.at().z)
     expect(sm.lean).toBe(0)
   })
@@ -326,22 +336,153 @@ describe('lateral freedom', () => {
     expect(offLine(n)).toBeGreaterThan(2)            // it did drift
   })
 
-  it('is back on the line by the time the rider reaches the junction', () => {
+  // (Until 2026-09-29 the rider went back to the line before EVERY junction, which undid nearly every nudge on short
+  // blocks — the owner: "nudging also doesn't actually work a lot of the time". Now only a turn re-centres.)
+  it('is back on the line by the time the rider reaches a junction they are turning at', () => {
     const g = crossroads()
     const n = new Navigator(g, { edgeId: 3, s: 100, reversed: true })
     n.nudge(-1)
     n.advance(40, 5)
     expect(offLine(n)).toBeGreaterThan(1)
+    n.request('left')
     for (let i = 0; i < 118; i++) n.advance(0.5, 5)  // up to a metre short of the centre
     expect(offLine(n)).toBeLessThan(0.05)
+  })
+
+  it('stays where it was nudged a moment, then goes back to the right — not to the middle', () => {
+    const g = crossroads()
+    const n = new Navigator(g, { edgeId: 3, s: 100, reversed: true })
+    for (let i = 0; i < 20; i++) n.advance(1, 5)       // settled on the right: heading north, right is east
+    n.nudge(-1)
+    for (let i = 0; i < 5; i++) n.advance(1, 5)        // 1 s: moved 1.5 m left
+    const nudged = n.ridePoint().x - n.at().x
+    expect(nudged).toBeCloseTo(HOME - 1.5, 1)
+    for (let i = 0; i < 4; i++) n.advance(1, 5)        // still inside the 2 s
+    expect(n.ridePoint().x - n.at().x).toBeCloseTo(nudged, 5)
+    for (let i = 0; i < 30; i++) n.advance(1, 5)       // then home, straight on through the junction
+    expect(n.ridePoint().x - n.at().x).toBeCloseTo(HOME, 1)
+  })
+
+  it('moves to the middle for a left turn, and stays right for a right one', () => {
+    const g = crossroads()
+    const left = new Navigator(g, { edgeId: 3, s: 100, reversed: true })
+    left.request('left')
+    for (let i = 0; i < 188; i++) left.advance(0.5, 5)  // a metre short of the centre
+    expect(offLine(left)).toBeLessThan(0.05)
+    const right = new Navigator(g, { edgeId: 3, s: 100, reversed: true })
+    right.request('right')
+    for (let i = 0; i < 188; i++) right.advance(0.5, 5)
+    expect(offLine(right)).toBeCloseTo(HOME, 1)
   })
 
   it('keeps to the right-hand carriageway of a boulevard drawn twice', () => {
     const e: Edge = { id: 1, a: 0, b: 1, points: [{ x: 0, z: 0 }, { x: 0, z: 200 }], length: 200,
       surface: 'asphalt', width: 7, walk: 2, foot: false, lane: 6 }
     const n = new Navigator(buildGraph([e]), { edgeId: 1, s: 50, reversed: false })
-    n.advance(1, 5)
-    // heading north, right is east
-    expect(n.ridePoint().x).toBeCloseTo(6)
+    n.advance(30, 5)
+    // heading north, right is east: the right-hand carriageway, and on its right
+    expect(n.ridePoint().x).toBeCloseTo(6 + HOME)
+  })
+})
+
+/**
+ * FAST INPUT (owner, 2026-09-29: "you press left, you go left immediately"): holding a direction steers across the
+ * street, and the turn taken is whatever is held — or was just tapped — at the corner. Rides north up the south
+ * arm of the crossroads at 8 m/s in 1 m steps (a frame is ~0.13 m at 60 fps, but the latch is per step).
+ */
+describe('fast input', () => {
+  const ride = (n: Navigator, metres: number, each?: (left: number) => void): void => {
+    for (let i = 0; i < metres; i++) {
+      const e = n.position
+      each?.(e.edgeId === 3 ? e.s : -1)
+      n.advance(1, 8)
+    }
+  }
+  const fastNav = (): Navigator => {
+    const n = new Navigator(crossroads(), { edgeId: 3, s: 100, reversed: true })
+    n.fast = true
+    return n
+  }
+
+  it('turns the way that is held at the corner', () => {
+    const n = fastNav()
+    ride(n, 90)
+    n.hold(-1)
+    ride(n, 20)
+    expect(n.position.edgeId).toBe(4)   // west: left
+  })
+
+  it('goes straight on when nothing is held', () => {
+    const n = fastNav()
+    ride(n, 110)
+    expect(n.position.edgeId).toBe(1)
+  })
+
+  it('does not turn for a hold let go well before the corner — the rider stays where they steered, then keeps right', () => {
+    const n = fastNav()
+    ride(n, 40)
+    expect(n.nudged).toBeCloseTo(HOME, 5)
+    n.hold(-1)
+    ride(n, 8)                          // a second of steering left
+    n.hold(0)
+    const across = n.nudged
+    expect(across).toBeLessThan(HOME - 2.5)   // moved left, 3 m/s…
+    ride(n, 12)                               // 1.5 s: still where it was steered to
+    expect(n.nudged).toBeCloseTo(across, 5)
+    ride(n, 50)
+    expect(n.position.edgeId).toBe(1)   // …carried straight on
+    expect(n.nudged).toBeCloseTo(HOME, 5)     // and back on the right
+  })
+
+  it('takes a tap just before the corner, and ignores one long before it', () => {
+    const late = fastNav()
+    ride(late, 90)                      // 10 m out: the corner starts at 7 m
+    late.tap(-1)
+    ride(late, 20)
+    expect(late.position.edgeId).toBe(4)
+
+    const early = fastNav()
+    ride(early, 40)                     // 60 m out
+    early.tap(-1)
+    ride(early, 70)
+    expect(early.position.edgeId).toBe(1)
+  })
+
+  it('decides at the corner, not 1.6 s before it: a change of mind 10 m out still counts', () => {
+    const n = fastNav()
+    n.hold(1)
+    ride(n, 90)                         // holding right…
+    n.hold(-1)                          // …then left, 1.25 s before the junction
+    ride(n, 20)
+    expect(n.position.edgeId).toBe(4)
+  })
+
+  it('spends a hold on the corner it took: still held, it asks nothing of the next until let go', () => {
+    const n = fastNav()
+    ride(n, 90)
+    n.hold(-1)
+    ride(n, 20)
+    expect(n.position.edgeId).toBe(4)
+    expect(n.requested).toBe('straight')
+    n.hold(0)
+    n.hold(-1)
+    expect(n.requested).toBe('left')
+  })
+
+  it('never steers at a standstill, nor past 0.8 m from the kerb', () => {
+    const n = fastNav()
+    n.hold(1)
+    n.advance(0, 0)
+    expect(n.nudged).toBe(0)
+    ride(n, 30)
+    expect(n.nudged).toBeCloseTo(7 / 2 - 0.8, 5)
+  })
+
+  it('leaves the slow model alone: a slow navigator ignores holds', () => {
+    const n = new Navigator(crossroads(), { edgeId: 3, s: 100, reversed: true })
+    n.hold(-1)
+    ride(n, 110)
+    expect(n.position.edgeId).toBe(1)
+    expect(n.nudged).toBeCloseTo(HOME, 5)   // on its own line, not steered left
   })
 })

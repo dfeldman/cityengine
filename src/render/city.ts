@@ -273,7 +273,7 @@ export function densify(pts: { x: number; z: number }[], step = 4): { x: number;
 }
 
 function quadStrip(out: MeshBuilder, pts0: { x: number; z: number }[], width: number, y: number,
-                   tint: [number, number, number]): void {
+                   tint: [number, number, number], ground?: (x: number, z: number) => number): void {
   const pts = densify(pts0)
   const h = width / 2
   for (let i = 1; i < pts.length; i++) {
@@ -289,13 +289,32 @@ function quadStrip(out: MeshBuilder, pts0: { x: number; z: number }[], width: nu
     // layer is painted rather than unioned, so overlap costs nothing
     const ex = (dx / len) * h * 0.55
     const ez = (dz / len) * h * 0.55
-    out.quad(
-      [[a.x + nx - ex, y, a.z + nz - ez], [a.x - nx - ex, y, a.z - nz - ez],
-       [b.x - nx + ex, y, b.z - nz + ez], [b.x + nx + ex, y, b.z + nz + ez]],
-      [0, 1, 0],
-      [[h, 0], [-h, 0], [-h, len], [h, len]],
-      tint, 0,
-    )
+    /*
+     * SPLIT ACROSS where the ground is not a plane under it (BUGS.md #234). Draped at its two long edges only, a
+     * ~20 m wide pavement strip is a straight chord across the street; on a hillside that bows, the chord stood
+     * half a metre off the ground at Green and Taylor, and everything draped on the true ground — the trees'
+     * shadows — showed through it as grey lumps. Only where the middle is 0.15 m off the chord: flat streets
+     * keep one quad.
+     */
+    let cols = 1
+    if (ground) {
+      const mx = (a.x + b.x) / 2
+      const mz = (a.z + b.z) / 2
+      const bow = Math.max(...[-0.5, 0, 0.5].map((f) => Math.abs(ground(mx + nx * f * 2 * 0.5, mz + nz * f * 2 * 0.5)
+        - (ground(mx + nx, mz + nz) * (0.5 + f * 0.5) + ground(mx - nx, mz - nz) * (0.5 - f * 0.5)))))
+      if (bow > 0.15) cols = Math.max(2, Math.ceil(width / 2.5))
+    }
+    for (let c = 0; c < cols; c++) {
+      const s0 = 1 - (2 * c) / cols
+      const s1 = 1 - (2 * (c + 1)) / cols
+      out.quad(
+        [[a.x + nx * s0 - ex, y, a.z + nz * s0 - ez], [a.x + nx * s1 - ex, y, a.z + nz * s1 - ez],
+         [b.x + nx * s1 + ex, y, b.z + nz * s1 + ez], [b.x + nx * s0 + ex, y, b.z + nz * s0 + ez]],
+        [0, 1, 0],
+        [[h * s0, 0], [h * s1, 0], [h * s1, len], [h * s0, len]],
+        tint, 0,
+      )
+    }
   }
 }
 
@@ -918,8 +937,12 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0): void {
    * paths — a footpath through a park painted first was buried under the grass, and the rider rode
    * across what looked like an unbroken lawn.
    */
+  // …except a street tunnel's mouths (render/tunnels.ts), BEFORE the occluder: a mouth is below the raw ground by
+  // nature — the road runs down into it in a cut — and the occluder, drawn first, hid its floor and the foot of its
+  // portal, so the street outside seemed to run on up into the arch. They are only shown near and in front.
   const rank = (mesh: { name: string }): number =>
-    mesh.name.startsWith('ground:occluder') ? 0 : mesh.name.startsWith('areas:') ? 1 : mesh.name.startsWith('corridor:') ? 2 : 3
+    mesh.name.startsWith('tunnel:entry') || mesh.name.startsWith('tunnel:headwalls') ? -1
+      : mesh.name.startsWith('ground:occluder') ? 0 : mesh.name.startsWith('areas:') ? 1 : mesh.name.startsWith('corridor:') ? 2 : 3
   for (const group of [GROUP.areas, GROUP.road, GROUP.building]) {
     scene.setRenderingOrder(group, (a, b) => rank(a.getMesh()) - rank(b.getMesh()))
   }
@@ -1025,6 +1048,7 @@ export class City {
     this.terrain = new Terrain(pkg.terrain, TILE)
     // the streets' own level inside their corridors (BUGS.md #38); the occluder keeps the raw ground (its own Terrain)
     this.terrain.grade = (x, z) => (this.off.has('grade') ? null : this.gradeAt(x, z))
+    this.terrain.cut = (x, z) => (this.off.has('grade') ? null : this.grade.cutAt(x, z))
     this.region = region(pkg.region)
     const __tg0 = performance.now()
     distantGround(scene, this.terrain, pkg, this.roadAssets)
@@ -1933,7 +1957,7 @@ export class City {
        * straight from worn asphalt to a dirt-and-leaf shoulder. There is no wedge of grass to hide out here
        * because grass is what the park IS, so the layer has nothing to do and everything to spoil.
        */
-      if (!e.park) quadStrip(corridor, pts, e.width + 2 * e.walk + 4.5, 0.15, PAVEMENT)
+      if (!e.park) quadStrip(corridor, pts, e.width + 2 * e.walk + 4.5, 0.15, PAVEMENT, (x, z) => this.terrain.heightAt(x, z))
       // a brick street's pavements (San Francisco's Market Street), drawn over the concrete a hair higher so
       // it wins every overlap the same way each frame — the kerb-to-wall width only, the carriageway is over it
       if (brick && !e.foot && e.walk > 0 && brick.names.includes(e.name ?? '')) {
@@ -2424,16 +2448,20 @@ export class City {
         // where this head's lamps are, for the live lamps (render/lamps.ts): the traffic it stops arrives along
         // this arm, so its light is that arm's
         if (a.edgeId !== undefined) {
-          const ground = this.terrain.heightAt(px, pz) + 0.15
           const lamps = signalLamps(this.region.signals, a.half * 1.1 + n.walk * 0.55)
           const cos = Math.cos(facing)
           const sin = Math.sin(facing)
           const list = this.heads.get(k) ?? this.heads.set(k, []).get(k)!
           for (const l of lamps) {
-            list.push({
-              nodeId: id, edgeId: a.edgeId, facing, scale: l.scale,
-              at: l.at.map(([lx, ly, lz]) => [px + lx * cos + lz * sin, ground + ly, pz - lx * sin + lz * cos]) as SignalHead['at'],
-            })
+            // each lens at the ground under ITSELF: the furniture mesh is draped vertex by vertex (below), so a mast
+            // arm's head out over a sloping street sits at that street's height, not the post's — measured from the
+            // post, the lit lamp floated off its lens (owner, 2026-09-29: "not aligned with the actual signal")
+            const at = l.at.map(([lx, ly, lz]) => {
+              const x = px + lx * cos + lz * sin
+              const z = pz - lx * sin + lz * cos
+              return [x, this.terrain.heightAt(x, z) + 0.15 + ly, z]
+            }) as SignalHead['at']
+            list.push({ nodeId: id, edgeId: a.edgeId, facing, scale: l.scale, at })
           }
         }
         // the stop bar across this arm's carriageway
@@ -2486,6 +2514,29 @@ export class City {
         if (!e.heights || e.tunnel) continue
         const pts = unpackPoints(e.points)
         const half = (e.foot ? e.width / 2 : e.width / 2 + Math.max(e.walk, 0.6)) + 0.3
+        /*
+         * The wall is decided ONCE PER SIDE of the street, not per segment (owner, 2026-09-29, Taylor at Green on
+         * Russian Hill: "the ground is very messed up… a very bumpy ground mesh"; "odd rendering glitches on steep
+         * terrain changes"). Per segment, a wall came and went wherever the drop wavered round 0.6 m, and its
+         * parapet jumped between 0.12 m and 0.9 m wherever it wavered round 1.5 m: a sawtooth along the kerb.
+         * Now a side with a drop of 0.6 m anywhere is walled wherever it stands 0.3 m clear, and its parapet is
+         * set by its worst drop.
+         */
+        const sideDrop = { [-1]: 0, [1]: 0 } as Record<number, number>
+        for (let i = 1; i < pts.length; i++) {
+          const l = Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z)
+          if (l < 0.2) continue
+          const ux = (pts[i].x - pts[i - 1].x) / l
+          const uz = (pts[i].z - pts[i - 1].z) / l
+          for (const side of [-1, 1]) {
+            const nx = -uz * side
+            const nz = ux * side
+            const r = half + 0.6
+            sideDrop[side] = Math.max(sideDrop[side],
+              e.heights[i - 1] - this.terrain.rawHeightAt(pts[i - 1].x + nx * r, pts[i - 1].z + nz * r),
+              e.heights[i] - this.terrain.rawHeightAt(pts[i].x + nx * r, pts[i].z + nz * r))
+          }
+        }
         for (let i = 1; i < pts.length; i++) {
           const a = pts[i - 1]
           const b = pts[i]
@@ -2549,13 +2600,13 @@ export class City {
             const ga = this.terrain.rawHeightAt(ea.x + nx * 0.6, ea.z + nz * 0.6)
             const gb = this.terrain.rawHeightAt(eb.x + nx * 0.6, eb.z + nz * 0.6)
             const drop = Math.max(ha - ga, hb - gb)
-            if (drop < 0.6) continue
+            if (sideDrop[side] < 0.6 || drop < 0.3) continue
             const n: [number, number, number] = [nx, 0, nz]
             const UV: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
             const q = (p0: { x: number; z: number }, p1: { x: number; z: number }, y00: number, y10: number, y11: number, y01: number, c: [number, number, number], nn = n): void => {
               walls.quad([[p0.x, y00, p0.z], [p1.x, y10, p1.z], [p1.x, y11, p1.z], [p0.x, y01, p0.z]], nn, UV, c, 0)
             }
-            const parapet = drop > 1.5 ? 0.9 : 0.12
+            const parapet = sideDrop[side] > 1.5 ? 0.9 : 0.12
             // the face, down to just under the ground, and the parapet's outer face above the street
             q(ea, eb, ga - 0.3, gb - 0.3, hb + parapet, ha + parapet, stone)
             if (parapet > 0.2) {

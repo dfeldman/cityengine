@@ -23,6 +23,7 @@
  * rest from the city's own character. Baking it in rather than deciding at runtime means the same building is
  * the same every session, which is what makes two rides down the same street comparable.
  */
+import { boreTunnels } from './tunnels.ts'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { existsSync, readFileSync } from 'node:fs'
 import { spawnSync } from 'node:child_process'
@@ -1375,6 +1376,21 @@ async function bake(spec: CitySpec): Promise<void> {
    * under the ground — the rider rode inside the hill, and the road markings, which follow the ground, were
    * drawn on top of them.
    */
+  /*
+   * TUNNEL MOUTHS (the Stockton Tunnel, 2026-09-29): nodes where a way goes underground. A street running into one
+   * is in a CUT — the one place "a fill, never a cut" below is wrong: levelled to the highest ground across its
+   * corridor, lower Stockton climbed the side of its own cutting to 2.6 m under Bush Street, which crosses over the
+   * mouth. So a street's last 30 m to a mouth follow the ground along its centre line, easing into the level
+   * street beyond; and a tunnel's own heights (the hill above it) never raise the node where it meets the street.
+   */
+  const underground = (e: PackedEdge): boolean => !!e.tunnel || (e.layer ?? 0) < 0
+  const mouthNodes = new Set<number>()
+  {
+    const kinds = new Map<number, number>()
+    for (const e of kept) for (const n of [e.a, e.b]) kinds.set(n, (kinds.get(n) ?? 0) | (underground(e) ? 1 : 2))
+    for (const [n, k] of kinds) if (k === 3) mouthNodes.add(n)
+  }
+  const CUT = 30
   for (const e of kept) {
     const src = unpackPoints(e.points)
     const dense: { x: number; z: number }[] = [src[0]]
@@ -1433,6 +1449,16 @@ async function bake(spec: CitySpec): Promise<void> {
       const b = raw[Math.min(raw.length - 1, i + 1)]
       return Math.max((a + 2 * v + b) / 4, centre[i])
     })
+    // into a tunnel mouth: the centre line's ground at the mouth, easing to the levelled street 30 m out
+    if (!underground(e) && (mouthNodes.has(e.a) || mouthNodes.has(e.b))) {
+      const cum = [0]
+      for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z))
+      const L = cum[cum.length - 1]
+      for (let i = 0; i < pts.length; i++) {
+        const d = Math.min(mouthNodes.has(e.a) ? cum[i] : Infinity, mouthNodes.has(e.b) ? L - cum[i] : Infinity)
+        if (d < CUT) smooth[i] = centre[i] + (smooth[i] - centre[i]) * (d / CUT)
+      }
+    }
     e.heights = smooth
   }
   // …and one height where streets meet: every end at a node takes the highest of them, eased in over 12 m, so
@@ -1440,6 +1466,8 @@ async function bake(spec: CitySpec): Promise<void> {
   {
     const nodeH = new Map<number, number>()
     for (const e of kept) {
+      // (a tunnel's heights are the hill over it: they must not lift the street at its mouth)
+      if (underground(e)) continue
       const h = e.heights!
       nodeH.set(e.a, Math.max(nodeH.get(e.a) ?? -Infinity, h[0]))
       nodeH.set(e.b, Math.max(nodeH.get(e.b) ?? -Infinity, h[h.length - 1]))
@@ -1450,8 +1478,8 @@ async function bake(spec: CitySpec): Promise<void> {
       const cum = [0]
       for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z))
       const L = cum[cum.length - 1]
-      const ha = nodeH.get(e.a)!
-      const hb = nodeH.get(e.b)!
+      const ha = nodeH.get(e.a) ?? h[0]
+      const hb = nodeH.get(e.b) ?? h[h.length - 1]
       const EASE = Math.min(12, L / 2)
       e.heights = h.map((v, i) => {
         let out = v
@@ -1491,6 +1519,9 @@ async function bake(spec: CitySpec): Promise<void> {
   const decks = bridgeHeights(kept, { water: waterBodies, ground: groundAt, buried })
   // the ways lifted onto a deck are ramps: said outright, for the renderer (city/package.ts isRaised)
   for (const e of kept) if (decks.raised.has(e.id) && !e.bridge) e.ramp = true
+  // street tunnels under a hill: their own mouth-to-mouth profile, and `bore` — ridden and drawn (tools/tunnels.ts)
+  const bores = boreTunnels(kept, groundAt, (name, why) => console.log(`  tunnel not ridden: ${name} — ${why}`))
+  if (bores.size > 0) console.log(`  ${bores.size} street-tunnel ways made rideable bores (their pavements included)`)
   /*
    * Elevated railways (the Loop's L) by a direct rule rather than the street chains: an L structure runs at
    * a steady 6–7 m, and chained through a whole loop of track the street rule took the worst crossing

@@ -11,7 +11,7 @@
  */
 import type { PackedEdge } from './package.ts'
 
-interface Seg { ax: number; az: number; bx: number; bz: number; ha: number; hb: number; half: number }
+interface Seg { ax: number; az: number; bx: number; bz: number; ha: number; hb: number; half: number; cut: boolean }
 
 export class StreetGrade {
   /** each segment of each street at grade, with its heights at both ends and its half-width, in 10 m cells */
@@ -19,12 +19,12 @@ export class StreetGrade {
   private readonly seen = new Set<number>()
 
   /** File a street (idempotent by id). Bridges, tunnels and streets without heights have no corridor. */
-  add(e: Pick<PackedEdge, 'id' | 'points' | 'heights' | 'bridge' | 'tunnel' | 'foot' | 'width' | 'walk'>): void {
+  add(e: Pick<PackedEdge, 'id' | 'points' | 'heights' | 'bridge' | 'tunnel' | 'foot' | 'width' | 'walk' | 'cut'>): void {
     if (this.seen.has(e.id) || !e.heights || e.bridge || e.tunnel) return
     this.seen.add(e.id)
     const half = (e.foot ? e.width / 2 : e.width / 2 + Math.max(e.walk, 0.6)) + 0.3
     for (let i = 2; i < e.points.length; i += 2) {
-      const sg = { ax: e.points[i - 2], az: e.points[i - 1], bx: e.points[i], bz: e.points[i + 1], ha: e.heights[i / 2 - 1], hb: e.heights[i / 2], half }
+      const sg = { ax: e.points[i - 2], az: e.points[i - 1], bx: e.points[i], bz: e.points[i + 1], ha: e.heights[i / 2 - 1], hb: e.heights[i / 2], half, cut: !!e.cut }
       const x0 = Math.floor((Math.min(sg.ax, sg.bx) - half) / 10)
       const x1 = Math.floor((Math.max(sg.ax, sg.bx) + half) / 10)
       const z0 = Math.floor((Math.min(sg.az, sg.bz) - half) / 10)
@@ -39,10 +39,22 @@ export class StreetGrade {
   }
 
   /** The level of the street whose corridor (x, z) is in — the nearest, where two overlap — or null. */
-  at(x: number, z: number): number | null {
+  at(x: number, z: number): number | null { return this.nearest(x, z)?.h ?? null }
+
+  /**
+   * The level of a street in a CUT whose corridor (x, z) is in (the nearest corridor there being a cut), or null: a
+   * street running down into a tunnel mouth (tools/tunnels.ts). There the street is below the ground, and what is
+   * draped on it must follow the street — not stand at the ground over it, which is the rule everywhere else.
+   */
+  cutAt(x: number, z: number): number | null {
+    const n = this.nearest(x, z)
+    return n && n.cut ? n.h : null
+  }
+
+  private nearest(x: number, z: number): { h: number; cut: boolean } | null {
     const list = this.cells.get(`${Math.floor(x / 10)},${Math.floor(z / 10)}`)
     if (!list) return null
-    let best: number | null = null
+    let best: { h: number; cut: boolean } | null = null
     let bd = Infinity
     for (const sg of list) {
       const dx = sg.bx - sg.ax
@@ -52,7 +64,7 @@ export class StreetGrade {
       const d = Math.hypot(x - sg.ax - dx * t, z - sg.az - dz * t)
       if (d > sg.half || d >= bd) continue
       bd = d
-      best = sg.ha + (sg.hb - sg.ha) * t
+      best = { h: sg.ha + (sg.hb - sg.ha) * t, cut: sg.cut }
     }
     return best
   }

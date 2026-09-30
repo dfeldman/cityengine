@@ -1,8 +1,8 @@
 /**
  * The delivery game's screen furniture (src/game/delivery.ts is the logic): the OFFER card — two stops, named by
  * their nearest intersection, with Take it (Y) and No thanks (X) and a bar running down to when it goes away by
- * itself — and, during a job, one line saying where to go next. No route and no pointer: finding the way is the
- * game (a compass comes later).
+ * itself — and, during a job, one line saying where to go next, the compass and the clock. No route: finding the
+ * way is the game. Pickup is 1 and amber, drop-off is 2 and green, the same on every screen.
  */
 import type { Job } from '../game/delivery.ts'
 
@@ -16,6 +16,7 @@ export const DELIVERY_CSS = `
 .sr-offer .stop { display: flex; gap: 10px; align-items: baseline; margin: 6px 0 }
 .sr-offer .n { flex: none; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center;
   font: 800 13px/1 var(--font); color: var(--on-amber); background: var(--c-amber) }
+.sr-offer .stop + .stop .n { background: #34d27a; color: #111 }
 .sr-offer .what { opacity: .7; font-size: 12px }
 .sr-offer .far { opacity: .7; margin: 8px 0 10px; font-size: 13px }
 .sr-offer .row { display: flex; gap: 8px }
@@ -25,15 +26,32 @@ export const DELIVERY_CSS = `
 .sr-offer kbd { font: 800 11px/1 var(--font); opacity: .75; margin-left: 6px }
 .sr-offer .clock { height: 3px; margin-top: 10px; border-radius: 3px; background: var(--c-amber); transform-origin: left;
   transition: transform linear }
-.sr-job { position: fixed; top: 120px; left: 50%; transform: translateX(-50%); z-index: 6; display: none;
-  font: 700 15px/1.3 var(--font); color: var(--on-amber); background: var(--c-amber); border-radius: 999px;
-  padding: 6px 16px; box-shadow: var(--shadow); white-space: nowrap }
+.sr-job { position: fixed; top: 128px; left: 14px; z-index: 6; display: none; max-width: calc(100vw - 28px);
+  font: 700 14px/1.3 var(--font); color: var(--on-amber); background: var(--c-amber); border-radius: 999px;
+  padding: 5px 14px; box-shadow: var(--shadow); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
 .sr-job.on { display: block }
+/* the drop-off leg is green everywhere — pill, compass, map pin, beacon — as the pickup leg is amber */
+.sr-job.drop { background: #34d27a; color: #111 }
+.sr-nav.drop .dial path { fill: #34d27a }
+/* up by the top bar, under the buttons on the left (owner: "it needs to be near the top bar") */
+.sr-nav { position: fixed; top: 56px; left: 14px; z-index: 6; display: none;
+  align-items: center; gap: 14px; padding: 8px 18px 8px 10px; color: var(--text); background: var(--panel);
+  border: 2px solid var(--page); border-radius: 999px; box-shadow: var(--shadow); backdrop-filter: blur(8px) }
+.sr-nav.on { display: flex }
+.sr-nav .dial { width: 54px; height: 54px; border-radius: 50%; background: var(--page); display: grid; place-items: center }
+.sr-nav .dial svg { width: 40px; height: 40px; transition: transform .15s linear }
+.sr-nav .dist { font: 800 20px/1 var(--font); min-width: 70px }
+.sr-nav .dist small { display: block; font: 600 11px/1.2 var(--font); opacity: .7 }
+.sr-nav .clock { font: 800 38px/1 var(--font); font-variant-numeric: tabular-nums; letter-spacing: .5px }
 `
 
 export class DeliveryCard {
   private readonly card: HTMLElement
   private readonly line: HTMLElement
+  private readonly nav: HTMLElement
+  private readonly arrow: SVGElement
+  private readonly distEl: HTMLElement
+  private readonly clockEl: HTMLElement
   private onYes: () => void = () => {}
   private onNo: () => void = () => {}
 
@@ -44,6 +62,44 @@ export class DeliveryCard {
     this.line = document.createElement('div')
     this.line.className = 'sr-job'
     document.body.appendChild(this.line)
+    // the compass, the distance and the big timer (owner, 2026-09-29) — no route: the arrow is as the crow flies
+    this.nav = document.createElement('div')
+    this.nav.className = 'sr-nav'
+    this.nav.innerHTML = `
+      <div class="dial"><svg viewBox="-20 -20 40 40"><path d="M0,-17 L10,12 L0,6 L-10,12 Z" fill="var(--c-amber)"
+        stroke="var(--text)" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+      <div class="dist">–<small>to go</small></div>
+      <div class="clock">0:00</div>`
+    document.body.appendChild(this.nav)
+    this.arrow = this.nav.querySelector('svg')!
+    this.distEl = this.nav.querySelector('.dist')!
+    this.clockEl = this.nav.querySelector('.clock')!
+  }
+
+  /**
+   * The compass, the distance and the timer, every frame during a job; `target` null hides them. The arrow is the
+   * bearing to the target RELATIVE TO THE RIDER'S HEADING — straight up is straight ahead. Headings: 0 is +z (north),
+   * clockwise positive, as everywhere in the code.
+   */
+  navigate(target: { x: number; z: number } | null, rider: { x: number; z: number; heading: number }, elapsed: number | null): void {
+    if (!target || elapsed === null) { this.nav.classList.remove('on'); return }
+    this.nav.classList.add('on')
+    const dx = target.x - rider.x
+    const dz = target.z - rider.z
+    const rel = Math.atan2(dx, dz) - rider.heading
+    this.arrow.style.transform = `rotate(${(rel * 180) / Math.PI}deg)`
+    const d = Math.hypot(dx, dz)
+    const txt = d >= 1000 ? `${(d / 1000).toFixed(1)} km` : `${Math.round(d / 10) * 10} m`
+    if (this.distEl.firstChild?.textContent !== txt) this.distEl.firstChild!.textContent = txt
+    const m = Math.floor(elapsed / 60)
+    const clock = `${m}:${String(Math.floor(elapsed % 60)).padStart(2, '0')}`
+    if (this.clockEl.textContent !== clock) this.clockEl.textContent = clock
+  }
+
+  /** the leg's colour: amber to the pickup, green to the drop-off (matching the beacon and the map pin) */
+  colour(leg: 'pickup' | 'dropoff'): void {
+    this.line.classList.toggle('drop', leg === 'dropoff')
+    this.nav.classList.toggle('drop', leg === 'dropoff')
   }
 
   /** Show an offer; `lasts` seconds before it goes away by itself. */

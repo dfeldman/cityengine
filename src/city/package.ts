@@ -51,6 +51,16 @@ export interface PackedEdge {
   layer?: number
   bridge?: boolean
   tunnel?: boolean
+  /**
+   * A street tunnel a rider goes through (tools/tunnels.ts): under a hill, a street class, heights straight from
+   * mouth to mouth. Ridden and driven like a street, drawn as a tunnel (render/tunnels.ts), never as a street.
+   */
+  bore?: boolean
+  /**
+   * A street in a CUT, running down into a tunnel mouth (tools/tunnels.ts): below the ground beside it, so what is
+   * drawn along it follows it rather than the ground (city/grade.ts `cutAt`).
+   */
+  cut?: boolean
   /** through a building at grade (tunnel=building_passage, covered=yes): rideable, drawn as an arch */
   passage?: boolean
   /** a way the bake lifted onto a bridge's deck (tools/bridges.ts): drawn as a structure, like the bridge */

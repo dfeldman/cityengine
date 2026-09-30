@@ -10,7 +10,8 @@ const sq = (cx: number, cz: number, h: number): number[] => [cx - h, cz - h, cx 
 function town(): DeliveryWorld {
   const buildings: { id: number; ring: number[] }[] = []
   let id = 1
-  for (let i = -15; i <= 15; i++) for (let j = -15; j <= 15; j++) buildings.push({ id: id++, ring: sq(i * 100 + 50, j * 100 + 50, 20) })
+  // each building 30 m along and 30 m across from a corner: 42 m from its intersection, inside the 70 m of "near"
+  for (let i = -15; i <= 15; i++) for (let j = -15; j <= 15; j++) buildings.push({ id: id++, ring: sq(i * 100 + 30, j * 100 + 30, 20) })
   return {
     buildingsNear: (x, z, r) => buildings.filter((b) => Math.hypot(b.ring[0] + 20 - x, b.ring[1] + 20 - z) <= r),
     junctionNear: (x, z, reach) => {

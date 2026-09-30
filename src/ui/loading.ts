@@ -86,7 +86,8 @@ export class LoadingScreen {
  */
 const CONTROLS: [string, string][] = [
   ['pedal / ↑', 'ride — the bike or treadmill drives you, arrows if you have neither'],
-  ['← →', 'steer at the junctions'],
+  ['← →', 'hold to steer; hold as you reach a corner to turn there'],
+  ['U', 'turn round'],
   ['M', 'the map — click to set a destination, double-click to go there'],
   ['R', 'bike or run'],
   ['M, then search', 'the map: search a landmark ("Chase Center"), Enter to go'],
@@ -115,10 +116,11 @@ export const WELCOME_CSS = `
 `
 
 /** Show it, and take it away at the first key or click. */
-export function welcomeScreen(cityName: string): void {
+export function welcomeScreen(cityName: string, slowInput = false): void {
   const root = document.createElement('div')
   root.className = 'sr-welcome'
-  const rows = CONTROLS.map(([k, d]) => `<tr><td class="k"><kbd>${k}</kbd></td><td class="d">${d}</td></tr>`).join('')
+  // slow input (?input=slow, trainers): a press declares the turn at the next junction, well before it
+  const rows = CONTROLS.map(([k, d]) => (k === '← →' && slowInput ? [k, 'pick your turn at the next junction, before you reach it'] : [k, d])).map(([k, d]) => `<tr><td class="k"><kbd>${k}</kbd></td><td class="d">${d}</td></tr>`).join('')
   root.innerHTML = `<div class="sr-card"><span class="sr-pill">Dandyhorse</span><h1>Street Runner</h1>
     <p class="lede">Ride ${cityName} for real — every street, every building, where they actually are.</p>
     <table>${rows}</table><div class="go">press any key to ride</div></div>`
