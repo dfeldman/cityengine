@@ -129,7 +129,8 @@ function plantZoned(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Partia
   // 3. invented street rows, where a zone asks for them
   const rows: Planting[] = []
   for (const e of pkg.edges) {
-    if (e.foot || !onSurface(e)) continue
+    // (not on a bridge, a ramp or anything raised: a row of trees stood down the middle of the Golden Gate)
+    if (e.foot || !onSurface(e) || e.bridge || e.ramp || (e.layer ?? 0) > 0) continue
     const pts = unpackPoints(e.points)
     let total = 0
     for (let i = 1; i < pts.length; i++) total += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z)
@@ -303,7 +304,7 @@ function plantLegacy(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Parti
     // A BOULEVARD, not every street with a kerb. Relaxing this to "anything with a pavement" planted five
     // thousand trees in the Loop, several of them within touching distance of the rider's own line — a
     // forest with a city somewhere behind it.
-    if (e.foot || e.walk < 1.8 || e.width < 9 || !onSurface(e)) continue
+    if (e.foot || e.walk < 1.8 || e.width < 9 || !onSurface(e) || e.bridge || e.ramp || (e.layer ?? 0) > 0) continue
     const pts = unpackPoints(e.points)
     const spacing = 13 + r() * 5
     let total = 0

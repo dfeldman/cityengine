@@ -18,8 +18,9 @@ import { Projection } from './city/geo.ts'
 import { parseLatLon } from './ui/goto.ts'
 import { asMassing, fringeLayer, massing } from './render/fringe.ts'
 import { terracesLayer } from './render/terraces.ts'
-import { MID, VIEW } from './render/city.ts'
+import { MID, VIEW, setGroundStride, setRings } from './render/city.ts'
 import { MemoryTiles, TILE, tileKey, type CityIndex, type TileData } from './city/tiles.ts'
+import { Terrain } from './city/terrain.ts'
 import { tilePreparer } from './render/prepare.ts'
 import { ParkMap } from './city/park-area.ts'
 import { plog } from './profile.ts'
@@ -39,6 +40,7 @@ import { metroSignsLayer } from './render/metrosigns.ts'
 import { PathMap } from './render/pathmap.ts'
 import { region } from './city/region.ts'
 import { ambientOcclusion } from './render/depth.ts'
+import { colourGrade, GRADE } from './render/grade.ts'
 import { City, setupGroundLayers } from './render/city.ts'
 import { Crowd } from './sim/crowd.ts'
 import { Life } from './render/life.ts'
@@ -46,28 +48,36 @@ import { OverheadLines } from './render/overhead.ts'
 import { streetRailsLayer } from './render/street-rails.ts'
 import { stairsLayer } from './render/stairs.ts'
 import { SF_STAIRWAYS } from './render/landmarks/sf/stairways.ts'
+import { SF_TUNNELS } from './render/landmarks/sf/tunnels.ts'
+import { SF_BRIDGE_DECKS, BAY_CROSSINGS } from './city/sf/bridges.ts'
+import { BridgeDecks, placement } from './city/bridge-decks.ts'
 import { Sky } from './render/sky.ts'
-import { Landmarks, landmarkManifest, packedIds } from './render/landmarks.ts'
+import { Landmarks, landmarkManifest, packedIds, setKeepGeometry } from './render/landmarks.ts'
 import { Statues, statueManifest } from './render/statues.ts'
 import { Traffic, onEdge, type RiderNow, type Vehicle } from './sim/traffic.ts'
 import { Signals } from './sim/signals.ts'
 import { SignalLamps } from './render/lamps.ts'
-import { DEFAULTS as DELIVERY_DEFAULTS, Delivery, type DeliveryEvent, type Stop } from './game/delivery.ts'
+import { DEFAULTS as DELIVERY_DEFAULTS, Delivery, type DeliveryEvent, type Source, type Stop } from './game/delivery.ts'
 import { DeliveryCard } from './ui/delivery-card.ts'
 import { Tunnels } from './render/tunnels.ts'
 import { Beacon } from './render/beacon.ts'
 import { SIZE, boxOf, overlap } from './sim/collide.ts'
 import { inRing } from './map/zones.ts'
-import { BakedCrowd } from './render/crowd-baked.ts'
+import { BakedCrowd, peopleLights } from './render/crowd-baked.ts'
 import { Rider } from './render/rider.ts'
-import { Signs, type SignedJunction } from './render/signs.ts'
-import { Vegetation } from './render/vegetation.ts'
+import { Signs, setTextScale, type SignedJunction } from './render/signs.ts'
+import { GPU_PER_TILE_MB, HEAP_PER_TILE_MB, TIERS, type Tier } from './tier.ts'
+import { MODES, type GameMode } from './modes.ts'
+import SF_KITCHENS from './city/sf/restaurants.json'
+import { Energy } from './sim/energy.ts'
+import { capTextures } from './render/texture-cap.ts'
+import { Vegetation, foliageLights } from './render/vegetation.ts'
 import { updateCartoonEye } from './render/cartoon-material.ts'
 import { DAYLIGHT, updateEye } from './render/facade-material.ts'
 import { updateWater } from './render/water-material.ts'
 import { Hud } from './ui/hud.ts'
 import { photoMode, setRegionFog } from './render/photo.ts'
-import { watchHeap } from './render/heap.ts'
+import { gpuMB, showMemory, watchHeap } from './render/heap.ts'
 import { Minimap } from './ui/minimap.ts'
 import { LocalControls, type Controls } from './controls.ts'
 import type { Platform } from './platform.ts'
@@ -75,7 +85,7 @@ import { Tools } from '@babylonjs/core/Misc/tools'
 import { Navigator, pointAlong } from './sim/navigate.ts'
 import { Transit, type Placer, type TransitKind, type VehicleView } from './sim/transit.ts'
 import { Ride, cornerRadius } from './sim/ride.ts'
-import { addEdges, departureBearing, resolve, type CityGraph, type Edge } from './city/graph.ts'
+import { addEdges, departureBearing, exits, resolve, type CityGraph, type Edge } from './city/graph.ts'
 import { locate, rideExits, type RideGraph } from './city/ridegraph.ts'
 import { nearestOnGraph, planRoute, type Route } from './sim/route.ts'
 import { SCENIC } from './city/scenic.ts'
@@ -137,6 +147,18 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    */
   input?: 'fast' | 'slow'
   /**
+   * `?route=auto` (the default) or `?route=manual`: auto, an accepted delivery is routed — to the pickup, then the
+   * drop-off — and the game takes each turn of it, so a rider can just pedal (owner, 2026-09-30: "MOST users will
+   * use auto-routing"); manual, finding the way is the game, as it was.
+   */
+  route?: 'auto' | 'manual'
+  /** how much the device can hold (src/tier.ts); desktop when not said */
+  tier?: Tier
+  /** couch, trainer or trainer debug (src/modes.ts); trainer debug when not said (the tools' and tests' game) */
+  mode?: GameMode
+  /** world metres per physical metre, overriding the mode's (sim/ride.ts `speedup`) */
+  speedup?: number
+  /**
    * How many times the baked tree count a CLOSED wood grows to at render time (render/infill.ts). The park
    * is thickened by default — *"parts of the real park feel like a forest"* — and `?veg=1` is the package
    * exactly as it was baked, which is what the before-and-after measurement wants.
@@ -149,6 +171,17 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   turn?: 'left' | 'straight' | 'right'
 }): Promise<void> {
   const off = opts.without ?? new Set<string>()
+  // what this device can hold (src/tier.ts, BUGS.md #242): set before anything is built
+  const tier = TIERS[opts.tier ?? 'desktop']
+  // `?rings=2,5` tries other rings on a device without a code change (src/tier.ts has the defaults)
+  const rings = new URLSearchParams(location.search).get('rings')?.split(',').map(Number)
+  setRings(rings?.[0] ?? tier.view, rings?.[1] ?? tier.mid)
+  setTextScale(tier.textScale)
+  setGroundStride(tier.groundStride)
+  setKeepGeometry(tier.keepGeometry)
+  if (!tier.ao) off.add('ao')
+  for (const w of tier.without) off.add(w)
+  plog('tier', opts.tier ?? 'desktop')
   /*
    * Load-stage timings (tools/measure-load.ts): each mark is the milliseconds the stage since the previous one
    * took, so a slow stage is obvious as the city grows.
@@ -175,6 +208,37 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   loading?.city(src.index?.name ?? opts.city)
   // the city's landmarks, or its region's (the Marais and central Paris share Paris's)
   const landmarkList = await landmarkManifest(document.baseURI, opts.city, src.index.region)
+  /*
+   * THE BRIDGE DECKS (src/city/bridge-decks.ts): every bridge model the region knows the decks of, placed as its
+   * manifest entry places it. The ways over it — the ride graph now, each tile's edges as they arrive — take its
+   * deck's heights, so the rider, the cars and the GPS line are on the steel.
+   */
+  const bridgeDecks = new BridgeDecks()
+  {
+    const decls: Record<string, import('./city/bridge-decks.ts').DeckDecl[]> = src.index.region === 'san-francisco' ? SF_BRIDGE_DECKS : {}
+    const pr = new Projection(src.index.origin)
+    for (const e of landmarkList) {
+      const d = e.procedural ? decls[e.procedural] : undefined
+      if (d && e.lat !== undefined && e.lon !== undefined) bridgeDecks.add(placement({ ...e, lat: e.lat, lon: e.lon }, pr), d)
+    }
+  }
+  // no tree on a bridge deck (the bake planted a row down the Golden Gate; src/city/plantings.ts no longer does,
+  // and this keeps a package baked before that honest). The WAYS over a deck carry its heights from the bake
+  // (src/city/bridge-decks.ts conformGraph, tools/bake.ts) — nothing is regraded here.
+  const conformTile = (t: TileData): void => {
+    if (bridgeDecks.size === 0) return
+    const p = t.plantings
+    if (p?.length) {
+      const keep: number[] = []
+      const keepY: number[] = []
+      for (let i = 0; i + 4 < p.length; i += 5) {
+        if (bridgeDecks.covers(p[i], p[i + 1])) continue
+        keep.push(p[i], p[i + 1], p[i + 2], p[i + 3], p[i + 4])
+        if (t.plantingY) keepY.push(t.plantingY[i / 5])
+      }
+      if (keep.length !== p.length) { t.plantings = keep; if (t.plantingY) t.plantingY = keepY }
+    }
+  }
   mark('fetched')
   const index = src.index
   // what the rest of the game reads of the city as a whole: the index's global part
@@ -219,10 +283,43 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   setWeather(opts.weather ?? 'clear')
 
   const __t0 = performance.now()
-  const engine = new Engine(canvas, true, { antialias: true }, true)
+  // (`limitDeviceRatio`: an iPhone's 3x is nine times the pixels — the framebuffer and every full-screen target)
+  const engine = new Engine(canvas, true, { antialias: true, limitDeviceRatio: tier.maxDpr === Infinity ? undefined : tier.maxDpr,
+    doNotHandleContextLost: !tier.recoverContext }, true)
+  capTextures(engine, tier.textureCaps)
+  if (!tier.recoverContext) {
+    // nothing kept to rebuild from, so a lost context (iOS can take it from a backgrounded tab) starts again
+    canvas.addEventListener('webglcontextlost', () => location.reload())
+  }
   plog('engine', Math.round(performance.now() - __t0))
   const __t1 = performance.now()
   const scene = new Scene(engine)
+  // the Babylon lights, always (render/crowd-baked.ts, vegetation.ts): the rider's avatar is lit by them, and with
+  // the crowd and the trees left out (iOS's ultra tier) nothing made any light — the rider rode as a black silhouette
+  peopleLights(scene)
+  /*
+   * BABYLON'S VERTEX CACHE (BUGS.md #243): `refreshBoundingInfo` — ours, and Babylon's own for thin instances — keeps
+   * every vertex of the mesh as a Vector3 object (`_positions`), for picking and collisions, which nothing here uses
+   * but the debug probes. On iOS's ultra tier that was ~60 MB of a 250 MB heap: 860 000 Vector3s and their 2.6
+   * million boxed numbers. Dropped every five seconds; Babylon rebuilds it if a pick ever asks.
+   */
+  setInterval(() => {
+    for (const m of scene.meshes) {
+      const info = (m as unknown as { _internalAbstractMeshDataInfo?: { _positions: unknown } })._internalAbstractMeshDataInfo
+      if (info?._positions) info._positions = null
+    }
+  }, 5000)
+  foliageLights(scene)
+  if (!tier.recoverContext) {
+    // and a texture's own copy of its source bytes (a glTF image's PNG, ~2 MB a leaf atlas) once it is on the GPU
+    // (swept, not hooked: a texture whose image is already cached never fires its load observable)
+    setInterval(() => {
+      for (const t of scene.textures) {
+        const tex = t as unknown as { _buffer?: unknown }
+        if (tex._buffer && t.isReady()) tex._buffer = null
+      }
+    }, 3000)
+  }
   scene.clearColor = new Color4(DAYLIGHT.fogColour.r, DAYLIGHT.fogColour.g, DAYLIGHT.fogColour.b, 1)
   setupGroundLayers(scene)
   plog('scene+ground', Math.round(performance.now() - __t1))
@@ -360,6 +457,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     // the tile is here; the work it costs waits for a frame that can afford it
     if (streaming && spent > BUDGET) { bringStats.deferred++; await nextFrame(); t1 = performance.now() }
     const ready = prepare(raw)
+    conformTile(ready)
     const t2 = performance.now()
     // the landmarks from every tile, near or far: an icon is seen from a kilometre and more
     for (const f of anyTile) f(raw)
@@ -531,6 +629,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     // a landmark that hand-builds a bridge or canopy suppresses the OSM way under it, the moment it is
     // placed and before any tile is handed over — see Landmarks.covers / City.coverRaised (BUGS.md #136)
     landmarks.onCover = (c) => city.coverRaised(c)
+    if (bridgeDecks.size > 0) city.modelDeck = (x, z) => bridgeDecks.drawn(x, z)
     for (const raw of seenRaw) landmarks.addTile(raw)
     anyTile.push((raw) => landmarks.addTile(raw))
   }
@@ -679,7 +778,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   }
   // the crowd's own density: `?crowd=crowded` for a Saturday; the traffic level otherwise
   const crowdN = numArg('crowd')
-  const crowdLevel = (new URLSearchParams(location.search).get('crowd') as 'none' | 'some' | 'busy' | 'crowded' | null) ?? level
+  // (`without=crowd`, iOS's ultra tier: nobody on the pavements; the cars still drive)
+  const crowdLevel = off.has('crowd') ? 'none' : (new URLSearchParams(location.search).get('crowd') as 'none' | 'some' | 'busy' | 'crowded' | null) ?? level
   const crowd = new Crowd(graph, crowdN !== null
     ? { perKm: crowdN, range: Math.max(260, 26 * Math.sqrt(crowdN)) }
     : crowdLevel)
@@ -702,9 +802,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       }
     : dense ? { cars: 900, buses: 80, people: 3000 } : undefined
   if (budget) console.log('[density] pools', budget, 'traffic', trafficN, 'crowd', crowdN)
-  const life = new Life(scene, pkg as unknown as CityPackage, budget, regionKit(pkg.region).stock, city.viaductStations)
+  // the cars and buses by carkit (render/street-fleet.ts); `?without=carkit` for the old stand-ins
+  const life = new Life(scene, pkg as unknown as CityPackage, budget, regionKit(pkg.region).stock, city.viaductStations, !off.has('carkit'))
   // street tunnels (render/tunnels.ts): the inside drawn only with the camera in it, the mouths otherwise
-  const tunnels = new Tunnels(scene, city.terrain)
+  const tunnels = new Tunnels(scene, city.terrain, pkg.region === 'san-francisco' ? SF_TUNNELS : {})
   onTile((a) => tunnels.add(a.ready.edges))
   ;(window as unknown as Record<string, unknown>).__tunnels = tunnels
   // the tram track in the street, and the wires over the electric track (render/street-rails.ts, overhead.ts)
@@ -732,7 +833,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   void (rider?.ready ?? Promise.resolve()).then(() => {
     ;(window as unknown as { riderReady?: boolean }).riderReady = true
     if (off.has('life')) return
-    const c = new BakedCrowd(scene, opts.bodies ?? 10)
+    const c = new BakedCrowd(scene, opts.bodies ?? tier.bodies)
     void c.ready.then(() => {
       strangers = c
       ;(window as unknown as { crowdReady?: boolean }).crowdReady = true
@@ -832,6 +933,20 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     for (let m = 0; m < opts.advance; m += 0.25) nav.advance(Math.min(0.25, opts.advance - m), 4.2)
   }
   const ride = new Ride()
+  const play = MODES[opts.mode ?? 'debug']
+  ride.speedup = opts.speedup && opts.speedup > 0 ? opts.speedup : play.speedup
+  /*
+   * COUCH MODE's energy bar (sim/energy.ts): the watts typed with ↑/↓ are paid for out of it, and an empty bar caps
+   * them until it has refilled a little. Shown under the speed.
+   */
+  const energy = play.energy ? new Energy() : null
+  const energyBar = energy && !opts.freeze ? (() => {
+    const el = document.createElement('div')
+    el.className = 'sr-energy'
+    el.innerHTML = '<span class="label">energy</span><span class="track"><span class="fill"></span></span>'
+    document.body.appendChild(el)
+    return { el, fill: el.querySelector('.fill') as HTMLElement }
+  })() : null
   const hud = new Hud(document.getElementById('hud')!, () => (controls.press ? controls.press('back') : nav.turnAround()))
 
   /*
@@ -890,7 +1005,41 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     }
     return best
   }
+  // the long jobs over the Bay Bridge (src/city/sf/bridges.ts), in this city's metres
+  const crossings = (src.index.region === 'san-francisco' ? BAY_CROSSINGS : []).map((c) => {
+    const pr = new Projection(src.index.origin)
+    const f = pr.toLocal({ lat: c.from.lat, lon: c.from.lon })
+    return { name: c.name, chance: c.chance, from: { x: f.x, z: f.z, r: c.from.r },
+      places: c.places.map((p) => ({ name: p.name, ...pr.toLocal({ lat: p.lat, lon: p.lon }) })) }
+  })
+  /*
+   * THE KITCHENS (game/delivery.ts `Source`; owner, 2026-10-01): invented restaurants at fixed places, where jobs
+   * start. San Francisco's are in src/city/sf/restaurants.json; a city without any keeps the old building-to-building
+   * jobs. The LEVEL sets how far a drop-off may be (500 m at level 1): it rises every three deliveries in this city
+   * (kept in the browser), or `?level=` sets it.
+   */
+  const kitchens: Source[] = src.index.region === 'san-francisco' ? (() => {
+    const pr = new Projection(pkg.origin)
+    return SF_KITCHENS.restaurants.map((k) => ({ ...k, ...pr.toLocal({ lat: k.lat, lon: k.lon }) }))
+  })() : []
+  const builtTiles = new Set((index.tiles ?? []).filter((t) => t.buildings > 0).map((t) => tileKey(t.tx, t.tz)))
+  const DELIVERED_KEY = `sr-delivered:${opts.city}`
+  let delivered = 0
+  try { delivered = Number(localStorage.getItem(DELIVERED_KEY)) || 0 } catch { /* private mode: start at 0 */ }
+  const askedLevel = Number(new URLSearchParams(location.search).get('level'))
+  const levelFor = (n: number): number => askedLevel > 0 ? askedLevel : Math.min(DELIVERY_DEFAULTS.levels.length, 1 + Math.floor(n / 3))
   const delivery = new Delivery({
+    builtAt: (x, z) => builtTiles.has(tileKey(Math.floor(x / TILE), Math.floor(z / TILE))),
+    nameAt: (x, z) => {
+      // the nearest named street on the ride graph (a far drop-off, before its tiles are in to find a crossing)
+      let best: { name: string; d: number } | null = null
+      for (const e of rides.edges.values()) {
+        if (!e.name) continue
+        const d = Math.hypot(e.points[0].x - x, e.points[0].z - z)
+        if (d < 250 && (!best || d < best.d)) best = { name: e.name, d }
+      }
+      return best ? `${best.name}` : null
+    },
     buildingsNear: (x, z, r) => {
       const out: { id: number; ring: number[]; height: number; baseY: number }[] = []
       for (const t of prepared.tiles.values()) {
@@ -920,7 +1069,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       }
       return best
     },
-  })
+  }, { crossings, autoAccept: play.autoAccept, sources: kitchens })
+  delivery.level = levelFor(delivered)
   const deliveryCard = new DeliveryCard()
   // the target building, lit up (render/beacon.ts)
   const beacon = new Beacon(scene)
@@ -930,26 +1080,71 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     const p = streetPoint(s.ring)
     return { x: p.x, z: p.z, y: city.terrain.heightAt(p.x, p.z) }
   }
+  /*
+   * AUTO-ROUTING (`?route=auto`, the default): the job's stop is the destination — its door on the street — and
+   * the navigator follows the planned route turn by turn, as it does for a pinned destination (the GPS). The plan is
+   * on the ride network, which is what keeps it off the freeways nobody rides (src/city/ridegraph.ts).
+   */
+  let deliveryRouted = false
+  const routeTo = (s: Stop | null): void => {
+    if (opts.route === 'manual') return
+    if (!s) { deliveryRouted = false; clearRoute(); return }
+    const p = streetPoint(s.ring)
+    destination = { x: p.x, z: p.z }
+    tour = null
+    deliveryRouted = true
+    replan()
+  }
   const onDelivery = (events: DeliveryEvent[]): void => {
     for (const ev of events) {
       if (ev.kind === 'offer') {
-        deliveryCard.offer(ev.job, DELIVERY_DEFAULTS.offerLasts, () => onDelivery(delivery.accept()), () => onDelivery(delivery.decline()))
+        const take = (): void => onDelivery(delivery.accept())
+        const skip = (): void => onDelivery(delivery.decline())
+        deliveryCard.offer(ev.job, play.autoAccept ?? DELIVERY_DEFAULTS.offerLasts, take, skip, opts.route !== 'manual', play.autoAccept !== null)
+        // trainer mode: on the phone too, beside the d-pad (src/platform.ts `offer`)
+        opts.platform?.offer(`${ev.job.item?.emoji ?? '📦'} ${ev.job.item?.name ?? 'a parcel'}: ${ev.job.pickup.label} → ${ev.job.dropoff.label}`, play.autoAccept ?? DELIVERY_DEFAULTS.offerLasts, take, skip)
       } else if (ev.kind === 'offerExpired' || ev.kind === 'declined') {
         deliveryCard.hideOffer()
+        opts.platform?.endOffer()
       } else if (ev.kind === 'accepted') {
         deliveryCard.hideOffer()
-        deliveryCard.going(`1 · Pick up near ${ev.job.pickup.label}`)
+        opts.platform?.endOffer()
+        const what = ev.job.item ? `${ev.job.item.emoji} ` : ''
+        deliveryCard.going(`1 · Pick up ${what}${ev.job.source ? 'at' : 'near'} ${ev.job.pickup.label}`)
         light(ev.job.pickup, 'pickup')
-        hud.banner('Go!', `pick up near ${ev.job.pickup.label}`, 3000)
+        routeTo(ev.job.pickup)
+        hud.banner('Go!', `pick up ${ev.job.item ? `the ${ev.job.item.name} ` : ''}${ev.job.source ? 'at' : 'near'} ${ev.job.pickup.label}`, 3000)
       } else if (ev.kind === 'pickedUp') {
-        deliveryCard.going(`2 · Deliver near ${ev.job.dropoff.label}`)
+        const what = ev.job.item ? `${ev.job.item.emoji} ` : ''
+        deliveryCard.going(`2 · Deliver ${what}near ${ev.job.dropoff.label}`)
         light(ev.job.dropoff, 'dropoff')
-        hud.banner('Picked up!', `now deliver near ${ev.job.dropoff.label}`, 3000)
+        routeTo(ev.job.dropoff)
+        hud.banner('Picked up!', `${ev.job.item?.fragile ? 'FRAGILE — no crashes! ' : ''}now deliver near ${ev.job.dropoff.label}`, 3000)
+      } else if (ev.kind === 'stopMoved') {
+        // (a far stop pinned to its building once its tiles came in: light that, and route to its door — if it is
+        // the leg being ridden; a pickup pinned while still on offer just waits)
+        if (ev.stop === 'dropoff' || delivery.phase === 'toPickup') {
+          light(ev.job[ev.stop], ev.stop)
+          routeTo(ev.job[ev.stop])
+        }
+      } else if (ev.kind === 'spoiled') {
+        // a fragile item and a collision: the job is off
+        deliveryCard.going(null)
+        light(null, 'pickup')
+        routeTo(null)
+        hud.banner(`${ev.job.item?.emoji ?? ''} Splat!`, `the ${ev.job.item?.name ?? 'delivery'} did not survive · job cancelled`, 4500)
       } else if (ev.kind === 'delivered') {
         deliveryCard.going(null)
         light(null, 'pickup')
+        routeTo(null)
         const m = Math.floor(ev.seconds / 60)
-        hud.banner('Delivered!', `in ${m}:${String(Math.round(ev.seconds % 60)).padStart(2, '0')} · nice riding`, 5000)
+        delivered++
+        try { localStorage.setItem(DELIVERED_KEY, String(delivered)) } catch { /* fine */ }
+        const was = delivery.level
+        delivery.level = levelFor(delivered)
+        hud.banner('Delivered!', delivery.level > was
+          ? `Level ${delivery.level}! deliveries go further now · in ${m}:${String(Math.round(ev.seconds % 60)).padStart(2, '0')}`
+          : `in ${m}:${String(Math.round(ev.seconds % 60)).padStart(2, '0')} · nice riding`, 5000)
       }
     }
   }
@@ -1332,6 +1527,36 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   photoMode(scene, camera, (s) => hud.banner(s))
   // Chrome's ~3 GB ceiling is fatal and silent (BUGS.md #121): say so while there is still a tab to say it in
   watchHeap((m) => hud.banner('memory', m))
+  if (new URLSearchParams(location.search).get('mem') === '1') showMemory(scene, opts.tier ?? 'desktop')
+  /*
+   * THE MEMORY GOVERNOR (phones: src/tier.ts `memoryBudget`; owner, 2026-10-01: a Safari tab is killed at ~1 GB "with
+   * no available instrumentation"). Every five seconds the footprint is ESTIMATED — the JS heap from a measured
+   * model (a base plus a cost per tile held), the GPU from Babylon's own record of every buffer and texture — and
+   * the massing ring pulled in by one when it is over budget (the tiles beyond it are dropped by the next
+   * `wantTiles`), or grown back by one when the bigger ring would still fit with 5% to spare. `?budget=` sets the
+   * MB; `window.__governor()` says what it decided.
+   */
+  const memBudget = Number(new URLSearchParams(location.search).get('budget')) || tier.memoryBudget
+  if (memBudget) {
+    const last = { estimate: 0, mid: MID, changes: 0 }
+    ;(window as unknown as Record<string, unknown>).__governor = () => ({ ...last, memBudget, held: tileLevel.size })
+    setInterval(() => {
+      const g = gpuMB(scene)
+      const estimate = Math.round(tier.heapBase + HEAP_PER_TILE_MB * tileLevel.size + g.buffers + g.textures)
+      last.estimate = estimate
+      const grow = (8 * MID + 24) * (HEAP_PER_TILE_MB + GPU_PER_TILE_MB)
+      if (estimate > memBudget && MID > tier.minMid) {
+        setRings(VIEW, MID - 1)
+        last.changes++
+        console.info(`[memory] ~${estimate} MB of ${memBudget}: massing ring in to ${MID}`)
+      } else if (estimate + grow < memBudget * 0.95 && MID < (rings?.[1] ?? tier.mid)) {
+        setRings(VIEW, MID + 1)
+        last.changes++
+        console.info(`[memory] ~${estimate} MB of ${memBudget}: massing ring out to ${MID}`)
+      }
+      last.mid = MID
+    }, 5000)
+  }
 
   let last = performance.now()
   let frames = 0
@@ -1347,6 +1572,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
 
   // Contact shadows for everything, without teaching a single shader about them. `?without=ao` turns it off.
   if (!off.has('ao')) ambientOcclusion(scene, camera)
+  // brighter, more saturated, and anti-aliased: after the AO, the last passes (render/grade.ts)
+  if (!off.has('grade')) {
+    const g = new URLSearchParams(location.search).get('grade')?.split(',').map(Number)
+    colourGrade(scene, camera, g && g.length === 3 && g.every((v) => v > 0) ? { exposure: g[0], saturation: g[1], contrast: g[2] } : GRADE)
+  }
 
   let lastState: ReturnType<typeof ride.step> | null = null
   /*
@@ -1442,7 +1672,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       if (destination && now - routedAt > 1000) {
         routedAt = now
         replan()
-        if (route && route.length < 20) {
+        // (a delivery's own stop is the delivery's to announce: it says "picked up" and routes on)
+        if (route && route.length < 20 && !deliveryRouted) {
           const here = destination!
           const reached = placeName(here)
           if (tour && nextWaypoint()) {
@@ -1457,7 +1688,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       }
       if (route && junction && !junction.passThrough && ownChoiceAt !== junction.nodeId && !nav.isCommitted) {
         const want = route.leave.get(junction.nodeId)
-        const exit = want === undefined ? undefined : junction.exits.find((x) => x.edgeId === want)
+        // (the route's exit even where the junction's offer folded it into a neighbour: `Navigator` takes it by edge)
+        const exit = want === undefined ? undefined
+          : junction.exits.find((x) => x.edgeId === want) ?? exits(rides, junction.nodeId, nav.edge.id).find((x) => x.edgeId === want)
         if (exit && nav.requestedEdge !== exit.edgeId) { nav.request(exit.turn); nav.requestEdge(exit.edgeId) }
       }
       if (route) {
@@ -1501,8 +1734,17 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       const riding = transit.aboard !== null
       // …and while the rider is picking themselves up after a collision (render/rider.ts `tumble`)
       const hold = frozen || controls.paused() || riding || !!rider?.tumbling || stillInWay(lastRider, now)
+      // the watts the rider gets: what was measured (or typed), less what an empty energy bar will not pay for
+      const measured = controls.measured()
+      const given = energy && measured.power !== null ? { ...measured, power: energy.allowed(measured.power) } : measured
+      if (energy && !hold) energy.spend(given.power ?? 0, dt)
+      if (energyBar && energy) {
+        energyBar.fill.style.width = `${Math.round(energy.level * 100)}%`
+        energyBar.el.classList.toggle('low', energy.level < 0.25)
+        energyBar.el.classList.toggle('bonk', energy.bonked)
+      }
       const state = hold && lastState ? { ...lastState, speed: 0, power: riding ? 0 : lastState.power, grade: riding ? 0 : lastState.grade }
-        : ride.step(dt, controls.measured(), opts.device, surface, ground.grade, radius, junction?.ahead ?? Infinity,
+        : ride.step(dt, given, opts.device, surface, ground.grade, radius, junction?.ahead ?? Infinity,
           // held behind the car ahead in the rider's lane (none on a descent: the traffic makes way instead) —
           // judged along the strip the rider is WEAVING to, and slowed to swing out in time when that is far across
           lastRider ? heldBy(lastRider) : null)
@@ -1567,7 +1809,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         const street = graph.edges.get(mapId)
         const onIt = street ? onEdge(street, at, heading) : null
         const riderNow: RiderNow | null = street && onIt ? {
-          at, heading, speed: lastState?.speed ?? 0, edgeId: mapId, s: onIt.s, dir: onIt.dir, grade: nav.elevation().grade,
+          at, heading, speed: lastState?.speed ?? 0, edgeId: mapId, s: onIt.s, dir: onIt.dir, grade: nav.elevation().grade, y: nav.elevation().y,
           box: boxOf(at.x, at.z, heading, opts.device === 'treadmill' ? SIZE.runner : SIZE.bike),
         } : null
         lastRider = riderNow
@@ -1611,6 +1853,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           rider?.tumble(side)
           const lines = ['Oops!', 'Whoa there!', 'Bonk!', 'Oof!']
           hud.banner(lines[collisions % lines.length], `bumped a ${hv.kind} in the junction · ${collisions} this ride`, 2600)
+          onDelivery(delivery.collided())
           ;(window as unknown as Record<string, unknown>).__collisions = collisions
           // what happened, for tuning (read by the shot tools): who was going where, under which light
           const log = ((window as unknown as Record<string, unknown>).__collisionLog ??= []) as unknown[]
@@ -1623,6 +1866,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
               vLight: v.inBox ? signals.aspect(h.nodeId, v.inBox.from, traffic.time) : null,
               riderLight: riderNow ? signals.aspect(h.nodeId, riderNow.edgeId, traffic.time) : null,
               kindAt: signals.control(h.nodeId).kind,
+              at: [Math.round(h.at.x), Math.round(h.at.z)], vehicleEdge: v.edgeId, riderAt: [Math.round(at.x), Math.round(at.z)],
             })
           }
         }
@@ -1637,6 +1881,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
             // not the crowd's cyclists: they share the road the rider's way, and catching one up from behind was two
             // crashes in 100 s (measured) — a nuisance, not a hazard
             if (w.kind === 'cycle' || Math.abs(w.at.x - at.x) > 2.5 || Math.abs(w.at.z - at.z) > 2.5) continue
+            // (a walker on another level — the street over a tunnel — is not in the way)
+            if (Math.abs((w.y ?? city.terrain.heightAt(w.at.x, w.at.z)) - nav.elevation().y) > 3.5) continue
             if (!overlap(riderNow.box, boxOf(w.at.x, w.at.z, w.heading, SIZE.runner))) continue
             graceUntil = now + 4000
             collisions += 1
@@ -1644,6 +1890,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
             rider?.tumble(Math.sin(heading) * (w.at.z - at.z) - Math.cos(heading) * (w.at.x - at.x) > 0 ? 1 : -1)
             const lines = ['Sorry!', 'Watch it!', 'Excuse me!']
             hud.banner(lines[collisions % lines.length], `clipped a ${w.kind === 'run' ? 'runner' : 'pedestrian'} · ${collisions} this ride`, 2600)
+            onDelivery(delivery.collided())
             ;(window as unknown as Record<string, unknown>).__collisions = collisions
             ;(((window as unknown as Record<string, unknown>).__collisionLog ??= []) as unknown[]).push({ kind: w.kind, riderSpeed: +riderNow.speed.toFixed(1), riderEdge: riderNow.edgeId, walkerEdge: w.edgeId })
             break
@@ -1732,7 +1979,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         * Math.min(1, dt * 6)
       const aheadY = aimY
       // under a passage's vault, and behind the rider along it, the camera drops below the arch
+      // (and in a street tunnel, under its vault: the Broadway Tunnel's bores are 4.6 m high, and a camera 3.5 m up
+      // cut the vault with its near plane — render/tunnels.ts `headroom`)
       const vault = high ? null : city.passageAt(at.x - fx * camBack, at.z - fz * camBack) ?? city.passageAt(at.x, at.z)
+        ?? tunnels.headroom(at.x - fx * camBack, at.z - fz * camBack, camBack) ?? tunnels.headroom(at.x, at.z, 0)
       const lift = high ? 34 : riding ? 6.5 : vault === null ? 3.5 : Math.max(1.9, Math.min(3.5, vault - 1.0))
       camHeight += (lift + groundY - camHeight) * Math.min(1, dt * (vault === null ? 4 : 8))
       if (!frozen) {
@@ -1830,6 +2080,14 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // the elevation data alone, without the streets' levelling (what a patch lowering a street would have under it)
   ;(window as unknown as { __rawHeightAt?: unknown }).__rawHeightAt = (x: number, z: number) => city.terrain.rawHeightAt(x, z)
   /* how much fine ground is resident, against how many tiles are held: the per-tile terrain's heap report */
+  // one point's ground every way it is known: the fine block's step, the elevation, the coarse grid alone (what the
+  // depth occluder and the distant ground are built from), and what is drawn (streets levelled) — BUGS.md #240
+  let coarseOnly: Terrain | null = null
+  ;(window as unknown as Record<string, unknown>).__terrainAt = (x: number, z: number) => {
+    coarseOnly ??= new Terrain(city.terrain.coarse)
+    return { step: city.terrain.stepIn(tileKey(Math.floor(x / TILE), Math.floor(z / TILE))), raw: city.terrain.rawHeightAt(x, z),
+      coarse: coarseOnly.rawHeightAt(x, z), drawn: city.terrain.heightAt(x, z) }
+  }
   ;(window as unknown as Record<string, unknown>).__terrainStats = () => ({
     blocks: city.terrain.blockCount, tilesHeld: tileLevel.size, coarse: !!city.terrain.coarse,
   })
@@ -1950,7 +2208,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         return { x: lastAt.x, y: nav.elevation().y, z: lastAt.z, lat: ll.lat, lon: ll.lon, edge: nav.mapEdgeId(), street: nav.edge.name }
       },
       grade: () => lastState?.grade ?? 0,
-      speed: () => lastState?.speed ?? 0,
+      // the PHYSICAL speed (the server integrates the session's distance from it): the speedup is the game's
+      speed: () => (lastState?.speed ?? 0) / ride.speedup,
       travelled: () => nav.travelled,
       // Babylon's own screenshot, not the canvas: a raw toDataURL comes back blank under WebGPU (INTEGRATION.md §8)
       screenshot: () => Tools.CreateScreenshotAsync(engine, camera, { width: 640, height: 360 }, 'image/jpeg', 0.82).catch(() => null),

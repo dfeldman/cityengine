@@ -1,0 +1,8 @@
+numpy
+scipy
+shapely>=2.1
+laspy[lazrs]
+numba
+PyMaxflow
+scikit-image
+matplotlib

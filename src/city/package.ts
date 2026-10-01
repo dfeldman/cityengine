@@ -61,6 +61,13 @@ export interface PackedEdge {
    * drawn along it follows it rather than the ground (city/grade.ts `cutAt`).
    */
   cut?: boolean
+  /**
+   * A way the REGION drew, not OSM (src/city/sf/bridges.ts `BAY_BIKEWAY`): its heights are fixed, and a model draws
+   * it, so nothing else does (render/city.ts).
+   */
+  authored?: boolean
+  /** a FREEWAY way the bike rides (a bridge deck, a ramp the region chose): every other is out of the ride network */
+  ridden?: boolean
   /** through a building at grade (tunnel=building_passage, covered=yes): rideable, drawn as an arch */
   passage?: boolean
   /** a way the bake lifted onto a bridge's deck (tools/bridges.ts): drawn as a structure, like the bridge */

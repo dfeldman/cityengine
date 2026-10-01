@@ -6,6 +6,7 @@
  * the renderer, Babylon) is x east, z north, y up, in float metres. Only `convert.ts` and `adapt.ts` cross
  * between the two.
  */
+import type { Simple } from './simple.ts'
 import type { RingForm } from '../city/ring-forms.ts'
 import type { PackedArea, PackedLandmark, PackedWall, RoofShape } from '../city/package.ts'
 import type { PackedTerrain } from '../city/terrain.ts'
@@ -167,7 +168,7 @@ export interface Way {
 
 /** Street flag bits (MAP-FORMAT §5.5). */
 // `bore`: a street tunnel under a hill, ridden and drawn as a tunnel (tools/tunnels.ts, render/tunnels.ts)
-export const SF = { foot: 1, oneway: 2, bridge: 4, tunnel: 8, passage: 16, ramp: 32, crossing: 64, park: 128, bore: 256, cut: 512 } as const
+export const SF = { foot: 1, oneway: 2, bridge: 4, tunnel: 8, passage: 16, ramp: 32, crossing: 64, park: 128, bore: 256, cut: 512, authored: 1024 } as const
 /** Rail flag bits. */
 export const RF = { bridge: 1, cable: 2, light: 4 } as const
 
@@ -233,7 +234,10 @@ export interface Building {
   kit?: Record<string, unknown>
   proc?: { name: string; params?: Record<string, unknown> }
   mesh?: { file: string; rot: number; scale?: number; offset?: [number, number, number] }
-  simple?: { polys: { way: number; z: number; h: number; style?: number; colour?: number }[]; roofColour: number }
+  /** lidar-derived roof faces over a shared vertex table; walls implied (MAP-FORMAT §5.3.1, src/map/simple.ts) */
+  simple?: Simple
+  /** a lidar building added in its own grouping: the OSM buildings it covers, biggest share first (tools/lidar/patch.py) */
+  covers?: Ref[]
 }
 
 export interface Deck {

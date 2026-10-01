@@ -7,7 +7,7 @@ import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
 import { goldenGateBridge, goldenGateBridgeNear } from './golden-gate.ts'
 import { sutroTower } from './sutro-tower.ts'
-import { bayBridge } from './bay-bridge.ts'
+import { bayBridge, bayBridgeNear } from './bay-bridge.ts'
 import { transamericaPyramid } from './transamerica.ts'
 import { salesforceTower } from './salesforce-tower.ts'
 import { coitTower } from './coit-tower.ts'
@@ -115,7 +115,7 @@ import { SCRATCH_2 } from './scratch-2.ts'
 import { SCRATCH_3 } from './scratch-3.ts'
 
 export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  goldenGateBridge, goldenGateBridgeNear, sutroTower, bayBridge, transamericaPyramid, salesforceTower, coitTower, ferryBuilding, cityHall,
+  goldenGateBridge, goldenGateBridgeNear, sutroTower, bayBridge, bayBridgeNear, transamericaPyramid, salesforceTower, coitTower, ferryBuilding, cityHall,
   ...TOWER_PRESETS, fiveFiveFiveCalifornia, wharfSign, ghirardelliSign, ...PIERS, sfmoma_151_third, metreon_135_fourth, ica_345_montgomery, columbusTower_916_kearny, palaceOfFineArts_3301_lyon,
   e12_stevensonPlace_149840694, e12_argenta_940206084,
   yerbaBuenaGardens, mosconeNorth, mosconeSkybridge, mosconeSouthDeck, mosconeOpenBridge,

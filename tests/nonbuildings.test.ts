@@ -175,8 +175,10 @@ const KNOWN: Record<string, string[]> = {
      * one over the other; there is nothing for the depth buffer to choose between.
      */
     'coplanar | Golden Gate Bridge',
-    // #112 — the Bay Bridge is still far-only
-    'skyline | Bay Bridge',
+    // (#112, the Bay Bridge far-only, is closed: BUGS.md #238, `bayBridgeNear`.) Its roadways are slabs on a grade,
+    // end to end, which the heuristic counts as it does the Golden Gate's — both levels of the model
+    'coplanar | Bay Bridge',
+    'coplanar | Bay Bridge',
   ],
 }
 

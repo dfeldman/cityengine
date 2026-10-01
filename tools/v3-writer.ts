@@ -24,6 +24,8 @@ export interface V3Options {
   zones?: LocalZone[]
   /** the true elevation of the v2 datum, metres, when known (the bake knows it) */
   datumMsl?: number
+  /** a re-conversion: the zones (already in city centimetres) and datum of the index being replaced */
+  keep?: { zones?: Zone[]; datumMsl?: number }
 }
 
 /** Zones as the index carries them: city centimetres, x east and y north (MAP-FORMAT §3, §7). */
@@ -74,7 +76,8 @@ export function writeV3(dir: string, index: CityIndex, tiles: TileData[], opt: V
   written.sort((a, b) => a.ty - b.ty || a.tx - b.tx)
   const idx = convertIndex(index, zFloor, dict.dict, written)
   if (opt.datumMsl !== undefined) idx.datumMsl = Math.round(opt.datumMsl * 100) / 100
-  idx.zones = indexZones(opt.zones ?? [])
+  else if (opt.keep?.datumMsl !== undefined) idx.datumMsl = opt.keep.datumMsl
+  idx.zones = opt.zones ? indexZones(opt.zones) : opt.keep?.zones ?? []
   writeFileSync(join(out, 'index.json'), JSON.stringify(idx))
   return { index: idx, stats, bytes }
 }

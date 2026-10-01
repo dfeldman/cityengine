@@ -1959,34 +1959,1648 @@
   ],
   "note": "Looking north-west at the south anchorage: does the steel now end near the water, and does the road carry on from it without a gap? The south approach viaduct was cut from 220 m to 60 m."
  },
-  {"name": "bug233-macondray-from-taylor", "group": "bug", "from": [37.7991984, -122.4139098, 2.2], "to": [37.7993601, -122.4141599, 0.5], "note": "BUGS.md #233/#234: stairs and ground where the Macondray Lane and Green Street steps meet Taylor Street"},
-  {"name": "bug233-macondray-air", "group": "bug", "from": [37.7991984, -122.4137052, 22], "to": [37.7993511, -122.414103, 0], "note": "BUGS.md #233/#234: stairs and ground where the Macondray Lane and Green Street steps meet Taylor Street"},
-  {"name": "bug234-green-steps-ground", "group": "bug", "from": [37.7988211, -122.4137961, 3], "to": [37.7989468, -122.4140689, 0], "note": "BUGS.md #233/#234: stairs and ground where the Macondray Lane and Green Street steps meet Taylor Street"},
-  {"name": "bug234-green-air", "group": "bug", "from": [37.7987492, -122.4137052, 25], "to": [37.7989468, -122.414103, 0], "note": "BUGS.md #233/#234: stairs and ground where the Macondray Lane and Green Street steps meet Taylor Street"},
-  {"name": "bug234-green-steps-side", "group": "bug", "from": [37.7987492, -122.4143304, 4], "to": [37.7989199, -122.4143531, 0], "note": "BUGS.md #234: the Green Street steps from the south"},
-  {"name": "bug234-green-steps-up", "group": "bug", "from": [37.7989648, -122.4140462, 2], "to": [37.7989109, -122.4144441, 4], "note": "BUGS.md #234: up the Green Street steps from Taylor"},
-  {"name": "portal Broadway-60888-A front 30m", "group": "bug", "from": [37.7973089, -122.4109508, 2.2], "to": [37.7972653, -122.4112874, 2.5], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Broadway-60888-A front 12m", "group": "bug", "from": [37.7972827, -122.4111527, 1.8], "to": [37.7972653, -122.4112874, 2.5], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Broadway-60888-A oblique", "group": "bug", "from": [37.7974156, -122.4111112, 6], "to": [37.7972653, -122.4112874, 2], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Broadway-60888-A above", "group": "bug", "from": [37.7972478, -122.411422, 14], "to": [37.7972871, -122.4111191, 0], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Broadway-60888-B front 30m", "group": "bug", "from": [37.7963698, -122.418189, 2.2], "to": [37.7964134, -122.4178525, 2.5], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Broadway-60888-B front 12m", "group": "bug", "from": [37.796396, -122.4179871, 1.8], "to": [37.7964134, -122.4178525, 2.5], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Broadway-60888-B oblique", "group": "bug", "from": [37.7962631, -122.4180286, 6], "to": [37.7964134, -122.4178525, 2], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Broadway-60888-B above", "group": "bug", "from": [37.7964309, -122.4177179, 14], "to": [37.7963916, -122.4180207, 0], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Stockton-63973-A front 30m", "group": "bug", "from": [37.7900164, -122.4070938, 2.2], "to": [37.7902825, -122.4071479, 2.5], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Stockton-63973-A front 12m", "group": "bug", "from": [37.7901761, -122.4071262, 1.8], "to": [37.7902825, -122.4071479, 2.5], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Stockton-63973-A oblique", "group": "bug", "from": [37.7901428, -122.4069583, 6], "to": [37.7902825, -122.4071479, 2], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Stockton-63973-A above", "group": "bug", "from": [37.7903889, -122.4071695, 14], "to": [37.7901495, -122.4071208, 0], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Stockton-63973-B front 30m", "group": "bug", "from": [37.7930149, -122.4077015, 2.2], "to": [37.7927488, -122.4076476, 2.5], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Stockton-63973-B front 12m", "group": "bug", "from": [37.7928553, -122.4076692, 1.8], "to": [37.7927488, -122.4076476, 2.5], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Stockton-63973-B oblique", "group": "bug", "from": [37.7928886, -122.4078371, 6], "to": [37.7927488, -122.4076476, 2], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Stockton-63973-B above", "group": "bug", "from": [37.7926424, -122.4076261, 14], "to": [37.7928819, -122.4076746, 0], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Baker-Barry-81522-A front 30m", "group": "bug", "from": [37.8419787, -122.4935542, 2.2], "to": [37.8418603, -122.4932479, 2.5], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Baker-Barry-81522-A front 12m", "group": "bug", "from": [37.8419077, -122.4933704, 1.8], "to": [37.8418603, -122.4932479, 2.5], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Baker-Barry-81522-A oblique", "group": "bug", "from": [37.8418184, -122.4935016, 6], "to": [37.8418603, -122.4932479, 2], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Baker-Barry-81522-A above", "group": "bug", "from": [37.8418129, -122.4931253, 14], "to": [37.8419195, -122.493401, 0], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Baker-Barry-81522-B front 30m", "group": "bug", "from": [37.8388965, -122.4855911, 2.2], "to": [37.8390149, -122.4858974, 2.5], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Baker-Barry-81522-B front 12m", "group": "bug", "from": [37.8389676, -122.4857749, 1.8], "to": [37.8390149, -122.4858974, 2.5], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Baker-Barry-81522-B oblique", "group": "bug", "from": [37.8390568, -122.4856437, 6], "to": [37.8390149, -122.4858974, 2], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"},
-  {"name": "portal Baker-Barry-81522-B above", "group": "bug", "from": [37.8390623, -122.48602, 14], "to": [37.8389557, -122.4857443, 0], "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"}
+ {
+  "name": "bug233-macondray-from-taylor",
+  "group": "bug",
+  "from": [
+   37.7991984,
+   -122.4139098,
+   2.2
+  ],
+  "to": [
+   37.7993601,
+   -122.4141599,
+   0.5
+  ],
+  "note": "BUGS.md #233/#234: stairs and ground where the Macondray Lane and Green Street steps meet Taylor Street"
+ },
+ {
+  "name": "bug233-macondray-air",
+  "group": "bug",
+  "from": [
+   37.7991984,
+   -122.4137052,
+   22
+  ],
+  "to": [
+   37.7993511,
+   -122.414103,
+   0
+  ],
+  "note": "BUGS.md #233/#234: stairs and ground where the Macondray Lane and Green Street steps meet Taylor Street"
+ },
+ {
+  "name": "bug234-green-steps-ground",
+  "group": "bug",
+  "from": [
+   37.7988211,
+   -122.4137961,
+   3
+  ],
+  "to": [
+   37.7989468,
+   -122.4140689,
+   0
+  ],
+  "note": "BUGS.md #233/#234: stairs and ground where the Macondray Lane and Green Street steps meet Taylor Street"
+ },
+ {
+  "name": "bug234-green-air",
+  "group": "bug",
+  "from": [
+   37.7987492,
+   -122.4137052,
+   25
+  ],
+  "to": [
+   37.7989468,
+   -122.414103,
+   0
+  ],
+  "note": "BUGS.md #233/#234: stairs and ground where the Macondray Lane and Green Street steps meet Taylor Street"
+ },
+ {
+  "name": "bug234-green-steps-side",
+  "group": "bug",
+  "from": [
+   37.7987492,
+   -122.4143304,
+   4
+  ],
+  "to": [
+   37.7989199,
+   -122.4143531,
+   0
+  ],
+  "note": "BUGS.md #234: the Green Street steps from the south"
+ },
+ {
+  "name": "bug234-green-steps-up",
+  "group": "bug",
+  "from": [
+   37.7989648,
+   -122.4140462,
+   2
+  ],
+  "to": [
+   37.7989109,
+   -122.4144441,
+   4
+  ],
+  "note": "BUGS.md #234: up the Green Street steps from Taylor"
+ },
+ {
+  "name": "portal Broadway-60888-A front 30m",
+  "group": "bug",
+  "from": [
+   37.7973089,
+   -122.4109508,
+   2.2
+  ],
+  "to": [
+   37.7972653,
+   -122.4112874,
+   2.5
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Broadway-60888-A front 12m",
+  "group": "bug",
+  "from": [
+   37.7972827,
+   -122.4111527,
+   1.8
+  ],
+  "to": [
+   37.7972653,
+   -122.4112874,
+   2.5
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Broadway-60888-A oblique",
+  "group": "bug",
+  "from": [
+   37.7974156,
+   -122.4111112,
+   6
+  ],
+  "to": [
+   37.7972653,
+   -122.4112874,
+   2
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Broadway-60888-A above",
+  "group": "bug",
+  "from": [
+   37.7972478,
+   -122.411422,
+   14
+  ],
+  "to": [
+   37.7972871,
+   -122.4111191,
+   0
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Broadway-60888-B front 30m",
+  "group": "bug",
+  "from": [
+   37.7963698,
+   -122.418189,
+   2.2
+  ],
+  "to": [
+   37.7964134,
+   -122.4178525,
+   2.5
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Broadway-60888-B front 12m",
+  "group": "bug",
+  "from": [
+   37.796396,
+   -122.4179871,
+   1.8
+  ],
+  "to": [
+   37.7964134,
+   -122.4178525,
+   2.5
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Broadway-60888-B oblique",
+  "group": "bug",
+  "from": [
+   37.7962631,
+   -122.4180286,
+   6
+  ],
+  "to": [
+   37.7964134,
+   -122.4178525,
+   2
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Broadway-60888-B above",
+  "group": "bug",
+  "from": [
+   37.7964309,
+   -122.4177179,
+   14
+  ],
+  "to": [
+   37.7963916,
+   -122.4180207,
+   0
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Stockton-63973-A front 30m",
+  "group": "bug",
+  "from": [
+   37.7900164,
+   -122.4070938,
+   2.2
+  ],
+  "to": [
+   37.7902825,
+   -122.4071479,
+   2.5
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Stockton-63973-A front 12m",
+  "group": "bug",
+  "from": [
+   37.7901761,
+   -122.4071262,
+   1.8
+  ],
+  "to": [
+   37.7902825,
+   -122.4071479,
+   2.5
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Stockton-63973-A oblique",
+  "group": "bug",
+  "from": [
+   37.7901428,
+   -122.4069583,
+   6
+  ],
+  "to": [
+   37.7902825,
+   -122.4071479,
+   2
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Stockton-63973-A above",
+  "group": "bug",
+  "from": [
+   37.7903889,
+   -122.4071695,
+   14
+  ],
+  "to": [
+   37.7901495,
+   -122.4071208,
+   0
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Stockton-63973-B front 30m",
+  "group": "bug",
+  "from": [
+   37.7930149,
+   -122.4077015,
+   2.2
+  ],
+  "to": [
+   37.7927488,
+   -122.4076476,
+   2.5
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Stockton-63973-B front 12m",
+  "group": "bug",
+  "from": [
+   37.7928553,
+   -122.4076692,
+   1.8
+  ],
+  "to": [
+   37.7927488,
+   -122.4076476,
+   2.5
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Stockton-63973-B oblique",
+  "group": "bug",
+  "from": [
+   37.7928886,
+   -122.4078371,
+   6
+  ],
+  "to": [
+   37.7927488,
+   -122.4076476,
+   2
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Stockton-63973-B above",
+  "group": "bug",
+  "from": [
+   37.7926424,
+   -122.4076261,
+   14
+  ],
+  "to": [
+   37.7928819,
+   -122.4076746,
+   0
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Baker-Barry-81522-A front 30m",
+  "group": "bug",
+  "from": [
+   37.8419787,
+   -122.4935542,
+   2.2
+  ],
+  "to": [
+   37.8418603,
+   -122.4932479,
+   2.5
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Baker-Barry-81522-A front 12m",
+  "group": "bug",
+  "from": [
+   37.8419077,
+   -122.4933704,
+   1.8
+  ],
+  "to": [
+   37.8418603,
+   -122.4932479,
+   2.5
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Baker-Barry-81522-A oblique",
+  "group": "bug",
+  "from": [
+   37.8418184,
+   -122.4935016,
+   6
+  ],
+  "to": [
+   37.8418603,
+   -122.4932479,
+   2
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Baker-Barry-81522-A above",
+  "group": "bug",
+  "from": [
+   37.8418129,
+   -122.4931253,
+   14
+  ],
+  "to": [
+   37.8419195,
+   -122.493401,
+   0
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Baker-Barry-81522-B front 30m",
+  "group": "bug",
+  "from": [
+   37.8388965,
+   -122.4855911,
+   2.2
+  ],
+  "to": [
+   37.8390149,
+   -122.4858974,
+   2.5
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Baker-Barry-81522-B front 12m",
+  "group": "bug",
+  "from": [
+   37.8389676,
+   -122.4857749,
+   1.8
+  ],
+  "to": [
+   37.8390149,
+   -122.4858974,
+   2.5
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Baker-Barry-81522-B oblique",
+  "group": "bug",
+  "from": [
+   37.8390568,
+   -122.4856437,
+   6
+  ],
+  "to": [
+   37.8390149,
+   -122.4858974,
+   2
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "portal Baker-Barry-81522-B above",
+  "group": "bug",
+  "from": [
+   37.8390623,
+   -122.48602,
+   14
+  ],
+  "to": [
+   37.8389557,
+   -122.4857443,
+   0
+  ],
+  "note": "street-tunnel portal (render/tunnels.ts): front, oblique and from over the hill behind"
+ },
+ {
+  "name": "bay sf approach from the south",
+  "group": "bridge",
+  "from": [
+   37.7843511,
+   -122.3907167,
+   22
+  ],
+  "to": [
+   37.785997,
+   -122.3908902,
+   18
+  ],
+  "note": "the ridden bridge decks and their approaches (src/city/bridge-decks.ts), 2026-09-30"
+ },
+ {
+  "name": "bay sf approach from under",
+  "group": "bridge",
+  "from": [
+   37.7853745,
+   -122.3906633,
+   3
+  ],
+  "to": [
+   37.7864664,
+   -122.3905363,
+   22
+  ],
+  "note": "the ridden bridge decks and their approaches (src/city/bridge-decks.ts), 2026-09-30"
+ },
+ {
+  "name": "bay sf anchorage",
+  "group": "bridge",
+  "from": [
+   37.7857542,
+   -122.3887674,
+   55
+  ],
+  "to": [
+   37.7875056,
+   -122.3892746,
+   38
+  ],
+  "note": "the ridden bridge decks and their approaches (src/city/bridge-decks.ts), 2026-09-30"
+ },
+ {
+  "name": "bay span from the sf shore",
+  "group": "bridge",
+  "from": [
+   37.7847889,
+   -122.3889077,
+   75
+  ],
+  "to": [
+   37.7925799,
+   -122.3838404,
+   62
+  ],
+  "note": "the ridden bridge decks and their approaches (src/city/bridge-decks.ts), 2026-09-30"
+ },
+ {
+  "name": "bay lower deck rincon",
+  "group": "bridge",
+  "from": [
+   37.7854605,
+   -122.3915838,
+   8
+  ],
+  "to": [
+   37.78642,
+   -122.3904669,
+   24
+  ],
+  "note": "the ridden bridge decks and their approaches (src/city/bridge-decks.ts), 2026-09-30"
+ },
+ {
+  "name": "bay ybi west portal front",
+  "group": "bridge",
+  "from": [
+   37.8079402,
+   -122.367391,
+   45
+  ],
+  "to": [
+   37.8089276,
+   -122.3663336,
+   8
+  ],
+  "note": "the ridden bridge decks and their approaches (src/city/bridge-decks.ts), 2026-09-30"
+ },
+ {
+  "name": "bay ybi west portal oblique",
+  "group": "bridge",
+  "from": [
+   37.8078293,
+   -122.3661695,
+   32
+  ],
+  "to": [
+   37.8089687,
+   -122.3662895,
+   9
+  ],
+  "note": "the ridden bridge decks and their approaches (src/city/bridge-decks.ts), 2026-09-30"
+ },
+ {
+  "name": "bay ybi viaduct from the north",
+  "group": "bridge",
+  "from": [
+   37.8090058,
+   -122.3686326,
+   40
+  ],
+  "to": [
+   37.8083516,
+   -122.3669504,
+   28
+  ],
+  "note": "the ridden bridge decks and their approaches (src/city/bridge-decks.ts), 2026-09-30"
+ },
+ {
+  "name": "bay ybi east ramps",
+  "group": "bridge",
+  "from": [
+   37.8109889,
+   -122.3617434,
+   45
+  ],
+  "to": [
+   37.8106145,
+   -122.3645271,
+   6
+  ],
+  "note": "the ridden bridge decks and their approaches (src/city/bridge-decks.ts), 2026-09-30"
+ },
+ {
+  "name": "ggb-deck north approach",
+  "group": "bridge",
+  "from": [
+   37.8328121,
+   -122.4790541,
+   28
+  ],
+  "to": [
+   37.8311926,
+   -122.4802354,
+   35
+  ],
+  "note": "the ridden bridge decks and their approaches (src/city/bridge-decks.ts), 2026-09-30"
+ },
+ {
+  "name": "ggb-deck north viaduct side",
+  "group": "bridge",
+  "from": [
+   37.8297389,
+   -122.4778971,
+   40
+  ],
+  "to": [
+   37.8296071,
+   -122.4797082,
+   38
+  ],
+  "note": "the ridden bridge decks and their approaches (src/city/bridge-decks.ts), 2026-09-30"
+ },
+ {
+  "name": "ggb-deck south span side",
+  "group": "bridge",
+  "from": [
+   37.8123284,
+   -122.4754125,
+   60
+  ],
+  "to": [
+   37.8121637,
+   -122.4776764,
+   55
+  ],
+  "note": "the ridden bridge decks and their approaches (src/city/bridge-decks.ts), 2026-09-30"
+ },
+ {
+  "name": "bay ybi macalla on-ramp",
+  "group": "bridge",
+  "from": [
+   37.8119649,
+   -122.3633788,
+   14
+  ],
+  "to": [
+   37.8119544,
+   -122.364507,
+   3
+  ],
+  "note": "the ridden bridge decks and their approaches (src/city/bridge-decks.ts), 2026-09-30"
+ },
+ {
+  "name": "bay ybi east portal front",
+  "group": "bridge",
+  "from": [
+   37.8108518,
+   -122.3638262,
+   22
+  ],
+  "to": [
+   37.8101482,
+   -122.3650264,
+   6
+  ],
+  "note": "the ridden bridge decks and their approaches (src/city/bridge-decks.ts), 2026-09-30"
+ },
+ {
+  "name": "bay ybi east portal oblique",
+  "group": "bridge",
+  "from": [
+   37.81139,
+   -122.3653348,
+   30
+  ],
+  "to": [
+   37.8101482,
+   -122.3650264,
+   4
+  ],
+  "note": "the ridden bridge decks and their approaches (src/city/bridge-decks.ts), 2026-09-30"
+ },
+ {
+  "name": "ggb-deck south abutment",
+  "group": "bridge",
+  "from": [
+   37.8075133,
+   -122.475879,
+   18
+  ],
+  "to": [
+   37.8084314,
+   -122.4768992,
+   10
+  ],
+  "note": "the ridden bridge decks and their approaches (src/city/bridge-decks.ts), 2026-09-30"
+ },
+ {
+  "name": "ggb-deck south curve from above",
+  "group": "bridge",
+  "from": [
+   37.8088633,
+   -122.4759221,
+   60
+  ],
+  "to": [
+   37.8082525,
+   -122.4768784,
+   12
+  ],
+  "note": "the ridden bridge decks and their approaches (src/city/bridge-decks.ts), 2026-09-30"
+ },
+ {
+  "name": "bay east span from ybi",
+  "group": "bridge",
+  "from": [
+   37.811949,
+   -122.3626512,
+   30
+  ],
+  "to": [
+   37.8158839,
+   -122.357097,
+   40
+  ],
+  "note": "the ridden bridge decks and their approaches (src/city/bridge-decks.ts), 2026-09-30"
+ },
+ {
+  "name": "air ggb south",
+  "group": "bridge",
+  "from": [
+   37.8061161,
+   -122.4740039,
+   110
+  ],
+  "to": [
+   37.8090493,
+   -122.4770854,
+   20
+  ],
+  "query": "paths=1",
+  "note": "from the air, with the paths shown: what is ridden and driven round the bridges"
+ },
+ {
+  "name": "air ggb south close",
+  "group": "bridge",
+  "from": [
+   37.8070742,
+   -122.4757137,
+   45
+  ],
+  "to": [
+   37.8086021,
+   -122.4770333,
+   15
+  ],
+  "query": "paths=1",
+  "note": "from the air, with the paths shown: what is ridden and driven round the bridges"
+ },
+ {
+  "name": "air ggb north",
+  "group": "bridge",
+  "from": [
+   37.834261,
+   -122.4777388,
+   110
+  ],
+  "to": [
+   37.8309242,
+   -122.4802041,
+   30
+  ],
+  "query": "paths=1",
+  "note": "from the air, with the paths shown: what is ridden and driven round the bridges"
+ },
+ {
+  "name": "air ggb north close",
+  "group": "bridge",
+  "from": [
+   37.8333241,
+   -122.4794562,
+   40
+  ],
+  "to": [
+   37.8316234,
+   -122.4805139,
+   25
+  ],
+  "query": "paths=1",
+  "note": "from the air, with the paths shown: what is ridden and driven round the bridges"
+ },
+ {
+  "name": "air bay sf",
+  "group": "bridge",
+  "from": [
+   37.7820934,
+   -122.3901562,
+   140
+  ],
+  "to": [
+   37.7862977,
+   -122.3911638,
+   30
+  ],
+  "query": "paths=1",
+  "note": "from the air, with the paths shown: what is ridden and driven round the bridges"
+ },
+ {
+  "name": "air bay sf ramps",
+  "group": "bridge",
+  "from": [
+   37.7872315,
+   -122.3934401,
+   80
+  ],
+  "to": [
+   37.7850423,
+   -122.3928061,
+   15
+  ],
+  "query": "paths=1",
+  "note": "from the air, with the paths shown: what is ridden and driven round the bridges"
+ },
+ {
+  "name": "air bay sf close",
+  "group": "bridge",
+  "from": [
+   37.784309,
+   -122.3913576,
+   45
+  ],
+  "to": [
+   37.7859759,
+   -122.3912106,
+   25
+  ],
+  "query": "paths=1",
+  "note": "from the air, with the paths shown: what is ridden and driven round the bridges"
+ },
+ {
+  "name": "air bay ybi west",
+  "group": "bridge",
+  "from": [
+   37.8058142,
+   -122.3657958,
+   120
+  ],
+  "to": [
+   37.8090373,
+   -122.3662161,
+   20
+  ],
+  "query": "paths=1",
+  "note": "from the air, with the paths shown: what is ridden and driven round the bridges"
+ },
+ {
+  "name": "air bay ybi east",
+  "group": "bridge",
+  "from": [
+   37.811184,
+   -122.3597475,
+   130
+  ],
+  "to": [
+   37.8108677,
+   -122.3645538,
+   10
+  ],
+  "query": "paths=1",
+  "note": "from the air, with the paths shown: what is ridden and driven round the bridges"
+ },
+ {
+  "name": "air bay ybi ramps close",
+  "group": "bridge",
+  "from": [
+   37.8109467,
+   -122.3623843,
+   50
+  ],
+  "to": [
+   37.8111895,
+   -122.364507,
+   10
+  ],
+  "query": "paths=1",
+  "note": "from the air, with the paths shown: what is ridden and driven round the bridges"
+ },
+ {
+  "name": "air bay east span",
+  "group": "bridge",
+  "from": [
+   37.814365,
+   -122.3627445,
+   90
+  ],
+  "to": [
+   37.8163956,
+   -122.3561023,
+   50
+  ],
+  "query": "paths=1",
+  "note": "from the air, with the paths shown: what is ridden and driven round the bridges"
+ },
+ {
+  "name": "air bay deck mid",
+  "group": "bridge",
+  "from": [
+   37.7946265,
+   -122.3798617,
+   110
+  ],
+  "to": [
+   37.79738,
+   -122.3787,
+   70
+  ],
+  "query": "paths=1",
+  "note": "from the air, with the paths shown: what is ridden and driven round the bridges"
+ },
+ {
+  "name": "join ggb south end",
+  "group": "bridge",
+  "from": [
+   37.8078381,
+   -122.4763735,
+   75
+  ],
+  "to": [
+   37.8086874,
+   -122.4771003,
+   52
+  ],
+  "query": "paths=1",
+  "note": "where the ways leave a bridge model's own roadway: is there something under every path?"
+ },
+ {
+  "name": "join ggb south tower",
+  "group": "bridge",
+  "from": [
+   37.8131077,
+   -122.4771014,
+   110
+  ],
+  "to": [
+   37.8136049,
+   -122.4777073,
+   72
+  ],
+  "query": "paths=1",
+  "note": "where the ways leave a bridge model's own roadway: is there something under every path?"
+ },
+ {
+  "name": "join ggb north tower",
+  "group": "bridge",
+  "from": [
+   37.8256311,
+   -122.4785602,
+   110
+  ],
+  "to": [
+   37.8250549,
+   -122.479041,
+   72
+  ],
+  "query": "paths=1",
+  "note": "where the ways leave a bridge model's own roadway: is there something under every path?"
+ },
+ {
+  "name": "join ggb north end",
+  "group": "bridge",
+  "from": [
+   37.8296565,
+   -122.479029,
+   75
+  ],
+  "to": [
+   37.8304976,
+   -122.479869,
+   45
+  ],
+  "query": "paths=1",
+  "note": "where the ways leave a bridge model's own roadway: is there something under every path?"
+ },
+ {
+  "name": "join ggb north curve",
+  "group": "bridge",
+  "from": [
+   37.8312502,
+   -122.479443,
+   70
+  ],
+  "to": [
+   37.8319936,
+   -122.4803858,
+   30
+  ],
+  "query": "paths=1",
+  "note": "where the ways leave a bridge model's own roadway: is there something under every path?"
+ },
+ {
+  "name": "join bay sf upper",
+  "group": "bridge",
+  "from": [
+   37.7861393,
+   -122.3896953,
+   85
+  ],
+  "to": [
+   37.7859062,
+   -122.3911065,
+   48
+  ],
+  "query": "paths=1",
+  "note": "where the ways leave a bridge model's own roadway: is there something under every path?"
+ },
+ {
+  "name": "join bay sf lower",
+  "group": "bridge",
+  "from": [
+   37.7868146,
+   -122.391057,
+   55
+  ],
+  "to": [
+   37.7858203,
+   -122.3911539,
+   25
+  ],
+  "query": "paths=1",
+  "note": "where the ways leave a bridge model's own roadway: is there something under every path?"
+ },
+ {
+  "name": "join bay sf landing",
+  "group": "bridge",
+  "from": [
+   37.7853745,
+   -122.3906633,
+   60
+  ],
+  "to": [
+   37.7852216,
+   -122.3920184,
+   8
+  ],
+  "query": "paths=1",
+  "note": "where the ways leave a bridge model's own roadway: is there something under every path?"
+ },
+ {
+  "name": "join bay ybi west",
+  "group": "bridge",
+  "from": [
+   37.8072597,
+   -122.3670774,
+   80
+  ],
+  "to": [
+   37.8083516,
+   -122.3669504,
+   45
+  ],
+  "query": "paths=1",
+  "note": "where the ways leave a bridge model's own roadway: is there something under every path?"
+ },
+ {
+  "name": "join bay ybi portal",
+  "group": "bridge",
+  "from": [
+   37.8080614,
+   -122.3665166,
+   50
+  ],
+  "to": [
+   37.8089687,
+   -122.3662895,
+   14
+  ],
+  "query": "paths=1",
+  "note": "where the ways leave a bridge model's own roadway: is there something under every path?"
+ },
+ {
+  "name": "join bay ybi east",
+  "group": "bridge",
+  "from": [
+   37.810414,
+   -122.3636994,
+   40
+  ],
+  "to": [
+   37.8102716,
+   -122.3648943,
+   6
+  ],
+  "query": "paths=1",
+  "note": "where the ways leave a bridge model's own roadway: is there something under every path?"
+ },
+ {
+  "name": "join bay east span start",
+  "group": "bridge",
+  "from": [
+   37.8124713,
+   -122.3634322,
+   60
+  ],
+  "to": [
+   37.8141749,
+   -122.3598207,
+   40
+  ],
+  "query": "paths=1",
+  "note": "where the ways leave a bridge model's own roadway: is there something under every path?"
+ },
+ {
+  "name": "hill a N",
+  "group": "hills",
+  "from": [
+   37.835785,
+   -122.484543,
+   2.5
+  ],
+  "to": [
+   37.837582,
+   -122.484543,
+   2
+  ],
+  "note": "BUGS #240: cars/roads seen through hills in Sausalito / Marin"
+ },
+ {
+  "name": "hill a E",
+  "group": "hills",
+  "from": [
+   37.835785,
+   -122.484543,
+   2.5
+  ],
+  "to": [
+   37.835785,
+   -122.482268,
+   2
+  ],
+  "note": "BUGS #240: cars/roads seen through hills in Sausalito / Marin"
+ },
+ {
+  "name": "hill a S",
+  "group": "hills",
+  "from": [
+   37.835785,
+   -122.484543,
+   2.5
+  ],
+  "to": [
+   37.833988,
+   -122.484543,
+   2
+  ],
+  "note": "BUGS #240: cars/roads seen through hills in Sausalito / Marin"
+ },
+ {
+  "name": "hill a W",
+  "group": "hills",
+  "from": [
+   37.835785,
+   -122.484543,
+   2.5
+  ],
+  "to": [
+   37.835785,
+   -122.486818,
+   2
+  ],
+  "note": "BUGS #240: cars/roads seen through hills in Sausalito / Marin"
+ },
+ {
+  "name": "hill b N",
+  "group": "hills",
+  "from": [
+   37.836149,
+   -122.483694,
+   2.5
+  ],
+  "to": [
+   37.837946,
+   -122.483694,
+   2
+  ],
+  "note": "BUGS #240: cars/roads seen through hills in Sausalito / Marin"
+ },
+ {
+  "name": "hill b E",
+  "group": "hills",
+  "from": [
+   37.836149,
+   -122.483694,
+   2.5
+  ],
+  "to": [
+   37.836149,
+   -122.481419,
+   2
+  ],
+  "note": "BUGS #240: cars/roads seen through hills in Sausalito / Marin"
+ },
+ {
+  "name": "hill b S",
+  "group": "hills",
+  "from": [
+   37.836149,
+   -122.483694,
+   2.5
+  ],
+  "to": [
+   37.834352,
+   -122.483694,
+   2
+  ],
+  "note": "BUGS #240: cars/roads seen through hills in Sausalito / Marin"
+ },
+ {
+  "name": "hill b W",
+  "group": "hills",
+  "from": [
+   37.836149,
+   -122.483694,
+   2.5
+  ],
+  "to": [
+   37.836149,
+   -122.485969,
+   2
+  ],
+  "note": "BUGS #240: cars/roads seen through hills in Sausalito / Marin"
+ },
+ {
+  "name": "hill c N",
+  "group": "hills",
+  "from": [
+   37.845679,
+   -122.482597,
+   2.5
+  ],
+  "to": [
+   37.847476,
+   -122.482597,
+   2
+  ],
+  "note": "BUGS #240: cars/roads seen through hills in Sausalito / Marin"
+ },
+ {
+  "name": "hill c E",
+  "group": "hills",
+  "from": [
+   37.845679,
+   -122.482597,
+   2.5
+  ],
+  "to": [
+   37.845679,
+   -122.480322,
+   2
+  ],
+  "note": "BUGS #240: cars/roads seen through hills in Sausalito / Marin"
+ },
+ {
+  "name": "hill c S",
+  "group": "hills",
+  "from": [
+   37.845679,
+   -122.482597,
+   2.5
+  ],
+  "to": [
+   37.843882,
+   -122.482597,
+   2
+  ],
+  "note": "BUGS #240: cars/roads seen through hills in Sausalito / Marin"
+ },
+ {
+  "name": "hill c W",
+  "group": "hills",
+  "from": [
+   37.845679,
+   -122.482597,
+   2.5
+  ],
+  "to": [
+   37.845679,
+   -122.484872,
+   2
+  ],
+  "note": "BUGS #240: cars/roads seen through hills in Sausalito / Marin"
+ },
+ {
+  "name": "hill ybi N",
+  "group": "hills",
+  "from": [
+   37.8095,
+   -122.3655,
+   2.5
+  ],
+  "to": [
+   37.811746,
+   -122.3655,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill ybi E",
+  "group": "hills",
+  "from": [
+   37.8095,
+   -122.3655,
+   2.5
+  ],
+  "to": [
+   37.8095,
+   -122.362657,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill ybi S",
+  "group": "hills",
+  "from": [
+   37.8095,
+   -122.3655,
+   2.5
+  ],
+  "to": [
+   37.807254,
+   -122.3655,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill ybi W",
+  "group": "hills",
+  "from": [
+   37.8095,
+   -122.3655,
+   2.5
+  ],
+  "to": [
+   37.8095,
+   -122.368343,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill sausalito N",
+  "group": "hills",
+  "from": [
+   37.853,
+   -122.481,
+   2.5
+  ],
+  "to": [
+   37.855246,
+   -122.481,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill sausalito E",
+  "group": "hills",
+  "from": [
+   37.853,
+   -122.481,
+   2.5
+  ],
+  "to": [
+   37.853,
+   -122.478156,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill sausalito S",
+  "group": "hills",
+  "from": [
+   37.853,
+   -122.481,
+   2.5
+  ],
+  "to": [
+   37.850754,
+   -122.481,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill sausalito W",
+  "group": "hills",
+  "from": [
+   37.853,
+   -122.481,
+   2.5
+  ],
+  "to": [
+   37.853,
+   -122.483844,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill conzelman N",
+  "group": "hills",
+  "from": [
+   37.831,
+   -122.483,
+   2.5
+  ],
+  "to": [
+   37.833246,
+   -122.483,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill conzelman E",
+  "group": "hills",
+  "from": [
+   37.831,
+   -122.483,
+   2.5
+  ],
+  "to": [
+   37.831,
+   -122.480157,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill conzelman S",
+  "group": "hills",
+  "from": [
+   37.831,
+   -122.483,
+   2.5
+  ],
+  "to": [
+   37.828754,
+   -122.483,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill conzelman W",
+  "group": "hills",
+  "from": [
+   37.831,
+   -122.483,
+   2.5
+  ],
+  "to": [
+   37.831,
+   -122.485843,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill twin peaks N",
+  "group": "hills",
+  "from": [
+   37.753,
+   -122.446,
+   2.5
+  ],
+  "to": [
+   37.755246,
+   -122.446,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill twin peaks E",
+  "group": "hills",
+  "from": [
+   37.753,
+   -122.446,
+   2.5
+  ],
+  "to": [
+   37.753,
+   -122.44316,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill twin peaks S",
+  "group": "hills",
+  "from": [
+   37.753,
+   -122.446,
+   2.5
+  ],
+  "to": [
+   37.750754,
+   -122.446,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill twin peaks W",
+  "group": "hills",
+  "from": [
+   37.753,
+   -122.446,
+   2.5
+  ],
+  "to": [
+   37.753,
+   -122.44884,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill sausalito upper N",
+  "group": "hills",
+  "from": [
+   37.856,
+   -122.486,
+   2.5
+  ],
+  "to": [
+   37.858246,
+   -122.486,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill sausalito upper E",
+  "group": "hills",
+  "from": [
+   37.856,
+   -122.486,
+   2.5
+  ],
+  "to": [
+   37.856,
+   -122.483156,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill sausalito upper S",
+  "group": "hills",
+  "from": [
+   37.856,
+   -122.486,
+   2.5
+  ],
+  "to": [
+   37.853754,
+   -122.486,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill sausalito upper W",
+  "group": "hills",
+  "from": [
+   37.856,
+   -122.486,
+   2.5
+  ],
+  "to": [
+   37.856,
+   -122.488844,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill ybi north N",
+  "group": "hills",
+  "from": [
+   37.8135,
+   -122.364,
+   2.5
+  ],
+  "to": [
+   37.815746,
+   -122.364,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill ybi north E",
+  "group": "hills",
+  "from": [
+   37.8135,
+   -122.364,
+   2.5
+  ],
+  "to": [
+   37.8135,
+   -122.361157,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill ybi north S",
+  "group": "hills",
+  "from": [
+   37.8135,
+   -122.364,
+   2.5
+  ],
+  "to": [
+   37.811254,
+   -122.364,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "hill ybi north W",
+  "group": "hills",
+  "from": [
+   37.8135,
+   -122.364,
+   2.5
+  ],
+  "to": [
+   37.8135,
+   -122.366843,
+   2
+  ],
+  "note": "BUGS #240: things seen through hills"
+ }
 ]

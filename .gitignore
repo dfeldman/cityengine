@@ -45,3 +45,6 @@ docs/review/
 
 __pycache__/
 *.pyc
+
+# tools/lidar python environment (uv venv --python 3.12 tools/lidar/.venv; see docs/LIDAR.md)
+tools/lidar/.venv/

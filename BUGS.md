@@ -9943,7 +9943,230 @@ garage ramp). And the tunnel itself is now a street tunnel you ride through — 
 ### #237 The Chinatown Public Health Center stands across Broadway in front of the Broadway Tunnel's east mouth
 
 **Found 2026-09-29** while shooting the tunnel portals (`views/san-francisco.json`, "portal Broadway-60888-A"):
-the landmark model `Chinatown Public Health Center` (picked at about (63, 475) in the code frame) stands on the
-carriageway of Broadway right in front of the east portal, hiding it — a rider rides into the building's face. The
-real building is beside the tunnel approach, not over the road. Needs its placement (or footprint) checked against
-the street. Not investigated yet.
+the landmark model `Chinatown Public Health Center` stood on the carriageway of Broadway right in front of the
+east portal, hiding it.
+
+**Fixed 2026-09-29.** The real building stands OVER the tunnel's east mouth, so it is the portal: the generic
+landmark is suppressed (`public/patches/san-francisco.json`, `b206652621`) and `broadwayEast`
+(`src/render/landmarks/sf/tunnels.ts`) builds the block over the arched face.
+
+### #238 The bridges are ridden on their models (closes #217, #218)
+
+**The owner, 2026-09-29:** *"get the Bay Bridge and Golden Gate bridge fully working. This is extremely tricky and
+we spent a lot of time on it in a previous session, with little to show from it. The paths all need to line up to
+bike over the bridge models, which are not exactly the same shape as the data from OSM."*
+
+**What was wrong, measured** (`tools/bridge-fit.ts`, `tools/bridge-chain.ts`): the bake gives a bridge a hump a few
+metres over the water, and the models stand 50–70 m up. On the Golden Gate the ride was 21 m above the deck with a
+29% cliff at the San Francisco end (and the model had been sunk 18 m into the sea to hide some of it); the Bay Bridge
+had no ridden deck at all, its upper roadway came in BELOW its lower one on Rincon Hill, and both dead-ended at the
+Yerba Buena tunnel.
+
+**Fixed 2026-09-30** — README "The bridges you ride". The model is the truth: each declares its decks, the bake puts
+the ways on them and regrades what hangs off them. Measured after: every way on a deck within 0.00 m of it, both
+bridges; steepest regraded approach 5.1%; ridden end to end by probe both ways on each (`scratchpad/bridge.mjs`).
+
+Found and fixed on the way:
+- `mergeParallel` made the Bay Bridge's two roadways (4 m apart in plan, 9.5 m in height) ONE two-way road down the
+  lower deck: a pair one over the other is not a pair.
+- A bike rode a one-way freeway either way; the route west took the eastbound deck. Never against a one-way
+  freeway now, and a one-way freeway that leads nowhere is not ridden.
+- The generic deck stood wall piers across the roadway under it, drew 9 m-high ramps as embankments (stone fins
+  through the decks below), and gave freeways 3.8 m pavements.
+- A way whose MIDDLE is inside a model's footprint is drawn by nothing but the model (`coverRaised`): the Bay
+  Bridge's two long ways run 150 m past the span each end, so the near model draws its roadways that far.
+- The Golden Gate's roadway was drawn in level 61 m boxes: a 1.7 m stair on its 2.9% south side span
+  (`slopedSlab`).
+
+**Left:** the east span has no model (a deck and the generic viaduct); the Golden Gate's south abutment passes
+1.4 m over the path under it (`bridge-fit --chain` lists it); the skyway west of 5th Street keeps the bake's
+heights, which touch the ground where OSM changes its layer.
+
+### #239 Paths through the air at both bridges; no car could get onto the Bay Bridge's upper deck
+
+**Reported by the owner, 2026-09-30,** after #238: *"GG bridge and Bay Bridge both have many paths that go through
+the air. On Bay Bridge, the car entrances don't actually connect (but you can bike on the bridge)."* And the goal:
+*"the rider should have a simple way to get on and off both bridges in both directions without having to fly
+through the air. We can look for paths that fly through the air (which are usually errors)."*
+
+**What they were** (the ride graph's HEIGHTS were right — every probe ride arrived — it was what is DRAWN under
+the ways that was missing, which a ride along one route does not show):
+- A way a bridge model "takes" is drawn by nothing else, whole — and the models draw a straight slab. Wherever such
+  a way ran off the slab it was in the air: the Golden Gate's sidewalks round each tower (3.5 m out, through the
+  tower's leg), all four ways over the last 100 m at the south end and 30 m at the north, where they swing off the
+  axis. Pinning ways within 3 m of a declared deck's edge made it worse: on the deck by the numbers, beside it by
+  the eye.
+- The Golden Gate model ran straight on 100 m past where the road curves away: an empty truss beside the road.
+- `linkCarriageways` joined a split road's two halves every 100 m — across the gap between two viaducts, and
+  between the Bay Bridge's two roadways 10 m one over the other east of the tunnel.
+- The only car way onto the upper deck from Yerba Buena is two `motorway_link`s the bake made 3 m wide; `drives`
+  wants 4.2 m. From the San Francisco side the lower deck was reachable; the upper could be reached from 9 nodes.
+
+**Fixed 2026-09-30.** `DeckDecl.model` says what the model really draws; a taken way is drawn outside that
+(`outsideCovers`); a bulge is brought in (`snap`); the Golden Gate's steel and deck end where the straight does; no
+invented link across a freeway or between levels; a freeway ramp is always drivable, and is baked 5.8 m wide.
+`tools/air-paths.ts` is the detector — README "The bridges you ride". After: 0 stretches in the air on either
+bridge (4 within 2.3 km of the Golden Gate, all at the Alexander Avenue interchange in Marin, 1–3.5 m).
+
+**Not done:** hand-authored paths. The owner suggested redoing the paths round both bridges by hand; with the
+detector clean and the four approaches looked at from the air (`views/san-francisco.json`, "join …") it did not
+come to that — but the Bay Bridge's San Francisco approach is still OSM's interchange drawn as generic viaducts,
+and is the place it would pay.
+
+**Then done anyway, in the owner's way (2026-09-30/10-01):** the Bay Bridge Bikeway — see #241.
+
+### #240 Through the hills in Sausalito and on Yerba Buena: cars and roads seen through the ground
+
+**Reported by the owner, 2026-09-30,** with screenshots at 37.835785 −122.484543, 37.836149 −122.483694 and
+37.845679 −122.482597 (Sausalito; Yerba Buena Island too): *"occlusion not really working and seeing cars and
+roads right through hills"*. Their hypotheses, both plausible: steep hills (which only these areas have) are
+rendered badly — the screenshots show stepped levelled road corridors with retaining walls standing up off the
+slope and road slabs at different heights — and the depth occluder works poorly near the edge of the box (both
+places are near it); the data may be worse out there too.
+
+**Found and fixed 2026-10-01: the occluder was built from different ground than is drawn.** Buildings, roads and
+cars draw in rendering groups that clear depth, so only the depth-only ground occluder hides them behind a hill —
+and it was built once, from the index's COARSE 20 m grid. Near the rider the ground drawn is each tile's FINE
+block (4 m in the zones; Marin and Yerba Buena are zones). On these slopes the two part by metres: within 200 m
+of the reported points the fine ground stood up to 3.8 m above the coarse grid (a crest the 20 m chord cuts
+under — with the occluder 0.6 m below that again, whatever was behind the crest drew through the hill) and up to
+5.2 m below it (a hollow, where the occluder stood above the drawn ground and hid road that should show). Point c
+is coarse itself but beside fine tiles. The box edge was not the cause.
+
+Now the occluder follows the ground (render/city.ts `groundOccluder` → `GroundOccluder`): a chunk holding tiles
+with fine ground is rebuilt from it at its own resolution once its tiles stop arriving (Terrain `onTile`, fired
+by `addTile`/`dropTile`), and from the coarse grid again when they are dropped. Measured: ~8 ms a chunk (worst
+18 ms), ~35 chunks over the initial load. `?without=fineocc` keeps it coarse for comparison; the `hills` views
+(views/san-francisco.json: the three reported points and six more hillsides, four ways each) rendered both ways
+show road and walls behind crests gone, and road wrongly hidden in hollows back. `window.__occluderStats()`.
+
+**Not changed: the tall walls.** A street is levelled to the HIGHEST ground across its corridor (city/grade.ts,
+baked), so on a steep side-slope its downhill edge stands on a vertical retaining wall several metres tall. The
+better shape is an embankment — graded ground falling away from the road edge at about 1:1 into the slope —
+but the bake levels building feet by the same rule (MAP-FORMAT rule 3), so it is a bake-wide change, left for a
+decision.
+
+### #241 The Bay Bridge Bikeway: a way onto the west span by bike, auto-routed both ways (DONE 2026-10-01)
+
+**The owner, 2026-09-30:** *"I'm leaning toward adding a nonexistent bikes-only entrance to the decks of the
+bridge, because it genuinely is fun to bike on a virtual freeway, and I think it would be neat to have destinations
+on YB island and Treasure Island"*; *"cut off all the overpasses and on-ramps from the ride network EXCEPT the ones
+we want cyclists to actually use"*; and *"MOST users will use auto-routing … so we want to make these new paths part
+of the route network, and also cut off the broken car-only paths."*
+
+**What was built** (full notes: docs/BRIDGES.md):
+- `BAY_BIKEWAY` (src/city/sf/bridges.ts): hand-authored ways in the Bay Bridge model's frame — a boardwalk from
+  The Embarcadero at Harrison St, a helix up to the lower deck, on up to the upper, and a level spur onto each deck.
+  The bake adds them to the OSM ways (`authoredWays`, tools/deck-conform.ts) with their own heights; the model
+  draws them (`bikeway()` in render/landmarks/sf/bay-bridge.ts).
+- The freeways are out of the ride network except what is `ridden`: the Bay decks and the real Yerba Buena ramps
+  named in `BAY_RIDDEN_RAMPS`.
+- `?route=auto` (the default): each accepted delivery stop is routed and the navigator takes the turns.
+- Cross-bay jobs (`BAY_CROSSINGS`): now and then near the Bikeway's foot, a drop-off on Treasure Island or Yerba
+  Buena; and back.
+
+**Bugs found on the way and fixed:**
+- The helix ridden at y 0: the bake densifies a way's points and the authored heights were per node. Now each
+  point is matched to the authored line it lies on (`_y` as [x, z, y]); air-paths reports a ride edge with no heights.
+- No node to join on the deck: OSM maps each span with three nodes; one is put into the way at the join.
+- An auto-routed loop on Yerba Buena: Old Macalla Road and Macalla Road leave the same node within 20°, the
+  junction's de-duplicated exits offered only one, and the navigator could not take the planned one. The
+  navigator (sim/navigate.ts) and the game's route-follow fall back to the node's raw exits.
+- The Transbay bus deck was laid on the ground by the short-structure rule; busways are not structure.
+
+**Verified 2026-10-01** by auto-routed rides on the final bake: The Embarcadero → helix → lower deck → Yerba Buena →
+Macalla Road → Treasure Island, arrived; and Treasure Island → Macalla on-ramp → upper deck → helix down →
+Harrison Street, arrived. air-paths: nothing on either bridge (13 short stretches elsewhere in the city, the
+nearest an 11 m piece of the Bay Bridge Trail at 37.810868 −122.363544, 2.5 m off its way).
+
+
+### #242 Crashes while loading on a real iPhone: ~2–3 GB where a Safari tab gets ~1 GB (phone tier, 2026-10-01)
+
+**The owner, 2026-10-01:** *"the entire app actually works fine in the Xcode iOS simulator, which does not enforce any
+memory limits. On real iphone, it crashes during load — I'm sure exceeding the 1GB limit per tab."*
+
+**Measured** (scratch `mem.mjs`: Chromium at an iPhone's 390×844 @3x, every byte handed to WebGL tallied by wrapping
+the GL calls, the heap after a forced GC once tiles stop arriving; Babylon's own geometry and texture records for
+the breakdown, a heap snapshot's retainers for the heap). Before: **JS heap 841 MB settled and ~1.05 GB at the
+first frame; GPU buffers 1 265 MB; GPU textures 909 MB**; canvas 1170×2532.
+
+Where it went, and what was done:
+- **The ground occluder: 326 MB** of vertex buffers for a depth-only, unlit mesh carrying normals, uvs and colours,
+  four vertices a quad, and every chunk's builder open at once as JS number arrays (most of the +730 MB the heap
+  grew by while the City was built). Now positions and indices only, corners shared, built and uploaded chunk by
+  chunk: **41 MB**, same cells, heights and winding (its SHAPE is #169's and #240's, untouched).
+- **The distant ground: 198 MB**, one 3.8 M-vertex mesh drawn whole every frame. Now 800 m chunks (culled) with
+  shared vertices and world-metre uvs: **57 MB**. These two are for every device; the first-frame heap fell from
+  ~1 050 MB to ~550 MB with them (~380 MB on the phone tier below).
+- **A phone tier** (src/tier.ts; guessed from the user agent — iPhone, iPad, Android — `?tier=phone|desktop`
+  overrides): the built ring 1 tile and massing 5 (desktop 3 and 6; `?rings=v,m` to try others), the canvas at
+  1.5x at most, no SSAO, the sign pages at half resolution (render/signs.ts `setTextScale`: 290 MB → ~70 MB),
+  the trees', plants', palms' and avatars' images uploaded at 512 at most (render/texture-cap.ts), 4 avatar bodies
+  not 10, landmarks without CPU copies of their vertices (only picking reads them), and no context-loss copies —
+  Babylon kept every glTF image's PNG bytes and every morph target's raw data to rebuild a lost context (a lost
+  context now reloads the page).
+
+After, phone tier, same start: **JS heap 486 MB (peak 540), GPU buffers 411 MB, textures 341 MB.** Desktop (same
+viewport): heap 633, buffers 840, textures 909.
+
+**Not verified on a device** — Chromium's numbers are not Safari's, and which of these iOS counts against the tab
+(WebGL lives in Safari's GPU process) is not known here. `?mem=1` puts the tier, canvas and GPU estimate in a
+corner on the phone; Safari on a Mac → Develop → the iPhone → Timelines → Memory gives the real footprint.
+Next if it still dies: the building geometry (~200 MB of the buffers; colours could be bytes, not floats), the
+JS heap's global part (the index, the ride graphs, terrain — most of the 486 MB does not shrink with the rings),
+and the dev server itself (46 MB of module source in the heap; a production build would not carry it).
+
+**2026-10-01, later: a governor, and what it showed.** Safari gives a page no memory numbers, so the phone tier
+now ESTIMATES its footprint every 5 s (game.ts; model in src/tier.ts): JS heap = 386 MB base + 0.65 MB per tile
+held (measured: rings 1,3 held 99 tiles at 450 MB, rings 1,6 255 tiles at 551 MB), plus Babylon's own record of
+every GPU buffer and texture (render/heap.ts `gpuMB`). Over `memoryBudget` (1000 MB; `?budget=`) it pulls the
+massing ring in by one, down to 3, and the next `wantTiles` drops what is beyond; with room for another ring it
+grows back. `window.__governor()`. Measured with `?budget=900`: ring 5 → 4 → 3, 110 tiles held.
+
+What it showed: **the ring is not where the memory is.** At the smallest ring the estimate is still ~1.2 GB by
+Chromium's accounting — heap 487 MB (46 of it the dev server's module source), GPU buffers 396, textures 325 — so
+the governor keeps tile memory from growing as the rider travels, but cannot get a phone under 1 GB by itself.
+The fixed costs are next: the base heap (index, ride graphs — the binary format the owner has in mind is the
+real answer), the textures (facade atlas now 2048² on phones; signs 95 MB at half resolution; the avatars' skins
+and morph targets ~85 MB; the avatars' subsurface pre-pass 26 MB), and whether iOS even counts WebGL against the
+tab (Safari runs WebGL in its GPU process). Measure on the device: `?mem=1`, Safari Web Inspector → Timelines.
+
+### #243 iOS Safari: 384 MB a tab — the ultra tier (2026-10-01)
+
+**The owner:** *"We need an ultra-low-memory mode for iOS, this will likely require making substantial sacrifices like
+removing plants and scaling down building map tiles, iOS Safari only supports up to 384 MB."*
+
+**`ultra` (src/tier.ts), now the tier for every iPhone and iPad** (`?tier=` overrides):
+- No plants, no street trees, no crowd, no street furniture, no signs, fountains, courts, rain or colour grade
+  (`without`). The cars stay (carkit), the rider stays.
+- Buildings in full on the rider's OWN tile only (`view: 0`); simple massing two tiles out (`mid: 2`), one when the
+  governor says so.
+- The canvas at 1x; sign pages at 0.35; vegetation and avatar images at 256 px; the facade atlas at 1024.
+- The distant ground and the coarse occluder on a 40 m grid (`groundStride: 2`, render/city.ts `setGroundStride`;
+  both from the same decimated grid, so they agree; near the rider the occluder is rebuilt from the fine ground).
+- The governor's budget 380 MB, with a heap base of 150 MB measured for this tier.
+
+**Found on the way, for every tier:**
+- **Babylon's vertex cache.** `refreshBoundingInfo` keeps every vertex of a mesh as a `Vector3` (`_positions`),
+  for picking and collisions — 860 000 Vector3s and 2.6 million boxed numbers, ~60 MB of a 250 MB heap. Ours now
+  pass `updatePositionsArray: false`, and game.ts drops any left (Babylon's own thin-instance refreshes) every 5 s.
+- **A black rider without trees.** The avatar is PBR, lit only by lights the vegetation and the crowd made; with
+  both off nothing lit it. game.ts makes both sets of lights at the start (`foliageLights`, `peopleLights`).
+- **Production builds broke carkit's shaders** (and duplicated Babylon): a linked kit's `@babylonjs/core` import
+  resolves to the kit's own copy in a Rollup build, so carkit registered its shader with a Babylon the engine never
+  asks, and the engine fetched it by URL — index.html. Verified fixed with `resolve.dedupe: ['@babylonjs/core',
+  '@babylonjs/loaders']` (a scratch config; the build then takes 40 s, not 79 s). Now in vite.config.ts (owner's go-ahead, 2026-10-01).
+  `npm run build` also fails on pre-existing type errors in src/render/landmarks/sf/experiments/e14.ts and
+  districts/batteries.ts (not new).
+
+**Measured** (Chromium at 390×844, the GL calls tallied, heap after a forced GC once tiles settle):
+
+| | JS heap | GPU buffers | GPU textures |
+|---|---|---|---|
+| phone tier (dev server) | 487 MB | 396 | 325 |
+| ultra (dev server) | 213 | 133 | 51 |
+| ultra (production build) | 170 settled, ~115 live between tiles, ~210 live peak | 117 | 51 |
+
+So ultra is ~340 MB settled on a production build by Chromium's accounting, GPU included. Tight, not roomy: the
+transient garbage while tiles arrive is the risk, and a phone should load the PRODUCTION build (the dev server's
+module source alone is ~50 MB of heap). Not verified on a device.

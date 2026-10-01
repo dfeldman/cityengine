@@ -3,7 +3,7 @@
  * intersections named "N<i> St & E<j> Ave".
  */
 import { describe, expect, it } from 'vitest'
-import { DEFAULTS, Delivery, distanceToRing, type DeliveryWorld } from '../src/game/delivery.ts'
+import { DEFAULTS, Delivery, distanceToRing, type DeliveryWorld, type Source } from '../src/game/delivery.ts'
 
 const sq = (cx: number, cz: number, h: number): number[] => [cx - h, cz - h, cx + h, cz - h, cx + h, cz + h, cx - h, cz + h]
 
@@ -94,5 +94,83 @@ describe('the delivery game', () => {
     expect(tick(g, DEFAULTS.firstOffer + 1, { x: 0, z: 0 }).some((e) => e.kind === 'offer')).toBe(false)
     const ok = new Delivery({ ...w, streetDistance: () => 8 }, {}, 5)
     expect(tick(ok, DEFAULTS.firstOffer + 1, { x: 0, z: 0 }).some((e) => e.kind === 'offer')).toBe(true)
+  })
+
+  it('offers a long job across to a far place, and pins it to a building once one is in', () => {
+    const world = town()
+    // the far place's buildings are not loaded at first
+    let loaded = false
+    const far = { name: 'The Island', x: 5000, z: 0 }
+    const w: DeliveryWorld = { ...world, buildingsNear: (x, z, r) => (x > 4000 ? (loaded ? [{ id: 999, ring: sq(5010, 10, 15) }] : []) : world.buildingsNear(x, z, r)) }
+    const g = new Delivery(w, { crossings: [{ name: 'across', from: { x: 0, z: 0, r: 500 }, places: [far], chance: 1 }] }, 7)
+    const offer = tick(g, DEFAULTS.firstOffer + 1, { x: 0, z: 0 }).find((e) => e.kind === 'offer')!
+    expect(offer.job.dropoff.label).toBe('The Island')
+    expect(offer.job.dropoff.far).toBe(true)
+    expect(offer.job.metres).toBeGreaterThan(4500)
+    g.accept()
+    const p = offer.job.pickup
+    tick(g, 1, { x: p.x, z: p.z })
+    expect(g.phase).toBe('toDropoff')
+    loaded = true
+    const moved = tick(g, 1, { x: 1000, z: 0 }).find((e) => e.kind === 'stopMoved')
+    expect(moved!.job.dropoff.buildingId).toBe(999)
+    expect(moved!.job.dropoff.label).toBe('The Island')
+  })
+})
+
+describe('kitchens, dishes and levels (owner, 2026-10-01)', () => {
+  const kitchen = (over: Partial<Source> = {}): Source => ({
+    id: 'k', name: 'The Test Kitchen', kind: 'test', blurb: 'it is a test', x: 230, z: 330,
+    items: [{ name: 'ice cream', emoji: '🍦', blurb: 'melts', fragile: true }], ...over,
+  })
+  const at = { x: 200, z: 300 }
+
+  it('picks up at the kitchen, by its name, with a dish from its menu', () => {
+    const g = new Delivery(town(), { sources: [kitchen()] }, 4)
+    const offer = tick(g, DEFAULTS.firstOffer + 1, at).find((e) => e.kind === 'offer')
+    expect(offer).toBeTruthy()
+    const job = offer!.job
+    expect(job.source?.id).toBe('k')
+    expect(job.item?.emoji).toBe('🍦')
+    expect(job.pickup.label).toBe('The Test Kitchen')
+    expect(Math.hypot(job.pickup.x - 230, job.pickup.z - 330)).toBeLessThan(60)
+  })
+
+  it('sends the drop-off as far as the level allows, and no further', () => {
+    for (const level of [1, 3]) {
+      for (let seed = 1; seed < 12; seed++) {
+        const g = new Delivery(town(), { sources: [kitchen()] }, seed)
+        g.level = level
+        const job = tick(g, DEFAULTS.firstOffer + 1, at).find((e) => e.kind === 'offer')!.job
+        const d = Math.hypot(job.dropoff.x - job.source!.x, job.dropoff.z - job.source!.z)
+        expect(d).toBeLessThanOrEqual(DEFAULTS.levels[level - 1] + 30)
+        expect(d).toBeGreaterThanOrEqual(DEFAULTS.levels[level - 1] / 3 - 30)
+      }
+    }
+  })
+
+  it('a collision spoils a fragile dish once it is picked up — not before, and not a sturdy one', () => {
+    const g = new Delivery(town(), { sources: [kitchen()] }, 4)
+    const job = tick(g, DEFAULTS.firstOffer + 1, at).find((e) => e.kind === 'offer')!.job
+    g.accept()
+    expect(g.collided()).toEqual([])                    // on the way to the kitchen: nothing to spill
+    tick(g, 1, { x: job.pickup.x, z: job.pickup.z })
+    expect(g.phase).toBe('toDropoff')
+    expect(g.collided().map((e) => e.kind)).toEqual(['spoiled'])
+    expect(g.phase).toBe('idle')
+
+    const sturdy = new Delivery(town(), { sources: [kitchen({ items: [{ name: 'bagel', emoji: '🥯', blurb: 'sturdy' }] })] }, 4)
+    const j2 = tick(sturdy, DEFAULTS.firstOffer + 1, at).find((e) => e.kind === 'offer')!.job
+    sturdy.accept()
+    tick(sturdy, 1, { x: j2.pickup.x, z: j2.pickup.z })
+    expect(sturdy.collided()).toEqual([])
+    expect(sturdy.phase).toBe('toDropoff')
+  })
+
+  it('without a kitchen in reach, the old building-to-building job', () => {
+    const g = new Delivery(town(), { sources: [kitchen({ x: 9000, z: 9000 })] }, 4)
+    const job = tick(g, DEFAULTS.firstOffer + 1, at).find((e) => e.kind === 'offer')!.job
+    expect(job.source).toBeUndefined()
+    expect(job.pickup.label).toMatch(/St & /)
   })
 })

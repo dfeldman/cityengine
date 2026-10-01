@@ -62,7 +62,8 @@ it (docs/OSM-DATA.md).
 
 High-resolution terrain (USGS 3DEP has 1 m over San Francisco) and, later, LIDAR-derived building shapes. The
 format reserves both: 1 m terrain steps per tile, and the `simple` building kind (several extruded polygons,
-facades and a roof colour). **Nothing uses LIDAR yet.**
+facades and a roof colour). **Nothing uses LIDAR yet.** Research on building shapes from the 2023 SF point cloud (method, numbers, the two format
+fields `simple` still needs, full-city cost): docs/LIDAR.md, tools in `tools/lidar/`.
 
 ## 6. Lower system requirements
 

@@ -70,7 +70,9 @@ function wall(out: MeshBuilder, f: Frame[], o: number, dy0: number, dy1: number,
     const at = (fr: Frame, dy: number, toGround: boolean): [number, number, number] => {
       const x = fr.x + fr.nx * o
       const z = fr.z + fr.nz * o
-      return [x, toGround && ground ? ground(x, z) - 0.3 : fr.y + dy, z]
+      // (down to the ground — never UP to it: on a hillside the ground on the uphill side of a ramp is above its
+      // edge, and the "wall" stood up from the road as a row of stone fins, the zigzag along every hillside ramp)
+      return [x, toGround && ground ? Math.min(ground(x, z) - 0.3, fr.y + dy1) : fr.y + dy, z]
     }
     const lo = ground !== undefined
     const quad: [number, number, number][] = [at(p, dy0, lo), at(q, dy0, lo), at(q, dy1, false), at(p, dy1, false)]
@@ -82,13 +84,28 @@ function wall(out: MeshBuilder, f: Frame[], o: number, dy0: number, dy1: number,
 /** Is this edge a structure rather than a painted surface? A bridge, or lifted clear of the ground. */
 export { isRaised }
 
-/** One raised edge as a deck. */
+const FREEWAY = new Set(['motorway', 'motorway_link'])
+
+/**
+ * A ramp that stands well clear of the ground is a viaduct, not an embankment: the freeway ramps on Yerba Buena and
+ * Rincon Hill are 9 m and more up, and drawn as embankments their retaining walls were stone fins down to the
+ * ground, through the roadways under them (2026-09-30). This far up anywhere along it, it is drawn as a bridge.
+ */
+const EMBANKMENT = 3.5
+function standsClear(f: Frame[], ground: (x: number, z: number) => number): boolean {
+  for (const fr of f) if (fr.y - ground(fr.x, fr.z) > EMBANKMENT) return true
+  return false
+}
+
+/** One raised edge as a deck. `under(x, z, r, y)`: does a road pass within r of (x, z), below y? (for the piers) */
 export function deck(out: MeshBuilder, e: PackedEdge, terrain: Terrain, walk = e.walk, drop = 0, structured = false,
-                     hedged = false): void {
+                     hedged = false, under?: (x: number, z: number, r: number, y: number) => boolean): void {
   const pts = unpackPoints(e.points)
   if (pts.length < 2 || !e.heights) return
   const f = frames(pts, e.heights)
   const road = e.foot ? 0 : e.width / 2
+  // (a freeway has a shoulder, not a pavement — whatever an older bake gave it)
+  if (FREEWAY.has(e.kind)) walk = 0
   const outer = e.foot ? e.width / 2 : e.width / 2 + Math.max(0.6, walk)
   const ground = (x: number, z: number): number => terrain.heightAt(x, z)
   // the running surfaces, a hair above the heights so the rider's wheels are on them
@@ -143,7 +160,7 @@ export function deck(out: MeshBuilder, e: PackedEdge, terrain: Terrain, walk = e
     }
     // down to the water, which lies `drop` below the ground the elevation data gives under the river
     archSpans(out, f, style, outer + 0.3, top, (x, z) => terrain.heightAt(x, z) - drop)
-  } else if (e.bridge) {
+  } else if (e.bridge || standsClear(f, ground)) {
     // the slab's fascia and soffit
     wall(out, f, -outer - 0.3, -0.9, top, STONE, -1)
     wall(out, f, outer + 0.3, -0.9, top, STONE, 1)
@@ -170,8 +187,23 @@ export function deck(out: MeshBuilder, e: PackedEdge, terrain: Terrain, walk = e
       const yBot = ground(x, z) - 1 - drop
       if (yTop - yBot < 1.2) continue
       const w = Math.max(1.2, (outer * 2) / 3) / 2
+      const heading = Math.atan2(p.nx, p.nz)
       // piers stand across the deck: long side along the deck's width
-      pier(out, x, z, yBot, yTop, 0.6, w, Math.atan2(p.nx, p.nz))
+      if (!under?.(x, z, w, yTop)) { pier(out, x, z, yBot, yTop, 0.6, w, heading); continue }
+      /*
+       * …unless a road runs under it there (a deck over a deck: the Bay Bridge's upper roadway on Rincon Hill and
+       * on Yerba Buena, whose wall piers stood across the lower one, 2026-09-30). Then a bent: a column under each
+       * edge of the deck, where THAT is clear, and a beam across under it.
+       */
+      let stood = 0
+      for (const side of [-1, 1]) {
+        const cx = x + p.nx * side * (outer - 0.4)
+        const cz = z + p.nz * side * (outer - 0.4)
+        if (under(cx, cz, 0.7, yTop)) continue
+        pier(out, cx, cz, ground(cx, cz) - 1 - drop, yTop, 0.7, 0.7, heading)
+        stood++
+      }
+      if (stood > 0) pier(out, x, z, yTop - 1.1, yTop, 0.7, outer, heading)
     }
   } else {
     // a ramp on an embankment: retaining walls from the deck edge down to the ground

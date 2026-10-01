@@ -120,7 +120,16 @@ export interface RiderNow {
   /** grade of the road under the rider, rise/run (negative downhill) */
   grade: number
   box: Box
+  /**
+   * The height of the road under the rider (optional). With it, a vehicle on another LEVEL — a street over a
+   * tunnel, a road under a bridge — is not in the rider's way, cannot be hit, and does not wait for them (the
+   * Broadway Tunnel, 2026-09-29: six "collisions" in one ride with cars on the streets 25 m overhead).
+   */
+  y?: number
 }
+
+/** vertical separation beyond which the rider and a vehicle are on different levels */
+const LEVELS = 3.5
 
 export interface Collision { vehicle: Vehicle; nodeId: number; at: Point }
 
@@ -249,7 +258,7 @@ export class Traffic {
       if ((v.still ?? 0) > 45 && this.hidden(v.at)) { this.vehicles.splice(i, 1); continue }
       // only a MOVING car hits the rider: riding into a standing one (or one squeezed past) is not a crash, and nor
       // is a car creeping at walking pace touching them (two such "crashes" in 100 s, measured, at 1–1.9 m/s)
-      if (who && v.inBox && !v.bumped && !v.passed && v.speed > 2 && overlap(who.box, this.boxOf(v))) {
+      if (who && v.inBox && !v.bumped && !v.passed && v.speed > 2 && !this.otherLevel(who, v) && overlap(who.box, this.boxOf(v))) {
         // the rider stops (game.ts); the vehicle drives on, and from now on the two ignore each other
         v.bumped = true
         hits.push({ vehicle: v, nodeId: v.inBox.nodeId, at: { ...v.at } })
@@ -280,7 +289,7 @@ export class Traffic {
     const margin = SIZE.bike.wid / 2 + 0.2
     const blocked: [number, number][] = []
     for (const v of this.vehicles) {
-      if (Math.hypot(v.at.x - rider.at.x, v.at.z - rider.at.z) > look + 14) continue
+      if (Math.hypot(v.at.x - rider.at.x, v.at.z - rider.at.z) > look + 14 || this.otherLevel(rider, v)) continue
       // standing traffic, and traffic crawling the rider's way (a jam creeping at walking pace holds nobody on a
       // bike); cross traffic that is moving is the rider's own judgement
       if (v.speed > 2 && (v.speed > CRAWL || Math.cos(v.heading - rider.heading) < 0.5)) continue
@@ -357,7 +366,7 @@ export class Traffic {
     for (const v of this.vehicles) {
       // …never by a vehicle that is itself waiting for the rider: a car and a rider face to face on a narrow street
       // each waited for the other for ever (owner, 2026-09-29)
-      if (v.bumped || v.passed || v.why === 'rider in lane' || Math.hypot(v.at.x - rider.at.x, v.at.z - rider.at.z) > 32) continue
+      if (v.bumped || v.passed || v.why === 'rider in lane' || Math.hypot(v.at.x - rider.at.x, v.at.z - rider.at.z) > 32 || this.otherLevel(rider, v)) continue
       // standing, or going the rider's way (a car ahead turning off still has to be cleared — the rider ran into
       // the back of one): CROSS traffic is left out on purpose, so running a red can still cost you
       if (v.speed > 1.5 && Math.cos(v.heading - rider.heading) < 0.5) continue
@@ -434,6 +443,20 @@ export class Traffic {
   }
   private readonly clusters = new Map<number, number>()
   private clusteredAt = -1
+
+  /** the height of the road under a vehicle: its street's own profile (every baked street has one), else unknown */
+  private levelOf(v: Vehicle): number | null {
+    if (v.y !== undefined) return v.y
+    const e = this.g.edges.get(v.edgeId)
+    return e?.heights?.length ? profileAt(e.points, e.heights, v.s).y : null
+  }
+
+  /** the rider and this vehicle are on different levels (a street over a tunnel, a road under a bridge) */
+  private otherLevel(rider: RiderNow, v: Vehicle): boolean {
+    if (rider.y === undefined) return false
+    const y = this.levelOf(v)
+    return y !== null && Math.abs(y - rider.y) > LEVELS
+  }
 
   /** how far `v` can move straight ahead (its own `box`) before touching `other`, up to `reach`; −1 if never */
   private sweep(v: Vehicle, box: Box, reach: number, other: Box): number {
@@ -635,14 +658,16 @@ export class Traffic {
     if (rider) {
       const nd = this.g.nodes.get(node)
       const cr = this.signals?.control(node).radius ?? 6
-      if (nd && distance(rider.at, nd.at) < cr + 1.5) { v.refused = 'rider in junction'; return false }
+      // (not a rider on another level: in a tunnel under the junction, or on a bridge over it)
+      const sameLevel = !this.otherLevel(rider, v)
+      if (sameLevel && nd && distance(rider.at, nd.at) < cr + 1.5) { v.refused = 'rider in junction'; return false }
       /*
        * …nor one the rider is ABOUT to reach, from another arm, before this car would be out of it. The rider could
        * not brake when this was written, and a car pulling out in front of them was a collision they could not
        * avoid. Only a car already committed, too close to stop, can still be hit: rare, as the owner asked.
        */
       const re = this.g.edges.get(rider.edgeId)
-      if (nd && re && rider.edgeId !== e.id && (rider.dir > 0 ? re.b : re.a) === node) {
+      if (sameLevel && nd && re && rider.edgeId !== e.id && (rider.dir > 0 ? re.b : re.a) === node) {
         const clearIn = (stopDist + 2 * cr + 2 * this.halfLen(v)) / Math.max(v.speed, 2.5) + 1
         if (distance(rider.at, nd.at) / Math.max(rider.speed, 1) < clearIn) { v.refused = 'rider arriving'; return false }
       }
@@ -816,7 +841,7 @@ export class Traffic {
     // …and by any vehicle going slowly enough to stop for them anyway (under 3 m/s: a car creeping through a jammed
     // box, and above all one turning RIGHT across a rider keeping right — the right hook, measured once keeping
     // right came in)
-    if (rider && !v.bumped && !v.passed && (rider.speed < 1.5 || v.speed < 3) && Math.hypot(rider.at.x - v.at.x, rider.at.z - v.at.z) < 26) {
+    if (rider && !v.bumped && !v.passed && (rider.speed < 1.5 || v.speed < 3) && Math.hypot(rider.at.x - v.at.x, rider.at.z - v.at.z) < 26 && !this.otherLevel(rider, v)) {
       const box = this.boxOf(v)
       const fx = Math.sin(v.heading)
       const fz = Math.cos(v.heading)

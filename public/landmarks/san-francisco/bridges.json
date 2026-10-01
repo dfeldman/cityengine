@@ -6,11 +6,30 @@
     "lat": 37.81932,
     "lon": -122.47851,
     "rotateDeg": -5.259,
-    "size": [130, 2650],
+    "size": [
+      130,
+      2650
+    ],
     "height": 227,
-    "baseY": -102.86,
+    "baseY": -84.51,
     "stone": false,
     "coversRaised": true,
-    "note": "The NEAR level of the bridge (BUGS.md #211). tools/cities.ts's `skyline` entry is the FAR level and stays; Landmarks.update() disables the stand-in once the rider is within 1.3 km of THIS model's own rectangle, so there is one bridge, not two. Position, bearing and baseY are fitted to the ride graph's own west sidewalk (edge 1002983) over the bridge proper, not to the skyline entry's stale lat/lon — centre -5850.7,2929.8 local, axis -5.259 deg, and the model's roadway within +-0.58 m of the ridden path. `coversRaised` suppresses the OSM extruded slab, its generic piers and the `building:part` tower stacks under the same footprint."
+    "note": "The NEAR level of the bridge (BUGS.md #211). tools/cities.ts's `skyline` entry is the FAR level; Landmarks.update() disables it once the rider is within 1.3 km of THIS model's rectangle, so there is one bridge, not two. Position and bearing fitted to the ridden roadway (tools/bridge-fit.ts: within 0.8 m of the axis over the whole span). baseY -84.51 is the city's sea level (the datum frame's MSL, BUGS.md #227 \u2014 the index does not carry seaLevel, so it is written here): the model stands at its real height, and since 2026-09-29 the ways over it take their heights from its declared deck (src/city/bridge-decks.ts, golden-gate.ts GOLDEN_GATE_DECKS) rather than the model being sunk 18 m to meet them. `coversRaised` suppresses the OSM extruded slab, its generic piers and the `building:part` tower stacks under the same footprint."
+  },
+  {
+    "name": "Bay Bridge",
+    "procedural": "bayBridgeNear",
+    "lat": 37.79738,
+    "lon": -122.3787,
+    "rotateDeg": 40.24,
+    "size": [
+      60,
+      2890
+    ],
+    "height": 160,
+    "baseY": -84.51,
+    "stone": false,
+    "coversRaised": true,
+    "note": "The NEAR level of the Bay Bridge's west span (the far level is tools/cities.ts's skyline entry of the same name, which takes this entry's place and datum). baseY -84.51 is the city's sea level. The ways over it \u2014 the lower deck eastbound, the upper westbound, the approach over Rincon Hill, the viaduct and the tunnel on Yerba Buena \u2014 take their heights from its declared decks (bay-bridge.ts BAY_BRIDGE_DECKS, src/city/bridge-decks.ts), which run well past this footprint: the footprint is only what the MODEL draws (tower to tower and the two anchorages), and `coversRaised` stops the generic slab and piers being drawn inside it."
   }
 ]

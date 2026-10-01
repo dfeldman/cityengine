@@ -362,7 +362,7 @@ async function strideOf(avatar: Avatar, pace: number): Promise<number> {
  * bounce from the street below, instead of the trees' saturated blue sky — which, in shade, turned light
  * skin green (see layers.ts). Created once per scene; lights only meshes carrying the PEOPLE bit.
  */
-function peopleLights(scene: Scene): void {
+export function peopleLights(scene: Scene): void {
   if (scene.lights.some((l) => l.name === 'people')) return
   const sky = new HemisphericLight('people', new Vector3(0, 1, 0), scene)
   const s = DAYLIGHT.skyColour

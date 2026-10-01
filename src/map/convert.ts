@@ -165,6 +165,7 @@ export function convertTile(t: TileData, ctx: ConvertContext): MapTile {
     if (e.ramp) flags |= SF.ramp
     if (e.bore) flags |= SF.bore
     if (e.cut) flags |= SF.cut
+    if (e.authored) flags |= SF.authored
     if (e.crossing) flags |= SF.crossing
     if (e.park) flags |= SF.park
     const w: Way = {

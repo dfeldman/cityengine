@@ -19,6 +19,14 @@ export const DELIVERY_CSS = `
 .sr-offer .stop + .stop .n { background: #34d27a; color: #111 }
 .sr-offer .what { opacity: .7; font-size: 12px }
 .sr-offer .far { opacity: .7; margin: 8px 0 10px; font-size: 13px }
+/* what it is and where from (the kitchens, game/delivery.ts Source): the dish big, the joke small */
+.sr-offer .dish { display: flex; gap: 10px; align-items: center; margin: 2px 0 8px }
+.sr-offer .dish .emoji { font-size: 34px; line-height: 1 }
+.sr-offer .dish b { display: block; font: 800 16px/1.2 var(--font) }
+.sr-offer .dish i { display: block; font: italic 500 12px/1.3 var(--font); opacity: .8 }
+.sr-offer .fragile { display: inline-block; margin-left: 6px; padding: 2px 7px; border-radius: 999px; font: 800 10px/1.2 var(--font);
+  letter-spacing: .08em; color: #fff; background: var(--c-red); vertical-align: 2px }
+.sr-offer .kitchen { font: italic 500 12px/1.3 var(--font); opacity: .75; margin-top: 2px }
 .sr-offer .row { display: flex; gap: 8px }
 .sr-offer button { flex: 1; font: 800 14px/1 var(--font); padding: 9px 10px; border-radius: 999px; border: 0; cursor: pointer }
 .sr-offer .yes { color: var(--on-amber); background: var(--c-amber) }
@@ -103,15 +111,17 @@ export class DeliveryCard {
   }
 
   /** Show an offer; `lasts` seconds before it goes away by itself. */
-  offer(job: Job, lasts: number, yes: () => void, no: () => void): void {
+  offer(job: Job, lasts: number, yes: () => void, no: () => void, routed = false, auto = false): void {
     this.onYes = yes
     this.onNo = no
     const km = job.metres >= 950 ? `${(job.metres / 1000).toFixed(1)} km` : `${Math.round(job.metres / 50) * 50} m`
+    const it = job.item
     this.card.innerHTML = `
       <h3>New delivery</h3>
-      <div class="stop"><span class="n">1</span><div><div class="what">Pick up near</div>${esc(job.pickup.label)}</div></div>
+      ${it ? `<div class="dish"><span class="emoji">${esc(it.emoji)}</span><div><b>${esc(it.name)}${it.fragile ? '<span class="fragile">FRAGILE</span>' : ''}</b><i>${esc(it.blurb)}</i></div></div>` : ''}
+      <div class="stop"><span class="n">1</span><div><div class="what">${job.source ? 'Pick up at' : 'Pick up near'}</div>${esc(job.pickup.label)}${job.source ? `<div class="kitchen">${esc(job.source.blurb)}</div>` : ''}</div></div>
       <div class="stop"><span class="n">2</span><div><div class="what">Deliver near</div>${esc(job.dropoff.label)}</div></div>
-      <div class="far">about ${km} as the crow flies · find your own way</div>
+      <div class="far">about ${km} as the crow flies · ${routed ? 'we\'ll route you' : 'find your own way'}${auto ? ` · taking it in ${lasts} s` : ''}</div>
       <div class="row"><button class="yes">Take it<kbd>Y</kbd></button><button class="no">No thanks<kbd>X</kbd></button></div>
       <div class="clock"></div>`
     this.card.querySelector('.yes')!.addEventListener('click', () => this.onYes())

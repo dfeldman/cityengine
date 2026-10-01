@@ -183,6 +183,21 @@ describe('weaving past stopped traffic (Traffic.weave)', () => {
     expect(shift).toBeGreaterThan(2.5)
   })
 
+  it('ignores a car on another level — a street over a tunnel — however close it is in plan', () => {
+    // a street at 0 and, 20 m below it along the same line, a tunnel the rider is in
+    const g = buildGraph([
+      { id: 1, a: 0, b: 1, points: [{ x: 0, z: 0 }, { x: 0, z: 400 }], length: 400, surface: 'asphalt', width: 14, walk: 2, foot: false, heights: [0, 0] },
+      { id: 2, a: 2, b: 3, points: [{ x: 0, z: 0 }, { x: 0, z: 400 }], length: 400, surface: 'asphalt', width: 14, walk: 2, foot: false, heights: [-20, -20], tunnel: true, bore: true },
+    ])
+    const t = new Traffic(g, 'dense')
+    park(t, 0, 110)   // on the street above
+    const below: RiderNow = { ...rider(), edgeId: 2, y: -20 }
+    expect(t.weave(below, -6, 6)).toBe(0)
+    expect(t.leaderFor(below, 0)).toBeNull()
+    // the same rider on the street is held by it, as before
+    expect(t.leaderFor({ ...rider(), y: 0 }, 0)).not.toBeNull()
+  })
+
   it('filters down the centre line between two stopped lanes of a 9 m street', () => {
     const t = new Traffic(street(9), 'dense')
     park(t, 1.7, 110)    // the rider's lane…

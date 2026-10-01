@@ -12,6 +12,7 @@
  * drawn separately, and a city is the case where that bites hardest.
  */
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
+import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData'
 import type { Scene } from '@babylonjs/core/scene'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { stopSign, uspsBox, billboard, muniStop, plainStop, newsRacks, parkingMeter, utilityPole } from './us-furniture.ts'
@@ -34,7 +35,7 @@ import { region, type Region } from '../city/region.ts'
 import { pointAlong } from '../sim/navigate.ts'
 import { waterMaterial } from './water-material.ts'
 import { planFacade, type StyleId } from '../city/facade.ts'
-import { Terrain } from '../city/terrain.ts'
+import { Terrain, type PackedTerrain } from '../city/terrain.ts'
 import { Carriageways } from '../city/carriageways.ts'
 import { bartEntrance, sfTrashCan, chainBollard, streetBanners } from './sf/furniture.ts'
 import { waterLookup } from './watermask.ts'
@@ -42,6 +43,7 @@ import { beachTint, buildShore, revetmentBand, shoreDistance, type ShoreIndex } 
 import { plog } from '../profile.ts'
 import { unpackPoints, type CityPackage, type PackedArea, type PackedCourt, type PackedBuilding, type PackedEdge, type PackedFurniture, type PackedRail } from '../city/package.ts'
 import { BRIDGE_STYLES, deck, isRaised, railDeck } from './bridges.ts'
+import { FREEWAY_KINDS } from './bridge-structures.ts'
 import { TILE, nearOf, tileKey, tileOf, tilesOfLine, type Near, type TileData, type TileSource } from '../city/tiles.ts'
 
 /** A subsystem drawn per tile: `build` returns the tile's meshes (disposed with the tile). */
@@ -56,8 +58,8 @@ export interface TileLayer {
 
 /** Milliseconds a frame may spend building tiles and layers once the city has loaded. */
 const BUILD_MS = 7
-/** The mid ring's reach in tiles (PARIS_EXPAND §2: massing out to ~1200 m). */
-export const MID = 6
+/** The mid ring's reach in tiles (PARIS_EXPAND §2: massing out to ~1200 m). Per device: `setRings`. */
+export let MID = 6
 import { onSurface, waterLevels, wholeWater } from '../city/package.ts'
 import { buildingFooting, simplifyRing } from '../map/footing.ts'
 import { signalLamps, type SignalHead } from './lamps.ts'
@@ -65,8 +67,27 @@ import { StreetGrade } from '../city/grade.ts'
 
 /** Tile size in metres: the ONE grid, shared with the bake (city/tiles.ts). */
 export { TILE }
-/** How far from the rider tiles are kept built. */
-export const VIEW = 3
+/** How far from the rider tiles are kept built. Per device: `setRings`. */
+export let VIEW = 3
+/**
+ * The grid the DISTANT GROUND and the coarse DEPTH OCCLUDER are built on, as a multiple of the terrain's own step
+ * (src/tier.ts; iOS's ultra tier: 2, a quarter of their ~100 MB of vertex buffers). Both are built from the SAME
+ * decimated grid, so they agree with each other; near the rider the occluder is rebuilt from the fine ground anyway.
+ */
+let GROUND_STRIDE = 1
+export function setGroundStride(n: number): void { GROUND_STRIDE = Math.max(1, Math.round(n)) }
+function groundGrid(t: PackedTerrain | undefined | null): PackedTerrain | undefined {
+  if (!t || GROUND_STRIDE === 1) return t ?? undefined
+  const k = GROUND_STRIDE
+  const cols = Math.floor((t.cols - 1) / k) + 1
+  const rows = Math.floor((t.rows - 1) / k) + 1
+  const heights = new Float32Array(cols * rows)
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) heights[r * cols + c] = t.heights[r * k * t.cols + c * k]
+  return { ...t, step: t.step * k, cols, rows, heights }
+}
+
+/** The rings for this device (src/tier.ts), before the City is made: a phone holds less city round the rider. */
+export function setRings(view: number, mid: number): void { VIEW = view; MID = mid }
 
 /**
  * The ground is four near-coplanar layers — the base plane, mapped areas, the carriageway and the pavement —
@@ -689,7 +710,7 @@ function contentBounds(pkg: CityPackage): { x0: number; x1: number; z0: number; 
 
 
 function distantGround(scene: Scene, terrain: Terrain, pkg: CityPackage, assets: string): Mesh | null {
-  const t = pkg.terrain
+  const t = groundGrid(pkg.terrain)
   if (!t) return null
   const out = new MeshBuilder()
   // full resolution, the same grid as the depth occluder: at half resolution the drawn ground ran lower than
@@ -708,22 +729,71 @@ function distantGround(scene: Scene, terrain: Terrain, pkg: CityPackage, assets:
    */
   const box = contentBounds(pkg)
   const boxMargin = 0
-  for (let r = 0; r + stride < t.rows; r += stride) {
-    for (let c = 0; c + stride < t.cols; c += stride) {
-      const x = t.x0 + c * t.step
-      const z = t.z0 + r * t.step
-      if (box && (x + step < box.x0 - boxMargin || x > box.x1 + boxMargin
-        || z + step < box.z0 - boxMargin || z > box.z1 + boxMargin)) continue
-      const h = (cx: number, cz: number): number => t.heights[cz * t.cols + cx]
-      out.quad(
-        [[x, h(c, r), z], [x + step, h(c + stride, r), z],
-         [x + step, h(c + stride, r + stride), z + step], [x, h(c, r + stride), z + step]],
-        [0, 1, 0],
-        [[0, 0], [step, 0], [step, step], [0, step]],
-        [0.5, 0.5, 0.5], 0,
-      )
+  /*
+   * In 800 m chunks, one vertex per grid point (BUGS.md #242, the iPhone's memory). It was one mesh of four
+   * vertices a cell — 3.8 million in San Francisco, 198 MB of vertex buffers, drawn whole every frame — built
+   * in one set of JS number arrays. The normal and colour are the same everywhere, so a point shared by four
+   * cells is the same vertex; the uvs are world metres from the grid's corner rather than each cell's own
+   * 0..step, which is the same page wherever `ROAD_PAGE_METRES` divides the step and seamless where it does not.
+   */
+  const mat = roadMaterial(scene, pkg.ground, assets)
+  const CHUNK = 800
+  const per = Math.max(1, Math.round(CHUNK / step))
+  const inBox = (c: number, r: number): boolean => {
+    const x = t.x0 + c * t.step
+    const z = t.z0 + r * t.step
+    return !(box && (x + step < box.x0 - boxMargin || x > box.x1 + boxMargin
+      || z + step < box.z0 - boxMargin || z > box.z1 + boxMargin))
+  }
+  let cells = 0
+  for (let r0 = 0; r0 + stride < t.rows; r0 += per * stride) {
+    for (let c0 = 0; c0 + stride < t.cols; c0 += per * stride) {
+      const r1 = Math.min(r0 + per * stride, t.rows - 1)
+      const c1 = Math.min(c0 + per * stride, t.cols - 1)
+      const W = c1 - c0 + 1
+      const id = new Int32Array(W * (r1 - r0 + 1)).fill(-1)
+      const pos: number[] = []
+      const idx: number[] = []
+      const v = (c: number, r: number): number => {
+        const k = (r - r0) * W + (c - c0)
+        if (id[k] < 0) {
+          id[k] = pos.length / 3
+          pos.push(t.x0 + c * t.step, t.heights[r * t.cols + c], t.z0 + r * t.step)
+        }
+        return id[k]
+      }
+      for (let r = r0; r < r1; r += stride) {
+        for (let c = c0; c < c1; c += stride) {
+          if (!inBox(c, r)) continue
+          // MeshBuilder.quad's winding for these corners facing up
+          const a = v(c, r), b = v(c + stride, r), cc = v(c + stride, r + stride), d = v(c, r + stride)
+          idx.push(a, b, cc, a, cc, d)
+          cells++
+        }
+      }
+      if (idx.length === 0) continue
+      const n = pos.length / 3
+      const vd = new VertexData()
+      vd.positions = new Float32Array(pos)
+      vd.normals = new Float32Array(n * 3)
+      vd.uvs = new Float32Array(n * 2)
+      vd.colors = new Float32Array(n * 4)
+      for (let i = 0; i < n; i++) {
+        vd.normals[i * 3 + 1] = 1
+        vd.uvs[i * 2] = pos[i * 3] - t.x0
+        vd.uvs[i * 2 + 1] = pos[i * 3 + 2] - t.z0
+        vd.colors.set([0.5, 0.5, 0.5, 0], i * 4)
+      }
+      vd.indices = n > 65535 ? new Uint32Array(idx) : new Uint16Array(idx)
+      const m = new Mesh(`ground:distant:${c0},${r0}`, scene)
+      vd.applyToMesh(m)
+      m.geometry?.clearCachedData()
+      m.material = mat
+      m.renderingGroupId = GROUP.base
+      m.isPickable = false
     }
   }
+  plog('distantGround cells', cells)
   /*
    * And a skirt beyond the grid's edge: 3 km out, flat at the edge's own height. The terrain stops where the
    * bake stopped sampling it, and where the edge is on a hill (Belleville to the north, the Montagne
@@ -758,11 +828,10 @@ function distantGround(scene: Scene, terrain: Terrain, pkg: CityPackage, assets:
       [[0, 0], [far, 0], [far, far], [0, far]], [0.5, 0.5, 0.5], 0)
   }
   void terrain
-  plog('distantGround quads', out.indices.length / 6, 'verts', out.positions.length / 3)
-  const m = new Mesh('ground:distant', scene)
+  const m = new Mesh('ground:distant:skirt', scene)
   out.toVertexData().applyToMesh(m)
   m.geometry?.clearCachedData()
-  m.material = roadMaterial(scene, pkg.ground, assets)
+  m.material = mat
   m.renderingGroupId = GROUP.base
   m.isPickable = false
   m.alwaysSelectAsActiveMesh = true
@@ -782,9 +851,17 @@ function distantGround(scene: Scene, terrain: Terrain, pkg: CityPackage, assets:
  * group. It is sunk 0.6 m below the real surface, so it never clips anything standing ON the ground — a
  * kerb, a foot, a car's wheel — but it still hides whatever is behind a rise or below the lip of a quay.
  */
-function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0): void {
-  const t = pkg.terrain
-  if (!t) return
+/** the occluder's chunks, rebuilt from the fine ground as tiles bring it and back to coarse as they drop it */
+export interface GroundOccluder {
+  /** a tile's fine ground came or went: its chunk is rebuilt */
+  mark(tx: number, tz: number): void
+  /** rebuild what was marked, for at most `ms` (at least one chunk) */
+  update(ms: number): void
+}
+
+function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain): GroundOccluder | null {
+  const t = groundGrid(pkg.terrain)
+  if (!t) return null
   /*
    * Over water the occluder goes down to just under the river's surface (its lowest bank less the region's
    * drop, as the water is drawn), and nowhere else. It used to sink ten metres at every grid point within a
@@ -827,8 +904,18 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0): void {
    * measured over all 578 391 cells, 4 005 327 probes, zero differing answers, 81x faster.
    */
   const wetOnly = waterLookup(water)
+  /*
+   * The ground it stands for (BUGS.md #240). Built first from the coarse 20 m grid, and that was all it ever was —
+   * but near the rider the ground DRAWN is each tile's fine block (4 m in the zones), and on Marin's and Yerba
+   * Buena's steep hills the two part by metres: within 200 m of the owner's reports the fine ground stood 3.8 m
+   * above the coarse grid at a crest (so the occluder, 0.6 m under the coarse, let the road and the cars behind
+   * the crest show through the hill) and 5.2 m below it in a hollow (where it hid what should show). A chunk
+   * holding tiles with fine ground is rebuilt from it, at its resolution, as the tiles arrive; and from the
+   * coarse grid again when they go.
+   */
+  let heightOf = (x: number, z: number): number => terrain.heightAt(x, z)
   const occ = (x: number, z: number, lv: number | null): number => {
-    const g = terrain.heightAt(x, z) - 0.6
+    const g = heightOf(x, z) - 0.6
     return lv === null ? g : Math.min(g, lv - 0.4)
   }
   /*
@@ -840,97 +927,217 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0): void {
   const CHUNK = 800
   const box = contentBounds(pkg)
   const margin = 0
-  const chunks = new Map<string, MeshBuilder>()
-  let out = new MeshBuilder()
-  const quad = (p: [number, number, number][]): void => {
-    out.quad(p, [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], [0, 0, 0], 0)
-  }
-  for (let r = 0; r + 1 < t.rows; r++) {
-    for (let c = 0; c + 1 < t.cols; c++) {
-      const x = t.x0 + c * t.step
-      const z = t.z0 + r * t.step
-      if (box && (x < box.x0 - margin || x > box.x1 + margin || z < box.z0 - margin || z > box.z1 + margin)) continue
-      const ck = `${Math.floor(x / CHUNK)},${Math.floor(z / CHUNK)}`
-      out = chunks.get(ck) ?? chunks.set(ck, new MeshBuilder()).get(ck)!
-      // does the cell straddle a bank? sample its corners and centre
-      const probes = [[0, 0], [1, 0], [0, 1], [1, 1], [0.5, 0.5]].map(([u, v]) => wetAt(x + u * t.step, z + v * t.step))
-      const allDry = probes.every((p) => p === null)
-      const allWet = probes.every((p) => p !== null)
-      if (allDry || allWet) {
-        const h = (u: number, v: number): [number, number, number] => {
-          const px = x + u * t.step
-          const pz = z + v * t.step
-          return [px, occ(px, pz, allWet ? wetAt(px, pz) : null), pz]
-        }
-        quad([h(0, 0), h(1, 0), h(1, 1), h(0, 1)])
-        continue
-      }
-      /*
-       * A bank: a 2 m lattice over the cell (and one step round it), wet flags dilated by one step so the
-       * occluder is already down at the river's level a couple of metres before the bank. Otherwise the
-       * cells sloping from land height down to the water sliced the quay wall into a sawtooth.
-       */
-      const n = Math.max(1, Math.round(t.step / 2))
-      const sub = t.step / n
-      const W = n + 3
-      const lvl: (number | null)[] = []
-      for (let j = -1; j <= n + 1; j++) for (let i = -1; i <= n + 1; i++) lvl.push(wetAt(x + i * sub, z + j * sub))
-      const at = (i: number, j: number): number | null => lvl[(j + 1) * W + (i + 1)]
-      const near = (i: number, j: number): number | null => {
-        let best: number | null = null
-        for (let dj = -1; dj <= 1; dj++) for (let di = -1; di <= 1; di++) {
-          const v = at(i + di, j + dj)
-          if (v !== null && (best === null || v < best)) best = v
-        }
-        return best
-      }
-      const v = (i: number, j: number): [number, number, number] => {
-        const px = x + i * sub
-        const pz = z + j * sub
-        return [px, occ(px, pz, near(i, j)), pz]
-      }
-      for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) quad([v(i, j), v(i + 1, j), v(i + 1, j + 1), v(i, j + 1)])
-    }
-  }
   const mat = new StandardMaterial('occluder', scene)
   mat.disableColorWrite = true
   mat.disableLighting = true
   mat.backFaceCulling = false
   /*
-   * Twice: at the start of the water's group, so land in front of a river hides it (the water is otherwise
-   * painted over everything in its layer, and showed through every rise between the eye and the Seine),
-   * and at the start of the buildings' group, so land in front of a building hides that.
+   * Positions and indices ONLY, built and uploaded one chunk at a time (BUGS.md #242, the iPhone's memory).
+   *
+   * It draws depth and no colour, unlit, so the normals, uvs and colours a `MeshBuilder` carries were three
+   * quarters of its buffers for nothing — 326 MB of San Francisco's 1.3 GB of vertex buffers. And every chunk's
+   * builder was open at once as JS number arrays (the grid is walked row by row, which touches every chunk
+   * across), the largest part of the 730 MB the heap grew by while the City was built. The corners of plain
+   * cells are shared (a corner's height depends on the corner alone: a cell is all wet or all dry, so a wet
+   * corner is never in a dry cell); a bank's 2 m lattice keeps its own. Same cells, same heights, same
+   * winding as before: the SHAPE is #169's and #240's to change, not this.
    */
-  // …and at the start of the carriageway's group, so land in front of a road hides it: on Nob Hill the
-  // streets beyond a crest were painted over the hill in front of them
-  // one geometry for all three (clones share it): three copies of the whole grid held a quarter of a gigabyte
-  // in central Paris, and none of it needs a CPU copy once uploaded
-  for (const [ck, piece] of chunks) {
-  let first: Mesh | null = null
-  for (const group of [GROUP.areas, GROUP.road, GROUP.building]) {
-    let m: Mesh
-    if (!first) {
-      m = new Mesh(`ground:occluder:${group}:${ck}`, scene)
-      piece.toVertexData().applyToMesh(m)
-      m.geometry?.clearCachedData()
-      first = m
-    } else {
-      m = first.clone(`ground:occluder:${group}:${ck}`)
+  let built = 0
+  let shared = 0
+  const keys: [number, number][] = []
+  {
+    const seen = new Set<string>()
+    for (let r = 0; r + 1 < t.rows; r++) {
+      const z = t.z0 + r * t.step
+      if (box && (z < box.z0 - margin || z > box.z1 + margin)) continue
+      for (let c = 0; c + 1 < t.cols; c++) {
+        const x = t.x0 + c * t.step
+        if (box && (x < box.x0 - margin || x > box.x1 + margin)) continue
+        const kx = Math.floor(x / CHUNK)
+        const kz = Math.floor(z / CHUNK)
+        const k = `${kx},${kz}`
+        if (!seen.has(k)) { seen.add(k); keys.push([kx, kz]) }
+      }
     }
-    m.material = mat
-    m.renderingGroupId = group
+  }
+  let pos = new Float32Array(1 << 16)
+  let idx = new Uint32Array(1 << 16)
+  let np = 0
+  let ni = 0
+  const vert = (q: [number, number, number]): number => {
+    if (np + 3 > pos.length) { const g = new Float32Array(pos.length * 2); g.set(pos); pos = g }
+    pos[np] = q[0]; pos[np + 1] = q[1]; pos[np + 2] = q[2]
+    np += 3
+    return np / 3 - 1
+  }
+  // MeshBuilder.quad's winding for a quad facing +y
+  const quad = (p: [number, number, number][], v: number[]): void => {
+    if (ni + 6 > idx.length) { const g = new Uint32Array(idx.length * 2); g.set(idx); idx = g }
+    const e1x = p[1][0] - p[0][0], e1z = p[1][2] - p[0][2]
+    const e2x = p[2][0] - p[0][0], e2z = p[2][2] - p[0][2]
+    const facing = e1z * e2x - e1x * e2z
+    const o = facing > 0 ? [0, 2, 1, 0, 3, 2] : [0, 1, 2, 0, 2, 3]
+    for (const k of o) idx[ni++] = v[k]
+  }
+  const meshes = new Map<string, Mesh[]>()
+  const build = (kx: number, kz: number, useFine: boolean): void => {
+    const ck = `${kx},${kz}`
+    for (const m of meshes.get(ck) ?? []) m.dispose()
+    meshes.delete(ck)
+    heightOf = useFine && fine ? (x, z) => fine.rawHeightAt(x, z) : (x, z) => terrain.heightAt(x, z)
+    np = 0
+    ni = 0
+    // this chunk's cells: the same `floor(x / CHUNK)` test as ever, over a window a cell wider than the chunk
+    const c0 = Math.max(0, Math.floor((kx * CHUNK - t.x0) / t.step) - 1)
+    const c1 = Math.min(t.cols - 2, Math.ceil(((kx + 1) * CHUNK - t.x0) / t.step) + 1)
+    const r0 = Math.max(0, Math.floor((kz * CHUNK - t.z0) / t.step) - 1)
+    const r1 = Math.min(t.rows - 2, Math.ceil(((kz + 1) * CHUNK - t.z0) / t.step) + 1)
+    const W = c1 - c0 + 2
+    const corner = new Int32Array(W * (r1 - r0 + 2)).fill(-1)
+    for (let r = r0; r <= r1; r++) {
+      for (let c = c0; c <= c1; c++) {
+        const x = t.x0 + c * t.step
+        const z = t.z0 + r * t.step
+        if (box && (x < box.x0 - margin || x > box.x1 + margin || z < box.z0 - margin || z > box.z1 + margin)) continue
+        if (Math.floor(x / CHUNK) !== kx || Math.floor(z / CHUNK) !== kz) continue
+        // does the cell straddle a bank? sample its corners and centre
+        const probes = [[0, 0], [1, 0], [0, 1], [1, 1], [0.5, 0.5]].map(([u, v]) => wetAt(x + u * t.step, z + v * t.step))
+        const allDry = probes.every((p) => p === null)
+        const allWet = probes.every((p) => p !== null)
+        // a tile with fine ground: the cell at the fine ground's own resolution, its lattice shared within it
+        const fs = useFine && fine ? fine.stepIn(tileKey(Math.floor((x + t.step / 2) / TILE), Math.floor((z + t.step / 2) / TILE))) : null
+        if ((allDry || allWet) && fs !== null && fs < t.step) {
+          const n = Math.max(1, Math.round(t.step / fs))
+          const sub = t.step / n
+          const lat = new Int32Array((n + 1) * (n + 1)).fill(-1)
+          const pt = new Array<[number, number, number] | null>((n + 1) * (n + 1)).fill(null)
+          const get = (i: number, j: number): [number, number, number] => {
+            const k = j * (n + 1) + i
+            if (pt[k]) return pt[k]!
+            const px = x + i * sub
+            const pz = z + j * sub
+            return (pt[k] = [px, occ(px, pz, allWet ? wetAt(px, pz) : null), pz])
+          }
+          const id = (i: number, j: number): number => {
+            const k = j * (n + 1) + i
+            if (lat[k] < 0) lat[k] = vert(get(i, j))
+            return lat[k]
+          }
+          for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+            quad([get(i, j), get(i + 1, j), get(i + 1, j + 1), get(i, j + 1)], [id(i, j), id(i + 1, j), id(i + 1, j + 1), id(i, j + 1)])
+            built++
+          }
+          continue
+        }
+        if (allDry || allWet) {
+          const h = (u: number, v: number): [number, number, number] => {
+            const px = x + u * t.step
+            const pz = z + v * t.step
+            return [px, occ(px, pz, allWet ? wetAt(px, pz) : null), pz]
+          }
+          const p = [h(0, 0), h(1, 0), h(1, 1), h(0, 1)]
+          const at = [[0, 0], [1, 0], [1, 1], [0, 1]].map(([u, v], i) => {
+            const k = (r - r0 + v) * W + (c - c0 + u)
+            if (corner[k] < 0) corner[k] = vert(p[i])
+            else shared++
+            return corner[k]
+          })
+          quad(p, at)
+          built++
+          continue
+        }
+        /*
+         * A bank: a 2 m lattice over the cell (and one step round it), wet flags dilated by one step so the
+         * occluder is already down at the river's level a couple of metres before the bank. Otherwise the
+         * cells sloping from land height down to the water sliced the quay wall into a sawtooth.
+         */
+        const n = Math.max(1, Math.round(t.step / 2))
+        const sub = t.step / n
+        const L = n + 3
+        const lvl: (number | null)[] = []
+        for (let j = -1; j <= n + 1; j++) for (let i = -1; i <= n + 1; i++) lvl.push(wetAt(x + i * sub, z + j * sub))
+        const at = (i: number, j: number): number | null => lvl[(j + 1) * L + (i + 1)]
+        const near = (i: number, j: number): number | null => {
+          let best: number | null = null
+          for (let dj = -1; dj <= 1; dj++) for (let di = -1; di <= 1; di++) {
+            const v = at(i + di, j + dj)
+            if (v !== null && (best === null || v < best)) best = v
+          }
+          return best
+        }
+        const v = (i: number, j: number): [number, number, number] => {
+          const px = x + i * sub
+          const pz = z + j * sub
+          return [px, occ(px, pz, near(i, j)), pz]
+        }
+        // the lattice's points shared between its quads (a point's height is a function of the point alone)
+        const lat = new Int32Array((n + 1) * (n + 1)).fill(-1)
+        const pt = new Array<[number, number, number] | null>((n + 1) * (n + 1)).fill(null)
+        const get = (i: number, j: number): [number, number, number] => pt[j * (n + 1) + i] ??= v(i, j)
+        const id = (i: number, j: number): number => {
+          const k = j * (n + 1) + i
+          if (lat[k] < 0) lat[k] = vert(get(i, j))
+          else shared++
+          return lat[k]
+        }
+        for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+          quad([get(i, j), get(i + 1, j), get(i + 1, j + 1), get(i, j + 1)], [id(i, j), id(i + 1, j), id(i + 1, j + 1), id(i, j + 1)])
+          built++
+        }
+      }
+    }
+    if (ni === 0) return
+    const vd = new VertexData()
+    vd.positions = pos.slice(0, np)
+    vd.indices = np / 3 > 65535 ? idx.slice(0, ni) : Uint16Array.from(idx.subarray(0, ni))
     /*
-     * Tighter for the buildings: 0.15 m under the ground, not 0.6. A building on a slope stands sunk to the
-     * lowest ground under it, so uphill its wall runs on below the pavement, and the 0.6 m band between the
-     * sunk occluder and the surface showed through as a second, lower ground (BUGS.md #14). Roads keep the
-     * wider margin: a draped street can dip a little under the grid between its points.
+     * Twice: at the start of the water's group, so land in front of a river hides it (the water is otherwise
+     * painted over everything in its layer, and showed through every rise between the eye and the Seine),
+     * and at the start of the buildings' group, so land in front of a building hides that.
      */
-    if (group === GROUP.building) m.position.y = 0.45
-    m.isPickable = false
-    // culled by the frustum now, chunk by chunk (it was one mesh, always drawn)
-    m.refreshBoundingInfo()
+    // …and at the start of the carriageway's group, so land in front of a road hides it: on Nob Hill the
+    // streets beyond a crest were painted over the hill in front of them
+    // one geometry for all three (clones share it): three copies of the whole grid held a quarter of a gigabyte
+    // in central Paris, and none of it needs a CPU copy once uploaded
+    let first: Mesh | null = null
+    const made: Mesh[] = []
+    meshes.set(ck, made)
+    for (const group of [GROUP.areas, GROUP.road, GROUP.building]) {
+      let m: Mesh
+      if (!first) {
+        m = new Mesh(`ground:occluder:${group}:${ck}`, scene)
+        vd.applyToMesh(m)
+        m.geometry?.clearCachedData()
+        first = m
+      } else {
+        m = first.clone(`ground:occluder:${group}:${ck}`)
+      }
+      m.material = mat
+      m.renderingGroupId = group
+      /*
+       * Tighter for the buildings: 0.15 m under the ground, not 0.6. A building on a slope stands sunk to the
+       * lowest ground under it, so uphill its wall runs on below the pavement, and the 0.6 m band between the
+       * sunk occluder and the surface showed through as a second, lower ground (BUGS.md #14). Roads keep the
+       * wider margin: a draped street can dip a little under the grid between its points.
+       */
+      if (group === GROUP.building) m.position.y = 0.45
+      m.isPickable = false
+      // culled by the frustum now, chunk by chunk (it was one mesh, always drawn)
+      // (without Babylon's cache of every vertex as a Vector3: 60k objects a fine chunk, three times over — BUGS.md #243)
+      m.refreshBoundingInfo({ updatePositionsArray: false })
+      made.push(m)
+    }
   }
-  }
+  for (const [kx, kz] of keys) build(kx, kz, false)
+  plog('groundOccluder quads', built, 'chunks', keys.length, 'shared corners', shared)
+  const known = new Set(keys.map(([kx, kz]) => `${kx},${kz}`))
+  // chunk → when it was last marked: rebuilt once its tiles have stopped arriving (a chunk is sixteen tiles, and was
+  // rebuilt for each of them)
+  const dirty = new Map<string, number>()
+  const SETTLE = 500
+  // what the rebuilds cost (`window.__occluderStats()`): a chunk is rebuilt whole, inside a frame
+  const stats = { builds: 0, ms: 0, worst: 0 }
+  ;(window as unknown as Record<string, unknown>).__occluderStats = () => ({ ...stats, pending: dirty.size })
   /*
    * The order within each group, stated rather than left to creation order: the occluder first, since
    * everything after has to test against it; then, in the ground's group, parks BEFORE the pavement and
@@ -941,10 +1148,31 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0): void {
   // nature — the road runs down into it in a cut — and the occluder, drawn first, hid its floor and the foot of its
   // portal, so the street outside seemed to run on up into the arch. They are only shown near and in front.
   const rank = (mesh: { name: string }): number =>
-    mesh.name.startsWith('tunnel:entry') || mesh.name.startsWith('tunnel:headwalls') ? -1
+    mesh.name.startsWith('tunnel:entry') || mesh.name.startsWith('tunnel:portals') ? -1
       : mesh.name.startsWith('ground:occluder') ? 0 : mesh.name.startsWith('areas:') ? 1 : mesh.name.startsWith('corridor:') ? 2 : 3
   for (const group of [GROUP.areas, GROUP.road, GROUP.building]) {
     scene.setRenderingOrder(group, (a, b) => rank(a.getMesh()) - rank(b.getMesh()))
+  }
+  return {
+    mark(tx, tz) {
+      const k = `${Math.floor((tx * TILE) / CHUNK)},${Math.floor((tz * TILE) / CHUNK)}`
+      if (known.has(k)) dirty.set(k, performance.now())
+    },
+    update(ms) {
+      const t0 = performance.now()
+      for (const [k, at] of dirty) {
+        if (ms !== Infinity && t0 - at < SETTLE) continue
+        dirty.delete(k)
+        const [kx, kz] = k.split(',').map(Number)
+        const t1 = performance.now()
+        build(kx, kz, true)
+        const took = performance.now() - t1
+        stats.builds++
+        stats.ms += took
+        stats.worst = Math.max(stats.worst, took)
+        if (performance.now() - t0 > ms) break
+      }
+    },
   }
 }
 
@@ -966,6 +1194,8 @@ export class City {
   private readonly assets: string
   private readonly roadAssets: string
   readonly terrain: Terrain
+  /** the depth occluder, rebuilt from the fine ground where tiles carry it (BUGS.md #240) */
+  private occluder: GroundOccluder | null = null
   private readonly tiles = new Map<string, Tile>()
   /** what falls in each tile, worked out once at load */
   private readonly edgesIn = new Map<string, PackedEdge[]>()
@@ -988,6 +1218,8 @@ export class City {
   /** the bridges' outlines (render/bridge-structures.ts): a way on one draws only its running surfaces */
   private readonly outlines = new Map<number, { ring: { x: number; z: number }[]; x0: number; x1: number; z0: number; z1: number }>()
   private structured(e: PackedEdge): boolean {
+    // (never a freeway: see bridge-structures.ts `FREEWAY`)
+    if (FREEWAY_KINDS.has(e.kind)) return false
     const n = e.points.length / 2
     const k = Math.floor(n / 2)
     const x = n % 2 ? e.points[2 * k] : (e.points[2 * k - 2] + e.points[2 * k]) / 2
@@ -1054,7 +1286,10 @@ export class City {
     distantGround(scene, this.terrain, pkg, this.roadAssets)
     plog('distantGround total', Math.round(performance.now() - __tg0))
     const __tg1 = performance.now()
-    groundOccluder(scene, pkg, this.region.riverDrop ?? 0)
+    this.occluder = groundOccluder(scene, pkg, this.region.riverDrop ?? 0, this.terrain)
+    // the fine ground as tiles bring it (and the coarse again as they drop it): the occluder follows (#240)
+    // (`?without=fineocc` keeps it coarse, to see what the fine one changes)
+    this.terrain.onTile = (tx, tz) => { if (!this.off.has('fineocc')) this.occluder?.mark(tx, tz) }
     plog('groundOccluder total', Math.round(performance.now() - __tg1))
   }
 
@@ -1399,6 +1634,36 @@ export class City {
   }
 
   /** one raised edge against one declared footprint; true when it was taken */
+  /** Is this point on a roadway slab some bridge model DRAWS? (game.ts: `BridgeDecks.drawn`, src/city/bridge-decks.ts) */
+  modelDeck: ((x: number, z: number) => boolean) | null = null
+
+  /** The stretches of a way that lie outside every model's footprint, as ways of their own (for the generic deck). */
+  private outsideCovers(e: PackedEdge): PackedEdge[] {
+    if (!e.heights) return []
+    const n = e.points.length / 2
+    const inside = (i: number): boolean => {
+      const x = e.points[i * 2]
+      const z = e.points[i * 2 + 1]
+      // (a bridge model's footprint is the box round its whole mesh — the Golden Gate's is 124 m wide, for the
+      // fender round its south pier — so where the models' decks are known, those say what the model draws)
+      if (this.modelDeck) return this.modelDeck(x, z)
+      return this.coverAreas.some((a) => x >= a.x0 - 2 && x <= a.x1 + 2 && z >= a.z0 - 2 && z <= a.z1 + 2 && inOutline(a.ring, x, z, 2))
+    }
+    const out: PackedEdge[] = []
+    let from = -1
+    for (let i = 0; i <= n; i++) {
+      const outside = i < n && !inside(i)
+      if (outside && from < 0) from = i
+      if (!outside && from >= 0) {
+        // (from the last point inside, so the stretch meets the model's deck; nothing for a scrap)
+        const a = Math.max(0, from - 1)
+        if (i - a >= 2) out.push({ ...e, points: e.points.slice(a * 2, i * 2), heights: e.heights.slice(a, i) })
+        from = -1
+      }
+    }
+    return out
+  }
+
   private takeEdge(a: { ring: { x: number; z: number }[]; y0: number; y1: number; x0: number; x1: number; z0: number; z1: number }, e: PackedEdge): boolean {
     if (!this.raisedIds.has(e.id) || this.coveredDecks.has(e.id)) return false
     const mid = Math.floor(e.points.length / 4) * 2
@@ -1673,6 +1938,7 @@ export class City {
     }
     const first = this.tiles.size === 0
     const t0 = performance.now()
+    this.occluder?.update(first ? Infinity : 3)
     const spent = (): boolean => !first && performance.now() - t0 > BUILD_MS
     const todo: string[] = []
     for (let dz = -VIEW; dz <= VIEW; dz++) {
@@ -2647,10 +2913,44 @@ export class City {
      */
     if (!this.off.has('bridges')) {
       const decks = new MeshBuilder()
+      /*
+       * What passes under a deck, for its piers (render/bridges.ts): the carriageways of this tile and the ones
+       * round it, below the deck — a pier is not stood across a road.
+       */
+      let lower: { pts: { x: number; z: number }[]; h: number[]; half: number; id: number }[] | null = null
+      const [dtx, dtz] = k.split(',').map(Number)
+      const underDeck = (self: number) => (x: number, z: number, r: number, y: number): boolean => {
+        if (!lower) {
+          lower = []
+          for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) for (const o of this.edgesIn.get(key(dtx + dx, dtz + dz)) ?? []) {
+            if (o.foot || !o.heights || (o.tunnel && !o.bore)) continue
+            lower.push({ pts: unpackPoints(o.points), h: o.heights, half: o.width / 2 + 0.5, id: o.id })
+          }
+        }
+        for (const o of lower) {
+          if (o.id === self) continue
+          for (let i = 1; i < o.pts.length; i++) {
+            const a = o.pts[i - 1]
+            const dx = o.pts[i].x - a.x
+            const dz = o.pts[i].z - a.z
+            const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1e-9)))
+            if (Math.hypot(a.x + dx * t - x, a.z + dz * t - z) > o.half + r) continue
+            if (o.h[i - 1] + (o.h[i] - o.h[i - 1]) * t < y - 2.5) return true
+          }
+        }
+        return false
+      }
       for (const e of this.edgesIn.get(k) ?? []) {
-        if (this.raisedIds.has(e.id) && !this.coveredDecks.has(e.id)) {
-          deck(decks, e, this.terrain, this.deckWalk.get(e.id), this.region.riverDrop ?? 0, e.bridge === true && this.structured(e),
-            e.name !== undefined && (this.region.elevatedWalks ?? []).some((w) => w.name === e.name))
+        // (a way the region authored is drawn by the model it belongs to — the Bay Bridge Bikeway's helix)
+        if (!this.raisedIds.has(e.id) || e.authored) continue
+        /*
+         * A way a hand-built model draws (`coveredDecks`) is still drawn HERE where it runs on outside the model's
+         * footprint: the Golden Gate's carriageways are one way each from mid-span to the toll plaza, the model's
+         * deck is straight, and the last 60 m of road swing east off it — where the cars drove on nothing.
+         */
+        for (const part of this.coveredDecks.has(e.id) ? this.outsideCovers(e) : [e]) {
+          deck(decks, part, this.terrain, this.deckWalk.get(e.id), this.region.riverDrop ?? 0, e.bridge === true && this.structured(e),
+            e.name !== undefined && (this.region.elevatedWalks ?? []).some((w) => w.name === e.name), underDeck(e.id))
         }
       }
       const railColour = hexRgb(this.region.elevatedRailColour)

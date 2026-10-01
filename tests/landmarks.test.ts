@@ -103,6 +103,8 @@ const BIG: Record<string, number> = {
    */
   goldenGateBridgeNear: 80_000,
   bayBridge: 40_000,
+  // the near level: both roadways tessellated to 4 m for a rider, the lane lines, the approach bents
+  bayBridgeNear: 110_000,
 }
 
 describe('every procedural landmark', () => {
@@ -113,7 +115,9 @@ describe('every procedural landmark', () => {
       expect(out.positions.length).toBeGreaterThan(0)
       for (const v of out.positions) expect(Number.isFinite(v)).toBe(true)
       expect(out.triangles).toBeLessThan(BIG[name] ?? 25_000)
-    })
+      // (the big builders take a second or two alone and five or more when the whole suite runs beside them: the
+      // default 5 s failed the bridges on load, not on geometry)
+    }, name in BIG ? 30_000 : undefined)
   }
 })
 

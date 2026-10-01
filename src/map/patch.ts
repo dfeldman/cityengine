@@ -7,6 +7,7 @@
  * written by a person or the editor looking at the whole map, and the loader files each add into its tile.
  */
 import { ITEM_STRIDE, type Building, type Deck, type MapDict, type MapIndex, type MapTile, type Place, type Ref, type Way } from './format.ts'
+import type { Simple } from './simple.ts'
 
 export interface PatchSet {
   v: 1
@@ -129,6 +130,11 @@ export function applyPatches(m: MapTile, p: PatchIndex, idx: Pick<MapIndex, 'dic
       target[k] = d && typeof v === 'string' ? intern(d, v) : v
     }
   }
+  /** a `simple` record's origin is city cm in a patch and tile-local in a tile; its vertices are relative to it */
+  const localSimple = (q: Simple): Simple => ({
+    ...q, x: q.x - ox, y: q.y - oy,
+    ...(q.l ? { l: q.l.map((k) => (typeof k.style === 'string' ? { ...k, style: intern('styles', k.style) } : k)) } : {}),
+  })
   /** new nodes for a city-cm polyline (x,y pairs, or x,y,z triples when `withZ`) */
   const nodesFor = (pts: number[], withZ: boolean): number[] => {
     const out: number[] = []
@@ -156,7 +162,11 @@ export function applyPatches(m: MapTile, p: PatchIndex, idx: Pick<MapIndex, 'dic
   m.buildings = m.buildings.filter((b) => {
     const op = p.byRef.get(b.ref)
     if (op?.op === 'suppress') return false
-    if (op?.op === 'override') { assign(b as unknown as Record<string, unknown>, op.set, BUILDING_DICT); b.patched = true }
+    if (op?.op === 'override') {
+      assign(b as unknown as Record<string, unknown>, op.set, BUILDING_DICT)
+      if (op.set.simple) b.simple = localSimple(op.set.simple as Simple)
+      b.patched = true
+    }
     if (b.parts) {
       b.parts = b.parts.filter((q) => {
         const po = p.byRef.get(q.ref)
@@ -211,12 +221,13 @@ export function applyPatches(m: MapTile, p: PatchIndex, idx: Pick<MapIndex, 'dic
   for (const op of p.adds.get(m.key) ?? []) {
     if (op.op !== 'add') continue
     if (op.type === 'building') {
-      const { pts, z, style, ...rest } = op.record
+      const { pts, z, style, simple, ...rest } = op.record
       const way = m.ways.push({ role: 'footprint', nodes: nodesFor(pts, false) }) - 1
       const [cx, cy] = centreOf(pts)
       const b: Building = {
         ...rest, way, cx: Math.round(cx - ox), cy: Math.round(cy - oy), z: z || groundAt(cx, cy), patched: true,
         ...(style !== undefined ? { style: intern('styles', style) } : {}),
+        ...(simple ? { simple: localSimple(simple) } : {}),
       }
       m.buildings.push(b)
     } else if (op.type === 'item') {

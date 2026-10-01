@@ -1,0 +1,31 @@
+{
+  "v": 1,
+  "city": "san-francisco",
+  "ops": [
+    {
+      "op": "suppress",
+      "ref": "s612033707-7233777929",
+      "note": "Sutter-Stockton garage's service bridge (OSM 28843606) along the Stockton cut: the chase camera into the Stockton Tunnel's south mouth was trapped under it; owner 2026-09-29: parking structures are useless in this game"
+    },
+    {
+      "op": "suppress",
+      "ref": "s612033707-7233764925",
+      "note": "the garage ramp up to Bush Street (OSM 681183501), piece 1"
+    },
+    {
+      "op": "suppress",
+      "ref": "s6906959680-7233764925",
+      "note": "the garage ramp up to Bush Street, piece 2"
+    },
+    {
+      "op": "suppress",
+      "ref": "s65319940-6906959680",
+      "note": "the garage ramp up to Bush Street, piece 3"
+    },
+    {
+      "op": "suppress",
+      "ref": "b206652621",
+      "note": "Chinatown Public Health Center: the Broadway Tunnel's east mouth runs under it, and its generic block stood across the road; render/landmarks/sf/tunnels.ts builds it as the tunnel's east portal"
+    }
+  ]
+}

@@ -26,7 +26,20 @@ export interface DeliveryWorld {
    * `arrive` from any street, could never be reached, so it is never offered.
    */
   streetDistance?(ring: number[]): number
+  /** is there anything built at (x, z) — a building-bearing tile of the city (optional; for drop-offs beyond the tiles in) */
+  builtAt?(x: number, z: number): boolean
+  /** a name for a place not yet loaded, e.g. "Geary Blvd near Fillmore St" (optional) */
+  nameAt?(x: number, z: number): string | null
 }
+
+/** Something to deliver: a dish, a bottle, a cake. FRAGILE: a collision after pickup spoils it, and the job is off. */
+export interface Item { name: string; emoji: string; blurb: string; fragile?: boolean }
+
+/**
+ * Where a job starts (owner, 2026-10-01): a kitchen at a fixed place — invented names, plausible places (dim sum in
+ * Chinatown, steak downtown; src/city/sf/restaurants.json) — and what it sends out.
+ */
+export interface Source { id: string; name: string; kind: string; blurb: string; x: number; z: number; items: Item[] }
 
 export interface Stop {
   buildingId: number
@@ -36,6 +49,8 @@ export interface Stop {
   ring: number[]
   /** how the player is told where it is: the nearest intersection, for now */
   label: string
+  /** a far place not yet pinned to a building: `ring` is a square round the point until its tiles are in */
+  far?: boolean
   /** the building's height and where its walls start, metres, when the game knows them (for lighting it up) */
   height?: number
   baseY?: number
@@ -47,6 +62,9 @@ export interface Job {
   dropoff: Stop
   /** straight-line metres rider → pickup → drop-off, for the offer's "about 1.2 km" */
   metres: number
+  /** the kitchen it comes from and what it is, when the city has sources (the pickup is then the kitchen) */
+  source?: Source
+  item?: Item
 }
 
 export type Phase = 'idle' | 'offered' | 'toPickup' | 'toDropoff'
@@ -58,6 +76,10 @@ export type DeliveryEvent =
   | { kind: 'accepted'; job: Job }
   | { kind: 'pickedUp'; job: Job }
   | { kind: 'delivered'; job: Job; seconds: number }
+  /** a far stop has been pinned to its building, once its tiles are in */
+  | { kind: 'stopMoved'; job: Job; stop: 'pickup' | 'dropoff' }
+  /** a fragile item did not survive a collision: the job is off */
+  | { kind: 'spoiled'; job: Job }
 
 export interface DeliveryConfig {
   /** everything — the rider, the pickup, the drop-off — within this radius of where the offer is made */
@@ -69,9 +91,28 @@ export interface DeliveryConfig {
   arrive: number
   /** a stop must have a named intersection within this of it, or it cannot be described */
   labelReach: number
+  /**
+   * LONG JOBS ACROSS SOMETHING (owner, 2026-09-30: destinations on Yerba Buena and Treasure Island): near `from`,
+   * now and then (`chance` of an offer), the drop-off is one of `places` instead — kilometres away, over the Bay
+   * Bridge. A place is a point and a name; the building there is found when its tiles have come in.
+   */
+  crossings?: { name: string; from: { x: number; z: number; r: number }; places: { name: string; x: number; z: number }[]; chance: number }[]
   /** seconds: before the first offer, after an unanswered/declined offer, after a finished job */
   firstOffer: number
   offerLasts: number
+  /**
+   * Seconds after which an offer is TAKEN rather than left (trainer mode, src/modes.ts: a rider happy with the
+   * defaults never touches a control). Absent or null: an unanswered offer goes away after `offerLasts`.
+   */
+  autoAccept?: number | null
+  /** the city's kitchens (`Source`): jobs start at one of them when there is one within `sourceReach` of the rider */
+  sources?: Source[]
+  sourceReach: number
+  /**
+   * The farthest a drop-off may be from its kitchen, metres, by LEVEL (1-based; `Delivery.level`): the difficulty.
+   * The nearest is a third of it (but never under `minHop`).
+   */
+  levels: number[]
   afterDecline: number
   afterDelivery: number
 }
@@ -84,6 +125,8 @@ export const DEFAULTS: DeliveryConfig = {
   // crow flies is two or three blocks in the Haight (at 350 m a probe's legs ran to 6 junctions and 680 m)
   radius: 600, minHop: 120, maxHop: 280, arrive: 26, labelReach: 70,
   firstOffer: 8, offerLasts: 30, afterDecline: 45, afterDelivery: 8,
+  // level 1 (owner, 2026-10-01: "at level 1 it might be just 500 meter radius deliveries, level 2 it's a bit further")
+  sourceReach: 1500, levels: [500, 900, 1400, 2000, 3000],
 }
 
 /** a small seeded random, so a test is repeatable */
@@ -148,6 +191,9 @@ export class Delivery {
   private jobs = 0
   phase: Phase = 'idle'
   job: Job | null = null
+  /** the difficulty, 1-based: how far a drop-off may be from its kitchen (`levels`) */
+  level = 1
+  private settleAt = 0
 
   constructor(world: DeliveryWorld, cfg: Partial<DeliveryConfig> = {}, seed = Date.now()) {
     this.world = world
@@ -177,10 +223,18 @@ export class Delivery {
         this.offeredAt = this.t
         out.push({ kind: 'offer', job })
       } else this.nextOfferAt = this.t + 5   // nothing suitable loaded yet: try again shortly
+    } else if (this.phase === 'offered' && this.cfg.autoAccept != null && this.t - this.offeredAt > this.cfg.autoAccept) {
+      out.push(...this.accept())
     } else if (this.phase === 'offered' && this.t - this.offeredAt > this.cfg.offerLasts) {
       // ignored: it simply goes away, and the ride goes on
       out.push({ kind: 'offerExpired', job: this.job! })
       this.reset(this.cfg.afterDecline)
+    } else if ((this.phase === 'offered' || this.phase === 'toPickup') && this.job!.pickup.far && this.settle(this.job!, 'pickup')) {
+      // a kitchen beyond the tiles in when it was offered: now a building to light
+      out.push({ kind: 'stopMoved', job: this.job!, stop: 'pickup' })
+    } else if (this.phase === 'toDropoff' && this.job!.dropoff.far && this.settle(this.job!, 'dropoff')) {
+      // a far drop-off's building has come in with its tiles: the same place, now a building to light
+      out.push({ kind: 'stopMoved', job: this.job!, stop: 'dropoff' })
     } else if (this.phase === 'toPickup' && this.arrived(this.job!.pickup, at)) {
       this.phase = 'toDropoff'
       out.push({ kind: 'pickedUp', job: this.job! })
@@ -216,20 +270,128 @@ export class Delivery {
   }
 
   /** a stop at a building, if it is a sensible one: a real footprint, standing near a named intersection */
-  private stopAt(b: { id: number; ring: number[]; height?: number; baseY?: number }): Stop | null {
+  private stopAt(b: { id: number; ring: number[]; height?: number; baseY?: number }, named = true): Stop | null {
     if (b.ring.length < 6) return null
     const a = area(b.ring)
     if (a < 60 || a > 20000) return null
     const c = centre(b.ring)
     if (this.world.streetDistance && this.world.streetDistance(b.ring) > this.cfg.arrive - 4) return null
-    const j = this.world.junctionNear(c.x, c.z, this.cfg.labelReach)
-    if (!j) return null
-    return { buildingId: b.id, x: c.x, z: c.z, ring: b.ring, label: j.name,
+    // (a stop that brings its own name — a kitchen, a far place — needs no intersection to be described by)
+    const j = named ? this.world.junctionNear(c.x, c.z, this.cfg.labelReach) : null
+    if (named && !j) return null
+    return { buildingId: b.id, x: c.x, z: c.z, ring: b.ring, label: j?.name ?? '',
       ...(b.height !== undefined ? { height: b.height } : {}), ...(b.baseY !== undefined ? { baseY: b.baseY } : {}) }
+  }
+
+  /** A far place as a stop: its building if it is in, else a square round the point, to be settled later. */
+  private farStop(p: { name: string; x: number; z: number }): Stop {
+    const s = this.nearestStop(p)
+    if (s) return { ...s, label: p.name }
+    const h = 8
+    return { buildingId: -1, x: p.x, z: p.z, label: p.name, far: true,
+      ring: [p.x - h, p.z - h, p.x + h, p.z - h, p.x + h, p.z + h, p.x - h, p.z + h] }
+  }
+
+  private nearestStop(p: { x: number; z: number }): Stop | null {
+    let best: Stop | null = null
+    let bd = Infinity
+    for (const b of this.world.buildingsNear(p.x, p.z, 90)) {
+      const s = this.stopAt(b, false)
+      if (!s) continue
+      const d = Math.hypot(s.x - p.x, s.z - p.z)
+      if (d < bd) { bd = d; best = s }
+    }
+    return best
+  }
+
+  /** pin a far stop to its building, if its tiles are in now; true if it moved */
+  private settle(job: Job, which: 'pickup' | 'dropoff'): boolean {
+    // (a look through the buildings that are in: once a second is plenty)
+    if (this.t < this.settleAt) return false
+    this.settleAt = this.t + 1
+    const s = this.nearestStop(job[which])
+    if (!s) return false
+    job[which] = { ...s, label: job[which].label }
+    return true
+  }
+
+  /**
+   * A collision (game.ts, when the rider goes down): a FRAGILE item already picked up is spoiled and the job is off.
+   * The ice cream is on the road; the customer will not be told.
+   */
+  collided(): DeliveryEvent[] {
+    if (this.phase !== 'toDropoff' || !this.job?.item?.fragile) return []
+    const job = this.job
+    this.reset(this.cfg.afterDecline)
+    return [{ kind: 'spoiled', job }]
+  }
+
+  /**
+   * A job from a KITCHEN (`sources`): one of the nearest few within `sourceReach` of the rider, picked up at its
+   * building; delivered to a random building between a third of the level's distance and all of it. Beyond the
+   * tiles that are in, the drop-off is a point on built ground (`builtAt`), pinned to its building as it loads.
+   */
+  private kitchenJob(at: { x: number; z: number }): Job | null {
+    const near = (this.cfg.sources ?? [])
+      .map((src) => ({ src, d: Math.hypot(src.x - at.x, src.z - at.z) }))
+      .filter((c) => c.d <= this.cfg.sourceReach && c.src.items.length > 0)
+      .sort((a, b) => a.d - b.d)
+      .slice(0, 4)
+    if (near.length === 0) return null
+    const { src, d } = near[Math.floor(this.r() * near.length)]
+    const pickup = this.farStop({ name: src.name, x: src.x, z: src.z })
+    const hi = this.cfg.levels[Math.max(0, Math.min(this.cfg.levels.length - 1, this.level - 1))]
+    const lo = Math.max(this.cfg.minHop, hi / 3)
+    const item = src.items[Math.floor(this.r() * src.items.length)]
+    const make = (dropoff: Stop): Job => ({ id: ++this.jobs, pickup, dropoff, metres: d + Math.hypot(dropoff.x - src.x, dropoff.z - src.z), source: src, item })
+    // a building that is in, first
+    const pool = this.world.buildingsNear(src.x, src.z, hi)
+    for (let tries = 0; tries < 60 && pool.length; tries++) {
+      const b = pool[Math.floor(this.r() * pool.length)]
+      const c = centre(b.ring)
+      const dd = Math.hypot(c.x - src.x, c.z - src.z)
+      if (dd < lo || dd > hi) continue
+      const stop = this.stopAt(b)
+      if (stop && stop.label !== pickup.label) return make(stop)
+    }
+    // …else a point on built ground at that distance, to be pinned later
+    for (let tries = 0; tries < 40; tries++) {
+      const a = this.r() * Math.PI * 2
+      const dd = lo + (hi - lo) * this.r()
+      const x = src.x + Math.sin(a) * dd
+      const z = src.z + Math.cos(a) * dd
+      if (this.world.builtAt && !this.world.builtAt(x, z)) continue
+      return make(this.farStop({ name: this.world.nameAt?.(x, z) ?? 'a doorstep across town', x, z }))
+    }
+    return null
+  }
+
+  /** A job ACROSS something (`crossings`): picked up near here, delivered to one of the far places. */
+  private crossingJob(at: { x: number; z: number }): Job | null {
+    for (const c of this.cfg.crossings ?? []) {
+      if (Math.hypot(at.x - c.from.x, at.z - c.from.z) > c.from.r || this.r() >= c.chance) continue
+      const pool = this.world.buildingsNear(at.x, at.z, this.cfg.maxHop)
+      for (let tries = 0; tries < 40 && pool.length; tries++) {
+        const pb = pool[Math.floor(this.r() * pool.length)]
+        const pc = centre(pb.ring)
+        const d = Math.hypot(pc.x - at.x, pc.z - at.z)
+        if (d < this.cfg.minHop || d > this.cfg.maxHop) continue
+        const pickup = this.stopAt(pb)
+        if (!pickup) continue
+        const place = c.places[Math.floor(this.r() * c.places.length)]
+        const dropoff = this.farStop(place)
+        return { id: ++this.jobs, pickup, dropoff, metres: d + Math.hypot(place.x - pc.x, place.z - pc.z) }
+      }
+    }
+    return null
   }
 
   /** A job near the rider: pickup and drop-off both within `radius` of here, each a hop of min–max metres. */
   makeJob(at: { x: number; z: number }): Job | null {
+    const across = this.crossingJob(at)
+    if (across) return across
+    const kitchen = this.kitchenJob(at)
+    if (kitchen) return kitchen
     const { radius, minHop, maxHop } = this.cfg
     const pool = this.world.buildingsNear(at.x, at.z, radius)
     if (pool.length < 2) return null

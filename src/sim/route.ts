@@ -9,6 +9,7 @@
  */
 import type { CityGraph } from '../city/graph.ts'
 import type { Position } from './navigate.ts'
+import { againstFreeway } from '../city/ridegraph.ts'
 
 type P = { x: number; z: number }
 
@@ -143,7 +144,8 @@ export function planRoute(g: CityGraph, from: Position, target: P,
   // the goal is reached from either end of its edge — and back into the rider's own edge from the node ahead
   // only by turning round there
   const goalCost = (n: number): number => {
-    const c = n === goal.a ? onGraph.s : n === goal.b ? goal.length - onGraph.s : Infinity
+    // (the goal's own edge entered from this end: not the wrong way up a freeway)
+    const c = againstFreeway(goal, n) ? Infinity : n === goal.a ? onGraph.s : n === goal.b ? goal.length - onGraph.s : Infinity
     return goal.id === here.id && n === aheadNode ? c + TURN_ROUND_COST : c
   }
   // null, not −1: the ride graph's own synthetic nodes have negative ids (ridegraph.ts `Ids`)
@@ -159,6 +161,7 @@ export function planRoute(g: CityGraph, from: Position, target: P,
       // not back along the rider's own edge from the node ahead (that is the U-turn, seeded separately)
       if (eid === here.id) continue
       const e = g.edges.get(eid)!
+      if (againstFreeway(e, n)) continue
       const m = e.a === n ? e.b : e.a
       const nd = d + e.length
       if (nd < (dist.get(m) ?? Infinity)) {

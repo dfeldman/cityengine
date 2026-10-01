@@ -225,7 +225,7 @@ The five kinds (six names — `generic` and `restyled` are one renderer):
 |---|---|---|
 | **`generic`** | the facade generator | `style` and optional `colour`/`accent`, decided by rules (`styleFor`, the region classifier, a cluster) |
 | **`restyled`** | the facade generator | the same fields, but a patch or manifest chose them for this building. The distinction exists so an audit can ask "which buildings did a person touch" |
-| **`simple`** | the simple-mesh renderer — **reserved, not implemented** | `simple: { polys: { way, z, h, style?, colour? }[], roofColour }`: several extruded polygons, each a facade, one roof colour. For LIDAR-derived models. Nothing writes or reads it yet; the adapter drops it with a warning |
+| **`simple`** | the simple-mesh renderer — **not written yet** (the geometry is: `src/map/simple.ts`) | `simple: { x, y, v, f }`: planar roof faces over one vertex table, walls implied — §5.3.1. Written by `tools/lidar/patch.py`; the adapter still drops it with a warning |
 | **`kit`** | the kit interpreter — **reserved** | `kit: KitSpec` as JSON. Today's kits are code, so they are `procedural` until the kit language is data |
 | **`procedural`** | a named builder shipped with the game (`render/landmarks/**`) | `proc: { name, params? }` — Salesforce Park, the Transamerica Pyramid, every recipe builder today |
 | **`mesh`** | a GLB | `mesh: { file, rot, scale?, offset? }` (rot in centidegrees, from north, clockwise) |
@@ -251,6 +251,88 @@ than the one drawn. The native bake (§12 step 4) has the levelling and closes t
 **Owners split across tiles.** v2 files each part by its own centre, so one dropped outline's parts can land
 in two tiles. The converter gives each tile an owner record (same `ref`) holding the parts it has. A patch on
 the owner's ref reaches all of them. The native bake files the building once, by its own centre.
+
+### 5.3.1 `simple` buildings (lidar)
+
+A building as a handful of planar roof faces, with every wall implied by their edges. It is what
+`tools/lidar` reconstructs (docs/LIDAR.md), and it is shaped so a renderer needs no geometry judgement at
+runtime: no plane fitting, no float matching, no repair.
+
+```ts
+simple: {
+  x, y,                 // origin, cm: tile-local in a tile, CITY cm in a patch (the loader moves it)
+  v: number[],          // vertex table, stride 2: dx, dy in cm from (x, y); shared by every face
+  f: {
+    r: number[],        // outer ring: indices into v, counter-clockwise (x east, y north)
+    h?: number[][],     // holes, clockwise
+    z: number,          // roof height AT THE ORIGIN, cm above zFloor
+    s?: [sx, sy],       // roof slope dz/dx, dz/dy in 1/10000; absent = flat
+    l?: number,         // index into the look table; absent = 0
+  }[],
+  l?: {                 // looks: absent = the building's own style/colour/palette, as for any generic building
+    style,              // facade style: dict.styles index in a tile, the style's name in a patch
+    wall?, trim?, accent?, roof?,   // 0xRRGGBB; absent = from the style's palettes, chosen by the seed
+  }[],
+}
+// roof z at vertex k of face f = f.z + (f.s[0] * v[2k] + f.s[1] * v[2k+1]) / 10000
+```
+
+The building's own `z` is the foot and `h` is the highest roof above it. `roof`, `levels` and `way` are not
+needed to draw it. An override keeps the OSM `way` as the building's identity outline.
+
+**Looks: colour and pattern.** The geometry says nothing about appearance, and lidar has none to give, so
+appearance is a separate small table. A face wears one look. Its outside walls and its roof take it, and a
+step wall takes the higher face's look. A look is a facade **style**, which is the pattern (windows, bays,
+cornice, ground floor, all in `styles.json`), plus optional colours. A missing colour comes from the style's
+own palettes, chosen by the seed, exactly as for a generic building. With no table at all, the building is
+drawn with its record's `style`/`colour`/`palette`. That is what an override of an OSM building does: it
+keeps the look the bake gave it. Looks may be real or generated, and the format does not record which.
+`tools/lidar/patch.py` generates one for every lidar building OSM lacks, statistically. It draws the style
+from the styles of OSM buildings within 150 m, weighted by how close their height is, and the colours from
+one of that style's palettes, seeded by the ref. A table of up to 16 looks lets one record vary by face (a
+block of rowhouses in eight colours), or lets a person or the editor repaint one face. In a patch, a look
+names its style. The loader interns it into `dict.styles` and moves the origin into the tile.
+
+**Which OSM building a mesh is.** An override's ref *is* the OSM identity (`b<way id>`, `b<2N+1>` for relation
+N, §9). The lidar tools make that exact: `tools/lidar/recon.py` labels every roof cell with a plane **and an
+OSM owner**. Footprints are rasterised on the block's grid, a `building:part` counts as its building, and
+roof outside every footprint (eaves, cornices, the 0.5–1 m registration error) goes to the nearest footprint
+within 2 m. So every face belongs to exactly one OSM building, and the cuts between owners are as straight as
+any other edge. Roof with no owner within reach becomes an add (`ref: 'x:lidar-<n>'`). An add written in the
+lidar's own grouping carries `covers: Ref[]`, the OSM buildings its faces belong to, biggest first.
+
+**Walls are read off the edges.** An edge two faces share appears in both, between the same two indices, in
+opposite directions: a **step**, drawn as one quad between the two roofs and facing the lower one. Where two
+pitched roofs cross along it, it is two triangles facing opposite ways. An edge only one face has is
+**outside**: a quad from that roof down to `z`, facing out (to the right of a CCW edge). `simpleGeometry()`
+in `src/map/simple.ts` does exactly this and returns plain arrays (roof triangles plus wall quads in the map
+frame). `tests/simple.test.ts` proves roof + walls + a floor close into a solid whose volume is exactly the
+volume under the roofs, and has been run on every building of the two research areas: 3 892 buildings, all exact. Wall facing was
+checked the same way: of ~130 000 walls, 5 have no roof within 2 cm behind them, where a face narrows to a
+needle.
+
+**Guarantees from the bake** (`tools/lidar/simple.py`, re-checked cheaply by `checkSimple()`):
+faces do not overlap; neighbouring faces share vertices, with T-junctions split; rings are simple with
+non-zero area, outer CCW, holes CW; no directed edge is used twice.
+
+**Limits.** A building over one of these is **not simplified, it is refused**. It is left out of the patch
+and listed with its reason, and an OSM building in that position keeps its generic form. Those are the
+special cases, for a kit or a mesh later.
+
+| limit | value | why |
+|---|---|---|
+| vertices | ≤ 256 | an index fits a byte |
+| faces | ≤ 32 | |
+| \|dx\|, \|dy\| | ≤ 15 000 cm (300 m across) | an offset fits an int16 |
+| height | ≤ 500 m | |
+| slope | ≤ tan 65° | steeper is a wall |
+| looks | ≤ 16 | |
+
+So any record is at most 256 × 2 int16 + its index rings: a few KB as JSON, about 2 KB binary. Measured
+on the research areas, a building is on average 88–147 triangles (roof + walls as two triangles each), at most
+924. Refused with OSM identity: 0.2% of buildings in the Haight, 2.8% downtown, where a tower and all its
+parts are one owner. Most are over 32 faces; the rest are geometry the encoder could not guarantee (a ring
+that self-intersects after rounding to cm).
 
 ### 5.4 Items
 

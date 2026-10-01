@@ -186,26 +186,7 @@ export class Vegetation {
      * lights here are matched to the same sun and sky the shaders use, so the foliage agrees with the
      * buildings it stands in front of.
      */
-    if (!this.scene.lights.some((l) => l.name === 'foliage')) {
-      const sky = new HemisphericLight('foliage', new V3(0, 1, 0), this.scene)
-      sky.diffuse = DAYLIGHT.skyColour.scale(1.5)
-      sky.groundColor = DAYLIGHT.groundColour.scale(1.6)
-      /*
-       * Dimmed under cloud. Overcast raises the ambient and drops the sun, which is right for the city but
-       * leaves the trees — the one thing here lit by real Babylon lights rather than by hand — brighter
-       * than they were in sunshine, and a glowing green tree under a grey sky is the first thing the eye
-       * picks out as wrong.
-       */
-      sky.intensity = 1.0 * (1 - 0.35 * OVERCAST)
-      sky.excludeWithLayerMask = PEOPLE
-      const sun = new DirectionalLight('foliage-sun', DAYLIGHT.sun.clone(), this.scene)
-      sun.diffuse = new Color3(DAYLIGHT.sunColour.r, DAYLIGHT.sunColour.g, DAYLIGHT.sunColour.b)
-      // matched to the hour: a tree lit for noon under a midnight sky is the one thing that gives a
-      // faked night away immediately
-      sun.intensity = 1.6 * (0.2 + 0.8 * Math.min(1, DAYLIGHT.sunColour.r))
-      sun.specular = new Color3(0.05, 0.05, 0.05)
-      sun.excludeWithLayerMask = PEOPLE
-    }
+    foliageLights(this.scene)
 
     // the library, and the region's own beside it; only trees in leaf: the library has autumn and snow-topped winter
     // trees for Trail Trainer's forests, and a red maple or a bare one in a San Francisco street was a random draw
@@ -582,3 +563,30 @@ export class Vegetation {
   get plantedCount(): number { return this.planted }
 }
 
+/**
+ * The Babylon lights for everything with a PBR material — the trees, and the rider's avatar, which otherwise has
+ * none: with the trees left out (iOS's ultra tier) the rider rode as a black silhouette. Idempotent; game.ts makes
+ * them at the start, the vegetation again in case it is used alone.
+ */
+export function foliageLights(scene: Scene): void {
+  if (!scene.lights.some((l) => l.name === 'foliage')) {
+    const sky = new HemisphericLight('foliage', new V3(0, 1, 0), scene)
+    sky.diffuse = DAYLIGHT.skyColour.scale(1.5)
+    sky.groundColor = DAYLIGHT.groundColour.scale(1.6)
+    /*
+     * Dimmed under cloud. Overcast raises the ambient and drops the sun, which is right for the city but
+     * leaves the trees — the one thing here lit by real Babylon lights rather than by hand — brighter
+     * than they were in sunshine, and a glowing green tree under a grey sky is the first thing the eye
+     * picks out as wrong.
+     */
+    sky.intensity = 1.0 * (1 - 0.35 * OVERCAST)
+    sky.excludeWithLayerMask = PEOPLE
+    const sun = new DirectionalLight('foliage-sun', DAYLIGHT.sun.clone(), scene)
+    sun.diffuse = new Color3(DAYLIGHT.sunColour.r, DAYLIGHT.sunColour.g, DAYLIGHT.sunColour.b)
+    // matched to the hour: a tree lit for noon under a midnight sky is the one thing that gives a
+    // faked night away immediately
+    sun.intensity = 1.6 * (0.2 + 0.8 * Math.min(1, DAYLIGHT.sunColour.r))
+    sun.specular = new Color3(0.05, 0.05, 0.05)
+    sun.excludeWithLayerMask = PEOPLE
+  }
+}

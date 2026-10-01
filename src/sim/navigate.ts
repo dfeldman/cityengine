@@ -519,7 +519,14 @@ export class Navigator {
         this.pos = { edgeId: ne.id, s: rev ? ne.length : 0, reversed: rev }
         continue
       }
-      const byEdge = this.wantEdge === null ? undefined : xs.find((x) => x.edgeId === this.wantEdge)
+      /*
+       * The edge asked for (the planned route's) — among the exits offered, or, if the offer folded it into a
+       * neighbour (two streets leaving within 20° are one choice, `rideExits`), among all of them. Yerba Buena's
+       * Macalla Road and Old Macalla Road leave one junction side by side; only Old Macalla was offered, it is a
+       * dead end, and an auto-routed rider went down it, turned round and went down it again (2026-09-30).
+       */
+      const byEdge = this.wantEdge === null ? undefined
+        : xs.find((x) => x.edgeId === this.wantEdge) ?? exits(this.g, nodeId, this.pos.edgeId).find((x) => x.edgeId === this.wantEdge)
       const chosen = byEdge ?? resolve(xs, this.committed ?? this.choice())
       // fast input: the hold that took this corner is spent until let go, and a tap is used up
       if (this.fast && (this.committed ?? this.choice()) !== 'straight') {

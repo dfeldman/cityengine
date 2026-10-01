@@ -29,6 +29,19 @@ import { SHADOW_Y, addShadow, shadowMaterial, shadowOffset } from './shadows.ts'
 import { PROCEDURAL, type Fit } from './landmarks/procedural.ts'
 import { TILE, type TileData } from '../city/tiles.ts'
 import { MID } from './city.ts'
+
+/**
+ * Whether a placed model keeps a CPU copy of its vertices once they are on the GPU (src/tier.ts, BUGS.md #242).
+ * Only picking reads them — `__pick` and the probes in tools/ — so a phone, where the landmarks' copies were ~70 MB
+ * of the JS heap, drops them; the desktop keeps them for the probes.
+ */
+let KEEP_GEOMETRY = true
+export function setKeepGeometry(keep: boolean): void { KEEP_GEOMETRY = keep }
+const shed = (m: Mesh): void => {
+  if (KEEP_GEOMETRY) return
+  m.refreshBoundingInfo({ updatePositionsArray: false })
+  m.geometry?.clearCachedData()
+}
 import { signCut, type PlacedSign } from './landmarks/signage.ts'
 import { flatSignMesh } from './sign-plates.ts'
 import { expandIncludes } from '../city/manifest.ts'
@@ -713,6 +726,7 @@ export class Landmarks {
       }
       const m = new Mesh(`skyline:${s.name}`, scene)
       mb.toVertexData().applyToMesh(m)
+      shed(m)
       m.material = skyMat
       // group 0, with the sky dome: every solid thing in the city draws over it, so it shows only where
       // there is sky — which is exactly where a tower five kilometres away should show
@@ -721,8 +735,22 @@ export class Landmarks {
       m.alwaysSelectAsActiveMesh = true
       // turned to its bearing (a bridge), degrees clockwise from north; local +z is the model's own axis
       if (s.bearing) m.rotation.y = (s.bearing * Math.PI) / 180
+      /*
+       * Where the city also places this landmark near (a manifest entry of the same name at its own point — the
+       * Golden Gate's NEAR level, public/landmarks/<city>/bridges.json), the far copy stands exactly where the near
+       * one does: same point, bearing and datum. It stood at the sea bed (−180 m) with the near one 80 m higher,
+       * and the swap at 1.3 km jumped.
+       */
+      const near = entries.find((e) => e.name === s.name && e.lat !== undefined && e.lon !== undefined)
+      let at = { x: s.x, y: s.baseY ?? 0, z: s.z }
+      if (near) {
+        const p = this.proj.toLocal({ lat: near.lat!, lon: near.lon! })
+        const [ox, oy, oz] = near.offset ?? [0, 0, 0]
+        at = { x: p.x + ox, y: (near.baseY ?? at.y) + oy, z: p.z + oz }
+        if (near.rotateDeg !== undefined) m.rotation.y = (near.rotateDeg * Math.PI) / 180
+      }
       // a long thing needs less of the distance boost a slender tower does (the Golden Gate is 2.7 km of it)
-      this.sky.push({ name: s.name, mesh: m, x: s.x, y: s.baseY ?? 0, z: s.z, boost: s.boost ?? skylineBoost(d) })
+      this.sky.push({ name: s.name, mesh: m, x: at.x, y: at.y, z: at.z, boost: s.boost ?? skylineBoost(d) })
     }
   }
 
@@ -1001,7 +1029,9 @@ export class Landmarks {
         sm.material = shadowMaterial(this.scene)
         sm.renderingGroupId = 3
         sm.isPickable = false
+        shed(sm)
       }
+      shed(m)
     } else if (e.file) {
       void this.loadModel(e, cx + ox, y, cz + oz, rotation)
     }
@@ -1136,6 +1166,7 @@ export class Landmarks {
         m.scaling.setAll(e.scale ?? 1)
         m.renderingGroupId = 3
         m.isPickable = false
+        shed(m)
       }
       for (const m of r.meshes) if (m.name === '__root__') m.dispose()
       this.count++

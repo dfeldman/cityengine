@@ -133,10 +133,14 @@ export class Terrain {
     const had = this.blocks.get(k)
     if (had && had.step === b.step && had.cols === b.cols) return
     this.blocks.set(k, { step: b.step, cols: b.cols, dm: Int16Array.from(b.dm) })
+    this.onTile?.(tx, tz)
   }
 
-  /** Forget a tile's ground. Held as `Int16Array` the whole box is under 20 MB, so nothing calls this yet. */
-  dropTile(tx: number, tz: number): void { this.blocks.delete(Terrain.at(tx, tz)) }
+  /** Forget a tile's ground (game.ts, as the tile leaves the ring). */
+  dropTile(tx: number, tz: number): void { if (this.blocks.delete(Terrain.at(tx, tz))) this.onTile?.(tx, tz) }
+
+  /** told when a tile's fine ground arrives or goes (render/city.ts: the depth occluder follows it, BUGS.md #240) */
+  onTile: ((tx: number, tz: number) => void) | null = null
 
   /** How many tiles have their own fine ground right now (for the heap report). */
   get blockCount(): number { return this.blocks.size }

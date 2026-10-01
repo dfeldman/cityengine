@@ -34,7 +34,7 @@ import { joinNearMisses } from './gaps.ts'
 import { bridgesQuery, sandQuery, wallsQuery, squaresQuery, stepsQuery, wideQuery, fringeQuery, cityQuery, furnitureQuery, innerRings, outerRings, overpassTiled, type Bbox, type OsmWay, type LatLon } from './overpass.ts'
 import { Elevation, ATTRIBUTION as TERRAIN_CREDIT, metresPerPixel } from './terrarium.ts'
 import { Terrain, type PackedTerrain } from '../src/city/terrain.ts'
-import { TILE, splitPackage, type CityIndex, type TileEntry } from '../src/city/tiles.ts'
+import { TILE, splitPackage, tilesOfLine, type CityIndex, type TileEntry } from '../src/city/tiles.ts'
 import { waterLookup } from '../src/render/watermask.ts'
 import { MIN_SPACING, TREE_CAP, TREES_PER_KM2, newPlantReport, packPlantings, plantCity, type PlantReport } from '../src/city/plantings.ts'
 import { PlantZones } from '../src/city/zone-planting.ts'
@@ -50,6 +50,7 @@ import { rideGraph, rideStats } from '../src/city/ridegraph.ts'
 import { frontageOf, totemPoint } from '../src/city/landmark-place.ts'
 import { landmarkKind, score } from './landmark-rank.ts'
 import { bridgeHeights } from './bridges.ts'
+import { authoredWays, conformWithUndo, describe, undoDecks, type DeckUndo } from './deck-conform.ts'
 import { cityParkMask, parkEdge, roadFix } from '../src/city/park-area.ts'
 
 /**
@@ -181,6 +182,9 @@ function widthOfNA(tags: Record<string, string>): number {
     case 'pedestrian': return 8
     case 'service': return 5
     case 'cycleway': return 2.5
+    // (a ramp with no lanes tagged is one lane and its shoulders — at the default 3 m no car would use it)
+    case 'motorway_link': case 'trunk_link': return 5.8
+    case 'motorway': case 'trunk': return 9.2
     default: return 3
   }
 }
@@ -274,6 +278,11 @@ async function bake(spec: CitySpec): Promise<void> {
     }
     console.log(`  ${n} stairways from OSM, ${own} of the region's own`)
   }
+  // the region's own AUTHORED ways (src/city/sf/bridges.ts: the Bay Bridge Bikeway), joined to the real junctions
+  // they name, their heights their own (kept aside here, put back by tools/deck-conform.ts)
+  const authored = authoredWays(spec.region ?? spec.id, spec.centre, ways)
+  ways.push(...authored.ways)
+  if (authored.ways.length) console.log(`  ${authored.ways.length} authored ways of the region's own`)
 
   const proj = new Projection(spec.centre)
   const streetRegion = region(spec.region)
@@ -463,19 +472,24 @@ async function bake(spec: CitySpec): Promise<void> {
           // class default is a whole corridor, and the Champs-Élysées' contre-allées spread over their pavements
           const measured = w.tags.width !== undefined || w.tags.lanes !== undefined
           const separate = measured && (/^(separate|no|none)$/.test(w.tags.sidewalk ?? '') || w.tags['sidewalk:both'] === 'separate')
-          const walk = foot ? 0 : kerbToKerb ? pavementForNA(corridor) : separate ? 0.6 : pavementFor(corridor)
+          // (no pavement beside a freeway: the Bay Bridge's approaches had 3.8 m of paving each side, and people on it)
+          const freeway = w.tags.highway === 'motorway' || w.tags.highway === 'motorway_link'
+          const walk = foot || freeway ? 0 : kerbToKerb ? pavementForNA(corridor) : separate ? 0.6 : pavementFor(corridor)
           edges.push({
             id: edgeId++, a: w.nodes[startIdx], b: w.nodes[i],
             points: packPoints(pts), surface: surfaceOf(w.tags),
             // the carriageway is the corridor less its two pavements, never narrower than a single lane —
             // or, where the region measures kerb to kerb, the width itself
-            width: foot || kerbToKerb || separate ? corridor : Math.max(2.8, corridor - 2 * walk),
+            width: foot || kerbToKerb || separate || freeway ? corridor : Math.max(2.8, corridor - 2 * walk),
             walk,
             name: w.tags.name, foot,
             // OSM marks these itself, which is far better than guessing from where two ways overlap
             crossing: w.tags.footway === 'crossing' || w.tags.path === 'crossing'
               || w.tags.crossing !== undefined || w.tags.highway === 'crossing' || undefined,
             ...wayTags(w.tags),
+            // (its own heights, at its nodes: the bake puts more points along long ways later, so they are kept with
+            // where they are, and laid along every point at the end — tools/deck-conform.ts)
+            ...(w.tags['sr:authored'] ? { authored: true, _y: pts.map((p, k) => [p.x, p.z, authored.y.get(w.nodes[startIdx + k]) ?? 0]) } : {}),
           })
           last = edges[edges.length - 1]
           emitted = true
@@ -1353,7 +1367,7 @@ async function bake(spec: CitySpec): Promise<void> {
       if (fineZones.some((zn) => zoneTouchesRect(zn, ...r))) fineTiles.add(`${tx},${tz}`)
     }
   }
-  const shipped = new GroundModel({
+  let shipped = new GroundModel({
     coarse: { x0: tx0, z0: tz0, step: STEP, cols, rows, h: ground },
     fine: { x0: fx0, z0: fz0, step: FINE_STEP, cols: fcols, rows: frows, h: fineGround },
     fineTiles, tiles: blockTiles, fineStep: FINE_STEP, tile: TILE,
@@ -1516,12 +1530,91 @@ async function bake(spec: CitySpec): Promise<void> {
         + ` (true MSL in this frame is ${(-datumRaw).toFixed(1)} m)`)
     }
   }
-  const decks = bridgeHeights(kept, { water: waterBodies, ground: groundAt, buried })
+  // (not the region's authored ways: their heights are their own, and nothing is ramped up to them)
+  const decks = bridgeHeights(kept.filter((e) => !e.authored), { water: waterBodies, ground: groundAt, buried })
   // the ways lifted onto a deck are ramps: said outright, for the renderer (city/package.ts isRaised)
   for (const e of kept) if (decks.raised.has(e.id) && !e.bridge) e.ramp = true
   // street tunnels under a hill: their own mouth-to-mouth profile, and `bore` — ridden and drawn (tools/tunnels.ts)
   const bores = boreTunnels(kept, groundAt, (name, why) => console.log(`  tunnel not ridden: ${name} — ${why}`))
   if (bores.size > 0) console.log(`  ${bores.size} street-tunnel ways made rideable bores (their pavements included)`)
+  /*
+   * The ways over a MODELLED bridge take the model's deck heights, and the chain off each end of it is regraded to
+   * meet them (src/city/bridge-decks.ts, tools/deck-conform.ts): the Golden Gate's roadway and sidewalks, both
+   * decks of the Bay Bridge and the ramps on Rincon Hill. Before the cuts are carved: a deck that comes out of a
+   * hill below the ground (the Bay Bridge's lower roadway, east of the Yerba Buena tunnel) is a `cut`, and the
+   * ground is brought down to it. What it changed is kept (`decks-undo.json`), for `--decks`.
+   */
+  const deckWork = conformWithUndo(spec.region ?? spec.id, spec.centre, kept, groundAt)
+  if (deckWork) console.log(`  bridge decks: ${describe(deckWork.report)}`)
+  /*
+   * CARVE THE CUTS into the ground (2026-09-29): a street running down into a tunnel mouth is in a cutting the
+   * elevation data does not have — the coarse ground stood over lower Stockton and over the approach to the
+   * Stockton Tunnel's north mouth, and the ground occluder hid the whole street beyond it from inside the tunnel.
+   * Each cut street's corridor, and 8 m either side, is lowered to the street's own level, rising at 2:1 beyond
+   * that; only alongside the street — never past its ends, which would dig a hole in the hill over the mouth.
+   * The tiles it touches ship fine ground (4 m), so the cutting has sides.
+   */
+  {
+    const cuts = kept.filter((e) => e.cut && e.heights?.length)
+    if (cuts.length) {
+      const MARGIN = 8
+      const carve = (h: ArrayLike<number> & { [i: number]: number }, x0: number, z0: number, step: number, ncols: number, nrows: number): number => {
+        let lowered = 0
+        for (const e of cuts) {
+          const pts = unpackPoints(e.points)
+          const half = (e.foot ? e.width / 2 : e.width / 2 + Math.max(e.walk, 0.6)) + 0.3
+          const reach = half + MARGIN
+          for (let i = 1; i < pts.length; i++) {
+            const a = pts[i - 1]
+            const b = pts[i]
+            const dx = b.x - a.x
+            const dz = b.z - a.z
+            const l2 = dx * dx + dz * dz
+            if (l2 < 1e-6) continue
+            const c0 = Math.max(0, Math.floor((Math.min(a.x, b.x) - reach - x0) / step))
+            const c1 = Math.min(ncols - 1, Math.ceil((Math.max(a.x, b.x) + reach - x0) / step))
+            const r0 = Math.max(0, Math.floor((Math.min(a.z, b.z) - reach - z0) / step))
+            const r1 = Math.min(nrows - 1, Math.ceil((Math.max(a.z, b.z) + reach - z0) / step))
+            for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) {
+              const x = x0 + c * step
+              const z = z0 + r * step
+              const t = ((x - a.x) * dx + (z - a.z) * dz) / l2
+              // alongside this piece only (the street's own ends included, never beyond them)
+              const endA = i === 1 ? 0 : -0.05
+              const endB = i === pts.length - 1 ? 1 : 1.05
+              if (t < endA || t > endB) continue
+              const tt = Math.max(0, Math.min(1, t))
+              const d = Math.hypot(x - (a.x + dx * tt), z - (a.z + dz * tt))
+              if (d > reach + 12) continue
+              const level = e.heights![i - 1] + (e.heights![i] - e.heights![i - 1]) * tt
+              const want = level + Math.max(0, d - reach) * 2
+              const k = r * ncols + c
+              if (want < h[k]) { h[k] = want; lowered++ }
+            }
+          }
+        }
+        return lowered
+      }
+      const nf = carve(fineGround, fx0, fz0, FINE_STEP, fcols, frows)
+      const nc = carve(ground, tx0, tz0, STEP, cols, rows)
+      // the tiles the cuts touch ship the fine ground, so the cutting keeps its sides
+      for (const e of cuts) for (const q of unpackPoints(e.points)) {
+        for (const [dx, dz] of [[0, 0], [30, 0], [-30, 0], [0, 30], [0, -30]]) {
+          const k = `${Math.floor((q.x + dx) / TILE)},${Math.floor((q.z + dz) / TILE)}`
+          if (blockTiles.some(([tx, tz]) => `${tx},${tz}` === k)) fineTiles.add(k)
+        }
+      }
+      shipped = new GroundModel({
+        coarse: { x0: tx0, z0: tz0, step: STEP, cols, rows, h: ground },
+        fine: { x0: fx0, z0: fz0, step: FINE_STEP, cols: fcols, rows: frows, h: fineGround },
+        fineTiles, tiles: blockTiles, fineStep: FINE_STEP, tile: TILE,
+      })
+      for (const [k, b] of shipped.blocks) {
+        if (shipped.fineTiles.has(k)) { b.src = terrainFine.src; b.resM = terrainFine.resM } else { b.src = terrain.src; b.resM = terrain.resM }
+      }
+      console.log(`  cuts carved into the ground: ${cuts.length} streets into tunnel mouths, ${nf} fine and ${nc} coarse samples lowered`)
+    }
+  }
   /*
    * Elevated railways (the Loop's L) by a direct rule rather than the street chains: an L structure runs at
    * a steady 6–7 m, and chained through a whole loop of track the street rule took the worst crossing
@@ -1940,6 +2033,7 @@ async function bake(spec: CitySpec): Promise<void> {
   console.log(`  → public/cities/${spec.id}.json  ${kb} kB`)
   await writeTiles(pkg, streetRegion.riverDrop ?? 0, shipped, zones, datumRaw)
   await writeRides(pkg)
+  if (deckWork) await writeFile(resolve(OUT, spec.id, 'decks-undo.json'), JSON.stringify(deckWork.undo))
   // and last, the checks that genuinely need the finished tiles: direction A confirmed against what was
   // actually written, and direction B — what is standing in the city with nothing but the classifier
   auditStage('3', spec)
@@ -2438,6 +2532,48 @@ async function main(): Promise<void> {
       const pkg = JSON.parse(readFileSync(resolve(OUT, `${spec.id}.json`), 'utf8')) as CityPackage
       console.log(`${spec.id}:`)
       await writeRides(pkg)
+    }
+    return
+  }
+  /*
+   * --decks: only the bridge decks, on the package already baked — for working on a bridge model's deck profile
+   * (src/render/landmarks/sf/bay-bridge.ts `lowerY`) without the twenty minutes of a bake. The ways are conformed
+   * again from what they were BEFORE the last conform (kept beside the package as `decks-undo.json`, so a changed
+   * declaration does not build on the last one's heights), written into the package, the tiles they lie in, the
+   * ride files, and v3 (`npm run map:v3`, which keeps the zones and the datum a bake wrote).
+   */
+  if (process.argv.includes('--decks')) {
+    const { readFileSync, existsSync, writeFileSync } = await import('node:fs')
+    const { execFileSync } = await import('node:child_process')
+    for (const spec of list) {
+      const file = resolve(OUT, `${spec.id}.json`)
+      const pkg = JSON.parse(readFileSync(file, 'utf8')) as CityPackage
+      const undoFile = resolve(OUT, spec.id, 'decks-undo.json')
+      const touched = existsSync(undoFile) ? undoDecks(pkg.edges, JSON.parse(readFileSync(undoFile, 'utf8')) as DeckUndo) : new Set<number>()
+      const terrain = new Terrain(pkg.terrain)
+      const work = conformWithUndo(spec.region ?? spec.id, pkg.origin, pkg.edges, (x, z) => terrain.rawHeightAt(x, z))
+      if (!work) { console.log(`${spec.id}: no bridge decks declared for region ${spec.region}`); continue }
+      console.log(`${spec.id}: ${describe(work.report)}`)
+      for (const id of work.report.changed) touched.add(id)
+      writeFileSync(undoFile, JSON.stringify(work.undo))
+      await writeFile(file, JSON.stringify(pkg))
+      // the tiles those ways lie in: the same records, by id
+      const byId = new Map(pkg.edges.filter((e) => touched.has(e.id)).map((e) => [e.id, e]))
+      const tiles = new Set<string>()
+      for (const e of byId.values()) for (const k of tilesOfLine(e.points)) tiles.add(k)
+      let rewritten = 0
+      for (const k of tiles) {
+        const [tx, tz] = k.split(',').map(Number)
+        const f = resolve(OUT, spec.id, 'tiles', `${tx}_${tz}.json`)
+        if (!existsSync(f)) continue
+        const t = JSON.parse(readFileSync(f, 'utf8')) as { edges: PackedEdge[] }
+        t.edges = t.edges.map((e) => byId.get(e.id) ?? e)
+        writeFileSync(f, JSON.stringify(t))
+        rewritten++
+      }
+      console.log(`  ${touched.size} ways written into the package and ${rewritten} tiles`)
+      await writeRides(pkg)
+      execFileSync('node', ['--max-old-space-size=8192', '--experimental-strip-types', 'tools/map-v3.ts', spec.id], { stdio: 'inherit', cwd: resolve(import.meta.dirname, '..') })
     }
     return
   }

@@ -25,6 +25,7 @@ import type { CityPackage } from '../city/package.ts'
 import type { Terrain } from '../city/terrain.ts'
 import { unpackPoints } from '../city/package.ts'
 import { profileAt } from '../city/terrain.ts'
+import { StreetFleet } from './street-fleet.ts'
 
 class Pool {
   readonly mesh: Mesh
@@ -111,6 +112,8 @@ const build = (fn: (out: MeshBuilder) => void): MeshBuilder => {
 export class Life {
   private readonly cars: Pool
   private readonly buses: Pool
+  /** the street's cars and buses as carkit draws them (render/street-fleet.ts); null: the old models above */
+  private readonly fleet: StreetFleet | null
   /** the trains' cars, by kind and variant: middle, head and tail pools */
   private readonly stockPools: { kind: TrainKind; variants: { mid: Pool; head: Pool | null; tail: Pool | null; liveries?: Rgb[]; pitch: number; shadow: [number, number, number] }[] }[] = []
   private readonly stock: RegionStock
@@ -132,9 +135,10 @@ export class Life {
   private readonly m = Matrix.Identity()
 
   constructor(scene: Scene, pkg: CityPackage, budget = { cars: 90, buses: 16, people: 3000 },
-              stock: RegionStock = DEFAULT_STOCK, stations: { x: number; z: number }[] = []) {
-    this.cars = new Pool(scene, 'cars', build(car), budget.cars)
-    this.buses = new Pool(scene, 'buses', build(bus), budget.buses)
+              stock: RegionStock = DEFAULT_STOCK, stations: { x: number; z: number }[] = [], carkit = true) {
+    this.fleet = carkit ? new StreetFleet(scene) : null
+    this.cars = new Pool(scene, 'cars', build(car), carkit ? 1 : budget.cars)
+    this.buses = new Pool(scene, 'buses', build(bus), carkit ? 1 : budget.buses)
     // the region's own rolling stock (render/rolling-stock.ts; Paris's RER, métro and Citadis, SF's cable cars)
     this.stock = stock
     this.stations = stations
@@ -288,7 +292,7 @@ export class Life {
   }
 
   get stats(): { vehicles: number; people: number } {
-    return { vehicles: this.cars.count + this.buses.count, people: this.bodies.count }
+    return { vehicles: this.fleet ? this.fleet.count : this.cars.count + this.buses.count, people: this.bodies.count }
   }
 
   update(dt: number, vehicles: readonly Vehicle[], walkers: readonly Walker[], at: { x: number; z: number },
@@ -312,7 +316,8 @@ export class Life {
       this.blobs.push(this.m, 1, 1, 1, 0)
     }
 
-    for (const v of vehicles) {
+    if (this.fleet) this.fleet.update(dt, vehicles, (x, z) => groundAt({ x, z }), blob)
+    else for (const v of vehicles) {
       Matrix.ComposeToRef(
         Vector3.OneReadOnly,
         Quaternion.RotationYawPitchRoll(v.heading, 0, 0),

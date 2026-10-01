@@ -1,0 +1,190 @@
+{
+  "_note": "Street Runner's delivery sources in San Francisco (src/game/delivery.ts `sources`). Every name is INVENTED, on purpose: no real business is named or implied. Places are where such a kitchen would plausibly be (dim sum in Chinatown, steak downtown). `fragile`: a collision after pickup spoils it and the job is off. lat/lon: a point on the block; the nearest building becomes the pickup.",
+  "restaurants": [
+    {
+      "id": "golden-crank", "name": "The Golden Crank Dumpling House", "kind": "chinese", "lat": 37.79455, "lon": -122.40655,
+      "blurb": "Dim sum so fresh the har gow still has opinions.",
+      "items": [
+        { "name": "kung pao chicken", "emoji": "🥡", "blurb": "Extra peanuts, because you clearly need the protein." },
+        { "name": "lo mein", "emoji": "🍜", "blurb": "Nine feet of noodle, coiled for aerodynamics." },
+        { "name": "pork buns", "emoji": "🥟", "blurb": "Soft as a saddle you will never own." }
+      ]
+    },
+    {
+      "id": "lucky-spoke", "name": "Lucky Spoke Noodle Bar", "kind": "chinese", "lat": 37.79560, "lon": -122.40770,
+      "blurb": "Hand-pulled noodles, pulled by a former track sprinter.",
+      "items": [
+        { "name": "hot and sour soup", "emoji": "🍲", "fragile": true, "blurb": "Scalding, sloshy, and absolutely not spill-proof." },
+        { "name": "dan dan noodles", "emoji": "🍜", "blurb": "Numbing pepper for the hills ahead." }
+      ]
+    },
+    {
+      "id": "jade-derailleur", "name": "Jade Derailleur Tea House", "kind": "chinese", "lat": 37.79620, "lon": -122.40580,
+      "blurb": "Eleven gears of oolong. Shifts smoothly under load.",
+      "items": [
+        { "name": "egg tarts", "emoji": "🥧", "fragile": true, "blurb": "Custard wobble rated for zero potholes." },
+        { "name": "sesame balls", "emoji": "🍡", "blurb": "Round, golden, roll downhill if dropped." }
+      ]
+    },
+    {
+      "id": "cannoli-climb", "name": "Nonna's Hill-Climb Cannoli", "kind": "italian bakery", "lat": 37.79990, "lon": -122.40860,
+      "blurb": "Nonna rode up Telegraph Hill daily until she was 94. Show some respect.",
+      "items": [
+        { "name": "cannoli", "emoji": "🥐", "fragile": true, "blurb": "Shell crisp, filling piped to order, structural integrity: poor." },
+        { "name": "focaccia", "emoji": "🍞", "blurb": "Dimpled like a well-used saddle." }
+      ]
+    },
+    {
+      "id": "pedal-pizza", "name": "Pedal-Pushers Pizzeria", "kind": "pizza", "lat": 37.80060, "lon": -122.41010,
+      "blurb": "Wood-fired. The wood was a bike shop's old workbench.",
+      "items": [
+        { "name": "margherita pizza", "emoji": "🍕", "blurb": "Keep the box flat. Keep the box FLAT." },
+        { "name": "garlic knots", "emoji": "🧄", "blurb": "Ward off vampires and drafting rivals." }
+      ]
+    },
+    {
+      "id": "ironhorse-steak", "name": "The Brake Lever Chophouse", "kind": "steakhouse", "lat": 37.79240, "lon": -122.40030,
+      "blurb": "Where the Financial District expenses its feelings.",
+      "items": [
+        { "name": "dry-aged ribeye", "emoji": "🥩", "blurb": "Aged 45 days, delivered in 15 minutes. Ideally." },
+        { "name": "bottle of cabernet", "emoji": "🍷", "fragile": true, "blurb": "Glass, liquid, expensive: three reasons to ride gently." }
+      ]
+    },
+    {
+      "id": "brass-bell-grill", "name": "Brass Bell Grill & Oyster Room", "kind": "steakhouse", "lat": 37.79000, "lon": -122.40190,
+      "blurb": "Ring the bell for service. Ring it twice and they fine you.",
+      "items": [
+        { "name": "steak frites", "emoji": "🍟", "blurb": "Fries are to be eaten hot, so pedal like it." },
+        { "name": "oysters on ice", "emoji": "🦪", "fragile": true, "blurb": "A dozen, on ice, on a bike. What could go wrong." }
+      ]
+    },
+    {
+      "id": "senor-sprocket", "name": "Señor Sprocket's Taquería", "kind": "taqueria", "lat": 37.76160, "lon": -122.41930,
+      "blurb": "Burritos the size of a rear pannier.",
+      "items": [
+        { "name": "super burrito", "emoji": "🌯", "blurb": "Two pounds of carnitas, rice and destiny." },
+        { "name": "horchata", "emoji": "🥛", "fragile": true, "blurb": "Cinnamon, ice, and a lid that does not quite fit." },
+        { "name": "tacos al pastor", "emoji": "🌮", "blurb": "Pineapple included, opinions not." }
+      ]
+    },
+    {
+      "id": "valencia-bagel", "name": "Uncle Chainring's Bagel Depot", "kind": "deli", "lat": 37.76420, "lon": -122.42180,
+      "blurb": "Bagels boiled, baked, and slightly out of true.",
+      "items": [
+        { "name": "everything bagel", "emoji": "🥯", "blurb": "Shedding seeds in your bag forever after." },
+        { "name": "lox and schmear", "emoji": "🐟", "blurb": "Cold-smoked salmon, warm-hearted service." }
+      ]
+    },
+    {
+      "id": "nob-hill-deli", "name": "Top of the Hill Delicatessen", "kind": "deli", "lat": 37.79180, "lon": -122.41380,
+      "blurb": "You climbed Nob Hill for this. It is worth it. Mostly.",
+      "items": [
+        { "name": "pastrami on rye", "emoji": "🥪", "blurb": "Stacked higher than California Street is steep." },
+        { "name": "matzo ball soup", "emoji": "🍲", "fragile": true, "blurb": "Grandma-grade, lid-optional." }
+      ]
+    },
+    {
+      "id": "union-sq-bagels", "name": "Thirteen-Spoke Bagels & Lox", "kind": "deli", "lat": 37.78810, "lon": -122.40760,
+      "blurb": "Open since breakfast was invented, roughly.",
+      "items": [
+        { "name": "bagel dozen", "emoji": "🥯", "blurb": "Thirteen, actually. The baker cannot count." },
+        { "name": "black-and-white cookies", "emoji": "🍪", "blurb": "Half vanilla, half chocolate, fully crumbly." }
+      ]
+    },
+    {
+      "id": "fog-scoop", "name": "Low-Gear Creamery", "kind": "ice cream", "lat": 37.80020, "lon": -122.43690,
+      "blurb": "Ice cream churned at the exact temperature of a Marina July.",
+      "items": [
+        { "name": "salted caramel ice cream", "emoji": "🍦", "fragile": true, "blurb": "Melting as you read this. Crash once and it is soup." },
+        { "name": "mint chip pint", "emoji": "🍨", "fragile": true, "blurb": "Keep it upright, keep it cold, keep it moving." }
+      ]
+    },
+    {
+      "id": "haight-gelato", "name": "Gearshift Gelato", "kind": "ice cream", "lat": 37.76990, "lon": -122.44700,
+      "blurb": "Psychedelic flavours, conventional cones.",
+      "items": [
+        { "name": "pistachio gelato", "emoji": "🍨", "fragile": true, "blurb": "One pothole and it is a smoothie." },
+        { "name": "affogato kit", "emoji": "☕", "fragile": true, "blurb": "Espresso and gelato, travelling separately, briefly." }
+      ]
+    },
+    {
+      "id": "dolores-scoops", "name": "Two-Wheel Scoop Shop", "kind": "ice cream", "lat": 37.76130, "lon": -122.42560,
+      "blurb": "Across from the park, so everyone wants it, now.",
+      "items": [
+        { "name": "brown butter ice cream", "emoji": "🍦", "fragile": true, "blurb": "Delicate, delicious, doomed if you hit a car." }
+      ]
+    },
+    {
+      "id": "hayes-wine", "name": "Tailwind & Tannin Wine Merchants", "kind": "wine store", "lat": 37.77650, "lon": -122.42380,
+      "blurb": "Natural wine, natural light, natural smugness.",
+      "items": [
+        { "name": "bottle of pinot noir", "emoji": "🍷", "fragile": true, "blurb": "Sonoma's finest, swaddled in one sad sheet of tissue." },
+        { "name": "champagne", "emoji": "🍾", "fragile": true, "blurb": "Shaken, it becomes a fire extinguisher." }
+      ]
+    },
+    {
+      "id": "japantown-ramen", "name": "Kickstand Ramen Counter", "kind": "japanese", "lat": 37.78530, "lon": -122.42980,
+      "blurb": "Broth simmered for 18 hours; your ride should take 18 minutes.",
+      "items": [
+        { "name": "tonkotsu ramen", "emoji": "🍜", "fragile": true, "blurb": "A litre of molten broth in a plastic tub. Ride like a monk." },
+        { "name": "sushi platter", "emoji": "🍣", "blurb": "Arranged with tweezers. Please do not do wheelies." }
+      ]
+    },
+    {
+      "id": "tenderloin-pho", "name": "Spoke and Broth Noodle Café", "kind": "vietnamese", "lat": 37.78450, "lon": -122.41550,
+      "blurb": "Half bike shop, half noodle shop, all broth.",
+      "items": [
+        { "name": "pho tai", "emoji": "🍲", "fragile": true, "blurb": "Herbs on the side, soup everywhere if you crash." },
+        { "name": "bánh mì", "emoji": "🥖", "blurb": "Crusty baguette, rated for minor turbulence." }
+      ]
+    },
+    {
+      "id": "ferry-oysters", "name": "Low Tide Oyster Counter", "kind": "seafood", "lat": 37.79550, "lon": -122.39400,
+      "blurb": "Oysters so fresh they were in the Bay this morning. Hopefully not the bit under the bridge.",
+      "items": [
+        { "name": "oyster dozen", "emoji": "🦪", "fragile": true, "blurb": "On crushed ice. Twelve tiny trust exercises." },
+        { "name": "crab sandwich", "emoji": "🦀", "blurb": "Dungeness, mayo, and a mild sense of occasion." }
+      ]
+    },
+    {
+      "id": "wharf-chowder", "name": "Bread Bowl Bob's Chowder Shack", "kind": "seafood", "lat": 37.80780, "lon": -122.41720,
+      "blurb": "The bowl is bread. The bread is a bowl. Bob is a legend.",
+      "items": [
+        { "name": "clam chowder in a bread bowl", "emoji": "🥣", "fragile": true, "blurb": "The bowl holds. Until it does not." },
+        { "name": "sourdough loaf", "emoji": "🍞", "blurb": "Tangy, crusty, practically indestructible." }
+      ]
+    },
+    {
+      "id": "polk-burger", "name": "Burger Bottom Bracket", "kind": "burgers", "lat": 37.79070, "lon": -122.42070,
+      "blurb": "Two smashed patties, one smashed record.",
+      "items": [
+        { "name": "double cheeseburger", "emoji": "🍔", "blurb": "Keep it level, keep it moving." },
+        { "name": "chocolate milkshake", "emoji": "🥤", "fragile": true, "blurb": "Thick, cold, and absolutely not crash-rated." }
+      ]
+    },
+    {
+      "id": "castro-bakery", "name": "Coaster Brake Bakery", "kind": "bakery", "lat": 37.76100, "lon": -122.43480,
+      "blurb": "Layer cakes engineered by a retired bridge inspector.",
+      "items": [
+        { "name": "birthday cake", "emoji": "🎂", "fragile": true, "blurb": "Three tiers, one rider, zero margin for error." },
+        { "name": "morning buns", "emoji": "🥐", "blurb": "Cinnamon sugar on everything you own." }
+      ]
+    },
+    {
+      "id": "soma-coffee", "name": "Ninety RPM Coffee Roasters", "kind": "coffee", "lat": 37.77880, "lon": -122.40410,
+      "blurb": "Single-origin beans, roasted at 90 rpm.",
+      "items": [
+        { "name": "tray of lattes", "emoji": "☕", "fragile": true, "blurb": "Four flat whites in a cardboard tray of hope." },
+        { "name": "bag of beans", "emoji": "🫘", "blurb": "Whole bean, rattles like a loose spoke." }
+      ]
+    },
+    {
+      "id": "richmond-dimsum", "name": "Pagoda of the Pedals", "kind": "chinese", "lat": 37.78010, "lon": -122.46420,
+      "blurb": "The Richmond's answer to Chinatown, with parking for bikes only.",
+      "items": [
+        { "name": "xiao long bao", "emoji": "🥟", "fragile": true, "blurb": "Soup inside dumplings. Physics is not on your side." },
+        { "name": "roast duck", "emoji": "🦆", "blurb": "Glossy, crackling, and it fits in the bag (barely)." }
+      ]
+    }
+  ]
+}

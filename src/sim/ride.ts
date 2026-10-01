@@ -62,6 +62,8 @@ export const BRAKE_HARD = 3
 
 export class Ride {
   private v = 0
+  /** world metres per physical metre (src/modes.ts): `step` returns the world speed, the physics stay physical */
+  speedup = 1
   private crank = 0
   private braking = false
   /** seconds at (near) zero power: the brake comes on after a moment of it */
@@ -109,6 +111,18 @@ export class Ride {
       }
     }
 
+    /*
+     * THE SPEEDUP (src/modes.ts): the rider covers `speedup` times the ground their physical speed would. The
+     * physics stay in physical metres — the resistance, so the grade a trainer is asked for, is the real one — and
+     * what comes in from the world (the corner, the car ahead) is turned into physical terms first, so the caps
+     * still hold in the world: a corner taken at √(a·r) world speed, the car ahead never passed through.
+     */
+    const k = this.speedup
+    if (k !== 1) {
+      cornerRadius /= k * k
+      distanceToCorner /= k
+      if (leader) leader = { speed: leader.speed / k, gap: leader.gap / k }
+    }
     const mass = this.cfg.riderMassKg + this.cfg.bikeMassKg
     const power = m.power ?? 0
     const crr = CRR[surface] ?? CRR.asphalt
@@ -163,7 +177,7 @@ export class Ride {
 
     this.crank += (power > 10 ? (this.v > 0.5 ? this.v * 0.9 : 1.2) : 0) * dt
     return {
-      speed: this.v, grade, power: m.power, working: power > 10,
+      speed: this.v * k, grade, power: m.power, working: power > 10,
       coasting: power <= ZERO_POWER && this.v > 0.3 && !this.braking, braking: this.braking, crank: this.crank,
     }
   }

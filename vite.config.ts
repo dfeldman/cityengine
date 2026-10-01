@@ -5,6 +5,13 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   base: './',
   /*
+   * ONE BABYLON for the app and every linked kit (carkit, avatarkit). In a production build a `file:` kit's
+   * `@babylonjs/core` import resolves to the kit's OWN copy, so carkit registered its shaders with a Babylon the
+   * engine never asks, and the engine fetched them by URL — and got index.html (BUGS.md #243). The dev server's
+   * pre-bundling happened to hide it.
+   */
+  resolve: { dedupe: ['@babylonjs/core', '@babylonjs/loaders'] },
+  /*
    * A DEV SERVER STARTED FOR TESTING MUST NOT SHARE THE LIVE SERVER'S DEP CACHE.
    *
    * `node_modules/.vite` is shared by every Vite in this folder. A second server — an agent's test run, a

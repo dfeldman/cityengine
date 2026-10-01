@@ -57,12 +57,18 @@ export interface Edge {
   /** OSM `service=*`: a parking aisle or a driveway is not a street */
   service?: string
   oneway?: boolean
+  /** the one way runs from `b` to `a`: a ride edge joined from map edges, turned round to join (ridegraph.ts) */
+  onewayBack?: boolean
   /** OSM `layer`, for keeping a bridge and the street under it apart */
   layer?: number
   bridge?: boolean
   tunnel?: boolean
   /** a street tunnel under a hill, ridden and drawn as a tunnel (tools/tunnels.ts) */
   bore?: boolean
+  /** a freeway way the bike rides (package.ts `ridden`) */
+  ridden?: boolean
+  /** a way the region drew (package.ts `authored`) */
+  authored?: boolean
   /**
    * On a RIDE graph (ridegraph.ts), the map edges this edge was built from, in order from its `a` end, with
    * `reversed` true where that map edge runs b→a inside it. Absent on the map graph.

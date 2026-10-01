@@ -57,6 +57,30 @@ describe('Street Runner on Dandyhorse (src/platform.ts)', () => {
     expect(p.steering()).toEqual([])
   })
 
+  it('shows an offered delivery on the phone as a menu beside the d-pad, and puts the d-pad back after', () => {
+    const p = new Platform(start(), () => {}) as unknown as Inside & {
+      offer: Platform['offer']; endOffer: Platform['endOffer']; client: { prompt: { layout?: string; items?: { id: string }[]; countdown?: number | null } | null; requestTick(): Promise<void> }
+    }
+    p.client.requestTick = async () => {}
+    p.link = link()
+    let took = 0, skipped = 0
+    p.offer('📦 here → there', 12, () => took++, () => skipped++)
+    expect(p.client.prompt?.layout).toBe('menu')
+    expect(p.client.prompt?.countdown).toBe(12)
+    expect(p.client.prompt?.items?.length).toBe(2)
+    // the items do what they say; the d-pad still steers while the offer is up
+    p.onAnswer({ promptId: 'steer', choice: p.client.prompt!.items![1].id, t: 1, source: 'bridge:x' })
+    p.onAnswer({ promptId: 'steer', choice: 'left', t: 2, source: 'bridge:x' })
+    expect(skipped).toBe(1)
+    expect(took).toBe(0)
+    expect(p.steering()).toEqual(['left'])
+    p.endOffer()
+    expect(p.client.prompt?.layout).toBe('dpad')
+    // a late tap on the closed offer does nothing
+    p.onAnswer({ promptId: 'steer', choice: 'take', t: 3, source: 'bridge:x' })
+    expect(took).toBe(0)
+  })
+
   it('asks a bike for the grade with its virtual speed, and a treadmill for incline only, never below flat', () => {
     const bike = new Platform(start(), () => {}) as unknown as Inside
     bike.link = link()

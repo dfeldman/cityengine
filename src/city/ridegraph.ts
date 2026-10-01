@@ -41,6 +41,11 @@ const BIKE = new Set(['primary', 'secondary', 'tertiary', 'primary_link', 'secon
  */
 const RIDEABLE_MOTORWAY = new Set(['motorway', 'trunk', 'motorway_link', 'trunk_link'])
 /**
+ * …of which these are FREEWAYS: no pavement, no frontage, one way. A `trunk` is not — in an American city it is a
+ * big street (Van Ness, Tillary Street, the Brooklyn Bridge's own roadway), ridden either way like any other.
+ */
+const FREEWAY = new Set(['motorway', 'motorway_link'])
+/**
  * …and on foot, the paths as well — and the public stairways. They were left out once ("a treadmill cannot climb
  * them"), but a runner on a treadmill climbs a virtual stair at their own pace like any hill, and in San
  * Francisco the stairways ARE where people run (user, 2026-09-22: "there are SO MANY public stairs… we need to
@@ -96,12 +101,57 @@ export function classify(edges: Edge[], mode: RideMode): RideEdge[] {
       if (k === 'service' && !e.name && e.bridge) return false
       // a car park's ramp down into it: a dead end into the ground (BUGS.md #20 — 20 of the audit's dead ends)
       if (e.name && /^(Accès|Sortie|Entrée|Rampe)\b.*\b[Pp]arking|^Allée de [Pp]arking/.test(e.name)) return false
+      /*
+       * A FREEWAY only where the region rides it (`ridden`: the Bay Bridge's decks, the ramps chosen at each end —
+       * src/city/sf/bridges.ts). The owner, 2026-09-30: cut off "all the overpasses and on-ramps from the ride
+       * network EXCEPT the ones we want cyclists to actually use, otherwise users are going to get lost and stuck
+       * in a maze of paths that doesn't quite actually work" — and the route the game plans goes where the network
+       * goes. A trunk road is a city street here (Van Ness, Tillary Street), and stays.
+       */
+      if (FREEWAY.has(k)) return !!e.ridden
       return BIKE.has(k) || RIDEABLE_MOTORWAY.has(k) || (mode === 'run' && RUN_EXTRA.has(k))
     })
     .map((e) => ({
       ...e, points: [...e.points], heights: e.heights ? [...e.heights] : undefined,
       over: e.over ?? [{ id: e.id, reversed: false, length: e.length }],
     }))
+}
+
+/**
+ * Would a rider entering `e` from junction `from` be going the wrong way up a one-way FREEWAY? A bike rides an
+ * ordinary one-way street either way in this game (the city is full of them, and nobody is sent round the block);
+ * a freeway is another matter — the Bay Bridge's two roadways are one way each, five lanes of traffic, and the
+ * rider who took the lower one westbound met all of it head on (2026-09-30). So such an edge is never offered as an
+ * exit (`rideExits`) and never routed along (sim/route.ts).
+ */
+export function againstFreeway(e: Pick<Edge, 'a' | 'b' | 'oneway' | 'onewayBack' | 'kind'>, from: number): boolean {
+  if (!e.oneway || !FREEWAY.has(e.kind ?? '')) return false
+  return e.onewayBack ? e.a === from : e.b === from
+}
+
+/**
+ * Rule 1a: a ONE-WAY freeway that leads nowhere, or comes from nowhere, is not ridden. The Bay Bridge's east span
+ * runs off the edge of San Francisco's box: eastbound it is three kilometres to a dead end with no way back but
+ * the wrong way up a freeway, and it is what "straight on" means out of the Yerba Buena tunnel — so the rider who
+ * did nothing was taken there (2026-09-30). Pruned back, one way at a time, to the last junction with another way
+ * out (the Treasure Island exit), and the carriageway nobody can get onto likewise, to the first ramp that joins it.
+ */
+export function pruneFreewayTraps(edges: RideEdge[]): RideEdge[] {
+  let cur = edges
+  for (;;) {
+    const out = new Map<number, number>()
+    const into = new Map<number, number>()
+    const bump = (m: Map<number, number>, n: number): void => { m.set(n, (m.get(n) ?? 0) + 1) }
+    for (const e of cur) {
+      // what can be LEFT a junction by, and ARRIVED at it by: a two-way edge both, at both its ends
+      bump(out, e.a); bump(into, e.b)
+      if (!e.oneway) { bump(out, e.b); bump(into, e.a) }
+    }
+    const next = cur.filter((e) => !(e.oneway && FREEWAY.has(e.kind ?? '')
+      && ((out.get(e.b) ?? 0) === 0 || (into.get(e.a) ?? 0) === 0)))
+    if (next.length === cur.length) return cur
+    cur = next
+  }
 }
 
 /**
@@ -384,6 +434,7 @@ export function reverseEdge(e: RideEdge): RideEdge {
     points: [...e.points].reverse(),
     heights: e.heights ? [...e.heights].reverse() : undefined,
     over: [...e.over].reverse().map((o) => ({ ...o, reversed: !o.reversed })),
+    ...(e.oneway ? { onewayBack: !e.onewayBack } : {}),
   }
 }
 
@@ -564,6 +615,21 @@ export function isParallelPair(e: RideEdge, f: RideEdge): boolean {
   if (e.a === f.a && e.b === f.b) { /* same ends: still a pair if they run side by side */ }
   const mid = (x: RideEdge): Point => resample(x.points, undefined, 2).pts[1]
   if (distance(mid(e), mid(f)) > 25) return false
+  // one OVER the other is not a pair: the Bay Bridge's two roadways are 4 m apart in plan and 9.5 m in height, and
+  // merged into one two-way road down the lower deck — the rider went west against five lanes (2026-09-30)
+  if (layerOf(e) !== layerOf(f)) return false
+  if (e.heights && f.heights) {
+    const near = (x: RideEdge, p: Point): number => {
+      let best = 0
+      let bd = Infinity
+      for (let i = 0; i < x.points.length; i++) { const d = distance(x.points[i], p); if (d < bd) { bd = d; best = i } }
+      return x.heights![best]
+    }
+    for (const t of [0.25, 0.5, 0.75]) {
+      const p = resample(e.points, undefined, 4).pts[Math.round(t * 4)]
+      if (Math.abs(near(e, p) - near(f, p)) > 4) return false
+    }
+  }
   const be = bearing(e.points[0], e.points[e.points.length - 1])
   const bf = bearing(f.points[0], f.points[f.points.length - 1])
   const d = Math.abs(angleDiff(be, bf))
@@ -651,7 +717,10 @@ function midline(e: RideEdge, f0: RideEdge, ids: Ids, dryRun: boolean)
   const edge: RideEdge = {
     ...longer, id: ids.nextEdge(), a: na.id, b: nb.id, points: pts, heights: hs, length: lengthOf(pts),
     over: [...e.over, ...f.over], ...(lane > 1 ? { lane } : {}),
+    // two carriageways, one each way, are one road ridden both ways; two the same way are still one way
+    oneway: !!e.oneway && !!f.oneway && !!e.onewayBack === !!f.onewayBack, onewayBack: undefined,
   }
+  if (edge.oneway && e.onewayBack) edge.onewayBack = true
   return { edge, moved }
 }
 
@@ -790,9 +859,31 @@ export function dropSidePaths(edges: RideEdge[], ids = new Ids(), blocked?: (a: 
     }
     return null
   }
+  /*
+   * A BRIDGE'S CYCLEWAY IS THE BIKE ROUTE OVER IT (2026-09-29). The Golden Gate's sidewalks were dropped here as side
+   * paths of US 101 beside them, and the rider was sent across the six-lane roadway into its traffic. The other way
+   * round: where a cycleway on a bridge runs beside a motorway, the MOTORWAY is what a bike does not ride. (A bridge
+   * with no cycleway — the Bay Bridge's west span — keeps its roadway: `classify` lets motorway bridges in.)
+   */
+  const roadsOut = new Set<RideEdge>()
+  // (or on a raised layer: the Golden Gate's sidewalk pieces round the north tower are layer 1 without the bridge tag)
+  const bikeway = (e: RideEdge): boolean => e.kind === 'cycleway' && (!!e.bridge || (e.layer ?? 0) > 0)
+  for (const e of edges) {
+    if (!bikeway(e)) continue
+    // every motorway beside it, one at a time (`beside` answers with the first it finds: the Golden Gate has two
+    // carriageways, and with only one taken out the sidewalks were dropped as side paths of the other)
+    for (let guard = 0; guard < 6; guard++) {
+      const r = beside(e)
+      if (!r || !(r.kind === 'motorway' || r.kind === 'trunk')) break
+      roadsOut.add(r)
+      for (const [k, list] of grid) grid.set(k, list.filter((q) => q !== r))
+    }
+  }
+  if (roadsOut.size) edges = edges.filter((e) => !roadsOut.has(e))
   const dropped = new Map<RideEdge, RideEdge>()
   for (const e of edges) {
-    if (!candidate(e)) continue
+    // (and a bridge's cycleway is never itself a side path: it is the way over)
+    if (!candidate(e) || bikeway(e)) continue
     const r = beside(e)
     if (r) dropped.set(e, r)
   }
@@ -1127,6 +1218,10 @@ export function linkCarriageways(edges: RideEdge[], ids: Ids): RideEdge[] {
   for (const e of edges) {
     // real streets only: not the synthetic circle and spokes of an override, not paths
     if (!e.name || e.foot || e.over.length === 0 || e.kind === 'service') continue
+    // …and streets ON THE GROUND: a link across a boulevard's median is a crossing; between the two carriageways of
+    // a freeway, or of a viaduct, it is a path through the air (the Bay Bridge's two roadways east of the Yerba
+    // Buena tunnel are 10 m one over the other, and were joined every hundred metres)
+    if (FREEWAY.has(e.kind ?? '') || e.bridge || e.raised || e.bore || layerOf(e) !== 0) continue
     const list = named.get(e.name)
     if (list) list.push(e)
     else named.set(e.name, [e])
@@ -1149,6 +1244,10 @@ export function linkCarriageways(edges: RideEdge[], ids: Ids): RideEdge[] {
           if (o === e) continue
           const pr = project(o.points, p)
           if (pr.d < 15 || pr.d > 55 || pr.s < 10 || pr.s > o.length - 10) continue
+          // (nor between two carriageways at different levels, whatever they are)
+          const hp = e.heights?.[Math.min(e.points.length - 1, Math.round((s / e.length) * (e.points.length - 1)))]
+          const hq = o.heights?.[Math.min(o.points.length - 1, Math.round((pr.s / o.length) * (o.points.length - 1)))]
+          if (hp !== undefined && hq !== undefined && Math.abs(hp - hq) > 1.5) continue
           const at = pointAt(o.points, pr.s)
           const cos = Math.abs(((at.x - p.x) * dir.x + (at.z - p.z) * dir.z) / (pr.d * dl))
           if (cos > 0.5) continue
@@ -1256,8 +1355,11 @@ export function snapEnds(edges: RideEdge[]): RideEdge[] {
 export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrides): RideGraph {
   const ids = new Ids()
   const blocked = overrides?.buildings ? footprintTest(overrides.buildings) : undefined
-  const classified = mode === 'bike' ? joinDeadEnds(classify(edges, mode), edges, blocked) : classify(edges, mode)
-  let es = pruneStubs(largest(mode === 'bike' ? dropSidePaths(classified, ids, blocked) : classified))
+  const ridden = pruneFreewayTraps(classify(edges, mode))
+  const classified = mode === 'bike' ? joinDeadEnds(ridden, edges, blocked) : ridden
+  // (the freeways pruned again once the side paths are gone: the carriageway a bridge's sidewalk replaces was the
+  // only way onto the freeway beyond it)
+  let es = pruneStubs(largest(mode === 'bike' ? pruneFreewayTraps(dropSidePaths(classified, ids, blocked)) : classified))
   es = despike(contract(collapseClusters(es, ids, overrides?.wideJunctions), ids))
   es = mergeParallel(es, ids)
   es = largest(despike(contract(collapseClusters(es, ids, overrides?.wideJunctions), ids)))
@@ -1293,7 +1395,10 @@ export function trunkName(name: string | undefined): string | undefined {
 }
 
 export function rideExits(g: CityGraph, nodeId: number, arrivedOn: number | null): Exit[] {
-  const all = exits(g, nodeId, arrivedOn)
+  const every = exits(g, nodeId, arrivedOn)
+  // (not the wrong way up a freeway — unless there is nothing else, which `pruneFreewayTraps` has seen there is not)
+  const legal = every.filter((x) => !againstFreeway(g.edges.get(x.edgeId)!, nodeId))
+  const all = legal.length > 0 ? legal : every
   let keep = all.filter((x) => Math.abs(x.angle) <= 150 * DEG)
   if (keep.length === 0 && all.length > 0) keep = [all[0]]
   const pref = [...keep].sort((p, q) => {

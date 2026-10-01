@@ -85,11 +85,10 @@ export class LoadingScreen {
  * the load timings being measured against it. This is its own overlay, shown once the loading screen goes.
  */
 const CONTROLS: [string, string][] = [
-  ['pedal / ↑', 'ride — the bike or treadmill drives you, arrows if you have neither'],
+  ['pedal / ↑ ↓', 'ride — the trainer drives you; on the couch ↑ ↓ choose your effort, paid from the energy bar'],
   ['← →', 'hold to steer; hold as you reach a corner to turn there'],
   ['U', 'turn round'],
   ['M', 'the map — click to set a destination, double-click to go there'],
-  ['R', 'bike or run'],
   ['M, then search', 'the map: search a landmark ("Chase Center"), Enter to go'],
   ['F', 'freeze and fly: WASD, Q/E, drag to look'],
   ['P  [  ]', 'photo mode: fog off, draw distance in and out'],

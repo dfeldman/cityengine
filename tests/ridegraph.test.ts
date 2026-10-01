@@ -5,7 +5,8 @@ import { describe, expect, it } from 'vitest'
 import { buildGraph, lengthOf, type Edge } from '../src/city/graph.ts'
 import type { Point } from '../src/city/geo.ts'
 import {
-  Ids, classify, collapseClusters, contract, dropSidePaths, locate, mapEdgeAt, mergeParallel, pruneStubs, rideExits,
+  Ids, againstFreeway, classify, collapseClusters, contract, dropSidePaths, locate, mapEdgeAt, mergeParallel, pruneFreewayTraps,
+  pruneStubs, rideExits,
   rideGraph,
   reverseEdge,
   type RideEdge,
@@ -125,6 +126,8 @@ describe('mergeParallel', () => {
     expect(out).toHaveLength(1)
     for (const p of out[0].points) expect(Math.abs(p.z - 6)).toBeLessThan(0.5)
     expect(out[0].over.map((o) => o.id).sort()).toEqual(es.map((e) => e.id).sort())
+    // one each way: the road down the middle is ridden both ways
+    expect(out[0].oneway).toBe(false)
   })
 
   it('leaves two different streets alone', () => {
@@ -182,5 +185,59 @@ describe('dropSidePaths', () => {
       edge(5, 6, [[0, 60], [100, 60]], { name: 'Rue des Rosiers', kind: 'pedestrian', foot: true }),
     ])
     expect(dropSidePaths(es).map((e) => e.name)).toEqual(['Rue Saint-Antoine', 'Rue des Rosiers'])
+  })
+})
+
+describe('freeways', () => {
+  // a one-way freeway from 1 to 2 to 3; an exit at 2 down to a street (2 → 4 → 5); beyond 3 it runs off the map
+  const fw = (a: number, b: number, pts: [number, number][]): Edge => edge(a, b, pts, { kind: 'motorway', oneway: true, name: 'Freeway', ridden: true })
+  const on = edge(0, 1, [[-100, 0], [0, 0]], { name: 'Approach' })
+  const f1 = fw(1, 2, [[0, 0], [0, 500]])
+  const f2 = fw(2, 3, [[0, 500], [0, 3000]])
+  const exit = edge(2, 4, [[0, 500], [60, 560]], { kind: 'motorway_link', oneway: true, ridden: true })
+  const street = edge(4, 5, [[60, 560], [200, 560]], { name: 'Island Road' })
+
+  it('rides no freeway the region has not chosen, and every street, trunk roads included', () => {
+    const plain = edge(50, 51, [[0, 0], [0, 300]], { kind: 'motorway', oneway: true })
+    const link = edge(51, 52, [[0, 300], [50, 350]], { kind: 'motorway_link', oneway: true })
+    const trunk = edge(52, 53, [[50, 350], [50, 600]], { kind: 'trunk', name: 'Van Ness Avenue' })
+    expect(classify([plain, link, trunk], 'bike').map((e) => e.id)).toEqual([trunk.id])
+    expect(classify([{ ...plain, ridden: true }], 'bike')).toHaveLength(1)
+  })
+  it('prunes a one-way freeway that leads nowhere back to its last exit', () => {
+    const kept = pruneFreewayTraps(ride([on, f1, f2, exit, street])).map((e) => e.id)
+    expect(kept).toEqual([on.id, f1.id, exit.id, street.id])
+  })
+  it('prunes one nobody can get onto, up to the first ramp that joins it', () => {
+    // the other carriageway: from off the map (13) to 12, where a ramp from the street joins, and on to 11
+    const g2 = fw(13, 12, [[10, 3000], [10, 500]])
+    const g1 = fw(12, 11, [[10, 500], [10, 0]])
+    const ramp = edge(14, 12, [[70, 560], [10, 500]], { kind: 'motorway_link', oneway: true, ridden: true })
+    const from = edge(15, 14, [[200, 570], [70, 560]], { name: 'Island Road' })
+    const off = edge(11, 16, [[10, 0], [-100, 10]], { name: 'Approach' })
+    expect(pruneFreewayTraps(ride([g2, g1, ramp, from, off])).map((e) => e.id)).toEqual([g1.id, ramp.id, from.id, off.id])
+  })
+  it('knows the wrong way up a freeway, through a reversal, and lets a street be ridden either way', () => {
+    const [r] = ride([f1])
+    expect(againstFreeway(r, 1)).toBe(false)
+    expect(againstFreeway(r, 2)).toBe(true)
+    const back = reverseEdge(r)
+    expect(againstFreeway(back, 1)).toBe(false)
+    expect(againstFreeway(back, 2)).toBe(true)
+    const [oneWayStreet] = ride([edge(20, 21, [[0, 0], [0, 100]], { oneway: true })])
+    expect(againstFreeway(oneWayStreet, 21)).toBe(false)
+  })
+  it('does not offer the wrong way up a freeway as an exit', () => {
+    // at 2, arriving up the exit's street end is not possible; at 3 of a through freeway, arriving from a side street
+    const side = edge(30, 2, [[-80, 500], [0, 500]], { name: 'Side Street' })
+    const g = buildGraph(ride([f1, f2, side, exit]))
+    const offered = rideExits(g, 2, side.id).map((x) => x.edgeId)
+    expect(offered).toContain(f2.id)
+    expect(offered).not.toContain(f1.id)
+  })
+  it('does not merge two carriageways one over the other into one road', () => {
+    const lower = edge(40, 41, [[0, 0], [0, 1000]], { kind: 'motorway', oneway: true, name: 'Bridge', heights: [20, 20], ridden: true })
+    const upper = edge(42, 43, [[4, 1000], [4, 0]], { kind: 'motorway', oneway: true, name: 'Bridge', heights: [29.5, 29.5], ridden: true })
+    expect(mergeParallel(ride([lower, upper]))).toHaveLength(2)
   })
 })

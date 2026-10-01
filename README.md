@@ -176,7 +176,7 @@ The city is full of cars, mostly slow — the delivery game's joke is that the b
 
 Street tunnels under a hill are ridden, driven and walked through — San Francisco's Stockton Tunnel (Bush to
 Sacramento, under Nob Hill), the Broadway Tunnel and the Baker-Barry Tunnel. Highway and railway tunnels are
-still left out.
+still left out — but for the one a ridden bridge runs through (the Yerba Buena tunnel, see the bridges below).
 
 - **The bake** (`tools/tunnels.ts`) finds a *bore*: a chain of tunnel carriageways of an ordinary street class with
   two mouths, under ground that is never below it and well above it somewhere (not an underpass). It gets its own
@@ -195,6 +195,116 @@ still left out.
   them, so nothing under the ground can be drawn while the camera is above it. The tube (road, pavements, tiled
   walls, arch, lamps) is shown only while the camera is inside it; from outside, each mouth is a headwall on the
   hillside with a dark opening. Cars and walkers inside a tunnel are hidden until the camera follows them in.
+
+## How you play: three modes (2026-10-01)
+
+`src/modes.ts`; chosen on the welcome screen, or `?mode=`:
+
+| | Couch (default) | Trainer (Dandyhorse) | Trainer debug (`?mode=debug`) |
+|---|---|---|---|
+| power | ↑ ↓ choose your effort, paid from the **energy bar** (sim/energy.ts: drains above 200 W, refills below; run it dry and you are capped until a quarter is back) | read from the trainer; the grade is written back | ↑ ↓ set the watts (a simulated trainer) |
+| steering | fast: hold ← → | slow: turns declared ahead, from the phone's d-pad | slow |
+| deliveries | offered; Y / X | **taken after 12 s unless skipped** — on screen and on the phone (a menu beside the d-pad) — so a rider can just pedal | offered |
+| speedup | 2× | 1.25× | 1× |
+
+The speedup scales the ground covered, not the physics: the grade asked of a trainer, and the power it takes, stay
+real (sim/ride.ts). `?speedup=` overrides it. `?mode=trainer` outside Dandyhorse opens an ad-hoc session on a local
+Dandyhorse server. **Running is off for now**: the bike only (`?running=1&device=treadmill` for development).
+
+## Deliveries: kitchens, dishes, levels (2026-10-01)
+
+Jobs start at **kitchens**: invented restaurants at fixed, plausible places — dim sum in Chinatown, steak in the
+Financial District, a taquería in the Mission, ice cream in the Marina — 23 of them in
+`src/city/sf/restaurants.json`, each with a joke, a menu, and an emoji per dish. Every name is made up; none is a
+real business. A job picks one of the four nearest kitchens within 1.5 km, and a dish from its menu; the drop-off
+is a random building. **FRAGILE** dishes (ice cream, wine, soup, cake…) are spoiled by a collision after pickup,
+and the job is off. The **level** sets how far a drop-off may be from its kitchen — 500 m, 900 m, 1.4 km, 2 km,
+3 km — and rises every three deliveries in a city (kept in the browser; `?level=` sets it). A city without
+kitchens (Paris) keeps the building-to-building jobs. Logic: `src/game/delivery.ts` (tests/delivery.test.ts).
+
+## Cars and buses: carkit (2026-10-01)
+
+The street's cars and buses are drawn by **carkit** (`~/dandyhorse/libs/carkit`, linked like the avatar kit):
+procedural sedans, hatchbacks, SUVs, vans, trucks, buses and their taxi/police/delivery/transit liveries, posed on
+the hill under all four tyres, with brake lamps, indicators and headlamps. `src/render/street-fleet.ts` gives each
+traffic vehicle one carkit car, its shape picked from its id. `?without=carkit` shows the old stand-ins. Trains,
+streetcars and cable cars are still Street Runner's own (render/rolling-stock.ts).
+
+## The look: brighter, more saturated, FXAA (2026-10-01)
+
+Every material writes its own final colour and the AO can only darken, so frames came out dark and muddy. A last
+pass now lifts exposure 1.14×, saturation 1.28×, contrast 1.06× with a soft shoulder (no clipped sky), then FXAA —
+the AO renders into a texture without MSAA, so edges were jagged (`src/render/grade.ts`). `?grade=1,1,1` shows the
+picture as the shaders made it; `?without=grade` drops both passes.
+
+## Phones (2026-10-01)
+
+**iPhones and iPads get the `ultra` tier** (iOS Safari allows a tab 384 MB; BUGS.md #243): no plants, trees,
+crowd, furniture or signs; full buildings on the rider's own tile only, massing two tiles out; 1x canvas, small
+textures, a 40 m ground grid. ~340 MB on a production build by Chromium's count. Load the production build on a
+phone (the dev server costs ~50 MB more),; vite.config.ts dedupes Babylon so carkit's shaders
+work in a build. `?tier=desktop|phone|ultra` overrides the guess.
+
+
+A Safari tab on an iPhone is killed at about a gigabyte, and San Francisco needed two to three (BUGS.md #242). Phones
+and tablets get the **phone tier** (src/tier.ts — guessed from the user agent, `?tier=phone|desktop` to override):
+a smaller built ring (`?rings=1,5` is its default), the canvas at 1.5x at most, no SSAO, half-resolution sign pages,
+vegetation and avatar images at 512 px, fewer avatar bodies, no CPU or context-loss copies of what is on the GPU.
+`?mem=1` shows the tier, canvas and a GPU estimate in a corner. A **memory governor** estimates the footprint every 5 s (Safari reports nothing) and pulls the massing ring in
+when it is over budget (`?budget=`, 1000 MB on phones; BUGS.md #242). The ground occluder and the distant ground were cut
+from 524 MB of vertex buffers to 98 MB for every device.
+
+## The bridges you ride (2026-09-30)
+
+The full working notes — decisions, the Bay Bridge Bikeway, the tools, what is left — are in **docs/BRIDGES.md**.
+In short: freeways are out of the ride network except the ones chosen for bikes; the Bay Bridge is reached by a
+fictional bikes-only helix from The Embarcadero (`BAY_BIKEWAY`); deliveries are auto-routed by default
+(`?route=manual` to find your own way), and now and then a job crosses the bay to Treasure Island.
+
+The Golden Gate and the Bay Bridge are ridden end to end, on their models. The rule: **the model is the truth, and
+the ways are put on it** — OSM says where a way runs, the model says how high.
+
+- **A model declares its decks** (`src/city/sf/bridges.ts`, beside the profile functions the models draw their
+  roadways from, so the two cannot disagree): a strip along the model's axis — or along a curved `path` — with a
+  half-width and a height at each point; for a double-deck bridge one per OSM `layer`, which is what tells the
+  roadways apart. `public/landmarks/<region>/bridges.json` places the model; the same transform places its decks.
+- **The bake conforms the ways** (`src/city/bridge-decks.ts`, called from `tools/bake.ts`): a way on a deck takes the
+  deck's height. Off the deck's end, the chain of *structures* (bridges, ways above layer 0) is regraded as straight
+  grades between what is known — the deck, a junction with a way on the ground, the bake's own height 900 m along —
+  with each junction where the grades of everything meeting there agree. A way on the ground that leaves a deck is
+  brought to it within a 5% cone. Where the chain lands on an ordinary street, the junction is put on the ground
+  and the bake's own 60 m ramp is taken back out of the streets there. A regraded ramp is held 5 m clear of what
+  it crosses. Whatever is left standing off the ground is marked a bridge, and a tunnel a deck runs through a bore.
+- **Trying a profile** takes two minutes, not twenty: `npm run bake -- <city> --decks` re-conforms a package already
+  baked (from what it was before, `decks-undo.json`) and rewrites the tiles, the ride files and v3.
+  `npx vite-node tools/bridge-fit.ts -- --conform --chain` measures it in seconds without writing anything: every
+  way against its deck, every regraded way's grade, every crossing without headroom.
+  `tools/bridge-chain.ts` lists what hangs off a bridge.
+- **Nothing ridden flies.** `npx vite-node tools/air-paths.ts -- <city> [--mode=run] [--near=lat,lon,radius]` walks
+  every ride edge against what the game draws — a street's corridor, a way's own deck, a model's roadway
+  (`DeckDecl.model`: the slab the model really draws, narrower and shorter than the deck it declares), a bore — and
+  lists each stretch with nothing under the wheel, with a lat, lon to go to. It is arithmetic on the baked files by
+  the renderer's rules, city-generic; run it after any change to a bridge, the ride graph or the conformer.
+- **A model stops where the ways stop being straight.** The Golden Gate's ways run dead straight from z −1100 to
+  z 1275 in the model's frame and then swing 45 m off the axis within 150 m, so the steel and the declared deck end
+  there (`GG_SOUTH_END`, `GG_NORTH_END`) and the curved viaducts to the toll plaza and to Vista Point are the ways'
+  own structure. A way a model has taken is still drawn wherever it is off the model's roadway
+  (`City.outsideCovers`), and a way that only bulges past the roadway's edge and comes back — the sidewalks round
+  the towers — is brought in onto it (`BridgeDecks.snap`, the one place the plan is touched).
+- **The Golden Gate**: both sidewalks are the bike's way across (the freeway is left out beside them), on the deck
+  from the toll plaza to Vista Point.
+- **The Bay Bridge**: eastbound on the lower deck, westbound on the upper — a one-way freeway is never ridden the
+  wrong way (`againstFreeway`), and one that leads nowhere is not ridden at all (`pruneFreewayTraps`). On from Rincon
+  Hill's ramps (Sterling, Essex, First, Fremont, Harrison), across, through the Yerba Buena tunnel (a double-deck
+  bore, `render/landmarks/sf/tunnels.ts`), off at Treasure Island Road; back on from Macalla Road. The east span
+  has no model yet: its ways are on a declared deck from the island down to the Oakland shore, drawn as a viaduct,
+  and the Bay Bridge Trail along it is ridden.
+- **Drawn outside the models** by the generic deck (`render/bridges.ts`): a pier is not stood across a road under
+  the deck (a bent instead), a ramp well off the ground is a viaduct and not an embankment, a freeway has no
+  pavement, a freeway's `man_made=bridge` outline does not get a stone-arch structure
+  (`render/bridge-structures.ts`), and a way a model draws is still drawn where it runs on past the model's deck.
+  Cars do not drive on cycleways, however wide, and do use a freeway ramp, however narrow. The ride graph invents
+  no link across a freeway's two carriageways, or between two at different levels.
 
 ## Where it comes from
 

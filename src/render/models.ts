@@ -117,6 +117,30 @@ export function boxSubdivided(out: MeshBuilder, cx: number, cy: number, cz: numb
 }
 
 /**
+ * A slab that follows a PROFILE: `hx` either side of x = `cx`, from z0 to z1, its top at `y(z)` and `thick` deep,
+ * cut along z every `chunk` metres (each piece a plane between the profile's heights at its ends) and its top and
+ * bottom subdivided to `maxEdge`. A bridge's roadway on a grade: `boxSubdivided` draws it in level steps, which at
+ * 3% and 60 m a box is a 1.8 m stair the rider sinks into and floats over.
+ */
+export function slopedSlab(out: MeshBuilder, cx: number, hx: number, z0: number, z1: number, y: (z: number) => number,
+                           thick: number, colour: Rgb, tag = BODY, maxEdge = 20, chunk = 20): void {
+  const n = Math.max(1, Math.ceil((z1 - z0) / chunk))
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  for (let k = 0; k < n; k++) {
+    const za = z0 + ((z1 - z0) * k) / n
+    const zb = z0 + ((z1 - z0) * (k + 1)) / n
+    const ya = y(za)
+    const yb = y(zb)
+    const xl = cx - hx
+    const xr = cx + hx
+    quadGrid(out, [[xl, yb, zb], [xr, yb, zb], [xr, ya, za], [xl, ya, za]], [0, 1, 0], uv, colour, tag, maxEdge)
+    quadGrid(out, [[xl, ya - thick, za], [xr, ya - thick, za], [xr, yb - thick, zb], [xl, yb - thick, zb]], [0, -1, 0], uv, colour, tag, maxEdge)
+    out.quad([[xr, yb - thick, zb], [xr, ya - thick, za], [xr, ya, za], [xr, yb, zb]], [1, 0, 0], uv, colour, tag)
+    out.quad([[xl, ya - thick, za], [xl, yb - thick, zb], [xl, yb, zb], [xl, ya, za]], [-1, 0, 0], uv, colour, tag)
+  }
+}
+
+/**
  * A straight member of rectangular section from a to b: `w` across it horizontally, `h` in the vertical plane through
  * it (for a vertical member, `w` along x). Beams, poles, cables, truss diagonals.
  */

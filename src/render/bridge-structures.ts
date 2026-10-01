@@ -192,10 +192,23 @@ export function styleFor(b: PackedBridge, styles: Record<string, StructureStyle>
   return b.name ? styles[b.name] ?? styles[b.name.replace(/ - .*$/, '')] : undefined
 }
 
+/**
+ * A freeway's structure is not one of these. OSM outlines the ramps of an interchange too (`man_made=bridge` round
+ * each flyover on Yerba Buena Island), and a curved ramp built on its outline's long axis, with stone abutments up
+ * to whatever way was nearest, stood as a saw-toothed masonry wall beside the Bay Bridge's on-ramp (2026-09-30).
+ * An outline with a freeway way on it is left to the ways: each draws its own slab and piers (render/bridges.ts).
+ */
+export const FREEWAY_KINDS = new Set(['motorway', 'motorway_link', 'trunk', 'trunk_link', 'busway'])
+
 function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: PackedEdge[], terrain: Terrain,
   wetAt: (x: number, z: number) => number | null, styles: Record<string, StructureStyle>): void {
   const ax = axisOf(ring)
   if (!ax || ax.L < 8) return
+  for (const e of edges) {
+    if (!FREEWAY_KINDS.has(e.kind) || !isRaised(e)) continue
+    const k = Math.floor(e.points.length / 4) * 2
+    if (inOutline(ring, e.points[k], e.points[k + 1], 1.5)) return
+  }
   const { ux, uz } = ax
   let O = ax.o
   let L = ax.L

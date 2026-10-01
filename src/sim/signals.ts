@@ -43,7 +43,10 @@ export interface Control {
 }
 
 /** a driving arm: not a footway, wide enough to carry a car */
-export const drives = (e: Edge): boolean => !e.foot && e.width >= 4.2
+// (never a cycleway, however wide: the Bay Bridge Trail is 4.7 m, and cars queued along it over the east span)
+// …and always a freeway ramp, however narrow the bake made it: an untagged `motorway_link` came out 3 m wide, and
+// the only way onto the Bay Bridge's upper deck from Yerba Buena was closed to every car
+export const drives = (e: Edge): boolean => !e.foot && (e.width >= 4.2 || e.kind === 'motorway_link') && e.kind !== 'cycleway'
 
 /** the bearing an edge LEAVES a node along */
 export function bearingFrom(e: Edge, nodeId: number): number {

@@ -14,11 +14,19 @@
  *
  * Local frame: +z along the bridge toward Yerba Buena Island (bearing 40°), +x to its right, the origin at the
  * middle of the central anchorage at the water line.
+ *
+ * THE DECKS ARE ON A GRADE, and the ways over the bridge take their heights from them (2026-09-30, `lowerY`,
+ * `upperY`, `BAY_BRIDGE_DECKS`; src/city/bridge-decks.ts). The bridge was drawn level at 72 m, which is right from
+ * across the city and cannot be ridden: the lower deck has to come down to Rincon Hill at one end (the freeway is on
+ * the ground there, 26 m above the sea) and to the mouth of the Yerba Buena tunnel at the other (54 m). So both decks
+ * crest at the central anchorage and fall each way — 0.7% at the crest, 3% at the San Francisco end — the upper
+ * 9.5 m over the lower throughout, and the towers, the truss and the cables follow them.
  */
 import type { MeshBuilder } from '../../buildings.ts'
-import { box, boxSubdivided, type Rgb } from '../../models.ts'
+import { box, slopedSlab, type Rgb } from '../../models.ts'
 import type { Fit } from '../fit.ts'
 import { beam } from './golden-gate.ts'
+import { BAY_ANCHOR_HALF as ANCHOR_HALF, BAY_SIDE as SIDE, BAY_MAIN as MAIN, BAY_BETWEEN as BETWEEN, BAY_BIKEWAY, HELIX, bayLowerY as lowerY, bayUpperY as upperY } from '../../../city/sf/bridges.ts'
 
 const STEEL: Rgb = [0.7, 0.72, 0.74]
 const STEEL_DARK: Rgb = [0.56, 0.58, 0.6]
@@ -26,10 +34,6 @@ const CONCRETE: Rgb = [0.74, 0.72, 0.68]
 const RUST: Rgb = [0.46, 0.36, 0.28]
 const ROAD: Rgb = [0.24, 0.24, 0.25]
 
-const ANCHOR_HALF = 30          // the central anchorage's half-length along the bridge
-const SIDE = 353
-const MAIN = 704
-const DECK_TOP = 72
 const TRUSS = 11
 const TOWER_TOP = 160
 const SADDLE = 156
@@ -39,6 +43,12 @@ const CABLE_X = 11.5
 /** the towers' positions along the bridge */
 const TOWERS = [-(ANCHOR_HALF + SIDE + MAIN), -(ANCHOR_HALF + SIDE), ANCHOR_HALF + SIDE, ANCHOR_HALF + SIDE + MAIN]
 const END = ANCHOR_HALF + SIDE + MAIN + SIDE
+/**
+ * The NEAR level: the bridge as a rider crosses it — the roadways tessellated, the floor beams under the upper deck
+ * that a rider on the lower one looks up at, the anchorage on the San Francisco shore, and no island (the real one
+ * is there). `bayBridge` is the far level, for the skyline.
+ */
+let NEAR = false
 
 /**
  * True over open water in the middle of one of the two 704 m main spans, well clear of any tower — the
@@ -54,8 +64,9 @@ function cableY(z: number): number {
   const a = Math.abs(z)
   const t2 = ANCHOR_HALF + SIDE                 // the inner tower
   const t3 = t2 + MAIN                          // the outer tower
-  const low = DECK_TOP + 2.5
-  const anchorY = DECK_TOP + 1
+  // (the low points and the anchorages ride on the deck, which is on a grade)
+  const low = upperY(Math.sign(z) * (t2 + t3) / 2) + 2.5
+  const anchorY = upperY(a < t2 ? 0 : Math.sign(z) * END) + 1
   if (a < t2) {
     const t = (a - ANCHOR_HALF) / SIDE
     return anchorY + (SADDLE - anchorY) * Math.max(0, t) - 12 * Math.sin(Math.PI * Math.max(0, Math.min(1, t)))
@@ -84,21 +95,22 @@ function legFrame(out: MeshBuilder, x: number, zc: number, y0: number, y1: numbe
 }
 
 function tower(out: MeshBuilder, zc: number): void {
+  const top = upperY(zc)
   // the caisson, its rust-stained waterline and the pedestal on it
   box(out, 0, 2, zc, 34, 2, 18, RUST, 0)
   box(out, 0, 7, zc, 30, 3, 15, CONCRETE, 0)
   for (const side of [-1, 1]) {
     const x = side * LEG_X
-    legFrame(out, x, zc, 10, DECK_TOP - TRUSS - 2, 2, 3.6)
-    legFrame(out, x, zc, DECK_TOP + 2, TOWER_TOP - 10, 4, 3.2)
+    legFrame(out, x, zc, 10, top - TRUSS - 2, 2, 3.6)
+    legFrame(out, x, zc, top + 2, TOWER_TOP - 10, 4, 3.2)
     // through the deck: the chords continue as solid posts
-    for (const zf of [-9, 9]) box(out, x, DECK_TOP - TRUSS / 2, zc + zf, 1.8, TRUSS / 2 + 2, 1.8, STEEL, 0)
+    for (const zf of [-9, 9]) box(out, x, top - TRUSS / 2, zc + zf, 1.8, TRUSS / 2 + 2, 1.8, STEEL, 0)
     // the cap: the saddle housing, with its openings
     box(out, x, TOWER_TOP - 5, zc, 2.6, 5, 10.5, STEEL, 0)
     box(out, x + side * 2.65, TOWER_TOP - 5, zc, 0.1, 2.2, 4.5, STEEL_DARK, 0)
   }
-  // across the bridge: struts under the deck, at the deck, high up, and an X over the top between the caps
-  for (const y of [DECK_TOP - TRUSS - 3, 118, TOWER_TOP - 11]) {
+  // across the bridge: struts under the deck, high up, and an X over the top between the caps
+  for (const y of [top - TRUSS - 3, 118, TOWER_TOP - 11]) {
     for (const zf of [-9, 9]) beam(out, [-LEG_X, y, zc + zf], [LEG_X, y, zc + zf], 2, 2.4, STEEL)
   }
   for (const zf of [-9, 9]) {
@@ -107,35 +119,81 @@ function tower(out: MeshBuilder, zc: number): void {
   }
 }
 
-function deck(out: MeshBuilder): void {
+/** the half-widths of the two roadways, and where the trusses stand outside them */
+const UPPER_HALF = 10
+const LOWER_HALF = 9.5
+const TRUSS_X = 10.2
+
+const PAINT: Rgb = [0.86, 0.86, 0.82]
+/** the lanes: five each way, 3.6 m, a broken white line between them (a rider's-eye detail: the near level only) */
+function lanes(out: MeshBuilder, half: number, z0: number, z1: number, y: (z: number) => number): void {
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const stripe = (x: number, za: number, zb: number, w: number): void => {
+    const ya = y(za) + 0.04
+    const yb = y(zb) + 0.04
+    out.quad([[x - w, yb, zb], [x + w, yb, zb], [x + w, ya, za], [x - w, ya, za]], [0, 1, 0], uv, PAINT, 0)
+  }
+  for (let z = Math.ceil(z0 / 12) * 12; z + 3 <= z1; z += 12) for (const x of [-5.4, -1.8, 1.8, 5.4]) stripe(x, z, z + 3, 0.07)
+  // the solid edge lines
+  for (let z = z0; z < z1; z += 20) for (const side of [-1, 1]) stripe(side * (half - 0.9), z, Math.min(z1, z + 20), 0.07)
+}
+
+/**
+ * The two roadways from z0 to z1 (the upper from `upperFrom`), and between the anchorages the truss they hang in.
+ * Off the span they stand on concrete bents — the approach over the San Francisco shore, the viaduct on Yerba
+ * Buena's.
+ */
+function deck(out: MeshBuilder, z0: number, z1: number, upperFrom = z0): void {
   const panel = 20             // seen from across the city: the truss's rhythm, not its every member
-  for (let z = -END; z < END; z += panel) {
-    const za = z
-    const zb = Math.min(END, z + panel)
-    const zm = (za + zb) / 2
-    // the two roadways, one over the other, four panels at a time (the deck is level)
-    if (Math.round((za + END) / panel) % 4 === 0) {
-      const zg = Math.min(END, za + 4 * panel)
-      const zgm = (za + zg) / 2
-      // the east span (lower deck here) carries the bike path (owner: wants to ride it). Graded, not
-      // uniform, tessellation (BUGS.md #154): 16 m out over the open middle of a main span, where nothing
-      // else is nearby to fight the depth buffer; 6 m near a tower, the anchorage or a shore approach, where
-      // the rider is close to other structure and the water below reads shallow — see golden-gate.ts for the
-      // same rule on the other bridge.
-      const maxEdge = isMainSpan(zgm) ? 16 : 6
-      boxSubdivided(out, 0, DECK_TOP - 0.3, zgm, 10, 0.3, (zg - za) / 2 + 0.02, ROAD, 0, maxEdge)
-      boxSubdivided(out, 0, DECK_TOP - TRUSS + 1.2, zgm, 9.5, 0.3, (zg - za) / 2 + 0.02, ROAD, 0, maxEdge)
-      for (const side of [-1, 1]) box(out, side * 10.3, DECK_TOP + 0.6, zgm, 0.08, 0.6, (zg - za) / 2, STEEL, 0)
-    }
-    const atTower = TOWERS.some((t) => Math.abs(zm - t) < 11)
-    if (atTower) continue
+  /*
+   * The roadways: each a slab on its profile (`slopedSlab` — a level box every 80 m was a 2.7 m stair at the San
+   * Francisco end). Tessellated for a rider (BUGS.md #154, and the near level finer still): 16 m over the open
+   * middle of a main span, 6 m near a tower, the anchorage or a shore.
+   */
+  for (let z = z0; z < z1; z += 4 * panel) {
+    const zg = Math.min(z1, z + 4 * panel)
+    const maxEdge = NEAR ? 4 : isMainSpan((z + zg) / 2) ? 16 : 6
+    const zu = Math.max(z, upperFrom)
+    if (zu < zg) slopedSlab(out, 0, UPPER_HALF, zu, zg + 0.02, upperY, 0.6, ROAD, 0, maxEdge)
+    slopedSlab(out, 0, LOWER_HALF, z, zg + 0.02, lowerY, 0.6, ROAD, 0, maxEdge)
     for (const side of [-1, 1]) {
-      const x = side * 10.2
-      beam(out, [x, DECK_TOP, za], [x, DECK_TOP, zb], 0.8, 1, STEEL, false)
-      beam(out, [x, DECK_TOP - TRUSS, za], [x, DECK_TOP - TRUSS, zb], 0.8, 1, STEEL, false)
+      // the upper deck's railing, and the lower's kerb inside the truss
+      if (zu < zg) beam(out, [side * (UPPER_HALF + 0.3), upperY(zu) + 0.6, zu], [side * (UPPER_HALF + 0.3), upperY(zg) + 0.6, zg], 0.16, 1.2, STEEL, false)
+      if (NEAR) beam(out, [side * (LOWER_HALF + 0.2), lowerY(z) + 0.45, z], [side * (LOWER_HALF + 0.2), lowerY(zg) + 0.45, zg], 0.3, 0.9, CONCRETE, false)
+    }
+    if (NEAR) {
+      if (zu < zg) lanes(out, UPPER_HALF, zu, zg, upperY)
+      lanes(out, LOWER_HALF, z, zg, lowerY)
+    }
+  }
+  for (let z = z0; z < z1; z += panel) {
+    const za = z
+    const zb = Math.min(z1, z + panel)
+    const zm = (za + zb) / 2
+    const ta = upperY(za)
+    const tb = upperY(zb)
+    const span = zm > -END && zm < END
+    // under the upper roadway, the floor beams a rider on the lower one looks up at
+    if (NEAR && za >= upperFrom) beam(out, [-TRUSS_X, ta - 1.1, za], [TRUSS_X, ta - 1.1, za], 0.5, 1, STEEL_DARK, false)
+    if (!span) {
+      // a bent every other panel: two columns outside the lower roadway up to the upper one, and a beam under each
+      if (Math.round(za / panel) % 2 !== 0) continue
+      const top = za >= upperFrom ? ta - 0.6 : lowerY(za) - 0.6
+      for (const side of [-1, 1]) box(out, side * (TRUSS_X + 1.2), top / 2, za, 1.1, top / 2, 1.1, CONCRETE, 0)
+      box(out, 0, lowerY(za) - 1.4, za, TRUSS_X + 2.3, 0.8, 1.2, CONCRETE, 0)
+      if (za >= upperFrom) box(out, 0, ta - 1.4, za, TRUSS_X + 2.3, 0.8, 1.2, CONCRETE, 0)
+      continue
+    }
+    if (TOWERS.some((t) => Math.abs(zm - t) < 11)) continue
+    // the truss's depth: from the upper roadway down past the lower one
+    const bottom = BETWEEN + 1.5
+    for (const side of [-1, 1]) {
+      const x = side * TRUSS_X
+      beam(out, [x, ta, za], [x, tb, zb], 0.8, 1, STEEL, false)
+      beam(out, [x, ta - bottom, za], [x, tb - bottom, zb], 0.8, 1, STEEL, false)
       const up = Math.round(za / panel) % 2 === 0
-      beam(out, [x, up ? DECK_TOP - TRUSS : DECK_TOP, za], [x, up ? DECK_TOP : DECK_TOP - TRUSS, zb], 0.5, 0.5, STEEL, false)
-      beam(out, [x, DECK_TOP - TRUSS, za], [x, DECK_TOP, za], 0.4, 0.4, STEEL_DARK, false)
+      beam(out, [x, up ? ta - bottom : ta, za], [x, up ? tb : tb - bottom, zb], 0.5, 0.5, STEEL, false)
+      beam(out, [x, ta - bottom, za], [x, ta, za], 0.4, 0.4, STEEL_DARK, false)
     }
   }
 }
@@ -154,8 +212,9 @@ function cables(out: MeshBuilder): void {
   for (let z = -END + 6; z < END - 6; z += 18) {
     if (Math.abs(z) < ANCHOR_HALF + 4 || TOWERS.some((t) => Math.abs(z - t) < 11)) continue
     const top = cableY(z)
-    if (top - DECK_TOP < 1.5) continue
-    for (const side of [-1, 1]) box(out, side * (CABLE_X + 0.45), (top + DECK_TOP) / 2, z, 0.08, (top - DECK_TOP) / 2, 0.08, STEEL_DARK, 0)
+    const road = upperY(z)
+    if (top - road < 1.5) continue
+    for (const side of [-1, 1]) box(out, side * (CABLE_X + 0.45), (top + road) / 2, z, 0.08, (top - road) / 2, 0.08, STEEL_DARK, 0)
   }
 }
 
@@ -184,12 +243,107 @@ function island(out: MeshBuilder, cx: number, cz: number, r: number, h: number):
 export function bayBridge(out: MeshBuilder, _fit?: Fit): void {
   for (const zc of TOWERS) tower(out, zc)
   // the central anchorage: a tall concrete block, battered, its top at the deck where the four cables go in
+  const crest = upperY(0)
   box(out, 0, 3, 0, 32, 3, ANCHOR_HALF + 4, RUST, 0)
-  box(out, 0, 38, 0, 28, 32, ANCHOR_HALF, CONCRETE, 0)
-  box(out, 0, DECK_TOP + 3, 0, 22, 4, ANCHOR_HALF - 4, CONCRETE, 0)
-  deck(out)
-  // Yerba Buena Island, where the west span lands and the tunnel goes through: a wooded hill 105 m high and a
-  // kilometre across, so the bridge meets land and not the sky (drawn roughly: it is kilometres off)
-  island(out, 0, END + 480, 560, 105)
+  box(out, 0, (crest - TRUSS - 4) / 2 + 3, 0, 28, (crest - TRUSS - 4) / 2 - 3, ANCHOR_HALF, CONCRETE, 0)
+  for (const side of [-1, 1]) box(out, side * 17, crest - 2, 0, 5, 7, ANCHOR_HALF - 4, CONCRETE, 0)
   cables(out)
+  if (!NEAR) {
+    deck(out, -END, END)
+    // Yerba Buena Island, where the west span lands and the tunnel goes through: a wooded hill 105 m high and a
+    // kilometre across, so the bridge meets land and not the sky (drawn roughly: it is kilometres off)
+    island(out, 0, END + 480, 560, 105)
+    return
+  }
+  /*
+   * For a rider. The roadways go on past the span as far as OSM's two long bridge ways do (`NEAR_FROM`…`NEAR_TO`):
+   * a way whose middle is inside a model's footprint is drawn by the model and by nothing else (render/city.ts
+   * `coverRaised`), so where the model stopped at the anchorages the rider rode the last 150 m of each end on
+   * nothing. Beyond those the ways' own structure is drawn (render/bridges.ts), at the heights the decks give.
+   * And the anchorage on each shore: the housings the cables run down into, either side of the roadways.
+   */
+  deck(out, NEAR_FROM, NEAR_TO, NEAR_UPPER_FROM)
+  bikeway(out)
+  for (const end of [-END, END]) {
+    for (const side of [-1, 1]) box(out, side * 17, (upperY(end) + 4) / 2, end + Math.sign(end) * 22, 5, (upperY(end) + 4) / 2, 26, CONCRETE, 0)
+  }
+}
+
+/** how far the near level's roadways run: the lower from where OSM's plain motorway meets the ramps on Rincon
+ *  Hill, the upper from the end of its long bridge way, both to the end of those ways on Yerba Buena */
+const NEAR_FROM = -1662
+const NEAR_UPPER_FROM = -1636
+const NEAR_TO = 1560
+
+const BIKE_LANE: Rgb = [0.52, 0.27, 0.23]
+const BIKE_HALF = 2
+
+/**
+ * THE BAY BRIDGE BIKEWAY (src/city/sf/bridges.ts `BAY_BIKEWAY`, BRIDGES.md): the bikes-only helix in the bay beside
+ * the first tower, the boardwalk out to it from The Embarcadero, and the two bridges across from it to the decks —
+ * drawn from the very points the ridden ways are made of, so the rider is on this and nothing else draws it
+ * (render/city.ts skips an `authored` way). A red-surfaced ramp on a concrete core, steel posts round the outside.
+ */
+function bikeway(out: MeshBuilder): void {
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  type P = { x: number; z: number; y: number }
+  const strip = (pts: P[]): void => {
+    for (let i = 1; i < pts.length; i++) {
+      const a = pts[i - 1], b = pts[i]
+      const l = Math.hypot(b.x - a.x, b.z - a.z) || 1
+      const rx = (b.z - a.z) / l, rz = -(b.x - a.x) / l
+      const at = (q: P, side: number, dy: number): [number, number, number] => [q.x + rx * side * BIKE_HALF, q.y + dy, q.z + rz * side * BIKE_HALF]
+      out.quad([at(b, -1, 0), at(b, 1, 0), at(a, 1, 0), at(a, -1, 0)], [0, 1, 0], uv, BIKE_LANE, 0)
+      out.quad([at(a, -1, -0.5), at(a, 1, -0.5), at(b, 1, -0.5), at(b, -1, -0.5)], [0, -1, 0], uv, CONCRETE, 0)
+      out.quad([at(b, 1, -0.5), at(a, 1, -0.5), at(a, 1, 0), at(b, 1, 0)], [rx, 0, rz], uv, CONCRETE, 0)
+      out.quad([at(a, -1, -0.5), at(b, -1, -0.5), at(b, -1, 0), at(a, -1, 0)], [-rx, 0, -rz], uv, CONCRETE, 0)
+      for (const side of [-1, 1]) {
+        const p0 = at(a, side * 1.03, 1.1), p1 = at(b, side * 1.03, 1.1)
+        beam(out, p0, p1, 0.08, 0.08, STEEL, false)
+        beam(out, at(a, side * 1.03, 0.5), at(b, side * 1.03, 0.5), 0.05, 0.05, STEEL, false)
+        if (i % 2 === 0) beam(out, at(a, side * 1.03, 0), p0, 0.06, 0.06, STEEL, false)
+      }
+    }
+  }
+  for (const w of BAY_BIKEWAY) strip(w.points)
+  // the helix's structure: a core, posts round the outside, and arms under the ramp to both
+  const top = Math.max(...BAY_BIKEWAY.flatMap((w) => w.points.map((q) => q.y))) + 2
+  const n = 8
+  for (let k = 0; k < n; k++) {
+    const a0 = (2 * Math.PI * k) / n, a1 = (2 * Math.PI * (k + 1)) / n
+    const P = (a: number, r: number, y: number): [number, number, number] => [HELIX.x + r * Math.cos(a), y, HELIX.z + r * Math.sin(a)]
+    out.quad([P(a0, 5, -1), P(a1, 5, -1), P(a1, 5, top), P(a0, 5, top)], [Math.cos((a0 + a1) / 2), 0, Math.sin((a0 + a1) / 2)], uv, CONCRETE, 0)
+  }
+  const helix = BAY_BIKEWAY.filter((w) => w.points.length > 40)
+  const postR = HELIX.r + 0.3 * (HELIX.landTurns + HELIX.upperTurns) + 3
+  for (let k = 0; k < 12; k++) {
+    const a = (2 * Math.PI * k) / 12
+    const px = HELIX.x + postR * Math.cos(a), pz = HELIX.z + postR * Math.sin(a)
+    beam(out, [px, -1, pz], [px, top, pz], 0.7, 0.7, STEEL, true)
+    // under each pass of the ramp at this angle, an arm from the core to the post
+    for (const w of helix) {
+      for (let i = 1; i < w.points.length; i++) {
+        const q = w.points[i], p = w.points[i - 1]
+        const aq = Math.atan2(q.z - HELIX.z, q.x - HELIX.x), ap = Math.atan2(p.z - HELIX.z, p.x - HELIX.x)
+        const da = ((aq - a + 3 * Math.PI) % (2 * Math.PI)) - Math.PI, dp = ((ap - a + 3 * Math.PI) % (2 * Math.PI)) - Math.PI
+        if (!(da >= 0 && dp < 0)) continue
+        beam(out, [HELIX.x + 5 * Math.cos(a), q.y - 0.7, HELIX.z + 5 * Math.sin(a)], [px, q.y - 0.7, pz], 0.35, 0.5, STEEL_DARK, false)
+      }
+    }
+  }
+  // the boardwalk on piles
+  const walk = BAY_BIKEWAY[0].points
+  for (let i = 0; i < walk.length - 1; i++) {
+    const a = walk[i], b = walk[i + 1]
+    const m = Math.max(1, Math.round(Math.hypot(b.x - a.x, b.z - a.z) / 8))
+    for (let j = 0; j < m; j++) {
+      const t = j / m
+      box(out, a.x + (b.x - a.x) * t, (a.y + (b.y - a.y) * t - 0.5 - 2) / 2, a.z + (b.z - a.z) * t, 0.3, (a.y + (b.y - a.y) * t - 0.5 + 2) / 2, 0.3, RUST, 0)
+    }
+  }
+}
+
+export function bayBridgeNear(out: MeshBuilder, fit?: Fit): void {
+  NEAR = true
+  try { bayBridge(out, fit) } finally { NEAR = false }
 }

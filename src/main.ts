@@ -3,7 +3,8 @@
  *
  *   /                          ride Le Marais
  *   /?city=brooklyn-heights    somewhere else
- *   /?device=treadmill         run it instead
+ *   /?mode=debug               trainer debug (?mode=trainer: on a local Dandyhorse; couch by default; src/modes.ts)
+ *   /?running=1&device=treadmill  run it instead (running is off for now)
  *   /?showcase=1               the facade showcase, one building per style
  *   /?showcase=1&style=brick   eight of one style
  *   /?session=<id>             on Dandyhorse: the bridge's session (src/platform.ts; INTEGRATION.md)
@@ -16,6 +17,8 @@ import { MINIMAP_CSS } from './ui/minimap.ts'
 import { THEME_CSS } from './ui/theme.ts'
 import { LOADING_CSS, WELCOME_CSS } from './ui/loading.ts'
 import { CARD_CSS } from './ui/landmark-card.ts'
+import { detectTier } from './tier.ts'
+import { chooseMode, MODES, type GameMode } from './modes.ts'
 
 const params = new URLSearchParams(location.search)
 const canvas = document.getElementById('view') as HTMLCanvasElement
@@ -51,7 +54,8 @@ if (params.get('model')) {
    * never fetches it.
    */
   const sessionId = params.get('session')
-  const adHoc = params.get('dandyhorse')
+  // `?mode=trainer` outside Dandyhorse opens an ad-hoc session on a local Dandyhorse server, as `?dandyhorse=bike` does
+  const adHoc = params.get('dandyhorse') ?? (params.get('mode') === 'trainer' ? 'bike' : null)
   let platform: import('./platform.ts').Platform | null = null
   if (sessionId || adHoc) {
     const [{ startSession }, { Platform, GAME_ID }] = await Promise.all([import('@dandyhorse/gamekit'), import('./platform.ts')])
@@ -103,42 +107,58 @@ if (params.get('model')) {
     pick.addEventListener('keydown', (e) => e.stopPropagation())
     document.body.appendChild(pick)
   }
-  // bike or run (Trail Trainer's two machines): a switch under the menus; the other is another ride graph, so
-  // switching reloads, keeping the city and the place
-  const device = platform?.device ?? (params.get('device') === 'treadmill' ? 'treadmill' : 'bike')
+  // the game's mode (src/modes.ts): Dandyhorse is the trainer; otherwise couch unless `?mode=` says
+  const mode: GameMode = chooseMode(params.get('mode'), !!platform)
+  /*
+   * RUNNING IS OFF FOR NOW (owner, 2026-10-01: "biking only for simplicity right now"): the bike, whatever the URL
+   * says, unless `?running=1` (development) — or Dandyhorse launched a run, which is the platform's choice.
+   */
+  const running = params.get('running') === '1'
+  const device = platform?.device ?? (running && params.get('device') === 'treadmill' ? 'treadmill' : 'bike')
   if (!platform) {
+    /*
+     * The choice made once, on the welcome screen (ui/loading.ts; owner, 2026-09-24: "just once at the beginning"):
+     * which MODE — couch, trainer, trainer debug. Each is a reload keeping the city and the place. With `?running=1`
+     * it is the old bike/run switch instead (R switches at any time).
+     */
     const box = document.createElement('div')
     box.className = 'sr-mode'
     box.setAttribute('role', 'radiogroup')
-    box.title = 'bike or run (R)'
-    const go = (d: 'bike' | 'treadmill'): void => {
-      if (d === device) return
+    const reload = (set: (q: URLSearchParams) => void): void => {
       const q = new URLSearchParams(location.search)
-      if (d === 'treadmill') q.set('device', 'treadmill')
-      else q.delete('device')
+      set(q)
       q.delete('start')
       const here = (window as unknown as { __here?: () => string | null }).__here?.()
       if (here) q.set('at', here)
       location.search = `?${q}`.replace(/%2C/g, ',')
     }
-    for (const [d, label] of [['bike', 'Bike'], ['treadmill', 'Run']] as const) {
+    const button = (label: string, on: boolean, title: string, go: () => void): void => {
       const b = document.createElement('button')
       b.textContent = label
+      b.title = title
       b.setAttribute('role', 'radio')
-      b.setAttribute('aria-checked', String(d === device))
-      if (d === device) b.classList.add('on')
-      b.addEventListener('click', () => go(d))
+      b.setAttribute('aria-checked', String(on))
+      if (on) b.classList.add('on')
+      b.addEventListener('click', () => { if (!on) go() })
       box.appendChild(b)
     }
-    addEventListener('keydown', (e) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) return
-      if (e.code === 'KeyR') go(device === 'bike' ? 'treadmill' : 'bike')
-    })
-    /*
-     * Not on screen for the whole ride (owner, 2026-09-24: "we do not need the bike/run toggle to always be
-     * visible, just once at the beginning"). It is handed to the welcome screen (ui/loading.ts), which is the
-     * one moment the choice is worth making; R still switches at any time.
-     */
+    if (running) {
+      box.title = 'bike or run (R)'
+      const go = (d: 'bike' | 'treadmill'): void => {
+        if (d !== device) reload((q) => { if (d === 'treadmill') q.set('device', 'treadmill'); else q.delete('device') })
+      }
+      button('Bike', device === 'bike', 'bike', () => go('bike'))
+      button('Run', device === 'treadmill', 'run', () => go('treadmill'))
+      addEventListener('keydown', (e) => {
+        if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) return
+        if (e.code === 'KeyR') go(device === 'bike' ? 'treadmill' : 'bike')
+      })
+    } else {
+      box.title = 'how you are playing'
+      for (const m of ['couch', 'trainer', 'debug'] as const) {
+        button(MODES[m].label, m === mode, MODES[m].blurb, () => reload((q) => { if (m === 'couch') q.delete('mode'); else q.set('mode', m) }))
+      }
+    }
     box.classList.add('sr-mode-welcome')
     ;(window as unknown as { __modeSwitch?: HTMLElement }).__modeSwitch = box
   }
@@ -165,8 +185,15 @@ if (params.get('model')) {
     cars: params.get('cars') !== '0',
     // ?input=fast (held arrows steer, the turn is taken at the corner) is the default; ?input=slow declares turns
     // ahead, for trainers — and is the default on Dandyhorse, where the phone's d-pad arrives on a 1 s poll
+    // ?route=manual: deliveries are not routed for you (the default routes them, and takes the turns)
+    route: params.get('route') === 'manual' ? 'manual' : 'auto',
+    // ?tier=phone|desktop: how much the device can hold (src/tier.ts); phones and tablets are guessed
+    tier: detectTier(params.get('tier')),
     input: params.get('input') === 'slow' || params.get('input') === 'fast' ? params.get('input') as 'fast' | 'slow'
-      : platform ? 'slow' : 'fast',
+      : MODES[mode].input,
+    // couch, trainer or trainer debug (src/modes.ts); `?speedup=` overrides the mode's
+    mode,
+    speedup: params.get('speedup') ? Number(params.get('speedup')) : undefined,
     // ?veg=3 — how many times the baked count a closed wood grows to (render/infill.ts); ?vegmerge=0 turns
     // off the material and far-tier merging of BUGS.md #205, so the two can be measured against each other
     veg: params.get('veg') ? Number(params.get('veg')) : undefined,

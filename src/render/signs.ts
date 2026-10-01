@@ -103,6 +103,14 @@ const BOARD: Record<PackedPoi['kind'], [number, number, number]> = {
 
 let registered = false
 
+/**
+ * The pages' resolution against the cells' own (src/tier.ts): at 0.5 a page is a quarter of the memory — its
+ * texture and the canvas behind it — and every cell is drawn through the same transform, so nothing that draws
+ * into one knows. The sign pages held ~290 MB of GPU memory at full size (BUGS.md #242).
+ */
+let TEXT_SCALE = 1
+export function setTextScale(s: number): void { TEXT_SCALE = s }
+
 /** A junction the rider is asked about, with the streets that leave it: where the corner plaques go. */
 /**
  * Lettering for streamed signs: pages of equal cells, ONE cell per distinct text, shared by every tile that
@@ -151,8 +159,9 @@ export class TextAtlas {
       registered = true
     }
     const i = this.pages.length
-    const tex = new DynamicTexture(`${this.name}${i}`, { width: this.pageW, height: this.pageH }, this.scene, true)
+    const tex = new DynamicTexture(`${this.name}${i}`, { width: Math.round(this.pageW * TEXT_SCALE), height: Math.round(this.pageH * TEXT_SCALE) }, this.scene, true)
     const ctx = tex.getContext() as unknown as CanvasRenderingContext2D
+    ctx.setTransform(TEXT_SCALE, 0, 0, TEXT_SCALE, 0, 0)
     ctx.clearRect(0, 0, this.pageW, this.pageH)
     tex.hasAlpha = true
     const mat = new ShaderMaterial(`${this.name}${i}`, this.scene, 'sign', {

@@ -193,6 +193,16 @@ export class Hud {
 }
 
 export const HUD_CSS = `
+/* couch mode's energy bar (sim/energy.ts), bottom left above the attribution: lime, amber when low, red when spent */
+.sr-energy { position: fixed; left: 16px; bottom: 72px; z-index: 6; display: flex; align-items: center; gap: 8px;
+  font: 700 12px/1 var(--font); color: var(--text); letter-spacing: .06em; text-transform: uppercase;
+  background: var(--panel); border: 1px solid var(--border); border-radius: 999px; padding: 7px 12px; box-shadow: var(--shadow);
+  pointer-events: none }
+.sr-energy .track { width: 160px; height: 10px; border-radius: 999px; background: rgba(255,255,255,.12); overflow: hidden }
+.sr-energy .fill { display: block; height: 100%; width: 100%; background: var(--c-lime); border-radius: 999px; transition: width .2s linear }
+.sr-energy.low .fill { background: var(--c-amber) }
+.sr-energy.bonk .fill { background: var(--c-red) }
+.sr-energy.bonk .label::after { content: ' · spent'; color: var(--c-red) }
 /*
  * The bottom of the screen has TWO things in it: this, centred, and the attribution label in the corner.
  * They are both pinned to the same edge, so the stats line and the ODbL credit were drawing on top of one
@@ -214,6 +224,9 @@ export const HUD_CSS = `
 #hud .sr-back:hover { opacity: 1 }
 #hud .sr-next { font-size: 15px; opacity: .9; min-height: 1.4em }
 #hud .sr-exits { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 760px; pointer-events: auto }
+/* (display: flex beats the hidden attribute: a star junction's buttons stayed on screen long after it, all the way
+   through the Stockton Tunnel, 2026-09-29) */
+#hud .sr-exits[hidden] { display: none }
 #hud .sr-exits button { font: 600 14px/1.2 var(--font); color: var(--text); cursor: pointer; min-height: 36px;
   background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px 12px; text-shadow: none; box-shadow: var(--shadow) }
 #hud .sr-exits button.picked { background: var(--c-amber); color: var(--on-amber); border-color: var(--c-amber) }

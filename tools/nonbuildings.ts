@@ -131,7 +131,7 @@ const BY_MODULE: [Record<string, unknown>, NonbuildingKind][] = [
  */
 export const EXPLICIT: Record<string, NonbuildingKind> = {
   // bridges — these bind through the city SKYLINE (tools/cities.ts), not through any manifest
-  goldenGateBridge: 'bridge', bayBridge: 'bridge',
+  goldenGateBridge: 'bridge', bayBridge: 'bridge', bayBridgeNear: 'bridge',
   // masts and lattices: a tower with no floors is not a building
   sutroTower: 'tower', eiffelTower: 'tower', eiffelTowerFull: 'tower', tourSaintJacques: 'tower',
   // signs and lettering

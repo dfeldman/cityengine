@@ -11,7 +11,7 @@
  * rider is, how far they have come, the grade under them, and a picture for History.
  */
 import {
-  SessionClient, putSave,
+  SessionClient, putSave, menuPrompt, readMenuAnswer,
   type EndInfo, type GameState, type InputAnswer, type Json, type StartPayload, type TickBody,
 } from '@dandyhorse/gamekit'
 import type { Controls, Measured, Steer } from './controls.ts'
@@ -84,6 +84,9 @@ export class Platform implements Controls {
   private smoothGrade = 0
   private image: string | null = null
   private finishing = false
+  /** a delivery on offer, shown on the phone as a menu beside the d-pad (`offer`), and what its two items do */
+  private offering: { take: () => void; skip: () => void } | null = null
+  private rev = 1
 
   // achievements
   private readonly earned = new Set<string>()
@@ -137,12 +140,36 @@ export class Platform implements Controls {
   attach(link: GameLink): void {
     this.link = link
     this.visited = new Set(this.save.cities[link.city]?.visited ?? [])
-    this.client.openPrompt({ promptId: PROMPT_ID, prompt: 'Turn', choices: ['left', 'up', 'right', 'down'], persistent: true, layout: 'dpad' })
+    this.openSteer()
     this.client.start()
     // a picture for History now and then, so the one sent at the end is recent without waiting for it then
     const snap = (): void => { void link.screenshot().then((img) => { if (img) this.image = img }) }
     setTimeout(snap, 20_000)
     setInterval(snap, 120_000)
+  }
+
+  private openSteer(): void {
+    this.client.openPrompt({ promptId: PROMPT_ID, prompt: 'Turn', choices: ['left', 'up', 'right', 'down'], persistent: true, layout: 'dpad' })
+  }
+
+  /**
+   * TRAINER MODE (src/modes.ts): a delivery on offer, on the phone. Only one prompt can be open, so the steering
+   * d-pad becomes a MENU for the offer's life — "Take it" and "Skip" as big buttons, the same d-pad beside them,
+   * and the seconds until it is taken anyway. `endOffer` puts the plain d-pad back.
+   */
+  offer(title: string, seconds: number, take: () => void, skip: () => void): void {
+    if (!this.link) return
+    this.offering = { take, skip }
+    this.client.openPrompt(menuPrompt(PROMPT_ID, ++this.rev, {
+      title, countdown: seconds, buttons: ['left', 'up', 'right', 'down'],
+      items: [{ id: 'take', label: '✅ Take it' }, { id: 'skip', label: '⏭️ Skip' }],
+    }))
+  }
+
+  endOffer(): void {
+    if (!this.offering) return
+    this.offering = null
+    if (this.link) this.openSteer()
   }
 
   // --- Controls -----------------------------------------------------------------------------------
@@ -204,7 +231,15 @@ export class Platform implements Controls {
 
   private onAnswer(a: InputAnswer): void {
     if (a.promptId !== PROMPT_ID || this.paused()) return
-    const s = DPAD[a.choice]
+    // the offer's two items, while it is on (a late tap on a closed offer does nothing)
+    const r = readMenuAnswer(a)
+    if (r.kind === 'item') {
+      const o = this.offering
+      if (o && r.id === 'take') o.take()
+      else if (o && r.id === 'skip') o.skip()
+      return
+    }
+    const s = DPAD[r.button]
     if (!s) return
     this.queue.push(s)
     if (s === 'left' || s === 'right') this.achievement('first-turn')
