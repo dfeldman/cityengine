@@ -2876,10 +2876,6 @@ export class City {
             const nz = ux * side
             const ea = { x: a.x + nx * half, z: a.z + nz * half }
             const eb = { x: b.x + nx * half, z: b.z + nz * half }
-            const mid = { x: (ea.x + eb.x) / 2 + nx * 0.6, z: (ea.z + eb.z) / 2 + nz * 0.6 }
-            if (this.gradeAt(mid.x, mid.z) !== null) continue
-            // nor where a paved square is beside it: a square is graded level with its streets, never walled
-            if (pavedHere(mid.x, mid.z)) continue
             const ha = e.heights[i - 1]
             const hb = e.heights[i]
             const ga = this.terrain.rawHeightAt(ea.x + nx * 0.6, ea.z + nz * 0.6)
@@ -2892,13 +2888,38 @@ export class City {
               walls.quad([[p0.x, y00, p0.z], [p1.x, y10, p1.z], [p1.x, y11, p1.z], [p0.x, y01, p0.z]], nn, UV, c, 0)
             }
             const parapet = sideDrop[side] > 1.5 ? 0.9 : 0.12
-            // the face, down to just under the ground, and the parapet's outer face above the street
-            q(ea, eb, ga - 0.3, gb - 0.3, hb + parapet, ha + parapet, stone)
-            if (parapet > 0.2) {
-              const ia = { x: ea.x - nx * 0.3, z: ea.z - nz * 0.3 }
-              const ib = { x: eb.x - nx * 0.3, z: eb.z - nz * 0.3 }
-              q(ib, ia, hb, ha, ha + parapet, hb + parapet, stone, [-nx, 0, -nz])
-              walls.quad([[ea.x, ha + parapet, ea.z], [eb.x, hb + parapet, eb.z], [ib.x, hb + parapet, ib.z], [ia.x, ha + parapet, ia.z]], [0, 1, 0], UV, cap, 0)
+            /*
+             * In pieces of about 1.5 m, each built only where the ground beside it is OPEN (owner, 2026-10-01: walls
+             * sticking into the crossing street at a junction). One test at the middle of a segment decided the whole
+             * of it, so a segment ending in a junction carried its wall and parapet on across the other street's
+             * carriageway. Now a piece whose outside is in another street's corridor, or on a paved square, is left
+             * out, and the wall stops at the street it meets. The ground is sampled per piece, too, so the foot of a
+             * long wall follows the slope instead of a straight line between its ends.
+             */
+            const span = Math.hypot(eb.x - ea.x, eb.z - ea.z)
+            const pieces = Math.max(1, Math.ceil(span / 1.5))
+            const P = (t: number): { x: number; z: number } => ({ x: ea.x + (eb.x - ea.x) * t, z: ea.z + (eb.z - ea.z) * t })
+            const H = (t: number): number => ha + (hb - ha) * t
+            const Gr = (t: number): number => { const p = P(t); return this.terrain.rawHeightAt(p.x + nx * 0.6, p.z + nz * 0.6) }
+            for (let j = 0; j < pieces; j++) {
+              const t0 = j / pieces
+              const t1 = (j + 1) / pieces
+              const pm = P((t0 + t1) / 2)
+              const ox = pm.x + nx * 0.6
+              const oz = pm.z + nz * 0.6
+              if (this.gradeAt(ox, oz) !== null || pavedHere(ox, oz)) continue
+              const p0 = P(t0)
+              const p1 = P(t1)
+              const h0 = H(t0)
+              const h1 = H(t1)
+              // the face, down to just under the ground, and the parapet's outer face above the street
+              q(p0, p1, Gr(t0) - 0.3, Gr(t1) - 0.3, h1 + parapet, h0 + parapet, stone)
+              if (parapet > 0.2) {
+                const i0 = { x: p0.x - nx * 0.3, z: p0.z - nz * 0.3 }
+                const i1 = { x: p1.x - nx * 0.3, z: p1.z - nz * 0.3 }
+                q(i1, i0, h1, h0, h0 + parapet, h1 + parapet, stone, [-nx, 0, -nz])
+                walls.quad([[p0.x, h0 + parapet, p0.z], [p1.x, h1 + parapet, p1.z], [i1.x, h1 + parapet, i1.z], [i0.x, h0 + parapet, i0.z]], [0, 1, 0], UV, cap, 0)
+              }
             }
           }
         }
