@@ -56,6 +56,42 @@ export class Carriageways {
     return out
   }
 
+  /**
+   * Somewhere STREET FURNITURE must not stand (owner, 2026-10-01: "benches and utility poles in the middle of the
+   * street"): in any carriageway, or in a MEDIAN — a carriageway on each side, running parallel, each within `reach` of
+   * its edge. A road OSM maps as two one-way ways puts each way's inner "pavement" in the median, the middle of the
+   * road; Geary's island had newsracks and a bin. Whoever placed the thing (our kerbside rules or an OSM point), the
+   * test is the same. A corner, with the cross street at right angles, still allows it.
+   */
+  noFurniture(x: number, z: number, reach = 4): boolean { return this.whyNoFurniture(x, z, reach) !== null }
+
+  /** `noFurniture`, and why: in a road, or in a median */
+  whyNoFurniture(x: number, z: number, reach = 4): 'road' | 'median' | null {
+    const near = this.near(x, z).filter((n) => n.d < n.s.half + reach)
+    if (near.some((n) => n.d < n.s.half + 0.15)) return 'road'
+    // a carriageway on EACH side, running the same way (either direction), each within `reach` of its edge: a median
+    for (const a of near) {
+      const ax = a.s.bx - a.s.ax, az = a.s.bz - a.s.az
+      const al = Math.hypot(ax, az) || 1
+      const sideA = Math.sign(ax * (z - a.s.az) - az * (x - a.s.ax))
+      for (const b of near) {
+        if (b.s.edge === a.s.edge) continue
+        const bx = b.s.bx - b.s.ax, bz = b.s.bz - b.s.az
+        if (Math.abs((ax * bx + az * bz) / (al * (Math.hypot(bx, bz) || 1))) < 0.85) continue
+        // which side of a's line b's nearest point is on
+        const t = b.t
+        const qx = b.s.ax + bx * t, qz = b.s.az + bz * t
+        const crossB = (ax * (qz - a.s.az) - az * (qx - a.s.ax)) / al
+        // …and genuinely BESIDE it — two carriageways apart, not the next piece of the same street round a slight bend
+        // at a junction, which is nearly on a's own line (that was half of what this took out on Nob Hill's plain grid)
+        if (Math.abs(crossB) < a.s.half + b.s.half + 0.5) continue
+        const sideB = Math.sign(crossB)
+        if (sideA !== 0 && sideB !== 0 && sideA !== sideB) return 'median'
+      }
+    }
+    return null
+  }
+
   /** in some street's carriageway (within `margin` of its edge) */
   inside(x: number, z: number, margin = 0.3): boolean {
     return this.near(x, z).some((n) => n.d < n.s.half + margin)

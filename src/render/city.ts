@@ -1176,6 +1176,16 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain
   }
 }
 
+/** what `Carriageways.noFurniture` kept off the road, for probes (`window.__furnitureSkipped`) */
+const SKIPPED: { n: number; at: [number, number, string][] } = { n: 0, at: [] }
+if (typeof window !== 'undefined') (window as unknown as Record<string, unknown>).__furnitureSkipped = SKIPPED
+function skippedIf(why: string | null, x: number, z: number, what: string): boolean {
+  if (why === null) return false
+  SKIPPED.n++
+  if (SKIPPED.at.length < 200) SKIPPED.at.push([Math.round(x), Math.round(z), `${what} (${why})`])
+  return true
+}
+
 /** Even-odd point in polygon. */
 function insideRing(ring: Point[], x: number, z: number): boolean {
   let hit = false
@@ -2449,6 +2459,8 @@ export class City {
     // and there. Both are cheap boxes, and a street without them reads as a rendering of a street: they are
     // the small evidence that somebody maintains the place.
     const furniture = new MeshBuilder()
+    // never in a road, nor in the median of one mapped as two ways (Carriageways.noFurniture)
+    const kerbside = new Carriageways(groundEdges)
     /*
      * THE PARK'S OWN LAMPPOSTS (BUGS.md #202, docs/PARKS.md). The owner: *"Almost [no] sidewalks or street
      * furniture except a few classic lampposts."* — an exception written into a list of removals, and the
@@ -2478,7 +2490,7 @@ export class City {
           const t = acc / seg
           const px = pts[i - 1].x + dx * t + (-dz / seg) * off * side
           const pz = pts[i - 1].z + dz * t + (dx / seg) * off * side
-          placeModel(furniture, lampPost, px, 0.15, pz, Math.atan2(dx, dz) + (side > 0 ? Math.PI : 0))
+          if (!(skippedIf(kerbside.whyNoFurniture(px, pz), px, pz, 'park lamp'))) placeModel(furniture, lampPost, px, 0.15, pz, Math.atan2(dx, dz) + (side > 0 ? Math.PI : 0))
           acc += 70 + ((e.id + n) % 23)
           n++
         }
@@ -2519,6 +2531,7 @@ export class City {
           const px = pts[i - 1].x + dx * t + (-dz / seg) * off * side
           const pz = pts[i - 1].z + dz * t + (dx / seg) * off * side
           const heading = Math.atan2(dx, dz) + (side > 0 ? Math.PI : 0)
+          if (skippedIf(kerbside.whyNoFurniture(px, pz), px, pz, 'lamp/bench')) { acc += 22 + ((e.id + n) % 9); n++; continue }
           // what stands on the pavement is regional: Paris hangs its lamps on the buildings
           // a bench only where the pavement has room to sit on it, and not at every other lamp post
           if ((e.id + n) % 14 === 0 && walk >= 2.5) {
@@ -2559,7 +2572,7 @@ export class City {
             const side = (e.id + n) % 2 === 0 ? 1 : -1
             const hx = pts[i - 1].x + dx * t + (-dz / seg) * off * side
             const hz = pts[i - 1].z + dz * t + (dx / seg) * off * side
-            if (!roads.inside(hx, hz, 0.2)) placeModel(furniture, hydrant, hx, 0.15, hz, Math.atan2(dx, dz))
+            if (!(skippedIf(roads.whyNoFurniture(hx, hz), hx, hz, 'hydrant'))) placeModel(furniture, hydrant, hx, 0.15, hz, Math.atan2(dx, dz))
             acc += 60
             n++
           }
@@ -2580,7 +2593,6 @@ export class City {
       const carriage = new Carriageways(groundEdges)
       const brickNames = this.region.brickStreets?.names ?? []
       const hash = (a: number, b: number): number => ((Math.imul(a ^ Math.imul(b, 0x27d4eb2d), 0x9e3779b1) >>> 0) % 1000) / 1000
-      const clear = (x: number, z: number): boolean => !carriage.inside(x, z, 0.15)
       for (const e of groundEdges) {
         if (e.foot || e.walk < 1.2 || !onSurface(e)) continue
         const pts = unpackPoints(e.points)
@@ -2604,7 +2616,8 @@ export class City {
           const p = at(s)
           const x = p.x - p.tz * off * side
           const z = p.z + p.tx * off * side
-          if (!clear(x, z)) return null
+          // (not in a road, nor in the median of one mapped as two ways: Carriageways.noFurniture)
+          if (skippedIf(carriage.whyNoFurniture(x, z), x, z, 'clutter')) return null
           placeModel(furniture, model, x, 0.15, z, Math.atan2(p.tx, p.tz) + (side > 0 ? Math.PI : 0) + turn)
           return { x, z }
         }
@@ -3016,7 +3029,12 @@ export class City {
      */
     const pf = this.region.pointFurniture
     const bikes = bikeDocks(hexRgb(pf.bikeColour))
+    // (the kinds that belong on a pavement, never in a road or its median, whatever OSM says — Carriageways.noFurniture;
+    // signals, tram and bus stops and métro entrances do stand in the middle of a road)
+    const pointKerb = new Carriageways(groundEdges)
+    const kerbOnly = new Set(['column', 'kiosk', 'billboard', 'postbox', 'hydrant', 'bikeshare', 'fountain'])
     for (const f of this.pointsIn.get(k) ?? []) {
+      if (kerbOnly.has(f.kind) && skippedIf(pointKerb.whyNoFurniture(f.x, f.z), f.x, f.z, `osm ${f.kind}`)) continue
       const heading = this.streetBearing(f.x, f.z, f.kind === 'bikeshare' || f.kind === 'column')
       const model = f.kind === 'metro'
         ? ({ guimard: guimardEntrance, nyc: nycSubwayEntrance, cta: ctaEntrance, generic: genericEntrance, bart: bartEntrance })[pf.metro]
