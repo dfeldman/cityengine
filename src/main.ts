@@ -19,12 +19,13 @@ import { LOADING_CSS, WELCOME_CSS } from './ui/loading.ts'
 import { CARD_CSS } from './ui/landmark-card.ts'
 import { detectTier } from './tier.ts'
 import { chooseMode, MODES, type GameMode } from './modes.ts'
+import { TOUCH_CSS, touchControls, wantsTouch } from './ui/touch.ts'
 
 const params = new URLSearchParams(location.search)
 const canvas = document.getElementById('view') as HTMLCanvasElement
 
 const style = document.createElement('style')
-style.textContent = HUD_CSS + MINIMAP_CSS + THEME_CSS + LOADING_CSS + WELCOME_CSS + CARD_CSS + DELIVERY_CSS
+style.textContent = HUD_CSS + MINIMAP_CSS + THEME_CSS + LOADING_CSS + WELCOME_CSS + CARD_CSS + DELIVERY_CSS + TOUCH_CSS
 document.head.appendChild(style)
 
 if (params.get('model')) {
@@ -97,7 +98,8 @@ if (params.get('model')) {
     throw new Error(`unknown city ${city}`)
   }
   // the city menu, top centre (on Dandyhorse the launch chose the city)
-  if (cities.length > 1 && !platform) {
+  // (hidden unless `?citymenu=1`: the city is a URL parameter, `?city=`, owner 2026-10-01)
+  if (cities.length > 1 && !platform && params.get('citymenu') === '1') {
     const pick = document.createElement('select')
     pick.className = 'sr-city'
     pick.title = 'city'
@@ -162,6 +164,8 @@ if (params.get('model')) {
     box.classList.add('sr-mode-welcome')
     ;(window as unknown as { __modeSwitch?: HTMLElement }).__modeSwitch = box
   }
+  // the touch buttons on a phone or tablet (ui/touch.ts; `?touch=1|0`)
+  if (wantsTouch(params.get('touch'))) touchControls({ trainer: mode === 'trainer' })
   const { game } = await import('./game.ts')
   void game(canvas, {
     city,

@@ -329,6 +329,18 @@ export class Navigator {
    * overriding the nudge and the re-centring before a junction while it is set; null lets go and the rider stays
    * wherever they are across the street.
    */
+  /**
+   * THE CARS ALONGSIDE (owner, 2026-10-01: "i can go through cars from the side"): this frame the rider may not move
+   * across past these offsets, metres right of the line (sim/traffic.ts `alongside`). Steering by hand, weaving, the
+   * re-centring — all of it stops at the side of the car next to the rider. Null: no limit.
+   */
+  fence(lo: number | null, hi: number | null): void { this.fenceLo = lo; this.fenceHi = hi }
+  /** the direction the rider last moved across (−1, 0, 1), and for how long they have been asked to go the other way */
+  private lastSide = 0
+  private reverseFor = 0
+  private fenceLo: number | null = null
+  private fenceHi: number | null = null
+
   weaveTo(offset: number | null): void {
     this.weaveTarget = offset === null ? null : Math.max(-this.maxOffset, Math.min(this.maxOffset, offset))
   }
@@ -468,10 +480,33 @@ export class Navigator {
     else if (this.clock >= this.manualUntil) this.offsetTarget = this.restingTarget()
     void j; void commit
     this.offsetTarget = Math.max(-this.maxOffset, Math.min(this.maxOffset, this.offsetTarget))
+    // never across into the side of a car (`fence`): a limit that the rider is already past only stops them going further
+    if (this.fenceLo !== null) this.offsetTarget = Math.max(this.offsetTarget, Math.min(this.offset, this.fenceLo))
+    if (this.fenceHi !== null) this.offsetTarget = Math.min(this.offsetTarget, Math.max(this.offset, this.fenceHi))
     // sideways at 1.5 m/s (3 m/s under a held key); the step's duration is recovered from how far it went at
     // what speed — so there is no steering at a standstill
     const stepMax = speed > 0.1 ? (steering ? FAST_LATERAL : 1.5) * (metres / speed) : 0
-    this.offset += Math.max(-stepMax, Math.min(stepMax, this.offsetTarget - this.offset))
+    /*
+     * HYSTERESIS on the way across (owner, 2026-10-01: squeezed between the kerb and the cars, the rider "flip[s] back
+     * and forth on each frame between leaning slightly left and leaning slightly right"; measured, the offset alternating
+     * 0.476 / 0.448 / 0.475 / 0.447 m frame after frame). The fence, the weave and the rest each ask from where the rider
+     * is THIS frame, and two of them a few centimetres apart traded the target from side to side. Now the rider only
+     * turns back the other way once it has been asked to for a quarter of a second; until then they hold still across.
+     */
+    let step = Math.max(-stepMax, Math.min(stepMax, this.offsetTarget - this.offset))
+    const dir = Math.abs(step) < 1e-4 ? 0 : Math.sign(step)
+    const dt = speed > 0.1 ? metres / speed : 0
+    // (only for the automatic ones: the rider's own steering and nudges turn back at once)
+    const byHand = steering || this.clock < this.manualUntil
+    if (!byHand && dir !== 0 && this.lastSide !== 0 && dir !== this.lastSide) {
+      this.reverseFor += dt
+      if (this.reverseFor < 0.25) step = 0
+      else { this.lastSide = dir; this.reverseFor = 0 }
+    } else {
+      this.reverseFor = 0
+      if (dir !== 0) this.lastSide = dir
+    }
+    this.offset += step
     this.offset = Math.max(-this.maxOffset, Math.min(this.maxOffset, this.offset))
     const target = this.lateral()
     if (this.shown === null) this.shown = target

@@ -126,7 +126,8 @@ export class DebugPanel {
     button('⧉ copy location (C)', 'Copy lat, lon of what the camera is looking at', onCopy)
     if (onGo) button('⌖ go to (G)', 'Ride from a "lat, lon" — or just paste one anywhere', onGo)
     if (onPaths) button('⌇ paths (J)', 'Show the paths the rider can take and the junctions where there is a choice', onPaths)
-    document.body.appendChild(panel)
+    // keyboard commands for the advanced (owner, 2026-10-01): F C G J; the buttons only with `?buttons=1`
+    if (new URLSearchParams(location.search).get('buttons') === '1') document.body.appendChild(panel)
 
     this.toastEl = document.createElement('div')
     this.toastEl.style.cssText = 'position:fixed;left:14px;top:50px;z-index:5;padding:6px 10px;border-radius:6px;'

@@ -98,7 +98,8 @@ export class LocalControls implements Controls {
       case 'ArrowRight': this.pending.push('right'); e.preventDefault(); break
       case 'KeyS': this.pending.push('straight'); break
       case 'KeyU': case 'Backspace': this.pending.push('back'); e.preventDefault(); break
-      case 'KeyP': this.paused_ = !this.paused_; break
+      // (the Pause key too: the touch ⏸ sends it, so it pauses without also toggling photo mode, which is also P)
+      case 'KeyP': case 'Pause': this.paused_ = !this.paused_; break
     }
     this.watts = Math.max(0, Math.min(700, this.watts))
     this.belt = Math.max(0, Math.min(7, this.belt))

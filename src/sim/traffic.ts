@@ -66,6 +66,8 @@ export interface Vehicle {
    * truck is 7 m, a minivan 5; without it every car was a 4.4 m box and the back of a long one could be ridden through.
    */
   size?: { len: number; wid: number }
+  /** a streetcar or cable car standing in for a vehicle (`Traffic.setTransit`): what to call it */
+  transit?: string
   /** the exit chosen at the junction ahead, and what kind of turn it is */
   next?: { edgeId: number; dir: 1 | -1; turn: Turn }
   /** while inside a junction: its node, and the arm it came in by */
@@ -187,7 +189,7 @@ function rng(seed: number): () => number {
 // that drove into one were drawn along the ground above it
 const allowed = (e: Edge, dir: 1 | -1): boolean => drives(e) && !(e.tunnel && !e.bore) && !(e.oneway && dir < 0)
 /** the lane: right of the centre, half a lane out, less on a narrow street */
-const laneOf = (e: Edge): number => Math.min(2.6, e.width * 0.24)
+export const laneOf = (e: Edge): number => Math.min(2.6, e.width * 0.24)
 
 export class Traffic {
   private readonly g: CityGraph
@@ -230,6 +232,74 @@ export class Traffic {
    * collision with the rider (in a junction, per the rules above). `rider` may be a bare point, for callers that
    * only want the city to look busy.
    */
+  /**
+   * THE STREETCARS AND CABLE CARS, as obstacles (owner, 2026-10-01: "they have no collision so people, cars, and the
+   * player go right through"). render/life.ts runs them on their rails and says, every frame, where each car is; here
+   * each becomes a stand-in vehicle — kept by id, so a tram that hit the rider stays `bumped` — that cars queue behind
+   * (`drive`), that holds and fences the rider (`leaderFor`, `alongside`, `weave`) and that can hit them (`update`).
+   */
+  setTransit(bodies: readonly { id: string; x: number; z: number; y: number; heading: number; speed: number; len: number; wid: number; kind: number }[]): void {
+    const seen = new Set<string>()
+    for (const b of bodies) {
+      seen.add(b.id)
+      let v = this.trams.get(b.id)
+      if (!v) {
+        v = { id: -1, kind: 'bus', edgeId: -1, s: 0, dir: 1, speed: 0, cruise: 0, lane: 0, colour: [1, 1, 1], waiting: false,
+          at: { x: b.x, z: b.z }, heading: 0, driver: { a: 1, b: 2, T: 1, s0: 2 },
+          transit: b.kind === 3 ? 'cable car' : 'streetcar' } as Vehicle
+        this.trams.set(b.id, v)
+      }
+      v.at = { x: b.x, z: b.z }
+      v.y = b.y
+      v.heading = b.heading
+      v.speed = b.speed
+      v.size = { len: b.len, wid: b.wid }
+      /*
+       * …and IN THE LANES, where it runs along a street: the street under it, facing its way, and how far along. The
+       * cars behind then follow it as they follow each other (`lanes`, `drive`) — the one rule that keeps a queue
+       * from driving into what is ahead of it. A tram on no street it lines up with keeps the swept look (`drive`).
+       */
+      let best: { e: Edge; s: number; dir: 1 | -1; d: number } | null = null
+      for (const e of this.streets) {
+        for (let i = 1; i < e.points.length; i++) {
+          const a = e.points[i - 1], c = e.points[i]
+          const dx = c.x - a.x, dz = c.z - a.z
+          const l2 = dx * dx + dz * dz || 1e-9
+          const t = Math.max(0, Math.min(1, ((b.x - a.x) * dx + (b.z - a.z) * dz) / l2))
+          const d = Math.hypot(a.x + dx * t - b.x, a.z + dz * t - b.z)
+          if (d > 4.5 || (best && d >= best.d)) continue
+          const cos = (dx * Math.sin(b.heading) + dz * Math.cos(b.heading)) / Math.sqrt(l2)
+          if (Math.abs(cos) < 0.85) continue
+          let along = 0
+          for (let k = 1; k < i; k++) along += Math.hypot(e.points[k].x - e.points[k - 1].x, e.points[k].z - e.points[k - 1].z)
+          best = { e, s: along + t * Math.sqrt(l2), dir: cos > 0 ? 1 : -1, d }
+        }
+      }
+      if (best) { v.edgeId = best.e.id; v.s = best.s; v.dir = best.dir; v.lane = laneOf(best.e) }
+      else v.edgeId = -1
+      /*
+       * …and IN A JUNCTION when it is within one (a cable car's stops are at the corners): its box is taken, as if by a
+       * car going straight across, so the rules of the junction keep cars out of it until it has gone (`mayEnter`).
+       */
+      v.inBox = undefined
+      if (best) {
+        const toA = best.s, toB = best.e.length - best.s
+        const node = toA < toB ? best.e.a : best.e.b
+        const r = this.signals?.control(node).radius ?? 6
+        if (Math.min(toA, toB) < r + b.len / 2) v.inBox = { nodeId: node, from: best.e.id, turn: 'straight' }
+      }
+      if ((v.bumped || v.passed) && this.view && Math.hypot(v.at.x - this.view.at.x, v.at.z - this.view.at.z) > 40) { v.bumped = undefined; v.passed = undefined }
+    }
+    for (const id of [...this.trams.keys()]) if (!seen.has(id)) this.trams.delete(id)
+  }
+  private readonly trams = new Map<string, Vehicle>()
+  /** the trams as the sim sees them (probes) */
+  get tramViews(): Vehicle[] { return [...this.trams.values()] }
+  /** the streets near the rider, from the last `update` (what a tram is matched to: `setTransit`) */
+  private streets: Edge[] = []
+  /** the traffic and the trams, for the loops about the rider */
+  private *withTrams(): Iterable<Vehicle> { yield* this.vehicles; yield* this.trams.values() }
+
   update(dt: number, rider: RiderNow | Point, edgesNear: Iterable<Edge>): Collision[] {
     if (this.cfg.density === 0 || dt <= 0) return []
     this.t += dt
@@ -238,7 +308,8 @@ export class Traffic {
     const at = who ? who.at : (rider as Point)
 
     this.view = who ? { at, fx: Math.sin(who.heading), fz: Math.cos(who.heading) } : { at, fx: 0, fz: 0 }
-    this.populate(at, edgesNear)
+    this.streets = [...edgesNear].filter((e) => drives(e))
+    this.populate(at, this.streets)
     const lanes = this.lanes()
     this.laneCache = lanes
     const boxes = this.occupancy()
@@ -281,6 +352,13 @@ export class Traffic {
         hits.push({ vehicle: v, nodeId: v.inBox?.nodeId ?? -1, at: { ...v.at } })
       }
     }
+    // …and a MOVING streetcar or cable car (they do not stop dead for the rider any more than a car does)
+    if (who) for (const v of this.trams.values()) {
+      if (!v.bumped && !v.passed && v.speed > 1 && !this.otherLevel(who, v) && overlap(who.box, this.boxOf(v))) {
+        v.bumped = true
+        hits.push({ vehicle: v, nodeId: -1, at: { ...v.at } })
+      }
+    }
     return hits
   }
 
@@ -294,7 +372,41 @@ export class Traffic {
    * blocked (then they are held, `leaderFor`). Moving traffic is not woven round — a car driving away needs no
    * avoiding, and cross traffic is what a rider has to judge for themselves.
    */
-  weave(rider: RiderNow, left: number, right: number, prefer = 0): number | null {
+  /**
+   * How far the rider may move across before touching a vehicle BESIDE them — one whose length overlaps the bike's —
+   * at any speed: metres, `left` ≤ 0 ≤ `right`, relative to where they are (Infinity: nothing there). A vehicle the
+   * rider already overlaps sets no limit (that is a collision's business, not this).
+   */
+  alongside(rider: RiderNow): { left: number; right: number } {
+    const fx = Math.sin(rider.heading)
+    const fz = Math.cos(rider.heading)
+    const rx = Math.cos(rider.heading)
+    const rz = -Math.sin(rider.heading)
+    const margin = SIZE.bike.wid / 2 + 0.15
+    const reach = SIZE.bike.len / 2 + 0.3
+    let left = -Infinity
+    let right = Infinity
+    for (const v of this.withTrams()) {
+      if (v.passed || Math.hypot(v.at.x - rider.at.x, v.at.z - rider.at.z) > 16 || this.otherLevel(rider, v)) continue
+      const b = this.boxOf(v)
+      const bf = [Math.sin(b.heading), Math.cos(b.heading)]
+      const br = [Math.cos(b.heading), -Math.sin(b.heading)]
+      let f0 = Infinity, f1 = -Infinity, l0 = Infinity, l1 = -Infinity
+      for (const [a, c] of [[1, 1], [1, -1], [-1, 1], [-1, -1]]) {
+        const x = b.x + bf[0] * b.halfLen * a + br[0] * b.halfWid * c - rider.at.x
+        const z = b.z + bf[1] * b.halfLen * a + br[1] * b.halfWid * c - rider.at.z
+        const f = x * fx + z * fz
+        const l = x * rx + z * rz
+        f0 = Math.min(f0, f); f1 = Math.max(f1, f); l0 = Math.min(l0, l); l1 = Math.max(l1, l)
+      }
+      if (f1 < -reach || f0 > reach) continue
+      if (l1 < 0) left = Math.max(left, l1 + margin)
+      else if (l0 > 0) right = Math.min(right, l0 - margin)
+    }
+    return { left: Math.min(0, left), right: Math.max(0, right) }
+  }
+
+  weave(rider: RiderNow, left: number, right: number, prefer = 0, prev: number | null = null): number | null {
     const look = Math.max(10, rider.speed * 3)
     const fx = Math.sin(rider.heading)
     const fz = Math.cos(rider.heading)
@@ -305,7 +417,7 @@ export class Traffic {
     // only occasionally have to wait for them"); must stay above `leaderFor`'s lane tolerance (0.15)
     const margin = SIZE.bike.wid / 2 + 0.2
     const blocked: [number, number][] = []
-    for (const v of this.vehicles) {
+    for (const v of this.withTrams()) {
       if (Math.hypot(v.at.x - rider.at.x, v.at.z - rider.at.z) > look + 14 || this.otherLevel(rider, v)) continue
       // standing traffic, and traffic crawling the rider's way (a jam creeping at walking pace holds nobody on a
       // bike); cross traffic that is moving is the rider's own judgement
@@ -337,9 +449,15 @@ export class Traffic {
     if (free(want) && free(0) && Math.abs(want) < 0.05) return 0
     let best: number | null = null
     let cost = Infinity
-    for (const l of [0, want, ...blocked.flatMap(([a, b]) => [a - 0.01, b + 0.01])]) {
+    /*
+     * …and with a HOLD on last frame's choice (`prev`, where it is now relative to the rider; owner, 2026-10-01:
+     * squeezed between the kerb and a line of cars the rider "flips back and forth on each frame between leaning
+     * slightly left and leaning slightly right"): two strips costing about the same no longer trade places every
+     * frame — the one already chosen wins unless another is better by more than half a metre.
+     */
+    for (const l of [0, want, ...(prev !== null ? [prev] : []), ...blocked.flatMap(([a, b]) => [a - 0.01, b + 0.01])]) {
       if (l < left - 1e-9 || l > right + 1e-9 || !free(l)) continue
-      const c = Math.abs(l - want) + 0.3 * Math.abs(l)
+      const c = Math.abs(l - want) + 0.3 * Math.abs(l) - (prev !== null && Math.abs(l - prev) < 0.15 ? 0.5 : 0)
       if (c < cost) { cost = c; best = l }
     }
     return best
@@ -380,14 +498,20 @@ export class Traffic {
      */
     const fx = Math.sin(rider.heading)
     const fz = Math.cos(rider.heading)
-    for (const v of this.vehicles) {
+    for (const v of this.withTrams()) {
       // …never by a vehicle that is itself waiting for the rider: a car and a rider face to face on a narrow street
       // each waited for the other for ever (owner, 2026-09-29)
-      if (v.bumped || v.passed || v.why === 'rider in lane' || Math.hypot(v.at.x - rider.at.x, v.at.z - rider.at.z) > 32 || this.otherLevel(rider, v)) continue
+      // (a car standing face to face, waiting for the rider, used to be left out here so the two did not wait for each
+      // other for ever — and the rider rode straight through its bonnet, owner 2026-10-01. It holds the rider now; the
+      // weave takes them round it where there is room, and the never-stuck valve below lets them past where there is not)
+      if (v.bumped || v.passed || Math.hypot(v.at.x - rider.at.x, v.at.z - rider.at.z) > 32 || this.otherLevel(rider, v)) continue
       // standing, or going the rider's way (a car ahead turning off still has to be cleared — the rider ran into
       // the back of one): CROSS traffic is left out on purpose, so running a red can still cost you
       if (v.speed > 1.5 && Math.cos(v.heading - rider.heading) < 0.5) continue
       const box = this.boxOf(v)
+      // nor one BEHIND the rider, or one the rider is already inside: it cannot be in their way, and holding them for it
+      // left the rider standing inside a car that had rolled up against them, for the rest of the ride (measured)
+      if ((v.at.x - rider.at.x) * fx + (v.at.z - rider.at.z) * fz < 0 || overlap(rider.box, box)) continue
       for (let d = 0.5; d <= 25; d += 0.75) {
         if (best && d > best.gap) break
         if (overlap({ ...rider.box, x: rider.at.x + fx * d, z: rider.at.z + fz * d }, box)) {
@@ -573,7 +697,8 @@ export class Traffic {
   /** each lane's vehicles, nearest the far end first */
   private lanes(): Map<string, Vehicle[]> {
     const m = new Map<string, Vehicle[]>()
-    for (const v of this.vehicles) {
+    // (the trams that run along a street too: `setTransit`)
+    for (const v of [...this.vehicles, ...[...this.trams.values()].filter((t) => t.edgeId >= 0)]) {
       const k = `${v.edgeId}:${v.dir}`
       const l = m.get(k)
       if (l) l.push(v)
@@ -586,7 +711,8 @@ export class Traffic {
   /** who is in each junction box */
   private occupancy(): Map<number, Vehicle[]> {
     const m = new Map<number, Vehicle[]>()
-    for (const v of this.vehicles) {
+    // (and the trams in a junction: `setTransit`)
+    for (const v of [...this.vehicles, ...this.trams.values()]) {
       if (!v.inBox) continue
       const l = m.get(v.inBox.nodeId)
       if (l) l.push(v)
@@ -793,6 +919,23 @@ export class Traffic {
         if (o === v || !o.inBox || o.inBox.from !== e.id || o.edgeId === e.id) continue
         const oe = this.g.edges.get(o.edgeId)!
         obstacles.push([toGo + (o.dir > 0 ? o.s : oe.length - o.s) - this.halfLen(v) - this.halfLen(o) - turning(o), o.speed]); whys.push(`box car ${o.id}`)
+      }
+    }
+    // a streetcar or cable car in the way — swept straight ahead from here, as the look-ahead in junctions does: followed
+    // at its speed going this way, waited for otherwise
+    // (not while its never-stuck valve is open, `lookOff` below: a car and a tram each waiting for the other in a
+    // junction otherwise stood there for good)
+    if (this.trams.size && this.t >= (v.lookOff ?? 0)) {
+      const box = this.boxOf(v)
+      const reach = Math.min(30, 6 + v.speed * 2)
+      for (const o of this.trams.values()) {
+        // (one in this very lane is followed as the car ahead already)
+        if (o.edgeId === v.edgeId && o.dir === v.dir) continue
+        if (Math.abs(o.at.x - v.at.x) > reach + 15 || Math.abs(o.at.z - v.at.z) > reach + 15) continue
+        if (Math.abs((o.y ?? 0) - (this.levelOf(v) ?? o.y ?? 0)) > LEVELS) continue
+        const d = this.sweep(v, box, reach, this.boxOf(o))
+        if (d < 0) continue
+        obstacles.push([Math.max(0, d - 0.75), Math.cos(o.heading - v.heading) > 0.5 ? o.speed : 0]); whys.push(o.transit ?? 'tram')
       }
     }
     // the rider, in this lane, ahead — followed or waited for like a car, so nothing runs into them. Not after a

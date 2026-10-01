@@ -127,7 +127,22 @@ export class Life {
   private readonly blobs: Pool
   private readonly rails: { points: { x: number; z: number }[]; length: number; kind: 0 | 1 | 2 | 3 | 4; heights?: number[]; stops: number[] }[] = []
   /** a train: where its head is along the rail, which way, its running speed and speed now, its dwell */
-  private readonly trains: { rail: number; s: number; dir: 1 | -1; speed: number; v: number; wait: number; last: number; variant: number }[] = []
+  private readonly trains: { rail: number; s: number; dir: 1 | -1; speed: number; v: number; wait: number; last: number; variant: number; held?: number; fixed?: 1 | -1 | null; shift?: number }[] = []
+  /**
+   * The street-running cars this frame — cable cars, streetcars, light rail (rail kinds 2–4; not the main line nor the
+   * métro on its viaduct): where each car is, its size, its speed. The traffic, the rider and the crowd treat them as
+   * the obstacles they are (sim/traffic.ts `transit`; owner, 2026-10-01: "they have no collision so people, cars, and
+   * the player go right through"). `id` is train and car, stable while the train runs.
+   */
+  /**
+   * Which way a STREET track runs, from where it lies in its street (game.ts gives it the street graph): +1 a→b, −1
+   * b→a, null a single track down the middle that is run both ways (owner, 2026-10-01: half the streetcars ran on the
+   * wrong side of the street, head-on into the cars — every track was run both ways, turning round at each end).
+   */
+  trackDirection: ((points: { x: number; z: number }[]) => { dir: 1 | -1 | null; shift: number } | undefined) | null = null
+  /** the rider is aboard a train (game.ts): no train stops for them then — they are standing in it */
+  riderAboard = false
+  readonly transitBodies: { id: string; x: number; z: number; y: number; heading: number; speed: number; len: number; wid: number; kind: number }[] = []
   /** the stations trains stop at (the métro viaduct's), in local metres */
   private readonly stations: { x: number; z: number }[]
   /** the streetcar and cable-car stops (OSM railway=tram_stop), as the tiles bring them */
@@ -372,12 +387,14 @@ export class Life {
 
     // trains: they run their line end to end and turn round, which is what a terminus looks like; the métro
     // on its viaduct slows into each station, stands there with its doors open, and pulls away
-    for (const t of this.trains) {
+    this.transitBodies.length = 0
+    for (const [ti, t] of this.trains.entries()) {
       const rail = this.rails[t.rail]
       const kp = this.stockPools[rail.kind]
       const k = kp.kind
       const vp = kp.variants[t.variant]
       const trainLen = (k.cars - 1) * vp.pitch
+      const street = rail.kind >= 2
       if (t.wait > 0) {
         t.wait -= dt
       } else {
@@ -389,7 +406,40 @@ export class Life {
           if (ahead >= -0.5 && ahead < brake && Math.abs(at - t.last) > 1) brake = ahead
         }
         const A = 0.9
-        const target = Math.min(t.speed, Math.sqrt(2 * A * Math.max(0, brake)))
+        let target = Math.min(t.speed, Math.sqrt(2 * A * Math.max(0, brake)))
+        /*
+         * WHAT IS ON THE TRACK AHEAD (owner, 2026-10-01): a streetcar or a cable car brakes for the rider, a car or a
+         * walker in its path, as a driver would, and stops a metre and a half short. Looked for along its heading from
+         * the head car, within its own width; held more than 20 s, it moves on for 4 (the traffic's cars give way first:
+         * theirs is 2 s).
+         */
+        if (street && (t.held ?? 0) < 20) {
+          const head0 = along(rail.points, t.s)
+          const h0 = along(rail.points, Math.max(0, Math.min(rail.length, t.s + t.dir * 3)))
+          const fx = h0.x - head0.x, fz = h0.z - head0.z
+          const fl = Math.hypot(fx, fz) || 1
+          const ux = fx / fl, uz = fz / fl
+          // (on its lane line, as it is drawn)
+          if (t.shift) { head0.x += uz * t.shift; head0.z -= ux * t.shift }
+          const halfLen = vp.shadow[0] / 2
+          const halfWid = vp.shadow[1] / 2
+          const look = halfLen + 4 + (t.v * t.v) / (2 * A)
+          let gap = Infinity
+          const consider = (x: number, z: number, hl: number, hw: number): void => {
+            const dx = x - head0.x, dz = z - head0.z
+            const a = dx * ux + dz * uz
+            const c = Math.abs(dx * uz - dz * ux)
+            if (a > 0 && a < look + hl && c < halfWid + hw + 0.3) gap = Math.min(gap, a - halfLen - hl)
+          }
+          if (!this.riderAboard) consider(at.x, at.z, 0.9, 0.3)
+          for (const v of vehicles) if (Math.abs(v.at.x - head0.x) < 40 && Math.abs(v.at.z - head0.z) < 40) consider(v.at.x, v.at.z, (v.size?.len ?? 4.4) / 2, (v.size?.wid ?? 1.9) / 2)
+          for (const w of walkers) if (Math.abs(w.at.x - head0.x) < 30 && Math.abs(w.at.z - head0.z) < 30) consider(w.at.x, w.at.z, 0.3, 0.3)
+          if (gap < Infinity) target = Math.min(target, Math.sqrt(2 * A * Math.max(0, gap - 1.5)))
+          t.held = target < 0.2 && gap < Infinity ? (t.held ?? 0) + dt : 0
+        } else if ((t.held ?? 0) >= 20) {
+          t.held = (t.held ?? 0) + dt
+          if (t.held > 24) t.held = 0
+        }
         t.v = t.v < target ? Math.min(target, t.v + A * dt) : target
         if (brake < 0.4 && t.v < 0.5) {
           // a métro train stands twenty seconds or so; a streetcar or a cable car at its stop, a dozen
@@ -399,7 +449,27 @@ export class Life {
         }
         t.s += t.dir * Math.max(t.v, brake < Infinity ? 0.3 : 0) * dt
       }
-      if (t.s < 0 || t.s > rail.length) { t.dir = (-t.dir) as 1 | -1; t.s = Math.max(0, Math.min(rail.length, t.s)); t.last = -1 }
+      // a street track runs one way (`trackDirection`, decided once per train): set it going that way
+      if (street && t.fixed === undefined && this.trackDirection) {
+        // (undefined: its street is not in yet — asked again next frame)
+        // (`shift`: metres to its right that put the car on the traffic's own lane line, not OSM's track — a tram
+        // drawn on the track stood half a metre into the oncoming cars, and they stopped against its side)
+        const d = this.trackDirection(rail.points)
+        if (d !== undefined) { t.fixed = d.dir; t.shift = d.shift; if (d.dir) t.dir = d.dir }
+      }
+      if (t.s < 0 || t.s > rail.length) {
+        if (t.fixed) {
+          /*
+           * A one-way track's end: the car leaves the line here and the next one starts at the far end — never turning
+           * round on the same rails into the oncoming traffic. Not while the rider is looking: then it stands at the end.
+           */
+          const start = t.fixed > 0 ? 0 : rail.length
+          const end = along(rail.points, Math.max(0, Math.min(rail.length, t.s)))
+          const begin = along(rail.points, start)
+          if (Math.hypot(end.x - focus.x, end.z - focus.z) > 160 && Math.hypot(begin.x - focus.x, begin.z - focus.z) > 160) { t.s = start; t.last = -1 }
+          else { t.s = Math.max(0, Math.min(rail.length, t.s)); t.wait = 2 }
+        } else { t.dir = (-t.dir) as 1 | -1; t.s = Math.max(0, Math.min(rail.length, t.s)); t.last = -1 }
+      }
       const head = along(rail.points, t.s)
       // near where is being looked at: the rider, or a frozen view's focus
       if (Math.hypot(head.x - focus.x, head.z - focus.z) > 420) continue
@@ -413,6 +483,7 @@ export class Life {
         const a = along(rail.points, s0)
         const b = along(rail.points, s0 + 4)
         const heading = t.dir > 0 ? Math.atan2(b.x - a.x, b.z - a.z) : Math.atan2(a.x - b.x, a.z - b.z)
+        if (t.shift) { p.x += Math.cos(heading) * t.shift; p.z -= Math.sin(heading) * t.shift }
         /*
          * On the grade. A cable car on Hyde Street's 21% has its ends two metres apart in height: set level at its
          * middle's height it buried its downhill end and hung its uphill end in the air. It takes the ground at its
@@ -433,6 +504,7 @@ export class Life {
         const liv = vp.liveries ? vp.liveries[t.rail % vp.liveries.length] : k.colour
         // a full pool drops the carriage; its shadow has to go with it, or a rail yard is full of trains that
         // are not there (user, 2026-09-22: "trains that randomly disappear - but leave their shadow")
+        if (street) this.transitBodies.push({ id: `${ti}:${c}`, x: p.x, z: p.z, y: (yF + yB) / 2, heading, speed: t.wait > 0 ? 0 : t.v, len: vp.shadow[0], wid: vp.shadow[1], kind: rail.kind })
         if (!pool.push(this.m, liv[0], liv[1], liv[2])) continue
         blob(p, heading, vp.shadow[0], vp.shadow[1], vp.shadow[2])
       }
@@ -461,7 +533,8 @@ function stopAlong(points: { x: number; z: number }[], st: { x: number; z: numbe
 }
 
 function along(points: { x: number; z: number }[], s: number): { x: number; z: number } {
-  if (s <= 0) return points[0]
+  // (copies, never the rail's own points: a caller moves what it gets — a tram onto its lane line)
+  if (s <= 0) return { ...points[0] }
   let acc = 0
   for (let i = 1; i < points.length; i++) {
     const dx = points[i].x - points[i - 1].x
@@ -473,5 +546,5 @@ function along(points: { x: number; z: number }[], s: number): { x: number; z: n
     }
     acc += d
   }
-  return points[points.length - 1]
+  return { ...points[points.length - 1] }
 }

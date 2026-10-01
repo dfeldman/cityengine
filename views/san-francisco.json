@@ -3662,5 +3662,65 @@
    0.5
   ],
   "note": "owner 2026-10-01: retaining wall visible through the road on a steep hill"
+ },
+ {
+  "name": "below N",
+  "group": "below",
+  "from": [
+   37.794188,
+   -122.404712,
+   6
+  ],
+  "to": [
+   37.794413,
+   -122.404712,
+   0.5
+  ],
+  "note": "owner 2026-10-01: path below the terrain on a hill"
+ },
+ {
+  "name": "below E",
+  "group": "below",
+  "from": [
+   37.794413,
+   -122.404996,
+   6
+  ],
+  "to": [
+   37.794413,
+   -122.404712,
+   0.5
+  ],
+  "note": "owner 2026-10-01: path below the terrain on a hill"
+ },
+ {
+  "name": "below S",
+  "group": "below",
+  "from": [
+   37.794638,
+   -122.404712,
+   6
+  ],
+  "to": [
+   37.794413,
+   -122.404712,
+   0.5
+  ],
+  "note": "owner 2026-10-01: path below the terrain on a hill"
+ },
+ {
+  "name": "below W",
+  "group": "below",
+  "from": [
+   37.794413,
+   -122.404428,
+   6
+  ],
+  "to": [
+   37.794413,
+   -122.404712,
+   0.5
+  ],
+  "note": "owner 2026-10-01: path below the terrain on a hill"
  }
 ]

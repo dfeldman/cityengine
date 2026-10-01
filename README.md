@@ -196,6 +196,56 @@ still left out — but for the one a ridden bridge runs through (the Yerba Buena
   walls, arch, lamps) is shown only while the camera is inside it; from outside, each mouth is a headwall on the
   hillside with a dark opening. Cars and walkers inside a tunnel are hidden until the camera follows them in.
 
+## URL parameters
+
+Everything a player chooses is on the URL now (owner, 2026-10-01: the city menu, the routes menu and the
+freeze/copy/go-to/paths buttons are gone from the screen; their keys still work). E.g.
+`/?city=san-francisco&mode=debug` is trainer debug in San Francisco.
+
+**Playing**
+
+| | |
+|---|---|
+| `city=san-francisco` | the city (default); `paris-centre`, `paris-marais`, … as baked (`public/cities/index.json`) |
+| `mode=couch\|trainer\|debug` | how you play (src/modes.ts): couch (default), trainer on a local Dandyhorse, trainer debug |
+| `session=<id>` | on Dandyhorse: the session to join (the platform passes it); `dandyhorse=bike` an ad-hoc local session |
+| `route=manual` | deliveries are not routed for you (default: routed, the turns taken) |
+| `input=fast\|slow` | held arrows steer (couch default) / turns declared ahead (trainer default) |
+| `speedup=2` | world metres per pedalled metre (default by mode: couch 2, trainer 1.25, debug 1) |
+| `level=3` | the delivery level, 1–5 (default: rises every 3 deliveries) |
+| `at=lat,lon` | start on the street nearest a point; `start=<edge>` on a ride edge |
+| `time=dawn\|day\|dusk\|night`, `weather=clear\|overcast\|rain` | the hour and the sky |
+| `traffic=none\|some\|busy`, `cars=0`, `crowd=none\|some\|busy\|crowded` | how busy |
+| `touch=1\|0` | the touch buttons on or off (default: on a touch screen) |
+| `running=1` | the bike/run switch back (running is off for now); then `device=treadmill` |
+
+**The device**
+
+| | |
+|---|---|
+| `tier=desktop\|phone\|ultra` | how much memory to use (default: iPhone/iPad ultra, Android phone, else desktop; src/tier.ts) |
+| `rings=v,m` | the built and massing rings, in tiles (default by tier) |
+| `budget=380` | the memory governor's budget, MB (phone and ultra tiers) |
+| `mem=1` | the tier, canvas and a GPU estimate in a corner |
+
+**Development**
+
+| | |
+|---|---|
+| `buttons=1`, `routes=1`, `citymenu=1` | the hidden freeze/copy/go-to/paths buttons, routes menu, city menu |
+| `freeze=1`, `view=high`, `paths=1` | the rider held still; the high camera; the ride graph drawn |
+| `without=a,b` | leave subsystems out: ao, grade, trees, plants, life, crowd, furniture, signs, buildings, landmarks, carkit, fineocc, fence, weavehold, … |
+| `grade=e,s,c` | the colour grade's exposure, saturation, contrast (`1,1,1`: none) |
+| `fog=off`, `far=<m>` | photo mode's fog and draw distance |
+| `map=v2` | read the old tile format |
+| `profile=1`, `pick=1`, `zcheck=1`, `burst=1` | load profiling, mesh picking, z-fighting check, tile loading unthrottled |
+| `bodies=4`, `veg=3`, `vegmerge=0`, `advance=<m>`, `turn=left` | avatar bodies, wood density, vegetation merging, ride ahead on load, a test turn |
+| `model=<name>`, `trees=1`, `palms=1`, `showcase=1&style=<id>` | the model, tree, palm and facade showcases instead of the city |
+
+**Keys**: ↑ ↓ effort · ← → steer · U turn round · Y / X take / decline a delivery · M map · P pause (and photo mode: fog off — the
+same key, to be untangled) · B board transit · F freeze and fly · C copy location · G go to "lat, lon" · J paths ·
+I landmark card · [ ] photo mode's draw distance.
+
 ## How you play: three modes (2026-10-01)
 
 `src/modes.ts`; chosen on the welcome screen, or `?mode=`:

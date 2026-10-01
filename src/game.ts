@@ -54,7 +54,7 @@ import { BridgeDecks, placement } from './city/bridge-decks.ts'
 import { Sky } from './render/sky.ts'
 import { Landmarks, landmarkManifest, packedIds, setKeepGeometry } from './render/landmarks.ts'
 import { Statues, statueManifest } from './render/statues.ts'
-import { Traffic, onEdge, type RiderNow, type Vehicle } from './sim/traffic.ts'
+import { Traffic, laneOf, onEdge, type RiderNow, type Vehicle } from './sim/traffic.ts'
 import { Signals } from './sim/signals.ts'
 import { SignalLamps } from './render/lamps.ts'
 import { DEFAULTS as DELIVERY_DEFAULTS, Delivery, type DeliveryEvent, type Source, type Stop } from './game/delivery.ts'
@@ -703,6 +703,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * each frame, the free strip past stopped traffic nearest where the rider is; the navigator steers across to it.
    */
   let weaveShift: number | null = 0
+  /** the offset the weave last chose (metres right of the line), for its hold against dithering */
+  let weaveAt: number | null = null
   const heldBy = (r: RiderNow): { gap: number; speed: number } | null => {
     const shift = weaveShift ?? 0
     const lead = traffic.leaderFor(r, shift)
@@ -710,7 +712,13 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     // swinging out takes |shift| / 1.5 s (the navigator's sideways speed): no faster than covers the gap in that time
     const inWay = traffic.leaderFor(r, 0, true)
     if (!inWay) return lead
-    const cap = Math.max(2, (1.5 * Math.max(0, inWay.gap)) / Math.abs(shift))
+    /*
+     * No faster than covers the gap left in the time it takes to swing clear — and with no 2 m/s floor any more (owner,
+     * 2026-10-01: riding through cars). That floor rolled the bike into the bumper of a car standing in a junction faster
+     * than it moved across. The sideways rate does not depend on the forward speed (Navigator: 1.5 m/s as long as the
+     * bike is rolling at all), so a 0.12 m/s creep still swings out at full rate.
+     */
+    const cap = Math.max(0.12, (1.5 * Math.max(0, inWay.gap - 0.4)) / Math.abs(shift))
     const swing = { gap: 0, speed: cap }
     return !lead || swing.speed < lead.speed ? swing : lead
   }
@@ -804,6 +812,42 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   if (budget) console.log('[density] pools', budget, 'traffic', trafficN, 'crowd', crowdN)
   // the cars and buses by carkit (render/street-fleet.ts); `?without=carkit` for the old stand-ins
   const life = new Life(scene, pkg as unknown as CityPackage, budget, regionKit(pkg.region).stock, city.viaductStations, !off.has('carkit'))
+  /*
+   * Which way each street track runs (render/life.ts `trackDirection`): the street nearest the middle of the track, and
+   * which side of it the track lies on — on the right of the way it runs, as the traffic keeps right. A track within
+   * half a metre of the street's centre line is a single track, run both ways. Asked once per train, once its street
+   * is in.
+   */
+  life.trackDirection = (pts) => {
+    let n = 0
+    for (let i = 1; i < pts.length; i++) n += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z)
+    let acc = 0, mid = pts[0], dir = { x: 0, z: 1 }
+    for (let i = 1; i < pts.length; i++) {
+      const l = Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z)
+      if (acc + l >= n / 2) { const t = (n / 2 - acc) / (l || 1); mid = { x: pts[i - 1].x + (pts[i].x - pts[i - 1].x) * t, z: pts[i - 1].z + (pts[i].z - pts[i - 1].z) * t }; dir = { x: (pts[i].x - pts[i - 1].x) / (l || 1), z: (pts[i].z - pts[i - 1].z) / (l || 1) }; break }
+      acc += l
+    }
+    let best: { d: number; q: { x: number; z: number }; e?: Edge } | null = null
+    for (const id of city.edgesNear(mid.x, mid.z)) {
+      const e = graph.edges.get(id)
+      if (!e || e.foot) continue
+      for (let i = 1; i < e.points.length; i++) {
+        const a = e.points[i - 1], b = e.points[i]
+        const dx = b.x - a.x, dz = b.z - a.z
+        const t = Math.max(0, Math.min(1, ((mid.x - a.x) * dx + (mid.z - a.z) * dz) / (dx * dx + dz * dz || 1e-9)))
+        const q = { x: a.x + dx * t, z: a.z + dz * t }
+        const d = Math.hypot(mid.x - q.x, mid.z - q.z)
+        if (d < 12 && (!best || d < best.d)) best = { d, q, e }
+      }
+    }
+    if (!best) return undefined
+    // a single track down the middle, run both ways: still on the lane line to the right of whichever way it goes
+    if (best.d < 0.5) return { dir: null, shift: best.e ? laneOf(best.e) - best.d : 0 }
+    // the right of the direction a→b is (dz, −dx): the track to the right of the street's line, it runs a→b
+    const side = (mid.x - best.q.x) * dir.z - (mid.z - best.q.z) * dir.x
+    // and onto the traffic's lane line for that street: `laneOf` to the right of its way, from `best.d` now
+    return { dir: side > 0 ? 1 : -1, shift: best.e ? laneOf(best.e) - best.d : 0 }
+  }
   // street tunnels (render/tunnels.ts): the inside drawn only with the camera in it, the mouths otherwise
   const tunnels = new Tunnels(scene, city.terrain, pkg.region === 'san-francisco' ? SF_TUNNELS : {})
   onTile((a) => tunnels.add(a.ready.edges))
@@ -1244,7 +1288,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       nextWaypoint()
       hud.banner(r.name, `${tour.of} stops · first: ${placeName(destination!)}, ${((route?.length ?? 0) / 1000).toFixed(1)} km away`)
     })
-    document.body.appendChild(menu)
+    // hidden for now (owner, 2026-10-01: "remove the routes menu … but keep underlying functionality"): `?routes=1`
+    if (new URLSearchParams(location.search).get('routes') === '1') document.body.appendChild(menu)
   }
   minimap.onPick = (p, jump) => {
     if (jump) {
@@ -1737,7 +1782,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       // the watts the rider gets: what was measured (or typed), less what an empty energy bar will not pay for
       const measured = controls.measured()
       const given = energy && measured.power !== null ? { ...measured, power: energy.allowed(measured.power) } : measured
-      if (energy && !hold) energy.spend(given.power ?? 0, dt)
+      // aboard a streetcar or cable car the legs rest: the bar refills as fast as it can (owner, 2026-10-01)
+      if (energy && riding) energy.spend(0, dt)
+      else if (energy && !hold) energy.spend(given.power ?? 0, dt)
       if (energyBar && energy) {
         energyBar.fill.style.width = `${Math.round(energy.level * 100)}%`
         energyBar.el.classList.toggle('low', energy.level < 0.25)
@@ -1815,12 +1862,26 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         lastRider = riderNow
         if (riderNow && !frozen) {
           const room = nav.room
+          // the cars BESIDE the rider (`alongside`): the weave may only choose a strip reachable without going through
+          // one — it chose one on the far side of a car standing beside the rider, the fence would not let them across,
+          // and the rider sat in the junction for the rest of the ride (measured, 2026-10-01)
+          const side = off.has('fence') ? { left: -Infinity, right: Infinity } : traffic.alongside(riderNow)
+          const reach = { left: Math.max(room.left, side.left), right: Math.min(room.right, side.right) }
           // aiming for the rider's own line — the right-hand side (Navigator `preferShift`) — round whatever stands
-          weaveShift = traffic.weave(riderNow, room.left, room.right, nav.preferShift)
+          // (last frame's choice, where it is now: the weave holds it rather than dither between two — `weave`)
+          weaveShift = traffic.weave(riderNow, reach.left, reach.right, nav.preferShift, weaveAt === null || off.has('weavehold') ? null : weaveAt - nav.nudged)
           // steering by hand (fast input): the rider goes where they steer, and is held judged from there
           if (nav.fast && lastAxis !== 0) weaveShift = 0
-          nav.weaveTo(weaveShift === null || Math.abs(weaveShift) < 0.05 ? null : nav.nudged + weaveShift)
+          weaveAt = weaveShift === null || Math.abs(weaveShift) < 0.05 ? null : nav.nudged + weaveShift
+          nav.weaveTo(weaveAt)
+          // and never across into the side of a car beside them, however they steer
+          if (off.has('fence')) nav.fence(null, null)
+          else nav.fence(Number.isFinite(side.left) ? nav.nudged + side.left : null, Number.isFinite(side.right) ? nav.nudged + side.right : null)
         }
+        // the streetcars and cable cars where Life last drew them (render/life.ts `transitBodies`): obstacles to the
+        // traffic and the rider; and none of them stops for a rider who is aboard one
+        traffic.setTransit(off.has('tramobstacles') ? [] : life.transitBodies)
+        life.riderAboard = transit.aboard !== null
         const hits = traffic.update(dt, riderNow ?? at, near)
         // the delivery game: its clock runs with the ride (not while frozen or paused), and it watches the rider
         if (!hold) onDelivery(delivery.update(dt, at))
@@ -1841,7 +1902,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
          * A COLLISION, in a junction (owner, 2026-09-29): not animated. The bike stops dead, the car stops too
          * (sim/traffic.ts), a message says so, and both carry on. In the game proper it costs points.
          */
-        if (hits.length > 0 && now >= graceUntil) {
+        // (not while aboard a streetcar or cable car: a car running into it is the tram's collision, not the rider's —
+        // owner, 2026-10-01)
+        if (hits.length > 0 && now >= graceUntil && transit.aboard === null) {
           graceUntil = now + 4000
           collisions += 1
           ride.halt()
@@ -1852,7 +1915,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           const side = Math.sin(heading) * (hv.at.z - at.z) - Math.cos(heading) * (hv.at.x - at.x) > 0 ? 1 : -1
           rider?.tumble(side)
           const lines = ['Oops!', 'Whoa there!', 'Bonk!', 'Oof!']
-          hud.banner(lines[collisions % lines.length], `bumped a ${hv.kind}${hits[0].nodeId >= 0 ? ' in the junction' : ''} · ${collisions} this ride`, 2600)
+          hud.banner(lines[collisions % lines.length], `bumped a ${hv.transit ?? hv.kind}${hits[0].nodeId >= 0 ? ' in the junction' : ''} · ${collisions} this ride`, 2600)
           onDelivery(delivery.collided())
           ;(window as unknown as Record<string, unknown>).__collisions = collisions
           // what happened, for tuning (read by the shot tools): who was going where, under which light
@@ -1876,7 +1939,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
          * street much, but it can happen"): the same tumble and a word of apology. Only riding at some speed — a
          * walker brushing a standing bike is no crash — and the walker simply walks on.
          */
-        if (riderNow && !hold && ride.speed > 2 && now >= graceUntil) {
+        if (riderNow && !hold && ride.speed > 2 && now >= graceUntil && transit.aboard === null) {
           for (const w of crowd.all) {
             // not the crowd's cyclists: they share the road the rider's way, and catching one up from behind was two
             // crashes in 100 s (measured) — a nuisance, not a hazard
@@ -2088,6 +2151,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     return { step: city.terrain.stepIn(tileKey(Math.floor(x / TILE), Math.floor(z / TILE))), raw: city.terrain.rawHeightAt(x, z),
       coarse: coarseOnly.rawHeightAt(x, z), drawn: city.terrain.heightAt(x, z) }
   }
+  // the rider's sideways offset, metres right of the line (probes: how often the weave changes its mind)
+  ;(window as unknown as Record<string, unknown>).__navOffset = () => nav.nudged
+  // the streetcars' and cable cars' boxes this frame (probes: what runs into them)
+  ;(window as unknown as Record<string, unknown>).__transitBodies = () => life.transitBodies
   ;(window as unknown as Record<string, unknown>).__terrainStats = () => ({
     blocks: city.terrain.blockCount, tilesHeld: tileLevel.size, coarse: !!city.terrain.coarse,
   })
