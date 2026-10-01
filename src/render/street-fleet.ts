@@ -13,6 +13,7 @@ import type { Scene } from '@babylonjs/core/scene'
 import { Fleet, randomSpec, slopePose, steerForCurvature, type Archetype, type Car, type Livery } from '@dandyhorse/carkit'
 import { DAYLIGHT, NIGHT } from './facade-material.ts'
 import type { Vehicle } from '../sim/traffic.ts'
+import { nearLevel } from '../city/terrain.ts'
 
 /**
  * The city's mix of shapes, by weight (after carkit's demo): mostly sedans, hatchbacks and SUVs, a few vans and
@@ -100,6 +101,8 @@ export class StreetFleet {
       }
       t.seen = this.frame
       const car = t.car
+      // the footprint drawn, for the traffic sim's boxes (collisions, being held behind it): sim/traffic.ts `size`
+      v.size ??= { len: car.spec.length, wid: car.spec.width }
       const ds = Math.hypot(v.at.x - t.x, v.at.z - t.z)
       if (v.y !== undefined) {
         /*
@@ -111,7 +114,8 @@ export class StreetFleet {
         car.setPose(slopePose(v.at.x, v.y, v.at.z, v.heading, t.grade))
         car.drops = car.layout.wheels.map(() => 0)
       } else {
-        car.place(v.at.x, v.at.z, v.heading, groundAt, dt)
+        // (on the ground, but never off the street's own level: city/terrain.ts `nearLevel`)
+        car.place(v.at.x, v.at.z, v.heading, (x, z) => nearLevel(groundAt(x, z), v.level), dt)
         t.grade = 0
       }
       // the front wheels follow the path's curvature (only seen, so the frame-to-frame estimate will do)

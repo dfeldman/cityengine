@@ -3602,5 +3602,65 @@
    2
   ],
   "note": "BUGS #240: things seen through hills"
+ },
+ {
+  "name": "steep presidio N",
+  "group": "steep",
+  "from": [
+   37.79623,
+   -122.468589,
+   9
+  ],
+  "to": [
+   37.796428,
+   -122.468589,
+   0.5
+  ],
+  "note": "owner 2026-10-01: retaining wall visible through the road on a steep hill"
+ },
+ {
+  "name": "steep presidio E",
+  "group": "steep",
+  "from": [
+   37.796428,
+   -122.468839,
+   9
+  ],
+  "to": [
+   37.796428,
+   -122.468589,
+   0.5
+  ],
+  "note": "owner 2026-10-01: retaining wall visible through the road on a steep hill"
+ },
+ {
+  "name": "steep presidio S",
+  "group": "steep",
+  "from": [
+   37.796626,
+   -122.468589,
+   9
+  ],
+  "to": [
+   37.796428,
+   -122.468589,
+   0.5
+  ],
+  "note": "owner 2026-10-01: retaining wall visible through the road on a steep hill"
+ },
+ {
+  "name": "steep presidio W",
+  "group": "steep",
+  "from": [
+   37.796428,
+   -122.468339,
+   9
+  ],
+  "to": [
+   37.796428,
+   -122.468589,
+   0.5
+  ],
+  "note": "owner 2026-10-01: retaining wall visible through the road on a steep hill"
  }
 ]

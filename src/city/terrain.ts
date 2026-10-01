@@ -289,3 +289,15 @@ function walk(points: { x: number; z: number }[], heights: number[], s: number):
   }
   return { y: heights[heights.length - 1], at: clamped }
 }
+
+/**
+ * The ground under something that moves along a street, given the street's own level there (`level`, its profile).
+ * Normally the ground — so a car's four tyres follow the camber and a walker the pavement. But where the two
+ * disagree by metres the street's level wins: the ground lookup answers a tunnel's CUT (the street descending to the
+ * mouth) for everything inside the cut's corridor, including a street that crosses OVER the mouth, and cars and
+ * people on Bush Street dropped into the Stockton Tunnel's portal and popped out again (owner, 2026-10-01).
+ */
+export function nearLevel(ground: number, level: number | undefined, tolerance = 1.5): number {
+  return level !== undefined && Math.abs(ground - level) > tolerance ? level : ground
+}
+

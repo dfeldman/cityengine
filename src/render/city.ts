@@ -2416,6 +2416,25 @@ export class City {
         : groundLayerMaterial(this.scene, this.roadAssets, surface, 'carriage')
       m.renderingGroupId = surface === this.pkg.ground ? GROUP.base : GROUP.road
       meshes.push(m)
+      /*
+       * …and the carriageway again as DEPTH ONLY, first in the buildings' group, like the ground occluder (owner,
+       * 2026-10-01, at 37.796428 −122.468589: "the retaining wall is visible THROUGH the road"). The depth buffer is
+       * cleared between groups, so a road drawn in its own group hid nothing in the last one: on a steep slope the
+       * retaining wall of a street raised on fill, which runs down under the next street's edge, drew right over
+       * that street. 12 cm down, so a car's tyres and a kerb on the road are never clipped. (Named as an occluder,
+       * so it is drawn before everything it hides: `rank` above.)
+       */
+      if (surface !== this.pkg.ground) {
+        const occ = this.scene.getMaterialByName('occluder')
+        if (occ) {
+          const d = m.clone(`ground:occluder:road:${k}`)
+          d.material = occ
+          d.renderingGroupId = GROUP.building
+          d.position.y = -0.12
+          d.isPickable = false
+          meshes.push(d)
+        }
+      }
     }
     if (water.triangles > 0 && !this.off.has('water')) {
       const m = new Mesh(`water:${k}`, this.scene)

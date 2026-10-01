@@ -40,7 +40,7 @@ import { PEOPLE } from './layers.ts'
 import type { Scene } from '@babylonjs/core/scene'
 import type { Walker } from '../sim/crowd.ts'
 import { distance, type Point } from '../city/geo.ts'
-import type { Terrain } from '../city/terrain.ts'
+import { nearLevel, type Terrain } from '../city/terrain.ts'
 
 /** The pace the stride is baked at; each walker's playback is scaled to their own speed from it. */
 const BAKE_SPEED = 1.35
@@ -301,7 +301,7 @@ export class BakedCrowd {
       }
       list.forEach(({ w, d }, i) => {
         // a walker's feet are 0.155 m under the kit's root; a bike's wheels stand on it
-        const y = (w.y ?? terrain?.heightAt(w.at.x, w.at.z) ?? 0) + (v.gait === 'cycle' ? 0 : 0.155)
+        const y = (w.y ?? nearLevel(terrain?.heightAt(w.at.x, w.at.z) ?? 0, w.level)) + (v.gait === 'cycle' ? 0 : 0.155)
         // the kit's bodies are life-size already; the walker's height varies them a little around it, and
         // at the edge of the drawn range they grow in from nothing instead of appearing whole
         const grow = Math.min(1, Math.max(0, (RANGE - d) / GROW))

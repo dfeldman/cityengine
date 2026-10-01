@@ -55,6 +55,17 @@ export interface Vehicle {
   heading: number
   /** height, on a raised edge (a bridge); absent means "on the ground" */
   y?: number
+  /**
+   * The street's own level here (its baked profile), whatever the edge: where the ground answer disagrees with it by
+   * metres — a tunnel's cut running under a street that crosses over it (the Stockton Tunnel under Bush Street) —
+   * this is where the car really is (render: `nearLevel`).
+   */
+  level?: number
+  /**
+   * The footprint the vehicle is DRAWN with, metres (render/street-fleet.ts sets it from the carkit body): a box
+   * truck is 7 m, a minivan 5; without it every car was a 4.4 m box and the back of a long one could be ridden through.
+   */
+  size?: { len: number; wid: number }
   /** the exit chosen at the junction ahead, and what kind of turn it is */
   next?: { edgeId: number; dir: 1 | -1; turn: Turn }
   /** while inside a junction: its node, and the arm it came in by */
@@ -131,6 +142,7 @@ export interface RiderNow {
 /** vertical separation beyond which the rider and a vehicle are on different levels */
 const LEVELS = 3.5
 
+/** a moving vehicle hitting the rider: in a junction (`nodeId`), or anywhere along a street (`nodeId` -1) */
 export interface Collision { vehicle: Vehicle; nodeId: number; at: Point }
 
 /** grade below which the rider is on a descent: cars ahead get out of the way instead of holding them */
@@ -258,10 +270,15 @@ export class Traffic {
       if ((v.still ?? 0) > 45 && this.hidden(v.at)) { this.vehicles.splice(i, 1); continue }
       // only a MOVING car hits the rider: riding into a standing one (or one squeezed past) is not a crash, and nor
       // is a car creeping at walking pace touching them (two such "crashes" in 100 s, measured, at 1–1.9 m/s)
-      if (who && v.inBox && !v.bumped && !v.passed && v.speed > 2 && !this.otherLevel(who, v) && overlap(who.box, this.boxOf(v))) {
+      /*
+       * …in a junction, or ALONG A STREET (owner, 2026-10-01: "intersection collision works, but … on non-intersection
+       * paths, you can go right through them"): a moving car the rider swerves into, or meets in its own lane. Along a
+       * street the rider is otherwise held behind the car ahead (`leaderFor`), so an overlap there is a real crash.
+       */
+      if (who && !v.bumped && !v.passed && v.speed > 2 && !this.otherLevel(who, v) && overlap(who.box, this.boxOf(v))) {
         // the rider stops (game.ts); the vehicle drives on, and from now on the two ignore each other
         v.bumped = true
-        hits.push({ vehicle: v, nodeId: v.inBox.nodeId, at: { ...v.at } })
+        hits.push({ vehicle: v, nodeId: v.inBox?.nodeId ?? -1, at: { ...v.at } })
       }
     }
     return hits
@@ -415,8 +432,9 @@ export class Traffic {
 
   // ---- the parts
 
-  private halfLen(v: Vehicle): number { return (v.kind === 'bus' ? SIZE.bus : SIZE.car).len / 2 }
-  private halfWid(v: Vehicle): number { return (v.kind === 'bus' ? SIZE.bus : SIZE.car).wid / 2 }
+  private sizeOf(v: Vehicle): { len: number; wid: number } { return v.size ?? (v.kind === 'bus' ? SIZE.bus : SIZE.car) }
+  private halfLen(v: Vehicle): number { return this.sizeOf(v).len / 2 }
+  private halfWid(v: Vehicle): number { return this.sizeOf(v).wid / 2 }
   /**
    * One intersection that OSM split into several nodes a few metres apart (a divided street, a skewed crossing): the
    * nodes joined by streets shorter than 12 m are one junction, for the look-ahead. Its smallest node id names it.
@@ -466,7 +484,7 @@ export class Traffic {
     return -1
   }
 
-  boxOf(v: Vehicle): Box { return boxOf(v.at.x, v.at.z, v.heading, v.kind === 'bus' ? SIZE.bus : SIZE.car) }
+  boxOf(v: Vehicle): Box { return boxOf(v.at.x, v.at.z, v.heading, this.sizeOf(v)) }
 
   /** a point's signed distance to the right of an edge's a→b centre line, at `s` */
   private lateral(e: Edge, s: number, p: Point): number {
@@ -1035,6 +1053,7 @@ export class Traffic {
       v.heading = h
     }
     v.y = e.raised ? profileAt(e.points, e.heights, v.s).y : undefined
+    v.level = e.heights?.length ? profileAt(e.points, e.heights, v.s).y : undefined
     return true
   }
 }

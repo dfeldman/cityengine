@@ -20,7 +20,7 @@ import { asMassing, fringeLayer, massing } from './render/fringe.ts'
 import { terracesLayer } from './render/terraces.ts'
 import { MID, VIEW, setGroundStride, setRings } from './render/city.ts'
 import { MemoryTiles, TILE, tileKey, type CityIndex, type TileData } from './city/tiles.ts'
-import { Terrain } from './city/terrain.ts'
+import { nearLevel, Terrain } from './city/terrain.ts'
 import { tilePreparer } from './render/prepare.ts'
 import { ParkMap } from './city/park-area.ts'
 import { plog } from './profile.ts'
@@ -1852,7 +1852,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           const side = Math.sin(heading) * (hv.at.z - at.z) - Math.cos(heading) * (hv.at.x - at.x) > 0 ? 1 : -1
           rider?.tumble(side)
           const lines = ['Oops!', 'Whoa there!', 'Bonk!', 'Oof!']
-          hud.banner(lines[collisions % lines.length], `bumped a ${hv.kind} in the junction · ${collisions} this ride`, 2600)
+          hud.banner(lines[collisions % lines.length], `bumped a ${hv.kind}${hits[0].nodeId >= 0 ? ' in the junction' : ''} · ${collisions} this ride`, 2600)
           onDelivery(delivery.collided())
           ;(window as unknown as Record<string, unknown>).__collisions = collisions
           // what happened, for tuning (read by the shot tools): who was going where, under which light
@@ -1864,8 +1864,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
               riderEdge: riderNow?.edgeId, riderSpeed: +(riderNow?.speed ?? 0).toFixed(1),
               sameArm: v.inBox?.from === riderNow?.edgeId,
               vLight: v.inBox ? signals.aspect(h.nodeId, v.inBox.from, traffic.time) : null,
-              riderLight: riderNow ? signals.aspect(h.nodeId, riderNow.edgeId, traffic.time) : null,
-              kindAt: signals.control(h.nodeId).kind,
+              riderLight: riderNow && h.nodeId >= 0 ? signals.aspect(h.nodeId, riderNow.edgeId, traffic.time) : null,
+              kindAt: h.nodeId >= 0 ? signals.control(h.nodeId).kind : 'street',
               at: [Math.round(h.at.x), Math.round(h.at.z)], vehicleEdge: v.edgeId, riderAt: [Math.round(at.x), Math.round(at.z)],
             })
           }
@@ -1882,7 +1882,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
             // crashes in 100 s (measured) — a nuisance, not a hazard
             if (w.kind === 'cycle' || Math.abs(w.at.x - at.x) > 2.5 || Math.abs(w.at.z - at.z) > 2.5) continue
             // (a walker on another level — the street over a tunnel — is not in the way)
-            if (Math.abs((w.y ?? city.terrain.heightAt(w.at.x, w.at.z)) - nav.elevation().y) > 3.5) continue
+            if (Math.abs((w.y ?? nearLevel(city.terrain.heightAt(w.at.x, w.at.z), w.level)) - nav.elevation().y) > 3.5) continue
             if (!overlap(riderNow.box, boxOf(w.at.x, w.at.z, w.heading, SIZE.runner))) continue
             graceUntil = now + 4000
             collisions += 1

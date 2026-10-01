@@ -24,7 +24,7 @@ import type { Walker } from '../sim/crowd.ts'
 import type { CityPackage } from '../city/package.ts'
 import type { Terrain } from '../city/terrain.ts'
 import { unpackPoints } from '../city/package.ts'
-import { profileAt } from '../city/terrain.ts'
+import { nearLevel, profileAt } from '../city/terrain.ts'
 import { StreetFleet } from './street-fleet.ts'
 
 class Pool {
@@ -321,7 +321,7 @@ export class Life {
       Matrix.ComposeToRef(
         Vector3.OneReadOnly,
         Quaternion.RotationYawPitchRoll(v.heading, 0, 0),
-        new Vector3(v.at.x, 0.06 + (v.y ?? groundAt(v.at)), v.at.z), this.m)
+        new Vector3(v.at.x, 0.06 + (v.y ?? nearLevel(groundAt(v.at), v.level)), v.at.z), this.m)
       const pool = v.kind === 'bus' ? this.buses : this.cars
       pool.push(this.m, v.colour[0], v.colour[1], v.colour[2])
       blob(v.at, v.heading, v.kind === 'bus' ? 12 : 4.6, v.kind === 'bus' ? 3 : 2.1,
@@ -339,7 +339,7 @@ export class Life {
       const swing = Math.sin(w.phase) * (w.kind === 'run' ? 0.95 : 0.62)
       const rot = Quaternion.RotationYawPitchRoll(w.heading, w.kind === 'run' ? 0.12 : w.kind === 'cycle' ? 0.35 : 0, 0)
       const scale = new Vector3(1, w.height, 1)
-      const wy = w.y ?? groundAt(w.at)
+      const wy = w.y ?? nearLevel(groundAt(w.at), w.level)
       if (w.kind === 'cycle') {
         // the bicycle under them, and the rider seated: lifted onto the saddle and leaning to the bars
         Matrix.ComposeToRef(new Vector3(1, 1, 1), Quaternion.RotationYawPitchRoll(w.heading, 0, 0),

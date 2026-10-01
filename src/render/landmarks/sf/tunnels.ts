@@ -298,7 +298,13 @@ function yerbaBuenaPortal(c: PortalContext): PortalParts {
 
 export const SF_TUNNELS: Record<string, TunnelStyle> = {
   'Stockton Tunnel': {
-    vault: 'segmental', spring: 1.6, crown: 6.0,
+    /*
+     * crown 4.9, not 6.0 (owner, 2026-10-01: cars and people on Bush Street showed INSIDE the top of the arch). In
+     * the baked heights Bush Street crosses the south mouth only ~6.1 m above the tunnel's road, so a 6 m arch rose to
+     * the street over it, the portal's deck could not be the street (stocktonPortal wants it 0.8 m clear), and the
+     * traffic on Bush rode through the arch. The real tunnel's clearance is about 4.3 m.
+     */
+    vault: 'segmental', spring: 1.6, crown: 4.9,
     wall: [0.93, 0.78, 0.45], wallTop: 2.4, vaultColour: [0.72, 0.66, 0.52],
     lamps: 'springs', walks: 'both',
     portal: (c) => stocktonPortal(c),
