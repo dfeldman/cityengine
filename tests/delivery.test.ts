@@ -3,7 +3,7 @@
  * intersections named "N<i> St & E<j> Ave".
  */
 import { describe, expect, it } from 'vitest'
-import { DEFAULTS, Delivery, distanceToRing, type DeliveryWorld, type Source } from '../src/game/delivery.ts'
+import { CROSSING_LEVEL, DEFAULTS, Delivery, distanceToRing, rate, type DeliveryWorld, type Source } from '../src/game/delivery.ts'
 
 const sq = (cx: number, cz: number, h: number): number[] => [cx - h, cz - h, cx + h, cz - h, cx + h, cz + h, cx - h, cz + h]
 
@@ -103,6 +103,7 @@ describe('the delivery game', () => {
     const far = { name: 'The Island', x: 5000, z: 0 }
     const w: DeliveryWorld = { ...world, buildingsNear: (x, z, r) => (x > 4000 ? (loaded ? [{ id: 999, ring: sq(5010, 10, 15) }] : []) : world.buildingsNear(x, z, r)) }
     const g = new Delivery(w, { crossings: [{ name: 'across', from: { x: 0, z: 0, r: 500 }, places: [far], chance: 1 }] }, 7)
+    g.level = CROSSING_LEVEL   // (only offered at the top level)
     const offer = tick(g, DEFAULTS.firstOffer + 1, { x: 0, z: 0 }).find((e) => e.kind === 'offer')!
     expect(offer.job.dropoff.label).toBe('The Island')
     expect(offer.job.dropoff.far).toBe(true)
@@ -172,5 +173,31 @@ describe('kitchens, dishes and levels (owner, 2026-10-01)', () => {
     const job = tick(g, DEFAULTS.firstOffer + 1, at).find((e) => e.kind === 'offer')!.job
     expect(job.source).toBeUndefined()
     expect(job.pickup.label).toMatch(/St & /)
+  })
+})
+
+describe('the rating (2026-10-01)', () => {
+  const job = { id: 1, pickup: {} as never, dropoff: {} as never, metres: 1000 }
+  it('is five stars when quick and clean, fewer when slow, and loses a star a bump', () => {
+    // expected: 1000·1.35/13 + 15 ≈ 119 s
+    expect(rate(job, 80, 0, 1, 13, 0).stars).toBe(5)
+    expect(rate(job, 130, 0, 1, 13, 0).stars).toBe(3)
+    expect(rate(job, 400, 0, 1, 13, 0).stars).toBe(1)
+    expect(rate(job, 80, 2, 1, 13, 0).stars).toBe(3)
+    expect(rate(job, 80, 9, 1, 13, 0).stars).toBe(1)
+  })
+  it('offers no job across to the islands below the top level (owner, 2026-10-02)', () => {
+    const g = new Delivery(town(), { crossings: [{ name: 'across', from: { x: 0, z: 0, r: 500 }, places: [{ name: 'The Island', x: 5000, z: 0 }], chance: 1 }] }, 7)
+    g.level = 2
+    const offer = tick(g, DEFAULTS.firstOffer + 1, { x: 0, z: 0 }).find((e) => e.kind === 'offer')
+    expect(offer?.job.dropoff.label).not.toBe('The Island')
+  })
+  it('pays by distance and tips by stars, more at higher levels', () => {
+    const a = rate(job, 80, 0, 1, 13, 0)
+    expect(a.fee).toBe(5)
+    expect(a.tip).toBe(4)
+    expect(rate(job, 80, 0, 3, 13, 0).tip).toBeGreaterThan(a.tip)
+    expect(rate(job, 400, 0, 1, 13, 0).tip).toBe(0)
+    expect(a.line.length).toBeGreaterThan(0)
   })
 })

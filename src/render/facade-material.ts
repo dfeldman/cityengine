@@ -270,7 +270,7 @@ const LOOKS: Record<TimeOfDay, SkyLook & { night: number }> = {
     skyColour: new Color3(0.42, 0.47, 0.58),
     groundColour: new Color3(0.22, 0.21, 0.19),
     fogColour: new Color3(0.72, 0.76, 0.82),
-    fogDensity: 0.0016,
+    fogDensity: 0.0012,
     zenith: new Color3(0.40, 0.55, 0.82),
     horizon: new Color3(0.80, 0.85, 0.92),
     night: 0,
@@ -381,7 +381,7 @@ export const DAYLIGHT: SkyLook = {
   skyColour: new Color3(0.42, 0.47, 0.58),
   groundColour: new Color3(0.22, 0.21, 0.19),
   fogColour: new Color3(0.72, 0.76, 0.82),
-  fogDensity: 0.0016,
+  fogDensity: 0.0012,
   zenith: new Color3(0.40, 0.55, 0.82),
   horizon: new Color3(0.80, 0.85, 0.92),
 }

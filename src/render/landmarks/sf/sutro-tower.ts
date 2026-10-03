@@ -122,3 +122,45 @@ export function sutroTower(out: MeshBuilder, _fit?: Fit): void {
     box(out, p[0], 1.5, p[2], 4, 1.5, 4, [0.7, 0.7, 0.68], 0)
   }
 }
+
+/**
+ * THE NEAR LEVEL (owner, 2026-10-02: "rework our sutro tower model into high and low levels of detail like the bridges
+ * so it looks ok when you get close … right now the polys are huge so occlusion doesn't work"). The far level is the
+ * skyline stand-in — drawn shrunk toward the eye, BEHIND everything (render group 0), which is right at 5 km and wrong
+ * at the foot of Mount Sutro, where it showed through the hill and the trees. This is the same tower as a real
+ * landmark on the ground (public/landmarks/san-francisco/bridges.json), which the stand-in hands over to within 1.3 km
+ * (render/landmarks.ts), with the lattice a rider at its foot sees: X-bracing between the corner chords in every
+ * panel of every leg, and the crossarm's walkway grating.
+ */
+export function sutroTowerNear(out: MeshBuilder, fit?: Fit): void {
+  sutroTower(out, fit)
+  const legAngle = (k: number): number => (k / 3) * Math.PI * 2 + Math.PI
+  const at = (k: number, y: number, r = legR(y)): V3 => [Math.sin(legAngle(k)) * r, y, Math.cos(legAngle(k)) * r]
+  const bands = 7
+  for (let k = 0; k < 3; k++) {
+    for (let b = 0; b < bands; b++) {
+      const y0 = (TOP_LEG * b) / bands
+      const y1 = (TOP_LEG * (b + 1)) / bands
+      const c = b % 2 === 0 ? RED : WHITE
+      const w = 3.4 - b * 0.12
+      // panels every ~6 m up the band, an X on each of the column's four faces
+      const n = Math.max(2, Math.round((y1 - y0) / 6))
+      for (let i = 0; i < n; i++) {
+        const ya = y0 + ((y1 - y0) * i) / n
+        const yb = y0 + ((y1 - y0) * (i + 1)) / n
+        const A = at(k, ya), B = at(k, yb)
+        for (const [dx, dz, ex, ez] of [[1, 1, 1, -1], [1, -1, -1, -1], [-1, -1, -1, 1], [-1, 1, 1, 1]]) {
+          const o = (p: V3, sx: number, sz: number): V3 => [p[0] + sx * w * 0.58, p[1], p[2] + sz * w * 0.58]
+          beam(out, o(A, dx, dz), o(B, ex, ez), 0.16, 0.16, c, false)
+          beam(out, o(A, ex, ez), o(B, dx, dz), 0.16, 0.16, c, false)
+        }
+      }
+    }
+  }
+  // the crossarm's walkway: a grating between the arms
+  for (let k = 0; k < 3; k++) {
+    const a = at(k, CROSSARM + 1.5, legR(CROSSARM) + 21)
+    const b = at((k + 1) % 3, CROSSARM + 1.5, legR(CROSSARM) + 21)
+    beamChopped(out, a, b, 2.4, 0.12, GREY, 5)
+  }
+}

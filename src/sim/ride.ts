@@ -50,7 +50,14 @@ export interface RideState {
   braking: boolean
   /** crank angle for the avatar's legs */
   crank: number
+  /** m/s backwards: REVERSE, the rider stopped and asking for less than nothing (`REVERSE_WATTS`) */
+  reverse?: number
 }
+
+/** the most negative power the keyboard asks for: reverse at its fastest */
+export const REVERSE_WATTS = -45
+/** m/s, backing up at REVERSE_WATTS: a walking shuffle */
+export const REVERSE_SPEED = 1.1
 
 /** watts at or under which the rider is not pedalling */
 export const ZERO_POWER = 10
@@ -68,6 +75,8 @@ export class Ride {
   private braking = false
   /** seconds at (near) zero power: the brake comes on after a moment of it */
   private idle = 0
+  /** m/s backwards (REVERSE) */
+  private back = 0
   private readonly cfg: RideConfig
 
   constructor(cfg: Partial<RideConfig> = {}) {
@@ -76,8 +85,11 @@ export class Ride {
 
   get speed(): number { return this.v }
 
-  /** Stop dead — a collision (sim/traffic.ts): not animated, the rider simply stops and rides on. */
-  halt(): void { this.v = 0 }
+  /** no faster than `world` m/s (the world's speed, the speedup counted): creeping through a car (game.ts) */
+  cap(world: number): void { this.v = Math.min(this.v, world / this.speedup) }
+
+  /** Stop dead — a collision (sim/traffic.ts), or a standing car in the way (game.ts): the rider simply stops. */
+  halt(): void { this.v = 0; this.back = 0 }
 
   /**
    * One step. `grade` is rise over run; `cornerRadius` is the radius of the bend the rider is approaching,
@@ -175,10 +187,19 @@ export class Ride {
       }
     }
 
+    /*
+     * REVERSE (owner, 2026-10-01): stopped, and asking for negative power, the rider walks the bike back — slowly,
+     * along the street they are on (game.ts `Navigator.backUp`), to get out from behind a car that will not move.
+     * Moving forward, negative power is only the brake.
+     */
+    const backWanted = power < 0 && this.v < 0.05 ? REVERSE_SPEED * Math.min(1, power / REVERSE_WATTS) : 0
+    this.back += (backWanted - this.back) * Math.min(1, dt * (backWanted > this.back ? 2 : 6))
+    if (this.back < 0.02 && backWanted === 0) this.back = 0
     this.crank += (power > 10 ? (this.v > 0.5 ? this.v * 0.9 : 1.2) : 0) * dt
     return {
       speed: this.v * k, grade, power: m.power, working: power > 10,
       coasting: power <= ZERO_POWER && this.v > 0.3 && !this.braking, braking: this.braking, crank: this.crank,
+      reverse: this.back,
     }
   }
 }

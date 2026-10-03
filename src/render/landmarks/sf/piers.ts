@@ -150,6 +150,10 @@ export function pier(out: MeshBuilder, fit: Fit, spec: PierSpec): void {
       box(out, s * (hx - 1.45), shedH - 1.2, z, 0.05, 0.7, 2, trim, metal)
     }
   }
+  // the substructure: dark timber and concrete from the deck down past the waterline, under the whole pier. Placed on
+  // the sea's level since 2026-10-02 (BUGS.md #258), the open underside showed the bank of ground the pier stands on as
+  // a green strip at the waterline (owner's screenshot)
+  box(out, 0, -2.6, 0, hx, 3, hz, [0.24, 0.22, 0.2], concrete)
   // the deck's edge and its piles, out over the water
   box(out, 0, 0.4, (rz0 + rz1) / 2, hx, 0.4, (rz1 - rz0) / 2, [0.5, 0.49, 0.47], concrete)
   for (const s of [-1, 1]) {
@@ -189,5 +193,5 @@ export const PIERS = {
   // claimed by way id, same as the three standalone piers in s1.json. A big double-deck shopping pier with
   // a marina either side, of which a rider sees only the bulkhead and the deck's edge from the Embarcadero
   // -- the same shed this kit already draws, wider than the plain Piers 33/35 sheds either side of it.
-  pier39: preset({ number: '39', style: 'plain', height: 12, wall: [0.86, 0.83, 0.74] }),
+  // (no pier39: Pier 39 has no shed — its shops are sf/pier39.ts, and the preset drew a stucco bulkhead over them)
 }

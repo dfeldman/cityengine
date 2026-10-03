@@ -47,9 +47,10 @@ function pointAlong(points: P[], s: number): P {
 }
 
 /** The point of the graph nearest `p`: its edge and distance along it from `a`. */
-export function nearestOnGraph(g: CityGraph, p: P): { edgeId: number; s: number; at: P; d: number } | null {
+export function nearestOnGraph(g: CityGraph, p: P, skip?: (e: { id: number; name?: string }) => boolean): { edgeId: number; s: number; at: P; d: number } | null {
   let best: { edgeId: number; s: number; at: P; d: number } | null = null
   for (const e of g.edges.values()) {
+    if (skip?.(e)) continue
     let run = 0
     for (let i = 1; i < e.points.length; i++) {
       const a = e.points[i - 1]

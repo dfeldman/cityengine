@@ -109,6 +109,8 @@ export function classify(edges: Edge[], mode: RideMode): RideEdge[] {
        * goes. A trunk road is a city street here (Van Ness, Tillary Street), and stays.
        */
       if (FREEWAY.has(k)) return !!e.ridden
+      // a trail in a zone that opens its trails to bikes (`trails: 'bike'`): the Lands End trail down to Sutro Baths
+      if (e.trail && (k === 'footway' || k === 'path' || k === 'track' || k === 'bridleway')) return true
       return BIKE.has(k) || RIDEABLE_MOTORWAY.has(k) || (mode === 'run' && RUN_EXTRA.has(k))
     })
     .map((e) => ({

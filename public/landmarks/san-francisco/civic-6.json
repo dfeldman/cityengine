@@ -1,0 +1,13 @@
+[
+  {"osm": ["way/243464467"], "name": "Flexdrive", "procedural": "flexdrive", "height": 14, "note": "Car rental garage; light grey concrete facade with large dark-tinted windows and glass base. Mapillary 611612311782945."},
+  {"osm": ["way/218185111"], "name": "Multi-Service Center South", "procedural": "multiServiceCenterSouth", "height": 11, "note": "Light blue stucco civic building with large windows and red/brown roof. Mapillary 1428143598303790."},
+  {"osm": ["way/71209420"], "name": "Tenderloin Recreation Center", "procedural": "tenderloinRecreationCenter", "height": 10, "note": "2-storey brick building with distinctive bay window; community recreation facility. Mapillary 675057162268761."},
+  {"osm": ["way/161385043"], "name": "Northern Police Station", "procedural": "northernPoliceStation", "height": 7, "note": "Municipal police facility; photo did not show building clearly, built plainly."},
+  {"osm": ["way/158827841"], "name": "California Highway Patrol", "procedural": "californiaHighwayPatrol", "height": 6, "note": "Service building with red brick base and cream upper storeys. Mapillary 1327946379330635."},
+  {"osm": ["way/288374432"], "name": "Crissy Field Center", "procedural": "crissyFieldCenter", "height": 5, "note": "Visitor facility at Crissy Field; photo did not show building clearly, built with natural tones."},
+  {"osm": ["way/160833254"], "name": "Western Addition Branch Library", "procedural": "westernAdditionBranchLibrary", "height": 3, "note": "Small public library; white facade shaded by large trees. Mapillary 1338257691222198."},
+  {"osm": ["relation/3528184"], "name": "Pacific Heights School", "procedural": "pacificHeightsSchool", "height": 14, "note": "4-storey Beaux-Arts institutional building with cream stone facade, arched entrance with classical columns. Mapillary 537480817879710."},
+  {"osm": ["way/260358486"], "name": "United Playaz", "procedural": "unitedPlayaz", "height": 20, "note": "5-6 storey mixed-use civic building; brick base with cream/white upper storeys, community youth programs. Mapillary 1330384805328132."},
+  {"osm": ["way/225733614"], "name": "San Francisco Fire Station 1", "procedural": "sanFranciscoFireStation1", "height": 14, "note": "Modern fire station building with dark grey facade and 'SFFD 1' signage. Mapillary 735181952768559."},
+  {"osm": ["way/262074929"], "name": "Town School for Boys", "procedural": "townSchoolForBoys", "height": 18, "note": "4-5 storey school building with cream/tan stone base and large glass upper storeys. Mapillary 703376794258615."}
+]

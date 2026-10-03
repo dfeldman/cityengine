@@ -26,18 +26,6 @@
   },
   {
     "osm": [
-      "way/113505811"
-    ],
-    "name": "Foundry Square IV",
-    "restyle": "towerblock",
-    "wall": "#d0ccc4",
-    "by": "haiku",
-    "image": "way-113505811-2.jpg",
-    "note": "Individual punched windows in rendered wall with modern glass sections; towerblock not skyscraper",
-    "height": 46
-  },
-  {
-    "osm": [
       "way/32947380"
     ],
     "name": "Wells Fargo",

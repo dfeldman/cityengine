@@ -39,7 +39,8 @@ export function bow(out: MeshBuilder, z0: number, B: number, y: number, h: numbe
 function wake(out: MeshBuilder, L: number, B: number): void {
   const y = 0.05
   const q = (p: [number, number, number][]): void => out.quad(p, [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], [3, 0, 0], 0)
-  const len = Math.max(14, L * 2.6)
+  // (at least 14 m behind anything boat-sized, but in proportion behind a swimmer or a model yacht)
+  const len = Math.max(Math.min(14, L * 6), L * 2.6)
   const k = Math.tan((19.5 * Math.PI) / 180)
   for (const s of [-1, 1]) {
     // the arm: from the bow shoulder back and out, widening
@@ -81,12 +82,16 @@ function launchBoat(out: MeshBuilder, seed: number): { L: number; B: number } {
 }
 
 /** a kind of boat in a region's fleet: how to build it (local +z forward, waterline y = 0), its pace, its lane */
-export interface BoatKind { name: string; build: (out: MeshBuilder, seed: number) => { L: number; B: number }; speed: number; lane: number }
+export interface BoatKind {
+  name: string; build: (out: MeshBuilder, seed: number) => { L: number; B: number }; speed: number; lane: number
+  /** not drawn within this many metres of either end of its line, so a long ship's turn there is never seen */
+  hideEnds?: number
+}
 
 /** a small launch, anywhere there is a river */
 export const LAUNCH: BoatKind = { name: 'launch', build: launchBoat, speed: 6.5, lane: 14 }
 
-interface Boat { mesh: Mesh; kind: string; s: number; dir: 1 | -1; speed: number; lane: number; half: number; phase: number; x: number; z: number; heading: number }
+interface Boat { mesh: Mesh; kind: string; s: number; dir: 1 | -1; speed: number; lane: number; half: number; phase: number; x: number; z: number; heading: number; hideEnds: number }
 
 export class RiverTraffic {
   private readonly pts: { x: number; z: number }[] = []
@@ -122,7 +127,7 @@ export class RiverTraffic {
       wm.isPickable = false
       wm.parent = mesh
       this.boats.push({ mesh, kind: kind.name, x: 0, z: 0, heading: 0, s: ((i + 0.5) / n) * length, dir: i % 2 ? 1 : -1,
-        speed: kind.speed, lane: kind.lane, half: L, phase: i * 1.7 })
+        speed: kind.speed, lane: kind.lane, half: L, phase: i * 1.7, hideEnds: kind.hideEnds ?? 0 })
     }
   }
 
@@ -164,7 +169,7 @@ export class RiverTraffic {
       b.x = x
       b.z = z
       b.heading = Math.atan2(fx, fz)
-      const far = Math.hypot(x - rider.x, z - rider.z) > 1600
+      const far = Math.hypot(x - rider.x, z - rider.z) > 1600 || b.s < b.hideEnds || b.s > L - b.hideEnds
       const level = far ? null : this.waterAt(x, z)
       if (level === null) { b.mesh.setEnabled(false); continue }
       b.mesh.setEnabled(true)

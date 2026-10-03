@@ -67,7 +67,16 @@ export class MeshBuilder {
    * (render/landmarks.ts) turns it into world-space planting the same way it turns the mesh itself into a
    * placed landmark: same rotation, same translation, same scale. Empty and untouched for everything else.
    */
-  readonly decks: { ring: { x: number; z: number }[]; y: number }[] = []
+  // (`keepOff`: how far in from the ring's edge trees stand — 6.5 m unless a bed says; `trees`/`shrubs`: which
+  // planting layers plant it, both unless false — a designed garden plants its beds, not its paths)
+  /**
+   * Ground the landmark PAVES at street level, in its own frame: draped on the terrain by the city's ground pass
+   * (render/city.ts `paveGround`), over the grass the city's ground otherwise is. The concourse under the Transit
+   * Center, which a model cannot floor itself — the terrain rises 4 m along it, and a flat floor is buried at one end.
+   */
+  readonly grounds: { x: number; z: number }[][] = []
+  /** `spacing`: trees at this pitch, past the area density (park-planting.ts `deckRow`) — a row along a path */
+  readonly decks: { ring: { x: number; z: number }[]; y: number; keepOff?: number; trees?: boolean; shrubs?: boolean; spacing?: number }[] = []
 
   /** One quad, wound so its face points along `n`. `uv` is the four corners, in order bl, br, tr, tl. */
   quad(
@@ -311,6 +320,29 @@ function gable(out: MeshBuilder, f: Feature, at: (t: number, y: number) => [numb
     out.quad([off(a0, 0.03), off(a1, 0.03), off([a1[0], a1[1] + 0.22, a1[2]], 0.03), off([a0[0], a0[1] + 0.22, a0[2]], 0.03)],
       [nx, 0, nz], flat, trim, KIND_WALL)
   }
+  /*
+   * …and the ROOF behind it (owner, 2026-10-02: "victorians have a facade that's one-dimensional and gabled. this looks
+   * weird even from the ground"). The gable was a cut-out on the street wall with the flat roof behind: seen at any
+   * angle, a triangle of card. Now two shingled slopes run back from its raking edges along a ridge, and a second gable
+   * closes them at the back — a front-gabled house, as the Italianates and Stick houses are. As deep as the front is
+   * wide, within 3–7 m: the street sees a roof, and it does not run out over a short lot.
+   */
+  const deep = Math.max(3, Math.min(7, len))
+  const back = (q: [number, number, number]): [number, number, number] => [q[0] - nx * deep, q[1], q[2] - nz * deep]
+  const l0 = at(-0.1, f.y0 - 0.05)
+  const r0 = at(len + 0.1, f.y0 - 0.05)
+  const top: [number, number, number] = [apex[0], apex[1] + 0.12, apex[2]]
+  const roof: [number, number, number] = [0.3, 0.29, 0.3]
+  // each slope's normal: up and out to its side
+  const across = [r0[0] - l0[0], 0, r0[2] - l0[2]]
+  const al = Math.hypot(across[0], across[2]) || 1
+  const rise = Math.max(0.1, f.y1 - f.y0)
+  const run = len / 2
+  const k = 1 / Math.hypot(rise, run)
+  const sideN = (s: number): [number, number, number] => [(-across[0] / al) * s * rise * k, run * k, (-across[2] / al) * s * rise * k]
+  out.quad([l0, top, back(top), back(l0)], sideN(1), flat, roof, KIND_WALL)
+  out.quad([top, r0, back(r0), back(top)], sideN(-1), flat, roof, KIND_WALL)
+  out.quad([back(at(0, f.y0)), back(at(len, f.y0)), back(apex), back(apex)], [-nx, 0, -nz], flat, tint, KIND_WALL)
 }
 
 /**

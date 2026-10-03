@@ -377,13 +377,54 @@ function mulberry(seed: number): () => number {
  * loop plus a little; the first render was taken at 4 m and had trees standing on the path.
  */
 export function deckPlantings(ring: { x: number; z: number }[], y: number, keepOff = 6.5,
-                              rule: ParkRule = DECK_PLANTING): Planting[] {
+                              rule: ParkRule = DECK_PLANTING, spacing?: number): Planting[] {
   if (ring.length < 3) return []
+  if (spacing) return deckRow(ring, y, keepOff, spacing, rule)
   const pkg = { areas: [{ kind: 'park' as const, ring: packPoints(ring) }], edges: [] }
   const edges = new SegGrid(ring, [])
   return plantParks(pkg, rule, 0x5ca1eb1e)
     .filter((p) => edges.distance(p.x, p.z) > keepOff)
     .map((p) => ({ ...p, y }))
+}
+
+/**
+ * Trees at a GIVEN pitch on a deck bed, past `MAX_DENSITY`: a row along a path is a few dozen trees on a strip a
+ * couple of metres wide, which an area density can never put there (0.0078 a square metre is half a tree on a 22 m
+ * strip). A jittered grid at `spacing`, the same species mix, the same keep-off from the bed's edge.
+ */
+function deckRow(ring: { x: number; z: number }[], y: number, keepOff: number, spacing: number, rule: ParkRule): Planting[] {
+  // the bed's own axes (a deck ring arrives in world space, turned however the landmark stands): its long axis by
+  // the second moments, so a strip at 45° is planted down its length and not by a grid across it
+  let mx = 0, mz = 0
+  for (const p of ring) { mx += p.x; mz += p.z }
+  mx /= ring.length; mz /= ring.length
+  let sxx = 0, szz = 0, sxz = 0
+  for (const p of ring) { const dx = p.x - mx, dz = p.z - mz; sxx += dx * dx; szz += dz * dz; sxz += dx * dz }
+  const t = 0.5 * Math.atan2(2 * sxz, sxx - szz)
+  const c = Math.cos(t), sn = Math.sin(t)
+  const toU = (x: number, z: number): [number, number] => [(x - mx) * c + (z - mz) * sn, -(x - mx) * sn + (z - mz) * c]
+  let u0 = Infinity, u1 = -Infinity, v0 = Infinity, v1 = -Infinity
+  for (const p of ring) { const [u, v] = toU(p.x, p.z); u0 = Math.min(u0, u); u1 = Math.max(u1, u); v0 = Math.min(v0, v); v1 = Math.max(v1, v) }
+  const r = mulberry(Math.round(mx * 7 + mz * 13) ^ 0x7ee5)
+  const edges = new SegGrid(ring, [])
+  const out: Planting[] = []
+  // rows centred in the bed, at least one each way: a strip narrower than the pitch is one row down its middle
+  const nu = Math.max(1, Math.floor((u1 - u0) / spacing))
+  const nv = Math.max(1, Math.floor((v1 - v0) / spacing))
+  for (let iv = 0; iv < nv; iv++) {
+    for (let iu = 0; iu < nu; iu++) {
+      const u = u0 + ((iu + 0.5 + (r() - 0.5) * 0.4) * (u1 - u0)) / nu
+      const v = v0 + ((iv + 0.5 + (r() - 0.5) * 0.2) * (v1 - v0)) / nv
+      const px = mx + u * c - v * sn
+      const pz = mz + u * sn + v * c
+      if (!inside(ring, px, pz) || edges.distance(px, pz) < Math.min(keepOff, 0.4)) continue
+      const spot = rule(px, pz, 'park')
+      if (!spot || spot.species.length === 0) continue
+      const sp = weighted(spot.species, r())
+      out.push({ x: px, z: pz, y, height: sp.h[0] + r() * (sp.h[1] - sp.h[0]), spin: r() * 6.28, park: true, form: formCode(sp.form) })
+    }
+  }
+  return out
 }
 
 /**

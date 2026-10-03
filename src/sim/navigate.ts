@@ -117,6 +117,8 @@ export const FAST_COMMIT_MIN = 4
 export const FAST_COMMIT_MAX = 7
 /** Fast input: sideways speed while a direction is held, m/s (slow input's nudges ease at 1.5). */
 export const FAST_LATERAL = 3
+/** m/s across the street at a standstill, edging round a stopped car (`Navigator.sidestep`) */
+export const EDGE_SPEED = 0.6
 /** Fast input: a tap counts for this long before the corner, seconds of travel. */
 export const FAST_TAP_SECONDS = 0.6
 
@@ -209,6 +211,88 @@ export class Navigator {
     this.committed = null
     this.tapped = null
     this.swap = 1
+  }
+  /**
+   * EDGING ROUND A STOPPED CAR (owner, 2026-10-02: "it should be possible to go to the left or the right of a stopped
+   * car. just not through … maybe very slowly"). Sideways movement otherwise comes only with travel along the street
+   * (`advance`), so a rider stopped dead behind a car could neither steer nor be woven round it. At a standstill the
+   * held direction — or the weave's strip — moves them across at a walking shuffle, never into a car beside them
+   * (the fences), and never off the street.
+   */
+  sidestep(dt: number): void {
+    if (dt <= 0) return
+    const steering = this.fast && this.held !== 0
+    let target = steering ? this.offset + this.held : this.weaveTarget
+    if (target === null) return
+    target = Math.max(-this.maxOffset, Math.min(this.maxOffset, target))
+    if (this.fenceLo !== null) target = Math.max(target, Math.min(this.offset, this.fenceLo))
+    if (this.fenceHi !== null) target = Math.min(target, Math.max(this.offset, this.fenceHi))
+    const step = Math.max(-EDGE_SPEED * dt, Math.min(EDGE_SPEED * dt, target - this.offset))
+    if (Math.abs(step) < 1e-5) return
+    this.offset += step
+    this.offsetTarget = this.offset
+    if (steering) this.manualUntil = this.clock + Navigator.MANUAL_SECONDS
+    const t = this.lateral()
+    if (this.shown !== null) this.shown += Math.max(-EDGE_SPEED * dt, Math.min(EDGE_SPEED * dt, t - this.shown))
+  }
+
+  /**
+   * Where the rider is, to put back (game.ts: a step that would take them INTO a standing car is undone — cars are
+   * solid). Only within one street: a step that crossed a junction is not undone.
+   */
+  snapshot(): { pos: Position; offset: number; offsetTarget: number; shown: number | null; travelled: number } {
+    return { pos: { ...this.pos }, offset: this.offset, offsetTarget: this.offsetTarget, shown: this.shown, travelled: this.travelled }
+  }
+
+  restore(s: ReturnType<Navigator['snapshot']>): void {
+    this.pos = { ...s.pos }
+    this.offset = s.offset
+    this.offsetTarget = s.offsetTarget
+    this.shown = s.shown
+    this.travelled = s.travelled
+  }
+
+  /**
+   * REVERSE (sim/ride.ts): back `metres` along the street the rider is on, and on round the corner into the one behind.
+   */
+  backUp(metres: number): void {
+    const e = this.edge
+    const room = this.pos.reversed ? e.length - this.pos.s : this.pos.s
+    if (metres <= room) {
+      const s = this.pos.reversed ? this.pos.s + metres : this.pos.s - metres
+      this.pos = { ...this.pos, s }
+    } else {
+      /*
+       * …and on BACK ROUND THE CORNER (owner, 2026-10-02, stuck just past a junction between a truck and a car: "I
+       * can't back up, i can't move forward"): at the street's start the rider backs on into the street behind — the
+       * one straight back, else the nearest — still facing the way they were going.
+       */
+      const node = this.pos.reversed ? e.b : e.a
+      const xs = this.exitsOf(this.g, node, e.id)
+      const back = xs.find((x) => x.turn === 'straight') ?? xs[0]
+      const ne = back ? this.g.edges.get(back.edgeId) : undefined
+      if (!ne) {
+        this.pos = { ...this.pos, s: this.pos.reversed ? e.length : 0 }
+      } else {
+        const d = Math.min(ne.length, metres - room)
+        // facing the node it came from: along `ne` toward `node`
+        this.pos = ne.a === node ? { edgeId: ne.id, s: d, reversed: true } : { edgeId: ne.id, s: ne.length - d, reversed: false }
+        this.arcAhead = null
+        this.arcBehind = null
+        this.committed = null
+      }
+    }
+    // a held direction steers while backing, at half the forward rate, so the rider can pull out round the car
+    if (this.fast && this.held !== 0) {
+      let o = this.offset + this.held * metres * 0.8
+      if (this.fenceLo !== null) o = Math.max(o, Math.min(this.offset, this.fenceLo))
+      if (this.fenceHi !== null) o = Math.min(o, Math.max(this.offset, this.fenceHi))
+      this.offset = Math.max(-this.maxOffset, Math.min(this.maxOffset, o))
+      this.offsetTarget = this.offset
+      this.manualUntil = this.clock + 1.5
+    }
+    const t = this.lateral()
+    if (this.shown !== null) this.shown += Math.max(-metres, Math.min(metres, t - this.shown))
   }
   get edge() { return this.g.edges.get(this.pos.edgeId)! }
   /** the turn the rider has asked for, or has been locked into */

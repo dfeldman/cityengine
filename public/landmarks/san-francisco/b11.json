@@ -45,5 +45,101 @@
     "procedural": "b11_orchardGardenHotel_260279404",
     "name": "Orchard Garden Hotel",
     "height": 31
+  },
+  {
+    "osm": [
+      "way/24433389"
+    ],
+    "procedural": "b11_modelIndustriesBuilding_24433389",
+    "name": "Model Industries Building (Alcatraz)",
+    "note": "Restored 2026-10-02 by tools/builder-audit.ts: the builder existed, the manifest never placed it."
+  },
+  {
+    "osm": [
+      "way/24433395"
+    ],
+    "procedural": "b11_newIndustriesBuilding_24433395",
+    "name": "New Industries Building (Alcatraz)",
+    "note": "Restored 2026-10-02 by tools/builder-audit.ts: the builder existed, the manifest never placed it."
+  },
+  {
+    "osm": [
+      "way/28000041"
+    ],
+    "procedural": "b11_morgue_28000041",
+    "name": "Morgue (Alcatraz)",
+    "note": "Restored 2026-10-02 by tools/builder-audit.ts: the builder existed, the manifest never placed it."
+  },
+  {
+    "osm": [
+      "way/27996721"
+    ],
+    "procedural": "b11_powerhouse_27996721",
+    "name": "Powerhouse (Alcatraz)",
+    "note": "Restored 2026-10-02 by tools/builder-audit.ts: the builder existed, the manifest never placed it."
+  },
+  {
+    "osm": [
+      "way/291188933"
+    ],
+    "procedural": "b11_quarters1NimitzHouse_291188933",
+    "name": "Quarters 1 / Nimitz House (Treasure Island)",
+    "note": "Restored 2026-10-02 by tools/builder-audit.ts: the builder existed, the manifest never placed it."
+  },
+  {
+    "osm": [
+      "way/291188936"
+    ],
+    "procedural": "b11_quarters2_291188936",
+    "name": "Quarters 2 (Treasure Island)",
+    "note": "Restored 2026-10-02 by tools/builder-audit.ts: the builder existed, the manifest never placed it."
+  },
+  {
+    "osm": [
+      "way/291188941"
+    ],
+    "procedural": "b11_quarters3_291188941",
+    "name": "Quarters 3 (Treasure Island)",
+    "note": "Restored 2026-10-02 by tools/builder-audit.ts: the builder existed, the manifest never placed it."
+  },
+  {
+    "osm": [
+      "way/291188937"
+    ],
+    "procedural": "b11_quarters4_291188937",
+    "name": "Quarters 4 (Treasure Island)",
+    "note": "Restored 2026-10-02 by tools/builder-audit.ts: the builder existed, the manifest never placed it."
+  },
+  {
+    "osm": [
+      "way/291188938"
+    ],
+    "procedural": "b11_quarters5_291188938",
+    "name": "Quarters 5 (Treasure Island)",
+    "note": "Restored 2026-10-02 by tools/builder-audit.ts: the builder existed, the manifest never placed it."
+  },
+  {
+    "osm": [
+      "way/291188939"
+    ],
+    "procedural": "b11_quarters6_291188939",
+    "name": "Quarters 6 (Treasure Island)",
+    "note": "Restored 2026-10-02 by tools/builder-audit.ts: the builder existed, the manifest never placed it."
+  },
+  {
+    "osm": [
+      "way/291188940"
+    ],
+    "procedural": "b11_quarters7_291188940",
+    "name": "Quarters 7 (Treasure Island)",
+    "note": "Restored 2026-10-02 by tools/builder-audit.ts: the builder existed, the manifest never placed it."
+  },
+  {
+    "osm": [
+      "way/291188963"
+    ],
+    "procedural": "b11_quarters9_291188963",
+    "name": "Quarters 9 (Treasure Island)",
+    "note": "Restored 2026-10-02 by tools/builder-audit.ts: the builder existed, the manifest never placed it."
   }
 ]

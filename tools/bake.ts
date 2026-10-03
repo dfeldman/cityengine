@@ -25,7 +25,7 @@
  */
 import { boreTunnels } from './tunnels.ts'
 import { mkdir, writeFile } from 'node:fs/promises'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { spawnSync } from 'node:child_process'
 import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
@@ -92,7 +92,7 @@ import { buildSigns } from './signs.ts'
 import { insetNested } from '../src/city/nesting.ts'
 import { GroundModel } from '../src/map/ground.ts'
 import { writeV3 } from './v3-writer.ts'
-import { localZones, zoneTouchesRect, type LocalZone, type ZoneFile } from '../src/map/zones.ts'
+import { localZones, zoneTouchesRect, zonesAt, type LocalZone, type ZoneFile } from '../src/map/zones.ts'
 import { NeighbourGrid, centroid, hasHeightTag, inferLevels, taggedLevels, type TaggedNeighbour } from './heights.ts'
 
 const OUT = resolve(import.meta.dirname, '..', 'public', 'cities')
@@ -111,9 +111,31 @@ const PARK_RING_M2 = 40000
 
 const bbox = (c: CitySpec, pad = 0): Bbox => bboxOf(c, pad)
 
+/** The OSM ways a region's landmark manifests claim (public/landmarks/<region>/*.json and <region>.json), packed ids. */
+function landmarkClaims(region: string): Set<number> {
+  const out = new Set<number>()
+  const dir = resolve(import.meta.dirname, '..', 'public', 'landmarks')
+  const files = [resolve(dir, `${region}.json`)]
+  const sub = resolve(dir, region)
+  if (existsSync(sub)) for (const f of readdirSync(sub)) if (f.endsWith('.json')) files.push(resolve(sub, f))
+  for (const f of files) {
+    if (!existsSync(f)) continue
+    const d = JSON.parse(readFileSync(f, 'utf8')) as { osm?: string | string[] }[] | { landmarks?: { osm?: string | string[] }[] }
+    for (const e of Array.isArray(d) ? d : d.landmarks ?? []) {
+      for (const ref of e.osm ? (Array.isArray(e.osm) ? e.osm : [e.osm]) : []) {
+        const [kind, n] = ref.split('/')
+        if (kind === 'way') out.add(Number(n))
+      }
+    }
+  }
+  return out
+}
+
 const SURFACES: Record<string, PackedEdge['surface']> = {
   asphalt: 'asphalt', paved: 'asphalt', concrete: 'concrete', paving_stones: 'concrete',
   sett: 'cobblestone', cobblestone: 'cobblestone', unhewn_cobblestone: 'cobblestone',
+  // Lombard Street's crooked block (owner's appearance pass, 2026-10-02): red brick, not the asphalt it fell back to
+  bricks: 'brick', brick: 'brick', clay: 'brick',
   gravel: 'gravel', fine_gravel: 'gravel', compacted: 'gravel',
   ground: 'dirt', dirt: 'dirt', earth: 'dirt', grass: 'dirt', sand: 'dirt', wood: 'wood',
 }
@@ -290,7 +312,16 @@ async function bake(spec: CitySpec): Promise<void> {
   // the paths that stop a few metres short of the way they obviously run into, joined to it (tools/gaps.ts)
   const joins = joinNearMisses(streets, (g) => proj.toLocal(g))
   console.log(`  ${joins} near-miss path ends joined to the way beside them`)
-  const railways = ways.filter((w) => w.tags.railway)
+  /*
+   * Only the lines trains RUN on. Any `railway=` was taken, and an abandoned or razed line is a railway in OSM to the
+   * end of time: the Mill Valley - Sausalito Path and the rest of the Northwestern Pacific's old bed in Marin carry
+   * `railway=abandoned|razed` beside `highway=cycleway`, and Sausalito filled with trains running down its bike path
+   * (owner, 2026-10-02: "Sausalito also displays with way too many trains").
+   */
+  const RUNNING = /^(rail|light_rail|tram|subway|narrow_gauge|funicular|monorail)$/
+  // (and not industrial yard track: Sausalito's boatyard slipways are `railway=rail, service=yard, usage=industrial`)
+  const railways = ways.filter((w) => RUNNING.test(w.tags.railway ?? '') && !/^(abandoned|disused|razed|construction|proposed)$/.test(w.tags.usage ?? '')
+    && !(w.tags.service === 'yard' && w.tags.usage === 'industrial'))
   /**
    * Buildings, minus the outlines that have been superseded by their own parts.
    *
@@ -322,8 +353,16 @@ async function bake(spec: CitySpec): Promise<void> {
   const belowGround = (t: Record<string, string>): boolean => t.location === 'underground' || t.indoor !== undefined
     || parseFloat(t.layer ?? '0') < 0 || (t.level !== undefined && t.level.split(';').every((v) => parseFloat(v) < 0))
   // boats moored on the river are drawn as boats (render/boats.ts), not as twenty-metre blocks in the water
-  const isBoat = (t: Record<string, string>): boolean => t.building === 'boat' || t.building === 'houseboat'
-  const boatWays = ways.filter((w) => isBoat(w.tags) && w.geometry && w.geometry.length >= 4)
+  /*
+   * …and the historic SHIPS (BUGS.md #229, #251): OSM tags the waterfront's vessels `building=ship`, which went down
+   * the building path — the owner: "two permanently placed ships … that render as victorian buildings in the water".
+   * A ship is a boat (a hull at the water) unless a landmark entry claims its way for a model of its own (USS
+   * Pampanito, manual-1.json): that one stays a building for the model to replace.
+   */
+  const shipModels = landmarkClaims(spec.region ?? spec.id)
+  const isBoat = (w: { id: number; tags: Record<string, string> }): boolean => w.tags.building === 'boat' || w.tags.building === 'houseboat'
+    || (w.tags.building === 'ship' && !shipModels.has(w.id))
+  const boatWays = ways.filter((w) => isBoat(w) && w.geometry && w.geometry.length >= 4)
   /*
    * BUGS.md #150, #151. Infrastructure wearing a building tag. The Bay Bridge's four western-span suspension
    * towers carry `building=tower` beside `bridge:support=pylon`, so they were extruded as buildings and drawn
@@ -337,7 +376,7 @@ async function bake(spec: CitySpec): Promise<void> {
   const isInfrastructure = (t: Record<string, string>): boolean => t['bridge:support'] !== undefined
     || (t.name === undefined && (t.power !== undefined || t['tower:type'] !== undefined
       || /^(tower|mast|chimney|silo|storage_tank|water_tower|communications_tower)$/.test(t.man_made ?? '')))
-  const outlines = ways.filter((w) => w.tags.building && !w.tags['building:part'] && !canopy(w.tags) && !belowGround(w.tags) && !isBoat(w.tags) && !isInfrastructure(w.tags))
+  const outlines = ways.filter((w) => w.tags.building && !w.tags['building:part'] && !canopy(w.tags) && !belowGround(w.tags) && !isBoat(w) && !isInfrastructure(w.tags))
   const parts = ways.filter((w) => w.tags['building:part'] && !belowGround(w.tags))
   const partSeeds = parts
     .filter((w) => w.geometry && w.geometry.length >= 3)
@@ -517,6 +556,21 @@ async function bake(spec: CitySpec): Promise<void> {
 
   // ---- keep only the largest connected component: an island of three streets the rider can never
   // reach is worse than not having it, because it appears on the map and cannot be ridden to.
+  /*
+   * TRAILS a bike rides (owner, 2026-10-02: "there should be a trail to the baths"): in a zone with `trails: 'bike'`,
+   * a footway, path or track with a riding surface (not steps, not sand) joins the bike network.
+   */
+  {
+    const trailZones = loadZones(spec, (lat, lon) => proj.toLocal({ lat, lon })).filter((zn) => zn.props.trails === 'bike')
+    let n = 0
+    if (trailZones.length) for (const e of edges) {
+      if (!/^(footway|path|track|bridleway)$/.test(e.kind ?? '') || /^(sand|mud|grass|rock|stone|wood)$/.test(e.surface ?? '')) continue
+      const pts = unpackPoints(e.points)
+      const mid = pts[Math.floor(pts.length / 2)]
+      if (trailZones.some((zn) => zonesAt([zn], mid.x, mid.z).length > 0)) { e.trail = true; n++ }
+    }
+    if (n) console.log(`  ${n} trails opened to bikes (zones with trails: 'bike')`)
+  }
   const kept = largestComponent(edges)
   console.log(`  ${edges.length} edges → ${kept.length} in the largest connected network`)
 
@@ -847,7 +901,12 @@ async function bake(spec: CitySpec): Promise<void> {
           buildingRoofDirection?: number
         }
         const ccwPts = ccw(pts)
-        const styleId = styleFor(rel.tags, () => chooseStyle({ levels: p.buildingLevels, height: p.buildingHeight,
+        // through the region's classifier like a way (a multipolygon skipped it and drew a style at random — the Fairmont,
+        // schools and 10 000 m2 Wharf blocks came out Victorian, 2026-10-03), the random mix only where it declines
+        const relKind = classify?.({ record: recordOf?.(pts.map((q) => proj.toLatLon(q))) ?? undefined, tags: rel.tags, ring: pts,
+          height: p.buildingHeight, levels: p.buildingLevels, lat: proj.toLatLon(pts[0]).lat, lon: proj.toLatLon(pts[0]).lon,
+          id: rel.id * 2 + 1, area: area(pts) }) ?? null
+        const styleId = relKind ? styleFor(rel.tags, () => relKind.style) : styleFor(rel.tags, () => chooseStyle({ levels: p.buildingLevels, height: p.buildingHeight,
           material: p.buildingFacadeMaterial, building: rel.tags.building }, spec.styles, rel.id))
         // its courtyards: inner rings inside this outer ring, wound clockwise (see PackedBuilding.holes)
         const courts = innerRings(rel)
@@ -1176,6 +1235,26 @@ async function bake(spec: CitySpec): Promise<void> {
    * stays at 60 m until it can be made conditional on there being buildings there at all.
    */
   const fineGround = bareEarthF(fine, fcols, frows, Math.round(60 / FINE_STEP), fineWet)
+  /*
+   * …except where a zone asks for the RAW relief (`relief: 'raw'`): the 60 m opening is for city blocks, and on a
+   * narrow steep island it takes the summit off — Alcatraz, 150 m across, came out 11 m high where the data says
+   * 41 (BUGS.md #257, measured 2026-10-02). There the elevation is bare ground already.
+   */
+  {
+    const rawZones = loadZones(spec, (lat, lon) => proj.toLocal({ lat, lon })).filter((zn) => zn.props.relief === 'raw')
+    let n = 0
+    for (const zn of rawZones) {
+      const [x0, z0, x1, z1] = zn.bbox
+      for (let r = Math.max(0, Math.floor((z0 - fz0) / FINE_STEP)); r < Math.min(frows, Math.ceil((z1 - fz0) / FINE_STEP)); r++) {
+        for (let c = Math.max(0, Math.floor((x0 - fx0) / FINE_STEP)); c < Math.min(fcols, Math.ceil((x1 - fx0) / FINE_STEP)); c++) {
+          if (!zonesAt([zn], fx0 + c * FINE_STEP, fz0 + r * FINE_STEP).length || fineWet[r * fcols + c]) continue
+          fineGround[r * fcols + c] = fine[r * fcols + c]
+          n++
+        }
+      }
+    }
+    if (n) console.log(`  raw relief kept in ${rawZones.length} zone(s): ${n} fine samples unopened`)
+  }
   /*
    * The sea bed is not the ground (BUGS.md #58). The elevation tiles carry BATHYMETRY: off the Embarcadero the
    * bay floor drops to −108 m, so the shoreline came out as a cliff, the water plane sat in a pit far out from
@@ -2090,6 +2169,9 @@ function roofFor(
     else if (st.top === 'mansard') shape = 'mansard'
     // the pre-Haussmann Marais: a steep slate roof, pitched, with dormers — never flat
     else if (styleId === 'marais') shape = 'hipped'
+    // the Presidio's and the parks' Army buildings: red tile, gabled — hipped where the block is too wide for a gable
+    // to stay low (owner, 2026-10-02: "white with gabled red tile roofs"); the Main Post's brick barracks the same
+    else if (styleId === 'presidio' || styleId === 'presidioBrick') shape = span < 16 ? 'gabled' : 'hipped'
     else if (span < 7 && tags.building === 'garage') shape = 'skillion'
     else shape = 'flat'
   }
@@ -2102,6 +2184,8 @@ function roofFor(
       : Math.min(span * 0.42, shape === 'pyramidal' ? 7 : 5.5)
   }
   if (shape === 'flat') height = 0
+  // (a Spanish Colonial roof is low-pitched: about 17°, not a Victorian's steep gable)
+  if ((styleId === 'presidio' || styleId === 'presidioBrick') && !p.buildingRoofHeight && shape !== 'flat') height = Math.min(span * 0.16, 3.2)
 
   return {
     roof: shape,
@@ -2260,6 +2344,16 @@ function areaKind(w: OsmWay): PackedArea['kind'] | null {
   // park rule plants it thinly rather than as forest
   if (t.landuse === 'grass' || t.landuse === 'meadow' || t.natural === 'scrub') return 'grass'
   if ((t.highway === 'pedestrian' && (t.area === 'yes' || t.type === 'multipolygon')) || t['area:highway'] || t.place === 'square') return 'paved'
+  /*
+   * A pier's deck and a surface car park are concrete and asphalt (appearance audit, 2026-10-02): unclaimed, they
+   * were the city's default ground, so Pier 30-32 — a 13-acre parking deck in the bay — was a lawn with its
+   * aisles drawn across it. Not a multi-storey or underground car park: that is a building, or nothing to see.
+   */
+  // (a pier's deck stands on piles over the water, and an area drawn at the ground lies on the flattened sea bed, under
+  //  the bay — the ferry gates came out as grey shapes under the water behind the Ferry Building, owner 2026-10-02.
+  //  Only a pier on FILL, at grade, is ground: Pier 30-32's deck is mapped `man_made=pier` with a `surface`.)
+  if (t.man_made === 'pier' && t.floating !== 'yes' && t.surface !== undefined) return 'lot'
+  if (t.amenity === 'parking' && !/^(multi-storey|underground|rooftop)$/.test(t.parking ?? '')) return 'lot'
   return null
 }
 

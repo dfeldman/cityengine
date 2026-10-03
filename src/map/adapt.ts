@@ -28,6 +28,8 @@ export function adaptIndex(m: MapIndex): CityIndex {
     id: m.id, name: m.name, origin: m.origin, radius: m.radius, ground: m.ground, start: m.start,
     ...(m.box ? { box: m.box } : {}), ...(m.region ? { region: m.region } : {}),
     ...(m.terrain ? { terrain: m.terrain } : {}), ...(m.skyline ? { skyline: m.skyline } : {}),
+    // the sea's surface in the code frame: the bake writes `datumMsl` only for a city with a sea (convert-city.ts)
+    ...(typeof m.datumMsl === 'number' ? { sea: -m.datumMsl } : {}),
     landmarks: m.legacy.landmarks, water: m.legacy.water, ...(m.legacy.walls ? { walls: m.legacy.walls } : {}),
     attribution: m.attribution, baked: m.baked, tile: m.tile,
     tiles: m.tiles.map((t) => ({ key: t.key, tx: t.tx, tz: t.ty, bytes: t.bytes, buildings: t.buildings, edges: t.edges })),

@@ -200,5 +200,20 @@ export type RecipeName = keyof typeof RECIPES
 /** A builder from a recipe and what the photograph says is different about this one. */
 export function fromRecipe(name: RecipeName, o: RecipeOverrides = {}): (out: MeshBuilder, fit: Fit) => void {
   const spec = RECIPES[name](o)
+  /*
+   * NO HEIGHT GIVEN, THE BUILDING'S OWN (2026-10-02): a recipe's height is only the style's typical one — 45 m for the
+   * terracotta block, more for the hotel — and the tower's plausibility rule (render/landmarks/tower.ts, the fitted
+   * height only within 0.6–1.6× the spec's) then threw the real building's height away as implausible. Fisherman's
+   * Wharf had Castagnola's restaurant at 64 m and the Dolphin Club's boathouse at 46. Where the builder did not say how
+   * tall, the building's own height (the manifest's, else OSM's) is the height; the base storey never more than half
+   * of it.
+   */
+  if (o.height === undefined) {
+    return (out: MeshBuilder, fit: Fit): void => {
+      if (!(fit.height > 0)) { tower(out, fit, spec); return }
+      const base = spec.base ? { ...spec.base, height: Math.min(spec.base.height, fit.height * 0.5) } : spec.base
+      tower(out, fit, { ...spec, height: fit.height, base })
+    }
+  }
   return (out: MeshBuilder, fit: Fit): void => tower(out, fit, spec)
 }

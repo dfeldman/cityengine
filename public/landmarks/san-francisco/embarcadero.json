@@ -58,5 +58,16 @@
   "name": "One Maritime Plaza Park",
   "kind": "plaza",
   "note": "BUGS.md #180: the lawn with sculptures on the podium roof west of the One Maritime Plaza tower (way/28240176 — `embarcadero-maritime-aerial.png`), previously missing entirely. Placed by measuring way/28240176's own centroid/extent from the Overpass cache and offsetting west by its own half-width plus this court's half-width plus a small gap — not typed by eye. This is a FIFTH unit on its own footprint (a single tower over a garage), not one of the four `gapQuad` units, per the file header. The other half of #180 — the small brick building rendered sunken into the plaza — is a height-datum problem in whatever places that building on the ground instead of the deck; no such building is built by this file, so it is reported, not fixed here."
+ },
+ {
+  "osm": [
+   "way/1093564640"
+  ],
+  "name": "Fireboat Station 35",
+  "procedural": "fireboatStation",
+  "front": "street",
+  "deckAbove": 0,
+  "height": 17,
+  "note": "The floating fire station at Pier 22 1/2 (2022): render/landmarks/sf/fireboat-station.ts. deckAbove 0: the float's waterline is the sea, not the sea bed. Owner, 2026-10-02: 'generic building in the water at 37.790008, -122.387991'."
  }
 ]

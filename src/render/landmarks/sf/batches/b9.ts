@@ -81,23 +81,6 @@ import type { Fit } from '../../fit.ts'
 import { facade } from '../../facade.ts'
 
 export const B9: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  /**
-   * way/1249412094 — Isle House, 39 Bruton St, Treasure Island. `building=apartments`,
-   * `building:levels=22`, height 67m tagged. Plain flat tower with two shallow chamfered corners, dark
-   * recessed base, balanced punched windows above.
-   */
-  b9_tower_1249412094: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'recessed', storeys: 1, depth: 0.8, material: 'concrete' },
-      shaft: { storeys: 20, windows: 'balanced', material: 'precast' },
-      top: { kind: 'attic', storeys: 1, material: 'precast' },
-      bands: { aboveGround: 'string', belowTop: null, top: null },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'recessed', steps: 1 },
-      material: 'precast',
-    })
-  },
 
   /**
    * way/1487223700 — unnamed corner apartment tower, height 60m tagged. Faceted (not curved — checked

@@ -359,7 +359,12 @@ function ridgeLine(ring: Pt[], dir: number, _h: number, _y: number): [Pt, Pt] {
     cross += p.x * px + p.z * pz
     n++
   }
-  const c = cross / n
+  // the middle of the footprint across the ridge, not the mean of its corners — a run of extra vertices down one
+  // side pulled the ridge off centre and the two slopes came out unequal
+  void cross; void n
+  let clo = Infinity, chi = -Infinity
+  for (const p of ring) { const v = p.x * px + p.z * pz; clo = Math.min(clo, v); chi = Math.max(chi, v) }
+  const c = (clo + chi) / 2
   const shrink = (hi - lo) * 0.0
   return [
     { x: ux * (lo + shrink) + px * c, z: uz * (lo + shrink) + pz * c },
@@ -376,6 +381,7 @@ function gable(out: MeshBuilder, ring: Pt[], dir: number, y: number, h: number,
   const r0 = along(ridge[0])
   const r1 = along(ridge[1])
   const lift = (p: Pt): Pt => p
+  const wound = -area2(ring)
 
   for (let i = 0; i < ring.length; i++) {
     const a = ring[i]
@@ -385,8 +391,12 @@ function gable(out: MeshBuilder, ring: Pt[], dir: number, y: number, h: number,
     const tb = Math.min(1, Math.max(0, (along(b) - r0) / (r1 - r0 || 1)))
     const ra = { x: ridge[0].x + (ridge[1].x - ridge[0].x) * ta, z: ridge[0].z + (ridge[1].z - ridge[0].z) * ta }
     const rb = { x: ridge[0].x + (ridge[1].x - ridge[0].x) * tb, z: ridge[0].z + (ridge[1].z - ridge[0].z) * tb }
-    const nx = a.z - b.z
-    const nz = b.x - a.x
+    // the slope's outward normal, whichever way the footprint is wound: wound clockwise, (a.z - b.z, b.x - a.x)
+    // points INTO the building, the quad is turned to face down and culled — half a roof missing over the flat
+    // top below (owner's screenshot of Sausalito's new revival blocks, 2026-10-02)
+    const sgn = wound > 0 ? 1 : -1
+    const nx = (a.z - b.z) * sgn
+    const nz = (b.x - a.x) * sgn
     const l = Math.hypot(nx, nz) || 1
     out.quad(
       [[a.x, y, a.z], [b.x, y, b.z], [rb.x, y + h, rb.z], [ra.x, y + h, ra.z]],

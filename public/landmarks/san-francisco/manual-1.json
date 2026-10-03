@@ -97,6 +97,7 @@
     "procedural": "ussPampanito",
     "front": "street",
     "height": 8,
+    "deckAbove": -1.2,
     "by": "human",
     "note": "Pier 45: Balao-class submarine — black hull, casing deck, grey sail with periscopes, deck gun forward"
   },

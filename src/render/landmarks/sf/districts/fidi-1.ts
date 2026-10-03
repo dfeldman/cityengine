@@ -7,12 +7,15 @@
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { fromRecipe } from '../recipes.ts'
+import { parkTowerTransbay } from '../park-tower.ts'
+import { fiveFiveFiveMission, fiveThreeFiveMission } from '../mission-towers.ts'
 
 export const FIDI_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** 50 Fremont Center (1985): white precast tower, rounded corners, pale blue-green glass, flat parapet top. */
   fiftyFremontCenter: fromRecipe('granite-eighties', { height: 183, wall: [0.86, 0.86, 0.83], glass: [0.42, 0.55, 0.56], base: 8, baseWall: [0.8, 0.8, 0.77], crown: { kind: 'parapet', height: 1.5 } }),
   /** Park Tower at Transbay (2018): all-glass slender tower, deep blue glass, stepped balcony notch near the top, flat crown. */
-  parkTowerTransbay: fromRecipe('modern-slender', { height: 183, wall: [0.5, 0.56, 0.6], glass: [0.22, 0.34, 0.48], crown: { kind: 'flat' } }),
+  // (Park Tower has its own builder since 2026-10-02: render/landmarks/sf/park-tower.ts)
+  parkTowerTransbay,
   /** Chevron Tower / 555 Market (1976): a banded precast slab, pale grey-buff, dark glass, flat top with its penthouse. */
   chevronTower: fromRecipe('midcentury-slab', { height: 175, wall: [0.82, 0.8, 0.76], glass: [0.3, 0.36, 0.4] }),
   /** 44 Montgomery Street (1986): white precast tower with rounded corners, a full-height pale blue-green glazed slot down the front, flat top. */
@@ -32,7 +35,8 @@ export const FIDI_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** 333 Bush Street (1986): pink-cream stone tower, green punched glass, a ziggurat of setbacks near the top. */
   threeThreeThreeBush: fromRecipe('deco-setback', { height: 151, wall: [0.88, 0.82, 0.78], glass: [0.42, 0.55, 0.46], material: 'granite', base: 9, baseWall: [0.6, 0.5, 0.46], crown: { kind: 'stepped', steps: 4, height: 13, inset: 3 } }),
   /** 555 Mission Street (2008): dark blue-green curtain-wall tower, fine mullion grid, a beveled corner at the top. */
-  fiveFiveFiveMission: fromRecipe('glass-tower', { height: 148, wall: [0.3, 0.34, 0.36], glass: [0.2, 0.32, 0.38], base: 7, baseWall: [0.26, 0.3, 0.32] }),
+  // (since 2026-10-02 its own builder: render/landmarks/sf/mission-towers.ts)
+  fiveFiveFiveMission,
   /** 650 California Street (1964): cream precast tower, deep punched window reveals, a slightly recessed top storey. */
   sixFiftyCalifornia: fromRecipe('granite-eighties', { height: 142, wall: [0.86, 0.83, 0.75], glass: [0.22, 0.24, 0.27], base: 6, baseWall: [0.7, 0.66, 0.58], crown: { kind: 'parapet', height: 1.3 } }),
   /** 123 Mission Street (1988): cream stone tower, reddish-brown recessed window surrounds, flat top, cut corner. */
@@ -44,7 +48,8 @@ export const FIDI_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** 601 California Street (1985): cream-tan concrete banded tower, cut corner with a darker vertical strip, flat top. */
   sixZeroOneCalifornia: fromRecipe('midcentury-slab', { height: 122, wall: [0.82, 0.78, 0.68], glass: [0.26, 0.28, 0.3], base: 7, baseWall: [0.55, 0.5, 0.42] }),
   /** 535 Mission Street (2013): dark blue glass tower with a faceted, angled corner, flat top. */
-  fiveThreeFiveMission: fromRecipe('modern-slender', { height: 115, wall: [0.3, 0.36, 0.42], glass: [0.18, 0.28, 0.38], crown: { kind: 'flat' }, base: 8 }),
+  // (since 2026-10-02 its own builder: render/landmarks/sf/mission-towers.ts)
+  fiveThreeFiveMission,
   /** 456 Montgomery Street (1968, plus the 1920s Borel Bank base at street level): grey stone tower, vertical pier bands, flat top. */
   fourFiftySixMontgomery: fromRecipe('concrete-piers', { height: 114, wall: [0.72, 0.71, 0.68], glass: [0.24, 0.26, 0.29], base: 8, baseWall: [0.5, 0.45, 0.38] }),
   /** 401 California Street (1970, with 425 California beside it): bronze-tinted glass tower with cream vertical mullions, flat top. */

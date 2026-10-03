@@ -206,7 +206,13 @@ export const CITIES: CitySpec[] = [
      * not have was anything `pkg.box` governs — `buildShore` (render/city.ts), the minimap's bounds and goto,
      * so Sausalito had roads and no shore and could not be teleported to. 8000 = 37.865 clears the town.
      */
-    box: { west: 9800, east: 7800, north: 8000, south: 3600 },
+    /*
+     * NORTH 9300 (owner, 2026-10-02: "not sure if all marinas are in the box … marinas and boats are the whole
+     * identity"). 8000 = 37.865 stopped mid-town: Clipper Yacht Harbor (centre 37.8704), Waldo Point's houseboats
+     * (37.872-37.875), Kappas and Galilee Harbor all fell outside. 9300 = 37.8767 takes in the whole waterfront to
+     * Waldo Point.
+     */
+    box: { west: 9800, east: 7800, north: 9300, south: 3600 },
     /*
      * West to the ocean and south past Golden Gate Park. The park runs five kilometres from Stanyan Street to
      * Ocean Beach and the Presidio fills the north-west corner; a game whose players spend their time riding
@@ -244,12 +250,14 @@ export const CITIES: CitySpec[] = [
      * (515) all take `detailBboxOf`. Sausalito therefore had buildings — they reach z 6366, which is how the
      * owner came to see them through a hill — with no ground cover, no furniture and no walls at all.
      */
-    detail: { west: 9800, east: 4500, north: 8000, south: 3600 },
+    detail: { west: 9800, east: 4500, north: 9300, south: 3600 },
     ground: 'grass',
+    // (no 'brownstone': a New York style, and what the outer ring drew in grey rows over Sausalito's hills — owner's
+    //  screenshot, 2026-10-02; the stucco houses are what the Avenues, Daly City and Marin are built of)
     styles: [
       { id: 'victorian', weight: 5 },
-      { id: 'brownstone', weight: 2 },
-      { id: 'classical', weight: 2 },
+      { id: 'stucco', weight: 3 },
+      { id: 'classical', weight: 1 },
       { id: 'skyscraper', weight: 1 },
     ],
     note: 'The hills. A grid laid over terrain that does not care about grids, which is the whole point of '

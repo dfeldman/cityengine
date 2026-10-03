@@ -12,9 +12,116 @@
       438,
       56
     ],
-    "front": 45,
     "height": 21,
     "stone": false,
-    "note": "Pelli Clarke Pelli 2018, with PWP's Salesforce Park on the roof, the Mission Street gondola and the bridge from Salesforce Tower. Placed at a point with a size, not on its OSM footprint: way/542375290 carries layer=-1 and relation/8524888 level=3, and the bake drops both — there is no building and no park polygon in the package here. front 45 turns the model's +z (its front) to bearing 315, the Mission/Minna side, where the gondola and the bridge are."
-  }
+    "note": "Pelli Clarke Pelli 2018, with PWP's Salesforce Park on the roof, the Mission Street gondola and the bridge from Salesforce Tower. Placed at a point with a size, not on its OSM footprint: way/542375290 carries layer=-1 and relation/8524888 level=3, and the bake drops both. Size and centre measured off way/542375290 (438 x 56 m, long axis at 45.1 deg, centre 37.789107 -122.396877). rotateDeg 135 (= front 315): the model's front (+z) faces bearing 315, the Mission/Minna side, where the gondola and the bridge are; its long axis runs along 45/225. Written as rotateDeg, not front, because the bake's deck placement (src/city/bridge-decks.ts `placement`) reads only rotateDeg — the park is a deck its OSM paths are pinned to (src/city/sf/bridges.ts SALESFORCE_PARK_DECKS). It was front 45 until 2026-10-02, written when `front` meant the model's back: the whole complex stood at right angles across Mission Street. baseY -81.5: the lowest ground under the outline (-81.0) less half a metre, as the game drapes it — given so the bake and the game agree where the deck is. coversRaised: the park's OSM paths, now on the deck, are drawn by the model, not as generic bridge decks (docs/SALESFORCE-PARK.md).",
+    "rotateDeg": 135,
+    "baseY": -81.5,
+    "coversRaised": true
+  },
+  {
+    "osm": [
+      "way/616385886",
+      "way/773887803",
+      "way/773887804",
+      "way/616222775",
+      "way/616385859",
+      "way/616385862",
+      "way/616385863",
+      "way/616385884",
+      "way/773887796",
+      "way/773887801",
+      "way/773887802",
+      "way/773887808",
+      "way/773887809",
+      "way/773887810",
+      "way/1375817012",
+      "way/616222772",
+      "way/773887812",
+      "way/616385883",
+      "way/616222774",
+      "way/616385861",
+      "way/773887797",
+      "way/773887807",
+      "way/616385887",
+      "way/616385891"
+    ],
+    "name": "Salesforce Transit Center: what OSM maps inside it",
+    "note": "Placeholder (no model): removes the 24 buildings the bake made of what OSM maps INSIDE the Transit Center's outline — the park relation's inner rings (the light wells and roof structures over them, tagged as buildings) and pieces of the concourse — which stood as tenements and brick blocks inside and under the park, several in mid-air (min_height 4-12 m). The `salesforceTransitCenter` model draws the light wells itself. Found 2026-10-02 by testing every baked building against way/542375290 (docs/SALESFORCE-PARK.md)."
+  },
+  {
+    "name": "Foundry Square I",
+    "procedural": "foundrySquareI",
+    "height": 45,
+    "note": "Foundry Square (render/landmarks/sf/foundry.ts). 400 Howard. Placed at OSM's outline (way/136104348: 79.7 x 51.1 m, long axis 45.2 deg, measured 2026-10-02), not on it: the bake supersedes that outline with one small building:part, and fitted to the part the model came out a 12 m-wide sliver (owner: 'one foundry building is appearing as a skinny tower'). The outline and its parts are removed by the placeholder below.",
+    "lat": 37.789141,
+    "lon": -122.395893,
+    "size": [
+      79.7,
+      51.1
+    ],
+    "rotateDeg": 135
+  },
+  {
+    "osm": [
+      "way/136104349"
+    ],
+    "name": "Foundry Square II",
+    "procedural": "foundrySquareII",
+    "front": "street",
+    "height": 45,
+    "note": "Foundry Square (docs/SALESFORCE-PARK.md, render/landmarks/sf/foundry.ts): one of four linked ten-storey glass buildings on the corners of Howard and First. 500 Howard. OSM's 55 m includes the rooftop plant."
+  },
+  {
+    "osm": [
+      "way/242940296"
+    ],
+    "name": "Foundry Square III",
+    "procedural": "foundrySquareIII",
+    "front": "street",
+    "height": 45,
+    "note": "Foundry Square (docs/SALESFORCE-PARK.md, render/landmarks/sf/foundry.ts): one of four linked ten-storey glass buildings on the corners of Howard and First. 505 Howard."
+  },
+  {
+    "osm": [
+      "way/113505811"
+    ],
+    "name": "Foundry Square IV",
+    "procedural": "foundrySquareIV",
+    "front": "street",
+    "height": 45,
+    "note": "Foundry Square (docs/SALESFORCE-PARK.md, render/landmarks/sf/foundry.ts): one of four linked ten-storey glass buildings on the corners of Howard and First. 405 Howard."
+  },
+  {
+    "name": "Transit Center bus ramp bridge",
+    "procedural": "transbayBusRampBridge",
+    "lat": 37.787318,
+    "lon": -122.397296,
+    "rotateDeg": 0,
+    "baseY": -77.18,
+    "note": "The cable-stayed bridge carrying the bus ramp over Howard Street (render/landmarks/sf/bus-ramp-bridge.ts): the pylon and its stays; the deck is the ramp's own. Placed at the pylon, unrotated: the builder's numbers are the busways' points relative to their Howard crossing. baseY: the ground at the pylon. Owner, 2026-10-02, with a photograph."
+  },
+  {
+    "osm": [
+      "way/136104348",
+      "way/1410037751",
+      "way/1410037752"
+    ],
+    "name": "Foundry Square I: OSM's outline and parts",
+    "note": "Placeholder (removes only): the outline, its 50 m part, and the part OSM maps floating 8-28 m up — drawn by the Foundry Square I model placed at the outline."
+  },
+  {
+    "osm": [
+      "way/693630045",
+      "way/693630047",
+      "way/693630048"
+    ],
+    "name": "Park Tower at Transbay: OSM's parts",
+    "note": "Placeholder (removes only): Park Tower is also mapped as three separate building parts (183, 108 and 44 m) that nothing claimed — drawn as generic glass blocks over the park-tower model, which the owner then saw as 'tall and generic' (2026-10-02)."
+  },
+  {"osm": ["way/260320982"], "name": "One Rincon Hill podium", "restyle": "towerblock", "levels": 5, "height": 16, "note": "The site outline, tagged 5 levels, baked at the tower's 195 m: a box wrapping the modelled tower (way/944990390). Kept as the 5-storey podium (2026-10-02)."},
+  {"osm": ["relation/9737061", "way/700791868"], "name": "Hilton Union Square: the site outline", "note": "placeholder (owner, 2026-10-02: z-fighting at 37.785874, -122.411098): the complex's outline relation was baked as a building \u2014 twice, in two styles \u2014 over its own tower parts. The parts are the massing; hiltonUnionSquare models the main tower."},
+  {"osm": ["relation/7150104"], "name": "Solaire: the type=building relation", "note": "placeholder (2026-10-02 scan): the relation was baked as a building over its own parts and over b1_tower_320721969 on its outline way \u2014 the Hilton Union Square z-fighting pattern."},
+  {"osm": ["relation/10247797"], "name": "1190 Haight Street: the type=building relation", "note": "placeholder (2026-10-02 scan): baked over its own parts."},
+  {"osm": ["way/1330586852", "way/1330832666"], "name": "Golden Gate Bridge: OSM's tower buildings", "note": "placeholder (2026-10-02 scan): OSM maps each tower as a building with 3D parts to 225 m; baked as sfapartment boxes, they showed pale inside the model's legs. The bridge models are the towers."}
 ]

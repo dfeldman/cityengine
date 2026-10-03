@@ -15,6 +15,30 @@
   "include": "san-francisco/oddities.json"
  },
  {
+  "include": "san-francisco/alcatraz.json"
+ },
+ {
+  "include": "san-francisco/ships.json"
+ },
+ {
+  "include": "san-francisco/marinas.json"
+ },
+ {
+  "include": "san-francisco/prominent.json"
+ },
+ {
+  "include": "san-francisco/civic-6.json"
+ },
+ {
+  "include": "san-francisco/churches-5.json"
+ },
+ {
+  "include": "san-francisco/pier39.json"
+ },
+ {
+  "include": "san-francisco/sights.json"
+ },
+ {
   "include": "san-francisco/stations.json"
  },
  {
@@ -77,7 +101,8 @@
  },
  {
   "osm": [
-   "way/558731934"
+   "way/558731934",
+   "way/24460886"
   ],
   "name": "Ferry Building",
   "procedural": "ferryBuilding",
@@ -475,9 +500,6 @@
  },
  {
   "include": "san-francisco/churches-3.json"
- },
- {
-  "include": "san-francisco/waterfront-2.json"
  },
  {
   "include": "san-francisco/b5.json"

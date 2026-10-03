@@ -1,13 +1,12 @@
 [
-  { "osm": ["way/681442044"], "procedural": "b1_tower_681442044", "name": "Way 681442044", "height": 84 },
+  { "osm": ["way/681442044"], "procedural": "gearyTower", "name": "Geary Boulevard tower at Gough", "height": 84 },
   { "osm": ["way/79377162"], "procedural": "b1_loft_79377162", "name": "Way 79377162", "height": 12 },
   { "osm": ["way/118480406"], "procedural": "b1_apartment_118480406", "name": "Way 118480406", "height": 16 },
   { "osm": ["way/1365382601"], "procedural": "b1_prewarOffice_1365382601", "name": "Way 1365382601", "height": 32 },
-  { "osm": ["way/159280395"], "procedural": "b1_tower_159280395", "name": "Way 159280395", "height": 160 },
-  { "osm": ["way/91626348"], "procedural": "b1_midcenturyTower_91626348", "name": "Way 91626348", "height": 136 },
-  { "osm": ["way/1410929341"], "procedural": "b1_midcenturyTower_1410929341", "name": "Way 1410929341", "height": 136 },
+  { "osm": ["way/1410929341"], "procedural": "oneHundredFirstPlaza", "name": "100 First Plaza", "height": 136 },
+  { "osm": ["way/91626348"], "procedural": "oneHundredFirstPodium", "name": "100 First Plaza podium", "height": 13 },
   { "osm": ["way/320721969"], "procedural": "b1_tower_320721969", "name": "Way 320721969", "height": 91 },
-  { "osm": ["way/197462674"], "procedural": "b1_hotel_197462674", "name": "Way 197462674", "height": 101 },
-  { "osm": ["way/436473931"], "procedural": "b1_hotel_436473931", "name": "Way 436473931", "height": 101 },
-  { "osm": ["way/255960463"], "procedural": "b1_tower_255960463", "name": "Way 255960463", "height": 92 }
+  { "osm": ["way/197462674"], "procedural": "holidayInnPodium", "name": "Holiday Inn Golden Gateway podium", "height": 10 },
+  { "osm": ["way/436473931"], "procedural": "holidayInnTower", "name": "Holiday Inn Golden Gateway", "height": 101 },
+  { "osm": ["way/255960463"], "procedural": "somaGrand", "name": "Soma Grand", "height": 92 }
 ]

@@ -67,6 +67,10 @@ export interface Job {
   item?: Item
 }
 
+/** how much of a crossing's `chance` each level (1-based) gets: none at the first two, the whole of it at the last */
+export const CROSSING_BY_LEVEL = [0, 0, 0.1, 0.35, 1]
+export const CROSSING_LEVEL = CROSSING_BY_LEVEL.length
+
 export type Phase = 'idle' | 'offered' | 'toPickup' | 'toDropoff'
 
 export type DeliveryEvent =
@@ -75,7 +79,7 @@ export type DeliveryEvent =
   | { kind: 'declined'; job: Job }
   | { kind: 'accepted'; job: Job }
   | { kind: 'pickedUp'; job: Job }
-  | { kind: 'delivered'; job: Job; seconds: number }
+  | { kind: 'delivered'; job: Job; seconds: number; bumps: number }
   /** a far stop has been pinned to its building, once its tiles are in */
   | { kind: 'stopMoved'; job: Job; stop: 'pickup' | 'dropoff' }
   /** a fragile item did not survive a collision: the job is off */
@@ -188,6 +192,8 @@ export class Delivery {
   private nextOfferAt: number
   private offeredAt = 0
   private startedAt = 0
+  /** collisions during the job in hand: they cost stars (`rate`) */
+  private bumps = 0
   private jobs = 0
   phase: Phase = 'idle'
   job: Job | null = null
@@ -239,7 +245,7 @@ export class Delivery {
       this.phase = 'toDropoff'
       out.push({ kind: 'pickedUp', job: this.job! })
     } else if (this.phase === 'toDropoff' && this.arrived(this.job!.dropoff, at)) {
-      out.push({ kind: 'delivered', job: this.job!, seconds: this.t - this.startedAt })
+      out.push({ kind: 'delivered', job: this.job!, seconds: this.t - this.startedAt, bumps: this.bumps })
       this.reset(this.cfg.afterDelivery)
     }
     return out
@@ -249,6 +255,7 @@ export class Delivery {
     if (this.phase !== 'offered' || !this.job) return []
     this.phase = 'toPickup'
     this.startedAt = this.t
+    this.bumps = 0
     return [{ kind: 'accepted', job: this.job }]
   }
 
@@ -320,6 +327,7 @@ export class Delivery {
    * The ice cream is on the road; the customer will not be told.
    */
   collided(): DeliveryEvent[] {
+    if (this.phase === 'toPickup' || this.phase === 'toDropoff') this.bumps++
     if (this.phase !== 'toDropoff' || !this.job?.item?.fragile) return []
     const job = this.job
     this.reset(this.cfg.afterDecline)
@@ -369,7 +377,11 @@ export class Delivery {
   /** A job ACROSS something (`crossings`): picked up near here, delivered to one of the far places. */
   private crossingJob(at: { x: number; z: number }): Job | null {
     for (const c of this.cfg.crossings ?? []) {
-      if (Math.hypot(at.x - c.from.x, at.z - c.from.z) > c.from.r || this.r() >= c.chance) continue
+      // (MOSTLY at the top levels: the islands are 4–5 km over the bridge, and at level 2 one was a long, unwelcome
+      // haul — owner, 2026-10-02: "i just got a delivery to treasure island. i think i'm level 2? that is a LOOOONG
+      // ride" … "crossings should be real, but mostly at high levels"): the chance scaled by `CROSSING_BY_LEVEL`
+      const scale = CROSSING_BY_LEVEL[Math.max(0, Math.min(CROSSING_BY_LEVEL.length - 1, this.level - 1))]
+      if (Math.hypot(at.x - c.from.x, at.z - c.from.z) > c.from.r || this.r() >= c.chance * scale) continue
       const pool = this.world.buildingsNear(at.x, at.z, this.cfg.maxHop)
       for (let tries = 0; tries < 40 && pool.length; tries++) {
         const pb = pool[Math.floor(this.r() * pool.length)]
@@ -420,4 +432,34 @@ export class Delivery {
     }
     return null
   }
+}
+
+/** How a delivery went: the customer's stars, the pay, and what they said. */
+export interface Rating { stars: number; fee: number; tip: number; line: string }
+
+const LINES: Record<number, string[]> = {
+  5: ['Still hot! Best courier in the city.', 'Wow, that was fast!', 'Perfect. You are my new favourite.'],
+  4: ['Right on time, thanks!', 'Great, thank you!', 'Nice one, see you next time.'],
+  3: ['Got it, thanks.', 'OK, thanks.', 'Cheers.'],
+  2: ['A little cold, but fine.', 'Took a while…', 'Hmm, it got a bit shaken.'],
+  1: ['Finally.', 'Was that a scenic route?', 'It looks like it fell off the bike.'],
+}
+
+/**
+ * THE RATING (2026-10-01, for the demo: a delivery should feel like it was worth doing). The time is judged against
+ * what the job's distance takes at `pace` m/s (the world speed of a steady rider in this mode, the speedup counted),
+ * with a fifth more for the streets not being straight lines; each collision on the way costs a star. The fee is
+ * by distance, the tip by stars, both a little richer at higher levels.
+ */
+export function rate(job: Job, seconds: number, bumps: number, level: number, pace: number, pick = Math.random()): Rating {
+  const expected = (job.metres * 1.35) / pace + 15
+  const r = seconds / expected
+  let stars = r <= 0.8 ? 5 : r <= 1.0 ? 4 : r <= 1.3 ? 3 : r <= 1.7 ? 2 : 1
+  stars = Math.max(1, stars - bumps)
+  const boost = 1 + 0.25 * (Math.max(1, level) - 1)
+  const half = (v: number): number => Math.round(v * 2) / 2
+  const fee = half((3 + 2 * job.metres / 1000) * boost)
+  const tip = half([0, 0, 0.5, 1.5, 2.5, 4][stars] * boost)
+  const lines = LINES[stars]
+  return { stars, fee, tip, line: lines[Math.floor(pick * lines.length) % lines.length] }
 }

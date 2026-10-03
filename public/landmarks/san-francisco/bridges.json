@@ -31,5 +31,14 @@
     "stone": false,
     "coversRaised": true,
     "note": "The NEAR level of the Bay Bridge's west span (the far level is tools/cities.ts's skyline entry of the same name, which takes this entry's place and datum). baseY -84.51 is the city's sea level. The ways over it \u2014 the lower deck eastbound, the upper westbound, the approach over Rincon Hill, the viaduct and the tunnel on Yerba Buena \u2014 take their heights from its declared decks (bay-bridge.ts BAY_BRIDGE_DECKS, src/city/bridge-decks.ts), which run well past this footprint: the footprint is only what the MODEL draws (tower to tower and the two anchorages), and `coversRaised` stops the generic slab and piers being drawn inside it."
+  },
+  {
+    "name": "Sutro Tower",
+    "procedural": "sutroTowerNear",
+    "lat": 37.75523,
+    "lon": -122.45277,
+    "size": [50, 50],
+    "height": 298,
+    "note": "The NEAR level (owner, 2026-10-02): the skyline stand-in hands over to this within 1.3 km, a real landmark on Mount Sutro's ground, with its lattice X-bracing (src/render/landmarks/sf/sutro-tower.ts)."
   }
 ]

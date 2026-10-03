@@ -1,17 +1,6 @@
 [
   {
     "osm": [
-      "way/242940296"
-    ],
-    "name": "Foundry Square III",
-    "restyle": "towerblock",
-    "wall": "#c0bcb5",
-    "by": "haiku",
-    "image": "way-242940296.jpg",
-    "height": 44
-  },
-  {
-    "osm": [
       "way/35176304"
     ],
     "name": "Hiram W. Johnson State Office Building",

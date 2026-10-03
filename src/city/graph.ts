@@ -30,7 +30,7 @@ export interface Edge {
   points: Point[]
   length: number
   /** what OSM said it is made of, which the ride model reads for rolling resistance */
-  surface: 'asphalt' | 'concrete' | 'cobblestone' | 'gravel' | 'dirt' | 'wood'
+  surface: 'asphalt' | 'concrete' | 'cobblestone' | 'gravel' | 'dirt' | 'wood' | 'brick'
   /** carriageway width in metres — the corridor less its pavements */
   width: number
   /** the pavement either side, in metres; 0 on a lane too narrow to have one */
@@ -67,6 +67,8 @@ export interface Edge {
   bore?: boolean
   /** a freeway way the bike rides (package.ts `ridden`) */
   ridden?: boolean
+  /** a trail the bike rides (package.ts `trail`) */
+  trail?: boolean
   /** a way the region drew (package.ts `authored`) */
   authored?: boolean
   /**

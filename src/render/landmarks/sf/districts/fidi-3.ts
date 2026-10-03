@@ -27,7 +27,6 @@ export const FIDI_3: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** LinkedIn / 222 2nd Street (2015): blue-grey glass curtain-wall office tower, fine mullions, flat top. */
   linkedinTower: fromRecipe('glass-tower', { height: 106, wall: [0.5, 0.54, 0.58], glass: [0.3, 0.4, 0.48], base: 8 }),
   /** 101 2nd Street (1999): blue-green glass curtain-wall office tower, plain rectangular block, flat top. */
-  oneOOneSecondStreet: fromRecipe('glass-tower', { height: 99, wall: [0.48, 0.54, 0.56], glass: [0.28, 0.42, 0.46], base: 7 }),
   /** The Towers at Rincon (2008): twin blue-green glass residential towers, curtain-wall grid, flat tops. */
   towersAtRincon: fromRecipe('glass-tower', { height: 93, wall: [0.5, 0.58, 0.6], glass: [0.3, 0.44, 0.48], base: 6 }),
   /** St. Regis Museum Tower (2005): pale grey glass-and-concrete condo/hotel tower, deep punched reveals, flat top. */

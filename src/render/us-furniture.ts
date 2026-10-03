@@ -83,12 +83,27 @@ function adFace(out: MeshBuilder, c: [number, number, number], hw: number, hh: n
     else box(out, x + lift, y + v, z + u, 0.002, h, w, col, glow ? EMIT : FIXED)
   }
   face(0, 0, hw, hh, bg, 0, true)
-  const photoLeft = r(2) < 0.5
-  face((photoLeft ? -1 : 1) * hw * 0.45, 0, hw * 0.5, hh * 0.9, accent, 0.004, true)
-  face((photoLeft ? 1 : -1) * hw * 0.42, hh * 0.35, hw * 0.4, hh * 0.14, ink, 0.004)
-  face((photoLeft ? 1 : -1) * hw * 0.42, hh * 0.05, hw * 0.36, hh * 0.06, ink, 0.004)
-  face((photoLeft ? 1 : -1) * hw * 0.42, -hh * 0.12, hw * 0.3, hh * 0.05, ink, 0.004)
-  face((photoLeft ? 1 : -1) * hw * 0.6, -hh * 0.62, hw * 0.16, hh * 0.16, accent, 0.004)
+  /*
+   * Reworked 2026-10-02 (owner: "billboards look really bad"): what a bulletin reads as from the street is a PHOTO
+   * on one side and three or four huge words on the other. The photo: a sky band over a horizon band, and the
+   * product in it — a round can or a bottle or a phone, by seed; the words: two heavy ink lines, a lighter third;
+   * the brand's mark in a corner.
+   */
+  const s = r(2) < 0.5 ? -1 : 1
+  const px = s * hw * 0.48
+  const skies: Rgb[] = [[0.45, 0.7, 0.92], [0.98, 0.72, 0.4], [0.2, 0.22, 0.3], [0.85, 0.88, 0.9]]
+  const sky = skies[Math.floor(r(3) * skies.length)]
+  face(px, hh * 0.25, hw * 0.5, hh * 0.72, sky, 0.003, true)
+  face(px, -hh * 0.5, hw * 0.5, hh * 0.47, accent, 0.004, true)
+  const prod = Math.floor(r(4) * 3)
+  if (prod === 0) face(px, -hh * 0.05, hw * 0.12, hh * 0.55, ink, 0.006)                                  // a can
+  else if (prod === 1) { face(px, -hh * 0.15, hw * 0.08, hh * 0.45, ink, 0.006); face(px, hh * 0.38, hw * 0.035, hh * 0.12, ink, 0.006) } // a bottle
+  else face(px, -hh * 0.02, hw * 0.13, hh * 0.62, [0.08, 0.08, 0.1], 0.006)                                // a phone
+  const tx = -s * hw * 0.42
+  face(tx, hh * 0.42, hw * 0.44, hh * 0.2, ink, 0.004)
+  face(tx, hh * 0.0, hw * 0.4, hh * 0.2, ink, 0.004)
+  face(tx, -hh * 0.36, hw * 0.3, hh * 0.08, ink, 0.004)
+  face(-s * hw * 0.84, -hh * 0.72, hw * 0.1, hh * 0.18, accent, 0.004, true)
 }
 
 /** A billboard: 14.6 × 4.3 m (the "bulletin"), on a steel post, with its catwalk and the lamps along it. */
@@ -158,4 +173,52 @@ export function utilityPole(out: MeshBuilder, seed = 0): void {
     // the transformer: a grey can bolted to the pole
     box(out, 0.28, 8.4, 0, 0.2, 0.45, 0.2, [0.52, 0.54, 0.55], FIXED)
   }
+}
+
+/**
+ * MARKET STREET'S "PATH OF GOLD" lamp (1908-16, Arthur Putnam's base): a dark green fluted standard ~9 m tall on a
+ * sculpted base, a trident head carrying three globes, the centre one highest. Lining Market from the Ferry Building
+ * to Castro, they are what makes Market Street look like itself (appearance pass, 2026-10-02).
+ */
+export function pathOfGold(out: MeshBuilder): void {
+  /*
+   * The 1916 Path of Gold standard (Arthur Putnam's base, the trident head). Procedural until the GLB the owner asked
+   * for (backlog: "render the path of gold lamps as glbs like sculptures"); this is the silhouette a rider reads:
+   * a stepped plinth, a fat sculpted drum with relief panels on four sides, a collar, a fluted shaft with a ring
+   * part-way up, and the three globes on curved arms.
+   */
+  const green: Rgb = [0.13, 0.2, 0.16]
+  const dark: Rgb = [0.09, 0.14, 0.11]
+  const glow: Rgb = [1.0, 0.94, 0.74]
+  // the plinth, in two steps, and the sculpted drum
+  prism(out, 0, 0, 0, 0.18, 0.52, 8, dark, FIXED, 0.5)
+  prism(out, 0, 0, 0.18, 0.34, 0.44, 8, green, FIXED, 0.42)
+  prism(out, 0, 0, 0.34, 1.35, 0.38, 8, green, FIXED, 0.3)
+  // the relief panels: Putnam's four scenes (the pioneers, the bears, the settlers, the city) as proud tablets
+  for (let k = 0; k < 4; k++) {
+    const a = (k * Math.PI) / 2
+    box(out, Math.sin(a) * 0.36, 0.82, Math.cos(a) * 0.36, Math.abs(Math.cos(a)) * 0.2 + 0.03, 0.34, Math.abs(Math.sin(a)) * 0.2 + 0.03, dark, FIXED)
+  }
+  prism(out, 0, 0, 1.35, 1.5, 0.34, 8, dark, FIXED, 0.22)
+  prism(out, 0, 0, 1.5, 1.75, 0.2, 8, green, FIXED, 0.16)
+  // the shaft, fluted (sixteen sides read as flutes at this size), a ring two-thirds up, a capital
+  prism(out, 0, 0, 1.75, 8.0, 0.14, 16, green, FIXED, 0.09)
+  prism(out, 0, 0, 5.6, 5.8, 0.16, 8, dark, FIXED, 0.16)
+  prism(out, 0, 0, 8.0, 8.25, 0.12, 8, dark, FIXED, 0.18)
+  // the arms: each a curve out and up in four short steps, a globe on its end; the middle globe higher on a finial
+  for (const sx of [-1, 1]) {
+    let x = 0.1, y = 8.2
+    for (let k = 0; k < 4; k++) {
+      const nx = x + 0.2, ny = y + 0.04 + k * 0.05
+      box(out, sx * (x + nx) / 2, (y + ny) / 2, 0, 0.11, 0.05, 0.05, green, FIXED)
+      x = nx; y = ny
+    }
+    box(out, sx * x, y + 0.12, 0, 0.05, 0.12, 0.05, green, FIXED)
+    prism(out, sx * x, 0, y + 0.22, y + 0.3, 0.12, 8, dark, FIXED, 0.12)
+    prism(out, sx * x, 0, y + 0.3, y + 0.78, 0.22, 10, glow, EMIT, 0.2)
+  }
+  prism(out, 0, 0, 8.25, 9.0, 0.06, 6, green, FIXED, 0.05)
+  prism(out, 0, 0, 9.0, 9.08, 0.13, 8, dark, FIXED, 0.13)
+  prism(out, 0, 0, 9.08, 9.58, 0.23, 10, glow, EMIT, 0.21)
+  prism(out, 0, 0, 9.58, 9.75, 0.06, 6, green, FIXED, 0.01)
 }

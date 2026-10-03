@@ -7,7 +7,9 @@
    "name": "Golden Gate Park",
    "priority": 1,
    "props": {
-    "terrain": "fine"
+    "terrain": "fine",
+    "traffic": 0.35,
+    "crowd": 2.5
    },
    "ring": [
     [
@@ -33,7 +35,8 @@
    "name": "The Panhandle",
    "priority": 1,
    "props": {
-    "terrain": "fine"
+    "terrain": "fine",
+    "crowd": 2
    },
    "ring": [
     [
@@ -59,7 +62,9 @@
    "name": "Buena Vista Park",
    "priority": 1,
    "props": {
-    "terrain": "fine"
+    "terrain": "fine",
+    "traffic": 0.5,
+    "crowd": 1.5
    },
    "ring": [
     [
@@ -85,7 +90,9 @@
    "name": "The Presidio",
    "priority": 1,
    "props": {
-    "terrain": "fine"
+    "terrain": "fine",
+    "traffic": 0.35,
+    "crowd": 0.7
    },
    "ring": [
     [
@@ -111,7 +118,11 @@
    "name": "Lands End and Sutro Heights",
    "priority": 1,
    "props": {
-    "terrain": "fine"
+    "terrain": "fine",
+    "traffic": 0.2,
+    "crowd": 0.8,
+    "trails": "bike",
+    "water": "waves"
    },
    "ring": [
     [
@@ -137,7 +148,10 @@
    "name": "Ocean Beach",
    "priority": 1,
    "props": {
-    "terrain": "fine"
+    "terrain": "fine",
+    "traffic": 0.6,
+    "crowd": 1.3,
+    "water": "waves"
    },
    "ring": [
     [
@@ -163,7 +177,9 @@
    "name": "Mount Sutro",
    "priority": 1,
    "props": {
-    "terrain": "fine"
+    "terrain": "fine",
+    "traffic": 0.15,
+    "crowd": 0.3
    },
    "ring": [
     [
@@ -189,7 +205,9 @@
    "name": "Twin Peaks",
    "priority": 1,
    "props": {
-    "terrain": "fine"
+    "terrain": "fine",
+    "traffic": 0.4,
+    "crowd": 0.6
    },
    "ring": [
     [
@@ -215,7 +233,9 @@
    "name": "Marin Headlands",
    "priority": 1,
    "props": {
-    "terrain": "fine"
+    "terrain": "fine",
+    "traffic": 0.15,
+    "crowd": 0.2
    },
    "ring": [
     [
@@ -517,7 +537,9 @@
        "bush_green"
       ]
      }
-    }
+    },
+    "traffic": 0.15,
+    "crowd": 0.25
    },
    "ring": [
     [
@@ -1539,7 +1561,8 @@
        }
       ]
      }
-    }
+    },
+    "crowd": 3
    },
    "ring": [
     [
@@ -1656,7 +1679,8 @@
        }
       ]
      }
-    }
+    },
+    "crowd": 3
    },
    "ring": [
     [
@@ -1773,7 +1797,8 @@
        }
       ]
      }
-    }
+    },
+    "crowd": 3
    },
    "ring": [
     [
@@ -1890,7 +1915,8 @@
        }
       ]
      }
-    }
+    },
+    "crowd": 3
    },
    "ring": [
     [
@@ -2007,7 +2033,8 @@
        }
       ]
      }
-    }
+    },
+    "crowd": 3
    },
    "ring": [
     [
@@ -2124,7 +2151,8 @@
        }
       ]
      }
-    }
+    },
+    "crowd": 3
    },
    "ring": [
     [
@@ -2241,7 +2269,8 @@
        }
       ]
      }
-    }
+    },
+    "crowd": 3
    },
    "ring": [
     [
@@ -2334,6 +2363,893 @@
     [
      37.872,
      -122.505
+    ]
+   ]
+  },
+  {
+   "ref": "presidio-buildings",
+   "name": "The Presidio (its buildings)",
+   "priority": 2,
+   "props": {
+    "buildings": "presidio"
+   },
+   "note": "The park's real outline (OSM, from the package's park areas, simplified to 6 m), for what is BUILT in it: the Army's and the Park's own buildings, white stucco with red tile, never city rowhouses (owner, 2026-10-02; src/city/sf/btype.ts).",
+   "ring": [
+    [
+     37.790818,
+     -122.485875
+    ],
+    [
+     37.790427,
+     -122.485337
+    ],
+    [
+     37.789771,
+     -122.484899
+    ],
+    [
+     37.789378,
+     -122.483941
+    ],
+    [
+     37.789115,
+     -122.48376
+    ],
+    [
+     37.787574,
+     -122.484162
+    ],
+    [
+     37.787548,
+     -122.484683
+    ],
+    [
+     37.787408,
+     -122.484669
+    ],
+    [
+     37.78738,
+     -122.484337
+    ],
+    [
+     37.787255,
+     -122.484076
+    ],
+    [
+     37.787076,
+     -122.48215
+    ],
+    [
+     37.787297,
+     -122.481621
+    ],
+    [
+     37.787084,
+     -122.481086
+    ],
+    [
+     37.787032,
+     -122.478606
+    ],
+    [
+     37.786862,
+     -122.477751
+    ],
+    [
+     37.786973,
+     -122.477127
+    ],
+    [
+     37.786891,
+     -122.476745
+    ],
+    [
+     37.786801,
+     -122.47452
+    ],
+    [
+     37.786979,
+     -122.474533
+    ],
+    [
+     37.787668,
+     -122.471017
+    ],
+    [
+     37.787262,
+     -122.470987
+    ],
+    [
+     37.792144,
+     -122.446489
+    ],
+    [
+     37.794237,
+     -122.446802
+    ],
+    [
+     37.79424,
+     -122.447133
+    ],
+    [
+     37.795016,
+     -122.447123
+    ],
+    [
+     37.795014,
+     -122.446928
+    ],
+    [
+     37.801433,
+     -122.447934
+    ],
+    [
+     37.801546,
+     -122.448555
+    ],
+    [
+     37.80183,
+     -122.449048
+    ],
+    [
+     37.802415,
+     -122.449642
+    ],
+    [
+     37.802832,
+     -122.449834
+    ],
+    [
+     37.803282,
+     -122.449824
+    ],
+    [
+     37.803893,
+     -122.449536
+    ],
+    [
+     37.804757,
+     -122.448466
+    ],
+    [
+     37.806743,
+     -122.448714
+    ],
+    [
+     37.806779,
+     -122.44909
+    ],
+    [
+     37.806671,
+     -122.450059
+    ],
+    [
+     37.806472,
+     -122.450765
+    ],
+    [
+     37.806363,
+     -122.451866
+    ],
+    [
+     37.806092,
+     -122.45243
+    ],
+    [
+     37.806035,
+     -122.453477
+    ],
+    [
+     37.805909,
+     -122.453681
+    ],
+    [
+     37.805889,
+     -122.45397
+    ],
+    [
+     37.805589,
+     -122.454084
+    ],
+    [
+     37.805554,
+     -122.454352
+    ],
+    [
+     37.806013,
+     -122.454317
+    ],
+    [
+     37.806132,
+     -122.454165
+    ],
+    [
+     37.806263,
+     -122.453417
+    ],
+    [
+     37.806165,
+     -122.452843
+    ],
+    [
+     37.806209,
+     -122.452452
+    ],
+    [
+     37.806423,
+     -122.452691
+    ],
+    [
+     37.80659,
+     -122.453079
+    ],
+    [
+     37.806342,
+     -122.453946
+    ],
+    [
+     37.806427,
+     -122.454369
+    ],
+    [
+     37.806044,
+     -122.455817
+    ],
+    [
+     37.805662,
+     -122.458256
+    ],
+    [
+     37.805066,
+     -122.463201
+    ],
+    [
+     37.805851,
+     -122.46638
+    ],
+    [
+     37.806042,
+     -122.466841
+    ],
+    [
+     37.806527,
+     -122.467591
+    ],
+    [
+     37.806806,
+     -122.468657
+    ],
+    [
+     37.807212,
+     -122.469118
+    ],
+    [
+     37.80771,
+     -122.469486
+    ],
+    [
+     37.808562,
+     -122.470651
+    ],
+    [
+     37.808783,
+     -122.471395
+    ],
+    [
+     37.80907,
+     -122.472962
+    ],
+    [
+     37.809144,
+     -122.47466
+    ],
+    [
+     37.809201,
+     -122.474878
+    ],
+    [
+     37.809347,
+     -122.474945
+    ],
+    [
+     37.80928,
+     -122.475087
+    ],
+    [
+     37.809439,
+     -122.475705
+    ],
+    [
+     37.809684,
+     -122.476104
+    ],
+    [
+     37.810836,
+     -122.476497
+    ],
+    [
+     37.811032,
+     -122.477336
+    ],
+    [
+     37.811001,
+     -122.477804
+    ],
+    [
+     37.810186,
+     -122.477639
+    ],
+    [
+     37.808495,
+     -122.477843
+    ],
+    [
+     37.807901,
+     -122.478349
+    ],
+    [
+     37.806015,
+     -122.478688
+    ],
+    [
+     37.805168,
+     -122.478732
+    ],
+    [
+     37.803472,
+     -122.479337
+    ],
+    [
+     37.803315,
+     -122.479613
+    ],
+    [
+     37.803121,
+     -122.479708
+    ],
+    [
+     37.802289,
+     -122.479849
+    ],
+    [
+     37.800679,
+     -122.480605
+    ],
+    [
+     37.800451,
+     -122.480624
+    ],
+    [
+     37.800176,
+     -122.480883
+    ],
+    [
+     37.799947,
+     -122.480911
+    ],
+    [
+     37.799891,
+     -122.481052
+    ],
+    [
+     37.799555,
+     -122.481086
+    ],
+    [
+     37.799445,
+     -122.481356
+    ],
+    [
+     37.799098,
+     -122.481441
+    ],
+    [
+     37.798327,
+     -122.481924
+    ],
+    [
+     37.793378,
+     -122.483943
+    ],
+    [
+     37.792858,
+     -122.484272
+    ],
+    [
+     37.792605,
+     -122.484594
+    ],
+    [
+     37.791482,
+     -122.485207
+    ],
+    [
+     37.790875,
+     -122.485824
+    ]
+   ]
+  },
+  {
+   "ref": "ggp-buildings",
+   "name": "Golden Gate Park (its buildings)",
+   "priority": 2,
+   "props": {
+    "buildings": "presidio"
+   },
+   "note": "The park's real outline (OSM, from the package's park areas, simplified to 6 m), for what is BUILT in it: the Army's and the Park's own buildings, white stucco with red tile, never city rowhouses (owner, 2026-10-02; src/city/sf/btype.ts).",
+   "ring": [
+    [
+     37.768609,
+     -122.51049
+    ],
+    [
+     37.766554,
+     -122.510198
+    ],
+    [
+     37.764153,
+     -122.510228
+    ],
+    [
+     37.764142,
+     -122.508872
+    ],
+    [
+     37.766381,
+     -122.45858
+    ],
+    [
+     37.766011,
+     -122.457453
+    ],
+    [
+     37.765991,
+     -122.45675
+    ],
+    [
+     37.766351,
+     -122.453994
+    ],
+    [
+     37.766574,
+     -122.454039
+    ],
+    [
+     37.766629,
+     -122.453181
+    ],
+    [
+     37.774629,
+     -122.454753
+    ],
+    [
+     37.773346,
+     -122.465286
+    ],
+    [
+     37.771248,
+     -122.510867
+    ],
+    [
+     37.768735,
+     -122.510558
+    ]
+   ]
+  },
+  {
+   "ref": "alcatraz",
+   "name": "Alcatraz",
+   "priority": 1,
+   "props": {
+    "terrain": "fine",
+    "traffic": 0,
+    "crowd": 0.8,
+    "relief": "raw"
+   },
+   "note": "Appearance audit 2026-10-02 (BUGS.md #257): on the coarse grid the island topped out 11 m above the sea; it rises about 41 m to the cellhouse.",
+   "ring": [
+    [
+     37.8245,
+     -122.4255
+    ],
+    [
+     37.8245,
+     -122.4195
+    ],
+    [
+     37.829,
+     -122.4195
+    ],
+    [
+     37.829,
+     -122.4255
+    ]
+   ]
+  },
+  {
+   "ref": "islands",
+   "name": "Yerba Buena and Treasure Island",
+   "priority": 5,
+   "props": {
+    "traffic": 0.15,
+    "crowd": 0.8
+   },
+   "note": "Owner, 2026-10-02: 'There's WAY too much traffic; it's a mostly pedestrian area' (BUGS.md #254).",
+   "ring": [
+    [
+     37.803,
+     -122.374
+    ],
+    [
+     37.803,
+     -122.357
+    ],
+    [
+     37.834,
+     -122.357
+    ],
+    [
+     37.834,
+     -122.374
+    ]
+   ]
+  },
+  {
+   "ref": "sausalito",
+   "name": "Sausalito",
+   "priority": 5,
+   "props": {
+    "traffic": 0.2,
+    "crowd": 1.2,
+    "buildings": "mediterranean"
+   },
+   "note": "Owner, 2026-10-02: 'a destination … little car traffic … many low stucco Spanish colonial buildings, not big boxy buildings'.",
+   "ring": [
+    [
+     37.844,
+     -122.508
+    ],
+    [
+     37.844,
+     -122.47
+    ],
+    [
+     37.875,
+     -122.47
+    ],
+    [
+     37.875,
+     -122.508
+    ]
+   ]
+  },
+  {
+   "ref": "fort-point-surf",
+   "name": "Fort Point",
+   "priority": 5,
+   "props": {
+    "water": "waves"
+   },
+   "note": "The surf breaking on the seawall under the bridge (owner, 2026-10-02).",
+   "ring": [
+    [
+     37.8085,
+     -122.479
+    ],
+    [
+     37.8085,
+     -122.474
+    ],
+    [
+     37.8125,
+     -122.474
+    ],
+    [
+     37.8125,
+     -122.479
+    ]
+   ]
+  },
+  {
+   "ref": "sutro-baths-open",
+   "name": "Sutro Baths, Cliff House and Point Lobos",
+   "priority": 151,
+   "props": {
+    "plant": {
+     "wood": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         6,
+         12
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         6,
+         12
+        ]
+       }
+      ]
+     },
+     "park": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0.0003,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         12,
+         21
+        ]
+       }
+      ]
+     }
+    }
+   },
+   "note": "Owner, 2026-10-02: 'i'm not seeing those unique buildings' — a forest stood over the baths, the Cliff House and the Camera Obscura. The real headland is bare cliff and scrub, cypress in ones and twos.",
+   "ring": [
+    [
+     37.777,
+     -122.5165
+    ],
+    [
+     37.777,
+     -122.51
+    ],
+    [
+     37.7835,
+     -122.51
+    ],
+    [
+     37.7835,
+     -122.5165
+    ]
+   ]
+  },
+  {
+   "ref": "ti-avenue-of-the-palms",
+   "name": "Avenue of the Palms, Treasure Island",
+   "priority": 112,
+   "props": {
+    "plant": {
+     "street": {
+      "spacing": 9,
+      "jitter": 0.5,
+      "minWalk": 0,
+      "minWidth": 3,
+      "species": [
+       {
+        "form": "canary",
+        "weight": 3,
+        "h": [
+         9,
+         13
+        ]
+       },
+       {
+        "form": "queen",
+        "weight": 1,
+        "h": [
+         8,
+         11
+        ]
+       }
+      ]
+     }
+    }
+   },
+   "note": "Owner, 2026-10-02: 'avenue of the palms should have...palms'.",
+   "ring": [
+    [
+     37.8182,
+     -122.3748
+    ],
+    [
+     37.8182,
+     -122.372
+    ],
+    [
+     37.8218,
+     -122.372
+    ],
+    [
+     37.8218,
+     -122.3748
+    ]
+   ]
+  },
+  {
+   "ref": "baker-beach-surf",
+   "name": "Baker Beach and China Beach",
+   "priority": 5,
+   "props": {
+    "water": "waves"
+   },
+   "ring": [
+    [
+     37.786,
+     -122.493
+    ],
+    [
+     37.786,
+     -122.48
+    ],
+    [
+     37.801,
+     -122.48
+    ],
+    [
+     37.801,
+     -122.493
+    ]
+   ]
+  },
+  {
+   "ref": "plant-mount-sutro-forest",
+   "name": "Sutro Forest",
+   "priority": 152,
+   "props": {
+    "plant": {
+     "wood": {
+      "density": 0.0078,
+      "clump": 0.5,
+      "species": [
+       {
+        "form": "eucalyptus",
+        "weight": 8,
+        "h": [
+         22,
+         34
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 1,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         14,
+         22
+        ]
+       }
+      ]
+     },
+     "park": {
+      "density": 0.0078,
+      "clump": 0.5,
+      "species": [
+       {
+        "form": "eucalyptus",
+        "weight": 8,
+        "h": [
+         22,
+         34
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 1,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         14,
+         22
+        ]
+       }
+      ]
+     }
+    }
+   },
+   "note": "Appearance pass 2026-10-02: Mount Sutro rose bare under the tower; the real hill is the Sutro Forest, tall blue gum eucalyptus all round it.",
+   "ring": [
+    [
+     37.7555,
+     -122.4635
+    ],
+    [
+     37.7555,
+     -122.4505
+    ],
+    [
+     37.765,
+     -122.4505
+    ],
+    [
+     37.765,
+     -122.4635
+    ]
+   ]
+  },
+  {
+   "ref": "treasure-island-navy",
+   "name": "Treasure Island",
+   "priority": 5,
+   "props": {
+    "buildings": "navy"
+   },
+   "note": "Owner, 2026-10-02: 'Treasure Island … need a lot of work'. The Navy's island: low stucco quarters and new mid-rise blocks, never the city's brick, Victorians or tenements. Landmarks (Building 1, the hangars) are models.",
+   "ring": [
+    [
+     37.815,
+     -122.38
+    ],
+    [
+     37.815,
+     -122.357
+    ],
+    [
+     37.833,
+     -122.357
+    ],
+    [
+     37.833,
+     -122.38
     ]
    ]
   }

@@ -156,7 +156,7 @@
     "procedural": "rinconAnnex",
     "front": "street",
     "height": 22,
-    "note": "1940 Streamline Moderne former post office, deco piers over a granite base. OSM's 33 m (levels >= 8) is far taller than the photograph's squat block (BUGS.md #126) \u2014 believed the photo."
+    "note": "1940 Streamline Moderne former post office, deco piers over a granite base. OSM's 33 m (levels >= 8) is far taller than the photograph's squat block (BUGS.md #126) — believed the photo."
   },
   {
     "osm": [
@@ -331,7 +331,7 @@
     "name": "Metreon",
     "height": 50,
     "levels": 0,
-    "note": "Hand-modelled 2026-09-23 (owner: 'This is an important, but very strange area. We should do custom modeling.'). A blank pale metal-panel street elevation with a wall-sized METREON wordmark, a Target bullseye and an AMC/IMAX corner over a perforated dot panel, and an entirely different long glazed wall on the Yerba Buena Gardens side, which stands on the raised deck over Moscone Center (BUGS.md #130) \u2014 the garden glazing starts partway up the wall over a blank retaining wall to grade. Was `pending` in docs/sf-queue.csv, unclaimed.",
+    "note": "Hand-modelled 2026-09-23 (owner: 'This is an important, but very strange area. We should do custom modeling.'). A blank pale metal-panel street elevation with a wall-sized METREON wordmark, a Target bullseye and an AMC/IMAX corner over a perforated dot panel, and an entirely different long glazed wall on the Yerba Buena Gardens side, which stands on the raised deck over Moscone Center (BUGS.md #130) — the garden glazing starts partway up the wall over a blank retaining wall to grade. Was `pending` in docs/sf-queue.csv, unclaimed.",
     "procedural": "metreon_135_fourth"
   },
   {
@@ -448,9 +448,9 @@
       "relation/7814696"
     ],
     "name": "Cathedral of Saint Mary of the Assumption",
-    "restyle": "classical",
-    "height": 19,
-    "note": "rule 2: place of worship or church"
+    "procedural": "stMarysCathedral",
+    "height": 58,
+    "note": "Nervi and Belluschi, 1971: four saddle-shaped shells from the corners to a glazed cross 58 m up, a gold cross on the crossing (src/render/landmarks/sf/st-marys.ts). Was a 19 m classical restyle until the appearance audit, 2026-10-02."
   },
   {
     "osm": [
@@ -535,7 +535,9 @@
     "note": "rule 2: place of worship or church"
   },
   {
-    "osm": ["way/256442765"],
+    "osm": [
+      "way/256442765"
+    ],
     "name": "Old Mission Dolores",
     "procedural": "missionDolores",
     "front": "street",
@@ -543,11 +545,22 @@
     "note": "Hand-modelled 2026-09-24: 1776 adobe, the oldest building in San Francisco. Very plain, very low, church() with front: 'mission' for the flat espadana parapet and bell niches. Not the neighbouring Mission Dolores Basilica (way/256442760), a separate, much larger building left untouched. No usable street photograph (Mapillary marked junk); form from the building's well-documented history."
   },
   {
-    "osm": ["way/262435071"],
+    "osm": [
+      "way/262435071"
+    ],
     "name": "Bimbo's 365 Club",
     "procedural": "bimbos365Club",
     "front": "street",
     "height": 6,
     "note": "Hand-modelled 2026-09-24: 1931 nightclub, 1025 Columbus Avenue. Low flat-roofed box, cream wall covered in a pierced circle-motif breeze-block screen (approximated as a dense punched grid), corner blade sign 'BIMBO'S' and a lit readerboard marquee at the entrance. No usable Mapillary frame (marked junk); confirmed by name via Wikimedia Commons (Bimbo's365Blade.jpg, Bimbo's Marquee.jpg, both at 1025 Columbus)."
+  },
+  {
+    "osm": [
+      "way/288473107"
+    ],
+    "name": "105-145 Jefferson Street",
+    "restyle": "classical",
+    "height": 12,
+    "note": "Fisherman's Wharf: cream classical front with a great arched window (Mapillary 621076514393452); was brick (Embarcadero sweep 2026-10-03)."
   }
 ]

@@ -35,7 +35,8 @@ type P2 = { x: number; z: number }
 const BRICK: Rgb = [0.55, 0.36, 0.29]
 const STONE: Rgb = [0.80, 0.77, 0.71]
 const STEEL: Rgb = [0.62, 0.64, 0.66]
-const SEAT: Rgb = [0.16, 0.24, 0.28]
+// Oracle Park's seats are a deep forest green (they had been a slate blue that read as water from above)
+const SEAT: Rgb = [0.10, 0.22, 0.15]
 const DECK: Rgb = [0.55, 0.55, 0.53]
 const GRASS: Rgb = [0.31, 0.50, 0.24]
 const GRASS_2: Rgb = [0.36, 0.55, 0.27]
@@ -151,9 +152,15 @@ function oraclePark(out: MeshBuilder, fit: Fit): void {
    * claims relation/7330762 — but the triangle-budget test builds every landmark on a bare fit, and a builder
    * that draws nothing there would pass every check by drawing nothing at all.
    */
+  /*
+   * No footprint of its own — placed standalone at the survey's origin (venues.json, 2026-10-02): the survey IS the
+   * footprint. The stadium relations never reach the bake, so a claimed fit was the one 5 800 m2 part
+   * (way/499568642), and the park was built a quarter of its size in the corner over the Cove (owner: "the giants
+   * stadium is not really recognizable", the arcade "connected to nothing").
+   */
   const ring: P2[] = fit.ring && fit.ring.length >= 6
     ? fit.ring
-    : [{ x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+    : SURVEY.map(([x, z]) => ({ x, z }))
   /*
    * ---- line the survey up with the footprint we were given: same centroid, area ratio for the scale, and
    * the turn whose support function matches best, refined a degree at a time.

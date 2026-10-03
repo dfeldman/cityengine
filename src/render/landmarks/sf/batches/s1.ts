@@ -16,7 +16,7 @@
 import type { MeshBuilder } from '../../../buildings.ts'
 import { box, type Rgb } from '../../../models.ts'
 import type { Fit } from '../../fit.ts'
-import { arcade, edgeAt, offsetRing } from '../../parts.ts'
+import { arcade, edgeAt } from '../../parts.ts'
 import { towerRing, faceBand } from '../../tower.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
 
@@ -28,7 +28,6 @@ const WOOD_NATURAL: Rgb = [0.52, 0.42, 0.32]
 const WOOD_DARK: Rgb = [0.3, 0.24, 0.18]
 const METAL_DARK: Rgb = [0.24, 0.25, 0.27]
 const METAL_RAILING: Rgb = [0.35, 0.36, 0.38]
-const WATER: Rgb = [0.15, 0.25, 0.35]
 
 /**
  * Presidio Theatre (way/32650566) — Mission Revival, cream stucco, red barrel-tile gabled roofs.
@@ -113,49 +112,57 @@ export const s1_presidio_theatre_32650566 = (out: MeshBuilder, fit: Fit): void =
 }
 
 /**
- * Sutro Baths (way/32776564) — RUINS: roofless concrete walls on the actual footprint, flooded pools,
- * curved sea wall, scattered boulders. Built on fit.ring.
+ * SUTRO BATHS (1896; way/32776564) — the ruin, rebuilt 2026-10-02 (owner: "I do really want to have a sutro baths ride").
+ * Was a ring of 6 m walls round one water slab with boulders thrown at Math.random — a different ruin every load.
+ *
+ * What is there: in the cove under Point Lobos, the foundations of the glass palace — a long rectangular BASIN at the
+ * sea's level, divided by low concrete walls into the old pools (the big L-shaped main pool and a row of smaller tanks),
+ * the walls' tops just out of the water and walkable; on the ocean side the heavy SEAWALL with the BREACH the surf
+ * comes through; behind, the building's FOUNDATIONS climbing the cliff in terraces with the stairs between them; and
+ * at the north end the TUNNEL cut through the headland to the sea cave. Placed on the sea's level (`deckAbove: 0`):
+ * the pools are the sea itself, x east (the cliff), −x west (the ocean).
  */
 export const s1_sutro_baths_32776564 = (out: MeshBuilder, fit: Fit): void => {
-  const ring = towerRing(fit)
   const concrete = surfaceTag('concrete')
-
-  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
-  for (const p of ring) {
-    x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x)
-    z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z)
+  const W = Math.min(fit.hx, 60)          // half the site across
+  const L = Math.min(fit.hz, 80)          // half along the shore
+  const OLD: [number, number, number] = [0.66, 0.64, 0.6]
+  const DARK: [number, number, number] = [0.46, 0.45, 0.42]
+  const POOL: [number, number, number] = [0.08, 0.15, 0.14]
+  // the basin: west half of the site, its water at the sea's level and a little greener than the sea
+  const bx0 = -W, bx1 = W * 0.15
+  box(out, (bx0 + bx1) / 2, -0.05, 0, (bx1 - bx0) / 2, 0.08, L * 0.9, POOL, 0)
+  const wall = (x0: number, z0: number, x1: number, z1: number, h = 1.1, t = 0.9, c = OLD): void => {
+    const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2
+    box(out, cx, h / 2 - 0.4, cz, Math.max(t / 2, Math.abs(x1 - x0) / 2), (h + 0.4) / 2, Math.max(t / 2, Math.abs(z1 - z0) / 2), c, concrete)
   }
-  const cx = (x0 + x1) / 2
-  const cz = (z0 + z1) / 2
-  const hx = (x1 - x0) / 2
-  const hz = (z1 - z0) / 2
-
-  const wallH = 6
-
-  // Perimeter concrete walls (roofless ruins)
-  faceBand(out, ring, 0, wallH, { kind: 'blank', wall: CONCRETE_GREY, material: 'concrete' })
-
-  // Interior cross-walls dividing into chambers (offsetRing handles concave rings safely)
-  const innerRing = offsetRing(ring, -hx * 0.2)
-  for (let i = 0; i < innerRing.length; i++) {
-    const p1 = innerRing[i]
-    const p2 = innerRing[(i + 1) % innerRing.length]
-    const L = Math.hypot(p2.x - p1.x, p2.z - p1.z)
-    if (L > hx * 0.5) {
-      box(out, (p1.x + p2.x) / 2, wallH / 2, (p1.z + p2.z) / 2, L / 2, wallH / 2, 0.8, CONCRETE_GREY, concrete)
-    }
+  // the basin's rim, and the pools: the main pool's long divider, and the row of small tanks along the cliff side
+  wall(bx0, -L * 0.9, bx1, -L * 0.9)
+  wall(bx0, L * 0.9, bx1, L * 0.9)
+  wall(bx1, -L * 0.9, bx1, L * 0.9)
+  wall(bx0 + (bx1 - bx0) * 0.55, -L * 0.9, bx0 + (bx1 - bx0) * 0.55, L * 0.35)
+  for (let k = 0; k <= 6; k++) {
+    const z = -L * 0.9 + (k * L * 1.8) / 6
+    wall(bx0 + (bx1 - bx0) * 0.55, z, bx1, z, 0.9, 0.7)
   }
-
-  // Flooded pools: water surface inside
-  box(out, cx, 0.5, cz, hx * 0.9, 0.5, hz * 0.85, WATER, 0)
-
-  // Scattered boulders
-  for (let i = 0; i < 15; i++) {
-    const x = cx + (Math.random() - 0.5) * hx * 1.5
-    const z = cz + (Math.random() - 0.5) * hz * 1.5
-    const s = 1.5 + Math.random() * 2.5
-    box(out, x, s / 2, z, s * 0.6, s / 2, s * 0.5, CONCRETE_DARK, concrete)
+  wall(bx0, L * 0.35, bx0 + (bx1 - bx0) * 0.55, L * 0.35, 0.8, 0.7)
+  // the seawall on the ocean side, heavy and higher, broken by the breach two-thirds of the way along
+  wall(bx0 - 2, -L * 0.95, bx0 - 2, L * 0.15, 3.2, 3.2, DARK)
+  wall(bx0 - 2, L * 0.32, bx0 - 2, L * 0.95, 3.2, 3.2, DARK)
+  for (const [z, s] of [[L * 0.2, 1.6], [L * 0.24, 1.1], [L * 0.28, 1.4]] as const) box(out, bx0 - 3 + s * 0.3, s * 0.3, z, s, s * 0.7, s, DARK, concrete)
+  // the foundations climbing the cliff in terraces, a stair between each pair
+  for (let t = 0; t < 4; t++) {
+    const x0 = bx1 + 2 + t * ((W - bx1) / 4)
+    const y = 2.5 + t * 4.5
+    box(out, x0 + (W - bx1) / 8, y / 2, 0, (W - bx1) / 8, y / 2, L * (0.8 - t * 0.12), OLD, concrete)
+    // the column stumps on each terrace
+    for (let k = -4; k <= 4; k++) box(out, x0 + 2, y + 0.6, k * L * 0.16, 0.5, 0.6, 0.5, DARK, concrete)
+    // the stair up to it, at the south end
+    for (let st = 0; st < 6; st++) box(out, x0 - 1 + st * 0.45, (y - 4.5) + (st + 1) * 0.75 * (4.5 / 4.5) / 1, -L * (0.8 - t * 0.12) - 1.5, 0.3, 0.38, 1.4, OLD, concrete)
   }
+  // the tunnel's portal in the headland at the north end
+  box(out, bx0 + 6, 4, L * 0.98, 6, 4, 3, DARK, concrete)
+  box(out, bx0 + 6, 2.2, L * 0.98 - 3.05, 2.2, 2.4, 0.1, [0.06, 0.06, 0.07], 0)
 }
 
 /**

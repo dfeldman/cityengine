@@ -148,17 +148,6 @@
   },
   {
     "osm": [
-      "way/30029681"
-    ],
-    "name": "Cable Car Powerhouse and Barn",
-    "restyle": "brick",
-    "wall": "#8B5A3C",
-    "by": "haiku",
-    "image": "way-30029681.jpg",
-    "note": "red-brown brick industrial building with arched windows"
-  },
-  {
-    "osm": [
       "way/33570646"
     ],
     "name": "Alcazar Theatre",

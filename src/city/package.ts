@@ -20,7 +20,7 @@ export interface PackedEdge {
   b: number
   /** flattened x,z pairs in local metres */
   points: number[]
-  surface: 'asphalt' | 'concrete' | 'cobblestone' | 'gravel' | 'dirt' | 'wood'
+  surface: 'asphalt' | 'concrete' | 'cobblestone' | 'gravel' | 'dirt' | 'wood' | 'brick'
   /**
    * The CARRIAGEWAY, not the corridor. The pavement is carved out of what OSM calls the street's width
    * rather than added outside it, so that `width + 2 * walk` is the building-to-building corridor and every
@@ -68,6 +68,8 @@ export interface PackedEdge {
   authored?: boolean
   /** a FREEWAY way the bike rides (a bridge deck, a ramp the region chose): every other is out of the ride network */
   ridden?: boolean
+  /** a TRAIL the bike rides: a footway or path inside a zone with `trails: 'bike'` (Lands End down to Sutro Baths) */
+  trail?: boolean
   /** through a building at grade (tunnel=building_passage, covered=yes): rideable, drawn as an arch */
   passage?: boolean
   /** a way the bake lifted onto a bridge's deck (tools/bridges.ts): drawn as a structure, like the bridge */
@@ -165,7 +167,7 @@ export interface PackedArea {
    * mud|earth` and `landuse=landfill|quarry` — the ground OSM says outright is not growing anything.
    * Neither is GREEN and neither is planted.
    */
-  kind: 'park' | 'grass' | 'water' | 'wood' | 'pitch' | 'paved' | 'sand' | 'dirt'
+  kind: 'park' | 'grass' | 'water' | 'wood' | 'pitch' | 'paved' | 'sand' | 'dirt' | 'lot'
   ring: number[]
   /** inner rings: the islands in a river, the courtyard in a park */
   holes?: number[][]
@@ -289,6 +291,8 @@ export interface PackedRail {
   cable?: true
   /** light rail (a modern tram on its own right of way, Muni Metro's surface lines), not a main-line railway */
   light?: true
+  /** a gondola's inclined track (not baked: game.ts adds Salesforce Park's), its heights absolute */
+  gondola?: true
 }
 
 export interface CityPackage {

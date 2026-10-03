@@ -10,11 +10,12 @@
  */
 import type { StyleId } from '../facade.ts'
 import DISTRICTS from './districts.json' with { type: 'json' }
+import ZONES from '../../../data/zones/san-francisco.json' with { type: 'json' }
 
 export type Archetype =
   | 'rowhouse' | 'marinaHouse' | 'apartment' | 'chinatown' | 'loft' | 'prewarOffice' | 'tower' | 'modern'
   | 'retailBox' | 'civic' | 'church' | 'hotel' | 'pier' | 'midcentury' | 'contemporary' | 'edwardianHouse'
-  | 'apartmentTower'
+  | 'apartmentTower' | 'presidio' | 'presidioBrick'
 
 export type District = keyof typeof DISTRICTS.districts
 
@@ -76,6 +77,35 @@ export function archetypeOf(f: Features): { archetype: Archetype; district: Dist
   const t = f.tags
   const h = f.height ?? (f.levels !== undefined ? f.levels * 3.3 : 10)
   const a = (archetype: Archetype, rule: string): { archetype: Archetype; district: District; rule: string } => ({ archetype, district, rule })
+
+  /*
+   * THE PRESIDIO AND GOLDEN GATE PARK (owner, 2026-10-02): "colonial-style buildings … white with gabled red tile
+   * roofs — simple buildings, obviously government-owned, built as military housing mostly … some stretches of the
+   * presidio buildings are brick, like around the walt disney museum. There are no tenements or victorians or normal
+   * city buildings in these areas." Inside either park's real outline (the `buildings: 'presidio'` zones), whatever
+   * the lot and height say; the Main Post's barracks row in brick. A tower is left to the rules below (there are none
+   * to speak of; the museums are landmark models).
+   */
+  if (h <= 30 && inBuiltZone('presidio', f.lat, f.lon)) {
+    return near(f.lat, f.lon, MAIN_POST, 220) ? a('presidioBrick', 'presidio-main-post') : a('presidio', 'presidio-park')
+  }
+  /*
+   * SAUSALITO (owner, 2026-10-02: "a very different architectural style, many low stucco Spanish colonial buildings,
+   * not big boxy buildings"): the white stucco and red tile of the Presidio's revival for most, pastel stucco houses
+   * for the rest — never the city's flats, offices or Victorians.
+   */
+  if (h <= 30 && inBuiltZone('mediterranean', f.lat, f.lon)) {
+    return f.roll < 0.4 ? a('presidio', 'sausalito-revival') : a('marinaHouse', 'sausalito-stucco')
+  }
+
+  /*
+   * TREASURE ISLAND (owner, 2026-10-02: "YB Island and Treasure Island … need a lot of work"): the Navy's island,
+   * filled since 1940 with plain stucco quarters and, since 2020, new mid-rise blocks — never the city's brick lofts,
+   * Victorians or tenements, which the district rules gave it. The Exposition's survivors are landmark models.
+   */
+  if (h <= 40 && inBuiltZone('navy', f.lat, f.lon)) {
+    return h <= 12 ? a('marinaHouse', 'treasure-island-quarters') : a('contemporary', 'treasure-island-new')
+  }
 
   // what the mapper said, when they said anything
   if (t.amenity === 'place_of_worship' || /^(church|cathedral|chapel|synagogue|temple)$/.test(t.building ?? '')) return a('church', 'worship')
@@ -146,6 +176,25 @@ export function archetypeOf(f: Features): { archetype: Archetype; district: Dist
   return a('apartment', 'default')
 }
 
+/** the zones that say what is built in them (ZoneProps.buildings), in [lat, lon] */
+const BUILT = (ZONES as { zones: { props: { buildings?: string }; ring: number[][] }[] }).zones.filter((z) => z.props.buildings)
+function inBuiltZone(kind: string, lat: number, lon: number): boolean {
+  for (const z of BUILT) {
+    if (z.props.buildings !== kind) continue
+    let hit = false
+    const r = z.ring
+    for (let i = 0, j = r.length - 1; i < r.length; j = i++) {
+      if ((r[i][0] > lat) !== (r[j][0] > lat) && lon < ((r[j][1] - r[i][1]) * (lat - r[i][0])) / (r[j][0] - r[i][0]) + r[i][1]) hit = !hit
+    }
+    if (hit) return true
+  }
+  return false
+}
+/** the Main Post's brick barracks along Montgomery Street, by the Walt Disney Family Museum */
+const MAIN_POST = { lat: 37.8013, lon: -122.4590 }
+const near = (lat: number, lon: number, c: { lat: number; lon: number }, m: number): boolean =>
+  Math.hypot((lat - c.lat) * 111_000, (lon - c.lon) * 111_000 * COS) < m
+
 /** The style each archetype wears (SF_PLAN.md §3). */
 export const STYLE_OF: Record<Archetype, StyleId> = {
   rowhouse: 'victorian',
@@ -163,6 +212,8 @@ export const STYLE_OF: Record<Archetype, StyleId> = {
   pier: 'classical',
   edwardianHouse: 'edwardian',
   apartmentTower: 'towerblock',
+  presidio: 'presidio',
+  presidioBrick: 'presidioBrick',
   midcentury: 'bauhaus',
   contemporary: 'bauhaus',
 }

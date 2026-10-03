@@ -16,7 +16,7 @@ import type { Scene } from '@babylonjs/core/scene'
 import { MeshBuilder } from './buildings.ts'
 import { buildRoof } from './roofs.ts'
 import { facadeMaterial, KIND_WALL } from './facade-material.ts'
-import { style as styleOf, type Palette } from '../city/facade.ts'
+import { style as styleOf, STYLES, type Palette } from '../city/facade.ts'
 import { unpackPoints, type PackedBuilding, type PackedFringe } from '../city/package.ts'
 import type { TileLayer } from './city.ts'
 import type { Region } from '../city/region.ts'
@@ -51,9 +51,13 @@ export function massing(scene: Scene, list: PackedFringe[], reg: Region, terrain
   const byStyle = new Map<string, MeshBuilder>()
   // roofs apart, in the style's ordinary material: sampled from the far page, a mansard grew windows
   const roofs = new Map<string, MeshBuilder>()
-  for (const f of list) {
+  for (const given of list) {
+    let f = given
     const ring = unpackPoints(f.ring)
     if (ring.length < 3) continue
+    // a building with no style (a restyle or a v3 style index that did not resolve) takes the region's first, rather
+    // than throwing out of the frame loop (owner, 2026-10-02, Sausalito: "Uncaught Error: unknown style undefined")
+    if (!f.style || !(f.style in reg.palettes) && !STYLES.some((st) => st.id === f.style)) f = { ...f, style: 'sfapartment' as typeof f.style }
     const palettes: Palette[] = reg.palettes[f.style] ?? styleOf(f.style).palettes
     const pal = palettes[Math.abs(f.id) % palettes.length]
     const tint = rgb(pal.wall)

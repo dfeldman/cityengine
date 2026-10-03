@@ -960,13 +960,15 @@ function blades(scene: Scene, atlas: TextAtlas, owner: string, junctions: Signed
     const px = j.at.x + cx * reach
     const pz = j.at.z + cz * reach
     const g = terrain.heightAt(px, pz)
-    // the pole
+    // the pole, up to the lower blade: the blades sit on its cap, they are not threaded on it (owner, 2026-10-02:
+    // "street signs are always obstructing the sign with the pole" — it ran on to 2.7 m, through both names)
+    const top = 2.3 - 0.11
     for (const [ox, oz] of [[1, 0], [0, 1], [-1, 0], [0, -1]]) {
       const hx = oz * 0.04
       const hz = -ox * 0.04
       const fx = px + ox * 0.04
       const fz = pz + oz * 0.04
-      out.quad([[fx - hx, g, fz - hz], [fx + hx, g, fz + hz], [fx + hx, g + 2.7, fz + hz], [fx - hx, g + 2.7, fz - hz]],
+      out.quad([[fx - hx, g, fz - hz], [fx + hx, g, fz + hz], [fx + hx, g + top, fz + hz], [fx - hx, g + top, fz - hz]],
         [ox, 0, oz], blank, pole, 0)
     }
     // a blade along each street, one above the other

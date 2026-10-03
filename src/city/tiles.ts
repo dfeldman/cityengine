@@ -95,6 +95,12 @@ export interface CityIndex {
    * `Terrain.coarse` and BUGS.md #179.
    */
   terrain?: PackedTerrain
+  /**
+   * The sea's surface, datum metres (the package's `seaLevel`), for the renderer's open sea past the tiles
+   * (render/city.ts `distantSea`). Its own name, not `seaLevel`: landmarks read `seaLevel` for `deckAbove`, and
+   * twenty-odd pier entries have been placed by the drape it falls back to — passing that on is its own change.
+   */
+  sea?: number | null
   skyline?: CityPackage['skyline']
   /** every named landmark, for the menu and the minimap (they are also in their tiles, for the plates) */
   landmarks: PackedLandmark[]
@@ -300,7 +306,7 @@ export function splitPackage(pkg: CityPackage, waterLevel: (ring: Point[], area:
 
   const index: Omit<CityIndex, 'tiles'> = {
     id: pkg.id, name: pkg.name, origin: pkg.origin, radius: pkg.radius, box: pkg.box, ground: pkg.ground,
-    region: pkg.region, start: pkg.start, terrain: pkg.terrain, skyline: pkg.skyline, landmarks: pkg.landmarks ?? [],
+    region: pkg.region, start: pkg.start, terrain: pkg.terrain, sea: pkg.seaLevel ?? null, skyline: pkg.skyline, landmarks: pkg.landmarks ?? [],
     water: pkg.areas.filter((a) => a.kind === 'water'),
     ...(pkg.walls && pkg.walls.length > 0 ? { walls: pkg.walls } : {}),
     attribution: pkg.attribution, baked: pkg.baked, tile: TILE,
@@ -321,7 +327,7 @@ export function joinTiles(index: Omit<CityIndex, 'tiles'> | CityIndex, tiles: It
   const bridges = new Map<number, PackedBridge>()
   const out = {
     id: index.id, name: index.name, origin: index.origin, radius: index.radius, box: index.box, ground: index.ground,
-    region: index.region, start: index.start, terrain: index.terrain, skyline: index.skyline,
+    region: index.region, start: index.start, terrain: index.terrain, sea: index.sea, skyline: index.skyline,
     attribution: index.attribution, baked: index.baked, walls: index.walls,
     edges: [] as PackedEdge[], buildings: [] as PackedBuilding[], fringe: [] as PackedFringe[], areas: [] as TileArea[],
     trees: [] as number[], pois: [] as PackedPoi[], furniture: [] as PackedFurniture[], landmarks: [] as PackedLandmark[],

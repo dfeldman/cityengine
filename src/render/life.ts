@@ -125,7 +125,7 @@ export class Life {
   /** a stranger's bicycle, frame and wheels, facing +z */
   private readonly bikes: Pool
   private readonly blobs: Pool
-  private readonly rails: { points: { x: number; z: number }[]; length: number; kind: 0 | 1 | 2 | 3 | 4; heights?: number[]; stops: number[] }[] = []
+  private readonly rails: { points: { x: number; z: number }[]; length: number; kind: 0 | 1 | 2 | 3 | 4 | 5; heights?: number[]; stops: number[] }[] = []
   /** a train: where its head is along the rail, which way, its running speed and speed now, its dwell */
   private readonly trains: { rail: number; s: number; dir: 1 | -1; speed: number; v: number; wait: number; last: number; variant: number; held?: number; fixed?: 1 | -1 | null; shift?: number }[] = []
   /**
@@ -139,7 +139,7 @@ export class Life {
    * b→a, null a single track down the middle that is run both ways (owner, 2026-10-01: half the streetcars ran on the
    * wrong side of the street, head-on into the cars — every track was run both ways, turning round at each end).
    */
-  trackDirection: ((points: { x: number; z: number }[]) => { dir: 1 | -1 | null; shift: number } | undefined) | null = null
+  trackDirection: ((points: { x: number; z: number }[]) => { dir: 1 | -1 | null; d: number; lane: number } | undefined) | null = null
   /** the rider is aboard a train (game.ts): no train stops for them then — they are standing in it */
   riderAboard = false
   readonly transitBodies: { id: string; x: number; z: number; y: number; heading: number; speed: number; len: number; wid: number; kind: number }[] = []
@@ -157,9 +157,9 @@ export class Life {
     // the region's own rolling stock (render/rolling-stock.ts; Paris's RER, métro and Citadis, SF's cable cars)
     this.stock = stock
     this.stations = stations
-    for (const [i, kind] of [stock.rail, stock.metro, stock.tram, stock.cable ?? null, stock.light ?? null].entries()) {
+    for (const [i, kind] of [stock.rail, stock.metro, stock.tram, stock.cable ?? null, stock.light ?? null, stock.gondola ?? null].entries()) {
       if (!kind) { this.stockPools.push(null as never); continue }
-      const name = ['carriages', 'metro', 'trams', 'cablecars', 'lightrail'][i]
+      const name = ['carriages', 'metro', 'trams', 'cablecars', 'lightrail', 'gondola'][i]
       const models = [{ mid: kind.mid, head: kind.head, tail: kind.tail, liveries: kind.liveries, pitch: kind.pitch, shadow: kind.shadow }, ...(kind.variants ?? [])]
       this.stockPools.push({
         kind,
@@ -224,7 +224,8 @@ export class Life {
       // rider sees a métro train
       if ((r.kind === 'subway' && !r.heights) || this.railIds.has(r.id)) continue
       // (a cable-car or light-rail track takes its own stock where the region has one, else the tram's)
-      const kind: 0 | 1 | 2 | 3 | 4 = r.kind === 'tram'
+      // (and a GONDOLA — Salesforce Park's, docs/SALESFORCE-PARK.md — on its own inclined track, kind 5)
+      const kind: 0 | 1 | 2 | 3 | 4 | 5 = r.gondola ? 5 : r.kind === 'tram'
         ? (r.cable && this.stockPools[3] ? 3 : r.light && this.stockPools[4] ? 4 : 2)
         : r.kind === 'subway' ? 1 : 0
       if (!this.stockPools[kind]) continue
@@ -234,11 +235,13 @@ export class Life {
       for (let i = 1; i < points.length; i++) {
         length += Math.hypot(points[i].x - points[i - 1].x, points[i].z - points[i - 1].z)
       }
-      if (length < this.stock.minLine) continue
+      if (length < this.stock.minLine && kind !== 5) continue
       // the stations on this line: where along it each comes within 40 m
       // the stations on this line: the métro viaduct's for the métro, the tram stops for everything on tram track
       const stops: number[] = []
-      if (this.stockPools[kind].kind.stops) {
+      // a gondola stops at both its stations, its two ends
+      if (kind === 5) stops.push(0.5, length - 0.5)
+      else if (this.stockPools[kind].kind.stops) {
         for (const st of kind === 1 ? this.stations : this.tramStops) {
           const s = stopAlong(points, st, kind === 1 ? 40 : 12)
           if (s !== null) stops.push(s)
@@ -387,6 +390,9 @@ export class Life {
 
     // trains: they run their line end to end and turn round, which is what a terminus looks like; the métro
     // on its viaduct slows into each station, stands there with its doors open, and pulls away
+    // the cars as they stood last frame: what each tram looks out for of the OTHERS (owner, 2026-10-01: "streetcars go
+    // right through each other" — lines share track on Market Street, and tracks cross)
+    const others = this.transitBodies.slice()
     this.transitBodies.length = 0
     for (const [ti, t] of this.trains.entries()) {
       const rail = this.rails[t.rail]
@@ -394,7 +400,7 @@ export class Life {
       const k = kp.kind
       const vp = kp.variants[t.variant]
       const trainLen = (k.cars - 1) * vp.pitch
-      const street = rail.kind >= 2
+      const street = rail.kind >= 2 && rail.kind <= 4
       if (t.wait > 0) {
         t.wait -= dt
       } else {
@@ -434,6 +440,10 @@ export class Life {
           if (!this.riderAboard) consider(at.x, at.z, 0.9, 0.3)
           for (const v of vehicles) if (Math.abs(v.at.x - head0.x) < 40 && Math.abs(v.at.z - head0.z) < 40) consider(v.at.x, v.at.z, (v.size?.len ?? 4.4) / 2, (v.size?.wid ?? 1.9) / 2)
           for (const w of walkers) if (Math.abs(w.at.x - head0.x) < 30 && Math.abs(w.at.z - head0.z) < 30) consider(w.at.x, w.at.z, 0.3, 0.3)
+          for (const o of others) {
+            if (o.id.startsWith(`${ti}:`) || Math.abs(o.x - head0.x) > 60 || Math.abs(o.z - head0.z) > 60) continue
+            consider(o.x, o.z, o.len / 2, o.wid / 2)
+          }
           if (gap < Infinity) target = Math.min(target, Math.sqrt(2 * A * Math.max(0, gap - 1.5)))
           t.held = target < 0.2 && gap < Infinity ? (t.held ?? 0) + dt : 0
         } else if ((t.held ?? 0) >= 20) {
@@ -455,7 +465,17 @@ export class Life {
         // (`shift`: metres to its right that put the car on the traffic's own lane line, not OSM's track — a tram
         // drawn on the track stood half a metre into the oncoming cars, and they stopped against its side)
         const d = this.trackDirection(rail.points)
-        if (d !== undefined) { t.fixed = d.dir; t.shift = d.shift; if (d.dir) t.dir = d.dir }
+        if (d !== undefined) {
+          t.fixed = d.dir
+          if (d.dir) t.dir = d.dir
+          /*
+           * At least half its own width and a bit off the centre line (owner, 2026-10-01: "the tracks should be far
+           * enough apart that cars in opposite directions have no chance of collision. otherwise they'd deadlock"): two
+           * trams passing each other clear by 0.4 m, and neither sees the other as in its way (`consider`).
+           */
+          const off = Math.max(d.lane, vp.shadow[1] / 2 + 0.2)
+          t.shift = off - d.d
+        }
       }
       if (t.s < 0 || t.s > rail.length) {
         if (t.fixed) {
@@ -496,7 +516,9 @@ export class Life {
         const half = vp.shadow[0] / 2
         const yF = railY(s + t.dir * half)
         const yB = railY(s - t.dir * half)
-        const pitch = -Math.atan2(yF - yB, 2 * half)
+        // …except the GONDOLA's cabin, which hangs level as an inclined lift's does: a box tilted to the 24° track looks
+        // the same climbing as descending, and the owner saw it "always going UP, even when you go down" (2026-10-02)
+        const pitch = rail.kind === 5 ? 0 : -Math.atan2(yF - yB, 2 * half)
         Matrix.ComposeToRef(Vector3.OneReadOnly,
           Quaternion.RotationYawPitchRoll(heading, pitch, 0),
           new Vector3(p.x, 0.25 + (yF + yB) / 2, p.z), this.m)

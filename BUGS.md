@@ -9762,7 +9762,7 @@ reach, and the houseboats are one of the two things Sausalito is known for.
 
 (3) is right on its own merits; (1) or (2) is what makes the houseboats appear.
 
-### #229 `building=ship` vessels are extruded as buildings, not drawn as boats
+### #229 `building=ship` vessels are extruded as buildings, not drawn as boats (FIXED 2026-10-02: a ship is a boat unless a landmark entry claims it)
 
 `tools/bake.ts:307`: `const isBoat = (t) => t.building === 'boat' || t.building === 'houseboat'`. OSM tags the
 historic waterfront vessels **`building=ship`**, which that test misses — so USS Pampanito, Balclutha, Jeremiah
@@ -10170,3 +10170,218 @@ removing plants and scaling down building map tiles, iOS Safari only supports up
 So ultra is ~340 MB settled on a production build by Chromium's accounting, GPU included. Tight, not roomy: the
 transient garbage while tiles arrive is the risk, and a phone should load the PRODUCTION build (the dev server's
 module source alone is ~50 MB of heap). Not verified on a device.
+
+### #244 Junctions gridlock for good, and cars go through each other in them (OPEN, priority, 2026-10-02)
+
+The owner: *"i still see intersections that are completely deadlocked regularly … a truck seems to have gotten stuck
+and is blocking everyone forever"*; and *"cars also go right through other cars at intersections. this is more
+obvious with longer buses and trucks."* The headless soak agrees: `npx vite-node tools/traffic-soak.ts --
+san-francisco 900` had 116 vehicles stuck > 60 s after 570 s, most chains ending in "may not enter (no room beyond)",
+some in cycles. The overlaps come from the junction look-ahead's give-up (standing 2 s, a vehicle stops looking and
+drives through), from moving cars not stopping for STANDING vehicles in a box, and from long vehicles whose centre has
+left the box while their tail has not.
+
+### #245 The Presidio and Golden Gate Park's own building style (DONE 2026-10-02, baked)
+
+The owner: *"a custom generator style for the colonial-style buildings in the presidio and gg park, which are white
+with gabled red tile roofs — simple buildings, obviously government-owned, built as military housing mostly, do not
+look like houses or offices. some stretches of the presidio buildings are brick, like around the walt disney museum.
+There are no tenements or victorians or normal city buildings in these areas."* Also: tenement-style buildings there
+draw their ground-floor arches as open holes (37.801593, −122.456255, the Main Post) — the new style replaces them.
+
+### #246 San Francisco National Cemetery's headstones (DONE 2026-10-02)
+
+The owner: *"there is a massive military cemetery in the presidio with thousands of identical white headstones that
+are regularly placed, we should render those as items."* Rows of identical white upright stones, thin-instanced like
+the other placed items, laid out on the cemetery's grid inside its OSM outline (landuse=cemetery).
+
+### #247 Models drawn far taller than the building: the `h1` batch's placeholder heights (FIXED 2026-10-02)
+
+The owner: a Presidio building *"extremely tall … our landmarks system coded it as the default height=120"*. It was
+the Julius Kahn Clubhouse (5 m) at 124 m. Every builder in src/render/landmarks/sf/batches/h1.ts was written with
+`height: 120` (some 210), and the tower's plausibility rule (render/landmarks/tower.ts: the manifest's height only
+within 0.6–1.6× the spec's) threw the manifest's real height away. Each builder now carries its manifest height; four
+with none got one from what the building is. Audit: build every manifest's model headless and list those drawn
+> 2× their manifest height and over 30 m (scratchpad audit.ts, worth turning into a tool) — 32 before, 11 after,
+the 11 being spires, domes, the Dutch Windmill (genuinely taller than their eaves). The owner: the de Young's
+observation tower is likewise genuinely tall — an audit must allow for such things.
+
+### #248 Built but never shown: the de Young, and builders no manifest places (OPEN, 2026-10-02)
+
+The owner: *"the de Young museum is rendering as a default building even though I KNOW we have a procedural
+renderer … I'm worried we have other procedural renderers we developed, that are not displaying."*
+- **The de Young has no builder** — not in this repo, its history, or ~/streetrunner-backup*. docs/sf-batches/
+  parks-hard.md lists it (and Fort Point) as not done: the relation's geometry (relation/1652482) never came back
+  from Overpass. The copper box + the twisting Hamon observation tower is still to model.
+- **Builders no manifest uses** (984 builders, 705 placed; most of the rest are the e1–e15 experiments and kit
+  samples): pier3, pier19, pier23, pier29, pier31, pier45, fortyFourMontgomery, fiftyCaliforniaStreet,
+  fourTwentyFiveMarket, twoTwentyFiveBush, twoThirtyFivePine, unnamedNineHundredBlock, unnamedPineStreet,
+  unnamedSutterStreet(Two), fifteenHundredMission (superseded?), ccsfChinatownAnnex, fulton501,
+  unnamedSeventyThreeMeterTower, unnamedTower256477866, batteryChamberlin, batteryCrosby, batteryGodfrey, diningHall,
+  formerMilitaryChapel, lyonStreetSteps, hiltonSanFranciscoUnionSquare. Each: placed under another name, superseded,
+  or genuinely lost? Manifests live in public/landmarks/<region>/*.json AND public/landmarks/<region>.json.
+- **A defect hunt the owner suggested:** pick the places a rider is sure to notice and compare the render with
+  Mapillary photographs there — not for small differences (it is a cartoon), for a missing ICONIC thing.
+
+### #249 Victorians: a gabled false front on a flat roof (FIXED 2026-10-02: render/buildings.ts `gable` now has two shingled slopes running back 3–7 m to a back gable)
+
+The owner, with a screenshot of a row: *"all our buildings have flat roofs, except victorians have a facade that's
+one-dimensional and gabled. this looks weird even from the ground sometimes."* The gable is a flat cut-out on the
+front wall; there is no roof behind it. Needs a real pitched roof running back from the gable (at least a few metres
+deep, so it reads from the street at an angle), or the gable dropped.
+
+### #250 Left-turning cars stop, then swing 90° at once (MOSTLY FIXED, 2026-10-02)
+
+The owner: *"cars turning left seem to stop, then jump 90 degrees instead of moving smoothly."*
+
+**#250, measured and mostly fixed (2026-10-02).** `tools/traffic-soak.ts` now counts heading changes of over 20° in
+one step. 843 in 300 s, two thirds of them cars going STRAIGHT through junctions on 5–10 m streets between two close
+junction nodes: entering such a street put the car in the next junction's box at once, which replaced the box it was
+still curving out of, and the rest of that curve was skipped. Now the old box is kept (`Vehicle.prevBox`) until the car
+is clear of it, each curve reaches at most half the street on its side, and the curve's ends sit on the street's own
+line where it meets it. 305 left: 150 are cars turning round at a dead end (an instant 180° while standing — still to
+ease), the rest kinks in OSM's lines.
+
+**#248, the audit as a tool (2026-10-02):** `npx vite-node tools/builder-audit.ts` lists every builder no manifest
+places — UNPLACED (its comment names an OSM way nothing places), NO OSM ID (look by hand), SUPERSEDED (another
+entry places that way; a heuristic — the comment window can catch a neighbour's way), with the 223 experiments and kit
+samples counted apart (`--all` lists them). First run: 18 unplaced. 15 restored — b11.json stopped at 6 of its batch's
+18 builders (the Treasure Island/Yerba Buena officers' quarters 1–9 with Nimitz House, Alcatraz's Model and New
+Industries Buildings, morgue and powerhouse), h3.json had missed three (Harvey Milk Memorial Administration Building,
+Fire Station H, the EBMUD injector station). Checked placed in the game (the quarters at 10–14 m). Still to look at:
+the 3 unplaced downtown towers and the 29 with no OSM id (the piers, Presidio batteries, dining hall, chapel, Lyon
+Street Steps, several FiDi towers).
+
+### #251 The famous ships, modelled (FIXED 2026-10-02 — see the end of this entry)
+
+The owner: *"around 37.797801, -122.394925 we have two permanently placed ships of some kind that render as victorian
+buildings in the water"*, *"we should write down to do specific renderings of the very famous ships"*, and *"there are
+the two military ships near the ferry building, and then a bunch of non-military at the historic site near hyde
+street"*. The cause is #229 (`building=ship` takes the building path; `isBoat` knows only boat/houseboat) — the
+interim fix (`ship` in `isBoat`, a generic hull) is due with the next bake. The finish is a model each, like
+Pampanito's (`manual-1.ts`), for the ones a rider will notice:
+- by the Ferry Building: the two military ships OSM places there (identify from their OSM names at the next bake);
+- Pier 45: SS Jeremiah O'Brien (Liberty ship), USS Pampanito (submarine — has a builder; check it is placed);
+- Hyde Street Pier (San Francisco Maritime NHP): Balclutha (square-rigged three-master), Eureka (paddle-wheel
+  ferry), C.A. Thayer (three-masted schooner), Hercules (steam tug), Alma (scow schooner), Eppleton Hall (paddle tug).
+Masts, rigging and funnels are what make each recognisable; a generic hull is the floor, not the finish.
+
+**#244, progress (2026-10-02).** Gridlock: none stuck > 60 s in 900 s soaks (was 137) — short empty exits count only
+their own length plus what is beyond them, exits reserved across a junction cluster, and the release valve retires a
+car stuck 35 s anywhere out of view. Overlaps in junctions (soak "deep overlaps", 600 s): 831 → 732 by stopping for a
+vehicle standing right across the way (4 m), → 470 by waiting 10 s, not 2, before giving up looking ahead
+(`LOOK_PATIENCE`). A long vehicle whose tail is still in the junction counts too (`tailIn`) — the soak cannot show it
+(headless, every car is 4.5 m; carkit's trucks are only in the browser), so judge buses and trucks in the game.
+
+**#245, baked (2026-10-02).** Two styles (src/city/styles.json `presidio`, `presidioBrick`; facade art from
+tools/facadegen with a 17th atlas row), chosen in src/city/sf/btype.ts for everything under 30 m inside the parks' real
+outlines — new zones `presidio-buildings` and `ggp-buildings` (`buildings: 'presidio'`, from the package's park areas,
+not the hand-drawn rectangles, which would have caught Presidio Heights and Fulton Street) — brick within 220 m of the
+Main Post barracks. Roofs (tools/bake.ts `roofFor`): gabled, hipped past 16 m across, a low 17° pitch, red tile /
+slate. Seen after the bake: the Main Post's brick rows, the white red-roofed houses round them. For the NEXT bake:
+the red reads a little orange under the grade (palette roofs #a8462c, #b2502f, #9c4128 — try a browner red), and
+the widest blocks' hipped roofs read as big flat orange slabs.
+
+**#246, done (2026-10-02).** src/render/sf/cemetery.ts: one upright rounded-top white stone, thin-instanced in rows
+square to the cemetery's long side (1.5 m along, 2.4 m between rows) inside OSM's outline (way/158606174), off the
+drives (the street graph, re-laid as its tiles stream in) and paved areas, each on the ground, re-read until the fine
+terrain arrives; built when the city's focus comes within 700 m, left out with the furniture. Still wrong: the
+Presidio forest planting covers the cemetery, so the graves stand in a wood — the real one is open lawn with a few
+trees. FIXED the same day without a bake: game.ts `conformTile` (which already kept trees off bridge decks) keeps one
+tree in twelve inside the outline (render/sf/cemetery.ts `inCemetery`). Seen: open lawn, rows over the hill, a few trees.
+
+### #252 The Presidio Golf Course: grass and sand, not forest (FIXED 2026-10-02)
+
+The owner: *"we should also work on the presidio golf course if possible. it's lower-plant but a real golf course has
+grass and sand only."* OSM maps it whole and every fairway, green, tee and bunker is also tagged `landuse=grass` or
+`natural=sand`, so they were already drawn as grass and sand — the forest planting grew over them. game.ts
+`conformTile` now drops any tree on a grass or sand area inside the course (render/sf/golf.ts, way/16650363); the
+woods between the holes stay (it is a tree-lined course). No bake needed.
+
+**Also looked at (#245 follow-up):** the Main Post building the owner saw "with the arches just being holes"
+(37.801593, −122.456255) is a generic building — Presidio style since the bake — whose arches are PASSAGES
+(render/passages.ts) cut where OSM maps a way through it; a passage is see-through by nature. Open question whether
+OSM's ways there are real passages or a porch/arcade misread — check against a photograph.
+
+### #253 Recipe models with no height drawn at the recipe's default (FIXED 2026-10-02)
+
+Found checking Fisherman's Wharf: Castagnola's restaurant drawn 64 m tall, the Dolphin Club's boathouse 46 m, the
+Argonaut Hotel 46 m. The same flaw as #247, systemic: `fromRecipe('hotel-punched', {})` gave the recipe's TYPICAL
+height (45–64 m) and the tower's plausibility rule (0.6–1.6×) then discarded the building's real one. Now
+(render/landmarks/sf/recipes.ts `fromRecipe`) a recipe given no height takes the building's own — the manifest's,
+else OSM's — and its base storey is at most half of it. 26 builders affected (mostly the h2 batch); after: 12, 9 and
+13 m. The headless audit of #247 could not see this (no manifest height to compare against) — a check that wants
+the FITTED height needs the game's placement (`__placed()`), not the manifest.
+
+### #254 Yerba Buena Island (OPEN, 2026-10-02)
+
+The owner: *"YB island has a lot of issues. There is a random wall across the bridge. The entrance and exit of the
+tunnel (mandatory) are both poorly rendered. There are many paths on the island that go through the air. There's WAY
+too much traffic; it's a mostly pedestrian area."* Four items: (1) a wall across the bridge deck — find the mesh with a
+pick; (2) the YBI tunnel's two portals (the Bay Bridge's bores, render/tunnels.ts) need proper portal geometry;
+(3) `tools/air-paths.ts -- san-francisco --near=37.8105,-122.3650,1200`; (4) traffic: a zone with `traffic` ≈ 0.15
+over Yerba Buena and Treasure Island (data/zones/san-francisco.json, then `tools/zone-props.ts` — needs the zone in the
+index, i.e. a bake, since it is a new zone).
+Also (same day): (5) parts of the bridge showing through the hill — the old occlusion problem (#240); (6) a building
+going through the road at 37.811151, −122.366383 — Macalla Road runs over a building's roof, walkers on it: the
+building's base is below the road's level (screenshot: the road's walls and pavement cutting across its flat roof).
+(4) traffic: the `islands` zone (traffic 0.15, crowd 0.8) is in data/zones, in from the next bake.
+Also (owner): Treasure Island's Avenue of the Palms should be lined with palms; Treasure Island needs its own kit buildings like the Presidio (the 1939 Exposition buildings, Navy barracks).
+
+### #255 French shop signs in San Francisco (OPEN, 2026-10-02)
+A street-level render at Second and Natoma (37.78755, −122.39985) shows "PHARMACIE" fascias on a brick block. The
+ground-floor shop signs appear to come from a Paris word list. Found in passing during the Salesforce Park work
+(docs/SALESFORCE-PARK.md §8). Look for where the shopfront text is chosen per region.
+
+### #256 Salesforce Park: station signage and the soffit (FIXED 2026-10-02)
+The gondola's two stations and the three lift head houses (src/render/landmarks/sf/districts/transbay.ts `gondola()`,
+`lifts()`) work but carry no name boards: "Salesforce Park" and "Gondola" or "Lift" panels, as the street signs do.
+Also: the soffit over Fremont and First under the terminal is a flat grey slab, where the real one is ribbed and lit.
+docs/SALESFORCE-PARK.md "Still to do".
+
+### #257 Alcatraz is too low (FIXED 2026-10-02: an `alcatraz` zone with `terrain: fine`, data/zones; re-baked)
+The island's tile has only the coarse 20 m terrain (Terrarium z12): its top is 11 m above the sea (−73.5 against
+−84.5), where the real island rises about 41 m to the cellhouse. The fine z15 ground does not reach it. Extend the
+fine sampling box to the islands in the bay (Alcatraz, and check Angel Island's edge). docs/APPEARANCE-AUDIT.md.
+
+### #258 `deckAbove` never works at run time (FIXED 2026-10-02)
+The runtime index has no `seaLevel`, so every `deckAbove` entry (22, piers.json, embarcadero.json, s1.json,
+waterfront-2.json) silently falls back to the terrain drape (render/landmarks.ts comment on `baseY`). The index now
+carries the level as `sea` (map/adapt.ts, city/tiles.ts) for the open-sea plane; passing it on as `seaLevel` would
+switch `deckAbove` on and move all 22 — check each pier's deck against the water before doing so.
+
+**#258, fixed.** game.ts hands the landmarks the index's `sea` as `seaLevel`. Measured first: every one of the 21 placed
+`deckAbove` entries stood 3-10 m UNDER the water on the drape (Pier 1 at -87.4, Fort Mason's piers at -91), the sea
+being -84.5 and the Embarcadero in front of them -79 to -83. At sea + 3.5 the decks meet the street; Pier 1, whose
+street is 1.7 m above the sea, is now `deckAbove: 1.5`. USS Pampanito floats at -1.2 (it had been on the sea bed).
+
+**#251, fixed.** src/render/landmarks/sf/ships.ts, public/landmarks/san-francisco/ships.json: Balclutha (three
+square-rigged masts), C.A. Thayer (three-masted schooner), Eureka (paddle ferry, walking beam, paddle boxes) and
+Hercules (steam tug) moored along Hyde Street Pier by hand (none is in OSM); Alma, Santa Rosa, the San Francisco Belle
+and SS Jeremiah O'Brien claim their OSM ways. The "two military ships by the Ferry Building" are OSM's Santa Rosa
+(the 1927 ferry, now offices) and the San Francisco Belle (a paddle-wheel party boat); the military pair is at Pier 45
+(O'Brien and Pampanito).
+
+### #259 Owner's reports, 2026-10-02 evening (FIXED)
+- **Gondola "always going UP"**: the cabin was a box pitched to the 24° track, which looks the same climbing and
+  descending. It now hangs level, as an inclined lift's cabin does (render/life.ts, kind 5).
+- **"Aboard the streetcar" on the gondola**: the B-key boarding named every non-cable vehicle a streetcar. It says
+  the gondola, and sets the auto-alight at the far station (game.ts).
+- **Freeze on a shift-click on the map**: the jump (`__jump`) left the rider aboard a vehicle, which then held them
+  where it was for good. The jump now gets off first and clears the gondola and lift state. (A plain jump costs a
+  0.1-1.5 s hitch and a few seconds of 100-350 ms stutters while the new place streams; measured, not a freeze.)
+- **Mobile**: `sr-compact` (src/ui/touch.ts `COMPACT_CSS`, set by `compactScreen`, `?compact=1|0`) on a touch
+  screen with a short side under 600 px: no minimap (the big map still opens), no junction arrows or turn-round
+  button, no stats lines, the attribution one small line, the delivery offer ONE line with its two buttons, the
+  compass and clock smaller.
+- **181 Fremont** (the owner's photo, which they called Park Tower — Park Tower at 250 Howard has no braces; Meta
+  leases it): a model of its own, sf/fremont181.ts — white corner frame, the mega-brace Z with the band and its V,
+  the raked crown, lattice and spire. Was a generic grid preset.
+- **Portsmouth Square**: the Empress of China was a hand-placed cube in the middle of Washington Street; it is the
+  China Trade Center, OSM way/256080536 (32 m), now fitted to that footprint and rebuilt from the owner's photo
+  (portholes down both sides of the square-facing end, balcony slabs over dark glass, recessed top, stair towers).
+  The Hilton was a dark stepped pyramid with a hole in it; now a pale ribbed slab that flares over its bottom 16 m
+  into two legs, the skybridge's gap between them (districts/model-tall.ts).
+- **Z-fighting on buses' backs**: the rear window, tall-tail lamps and bus doors stood 1.2 cm / 0.8 cm proud of the
+  body; on big vehicles now 5 cm / 3.5 cm (carkit src/geometry/body.ts).
+- **The Thinker** at the Legion of Honor is a placeholder block until the owner's GLB arrives.

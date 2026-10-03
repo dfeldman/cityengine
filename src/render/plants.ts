@@ -79,6 +79,30 @@ function edgeDistance(r: number[], x: number, z: number): number {
  * uses to stay out of the road, taken with `includeFoot` because a park trail is a footway and is precisely
  * where the plants were standing. Optional, so the deck planter and any older caller are unchanged.
  */
+/**
+ * A DESIGNED BED, filled (Salesforce Park's gardens, 2026-10-02: "the park has tons of interesting plants"): not the
+ * city lattice, which lines a park's edges and leaves its middle to the trees, but a bed planted edge to edge the way a
+ * garden designer does — a plant every metre and a half, in drifts: a stretch of one shrub, then a stretch of flowers,
+ * from slow noise over the bed so neighbours agree. Only on a deck that asks for it (`MeshBuilder.decks` `shrubs`).
+ */
+export function bedPlanting(ring: number[], rect: { x0: number; z0: number; x1: number; z1: number }): Planted[] {
+  const out: Planted[] = []
+  const STEP = 1.5
+  for (let x = Math.ceil(rect.x0 / STEP) * STEP; x < rect.x1; x += STEP) {
+    for (let z = Math.ceil(rect.z0 / STEP) * STEP; z < rect.z1; z += STEP) {
+      const jx = x + (hash(x, z, 21) - 0.5) * STEP * 0.7
+      const jz = z + (hash(x, z, 22) - 0.5) * STEP * 0.7
+      if (!inside(ring, jx, jz) || edgeDistance(ring, jx, jz) < 0.35) continue
+      // the drift: slow, so a patch of flowers is metres across, not every other plant
+      const drift = Math.sin(jx / 4.3 + 1.7) + Math.sin(jz / 3.7) + Math.sin((jx + jz) / 6.1)
+      if (hash(x, z, 23) < 0.12) continue
+      if (drift > 0.6) out.push({ x: jx, z: jz, s: 0.9 + hash(x, z, 24) * 0.4, spin: hash(x, z, 25) * Math.PI * 2, kind: 'flower' })
+      else out.push({ x: jx, z: jz, s: 0.6 + hash(x, z, 26) * 0.6, spin: hash(x, z, 27) * Math.PI * 2, kind: 'shrub' })
+    }
+  }
+  return out
+}
+
 export function plantTile(areas: TileArea[], rect: { x0: number; z0: number; x1: number; z1: number },
   edges?: PackedEdge[], trees?: Planting[], zones?: PlantZones | null): Planted[] {
   // how thick the zone here asks for it (ZonePlant.shrubs.density, 1 where no zone says): scales every keep chance
@@ -107,7 +131,7 @@ export function plantTile(areas: TileArea[], rect: { x0: number; z0: number; x1:
    * moment it stopped being a lawn. `dirt` is deliberately NOT here: undergrowth on bare duff is exactly
    * what a forest floor should have.
    */
-  const pavedAreas = areas.filter((a) => a.kind === 'paved' || a.kind === 'sand' || a.kind === 'water')
+  const pavedAreas = areas.filter((a) => a.kind === 'paved' || a.kind === 'lot' || a.kind === 'sand' || a.kind === 'water')
     .map((a) => a.ring)
   const built = (x: number, z: number): boolean =>
     (paved?.onPaving(x, z) ?? false) || pavedAreas.some((r) => inside(r, x, z))
@@ -193,7 +217,7 @@ export class Plants {
    * it places sits at the deck's height instead of sinking to the terrain below. One call per deck, not per
    * tile, since a hand-modelled landmark does not stream in and out the way the city's own tiles do.
    */
-  addDeck(ring: { x: number; z: number }[], y: number): void {
+  addDeck(ring: { x: number; z: number }[], y: number, bed = false): void {
     const flat: number[] = []
     let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
     for (const p of ring) {
@@ -201,7 +225,7 @@ export class Plants {
       x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z)
     }
     const area = { kind: 'park', ring: flat, of: -1 } as unknown as TileArea
-    const list = plantTile([area], { x0, z0, x1, z1 }).map((p) => ({ ...p, y }))
+    const list = (bed ? bedPlanting(flat, { x0, z0, x1, z1 }) : plantTile([area], { x0, z0, x1, z1 })).map((p) => ({ ...p, y }))
     this.byTile.set(`deck:${this.planted++}`, list)
     this.dirty = true
   }

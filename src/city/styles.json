@@ -1614,6 +1614,128 @@
         "height": 0.45
       },
       "stringCourse": false
+    },
+    {
+      "id": "presidio",
+      "name": "Presidio colonial",
+      "note": "The Presidio and Golden Gate Park's own (owner, 2026-10-02): the Army's Spanish Colonial Revival — 'white with gabled red tile roofs — simple buildings, obviously government-owned, built as military housing mostly, do not look like houses or offices.' Smooth white stucco, plain sash windows in a regular rhythm, a short stair to the door, a red clay-tile gabled roof (tools/bake.ts roofFor). One to three storeys.",
+      "levels": [
+        1,
+        3
+      ],
+      "levelHeight": [
+        3.0,
+        3.4
+      ],
+      "groundHeight": [
+        3.0,
+        3.4
+      ],
+      "bayWidth": [
+        2.6,
+        3.4
+      ],
+      "pier": [
+        0.8,
+        1.2
+      ],
+      "window": {
+        "kind": "sash",
+        "widthFrac": [
+          0.42,
+          0.52
+        ],
+        "heightFrac": [
+          0.6,
+          0.7
+        ],
+        "sill": 0.1
+      },
+      "ground": "stoop",
+      "top": "cornice",
+      "cornice": {
+        "depth": 0.35,
+        "height": 0.3
+      },
+      "stringCourse": false,
+      "palettes": [
+        {
+          "wall": "#f4f1e8",
+          "trim": "#ffffff",
+          "roof": "#a8462c",
+          "accent": "#2f4a3a"
+        },
+        {
+          "wall": "#efeadc",
+          "trim": "#fbf8f0",
+          "roof": "#b2502f",
+          "accent": "#3a3a36"
+        },
+        {
+          "wall": "#f7f4ec",
+          "trim": "#e8e2d2",
+          "roof": "#9c4128",
+          "accent": "#4a3a30"
+        }
+      ]
+    },
+    {
+      "id": "presidioBrick",
+      "name": "Presidio brick",
+      "note": "The Presidio's Main Post (owner, 2026-10-02: 'some stretches of the presidio buildings are brick, like around the walt disney museum'): the Montgomery Street barracks — red brick, white-painted sash windows and trim, a dark slate roof. Two or three storeys.",
+      "levels": [
+        2,
+        3
+      ],
+      "levelHeight": [
+        3.2,
+        3.6
+      ],
+      "groundHeight": [
+        3.2,
+        3.6
+      ],
+      "bayWidth": [
+        2.4,
+        3.0
+      ],
+      "pier": [
+        0.7,
+        1.0
+      ],
+      "window": {
+        "kind": "sash",
+        "widthFrac": [
+          0.45,
+          0.55
+        ],
+        "heightFrac": [
+          0.62,
+          0.72
+        ],
+        "sill": 0.12
+      },
+      "ground": "stoop",
+      "top": "cornice",
+      "cornice": {
+        "depth": 0.35,
+        "height": 0.35
+      },
+      "stringCourse": false,
+      "palettes": [
+        {
+          "wall": "#9a4a36",
+          "trim": "#f2efe6",
+          "roof": "#4a4644",
+          "accent": "#2f3a32"
+        },
+        {
+          "wall": "#8e4432",
+          "trim": "#ece8dc",
+          "roof": "#55504c",
+          "accent": "#3a2e28"
+        }
+      ]
     }
   ]
 }

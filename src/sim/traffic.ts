@@ -55,6 +55,8 @@ export interface Vehicle {
   heading: number
   /** height, on a raised edge (a bridge); absent means "on the ground" */
   y?: number
+  /** the street's rise per metre along the direction of travel, where it has a profile (with `level`) */
+  slope?: number
   /**
    * The street's own level here (its baked profile), whatever the edge: where the ground answer disagrees with it by
    * metres — a tunnel's cut running under a street that crosses over it (the Stockton Tunnel under Bush Street) —
@@ -72,6 +74,12 @@ export interface Vehicle {
   next?: { edgeId: number; dir: 1 | -1; turn: Turn }
   /** while inside a junction: its node, and the arm it came in by */
   inBox?: { nodeId: number; from: number; turn: Turn }
+  /**
+   * The box it is still curving OUT of, when the next one claimed it first (BUGS.md #250): on a 5–10 m street between
+   * two close junctions a car is in the next box the moment it arrives, and the rest of the curve out of the last was
+   * skipped — the car snapped round. Kept for `arc` until the car is clear of it.
+   */
+  prevBox?: { nodeId: number; from: number; turn: Turn }
   /** stopped at the line since this time: a stop sign's first-come-first-served, and a light's patience */
   stoppedAt?: number
   /** has hit the rider already: from then on the two ignore each other, and it drives on */
@@ -149,6 +157,13 @@ export interface Collision { vehicle: Vehicle; nodeId: number; at: Point }
 
 /** grade below which the rider is on a descent: cars ahead get out of the way instead of holding them */
 export const DESCENT = -0.04
+/**
+ * Seconds standing before a vehicle stops looking ahead in a junction and goes as the rules let it (`drive`): the
+ * give-up that turns a ring of waiting into a rare overlap. 2 s until 2026-10-02; 10 s now that a jam has a sure way
+ * out (the release valve), because each give-up was a car driving into another (BUGS.md #244): soaked 600 s,
+ * deep overlaps 732 → 502 at 6 s, 470 at 10, nothing stuck either way.
+ */
+export const LOOK_PATIENCE = 10
 /** m/s: traffic going the rider's way slower than this is woven round, not followed */
 export const CRAWL = 6
 /** metres: the grid cell for finding the vehicles near one */
@@ -338,7 +353,9 @@ export class Traffic {
       // a collision or a squeeze-past is forgiven once the two are well apart: a car that hit the rider must not
       // ignore them for the rest of the ride (it would never stop for them again, nor ever hit them)
       if ((v.bumped || v.passed) && who && Math.hypot(v.at.x - who.at.x, v.at.z - who.at.z) > 40) { v.bumped = undefined; v.passed = undefined }
-      if ((v.still ?? 0) > 45 && this.hidden(v.at)) { this.vehicles.splice(i, 1); continue }
+      // (BUGS.md #244: 35 s, and anywhere out of view rather than at the edge of the range — a ring of queues runs
+      // round the block behind the rider, and breaking it anywhere unseen lets the queue in front of them drain)
+      if ((v.still ?? 0) > 35 && this.hidden(v.at, 0.5)) { this.vehicles.splice(i, 1); continue }
       // only a MOVING car hits the rider: riding into a standing one (or one squeezed past) is not a crash, and nor
       // is a car creeping at walking pace touching them (two such "crashes" in 100 s, measured, at 1–1.9 m/s)
       /*
@@ -377,6 +394,51 @@ export class Traffic {
    * at any speed: metres, `left` ≤ 0 ≤ `right`, relative to where they are (Infinity: nothing there). A vehicle the
    * rider already overlaps sets no limit (that is a collision's business, not this).
    */
+  /**
+   * The NEVER-STUCK valve (`leaderFor`): held long enough by one vehicle, the rider squeezes past it — THROUGH it, as
+   * drawn. After 5 s on a trainer (no reverse, slow input). On the keyboard cars are solid and the rider edges round
+   * them (Navigator.sidestep), backs up (↓ below 0 W) or turns; only a car that will not move for `squeezeLate` seconds
+   * with no way round is passed through, so the game never freezes behind one (owner, 2026-10-02). game.ts sets it.
+   */
+  squeeze = true
+  /** …and where it is off, the same valve after this long behind a standing vehicle: a car stopped for good never freezes the game */
+  squeezeLate = 15
+
+  /**
+   * A car the rider's box at `box` would be INSIDE without it being a crash (standing, crawling, or not on another
+   * level) — and was not inside already: game.ts undoes the step that would take them there. Cars are solid.
+   */
+  solidAt(rider: RiderNow, box: Box): Vehicle | null {
+    for (const v of this.withTrams()) {
+      if (v.bumped || v.passed || v.speed > 2 || Math.hypot(v.at.x - box.x, v.at.z - box.z) > 20 || this.otherLevel(rider, v)) continue
+      const b = this.boxOf(v)
+      if (overlap(box, b) && !overlap(rider.box, b)) return v
+    }
+    return null
+  }
+
+  /**
+   * THE LAST RESORT (owner, 2026-10-02: a truck face on, a car beside, nothing would move: "sometimes i get in
+   * situations that seem to deadlock still"). Whatever holds the rider, once they have been stalled long enough
+   * asking to move (game.ts), the standing vehicles round them stop being solid to them — and the rider creeps
+   * through, very slowly (game.ts caps the speed while inside one). Returns how many it let go.
+   */
+  squeezeAround(rider: RiderNow, r = 10): number {
+    let n = 0
+    for (const v of this.withTrams()) {
+      if (v.passed || v.speed > 2 || Math.hypot(v.at.x - rider.at.x, v.at.z - rider.at.z) > r || this.otherLevel(rider, v)) continue
+      v.passed = true
+      n++
+    }
+    return n
+  }
+
+  /** Is the rider's box inside a vehicle it was let through (`squeezeAround`, the valve)? Then they only creep. */
+  creeping(box: Box): boolean {
+    for (const v of this.withTrams()) if (v.passed && Math.hypot(v.at.x - box.x, v.at.z - box.z) < 20 && overlap(box, this.boxOf(v))) return true
+    return false
+  }
+
   alongside(rider: RiderNow): { left: number; right: number } {
     const fx = Math.sin(rider.heading)
     const fz = Math.cos(rider.heading)
@@ -474,14 +536,20 @@ export class Traffic {
       const rz = -Math.sin(rider.heading)
       rider = { ...rider, at: { x: rider.at.x + rx * shift, z: rider.at.z + rz * shift }, box: { ...rider.box, x: rider.box.x + rx * shift, z: rider.box.z + rz * shift } }
     }
-    if (rider.grade < DESCENT) return null
+    /*
+     * On a DESCENT the car ahead makes way (`drive`: it speeds up) and the rider is not held behind it — but a car
+     * STANDING in the way, or coming the other way, still is (owner, 2026-10-02: "i still can go right through cars if
+     * i approach from the front"): an oncoming car stops for a rider in its lane, and a standing car is no crash, so
+     * on every hill the rider rode straight through its bonnet.
+     */
+    const descent = rider.grade < DESCENT
     const e = this.g.edges.get(rider.edgeId)
     if (!e) return null
     const lat = this.lateral(e, rider.s, rider.at)
     let best: { gap: number; speed: number } | null = null
     // which vehicle it is, for the never-stuck valve below
     let bestV: Vehicle | null = null
-    for (const v of this.vehicles) {
+    if (!descent) for (const v of this.vehicles) {
       if (v.edgeId !== e.id || v.dir !== rider.dir || v.bumped || v.passed || v.why === 'rider in lane') continue
       const gap = (v.s - rider.s) * rider.dir
       if (gap <= 0) continue
@@ -508,6 +576,8 @@ export class Traffic {
       // standing, or going the rider's way (a car ahead turning off still has to be cleared — the rider ran into
       // the back of one): CROSS traffic is left out on purpose, so running a red can still cost you
       if (v.speed > 1.5 && Math.cos(v.heading - rider.heading) < 0.5) continue
+      // (downhill, only what stands or comes the other way)
+      if (descent && v.speed > 1.5) continue
       const box = this.boxOf(v)
       // nor one BEHIND the rider, or one the rider is already inside: it cannot be in their way, and holding them for it
       // left the rider standing inside a car that had rolled up against them, for the rest of the ride (measured)
@@ -532,7 +602,7 @@ export class Traffic {
     const holder = best ? bestV : null
     if (holder && holder === this.heldBy) {
       this.heldFor += this.lastDt
-      if (this.heldFor > (holder.speed < 2 ? 5 : 20)) { holder.passed = true; this.heldBy = null; this.heldFor = 0; return null }
+      if (this.heldFor > (holder.speed < 2 ? (this.squeeze ? 5 : this.squeezeLate) : 20)) { holder.passed = true; this.heldBy = null; this.heldFor = 0; return null }
     } else { this.heldBy = holder; this.heldFor = 0 }
     return best
   }
@@ -754,6 +824,38 @@ export class Traffic {
     return !(opposite && a.turn !== 'left' && b.turn !== 'left')
   }
 
+  /** Does a long vehicle (over 7 m) out of any box still reach back into the junction at `node`? */
+  private tailIn(o: Vehicle, node: number): boolean {
+    const len = 2 * this.halfLen(o)
+    if (len < 7) return false
+    const nd = this.g.nodes.get(node)
+    if (!nd) return false
+    const r = this.signals?.control(node).radius ?? 6
+    // its back end: half its length behind its centre
+    const bx = o.at.x - Math.sin(o.heading) * len / 2
+    const bz = o.at.z - Math.cos(o.heading) * len / 2
+    return Math.hypot(bx - nd.at.x, bz - nd.at.z) < r
+  }
+
+  /** Room on an empty `e` (travelled `dir`), and on beyond it while it is short: see `mayEnter`. */
+  private roomThrough(e: Edge, dir: 1 | -1, depth: number): number {
+    if (e.length >= 40 || depth >= 2) return Infinity
+    const node = dir > 0 ? e.b : e.a
+    const r = this.signals?.control(node).radius ?? 6
+    // straight on, else the gentlest turn; nowhere to go is no room
+    const xs = exits(this.g, node, e.id)
+    const on = xs.find((x) => x.turn === 'straight') ?? xs.slice().sort((p, q) => Math.abs(p.angle) - Math.abs(q.angle))[0]
+    const n = on ? this.g.edges.get(on.edgeId) : undefined
+    if (!n) return e.length
+    const nd: 1 | -1 = n.a === node ? 1 : -1
+    // anything standing in that junction's box fills it
+    if (this.vehicles.some((o) => o.inBox?.nodeId === node && o.speed < 0.5)) return e.length
+    const queue = this.laneCache.get(`${n.id}:${nd}`) ?? []
+    const last = queue[queue.length - 1]
+    const beyond = last ? (last.dir > 0 ? last.s : n.length - last.s) - this.halfLen(last) : this.roomThrough(n, nd, depth + 1)
+    return e.length + 2 * r + beyond
+  }
+
   private impatient(v: Vehicle): boolean { return v.stoppedAt !== undefined && this.t - v.stoppedAt > PATIENCE }
 
   /** an impatient left-turner waiting at the line of the arm opposite this vehicle's */
@@ -787,13 +889,22 @@ export class Traffic {
       const last = queue[queue.length - 1]
       // cars already committed to the same street out of this junction take room too — two cars from two arms
       // both checked the same gap, both went in, and the second stopped with its tail in the junction
+      // …from ANY box, not only this node's (2026-10-02, BUGS.md #244): a San Francisco junction is often a cluster of
+      // nodes, and cars entering through two of its nodes claimed the same gap, stopped in the box, and the city locked
       let taken = 0
-      for (const o of boxes.get(node) ?? []) {
-        if (o === v || o.edgeId === v.next.edgeId || !o.next || `${o.next.edgeId}:${o.next.dir}` !== want) continue
+      for (const o of this.vehicles) {
+        if (o === v || !o.inBox || o.edgeId === v.next.edgeId || !o.next || `${o.next.edgeId}:${o.next.dir}` !== want) continue
         taken += 2 * this.halfLen(o) + o.driver.s0
       }
       if (out) {
-        const room = last ? (last.dir > 0 ? last.s : out.length - last.s) - this.halfLen(last) : Infinity
+        /*
+         * …and an EMPTY exit is only as roomy as it is long (2026-10-02, BUGS.md #244). An empty street counted as
+         * endless room, so a car went in onto a 6 m connector inside a clustered junction with the junction beyond it
+         * jammed, and stopped there — in the box, across the cross traffic — and the city locked round it (every deep
+         * overlap in the soak was a car on a 5–12 m edge). A short empty exit adds the room on the street it runs
+         * straight on into, up to two streets on.
+         */
+        const room = last ? (last.dir > 0 ? last.s : out.length - last.s) - this.halfLen(last) : this.roomThrough(out, v.next.dir, 0)
         // room for the whole car to be clear of the junction beyond its box, plus a margin
         if (room - taken < r + 2 * this.halfLen(v) + v.driver.s0 + 2) { v.refused = 'no room beyond'; return false }
       }
@@ -967,7 +1078,7 @@ export class Traffic {
     // crawled for ever instead of going)
     // 2 s, not 6: stopping in a box for each other for longer kept boxes full, and in a 600 s soak rings of queues
     // locked the whole city
-    if ((v.still ?? 0) > 2) v.lookOff = this.t + 4
+    if ((v.still ?? 0) > LOOK_PATIENCE) v.lookOff = this.t + 4
     if (this.lookAhead && boxNode !== null && this.t >= (v.lookOff ?? 0)) {
       const box = this.boxOf(v)
       const reach = Math.min(8, 3 + v.speed)
@@ -978,10 +1089,16 @@ export class Traffic {
         for (const o of this.near.get(`${cx + i},${cz + j}`) ?? []) {
           // the car ahead in the same lane is IDM's already
           if (o === v || (o.edgeId === v.edgeId && o.dir === v.dir)) continue
-          if (!o.inBox || this.cluster(o.inBox.nodeId) !== this.cluster(boxNode)) continue
+          // (…or a long one whose body still reaches into this junction: a bus's centre leaves the box while its tail
+          // is still across it, and the cross traffic drove through the tail — BUGS.md #244)
+          const inThis = o.inBox ? this.cluster(o.inBox.nodeId) === this.cluster(boxNode) : this.tailIn(o, boxNode)
+          if (!inThis) continue
           // only a MOVING one: waiting in a box for a car standing in it (itself waiting for its way out) filled boxes
-          // and rings of queues locked the city after ten minutes of soak
-          if (o.speed < 0.5) continue
+          // and rings of queues locked the city after ten minutes of soak — EXCEPT one standing right across this
+          // vehicle's way, a few metres ahead (2026-10-02, BUGS.md #244: "cars also go right through other cars at
+          // intersections … more obvious with longer buses and trucks"); jams that this makes are broken by the
+          // release valve (`update`: a car stuck 35 s out of view is retired)
+          if (o.speed < 0.5 && this.sweep(v, box, Math.min(reach, 4), this.boxOf(o)) < 0) continue
           if (o.why === `car ${v.id}` || o.why === `next-street car ${v.id}` || o.why === `box car ${v.id}`) continue
           if (Math.abs(o.at.x - v.at.x) > reach + 10 || Math.abs(o.at.z - v.at.z) > reach + 10) continue
           const hit = this.sweep(v, box, reach, this.boxOf(o))
@@ -1050,6 +1167,7 @@ export class Traffic {
          * COMMITTED: allowed in, and too close to stop comfortably. The junction is claimed now, at the decision,
          * not when the nose crosses into it — two conflicting cars that both found it empty would both drive in.
          */
+        if (v.inBox && v.inBox.nodeId !== node) v.prevBox = v.inBox
         v.inBox = { nodeId: node, from: e.id, turn: v.next.turn }
         const l = boxes.get(node)
         if (l) l.push(v)
@@ -1080,6 +1198,7 @@ export class Traffic {
 
     // into the box
     if (!boxHere && toGo - this.halfLen(v) < radius && v.next) {
+      if (v.inBox && v.inBox.nodeId !== node) v.prevBox = v.inBox
       v.inBox = { nodeId: node, from: e.id, turn: v.next.turn }
       // at once, not next frame: two conflicting cars deciding in the same frame would otherwise both go
       const l = boxes.get(node)
@@ -1103,37 +1222,64 @@ export class Traffic {
     let outDir: 1 | -1
     let node: number
     let u: number
-    const radius = (n: number): number => this.signals?.control(n).radius ?? 6
-    if (v.next && this.toGo(v, e) < radius(this.endNode(v, e))) {
+    /*
+     * The curve's reach along each street, at most HALF that street (2026-10-02, BUGS.md #250: "cars turning left seem
+     * to stop, then jump 90 degrees"; the soak counted 843 heading jumps of over 20° in one step in 300 s, most of them
+     * going straight on 8–9 m edges between the nodes of a clustered junction). With a 6 m radius at both ends of a 9 m
+     * street, the curve out of one junction and the curve into the next overlapped, and a car snapped from one to the
+     * other half-way along.
+     */
+    const radius = (n: number, along: Edge | undefined): number => Math.min(this.signals?.control(n).radius ?? 6, along ? along.length / 2 : Infinity)
+    if (v.next && this.toGo(v, e) < radius(this.endNode(v, e), e)) {
       node = this.endNode(v, e)
-      const r = radius(node)
+      const r = radius(node, e)
       inE = e
       outE = this.g.edges.get(v.next.edgeId)
       outDir = v.next.dir
       u = (r - this.toGo(v, e)) / (2 * r)
-    } else if (v.inBox && v.inBox.from !== e.id) {
-      node = v.inBox.nodeId
-      const r = radius(node)
+    } else if (v.prevBox && (v.prevBox.from === e.id || v.prevBox.nodeId !== (v.dir > 0 ? e.a : e.b)) && (v.prevBox = undefined, false)) {
+      return null
+    } else if ((v.inBox && v.inBox.from !== e.id) || (v.prevBox && v.prevBox.from !== e.id)) {
+      // (the box it is curving out of: this one, or the last one if the next has already claimed it)
+      const box = v.inBox && v.inBox.from !== e.id ? v.inBox : v.prevBox!
+      node = box.nodeId
+      const r = radius(node, e)
       const gone = v.dir > 0 ? v.s : e.length - v.s
-      if (gone >= r) return null
-      inE = this.g.edges.get(v.inBox.from)
+      if (gone >= r) { if (box === v.prevBox) v.prevBox = undefined; return null }
+      inE = this.g.edges.get(box.from)
       outE = e
       outDir = v.dir
       u = 0.5 + gone / (2 * r)
     } else return null
     const nd = this.g.nodes.get(node)
     if (!inE || !outE || !nd) return null
-    const r = radius(node)
-    // arriving: the direction of travel is back along the incoming street's bearing from the node
-    const bi = bearingOut(inE, node) + Math.PI
-    const bo = bearingOut(outE, node)
+    // (in on one street, out on the other: each end of the curve as far along its own street as that street allows)
+    const ri = radius(node, inE)
+    const ro = radius(node, outE)
+    const r = Math.max(ri, ro)
+    // arriving: the direction of travel is back along the incoming street's bearing from the node — read on the street
+    // where the curve meets it, `ri` / `ro` from the node, not on its first segment: OSM puts a node a metre or two from
+    // many corners, and leaving the curve onto a street bent off that first segment snapped the car round (BUGS.md #250)
+    const away = (edge: Edge, d: number): { p: Point; h: number } => {
+      const fromA = edge.a === node
+      const s0 = clamp(fromA ? d : edge.length - d, 0, edge.length)
+      const s1 = clamp(fromA ? d + 1.5 : edge.length - d - 1.5, 0, edge.length)
+      const p = pointAlong(edge.points, s0)
+      const q = pointAlong(edge.points, s1)
+      const h = Math.abs(q.x - p.x) + Math.abs(q.z - p.z) > 1e-6 ? Math.atan2(q.x - p.x, q.z - p.z) : bearingOut(edge, node)
+      return { p, h }
+    }
+    const ai = away(inE, ri)
+    const ao = away(outE, ro)
+    const bi = ai.h + Math.PI
+    const bo = ao.h
     const di = { x: Math.sin(bi), z: Math.cos(bi) }
     const dO = { x: Math.sin(bo), z: Math.cos(bo) }
     const li = laneOf(inE)
     const lo = laneOf(outE)
     // the right of each direction of travel is (cos h, −sin h)
-    const E = { x: nd.at.x - di.x * r + Math.cos(bi) * li, z: nd.at.z - di.z * r - Math.sin(bi) * li }
-    const X = { x: nd.at.x + dO.x * r + Math.cos(bo) * lo, z: nd.at.z + dO.z * r - Math.sin(bo) * lo }
+    const E = { x: ai.p.x + Math.cos(bi) * li, z: ai.p.z - Math.sin(bi) * li }
+    const X = { x: ao.p.x + Math.cos(bo) * lo, z: ao.p.z - Math.sin(bo) * lo }
     // where the incoming lane line (E + t·di) meets the outgoing one (X − k·dO); the middle for a straight run
     const den = di.x * -dO.z - di.z * -dO.x
     let C = { x: (E.x + X.x) / 2, z: (E.z + X.z) / 2 }
@@ -1197,6 +1343,10 @@ export class Traffic {
     }
     v.y = e.raised ? profileAt(e.points, e.heights, v.s).y : undefined
     v.level = e.heights?.length ? profileAt(e.points, e.heights, v.s).y : undefined
+    // …and its slope there, along the direction of travel: the street's own pitch under the car (render/street-fleet.ts)
+    v.slope = e.heights?.length
+      ? (profileAt(e.points, e.heights, clamp(v.s + v.dir * 1.5, 0, e.length)).y - profileAt(e.points, e.heights, clamp(v.s - v.dir * 1.5, 0, e.length)).y) / 3
+      : undefined
     return true
   }
 }

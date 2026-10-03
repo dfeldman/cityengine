@@ -21,24 +21,6 @@ import type { Fit } from '../../fit.ts'
 import { facade } from '../../facade.ts'
 
 export const B1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  /**
-   * way/681442044 — 84 m, 24 levels, baked style "skyscraper". Plain rectangular plan (fill ratio 0.98 against
-   * its bounding box), no photograph. A mid-century office slab: precast ground floor, a balanced punched
-   * curtain shaft, a plain glazed top few floors, no crown — a flat-topped office tower is the honest default
-   * for a building this ordinary. Built BLIND.
-   */
-  b1_tower_681442044: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'plain', storeys: 2, material: 'precast' },
-      shaft: { storeys: 19, windows: 'balanced', material: 'glass' },
-      top: { kind: 'glazed', storeys: 3, material: 'glass' },
-      bands: { aboveGround: 'string', belowTop: 'string', top: 'cornice' },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'recessed', steps: 0 },
-      material: 'precast',
-    })
-  },
 
   /**
    * way/79377162 — 12 m, 3 levels, baked style "brick"/archetype "loft". A small SoMa brick loft building:
@@ -94,63 +76,6 @@ export const B1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   },
 
   /**
-   * way/159280395 — a hull of one part (way/1410934053), 160 m, 40 levels — its OWN reasonable footprint
-   * (fill ratio 0.95 against its bounding box, ~42x36 m), unlike the four Bay Bridge pylons that happen to
-   * share this exact height/level pair. Baked with no style/archetype (parts-derived hull). Plain residential
-   * curtain-glass tower: a modest podium, a glass shaft with balconies read as horizontal banding, a glazed
-   * top few floors. No photograph. Built BLIND — a 160 m tower with every slot `null` but `shaft` would be a
-   * missed opportunity, so it gets a considered ground and top instead.
-   */
-  b1_tower_159280395: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'plain', storeys: 3, material: 'concrete' },
-      shaft: { storeys: 33, windows: 'horizontal', material: 'glass' },
-      top: { kind: 'glazed', storeys: 4, material: 'glass' },
-      bands: { aboveGround: 'string', belowTop: 'string', top: 'cornice' },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'recessed', steps: 0 },
-      material: 'concrete',
-    })
-  },
-
-  /**
-   * way/91626348 — 136 m, no OSM level tag, baked style "bauhaus"/archetype "midcentury". Paired with
-   * way/1410929341 (same height, same neighbourhood, adjacent plots) — plausibly twin midcentury towers, so
-   * both get the same treatment for consistency. A precast midcentury office tower: a plain podium, a repeat
-   * punched curtain wall in bands, a plain setback top storey. No photograph. Built BLIND.
-   */
-  b1_midcenturyTower_91626348: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'plain', storeys: 2, material: 'precast' },
-      shaft: { storeys: 28, windows: 'horizontal', material: 'precast' },
-      top: { kind: 'setback', storeys: 2, by: 1.2, material: 'precast' },
-      bands: { aboveGround: 'string', belowTop: 'cornice', top: 'cornice' },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'recessed', steps: 0 },
-      material: 'precast',
-    })
-  },
-
-  /**
-   * way/1410929341 — 136 m, 34 levels, baked style "bauhaus"/archetype "midcentury" — the twin of 91626348
-   * (see above), same treatment for consistency between the pair. No photograph. Built BLIND.
-   */
-  b1_midcenturyTower_1410929341: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'plain', storeys: 2, material: 'precast' },
-      shaft: { storeys: 30, windows: 'horizontal', material: 'precast' },
-      top: { kind: 'setback', storeys: 2, by: 1.2, material: 'precast' },
-      bands: { aboveGround: 'string', belowTop: 'cornice', top: 'cornice' },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'recessed', steps: 0 },
-      material: 'precast',
-    })
-  },
-
-  /**
    * way/320721969 — the ONE building in this batch actually built from a photograph
    * (`docs/shots/refs/sf-mapillary/way-320721969-01.jpg`, geotag-verified): a plain glass residential tower on
    * a rust/oxide-coloured metal-clad podium of about 8 storeys, glass curtain wall above with balcony rails
@@ -171,58 +96,6 @@ export const B1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     })
   },
 
-  /**
-   * way/197462674 — 101 m, no OSM level tag, baked style "classical"/archetype "hotel". Paired with
-   * way/436473931 (same height, same block, same archetype) — two lots of what reads as one pre-war hotel
-   * complex, so both get the same classical treatment. A rusticated stone base, a giant-order-free classical
-   * punched shaft with dressed window surrounds, a bracketed cornice. No photograph. Built BLIND.
-   */
-  b1_hotel_197462674: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'rusticated', storeys: 2, material: 'limestone' },
-      shaft: { storeys: 22, windows: 'dressed', material: 'terracotta' },
-      top: { kind: 'attic', storeys: 2, material: 'limestone' },
-      bands: { aboveGround: 'cornice', belowTop: 'string', top: 'bracketed' },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'portal', steps: 4 },
-      material: 'terracotta',
-    })
-  },
 
-  /**
-   * way/436473931 — 101 m, 26 levels, baked style "classical"/archetype "hotel" — the twin of 197462674 (see
-   * above), same treatment for consistency between the pair. No photograph. Built BLIND.
-   */
-  b1_hotel_436473931: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'rusticated', storeys: 2, material: 'limestone' },
-      shaft: { storeys: 20, windows: 'dressed', material: 'terracotta' },
-      top: { kind: 'attic', storeys: 2, material: 'limestone' },
-      bands: { aboveGround: 'cornice', belowTop: 'string', top: 'bracketed' },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'portal', steps: 4 },
-      material: 'terracotta',
-    })
-  },
 
-  /**
-   * way/255960463 — 92 m, no OSM level tag, baked style "bauhaus"/archetype "contemporary". 17 corners but a
-   * fill ratio of 0.98 against its bounding box — the notches are small (balconies or a service bay), not a
-   * defining feature, so the plain kit answer is right. A contemporary curtain-glass tower: a plain podium, a
-   * continuous glass shaft, a glazed top. No photograph. Built BLIND.
-   */
-  b1_tower_255960463: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'plain', storeys: 2, material: 'concrete' },
-      shaft: { storeys: 20, windows: 'continuous', material: 'glass' },
-      top: { kind: 'glazed', storeys: 2, material: 'glass' },
-      bands: { aboveGround: 'string', belowTop: null, top: 'cornice' },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'recessed', steps: 0 },
-      material: 'concrete',
-    })
-  },
 }

@@ -72,6 +72,12 @@ export interface DeckDecl {
    * bridge, a ramp or a way off layer 0 is: a street passing under the deck is not on it.
    */
   kinds?: string[]
+  /**
+   * Reached by stairs and lifts, not ramps (Salesforce Park, 2026-10-02): the ways ON it take its height, and nothing
+   * off it is regraded — no chain of structures graded down from it, no cone lifting the streets round it. Without it
+   * the park's 21 m deck pulled 1 266 ways up, ordinary streets blocks away among them (docs/SALESFORCE-PARK.md).
+   */
+  vertical?: boolean
 }
 
 /** Where a model stands: as a manifest entry says, the arithmetic of render/landmarks.ts `place`. */
@@ -229,6 +235,16 @@ export class BridgeDecks {
 
   get size(): number { return this.list.length }
 
+  /** Is (x, z) on a `vertical` deck (any layer)? Then nothing leaves it by ramp. */
+  vertical(x: number, z: number): boolean {
+    for (const { p, d } of this.list) {
+      if (!d.vertical) continue
+      const on = locate(d, toModel(p, { x, z }))
+      if (on && on.off <= MARGIN) return true
+    }
+    return false
+  }
+
   /**
    * The deck under a point (in plan) for a way on `layer`, with its height there; null off every deck. `kind`
    * lets a deck that names kinds take a way of that kind (see `DeckDecl.kinds`).
@@ -384,6 +400,16 @@ export class BridgeDecks {
       if (p[p.length - 1] !== null) deckNode.set(e.b, p[p.length - 1]!)
     }
     if (pins.size === 0) return report
+    /*
+     * A VERTICAL deck's ways and junctions (`DeckDecl.vertical`) are pinned and left there: dropped from what the
+     * chain and the cones start from, so nothing off them is regraded.
+     */
+    const onVertical = (e: GraphEdge): boolean => {
+      const m = e.points[Math.floor(e.points.length / 2)]
+      return this.vertical(m.x, m.z)
+    }
+    const isolated = new Set<GraphEdge>([...pins.keys()].filter(onVertical))
+    for (const e of isolated) { deckNode.delete(e.a); deckNode.delete(e.b) }
     /** the bake's heights of the ways on a deck, before the deck's */
     const own = new Map<GraphEdge, number[]>()
     for (const e of pins.keys()) own.set(e, e.heights!.slice())
@@ -427,7 +453,7 @@ export class BridgeDecks {
       }
       // off each deck's edge, along the structure that was on it
       for (const [e, p] of pins) {
-        if (!structure(e)) continue
+        if (!structure(e) || isolated.has(e)) continue
         const last = p.length - 1
         const first = p.findIndex((v) => v !== null)
         let end = last
@@ -564,7 +590,7 @@ export class BridgeDecks {
     /** where a floor cone met a junction it could not pass: the way has to come DOWN to it, no steeper than `CAP_GRADE` */
     const caps: typeof cones = []
     for (const [e, p] of pins) {
-      if (structure(e)) continue
+      if (structure(e) || isolated.has(e)) continue
       const last = p.length - 1
       const first = p.findIndex((v) => v !== null)
       let end = last

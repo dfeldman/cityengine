@@ -54,7 +54,7 @@ CELL = 256          # one element's slot in the atlas
 BLEED = 8           # margin smeared with edge pixels so mips do not sample the neighbour
 ART = CELL - 2 * BLEED
 COLS = 8            # 8 across…
-ROWS = 16           # …by 16 down: 2048 × 4096. It was 8 × 8 until the three American styles filled it; two
+ROWS = 17           # …by 17 down: 2048 × 4352 (a 17th row for the Presidio's two styles, 2026-10-02). It was 8 × 8 until the three American styles filled it; two
                     # pages tall keeps every UV the manifest gives and needs nothing new of the material
 WALL = 512          # seamless material page
 VARIANTS = 3        # how many paintings of each element; the grammar picks between them per bay

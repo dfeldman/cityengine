@@ -54,11 +54,29 @@ const overlaps = new Map<string, number>()
 let deep = 0
 const deepPairs = new Map<string, { n: number; what: string }>()
 const overlapSamples: string[] = []
+// TURNS IN ONE STEP (owner, 2026-10-02: "cars turning left seem to stop, then jump 90 degrees instead of moving
+// smoothly"): a heading change of more than 20° between two steps, by what the car was doing
+const lastHeading = new Map<number, { h: number; edge: number }>()
+const jumps = new Map<string, number>()
+const jumpSamples: string[] = []
 for (let t = 0; t < seconds; t += dt) {
   traffic.update(dt, at, edges)
   for (const v of traffic.all) {
     if (v.speed < 0.1) still.set(v.id, (still.get(v.id) ?? 0) + dt)
     else still.delete(v.id)
+    const was = lastHeading.get(v.id)
+    if (was) {
+      let dh = v.heading - was.h
+      while (dh > Math.PI) dh -= 2 * Math.PI
+      while (dh < -Math.PI) dh += 2 * Math.PI
+      if (Math.abs(dh) > (20 * Math.PI) / 180) {
+        const k = `${v.inBox ? `in box ${v.inBox.turn}` : v.next ? `approaching ${v.next.turn}` : 'on street'}${was.edge !== v.edgeId ? ', changed edge' : ''}, ${v.speed < 0.3 ? 'standing' : 'moving'}`
+        jumps.set(k, (jumps.get(k) ?? 0) + 1)
+        const ee = graph.edges.get(v.edgeId)
+        if (jumpSamples.length < 12 && v.speed >= 0.3) jumpSamples.push(`${Math.round((Math.abs(dh) * 180) / Math.PI)}° ${v.kind} ${v.id} e${was.edge}→e${v.edgeId} len ${ee?.length.toFixed(1)} s ${v.s.toFixed(1)} dir ${v.dir} v ${v.speed.toFixed(1)} box ${v.inBox ? `${v.inBox.nodeId} from e${v.inBox.from}` : '-'} next ${v.next ? `e${v.next.edgeId} ${v.next.turn}` : '-'} ends ${ee?.a}/${ee?.b} pts ${ee?.points.length} | ${k}`)
+      }
+    }
+    lastHeading.set(v.id, { h: v.heading, edge: v.edgeId })
   }
   // cars THROUGH cars (owner: "I still see vehicles going through other vehicles, especially at intersections"):
   // every second, each overlapping pair, and where — both in a junction, one, or neither
@@ -92,6 +110,8 @@ for (let t = 0; t < seconds; t += dt) {
     jammed = stuck
   }
 }
+console.log(`heading jumps > 20° in one step: ${[...jumps.values()].reduce((p, q) => p + q, 0)}`, JSON.stringify(Object.fromEntries(jumps)))
+for (const j of jumpSamples) console.log('  ' + j)
 console.log(`deep overlaps (pair-seconds): ${deep}, distinct pairs ${deepPairs.size}`)
 for (const [, x] of [...deepPairs].sort((p, q) => q[1].n - p[1].n).slice(0, 8)) console.log(`  ${x.n}s  ${x.what}`)
 console.log('overlapping pairs (pair-seconds):', JSON.stringify(Object.fromEntries(overlaps)))

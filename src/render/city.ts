@@ -15,7 +15,7 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData'
 import type { Scene } from '@babylonjs/core/scene'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
-import { stopSign, uspsBox, billboard, muniStop, plainStop, newsRacks, parkingMeter, utilityPole } from './us-furniture.ts'
+import { stopSign, uspsBox, billboard, muniStop, plainStop, newsRacks, parkingMeter, utilityPole, pathOfGold } from './us-furniture.ts'
 import { MeshBuilder, buildBuilding, capPolygon, capPolygonWithHoles, type Arch, type AtlasManifest, type Ring } from './buildings.ts'
 import { archSize, passageArches } from './passages.ts'
 import { inOutline } from './bridge-structures.ts'
@@ -137,6 +137,8 @@ export type CityMeta = Pick<CityPackage, 'name' | 'ground' | 'region' | 'terrain
      * margin exactly as it always did.
      */
     contentBox?: { x0: number; x1: number; z0: number; z1: number }
+    /** the sea's surface, datum metres (the index's `sea`), for `distantSea`; absent, there is no open sea drawn */
+    sea?: number | null
   }
 
 const key = tileKey
@@ -162,6 +164,8 @@ const AREA_TINT: Record<PackedArea['kind'], [number, number, number]> = {
   pitch: [0.32, 0.45, 0.30], water: [0.20, 0.30, 0.38],
   // a paved square: warm stone setts and stabilised sand, paler than a pavement (BUGS.md #22)
   paved: [0.62, 0.58, 0.51],
+  // a car park or a pier deck on fill: worn asphalt — pale-stone 'paved' turned Treasure Island's lots white (2026-10-03)
+  lot: [0.36, 0.36, 0.35],
 }
 /**
  * Sand is capped finer than the rest of the ground (BUGS.md #200). The bands are a per-VERTEX colour, and
@@ -709,6 +713,44 @@ function contentBounds(pkg: CityPackage): { x0: number; x1: number; z0: number; 
 }
 
 
+/**
+ * THE SEA BEYOND THE TILES (appearance audit, 2026-10-02): water is drawn by the tiles, so past the ring of built
+ * tiles the ocean and the bay were the distant GROUND — grass-coloured — and the Pacific off Ocean Beach read as a
+ * green field with a strip of water along the shore. One flat plane at the package's sea level, a little under it so
+ * the tiles' own water wins where both are drawn, in the distant ground's group: the land stands above it and hides
+ * it by depth, and everywhere the ground is below the sea — the bed the bake flattened — the sea shows.
+ */
+function distantSea(scene: Scene, pkg: CityPackage): Mesh | null {
+  const t = pkg.terrain
+  const sea = (pkg as CityPackage & CityMeta).sea ?? pkg.seaLevel
+  if (!t || sea === null || sea === undefined) return null
+  const PAD = 3000
+  const SIZE = 2000
+  const x0 = t.x0 - PAD, z0 = t.z0 - PAD
+  const x1 = t.x0 + (t.cols - 1) * t.step + PAD, z1 = t.z0 + (t.rows - 1) * t.step + PAD
+  const y = sea - 0.3
+  const pos: number[] = [], nrm: number[] = [], idx: number[] = []
+  for (let z = z0; z < z1; z += SIZE) {
+    for (let x = x0; x < x1; x += SIZE) {
+      const n = pos.length / 3
+      const xa = Math.min(x + SIZE, x1), za = Math.min(z + SIZE, z1)
+      pos.push(x, y, z, xa, y, z, xa, y, za, x, y, za)
+      nrm.push(0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0)
+      idx.push(n, n + 1, n + 2, n, n + 2, n + 3)
+    }
+  }
+  const vd = new VertexData()
+  vd.positions = pos
+  vd.normals = nrm
+  vd.indices = idx
+  const m = new Mesh('ground:sea', scene)
+  vd.applyToMesh(m)
+  m.material = waterMaterial(scene)
+  m.renderingGroupId = GROUP.base
+  m.isPickable = false
+  return m
+}
+
 function distantGround(scene: Scene, terrain: Terrain, pkg: CityPackage, assets: string): Mesh | null {
   const t = groundGrid(pkg.terrain)
   if (!t) return null
@@ -1220,6 +1262,7 @@ export class City {
    * The footprints landmarks declared they draw their own raised structure over (`coversRaised`,
    * render/landmarks.ts), in world metres with the band of heights each model occupies. BUGS.md #136.
    */
+  private readonly pavedGrounds: { ring: { x: number; z: number }[]; x0: number; x1: number; z0: number; z1: number }[] = []
   private readonly coverAreas: { ring: { x: number; z: number }[]; y0: number; y1: number; x0: number; x1: number; z0: number; z1: number }[] = []
   /** baked bridge outlines (`t.bridges`) inside one of those footprints: bridge-structures.ts skips them */
   private readonly coveredOutlines = new Set<number>()
@@ -1294,6 +1337,7 @@ export class City {
     this.region = region(pkg.region)
     const __tg0 = performance.now()
     distantGround(scene, this.terrain, pkg, this.roadAssets)
+    distantSea(scene, pkg)
     plog('distantGround total', Math.round(performance.now() - __tg0))
     const __tg1 = performance.now()
     this.occluder = groundOccluder(scene, pkg, this.region.riverDrop ?? 0, this.terrain)
@@ -1326,6 +1370,23 @@ export class City {
    */
   private readonly grade = new StreetGrade()
   private fileGrade(e: PackedEdge): void { this.grade.add(e) }
+  /** Dry land at (x, z)? Only when its tile is in and has no water piece there — an unloaded tile is not known dry. */
+  dryAt(x: number, z: number): boolean {
+    const here = this.areasIn.get(key(...tileOf(x, z)))
+    if (!here) return false
+    if (this.waterLevelAt(x, z) === null) return true
+    // …or a land area drawn over the water: a breakwater, a quay, a park on the fill (the marina's mole at Fort Baker)
+    for (const a of here) {
+      if (a.kind === 'water') continue
+      const r = a.ring
+      let o = false
+      for (let i = 0, j = r.length - 2; i < r.length; j = i, i += 2) {
+        if ((r[i + 1] > z) !== (r[j + 1] > z) && x < ((r[j] - r[i]) * (z - r[i + 1])) / (r[j + 1] - r[i + 1]) + r[i]) o = !o
+      }
+      if (o) return true
+    }
+    return false
+  }
   /** The surface of the water at (x, z), from the tile's water pieces (each carries its body's level), or null. */
   waterLevelAt(x: number, z: number): number | null {
     for (const a of this.areasIn.get(key(...tileOf(x, z))) ?? []) {
@@ -1545,6 +1606,19 @@ export class City {
    *   - landmark first: `coverEdges()` runs at every tile build against the areas standing then.
    * The two are the same test; only when it runs differs.
    */
+  /**
+   * Street-level paving a landmark asks for (MeshBuilder.grounds): drawn with the tile's areas, over them, draped like
+   * them. Any tile it reaches that is already built is built again.
+   */
+  paveGround(ring: { x: number; z: number }[]): void {
+    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+    for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+    this.pavedGrounds.push({ ring, x0, x1, z0, z1 })
+    for (let tz = Math.floor(z0 / TILE); tz <= Math.floor(z1 / TILE); tz++) {
+      for (let tx = Math.floor(x0 / TILE); tx <= Math.floor(x1 / TILE); tx++) this.rebuild(key(tx, tz))
+    }
+  }
+
   coverRaised(c: { ring: { x: number; z: number }[]; y0: number; y1: number }): void {
     let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
     for (const q of c.ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
@@ -2104,7 +2178,7 @@ export class City {
      * by hand, last, over the park OSM spreads across it.
      */
     const rank = (a: { kind: string; top?: boolean }): number =>
-      a.top ? 3 : a.kind === 'paved' ? 0 : a.kind === 'sand' || a.kind === 'dirt' ? 2 : 1
+      a.top ? 3 : a.kind === 'paved' || a.kind === 'lot' ? 0 : a.kind === 'sand' || a.kind === 'dirt' ? 2 : 1
     const areasHere = this.areasIn.get(k) ?? []
     const ordered = [...areasHere].sort((p, q) => rank(p) - rank(q))
     /*
@@ -2166,6 +2240,13 @@ export class City {
           }
         }
       }
+    }
+    // the paving landmarks asked for (`paveGround`), clipped to this tile, over every area
+    for (const g of this.pavedGrounds) {
+      const bx0 = ktx * TILE, bz0 = ktz * TILE
+      if (g.x1 < bx0 || g.x0 > bx0 + TILE || g.z1 < bz0 || g.z0 > bz0 + TILE) continue
+      const piece = clipToBox(g.ring, bx0, bz0, bx0 + TILE, bz0 + TILE)
+      if (piece.length >= 3) capPolygonWithHoles(areas, [piece], 0.035, AREA_TINT.paved, 0, 2.4, AREA_MAX_EDGE)
     }
     /*
      * BAND 1, over the areas: the rip-rap revetment along the mapped seawall (docs/PARKS.md). Drawn LAST of
@@ -2353,7 +2434,9 @@ export class City {
       const parkLane = e.park && e.width < 9
       if (!parkLane) {
         if (this.region.centreLine === 'doubleYellow') {
-          if (!e.oneway) for (const side of [-1, 1]) dashedLine(markings, pts, side * 0.1, 0.063, 0.1, 1, 1, YELLOW)
+          // (not down the F-line's streets, whose middle is the streetcar tracks and their islands: Market, the Embarcadero)
+          const trackStreet = e.name === 'Market Street' || e.name === 'The Embarcadero'
+          if (!e.oneway && !trackStreet) for (const side of [-1, 1]) dashedLine(markings, pts, side * 0.1, 0.063, 0.1, 1, 1, YELLOW)
         } else {
           dashedLine(markings, pts, 0, 0.063, 0.12, 3, 9)
         }
@@ -2519,6 +2602,7 @@ export class City {
       const walk = e.walk
       const pts = unpackPoints(e.points)
       const off = e.width / 2 + walk * 0.55
+      const market = this.region.pointFurniture.american && e.name === 'Market Street'
       let acc = 8 + (e.id % 11)
       let n = 0
       for (let i = 1; i < pts.length; i++) {
@@ -2537,9 +2621,10 @@ export class City {
           if ((e.id + n) % 14 === 0 && walk >= 2.5) {
             if (this.region.furniture.benches) placeModel(furniture, bench, px, 0.15, pz, heading)
           } else if (this.region.furniture.lampPosts && !nearStairMouth(px, pz)) {
-            placeModel(furniture, lampPost, px, 0.15, pz, heading)
+            placeModel(furniture, market ? pathOfGold : lampPost, px, 0.15, pz, heading)
           }
-          acc += 22 + ((e.id + n) % 9)
+          // (Market's Path of Gold stands closer: about every 30 m each side, so ~15 m alternating)
+          acc += market ? 15 : 22 + ((e.id + n) % 9)
           n++
         }
         acc -= seg
@@ -3051,7 +3136,14 @@ export class City {
       if (!model) continue
       // a stop sign and a bus stop stand at the kerb, not in the road where OSM puts the node
       const kerb = f.kind === 'stop' || f.kind === 'busstop' ? 5 : 0
-      placeModel(furniture, model, f.x + Math.cos(heading) * kerb, 0.15, f.z - Math.sin(heading) * kerb, heading)
+      /*
+       * A billboard turned to run along the street is a thin edge to anyone riding up it, and only glimpsed at a
+       * grazing angle riding past (owner, 2026-10-02: "billboards look really bad"). Real bulletins are angled to the
+       * traffic: turned 35° off the street line, half toward each direction, the face reads from a block away and the
+       * board overhangs the kerb by no more than its catwalk.
+       */
+      const turn = f.kind === 'billboard' ? (Math.round(f.x * 7 + f.z * 13) % 2 ? 1 : -1) * 0.61 : 0
+      placeModel(furniture, model, f.x + Math.cos(heading) * kerb, 0.15, f.z - Math.sin(heading) * kerb, heading + turn)
     }
 
     /*
@@ -3340,3 +3432,25 @@ function zcheck(id: number, baked: number, computed: number): void {
   if (d > s.max) { s.max = d; s.worst = id }
 }
 
+/** A ring clipped to an axis-aligned box (Sutherland–Hodgman, one side at a time). */
+function clipToBox(ring: { x: number; z: number }[], x0: number, z0: number, x1: number, z1: number): { x: number; z: number }[] {
+  type P = { x: number; z: number }
+  const side = (pts: P[], inside: (p: P) => boolean, cut: (a: P, b: P) => P): P[] => {
+    const out: P[] = []
+    for (let i = 0; i < pts.length; i++) {
+      const a = pts[i], b = pts[(i + 1) % pts.length]
+      const ia = inside(a), ib = inside(b)
+      if (ia) out.push(a)
+      if (ia !== ib) out.push(cut(a, b))
+    }
+    return out
+  }
+  const atX = (x: number) => (a: P, b: P): P => ({ x, z: a.z + ((x - a.x) / (b.x - a.x)) * (b.z - a.z) })
+  const atZ = (z: number) => (a: P, b: P): P => ({ x: a.x + ((z - a.z) / (b.z - a.z)) * (b.x - a.x), z })
+  let r = ring
+  r = side(r, (p) => p.x >= x0, atX(x0))
+  r = side(r, (p) => p.x <= x1, atX(x1))
+  r = side(r, (p) => p.z >= z0, atZ(z0))
+  r = side(r, (p) => p.z <= z1, atZ(z1))
+  return r
+}

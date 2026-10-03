@@ -64,6 +64,8 @@ export interface Walker {
   across: number
   /** the sidestep being made round somebody, metres across the pavement, eased */
   dodge: number
+  /** the offset across the pavement last frame, all of it (`update`: never faster across than a sidestep) */
+  offNow?: number
   /** the street's across direction at the walker this frame (where +off moves them), for the rider's dodge */
   nx?: number
   nz?: number
@@ -172,9 +174,16 @@ export class Crowd {
    * A preset name, or a config of its own — `?crowd=`/`?traffic=` take a NUMBER for a quick density test
    * beyond the named levels (src/game.ts). The presets are what the game ships; a number is for measuring.
    */
-  constructor(graph: CityGraph, level: keyof typeof CROWD | CrowdConfig = 'some') {
+  /**
+   * How many walkers a place has, by ZONE (owner, 2026-10-02: "parks should have a lot more pedestrians and fewer cars.
+   * isolated areas should have few of either"): `ZoneProps.crowd`, a multiplier, 1 outside every zone that says.
+   */
+  private readonly zoneFactor: (p: { x: number; z: number }) => number
+
+  constructor(graph: CityGraph, level: keyof typeof CROWD | CrowdConfig = 'some', zoneFactor: (p: { x: number; z: number }) => number = () => 1) {
     this.g = graph
     this.cfg = typeof level === 'string' ? CROWD[level] : level
+    this.zoneFactor = zoneFactor
   }
 
   /**
@@ -313,7 +322,7 @@ export class Crowd {
 
       // a different draw each time the street is populated: the same seed twice gave exact clones
       const r = rng(e.id ^ 0x51ed270b ^ Math.imul(++this.generation, 0x9e3779b9))
-      const want = (e.length / 1000) * this.cfg.perKm
+      const want = (e.length / 1000) * this.cfg.perKm * this.zoneFactor(mid)
       let n = Math.floor(want)
       if (r() < want - n) n++
       for (let i = 0; i < n; i++) {
@@ -339,9 +348,14 @@ export class Crowd {
             height: 0.95 + r() * 0.15, phase: r() * Math.PI * 2, ...dressed(r, true) })
           continue
         }
-        if (roll < 0.24) {
-          // a runner, alone, in athletic kit
-          this.walkers.push({ ...base, id: nextWalkerId++, side, kind: 'run', speed: 2.6 + r() * 0.9,
+        /*
+         * a runner, alone, in athletic kit — more of them, and quicker, on the paths and in the parks (owner,
+         * 2026-10-02: "runners - people in athletic clothing moving faster through the parks and trails especially";
+         * at a jog's 2.6–3.5 m/s they read as people walking briskly)
+         */
+        const trail = e.foot || this.zoneFactor(mid) > 1.2
+        if (roll < (trail ? 0.35 : 0.24)) {
+          this.walkers.push({ ...base, id: nextWalkerId++, side, kind: 'run', speed: trail ? 3.2 + r() * 1.4 : 2.6 + r() * 0.9,
             height: 0.95 + r() * 0.15, phase: r() * Math.PI * 2, ...dressed(r, true) })
           continue
         }
@@ -531,7 +545,11 @@ export class Crowd {
       const keep = w.keepNow
       const formGoal = w.across * w.dir
       w.formNow = w.formNow === undefined ? formGoal : w.formNow + Math.max(-dt * 1.2, Math.min(dt * 1.2, formGoal - w.formNow))
-      const off = Math.max(-halfWalk, Math.min(halfWalk, keep + w.dodge + w.formNow))
+      // (all of it together no quicker across than a quick sidestep, 3 m/s: the sidestep and the drift back to their
+      // own side, each eased on its own, added up to 3.4 m/s when they ran the same way)
+      const offGoal = Math.max(-halfWalk, Math.min(halfWalk, keep + w.dodge + w.formNow))
+      const off = w.offNow === undefined || dt <= 0 ? offGoal : w.offNow + Math.max(-2.95 * dt, Math.min(2.95 * dt, offGoal - w.offNow))
+      w.offNow = off
       // onto the pavement: `side` is relative to the STREET, so it does not change when they turn round
       const l = lane * w.side + off
       w.at = { x: p.x - dz * l, z: p.z + dx * l }

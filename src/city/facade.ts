@@ -39,6 +39,8 @@ export type StyleId =
   | 'stucco' | 'sfapartment' | 'chinatown' | 'edwardian'
   // shared: the post-war residential tower, which every city has and which is NOT an office block
   | 'towerblock'
+  // the Presidio's and Golden Gate Park's (owner, 2026-10-02): the Army's white stucco with red tile, and its brick
+  | 'presidio' | 'presidioBrick'
 
 export type GroundKind = 'shopfront' | 'stoop' | 'arcade' | 'glazed' | 'recessed' | 'plain' | 'garage'
 export type TopKind = 'cornice' | 'parapet' | 'mansard' | 'entablature' | 'flatband' | 'crown' | 'gable'

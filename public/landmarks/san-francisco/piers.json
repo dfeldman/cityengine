@@ -7,8 +7,8 @@
   "procedural": "pier1",
   "front": "street",
   "height": 11,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
-  "deckAbove": 3.5
+  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated. deckAbove 1.5: the Embarcadero in front of it is 1.7 m above the sea, where the rest of the waterfront is ~3.5 (BUGS.md #258, measured 2026-10-02).",
+  "deckAbove": 1.5
  },
  {
   "osm": [
@@ -173,6 +173,28 @@
   "front": "street",
   "height": 10,
   "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
+  "deckAbove": 3.5
+ },
+ {
+  "osm": [
+   "way/91913149"
+  ],
+  "name": "Piers 29-31",
+  "procedural": "pier31",
+  "front": "street",
+  "height": 11,
+  "note": "Placed 2026-10-02: the preset was built and never placed; OSM's unnamed 24 900 m2 shed between Piers 33 and 27 is the Piers 29-31 bulkhead and shed.",
+  "deckAbove": 3.5
+ },
+ {
+  "osm": [
+   "way/91913152"
+  ],
+  "name": "Pier 23",
+  "procedural": "pier23",
+  "front": "street",
+  "height": 10,
+  "note": "Placed 2026-10-02: the preset was built and never placed; OSM's unnamed 21 500 m2 shed at 37.8032, -122.3997.",
   "deckAbove": 3.5
  }
 ]

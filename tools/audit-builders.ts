@@ -397,20 +397,7 @@ export const UNREFERENCED_OK = {
      * reasons the same day: two coastal artillery batteries a recipe batch rendered as apartment blocks,
      * three ids absent from the bake entirely, and a Hilton outline that double-drew its own tower.
      */
-    'b11_modelIndustriesBuilding_24433389',
-    'b11_morgue_28000041',
-    'b11_newIndustriesBuilding_24433395',
-    'b11_powerhouse_27996721',
-    'b11_quarters1NimitzHouse_291188933',
-    'b11_quarters2_291188936',
-    'b11_quarters3_291188941',
-    'b11_quarters4_291188937',
-    'b11_quarters5_291188938',
-    'b11_quarters6_291188939',
-    'b11_quarters7_291188940',
-    'b11_quarters9_291188963',
-    'h3_firestationH_764313741',
-    'h3_harveyMilkMemorial_34313513',
+    // (EBMUD's injector station is in the East Bay, outside the city: built, never placeable — 2026-10-02)
     'h3_injectorStation_1038340434',
     'ccsfChinatownAnnex', 'fiftyCaliforniaStreet', 'foGuangShanSanBaoTemple', 'fortyFourMontgomery',
     'fourTwentyFiveMarket', 'fulton501', 'hunterDulin', 'newcomerSchool', 'oneSansomeStreet',
@@ -418,7 +405,7 @@ export const UNREFERENCED_OK = {
     'unnamedPineStreet', 'unnamedSeventyThreeMeterTower', 'unnamedSutterStreet', 'unnamedSutterStreetTwo',
     'unnamedTower256477866', 'usAppraisersBuilding',
     // the piers: modelled in piers.ts, absent from piers.json, which places sixteen of the twenty-two
-    'pier3', 'pier19', 'pier23', 'pier29', 'pier31', 'pier45',
+    'pier3', 'pier19', 'pier29', 'pier45',
   ] as string[],
 }
 

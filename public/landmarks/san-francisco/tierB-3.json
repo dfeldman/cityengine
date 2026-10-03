@@ -50,9 +50,11 @@
       "way/32946942"
     ],
     "name": "Grace Cathedral",
-    "height": 53,
-    "restyle": "classical",
-    "note": "rule 1"
+    "procedural": "graceCathedral",
+    "scale": 0.75,
+    "front": 261,
+    "height": 72,
+    "note": "Notre-Dame's model at Grace's size (src/render/landmarks/sf/grace.ts): the west front to Taylor Street. Was a 53 m classical restyle until the appearance audit, 2026-10-02."
   },
   {
     "osm": [

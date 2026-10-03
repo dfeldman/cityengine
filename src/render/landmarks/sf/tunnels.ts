@@ -36,6 +36,9 @@ const TEAL: Rgb = [0.1, 0.52, 0.58]
 const SIGN_YELLOW: Rgb = [0.92, 0.72, 0.1]
 const CONCRETE: Rgb = [0.8, 0.77, 0.7]
 const CONCRETE_LIGHT: Rgb = [0.86, 0.84, 0.79]
+/** Yerba Buena's rock and the scrub over it */
+const ROCK: Rgb = [0.5, 0.46, 0.4]
+const SCRUB: Rgb = [0.22, 0.3, 0.15]
 const GLASS: Rgb = [0.2, 0.23, 0.27]
 const RELIEF: Rgb = [0.26, 0.26, 0.27]
 
@@ -289,10 +292,36 @@ function yerbaBuenaPortal(c: PortalContext): PortalParts {
     box(face, side * (W - 1.4) - 1.1, side * (W - 1.4) + 1.1, -2, top + 1.2, 0, 0.7, CONCRETE_LIGHT)
   }
   box(face, -W, W, top - 0.9, top, 0, 0.5, CONCRETE_LIGHT)
-  // the housing: side walls and a roof back into the hill
+  /*
+   * The hill over and beside it. The coarse ground does not reach up to the upper roadway until well inside the
+   * mouth, so something has to stand there; it was a concrete housing with a flat 46 m roof, which from the upper deck
+   * read as a white canopy laid over the portal (backlog, 2026-10-02). The real mouths are cut into Yerba Buena's
+   * rock: so a mound of scrub over the bore, rising back from the face, and rock cuttings flaring out from the piers
+   * down to the ground either side.
+   */
   const D = 46
-  for (const side of [-1, 1]) box(mass, Math.min(side * (W - 1), side * W), Math.max(side * (W - 1), side * W), -4, top, -D, 0, CONCRETE)
-  box(mass, -W, W, top - 1, top, -D, 0, CONCRETE)
+  const RISE = 7
+  const FLARE = 16
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const crestZ = -D * 0.45
+  // the crown of the mound: from the face's top back and up to a crest, then level into the hill
+  const n1: V3 = [0, 0.99, RISE / (D * 0.45)]
+  mass.quad([[-W, top, 0], [W, top, 0], [W, top + RISE, crestZ], [-W, top + RISE, crestZ]], n1, uv, SCRUB, 0)
+  mass.quad([[-W, top + RISE, crestZ], [W, top + RISE, crestZ], [W, top + RISE, -D], [-W, top + RISE, -D]], [0, 1, 0], uv, SCRUB, 0)
+  for (const side of [-1, 1]) {
+    const x = side * W, xo = side * (W + FLARE)
+    // the rock cutting: a steep face from the pier's edge, turned back into the hill, down to the ground
+    mass.quad(side > 0
+      ? [[x, -4, 0], [xo, -4, -FLARE * 0.6], [xo, top * 0.35, -FLARE * 0.6 - 4], [x, top, 0]]
+      : [[xo, -4, -FLARE * 0.6], [x, -4, 0], [x, top, 0], [xo, top * 0.35, -FLARE * 0.6 - 4]], [0, 0, 1], uv, ROCK, 0)
+    // and the mound's flank, from the crown down over the cutting's top to the ground
+    mass.quad(side > 0
+      ? [[x, top, 0], [xo, top * 0.35, -FLARE * 0.6 - 4], [xo, -4, -D], [x, top + RISE, -D]]
+      : [[xo, top * 0.35, -FLARE * 0.6 - 4], [x, top, 0], [x, top + RISE, -D], [xo, -4, -D]], [side * 0.7, 0.7, 0], uv, SCRUB, 0)
+    mass.quad(side > 0
+      ? [[x, top, 0], [x, top + RISE, crestZ], [x, top + RISE, -D], [x, top, 0]]
+      : [[x, top, 0], [x, top + RISE, -D], [x, top + RISE, crestZ], [x, top, 0]], [side, 0, 0], uv, SCRUB, 0)
+  }
   return { face, mass }
 }
 

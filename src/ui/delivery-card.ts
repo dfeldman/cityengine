@@ -4,7 +4,8 @@
  * itself — and, during a job, one line saying where to go next, the compass and the clock. No route: finding the
  * way is the game. Pickup is 1 and amber, drop-off is 2 and green, the same on every screen.
  */
-import type { Job } from '../game/delivery.ts'
+import type { Job, Rating } from '../game/delivery.ts'
+import * as sfx from './sfx.ts'
 
 export const DELIVERY_CSS = `
 .sr-offer { position: fixed; left: 16px; top: 50%; transform: translate(-24px, -50%); opacity: 0; z-index: 7;
@@ -51,6 +52,28 @@ export const DELIVERY_CSS = `
 .sr-nav .dist { font: 800 20px/1 var(--font); min-width: 70px }
 .sr-nav .dist small { display: block; font: 600 11px/1.2 var(--font); opacity: .7 }
 .sr-nav .clock { font: 800 38px/1 var(--font); font-variant-numeric: tabular-nums; letter-spacing: .5px }
+/* the RECEIPT on a drop-off: the customer's stars, what they said, the pay — and the running total by the energy bar */
+.sr-receipt { position: fixed; left: 50%; top: 22%; z-index: 9; transform: translate(-50%, -12px) scale(.92); opacity: 0;
+  pointer-events: none; transition: opacity .35s, transform .35s cubic-bezier(.2,1.6,.4,1); text-align: center;
+  width: min(360px, calc(100vw - 32px)); color: var(--text); background: var(--panel); border: 2px solid #34d27a;
+  border-radius: var(--radius); box-shadow: var(--shadow); backdrop-filter: blur(8px); padding: 14px 18px 16px;
+  font: 600 14px/1.35 var(--font) }
+.sr-receipt.on { opacity: 1; transform: translate(-50%, 0) scale(1) }
+.sr-receipt h3 { margin: 0; font: 800 22px/1.2 var(--font) }
+.sr-receipt .stars { font-size: 30px; letter-spacing: 4px; margin: 4px 0 2px; color: #ffc93c }
+.sr-receipt .stars span { display: inline-block; opacity: 0; transform: scale(.3); transition: opacity .2s, transform .3s cubic-bezier(.2,1.8,.4,1) }
+.sr-receipt .stars span.dim { color: var(--text); opacity: 0 }
+.sr-receipt.on .stars span { opacity: 1; transform: scale(1) }
+.sr-receipt.on .stars span.dim { opacity: .25 }
+.sr-receipt q { display: block; font: italic 600 14px/1.35 var(--font); margin: 4px 0 10px; opacity: .9 }
+.sr-receipt .pay { display: flex; justify-content: center; gap: 14px; font: 800 15px/1 var(--font) }
+.sr-receipt .pay b { font-size: 22px; color: #34d27a }
+.sr-receipt .pay small { display: block; font: 600 11px/1.3 var(--font); opacity: .7 }
+.sr-cash { position: fixed; z-index: 6; left: 16px; bottom: 112px; padding: 4px 12px; border-radius: 999px;
+  font: 800 15px/1.2 var(--font); color: #111; background: #34d27a; box-shadow: var(--shadow);
+  font-variant-numeric: tabular-nums; transition: transform .25s }
+.sr-cash.bump { transform: scale(1.25) }
+.sr-confetti { position: fixed; inset: 0; pointer-events: none; z-index: 8 }
 `
 
 export class DeliveryCard {
@@ -117,6 +140,7 @@ export class DeliveryCard {
     const km = job.metres >= 950 ? `${(job.metres / 1000).toFixed(1)} km` : `${Math.round(job.metres / 50) * 50} m`
     const it = job.item
     this.card.innerHTML = `
+      <div class="one">${it ? `${esc(it.emoji)} ${esc(it.name)}` : 'Delivery'} → ${esc(job.dropoff.label)} · ${km}</div>
       <h3>New delivery</h3>
       ${it ? `<div class="dish"><span class="emoji">${esc(it.emoji)}</span><div><b>${esc(it.name)}${it.fragile ? '<span class="fragile">FRAGILE</span>' : ''}</b><i>${esc(it.blurb)}</i></div></div>` : ''}
       <div class="stop"><span class="n">1</span><div><div class="what">${job.source ? 'Pick up at' : 'Pick up near'}</div>${esc(job.pickup.label)}${job.source ? `<div class="kitchen">${esc(job.source.blurb)}</div>` : ''}</div></div>
@@ -144,6 +168,52 @@ export class DeliveryCard {
     if (text) { this.line.textContent = text; this.line.classList.add('on') } else this.line.classList.remove('on')
   }
 
+  private receiptEl: HTMLElement | null = null
+  private receiptTimer = 0
+  private cashEl: HTMLElement | null = null
+
+  /** The running total, by the energy bar (null hides it). */
+  cash(total: number | null, bump = false): void {
+    if (total === null) { this.cashEl?.remove(); this.cashEl = null; return }
+    if (!this.cashEl) {
+      this.cashEl = document.createElement('div')
+      this.cashEl.className = 'sr-cash'
+      document.body.appendChild(this.cashEl)
+    }
+    this.cashEl.textContent = `$${total.toFixed(2)}`
+    if (bump) {
+      this.cashEl.classList.add('bump')
+      setTimeout(() => this.cashEl?.classList.remove('bump'), 260)
+    }
+  }
+
+  /** The drop-off's receipt: stars popping in one by one, the customer's line, the fee and the tip; confetti for 4+. */
+  receipt(job: Job, r: Rating, seconds: number, levelUp: number | null): void {
+    if (!this.receiptEl) {
+      this.receiptEl = document.createElement('div')
+      this.receiptEl.className = 'sr-receipt'
+      document.body.appendChild(this.receiptEl)
+    }
+    const el = this.receiptEl
+    const m = Math.floor(seconds / 60)
+    const time = `${m}:${String(Math.round(seconds % 60)).padStart(2, '0')}`
+    const stars = [1, 2, 3, 4, 5].map((k) => `<span class="${k <= r.stars ? '' : 'dim'}" style="transition-delay:${0.15 + k * 0.12}s">★</span>`).join('')
+    el.innerHTML = `
+      <h3>${job.item ? esc(job.item.emoji) + ' ' : ''}Delivered!</h3>
+      <div class="stars">${stars}</div>
+      <q>${esc(r.line)}</q>
+      <div class="pay"><div><b>$${r.fee.toFixed(2)}</b><small>fee</small></div><div><b>+$${r.tip.toFixed(2)}</b><small>tip</small></div><div><b>${time}</b><small>time</small></div></div>
+      ${levelUp ? `<div style="margin-top:10px;font:800 15px/1.2 var(--font);color:var(--c-amber)">Level ${levelUp}! deliveries go further now</div>` : ''}`
+    el.classList.remove('on')
+    void el.offsetWidth
+    el.classList.add('on')
+    clearTimeout(this.receiptTimer)
+    this.receiptTimer = window.setTimeout(() => el.classList.remove('on'), 5500)
+    if (r.stars >= 4 || levelUp) confetti(r.stars === 5 || levelUp ? 140 : 70)
+    if (levelUp) sfx.levelUp()
+    else sfx.chime(r.stars)
+  }
+
   /** Y and X, while an offer is showing */
   key(code: string): boolean {
     if (!this.card.classList.contains('on')) return false
@@ -154,3 +224,49 @@ export class DeliveryCard {
 }
 
 const esc = (s: string): string => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!)
+
+/** A burst of confetti from the top of the screen, a canvas of its own for two seconds and a half. */
+function confetti(n: number): void {
+  const c = document.createElement('canvas')
+  c.className = 'sr-confetti'
+  const dpr = Math.min(2, devicePixelRatio || 1)
+  c.width = innerWidth * dpr
+  c.height = innerHeight * dpr
+  document.body.appendChild(c)
+  const g = c.getContext('2d')
+  if (!g) { c.remove(); return }
+  const colours = ['#ffc93c', '#34d27a', '#ff5d73', '#4cc3ff', '#ffffff', '#b07cff']
+  const bits = Array.from({ length: n }, () => ({
+    x: innerWidth * (0.3 + Math.random() * 0.4), y: innerHeight * 0.25,
+    vx: (Math.random() - 0.5) * 900, vy: -300 - Math.random() * 500,
+    r: Math.random() * Math.PI, vr: (Math.random() - 0.5) * 14, w: 6 + Math.random() * 6, h: 3 + Math.random() * 4,
+    c: colours[Math.floor(Math.random() * colours.length)],
+  }))
+  const t0 = performance.now()
+  let last = t0
+  const frame = (t: number): void => {
+    const dt = Math.min(0.05, (t - last) / 1000)
+    last = t
+    g.setTransform(dpr, 0, 0, dpr, 0, 0)
+    g.clearRect(0, 0, innerWidth, innerHeight)
+    const fade = Math.max(0, 1 - (t - t0 - 1600) / 900)
+    g.globalAlpha = fade
+    for (const b of bits) {
+      b.vy += 900 * dt
+      b.vx *= 1 - 1.2 * dt
+      b.x += b.vx * dt
+      b.y += b.vy * dt
+      b.r += b.vr * dt
+      g.save()
+      g.translate(b.x, b.y)
+      g.rotate(b.r)
+      g.fillStyle = b.c
+      g.fillRect(-b.w / 2, -b.h / 2 * Math.abs(Math.cos(b.r * 1.7)), b.w, b.h)
+      g.restore()
+    }
+    if (fade > 0) requestAnimationFrame(frame)
+    else c.remove()
+  }
+  requestAnimationFrame(frame)
+}
+

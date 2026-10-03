@@ -16,8 +16,8 @@ import type { MeshBuilder } from '../../buildings.ts'
 import { box, prism, type Rgb } from '../../models.ts'
 import type { Fit } from '../fit.ts'
 
-const STONE: Rgb = [0.86, 0.86, 0.84]
-const STONE_DARK: Rgb = [0.72, 0.72, 0.7]
+const STONE: Rgb = [0.88, 0.84, 0.74]   // Colusa sandstone: a warm pale buff, not grey (2026-10-03)
+const STONE_DARK: Rgb = [0.75, 0.71, 0.61]
 const ROOF: Rgb = [0.5, 0.55, 0.55]
 const DARK: Rgb = [0.24, 0.25, 0.27]
 const CLOCK: Rgb = [0.92, 0.92, 0.88]

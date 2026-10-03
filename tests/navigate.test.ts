@@ -188,6 +188,20 @@ describe('riding', () => {
     expect(r.speed).toBeLessThan(0.5)
   })
 
+  it('reverses: stopped, negative power backs up slowly; moving, it only brakes (owner, 2026-10-01)', () => {
+    const r = new Ride()
+    for (let i = 0; i < 100; i++) r.step(0.1, { ...NO_READING, power: 200 }, 'bike', 'asphalt', 0)
+    const first = r.step(0.1, { ...NO_READING, power: -45 }, 'bike', 'asphalt', 0)
+    expect(first.reverse ?? 0).toBe(0)                 // still rolling forward: the brake, not reverse
+    let s = first
+    for (let i = 0; i < 100; i++) s = r.step(0.1, { ...NO_READING, power: -45 }, 'bike', 'asphalt', 0.05)
+    expect(s.speed).toBe(0)
+    expect(s.reverse).toBeGreaterThan(0.8)
+    expect(s.reverse).toBeLessThan(1.2)
+    for (let i = 0; i < 20; i++) s = r.step(0.1, { ...NO_READING, power: 100 }, 'bike', 'asphalt', 0)
+    expect(s.reverse ?? 0).toBe(0)
+  })
+
   it('gives a runner nothing for free: the belt is the speed, downhill or not', () => {
     const r = new Ride()
     for (let i = 0; i < 60; i++) r.step(0.1, { ...NO_READING, speed: 3.2 }, 'treadmill', 'asphalt', -0.1)
@@ -361,6 +375,34 @@ describe('lateral freedom', () => {
     expect(n.ridePoint().x - n.at().x).toBeCloseTo(nudged, 5)
     for (let i = 0; i < 30; i++) n.advance(1, 5)       // then home, straight on through the junction
     expect(n.ridePoint().x - n.at().x).toBeCloseTo(HOME, 1)
+  })
+
+  it('backs up round the corner into the street behind, still facing the same way (owner, 2026-10-02)', () => {
+    const g = crossroads()
+    // riding south down the south arm, 2 m past the crossroads: backing 5 m goes 3 m up the north arm
+    const n = new Navigator(g, { edgeId: 3, s: 2, reversed: false })
+    const h0 = n.heading()
+    const p0 = n.at()
+    n.backUp(5)
+    expect(n.position.edgeId).toBe(1)
+    expect(Math.hypot(n.at().x - p0.x, n.at().z - p0.z)).toBeCloseTo(5, 0)
+    expect(Math.cos(n.heading() - h0)).toBeGreaterThan(0.9)
+  })
+
+  it('edges sideways slowly at a standstill — round a stopped car, never through it (owner, 2026-10-02)', () => {
+    const g = crossroads()
+    const n = new Navigator(g, { edgeId: 3, s: 100, reversed: true })
+    n.fast = true
+    for (let i = 0; i < 20; i++) n.advance(1, 5)
+    const s0 = n.at()
+    const o0 = n.nudged
+    n.hold(-1)
+    for (let i = 0; i < 10; i++) n.sidestep(0.1)    // 1 s held left, stopped
+    expect(o0 - n.nudged).toBeCloseTo(0.6, 2)        // a walking shuffle across
+    expect(n.at()).toEqual(s0)                       // and not a centimetre along
+    n.fence(o0 - 0.3, null)                          // a car beside, on the left: no further
+    for (let i = 0; i < 30; i++) n.sidestep(0.1)
+    expect(n.nudged).toBeGreaterThanOrEqual(o0 - 0.6 - 1e-6)
   })
 
   it('moves to the middle for a left turn, and stays right for a right one', () => {

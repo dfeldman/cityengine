@@ -1,0 +1,9 @@
+[
+  {"osm": ["way/128245373"], "name": "Alcatraz Main Prison (the cellhouse)", "procedural": "alcatrazCellhouse", "height": 14, "note": "Appearance audit 2026-10-02: was a generic brick block. Pale weathered concrete, tall barred windows, the skylight monitor (src/render/landmarks/sf/alcatraz.ts)."},
+  {"osm": ["way/985656043"], "name": "Alcatraz Guard Gallery (part of the cellhouse)", "note": "placeholder: drawn by alcatrazCellhouse"},
+  {"osm": ["way/99202294"], "name": "Alcatraz Island Lighthouse", "procedural": "alcatrazLighthouse", "height": 26, "note": "1909, 26 m: a white octagonal tower tapering to a black lantern. Was a 4 m-square apartment block 26 m tall."},
+  {"osm": ["way/24617219"], "name": "Building 64", "restyle": "stucco", "height": 14, "note": "The barracks at the dock, pale concrete; was a brick style."},
+  {"osm": ["way/24433437"], "name": "Alcatraz Dining Hall", "restyle": "stucco", "height": 12},
+  {"osm": ["way/27996723"], "name": "Alcatraz Quartermaster", "restyle": "stucco", "height": 12},
+  {"osm": ["way/660870452"], "name": "Alcatraz Water Tower", "procedural": "alcatrazWaterTower", "height": 24, "note": "1940 steel tank on braced legs, the occupation's red lettering (restored 2012). Was a plain building."}
+]

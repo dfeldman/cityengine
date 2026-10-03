@@ -341,44 +341,76 @@ export function portsmouthSquareDeck(out: MeshBuilder, _fit: Fit): void {
  * restaurant sign across the top. An ordinary custom building, not part of the deck.
  */
 export function empressOfChina(out: MeshBuilder, fit: Fit): void {
-  const hx = Math.max(6, fit.hx)
-  const hz = Math.max(6, fit.hz)
-  const H = fit.height > 8 && fit.height < 40 ? fit.height : 16
-  const floors = Math.max(3, Math.round(H / 3.4))
-  const floorH = H / floors
-  const ring: P2[] = [{ x: -hx, z: -hz }, { x: hx, z: -hz }, { x: hx, z: hz }, { x: -hx, z: hz }]
-  // street-facing edge: ring index 2 is the one whose OWN normal comes out +z for this CCW rectangle
-  // (checked by render, not assumed — index 0 pointed −z here and put the whole facade on the back of the
-  // building, invisible from the street, exactly the past bug this file's header warns about)
-  const front = edgeAt(ring, 2)
+  /*
+   * THE CHINA TRADE CENTER, 838 Grant Avenue (way/256080536, 32 m), the Empress of China on its top floor — fitted to
+   * its real footprint since 2026-10-02. It had been placed by hand at a point that turned out to be the middle of
+   * Washington Street (owner: "the famous restaurant building appears as a cube overlapping the street").
+   *
+   * From the owner's photograph of its square-facing end: cream concrete; a column of ROUND WINDOWS down each side of
+   * the face, one a storey; between them deep horizontal BALCONY SLABS over dark glass; the top storeys set back
+   * under a heavy overhang, two stair towers standing up at the corners. Both short ends get that face; the long sides,
+   * mostly against their neighbours, get plain bands.
+   */
+  const ring = fit.ring && fit.ring.length >= 3 ? fit.ring : [{ x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  const H = fit.height > 20 && fit.height < 45 ? fit.height : 32
+  const floors = 9
+  const fh = (H - 4) / floors
+  const concrete = surfaceTag('concrete')
+  const glass = surfaceTag('glass')
   faceBand(out, ring, 0, H, { kind: 'blank', wall: CREAM, material: 'concrete' })
-  capPolygon(out, ring, H, [0.7, 0.68, 0.6], surfaceTag('concrete'))
-  // storey band lines (thin dark string courses) + a circular opening centred on each bay, each floor
-  const bays = Math.max(3, Math.round((front.L) / 3.4))
-  for (let f = 1; f < floors; f++) {
-    const y = f * floorH
-    boxAlong(out, front.mid.x + front.nx * (hz * 0 + 0.01), y, front.mid.z + front.nz * 0.01, front.L / 2, 0.12, 0.05, front.heading, [0.55, 0.53, 0.47], surfaceTag('concrete'))
-    for (let b = 0; b < bays; b++) {
-      const u = (b + 0.5) / bays - 0.5
-      const px = front.a.x + front.tx * (u * front.L + front.L / 2)
-      const pz = front.a.z + front.tz * (u * front.L + front.L / 2)
-      // a flat dark disc set just proud of the wall, reading as a punched circular opening — this building's
-      // one distinctive move. Faces the outward normal from `edgeAt`, never a hand atan2 (bug #135), and the
-      // normal is explicit because this quad is hand-built and gets no automatic flip.
-      const R = Math.min(1.1, floorH * 0.32)
-      const n = 12
-      const cx = px + front.nx * 0.06
-      const cz = pz + front.nz * 0.06
-      const cy = y - floorH * 0.42
-      for (let k = 0; k < n; k += 2) {
-        const a0 = (k / n) * Math.PI * 2
-        const a1 = ((k + 1) / n) * Math.PI * 2
-        const a2 = ((k + 2) / n) * Math.PI * 2
-        const P = (ang: number): [number, number, number] => [cx + front.tx * Math.cos(ang) * R, cy + Math.sin(ang) * R, cz + front.tz * Math.cos(ang) * R]
-        out.quad([P(a0), P(a1), P(a2), P(a2)], [front.nx, 0, front.nz], [[0, 0], [1, 0], [1, 1], [0, 1]], OPENING, surfaceTag('glass'))
+  capPolygon(out, ring, H, [0.62, 0.6, 0.55], concrete)
+  // the footprint's long axis, from its edges weighted by length (doubled angles, so a side and its opposite agree):
+  // the long sides arrive as several short edges, so an end is told by its DIRECTION, not its length
+  let ax = 0, az = 0
+  for (let i = 0; i < ring.length; i++) { const e = edgeAt(ring, i); const a = 2 * Math.atan2(e.tz, e.tx); ax += Math.cos(a) * e.L; az += Math.sin(a) * e.L }
+  const axis = Math.atan2(az, ax) / 2
+  const isEnd = (e: { tx: number; tz: number }): boolean => Math.abs(e.tx * Math.cos(axis) + e.tz * Math.sin(axis)) < 0.5
+  for (let i = 0; i < ring.length; i++) {
+    const e = edgeAt(ring, i)
+    if (e.L < 6) continue
+    const at = (t: number, y: number, out_: number): [number, number, number] => [e.a.x + e.tx * e.L * t + e.nx * out_, y, e.a.z + e.tz * e.L * t + e.nz * out_]
+    if (isEnd(e)) {
+      // THE FACE: portholes down both sides, balcony slabs over dark glass between, the set-back top
+      const side = Math.min(2.6, e.L * 0.16)
+      const inner = e.L - 2 * side
+      for (let f = 0; f < floors; f++) {
+        const y = 3.5 + f * fh
+        for (const t of [side / 2 / e.L, 1 - side / 2 / e.L]) {
+          const [cx, cy, cz] = at(t, y + fh * 0.5, 0.06)
+          const R = Math.min(1.05, fh * 0.36, side * 0.42)
+          // a filled disc: a fan from its centre
+          for (let k = 0; k < 16; k++) {
+            const P = (a: number): [number, number, number] => [cx + e.tx * Math.cos(a) * R, cy + Math.sin(a) * R, cz + e.tz * Math.cos(a) * R]
+            const a0 = (k / 16) * Math.PI * 2, a1 = ((k + 1) / 16) * Math.PI * 2
+            out.quad([[cx, cy, cz], P(a0), P(a1), P(a1)], [e.nx, 0, e.nz], [[0, 0], [1, 0], [1, 1], [0, 1]], OPENING, glass)
+          }
+        }
+        if (f < floors - 2) {
+          // the dark glass behind, and the deep slab across the bay in front of it
+          const [gx, , gz] = at(0.5, 0, 0.05)
+          boxAlong(out, gx, y + fh * 0.55, gz, inner / 2, fh * 0.32, 0.05, e.heading, OPENING, glass)
+          const [sx, , sz] = at(0.5, 0, 0.7)
+          boxAlong(out, sx, y + 0.2, sz, inner / 2 - 0.2, 0.22, 0.7, e.heading, CREAM, concrete)
+        }
+      }
+      // the top: a dark glazed storey under the heavy overhang
+      const [tx, , tz] = at(0.5, 0, 0.05)
+      boxAlong(out, tx, H - 5.5, tz, inner / 2, 2.4, 0.05, e.heading, OPENING, glass)
+      const [ox, , oz] = at(0.5, 0, 1.2)
+      boxAlong(out, ox, H - 2.4, oz, inner / 2 + 0.4, 0.7, 1.2, e.heading, CREAM, concrete)
+      // the two stair towers standing up at the corners, and the restaurant's name over the door
+      for (const t of [side / 2 / e.L, 1 - side / 2 / e.L]) {
+        const [px, , pz] = at(t, 0, -side / 2)
+        boxAlong(out, px, H + 2, pz, side / 2, 2, side / 2, e.heading, CREAM, concrete)
+      }
+      const [nx_, , nz_] = at(0.5, 0, 0.15)
+      boxAlong(out, nx_, 3.0, nz_, Math.min(4, inner * 0.35), 0.35, 0.08, e.heading, SIGN_RED, surfaceTag('metal'))
+    } else {
+      // the long sides: storey bands of plain windows
+      for (let f = 0; f < floors; f++) {
+        const [cx, , cz] = at(0.5, 0, 0.04)
+        boxAlong(out, cx, 3.5 + f * fh + fh * 0.5, cz, e.L / 2 - 1.5, fh * 0.22, 0.04, e.heading, OPENING, glass)
       }
     }
   }
-  // roof-garden restaurant sign across the top, facing the same way as the openings, sitting on the parapet
-  boxAlong(out, front.mid.x + front.nx * 0.2, H + 0.6, front.mid.z + front.nz * 0.2, front.L * 0.34, 0.5, 0.12, front.heading, SIGN_RED, surfaceTag('metal'))
 }

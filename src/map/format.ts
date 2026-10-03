@@ -39,13 +39,20 @@ export interface Zone {
 export interface ZoneProps {
   /** the ground here ships at the fine step (MAP-FORMAT §5.7); everywhere else is coarse */
   terrain?: 'fine' | 'coarse'
+  /** 'raw': the fine ground here skips the bake's 60 m rooftop-removing opening (a narrow steep island: Alcatraz) */
+  relief?: 'raw'
   /** what grows here (docs/MAP-FORMAT.md §7, src/city/zone-planting.ts) — the whole planting, winner-takes-all */
   plant?: ZonePlant
   itemColour?: Record<string, number>
   palette?: Record<string, unknown>
   crowd?: number
   traffic?: number
+  /** what is BUILT here, where it is not the city's usual (src/city/sf/btype.ts): 'presidio', the Army's and the parks' own */
+  buildings?: 'presidio' | 'mediterranean' | 'navy'
+  /** 'bike': the trails here (footways, paths, tracks with a riding surface) join the BIKE network (tools/bake.ts) */
+  trails?: 'bike'
   exclude?: string[]
+  /** 'waves': surf breaks on the shore here — foam and spray along the coastline (render/surf.ts) */
   water?: 'calm' | 'waves'
   park?: Record<string, unknown>
   furniture?: Record<string, unknown>
@@ -156,7 +163,7 @@ export interface Way {
   name?: number
   flags?: number
   // street
-  surface?: 'asphalt' | 'concrete' | 'cobblestone' | 'gravel' | 'dirt' | 'wood'
+  surface?: 'asphalt' | 'concrete' | 'cobblestone' | 'gravel' | 'dirt' | 'wood' | 'brick'
   width?: number
   walk?: number
   layer?: number

@@ -25,6 +25,7 @@
  * Going BELOW the sky radius will clip the dome and show the void behind it, so the floor here is deliberate.
  */
 import type { Scene } from '@babylonjs/core/scene'
+import { DAYLIGHT } from './facade-material.ts'
 import type { Camera } from '@babylonjs/core/Cameras/camera'
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial'
 
@@ -38,6 +39,14 @@ const MAX_FAR = 12000
 /** Each material's own fog density, remembered the first time we touch it so fog can be restored exactly. */
 const original = new WeakMap<ShaderMaterial, number>()
 let fogOff = false
+/**
+ * Babylon's fog on the PBR trees, as a fraction of the shaders' density. The law is the same, but PBR mixes the
+ * fog in LINEAR light before its gamma: at the shaders' density a tree 300 m off came out the fog's own white
+ * (measured at Aquatic Park, 2026-10-02); a quarter matches the roofs it stands among.
+ */
+export const PBR_FOG = 0.25
+/** the park's air when the rider is in one (`setRegionFog`), for Babylon's own fog on the PBR trees */
+let regionDensity: number | null = null
 
 function eachShader(scene: Scene, f: (m: ShaderMaterial) => void): void {
   for (const m of scene.materials) if (m instanceof ShaderMaterial) f(m)
@@ -49,6 +58,7 @@ function eachShader(scene: Scene, f: (m: ShaderMaterial) => void): void {
  */
 export function setFog(scene: Scene, on: boolean): void {
   fogOff = !on
+  scene.fogDensity = on ? (regionDensity ?? DAYLIGHT.fogDensity) * PBR_FOG : 0
   eachShader(scene, (m) => {
     // `floats` is Babylon's own record of what has been set on a ShaderMaterial; read the shipped value once
     const current = (m as unknown as { _floats?: Record<string, number> })._floats?.fogDensity
@@ -79,7 +89,10 @@ export const fogIsOff = (): boolean => fogOff
  * separate change and is written up rather than half-made here.
  */
 export function setRegionFog(scene: Scene, density: number | null): void {
+  regionDensity = density
   if (fogOff) return                        // photo mode wins; it was asked for explicitly
+  // the PBR trees' fog (game.ts sets Babylon's own fog to match the shaders'): the park's air, or the hour's
+  scene.fogDensity = (density ?? DAYLIGHT.fogDensity) * PBR_FOG
   eachShader(scene, (m) => {
     const current = (m as unknown as { _floats?: Record<string, number> })._floats?.fogDensity
     if (current !== undefined && !original.has(m)) original.set(m, current)

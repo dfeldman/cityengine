@@ -21,10 +21,11 @@
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader'
 import type { Scene } from '@babylonjs/core/scene'
-import type { Vector3 } from '@babylonjs/core/Maths/math.vector'
+import { Vector3 } from '@babylonjs/core/Maths/math.vector'
 import { MeshBuilder } from './buildings.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
 import { DAYLIGHT } from './facade-material.ts'
+import { fogIsOff } from './photo.ts'
 import { SHADOW_Y, addShadow, shadowMaterial, shadowOffset } from './shadows.ts'
 import { PROCEDURAL, type Fit } from './landmarks/procedural.ts'
 import { TILE, type TileData } from '../city/tiles.ts'
@@ -145,13 +146,16 @@ export interface LandmarkEntry {
    * real pier deck being about 3–5 m. Takes precedence over the terrain-draped placement below.
    */
   deckAbove?: number
+  /** every vertex lifted onto the ground under it (a model that follows a slope: Lombard Street's hedges) */
+  drape?: boolean
+  /** only what stands over the water is drawn (a marina's boats, not on its breakwater) */
+  waterOnly?: boolean
   /**
    * The model's own y = 0, in DATUM metres, instead of draping it on the terrain under it (BUGS.md #211).
    *
-   * `deckAbove` is the same idea measured off the sea, and would be the right knob — but the city INDEX
-   * carries no `seaLevel` (the bake writes one, `tools/bake.ts`, and neither `index.json` nor
-   * `src/city/tiles.ts` passes it on), so at run time it is null and `deckAbove` silently falls through to
-   * the drape. This is the absolute form, which needs nothing from the bake.
+   * `deckAbove` is the same idea measured off the sea. (Until 2026-10-02 the city index carried no sea level, so
+   * `deckAbove` silently fell through to the drape — BUGS.md #258; it now arrives as the index's `sea`.) This is the
+   * absolute form, for a model whose datum is not the sea's.
    *
    * It exists for the Golden Gate Bridge, whose footprint is 2.7 km long and whose terrain is the sea bed:
    * draped, the whole bridge stands 70 m under the water. The number is not the real water line either — it
@@ -566,7 +570,7 @@ export function tileNearParts(parts: PartLike[], tx: number, tz: number, slack =
 }
 
 /** A skyline landmark: its true position, and how much larger than true it is drawn (see skylineBoost). */
-interface SkyItem { name: string; mesh: Mesh; x: number; y: number; z: number; boost: number }
+interface SkyItem { name: string; mesh: Mesh; x: number; y: number; z: number; boost: number; haze: { fog: number } }
 
 /**
  * Far landmarks are drawn larger than true, growing with distance: 1× inside 1.5 km, 1.8× by 5 km. At its true
@@ -622,7 +626,7 @@ export class Landmarks {
    * got. render/plants.ts reads this list (via game.ts) to lattice-plant a skypark exactly where its deck
    * actually is — including any standing placement error, which this deliberately does not correct.
    */
-  readonly decks: { ring: { x: number; z: number }[]; y: number }[] = []
+  readonly decks: { ring: { x: number; z: number }[]; y: number; keepOff?: number; trees?: boolean; shrubs?: boolean; spacing?: number }[] = []
 
   /**
    * Every footprint a landmark declared it draws its own raised structure over (`coversRaised`), in world
@@ -637,6 +641,10 @@ export class Landmarks {
   readonly covers: { ring: { x: number; z: number }[]; y0: number; y1: number }[] = []
   /** told of each cover the instant it is placed; set by game.ts before any tile is handed over */
   onCover: ((c: { ring: { x: number; z: number }[]; y0: number; y1: number }) => void) | null = null
+  /** told of each street-level paving a model asks for (MeshBuilder.grounds); set by game.ts like `onCover` */
+  onGround: ((ring: { x: number; z: number }[]) => void) | null = null
+  /** is (x, z) known dry land (the city's water pieces)? for `waterOnly`; set by game.ts */
+  dryAt: ((x: number, z: number) => boolean) | null = null
 
   /**
    * Every sign a model put on itself (render/landmarks/signage.ts), with the distance beyond which it is not
@@ -710,22 +718,21 @@ export class Landmarks {
     // ---- the skyline
     const skyMat = cartoonMaterial(scene, 'cartoonSkyline', false)
     skyMat.setFloat('fogDensity', 0.00002)
-    const fog = DAYLIGHT.fogColour
     for (const s of pkg.skyline ?? []) {
       const build = PROCEDURAL[s.procedural]
       if (!build) continue
       const mb = new MeshBuilder()
       build(mb, { hx: 20, hz: 20, height: s.heightM })
-      // hazed toward the horizon by distance, baked in: at kilometres the change as the rider moves is nil
+      // (hazed per frame by its distance from the EYE — `update` — not baked from the origin's: baked, the Bay Bridge
+      //  was 38 % hazed with the city between it and the rider 90 % hazed, and Yerba Buena hung over the water as a
+      //  dark saucer — appearance audit, 2026-10-02)
       const d = Math.hypot(s.x, s.z)
-      const haze = Math.min(0.85, 1 - Math.exp(-d / 6000))
-      for (let i = 0; i < mb.colors.length; i += 4) {
-        mb.colors[i] += (fog.r - mb.colors[i]) * haze
-        mb.colors[i + 1] += (fog.g - mb.colors[i + 1]) * haze
-        mb.colors[i + 2] += (fog.b - mb.colors[i + 2]) * haze
-      }
       const m = new Mesh(`skyline:${s.name}`, scene)
       mb.toVertexData().applyToMesh(m)
+      // the fog it gets, set just before its own draw: the shared material's density, scaled so that its fake depth
+      // (it is drawn shrunk to about R metres out) fogs it as its true distance would
+      const item = { fog: 0 }
+      m.onBeforeRenderObservable.add(() => skyMat.setFloat('fogDensity', fogIsOff() ? 0 : item.fog))
       shed(m)
       m.material = skyMat
       // group 0, with the sky dome: every solid thing in the city draws over it, so it shows only where
@@ -750,7 +757,7 @@ export class Landmarks {
         if (near.rotateDeg !== undefined) m.rotation.y = (near.rotateDeg * Math.PI) / 180
       }
       // a long thing needs less of the distance boost a slender tower does (the Golden Gate is 2.7 km of it)
-      this.sky.push({ name: s.name, mesh: m, x: at.x, y: at.y, z: at.z, boost: s.boost ?? skylineBoost(d) })
+      this.sky.push({ name: s.name, mesh: m, x: at.x, y: at.y, z: at.z, boost: s.boost ?? skylineBoost(d), haze: item })
     }
   }
 
@@ -971,6 +978,37 @@ export class Landmarks {
       if (!build) { console.warn(`landmark ${e.name}: no procedural builder "${e.procedural}"`); return }
       const mb = new MeshBuilder()
       build(mb, fit)
+      /*
+       * DRAPED (`"drape": true`): every vertex lifted by the ground under it, relative to the placement's y — for a model
+       * that follows a slope rather than standing on one level: Lombard Street's hedges down the 27% crooked block.
+       */
+      if (e.drape) {
+        const sc = e.scale ?? 1, cr = Math.cos(rotation), sr = Math.sin(rotation)
+        for (let i = 0; i < mb.positions.length; i += 3) {
+          const px = mb.positions[i], pz = mb.positions[i + 2]
+          const wx = cx + ox + (px * cr + pz * sr) * sc
+          const wz = cz + oz + (-px * sr + pz * cr) * sc
+          mb.positions[i + 1] += (this.terrain.heightAt(wx, wz) - y) / sc
+        }
+      }
+      /*
+       * WATER ONLY (`"waterOnly": true`): every triangle whose middle stands over land is dropped — a marina's rectangle
+       * takes in its breakwaters and car parks, and its boats were moored on them (appearance pass, 2026-10-02).
+       */
+      if (e.waterOnly && this.dryAt) {
+        const sc = e.scale ?? 1, cr = Math.cos(rotation), sr = Math.sin(rotation)
+        const keep: number[] = []
+        const P = mb.positions
+        for (let t = 0; t < mb.indices.length; t += 3) {
+          const [a, b, c] = [mb.indices[t], mb.indices[t + 1], mb.indices[t + 2]]
+          const px = (P[a * 3] + P[b * 3] + P[c * 3]) / 3, pz = (P[a * 3 + 2] + P[b * 3 + 2] + P[c * 3 + 2]) / 3
+          const wx = cx + ox + (px * cr + pz * sr) * sc
+          const wz = cz + oz + (-px * sr + pz * cr) * sc
+          if (!this.dryAt(wx, wz)) keep.push(a, b, c)
+        }
+        mb.indices.length = 0
+        mb.indices.push(...keep)
+      }
       const m = new Mesh(`landmark:${e.name}`, this.scene)
       mb.toVertexData().applyToMesh(m)
       // plain, not dressed stone, where the white is paint on steel (the Pompidou): `"stone": false`
@@ -990,7 +1028,14 @@ export class Landmarks {
           x: cx + ox + (p.x * cosR + p.z * sinR) * scale,
           z: cz + oz + (-p.x * sinR + p.z * cosR) * scale,
         }))
-        this.decks.push({ ring, y: y + d.y * scale })
+        this.decks.push({ ring, y: y + d.y * scale, keepOff: d.keepOff, trees: d.trees, shrubs: d.shrubs, spacing: d.spacing ? d.spacing * scale : undefined })
+      }
+      // and the ground it paves at street level (MeshBuilder.grounds), in world metres, for the city to drape
+      for (const g of mb.grounds) {
+        this.onGround?.(g.map((p) => ({
+          x: cx + ox + (p.x * cosR + p.z * sinR) * scale,
+          z: cz + oz + (-p.x * sinR + p.z * cosR) * scale,
+        })))
       }
       // and the footprint it claims from the ride graph, measured off the mesh it just wrote and turned
       // into world metres by the same transform as the decks above (BUGS.md #136)
@@ -1021,7 +1066,10 @@ export class Landmarks {
        * the deck the rider is on. A bridge over water casts its shadow on the water, which we do not draw.
        */
       const shadows = new MeshBuilder()
-      if (e.baseY === undefined) addShadow(shadows, under, modelHeight(mb) * 0.85, shadowOffset(DAYLIGHT.sun), SHADOW_Y)
+      // …and nor does one standing on piles over the water (`deckAbove`): its shadow draped on the sea bed showed
+      // up through the water as a dark box round every pier (appearance audit, 2026-10-02: Hyde Street Pier,
+      // the Ferry Building's floats)
+      if (e.baseY === undefined && e.deckAbove === undefined) addShadow(shadows, under, modelHeight(mb) * 0.85, shadowOffset(DAYLIGHT.sun), SHADOW_Y)
       if (shadows.triangles > 0) {
         const sm = new Mesh(`landmark:shadow:${e.name}`, this.scene)
         this.terrain.drape(shadows.positions)
@@ -1055,7 +1103,10 @@ export class Landmarks {
         if (!m) continue
         m.parent = host
         m.renderingGroupId = 3
-        this.signs.push({ mesh: m, x: host.position.x, z: host.position.z, cut, on: true })
+        // gated at the SIGN, not the host's origin: on a 438 m terminal the gondola's board is 150 m from it
+        // and was never switched on for a rider standing under it
+        const at = Vector3.TransformCoordinates(new Vector3(p.x, p.y, p.z), host.computeWorldMatrix(true))
+        this.signs.push({ mesh: m, x: at.x, z: at.z, cut, on: true })
       } else if (p.spec.model) {
         void this.loadSignModel(p, host, name, cut)
       } else {
@@ -1079,7 +1130,10 @@ export class Landmarks {
         m.rotation.y = p.heading
         m.renderingGroupId = 3
         m.isPickable = false
-        this.signs.push({ mesh: m, x: host.position.x, z: host.position.z, cut, on: true })
+        // gated at the SIGN, not the host's origin: on a 438 m terminal the gondola's board is 150 m from it
+        // and was never switched on for a rider standing under it
+        const at = Vector3.TransformCoordinates(new Vector3(p.x, p.y, p.z), host.computeWorldMatrix(true))
+        this.signs.push({ mesh: m, x: at.x, z: at.z, cut, on: true })
       }
       for (const m of r.meshes) if (m.name === '__root__') m.dispose()
     } catch (err) {
@@ -1133,6 +1187,10 @@ export class Landmarks {
       const py = Math.min(eye.y + dy * k, this.terrain.heightAt(px, pz) - 3)
       s.mesh.position.set(px, py, pz)
       s.mesh.scaling.setAll(k * s.boost)
+      // as hazed as the city would be at its true distance, but never past 0.8 — a little under what the city's own fog has
+      // reached at the 1.3 km where the real model hands over to this one
+      const f = Math.min(0.8, 1 - Math.exp(-d * DAYLIGHT.fogDensity))
+      s.haze.fog = -Math.log(1 - f) / Math.max(R, d * k)
     }
   }
 

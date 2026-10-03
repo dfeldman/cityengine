@@ -186,8 +186,7 @@ export const TOWER_PRESETS = {
   parc55: preset({ height: 125, wall: [0.84, 0.82, 0.78], glass: [0.2, 0.23, 0.27], pattern: 'horizontal', pitch: 3.1, solid: 0.5, crown: 'flat' }),
   /** Millennium Tower (2009): blue-grey glass in a fine grid, stepping in at the top */
   millenniumTower: preset({ height: 197, wall: [0.62, 0.66, 0.7], glass: [0.38, 0.47, 0.56], pattern: 'grid', pitch: 3.2, solid: 0.18, setbacks: [[0.85, 3], [0.93, 3]], crown: 'flat' }),
-  /** 181 Fremont (2018): glass with its diagonal-braced frame, a sloped crown and mast */
-  fremont181: preset({ height: 244, wall: [0.7, 0.73, 0.76], glass: [0.4, 0.5, 0.6], pattern: 'grid', pitch: 3.6, solid: 0.15, crown: 'mast' }),
+  // (181 Fremont was a grid preset here; it is its own model now, sf/fremont181.ts — the braces are the building)
   /** One Rincon Hill (2008): pale glass and white bands, the flat crown */
   oneRinconHill: preset({ height: 195, wall: [0.84, 0.86, 0.88], glass: [0.44, 0.55, 0.64], pattern: 'horizontal', pitch: 3, solid: 0.2, crown: 'lantern' }),
   /** the Russ Building (1927): buff terracotta Gothic, stepping in to its tower */

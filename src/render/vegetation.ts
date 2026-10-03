@@ -143,8 +143,8 @@ export class Vegetation {
    * a deck adds is `y` on each planting, which `seat()` uses instead of the terrain. Held for good rather
    * than streamed: a hand-modelled landmark does not come and go the way a tile does.
    */
-  addDeck(ring: { x: number; z: number }[], y: number): void {
-    const ps = deckPlantings(ring, y)
+  addDeck(ring: { x: number; z: number }[], y: number, keepOff?: number, spacing?: number): void {
+    const ps = deckPlantings(ring, y, keepOff, undefined, spacing)
     if (!ps.length) return
     const key = `deck:${this.decks++}`
     this.byTile.set(key, ps)

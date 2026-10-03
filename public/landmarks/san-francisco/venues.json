@@ -1,5 +1,18 @@
 [
  {
+  "name": "Oracle Park",
+  "procedural": "oraclePark",
+  "height": 45,
+  "note": "Placed at its survey's origin (venues.ts SURVEY: way/24352572 in metres, x east z north; matched to OSM within 0.4 m, 2026-10-02) and built on the survey itself. Claimed by OSM id it was fitted to the one baked part (way/499568642) and came out a quarter size in the Cove. The Giants' ballpark (HOK, 2000), open to the sky: the city drew it as a 30 m solid extrusion because relation/7325085 (named, leisure=stadium, height=45) carries no building tag and relation/7330762 (building=stadium) is unnamed, so it reached neither the register nor any manifest. The builder derives its own frame from the footprint's longest edge \u2014 the 124 m right-field wall on McCovey Cove \u2014 so no `front` is given: the relation is unnamed, so \"street\" would find no frontage anyway and the loader falls back to the footprint's long axis, which the builder does not depend on. BUGS.md #156: the 4995686xx building:parts were NOT claimed here, so they drew ON TOP of this builder - w499568642 alone is 60 m over 33,567 m2, which is the 'huge generic building' the owner saw covering the park (2026-09-23). 646/647/648/649 are the floodlight masts that also reached a Haiku batch (#127). All nine now claimed so supersession removes them.",
+  "lat": 37.7785467,
+  "lon": -122.3895006,
+  "rotateDeg": 0,
+  "size": [
+   271,
+   206
+  ]
+ },
+ {
   "osm": [
    "relation/7330762",
    "relation/7325085",
@@ -12,12 +25,14 @@
    "way/499568647",
    "way/499568648",
    "way/499568649",
-   "way/499568652"
+   "way/499568652",
+   "way/368214736",
+   "way/368214737",
+   "way/368215207",
+   "way/368215208"
   ],
-  "name": "Oracle Park",
-  "procedural": "oraclePark",
-  "height": 45,
-  "note": "The Giants' ballpark (HOK, 2000), open to the sky: the city drew it as a 30 m solid extrusion because relation/7325085 (named, leisure=stadium, height=45) carries no building tag and relation/7330762 (building=stadium) is unnamed, so it reached neither the register nor any manifest. The builder derives its own frame from the footprint's longest edge \u2014 the 124 m right-field wall on McCovey Cove \u2014 so no `front` is given: the relation is unnamed, so \"street\" would find no frontage anyway and the loader falls back to the footprint's long axis, which the builder does not depend on. BUGS.md #156: the 4995686xx building:parts were NOT claimed here, so they drew ON TOP of this builder - w499568642 alone is 60 m over 33,567 m2, which is the 'huge generic building' the owner saw covering the park (2026-09-23). 646/647/648/649 are the floodlight masts that also reached a Haiku batch (#127). All nine now claimed so supersession removes them."
+  "name": "Oracle Park: OSM's outline and parts",
+  "note": "placeholder: the stadium's relations, outline and building:parts (incl. floodlight masts) \u2014 drawn by oraclePark above."
  },
  {
   "osm": [

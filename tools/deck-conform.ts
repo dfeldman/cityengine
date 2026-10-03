@@ -11,7 +11,7 @@ import { resolve } from 'node:path'
 import { Projection } from '../src/city/geo.ts'
 import { packPoints, unpackPoints, type PackedEdge } from '../src/city/package.ts'
 import { BridgeDecks, placement, toWorld, type ConformReport, type DeckDecl, type GraphEdge } from '../src/city/bridge-decks.ts'
-import { SF_BRIDGE_DECKS, BAY_BIKEWAY, BAY_RIDDEN_RAMPS, type AuthoredEnd, type AuthoredWay } from '../src/city/sf/bridges.ts'
+import { SF_BRIDGE_DECKS, BAY_BIKEWAY, BAY_RIDDEN_RAMPS, SALESFORCE_PARK_WAYS, type AuthoredEnd, type AuthoredWay } from '../src/city/sf/bridges.ts'
 import type { OsmWay } from './overpass.ts'
 
 /** the decks each region's bridge models declare, by `procedural` */
@@ -36,16 +36,24 @@ export function decksOf(region: string, origin: { lat: number; lon: number }): B
   return decks
 }
 
-/** each region's authored ways, the model whose frame they are drawn in, and the freeway ramps it rides */
-const REGION_WAYS: Record<string, { model: string; ways: AuthoredWay[]; ridden: [number, number][] }> = {
-  'san-francisco': { model: 'bayBridgeNear', ways: BAY_BIKEWAY, ridden: BAY_RIDDEN_RAMPS },
+/**
+ * Each region's authored ways, by the model whose frame they are drawn in (any manifest of the region may place it),
+ * and the freeway ramps it rides. The Bay Bridge Bikeway; since 2026-10-02 Salesforce Park's gondola
+ * (docs/SALESFORCE-PARK.md).
+ */
+const REGION_WAYS: Record<string, { models: { model: string; ways: AuthoredWay[] }[]; ridden: [number, number][] }> = {
+  'san-francisco': { models: [{ model: 'bayBridgeNear', ways: BAY_BIKEWAY }, { model: 'salesforceTransitCenter', ways: SALESFORCE_PARK_WAYS }], ridden: BAY_RIDDEN_RAMPS },
 }
 
 function placementOf(region: string, procedural: string, origin: { lat: number; lon: number }): ReturnType<typeof placement> | null {
-  const file = resolve(import.meta.dirname, '..', 'public', 'landmarks', region, 'bridges.json')
-  if (!existsSync(file)) return null
-  const e = (JSON.parse(readFileSync(file, 'utf8')) as Entry[]).find((x) => x.procedural === procedural)
-  return e && e.lat !== undefined && e.lon !== undefined ? placement({ ...e, lat: e.lat, lon: e.lon }, new Projection(origin)) : null
+  const dir = resolve(import.meta.dirname, '..', 'public', 'landmarks', region)
+  if (!existsSync(dir)) return null
+  for (const f of readdirSync(dir).filter((n) => n.endsWith('.json')).sort()) {
+    const list = JSON.parse(readFileSync(resolve(dir, f), 'utf8')) as Entry[] | { entries?: Entry[] }
+    const e = (Array.isArray(list) ? list : list.entries ?? []).find((x) => x.procedural === procedural)
+    if (e && e.lat !== undefined && e.lon !== undefined) return placement({ ...e, lat: e.lat, lon: e.lon }, new Projection(origin))
+  }
+  return null
 }
 
 /**
@@ -58,8 +66,6 @@ export function authoredWays(region: string, origin: { lat: number; lon: number 
   const spec = REGION_WAYS[region]
   const y = new Map<number, number>()
   if (!spec) return { ways: [], y }
-  const pl = placementOf(region, spec.model, origin)
-  if (!pl) return { ways: [], y }
   const proj = new Projection(origin)
   // every OSM node's place
   const nodeAt = new Map<number, { lat: number; lon: number }>()
@@ -98,7 +104,11 @@ export function authoredWays(region: string, origin: { lat: number; lon: number 
   let next = -800_000_000
   const free = new Map<string, number>()
   const out: OsmWay[] = []
-  spec.ways.forEach((w, k) => {
+  let k = 0
+  for (const group of spec.models) {
+  const pl = placementOf(region, group.model, origin)
+  if (!pl) continue
+  for (const w of group.ways) {
     const world = w.points.map((q) => ({ ...toWorld(pl, q), y: pl.baseY + q.y * pl.scale }))
     const end = (e: AuthoredEnd, q: { x: number; z: number }): number => {
       if ('node' in e) return e.node
@@ -118,8 +128,10 @@ export function authoredWays(region: string, origin: { lat: number; lon: number 
     const geometry = world.map((q, i) => nodeAt.get(nodes[i]) ?? proj.toLatLon(q))
     nodes.forEach((n, i) => y.set(n, Math.round(world[i].y * 100) / 100))
     out.push({ type: 'way', id: -(700_000_000 + k), nodes, geometry,
-      tags: { highway: w.kind, name: w.name, bridge: 'yes', layer: '1', width: '4', bicycle: 'designated', 'sr:authored': 'yes' } } as OsmWay)
-  })
+      tags: { highway: w.kind, name: w.name, bridge: 'yes', layer: String(w.layer ?? 1), width: '4', bicycle: 'designated', 'sr:authored': 'yes' } } as OsmWay)
+    k++
+  }
+  }
   return { ways: out, y }
 }
 
@@ -169,11 +181,113 @@ export function conformToDecks(region: string, origin: { lat: number; lon: numbe
     if (v.cut) e.cut = true
     if (v.ridden) e.ridden = true
   })
+  alongside(edges, r.changed, decks)
   return r
 }
 
+const PATHS = new Set(['footway', 'path', 'cycleway', 'pedestrian', 'steps'])
+/** narrowest a carriageway is drawn when it has to give way to a neighbour (two lanes) */
+const MIN_ROAD = 6
+/** a footway on a structure stands this much above the carriageway beside it: the kerb */
+const KERB = 0.15
+
+/**
+ * SIDE BY SIDE ON ONE STRUCTURE (owner, 2026-10-02, the Golden Gate's south approach: "the path goes right through the
+ * bottom of the bridge, and the user is stuck inside the bridge deck for quite a while"). Off a model's deck, every
+ * way of a chain is graded on its own, down to its own landing — and OSM's carriageways are drawn as wide as their
+ * width tag says. On the curved approach the two carriageways (12.6 m each, 9.8 m apart) overlapped each other, the
+ * east one's deck and parapet reached over the sidewalk 7.3 m from its middle, and the sidewalk, graded to its own
+ * end, ran 1.8 m under the road's surface: the rider rode inside the deck, through its parapet, head showing.
+ *
+ * So, for the ways the conform changed, off a model's own roadway, where two on the same level run alongside:
+ *   1. a CARRIAGEWAY is drawn no wider than leaves room for its neighbour (never under `MIN_ROAD`);
+ *   2. a FOOTWAY or cycleway beside a carriageway is at the carriageway's height, a kerb above it — blended back to
+ *      its own as the two part, so where it leaves for its own landing it still gets there.
+ */
+function alongside(edges: PackedEdge[], changed: Set<number>, decks: BridgeDecks): void {
+  interface Seg { e: PackedEdge; ax: number; az: number; bx: number; bz: number; ha: number; hb: number }
+  const CELL = 25
+  const grid = new Map<string, Seg[]>()
+  const cands = edges.filter((e) => changed.has(e.id) && (e.bridge || e.ramp) && !e.tunnel && e.heights)
+  const pts = new Map<PackedEdge, { x: number; z: number }[]>()
+  for (const e of cands) {
+    const p = unpackPoints(e.points)
+    pts.set(e, p)
+    for (let i = 1; i < p.length; i++) {
+      const s: Seg = { e, ax: p[i - 1].x, az: p[i - 1].z, bx: p[i].x, bz: p[i].z, ha: e.heights![i - 1], hb: e.heights![i] }
+      for (let gx = Math.floor(Math.min(s.ax, s.bx) / CELL); gx <= Math.floor(Math.max(s.ax, s.bx) / CELL); gx++) {
+        for (let gz = Math.floor(Math.min(s.az, s.bz) / CELL); gz <= Math.floor(Math.max(s.az, s.bz) / CELL); gz++) {
+          const k = `${gx},${gz}`
+          const l = grid.get(k)
+          if (l) l.push(s); else grid.set(k, [s])
+        }
+      }
+    }
+  }
+  const road = (e: PackedEdge): boolean => !e.foot && !PATHS.has(e.kind)
+  /** the nearest point of each OTHER way running the same way as `dir` near (x, z), with its height and distance */
+  const neighbours = (self: PackedEdge, x: number, z: number, dx: number, dz: number): Map<PackedEdge, { d: number; h: number }> => {
+    const out = new Map<PackedEdge, { d: number; h: number }>()
+    const gx = Math.floor(x / CELL), gz = Math.floor(z / CELL)
+    for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) for (const s of grid.get(`${gx + i},${gz + j}`) ?? []) {
+      if (s.e === self || (s.e.layer ?? 0) !== (self.layer ?? 0)) continue
+      const ux = s.bx - s.ax, uz = s.bz - s.az
+      const L = Math.hypot(ux, uz) || 1e-9
+      // parallel only: a way crossing over or under is not alongside
+      if (Math.abs((ux * dx + uz * dz) / L) < 0.9) continue
+      const t = Math.max(0, Math.min(1, ((x - s.ax) * ux + (z - s.az) * uz) / (L * L)))
+      const d = Math.hypot(s.ax + ux * t - x, s.az + uz * t - z)
+      const was = out.get(s.e)
+      if (!was || d < was.d) out.set(s.e, { d, h: s.ha + (s.hb - s.ha) * t })
+    }
+    return out
+  }
+  const halfOf = (e: PackedEdge): number => e.width / 2 + (road(e) ? Math.max(e.walk ?? 0, 0) : 0)
+  // 1. widths
+  const narrowest = new Map<PackedEdge, number>()
+  for (const e of cands) {
+    const p = pts.get(e)!
+    for (let i = 0; i < p.length; i++) {
+      if (decks.covers(p[i].x, p[i].z)) continue
+      const a = p[Math.max(0, i - 1)], b = p[Math.min(p.length - 1, i + 1)]
+      const l = Math.hypot(b.x - a.x, b.z - a.z) || 1e-9
+      for (const [n, { d }] of neighbours(e, p[i].x, p[i].z, (b.x - a.x) / l, (b.z - a.z) / l)) {
+        if (!road(n)) continue
+        // the room n leaves e here: half the gap between two carriageways, all of it beside a path
+        const room = road(e) ? d / 2 - 0.2 : d - halfOf(e) - 0.35
+        if (room < halfOf(n)) narrowest.set(n, Math.min(narrowest.get(n) ?? Infinity, room))
+      }
+    }
+  }
+  for (const [n, half] of narrowest) {
+    const w = Math.max(MIN_ROAD, Math.round(2 * (half - Math.max(n.walk ?? 0, 0)) * 10) / 10)
+    if (w < n.width) n.width = w
+  }
+  // 2. a path's heights beside a carriageway
+  for (const e of cands) {
+    if (road(e)) continue
+    const p = pts.get(e)!
+    const h = e.heights!
+    for (let i = 0; i < p.length; i++) {
+      if (decks.covers(p[i].x, p[i].z)) continue
+      const a = p[Math.max(0, i - 1)], b = p[Math.min(p.length - 1, i + 1)]
+      const l = Math.hypot(b.x - a.x, b.z - a.z) || 1e-9
+      let best: { d: number; h: number; reach: number } | null = null
+      for (const [n, v] of neighbours(e, p[i].x, p[i].z, (b.x - a.x) / l, (b.z - a.z) / l)) {
+        if (!road(n)) continue
+        const reach = halfOf(n) + halfOf(e) + 1
+        if (v.d < reach + 2 && (!best || v.d - reach < best.d - best.reach)) best = { ...v, reach }
+      }
+      if (!best) continue
+      // wholly alongside within `reach`, back to its own over the next two metres apart
+      const w = Math.max(0, Math.min(1, (best.reach + 2 - best.d) / 2))
+      h[i] = Math.round((h[i] + (best.h + KERB - h[i]) * w) * 100) / 100
+    }
+  }
+}
+
 /** what a way was before it was conformed — all that `conformToDecks` changes of it */
-export type DeckUndo = Record<string, { heights?: number[]; points?: number[]; bridge?: boolean; ramp?: boolean; bore?: boolean; cut?: boolean }>
+export type DeckUndo = Record<string, { heights?: number[]; points?: number[]; width?: number; bridge?: boolean; ramp?: boolean; bore?: boolean; cut?: boolean }>
 
 /** Put back what an earlier conform changed (so a changed declaration does not build on the last one's heights). */
 export function undoDecks(edges: PackedEdge[], undo: DeckUndo): Set<number> {
@@ -183,6 +297,7 @@ export function undoDecks(edges: PackedEdge[], undo: DeckUndo): Set<number> {
     if (!u) continue
     e.heights = u.heights
     if (u.points) e.points = u.points
+    if (u.width !== undefined) e.width = u.width
     for (const k of ['bridge', 'ramp', 'bore', 'cut'] as const) { if (u[k]) e[k] = true; else delete e[k] }
     touched.add(e.id)
   }
@@ -192,7 +307,7 @@ export function undoDecks(edges: PackedEdge[], undo: DeckUndo): Set<number> {
 /** `conformToDecks`, and what it changed as it was before — written beside the package as `decks-undo.json`. */
 export function conformWithUndo(region: string, origin: { lat: number; lon: number }, edges: PackedEdge[],
   ground: (x: number, z: number) => number): { report: ConformReport; undo: DeckUndo } | null {
-  const before = new Map(edges.map((e) => [e.id, { heights: e.heights, points: e.points, bridge: e.bridge, ramp: e.ramp, bore: e.bore, cut: e.cut }]))
+  const before = new Map(edges.map((e) => [e.id, { heights: e.heights, points: e.points, width: e.width, bridge: e.bridge, ramp: e.ramp, bore: e.bore, cut: e.cut }]))
   const report = conformToDecks(region, origin, edges, ground)
   if (!report) return null
   const undo: DeckUndo = {}

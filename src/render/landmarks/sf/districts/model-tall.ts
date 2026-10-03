@@ -5,7 +5,7 @@ import { fromRecipe } from '../recipes.ts'
 import { faceBand, towerRing, tower, type TowerSpec } from '../../tower.ts'
 import { boxAlong, edgeAt, longestEdge, offsetRing } from '../../parts.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
-import type { Rgb } from '../../../models.ts'
+import { box, type Rgb } from '../../../models.ts'
 
 const spec = (s: TowerSpec) => (out: MeshBuilder, fit: Fit): void => tower(out, fit, s)
 
@@ -113,7 +113,29 @@ function oneOhOneSecond(out: MeshBuilder, fit: Fit): void {
   boxAlong(out, cx + e.nx * 2.4, H + 13, cz + e.nz * 2.4, e.L * 0.15, 4, 5.4, e.heading, [0.55, 0.62, 0.62], surfaceTag('glass'))
 }
 
+/**
+ * 101 Second's ATRIUM (way/80296724): the public four-storey glass hall along Second Street in front of the tower. OSM tags this slab with the whole complex's address and a 99 m height,
+ * which drew a second glass tower beside the first (2026-10-02, docs/SALESFORCE-PARK.md); the height is the hall's.
+ */
+function oneOhOneSecondAtrium(out: MeshBuilder, fit: Fit): void {
+  // from a Mapillary panorama on Second Street beside No. 121: reflective blue glass in white horizontal mullions,
+  // five storeys, under a thin white roof plate that oversails the glass
+  const H = 21
+  tower(out, { ...fit, height: H }, {
+    height: H,
+    tiers: [{ to: 1, face: { kind: 'curtain', wall: [0.9, 0.9, 0.88], glass: [0.34, 0.48, 0.64], pitch: 3, floor: 2.6, material: 'glass' } }],
+    roof: [0.9, 0.9, 0.88],
+    crown: { kind: 'flat' },
+  })
+  const ring = towerRing(fit)
+  const e = edgeAt(ring, longestEdge(ring))
+  const W = Math.min(fit.hx, fit.hz) * 2
+  boxAlong(out, e.a.x + e.tx * e.L / 2 - e.nx * (W / 2 - 1), H + 0.3, e.a.z + e.tz * e.L / 2 - e.nz * (W / 2 - 1),
+    e.L / 2 + 1.2, 0.3, W / 2 + 1, e.heading, [0.92, 0.92, 0.9], surfaceTag('metal'))
+}
+
 export const MODEL_TALL: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+  oneOhOneSecondAtrium,
   mira,
   oneOhOneSecond,
 
@@ -165,55 +187,76 @@ export const MODEL_TALL: Record<string, (out: MeshBuilder, fit: Fit) => void> = 
    * `fit.hx`/`fit.hz`, not the building's massing, which the tiers below fully override.
    */
   hiltonFinancialDistrict: (out: MeshBuilder, fit: Fit): void => {
+    /*
+     * Reworked 2026-10-02 from the owner's aerial ("the Hilton hotel there looks all wrong"): the legs leaned together
+     * over half the tower in ten stair-steps and the square-facing ends were a dark blank — a dark stepped pyramid
+     * with a hole in it. The real one is a slender PALE concrete slab, ribbed top to bottom with its windows between
+     * the ribs on every face, that FLARES only over its bottom few storeys into two splayed legs — the skybridge from
+     * the square landing in the gap between them.
+     */
     const H = 91
-    const wall: [number, number, number] = [0.79, 0.74, 0.66]
-    const dark: [number, number, number] = [0.66, 0.62, 0.56]
-    const glass: [number, number, number] = [0.24, 0.24, 0.26]
-    const blankFace = { kind: 'blank' as const, wall: dark, material: 'concrete' as const }
-    const glazedFace = { kind: 'punched' as const, wall, glass, pitch: 3.0, floor: 3.15, solid: 0.55, material: 'concrete' as const }
+    const wall: [number, number, number] = [0.74, 0.73, 0.70]
+    const rib: [number, number, number] = [0.80, 0.79, 0.76]
+    const glass: [number, number, number] = [0.22, 0.23, 0.25]
+    const face = { kind: 'punched' as const, wall, glass, pitch: 2.6, floor: 3.15, solid: 0.5, material: 'concrete' as const }
+    const concrete = surfaceTag('concrete')
+    const hx = Math.min(fit.hx, 34)
+    const T = Math.max(7, Math.min(fit.hz * 0.45, 11))   // the slab's half-thickness
+    const HZ = Math.max(T + 4, fit.hz)                    // where the legs reach the ground
+    const FLARE = 16                                      // the top of the splay
+    const GAP = 4.5                                       // half the opening between the legs
+    const ARCH = 9                                        // its height
 
-    const hx = fit.hx
-    const T = fit.hz * 0.28 // leg/shaft half-thickness, held constant so the two legs become the shaft exactly
-    const outerZ0 = fit.hz - T // each leg's centre at the ground: its outer face sits on the real footprint edge
-    const convergeY = H * 0.52 // height at which the two legs' centrelines both reach z=0 and fully coincide
-
-    // a rectangle of the extrusion's full length (x) and the tier's own z-span, centred on `c`
-    const tierRing = (c: number): { x: number; z: number }[] => [
-      { x: -hx, z: c - T }, { x: hx, z: c - T }, { x: hx, z: c + T }, { x: -hx, z: c + T },
-    ]
-    // edges 1 and 3 (x = +hx and x = -hx) are the profile ends; edges 0 and 2 (z = const) are the swept sides
-    const drawTier = (c: number, y0: number, y1: number): void => {
-      const ring = tierRing(c)
-      faceBand(out, ring, y0, y1, blankFace, [1, 3])
-      faceBand(out, ring, y0, y1, glazedFace, [0, 2])
-    }
-
-    // the two legs, splayed apart at the ground and leaning together — staircased into LEG_TIERS steps so the
-    // gap between them (the "inverted V of open air") closes gradually rather than in one jump. Each tier
-    // keeps the WIDER (lower) footprint for its whole height, like `setbackTiers`, so a step always faces up.
-    const LEG_TIERS = 10
-    for (const side of [-1, 1] as const) {
-      for (let i = 0; i < LEG_TIERS; i++) {
-        const t0 = i / LEG_TIERS
-        const y0 = t0 * convergeY
-        const y1 = ((i + 1) / LEG_TIERS) * convergeY
-        const c = side * outerZ0 * (1 - t0) // lerp from the leg's ground position to 0, taken at the tier's base
-        drawTier(c, y0, y1)
+    // the slab, from the top of the flare to the roof
+    const slab = [{ x: -hx, z: -T }, { x: hx, z: -T }, { x: hx, z: T }, { x: -hx, z: T }]
+    faceBand(out, slab, FLARE, H - 4, face)
+    // its ribs: a pale fin every 3 m down every face, standing out of the windows
+    for (let i = 0; i < slab.length; i++) {
+      const e = edgeAt(slab, i)
+      const n = Math.round(e.L / 3)
+      for (let k = 1; k < n; k++) {
+        const t = k / n
+        boxAlong(out, e.a.x + e.tx * e.L * t + e.nx * 0.35, (FLARE + H - 4) / 2, e.a.z + e.tz * e.L * t + e.nz * 0.35, 0.25, (H - 4 - FLARE) / 2, 0.35, e.heading, rib, concrete)
       }
     }
+    // the crown: a deeper band, flared a little, the plant boxes on top
+    const crown = offsetRing(slab, 1.2)
+    faceBand(out, crown, H - 4, H, { kind: 'blank', wall: rib, material: 'concrete' })
+    capPolygon(out, crown, H, [0.62, 0.61, 0.58], concrete)
+    box(out, -hx * 0.45, H + 2, 0, 5, 2, T * 0.6, wall, concrete)
+    box(out, hx * 0.45, H + 2, 0, 5, 2, T * 0.6, wall, concrete)
 
-    // above the merge the two legs have become one shaft, centred, T half-thick, up to a small crown
-    const crownStart = H - 6
-    drawTier(0, convergeY, crownStart)
-
-    // a small parapet, per Wikipedia's "flares out in pagoda style" at the old roof-pool level — modest here
-    // since the shaft itself is already narrow (T, not the full footprint)
-    const crownRing = tierRing(0)
-    const flareRing = offsetRing(crownRing, 1.1)
-    faceBand(out, flareRing, crownStart, H, blankFace, [1, 3])
-    faceBand(out, flareRing, crownStart, H, glazedFace, [0, 2])
-    capPolygon(out, flareRing, H, [0.7, 0.66, 0.6], 0)
+    // THE LEGS: on each side, a solid splay from the slab's face out to the footprint at the ground, its outer face a
+    // slope, its inner face vertical beside the gap; the gap open to ARCH, closed above it
+    const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+    for (const s of [-1, 1] as const) {
+      const zIn = s * GAP
+      const zOut0 = s * HZ
+      const zOut1 = s * T
+      const k = (HZ - T) / FLARE
+      // the sloping outer face, with its windows as dark bands
+      out.quad([[-hx, 0, zOut0], [hx, 0, zOut0], [hx, FLARE, zOut1], [-hx, FLARE, zOut1]], [0, k, s], uv, wall, concrete)
+      for (let f = 1; f < 4; f++) {
+        const y = (f / 4) * FLARE
+        const z = zOut0 + (zOut1 - zOut0) * (y / FLARE)
+        out.quad([[-hx + 1, y - 1.1, z + s * 0.05], [hx - 1, y - 1.1, z + s * 0.05], [hx - 1, y + 0.4, z + s * 0.05 - s * 0.15], [-hx + 1, y + 0.4, z + s * 0.05 - s * 0.15]], [0, k, s], uv, glass, surfaceTag('glass'))
+      }
+      // the inner face beside the gap, to the arch's head
+      out.quad([[-hx, 0, zIn], [hx, 0, zIn], [hx, ARCH, zIn], [-hx, ARCH, zIn]], [0, 0, -s], uv, rib, concrete)
+      // the ends: the trapezoid of the splay, at x = ±hx
+      for (const ex of [-1, 1] as const) {
+        const x = ex * hx
+        out.quad([[x, 0, zIn], [x, 0, zOut0], [x, FLARE, zOut1], [x, FLARE, zIn]], [ex, 0, 0], uv, wall, concrete)
+      }
+    }
+    // over the gap: the arch's soffit and the wall above it, up to the slab
+    out.quad([[-hx, ARCH, -GAP], [hx, ARCH, -GAP], [hx, ARCH, GAP], [-hx, ARCH, GAP]], [0, -1, 0], uv, rib, concrete)
+    for (const ex of [-1, 1] as const) {
+      const x = ex * hx
+      out.quad([[x, ARCH, -GAP], [x, ARCH, GAP], [x, FLARE, GAP], [x, FLARE, -GAP]], [ex, 0, 0], uv, wall, concrete)
+    }
   },
+
 
   /**
    * 655 Montgomery, the Montgomery-Washington Tower (1984): buff precast postmodern, dark teal glass, the top

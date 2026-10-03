@@ -3722,5 +3722,705 @@
    0.5
   ],
   "note": "owner 2026-10-01: path below the terrain on a hill"
+ },
+ {
+  "name": "audit 01 Ferry Building",
+  "group": "audit",
+  "from": [
+   37.794577,
+   -122.396905,
+   120.00000000000001
+  ],
+  "to": [
+   37.7955,
+   -122.3937,
+   16
+  ]
+ },
+ {
+  "name": "audit 02 Pier 39",
+  "group": "audit",
+  "from": [
+   37.806163,
+   -122.410967,
+   100
+  ],
+  "to": [
+   37.8087,
+   -122.4098,
+   6
+  ]
+ },
+ {
+  "name": "audit 03 Fisherman's Wharf, Jefferson St",
+  "group": "audit",
+  "from": [
+   37.805301,
+   -122.4177,
+   100
+  ],
+  "to": [
+   37.808,
+   -122.4177,
+   6
+  ]
+ },
+ {
+  "name": "audit 04 Hyde Street Pier ships",
+  "group": "audit",
+  "from": [
+   37.805942,
+   -122.421208,
+   100
+  ],
+  "to": [
+   37.8086,
+   -122.4218,
+   6
+  ]
+ },
+ {
+  "name": "audit 05 Aquatic Park and Maritime Museum",
+  "group": "audit",
+  "from": [
+   37.80515,
+   -122.420546,
+   100
+  ],
+  "to": [
+   37.8065,
+   -122.4235,
+   6
+  ]
+ },
+ {
+  "name": "audit 06 Ghirardelli Square from the bay",
+  "group": "audit",
+  "from": [
+   37.808338,
+   -122.424605,
+   111.00000000000001
+  ],
+  "to": [
+   37.806,
+   -122.4229,
+   12
+  ]
+ },
+ {
+  "name": "audit 07 Fort Mason piers",
+  "group": "audit",
+  "from": [
+   37.804662,
+   -122.430295,
+   100
+  ],
+  "to": [
+   37.807,
+   -122.432,
+   6
+  ]
+ },
+ {
+  "name": "audit 08 Palace of Fine Arts",
+  "group": "audit",
+  "from": [
+   37.8029,
+   -122.444989,
+   120.00000000000001
+  ],
+  "to": [
+   37.8029,
+   -122.4484,
+   16
+  ]
+ },
+ {
+  "name": "audit 09 Marina Green and Crissy Field",
+  "group": "audit",
+  "from": [
+   37.80265,
+   -122.460046,
+   100
+  ],
+  "to": [
+   37.804,
+   -122.463,
+   4
+  ]
+ },
+ {
+  "name": "audit 10 Fort Point and the bridge",
+  "group": "audit",
+  "from": [
+   37.808532,
+   -122.474907,
+   120.00000000000001
+  ],
+  "to": [
+   37.8106,
+   -122.4771,
+   16
+  ]
+ },
+ {
+  "name": "audit 11 Golden Gate Bridge from Crissy Field",
+  "group": "audit",
+  "from": [
+   37.8045,
+   -122.456,
+   25
+  ],
+  "to": [
+   37.815,
+   -122.477,
+   90
+  ]
+ },
+ {
+  "name": "audit 12 Cliff House and Sutro Baths",
+  "group": "audit",
+  "from": [
+   37.77715,
+   -122.511047,
+   102.00000000000001
+  ],
+  "to": [
+   37.7785,
+   -122.514,
+   8
+  ]
+ },
+ {
+  "name": "audit 13 Ocean Beach",
+  "group": "audit",
+  "from": [
+   37.760923,
+   -122.506797,
+   100
+  ],
+  "to": [
+   37.76,
+   -122.51,
+   4
+  ]
+ },
+ {
+  "name": "audit 14 Legion of Honor",
+  "group": "audit",
+  "from": [
+   37.7845,
+   -122.49739,
+   111.00000000000001
+  ],
+  "to": [
+   37.7845,
+   -122.5008,
+   12
+  ]
+ },
+ {
+  "name": "audit 15 Exploratorium, Pier 15",
+  "group": "audit",
+  "from": [
+   37.80015,
+   -122.400454,
+   100
+  ],
+  "to": [
+   37.8015,
+   -122.3975,
+   6
+  ]
+ },
+ {
+  "name": "audit 16 Coit Tower",
+  "group": "audit",
+  "from": [
+   37.799863,
+   -122.406967,
+   156
+  ],
+  "to": [
+   37.8024,
+   -122.4058,
+   32
+  ]
+ },
+ {
+  "name": "audit 17 Transamerica Pyramid",
+  "group": "audit",
+  "from": [
+   37.791459,
+   -122.405528,
+   314.4
+  ],
+  "to": [
+   37.7952,
+   -122.4028,
+   80
+  ]
+ },
+ {
+  "name": "audit 18 Salesforce Tower",
+  "group": "audit",
+  "from": [
+   37.787484,
+   -122.404891,
+   471.6
+  ],
+  "to": [
+   37.7897,
+   -122.3972,
+   120
+  ]
+ },
+ {
+  "name": "audit 19 Bay Bridge west span",
+  "group": "audit",
+  "from": [
+   37.78835,
+   -122.386953,
+   192
+  ],
+  "to": [
+   37.787,
+   -122.384,
+   48
+  ]
+ },
+ {
+  "name": "audit 20 Oracle Park",
+  "group": "audit",
+  "from": [
+   37.779523,
+   -122.392504,
+   120.00000000000001
+  ],
+  "to": [
+   37.7786,
+   -122.3893,
+   16
+  ]
+ },
+ {
+  "name": "audit 21 Chase Center",
+  "group": "audit",
+  "from": [
+   37.76935,
+   -122.390652,
+   120.00000000000001
+  ],
+  "to": [
+   37.768,
+   -122.3877,
+   16
+  ]
+ },
+ {
+  "name": "audit 22 City Hall",
+  "group": "audit",
+  "from": [
+   37.7793,
+   -122.41589,
+   156
+  ],
+  "to": [
+   37.7793,
+   -122.4193,
+   32
+  ]
+ },
+ {
+  "name": "audit 23 War Memorial Opera House",
+  "group": "audit",
+  "from": [
+   37.779123,
+   -122.417796,
+   120.00000000000001
+  ],
+  "to": [
+   37.7782,
+   -122.421,
+   16
+  ]
+ },
+ {
+  "name": "audit 24 Main Library and Asian Art Museum",
+  "group": "audit",
+  "from": [
+   37.776301,
+   -122.4157,
+   111.00000000000001
+  ],
+  "to": [
+   37.779,
+   -122.4157,
+   12
+  ]
+ },
+ {
+  "name": "audit 25 St Mary's Cathedral",
+  "group": "audit",
+  "from": [
+   37.783577,
+   -122.422596,
+   156
+  ],
+  "to": [
+   37.7845,
+   -122.4258,
+   32
+  ]
+ },
+ {
+  "name": "audit 26 Grace Cathedral",
+  "group": "audit",
+  "from": [
+   37.789363,
+   -122.414566,
+   138
+  ],
+  "to": [
+   37.7919,
+   -122.4134,
+   24
+  ]
+ },
+ {
+  "name": "audit 27 Fairmont Hotel",
+  "group": "audit",
+  "from": [
+   37.79105,
+   -122.407247,
+   138
+  ],
+  "to": [
+   37.7924,
+   -122.4102,
+   24
+  ]
+ },
+ {
+  "name": "audit 28 Palace Hotel and Market Street",
+  "group": "audit",
+  "from": [
+   37.78665,
+   -122.404753,
+   120.00000000000001
+  ],
+  "to": [
+   37.788,
+   -122.4018,
+   16
+  ]
+ },
+ {
+  "name": "audit 29 SFMOMA",
+  "group": "audit",
+  "from": [
+   37.783163,
+   -122.402266,
+   156
+  ],
+  "to": [
+   37.7857,
+   -122.4011,
+   32
+  ]
+ },
+ {
+  "name": "audit 30 Yerba Buena Gardens and Moscone",
+  "group": "audit",
+  "from": [
+   37.786838,
+   -122.404205,
+   102.00000000000001
+  ],
+  "to": [
+   37.7845,
+   -122.4025,
+   8
+  ]
+ },
+ {
+  "name": "audit 31 Embarcadero Center",
+  "group": "audit",
+  "from": [
+   37.792932,
+   -122.395308,
+   192
+  ],
+  "to": [
+   37.795,
+   -122.3975,
+   48
+  ]
+ },
+ {
+  "name": "audit 32 555 California",
+  "group": "audit",
+  "from": [
+   37.789408,
+   -122.39783,
+   377.28000000000003
+  ],
+  "to": [
+   37.792,
+   -122.4035,
+   96
+  ]
+ },
+ {
+  "name": "audit 33 Millennium Tower and 181 Fremont",
+  "group": "audit",
+  "from": [
+   37.794989,
+   -122.392726,
+   377.28000000000003
+  ],
+  "to": [
+   37.7905,
+   -122.396,
+   96
+  ]
+ },
+ {
+  "name": "audit 34 One Rincon Hill",
+  "group": "audit",
+  "from": [
+   37.781941,
+   -122.394366,
+   314.4
+  ],
+  "to": [
+   37.786,
+   -122.3925,
+   80
+  ]
+ },
+ {
+  "name": "audit 35 Federal Building, 7th St",
+  "group": "audit",
+  "from": [
+   37.776963,
+   -122.413466,
+   156
+  ],
+  "to": [
+   37.7795,
+   -122.4123,
+   32
+  ]
+ },
+ {
+  "name": "audit 36 Union Square",
+  "group": "audit",
+  "from": [
+   37.785301,
+   -122.4075,
+   102.00000000000001
+  ],
+  "to": [
+   37.788,
+   -122.4075,
+   8
+  ]
+ },
+ {
+  "name": "audit 37 Chinatown Gate",
+  "group": "audit",
+  "from": [
+   37.787801,
+   -122.4058,
+   100
+  ],
+  "to": [
+   37.7905,
+   -122.4058,
+   5
+  ]
+ },
+ {
+  "name": "audit 38 Lombard Street",
+  "group": "audit",
+  "from": [
+   37.8021,
+   -122.415289,
+   100
+  ],
+  "to": [
+   37.8021,
+   -122.4187,
+   4
+  ]
+ },
+ {
+  "name": "audit 39 Conservatory of Flowers",
+  "group": "audit",
+  "from": [
+   37.768901,
+   -122.4602,
+   102.00000000000001
+  ],
+  "to": [
+   37.7716,
+   -122.4602,
+   8
+  ]
+ },
+ {
+  "name": "audit 40 de Young",
+  "group": "audit",
+  "from": [
+   37.769332,
+   -122.466509,
+   120.00000000000001
+  ],
+  "to": [
+   37.7714,
+   -122.4687,
+   16
+  ]
+ },
+ {
+  "name": "audit 41 California Academy of Sciences",
+  "group": "audit",
+  "from": [
+   37.767562,
+   -122.467805,
+   102.00000000000001
+  ],
+  "to": [
+   37.7699,
+   -122.4661,
+   8
+  ]
+ },
+ {
+  "name": "audit 42 Dutch Windmill",
+  "group": "audit",
+  "from": [
+   37.7705,
+   -122.505591,
+   111.00000000000001
+  ],
+  "to": [
+   37.7705,
+   -122.509,
+   12
+  ]
+ },
+ {
+  "name": "audit 43 Beach Chalet",
+  "group": "audit",
+  "from": [
+   37.769969,
+   -122.506643,
+   100
+  ],
+  "to": [
+   37.7695,
+   -122.51,
+   5
+  ]
+ },
+ {
+  "name": "audit 44 Stow Lake and Strawberry Hill",
+  "group": "audit",
+  "from": [
+   37.766162,
+   -122.474295,
+   102.00000000000001
+  ],
+  "to": [
+   37.7685,
+   -122.476,
+   8
+  ]
+ },
+ {
+  "name": "audit 45 Presidio Main Post and Officers' Club",
+  "group": "audit",
+  "from": [
+   37.7985,
+   -122.455589,
+   100
+  ],
+  "to": [
+   37.7985,
+   -122.459,
+   6
+  ]
+ },
+ {
+  "name": "audit 46 Sutro Tower",
+  "group": "audit",
+  "from": [
+   37.760811,
+   -122.44871,
+   471.6
+  ],
+  "to": [
+   37.7552,
+   -122.4528,
+   120
+  ]
+ },
+ {
+  "name": "audit 47 Twin Peaks",
+  "group": "audit",
+  "from": [
+   37.75385,
+   -122.444548,
+   102.00000000000001
+  ],
+  "to": [
+   37.7525,
+   -122.4475,
+   8
+  ]
+ },
+ {
+  "name": "audit 48 Kezar Stadium",
+  "group": "audit",
+  "from": [
+   37.769699,
+   -122.457,
+   100
+  ],
+  "to": [
+   37.767,
+   -122.457,
+   6
+  ]
+ },
+ {
+  "name": "audit 49 Mission Dolores",
+  "group": "audit",
+  "from": [
+   37.7642,
+   -122.423591,
+   105.60000000000002
+  ],
+  "to": [
+   37.7642,
+   -122.427,
+   10
+  ]
+ },
+ {
+  "name": "audit 50 Alcatraz from the shore",
+  "group": "audit",
+  "from": [
+   37.815902,
+   -122.423,
+   372.00000000000006
+  ],
+  "to": [
+   37.8267,
+   -122.423,
+   16
+  ]
  }
 ]

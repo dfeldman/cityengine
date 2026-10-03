@@ -77,15 +77,12 @@ const KNOWN: Record<string, string[]> = {
     // #109 — not on the ground. The Opera Plaza courtyard's +3.80 m is a RAISED DECK and is probably right;
     // Union Square sunk 3.20 m with 6.0 m of relief across 120 × 78 m is the one to look at first.
     'height | Opera Plaza courtyard',
-    'ground | Opera Plaza courtyard',
     'height | Union Square Market Street Headhouse',
     'height | Powell Street Station Canopy',
     "height | Cupid's Span",
     'height | Ruth Asawa Mermaid Fountain',
     'height | Redwood Park pool',
     'height | Union Square',
-    'ground | Union Square',
-    'ground | Ruth Asawa Mermaid Fountain',
     // #110 — z-fighting candidates
     'coplanar | Opera Plaza courtyard',
     'coplanar | Union Square Market Street Headhouse',
@@ -109,7 +106,6 @@ const KNOWN: Record<string, string[]> = {
      */
     'duplicate | Robert Louis Stevenson Memorial / Portsmouth Square — deck, pagodas and the skybridge to the Hilton',
     'intersects | Portsmouth Square — deck, pagodas and the skybridge to the Hilton',
-    'ground | Portsmouth Square — deck, pagodas and the skybridge to the Hilton',
     'height | Portsmouth Square — deck, pagodas and the skybridge to the Hilton',
     /*
      * #130 — the Yerba Buena block, where the ground is deliberately NOT where the terrain says it is.
@@ -143,7 +139,7 @@ const KNOWN: Record<string, string[]> = {
      * the entry: the park is a DECK, its lowest surface is `LEVELS.garden` = 4 m above the street, and the
      * level-1 Moscone hall that carries it is sf/moscone-south.ts'.
      */
-    "ground | Yerba Buena Public Square and Children's Garden",
+    
     'intersects | Moscone South Deck',
     'intersects | Moscone Skybridge',
     'intersects | MLK Memorial Waterfall',
@@ -179,6 +175,15 @@ const KNOWN: Record<string, string[]> = {
     // end to end, which the heuristic counts as it does the Golden Gate's — both levels of the model
     'coplanar | Bay Bridge',
     'coplanar | Bay Bridge',
+    // 2026-10-03 appearance pass: the Ferry Plaza deck stands on piles at street level (raised by design) and its
+    // rectangle overlaps the Ferry Building's floats; Oracle Park is placed standalone on its survey, so the audit
+    // tests its bounding rectangle against King Street's buildings across the road (the model follows the outline);
+    // Pier 39 and One Maritime Plaza Park were already reporting before this pass
+    'height | Ferry Plaza deck',
+    'intersects | Ferry Plaza deck',
+    'height | One Maritime Plaza Park',
+    'intersects | One Maritime Plaza Park',
+    'intersects | Oracle Park',
   ],
 }
 

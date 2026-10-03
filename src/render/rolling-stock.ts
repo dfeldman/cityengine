@@ -50,6 +50,8 @@ export interface RegionStock {
   cable?: TrainKind
   /** light rail (PackedRail.light: Muni Metro's surface lines), where it differs from the tram */
   light?: TrainKind
+  /** a gondola (PackedRail.gondola): Salesforce Park's, boarded like a cable car */
+  gondola?: TrainKind
   /** the shortest line trains are put on, metres */
   minLine: number
 }

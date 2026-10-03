@@ -12,6 +12,7 @@
  * poll as everything else — see `src/sim/navigate.ts` for why that shapes the whole design.
  */
 import type { Turn } from './city/graph.ts'
+import { REVERSE_WATTS } from './sim/ride.ts'
 
 export interface Measured {
   power: number | null
@@ -101,7 +102,9 @@ export class LocalControls implements Controls {
       // (the Pause key too: the touch ⏸ sends it, so it pauses without also toggling photo mode, which is also P)
       case 'KeyP': case 'Pause': this.paused_ = !this.paused_; break
     }
-    this.watts = Math.max(0, Math.min(700, this.watts))
+    // a little below zero is REVERSE (owner, 2026-10-01: "power should go slightly negative so you can get unstuck if
+    // you're right behind a car that isn't moving"): sim/ride.ts backs the bike up once it has stopped
+    this.watts = Math.max(REVERSE_WATTS, Math.min(700, this.watts))
     this.belt = Math.max(0, Math.min(7, this.belt))
   }
 

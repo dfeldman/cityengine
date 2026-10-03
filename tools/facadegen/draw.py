@@ -295,6 +295,9 @@ WALLS = {
     'edwardian': wall_siding,
     # the post-war tower's precast panels — NOT brutalism's board-marked concrete
     'towerblock': wall_precast,
+    # the Presidio's (owner, 2026-10-02): the Army's smooth white stucco, and the Main Post's red brick
+    'presidio': lambda s, r: wall_render(s, r, stipple=3),
+    'presidioBrick': wall_brick,
 }
 
 
@@ -756,6 +759,8 @@ WINDOWS = {
     'chinatown': win_chinatown,
     'edwardian': win_sfapartment,
     'towerblock': win_punched,
+    'presidio': win_sash,
+    'presidioBrick': win_sash,
 }
 
 
@@ -767,8 +772,10 @@ WINDOWS = {
 
 SIGN_WORDS_FR = ['BOULANGERIE', 'PÂTISSERIE', 'TABAC', 'PHARMACIE', 'FROMAGERIE', 'LIBRAIRIE', 'CAFÉ', 'BISTROT',
                  'FLEURS', 'OPTIQUE', 'BOUCHERIE', 'ÉPICERIE', 'CAVE', 'CHAPELIER', 'GALERIE', 'CRÉMERIE']
-SIGN_WORDS = ['CAFÉ', 'BOULANGERIE', 'TABAC', 'PHARMACIE', 'BOOKS', 'DELI', 'BAR', 'HARDWARE',
-              'LAUNDRY', 'OPTIQUE', 'FLEURS', 'BODEGA', 'GROCER', 'BANK', 'SALON', 'TAILOR']
+# (English only: the shared list is what every non-Paris style paints, and BOULANGERIE, TABAC, PHARMACIE, OPTIQUE
+#  and FLEURS turned up over San Francisco's shops — BUGS.md #255, 2026-10-02)
+SIGN_WORDS = ['CAFÉ', 'BAKERY', 'DRUGS', 'PHARMACY', 'BOOKS', 'DELI', 'BAR', 'HARDWARE',
+              'LAUNDRY', 'OPTICAL', 'FLOWERS', 'LIQUORS', 'GROCERY', 'BANK', 'SALON', 'TAILOR']
 AWNING = [(168, 58, 48), (46, 82, 112), (58, 96, 62), (140, 116, 58), (96, 62, 96), (54, 54, 60)]
 
 

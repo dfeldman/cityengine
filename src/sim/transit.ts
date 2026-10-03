@@ -60,6 +60,8 @@ export type Placer = (p: { x: number; z: number }, heading: number) => { pos: Gr
 export const BOARD_NEAR = 20
 /** Near enough to be told it is there and worth waiting for. */
 export const SEE_NEAR = 70
+/** how near the gondola's cabin is near enough (`update`) */
+export const GONDOLA_NEAR = 35
 /**
  * No longer a boarding condition — kept because the HUD and the tests still talk about a rider being "nearly
  * stopped", and because it is the threshold below which the rider counts as standing. Boarding stopped
@@ -125,7 +127,9 @@ export class Transit {
        * to board it." So: near is the whole test. You can swing aboard a moving cable car, which is both
        * more fun and, as it happens, what people actually used to do.
        */
-      if (d > BOARD_NEAR) continue
+      // (the gondola's lower station stands back in Salesforce Plaza, 24 m off Mission Street, the nearest street a
+      // bike is on: within reach of it, not of the kerb)
+      if (d > (v.kind === 'gondola' ? GONDOLA_NEAR : BOARD_NEAR)) continue
       if (!best || d < best.d) best = { v, d }
     }
     this.candidate = best?.v ?? null

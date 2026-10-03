@@ -11,9 +11,11 @@
  */
 import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
-import { tower, type Face } from '../tower.ts'
+import { tower, towerRing, type Face } from '../tower.ts'
 import { facade } from '../facade.ts'
-import { cupola } from '../parts.ts'
+import { boxAlong, cupola, edgeAt } from '../parts.ts'
+import { surfaceTag } from '../../cartoon-material.ts'
+import { sign } from '../signage.ts'
 import { dome as domePart } from '../kit.ts'
 import { box, prism } from '../../models.ts'
 import { fromRecipe } from './recipes.ts'
@@ -116,14 +118,23 @@ export const ODDITIES: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
    * hand model is the right amount of effort.
    */
   cameraObscura_168942987: (out: MeshBuilder, fit: Fit): void => {
-    const hx = Math.max(fit.hx, 2)
-    const hz = Math.max(fit.hz, 2)
-    const h = Math.max(fit.height, 3.4)
-    const dark: [number, number, number] = [0.12, 0.11, 0.12]
-    box(out, 0, h / 2, 0, hx, h / 2, hz, dark, 2)
-    // the lens barrel, standing proud of the front (+z) wall, pointed at the street/horizon
-    prism(out, 0, hz + 0.9, h * 0.35, h * 0.62, 0.9, 12, [0.08, 0.08, 0.09], 2, 0.75)
-    box(out, 0, h * 0.62 + 0.15, hz + 0.9, 0.85, 0.15, 0.85, [0.05, 0.05, 0.05], 2)
+    // the Giant Camera (1946): a little building shaped like a box camera — a cream lower storey, a yellow camera body
+    // with dark trim on top of it, and the lens turret on the roof turning over the sea (appearance pass, 2026-10-02:
+    // it was a black box)
+    const hx = Math.max(fit.hx, 3)
+    const hz = Math.max(fit.hz, 3)
+    const CREAM: [number, number, number] = [0.86, 0.82, 0.70]
+    const YELLOW: [number, number, number] = [0.85, 0.68, 0.22]
+    const DARK: [number, number, number] = [0.12, 0.11, 0.12]
+    box(out, 0, 1.3, 0, hx, 1.3, hz, CREAM, 2)
+    box(out, 0, 2.66, 0, hx + 0.15, 0.1, hz + 0.15, DARK, 2)
+    box(out, 0, 3.9, 0, hx * 0.82, 1.15, hz * 0.82, YELLOW, 2)
+    box(out, 0, 5.1, 0, hx * 0.86, 0.08, hz * 0.86, DARK, 2)
+    // the lens turret on the roof, its lens looking out to sea
+    prism(out, 0, 0, 5.18, 6.3, 0.95, 12, DARK, 2)
+    box(out, 0, 6.0, 0.9, 0.45, 0.35, 0.5, DARK, 2)
+    // a dark band of the camera's "bellows" and its door
+    box(out, 0, 1.1, hz + 0.02, 0.6, 1.1, 0.03, DARK, 2)
   },
 
   /**
@@ -144,6 +155,18 @@ export const ODDITIES: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
       entrance: { at: 'centre', kind: 'door', steps: 2 },
       material: 'stucco',
     })
+    // the 2004 glass dining room cantilevered over the cliff on the ocean side (the longest edge facing west), and the
+    // name across the street front (appearance pass, 2026-10-02)
+    const ring = towerRing(fit)
+    let best = 0, bi = 0
+    for (let i = 0; i < ring.length; i++) { const e = edgeAt(ring, i); const score = -e.nx * e.L; if (score > best) { best = score; bi = i } }
+    const e = edgeAt(ring, bi)
+    const cx = e.a.x + e.tx * e.L * 0.5, cz = e.a.z + e.tz * e.L * 0.5
+    boxAlong(out, cx + e.nx * 3, 5, cz + e.nz * 3, e.L * 0.42, 3.6, 3, e.heading, [0.32, 0.42, 0.46], surfaceTag('glass'))
+    boxAlong(out, cx + e.nx * 3, 8.75, cz + e.nz * 3, e.L * 0.44, 0.15, 3.2, e.heading, [0.9, 0.9, 0.88], surfaceTag('metal'))
+    let fi = 0, fbest = -1
+    for (let i = 0; i < ring.length; i++) { const f = edgeAt(ring, i); const score = f.nx * f.L; if (score > fbest) { fbest = score; fi = i } }
+    sign(out, { type: 'flat', text: 'CLIFF HOUSE', h: 0.9, face: 'roman', colour: [0.2, 0.22, 0.26], lit: 'front' }, { ring, edge: fi, y: 6.4 })
   },
 
   /**

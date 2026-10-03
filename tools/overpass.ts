@@ -279,6 +279,7 @@ export function squaresQuery(b: Bbox): string {
   way["highway"="pedestrian"]["area"="yes"](${box});
   way["area:highway"~"^(pedestrian|footway|living_street)$"](${box});
   way["place"="square"](${box});
+  way["amenity"="parking"](${box});
   relation["highway"="pedestrian"](${box});
   relation["place"="square"](${box});
 );

@@ -159,19 +159,6 @@ export const B2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
    * way/136104349 — "Foundry Square II" / Orrick Building, 405 Howard St, 55 m, baked style
    * "skyscraper"/archetype "tower". Photographed: a dark glass office box, ground-floor retail glazing under
    * awnings, a continuous curtain shaft, plain flat top.
-   */
-  b2_office_136104349: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'shopfronts', bays: 5, storeys: 1, material: 'dark-stone' },
-      shaft: { storeys: 12, windows: 'continuous', material: 'glass' },
-      top: { kind: 'attic', storeys: 1, material: 'glass' },
-      bands: { aboveGround: 'string', belowTop: null, top: 'cornice' },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'recessed', steps: 0 },
-      material: 'glass',
-    })
-  },
 
   /**
    * way/944986473 — building:part=yes, tagged/baked as 50 m over 13 levels, but photographed

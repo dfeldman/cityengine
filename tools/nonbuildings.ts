@@ -140,6 +140,8 @@ export const EXPLICIT: Record<string, NonbuildingKind> = {
   colonneDeJuillet: 'monument', colonneVendome: 'monument', monumentRepublique: 'monument',
   arcDeTriomphe: 'monument', operaArch: 'monument', saintDenysPortico: 'monument',
   burenColumns: 'monument',
+  // the deck of Ferry Plaza on its piles (sf/marina.ts)
+  plazaDeck: 'plaza',
   // the two equestrian statues that are built rather than modelled (paris/equestrian.ts)
   louisXIV: 'statue', fochTrocadero: 'statue',
   // plazas, parvises, courts, gardens — the flat ones, and the z-fighting family
@@ -167,6 +169,8 @@ export const EXPLICIT: Record<string, NonbuildingKind> = {
  * "everything is classified" test meaningful. Only needed for names that look like nonbuildings and are not.
  */
 export const BUILDINGS_OK: string[] = [
+  // churches and a funeral chapel whose names carry "Memorial" or "Chapel" (sf/churches-5.ts, 2026-10-03)
+  'hamiltonMemorialChurchOfGodInChrist', 'jonesMemorialUnitedMethodistChurch', 'sinaiMemorialChapel',
   // a HOTEL whose proper name contains "Plaza": Hotel Riu Plaza Fisherman's Wharf. The pattern is
   // matching a word inside a brand name, not a public plaza.
   'hotelRiuPlazaFishermansWharf',
@@ -178,7 +182,9 @@ export const BUILDINGS_OK: string[] = [
   'kensingtonPark', 'marinesMemorial', 'ghirardelliClockTower', 'carillonTower', 'clockTowerBuilding',
   'montgomeryWashingtonTower', 'goldenGateTheatre', 'warMemorialOperaHouse', 'warMemorialVeterans',
   'hamiltonSquareBaptistChurch', 'goldenGateValleyLibrary', 'stockExchangeTower', 'martinLutherTower',
-  'mcallisterTower', 'chaseCenter',
+  'mcallisterTower', 'chaseCenter', 'oneHundredFirstPlaza', 'h4_oneMarketPlaza', 'h4_unionSquarePlazaHotel',
+  // a BUILDING named after Harvey Milk (Treasure Island's Job Corps administration building), not a memorial
+  'h3_harveyMilkMemorial_34313513',
   // it is a pyramid and it is 260 m of offices
   'transamericaPyramid',
   // way/1458363734, building=pagoda: a real freestanding building, not a park pavilion

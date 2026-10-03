@@ -6,7 +6,7 @@
 import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
 import { goldenGateBridge, goldenGateBridgeNear } from './golden-gate.ts'
-import { sutroTower } from './sutro-tower.ts'
+import { sutroTower, sutroTowerNear } from './sutro-tower.ts'
 import { bayBridge, bayBridgeNear } from './bay-bridge.ts'
 import { transamericaPyramid } from './transamerica.ts'
 import { salesforceTower } from './salesforce-tower.ts'
@@ -74,6 +74,31 @@ import { UNION_SQUARE } from './districts/union-square.ts'
 import { PARKS } from './districts/parks.ts'
 import { BATTERIES } from './districts/batteries.ts'
 import { TRANSBAY } from './districts/transbay.ts'
+import { FOUNDRY } from './foundry.ts'
+import { SHIPS } from './ships.ts'
+import { marina, mooringField, plazaDeck } from './marina.ts'
+import { fortPoint } from './fort-point.ts'
+import { countyJailTwo } from './county-jail.ts'
+import { lombardGardens } from './lombard.ts'
+import { PROMINENT } from './prominent.ts'
+import { CIVIC_6 } from './civic-6.ts'
+import { CHURCHES_5 } from './churches-5.ts'
+import { PIER_39 } from './pier39.ts'
+import { CHINATOWN_GATE } from './chinatown-gate.ts'
+import { SEA_LIONS } from './sea-lions.ts'
+import { PARK_SIGHTS } from './park-sights.ts'
+import { PAINTED_LADIES } from './painted-ladies.ts'
+import { seaStacks } from './rocks.ts'
+import { tiBuildingOne, tiHangar } from './treasure-island.ts'
+import { fireboatStation } from './fireboat-station.ts'
+import { oneHundredFirstPlaza, oneHundredFirstPodium } from './first-plaza.ts'
+import { stMarysCathedral } from './st-marys.ts'
+import { deYoungMuseum } from './de-young.ts'
+import { alcatrazCellhouse, alcatrazLighthouse, alcatrazWaterTower } from './alcatraz.ts'
+import { graceCathedral } from './grace.ts'
+import { legionOfHonor } from './legion.ts'
+import { fremont181 } from './fremont181.ts'
+import { transbayBusRampBridge } from './bus-ramp-bridge.ts'
 import { VENUES } from './districts/venues.ts'
 import { ART } from './art.ts'
 import { yerbaBuenaGardens, mosconeNorth, mosconeSkybridge, mosconeSouthDeck, mosconeOpenBridge } from './yerba-buena.ts'
@@ -115,7 +140,7 @@ import { SCRATCH_2 } from './scratch-2.ts'
 import { SCRATCH_3 } from './scratch-3.ts'
 
 export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  goldenGateBridge, goldenGateBridgeNear, sutroTower, bayBridge, bayBridgeNear, transamericaPyramid, salesforceTower, coitTower, ferryBuilding, cityHall,
+  goldenGateBridge, goldenGateBridgeNear, sutroTower, sutroTowerNear, bayBridge, bayBridgeNear, transamericaPyramid, salesforceTower, coitTower, ferryBuilding, cityHall,
   ...TOWER_PRESETS, fiveFiveFiveCalifornia, wharfSign, ghirardelliSign, ...PIERS, sfmoma_151_third, metreon_135_fourth, ica_345_montgomery, columbusTower_916_kearny, palaceOfFineArts_3301_lyon,
   e12_stevensonPlace_149840694, e12_argenta_940206084,
   yerbaBuenaGardens, mosconeNorth, mosconeSkybridge, mosconeSouthDeck, mosconeOpenBridge,
@@ -172,6 +197,37 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   ...PARKS,
   ...BATTERIES,
   ...TRANSBAY,
+  ...FOUNDRY,
+  ...SHIPS,
+  marina,
+  mooringField,
+  plazaDeck,
+  fortPoint,
+  countyJailTwo,
+  lombardGardens,
+  ...PROMINENT,
+  ...CIVIC_6,
+  ...CHURCHES_5,
+  ...PIER_39,
+  ...CHINATOWN_GATE,
+  ...SEA_LIONS,
+  ...PARK_SIGHTS,
+  ...PAINTED_LADIES,
+  seaStacks,
+  tiBuildingOne,
+  tiHangar,
+  fireboatStation,
+  oneHundredFirstPlaza,
+  oneHundredFirstPodium,
+  stMarysCathedral,
+  deYoungMuseum,
+  alcatrazCellhouse,
+  alcatrazLighthouse,
+  alcatrazWaterTower,
+  graceCathedral,
+  legionOfHonor,
+  fremont181,
+  transbayBusRampBridge,
   ...VENUES,
   ...ART,
   ...YBCA,

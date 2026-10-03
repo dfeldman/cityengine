@@ -123,5 +123,21 @@
     "procedural": "h3_aliotoveronese_32946359",
     "name": "Alioto - Veronese Building",
     "height": 11
+  },
+  {
+    "osm": [
+      "way/34313513"
+    ],
+    "procedural": "h3_harveyMilkMemorial_34313513",
+    "name": "Harvey Milk Memorial Administration Building",
+    "note": "Restored 2026-10-02 by tools/builder-audit.ts: the builder existed, the manifest never placed it."
+  },
+  {
+    "osm": [
+      "way/764313741"
+    ],
+    "procedural": "h3_firestationH_764313741",
+    "name": "Fire Station H",
+    "note": "Restored 2026-10-02 by tools/builder-audit.ts: the builder existed, the manifest never placed it."
   }
 ]

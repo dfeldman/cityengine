@@ -85,44 +85,67 @@ export class LoadingScreen {
  * the load timings being measured against it. This is its own overlay, shown once the loading screen goes.
  */
 const CONTROLS: [string, string][] = [
-  ['pedal / ↑ ↓', 'ride — the trainer drives you; on the couch ↑ ↓ choose your effort, paid from the energy bar'],
-  ['← →', 'hold to steer; hold as you reach a corner to turn there'],
+  ['↑ ↓', 'effort — paid from the energy bar; ↓ below 0 W backs up'],
+  ['← →', 'hold to steer; hold into a corner to turn there'],
+  ['Y  X', 'take or skip a delivery'],
   ['U', 'turn round'],
-  ['M', 'the map — click to set a destination, double-click to go there'],
-  ['M, then search', 'the map: search a landmark ("Chase Center"), Enter to go'],
-  ['F', 'freeze and fly: WASD, Q/E, drag to look'],
-  ['P  [  ]', 'photo mode: fog off, draw distance in and out'],
-  ['G', 'go to a "lat, lon" — or just paste one'],
+  ['M', 'the map — search a landmark, click to go'],
+]
+/** what the game IS, before what the keys do (2026-10-01, for the demo) */
+const HIGHLIGHTS: [string, string, string][] = [
+  ['🥡', 'Deliver', 'take a job, find the kitchen, beat the clock for stars and tips'],
+  ['🚋', 'Hop aboard', 'ride a cable car or a streetcar and get your breath back'],
+  ['🌉', 'Explore', 'Nob Hill, Chinatown, the waterfront, both bridges'],
 ]
 
 export const WELCOME_CSS = `
 .sr-welcome { position: fixed; inset: 0; z-index: 40; display: flex; align-items: center; justify-content: center;
-  background: radial-gradient(ellipse at 50% 35%, rgba(27,36,96,.82) 0%, rgba(11,15,36,.9) 70%);
-  backdrop-filter: blur(3px); transition: opacity .45s ease; }
+  background: radial-gradient(ellipse at 50% 40%, rgba(11,15,36,.25) 0%, rgba(11,15,36,.72) 75%);
+  transition: opacity .45s ease; }
 .sr-welcome.gone { opacity: 0; pointer-events: none; }
-.sr-welcome .sr-card { width: min(560px, 88vw); padding: 30px 34px 26px; text-align: center;
-  background: var(--panel-solid); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
-.sr-welcome h1 { margin: 8px 0 4px; font: 800 40px/1.1 var(--font); letter-spacing: -.01em; }
-.sr-welcome .lede { font: 600 16px/1.5 var(--font); color: var(--muted); margin: 0 0 20px; }
+.sr-welcome .sr-card { width: min(600px, 92vw); max-height: 94vh; overflow: auto; padding: 26px 30px 22px; text-align: center;
+  background: var(--panel-solid); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
+  animation: sr-rise .6s cubic-bezier(.2,1.2,.4,1) both }
+@keyframes sr-rise { from { opacity: 0; transform: translateY(18px) scale(.97) } }
+.sr-welcome h1 { margin: 8px 0 4px; font: 800 42px/1.05 var(--font); letter-spacing: -.01em; }
+.sr-welcome .lede { font: 600 16px/1.45 var(--font); color: var(--muted); margin: 0 0 16px; }
+.sr-welcome .hl { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 16px; text-align: left }
+.sr-welcome .hl > div { background: var(--panel-2); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px }
+.sr-welcome .hl .e { font-size: 26px; line-height: 1 }
+.sr-welcome .hl b { display: block; margin: 6px 0 2px; font: 800 15px/1.2 var(--font); color: var(--text) }
+.sr-welcome .hl span { font: 13px/1.35 var(--font); color: var(--muted) }
+@media (max-width: 560px) { .sr-welcome .hl { grid-template-columns: 1fr } .sr-welcome .hl > div { display: flex; gap: 10px; align-items: center }
+  .sr-welcome .hl b { margin: 0 } .sr-welcome h1 { font-size: 34px } }
 .sr-welcome table { width: 100%; border-collapse: collapse; text-align: left; }
-.sr-welcome td { padding: 6px 0; font: 15px/1.35 var(--font); color: var(--text); vertical-align: baseline; }
-.sr-welcome td.k { width: 118px; white-space: nowrap; }
+.sr-welcome td { padding: 4px 0; font: 14px/1.35 var(--font); color: var(--text); vertical-align: baseline; }
+.sr-welcome td.k { width: 70px; white-space: nowrap; }
 .sr-welcome kbd { font: 700 13px/1 var(--mono); background: var(--panel-2); border: 1px solid var(--border);
   border-radius: 6px; padding: 5px 8px; display: inline-block; color: var(--text); }
-.sr-welcome td.d { color: var(--muted); padding-left: 14px; }
-.sr-welcome .sr-mode-welcome { position: static; transform: none; margin: 20px auto 0; display: inline-flex; }
-.sr-welcome .go { margin-top: 16px; font: 700 15px/1 var(--font); color: var(--page); }
+.sr-welcome td.d { color: var(--muted); padding-left: 12px; }
+.sr-welcome .more { margin-top: 8px; font: 12px/1.4 var(--font); color: var(--muted); opacity: .8 }
+.sr-welcome .sr-mode-welcome { position: static; transform: none; margin: 16px auto 0; display: inline-flex; }
+.sr-welcome .go { margin-top: 14px; font: 800 16px/1 var(--font); color: var(--page); animation: sr-pulse 1.6s ease-in-out infinite }
+@keyframes sr-pulse { 50% { opacity: .45 } }
 `
+
+/** Up and not yet dismissed: the ride waits for it (game.ts `hold`), so nobody starts the game mid-descent. */
+let welcomeUp = false
+export const welcomeOpen = (): boolean => welcomeUp
 
 /** Show it, and take it away at the first key or click. */
 export function welcomeScreen(cityName: string, slowInput = false): void {
+  welcomeUp = true
   const root = document.createElement('div')
   root.className = 'sr-welcome'
   // slow input (?input=slow, trainers): a press declares the turn at the next junction, well before it
+  const touch = typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches
   const rows = CONTROLS.map(([k, d]) => (k === '← →' && slowInput ? [k, 'pick your turn at the next junction, before you reach it'] : [k, d])).map(([k, d]) => `<tr><td class="k"><kbd>${k}</kbd></td><td class="d">${d}</td></tr>`).join('')
+  const hl = HIGHLIGHTS.map(([e, t, d]) => `<div><span class="e">${e}</span><div><b>${t}</b><span>${d}</span></div></div>`).join('')
   root.innerHTML = `<div class="sr-card"><span class="sr-pill">Dandyhorse</span><h1>Street Runner</h1>
     <p class="lede">Ride ${cityName} for real — every street, every building, where they actually are.</p>
-    <table>${rows}</table><div class="go">press any key to ride</div></div>`
+    <div class="hl">${hl}</div>
+    ${touch ? '' : `<table>${rows}</table><div class="more">F fly · P photo mode · G go to a place</div>`}
+    <div class="go">${touch ? 'tap to ride' : 'press any key to ride'}</div></div>`
   /*
    * The bike/run switch lives here now, and only here (main.ts builds it): choosing the machine is a thing
    * you do once, at the start, not a control that sits over the city for the whole ride.
@@ -131,6 +154,7 @@ export function welcomeScreen(cityName: string, slowInput = false): void {
   if (mode) root.querySelector('.go')!.before(mode)
   document.body.appendChild(root)
   const dismiss = (): void => {
+    welcomeUp = false
     root.classList.add('gone')
     setTimeout(() => root.remove(), 600)
     removeEventListener('keydown', dismiss)
