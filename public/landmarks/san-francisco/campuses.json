@@ -22,5 +22,6 @@
   {"osm": ["way/262432827"], "name": "San Francisco Art Institute (1926)", "procedural": "sfaiMain", "front": 180, "note": "art-institute.ts: board-formed concrete, red tile copings, Chestnut wall lettering, carved portal, bell tower, Jones Street studio gables (Commons photographs, university audit 2026-10-04)."},
   {"osm": ["way/262432824"], "name": "San Francisco Art Institute addition (1969)", "procedural": "sfaiAddition", "front": 180, "note": "art-institute.ts: board-formed concrete, roof deck with truncated skylight cones."},
   {"osm": ["way/256066001"], "name": "CCSF Mission Campus, Bartlett Building", "procedural": "ccsfMissionBartlett", "front": 90, "note": "ccsf-mission.ts: cobalt tile ground storey and tower, banded pale upper floors with step-fret frieze, glass atrium with the great mosaic disc, CCSF / MISSION CAMPUS (Mapillary on Bartlett, 2026-10-04)."},
-  {"osm": ["way/256066027"], "name": "CCSF Mission Campus, Valencia Building", "procedural": "ccsfMissionValencia", "front": 270, "note": "ccsf-mission.ts: the same skin, its blue tile tower on Valencia."}
+  {"osm": ["way/256066027"], "name": "CCSF Mission Campus, Valencia Building", "procedural": "ccsfMissionValencia", "front": 270, "note": "ccsf-mission.ts: the same skin, its blue tile tower on Valencia."},
+  {"osm": ["way/6986235"], "name": "Mission High School", "procedural": "missionHighSchool", "front": 180, "note": "schools.ts: white stucco, red tile, Mission parapets, the carved tower over Dolores Park (Commons photographs, 2026-10-04); was the bake's sfapartment."}
 ]

@@ -112,6 +112,7 @@ import { MASONIC } from './masonic.ts'
 import { ART_INSTITUTE } from './art-institute.ts'
 import { CCSF_MISSION } from './ccsf-mission.ts'
 import { SHELL_BUILDING } from './shell-building.ts'
+import { SCHOOLS } from './schools.ts'
 import { SHEDS } from './sheds.ts'
 import { MURAL_ALLEYS } from './mural-alleys.ts'
 import { POINT_BONITA } from './point-bonita.ts'
@@ -268,6 +269,7 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   ...ART_INSTITUTE,
   ...CCSF_MISSION,
   ...SHELL_BUILDING,
+  ...SCHOOLS,
   ...SHEDS,
   ...MURAL_ALLEYS,
   ...POINT_BONITA,

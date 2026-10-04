@@ -4662,5 +4662,20 @@
    30
   ],
   "note": "beige stone and teal glass tower (skyline census 2026-10-04)."
+ },
+ {
+  "name": "Mission High School \u2014 from Dolores Park",
+  "group": "landmark",
+  "from": [
+   37.759762,
+   -122.427005,
+   12
+  ],
+  "to": [
+   37.761559,
+   -122.42729,
+   25
+  ],
+  "note": "schools.ts: the tower over the park (2026-10-04)."
  }
 ]
