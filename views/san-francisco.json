@@ -4527,5 +4527,50 @@
    6
   ],
   "note": "libraries.ts potreroBranchLibrary: white frame, glass grid, wood canopies (2026-10-04)."
+ },
+ {
+  "name": "CPMC Davies \u2014 the Duboce shafts",
+  "group": "landmark",
+  "from": [
+   37.769069,
+   -122.435077,
+   2
+  ],
+  "to": [
+   37.768925,
+   -122.43544,
+   12
+  ],
+  "note": "hospitals.ts daviesDuboceTower: two windowless board-formed shafts (owner frames 2026-10-04)."
+ },
+ {
+  "name": "CPMC Davies \u2014 from the air",
+  "group": "landmark",
+  "from": [
+   37.769464,
+   -122.433599,
+   60
+  ],
+  "to": [
+   37.768296,
+   -122.434736,
+   0
+  ],
+  "note": "grey concrete fins over the whole campus."
+ },
+ {
+  "name": "CPMC Davies \u2014 Duboce wing from above",
+  "group": "landmark",
+  "from": [
+   37.769374,
+   -122.434963,
+   45
+  ],
+  "to": [
+   37.768745,
+   -122.435418,
+   0
+  ],
+  "note": "where the shafts stand on the wing."
  }
 ]

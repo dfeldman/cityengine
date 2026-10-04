@@ -13,7 +13,7 @@ import type { Fit } from '../fit.ts'
 import { box, type Rgb } from '../../models.ts'
 import { tower, towerRing, insetRing, faceBand } from '../tower.ts'
 import { capPolygon } from '../../buildings.ts'
-import { edgeAt, boxAlong } from '../parts.ts'
+import { edgeAt, edgeFacing, boxAlong } from '../parts.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 
 type P2 = { x: number; z: number }
@@ -149,7 +149,46 @@ const sfghBrick = (H: number) => (out: MeshBuilder, fit: Fit): void => {
   })
 }
 
+/**
+ * CPMC DAVIES CAMPUS (owner's Street View frames, 2026-10-04: "the windowless tower is on Duboce side. most of it
+ * genuinely is hidden"): the whole campus is 1970s board-formed grey concrete. The ward blocks stand behind trees with
+ * deep vertical concrete fins between slot windows; on Duboce Avenue the north end of the Noe Street wing
+ * (way/288543156) rises as a pair of windowless shafts, stepped at the top, the taller one forward. Front 0: Duboce
+ * is north.
+ */
+const DAVIES: Rgb = [0.62, 0.62, 0.59]
+function daviesConcrete(out: MeshBuilder, fit: Fit, H: number): void {
+  tower(out, { ...fit, height: H }, {
+    height: H,
+    base: { height: 3.5, face: { kind: 'blank', wall: [0.55, 0.55, 0.52], material: 'concrete' } },
+    tiers: [{ to: H, face: { kind: 'fins', wall: DAVIES, glass: [0.2, 0.22, 0.24], pitch: 1.8, solid: 0.55, depth: 0.7, floor: 3.8, material: 'concrete' } }],
+    roof: [0.5, 0.5, 0.48],
+    crown: { kind: 'parapet', height: 1, colour: DAVIES, material: 'concrete' },
+  })
+}
+function daviesWard(out: MeshBuilder, fit: Fit): void { daviesConcrete(out, fit, fit.height > 8 && fit.height < 24 ? fit.height : 14) }
+function daviesDuboceTower(out: MeshBuilder, fit: Fit): void {
+  const H = 15
+  daviesConcrete(out, fit, H)
+  const ring = towerRing(fit)
+  // Duboce's end (bearing 0 here: the first render, at 180, put them on the 14th Street end)
+  const e = edgeAt(ring, edgeFacing(ring, 0))
+  const conc = surfaceTag('concrete')
+  // the two windowless shafts on the Duboce end: the taller forward, the second set back and lower
+  // (they stand proud of the wing's end, in the paler fresh-looking concrete of the frames, over the wing's roof)
+  const SHAFT: Rgb = [0.68, 0.68, 0.65]
+  const shafts: [number, number, number, number][] = [[-e.L * 0.2, 4, 22, 8], [e.L * 0.22, 2.5, 19, 9]]
+  for (const [u, o, h, w] of shafts) {
+    const x = e.mid.x + e.tx * u + e.nx * (o - 3), z = e.mid.z + e.tz * u + e.nz * (o - 3)
+    boxAlong(out, x, h / 2, z, w / 2, h / 2, 3.5, e.heading, SHAFT, conc)
+    // the stepped top and a board-mark panel line or two
+    boxAlong(out, x - e.nx * 0.6, h + 0.6, z - e.nz * 0.6, w / 2 - 0.8, 0.6, 2.9, e.heading, SHAFT, conc)
+    for (const y of [h * 0.35, h * 0.7]) boxAlong(out, x + e.nx * 3.52, y, z + e.nz * 3.52, w / 2 - 0.3, 0.06, 0.04, e.heading, [0.55, 0.55, 0.52], conc)
+  }
+}
+
 export const HOSPITALS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+  daviesWard, daviesDuboceTower,
   cpmcVanNess, zuckerbergSFGH,
   sfghWard10: sfghBrick(18), sfghWard20: sfghBrick(18), sfghWard30: sfghBrick(18), sfghWard40: sfghBrick(18), sfghWard50: sfghBrick(18),
   sfghBuilding1: sfghBrick(15), sfghBuilding80: sfghBrick(22),
