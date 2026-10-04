@@ -306,13 +306,14 @@ out geom qt;`
  * campus is usually tagged plain `building=yes`, so it took the neighbourhood's style — Saint Mary's 2250 Hayes
  * and Mount Zion's towers came out as walk-ups with shopfronts and bay stacks (hospital audit, 2026-10-04). The
  * bake dresses a building inside one of these as the campus's own (tools/bake.ts `campusAmenity`). Its own query,
- * so the others' caches stand.
+ * so the others' caches stand. School grounds too (2026-10-04: 103 school buildings were walk-ups — Mission High,
+ * Washington High).
  */
 export function campusQuery(b: Bbox): string {
   const box = `${b.south},${b.west},${b.north},${b.east}`
   return `[out:json][timeout:120];
 (
-  way["amenity"~"^(hospital|university|college)$"](${box});
+  way["amenity"~"^(hospital|university|college|school)$"](${box});
 );
 out geom qt;`
 }

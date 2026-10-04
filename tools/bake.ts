@@ -327,7 +327,7 @@ async function bake(spec: CitySpec): Promise<void> {
     console.warn(`  campuses: not fetched (${String(e).slice(0, 120)})`)
     return [] as OsmWay[]
   })
-  console.log(`  ${campusWays.length} hospital / university / college grounds`)
+  console.log(`  ${campusWays.length} hospital / university / college / school grounds`)
   // the region's own AUTHORED ways (src/city/sf/bridges.ts: the Bay Bridge Bikeway), joined to the real junctions
   // they name, their heights their own (kept aside here, put back by tools/deck-conform.ts)
   const authored = authoredWays(spec.region ?? spec.id, spec.centre, ways)
@@ -725,7 +725,8 @@ async function bake(spec: CitySpec): Promise<void> {
    * shopfronts (Mount Zion's ward blocks were sfapartment with bay stacks, 2026-10-04). Every other style stands:
    * the Academy of Art's old hotels and Golden Gate University's brick are what they look like. Only buildings
    * big enough to be a ward or a lab block — 400 m² and up — with no amenity of their own (a car park stays a
-   * car park) and never one tagged as a home: the old houses a campus has swallowed stay houses.
+   * car park) and never one tagged as a home: the old houses a campus has swallowed stay houses. On SCHOOL grounds
+   * the same, dressed `stucco` (below) rather than institutional: 103 school buildings were walk-ups (2026-10-04).
    */
   const campuses = campusWays.filter((c) => c.geometry && c.geometry.length >= 4).map((c) => {
     const r = c.geometry!.map((g) => proj.toLocal(g))
@@ -793,7 +794,10 @@ async function bake(spec: CitySpec): Promise<void> {
           building: w.tags.building },
         spec.styles, w.id))
     const dressTags = campusAmenity(owner?.tags ?? w.tags, ownerRing, styleChosen)
-    const styleId = dressTags === (owner?.tags ?? w.tags) ? styleChosen : styleFor(dressTags, () => styleChosen)
+    // (a school is not an `institution` — the city's schools are various — but a school dressed as a HOME is wrong
+    //  everywhere: San Francisco's public schools are stucco and concrete, Spanish or Moderne, so stucco it is)
+    const styleId = dressTags === (owner?.tags ?? w.tags) ? styleChosen
+      : dressTags.amenity === 'school' ? 'stucco' : styleFor(dressTags, () => styleChosen)
     const formKey = owner?.id ?? w.id
     if (!formOf.has(formKey)) {
       const fh = (owner ? ownerP!.buildingHeight : p.buildingHeight) ?? 0
@@ -846,7 +850,7 @@ async function bake(spec: CitySpec): Promise<void> {
     })
     if (w.tags.name && worthNaming(w.tags)) named.push({ id: w.id, tags: w.tags, ring: ccwRing })
   }
-  console.log(`  ${campusDressed} buildings dressed as their hospital / university / college campus`)
+  console.log(`  ${campusDressed} buildings dressed as their hospital / university / college / school campus`)
   console.log(`  ${buildings.length} buildings`)
   reportRingForms(formScanned, formed, FORM)
   if (streetRegion.streetWidth === 'carriageway') fitStreetsBetweenBuildings(kept, buildings)
