@@ -4587,5 +4587,65 @@
    5
   ],
   "note": "kit-churches.ts presidioChapel: corner bell tower, carved portal (HABS photo, 2026-10-04)."
+ },
+ {
+  "name": "Shell Building \u2014 from Market at Bush",
+  "group": "landmark",
+  "from": [
+   37.791096,
+   -122.399098,
+   2
+  ],
+  "to": [
+   37.791509,
+   -122.399905,
+   75
+  ],
+  "note": "shell-building.ts: buff terracotta piers, stepped top, fluted crown (2026-10-04)."
+ },
+ {
+  "name": "Shell Building \u2014 the crown from the air",
+  "group": "landmark",
+  "from": [
+   37.790036,
+   -122.397677,
+   170
+  ],
+  "to": [
+   37.791509,
+   -122.399905,
+   100
+  ],
+  "note": "the setbacks and the corner fins."
+ },
+ {
+  "name": "Pier 70 \u2014 Building 113 and the machine shop",
+  "group": "landmark",
+  "from": [
+   37.759583,
+   -122.385854,
+   30
+  ],
+  "to": [
+   37.760301,
+   -122.385399,
+   5
+  ],
+  "note": "mission-bay.ts uiwShop: brick piers, arched windows, the rust-clad nave and its gable fan (2026-10-04)."
+ },
+ {
+  "name": "Presidio Tunnel Tops \u2014 the planted beds",
+  "group": "landmark",
+  "from": [
+   37.801983,
+   -122.455766,
+   20
+  ],
+  "to": [
+   37.803061,
+   -122.456107,
+   0
+  ],
+  "note": "zone ground: beds \u2014 mulch and low shrubs, the oval lawns (Commons aerial, 2026-10-04)."
  }
 ]

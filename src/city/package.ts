@@ -184,6 +184,9 @@ export interface PackedArea {
   kind: 'park' | 'grass' | 'water' | 'wood' | 'pitch' | 'paved' | 'sand' | 'dirt' | 'lot'
   /** a paved square laid in the region's street brick: it opens off a brick street (tools/street-paint.ts) */
   brick?: true
+  /** a park laid out as planted BEDS — mulch and low native shrubs between its paths, its mapped lawns the only grass
+   *  (a zone's `ground: 'beds'`, tools/bake.ts: the Presidio Tunnel Tops, owner's reference list 2026-10-04) */
+  beds?: true
   ring: number[]
   /** inner rings: the islands in a river, the courtyard in a park */
   holes?: number[][]

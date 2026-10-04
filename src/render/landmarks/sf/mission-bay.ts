@@ -769,8 +769,75 @@ export function ccaMain(out: MeshBuilder, fit: Fit): void {
   signText(out, 'CALIFORNIA COLLEGE OF THE ARTS', nx, 8.2, nz, 0.55, [0.95, 0.95, 0.93], { heading: e.heading })
 }
 
+/**
+ * The Union Iron Works machine shops at Pier 70 (Building 113, 1886, and its neighbour; Commons "Union Iron Works
+ * Historic District Machine Shop Building 113 (northwest corner at 20th Street).jpg", "Union Iron Works building on
+ * Pier 70, September 2018.JPG" — Building 113's window rhythm was on the owner's reference list): two storeys of red
+ * brick, a pier between every pair of tall round-arched windows, the ground storey's arches taller; over the middle a
+ * raised NAVE clad in rust-brown, its gable ends the building's face — a fan of arched windows stepping up under the
+ * rake — and low aisle roofs either side. The ridge runs the long way.
+ */
+export function uiwShop(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.44, 0.22, 0.17], RUST: Rgb = [0.42, 0.3, 0.23], ROOFC: Rgb = [0.3, 0.28, 0.26], DARKG: Rgb = [0.14, 0.15, 0.16]
+  const WALL = 10
+  tower(out, { ...fit, height: WALL }, {
+    height: WALL,
+    base: { height: 5, face: { kind: 'punched', wall: BRICK, glass: DARKG, pitch: 3, solid: 0.5, floor: 5, arched: true, material: 'brick' } },
+    tiers: [{ to: WALL, face: { kind: 'punched', wall: BRICK, glass: DARKG, pitch: 3, solid: 0.55, floor: 5, arched: true, material: 'brick' }, cornice: { depth: 0.3, height: 0.5, colour: [0.4, 0.2, 0.15] } }],
+    roof: ROOFC,
+    crown: { kind: 'flat' },
+  })
+  const brick = surfaceTag('brick'), metal = surfaceTag('metal'), glass = surfaceTag('glass')
+  // the piers, every two bays, on every wall
+  const ring = towerRing(fit)
+  for (let i = 0; i < ring.length; i++) {
+    const e = edgeAt(ring, i)
+    if (e.L < 8) continue
+    const n = Math.round(e.L / 6)
+    for (let k = 0; k <= n; k++) {
+      const u = -e.L / 2 + (k * e.L) / n
+      boxAlong(out, e.mid.x + e.tx * u + e.nx * 0.2, WALL / 2, e.mid.z + e.tz * u + e.nz * 0.2, 0.45, WALL / 2, 0.25, e.heading, BRICK, brick)
+    }
+  }
+  // the nave: along the long axis, half the width, clerestory walls and a gable roof, rust-brown
+  const along = fit.hx >= fit.hz
+  const L = (along ? fit.hx : fit.hz) - 0.4, Wn = (along ? fit.hz : fit.hx) * 0.55
+  const P = (u: number, y: number, v: number): [number, number, number] => (along ? [u, y, v] : [v, y, u])
+  const C = WALL + 3.5, R = C + Wn * 0.55
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  for (const s of [-1, 1]) {
+    // a clerestory wall, and the roof slope over it
+    const [x, , z] = P(0, 0, s * Wn)
+    box(out, x, (WALL + C) / 2, z, along ? L : 0.15, (C - WALL) / 2, along ? 0.15 : L, RUST, metal)
+    const n: [number, number, number] = along ? [0, 1, s * 0.6] : [s * 0.6, 1, 0]
+    const q: [number, number, number][] = [P(-L, C, s * (Wn + 0.4)), P(L, C, s * (Wn + 0.4)), P(L, R, 0), P(-L, R, 0)]
+    out.quad(s > 0 ? q : [q[1], q[0], q[3], q[2]], n, uv, ROOFC, metal)
+    // the clerestory's arched windows, every bay
+    for (let u = -L + 3; u < L - 2; u += 6) {
+      const [wx, , wz] = P(u, 0, s * (Wn + 0.1))
+      box(out, wx, WALL + 1.75, wz, along ? 1 : 0.05, 1.2, along ? 0.05 : 1, DARKG, glass)
+    }
+  }
+  // the gable ends: the rust-clad triangle over the clerestory, a fan of tall arched windows stepping up under the rake
+  for (const e of [-1, 1]) {
+    const face: [number, number, number][] = [P(e * L, WALL, -Wn), P(e * L, WALL, Wn), P(e * L, R, 0), P(e * L, R, 0)]
+    const fn: [number, number, number] = along ? [e, 0, 0] : [0, 0, e]
+    out.quad(e > 0 ? face : [face[1], face[0], face[3], face[2]], fn, uv, RUST, metal)
+    const fan = 5
+    for (let k = 0; k < fan; k++) {
+      const v = (-1 + (2 * (k + 0.5)) / fan) * Wn * 0.8
+      const top = R - Math.abs(v) * ((R - WALL) / Wn) - 1.2
+      const h = Math.max(1.5, top - (WALL + 0.8))
+      const [wx, , wz] = P(e * (L + 0.06), 0, v)
+      box(out, wx, WALL + 0.8 + h / 2, wz, along ? 0.05 : Wn * 0.11, h / 2, along ? Wn * 0.11 : 0.05, DARKG, glass)
+      const [ax, , az] = P(e * (L + 0.06), 0, v)
+      box(out, ax, WALL + 0.8 + h + 0.25, az, along ? 0.05 : Wn * 0.07, 0.25, along ? Wn * 0.07 : 0.05, DARKG, glass)
+    }
+  }
+}
+
 export const MISSION_BAY: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  five88, mb360, thirdStreetGarage, owensGarage, owens1670Garage, ccaExpanded, ccaMain,
+  five88, mb360, thirdStreetGarage, owensGarage, owens1670Garage, ccaExpanded, ccaMain, uiwShop,
   pierShed, ucsfMissionBayHospital, ucsfMbCanopy,
   rutterCenter, garage450South,
   smithCardiovascular, helenDiller, missionHall,

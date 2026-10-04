@@ -16,4 +16,14 @@ describe('the parks’ planting (PARIS_EXPAND §6 item 8)', () => {
     const lawn = { kind: 'grass' as const, ring: [20, 20, 60, 20, 60, 50, 20, 50], of: 1 }
     expect(plantTile([park as never, lawn as never], rect).length).toBeGreaterThan(plantTile([park as never], rect).length)
   })
+  it('a park of planted BEDS is shrubs all through, but never on its mapped lawns (the Tunnel Tops)', () => {
+    const lawn = { kind: 'grass' as const, ring: [20, 20, 60, 20, 60, 50, 20, 50], of: 1 }
+    const beds = plantTile([{ ...park, beds: true } as never, lawn as never], rect)
+    const plain = plantTile([park as never, lawn as never], rect)
+    expect(beds.filter((p) => p.kind === 'shrub').length).toBeGreaterThan(3 * plain.filter((p) => p.kind === 'shrub').length)
+    const inLawn = (p: { x: number; z: number }): boolean => p.x > 20.5 && p.x < 59.5 && p.z > 20.5 && p.z < 49.5
+    expect(beds.filter(inLawn).length).toBe(0)
+    // and right across the middle of the beds, not only along their edges
+    expect(beds.filter((p) => p.x > 70 && p.x < 90 && p.z > 30 && p.z < 50).length).toBeGreaterThan(5)
+  })
 })

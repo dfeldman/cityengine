@@ -56,6 +56,8 @@ export interface ZoneProps {
   water?: 'calm' | 'waves'
   /** true: the steep ground here is bare rock, with boulders (render/cliffs.ts — Lands End, the Sutro Baths) */
   cliffs?: boolean
+  /** 'beds': the parks here are planted beds — mulch and low shrubs, the mapped lawns the only grass (Tunnel Tops) */
+  ground?: 'beds'
   park?: Record<string, unknown>
   furniture?: Record<string, unknown>
 }
@@ -268,6 +270,8 @@ export interface Area {
   top?: true
   sea?: true
   brick?: true
+  /** a park laid out as planted beds (city/package.ts PackedArea `beds`) */
+  beds?: true
   /** water: the whole body's level, cm above zFloor */
   level?: number
   /** which whole area this is a clipped piece of */

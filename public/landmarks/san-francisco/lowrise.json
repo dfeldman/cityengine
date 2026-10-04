@@ -66,16 +66,6 @@
   },
   {
     "osm": [
-      "way/1258748457"
-    ],
-    "name": "Building 1258748457",
-    "restyle": "chicago",
-    "height": 34,
-    "levels": 10,
-    "note": "rule 7: tall building (levels >= 8)"
-  },
-  {
-    "osm": [
       "way/1420679237"
     ],
     "name": "Building 1420679237",

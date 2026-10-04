@@ -1736,6 +1736,19 @@ async function bake(spec: CitySpec): Promise<void> {
     from: proj.toLocal({ lat: r.from[0], lon: r.from[1] }), to: proj.toLocal({ lat: r.to[0], lon: r.to[1] }) })))
   const bricked = markBrickSquares(areas, kept, streetRegion.brickStreets?.names ?? [])
   if (painted.length || bricked) console.log(`  street paint: ${painted.join(' / ')} edges; ${bricked} squares laid in brick`)
+  // the parks a zone says are planted BEDS (`ground: 'beds'`: the Presidio Tunnel Tops) — mulch and low shrubs, the
+  // lawns mapped inside them the only grass (PackedArea `beds`)
+  {
+    const bedZones = zones.filter((zn) => zn.props.ground === 'beds')
+    let n = 0
+    if (bedZones.length) for (const a of areas) {
+      if (a.kind !== 'park') continue
+      const r = unpackPoints(a.ring)
+      const c = centroid(r)
+      if (bedZones.some((zn) => c.x >= zn.bbox[0] && c.x <= zn.bbox[2] && c.z >= zn.bbox[1] && c.z <= zn.bbox[3] && inRing(zn.ring, c.x, c.z))) { a.beds = true; n++ }
+    }
+    if (bedZones.length) console.log(`  ${n} parks laid out as planted beds`)
+  }
   const layerCaps = (streetRegion.footBridgeLayers ?? []).map((c) => ({ ...proj.toLocal({ lat: c.lat, lon: c.lon }), radius: c.radius, layer: c.layer }))
   const decks = bridgeHeights(kept.filter((e) => !e.authored), { water: waterBodies, ground: groundAt, buried, layerCaps })
   // the ways lifted onto a deck are ramps: said outright, for the renderer (city/package.ts isRaised)

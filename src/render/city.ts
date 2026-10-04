@@ -178,6 +178,8 @@ const AREA_TINT: Record<PackedArea['kind'], [number, number, number]> = {
  * triangle budget — there is one strip of sand in San Francisco, not a network of them.
  */
 const SAND_MAX_EDGE = 4
+/** planted beds' ground: pale grey-brown bark mulch between low shrubs (the Tunnel Tops, Commons aerial) */
+const BEDS: [number, number, number] = [0.47, 0.44, 0.37]
 // Paving is grey, not white. The brighter value washed out every street it was laid in.
 const PAVEMENT: [number, number, number] = [0.52, 0.51, 0.485]
 
@@ -2215,8 +2217,10 @@ export class City {
      * arriving first and the beach is a lawn again at the last moment (BUGS.md #200); then a square paved
      * by hand, last, over the park OSM spreads across it.
      */
-    const rank = (a: { kind: string; top?: boolean }): number =>
-      a.top ? 3 : a.kind === 'paved' || a.kind === 'lot' ? 0 : a.kind === 'sand' || a.kind === 'dirt' ? 2 : 1
+    const rank = (a: { kind: string; top?: boolean; beds?: boolean }): number =>
+      // (planted beds over the parks they lie in — the Presidio's own park polygon covers the Tunnel Tops — and the lawns
+      //  over the beds)
+      a.top ? 3 : a.kind === 'paved' || a.kind === 'lot' ? 0 : a.kind === 'sand' || a.kind === 'dirt' ? 2 : a.beds ? 1.5 : a.kind === 'grass' ? 1.6 : 1
     const areasHere = this.areasIn.get(k) ?? []
     const ordered = [...areasHere].sort((p, q) => rank(p) - rank(q))
     /*
@@ -2268,7 +2272,8 @@ export class City {
         const beach = a.kind === 'sand' ? this.shoreIndex() : null
         const base = areas.positions.length / 3
         // (a square opening off a brick street is laid in its brick: PackedArea `brick`, tools/street-paint.ts)
-        const tint = a.brick && this.region.brickStreets ? this.region.brickStreets.colour : AREA_TINT[a.kind]
+        // (a park of planted beds is mulch, its lawns drawn over it: PackedArea `beds`, the Tunnel Tops)
+        const tint = a.brick && this.region.brickStreets ? this.region.brickStreets.colour : a.beds ? BEDS : AREA_TINT[a.kind]
         capPolygonWithHoles(areas, [unpackPoints(a.ring), ...(a.holes ?? []).map(unpackPoints)],
           0.02, tint, 0, 2.4, beach ? Math.min(AREA_MAX_EDGE, SAND_MAX_EDGE) : AREA_MAX_EDGE)
         if (beach) {

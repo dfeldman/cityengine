@@ -148,8 +148,11 @@ export function plantTile(areas: TileArea[], rect: { x0: number; z0: number; x1:
     z /= a.ring.length / 2
     return parks.some((p) => inside(p.ring, x, z))
   }
+  // (a lawn in a park of planted beds gets nothing of its own: the beds round it are the planting)
+  const bedParks = parks.filter((p) => p.beds)
+  const inBeds = (a: TileArea): boolean => bedParks.length > 0 && bedParks.some((p) => inside(p.ring, a.ring[0], a.ring[1]))
   for (const a of areas) {
-    if (a.kind !== 'park' && !(a.kind === 'grass' && inPark(a))) continue
+    if (a.kind !== 'park' && !(a.kind === 'grass' && inPark(a) && !inBeds(a))) continue
     let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
     for (let i = 0; i < a.ring.length; i += 2) {
       x0 = Math.min(x0, a.ring[i]); x1 = Math.max(x1, a.ring[i]); z0 = Math.min(z0, a.ring[i + 1]); z1 = Math.max(z1, a.ring[i + 1])
@@ -172,6 +175,21 @@ export function plantTile(areas: TileArea[], rect: { x0: number; z0: number; x1:
         if (!inside(a.ring, jx, jz) || (a.holes ?? []).some((h) => inside(h, jx, jz))) continue
         if (built(jx, jz)) continue
         const edge = edgeDistance(a.ring, jx, jz)
+        /*
+         * A park of planted BEDS (PackedArea `beds`: the Tunnel Tops) is shrubs all through — low natives a couple of
+         * metres apart in mulch, with a few flowering clumps — everywhere but its mapped lawns and its paths.
+         */
+        if (a.kind === 'park' && a.beds) {
+          if (onLawn(jx, jz)) continue
+          const rb = hash(x, z, 3)
+          if (rb < 0.62) out.push({ x: jx, z: jz, s: 0.9 + hash(x, z, 13) * 0.8, spin: hash(x, z, 14) * Math.PI * 2, kind: 'shrub' })
+          else if (rb < 0.7) out.push({ x: jx, z: jz, s: 0.8 + hash(x, z, 7) * 0.4, spin: hash(x, z, 6) * Math.PI * 2, kind: 'flower' })
+          // and a second, smaller, half a step off: the beds are planted close (about one plant every 3 m)
+          const kx = jx + STEP * 0.5, kz = jz + (hash(x, z, 15) - 0.5) * STEP * 0.6
+          if (hash(x, z, 16) < 0.65 && inside(a.ring, kx, kz) && !onLawn(kx, kz) && !built(kx, kz))
+            out.push({ x: kx, z: kz, s: 0.7 + hash(x, z, 17) * 0.6, spin: hash(x, z, 18) * Math.PI * 2, kind: 'shrub' })
+          continue
+        }
         const r = hash(x, z, 3) / Math.max(1e-6, thick(jx, jz))
         // under the canopy first: most of the lattice is kept, and what it grows is undergrowth rather than
         // a gardener's shrub — smaller, and scattered instead of lining a path
