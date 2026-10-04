@@ -157,8 +157,10 @@ export function presidioChapel(out: MeshBuilder, fit: Fit): void {
     aisles: null,
     transept: null,
     chancel: { kind: 'square' },
-    tower: { at: 'front-centre', stages: 2, plan: 'square', top: 'belfry' },
-    front: { kind: 'gable', portal: 'single', window: 'oculus', steps: 2 },
+    // the 1952 Mission Revival front (HABS CAL,38-SANFRA,8F-6, Commons): a square bell tower at one corner of the
+    // gable, small openings high in it under a near-flat top; the door in a carved frame with an arched window over it
+    tower: { at: 'front-corner', stages: 2, plan: 'square', top: 'flat' },
+    front: { kind: 'gable', portal: 'porch', window: 'medallion', steps: 2 },
     walls: { material: 'stucco', openings: 'round', buttresses: 'none', colour: [0.93, 0.92, 0.88] },
   })
 }

@@ -4572,5 +4572,20 @@
    0
   ],
   "note": "where the shafts stand on the wing."
+ },
+ {
+  "name": "Presidio Chapel of Our Lady \u2014 the Moraga front",
+  "group": "landmark",
+  "from": [
+   37.79739,
+   -122.457941,
+   4
+  ],
+  "to": [
+   37.797159,
+   -122.45829,
+   5
+  ],
+  "note": "kit-churches.ts presidioChapel: corner bell tower, carved portal (HABS photo, 2026-10-04)."
  }
 ]
