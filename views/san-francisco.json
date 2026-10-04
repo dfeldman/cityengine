@@ -4647,5 +4647,20 @@
    0
   ],
   "note": "zone ground: beds \u2014 mulch and low shrubs, the oval lawns (Commons aerial, 2026-10-04)."
+ },
+ {
+  "name": "1 Daniel Burnham Court \u2014 from Van Ness",
+  "group": "landmark",
+  "from": [
+   37.787251,
+   -122.421776,
+   40
+  ],
+  "to": [
+   37.786694,
+   -122.42289,
+   30
+  ],
+  "note": "beige stone and teal glass tower (skyline census 2026-10-04)."
  }
 ]
