@@ -314,6 +314,7 @@ export function campusQuery(b: Bbox): string {
   return `[out:json][timeout:120];
 (
   way["amenity"~"^(hospital|university|college|school)$"](${box});
+  relation["amenity"~"^(hospital|university|college|school)$"](${box});
 );
 out geom qt;`
 }

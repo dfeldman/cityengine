@@ -323,7 +323,9 @@ async function bake(spec: CitySpec): Promise<void> {
     console.log(`  ${n} stairways from OSM, ${own} of the region's own`)
   }
   // the hospital, university and college grounds (tools/overpass.ts campusQuery), for dressing the buildings on them
-  const campusWays = await overpassTiled(campusQuery, bbox(spec), 3200).then((g) => g.ways).catch((e) => {
+  // (a multipolygon's grounds too — Galileo High's are a relation — as one way per outer ring)
+  const campusWays = await overpassTiled(campusQuery, bbox(spec), 3200).then((g) => [...g.ways,
+    ...(g.relations ?? []).flatMap((r) => outerRings(r).filter((q) => q.length >= 4).map((q) => ({ type: 'way' as const, id: r.id, nodes: [], geometry: q, tags: r.tags }) as unknown as OsmWay))]).catch((e) => {
     console.warn(`  campuses: not fetched (${String(e).slice(0, 120)})`)
     return [] as OsmWay[]
   })
@@ -728,7 +730,7 @@ async function bake(spec: CitySpec): Promise<void> {
    * car park) and never one tagged as a home: the old houses a campus has swallowed stay houses. On SCHOOL grounds
    * the same, dressed `stucco` (below) rather than institutional: 103 school buildings were walk-ups (2026-10-04).
    */
-  const campuses = campusWays.filter((c) => c.geometry && c.geometry.length >= 4).map((c) => {
+  const campuses = campusWays.filter((c) => c.geometry && c.geometry.length >= 4 && /^(hospital|university|college|school)$/.test(c.tags?.amenity ?? '')).map((c) => {
     const r = c.geometry!.map((g) => proj.toLocal(g))
     const xs = r.map((q) => q.x), zs = r.map((q) => q.z)
     return { r, amenity: c.tags.amenity, x0: Math.min(...xs), x1: Math.max(...xs), z0: Math.min(...zs), z1: Math.max(...zs) }
