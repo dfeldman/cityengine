@@ -410,7 +410,7 @@ const CITY_WARDROBE = {
 /** women dressed so far, so one in three gets a dress — a fixed share, not a dice roll that can come up none */
 let women = 0
 
-function cityClothes(spec: AvatarSpec, seed: number, index: number): AvatarSpec {
+export function cityClothes(spec: AvatarSpec, seed: number, index: number): AvatarSpec {
   let h = seed >>> 0
   const next = (): number => { h = (Math.imul(h ^ (h >>> 15), 0x2c1b3c6d) + 0x9e3779b9) >>> 0; return h / 4294967296 }
   const pick = <T>(list: readonly T[]): T => list[Math.floor(next() * list.length)]

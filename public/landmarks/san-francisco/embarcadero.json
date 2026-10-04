@@ -1,63 +1,33 @@
 [
  {
-  "lat": 37.794127,
-  "lon": -122.400136,
-  "size": [67, 67],
-  "height": 8,
+  "lat": 37.795245788,
+  "lon": -122.398358674,
+  "size": [
+   440,
+   180
+  ],
   "rotateDeg": 0,
-  "procedural": "embarcaderoUnit1",
-  "coversRaised": true,
-  "name": "Embarcadero Center — plaza deck (West / One)",
+  "procedural": "embarcaderoPodium",
+  "name": "Embarcadero Center — podium level",
   "kind": "plaza",
-  "note": "docs/EMBARCADERO-CENTER.md. Re-authored 2026-09-24 as ONE CONTINUOUS STRUCTURE: this lat/lon is now DERIVED from src/render/landmarks/sf/embarcadero.ts's own network table (`unitLatLon('West-EC1')`), not typed independently — code and manifest read the same TOWERS table so they cannot drift apart. Between Embarcadero Center West (way/32947500) and Embarcadero Center 1 (way/32612608), the widest gap of the four units. `size` is the ring's own axis-aligned bounding box (the ring itself sits at an angle to the city grid). Deck height (8 m) and hole position/depth are still inferred, not measured — see the file header."
- },
- {
-  "lat": 37.794729,
-  "lon": -122.399119,
-  "size": [49, 59],
-  "height": 8,
-  "rotateDeg": 0,
-  "procedural": "embarcaderoUnit2",
-  "coversRaised": true,
-  "name": "Embarcadero Center — plaza deck (One / Two)",
-  "kind": "plaza",
-  "note": "Between Embarcadero Center 1 (way/32612608) and Embarcadero Center 2 (way/32612520). Derived the same way as unit 1, from the same shared network table — see embarcadero.ts header."
- },
- {
-  "lat": 37.795066,
-  "lon": -122.397939,
-  "size": [40, 47],
-  "height": 8,
-  "rotateDeg": 0,
-  "procedural": "embarcaderoUnit3",
-  "coversRaised": true,
-  "name": "Embarcadero Center — plaza deck (Two / Three)",
-  "kind": "plaza",
-  "note": "Between Embarcadero Center 2 (way/32612520) and Embarcadero Center 3 (way/32612538) — the narrowest gap of the four, so genuinely the smallest deck and hole, not a scaled copy of the others."
- },
- {
-  "lat": 37.795239,
-  "lon": -122.396697,
-  "size": [37, 48],
-  "height": 8,
-  "rotateDeg": 0,
-  "procedural": "embarcaderoUnit4",
-  "coversRaised": true,
-  "name": "Embarcadero Center — plaza deck (Three / Four)",
-  "kind": "plaza",
-  "note": "Between Embarcadero Center 3 (way/32612538) and Embarcadero Center 4 (way/616812910). Nearest unit to the Hyatt Regency and the Vaillancourt Fountain block; does not touch either (districts/market-east.ts and sf/art.ts untouched). BUGS.md #180 ('an old model that is too tall, and does not fit') is about EC4's OWN tower massing (the shared `embarcaderoCenter` preset in ring-tower.ts on this footprint), not this deck — not fixed in this pass; height 174 m over EC4's footprint confirmed correct by the owner, so the fix is to the preset/massing, not the number."
+  "note": "2026-10-03: the podium level as DECKS the ways take their height from (src/city/sf/bridges.ts EMBARCADERO_PODIUM_DECKS): the promenade, the skybridges and the Golden Gateway Garage's roof at one level, 8 m up. Replaces the four `embarcaderoUnit1..4` entries, whose 'gap between two towers' quads had landed across Battery, Front, Davis and Drumm streets — piers and well walls in the roadways (owner: 'walls block the way under them … somewhat the wrong footprints'). Their brick/colonnade/canopy vocabulary stays in sf/embarcadero.ts, to be re-placed on the low building:part rings south of the promenade. Draws nothing itself: the ways on the deck are drawn as raised walks (render/bridges.ts).",
+  "baseY": 0
  },
  {
   "lat": 37.795553,
   "lon": -122.399686,
-  "size": [26, 34],
+  "size": [
+   26,
+   34
+  ],
   "height": 8,
   "rotateDeg": 0,
   "procedural": "oneMaritimeGrassCourt",
   "coversRaised": true,
   "name": "One Maritime Plaza Park",
   "kind": "plaza",
-  "note": "BUGS.md #180: the lawn with sculptures on the podium roof west of the One Maritime Plaza tower (way/28240176 — `embarcadero-maritime-aerial.png`), previously missing entirely. Placed by measuring way/28240176's own centroid/extent from the Overpass cache and offsetting west by its own half-width plus this court's half-width plus a small gap — not typed by eye. This is a FIFTH unit on its own footprint (a single tower over a garage), not one of the four `gapQuad` units, per the file header. The other half of #180 — the small brick building rendered sunken into the plaza — is a height-datum problem in whatever places that building on the ground instead of the deck; no such building is built by this file, so it is reported, not fixed here."
+  "note": "BUGS.md #180: the lawn with sculptures on the podium roof west of the One Maritime Plaza tower (way/28240176 — `embarcadero-maritime-aerial.png`), previously missing entirely. Placed by measuring way/28240176's own centroid/extent from the Overpass cache and offsetting west by its own half-width plus this court's half-width plus a small gap — not typed by eye. This is a FIFTH unit on its own footprint (a single tower over a garage), not one of the four `gapQuad` units, per the file header. The other half of #180 — the small brick building rendered sunken into the plaza — is a height-datum problem in whatever places that building on the ground instead of the deck; no such building is built by this file, so it is reported, not fixed here. 2026-10-03: baseY −81.3 puts its lawn (8 m up in its frame) on the declared podium deck, −73.3 (src/city/sf/bridges.ts EC_PODIUM_Y).",
+  "baseY": -81.3
  },
  {
   "osm": [
@@ -69,5 +39,8 @@
   "deckAbove": 0,
   "height": 17,
   "note": "The floating fire station at Pier 22 1/2 (2022): render/landmarks/sf/fireboat-station.ts. deckAbove 0: the float's waterline is the sea, not the sea bed. Owner, 2026-10-02: 'generic building in the water at 37.790008, -122.387991'."
- }
+ },
+  {"lat": 37.794729, "lon": -122.391186, "size": [98, 125], "front": 180, "deckAbove": 0, "coversRaised": true, "kind": "structure", "procedural": "ferryGatesEFG", "name": "Ferry Building Gates E, F and G", "note": "ferry-gates.ts: the granite gate kiosks, the white truss gangways (over the package's foot bridges 80424-6) and the steel floats with their guide piles and canopies (Commons, 2019-2020 photographs of the expansion). World-aligned about (1831, 192.5); y 0 = the sea."},
+  {"lat": 37.794707, "lon": -122.392050, "size": [20, 20], "front": 180, "deckAbove": 0, "coversRaised": true, "kind": "plaza", "procedural": "southBasinDeck", "name": "South Basin deck (Ferry Terminal)", "note": "ferry-gates.ts: the deck from the old bulkhead to the gate kiosks (OSM pier 661723975 seaward of the coastline); the bay showed through between the promenade and the plaza. World-aligned about (1755, 190), a point on the deck by Gate E's walk; `size` is that point's square alone (the cover it publishes is the box round what it draws)."},
+  {"osm": ["way/288473107"], "name": "Jefferson Street attractions block (Ripley's / Wax Museum)", "restyle": "brick", "wall": "#a78d6c", "note": "Fisherman's Wharf audit 2026-10-04 (Mapillary on Jefferson): tan brick, tall glazed bays \u2014 was red."}
 ]

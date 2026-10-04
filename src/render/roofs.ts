@@ -249,6 +249,18 @@ export function buildRoof(out: MeshBuilder, ring: Pt[], spec: RoofSpec): number 
       for (const p of ring) { cx += p.x; cz += p.z }
       cx /= ring.length
       cz /= ring.length
+      /*
+       * Only where every edge can see the apex (the ring is star-shaped about it). Round a light court — an E or an L,
+       * the Army and Navy YMCA on Steuart Street, OSM `roof:shape=pyramidal` on ten storeys — the fan's triangles
+       * folded back over the apex and the roof turned inside out: from the street, no roof at all (owner, 2026-10-03).
+       * Such a roof is flat.
+       */
+      let area = 0
+      for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+      for (let i = 0; i < ring.length; i++) {
+        const a = ring[i], b = ring[(i + 1) % ring.length]
+        if (((b.x - a.x) * (cz - a.z) - (b.z - a.z) * (cx - a.x)) * area <= 0) { capPolygon(out, ring, y, colour, 0); return y }
+      }
       for (let i = 0; i < ring.length; i++) {
         const a = ring[i]
         const b = ring[(i + 1) % ring.length]

@@ -40,7 +40,6 @@ export const H2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** East Ping Yuen: civic, Chinese American residential/community building. No photo; 1960s-80s postwar guess. */
   eastPingYuen: fromRecipe('hotel-punched', {}),
   /** Ferry Station Post Office Building: civic, federal building at Ferry Building area. No photo; 1900s–1920s terracotta era guess. */
-  ferryStationPostOffice: fromRecipe('edwardian-terracotta', {}),
   /** Former Military Chapel: civic, historic religious building. No photo; 1900s–1920s terracotta era guess. */
   formerMilitaryChapel: fromRecipe('chicago-block', {}),
   /** Fugazi Bank Building: civic, historic bank in North Beach. No photo; 1900s–1920s terracotta era guess. */

@@ -30,13 +30,36 @@ const RISER = 0.17
  * layer never imports a city's own builders (feedback-region-files). Everything not in it gets the generic
  * treatment below, unchanged.
  */
-export function stairsLayer(scene: Scene, terrain: Terrain, named: Record<string, NamedStairway> = {}): TileLayer {
+/** a park's trail steps: packed earth, and the timber edging each step */
+const TRAIL_EARTH: [number, number, number] = [0.34, 0.28, 0.2]
+const TRAIL_TIMBER: [number, number, number] = [0.33, 0.24, 0.16]
+
+export function stairsLayer(scene: Scene, terrain: Terrain, named: Record<string, NamedStairway> = {}, drawnBy?: (x: number, z: number) => boolean): TileLayer {
   const concrete = surfaceTag('concrete')
   return {
     name: 'stairs',
     range: 3,
     build(near, rect) {
-      const flights = (near.tile.edges ?? []).filter((e) => e.kind === 'steps')
+      /*
+       * Not underground (a tunnel, a layer below: the stairs down into a station), and ONE flight where OSM maps several
+       * side by side — Powell Station's stairs and escalators are four `steps` ways a few metres apart, and drawn each
+       * as its own flight with cheek walls and rails they made a bank of white blocks on Hallidie Plaza (owner,
+       * 2026-10-03: "overlapping walkways that can't possibly look like that"). A flight whose middle lies within 4 m of
+       * one already kept, running the same way, is the same stair.
+       */
+      const kept: { mx: number; mz: number; dx: number; dz: number }[] = []
+      const flights = (near.tile.edges ?? []).filter((e) => e.kind === 'steps' && !e.tunnel && !((e.layer ?? 0) < 0))
+        // (nor a flight a hand-built model draws itself: the stairs down into the open BART plazas, #248)
+        .filter((e) => !drawnBy?.(e.points[Math.floor(e.points.length / 4) * 2], e.points[Math.floor(e.points.length / 4) * 2 + 1])).filter((e) => {
+        const p = unpackPoints(e.points)
+        if (p.length < 2) return false
+        const a = p[0], b = p[p.length - 1]
+        const L = Math.hypot(b.x - a.x, b.z - a.z) || 1
+        const f = { mx: (a.x + b.x) / 2, mz: (a.z + b.z) / 2, dx: (b.x - a.x) / L, dz: (b.z - a.z) / L }
+        if (kept.some((k) => Math.hypot(k.mx - f.mx, k.mz - f.mz) < 4 && Math.abs(k.dx * f.dx + k.dz * f.dz) > 0.9)) return false
+        kept.push(f)
+        return true
+      })
       if (flights.length === 0) return []
       const out = new MeshBuilder()
       const inRect = (x: number, z: number): boolean => x >= rect.x0 && x < rect.x1 && z >= rect.z0 && z < rect.z1
@@ -93,7 +116,10 @@ export function stairsLayer(scene: Scene, terrain: Terrain, named: Record<string
         at.push({ x: last.x, z: last.z, dx: at[at.length - 1]?.dx ?? 1, dz: at[at.length - 1]?.dz ?? 0 })
         if (at.length < 2) continue
         // the ground under each tread, quantised to risers from the lower end, so the treads step
-        const g = at.map((p) => terrain.heightAt(p.x, p.z))
+        // (a park's steps on the hill as it is: the park ground is draped raw, and on the levelled corridor height the
+        //  flights stood ~2 m clear of Strawberry Hill's slopes, 2026-10-04)
+        const park = !!e.park
+        const g = at.map((p) => (park ? terrain.rawHeightAt(p.x, p.z) : terrain.heightAt(p.x, p.z)))
         const base = Math.min(g[0], g[g.length - 1])
         const y = g.map((h) => base + Math.round((h - base) / RISER) * RISER + 0.15)
         for (let i = 0; i < at.length - 1; i++) {
@@ -105,6 +131,18 @@ export function stairsLayer(scene: Scene, terrain: Terrain, named: Record<string
           const top = Math.max(y[i], y[i + 1])
           const ya = y[i]
           const P = (r: { x: number; z: number }, o: number, h: number): [number, number, number] => [r.x + nx * o, h, r.z + nz * o]
+          /*
+           * A park's trail steps: an earth tread lying ON the slope from this point to the next, and a timber edge across
+           * it — no level treads and risers, which on a raw hillside stood as white blocks and dark slabs (Strawberry
+           * Hill, 2026-10-04).
+           */
+          if (park) {
+            const ga = g[i] + 0.06, gb = g[i + 1] + 0.06
+            out.quad([P(p, -half, ga), P(p, half, ga), P(q, half, gb), P(q, -half, gb)], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], TRAIL_EARTH, 0)
+            out.quad([P(p, -half, ga), P(p, half, ga), P(p, half, ga + 0.14), P(p, -half, ga + 0.14)], [-p.dx, 0, -p.dz], [[0, 0], [1, 0], [1, 1], [0, 1]], TRAIL_TIMBER, 0)
+            out.quad([P(p, -half, ga + 0.14), P(p, half, ga + 0.14), P(p, half, ga + 0.14), P(p, -half, ga + 0.14)], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], TRAIL_TIMBER, 0)
+            continue
+          }
           // the tread, level, from this point to the next
           out.quad([P(p, -half, ya), P(p, half, ya), P(q, half, ya), P(q, -half, ya)], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], CONCRETE, concrete)
           // the riser up to the next tread (or down from it), facing the lower side
@@ -114,8 +152,8 @@ export function stairsLayer(scene: Scene, terrain: Terrain, named: Record<string
             const f = y[i + 1] > ya ? -1 : 1
             out.quad([P(q, -half, lo), P(q, half, lo), P(q, half, hi), P(q, -half, hi)], [p.dx * f, 0, p.dz * f], [[0, 0], [1, 0], [1, 1], [0, 1]], NOSING, concrete)
           }
-          // the cheek walls, from the ground up past the tread, each side
-          for (const s of [-1, 1]) {
+          // the cheek walls, from the ground up past the tread, each side (a park's trail steps have none)
+          for (const s of park ? [] : [-1, 1]) {
             const o = s * (half + 0.15)
             const gl = Math.min(g[i], g[i + 1]) - 0.3
             const wn: [number, number, number] = [nx * s, 0, nz * s]
@@ -126,8 +164,8 @@ export function stairsLayer(scene: Scene, terrain: Terrain, named: Record<string
               [[0, 0], [1, 0], [1, 1], [0, 1]], NOSING, concrete)
           }
         }
-        // the handrails: a steel tube on posts, 0.9 m over the treads, down each side
-        for (const s of [-1, 1]) {
+        // the handrails: a steel tube on posts, 0.9 m over the treads, down each side (not on a park's trail steps)
+        for (const s of park ? [] : [-1, 1]) {
           const o = s * (half - 0.1)
           for (let i = 0; i < at.length - 1; i += 6) {
             const j = Math.min(at.length - 1, i + 6)

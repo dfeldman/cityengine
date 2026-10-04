@@ -4,6 +4,7 @@
  * Standalone the controls are the keyboard; on Dandyhorse the same `Controls` interface is backed by the
  * platform session and nothing else here changes. See INTEGRATION.md.
  */
+import { CourtPlayers } from './sim/players.ts'
 import { Color4 } from '@babylonjs/core/Maths/math.color'
 import { Engine } from '@babylonjs/core/Engines/engine'
 import { FreeCamera } from '@babylonjs/core/Cameras/freeCamera'
@@ -13,25 +14,31 @@ import { Ray } from '@babylonjs/core/Culling/ray'
 import '@babylonjs/core/Materials/standardMaterial'
 import { setTimeOfDay, setWeather, type TimeOfDay, type Weather } from './render/facade-material.ts'
 import { Rain } from './render/rain.ts'
-import { DebugPanel, OrbitLook, copyText } from './ui/debug.ts'
+import { DebugPanel, LookPad, OrbitLook, copyText } from './ui/debug.ts'
 import { Projection } from './city/geo.ts'
 import { parseLatLon } from './ui/goto.ts'
-import { asMassing, fringeLayer, massing } from './render/fringe.ts'
+import { asMassing, fringeLayer, massing, midRoads } from './render/fringe.ts'
 import { terracesLayer } from './render/terraces.ts'
 import { MID, VIEW, setGroundStride, setRings } from './render/city.ts'
+import { keyed, touchScreen } from './ui/touch.ts'
+import { Inspector } from './ui/inspector.ts'
+import { flagPoles, flagsLayer } from './render/flags.ts'
+import { cliffsLayer } from './render/cliffs.ts'
 import { MemoryTiles, TILE, tileKey, type CityIndex, type TileData } from './city/tiles.ts'
 import { nearLevel, Terrain } from './city/terrain.ts'
 import { tilePreparer } from './render/prepare.ts'
 import { ParkMap } from './city/park-area.ts'
 import { plog } from './profile.ts'
 import { quaysLayer } from './render/quays.ts'
-import { LoadingScreen, welcomeOpen, welcomeScreen } from './ui/loading.ts'
+import { LoadingScreen, closeWelcome, welcomeOpen, welcomeScreen } from './ui/loading.ts'
+import { TravelCard } from './ui/travel.ts'
+import { SF_STATIONS, FARES, destinations, type Station } from './game/stations.ts'
 import { LandmarkCard } from './ui/landmark-card.ts'
 import { Plants } from './render/plants.ts'
 import { quickMarksLayer } from './render/quickmarks.ts'
 import { postersLayer } from './render/posters.ts'
 import { Fountains, fountainManifest, wallaceLayer } from './render/fountains.ts'
-import { bridgeStructuresLayer, PARIS_BRIDGES } from './render/bridge-structures.ts'
+import { bridgeStructuresLayer, PARIS_BRIDGES, STEEL_OVER_WATER } from './render/bridge-structures.ts'
 import { passagesLayer } from './render/passages.ts'
 import { boatsLayer } from './render/boats.ts'
 import { RiverTraffic, riverLine } from './render/river-traffic.ts'
@@ -40,7 +47,7 @@ import { metroSignsLayer } from './render/metrosigns.ts'
 import { PathMap } from './render/pathmap.ts'
 import { region } from './city/region.ts'
 import { ambientOcclusion } from './render/depth.ts'
-import { colourGrade, GRADE } from './render/grade.ts'
+import { colourGrade, GRADE, GRADE_NO_AO } from './render/grade.ts'
 import { City, setupGroundLayers } from './render/city.ts'
 import { Crowd } from './sim/crowd.ts'
 import { Life } from './render/life.ts'
@@ -59,13 +66,14 @@ import { Statues, statueManifest } from './render/statues.ts'
 import { Traffic, laneOf, onEdge, type RiderNow, type Vehicle } from './sim/traffic.ts'
 import { Signals } from './sim/signals.ts'
 import { SignalLamps } from './render/lamps.ts'
-import { DEFAULTS as DELIVERY_DEFAULTS, Delivery, rate, type DeliveryEvent, type Source, type Stop } from './game/delivery.ts'
+import { ATE_LINES, DEFAULTS as DELIVERY_DEFAULTS, Delivery, rate, type DeliveryEvent, type Source, type Stop } from './game/delivery.ts'
 import { DeliveryCard } from './ui/delivery-card.ts'
 import { Tunnels } from './render/tunnels.ts'
 import { Beacon } from './render/beacon.ts'
 import { SIZE, boxOf, overlap } from './sim/collide.ts'
 import { inRing } from './map/zones.ts'
-import { BakedCrowd, peopleLights } from './render/crowd-baked.ts'
+import { BakedCrowd, cityClothes, peopleLights } from './render/crowd-baked.ts'
+import { randomSpec } from '@dandyhorse/avatarkit'
 import { Rider } from './render/rider.ts'
 import { Signs, setTextScale, type SignedJunction } from './render/signs.ts'
 import { GPU_PER_TILE_MB, HEAP_PER_TILE_MB, TIERS, type Tier } from './tier.ts'
@@ -399,6 +407,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const prepared = new MemoryTiles(new Map())
   city.source = prepared
   city.viaductStations = (region(pkg.region).viaductStations ?? []).map((q) => new Projection(pkg.origin).toLocal(q))
+  city.rainbowSpots = (region(pkg.region).rainbowCrossings ?? []).map((r) => ({ ...new Projection(pkg.origin).toLocal({ lat: r.lat, lon: r.lon }), radius: r.radius }))
+  city.lanternStretches = (region(pkg.region).lanternStreets ?? []).map((l) => ({ street: l.street, colour: l.colour ?? [0.78, 0.1, 0.08],
+    a: new Projection(pkg.origin).toLocal({ lat: l.from[0], lon: l.from[1] }), b: new Projection(pkg.origin).toLocal({ lat: l.to[0], lon: l.to[1] }) }))
   city.exists = (k) => src.has(k)
   const graph: CityGraph = { nodes: new Map(), edges: new Map() }
   const arrived: { raw: TileData; ready: TileData; edges: Edge[] }[] = []
@@ -505,7 +516,14 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     for (const f of anyTile) f(raw)
     if (!full) {
       // what the mid ring's massing needs, and nothing else
-      if (tileLevel.get(k) === 'mid') prepared.tiles.set(k, { ...ready, edges: [], areas: [], trees: [], pois: [], furniture: [], landmarks: [], rails: [], plantings: [] })
+      // (and a slim copy of the streets, for the road ribbons that run on ahead of the full ring: render/fringe.ts midRoads
+      // — on the phone tiers only, whose full ring is the rider's own tile: on a desktop the full ring already reaches
+      // 600 m, and ribbons over the whole mid ring were a hundred-odd more draw calls and a pale wash over the distance
+      // in the fog — owner, 2026-10-03: "the game suddenly got much slower … everything look washed out")
+      const slim = VIEW > 1 ? [] : ready.edges.filter((e) => !e.bridge && !e.tunnel && (e.layer ?? 0) <= 0)
+        .map((e) => ({ id: e.id, a: e.a, b: e.b, points: e.points, heights: e.heights, width: e.width, walk: e.walk, foot: e.foot, kind: e.kind, layer: e.layer }) as typeof e)
+      // (beside `edges`, not in them: a full tile at the ring's edge reads its neighbours' edges, and these are partial)
+      if (tileLevel.get(k) === 'mid') prepared.tiles.set(k, { ...ready, edges: [], midEdges: slim, areas: [], trees: [], pois: [], furniture: [], landmarks: [], rails: [], plantings: [] } as typeof ready)
       spent += performance.now() - t1
       return
     }
@@ -613,11 +631,18 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // from here on there is a frame to protect, so the tile work takes its slice of each one rather than all of it
   streaming = true
   mark('city')
-  city.pickable = new URLSearchParams(location.search).get('pick') === '1'
+  // (`?edit=1`: the inspector, ui/inspector.ts, which needs the buildings' ids on their meshes)
+  const editing = new URLSearchParams(location.search).get('edit') === '1'
+  city.pickable = editing || new URLSearchParams(location.search).get('pick') === '1'
   // and the city beyond the box, as plain massing, so it does not stop at a field (render/fringe.ts)
   // (the bake leaves out of the fringe every building the city itself has)
   city.addLayer(fringeLayer(scene, region(pkg.region), city.terrain, ASSETS, new Set<number>()))
   mark('fringe')
+  // the bare rock of the cliffs, in zones with `cliffs: true` (render/cliffs.ts)
+  if (!off.has('cliffs')) {
+    const cl = cliffsLayer(scene, index.zones ?? [], city.terrain, index.sea)
+    if (cl) city.addLayer(cl)
+  }
   // the surf on the rocks, in zones with `water: 'waves'` (render/surf.ts)
   if (index.sea !== undefined && index.sea !== null && !off.has('surf')) {
     const surf = surfLayer(scene, index.zones ?? [], city.terrain, index.sea)
@@ -626,8 +651,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // café terraces on the pavement, where the region sets them out (render/terraces.ts)
   // the mid ring (PARIS_EXPAND §2): every building of a far tile as plain massing, so the city has a horizon
   if (!off.has('fringe')) {
-    city.midBuild = (t) => massing(scene, [...t.buildings.map(asMassing), ...t.fringe],
-      region(pkg.region), city.terrain, ASSETS, `mid:${t.key}`)
+    city.midBuild = (t) => [...massing(scene, [...t.buildings.map(asMassing), ...t.fringe],
+      region(pkg.region), city.terrain, ASSETS, `mid:${t.key}`), ...(VIEW <= 1 ? midRoads(scene, (t as { midEdges?: typeof t.edges }).midEdges ?? t.edges, city.terrain, t.key) : [])]
   }
   if (region(pkg.region).furniture.terraces) city.addLayer(terracesLayer(scene, city.terrain))
   mark('terraces')
@@ -635,12 +660,19 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   city.addLayer(quaysLayer(scene, pkg, city.terrain, region(pkg.region).riverDrop ?? 0))
   // the bridges, each built once from its outline in its own design (render/bridge-structures.ts, BUGS.md #37)
   city.addLayer(bridgeStructuresLayer(scene, pkg, city.terrain, region(pkg.region).riverDrop ?? 0,
-    pkg.region === 'paris' ? PARIS_BRIDGES : {}, (id) => city.coversOutline(id)))
+    pkg.region === 'paris' ? PARIS_BRIDGES : {}, (id) => city.coversOutline(id), pkg.region === 'paris' ? undefined : STEEL_OVER_WATER))
   mark('quays')
   // the arches and covered ways that take streets through buildings (render/passages.ts)
   city.addLayer(passagesLayer(scene, city.terrain))
   // the buildings people steer by, marked by their kind: flags on the civic ones, towers on the churches (BUGS.md #41)
   city.addLayer(quickMarksLayer(scene, city.terrain, pkg.region))
+  // OSM's flagpoles and what they fly (render/flags.ts, tools/flags.ts)
+  if (!off.has('flags')) {
+    const fp = new Projection(pkg.origin)
+    void flagPoles(document.baseURI, opts.city).then((poles) => {
+      if (poles.length) city.addLayer(flagsLayer(scene, poles, (lat, lon) => fp.toLocal({ lat, lon }), city.terrain))
+    })
+  }
   // moving water: the region's fountains, and a trickle from every Wallace fountain (render/fountains.ts)
   if (!off.has('fountains')) city.addLayer(wallaceLayer(scene, city.terrain))
   let fountains: Fountains | null = null
@@ -674,6 +706,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     city.addLayer(metroSignsLayer(scene, city.terrain, (x, z) => city.streetBearing(x, z)))
   }
   const sky = off.has('sky') ? null : new Sky(scene)
+  // ground landmarks pave, as trees clearings (render/vegetation.ts `clear`)
+  const clearingsEarly: { x: number; z: number }[][] = []
+  let treesReady = false
+  let plantsClear: ((ring: { x: number; z: number }[]) => void) | null = null
   const landmarks = off.has('landmarks') ? null
     // (the sea's level, from the index: `deckAbove` — the piers — places by it; without it every pier fell through to
     //  the drape on the sea bed and stood 3-10 m under the water, BUGS.md #258)
@@ -687,7 +723,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     // a landmark that hand-builds a bridge or canopy suppresses the OSM way under it, the moment it is
     // placed and before any tile is handed over — see Landmarks.covers / City.coverRaised (BUGS.md #136)
     landmarks.onCover = (c) => city.coverRaised(c)
-    landmarks.onGround = (ring) => city.paveGround(ring)
+    // (the trees are made further down: a paving that arrives first is queued for them)
+    landmarks.onGround = (ring) => { city.paveGround(ring); clearingsEarly.push(ring); if (treesReady) trees.clear(ring); plantsClear?.(ring) }
+    landmarks.onFootprint = (ring) => { clearingsEarly.push(ring); if (treesReady) trees.clear(ring); plantsClear?.(ring) }
     landmarks.dryAt = (x, z) => city.dryAt(x, z)
     if (bridgeDecks.size > 0) city.modelDeck = (x, z) => bridgeDecks.drawn(x, z)
     for (const raw of seenRaw) landmarks.addTile(raw)
@@ -761,9 +799,26 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     ? { density: trafficN, range: Math.max(220, 40 * Math.sqrt(trafficN)) }
     : !opts.cars ? 'none' as const
     : (opts.traffic && opts.traffic !== 'some' ? opts.traffic : 'dense' as const)
-  const traffic = new Traffic(graph, trafficLevel, { signals, zoneFactor })
+  /*
+   * MARKET STREET IS CAR-FREE (owner, 2026-10-03: "buses and taxis only … and streetcars … and delivery bikes"): from
+   * 10th Street to the Embarcadero since 2020. 10th meets Market at about x = −490 in San Francisco's frame.
+   */
+  const carFreeX = new Map<number, boolean>()
+  const carFree = index.region === 'san-francisco' ? (e: { id: number; name?: string; points: { x: number; z: number }[] }): boolean => {
+    if (e.name !== 'Market Street') return false
+    let v = carFreeX.get(e.id)
+    if (v === undefined) { v = e.points[Math.floor(e.points.length / 2)].x > -490; carFreeX.set(e.id, v) }
+    return v
+  } : undefined
+  const traffic = new Traffic(graph, trafficLevel, { signals, zoneFactor, carFree })
+  const courtPlayers = new CourtPlayers()
   // the never-stuck squeeze THROUGH a standing car: only on a trainer, which cannot back up (sim/traffic.ts `squeeze`)
-  traffic.squeeze = !!opts.platform
+  // …and in the trainer modes (slow input: a rider who may have no controls at all, owner 2026-10-03) the squeeze comes
+  // sooner — the hands-off soak (tools/trainer-soak.ts) stood 5–8 s at junctions behind buses standing in the box
+  const handsOff = !!opts.platform || opts.input === 'slow'
+  traffic.squeeze = handsOff
+  if (handsOff) traffic.squeezeAfter = 2.5
+  traffic.rechooseOn = true
   let lastRider: RiderNow | null = null
   /*
    * WEAVING (sim/traffic.ts `weave`, owner 2026-09-29: "that's the whole advantage of a bike in a gridlocked city"):
@@ -845,7 +900,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   let stalled = 0
   let stallFrom: { x: number; z: number } | null = null
   // (a trainer cannot back up: sooner)
-  const STALL_LIMIT = opts.platform ? 5 : 8
+  const STALL_LIMIT = handsOff ? 3 : 8
   /*
    * THE BIKE'S STEERING (owner, 2026-09-29: "no animation when the bike is nudging… it should tilt a bit, with a
    * smooth fade in and out, and the front wheel should turn… at intersections it just flops to an angle and flops
@@ -991,7 +1046,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // the tram track in the street, and the wires over the electric track (render/street-rails.ts, overhead.ts)
   city.addLayer(streetRailsLayer(scene, city.terrain))
   // the public stairways as stairs (render/stairs.ts)
-  city.addLayer(stairsLayer(scene, city.terrain, pkg.region === 'san-francisco' ? SF_STAIRWAYS : {}))
+  city.addLayer(stairsLayer(scene, city.terrain, pkg.region === 'san-francisco' ? SF_STAIRWAYS : {}, (x, z) => city.inCover(x, z)))
   const overhead = off.has('life') ? null : new OverheadLines(scene, city.terrain)
   onTile((a) => {
     // the tram stops first, so the tile's own lines find them
@@ -1002,7 +1057,16 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   mark('life')
   // `?without=rider` is how the city is compared with and without the avatar kit, which brings its own
   // lighting and image-processing opinions along with the body
-  const rider = off.has('rider') ? null : Rider.create(scene, opts.device)
+  /*
+   * A DIFFERENT RIDER EVERY LOAD (owner, 2026-10-03: "we had decided to make the avatar random (with random clothes)
+   * on each load. That's a fun little gimmick"): an avatar-kit body from a random seed, dressed for the city — trousers
+   * on a bike (a skirt hangs through the saddle), sports kit on foot. Frozen shots keep the preset, so they repeat;
+   * `?rider=<n>` picks a seed.
+   */
+  const riderSeed = new URLSearchParams(location.search).get('rider')
+  const riderSpec = opts.freeze && riderSeed === null ? undefined
+    : (() => { const seed = riderSeed !== null ? Number(riderSeed) : Math.floor(Math.random() * 1e9); return cityClothes(randomSpec(seed), seed, opts.device === 'bike' ? -1 : 0) })()
+  const rider = off.has('rider') ? null : Rider.create(scene, opts.device, riderSpec ? { spec: riderSpec } : {})
   /*
    * Every stranger is a real avatar-kit body, drawn by baked vertex animation (render/crowd-baked.ts).
    * The variants are built only once the rider's own body is on screen: the kit builds one body at a
@@ -1020,9 +1084,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     })
   })
   const floraOf = regionKit(pkg.region).flora
-  const trees = new Vegetation(scene, city.terrain, new URL('trees/', document.baseURI).href,
+  const trees: Vegetation = new Vegetation(scene, city.terrain, new URL('trees/', document.baseURI).href,
     floraOf?.((x, z) => new Projection(pkg.origin).toLatLon({ x, z })), opts.veg ?? CANOPY, opts.vegMerge !== false)
   if (!off.has('trees')) city.addLayer(trees.layer())
+  treesReady = true
+  for (const r of clearingsEarly) trees.clear(r)
   mark('vegetation')
   // the models are a few megabytes, so the ride starts without them and they appear when they arrive
   // (`treesReady`: the shot tools wait for it — SF's forms are forty-odd models and take a while)
@@ -1034,6 +1100,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const plants = new Plants(scene, city.terrain, new URL('plants/', document.baseURI).href)
   // which shrubs grow where, by zone (map format v3; a v2 city has none and gets the defaults everywhere)
   if (index.zones?.length) plants.zones = new PlantZones(index.zones)
+  // (the clearings the landmarks have asked for so far, and every one from now on)
+  for (const r of clearingsEarly) plants.clearings.push(r)
+  plantsClear = (ring) => plants.clear(ring)
   if (!off.has('trees') && !off.has('plants')) {
     city.addLayer(plants.layer())
     void plants.load().catch((e) => console.warn('plants did not load:', e))
@@ -1130,6 +1199,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     return { el, fill: el.querySelector('.fill') as HTMLElement }
   })() : null
   const hud = new Hud(document.getElementById('hud')!, () => (controls.press ? controls.press('back') : nav.turnAround()))
+  hud.setUnits(region(pkg.region).units)
 
   /*
    * THE DELIVERY GAME (src/game/delivery.ts, 2026-09-29): a job offer pops up — pick up at one building, deliver to
@@ -1259,6 +1329,21 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   delivery.level = levelFor(delivered)
   const deliveryCard = new DeliveryCard()
   if (!opts.freeze) deliveryCard.cash(earned)
+  /*
+   * FERRIES AND MUNI METRO (game/stations.ts, ui/travel.ts): ride up to a terminal or a stop, pick where to go, pay the
+   * fare from what the deliveries earned (it may go below zero: travel is never refused), fade to black, and arrive.
+   */
+  const travel = opts.freeze ? null : new TravelCard()
+  const stations: (Station & { x: number; z: number })[] = index.region === 'san-francisco'
+    ? SF_STATIONS.map((st) => ({ ...st, ...new Projection(pkg.origin).toLocal({ lat: st.lat, lon: st.lon }) })) : []
+  if (travel) travel.onGo = (to, fare) => {
+    const jump = (window as unknown as { __jump?: (lat: number, lon: number) => boolean }).__jump
+    if (!jump?.(to.lat, to.lon)) return
+    earned -= fare
+    try { localStorage.setItem(EARNED_KEY, earned.toFixed(2)) } catch { /* fine */ }
+    deliveryCard.cash(earned, true)
+    hud.banner(to.line === 'ferry' ? `Ferry to ${to.name}` : `Muni Metro to ${to.name}`, `fare $${fare.toFixed(2)}`)
+  }
   // the target building, lit up (render/beacon.ts)
   const beacon = new Beacon(scene)
   const light = (s: Stop | null, kind: 'pickup' | 'dropoff'): void =>
@@ -1315,6 +1400,12 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           light(ev.job[ev.stop], ev.stop)
           routeTo(ev.job[ev.stop])
         }
+      } else if (ev.kind === 'forfeit') {
+        // a jump on the map: the job is off, unpaid (no teleporting to the door)
+        deliveryCard.going(null)
+        light(null, 'pickup')
+        routeTo(null)
+        hud.banner('Delivery forfeit', `jumped away from the ${ev.job.item?.name ?? 'order'} · job cancelled, no pay`, 4500)
       } else if (ev.kind === 'spoiled') {
         // a fragile item and a collision: the job is off
         deliveryCard.going(null)
@@ -1322,6 +1413,16 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         routeTo(null)
         sfx.spoiled()
         hud.banner(`${ev.job.item?.emoji ?? ''} Splat!`, `the ${ev.job.item?.name ?? 'delivery'} did not survive · job cancelled`, 4500)
+      } else if (ev.kind === 'eaten') {
+        // the pass: full energy, no pay, one star, and the customer has something to say
+        deliveryCard.going(null)
+        light(null, 'pickup')
+        routeTo(null)
+        eatHint = 0
+        if (energy) { energy.level = 1; energy.bonked = false }
+        const line = ATE_LINES[Math.floor(Math.random() * ATE_LINES.length)]
+        deliveryCard.receipt(ev.job, { stars: 1, fee: 0, tip: 0, line }, ev.seconds, null, `Ate the ${ev.job.item?.name ?? 'order'}`)
+        hud.banner(`${ev.job.item?.emoji ?? '🍽'} Mmm.`, 'full energy · no pay for this one', 3500)
       } else if (ev.kind === 'delivered') {
         deliveryCard.going(null)
         light(null, 'pickup')
@@ -1340,6 +1441,12 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     }
   }
   addEventListener('keydown', (e) => { if (deliveryCard.key(e.code)) e.preventDefault() })
+  // E eats the order you are carrying (the pass); the hint comes up, for a few seconds a minute, once you are very late
+  let eatHint = 0
+  addEventListener('keydown', (e) => {
+    if (e.code !== 'KeyE' || frozen || (e.target instanceof HTMLElement && e.target.closest('input, textarea, select'))) return
+    onDelivery(delivery.eat())
+  })
   ;(window as unknown as Record<string, unknown>).__delivery = delivery
   // the landmark card (ui/landmark-card.ts): notes on the major landmark nearby, toggled with I
   const staticPlaces: { name: string; x: number; z: number }[] = []
@@ -1483,7 +1590,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const tier1 = (pkg.landmarks ?? []).filter((l) => l.tier === 1)
 
   addEventListener('keydown', (e) => {
-    if (e.code !== 'KeyM' || (e.target instanceof HTMLElement && e.target.closest('input, textarea, select'))) return
+    // Escape leaves the big map from anywhere — the landmark search has the focus while it is open, and M typed there is
+    // a letter (owner, 2026-10-03: "hard to get out of map mode … you should just be able to press escape")
+    const leaving = e.code === 'Escape' && minimap.isLarge
+    if (!leaving && (e.code !== 'KeyM' || (e.target instanceof HTMLElement && e.target.closest('input, textarea, select')))) return
+    if (leaving) e.preventDefault()
     minimap.toggle()
     // the landmark search belongs to the large map: it arrives with it and leaves with it
     if (mapSearch) {
@@ -1511,6 +1622,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   let liftUsed = -1
   /** why the rider is held this frame, for the probes (`__ride().hold`) */
   let holdWhy = ''
+  let welcomeFor = 0
+  let welcomePedal = 0
+  /** what the rider was held behind last frame, for the probes (tools/trainer-soak.ts) */
+  let lastLead: { gap: number; speed: number } | null = null
   const BOARDABLE = new Map<number, TransitKind>([[2, 'streetcar'], [3, 'cable'], [5, 'gondola']])
   const vehicleView = (t: { id: number; kind: number; x: number; z: number; y: number; heading: number; v: number; wait: number }): VehicleView => ({
     id: String(t.id), kind: BOARDABLE.get(t.kind) ?? 'streetcar', x: t.x, z: t.z, y: t.y,
@@ -1566,10 +1681,19 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       return
     }
     if (e.code !== 'KeyB') return
+    transitAction()
+  })
+  /** B, or a tap on the transit line: off if aboard, on if something is boardable (owner, 2026-10-03: no way to board on mobile) */
+  function transitAction(): void {
     if (transit.aboard) {
       const r = transit.alight(placeOnGraph)
       if (r.status === 'ok') { backOnStreet(r.pos); hud.banner('Off you get', placeName(nav.at())) }
-      else hud.note('no street to get off onto here')
+      else if (transit.prompt()?.includes('Esc')) {
+        // (lost: the escape hatch, which on a phone is the same tap)
+        const pos = transit.abandon(placeOnGraph)
+        if (pos) backOnStreet(pos)
+        hud.banner('Off the transit', 'put back on the nearest street')
+      } else hud.note('no street to get off onto here')
       return
     }
     const v = transit.boardable
@@ -1583,9 +1707,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         const a = transit.aboard!
         gondolaFrom = { x: a.x, z: a.z }
         hud.banner('Aboard the gondola', a.y - city.terrain.heightAt(a.x, a.z) > 8 ? 'down to Salesforce Plaza' : 'up to Salesforce Park')
-      } else hud.banner(`Aboard the ${v.name ?? (v.kind === 'cable' ? 'cable car' : 'streetcar')}`, 'B to get off anywhere there is a street')
+      } else hud.banner(`Aboard the ${v.name ?? (v.kind === 'cable' ? 'cable car' : 'streetcar')}`, `${keyed('B', 'get off')} anywhere there is a street`)
     }
-  })
+  }
+  hud.onTransitTap = transitAction
 
   // debugging: freeze and look around, and copy where you are (see ui/debug.ts)
   const orbit = new OrbitLook(canvas)
@@ -1607,6 +1732,28 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    */
   let held: { from: Vector3; to: Vector3 } | null = null
   let lastWant = 0
+  // the inspector, for editing (`?edit=1`, I): what a building or a model is, and where its data came from
+  if (editing) {
+    const pr = new Projection(pkg.origin)
+    new Inspector({
+      scene,
+      latLon: (x, z) => pr.toLatLon({ x, z }),
+      building: (id) => {
+        for (const [k, t] of prepared.tiles) {
+          const b = t.buildings.find((q) => q.id === id) ?? t.fringe?.find((q) => (q as { id?: number }).id === id)
+          if (b) return { tile: k, b: b as unknown as Record<string, unknown> }
+        }
+        return null
+      },
+      entriesFor: (id, partOf) => landmarkList.filter((e) => { const ids = packedIds(e); return ids.includes(id) || (partOf !== undefined && ids.includes(partOf)) }) as unknown as Record<string, unknown>[],
+      model: (name) => ({
+        entry: (landmarkList.find((e) => e.name === name) ?? null) as unknown as Record<string, unknown> | null,
+        placed: (landmarks?.placed.find((p) => p.name === name) ?? null) as unknown as Record<string, unknown> | null,
+      }),
+    }, canvas)
+  }
+  // the paused camera's arrows on a touch screen (ui/debug.ts LookPad)
+  const lookPad = touchScreen() ? new LookPad(orbit) : null
   const debug = new DebugPanel(() => {
     held = null
     frozen = !frozen
@@ -1623,6 +1770,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       orbit.lift = 0
     }
     debug.frozen(frozen)
+    lookPad?.show(frozen)
   }, () => {
     const at = frozen ? { x: orbit.look.x, z: orbit.look.z } : lastAt
     const ll = proj.toLatLon(at)
@@ -1649,6 +1797,62 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     const why = opts.goTo(text)
     if (why) debug.toast(why)
   })
+  /*
+   * OBSERVE FROM THE TOP (owner, 2026-10-03: "a toast that allows you to press o to Observe from the top of major high up
+   * landmarks, like Sutro, Salesforce Tower, Coit Tower, de Young Tower"). Near one, a pill offers it (tappable on a
+   * phone); O lifts the paused camera to its top to look round, O or P comes back down. Heights are the viewing level,
+   * metres over the ground at its foot.
+   */
+  const OBSERVE = pkg.region === 'san-francisco' ? [
+    { name: 'Sutro Tower', lat: 37.75523, lon: -122.45277, top: 235 },
+    { name: 'Salesforce Tower', lat: 37.78977, lon: -122.39687, top: 300 },
+    { name: 'Coit Tower', lat: 37.80239, lon: -122.40582, top: 62 },
+    { name: 'the de Young\'s Hamon Tower', lat: 37.77147, lon: -122.46859, top: 42 },
+    { name: 'the Transamerica Pyramid', lat: 37.79519, lon: -122.40279, top: 230 },
+  ].map((o) => ({ ...o, ...proj.toLocal({ lat: o.lat, lon: o.lon }) })) : []
+  let observing: string | null = null
+  const nearTop = (at: { x: number; z: number }): (typeof OBSERVE)[number] | null =>
+    OBSERVE.find((o) => Math.hypot(o.x - at.x, o.z - at.z) < 150) ?? null
+  const comeDown = (): void => {
+    observing = null
+    frozen = false
+    orbit.active = false
+    debug.frozen(false)
+    lookPad?.show(false)
+  }
+  const goUp = (o: (typeof OBSERVE)[number]): void => {
+    held = null
+    frozen = true
+    orbit.active = true
+    const l = orbit.look
+    l.x = o.x
+    l.z = o.z
+    l.yaw = Math.atan2(-Math.sin(camHeading), -Math.cos(camHeading))
+    l.pitch = 0.12
+    l.dist = 3
+    // the eye just over the MODEL's own top where one is placed there (the guessed heights put it inside Coit Tower)
+    let topY = city.terrain.heightAt(o.x, o.z) + o.top
+    for (const p of landmarks?.placed ?? []) {
+      if (Math.hypot(p.x - o.x, p.z - o.z) < 40 && p.y !== undefined && p.height !== undefined) topY = Math.max(topY, p.y + p.height + 2)
+    }
+    orbit.lift = topY - city.terrain.heightAt(o.x, o.z) - 1.5
+    observing = o.name
+    debug.frozen(true)
+    lookPad?.show(true)
+    hud.banner(`The top of ${o.name}`, touchScreen() ? 'drag to look round · ⏸ to come down' : 'drag to look round · O to come down', 4500)
+  }
+  addEventListener('keydown', (e) => {
+    if (e.code !== 'KeyO' || e.ctrlKey || e.metaKey || (e.target instanceof HTMLElement && e.target.closest('input, textarea, select'))) return
+    if (observing && frozen) { comeDown(); return }
+    const o = !frozen ? nearTop(lastAt) : null
+    if (o) goUp(o)
+  })
+  /** once a frame, from the ride loop: the pill by a tall landmark */
+  const observeTick = (at: { x: number; z: number }): void => {
+    if (observing && !frozen) observing = null
+    const o = frozen ? null : nearTop(at)
+    hud.observe(o ? (touchScreen() ? `🔭 Observe from the top of ${o.name}` : `🔭 Press O to observe from the top of ${o.name}`) : null, o ? () => goUp(o) : undefined)
+  }
   /*
    * Jump to a landmark: a menu beside the city menu of every modelled landmark, restyled place and named
    * building, which goes there by the same road as a pasted "lat, lon" (ui/goto.ts).
@@ -1782,7 +1986,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // brighter, more saturated, and anti-aliased: after the AO, the last passes (render/grade.ts)
   if (!off.has('grade')) {
     const g = new URLSearchParams(location.search).get('grade')?.split(',').map(Number)
-    colourGrade(scene, camera, g && g.length === 3 && g.every((v) => v > 0) ? { exposure: g[0], saturation: g[1], contrast: g[2] } : GRADE)
+    colourGrade(scene, camera, g && g.length === 3 && g.every((v) => v > 0) ? { exposure: g[0], saturation: g[1], contrast: g[2] } : off.has('ao') ? GRADE_NO_AO : GRADE)
   }
 
   let lastState: ReturnType<typeof ride.step> | null = null
@@ -1866,11 +2070,12 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       const onCabin = transit.aboard?.kind === 'gondola' ? transit.aboard : null
       if (onCabin && gondolaFrom && onCabin.dwelling && Math.hypot(onCabin.x - gondolaFrom.x, onCabin.z - gondolaFrom.z) > 25) {
         const r = transit.alight(placeOnGraph)
-        if (r.status === 'ok') { backOnStreet(r.pos); hud.banner(onCabin.y - city.terrain.heightAt(onCabin.x, onCabin.z) > 8 ? 'Salesforce Park' : 'Salesforce Plaza', 'B gets you off any transit; here it is automatic') }
+        if (r.status === 'ok') { backOnStreet(r.pos); hud.banner(onCabin.y - city.terrain.heightAt(onCabin.x, onCabin.z) > 8 ? 'Salesforce Park' : 'Salesforce Plaza', touchScreen() ? 'the transit line takes you off any transit; here it is automatic' : 'B gets you off any transit; here it is automatic') }
         gondolaFrom = null
       }
       const prompt = transit.prompt()
-      if (prompt) hud.transit(prompt)
+      // (on a touch screen the line is the button: it says so instead of naming a key)
+      if (prompt) hud.transit(touchScreen() ? prompt.replace(/^B · board/, 'Tap · board').replace(/ · (B|Esc) to get off$/, ' · tap to get off') : prompt)
       else hud.transit(null)
 
       // Always drained, even aboard the transit: `steering()` empties a queue, and presses kept while the
@@ -1986,6 +2191,17 @@ export async function game(canvas: HTMLCanvasElement, opts: {
        * them, at its own speed, and the distance it covers is the vehicle's, not theirs.
        */
       const riding = transit.aboard !== null
+      /*
+       * HANDS OFF (owner, 2026-10-03: in trainer mode "the user never has to touch the controls at all (they may not
+       * have any controls)"). The welcome card holds the ride until a key or a click — which a rider on a trainer with
+       * no keyboard can never give, and the trainer soak stood still behind it for six minutes. With slow input (the
+       * trainer modes) it goes on its own: after two seconds of pedalling, or twenty seconds up.
+       */
+      if (welcomeOpen() && !nav.fast) {
+        welcomeFor += dt
+        welcomePedal = (controls.measured().power ?? 0) > 30 ? welcomePedal + dt : 0
+        if (welcomePedal > 2 || welcomeFor > 20) closeWelcome()
+      }
       // …and while the rider is picking themselves up after a collision (render/rider.ts `tumble`)
       const hold = frozen || controls.paused() || riding || !!rider?.tumbling || stillInWay(lastRider, now) || welcomeOpen()
         // (waiting at the gondola's station: the cabin is boarded, the track is not ridden; and in a lift)
@@ -2009,7 +2225,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         : ride.step(dt, given, opts.device, surface, ground.grade, radius, junction?.ahead ?? Infinity,
           // held behind the car ahead in the rider's lane (none on a descent: the traffic makes way instead) —
           // judged along the strip the rider is WEAVING to, and slowed to swing out in time when that is far across
-          lastRider ? heldBy(lastRider) : null)
+          (lastLead = lastRider && !hold ? heldBy(lastRider) : null))
       lastState = state
       // held still behind traffic for a while: say how to get out (owner, 2026-09-29: stuck face to face with a car
       // on a narrow street) — a U-turn works from a standstill
@@ -2023,8 +2239,13 @@ export async function game(canvas: HTMLCanvasElement, opts: {
        * through, at a creep (below).
        */
       const asking = (controls.measured().power ?? 0) > 10 || (controls.measured().power ?? 0) < 0
-      // (stalled = not a metre from where they were, however they tried: forward, back, or sideways)
-      if (hold || !lastRider || !asking || !stallFrom || Math.hypot(lastRider.at.x - stallFrom.x, lastRider.at.z - stallFrom.z) > 1) {
+      // (stalled = not a metre further along, forward or back. SIDEWAYS does not count: standing, the navigator's
+      // sidestep edges the rider across the lane looking for a way round, and when that drift reset this clock the
+      // valve never opened — the hands-off soak stood 9.6 s face to face with a car in the box, 2026-10-03)
+      const along = lastRider && stallFrom
+        ? Math.abs((lastRider.at.x - stallFrom.x) * Math.sin(lastRider.heading) + (lastRider.at.z - stallFrom.z) * Math.cos(lastRider.heading))
+        : Infinity
+      if (hold || !lastRider || !asking || !stallFrom || along > 1) {
         stalled = 0
         stallFrom = lastRider ? { ...lastRider.at } : null
       } else stalled += dt
@@ -2120,6 +2341,13 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       lastAt = at
       lastY = groundY
       if (!frozen) city.update(at.x, at.z)
+      // at a station? (not aboard anything)
+      if (travel && !transit.aboard) {
+        let here: (typeof stations)[number] | null = null
+        // (a ferry terminal is a big building out over the water; the street in front of it is 100 m off its centre)
+        for (const st of stations) if (Math.hypot(st.x - at.x, st.z - at.z) < (st.line === 'ferry' ? 140 : 70)) { here = st; break }
+        travel.at(here, here ? destinations(here, stations) : [], here ? FARES[here.line] : 0)
+      }
       // and the tiles to build them from, round wherever is being looked at, a few times a second
       if (now - lastWant > 250) {
         lastWant = now
@@ -2171,6 +2399,15 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         const hits = traffic.update(dt, riderNow ?? at, near)
         // the delivery game: its clock runs with the ride (not while frozen or paused), and it watches the rider
         if (!hold) onDelivery(delivery.update(dt, at))
+        // very late with the order on board (past the one-star mark): offer the pass, for a few seconds every minute
+        const veryLate = !hold && delivery.phase === 'toDropoff' && delivery.job && (delivery.elapsed ?? 0) > Delivery.expected(delivery.job, 6.5 * play.speedup) * 1.7
+        // the pass, as a button too: a phone has no E (owner, 2026-10-03)
+        hud.action(veryLate ? `${delivery.job?.item?.emoji ?? '🍽'} Eat the ${delivery.job?.item?.name ?? 'order'}` : null, () => onDelivery(delivery.eat()))
+        observeTick(at)
+        if (veryLate && delivery.job) {
+          eatHint -= dt
+          if (eatHint <= 0) { hud.banner(`${delivery.job.item?.emoji ?? '🍽'} Running very late…`, `${touchScreen() ? 'tap 🍽 below' : 'press E'} to eat the ${delivery.job.item?.name ?? 'order'} — full energy, no pay`, 5000); eatHint = 60 }
+        }
         deliveryCard.navigate(delivery.target, { x: at.x, z: at.z, heading }, delivery.elapsed)
         // the two stops on the maps, no route between them
         const job = delivery.phase === 'toPickup' || delivery.phase === 'toDropoff' ? delivery.job : null
@@ -2248,7 +2485,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           }
         }
         // nothing inside a tunnel is drawn while the camera is outside it: it would show through the hill
-        const walkers = crowd.all.filter((w) => !tunnels.hides(w.edgeId))
+        // (and the players on the sports courts near the rider: sim/players.ts)
+        const walkers = [...crowd.all.filter((w) => !tunnels.hides(w.edgeId)), ...courtPlayers.update(dt, at, city.courtsNear(at.x, at.z, 160))]
         strangers?.update(dt, walkers, at, city.terrain)
         const focus = frozen ? (held ? held.to : orbit.look) : at
         life.update(dt, traffic.all.filter((v) => !tunnels.hides(v.edgeId)), walkers, at, strangers?.drawn, city.terrain, focus)
@@ -2458,7 +2696,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     seconds: simSeconds, travelled: nav.travelled, speed: lastState?.speed ?? 0,
   })
   ;(window as unknown as { __ride?: unknown }).__ride = () => ({
-    hold: holdWhy, speed: lastState?.speed ?? 0,
+    hold: holdWhy, speed: lastState?.speed ?? 0, lead: lastLead, stalled,
     x: lastAt.x, z: lastAt.z, y: lastY, terrain: city.terrain.heightAt(lastAt.x, lastAt.z), edge: nav.mapEdgeId(),
     elevation: nav.elevation().y,
   })
@@ -2518,6 +2756,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     // off whatever was carrying the rider first: a jump made aboard the gondola or a streetcar left the rider on the
     // vehicle, which then held them where it was for good — the "freeze" on a shift-click on the map (2026-10-02)
     if (transit.aboard) transit.abandon(() => null)
+    // and any delivery under way is forfeit, else a jump to the door would complete it
+    const forfeit = delivery.forfeit()
+    onDelivery(forfeit)
     gondolaFrom = null
     liftUsed = -1
     liftTime = 0
@@ -2528,7 +2769,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     const at = nav.at()
     city.update(at.x, at.z)
     trees.update(new Vector3(at.x, 0, at.z))
-    hud.banner('Jumped', `${lat.toFixed(5)}, ${lon.toFixed(5)} · ${placeName(at)}`)
+    hud.banner(forfeit.length ? 'Jumped — delivery forfeit' : 'Jumped', `${lat.toFixed(5)}, ${lon.toFixed(5)} · ${placeName(at)}`)
     return true
   }
   w.__pick = (x: number, y: number) => {
@@ -2544,6 +2785,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     return { name: '', group: '', from: toLL(f), to: toLL(to) }
   }
   w.__placed = () => landmarks?.placed ?? []
+  // the ride graph, for probes (tools/: which ways are rideable where, and at what heights)
+  w.__rides = rides
   w.__landmarks = landmarks
   w.__boats = () => [...(river?.positions() ?? []), ...bay.flatMap((b) => b.positions())]
   w.__trains = () => life.trainInfo()

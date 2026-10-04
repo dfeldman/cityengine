@@ -16,6 +16,9 @@ import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData'
 import type { Scene } from '@babylonjs/core/scene'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { stopSign, uspsBox, billboard, muniStop, plainStop, newsRacks, parkingMeter, utilityPole, pathOfGold } from './us-furniture.ts'
+import { streetClockPost } from './street-clock.ts'
+import { clockFace } from './landmarks/parts.ts'
+import { Clocks } from './clocks.ts'
 import { MeshBuilder, buildBuilding, capPolygon, capPolygonWithHoles, type Arch, type AtlasManifest, type Ring } from './buildings.ts'
 import { archSize, passageArches } from './passages.ts'
 import { inOutline } from './bridge-structures.ts'
@@ -28,7 +31,7 @@ import { DAYLIGHT } from './facade-material.ts'
 import {
   bench, bikeDocks, bollard, hydrant, ctaEntrance, drinkingTap, genericEntrance, guimardEntrance, kiosk, lampPost,
   morrisColumn, nycSubwayEntrance, parisNewsstand, trafficLight, trafficLightMast, trafficLightParis, wallaceFountain,
-  wallLamp, strut, FIXED,
+  wallLamp, strut, prism, FIXED,
 } from './models.ts'
 import { facesStreet, pavementDepth, streetIndex, type StreetIndex } from '../city/frontage.ts'
 import { region, type Region } from '../city/region.ts'
@@ -600,6 +603,11 @@ function zebra(out: MeshBuilder, pts: { x: number; z: number }[], width: number,
  * line. Drawn as geometry rather than in the asphalt shader because the road surface is now a single unioned
  * polygon with no notion of which street any given square metre belongs to.
  */
+/** San Francisco's transit-only red */
+const BUS_RED: [number, number, number] = [0.46, 0.14, 0.12]
+const BIKE_GREEN: [number, number, number] = [0.27, 0.52, 0.3]
+const RAINBOW: [number, number, number][] = [[0.82, 0.12, 0.12], [0.92, 0.48, 0.1], [0.95, 0.85, 0.15], [0.15, 0.6, 0.25], [0.15, 0.35, 0.8], [0.45, 0.2, 0.6]]
+
 function dashedLine(out: MeshBuilder, pts: { x: number; z: number }[], offset: number, y: number,
                     width: number, on: number, period: number,
                     white: [number, number, number] = [0.86, 0.85, 0.79]): void {
@@ -1251,6 +1259,8 @@ export class City {
   private readonly tiles = new Map<string, Tile>()
   /** what falls in each tile, worked out once at load */
   private readonly edgesIn = new Map<string, PackedEdge[]>()
+  /** the shops and food places by tile, for where the parking meters go (#237) */
+  private readonly shopsIn = new Map<string, { x: number; z: number }[]>()
   /** OSM's point furniture (Métro entrances, fountains, columns, kiosks, bike docks) by tile */
   private readonly pointsIn = new Map<string, PackedFurniture[]>()
   /** edges that are structures (bridges, ramps) rather than painted ground; see render/bridges.ts */
@@ -1268,6 +1278,10 @@ export class City {
   private readonly coveredOutlines = new Set<number>()
   /** the viaduct's stations in local metres (region `viaductStations`), set by the game */
   viaductStations: { x: number; z: number }[] = []
+  /** the region's lantern streets in local metres (Region `lanternStreets`), set by the game */
+  /** the region's rainbow crossings in local metres (Region `rainbowCrossings`), set by the game */
+  rainbowSpots: { x: number; z: number; radius: number }[] = []
+  lanternStretches: { street: string; a: { x: number; z: number }; b: { x: number; z: number }; colour: [number, number, number] }[] = []
   /** the bridges' outlines (render/bridge-structures.ts): a way on one draws only its running surfaces */
   private readonly outlines = new Map<number, { ring: { x: number; z: number }[]; x0: number; x1: number; z0: number; z1: number }>()
   private structured(e: PackedEdge): boolean {
@@ -1290,7 +1304,18 @@ export class City {
   private readonly buildingsIn = new Map<string, PackedBuilding[]>()
   /** fitted sports courts by tile (BUGS.md #214, city/sports.ts) */
   private readonly courtsIn = new Map<string, PackedCourt[]>()
+  /** the sports courts in the tiles that are in, within `r` of (x, z) — for the players on them (sim/players.ts) */
+  courtsNear(x: number, z: number, r: number): PackedCourt[] {
+    const out: PackedCourt[] = []
+    for (const list of this.courtsIn.values()) for (const c of list) if (Math.abs(c.x - x) < r && Math.abs(c.z - z) < r) out.push(c)
+    return out
+  }
   private readonly region: Region
+  /** the street clocks' hands (render/clocks.ts), set lazily: the material wants the scene */
+  private clockHandsLazy?: Clocks
+  private get clockHands(): Clocks {
+    return this.clockHandsLazy ??= new Clocks(this.scene, cartoonMaterial(this.scene, 'cartoonStatic', false), this.region.timeZone)
+  }
   private streets: StreetIndex | undefined
   /** the through streets only, where the shops have deep café awnings */
   private mainStreets: StreetIndex | undefined
@@ -1426,6 +1451,7 @@ export class City {
       for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
       this.outlines.set(b.id, { ring, x0, x1, z0, z1 })
     }
+    for (const p of t.pois ?? []) if (p.kind === 'shop' || p.kind === 'food') this.bucket(this.shopsIn, p.x, p.z, { x: p.x, z: p.z })
     for (const e of t.edges) {
       if (!onSurface(e) || this.edgeSeen.has(e.id)) continue
       this.edgeSeen.add(e.id)
@@ -1647,6 +1673,9 @@ export class City {
       const [tx, tz] = tileOf(mx, mz)
       stale.add(key(tx, tz))
     }
+    // …and the subway-entrance points it draws itself (the BART plazas)
+    for (const [k, list] of this.pointsIn) if (list.some((f) => f.kind === 'metro' && this.inCover(f.x, f.z))) stale.add(k)
+    for (const [k, list] of this.edgesIn) if (list.some((e) => e.kind === 'steps' && this.inCover(e.points[Math.floor(e.points.length / 4) * 2], e.points[Math.floor(e.points.length / 4) * 2 + 1]))) stale.add(k)
     let dropped = 0
     for (const k of stale) if (this.rebuild(k)) dropped++
     if (stale.size > 0) console.info(`cover: ${stale.size} tile(s) touched, ${dropped} already built and dropped to be built again`)
@@ -1730,8 +1759,11 @@ export class City {
       const z = e.points[i * 2 + 1]
       // (a bridge model's footprint is the box round its whole mesh — the Golden Gate's is 124 m wide, for the
       // fender round its south pier — so where the models' decks are known, those say what the model draws)
-      if (this.modelDeck) return this.modelDeck(x, z)
-      return this.coverAreas.some((a) => x >= a.x0 - 2 && x <= a.x1 + 2 && z >= a.z0 - 2 && z <= a.z1 + 2 && inOutline(a.ring, x, z, 2))
+      if (this.modelDeck?.(x, z)) return true
+      // …and any OTHER model's footprint counts by its outline: a cover area whose middle is on no declared deck is
+      // not a bridge model (the Japanese Tea Garden's two garden bridges were drawn twice, a plank in the air, #238)
+      return this.coverAreas.some((a) => x >= a.x0 - 2 && x <= a.x1 + 2 && z >= a.z0 - 2 && z <= a.z1 + 2
+        && !(this.modelDeck && this.modelDeck((a.x0 + a.x1) / 2, (a.z0 + a.z1) / 2)) && inOutline(a.ring, x, z, 2))
     }
     const out: PackedEdge[] = []
     let from = -1
@@ -1762,6 +1794,11 @@ export class City {
     this.coveredDecks.add(e.id)
     console.info(`cover: raised edge ${e.id} is drawn by a hand-built landmark`)
     return true
+  }
+
+  /** inside any hand-built model's declared footprint (`coverRaised`) */
+  inCover(x: number, z: number): boolean {
+    return this.coverAreas.some((a) => x >= a.x0 - 1 && x <= a.x1 + 1 && z >= a.z0 - 1 && z <= a.z1 + 1 && inOutline(a.ring, x, z, 1))
   }
 
   /** every raised edge filed in this tile against the footprints declared so far (the landmark-first order) */
@@ -2015,6 +2052,7 @@ export class City {
    * not rebuild the same tile back and forth. `idle` says nothing is waiting — the shot tools wait for it.
    */
   update(x: number, z: number): void {
+    this.clockHandsLazy?.update()
     const [cx, cz] = tileOf(x, z)
     const dist = (k: string): number => {
       const [tx, tz] = k.split(',').map(Number)
@@ -2229,8 +2267,10 @@ export class City {
          */
         const beach = a.kind === 'sand' ? this.shoreIndex() : null
         const base = areas.positions.length / 3
+        // (a square opening off a brick street is laid in its brick: PackedArea `brick`, tools/street-paint.ts)
+        const tint = a.brick && this.region.brickStreets ? this.region.brickStreets.colour : AREA_TINT[a.kind]
         capPolygonWithHoles(areas, [unpackPoints(a.ring), ...(a.holes ?? []).map(unpackPoints)],
-          0.02, AREA_TINT[a.kind], 0, 2.4, beach ? Math.min(AREA_MAX_EDGE, SAND_MAX_EDGE) : AREA_MAX_EDGE)
+          0.02, tint, 0, 2.4, beach ? Math.min(AREA_MAX_EDGE, SAND_MAX_EDGE) : AREA_MAX_EDGE)
         if (beach) {
           const n = areas.positions.length / 3
           for (let v = base; v < n; v++) {
@@ -2293,6 +2333,13 @@ export class City {
      * seven-way junction.
      */
     const brick = this.region.brickStreets
+    // the painted transit busways of this tile, for `buswayBeside`
+    const busways = groundEdges.filter((o) => o.kind === 'busway' && o.paint && o.paint & 1).map((o) => ({ name: o.name, pts: unpackPoints(o.points) }))
+    const buswayBeside = (e: PackedEdge, pts: { x: number; z: number }[]): boolean => {
+      if (busways.length === 0) return false
+      const m = pts[Math.floor(pts.length / 2)]
+      return busways.some((b) => b.name === e.name && b.pts.some((q) => Math.hypot(q.x - m.x, q.z - m.z) < e.width / 2 + 12))
+    }
     for (const e of groundEdges) {
       const pts = unpackPoints(e.points)
       if (pts.length < 2) continue
@@ -2314,7 +2361,9 @@ export class City {
        * straight from worn asphalt to a dirt-and-leaf shoulder. There is no wedge of grass to hide out here
        * because grass is what the park IS, so the layer has nothing to do and everything to spoil.
        */
-      if (!e.park) quadStrip(corridor, pts, e.width + 2 * e.walk + 4.5, 0.15, PAVEMENT, (x, z) => this.terrain.heightAt(x, z))
+      // (a FOOT way takes a metre of slop, not 4.5: the slop is for streets meeting at shallow angles, and on an open
+      //  hillside outside any mapped park — Twin Peaks' slopes — each 3 m trail became a 7.5 m concrete stripe, 2026-10-04)
+      if (!e.park) quadStrip(corridor, pts, e.width + 2 * e.walk + (e.foot ? 1 : 4.5), 0.15, PAVEMENT, (x, z) => this.terrain.heightAt(x, z))
       // a brick street's pavements (San Francisco's Market Street), drawn over the concrete a hair higher so
       // it wins every overlap the same way each frame — the kerb-to-wall width only, the carriageway is over it
       if (brick && !e.foot && e.walk > 0 && brick.names.includes(e.name ?? '')) {
@@ -2353,6 +2402,13 @@ export class City {
           const inner = onCarriageway(pts, road)
           // Paris's passages piétons: the same bars, wider apart, across a broader crossing
           if (inner.length >= 2) {
+            // the Castro's rainbow crossings: six solid bands along the crossing, not white bars (Region `rainbowCrossings`)
+            const mid = inner[Math.floor(inner.length / 2)]
+            if (this.rainbowSpots.some((r) => Math.hypot(mid.x - r.x, mid.z - r.z) < r.radius)) {
+              const W = Math.max(3, Math.min(4.5, e.width))
+              RAINBOW.forEach((c, k) => dashedLine(markings, inner, (k - 2.5) * (W / 6), 0.064, W / 6 + 0.01, 1, 1, c))
+              continue
+            }
             if (this.region.crossings === 'bands') zebra(markings, inner, Math.max(3, Math.min(5, e.width + 1)), 0.5, 0.8)
             // North America's continental crossing: broad bars, as wide as the gaps, the full width of the road
             else if (this.region.crossings === 'continental') zebra(markings, inner, Math.max(3, Math.min(4.5, e.width)), 0.6, 0.6)
@@ -2412,9 +2468,31 @@ export class City {
     // Markings are their own geometry: the road surface is one painted layer with no notion of which street
     // any given square metre belongs to.
     for (const e of groundEdges) {
-      if (e.foot || e.width < 5.4) continue
+      // (a painted busway is narrower than any marked road: it is let through for its paint, and only that)
+      if (e.foot || (e.width < 5.4 && !(e.paint && e.kind === 'busway'))) continue
       const full = unpackPoints(e.points)
       const pts = slice(full, this.cutback(e.a) + 2.5, this.cutback(e.b) + 2.5)
+      /*
+       * The region's own lane paint (PackedEdge `paint`, tools/street-paint.ts; owner on Market Street: "the centre lanes
+       * with the streetcars is red between Gough St and 3rd St … distinctive green bike lanes between Gough and 8th St").
+       * Lane colour runs block to block, so it takes the WHOLE line less 3 m at each end — not the centre line's cutback,
+       * which on Market's short blocks between close junctions left nothing at all (views audit, 2026-10-04).
+       * On a one-way carriageway the middle of the street is its left side; on a two-way one, the centre.
+       */
+      const paintPts = e.paint ? slice(full, 3, 3) : []
+      if (e.paint && e.paint & 1 && e.kind === 'busway' && paintPts.length >= 2) dashedLine(markings, paintPts, 0, 0.058, e.width + 0.2, 1, 1, BUS_RED)
+      if (e.paint && e.width >= 5 && paintPts.length >= 2) {
+        if (e.paint & 1 && !buswayBeside(e, paintPts)) {
+          const W = Math.min(3.4, e.width / 2 - 0.5)
+          if (e.oneway) dashedLine(markings, paintPts, e.width / 2 - 0.4 - W / 2, 0.058, W, 1, 1, BUS_RED)
+          else dashedLine(markings, paintPts, 0, 0.058, Math.min(6.6, e.width - 4), 1, 1, BUS_RED)
+        }
+        if (e.paint & 2) {
+          const W = 1.7
+          for (const side of e.oneway ? [-1] : [-1, 1]) dashedLine(markings, paintPts, side * (e.width / 2 - 0.3 - W / 2), 0.0585, W, 1, 1, BIKE_GREEN)
+        }
+      }
+      if (e.width < 5.4) continue
       // a connector a few metres long inside a junction gets no centre line: its stubs were left lying in
       // the junction box as stray bits of double yellow
       if (pts.length < 2 || lengthOf(pts) < 6) continue
@@ -2441,6 +2519,13 @@ export class City {
           dashedLine(markings, pts, 0, 0.063, 0.12, 3, 9)
         }
         for (const side of [-1, 1]) dashedLine(markings, pts, side * (e.width / 2 - 0.5), 0.063, 0.10, 1, 1)
+      }
+      // the red bus lanes along their curbs (PackedEdge `busSide`; owner: "render bus lanes as red"), just under the paint
+      if (e.busSide && e.width >= 7) {
+        const W = Math.min(3.3, e.width / 2 - 0.8)
+        for (const [bit, side] of [[1, -1], [2, 1]] as const) {
+          if (e.busSide & bit) dashedLine(markings, pts, side * (e.width / 2 - 0.55 - W / 2), 0.058, W, 1, 1, BUS_RED)
+        }
       }
     }
 
@@ -2596,6 +2681,35 @@ export class City {
     const nearStairMouth = (x: number, z: number): boolean =>
       stairMouths.some((m) => Math.abs(m.x - x) < 6 && Math.abs(m.z - z) < 6)
 
+    /*
+     * A street mapped as TWO ways, one each way (Market at Van Ness, 10th, 8th …): each way's pavement on the inside is
+     * the median — tracks, islands, the other carriageway — and its lamps stood in the road there (owner's Market
+     * survey, 2026-10-03). A point is on the inside when another way of the same name runs nearer to it than its own.
+     */
+    const twins = new Map<string, { id: number; pts: { x: number; z: number }[] }[]>()
+    // (from this tile and its neighbours: the other way of the pair is often in the next tile)
+    const around: typeof groundEdges = []
+    for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) around.push(...(this.edgesIn.get(key(ktx + dx, ktz + dz)) ?? []))
+    for (const o of around) {
+      if (o.foot || !o.name) continue
+      const l = twins.get(o.name) ?? []
+      l.push({ id: o.id, pts: unpackPoints(o.points) })
+      twins.set(o.name, l)
+    }
+    const segDist = (pts: { x: number; z: number }[], x: number, z: number): number => {
+      let d = Infinity
+      for (let i = 1; i < pts.length; i++) {
+        const a = pts[i - 1], dx = pts[i].x - a.x, dz = pts[i].z - a.z
+        const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1e-9)))
+        d = Math.min(d, Math.hypot(a.x + dx * t - x, a.z + dz * t - z))
+      }
+      return d
+    }
+    const insideTwin = (e: { id: number; name?: string }, own: { x: number; z: number }[], x: number, z: number): boolean => {
+      if (!e.name) return false
+      const mine = segDist(own, x, z)
+      return (twins.get(e.name) ?? []).some((o) => o.id !== e.id && segDist(o.pts, x, z) < mine + 1)
+    }
     for (const e of groundEdges) {
       if (e.foot) continue
       if (e.walk < 1.2) continue
@@ -2615,7 +2729,7 @@ export class City {
           const px = pts[i - 1].x + dx * t + (-dz / seg) * off * side
           const pz = pts[i - 1].z + dz * t + (dx / seg) * off * side
           const heading = Math.atan2(dx, dz) + (side > 0 ? Math.PI : 0)
-          if (skippedIf(kerbside.whyNoFurniture(px, pz), px, pz, 'lamp/bench')) { acc += 22 + ((e.id + n) % 9); n++; continue }
+          if (skippedIf(kerbside.whyNoFurniture(px, pz), px, pz, 'lamp/bench') || insideTwin(e, pts, px, pz)) { acc += market ? 15 : 22 + ((e.id + n) % 9); n++; continue }
           // what stands on the pavement is regional: Paris hangs its lamps on the buildings
           // a bench only where the pavement has room to sit on it, and not at every other lamp post
           if ((e.id + n) % 14 === 0 && walk >= 2.5) {
@@ -2638,6 +2752,18 @@ export class City {
       // (not in the road: a street mapped as two parallel ways has one way's kerb in the other's lanes, and a
       // hydrant near a junction was in the cross street — BUGS.md #45)
       const roads = new Carriageways(groundEdges)
+      // the paint, by the hydrant's own position in the street: the same every time the tile is built
+      const paint = this.region.hydrantPaint
+      const body = paint ? hexRgb(paint.body) : undefined
+      const tops = paint?.tops.map(([c, w]) => [hexRgb(c), w] as const) ?? []
+      const weight = tops.reduce((t, [, w]) => t + w, 0)
+      const paintHydrant = (k: number) => (b: MeshBuilder): void => {
+        if (!body) { hydrant(b); return }
+        let r = ((Math.imul(k ^ 0x9e3779b9, 0x85ebca6b) >>> 0) / 4294967296) * weight
+        let top = tops[0]?.[0] ?? body
+        for (const [c, w] of tops) { if (r < w) { top = c; break } r -= w }
+        hydrant(b, body, top)
+      }
       for (const e of groundEdges) {
         if (e.foot || e.walk < 1.5) continue
         const pts = unpackPoints(e.points)
@@ -2657,7 +2783,7 @@ export class City {
             const side = (e.id + n) % 2 === 0 ? 1 : -1
             const hx = pts[i - 1].x + dx * t + (-dz / seg) * off * side
             const hz = pts[i - 1].z + dz * t + (dx / seg) * off * side
-            if (!(skippedIf(roads.whyNoFurniture(hx, hz), hx, hz, 'hydrant'))) placeModel(furniture, hydrant, hx, 0.15, hz, Math.atan2(dx, dz))
+            if (!(skippedIf(roads.whyNoFurniture(hx, hz), hx, hz, 'hydrant'))) placeModel(furniture, paintHydrant(e.id * 7 + n), hx, 0.15, hz, Math.atan2(dx, dz))
             acc += 60
             n++
           }
@@ -2674,6 +2800,46 @@ export class City {
      * the commercial streets; wooden utility poles and their wires down the residential ones; and on a brick
      * street (Market) the chain kerb and the bannered standards. Nothing where it would stand in a road.
      */
+    /*
+     * LANTERN STRINGS across a street (Region `lanternStreets`: Grant Avenue in Chinatown): a wire from wall to wall at
+     * about seven metres, sagging a little, every nine metres, with red paper lanterns hung along it.
+     */
+    for (const ls of this.lanternStretches) {
+      const dx = ls.b.x - ls.a.x, dz = ls.b.z - ls.a.z, LL = Math.hypot(dx, dz) || 1
+      for (const e of groundEdges) {
+        if (e.foot || e.name !== ls.street) continue
+        const pts = unpackPoints(e.points)
+        let acc = 0
+        for (let i = 1; i < pts.length; i++) {
+          const p0 = pts[i - 1], p1 = pts[i]
+          const L = Math.hypot(p1.x - p0.x, p1.z - p0.z)
+          if (L < 0.1) continue
+          const ux = (p1.x - p0.x) / L, uz = (p1.z - p0.z) / L
+          for (let s = (9 - (acc % 9)) % 9; s < L; s += 9) {
+            const x = p0.x + ux * s, z = p0.z + uz * s
+            const t = ((x - ls.a.x) * dx + (z - ls.a.z) * dz) / (LL * LL)
+            const off = Math.abs((x - ls.a.x) * dz - (z - ls.a.z) * dx) / LL
+            if (t < 0 || t > 1 || off > 40) continue
+            const half = e.width / 2 + e.walk
+            const nx = -uz, nz = ux
+            const y = 7   // (over the ground: the furniture mesh is draped)
+            strut(furniture, [x - nx * half, y, z - nz * half], [x + nx * half, y, z + nz * half], 0.02, 0.02, [0.1, 0.1, 0.1], 0, false)
+            const n = Math.max(3, Math.round((half * 2) / 1.6))
+            for (let k = 1; k < n; k++) {
+              const f = k / n - 0.5, sag = 0.5 * (1 - 4 * f * f)
+              const lx = x + nx * f * half * 2, lz = z + nz * f * half * 2
+              // a paper lantern's belly: narrow, full, narrow
+              prism(furniture, lx, lz, y - sag - 0.78, y - sag - 0.66, 0.13, 10, ls.colour, 0, 0.23)
+              prism(furniture, lx, lz, y - sag - 0.66, y - sag - 0.46, 0.23, 10, ls.colour, 0, 0.23)
+              prism(furniture, lx, lz, y - sag - 0.46, y - sag - 0.35, 0.23, 10, ls.colour, 0, 0.13)
+              prism(furniture, lx, lz, y - sag - 0.35, y - sag - 0.3, 0.12, 8, [0.85, 0.7, 0.2], 0, 0.12)
+            }
+          }
+          acc += L
+        }
+      }
+    }
+
     if (this.region.furniture.clutter) {
       const carriage = new Carriageways(groundEdges)
       const brickNames = this.region.brickStreets?.names ?? []
@@ -2702,7 +2868,7 @@ export class City {
           const x = p.x - p.tz * off * side
           const z = p.z + p.tx * off * side
           // (not in a road, nor in the median of one mapped as two ways: Carriageways.noFurniture)
-          if (skippedIf(carriage.whyNoFurniture(x, z), x, z, 'clutter')) return null
+          if (skippedIf(carriage.whyNoFurniture(x, z), x, z, 'clutter') || insideTwin(e, pts, x, z)) return null
           placeModel(furniture, model, x, 0.15, z, Math.atan2(p.tx, p.tz) + (side > 0 ? Math.PI : 0) + turn)
           return { x, z }
         }
@@ -2717,8 +2883,25 @@ export class City {
             else put(s + 2, -side, e.width / 2 + 0.55, sfTrashCan)
           }
         }
-        // parking meters down the commercial kerbs (not Market, where nobody parks)
-        if (main && !brick && total > 30) {
+        // parking meters down the commercial kerbs (not Market, where nobody parks) — and only COMMERCIAL ones: a street
+        // lined with shops and places to eat, at least three within 20 m of it and one per 40 m of its length (owner,
+        // 2026-10-03: "WAY too many parking meters … most of the city has no parking meters"; every main street had them)
+        const shopsAlong = (): number => {
+          const [tx0, tz0] = tileOf(pts[0].x, pts[0].z)
+          let n = 0
+          for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {
+            for (const q of this.shopsIn.get(key(tx0 + dx, tz0 + dz)) ?? []) {
+              for (let i = 1; i < pts.length; i++) {
+                const a = pts[i - 1], b = pts[i]
+                const vx = b.x - a.x, vz = b.z - a.z, L2 = vx * vx + vz * vz || 1
+                const t = Math.max(0, Math.min(1, ((q.x - a.x) * vx + (q.z - a.z) * vz) / L2))
+                if (Math.hypot(a.x + vx * t - q.x, a.z + vz * t - q.z) < 20) { n++; break }
+              }
+            }
+          }
+          return n
+        }
+        if (main && !brick && total > 30 && shopsAlong() >= Math.max(3, total / 40)) {
           for (const side of [-1, 1]) {
             if (hash(e.id, side + 3) < 0.35) continue
             for (let s = 12; s < total - 12; s += 6.5) put(s, side, e.width / 2 + 0.35, parkingMeter)
@@ -2985,6 +3168,17 @@ export class City {
             const q = (p0: { x: number; z: number }, p1: { x: number; z: number }, y00: number, y10: number, y11: number, y01: number, c: [number, number, number], nn = n): void => {
               walls.quad([[p0.x, y00, p0.z], [p1.x, y10, p1.z], [p1.x, y11, p1.z], [p0.x, y01, p0.z]], nn, UV, c, 0)
             }
+            /*
+             * A FOOT WAY gets no wall (Golden Gate Park audit, 2026-10-04: Strawberry Hill's trails, benched across its
+             * slopes, stood in cream stone walls with parapets). A ground foot way is drawn DRAPED on the terrain (the
+             * corridor layer), so a wall — or the earth bank tried first — from its levelled height stood as a ridge
+             * beside a path lying on the ground.
+             */
+            // (any ground FOOT way: all are draped; stairs are drawn at their own heights, and keep theirs)
+            if (e.foot && e.kind !== 'steps') continue
+            // …nor a stairway in a park: its treads follow the hill (render/stairs.ts), and walls from the steps' levelled
+            // heights stood as dark slabs up Strawberry Hill (2026-10-04); a city stair street keeps its walls
+            if (e.kind === 'steps' && e.park) continue
             const parapet = sideDrop[side] > 1.5 ? 0.9 : 0.12
             /*
              * In pieces of about 1.5 m, each built only where the ground beside it is OPEN (owner, 2026-10-01: walls
@@ -3005,7 +3199,9 @@ export class City {
               const pm = P((t0 + t1) / 2)
               const ox = pm.x + nx * 0.6
               const oz = pm.z + nz * 0.6
-              if (this.gradeAt(ox, oz) !== null || pavedHere(ox, oz)) continue
+              // (nor, for a foot way, inside a hand-built model's footprint, which draws its own edges: the ferry floats,
+              //  2026-10-04 — a STREET keeps its walls there: the bridges' footprints take in Doyle Drive and the Embarcadero)
+              if (this.gradeAt(ox, oz) !== null || pavedHere(ox, oz) || (e.foot && this.inCover(ox, oz))) continue
               const p0 = P(t0)
               const p1 = P(t1)
               const h0 = H(t0)
@@ -3078,6 +3274,27 @@ export class City {
         }
         return false
       }
+      /*
+       * Another raised walk or deck at (x, z), within 1.5 m of height y (and not the edge itself): a deck's parapet is
+       * left out where one stands beside it (bridges.ts `openRuns`) — the walks of a podium mapped side by side.
+       */
+      const raisedHere = [...(this.edgesIn.get(k) ?? []), ...[-1, 0, 1].flatMap((dz) => [-1, 0, 1].flatMap((dx) => (dx || dz) ? (this.edgesIn.get(key(Number(k.split(',')[0]) + dx, Number(k.split(',')[1]) + dz)) ?? []) : []))]
+        .filter((o) => this.raisedIds.has(o.id) && o.heights)
+        .map((o) => ({ id: o.id, pts: unpackPoints(o.points), h: o.heights!, half: (o.foot ? o.width / 2 : o.width / 2 + Math.max(0.6, o.walk)) + 0.3 }))
+      const besideOf = (self: number) => (x: number, z: number, y: number): boolean => {
+        for (const o of raisedHere) {
+          if (o.id === self) continue
+          for (let i = 1; i < o.pts.length; i++) {
+            const a = o.pts[i - 1]
+            const dx = o.pts[i].x - a.x
+            const dz = o.pts[i].z - a.z
+            const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1e-9)))
+            if (Math.hypot(a.x + dx * t - x, a.z + dz * t - z) > o.half) continue
+            if (Math.abs(o.h[i - 1] + (o.h[i] - o.h[i - 1]) * t - y) < 1.5) return true
+          }
+        }
+        return false
+      }
       for (const e of this.edgesIn.get(k) ?? []) {
         // (a way the region authored is drawn by the model it belongs to — the Bay Bridge Bikeway's helix)
         if (!this.raisedIds.has(e.id) || e.authored) continue
@@ -3086,9 +3303,12 @@ export class City {
          * footprint: the Golden Gate's carriageways are one way each from mid-span to the toll plaza, the model's
          * deck is straight, and the last 60 m of road swing east off it — where the cars drove on nothing.
          */
+        // (a way rising more than it runs is a lift or a stair core OSM drew as a bridge — 78924 at Embarcadero Center
+        // climbs 8 m in 4: drawn, it is a slab standing across the walk beneath; not a deck anyone rides)
+        if (steeperThanWall(e)) continue
         for (const part of this.coveredDecks.has(e.id) ? this.outsideCovers(e) : [e]) {
           deck(decks, part, this.terrain, this.deckWalk.get(e.id), this.region.riverDrop ?? 0, e.bridge === true && this.structured(e),
-            e.name !== undefined && (this.region.elevatedWalks ?? []).some((w) => w.name === e.name), underDeck(e.id))
+            e.name !== undefined && (this.region.elevatedWalks ?? []).some((w) => w.name === e.name), underDeck(e.id), besideOf(e.id))
         }
       }
       const railColour = hexRgb(this.region.elevatedRailColour)
@@ -3120,6 +3340,8 @@ export class City {
     const kerbOnly = new Set(['column', 'kiosk', 'billboard', 'postbox', 'hydrant', 'bikeshare', 'fountain'])
     for (const f of this.pointsIn.get(k) ?? []) {
       if (kerbOnly.has(f.kind) && skippedIf(pointKerb.whyNoFurniture(f.x, f.z), f.x, f.z, `osm ${f.kind}`)) continue
+      // a subway entrance a model draws itself (its `coversRaised` footprint): the open BART plazas on Mission Street
+      if (f.kind === 'metro' && this.inCover(f.x, f.z)) continue
       const heading = this.streetBearing(f.x, f.z, f.kind === 'bikeshare' || f.kind === 'column')
       const model = f.kind === 'metro'
         ? ({ guimard: guimardEntrance, nyc: nycSubwayEntrance, cta: ctaEntrance, generic: genericEntrance, bart: bartEntrance })[pf.metro]
@@ -3133,6 +3355,19 @@ export class City {
         : pf.american && f.kind === 'billboard' ? (o: MeshBuilder) => billboard(o, Math.round(f.x * 7 + f.z * 13))
         : f.kind === 'busstop' && pf.busStop ? (pf.busStop === 'muni' ? muniStop : plainStop)
         : null          // (drawn elsewhere: tram stops by the trams, hydrants along every pavement)
+      /*
+       * A street clock on its post (OSM amenity=clock, support=pole): the dark iron column, the drum head and its four
+       * dials, which tell the real time (render/clocks.ts; owner, 2026-10-04 — Union Square's sidewalk clock).
+       */
+      if (f.kind === 'clock') {
+        placeModel(furniture, streetClockPost, f.x, 0.15, f.z, heading)
+        for (let q = 0; q < 4; q++) {
+          const a = heading + (q * Math.PI) / 2
+          clockFace(furniture, f.x + Math.sin(a) * 0.42, 0.15 + 4.1, f.z + Math.cos(a) * 0.42, Math.sin(a), Math.cos(a), 0.36,
+            { rim: [0.12, 0.16, 0.13], out: 0.01 })
+        }
+        continue
+      }
       if (!model) continue
       // a stop sign and a bus stop stand at the kerb, not in the road where OSM puts the node
       const kerb = f.kind === 'stop' || f.kind === 'busstop' ? 5 : 0
@@ -3187,6 +3422,11 @@ export class City {
       m.material = cartoonMaterial(this.scene, 'cartoonStatic', false)
       m.renderingGroupId = GROUP.building
       meshes.push(m)
+      // the street clocks' hands, on the same ground as the dials they turn over
+      if (furniture.clocks.length) {
+        for (const c of furniture.clocks) c.y += this.terrain.heightAt(c.x, c.z)
+        this.clockHands.raise(furniture.clocks, m, `street:${k}`)
+      }
     }
 
     const byStyleSpans = new Map<StyleId, [number, number][]>()
@@ -3246,7 +3486,7 @@ export class City {
         pad = this.terrain.heightAt(cx / ring.length, cz / ring.length)
         if (ZCHECK) zcheck(b.id, foot, buildingFooting(ring, (x, z) => this.terrain.heightAt(x, z)).foot)
       }
-      const plan = planFacade(b.style, b.id, { levels: b.levels, height: b.height, minHeight: b.minHeight, stretch: b.stretch },
+      const plan = planFacade(b.style, b.id, { levels: b.levels, height: b.height, minHeight: b.minHeight, stretch: b.stretch, noShops: b.noShops },
         b.palette ? [b.palette] : this.region.palettes[b.style])
       const out = byStyle.get(b.style) ?? new MeshBuilder()
       byStyle.set(b.style, out)
@@ -3453,4 +3693,14 @@ function clipToBox(ring: { x: number; z: number }[], x0: number, z0: number, x1:
   r = side(r, (p) => p.z >= z0, atZ(z0))
   r = side(r, (p) => p.z <= z1, atZ(z1))
   return r
+}
+
+/** a raised way any of whose segments climbs more than it runs (see the deck loop) */
+function steeperThanWall(e: PackedEdge): boolean {
+  if (!e.heights || e.kind === 'steps') return false
+  for (let i = 1; i < e.heights.length; i++) {
+    const run = Math.hypot(e.points[i * 2] - e.points[i * 2 - 2], e.points[i * 2 + 1] - e.points[i * 2 - 1])
+    if (Math.abs(e.heights[i] - e.heights[i - 1]) > Math.max(1.5, run)) return true
+  }
+  return false
 }

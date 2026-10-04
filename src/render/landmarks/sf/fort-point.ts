@@ -12,7 +12,7 @@
  * from the ground.
  */
 import type { MeshBuilder } from '../../buildings.ts'
-import { capPolygon } from '../../buildings.ts'
+import { capPolygon, capPolygonWithHoles } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
 import type { Rgb } from '../../models.ts'
 import { prism } from '../../models.ts'
@@ -38,9 +38,10 @@ export function fortPoint(out: MeshBuilder, fit: Fit): void {
   faceBand(out, ring, 2.2, H, { kind: 'blank', wall: BRICK, material: 'brick' })
   // the parade ground's walls face in: the same band on the inner ring, reversed so its faces look into the court
   faceBand(out, [...court].reverse(), 0, H, { kind: 'punched', wall: BRICK, glass: ARCH, pitch: 4.2, floor: 4.4, solid: 0.45, material: 'brick' })
-  // the roof between them: the barbette tier, and the parade ground's floor
-  capPolygon(out, ring, H, [0.5, 0.48, 0.45], stone)
-  capPolygon(out, court, 0.15, PARADE, stone)
+  // the roof between them: the barbette tier — a RING round the open parade ground (it was capped right across, so the
+  // fort read as a solid block; Commons photographs of the courtyard, 2026-10-04) — and the parade ground's floor
+  capPolygonWithHoles(out, [ring, court], H, [0.5, 0.48, 0.45], stone)
+  capPolygon(out, court, 0.6, PARADE, stone)
   // the parapet round the top, and the casemate arches: three tiers on each face
   faceBand(out, ring, H, H + 1.6, { kind: 'blank', wall: BRICK_DARK, material: 'brick' })
   for (let i = 0; i < ring.length; i++) {

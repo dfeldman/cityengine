@@ -15,6 +15,7 @@
 import type { MeshBuilder } from '../../buildings.ts'
 import { box, prism, type Rgb } from '../../models.ts'
 import type { Fit } from '../fit.ts'
+import { clockFace } from '../parts.ts'
 
 const STONE: Rgb = [0.88, 0.84, 0.74]   // Colusa sandstone: a warm pale buff, not grey (2026-10-03)
 const STONE_DARK: Rgb = [0.75, 0.71, 0.61]
@@ -64,26 +65,8 @@ export function ferryBuilding(out: MeshBuilder, fit: Fit): void {
   const w = 7.2
   box(out, 0, 24, tz, w, 24, w, STONE, 0)
   for (const [dx, dz] of [[1, 1], [1, -1], [-1, 1], [-1, -1]]) box(out, dx * (w - 0.6), 24, tz + dz * (w - 0.6), 0.9, 24, 0.9, STONE_DARK, 0)
-  // the clocks, one each face
-  for (const [nx, nz] of [[0, -1], [0, 1], [1, 0], [-1, 0]]) {
-    const cx = nx * (w + 0.12)
-    const cz = tz + nz * (w + 0.12)
-    const r = 3
-    // a round face — a fan of wedges facing out — and the dark ring round it
-    const disc = (rr: number, c: Rgb, off: number): void => {
-      const n = 16
-      for (let i = 0; i < n; i++) {
-        const a0 = (i / n) * Math.PI * 2
-        const a1 = ((i + 1) / n) * Math.PI * 2
-        const P = (a: number): [number, number, number] => nz !== 0
-          ? [cx + Math.cos(a) * rr, 33 + Math.sin(a) * rr, cz + nz * off]
-          : [cx + nx * off, 33 + Math.sin(a) * rr, cz + Math.cos(a) * rr]
-        out.quad([P(a0), P(a1), [cx + nx * off, 33, cz + nz * off], [cx + nx * off, 33, cz + nz * off]], [nx, 0, nz], [[0, 0], [1, 0], [1, 1], [0, 1]], c, 0)
-      }
-    }
-    disc(r + 0.35, DARK, 0.02)
-    disc(r, CLOCK, 0.05)
-  }
+  // the clocks, one each face — telling the real time (render/clocks.ts)
+  for (const [nx, nz] of [[0, -1], [0, 1], [1, 0], [-1, 0]]) clockFace(out, nx * w, 33, tz + nz * w, nx, nz, 3, { dial: CLOCK, rim: DARK, out: 0.12 })
   // the cornice and its balustrade
   box(out, 0, 48.6, tz, w + 0.8, 0.6, w + 0.8, STONE_DARK, 0)
   box(out, 0, 49.8, tz, w + 0.5, 0.6, w + 0.5, STONE, 0)

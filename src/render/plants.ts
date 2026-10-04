@@ -131,13 +131,15 @@ export function plantTile(areas: TileArea[], rect: { x0: number; z0: number; x1:
    * moment it stopped being a lawn. `dirt` is deliberately NOT here: undergrowth on bare duff is exactly
    * what a forest floor should have.
    */
-  const pavedAreas = areas.filter((a) => a.kind === 'paved' || a.kind === 'lot' || a.kind === 'sand' || a.kind === 'water')
+  const pavedAreas = areas.filter((a) => a.kind === 'paved' || a.kind === 'lot' || a.kind === 'sand' || a.kind === 'water' || a.kind === 'pitch')
     .map((a) => a.ring)
   const built = (x: number, z: number): boolean =>
     (paved?.onPaving(x, z) ?? false) || pavedAreas.some((r) => inside(r, x, z))
   // a park, and the lawns inside one (a garden is mapped as a park with its lawns as grass on top: their edges
   // are the paths, which is where a gardener plants the shrubs)
   const parks = areas.filter((a) => a.kind === 'park')
+  const lawns = areas.filter((a) => a.kind === 'grass').map((a) => a.ring)
+  const onLawn = (x: number, z: number): boolean => lawns.some((r) => inside(r, x, z))
   const inPark = (a: TileArea): boolean => {
     let x = 0
     let z = 0
@@ -152,6 +154,16 @@ export function plantTile(areas: TileArea[], rect: { x0: number; z0: number; x1:
     for (let i = 0; i < a.ring.length; i += 2) {
       x0 = Math.min(x0, a.ring[i]); x1 = Math.max(x1, a.ring[i]); z0 = Math.min(z0, a.ring[i + 1]); z1 = Math.max(z1, a.ring[i + 1])
     }
+    /*
+     * A flower bed or a lone shrub out in the middle of a lawn is a GARDEN's thing — a square, a small park. On a great
+     * meadow (Golden Gate Park's, the Presidio's) the same rule scattered loose clumps far out on the mown grass, which
+     * read as broken branches lying on the lawn (views audit, 2026-10-04). Past about 4 ha of bounding box, none.
+     */
+    // (measured on the piece in this tile: a tile's areas are CLIPPED to it, so a big meadow cut at the tile edge
+    //  can still look small — a piece that fills most of a 200 m tile is no garden either)
+    // (and, in any park, only by a path — a tile's areas are clipped pieces, so a big lawn can pass for a garden here:
+    //  Dolores Park's lawn came out strewn with clumps, 2026-10-04)
+    const garden = (x1 - x0) * (z1 - z0) < 40000 && !((x1 - x0) > 120 && (z1 - z0) > 120) && !(a.kind === 'grass' && (x1 - x0) * (z1 - z0) > 6000)
     for (let x = Math.ceil(Math.max(x0, rect.x0) / STEP) * STEP; x < Math.min(x1, rect.x1); x += STEP) {
       for (let z = Math.ceil(Math.max(z0, rect.z0) / STEP) * STEP; z < Math.min(z1, rect.z1); z += STEP) {
         // jittered off the lattice, so no rows show
@@ -168,11 +180,17 @@ export function plantTile(areas: TileArea[], rect: { x0: number; z0: number; x1:
         // high because the failure it guards against is the one the owner named — *"some areas that DON'T
         // have vegetation, like fields and the polo field"* — and a meadow with scrub scattered over it is
         // the same mistake as a meadow with trees on it
-        if (w >= 0.6 && edge > 3.2 && r < 0.75 * (w - 0.4)) {
+        // (never on a mapped LAWN: a mown grass area under a park's scattered trees is not a forest floor — Dolores Park's
+        //  lawns came out strewn with undergrowth wherever two trees stood within 14 m, 2026-10-04)
+        if (w >= 0.6 && edge > 3.2 && r < 0.75 * (w - 0.4) && !onLawn(jx, jz)) {
           out.push({ x: jx, z: jz, s: 0.5 + hash(x, z, 13) * 0.75, spin: hash(x, z, 14) * Math.PI * 2, kind: 'shrub' })
-        } else if (edge > 0.9 && edge < 3.2 && r < 0.7) {
+        // (an EDGE shrub only where a path runs along the edge: OSM cuts a meadow into grass areas whose shared boundary
+        //  runs across open lawn, and a row of shrubs planted along it stood mid-meadow — views audit, 2026-10-04)
+        // (a mown LAWN's own border gets an occasional shrub, not a hedge: Dolores Park's lawns, each ringed by paths, came
+        //  out edged in clumps all round, 72 of the tile's 93 shrubs — 2026-10-04; a park's outer edge keeps its planting)
+        } else if (edge > 0.9 && edge < 3.2 && r < (a.kind === 'grass' ? 0.12 : 0.7) && (paved?.onPaving(jx, jz, 4) ?? true)) {
           out.push({ x: jx, z: jz, s: 0.8 + hash(x, z, 4) * 0.6, spin: hash(x, z, 5) * Math.PI * 2, kind: 'shrub' })
-        } else if (edge >= 8 && r < 0.02) {
+        } else if (garden && edge >= 8 && r < 0.02 && (paved?.onPaving(jx, jz, 12) ?? true)) {
           // a flower bed: a clump of one kind, a dozen plants in a ring of about two metres
           for (let k = 0; k < 12; k++) {
             const t = (k / 12) * Math.PI * 2
@@ -183,7 +201,7 @@ export function plantTile(areas: TileArea[], rect: { x0: number; z0: number; x1:
             if (built(fx, fz)) continue
             out.push({ x: fx, z: fz, s: 0.9 + hash(x, z + k, 7) * 0.4, spin: t, kind: 'flower' })
           }
-        } else if (edge >= 5 && r < 0.03) {
+        } else if (garden && edge >= 5 && r < 0.03 && (paved?.onPaving(jx, jz, 12) ?? true)) {
           out.push({ x: jx, z: jz, s: 1 + hash(x, z, 8) * 0.8, spin: hash(x, z, 9) * Math.PI * 2, kind: 'shrub' })
         }
       }
@@ -230,12 +248,37 @@ export class Plants {
     this.dirty = true
   }
 
+  /**
+   * The rings nothing grows in: a landmark's paved ground or footprint (game.ts, as for the trees' `clear`). Kezar
+   * Stadium's track came out planted with the park's undergrowth, 2026-10-04. Shared by reference with game.ts.
+   */
+  clearings: { x: number; z: number }[][] = []
+  /** a ring arriving after its tiles were planted: those tiles' plants inside it go */
+  clear(ring: { x: number; z: number }[]): void {
+    if (!this.clearings.includes(ring)) this.clearings.push(ring)
+    for (const [k, ps] of this.byTile) {
+      // (a raised deck's planting stands ON a footprint: it is the skypark's own)
+      if (k.startsWith('deck:')) continue
+      const kept = this.cleared(ps, [ring])
+      if (kept.length !== ps.length) { this.byTile.set(k, kept); this.dirty = true }
+    }
+  }
+  private cleared<T extends { x: number; z: number }>(ps: T[], rings = this.clearings): T[] {
+    if (rings.length === 0 || ps.length === 0) return ps
+    const boxes = rings.map((r) => {
+      let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+      for (const q of r) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+      return { r: r.flatMap((q) => [q.x, q.z]), x0, x1, z0, z1 }
+    })
+    return ps.filter((p) => !boxes.some((b) => p.x >= b.x0 && p.x <= b.x1 && p.z >= b.z0 && p.z <= b.z1 && inside(b.r, p.x, p.z)))
+  }
+
   layer(): TileLayer {
     return {
       name: 'plants',
       range: 2,
       build: (near, rect) => {
-        this.byTile.set(near.key, plantTile(near.tile.areas, rect, near.tile.edges, unpackPlantings(near.tile.plantings), this.zones))
+        this.byTile.set(near.key, this.cleared(plantTile(near.tile.areas, rect, near.tile.edges, unpackPlantings(near.tile.plantings), this.zones)))
         this.dirty = true
         return []
       },

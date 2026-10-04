@@ -19,6 +19,8 @@
  */
 import type { Measured } from '../controls.ts'
 
+/** m/s: the slowest a rider still pedalling ever goes uphill — off and pushing (see `step`) */
+const PUSH_SPEED = 1.2
 const G = 9.81
 
 /** Rolling resistance by what OSM says the street is made of. */
@@ -149,6 +151,13 @@ export class Ride {
 
     this.v += ((drive - gravity - rolling - drag) / mass) * dt
     if (this.v < 0) this.v = 0
+    /*
+     * PUSHING THE BIKE (owner, 2026-10-03: "there's a hill here that is so steep the cyclist makes zero progress at
+     * all" — a 67% bank on the Sutro Baths path; and a trainer rider must never be stuck). However steep, a rider still
+     * putting power in gets off and pushes: never slower than a walk, 1.2 m/s — in physical metres, so the speedup
+     * still applies on top. The trainer is asked for the real grade all the same.
+     */
+    if (power > 30 && grade > 0 && this.v < PUSH_SPEED) this.v = Math.min(PUSH_SPEED, this.v + 2 * dt)
 
     /*
      * BRAKES (owner, 2026-09-29): *"if power goes to 0 then it should go 'negative' and that should be a brake."*

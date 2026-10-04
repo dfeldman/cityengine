@@ -461,16 +461,16 @@
   "name": "NB \u2014 Vaillancourt Fountain",
   "group": "nonbuilding",
   "from": [
-   37.794323,
-   -122.39495,
-   7.199999999999999
+   37.79517,
+   -122.39512,
+   30
   ],
   "to": [
-   37.7946,
-   -122.3946,
-   4.199999999999999
+   37.79542,
+   -122.39537,
+   5
   ],
-  "note": "art \u00b7 manifest \u00b7 vaillancourtFountain"
+  "note": "art \u00b7 manifest \u00b7 vaillancourtFountain \u00b7 re-aimed 2026-10-04 at the corrected position (the view still looked at the old one)"
  },
  {
   "name": "NB \u2014 Cupid's Span",
@@ -491,9 +491,9 @@
   "name": "NB \u2014 Ruth Asawa Mermaid Fountain",
   "group": "nonbuilding",
   "from": [
-   37.805634,
-   -122.42321,
-   3
+   37.80555,
+   -122.42275,
+   30
   ],
   "to": [
    37.8058,
@@ -506,9 +506,9 @@
   "name": "NB \u2014 Redwood Park pool",
   "group": "nonbuilding",
   "from": [
-   37.794962,
-   -122.402875,
-   3
+   37.79485,
+   -122.40245,
+   30
   ],
   "to": [
    37.7951,
@@ -746,9 +746,9 @@
   "name": "NB \u2014 Pier 1",
   "group": "nonbuilding",
   "from": [
-   37.794364,
-   -122.398123,
-   6.6
+   37.796774,
+   -122.395073,
+   25
   ],
   "to": [
    37.79721834678078,
@@ -761,9 +761,9 @@
   "name": "NB \u2014 Pier 5",
   "group": "nonbuilding",
   "from": [
-   37.797503,
-   -122.397473,
-   6.6
+   37.797923,
+   -122.396942,
+   25
   ],
   "to": [
    37.7983673344113,
@@ -776,9 +776,9 @@
   "name": "NB \u2014 Pier 9",
   "group": "nonbuilding",
   "from": [
-   37.797101,
-   -122.401544,
-   6.6
+   37.799867,
+   -122.398044,
+   25
   ],
   "to": [
    37.80031171397772,
@@ -791,9 +791,9 @@
   "name": "NB \u2014 Pier 15",
   "group": "nonbuilding",
   "from": [
-   37.798198,
-   -122.40187,
-   7.199999999999999
+   37.800961,
+   -122.398373,
+   25
   ],
   "to": [
    37.80140586089456,
@@ -806,9 +806,9 @@
   "name": "NB \u2014 Pier 17",
   "group": "nonbuilding",
   "from": [
-   37.799401,
-   -122.401471,
-   7.199999999999999
+   37.801926,
+   -122.398276,
+   25
   ],
   "to": [
    37.80237022397892,
@@ -821,9 +821,9 @@
   "name": "NB \u2014 Pier 33",
   "group": "nonbuilding",
   "from": [
-   37.803334,
-   -122.40972,
-   6.6
+   37.806632,
+   -122.405546,
+   25
   ],
   "to": [
    37.80707644628099,
@@ -836,9 +836,9 @@
   "name": "NB \u2014 Pier 35",
   "group": "nonbuilding",
   "from": [
-   37.803326,
-   -122.412375,
-   6.6
+   37.807591,
+   -122.406976,
+   25
   ],
   "to": [
    37.80803582628295,
@@ -851,9 +851,9 @@
   "name": "NB \u2014 Pier 24",
   "group": "nonbuilding",
   "from": [
-   37.788412,
-   -122.389034,
-   6
+   37.788982,
+   -122.388313,
+   25
   ],
   "to": [
    37.78942612288897,
@@ -866,9 +866,9 @@
   "name": "NB \u2014 Pier 26",
   "group": "nonbuilding",
   "from": [
-   37.78603,
-   -122.391235,
-   6
+   37.788756,
+   -122.387786,
+   25
   ],
   "to": [
    37.78920016006272,
@@ -881,9 +881,9 @@
   "name": "NB \u2014 Pier 28",
   "group": "nonbuilding",
   "from": [
-   37.785279,
-   -122.390556,
-   6
+   37.787657,
+   -122.387548,
+   25
   ],
   "to": [
    37.78810132950054,
@@ -896,9 +896,9 @@
   "name": "NB \u2014 Pier 38",
   "group": "nonbuilding",
   "from": [
-   37.778526,
-   -122.392284,
-   5.3999999999999995
+   37.782078,
+   -122.38779,
+   25
   ],
   "to": [
    37.7825222107438,
@@ -911,9 +911,9 @@
   "name": "NB \u2014 Pier 40",
   "group": "nonbuilding",
   "from": [
-   37.779909,
-   -122.388603,
-   5.3999999999999995
+   37.781275,
+   -122.386875,
+   25
   ],
   "to": [
    37.78171979428674,
@@ -926,9 +926,9 @@
   "name": "NB \u2014 Pier 48",
   "group": "nonbuilding",
   "from": [
-   37.772579,
-   -122.390701,
-   7.8
+   37.775179,
+   -122.387412,
+   25
   ],
   "to": [
    37.77562379509131,
@@ -4422,5 +4422,110 @@
    -122.423,
    16
   ]
+ },
+ {
+  "name": "SF Art Institute \u2014 Chestnut front and bell tower",
+  "group": "landmark",
+  "from": [
+   37.802971,
+   -122.416661,
+   25
+  ],
+  "to": [
+   37.803555,
+   -122.417115,
+   12
+  ],
+  "note": "art-institute.ts: lettered wall, portal at the west end, tower set back (2026-10-04)."
+ },
+ {
+  "name": "SF Art Institute \u2014 from the bay side",
+  "group": "landmark",
+  "from": [
+   37.804319,
+   -122.41632,
+   55
+  ],
+  "to": [
+   37.803645,
+   -122.417172,
+   10
+  ],
+  "note": "Jones Street studio gables; the 1969 addition and its roof cones."
+ },
+ {
+  "name": "California College of the Arts \u2014 both buildings from the air",
+  "group": "landmark",
+  "from": [
+   37.768117,
+   -122.398586,
+   45
+  ],
+  "to": [
+   37.767443,
+   -122.399495,
+   4
+  ],
+  "note": "mission-bay.ts ccaMain (solar rows, glazed entrance) and ccaExpanded (timber + steel V braces) (2026-10-04)."
+ },
+ {
+  "name": "CCSF Mission Campus \u2014 the mosaic disc entrance",
+  "group": "landmark",
+  "from": [
+   37.75545,
+   -122.419275,
+   45
+  ],
+  "to": [
+   37.754822,
+   -122.420298,
+   5
+  ],
+  "note": "ccsf-mission.ts: blue tile base and tower, the disc over the glass atrium (2026-10-04)."
+ },
+ {
+  "name": "Treasure Island Building 1 \u2014 the crescent from above",
+  "group": "landmark",
+  "from": [
+   37.818153,
+   -122.370621,
+   70
+  ],
+  "to": [
+   37.816716,
+   -122.371303,
+   0
+  ],
+  "note": "treasure-island.ts tiBuildingOne: concave front to the parking court, the drum behind, the glass control cab (2026-10-04)."
+ },
+ {
+  "name": "Treasure Island Building 1 \u2014 from the parking court",
+  "group": "landmark",
+  "from": [
+   37.815997,
+   -122.37244,
+   30
+  ],
+  "to": [
+   37.817147,
+   -122.37111,
+   10
+  ],
+  "note": "tall windows between fluted pilasters along the concave front."
+ },
+ {
+  "name": "Potrero Branch Library \u2014 20th Street",
+  "group": "landmark",
+  "from": [
+   37.760436,
+   -122.397654,
+   3
+  ],
+  "to": [
+   37.760167,
+   -122.397665,
+   6
+  ],
+  "note": "libraries.ts potreroBranchLibrary: white frame, glass grid, wood canopies (2026-10-04)."
  }
 ]

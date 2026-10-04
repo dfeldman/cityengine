@@ -74,6 +74,33 @@ describe('the delivery game', () => {
     expect(g.phase).toBe('idle')
   })
 
+  it('eating the order is the pass: only with it on board, and the job is over (owner, 2026-10-03)', () => {
+    const g = new Delivery(town(), {}, 3)
+    const offer = tick(g, DEFAULTS.firstOffer + 1, { x: 0, z: 0 }).find((e) => e.kind === 'offer')!
+    g.accept()
+    // not before it has been picked up
+    expect(g.eat()).toEqual([])
+    tick(g, 1, { x: offer.job.pickup.x, z: offer.job.pickup.z + 20 + 15 })
+    expect(g.phase).toBe('toDropoff')
+    expect(g.eat().map((e) => e.kind)).toEqual(['eaten'])
+    expect(g.phase).toBe('idle')
+    expect(g.job).toBeNull()
+  })
+
+  it('a jump on the map forfeits the job in hand — no jumping to the door (owner, 2026-10-03)', () => {
+    const g = new Delivery(town(), {}, 3)
+    const offer = tick(g, DEFAULTS.firstOffer + 1, { x: 0, z: 0 }).find((e) => e.kind === 'offer')!
+    g.accept()
+    tick(g, 1, { x: offer.job.pickup.x, z: offer.job.pickup.z + 20 + 15 })
+    expect(g.phase).toBe('toDropoff')
+    expect(g.forfeit().map((e) => e.kind)).toEqual(['forfeit'])
+    expect(g.phase).toBe('idle')
+    // arriving at the old drop-off now counts for nothing
+    expect(tick(g, 1, { x: offer.job.dropoff.x + 30, z: offer.job.dropoff.z })).toEqual([])
+    // and with nothing in hand there is nothing to forfeit
+    expect(g.forfeit()).toEqual([])
+  })
+
   it('declining is the same as ignoring', () => {
     const g = new Delivery(town(), {}, 9)
     tick(g, DEFAULTS.firstOffer + 1, { x: 0, z: 0 })

@@ -2,7 +2,7 @@
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { tower, towerRing } from '../../tower.ts'
-import { boxAlong, edgeAt, edgeFacing, longestEdge, roundRing, spireOn, stripRoof, bladeSign, marquee } from '../../parts.ts'
+import { boxAlong, edgeAt, edgeFacing, longestEdge, roundRing, spireOn, stripRoof, bladeSign, marquee, clockFace } from '../../parts.ts'
 import { faceBand, insetRing } from '../../tower.ts'
 import { capPolygon } from '../../../buildings.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
@@ -55,13 +55,8 @@ export const MANUAL_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
       const fx = corner.x + ox * flat
       const fz = corner.z + oz * flat
       boxAlong(out, fx, 21.5, fz, 1.9, 1.9, 0.1, a, [0.95, 0.94, 0.9], surfaceTag('ashlar'))
-      // ten past ten, the hands every clock in every advertisement is set to
-      for (const [len, ang, w] of [[1.25, -Math.PI / 3, 0.09], [0.85, Math.PI / 3, 0.12]] as const) {
-        const hx = Math.sin(ang) * len / 2
-        const hy = Math.cos(ang) * len / 2
-        boxAlong(out, fx + ox * 0.14 + Math.cos(a) * hx, 21.5 + hy, fz + oz * 0.14 - Math.sin(a) * hx,
-          w, len / 2, 0.05, a, [0.2, 0.2, 0.22], 0)
-      }
+      // the dial and its hands, on the real time (render/clocks.ts; owner, 2026-10-04) — no more ten past ten
+      clockFace(out, fx + ox * 0.1, 21.5, fz + oz * 0.1, ox, oz, 1.6, { rim: [0.2, 0.2, 0.22], out: 0.02 })
     }
   },
 

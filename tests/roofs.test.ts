@@ -104,6 +104,15 @@ describe('buildRoof', () => {
       expect(bounds(out).maxY, `${shape} is flat`).toBeGreaterThan(11)
     }
   })
+
+  it('caps a pyramid it cannot fan from one apex (round a light court) flat, facing up — never inside out', () => {
+    // the notch's floor edge faces away from the centroid: a fan from there folds back over its own apex
+    const out = new MeshBuilder()
+    const top = buildRoof(out, notched(), { shape: 'pyramidal', y: 30, height: 6, colour: [0.3, 0.3, 0.3] })
+    expect(top).toBe(30)
+    expect(bounds(out).maxY).toBeCloseTo(30)
+    expect(out.indices.length).toBeGreaterThan(0)
+  })
 })
 
 describe('the Paris roofscape', () => {

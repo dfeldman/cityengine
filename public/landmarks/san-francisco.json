@@ -3,6 +3,30 @@
   "include": "san-francisco/manual-1.json"
  },
  {
+  "include": "san-francisco/hospitals.json"
+ },
+ {
+  "include": "san-francisco/mission-bay.json"
+ },
+ {
+  "include": "san-francisco/golden-gate-park.json"
+ },
+ {
+  "include": "san-francisco/campuses.json"
+ },
+ {
+  "include": "san-francisco/presidio.json"
+ },
+ {
+  "include": "san-francisco/libraries.json"
+ },
+ {
+  "include": "san-francisco/museums.json"
+ },
+ {
+  "include": "san-francisco/public-toilets.json"
+ },
+ {
   "include": "san-francisco/batteries.json"
  },
  {
@@ -239,12 +263,12 @@
  },
  {
   "osm": [
-   "relation/6483285"
+   "way/436648569"
   ],
   "name": "San Francisco Marriott Marquis",
   "procedural": "marriottMarquis_missionAt4th",
   "height": 133,
-  "note": "Hand-modelled (marquis.ts): the ziggurat's setback table, the L-shaped left wing, the glass crown, the arched-slit motif on every setback, and the offset core's full-height corner slit. Replaces the setbacks preset per docs/MARRIOTT-MARQUIS.md."
+  "note": "Hand-modelled (marquis.ts): the ziggurat's setback table, the L-shaped left wing, the glass crown, the arched-slit motif on every setback, and the offset core's full-height corner slit. Replaces the setbacks preset per docs/MARRIOTT-MARQUIS.md. (2026-10-03, owner: 'rendering for the hotel around YB Center is still pretty bad'): fitted to the 137 m TOWER part, way/436648569 \u2014 fitted to the relation it was a 160 x 76 m ziggurat over the whole block, the court and its neighbours inside it. The four 24 m wings (way/616813832-835) are the city's."
  },
  {
   "osm": [
@@ -253,7 +277,8 @@
   "name": "Westin St. Francis Tower",
   "procedural": "westinTower",
   "height": 120,
-  "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."
+  "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs.",
+  "inset": 0.4
  },
  {
   "osm": [
@@ -266,14 +291,13 @@
  },
  {
   "osm": [
-   "way/28240176",
-   "way/1391009943"
+   "way/28240176"
   ],
   "name": "One Maritime Plaza",
   "procedural": "oneMaritimePlaza",
   "front": "street",
   "height": 121,
-  "note": "The Alcoa Building (SOM, 1967), modelled in districts/market-east.ts: the exterior seismic frame \u2014 dark steel belts and a row of X-braces between each pair \u2014 standing proud of a dark curtain wall. From Mapillary street views. The garage podium under it is OSM way/1177704958 and is left to the city."
+  "note": "The Alcoa Building (SOM, 1967), modelled in districts/market-east.ts: the exterior seismic frame \u2014 dark steel belts and a row of X-braces between each pair \u2014 standing proud of a dark curtain wall. From Mapillary street views. The garage podium under it is OSM way/1177704958 and is left to the city. (2026-10-03: no longer claims way/1391009943 \u2014 the small building on the plaza, which widened the tower's fit over it; it is a restyle on the podium now, prominent.json.)"
  },
  {
   "name": "Fisherman's Wharf sign",
@@ -291,9 +315,10 @@
  {
   "name": "Ghirardelli sign",
   "procedural": "ghirardelliSign",
-  "lat": 37.80584,
-  "lon": -122.42296,
-  "front": 0,
+  "lat": 37.805666,
+  "lon": -122.423163,
+  "front": 180,
+  "baseY": -46.4,
   "size": [
    36,
    2
@@ -301,11 +326,11 @@
   "height": 6,
   "offset": [
    0,
-   24,
+   0,
    0
   ],
   "sign": false,
-  "note": "On the clock-tower block's roof, the letters to the bay (north). The LETTERS are a GLB in Georgia from tools/signgen (real mixed-case letterforms with bulbs along them); this entry draws the open steel lattice they stand on."
+  "note": "On the clock-tower block's roof, the letters to the bay (north). 2026-10-03 (owner: faces away from the waterfront, floats): it stood 14 m north of the block (z 1429 vs the block's north edge at 1415) and faced inland; moved onto the north edge, front 180, and its foot set absolutely at the block's roof (baseY: block ground min -67.86, less 0.5, plus its 22 m). The LETTERS are a GLB in Georgia from tools/signgen (real mixed-case letterforms with bulbs along them); this entry draws the open steel lattice they stand on."
  },
  {
   "osm": [

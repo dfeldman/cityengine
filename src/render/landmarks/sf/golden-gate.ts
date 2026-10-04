@@ -252,20 +252,15 @@ export function goldenGateBridge(out: MeshBuilder, _fit?: Fit): void {
   suspenders(out)
   // the deck: the main span and both side spans, then the approaches
   deck(out, -(MAIN / 2 + SIDE), MAIN / 2 + SIDE, true)
-  // the anchorages and pylons at the ends of the side spans
+  // the pylons at the ends of the side spans (south: Pylon S1, against Fort Point's bay wall)
   const zSa = -(MAIN / 2 + SIDE)
   const zNa = MAIN / 2 + SIDE
   pylon(out, zSa, 0)
   pylon(out, zNa, 0)
-  // the anchorage blocks, their tops just under the deck they carry
-  const hS = GG_SOUTH_ANCHORAGE / 2
-  const topS = deckY(zSa - hS) - 1.5
-  const topN = deckY(zNa + 30) - 1.5
-  bx(out, 0, topS / 2, zSa - hS, 24, topS / 2, hS - 1, ANCHOR, F)
-  bx(out, 0, topN / 2, zNa + 30, 24, topN / 2, 26, ANCHOR, F)
-  // the Fort Point arch: a steel arch over the old fort, carrying the deck on posts
-  const a0 = zSa - GG_SOUTH_ANCHORAGE
+  // the Fort Point arch: a steel arch from S1 over the old fort's courtyard to Pylon S2, carrying the deck on posts
+  const a0 = zSa
   const a1 = a0 - GG_FORT_POINT_ARCH
+  pylon(out, a1, 0)
   for (const x of [-DECK_HALF + 1, DECK_HALF - 1]) {
     let prev: V3 | null = null
     for (let i = 0; i <= 16; i++) {
@@ -279,6 +274,12 @@ export function goldenGateBridge(out: MeshBuilder, _fit?: Fit): void {
       prev = p
     }
   }
+  // the anchorage blocks, their tops just under the deck they carry: the south one on the bluff past S2 (OSM's order)
+  const hS = GG_SOUTH_ANCHORAGE / 2
+  const topS = deckY(a1 - hS) - 1.5
+  const topN = deckY(zNa + 30) - 1.5
+  bx(out, 0, topS / 2, a1 - hS, 24, topS / 2, hS - 1, ANCHOR, F)
+  bx(out, 0, topN / 2, zNa + 30, 24, topN / 2, 26, ANCHOR, F)
   /*
    * THE STEEL ENDS WHERE THE STRAIGHT DOES (src/city/sf/bridges.ts `GG_SOUTH_END`, `GG_NORTH_END`). The owner, with
    * aerials (BUGS.md #218b): *"In real life, the real bridge only starts at the very edge of the water. There is a

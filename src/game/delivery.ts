@@ -84,6 +84,10 @@ export type DeliveryEvent =
   | { kind: 'stopMoved'; job: Job; stop: 'pickup' | 'dropoff' }
   /** a fragile item did not survive a collision: the job is off */
   | { kind: 'spoiled'; job: Job }
+  /** the rider jumped elsewhere on the map: a job under way (or on offer) is forfeit (game.ts `__jump`) */
+  | { kind: 'forfeit'; job: Job }
+  /** the rider ate it (`eat`): the pass for a trip that is too hard */
+  | { kind: 'eaten'; job: Job; seconds: number }
 
 export interface DeliveryConfig {
   /** everything — the rider, the pickup, the drop-off — within this radius of where the offer is made */
@@ -323,6 +327,33 @@ export class Delivery {
   }
 
   /**
+   * EAT THE FOOD (owner, 2026-10-03: "the 'pass' for when a trip is just too hard"): carrying the order, the rider eats
+   * it — the job is over, the customer gets nothing (game.ts pays nothing, gives one star and the complaint, and fills
+   * the energy bar), and the next offer comes along as after a delivery.
+   */
+  eat(): DeliveryEvent[] {
+    if (this.phase !== 'toDropoff' || !this.job) return []
+    const job = this.job
+    const seconds = this.t - this.startedAt
+    this.reset(this.cfg.afterDelivery)
+    return [{ kind: 'eaten', job, seconds }]
+  }
+
+  /**
+   * A JUMP on the map (owner, 2026-10-03: "you forfeit any delivery that's in progress if you jump locations using the
+   * map (otherwise you could just jump to complete the delivery)"): the job in hand, or on offer, is off, unpaid.
+   */
+  forfeit(): DeliveryEvent[] {
+    if (!this.job || this.phase === 'idle') return []
+    const job = this.job
+    this.reset(this.cfg.afterDecline)
+    return [{ kind: 'forfeit', job }]
+  }
+
+  /** the time a job should take at `pace` m/s (the rating's yardstick): for "very late" */
+  static expected(job: Job, pace: number): number { return (job.metres * 1.35) / pace + 15 }
+
+  /**
    * A collision (game.ts, when the rider goes down): a FRAGILE item already picked up is spoiled and the job is off.
    * The ice cream is on the road; the customer will not be told.
    */
@@ -451,8 +482,12 @@ const LINES: Record<number, string[]> = {
  * with a fifth more for the streets not being straight lines; each collision on the way costs a star. The fee is
  * by distance, the tip by stars, both a little richer at higher levels.
  */
+/** what a customer says when the courier ate their order */
+export const ATE_LINES = ['Where is my food?? Never ordering again.', 'Did you EAT it? One star.', 'The app says delivered. My plate says otherwise.',
+  'I can see crumbs in your beard on the doorbell camera.', 'Refund requested. Courier reported.']
+
 export function rate(job: Job, seconds: number, bumps: number, level: number, pace: number, pick = Math.random()): Rating {
-  const expected = (job.metres * 1.35) / pace + 15
+  const expected = Delivery.expected(job, pace)
   const r = seconds / expected
   let stars = r <= 0.8 ? 5 : r <= 1.0 ? 4 : r <= 1.3 ? 3 : r <= 1.7 ? 2 : 1
   stars = Math.max(1, stars - bumps)

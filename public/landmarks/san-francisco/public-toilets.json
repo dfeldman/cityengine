@@ -1,0 +1,296 @@
+[
+ {
+  "name": "Public toilet, Bay & Taylor",
+  "procedural": "pitStopToilet",
+  "lat": 37.805318,
+  "lon": -122.415308,
+  "size": [
+   4.6,
+   2.2
+  ],
+  "front": -8,
+  "height": 3.6,
+  "sign": false,
+  "note": "JCDecaux self-cleaning toilet (SF Public Works Pit Stop list). Placed by tools: the corner's OSM node, then the first point 8–18 m out that is 2.2–6.5 m from every carriageway's edge and in no building; `front` faces the nearest road."
+ },
+ {
+  "name": "Public toilet, Union & Columbus",
+  "procedural": "pitStopToilet",
+  "lat": 37.800403,
+  "lon": -122.410131,
+  "size": [
+   4.6,
+   2.2
+  ],
+  "front": -139,
+  "height": 3.6,
+  "sign": false,
+  "note": "JCDecaux self-cleaning toilet (SF Public Works Pit Stop list). Placed by tools: the corner's OSM node, then the first point 8–18 m out that is 2.2–6.5 m from every carriageway's edge and in no building; `front` faces the nearest road."
+ },
+ {
+  "name": "Public toilet, Embarcadero & Broadway",
+  "procedural": "pitStopToilet",
+  "lat": 37.799351,
+  "lon": -122.397698,
+  "size": [
+   4.6,
+   2.2
+  ],
+  "front": 55,
+  "height": 3.6,
+  "sign": false,
+  "note": "JCDecaux self-cleaning toilet (SF Public Works Pit Stop list). Placed by tools: the corner's OSM node, then the first point 8–18 m out that is 2.2–6.5 m from every carriageway's edge and in no building; `front` faces the nearest road."
+ },
+ {
+  "name": "Public toilet, Market & California",
+  "procedural": "pitStopToilet",
+  "lat": 37.793605,
+  "lon": -122.396109,
+  "size": [
+   4.6,
+   2.2
+  ],
+  "front": 135,
+  "height": 3.6,
+  "sign": false,
+  "note": "JCDecaux self-cleaning toilet (SF Public Works Pit Stop list). Placed by tools: the corner's OSM node, then the first point 8–18 m out that is 2.2–6.5 m from every carriageway's edge and in no building; `front` faces the nearest road."
+ },
+ {
+  "name": "Public toilet, Pine & Quincy",
+  "procedural": "pitStopToilet",
+  "lat": 37.791611,
+  "lon": -122.405428,
+  "size": [
+   4.6,
+   2.2
+  ],
+  "front": 171,
+  "height": 3.6,
+  "sign": false,
+  "note": "JCDecaux self-cleaning toilet (SF Public Works Pit Stop list). Placed by tools: the corner's OSM node, then the first point 8–18 m out that is 2.2–6.5 m from every carriageway's edge and in no building; `front` faces the nearest road."
+ },
+ {
+  "name": "Public toilet, Union Square (Geary & Powell)",
+  "procedural": "pitStopToilet",
+  "lat": 37.78752,
+  "lon": -122.40808,
+  "size": [
+   4.6,
+   2.2
+  ],
+  "front": 225,
+  "height": 3.6,
+  "sign": false,
+  "note": "JCDecaux self-cleaning toilet (SF Public Works Pit Stop list: 'Union Square: Geary & Powell Sts.'): on the square by that corner, not on the kerb, the door toward the corner."
+ },
+ {
+  "name": "Public toilet, Larkin & O'Farrell",
+  "procedural": "pitStopToilet",
+  "lat": 37.785264,
+  "lon": -122.417837,
+  "size": [
+   4.6,
+   2.2
+  ],
+  "front": -99,
+  "height": 3.6,
+  "sign": false,
+  "note": "JCDecaux self-cleaning toilet (SF Public Works Pit Stop list). Placed by tools: the corner's OSM node, then the first point 8–18 m out that is 2.2–6.5 m from every carriageway's edge and in no building; `front` faces the nearest road."
+ },
+ {
+  "name": "Public toilet, Eddy & Jones",
+  "procedural": "pitStopToilet",
+  "lat": 37.784066,
+  "lon": -122.412389,
+  "size": [
+   4.6,
+   2.2
+  ],
+  "front": 171,
+  "height": 3.6,
+  "sign": false,
+  "note": "JCDecaux self-cleaning toilet (SF Public Works Pit Stop list). Placed by tools: the corner's OSM node, then the first point 8–18 m out that is 2.2–6.5 m from every carriageway's edge and in no building; `front` faces the nearest road."
+ },
+ {
+  "name": "Public toilet, Market & Powell",
+  "procedural": "pitStopToilet",
+  "lat": 37.78457,
+  "lon": -122.407562,
+  "size": [
+   4.6,
+   2.2
+  ],
+  "front": 153,
+  "height": 3.6,
+  "sign": false,
+  "note": "JCDecaux self-cleaning toilet (SF Public Works Pit Stop list). Placed by tools: the corner's OSM node, then the first point 8–18 m out that is 2.2–6.5 m from every carriageway's edge and in no building; `front` faces the nearest road."
+ },
+ {
+  "name": "Public toilet, Grove & Larkin",
+  "procedural": "pitStopToilet",
+  "lat": 37.778754,
+  "lon": -122.416517,
+  "size": [
+   4.6,
+   2.2
+  ],
+  "front": 177,
+  "height": 3.6,
+  "sign": false,
+  "note": "JCDecaux self-cleaning toilet (SF Public Works Pit Stop list). Placed by tools: the corner's OSM node, then the first point 8–18 m out that is 2.2–6.5 m from every carriageway's edge and in no building; `front` faces the nearest road."
+ },
+ {
+  "name": "Public toilet, Market & 7th",
+  "procedural": "pitStopToilet",
+  "lat": 37.780313,
+  "lon": -122.412523,
+  "size": [
+   4.6,
+   2.2
+  ],
+  "front": -45,
+  "height": 3.6,
+  "sign": false,
+  "note": "JCDecaux self-cleaning toilet (SF Public Works Pit Stop list). Placed by tools: the corner's OSM node, then the first point 8–18 m out that is 2.2–6.5 m from every carriageway's edge and in no building; `front` faces the nearest road."
+ },
+ {
+  "name": "Public toilet, Embarcadero & Harrison",
+  "procedural": "pitStopToilet",
+  "lat": 37.789658,
+  "lon": -122.388532,
+  "size": [
+   4.6,
+   2.2
+  ],
+  "front": 138,
+  "height": 3.6,
+  "sign": false,
+  "note": "JCDecaux self-cleaning toilet (SF Public Works Pit Stop list). Placed by tools: the corner's OSM node, then the first point 8–18 m out that is 2.2–6.5 m from every carriageway's edge and in no building; `front` faces the nearest road."
+ },
+ {
+  "name": "Public toilet, Stanyan & Waller",
+  "procedural": "pitStopToilet",
+  "lat": 37.768328,
+  "lon": -122.453265,
+  "size": [
+   4.6,
+   2.2
+  ],
+  "front": -99,
+  "height": 3.6,
+  "sign": false,
+  "note": "JCDecaux self-cleaning toilet (SF Public Works Pit Stop list). Placed by tools: the corner's OSM node, then the first point 8–18 m out that is 2.2–6.5 m from every carriageway's edge and in no building; `front` faces the nearest road."
+ },
+ {
+  "name": "Public toilet, Market & Church",
+  "procedural": "pitStopToilet",
+  "lat": 37.7676,
+  "lon": -122.429125,
+  "size": [
+   4.6,
+   2.2
+  ],
+  "front": 86,
+  "height": 3.6,
+  "sign": false,
+  "note": "JCDecaux self-cleaning toilet (SF Public Works Pit Stop list). Placed by tools: the corner's OSM node, then the first point 8–18 m out that is 2.2–6.5 m from every carriageway's edge and in no building; `front` faces the nearest road."
+ },
+ {
+  "name": "Public toilet, Market & 17th",
+  "procedural": "pitStopToilet",
+  "lat": 37.76236,
+  "lon": -122.436047,
+  "size": [
+   4.6,
+   2.2
+  ],
+  "front": 148,
+  "height": 3.6,
+  "sign": false,
+  "note": "JCDecaux self-cleaning toilet (SF Public Works Pit Stop list). Placed by tools: the corner's OSM node, then the first point 8–18 m out that is 2.2–6.5 m from every carriageway's edge and in no building; `front` faces the nearest road."
+ },
+ {
+  "name": "Public toilet, Mission & 16th",
+  "procedural": "pitStopToilet",
+  "lat": 37.765141,
+  "lon": -122.419818,
+  "size": [
+   4.6,
+   2.2
+  ],
+  "front": 85,
+  "height": 3.6,
+  "sign": false,
+  "note": "JCDecaux self-cleaning toilet (SF Public Works Pit Stop list). Placed by tools: the corner's OSM node, then the first point 8–18 m out that is 2.2–6.5 m from every carriageway's edge and in no building; `front` faces the nearest road."
+ },
+ {
+  "name": "Public toilet, Drumm & Clay",
+  "procedural": "pitStopToilet",
+  "lat": 37.795536,
+  "lon": -122.396924,
+  "size": [
+   4.6,
+   2.2
+  ],
+  "front": 82,
+  "height": 3.6,
+  "sign": false,
+  "note": "JCDecaux self-cleaning toilet (SF Public Works Pit Stop list). Placed by tools: the corner's OSM node, then the first point 8–18 m out that is 2.2–6.5 m from every carriageway's edge and in no building; `front` faces the nearest road."
+ },
+ {
+  "name": "Public toilet, Coit Tower, Pioneer Park",
+  "procedural": "pitStopToilet",
+  "lat": 37.802696,
+  "lon": -122.406018,
+  "size": [
+   4.6,
+   2.2
+  ],
+  "front": 10,
+  "height": 3.6,
+  "sign": false,
+  "note": "JCDecaux self-cleaning toilet (SF Public Works Pit Stop list). Placed by tools: the corner's OSM node, then the first point 8–18 m out that is 2.2–6.5 m from every carriageway's edge and in no building; `front` faces the nearest road."
+ },
+ {
+  "name": "Public toilet, Jefferson & Powell (1)",
+  "procedural": "pitStopToilet",
+  "lat": 37.808655,
+  "lon": -122.412455,
+  "size": [
+   4.6,
+   2.2
+  ],
+  "front": 152,
+  "height": 3.6,
+  "sign": false,
+  "note": "JCDecaux self-cleaning toilet (SF Public Works Pit Stop list). Placed by tools: the corner's OSM node, then the first point 8–18 m out that is 2.2–6.5 m from every carriageway's edge and in no building; `front` faces the nearest road."
+ },
+ {
+  "name": "Public toilet, Jefferson & Powell (2)",
+  "procedural": "pitStopToilet",
+  "lat": 37.808528,
+  "lon": -122.412616,
+  "size": [
+   4.6,
+   2.2
+  ],
+  "front": 10,
+  "height": 3.6,
+  "sign": false,
+  "note": "JCDecaux self-cleaning toilet (SF Public Works Pit Stop list). Placed by tools: the corner's OSM node, then the first point 8–18 m out that is 2.2–6.5 m from every carriageway's edge and in no building; `front` faces the nearest road."
+ },
+ {
+  "name": "Public toilet, Justin Herman Plaza",
+  "procedural": "pitStopToilet",
+  "lat": 37.7953,
+  "lon": -122.3949,
+  "size": [
+   4.6,
+   2.2
+  ],
+  "front": 180,
+  "height": 3.6,
+  "sign": false,
+  "note": "JCDecaux self-cleaning toilet (SF Public Works Pit Stop list). Placed by tools: the corner's OSM node, then the first point 8–18 m out that is 2.2–6.5 m from every carriageway's edge and in no building; `front` faces the nearest road."
+ }
+]

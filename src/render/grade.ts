@@ -21,6 +21,12 @@ import { Effect, FxaaPostProcess, PostProcess, type Camera, type Scene } from '@
 export interface Grade { exposure: number; saturation: number; contrast: number }
 
 export const GRADE: Grade = { exposure: 1.14, saturation: 1.28, contrast: 1.06 }
+/**
+ * The grade WITHOUT ambient occlusion (the phone tiers, src/tier.ts `ao: false`). GRADE's 1.14 exposure was set to lift
+ * a picture the AO had darkened; with no AO to darken it, the same lift washed the phone's picture out (owner,
+ * 2026-10-04: "something with the brightness and it is very light-colored graphics"). No lift, a little more contrast.
+ */
+export const GRADE_NO_AO: Grade = { exposure: 1.0, saturation: 1.24, contrast: 1.12 }
 
 const FRAGMENT = `
 precision highp float;

@@ -67,8 +67,21 @@ export function bisonPaddock(out: MeshBuilder, fit: Fit): void {
 const STONE: Rgb = [0.6, 0.58, 0.54]
 
 export function landsEndLabyrinth(out: MeshBuilder, fit: Fit): void {
+  stoneRings(out, fit, 7, STONE)
+}
+
+/**
+ * THE BERNAL HILL LABYRINTH (labyrinthlocator.org: 37.7430988, −122.4140468): in the old quarry on the hill's south-west
+ * corner, a three-circuit classical labyrinth laid in May 2008 in the hill's own reddish rocks — not in OSM (#278's
+ * "a location would let it be drawn like Lands End's", 2026-10-04).
+ */
+export function bernalLabyrinth(out: MeshBuilder, fit: Fit): void {
+  stoneRings(out, fit, 4, [0.56, 0.38, 0.3])
+}
+
+/** Rings of loose stones on the ground, each broken where the path turns, the break walking round as they go in. */
+function stoneRings(out: MeshBuilder, fit: Fit, rings: number, colour: Rgb): void {
   const R = Math.min(fit.hx, fit.hz) - 0.5
-  const rings = 7
   for (let k = 1; k <= rings; k++) {
     const r = (R * k) / rings
     const n = Math.round((2 * Math.PI * r) / 0.45)
@@ -79,33 +92,115 @@ export function landsEndLabyrinth(out: MeshBuilder, fit: Fit): void {
       const d = Math.abs(((a - gap + Math.PI * 3) % (Math.PI * 2)) - Math.PI)
       if (d < 0.9 / r + 0.08) continue
       const s = 0.1 + hash(k * 100 + i, 1) * 0.06
-      box(out, Math.cos(a) * r, s * 0.6, Math.sin(a) * r, s, s * 0.6, s, STONE, 0)
+      box(out, Math.cos(a) * r, s * 0.6, Math.sin(a) * r, s, s * 0.6, s, colour, 0)
     }
   }
-  box(out, 0, 0.12, 0, 0.3, 0.12, 0.3, STONE, 0)
+  box(out, 0, 0.12, 0, 0.3, 0.12, 0.3, colour, 0)
+}
+
+/**
+ * GRACE CATHEDRAL'S OUTDOOR LABYRINTH (OSM n9010894444, "Grace Cathedral Labyrinth"): the eleven-circuit Chartres
+ * pattern laid in terrazzo on the cathedral's plaza — pale stone with the circuits' walls as dark lines and the
+ * six-petalled rose at the centre (2026-10-04, the labyrinths queue item; it was not drawn). Flat on the plaza, the
+ * lines a hand proud of the pale disc so they do not fight it.
+ */
+export function graceLabyrinth(out: MeshBuilder, fit: Fit): void {
+  const R = Math.max(5, Math.min(fit.hx, fit.hz))
+  const PALE: Rgb = [0.62, 0.6, 0.57], LINE: Rgb = [0.3, 0.29, 0.29]
+  const disc = (r: number, y: number, c: Rgb): void => {
+    const n = 48
+    for (let i = 0; i < n; i++) {
+      const a0 = (i / n) * Math.PI * 2, a1 = ((i + 1) / n) * Math.PI * 2
+      out.quad([[0, y, 0], [Math.cos(a1) * r, y, Math.sin(a1) * r], [Math.cos(a0) * r, y, Math.sin(a0) * r], [0, y, 0]], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], c, 0)
+    }
+  }
+  disc(R, 0.04, PALE)
+  // the twelve walls of the eleven circuits, each broken where the path turns through it; the entrance at −z
+  for (let k = 0; k <= 11; k++) {
+    const r = R * (0.25 + (0.73 * k) / 11)
+    const n = Math.round((2 * Math.PI * r) / 0.35)
+    const turn = k === 11 ? -Math.PI / 2 : ((k * 1.7) % 2) < 1 ? 0 : Math.PI
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2
+      const d = Math.abs(((a - turn + Math.PI * 3) % (Math.PI * 2)) - Math.PI)
+      if (d * r < 0.45) continue
+      const a1 = ((i + 1) / n) * Math.PI * 2
+      out.quad([[Math.cos(a) * (r - 0.04), 0.06, Math.sin(a) * (r - 0.04)], [Math.cos(a1) * (r - 0.04), 0.06, Math.sin(a1) * (r - 0.04)], [Math.cos(a1) * (r + 0.04), 0.06, Math.sin(a1) * (r + 0.04)], [Math.cos(a) * (r + 0.04), 0.06, Math.sin(a) * (r + 0.04)]], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], LINE, 0)
+    }
+  }
+  // the rose: six petals round the centre
+  for (let p = 0; p < 6; p++) {
+    const a = (p / 6) * Math.PI * 2
+    const cx = Math.cos(a) * R * 0.13, cz = Math.sin(a) * R * 0.13
+    const n = 12, r = R * 0.1
+    for (let i = 0; i < n; i++) {
+      const b0 = (i / n) * Math.PI * 2, b1 = ((i + 1) / n) * Math.PI * 2
+      out.quad([[cx + Math.cos(b0) * (r - 0.04), 0.06, cz + Math.sin(b0) * (r - 0.04)], [cx + Math.cos(b1) * (r - 0.04), 0.06, cz + Math.sin(b1) * (r - 0.04)], [cx + Math.cos(b1) * (r + 0.04), 0.06, cz + Math.sin(b1) * (r + 0.04)], [cx + Math.cos(b0) * (r + 0.04), 0.06, cz + Math.sin(b0) * (r + 0.04)]], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], LINE, 0)
+    }
+  }
 }
 
 const GRANITE: Rgb = [0.62, 0.6, 0.58]
 const MARBLE: Rgb = [0.82, 0.8, 0.76]
 const PIPE: Rgb = [0.16, 0.17, 0.18]
 
+/**
+ * THE WAVE ORGAN (Peter Richards and George Gonzalez, 1986), at the tip of the Marina's jetty (OSM n590952130): a
+ * little stepped amphitheatre facing the bay, built of carved granite and marble from a demolished cemetery — kerbs,
+ * column drums, a fallen fluted shaft, panels with their mouldings still on — and through the stone, at every height
+ * and angle, the organ's pipes: grey concrete and PVC, each ending in a flared mouth you put your ear to (owner,
+ * 2026-10-03: "there, but not recognizable" — it was a few rows of boxes). Its back (−z) is the jetty, its front (+z)
+ * steps down to the water.
+ */
 export function waveOrgan(out: MeshBuilder, fit: Fit): void {
-  const hx = Math.max(8, fit.hx), hz = Math.max(6, fit.hz)
-  // stepped terraces of salvaged stone, falling toward the water at +z
-  for (let t = 0; t < 4; t++) {
-    const y = 1.6 - t * 0.45
-    const z0 = -hz + t * (hz * 0.45)
-    for (let i = 0; i < 9; i++) {
-      const x = -hx + (i + 0.5) * ((2 * hx) / 9) + (hash(t * 9 + i, 1) - 0.5) * 0.8
-      const w = 0.6 + hash(t * 9 + i, 2) * 0.6
-      box(out, x, y / 2, z0 + hash(t * 9 + i, 3) * 1.2, w, y / 2, 0.5 + hash(t * 9 + i, 4) * 0.5, hash(t * 9 + i, 5) < 0.4 ? MARBLE : GRANITE, 0)
+  const R = Math.max(8, Math.min(fit.hx, fit.hz * 1.4))
+  const stone = (k: number): Rgb => (hash(k, 5) < 0.45 ? MARBLE : hash(k, 6) < 0.5 ? GRANITE : [0.55, 0.53, 0.5])
+  // the terraces: three arcs of salvaged blocks, stepping down toward the water, each a ring of irregular stones
+  for (let t = 0; t < 3; t++) {
+    const r = R * (0.95 - t * 0.28)
+    const y = 1.5 - t * 0.5
+    const n = 11 - t * 2
+    for (let i = 0; i < n; i++) {
+      const a = Math.PI * (0.08 + (0.84 * (i + 0.5)) / n)            // a half circle opening to +z
+      const k = t * 20 + i
+      const x = -Math.cos(a) * r, z = -Math.sin(a) * r * 0.75 + (hash(k, 2) - 0.5) * 0.4
+      const w = (Math.PI * r) / n / 2 - 0.08
+      box(out, x, y / 2, z, w * (0.8 + hash(k, 3) * 0.3), y / 2 + hash(k, 4) * 0.12, 0.45 + hash(k, 7) * 0.25, stone(k), 0)
+      // a moulding left on some: a thin projecting course along the top
+      if (hash(k, 8) < 0.4) box(out, x, y + 0.08, z, w * 0.85, 0.06, 0.55, MARBLE, 0)
     }
   }
-  // the pipes' mouths: short dark tubes standing out of the stone
-  for (let i = 0; i < 14; i++) {
-    const x = (hash(i, 6) * 2 - 1) * hx * 0.85
-    const z = (hash(i, 7) * 2 - 1) * hz * 0.8
-    prism(out, x, z, 0, 0.5 + hash(i, 8) * 1.4, 0.16, 8, PIPE, 0, 0.16, true)
+  // the floor of the bowl, and the steps down to the water at the front
+  box(out, 0, 0.06, -R * 0.2, R * 0.75, 0.06, R * 0.45, GRANITE, 0)
+  for (let k = 0; k < 4; k++) box(out, 0, -0.15 - k * 0.3, R * 0.35 + k * 0.6, R * 0.5 - k * 0.6, 0.15, 0.3, [0.5, 0.49, 0.47], 0)
+  // the cemetery's pieces: column drums standing about, one fluted shaft lying on its side, a carved panel on edge
+  for (let i = 0; i < 5; i++) {
+    const a = Math.PI * (0.15 + 0.7 * hash(i, 11))
+    const r = R * (0.3 + 0.35 * hash(i, 12))
+    prism(out, -Math.cos(a) * r, -Math.sin(a) * r * 0.75, 0, 0.5 + hash(i, 13) * 0.6, 0.35 + hash(i, 14) * 0.15, 12, MARBLE, 0)
+  }
+  {
+    const n = 12, L = 2.6, rad = 0.32, cx = R * 0.35, cz = -R * 0.45
+    for (let k = 0; k < n; k++) {
+      const a = (k / n) * Math.PI * 2
+      box(out, cx, rad + Math.sin(a) * rad, cz + Math.cos(a) * rad, L / 2, 0.07, 0.07, MARBLE, 0)
+    }
+  }
+  box(out, -R * 0.4, 0.6, -R * 0.15, 0.9, 0.6, 0.12, MARBLE, 0)
+  box(out, -R * 0.4, 0.6, -R * 0.15, 0.75, 0.48, 0.16, [0.74, 0.72, 0.68], 0)
+  // the pipes: in clusters through the stone, upright and leaning, each with a flared mouth
+  const PIPES: Rgb[] = [PIPE, [0.55, 0.56, 0.56], [0.78, 0.78, 0.76]]
+  for (let i = 0; i < 26; i++) {
+    const cluster = i % 6
+    const a = Math.PI * (0.12 + (0.76 * (cluster + 0.5)) / 6) + (hash(i, 21) - 0.5) * 0.18
+    const r = R * (0.45 + 0.45 * hash(i, 22))
+    const x = -Math.cos(a) * r, z = -Math.sin(a) * r * 0.75
+    const h = 0.6 + hash(i, 23) * 1.6
+    const rad = 0.1 + hash(i, 24) * 0.09
+    const col = PIPES[Math.floor(hash(i, 25) * PIPES.length)]
+    prism(out, x, z, 0, h, rad, 10, col, 0)
+    // the mouth: a short flared bell, wider than the pipe
+    prism(out, x, z, h, h + 0.22, rad * 1.1, 10, [0.6, 0.6, 0.58], 0, rad * 1.9, true)
   }
 }
 
@@ -242,4 +337,4 @@ function garden(t: number, zc: number, i: number, c: number): Rgb {
   return stem ? LEAF : (h < 0.5 ? LEAF2 : [0.32, 0.6, 0.28])
 }
 
-export const PARK_SIGHTS: Record<string, (out: MeshBuilder, fit: Fit) => void> = { bisonPaddock, landsEndLabyrinth, waveOrgan, portalsOfThePast, sutroParapet, tiledSteps, hiddenGardenSteps }
+export const PARK_SIGHTS: Record<string, (out: MeshBuilder, fit: Fit) => void> = { bisonPaddock, landsEndLabyrinth, bernalLabyrinth, graceLabyrinth, waveOrgan, portalsOfThePast, sutroParapet, tiledSteps, hiddenGardenSteps }

@@ -19,7 +19,7 @@ import type { Fit } from '../../fit.ts'
 import { faceBand, insetRing, tower, towerRing, type Face, type TowerSpec } from '../../tower.ts'
 import { prism, type Rgb } from '../../../models.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
-import { boxAlong, edgeAt, longestEdge } from '../../parts.ts'
+import { boxAlong, edgeAt, longestEdge, offsetRing } from '../../parts.ts'
 import { classicalColumn } from '../../column.ts'
 import { column } from '../../kit.ts'
 import { fromRecipe } from '../recipes.ts'
@@ -226,10 +226,20 @@ function blade(out: MeshBuilder, e: Edge, u: number, y0: number, y1: number, dep
 }
 
 /** A tower spec raised on the fitted ring, then `extra` drawn on the same ring. */
+/** The ring moved `d` metres OUT (negative: in), whichever way it winds: an overlay on a wall stands proud of it */
+function nudge(r: P2[], d: number): P2[] {
+  let a = 0
+  for (let i = 0; i < r.length; i++) { const j = (i + 1) % r.length; a += r[i].x * r[j].z - r[j].x * r[i].z }
+  return offsetRing(r, a > 0 ? d : -d)
+}
+
 const specPlus = (s: TowerSpec, extra: (out: MeshBuilder, ring: P2[], H: number) => void) => (out: MeshBuilder, fit: Fit): void => {
   tower(out, fit, s)
   const H = fit.height > 0.6 * s.height && fit.height < 1.6 * s.height ? fit.height : s.height
-  extra(out, towerRing(fit), H)
+  // the extras stand ON the walls (fins, frames, panels): given a ring 3 cm outside them, never in their plane —
+  // drawn on the ring itself they doubled the walls, and NEMA, Market Square, 1145 Market z-fought top to bottom
+  // (2026-10-03 coplanar scan)
+  extra(out, nudge(towerRing(fit), 0.03), H)
 }
 
 
@@ -640,7 +650,13 @@ export const MARKET_WEST: Record<string, (out: MeshBuilder, fit: Fit) => void> =
     const e = boxed(ring) ? frontOfBox(ring) : edgeNear(ring, 61.7)
     const g = edgeNear(ring, 42.2)
     const mid = boxed(ring) ? e.L / 2 : (g.a === e.b || g.b === e.b ? e.L : 0)
-    const bay = strip(e, mid - 12.5, mid + 12.5, 20)
+    // (kept inside the building's own outline: on the corner at 10th the strip ran out past the side wall, a 48 m
+    // tower bay standing over Market's pavement and lanes — owner, 2026-10-03)
+    const clipIn = (b: P2[]): P2[] => { for (let i = 0; i < ring.length && b.length >= 3; i++) b = behind(b, edgeOf(ring, i), 0.6); return b }
+    // (the strip is drawn to one side of the frontage; where that side was the street, the other side is the building)
+    let bay = clipIn(strip(e, mid - 12.5, mid + 12.5, 20))
+    if (bay.length < 3) bay = clipIn(strip(e, mid - 12.5, mid + 12.5, -20))
+    if (bay.length < 3) return
     raise(out, bay, H + 7.5, {
       height: H + 7.5,
       tiers: [
@@ -1054,7 +1070,7 @@ export const MARKET_WEST: Record<string, (out: MeshBuilder, fit: Fit) => void> =
       roof: [0.55, 0.55, 0.54],
     })
     // the mullions in each bay, and the glass penthouse stepping back
-    faceBand(out, ring, 6, H * 0.98, { kind: 'fins', material: 'terracotta', wall: white, glass: [0.46, 0.53, 0.55], pitch: 2.1, solid: 0.12, depth: 0.14, floor: 3.9 })
+    faceBand(out, nudge(ring, 0.03), 6, H * 0.98, { kind: 'fins', material: 'terracotta', wall: white, glass: [0.46, 0.53, 0.55], pitch: 2.1, solid: 0.12, depth: 0.14, floor: 3.9 })
     let r = ring
     let y = H
     for (const step of [3.4, 3.4, 3.4]) {
@@ -1275,7 +1291,8 @@ function warMemorial(out: MeshBuilder, fit: Fit, frontLen: number, stage: boolea
   colonnade(out, front, 4, front.L - 4, 10, 22, 1.8, 0.8, 4.6, granite, T.granite, [0.3, 0.31, 0.32])
   if (stage) {
     // the stage house: the back half of the block, up to the OSM height
-    const back = behind(ring, front, 34)
+    // (5 cm inside the hall's own walls, which it shares: they z-fought the whole height of the back)
+    const back = nudge(behind(ring, front, 34), -0.05)
     if (back.length >= 3) raise(out, back, Math.max(38, fit.height), { height: 40, tiers: [{ to: 1, face: { kind: 'blank', material: 'concrete', wall: [0.72, 0.72, 0.7] } }], roof: [0.5, 0.5, 0.5], crown: { kind: 'parapet', height: 1, colour: [0.7, 0.7, 0.68] } })
   }
 }

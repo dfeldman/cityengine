@@ -61,6 +61,12 @@ const jumps = new Map<string, number>()
 const jumpSamples: string[] = []
 for (let t = 0; t < seconds; t += dt) {
   traffic.update(dt, at, edges)
+  // DEBUG_EDGE=<id>: every vehicle on that edge (or in a box onto it) every 5 s
+  if (process.env.DEBUG_EDGE && Math.abs(t % 5) < dt / 2) {
+    const id = Number(process.env.DEBUG_EDGE)
+    const on = traffic.all.filter((v) => v.edgeId === id || v.next?.edgeId === id)
+    if (on.length) console.log(`t=${t.toFixed(0)} e${id}: ` + on.map((v) => `${v.id}@${v.edgeId === id ? 's' + v.s.toFixed(1) : 'e' + v.edgeId + ':' + v.s.toFixed(1)} v${v.speed.toFixed(1)} ${v.why ?? '-'}${v.inBox ? ' box' + v.inBox.nodeId : ''}${v.refused ? ' ref:' + v.refused : ''}`).join(' | '))
+  }
   for (const v of traffic.all) {
     if (v.speed < 0.1) still.set(v.id, (still.get(v.id) ?? 0) + dt)
     else still.delete(v.id)

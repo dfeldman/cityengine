@@ -18,6 +18,12 @@
  * toward the camera along its true direction and scaled by the same factor — so its bearing and angular size
  * are exactly right from wherever the rider is, and it never slides along the horizon as they ride.
  */
+import { dropCoincidentFaces, subdivideLong } from './landmarks/coplanar.ts'
+/** time spent in `dropCoincidentFaces`, for probes (`window.__coplanarMs`) */
+export let coplanarMs = 0
+export const slowCoplanar: [string, number, number][] = []
+if (typeof window !== 'undefined') Object.defineProperty(window, '__slowCoplanar', { get: () => slowCoplanar })
+if (typeof window !== 'undefined') Object.defineProperty(window, '__coplanarMs', { get: () => coplanarMs })
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader'
 import type { Scene } from '@babylonjs/core/scene'
@@ -27,6 +33,7 @@ import { cartoonMaterial } from './cartoon-material.ts'
 import { DAYLIGHT } from './facade-material.ts'
 import { fogIsOff } from './photo.ts'
 import { SHADOW_Y, addShadow, shadowMaterial, shadowOffset } from './shadows.ts'
+import { offsetRing } from './landmarks/parts.ts'
 import { PROCEDURAL, type Fit } from './landmarks/procedural.ts'
 import { TILE, type TileData } from '../city/tiles.ts'
 import { MID } from './city.ts'
@@ -45,6 +52,8 @@ const shed = (m: Mesh): void => {
 }
 import { signCut, type PlacedSign } from './landmarks/signage.ts'
 import { flatSignMesh } from './sign-plates.ts'
+import { Clocks } from './clocks.ts'
+import { region } from '../city/region.ts'
 import { expandIncludes } from '../city/manifest.ts'
 import { Projection } from '../city/geo.ts'
 import { unpackPoints, type CityPackage, type PackedBuilding, type PackedLandmark } from '../city/package.ts'
@@ -110,6 +119,22 @@ export interface LandmarkEntry {
   take?: 'around' | 'inside'
   /** a restyle's roof, where the style's own default is wrong for the building ("flat" for the Opéra) */
   roof?: 'flat' | 'hipped' | 'gabled' | 'mansard'
+  /** draw a model's footprint this many metres in all round (a tower sharing its podium's walls): see `place` */
+  inset?: number
+  /**
+   * "union": a builder fitted to its parts gets their TRUE outline as `fit.ring`, not their convex hull. The hull is
+   * right for most (a tower and its podium), wrong for a plan that wraps round a neighbour: SFMOMA's L round the W
+   * hotel's corner lot, whose hull took the W's footprint in and raised the Snøhetta wing through the hotel (owner,
+   * 2026-10-03: "another intersecting buildings issue here 37.785513, -122.400479"). Opt-in, so models already
+   * checked against their photographs keep the ring they were built on.
+   */
+  plan?: 'union'
+  /**
+   * A restyle's BASE: the building stands this many metres up — on a podium — keeping its own height above it. OSM maps
+   * Golden Gateway Center's townhouses as `layer=1` buildings with their own 12–13 m on top of a 12 m garage podium,
+   * and drawn from the ground they stood entirely INSIDE the podium (owner, 2026-10-03).
+   */
+  base?: number
   /** a restyle's wall height, storeys (with the ground floor) and roof, where OSM's are not the building's own */
   eaves?: number
   levels?: number
@@ -133,6 +158,9 @@ export interface LandmarkEntry {
    */
   wall?: string
   trim?: string
+  /** a restyle in a shopfront style (`brick`, `tenement`, `chinatown`…) on a building with no shops — a consulate,
+   *  a library, a hospital: its ground floor takes the style's windows (BUGFIX #320) */
+  noShops?: boolean
   accent?: string
   /** the ground floor where it is painted differently from the rest — a dark shopfront under pale flats */
   groundWall?: string
@@ -189,9 +217,11 @@ export async function landmarkManifest(base: string, city: string, region?: stri
       // Vite answers a missing file with index.html and a 200
       if (r.ok && text.trimStart().startsWith('[')) {
         // (a manifest may be split in files: city/manifest.ts)
-        return expandIncludes<LandmarkEntry>(JSON.parse(text), async (p) => {
+        // (each entry knows the file it came from: the inspector, ui/inspector.ts, says where to edit it)
+        const tag = (list: unknown[], file: string): unknown[] => list.map((x) => (x && typeof x === 'object' && !('include' in x) ? { ...x, _file: file } : x))
+        return expandIncludes<LandmarkEntry>(tag(JSON.parse(text), `${name}.json`) as (LandmarkEntry | { include: string })[], async (p) => {
           const got = await fetch(new URL(`landmarks/${p}`, base).href).then((q) => (q.ok ? q.text() : '')).catch(() => '')
-          return got.trimStart().startsWith('[') ? JSON.parse(got) as unknown[] : null
+          return got.trimStart().startsWith('[') ? tag(JSON.parse(got) as unknown[], p) : null
         })
       }
     } catch {
@@ -521,6 +551,83 @@ export function partsUnion(parts: PartLike[]): { hull: { x: number; z: number }[
 }
 
 /**
+ * The true outline of a building's grounded parts — their union, concave where it is concave — anticlockwise in the
+ * city's x/z frame: rasterised at half a metre, the outer boundary of the largest piece traced cell edge by cell
+ * edge, and simplified back to its corners. Null when there is nothing to trace.
+ */
+export function partsOutline(parts: PartLike[]): { x: number; z: number }[] | null {
+  const rings = groundedParts(parts).map((p) => unpackPoints(p.ring))
+  if (rings.length === 0) return null
+  const C = 0.5
+  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+  for (const r of rings) for (const q of r) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+  const nx = Math.ceil((x1 - x0) / C) + 2, nz = Math.ceil((z1 - z0) / C) + 2
+  if (nx * nz > 4e6) return null
+  const ox = x0 - C, oz = z0 - C
+  const inside = (r: { x: number; z: number }[], x: number, z: number): boolean => {
+    let c = false
+    for (let i = 0, j = r.length - 1; i < r.length; j = i++) {
+      if ((r[i].z > z) !== (r[j].z > z) && x < ((r[j].x - r[i].x) * (z - r[i].z)) / (r[j].z - r[i].z) + r[i].x) c = !c
+    }
+    return c
+  }
+  const fill = new Uint8Array(nx * nz)
+  for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
+    const x = ox + (i + 0.5) * C, z = oz + (j + 0.5) * C
+    if (rings.some((r) => inside(r, x, z))) fill[j * nx + i] = 1
+  }
+  const at = (i: number, j: number): boolean => i >= 0 && j >= 0 && i < nx && j < nz && fill[j * nx + i] === 1
+  // every boundary edge, directed with the filled cell on its LEFT (anticlockwise round the filled region)
+  const next = new Map<number, number[]>()
+  const key = (i: number, j: number): number => j * (nx + 1) + i
+  const add = (a: number, b: number): void => { const l = next.get(a); if (l) l.push(b); else next.set(a, [b]) }
+  for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
+    if (!at(i, j)) continue
+    if (!at(i, j - 1)) add(key(i, j), key(i + 1, j))
+    if (!at(i + 1, j)) add(key(i + 1, j), key(i + 1, j + 1))
+    if (!at(i, j + 1)) add(key(i + 1, j + 1), key(i, j + 1))
+    if (!at(i - 1, j)) add(key(i, j + 1), key(i, j))
+  }
+  // link them into loops; the longest is the outer boundary of the largest piece
+  let best: number[] = []
+  while (next.size) {
+    const start = next.keys().next().value as number
+    const loop: number[] = []
+    let k = start
+    for (let guard = 0; guard < 1e6; guard++) {
+      const l = next.get(k)
+      if (!l || !l.length) break
+      const n = l.pop()!
+      if (!l.length) next.delete(k)
+      loop.push(k)
+      k = n
+      if (k === start) break
+    }
+    if (loop.length > best.length) best = loop
+  }
+  if (best.length < 4) return null
+  const pts = best.map((v) => ({ x: ox + (v % (nx + 1)) * C, z: oz + Math.floor(v / (nx + 1)) * C }))
+  // back to corners: Douglas–Peucker on the closed loop, split at its two farthest-apart points
+  const simplify = (p: { x: number; z: number }[], tol: number): { x: number; z: number }[] => {
+    if (p.length < 3) return p
+    const a = p[0], b = p[p.length - 1]
+    const L = Math.hypot(b.x - a.x, b.z - a.z) || 1e-9
+    let far = 0, at2 = 0
+    for (let i = 1; i < p.length - 1; i++) {
+      const d = Math.abs((b.x - a.x) * (a.z - p[i].z) - (a.x - p[i].x) * (b.z - a.z)) / L
+      if (d > far) { far = d; at2 = i }
+    }
+    if (far <= tol) return [a, b]
+    return [...simplify(p.slice(0, at2 + 1), tol).slice(0, -1), ...simplify(p.slice(at2), tol)]
+  }
+  let half = 0, dmax = -1
+  for (let i = 1; i < pts.length; i++) { const d = Math.hypot(pts[i].x - pts[0].x, pts[i].z - pts[0].z); if (d > dmax) { dmax = d; half = i } }
+  const tol = C * 1.2
+  const out = [...simplify(pts.slice(0, half + 1), tol).slice(0, -1), ...simplify([...pts.slice(half), pts[0]], tol).slice(0, -1)]
+  return out.length >= 3 ? out : null
+}
+
+/**
  * How far outside the parts seen so far another part of the same building could start, metres. A part
  * narrower than this could sit across a tile boundary without its ring reaching into the bbox — buildings are
  * filed by their CENTRE (city/tiles.ts), so the tile a part is in says nothing about where its neighbours are.
@@ -643,6 +750,11 @@ export class Landmarks {
   onCover: ((c: { ring: { x: number; z: number }[]; y0: number; y1: number }) => void) | null = null
   /** told of each street-level paving a model asks for (MeshBuilder.grounds); set by game.ts like `onCover` */
   onGround: ((ring: { x: number; z: number }[]) => void) | null = null
+  /**
+   * Each placed model's footprint, for the trees: the park scatter knows nothing of models, and planted Rincon Park's
+   * trees through Cupid's Span (2026-10-03). Not for an AREA — a plaza, a garden, a park — whose own trees stand in it.
+   */
+  onFootprint: ((ring: { x: number; z: number }[]) => void) | null = null
   /** is (x, z) known dry land (the city's water pieces)? for `waterOnly`; set by game.ts */
   dryAt: ((x: number, z: number) => boolean) | null = null
 
@@ -668,11 +780,21 @@ export class Landmarks {
   /** every tile that has arrived, so `partsComplete` can tell "not here yet" from "not there" */
   private readonly seenTiles = new Set<string>()
   private readonly wanted = new Set<number>()
+  /**
+   * The model entry that names each building id ITSELF (not through an outline). An entry fitted to an OUTLINE takes
+   * the union of its parts — but not a part another model names for itself: the Paramount's entry named the 3-storey
+   * outline that also holds the St. Regis Museum Tower's part, the Westin St. Francis's the outline round the Westin's
+   * own tower, and each model was drawn over the other (owner, 2026-10-03: "in most cases, we are probably replacing a
+   * whole building and keeping the buildingparts, OR maybe the other way around").
+   */
+  private readonly ownedBy = new Map<number, LandmarkEntry>()
   /** entries not yet placed: each waits for the tile its building, or its point, is in */
   private pending: LandmarkEntry[]
   private readonly named: PackedLandmark[]
   private readonly proj: Projection
   private readonly mat: ShaderMaterial
+  /** the public clocks' hands (render/clocks.ts), turned to the city's own time */
+  private readonly clockHands: Clocks
   private plain: ShaderMaterial | null = null
   private plainMat(): ShaderMaterial {
     if (!this.plain) {
@@ -710,10 +832,12 @@ export class Landmarks {
       return true
     })
     for (const e of this.pending) for (const id of [...packedIds(e), ...(e.on ? packedIds({ name: e.name, osm: e.on }) : [])]) this.wanted.add(id)
+    for (const e of this.pending) for (const id of packedIds(e)) if (!this.ownedBy.has(id)) this.ownedBy.set(id, e)
     const mat = cartoonMaterial(scene, 'cartoonLandmark', false)
     // drawn both sides: one mesh per landmark, and a builder's hand-wound quads need not all agree
     mat.backFaceCulling = false
     this.mat = mat
+    this.clockHands = new Clocks(scene, mat, region((pkg as { region?: string }).region).timeZone)
 
     // ---- the skyline
     const skyMat = cartoonMaterial(scene, 'cartoonSkyline', false)
@@ -831,11 +955,16 @@ export class Landmarks {
    * massing while fitting to one named part would leave a small model in a hole. Empty when no id names such
    * an outline, which is how every other entry keeps its old path.
    */
-  private claims(ids: number[]): PartLike[] {
+  private claims(ids: number[], self?: LandmarkEntry): PartLike[] {
     if (!ids.some((id) => this.partsOf.has(id))) return []
     const out = new Map<number, PartLike>()
     for (const id of ids) {
-      for (const p of this.partsOf.get(id)?.values() ?? []) out.set(p.id, p)
+      for (const p of this.partsOf.get(id)?.values() ?? []) {
+        // (a part another model names for itself is that model's, not this outline's: see `ownedBy`)
+        const owner = this.ownedBy.get(p.id)
+        if (owner && owner !== self && !ids.includes(p.id)) continue
+        out.set(p.id, p)
+      }
       const own = this.byId.get(id)
       if (own) out.set(own.id, own)
     }
@@ -843,7 +972,7 @@ export class Landmarks {
   }
 
   private partsReady(e: LandmarkEntry, ids: number[], tx: number, tz: number): boolean {
-    const parts = this.claims(ids)
+    const parts = this.claims(ids, e)
     if (parts.length === 0) return false
     if (partsComplete(parts, this.seenTiles)) return true
     if (!tileNearParts(parts, tx, tz)) return false
@@ -894,7 +1023,7 @@ export class Landmarks {
      */
     const unionId = onId !== undefined || (e.lat !== undefined && e.lon !== undefined)
       ? undefined : packedIds(e).find((id) => this.partsOf.has(id))
-    const union = unionId === undefined ? null : partsUnion(this.claims(packedIds(e)))
+    const union = unionId === undefined ? null : partsUnion(this.claims(packedIds(e), e))
     const height = e.height ?? (union ? union.height : building?.height) ?? 30
     let cx: number
     let cz: number
@@ -905,7 +1034,7 @@ export class Landmarks {
     // OSM parts, and fitted to the first it came out a third of its size, off to one side
     const atPoint = e.lat !== undefined && e.lon !== undefined && e.size !== undefined
     if ((building || union) && !atPoint) {
-      ring = union ? union.hull : unpackPoints(building!.ring)
+      ring = union ? (e.plan === 'union' ? partsOutline(this.claims(packedIds(e), e)) ?? union.hull : union.hull) : unpackPoints(building!.ring)
       if (e.court && union) { console.warn(`landmark ${e.name}: no courtyard (its outline is only parts)`); return }
       if (e.court && building) {
         // the largest courtyard, turned back to anticlockwise like an outline
@@ -946,6 +1075,7 @@ export class Landmarks {
     } else return
     const [ox, oy, oz] = e.offset ?? [0, 0, 0]
     const under = ring ?? rectRing(cx, cz, fit.hx, fit.hz, rotation)
+    if (!/^(plaza|garden|park)$/.test(e.kind ?? '') && !/plaza|park|garden|square|marina|harbo|deck|podium|paddock|labyrinth|court/i.test(`${e.name} ${e.procedural ?? ''}`)) this.onFootprint?.(under)
     // a structure on piles takes its own deck datum off the sea, not the sea bed under it (BUGS.md #181):
     // the terrain there is deliberately below the waterline, and draping the model on it submerges it
     const y = e.baseY !== undefined
@@ -954,6 +1084,10 @@ export class Landmarks {
       ? this.seaLevel + e.deckAbove + oy
       // sunk to the lowest ground under it, as the city's own buildings are, so a slope shows no daylight
       : Math.min(...under.map((q) => this.terrain.heightAt(q.x, q.z)), this.terrain.heightAt(cx, cz)) - 0.5 + oy
+    // (the ground at the front's middle over that base: Fit.grade; the model's local (0, −hz), placed as Babylon does)
+    fit.grade = this.terrain.heightAt(cx - fit.hz * Math.sin(rotation), cz - fit.hz * Math.cos(rotation)) - y
+    fit.groundAt = (lx: number, lz: number): number =>
+      this.terrain.heightAt(cx + lx * Math.cos(rotation) + lz * Math.sin(rotation), cz - lx * Math.sin(rotation) + lz * Math.cos(rotation)) - y
 
     /*
      * A model that draws its own raised structure — a skybridge, a canopy, a skywalk, a pergola — claims
@@ -977,12 +1111,89 @@ export class Landmarks {
       const build = PROCEDURAL[e.procedural]
       if (!build) { console.warn(`landmark ${e.name}: no procedural builder "${e.procedural}"`); return }
       const mb = new MeshBuilder()
-      build(mb, fit)
+      /*
+       * INSET (`"inset": 0.12`): the footprint drawn in by that much all round. A tower that is a building:part of its
+       * podium's outline — the Four Seasons on Market, the Westin St. Francis tower on the hotel — shares the
+       * podium's walls from the ground up, and the two models' faces in one plane z-fought (owner, 2026-10-03:
+       * "Around Union Square, several of our custom buildings (the glassy ones) have severe Z fighting"). 40 cm in, the
+       * tower's lower walls are hidden inside the podium and its upper walls look the same. (Not 12: that put the
+       * Westin tower's wall exactly on the plane of the hotel's recessed window glass, and they fought just the same.)
+       */
+      // (inward whichever way the ring winds: `offsetRing` moves along each edge's own normal)
+      const inward = (r: { x: number; z: number }[], d: number): { x: number; z: number }[] => {
+        let a = 0
+        for (let i = 0; i < r.length; i++) { const j = (i + 1) % r.length; a += r[i].x * r[j].z - r[j].x * r[i].z }
+        // (an edge shorter than the inset comes out REVERSED, a fold that doubles the wall back on itself in one plane
+        // — the ICA's 1 800 m² of fighting glass: each reversed edge is collapsed to its middle)
+        let o = offsetRing(r, a > 0 ? -d : d)
+        if (o.length !== r.length) return o
+        for (let pass = 0; pass < 4; pass++) {
+          let fixed = false
+          const out: { x: number; z: number }[] = []
+          for (let i = 0; i < o.length; i++) {
+            const j = (i + 1) % o.length
+            const rx = r[j].x - r[i].x, rz = r[j].z - r[i].z
+            const ox = o[j].x - o[i].x, oz = o[j].z - o[i].z
+            if (rx * ox + rz * oz < 0 && j !== 0) {
+              out.push({ x: (o[i].x + o[j].x) / 2, z: (o[i].z + o[j].z) / 2 })
+              i++
+              fixed = true
+            } else out.push(o[i])
+          }
+          if (!fixed || out.length < 3) break
+          // (the original ring with the same collapse, so the next pass compares like with like)
+          const rr: { x: number; z: number }[] = []
+          for (let i = 0, k = 0; i < r.length && k < out.length; i++, k++) {
+            const j = (i + 1) % r.length
+            const ox = o[j].x - o[i].x, oz = o[j].z - o[i].z
+            if ((r[j].x - r[i].x) * ox + (r[j].z - r[i].z) * oz < 0 && j !== 0) { rr.push({ x: (r[i].x + r[j].x) / 2, z: (r[i].z + r[j].z) / 2 }); i++ }
+            else rr.push(r[i])
+          }
+          o = out
+          r = rr
+        }
+        return o
+      }
+      // (every model fitted to a footprint is drawn 5 cm in: two neighbours fitted to buildings that share a party wall
+      // drew that wall twice in one plane and fought — Saks and Tiffany on Union Square, 900 m² — and 10 cm apart they
+      // do not; 5 cm is nothing to the eye)
+      // (SCALED about its middle so the farthest wall comes 5 cm in, not offset: an offset folds a short edge back on
+      // itself and the doubled wall fights — the ICA's glass)
+      const shrink = (r: { x: number; z: number }[]): { x: number; z: number }[] => {
+        // each corner along its own bisector by 5 cm / cos(half the turn), clamped: every wall comes in 5 cm, a sharp
+        // corner a little less, and nothing can cross over (an offset left a sharp corner where it was and folded)
+        let area = 0
+        for (let i = 0; i < r.length; i++) { const j = (i + 1) % r.length; area += r[i].x * r[j].z - r[j].x * r[i].z }
+        const sgn = area > 0 ? 1 : -1
+        const nrm = (i: number): [number, number] => {
+          const j = (i + 1) % r.length
+          const dx = r[j].x - r[i].x, dz = r[j].z - r[i].z, L = Math.hypot(dx, dz) || 1
+          return [(-dz / L) * sgn, (dx / L) * sgn]   // inward for this winding
+        }
+        return r.map((q, i) => {
+          const n0 = nrm((i - 1 + r.length) % r.length), n1 = nrm(i)
+          const mx = n0[0] + n1[0], mz = n0[1] + n1[1], m = Math.hypot(mx, mz)
+          if (m < 0.2) return q
+          const cosHalf = m / 2
+          const d = Math.min(0.15, 0.05 / Math.max(cosHalf, 0.33))
+          return { x: q.x + (mx / m) * d, z: q.z + (mz / m) * d }
+        })
+      }
+      const built = e.inset === 0 ? fit : e.inset ? { ...fit, hx: fit.hx - e.inset, hz: fit.hz - e.inset, ring: fit.ring ? inward(fit.ring, e.inset) : undefined }
+        : ring && !atPoint && fit.ring ? { ...fit, hx: fit.hx - 0.05, hz: fit.hz - 0.05, ring: shrink(fit.ring) } : fit
+      build(mb, built)
+      // faces lying inside larger coplanar ones — a box's floor on the deck under it, two abutting boxes' touching
+      // faces, a band drawn twice — fight, drawn double-sided as landmarks are: dropped (landmarks/coplanar.ts)
+      const tc = performance.now()
+      dropCoincidentFaces(mb)
+      coplanarMs += performance.now() - tc
+      if (performance.now() - tc > 40) slowCoplanar.push([e.name, Math.round(performance.now() - tc), mb.triangles])
       /*
        * DRAPED (`"drape": true`): every vertex lifted by the ground under it, relative to the placement's y — for a model
        * that follows a slope rather than standing on one level: Lombard Street's hedges down the 27% crooked block.
        */
       if (e.drape) {
+        subdivideLong(mb, 4)
         const sc = e.scale ?? 1, cr = Math.cos(rotation), sr = Math.sin(rotation)
         for (let i = 0; i < mb.positions.length; i += 3) {
           const px = mb.positions[i], pz = mb.positions[i + 2]
@@ -1056,6 +1267,8 @@ export class Landmarks {
       }
       // the names the model asked for, as their own meshes, gated by distance (`signs` above)
       this.raiseSigns(mb.signs, m, e.name)
+      // and its clocks' hands, to the real time (render/clocks.ts)
+      if (mb.clocks.length) this.clockHands.raise(mb.clocks, m, e.name)
       // every placed model is on the list (fountains, statues and the landmark card find their host by it)
       this.placed.push({ name: e.name, x: cx + ox, y, z: cz + oz, hx: fit.hx, hz: fit.hz, rotation, height: modelHeight(mb) })
       /*
@@ -1069,7 +1282,11 @@ export class Landmarks {
       // …and nor does one standing on piles over the water (`deckAbove`): its shadow draped on the sea bed showed
       // up through the water as a dark box round every pier (appearance audit, 2026-10-02: Hyde Street Pier,
       // the Ferry Building's floats)
-      if (e.baseY === undefined && e.deckAbove === undefined) addShadow(shadows, under, modelHeight(mb) * 0.85, shadowOffset(DAYLIGHT.sun), SHADOW_Y)
+      // …nor a LOW model (under 6 m): the shadow is its whole footprint projected at its tallest point, which for a solid
+      // building is right, but a low one spread over a big outline — a coastal battery's parapets and pits on 63 × 114 m
+      // (2026-10-04) — came out a dark field; a low solid one loses only a metre or two of shadow past its walls
+      const mh = modelHeight(mb)
+      if (e.baseY === undefined && e.deckAbove === undefined && mh >= 6) addShadow(shadows, under, mh * 0.85, shadowOffset(DAYLIGHT.sun), SHADOW_Y)
       if (shadows.triangles > 0) {
         const sm = new Mesh(`landmark:shadow:${e.name}`, this.scene)
         this.terrain.drape(shadows.positions)
@@ -1147,6 +1364,7 @@ export class Landmarks {
    * where and exactly as big as it would be at five kilometres.
    */
   update(eye: Vector3): void {
+    this.clockHands.update()
     /*
      * The signs, first: a name too far to read is not drawn at all. A 5 % band round the cut, so a rider
      * sitting exactly on it does not make the sign flicker on and off between frames.

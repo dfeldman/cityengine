@@ -42,7 +42,7 @@ import { formCode, type TreeForm } from '../city/tree-forms.ts'
 import { thicken } from './infill.ts'
 
 /** each palm kind's seed family, so the same kind is the same palms everywhere */
-const PALM_SEEDS: Record<PalmKind, number> = { canary: 1, fan: 2, queen: 3, spiky: 4, windmill: 5 }
+const PALM_SEEDS: Record<PalmKind, number> = { canary: 1, fan: 2, queen: 3, spiky: 4, windmill: 5, treefern: 6 }
 
 // The species a city plants come from its region (render/flora.ts): San Francisco's include generated palms.
 
@@ -122,7 +122,7 @@ export class Vegetation {
     return {
       name: 'trees',
       build: (near) => {
-        const ps = thicken(unpackPlantings(near.tile.plantings, near.tile.plantingY), near.tile.edges, this.thickness)
+        const ps = this.cleared(thicken(unpackPlantings(near.tile.plantings, near.tile.plantingY), near.tile.edges, this.thickness))
         this.byTile.set(near.key, ps)
         this.dirty = true
         const shadow = this.castShadows(ps, `shadow:trees:${near.key}`)
@@ -130,6 +130,39 @@ export class Vegetation {
       },
       release: (k) => { this.seated.delete(k); if (this.byTile.delete(k)) this.dirty = true },
     }
+  }
+
+  /**
+   * CLEARINGS: ground a landmark has paved (MeshBuilder.grounds — a plaza's promenade, a playground) grows no trees.
+   * The park scatter planted Civic Center's promenade and its playgrounds full of trees (2026-10-03). A clearing that
+   * arrives after a tile's trees takes them out of it too.
+   */
+  private readonly clearings: { ring: { x: number; z: number }[]; x0: number; x1: number; z0: number; z1: number }[] = []
+  clear(ring: { x: number; z: number }[]): void {
+    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+    for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+    const c = { ring, x0, x1, z0, z1 }
+    this.clearings.push(c)
+    // (the trees already planted against THIS ring only: hundreds of footprints arrive, one at a time)
+    for (const [k, ps] of this.byTile) {
+      const kept = this.cleared(ps, [c])
+      if (kept.length !== ps.length) { this.byTile.set(k, kept); this.seated.delete(k); this.dirty = true }
+    }
+  }
+  private cleared(ps: Planting[], clearings = this.clearings): Planting[] {
+    if (clearings.length === 0) return ps
+    const inside = (r: { x: number; z: number }[], x: number, z: number): boolean => {
+      let o = false
+      for (let i = 0, j = r.length - 1; i < r.length; j = i++) {
+        if ((r[i].z > z) !== (r[j].z > z) && x < ((r[j].x - r[i].x) * (z - r[i].z)) / (r[j].z - r[i].z) + r[i].x) o = !o
+      }
+      return o
+    }
+    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+    for (const p of ps) { x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z) }
+    const near = clearings.filter((c) => c.x1 >= x0 - 2 && c.x0 <= x1 + 2 && c.z1 >= z0 - 2 && c.z0 <= z1 + 2)
+    if (near.length === 0) return ps
+    return ps.filter((p) => !near.some((c) => p.x >= c.x0 - 2 && p.x <= c.x1 + 2 && p.z >= c.z0 - 2 && p.z <= c.z1 + 2 && inside(c.ring, p.x, p.z)))
   }
 
   /** how many decks have been planted, so game.ts adds only the new ones (the same bookkeeping Plants does) */

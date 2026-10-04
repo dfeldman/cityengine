@@ -68,6 +68,12 @@ export interface Region {
   centreLine: 'white' | 'doubleYellow'
   /** red fire hydrants along the pavements */
   hydrants: boolean
+  /**
+   * The hydrants' paint where it is not red: the body, and the bonnets drawn from by weight. San Francisco's are white
+   * with coloured tops — and the high-pressure AWSS hydrants downtown blue-, red- or black-topped (owner, 2026-10-03:
+   * "blue/white fire hydrants").
+   */
+  hydrantPaint?: { body: string; tops: [string, number][] }
   /** open country inside this region: see `ParkStyle`. Every region has one; `default`'s is the park rule. */
   park: ParkStyle
   /** what a traffic signal looks like: a slim Paris post, or a North American mast arm over the lanes */
@@ -96,14 +102,38 @@ export interface Region {
    *  des Arts, BUGS.md #32): OSM puts them at street level, where they ran hidden inside the viaduct */
   elevatedWalks?: { name: string; height: number }[]
   /**
+   * Foot bridges whose OSM `layer` is not a height: within `radius` metres of the point their layer counts as at
+   * most `layer` (tools/bridges.ts). OSM numbers a spiral ramp's turns 3, 4, 5 so that they can cross themselves,
+   * and the bake stacked them 5.5 m a layer — the Market Street overpass helix stood 36 m up (BUGFIX #323).
+   */
+  footBridgeLayers?: { name: string; lat: number; lon: number; radius: number; layer: number }[]
+  /**
    * Streets whose pavements are brick rather than concrete, by name (San Francisco: Market Street's red brick,
    * Embarcadero to Octavia), and the brick's colour.
    */
   brickStreets?: { names: string[]; colour: [number, number, number] }
+  /**
+   * Streets hung with strings of lanterns from wall to wall, between two points (render/city.ts): San Francisco's
+   * Grant Avenue through Chinatown, red paper lanterns on wires every few metres (2026-10-04).
+   */
+  lanternStreets?: { street: string; from: [number, number]; to: [number, number]; colour?: [number, number, number] }[]
+  /** marked crossings painted in the six rainbow bands within `radius` m of a point (the Castro at 18th Street) */
+  rainbowCrossings?: { name: string; lat: number; lon: number; radius: number }[]
+  /** the IANA time zone the city keeps, for its public clocks (render/clocks.ts) */
+  timeZone?: string
+  /** what the speedometer reads in: miles and mph, or kilometres and km/h (ui/hud.ts) */
+  units?: 'imperial' | 'metric'
+  /**
+   * A named street's lanes painted over a stretch between two points (tools/street-paint.ts): `transit` the middle
+   * lanes red, `bike` the kerb lanes green. San Francisco's Market Street (owner, 2026-10-04): red down the streetcar
+   * lanes from Gough to 3rd and nowhere else, green bike lanes from Gough to 8th.
+   */
+  streetPaint?: { street: string; from: [number, number]; to: [number, number]; paint: 'transit' | 'bike'; note?: string }[]
   /** public stairways OSM does not have, by hand: each a polyline of [lat, lon] from one end to the other */
   stairways?: { name: string; points: [number, number][]; width?: number }[]
   /** squares OSM maps only as lines (the Trocadéro's parvis): paved areas by hand, rings of [lat, lon] */
-  pavedSquares?: { name: string; ring: [number, number][] }[]
+  /** `brick`: laid in the region's street brick (`brickStreets.colour`) */
+  pavedSquares?: { name: string; ring: [number, number][]; brick?: boolean }[]
   /** the steel of an elevated railway — the Loop's L is painted a dark green-black */
   elevatedRailColour: string
   /** the elevated railway's design: 'bent' (the Loop's L: steel bents) or 'paris' (the Métro's iron viaducts on
@@ -140,6 +170,7 @@ export function region(id: string | undefined): Region {
     crossings: own?.crossings ?? base.crossings,
     centreLine: own?.centreLine ?? base.centreLine,
     hydrants: own?.hydrants ?? base.hydrants,
+    hydrantPaint: own?.hydrantPaint ?? base.hydrantPaint,
     park: { ...base.park, ...(own?.park ?? {}) },
     signals: own?.signals ?? base.signals,
     streetWidth: own?.streetWidth ?? base.streetWidth,
@@ -150,8 +181,14 @@ export function region(id: string | undefined): Region {
     awnings: own?.awnings ?? base.awnings,
     riverDrop: own?.riverDrop ?? base.riverDrop,
     elevatedWalks: own?.elevatedWalks ?? base.elevatedWalks,
+    footBridgeLayers: own?.footBridgeLayers ?? base.footBridgeLayers,
     pavedSquares: own?.pavedSquares ?? base.pavedSquares,
     brickStreets: own?.brickStreets ?? base.brickStreets,
+    timeZone: own?.timeZone ?? base.timeZone,
+    lanternStreets: own?.lanternStreets ?? base.lanternStreets,
+    rainbowCrossings: own?.rainbowCrossings ?? base.rainbowCrossings,
+    units: own?.units ?? base.units,
+    streetPaint: own?.streetPaint ?? base.streetPaint,
     stairways: own?.stairways ?? base.stairways,
     pointFurniture: { ...base.pointFurniture, ...(own?.pointFurniture ?? {}) },
     landmarkPlate: { ...base.landmarkPlate, ...(own?.landmarkPlate ?? {}) },

@@ -438,7 +438,7 @@ export class Signs implements TileLayer {
       if (!b) return null
       let pl = plans.get(id)
       if (!pl) {
-        pl = planFacade(b.style, b.id, { levels: b.levels, height: b.height, minHeight: b.minHeight },
+        pl = planFacade(b.style, b.id, { levels: b.levels, height: b.height, minHeight: b.minHeight, noShops: b.noShops },
           reg.palettes[b.style])
         plans.set(id, pl)
       }

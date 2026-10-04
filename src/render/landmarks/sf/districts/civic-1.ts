@@ -10,9 +10,9 @@ import { faceBand, insetRing, tower, towerRing } from '../../tower.ts'
 import { boxAlong, colonnade, cupola, edgeAt, edgeFacing, roundRing, signText, spireOn } from '../../parts.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
 import { beam } from '../golden-gate.ts'
+import { church } from '../../church.ts'
 
 const CREAM: [number, number, number] = [0.86, 0.82, 0.72]
-const OCHRE: [number, number, number] = [0.78, 0.68, 0.52]
 const WHITE: [number, number, number] = [0.9, 0.89, 0.86]
 
 export const CIVIC_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
@@ -196,20 +196,22 @@ export const CIVIC_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   }),
 
   /**
-   * Notre Dame des Victoires (566 Bush St, 1915, French Romanesque): ochre terracotta, a round apse with tall
-   * arched windows facing the street, and a square campanile with a pyramidal spire standing on one corner.
+   * Notre Dame des Victoires (566 Bush St, 1915, Louis Brochoud; French Romanesque after Notre-Dame de Fourvière in
+   * Lyon): a buff brick and terracotta front on Bush, the stained-glass central bay between two cross-topped
+   * masonry towers, twin stairs up to the porch (Wikipedia, noehill SF Landmark #173). Rebuilt with the church kit
+   * 2026-10-04 (BUGFIX #315): the first pass was a 10 m ochre ring with one corner campanile, and on Bush's slope
+   * its roof stood level with the street — the kit's hillside plinth (#314) now stands it on its basement.
    */
   notreDameDesVictoires: (out: MeshBuilder, fit: Fit): void => {
-    const ring = roundRing(towerRing(fit), 2.2, 4)
-    tower(out, { ...fit, ring }, {
-      height: 10,
-      base: { height: 2, face: { kind: 'blank', wall: OCHRE, material: 'ashlar' } },
-      tiers: [{ to: 1, face: { kind: 'punched', wall: OCHRE, glass: [0.22, 0.24, 0.3], pitch: 3, solid: 0.45, floor: 8, arched: true, material: 'ashlar' } }],
-      roof: [0.4, 0.36, 0.3],
-      crown: { kind: 'parapet', height: 0.8, colour: OCHRE, material: 'ashlar' },
+    church(out, fit, {
+      nave: { bays: 6, storeys: 1, roof: 'gable', pitch: 'low' },
+      aisles: null,
+      transept: null,
+      chancel: { kind: 'apse' },
+      tower: { at: 'twin', stages: 3, plan: 'square', top: 'parapet' },
+      front: { kind: 'gable', portal: 'porch', window: 'wheel', steps: 5 },
+      walls: { material: 'sandstone', openings: 'round', buttresses: 'none' },
     })
-    const plain = towerRing(fit)
-    spireOn(out, plain[edgeFacing(plain, 0)], 10, 1.4, 5, 6, { colour: OCHRE, spireColour: [0.4, 0.36, 0.3], material: 'ashlar', spireMaterial: 'tile', belfry: true })
   },
 
   /**

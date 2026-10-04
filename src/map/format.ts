@@ -54,6 +54,8 @@ export interface ZoneProps {
   exclude?: string[]
   /** 'waves': surf breaks on the shore here — foam and spray along the coastline (render/surf.ts) */
   water?: 'calm' | 'waves'
+  /** true: the steep ground here is bare rock, with boulders (render/cliffs.ts — Lands End, the Sutro Baths) */
+  cliffs?: boolean
   park?: Record<string, unknown>
   furniture?: Record<string, unknown>
 }
@@ -175,7 +177,7 @@ export interface Way {
 
 /** Street flag bits (MAP-FORMAT §5.5). */
 // `bore`: a street tunnel under a hill, ridden and drawn as a tunnel (tools/tunnels.ts, render/tunnels.ts)
-export const SF = { foot: 1, oneway: 2, bridge: 4, tunnel: 8, passage: 16, ramp: 32, crossing: 64, park: 128, bore: 256, cut: 512, authored: 1024 } as const
+export const SF = { foot: 1, oneway: 2, bridge: 4, tunnel: 8, passage: 16, ramp: 32, crossing: 64, park: 128, bore: 256, cut: 512, authored: 1024, busRight: 2048, busLeft: 4096, paintTransit: 8192, paintBike: 16384 } as const
 /** Rail flag bits. */
 export const RF = { bridge: 1, cable: 2, light: 4 } as const
 
@@ -206,6 +208,8 @@ export interface Part {
   archetype?: number
   form?: RingForm
   stretch?: boolean
+  /** no shopfronts on the ground floor (PackedBuilding.noShops) */
+  noShops?: true
   palette?: { wall: string; trim: string; roof: string; accent: string; ground?: string }
 }
 
@@ -233,6 +237,8 @@ export interface Building {
   levelsInferred?: true
   form?: RingForm
   stretch?: boolean
+  /** no shopfronts on the ground floor (PackedBuilding.noShops) */
+  noShops?: true
   seed: number
   lod?: 'far'
   originalRef?: Ref
@@ -261,6 +267,7 @@ export interface Area {
   holes?: number[]
   top?: true
   sea?: true
+  brick?: true
   /** water: the whole body's level, cm above zFloor */
   level?: number
   /** which whole area this is a clipped piece of */
@@ -310,7 +317,7 @@ export interface TileGround {
 /** A v2 record the format has not folded in yet, carried in v3 units (MAP-FORMAT §11). */
 export interface Boat3 { id: number; ring: number[]; name?: string }
 export interface Court3 {
-  sport: 'tennis' | 'pickleball' | 'basketball' | 'four_square' | 'volleyball'
+  sport: 'tennis' | 'pickleball' | 'basketball' | 'four_square' | 'volleyball' | 'playground'
   x: number
   y: number
   /** radians, verbatim */

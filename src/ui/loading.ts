@@ -131,6 +131,12 @@ export const WELCOME_CSS = `
 /** Up and not yet dismissed: the ride waits for it (game.ts `hold`), so nobody starts the game mid-descent. */
 let welcomeUp = false
 export const welcomeOpen = (): boolean => welcomeUp
+let dismissWelcome: (() => void) | null = null
+/**
+ * Take it away without a key or a click (owner, 2026-10-03: a trainer rider "may not have any controls"): game.ts
+ * calls this in the trainer modes once the rider has pedalled a couple of seconds, or the card has been up a while.
+ */
+export const closeWelcome = (): void => { dismissWelcome?.() }
 
 /** Show it, and take it away at the first key or click. */
 export function welcomeScreen(cityName: string, slowInput = false): void {
@@ -159,7 +165,9 @@ export function welcomeScreen(cityName: string, slowInput = false): void {
     setTimeout(() => root.remove(), 600)
     removeEventListener('keydown', dismiss)
     removeEventListener('pointerdown', dismiss)
+    dismissWelcome = null
   }
+  dismissWelcome = dismiss
   // never preventDefault: the paste handler and the trainer's own input must go on working underneath
   addEventListener('keydown', dismiss)
   addEventListener('pointerdown', dismiss)

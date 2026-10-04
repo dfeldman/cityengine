@@ -211,6 +211,71 @@ export function heartsInSanFrancisco(out: MeshBuilder, _fit?: Fit): void {
   }
 }
 
+/**
+ * HEARTS IN SAN FRANCISCO, as they are (owner, 2026-10-03: "union square itself has the heart sculpture, neat. we
+ * should add all the hearts"): the San Francisco General Hospital Foundation's series since 2004 — big rounded
+ * fibreglass hearts on low pedestals, each painted by its own artist. A lofted heart: the heart curve at shrinking
+ * scale toward front and back, so it is puffy, not a cut-out; and painted, by a design and two colours per piece.
+ * Placed at OSM's own heart artworks (art.json).
+ */
+type HeartPaint = { base: Rgb; accent: Rgb; design: 'stripes' | 'dots' | 'bands' | 'rainbow' | 'splotch' | 'labyrinth' | 'plain' }
+function paintedHeart(out: MeshBuilder, paint: HeartPaint): void {
+  const plinthH = 0.8
+  box(out, 0, plinthH / 2, 0, 0.95, plinthH / 2, 0.75, GRANITE, GRAN_TAG)
+  const R = 1.6
+  const depth = 0.55
+  const baseY = plinthH + R
+  const ring = heartRing(R)
+  const K = 8
+  const layer = (k: number): { x: number; y: number; z: number }[] => {
+    const t = -1 + (2 * k) / K
+    const sc = Math.pow(Math.max(0, 1 - t * t), 0.35)
+    return ring.map((p) => ({ x: p.x * sc, y: baseY + (p.z + 0.2 * R) * sc - 0.2 * R, z: t * depth }))
+  }
+  const RAINBOW: Rgb[] = [[0.85, 0.15, 0.15], [0.95, 0.55, 0.1], [0.95, 0.85, 0.15], [0.2, 0.65, 0.3], [0.15, 0.4, 0.8], [0.5, 0.25, 0.7]]
+  const colourAt = (x: number, y: number, z: number): Rgb => {
+    const h = y - plinthH
+    switch (paint.design) {
+      case 'stripes': return Math.floor((x + h) * 2.2) % 2 === 0 ? paint.base : paint.accent
+      case 'dots': return (Math.hypot(((x * 2.4) % 1 + 1) % 1 - 0.5, ((h * 2.4) % 1 + 1) % 1 - 0.5) < 0.22) ? paint.accent : paint.base
+      case 'bands': return Math.floor(h * 2.5) % 2 === 0 ? paint.base : paint.accent
+      case 'rainbow': return RAINBOW[Math.max(0, Math.min(5, Math.floor((h / (2 * R)) * 6)))]
+      case 'splotch': return (Math.sin(x * 5.1 + z * 3) * Math.sin(h * 4.3 + x * 2) > 0.35) ? paint.accent : paint.base
+      case 'labyrinth': return (Math.abs(Math.sin(Math.hypot(x, h - R) * 7)) < 0.25) ? paint.accent : paint.base
+      default: return paint.base
+    }
+  }
+  for (let k = 0; k < K; k++) {
+    const A = layer(k), B = layer(k + 1)
+    for (let i = 0; i < ring.length; i++) {
+      const j = (i + 1) % ring.length
+      const q: [number, number, number][] = [[A[i].x, A[i].y, A[i].z], [A[j].x, A[j].y, A[j].z], [B[j].x, B[j].y, B[j].z], [B[i].x, B[i].y, B[i].z]]
+      // the normal: across the ring's tangent and the loft
+      const ux = q[1][0] - q[0][0], uy = q[1][1] - q[0][1], uz = q[1][2] - q[0][2]
+      const vx = q[3][0] - q[0][0], vy = q[3][1] - q[0][1], vz = q[3][2] - q[0][2]
+      let n: [number, number, number] = [uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx]
+      const cx = (q[0][0] + q[2][0]) / 2, cy = (q[0][1] + q[2][1]) / 2 - baseY + 0.2 * R, cz = (q[0][2] + q[2][2]) / 2
+      if (n[0] * cx + n[1] * cy + n[2] * cz < 0) n = [-n[0], -n[1], -n[2]]
+      const L = Math.hypot(...n) || 1
+      out.quad(q, [n[0] / L, n[1] / L, n[2] / L], [[0, 0], [1, 0], [1, 1], [0, 1]], colourAt(cx, (q[0][1] + q[2][1]) / 2, cz), METAL_TAG)
+    }
+  }
+}
+const HEART_PAINTS: Record<string, HeartPaint> = {
+  heartLabyrinthine: { base: [0.12, 0.2, 0.45], accent: [0.95, 0.82, 0.3], design: 'labyrinth' },
+  heartButterflight: { base: [0.55, 0.78, 0.9], accent: [0.92, 0.45, 0.15], design: 'splotch' },
+  heartUnionSquare: { base: [0.8, 0.1, 0.15], accent: [0.97, 0.95, 0.9], design: 'dots' },
+  heartMyHeart: { base: [0.9, 0.85, 0.75], accent: [0.75, 0.12, 0.18], design: 'stripes' },
+  heartOpen: { base: [0.6, 0.8, 0.85], accent: [0.85, 0.95, 0.98], design: 'bands' },
+  heartRichmond: { base: [0.2, 0.55, 0.35], accent: [0.95, 0.9, 0.3], design: 'stripes' },
+  heartPanhandle: { base: [0.7, 0.2, 0.5], accent: [0.2, 0.6, 0.9], design: 'rainbow' },
+  heartHaight: { base: [0.95, 0.93, 0.88], accent: [0.1, 0.1, 0.12], design: 'splotch' },
+  heartBronze: { base: [0.45, 0.3, 0.18], accent: [0.45, 0.3, 0.18], design: 'plain' },
+  heartMetal: { base: [0.62, 0.64, 0.66], accent: [0.62, 0.64, 0.66], design: 'plain' },
+}
+const HEARTS: Record<string, (out: MeshBuilder, fit: Fit) => void> = Object.fromEntries(
+  Object.entries(HEART_PAINTS).map(([k, paint]) => [k, (out: MeshBuilder) => paintedHeart(out, paint)]))
+
 // ---------------------------------------------------------------------------------------------------------------
 // Language of the Birds, Brenda Way / Vito Acconci / PROXY? — actually Brian Goggin & Dorka Keehn, 2016, at
 // Broadway & Columbus (37.7978, -122.4069): translucent resin "books" suspended on tall poles over the
@@ -276,5 +341,7 @@ export function stevensonMemorial(out: MeshBuilder, _fit?: Fit): void {
 
 export const ART: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   vaillancourtFountain, cupidsSpan, asawaMermaidFountain, redwoodParkBronzes, mlkWaterfall,
-  heartsInSanFrancisco, languageOfTheBirds, francisScottKeyCanopy, stevensonMemorial,
+  // (`heartsInSanFrancisco`, the flat red heart, is unregistered: the hearts are `paintedHeart`'s family now, HEARTS)
+  languageOfTheBirds, francisScottKeyCanopy, stevensonMemorial,
+  ...HEARTS,
 }

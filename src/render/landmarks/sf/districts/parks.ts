@@ -5,15 +5,14 @@
  * parts rather than a recipe.
  */
 import { capPolygon, type MeshBuilder } from '../../../buildings.ts'
-import { box, type Rgb } from '../../../models.ts'
+import { box, prism, type Rgb } from '../../../models.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
 import type { Fit } from '../../fit.ts'
-import { tower, towerRing, faceBand, insetRing, type TowerSpec } from '../../tower.ts'
-import { edgeAt, edgeFacing, colonnade, arcade, cupola, roundRing } from '../../parts.ts'
+import { tower, towerRing, insetRing } from '../../tower.ts'
+import { boxAlong, edgeAt, edgeFacing, arcade, cupola, roundRing } from '../../parts.ts'
 import { beam } from '../golden-gate.ts'
 import { fromRecipe } from '../recipes.ts'
-
-const spec = (s: TowerSpec) => (out: MeshBuilder, fit: Fit): void => tower(out, fit, s)
+import { calAcademy } from '../cal-academy.ts'
 
 /**
  * `strut`/`beam` (models.ts/golden-gate.ts) pick their own cross-section axes from the beam's direction: when
@@ -133,10 +132,9 @@ function sailAssembly(out: MeshBuilder, hub: [number, number, number], armLen: n
 }
 
 const WHITE: Rgb = [0.93, 0.92, 0.88]
-const GLASS_PALE: Rgb = [0.78, 0.86, 0.82]
-const LIVING_GREEN: Rgb = [0.34, 0.46, 0.28]
-const RED_LACQUER: Rgb = [0.62, 0.16, 0.12]
-const TEA_GREEN: Rgb = [0.24, 0.34, 0.24]
+/** the Conservatory's panes are WHITEWASHED (the shading paint on a Victorian glasshouse): milky white, not clear glass
+ *  — drawn as glass they took the sky and the whole house came out blue-grey (views audit, 2026-10-04) */
+const MILKY: Rgb = [0.9, 0.92, 0.9]
 const SAIL_WOOD: Rgb = [0.58, 0.56, 0.51]
 const CREAM: Rgb = [0.87, 0.83, 0.73]
 /** pale cream-grey smock-mill stucco (Dutch/Murphy Windmill) — deliberately lighter and greyer than `CREAM`
@@ -157,70 +155,17 @@ export const PARKS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     tower(out, fit, {
       height: 11,
       base: { height: 2.2, face: { kind: 'blank', wall: WHITE, material: 'clapboard' } },
-      tiers: [{ to: 1, face: { kind: 'curtain', wall: WHITE, glass: GLASS_PALE, pitch: 2.4, floor: 3, solid: 0.22, material: 'metal' } }],
-      roof: GLASS_PALE,
-      crown: { kind: 'hip', height: 3.2, inset: 3, colour: GLASS_PALE, material: 'glass' },
+      tiers: [{ to: 1, face: { kind: 'curtain', wall: WHITE, glass: MILKY, pitch: 2.4, floor: 3, solid: 0.22, material: 'metal' } }],
+      roof: MILKY,
+      crown: { kind: 'hip', height: 3.2, inset: 3, colour: MILKY, material: 'stucco' },
     })
     // the domed central pavilion, standing taller in the middle of the ridge
     const c = ring.reduce((a, p) => ({ x: a.x + p.x / ring.length, z: a.z + p.z / ring.length }), { x: 0, z: 0 })
-    cupola(out, c, 11, 11, { drum: 4, dome: 9, colour: WHITE, domeColour: GLASS_PALE, material: 'metal', domeMaterial: 'glass', lantern: true })
+    cupola(out, c, 11, 11, { drum: 4, dome: 9, colour: WHITE, domeColour: MILKY, material: 'clapboard', domeMaterial: 'stucco', lantern: true })
   },
 
-  /**
-   * California Academy of Sciences (Renzo Piano, 2008): a flat glass box under a famous undulating GREEN LIVING
-   * ROOF with round domes (the planetarium, the rainforest dome) pushed up through it, and a glass canopy
-   * overhanging all round.
-   */
-  californiaAcademyOfSciences: (out: MeshBuilder, fit: Fit): void => {
-    const ring = towerRing(fit)
-    tower(out, fit, {
-      height: 9,
-      tiers: [{ to: 1, face: { kind: 'curtain', wall: [0.55, 0.56, 0.53], glass: [0.5, 0.58, 0.55], pitch: 4, floor: 4.5, solid: 0.18, material: 'metal' } }],
-      roof: LIVING_GREEN,
-      crown: { kind: 'flat' },
-    })
-    // the canopy overhanging the whole building: a thin glass slab a little wider than the footprint
-    const wide = insetRing(ring, -1.8)
-    faceBand(out, wide, 9.6, 9.75, { kind: 'blank', wall: [0.75, 0.8, 0.78], material: 'glass' })
-    capPolygon(out, wide, 9.75, [0.75, 0.8, 0.78], surfaceTag('glass'))
-    // the domes standing up through the living roof: the planetarium (big) and the rainforest dome (smaller)
-    const c = ring.reduce((a, p) => ({ x: a.x + p.x / ring.length, z: a.z + p.z / ring.length }), { x: 0, z: 0 })
-    cupola(out, { x: c.x - fit.hx * 0.28, z: c.z }, 9, 11, { drum: 0.5, dome: 7, colour: LIVING_GREEN, domeColour: [0.5, 0.58, 0.55], material: 'concrete', domeMaterial: 'glass', lantern: false })
-    cupola(out, { x: c.x + fit.hx * 0.3, z: c.z }, 9, 6, { drum: 0.3, dome: 4, colour: LIVING_GREEN, domeColour: [0.5, 0.58, 0.55], material: 'concrete', domeMaterial: 'glass', lantern: false })
-  },
-
-  /**
-   * Japanese Tea Garden: the South Gate, its pagoda and its tea house, on their own small footprints — red and
-   * green timber, deep tiled eaves. Each is one small tiered pyramid roof on a plain base, which is what most
-   * of the garden's structures actually are at this distance.
-   */
-  japaneseTeaGardenGate: spec({
-    height: 6,
-    tiers: [{ to: 1, face: { kind: 'blank', wall: RED_LACQUER, material: 'clapboard' } }],
-    roof: TEA_GREEN,
-    crown: { kind: 'pyramid', height: 3, colour: TEA_GREEN, material: 'tile' },
-  }),
-  japaneseTeaGardenPagoda: (out: MeshBuilder, fit: Fit): void => {
-    // a two-tier pagoda: a lower storey, a deep green tiled roof, a smaller upper storey, a second roof, a finial
-    tower(out, fit, {
-      height: 5,
-      tiers: [{ to: 1, face: { kind: 'blank', wall: RED_LACQUER, material: 'clapboard' } }],
-      roof: TEA_GREEN,
-      crown: { kind: 'hip', height: 1.6, inset: 1.6, colour: TEA_GREEN, material: 'tile' },
-    })
-    const ring = insetRing(towerRing(fit), 2.4)
-    faceBand(out, ring, 6.6, 7.8, { kind: 'blank', wall: RED_LACQUER, material: 'clapboard' })
-    capPolygon(out, ring, 7.8, RED_LACQUER, surfaceTag('clapboard'))
-    const c = ring.reduce((a, p) => ({ x: a.x + p.x / ring.length, z: a.z + p.z / ring.length }), { x: 0, z: 0 })
-    box(out, c.x, 9, c.z, 0.6, 1.4, 0.6, TEA_GREEN, surfaceTag('tile'))
-    box(out, c.x, 10.2, c.z, 0.12, 0.5, 0.12, [0.7, 0.62, 0.3], 0)
-  },
-  japaneseTeaGardenTeaHouse: spec({
-    height: 5,
-    tiers: [{ to: 1, face: { kind: 'blank', wall: [0.42, 0.34, 0.24], material: 'clapboard' } }],
-    roof: TEA_GREEN,
-    crown: { kind: 'hip', height: 2.4, inset: 1.4, colour: TEA_GREEN, material: 'tile' },
-  }),
+  /** California Academy of Sciences: sf/cal-academy.ts (rebuilt 2026-10-04, the seven hills, portholes, canopy) */
+  californiaAcademyOfSciences: calAcademy,
 
   /**
    * Dutch Windmill (1902/1981) and Murphy Windmill (1907): smock-style windmills at the park's ocean end — a
@@ -255,18 +200,55 @@ export const PARKS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   }),
 
   /**
-   * Spreckels Temple of Music (the Music Concourse bandshell, 1900): a stone bandshell with a colonnade —
-   * a curved back wall behind an open colonnaded front, no roof over the audience side.
+   * Spreckels Temple of Music (1900, Reid Brothers): the Music Concourse bandshell, facing EAST across the bowl — a
+   * tall central pavilion of Colusa sandstone with a great round arch opening onto the deep stage shell, an attic
+   * and pediment over it with statuary, and on either side a curving Corinthian colonnade wing ending in a smaller
+   * pavilion. Rebuilt 2026-10-04 (views audit): it was a walled drum, an L of plain stone seen from the Concourse.
    */
   spreckelsTempleOfMusic: (out: MeshBuilder, fit: Fit): void => {
     const ring = towerRing(fit)
-    const front = edgeFacing(ring, 0)
-    const e = edgeAt(ring, front)
-    // the stage floor and the curved stone back wall (a shallow drum standing behind the colonnade)
-    capPolygon(out, ring, 0.3, STONE, surfaceTag('ashlar'))
-    faceBand(out, insetRing(ring, 1.5), 0.3, 8, { kind: 'blank', wall: STONE, material: 'ashlar' })
-    capPolygon(out, insetRing(ring, 1.5), 8, STONE, surfaceTag('ashlar'))
-    colonnade(out, e.a, e.b, 0.3, 5.5, Math.max(4, Math.round(e.L / 4)), { colour: STONE, material: 'ashlar', out: 0.9, entablature: 1.2 })
+    const e = edgeAt(ring, edgeFacing(ring))
+    const st = surfaceTag('ashlar')
+    const at = (u: number, o: number): [number, number] => [e.mid.x + e.tx * u + e.nx * o, e.mid.z + e.tz * u + e.nz * o]
+    const SHADE: Rgb = [0.22, 0.2, 0.18]
+    // the central pavilion, set back from the front: a tall block with the arch in it
+    const pw = 9, pd = 5, ph = 21
+    let [x, z] = at(0, -8)
+    boxAlong(out, x, ph / 2, z, pw, ph / 2, pd, e.heading, STONE, st)
+    // the arch: a dark opening, square below and round above, a raised surround
+    ;[x, z] = at(0, -8 + pd + 0.05)
+    boxAlong(out, x, 6.5, z, 5.6, 6.5, 0.05, e.heading, SHADE, 0)
+    for (let k = 0; k < 8; k++) {
+      const t = (k + 0.5) / 8, w = 5.6 * Math.sqrt(1 - t * t)
+      boxAlong(out, x, 13 + t * 5.6, z, w, 5.6 / 16, 0.05, e.heading, SHADE, 0)
+    }
+    ;[x, z] = at(0, -8 + pd + 0.3)
+    boxAlong(out, x, ph - 0.8, z, pw + 0.4, 0.8, 0.3, e.heading, [0.84, 0.81, 0.74], st)
+    // the attic's pediment and the statuary group on top
+    for (let k = 0; k < 4; k++) {
+      ;[x, z] = at(0, -8)
+      boxAlong(out, x, ph + 0.4 + k * 0.7, z, pw - k * 1.8, 0.35, pd - 0.5, e.heading, STONE, st)
+    }
+    ;[x, z] = at(0, -4)
+    prism(out, x, z, ph + 3, ph + 5.2, 0.8, 8, [0.8, 0.77, 0.7], st, 0.4)
+    // the stage floor in front of the arch, and the two colonnade wings swinging forward to small end pavilions
+    ;[x, z] = at(0, -4)
+    boxAlong(out, x, 0.6, z, pw - 0.5, 0.6, 3, e.heading, STONE, st)
+    for (const s of [-1, 1]) {
+      const pts: [number, number][] = []
+      for (let k = 0; k <= 6; k++) {
+        const a = (k / 6) * (Math.PI / 2.6)
+        pts.push(at(s * (pw + 1 + Math.sin(a) * 12), -8 + Math.cos(a) * 0 + (1 - Math.cos(a)) * 10))
+      }
+      for (let k = 0; k < pts.length; k++) prism(out, pts[k][0], pts[k][1], 0, 7.5, 0.42, 10, STONE, st, 0.36)
+      for (let k = 1; k < pts.length; k++) {
+        const [ax, az] = pts[k - 1], [bx, bz] = pts[k]
+        boxAlong(out, (ax + bx) / 2, 8.1, (az + bz) / 2, 0.6, 0.6, Math.hypot(bx - ax, bz - az) / 2 + 0.4, Math.atan2(bx - ax, bz - az), STONE, st)
+      }
+      const [ex, ez] = pts[pts.length - 1]
+      box(out, ex, 5, ez, 2.2, 5, 2.2, STONE, st)
+      prism(out, ex, ez, 10, 11.4, 0.7, 10, [0.8, 0.77, 0.7], st, 0.35)
+    }
   },
 
   /** Presidio Officers' Club (adobe origins, 1930s remodel): white Spanish colonial, arcaded along the front. */

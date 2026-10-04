@@ -23,6 +23,7 @@
  * rest from the city's own character. Baking it in rather than deciding at runtime means the same building is
  * the same every session, which is what makes two rides down the same street comparable.
  */
+import { applyStreetPaint, markBrickSquares } from './street-paint.ts'
 import { boreTunnels } from './tunnels.ts'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
@@ -31,7 +32,7 @@ import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import { CITIES, bboxOf, city, detailBboxOf, extentOf, type CitySpec } from './cities.ts'
 import { joinNearMisses } from './gaps.ts'
-import { bridgesQuery, sandQuery, wallsQuery, squaresQuery, stepsQuery, wideQuery, fringeQuery, cityQuery, furnitureQuery, innerRings, outerRings, overpassTiled, type Bbox, type OsmWay, type LatLon } from './overpass.ts'
+import { bridgesQuery, campusQuery, sandQuery, wallsQuery, squaresQuery, stepsQuery, wideQuery, fringeQuery, cityQuery, furnitureQuery, partRelationsQuery, innerRings, outerRings, overpassTiled, type Bbox, type OsmWay, type LatLon } from './overpass.ts'
 import { Elevation, ATTRIBUTION as TERRAIN_CREDIT, metresPerPixel } from './terrarium.ts'
 import { Terrain, type PackedTerrain } from '../src/city/terrain.ts'
 import { TILE, splitPackage, tilesOfLine, type CityIndex, type TileEntry } from '../src/city/tiles.ts'
@@ -49,7 +50,7 @@ import { largestComponent, lengthOf, type Edge } from '../src/city/graph.ts'
 import { rideGraph, rideStats } from '../src/city/ridegraph.ts'
 import { frontageOf, totemPoint } from '../src/city/landmark-place.ts'
 import { landmarkKind, score } from './landmark-rank.ts'
-import { bridgeHeights } from './bridges.ts'
+import { bridgeHeights, liftWalksOffTheSea, rampFootBridgeEnds } from './bridges.ts'
 import { authoredWays, conformWithUndo, describe, undoDecks, type DeckUndo } from './deck-conform.ts'
 import { cityParkMask, parkEdge, roadFix } from '../src/city/park-area.ts'
 
@@ -92,6 +93,7 @@ import { buildSigns } from './signs.ts'
 import { insetNested } from '../src/city/nesting.ts'
 import { GroundModel } from '../src/map/ground.ts'
 import { writeV3 } from './v3-writer.ts'
+import { HUGE_AREA_SPAN, tooBigForAnArea } from '../src/city/park-planting.ts'
 import { localZones, zoneTouchesRect, zonesAt, type LocalZone, type ZoneFile } from '../src/map/zones.ts'
 import { NeighbourGrid, centroid, hasHeightTag, inferLevels, taggedLevels, type TaggedNeighbour } from './heights.ts'
 
@@ -169,7 +171,26 @@ function widthOf(tags: Record<string, string>): number {
 }
 
 /** What the ride graph and the bridge builder need to know about a way, beyond its shape. */
-function wayTags(t: Record<string, string>): Pick<PackedEdge, 'kind' | 'service' | 'oneway' | 'layer' | 'bridge' | 'tunnel' | 'passage'> {
+/**
+ * Which curbs carry a bus lane (PackedEdge `busSide`), from the tags San Francisco and Paris use: `lanes:bus`/`lanes:psv`
+ * (with :forward/:backward), `bus:lanes`/`psv:lanes` (with :forward/:backward; any `designated`), `busway`, `busway:right`,
+ * `busway:left`, `busway:both`. Forward lanes are on the right of the way's direction, backward ones on its left; on a
+ * one-way street an undirected lane is on the right unless `busway:left` says otherwise.
+ */
+export function busSide(t: Record<string, string>): 1 | 2 | 3 | undefined {
+  const oneway = t.oneway === 'yes' || t.oneway === '-1'
+  const n = (k: string): boolean => { const v = parseInt(t[k] ?? '', 10); return Number.isFinite(v) && v > 0 }
+  const des = (k: string): boolean => /designated/.test(t[k] ?? '')
+  const lane = (k: string): boolean => /^(lane|opposite_lane)$/.test(t[k] ?? '')
+  let right = n('lanes:bus:forward') || n('lanes:psv:forward') || des('bus:lanes:forward') || des('psv:lanes:forward') || lane('busway:right')
+  let left = n('lanes:bus:backward') || n('lanes:psv:backward') || des('bus:lanes:backward') || des('psv:lanes:backward') || lane('busway:left')
+  const any = n('lanes:bus') || n('lanes:psv') || des('bus:lanes') || des('psv:lanes') || lane('busway')
+  if (lane('busway:both')) { right = true; left = true }
+  if (any && !right && !left) { if (oneway) right = true; else { right = true; left = true } }
+  return right && left ? 3 : right ? 1 : left ? 2 : undefined
+}
+
+function wayTags(t: Record<string, string>): Pick<PackedEdge, 'kind' | 'service' | 'oneway' | 'layer' | 'bridge' | 'tunnel' | 'passage' | 'busSide'> {
   const layer = parseInt(t.layer ?? '', 10)
   const yes = (v: string | undefined): true | undefined => (v !== undefined && v !== 'no' ? true : undefined)
   return {
@@ -178,6 +199,7 @@ function wayTags(t: Record<string, string>): Pick<PackedEdge, 'kind' | 'service'
     ...(t.oneway === 'yes' || t.oneway === '-1' ? { oneway: true } : {}),
     ...(Number.isFinite(layer) && layer !== 0 ? { layer } : {}),
     ...(yes(t.bridge) ? { bridge: true } : {}),
+    ...(busSide(t) ? { busSide: busSide(t) } : {}),
     /*
      * A way through a building at street level — the arches through the Place des Vosges's Pavillon du Roi
      * (Rue de Birague) and Pavillon de la Reine (Rue de Béarn), a passage under an apartment block — is a
@@ -300,6 +322,12 @@ async function bake(spec: CitySpec): Promise<void> {
     }
     console.log(`  ${n} stairways from OSM, ${own} of the region's own`)
   }
+  // the hospital, university and college grounds (tools/overpass.ts campusQuery), for dressing the buildings on them
+  const campusWays = await overpassTiled(campusQuery, bbox(spec), 3200).then((g) => g.ways).catch((e) => {
+    console.warn(`  campuses: not fetched (${String(e).slice(0, 120)})`)
+    return [] as OsmWay[]
+  })
+  console.log(`  ${campusWays.length} hospital / university / college grounds`)
   // the region's own AUTHORED ways (src/city/sf/bridges.ts: the Bay Bridge Bikeway), joined to the real junctions
   // they name, their heights their own (kept aside here, put back by tools/deck-conform.ts)
   const authored = authoredWays(spec.region ?? spec.id, spec.centre, ways)
@@ -376,8 +404,26 @@ async function bake(spec: CitySpec): Promise<void> {
   const isInfrastructure = (t: Record<string, string>): boolean => t['bridge:support'] !== undefined
     || (t.name === undefined && (t.power !== undefined || t['tower:type'] !== undefined
       || /^(tower|mast|chimney|silo|storage_tank|water_tower|communications_tower)$/.test(t.man_made ?? '')))
-  const outlines = ways.filter((w) => w.tags.building && !w.tags['building:part'] && !canopy(w.tags) && !belowGround(w.tags) && !isBoat(w) && !isInfrastructure(w.tags))
-  const parts = ways.filter((w) => w.tags['building:part'] && !belowGround(w.tags))
+  /*
+   * `building:part=no` says the way is NOT a part (Sutro Tower's outline at its foot carries it, beside `building=tower`)
+   * — and it was taken as one by the truthy test, then drawn as a 12 m apartment block round the tower (#236).
+   */
+  const isPart = (t: Record<string, string>): boolean => !!t['building:part'] && t['building:part'] !== 'no'
+  const outlines = ways.filter((w) => w.tags.building && !isPart(w.tags) && !canopy(w.tags) && !belowGround(w.tags) && !isBoat(w) && !isInfrastructure(w.tags))
+  /*
+   * The parts mapped as multipolygon RELATIONS, each outer ring standing in as a part way (packed `rel.id * 2 + 1`,
+   * the id space every relation building uses), so the coverage, `partOf` and dressing below treat them exactly as
+   * part ways. Own query (overpass.ts `partRelationsQuery`); none fetched only costs those buildings.
+   */
+  const partRels = await overpassTiled(partRelationsQuery, detailBboxOf(spec)).catch((e) => {
+    console.warn(`  part relations: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
+    return { ways: [] as OsmWay[], relations: [] as typeof relations }
+  })
+  const partRelWays: OsmWay[] = partRels.relations
+    .filter((r) => isPart(r.tags) && r.tags.building === undefined && !belowGround(r.tags))
+    .flatMap((r) => outerRings(r).filter((g) => g.length >= 4).map((g) => ({ type: 'way' as const, id: r.id * 2 + 1, nodes: [], geometry: g, tags: r.tags })))
+  if (partRelWays.length) console.log(`  ${partRelWays.length} building parts from multipolygon relations`)
+  const parts = [...ways.filter((w) => isPart(w.tags) && !belowGround(w.tags)), ...partRelWays]
   const partSeeds = parts
     .filter((w) => w.geometry && w.geometry.length >= 3)
     // the part's centre, not its first vertex: parts share the outline's edges, and a vertex exactly ON
@@ -397,6 +443,9 @@ async function bake(spec: CitySpec): Promise<void> {
   const relOwnerOf = new Map<number, number>()
   // outlines kept alongside parts that float above them, and the height they must reach
   const raiseTo = new Map<number, number>()
+  // outlines kept round GROUNDED parts that cover only a little of them — a podium with buildings on it — and the
+  // height they are held to, under those buildings
+  const capTo = new Map<number, number>()
   for (const w of outlines) {
     if (!w.geometry || w.geometry.length < 4) continue
     const ring = w.geometry.map((g) => proj.toLocal(g))
@@ -428,15 +477,28 @@ async function bake(spec: CitySpec): Promise<void> {
       // kept, with parts floating above it: the tower's top floors are mapped and the floors between are
       // not, so the outline is raised to meet the highest part rather than leaving a gap of sky
       let top = 0
+      let lowest = Infinity
+      let floating = false
       for (const { way, at: q } of partSeeds) {
         if (ownerOf.get(way.id) !== w) continue
         const pp = getBuildingParamsFromOSMTags(way.tags) as { buildingHeight?: number }
         if (pp.buildingHeight) top = Math.max(top, pp.buildingHeight)
+        if (way.tags.min_height || way.tags['building:min_level']) floating = true
+        else if (pp.buildingHeight) lowest = Math.min(lowest, pp.buildingHeight)
         void q
       }
-      if (top > 0) raiseTo.set(w.id, top)
+      /*
+       * Raised only to meet parts that FLOAT (a crown mapped, the floors under it not). Parts standing on the ground
+       * that cover a little of the outline are buildings on a podium — Golden Gateway Commons' townhouses on their
+       * garage — and raising the podium to the townhouses' 14 m put identical blocks one inside the other (owner,
+       * 2026-10-03: "intersections here that can't possibly be right"). There an outline with no height of its own is
+       * held UNDER its parts, as the podium it is.
+       */
+      if (floating && top > 0) raiseTo.set(w.id, top)
+      else if (lowest < Infinity && !w.tags.height && !w.tags['building:levels']) capTo.set(w.id, Math.max(3.5, lowest * 0.45))
     }
   }
+  if (capTo.size) console.log(`  ${capTo.size} podium outlines held under the buildings standing on them`)
   /*
    * The same supersession, for a building outline mapped as a RELATION (a multipolygon) rather than a way —
    * Simple 3D Buildings does not care which one carries the footprint, but this pipeline, until now, only
@@ -657,6 +719,36 @@ async function bake(spec: CitySpec): Promise<void> {
     if (!superseded.has(w.id) || !w.tags.name || !worthNaming(w.tags) || !w.geometry) continue
     named.push({ id: w.id, tags: w.tags, ring: ccw(w.geometry.slice(0, -1).map((g) => proj.toLocal(g))) })
   }
+  /*
+   * A building ON a hospital, university or college campus that the neighbourhood mix dressed as a HOME — a
+   * walk-up, a Victorian, an Edwardian flat — is dressed as the campus's instead: the institutional style and no
+   * shopfronts (Mount Zion's ward blocks were sfapartment with bay stacks, 2026-10-04). Every other style stands:
+   * the Academy of Art's old hotels and Golden Gate University's brick are what they look like. Only buildings
+   * big enough to be a ward or a lab block — 400 m² and up — with no amenity of their own (a car park stays a
+   * car park) and never one tagged as a home: the old houses a campus has swallowed stay houses.
+   */
+  const campuses = campusWays.filter((c) => c.geometry && c.geometry.length >= 4).map((c) => {
+    const r = c.geometry!.map((g) => proj.toLocal(g))
+    const xs = r.map((q) => q.x), zs = r.map((q) => q.z)
+    return { r, amenity: c.tags.amenity, x0: Math.min(...xs), x1: Math.max(...xs), z0: Math.min(...zs), z1: Math.max(...zs) }
+  })
+  const HOME = /^(house|residential|apartments|detached|semidetached_house|terrace|dormitory|garage|garages|shed)$/
+  const HOME_STYLE = new Set<string>(['sfapartment', 'tenement', 'victorian', 'edwardian'])
+  let campusDressed = 0
+  const campusAmenity = (t: Record<string, string>, r: { x: number; z: number }[], style: string): Record<string, string> => {
+    if (campuses.length === 0 || !HOME_STYLE.has(style) || t.amenity || HOME.test(t.building ?? '') || area(r) < 400) return t
+    const c = centroid(r)
+    for (const k of campuses) {
+      if (c.x < k.x0 || c.x > k.x1 || c.z < k.z0 || c.z > k.z1) continue
+      let inside = false
+      for (let i = 0, j = k.r.length - 1; i < k.r.length; j = i++) {
+        const a = k.r[i], b = k.r[j]
+        if ((a.z > c.z) !== (b.z > c.z) && c.x < ((b.x - a.x) * (c.z - a.z)) / (b.z - a.z) + a.x) inside = !inside
+      }
+      if (inside) { campusDressed++; return { ...t, amenity: k.amenity } }
+    }
+    return t
+  }
   for (const w of buildingWays) {
     if (!w.geometry || w.geometry.length < 4) continue
     const ring = w.geometry.slice(0, -1).map((g) => proj.toLocal(g))  // OSM closes the ring; we do not
@@ -692,7 +784,7 @@ async function bake(spec: CitySpec): Promise<void> {
       ? { record: recordOf?.(ownerRing.map((q) => proj.toLatLon(q))) ?? undefined, tags: owner.tags, ring: ownerRing, height: ownerP!.buildingHeight, levels: ownerP!.buildingLevels ?? tallest.get(owner.id),
           lat: w.geometry[0].lat, lon: w.geometry[0].lon, id: owner.id, area: area(ownerRing) }
       : { record: recordOf?.(w.geometry) ?? undefined, tags: w.tags, ring, height: p.buildingHeight, levels: p.buildingLevels, lat: w.geometry[0].lat, lon: w.geometry[0].lon, id: w.id, area: area(ring) }) ?? null
-    const styleId = kind ? styleFor(owner?.tags ?? w.tags, () => kind.style) : owner
+    const styleChosen = kind ? styleFor(owner?.tags ?? w.tags, () => kind.style) : owner
       ? styleFor(owner.tags, () => chooseStyle({ levels: ownerP!.buildingLevels ?? tallest.get(owner.id),
         height: ownerP!.buildingHeight, material: ownerP!.buildingFacadeMaterial ?? p.buildingFacadeMaterial,
         building: owner.tags.building }, spec.styles, owner.id))
@@ -700,6 +792,8 @@ async function bake(spec: CitySpec): Promise<void> {
         { levels: p.buildingLevels, height: p.buildingHeight, material: p.buildingFacadeMaterial,
           building: w.tags.building },
         spec.styles, w.id))
+    const dressTags = campusAmenity(owner?.tags ?? w.tags, ownerRing, styleChosen)
+    const styleId = dressTags === (owner?.tags ?? w.tags) ? styleChosen : styleFor(dressTags, () => styleChosen)
     const formKey = owner?.id ?? w.id
     if (!formOf.has(formKey)) {
       const fh = (owner ? ownerP!.buildingHeight : p.buildingHeight) ?? 0
@@ -724,6 +818,8 @@ async function bake(spec: CitySpec): Promise<void> {
       form ? `${form.fired}:${form[form.fired]}` : ''].join(','))
     const raised = raiseTo.get(w.id)
     const tall = raised !== undefined && raised > (p.buildingHeight ?? 0)
+    const capped = capTo.get(w.id)
+    const low = capped !== undefined && capped < (p.buildingHeight ?? Infinity)
     /*
      * Mark the buildings whose storeys we GUESSED. Every building leaves the bake with a height, so nothing
      * downstream can otherwise tell a surveyed twelve metres from an invented one — and a refacing entry that
@@ -735,13 +831,14 @@ async function bake(spec: CitySpec): Promise<void> {
       ring: packPoints(ccwRing),
       style: styleId,
       // a raised outline's own level count would fight its new height, so the height decides
-      levels: tall ? undefined : p.buildingLevels,
-      height: tall ? raised : p.buildingHeight,
+      levels: tall || low ? undefined : p.buildingLevels,
+      height: tall ? raised : low ? capped : p.buildingHeight,
       minHeight: p.buildingMinHeight,
       ...roofFor(w.tags, p, styleId, ccwRing, w.id),
       ...(own.inferred ? { levelsInferred: true as const } : {}),
       ...(kind ? { archetype: kind.archetype } : {}),
       ...(form ? { form } : {}),
+      ...(noShopsFor(dressTags) ? { noShops: true } : {}),
       // a part of a building whose outline its parts replace: that outline's id (a church's towers and apse
       // are the church, for its quick dress: render/prepare.ts)
       ...(ownerOf.has(w.id) && superseded.has(ownerOf.get(w.id)!.id) ? { partOf: ownerOf.get(w.id)!.id }
@@ -749,6 +846,7 @@ async function bake(spec: CitySpec): Promise<void> {
     })
     if (w.tags.name && worthNaming(w.tags)) named.push({ id: w.id, tags: w.tags, ring: ccwRing })
   }
+  console.log(`  ${campusDressed} buildings dressed as their hospital / university / college campus`)
   console.log(`  ${buildings.length} buildings`)
   reportRingForms(formScanned, formed, FORM)
   if (streetRegion.streetWidth === 'carriageway') fitStreetsBetweenBuildings(kept, buildings)
@@ -828,6 +926,20 @@ async function bake(spec: CitySpec): Promise<void> {
     })
     courtsBySport.set(fit.sport, (courtsBySport.get(fit.sport) ?? 0) + 1)
   }
+  // …and the PLAYGROUNDS (owner, 2026-10-03): every leisure=playground, fitted as its own box and furnished at run time
+  // from the playground kit (render/playground.ts) — it travels with the courts as sport `playground`
+  let playgrounds = 0
+  for (const w of areaWays) {
+    if (w.tags.leisure !== 'playground' || !w.geometry || w.geometry.length < 4) continue
+    const ring = w.geometry.slice(0, -1).map((g) => proj.toLocal(g))
+    if (ringArea(ring) > 6000) continue
+    const fit = fitCourt(ring, 'playground')
+    if (!fit) continue
+    sportsCourts.push({ sport: 'playground', x: Math.round(fit.x * 100) / 100, z: Math.round(fit.z * 100) / 100,
+      heading: Math.round(fit.heading * 10000) / 10000, len: Math.round(fit.len * 100) / 100, wid: Math.round(fit.wid * 100) / 100 })
+    playgrounds++
+  }
+  if (playgrounds) console.log(`  ${playgrounds} playgrounds furnished`)
   if (sportsCourts.length || courtsExcluded) {
     console.log(`  ${sportsCourts.length} sports courts (${[...courtsBySport].map(([s, n]) => `${s} ${n}`).join(', ')}), `
       + `${courtsExcluded} pitches excluded (named, over ${COURT_MAX_M2} m², a venue, or too small to fit a court)`)
@@ -874,11 +986,12 @@ async function bake(spec: CitySpec): Promise<void> {
   // squares OSM draws only as lines, paved by hand from the region (the Trocadéro's parvis)
   for (const sq of streetRegion.pavedSquares ?? []) {
     const ring = sq.ring.map(([lat, lon]) => proj.toLocal({ lat, lon }))
-    areas.push({ kind: 'paved', ring: packPoints(ccw(ring)), top: true })
+    areas.push({ kind: 'paved', ring: packPoints(ccw(ring)), top: true, ...(sq.brick ? { brick: true as const } : {}) })
   }
   // Multipolygon relations: the Seine is one, and so is every courtyard block. Skipping them is why the
   // water shader had no water and why the Loop came back with half the buildings it should have.
   let fromRelations = 0
+  let hugeAreas = 0
   for (const rel of areaRels) {
     const kind = areaKind({ tags: rel.tags } as OsmWay)
     const isBuilding = rel.tags.building !== undefined
@@ -932,12 +1045,17 @@ async function bake(spec: CitySpec): Promise<void> {
           .map((h) => h.slice(0, -1).map((g) => proj.toLocal(g)))
           .filter((h) => h.length >= 3 && pointInRing(pts, h[0].x, h[0].z))
           .map((h) => packPoints(h))
+        // A "park" tens of kilometres across is a reserve's boundary, not a park: growing SF's box south in
+        // 2026-10 brought in nature_reserve relations running 228 km down the coast, which hung the planting
+        // (45 million candidate points on a 6 663-point ring) and would have greened the whole city.
+        if (kind !== 'water' && tooBigForAnArea(pts)) { hugeAreas++; continue }
         areas.push({ kind: kind!, ring: packPoints(ccw(pts)), ...(holes.length > 0 ? { holes } : {}) })
       }
       fromRelations++
     }
   }
   if (fromRelations > 0) console.log(`  ${fromRelations} more from relations (multipolygons)`)
+  if (hugeAreas > 0) console.log(`  ${hugeAreas} reserve-sized green relations dropped (over ${HUGE_AREA_SPAN / 1000} km across)`)
   reportLevels(buildings, inferredCount)
 
   /*
@@ -1242,13 +1360,16 @@ async function bake(spec: CitySpec): Promise<void> {
    */
   {
     const rawZones = loadZones(spec, (lat, lon) => proj.toLocal({ lat, lon })).filter((zn) => zn.props.relief === 'raw')
+    // (the raw relief BLURRED as the opened ground is — a zero-radius opening is the blur alone: the tile's 4 m posts
+    //  unsmoothed read as corrugation along a trail; 2026-10-04, Strawberry Hill)
+    const rawGround = rawZones.length ? bareEarthF(fine, fcols, frows, 0, fineWet) : fine
     let n = 0
     for (const zn of rawZones) {
       const [x0, z0, x1, z1] = zn.bbox
       for (let r = Math.max(0, Math.floor((z0 - fz0) / FINE_STEP)); r < Math.min(frows, Math.ceil((z1 - fz0) / FINE_STEP)); r++) {
         for (let c = Math.max(0, Math.floor((x0 - fx0) / FINE_STEP)); c < Math.min(fcols, Math.ceil((x1 - fx0) / FINE_STEP)); c++) {
           if (!zonesAt([zn], fx0 + c * FINE_STEP, fz0 + r * FINE_STEP).length || fineWet[r * fcols + c]) continue
-          fineGround[r * fcols + c] = fine[r * fcols + c]
+          fineGround[r * fcols + c] = rawGround[r * fcols + c]
           n++
         }
       }
@@ -1610,9 +1731,43 @@ async function bake(spec: CitySpec): Promise<void> {
     }
   }
   // (not the region's authored ways: their heights are their own, and nothing is ramped up to them)
-  const decks = bridgeHeights(kept.filter((e) => !e.authored), { water: waterBodies, ground: groundAt, buried })
+  // the region's street paint and brick squares (tools/street-paint.ts: Market Street, owner 2026-10-04)
+  const painted = applyStreetPaint(kept, (streetRegion.streetPaint ?? []).map((r) => ({ street: r.street, paint: r.paint,
+    from: proj.toLocal({ lat: r.from[0], lon: r.from[1] }), to: proj.toLocal({ lat: r.to[0], lon: r.to[1] }) })))
+  const bricked = markBrickSquares(areas, kept, streetRegion.brickStreets?.names ?? [])
+  if (painted.length || bricked) console.log(`  street paint: ${painted.join(' / ')} edges; ${bricked} squares laid in brick`)
+  const layerCaps = (streetRegion.footBridgeLayers ?? []).map((c) => ({ ...proj.toLocal({ lat: c.lat, lon: c.lon }), radius: c.radius, layer: c.layer }))
+  const decks = bridgeHeights(kept.filter((e) => !e.authored), { water: waterBodies, ground: groundAt, buried, layerCaps })
   // the ways lifted onto a deck are ramps: said outright, for the renderer (city/package.ts isRaised)
   for (const e of kept) if (decks.raised.has(e.id) && !e.bridge) e.ramp = true
+  // the walks over the bay off the sea bed: onto their piers' decks, or a float (tools/bridges.ts `liftWalksOffTheSea`)
+  if (seaLevel !== null) {
+    const piers: { ring: { x: number; z: number }[]; floating: boolean }[] = []
+    for (const w of ways) {
+      if (w.tags.man_made !== 'pier' || !w.geometry || w.geometry.length < 4) continue
+      const a = w.geometry[0], b = w.geometry[w.geometry.length - 1]
+      if (Math.abs(a.lat - b.lat) > 1e-9 || Math.abs(a.lon - b.lon) > 1e-9) continue   // (a pier drawn as a line has no outline)
+      piers.push({ ring: w.geometry.slice(0, -1).map((g) => proj.toLocal(g)), floating: w.tags.floating === 'yes' })
+    }
+    for (const r of relations) {
+      if (r.tags.man_made !== 'pier') continue
+      for (const ring of outerRings(r)) piers.push({ ring: ring.slice(0, -1).map((g) => proj.toLocal(g)), floating: r.tags.floating === 'yes' })
+    }
+    // (over the water by the bake's own sea and lakes, the coastline being the shore — not by the elevation tiles)
+    const waterAt = waterLookup(wetAreas.map((a) => {
+      const ring = unpackPoints(a.ring)
+      let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+      for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+      return { ring, holes: (a.holes ?? []).map(unpackPoints), x0, x1, z0, z1, level: 0 }
+    }))
+    const lifted = liftWalksOffTheSea(kept, seaLevel, piers, 3.5, (x, z) => waterAt(x, z) !== null)
+    if (lifted.size) console.log(`  ${lifted.size} walks lifted off the sea bed onto ${piers.length} piers' decks and floats`)
+  }
+  // a foot bridge's ends down to the paths they meet (tools/bridges.ts `rampFootBridgeEnds`)
+  {
+    const r = rampFootBridgeEnds(kept)
+    if (r.size) console.log(`  ${r.size} foot-bridge ends graded down to the paths they join`)
+  }
   // street tunnels under a hill: their own mouth-to-mouth profile, and `bore` — ridden and drawn (tools/tunnels.ts)
   const bores = boreTunnels(kept, groundAt, (name, why) => console.log(`  tunnel not ridden: ${name} — ${why}`))
   if (bores.size > 0) console.log(`  ${bores.size} street-tunnel ways made rideable bores (their pavements included)`)
@@ -1886,7 +2041,9 @@ async function bake(spec: CitySpec): Promise<void> {
         : t.highway === 'stop' ? 'stop'
         : t.highway === 'bus_stop' ? 'busstop'
         : t.amenity === 'post_box' ? 'postbox'
-        : t.emergency === 'fire_hydrant' ? 'hydrant' : null
+        : t.emergency === 'fire_hydrant' ? 'hydrant'
+        // a street clock on a post (owner, 2026-10-04: the sidewalk clock by Union Square); a wall clock needs its wall
+        : t.amenity === 'clock' && /^(pole|ground|pedestal)$/.test(t.support ?? '') ? 'clock' : null
       if (!kind) continue
       const p = proj.toLocal(n)
       const wallace = kind === 'fountain' && /wallace/i.test(`${t.name ?? ''} ${t.brand ?? ''} ${t.model ?? ''} ${t['fountain'] ?? ''} ${t.description ?? ''}`)
@@ -2625,6 +2782,17 @@ async function main(): Promise<void> {
     for (const spec of list) {
       const pkg = JSON.parse(readFileSync(resolve(OUT, `${spec.id}.json`), 'utf8')) as CityPackage
       console.log(`${spec.id}:`)
+      // (the bike trails again, from the zones as they are now: a zone edit then needs only --rides)
+      const proj = new Projection(pkg.origin)
+      const trailZones = loadZones(spec, (lat, lon) => proj.toLocal({ lat, lon })).filter((zn) => zn.props.trails === 'bike')
+      let opened = 0
+      for (const e of pkg.edges) {
+        if (e.trail || !/^(footway|path|track|bridleway)$/.test(e.kind ?? '') || /^(sand|mud|grass|rock|stone|wood)$/.test(e.surface ?? '')) continue
+        const pts = unpackPoints(e.points)
+        const mid = pts[Math.floor(pts.length / 2)]
+        if (trailZones.some((zn) => zonesAt([zn], mid.x, mid.z).length > 0)) { e.trail = true; opened++ }
+      }
+      if (opened) { console.log(`  ${opened} more trails opened to bikes`); await writeFile(resolve(OUT, `${spec.id}.json`), JSON.stringify(pkg)) }
       await writeRides(pkg)
     }
     return
@@ -2645,6 +2813,8 @@ async function main(): Promise<void> {
       const undoFile = resolve(OUT, spec.id, 'decks-undo.json')
       const touched = existsSync(undoFile) ? undoDecks(pkg.edges, JSON.parse(readFileSync(undoFile, 'utf8')) as DeckUndo) : new Set<number>()
       const terrain = new Terrain(pkg.terrain)
+      // (and the foot bridges' ends, which a package baked before rampFootBridgeEnds still has standing in the air)
+      for (const id of rampFootBridgeEnds(pkg.edges)) touched.add(id)
       const work = conformWithUndo(spec.region ?? spec.id, pkg.origin, pkg.edges, (x, z) => terrain.rawHeightAt(x, z))
       if (!work) { console.log(`${spec.id}: no bridge decks declared for region ${spec.region}`); continue }
       console.log(`${spec.id}: ${describe(work.report)}`)
@@ -2674,9 +2844,23 @@ async function main(): Promise<void> {
   // --replant: only the trees, on the package already baked (city/plantings.ts), and its tiles rewritten — for
   // working on the plants without the hours a full bake spends waiting on Overpass
   if (process.argv.includes('--replant')) {
+    /*
+     * STALE — refuses to run (2026-10-04). It re-tiles from the package JSON alone, which covers only the detail box: a
+     * run on San Francisco left 7 746 tiles of the full bake's 9 206 (deleting the wider ring's) and 46 864 street trees
+     * of 72 204 (clipped to the package's old radius). Re-plant with a full bake until this path is brought back in step
+     * with `bake()` — the tiling and the street-tree box both.
+     */
+    if (!process.argv.includes('--replant-anyway')) {
+      console.error('--replant is stale: it drops the tiles outside the package box and the street trees past its radius. Run a full bake (see the comment in tools/bake.ts).')
+      process.exit(1)
+    }
     const { readFileSync } = await import('node:fs')
     for (const spec of list) {
       const pkg = JSON.parse(readFileSync(resolve(OUT, `${spec.id}.json`), 'utf8')) as CityPackage
+      // (the reserve boundaries a bake now drops, out of a package baked before it did)
+      const before = pkg.areas.length
+      pkg.areas = pkg.areas.filter((a) => a.kind === 'water' || !tooBigForAnArea(unpackPoints(a.ring)))
+      if (pkg.areas.length < before) console.log(`  ${before - pkg.areas.length} reserve-sized green areas dropped`)
       const proj = new Projection(pkg.origin)
       const ex = extentOf(spec)
       const km2 = ((ex.west + ex.east) * (ex.south + ex.north)) / 1e6
@@ -3004,4 +3188,22 @@ async function writeRides(pkg: CityPackage): Promise<void> {
     await writeFile(resolve(OUT, pkg.id, `ride-${mode}.json`), text)
     console.log(`  → public/cities/${pkg.id}/ride-${mode}.json  ${g.edges.size} edges, ${Math.round(text.length / 1024)} kB`)
   }
+}
+
+/**
+ * A building whose OSM tags say it is a school, a library, a hospital, a fire station, a church, a museum or a
+ * government office has no shops on its ground floor, whatever style the classifier gives it — `brick`'s ground
+ * floor is shopfronts with PHARMACY and BOOKS painted on them (BUGFIX #320; render/prepare.ts does the same for
+ * the restyles). PackedBuilding.noShops.
+ */
+const NO_SHOP_AMENITY = new Set(['school', 'college', 'university', 'kindergarten', 'library', 'hospital', 'clinic',
+  'fire_station', 'police', 'townhall', 'courthouse', 'place_of_worship', 'community_centre', 'arts_centre', 'theatre',
+  'social_facility', 'prison', 'post_office'])
+const NO_SHOP_BUILDING = new Set(['school', 'college', 'university', 'kindergarten', 'hospital', 'church', 'cathedral',
+  'chapel', 'temple', 'synagogue', 'mosque', 'civic', 'government', 'public', 'fire_station', 'museum', 'library',
+  // and the works: a factory, a shed, a warehouse has loading doors, not PHARMACY (Pier 70's shipyard, 2026-10-04)
+  'industrial', 'warehouse', 'factory', 'manufacture', 'hangar', 'shed', 'storage_tank', 'service', 'transportation', 'train_station'])
+function noShopsFor(tags: Record<string, string>): boolean {
+  return NO_SHOP_AMENITY.has(tags.amenity ?? '') || NO_SHOP_BUILDING.has(tags.building ?? '') || tags.tourism === 'museum'
+    || tags.office === 'government'
 }

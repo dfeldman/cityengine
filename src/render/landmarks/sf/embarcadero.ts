@@ -73,6 +73,8 @@ import type { Fit } from '../fit.ts'
 import { deckCut, edgeAt, insetRing, boxAlong, railing } from '../parts.ts'
 import type { Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
+import { capPolygon } from '../../buildings.ts'
+import { EMBARCADERO_PODIUM_DECKS, EC_PODIUM_Y } from '../../../city/sf/bridges.ts'
 
 type P2 = { x: number; z: number }
 
@@ -321,8 +323,36 @@ export function oneMaritimeGrassCourt(out: MeshBuilder, _fit?: Fit): void {
   railing(out, [...ring, ring[0]], y, { kind: 'posts', height: 0.5, colour: FENCE, spacing: 2 }) // a low kerb rail round it
 }
 
+/**
+ * The podium level as a whole (2026-10-03): its walks are OSM's, lifted onto the decks declared in
+ * src/city/sf/bridges.ts (`EMBARCADERO_PODIUM_DECKS`) and drawn as raised walks by the city. Of its own it draws the
+ * plaza on the Golden Gateway Garage's roof round One Maritime Plaza — brick, a hand under the walks on it, with a
+ * concrete fascia down its edge — the deck's own ring, so plaza and walks cannot disagree. The entry stands at
+ * `EC_PODIUM`, unrotated, with `baseY` 0: this frame is the city's, shifted.
+ */
+export function embarcaderoPodium(out: MeshBuilder, _fit?: Fit): void {
+  const ring = EMBARCADERO_PODIUM_DECKS.find((d) => d.ring)?.ring
+  if (!ring) return
+  const y = EC_PODIUM_Y - 0.1
+  // (anticlockwise for the cap and for outward-facing fascia)
+  const area = ring.reduce((s, p, i) => { const q = ring[(i + 1) % ring.length]; return s + p.x * q.z - q.x * p.z }, 0)
+  const ccw = area > 0 ? ring : [...ring].reverse()
+  capPolygon(out, ccw, y, [0.56, 0.37, 0.31], CONC_TAG)
+  for (let i = 0; i < ccw.length; i++) {
+    const a = ccw[i], b = ccw[(i + 1) % ccw.length]
+    const len = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    const n: [number, number, number] = [(b.z - a.z) / len, 0, -(b.x - a.x) / len]
+    out.quad([[a.x, y - 1.4, a.z], [b.x, y - 1.4, b.z], [b.x, y, b.z], [a.x, y, a.z]], n, [[0, 0], [1, 0], [1, 1], [0, 1]], PIER, CONC_TAG)
+  }
+}
+
+/*
+ * `embarcaderoUnit1..4` are not registered (2026-10-03): their "gap between two towers" quads landed across Battery,
+ * Front, Davis and Drumm streets. Kept for their vocabulary (brick deck, hole, colonnade, canopy), to be re-placed on
+ * the low building:part rings south of the promenade.
+ */
 export const EMBARCADERO: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  embarcaderoUnit1, embarcaderoUnit2, embarcaderoUnit3, embarcaderoUnit4, oneMaritimeGrassCourt,
+  oneMaritimeGrassCourt, embarcaderoPodium,
 }
 
 void insetRing

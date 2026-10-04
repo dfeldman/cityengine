@@ -140,6 +140,8 @@ export const EXPLICIT: Record<string, NonbuildingKind> = {
   colonneDeJuillet: 'monument', colonneVendome: 'monument', monumentRepublique: 'monument',
   arcDeTriomphe: 'monument', operaArch: 'monument', saintDenysPortico: 'monument',
   burenColumns: 'monument',
+  // San Francisco's figure monuments (sf/monuments.ts, 2026-10-04)
+  pioneerMonument: 'monument', mckinleyMonument: 'monument', goetheSchiller: 'monument', figureOnPedestal: 'monument', emptyPedestal: 'monument',
   // the deck of Ferry Plaza on its piles (sf/marina.ts)
   plazaDeck: 'plaza',
   // the two equestrian statues that are built rather than modelled (paris/equestrian.ts)
@@ -150,14 +152,16 @@ export const EXPLICIT: Record<string, NonbuildingKind> = {
   sullyCourt: 'plaza', soubiseCourt: 'plaza', carnavaletCourt: 'plaza',
   // San Francisco's park furniture, inside the mixed PARKS record (which also holds the Conservatory of
   // Flowers and the Academy of Sciences — real buildings, on BUILDINGS_OK)
-  japaneseTeaGardenPagoda: 'structure', japaneseTeaGardenGate: 'structure',
+  teaGardenPagoda: 'structure', teaGardenSouthGate: 'structure', teaGardenTempleGate: 'structure', teaGardenGrounds: 'garden',
   dutchWindmill: 'structure', murphyWindmill: 'structure', spreckelsTempleOfMusic: 'structure',
   // station head houses and canopies: a mouth in the pavement with a roof over it, not a building
   unionSquareHeadhouse: 'station', powellStreetCanopy: 'station',
   // free-standing glass pavilions and kiosks in plazas, inside district records
   plazaKiosk: 'structure', bushPlazaPavilion: 'structure',
+  // the Legion of Honor's glass pyramid skylight, a hospital's entrance canopy (2026-10-04)
+  legionPyramid: 'structure', ucsfMbCanopy: 'structure',
   // the squares themselves, and a raised garden deck
-  unionSquarePlaza: 'plaza', operaPlazaCourtyard: 'garden',
+  unionSquarePlaza: 'plaza', operaPlazaCourtyard: 'garden', civicCenterPlaza: 'plaza', bartPlaza24thSW: 'plaza', bartPlaza24thNE: 'plaza', bartPlaza16thNE: 'plaza', bartPlaza16thSW: 'plaza',
   // its own geometry, no OSM building at all: the bronze column at Market/Geary/Kearny/Third
   lottasFountain: 'fountain',
   // a ballpark open to the sky: no facade the kit could say, and nothing a street photograph settles
@@ -175,8 +179,10 @@ export const BUILDINGS_OK: string[] = [
   // matching a word inside a brand name, not a public plaza.
   'hotelRiuPlazaFishermansWharf',
   // in PARKS, and buildings: glasshouses, a tea house, a clubhouse, a restaurant
-  'conservatoryOfFlowers', 'californiaAcademyOfSciences', 'japaneseTeaGardenTeaHouse', 'beachChalet',
+  'conservatoryOfFlowers', 'californiaAcademyOfSciences', 'teaGardenTeaHouse', 'teaGardenGiftShop', 'sparkTent', 'sparkUmbrella', 'sparkTruck', 'beachChalet',
   'presidioOfficersClub',
+  // a 1924 gymnasium named "Pavilion" (kezar.ts)
+  'kezarPavilion',
   // named after a plaza, a park or a tower and emphatically a building
   'foxPlaza', 'mintPlaza', 'oneMaritimePlaza', 'unPlazaFederal', 'operaPlazaTower', 'operaPlazaBlock',
   'kensingtonPark', 'marinesMemorial', 'ghirardelliClockTower', 'carillonTower', 'clockTowerBuilding',
@@ -391,7 +397,7 @@ export function coplanarSlabs(procedural: string, size?: [number, number], heigh
   const p = mb.positions
   const n = mb.normals
   // horizontal triangles, bucketed to the centimetre: a bucket with several square metres in it is a slab
-  const bucket = new Map<number, { area: number; faces: number }>()
+  const bucket = new Map<number, { area: number; faces: number; cells: Set<number> }>()
   for (let t = 0; t < mb.indices.length; t += 3) {
     const [a, b, c] = [mb.indices[t], mb.indices[t + 1], mb.indices[t + 2]]
     if (Math.abs(n[a * 3 + 1]) < 0.98) continue
@@ -401,15 +407,27 @@ export function coplanarSlabs(procedural: string, size?: [number, number], heigh
     const bx = p[c * 3] - p[a * 3]; const bz = p[c * 3 + 2] - p[a * 3 + 2]
     const area = Math.abs(ax * bz - az * bx) / 2
     const key = Math.round(ys[0] * 100)
-    const got = bucket.get(key) ?? { area: 0, faces: 0 }
-    bucket.set(key, { area: got.area + area, faces: got.faces + 1 })
+    const got = bucket.get(key) ?? { area: 0, faces: 0, cells: new Set<number>() }
+    got.area += area
+    got.faces++
+    // the 2 m cells it covers (its bounding box), so a pair must also share ground in plan to count
+    const xs = [p[a * 3], p[b * 3], p[c * 3]], zs = [p[a * 3 + 2], p[b * 3 + 2], p[c * 3 + 2]]
+    for (let i = Math.floor(Math.min(...xs) / 2); i <= Math.floor(Math.max(...xs) / 2); i++) {
+      for (let j = Math.floor(Math.min(...zs) / 2); j <= Math.floor(Math.max(...zs) / 2); j++) got.cells.add(i * 100003 + j)
+    }
+    bucket.set(key, got)
   }
   // two slabs within 2 cm of each other, each over 4 m² — the shape of the Salesforce Park defect
   // 30 m² is about the size at which a coplanar pair is visible as shimmer from a bike rather than a seam
   const slabs = [...bucket.entries()].filter(([, v]) => v.area > 30).sort((a, b) => a[0] - b[0])
   const out: { y: number; area: number; faces: number }[] = []
   for (let i = 1; i < slabs.length; i++) {
-    if (slabs[i][0] - slabs[i - 1][0] <= 2) out.push({ y: slabs[i][0] / 100, area: slabs[i][1].area, faces: slabs[i][1].faces })
+    if (slabs[i][0] - slabs[i - 1][0] > 2) continue
+    // (two levels 2 cm apart at opposite ends of a plaza do not fight: they must overlap)
+    const [small, big] = slabs[i][1].cells.size < slabs[i - 1][1].cells.size ? [slabs[i][1].cells, slabs[i - 1][1].cells] : [slabs[i - 1][1].cells, slabs[i][1].cells]
+    let shared = 0
+    for (const k of small) if (big.has(k)) shared++
+    if (shared > 0) out.push({ y: slabs[i][0] / 100, area: slabs[i][1].area, faces: slabs[i][1].faces })
   }
   return out
 }

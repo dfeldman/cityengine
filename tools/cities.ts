@@ -212,7 +212,14 @@ export const CITIES: CitySpec[] = [
      * (37.872-37.875), Kappas and Galilee Harbor all fell outside. 9300 = 37.8767 takes in the whole waterfront to
      * Waldo Point.
      */
-    box: { west: 9800, east: 7800, north: 9300, south: 3600 },
+    /*
+     * SOUTH 4500 REACHES SUTRO TOWER (owner, 2026-10-02/03: "a ride up to the tower … it's not quite all in the box";
+     * "still no close-up view of sutro tower"). 3600 = 37.7607 stopped 470 m short of the tower (37.75523): its near
+     * model (bridges.json `sutroTowerNear`) waits for a tile that never came, and only the skyline stand-in was ever
+     * seen. 4500 = 37.7526 takes in the tower, Twin Peaks' north peak, and with them the Golden Fire Hydrant (20th and
+     * Church) and the Mission at 24th Pit Stop.
+     */
+    box: { west: 9800, east: 7800, north: 9300, south: 4500 },
     /*
      * West to the ocean and south past Golden Gate Park. The park runs five kilometres from Stanyan Street to
      * Ocean Beach and the Presidio fills the north-west corner; a game whose players spend their time riding
@@ -250,7 +257,7 @@ export const CITIES: CitySpec[] = [
      * (515) all take `detailBboxOf`. Sausalito therefore had buildings — they reach z 6366, which is how the
      * owner came to see them through a hill — with no ground cover, no furniture and no walls at all.
      */
-    detail: { west: 9800, east: 4500, north: 9300, south: 3600 },
+    detail: { west: 9800, east: 4500, north: 9300, south: 4500 },
     ground: 'grass',
     // (no 'brownstone': a New York style, and what the outer ring drew in grey rows over Sausalito's hills — owner's
     //  screenshot, 2026-10-02; the stucco houses are what the Avenues, Daly City and Marin are built of)

@@ -1,6 +1,6 @@
 [
   { "osm": ["way/260162805"], "procedural": "b3_hotel_260162805", "name": "GEDEC Family Housing", "height": 41 },
-  { "osm": ["way/84805700"], "procedural": "b3_lab_84805700", "name": "J David Gladstone Institutes", "height": 41 },
+  { "osm": ["way/84805700"], "procedural": "gladstoneInstitutes", "front": "street", "name": "J David Gladstone Institutes", "height": 41 },
   { "osm": ["way/71739084"], "procedural": "b3_prewarTower_71739084", "name": "Way 71739084", "height": 50 },
   { "osm": ["way/25759123"], "procedural": "b3_university_25759123", "name": "Arthur A Dugoni School of Dentistry", "height": 46 },
   { "osm": ["way/256763516"], "procedural": "b3_mixedUse_256763516", "name": "Webster Tower & Terrace", "height": 15 },

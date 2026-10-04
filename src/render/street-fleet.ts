@@ -23,7 +23,6 @@ const MIX: [Archetype, number, Livery][] = [
   ['pickup', 6, 'none'], ['van', 7, 'none'], ['boxtruck', 4, 'none'], ['sedan', 6, 'taxi'], ['minivan', 2, 'taxi'],
   ['sedan', 1, 'police'], ['suv', 1, 'police'], ['van', 1, 'ambulance'], ['boxtruck', 2, 'delivery'],
 ]
-const MIX_TOTAL = MIX.reduce((s, m) => s + m[1], 0)
 /** metres a wheel may stand above or below the car's centreline: the most a car on a street rolls */
 const ROLL = 0.08
 /** seeds per archetype: each is a different shape, i.e. a draw call; four keeps the street at ~45 */
@@ -87,9 +86,13 @@ export class StreetFleet {
       car.paint = [...v.colour]
       return car
     }
-    let x = (h >>> 8) % MIX_TOTAL
-    let pick = MIX[0]
-    for (const m of MIX) { x -= m[1]; if (x < 0) { pick = m; break } }
+    // the sim says which cars are taxis (it lets them onto car-free Market Street): those are drawn as taxis, and no
+    // other car is
+    const mix = MIX.filter((m) => (m[2] === 'taxi') === !!v.taxi)
+    const total = mix.reduce((t, m) => t + m[1], 0)
+    let x = (h >>> 8) % total
+    let pick = mix[0]
+    for (const m of mix) { x -= m[1]; if (x < 0) { pick = m; break } }
     const car = this.fleet.add(randomSpec(pick[0], seed, pick[2]))
     // a plain car keeps the colour the traffic sim gave it; a livery is its own
     if (pick[2] === 'none') car.paint = [...v.colour]

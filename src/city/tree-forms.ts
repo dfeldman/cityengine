@@ -31,6 +31,8 @@ export const TREE_FORMS = [
   'spiky',        // cabbage tree, yucca, tree fern: a small tuft on a stem
   'windmill',     // windmill palm, Mediterranean fan palm: a small fan palm, four to eight metres
   'oak',          // the park oak: a big spreading deciduous or coast live oak, not the clipped street Quercus
+  // (appended, never inserted: the codes are baked by position)
+  'treefern',     // tree fern (Dicksonia, Cyathea): a short shaggy trunk, a wide flat crown of fronds — Golden Gate Park's dell
 ] as const
 
 export type TreeForm = (typeof TREE_FORMS)[number]
@@ -39,7 +41,7 @@ export const formCode = (f: TreeForm): number => TREE_FORMS.indexOf(f)
 export const formOf = (code: number): TreeForm => TREE_FORMS[code] ?? ''
 
 /** the palm forms, drawn by render/palms.ts rather than from the tree library */
-export const PALM_FORMS: ReadonlySet<TreeForm> = new Set<TreeForm>(['canary', 'fan', 'queen', 'spiky', 'windmill'])
+export const PALM_FORMS: ReadonlySet<TreeForm> = new Set<TreeForm>(['canary', 'fan', 'queen', 'spiky', 'windmill', 'treefern'])
 
 /**
  * How wide a form's crown is: its RADIUS as a fraction of the tree's height. For keeping a planted tree's crown out
@@ -51,7 +53,7 @@ export const CROWN: Record<TreeForm, number> = {
   '': 0.3, plane: 0.3, evergreen: 0.22, laurel: 0.22, ficus: 0.25, myrtle: 0.3, olive: 0.3, bottlebrush: 0.25,
   plum: 0.3, blossom: 0.35, pear: 0.2, flowering: 0.3, deciduous: 0.3, columnar: 0.08, weeping: 0.3,
   eucalyptus: 0.2, pine: 0.25, cypress: 0.27, canary: 0.3, fan: 0.12, queen: 0.15, spiky: 0.15, windmill: 0.12,
-  oak: 0.35,
+  oak: 0.35, treefern: 0.6,
 }
 
 /** a planting's crown radius, metres */

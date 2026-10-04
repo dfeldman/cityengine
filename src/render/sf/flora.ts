@@ -65,8 +65,9 @@ export function sfFlora(toLatLon: (x: number, z: number) => { lat: number; lon: 
       queen: [['palm:queen', 1]],
       spiky: [['palm:spiky', 1]],
       windmill: [['palm:windmill', 1]],
+      treefern: [['palm:treefern', 1]],
     },
-    formModels: { oak: 4, cypress: 6, pine: 6, eucalyptus: 4, plane: 5, laurel: 4, evergreen: 4, ficus: 4, deciduous: 4, plum: 4, canary: 4, fan: 3, queen: 3, spiky: 3 },
+    formModels: { oak: 4, cypress: 6, pine: 6, eucalyptus: 4, plane: 5, laurel: 4, evergreen: 4, ficus: 4, deciduous: 4, plum: 4, canary: 4, fan: 3, queen: 3, spiky: 3, treefern: 3 },
     palmChance: (x, z) => {
       const { lat, lon } = toLatLon(x, z)
       return PALMS[districtOf(lat, lon)] ?? 0.03

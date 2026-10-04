@@ -12,11 +12,14 @@ import { sign } from '../signage.ts'
 import { boxAlong, edgeAt, offsetRing } from '../parts.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 
-/** THE PARAMOUNT, 680 Mission (Elkus Manfredi, 2002; 42 storeys, 128 m): a slender shaft in a pale precast grid of
- *  deep punched windows, the base dressed in warm stone, a plain flat top with a thin cap. */
-export function paramount(out: MeshBuilder, fit: Fit): void {
-  tower(out, { ...fit, height: 128 }, {
-    height: 128,
+/** THE ST. REGIS MUSEUM TOWER's tower, 125 Third Street (SOM, 2005; 42 storeys, 148 m — OSM's part way/436648187): a
+ *  slender shaft in a pale precast grid of deep punched windows, the base dressed in warm stone, a plain flat top with
+ *  a thin cap. Built 2026-10-02 as "the Paramount" from a Mapillary frame taken HERE, on Third at Mission — the
+ *  Paramount is the terracotta Deco tower at 680 Mission, way/160673823 (fidi-3.ts `paramount`), and the two entries
+ *  shared one registry key, so both towers were drawn as this one (owner: z-fighting at 37.786342, -122.401152). */
+export function stRegisTower(out: MeshBuilder, fit: Fit): void {
+  tower(out, { ...fit, height: 148 }, {
+    height: 148,
     base: { height: 12, face: { kind: 'curtain', wall: [0.62, 0.52, 0.42], glass: [0.22, 0.25, 0.28], pitch: 3.2, floor: 6, material: 'granite' } },
     tiers: [{ to: 1, face: { kind: 'punched', wall: [0.86, 0.84, 0.78], glass: [0.28, 0.32, 0.36], pitch: 2.0, floor: 2.9, solid: 0.45, material: 'concrete' } }],
     crown: { kind: 'parapet', height: 1.4, colour: [0.82, 0.8, 0.74], material: 'concrete' },
@@ -247,4 +250,4 @@ export function warmingHut(out: MeshBuilder, fit: Fit): void {
   })
 }
 
-export const PROMINENT: Record<string, (out: MeshBuilder, fit: Fit) => void> = { pofaHall, fairmontHotel, paramount, montgomeryGlassCube, holidayInnTower, holidayInnPodium, somaGrand, gearyTower, isleHouse, sfpucHq, oneMissionBay, sailorsUnion, symphonyTowers, jfkTowers, folsom230, cruiseTerminal27, cableCarBarn, warmingHut }
+export const PROMINENT: Record<string, (out: MeshBuilder, fit: Fit) => void> = { pofaHall, fairmontHotel, stRegisTower, montgomeryGlassCube, holidayInnTower, holidayInnPodium, somaGrand, gearyTower, isleHouse, sfpucHq, oneMissionBay, sailorsUnion, symphonyTowers, jfkTowers, folsom230, cruiseTerminal27, cableCarBarn, warmingHut }

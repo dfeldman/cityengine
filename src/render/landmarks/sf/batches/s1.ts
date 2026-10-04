@@ -13,7 +13,7 @@
  * - Pier 7 (way/23605169): promenade pier.
  * - Pier 14 (way/23605173): promenade pier.
  */
-import type { MeshBuilder } from '../../../buildings.ts'
+import { capPolygon, type MeshBuilder } from '../../../buildings.ts'
 import { box, type Rgb } from '../../../models.ts'
 import type { Fit } from '../../fit.ts'
 import { arcade, edgeAt } from '../../parts.ts'
@@ -219,16 +219,15 @@ export const s1_fort_mason_shed_a_25372350 = (out: MeshBuilder, fit: Fit): void 
   const eaves = 7
 
   const sidingColor: Rgb = [0.8, 0.79, 0.75]
-  const roofColor: Rgb = [0.6, 0.4, 0.3]
+  const roofColor: Rgb = [0.5, 0.5, 0.49]
 
   // Walls on the actual footprint
   faceBand(out, ring, 0, eaves, { kind: 'blank', wall: sidingColor, material: 'metal' })
 
-  // Gabled roof over the footprint
-  for (let i = 0; i < Math.round(hx * 2); i++) {
-    const x = -hx + (i + 0.5) * (hx * 2 / Math.round(hx * 2))
-    box(out, cx + x, eaves + 0.12, cz, (hx * 2 / Math.round(hx * 2)) / 2, 0.08, hz * 1.15, roofColor, metal)
-  }
+  // The roof ON the footprint: a shallow parapet and a flat grey deck (it was a slab per metre over the footprint's
+  // axis-aligned box, 15% wider again — on these turned sheds a red roof twice their size, owner 2026-10-03)
+  faceBand(out, ring, eaves, eaves + 0.6, { kind: 'blank', wall: sidingColor, material: 'metal' })
+  capPolygon(out, ring, eaves + 0.6, roofColor, metal)
 
   // Piles supporting over water
   for (let i = -2; i <= 2; i++) {
@@ -258,13 +257,12 @@ export const s1_fort_mason_shed_b_25372352 = (out: MeshBuilder, fit: Fit): void 
   const eaves = 7
 
   const sidingColor: Rgb = [0.8, 0.79, 0.75]
-  const roofColor: Rgb = [0.6, 0.4, 0.3]
+  const roofColor: Rgb = [0.5, 0.5, 0.49]
 
   faceBand(out, ring, 0, eaves, { kind: 'blank', wall: sidingColor, material: 'metal' })
-  for (let i = 0; i < Math.round(hx * 2); i++) {
-    const x = -hx + (i + 0.5) * (hx * 2 / Math.round(hx * 2))
-    box(out, cx + x, eaves + 0.12, cz, (hx * 2 / Math.round(hx * 2)) / 2, 0.08, hz * 1.15, roofColor, metal)
-  }
+  // the roof on the footprint itself (see Shed A)
+  faceBand(out, ring, eaves, eaves + 0.6, { kind: 'blank', wall: sidingColor, material: 'metal' })
+  capPolygon(out, ring, eaves + 0.6, roofColor, metal)
   for (let i = -2; i <= 2; i++) {
     for (let k = -1; k <= 1; k++) {
       box(out, cx + i * hx / 2.2, -2, cz + k * hz / 2.2, 0.5, 2, 0.5, CONCRETE_DARK, concrete)
@@ -296,13 +294,12 @@ export const s1_fort_mason_shed_d_25372355 = (out: MeshBuilder, fit: Fit): void 
   const eaves = 7
 
   const sidingColor: Rgb = [0.8, 0.79, 0.75]
-  const roofColor: Rgb = [0.6, 0.4, 0.3]
+  const roofColor: Rgb = [0.5, 0.5, 0.49]
 
   faceBand(out, ring, 0, eaves, { kind: 'blank', wall: sidingColor, material: 'metal' })
-  for (let i = 0; i < Math.round(hx * 2); i++) {
-    const x = -hx + (i + 0.5) * (hx * 2 / Math.round(hx * 2))
-    box(out, cx + x, eaves + 0.12, cz, (hx * 2 / Math.round(hx * 2)) / 2, 0.08, hz * 1.15, roofColor, metal)
-  }
+  // the roof on the footprint itself (see Shed A)
+  faceBand(out, ring, eaves, eaves + 0.6, { kind: 'blank', wall: sidingColor, material: 'metal' })
+  capPolygon(out, ring, eaves + 0.6, roofColor, metal)
   for (let i = -2; i <= 2; i++) {
     for (let k = -1; k <= 1; k++) {
       box(out, cx + i * hx / 2.2, -2, cz + k * hz / 2.2, 0.5, 2, 0.5, CONCRETE_DARK, concrete)
@@ -362,47 +359,43 @@ export const s1_hyde_street_pier_25319880 = (out: MeshBuilder, fit: Fit): void =
 }
 
 /**
- * Pier 7 (way/23605169) — Promenade pier on actual footprint.
+ * Pier 7 (way/23605169) — the public fishing and promenade pier north of the Ferry Building: a narrow WOODEN deck some
+ * 260 m long running out diagonally into the bay with two small bump-outs, a low black iron railing and a row of old
+ * lamp standards down both sides, benches. Drawn on OSM's own outline (copied: the pier is no building in the bake), on
+ * piles; the batch model drew an axis-aligned 220 x 167 m slab, its paths floating over the open water beside it.
+ * Placed standalone at the outline's centre, x east / z north.
  */
-export const s1_pier_7_23605169 = (out: MeshBuilder, fit: Fit): void => {
-  const ring = towerRing(fit)
-  const concrete = surfaceTag('concrete')
+const PIER7: [number, number][] = [[-78.13, -67.46], [-76.55, -66.26], [-73.82, -64.16], [-70.59, -61.62], [-70.23, -61.03], [-69.99, -60.41], [-69.87, -59.74], [-69.9, -59.06], [-70.04, -58.42], [-70.3, -57.82], [-71.04, -56.81], [5.07, -0.88], [7.62, -0.52], [8.16, -1.27], [13.04, -0.73], [21.95, 5.79], [24.0, 10.48], [23.49, 11.19], [24.41, 13.37], [114.11, 79.12], [115.48, 77.34], [120.51, 77.82], [123.47, 73.95], [129.0, 77.84], [127.97, 86.73], [121.05, 96.27], [113.14, 99.71], [107.5, 95.68], [110.43, 91.79], [108.52, 86.93], [109.87, 85.2], [20.05, 19.41], [17.65, 19.15], [17.06, 19.91], [12.17, 19.42], [3.17, 12.66], [1.13, 8.29], [1.71, 7.44], [0.76, 5.3], [-75.48, -50.66], [-77.11, -48.9], [-77.75, -48.6], [-78.48, -48.48], [-79.23, -48.59], [-79.89, -48.8], [-83.73, -51.46], [-86.46, -47.85], [-90.51, -50.84], [-83.35, -60.43]]
+export const pier7Promenade = (out: MeshBuilder, _fit: Fit): void => {
+  const ring = PIER7.map(([x, z]) => ({ x, z }))
+  const wood = surfaceTag('clapboard')
   const metal = surfaceTag('metal')
-
-  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
-  for (const p of ring) {
-    x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x)
-    z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z)
-  }
-  const cx = (x0 + x1) / 2
-  const cz = (z0 + z1) / 2
-  const hx = (x1 - x0) / 2
-  const hz = (z1 - z0) / 2
-  const deckH = 0.4
-  const pillingH = 6
-
-  faceBand(out, ring, 0, deckH, { kind: 'blank', wall: CONCRETE_GREY, material: 'concrete' })
-  for (let i = -1; i <= 1; i++) {
-    for (let k = -1; k <= 1; k++) {
-      box(out, cx + i * hx / 2, -pillingH / 2, cz + k * hz / 2, 0.6, pillingH / 2, 0.6, CONCRETE_DARK, concrete)
-    }
-  }
-
-  const railingH = 1.1
+  const DECK: Rgb = [0.5, 0.42, 0.33]
+  const deckY = 0.35
+  // the deck: its top fanned from the first corner is wrong for a concave ring, so ear-clipped by capPolygon
+  capPolygon(out, ring, deckY, DECK, wood)
+  faceBand(out, ring, -0.6, deckY, { kind: 'blank', wall: [0.32, 0.28, 0.24], material: 'clapboard' })
+  // piles under the edges, every 6 m
   for (let i = 0; i < ring.length; i++) {
     const e = edgeAt(ring, i)
-    box(out, e.mid.x + e.nx * 0.15, deckH + railingH / 2, e.mid.z + e.nz * 0.15, e.L / 2, railingH / 2, 0.08, METAL_RAILING, metal)
-    for (let j = 0; j < Math.max(2, Math.round(e.L / 3)); j++) {
-      const u = e.L * (j + 0.5) / Math.max(2, Math.round(e.L / 3))
-      box(out, e.a.x + e.tx * u + e.nx * 0.15, deckH + railingH / 2, e.a.z + e.tz * u + e.nz * 0.15, 0.08, railingH / 2, 0.08, METAL_RAILING, metal)
-    }
+    for (let u = 0; u < e.L; u += 6) box(out, e.a.x + e.tx * u, -3, e.a.z + e.tz * u, 0.22, 3, 0.22, [0.24, 0.2, 0.17], wood)
   }
-
-  for (let i = 0; i < Math.round(hx * 2 / 3); i++) {
-    const x = -hx + (i + 0.5) * (hx * 2 / Math.round(hx * 2 / 3))
-    const lampH = 4
-    box(out, cx + x, deckH + lampH / 2, cz + hz, 0.1, lampH / 2, 0.1, METAL_DARK, metal)
-    box(out, cx + x, deckH + lampH + 0.15, cz + hz, 0.25, 0.15, 0.25, [0.9, 0.85, 0.7], 0)
+  // the railing: posts every 2.5 m and a top rail, along every edge longer than a metre
+  for (let i = 0; i < ring.length; i++) {
+    const e = edgeAt(ring, i)
+    if (e.L < 1) continue
+    const n = Math.max(1, Math.round(e.L / 2.5))
+    for (let j = 0; j <= n; j++) {
+      const u = (e.L * j) / n
+      box(out, e.a.x + e.tx * u - e.nx * 0.12, deckY + 0.55, e.a.z + e.tz * u - e.nz * 0.12, 0.04, 0.55, 0.04, [0.08, 0.08, 0.09], metal)
+    }
+    box(out, e.mid.x - e.nx * 0.12, deckY + 1.08, e.mid.z - e.nz * 0.12, e.L / 2, 0.035, 0.035, [0.08, 0.08, 0.09], metal)
+    // the lamp standards on the long sides, every 20 m
+    if (e.L > 30) for (let u = 10; u < e.L - 5; u += 20) {
+      const x = e.a.x + e.tx * u - e.nx * 0.5, z = e.a.z + e.tz * u - e.nz * 0.5
+      box(out, x, deckY + 2.2, z, 0.07, 2.2, 0.07, [0.1, 0.1, 0.11], metal)
+      box(out, x, deckY + 4.5, z, 0.22, 0.22, 0.22, [0.95, 0.88, 0.7], 0)
+    }
   }
 }
 
@@ -459,6 +452,5 @@ export const S1 = {
   s1_fort_mason_shed_b_25372352,
   s1_fort_mason_shed_d_25372355,
   s1_hyde_street_pier_25319880,
-  s1_pier_7_23605169,
-  s1_pier_14_23605173,
+  pier7Promenade,
 }

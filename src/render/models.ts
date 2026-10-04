@@ -834,14 +834,13 @@ export function bikeDocks(colour: Rgb): (out: MeshBuilder) => void {
   }
 }
 
-/** A fire hydrant: a red barrel, a domed cap, two side nozzles and a chain-ring. 0.75 m. */
-export function hydrant(out: MeshBuilder): void {
-  const red: Rgb = [0.78, 0.16, 0.12]
-  prism(out, 0, 0, 0, 0.08, 0.17, 8, red)
-  prism(out, 0, 0, 0.08, 0.6, 0.12, 8, red)
-  prism(out, 0, 0, 0.6, 0.66, 0.15, 8, red)
-  prism(out, 0, 0, 0.66, 0.78, 0.12, 8, red, FIXED, 0.04)
-  for (const s of [-1, 1]) box(out, s * 0.16, 0.42, 0, 0.05, 0.05, 0.05, red, FIXED)
+/** A fire hydrant: a barrel (red unless painted otherwise), a domed cap — its bonnet — two side nozzles and a chain-ring. 0.75 m. */
+export function hydrant(out: MeshBuilder, body: Rgb = [0.78, 0.16, 0.12], top: Rgb = body): void {
+  prism(out, 0, 0, 0, 0.08, 0.17, 8, body)
+  prism(out, 0, 0, 0.08, 0.6, 0.12, 8, body)
+  prism(out, 0, 0, 0.6, 0.66, 0.15, 8, top)
+  prism(out, 0, 0, 0.66, 0.78, 0.12, 8, top, FIXED, 0.04)
+  for (const s of [-1, 1]) box(out, s * 0.16, 0.42, 0, 0.05, 0.05, 0.05, body, FIXED)
   box(out, 0, 0.42, 0.15, 0.06, 0.06, 0.04, [0.85, 0.85, 0.8], FIXED)
 }
 

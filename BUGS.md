@@ -10206,7 +10206,7 @@ with none got one from what the building is. Audit: build every manifest's model
 the 11 being spires, domes, the Dutch Windmill (genuinely taller than their eaves). The owner: the de Young's
 observation tower is likewise genuinely tall — an audit must allow for such things.
 
-### #248 Built but never shown: the de Young, and builders no manifest places (OPEN, 2026-10-02)
+### #248 Built but never shown: the de Young, and builders no manifest places (CLOSED 2026-10-04: the de Young was built since; the listed builders are superseded by later entries — market-east.json's 44 Montgomery, 50 California, 425 Market, 225 Bush, 235 Pine — or are unphotographed placeholder guesses (h2.ts `diningHall`, `formerMilitaryChapel`: a chicago-block chapel) that the photo-checked restyles beat; pier23/31 and the batteries are placed)
 
 The owner: *"the de Young museum is rendering as a default building even though I KNOW we have a procedural
 renderer … I'm worried we have other procedural renderers we developed, that are not displaying."*
@@ -10313,7 +10313,7 @@ else OSM's — and its base storey is at most half of it. 26 builders affected (
 13 m. The headless audit of #247 could not see this (no manifest height to compare against) — a check that wants
 the FITTED height needs the game's placement (`__placed()`), not the manifest.
 
-### #254 Yerba Buena Island (OPEN, 2026-10-02)
+### #254 Yerba Buena Island (OPEN, 2026-10-02; 2026-10-04: air-paths near YBI 0 stretches, the `islands` traffic zone is baked — (6) the building under Macalla Road: road now passes clear (render checked); left: (2) the tunnel portals' look)
 
 The owner: *"YB island has a lot of issues. There is a random wall across the bridge. The entrance and exit of the
 tunnel (mandatory) are both poorly rendered. There are many paths on the island that go through the air. There's WAY
@@ -10328,7 +10328,7 @@ building's base is below the road's level (screenshot: the road's walls and pave
 (4) traffic: the `islands` zone (traffic 0.15, crowd 0.8) is in data/zones, in from the next bake.
 Also (owner): Treasure Island's Avenue of the Palms should be lined with palms; Treasure Island needs its own kit buildings like the Presidio (the 1939 Exposition buildings, Navy barracks).
 
-### #255 French shop signs in San Francisco (OPEN, 2026-10-02)
+### #255 French shop signs in San Francisco (FIXED: tools/facadegen/draw.py paints SIGN_WORDS, the English list, for every non-Paris style; checked 2026-10-04)
 A street-level render at Second and Natoma (37.78755, −122.39985) shows "PHARMACIE" fascias on a brick block. The
 ground-floor shop signs appear to come from a Paris word list. Found in passing during the Salesforce Park work
 (docs/SALESFORCE-PARK.md §8). Look for where the shopfront text is chosen per region.
@@ -10385,3 +10385,62 @@ and SS Jeremiah O'Brien claim their OSM ways. The "two military ships by the Fer
 - **Z-fighting on buses' backs**: the rear window, tall-tail lamps and bus doors stood 1.2 cm / 0.8 cm proud of the
   body; on big vehicles now 5 cm / 3.5 cm (carkit src/geometry/body.ts).
 - **The Thinker** at the Legion of Honor is a placeholder block until the owner's GLB arrives.
+
+### #260 Every hilltop in the city is ~30 m too low — the 60 m bare-earth opening (OPEN, OWNER DECISION; Strawberry Hill fixed by zone 2026-10-04)
+Found on the Golden Gate Park audit (docs/BUGFIX-2026-10-03.md #267): Strawberry Hill is a flat-topped mesa 14 m over
+Stow Lake. The cause is city-wide. `tools/bake.ts` runs a morphological OPENING of radius 60 m (a ~120 m window) over
+the zoom-15 ground to take rooftops out of a surface model; an opening also removes any summit narrower than the
+window. Highest point within 120 m, raw zoom-15 against the baked ground (both metres above sea):
+
+| summit | raw | baked | lost |
+|---|---|---|---|
+| Twin Peaks (N / S) | 278.0 / 280.7 | 245.2 / 246.2 | 32.8 / 34.5 |
+| Mount Davidson | 284.1 | 251.9 | 32.2 |
+| Mount Sutro | 278.4 | 252.0 | 26.4 |
+| Grand View Park | 203.9 | 170.8 | 33.1 |
+| Buena Vista Park | 174.8 | 143.5 | 31.3 |
+| Mount Olympus | 171.7 | 141.8 | 30.0 |
+| Corona Heights | 151.4 | 117.3 | 34.2 |
+| Bernal Heights | 141.9 | 112.4 | 29.5 |
+| Strawberry Hill | 130.4 | 101.7 | 28.6 |
+| Telegraph Hill (Coit Tower) | 91.5 | 63.3 | 28.2 |
+| Angel Island / YBI / Hawk Hill | 237.2 / 94.2 / 254.0 | 202.1 / 75.7 / 237.0 | 35.1 / 18.5 / 17.0 |
+| Diamond Hts, Russian Hill, Kite Hill, Billy Goat, McLaren, Lone Mtn | | | 11–15 |
+| Tank Hill, Nob Hill, Inspiration Pt, Potrero Hill (broad tops) | | | 0.2–4.5 |
+
+The raw numbers are the real ones (Twin Peaks 282 m, Mount Davidson 283 m, Strawberry Hill 125 m published). And the
+opening has nothing to remove here: the zoom-15 tiles over San Francisco are BARE EARTH. Measured over all 409 OSM
+buildings of 40 m or more: centre minus the highest ground 30 m outside the footprint is median −1.5 m, p90 −0.2,
+p99 +3.3 (the one outlier, +21.7, is a structure in the bay by the Bay Bridge, ringed by water). Salesforce Tower's
+site reads 7.3 m against 4.3 m at the street.
+
+**Fixed so far:** Strawberry Hill only — a `relief: raw` zone on the island's own shore (data/zones, ring pushed into
+the lake; nothing ridden crosses it). The raw path now takes the raw ground BLURRED like the opened one (a zero-radius
+`bareEarthF`), not the tile's posts unsmoothed — which also slightly softens Alcatraz.
+
+**For the owner — the city-wide fix is yours to call:** drop the opening for San Francisco (a per-city switch, or
+the bake comment's own proposal: open only where there are buildings), and re-bake. It moves every street height
+near a summit, the Twin Peaks figure-eight and the Telegraph Hill loop by up to 30 m, every conformed bridge deck and
+absolute `baseY` near them, and the raw ground is ~45% bumpier at 4 m than the opened ground (the bake's own transect)
+— which touches the descent goal, and only you can judge how the descents ride. Per-summit `relief: raw` zones are the
+cautious alternative, but each ring must sit where raw ≈ opened (under ~1 m) or be feathered, and no ridden way may
+cross it.
+
+### #261 The Bay Bridge's towers stand ~115 m south-west of the real ones (OPEN, OWNER DECISION; 2026-10-04)
+Found after #272 in docs/BUGFIX-2026-10-03.md (the Golden Gate stood 49 m off along its axis — `tools/bridge-fit.ts`
+measures only ACROSS a bridge's axis). Projected onto the Bay Bridge NEAR entry's axis (bridges.json: 37.79738,
+−122.3787, 40.24°), OSM's four tower pylons (ways 432712476–479, `bridge:support=pylon`) stand at −969, −264, +494,
++1200 m (spacing 705 / 758 / 706: the real spans), 5 m off the axis, and the Center Anchorage (236374789) at +110. The
+model draws its towers at ±383 and ±1087 about its own centre anchorage at 0 (bay-bridge.ts `TOWERS`): every tower,
+both anchorages and the cables are 111–119 m south-west of the real ones. Seen from above, the San Francisco
+anchorage stands inland among Rincon Hill's buildings and the first tower at the shoreline (it is ~350 m out).
+
+Not moved tonight, because the frame carries everything else: the deck profile crests at the frame's 0
+(`bayLowerY`), the land meets and the tunnel portals (`SF_LAND`, `YBI_PORTAL`, `YBI_EAST`) were measured in it from the
+baked terrain, the deck declarations, the east span's path, and the Bikeway's helix "beside the first tower" are all
+authored in it, and both decks have been ridden both ways on it. Two ways to fix, for the owner to choose:
+(a) move the entry 115 m north-east and subtract 115 from every frame constant fitted to the ground (land meets,
+portals, deck ranges, EAST_PATH, the helix and its boardwalk), keeping the structure's own numbers; or (b) keep the
+frame and draw the structure 115 m further along it (TOWERS, the anchorages, END, the cables), moving the profile's
+crest with it — the helix then stands ~115 m from the first tower rather than beside it. Either needs `bake --decks`,
+air-paths round both ends, car reachability, and a ride both ways on each deck and the Bikeway.

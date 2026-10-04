@@ -59,23 +59,7 @@ export const B3: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     })
   },
 
-  /**
-   * way/84805700 — J David Gladstone Institutes, 1650 Owens St, 41 m / 6 levels. Reference photo
-   * (`sf-mapillary/way-84805700-01.jpg`): plain modern biotech/office low-rise, metal panel and glass, no
-   * ornament, articulated bays reading as vertical panel piers, ground floor recessed under an overhang.
-   */
-  b3_lab_84805700: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'recessed', storeys: 1, depth: 1.2, material: 'glass' },
-      shaft: { storeys: 4, windows: 'horizontal', material: 'precast' },
-      top: { kind: 'attic', storeys: 1, material: 'precast' },
-      bands: { aboveGround: 'string', belowTop: null, top: null },
-      crown: null,
-      frame: { verticals: { kind: 'pier', width: 0.5, at: 'bays', count: 6 }, horizontals: null, recess: 0, material: 'precast' },
-      entrance: { at: 'centre', kind: 'recessed', steps: 0 },
-      material: 'precast',
-    })
-  },
+
 
   /**
    * way/71739084 — 666 Post St, 50 m. Reference photo (`batch3/way-71739084.jpg`): dark red-brown brick/

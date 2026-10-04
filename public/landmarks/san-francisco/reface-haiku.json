@@ -139,7 +139,7 @@
       "way/261443889"
     ],
     "name": "Second Union Baptist Church",
-    "restyle": "brick",
+    "restyle": "brick", "noShops": true,
     "wall": "#E8D9CA",
     "by": "haiku",
     "image": "way-261443889.jpg",
@@ -163,7 +163,7 @@
       "way/261302127"
     ],
     "name": "Uptown Church of Christ",
-    "restyle": "brick",
+    "restyle": "brick", "noShops": true,
     "wall": "#7FA8D0",
     "by": "haiku",
     "image": "way-261302127-2.jpg",

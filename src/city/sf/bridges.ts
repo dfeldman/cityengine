@@ -44,16 +44,25 @@ export const goldenGateDeckY = (z: number): number => {
  */
 /**
  * Where the STRAIGHT bridge ends, each way (z, this frame). Measured from the ways themselves (OSM): all four —
- * the two carriageways, the two sidewalks — run dead straight from z −1100 to z 1275 and then swing off, east to the
+ * the two carriageways, the two sidewalks — run dead straight from z −1149 to z 1226 (−1100 and 1275 before the
+ * model moved 49 m north onto OSM's towers) and then swing off, east to the
  * toll plaza at the San Francisco end and west to Vista Point at the Marin end, 45 m off the axis within 150 m. The
  * model's deck, and the deck declared for the ways, stop where the straight does; the curved viaducts beyond are
  * the ways' own structure (render/bridges.ts), graded from the deck's end to the ground (src/city/bridge-decks.ts).
  * (Until 2026-09-30 the model ran straight on to −1200: its last hundred metres stood empty beside the road.)
  */
-export const GG_SOUTH_ANCHORAGE = 30
-export const GG_FORT_POINT_ARCH = 90
-export const GG_SOUTH_END = -(GG_MAIN / 2 + GG_SIDE) - GG_SOUTH_ANCHORAGE - GG_FORT_POINT_ARCH - 2
-export const GG_NORTH_END = 1275
+/*
+ * The SOUTH END IN OSM'S ORDER (2026-10-04, BUGFIX-2026-10-03.md #272): the side span ends at Pylon S1, against Fort
+ * Point's bay wall; the Fort Point ARCH spans the fort's courtyard to Pylon S2 on the bluff; the anchorage lies beyond
+ * it. OSM: Pylon S1 (way 1560010162/3) 342 m from the south tower's parts, the Fort Point Arch (1560010166) 112 m to
+ * Pylon S2 (1560010164/5), the South Anchorage (1560010167) ~38 m past that. (Was side span → anchorage → arch: the
+ * anchorage and its pylon stood inside the fort, the arch on the bluff south of it.) Both ends were fitted in the
+ * world with the model 49 m south of OSM's towers; moved by that much, they keep their places on the ground.
+ */
+export const GG_SOUTH_ANCHORAGE = 38
+export const GG_FORT_POINT_ARCH = 112
+export const GG_SOUTH_END = -(GG_MAIN / 2 + GG_SIDE) - GG_FORT_POINT_ARCH - GG_SOUTH_ANCHORAGE - 21
+export const GG_NORTH_END = 1226
 export const GOLDEN_GATE_DECKS: DeckDecl[] = [
   {
     from: GG_SOUTH_END, to: GG_NORTH_END, half: GG_DECK_HALF, y: goldenGateDeckY,
@@ -364,7 +373,90 @@ export const SALESFORCE_PARK_WAYS: AuthoredWay[] = [
 ]
 
 /** the decks each bridge model declares, by the `procedural` its manifest entry places it under */
+// ---------------------------------------------------------------- Embarcadero Center's podium (docs/EMBARCADERO-CENTER.md)
+/**
+ * THE PODIUM LEVEL of Embarcadero Center and One Maritime Plaza: the promenade along the four Embarcadero Center
+ * blocks, the skybridges over Battery, Front, Davis and Drumm, and the roof of the Golden Gateway Garage (the plaza
+ * round One Maritime Plaza), one level 8 m over the street — the garage's own two storeys (way/1177704958), the level
+ * Bar Sprezzatura stands on (`base` 8, prominent.json). OSM maps it all as layer-1 footways and pedestrian ways; the
+ * bake had the promenade at street level and guessed the skybridges 5.7 m up, so every bridge was a step as tall as
+ * a person and the walk ran through the shops (owner, 2026-10-03: "the embarcadero decks are not navigable").
+ *
+ * Reached by stairs and paths up from the street (`joins`: graded from the deck down to the street); nothing round
+ * it is ramped up to it. Authored in the CITY frame round `EC_PODIUM` (the manifest entry `embarcaderoPodium` stands
+ * there, unrotated), so these points are OSM's own, read off the bake. Only foot ways on layer 1: Washington Street
+ * is layer 1 too, and stays on the street.
+ */
+export const EC_PODIUM = { x: 1200, z: 250 }
+/** the podium's absolute height (city frame): the street here is at −81.2 */
+export const EC_PODIUM_Y = -73.3
+const ecLocal = (pts: [number, number][]): { x: number; z: number }[] => pts.map(([x, z]) => ({ x: x - EC_PODIUM.x, z: z - EC_PODIUM.z }))
+const EC_FOOT = ['footway', 'pedestrian', 'steps', 'path', 'cycleway']
+const ecDeck = (more: Partial<DeckDecl>): DeckDecl => ({ from: 0, to: 0, half: 0, y: () => EC_PODIUM_Y, layer: 1, kinds: EC_FOOT, vertical: true, joins: true, ...more })
+export const EMBARCADERO_PODIUM_DECKS: DeckDecl[] = [
+  // the promenade, from the head of the steps west of Battery (x 1009) to the Embarcadero, along the blocks' south side
+  (() => {
+    // (to x 1397, where the promenade ENDS above Drumm Street: running on to 1420 pinned the way down to the street at deck
+    // height until its last 7 m, which fell 8 m — a wall across the walk under it, owner 2026-10-03 "walls block the way")
+    const path = ecLocal([[1009, 173], [1063, 181], [1106, 189], [1157, 195], [1222, 201], [1265, 207], [1296, 218], [1347, 227], [1397, 235]])
+    const len = path.reduce((t, q, i) => (i === 0 ? 0 : t + Math.hypot(q.x - path[i - 1].x, q.z - path[i - 1].z)), 0)
+    return ecDeck({ path, from: 0, to: len, half: 14 })
+  })(),
+  // the Golden Gateway Garage's roof: One Maritime Plaza's plaza (way/1177704958's ring)
+  ecDeck({ ring: ecLocal([[1206, 341], [1217, 271], [1177, 264], [1147, 259], [1106, 253], [1077, 248], [1037, 241], [1031, 277], [1026, 311], [1067, 318], [1072, 319], [1094, 323], [1096, 323], [1136, 329], [1175, 336]]) }),
+  /*
+   * GOLDEN GATEWAY CENTER, over Washington Street (2026-10-03): its garden podium, where the townhouses stand — 12 m
+   * over the street on the west garage (way/588365127), 13 m on the east one (way/588363943), the heights the
+   * townhouse restyles already stand on (prominent.json `base`). The bridges over Washington climb to it from
+   * Maritime Plaza's 8 m.
+   */
+  ecDeck({ y: () => EC_PODIUM_Y + 4, ring: ecLocal([[1199.8, 363.8], [1201.7, 364.1], [1201.3, 367.0], [1203.3, 367.4], [1199.9, 388.3], [1197.9, 401.1], [1194.4, 422.9], [1191.0, 443.7], [1155.3, 437.9], [1116.7, 433.8], [1111.2, 428.5], [1114.6, 407.2], [1117.1, 391.9], [1096.4, 388.6], [1090.1, 427.8], [1042.3, 420.1], [1055.1, 340.3], [1109.3, 349.1], [1152.2, 356.1], [1178.9, 360.3], [1200.0, 362.2]]) }),
+  ecDeck({ y: () => EC_PODIUM_Y + 5, ring: ecLocal([[1305.5, 380.2], [1301.5, 406.1], [1302.6, 409.6], [1299.0, 433.4], [1295.0, 445.1], [1292.8, 459.6], [1256.2, 454.0], [1214.5, 447.5], [1217.7, 426.4], [1216.3, 420.1], [1220.0, 396.5], [1222.8, 393.6], [1226.8, 368.0], [1258.0, 372.9], [1305.5, 380.2]]) }),
+]
+
+/*
+ * PIER 7 (2026-10-04, waterfront audit): its walks were baked at the sea bed under its new model's deck (batches/s1.ts
+ * `pier7Promenade`), a metre under the water. The deck is the model's outline (copied there from OSM way/23605169), at
+ * the model's deck top: the sea (−84.51) + the entry's `deckAbove` 3.5 + the 0.35 m deck; the walk off the Embarcadero
+ * is graded up to it (`joins`).
+ */
+const PIER7_RING: { x: number; z: number }[] = [{"x": -78.13, "z": -67.46}, {"x": -76.55, "z": -66.26}, {"x": -73.82, "z": -64.16}, {"x": -70.59, "z": -61.62}, {"x": -70.23, "z": -61.03}, {"x": -69.99, "z": -60.41}, {"x": -69.87, "z": -59.74}, {"x": -69.9, "z": -59.06}, {"x": -70.04, "z": -58.42}, {"x": -70.3, "z": -57.82}, {"x": -71.04, "z": -56.81}, {"x": 5.07, "z": -0.88}, {"x": 7.62, "z": -0.52}, {"x": 8.16, "z": -1.27}, {"x": 13.04, "z": -0.73}, {"x": 21.95, "z": 5.79}, {"x": 24.0, "z": 10.48}, {"x": 23.49, "z": 11.19}, {"x": 24.41, "z": 13.37}, {"x": 114.11, "z": 79.12}, {"x": 115.48, "z": 77.34}, {"x": 120.51, "z": 77.82}, {"x": 123.47, "z": 73.95}, {"x": 129.0, "z": 77.84}, {"x": 127.97, "z": 86.73}, {"x": 121.05, "z": 96.27}, {"x": 113.14, "z": 99.71}, {"x": 107.5, "z": 95.68}, {"x": 110.43, "z": 91.79}, {"x": 108.52, "z": 86.93}, {"x": 109.87, "z": 85.2}, {"x": 20.05, "z": 19.41}, {"x": 17.65, "z": 19.15}, {"x": 17.06, "z": 19.91}, {"x": 12.17, "z": 19.42}, {"x": 3.17, "z": 12.66}, {"x": 1.13, "z": 8.29}, {"x": 1.71, "z": 7.44}, {"x": 0.76, "z": 5.3}, {"x": -75.48, "z": -50.66}, {"x": -77.11, "z": -48.9}, {"x": -77.75, "z": -48.6}, {"x": -78.48, "z": -48.48}, {"x": -79.23, "z": -48.59}, {"x": -79.89, "z": -48.8}, {"x": -83.73, "z": -51.46}, {"x": -86.46, "z": -47.85}, {"x": -90.51, "z": -50.84}, {"x": -83.35, "z": -60.43}]
+export const PIER7_DECKS: DeckDecl[] = [
+  { from: 0, to: 0, half: 0, y: () => -84.51 + 3.5 + 0.35, ring: PIER7_RING, kinds: ['footway', 'path', 'pedestrian'], vertical: true, joins: true },
+]
+
+/**
+ * THE FERRY GATES' GANGWAYS (E, F, G south of the Ferry Building, BUGFIX-2026-10-03.md #276/#281): each a straight
+ * covered bridge from its kiosk on the South Basin deck down to its float. OSM's ways (the package's 80426, 80425, 80424)
+ * came out of the generic bridge rule humped in the middle and dipping 2 m at the kiosk, whose node lies on the pier
+ * outline's very edge. Declared here as a straight fall from the deck (sea + 3.5, the basin's level) to the float
+ * (sea + 0.5); the model (render/landmarks/sf/ferry-gates.ts) draws its trusses and floor on the same line. World
+ * x, z; the model's frame is the world's about FERRY_GATES_ORIGIN (front 180, no rotation).
+ */
+export const FERRY_GATES_ORIGIN = { x: 1831, z: 192.5 }
+export const FERRY_GANGWAYS: { gate: string; from: [number, number]; to: [number, number] }[] = [
+  { gate: 'E', from: [1750, 202], to: [1778, 223] },
+  { gate: 'F', from: [1780, 162], to: [1807, 182] },
+  { gate: 'G', from: [1809, 121], to: [1837, 142] },
+]
+export const FERRY_DECK_Y = -84.51 + 3.5
+export const FERRY_FLOAT_Y = -84.51 + 0.5
+/** the gangway's floor at fraction t from the kiosk (0) to the float (1) */
+export const gangwayY = (t: number): number => FERRY_DECK_Y + (FERRY_FLOAT_Y - FERRY_DECK_Y) * Math.max(0, Math.min(1, t))
+const FERRY_GATE_DECKS: DeckDecl[] = FERRY_GANGWAYS.map((g) => {
+  const a = { x: g.from[0] - FERRY_GATES_ORIGIN.x, z: g.from[1] - FERRY_GATES_ORIGIN.z }
+  const b = { x: g.to[0] - FERRY_GATES_ORIGIN.x, z: g.to[1] - FERRY_GATES_ORIGIN.z }
+  const L = Math.hypot(b.x - a.x, b.z - a.z)
+  // (the line runs 1.5 m past each end: a way's end node exactly at the line's end fell off it by a rounding)
+  const ux = (b.x - a.x) / L, uz = (b.z - a.z) / L, X = 1.5
+  const path = [{ x: a.x - ux * X, z: a.z - uz * X }, { x: b.x + ux * X, z: b.z + uz * X }]
+  return { from: 0, to: L + 2 * X, half: 2.2, path, y: (s: number) => gangwayY((s - X) / L), kinds: ['footway'] }
+})
+
 export const SF_BRIDGE_DECKS: Record<string, DeckDecl[]> = {
+  pier7Promenade: PIER7_DECKS,
+  ferryGatesEFG: FERRY_GATE_DECKS,
+  embarcaderoPodium: EMBARCADERO_PODIUM_DECKS,
   goldenGateBridgeNear: GOLDEN_GATE_DECKS,
   bayBridgeNear: BAY_BRIDGE_DECKS,
   salesforceTransitCenter: SALESFORCE_PARK_DECKS,

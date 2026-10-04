@@ -89,6 +89,8 @@ export function adaptTile(m: MapTile, idx: Pick<MapIndex, 'zFloor' | 'dict' | 't
       if (f & SF.authored) e.authored = true
       if (f & SF.crossing) e.crossing = true
       if (f & SF.park) e.park = true
+      if (f & (SF.busRight | SF.busLeft)) e.busSide = (((f & SF.busRight) ? 1 : 0) | ((f & SF.busLeft) ? 2 : 0)) as 1 | 2 | 3
+      if (f & (SF.paintTransit | SF.paintBike)) e.paint = ((f & SF.paintTransit) ? 1 : 0) | ((f & SF.paintBike) ? 2 : 0)
       t.edges.push(e)
     } else if (w.role === 'rail') {
       const zs = zsOf(wi)
@@ -120,6 +122,7 @@ export function adaptTile(m: MapTile, idx: Pick<MapIndex, 'zFloor' | 'dict' | 't
     if (b.minH !== undefined) p.minHeight = b.minH / 100
     if (partOf !== undefined) p.partOf = partOf
     if (b.stretch !== undefined) p.stretch = b.stretch
+    if (b.noShops) p.noShops = true
     if (b.palette) p.palette = b.palette
     if (b.holes) p.holes = b.holes.map(flat)
     if (b.levelsInferred) p.levelsInferred = true
@@ -153,6 +156,7 @@ export function adaptTile(m: MapTile, idx: Pick<MapIndex, 'zFloor' | 'dict' | 't
     if (a.holes) r.holes = a.holes.map(flat)
     if (a.top) r.top = true
     if (a.sea) r.sea = true
+    if (a.brick) r.brick = true
     if (a.level !== undefined) r.level = H(a.level)
     t.areas.push(r)
   }

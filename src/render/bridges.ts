@@ -99,7 +99,8 @@ function standsClear(f: Frame[], ground: (x: number, z: number) => number): bool
 
 /** One raised edge as a deck. `under(x, z, r, y)`: does a road pass within r of (x, z), below y? (for the piers) */
 export function deck(out: MeshBuilder, e: PackedEdge, terrain: Terrain, walk = e.walk, drop = 0, structured = false,
-                     hedged = false, under?: (x: number, z: number, r: number, y: number) => boolean): void {
+                     hedged = false, under?: (x: number, z: number, r: number, y: number) => boolean,
+                     beside?: (x: number, z: number, y: number) => boolean): void {
   const pts = unpackPoints(e.points)
   if (pts.length < 2 || !e.heights) return
   const f = frames(pts, e.heights)
@@ -165,13 +166,16 @@ export function deck(out: MeshBuilder, e: PackedEdge, terrain: Terrain, walk = e
     wall(out, f, -outer - 0.3, -0.9, top, STONE, -1)
     wall(out, f, outer + 0.3, -0.9, top, STONE, 1)
     strip(out, f, -outer - 0.3, outer + 0.3, -0.9, UNDER, true)
-    // the parapets: 0.3 m wide, 1.1 m above the pavement, with their tops
+    // the parapets: 0.3 m wide, 1.1 m above the pavement, with their tops — only along the stretches where that side
+    // is OPEN (see `openRuns`)
     for (const side of [-1, 1] as const) {
       const o0 = side * outer
       const o1 = side * (outer + 0.3)
-      wall(out, f, o0, top, top + 1.1, STONE, side === -1 ? 1 : -1)
-      wall(out, f, o1, top, top + 1.1, STONE, side)
-      strip(out, f, Math.min(o0, o1), Math.max(o0, o1), top + 1.1, STONE)
+      for (const run of openRuns(f, side * (outer + 0.8), beside)) {
+        wall(out, run, o0, top, top + 1.1, STONE, side === -1 ? 1 : -1)
+        wall(out, run, o1, top, top + 1.1, STONE, side)
+        strip(out, run, Math.min(o0, o1), Math.max(o0, o1), top + 1.1, STONE)
+      }
     }
     // piers every 25 m, down to the ground or the river bed
     const total = f[f.length - 1].s
@@ -206,9 +210,41 @@ export function deck(out: MeshBuilder, e: PackedEdge, terrain: Terrain, walk = e
       if (stood > 0) pier(out, x, z, yTop - 1.1, yTop, 0.7, outer, heading)
     }
   } else {
-    // a ramp on an embankment: retaining walls from the deck edge down to the ground
-    wall(out, f, -outer, 0, top, STONE, -1, ground)
-    wall(out, f, outer, 0, top, STONE, 1, ground)
+    /*
+     * A ramp on an embankment: retaining walls from the deck edge down to the ground. Where an END stands clear of the
+     * ground beyond it — the abutment, where the ramp meets its bridge over a road — the fill stops square there
+     * (city/grade.ts), so the side walls are taken down only to the fill (sampled 1.5 m back from the end: at the end
+     * itself they dropped to the road below, a hanging triangular fin each side), and the drop is closed by a
+     * vertical abutment face across the end (Lincoln Blvd under the Presidio Parkway, 2026-10-03).
+     */
+    const ends = [{ at: f[0], next: f[Math.min(1, f.length - 1)] }, { at: f[f.length - 1], next: f[Math.max(0, f.length - 2)] }]
+      .map(({ at, next }) => {
+        const l = Math.hypot(next.x - at.x, next.z - at.z) || 1
+        return { at, ix: (next.x - at.x) / l, iz: (next.z - at.z) / l }
+      })
+    const fill = (x: number, z: number): number => {
+      for (const e of ends) {
+        const along = (x - e.at.x) * e.ix + (z - e.at.z) * e.iz
+        if (along < 1.5 && Math.hypot(x - e.at.x, z - e.at.z) < outer + 1) return ground(x + e.ix * (1.5 - along), z + e.iz * (1.5 - along))
+      }
+      return ground(x, z)
+    }
+    wall(out, f, -outer, 0, top, STONE, -1, fill)
+    wall(out, f, outer, 0, top, STONE, 1, fill)
+    for (const e of ends) {
+      const fr = e.at
+      const corner = (side: number): [number, number] => [fr.x + fr.nx * side * outer, fr.z + fr.nz * side * outer]
+      // the ground just beyond the end, under each corner
+      const below = Math.min(...[-1, 1].map((side) => { const [x, z] = corner(side); return ground(x - e.ix * 0.6, z - e.iz * 0.6) }))
+      if (fr.y - below < 1.2) continue
+      const [ax, az] = corner(-1)
+      const [bx, bz] = corner(1)
+      const quad: [number, number, number][] = [[ax, below - 0.3, az], [bx, below - 0.3, bz], [bx, fr.y + top, bz], [ax, fr.y + top, az]]
+      // facing out of the ramp, away from its fill
+      const n: [number, number, number] = [-e.ix, 0, -e.iz]
+      const cross = (bx - ax) * -e.iz - (bz - az) * -e.ix
+      out.quad(cross > 0 ? quad : [...quad].reverse(), n, [[0, 0], [1, 0], [1, 1], [0, 1]], STONE, FIXED)
+    }
   }
 }
 
@@ -305,6 +341,29 @@ export const BRIDGE_STYLES: Record<string, BridgeStyle> = {
 }
 
 /** A frame interpolated at distance `s` along the deck. */
+/**
+ * The stretches of one side of a deck that are OPEN — no other raised walk alongside at about the same height — as
+ * runs of frames every 2 m. Embarcadero Center's podium walks are mapped as several pedestrian ways side by side and
+ * crossing, each drawn as its own deck, and every one's parapets ran straight across its neighbours' walking surface:
+ * low concrete walls across the way, the rider riding through them (owner, 2026-10-03: "walls block the way").
+ * Without a `beside` test every side is open, as before.
+ */
+function openRuns(f: Frame[], offset: number, beside?: (x: number, z: number, y: number) => boolean): Frame[][] {
+  if (!beside) return [f]
+  const total = f[f.length - 1].s
+  const runs: Frame[][] = []
+  let cur: Frame[] = []
+  const n = Math.max(1, Math.ceil(total / 2))
+  for (let i = 0; i <= n; i++) {
+    const fr = frameAt(f, (total * i) / n)
+    const open = !beside(fr.x + fr.nx * offset, fr.z + fr.nz * offset, fr.y)
+    if (open) cur.push(fr)
+    else { if (cur.length >= 2) runs.push(cur); cur = [] }
+  }
+  if (cur.length >= 2) runs.push(cur)
+  return runs
+}
+
 function frameAt(f: Frame[], s: number): Frame {
   let k = 1
   while (k < f.length - 1 && f[k].s < s) k++

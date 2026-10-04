@@ -94,9 +94,9 @@
    "way/142845124"
   ],
   "name": "Madrone Mission Bay",
-  "procedural": "madroneMissionBay",
-  "front": "street",
-  "height": 61,
-  "note": "2012 Perkins & Will / Bosa, glass residential tower"
+  "note": "2012 Perkins & Will / Bosa: a U of two 16-storey glass towers and 9-storey blocks with stacked balconies (cei.com, sfhighrises). Was one glass box fitted over the hull of all 32 OSM parts; restyled so the parts keep their own massing (views audit 2026-10-04).",
+  "restyle": "towerblock",
+  "wall": "#d6dadd",
+  "noShops": true
  }
 ]

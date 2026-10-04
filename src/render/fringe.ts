@@ -17,7 +17,8 @@ import { MeshBuilder } from './buildings.ts'
 import { buildRoof } from './roofs.ts'
 import { facadeMaterial, KIND_WALL } from './facade-material.ts'
 import { style as styleOf, STYLES, type Palette } from '../city/facade.ts'
-import { unpackPoints, type PackedBuilding, type PackedFringe } from '../city/package.ts'
+import { unpackPoints, onSurface, type PackedBuilding, type PackedEdge, type PackedFringe } from '../city/package.ts'
+import { cartoonMaterial } from './cartoon-material.ts'
 import type { TileLayer } from './city.ts'
 import type { Region } from '../city/region.ts'
 import type { Terrain } from '../city/terrain.ts'
@@ -117,4 +118,42 @@ export function massing(scene: Scene, list: PackedFringe[], reg: Region, terrain
 export function asMassing(b: PackedBuilding): PackedFringe & { minHeight?: number } {
   return { id: b.id, ring: b.ring, height: b.height ?? (b.levels ?? 5) * 3.2, minHeight: b.minHeight, style: b.style,
     roof: b.roof, roofHeight: b.roofHeight, roofColour: b.roofColour }
+}
+
+/**
+ * THE ROADS OF A MID-RING TILE, as plain asphalt ribbons (owner, 2026-10-03: "on mobile, due to some memory saving
+ * measures, roads don't render at all until you are on top of them … it would be nice if we could render the road at
+ * least a little bit ahead of the rider"). On the phone tiers only the rider's own tile is built in full; the rings
+ * beyond had massing and no streets, so the road ahead began at the tile's edge. A strip per segment at the street's
+ * width and its own (graded) heights — no kerbs, no markings, no junction pads: a few hundred triangles a tile.
+ * Not a bridge's or a tunnel's: those are structures, and a ribbon on a tunnel lies across the hill over it.
+ */
+export function midRoads(scene: Scene, edges: PackedEdge[], terrain: Terrain, tag: string): Mesh[] {
+  const out = new MeshBuilder()
+  const ASPHALT: [number, number, number] = [0.2, 0.2, 0.22]
+  const PATH: [number, number, number] = [0.5, 0.48, 0.44]
+  for (const e of edges) {
+    if (!onSurface(e) || e.bridge || e.tunnel || (e.layer ?? 0) > 0) continue
+    const pts = unpackPoints(e.points)
+    const half = e.foot ? Math.max(0.8, e.width / 2) : e.width / 2
+    const y = (i: number): number => (e.heights?.[i] ?? terrain.heightAt(pts[i].x, pts[i].z)) + 0.08
+    for (let i = 1; i < pts.length; i++) {
+      const a = pts[i - 1], b = pts[i]
+      const L = Math.hypot(b.x - a.x, b.z - a.z)
+      if (L < 0.05) continue
+      const nx = -(b.z - a.z) / L * half, nz = (b.x - a.x) / L * half
+      out.quad([[a.x - nx, y(i - 1), a.z - nz], [b.x - nx, y(i), b.z - nz], [b.x + nx, y(i), b.z + nz], [a.x + nx, y(i - 1), a.z + nz]],
+        [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], e.foot ? PATH : ASPHALT, 0)
+    }
+  }
+  if (out.triangles === 0) return []
+  const m = new Mesh(`midroads:${tag}`, scene)
+  out.toVertexData().applyToMesh(m)
+  const mat = cartoonMaterial(scene, 'cartoonStatic', false)
+  m.material = mat
+  // the near tiles' asphalt group: after the ground, depth-tested against the buildings
+  m.renderingGroupId = 2
+  m.isPickable = false
+  m.freezeWorldMatrix()
+  return [m]
 }

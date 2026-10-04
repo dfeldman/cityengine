@@ -124,7 +124,8 @@ export function photoMode(scene: Scene, camera: Camera, onStatus?: (s: string) =
   if (Number.isFinite(farParam) && farParam > 0) setFar(camera, farParam)
 
   addEventListener('keydown', (e) => {
-    if (e.code === 'KeyP' && !e.ctrlKey && !e.metaKey) {
+    // (K: P is the pause, O observes from a tower's top)
+    if (e.code === 'KeyK' && !e.ctrlKey && !e.metaKey) {
       setFog(scene, fogOff)
       onStatus?.(fogOff ? 'fog off' : 'fog on')
     } else if (e.code === 'BracketRight') {

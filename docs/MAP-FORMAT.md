@@ -371,6 +371,9 @@ A way's booleans pack into `flags`:
 | 128 | park (set at load from the tile's areas, as today — never baked) | |
 | 256 | bore: a street tunnel under a hill, ridden and drawn as a tunnel (tools/tunnels.ts; 2026-09-29) | |
 | 512 | cut: a street running down into a tunnel mouth, drawn at its own level below the ground (2026-09-29) | |
+| 1024 | authored: a way the region drew itself, drawn by the model it belongs to | |
+| 2048 | busRight: a bus lane on the right curb of the way's direction, painted red (2026-10-04) | |
+| 4096 | busLeft: a bus lane on its left curb (a backward lane, or `busway:left`) | |
 
 ### 5.6 Areas and places
 
@@ -474,6 +477,7 @@ in this city"), and every tile needs the ones over it. `priority` orders overlap
 | `traffic: number` | car density multiplier (the delivery game's gridlock) | constant |
 | `exclude: string[]` | item type prefixes not planted here ("no palms in this park") | `sf/parks.ts` code |
 | `water: 'calm' \| 'waves'` | the water shader's mode | the `sea` flag |
+| `cliffs: true` | the steep ground here (over ~37°) is bare rock, with boulders | render/cliffs.ts (2026-10-03: Lands End, Sutro Baths) |
 | `park: ParkStyle` | the open-country rules | `region.park`, one per region |
 | `furniture: {…}` | lamp, bench, meter densities | `region.furniture` |
 

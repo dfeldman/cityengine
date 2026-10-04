@@ -4,7 +4,7 @@
       "way/35115839"
     ],
     "name": "Mission Substation",
-    "restyle": "brick",
+    "restyle": "brick", "noShops": true,
     "height": 36,
     "levels": 10,
     "note": "rule 7"

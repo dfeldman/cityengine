@@ -13,7 +13,7 @@
  * Each preset is registered as its own builder (the manifest names it), from photographs and the heights OSM carries.
  * Local frame: the fitted footprint's; +y up.
  */
-import type { MeshBuilder } from '../../buildings.ts'
+import { capPolygonWithHoles, type MeshBuilder } from '../../buildings.ts'
 import { box, type Rgb } from '../../models.ts'
 import type { Fit } from '../fit.ts'
 
@@ -102,18 +102,13 @@ function band(out: MeshBuilder, ring: P2[], y0: number, y1: number, p: TowerPres
   }
 }
 
-/** The roof of a ring at height y (a fan from its centroid: tower footprints are near-convex). */
+/**
+ * The roof of a ring at height y, triangulated (earcut). It was a fan from the centroid, on the claim that tower
+ * footprints are near-convex — Parc 55's is the whole lot with a notch for the Found Hotel, and the fan threw a lid over
+ * the notch at 125 m and past the outline (owner, 2026-10-03: "another intersecting case … might actually be real").
+ */
 function cap(out: MeshBuilder, ring: P2[], y: number, c: Rgb): void {
-  let cx = 0
-  let cz = 0
-  for (const p of ring) { cx += p.x; cz += p.z }
-  cx /= ring.length
-  cz /= ring.length
-  for (let i = 0; i < ring.length; i++) {
-    const a = ring[i]
-    const b = ring[(i + 1) % ring.length]
-    out.quad([[a.x, y, a.z], [b.x, y, b.z], [cx, y, cz], [cx, y, cz]], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], c, 0)
-  }
+  capPolygonWithHoles(out, [ring], y, c, 0)
 }
 
 export function ringTower(out: MeshBuilder, fit: Fit, p: TowerPreset): void {
@@ -194,7 +189,7 @@ export const TOWER_PRESETS = {
   /** the Shell Building (1929): Art Deco terracotta, setbacks to a crowned top */
   shellBuilding: preset({ height: 116, wall: [0.86, 0.8, 0.66], glass: [0.3, 0.3, 0.31], pattern: 'vertical', pitch: 2.2, solid: 0.6, setbacks: [[0.75, 3], [0.88, 3]], crown: 'lantern' }),
   /** Westin St. Francis tower (1972): white, banded, beside the old hotel */
-  westinTower: preset({ height: 120, wall: [0.86, 0.86, 0.84], glass: [0.26, 0.3, 0.34], pattern: 'horizontal', pitch: 3, solid: 0.5, crown: 'flat' }),
+  // (westinTower: its own builder now, districts/union-square.ts)
   /** 101 California (1982): a faceted cylinder of glass bands and granite */
   oneOhOneCalifornia: preset({ height: 183, wall: [0.62, 0.56, 0.52], glass: [0.3, 0.34, 0.4], pattern: 'horizontal', pitch: 3.6, solid: 0.35, crown: 'flat' }),
   /** Moscone West (2003): a three-storey glass box under a thin overhanging roof, the convention centre's face */

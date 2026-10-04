@@ -86,12 +86,19 @@ export class Ids {
 const layerOf = (e: Edge): number => e.layer ?? 0
 
 /** Rule 1: which ways this rider is steered along at all. Tunnels never — nobody can see them. */
+const k0 = (e: Edge): string => e.kind ?? 'residential'
+
 export function classify(edges: Edge[], mode: RideMode): RideEdge[] {
   return edges
     .filter((e) => {
       // tunnels and ways mapped below grade are not drawn (render/city.ts `onSurface`), so nobody rides them — except
       // a street tunnel under a hill (`bore`, tools/tunnels.ts), which is drawn as a tunnel and ridden through
       if (e.a === e.b || (!onSurface(e) && !e.bore)) return false
+      // a way rising more than it runs is a lift or a stair core drawn as a bridge (Embarcadero Center's 78924 climbs 8 m
+      // in 4) — not drawn (render/city.ts `steeperThanWall`), so not ridden: the route went straight up the air
+      // (stairs are exempt: Embarcadero Center's spiral stairs are short OSM ways climbing 8 m, and they ARE the way up)
+      if (k0(e) !== 'steps' && e.heights && e.heights.some((h, i) => i > 0 && Math.abs(h - e.heights![i - 1]) > Math.max(1.5,
+        Math.hypot(e.points[i].x - e.points[i - 1].x, e.points[i].z - e.points[i - 1].z)))) return false
       const k = e.kind ?? 'residential'
       if (k === 'service' && e.service && NOT_A_STREET.has(e.service)) return false
       // an unnamed service road on a bridge is a garage's own ramp or a loading bridge — San Francisco's beside the
@@ -216,6 +223,69 @@ export function joinDeadEnds(ridden: RideEdge[], all: Edge[], blocked?: (a: Poin
     }
   }
   return added.size ? [...ridden, ...added.values()] : ridden
+}
+
+/**
+ * Rule 1c: a path that STOPS SHORT. OSM's paths at Lands End and the Sutro Baths end a few metres from the path they
+ * plainly meet — never joined at a node — and the rider rode to the end and had to turn round (owner, 2026-10-03,
+ * twice). A path's dead end within 12 m of another way's node, at nearly the same height and with nothing built in
+ * between, is carried on to that node: its last point moved there, and the node shared.
+ */
+export function closePathGaps(edges: RideEdge[], blocked?: (a: Point, b: Point) => boolean): RideEdge[] {
+  const deg = degrees(edges)
+  const nodeAt = new Map<number, { p: Point; y: number | undefined }>()
+  for (const e of edges) {
+    nodeAt.set(e.a, { p: e.points[0], y: e.heights?.[0] })
+    nodeAt.set(e.b, { p: e.points[e.points.length - 1], y: e.heights?.[e.heights.length - 1] })
+  }
+  const CELL = 10
+  const grid = new Map<string, number[]>()
+  for (const [n, v] of nodeAt) {
+    const k = `${Math.floor(v.p.x / CELL)},${Math.floor(v.p.z / CELL)}`
+    ;(grid.get(k) ?? grid.set(k, []).get(k)!).push(n)
+  }
+  const near = (p: Point): number[] => {
+    const out: number[] = []
+    const cx = Math.floor(p.x / CELL), cz = Math.floor(p.z / CELL)
+    for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) out.push(...(grid.get(`${cx + i},${cz + j}`) ?? []))
+    return out
+  }
+  const moved = new Map<number, number>()
+  // (a node another end has been joined TO stays where it is: two dead ends facing each other each picked the other,
+  // and both moved — swapped, not joined)
+  const targets = new Set<number>()
+  for (const e of edges) {
+    if (!RUN_EXTRA.has(e.kind ?? '') && e.kind !== 'pedestrian') continue
+    for (const end of ['a', 'b'] as const) {
+      const n = e[end]
+      if ((deg.get(n) ?? 0) !== 1 || moved.has(n) || targets.has(n)) continue
+      const me = nodeAt.get(n)!
+      let best: number | null = null
+      let bd = 12
+      for (const m of near(me.p)) {
+        if (m === e.a || m === e.b || moved.has(m)) continue
+        const o = nodeAt.get(m)!
+        const d = distance(me.p, o.p)
+        if (d >= bd) continue
+        if (me.y !== undefined && o.y !== undefined && Math.abs(me.y - o.y) > 2.5) continue
+        if (blocked?.(me.p, o.p)) continue
+        bd = d
+        best = m
+      }
+      if (best !== null) { moved.set(n, best); targets.add(best) }
+    }
+  }
+  if (moved.size === 0) return edges
+  return edges.map((e) => {
+    const ta = moved.get(e.a)
+    const tb = moved.get(e.b)
+    if (ta === undefined && tb === undefined) return e
+    const points = [...e.points]
+    const heights = e.heights ? [...e.heights] : undefined
+    if (ta !== undefined) { points.unshift(nodeAt.get(ta)!.p); heights?.unshift(nodeAt.get(ta)!.y ?? heights[0]) }
+    if (tb !== undefined) { points.push(nodeAt.get(tb)!.p); heights?.push(nodeAt.get(tb)!.y ?? heights[heights.length - 1]) }
+    return { ...e, a: ta ?? e.a, b: tb ?? e.b, points, heights, length: lengthOf(points) }
+  })
 }
 
 /** Rule 2: the largest connected island, again — the filter can strand a courtyard's service road. */
@@ -629,7 +699,10 @@ export function isParallelPair(e: RideEdge, f: RideEdge): boolean {
     }
     for (const t of [0.25, 0.5, 0.75]) {
       const p = resample(e.points, undefined, 4).pts[Math.round(t * 4)]
-      if (Math.abs(near(e, p) - near(f, p)) > 4) return false
+      // (1.5 m, not 4: a SPLIT-LEVEL street — Carolina and De Haro on Potrero Hill, Bridgeway in Sausalito — has its two
+      // roadways a couple of metres apart in height, and the averaged midline ran between them over the retaining wall,
+      // nothing drawn under the wheel; air-paths, 2026-10-04)
+      if (Math.abs(near(e, p) - near(f, p)) > 1.5) return false
     }
   }
   const be = bearing(e.points[0], e.points[e.points.length - 1])
@@ -947,18 +1020,35 @@ export function dropSidePaths(edges: RideEdge[], ids = new Ids(), blocked?: (a: 
           }
           return out
         }
-        const hs = (sA: number, sB: number, n2: number): number[] | undefined => {
-          const h0 = hAt(piece, sA)
-          const h1 = hAt(piece, sB)
-          return h0 === undefined || h1 === undefined ? undefined : Array.from({ length: n2 }, (_, i) => h0 + ((h1 - h0) * i) / Math.max(1, n2 - 1))
+        /*
+         * The halves' heights, from the road's own profile at each of their points — not a straight line between the
+         * cut's two ends: that threw the profile away, and on 18th Street over Potrero Hill the rider rode a chord 5 m over
+         * the street's dip (air-paths' worst bike stretch, 2026-10-04).
+         */
+        const cum = [0]
+        for (let i = 1; i < piece.points.length; i++) cum.push(cum[i - 1] + distance(piece.points[i - 1], piece.points[i]))
+        const hExact = (sAt: number): number | undefined => {
+          const H = piece.heights
+          if (!H || H.length !== piece.points.length) return undefined
+          let i = 1
+          while (i < cum.length - 1 && cum[i] < sAt) i++
+          const t = (sAt - cum[i - 1]) / Math.max(1e-9, cum[i] - cum[i - 1])
+          return H[i - 1] + (H[i] - H[i - 1]) * Math.max(0, Math.min(1, t))
+        }
+        const hs = (sA: number, _sB: number, pts: Point[]): number[] | undefined => {
+          if (hExact(0) === undefined) return undefined
+          const out: number[] = []
+          let run = sA
+          for (let i = 0; i < pts.length; i++) { if (i > 0) run += distance(pts[i - 1], pts[i]); out.push(hExact(run)!) }
+          return out
         }
         const p1 = cut(0, q.s)
         const p2 = cut(q.s, piece.length)
         const total = piece.over.reduce((t, o) => t + o.length, 0) || piece.length
         const k = q.s / piece.length
-        const e1: RideEdge = { ...piece, id: ids.nextEdge(), b: target, points: p1, length: lengthOf(p1), heights: hs(0, q.s, p1.length),
+        const e1: RideEdge = { ...piece, id: ids.nextEdge(), b: target, points: p1, length: lengthOf(p1), heights: hs(0, q.s, p1),
           over: piece.over.map((o) => ({ ...o, length: (o.length / total) * total * k })) }
-        const e2: RideEdge = { ...piece, id: ids.nextEdge(), a: target, points: p2, length: lengthOf(p2), heights: hs(q.s, piece.length, p2.length),
+        const e2: RideEdge = { ...piece, id: ids.nextEdge(), a: target, points: p2, length: lengthOf(p2), heights: hs(q.s, piece.length, p2),
           over: piece.over.map((o) => ({ ...o, length: (o.length / total) * total * (1 - k) })) }
         kept = kept.filter((x) => x !== piece)
         kept.push(e1, e2)
@@ -1358,7 +1448,10 @@ export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrid
   const ids = new Ids()
   const blocked = overrides?.buildings ? footprintTest(overrides.buildings) : undefined
   const ridden = pruneFreewayTraps(classify(edges, mode))
-  const classified = mode === 'bike' ? joinDeadEnds(ridden, edges, blocked) : ridden
+  // (the near-miss gaps closed BEFORE the dead ends are rescued too: a rescue through a flight of steps — the Sutro Baths
+  // footway's end, 5 m short of the path on — hid the dead end from `closePathGaps`, then went with the steps)
+  const gapped = closePathGaps(ridden, blocked)
+  const classified = closePathGaps(mode === 'bike' ? joinDeadEnds(gapped, edges, blocked) : gapped, blocked)
   // (the freeways pruned again once the side paths are gone: the carriageway a bridge's sidewalk replaces was the
   // only way onto the freeway beyond it)
   let es = pruneStubs(largest(mode === 'bike' ? pruneFreewayTraps(dropSidePaths(classified, ids, blocked)) : classified))

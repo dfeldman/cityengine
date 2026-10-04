@@ -188,7 +188,7 @@ export class DeliveryCard {
   }
 
   /** The drop-off's receipt: stars popping in one by one, the customer's line, the fee and the tip; confetti for 4+. */
-  receipt(job: Job, r: Rating, seconds: number, levelUp: number | null): void {
+  receipt(job: Job, r: Rating, seconds: number, levelUp: number | null, title = 'Delivered!'): void {
     if (!this.receiptEl) {
       this.receiptEl = document.createElement('div')
       this.receiptEl.className = 'sr-receipt'
@@ -199,7 +199,7 @@ export class DeliveryCard {
     const time = `${m}:${String(Math.round(seconds % 60)).padStart(2, '0')}`
     const stars = [1, 2, 3, 4, 5].map((k) => `<span class="${k <= r.stars ? '' : 'dim'}" style="transition-delay:${0.15 + k * 0.12}s">★</span>`).join('')
     el.innerHTML = `
-      <h3>${job.item ? esc(job.item.emoji) + ' ' : ''}Delivered!</h3>
+      <h3>${job.item ? esc(job.item.emoji) + ' ' : ''}${esc(title)}</h3>
       <div class="stars">${stars}</div>
       <q>${esc(r.line)}</q>
       <div class="pay"><div><b>$${r.fee.toFixed(2)}</b><small>fee</small></div><div><b>+$${r.tip.toFixed(2)}</b><small>tip</small></div><div><b>${time}</b><small>time</small></div></div>

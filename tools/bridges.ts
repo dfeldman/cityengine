@@ -36,6 +36,8 @@ export interface BridgeWorld {
   ground: (x: number, z: number) => number
   /** water that runs UNDERGROUND (a canal in a tunnel): a "bridge" over it is a street over the vault, at grade */
   buried?: Pt[][]
+  /** foot bridges near these points take at most this layer (Region.footBridgeLayers, in local metres) */
+  layerCaps?: { x: number; z: number; radius: number; layer: number }[]
 }
 
 /** above the water's surface: with Paris's 2.5 m drop to the river, a gentle 1 m hump over its quays */
@@ -171,7 +173,8 @@ export function bridgeRise(e: BridgeEdge, all: BridgeEdge[], world: BridgeWorld,
   if (water) return { rise: Math.max(0.8, Math.min(5, water.level + CLEARANCE_WATER - top)), over: 'water' }
 
   // a way on a lower layer passing under it
-  const layer = e.layer ?? 1
+  const cap = e.foot ? world.layerCaps?.find((c) => p.some((q) => Math.hypot(q.x - c.x, q.z - c.z) < c.radius)) : undefined
+  const layer = Math.min(e.layer ?? 1, cap?.layer ?? Infinity)
   let need = -Infinity
   let footOnlyUnder = false
   for (const o of all) {
@@ -192,7 +195,17 @@ export function bridgeRise(e: BridgeEdge, all: BridgeEdge[], world: BridgeWorld,
       for (let j = 1; j < q.length; j++) {
         if (cross(p[i - 1], p[i], q[j - 1], q[j]) === null) continue
         const under = o.heights ? (o.heights[j - 1] + o.heights[j]) / 2 : world.ground(q[j].x, q[j].z)
-        need = Math.max(need, under + PER_LAYER * Math.max(1, layer - (o.layer ?? 0)) - top)
+        /*
+         * A footpath under a FOOT bridge is cleared by one storey, whatever the layers say. A spiral ramp overlaps
+         * itself in plan, so OSM numbers its turns layer 3, 4, 5 — and over the ground path beneath it each turn
+         * was lifted 5.5 m per layer: the Market Street overpass's helix (37.752148, −122.442793) stood 36 m up on
+         * a pier, when Mapillary shows one concrete deck ~5 m over the road (BUGFIX #323). Roads keep the per-layer
+         * rule: the Transit Center's park is a foot bridge four layers over the streets and 18 m up. (The helix's
+         * span over Market is itself tagged layer 5: that is the region's `layerCaps`, below — no rule tells
+         * it from the park, whose four layers are real.)
+         */
+        const per = o.foot && e.foot ? 1 : Math.max(1, layer - (o.layer ?? 0))
+        need = Math.max(need, under + PER_LAYER * per - top)
       }
     }
   }
@@ -457,4 +470,138 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
     }
   }
   return { bridges, ramps, raised }
+}
+
+/**
+ * A FOOT BRIDGE'S ENDS, graded down to the paths they join (owner, 2026-10-03: "footbridge at 37.753044, -122.455970
+ * does not connect to the ground on either end"). `bridgeHeights` gives a bridge one level; the footbridge over
+ * Clarendon Avenue is mapped as one way with its spiral ramps at both ends, so the whole of it — ramps included — stood
+ * at 79.1 m, its ends 3–5 m over the paths at 75.7 and 74.0. Where an end of a foot bridge (footway, path, cycleway,
+ * pedestrian; never steps) stands more than a metre over the highest non-bridge way meeting it there, the end is graded
+ * down to it along the bridge's own line over `drop / 0.1` metres (at most 45 % of its length), smoothly, so the middle
+ * — over the road — keeps its clearance. Returns the ids changed.
+ */
+export function rampFootBridgeEnds(edges: { id: number; a: number; b: number; kind?: string; foot?: boolean; bridge?: boolean; ramp?: boolean; points: number[]; heights?: number[] }[]): Set<number> {
+  const at = new Map<number, number[]>()   // node → heights of the non-bridge ways ending there
+  for (const e of edges) {
+    if (e.bridge || !e.heights?.length) continue
+    for (const [node, h] of [[e.a, e.heights[0]], [e.b, e.heights[e.heights.length - 1]]] as const) {
+      const l = at.get(node) ?? []; l.push(h); at.set(node, l)
+    }
+  }
+  // the road bridges' middles: a foot bridge alongside one is its SIDEWALK and keeps the road's level (the Fillmore
+  // overpass over Geary: graded on their own, its sidewalks dipped 4 m below the road deck at both ends)
+  const roadMids = edges.filter((e) => e.bridge && !e.foot && !/^(footway|path|cycleway|pedestrian|steps)$/.test(e.kind ?? '')).map((e) => {
+    const m = Math.floor(e.points.length / 4) * 2
+    return { x: e.points[m], z: e.points[m + 1] }
+  })
+  const changed = new Set<number>()
+  for (const e of edges) {
+    if (!e.bridge || !e.heights || e.heights.length < 3 || !/^(footway|path|cycleway|pedestrian)$/.test(e.kind ?? '')) continue
+    const m = Math.floor(e.points.length / 4) * 2
+    if (roadMids.some((r) => Math.hypot(r.x - e.points[m], r.z - e.points[m + 1]) < 18)) {
+      // (and one a previous pass graded is put back level, at its top)
+      const top = Math.max(...e.heights)
+      if (e.heights.some((h) => top - h > 0.05)) { e.heights.fill(top); changed.add(e.id) }
+      continue
+    }
+    const n = e.heights.length
+    const cum = [0]
+    for (let i = 1; i < n; i++) cum.push(cum[i - 1] + Math.hypot(e.points[i * 2] - e.points[i * 2 - 2], e.points[i * 2 + 1] - e.points[i * 2 - 1]))
+    const total = cum[n - 1]
+    for (const end of [0, 1] as const) {
+      const node = end === 0 ? e.a : e.b
+      const there = at.get(node)
+      if (!there?.length) continue
+      const ground = Math.max(...there)
+      const top = e.heights[end === 0 ? 0 : n - 1]
+      const drop = top - ground
+      if (drop <= 1) continue
+      const D = Math.min(total * 0.45, drop / 0.1)
+      for (let i = 0; i < n; i++) {
+        const s = end === 0 ? cum[i] : total - cum[i]
+        if (s >= D) continue
+        const t = s / D
+        const f = t * t * (3 - 2 * t)
+        e.heights[i] = Math.min(e.heights[i], ground + drop * f)
+      }
+      changed.add(e.id)
+    }
+  }
+  return changed
+}
+
+/**
+ * WALKS OFF THE SEA BED (waterfront audit, 2026-10-04): a pier is mapped as an area (`man_made=pier`) with its walks drawn
+ * over it as footways — and the footways took the ground under them, which over the bay is the flattened sea bed: 273 ways
+ * baked a metre UNDER the water (Pier 7, Pier 14, the Hyde Street and Fisherman's Wharf piers, Sausalito's docks).
+ * Every point of a foot way (footway, path, pedestrian, steps, cycleway) inside a fixed pier's outline goes to the pier
+ * deck, `deck` m over the sea; inside a floating pier, to a float, 0.5 m over it; and any other foot-way point still
+ * below the sea, to a float's height. A street is never moved. Returns the ids changed.
+ */
+export function liftWalksOffTheSea(edges: { id: number; kind?: string; tunnel?: boolean; bore?: boolean; bridge?: boolean; points: number[]; heights?: number[] }[],
+  sea: number, piers: { ring: { x: number; z: number }[]; floating: boolean }[], deck = 3.5,
+  wet?: (x: number, z: number) => boolean): Set<number> {
+  const boxes = piers.map((p) => {
+    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+    for (const q of p.ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+    return { ...p, x0, x1, z0, z1 }
+  })
+  const inRing = (r: { x: number; z: number }[], x: number, z: number): boolean => {
+    let c = false
+    for (let i = 0, j = r.length - 1; i < r.length; j = i++) {
+      if ((r[i].z > z) !== (r[j].z > z) && x < ((r[j].x - r[i].x) * (z - r[i].z)) / (r[j].z - r[i].z) + r[i].x) c = !c
+    }
+    return c
+  }
+  const within = (b: (typeof boxes)[number], x: number, z: number): boolean =>
+    x >= b.x0 && x <= b.x1 && z >= b.z0 && z <= b.z1 && inRing(b.ring, x, z)
+  const foot = (e: { kind?: string; tunnel?: boolean; bore?: boolean; heights?: number[] }): boolean =>
+    !!e.heights && !e.tunnel && !e.bore && /^(footway|path|pedestrian|steps|cycleway)$/.test(e.kind ?? '')
+  /*
+   * WHICH POINTS ARE ON THE DECK. A pier outline also takes in DRY land — the Ferry Building's covers its whole plaza —
+   * and lifting that walled every walk on it in. With the water (`wet`, the bake's sea and lakes: the coastline is the
+   * shore) a point is on the deck when it is over the water; without it, when it is down at the water (at most 0.3 m
+   * over the sea), which misses a deck the elevation tiles read as low land (the Ferry Terminal's South Basin).
+   */
+  const onWater = (x: number, z: number, h: number): boolean => (wet ? wet(x, z) : h <= sea + 0.3)
+  /*
+   * A fixed pier that LEAVES FROM LAND is level with it (2026-10-04, the South Basin): where the outline takes in dry
+   * walks — the promenade, a building's arcade — its deck is the highest of them, held to 1.5–4.5 m over the sea; the
+   * generic `deck` stood it 0.7 m over the promenade it joins.
+   */
+  const dry = boxes.map((b) => {
+    if (b.floating) return null
+    let top = -Infinity
+    for (const e of edges) {
+      if (!foot(e)) continue
+      for (let i = 0; i < e.heights!.length; i++) {
+        const x = e.points[i * 2], z = e.points[i * 2 + 1], h = e.heights![i]
+        if (onWater(x, z, h) || h <= sea + 0.3 || !within(b, x, z)) continue
+        top = Math.max(top, h)
+      }
+    }
+    return Number.isFinite(top) ? Math.min(sea + 4.5, Math.max(sea + 1.5, top)) : null
+  })
+  const changed = new Set<number>()
+  for (const e of edges) {
+    if (!foot(e)) continue
+    for (let i = 0; i < e.heights!.length; i++) {
+      const x = e.points[i * 2], z = e.points[i * 2 + 1], h = e.heights![i]
+      if (!onWater(x, z, h)) continue
+      // on a fixed deck the walk takes the deck's level exactly (a deck is flat, whatever the tiles say under it); on a
+      // float, or loose on the water, it is only ever lifted
+      let deckAt: number | null = null, floatAt: number | null = null
+      boxes.forEach((b, k) => {
+        if (!within(b, x, z)) return
+        if (b.floating) floatAt = sea + 0.5
+        else deckAt = Math.max(deckAt ?? -Infinity, dry[k] ?? sea + deck)
+      })
+      const want: number | null = deckAt ?? floatAt ?? (h < sea - 0.2 ? sea + 0.5 : null)
+      if (want === null) continue
+      // (a foot BRIDGE on a pier — a gangway's head, a raised walk — is only ever lifted onto it, never flattened)
+      if (deckAt !== null && !e.bridge ? Math.abs(h - want) > 0.05 : h < want - 0.05) { e.heights![i] = want; changed.add(e.id) }
+    }
+  }
+  return changed
 }

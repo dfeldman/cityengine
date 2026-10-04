@@ -122,7 +122,7 @@ let nextWalkerId = 1
 /** after the first frame, walkers are only created further away than people are drawn (crowd-baked.ts) */
 const SPAWN_BEYOND = 120
 
-function rng(seed: number): () => number {
+export function rng(seed: number): () => number {
   let a = (seed ^ 0x2545f491) >>> 0
   return () => {
     a = (a + 0x9e3779b9) >>> 0
@@ -580,7 +580,7 @@ export class Crowd {
 const SPORT_TOPS = ['#1f6bff', '#22c7ee', '#e03131', '#e5157f', '#ffd42a', '#12a874', '#ffffff', '#111111']
 const SPORT_BOTTOMS = ['#111111', '#1f2937', '#263066']
 
-function dressed(r: () => number, sport = false): Pick<Walker, 'shirt' | 'trousers' | 'skin' | 'hair' | 'look'> {
+export function dressed(r: () => number, sport = false): Pick<Walker, 'shirt' | 'trousers' | 'skin' | 'hair' | 'look'> {
   const look = { skin: pick(r, SKIN), hair: pick(r, HAIR), top: jitter(r, pick(r, sport ? SPORT_TOPS : TOPS)),
     bottom: jitter(r, pick(r, sport ? SPORT_BOTTOMS : BOTTOMS)) }
   return { look, skin: rgb(look.skin), hair: rgb(look.hair), shirt: rgb(look.top), trousers: rgb(look.bottom) }

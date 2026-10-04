@@ -133,54 +133,9 @@ export const B9: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     })
   },
 
-  /**
-   * way/574616994 — unnamed Mission Bay building, height 48m tagged. Baked ring: orthogonal with one
-   * single canted corner facet, not a rhythm. Dark panelled mid-rise, plain grid windows.
-   */
-  b9_midrise_574616994: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'plain', storeys: 1, material: 'concrete' },
-      shaft: { storeys: 9, windows: 'balanced', material: 'dark-brick' },
-      top: null,
-      bands: { aboveGround: 'string', belowTop: null, top: null },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'door', steps: 1 },
-      material: 'dark-brick',
-    })
-  },
 
-  /**
-   * way/135103725 — unnamed Mission Bay office building, height 47m tagged. Baked ring confirmed strictly
-   * orthogonal notched box. Tan-and-glass office building with banded glazing.
-   */
-  b9_office_135103725: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'recessed', storeys: 1, depth: 0.6, material: 'concrete' },
-      shaft: { storeys: 9, windows: 'continuous', material: 'glass' },
-      top: null,
-      bands: { aboveGround: 'string', belowTop: null, top: null },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'recessed', steps: 1 },
-      material: 'concrete',
-    })
-  },
 
-  /**
-   * way/135103710 — unnamed Mission Bay office building, height 47m tagged. Baked ring confirmed strictly
-   * orthogonal box. Plain glass office building, recessed ground floor.
-   */
-  b9_office_135103710: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'recessed', storeys: 1, depth: 0.6, material: 'concrete' },
-      shaft: { storeys: 9, windows: 'balanced', material: 'glass' },
-      top: null,
-      bands: { aboveGround: 'string', belowTop: null, top: null },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'recessed', steps: 1 },
-      material: 'concrete',
-    })
-  },
+
+
+
 }

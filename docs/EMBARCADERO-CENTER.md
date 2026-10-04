@@ -442,3 +442,16 @@ above (no `bridge`/`layer` tag on a `stairways` entry) is unchanged and is the t
 ## Scope note from the owner
 *"This is actually not an incredibly popular spot, there aren't that many pictures of it. So points for
 effort."* — so **evidence will run out**, and stopping at what the aerials support is the right answer.
+
+## 2026-10-03 — the podium level, rebuilt on OSM's own walks (BUGFIX-2026-10-03 #186–187)
+
+A plan of the bake against the models settled the owner's "somewhat the wrong footprints": the four
+`embarcaderoUnit` decks (gapQuad between tower bounding boxes) stood across the CROSS STREETS — the gap between
+two Embarcadero Center towers is Front, Davis, Drumm. Unregistered (code kept). The real podium route is OSM's:
+a layer-1 promenade along the blocks' south side, skybridges over each street, bridges north over Clay to the
+Golden Gateway Garage's roof round One Maritime Plaza. All of it is now pinned to ONE level, 8 m over the street
+(`EC_PODIUM_Y` −73.3, src/city/sf/bridges.ts), by decks the bake conforms the ways to; stairs from the street are
+graded down to it. Not yet: Golden Gateway Center (its podium is 12–13 m: the townhouse restyles' `base`), the
+Commons further north, the Tulip, and the brick/colonnade/canopy vocabulary re-placed on the low building:part
+rings south of the promenade (the plaza "units" proper).
+

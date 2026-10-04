@@ -18,6 +18,7 @@ import type { MeshBuilder } from '../../buildings.ts'
 import { box, strut, type Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 import type { Fit } from '../fit.ts'
+import { signText } from '../parts.ts'
 
 export interface PierSpec {
   /** the number over the portal, as it is painted (33, 39, "1½") */
@@ -130,7 +131,7 @@ export function pier(out: MeshBuilder, fit: Fit, spec: PierSpec): void {
   // ---- the shed behind: a long hall with a clerestory, on the deck
   const shedH = Math.min(7.5, H - 3)
   const back = -hz
-  box(out, 0, shedH / 2, (front - bulk + back) / 2, hx - 1.5, shedH / 2, (front - bulk - back) / 2, wall, stucco)
+  box(out, 0, (shedH + 0.8) / 2, (front - bulk + back) / 2, hx - 1.5, (shedH - 0.8) / 2, (front - bulk - back) / 2 - 0.05, wall, stucco)
   // the roof: a shallow barrel of a few facets, or a gable for the plain ones
   const rz0 = back
   const rz1 = front - bulk
@@ -153,7 +154,9 @@ export function pier(out: MeshBuilder, fit: Fit, spec: PierSpec): void {
   // the substructure: dark timber and concrete from the deck down past the waterline, under the whole pier. Placed on
   // the sea's level since 2026-10-02 (BUGS.md #258), the open underside showed the bank of ground the pier stands on as
   // a green strip at the waterline (owner's screenshot)
-  box(out, 0, -2.6, 0, hx, 3, hz, [0.24, 0.22, 0.2], concrete)
+  // (stopping 10 cm under the deck, and 5 cm in: up to 0.4 m and flush with its sides, the two z-fought along every
+  // pier's waterline — the largest surfaces the coplanar scan found in the city, 2026-10-03)
+  box(out, 0, -2.85, 0, hx - 0.05, 2.75, hz - 0.05, [0.24, 0.22, 0.2], concrete)
   // the deck's edge and its piles, out over the water
   box(out, 0, 0.4, (rz0 + rz1) / 2, hx, 0.4, (rz1 - rz0) / 2, [0.5, 0.49, 0.47], concrete)
   for (const s of [-1, 1]) {
@@ -169,7 +172,19 @@ export const PIERS = {
   pier3: preset({ number: '3', style: 'beaux' }),
   pier5: preset({ number: '5', style: 'beaux' }),
   pier9: preset({ number: '9', style: 'beaux' }),
-  pier15: preset({ number: '15', style: 'mission' }),
+  /*
+   * PIER 15 is the EXPLORATORIUM (since 2013): the Port's bulkhead with the museum's name across it, and at the bay end the
+   * glass BAY OBSERVATORY standing over the pier's deck (museums audit, 2026-10-04; exploratorium.edu).
+   */
+  pier15: (out: MeshBuilder, fit: Fit): void => {
+    pier(out, fit, { number: '15', style: 'mission' })
+    signText(out, 'EXPLORATORIUM', 0, 8.2, fit.hz + 0.2, 1.3, [0.12, 0.13, 0.14])
+    // at the bay end, from the deck up past the crown of the shed's roof, a little wider than the shed: its glass
+    // block (shed 7.5 m to the eaves, the arched roof to ~11 m — piers.ts `pier`)
+    const L = Math.min(22, fit.hz * 0.3), W = fit.hx - 1.5 + 0.35
+    box(out, 0, 6.1, -fit.hz + L / 2 + 1, W, 5.3, L / 2, [0.34, 0.45, 0.5], surfaceTag('glass'))
+    box(out, 0, 11.55, -fit.hz + L / 2 + 1, W + 0.3, 0.15, L / 2 + 0.3, [0.85, 0.85, 0.83], surfaceTag('metal'))
+  },
   pier17: preset({ number: '17', style: 'mission' }),
   pier19: preset({ number: '19', style: 'mission' }),
   pier23: preset({ number: '23', style: 'mission' }),

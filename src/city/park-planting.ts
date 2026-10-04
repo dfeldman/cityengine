@@ -68,15 +68,32 @@ export const GREEN: ReadonlySet<PackedArea['kind']> = new Set<PackedArea['kind']
  */
 export const TILE_TREES = 380
 export const MAX_DENSITY = 0.0078
+/**
+ * …except in a SMALL park (under a hectare) whose zone asks for more: the Seward Mini Park, "heavily wooded" (owner,
+ * 2026-10-03), asked 0.03 and got 11 trees on 3 000 m². A small park cannot make a forest's cost; `TILE_TREES` still
+ * bounds the tile. Up to a trunk every seven metres.
+ */
+export const SMALL_PARK_M2 = 10000
+export const SMALL_PARK_MAX_DENSITY = 0.02
+const capFor = (size: number): number => (size < SMALL_PARK_M2 ? SMALL_PARK_MAX_DENSITY : MAX_DENSITY)
 
 /** Every tree inside the region's parks. Street trees and the mapped ones are `plantCity`'s own business. */
+/** a green polygon wider than this is a reserve's boundary (a marine sanctuary, a national recreation area), not a park */
+export const HUGE_AREA_SPAN = 40000
+export const tooBigForAnArea = (ring: { x: number; z: number }[]): boolean => {
+  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+  for (const p of ring) { x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z) }
+  return x1 - x0 > HUGE_AREA_SPAN || z1 - z0 > HUGE_AREA_SPAN
+}
+
 export function plantParks(pkg: Pick<CityPackage, 'areas' | 'edges'>, rule: ParkRule, seed = 0x9e3779b9): Planting[] {
   const areas = pkg.areas.map((a) => {
     const ring = unpackPoints(a.ring)
     const holes = (a.holes ?? []).map(unpackPoints)
     return { kind: a.kind, ring, holes, ...boundsOf(ring), size: ringArea(ring) }
   })
-  const green = areas.map((a, i) => ({ a, i })).filter(({ a }) => GREEN.has(a.kind) && a.size >= 200)
+  // (and not a reserve's boundary, which packages baked before the bake dropped them still carry)
+  const green = areas.map((a, i) => ({ a, i })).filter(({ a }) => GREEN.has(a.kind) && a.size >= 200 && !tooBigForAnArea(a.ring))
   // the holes in the green: a lake, a ball field, a paved concourse. `top` paving included — that is exactly
   // the case it exists for, a square drawn over the park polygon that spreads under it.
   const blocked = areas.filter((a) => !GREEN.has(a.kind))
@@ -98,7 +115,7 @@ export function plantParks(pkg: Pick<CityPackage, 'areas' | 'edges'>, rule: Park
     const r = mulberry(seed ^ Math.imul(i + 1, 0x85ebca6b))
     const edges = new SegGrid(a.ring, a.holes)
     // the spacing the densest species here would want: the grid step, one candidate a cell
-    const step = 1 / Math.sqrt(Math.max(1e-6, peakDensity(rule, a)))
+    const step = 1 / Math.sqrt(Math.max(1e-6, peakDensity(rule, a, capFor(a.size))))
     const cell = step * step
     for (let z = a.z0 + r() * step; z < a.z1; z += step) {
       for (let x = a.x0 + r() * step; x < a.x1; x += step) {
@@ -120,7 +137,7 @@ export function plantParks(pkg: Pick<CityPackage, 'areas' | 'edges'>, rule: Park
         if (d < EDGE_BAND) f *= 1 + EDGE_BOOST * (1 - d / EDGE_BAND)
         // and thinning towards a path rather than stopping dead at it
         if (toPath < PATH_REACH) f *= (toPath - PATH_CLEAR) / (PATH_REACH - PATH_CLEAR)
-        if (r() > Math.min(MAX_DENSITY, spot.density) * f * cell) continue
+        if (r() > Math.min(capFor(a.size), spot.density) * f * cell) continue
         const sp = weighted(spot.species, r())
         const key = tileKey(...tileOf(px, pz))
         const list = perTile.get(key) ?? []
@@ -199,7 +216,7 @@ function clumping(x: number, z: number, clump: number, seed: number): number {
 }
 
 /** The densest the rule gets anywhere in this area — the grid step has to be fine enough for it. */
-function peakDensity(rule: ParkRule, a: { kind: PackedArea['kind']; x0: number; z0: number; x1: number; z1: number }): number {
+function peakDensity(rule: ParkRule, a: { kind: PackedArea['kind']; x0: number; z0: number; x1: number; z1: number }, cap = MAX_DENSITY): number {
   let peak = 0
   const n = 4
   for (let i = 0; i <= n; i++) {
@@ -209,7 +226,7 @@ function peakDensity(rule: ParkRule, a: { kind: PackedArea['kind']; x0: number; 
     }
   }
   // the clumping can reach a little over twice the nominal density; sample fine enough to draw it
-  return Math.max(1e-5, Math.min(MAX_DENSITY, peak) * 2.2)
+  return Math.max(1e-5, Math.min(cap, peak) * 2.2)
 }
 
 function weighted(species: ParkSpecies[], u: number): ParkSpecies {

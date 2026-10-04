@@ -123,7 +123,12 @@ export function uberHqWing(out: MeshBuilder, fit: Fit): void {
   faceBand(out, ring, 0, podiumH, { kind: 'blank', wall: UBER_SCREEN, material: 'metal' })
   faceBand(out, ring, podiumH, H * 0.85, { kind: 'curtain', wall: UBER_FRAME, glass: UBER_GLASS, pitch: 1.6, floor: 4.0, material: 'metal' })
   orangeCornice(out, ring, H * 0.85)
-  capPolygon(out, ring, H, UBER_FRAME, surfaceTag('metal'))
+  // the setback top storey above the cornice, as on the corner wing — without it the roof was drawn at H over walls
+  // that stop at 0.85 H, and stood 6 m in the air (owner, 2026-10-03: "a roof floating in the air" by Chase Center)
+  const upper = offsetRing(ring, -1.5)
+  faceBand(out, upper, H * 0.85, H, { kind: 'curtain', wall: UBER_FRAME, glass: UBER_GLASS, pitch: 1.6, floor: 4.0, material: 'metal' })
+  capPolygon(out, ring, H * 0.85 + 0.6, UBER_FRAME, surfaceTag('metal'))
+  capPolygon(out, upper, H, UBER_FRAME, surfaceTag('metal'))
 
   // the second curved run's diagonal wood fins: pick the longer half of the ring's edges (the gentler,
   // second curve) and lay a zigzag of raked beams proud of the glass, floor-height apart

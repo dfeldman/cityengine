@@ -58,6 +58,14 @@ export class MeshBuilder {
    * Empty and untouched for everything else that builds a mesh, including the whole facade generator.
    */
   readonly signs: PlacedSign[] = []
+  /**
+   * The clock faces the model carries (render/landmarks/parts.ts `clockFace`), in its own frame: the centre, the
+   * horizontal direction the face looks, and the dial's radius. The hands are NOT geometry — they turn with the real
+   * time in the region's own time zone (render/clocks.ts), so they are raised as their own nodes when the model is
+   * placed (owner, 2026-10-04: "the huge public clocks … actually show correct time … there will be public clocks
+   * in every city we ever do").
+   */
+  readonly clocks: { x: number; y: number; z: number; nx: number; nz: number; r: number; hands?: [number, number, number] }[] = []
 
   /**
    * A raised deck this model plants (render/plants.ts, docs/SKYPARKS.md): a ring in the model's own local

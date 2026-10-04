@@ -12,8 +12,8 @@
   "note": "Embarcadero (Justin Herman) Plaza, brutalist square-tube concrete tangle over a basin. POSITION CORRECTED 2026-09-23: was 37.7946/-122.3946, which is 111 m south-east of the real thing and outside the plaza (owner). Now the centre of way/27146056, the fountain's own concrete area in OSM (x 1445.8..1484.8, z 256.1..282.8 in city world metres)."
  },
  {
-  "lat": 37.791,
-  "lon": -122.3899,
+  "lat": 37.791527,
+  "lon": -122.390025,
   "size": [
    22,
    12
@@ -21,7 +21,7 @@
   "height": 18,
   "procedural": "cupidsSpan",
   "name": "Cupid's Span",
-  "note": "Rincon Park, giant bow and part-buried arrow (Oldenburg/van Bruggen 2002)."
+  "note": "Rincon Park, giant bow and part-buried arrow (Oldenburg/van Bruggen 2002). POSITION CORRECTED 2026-10-03: was 37.791/-122.3899, 60 m south in the Embarcadero roadway (owner: 'in the middle of the road'); now the centre of way/175010375, the sculpture's own outline in OSM."
  },
  {
   "lat": 37.8058,
@@ -60,30 +60,6 @@
   "note": "Yerba Buena Gardens, cut into the level change. Position CORRECTED from 37.7853/-122.4029 (103 m out, in the north-west corner of the park where there is nothing) to the centre of OSM way/25298444, amenity=fountain natural=water, which is the memorial's own water. The pier wall follows way/684190996; the pools are way/1167668187 and way/1326136219. Built in landmarks/sf/yerba-buena.ts with the rest of the block."
  },
  {
-  "lat": 37.788,
-  "lon": -122.4075,
-  "size": [
-   3,
-   3
-  ],
-  "height": 3,
-  "procedural": "heartsInSanFrancisco",
-  "name": "Hearts in San Francisco (Union Square)",
-  "note": "ONE heart model, several placements round the city; recolour per instance."
- },
- {
-  "lat": 37.7889,
-  "lon": -122.4066,
-  "size": [
-   3,
-   3
-  ],
-  "height": 3,
-  "procedural": "heartsInSanFrancisco",
-  "name": "Hearts in San Francisco (Ferry Building)",
-  "note": "second placement of the same heart model."
- },
- {
   "lat": 37.7978,
   "lon": -122.4069,
   "size": [
@@ -105,7 +81,7 @@
   "height": 6,
   "procedural": "francisScottKeyCanopy",
   "name": "Francis Scott Key Monument canopy",
-  "note": "Golden Gate Park: the stone canopy only \u2014 the figure is a real model placed separately."
+  "note": "Golden Gate Park: the stone canopy only — the figure is a real model placed separately."
  },
  {
   "lat": 37.7948,
@@ -118,5 +94,135 @@
   "procedural": "stevensonMemorial",
   "name": "Robert Louis Stevenson Memorial",
   "note": "Portsmouth Square, granite shaft with a small bronze galleon on top."
+ },
+ {
+  "lat": 37.787729,
+  "lon": -122.4068756,
+  "size": [
+   2.2,
+   1.6
+  ],
+  "height": 3.4,
+  "procedural": "heartLabyrinthine",
+  "name": "Labyrinthine Heart (Union Square)",
+  "sign": false,
+  "note": "Hearts in San Francisco (2026-10-03, owner: 'we should add all the hearts'): Wendy Ackrell, 2023 (OSM n10982692520). A rounded painted heart on a granite pedestal (sf/art.ts paintedHeart); the paint is a stand-in for the artist's design."
+ },
+ {
+  "lat": 37.7875653,
+  "lon": -122.4080223,
+  "size": [
+   2.2,
+   1.6
+  ],
+  "height": 3.4,
+  "procedural": "heartButterflight",
+  "name": "Butterflight (Union Square)",
+  "sign": false,
+  "note": "Hearts in San Francisco (2026-10-03, owner: 'we should add all the hearts'): Naomi Duben (OSM n12940072477). A rounded painted heart on a granite pedestal (sf/art.ts paintedHeart); the paint is a stand-in for the artist's design."
+ },
+ {
+  "lat": 37.788152,
+  "lon": -122.4081525,
+  "size": [
+   2.2,
+   1.6
+  ],
+  "height": 3.4,
+  "procedural": "heartUnionSquare",
+  "name": "Heart, Union Square",
+  "sign": false,
+  "note": "Hearts in San Francisco (2026-10-03, owner: 'we should add all the hearts'): OSM n13007545430. A rounded painted heart on a granite pedestal (sf/art.ts paintedHeart); the paint is a stand-in for the artist's design."
+ },
+ {
+  "lat": 37.7919283,
+  "lon": -122.3976865,
+  "size": [
+   2.2,
+   1.6
+  ],
+  "height": 3.4,
+  "procedural": "heartMyHeart",
+  "name": "My Heart",
+  "sign": false,
+  "note": "Hearts in San Francisco (2026-10-03, owner: 'we should add all the hearts'): Simon Norris, 2009 (OSM n6582227560). A rounded painted heart on a granite pedestal (sf/art.ts paintedHeart); the paint is a stand-in for the artist's design."
+ },
+ {
+  "lat": 37.8111548,
+  "lon": -122.41078,
+  "size": [
+   2.2,
+   1.6
+  ],
+  "height": 3.4,
+  "procedural": "heartOpen",
+  "name": "Open Heart",
+  "sign": false,
+  "note": "Hearts in San Francisco (2026-10-03, owner: 'we should add all the hearts'): Patrick Dintino, glass, 2014 (OSM n11390824810). A rounded painted heart on a granite pedestal (sf/art.ts paintedHeart); the paint is a stand-in for the artist's design."
+ },
+ {
+  "lat": 37.7806125,
+  "lon": -122.4636959,
+  "size": [
+   2.2,
+   1.6
+  ],
+  "height": 3.4,
+  "procedural": "heartRichmond",
+  "name": "Heart, Inner Richmond",
+  "sign": false,
+  "note": "Hearts in San Francisco (2026-10-03, owner: 'we should add all the hearts'): OSM n6839078160. A rounded painted heart on a granite pedestal (sf/art.ts paintedHeart); the paint is a stand-in for the artist's design."
+ },
+ {
+  "lat": 37.7728614,
+  "lon": -122.4380845,
+  "size": [
+   2.2,
+   1.6
+  ],
+  "height": 3.4,
+  "procedural": "heartPanhandle",
+  "name": "Heart, near the Panhandle",
+  "sign": false,
+  "note": "Hearts in San Francisco (2026-10-03, owner: 'we should add all the hearts'): OSM n12303138856. A rounded painted heart on a granite pedestal (sf/art.ts paintedHeart); the paint is a stand-in for the artist's design."
+ },
+ {
+  "lat": 37.7737487,
+  "lon": -122.4540115,
+  "size": [
+   2.2,
+   1.6
+  ],
+  "height": 3.4,
+  "procedural": "heartHaight",
+  "name": "Heart, Haight",
+  "sign": false,
+  "note": "Hearts in San Francisco (2026-10-03, owner: 'we should add all the hearts'): 'covered in various colored splotches and black lines' (OSM n12602218548). A rounded painted heart on a granite pedestal (sf/art.ts paintedHeart); the paint is a stand-in for the artist's design."
+ },
+ {
+  "lat": 37.7979162,
+  "lon": -122.3989876,
+  "size": [
+   2.2,
+   1.6
+  ],
+  "height": 3.4,
+  "procedural": "heartBronze",
+  "name": "Big Heart on the Rock",
+  "sign": false,
+  "note": "Hearts in San Francisco (2026-10-03, owner: 'we should add all the hearts'): Jim Dine, bronze (OSM n4127224064). A rounded painted heart on a granite pedestal (sf/art.ts paintedHeart); the paint is a stand-in for the artist's design."
+ },
+ {
+  "lat": 37.8041253,
+  "lon": -122.4206949,
+  "size": [
+   2.2,
+   1.6
+  ],
+  "height": 3.4,
+  "procedural": "heartMetal",
+  "name": "A giant metal heart",
+  "sign": false,
+  "note": "Hearts in San Francisco (2026-10-03, owner: 'we should add all the hearts'): OSM n9854608481. A rounded painted heart on a granite pedestal (sf/art.ts paintedHeart); the paint is a stand-in for the artist's design."
  }
 ]

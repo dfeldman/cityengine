@@ -1,0 +1,8 @@
+[
+  {"osm": ["way/476260391"], "name": "Kezar Stadium, north stand", "procedural": "kezarNorthStand", "front": 0, "height": 9, "note": "kezar.ts: open concrete stand, Candlestick seats (Wikipedia). OSM building=grandstand drew a barracks."},
+  {"osm": ["way/476260390"], "name": "Kezar Stadium, south stand", "procedural": "kezarSouthStand", "front": 180, "height": 9, "note": "kezar.ts"},
+  {"lat": 37.76687, "lon": -122.45599, "size": [92, 48], "front": 180, "drape": true, "height": 3, "kind": "plaza", "procedural": "kezarField", "name": "Kezar Stadium, track and field", "note": "kezar.ts: the red 8-lane track and the marked infield; its oval is paved ground, clear of the park trees. Centred between the stands (OSM grandstands 476260390/1)."},
+  {"osm": ["way/159924616"], "name": "McLaren Lodge", "procedural": "mclarenLodge", "front": "street", "height": 11, "note": "park-buildings.ts: 1896 sandstone lodge, red tile hips with dormers, the loggia and balcony block (Commons: McLarenLodge.jpg)."},
+  {"osm": ["way/120479803"], "name": "Stow Lake Boathouse", "procedural": "stowLakeBoathouse", "front": 187, "height": 6, "note": "park-buildings.ts: the log-sided boathouse under its broad roof, its deck on the lake (Commons: Stow Lake Boathouse.jpg)."},
+  {"osm": ["way/120481450"], "name": "Kezar Pavilion", "procedural": "kezarPavilion", "height": 12, "note": "kezar.ts: 1924 pavilion, olive stucco, tall arched windows, dark corbelled eave (Mapillary on Stanyan)."}
+]

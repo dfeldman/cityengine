@@ -141,7 +141,9 @@ export function tilePreparer(entries: LandmarkEntry[], index: Pick<CityIndex, 'o
           const h = b.height ?? 15
           return { ...b, style: quick, levels: Math.max(1, Math.round((h - (b.minHeight ?? 0)) / 10)), stretch: true }
         }
-        return (b.minHeight ?? 0) < 1 ? { ...b, style: quick } : b
+        // (a school in brick has no shops: the style's ground floor is shopfronts, signs painted on)
+        const shops = kind === 'school' ? { noShops: true } : {}
+        return (b.minHeight ?? 0) < 1 ? { ...b, style: quick, ...shops } : b
       }
       const st = ((b.minHeight ?? 0) > 2.5 && e.restyleAloft ? e.restyleAloft : e.restyle) as StyleId
       const pal = styleOf(st).palettes[0]
@@ -167,7 +169,20 @@ export function tilePreparer(entries: LandmarkEntry[], index: Pick<CityIndex, 'o
       const paint = e.wall || e.trim || e.accent || e.groundWall
         ? { palette: { wall: e.wall ?? pal.wall, trim: e.trim ?? pal.trim, roof: e.roofColour ?? pal.roof, accent: e.accent ?? pal.accent, ...(e.groundWall ? { ground: e.groundWall } : {}) } }
         : {}
-      return { ...b, style: st, ...roof, ...height, ...paint, roofColour: hexRgb(e.roofColour ?? pal.roof) }
+      // (storeys counted by hand are kept however tall they come out: past a 1.35 stretch the facade grammar re-derived
+      //  the count from the style's storey height — Letterman's four 4.2 m storeys came back as seven, 2026-10-04)
+      //  — but only a count that makes sense for the height (2.6–5.5 m a storey): several mechanical entries carry counts
+      //  that do not (1200 Van Ness: 68 m in 3; Arden: 30 m in 16), which the grammar's re-derivation used to absorb)
+      const per = 'levels' in height && height.levels ? (height.height - (b.minHeight ?? 0)) / height.levels : 0
+      const counted = per >= 2.6 && per <= 5.5 ? { stretch: true } : {}
+      const lifted = { ...b, style: st, ...roof, ...height, ...counted, ...paint, ...(e.noShops ? { noShops: true } : {}), roofColour: hexRgb(e.roofColour ?? pal.roof) }
+      // on a podium: its own height, standing `base` metres up
+      if (e.base !== undefined && (b.minHeight ?? 0) < e.base) {
+        // (the entry's `height` is the building's OWN on its podium, even where OSM gave it a min_height of its own)
+        const own = e.height ?? (lifted.height ?? 10) - (b.minHeight ?? 0)
+        return { ...lifted, minHeight: e.base, height: e.base + own }
+      }
+      return lifted
     }))
     return { ...t, buildings, fringe: t.fringe.filter((f) => !isReplaced(replaced, f)) }
   }

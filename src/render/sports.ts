@@ -22,6 +22,7 @@ import type { MeshBuilder } from './buildings.ts'
 import type { CourtFit, CourtSport } from '../city/sports.ts'
 import { box } from './models.ts'
 import { FIXED } from './models.ts'
+import { playground } from './playground.ts'
 
 type Rgb = [number, number, number]
 
@@ -32,12 +33,13 @@ const SURFACE: Record<CourtSport, Rgb> = {
   basketball: [0.26, 0.28, 0.31],
   four_square: [0.30, 0.31, 0.33],
   volleyball: [0.44, 0.38, 0.30],
+  playground: [0.6, 0.3, 0.24],
 }
 const LINE: Rgb = [0.88, 0.88, 0.85]
 const LINE_W = 0.10
 /** Above the pitch area's own cap (which sits at 0.02): high enough not to fight it, low enough to drape. */
 const SURFACE_Y = 0.035
-const LINE_Y = 0.05
+const LINE_Y = 0.06   // 2.5 cm over the surface: at 1.5 cm the lines shimmered from a distance
 
 /**
  * A court's geometry, in its own frame, mapped into local metres on the way out. Everything below pushes
@@ -168,6 +170,8 @@ function hoop(out: MeshBuilder, to: (lx: number, ly: number, lz: number) => [num
  * getting a full-size key painted over the whole of it.
  */
 export function court(out: MeshBuilder, fit: CourtFit): void {
+  // a playground is furnished, not painted (render/playground.ts)
+  if (fit.sport === 'playground') { playground(out, fit); return }
   const to = frame(fit)
   const hl = fit.len / 2
   const hw = fit.wid / 2

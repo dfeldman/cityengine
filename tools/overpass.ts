@@ -176,6 +176,20 @@ out geom qt;`
 }
 
 /**
+ * The `building:part`s mapped as RELATIONS (multipolygons) rather than ways. The main query asks for building
+ * relations only, so every part relation was missing from every city: five of Golden Gateway Commons' 14 m houses
+ * left holes in their block (2026-10-03). Its own query, so adding it did not change the main query's hash.
+ */
+export function partRelationsQuery(b: Bbox): string {
+  const box = `${b.south},${b.west},${b.north},${b.east}`
+  return `[out:json][timeout:180];
+(
+  relation["building:part"](${box});
+);
+out geom qt;`
+}
+
+/**
  * The small things that stand in a street and say where it is: a Guimard Métro entrance, a Wallace
  * fountain, a Morris column, a news kiosk, a bike-share dock — and the traffic signals, which are far denser
  * in some cities than any rule would guess. Its own query, so adding it did not change the main query's
@@ -198,6 +212,7 @@ export function furnitureQuery(b: Bbox): string {
   node["highway"="bus_stop"](${box});
   node["amenity"="post_box"](${box});
   node["emergency"="fire_hydrant"](${box});
+  node["amenity"="clock"](${box});
 );
 out qt;`
 }
@@ -282,6 +297,22 @@ export function squaresQuery(b: Bbox): string {
   way["amenity"="parking"](${box});
   relation["highway"="pedestrian"](${box});
   relation["place"="square"](${box});
+);
+out geom qt;`
+}
+
+/**
+ * The hospital, university and college CAMPUSES: the grounds, not the buildings. A ward block or a lab on a
+ * campus is usually tagged plain `building=yes`, so it took the neighbourhood's style — Saint Mary's 2250 Hayes
+ * and Mount Zion's towers came out as walk-ups with shopfronts and bay stacks (hospital audit, 2026-10-04). The
+ * bake dresses a building inside one of these as the campus's own (tools/bake.ts `campusAmenity`). Its own query,
+ * so the others' caches stand.
+ */
+export function campusQuery(b: Bbox): string {
+  const box = `${b.south},${b.west},${b.north},${b.east}`
+  return `[out:json][timeout:120];
+(
+  way["amenity"~"^(hospital|university|college)$"](${box});
 );
 out geom qt;`
 }

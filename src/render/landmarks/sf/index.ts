@@ -88,6 +88,36 @@ import { CHINATOWN_GATE } from './chinatown-gate.ts'
 import { SEA_LIONS } from './sea-lions.ts'
 import { PARK_SIGHTS } from './park-sights.ts'
 import { PAINTED_LADIES } from './painted-ladies.ts'
+import { CIVIC_PLAZA } from './civic-plaza.ts'
+import { PITSTOP } from './pitstop.ts'
+import { GOLDEN_HYDRANT } from './golden-hydrant.ts'
+import { SEWARD_SLIDES } from './seward-slides.ts'
+import { GG_COMMONS } from './gg-commons.ts'
+import { AG_BUILDING } from './ag-building.ts'
+import { FOOTBRIDGES } from './footbridges.ts'
+import { SUTRO_BASE } from './sutro-base.ts'
+import { TEA_GARDEN } from './tea-garden.ts'
+import { MISSION_BAY } from './mission-bay.ts'
+import { BART_PLAZAS } from './bart-plazas.ts'
+import { WOMENS_BUILDING } from './womens-building.ts'
+import { HOSPITALS } from './hospitals.ts'
+import { CASTRO_THEATRE } from './castro-theatre.ts'
+import { KEZAR } from './kezar.ts'
+import { LONE_MOUNTAIN } from './lone-mountain.ts'
+import { LIBRARIES } from './libraries.ts'
+import { SPEAKER_TOWERS } from './speaker-towers.ts'
+import { FERRY_GATES } from './ferry-gates.ts'
+import { CIVIC_CENTER } from './civic-center.ts'
+import { MASONIC } from './masonic.ts'
+import { ART_INSTITUTE } from './art-institute.ts'
+import { CCSF_MISSION } from './ccsf-mission.ts'
+import { SHEDS } from './sheds.ts'
+import { MURAL_ALLEYS } from './mural-alleys.ts'
+import { POINT_BONITA } from './point-bonita.ts'
+import { MONUMENTS } from './monuments.ts'
+import { WIGGLE } from './wiggle.ts'
+import { PARK_BUILDINGS } from './park-buildings.ts'
+import { KIT_CHURCHES } from './kit-churches.ts'
 import { seaStacks } from './rocks.ts'
 import { tiBuildingOne, tiHangar } from './treasure-island.ts'
 import { fireboatStation } from './fireboat-station.ts'
@@ -96,7 +126,7 @@ import { stMarysCathedral } from './st-marys.ts'
 import { deYoungMuseum } from './de-young.ts'
 import { alcatrazCellhouse, alcatrazLighthouse, alcatrazWaterTower } from './alcatraz.ts'
 import { graceCathedral } from './grace.ts'
-import { legionOfHonor } from './legion.ts'
+import { legionOfHonor, legionPyramid } from './legion.ts'
 import { fremont181 } from './fremont181.ts'
 import { transbayBusRampBridge } from './bus-ramp-bridge.ts'
 import { VENUES } from './districts/venues.ts'
@@ -213,6 +243,36 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   ...SEA_LIONS,
   ...PARK_SIGHTS,
   ...PAINTED_LADIES,
+  ...CIVIC_PLAZA,
+  ...PITSTOP,
+  ...GOLDEN_HYDRANT,
+  ...SEWARD_SLIDES,
+  ...GG_COMMONS,
+  ...AG_BUILDING,
+  ...FOOTBRIDGES,
+  ...SUTRO_BASE,
+  ...TEA_GARDEN,
+  ...MISSION_BAY,
+  ...BART_PLAZAS,
+  ...WOMENS_BUILDING,
+  ...HOSPITALS,
+  ...CASTRO_THEATRE,
+  ...KEZAR,
+  ...LONE_MOUNTAIN,
+  ...LIBRARIES,
+  ...SPEAKER_TOWERS,
+  ...FERRY_GATES,
+  ...CIVIC_CENTER,
+  ...MASONIC,
+  ...ART_INSTITUTE,
+  ...CCSF_MISSION,
+  ...SHEDS,
+  ...MURAL_ALLEYS,
+  ...POINT_BONITA,
+  ...MONUMENTS,
+  ...WIGGLE,
+  ...PARK_BUILDINGS,
+  ...KIT_CHURCHES,
   seaStacks,
   tiBuildingOne,
   tiHangar,
@@ -226,6 +286,7 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   alcatrazWaterTower,
   graceCathedral,
   legionOfHonor,
+  legionPyramid,
   fremont181,
   transbayBusRampBridge,
   ...VENUES,

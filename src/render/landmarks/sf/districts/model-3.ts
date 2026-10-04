@@ -71,8 +71,5 @@ export const MODEL_3: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     crown: { kind: 'stepped', steps: 2, height: 5, inset: 2.5, material: 'concrete' },
   }),
 
-  /** Madrone (2012, Perkins & Will / Bosa), Mission Bay: a glass residential tower, 16 floors, deep balconies. */
-  madroneMissionBay: fromRecipe('glass-tower', {
-    height: 61, wall: [0.7, 0.72, 0.74], glass: [0.32, 0.44, 0.52], pitch: 2, solid: 0.28, base: 5,
-  }),
+  /** Madrone (2012, Perkins & Will / Bosa): see model-3.json — now a restyle of its 32 parts, not a model. */
 }

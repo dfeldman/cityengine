@@ -166,6 +166,8 @@ export interface FacadePlan {
   bayWidth: number
   window: { kind: WindowKind; widthFrac: number; heightFrac: number; sill: number }
   ground: GroundKind
+  /** an institution (a school, a hospital, a church: `noShops`) — no fire escapes or apartment bay stacks either */
+  institution?: boolean
   top: TopKind
   hasBalconyAt: (level: number) => boolean
 }
@@ -256,7 +258,7 @@ export function chooseStyle(
 export function planFacade(
   styleId: StyleId,
   seed: number,
-  osm: { levels?: number; height?: number; minHeight?: number; stretch?: boolean },
+  osm: { levels?: number; height?: number; minHeight?: number; stretch?: boolean; noShops?: boolean },
   /** a region's own palettes for this style, which replace the style's (Paris is cream) */
   palettes?: Palette[],
 ): FacadePlan {
@@ -328,7 +330,8 @@ export function planFacade(
       heightFrac: between(r, st.window.heightFrac),
       sill: st.window.sill,
     },
-    ground: st.ground,
+    ground: osm.noShops && st.ground === 'shopfront' ? 'plain' : st.ground,
+    ...(osm.noShops ? { institution: true } : {}),
     top: st.top,
     hasBalconyAt: (level) => balconyLevels.has(level),
   }
@@ -386,7 +389,8 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number): Wa
 
       let element: string
       if (s.kind === 'ground' && b === carriageBay) element = `${plan.style}/carriage`
-      else if (s.kind === 'ground') element = `${plan.style}/${plan.ground}`
+      // ('plain': a ground floor of the style's own windows — a school's, where the style would have shops)
+      else if (s.kind === 'ground') element = plan.ground === 'plain' ? `${plan.style}/window` : `${plan.style}/${plan.ground}`
       else if (s.kind === 'top' && plan.top === 'mansard') element = `${plan.style}/dormer`
       else element = `${plan.style}/window`
 
@@ -431,7 +435,8 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number): Wa
    * centre two bays of a wall broad enough to have them, a stair between each. The thing a New York street
    * is remembered by, and nowhere else has it.
    */
-  if (st.features?.fireEscape && bays >= 3 && plan.storeys.length >= 3) {
+  // (not on a hospital, a school, a church: St Mary's and CPMC wore the tenement's ladders, 2026-10-04)
+  if (st.features?.fireEscape && !plan.institution && bays >= 3 && plan.storeys.length >= 3) {
     const b0 = Math.floor((bays - 2) / 2)
     const fx0 = margin + b0 * bayW
     const fx1 = fx0 + 2 * bayW
@@ -450,7 +455,7 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number): Wa
    * …and the apartment block's: bays in stacks up a wide front, two window bays each with a flat bay between
    * (the fire escape's, when there is one), from the first floor up — the ground storey is the entrance.
    */
-  if (st.features?.bayWindows === 'stacks' && bays >= 4 && plan.storeys.length >= 3) {
+  if (st.features?.bayWindows === 'stacks' && !plan.institution && bays >= 4 && plan.storeys.length >= 3) {
     const esc = st.features.fireEscape && bays >= 3 ? Math.floor((bays - 2) / 2) : -99
     for (let b = 0; b + 2 <= bays; b += 3) {
       if (b <= esc + 1 && b + 2 > esc) continue          // not across the fire escape

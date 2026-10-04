@@ -374,14 +374,11 @@ export const UNREFERENCED_OK = {
      */
     'lyonStreetSteps',
     /*
-     * The three Presidio batteries. Their builders are written and registered, and batteries.json is
-     * deliberately EMPTY: two successive modelling passes produced a flat pad (62 triangles) and then two
-     * crossed sticks (786-1,564 triangles), so nothing is placed until a model shot shows a fortification.
-     * BUGS.md #213c has the images and the numbers.
+     * (The three Presidio batteries were here, parked with batteries.json empty until a model shot showed a
+     * fortification — BUGS.md #213c. Placed 2026-10-04 after one did: low grey parapets, gun pits and an apron
+     * on the bluff over Baker Beach, where each had stood as a 12 m presidio-style barracks. BUGFIX-2026-10-03.md
+     * #292.)
      */
-    'batteryChamberlin',
-    'batteryCrosby',
-    'batteryGodfrey',
     'formerMilitaryChapel',
     'diningHall',
     'buildingUnidentified',

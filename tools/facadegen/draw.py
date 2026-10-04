@@ -779,8 +779,10 @@ SIGN_WORDS = ['CAFÉ', 'BAKERY', 'DRUGS', 'PHARMACY', 'BOOKS', 'DELI', 'BAR', 'H
 AWNING = [(168, 58, 48), (46, 82, 112), (58, 96, 62), (140, 116, 58), (96, 62, 96), (54, 54, 60)]
 
 
-_FONTS = ['/System/Library/Fonts/Supplemental/Didot.ttc', '/System/Library/Fonts/Supplemental/Baskerville.ttc',
-          '/System/Library/Fonts/Supplemental/Georgia Bold.ttf', '/System/Library/Fonts/Supplemental/Georgia.ttf',
+# (Georgia Bold FIRST, 2026-10-04: Didot's hairline crossbars vanish at the atlas's resolution — PHARMACY read
+#  "PIIARMACY" on a Potrero Avenue shopfront)
+_FONTS = ['/System/Library/Fonts/Supplemental/Georgia Bold.ttf', '/System/Library/Fonts/Supplemental/Baskerville.ttc',
+          '/System/Library/Fonts/Supplemental/Didot.ttc', '/System/Library/Fonts/Supplemental/Georgia.ttf',
           '/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf']
 
 

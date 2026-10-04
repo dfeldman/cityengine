@@ -1603,3 +1603,41 @@ export function gunPit(out: MeshBuilder, cx: number, cz: number, rx: number, rz:
   faceBand(out, lipRing, lipY, parapetHeight * 0.85, { kind: 'blank', wall: lipColour, material: 'concrete' })
   capPolygon(out, lipRing, parapetHeight * 0.85, lipColour, tag)
 }
+
+/**
+ * A public clock's face: a dark rim, a pale dial and the twelve hour marks, standing `out` off a wall that faces the
+ * horizontal direction (nx, nz); and the request for its HANDS, which show the real time (MeshBuilder `clocks`,
+ * render/clocks.ts). Every clock in every city goes through here, so they all tell the time.
+ */
+export function clockFace(out: MeshBuilder, x: number, y: number, z: number, nx: number, nz: number, r: number,
+  o: { dial?: Rgb; rim?: Rgb; marks?: Rgb; hands?: Rgb; out?: number } = {}): void {
+  const L = Math.hypot(nx, nz) || 1
+  nx /= L; nz /= L
+  const tx = -nz, tz = nx   // across the face, to the viewer's right
+  const off = o.out ?? 0.03
+  const P = (a: number, rr: number, d: number): [number, number, number] =>
+    [x + nx * d + tx * Math.sin(a) * rr, y + Math.cos(a) * rr, z + nz * d + tz * Math.sin(a) * rr]
+  const disc = (rr: number, c: Rgb, d: number): void => {
+    const n = 24
+    for (let i = 0; i < n; i++) {
+      const a0 = (i / n) * Math.PI * 2, a1 = ((i + 1) / n) * Math.PI * 2
+      out.quad([P(a1, rr, d), P(a0, rr, d), P(0, 0, d), P(0, 0, d)], [nx, 0, nz], [[0, 0], [1, 0], [1, 1], [0, 1]], c, 0)
+    }
+  }
+  disc(r * 1.1, o.rim ?? [0.12, 0.12, 0.12], off)
+  disc(r, o.dial ?? [0.93, 0.92, 0.86], off + 0.02)
+  // the hour marks, the quarters longer
+  const mark = o.marks ?? [0.1, 0.1, 0.1]
+  for (let h = 0; h < 12; h++) {
+    const a = (h / 12) * Math.PI * 2
+    const l = h % 3 === 0 ? 0.18 : 0.1, w = h % 3 === 0 ? 0.05 : 0.03
+    const c = [Math.sin(a), Math.cos(a)], s = [Math.cos(a), -Math.sin(a)]
+    const q = (u: number, v: number): [number, number, number] => {
+      const px = c[0] * u * r + s[0] * v * r, py = c[1] * u * r + s[1] * v * r
+      return [x + nx * (off + 0.04) + tx * px, y + py, z + nz * (off + 0.04) + tz * px]
+    }
+    out.quad([q(0.92 - l, -w), q(0.92, -w), q(0.92, w), q(0.92 - l, w)], [nx, 0, nz], [[0, 0], [1, 0], [1, 1], [0, 1]], mark, 0)
+  }
+  out.clocks.push({ x: x + nx * (off + 0.06), y, z: z + nz * (off + 0.06), nx, nz, r, ...(o.hands ? { hands: o.hands } : {}) })
+}
+

@@ -17,6 +17,7 @@ import type { Fit } from '../../fit.ts'
 import { tower, towerRing, faceBand, insetRing, type TowerSpec, type Face } from '../../tower.ts'
 import { prism, strut, EMIT, type Rgb } from '../../../models.ts'
 import { surfaceTag, type Surface } from '../../../cartoon-material.ts'
+import { offsetRing } from '../../parts.ts'
 
 type P2 = { x: number; z: number }
 type V3 = [number, number, number]
@@ -414,9 +415,6 @@ const LIT = 0.5
 // ---------------------------------------------------------------------------------------------------------------
 // the outlines, grid frame (tools: the Overpass cache, turned −9° so the streets run square)
 
-/** way/332378158 */
-const WESTIN_REF = [-48.9, 29.1, -43.3, 29.1, -43.3, 11.7, -48.9, 11.7, -48.8, -0.5, -40.0, -0.4, -39.9, -26.1, -39.9, -42.6, -31.4, -42.6, -22.3, -42.6, -7.1, -42.6, 43.6, -42.5, 43.5, -34.3, 43.5, -25.7, 43.5, -15.8, 43.4, 0.6, 43.3, 8.9, 43.2, 41.1, 1.1, 41.0, -24.0, 41.0, -49.0, 40.9]
-
 // ---------------------------------------------------------------------------------------------------------------
 
 /**
@@ -429,7 +427,20 @@ const WESTIN_REF = [-48.9, 29.1, -43.3, 29.1, -43.3, 11.7, -48.9, 11.7, -48.8, -
  * "Westin St. Francis 01.JPG", "San Francisco (CA, USA), The Westin St. Francis -- 2022 -- 2912.jpg".)
  */
 function westinStFrancis(out: MeshBuilder, fit: Fit): void {
-  const f = gridFrame(fit, WESTIN_REF, 0, 1)
+  /*
+   * The frame is SET, not fitted (2026-10-04): the city fits the union of the hotel's parts, the modern tower behind
+   * included, and `gridFrame`'s best turn of WESTIN_REF on that union is a quarter round — the three wings and their
+   * courts opened onto Post Street and the awnings stood in the road (owner: "large red cubes in the street"). With
+   * the manifest's front pinned to 90 (Powell), local −z is east: the grid's +x (the Powell face) is local −z and its
+   * +z (north) local +x.
+   */
+  const ring0 = towerRing(fit)
+  const c0 = centroidOf(ring0)
+  const f: Frame = { ring: ring0, at: (x, z) => ({ x: c0.x + z, z: c0.z - x }), dir: (x, z) => ({ x: z, z: -x }) }
+  // the Powell face, measured: the grid's x of the footprint's easternmost wall (the street-front pieces were drawn
+  // for a face at 43.4 about the OUTLINE's centroid; the union's lies further west, behind the modern tower)
+  const faceX = Math.max(...ring0.map((p) => c0.z - p.z))
+  const faceZ = Math.max(...ring0.map((p) => p.x - c0.x))
   const H = fit.height > 40 && fit.height < 80 ? fit.height : 60
   const STONE: Rgb = [0.5, 0.46, 0.41]
   const shaft: Face = { kind: 'punched', material: 'ashlar', wall: STONE, glass: DARK_GLASS, pitch: 2.7, solid: 0.55, floor: 3.7 }
@@ -459,17 +470,113 @@ function westinStFrancis(out: MeshBuilder, fit: Fit): void {
   const up = (ring: P2[]): void => {
     raised(out, baseH, () => mass(out, ring, H - baseH, { ...wing, tiers: wing.tiers.map((t) => ({ ...t, to: t.to - baseH })) }))
   }
-  up(rear)
+  // (25 cm in: the wings overlap it by a metre and their outer walls lay in its plane, and fought)
+  up(shrinkRing(rear, 0.25))
   const courts: [number, number][] = [[-15.5, -7.5], [12.5, 20.5]]
   const cuts = [-43, ...courts.flat(), 42]
   for (let k = 0; k < cuts.length; k += 2) up(clipBox(f.ring, f, back - 1, 60, cuts[k], cuts[k + 1]))
-  // the portico: four columns before the middle wing, and the red canopy over the door between them
-  const px = 45.2
-  for (const z of [-5, -1.7, 1.7, 5]) gcol(out, f, px, z, 0, 10.5, 0.55, [0.66, 0.62, 0.55], 10, 0.55, surfaceTag('ashlar'))
-  gbox(out, f, 43.4, 46.2, -6.2, 6.2, 10.5, 11.6, [0.6, 0.55, 0.48], surfaceTag('ashlar'))
-  gbox(out, f, 43.4, 47.8, -3.4, 3.4, 3.8, 4.6, AWNING_RED)
-  // the red awnings over the arched ground-floor windows, both sides of the portico
-  for (const z of [-38, -33, -28, -23, -18, -13, 12, 17, 22, 27, 32, 37]) gbox(out, f, 43.4, 44.6, z - 1.6, z + 1.6, 4.4, 5.6, AWNING_RED)
+  /*
+   * The Powell and Post fronts at street level, from the owner's Street View frame at the corner (2026-10-04):
+   * - the COLONNADE before the middle wing: a row of tall stone columns standing off the wall, carrying an
+   *   entablature with a balustraded balcony on top, the red marquee hung with flowers between them and the wall;
+   * - over the shop windows, square red shed awnings that STEP with the street's grade;
+   * - above them, over the arched windows, red half-dome awnings at ONE height along each front, however the
+   *   street falls — "weirdly the square ones follow the grade of the street, while the upper hemispherical ones are
+   *   arranged horizontally" (owner).
+   * Powell climbs to Post, so everything is set from `fit.groundAt` under it, not the base's lowest corner.
+   */
+  const street = (x: number, z: number): number => { const p = f.at(x, z); return Math.max(0, fit.groundAt?.(p.x, p.z) ?? 0) }
+  const footprint = towerRing(fit)
+  const onWall = (x: number, z: number): boolean => {
+    const p = f.at(x, z)
+    let c = false
+    for (let i = 0, j = footprint.length - 1; i < footprint.length; j = i++) {
+      const a = footprint[i], b = footprint[j]
+      if ((a.z > p.z) !== (b.z > p.z) && p.x < ((b.x - a.x) * (p.z - a.z)) / (b.z - a.z) + a.x) c = !c
+    }
+    return c
+  }
+  const STONE_LIGHT: Rgb = [0.7, 0.66, 0.58]
+  const ashlar = surfaceTag('ashlar')
+  // the colonnade, before the middle wing
+  const cz0 = -7, cz1 = 12.5
+  const g0 = street(faceX, (cz0 + cz1) / 2)
+  const cx = faceX + 2.2
+  const nCol = 8
+  for (let k = 0; k < nCol; k++) {
+    const z = cz0 + ((cz1 - cz0) * k) / (nCol - 1)
+    gbox(out, f, cx - 0.55, cx + 0.55, z - 0.55, z + 0.55, 0, g0 + 0.8, STONE_LIGHT, ashlar)
+    gcol(out, f, cx, z, g0 + 0.8, g0 + 9.2, 0.4, STONE_LIGHT, 12, 0.34, ashlar)
+    gbox(out, f, cx - 0.55, cx + 0.55, z - 0.55, z + 0.55, g0 + 9.2, g0 + 9.7, STONE_LIGHT, ashlar)
+  }
+  // the entablature from the wall out over the columns, and the balcony's balustrade on it
+  gbox(out, f, faceX, cx + 0.7, cz0 - 0.9, cz1 + 0.9, g0 + 9.7, g0 + 10.9, [0.6, 0.55, 0.48], ashlar)
+  gbox(out, f, cx + 0.45, cx + 0.65, cz0 - 0.8, cz1 + 0.8, g0 + 10.9, g0 + 11.9, STONE_LIGHT, ashlar)
+  for (let z = cz0 - 0.6; z <= cz1 + 0.6; z += 2.4) gbox(out, f, cx + 0.3, cx + 0.7, z - 0.2, z + 0.2, g0 + 10.9, g0 + 12.1, STONE_LIGHT, ashlar)
+  // the marquee between wall and columns, its valance hung with flowers
+  gbox(out, f, faceX, cx + 0.2, cz0 + 1, cz1 - 1, g0 + 3.9, g0 + 4.2, AWNING_RED)
+  gbox(out, f, cx + 0.2, cx + 0.45, cz0 + 1, cz1 - 1, g0 + 3.4, g0 + 4.2, AWNING_RED)
+  const BLOOMS: Rgb[] = [[0.93, 0.85, 0.3], [0.95, 0.5, 0.6], [0.95, 0.95, 0.9], [0.55, 0.35, 0.75], [0.35, 0.6, 0.3]]
+  for (let z = cz0 + 1.2, k = 0; z < cz1 - 1; z += 0.45, k++) {
+    gbox(out, f, cx + 0.45, cx + 0.6, z - 0.2, z + 0.2, g0 + 3.5 + (k % 3) * 0.2, g0 + 3.8 + (k % 3) * 0.2, BLOOMS[k % BLOOMS.length])
+  }
+
+  // the awnings on a front: `face` puts a point `u` along it and `o` out from it in the grid frame
+  const SHED: Rgb = [0.72, 0.16, 0.15], DOME: Rgb = [0.8, 0.42, 0.4], BAND: Rgb = [0.72, 0.66, 0.56]
+  type Front = { at: (u: number, o: number) => [number, number]; out: P2; along: P2; from: number; to: number; skip?: [number, number] }
+  const fronts: Front[] = [
+    // Powell: u is the grid's z, out is +x
+    { at: (u, o) => [faceX + o, u], out: f.dir(1, 0), along: f.dir(0, 1), from: -40, to: 40, skip: [cz0 - 2, cz1 + 2] },
+    // Post: u is the grid's x, out is +z
+    { at: (u, o) => [u, faceZ + o], out: f.dir(0, 1), along: f.dir(1, 0), from: faceX - 60, to: faceX - 2 },
+  ]
+  const P3 = (fr: Front, u: number, o: number, y: number): [number, number, number] => {
+    const [gx, gz] = fr.at(u, o); const q = f.at(gx, gz); return [q.x, y, q.z]
+  }
+  for (const fr of fronts) {
+    const us: number[] = []
+    for (let u = fr.from + 2.5; u <= fr.to - 2.5; u += 5) {
+      if (fr.skip && u > fr.skip[0] && u < fr.skip[1]) continue
+      const [ax, az] = fr.at(u - 1.6, -1), [bx, bz] = fr.at(u + 1.6, -1)
+      if (onWall(ax, az) && onWall(bx, bz)) us.push(u)
+    }
+    if (us.length === 0) continue
+    // the half-domes at one height along the front: over the highest pavement under them
+    const top = Math.max(...us.map((u) => street(...fr.at(u, 0.5))))
+    const Y = top + 6.6
+    for (const u of us) {
+      const g = street(...fr.at(u, 0.5))
+      // the shed awning: sloping out and down from the wall, cheeks at the ends, a valance along the front
+      const w = 1.5, d = 1.4, y1 = g + 4.3, y0 = g + 3.6
+      out.quad([P3(fr, u - w, 0.02, y1), P3(fr, u + w, 0.02, y1), P3(fr, u + w, d, y0), P3(fr, u - w, d, y0)],
+        [fr.out.x * 0.5, 1, fr.out.z * 0.5], [[0, 0], [1, 0], [1, 1], [0, 1]], SHED, 0)
+      out.quad([P3(fr, u - w, d, y0), P3(fr, u + w, d, y0), P3(fr, u + w, d, y0 - 0.3), P3(fr, u - w, d, y0 - 0.3)],
+        [fr.out.x, 0, fr.out.z], [[0, 0], [1, 0], [1, 1], [0, 1]], SHED, 0)
+      for (const s of [-1, 1]) {
+        out.quad([P3(fr, u + s * w, 0.02, y1), P3(fr, u + s * w, d, y0), P3(fr, u + s * w, d, y0 - 0.3), P3(fr, u + s * w, 0.02, y0 - 0.3)],
+          [fr.along.x * s, 0, fr.along.z * s], [[0, 0], [1, 0], [1, 1], [0, 1]], SHED, 0)
+      }
+      // the half-dome over the arched window: a quarter sphere against the wall, a pale band at its rim
+      const R = 1.25, D = 1.05, nT = 8, nP = 4
+      for (let a = 0; a < nT; a++) {
+        for (let b = 0; b < nP; b++) {
+          const pt = (ia: number, ib: number): [number, number, number] => {
+            const th = (Math.PI * ia) / nT, ph = (Math.PI / 2) * (ib / nP)
+            return P3(fr, u + R * Math.cos(th) * Math.cos(ph), 0.03 + D * Math.sin(ph), Y + R * Math.sin(th) * Math.cos(ph))
+          }
+          const th = (Math.PI * (a + 0.5)) / nT, ph = (Math.PI / 2) * ((b + 0.5) / nP)
+          const n: [number, number, number] = [fr.along.x * Math.cos(th) * Math.cos(ph) + fr.out.x * Math.sin(ph), Math.sin(th) * Math.cos(ph),
+            fr.along.z * Math.cos(th) * Math.cos(ph) + fr.out.z * Math.sin(ph)]
+          out.quad([pt(a, b), pt(a + 1, b), pt(a + 1, b + 1), pt(a, b + 1)], n, [[0, 0], [1, 0], [1, 1], [0, 1]], DOME, 0)
+        }
+      }
+      out.quad([P3(fr, u - R, D * 0.98, Y - 0.25), P3(fr, u + R, D * 0.98, Y - 0.25), P3(fr, u + R, D * 0.98, Y), P3(fr, u - R, D * 0.98, Y)],
+        [fr.out.x, 0, fr.out.z], [[0, 0], [1, 0], [1, 1], [0, 1]], BAND, 0)
+      // the arched window under it, dark
+      out.quad([P3(fr, u - 1.0, 0.06, g + 4.4), P3(fr, u + 1.0, 0.06, g + 4.4), P3(fr, u + 1.0, 0.06, Y), P3(fr, u - 1.0, 0.06, Y)],
+        [fr.out.x, 0, fr.out.z], [[0, 0], [1, 0], [1, 1], [0, 1]], [0.2, 0.18, 0.17], 0)
+    }
+  }
 }
 
 /** way/32863633 */
@@ -490,6 +597,13 @@ const WHITE: Rgb = [0.95, 0.95, 0.94]
  * (Commons: "Macy's Union Square San Francisco.jpg", "2017 Macy's on Union Square San Francisco.jpg",
  * "IMagnin-Macy's.jpg", "Macy´s(o´farrell st.) - panoramio.jpg".)
  */
+/** a ring drawn `d` metres in, whichever way it winds */
+function shrinkRing(r: P2[], d: number): P2[] {
+  let a = 0
+  for (let i = 0; i < r.length; i++) { const j = (i + 1) % r.length; a += r[i].x * r[j].z - r[j].x * r[i].z }
+  return offsetRing(r, a > 0 ? -d : d)
+}
+
 function macys(out: MeshBuilder, fit: Fit): void {
   const f = gridFrame(fit, MACYS_REF, 0, 1)
   const H = fit.height > 30 && fit.height < 70 ? fit.height : 45
@@ -498,7 +612,9 @@ function macys(out: MeshBuilder, fit: Fit): void {
   const GREY_STONE: Rgb = [0.66, 0.65, 0.62]
   const shops: Face = { kind: 'curtain', wall: [0.2, 0.2, 0.21], glass: [0.16, 0.18, 0.2], pitch: 4, floor: 6 }
   // the 1928 store, the south two-thirds of the block
-  mass(out, clip(f.ring, f, 0, 0.5, 0, 1), H - 3, {
+  // (25 cm in: the I. Magnin corner and the Geary glass front are drawn over parts of the same outline, and their walls
+  // lay in this one's plane — 4 400 m² of wall fighting itself, the goal's Union Square z-fighting)
+  mass(out, shrinkRing(clip(f.ring, f, 0, 0.5, 0, 1), 0.25), H - 3, {
     height: H - 3,
     base: { height: 6, face: shops, canopy: { depth: 1.2, colour: [0.3, 0.29, 0.28] } },
     tiers: [{ to: 1, face: { kind: 'punched', material: 'ashlar', wall: CREAM, glass: DARK_GLASS, pitch: 3.4, solid: 0.55, floor: 4.8 }, cornice: { depth: 0.5, height: 0.6 } }],
@@ -804,18 +920,20 @@ function appleUnionSquare(out: MeshBuilder, fit: Fit): void {
   const GL: Rgb = [0.55, 0.62, 0.64]
   const es = edgesOf(ring)
   const longest = Math.max(...es.map((e) => e.L))
-  for (const e of es) {
+  es.forEach((e, i) => {
     const long = e.L > longest * 0.8
-    const seg = [e.a, e.b]
-    if (!long) { faceBand(out, seg, 0, H - 1.2, { kind: 'curtain', material: 'metal', wall: [0.58, 0.59, 0.6], glass: PANEL, pitch: 1.6, floor: 3.3 }); continue }
-    faceBand(out, seg, 0, H - 1.2, { kind: 'curtain', material: 'metal', wall: [0.3, 0.31, 0.33], glass: GL, pitch: e.L / 4, floor: H - 1.2 })
+    // (by its index in the ring: given the edge alone, [a, b], faceBand closed it into a ring and drew the wall twice,
+    // back to back — and landmarks are drawn without back-face culling, so the two fought: the glass front's blotches,
+    // owner 2026-10-03, 37.788715, -122.407202)
+    if (!long) { faceBand(out, ring, 0, H - 1.2, { kind: 'curtain', material: 'metal', wall: [0.58, 0.59, 0.6], glass: PANEL, pitch: 1.6, floor: 3.3 }, [i]); return }
+    faceBand(out, ring, 0, H - 1.2, { kind: 'curtain', material: 'metal', wall: [0.3, 0.31, 0.33], glass: GL, pitch: e.L / 4, floor: H - 1.2 }, [i])
     // the sliding doors: their deep steel frames, the two middle bays
     const own = ownFrame(ring)
     for (const u of [e.L * 0.25, e.L * 0.5, e.L * 0.75]) {
       const c = { x: e.a.x + e.t.x * u, z: e.a.z + e.t.z * u }
       gbox(out, own, c.x - 0.2, c.x + 0.2, c.z - 0.2, c.z + 0.2, 0, H - 1.2, [0.28, 0.29, 0.3], surfaceTag('metal'))
     }
-  }
+  })
   capPolygon(out, ring, 0.02, [0.8, 0.8, 0.79], 0)
   // the mezzanine, seen through the glass, and the thin roof slab overhanging all round
   faceBand(out, insetRing(ring, 4), 6.2, 6.8, { kind: 'blank', material: 'stucco', wall: [0.9, 0.9, 0.89] })
@@ -1237,14 +1355,16 @@ function unionSquarePlaza(out: MeshBuilder, fit: Fit): void {
   gslab(out, f, -7.5, 7.5, zS, zN, deck + 0.08, PALE, GRAN)
 
   // the lawn panels at the Post and Geary ends: flat coloured ground, nothing planted on them
-  gslab(out, f, -30, 30, zN - 18, zN - 6, deck + 0.05, LAWN)
-  gslab(out, f, -30, 30, zS + 6, zS + 18, deck + 0.05, LAWN)
+  gslab(out, f, -30, 30, zN - 18, zN - 6, deck + 0.12, LAWN)
+  gslab(out, f, -30, 30, zS + 6, zS + 18, deck + 0.12, LAWN)
 
   // the broad flight down to Powell, and the one down to Geary: four granite treads, nested back to the deck
+  // (each tread its own block, front to the next tread's front — nested back to the deck, all four shared their cheeks
+  // and z-fought in alternating colours down both flights, 2026-10-03)
   for (let i = 0; i < 4; i++) {
     const y = (i + 1) * (deck / 4)
-    gbox(out, f, -hx + 1 + i * 1.5, xW, zS + 9, zN - 9, -0.3, y, i % 2 ? PALE : MID, GRAN)
-    gbox(out, f, xW + 12, xE - 12, -hz + 1 + i * 1.5, zS, -0.3, y, i % 2 ? PALE : MID, GRAN)
+    gbox(out, f, -hx + 1 + i * 1.5, i === 3 ? xW : -hx + 1 + (i + 1) * 1.5, zS + 9, zN - 9, -0.3, y, i % 2 ? PALE : MID, GRAN)
+    gbox(out, f, xW + 12, xE - 12, -hz + 1 + i * 1.5, i === 3 ? zS : -hz + 1 + (i + 1) * 1.5, -0.3, y, i % 2 ? PALE : MID, GRAN)
   }
   // their cheek walls, and the steel handrails that split the Geary flight
   for (const z of [zS + 9, zN - 9]) gbox(out, f, -hx + 1, xW + 0.6, z - 0.55, z + 0.55, -0.3, deck + 0.75, DARK, GRAN)
@@ -1263,8 +1383,8 @@ function unionSquarePlaza(out: MeshBuilder, fit: Fit): void {
   }
   for (let i = 0; i < 3; i++) {
     const y = (i + 1) * (deck / 3)
-    for (const z of cutsZ) gbox(out, f, xE, hx - 0.4 - i * 0.7, z - 3.6, z + 3.6, -0.3, y, i % 2 ? MID : PALE, GRAN)
-    for (const x of cutsX) gbox(out, f, x - 3.6, x + 3.6, zN, hz - 0.4 - i * 0.7, -0.3, y, i % 2 ? MID : PALE, GRAN)
+    for (const z of cutsZ) gbox(out, f, i === 2 ? xE : hx - 0.4 - (i + 1) * 0.7, hx - 0.4 - i * 0.7, z - 3.6, z + 3.6, -0.3, y, i % 2 ? MID : PALE, GRAN)
+    for (const x of cutsX) gbox(out, f, x - 3.6, x + 3.6, i === 2 ? zN : hz - 0.4 - (i + 1) * 0.7, hz - 0.4 - i * 0.7, -0.3, y, i % 2 ? MID : PALE, GRAN)
   }
 
   /*
@@ -1351,8 +1471,53 @@ function unionSquarePlaza(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+/**
+ * The Westin St. Francis TOWER (1972, William Pereira; OSM part way/435582543, 120 m), behind the old hotel on Post
+ * Street (owner, 2026-10-03: "a unique old building with then a unique modernist building behind it. look at commons
+ * images"; Commons "Westin St Francis, San Francisco 2023-07-13.jpg", "Union Square and the Westin seen from Macy's"):
+ * a slab of taupe precast in a close grid of punched windows; down the middle of its long faces a full-height slot of
+ * dark glass — the outside glass lifts the tower is known for, cars riding up and down in it; at the top a crown of
+ * tan, finned storeys under a projecting cap. Was a pale banded preset (ring-tower.ts).
+ */
+function westinTower(out: MeshBuilder, fit: Fit): void {
+  const ring = towerRing(fit)
+  const H = fit.height > 90 && fit.height < 150 ? fit.height : 120
+  const TAUPE: Rgb = [0.6, 0.56, 0.5]
+  const TAN: Rgb = [0.7, 0.62, 0.48]
+  tower(out, fit, {
+    height: H,
+    base: { height: 9, face: { kind: 'curtain', material: 'granite', wall: [0.36, 0.33, 0.3], glass: [0.18, 0.2, 0.22], pitch: 3.2, floor: 4.5 } },
+    tiers: [
+      { to: H - 12, face: { kind: 'punched', material: 'concrete', wall: TAUPE, glass: [0.16, 0.18, 0.2], pitch: 2.2, solid: 0.5, floor: 3.2 } },
+      { to: H - 1.8, face: { kind: 'fins', material: 'concrete', wall: TAN, glass: [0.2, 0.2, 0.2], pitch: 1.5, solid: 0.45, depth: 0.5, floor: 3.4 } },
+      { to: H, face: { kind: 'blank', material: 'concrete', wall: TAN }, cornice: { depth: 1.2, height: 0.9, colour: TAN } },
+    ],
+    roof: [0.42, 0.42, 0.42],
+  })
+  // the glass lifts: a slot of dark glass standing out of the middle of each long face, base to crown, a cab or two in it
+  const es = ring.map((a, i) => { const b = ring[(i + 1) % ring.length]; const L = Math.hypot(b.x - a.x, b.z - a.z); return { a, b, L } })
+  const longest = Math.max(...es.map((e) => e.L))
+  for (const e of es) {
+    if (e.L < longest * 0.75) continue
+    const tx = (e.b.x - e.a.x) / e.L, tz = (e.b.z - e.a.z) / e.L
+    const nx = tz, nz = -tx
+    const mx = (e.a.x + e.b.x) / 2, mz = (e.a.z + e.b.z) / 2
+    const w = 3.2, d = 1.4
+    const P = (u: number, v: number, y: number): [number, number, number] => [mx + tx * u + nx * v, y, mz + tz * u + nz * v]
+    const y0 = 9, y1 = H - 12
+    const GL: Rgb = [0.1, 0.13, 0.17]
+    out.quad([P(-w, d, y0), P(w, d, y0), P(w, d, y1), P(-w, d, y1)], [nx, 0, nz], [[0, 0], [1, 0], [1, 1], [0, 1]], GL, surfaceTag('glass'))
+    for (const sgn of [-1, 1]) out.quad([P(sgn * w, 0, y0), P(sgn * w, d, y0), P(sgn * w, d, y1), P(sgn * w, 0, y1)], [tx * sgn, 0, tz * sgn], [[0, 0], [1, 0], [1, 1], [0, 1]], GL, surfaceTag('glass'))
+    // two lift cabs, lit, at different heights
+    for (const [u, y] of [[-1.4, H * 0.3], [1.4, H * 0.62]]) {
+      out.quad([P(u - 1, d + 0.02, y), P(u + 1, d + 0.02, y), P(u + 1, d + 0.02, y + 2.6), P(u - 1, d + 0.02, y + 2.6)], [nx, 0, nz], [[0, 0], [1, 0], [1, 1], [0, 1]], [0.95, 0.85, 0.6], EMIT)
+    }
+  }
+}
+
 export const UNION_SQUARE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   westinStFrancis,
+  westinTower,
   macys,
   fourFiftySutter,
   grandHyatt,

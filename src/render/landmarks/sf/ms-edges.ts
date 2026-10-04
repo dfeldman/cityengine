@@ -52,7 +52,7 @@ import { capPolygon } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
 import { box, type Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
-import { arcStair, boxAlong, edgeAt, longestEdge, offsetRing, railing, ramp, stair } from '../parts.ts'
+import { boxAlong, edgeAt, longestEdge, offsetRing, railing, ramp, stair } from '../parts.ts'
 import { towerRing } from '../tower.ts'
 import { LEVELS, UNDERCROFT_H } from './moscone-south.ts'
 
@@ -149,9 +149,14 @@ export function msThirdStreetEsplanade(out: MeshBuilder, _fit: Fit): void {
   // The stepped terraces: arcStair from street (0) up to the hall's wall top (LEVELS.wall = 8), anchored on
   // the OUTER radius (the crown, toward 3rd St) so the flight climbs inward toward the hall — the form a
   // curved entrance forecourt actually has, stairs coming DOWN from the building toward the street.
-  const s = arcStair(out, centre, radius, 0, LEVELS.wall, {
-    from, to, preset: 'esplanade', anchor: 'top', climb: 'out', rail: 'both', railKind: 'posts',
-  })
+  /*
+   * NO FLIGHT (owner, 2026-10-03: "green and white quarter-circle in the street … the green and white area around the
+   * rink extending into the street"). The `esplanade` preset makes 40 treads of 1.2 m — a 48 m flight — anchored at the
+   * wall top and climbing OUT, which laid striped green-and-white treads across the street to the far pavement. No
+   * 48 m flight fits this frontage; until the terraces are measured against photographs the canopy, the beds and the
+   * rail along the arc stay, and the flight does not (BUGFIX-2026-10-03 DISABLED MODELS).
+   */
+  const s = { top: Array.from({ length: 25 }, (_, i) => { const a = 2 * Math.PI * (from + ((to - from) * i) / 24); return { x: centre.x + Math.cos(a) * radius, z: centre.z + Math.sin(a) * radius } }) }
 
   // Planted beds: a second, shallower arcStair-shaped strip is overkill — a simple ring of `capPolygon`
   // wedges along the outer radius reads as planting from a rider's eye without another solid.

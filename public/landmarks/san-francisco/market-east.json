@@ -203,7 +203,16 @@
  },
  {
   "osm": [
-   "way/690644023",
+   "way/690644023"
+  ],
+  "name": "44 Montgomery Street",
+  "procedural": "montgomery44",
+  "front": "street",
+  "height": 172,
+  "note": "1967: dark glass behind close white fins. Tower grammar from Commons photographs; the tower part, its two-storey podium and their roof parts are all replaced. Fitted to the TOWER part alone (way/690644023, 49 x 50 m) since 2026-10-03: fitted to all the parts it covered the Fidelity cube on the Market corner (owner)."
+ },
+ {
+  "osm": [
    "way/32963370",
    "way/690644020",
    "way/690644018",
@@ -211,11 +220,8 @@
    "way/690644021",
    "way/690644022"
   ],
-  "name": "44 Montgomery Street",
-  "procedural": "montgomery44",
-  "front": "street",
-  "height": 172,
-  "note": "1967: dark glass behind close white fins. Tower grammar from Commons photographs; the tower part, its two-storey podium and their roof parts are all replaced."
+  "name": "44 Montgomery Street: outline and podium parts",
+  "note": "placeholder (2026-10-03): the outline and the podium/roof parts under the montgomery44 model, which draws its own podium; split off so the tower is fitted to its own part and not over the Fidelity cube."
  },
  {
   "osm": [

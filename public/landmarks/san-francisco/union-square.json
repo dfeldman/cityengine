@@ -1,5 +1,5 @@
 [
-  {"osm": ["way/332378158"], "name": "The Westin St. Francis", "procedural": "westinStFrancis", "front": "street", "height": 60, "note": "Own geometry on the tower grammar (union-square.ts), from Commons photographs: the three sandstone wings and two light courts on Powell, the portico, the copper cornices. The modern tower behind is its own entry (westinTower)."},
+  {"osm": ["way/332378158"], "name": "The Westin St. Francis", "procedural": "westinStFrancis", "front": 90, "height": 60, "note": "Own geometry on the tower grammar (union-square.ts), from Commons photographs: the three sandstone wings and two light courts on Powell, the portico, the copper cornices. The modern tower behind is its own entry (westinTower)."},
   {"osm": ["way/32863633"], "name": "Macy's", "procedural": "macys", "front": "street", "height": 45, "note": "Own geometry on the tower grammar (union-square.ts), from Commons photographs: the one OSM way drawn as its three buildings: the white-marble I. Magnin at Geary and Stockton, the 1980s glass front on Geary with MACY'S and the star, the cream 1928 store with the O'Farrell blade."},
   {"osm": ["way/1186086081"], "name": "450 Sutter", "procedural": "fourFiftySutter", "front": "street", "height": 105, "note": "Tower grammar on its own rounded footprint (union-square.ts), from Commons photographs: Pflueger's Mayan-deco medical building, buff terracotta ribbed by unbroken piers, two masses, notched parapet."},
   {"osm": ["way/32863494"], "name": "Grand Hyatt San Francisco", "procedural": "grandHyatt", "front": "street", "height": 94, "note": "Tower grammar plus corner piers (union-square.ts), from Commons photographs: SOM's cream slab, blank corner piers running past the roof, window rows between."},
@@ -65,7 +65,7 @@
   {"osm": ["way/79375236"], "name": "542 Mason Street", "restyle": "classical", "note": "a stone-fronted commercial block, rusticated base and cornice", "levels": 6},
   {"osm": ["way/79375238"], "name": "575 Sutter Street", "restyle": "brick", "note": "an ordinary brick shop-and-loft building", "levels": 4},
   {"osm": ["way/79375240"], "name": "547;551;555 Sutter Street", "restyle": "classical", "note": "a stone-fronted commercial block, rusticated base and cornice", "levels": 5},
-  {"osm": ["way/79375245"], "name": "The Francisca Club", "restyle": "tenement", "note": "a post-fire walk-up hotel: brick, shops below, fire escapes down the front", "levels": 4},
+  {"osm": ["way/79375245"], "name": "The Francisca Club", "restyle": "tenement", "noShops": true, "note": "a post-fire walk-up hotel: brick, shops below, fire escapes down the front", "levels": 4},
   {"osm": ["way/79375256"], "name": "535;537;539;545 Sutter Street", "restyle": "classical", "note": "a stone-fronted commercial block, rusticated base and cornice", "levels": 5},
   {"osm": ["way/135174112"], "name": "228;230;236;240 Post Street", "restyle": "brick", "note": "an ordinary brick shop-and-loft building", "levels": 4},
   {"osm": ["way/135174114"], "name": "way/135174114", "restyle": "classical", "note": "a stone-fronted commercial block, rusticated base and cornice", "levels": 8},
@@ -205,6 +205,6 @@
   {"osm": ["way/1186086082"], "name": "415 Stockton Street", "restyle": "stucco", "note": "a low stuccoed shopfront building", "levels": 1},
   {"osm": ["way/1260649177"], "name": "way/1260649177", "restyle": "stucco", "note": "a low stuccoed shopfront building", "levels": 1},
   {"osm": ["way/1432655283"], "name": "141 Kearny Street", "restyle": "classical", "note": "a stone-fronted commercial block, rusticated base and cornice", "levels": 8},
-  {"name": "Union Square", "procedural": "unionSquarePlaza", "lat": 37.787933, "lon": -122.407514, "front": 171, "size": [120, 78], "height": 30, "note": "The square itself, standalone at its own point (OSM's way/25278818 is a park, not a building): the granite deck over the garage with its steps, the lawn panels, the Dewey Monument's column and Victory, the two glass cafe pavilions and the palms. Grid frame, -z to Geary."},
+  {"name": "Union Square", "procedural": "unionSquarePlaza", "lat": 37.787933, "lon": -122.407514, "front": 171, "size": [120, 78], "height": 30, "drape": true, "note": "The square itself, standalone at its own point (OSM's way/25278818 is a park, not a building): the granite deck over the garage with its steps, the lawn panels, the Dewey Monument's column and Victory, the two glass cafe pavilions and the palms. Grid frame, -z to Geary."},
   {"osm": ["way/474341709"], "name": "Hotel Des Arts", "restyle": "tenement", "levels": 9, "note": "A narrow post-fire hotel at Bush and Grant: brick, shops below, the fire escape zig-zagging down the front (Commons: \"Hotel des Arts San Francisco.jpg\")."}
 ]

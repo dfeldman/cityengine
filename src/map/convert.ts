@@ -94,7 +94,7 @@ const RAD_TO_CDEG = 18000 / Math.PI
 export const FURNITURE_TYPE: Record<string, string> = {
   metro: 'metro.entrance', fountain: 'fountain', column: 'column.advert', kiosk: 'kiosk', bikeshare: 'bikeshare',
   signals: 'signals', tramstop: 'tramstop', billboard: 'billboard', stop: 'sign.stop', busstop: 'busstop',
-  postbox: 'postbox', hydrant: 'hydrant',
+  postbox: 'postbox', hydrant: 'hydrant', clock: 'clock.street',
 }
 
 export function convertTile(t: TileData, ctx: ConvertContext): MapTile {
@@ -168,6 +168,10 @@ export function convertTile(t: TileData, ctx: ConvertContext): MapTile {
     if (e.authored) flags |= SF.authored
     if (e.crossing) flags |= SF.crossing
     if (e.park) flags |= SF.park
+    if (e.busSide && e.busSide & 1) flags |= SF.busRight
+    if (e.busSide && e.busSide & 2) flags |= SF.busLeft
+    if (e.paint && e.paint & 1) flags |= SF.paintTransit
+    if (e.paint && e.paint & 2) flags |= SF.paintBike
     const w: Way = {
       ref: ctx.edgeRef(e), role: 'street', nodes: ns, id: e.id, a: e.a, b: e.b, kind: dict.id('kinds', e.kind), flags,
       surface: e.surface, width: Math.round(e.width * 100), walk: Math.round(e.walk * 100),
@@ -239,6 +243,7 @@ export function convertTile(t: TileData, ctx: ConvertContext): MapTile {
       ...(b.archetype !== undefined ? { archetype: dict.id('archetypes', b.archetype) } : {}),
       ...(b.form ? { form: b.form } : {}),
       ...(b.stretch !== undefined ? { stretch: b.stretch } : {}),
+      ...(b.noShops ? { noShops: true as const } : {}),
       ...(b.palette ? { palette: b.palette } : {}),
     }
     const [cx, cz] = centreOf(b.ring)
@@ -289,6 +294,7 @@ export function convertTile(t: TileData, ctx: ConvertContext): MapTile {
     if (holes) r.holes = holes
     if (a.top) r.top = true
     if (a.sea) r.sea = true
+    if (a.brick) r.brick = true
     if (a.level !== undefined) r.level = zc(a.level)
     areas.push(r)
   }

@@ -547,3 +547,12 @@ export const BATTERIES: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     capPolygon(out, [bermL0, bermR0, bermR1, bermL1], magHeight, EARTH_DARK, 0)
   },
 }
+
+/**
+ * Batteries Boutelle and Cranston (OSM ways 420287677, 420287682), on the bluff by Battery Godfrey: the same
+ * Endicott-period emplacements, drawn by the same builders under their own names (one name per entry). 2026-10-04,
+ * when the batteries were first placed: batteries.json had been empty, and every one stood as a 12 m barracks.
+ */
+BATTERIES.batteryBoutelle = BATTERIES.batteryCrosby
+BATTERIES.batteryCranston = BATTERIES.batteryGodfrey
+

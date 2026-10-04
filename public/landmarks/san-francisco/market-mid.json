@@ -575,7 +575,8 @@
   "procedural": "fourSeasonsTower",
   "front": "street",
   "height": 121,
-  "note": "Tower grammar on the tower part: pale frame, grey-green glass (Commons skyline photograph)."
+  "note": "Tower grammar on the tower part: pale frame, grey-green glass (Commons skyline photograph).",
+  "inset": 0.4
  },
  {
   "osm": [

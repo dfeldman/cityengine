@@ -67,8 +67,8 @@
     "osm": [
       "way/104599975"
     ],
-    "procedural": "ferryStationPostOffice",
-    "name": "Ferry Station Post Office Building"
+    "procedural": "agricultureBuilding",
+    "name": "Ferry Station Post Office Building (the Agriculture Building)"
   },
   {
     "osm": [

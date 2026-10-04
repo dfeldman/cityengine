@@ -19,7 +19,9 @@
     "osm": [
       "way/1243657270"
     ],
-    "procedural": "h1_ucsf_pritzker",
+    "procedural": "ucsfPritzker",
+    "front": "street",
+    "height": 23,
     "name": "UCSF Nancy Friend Pritzker Psychiatry Building"
   },
   {

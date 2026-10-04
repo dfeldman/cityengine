@@ -28,6 +28,8 @@ export const TOUCH_CSS = `
 .sr-touch.effort { right: 16px; bottom: 150px; flex-direction: column }
 .sr-touch.small { left: 14px; top: 14px }
 .sr-touch.small button { width: 48px; height: 48px; font-size: 22px }
+/* looking round a paused scene: the riding pads give way to the look pad (ui/debug.ts LookPad) */
+.sr-looking .sr-touch.steer, .sr-looking .sr-touch.effort { display: none }
 `
 
 /**
@@ -126,6 +128,17 @@ export function touchControls(opts: { trainer: boolean }): void {
     button(effort, '▼', 'ArrowDown', 'ArrowDown', 'easier', true)
   }
   const small = pad('small')
-  button(small, '⏸', 'Pause', 'Pause')
+  // (no ⏸ here: the one at the top right — ui/debug.ts — pauses AND opens the look-around camera; two pause buttons,
+  // one of which only stopped the clock, is how the owner found "no way to move around the camera when paused")
   button(small, '🗺', 'KeyM', 'm')
 }
+
+/**
+ * What a prompt should ask for (owner, 2026-10-03: "many of the messages say 'press X key' which is frustrating on
+ * mobile"): a touch screen has no keyboard, so there the prompt names the tap, and the thing it names is a button on
+ * the screen. The same rule as the controls (`wantsTouch`, `?touch=` decides).
+ */
+export const touchScreen = (): boolean => wantsTouch(new URLSearchParams(globalThis.location?.search ?? '').get('touch'))
+
+/** "B to get off", or on a touch screen "tap to get off" */
+export const keyed = (key: string, action: string): string => (touchScreen() ? `tap to ${action}` : `${key} to ${action}`)

@@ -38,6 +38,13 @@ export interface PackedEdge {
   park?: boolean
   name?: string
   foot: boolean
+  /**
+   * A bus lane along a curb (OSM `lanes:bus`, `bus:lanes`, `busway:*`, `psv` the same): 1 the right of a→b, 2 the left,
+   * 3 both — painted red (owner, 2026-10-03: "ideally we would also render bus lanes as red").
+   */
+  busSide?: 1 | 2 | 3
+  /** lanes painted by the region (tools/street-paint.ts): 1 the transit lanes down the middle (red), 2 the bike lanes at the kerbs (green) */
+  paint?: number
   /** a marked place where a footway crosses a carriageway — drawn as a zebra rather than as pavement */
   crossing?: boolean
   /** ground height at each point of `points`, in metres; absent on a city baked flat */
@@ -91,6 +98,13 @@ export interface PackedBuilding {
   partOf?: number
   /** few storeys, as tall as they need to be (a church's great windows): set by render/prepare.ts */
   stretch?: boolean
+  /**
+   * No shops on the ground floor, whatever the style draws there: set by render/prepare.ts on the buildings the
+   * classifier dresses as schools in the `brick` style, whose ground floor is a row of shopfronts with PHARMACY
+   * and BOOKS painted on them (USF's library and the city's schools, 2026-10-04). The ground floor takes the
+   * style's own windows instead.
+   */
+  noShops?: boolean
   /** what the roof is, after OSM's own tags and the style's default have both had their say */
   roof: RoofShape
   /** how tall the roof is above the eaves, in metres */
@@ -168,6 +182,8 @@ export interface PackedArea {
    * Neither is GREEN and neither is planted.
    */
   kind: 'park' | 'grass' | 'water' | 'wood' | 'pitch' | 'paved' | 'sand' | 'dirt' | 'lot'
+  /** a paved square laid in the region's street brick: it opens off a brick street (tools/street-paint.ts) */
+  brick?: true
   ring: number[]
   /** inner rings: the islands in a river, the courtyard in a park */
   holes?: number[][]
@@ -197,7 +213,7 @@ export interface PackedPoi {
  * kit decided it could honestly be. `render/sports.ts` draws it; nothing downstream needs the polygon.
  */
 export interface PackedCourt {
-  sport: 'tennis' | 'pickleball' | 'basketball' | 'four_square' | 'volleyball'
+  sport: 'tennis' | 'pickleball' | 'basketball' | 'four_square' | 'volleyball' | 'playground'
   x: number
   z: number
   /** the long axis, radians: the court's length runs along (cos h, sin h) */
@@ -219,6 +235,8 @@ export interface PackedFurniture {
     // and the American street's (SF_PLAN.md §6): a streetcar stop, a billboard, a stop sign, a bus stop, a post box,
     // a fire hydrant
     | 'tramstop' | 'billboard' | 'stop' | 'busstop' | 'postbox' | 'hydrant'
+    // a street clock on its post (amenity=clock, support=pole), whose dials tell the real time (render/clocks.ts)
+    | 'clock'
   /** a Wallace fountain, as opposed to any drinking tap */
   wallace?: true
   /** explicit Z (map format v3): the ground at the point, metres, datum frame */

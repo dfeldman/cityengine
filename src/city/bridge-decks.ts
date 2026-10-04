@@ -55,6 +55,12 @@ export interface DeckDecl {
   /** the deck's centre line, in the model's frame, where it is not the z axis */
   path?: { x: number; z: number }[]
   /**
+   * A deck that is an AREA, not a strip: a podium's roof (Embarcadero Center's Maritime Plaza, 2026-10-03). A point is
+   * on it only INSIDE the ring (no margin: the street's own sidewalk runs along the podium's edge, at layer 1 like
+   * the walks on it), always at `y(0)`; `from`, `to`, `half` are unused.
+   */
+  ring?: { x: number; z: number }[]
+  /**
    * What the MODEL draws of this deck: its roadway slab, `half` either side of the line from `from` to `to`. A deck
    * is declared wider and longer than that (the ways take its heights for some way past the steel, and a sidewalk
    * hung outboard of the slab is still on the bridge) — but only inside this is there anything under the wheel;
@@ -78,6 +84,13 @@ export interface DeckDecl {
    * the park's 21 m deck pulled 1 266 ways up, ordinary streets blocks away among them (docs/SALESFORCE-PARK.md).
    */
   vertical?: boolean
+  /**
+   * With `vertical`: the foot ways that JOIN the deck from off it — the stairs and paths up from the street to a podium,
+   * which OSM maps at the street's level — are graded from the deck's height at the junction down to their far end,
+   * and drawn as structures where they stand off the ground. Without it they kept the street's height at a junction on
+   * the deck, a step as tall as the deck (Embarcadero Center, 2026-10-03). Nothing further off is touched.
+   */
+  joins?: boolean
 }
 
 /** Where a model stands: as a manifest entry says, the arithmetic of render/landmarks.ts `place`. */
@@ -204,6 +217,14 @@ const structure = (e: GraphEdge): boolean => !e.bore && !e.tunnel
 
 /** Where a point of the model's frame is on a deck: how far along it, and how far outside its edge (negative: on it). */
 function locate(d: DeckDecl, m: { x: number; z: number }): { along: number; off: number } | null {
+  if (d.ring) {
+    let inside = false
+    for (let i = 0, j = d.ring.length - 1; i < d.ring.length; j = i++) {
+      const a = d.ring[i], b = d.ring[j]
+      if ((a.z > m.z) !== (b.z > m.z) && m.x < a.x + ((m.z - a.z) * (b.x - a.x)) / (b.z - a.z)) inside = !inside
+    }
+    return inside ? { along: 0, off: -1 } : null
+  }
   if (!d.path) {
     if (m.z < d.from || m.z > d.to) return null
     return { along: m.z, off: Math.abs(m.x - (d.x ?? 0)) - d.half }
@@ -239,6 +260,16 @@ export class BridgeDecks {
   vertical(x: number, z: number): boolean {
     for (const { p, d } of this.list) {
       if (!d.vertical) continue
+      const on = locate(d, toModel(p, { x, z }))
+      if (on && on.off <= MARGIN) return true
+    }
+    return false
+  }
+
+  /** Is (x, z) on a `vertical` deck that grades the ways joining it (`DeckDecl.joins`)? `area`: an AREA deck only. */
+  joinsAt(x: number, z: number, area = false): boolean {
+    for (const { p, d } of this.list) {
+      if (!d.vertical || !d.joins || (area && !d.ring)) continue
       const on = locate(d, toModel(p, { x, z }))
       if (on && on.off <= MARGIN) return true
     }
@@ -295,7 +326,8 @@ export class BridgeDecks {
   /** a quick test before the per-point work: could any point of this way be on a deck? */
   private near(e: { points: { x: number; z: number }[] }): boolean {
     for (const { p, d } of this.list) {
-      const far = d.path ? Math.max(...d.path.map((q) => Math.hypot(q.x, q.z))) : Math.max(Math.abs(d.from), Math.abs(d.to))
+      const line = d.ring ?? d.path
+      const far = line ? Math.max(...line.map((q) => Math.hypot(q.x, q.z))) : Math.max(Math.abs(d.from), Math.abs(d.to))
       const reach = far * p.scale + d.half + 50
       for (const q of e.points) if (Math.abs(q.x - p.cx) < reach && Math.abs(q.z - p.cz) < reach) return true
     }
@@ -740,6 +772,70 @@ export class BridgeDecks {
       sweep()
       cones.push(...caps)
       sweep()
+    }
+
+    // ---- 7. the foot ways joining a `joins` vertical deck: from the deck's height at the junction to their far end
+    /** each junction where a way on such a deck ends ON it (its pinned end), and the deck's height there */
+    const deckEnd = new Map<number, number>()
+    const joined = [...isolated].filter((e) => { const m = e.points[Math.floor(e.points.length / 2)]; return this.joinsAt(m.x, m.z) })
+    for (const e of joined) {
+      const p = pins.get(e)!
+      const h = e.heights!
+      if (p[0] !== null) deckEnd.set(e.a, h[0])
+      if (p[p.length - 1] !== null) deckEnd.set(e.b, h[h.length - 1])
+    }
+    /** the foot ways that join the deck (graded below) */
+    const joining = new Set<GraphEdge>()
+    for (const n of deckEnd.keys()) for (const x of at.get(n) ?? []) if (!pins.has(x) && FOOT.has(x.kind ?? '')) joining.add(x)
+    /** the height the rest of the network has at junction n — any way there that is not on the deck, not `self`, and not
+     * itself one of the ways joining it (whose heights are about to change) */
+    const outside = (n: number, self: GraphEdge): number | undefined => {
+      for (const o of at.get(n) ?? []) {
+        if (o === self || pins.has(o) || joining.has(o) || !usable(o)) continue
+        return o.heights![o.a === n ? 0 : o.heights!.length - 1]
+      }
+      return undefined
+    }
+    const graded = new Set<GraphEdge>()
+    // a way on the deck whose end runs off it: from its last point on the deck to what it meets there
+    for (const e of joined) {
+      const p = pins.get(e)!
+      const h = e.heights!
+      const c = cum(e)
+      const lastPin = p.length - 1 - [...p].reverse().findIndex((v) => v !== null)
+      const firstPin = p.findIndex((v) => v !== null)
+      const tail = (from: number, to: number, n: number): void => {
+        const hEnd = deckEnd.get(n) ?? outside(n, e)
+        if (hEnd === undefined || from === to) return
+        const span = Math.abs(c[to] - c[from]) || 1
+        const step = to > from ? 1 : -1
+        for (let i = from + step; i !== to + step; i += step) h[i] = h[from] + (hEnd - h[from]) * (Math.abs(c[i] - c[from]) / span)
+      }
+      if (lastPin < p.length - 1) tail(lastPin, p.length - 1, e.b)
+      if (firstPin > 0) tail(firstPin, 0, e.a)
+    }
+    for (const [n, hn] of deckEnd) {
+      for (const x of at.get(n) ?? []) {
+        if (pins.has(x) || graded.has(x) || touched.has(x) || !usable(x) || x.tunnel || !FOOT.has(x.kind ?? '')) continue
+        const h = x.heights!
+        const last = h.length - 1
+        // (a far end the rest of the network meets is at ITS height; one that meets nothing, on an AREA deck, is on the
+        // deck — a walk on the roof mapped at the street's layer; never a flight of steps, which goes somewhere else)
+        const far = (i: number, node: number): number => {
+          const o = outside(node, x)
+          if (o !== undefined) return o
+          return x.kind !== 'steps' && this.joinsAt(x.points[i].x, x.points[i].z, true) ? hn : h[i]
+        }
+        const h0 = x.a === n ? hn : deckEnd.get(x.a) ?? far(0, x.a)
+        const h1 = x.b === n ? hn : deckEnd.get(x.b) ?? far(last, x.b)
+        if (Math.abs(h0 - h[0]) < 0.05 && Math.abs(h1 - h[last]) < 0.05) continue
+        const c = cum(x)
+        const len = c[last] || 1
+        for (let i = 0; i <= last; i++) h[i] = Math.max(h0 + (h1 - h0) * (c[i] / len), ground(x.points[i].x, x.points[i].z))
+        graded.add(x)
+        touched.add(x)
+        steep(Math.abs(h1 - h0) / len, len, x, last)
+      }
     }
 
     for (const e of pins.keys()) touched.add(e)

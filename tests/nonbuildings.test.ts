@@ -53,27 +53,32 @@ const KNOWN: Record<string, string[]> = {
     'skyline | Panthéon',
   ],
   'san-francisco': [
-    // Embarcadero Center plaza decks (docs/EMBARCADERO-CENTER.md, 2026-09-24): each deck's well genuinely
-    // drops below the deck into the `building:part` shop levels the brief calls "four layers of shops" — the
-    // well floor sits at -2.80 m in the model's own frame (a `deckCut`, PLAZA_H 8 m minus a 10.8 m well),
-    // which the checker reads as "sunk below ground", and the deck's footprint deliberately overlaps those
-    // same small building parts it stands over. Both are the shape the real complex is, not a placement bug.
-    'height | Embarcadero Center — plaza deck (West / One)',
-    'height | Embarcadero Center — plaza deck (One / Two)',
-    'height | Embarcadero Center — plaza deck (Two / Three)',
-    'height | Embarcadero Center — plaza deck (Three / Four)',
-    'intersects | Embarcadero Center — plaza deck (West / One)',
-    'intersects | Embarcadero Center — plaza deck (One / Two)',
-    'intersects | Embarcadero Center — plaza deck (Two / Three)',
-    'intersects | Embarcadero Center — plaza deck (Three / Four)',
+    // Embarcadero Center's podium level (2026-10-03): placed at its own datum (baseY 0, the deck 8 m over the street)
+    // and spanning the blocks whose walks it lifts — the four old plaza-deck entries it replaced are gone
+    'height | Embarcadero Center — podium level',
+    'intersects | Embarcadero Center — podium level',
     // #108 — standing in footprints it does not claim
     'intersects | Opera Plaza courtyard',
     'intersects | Powell Street Station Canopy',
     'intersects | Ruth Asawa Mermaid Fountain',
     'intersects | Redwood Park pool',
-    'intersects | Hearts in San Francisco (Ferry Building)',
+    // the mural alleys (2026-10-04): the murals are painted ON the alleys' walls, so their panels stand at the walls
+    'intersects | Balmy Alley murals',
+    'intersects | Clarion Alley murals',
     'intersects | Ghirardelli sign',
     'intersects | Union Square',
+    // (two of OSM's Hearts in San Francisco stand where OSM's building outlines reach — a forecourt, a lobby's plaza)
+    'intersects | My Heart',
+    'intersects | Heart, Inner Richmond',
+      // the garden's grounds (lanterns, fence, bridges) surround its own buildings, by design (#238)
+      'intersects | Japanese Tea Garden grounds',
+      // the food-truck park and the mini golf surround their own structures (OSM's, modelled), by design (#245)
+      'intersects | SPARK Social SF',
+      'intersects | Stagecoach Greens',
+      // the round BART plaza runs up to the building south of it, as in the owner's aerial (#248)
+      'intersects | 24th St Mission BART Plaza (south-west)',
+    // (Civic Center Plaza: OSM's own café at 52 Grove and the 1958 garage pay kiosk stand in it, as they do)
+    'intersects | Civic Center Plaza',
     // #109 — not on the ground. The Opera Plaza courtyard's +3.80 m is a RAISED DECK and is probably right;
     // Union Square sunk 3.20 m with 6.0 m of relief across 120 × 78 m is the one to look at first.
     'height | Opera Plaza courtyard',
@@ -89,13 +94,9 @@ const KNOWN: Record<string, string[]> = {
     'coplanar | Powell Street Station Canopy',
     'coplanar | Oracle Park',
     'coplanar | Bush Plaza Pavilion',
-    'coplanar | Union Square',
     'coplanar | Golden Gate Bridge',
     // #111 — duplicates, which the claim loop structurally cannot see
-    'duplicate | heartsInSanFrancisco',
-    'duplicate | Ruth Asawa Mermaid Fountain / Ghirardelli sign',
-    'duplicate | Hearts in San Francisco (Union Square) / Union Square',
-    /*
+        /*
      * Portsmouth Square (docs/SKYPARKS.md), 2026-09-24. The deck's own lat/lon sits inside the square, a few
      * metres from the existing Robert Louis Stevenson Memorial (sf/art.ts) — expected, not a collision, the
      * memorial genuinely stands on the square. Ground relief and the height mismatch are also expected: the
@@ -172,8 +173,8 @@ const KNOWN: Record<string, string[]> = {
      */
     'coplanar | Golden Gate Bridge',
     // (#112, the Bay Bridge far-only, is closed: BUGS.md #238, `bayBridgeNear`.) Its roadways are slabs on a grade,
-    // end to end, which the heuristic counts as it does the Golden Gate's — both levels of the model
-    'coplanar | Bay Bridge',
+    // end to end, which the heuristic counts as it does the Golden Gate's. (One model; the other's pair stopped
+    // counting when the heuristic began requiring the two levels to overlap in plan, 2026-10-03.)
     'coplanar | Bay Bridge',
     // 2026-10-03 appearance pass: the Ferry Plaza deck stands on piles at street level (raised by design) and its
     // rectangle overlaps the Ferry Building's floats; Oracle Park is placed standalone on its survey, so the audit
@@ -181,6 +182,12 @@ const KNOWN: Record<string, string[]> = {
     // Pier 39 and One Maritime Plaza Park were already reporting before this pass
     'height | Ferry Plaza deck',
     'intersects | Ferry Plaza deck',
+    // (the South Basin's plaza deck at the Ferry Terminal, 2026-10-03: the same builder on piles, the same datum)
+    'height | South Basin plaza deck (Ferry Terminal)',
+    'duplicate | plazaDeck',
+    // a generic figure-on-a-pedestal builder shared by standalone monuments (sf/monuments.ts, 2026-10-04): each entry is
+    // placed by its own point — standalone entries cannot shadow one another
+    'duplicate | figureOnPedestal',
     'height | One Maritime Plaza Park',
     'intersects | One Maritime Plaza Park',
     'intersects | Oracle Park',

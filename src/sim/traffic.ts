@@ -93,6 +93,8 @@ export interface Vehicle {
   passed?: true
   /** until when the junction look-ahead is off for it (the never-stuck valve in `drive`), sim seconds */
   lookOff?: number
+  /** a taxi: allowed where private cars are not (`carFree`), and drawn in a taxi livery (render/street-fleet.ts) */
+  taxi?: boolean
   /** this driver's own habits (IDM): acceleration, comfortable braking, time gap, standstill gap */
   driver: { a: number; b: number; T: number; s0: number }
 }
@@ -212,6 +214,14 @@ export class Traffic {
   private readonly signals: Signals | null
   /** the zone's traffic multiplier at a point (ZoneProps.traffic), 1 where no zone says */
   private readonly zoneFactor: (p: Point) => number
+  /**
+   * A street private cars may not use — only buses and taxis (owner, 2026-10-03: "Market Street is buses and taxis
+   * only … and streetcars of course … and, now, delivery bikes"). The region decides (game.ts: San Francisco's Market
+   * Street from 10th to the Embarcadero, car-free since 2020).
+   */
+  private readonly carFree: (e: Edge) => boolean
+  /** may this vehicle drive this street at all (a private car on a car-free one may not) */
+  private mayUse(v: { kind: VehicleKind; taxi?: boolean }, e: Edge): boolean { return v.kind === 'bus' || !!v.taxi || !this.carFree(e) }
   private readonly vehicles: Vehicle[] = []
   /** how many vehicles each street should carry, once it has been seen */
   private readonly target = new Map<number, number>()
@@ -231,8 +241,9 @@ export class Traffic {
   private readonly r = rng(0xc0ffee)
 
   constructor(graph: CityGraph, level: keyof typeof TRAFFIC | TrafficConfig = 'some',
-    opt: { signals?: Signals; zoneFactor?: (p: Point) => number; lookAhead?: boolean } = {}) {
+    opt: { signals?: Signals; zoneFactor?: (p: Point) => number; lookAhead?: boolean; carFree?: (e: Edge) => boolean } = {}) {
     this.lookAhead = opt.lookAhead ?? true
+    this.carFree = opt.carFree ?? (() => false)
     this.g = graph
     this.cfg = typeof level === 'string' ? TRAFFIC[level] : level
     this.signals = opt.signals ?? null
@@ -401,6 +412,10 @@ export class Traffic {
    * with no way round is passed through, so the game never freezes behind one (owner, 2026-10-02). game.ts sets it.
    */
   squeeze = true
+  /** seconds behind a standing vehicle before the squeeze (the trainer modes shorten it: game.ts) */
+  squeezeAfter = 5
+  /** pick another exit after 8 s refused for room (off by default: it made the crossroads tests overlap; on in the game) */
+  rechooseOn = false
   /** …and where it is off, the same valve after this long behind a standing vehicle: a car stopped for good never freezes the game */
   squeezeLate = 15
 
@@ -602,7 +617,7 @@ export class Traffic {
     const holder = best ? bestV : null
     if (holder && holder === this.heldBy) {
       this.heldFor += this.lastDt
-      if (this.heldFor > (holder.speed < 2 ? (this.squeeze ? 5 : this.squeezeLate) : 20)) { holder.passed = true; this.heldBy = null; this.heldFor = 0; return null }
+      if (this.heldFor > (holder.speed < 2 ? (this.squeeze ? this.squeezeAfter : this.squeezeLate) : 20)) { holder.passed = true; this.heldBy = null; this.heldFor = 0; return null }
     } else { this.heldBy = holder; this.heldFor = 0 }
     return best
   }
@@ -716,14 +731,15 @@ export class Traffic {
     void present
     if (refill && this.vehicles.length >= wanted) refill = false
     for (const e of near) {
-      if (!drives(e) || e.length < 12) continue
+      if (!drives(e) || e.length < 12 || this.blindAlley(e, 1) || this.blindAlley(e, -1)) continue
       const mid = pointAlong(e.points, e.length / 2)
       if (distance(mid, at) > this.cfg.range) continue
       const known = this.target.get(e.id)
       const first = known === undefined
       let want: number
       if (known === undefined) {
-        const w = (e.length / 1000) * this.cfg.density * this.zoneFactor(mid)
+        // (a car-free street carries buses and taxis only, and far fewer of them: 40%)
+        const w = (e.length / 1000) * this.cfg.density * this.zoneFactor(mid) * (this.carFree(e) ? 0.4 : 1)
         const r0 = rng(e.id)
         want = Math.floor(w) + (r0() < w - Math.floor(w) ? 1 : 0)
         this.target.set(e.id, want)
@@ -741,7 +757,11 @@ export class Traffic {
         // at the very start the whole ring fills (nothing has been seen yet); after that a car only ever appears
         // where the rider cannot see it appear
         if (this.t > 1.5 ? !this.hidden(p) : distance(p, at) < 25) continue
-        const bus = r() < 0.08 && e.width >= 8
+        // on a car-free street only buses and taxis
+        const free = this.carFree(e)
+        const bus = free ? r() < 0.35 : r() < 0.08 && e.width >= 8
+        // (from the id, not the street's random stream: drawing one more number reshuffled every other choice)
+        const taxi = !bus && (free || ((this.nextId * 2654435761) >>> 0) % 100 < 8)
         const half = (bus ? SIZE.bus : SIZE.car).len / 2
         // room for SPEED, not just length: a slow car spawned 8 m ahead of a faster one was inside its stopping
         // distance (seen at 90 cars/km in the crossroads test)
@@ -753,7 +773,9 @@ export class Traffic {
           id: this.nextId++, kind: bus ? 'bus' : 'car', edgeId: e.id, s, dir,
           // 18–27 km/h: the delivery game's joke is that the bike is faster than the traffic (owner, 2026-09-29)
           cruise: (bus ? 4.5 : 5) + r() * 2.5, speed: 2 + r() * 2, lane: laneOf(e),
-          colour: bus ? [0.85, 0.35, 0.18] : CAR_COLOURS[Math.floor(r() * CAR_COLOURS.length)],
+          // (the colour drawn whatever it is, so a taxi does not reshuffle the street's random stream)
+          colour: ((c: [number, number, number]) => bus ? [0.85, 0.35, 0.18] as [number, number, number] : taxi ? [0.95, 0.78, 0.12] as [number, number, number] : c)(bus ? [0, 0, 0] : CAR_COLOURS[Math.floor(r() * CAR_COLOURS.length)]),
+          ...(taxi ? { taxi: true as const } : {}),
           waiting: false, at: p, heading,
           // drivers differ: some pull away briskly and sit close, some leave a gap and brake early
           driver: bus ? { a: 0.9, b: 1.8, T: 1.7, s0: 2.5 }
@@ -762,6 +784,22 @@ export class Traffic {
         k++
       }
     }
+  }
+
+  /**
+   * A service alley whose far end (going `dir`) leads nowhere a car may drive: Quincy Street off Pine, 51 m and two-way,
+   * filled both ways and locked for good in the soak (2026-10-03) — the cars at its end could not turn round with the
+   * other lane full, and the other lane could not leave. Traffic neither spawns in one nor turns into one.
+   */
+  private blindAlley(n: Edge, dir: 1 | -1): boolean {
+    if (n.kind !== 'service') return false
+    const far = this.g.nodes.get(dir > 0 ? n.b : n.a)
+    if (!far) return false
+    return !far.edges.some((id) => {
+      if (id === n.id) return false
+      const o = this.g.edges.get(id)
+      return !!o && (allowed(o, 1) || allowed(o, -1))
+    })
   }
 
   /** each lane's vehicles, nearest the far end first */
@@ -803,11 +841,38 @@ export class Traffic {
     // a bus keeps to its route and goes straight wherever it can: a 12 m bus turning swings its body across the
     // next lane, which on these streets meant through the cars in it
     const straight = xs.some(({ x }) => x.turn === 'straight')
-    const w: number[] = xs.map(({ x }) => (x.turn === 'straight' ? 6 : v.kind === 'bus' && straight ? 0 : 2))
+    const open = xs.some(({ n, dir }) => !this.blindAlley(n, dir))
+    // (a private car never onto a car-free street, unless there is no other way out at all)
+    const legal = xs.some(({ n }) => this.mayUse(v, n))
+    const w: number[] = xs.map(({ x, n, dir }) => (open && this.blindAlley(n, dir) ? 0
+      : legal && !this.mayUse(v, n) ? 0
+      : x.turn === 'straight' ? 6 : v.kind === 'bus' && straight ? 0 : 2))
     let u = this.r() * w.reduce((p, q) => p + q, 0)
     let k = 0
     for (; k < xs.length - 1; k++) { u -= w[k]; if (u <= 0) break }
     v.next = { edgeId: xs[k].x.edgeId, dir: xs[k].dir, turn: xs[k].x.turn }
+  }
+
+  /** Pick again, among the exits other than the one refused, those with room for this car beyond the junction. */
+  private rechoose(v: Vehicle, e: Edge, node: number): void {
+    const was = v.next
+    if (!was) return
+    const r = this.signals?.control(node).radius ?? 6
+    const need = r + 2 * this.halfLen(v) + v.driver.s0 + 2
+    const xs = exits(this.g, node, e.id).map((x) => {
+      const n = this.g.edges.get(x.edgeId)!
+      return { x, dir: (n.a === node ? 1 : -1) as 1 | -1, n }
+    }).filter(({ x, n, dir }) => x.edgeId !== was.edgeId && allowed(n, dir) && !this.blindAlley(n, dir) && this.mayUse(v, n))
+      .filter(({ n, dir }) => {
+        const q = this.laneCache.get(`${n.id}:${dir}`) ?? []
+        const last = q[q.length - 1]
+        const room = last ? (last.dir > 0 ? last.s : n.length - last.s) - this.halfLen(last) : this.roomThrough(n, dir, 0)
+        return room >= need
+      })
+    if (xs.length === 0) return
+    const k = Math.floor(this.r() * xs.length)
+    v.next = { edgeId: xs[k].x.edgeId, dir: xs[k].dir, turn: xs[k].x.turn }
+    v.refused = undefined
   }
 
   /** two movements through one junction that cannot share it at once */
@@ -849,7 +914,10 @@ export class Traffic {
     if (!n) return e.length
     const nd: 1 | -1 = n.a === node ? 1 : -1
     // anything standing in that junction's box fills it
-    if (this.vehicles.some((o) => o.inBox?.nodeId === node && o.speed < 0.5)) return e.length
+    // (but not one waiting there to come ONTO this street the other way: it wants the other lane of `e`, and two such
+    //  cars facing each other across a short street each refused the other for good — the soak's head-on cycles,
+    //  BUGS.md #244, 2026-10-04)
+    if (this.vehicles.some((o) => o.inBox?.nodeId === node && o.speed < 0.5 && o.next?.edgeId !== e.id && !(o.edgeId === e.id && o.dir !== dir))) return e.length
     const queue = this.laneCache.get(`${n.id}:${nd}`) ?? []
     const last = queue[queue.length - 1]
     const beyond = last ? (last.dir > 0 ? last.s : n.length - last.s) - this.halfLen(last) : this.roomThrough(n, nd, depth + 1)
@@ -1079,9 +1147,15 @@ export class Traffic {
     // 2 s, not 6: stopping in a box for each other for longer kept boxes full, and in a 600 s soak rings of queues
     // locked the whole city
     if ((v.still ?? 0) > LOOK_PATIENCE) v.lookOff = this.t + 4
-    if (this.lookAhead && boxNode !== null && this.t >= (v.lookOff ?? 0)) {
+    /*
+     * …and while the valve has it NOT looking (`lookOff`), it still never drives INTO another vehicle (owner,
+     * 2026-10-03: "here's a bus, it's extra long, with a car in it"): it looks only a car's contact distance ahead,
+     * 1.2 m, so a ring of waiting still breaks — it rolls up to whatever is in the way — but nothing is driven through.
+     */
+    const contactOnly = this.t < (v.lookOff ?? 0)
+    if (this.lookAhead && boxNode !== null) {
       const box = this.boxOf(v)
-      const reach = Math.min(8, 3 + v.speed)
+      const reach = contactOnly ? 1.2 : Math.min(8, 3 + v.speed)
       const cx = Math.floor(v.at.x / NEAR_CELL)
       const cz = Math.floor(v.at.z / NEAR_CELL)
       let best: [number, number, Vehicle] | null = null
@@ -1139,6 +1213,7 @@ export class Traffic {
     // data) left a car believing it was still inside the junction ahead, so it never planned a turn and stood at the
     // end of the street with nothing in front of it — and the queue behind it, the rider in it, waited for ever
     const boxHere = !!v.inBox && v.inBox.nodeId === node && v.inBox.from === v.edgeId
+    let refusedNow = false
     if (toGo < CHOOSE && !v.next && !boxHere) this.choose(v, e, node)
     const c = this.signals?.control(node)
     const radius = c?.radius ?? 6
@@ -1160,6 +1235,13 @@ export class Traffic {
         }
       } else if (!this.mayEnter(v, e, node, stopDist, boxes, rider)) {
         atLine('may not enter')
+        refusedNow = true
+        /*
+         * A DRIVER WHO CANNOT GO ONE WAY GOES ANOTHER (2026-10-03). Refused for want of room beyond, the head of a
+         * queue waited on that one exit for ever — Geary at Union Square seized for the whole soak with an open right
+         * turn beside it. Standing eight seconds at the line, it picks again among the exits with room.
+         */
+        if (v.refused === 'no room beyond' && (v.still ?? 0) > 8 && this.rechooseOn) this.rechoose(v, e, node)
       } else if (stopSign && v.stoppedAt === undefined) {
         atLine('stop sign')
       } else if (stopDist < (v.speed * v.speed) / (2 * d.b) + 1.5) {
@@ -1196,8 +1278,16 @@ export class Traffic {
     v.speed = Math.max(0, vv + acc * dt)
     v.waiting = acc < -1.2 || v.speed < 0.3
 
+    /*
+     * …and REFUSED means refused (2026-10-03): where the line is only a metre or two back from the junction (a
+     * crosswalk node mid-block) a refused car could not stop short of it, and the step below took it into the box
+     * anyway — on Geary at Union Square eighteen cars stood piled on each other at the start of the next street.
+     * It stops where it is instead.
+     */
+    // (stopped where it is, not snapped back to the line: snapped back it landed in the car behind)
+    if (refusedNow && !boxHere && toGo - this.halfLen(v) < radius) v.speed = 0
     // into the box
-    if (!boxHere && toGo - this.halfLen(v) < radius && v.next) {
+    if (!refusedNow && !boxHere && toGo - this.halfLen(v) < radius && v.next) {
       if (v.inBox && v.inBox.nodeId !== node) v.prevBox = v.inBox
       v.inBox = { nodeId: node, from: e.id, turn: v.next.turn }
       // at once, not next frame: two conflicting cars deciding in the same frame would otherwise both go

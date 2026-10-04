@@ -39,7 +39,7 @@ import { MeshBuilder } from './buildings.ts'
 import type { Rgb } from './models.ts'
 
 type V3 = [number, number, number]
-export type PalmKind = 'canary' | 'fan' | 'queen' | 'spiky' | 'windmill'
+export type PalmKind = 'canary' | 'fan' | 'queen' | 'spiky' | 'windmill' | 'treefern'
 
 const rng = (seed: number): (() => number) => {
   let s = seed >>> 0
@@ -260,6 +260,33 @@ export function palm(kind: PalmKind, seed: number, lod: 0 | 1 | 2): PalmBuild {
     }
     return { trunk, collar, leaves, top: h + 2.4 }
   }
+  if (kind === 'treefern') {
+    /*
+     * The TREE FERN (owner, 2026-10-03: "golden gate park is a unique mix of tropical and north american plants" —
+     * Tree Fern Dell, by the Conservatory): a short, thick, shaggy trunk of old frond bases, and a wide crown of long
+     * finely-cut fronds held out nearly flat, arching down at their tips — an umbrella, not a shuttlecock; bright
+     * green, the young fronds rising in the middle.
+     */
+    const h = 2.2 + r() * 3
+    const lean = (r() - 0.5) * 0.12
+    const x = (y: number): number => lean * y
+    column(trunk, 0, h, 0.26, 0.2, lod === 2 ? 5 : 8, lod === 0 ? 3 : 1, 0.7, 2, white, x)
+    column(collar, h - 0.35, h + 0.1, 0.24, 0.3, lod === 2 ? 5 : 8, 1, 0.5, 1, white, x)
+    const centre: V3 = [x(h), h + 0.05, 0]
+    const n = lod === 0 ? 18 : lod === 1 ? 12 : 8
+    for (let i = 0; i < n; i++) {
+      const k = i / n
+      const yaw = i * 2.39996323 + (r() - 0.5) * 0.3
+      const pitch = 0.55 - k * 0.6 + (r() - 0.5) * 0.15
+      const droop = 1.1 + k * 0.8 + r() * 0.3
+      const len = (2.4 + k * 0.9) * (0.9 + r() * 0.2)
+      const tone = 0.95 + r() * 0.1
+      const c: Rgb = [tone * 0.85, tone * 1.12, tone * 0.72]
+      featherFrond(leaves, [centre[0], centre[1] - k * 0.15, centre[2]], centre, yaw, pitch, droop, len, 0.95 * (lod === 2 ? 1.3 : lod === 1 ? 1.1 : 1),
+        (r() - 0.5) * 0.8, 0.45 + r() * 0.2, lod === 0 ? 8 : lod === 1 ? 5 : 3, c, 0)
+    }
+    return { trunk, collar, leaves, top: h + 1.2 }
+  }
   if (kind === 'spiky') {
     // the cabbage tree: a short fibrous trunk that forks into a few stems, each with its tuft of straps
     const h = 1.6 + r() * 1.6
@@ -337,6 +364,8 @@ const TEXTURES: Record<PalmKind, { trunk: string; collar: string; leaves: string
   queen: { trunk: 'queen-trunk.png', collar: 'queen-trunk.png', leaves: ['queen-frond-a.png', 'queen-frond-b.png'] },
   windmill: { trunk: 'fan-skirt.png', collar: 'fan-skirt.png', leaves: ['fan-leaf-a.png', 'fan-leaf-b.png'] },
   spiky: { trunk: 'fan-trunk.png', collar: 'fan-skirt.png', leaves: ['strap-tuft-a.png', 'strap-tuft-b.png'] },
+  // the trunk in the windmill palm's brown fibre; the fronds the queen palm's feathers, held flat and tinted bright
+  treefern: { trunk: 'fan-skirt.png', collar: 'fan-skirt.png', leaves: ['queen-frond-a.png', 'queen-frond-b.png'] },
 }
 
 function material(scene: Scene, base: string, file: string, cutout: boolean): StandardMaterial {

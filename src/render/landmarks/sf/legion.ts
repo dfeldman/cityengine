@@ -34,6 +34,8 @@ export function legionOfHonor(out: MeshBuilder, _fit: Fit): void {
 
   // the court, paved, and The Thinker on his plinth in the middle of it
   box(out, 0, 0.15, 6, W - wing, 0.15, D - back / 2 + 2, PAVING, surfaceTag('concrete'))
+  // (and the same court handed to the city as paved GROUND, draped: the park's slope rose through the slab, 2026-10-04)
+  out.grounds.push([{ x: -(W - wing), z: 6 - (D - back / 2 + 2) }, { x: W - wing, z: 6 - (D - back / 2 + 2) }, { x: W - wing, z: 6 + (D - back / 2 + 2) }, { x: -(W - wing), z: 6 + (D - back / 2 + 2) }])
   box(out, 0, 1.2, 8, 1.4, 1.2, 1.4, STONE, stone)
   box(out, 0, 3.2, 8, 0.6, 0.8, 0.5, BRONZE, surfaceTag('metal'))
 
@@ -66,4 +68,20 @@ export function legionOfHonor(out: MeshBuilder, _fit: Fit): void {
   for (const s of [-1, 1]) box(out, s * 6.5, 7.5, zf, 2.5, 7.5, 2.2, STONE, stone)
   box(out, 0, 13.5, zf, 9, 1.5, 2.2, STONE, stone)
   box(out, 0, 15.8, zf, 8, 0.8, 2.0, SHADE, stone)
+}
+
+/**
+ * The GLASS PYRAMID skylight in the Court of Honor (way/393275341, `tourism=artwork`, over the galleries dug under the
+ * court in 1995): OSM's little glass building was drawn as a Victorian cottage with a hipped roof. A low glass pyramid
+ * on a stone curb, its ridges in dark metal.
+ */
+export function legionPyramid(out: MeshBuilder, fit: Fit): void {
+  const h = Math.max(2.4, Math.min(fit.hx, fit.hz)), y0 = 0.5, y1 = y0 + h * 0.75
+  box(out, 0, 0.25, 0, h + 0.3, 0.25, h + 0.3, STONE, surfaceTag('ashlar'))
+  const k: [number, number][] = [[-1, -1], [1, -1], [1, 1], [-1, 1]]
+  for (let i = 0; i < 4; i++) {
+    const [ax, az] = k[i], [bx, bz] = k[(i + 1) % 4]
+    const mx = (ax + bx) / 2, mz = (az + bz) / 2, L = Math.hypot(mx, 0.75, mz)
+    out.quad([[ax * h, y0, az * h], [bx * h, y0, bz * h], [0, y1, 0], [0, y1, 0]], [mx / L, 0.75 / L, mz / L], [[0, 0], [1, 0], [0.5, 1], [0.5, 1]], [0.55, 0.68, 0.72], surfaceTag('glass'))
+  }
 }

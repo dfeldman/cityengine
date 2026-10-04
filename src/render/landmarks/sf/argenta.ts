@@ -133,7 +133,7 @@ function curtainEdge(out: MeshBuilder, a: P2, b: P2, y0: number, y1: number, flo
  * standing on it, and the glazing recessed behind — repeated to the top. This is the operator the photograph
  * is built from: not a window pattern, a wrapped stack of horizontal bands.
  */
-function balconyStack(out: MeshBuilder, a: P2, b: P2, y0: number, y1: number, floor: number, depth: number,
+export function balconyStack(out: MeshBuilder, a: P2, b: P2, y0: number, y1: number, floor: number, depth: number,
                       wall: Rgb, glass: Rgb): void {
   const L = Math.hypot(b.x - a.x, b.z - a.z)
   if (L < 0.3) return

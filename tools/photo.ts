@@ -903,8 +903,9 @@ if (process.argv[1]?.endsWith('photo.ts')) {
   }
 
   const out = arg('out')
-  if (out && list[0]) {
-    await fetchPhoto(list[0], out)
-    console.log(`\n${list[0].ref} → ${out}`)
+  const chosen = list[Number(arg('pick', '0'))]
+  if (out && chosen) {
+    await fetchPhoto(chosen, out)
+    console.log(`\n${chosen.ref} → ${out}`)
   }
 }

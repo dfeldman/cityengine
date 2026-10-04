@@ -166,7 +166,9 @@ export function faceBand(out: MeshBuilder, ring: P2[], y0: number, y1: number, f
   const floor = f.floor ?? 3.6
   const pitch = f.pitch ?? 3
   const depth = f.depth ?? 0.3
-  const idxs = edges ?? ring.map((_, i) => i)
+  // (two points are ONE wall, not a ring: closed, the second edge was the same wall facing the other way, and with
+  // landmarks drawn double-sided the two fought — Apple Union Square's glass front, 2026-10-03)
+  const idxs = edges ?? (ring.length === 2 ? [0] : ring.map((_, i) => i))
   for (const i of idxs) {
     const a = ring[i]
     const b = ring[(i + 1) % ring.length]

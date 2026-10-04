@@ -112,6 +112,12 @@ export const PARIS_BRIDGES: Record<string, StructureStyle> = {
 const DEFAULT_OVER_WATER: StructureStyle = { kind: 'stone', span: 28, rise: 0.55, shape: 'segment', cutwater: 'round', parapet: 'stone', lamps: 'lantern' }
 /** a bridge over a road or a quay only: a plain stone-faced slab, as the ways drew it before */
 const DEFAULT_OVER_LAND: StructureStyle = { kind: 'girder', parapet: 'stone', lamps: 'none', iron: [0.66, 0.62, 0.55] }
+/**
+ * …and outside Paris an unnamed footbridge over water is not a stone arch bridge: the walkway between the Embarcadero's
+ * Piers 15 and 17 (the Exploratorium's) drew as a Seine bridge with two great stone arches (owner, 2026-10-03). A light
+ * steel girder with an iron railing instead.
+ */
+export const STEEL_OVER_WATER: StructureStyle = { kind: 'girder', parapet: 'iron', lamps: 'none', iron: [0.55, 0.57, 0.58] }
 
 export { axisOf }
 
@@ -127,7 +133,7 @@ function inside(r: P[], x: number, z: number): boolean {
 
 /** Structures as a per-tile layer: each outline built by the tile its centre is in, whole. */
 export function bridgeStructuresLayer(scene: Scene, pkg: Pick<CityPackage, 'areas' | 'water'>, terrain: Terrain, drop: number,
-  styles: Record<string, StructureStyle>, covered?: (id: number) => boolean): TileLayer {
+  styles: Record<string, StructureStyle>, covered?: (id: number) => boolean, overWater: StructureStyle = DEFAULT_OVER_WATER): TileLayer {
   const bodies = wholeWater(pkg)
   const levels = waterLevels(bodies, (x, z) => terrain.heightAt(x, z), drop)
   const water: Water[] = bodies.map((a, k) => {
@@ -157,7 +163,7 @@ export function bridgeStructuresLayer(scene: Scene, pkg: Pick<CityPackage, 'area
         cx /= ring.length
         cz /= ring.length
         if (cx < rect.x0 || cx >= rect.x1 || cz < rect.z0 || cz >= rect.z1) continue
-        buildStructure(out, b, ring, near.around.edges, terrain, wetAt, styles)
+        buildStructure(out, b, ring, near.around.edges, terrain, wetAt, styles, overWater)
       }
       if (out.triangles === 0) return []
       const m = new Mesh(`bridges:${near.key}`, scene)
@@ -201,7 +207,7 @@ export function styleFor(b: PackedBridge, styles: Record<string, StructureStyle>
 export const FREEWAY_KINDS = new Set(['motorway', 'motorway_link', 'trunk', 'trunk_link', 'busway'])
 
 function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: PackedEdge[], terrain: Terrain,
-  wetAt: (x: number, z: number) => number | null, styles: Record<string, StructureStyle>): void {
+  wetAt: (x: number, z: number) => number | null, styles: Record<string, StructureStyle>, waterDefault: StructureStyle = DEFAULT_OVER_WATER): void {
   const ax = axisOf(ring)
   if (!ax || ax.L < 8) return
   for (const e of edges) {
@@ -320,7 +326,7 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
     if (last && s - last.b <= 6) last.b = s
     else open.push({ a: s, b: s })
   }
-  const style = styleFor(b, styles) ?? (overWater ? DEFAULT_OVER_WATER : DEFAULT_OVER_LAND)
+  const style = styleFor(b, styles) ?? (overWater ? waterDefault : DEFAULT_OVER_LAND)
   const stone = style.stone ?? LIMESTONE
   const iron = style.iron ?? IRON_GREEN
   const spans = open.filter((q) => q.b - q.a >= 6)

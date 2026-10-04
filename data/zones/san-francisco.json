@@ -122,7 +122,8 @@
     "traffic": 0.2,
     "crowd": 0.8,
     "trails": "bike",
-    "water": "waves"
+    "water": "waves",
+    "cliffs": true
    },
    "ring": [
     [
@@ -536,6 +537,52 @@
        "juniper_scrub",
        "bush_green"
       ]
+     },
+     "park": {
+      "density": 0.0075,
+      "clump": 0.7,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 4,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "eucalyptus",
+        "weight": 4,
+        "h": [
+         16,
+         28
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 3,
+        "h": [
+         12,
+         21
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 1,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 1,
+        "h": [
+         7,
+         12
+        ]
+       }
+      ]
      }
     },
     "traffic": 0.15,
@@ -558,7 +605,8 @@
      37.8055,
      -122.488
     ]
-   ]
+   ],
+   "note": "`park` = its own wood mix (2026-10-04): without it the Presidio's park areas \u2014 the golf course \u2014 took the city's park mix, palms and pink blossom."
   },
   {
    "ref": "plant-presidio-shore",
@@ -633,6 +681,53 @@
         ]
        }
       ]
+     },
+     "park": {
+      "density": 0.0018,
+      "clump": 0.85,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 4,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 2,
+        "h": [
+         12,
+         21
+        ]
+       },
+       {
+        "form": "olive",
+        "weight": 2,
+        "h": [
+         5,
+         9
+        ]
+       },
+       {
+        "form": "myrtle",
+        "weight": 1,
+        "h": [
+         7,
+         12
+        ]
+       }
+      ]
+     },
+     "shrubs": {
+      "density": 1.2,
+      "shrubs": [
+       "bracken",
+       "fern",
+       "juniper_scrub",
+       "bush_green"
+      ]
      }
     }
    },
@@ -653,7 +748,8 @@
      37.813,
      -122.475
     ]
-   ]
+   ],
+   "note": "`park` = its own wood mix (2026-10-04): without it the Presidio's park areas \u2014 the golf course \u2014 took the city's park mix, palms and pink blossom."
   },
   {
    "ref": "plant-presidio-east",
@@ -752,6 +848,69 @@
         ]
        }
       ]
+     },
+     "park": {
+      "density": 0.006,
+      "clump": 0.65,
+      "species": [
+       {
+        "form": "eucalyptus",
+        "weight": 3,
+        "h": [
+         16,
+         28
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 2,
+        "h": [
+         12,
+         21
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 2,
+        "h": [
+         10,
+         17
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 2,
+        "h": [
+         7,
+         12
+        ]
+       },
+       {
+        "form": "blossom",
+        "weight": 1,
+        "h": [
+         5,
+         8
+        ]
+       }
+      ]
+     },
+     "shrubs": {
+      "density": 1.2,
+      "shrubs": [
+       "bracken",
+       "fern",
+       "juniper_scrub",
+       "bush_green"
+      ]
      }
     }
    },
@@ -772,7 +931,8 @@
      37.806,
      -122.456
     ]
-   ]
+   ],
+   "note": "`park` = its own wood mix (2026-10-04): without it the Presidio's park areas \u2014 the golf course \u2014 took the city's park mix, palms and pink blossom."
   },
   {
    "ref": "plant-ggp-west",
@@ -950,6 +1110,30 @@
          3,
          6
         ]
+       },
+       {
+        "form": "canary",
+        "weight": 1,
+        "h": [
+         8,
+         13
+        ]
+       },
+       {
+        "form": "treefern",
+        "weight": 1,
+        "h": [
+         3,
+         5
+        ]
+       },
+       {
+        "form": "queen",
+        "weight": 0.5,
+        "h": [
+         8,
+         12
+        ]
        }
       ]
      },
@@ -988,6 +1172,38 @@
          5,
          8
         ]
+       },
+       {
+        "form": "canary",
+        "weight": 1,
+        "h": [
+         8,
+         13
+        ]
+       },
+       {
+        "form": "treefern",
+        "weight": 1,
+        "h": [
+         3,
+         5
+        ]
+       },
+       {
+        "form": "spiky",
+        "weight": 1,
+        "h": [
+         3,
+         5
+        ]
+       },
+       {
+        "form": "queen",
+        "weight": 0.5,
+        "h": [
+         8,
+         12
+        ]
        }
       ]
      },
@@ -1018,7 +1234,8 @@
      37.776,
      -122.477
     ]
-   ]
+   ],
+   "_note": "2026-10-03: the park's tropical planting added \u2014 Canary palms, tree ferns, cabbage trees, queen palms (owner: \"golden gate park is a unique mix of tropical and north american plants\")."
   },
   {
    "ref": "plant-ggp-east",
@@ -1109,6 +1326,30 @@
          3,
          6
         ]
+       },
+       {
+        "form": "canary",
+        "weight": 1,
+        "h": [
+         8,
+         13
+        ]
+       },
+       {
+        "form": "treefern",
+        "weight": 1,
+        "h": [
+         3,
+         5
+        ]
+       },
+       {
+        "form": "queen",
+        "weight": 0.5,
+        "h": [
+         8,
+         12
+        ]
        }
       ]
      },
@@ -1155,6 +1396,38 @@
          7,
          12
         ]
+       },
+       {
+        "form": "canary",
+        "weight": 1,
+        "h": [
+         8,
+         13
+        ]
+       },
+       {
+        "form": "treefern",
+        "weight": 1,
+        "h": [
+         3,
+         5
+        ]
+       },
+       {
+        "form": "spiky",
+        "weight": 1,
+        "h": [
+         3,
+         5
+        ]
+       },
+       {
+        "form": "queen",
+        "weight": 0.5,
+        "h": [
+         8,
+         12
+        ]
        }
       ]
      },
@@ -1191,7 +1464,8 @@
      37.7745,
      -122.464
     ]
-   ]
+   ],
+   "_note": "2026-10-03: the park's tropical planting added \u2014 Canary palms, tree ferns, cabbage trees, queen palms (owner: \"golden gate park is a unique mix of tropical and north american plants\")."
   },
   {
    "ref": "plant-the-hills",
@@ -2844,9 +3118,10 @@
     "terrain": "fine",
     "traffic": 0,
     "crowd": 0.8,
-    "relief": "raw"
+    "relief": "raw",
+    "cliffs": true
    },
-   "note": "Appearance audit 2026-10-02 (BUGS.md #257): on the coarse grid the island topped out 11 m above the sea; it rises about 41 m to the cellhouse.",
+   "note": "Appearance audit 2026-10-02 (BUGS.md #257): on the coarse grid the island topped out 11 m above the sea; it rises about 41 m to the cellhouse. 2026-10-04: cliffs \u2014 the island meets the bay in rock all round (views audit).",
    "ring": [
     [
      37.8245,
@@ -2863,6 +3138,118 @@
     [
      37.829,
      -122.4255
+    ]
+   ]
+  },
+  {
+   "ref": "strawberry-hill",
+   "name": "Strawberry Hill (Stow Lake's island)",
+   "priority": 1,
+   "props": {
+    "terrain": "fine",
+    "relief": "raw"
+   },
+   "note": "Golden Gate Park audit 2026-10-04: the 60 m opening took the summit off \u2014 a flat mesa 14 m over the lake at 101.7 m, where the zoom-15 data (bare earth here) reads 130.4 m. The ring is the island's own shore (the hole in Stow Lake) pushed 5% out into the water; water samples are never raw, so the lake keeps its level and no ridden way crosses the edge.",
+   "ring": [
+    [
+     37.767792,
+     -122.47601
+    ],
+    [
+     37.767656,
+     -122.475404
+    ],
+    [
+     37.767626,
+     -122.47507
+    ],
+    [
+     37.7676,
+     -122.474863
+    ],
+    [
+     37.767611,
+     -122.474669
+    ],
+    [
+     37.767643,
+     -122.474408
+    ],
+    [
+     37.767706,
+     -122.474057
+    ],
+    [
+     37.76788,
+     -122.473725
+    ],
+    [
+     37.768029,
+     -122.473541
+    ],
+    [
+     37.76824,
+     -122.473445
+    ],
+    [
+     37.768594,
+     -122.473529
+    ],
+    [
+     37.768841,
+     -122.473634
+    ],
+    [
+     37.769028,
+     -122.473625
+    ],
+    [
+     37.769189,
+     -122.473748
+    ],
+    [
+     37.769386,
+     -122.474334
+    ],
+    [
+     37.769529,
+     -122.474847
+    ],
+    [
+     37.769572,
+     -122.475377
+    ],
+    [
+     37.769601,
+     -122.475705
+    ],
+    [
+     37.769735,
+     -122.4761
+    ],
+    [
+     37.769757,
+     -122.476618
+    ],
+    [
+     37.76956,
+     -122.476962
+    ],
+    [
+     37.768809,
+     -122.477185
+    ],
+    [
+     37.768115,
+     -122.476777
+    ],
+    [
+     37.767944,
+     -122.47643
+    ],
+    [
+     37.767814,
+     -122.476075
     ]
    ]
   },
@@ -2903,7 +3290,7 @@
     "crowd": 1.2,
     "buildings": "mediterranean"
    },
-   "note": "Owner, 2026-10-02: 'a destination … little car traffic … many low stucco Spanish colonial buildings, not big boxy buildings'.",
+   "note": "Owner, 2026-10-02: 'a destination \u2026 little car traffic \u2026 many low stucco Spanish colonial buildings, not big boxy buildings'.",
    "ring": [
     [
      37.844,
@@ -3038,9 +3425,10 @@
        }
       ]
      }
-    }
+    },
+    "cliffs": true
    },
-   "note": "Owner, 2026-10-02: 'i'm not seeing those unique buildings' — a forest stood over the baths, the Cliff House and the Camera Obscura. The real headland is bare cliff and scrub, cypress in ones and twos.",
+   "note": "Owner, 2026-10-02: 'i'm not seeing those unique buildings' \u2014 a forest stood over the baths, the Cliff House and the Camera Obscura. The real headland is bare cliff and scrub, cypress in ones and twos.",
    "ring": [
     [
      37.777,
@@ -3233,7 +3621,7 @@
    "props": {
     "buildings": "navy"
    },
-   "note": "Owner, 2026-10-02: 'Treasure Island … need a lot of work'. The Navy's island: low stucco quarters and new mid-rise blocks, never the city's brick, Victorians or tenements. Landmarks (Building 1, the hangars) are models.",
+   "note": "Owner, 2026-10-02: 'Treasure Island \u2026 need a lot of work'. The Navy's island: low stucco quarters and new mid-rise blocks, never the city's brick, Victorians or tenements. Landmarks (Building 1, the hangars) are models.",
    "ring": [
     [
      37.815,
@@ -3250,6 +3638,802 @@
     [
      37.833,
      -122.38
+    ]
+   ]
+  },
+  {
+   "ref": "embarcadero-podium",
+   "name": "Embarcadero Center podium",
+   "priority": 2,
+   "props": {
+    "trails": "bike"
+   },
+   "ring": [
+    [
+     37.7944373,
+     -122.4006322
+    ],
+    [
+     37.7950212,
+     -122.3956872
+    ],
+    [
+     37.7952638,
+     -122.3956872
+    ],
+    [
+     37.7953805,
+     -122.3971082
+    ],
+    [
+     37.7972221,
+     -122.3971082
+    ],
+    [
+     37.7968628,
+     -122.4001775
+    ],
+    [
+     37.7960992,
+     -122.4004049
+    ]
+   ],
+   "_note": "2026-10-03: the podium level's walks (src/city/sf/bridges.ts EMBARCADERO_PODIUM_DECKS) are mostly footways; open them to bikes so the promenade, the skybridges and Maritime Plaza are one rideable route (owner: 'walkable/bikeable \u2026 go either on the road beneath or on the aerial walkway'). 2026-10-03: extended north over Golden Gateway Center's 12-13 m podium, so its walks are rideable too (owner: 'the embarcadero decks are not navigable')."
+  },
+  {
+   "ref": "ggp-tree-fern-dell",
+   "name": "Tree Fern Dell",
+   "priority": 151,
+   "props": {
+    "plant": {
+     "wood": {
+      "density": 0.012,
+      "clump": 0.7,
+      "species": [
+       {
+        "form": "treefern",
+        "weight": 6,
+        "h": [
+         3,
+         6
+        ]
+       },
+       {
+        "form": "spiky",
+        "weight": 1,
+        "h": [
+         3,
+         5
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 1,
+        "h": [
+         10,
+         15
+        ]
+       }
+      ]
+     },
+     "park": {
+      "density": 0.012,
+      "clump": 0.7,
+      "species": [
+       {
+        "form": "treefern",
+        "weight": 6,
+        "h": [
+         3,
+         6
+        ]
+       },
+       {
+        "form": "spiky",
+        "weight": 1,
+        "h": [
+         3,
+         5
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 1,
+        "h": [
+         10,
+         15
+        ]
+       }
+      ]
+     }
+    }
+   },
+   "ring": [
+    [
+     37.77175,
+     -122.45985
+    ],
+    [
+     37.77175,
+     -122.45825
+    ],
+    [
+     37.77085,
+     -122.45825
+    ],
+    [
+     37.77085,
+     -122.45985
+    ]
+   ],
+   "_note": "2026-10-03: the dell of tree ferns below the Conservatory of Flowers (John McLaren's fern dell), by eye from the park map \u2014 refine from OSM if it is mapped."
+  },
+  {
+   "ref": "seward-mini-park",
+   "name": "Seward Mini Park",
+   "priority": 152,
+   "ring": [
+    [
+     37.758013,
+     -122.439787
+    ],
+    [
+     37.757926,
+     -122.439864
+    ],
+    [
+     37.757788,
+     -122.439991
+    ],
+    [
+     37.75772,
+     -122.440123
+    ],
+    [
+     37.757628,
+     -122.44023
+    ],
+    [
+     37.757497,
+     -122.440397
+    ],
+    [
+     37.757425,
+     -122.440489
+    ],
+    [
+     37.757341,
+     -122.440365
+    ],
+    [
+     37.757259,
+     -122.440234
+    ],
+    [
+     37.757605,
+     -122.439918
+    ],
+    [
+     37.757781,
+     -122.439762
+    ],
+    [
+     37.757885,
+     -122.439656
+    ],
+    [
+     37.757914,
+     -122.439534
+    ],
+    [
+     37.757944,
+     -122.439519
+    ]
+   ],
+   "_note": "2026-10-03 (owner: 'the park is heavily wooded'): thick planting either side of the slides; the slides and their path are a clearing (seward-slides.ts grounds). Ring from OSM way/138662530.",
+   "props": {
+    "plant": {
+     "park": {
+      "density": 0.03,
+      "clump": 0.3,
+      "species": [
+       {
+        "form": "evergreen",
+        "weight": 3,
+        "h": [
+         6,
+         11
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 3,
+        "h": [
+         4,
+         8
+        ]
+       },
+       {
+        "form": "bottlebrush",
+        "weight": 2,
+        "h": [
+         3,
+         6
+        ]
+       },
+       {
+        "form": "myrtle",
+        "weight": 1,
+        "h": [
+         5,
+         9
+        ]
+       }
+      ]
+     },
+     "wood": {
+      "density": 0.03,
+      "clump": 0.3,
+      "species": [
+       {
+        "form": "evergreen",
+        "weight": 3,
+        "h": [
+         6,
+         11
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 3,
+        "h": [
+         4,
+         8
+        ]
+       },
+       {
+        "form": "bottlebrush",
+        "weight": 2,
+        "h": [
+         3,
+         6
+        ]
+       },
+       {
+        "form": "myrtle",
+        "weight": 1,
+        "h": [
+         5,
+         9
+        ]
+       }
+      ]
+     },
+     "grass": {
+      "density": 0.03,
+      "clump": 0.3,
+      "species": [
+       {
+        "form": "evergreen",
+        "weight": 3,
+        "h": [
+         6,
+         11
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 3,
+        "h": [
+         4,
+         8
+        ]
+       },
+       {
+        "form": "bottlebrush",
+        "weight": 2,
+        "h": [
+         3,
+         6
+        ]
+       },
+       {
+        "form": "myrtle",
+        "weight": 1,
+        "h": [
+         5,
+         9
+        ]
+       }
+      ]
+     }
+    }
+   }
+  },
+  {
+   "ref": "twin-peaks-summits",
+   "name": "Twin Peaks (the summits and Christmas Tree Point)",
+   "priority": 150,
+   "props": {
+    "plant": {
+     "park": {
+      "density": 0,
+      "clump": 0.5,
+      "species": [
+       {
+        "form": "spiky",
+        "weight": 1,
+        "h": [
+         1.5,
+         3
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0,
+      "clump": 0.5,
+      "species": [
+       {
+        "form": "spiky",
+        "weight": 1,
+        "h": [
+         1.5,
+         3
+        ]
+       }
+      ]
+     },
+     "wood": {
+      "density": 0,
+      "clump": 0.5,
+      "species": [
+       {
+        "form": "spiky",
+        "weight": 1,
+        "h": [
+         1.5,
+         3
+        ]
+       }
+      ]
+     }
+    }
+   },
+   "note": "Viewpoints audit 2026-10-04: the summits are bare grass and coastal scrub, not the hills' park planting (eucalyptus, oak, blossom) \u2014 trees stood on the lawn at the top and in the view.",
+   "ring": [
+    [
+     37.7495,
+     -122.45
+    ],
+    [
+     37.7495,
+     -122.445
+    ],
+    [
+     37.7565,
+     -122.445
+    ],
+    [
+     37.7565,
+     -122.45
+    ]
+   ]
+  },
+  {
+   "ref": "corona-heights-summit",
+   "name": "Corona Heights (the rocky summit)",
+   "priority": 150,
+   "props": {
+    "plant": {
+     "park": {
+      "density": 0,
+      "clump": 0.5,
+      "species": [
+       {
+        "form": "spiky",
+        "weight": 1,
+        "h": [
+         1.5,
+         3
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0,
+      "clump": 0.5,
+      "species": [
+       {
+        "form": "spiky",
+        "weight": 1,
+        "h": [
+         1.5,
+         3
+        ]
+       }
+      ]
+     },
+     "wood": {
+      "density": 0,
+      "clump": 0.5,
+      "species": [
+       {
+        "form": "spiky",
+        "weight": 1,
+        "h": [
+         1.5,
+         3
+        ]
+       }
+      ]
+     }
+    }
+   },
+   "note": "Viewpoints audit 2026-10-04: the summit is a bare red-chert outcrop and grass; the park's trees are on its lower slopes by the Randall Museum.",
+   "ring": [
+    [
+     37.7646,
+     -122.4396
+    ],
+    [
+     37.7646,
+     -122.4375
+    ],
+    [
+     37.766,
+     -122.4375
+    ],
+    [
+     37.766,
+     -122.4396
+    ]
+   ]
+  },
+  {
+   "ref": "tank-hill-summit",
+   "name": "Tank Hill (the summit)",
+   "priority": 150,
+   "props": {
+    "plant": {
+     "park": {
+      "density": 0,
+      "clump": 0.5,
+      "species": [
+       {
+        "form": "spiky",
+        "weight": 1,
+        "h": [
+         1.5,
+         3
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0,
+      "clump": 0.5,
+      "species": [
+       {
+        "form": "spiky",
+        "weight": 1,
+        "h": [
+         1.5,
+         3
+        ]
+       }
+      ]
+     },
+     "wood": {
+      "density": 0,
+      "clump": 0.5,
+      "species": [
+       {
+        "form": "spiky",
+        "weight": 1,
+        "h": [
+         1.5,
+         3
+        ]
+       }
+      ]
+     }
+    }
+   },
+   "note": "Viewpoints audit 2026-10-04: a small bare rock summit with the view; eucalyptus round its foot.",
+   "ring": [
+    [
+     37.7593,
+     -122.4483
+    ],
+    [
+     37.7593,
+     -122.4471
+    ],
+    [
+     37.7603,
+     -122.4471
+    ],
+    [
+     37.7603,
+     -122.4483
+    ]
+   ]
+  },
+  {
+   "ref": "plant-marin-headlands",
+   "name": "marin-headlands",
+   "priority": 97,
+   "props": {
+    "plant": {
+     "wood": {
+      "density": 0.004,
+      "clump": 0.85,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         8,
+         15
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 2,
+        "h": [
+         8,
+         15
+        ]
+       },
+       {
+        "form": "eucalyptus",
+        "weight": 2,
+        "h": [
+         12,
+         22
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 1,
+        "h": [
+         6,
+         10
+        ]
+       }
+      ]
+     },
+     "park": {
+      "density": 0.0006,
+      "clump": 0.85,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         8,
+         15
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 2,
+        "h": [
+         8,
+         15
+        ]
+       },
+       {
+        "form": "eucalyptus",
+        "weight": 2,
+        "h": [
+         12,
+         22
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 1,
+        "h": [
+         6,
+         10
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0.0006,
+      "clump": 0.85,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         8,
+         15
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 2,
+        "h": [
+         8,
+         15
+        ]
+       },
+       {
+        "form": "eucalyptus",
+        "weight": 2,
+        "h": [
+         12,
+         22
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 1,
+        "h": [
+         6,
+         10
+        ]
+       }
+      ]
+     },
+     "shrubs": {
+      "density": 0.8,
+      "shrubs": [
+       "juniper_scrub",
+       "bush_green",
+       "sagebrush",
+       "bracken"
+      ]
+     }
+    }
+   },
+   "note": "2026-10-04 (views audit): the Marin Headlands are open coastal scrub with wind-bent cypress and a few eucalyptus groves; under the city's default mix they grew pink blossom and street trees. Rough rectangle south of Sausalito's own zone.",
+   "ring": [
+    [
+     37.8215,
+     -122.535
+    ],
+    [
+     37.8215,
+     -122.4735
+    ],
+    [
+     37.8455,
+     -122.4735
+    ],
+    [
+     37.8455,
+     -122.535
+    ]
+   ]
+  },
+  {
+   "ref": "plant-alcatraz",
+   "name": "alcatraz",
+   "priority": 105,
+   "props": {
+    "plant": {
+     "wood": {
+      "density": 0.004,
+      "clump": 0.8,
+      "species": [
+       {
+        "form": "eucalyptus",
+        "weight": 3,
+        "h": [
+         10,
+         18
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         8,
+         14
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         8,
+         13
+        ]
+       }
+      ]
+     },
+     "park": {
+      "density": 0.0012,
+      "clump": 0.8,
+      "species": [
+       {
+        "form": "eucalyptus",
+        "weight": 3,
+        "h": [
+         10,
+         18
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         8,
+         14
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         8,
+         13
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0.0012,
+      "clump": 0.8,
+      "species": [
+       {
+        "form": "eucalyptus",
+        "weight": 3,
+        "h": [
+         10,
+         18
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         8,
+         14
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         8,
+         13
+        ]
+       }
+      ]
+     },
+     "shrubs": {
+      "density": 0.6,
+      "shrubs": [
+       "bush_green",
+       "bramble",
+       "juniper_scrub"
+      ]
+     }
+    }
+   },
+   "note": "2026-10-04 (audit): Alcatraz's planting is wind-blown eucalyptus and cypress over the ruins' gardens, not the city's park mix (palms, blossom).",
+   "ring": [
+    [
+     37.8245,
+     -122.4255
+    ],
+    [
+     37.8245,
+     -122.4195
+    ],
+    [
+     37.829,
+     -122.4195
+    ],
+    [
+     37.829,
+     -122.4255
     ]
    ]
   }

@@ -130,45 +130,9 @@ export const B5: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     })
   },
 
-  /**
-   * way/260194175 — The Women's Building, 3543 18th St, community centre, 17 m. No photograph. Baked plan
-   * (25 vertices) is strictly orthogonal — a rectangle with several small (0.6–1.4m) light-well/party-wall
-   * notches, survey scale, no diagonal bays. Built BLIND as a plain Mission-district three-storey brick
-   * commercial building.
-   */
-  b5_community_260194175: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'shopfronts', bays: 3, storeys: 1, material: 'dark-brick' },
-      shaft: { storeys: 3, windows: 'balanced', material: 'brick' },
-      top: null,
-      bands: { aboveGround: 'string', belowTop: null, top: 'cornice' },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'door', steps: 1 },
-      material: 'brick',
-    })
-  },
 
-  /**
-   * way/1206216224 — Castro Theatre, 429 Castro St, cinema, opened 1922, 25 m. No photograph under
-   * `docs/shots/refs/`. Baked plan (9 vertices) is a rectangular auditorium block with two shallow angled
-   * corners following the block's non-orthogonal lot lines — not a bay rhythm, not a curve, just the site
-   * boundary. A movie palace is one of the brief's own examples of a significant building that is still a
-   * plain box: the famous Churrigueresque front is ornament on a rectangular volume, said here with a
-   * pedimented/arched top storey and a deep bracketed cornice rather than invented as extra geometry.
-   */
-  b5_cinema_1206216224: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'recessed', storeys: 1, depth: 1.2, material: 'terracotta' },
-      shaft: { storeys: 3, windows: 'arched', material: 'terracotta' },
-      top: { kind: 'attic', storeys: 1, material: 'terracotta' },
-      bands: { aboveGround: 'string', belowTop: 'string', top: 'bracketed' },
-      crown: null,
-      frame: { verticals: { kind: 'pilaster', width: 0.5, at: 'bays', count: 4 }, horizontals: null, recess: 0, material: 'terracotta' },
-      entrance: { at: 'centre', kind: 'portal', steps: 2 },
-      material: 'terracotta',
-    })
-  },
+
+
 
   /**
    * way/32863779 — Old San Francisco Mint, "The Granite Lady", 88 Fifth St. SUPERSEDED — this was written

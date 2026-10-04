@@ -127,7 +127,7 @@ export class Life {
   private readonly blobs: Pool
   private readonly rails: { points: { x: number; z: number }[]; length: number; kind: 0 | 1 | 2 | 3 | 4 | 5; heights?: number[]; stops: number[] }[] = []
   /** a train: where its head is along the rail, which way, its running speed and speed now, its dwell */
-  private readonly trains: { rail: number; s: number; dir: 1 | -1; speed: number; v: number; wait: number; last: number; variant: number; held?: number; fixed?: 1 | -1 | null; shift?: number }[] = []
+  private readonly trains: { rail: number; s: number; dir: 1 | -1; speed: number; v: number; wait: number; last: number; variant: number; held?: number; fixed?: 1 | -1 | null; shift?: number; spin?: number }[] = []
   /**
    * The street-running cars this frame — cable cars, streetcars, light rail (rail kinds 2–4; not the main line nor the
    * métro on its viaduct): where each car is, its size, its speed. The traffic, the rider and the crowd treat them as
@@ -214,6 +214,41 @@ export class Life {
     }
   }
 
+  /** Join `points` onto the one existing rail of `kind` it meets end to end; true if it did (`addRails`). */
+  private joinRail(points: { x: number; z: number }[], length: number, kind: number): boolean {
+    const near = (a: { x: number; z: number }, b: { x: number; z: number }): boolean => Math.hypot(a.x - b.x, a.z - b.z) < 1
+    const a0 = points[0], a1 = points[points.length - 1]
+    const hits: { i: number; at: 'start' | 'end'; mine: 'start' | 'end' }[] = []
+    this.rails.forEach((r, i) => {
+      if (r.kind !== kind || r.heights) return
+      const r0 = r.points[0], r1 = r.points[r.points.length - 1]
+      for (const [mine, p] of [['start', a0], ['end', a1]] as const) {
+        if (near(p, r0)) hits.push({ i, at: 'start', mine })
+        if (near(p, r1)) hits.push({ i, at: 'end', mine })
+      }
+    })
+    // only a plain continuation: one rail, at one of this piece's ends (a branch or a crossing stays separate)
+    if (hits.length !== 1) return false
+    const h = hits[0]
+    const rail = this.rails[h.i]
+    const piece = h.at === 'end' ? (h.mine === 'start' ? points : [...points].reverse()) : (h.mine === 'end' ? points : [...points].reverse())
+    if (h.at === 'end') {
+      rail.points = [...rail.points, ...piece.slice(1)]
+    } else {
+      rail.points = [...piece.slice(0, -1), ...rail.points]
+      rail.stops = rail.stops.map((st) => st + length)
+      for (const t of this.trains) if (t.rail === h.i) { t.s += length; if (t.last >= 0) t.last += length }
+    }
+    rail.length += length
+    // the stops on the joined piece
+    if (this.stockPools[rail.kind]?.kind.stops) {
+      rail.stops = []
+      for (const st of this.tramStops) { const sa = stopAlong(rail.points, st, 12); if (sa !== null) rail.stops.push(sa) }
+      rail.stops.sort((p, q) => p - q)
+    }
+    return true
+  }
+
   /** Railways arriving with streamed tiles, each once, with its trains. */
   addRails(rails: CityPackage['rails']): void {
     // Only the railways a rider can actually see. A subway is underground: putting a train on it would mean
@@ -248,6 +283,14 @@ export class Life {
         }
         stops.sort((p, q) => p - q)
       }
+      /*
+       * JOINED END TO END (owner, 2026-10-03, 9th Ave & Irving: trains "get stuck 100% of the time in the turn"). OSM maps a
+       * line as many ways, each a rail here with its own train shuttling to its ends — and a street track's end in sight
+       * holds its train there (below), so every train reaching the piece's end in the junction stood in the turn for good.
+       * A piece whose end meets exactly one existing rail's end (same stock, at grade) is joined onto that rail instead:
+       * the line runs through, and the trains already on it keep their place (shifted when the piece goes on the front).
+       */
+      if (!r.heights && kind >= 2 && kind <= 4 && this.joinRail(points, length, kind)) continue
       this.rails.push({ points, length, kind, heights: r.heights, stops })
     }
     this.rails.forEach((r, i) => {
@@ -431,11 +474,27 @@ export class Life {
           const halfWid = vp.shadow[1] / 2
           const look = halfLen + 4 + (t.v * t.v) / (2 * A)
           let gap = Infinity
+          /*
+           * ALONG ITS RAILS, not along a straight line (owner, 2026-10-03, 9th Ave & Irving: "since our trains can't bend,
+           * they get stuck 100% of the time in the turn"). Looked for straight ahead, a train entering a 90° street turn
+           * saw the cars queued in the cross street — and the other train round the corner — as on its track, and stood
+           * 20 s, crept 4, stood again. Now the path ahead is sampled every metre along the rail (on its lane line), and
+           * an obstacle is in the way only near that path.
+           */
+          const path: { x: number; z: number; d: number }[] = []
+          for (let d = 0; d <= look + 6; d += 1) {
+            const sd = Math.max(0, Math.min(rail.length, t.s + t.dir * d))
+            const p = along(rail.points, sd)
+            const q = along(rail.points, Math.max(0, Math.min(rail.length, sd + t.dir * 1)))
+            const qx = q.x - p.x, qz = q.z - p.z, ql = Math.hypot(qx, qz) || 1
+            if (t.shift) { p.x += (qz / ql) * t.shift; p.z -= (qx / ql) * t.shift }
+            path.push({ x: p.x, z: p.z, d })
+          }
           const consider = (x: number, z: number, hl: number, hw: number): void => {
-            const dx = x - head0.x, dz = z - head0.z
-            const a = dx * ux + dz * uz
-            const c = Math.abs(dx * uz - dz * ux)
-            if (a > 0 && a < look + hl && c < halfWid + hw + 0.3) gap = Math.min(gap, a - halfLen - hl)
+            for (const p of path) {
+              if (p.d < halfLen * 0.5) continue
+              if (Math.hypot(x - p.x, z - p.z) < halfWid + Math.min(hw, hl) + 0.3) { gap = Math.min(gap, p.d - halfLen - hl * 0.5); return }
+            }
           }
           if (!this.riderAboard) consider(at.x, at.z, 0.9, 0.3)
           for (const v of vehicles) if (Math.abs(v.at.x - head0.x) < 40 && Math.abs(v.at.z - head0.z) < 40) consider(v.at.x, v.at.z, (v.size?.len ?? 4.4) / 2, (v.size?.wid ?? 1.9) / 2)
@@ -486,10 +545,25 @@ export class Life {
           const start = t.fixed > 0 ? 0 : rail.length
           const end = along(rail.points, Math.max(0, Math.min(rail.length, t.s)))
           const begin = along(rail.points, start)
-          if (Math.hypot(end.x - focus.x, end.z - focus.z) > 160 && Math.hypot(begin.x - focus.x, begin.z - focus.z) > 160) { t.s = start; t.last = -1 }
-          else { t.s = Math.max(0, Math.min(rail.length, t.s)); t.wait = 2 }
-        } else { t.dir = (-t.dir) as 1 | -1; t.s = Math.max(0, Math.min(rail.length, t.s)); t.last = -1 }
+          if (Math.hypot(end.x - focus.x, end.z - focus.z) > 160 && Math.hypot(begin.x - focus.x, begin.z - focus.z) > 160) { t.s = start; t.last = -1; t.spin = 0 }
+          else {
+            t.s = Math.max(0, Math.min(rail.length, t.s)); t.wait = 2
+            /*
+             * THE TURNTABLE (owner, 2026-10-03: "we should make the turntables function!"): a cable car standing at the
+             * end of its line, in sight, is pushed round on the turntable there — half a turn in eight seconds — and
+             * stands turned, as at Powell & Market, Hyde & Beach and Taylor & Bay.
+             */
+            if (rail.kind === 3) t.spin = Math.min(Math.PI, (t.spin ?? 0) + dt * Math.PI / 8)
+          }
+        } else {
+          t.dir = (-t.dir) as 1 | -1; t.s = Math.max(0, Math.min(rail.length, t.s)); t.last = -1
+          // a cable car going back the way it came is turned on the turntable first: it starts the turn facing the way
+          // it arrived (−π) and is pushed round to its new heading while it stands (below)
+          if (rail.kind === 3) { t.spin = -Math.PI; t.wait = Math.max(t.wait, 9) }
+        }
       }
+      // the turn on the turntable: half a turn in eight seconds
+      if (t.spin !== undefined && t.spin < 0) t.spin = Math.min(0, t.spin + dt * Math.PI / 8)
       const head = along(rail.points, t.s)
       // near where is being looked at: the rider, or a frozen view's focus
       if (Math.hypot(head.x - focus.x, head.z - focus.z) > 420) continue
@@ -502,7 +576,7 @@ export class Life {
         const s0 = Math.max(0, Math.min(rail.length - 4, s - 2))
         const a = along(rail.points, s0)
         const b = along(rail.points, s0 + 4)
-        const heading = t.dir > 0 ? Math.atan2(b.x - a.x, b.z - a.z) : Math.atan2(a.x - b.x, a.z - b.z)
+        const heading = (t.dir > 0 ? Math.atan2(b.x - a.x, b.z - a.z) : Math.atan2(a.x - b.x, a.z - b.z)) + (t.spin ?? 0)
         if (t.shift) { p.x += Math.cos(heading) * t.shift; p.z -= Math.sin(heading) * t.shift }
         /*
          * On the grade. A cable car on Hyde Street's 21% has its ends two metres apart in height: set level at its

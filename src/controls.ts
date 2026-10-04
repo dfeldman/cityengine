@@ -100,7 +100,8 @@ export class LocalControls implements Controls {
       case 'KeyS': this.pending.push('straight'); break
       case 'KeyU': case 'Backspace': this.pending.push('back'); e.preventDefault(); break
       // (the Pause key too: the touch ⏸ sends it, so it pauses without also toggling photo mode, which is also P)
-      case 'KeyP': case 'Pause': this.paused_ = !this.paused_; break
+      // (P is the look-around pause now, ui/debug.ts — owner, 2026-10-03: "move freeze to pause, a P button")
+      case 'Pause': this.paused_ = !this.paused_; break
     }
     // a little below zero is REVERSE (owner, 2026-10-01: "power should go slightly negative so you can get unstuck if
     // you're right behind a car that isn't moving"): sim/ride.ts backs the bike up once it has stopped

@@ -78,6 +78,7 @@
     }
   },
   "paris": {
+    "timeZone": "Europe/Paris",
     "note": "Paris. Cream limestone almost everywhere (Haussmann's city is one colour, and that colour is what makes it Paris), slate-blue zinc roofs and black ironwork. No lamp posts on the pavement edge: Paris street lamps hang from the buildings. Black bollards (potelets) line the narrow pavements to keep cars off them. Crossings are the passage piéton: broad white bands, wider apart than a zebra (crossings: bands).",
     "palettes": {
       "haussmann": [
@@ -231,6 +232,8 @@
     "signals": "paris"
   },
   "new-york": {
+    "units": "imperial",
+    "timeZone": "America/New_York",
     "note": "Brooklyn and Manhattan brownstone and walk-up country: four or five storeys, set by the row either side. Only the height method is set here so far; the rest of the New York profile is item G.",
     "defaultLevels": {
       "residential": 4,
@@ -259,6 +262,8 @@
     "signals": "mastArm"
   },
   "chicago": {
+    "units": "imperial",
+    "timeZone": "America/Chicago",
     "note": "The Loop: towers stand beside three-storey survivors, and the towers are the ones mappers tag. The median of the tagged neighbours would make every untagged walk-up a skyscraper, so the lower quartile is asked, and capped. The rest of the Chicago profile is item G.",
     "defaultLevels": {
       "residential": 6,
@@ -285,6 +290,12 @@
     "signals": "mastArm"
   },
   "san-francisco": {
+    "rainbowCrossings": [{ "name": "Castro and 18th Street (2014)", "lat": 37.76088, "lon": -122.43498, "radius": 30 }],
+    "lanternStreets": [{ "street": "Grant Avenue", "from": [37.79070, -122.40565], "to": [37.79790, -122.40695] }],
+    "pavedSquares": [{"name": "Embarcadero Plaza (owner, 2026-10-04: brick, like Market's sidewalks; OSM maps it as a park)", "ring": [[37.795546, -122.39585], [37.795229, -122.395785], [37.795124, -122.395765], [37.795115, -122.395762], [37.795103, -122.395745], [37.794872, -122.395435], [37.794779, -122.395312], [37.794759, -122.395286], [37.794748, -122.395272], [37.794722, -122.39524], [37.794634, -122.395132], [37.79457, -122.395054], [37.794595, -122.395025], [37.794696, -122.394901], [37.794718, -122.394871], [37.794396, -122.394455], [37.794227, -122.394236], [37.794063, -122.394031], [37.7939, -122.393825], [37.794071, -122.393615], [37.794081, -122.393601], [37.794207, -122.393446], [37.794478, -122.393911], [37.794586, -122.394063], [37.794683, -122.394194], [37.794793, -122.394321], [37.794921, -122.39445], [37.795029, -122.394541], [37.795187, -122.394656], [37.795263, -122.394708], [37.795384, -122.39479], [37.795491, -122.394845], [37.79569, -122.394967], [37.795901, -122.395121], [37.795871, -122.395185], [37.795881, -122.395208], [37.795883, -122.395219], [37.795877, -122.395243], [37.795866, -122.395273], [37.795849, -122.39529], [37.795837, -122.395296], [37.795819, -122.395294], [37.795802, -122.395287], [37.795791, -122.395276], [37.79578, -122.395256], [37.79571, -122.395276], [37.795714, -122.395324], [37.795706, -122.395392], [37.795687, -122.395447], [37.795667, -122.395492], [37.795647, -122.395525], [37.795625, -122.395545], [37.795587, -122.395554], [37.795557, -122.395769], [37.795554, -122.395792], [37.795546, -122.39585]], "brick": true}],
+    "units": "imperial",
+    "timeZone": "America/Los_Angeles",
+    "footBridgeLayers": [{ "name": "Market Street overpass and its spiral ramp, at Clayton/Corbett (Mapillary: one deck ~5 m over the road)", "lat": 37.75215, "lon": -122.44279, "radius": 45, "layer": 1 }],
     "furniture": { "clutter": true },
     "pointFurniture": { "metro": "bart", "american": true, "busStop": "muni" },
     "note": "Nob Hill: houses and small apartment blocks, with a few hotels on the crest. The building type decides first and the neighbours are asked over a shorter distance, because a hotel tower on the corner says nothing about the Victorians down the hill. The rest of the profile is item G.",
@@ -304,11 +315,16 @@
     },
     "centreLine": "doubleYellow",
     "hydrants": true,
+    "hydrantPaint": { "body": "#e8e6df", "tops": [["#2f5fa8", 4], ["#c0392b", 3], ["#1e1e1e", 1.5], ["#e0b62a", 1.5]] },
     "crossings": "continental",
     "streetWidth": "carriageway",
     "streetSigns": "blade",
     "awnings": 0.35,
     "brickStreets": { "names": ["Market Street"], "colour": [0.55, 0.32, 0.26] },
+    "streetPaint": [
+      { "street": "Market Street", "from": [37.77310, -122.42230], "to": [37.78770, -122.40340], "paint": "transit", "note": "the streetcar lanes red, Gough to 3rd (owner)" },
+      { "street": "Market Street", "from": [37.77310, -122.42230], "to": [37.77780, -122.41520], "paint": "bike", "note": "green bike lanes, Gough to 8th (owner)" }
+    ],
     "signals": "mastArm",
     "stairways": [
       {

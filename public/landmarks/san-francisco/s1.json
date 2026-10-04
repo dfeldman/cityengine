@@ -67,29 +67,18 @@
   "deckAbove": 3.5
  },
  {
-  "procedural": "s1_pier_7_23605169",
+  "procedural": "pier7Promenade",
   "name": "Pier 7",
+  "coversRaised": true,
   "height": 4,
-  "lat": 37.799283,
-  "lon": -122.395759,
+  "lat": 37.7992955,
+  "lon": -122.3957411,
+  "front": 180,
   "size": [
    220,
    167
   ],
   "note": "placed by lat/lon: way/23605169 is not a building in the bake (pier/footway/ruin), so an osm claim never resolves",
-  "deckAbove": 3.5
- },
- {
-  "procedural": "s1_pier_14_23605173",
-  "name": "Pier 14",
-  "height": 4,
-  "lat": 37.794159,
-  "lon": -122.390354,
-  "size": [
-   172,
-   126
-  ],
-  "note": "placed by lat/lon: way/23605173 is not a building in the bake (pier/footway/ruin), so an osm claim never resolves",
   "deckAbove": 3.5
  }
 ]

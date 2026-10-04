@@ -184,3 +184,26 @@ describe('the new capabilities', () => {
     expect(Math.abs(mid - 7)).toBeLessThan(wall.bays > 0 ? 14 / wall.bays : 3)
   })
 })
+
+describe('a building with no shops', () => {
+  it('draws the style\'s own windows on the ground floor where the style would put shopfronts', () => {
+    const shops = planWall(planFacade('brick', 7, { levels: 3 }), 30, 7)
+    expect(shops.cells.some((c) => c.element === 'brick/shopfront')).toBe(true)
+    const plan = planFacade('brick', 7, { levels: 3, noShops: true })
+    expect(plan.ground).toBe('plain')
+    const wall = planWall(plan, 30, 7)
+    expect(wall.cells.some((c) => c.element.endsWith('/shopfront'))).toBe(false)
+    expect(wall.cells.filter((c) => c.y0 === 0 && c.element === 'brick/window').length).toBeGreaterThan(0)
+    // and a style whose ground floor is not shops keeps it
+    expect(planFacade('victorian', 7, { levels: 3, noShops: true }).ground).toBe('stoop')
+  })
+})
+
+describe('an institution', () => {
+  it('has no fire escapes', () => {
+    const tenement = planWall(planFacade('tenement', 3, { levels: 6 }), 30, 3)
+    const hospital = planWall(planFacade('tenement', 3, { levels: 6, noShops: true }), 30, 3)
+    expect(tenement.features.some((f) => f.kind === 'fireEscape')).toBe(true)
+    expect(hospital.features.some((f) => f.kind === 'fireEscape')).toBe(false)
+  })
+})

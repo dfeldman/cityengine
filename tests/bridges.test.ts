@@ -88,3 +88,29 @@ describe('a bridge in several pieces', () => {
     expect(pieces[0].heights![pieces[0].heights!.length - 1]).toBeCloseTo(pieces[1].heights![pieces[1].heights!.length - 1])
   })
 })
+
+describe('a foot bridge over a footpath (the Market Street helix, 2026-10-04)', () => {
+  it('clears the path by one storey however high its layer, and a road by its layers', () => {
+    const turn: BridgeEdge = { id: 1, a: 1, b: 2, points: [-20, 0, 20, 0], heights: [0, 0], bridge: true, foot: true, layer: 4 }
+    const path: BridgeEdge = { id: 2, a: 3, b: 4, points: [0, -20, 0, 20], heights: [0, 0], foot: true }
+    bridgeHeights([turn, path], { water: [], ground: flat })
+    expect(Math.max(...turn.heights!)).toBeCloseTo(5.5)
+    const park: BridgeEdge = { id: 1, a: 1, b: 2, points: [-20, 0, 20, 0], heights: [0, 0], bridge: true, foot: true, layer: 3 }
+    const street: BridgeEdge = { id: 2, a: 3, b: 4, points: [0, -20, 0, 20], heights: [0, 0] }
+    bridgeHeights([park, street], { water: [], ground: flat })
+    expect(Math.max(...park.heights!)).toBeCloseTo(16.5)
+  })
+})
+
+describe('a region\'s foot-bridge layer caps', () => {
+  it('lifts a foot bridge near a capped point one storey over the road, whatever its OSM layer', () => {
+    const span = (): BridgeEdge => ({ id: 1, a: 1, b: 2, points: [-20, 0, 20, 0], heights: [0, 0], bridge: true, foot: true, layer: 5 })
+    const road = (): BridgeEdge => ({ id: 2, a: 3, b: 4, points: [0, -20, 0, 20], heights: [0, 0] })
+    const capped = span()
+    bridgeHeights([capped, road()], { water: [], ground: flat, layerCaps: [{ x: 0, z: 0, radius: 45, layer: 1 }] })
+    expect(Math.max(...capped.heights!)).toBeCloseTo(5.5)
+    const far = span()
+    bridgeHeights([far, road()], { water: [], ground: flat, layerCaps: [{ x: 500, z: 0, radius: 45, layer: 1 }] })
+    expect(Math.max(...far.heights!)).toBeCloseTo(27.5)
+  })
+})

@@ -37,7 +37,7 @@
  *
  * Local frame: the fitted footprint's, +y up — the same frame as `tower()`, `facade()` and `parts.ts`.
  */
-import { MeshBuilder } from '../buildings.ts'
+import { MeshBuilder, capPolygon } from '../buildings.ts'
 import { box, prism, type Rgb } from '../models.ts'
 import { surfaceTag, type Surface } from '../cartoon-material.ts'
 import type { Fit } from './fit.ts'
@@ -133,6 +133,9 @@ export interface Walls {
   material: Material
   openings: 'lancet' | 'round' | 'square' | 'tracery' | 'blank'
   buttresses: 'none' | 'plain' | 'stepped' | 'flying'
+  /** the wall colour where the material's own is wrong for this building — buff brick, say (First Church of Christ,
+   *  Scientist); the material still sets the surface */
+  colour?: Rgb
 }
 
 /** One place of worship, in slots. **Every key is required; any value but `nave`, `front` and `walls` may be null.** */
@@ -674,7 +677,29 @@ function wallFace(openings: Walls['openings'], wall: Rgb, material: Surface, sto
  * Throws when `nave.bays` is less than one: a hall with no bays is a slip, not a decision, and a silent shed is
  * exactly what this API exists to prevent.
  */
+/**
+ * A church on a hillside stands on its basement. The loader seats every landmark at the LOWEST ground under it, so
+ * where the street at the front is higher than the back — Old Saint Mary's on California Street, 5 m up its slope —
+ * the portal and its steps were half under the pavement (BUGFIX #314). The whole church is lifted to the front's
+ * grade (`fit.grade`, less the half metre the loader sinks every model) onto a plain stone plinth that is the
+ * exposed basement on the downhill side, as San Francisco's own buildings show theirs.
+ */
 export function church(out: MeshBuilder, fit: Fit, spec: ChurchSpec): void {
+  const lift = Math.max(0, (fit.grade ?? 0) - 0.5)
+  if (lift < 0.8) { churchOnGround(out, fit, spec); return }
+  const p0 = out.positions.length, s0 = out.signs.length, d0 = out.decks.length
+  churchOnGround(out, fit, spec)
+  for (let i = p0 + 1; i < out.positions.length; i += 3) out.positions[i] += lift
+  for (let i = s0; i < out.signs.length; i++) out.signs[i].y += lift
+  for (let i = d0; i < out.decks.length; i++) out.decks[i].y += lift
+  const ring = towerRing(fit)
+  const stone = surfaceTag('ashlar')
+  const grey: Rgb = [0.52, 0.51, 0.49]
+  faceBand(out, ring, 0, lift, { kind: 'blank', wall: grey, material: 'ashlar' })
+  capPolygon(out, ring.map((q) => ({ x: q.x, z: q.z })), lift, grey, stone)
+}
+
+function churchOnGround(out: MeshBuilder, fit: Fit, spec: ChurchSpec): void {
   if (!(spec.nave.bays >= 1)) {
     throw new Error('church(): nave.bays must be at least 1 — count the window bays along one flank')
   }
@@ -698,13 +723,21 @@ export function church(out: MeshBuilder, fit: Fit, spec: ChurchSpec): void {
    */
   const q = new MeshBuilder()
   build(q, L, W, fit.height > 4 ? fit.height : 14, spec)
-  placed(out, q, alongZ ? Math.PI : -Math.PI / 2, cx, cz)
+  /*
+   * …and measured again 2026-10-03 (owner: "mt holy redeemer … rendered backward (with the front facing the center of
+   * the block)"; "we should check for other backward churches"): an audit of every kit church — its tower's side
+   * against the street — found the half turn put EVERY kit church given a bearing 180° off it: the street-fronted ones
+   * faced into their blocks, and Saints Peter and Paul (front 180, onto Washington Square) faced Union Street. The
+   * 09-22 "correction" was judged against a church whose model has since become custom. No half turn: the canonical
+   * −z front, placed as built, faces the bearing.
+   */
+  placed(out, q, alongZ ? 0 : Math.PI / 2, cx, cz)
 }
 
 /** the canonical church: nave along z, front at z = −L/2, centred on the origin */
 function build(out: MeshBuilder, L: number, W: number, H: number, spec: ChurchSpec): void {
   const { nave, aisles, transept, chancel, tower, front, walls } = spec
-  const wall = materialColour(walls.material)
+  const wall = walls.colour ?? materialColour(walls.material)
   const surf = materialSurface(walls.material)
   const trim: Rgb = [Math.min(1, wall[0] * 1.1 + 0.05), Math.min(1, wall[1] * 1.1 + 0.05), Math.min(1, wall[2] * 1.1 + 0.05)]
   const roofC: Rgb = walls.material === 'stucco' ? [0.45, 0.28, 0.2] : [0.34, 0.36, 0.4]

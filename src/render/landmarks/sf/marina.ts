@@ -99,8 +99,21 @@ export function plazaDeck(out: MeshBuilder, fit: Fit): void {
   const hx = fit.hx
   const hz = fit.hz
   const concrete = surfaceTag('concrete')
-  box(out, 0, -0.25, 0, hx, 0.25, hz, [0.72, 0.7, 0.66], concrete)
-  box(out, 0, -3.2, 0, hx - 0.5, 2.7, hz - 0.5, [0.24, 0.22, 0.2], concrete)
+  // the paving, in broad bands of two greys (one flat colour read as a white box from any height)
+  const BAND = 4
+  for (let x = -hx, k = 0; x < hx - 0.01; x += BAND, k++) {
+    const x1 = Math.min(hx, x + BAND)
+    box(out, (x + x1) / 2, -0.25, 0, (x1 - x) / 2, 0.25, hz, k % 2 ? [0.6, 0.59, 0.56] : [0.53, 0.52, 0.5], concrete)
+  }
+  // the edge beam, and the PILES under it — not a solid mass: a solid block under the deck stood 3.5 m out of the
+  // water as a black wall, a building on the bay (owner, 2026-10-03: "white boxes" at the ferry gates)
+  for (const [x, z, lx, lz] of [[0, hz - 0.3, hx, 0.3], [0, -hz + 0.3, hx, 0.3], [hx - 0.3, 0, 0.3, hz], [-hx + 0.3, 0, 0.3, hz]] as const) {
+    box(out, x, -0.9, z, lx, 0.4, lz, [0.34, 0.33, 0.32], concrete)
+  }
+  const P = 6
+  for (let x = -hx + 1.5; x <= hx - 1.5; x += P) {
+    for (let z = -hz + 1.5; z <= hz - 1.5; z += P) prism(out, x, z, -9, -0.5, 0.3, 6, [0.22, 0.21, 0.2], concrete)
+  }
   for (const [x, z, lx, lz] of [[0, hz, hx, 0.04], [0, -hz, hx, 0.04], [hx, 0, 0.04, hz], [-hx, 0, 0.04, hz]] as const) {
     box(out, x, 1.0, z, lx, 0.04, lz, [0.3, 0.32, 0.33], surfaceTag('metal'))
   }

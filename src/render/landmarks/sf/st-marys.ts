@@ -22,21 +22,42 @@ const GLASS: Rgb = [0.22, 0.27, 0.34]
 const RIDGE: Rgb = [0.30, 0.36, 0.52]
 const PLINTH: Rgb = [0.70, 0.68, 0.63]
 const GOLD: Rgb = [0.78, 0.62, 0.28]
-/** the ridges' height over the plinth, and the plinth's */
-const H = 55
-const BASE = 3
+/**
+ * The PODIUM (owner, 2026-10-03, with a Street View from Gough: "the real building has a large concrete podium and is
+ * mostly concrete on top"): about 13 m of travertine piers and glass under a deep flat overhang, much wider than the
+ * cupola, which rises from its roof to 58 m. Until then the shells sprang from a 3 m plinth at the full width.
+ */
+const BASE = 13.5
+/** the ridges' height over the podium's roof */
+const H = 44.5
+const TRAVERTINE: Rgb = [0.8, 0.77, 0.7]
+const DARK_GLASS: Rgb = [0.12, 0.14, 0.17]
 
 type V = [number, number, number]
 const lerp = (a: V, b: V, t: number): V => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]
 
 export function stMarysCathedral(out: MeshBuilder, fit: Fit): void {
-  const a = Math.max(20, Math.min(fit.hx, fit.hz, 40))
+  const P = Math.max(24, Math.min(fit.hx, fit.hz, 48))
+  // the cupola, set well in from the podium's edge
+  const a = P * 0.6
   const shell = surfaceTag('concrete')
   const glass = surfaceTag('glass')
   const stone = surfaceTag('ashlar')
 
-  // the plinth the cathedral stands on
-  box(out, 0, BASE / 2, 0, a + 3, BASE / 2, a + 3, PLINTH, stone)
+  // the podium: a glass core, travertine piers across each face leaving glass bays at the corners, the overhang on top
+  box(out, 0, 0.4, 0, P + 2, 0.4, P + 2, PLINTH, stone)
+  box(out, 0, BASE / 2, 0, P - 1.2, BASE / 2, P - 1.2, DARK_GLASS, glass)
+  for (const [nx, nz] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
+    const tx = -nz, tz = nx
+    const piers = 6
+    for (let k = 0; k < piers; k++) {
+      const u = -P * 0.62 + (k + 0.5) * ((P * 1.24) / piers)
+      const cx = nx * (P - 0.6) + tx * u, cz = nz * (P - 0.6) + tz * u
+      const half = (P * 1.24) / piers / 2 - 0.35
+      box(out, cx, BASE / 2, cz, Math.abs(tx) * half + Math.abs(nx) * 0.7, BASE / 2 - 0.6, Math.abs(tz) * half + Math.abs(nz) * 0.7, TRAVERTINE, stone)
+    }
+  }
+  box(out, 0, BASE - 0.5, 0, P + 3.5, 0.6, P + 3.5, TRAVERTINE, stone)
 
   const top = BASE + H
   const C: V = [0, top, 0]
@@ -64,7 +85,8 @@ export function stMarysCathedral(out: MeshBuilder, fit: Fit): void {
       }
     }
   }
-  // each side's gable: the vertical triangle between two quarters, glazed, from the plinth to the arm's end
+  // each side's gable: the vertical triangle between two quarters — travertine like the shells, a dark slot of glass
+  // up its middle to the ridge, the cross of light that the four make
   for (const [nx, nz] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
     const tx = -nz, tz = nx
     const apex: V = [nx * a, top, nz * a]
@@ -72,14 +94,11 @@ export function stMarysCathedral(out: MeshBuilder, fit: Fit): void {
     const right: V = [nx * a - tx * a, BASE, nz * a - tz * a]
     // set a hand's breadth in, so the shells' edges stand proud of the glass
     const inset = (p: V): V => [p[0] - nx * 0.4, p[1], p[2] - nz * 0.4]
-    out.quad([inset(left), inset(right), inset(apex), inset(apex)], [nx, 0, nz], [[0, 0], [1, 0], [0.5, 1], [0.5, 1]], GLASS, glass)
-    // the mullions up the gable
-    for (let k = 1; k < 8; k++) {
-      const t = k / 8
-      const lo = lerp(left, right, t)
-      const h = (1 - Math.abs(t - 0.5) * 2) * H
-      box(out, lo[0] - nx * 0.2, BASE + h / 2, lo[2] - nz * 0.2, Math.abs(tz) * 0.15 + Math.abs(nx) * 0.15, h / 2, Math.abs(tx) * 0.15 + Math.abs(nz) * 0.15, SHELL, shell)
-    }
+    out.quad([inset(left), inset(right), inset(apex), inset(apex)], [nx, 0, nz], [[0, 0], [1, 0], [0.5, 1], [0.5, 1]], SHELL, shell)
+    // the slot: a narrow dark band from the podium's roof to the ridge, a little proud of the gable
+    const w = 1.6
+    const slot = (u: number, y: number): V => [nx * (a - 0.25) + tx * u, y, nz * (a - 0.25) + tz * u]
+    out.quad([slot(-w, BASE + 0.6), slot(w, BASE + 0.6), slot(w, top), slot(-w, top)], [nx, 0, nz], [[0, 0], [1, 0], [1, 1], [0, 1]], GLASS, glass)
   }
   // the gold cross on the crossing
   box(out, 0, top + 8, 0, 0.35, 8, 0.35, GOLD, surfaceTag('metal'))

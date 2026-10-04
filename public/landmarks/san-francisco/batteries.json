@@ -1,1 +1,7 @@
-[]
+[
+  {"osm": ["way/421294976"], "name": "Battery Chamberlin", "procedural": "batteryChamberlin", "height": 4, "note": "districts/batteries.ts: 1904, Baker Beach: the disappearing gun's pit in its parapet, magazines, the earth berm. Was a 12 m presidio-style barracks."},
+  {"osm": ["way/420832798"], "name": "Battery Crosby", "procedural": "batteryCrosby", "height": 4, "note": "districts/batteries.ts: 1900, on the bluff over Baker Beach. Was a 12 m presidio-style barracks."},
+  {"osm": ["way/420287686"], "name": "Battery Godfrey", "procedural": "batteryGodfrey", "height": 4, "note": "districts/batteries.ts: 1896, the first of the Endicott batteries, by the Golden Gate. Was a 12 m presidio-style barracks."},
+  {"osm": ["way/420287677"], "name": "Battery Boutelle", "procedural": "batteryBoutelle", "height": 4, "note": "districts/batteries.ts: 1900, beside Godfrey (batteryCrosby's model). Was a 12 m presidio-style barracks."},
+  {"osm": ["way/420287682"], "name": "Battery Cranston", "procedural": "batteryCranston", "height": 4, "note": "districts/batteries.ts: 1897, beside Godfrey (batteryGodfrey's model). Was a 12 m presidio-style barracks."}
+]

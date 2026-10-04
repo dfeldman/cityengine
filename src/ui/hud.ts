@@ -20,12 +20,24 @@ export class Hud {
   private readonly nextEl: HTMLElement
   private readonly statsEl: HTMLElement
   private readonly gpsEl: HTMLElement
+  /**
+   * THE SPEEDOMETER (owner, 2026-10-04: "there is no display of speed and miles traveled (which are only small on the
+   * desktop UI, could be more prominent)"): the speed big, its unit, and the distance under it, in the corner the
+   * minimap leaves free — bottom right on a desktop, top right on a phone (where there is no minimap). Miles and mph
+   * in a region that measures in them (Region `units`).
+   */
+  private readonly speedoEl: HTMLElement
+  private imperial = false
+  /** miles and mph (the United States), or kilometres and km/h */
+  setUnits(units: 'imperial' | 'metric' | undefined): void { this.imperial = units === 'imperial' }
 
   constructor(root: HTMLElement, onBack?: () => void) {
     this.root = root
     root.innerHTML = `
       <div class="sr-gps" hidden></div>
       <div class="sr-transit" hidden></div>
+      <div class="sr-action" hidden></div>
+      <div class="sr-action sr-observe" hidden></div>
       <button class="sr-back" title="Turn around here (U)">↩</button>
       <div class="sr-turns"></div>
       <div class="sr-exits" hidden></div>
@@ -39,7 +51,17 @@ export class Hud {
     this.nextEl = root.querySelector('.sr-next')!
     this.statsEl = root.querySelector('.sr-stats')!
     this.gpsEl = root.querySelector('.sr-gps')!
+    this.speedoEl = document.createElement('div')
+    this.speedoEl.className = 'sr-speedo'
+    this.speedoEl.innerHTML = '<b>0</b><i>km/h</i><span></span>'
+    document.body.appendChild(this.speedoEl)
     this.transitEl = root.querySelector('.sr-transit')!
+    // (tappable: on a phone the transit line is the button — board, get off — owner, 2026-10-03)
+    this.transitEl.addEventListener('click', () => this.onTransitTap?.())
+    this.actionEl = root.querySelector('.sr-action')!
+    this.actionEl.addEventListener('click', () => this.actionTap?.())
+    this.observeEl = root.querySelector('.sr-observe')!
+    this.observeEl.addEventListener('click', () => this.observeTap?.())
     this.exitsEl = root.querySelector('.sr-exits')!
     this.exitsEl.addEventListener('click', (e) => {
       const b = (e.target as HTMLElement).closest<HTMLElement>('[data-edge]')
@@ -118,6 +140,24 @@ export class Hud {
   }
 
   private readonly transitEl: HTMLElement
+  /** a tap on the transit line: the same as B */
+  onTransitTap: (() => void) | null = null
+  private readonly actionEl: HTMLElement
+  private readonly observeEl: HTMLElement
+  private observeTap: (() => void) | null = null
+  /** the "observe from the top" prompt by a tall landmark (game.ts), its own pill beside the action one */
+  observe(text: string | null, tap?: () => void): void {
+    this.observeEl.hidden = text === null
+    this.observeTap = tap ?? null
+    if (text !== null && this.observeEl.textContent !== text) this.observeEl.textContent = text
+  }
+  private actionTap: (() => void) | null = null
+  /** A button for what can be done right now that has no other control on a phone (eat the order); null hides it. */
+  action(text: string | null, tap?: () => void): void {
+    this.actionEl.hidden = text === null
+    this.actionTap = tap ?? null
+    if (text !== null && this.actionEl.textContent !== text) this.actionEl.textContent = text
+  }
   /**
    * The transit line (src/sim/transit.ts): a cable car standing at the stop you are near, or the fact that
    * you are on one. Its own line, above the GPS — it is not a turn and it is not a destination.
@@ -157,6 +197,16 @@ export class Hud {
     const pace = stats.speed > 0.5 ? (() => { const t = Math.round(1000 / stats.speed); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')} /km` })() : '—:— /km'
     this.statsEl.textContent =
       `${kmh} km/h   ${stats.device === 'bike' ? power : pace}   ${(stats.distance / 1000).toFixed(2)} km`
+    // the speedometer: the speed, its unit, and how far the ride has come
+    const v = this.imperial ? stats.speed * 2.23694 : stats.speed * 3.6
+    const far = this.imperial ? `${(stats.distance / 1609.344).toFixed(2)} mi` : `${(stats.distance / 1000).toFixed(2)} km`
+    const [num, unit, dist] = this.speedoEl.children as unknown as HTMLElement[]
+    const vs = v < 10 ? v.toFixed(1) : String(Math.round(v))
+    if (num.textContent !== vs) num.textContent = vs
+    const us = this.imperial ? 'mph' : 'km/h'
+    if (unit.textContent !== us) unit.textContent = us
+    const ds = stats.device === 'bike' && stats.power !== null ? `${far} · ${Math.round(stats.power)} W` : far
+    if (dist.textContent !== ds) dist.textContent = ds
 
     this.turnsEl.innerHTML = (['left', 'straight', 'right'] as Turn[]).map((t) => {
       const offered = j?.turns.has(t) ?? false
@@ -234,7 +284,10 @@ export const HUD_CSS = `
 #hud .sr-gps { font: 700 15px/1.3 var(--font); color: var(--on-page); background: var(--page); border-radius: 999px; padding: 6px 16px; text-shadow: none; box-shadow: var(--shadow) }
 #hud .sr-gps:not([hidden]) + .sr-back { top: 50px }
 #hud .sr-transit { align-self: center; font: 700 15px/1.3 var(--font); color: var(--on-amber); background: var(--c-amber);
-  border-radius: 999px; padding: 6px 16px; text-shadow: none; box-shadow: var(--shadow) }
+  border-radius: 999px; padding: 6px 16px; text-shadow: none; box-shadow: var(--shadow); cursor: pointer; pointer-events: auto }
+#hud .sr-action { align-self: center; font: 700 15px/1.3 var(--font); color: var(--text); background: var(--panel);
+  border: 2px solid var(--c-amber); border-radius: 999px; padding: 6px 16px; text-shadow: none; box-shadow: var(--shadow);
+  cursor: pointer; pointer-events: auto }
 .sr-banner { position: fixed; top: 226px; left: 50%; transform: translate(-50%, -12px); z-index: 6; opacity: 0;
   pointer-events: none; transition: opacity .35s, transform .35s; text-align: center; color: var(--text);
   background: var(--panel); border: 2px solid var(--page); border-radius: var(--radius); padding: 14px 30px;
@@ -242,4 +295,15 @@ export const HUD_CSS = `
 .sr-banner.on { opacity: 1; transform: translate(-50%, 0) }
 .sr-banner-sub { font: 600 15px/1.4 var(--font); color: var(--muted); margin-top: 4px }
 #hud .sr-stats { font-size: 13px; opacity: .72; letter-spacing: .4px }
+.sr-speedo { position: fixed; right: 18px; bottom: 24px; z-index: 6; pointer-events: none; min-width: 112px; text-align: center;
+  color: var(--text); background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 14px 9px;
+  box-shadow: var(--shadow); backdrop-filter: blur(6px) }
+.sr-speedo b { display: block; font: 800 44px/1 var(--font); font-variant-numeric: tabular-nums; letter-spacing: -1px }
+.sr-speedo i { display: block; font: 700 12px/1.2 var(--font); font-style: normal; opacity: .7; letter-spacing: .08em; text-transform: uppercase }
+.sr-speedo span { display: block; margin-top: 4px; font: 700 15px/1.2 var(--font); font-variant-numeric: tabular-nums }
+.sr-compact .sr-speedo { right: 10px; bottom: auto; top: 66px; min-width: 84px; padding: 6px 10px 7px }
+.sr-compact .sr-speedo b { font-size: 32px }
+/* stopped to look round, a phone has no room for it over the paused note */
+.sr-compact.sr-looking .sr-speedo { display: none }
+.sr-compact .sr-speedo span { font-size: 13px }
 `

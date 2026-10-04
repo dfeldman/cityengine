@@ -25,8 +25,6 @@ export const H1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** way/274542537 — UCSF Nancy and Stephen Grand Building (Mission Bay). Modern medical campus building, precast concrete. */
   h1_ucsf_grand: fromRecipe('concrete-piers', { height: 9, wall: [0.76, 0.74, 0.70], glass: [0.26, 0.28, 0.30] }),
 
-  /** way/1243657270 — UCSF Nancy Friend Pritzker Psychiatry Building (Mission Bay). Modern institutional medical, precast. */
-  h1_ucsf_pritzker: fromRecipe('concrete-piers', { height: 210, wall: [0.78, 0.76, 0.72], glass: [0.28, 0.31, 0.34] }),
 
   /** way/256633745 — UCSF Medical Center at Mount Zion. Medical campus, modern institutional design. */
   h1_ucsf_mountZion: fromRecipe('midcentury-slab', { height: 29, wall: [0.75, 0.71, 0.65], glass: [0.26, 0.30, 0.35] }),

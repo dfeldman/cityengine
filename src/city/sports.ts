@@ -42,7 +42,7 @@
  */
 
 /** The sports the `court` part draws. Everything else is left as the flat `pitch` area it is today. */
-export type CourtSport = 'tennis' | 'pickleball' | 'basketball' | 'four_square' | 'volleyball'
+export type CourtSport = 'tennis' | 'pickleball' | 'basketball' | 'four_square' | 'volleyball' | 'playground'
 
 export interface CourtFit {
   sport: CourtSport
@@ -78,6 +78,8 @@ const LADDER: Record<CourtSport, Size[]> = {
   // the painted square is 16 ft on a side
   four_square: [{ len: 4.88, wid: 4.88 }],
   volleyball: [{ len: 18, wid: 9 }],
+  // a playground is its own box, furnished to fit (render/playground.ts): no rungs, see `fitCourt`
+  playground: [],
 }
 
 /**
@@ -191,6 +193,8 @@ export function fitCourt(ring: { x: number; z: number }[], sport: CourtSport): C
       heading, len, wid, ...(half ? { half: true } : {}),
     }
   }
+  // a playground: the box itself, a metre in from its fence
+  if (sport === 'playground') return boxLen > 4 && boxWid > 3 ? place(boxLen - 1, boxWid - 1) : null
   const rungs = LADDER[sport]
   const SLACK = 1.02
   for (const r of rungs) {

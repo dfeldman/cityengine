@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { entryKind, fitFront, groundedParts, isReplaced, packedIds, partsComplete, partsUnion, replacedIds, restyles, tileNearParts, type LandmarkEntry } from '../src/render/landmarks.ts'
+import { entryKind, fitFront, groundedParts, isReplaced, packedIds, partsComplete, partsOutline, partsUnion, replacedIds, restyles, tileNearParts, type LandmarkEntry } from '../src/render/landmarks.ts'
 import { PROCEDURAL } from '../src/render/landmarks/procedural.ts'
 import { MeshBuilder } from '../src/render/buildings.ts'
 
@@ -175,6 +175,25 @@ describe('a building the bake replaced with its own parts (BUGS.md #100)', () =>
     expect(Math.max(...xs)).toBe(60)
     expect(Math.min(...zs)).toBe(0)
     expect(Math.max(...zs)).toBe(20)
+  })
+
+  /*
+   * An L round a neighbour's corner lot (SFMOMA round the W, 2026-10-03): the hull fills the notch, the outline must
+   * not — it is what `"plan": "union"` hands a builder as its ring.
+   */
+  it('traces the true outline of an L-shaped plan, notch and all', () => {
+    const L = [{ id: 1, ring: ring(0, 0, 40, 20), height: 20 }, { id: 2, ring: ring(0, 20, 20, 40), height: 20 }]
+    const o = partsOutline(L)!
+    const area = Math.abs(o.reduce((a, p, i) => { const q = o[(i + 1) % o.length]; return a + p.x * q.z - q.x * p.z }, 0) / 2)
+    expect(area).toBeCloseTo(1200, -1)
+    expect(o.length).toBe(6)
+    const inside = (x: number, z: number): boolean => {
+      let c = false
+      for (let i = 0, j = o.length - 1; i < o.length; j = i++) if ((o[i].z > z) !== (o[j].z > z) && x < ((o[j].x - o[i].x) * (z - o[i].z)) / (o[j].z - o[i].z) + o[i].x) c = !c
+      return c
+    }
+    expect(inside(30, 30)).toBe(false)
+    expect(inside(10, 30)).toBe(true)
   })
 
   /** The roof plate alone would give the same footprint here; a part that overhangs would not. */

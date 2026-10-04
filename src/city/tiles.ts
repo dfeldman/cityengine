@@ -258,6 +258,7 @@ export function splitPackage(pkg: CityPackage, waterLevel: (ring: Point[], area:
         get(tileKey(tx, tz)).areas.push({
           kind: a.kind, ring: piece.flatMap((q) => [r2(q.x), r2(q.z)]), ...(holes.length ? { holes } : {}), of,
           ...(a.top ? { top: true } : {}),
+          ...(a.brick ? { brick: true } : {}),
           ...(level !== undefined && Number.isFinite(level) ? { level: Math.round(level * 100) / 100 } : {}),
         })
       }
