@@ -12,7 +12,8 @@
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
-import { boxAlong, edgeAt, longestEdge, gunPit, stair } from '../../parts.ts'
+import { boxAlong, edgeAt, longestEdge, gunPit, stair, stripRoof } from '../../parts.ts'
+import { prism } from '../../../models.ts'
 import { faceBand, towerRing } from '../../tower.ts'
 import { capPolygon, capPolygonWithHoles } from '../../../buildings.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
@@ -54,7 +55,46 @@ function magazineDoor(out: MeshBuilder, cx: number, cz: number, width: number, h
   boxAlong(out, cx, doorY + height + 0.1, cz, width + 0.2, 0.15, depth, heading, CONCRETE_DARK, concreteTag)
 }
 
+/**
+ * A WWII-era (and later-buried) coastal battery as it is seen today in the Marin Headlands and on Angel Island
+ * (batteries census, 2026-10-04: ten of them were 12 m walk-ups): an earth-covered concrete mass — a grassed mound
+ * over the whole mapped footprint, low concrete walls at its foot — with along its longest side the concrete face of
+ * the magazines, dark doorways in it, and on top the round concrete gun platforms open to the sky. Big mapped
+ * footprints (Battery Wallace's is 104 × 156 m) are the whole emplacement, berm and all: drawn as one low hill.
+ */
+function earthworkBattery(out: MeshBuilder, fit: Fit): void {
+  const ring = towerRing(fit)
+  const GRASS: [number, number, number] = [0.25, 0.33, 0.19]
+  const conc = surfaceTag('concrete')
+  const rise = Math.min(6, Math.max(3, Math.min(fit.hx, fit.hz) * 0.18))
+  faceBand(out, ring, -1, 1.6, { kind: 'blank', wall: CONCRETE_DARK, material: 'concrete' })
+  stripRoof(out, ring, 1.6, rise, GRASS, 'concrete')
+  const e = edgeAt(ring, longestEdge(ring))
+  const face = Math.min(e.L * 0.7, 60)
+  // the magazine face: a concrete wall standing out of the berm's long side, doorways along it
+  const fx = e.mid.x - e.nx * 1.2, fz = e.mid.z - e.nz * 1.2
+  boxAlong(out, fx, 2.6, fz, face / 2, 2.6, 1.2, e.heading, CONCRETE_DARK, conc)
+  const doors = Math.max(2, Math.round(face / 12))
+  for (let k = 0; k < doors; k++) {
+    const u = -face / 2 + ((k + 0.5) * face) / doors
+    boxAlong(out, fx + e.tx * u + e.nx * 1.22, 1.5, fz + e.tz * u + e.nz * 1.22, 1.3, 1.5, 0.04, e.heading, [0.08, 0.08, 0.08], 0)
+  }
+  // the gun platforms on top: one or two round concrete pads in a parapet ring
+  let cx = 0, cz = 0
+  for (const p of ring) { cx += p.x; cz += p.z }
+  cx /= ring.length; cz /= ring.length
+  const guns = e.L > 60 ? 2 : 1
+  for (let g = 0; g < guns; g++) {
+    const u = guns === 1 ? 0 : (g ? 1 : -1) * Math.min(e.L * 0.25, 30)
+    const gx = cx + e.tx * u, gz = cz + e.tz * u
+    const R = Math.min(7, Math.min(fit.hx, fit.hz) * 0.3)
+    prism(out, gx, gz, 1.6 + rise - 0.6, 1.6 + rise + 0.6, R + 0.8, 20, CONCRETE, conc)
+    prism(out, gx, gz, 1.6 + rise + 0.6, 1.6 + rise + 0.65, R, 20, CONCRETE_DARKER, conc)
+  }
+}
+
 export const BATTERIES: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+  earthworkBattery,
   /**
    * Battery Chamberlin (1904) — one of the best-preserved coastal batteries at the Presidio.
    * One large gun pit (12-inch/disappearing gun), surrounded by a substantial concrete parapet.

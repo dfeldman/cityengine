@@ -4677,5 +4677,35 @@
    25
   ],
   "note": "schools.ts: the tower over the park (2026-10-04)."
+ },
+ {
+  "name": "Japantown \u2014 Japan Center and the Peace Pagoda",
+  "group": "landmark",
+  "from": [
+   37.786173,
+   -122.429734,
+   45
+  ],
+  "to": [
+   37.785095,
+   -122.430757,
+   5
+  ],
+  "note": "the two malls restyled (2026-10-04); the Peace Pagoda."
+ },
+ {
+  "name": "Marin Headlands \u2014 Batteries Wallace, Mendell, Alexander",
+  "group": "landmark",
+  "from": [
+   37.822644,
+   -122.526814,
+   60
+  ],
+  "to": [
+   37.825339,
+   -122.530225,
+   0
+  ],
+  "note": "batteries census 2026-10-04: the gun batteries, no longer walk-ups."
  }
 ]
