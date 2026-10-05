@@ -2672,6 +2672,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     return { mesh: hit.pickedMesh.name, face: hit.faceId, building: id, at: hit.pickedPoint?.asArray().map((v) => Math.round(v * 10) / 10) }
   }
   ;(window as unknown as { __heightAt?: unknown }).__heightAt = (x: number, z: number) => city.terrain.heightAt(x, z)
+  // (debug: the street grade and the raw ground under a point, for the wall and island probes)
+  ;(window as unknown as { __groundProbe?: unknown }).__groundProbe = (x: number, z: number) => ({ grade: city.gradeAt(x, z), raw: city.terrain.rawHeightAt(x, z), drape: city.terrain.heightAt(x, z) })
   // the elevation data alone, without the streets' levelling (what a patch lowering a street would have under it)
   ;(window as unknown as { __rawHeightAt?: unknown }).__rawHeightAt = (x: number, z: number) => city.terrain.rawHeightAt(x, z)
   /* how much fine ground is resident, against how many tiles are held: the per-tile terrain's heap report */

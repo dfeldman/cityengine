@@ -3221,6 +3221,18 @@ export class City {
               // (nor, for a foot way, inside a hand-built model's footprint, which draws its own edges: the ferry floats,
               //  2026-10-04 — a STREET keeps its walls there: the bridges' footprints take in Doyle Drive and the Embarcadero)
               if (this.gradeAt(ox, oz) !== null || pavedHere(ox, oz) || (e.foot && this.inCover(ox, oz))) continue
+              /*
+               * …nor on a narrow ISLAND between two roads at the same level (Marin Headlands audit, 2026-10-05: wall
+               * pieces stood like boards on the islands of Conzelman Road's junctions and round its roundabout). The
+               * 0.6 m sample lands on the island's bare ground, which the coarse terrain leaves up to 3 m under the
+               * levelled roads either side (measured there: island 91.3, the roads 91.3 and 94.7). Another street's
+               * corridor within 4 m further out says the drop is an island between two roads, not an embankment.
+               */
+              let island = false
+              for (const k of [1.5, 3, 4]) {
+                if (this.gradeAt(ox + nx * k, oz + nz * k) !== null) { island = true; break }
+              }
+              if (island) continue
               const p0 = P(t0)
               const p1 = P(t1)
               const h0 = H(t0)
