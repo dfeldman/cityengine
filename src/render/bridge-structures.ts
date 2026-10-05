@@ -245,6 +245,12 @@ function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: Pac
     // every raised way gives heights (a ramp onto the bridge lies lower than its footways), but only the
     // bridge's own ways say how far the structure runs
     if (!e.heights || !isRaised(e, terrain)) continue
+    /*
+     * …but not a freeway crossing OVER the bridge (22nd Street's overpass on the Caltrain cut, under I-280, 2026-10-05):
+     * its heights 16 m above the bridge's own went into the bins where it crosses, the median of two picked the higher,
+     * and the structure rose to the freeway — a wall 16 m high across 22nd Street. A freeway draws its own deck.
+     */
+    if (FREEWAY_KINDS.has(e.kind)) continue
     const own = e.bridge === true
     const pts = unpackPoints(e.points)
     for (let i = 1; i < pts.length; i++) {
