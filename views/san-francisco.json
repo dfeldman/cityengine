@@ -4932,5 +4932,35 @@
    10
   ],
   "note": "tower, fog-signal house, keeper's house, the Coast Guard buildings (2026-10-05)."
+ },
+ {
+  "name": "Angel Island \u2014 Ayala Cove from the water",
+  "group": "landmark",
+  "from": [
+   37.866,
+   -122.433,
+   25
+  ],
+  "to": [
+   37.869,
+   -122.436,
+   5
+  ],
+  "note": "the ferry landing, the Army buildings (zone 2026-10-05)."
+ },
+ {
+  "name": "Angel Island \u2014 the Immigration Station",
+  "group": "landmark",
+  "from": [
+   37.8682,
+   -122.425,
+   28
+  ],
+  "to": [
+   37.86945,
+   -122.42664,
+   6
+  ],
+  "note": "the Detention Barracks restyled from Commons (2026-10-05)."
  }
 ]
