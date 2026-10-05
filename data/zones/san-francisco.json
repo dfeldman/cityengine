@@ -5089,6 +5089,36 @@
      -122.4502
     ]
    ]
+  },
+  {
+   "ref": "point-bonita",
+   "name": "Point Bonita",
+   "priority": 6,
+   "props": {
+    "terrain": "fine",
+    "relief": "raw",
+    "cliffs": true,
+    "trails": "bike"
+   },
+   "note": "Point Bonita's narrow rock ridge out to the lighthouse stood UNDER the sea on the coarse ground (-86.7 m against the sea at -84.5; manifest sheet audit 2026-10-05): the Marin Headlands zone stops at 37.82, 400 m north. Fine raw relief and cliffs over the point, as Yerba Buena's light station.",
+   "ring": [
+    [
+     37.8115,
+     -122.5365
+    ],
+    [
+     37.8115,
+     -122.5175
+    ],
+    [
+     37.8205,
+     -122.5175
+    ],
+    [
+     37.8205,
+     -122.5365
+    ]
+   ]
   }
  ]
 }
