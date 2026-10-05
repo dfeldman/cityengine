@@ -9729,7 +9729,7 @@ explicitly in the terrain header beside `src` and `resM` — and NOT worth switc
 heights above 3276 m (Lhasa 3650, Quito 2850, Bogota 2640). Per-tile offset plus Int16 deltas is the encoding
 that scales, and that IS a local datum, stored explicitly.
 
-### #228 The Sausalito houseboats are baked and invisible — no water under them
+### #228 The Sausalito houseboats are baked and invisible — no water under them (RESOLVED by the box going north to 9300, 2026-10-02; rendered 2026-10-05: they float)
 
 Measured on bake 7. Of 33 boats, **25 float correctly** on water at exactly `-84.51` = `seaLevel` (the bay is
 one constant level, confirmed: 180 of 183 sampled water pieces are at that number). **None** is on an elevated
@@ -9851,7 +9851,7 @@ package without tile counts takes that path, so it is not a live bug; note it if
 **Lesson:** an A/B experiment must hold everything but the one variable. Both arms here shared the adapted
 index, which was the variable that mattered.
 
-### #232 On steep hills the road, its markings and the paths draw at different heights
+### #232 On steep hills the road, its markings and the paths draw at different heights (NOT REPRODUCED; bug234 views clean 2026-10-05 — needs the owner's next sighting)
 
 **Reported by the owner, 2026-09-29**, while watching the new traffic: *"some funny rendering glitches on steep
 hills where the road, lines, and paths all appear on different heights. this was likely preexisting."*
