@@ -227,8 +227,10 @@ function paintedHeart(out: MeshBuilder, paint: HeartPaint): void {
   const baseY = plinthH + R
   const ring = heartRing(R)
   const K = 8
+  // (the loft stops short of the faces — ±0.9, not ±1 — and each face is a FAN to a point a little proud: lofted to a
+  //  point, the last rings were slivers and the faces read as black holes, 2026-10-05)
   const layer = (k: number): { x: number; y: number; z: number }[] => {
-    const t = -1 + (2 * k) / K
+    const t = -0.9 + (1.8 * k) / K
     const sc = Math.pow(Math.max(0, 1 - t * t), 0.35)
     return ring.map((p) => ({ x: p.x * sc, y: baseY + (p.z + 0.2 * R) * sc - 0.2 * R, z: t * depth }))
   }
@@ -255,9 +257,24 @@ function paintedHeart(out: MeshBuilder, paint: HeartPaint): void {
       const vx = q[3][0] - q[0][0], vy = q[3][1] - q[0][1], vz = q[3][2] - q[0][2]
       let n: [number, number, number] = [uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx]
       const cx = (q[0][0] + q[2][0]) / 2, cy = (q[0][1] + q[2][1]) / 2 - baseY + 0.2 * R, cz = (q[0][2] + q[2][2]) / 2
-      if (n[0] * cx + n[1] * cy + n[2] * cz < 0) n = [-n[0], -n[1], -n[2]]
+      // (outward: flip the NORMAL and the WINDING together — flipping only the normal left the quads wound inward,
+      //  culled from outside, and the heart's front showed as a black hole through to its unlit back, 2026-10-05)
+      let quad = q
+      if (n[0] * cx + n[1] * cy + n[2] * cz < 0) { n = [-n[0], -n[1], -n[2]]; quad = [q[0], q[3], q[2], q[1]] }
       const L = Math.hypot(...n) || 1
-      out.quad(q, [n[0] / L, n[1] / L, n[2] / L], [[0, 0], [1, 0], [1, 1], [0, 1]], colourAt(cx, (q[0][1] + q[2][1]) / 2, cz), METAL_TAG)
+      out.quad(quad, [n[0] / L, n[1] / L, n[2] / L], [[0, 0], [1, 0], [1, 1], [0, 1]], colourAt(cx, (q[0][1] + q[2][1]) / 2, cz), METAL_TAG)
+    }
+  }
+  // the two faces: each end ring fanned to its centre, the centre a little proud of the ring (a domed face)
+  for (const side of [-1, 1]) {
+    const E = layer(side < 0 ? 0 : K)
+    const c: [number, number, number] = [0, baseY - 0.2 * R * 0.6, side * depth * 1.05]
+    for (let i = 0; i < E.length; i++) {
+      const j = (i + 1) % E.length
+      const a: [number, number, number] = [E[i].x, E[i].y, E[i].z], b: [number, number, number] = [E[j].x, E[j].y, E[j].z]
+      const col = colourAt((a[0] + b[0]) / 3, (a[1] + b[1] + c[1]) / 3, side * depth)
+      // wound so the face is seen from outside (+z for the front, −z for the back)
+      out.quad(side > 0 ? [a, b, c, c] : [b, a, c, c], [0, 0, side], [[0, 0], [1, 0], [0.5, 1], [0.5, 1]], col, METAL_TAG)
     }
   }
 }

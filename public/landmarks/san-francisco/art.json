@@ -81,7 +81,7 @@
   "height": 6,
   "procedural": "francisScottKeyCanopy",
   "name": "Francis Scott Key Monument canopy",
-  "note": "Golden Gate Park: the stone canopy only — the figure is a real model placed separately."
+  "note": "Golden Gate Park: the stone canopy only \u2014 the figure is a real model placed separately."
  },
  {
   "lat": 37.7948,
@@ -106,7 +106,8 @@
   "procedural": "heartLabyrinthine",
   "name": "Labyrinthine Heart (Union Square)",
   "sign": false,
-  "note": "Hearts in San Francisco (2026-10-03, owner: 'we should add all the hearts'): Wendy Ackrell, 2023 (OSM n10982692520). A rounded painted heart on a granite pedestal (sf/art.ts paintedHeart); the paint is a stand-in for the artist's design."
+  "note": "Hearts in San Francisco (2026-10-03, owner: 'we should add all the hearts'): Wendy Ackrell, 2023 (OSM n10982692520). A rounded painted heart on a granite pedestal (sf/art.ts paintedHeart); the paint is a stand-in for the artist's design.",
+  "baseY": -63.16
  },
  {
   "lat": 37.7875653,
@@ -132,7 +133,8 @@
   "procedural": "heartUnionSquare",
   "name": "Heart, Union Square",
   "sign": false,
-  "note": "Hearts in San Francisco (2026-10-03, owner: 'we should add all the hearts'): OSM n13007545430. A rounded painted heart on a granite pedestal (sf/art.ts paintedHeart); the paint is a stand-in for the artist's design."
+  "note": "Hearts in San Francisco (2026-10-03, owner: 'we should add all the hearts'): OSM n13007545430. A rounded painted heart on a granite pedestal (sf/art.ts paintedHeart); the paint is a stand-in for the artist's design.",
+  "baseY": -57.72
  },
  {
   "lat": 37.7919283,
