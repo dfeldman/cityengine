@@ -152,7 +152,7 @@ export const EXPLICIT: Record<string, NonbuildingKind> = {
   sullyCourt: 'plaza', soubiseCourt: 'plaza', carnavaletCourt: 'plaza',
   // San Francisco's park furniture, inside the mixed PARKS record (which also holds the Conservatory of
   // Flowers and the Academy of Sciences — real buildings, on BUILDINGS_OK)
-  goldenGatePavilion: 'structure', huntingtonFalls: 'structure', musicConcourse: 'plaza', japantownYagura: 'tower', unPlazaFountain: 'fountain', yodaFountain: 'fountain',
+  goldenGatePavilion: 'structure', huntingtonFalls: 'structure', musicConcourse: 'plaza', japantownYagura: 'tower', unPlazaFountain: 'fountain', yodaFountain: 'fountain', leviPlazaFountain: 'fountain',
   teaGardenPagoda: 'structure', teaGardenSouthGate: 'structure', teaGardenTempleGate: 'structure', teaGardenGrounds: 'garden',
   dutchWindmill: 'structure', murphyWindmill: 'structure', spreckelsTempleOfMusic: 'structure',
   // station head houses and canopies: a mouth in the pavement with a roof over it, not a building

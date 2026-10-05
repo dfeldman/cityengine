@@ -119,4 +119,51 @@ export function sanFranciscoMint(out: MeshBuilder, fit: Fit): void {
   box(out, e.mid.x - e.nx * 6 + e.tx * 1.1, B + H1 + 0.7 + ATT + 9.2, e.mid.z - e.nz * 6 + e.tz * 1.1, 1, 0.6, 0.02, [0.7, 0.18, 0.16], 0)
 }
 
-export const FOUNTAINS: Record<string, (out: MeshBuilder, fit: Fit) => void> = { unPlazaFountain, yodaFountain, sanFranciscoMint }
+/**
+ * LEVI'S PLAZA FOUNTAIN (Lawrence Halprin, 1982), in the hard plaza between the Levi Strauss buildings off Battery
+ * Street (OSM node/2219695172 in the plaza way/25751236). Fountain census 2026-10-05, from Commons "Levi's Plaza Park
+ * (hard, fountain pano).jpg": a broad shallow pool in a plain concrete coping, crossed by low weirs of brown granite
+ * the water spills over in sheets; at its head a stepped granite pyramid climbed by a stair, a jet on its top; flat
+ * stepping slabs and a big planter block of clipped green in the water. Was bare paving. Local x the pool's length,
+ * the pyramid at +x.
+ */
+export function leviPlazaFountain(out: MeshBuilder, fit: Fit): void {
+  const CONC: Rgb = [0.74, 0.72, 0.68], GRANITE: Rgb = [0.4, 0.33, 0.28], PALE: Rgb = [0.68, 0.64, 0.58]
+  const WATER: Rgb = [0.4, 0.5, 0.5], FOAM: Rgb = [0.92, 0.95, 0.96], HEDGE: Rgb = [0.2, 0.33, 0.18]
+  const conc = surfaceTag('concrete'), st = surfaceTag('granite')
+  const hx = Math.max(8, fit.hx), hz = Math.max(6, fit.hz)
+  const ring = towerRing(fit)
+  // the coping, knee high, and the water a hand under its top
+  faceBand(out, ring, 0, 0.5, { kind: 'blank', wall: CONC, material: 'concrete' })
+  faceBand(out, insetRing(ring, 0.6), 0, 0.5, { kind: 'blank', wall: CONC, material: 'concrete' })
+  for (const [a, b] of [[ring, insetRing(ring, 0.6)]] as const) {
+    for (let i = 0; i < 4; i++) {
+      const p = a[i], q = a[(i + 1) % 4], P = b[i], Q = b[(i + 1) % 4]
+      out.quad([[p.x, 0.5, p.z], [q.x, 0.5, q.z], [Q.x, 0.5, Q.z], [P.x, 0.5, P.z]], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], CONC, conc)
+    }
+  }
+  capPolygon(out, insetRing(ring, 0.6), 0.38, WATER, surfaceTag('glass'))
+  // the stepped pyramid at the head, a stair up its front, the jet on top
+  const px = hx - 5
+  const tiers = [[4.2, 0.7], [3.3, 1.3], [2.4, 1.9], [1.5, 2.5]]
+  let y0 = 0
+  for (const [r, y1] of tiers) { box(out, px, (y0 + y1) / 2, 0, r, (y1 - y0) / 2, r, GRANITE, st); y0 = y1 }
+  for (let k = 0; k < 6; k++) box(out, px - 4.2 - 0.35 - k * 0.45, 0.25 + (5 - k) * 0.38, 0, 0.23, 0.25 + (5 - k) * 0.19 + 0.01, 1.1, PALE, conc)
+  strut(out, [px, 2.5, 0], [px, 5.2, 0], 0.16, 0.06, FOAM, 0, false)
+  for (const a of [0, 1.57, 3.14, 4.71]) strut(out, [px, 4.6, 0], [px + Math.cos(a) * 1.3, 2.55, Math.sin(a) * 1.3], 0.07, 0.07, FOAM, 0, false)
+  // sheets down the pyramid's tiers on the three water sides
+  for (const [r] of tiers) for (const sg of [-1, 1]) box(out, px, 0.9, sg * (r + 0.03), r * 0.6, 0.5, 0.03, FOAM, 0)
+  // the weirs: low brown granite walls across the pool, the water sheeting over them
+  const weirs: [number, number, number, number][] = [[-hx * 0.15, -hz * 0.35, hz * 0.5, 0.85], [hx * 0.25, hz * 0.3, hz * 0.45, 0.75], [-hx * 0.55, hz * 0.2, hz * 0.4, 0.65]]
+  for (const [x, z, half, top] of weirs) {
+    box(out, x, top / 2, z, 0.45, top / 2, half, GRANITE, st)
+    box(out, x - 0.48, top / 2 + 0.1, z, 0.03, top / 2 - 0.15, half * 0.85, FOAM, 0)
+    box(out, x + 0.5, 0.42, z, 0.35, 0.03, half * 0.85, FOAM, 0)
+  }
+  // the stepping slabs and the planter block
+  for (let k = 0; k < 7; k++) box(out, -hx * 0.8 + k * 1.5, 0.45, -hz * 0.65 + (k % 2) * 0.6, 0.6, 0.07, 0.6, PALE, conc)
+  box(out, -hx * 0.35, 0.6, hz * 0.62, 2.2, 0.6, 1.6, CONC, conc)
+  box(out, -hx * 0.35, 1.55, hz * 0.62, 2, 0.35, 1.4, HEDGE, 0)
+}
+
+export const FOUNTAINS: Record<string, (out: MeshBuilder, fit: Fit) => void> = { unPlazaFountain, yodaFountain, sanFranciscoMint, leviPlazaFountain }
