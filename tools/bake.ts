@@ -744,6 +744,7 @@ async function bake(spec: CitySpec): Promise<void> {
   const HOME = /^(house|residential|apartments|detached|semidetached_house|terrace|dormitory|garage|garages|shed)$/
   const HOME_STYLE = new Set<string>(['sfapartment', 'tenement', 'victorian', 'edwardian'])
   let campusDressed = 0
+  let bigNonHomes = 0
   const campusAmenity = (t: Record<string, string>, r: { x: number; z: number }[], style: string): Record<string, string> => {
     if (campuses.length === 0 || !HOME_STYLE.has(style) || t.amenity || HOME.test(t.building ?? '') || area(r) < 400) return t
     const c = centroid(r)
@@ -804,8 +805,21 @@ async function bake(spec: CitySpec): Promise<void> {
     const dressTags = campusAmenity(owner?.tags ?? w.tags, ownerRing, styleChosen)
     // (a school is not an `institution` — the city's schools are various — but a school dressed as a HOME is wrong
     //  everywhere: San Francisco's public schools are stucco and concrete, Spanish or Moderne, so stucco it is)
-    const styleId = dressTags === (owner?.tags ?? w.tags) ? styleChosen
+    /*
+     * And a BIG building whose own tags say it is not a home — a store, an office, a phone exchange, a school building
+     * off its grounds — that the mix dressed as one: Office Depot on Geary, Marin City's shopping centre, the AT&T
+     * exchanges were 60-metre walk-ups with bay stacks (census of house-styled buildings over 1 500 m², 2026-10-04).
+     * Shops and offices take the plain modern block; the institutions stucco without shopfronts.
+     */
+    const ownTags = owner?.tags ?? w.tags
+    const bigNonHome = HOME_STYLE.has(styleChosen) && area(ownerRing) >= 1500
+      ? /^(retail|commercial|supermarket|office|kiosk)$/.test(ownTags.building ?? '') || ownTags.shop ? 'shop'
+        : /^(school|utility|civic|public|government|hospital|university|college|sports_centre|sports_hall)$/.test(ownTags.building ?? '') ? 'institution' : null
+      : null
+    const styleId = bigNonHome === 'shop' ? 'bauhaus' : bigNonHome === 'institution' ? 'stucco'
+      : dressTags === ownTags ? styleChosen
       : dressTags.amenity === 'school' ? 'stucco' : styleFor(dressTags, () => styleChosen)
+    if (bigNonHome) bigNonHomes++
     const formKey = owner?.id ?? w.id
     if (!formOf.has(formKey)) {
       const fh = (owner ? ownerP!.buildingHeight : p.buildingHeight) ?? 0
@@ -850,7 +864,7 @@ async function bake(spec: CitySpec): Promise<void> {
       ...(own.inferred ? { levelsInferred: true as const } : {}),
       ...(kind ? { archetype: kind.archetype } : {}),
       ...(form ? { form } : {}),
-      ...(noShopsFor(dressTags) ? { noShops: true } : {}),
+      ...(noShopsFor(dressTags) || bigNonHome === 'institution' ? { noShops: true } : {}),
       // a part of a building whose outline its parts replace: that outline's id (a church's towers and apse
       // are the church, for its quick dress: render/prepare.ts)
       ...(ownerOf.has(w.id) && superseded.has(ownerOf.get(w.id)!.id) ? { partOf: ownerOf.get(w.id)!.id }
@@ -859,6 +873,7 @@ async function bake(spec: CitySpec): Promise<void> {
     if (w.tags.name && worthNaming(w.tags)) named.push({ id: w.id, tags: w.tags, ring: ccwRing })
   }
   console.log(`  ${campusDressed} buildings dressed as their hospital / university / college / school campus`)
+  console.log(`  ${bigNonHomes} big shops, offices and institutions no longer dressed as homes`)
   console.log(`  ${buildings.length} buildings`)
   reportRingForms(formScanned, formed, FORM)
   if (streetRegion.streetWidth === 'carriageway') fitStreetsBetweenBuildings(kept, buildings)
