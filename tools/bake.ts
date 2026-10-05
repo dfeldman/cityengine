@@ -411,8 +411,9 @@ async function bake(spec: CitySpec): Promise<void> {
    * — and it was taken as one by the truthy test, then drawn as a 12 m apartment block round the tower (#236).
    */
   const isPart = (t: Record<string, string>): boolean => !!t['building:part'] && t['building:part'] !== 'no'
-  // (`building=no` is OSM saying it is NOT one: an outdoor stage at 750 Howard was drawn as a block, 2026-10-05)
-  const outlines = ways.filter((w) => w.tags.building && w.tags.building !== 'no' && !isPart(w.tags) && !canopy(w.tags) && !belowGround(w.tags) && !isBoat(w) && !isInfrastructure(w.tags))
+  // (`building=no` is OSM saying it is NOT one — unless a landmark entry claims the way for a model of its own, as the
+  //  Yerba Buena Gardens Esplanade stage's is: the bake audit stopped bake 33 when it went missing, 2026-10-05)
+  const outlines = ways.filter((w) => w.tags.building && (w.tags.building !== 'no' || shipModels.has(w.id)) && !isPart(w.tags) && !canopy(w.tags) && !belowGround(w.tags) && !isBoat(w) && !isInfrastructure(w.tags))
   /*
    * The parts mapped as multipolygon RELATIONS, each outer ring standing in as a part way (packed `rel.id * 2 + 1`,
    * the id space every relation building uses), so the coverage, `partOf` and dressing below treat them exactly as
