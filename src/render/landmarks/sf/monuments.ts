@@ -17,11 +17,20 @@ const BRONZE: Rgb = [0.27, 0.3, 0.24]
 
 /** a standing bronze figure of height h, its feet at y */
 function figure(out: MeshBuilder, x: number, y: number, z: number, h: number): void {
+  /*
+   * A standing bronze man: legs under a long coat, a chest, shoulders broad enough to read, the arms down at his sides,
+   * a head. It was a tapering column, and from the street every statue in the city — Lincoln, Franklin, Garfield,
+   * Sun Yat-sen — read as a dark spike on its pedestal (standalone sweep, 2026-10-05). Facing local +z.
+   */
   const m = surfaceTag('metal')
-  prism(out, x, z, y, y + h * 0.55, h * 0.16, 10, BRONZE, m, h * 0.1)         // the robe, flaring at the hem
-  prism(out, x, z, y + h * 0.55, y + h * 0.82, h * 0.1, 10, BRONZE, m, h * 0.09) // the body
-  prism(out, x, z, y + h * 0.82, y + h * 0.88, h * 0.05, 8, BRONZE, m, h * 0.05) // the neck
-  prism(out, x, z, y + h * 0.88, y + h, h * 0.065, 8, BRONZE, m, h * 0.05)       // the head
+  const u = h / 1.8      // a man's height to the scale of the figure
+  for (const s of [-1, 1]) prism(out, x + s * 0.11 * u, z, y, y + 0.5 * u, 0.085 * u, 6, BRONZE, m, 0.075 * u)      // the legs
+  prism(out, x, z, y + 0.35 * u, y + 1.0 * u, 0.24 * u, 8, BRONZE, m, 0.2 * u)                                       // the coat
+  box(out, x, y + 1.22 * u, z, 0.22 * u, 0.24 * u, 0.13 * u, BRONZE, m)                                              // the chest
+  box(out, x, y + 1.42 * u, z, 0.26 * u, 0.05 * u, 0.12 * u, BRONZE, m)                                              // the shoulders
+  for (const s of [-1, 1]) box(out, x + s * 0.3 * u, y + 1.12 * u, z, 0.05 * u, 0.3 * u, 0.06 * u, BRONZE, m)       // the arms
+  prism(out, x, z, y + 1.46 * u, y + 1.52 * u, 0.05 * u, 6, BRONZE, m, 0.05 * u)                                     // the neck
+  prism(out, x, z, y + 1.52 * u, y + 1.78 * u, 0.1 * u, 8, BRONZE, m, 0.085 * u)                                     // the head
 }
 
 function steps(out: MeshBuilder, w: number, d: number, n: number, rise: number): number {
@@ -75,10 +84,13 @@ export function figureOnPedestal(out: MeshBuilder, fit: Fit): void {
   const H = Math.max(3, fit.height ?? 6)
   const w = Math.max(1, Math.min(fit.hx, fit.hz) * 2)
   const y0 = steps(out, w, w, 2, Math.min(0.4, H * 0.04))
-  const shaft = H * 0.62 - y0
+  // (the pedestal a little over half, the figure the rest and never under 2.6 m: a monumental bronze is larger than
+  //  life, and at 0.62 of the height the figure came out a doll on a plinth)
+  const fig = Math.max(2.6, H * 0.45)
+  const shaft = Math.max(0.8, H - fig - y0 - 0.24)
   box(out, 0, y0 + shaft / 2, 0, w * 0.24, shaft / 2, w * 0.24, GRANITE, g)
   box(out, 0, y0 + shaft + 0.12, 0, w * 0.28, 0.12, w * 0.28, GRANITE, g)
-  figure(out, 0, y0 + shaft + 0.24, 0, H - (y0 + shaft + 0.24))
+  figure(out, 0, y0 + shaft + 0.24, 0, fig)
 }
 
 /** a monument whose statue is gone: base, shaft and an empty cornice (Mount Olympus's "Triumph of Light", lost 1950s) */
