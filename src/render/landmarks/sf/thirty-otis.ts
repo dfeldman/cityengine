@@ -98,4 +98,49 @@ export function yerbaBuenaLofts(out: MeshBuilder, fit: Fit): void {
   }
 }
 
-export const THIRTY_OTIS: Record<string, (out: MeshBuilder, fit: Fit) => void> = { thirtyOtis, bayViewTower, yerbaBuenaLofts }
+/**
+ * 8 OCTAVIA (Stanley Saitowitz, 2014; way/215705485), at Market and Octavia. Same census, Mapillary on Octavia: five
+ * storeys of blue-silver aluminium, the floors banded, each bay either a flat panel or a screen of thin vertical
+ * louvres that the residents slide — so the facade is a shifting patchwork of plain and striped — over a glazed ground
+ * floor. Was a `bauhaus` box.
+ */
+export function eightOctavia(out: MeshBuilder, fit: Fit): void {
+  const H = fit.height > 10 ? fit.height : 17
+  const PANEL: Rgb = [0.56, 0.66, 0.72], LOUVRE: Rgb = [0.72, 0.78, 0.82], DARK: Rgb = [0.2, 0.24, 0.27]
+  const metal = surfaceTag('metal')
+  tower(out, fit, {
+    height: H,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.4, 0.42, 0.44], glass: [0.18, 0.22, 0.25], pitch: 3.5, floor: 4 } },
+    tiers: [{ to: H, face: { kind: 'blank', wall: DARK, material: 'metal' } }],
+    roof: [0.5, 0.5, 0.5],
+    crown: { kind: 'parapet', height: 0.5, colour: PANEL },
+  })
+  const ring = towerRing(fit)
+  const FL = 3.1, CELL = 2.6
+  let k = 11
+  const rnd = (): number => { k = (k * 1103515245 + 12345) & 0x7fffffff; return (k % 1000) / 1000 }
+  for (let i = 0; i < ring.length; i++) {
+    const e = edgeAt(ring, i)
+    if (e.L < 5) continue
+    const n = Math.max(1, Math.round(e.L / CELL)), cw = e.L / n
+    const at = (u: number, o: number): [number, number] => [e.mid.x + e.tx * u + e.nx * o, e.mid.z + e.tz * u + e.nz * o]
+    for (let y = 4; y + FL <= H + 0.01; y += FL) {
+      for (let c = 0; c < n; c++) {
+        const u = -e.L / 2 + (c + 0.5) * cw
+        if (rnd() < 0.55) {
+          const [x, z] = at(u, 0.06)
+          boxAlong(out, x, y + FL / 2, z, cw / 2 - 0.04, FL / 2 - 0.08, 0.05, e.heading, PANEL, metal)
+        } else {
+          for (let f = 0; f < 6; f++) {
+            const [x, z] = at(u - cw / 2 + (f + 0.5) * (cw / 6), 0.18)
+            boxAlong(out, x, y + FL / 2, z, 0.04, FL / 2 - 0.08, 0.12, e.heading, LOUVRE, metal)
+          }
+        }
+      }
+      const [x, z] = at(0, 0.1)
+      boxAlong(out, x, y, z, e.L / 2, 0.08, 0.1, e.heading, LOUVRE, metal)
+    }
+  }
+}
+
+export const THIRTY_OTIS: Record<string, (out: MeshBuilder, fit: Fit) => void> = { thirtyOtis, bayViewTower, yerbaBuenaLofts, eightOctavia }
