@@ -16,28 +16,36 @@ const hash = (a: number, b: number): number => { const s = Math.sin(a * 127.1 + 
 function muralAlley(out: MeshBuilder, fit: Fit): void {
   // along whichever axis is the longer: the entry's `size` is in the world's axes (front 0), as the audit reads it
   const along = fit.hx >= fit.hz
-  const L = along ? fit.hx : fit.hz, W = along ? fit.hz : fit.hx
+  const L = along ? fit.hx : fit.hz
+  /*
+   * ON THE WALLS, flat (2026-10-05, first look): the panels stood as free boards 1.6 m from the centre line — the alley
+   * is 7–8 m between the garages and fences, its carriageway 3 m — so one row stood in the road and every panel read as
+   * a billboard on legs. Now the murals lie on the line of the walls, 4.2 m out, as thin paint over a backing the
+   * height of a garage, and the shapes on them are flush patches, not boxes standing off them.
+   */
+  const W = 4.2
   const B = (x: number, y: number, z: number, hx: number, hy: number, hz: number, c: Rgb): void =>
     along ? box(out, x, y, z, hx, hy, hz, c, 0) : box(out, z, y, x, hz, hy, hx, c, 0)
   for (const side of [-1, 1]) {
     let u = -L
     let k = 0
     while (u < L - 1) {
-      const w = 2.5 + hash(k, side) * 3.5
-      const h = 2.6 + hash(k, side + 7) * 3.5
+      const w = Math.min(L - u, 2.5 + hash(k, side) * 3.5)
+      const h = 3 + hash(k, side + 7) * 3
       const c = FIELDS[Math.floor(hash(k, side + 3) * FIELDS.length)]
-      const z = side * (W + 0.06)
-      // the painted door or fence
-      B(u + w / 2, h / 2, z, w / 2 - 0.05, h / 2, 0.05, c)
-      // bold shapes on it: discs of colour, a band, a figure's block
+      const z = side * W
+      // the painted door, fence or wall: a slab 0.3 m thick, from below the ground to its top
+      B(u + w / 2, h / 2 - 0.3, z + side * 0.15, w / 2, h / 2 + 0.3, 0.15, c)
+      // the shapes painted on it, flush with its face
       for (let j = 0; j < 4; j++) {
         const sc = FIELDS[Math.floor(hash(k * 7 + j, side + 11) * FIELDS.length)]
-        const sw = 0.4 + hash(k, j + 20) * (w * 0.4), sh = 0.4 + hash(k, j + 30) * (h * 0.4)
-        const sx = u + 0.3 + hash(k, j + 40) * (w - 0.6 - sw) + sw / 2
+        const sw = 0.6 + hash(k, j + 20) * (w * 0.45), sh = 0.6 + hash(k, j + 30) * (h * 0.45)
+        const sx = u + 0.3 + hash(k, j + 40) * Math.max(0, w - 0.6 - sw) + sw / 2
         const sy = 0.3 + hash(k, j + 50) * (h - 0.6 - sh) + sh / 2
-        B(sx, sy, z - side * 0.06, sw / 2, sh / 2, 0.02, sc)
+        // (on the face towards the alley — the slab's face is at z itself — standing 3 cm off it, depth-safe at distance)
+        B(sx, sy, z - side * 0.03, sw / 2, sh / 2, 0.015, sc)
       }
-      u += w + 0.15
+      u += w
       k++
     }
   }
