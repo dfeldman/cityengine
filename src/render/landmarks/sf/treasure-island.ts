@@ -106,7 +106,7 @@ export function tiHangar(out: MeshBuilder, fit: Fit): void {
   const metal = surfaceTag('metal')
   // the walls
   const ring = [P(-L, 0, -W), P(L, 0, -W), P(L, 0, W), P(-L, 0, W)].map(([x, , z]) => ({ x, z }))
-  faceBand(out, ring, 0, H, { kind: 'bands', wall: PALE, glass: GLASS, floor: H / 2, solid: 0.72, material: 'stucco' })
+  faceBand(out, ring, 0, H, { kind: 'blank', wall: PALE, material: 'stucco' })
   // the vault: segments across the width
   const N = 10
   for (let i = 0; i < N; i++) {
@@ -118,6 +118,33 @@ export function tiHangar(out: MeshBuilder, fit: Fit): void {
     // the vault's ends, closed down to the walls, glazed
     for (const e of [-1, 1]) {
       out.quad([P(e * L, H, v0), P(e * L, H, v1), P(e * L, y1, v1), P(e * L, y0, v0)], alongX ? [e, 0, 0] : [0, 0, e], [[0, 0], [1, 0], [1, 1], [0, 1]], GLASS, surfaceTag('glass'))
+    }
+  }
+  /*
+   * The Moderne fronts (HABS CA-2785-2, the two palaces from across Clipper Cove, 2026-10-05): along each long side a
+   * row of tall window bays between white piers, and at each end of it a stepped pylon standing above the roofline —
+   * two setbacks and a fluted cap — that is what the Exposition's palaces look like from the water.
+   */
+  const st = surfaceTag('stucco')
+  const BAYS = Math.max(8, Math.round((2 * L) / 9))
+  for (const side of [-1, 1]) {
+    for (let k = 0; k < BAYS; k++) {
+      const u = -L + 8 + ((k + 0.5) * (2 * L - 16)) / BAYS
+      const [x, , z] = P(u, 0, side * (W + 0.05))
+      box(out, x, H * 0.52, z, alongX ? (2 * L - 16) / BAYS / 2 - 1.4 : 0.08, H * 0.36, alongX ? 0.08 : (2 * L - 16) / BAYS / 2 - 1.4, GLASS, 0)
+    }
+    for (const end of [-1, 1]) {
+      // the pylon: 8 m along, a little proud, three stages stepping in, up past the vault's crown
+      const steps: [number, number, number][] = [[0, H + 2, 4], [H + 2, H + RISE + 1, 3.2], [H + RISE + 1, H + RISE + 3.5, 2.2]]
+      for (const [y0, y1, half] of steps) {
+        const [x, , z] = P(end * (L - 4), 0, side * (W - half + 1.2))
+        box(out, x, (y0 + y1) / 2, z, alongX ? half : half, (y1 - y0) / 2, alongX ? half : half, PALE, st)
+      }
+      // its flutes: three dark slots up the face
+      for (const f of [-1.6, 0, 1.6]) {
+        const [x, , z] = P(end * (L - 4) + f, 0, side * (W + 1.25))
+        box(out, x, H * 0.6, z, alongX ? 0.25 : 0.05, H * 0.45, alongX ? 0.05 : 0.25, [0.62, 0.62, 0.6], st)
+      }
     }
   }
   // the ribs across the vault
