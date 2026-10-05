@@ -64,7 +64,7 @@ export function unPlazaFountain(out: MeshBuilder, fit: Fit): void {
  * faces, and on top the bronze Yoda, a metre tall, leaning on his cane. Standalone.
  */
 export function yodaFountain(out: MeshBuilder, _fit: Fit): void {
-  const STONE: Rgb = [0.6, 0.55, 0.48], TAN: Rgb = [0.72, 0.64, 0.52], WATER: Rgb = [0.45, 0.58, 0.64], BRONZE: Rgb = [0.32, 0.3, 0.26]
+  const STONE: Rgb = [0.6, 0.55, 0.48], TAN: Rgb = [0.72, 0.64, 0.52], WATER: Rgb = [0.45, 0.58, 0.64], BRONZE: Rgb = [0.38, 0.4, 0.33]
   const st = surfaceTag('granite'), metal = surfaceTag('metal')
   // the basin wall (a ring of segments) and the water inside it
   const n = 20
@@ -78,10 +78,10 @@ export function yodaFountain(out: MeshBuilder, _fit: Fit): void {
   prism(out, 0, 0, 1.25, 1.55, 0.6, 6, TAN, st, 0.55)
   for (const a of [0.3, 2.4, 4.5]) box(out, Math.cos(a) * 0.82, 0.8, Math.sin(a) * 0.82, 0.18, 0.45, 0.04, [0.88, 0.92, 0.94], 0)
   // Yoda: the robe, the head with its long ears, the cane
-  prism(out, 0, 0, 1.55, 2.2, 0.32, 8, BRONZE, metal, 0.18)
-  prism(out, 0, 0, 2.2, 2.45, 0.16, 8, BRONZE, metal, 0.14)
-  for (const s of [-1, 1]) strut(out, [s * 0.1, 2.38, 0], [s * 0.42, 2.48, -0.04], 0.12, 0.03, BRONZE, metal)
-  strut(out, [0.18, 1.55, 0.14], [0.2, 2.05, 0.12], 0.04, 0.04, BRONZE, metal)
+  prism(out, 0, 0, 1.55, 2.35, 0.36, 8, BRONZE, metal, 0.2)
+  prism(out, 0, 0, 2.35, 2.65, 0.2, 8, BRONZE, metal, 0.17)
+  for (const s of [-1, 1]) strut(out, [s * 0.12, 2.55, 0], [s * 0.5, 2.68, -0.04], 0.16, 0.04, BRONZE, metal)
+  strut(out, [0.24, 1.55, 0.16], [0.26, 2.2, 0.14], 0.05, 0.05, BRONZE, metal)
 }
 
 export const FOUNTAINS: Record<string, (out: MeshBuilder, fit: Fit) => void> = { unPlazaFountain, yodaFountain }
