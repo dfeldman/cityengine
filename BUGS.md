@@ -10447,6 +10447,10 @@ frame and draw the structure 115 m further along it (TOWERS, the anchorages, END
 crest with it — the helix then stands ~115 m from the first tower rather than beside it. Either needs `bake --decks`,
 air-paths round both ends, car reachability, and a ride both ways on each deck and the Bikeway.
 
+2026-10-05 (under-freeway rider sweep): the misplaced San Francisco anchorage, a 52 m grey block, stands ACROSS Main
+Street south of Harrison (Main runs into it at rider height; code (1966, −599) looking south-east). Option (a) or (b)
+would move it off the street.
+
 ### #262 Lighthouses: Yerba Buena Island, Point Diablo, Lime Point, Alcatraz (MODELLED 2026-10-04 — for the owner to look again)
 
 The owner, with a photograph of the Yerba Buena Island light station from the water: *"notice it's on a steep
