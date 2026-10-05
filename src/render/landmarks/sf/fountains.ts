@@ -166,4 +166,44 @@ export function leviPlazaFountain(out: MeshBuilder, fit: Fit): void {
   box(out, -hx * 0.35, 1.55, hz * 0.62, 2, 0.35, 1.4, HEDGE, 0)
 }
 
-export const FOUNTAINS: Record<string, (out: MeshBuilder, fit: Fit) => void> = { unPlazaFountain, yodaFountain, sanFranciscoMint, leviPlazaFountain }
+/**
+ * AURORA (Ruth Asawa, 1986; OSM node/2840131401 and the basin way/1168879938, ~6.6 m round), on the Embarcadero at
+ * Howard. Fountain census 2026-10-05, from Commons "Aurora sculpture Asawa.jpg" (Wikidata Q28451422): a ring some
+ * 4.5 m high standing on its edge, folded from stainless steel like paper — a chain of sharp pyramidal facets, deep
+ * then shallow, all the way round — in a round basin tiled deep blue, framing the Bay Bridge. The ring stands in the
+ * local x–y plane, looking along z.
+ */
+export function auroraFountain(out: MeshBuilder, fit: Fit): void {
+  const STEEL: Rgb = [0.74, 0.76, 0.78], TILE: Rgb = [0.16, 0.24, 0.52], RIM: Rgb = [0.78, 0.76, 0.72]
+  const R = Math.max(2.8, Math.min(fit.hx, fit.hz))
+  prism(out, 0, 0, 0, 0.45, R, 24, RIM, surfaceTag('concrete'))
+  prism(out, 0, 0, 0.44, 0.47, R - 0.3, 24, TILE, surfaceTag('tile'))
+  const C = 2.7, rIn = 1.3, rOut = 2.35, N = 24
+  const metal = surfaceTag('metal')
+  // each station round the ring a diamond across it — inner, front, outer, back — alternately deep and shallow, so the
+  // skin between them folds into facets
+  const station = (i: number): [number, number, number][] => {
+    const a = (i / N) * Math.PI * 2
+    const deep = i % 2 === 0
+    const d = deep ? 0.75 : 0.18, rm = deep ? (rIn + rOut) / 2 + 0.15 : (rIn + rOut) / 2 - 0.1
+    const ri = deep ? rIn - 0.15 : rIn + 0.2, ro = deep ? rOut + 0.25 : rOut - 0.1
+    const P = (r: number, z: number): [number, number, number] => [Math.cos(a) * r, C + Math.sin(a) * r, z]
+    return [P(ri, 0), P(rm, d), P(ro, 0), P(rm, -d)]
+  }
+  const nrm = (p: [number, number, number][]): [number, number, number] => {
+    const u = [p[1][0] - p[0][0], p[1][1] - p[0][1], p[1][2] - p[0][2]], v = [p[3][0] - p[0][0], p[3][1] - p[0][1], p[3][2] - p[0][2]]
+    return [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]]
+  }
+  const UV: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  for (let i = 0; i < N; i++) {
+    const A = station(i), B = station(i + 1)
+    for (let k = 0; k < 4; k++) {
+      const q: [number, number, number][] = [A[k], B[k], B[(k + 1) % 4], A[(k + 1) % 4]]
+      out.quad(q, nrm(q), UV, STEEL, metal)
+      const r: [number, number, number][] = [q[3], q[2], q[1], q[0]]
+      out.quad(r, nrm(r), UV, STEEL, metal)
+    }
+  }
+}
+
+export const FOUNTAINS: Record<string, (out: MeshBuilder, fit: Fit) => void> = { unPlazaFountain, yodaFountain, sanFranciscoMint, leviPlazaFountain, auroraFountain }
