@@ -7,7 +7,8 @@ import type { Fit } from '../../fit.ts'
 import { fromRecipe } from '../recipes.ts'
 import { tower, towerRing, insetRing } from '../../tower.ts'
 import { signText, longestEdge, edgeAt } from '../../parts.ts'
-import { pinnacle } from '../../kit.ts'
+import { box } from '../../../models.ts'
+import { surfaceTag } from '../../../cartoon-material.ts'
 
 /** A small SFFD fire station: a dark brick apparatus base under a painted wall band with the company number. */
 function fireStation(wall: [number, number, number], number: string): (out: MeshBuilder, fit: Fit) => void {
@@ -43,8 +44,10 @@ export const TIERA_5: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
    * rather than plain deco — hand-added at the crown, on top of `tower()`'s ordinary shaft and steps.
    */
   mcallisterTower: (out: MeshBuilder, fit: Fit): void => {
-    const wall: [number, number, number] = [0.82, 0.76, 0.6]
-    const baseWall: [number, number, number] = [0.72, 0.66, 0.5]
+    // buff, not yellow: the old [0.82, 0.76, 0.6] read as a yellow box in sun (campus audit 2026-10-05, Mapillary
+    // way-256042681-03 and the review refs: greyish buff brick, the shaft ribbed by deep piers between window strips)
+    const wall: [number, number, number] = [0.73, 0.67, 0.55]
+    const baseWall: [number, number, number] = [0.66, 0.6, 0.49]
     const glass: [number, number, number] = [0.18, 0.22, 0.22]
     const H = fit.height || 114
     const crownH = H * 0.09
@@ -52,7 +55,7 @@ export const TIERA_5: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     tower(out, fit, {
       height: H,
       base: { height: 15, face: { kind: 'punched', wall: baseWall, glass, pitch: 3, floor: 4, solid: 0.42, material: 'ashlar' } },
-      tiers: [{ to: 1 - crownH / H, face: { kind: 'punched', wall, glass, pitch: 3, floor: 3.4, solid: 0.55, material: 'brick' } }],
+      tiers: [{ to: 1 - crownH / H, face: { kind: 'fins', wall, glass, pitch: 2.8, floor: 3.4, solid: 0.45, depth: 0.5, material: 'brick' } }],
       roof: wall,
       crown: { kind: 'stepped', steps, height: crownH, inset: 2.4,
         face: { kind: 'punched', wall, glass, pitch: 2.6, floor: 3, solid: 0.35, material: 'brick' } },
@@ -60,19 +63,21 @@ export const TIERA_5: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     // Walk the same inset/step sequence tower()'s 'stepped' crown just drew, to find each step's own ring —
     // a fin pier stands at every corner of every step, tallest at the base step and shortest at the top.
     let r = towerRing(fit)
-    let y = H
+    let y = H - crownH   // the tiers stop at H − crownH and the stepped crown rises from there
     const each = crownH / steps
     for (let k = 0; k < steps; k++) {
       r = insetRing(r, 2.4)
-      const finH = each * (1.6 - k * 0.3)
-      for (const p of r) pinnacle(out, p.x, p.z, y, finH, 1.5 - k * 0.2, wall)
+      // square corner piers standing a metre over each step's parapet (the spikes they were read as floating
+      // clear of the crown from the street, 2026-10-05)
+      const finH = each + 1.2
+      for (const p of r) box(out, p.x, y + finH / 2, p.z, 0.7, finH / 2, 0.7, wall, surfaceTag('brick'))
       y += each
     }
-    // the slim central finial the reference silhouette shows above the topmost step
+    // the flagpole the photographs show on the top step
     let cx = 0, cz = 0
     for (const p of r) { cx += p.x; cz += p.z }
     cx /= r.length; cz /= r.length
-    pinnacle(out, cx, cz, y, each * 1.8, 1.1, wall)
+    box(out, cx, y + 4, cz, 0.06, 4, 0.06, [0.75, 0.75, 0.75], surfaceTag('metal'))
   },
 
   /** Phillip Burton Federal Building (1959): a grey precast tower with deep vertical piers in shadow, flat top, blank podium (Commons photograph). */
