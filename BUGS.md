@@ -10313,7 +10313,7 @@ else OSM's — and its base storey is at most half of it. 26 builders affected (
 13 m. The headless audit of #247 could not see this (no manifest height to compare against) — a check that wants
 the FITTED height needs the game's placement (`__placed()`), not the manifest.
 
-### #254 Yerba Buena Island (OPEN, 2026-10-02; 2026-10-04: air-paths near YBI 0 stretches, the `islands` traffic zone is baked — (6) the building under Macalla Road: road now passes clear (render checked); left: (2) the tunnel portals' look)
+### #254 Yerba Buena Island (OPEN, 2026-10-02; 2026-10-04: air-paths near YBI 0 stretches, the `islands` traffic zone is baked — (6) the building under Macalla Road: road now passes clear (render checked); (2) the tunnel portals rebuilt from a photograph 2026-10-05, BUGFIX #413 — for the owner to look again)
 
 The owner: *"YB island has a lot of issues. There is a random wall across the bridge. The entrance and exit of the
 tunnel (mandatory) are both poorly rendered. There are many paths on the island that go through the air. There's WAY

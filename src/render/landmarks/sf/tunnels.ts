@@ -272,26 +272,88 @@ const YBI_ARCH = 8
  * THE YERBA BUENA TUNNEL's mouths: a plain concrete face, the lower roadway's flat-topped opening at the bottom, the
  * upper roadway's arch over it, a pier each side — and behind the face a concrete housing running back into the
  * hill, because the coarse ground does not reach up to the upper roadway until well inside the mouth.
+ *
+ * The arch (2026-10-05, from Commons "San Francisco-Bay Bridge02.jpg", the west mouth from the upper deck — the owner:
+ * "the entrance and exit of the tunnel are both poorly rendered"): weathered GREY concrete, not cream; the opening is
+ * framed by THREE concentric rings, each stepped forward of the one inside it, so the arch reads as a deep stepped
+ * archivolt; the headwall over it is cut into tall panels by vertical joints; plain wide piers either side. The bore's
+ * own arch stays in the face plane (z = 0), where the tube meets it; the rings and the headwall stand forward of it.
  */
+const YBI_GREY: Rgb = [0.63, 0.63, 0.6]
+const YBI_LIGHT: Rgb = [0.7, 0.7, 0.67]
+const YBI_JOINT: Rgb = [0.47, 0.47, 0.45]
+
 function yerbaBuenaPortal(c: PortalContext): PortalParts {
   const face = new MeshBuilder()
   const mass = new MeshBuilder()
-  const W = c.half + 4.5
-  const top = YBI_BETWEEN + YBI_ARCH + 2.4
+  const W = c.half + 7
+  const top = YBI_BETWEEN + YBI_ARCH + 4.2
   // the upper opening: across the whole width between the piers (the two roadways are 3.5 m off each other's line)
   const r = c.half + 1.2
-  const upper = (x: number): number => YBI_BETWEEN + 3 + (YBI_ARCH - 3) * Math.sqrt(Math.max(0, 1 - (x / r) ** 2))
-  const lower = (x: number): number => (Math.abs(x) < c.half ? c.opening(x) ?? 0 : 0)
-  // the band between the two openings: the upper deck's edge
-  faceWall(face, -r, r, lower, YBI_BETWEEN - 0.2, 0, CONCRETE, 0.4)
-  box(face, -r, r, YBI_BETWEEN - 1.2, YBI_BETWEEN + 0.9, 0, 0.35, CONCRETE_LIGHT)
-  // over the arch, and the piers either side
-  faceWall(face, -r, r, upper, top, 0, CONCRETE, 0.4)
-  for (const side of [-1, 1]) {
-    faceWall(face, Math.min(side * r, side * W), Math.max(side * r, side * W), () => -2, top, 0, CONCRETE, 0.5)
-    box(face, side * (W - 1.4) - 1.1, side * (W - 1.4) + 1.1, -2, top + 1.2, 0, 0.7, CONCRETE_LIGHT)
+  const y0 = YBI_BETWEEN + 3
+  // ring k: the bore's arch (k = 0) and the two rings round it, each 1.1 m wider and taller, 0.6 m further forward
+  const RING = 1.1, STEP = 0.6
+  const arc = (k: number) => (x: number): number => {
+    const a = r + RING * k, bb = YBI_ARCH - 3 + RING * k
+    return y0 + bb * Math.sqrt(Math.max(0, 1 - (x / a) ** 2))
   }
-  box(face, -W, W, top - 0.9, top, 0, 0.5, CONCRETE_LIGHT)
+  const lower = (x: number): number => (Math.abs(x) < c.half ? c.opening(x) ?? 0 : 0)
+  const deckTop = YBI_BETWEEN + 0.9
+  // the band between the two openings: the upper deck's edge, a ledge right across the face
+  faceWall(face, -r, r, lower, YBI_BETWEEN - 0.2, 0, YBI_GREY, 0.4)
+  box(face, -W, W, YBI_BETWEEN - 1.2, deckTop, 0, STEP * 2 + 0.3, YBI_LIGHT)
+  // under the ledge, beside the lower opening: the face out to the headwall's line, and its return forward to it
+  for (const side of [-1, 1]) {
+    const ao = r + RING * 2
+    faceWall(face, Math.min(side * r, side * ao), Math.max(side * r, side * ao), () => -2, YBI_BETWEEN - 1.2, 0, YBI_GREY, 0.4)
+    const x = side * ao
+    face.quad(side > 0 ? [[x, -2, 0], [x, -2, STEP * 3], [x, YBI_BETWEEN - 1.2, STEP * 3], [x, YBI_BETWEEN - 1.2, 0]] : [[x, -2, STEP * 3], [x, -2, 0], [x, YBI_BETWEEN - 1.2, 0], [x, YBI_BETWEEN - 1.2, STEP * 3]], [side, 0, 0], UV, YBI_GREY, 0)
+  }
+  // the rings: each an arched band from its inner curve to its outer, standing forward of the one inside it, with
+  // its jambs down to the ledge and the soffit of its inner edge
+  const n = 72
+  for (let k = 0; k < 2; k++) {
+    const inner = arc(k), outer = arc(k + 1)
+    const ai = r + RING * k, ao = r + RING * (k + 1)
+    const z = STEP * (k + 1)
+    for (let i = 0; i < n; i++) {
+      const x0 = -ao + (2 * ao * i) / n, x1 = -ao + (2 * ao * (i + 1)) / n
+      const b0 = Math.abs(x0) < ai ? inner(x0) : deckTop, b1 = Math.abs(x1) < ai ? inner(x1) : deckTop
+      const t0 = outer(x0), t1 = outer(x1)
+      // (beyond the inner ring's span the band runs down to the ledge as the jamb)
+      face.quad([[x0, Math.abs(x0) < ai ? b0 : deckTop, z], [x1, Math.abs(x1) < ai ? b1 : deckTop, z], [x1, t1, z], [x0, t0, z]], [0, 0, 1], UV, k === 0 ? YBI_LIGHT : YBI_GREY, 0)
+      // the soffit along the inner curve, from the ring inside back to this one
+      if (Math.abs(x0) < ai && Math.abs(x1) < ai) face.quad([[x1, b1, z - STEP], [x0, b0, z - STEP], [x0, b0, z], [x1, b1, z]], [0, -1, 0], UV, YBI_JOINT, 0)
+    }
+    // the jamb returns: the inner ring's side, from the ledge to its springing, facing across the opening
+    for (const side of [-1, 1]) {
+      const x = side * ai
+      face.quad(side > 0 ? [[x, deckTop, z - STEP], [x, deckTop, z], [x, y0, z], [x, y0, z - STEP]] : [[x, deckTop, z], [x, deckTop, z - STEP], [x, y0, z - STEP], [x, y0, z]], [-side, 0, 0], UV, YBI_JOINT, 0)
+    }
+  }
+  // the headwall: forward of the outer ring, over its curve and down to the ground beyond it, with its own soffit
+  const zw = STEP * 3
+  const ao = r + RING * 2
+  const outerArc = arc(2)
+  faceWall(face, -ao, ao, (x) => (Math.abs(x) < ao ? outerArc(x) : deckTop), top, zw, YBI_GREY, 0.3)
+  for (let i = 0; i < n; i++) {
+    const x0 = -ao + (2 * ao * i) / n, x1 = -ao + (2 * ao * (i + 1)) / n
+    face.quad([[x1, outerArc(x1), zw - STEP], [x0, outerArc(x0), zw - STEP], [x0, outerArc(x0), zw], [x1, outerArc(x1), zw]], [0, -1, 0], UV, YBI_JOINT, 0)
+  }
+  for (const side of [-1, 1]) {
+    faceWall(face, Math.min(side * ao, side * W), Math.max(side * ao, side * W), () => -2, top, zw, YBI_GREY, 0.5)
+    // the outer jamb return
+    const x = side * ao
+    face.quad(side > 0 ? [[x, deckTop, zw - STEP], [x, deckTop, zw], [x, y0, zw], [x, y0, zw - STEP]] : [[x, deckTop, zw], [x, deckTop, zw - STEP], [x, y0, zw - STEP], [x, y0, zw]], [-side, 0, 0], UV, YBI_JOINT, 0)
+    // the wide plain pier, a step forward again, full height and a little over
+    box(face, side > 0 ? W - 4.2 : -W, side > 0 ? W : -W + 4.2, -2, top + 0.8, zw, zw + 0.8, YBI_LIGHT)
+  }
+  // the panel joints in the headwall, over the arch, and its coping
+  for (let x = -W + 4.2 + 5.2; x < W - 4.2 - 1; x += 5.2) {
+    const b = Math.abs(x) < ao ? outerArc(x) : -2
+    if (b < top - 0.8) box(face, x - 0.06, x + 0.06, b, top - 0.6, zw, zw + 0.04, YBI_JOINT)
+  }
+  box(face, -W, W, top - 0.6, top + 0.2, zw - 0.3, zw + 0.45, YBI_LIGHT)
   /*
    * The hill over and beside it. The coarse ground does not reach up to the upper roadway until well inside the
    * mouth, so something has to stand there; it was a concrete housing with a flat 46 m roof, which from the upper deck
