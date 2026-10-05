@@ -26,6 +26,2142 @@
       "op": "suppress",
       "ref": "b206652621",
       "note": "Chinatown Public Health Center: the Broadway Tunnel's east mouth runs under it, and its generic block stood across the road; render/landmarks/sf/tunnels.ts builds it as the tunnel's east portal"
+    },
+    {
+      "op": "override",
+      "ref": "s6338755536-6338757282",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 26.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s4061806120-6338755543",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 17.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s4061762661-6338755543",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 32.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6250503283-6522764204",
+      "set": {
+        "walk": 850
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 13.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5854481359-9856643365",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 27.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6522764204-6522764251",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 23.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1692478761-6250503284",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 16.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5854481359-6522764251",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 26.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5318468078-5858516700",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 16.9 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5318468075-5858516700",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 17.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5858516700-900000000000192",
+      "set": {
+        "walk": 530
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5858516697-900000000000192",
+      "set": {
+        "walk": 509
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 10.9 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723738985-2252547618",
+      "set": {
+        "walk": 660
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723738835-2252547618",
+      "set": {
+        "walk": 760
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 12.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723738985-1723739199",
+      "set": {
+        "walk": 740
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 12.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1260547096-9587254452",
+      "set": {
+        "walk": 550
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 10.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723739120-1723739196",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 18.2 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723739120-1723739176",
+      "set": {
+        "walk": 390
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 8.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723739237-5434001096",
+      "set": {
+        "walk": 520
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 10.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5434001096-12587241077",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 23.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723739196-1723739199",
+      "set": {
+        "walk": 780
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 12.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723738880-1723739176",
+      "set": {
+        "walk": 840
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 13.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723563814-900000000000048",
+      "set": {
+        "walk": 660
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s260494509-260494510",
+      "set": {
+        "walk": 400
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 10.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s260494509-6336760071",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 17.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65367485-6336760072",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 26.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65312206-65367485",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 24.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1563088535-5022098210",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 27.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s260494510-1563088535",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 26.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65312206-1563088539",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 27.2 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1563088539-8658188848",
+      "set": {
+        "walk": 640
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 13.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1563088519-5027131660",
+      "set": {
+        "walk": 560
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 10.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723563814-5027131659",
+      "set": {
+        "walk": 560
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 12.2 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65367485-6386556086",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 23.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723564011-5027131660",
+      "set": {
+        "walk": 500
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 9.9 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5438557813-8658188848",
+      "set": {
+        "walk": 819
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 13.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5027131659-5438557813",
+      "set": {
+        "walk": 810
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 13.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723563855-5022098210",
+      "set": {
+        "walk": 380
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 8.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6386556088-9833533939",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 21.9 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65367585-6522255384",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 18.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65367585-1692478722",
+      "set": {
+        "walk": 680
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6522241807-6522255307",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 17.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65367373-6522241807",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 16.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s260494523-3999825332",
+      "set": {
+        "walk": 520
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6522255331-6522255406",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 21.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s260494525-3999825331",
+      "set": {
+        "walk": 580
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 10.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65367373-6522241813",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 16.9 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6522241813-6522255331",
+      "set": {
+        "walk": 890
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 13.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65364271-6522255406",
+      "set": {
+        "walk": 980
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 14.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65310037-260494525",
+      "set": {
+        "walk": 969
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 14.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65292682-65367654",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 25.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s297860858-1723563826",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 26.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65314360-4087590310",
+      "set": {
+        "walk": 380
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 10.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s260494506-297860859",
+      "set": {
+        "walk": 700
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.9 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65294163-300750450",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 28.9 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s297860859-1723563897",
+      "set": {
+        "walk": 700
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.9 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65367654-1723563882",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 24.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s4087590310-9553489872",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 34.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s300750450-5437876981",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 34.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s297860858-10846158697",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 26.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65346810-65367101",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 22.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65310037-65346810",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 21.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65302678-65364271",
+      "set": {
+        "walk": 860
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 13.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s4165593360-9691587711",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 27.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s4967499780-9691587711",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 36.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1260547096-4967499780",
+      "set": {
+        "walk": 610
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s2068535627-5858516694",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 25.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723739244-11415684443",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 18.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5318468073-11415684443",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 18.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s2068535619-5318468073",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 17.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723738893-2068535619",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 17.2 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723739244-11415684444",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 18.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5318468075-11415684444",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 18.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723739121-5858516694",
+      "set": {
+        "walk": 950
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 17.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723739244-5858516697",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 16.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s2069694255-6370811834",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 19.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723739166-2069694255",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 19.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5318541609-5854920838",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 19.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5854920838-6370811834",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 19.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s2331980048-5318468078",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 30.9 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723739241-2331980048",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 21.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723739241-1723739359",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 31.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723739241-6489941288",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 23.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6489941288-900000000000269",
+      "set": {
+        "walk": 610
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.9 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5858516701-900000000000269",
+      "set": {
+        "walk": 530
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723739359-2068535636",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 18.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5858516708-900000000000270",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 38.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s2068535623-6101380143",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 38.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5858516468-6338827148",
+      "set": {
+        "walk": 490
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 10.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5318057692-6338827148",
+      "set": {
+        "walk": 540
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.2 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5318057695-900000000000127",
+      "set": {
+        "walk": 500
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s900000000000127-900000000000128",
+      "set": {
+        "walk": 500
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s900000000000126-900000000000128",
+      "set": {
+        "walk": 509
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6338827144-900000000000126",
+      "set": {
+        "walk": 700
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 13.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6338827144-12401039584",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 25.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65280776-65367101",
+      "set": {
+        "walk": 810
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 13.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s378431868-4177086676",
+      "set": {
+        "walk": 409
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 10.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s2252547604-10880079995",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 37.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s378431868-1723563901",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 26.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s258969415-1723563931",
+      "set": {
+        "walk": 700
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.9 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s267455477-9880238000",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 33.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6338757282-10974313460",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 16.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723738832-6338758289",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 25.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6338758289-10974313466",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 33.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s4178230427-6338758285",
+      "set": {
+        "walk": 740
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 13.9 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s4625283877-6338758285",
+      "set": {
+        "walk": 500
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5858516475-6338956536",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 18.2 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5858516475-900000000000196",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 24.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6338956534-900000000000196",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 24.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723738829-6338956534",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 26.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s4061806116-4597232309",
+      "set": {
+        "walk": 960
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 15.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s4061806117-4597232309",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 24.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5858516470-6338827129",
+      "set": {
+        "walk": 670
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 12.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5318057692-900000000000198",
+      "set": {
+        "walk": 819
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 14.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6338827165-900000000000198",
+      "set": {
+        "walk": 780
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 13.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6338827165-6386250942",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 26.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5318057695-5318059439",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 26.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723739263-6338956531",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 18.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5858516475-6338956531",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 18.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723739205-5858516479",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 18.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723739205-5318198808",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 17.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723739263-5858516479",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 18.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5858516479-900000000000191",
+      "set": {
+        "walk": 500
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 10.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5858516476-900000000000191",
+      "set": {
+        "walk": 490
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 10.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723739163-5858516480",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 24.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723563950-6336760036",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 25.9 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723563908-5352469963",
+      "set": {
+        "walk": 680
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s2248769212-13018138432",
+      "set": {
+        "walk": 509
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 10.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s4177086676-13018138432",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 19.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6386556286-900000000000110",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 15.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s900000000000110-900000000000111~2",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 15.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6386789734-900000000000111",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 15.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6386556101-6386789734",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 15.9 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6386556101-6386556285",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 28.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723563931-10995024883",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 15.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6386556291-10995024883",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 26.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65314360-4603460310",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 19.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s2248769201-4603460310",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 25.2 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s2248769201-6336760036",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 25.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s4061806117-6338827133",
+      "set": {
+        "walk": 740
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 13.2 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s4061806118-6338827133",
+      "set": {
+        "walk": 720
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 13.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65344347-360445953",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 32.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s703393139-4910016256",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 18.9 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s360445953-360445974",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 32.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s360445974-6522255357",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 26.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6250503375-6339001690",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 20.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5318541585-5318541590",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 35.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723738831-6101380144",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 35.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1864987699-5318198812",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 18.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1864987699-5858516480",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 24.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s258756405-5318541590",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 22.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723738990-6339001620",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 18.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723739121-6339001611",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 19.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723738990-6339001611",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 19.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5858516691-5858516692",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 26.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723738990-5858516692",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 24.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s260494519-6522764233",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 21.2 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6522764233-6522764235",
+      "set": {
+        "walk": 400
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 8.9 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s260494520-1689193740",
+      "set": {
+        "walk": 459
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 9.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1689193740-6522764237",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 20.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s260494519-6522764237",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 17.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65304994-6522764202",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 18.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6522764202-6522764213",
+      "set": {
+        "walk": 580
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 10.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6522255329-6522764213",
+      "set": {
+        "walk": 590
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 10.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6522764205-6522764214",
+      "set": {
+        "walk": 380
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 8.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65304994-6522764214",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 19.9 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s260494517-6522764235",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 23.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s260494516-6250503283",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 26.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6250503289-6522764223",
+      "set": {
+        "walk": 440
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 9.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s260494516-6250503289",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 24.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65304062-6250503284",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 18.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65304062-6250503288",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 36.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6250503288-6522764238",
+      "set": {
+        "walk": 480
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 9.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65312117-6522764238",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 32.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65312117-6522764205",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 31.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723738833-6339001620",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 17.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723738833-6339001788",
+      "set": {
+        "walk": 900
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 17.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6339001788-6489941287",
+      "set": {
+        "walk": 900
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 17.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5858516688-6489941287",
+      "set": {
+        "walk": 919
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 17.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5318199037-7217057124",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 38.2 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5318199037-5858516685",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 17.2 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1864987699-5858516685",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 17.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723738887-6339001633",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 18.2 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723738887-5858516686",
+      "set": {
+        "walk": 940
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 15.2 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723738887-7217057124",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 37.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6101380143-6101380144",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 20.2 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6101380143-900000000000270",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 28.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6522255324-6522255325",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 16.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6522255325-12143013808",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 15.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65280776-4334974840",
+      "set": {
+        "walk": 919
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 14.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s4179413931-900000000000068",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 27.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s900000000000067-900000000000069",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 34.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1563088577-900000000000067",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 26.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723563826-4179413931",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 26.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723563826-6386556090",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 25.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65345379-581047249",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 16.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1563088522-900000000000048",
+      "set": {
+        "walk": 690
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s581047249-1563088522",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 37.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s260494512-1563088519",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 22.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723564043-6250503273",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 21.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723564001-6250503273",
+      "set": {
+        "walk": 850
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 13.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s581047133-1563088497",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 29.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723564001-5020740562",
+      "set": {
+        "walk": 459
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 9.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6386555580-9743056687",
+      "set": {
+        "walk": 960
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 14.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6386555580-6386555583",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 34.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723564037-4189211976",
+      "set": {
+        "walk": 520
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 13.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s4189211976-9446687436",
+      "set": {
+        "walk": 840
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 15.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s260494512-6386555583",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 24.2 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65345379-1563088502",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 29.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1563088502-9446687436",
+      "set": {
+        "walk": 900
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 13.9 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s260494513-1723564021",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 30.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723564021-1723564043",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 37.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s342676141-1723564037",
+      "set": {
+        "walk": 490
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 13.2 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65296324-1723563834",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 33.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1692478761-1723563834",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 28.2 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65302699-4336288615",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 15.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s4336288615-4910016256",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 35.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s360857577-6522255357",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 26.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s260494526-360857577",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 29.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s260494526-4334974840",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 25.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65302678-65302699",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 15.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s4357170828-6130493222",
+      "set": {
+        "walk": 600
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 10.9 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s4357170828-6336760071",
+      "set": {
+        "walk": 620
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723564035-900000000000051",
+      "set": {
+        "walk": 450
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 9.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s900000000000051-900000000000052",
+      "set": {
+        "walk": 450
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 9.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s900000000000050-900000000000052",
+      "set": {
+        "walk": 450
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 9.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6336760072-900000000000050",
+      "set": {
+        "walk": 440
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 9.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s4357170829-6130493221",
+      "set": {
+        "walk": 620
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s4357170829-6386556086",
+      "set": {
+        "walk": 680
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 14.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5437461538-6130493221",
+      "set": {
+        "walk": 690
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65318037-6336978423",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 24.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s260494508-6336978424",
+      "set": {
+        "walk": 980
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 17.1 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1563088568-6336978437",
+      "set": {
+        "walk": 830
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 13.2 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1563088568-5437461538",
+      "set": {
+        "walk": 560
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 10.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65309842-1563088577",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 25.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1563088555-6336978436",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 29.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65318037-6336978437",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 24.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s260494508-6336978436",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 25.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s2248769190-6336978424",
+      "set": {
+        "walk": 470
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 9.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s260494506-2248769190",
+      "set": {
+        "walk": 459
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 9.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65309842-6336978423",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 24.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65309842-6386556090",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 23.7 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6130493222-11226192568",
+      "set": {
+        "walk": 590
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 10.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723563949-11226192568",
+      "set": {
+        "walk": 600
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 10.9 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723563949-6386789738",
+      "set": {
+        "walk": 509
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 12.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6386556092-6386789738",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 24.9 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6336978436-6386556092",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 26.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6522255428-6522255492",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 30.4 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65324886-260494522",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 25.6 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s260494522-12146226193",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 25.2 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6522255428-12143013808",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 31.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s6522255307-6522255492",
+      "set": {
+        "walk": 960
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 16.2 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65324886-1692478722",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 17.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5858516688-6339001633",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 17.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5858516688-900000000000221",
+      "set": {
+        "walk": 740
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 13.2 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s900000000000194-900000000000221",
+      "set": {
+        "walk": 570
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s5858516686-900000000000194",
+      "set": {
+        "walk": 570
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 11.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s2252547606-6338751428",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 23.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723738842-2252547610",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 26.2 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723738980-2252547616",
+      "set": {
+        "walk": 409
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 9.0 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s2252547608-2252547616",
+      "set": {
+        "walk": 560
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 10.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s2252547608-9880238000",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 24.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723739068-6338755508",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 36.8 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723739068-4177086686",
+      "set": {
+        "walk": 440
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 9.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723738842-6386806914",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 19.3 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s65281218-6338751428",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 34.5 m from the centreline)"
+    },
+    {
+      "op": "override",
+      "ref": "s1723738852-1723739196",
+      "set": {
+        "walk": 1000
+      },
+      "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 35.4 m from the centreline)"
     }
   ]
 }
