@@ -5286,6 +5286,109 @@
      -122.41398
     ]
    ]
+  },
+  {
+   "ref": "plant-crissy-field",
+   "name": "crissy-field",
+   "priority": 105,
+   "props": {
+    "plant": {
+     "wood": {
+      "density": 0.0006,
+      "clump": 0.9,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         10,
+         16
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         10,
+         16
+        ]
+       }
+      ]
+     },
+     "park": {
+      "density": 0.00012,
+      "clump": 0.9,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         10,
+         16
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         10,
+         16
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 6e-05,
+      "clump": 0.9,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         10,
+         16
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 1,
+        "h": [
+         10,
+         16
+        ]
+       }
+      ]
+     },
+     "shrubs": {
+      "density": 0.5,
+      "shrubs": [
+       "dry_grass",
+       "lupine",
+       "juniper_scrub",
+       "dry_grass"
+      ]
+     }
+    }
+   },
+   "note": "Crissy Field (Marina audit 2026-10-05): the restored airfield is open meadow, dunes and tidal marsh, with a few windbreak cypress at the edges; the presidio-forest zone (100) was planting it as woods along the Golden Gate Promenade. Mason Street to the shore, the Marina's west edge to the West Bluff.",
+   "ring": [
+    [
+     37.8034,
+     -122.4505
+    ],
+    [
+     37.8034,
+     -122.4722
+    ],
+    [
+     37.8078,
+     -122.4742
+    ],
+    [
+     37.8088,
+     -122.4502
+    ]
+   ]
   }
  ]
 }
