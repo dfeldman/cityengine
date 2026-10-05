@@ -160,4 +160,41 @@ export function musicConcourse(out: MeshBuilder, fit: Fit): void {
   }
 }
 
-export const STRAWBERRY_HILL: Record<string, (out: MeshBuilder, fit: Fit) => void> = { huntingtonFalls, goldenGatePavilion, musicConcourse }
+
+/**
+ * THE CAROUSEL, Koret Children's Quarter, Golden Gate Park (1914 Herschell-Spillman in its 1941 WPA rotunda;
+ * way/1554375367, ~25 m round). Commons "Golden Gate Park carousel building 01.jpg" (2026-10-05): a cream rotunda, a
+ * ring of fluted Doric columns with tall dark-framed glazed bays between them, a deep plain entablature, and over it a
+ * low grey standing-seam metal dome on a stepped drum, with a small lantern. Was a `midcentury-slab` recipe that drew a
+ * dark banded drum. Standalone of its own outline: centred on the fit.
+ */
+export function goldenGateCarousel(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.88, 0.85, 0.75], GLASS: Rgb = [0.12, 0.13, 0.14], METAL: Rgb = [0.36, 0.38, 0.4]
+  const st = surfaceTag('stucco'), metal = surfaceTag('metal')
+  const R = Math.max(8, Math.min(fit.hx, fit.hz) - 0.3)
+  const N = 12
+  const COL = 6.4, ENT = 1.8
+  // the glazed drum behind the columns, the colonnade, the entablature
+  prism(out, 0, 0, 0, 0.4, R + 0.6, 24, [0.7, 0.68, 0.62], st)
+  prism(out, 0, 0, 0.4, COL + 0.4, R - 0.8, 24, GLASS, surfaceTag('glass'))
+  for (let k = 0; k < N; k++) {
+    const a = (k / N) * Math.PI * 2
+    prism(out, Math.sin(a) * (R - 0.2), Math.cos(a) * (R - 0.2), 0.4, 1, 0.62, 8, CREAM, st)
+    prism(out, Math.sin(a) * (R - 0.2), Math.cos(a) * (R - 0.2), 1, COL + 0.4, 0.42, 12, CREAM, st, 0.38)
+  }
+  prism(out, 0, 0, COL + 0.4, COL + 0.4 + ENT, R + 0.3, 24, CREAM, st)
+  prism(out, 0, 0, COL + 0.4 + ENT, COL + 0.4 + ENT + 0.35, R + 0.6, 24, CREAM, st)
+  // the stepped drum and the low ribbed dome, and its lantern
+  const y0 = COL + 0.75 + ENT
+  prism(out, 0, 0, y0, y0 + 0.9, R - 0.2, 24, METAL, metal, R - 1.4)
+  prism(out, 0, 0, y0 + 0.9, y0 + 1.3, R - 1.6, 24, METAL, metal)
+  const D = 3.6
+  for (let i = 0; i < 6; i++) {
+    const t0 = i / 6, t1 = (i + 1) / 6
+    const r0 = (R - 1.6) * Math.cos(t0 * Math.PI / 2), r1 = (R - 1.6) * Math.cos(t1 * Math.PI / 2) + 0.01
+    prism(out, 0, 0, y0 + 1.3 + D * Math.sin(t0 * Math.PI / 2), y0 + 1.3 + D * Math.sin(t1 * Math.PI / 2), r0, 24, METAL, metal, Math.max(1.2, r1))
+  }
+  prism(out, 0, 0, y0 + 1.3 + D, y0 + 2.2 + D, 1.2, 12, METAL, metal, 0.9)
+}
+
+export const STRAWBERRY_HILL: Record<string, (out: MeshBuilder, fit: Fit) => void> = { huntingtonFalls, goldenGatePavilion, musicConcourse, goldenGateCarousel }

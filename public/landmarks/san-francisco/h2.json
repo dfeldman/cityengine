@@ -31,9 +31,10 @@
     "osm": [
       "way/1554375367"
     ],
-    "procedural": "carousel",
-    "name": "Carousel",
-    "height": 12
+    "procedural": "goldenGateCarousel",
+    "name": "Golden Gate Park Carousel",
+    "height": 12,
+    "note": "strawberry-hill.ts (2026-10-05, Commons 'Golden Gate Park carousel building 01.jpg'): cream rotunda, fluted columns, glazed bays, low ribbed metal dome. Was a midcentury-slab recipe."
   },
   {
     "osm": [
