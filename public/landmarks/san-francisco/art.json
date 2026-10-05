@@ -110,8 +110,8 @@
   "baseY": -63.16
  },
  {
-  "lat": 37.7875653,
-  "lon": -122.4080223,
+  "lat": 37.7876371,
+  "lon": -122.4080895,
   "size": [
    2.2,
    1.6
@@ -120,7 +120,7 @@
   "procedural": "heartButterflight",
   "name": "Butterflight (Union Square)",
   "sign": false,
-  "note": "Hearts in San Francisco (2026-10-03, owner: 'we should add all the hearts'): Naomi Duben (OSM n12940072477). A rounded painted heart on a granite pedestal (sf/art.ts paintedHeart); the paint is a stand-in for the artist's design."
+  "note": "Hearts in San Francisco (2026-10-03, owner: 'we should add all the hearts'): Naomi Duben (OSM n12940072477). A rounded painted heart on a granite pedestal (sf/art.ts paintedHeart); the paint is a stand-in for the artist's design. 2026-10-05: moved 6 m onto the corner paving by the caf\u00e9, at street level (it stood half-sunk in the terrace's corner wall by the public toilet)."
  },
  {
   "lat": 37.788152,
