@@ -4902,5 +4902,20 @@
    4
   ],
   "note": "strawberry-hill.ts musicConcourse at rider height (2026-10-04)."
+ },
+ {
+  "name": "Cliff House \u2014 close",
+  "group": "landmark",
+  "from": [
+   37.7787,
+   -122.51475,
+   12
+  ],
+  "to": [
+   37.77865,
+   -122.51399,
+   6
+  ],
+  "note": "cliffHouse_168942988 (2026-10-04 check)."
  }
 ]
