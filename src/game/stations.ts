@@ -23,7 +23,7 @@ export const FARES: Record<Station['line'], number> = { ferry: 5, metro: 1 }
 
 export const SF_STATIONS: Station[] = [
   // the ferries (OSM: the Ferry Building's gates, the Sausalito terminal, the Treasure Island terminal)
-  { name: 'Ferry Building', line: 'ferry', lat: 37.79560, lon: -122.39320, to: ['Sausalito', 'Treasure Island'] },
+  { name: 'Ferry Building', line: 'ferry', lat: 37.79560, lon: -122.39320, to: ['Sausalito', 'Treasure Island', 'Angel Island (Ayala Cove)'] },
   { name: 'Sausalito', line: 'ferry', lat: 37.85600, lon: -122.47790, to: ['Ferry Building'] },
   { name: 'Treasure Island', line: 'ferry', lat: 37.81616, lon: -122.37320, to: ['Ferry Building'] },
   // Alcatraz (BUGS.md #263, owner 2026-10-04: "we should add a (fictional) ferry route to Alcatraz and a tiny bike
@@ -31,6 +31,9 @@ export const SF_STATIONS: Station[] = [
   // (region `ferryIslands`) and opened to bikes (the `alcatraz` zone's `trails: 'bike'`)
   { name: 'Pier 33 (Alcatraz Landing)', line: 'ferry', lat: 37.80770, lon: -122.40540, to: ['Alcatraz'] },
   { name: 'Alcatraz', line: 'ferry', lat: 37.82690, lon: -122.42280, to: ['Pier 33 (Alcatraz Landing)'] },
+  // Angel Island (OSM's ferry route "Angel Island - San Francisco Ferry Building"): Ayala Cove, and the 8 km Perimeter
+  // Road round the island (asphalt, bicycle=yes) kept for it by the region's `ferryIslands`
+  { name: 'Angel Island (Ayala Cove)', line: 'ferry', lat: 37.86840, lon: -122.43530, to: ['Ferry Building'] },
   // Muni Metro: select stops, chosen to take a rider round or under the hills
   { name: 'Embarcadero', line: 'metro', lat: 37.79290, lon: -122.39690 },
   { name: 'Montgomery', line: 'metro', lat: 37.78890, lon: -122.40180 },

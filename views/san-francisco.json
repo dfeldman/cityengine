@@ -4812,5 +4812,50 @@
    10
   ],
   "note": "ybi-light.ts pointDiabloLight (BUGS #262)."
+ },
+ {
+  "name": "Strawberry Hill \u2014 close",
+  "group": "ggp",
+  "from": [
+   37.767578,
+   -122.473613,
+   45
+  ],
+  "to": [
+   37.768557,
+   -122.475012,
+   10
+  ],
+  "note": "the island hill in Stow Lake: should be wooded (2026-10-04)."
+ },
+ {
+  "name": "Grace Cathedral \u2014 the front from Huntington Park",
+  "group": "landmark",
+  "from": [
+   37.792147,
+   -122.412114,
+   30
+  ],
+  "to": [
+   37.792021,
+   -122.413591,
+   20
+  ],
+  "note": "grace.ts cathedral(): the west front faces Taylor Street (owner 2026-10-04: the Notre-Dame model had it at the wrong end)."
+ },
+ {
+  "name": "Grace Cathedral \u2014 from the air",
+  "group": "landmark",
+  "from": [
+   37.790664,
+   -122.412682,
+   110
+  ],
+  "to": [
+   37.792021,
+   -122.413762,
+   15
+  ],
+  "note": "nave, transept, apse and the crossing fleche."
  }
 ]
