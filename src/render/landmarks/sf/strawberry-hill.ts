@@ -7,8 +7,7 @@
  *    into the lake, white water tumbling over dark boulders in a cleft of rock, widening into a pool at the foot.
  *    Drawn on the ground along OSM's stream (way/120479794, /120479802), its heights from the terrain (`groundAt`).
  *  - The GOLDEN GATE PAVILION (the Chinese Pavilion, a 1981 gift from Taipei; way/120479810), on the island's east
- *    shore: red columns on a stone terrace under a double eave of green glazed tile with upswept corners and a gold
- *    finial — the tea-garden look of the island.
+ *    shore: hexagonal, red columns, a concave celadon tile roof (the owner's photograph).
  *
  * The wood and the trails are zones (data/zones: `plant-strawberry-hill`, and `trails: 'bike'` on the hill's own).
  */
@@ -17,7 +16,6 @@ import type { Fit } from '../fit.ts'
 import type { Rgb } from '../../models.ts'
 import { box, prism, strut } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
-import { roof } from '../kit.ts'
 
 /** the falls' line follows OSM's stream (way/120479794, /120479802) from the reservoir east to the lake */
 export const FALLS_CENTRE = { x: -5464, z: -2693 }
@@ -30,7 +28,7 @@ export function huntingtonFalls(out: MeshBuilder, fit: Fit): void {
    * and drops in three SHEER falls, each over the face of a great step of rock, a short pool between, the last into
    * a churned pool at the lake's edge. Local frame: the stream's line along +x (rotateDeg 0, centre FALLS_CENTRE).
    */
-  const g = fit.groundAt ?? ((x: number): number => Math.max(1, 20 - x * 0.45))
+  const g = fit.groundAt ?? ((x: number): number => Math.max(0, (22 - x) * 0.6))
   const rock = surfaceTag('granite')
   const ROCK: Rgb = [0.44, 0.42, 0.39], WATER: Rgb = [0.55, 0.68, 0.74], FOAM: Rgb = [0.93, 0.95, 0.96]
   const zAt = (x: number): number => -5 + ((x + 26) / 48) * 9
@@ -71,30 +69,47 @@ export function huntingtonFalls(out: MeshBuilder, fit: Fit): void {
 }
 
 export function goldenGatePavilion(out: MeshBuilder, fit: Fit): void {
-  const R = Math.max(3.5, Math.min(fit.hx, fit.hz))
+  /*
+   * From the owner's photograph (2026-10-04): HEXAGONAL — six red columns on a white-balustraded stone terrace at the
+   * water, a carved frieze of blue-green and gold under the eaves, and one sweeping CONCAVE roof of pale celadon
+   * glazed tile whose six hips curve up at their ends, a celadon bulb finial on top.
+   */
+  const R = Math.max(3.2, Math.min(fit.hx, fit.hz) * 0.95)
   const stone = surfaceTag('granite'), tile = surfaceTag('tile')
-  const RED: Rgb = [0.72, 0.16, 0.12], GREEN: Rgb = [0.18, 0.46, 0.32], GOLD: Rgb = [0.85, 0.68, 0.25]
-  // the terrace, two steps of grey stone, and a white balustrade round it
-  box(out, 0, 0.3, 0, R + 1.2, 0.6, R + 1.2, [0.62, 0.62, 0.6], stone)
-  box(out, 0, 0.75, 0, R + 0.6, 0.15, R + 0.6, [0.68, 0.68, 0.66], stone)
-  for (const [sx, sz] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) box(out, sx * (R + 1.1), 1.1, sz * (R + 1.1), sx ? 0.1 : R + 1.1, 0.35, sz ? 0.1 : R + 1.1, [0.85, 0.84, 0.8], stone)
-  // the red columns, the red frieze over them
-  for (const t of [-(R - 0.3), 0, R - 0.3]) for (const s of [-1, 1]) {
-    prism(out, t, s * (R - 0.3), 0.9, 4.2, 0.22, 8, RED, 0)
-    prism(out, s * (R - 0.3), t, 0.9, 4.2, 0.22, 8, RED, 0)
+  const RED: Rgb = [0.74, 0.14, 0.13], CELADON: Rgb = [0.5, 0.76, 0.68], FRIEZE: Rgb = [0.32, 0.55, 0.55], WHITE: Rgb = [0.9, 0.9, 0.87]
+  const hex = (r: number, k: number): [number, number] => [Math.cos((k / 6) * Math.PI * 2) * r, Math.sin((k / 6) * Math.PI * 2) * r]
+  // the terrace and its white balustrade: a rail on posts round the hexagon
+  prism(out, 0, 0, -0.3, 0.6, R + 1.3, 6, [0.6, 0.6, 0.58], stone)
+  for (let k = 0; k < 6; k++) {
+    const [ax, az] = hex(R + 1.1, k), [bx, bz] = hex(R + 1.1, k + 1)
+    strut(out, [ax, 1.45, az], [bx, 1.45, bz], 0.14, 0.12, WHITE, stone)
+    for (let t = 0; t < 1; t += 0.25) {
+      const px = ax + (bx - ax) * t, pz = az + (bz - az) * t
+      box(out, px, 1.05, pz, 0.11, 0.45, 0.11, WHITE, stone)
+    }
   }
-  box(out, 0, 4.4, 0, R, 0.3, R, RED, 0)
-  // two hipped eaves of green glazed tile, each rising from a wide overhang, the upper on a short red drum
-  const E1 = R + 1.8, E2 = R * 0.7 + 0.8
-  roof(out, -E1, E1, -E1, E1, 4.7, 1.6, E1 * 0.55, E1 * 0.55, GREEN)
-  box(out, 0, 6.8, 0, R * 0.62, 0.5, R * 0.62, RED, 0)
-  roof(out, -E2, E2, -E2, E2, 7.3, 2.4, E2, E2, GREEN)
-  // the upswept corners of both eaves, and the gold finial
-  for (const [E, y] of [[E1, 4.7], [E2, 7.3]] as const) for (const [sx, sz] of [[1, 1], [1, -1], [-1, 1], [-1, -1]]) {
-    strut(out, [sx * (E - 0.6), y + 0.3, sz * (E - 0.6)], [sx * (E + 0.5), y + 0.9, sz * (E + 0.5)], 0.25, 0.18, GREEN, tile)
+  // the six red columns, and the frieze ring over them
+  for (let k = 0; k < 6; k++) { const [cx, cz] = hex(R, k); prism(out, cx, cz, 0.6, 4.3, 0.24, 10, RED, 0) }
+  prism(out, 0, 0, 4.3, 4.85, R + 0.15, 6, FRIEZE, 0)
+  prism(out, 0, 0, 4.85, 5.0, R + 0.3, 6, RED, 0)
+  // the concave roof: a wide shallow skirt, steepening in bands to the top
+  const bands: [number, number, number][] = [[5.0, R + 2.0, R + 1.1], [5.45, R + 1.1, R * 0.62], [6.3, R * 0.62, R * 0.32], [7.4, R * 0.32, 0.25]]
+  let y = 5.0
+  for (const [y0, r0, r1] of bands) {
+    const y1 = y0 === 5.0 ? 5.45 : y0 === 5.45 ? 6.3 : y0 === 6.3 ? 7.4 : 8.3
+    prism(out, 0, 0, y0, y1, r0, 6, CELADON, tile, r1)
+    y = y1
   }
-  prism(out, 0, 0, 9.6, 10.2, 0.35, 8, GOLD, 0)
-  prism(out, 0, 0, 10.2, 11.3, 0.25, 8, GOLD, 0, 0.04)
+  // the six hips, curving up at their ends
+  for (let k = 0; k < 6; k++) {
+    const [ex, ez] = hex(R + 2.0, k), [mx, mz] = hex(R + 1.1, k), [tx, tz] = hex(0.3, k)
+    strut(out, [tx, y - 0.1, tz], [mx, 5.5, mz], 0.18, 0.18, CELADON, tile)
+    strut(out, [mx, 5.5, mz], [ex * 1.08, 5.75, ez * 1.08], 0.2, 0.2, CELADON, tile)
+  }
+  // the bulb finial
+  prism(out, 0, 0, y, y + 0.4, 0.25, 8, CELADON, tile, 0.4)
+  prism(out, 0, 0, y + 0.4, y + 1.0, 0.4, 8, CELADON, tile, 0.12)
+  prism(out, 0, 0, y + 1.0, y + 1.3, 0.12, 8, CELADON, tile, 0.04)
 }
 
 export const STRAWBERRY_HILL: Record<string, (out: MeshBuilder, fit: Fit) => void> = { huntingtonFalls, goldenGatePavilion }
