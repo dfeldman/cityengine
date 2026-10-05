@@ -67,6 +67,16 @@ export function cliffsLayer(scene: Scene, zones: Zone[], terrain: Terrain, sea: 
         .map((a) => ({ ring: unpackPoints(a.ring), holes: (a.holes ?? []).map(unpackPoints) }))
       const wet = (x: number, z: number): boolean =>
         water.some((w) => inside(w.ring, x, z) && !w.holes.some((h) => inside(h, x, z)))
+      // the ways here, so no boulder lies on a path (Alcatraz's Agave Trail ran through one — BUGS.md #263)
+      const ways = [...near.tile.edges, ...near.around.edges].map((e) => unpackPoints(e.points))
+      const onWay = (x: number, z: number, r: number): boolean => ways.some((p) => {
+        for (let i = 1; i < p.length; i++) {
+          const a = p[i - 1], b = p[i], dx = b.x - a.x, dz = b.z - a.z, L2 = dx * dx + dz * dz || 1e-6
+          const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / L2))
+          if (Math.hypot(x - a.x - dx * t, z - a.z - dz * t) < r) return true
+        }
+        return false
+      })
       const out = new MeshBuilder()
       const rock = surfaceTag('granite')
       for (let x = rect.x0; x < rect.x1; x += STEP) {
@@ -97,7 +107,7 @@ export function cliffsLayer(scene: Scene, zones: Zone[], terrain: Terrain, sea: 
           out.quad([[x, h00 + lift, z], [x, h01 + lift, z + STEP], [x + STEP, h11 + lift, z + STEP], [x + STEP, h10 + lift, z]],
             [n[0] / L, n[1] / L, n[2] / L], [[0, 0], [0, 1], [1, 1], [1, 0]], [c[0] * k, c[1] * k, c[2] * k], rock)
           // a boulder now and then, on the ledges and at the feet
-          if (hash(cx * 11, cz * 13) < 0.06) {
+          if (hash(cx * 11, cz * 13) < 0.06 && !onWay(cx, cz, 3.5)) {
             const r = 0.4 + hash(cx * 5, cz * 3) * 0.9
             const y = low
             prism(out, cx, cz, y - 0.2, y + r * 1.2, r, 5 + Math.floor(hash(cz, cx) * 3), BOULDERS[Math.floor(hash(cz * 2, cx) * BOULDERS.length)], rock, r * 0.6)

@@ -10466,7 +10466,7 @@ designs. There is also one at Alcatraz, which is in the box but inaccessible cur
 - **Alcatraz** (alcatraz.json `alcatrazLighthouse`, way/99202294): modelled; the island is not reachable in game
   yet, so it is checked only from the air.
 
-### #263 A (fictional) ferry to Alcatraz and a tiny bike circuit on the island (OPEN, owner 2026-10-04)
+### #263 A (fictional) ferry to Alcatraz and a tiny bike circuit on the island (DONE 2026-10-04, bake 26 — see the end)
 
 The owner, with a screenshot of the island from the water: *"alcatraz actually renders really really well, even
 including the lighthouse, even though it's not accessible to bikes! we should add a (fictional) ferry route to
@@ -10475,3 +10475,15 @@ in the same mechanic as any existing transit boarding (src/game/stations.ts / tr
 the island — the dock, up the switchback road past the Power House and the Officers' Club ruins to the cellhouse
 and the lighthouse, and back — as authored ways (the region's own, like the Bay Bridge bikeway), checked with
 tools/air-paths.ts (no flying paths).
+
+Done (bake 26): the bake and the ride graph dropped every island but the largest network, so Alcatraz had NO ways
+at all in the package. A region's `ferryIslands` (src/city/region.ts; San Francisco: Alcatraz, 350 m) now keeps any
+island network with an edge near the point (`largestComponent(edges, keep)`, tools/bake.ts and city/ridegraph.ts —
+106 edges kept), the `alcatraz` zone opens its trails to bikes, and two ferry stations (game/stations.ts): **Pier 33
+(Alcatraz Landing) ↔ Alcatraz**, $5, through the travel card like the others. Checked in a headless ride: the prompt
+at Pier 33 offers Alcatraz; arriving at the dock, the rider rides the Agave Trail along the cliffs (586 m in 32 s of
+holding ↑, staying on the island). Cliff boulders no longer lie on paths (render/cliffs.ts). The island's network
+has a dead end or two where the rider turns round; the switchback road up to the cellhouse is OSM `service` and
+`steps` in places — whether the circuit should be extended with an authored way up to the lighthouse is for the
+owner.
+

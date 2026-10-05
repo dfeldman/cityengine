@@ -636,9 +636,13 @@ async function bake(spec: CitySpec): Promise<void> {
     if (n) console.log(`  ${n} trails opened to bikes (zones with trails: 'bike')`)
   }
   // (and the islands a ferry serves: their paths are kept though no street reaches them — region `ferryIslands`)
-  const ferryIslands = (region(spec.region).ferryIslands ?? []).map((k) => ({ ...proj.toLocal({ lat: k.lat, lon: k.lon }), r: k.radius }))
+  const ferryIslands = (region(spec.region ?? spec.id).ferryIslands ?? []).map((k) => ({ ...proj.toLocal({ lat: k.lat, lon: k.lon }), r: k.radius }))
   const kept = largestComponent(edges, ferryIslands.length ? (e) => unpackPoints(e.points).some((p) => ferryIslands.some((k) => Math.hypot(p.x - k.x, p.z - k.z) < k.r)) : undefined)
   console.log(`  ${edges.length} edges → ${kept.length} in the largest connected network`)
+  if (ferryIslands.length) {
+    const near = (e: (typeof edges)[number]): boolean => unpackPoints(e.points).some((p) => ferryIslands.some((k) => Math.hypot(p.x - k.x, p.z - k.z) < k.r))
+    console.log(`  ferry islands: ${edges.filter(near).length} edges near them, ${kept.filter(near).length} kept`)
+  }
 
   // ---- buildings
   /*

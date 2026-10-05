@@ -188,6 +188,7 @@ export function region(id: string | undefined): Region {
     riverDrop: own?.riverDrop ?? base.riverDrop,
     elevatedWalks: own?.elevatedWalks ?? base.elevatedWalks,
     footBridgeLayers: own?.footBridgeLayers ?? base.footBridgeLayers,
+    ferryIslands: own?.ferryIslands ?? base.ferryIslands,
     pavedSquares: own?.pavedSquares ?? base.pavedSquares,
     brickStreets: own?.brickStreets ?? base.brickStreets,
     timeZone: own?.timeZone ?? base.timeZone,
