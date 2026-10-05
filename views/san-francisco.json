@@ -5082,5 +5082,20 @@
    0
   ],
   "note": "natural scenery audit 2026-10-05"
+ },
+ {
+  "name": "Yoda Fountain, Letterman",
+  "group": "landmark",
+  "from": [
+   37.79875,
+   -122.45042,
+   2
+  ],
+  "to": [
+   37.79882,
+   -122.45049,
+   1.8
+  ],
+  "note": "fountains.ts yodaFountain (2026-10-05)."
  }
 ]
