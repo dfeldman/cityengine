@@ -1482,18 +1482,22 @@ function unionSquarePlaza(out: MeshBuilder, fit: Fit): void {
 function westinTower(out: MeshBuilder, fit: Fit): void {
   const ring = towerRing(fit)
   const H = fit.height > 90 && fit.height < 150 ? fit.height : 120
-  const TAUPE: Rgb = [0.6, 0.56, 0.5]
-  const TAN: Rgb = [0.7, 0.62, 0.48]
+  const TAUPE: Rgb = [0.5, 0.47, 0.42]
+  const TAN: Rgb = [0.62, 0.56, 0.45]
   tower(out, fit, {
     height: H,
     base: { height: 9, face: { kind: 'curtain', material: 'granite', wall: [0.36, 0.33, 0.3], glass: [0.18, 0.2, 0.22], pitch: 3.2, floor: 4.5 } },
     tiers: [
-      { to: H - 12, face: { kind: 'punched', material: 'concrete', wall: TAUPE, glass: [0.16, 0.18, 0.2], pitch: 2.2, solid: 0.5, floor: 3.2 } },
+      // (horizontal BANDS of dark glass between taupe spandrels, as the photographs show it from Union Square — the
+      //  punched grid read as an ordinary office block; 2026-10-05)
+      { to: H - 12, face: { kind: 'bands', material: 'concrete', wall: TAUPE, glass: [0.13, 0.14, 0.16], floor: 3.2, solid: 0.5 } },
       { to: H - 1.8, face: { kind: 'fins', material: 'concrete', wall: TAN, glass: [0.2, 0.2, 0.2], pitch: 1.5, solid: 0.45, depth: 0.5, floor: 3.4 } },
       { to: H, face: { kind: 'blank', material: 'concrete', wall: TAN }, cornice: { depth: 1.2, height: 0.9, colour: TAN } },
     ],
     roof: [0.42, 0.42, 0.42],
   })
+  // the rounded corner piers, full height in the precast, the bands running into them
+  for (const p of ring) prism(out, p.x, p.z, 9, H - 1.8, 2.2, 10, TAUPE, surfaceTag('concrete'))
   // the glass lifts: a slot of dark glass standing out of the middle of each long face, base to crown, a cab or two in it
   const es = ring.map((a, i) => { const b = ring[(i + 1) % ring.length]; const L = Math.hypot(b.x - a.x, b.z - a.z); return { a, b, L } })
   const longest = Math.max(...es.map((e) => e.L))

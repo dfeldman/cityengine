@@ -5187,5 +5187,20 @@
    10
   ],
   "note": "civic center close look 2026-10-05"
+ },
+ {
+  "name": "Westin St. Francis \u2014 old building and tower from Union Square",
+  "group": "landmark",
+  "from": [
+   37.7881,
+   -122.4069,
+   25
+  ],
+  "to": [
+   37.78775,
+   -122.4087,
+   40
+  ],
+  "note": "union-square.ts westinStFrancis + the 1972 tower (2026-10-05 check)."
  }
 ]
