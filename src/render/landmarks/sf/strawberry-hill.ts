@@ -143,13 +143,12 @@ export function musicConcourse(out: MeshBuilder, fit: Fit): void {
       if (Math.abs(z) < 10 || !inOval(x, z) || nearFountain(x, z)) continue
       const y = g(x, z)
       // the trunk, the knuckled limbs pruned back to knobs, the low flat canopy they carry
-      prism(out, x, z, y, y + 3.4, 0.32, 7, BARK, 0, 0.26)
-      for (let k = 0; k < 4; k++) {
-        const a = (k / 4) * Math.PI * 2 + 0.4
-        strut(out, [x, y + 3.2, z], [x + Math.cos(a) * 1.2, y + 4.6, z + Math.sin(a) * 1.2], 0.18, 0.18, BARK, 0)
-        prism(out, x + Math.cos(a) * 1.2, z + Math.sin(a) * 1.2, y + 4.5, y + 4.9, 0.28, 6, BARK, 0)
+      prism(out, x, z, y, y + 3.4, 0.32, 5, BARK, 0, 0.26, false)
+      for (let k = 0; k < 3; k++) {
+        const a = (k / 3) * Math.PI * 2 + 0.4
+        strut(out, [x, y + 3.2, z], [x + Math.cos(a) * 1.2, y + 4.7, z + Math.sin(a) * 1.2], 0.2, 0.2, BARK, 0, false)
       }
-      prism(out, x, z, y + 4.6, y + 6.6, 3.6, 8, LEAF, 0, 3.0)
+      prism(out, x, z, y + 4.6, y + 6.6, 3.6, 6, LEAF, 0, 3.0)
     }
   }
   // the fountains' stone rims and their jets (OSM maps the basins' water)
