@@ -3148,7 +3148,8 @@
    "priority": 1,
    "props": {
     "terrain": "fine",
-    "relief": "raw"
+    "relief": "raw",
+    "trails": "bike"
    },
    "note": "Golden Gate Park audit 2026-10-04: the 60 m opening took the summit off \u2014 a flat mesa 14 m over the lake at 101.7 m, where the zoom-15 data (bare earth here) reads 130.4 m. The ring is the island's own shore (the hole in Stow Lake) pushed 5% out into the water; water samples are never raw, so the lake keeps its level and no ridden way crosses the edge.",
    "ring": [
@@ -4617,8 +4618,8 @@
    "props": {
     "plant": {
      "wood": {
-      "density": 0.03,
-      "clump": 0.15,
+      "density": 0.0078,
+      "clump": 0,
       "species": [
        {
         "form": "eucalyptus",

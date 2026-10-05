@@ -4857,5 +4857,35 @@
    15
   ],
   "note": "nave, transept, apse and the crossing fleche."
+ },
+ {
+  "name": "Huntington Falls \u2014 from across Stow Lake",
+  "group": "ggp",
+  "from": [
+   37.769105,
+   -122.473159,
+   6
+  ],
+  "to": [
+   37.768808,
+   -122.474182,
+   14
+  ],
+  "note": "strawberry-hill.ts: the cascade into the lake, the Chinese Pavilion on the shore (owner 2026-10-04)."
+ },
+ {
+  "name": "Golden Gate Pavilion \u2014 Stow Lake",
+  "group": "ggp",
+  "from": [
+   37.768206,
+   -122.473329,
+   4
+  ],
+  "to": [
+   37.768377,
+   -122.473613,
+   5
+  ],
+  "note": "strawberry-hill.ts goldenGatePavilion (2026-10-04)."
  }
 ]
