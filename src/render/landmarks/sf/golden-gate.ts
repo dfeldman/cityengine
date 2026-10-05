@@ -204,7 +204,9 @@ function deck(out: MeshBuilder, z0: number, z1: number, lamps: boolean): void {
     // the lamp standards, both sides every 61 m (the real ones stand closer; from the city they are the rhythm)
     if (lamps && Math.round(za / panel) % 4 === 0) {
       for (const side of [-1, 1]) {
-        const x = side * (DECK_HALF - 1.2)
+        // on the roadway's kerb, the sidewalk between them and the rail — at DECK_HALF − 1.2 they stood in the middle
+        // of the walk, and the rider rode through one every 61 m (2026-10-05)
+        const x = side * (DECK_HALF - 3.2)
         bx(out, x, ym + 4.5, zm, 0.15, 4.5, 0.15, LAMP, F)
         bx(out, x - side * 0.8, ym + 9, zm, 0.8, 0.12, 0.2, LAMP, F)
       }
