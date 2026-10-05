@@ -140,6 +140,13 @@ export interface Region {
   /** squares OSM maps only as lines (the Trocadéro's parvis): paved areas by hand, rings of [lat, lon] */
   /** `brick`: laid in the region's street brick (`brickStreets.colour`) */
   pavedSquares?: { name: string; ring: [number, number][]; brick?: boolean }[]
+  /**
+   * A waterfront street's wharf apron: paving from its bay-side kerb out over the seawall, `reach` metres from the
+   * centreline, wherever there is water on that side. OSM maps the apron along the Embarcadero as nothing, so the
+   * city's base ground — grass — showed between the sidewalk and the pier bulkheads (2026-10-05). Painted UNDER the
+   * parks and the water, which cover it where they are mapped.
+   */
+  wharfAprons?: { street: string; reach: number }[]
   /** the steel of an elevated railway — the Loop's L is painted a dark green-black */
   elevatedRailColour: string
   /** the elevated railway's design: 'bent' (the Loop's L: steel bents) or 'paris' (the Métro's iron viaducts on
@@ -190,6 +197,7 @@ export function region(id: string | undefined): Region {
     footBridgeLayers: own?.footBridgeLayers ?? base.footBridgeLayers,
     ferryIslands: own?.ferryIslands ?? base.ferryIslands,
     pavedSquares: own?.pavedSquares ?? base.pavedSquares,
+    wharfAprons: own?.wharfAprons ?? base.wharfAprons,
     brickStreets: own?.brickStreets ?? base.brickStreets,
     timeZone: own?.timeZone ?? base.timeZone,
     lanternStreets: own?.lanternStreets ?? base.lanternStreets,

@@ -1,200 +1,200 @@
 [
- {
-  "osm": [
-   "way/25489482"
-  ],
-  "name": "Pier 1",
-  "procedural": "pier1",
-  "front": "street",
-  "height": 11,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated. deckAbove 1.5: the Embarcadero in front of it is 1.7 m above the sea, where the rest of the waterfront is ~3.5 (BUGS.md #258, measured 2026-10-02).",
-  "deckAbove": 1.5
- },
- {
-  "osm": [
-   "way/91913148"
-  ],
-  "name": "Pier 5",
-  "procedural": "pier5",
-  "front": "street",
-  "height": 11,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
-  "deckAbove": 3.5
- },
- {
-  "osm": [
-   "way/25478417"
-  ],
-  "name": "Pier 9",
-  "procedural": "pier9",
-  "front": "street",
-  "height": 11,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
-  "deckAbove": 3.5
- },
- {
-  "osm": [
-   "way/25478444"
-  ],
-  "name": "Pier 15",
-  "procedural": "pier15",
-  "front": "street",
-  "height": 12,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
-  "deckAbove": 3.5
- },
- {
-  "osm": [
-   "way/25489458"
-  ],
-  "name": "Pier 17",
-  "procedural": "pier17",
-  "front": "street",
-  "height": 12,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
-  "deckAbove": 3.5
- },
- {
-  "osm": [
-   "way/91913158"
-  ],
-  "name": "Pier 33",
-  "procedural": "pier33",
-  "front": "street",
-  "height": 11,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
-  "deckAbove": 3.5
- },
- {
-  "osm": [
-   "way/91913150"
-  ],
-  "name": "Pier 35",
-  "procedural": "pier35",
-  "front": "street",
-  "height": 11,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
-  "deckAbove": 3.5
- },
- {
-  "osm": [
-   "way/186071977"
-  ],
-  "name": "Pier 24",
-  "procedural": "pier24",
-  "front": "street",
-  "height": 10,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
-  "deckAbove": 3.5
- },
- {
-  "osm": [
-   "way/104599978"
-  ],
-  "name": "Pier 26",
-  "procedural": "pier26",
-  "front": "street",
-  "height": 10,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
-  "deckAbove": 3.5
- },
- {
-  "osm": [
-   "way/104599994"
-  ],
-  "name": "Pier 28",
-  "procedural": "pier28",
-  "front": "street",
-  "height": 10,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
-  "deckAbove": 3.5
- },
- {
-  "osm": [
-   "way/104599982"
-  ],
-  "name": "Pier 38",
-  "procedural": "pier38",
-  "front": "street",
-  "height": 9,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
-  "deckAbove": 3.5
- },
- {
-  "osm": [
-   "way/104599990"
-  ],
-  "name": "Pier 40",
-  "procedural": "pier40",
-  "front": "street",
-  "height": 9,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
-  "deckAbove": 3.5
- },
- {
-  "osm": [
-   "way/27369603"
-  ],
-  "name": "Pier 48",
-  "procedural": "pier48",
-  "front": "street",
-  "height": 13,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
-  "deckAbove": 3.5
- },
- {
-  "osm": [
-   "way/288387751"
-  ],
-  "name": "Fort Mason Pier 1",
-  "procedural": "fortMasonPier1",
-  "front": "street",
-  "height": 10,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
-  "deckAbove": 3.5
- },
- {
-  "osm": [
-   "way/288387752"
-  ],
-  "name": "Fort Mason Pier 2 (Herbst Pavilion)",
-  "procedural": "fortMasonPier2",
-  "front": "street",
-  "height": 10,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
-  "deckAbove": 3.5
- },
- {
-  "osm": [
-   "way/288387753"
-  ],
-  "name": "Fort Mason Pier 3 (Festival Pavilion)",
-  "procedural": "fortMasonPier3",
-  "front": "street",
-  "height": 10,
-  "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated.",
-  "deckAbove": 3.5
- },
- {
-  "osm": [
-   "way/91913149"
-  ],
-  "name": "Piers 29-31",
-  "procedural": "pier31",
-  "front": "street",
-  "height": 11,
-  "note": "Placed 2026-10-02: the preset was built and never placed; OSM's unnamed 24 900 m2 shed between Piers 33 and 27 is the Piers 29-31 bulkhead and shed.",
-  "deckAbove": 3.5
- },
- {
-  "osm": [
-   "way/91913152"
-  ],
-  "name": "Pier 23",
-  "procedural": "pier23",
-  "front": "street",
-  "height": 10,
-  "note": "Placed 2026-10-02: the preset was built and never placed; OSM's unnamed 21 500 m2 shed at 37.8032, -122.3997.",
-  "deckAbove": 3.5
- }
+  {
+    "osm": [
+      "way/25489482"
+    ],
+    "name": "Pier 1",
+    "procedural": "pier1",
+    "front": 55,
+    "height": 11,
+    "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated. deckAbove 1.5: the Embarcadero in front of it is 1.7 m above the sea, where the rest of the waterfront is ~3.5 (BUGS.md #258, measured 2026-10-02). Front numeric 2026-10-05: the bearing from the shore end out along the pier (scratch pierfront.ts, +180: a numeric front puts the builder's +z, the bulkhead, AWAY from the bearing); \"street\" could pick the promenade along a flank.",
+    "deckAbove": 1.5
+  },
+  {
+    "osm": [
+      "way/91913148"
+    ],
+    "name": "Pier 5",
+    "procedural": "pier5",
+    "front": 55,
+    "height": 11,
+    "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated. Front numeric 2026-10-05: the bearing from the shore end out along the pier (scratch pierfront.ts, +180: a numeric front puts the builder's +z, the bulkhead, AWAY from the bearing); \"street\" could pick the promenade along a flank.",
+    "deckAbove": 3.5
+  },
+  {
+    "osm": [
+      "way/25478417"
+    ],
+    "name": "Pier 9",
+    "procedural": "pier9",
+    "front": 55,
+    "height": 11,
+    "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated. Front numeric 2026-10-05: the bearing from the shore end out along the pier (scratch pierfront.ts, +180: a numeric front puts the builder's +z, the bulkhead, AWAY from the bearing); \"street\" could pick the promenade along a flank.",
+    "deckAbove": 3.5
+  },
+  {
+    "osm": [
+      "way/25478444"
+    ],
+    "name": "Pier 15",
+    "procedural": "pier15",
+    "front": 49,
+    "height": 12,
+    "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated. Front numeric 2026-10-05: the bearing from the shore end out along the pier (scratch pierfront.ts, +180: a numeric front puts the builder's +z, the bulkhead, AWAY from the bearing); \"street\" could pick the promenade along a flank.",
+    "deckAbove": 3.5
+  },
+  {
+    "osm": [
+      "way/25489458"
+    ],
+    "name": "Pier 17",
+    "procedural": "pier17",
+    "front": 56,
+    "height": 12,
+    "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated. Front numeric 2026-10-05: the bearing from the shore end out along the pier (scratch pierfront.ts, +180: a numeric front puts the builder's +z, the bulkhead, AWAY from the bearing); \"street\" could pick the promenade along a flank.",
+    "deckAbove": 3.5
+  },
+  {
+    "osm": [
+      "way/91913158"
+    ],
+    "name": "Pier 33",
+    "procedural": "pier33",
+    "front": 18,
+    "height": 11,
+    "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated. Front numeric 2026-10-05: the bearing from the shore end out along the pier (scratch pierfront.ts, +180: a numeric front puts the builder's +z, the bulkhead, AWAY from the bearing); \"street\" could pick the promenade along a flank.",
+    "deckAbove": 3.5
+  },
+  {
+    "osm": [
+      "way/91913150"
+    ],
+    "name": "Pier 35",
+    "procedural": "pier35",
+    "front": 354,
+    "height": 11,
+    "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated. Front numeric 2026-10-05: the bearing from the shore end out along the pier (scratch pierfront.ts, +180: a numeric front puts the builder's +z, the bulkhead, AWAY from the bearing); \"street\" could pick the promenade along a flank.",
+    "deckAbove": 3.5
+  },
+  {
+    "osm": [
+      "way/186071977"
+    ],
+    "name": "Pier 24",
+    "procedural": "pier24",
+    "front": 80,
+    "height": 10,
+    "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated. Front numeric 2026-10-05: the bearing from the shore end out along the pier (scratch pierfront.ts, +180: a numeric front puts the builder's +z, the bulkhead, AWAY from the bearing); \"street\" could pick the promenade along a flank.",
+    "deckAbove": 3.5
+  },
+  {
+    "osm": [
+      "way/104599978"
+    ],
+    "name": "Pier 26",
+    "procedural": "pier26",
+    "front": 77,
+    "height": 10,
+    "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated. Front numeric 2026-10-05: the bearing from the shore end out along the pier (scratch pierfront.ts, +180: a numeric front puts the builder's +z, the bulkhead, AWAY from the bearing); \"street\" could pick the promenade along a flank.",
+    "deckAbove": 3.5
+  },
+  {
+    "osm": [
+      "way/104599994"
+    ],
+    "name": "Pier 28",
+    "procedural": "pier28",
+    "front": 80,
+    "height": 10,
+    "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated. Front numeric 2026-10-05: the bearing from the shore end out along the pier (scratch pierfront.ts, +180: a numeric front puts the builder's +z, the bulkhead, AWAY from the bearing); \"street\" could pick the promenade along a flank.",
+    "deckAbove": 3.5
+  },
+  {
+    "osm": [
+      "way/104599982"
+    ],
+    "name": "Pier 38",
+    "procedural": "pier38",
+    "front": 81,
+    "height": 9,
+    "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated. Front numeric 2026-10-05: the bearing from the shore end out along the pier (scratch pierfront.ts, +180: a numeric front puts the builder's +z, the bulkhead, AWAY from the bearing); \"street\" could pick the promenade along a flank.",
+    "deckAbove": 3.5
+  },
+  {
+    "osm": [
+      "way/104599990"
+    ],
+    "name": "Pier 40",
+    "procedural": "pier40",
+    "front": 85,
+    "height": 9,
+    "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated. Front numeric 2026-10-05: the bearing from the shore end out along the pier (scratch pierfront.ts, +180: a numeric front puts the builder's +z, the bulkhead, AWAY from the bearing); \"street\" could pick the promenade along a flank.",
+    "deckAbove": 3.5
+  },
+  {
+    "osm": [
+      "way/27369603"
+    ],
+    "name": "Pier 48",
+    "procedural": "pier48",
+    "front": 78,
+    "height": 13,
+    "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated. Front numeric 2026-10-05: the bearing from the shore end out along the pier (scratch pierfront.ts, +180: a numeric front puts the builder's +z, the bulkhead, AWAY from the bearing); \"street\" could pick the promenade along a flank.",
+    "deckAbove": 3.5
+  },
+  {
+    "osm": [
+      "way/288387751"
+    ],
+    "name": "Fort Mason Pier 1",
+    "procedural": "fortMasonPier1",
+    "front": 351,
+    "height": 10,
+    "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated. Front numeric 2026-10-05: the bearing from the shore end out along the pier (scratch pierfront.ts, +180: a numeric front puts the builder's +z, the bulkhead, AWAY from the bearing); \"street\" could pick the promenade along a flank.",
+    "deckAbove": 3.5
+  },
+  {
+    "osm": [
+      "way/288387752"
+    ],
+    "name": "Fort Mason Pier 2 (Herbst Pavilion)",
+    "procedural": "fortMasonPier2",
+    "front": 352,
+    "height": 10,
+    "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated. Front numeric 2026-10-05: the bearing from the shore end out along the pier (scratch pierfront.ts, +180: a numeric front puts the builder's +z, the bulkhead, AWAY from the bearing); \"street\" could pick the promenade along a flank.",
+    "deckAbove": 3.5
+  },
+  {
+    "osm": [
+      "way/288387753"
+    ],
+    "name": "Fort Mason Pier 3 (Festival Pavilion)",
+    "procedural": "fortMasonPier3",
+    "front": 351,
+    "height": 10,
+    "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated. Front numeric 2026-10-05: the bearing from the shore end out along the pier (scratch pierfront.ts, +180: a numeric front puts the builder's +z, the bulkhead, AWAY from the bearing); \"street\" could pick the promenade along a flank.",
+    "deckAbove": 3.5
+  },
+  {
+    "osm": [
+      "way/91913149"
+    ],
+    "name": "Piers 29-31",
+    "procedural": "pier31",
+    "front": 59,
+    "height": 11,
+    "note": "Placed 2026-10-02: the preset was built and never placed; OSM's unnamed 24 900 m2 shed between Piers 33 and 27 is the Piers 29-31 bulkhead and shed. Front numeric 2026-10-05: the bearing from the shore end out along the pier (scratch pierfront.ts, +180: a numeric front puts the builder's +z, the bulkhead, AWAY from the bearing); \"street\" could pick the promenade along a flank.",
+    "deckAbove": 3.5
+  },
+  {
+    "osm": [
+      "way/91913152"
+    ],
+    "name": "Pier 23",
+    "procedural": "pier23",
+    "front": 59,
+    "height": 10,
+    "note": "Placed 2026-10-02: the preset was built and never placed; OSM's unnamed 21 500 m2 shed at 37.8032, -122.3997. Front numeric 2026-10-05: the bearing from the shore end out along the pier (scratch pierfront.ts, +180: a numeric front puts the builder's +z, the bulkhead, AWAY from the bearing); \"street\" could pick the promenade along a flank.",
+    "deckAbove": 3.5
+  }
 ]

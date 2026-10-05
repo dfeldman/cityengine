@@ -1015,6 +1015,45 @@ async function bake(spec: CitySpec): Promise<void> {
     const ring = sq.ring.map(([lat, lon]) => proj.toLocal({ lat, lon }))
     areas.push({ kind: 'paved', ring: packPoints(ccw(ring)), top: true, ...(sq.brick ? { brick: true as const } : {}) })
   }
+  // a waterfront street's wharf apron (region `wharfAprons`): a strip of paving on its bay side, segment by segment,
+  // wherever water lies 40–55 m out on that side — under the parks and the water, which are painted over it
+  {
+    const waters = areas.filter((a) => a.kind === 'water').map((a) => unpackPoints(a.ring))
+    const inside = (r: { x: number; z: number }[], x: number, z: number): boolean => {
+      let c = false
+      for (let i = 0, j = r.length - 1; i < r.length; j = i++) {
+        const a = r[i], b = r[j]
+        if ((a.z > z) !== (b.z > z) && x < ((b.x - a.x) * (z - a.z)) / (b.z - a.z) + a.x) c = !c
+      }
+      return c
+    }
+    const wet = (x: number, z: number): boolean => waters.some((r) => inside(r, x, z))
+    for (const ap of streetRegion.wharfAprons ?? []) {
+      let n = 0
+      for (const e of edges) {
+        if (e.name !== ap.street || e.foot) continue
+        const p = unpackPoints(e.points)
+        for (let i = 1; i < p.length; i++) {
+          const a = p[i - 1], b = p[i]
+          const L = Math.hypot(b.x - a.x, b.z - a.z)
+          if (L < 1) continue
+          const ux = (b.x - a.x) / L, uz = (b.z - a.z) / L
+          const mx = (a.x + b.x) / 2, mz = (a.z + b.z) / 2
+          const side = [1, -1].find((s) => wet(mx - uz * s * 40, mz + ux * s * 40) || wet(mx - uz * s * 55, mz + ux * s * 55))
+          if (!side) continue
+          const nx = -uz * side, nz = ux * side
+          const k0 = e.width / 2 + e.walk - 0.5, k1 = Math.max(k0 + 5, ap.reach)
+          // (each a little longer than its segment, so the strips overlap at the bends)
+          const A = { x: a.x - ux * 1.5, z: a.z - uz * 1.5 }, B = { x: b.x + ux * 1.5, z: b.z + uz * 1.5 }
+          const ring = [{ x: A.x + nx * k0, z: A.z + nz * k0 }, { x: B.x + nx * k0, z: B.z + nz * k0 },
+            { x: B.x + nx * k1, z: B.z + nz * k1 }, { x: A.x + nx * k1, z: A.z + nz * k1 }]
+          areas.push({ kind: 'paved', ring: packPoints(ccw(ring)) })
+          n++
+        }
+      }
+      console.error(`  wharf apron along ${ap.street}: ${n} segments`)
+    }
+  }
   // Multipolygon relations: the Seine is one, and so is every courtyard block. Skipping them is why the
   // water shader had no water and why the Loop came back with half the buildings it should have.
   let fromRelations = 0
