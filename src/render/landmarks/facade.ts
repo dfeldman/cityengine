@@ -68,7 +68,9 @@ const MATERIALS: Record<Material, { wall: Rgb; surface: Surface; glass?: Rgb }> 
   marble: { wall: [0.92, 0.91, 0.87], surface: 'ashlar' },
   sandstone: { wall: [0.78, 0.68, 0.54], surface: 'ashlar' },
   terracotta: { wall: [0.88, 0.85, 0.76], surface: 'terracotta' },
-  brick: { wall: [0.62, 0.34, 0.28], surface: 'brick' },
+  // (was [0.62, 0.34, 0.28]: every hand-built brick landmark rendered a bright orange beside the city's restyled brick,
+  //  which reads deep red-brown — Redstone, the Walt Disney Family Museum beside the Presidio barracks; 2026-10-04)
+  brick: { wall: [0.47, 0.23, 0.18], surface: 'brick' },
   'dark-brick': { wall: [0.36, 0.22, 0.2], surface: 'brick' },
   'dark-stone': { wall: [0.3, 0.3, 0.32], surface: 'granite' },
   concrete: { wall: [0.72, 0.72, 0.7], surface: 'concrete' },
