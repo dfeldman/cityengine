@@ -8,7 +8,8 @@ import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
 import type { Rgb } from '../../models.ts'
 import { tower, towerRing } from '../tower.ts'
-import { edgeAt, edgeFacing, faceOn } from '../parts.ts'
+import { boxAlong, edgeAt, edgeFacing, faceOn } from '../parts.ts'
+import { surfaceTag } from '../../cartoon-material.ts'
 
 const WHITE: Rgb = [0.9, 0.9, 0.88]
 const GLASS: Rgb = [0.3, 0.4, 0.5]
@@ -48,4 +49,53 @@ export function bayViewTower(out: MeshBuilder, fit: Fit): void {
   })
 }
 
-export const THIRTY_OTIS: Record<string, (out: MeshBuilder, fit: Fit) => void> = { thirtyOtis, bayViewTower }
+
+/**
+ * YERBA BUENA LOFTS, 855 Folsom (Stanley Saitowitz, 2002; way/149086544). Unique-modern census 2026-10-05, Mapillary
+ * on Folsom: an exposed concrete frame of floor slabs and columns, every cell of the grid either a FROSTED GLASS panel
+ * (blue-grey, ribbed; some standing proud of the frame as a glass box) or left open as a dark recessed balcony — a
+ * chequer that changes floor by floor. A glazed base behind a low wall. Was a `brutalist` box.
+ */
+export function yerbaBuenaLofts(out: MeshBuilder, fit: Fit): void {
+  const H = fit.height > 15 ? fit.height : 26
+  const CONC: Rgb = [0.72, 0.72, 0.7], FROST: Rgb = [0.68, 0.75, 0.79], DARK: Rgb = [0.16, 0.17, 0.18]
+  const conc = surfaceTag('concrete'), glass = surfaceTag('glass')
+  tower(out, fit, {
+    height: H,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.62, 0.62, 0.6], glass: [0.3, 0.4, 0.44], pitch: 3, floor: 4 } },
+    tiers: [{ to: H, face: { kind: 'blank', wall: DARK, material: 'concrete' } }],
+    roof: [0.5, 0.5, 0.5],
+    crown: { kind: 'parapet', height: 0.6, colour: CONC },
+  })
+  const ring = towerRing(fit)
+  const FL = 3.6, CELL = 4.2
+  let k = 7
+  const rnd = (): number => { k = (k * 1103515245 + 12345) & 0x7fffffff; return (k % 1000) / 1000 }
+  for (let i = 0; i < ring.length; i++) {
+    const e = edgeAt(ring, i)
+    if (e.L < 6) continue
+    const n = Math.max(1, Math.round(e.L / CELL)), cw = e.L / n
+    const at = (u: number, o: number): [number, number] => [e.mid.x + e.tx * u + e.nx * o, e.mid.z + e.tz * u + e.nz * o]
+    // the slabs, a hand proud of the infill
+    for (let y = 4; y <= H + 0.01; y += FL) {
+      const [x, z] = at(0, 0.15)
+      boxAlong(out, x, y, z, e.L / 2, 0.2, 0.15, e.heading, CONC, conc)
+    }
+    for (let c = 0; c <= n; c++) {
+      const [x, z] = at(-e.L / 2 + c * cw, 0.15)
+      boxAlong(out, x, (4 + H) / 2, z, 0.2, (H - 4) / 2, 0.15, e.heading, CONC, conc)
+    }
+    // the cells: frosted glass flush, a glass box proud, or open
+    for (let y = 4; y + FL <= H + 0.01; y += FL) {
+      for (let c = 0; c < n; c++) {
+        const r = rnd()
+        if (r < 0.32) continue
+        const proud = r > 0.82
+        const [x, z] = at(-e.L / 2 + (c + 0.5) * cw, proud ? 0.7 : 0.05)
+        boxAlong(out, x, y + FL / 2, z, cw / 2 - 0.25, FL / 2 - 0.25, proud ? 0.65 : 0.05, e.heading, FROST, glass)
+      }
+    }
+  }
+}
+
+export const THIRTY_OTIS: Record<string, (out: MeshBuilder, fit: Fit) => void> = { thirtyOtis, bayViewTower, yerbaBuenaLofts }
