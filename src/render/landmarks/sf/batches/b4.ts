@@ -169,26 +169,6 @@ export const B4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     })
   },
 
-  /**
-   * way/260142634 — Mosser Towers (old_name Central Towers), 350 Turk St, apartments, 41 m. Reference photo
-   * (`batch5/way-260142634.jpg`) shows a large, plain, near-windowless tan stucco flank wall with a dark
-   * boxy mechanical penthouse above the roofline — evidently a side/party wall, not the main frontage, but
-   * it does confirm the plain finish and a set-back rooftop element. Modelled as a plain stucco apartment
-   * tower with a glazed mechanical-penthouse top; the main frontage's own window rhythm is not shown in the
-   * photo, so a modest, unremarkable punched pattern is used rather than invented ornament.
-   */
-  b4_apartment_260142634: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'plain', storeys: 1, material: 'stucco' },
-      shaft: { storeys: 9, windows: 'small', material: 'stucco' },
-      top: { kind: 'setback', storeys: 1, by: 1.2, material: 'glass' },
-      bands: { aboveGround: 'string', belowTop: null, top: null },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'recessed', steps: 0 },
-      material: 'stucco',
-    })
-  },
 
   /**
    * way/172886856 — The Presidio Landmark, 1801 Wedemeyer St, residential, 25 m. No photograph. A large
@@ -274,24 +254,6 @@ export const B4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     })
   },
 
-  /**
-   * way/260142631 — Mosser Towers (Central Towers), 455 Eddy St, 41 m. Reference photo
-   * (`batch5/way-260142631.jpg`): a plain dark tower with a regular grid of small punched windows, partly
-   * obscured by construction and a painted mural on an adjacent building. Matches its sibling `260142634` in
-   * material and plainness but darker.
-   */
-  b4_apartment_260142631: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'plain', storeys: 1, material: 'dark-stone' },
-      shaft: { storeys: 9, windows: 'small', material: 'dark-brick' },
-      top: null,
-      bands: { aboveGround: 'string', belowTop: null, top: null },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'recessed', steps: 0 },
-      material: 'dark-brick',
-    })
-  },
 
   /**
    * way/256853335 — Redstone Building (San Francisco Labor Temple), 2940 16th St, commercial, 3 levels,

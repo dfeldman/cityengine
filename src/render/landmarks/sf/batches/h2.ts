@@ -27,8 +27,6 @@ export const H2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   buildingUnidentified: fromRecipe('edwardian-terracotta', {}),
   /** California Historical Society: civic, cultural institution. No photo; 1900s–1920s terracotta era guess. */
   californiaHistoricalSociety: fromRecipe('edwardian-terracotta', {}),
-  /** Carousel (amusement): civic, historic Playland attraction. No photo; small pavilion 1960s-80s slab era guess. */
-  carousel: fromRecipe('midcentury-slab', { height: 12 }),
   /** Castagnola's: civic, historic waterfront restaurant. No photo; 1960s-80s commercial era guess. */
   castagnolaS: fromRecipe('hotel-punched', {}),
   /** Clay Theatre: civic, historic cinema at Fillmore and Clay. No photo; 1900s–1920s terracotta era guess. */
