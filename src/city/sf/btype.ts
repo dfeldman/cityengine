@@ -114,6 +114,9 @@ export function archetypeOf(f: Features): { archetype: Archetype; district: Dist
   // what the mapper said, when they said anything
   if (t.amenity === 'place_of_worship' || /^(church|cathedral|chapel|synagogue|temple)$/.test(t.building ?? '')) return a('church', 'worship')
   if (t.building === 'parking' || t.amenity === 'parking') return a('retailBox', 'parking')
+  // PG&E's substations (Stations E, G, I, J, K…): windowless masonry blocks behind louvres, never flats with shopfronts
+  // (they came out as `sfapartment`; substation census 2026-10-05)
+  if (t.power === 'substation' || t.power === 'plant') return a('loft', 'power-substation')
   if (t.man_made === 'pier' || /^Pier \d+/.test(t.name ?? '')) return a('pier', 'pier-tag')
   if (/^(civic|government|public|townhall|museum)$/.test(t.building ?? '') || t.amenity === 'townhall') return a('civic', 'civic-tag')
 

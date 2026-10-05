@@ -3285,5 +3285,5 @@ const NO_SHOP_BUILDING = new Set(['school', 'college', 'university', 'kindergart
   'industrial', 'warehouse', 'factory', 'manufacture', 'hangar', 'shed', 'storage_tank', 'service', 'transportation', 'train_station'])
 function noShopsFor(tags: Record<string, string>): boolean {
   return NO_SHOP_AMENITY.has(tags.amenity ?? '') || NO_SHOP_BUILDING.has(tags.building ?? '') || tags.tourism === 'museum'
-    || tags.office === 'government'
+    || tags.office === 'government' || tags.power === 'substation' || tags.power === 'plant'
 }
