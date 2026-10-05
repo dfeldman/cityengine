@@ -149,6 +149,13 @@ export class Sky {
     this.dome.infiniteDistance = true
     this.dome.renderingGroupId = 0
     this.dome.isPickable = false
+    /*
+     * FIRST in its group. The ground beyond the box is drawn in this group too (render/city.ts `distantGround`, the
+     * base), and the dome, writing no depth but still testing it, painted over every piece of ground drawn before it
+     * that lay further off than its own faces — about 540 m. From Twin Peaks the far back yards came out as white
+     * sky between the rows of houses, which are in a later group and so stood clear of it (2026-10-05).
+     */
+    scene.setRenderingOrder(0, (a, b) => (a.getMesh() === this.dome ? 0 : 1) - (b.getMesh() === this.dome ? 0 : 1))
 
     /**
      * Sky furniture gets its own material and its own rendering group.
