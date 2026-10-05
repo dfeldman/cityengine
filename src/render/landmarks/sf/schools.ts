@@ -68,4 +68,37 @@ export function missionHighSchool(out: MeshBuilder, fit: Fit): void {
   prism(out, tx, tz, G + 46, G + 50, 0.12, 6, [0.4, 0.38, 0.35], surfaceTag('metal'), 0.03)
 }
 
-export const SCHOOLS: Record<string, (out: MeshBuilder, fit: Fit) => void> = { missionHighSchool }
+
+/**
+ * NOTRE DAME SCHOOL, Dolores Street at 16th, across from Mission Dolores (1907; way/288643550). School census
+ * 2026-10-05, Mapillary on Dolores: a cream Second Empire block — two storeys of tall segmental windows over a raised
+ * basement behind a garden wall — under a grey slate MANSARD with pedimented dormers, and on the north end a columned
+ * BELVEDERE carrying a small grey dome, over a porch. Front 270: Dolores is west.
+ */
+export function notreDameSchool(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.88, 0.85, 0.75], SLATE: Rgb = [0.42, 0.44, 0.47], DARK: Rgb = [0.18, 0.2, 0.22]
+  const G = Math.max(0, fit.grade ?? 0)
+  const H = G + 12
+  tower(out, fit, {
+    height: H,
+    base: { height: G + 2.6, face: { kind: 'punched', wall: [0.62, 0.6, 0.55], glass: DARK, pitch: 3.4, solid: 0.6, floor: 2.6, material: 'ashlar' } },
+    tiers: [{ to: H, face: { kind: 'punched', wall: CREAM, glass: DARK, pitch: 3.4, solid: 0.55, floor: 4.6, material: 'stucco' }, cornice: { depth: 0.7, height: 0.6, colour: [0.94, 0.92, 0.86] } }],
+    roof: SLATE,
+    crown: { kind: 'mansard', height: 4.2, inset: 1.6, colour: SLATE, material: 'tile', dormers: 3 },
+  })
+  // the belvedere and dome over the north end of the front
+  const ring = towerRing(fit)
+  const e = edgeAt(ring, edgeFacing(ring))
+  const n = { x: e.mid.x + e.tx * (e.L / 2 - 6) - e.nx * 4, z: e.mid.z + e.tz * (e.L / 2 - 6) - e.nz * 4 }
+  const st = surfaceTag('stucco')
+  prism(out, n.x, n.z, H + 2, H + 4.5, 2.6, 8, CREAM, st)
+  for (let k = 0; k < 8; k++) {
+    const a = (k / 8) * Math.PI * 2
+    prism(out, n.x + Math.sin(a) * 2.3, n.z + Math.cos(a) * 2.3, H + 4.5, H + 7.5, 0.18, 8, [0.95, 0.94, 0.9], st)
+  }
+  prism(out, n.x, n.z, H + 7.5, H + 8, 2.7, 8, CREAM, st)
+  prism(out, n.x, n.z, H + 8, H + 9.4, 2.4, 12, SLATE, surfaceTag('metal'), 1.4)
+  prism(out, n.x, n.z, H + 9.4, H + 10.2, 1.4, 12, SLATE, surfaceTag('metal'), 0.2)
+}
+
+export const SCHOOLS: Record<string, (out: MeshBuilder, fit: Fit) => void> = { missionHighSchool, notreDameSchool }
