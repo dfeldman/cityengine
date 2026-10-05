@@ -122,6 +122,7 @@ import { FOUNTAINS } from './fountains.ts'
 import { ST_IGNATIUS } from './st-ignatius.ts'
 import { BANK_OF_CALIFORNIA } from './bank-of-california.ts'
 import { NEW_MISSION } from './new-mission.ts'
+import { THIRTY_OTIS } from './thirty-otis.ts'
 import { SHEDS } from './sheds.ts'
 import { MURAL_ALLEYS } from './mural-alleys.ts'
 import { POINT_BONITA } from './point-bonita.ts'
@@ -288,6 +289,7 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   ...ST_IGNATIUS,
   ...BANK_OF_CALIFORNIA,
   ...NEW_MISSION,
+  ...THIRTY_OTIS,
   ...SHEDS,
   ...MURAL_ALLEYS,
   ...POINT_BONITA,
