@@ -3362,7 +3362,7 @@ export class City {
        */
       const raisedHere = [...(this.edgesIn.get(k) ?? []), ...[-1, 0, 1].flatMap((dz) => [-1, 0, 1].flatMap((dx) => (dx || dz) ? (this.edgesIn.get(key(Number(k.split(',')[0]) + dx, Number(k.split(',')[1]) + dz)) ?? []) : []))]
         .filter((o) => this.raisedIds.has(o.id) && o.heights)
-        .map((o) => ({ id: o.id, pts: unpackPoints(o.points), h: o.heights!, half: (o.foot ? o.width / 2 : o.width / 2 + Math.max(0.6, o.walk)) + 0.3 }))
+        .map((o) => ({ id: o.id, pts: unpackPoints(o.points), h: o.heights!, half: (o.foot ? o.width / 2 : o.width / 2 + Math.max(0.6, o.walk)) + 0.3, road: o.foot ? 0 : o.width / 2 }))
       const besideOf = (self: number) => (x: number, z: number, y: number): boolean => {
         for (const o of raisedHere) {
           if (o.id === self) continue
@@ -3372,6 +3372,22 @@ export class City {
             const dz = o.pts[i].z - a.z
             const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1e-9)))
             if (Math.hypot(a.x + dx * t - x, a.z + dz * t - z) > o.half) continue
+            if (Math.abs(o.h[i - 1] + (o.h[i] - o.h[i - 1]) * t - y) < 1.5) return true
+          }
+        }
+        return false
+      }
+      // another raised ROAD's carriageway at (x, z), within 1.5 m of height y (and not the edge itself): a deck's
+      // pavement is left off it (bridges.ts `deck`)
+      const carriageOf = (self: number) => (x: number, z: number, y: number): boolean => {
+        for (const o of raisedHere) {
+          if (o.id === self || o.road <= 0) continue
+          for (let i = 1; i < o.pts.length; i++) {
+            const a = o.pts[i - 1]
+            const dx = o.pts[i].x - a.x
+            const dz = o.pts[i].z - a.z
+            const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1e-9)))
+            if (Math.hypot(a.x + dx * t - x, a.z + dz * t - z) > o.road) continue
             if (Math.abs(o.h[i - 1] + (o.h[i] - o.h[i - 1]) * t - y) < 1.5) return true
           }
         }
@@ -3390,7 +3406,8 @@ export class City {
         if (steeperThanWall(e)) continue
         for (const part of this.coveredDecks.has(e.id) ? this.outsideCovers(e) : [e]) {
           deck(decks, part, this.terrain, this.deckWalk.get(e.id), this.region.riverDrop ?? 0, e.bridge === true && this.structured(e),
-            e.name !== undefined && (this.region.elevatedWalks ?? []).some((w) => w.name === e.name), underDeck(e.id), besideOf(e.id))
+            e.name !== undefined && (this.region.elevatedWalks ?? []).some((w) => w.name === e.name), underDeck(e.id), besideOf(e.id),
+            carriageOf(e.id))
         }
       }
       const railColour = hexRgb(this.region.elevatedRailColour)

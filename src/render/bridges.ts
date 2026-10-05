@@ -100,7 +100,8 @@ function standsClear(f: Frame[], ground: (x: number, z: number) => number): bool
 /** One raised edge as a deck. `under(x, z, r, y)`: does a road pass within r of (x, z), below y? (for the piers) */
 export function deck(out: MeshBuilder, e: PackedEdge, terrain: Terrain, walk = e.walk, drop = 0, structured = false,
                      hedged = false, under?: (x: number, z: number, r: number, y: number) => boolean,
-                     beside?: (x: number, z: number, y: number) => boolean): void {
+                     beside?: (x: number, z: number, y: number) => boolean,
+                     onOther?: (x: number, z: number, y: number) => boolean): void {
   const pts = unpackPoints(e.points)
   if (pts.length < 2 || !e.heights) return
   const f = frames(pts, e.heights)
@@ -112,8 +113,21 @@ export function deck(out: MeshBuilder, e: PackedEdge, terrain: Terrain, walk = e
   // the running surfaces, a hair above the heights so the rider's wheels are on them
   if (road > 0) {
     strip(out, f, -road, road, 0.02, ASPHALT)
-    strip(out, f, -outer, -road, 0.15, PAVING)
-    strip(out, f, road, outer, 0.15, PAVING)
+    /*
+     * Each pavement only where it is not lying on another raised road's carriageway (Mission Bay ride samples,
+     * 2026-10-05: the 4th Street bridge is two raised ways, one each direction, that converge at both ends; each
+     * one's pavement ran on across the other's roadway as a cream wedge across the lanes, 15 cm proud).
+     */
+    // (and not where the other carriageway lies just beyond it: the narrowing median between the two, where both
+    //  inner pavements met in a cream triangle over the lanes)
+    for (const side of [-1, 1] as const) {
+      const mid = side * (road + outer) / 2
+      const past = side * (outer + 2.5)
+      const runs = onOther
+        ? sampledRuns(f, (fr) => !onOther(fr.x + fr.nx * mid, fr.z + fr.nz * mid, fr.y) && !onOther(fr.x + fr.nx * past, fr.z + fr.nz * past, fr.y))
+        : [f]
+      for (const run of runs) strip(out, run, side < 0 ? -outer : road, side < 0 ? -road : outer, 0.15, PAVING)
+    }
     // the kerb faces
     wall(out, f, -road, 0.02, 0.15, PAVING, 1)
     wall(out, f, road, 0.02, 0.15, PAVING, -1)
@@ -348,20 +362,24 @@ export const BRIDGE_STYLES: Record<string, BridgeStyle> = {
  * low concrete walls across the way, the rider riding through them (owner, 2026-10-03: "walls block the way").
  * Without a `beside` test every side is open, as before.
  */
-function openRuns(f: Frame[], offset: number, beside?: (x: number, z: number, y: number) => boolean): Frame[][] {
-  if (!beside) return [f]
+/** The stretches of `f`, resampled every 2 m or so, where `open` holds at each sample. */
+function sampledRuns(f: Frame[], open: (fr: Frame) => boolean): Frame[][] {
   const total = f[f.length - 1].s
   const runs: Frame[][] = []
   let cur: Frame[] = []
   const n = Math.max(1, Math.ceil(total / 2))
   for (let i = 0; i <= n; i++) {
     const fr = frameAt(f, (total * i) / n)
-    const open = !beside(fr.x + fr.nx * offset, fr.z + fr.nz * offset, fr.y)
-    if (open) cur.push(fr)
+    if (open(fr)) cur.push(fr)
     else { if (cur.length >= 2) runs.push(cur); cur = [] }
   }
   if (cur.length >= 2) runs.push(cur)
   return runs
+}
+
+function openRuns(f: Frame[], offset: number, beside?: (x: number, z: number, y: number) => boolean): Frame[][] {
+  if (!beside) return [f]
+  return sampledRuns(f, (fr) => !beside(fr.x + fr.nx * offset, fr.z + fr.nz * offset, fr.y))
 }
 
 function frameAt(f: Frame[], s: number): Frame {
