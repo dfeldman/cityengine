@@ -1888,31 +1888,31 @@
   "name": "GGP de Young",
   "group": "ggp-lm",
   "from": [
-   37.7713,
-   -122.4694,
-   2
+   37.77,
+   -122.47,
+   30
   ],
   "to": [
    37.77155,
    -122.4686,
-   14
+   12
   ],
-  "note": "BUGS #195 park landmarks placement check"
+  "note": "BUGS #195 park landmarks placement check \u2014 camera moved out from under the overhang"
  },
  {
   "name": "GGP Music Concourse",
   "group": "ggp-lm",
   "from": [
-   37.7703,
-   -122.467,
-   2
+   37.77,
+   -122.4655,
+   45
   ],
   "to": [
-   37.7708,
-   -122.4662,
-   8
+   37.7712,
+   -122.4677,
+   0
   ],
-  "note": "BUGS #195 park landmarks placement check"
+  "note": "BUGS #195 park landmarks placement check \u2014 re-aimed from above (2026-10-04)"
  },
  {
   "name": "Lyon Street Steps \u2014 down the axis from Broadway (BUGS #213a)",
@@ -4887,5 +4887,20 @@
    5
   ],
   "note": "strawberry-hill.ts goldenGatePavilion (2026-10-04)."
+ },
+ {
+  "name": "Music Concourse \u2014 among the plane trees",
+  "group": "ggp",
+  "from": [
+   37.77005,
+   -122.46797,
+   2
+  ],
+  "to": [
+   37.7705,
+   -122.4675,
+   4
+  ],
+  "note": "strawberry-hill.ts musicConcourse at rider height (2026-10-04)."
  }
 ]

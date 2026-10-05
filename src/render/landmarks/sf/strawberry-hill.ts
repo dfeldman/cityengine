@@ -112,4 +112,53 @@ export function goldenGatePavilion(out: MeshBuilder, fit: Fit): void {
   prism(out, 0, 0, y + 1.0, y + 1.3, 0.12, 8, CELADON, tile, 0.04)
 }
 
-export const STRAWBERRY_HILL: Record<string, (out: MeshBuilder, fit: Fit) => void> = { huntingtonFalls, goldenGatePavilion }
+/**
+ * THE MUSIC CONCOURSE (1894, rebuilt 2005), between the de Young and the Academy of Sciences, the bandshell at its
+ * south-west end — a sunken oval of tan decomposed granite under a GRID of pollarded London plane trees, their
+ * knobbed limbs carrying low flat canopies, lawn panels between the rows and fountains down the axis. OSM maps the
+ * lawns and the three fountain basins; the city drew the rest as open park with scattered palms (views audit,
+ * 2026-10-04). Standalone, centred on the middle fountain; local +x runs along the axis (rotateDeg set in the
+ * manifest), +z across it.
+ */
+export function musicConcourse(out: MeshBuilder, fit: Fit): void {
+  const g = fit.groundAt ?? (() => 0)
+  const HL = 100, HW = 52
+  const DG: Rgb = [0.6, 0.54, 0.44], BARK: Rgb = [0.56, 0.52, 0.45], LEAF: Rgb = [0.26, 0.37, 0.19], STONE: Rgb = [0.78, 0.76, 0.71]
+  const inOval = (x: number, z: number): boolean => (x / HL) ** 2 + (z / HW) ** 2 < 1
+  const fountains = [-49, 0, 49]
+  const nearFountain = (x: number, z: number): boolean => fountains.some((f) => Math.hypot(x - f, z) < 14)
+  // the promenade of tan gravel down the axis
+  const strip = (x0: number, x1: number, z0: number, z1: number): void => {
+    for (let x = x0; x < x1; x += 4) {
+      const xa = x, xb = Math.min(x1, x + 4)
+      out.quad([[xa, g(xa, z0) + 0.06, z0], [xb, g(xb, z0) + 0.06, z0], [xb, g(xb, z1) + 0.06, z1], [xa, g(xa, z1) + 0.06, z1]].reverse() as [number, number, number][],
+        [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], DG, 0)
+    }
+  }
+  strip(-HL * 0.95, HL * 0.95, -7, 7)
+  // the grid: rows across the axis every 8 m, trees every 8 m along each, out to the oval, clear of the promenade and
+  // the fountains
+  for (let x = -HL + 8; x < HL - 4; x += 8) {
+    for (let z = -HW + 6; z < HW - 2; z += 8) {
+      if (Math.abs(z) < 10 || !inOval(x, z) || nearFountain(x, z)) continue
+      const y = g(x, z)
+      // the trunk, the knuckled limbs pruned back to knobs, the low flat canopy they carry
+      prism(out, x, z, y, y + 3.4, 0.32, 7, BARK, 0, 0.26)
+      for (let k = 0; k < 4; k++) {
+        const a = (k / 4) * Math.PI * 2 + 0.4
+        strut(out, [x, y + 3.2, z], [x + Math.cos(a) * 1.2, y + 4.6, z + Math.sin(a) * 1.2], 0.18, 0.18, BARK, 0)
+        prism(out, x + Math.cos(a) * 1.2, z + Math.sin(a) * 1.2, y + 4.5, y + 4.9, 0.28, 6, BARK, 0)
+      }
+      prism(out, x, z, y + 4.6, y + 6.6, 3.6, 8, LEAF, 0, 3.0)
+    }
+  }
+  // the fountains' stone rims and their jets (OSM maps the basins' water)
+  for (const [i, f] of fountains.entries()) {
+    const r = i === 1 ? 11 : 4.5, y = g(f, 0)
+    prism(out, f, 0, y, y + 0.6, r + 0.5, 20, STONE, surfaceTag('granite'), r + 0.5)
+    prism(out, f, 0, y, y + 0.7, r, 20, [0.5, 0.62, 0.68], surfaceTag('glass'))
+    prism(out, f, 0, y + 0.7, y + (i === 1 ? 4 : 2), 0.35, 8, [0.92, 0.95, 0.97], 0, 0.1)
+  }
+}
+
+export const STRAWBERRY_HILL: Record<string, (out: MeshBuilder, fit: Fit) => void> = { huntingtonFalls, goldenGatePavilion, musicConcourse }
