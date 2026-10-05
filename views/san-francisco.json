@@ -5352,5 +5352,185 @@
    0
   ],
   "note": "TI check 2026-10-05"
+ },
+ {
+  "name": "campus 0 UCSF Parnassus",
+  "group": "audit",
+  "from": [
+   37.7655,
+   -122.453,
+   45
+  ],
+  "to": [
+   37.763,
+   -122.4585,
+   15
+  ],
+  "note": "campus audit 2026-10-05"
+ },
+ {
+  "name": "campus 1 St Ignatius and USF",
+  "group": "audit",
+  "from": [
+   37.7745,
+   -122.449,
+   40
+  ],
+  "to": [
+   37.7766,
+   -122.4527,
+   20
+  ],
+  "note": "campus audit 2026-10-05"
+ },
+ {
+  "name": "campus 2 Lone Mountain",
+  "group": "audit",
+  "from": [
+   37.777,
+   -122.448,
+   50
+  ],
+  "to": [
+   37.7798,
+   -122.4513,
+   25
+  ],
+  "note": "campus audit 2026-10-05"
+ },
+ {
+  "name": "campus 4 Zuckerberg SF General",
+  "group": "audit",
+  "from": [
+   37.7575,
+   -122.401,
+   45
+  ],
+  "to": [
+   37.7556,
+   -122.4048,
+   10
+  ],
+  "note": "campus audit 2026-10-05"
+ },
+ {
+  "name": "campus 6 UC Law SF",
+  "group": "audit",
+  "from": [
+   37.78,
+   -122.4135,
+   30
+  ],
+  "to": [
+   37.7811,
+   -122.416,
+   10
+  ],
+  "note": "campus audit 2026-10-05"
+ },
+ {
+  "name": "campus 7 Kaiser Geary and St Marys",
+  "group": "audit",
+  "from": [
+   37.7845,
+   -122.43,
+   50
+  ],
+  "to": [
+   37.7838,
+   -122.44,
+   10
+  ],
+  "note": "campus audit 2026-10-05"
+ },
+ {
+  "name": "campus 8 UCSF Parnassus \u2014 Moffitt from the avenue",
+  "group": "audit",
+  "from": [
+   37.7638,
+   -122.4545,
+   4
+  ],
+  "to": [
+   37.763,
+   -122.458,
+   25
+  ],
+  "note": "campus audit 2026-10-05"
+ },
+ {
+  "name": "campus 9 St Ignatius \u2014 Fulton front",
+  "group": "audit",
+  "from": [
+   37.7752,
+   -122.451,
+   4
+  ],
+  "to": [
+   37.7766,
+   -122.4527,
+   30
+  ],
+  "note": "campus audit 2026-10-05"
+ },
+ {
+  "name": "campus 10 100 McAllister tower",
+  "group": "audit",
+  "from": [
+   37.78,
+   -122.414,
+   4
+  ],
+  "to": [
+   37.7808,
+   -122.4162,
+   40
+  ],
+  "note": "campus audit 2026-10-05"
+ },
+ {
+  "name": "campus 11 Kaiser Geary",
+  "group": "audit",
+  "from": [
+   37.7825,
+   -122.44,
+   4
+  ],
+  "to": [
+   37.783,
+   -122.4425,
+   25
+  ],
+  "note": "campus audit 2026-10-05"
+ },
+ {
+  "name": "campus 12 St Ignatius \u2014 from the west",
+  "group": "landmark",
+  "from": [
+   37.7745,
+   -122.4585,
+   45
+  ],
+  "to": [
+   37.7756,
+   -122.4526,
+   30
+  ],
+  "note": "St Ignatius model 2026-10-05"
+ },
+ {
+  "name": "campus 13 St Ignatius \u2014 Fulton front up close",
+  "group": "landmark",
+  "from": [
+   37.77497,
+   -122.4516,
+   3
+  ],
+  "to": [
+   37.77517,
+   -122.45241,
+   24
+  ],
+  "note": "St Ignatius model 2026-10-05"
  }
 ]

@@ -50,34 +50,7 @@ export function saintAnneOfTheSunset(out: MeshBuilder, fit: Fit): void {
   })
 }
 
-/**
- * Saint Ignatius Roman Catholic Church, way/225193440 — `building=church`, `amenity=place_of_worship`; batch
- * 2's own read of the tags is "nave, tower, apse". No photograph, so this is built restrained rather than
- * reaching for what the real (much more elaborate, twin-towered) Saint Ignatius Church looks like from memory —
- * the brief is explicit that no web research backs this model, and a single confidently-placed tower the tags
- * can support beats a guessed second one they can't. `walls.material: 'limestone'` and `front.kind: 'pediment'`
- * are the restrained default for an institutional Catholic church front with no colour information in the tags.
- *
- * **Height.** OSM tags 58 m, which is this real building's height to the top of its towers/cross, not a nave
- * ridge — `church()`'s own convention is that `fit.height` is the NAVE ridge only, with the tower rising above
- * it (see the `Nave` doc comment: "OSM heights on churches essentially never include the spire", which is the
- * opposite case here: this tag very much DOES include it). Feeding 58 m in as a nave ridge would build an
- * absurdly tall gabled hall with a comparatively squat tower barely poking out. The manifest instead carries a
- * corrected 22 m nave ridge, and the tower is given extra stages (5) so it still reads as the dominant tall
- * element the real building is known for — a deliberate departure from the tag, not an oversight, exactly the
- * same kind of correction batch 2's `944986473` made for the opposite reason.
- */
-export function saintIgnatiusChurch(out: MeshBuilder, fit: Fit): void {
-  church(out, fit, {
-    nave: { bays: 4, storeys: 1, roof: 'gable', pitch: 'moderate' },
-    aisles: null,
-    transept: null,
-    chancel: { kind: 'apse' },
-    tower: { at: 'front-centre', stages: 5, plan: 'square', top: 'spire' },
-    front: { kind: 'pediment', portal: 'triple', window: 'oculus', steps: 2 },
-    walls: { material: 'limestone', openings: 'round', buttresses: 'none' },
-  })
-}
+// Saint Ignatius moved to its own model from photographs, sf/st-ignatius.ts (2026-10-05).
 
 /**
  * Saint Joseph's Arts Society, way/160163535 — a secular arts venue today, but `old_name` and the photograph
@@ -118,6 +91,5 @@ export function saintJosephsArtsSociety(out: MeshBuilder, fit: Fit): void {
 
 export const CHURCHES_3: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   saintAnneOfTheSunset,
-  saintIgnatiusChurch,
   saintJosephsArtsSociety,
 }
