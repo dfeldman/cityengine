@@ -3979,15 +3979,16 @@
   "name": "audit 19 Bay Bridge west span",
   "group": "audit",
   "from": [
-   37.78835,
-   -122.386953,
-   192
+   37.7885,
+   -122.39,
+   120
   ],
   "to": [
-   37.787,
-   -122.384,
-   48
-  ]
+   37.799,
+   -122.378,
+   55
+  ],
+  "note": "re-aimed 2026-10-05: the old target was south of the span"
  },
  {
   "name": "audit 20 Oracle Park",
