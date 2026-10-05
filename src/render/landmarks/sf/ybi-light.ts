@@ -57,4 +57,69 @@ export function ybiFogSignal(out: MeshBuilder, fit: Fit): void {
   for (const u of [-0.9, 0.9]) box(out, u, 1.8, hz + 0.02, 0.35, 0.55, 0.03, DARK, 0)
 }
 
-export const YBI_LIGHT: Record<string, (out: MeshBuilder, fit: Fit) => void> = { ybiLightTower, ybiFogSignal }
+/**
+ * LIME POINT LIGHT (1883/1900; BUGS.md #262), at the foot of the cliff under the Golden Gate Bridge's north tower,
+ * from Commons "Lime Point Lighthouse, SW view.jpg": on a 30 m rock spur of red-brown chert, a run of weathered grey
+ * concrete — a long retaining wall with a walkway back to the cliff, a squat flat-roofed block — and the fog-signal
+ * house at the seaward end: brick-red and grey render under a rusty red roof, a small steel light frame on its corner.
+ * Standalone (`deckAbove: 0`); local +z is the spur's length, the sea end at +z.
+ */
+export function limePointLight(out: MeshBuilder, _fit: Fit): void {
+  const conc = surfaceTag('concrete'), rock = surfaceTag('concrete'), metal = surfaceTag('metal')
+  const CHERT: Rgb = [0.48, 0.27, 0.2], GREY: Rgb = [0.66, 0.65, 0.61], RUST: Rgb = [0.5, 0.24, 0.18]
+  // the rock spur
+  prism(out, 0, 4, -2, 3, 9, 7, CHERT, rock, 7)
+  prism(out, 0, -8, -2, 4, 8, 6, CHERT, rock, 6)
+  prism(out, 1, 14, -2, 2.5, 6, 6, CHERT, rock, 5)
+  // the retaining wall and walkway back toward the cliff
+  box(out, -3, 4, -10, 1.5, 2, 8, GREY, conc)
+  box(out, -3, 6.1, -10, 1.6, 0.1, 8, [0.5, 0.49, 0.46], conc)
+  // the squat block, then the fog-signal house
+  box(out, 0, 5.5, 2, 3.2, 3, 3, GREY, conc)
+  box(out, 0, 5.2, 9, 3.4, 2.7, 4, RUST, surfaceTag('brick'))
+  box(out, 0, 2.6, 9, 3.6, 1.2, 4.2, GREY, conc)
+  roof(out, -3.6, 3.6, 4.8, 13.2, 7.9, 1.4, 3.6, 0, [0.48, 0.22, 0.17])
+  for (const u of [-1.6, 0, 1.6]) box(out, u, 5.6, 13.02, 0.35, 0.6, 0.03, DARK, 0)
+  // the light's steel frame and lamp on the corner, and a little railing
+  for (const [dx, dz] of [[2.6, 11.6], [3.2, 11.6], [2.6, 12.2], [3.2, 12.2]]) box(out, dx, 9.6, dz, 0.04, 1.7, 0.04, [0.75, 0.75, 0.73], metal)
+  box(out, 2.9, 11.4, 11.9, 0.35, 0.2, 0.35, WHITE, metal)
+  box(out, 3.6, 6.4, 13.4, 0.04, 0.5, 1.5, [0.7, 0.7, 0.7], metal)
+}
+
+/**
+ * POINT DIABLO LIGHT (BUGS.md #262), halfway between Point Bonita and Lime Point, from Commons "Point Diablo Light,
+ * California.jpg": a small white shed on the top of a steep rock knob over the water, a light mast beside it, and a
+ * long steel ladder-stair straight up the knob's face from a little landing at the waterline. Standalone
+ * (`deckAbove: 0`); the stair faces +z, the sea.
+ */
+export function pointDiabloLight(out: MeshBuilder, _fit: Fit): void {
+  const rock = surfaceTag('concrete'), metal = surfaceTag('metal'), st = surfaceTag('clapboard')
+  const ROCK: Rgb = [0.34, 0.29, 0.24]
+  const H = 16
+  // a craggy knob: a broad base and offset crags, darker in their clefts
+  prism(out, 0, 0, -2, H * 0.45, 12, 7, ROCK, rock, 10)
+  prism(out, -3, 2, H * 0.3, H * 0.8, 6.5, 6, [0.3, 0.26, 0.22], rock, 5)
+  prism(out, 3, -2, H * 0.3, H * 0.85, 6, 5, [0.38, 0.32, 0.26], rock, 4.5)
+  prism(out, 0, -1, H * 0.6, H, 4.5, 6, ROCK, rock, 3.2)
+  prism(out, 4, 5, -2, 5, 4, 5, [0.3, 0.26, 0.22], rock, 2.5)
+  // the shed and its flat roof, the railing round the top
+  box(out, 0, H + 1.3, 0, 2, 1.3, 1.6, WHITE, st)
+  box(out, 0, H + 2.7, 0, 2.3, 0.12, 1.9, [0.55, 0.55, 0.55], metal)
+  box(out, 0, H + 0.6, 3.2, 3, 0.04, 0.04, [0.7, 0.7, 0.7], metal)
+  // the mast with its lamp and antenna
+  box(out, 3.2, H + 3, -0.5, 0.08, 3, 0.08, [0.8, 0.8, 0.78], metal)
+  box(out, 3.2, H + 6.1, -0.5, 0.35, 0.3, 0.35, WHITE, metal)
+  box(out, 3.2, H + 7.3, -0.5, 0.03, 1, 0.03, DARK, metal)
+  // the ladder-stair down the seaward face to the landing
+  for (let k = 0; k <= 22; k++) {
+    const t = k / 22, y = H * (1 - t) + 0.5 * t, zz = 4 + t * 9.5
+    box(out, -0.6, y, zz, 0.6, 0.04, 0.12, [0.75, 0.75, 0.73], metal)
+  }
+  for (const sx of [-1.25, 0.05]) for (let k = 0; k < 11; k++) {
+    const t0 = k / 11, t1 = (k + 1) / 11
+    box(out, -0.6 + sx + 0.6, (H * (1 - t0) + H * (1 - t1)) / 2 + 0.5, 4 + (t0 + t1) / 2 * 9.5, 0.04, H / 22 + 0.2, 0.45, [0.7, 0.7, 0.68], metal)
+  }
+  box(out, -0.6, 0.6, 14.5, 1.6, 0.6, 1.2, [0.2, 0.2, 0.2], metal)
+}
+
+export const YBI_LIGHT: Record<string, (out: MeshBuilder, fit: Fit) => void> = { ybiLightTower, ybiFogSignal, limePointLight, pointDiabloLight }

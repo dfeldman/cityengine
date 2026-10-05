@@ -10460,9 +10460,13 @@ designs. There is also one at Alcatraz, which is in the box but inaccessible cur
   tower, the fog-signal house on its lip; view "Yerba Buena Island Lighthouse — from the water"). Look again: whether the cliff came out, the keeper's
   house (its porch, the cross gable and dormer), the steps and the lawn between them.
 - **Point Diablo** (Marin, OSM relation/10313743 is the seamark area; no building mapped): a small light on the
-  rocky point under the headlands. Not modelled. Needs its design checked (it differs from YBI's).
+  rocky point under the headlands. MODELLED 2026-10-04 (ybi-light.ts `pointDiabloLight`, Commons photograph): a
+  white shed and light mast on a craggy rock knob, the ladder-stair down its seaward face to a landing; standalone,
+  `deckAbove: 0`. View "Point Diablo Light — from the water".
 - **Lime Point** (Marin, under the Golden Gate Bridge's north tower; OSM node/1243877573 man_made=lighthouse,
-  Wikipedia "Lime Point Light"): a small light and fog-signal building at the water. Not modelled.
+  Wikipedia "Lime Point Light"): MODELLED 2026-10-04 (`limePointLight`, Commons "Lime Point Lighthouse, SW
+  view.jpg"): the chert spur, the grey concrete wall and block, the red-roofed fog-signal house, the steel light
+  frame. It stands a little clear of the cliff — Marin's shore here is the low ground of #260.
 - **Alcatraz** (alcatraz.json `alcatrazLighthouse`, way/99202294): modelled; the island is not reachable in game
   yet, so it is checked only from the air.
 

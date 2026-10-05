@@ -4782,5 +4782,35 @@
    17
   ],
   "note": "hua-zang-si.ts, the owner's photograph (2026-10-04)."
+ },
+ {
+  "name": "Lime Point Light \u2014 from the strait",
+  "group": "landmark",
+  "from": [
+   37.8248,
+   -122.478842,
+   15
+  ],
+  "to": [
+   37.825447,
+   -122.47832,
+   5
+  ],
+  "note": "ybi-light.ts limePointLight (BUGS #262)."
+ },
+ {
+  "name": "Point Diablo Light \u2014 from the water",
+  "group": "landmark",
+  "from": [
+   37.81959,
+   -122.499532,
+   12
+  ],
+  "to": [
+   37.820174,
+   -122.499418,
+   10
+  ],
+  "note": "ybi-light.ts pointDiabloLight (BUGS #262)."
  }
 ]

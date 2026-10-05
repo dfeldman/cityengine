@@ -74,5 +74,17 @@
     "procedural": "b12_kalmanovitzLibrary_288633744",
     "name": "Kalmanovitz Library",
     "height": 15
+  },
+  {
+    "name": "Lime Point Light",
+    "procedural": "limePointLight",
+    "lat": 37.825447, "lon": -122.478321, "size": [20, 34], "rotateDeg": 200, "deckAbove": 0, "height": 12,
+    "note": "ybi-light.ts: rock spur, grey concrete wall and block, the red-roofed fog-signal house, steel light frame (Commons photograph; BUGS #262)."
+  },
+  {
+    "name": "Point Diablo Light",
+    "procedural": "pointDiabloLight",
+    "lat": 37.820171, "lon": -122.499423, "size": [24, 24], "rotateDeg": 180, "deckAbove": 0, "height": 24,
+    "note": "ybi-light.ts: white shed and light mast on a rock knob, the ladder-stair down its seaward face (Commons photograph; BUGS #262)."
   }
 ]
