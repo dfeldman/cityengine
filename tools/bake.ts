@@ -411,7 +411,8 @@ async function bake(spec: CitySpec): Promise<void> {
    * — and it was taken as one by the truthy test, then drawn as a 12 m apartment block round the tower (#236).
    */
   const isPart = (t: Record<string, string>): boolean => !!t['building:part'] && t['building:part'] !== 'no'
-  const outlines = ways.filter((w) => w.tags.building && !isPart(w.tags) && !canopy(w.tags) && !belowGround(w.tags) && !isBoat(w) && !isInfrastructure(w.tags))
+  // (`building=no` is OSM saying it is NOT one: an outdoor stage at 750 Howard was drawn as a block, 2026-10-05)
+  const outlines = ways.filter((w) => w.tags.building && w.tags.building !== 'no' && !isPart(w.tags) && !canopy(w.tags) && !belowGround(w.tags) && !isBoat(w) && !isInfrastructure(w.tags))
   /*
    * The parts mapped as multipolygon RELATIONS, each outer ring standing in as a part way (packed `rel.id * 2 + 1`,
    * the id space every relation building uses), so the coverage, `partOf` and dressing below treat them exactly as
@@ -860,12 +861,12 @@ async function bake(spec: CitySpec): Promise<void> {
       levels: tall || low ? undefined : p.buildingLevels,
       height: tall ? raised : low ? capped : p.buildingHeight,
       /*
-       * A `building=roof` at the ground is a CANOPY — a petrol station's, a shelter's, a market roof — with no walls
+       * A `building=roof` (or carport, shelter, gazebo) at the ground is a CANOPY — a petrol station's, a shelter's, a market roof — with no walls
        * under it (the raised ones are dropped above, `canopy`). Drawn from the ground it was a walled house: two of the
        * Palace of Fine Arts' stood beside the hall as a 21 m tenement (2026-10-05). So: a half-metre roof slab at the
        * top, nothing under it.
        */
-      minHeight: w.tags.building === 'roof' && (p.buildingHeight ?? 0) > 1.5
+      minHeight: /^(roof|carport|shelter|gazebo)$/.test(w.tags.building ?? '') && (p.buildingHeight ?? 0) > 1.5
         ? Math.max(p.buildingMinHeight ?? 0, (tall ? raised! : low ? capped! : p.buildingHeight!) - 0.5)
         : p.buildingMinHeight,
       ...roofFor(w.tags, p, styleId, ccwRing, w.id),
