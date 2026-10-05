@@ -5262,5 +5262,65 @@
    10
   ],
   "note": "generic-church census 2026-10-05"
+ },
+ {
+  "name": "roof float check N",
+  "group": "bug",
+  "from": [
+   37.782384,
+   -122.414026,
+   70
+  ],
+  "to": [
+   37.781184,
+   -122.414026,
+   10
+  ],
+  "note": "owner queue: roof parts floating in the air"
+ },
+ {
+  "name": "roof float check E",
+  "group": "bug",
+  "from": [
+   37.781184,
+   -122.41242600000001,
+   70
+  ],
+  "to": [
+   37.781184,
+   -122.414026,
+   10
+  ],
+  "note": "owner queue: roof parts floating in the air"
+ },
+ {
+  "name": "roof float check S",
+  "group": "bug",
+  "from": [
+   37.779984000000006,
+   -122.414026,
+   70
+  ],
+  "to": [
+   37.781184,
+   -122.414026,
+   10
+  ],
+  "note": "owner queue: roof parts floating in the air"
+ },
+ {
+  "name": "roof float check W",
+  "group": "bug",
+  "from": [
+   37.781184,
+   -122.415626,
+   70
+  ],
+  "to": [
+   37.781184,
+   -122.414026,
+   10
+  ],
+  "note": "owner queue: roof parts floating in the air"
  }
 ]
