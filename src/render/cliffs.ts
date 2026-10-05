@@ -83,8 +83,11 @@ export function cliffsLayer(scene: Scene, zones: Zone[], terrain: Terrain, sea: 
         for (let z = rect.z0; z < rect.z1; z += STEP) {
           const cx = x + STEP / 2, cz = z + STEP / 2
           if (!here.some((zn) => inRing(zn.ring, cx, cz))) continue
-          const h00 = terrain.heightAt(x, z), h10 = terrain.heightAt(x + STEP, z)
-          const h01 = terrain.heightAt(x, z + STEP), h11 = terrain.heightAt(x + STEP, z + STEP)
+          // the RAW ground, as the grass under the rock is draped (city.ts `drapeRaw`): `heightAt` lifts to a graded road's
+          // level near it, and on Alcatraz's switchback roads the rock stood up to the road and hung over the lawn below
+          // in dark saw-teeth (2026-10-05)
+          const h00 = terrain.rawHeightAt(x, z), h10 = terrain.rawHeightAt(x + STEP, z)
+          const h01 = terrain.rawHeightAt(x, z + STEP), h11 = terrain.rawHeightAt(x + STEP, z + STEP)
           const gx = ((h10 - h00) + (h11 - h01)) / (2 * STEP), gz = ((h01 - h00) + (h11 - h10)) / (2 * STEP)
           const slope = Math.hypot(gx, gz)
           const low = Math.min(h00, h01, h10, h11)

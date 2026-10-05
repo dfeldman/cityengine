@@ -2247,16 +2247,34 @@ export class City {
     // it stood at TWICE the ground's height (BUGS.md #4)
     const h = (_x: number, _z: number): number => 0
     const N = 4
+    /*
+     * …in finer cells where the ground under a 50 m cell is not a plane (Alcatraz, 2026-10-05): draped only at its
+     * corners, the cell's chord stood 5 m over a cove in the island's cliffs, a lawn in the air with the rock hanging
+     * over it. The base is the only ground drawn where no area covers it; flat cells keep one quad.
+     */
+    const raw = (x: number, z: number): number => this.terrain.rawHeightAt(x, z)
     for (let r = 0; r < N; r++) {
       for (let c = 0; c < N; c++) {
-        const x = tx * TILE + (c * TILE) / N
-        const z = tz * TILE + (r * TILE) / N
-        const w = TILE / N
-        base.quad(
-          [[x, h(x, z), z], [x + w, h(x + w, z), z],
-           [x + w, h(x + w, z + w), z + w], [x, h(x, z + w), z + w]],
-          [0, 1, 0], [[0, 0], [w, 0], [w, w], [0, w]], [0.5, 0.5, 0.5], 0,
-        )
+        const x0 = tx * TILE + (c * TILE) / N
+        const z0 = tz * TILE + (r * TILE) / N
+        const W = TILE / N
+        const c00 = raw(x0, z0), c10 = raw(x0 + W, z0), c01 = raw(x0, z0 + W), c11 = raw(x0 + W, z0 + W)
+        let err = 0
+        for (const [u, v] of [[0.5, 0.5], [0.25, 0.25], [0.75, 0.25], [0.25, 0.75], [0.75, 0.75], [0.5, 0], [0, 0.5], [1, 0.5], [0.5, 1]]) {
+          const lin = c00 * (1 - u) * (1 - v) + c10 * u * (1 - v) + c01 * (1 - u) * v + c11 * u * v
+          err = Math.max(err, Math.abs(raw(x0 + u * W, z0 + v * W) - lin))
+        }
+        const sub = err > 2.5 ? 8 : err > 0.8 ? 4 : 1
+        const w = W / sub
+        for (let j = 0; j < sub; j++) for (let i = 0; i < sub; i++) {
+          const x = x0 + i * w
+          const z = z0 + j * w
+          base.quad(
+            [[x, h(x, z), z], [x + w, h(x + w, z), z],
+             [x + w, h(x + w, z + w), z + w], [x, h(x, z + w), z + w]],
+            [0, 1, 0], [[x - x0, z - z0], [x - x0 + w, z - z0], [x - x0 + w, z - z0 + w], [x - x0, z - z0 + w]], [0.5, 0.5, 0.5], 0,
+          )
+        }
       }
     }
 
