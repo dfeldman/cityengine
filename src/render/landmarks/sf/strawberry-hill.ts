@@ -151,12 +151,44 @@ export function musicConcourse(out: MeshBuilder, fit: Fit): void {
       prism(out, x, z, y + 4.6, y + 6.6, 3.6, 6, LEAF, 0, 3.0)
     }
   }
-  // the fountains' stone rims and their jets (OSM maps the basins' water)
+  // the fountains' stone rims (OSM maps the basins' water), and in each a pedestal and a bowl. The middle one is the
+  // RIDEOUT FOUNTAIN (Commons "Rideout Fountain - Golden Gate Park - San Francisco, CA - 01.jpg", 2026-10-05): a
+  // bronze bowl on a pedestal, a stone figure on it wrestling a swan whose neck arches over its head, and a ring of
+  // jets round the pool arching in onto the bowl. It and the side ones were a grey spike in the water.
+  const FOAM: Rgb = [0.93, 0.96, 0.98], BRONZE: Rgb = [0.5, 0.38, 0.2], PALE: Rgb = [0.86, 0.83, 0.76]
   for (const [i, f] of fountains.entries()) {
     const r = i === 1 ? 11 : 4.5, y = g(f, 0)
     prism(out, f, 0, y, y + 0.6, r + 0.5, 20, STONE, surfaceTag('granite'), r + 0.5)
     prism(out, f, 0, y, y + 0.7, r, 20, [0.5, 0.62, 0.68], surfaceTag('glass'))
-    prism(out, f, 0, y + 0.7, y + (i === 1 ? 4 : 2), 0.35, 8, [0.92, 0.95, 0.97], 0, 0.1)
+    const big = i === 1
+    const pr = big ? 1 : 0.6, bowlY = y + (big ? 1.9 : 1.3), bowlR = big ? 2.8 : 1.6
+    prism(out, f, 0, y + 0.6, bowlY - 0.3, pr, 10, STONE, surfaceTag('granite'), pr * 0.6)
+    prism(out, f, 0, bowlY - 0.3, bowlY + 0.35, pr * 0.6, 16, BRONZE, surfaceTag('metal'), bowlR)
+    prism(out, f, 0, bowlY + 0.3, bowlY + 0.38, bowlR - 0.15, 16, [0.5, 0.62, 0.68], surfaceTag('glass'))
+    if (!big) {
+      strut(out, [f, bowlY + 0.3, 0], [f, bowlY + 1.6, 0], 0.12, 0.05, FOAM, 0, false)
+      continue
+    }
+    // the figure and the swan, pale stone
+    const fy = bowlY + 0.35
+    prism(out, f, 0, fy, fy + 1.3, 0.42, 8, PALE, surfaceTag('ashlar'), 0.32)
+    prism(out, f, 0, fy + 1.3, fy + 2, 0.36, 8, PALE, surfaceTag('ashlar'), 0.28)
+    prism(out, f + 0.08, 0, fy + 2, fy + 2.35, 0.2, 8, PALE, surfaceTag('ashlar'), 0.17)
+    strut(out, [f + 0.25, fy + 0.6, 0.25], [f + 0.35, fy + 2.9, 0.1], 0.14, 0.11, PALE, surfaceTag('ashlar'))
+    strut(out, [f + 0.35, fy + 2.9, 0.1], [f - 0.1, fy + 3.2, 0.05], 0.11, 0.09, PALE, surfaceTag('ashlar'))
+    strut(out, [f - 0.1, fy + 3.2, 0.05], [f - 0.35, fy + 2.85, 0], 0.09, 0.06, PALE, surfaceTag('ashlar'))
+    for (const sg of [-1, 1]) strut(out, [f + 0.05, fy + 1.8, sg * 0.3], [f + 0.3, fy + 2.7, sg * 0.15], 0.08, 0.07, PALE, surfaceTag('ashlar'))
+    // the ring of jets, from a pipe ring a stride out from the bowl, arching in onto its rim (each a parabola in
+    // five pieces: two straight struts read as a ring of spider's legs)
+    for (let k = 0; k < 28; k++) {
+      const a = (k / 28) * Math.PI * 2, c = Math.cos(a), sn = Math.sin(a)
+      const r0 = bowlR + 1.3, r1 = bowlR - 0.2, y0 = y + 0.7, y1 = bowlY + 0.3, top = bowlY + 1.3
+      const at = (t: number): [number, number, number] => {
+        const rr = r0 + (r1 - r0) * t
+        return [f + c * rr, y0 + (y1 - y0) * t + 4 * (top - Math.max(y0, y1)) * t * (1 - t) + (Math.max(y0, y1) - y0) * t * 0, sn * rr]
+      }
+      for (let j = 0; j < 5; j++) strut(out, at(j / 5), at((j + 1) / 5), 0.035, 0.035, FOAM, 0, false)
+    }
   }
 }
 
