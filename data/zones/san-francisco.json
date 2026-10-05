@@ -3313,6 +3313,41 @@
    ]
   },
   {
+   "ref": "tiburon-belvedere",
+   "name": "Tiburon and Belvedere",
+   "priority": 5,
+   "props": {
+    "buildings": "marin"
+   },
+   "note": "2026-10-05 (museum census): the Tiburon peninsula and Belvedere were drawn as San Francisco flats, Victorians and tenements (691 of 1015 buildings sfapartment). Marin's small-town houses instead (src/city/sf/btype.ts). East edge at -122.4495 below 37.8745 keeps Angel Island (its own presidio zone) out.",
+   "ring": [
+    [
+     37.853,
+     -122.48
+    ],
+    [
+     37.853,
+     -122.4495
+    ],
+    [
+     37.8745,
+     -122.4495
+    ],
+    [
+     37.8745,
+     -122.438
+    ],
+    [
+     37.895,
+     -122.438
+    ],
+    [
+     37.895,
+     -122.48
+    ]
+   ]
+  },
+  {
    "ref": "fort-point-surf",
    "name": "Fort Point",
    "priority": 5,

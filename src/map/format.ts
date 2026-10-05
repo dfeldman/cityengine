@@ -48,7 +48,7 @@ export interface ZoneProps {
   crowd?: number
   traffic?: number
   /** what is BUILT here, where it is not the city's usual (src/city/sf/btype.ts): 'presidio', the Army's and the parks' own */
-  buildings?: 'presidio' | 'mediterranean' | 'navy'
+  buildings?: 'presidio' | 'mediterranean' | 'navy' | 'marin'
   /** 'bike': the trails here (footways, paths, tracks with a riding surface) join the BIKE network (tools/bake.ts) */
   trails?: 'bike'
   exclude?: string[]

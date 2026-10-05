@@ -103,6 +103,17 @@ export function archetypeOf(f: Features): { archetype: Archetype; district: Dist
   }
 
   /*
+   * TIBURON AND BELVEDERE (museum census, 2026-10-05): a waterfront village and a hillside of houses, drawn with the
+   * city's mix as flats, Victorians and tenements. Pastel stucco houses for most and plain modern ones for the rest
+   * (the hillsides are mostly post-war); a big footprint is a shed or a store, flat-roofed. Not Sausalito's Spanish
+   * revival: the two towns look different.
+   */
+  if (h <= 30 && inBuiltZone('marin', f.lat, f.lon)) {
+    if (f.area > 2000) return a('retailBox', 'marin-store')
+    return f.roll < 0.35 ? a('contemporary', 'marin-modern') : a('marinaHouse', 'marin-house')
+  }
+
+  /*
    * TREASURE ISLAND (owner, 2026-10-02: "YB Island and Treasure Island … need a lot of work"): the Navy's island,
    * filled since 1940 with plain stucco quarters and, since 2020, new mid-rise blocks — never the city's brick lofts,
    * Victorians or tenements, which the district rules gave it. The Exposition's survivors are landmark models.
