@@ -71,10 +71,16 @@
     ],
     "name": "Pier 35",
     "procedural": "pier35",
-    "front": 354,
+    "front": 176,
     "height": 11,
-    "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated. Front numeric 2026-10-05: the bearing from the shore end out along the pier (scratch pierfront.ts, +180: a numeric front puts the builder's +z, the bulkhead, AWAY from the bearing); \"street\" could pick the promenade along a flank.",
-    "deckAbove": 3.5
+    "note": "The Embarcadero's bulkhead and shed (render/landmarks/sf/piers.ts): the piers are one building repeated. Front numeric 2026-10-05: the bearing from the shore end out along the pier (scratch pierfront.ts, +180: a numeric front puts the builder's +z, the bulkhead, AWAY from the bearing); \"street\" could pick the promenade along a flank. 2026-10-05: OSM's outline takes in a shore wing that lies over the Embarcadero's northbound lane, and the model fitted to it stood its bulkhead across the roadway (rider-height Embarcadero ride). Placed instead by the shed alone (centre, 55 x 319 m along 356\u00b0), front 176 = the bulkhead to the shore, as the point placement turns +z to front+180.",
+    "deckAbove": 3.5,
+    "lat": 37.808672,
+    "lon": -122.406387,
+    "size": [
+      55,
+      319
+    ]
   },
   {
     "osm": [
