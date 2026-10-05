@@ -5037,5 +5037,50 @@
    0
   ],
   "note": "Halprin 1975 granite fountain (2026-10-05 check)."
+ },
+ {
+  "name": "Corona Heights \u2014 the rock summit",
+  "group": "hills",
+  "from": [
+   37.7635,
+   -122.4375,
+   45
+  ],
+  "to": [
+   37.76488,
+   -122.43937,
+   0
+  ],
+  "note": "natural scenery audit 2026-10-05"
+ },
+ {
+  "name": "Bernal Heights \u2014 the summit",
+  "group": "hills",
+  "from": [
+   37.7415,
+   -122.413,
+   60
+  ],
+  "to": [
+   37.74325,
+   -122.41503,
+   0
+  ],
+  "note": "natural scenery audit 2026-10-05"
+ },
+ {
+  "name": "Twin Peaks \u2014 from the north",
+  "group": "hills",
+  "from": [
+   37.757,
+   -122.447,
+   90
+  ],
+  "to": [
+   37.7525,
+   -122.4477,
+   0
+  ],
+  "note": "natural scenery audit 2026-10-05"
  }
 ]
