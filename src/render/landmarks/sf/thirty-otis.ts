@@ -105,7 +105,7 @@ export function yerbaBuenaLofts(out: MeshBuilder, fit: Fit): void {
  * floor. Was a `bauhaus` box.
  */
 export function eightOctavia(out: MeshBuilder, fit: Fit): void {
-  const H = fit.height > 10 ? fit.height : 17
+  const H = fit.height > 10 && fit.height < 25 ? fit.height : 17   // five storeys; anything else is not this building
   const PANEL: Rgb = [0.56, 0.66, 0.72], LOUVRE: Rgb = [0.72, 0.78, 0.82], DARK: Rgb = [0.2, 0.24, 0.27]
   const metal = surfaceTag('metal')
   tower(out, fit, {
@@ -131,9 +131,12 @@ export function eightOctavia(out: MeshBuilder, fit: Fit): void {
           const [x, z] = at(u, 0.06)
           boxAlong(out, x, y + FL / 2, z, cw / 2 - 0.04, FL / 2 - 0.08, 0.05, e.heading, PANEL, metal)
         } else {
-          for (let f = 0; f < 6; f++) {
-            const [x, z] = at(u - cw / 2 + (f + 0.5) * (cw / 6), 0.18)
-            boxAlong(out, x, y + FL / 2, z, 0.04, FL / 2 - 0.08, 0.12, e.heading, LOUVRE, metal)
+          // (a pale backing panel with three fins on it: six fins a bay came to 39 000 triangles, over the budget)
+          const [bx, bz] = at(u, 0.05)
+          boxAlong(out, bx, y + FL / 2, bz, cw / 2 - 0.04, FL / 2 - 0.08, 0.04, e.heading, DARK, 0)
+          for (let f = 0; f < 3; f++) {
+            const [x, z] = at(u - cw / 2 + (f + 0.5) * (cw / 3), 0.18)
+            boxAlong(out, x, y + FL / 2, z, 0.06, FL / 2 - 0.08, 0.12, e.heading, LOUVRE, metal)
           }
         }
       }
