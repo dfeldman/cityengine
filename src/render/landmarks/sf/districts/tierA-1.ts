@@ -24,7 +24,9 @@ export const TIERA_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     tower(out, fit, {
       height: 12,
       tiers: [{ to: 1, face: { kind: 'punched', wall: [0.88, 0.85, 0.78], glass: [0.2, 0.22, 0.24], pitch: 3, solid: 0.5, floor: 4, material: 'ashlar' } }],
-      roof: [0.7, 0.6, 0.3],
+      // (a grey roof: only the domes are gilded — the whole roof in gold read as a yellow slab from above, unviewed-models
+      //  audit 2026-10-04)
+      roof: [0.55, 0.55, 0.56],
       crown: { kind: 'flat' },
     })
     const ring = towerRing(fit)
