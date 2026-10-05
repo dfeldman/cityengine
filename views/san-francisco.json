@@ -4962,5 +4962,20 @@
    6
   ],
   "note": "the Detention Barracks restyled from Commons (2026-10-05)."
+ },
+ {
+  "name": "Fort Baker \u2014 the parade ground",
+  "group": "landmark",
+  "from": [
+   37.834,
+   -122.4782,
+   12
+  ],
+  "to": [
+   37.8362,
+   -122.4792,
+   6
+  ],
+  "note": "white Colonial Revival under red roofs (zone, 2026-10-05; Commons 'Fort Baker, Cavallo Point.jpg')."
  }
 ]
