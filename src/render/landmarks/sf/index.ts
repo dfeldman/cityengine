@@ -120,6 +120,7 @@ import { HUA_ZANG_SI } from './hua-zang-si.ts'
 import { STRAWBERRY_HILL } from './strawberry-hill.ts'
 import { FOUNTAINS } from './fountains.ts'
 import { ST_IGNATIUS } from './st-ignatius.ts'
+import { BANK_OF_CALIFORNIA } from './bank-of-california.ts'
 import { SHEDS } from './sheds.ts'
 import { MURAL_ALLEYS } from './mural-alleys.ts'
 import { POINT_BONITA } from './point-bonita.ts'
@@ -284,6 +285,7 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   ...STRAWBERRY_HILL,
   ...FOUNTAINS,
   ...ST_IGNATIUS,
+  ...BANK_OF_CALIFORNIA,
   ...SHEDS,
   ...MURAL_ALLEYS,
   ...POINT_BONITA,
