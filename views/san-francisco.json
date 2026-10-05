@@ -4917,5 +4917,20 @@
    6
   ],
   "note": "cliffHouse_168942988 (2026-10-04 check)."
+ },
+ {
+  "name": "Yerba Buena Island light station \u2014 from above",
+  "group": "landmark",
+  "from": [
+   37.806295,
+   -122.361754,
+   60
+  ],
+  "to": [
+   37.807643,
+   -122.36238,
+   10
+  ],
+  "note": "tower, fog-signal house, keeper's house, the Coast Guard buildings (2026-10-05)."
  }
 ]
