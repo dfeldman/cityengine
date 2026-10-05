@@ -50,6 +50,7 @@
  * as the plain garage box its photo shows.
  */
 import type { MeshBuilder } from '../../../buildings.ts'
+import { tower } from '../../tower.ts'
 import type { Fit } from '../../fit.ts'
 import { facade } from '../../facade.ts'
 
@@ -198,16 +199,21 @@ export const B4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
    * institutional block: plain punched windows, a modest cornice, no applied ornament invented beyond what
    * the tags support.
    */
+  /**
+   * The Presidio Landmark, the 1932 Public Health Service Hospital (way/172886856). Commons "Presidio Landmark, San
+   * Francisco (former Public Health Service Hospital), 2017.jpg" (2026-10-05): seven storeys of buff-tan brick in
+   * stone-trimmed pavilions, rows of paired sash windows, a string course over the ground floor and a cornice under a
+   * hipped red tile roof. It was a red brick facade() box with no roof, which read as a red block from across the city.
+   */
   b4_residential_172886856: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'plain', storeys: 1, material: 'brick' },
-      shaft: { storeys: 5, windows: 'balanced', material: 'brick' },
-      top: null,
-      bands: { aboveGround: 'string', belowTop: null, top: 'cornice' },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'door', steps: 2 },
-      material: 'brick',
+    const BUFF: [number, number, number] = [0.6, 0.47, 0.34], TRIM: [number, number, number] = [0.86, 0.82, 0.72]
+    const H = 24
+    tower(out, { ...fit, height: H }, {
+      height: H,
+      base: { height: 3.6, face: { kind: 'punched', wall: TRIM, glass: [0.2, 0.22, 0.25], pitch: 3, solid: 0.5, floor: 3.6, material: 'ashlar' } },
+      tiers: [{ to: H, face: { kind: 'punched', wall: BUFF, glass: [0.2, 0.22, 0.25], pitch: 2.4, solid: 0.5, floor: 2.9, material: 'brick' }, cornice: { depth: 0.6, height: 0.6, colour: TRIM } }],
+      roof: [0.52, 0.26, 0.18],
+      crown: { kind: 'hip', height: 4.5, inset: 5, colour: [0.52, 0.26, 0.18], material: 'tile' },
     })
   },
 
