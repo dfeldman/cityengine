@@ -4,10 +4,11 @@
       "way/192026937"
     ],
     "name": "120 Howard Street",
-    "restyle": "chicago",
+    "restyle": "brick",
     "height": 44,
     "levels": 11,
-    "note": "rule 8: chicago"
+    "note": "Rule check 2026-10-04 (Mapillary on Howard): a red-brick 1920s warehouse with big modern glazing at the foot; was rule 8 chicago.",
+    "wall": "#93533c"
   },
   {
     "osm": [
@@ -43,9 +44,10 @@
       "way/397182870"
     ],
     "name": "1401;1415 Mission Street",
-    "restyle": "brick",
+    "restyle": "bauhaus",
     "height": 40,
-    "note": "rule 7: brick"
+    "note": "Rule check 2026-10-04 (Mapillary on Mission): a dark grey modern panel box with large glazing; was rule 7 brick.",
+    "wall": "#53585c"
   },
   {
     "osm": [
@@ -62,46 +64,53 @@
       "way/221568041"
     ],
     "name": "Antonia Manor",
-    "restyle": "brick",
+    "restyle": "classical",
     "height": 35,
-    "note": "rule 7: brick"
+    "note": "Rule check 2026-10-04 (Mapillary): cream stucco with a dark green ground storey; was rule 7 brick.",
+    "wall": "#e3d2a8",
+    "groundWall": "#4f6a4f"
   },
   {
     "osm": [
       "way/256047262"
     ],
     "name": "Barcelona Apartments",
-    "restyle": "brick",
+    "restyle": "classical",
     "height": 35,
-    "note": "rule 7: brick"
+    "note": "Rule check 2026-10-04 (Mapillary): cream ornamented terracotta over a dark brown rusticated base; was rule 7 brick.",
+    "wall": "#ddd5c2",
+    "groundWall": "#5b4a39"
   },
   {
     "osm": [
       "way/260126021"
     ],
     "name": "O'Farrell Towers",
-    "restyle": "chicago",
+    "restyle": "towerblock",
     "height": 36,
-    "note": "rule 8: chicago"
+    "note": "Rule check 2026-10-04 (Mapillary): brown brick-faced modern tower; was rule 8 chicago.",
+    "wall": "#76503e"
   },
   {
     "osm": [
       "way/56723860"
     ],
     "name": "Geary Courtyard Apartments",
-    "restyle": "chicago",
+    "restyle": "bauhaus",
     "height": 38,
-    "note": "rule 8: chicago"
+    "note": "Rule check 2026-10-04 (Mapillary): grey-tan 2010s panels and glass; was rule 8 chicago.",
+    "wall": "#aaa298"
   },
   {
     "osm": [
       "way/42916782"
     ],
     "name": "Building 42916782",
-    "restyle": "brick",
+    "restyle": "chicago",
     "height": 50,
     "levels": 7,
-    "note": "rule 7: brick"
+    "note": "Rule check 2026-10-04 (Mapillary): a tan concrete loft with steel industrial windows; was rule 7 brick.",
+    "wall": "#b8955c"
   },
   {
     "osm": [
@@ -118,17 +127,19 @@
       "way/1057034239"
     ],
     "name": "Building 1057034239",
-    "restyle": "brick",
-    "note": "rule 7: brick"
+    "restyle": "bauhaus",
+    "note": "Rule check 2026-10-04 (Mapillary): a low white modern building behind a court fence; was rule 7 brick.",
+    "wall": "#d9dad6"
   },
   {
     "osm": [
       "way/288716386"
     ],
     "name": "Museum Parc Apartments",
-    "restyle": "brick",
+    "restyle": "bauhaus",
     "height": 40,
-    "note": "rule 7: brick"
+    "note": "Rule check 2026-10-04 (Mapillary): cream modern stucco and glass; was rule 7 brick.",
+    "wall": "#d8d0c2"
   },
   {
     "osm": [
@@ -156,7 +167,8 @@
     "name": "Building 179746900",
     "restyle": "chicago",
     "height": 37,
-    "note": "rule 8: chicago"
+    "note": "Rule check 2026-10-04 (Mapillary): a pinkish-beige brick 1920s apartment block with a fire escape; colour from the frame.",
+    "wall": "#c4a491"
   },
   {
     "osm": [
@@ -181,26 +193,34 @@
       "way/190863023"
     ],
     "name": "Building 190863023",
-    "restyle": "victorian",
-    "note": "rule 6: victorian"
+    "restyle": "brick",
+    "note": "Rule check 2026-10-04 (Mapillary): tan brick, blue window frames, an institution behind a fence; was rule victorian.",
+    "wall": "#b79563",
+    "noShops": true
   },
   {
     "osm": [
       "way/260495447"
     ],
     "name": "Building 260495447",
-    "restyle": "brick",
-    "height": 5,
-    "note": "rule 7: brick"
+    "restyle": "bauhaus",
+    "height": 4,
+    "note": "Rule check 2026-10-04 (Mapillary): single-storey white portable buildings behind a fence; was a brick block.",
+    "wall": "#e4e4df",
+    "noShops": true,
+    "levels": 1
   },
   {
     "osm": [
       "way/260495446"
     ],
     "name": "Building 260495446",
-    "restyle": "brick",
+    "restyle": "bauhaus",
     "height": 4,
-    "note": "rule 7: brick"
+    "note": "Rule check 2026-10-04 (Mapillary): single-storey white portable buildings behind a fence; was a brick block.",
+    "wall": "#e4e4df",
+    "noShops": true,
+    "levels": 1
   },
   {
     "osm": [
@@ -217,9 +237,10 @@
       "way/256479448"
     ],
     "name": "Building 256479448",
-    "restyle": "chicago",
+    "restyle": "bauhaus",
     "height": 36,
     "levels": 11,
-    "note": "rule 8: chicago"
+    "note": "Rule check 2026-10-04 (Mapillary): a plain pale modern block; was rule 8 chicago.",
+    "wall": "#d6d5d0"
   }
 ]

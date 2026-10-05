@@ -4,10 +4,12 @@
       "way/35115839"
     ],
     "name": "Mission Substation",
-    "restyle": "brick", "noShops": true,
+    "restyle": "brutalist",
+    "noShops": true,
     "height": 36,
     "levels": 10,
-    "note": "rule 7"
+    "note": "Rule check 2026-10-04 (Mapillary): PG&E's Mission Substation: tall blank concrete piers over a dark base behind a spiked screen; was rule 7 brick.",
+    "wall": "#b3aea3"
   },
   {
     "osm": [
@@ -22,30 +24,36 @@
       "way/227005944"
     ],
     "name": "The Margot",
-    "restyle": "brick",
+    "restyle": "stucco",
     "height": 40,
     "levels": 11,
-    "note": "rule 7"
+    "note": "Rule check 2026-10-04 (Mapillary): blue-painted stucco with white trim and a red tile awning; was rule 7 brick.",
+    "wall": "#3a5c8e",
+    "trim": "#f0eee8",
+    "roofColour": "#a8452e"
   },
   {
     "osm": [
       "way/260517113"
     ],
     "name": "850 Powell Street",
-    "restyle": "chinatown",
+    "restyle": "classical",
     "height": 37,
     "levels": 12,
-    "note": "rule 2"
+    "note": "Rule check 2026-10-04 (Mapillary): cream ornamented stone with arched openings (Nob Hill); was rule 2 chinatown.",
+    "wall": "#e2d4b4"
   },
   {
     "osm": [
       "way/156123224"
     ],
     "name": "5th and Mission Garage",
-    "restyle": "brick",
+    "restyle": "brutalist",
     "height": 36,
     "levels": 10,
-    "note": "rule 7"
+    "note": "Rule check 2026-10-04 (Mapillary): grey concrete garage decks with white curved spandrels; was rule 7 brick.",
+    "wall": "#a7a49d",
+    "noShops": true
   },
   {
     "osm": [
@@ -55,17 +63,19 @@
     "restyle": "chicago",
     "height": 57,
     "levels": 9,
-    "note": "rule 8"
+    "note": "Rule check 2026-10-04 (Mapillary): beige stone and glass office; colour from the frame.",
+    "wall": "#d3c6ac"
   },
   {
     "osm": [
       "way/35024322"
     ],
     "name": "Gaylord Suites",
-    "restyle": "chicago",
+    "restyle": "classical",
     "height": 38,
     "levels": 11,
-    "note": "rule 8"
+    "note": "Rule check 2026-10-04 (Mapillary): white Spanish Baroque — carved twisted columns at the door, ornamented window heads; was rule 8 chicago.",
+    "wall": "#e8e5dd"
   },
   {
     "osm": [
@@ -83,7 +93,7 @@
     ],
     "name": "Yerba Buena Center for the Arts",
     "height": 36,
-    "note": "The THEATRE, checked before use: it shares an edge with way/24563073 (the galleries), carries the same wikidata=Q1884883 with amenity=arts_centre and height=36 (a fly tower), its far end is 31 m off Howard Street and its long side 2 m off the Esplanade footway. Modelled 2026-09-23 from the owner's own STREET photograph and a second from inside the pedestrian passage on the east side: three masses along the frontage \u2014 a glazed lobby cube with a bright red entrance canopy, a near-black matt-panelled mass, a small pale block and the tall pale FLY TOWER \u2014 over broad shallow steps, with the walkway up to garden level at the left. The east wall is sheer panelled grid on a dark base course, full height to the passage floor. The plan is cut at its two narrowest stations; the fly tower is the larger end band and the lobby the smaller, which puts the lobby at the Howard Street end. NO RAKE: the owner first described 'one side sloped steeply down' but neither photograph shows a slope, so it is not modelled \u2014 see the builder's comment. GROUND FLOOR IS LEVEL 2 (docs/YERBA-BUENA.md), so features start at the gardens builder's exported DECK_H and the steps climb to it. See src/render/landmarks/sf/ybca.ts; renders in docs/shots/models/ybca-theatre-street and -east.",
+    "note": "The THEATRE, checked before use: it shares an edge with way/24563073 (the galleries), carries the same wikidata=Q1884883 with amenity=arts_centre and height=36 (a fly tower), its far end is 31 m off Howard Street and its long side 2 m off the Esplanade footway. Modelled 2026-09-23 from the owner's own STREET photograph and a second from inside the pedestrian passage on the east side: three masses along the frontage — a glazed lobby cube with a bright red entrance canopy, a near-black matt-panelled mass, a small pale block and the tall pale FLY TOWER — over broad shallow steps, with the walkway up to garden level at the left. The east wall is sheer panelled grid on a dark base course, full height to the passage floor. The plan is cut at its two narrowest stations; the fly tower is the larger end band and the lobby the smaller, which puts the lobby at the Howard Street end. NO RAKE: the owner first described 'one side sloped steeply down' but neither photograph shows a slope, so it is not modelled — see the builder's comment. GROUND FLOOR IS LEVEL 2 (docs/YERBA-BUENA.md), so features start at the gardens builder's exported DECK_H and the steps climb to it. See src/render/landmarks/sf/ybca.ts; renders in docs/shots/models/ybca-theatre-street and -east.",
     "procedural": "ybcaTheatre_24563077"
   },
   {
@@ -111,48 +121,55 @@
       "way/151980105"
     ],
     "name": "832 Folsom Street",
-    "restyle": "brick",
+    "restyle": "bauhaus",
     "height": 37,
     "levels": 10,
-    "note": "rule 7"
+    "note": "Rule check 2026-10-04 (Mapillary): bright yellow and red modern infill with blue frames; was rule 7 brick.",
+    "wall": "#d8bf55",
+    "accent": "#b43a28"
   },
   {
     "osm": [
       "way/1108078698"
     ],
     "name": "Building 1108078698",
-    "restyle": "brick",
-    "note": "rule 7"
+    "restyle": "brutalist",
+    "note": "Rule check 2026-10-04 (Mapillary): a blank board-formed concrete block (a vent or plant structure); was rule 7 brick.",
+    "wall": "#b9b4a8",
+    "noShops": true
   },
   {
     "osm": [
       "way/259974367"
     ],
     "name": "666;670 Ellis Street",
-    "restyle": "brick",
+    "restyle": "towerblock",
     "height": 38,
     "levels": 11,
-    "note": "rule 7"
+    "note": "Rule check 2026-10-04 (Mapillary): 1970s grey concrete tower with balconies; was rule 7 brick.",
+    "wall": "#a7a59d"
   },
   {
     "osm": [
       "way/288532297"
     ],
     "name": "Eastern Park Apartments",
-    "restyle": "brick",
+    "restyle": "towerblock",
     "height": 36,
     "levels": 10,
-    "note": "rule 7"
+    "note": "Rule check 2026-10-04 (Mapillary): 1970s tan tower, ribbon windows; was rule 7 brick.",
+    "wall": "#d5c6a3"
   },
   {
     "osm": [
       "way/258017308"
     ],
     "name": "Western Park Apartments",
-    "restyle": "brick",
+    "restyle": "towerblock",
     "height": 37,
     "levels": 10,
-    "note": "rule 7"
+    "note": "Rule check 2026-10-04 (Mapillary): 1970s pale grey-blue tower; was rule 7 brick.",
+    "wall": "#c8ced0"
   },
   {
     "osm": [
@@ -179,29 +196,32 @@
       "way/288647982"
     ],
     "name": "2 Townsend Street",
-    "restyle": "brick",
+    "restyle": "bauhaus",
     "height": 35,
     "levels": 10,
-    "note": "rule 7"
+    "note": "Rule check 2026-10-04 (Mapillary): pale modern stucco with glass balconies (South Beach); was rule 7 brick.",
+    "wall": "#d3c8c8"
   },
   {
     "osm": [
       "way/288648571"
     ],
     "name": "2 Townsend Street",
-    "restyle": "brick",
+    "restyle": "bauhaus",
     "height": 36,
     "levels": 10,
-    "note": "rule 7"
+    "note": "Rule check 2026-10-04 (Mapillary): pale modern stucco with glass balconies (South Beach); was rule 7 brick.",
+    "wall": "#d3c8c8"
   },
   {
     "osm": [
       "way/259252255"
     ],
     "name": "1960 Broadway",
-    "restyle": "sfapartment",
+    "restyle": "classical",
     "height": 40,
     "levels": 11,
-    "note": "rule 5"
+    "note": "Rule check 2026-10-04 (Mapillary): a tall cream classical apartment tower with an ornate entrance; was rule 5 sfapartment.",
+    "wall": "#e5d6b6"
   }
 ]

@@ -326,7 +326,8 @@
       "way/114709401"
     ],
     "name": "Consulate General of Mexico, San Francisco",
-    "restyle": "brick", "noShops": true,
+    "restyle": "brick",
+    "noShops": true,
     "height": 21,
     "note": "Mapillary 2026-10-04 (532 Folsom): red brick, steel-framed windows; was rule 8 tenement"
   },
@@ -335,9 +336,11 @@
       "way/66643085"
     ],
     "name": "Chinese Independent Baptist Church of San Francisco",
-    "restyle": "chinatown", "noShops": true,
+    "restyle": "stucco",
+    "noShops": true,
     "height": 20,
-    "note": "rule 1: chinatown zone"
+    "note": "Rule check 2026-10-04 (Mapillary on its street): a white modern stucco church with a tall cross and a stair to the door; was rule 1 chinatown (shopfronts).",
+    "wall": "#ecebe6"
   },
   {
     "osm": [
@@ -405,7 +408,8 @@
       "way/260345927"
     ],
     "name": "Bayanihan Community Center",
-    "restyle": "brick", "noShops": true,
+    "restyle": "brick",
+    "noShops": true,
     "height": 17,
     "note": "red brick with white trim, as the rule had it — checked (Mapillary) — 2026-10-04 (was rule 6: southern SF)"
   },
