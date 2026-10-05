@@ -108,6 +108,12 @@ export interface Region {
    */
   footBridgeLayers?: { name: string; lat: number; lon: number; radius: number; layer: number }[]
   /**
+   * Islands a ferry serves (game/stations.ts) but no street reaches: their network is kept, though it is not the
+   * city's largest — the bake and the ride graph otherwise drop every island (San Francisco: Alcatraz, BUGS.md #263).
+   * Any edge within `radius` metres of the point keeps its whole island.
+   */
+  ferryIslands?: { name: string; lat: number; lon: number; radius: number }[]
+  /**
    * Streets whose pavements are brick rather than concrete, by name (San Francisco: Market Street's red brick,
    * Embarcadero to Octavia), and the brick's colour.
    */

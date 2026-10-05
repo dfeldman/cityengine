@@ -10456,7 +10456,8 @@ designs. There is also one at Alcatraz, which is in the box but inaccessible cur
   and red-capped lantern (was an octagonal frustum), the fog-signal house on its white retaining wall
   (way/291189002), the keeper's house a white `victorian` restyle with a red cross-gabled roof (way/291188942);
   and the CLIFF — the coarse ground put the tower 2 m above the water, so a `ybi-light` zone (terrain fine,
-  relief raw, cliffs) over the station's shore, bake 25. Look again: whether the cliff came out, the keeper's
+  relief raw, cliffs) over the station's shore, bake 25 — the cliff came out (rock face from the water up to the
+  tower, the fog-signal house on its lip; view "Yerba Buena Island Lighthouse — from the water"). Look again: whether the cliff came out, the keeper's
   house (its porch, the cross gable and dormer), the steps and the lawn between them.
 - **Point Diablo** (Marin, OSM relation/10313743 is the seamark area; no building mapped): a small light on the
   rocky point under the headlands. Not modelled. Needs its design checked (it differs from YBI's).

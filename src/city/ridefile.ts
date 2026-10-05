@@ -9,6 +9,7 @@
 import { buildGraph, lengthOf, type Edge } from './graph.ts'
 import { Projection } from './geo.ts'
 import { RIDE_OVERRIDES } from './overrides.ts'
+import { region as regionOf } from './region.ts'
 import { rideGraph, type RideEdge, type RideGraph, type RideMode } from './ridegraph.ts'
 import { isRaised, onSurface, unpackPoints, type CityPackage, type PackedEdge } from './package.ts'
 
@@ -37,6 +38,7 @@ export function rideFor(city: string, origin: CityPackage['origin'], edges: Edge
     }),
     heightAt,
     buildings,
+    keep: (regionOf(region ?? city).ferryIslands ?? []).map((k) => ({ ...proj.toLocal({ lat: k.lat, lon: k.lon }), r: k.radius })),
   })
 }
 

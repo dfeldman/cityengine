@@ -3119,7 +3119,8 @@
     "traffic": 0,
     "crowd": 0.8,
     "relief": "raw",
-    "cliffs": true
+    "cliffs": true,
+    "trails": "bike"
    },
    "note": "Appearance audit 2026-10-02 (BUGS.md #257): on the coarse grid the island topped out 11 m above the sea; it rises about 41 m to the cellhouse. 2026-10-04: cliffs \u2014 the island meets the bay in rock all round (views audit).",
    "ring": [

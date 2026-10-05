@@ -1084,6 +1084,8 @@ export interface RideOverrides {
   buildings?: number[][]
   /** the ground, for the new edges' heights (the navigator rides an edge's own profile) */
   heightAt: (x: number, z: number) => number
+  /** islands a ferry serves (region `ferryIslands`, local frame): their networks are kept, not only the largest */
+  keep?: { x: number; z: number; r: number }[]
 }
 
 /** Both crossings of a segment p→q with the circle of radius R round c, as t in 0..1 (may be none). */
@@ -1446,6 +1448,8 @@ export function snapEnds(edges: RideEdge[]): RideEdge[] {
 /** The whole chain. */
 export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrides): RideGraph {
   const ids = new Ids()
+  const keep = overrides?.keep?.length ? (e: Edge): boolean => overrides.keep!.some((k) => e.points.some((p) => Math.hypot(p.x - k.x, p.z - k.z) < k.r)) : undefined
+  const largest = <E extends Edge>(es: E[]): E[] => largestComponent(es, keep)
   const blocked = overrides?.buildings ? footprintTest(overrides.buildings) : undefined
   const ridden = pruneFreewayTraps(classify(edges, mode))
   // (the near-miss gaps closed BEFORE the dead ends are rescued too: a rescue through a flight of steps — the Sutro Baths

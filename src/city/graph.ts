@@ -212,8 +212,11 @@ export class UnionFind {
   union(a: number, b: number): void { this.parent.set(this.find(a), this.find(b)) }
 }
 
-/** The edges of the largest connected island. An island the rider can never reach is worse than none. */
-export function largestComponent<E extends { a: number; b: number }>(edges: E[]): E[] {
+/**
+ * The edges of the largest connected island. An island the rider can never reach is worse than none — unless a ferry
+ * goes there: `keep` names edges whose whole island stays too (Alcatraz, region `ferryIslands`, BUGS.md #263).
+ */
+export function largestComponent<E extends { a: number; b: number }>(edges: E[], keep?: (e: E) => boolean): E[] {
   const uf = new UnionFind()
   for (const e of edges) uf.union(e.a, e.b)
   const size = new Map<number, number>()
@@ -224,5 +227,7 @@ export function largestComponent<E extends { a: number; b: number }>(edges: E[])
   let best = -1
   let bestN = 0
   for (const [r, n] of size) if (n > bestN) { best = r; bestN = n }
-  return edges.filter((e) => uf.find(e.a) === best)
+  const kept = new Set<number>([best])
+  if (keep) for (const e of edges) if (keep(e)) kept.add(uf.find(e.a))
+  return edges.filter((e) => kept.has(uf.find(e.a)))
 }

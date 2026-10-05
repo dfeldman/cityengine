@@ -99,42 +99,7 @@
  */
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
-import type { Rgb } from '../../../models.ts'
 import { facade } from '../../facade.ts'
-import { towerRing } from '../../tower.ts'
-import { capPolygon } from '../../../buildings.ts'
-import { surfaceTag } from '../../../cartoon-material.ts'
-
-/** Same construction as the smock-tower taper in `districts/parks.ts`: scale a ring toward its own centroid
- * by `k` (k<1 shrinks) and join base-to-top with `frustumBand` for a dead-straight cone with no stepping. */
-function scaleRing(ring: { x: number; z: number }[], k: number): { x: number; z: number }[] {
-  let cx = 0
-  let cz = 0
-  for (const p of ring) {
-    cx += p.x
-    cz += p.z
-  }
-  cx /= ring.length
-  cz /= ring.length
-  return ring.map((p) => ({ x: cx + (p.x - cx) * k, z: cz + (p.z - cz) * k }))
-}
-
-function frustumBand(out: MeshBuilder, ring0: { x: number; z: number }[], y0: number, ring1: { x: number; z: number }[], y1: number, colour: Rgb, tag: number): void {
-  for (let i = 0; i < ring0.length; i++) {
-    const j = (i + 1) % ring0.length
-    const a = ring0[i]
-    const b = ring0[j]
-    const e = { x: b.x - a.x, z: b.z - a.z }
-    const L = Math.hypot(e.x, e.z) || 1
-    const up = Math.max(0.2, (y1 - y0) / Math.max(0.5, Math.hypot(ring1[i].x - a.x, ring1[i].z - a.z)))
-    const n: [number, number, number] = [e.z / L, 1 / up, -e.x / L]
-    const nl = Math.hypot(n[0], n[1], n[2]) || 1
-    out.quad(
-      [[a.x, y0, a.z], [b.x, y0, b.z], [ring1[j].x, y1, ring1[j].z], [ring1[i].x, y1, ring1[i].z]],
-      [n[0] / nl, n[1] / nl, n[2] / nl], [[0, 0], [1, 0], [1, 1], [0, 1]], colour, tag,
-    )
-  }
-}
 
 export const B12: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** way/135620221 — White Swan Inn, 845 Bush St. Plain box, small boutique inn. */
@@ -150,29 +115,7 @@ export const B12: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
       material: 'stucco',
     }),
 
-  /**
-   * way/291189057 — Yerba Buena Island Lighthouse (1873/1875, NRHP). Small white octagonal tapering tower
-   * ("White Octagonal Tower" per OSM seamark tags), web-confirmed ~25 ft (7.6 m); the `height=5` OSM tag is
-   * not credible so 8 m is used instead. Built as a primitive (octagonal `frustumBand` taper), not `facade()`
-   * — the plan is genuinely octagonal/tapering, the case the brief calls out for `tower()`-style hand work.
-   */
-  b12_yerbaBuenaIslandLighthouse_291189057: (out: MeshBuilder, fit: Fit): void => {
-    const ring = towerRing(fit)
-    const H = fit.height || 8
-    const white: Rgb = [0.93, 0.92, 0.89]
-    const dark: Rgb = [0.15, 0.15, 0.16]
-    const wallTag = surfaceTag('stucco')
-    const galleryY = H * 0.82
-    const topRing = scaleRing(ring, 0.72)
-    frustumBand(out, ring, 0, topRing, galleryY, white, wallTag)
-    // dark gallery band, slightly proud
-    const galleryRing = scaleRing(topRing, 1.15)
-    frustumBand(out, topRing, galleryY, galleryRing, galleryY + 0.3, dark, wallTag)
-    // small lantern cap
-    const lanternRing = scaleRing(galleryRing, 0.7)
-    frustumBand(out, galleryRing, galleryY + 0.3, lanternRing, H, white, wallTag)
-    capPolygon(out, lanternRing, H, dark, wallTag)
-  },
+  // (way/291189057, the Yerba Buena Island lighthouse, moved to sf/ybi-light.ts from the owner's photograph, 2026-10-04)
 
   /** way/165846552 — UC Law San Francisco (198 McAllister campus tower). Plain modern academic tower. */
   b12_ucLawSfTower_165846552: (out: MeshBuilder, fit: Fit): void =>

@@ -635,7 +635,9 @@ async function bake(spec: CitySpec): Promise<void> {
     }
     if (n) console.log(`  ${n} trails opened to bikes (zones with trails: 'bike')`)
   }
-  const kept = largestComponent(edges)
+  // (and the islands a ferry serves: their paths are kept though no street reaches them — region `ferryIslands`)
+  const ferryIslands = (region(spec.region).ferryIslands ?? []).map((k) => ({ ...proj.toLocal({ lat: k.lat, lon: k.lon }), r: k.radius }))
+  const kept = largestComponent(edges, ferryIslands.length ? (e) => unpackPoints(e.points).some((p) => ferryIslands.some((k) => Math.hypot(p.x - k.x, p.z - k.z) < k.r)) : undefined)
   console.log(`  ${edges.length} edges → ${kept.length} in the largest connected network`)
 
   // ---- buildings
@@ -2158,6 +2160,7 @@ async function bake(spec: CitySpec): Promise<void> {
       wideJunctions: streetRegion.streetWidth === 'carriageway',
       // only ever called to give a roundabout's new edges their heights, and there are none here
       heightAt: () => 0,
+      keep: (streetRegion.ferryIslands ?? []).map((k) => ({ ...proj.toLocal({ lat: k.lat, lon: k.lon }), r: k.radius })),
     })
     const st = rideStats(rg)
     console.log(`  ride graph (${mode}): ${st.edges} edges over ${st.km.toFixed(1)} km, `

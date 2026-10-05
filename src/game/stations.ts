@@ -26,6 +26,11 @@ export const SF_STATIONS: Station[] = [
   { name: 'Ferry Building', line: 'ferry', lat: 37.79560, lon: -122.39320, to: ['Sausalito', 'Treasure Island'] },
   { name: 'Sausalito', line: 'ferry', lat: 37.85600, lon: -122.47790, to: ['Ferry Building'] },
   { name: 'Treasure Island', line: 'ferry', lat: 37.81616, lon: -122.37320, to: ['Ferry Building'] },
+  // Alcatraz (BUGS.md #263, owner 2026-10-04: "we should add a (fictional) ferry route to Alcatraz and a tiny bike
+  // circuit"): from the real Alcatraz Landing at Pier 33 to the island's dock; the island's paths are kept for it
+  // (region `ferryIslands`) and opened to bikes (the `alcatraz` zone's `trails: 'bike'`)
+  { name: 'Pier 33 (Alcatraz Landing)', line: 'ferry', lat: 37.80770, lon: -122.40540, to: ['Alcatraz'] },
+  { name: 'Alcatraz', line: 'ferry', lat: 37.82690, lon: -122.42280, to: ['Pier 33 (Alcatraz Landing)'] },
   // Muni Metro: select stops, chosen to take a rider round or under the hills
   { name: 'Embarcadero', line: 'metro', lat: 37.79290, lon: -122.39690 },
   { name: 'Montgomery', line: 'metro', lat: 37.78890, lon: -122.40180 },
