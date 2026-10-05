@@ -51,6 +51,8 @@ const RANGE = 115
 const GROW = 15
 /** Inside this, the small parts that only show close up — eyes, brows — are drawn too. */
 const NEAR = 22
+/** Inside this, shoes: beyond it the feet are the skin's colour, a few pixels nobody can tell apart. */
+const SHOES = 40
 /** The cyclists' baked pedalling: this cadence at this speed; playback scales with each cyclist's speed. */
 const CYCLE_CADENCE = 70
 const CYCLE_SPEED = 4.2
@@ -62,7 +64,8 @@ const BASE_SKIN = [0xdc / 255, 0x9c / 255, 0x70 / 255] as const
 type Part = 'skin' | 'top' | 'bottom' | 'hair' | 'plain' | 'frame'
 
 interface Variant {
-  meshes: { mesh: Mesh; part: Part; near: boolean }[]
+  /** `near`: the distance a part is drawn out to (metres; Infinity for the whole crowd) */
+  meshes: { mesh: Mesh; part: Part; near: number }[]
   /** one stride's worth of frames per second, at the baked pace */
   fps: number
   manager: BakedVertexAnimationManager
@@ -161,7 +164,7 @@ export class BakedCrowd {
     const manager = new BakedVertexAnimationManager(this.scene)
     manager.texture = baker.textureFromBakedVertexData(data)
 
-    const parts: { mesh: Mesh; part: Part; near: boolean }[] = []
+    const parts: { mesh: Mesh; part: Part; near: number }[] = []
     const topId = spec.clothes[0]?.id
     const bottomId = spec.clothes[1]?.id
     for (const m of meshes) {
@@ -213,7 +216,9 @@ export class BakedCrowd {
       m.material = mat
       m.layerMask = 0x0fffffff | PEOPLE
       kit?.dispose(false, false)
-      parts.push({ mesh: m, part, near: n.endsWith('.eyes') || n.includes('.eyebrows.') })
+      // eyes and brows only close up; shoes only to SHOES (past it a foot is a few pixels, and the plainest pair is
+      // 2 000 triangles: 358 k of the park crowd's 2.1 M, perf audit 2026-10-05)
+      parts.push({ mesh: m, part, near: n.endsWith('.eyes') || n.includes('.eyebrows.') ? NEAR : n.includes('.clothes.shoes') ? SHOES : Infinity })
     }
     /*
      * The kit's own bike, fitted to this body so the feet meet the pedals, frozen with its cranks level and
@@ -245,7 +250,7 @@ export class BakedCrowd {
         merged.isPickable = false
         merged.renderingGroupId = 3
         merged.layerMask = 0x0fffffff | PEOPLE
-        parts.push({ mesh: merged, part: isFrame ? 'frame' : 'plain', near: false })
+        parts.push({ mesh: merged, part: isFrame ? 'frame' : 'plain', near: Infinity })
       }
       bike.root.dispose()
     }
@@ -291,8 +296,13 @@ export class BakedCrowd {
       // near first, so the close-up parts can take a prefix of the same buffers
       const list = groups[vi].sort((a, b) => a.d - b.d)
       const n = list.length
-      let near = 0
-      while (near < n && list[near].d < NEAR) near++
+      // how many walkers are inside a part's range: a prefix of the sorted list
+      const within = (r: number): number => {
+        if (r === Infinity) return n
+        let k = 0
+        while (k < n && list[k].d < r) k++
+        return k
+      }
       const matrices = new Float32Array(n * 16)
       const settings = new Float32Array(n * 4)
       const colours: Record<Part, Float32Array> = {
@@ -320,8 +330,8 @@ export class BakedCrowd {
         // the bike's frame: the box renderer's colour for it, a darker take on the shirt
         colours.frame.set([w.shirt[0] * 0.5 + 0.1, w.shirt[1] * 0.5 + 0.1, w.shirt[2] * 0.5 + 0.1, 1], i * 4)
       })
-      for (const { mesh, part, near: closeOnly } of v.meshes) {
-        const count = closeOnly ? near : n
+      for (const { mesh, part, near: range } of v.meshes) {
+        const count = within(range)
         if (count === 0) { mesh.setEnabled(false); continue }
         mesh.thinInstanceSetBuffer('matrix', matrices.subarray(0, count * 16), 16, false)
         if (mesh.bakedVertexAnimationManager) mesh.thinInstanceSetBuffer('bakedVertexAnimationSettingsInstanced', settings.subarray(0, count * 4), 4, false)
