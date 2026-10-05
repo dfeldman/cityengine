@@ -103,7 +103,7 @@ export function plazaDeck(out: MeshBuilder, fit: Fit): void {
   const BAND = 4
   for (let x = -hx, k = 0; x < hx - 0.01; x += BAND, k++) {
     const x1 = Math.min(hx, x + BAND)
-    box(out, (x + x1) / 2, -0.25, 0, (x1 - x) / 2, 0.25, hz, k % 2 ? [0.6, 0.59, 0.56] : [0.53, 0.52, 0.5], concrete)
+    box(out, (x + x1) / 2, -0.25, 0, (x1 - x) / 2, 0.25, hz, k % 2 ? [0.47, 0.46, 0.44] : [0.41, 0.4, 0.39], concrete)
   }
   // the edge beam, and the PILES under it — not a solid mass: a solid block under the deck stood 3.5 m out of the
   // water as a black wall, a building on the bay (owner, 2026-10-03: "white boxes" at the ferry gates)

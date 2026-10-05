@@ -1331,10 +1331,12 @@ function unionSquarePlaza(out: MeshBuilder, fit: Fit): void {
   const CONC = surfaceTag('concrete')
   const MET = surfaceTag('metal')
   const GLS = surfaceTag('glass')
-  const DARK: Rgb = [0.44, 0.44, 0.43]
-  const MID: Rgb = [0.63, 0.62, 0.59]
-  const PALE: Rgb = [0.82, 0.8, 0.76]
-  const LAWN: Rgb = [0.33, 0.45, 0.25]
+  // (the paving is mostly UP faces, lit by sky and full sun at once — about 1.8× — so pale greys clipped to pure white
+  //  and the lawn to lime at rider height, 2026-10-05; set darker than the granite looks, the light brings them up)
+  const DARK: Rgb = [0.36, 0.36, 0.35]
+  const MID: Rgb = [0.48, 0.47, 0.45]
+  const PALE: Rgb = [0.6, 0.58, 0.55]
+  const LAWN: Rgb = [0.23, 0.33, 0.17]
   const BRONZE: Rgb = [0.3, 0.29, 0.22]
   const MAROON: Rgb = [0.33, 0.16, 0.14]
   const STEEL: Rgb = [0.86, 0.87, 0.89]
