@@ -4761,6 +4761,81 @@
      -122.476075
     ]
    ]
+  },
+  {
+   "ref": "angel-island-buildings",
+   "name": "Angel Island (its buildings)",
+   "priority": 2,
+   "props": {
+    "buildings": "presidio"
+   },
+   "note": "Angel Island is an old Army post (Camp Reynolds, Fort McDowell, the Immigration Station) and a state park: its 94 buildings came out as Victorians and walk-ups (54 victorian, 27 sfapartment). The Army's white with red roofs, as the Presidio (2026-10-05).",
+   "ring": [
+    [
+     37.8609,
+     -122.413275
+    ],
+    [
+     37.866057,
+     -122.414746
+    ],
+    [
+     37.870428,
+     -122.418935
+    ],
+    [
+     37.873349,
+     -122.425205
+    ],
+    [
+     37.874375,
+     -122.4326
+    ],
+    [
+     37.873349,
+     -122.439995
+    ],
+    [
+     37.870428,
+     -122.446265
+    ],
+    [
+     37.866057,
+     -122.450454
+    ],
+    [
+     37.8609,
+     -122.451925
+    ],
+    [
+     37.855743,
+     -122.450454
+    ],
+    [
+     37.851372,
+     -122.446265
+    ],
+    [
+     37.848451,
+     -122.439995
+    ],
+    [
+     37.847425,
+     -122.4326
+    ],
+    [
+     37.848451,
+     -122.425205
+    ],
+    [
+     37.851372,
+     -122.418935
+    ],
+    [
+     37.855743,
+     -122.414746
+    ]
+   ]
   }
  ]
 }
