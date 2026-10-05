@@ -1075,7 +1075,14 @@ export class Landmarks {
     } else return
     const [ox, oy, oz] = e.offset ?? [0, 0, 0]
     const under = ring ?? rectRing(cx, cz, fit.hx, fit.hz, rotation)
-    if (!/^(plaza|garden|park)$/.test(e.kind ?? '') && !/plaza|park|garden|square|marina|harbo|deck|podium|paddock|labyrinth|court/i.test(`${e.name} ${e.procedural ?? ''}`)) this.onFootprint?.(under)
+    /*
+     * (…nor a BRIDGE, a mooring field or a tower: their rectangle is the span over open ground, not a footprint. The
+     * Golden Gate's 130 × 2650 m and the Bay Bridge's 60 × 2890 m cleared every tree under them as their tiles came in —
+     * the Presidio's forest at Fort Point and the trees on Rincon Hill vanished as the rider came near, which is the
+     * owner's "trees sometimes disappear when the rider gets close", 2026-10-05.)
+     */
+    const spans = /bridge|moorings/i.test(`${e.name} ${e.procedural ?? ''}`) || /^sutroTower/.test(e.procedural ?? '')
+    if (!spans && !/^(plaza|garden|park)$/.test(e.kind ?? '') && !/plaza|park|garden|square|marina|harbo|deck|podium|paddock|labyrinth|court/i.test(`${e.name} ${e.procedural ?? ''}`)) this.onFootprint?.(under)
     // a structure on piles takes its own deck datum off the sea, not the sea bed under it (BUGS.md #181):
     // the terrain there is deliberately below the waterline, and draping the model on it submerges it
     const y = e.baseY !== undefined
