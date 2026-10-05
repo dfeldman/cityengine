@@ -1251,6 +1251,45 @@ function insideRing(ring: Point[], x: number, z: number): boolean {
   return hit
 }
 
+/**
+ * A LONG GROUND WAY IN PIECES (2026-10-05). Edges are bucketed by the tile their first point is in, and a tile draws
+ * the edges bucketed in it, whole. Outside the detail box the bake does not split ways at their junctions, and 324 ways
+ * run over 400 m — 33rd Avenue is one edge of 1.3 km — so the street under a rider was drawn only while the tile it
+ * STARTED in was in view: five tiles on, the rider rode on grass (ride-graph samples, 33rd Avenue at Ortega). Cut into
+ * pieces of about 120 m that share their cut points, each piece is drawn by its own tile; the joins are two-armed
+ * nodes, so they get no junction hull and no cutback, and the pieces meet seamlessly.
+ */
+const PIECE = 120
+function splitLong(e: PackedEdge): PackedEdge[] {
+  const n = e.points.length / 2
+  if (n < 3) return [e]
+  let total = 0
+  for (let i = 1; i < n; i++) total += Math.hypot(e.points[2 * i] - e.points[2 * i - 2], e.points[2 * i + 1] - e.points[2 * i - 1])
+  if (total <= PIECE * 1.6) return [e]
+  const out: PackedEdge[] = []
+  let start = 0
+  let acc = 0
+  let k = 0
+  const cut = (end: number, last: boolean): void => {
+    out.push({
+      ...e,
+      points: e.points.slice(2 * start, 2 * end + 2),
+      ...(e.heights ? { heights: e.heights.slice(start, end + 1) } : {}),
+      a: start === 0 ? e.a : -(e.id * 1000 + k),
+      b: last ? e.b : -(e.id * 1000 + k + 1),
+    })
+    k++
+    start = end
+    acc = 0
+  }
+  for (let i = 1; i < n; i++) {
+    acc += Math.hypot(e.points[2 * i] - e.points[2 * i - 2], e.points[2 * i + 1] - e.points[2 * i - 1])
+    if (acc >= PIECE && i < n - 1) cut(i, false)
+  }
+  cut(n - 1, true)
+  return out
+}
+
 export class City {
   private readonly scene: Scene
   private readonly pkg: CityPackage
@@ -1456,39 +1495,42 @@ export class City {
       this.outlines.set(b.id, { ring, x0, x1, z0, z1 })
     }
     for (const p of t.pois ?? []) if (p.kind === 'shop' || p.kind === 'food') this.bucket(this.shopsIn, p.x, p.z, { x: p.x, z: p.z })
-    for (const e of t.edges) {
-      if (!onSurface(e) || this.edgeSeen.has(e.id)) continue
-      this.edgeSeen.add(e.id)
-      this.bucket(this.edgesIn, e.points[0], e.points[1], e)
-      const raised = isRaised(e, this.terrain)
-      if (raised) this.raisedIds.add(e.id)
-      // Where streets meet, and how far back each one has to be cut. The radius is set by the WIDEST
-      // street at the junction: a narrow lane joining a boulevard is cut back to the boulevard's kerb line.
-      const pts = unpackPoints(e.points)
-      // which way the street leaves each of its ends, taken over its first few metres: a curving street
-      // leaves the junction in one direction and arrives somewhere else entirely
-      const ends = [
-        { id: e.a, from: pts[0], to: pts[Math.min(1, pts.length - 1)] },
-        { id: e.b, from: pts[pts.length - 1], to: pts[Math.max(0, pts.length - 2)] },
-      ]
-      for (const { id, from, to } of ends) {
-        const dx = to.x - from.x
-        const dz = to.z - from.z
-        const len = Math.hypot(dx, dz) || 1
-        const arm = { ux: dx / len, uz: dz / len, half: e.width / 2, foot: e.foot, surface: e.surface, raised, edgeId: e.id }
-        const r = e.width / 2 + 0.7
-        const got = this.nodes.get(id)
-        if (got) {
-          got.radius = Math.max(got.radius, r)
-          got.walk = Math.max(got.walk, e.walk)
-          // a junction is in the park only if every way meeting there is: a park road meeting a city street
-          // at the Stanyan Street gate still needs the city's apron on the city's side
-          got.park = got.park && !!e.park
-          got.edges++
-          got.arms.push(arm)
-        } else {
-          this.nodes.set(id, { at: from, radius: r, walk: e.walk, edges: 1, arms: [arm], park: !!e.park })
-          this.bucket(this.nodesIn, from.x, from.z, id)
+    for (const whole of t.edges) {
+      if (!onSurface(whole) || this.edgeSeen.has(whole.id)) continue
+      this.edgeSeen.add(whole.id)
+      const raised = isRaised(whole, this.terrain)
+      if (raised) this.raisedIds.add(whole.id)
+      // (a long ground way in pieces, each drawn by the tile it starts in: see `splitLong`)
+      for (const e of raised ? [whole] : splitLong(whole)) {
+        this.bucket(this.edgesIn, e.points[0], e.points[1], e)
+        // Where streets meet, and how far back each one has to be cut. The radius is set by the WIDEST
+        // street at the junction: a narrow lane joining a boulevard is cut back to the boulevard's kerb line.
+        const pts = unpackPoints(e.points)
+        // which way the street leaves each of its ends, taken over its first few metres: a curving street
+        // leaves the junction in one direction and arrives somewhere else entirely
+        const ends = [
+          { id: e.a, from: pts[0], to: pts[Math.min(1, pts.length - 1)] },
+          { id: e.b, from: pts[pts.length - 1], to: pts[Math.max(0, pts.length - 2)] },
+        ]
+        for (const { id, from, to } of ends) {
+          const dx = to.x - from.x
+          const dz = to.z - from.z
+          const len = Math.hypot(dx, dz) || 1
+          const arm = { ux: dx / len, uz: dz / len, half: e.width / 2, foot: e.foot, surface: e.surface, raised, edgeId: e.id }
+          const r = e.width / 2 + 0.7
+          const got = this.nodes.get(id)
+          if (got) {
+            got.radius = Math.max(got.radius, r)
+            got.walk = Math.max(got.walk, e.walk)
+            // a junction is in the park only if every way meeting there is: a park road meeting a city street
+            // at the Stanyan Street gate still needs the city's apron on the city's side
+            got.park = got.park && !!e.park
+            got.edges++
+            got.arms.push(arm)
+          } else {
+            this.nodes.set(id, { at: from, radius: r, walk: e.walk, edges: 1, arms: [arm], park: !!e.park })
+            this.bucket(this.nodesIn, from.x, from.z, id)
+          }
         }
       }
     }

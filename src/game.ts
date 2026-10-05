@@ -2673,6 +2673,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   }
   ;(window as unknown as { __heightAt?: unknown }).__heightAt = (x: number, z: number) => city.terrain.heightAt(x, z)
   // (debug: the street grade and the raw ground under a point, for the wall and island probes)
+  // (debug: the city object itself, for tile and edge inspection from the console)
+  ;(window as unknown as { __city?: unknown }).__city = city
   ;(window as unknown as { __groundProbe?: unknown }).__groundProbe = (x: number, z: number) => ({ grade: city.gradeAt(x, z), raw: city.terrain.rawHeightAt(x, z), drape: city.terrain.heightAt(x, z) })
   // the elevation data alone, without the streets' levelling (what a patch lowering a street would have under it)
   ;(window as unknown as { __rawHeightAt?: unknown }).__rawHeightAt = (x: number, z: number) => city.terrain.rawHeightAt(x, z)
