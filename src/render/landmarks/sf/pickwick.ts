@@ -10,7 +10,9 @@ import type { Fit } from '../fit.ts'
 import type { Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 import { tower, towerRing } from '../tower.ts'
-import { bladeSign, boxAlong, edgeAt } from '../parts.ts'
+import { bladeSign, boxAlong, clockFace, edgeAt } from '../parts.ts'
+import { box, strut } from '../../models.ts'
+import { roof } from '../kit.ts'
 
 const BRICK: Rgb = [0.42, 0.2, 0.15]
 const STONE: Rgb = [0.72, 0.6, 0.45]
@@ -43,4 +45,31 @@ export function pickwickCourt(out: MeshBuilder, fit: Fit): void {
   body(out, fit, fit.height > 30 && fit.height < 50 ? fit.height : 40)
 }
 
-export const PICKWICK: Record<string, (out: MeshBuilder, fit: Fit) => void> = { pickwickHotel, pickwickCourt }
+/**
+ * JAPANTOWN'S YAGURA CLOCK TOWER, at the Post Street entrance to the Buchanan Street mall (Commons
+ * "Japantown-plaza-14jul2005.jpg": "looking across Post Street north on Buchanan Street"; Mapillary at Post and
+ * Buchanan, 2026-10-05). A Japanese fire-watch tower in timber: four tall dark-stained legs, cross-braced, carrying a
+ * red-brown box with a clock on each of its four faces under a small roof. The clocks tell the time (render/clocks.ts).
+ * Standalone, centred between the legs.
+ */
+export function japantownYagura(out: MeshBuilder, _fit: Fit): void {
+  const WOOD: Rgb = [0.3, 0.22, 0.16], BOX: Rgb = [0.48, 0.24, 0.18], ROOF: Rgb = [0.24, 0.22, 0.2]
+  const wood = surfaceTag('clapboard')
+  const L = 1.5, H = 9
+  for (const [sx, sz] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) box(out, sx * L, H / 2, sz * L, 0.16, H / 2, 0.16, WOOD, wood)
+  // cross-bracing on each side, and a rail every few metres
+  for (const [ax, az, bx, bz] of [[-1, -1, 1, -1], [1, -1, 1, 1], [1, 1, -1, 1], [-1, 1, -1, -1]]) {
+    for (const y of [2, 5.5]) {
+      strut(out, [ax * L, y, az * L], [bx * L, y + 3, bz * L], 0.08, 0.08, WOOD, wood)
+      strut(out, [bx * L, y, bz * L], [ax * L, y + 3, az * L], 0.08, 0.08, WOOD, wood)
+    }
+    for (const y of [2, 5.5, H]) strut(out, [ax * L, y, az * L], [bx * L, y, bz * L], 0.1, 0.1, WOOD, wood)
+  }
+  // the clock box and its roof
+  const B = 1.6
+  box(out, 0, H + 1.4, 0, B, 1.4, B, BOX, wood)
+  roof(out, -B - 0.5, B + 0.5, -B - 0.5, B + 0.5, H + 2.8, 1.2, B + 0.5, B + 0.5, ROOF)
+  for (const [nx, nz] of [[0, 1], [0, -1], [1, 0], [-1, 0]]) clockFace(out, nx * (B + 0.02), H + 1.4, nz * (B + 0.02), nx, nz, 1.05, { dial: [0.95, 0.94, 0.9], rim: [0.2, 0.18, 0.16] })
+}
+
+export const PICKWICK: Record<string, (out: MeshBuilder, fit: Fit) => void> = { pickwickHotel, pickwickCourt, japantownYagura }

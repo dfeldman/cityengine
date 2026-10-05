@@ -4977,5 +4977,20 @@
    6
   ],
   "note": "white Colonial Revival under red roofs (zone, 2026-10-05; Commons 'Fort Baker, Cavallo Point.jpg')."
+ },
+ {
+  "name": "Japantown \u2014 the yagura clock tower at Post and Buchanan",
+  "group": "landmark",
+  "from": [
+   37.78545,
+   -122.42975,
+   3
+  ],
+  "to": [
+   37.78568,
+   -122.4298,
+   9
+  ],
+  "note": "pickwick.ts japantownYagura (2026-10-05)."
  }
 ]
