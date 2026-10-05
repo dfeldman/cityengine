@@ -81,6 +81,24 @@ function wall(out: MeshBuilder, f: Frame[], o: number, dy0: number, dy1: number,
   }
 }
 
+/** A grassed embankment along an offset: from the deck's edge `top` above it, out and down to the ground at 1 in 2. */
+const TURF: Rgb = [0.2, 0.29, 0.15]
+function bank(out: MeshBuilder, f: Frame[], o: number, top: number, side: 1 | -1, ground: (x: number, z: number) => number): void {
+  const at = (fr: Frame): { top: [number, number, number]; foot: [number, number, number] } => {
+    const x = fr.x + fr.nx * o, z = fr.z + fr.nz * o
+    const run = Math.max(0.5, 2 * (fr.y + top - ground(x, z)))
+    const fx = x + fr.nx * side * run, fz = z + fr.nz * side * run
+    return { top: [x, fr.y + top, z], foot: [fx, ground(fx, fz) - 0.15, fz] }
+  }
+  for (let i = 1; i < f.length; i++) {
+    const p = at(f[i - 1]), q = at(f[i])
+    const n: [number, number, number] = [f[i - 1].nx * side * 0.45, 0.9, f[i - 1].nz * side * 0.45]
+    const quad: [number, number, number][] = [p.foot, q.foot, q.top, p.top]
+    out.quad(side > 0 ? quad : [...quad].reverse(), n, [[0, 0], [1, 0], [1, 1], [0, 1]], TURF, FIXED)
+    out.quad(side > 0 ? [...quad].reverse() : quad, n, [[0, 0], [1, 0], [1, 1], [0, 1]], TURF, FIXED)
+  }
+}
+
 /** Is this edge a structure rather than a painted surface? A bridge, or lifted clear of the ground. */
 export { isRaised }
 
@@ -243,8 +261,16 @@ export function deck(out: MeshBuilder, e: PackedEdge, terrain: Terrain, walk = e
       }
       return ground(x, z)
     }
-    wall(out, f, -outer, 0, top, STONE, -1, fill)
-    wall(out, f, outer, 0, top, STONE, 1, fill)
+    /*
+     * …but in a PARK a grassed bank, sloping out about 1 in 2 to the ground (Golden Gate Park, 2026-10-05: Crossover
+     * Drive's approaches to its bridge over Transverse Drive stood in the meadow as dark stone walls).
+     */
+    if (e.park) {
+      for (const side of [-1, 1] as const) bank(out, f, side * outer, top, side, fill)
+    } else {
+      wall(out, f, -outer, 0, top, STONE, -1, fill)
+      wall(out, f, outer, 0, top, STONE, 1, fill)
+    }
     for (const e of ends) {
       const fr = e.at
       const corner = (side: number): [number, number] => [fr.x + fr.nx * side * outer, fr.z + fr.nz * side * outer]
