@@ -184,6 +184,12 @@ const BEDS: [number, number, number] = [0.47, 0.44, 0.37]
 const WET_ROCK: [number, number, number] = [0.22, 0.21, 0.2]
 // Paving is grey, not white. The brighter value washed out every street it was laid in.
 const PAVEMENT: [number, number, number] = [0.52, 0.51, 0.485]
+/** a park's foot way's surface page (public/roads/; #201's park has no concrete): asphalt, earth, gravel, boards */
+const TRAIL_PAGE: Record<string, string> = {
+  asphalt: 'asphalt', concrete: 'asphalt', dirt: 'dirt', ground: 'dirt', earth: 'dirt', compacted: 'dirt', grass: 'dirt',
+  gravel: 'gravel', fine_gravel: 'gravel', pebblestone: 'gravel', sand: 'sand', wood: 'wood',
+  paving_stones: 'cobblestone', sett: 'cobblestone', cobblestone: 'cobblestone', brick: 'brick',
+}
 
 
 
@@ -2223,6 +2229,7 @@ export class City {
     const walks = new MeshBuilder()
     const markings = new MeshBuilder()
     const corridor = new MeshBuilder()
+    const trails = new Map<string, MeshBuilder>()
     const shadows = new MeshBuilder()
     const roads = new Map<string, MeshBuilder>()
     const water = new MeshBuilder()
@@ -2425,6 +2432,20 @@ export class City {
       // (a FOOT way takes a metre of slop, not 4.5: the slop is for streets meeting at shallow angles, and on an open
       //  hillside outside any mapped park — Twin Peaks' slopes — each 3 m trail became a 7.5 m concrete stripe, 2026-10-04)
       if (!e.park) quadStrip(corridor, pts, e.width + 2 * e.walk + (e.foot ? 1 : 4.5), 0.15, PAVEMENT, (x, z) => this.terrain.heightAt(x, z))
+      /*
+       * …but a park's FOOT way is still drawn, at its own width and in its own surface (Golden Gate Park audit,
+       * 2026-10-05). A foot way is only ever drawn in this layer, so taking the park's concrete out (#201) took every
+       * trail with it — and the John F. Kennedy Promenade, Music Concourse Drive, Overlook Drive and 8th Avenue in the
+       * park, `highway=pedestrian` roads 6.5–12 m wide, were lawn with zebra crossings painted on it, the rider riding
+       * across the grass. Asphalt, dirt or gravel, no slop and no kerb: what the park's references show. Each surface
+       * its own mesh in the corridor's group, so a drive that crosses a trail paints over it.
+       */
+      else if (e.foot && e.kind !== 'steps') {
+        const page = TRAIL_PAGE[e.surface] ?? 'asphalt'
+        const out = trails.get(page) ?? new MeshBuilder()
+        trails.set(page, out)
+        quadStrip(out, pts, e.width, 0.15, [0.5, 0.5, 0.5], (x, z) => this.terrain.heightAt(x, z))
+      }
       // a brick street's pavements (San Francisco's Market Street), drawn over the concrete a hair higher so
       // it wins every overlap the same way each frame — the kerb-to-wall width only, the carriageway is over it
       if (brick && !e.foot && e.walk > 0 && brick.names.includes(e.name ?? '')) {
@@ -2595,6 +2616,15 @@ export class City {
       this.terrain.drape(corridor.positions)
       corridor.toVertexData().applyToMesh(m)
       m.material = groundLayerMaterial(this.scene, this.roadAssets, 'concrete', 'corridor')
+      m.renderingGroupId = GROUP.corridor
+      meshes.push(m)
+    }
+    for (const [page, out] of trails) {
+      if (out.triangles === 0 || this.off.has('walks')) continue
+      const m = new Mesh(`trail:${page}:${k}`, this.scene)
+      this.terrain.drape(out.positions)
+      out.toVertexData().applyToMesh(m)
+      m.material = groundLayerMaterial(this.scene, this.roadAssets, page, 'trail')
       m.renderingGroupId = GROUP.corridor
       meshes.push(m)
     }
@@ -3116,8 +3146,8 @@ export class City {
       const walls = new MeshBuilder()
       const stone: [number, number, number] = [0.6, 0.57, 0.51]
       const cap: [number, number, number] = [0.7, 0.67, 0.61]
-      // (darker than the park's ground tint: the wall's lit landmark material brightens what it is given)
-      const TURF: [number, number, number] = [0.2, 0.29, 0.15]
+      // (a little darker than the park's ground tint: the wall's lit landmark material brightens what it is given)
+      const TURF: [number, number, number] = [0.17, 0.25, 0.12]
       /*
        * A FLAT CARRIAGEWAY over the draped one, where the street is not on the ground (BUGS.md #221c/#221d).
        *
@@ -3288,6 +3318,19 @@ export class City {
               const p1 = P(t1)
               const h0 = H(t0)
               const h1 = H(t1)
+              /*
+               * A park's bank SLOPES: from the road's edge out to the ground at about 1 in 2, not a vertical turf face
+               * (Golden Gate Park views, 2026-10-05: on Transverse Drive the face stood across the meadow like a clipped
+               * hedge). Its foot is found on the raw ground where it lands.
+               */
+              if (parkBank) {
+                const run0 = Math.max(0.5, 2 * (h0 - Gr(t0))), run1 = Math.max(0.5, 2 * (h1 - Gr(t1)))
+                const f0 = { x: p0.x + nx * run0, z: p0.z + nz * run0 }, f1 = { x: p1.x + nx * run1, z: p1.z + nz * run1 }
+                const g0 = this.terrain.rawHeightAt(f0.x, f0.z) - 0.15, g1 = this.terrain.rawHeightAt(f1.x, f1.z) - 0.15
+                const slope: [number, number, number] = [nx * 0.45, 0.9, nz * 0.45]
+                walls.quad([[f0.x, g0, f0.z], [f1.x, g1, f1.z], [p1.x, h1 + 0.02, p1.z], [p0.x, h0 + 0.02, p0.z]], slope, UV, face, 0)
+                continue
+              }
               // the face, down to just under the ground, and the parapet's outer face above the street
               q(p0, p1, Gr(t0) - 0.3, Gr(t1) - 0.3, h1 + parapet, h0 + parapet, face)
               if (parapet > 0.2) {
