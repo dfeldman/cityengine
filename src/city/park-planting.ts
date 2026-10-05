@@ -46,6 +46,8 @@ export interface ParkSpot {
   /** 0 an even orchard, 1 all thicket and glade */
   clump: number
   species: ParkSpecies[]
+  /** grows right up to its trails (PlantSpot `trailside`) */
+  trailside?: boolean
 }
 
 /** A region's park planting: what grows at a point, or null to leave that ground bare. */
@@ -136,7 +138,7 @@ export function plantParks(pkg: Pick<CityPackage, 'areas' | 'edges'>, rule: Park
         const d = edges.distance(px, pz)
         if (d < EDGE_BAND) f *= 1 + EDGE_BOOST * (1 - d / EDGE_BAND)
         // and thinning towards a path rather than stopping dead at it
-        if (toPath < PATH_REACH) f *= (toPath - PATH_CLEAR) / (PATH_REACH - PATH_CLEAR)
+        if (toPath < PATH_REACH && !spot.trailside) f *= (toPath - PATH_CLEAR) / (PATH_REACH - PATH_CLEAR)
         if (r() > Math.min(capFor(a.size), spot.density) * f * cell) continue
         const sp = weighted(spot.species, r())
         const key = tileKey(...tileOf(px, pz))

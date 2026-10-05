@@ -73,6 +73,7 @@ export class PlantZones {
 const asSpot = (s: PlantSpot): ParkSpot => ({
   density: s.density, clump: s.clump,
   species: s.species.map((q) => ({ form: q.form as TreeForm, weight: q.weight, h: q.h })),
+  ...(s.trailside ? { trailside: true } : {}),
 })
 
 /**

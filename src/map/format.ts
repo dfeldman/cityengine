@@ -74,6 +74,9 @@ export interface PlantSpot {
   /** 0 an even orchard, 1 all thicket and glade */
   clump: number
   species: { form: string; weight: number; h: [number, number] }[]
+  /** a wood that grows right up to its trails: only the path's own 2.5 m kept clear, no thinning towards it (Strawberry
+   *  Hill, laced with trails, came out bare between them — 2026-10-04) */
+  trailside?: boolean
 }
 
 /**
