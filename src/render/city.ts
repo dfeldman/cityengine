@@ -187,7 +187,8 @@ const PAVEMENT: [number, number, number] = [0.52, 0.51, 0.485]
 /** a park's foot way's surface page (public/roads/; #201's park has no concrete): asphalt, earth, gravel, boards */
 const TRAIL_PAGE: Record<string, string> = {
   asphalt: 'asphalt', concrete: 'asphalt', dirt: 'dirt', ground: 'dirt', earth: 'dirt', compacted: 'dirt', grass: 'dirt',
-  gravel: 'gravel', fine_gravel: 'gravel', pebblestone: 'gravel', sand: 'sand', wood: 'wood',
+  gravel: 'gravel', fine_gravel: 'gravel', pebblestone: 'gravel', sand: 'sand', wood: 'wood', woodchips: 'dirt',
+  unpaved: 'dirt', paved: 'asphalt',
   paving_stones: 'cobblestone', sett: 'cobblestone', cobblestone: 'cobblestone', brick: 'brick',
 }
 
@@ -2444,7 +2445,13 @@ export class City {
         const page = TRAIL_PAGE[e.surface] ?? 'asphalt'
         const out = trails.get(page) ?? new MeshBuilder()
         trails.set(page, out)
-        quadStrip(out, pts, e.width, 0.15, [0.5, 0.5, 0.5], (x, z) => this.terrain.heightAt(x, z))
+        // (a footway or a path is drawn no wider than 2.2 m: the bake's 3 m default laid the Botanical Garden's web of
+        //  paths as a maze of broad dark bands; a car-free road keeps its width)
+        const w = e.kind === 'footway' || e.kind === 'path' ? Math.min(e.width, 2.2) : e.width
+        // (and a path's asphalt sun-bleached paler than a drive's: the road page at full depth made the web of paths
+        //  the darkest thing in the park)
+        const tint: [number, number, number] = page === 'asphalt' && w < e.width + 0.01 && e.kind !== 'pedestrian' ? [0.68, 0.68, 0.66] : [0.5, 0.5, 0.5]
+        quadStrip(out, pts, w, 0.15, tint, (x, z) => this.terrain.heightAt(x, z))
       }
       // a brick street's pavements (San Francisco's Market Street), drawn over the concrete a hair higher so
       // it wins every overlap the same way each frame — the kerb-to-wall width only, the carriageway is over it
