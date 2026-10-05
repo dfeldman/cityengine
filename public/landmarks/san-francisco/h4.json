@@ -94,8 +94,12 @@
     "osm": [
       "way/934659297"
     ],
-    "procedural": "h4_tideGaugeHouse",
-    "name": "Tide Gauge House"
+    "procedural": "tideGaugeHouse",
+    "name": "Tide Gauge House",
+    "front": 224,
+    "height": 5,
+    "note": "strawberry-hill.ts tideGaugeHouse (2026-10-05; NOAA Greater Farallones 'Pier & Tide Gauge House'): the small white wooden house with a red roof at the end of the Coast Guard pier off Crissy Field, the oldest continuously operating tide gauge in the Western Hemisphere (1854). It stood alone on the water; the builder now draws the pier back to the shore by the sanctuary building. Was a brick-loft recipe.",
+    "deckAbove": 2.5
   },
   {
     "osm": [

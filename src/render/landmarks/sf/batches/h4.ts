@@ -52,9 +52,6 @@ export const H4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** way/160705972 — The Smith-Kettlewell Eye Research Institute. Historic research building, 4 storeys, 12 m. */
   h4_smithKettlewell: fromRecipe('brick-loft', { height: 12, wall: [0.68, 0.56, 0.46], glass: [0.22, 0.25, 0.28] }),
 
-  /** way/934659297 — Tide Gauge House. Historic maritime building, Fort Point, 1 storey, small cottage. */
-  h4_tideGaugeHouse: fromRecipe('brick-loft', { height: 5, wall: [0.70, 0.60, 0.50], glass: [0.18, 0.21, 0.24] }),
-
   /** way/288374434 — Tides Converge. Historic building in Fort Mason, converted community center. */
   h4_tidesConverge: fromRecipe('brick-loft', { height: 18, wall: [0.66, 0.54, 0.44], glass: [0.22, 0.25, 0.28] }),
 

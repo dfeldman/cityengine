@@ -197,4 +197,31 @@ export function goldenGateCarousel(out: MeshBuilder, fit: Fit): void {
   prism(out, 0, 0, y0 + 1.3 + D, y0 + 2.2 + D, 1.2, 12, METAL, metal, 0.9)
 }
 
-export const STRAWBERRY_HILL: Record<string, (out: MeshBuilder, fit: Fit) => void> = { huntingtonFalls, goldenGatePavilion, musicConcourse, goldenGateCarousel }
+
+/**
+ * THE PRESIDIO TIDE GAUGE HOUSE (way/934659297), at the end of the old Coast Guard pier off Crissy Field: the oldest
+ * continuously operating tide gauge in the Western Hemisphere (1854; here since 1927). NOAA Greater Farallones "Pier &
+ * Tide Gauge House": a tiny white clapboard house with a red hipped roof on the pier head, the pier itself a long timber
+ * deck on piles running back to the shore by the sanctuary building. It stood alone on the water — OSM maps the house
+ * but not this pier. Front 224: the shore is south-west, local −z; the pier runs that way.
+ */
+export function tideGaugeHouse(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.93, 0.92, 0.88], RED: Rgb = [0.62, 0.17, 0.13], DECK: Rgb = [0.52, 0.45, 0.36], PILE: Rgb = [0.3, 0.26, 0.22]
+  const wood = surfaceTag('clapboard')
+  const W = 2.4, H = 3.2
+  // the pier head and the long deck to the shore (local −z), on piles
+  const L = 110, DW = 2.2
+  box(out, 0, 0.15, 0, 4.2, 0.15, 4.2, DECK, wood)
+  box(out, 0, 0.15, -4.2 - L / 2, DW, 0.15, L / 2, DECK, wood)
+  for (let z = -4; z > -4.2 - L; z -= 6) for (const s of [-1, 1]) box(out, s * (DW - 0.15), -1.6, z, 0.15, 1.75, 0.15, PILE, 0)
+  for (const [x, z] of [[-4, -4], [4, -4], [-4, 4], [4, 4]]) box(out, x, -1.6, z, 0.18, 1.75, 0.18, PILE, 0)
+  // the rail along both sides
+  for (const s of [-1, 1]) box(out, s * (DW - 0.05), 1.2, -4.2 - L / 2, 0.04, 0.04, L / 2, WHITE, 0)
+  // the house
+  box(out, 0, 0.3 + H / 2, 0, W, H / 2, W, WHITE, wood)
+  box(out, 0, 1.8, W + 0.02, 0.5, 1.1, 0.04, [0.3, 0.32, 0.34], 0)
+  for (const s of [-1, 1]) box(out, s * (W + 0.02), 2.2, 0, 0.04, 0.5, 0.6, [0.2, 0.22, 0.25], 0)
+  prism(out, 0, 0, 0.3 + H, 0.3 + H + 1.6, (W + 0.4) * Math.SQRT2, 4, RED, surfaceTag('tile'), 0.15)
+}
+
+export const STRAWBERRY_HILL: Record<string, (out: MeshBuilder, fit: Fit) => void> = { huntingtonFalls, goldenGatePavilion, musicConcourse, goldenGateCarousel, tideGaugeHouse }
