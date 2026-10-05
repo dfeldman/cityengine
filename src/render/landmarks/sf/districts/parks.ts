@@ -142,7 +142,6 @@ const CREAM: Rgb = [0.87, 0.83, 0.73]
 const MILL_STUCCO: Rgb = [0.83, 0.8, 0.72]
 const MILL_CAP: Rgb = [0.15, 0.14, 0.13]
 const CHALET_ROOF: Rgb = [0.42, 0.22, 0.18]
-const STONE: Rgb = [0.78, 0.76, 0.7]
 
 export const PARKS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /**
@@ -211,10 +210,12 @@ export const PARKS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     const st = surfaceTag('ashlar')
     const at = (u: number, o: number): [number, number] => [e.mid.x + e.tx * u + e.nx * o, e.mid.z + e.tz * u + e.nz * o]
     const SHADE: Rgb = [0.22, 0.2, 0.18]
+    // warm Colusa sandstone, not the park's pale grey stone (2026-10-05)
+    const SAND: Rgb = [0.8, 0.7, 0.55]
     // the central pavilion, set back from the front: a tall block with the arch in it
     const pw = 9, pd = 5, ph = 21
     let [x, z] = at(0, -8)
-    boxAlong(out, x, ph / 2, z, pw, ph / 2, pd, e.heading, STONE, st)
+    boxAlong(out, x, ph / 2, z, pw, ph / 2, pd, e.heading, SAND, st)
     // the arch: a dark opening, square below and round above, a raised surround
     ;[x, z] = at(0, -8 + pd + 0.05)
     boxAlong(out, x, 6.5, z, 5.6, 6.5, 0.05, e.heading, SHADE, 0)
@@ -227,26 +228,26 @@ export const PARKS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     // the attic's pediment and the statuary group on top
     for (let k = 0; k < 4; k++) {
       ;[x, z] = at(0, -8)
-      boxAlong(out, x, ph + 0.4 + k * 0.7, z, pw - k * 1.8, 0.35, pd - 0.5, e.heading, STONE, st)
+      boxAlong(out, x, ph + 0.4 + k * 0.7, z, pw - k * 1.8, 0.35, pd - 0.5, e.heading, SAND, st)
     }
     ;[x, z] = at(0, -4)
     prism(out, x, z, ph + 3, ph + 5.2, 0.8, 8, [0.8, 0.77, 0.7], st, 0.4)
     // the stage floor in front of the arch, and the two colonnade wings swinging forward to small end pavilions
     ;[x, z] = at(0, -4)
-    boxAlong(out, x, 0.6, z, pw - 0.5, 0.6, 3, e.heading, STONE, st)
+    boxAlong(out, x, 0.6, z, pw - 0.5, 0.6, 3, e.heading, SAND, st)
     for (const s of [-1, 1]) {
       const pts: [number, number][] = []
       for (let k = 0; k <= 6; k++) {
         const a = (k / 6) * (Math.PI / 2.6)
         pts.push(at(s * (pw + 1 + Math.sin(a) * 12), -8 + Math.cos(a) * 0 + (1 - Math.cos(a)) * 10))
       }
-      for (let k = 0; k < pts.length; k++) prism(out, pts[k][0], pts[k][1], 0, 7.5, 0.42, 10, STONE, st, 0.36)
+      for (let k = 0; k < pts.length; k++) prism(out, pts[k][0], pts[k][1], 0, 7.5, 0.42, 10, SAND, st, 0.36)
       for (let k = 1; k < pts.length; k++) {
         const [ax, az] = pts[k - 1], [bx, bz] = pts[k]
-        boxAlong(out, (ax + bx) / 2, 8.1, (az + bz) / 2, 0.6, 0.6, Math.hypot(bx - ax, bz - az) / 2 + 0.4, Math.atan2(bx - ax, bz - az), STONE, st)
+        boxAlong(out, (ax + bx) / 2, 8.1, (az + bz) / 2, 0.6, 0.6, Math.hypot(bx - ax, bz - az) / 2 + 0.4, Math.atan2(bx - ax, bz - az), SAND, st)
       }
       const [ex, ez] = pts[pts.length - 1]
-      box(out, ex, 5, ez, 2.2, 5, 2.2, STONE, st)
+      box(out, ex, 5, ez, 2.2, 5, 2.2, SAND, st)
       prism(out, ex, ez, 10, 11.4, 0.7, 10, [0.8, 0.77, 0.7], st, 0.35)
     }
   },
