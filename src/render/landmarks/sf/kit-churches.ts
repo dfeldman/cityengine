@@ -259,6 +259,18 @@ export function saintMonicas(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** St John's Presbyterian, 25 Lake Street at Arguello (1905; way/273299360). Historic-landmark census 2026-10-05, from
+ *  Commons "St Johns Presbyterian Church (San Francisco).JPG" and "…_2.JPG": brown-shingled Gothic; a square tower at
+ *  the front corner with paired lancet arcading under a notched parapet and a tall slate spire; a steep front gable
+ *  beside it with a big tracery window; a side gable down the flank; buttressed walls. */
+export function stJohnsPresbyterian(out: MeshBuilder, fit: Fit): void {
+  church(out, fit, {
+    nave: { bays: 5, storeys: 1, roof: 'gable', pitch: 'steep' }, aisles: null, transept: { ends: 'flush' }, chancel: { kind: 'square' },
+    tower: { at: 'front-corner', stages: 3, plan: 'square', top: 'spire' }, front: { kind: 'gable', portal: 'single', window: 'lancets', steps: 4 },
+    walls: { material: 'brick', openings: 'tracery', buttresses: 'plain', colour: [0.5, 0.33, 0.26] },
+  })
+}
+
 /** Park Presidio United Methodist, Geary at 7th Avenue (way/36654283): white stucco Gothic, a square corner tower with
  *  paired lancets, a steep gable front with a big pointed window, a red door. */
 export function parkPresidioMethodist(out: MeshBuilder, fit: Fit): void {
@@ -288,4 +300,4 @@ export function nineteenthAvenueBaptist(out: MeshBuilder, fit: Fit): void {
   })
 }
 
-export const KIT_CHURCHES: Record<string, (out: MeshBuilder, fit: Fit) => void> = { saintJames, southVanNessBrickChurch, saintMonicas, parkPresidioMethodist, shaarZahav, nineteenthAvenueBaptist, oldSacredHeart, fifthChurchOfChristScientist, shrineOfSaintFrancis, guadalupeChurch, saintDominics, sherithIsrael, saintBrigid, saintVincentDePaul, saintMarksLutheran, firstChurchOfChristScientist, saintAgnes, saintFrancisLutheran, presidioChapel, swedenborgianChurch, centralAdventist }
+export const KIT_CHURCHES: Record<string, (out: MeshBuilder, fit: Fit) => void> = { saintJames, stJohnsPresbyterian, southVanNessBrickChurch, saintMonicas, parkPresidioMethodist, shaarZahav, nineteenthAvenueBaptist, oldSacredHeart, fifthChurchOfChristScientist, shrineOfSaintFrancis, guadalupeChurch, saintDominics, sherithIsrael, saintBrigid, saintVincentDePaul, saintMarksLutheran, firstChurchOfChristScientist, saintAgnes, saintFrancisLutheran, presidioChapel, swedenborgianChurch, centralAdventist }
