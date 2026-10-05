@@ -4992,5 +4992,50 @@
    9
   ],
   "note": "pickwick.ts japantownYagura (2026-10-05)."
+ },
+ {
+  "name": "Sausalito stairs below the street",
+  "group": "bug",
+  "from": [
+   37.85565,
+   -122.4796,
+   25
+  ],
+  "to": [
+   37.855882,
+   -122.479986,
+   0
+  ],
+  "note": "owner queue: steep paths below the street."
+ },
+ {
+  "name": "Sausalito stairs \u2014 at rider height",
+  "group": "bug",
+  "from": [
+   37.85575,
+   -122.47975,
+   2
+  ],
+  "to": [
+   37.855882,
+   -122.479986,
+   1
+  ],
+  "note": "owner queue."
+ },
+ {
+  "name": "UN Plaza fountain",
+  "group": "landmark",
+  "from": [
+   37.779974,
+   -122.41308,
+   6
+  ],
+  "to": [
+   37.780253,
+   -122.413432,
+   0
+  ],
+  "note": "Halprin 1975 granite fountain (2026-10-05 check)."
  }
 ]
