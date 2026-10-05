@@ -3116,6 +3116,8 @@ export class City {
       const walls = new MeshBuilder()
       const stone: [number, number, number] = [0.6, 0.57, 0.51]
       const cap: [number, number, number] = [0.7, 0.67, 0.61]
+      // (darker than the park's ground tint: the wall's lit landmark material brightens what it is given)
+      const TURF: [number, number, number] = [0.2, 0.29, 0.15]
       /*
        * A FLAT CARRIAGEWAY over the draped one, where the street is not on the ground (BUGS.md #221c/#221d).
        *
@@ -3240,7 +3242,14 @@ export class City {
             // …nor a stairway in a park: its treads follow the hill (render/stairs.ts), and walls from the steps' levelled
             // heights stood as dark slabs up Strawberry Hill (2026-10-04); a city stair street keeps its walls
             if (e.kind === 'steps' && e.park) continue
-            const parapet = sideDrop[side] > 1.5 ? 0.9 : 0.12
+            /*
+             * A ROAD IN A PARK gets no parapet short of a real embankment, and its face is turf, not stone (Golden Gate
+             * Park ride samples, 2026-10-05: JFK Drive by 36th Avenue, 1.5 m over a dip in the meadow by the terrain,
+             * ran between a 0.9 m stone parapet like a viaduct's). A drive across a lawn sits on a grassy bank.
+             */
+            const parkBank = !!e.park && sideDrop[side] <= 3
+            const parapet = !parkBank && sideDrop[side] > 1.5 ? 0.9 : 0.12
+            const face = parkBank ? TURF : stone
             /*
              * In pieces of about 1.5 m, each built only where the ground beside it is OPEN (owner, 2026-10-01: walls
              * sticking into the crossing street at a junction). One test at the middle of a segment decided the whole
@@ -3280,7 +3289,7 @@ export class City {
               const h0 = H(t0)
               const h1 = H(t1)
               // the face, down to just under the ground, and the parapet's outer face above the street
-              q(p0, p1, Gr(t0) - 0.3, Gr(t1) - 0.3, h1 + parapet, h0 + parapet, stone)
+              q(p0, p1, Gr(t0) - 0.3, Gr(t1) - 0.3, h1 + parapet, h0 + parapet, face)
               if (parapet > 0.2) {
                 const i0 = { x: p0.x - nx * 0.3, z: p0.z - nz * 0.3 }
                 const i1 = { x: p1.x - nx * 0.3, z: p1.z - nz * 0.3 }
