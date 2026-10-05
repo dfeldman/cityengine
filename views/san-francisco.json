@@ -4737,5 +4737,50 @@
    0
   ],
   "note": "point-bonita.ts; the headland is mapped bare rock on ground the bake has too low (#260)."
+ },
+ {
+  "name": "Yerba Buena Island Lighthouse \u2014 from the water",
+  "group": "landmark",
+  "from": [
+   37.805936,
+   -122.362209,
+   8
+  ],
+  "to": [
+   37.807553,
+   -122.362346,
+   10
+  ],
+  "note": "owner's photo 2026-10-04: square white tower with red lantern cap, keeper's house up the slope, the fog-signal building on its white wall at the cliff top."
+ },
+ {
+  "name": "Macang Monastery \u2014 from Eddy Street",
+  "group": "landmark",
+  "from": [
+   37.780469,
+   -122.438032,
+   3
+  ],
+  "to": [
+   37.780873,
+   -122.438055,
+   12
+  ],
+  "note": "macang.ts, the owner's photograph (2026-10-04): portico, twin towers, the gallery to the right."
+ },
+ {
+  "name": "Hua Zang Si \u2014 from 22nd Street",
+  "group": "landmark",
+  "from": [
+   37.755406,
+   -122.417343,
+   2
+  ],
+  "to": [
+   37.75563,
+   -122.417366,
+   14
+  ],
+  "note": "hua-zang-si.ts, the owner's photograph (2026-10-04)."
  }
 ]

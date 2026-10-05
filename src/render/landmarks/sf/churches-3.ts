@@ -116,35 +116,8 @@ export function saintJosephsArtsSociety(out: MeshBuilder, fit: Fit): void {
   })
 }
 
-/**
- * Macang Monastery (`old_name` "Old Saint Patricks Church"), way/261273676 — `building=church`,
- * `amenity=place_of_worship buddhist`; a 19th-century Catholic church building, now a Buddhist monastery, built
- * as and shaped as the former. The photograph (`docs/shots/refs/batch5/way-261273676.jpg`) shows twin ornate
- * bell towers, octagonal above a squared base, each carrying a small open lantern stage and a conical cap, over
- * a warm tan/sandstone classical front with round oculus windows and a single central portal partly screened by
- * trees. Its `-2.jpg` sibling shows a different, unrelated blue-sided house down the block and is not used.
- *
- * `tower.at: 'twin'`, `plan: 'octagon'`, `top: 'lantern'` are read straight from the photograph's two matching
- * towers; `front.window: 'oculus'` for the round windows either side of the portal; `walls.material:
- * 'sandstone'` for the warm tan stone. The 16 m OSM tag matches the photograph's modest street-level scale (the
- * towers themselves rise well above that, which `church()` handles by building them above the nave ridge, not
- * within it), so it is used unmodified.
- */
-export function macangMonastery(out: MeshBuilder, fit: Fit): void {
-  church(out, fit, {
-    nave: { bays: 3, storeys: 2, roof: 'gable', pitch: 'moderate' },
-    aisles: null,
-    transept: null,
-    chancel: null,
-    tower: { at: 'twin', stages: 3, plan: 'octagon', top: 'lantern' },
-    front: { kind: 'pediment', portal: 'single', window: 'oculus', steps: 3 },
-    walls: { material: 'sandstone', openings: 'round', buttresses: 'none' },
-  })
-}
-
 export const CHURCHES_3: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   saintAnneOfTheSunset,
   saintIgnatiusChurch,
   saintJosephsArtsSociety,
-  macangMonastery,
 }

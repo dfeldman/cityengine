@@ -4579,6 +4579,35 @@
      -122.45751
     ]
    ]
+  },
+  {
+   "ref": "ybi-light",
+   "name": "Yerba Buena Island light station cliff",
+   "priority": 6,
+   "props": {
+    "terrain": "fine",
+    "relief": "raw",
+    "cliffs": true
+   },
+   "note": "The lighthouse stands ~20 m up a sandstone cliff (owner's photograph, 2026-10-04); the coarse ground put it 2 m above the water. Fine raw relief over the station's shore, as Alcatraz (#257).",
+   "ring": [
+    [
+     37.806475,
+     -122.363232
+    ],
+    [
+     37.806475,
+     -122.3613
+    ],
+    [
+     37.808451,
+     -122.3613
+    ],
+    [
+     37.808451,
+     -122.363232
+    ]
+   ]
   }
  ]
 }

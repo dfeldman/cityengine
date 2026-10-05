@@ -10444,3 +10444,33 @@ portals, deck ranges, EAST_PATH, the helix and its boardwalk), keeping the struc
 frame and draw the structure 115 m further along it (TOWERS, the anchorages, END, the cables), moving the profile's
 crest with it — the helix then stands ~115 m from the first tower rather than beside it. Either needs `bake --decks`,
 air-paths round both ends, car reachability, and a ride both ways on each deck and the Bikeway.
+
+### #262 Lighthouses: Yerba Buena Island, Point Diablo, Lime Point, Alcatraz (OPEN, owner 2026-10-04)
+
+The owner, with a photograph of the Yerba Buena Island light station from the water: *"notice it's on a steep
+cliff, and has a matching keeper's house and front structure"*, then: *"add a bug to take another look at the YB
+Island lighthouse. There are also lighthouses in the box at Point Diablo and Lime Point with somewhat different
+designs. There is also one at Alcatraz, which is in the box but inaccessible currently in-game."*
+
+- **Yerba Buena Island** (first pass 2026-10-04, sf/ybi-light.ts): the SQUARE white tower with a railed gallery
+  and red-capped lantern (was an octagonal frustum), the fog-signal house on its white retaining wall
+  (way/291189002), the keeper's house a white `victorian` restyle with a red cross-gabled roof (way/291188942);
+  and the CLIFF — the coarse ground put the tower 2 m above the water, so a `ybi-light` zone (terrain fine,
+  relief raw, cliffs) over the station's shore, bake 25. Look again: whether the cliff came out, the keeper's
+  house (its porch, the cross gable and dormer), the steps and the lawn between them.
+- **Point Diablo** (Marin, OSM relation/10313743 is the seamark area; no building mapped): a small light on the
+  rocky point under the headlands. Not modelled. Needs its design checked (it differs from YBI's).
+- **Lime Point** (Marin, under the Golden Gate Bridge's north tower; OSM node/1243877573 man_made=lighthouse,
+  Wikipedia "Lime Point Light"): a small light and fog-signal building at the water. Not modelled.
+- **Alcatraz** (alcatraz.json `alcatrazLighthouse`, way/99202294): modelled; the island is not reachable in game
+  yet, so it is checked only from the air.
+
+### #263 A (fictional) ferry to Alcatraz and a tiny bike circuit on the island (OPEN, owner 2026-10-04)
+
+The owner, with a screenshot of the island from the water: *"alcatraz actually renders really really well, even
+including the lighthouse, even though it's not accessible to bikes! we should add a (fictional) ferry route to
+Alcatraz and a tiny bike circuit"*. Wants: a ferry from Pier 33 (the real Alcatraz Landing) to the island's dock,
+in the same mechanic as any existing transit boarding (src/game/stations.ts / transit), and a short rideable loop on
+the island — the dock, up the switchback road past the Power House and the Officers' Club ruins to the cellhouse
+and the lighthouse, and back — as authored ways (the region's own, like the Bay Bridge bikeway), checked with
+tools/air-paths.ts (no flying paths).

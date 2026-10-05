@@ -114,6 +114,9 @@ import { CCSF_MISSION } from './ccsf-mission.ts'
 import { SHELL_BUILDING } from './shell-building.ts'
 import { SCHOOLS } from './schools.ts'
 import { PICKWICK } from './pickwick.ts'
+import { YBI_LIGHT } from './ybi-light.ts'
+import { MACANG } from './macang.ts'
+import { HUA_ZANG_SI } from './hua-zang-si.ts'
 import { SHEDS } from './sheds.ts'
 import { MURAL_ALLEYS } from './mural-alleys.ts'
 import { POINT_BONITA } from './point-bonita.ts'
@@ -272,6 +275,9 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   ...SHELL_BUILDING,
   ...SCHOOLS,
   ...PICKWICK,
+  ...YBI_LIGHT,
+  ...MACANG,
+  ...HUA_ZANG_SI,
   ...SHEDS,
   ...MURAL_ALLEYS,
   ...POINT_BONITA,

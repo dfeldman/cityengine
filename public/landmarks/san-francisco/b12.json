@@ -7,12 +7,31 @@
   },
   {
     "osm": ["way/291189057"],
-    "procedural": "b12_yerbaBuenaIslandLighthouse_291189057",
+    "procedural": "ybiLightTower",
     "name": "Yerba Buena Island Lighthouse",
-    "height": 8,
-    "size": [4.4, 4.4],
-    "lat": 37.80731335,
-    "lon": -122.362282025
+    "height": 11,
+    "front": 180,
+    "note": "ybi-light.ts: square white tower, railed gallery, red-capped lantern (owner's photograph, 2026-10-04)."
+  },
+  {
+    "osm": ["way/291189002"],
+    "procedural": "ybiFogSignal",
+    "name": "Yerba Buena Island fog-signal house",
+    "front": 180,
+    "note": "ybi-light.ts: white gabled house with a red roof on its white retaining wall at the cliff lip (owner's photograph)."
+  },
+  {
+    "osm": ["way/291188942"],
+    "name": "Yerba Buena Island light keeper's house",
+    "restyle": "victorian",
+    "wall": "#f2f1ec",
+    "trim": "#ffffff",
+    "roofColour": "#b4433a",
+    "roof": "gabled",
+    "roofHeight": 4.5,
+    "levels": 2,
+    "noShops": true,
+    "note": "Owner's photograph 2026-10-04: two storeys of white clapboard, steep red cross-gabled roof, a porch along the front."
   },
   {
     "osm": ["way/165846552"],

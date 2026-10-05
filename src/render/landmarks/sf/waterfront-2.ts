@@ -11,21 +11,11 @@
  *   the lower wall facing the plaza — the one legible thing a rider on the Embarcadero promenade actually
  *   reads, so it is built as a real `sign()`, not a hand-blocked font.
  *
- * - **Art Gallery of the Macang Monastery**, way/261273687, immediately beside way/261273676 (`macangMonastery`
- *   in ../churches-3.ts — the former Catholic church, twin octagonal bell towers, sandstone). Reference:
- *   `docs/shots/refs/batch5/way-261273687.jpg` — the corridor lands on a modest two-storey cream/stucco
- *   gable-roofed hall standing between the monastery's trees and the modern condo tower next door (which is
- *   OUTSIDE the corridor and not this building); a dark gable roof, a shuttered upper window facing the
- *   street, an arched opening at grade behind a low forecourt wall (confirmed by the `-2.jpg` sibling, which
- *   shows the same gate and tree from the monastery's own side). This matches the building's real history: it
- *   is the monastery's own former parish hall, used today as its gallery. Built with the SAME `church()` kit as
- *   `macangMonastery` — a plain nave, no tower, gable front — so the two sit together as one composition rather
- *   than as an unrelated box: same sandstone-family material, a gable front that agrees with the monastery's
- *   classical one, and a height (OSM tag 11 m) well under the monastery's twin towers.
+ * (The Art Gallery of the Macang Monastery moved to sf/macang.ts with the monastery, from the owner's photograph,
+ *  2026-10-04.)
  */
 import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
-import { church } from '../church.ts'
 import { tower, towerRing, type TowerSpec } from '../tower.ts'
 import { edgeAt, cupola, panelOn } from '../parts.ts'
 import { box, prism, type Rgb } from '../../models.ts'
@@ -101,26 +91,6 @@ export function aquariumOfTheBay(out: MeshBuilder, fit: Fit): void {
   box(out, e.mid.x, lowerTop + 0.2, e.mid.z, e.L * 0.32, 0.5, 0.08, DARK_GLASS, 0)
 }
 
-/**
- * Art Gallery of the Macang Monastery, way/261273687 — the monastery's own former parish hall, immediately
- * beside `macangMonastery`. Built with the same `church()` kit: a plain gabled nave, no tower (the photograph
- * shows none), a single shuttered window in the gable end reading as the front, in the same sandstone family
- * as the monastery next door so the two read as one property. Height 11 m (OSM tag) matches the photograph's
- * modest two-storey-under-a-gable scale.
- */
-export function macangGallery(out: MeshBuilder, fit: Fit): void {
-  church(out, fit, {
-    nave: { bays: 2, storeys: 2, roof: 'gable', pitch: 'moderate' },
-    aisles: null,
-    transept: null,
-    chancel: null,
-    tower: null,
-    front: { kind: 'gable', portal: 'single', window: 'oculus', steps: 1 },
-    walls: { material: 'sandstone', openings: 'square', buttresses: 'none' },
-  })
-}
-
 export const WATERFRONT_2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   aquariumOfTheBay,
-  macangGallery,
 }
