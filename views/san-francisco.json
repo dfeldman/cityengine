@@ -5533,5 +5533,96 @@
    24
   ],
   "note": "St Ignatius model 2026-10-05"
+ },
+ {
+  "name": "night \u2014 audit 01 Ferry Building",
+  "group": "night",
+  "from": [
+   37.794577,
+   -122.396905,
+   120.00000000000001
+  ],
+  "to": [
+   37.7955,
+   -122.3937,
+   16
+  ],
+  "query": "time=night"
+ },
+ {
+  "name": "night \u2014 audit 02 Pier 39",
+  "group": "night",
+  "from": [
+   37.806163,
+   -122.410967,
+   100
+  ],
+  "to": [
+   37.8087,
+   -122.4098,
+   6
+  ],
+  "query": "time=night"
+ },
+ {
+  "name": "night \u2014 audit 11 Golden Gate Bridge from Crissy Field",
+  "group": "night",
+  "from": [
+   37.8045,
+   -122.456,
+   25
+  ],
+  "to": [
+   37.815,
+   -122.477,
+   90
+  ],
+  "query": "time=night"
+ },
+ {
+  "name": "night \u2014 audit 19 Bay Bridge west span",
+  "group": "night",
+  "from": [
+   37.7885,
+   -122.39,
+   120
+  ],
+  "to": [
+   37.799,
+   -122.378,
+   55
+  ],
+  "note": "re-aimed 2026-10-05: the old target was south of the span",
+  "query": "time=night"
+ },
+ {
+  "name": "night \u2014 audit 22 City Hall",
+  "group": "night",
+  "from": [
+   37.7793,
+   -122.41589,
+   156
+  ],
+  "to": [
+   37.7793,
+   -122.4193,
+   32
+  ],
+  "query": "time=night"
+ },
+ {
+  "name": "night \u2014 audit 24 Main Library and Asian Art Museum",
+  "group": "night",
+  "from": [
+   37.776301,
+   -122.4157,
+   111.00000000000001
+  ],
+  "to": [
+   37.779,
+   -122.4157,
+   12
+  ],
+  "query": "time=night"
  }
 ]

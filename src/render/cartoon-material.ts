@@ -82,6 +82,7 @@ uniform vec3 fogColour;
 uniform float fogDensity;
 uniform float night;
 uniform float stone;
+uniform float flood;
 varying vec3 vWorld;
 varying float vSurface;
 varying vec2 vUV;
@@ -261,6 +262,17 @@ void main(void) {
   // lamp post, all glancing faces) pale sky-blue
   float lum = dot(vColour.rgb, vec3(0.3, 0.59, 0.11));
   lit += skyColour * rim * (0.18 + 0.47 * lum);
+  /*
+   * FLOODLIGHTS on the monuments after dark (night views 2026-10-05: City Hall, the Ferry Building and both bridges
+   * were near-black shapes against the night sky — the real ones are floodlit). On the landmark and bridge materials
+   * (the flood flag), a warm wash on the walls — vertical faces, brightest towards the eye so the lit side faces the rider —
+   * scaled by the night. Roofs and the ground are left dark, as a floodlight leaves them.
+   */
+  if (flood > 0.5 && night > 0.0) {
+    float wall = 1.0 - abs(n.y);
+    float facing = 0.45 + 0.55 * max(dot(n, -vView), 0.0);
+    lit += base * vec3(1.0, 0.86, 0.66) * (0.55 * wall * facing * night);
+  }
   // a lamp head, a headlight, a traffic signal: bright by day, and the only thing lit after dark
   lit = mix(lit, vColour.rgb * (1.0 + 1.4 * night), vColour.a * (0.35 + 0.65 * night));
   // a lit window of the surface library, bright whatever the light outside
@@ -336,11 +348,13 @@ export function cartoonMaterial(scene: Scene, name = 'cartoon', instanced = true
       ? ['position', 'normal', 'color', 'world0', 'world1', 'world2', 'world3', 'instColor']
       : ['position', 'normal', 'color', 'uv'],
     uniforms: ['world', 'viewProjection', 'eye', 'sunDir', 'sunColour', 'skyColour', 'groundColour',
-      'fogColour', 'fogDensity', 'night', 'stone'],
+      'fogColour', 'fogDensity', 'night', 'stone', 'flood'],
   })
   applyCartoonLook(mat, DAYLIGHT)
   // the monuments' pale surfaces as dressed stone (BUGS.md #8); everything else stays flat
   mat.setFloat('stone', name === 'cartoonLandmark' || name === 'cartoonBridge' ? 1 : 0)
+  // floodlit after dark: the monuments, the bridge structures, and the skyline's far landmarks and bridges
+  mat.setFloat('flood', name === 'cartoonLandmark' || name === 'cartoonBridge' || name === 'cartoonSkyline' ? 1 : 0)
   mat.backFaceCulling = true
   /**
    * An explicit depth function, so nothing inherits one.
