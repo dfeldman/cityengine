@@ -260,7 +260,44 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
   let bridges = 0
   const deckEdges = edges.filter((e) => e.bridge)
   for (const e of deckEdges) densify(e, world)
-  for (const chain of chains(deckEdges)) {
+  /*
+   * ---- FREEWAY JUNCTIONS IN THE AIR (2026-10-05, the Central Freeway at Bryant and Division)
+   *
+   * A chain ends wherever three deck edges meet, and each chain eased down to the GROUND height at its ends — right for
+   * a viaduct's touchdown, wrong where three freeway decks meet 7 m up: the Central Freeway's westbound deck and two
+   * ramps all came down to the street at their shared node, in the middle of the Bryant/Division junction, and the
+   * deck's fascia stood across Bryant Street as a wall. So a node where only freeway decks meet, three or more, is a
+   * junction in the air: its height is the highest top of the chains that meet there, and those chains end AT it.
+   */
+  const ends = (chain: { e: BridgeEdge; reversed: boolean }[]): [number, number] => {
+    const first = chain[0]
+    const end = chain[chain.length - 1]
+    return [first.reversed ? first.e.b : first.e.a, end.reversed ? end.e.a : end.e.b]
+  }
+  const deckAtNode = new Map<number, BridgeEdge[]>()
+  for (const e of deckEdges) for (const n of [e.a, e.b]) deckAtNode.set(n, [...(deckAtNode.get(n) ?? []), e])
+  const airJunction = (n: number): boolean => {
+    const es = deckAtNode.get(n) ?? []
+    return es.length >= 3 && es.every((x) => FREEWAY.has(x.kind ?? ''))
+  }
+  const allChains = chains(deckEdges)
+  const junctionY = new Map<number, number>()
+  for (const chain of allChains) {
+    if (!chain.every(({ e }) => FREEWAY.has(e.kind ?? ''))) continue
+    const [na, nb] = ends(chain)
+    if (!airJunction(na) && !airJunction(nb)) continue
+    const fe = chain[0].e, le = chain[chain.length - 1].e
+    const fp = pts(fe.points), lp = pts(le.points)
+    const fh = fe.heights ?? fp.map((q) => world.ground(q.x, q.z))
+    const lh = le.heights ?? lp.map((q) => world.ground(q.x, q.z))
+    const g0 = chain[0].reversed ? fh[fh.length - 1] : fh[0]
+    const g1 = chain[chain.length - 1].reversed ? lh[0] : lh[lh.length - 1]
+    let rise = FREEWAY_MIN_RISE
+    for (const { e } of chain) rise = Math.max(rise, bridgeRise(e, edges, world, [g0, g1]).rise)
+    const top = Math.max(g0, g1) + rise
+    for (const n of [na, nb]) if (airJunction(n)) junctionY.set(n, Math.max(junctionY.get(n) ?? -Infinity, top))
+  }
+  for (const chain of allChains) {
     // the chain as one polyline: each edge's points in travel order, with its distance from the chain start
     const segs = chain.map(({ e, reversed }) => {
       const p = pts(e.points)
@@ -274,17 +311,23 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
       acc += cumulative(sg.p)[sg.p.length - 1]
     }
     const L = acc
-    const h0 = segs[0].h[0]
     const last = segs[segs.length - 1]
-    const h1 = last.h[last.h.length - 1]
+    const g0 = segs[0].h[0]
+    const g1 = last.h[last.h.length - 1]
+    const isFreeway = chain.every(({ e }) => FREEWAY.has(e.kind ?? ''))
+    // (an end at a junction in the air is that junction's height, not the ground's: see above)
+    const [na, nb] = ends(chain)
+    const j0 = isFreeway ? junctionY.get(na) : undefined
+    const j1 = isFreeway ? junctionY.get(nb) : undefined
+    const h0 = j0 ?? g0
+    const h1 = j1 ?? g1
     let rise = 0
     // a bridge chain of a few metres is a culvert or a scrap of a bridge's pavement: it follows the ground
-    if (L >= 12) for (const sg of segs) rise = Math.max(rise, bridgeRise(sg.e, edges, world, [h0, h1]).rise)
+    if (L >= 12) for (const sg of segs) rise = Math.max(rise, bridgeRise(sg.e, edges, world, [g0, g1]).rise)
     // …unless it turns out to sit inside a structure the rest of this loop raises: see the second pass below
     else for (const sg of segs) shortChain.add(sg.e.id)
-    const isFreeway = chain.every(({ e }) => FREEWAY.has(e.kind ?? ''))
     if (isFreeway) rise = Math.max(rise, FREEWAY_MIN_RISE)
-    const top = Math.max(h0, h1) + rise
+    const top = Math.max(Math.max(g0, g1) + rise, j0 ?? -Infinity, j1 ?? -Infinity)
     const hump = Math.PI * rise / Math.max(1, L) <= MAX_HUMP_GRADE
     // a viaduct holds a level deck and eases only near a genuine at-grade end — a single mid-span crest
     // (right, for a Seine bridge a few hundred metres long) would put a several-hundred-metre-tall hill under

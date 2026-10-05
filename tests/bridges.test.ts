@@ -114,3 +114,18 @@ describe('a region\'s foot-bridge layer caps', () => {
     expect(Math.max(...far.heights!)).toBeCloseTo(27.5)
   })
 })
+
+describe('freeway junctions in the air (Central Freeway at Bryant and Division, 2026-10-05)', () => {
+  it('keeps the node where three freeway decks meet up at deck height, not on the ground', () => {
+    // three 400 m freeway viaducts meeting at node 9 (x 0); their outer ends on the ground
+    const mk = (id: number, x: number, z: number): BridgeEdge =>
+      ({ id, a: id, b: 9, points: [x, z, 0, 0], heights: [0, 0], bridge: true, layer: 1, kind: 'motorway' })
+    const es = [mk(1, -400, 0), mk(2, 400, 0), mk(3, 0, 400)]
+    bridgeHeights(es, { water: [], ground: flat })
+    for (const e of es) {
+      // the outer end on the ground, the junction end up with the deck
+      expect(e.heights![0]).toBeCloseTo(0)
+      expect(e.heights![e.heights!.length - 1]).toBeGreaterThan(5)
+    }
+  })
+})
