@@ -2278,8 +2278,12 @@ export class City {
         // (bare rock out in the sea — the stacks off Lands End, mapped as natural=bare_rock round their models — is wet
         //  dark rock at the waterline, not a raft of brown earth: views audit 2026-10-04)
         const seaLevel = (this.pkg as CityPackage & CityMeta).sea ?? this.pkg.seaLevel
+        // (only a stack's outline — under 60 m across: Point Bonita's whole headland is mapped as bare rock on ground
+        //  the bake has too low, #260, and came out a black slab)
         const wet = a.kind === 'dirt' && seaLevel !== null && seaLevel !== undefined && (() => {
           const r = unpackPoints(a.ring)
+          const xs = r.map((p) => p.x), zs = r.map((p) => p.z)
+          if (Math.max(...xs) - Math.min(...xs) > 60 || Math.max(...zs) - Math.min(...zs) > 60) return false
           const c = r.reduce((q, p) => ({ x: q.x + p.x / r.length, z: q.z + p.z / r.length }), { x: 0, z: 0 })
           return this.terrain.heightAt(c.x, c.z) <= seaLevel + 0.5
         })()

@@ -4722,5 +4722,20 @@
    25
   ],
   "note": "pickwick.ts: the blade sign on the corner (2026-10-04)."
+ },
+ {
+  "name": "Point Bonita \u2014 lighthouse and footbridge from above",
+  "group": "landmark",
+  "from": [
+   37.815188,
+   -122.529088,
+   30
+  ],
+  "to": [
+   37.815602,
+   -122.529543,
+   0
+  ],
+  "note": "point-bonita.ts; the headland is mapped bare rock on ground the bake has too low (#260)."
  }
 ]
