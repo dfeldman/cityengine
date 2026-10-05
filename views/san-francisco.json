@@ -4707,5 +4707,20 @@
    0
   ],
   "note": "batteries census 2026-10-04: the gun batteries, no longer walk-ups."
+ },
+ {
+  "name": "The Pickwick Hotel \u2014 5th and Mission",
+  "group": "landmark",
+  "from": [
+   37.782445,
+   -122.406032,
+   3
+  ],
+  "to": [
+   37.782912,
+   -122.406509,
+   25
+  ],
+  "note": "pickwick.ts: the blade sign on the corner (2026-10-04)."
  }
 ]

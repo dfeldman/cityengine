@@ -66,16 +66,6 @@
   },
   {
     "osm": [
-      "way/1420679237"
-    ],
-    "name": "Building 1420679237",
-    "restyle": "bauhaus",
-    "height": 34,
-    "levels": 10,
-    "note": "2010s residential tower (Van Ness / Mid-Market): modern render and ribbon glass, not brick (2026-10-04; was rule 6: southern SF)"
-  },
-  {
-    "osm": [
       "way/944981401"
     ],
     "name": "Building 944981401",

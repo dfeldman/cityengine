@@ -206,5 +206,7 @@
   {"osm": ["way/1260649177"], "name": "way/1260649177", "restyle": "stucco", "note": "a low stuccoed shopfront building", "levels": 1},
   {"osm": ["way/1432655283"], "name": "141 Kearny Street", "restyle": "classical", "note": "a stone-fronted commercial block, rusticated base and cornice", "levels": 8},
   {"name": "Union Square", "procedural": "unionSquarePlaza", "lat": 37.787933, "lon": -122.407514, "front": 171, "size": [120, 78], "height": 30, "drape": true, "note": "The square itself, standalone at its own point (OSM's way/25278818 is a park, not a building): the granite deck over the garage with its steps, the lawn panels, the Dewey Monument's column and Victory, the two glass cafe pavilions and the palms. Grid frame, -z to Geary."},
-  {"osm": ["way/474341709"], "name": "Hotel Des Arts", "restyle": "tenement", "levels": 9, "note": "A narrow post-fire hotel at Bush and Grant: brick, shops below, the fire escape zig-zagging down the front (Commons: \"Hotel des Arts San Francisco.jpg\")."}
+  {"osm": ["way/474341709"], "name": "Hotel Des Arts", "restyle": "tenement", "levels": 9, "note": "A narrow post-fire hotel at Bush and Grant: brick, shops below, the fire escape zig-zagging down the front (Commons: \"Hotel des Arts San Francisco.jpg\")."},
+  {"osm": ["way/1420679236"], "name": "The Pickwick Hotel", "procedural": "pickwickHotel", "note": "pickwick.ts: dark red-brown brick over a Gothic-arched stone ground storey, the vertical PICKWICK HOTEL blade on the corner of 5th and Mission (Mapillary, hotel census 2026-10-04)."},
+  {"osm": ["way/1420679237"], "name": "The Pickwick Hotel (light court)", "procedural": "pickwickCourt", "note": "pickwick.ts: the same brick."}
 ]
