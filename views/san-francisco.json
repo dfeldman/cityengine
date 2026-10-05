@@ -5322,5 +5322,35 @@
    10
   ],
   "note": "owner queue: roof parts floating in the air"
+ },
+ {
+  "name": "Treasure Island \u2014 from above the Avenue of the Palms",
+  "group": "landmark",
+  "from": [
+   37.815,
+   -122.368,
+   90
+  ],
+  "to": [
+   37.823,
+   -122.37,
+   0
+  ],
+  "note": "TI check 2026-10-05"
+ },
+ {
+  "name": "Treasure Island \u2014 the housing",
+  "group": "landmark",
+  "from": [
+   37.826,
+   -122.364,
+   60
+  ],
+  "to": [
+   37.824,
+   -122.369,
+   0
+  ],
+  "note": "TI check 2026-10-05"
  }
 ]
