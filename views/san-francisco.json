@@ -5097,5 +5097,95 @@
    1.8
   ],
   "note": "fountains.ts yodaFountain (2026-10-05)."
+ },
+ {
+  "name": "Dolores Street \u2014 the palm median",
+  "group": "trees",
+  "from": [
+   37.756,
+   -122.4256,
+   3
+  ],
+  "to": [
+   37.76,
+   -122.426,
+   3
+  ],
+  "note": "unique plants audit 2026-10-05"
+ },
+ {
+  "name": "Palm Drive \u2014 Embarcadero palms",
+  "group": "trees",
+  "from": [
+   37.799,
+   -122.399,
+   3
+  ],
+  "to": [
+   37.796,
+   -122.3945,
+   4
+  ],
+  "note": "unique plants audit 2026-10-05"
+ },
+ {
+  "name": "Civic Center \u2014 from the north-east",
+  "group": "civic",
+  "from": [
+   37.782,
+   -122.4155,
+   80
+  ],
+  "to": [
+   37.77927,
+   -122.41923,
+   10
+  ],
+  "note": "civic center close look 2026-10-05"
+ },
+ {
+  "name": "Civic Center \u2014 from the south-east",
+  "group": "civic",
+  "from": [
+   37.7765,
+   -122.415,
+   80
+  ],
+  "to": [
+   37.77927,
+   -122.41923,
+   10
+  ],
+  "note": "civic center close look 2026-10-05"
+ },
+ {
+  "name": "Civic Center \u2014 from the west",
+  "group": "civic",
+  "from": [
+   37.7795,
+   -122.424,
+   80
+  ],
+  "to": [
+   37.77927,
+   -122.41923,
+   10
+  ],
+  "note": "civic center close look 2026-10-05"
+ },
+ {
+  "name": "Civic Center \u2014 from the south-west",
+  "group": "civic",
+  "from": [
+   37.776,
+   -122.4235,
+   80
+  ],
+  "to": [
+   37.77927,
+   -122.41923,
+   10
+  ],
+  "note": "civic center close look 2026-10-05"
  }
 ]
