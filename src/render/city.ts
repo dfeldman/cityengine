@@ -180,6 +180,8 @@ const AREA_TINT: Record<PackedArea['kind'], [number, number, number]> = {
 const SAND_MAX_EDGE = 4
 /** planted beds' ground: pale grey-brown bark mulch between low shrubs (the Tunnel Tops, Commons aerial) */
 const BEDS: [number, number, number] = [0.47, 0.44, 0.37]
+/** bare rock at the waterline: dark, wet */
+const WET_ROCK: [number, number, number] = [0.22, 0.21, 0.2]
 // Paving is grey, not white. The brighter value washed out every street it was laid in.
 const PAVEMENT: [number, number, number] = [0.52, 0.51, 0.485]
 
@@ -2273,7 +2275,15 @@ export class City {
         const base = areas.positions.length / 3
         // (a square opening off a brick street is laid in its brick: PackedArea `brick`, tools/street-paint.ts)
         // (a park of planted beds is mulch, its lawns drawn over it: PackedArea `beds`, the Tunnel Tops)
-        const tint = a.brick && this.region.brickStreets ? this.region.brickStreets.colour : a.beds ? BEDS : AREA_TINT[a.kind]
+        // (bare rock out in the sea — the stacks off Lands End, mapped as natural=bare_rock round their models — is wet
+        //  dark rock at the waterline, not a raft of brown earth: views audit 2026-10-04)
+        const seaLevel = (this.pkg as CityPackage & CityMeta).sea ?? this.pkg.seaLevel
+        const wet = a.kind === 'dirt' && seaLevel !== null && seaLevel !== undefined && (() => {
+          const r = unpackPoints(a.ring)
+          const c = r.reduce((q, p) => ({ x: q.x + p.x / r.length, z: q.z + p.z / r.length }), { x: 0, z: 0 })
+          return this.terrain.heightAt(c.x, c.z) <= seaLevel + 0.5
+        })()
+        const tint = a.brick && this.region.brickStreets ? this.region.brickStreets.colour : a.beds ? BEDS : wet ? WET_ROCK : AREA_TINT[a.kind]
         capPolygonWithHoles(areas, [unpackPoints(a.ring), ...(a.holes ?? []).map(unpackPoints)],
           0.02, tint, 0, 2.4, beach ? Math.min(AREA_MAX_EDGE, SAND_MAX_EDGE) : AREA_MAX_EDGE)
         if (beach) {

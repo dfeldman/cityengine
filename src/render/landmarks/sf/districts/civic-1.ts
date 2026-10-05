@@ -273,5 +273,12 @@ export const CIVIC_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
    * height 16 m, roof=quadruple_saltbox): a plain brick transit-infrastructure box under its distinctive
    * saltbox roof.
    */
-  transbayTransitionStructure: fromRecipe('brick-loft', { height: 16, base: 0, wall: [0.5, 0.34, 0.28], crown: { kind: 'hip', height: 3, inset: 0.5, colour: [0.35, 0.32, 0.3], material: 'tile' } }),
+  // the BART Transbay Tube's San Francisco vent on its pier behind the Ferry Building (Wikipedia: Sinbad's restaurant
+  // stood on top of it until 2016): a near-windowless grey concrete box with louvred bands — was a brick-loft recipe
+  transbayTransitionStructure: (out, fit) => tower(out, { ...fit, height: 16 }, {
+    height: 16,
+    tiers: [{ to: 16, face: { kind: 'bands', wall: [0.62, 0.61, 0.58], glass: [0.32, 0.33, 0.33], floor: 5.3, solid: 0.82, material: 'concrete' } }],
+    roof: [0.5, 0.5, 0.48],
+    crown: { kind: 'parapet', height: 0.8, colour: [0.62, 0.61, 0.58], material: 'concrete' },
+  }),
 }
