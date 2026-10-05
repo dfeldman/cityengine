@@ -196,4 +196,20 @@ export function centralAdventist(out: MeshBuilder, fit: Fit): void {
   })
 }
 
-export const KIT_CHURCHES: Record<string, (out: MeshBuilder, fit: Fit) => void> = { shrineOfSaintFrancis, guadalupeChurch, saintDominics, sherithIsrael, saintBrigid, saintVincentDePaul, saintMarksLutheran, firstChurchOfChristScientist, saintAgnes, saintFrancisLutheran, presidioChapel, swedenborgianChurch, centralAdventist }
+/** Fifth Church of Christ, Scientist, 450 O'Farrell (way/71359566): a cream neoclassical temple front — a portico of
+ *  tall fluted columns under a pediment across the O'Farrell front, a medallion and lattice windows in the plain
+ *  side bays, FIFTH CHURCH OF CHRIST SCIENTIST cut in the stone (Mapillary, church audit 2026-10-04). It had been
+ *  given First Church's brick Romanesque model and name. */
+export function fifthChurchOfChristScientist(out: MeshBuilder, fit: Fit): void {
+  church(out, fit, {
+    nave: { bays: 4, storeys: 1, roof: 'gable', pitch: 'low' },
+    aisles: null,
+    transept: null,
+    chancel: null,
+    tower: null,
+    front: { kind: 'pediment', portal: 'porch', window: 'medallion', steps: 3 },
+    walls: { material: 'limestone', openings: 'square', buttresses: 'none', colour: [0.86, 0.83, 0.74] },
+  })
+}
+
+export const KIT_CHURCHES: Record<string, (out: MeshBuilder, fit: Fit) => void> = { fifthChurchOfChristScientist, shrineOfSaintFrancis, guadalupeChurch, saintDominics, sherithIsrael, saintBrigid, saintVincentDePaul, saintMarksLutheran, firstChurchOfChristScientist, saintAgnes, saintFrancisLutheran, presidioChapel, swedenborgianChurch, centralAdventist }
