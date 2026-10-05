@@ -37,6 +37,7 @@
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { facade } from '../../facade.ts'
+import { tower } from '../../tower.ts'
 
 export const B3: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /**
@@ -124,16 +125,20 @@ export const B3: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
    * huge, blank, windowless precast/concrete block with vertical fluted ribs and no visible openings at
    * street level beyond a small service door — the honest treatment is a plain, tall, unglazed wall.
    */
+  /*
+   * The Embarcadero Substation (PG&E, 51 m), Fremont at Folsom. Mapillary frames on its street (2026-10-05): a
+   * WINDOWLESS block of beige exposed-aggregate concrete, its whole height fluted in fins that splay a little at the
+   * foot, a recessed plinth. It was a facade() with ten storeys of small windows — an office tower it is not.
+   */
   b3_substation_192883977: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'plain', storeys: 2, material: 'concrete' },
-      shaft: { storeys: 10, windows: 'small', material: 'concrete' },
-      top: null,
-      bands: { aboveGround: null, belowTop: null, top: null },
-      crown: null,
-      frame: { verticals: { kind: 'pilaster', width: 0.35, at: 'bays', count: 10 }, horizontals: null, recess: 0, material: 'concrete' },
-      entrance: { at: 'corner', kind: 'door', steps: 0 },
-      material: 'concrete',
+    const BEIGE: [number, number, number] = [0.74, 0.69, 0.6]
+    const H = fit.height > 30 ? fit.height : 51
+    tower(out, { ...fit, height: H }, {
+      height: H,
+      base: { height: 4, face: { kind: 'blank', wall: [0.62, 0.58, 0.51], material: 'concrete' } },
+      tiers: [{ to: H, face: { kind: 'fins', wall: BEIGE, glass: [0.64, 0.6, 0.52], pitch: 1.4, solid: 0.55, depth: 0.35, floor: H, material: 'concrete' } }],
+      roof: [0.55, 0.53, 0.5],
+      crown: { kind: 'parapet', height: 0.8, colour: BEIGE },
     })
   },
 
