@@ -14,6 +14,7 @@ import { box, prism, strut } from '../../models.ts'
 import { capPolygon } from '../../buildings.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 import { towerRing, insetRing, faceBand } from '../tower.ts'
+import { edgeAt, edgeFacing, signText } from '../parts.ts'
 
 const h = (a: number, b: number): number => { const v = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return v - Math.floor(v) }
 
@@ -84,4 +85,38 @@ export function yodaFountain(out: MeshBuilder, _fit: Fit): void {
   strut(out, [0.24, 1.55, 0.16], [0.26, 2.2, 0.14], 0.05, 0.05, BRONZE, metal)
 }
 
-export const FOUNTAINS: Record<string, (out: MeshBuilder, fit: Fit) => void> = { unPlazaFountain, yodaFountain }
+
+/**
+ * THE SAN FRANCISCO MINT, 155 Hermann Street (Gilbert Stanley Underwood, 1937; way/115944818). Commons "NRIS 88000026
+ * Mint Building - Duboce St Elevation.jpg" (2026-10-05): a white granite Stripped Classical fortress on the rock
+ * outcrop over Duboce and Market. One tall storey of narrow window bays between flat piers, each pier with a roundel
+ * at its head, plain end pavilions with a single window, a high attic lettered UNITED STATES MINT with a row of small
+ * square windows, a flagpole — all standing on a massive rubble-stone retaining wall about 12 m high, which is the
+ * building's whole silhouette from the street. The terrain under it is the flattened summit of BUGS #260, so the rock
+ * and the wall are drawn here, the building raised on them. Front 180: Duboce is south.
+ */
+export function sanFranciscoMint(out: MeshBuilder, fit: Fit): void {
+  const GRANITE: Rgb = [0.86, 0.86, 0.84], SHADE: Rgb = [0.74, 0.74, 0.72], GLASS: Rgb = [0.13, 0.16, 0.2]
+  const RUBBLE: Rgb = [0.4, 0.36, 0.31], ROCK: Rgb = [0.42, 0.4, 0.37]
+  const st = surfaceTag('granite')
+  const ring = towerRing(fit)
+  const ROCKH = 12
+  // the outcrop and its rubble wall: the outline pushed out 4 m, from below ground to the building's floor
+  const wall = insetRing(ring, -4)
+  faceBand(out, wall, -2, ROCKH, { kind: 'blank', wall: RUBBLE, material: 'granite' })
+  capPolygon(out, wall.map((p) => ({ x: p.x, z: p.z })), ROCKH, ROCK, surfaceTag('concrete'))
+  // the building: the tall window storey, the attic, the parapet rail
+  const B = ROCKH, H1 = 13, ATT = 6
+  faceBand(out, ring, B, B + H1, { kind: 'fins', wall: GRANITE, glass: GLASS, pitch: 3.6, solid: 0.55, depth: 0.25, floor: H1, material: 'granite' })
+  faceBand(out, ring, B + H1, B + H1 + 0.7, { kind: 'blank', wall: SHADE, material: 'granite' })
+  faceBand(out, insetRing(ring, 1.2), B + H1 + 0.7, B + H1 + 0.7 + ATT, { kind: 'punched', wall: GRANITE, glass: GLASS, pitch: 4.2, solid: 0.88, floor: ATT, material: 'granite' })
+  capPolygon(out, insetRing(ring, 1.2).map((p) => ({ x: p.x, z: p.z })), B + H1 + 0.7 + ATT, [0.55, 0.55, 0.55], surfaceTag('concrete'))
+  capPolygon(out, ring.map((p) => ({ x: p.x, z: p.z })), B + H1 + 0.7, SHADE, st)
+  // the lettering and the flagpole over the front
+  const e = edgeAt(ring, edgeFacing(ring))
+  signText(out, 'UNITED STATES MINT', e.mid.x + e.nx * 0.06, B + H1 - 1.4, e.mid.z + e.nz * 0.06, 0.8, [0.6, 0.6, 0.58], { heading: e.heading })
+  box(out, e.mid.x - e.nx * 6, B + H1 + 0.7 + ATT + 5, e.mid.z - e.nz * 6, 0.07, 5, 0.07, [0.8, 0.8, 0.8], surfaceTag('metal'))
+  box(out, e.mid.x - e.nx * 6 + e.tx * 1.1, B + H1 + 0.7 + ATT + 9.2, e.mid.z - e.nz * 6 + e.tz * 1.1, 1, 0.6, 0.02, [0.7, 0.18, 0.16], 0)
+}
+
+export const FOUNTAINS: Record<string, (out: MeshBuilder, fit: Fit) => void> = { unPlazaFountain, yodaFountain, sanFranciscoMint }

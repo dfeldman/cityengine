@@ -181,26 +181,6 @@ export const B5: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     })
   },
 
-  /**
-   * way/115944818 — San Francisco Mint (current, "New Mint"), 155 Hermann St. SUPERSEDED — "No photograph...
-   * Built BLIND" undersold this: a name search (Living New Deal, NPS) confirms it is a 1937 Gilbert Stanley
-   * Underwood design in Stripped Classicism, granite-faced reinforced concrete, four storeys around a central
-   * court. See `BANK_TEMPLES.b5_civic_115944818` in `sf/districts/bank-temples.ts`, which overrides this
-   * entry (spread order in `sf/index.ts`). This function is dead code, kept only for review; its comment is
-   * not evidence about the building.
-   */
-  b5_civic_115944818: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'rusticated', storeys: 1, material: 'limestone' },
-      shaft: { storeys: 2, windows: 'dressed', material: 'limestone' },
-      top: null,
-      bands: { aboveGround: 'string', belowTop: null, top: 'cornice' },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'portal', steps: 3 },
-      material: 'limestone',
-    })
-  },
 
   /**
    * way/257338714 — Union Iron Works Office (Building #104), 560 20th St, industrial, 15 m. No photograph.

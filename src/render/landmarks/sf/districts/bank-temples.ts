@@ -96,16 +96,6 @@ export const BANK_TEMPLES: Record<string, (out: MeshBuilder, fit: Fit) => void> 
     })
   },
 
-  /** way/115944818 — San Francisco Mint (current, 1937), Stripped Classicism. Flattened giant pilasters, no portico. */
-  b5_civic_115944818: (out: MeshBuilder, fit: Fit): void => {
-    bankTemple(out, fit, {
-      columns: 6, order: 'doric', storeys: 3, windows: 'dressed',
-      engaged: true, flanks: false, pediment: false, material: 'granite',
-      top: { kind: 'attic', storeys: 1, material: 'granite' },
-      bands: { aboveGround: null, belowTop: 'string', top: 'cornice' },
-      esplanade: null, dome: null,
-    })
-  },
 
   /** way/32946683 — Savings Union Bank Building. Ionic hexastyle portico, pediment, dome behind. */
   savingsUnionBank_32946683: (out: MeshBuilder, fit: Fit): void => {
