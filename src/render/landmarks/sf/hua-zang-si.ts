@@ -67,7 +67,7 @@ export function huaZangSi(out: MeshBuilder, fit: Fit): void {
   for (let k = 0; k < 6; k++) {
     const a = (k / 6) * Math.PI, ex = Math.cos(f.heading), ez = -Math.sin(f.heading)
     const dx = ex * Math.cos(a) * R, dz = ez * Math.cos(a) * R, dy = Math.sin(a) * R
-    const [sx, sz] = f.at(0, 0.07)
+    const [sx, sz] = f.at(0, 0.16)
     strut(out, [sx - dx, G + ry - dy, sz - dz], [sx + dx, G + ry + dy, sz + dz], 0.08, 0.04, DARKGREY, 0)
   }
   // the centre gable over the front's eaves, its triple lancet

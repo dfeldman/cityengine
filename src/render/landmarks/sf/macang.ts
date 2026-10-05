@@ -33,7 +33,16 @@ export type Frame = { on: (u: number, y: number, o: number, w: number, h: number
 
 export function frontFrame(out: MeshBuilder, fit: Fit, G: number): Frame {
   const ring = towerRing(fit)
-  const e = edgeAt(ring, edgeFacing(ring, 180))
+  const e0 = edgeAt(ring, edgeFacing(ring, 180))
+  // the front is the WHOLE footprint's width along that edge, not the one segment: Macang's south side is a 14 m
+  // segment between the projecting tower fronts, and six columns came out squeezed into 0.6 m (owner, 2026-10-04)
+  let u0 = Infinity, u1 = -Infinity, o1 = -Infinity
+  for (const p of ring) {
+    const u = (p.x - e0.mid.x) * e0.tx + (p.z - e0.mid.z) * e0.tz, o = (p.x - e0.mid.x) * e0.nx + (p.z - e0.mid.z) * e0.nz
+    u0 = Math.min(u0, u); u1 = Math.max(u1, u); o1 = Math.max(o1, o)
+  }
+  const um = (u0 + u1) / 2
+  const e = { ...e0, L: u1 - u0, mid: { x: e0.mid.x + e0.tx * um + e0.nx * o1, z: e0.mid.z + e0.tz * um + e0.nz * o1 } }
   const at = (u: number, o: number): [number, number] => [e.mid.x + e.tx * u + e.nx * o, e.mid.z + e.tz * u + e.nz * o]
   const on = (u: number, y: number, o: number, w: number, h: number, d: number, c: Rgb, tag = surfaceTag('ashlar')): void => {
     const [x, z] = at(u, o)

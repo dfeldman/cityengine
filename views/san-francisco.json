@@ -4757,14 +4757,14 @@
   "name": "Macang Monastery \u2014 from Eddy Street",
   "group": "landmark",
   "from": [
-   37.780469,
-   -122.438032,
-   3
+   37.780648,
+   -122.437828,
+   2
   ],
   "to": [
-   37.780873,
-   -122.438055,
-   12
+   37.780855,
+   -122.4381,
+   13
   ],
   "note": "macang.ts, the owner's photograph (2026-10-04): portico, twin towers, the gallery to the right."
  },
@@ -4772,14 +4772,14 @@
   "name": "Hua Zang Si \u2014 from 22nd Street",
   "group": "landmark",
   "from": [
-   37.755406,
-   -122.417343,
+   37.755531,
+   -122.417366,
    2
   ],
   "to": [
-   37.75563,
+   37.755621,
    -122.417366,
-   14
+   17
   ],
   "note": "hua-zang-si.ts, the owner's photograph (2026-10-04)."
  }
