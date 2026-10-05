@@ -10426,6 +10426,10 @@ absolute `baseY` near them, and the raw ground is ~45% bumpier at 4 m than the o
 cautious alternative, but each ring must sit where raw ≈ opened (under ~1 m) or be feathered, and no ridden way may
 cross it.
 
+(2026-10-05: `cliffs` zones were added on Corona Heights, Twin Peaks' two summits and Bernal Hill's crest for their
+bare chert — and draw nothing yet, because the opening has flattened those summits into plateaus with no steep faces:
+Corona Heights reads 32.7 m flat over 80 m. They will show the rock once the summits are restored either way.)
+
 ### #261 The Bay Bridge's towers stand ~115 m south-west of the real ones (OPEN, OWNER DECISION; 2026-10-04)
 Found after #272 in docs/BUGFIX-2026-10-03.md (the Golden Gate stood 49 m off along its axis — `tools/bridge-fit.ts`
 measures only ACROSS a bridge's axis). Projected onto the Bay Bridge NEAR entry's axis (bridges.json: 37.79738,
