@@ -46,8 +46,8 @@ export const TIERA_5: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   mcallisterTower: (out: MeshBuilder, fit: Fit): void => {
     // buff, not yellow: the old [0.82, 0.76, 0.6] read as a yellow box in sun (campus audit 2026-10-05, Mapillary
     // way-256042681-03 and the review refs: greyish buff brick, the shaft ribbed by deep piers between window strips)
-    const wall: [number, number, number] = [0.73, 0.67, 0.55]
-    const baseWall: [number, number, number] = [0.66, 0.6, 0.49]
+    const wall: [number, number, number] = [0.69, 0.66, 0.59]
+    const baseWall: [number, number, number] = [0.62, 0.59, 0.52]
     const glass: [number, number, number] = [0.18, 0.22, 0.22]
     const H = fit.height || 114
     const crownH = H * 0.09
