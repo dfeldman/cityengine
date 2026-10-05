@@ -212,4 +212,19 @@ export function fifthChurchOfChristScientist(out: MeshBuilder, fit: Fit): void {
   })
 }
 
-export const KIT_CHURCHES: Record<string, (out: MeshBuilder, fit: Fit) => void> = { fifthChurchOfChristScientist, shrineOfSaintFrancis, guadalupeChurch, saintDominics, sherithIsrael, saintBrigid, saintVincentDePaul, saintMarksLutheran, firstChurchOfChristScientist, saintAgnes, saintFrancisLutheran, presidioChapel, swedenborgianChurch, centralAdventist }
+/** The old Sacred Heart Church, Fillmore at Fell (1898; way/248782086) — the Church of 8 Wheels roller rink since
+ *  2013: tan Romanesque Revival, round-arched windows, and the tall square campanile with its arcaded belfry under a
+ *  low hip at the corner (Mapillary on Fillmore, 2026-10-05). It was an 21 m sfapartment block. */
+export function oldSacredHeart(out: MeshBuilder, fit: Fit): void {
+  church(out, fit, {
+    nave: { bays: 6, storeys: 2, roof: 'gable', pitch: 'moderate' },
+    aisles: { roof: 'lean-to' },
+    transept: null,
+    chancel: { kind: 'apse' },
+    tower: { at: 'front-corner', stages: 5, plan: 'square', top: 'belfry' },
+    front: { kind: 'gable', portal: 'triple', window: 'rose', steps: 3 },
+    walls: { material: 'sandstone', openings: 'round', buttresses: 'plain', colour: [0.8, 0.7, 0.54] },
+  })
+}
+
+export const KIT_CHURCHES: Record<string, (out: MeshBuilder, fit: Fit) => void> = { oldSacredHeart, fifthChurchOfChristScientist, shrineOfSaintFrancis, guadalupeChurch, saintDominics, sherithIsrael, saintBrigid, saintVincentDePaul, saintMarksLutheran, firstChurchOfChristScientist, saintAgnes, saintFrancisLutheran, presidioChapel, swedenborgianChurch, centralAdventist }

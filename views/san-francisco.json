@@ -5202,5 +5202,20 @@
    40
   ],
   "note": "union-square.ts westinStFrancis + the 1972 tower (2026-10-05 check)."
+ },
+ {
+  "name": "Church of 8 Wheels (old Sacred Heart) \u2014 Fillmore and Fell",
+  "group": "landmark",
+  "from": [
+   37.774674,
+   -122.431325,
+   14
+  ],
+  "to": [
+   37.7748,
+   -122.430643,
+   12
+  ],
+  "note": "kit-churches.ts oldSacredHeart (2026-10-05)."
  }
 ]
