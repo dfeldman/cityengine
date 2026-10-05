@@ -95,6 +95,10 @@ export function archetypeOf(f: Features): { archetype: Archetype; district: Dist
    * for the rest — never the city's flats, offices or Victorians.
    */
   if (h <= 30 && inBuiltZone('mediterranean', f.lat, f.lon)) {
+    // …but not MARINSHIP: the wartime shipyard's sheds and warehouses along the north waterfront (the Bay Model's is
+    // 26 000 m²) came out as pink palazzi under acres of tile (Sausalito audit, 2026-10-05). A footprint past 2000 m²
+    // in a town of houses is a shed, plain and flat-roofed.
+    if (f.area > 2000) return a('retailBox', 'sausalito-marinship')
     return f.roll < 0.4 ? a('presidio', 'sausalito-revival') : a('marinaHouse', 'sausalito-stucco')
   }
 
