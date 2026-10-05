@@ -227,4 +227,65 @@ export function oldSacredHeart(out: MeshBuilder, fit: Fit): void {
   })
 }
 
-export const KIT_CHURCHES: Record<string, (out: MeshBuilder, fit: Fit) => void> = { oldSacredHeart, fifthChurchOfChristScientist, shrineOfSaintFrancis, guadalupeChurch, saintDominics, sherithIsrael, saintBrigid, saintVincentDePaul, saintMarksLutheran, firstChurchOfChristScientist, saintAgnes, saintFrancisLutheran, presidioChapel, swedenborgianChurch, centralAdventist }
+/* ---- the generic-church census, 2026-10-05 (every church still the bake's `classical` box, photographed) ---- */
+
+/** Saint James, Guerrero at 23rd (way/192123600): white Mission Revival, three round-arched portals with tracery
+ *  lunettes up a flight of steps, SAINT JAMES CHURCH over them, a flat parapet front. */
+export function saintJames(out: MeshBuilder, fit: Fit): void {
+  church(out, fit, {
+    nave: { bays: 5, storeys: 1, roof: 'gable', pitch: 'low' }, aisles: { roof: 'flat' }, transept: null, chancel: { kind: 'apse' },
+    tower: null, front: { kind: 'plain', portal: 'triple', window: 'lancets', steps: 5 },
+    walls: { material: 'stucco', openings: 'round', buttresses: 'none', colour: [0.93, 0.91, 0.86] },
+  })
+}
+
+/** The red brick church on South Van Ness at 18th (way/261103571; OSM gives no name): red brick Romanesque with a big
+ *  round wheel window in its gable and a square corner tower. */
+export function southVanNessBrickChurch(out: MeshBuilder, fit: Fit): void {
+  church(out, fit, {
+    nave: { bays: 4, storeys: 1, roof: 'gable', pitch: 'moderate' }, aisles: null, transept: null, chancel: { kind: 'square' },
+    tower: { at: 'front-corner', stages: 3, plan: 'square', top: 'pyramid' }, front: { kind: 'gable', portal: 'single', window: 'wheel', steps: 3 },
+    walls: { material: 'brick', openings: 'round', buttresses: 'plain', colour: [0.6, 0.26, 0.2] },
+  })
+}
+
+/** Saint Monica's, Geary at 23rd Avenue (way/286297923): pink-cream Spanish Baroque, arched portals up a balustraded
+ *  stair, tall arched windows, a corner bell tower. */
+export function saintMonicas(out: MeshBuilder, fit: Fit): void {
+  church(out, fit, {
+    nave: { bays: 6, storeys: 1, roof: 'gable', pitch: 'low' }, aisles: { roof: 'lean-to' }, transept: null, chancel: { kind: 'apse' },
+    tower: { at: 'front-corner', stages: 4, plan: 'square', top: 'dome' }, front: { kind: 'baroque', portal: 'triple', window: 'rose', steps: 6 },
+    walls: { material: 'stucco', openings: 'round', buttresses: 'none', colour: [0.92, 0.84, 0.78] },
+  })
+}
+
+/** Park Presidio United Methodist, Geary at 7th Avenue (way/36654283): white stucco Gothic, a square corner tower with
+ *  paired lancets, a steep gable front with a big pointed window, a red door. */
+export function parkPresidioMethodist(out: MeshBuilder, fit: Fit): void {
+  church(out, fit, {
+    nave: { bays: 4, storeys: 1, roof: 'gable', pitch: 'steep' }, aisles: null, transept: null, chancel: { kind: 'square' },
+    tower: { at: 'front-corner', stages: 3, plan: 'square', top: 'parapet' }, front: { kind: 'gable', portal: 'single', window: 'lancets', steps: 2 },
+    walls: { material: 'stucco', openings: 'lancet', buttresses: 'plain', colour: [0.93, 0.92, 0.89] },
+  })
+}
+
+/** Congregation Sha'ar Zahav, 16th at Dolores (way/260504799): a sage-green stucco hall with round-arched windows and
+ *  a red arched door, no tower. */
+export function shaarZahav(out: MeshBuilder, fit: Fit): void {
+  church(out, fit, {
+    nave: { bays: 4, storeys: 2, roof: 'flat', pitch: 'low' }, aisles: null, transept: null, chancel: null,
+    tower: null, front: { kind: 'plain', portal: 'single', window: 'none', steps: 3 },
+    walls: { material: 'stucco', openings: 'round', buttresses: 'none', colour: [0.64, 0.74, 0.62] },
+  })
+}
+
+/** 19th Avenue Baptist, 19th at Judah (way/267734029): a small cream clapboard church under a steep grey gable. */
+export function nineteenthAvenueBaptist(out: MeshBuilder, fit: Fit): void {
+  church(out, fit, {
+    nave: { bays: 4, storeys: 1, roof: 'gable', pitch: 'steep' }, aisles: null, transept: null, chancel: null,
+    tower: null, front: { kind: 'gable', portal: 'single', window: 'none', steps: 2 },
+    walls: { material: 'stucco', openings: 'square', buttresses: 'none', colour: [0.93, 0.9, 0.78] },
+  })
+}
+
+export const KIT_CHURCHES: Record<string, (out: MeshBuilder, fit: Fit) => void> = { saintJames, southVanNessBrickChurch, saintMonicas, parkPresidioMethodist, shaarZahav, nineteenthAvenueBaptist, oldSacredHeart, fifthChurchOfChristScientist, shrineOfSaintFrancis, guadalupeChurch, saintDominics, sherithIsrael, saintBrigid, saintVincentDePaul, saintMarksLutheran, firstChurchOfChristScientist, saintAgnes, saintFrancisLutheran, presidioChapel, swedenborgianChurch, centralAdventist }

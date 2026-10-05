@@ -5217,5 +5217,50 @@
    12
   ],
   "note": "kit-churches.ts oldSacredHeart (2026-10-05)."
+ },
+ {
+  "name": "Saint James Church \u2014 Guerrero",
+  "group": "churches",
+  "from": [
+   37.7538,
+   -122.4229,
+   3
+  ],
+  "to": [
+   37.753749,
+   -122.423413,
+   8
+  ],
+  "note": "generic-church census 2026-10-05"
+ },
+ {
+  "name": "Saint Monica's \u2014 Geary",
+  "group": "churches",
+  "from": [
+   37.7802,
+   -122.4827,
+   4
+  ],
+  "to": [
+   37.780597,
+   -122.482849,
+   10
+  ],
+  "note": "generic-church census 2026-10-05"
+ },
+ {
+  "name": "Park Presidio Methodist \u2014 Geary at 7th",
+  "group": "churches",
+  "from": [
+   37.7811,
+   -122.46545,
+   4
+  ],
+  "to": [
+   37.780637,
+   -122.465561,
+   10
+  ],
+  "note": "generic-church census 2026-10-05"
  }
 ]
