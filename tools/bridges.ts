@@ -384,11 +384,17 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
    * applied to heights.
    */
   const ALONGSIDE = 25
-  const carriage: { x: number; z: number; y: number }[] = []
+  // (each point with its way's direction there: a footway only joins a roadway it runs ALONG — Mariposa Street's 43 m
+  //  sidewalk passes under I-280, every point of it within 25 m of the freeway, and was lifted 15 m onto its deck)
+  const carriage: { x: number; z: number; y: number; ux: number; uz: number }[] = []
   for (const e of deckEdges) {
     if (e.foot || !raised.has(e.id) || !e.heights) continue
     const p = pts(e.points)
-    for (let i = 0; i < p.length; i++) carriage.push({ x: p[i].x, z: p[i].z, y: e.heights[i] })
+    for (let i = 0; i < p.length; i++) {
+      const a = p[Math.max(0, i - 1)], b = p[Math.min(p.length - 1, i + 1)]
+      const l = Math.hypot(b.x - a.x, b.z - a.z) || 1
+      carriage.push({ x: p[i].x, z: p[i].z, y: e.heights[i], ux: (b.x - a.x) / l, uz: (b.z - a.z) / l })
+    }
   }
   let adopted = 0
   if (carriage.length > 0) {
@@ -400,7 +406,12 @@ export function bridgeHeights(edges: BridgeEdge[], world: BridgeWorld): { bridge
       for (let i = 0; i < p.length; i++) {
         let best = Infinity
         let y = e.heights[i]
+        const a = p[Math.max(0, i - 1)], b = p[Math.min(p.length - 1, i + 1)]
+        const l = Math.hypot(b.x - a.x, b.z - a.z) || 1
+        const fx = (b.x - a.x) / l, fz = (b.z - a.z) / l
         for (const c of carriage) {
+          // alongside: within 30° of parallel either way
+          if (Math.abs(c.ux * fx + c.uz * fz) < 0.866) continue
           const d = Math.hypot(c.x - p[i].x, c.z - p[i].z)
           if (d < best) { best = d; y = c.y }
         }

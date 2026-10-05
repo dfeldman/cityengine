@@ -129,3 +129,14 @@ describe('freeway junctions in the air (Central Freeway at Bryant and Division, 
     }
   })
 })
+
+describe('a footway joins only the roadway it runs along (Mariposa Street under I-280, 2026-10-05)', () => {
+  it('does not lift a raised footway crossing UNDER a freeway onto the freeway deck', () => {
+    const freeway: BridgeEdge = { id: 1, a: 1, b: 2, points: [0, -400, 0, 400], heights: [0, 0], bridge: true, layer: 2, kind: 'motorway' }
+    // a 40 m sidewalk on a short bridge, crossing under it at right angles
+    const walk: BridgeEdge = { id: 2, a: 3, b: 4, points: [-20, 0, 20, 0], heights: [0, 0], bridge: true, layer: 1, foot: true, kind: 'footway' }
+    bridgeHeights([freeway, walk], { water: [], ground: flat })
+    expect(Math.max(...freeway.heights!)).toBeGreaterThan(5)
+    expect(Math.max(...walk.heights!)).toBeLessThan(5)
+  })
+})
