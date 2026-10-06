@@ -1811,7 +1811,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     { name: 'Sutro Tower', lat: 37.75523, lon: -122.45277, top: 235 },
     { name: 'Salesforce Tower', lat: 37.78977, lon: -122.39687, top: 300 },
     { name: 'Coit Tower', lat: 37.80239, lon: -122.40582, top: 62 },
-    { name: 'the de Young\'s Hamon Tower', lat: 37.77147, lon: -122.46859, top: 42 },
+    // (the tower itself, at the museum's north-east corner, from the model's own top: the museum's centre put the eye
+    //  over its roof, 65 m from the tower — owner, 2026-10-06)
+    { name: 'the de Young\'s Hamon Tower', lat: 37.772015, lon: -122.468316, top: 47 },
     { name: 'the Transamerica Pyramid', lat: 37.79519, lon: -122.40279, top: 230 },
   ].map((o) => ({ ...o, ...proj.toLocal({ lat: o.lat, lon: o.lon }) })) : []
   let observing: string | null = null
