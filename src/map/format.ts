@@ -53,7 +53,7 @@ export interface ZoneProps {
   trails?: 'bike'
   exclude?: string[]
   /** 'waves': surf breaks on the shore here — foam and spray along the coastline (render/surf.ts) */
-  water?: 'calm' | 'waves'
+  water?: 'calm' | 'waves' | 'beach'
   /** true: the steep ground here is bare rock, with boulders (render/cliffs.ts — Lands End, the Sutro Baths) */
   cliffs?: boolean
   /** 'beds': the parks here are planted beds — mulch and low shrubs, the mapped lawns the only grass (Tunnel Tops) */

@@ -179,7 +179,19 @@ export class Terrain {
    * sub-20 m detail the coarse grid cannot carry, and that boundary is only ever at the edge of the ring,
    * more than a kilometre from the rider.
    */
+  /**
+   * A beach's own slope (render/beach-surf.ts `shoreRamp`): the elevation data has no beach face — Ocean Beach stands
+   * 3 m over the sea at the waterline — so near a sandy shore the ground is lowered onto a beach that runs down into the
+   * water. Given the data's height, returns the ground's.
+   */
+  shore: ((x: number, z: number, h: number) => number) | null = null
+
   rawHeightAt(x: number, z: number): number {
+    const h = this.dataHeightAt(x, z)
+    return this.shore ? this.shore(x, z, h) : h
+  }
+
+  private dataHeightAt(x: number, z: number): number {
     if (this.blocks.size > 0) {
       const b = this.blocks.get(Terrain.at(Math.floor(x / this.tile), Math.floor(z / this.tile)))
       if (b) {

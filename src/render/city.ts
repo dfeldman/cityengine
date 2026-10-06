@@ -184,6 +184,8 @@ const BEDS: [number, number, number] = [0.47, 0.44, 0.37]
 const WET_ROCK: [number, number, number] = [0.22, 0.21, 0.2]
 // Paving is grey, not white. The brighter value washed out every street it was laid in.
 const PAVEMENT: [number, number, number] = [0.52, 0.51, 0.485]
+/** sand's tint on the road shader's sand page (which is already sand-coloured): Ocean Beach's pale grey-tan, not gold */
+const SAND_ON_PAGE: [number, number, number] = [0.64, 0.65, 0.72]
 /** a park's foot way's surface page (public/roads/; #201's park has no concrete): asphalt, earth, gravel, boards */
 const TRAIL_PAGE: Record<string, string> = {
   asphalt: 'asphalt', concrete: 'asphalt', dirt: 'dirt', ground: 'dirt', earth: 'dirt', compacted: 'dirt', grass: 'dirt',
@@ -2227,6 +2229,7 @@ export class City {
     // raised edges — bridges and the ramps onto them — are structures, built below, not painted
     const groundEdges = (this.edgesIn.get(k) ?? []).filter((e) => !this.raisedIds.has(e.id))
     const areas = new MeshBuilder()
+    const sandOut = new MeshBuilder()
     const walks = new MeshBuilder()
     const markings = new MeshBuilder()
     const corridor = new MeshBuilder()
@@ -2340,7 +2343,13 @@ export class City {
          * apparent shape is drawn by the WET BAND, not by geometry, so it costs one pass over the colours.
          */
         const beach = a.kind === 'sand' ? this.shoreIndex() : null
-        const base = areas.positions.length / 3
+        /*
+         * SAND IN ITS OWN MESH, on the road shader's grainy sand page (owner, 2026-10-06: "better sand"). The ground
+         * material's page drew sand as long pale stripes, like decking. The bands below still tint it vertex by vertex;
+         * its uvs are metres, as the road shader wants.
+         */
+        const into = a.kind === 'sand' ? sandOut : areas
+        const base = into.positions.length / 3
         // (a square opening off a brick street is laid in its brick: PackedArea `brick`, tools/street-paint.ts)
         // (a park of planted beds is mulch, its lawns drawn over it: PackedArea `beds`, the Tunnel Tops)
         // (bare rock out in the sea — the stacks off Lands End, mapped as natural=bare_rock round their models — is wet
@@ -2355,15 +2364,15 @@ export class City {
           const c = r.reduce((q, p) => ({ x: q.x + p.x / r.length, z: q.z + p.z / r.length }), { x: 0, z: 0 })
           return this.terrain.heightAt(c.x, c.z) <= seaLevel + 0.5
         })()
-        const tint = a.brick && this.region.brickStreets ? this.region.brickStreets.colour : a.beds ? BEDS : wet ? WET_ROCK : AREA_TINT[a.kind]
-        capPolygonWithHoles(areas, [unpackPoints(a.ring), ...(a.holes ?? []).map(unpackPoints)],
-          0.02, tint, 0, 2.4, beach ? Math.min(AREA_MAX_EDGE, SAND_MAX_EDGE) : AREA_MAX_EDGE)
+        const tint = a.kind === 'sand' ? SAND_ON_PAGE : a.brick && this.region.brickStreets ? this.region.brickStreets.colour : a.beds ? BEDS : wet ? WET_ROCK : AREA_TINT[a.kind]
+        capPolygonWithHoles(into, [unpackPoints(a.ring), ...(a.holes ?? []).map(unpackPoints)],
+          0.02, tint, 0, a.kind === 'sand' ? 1 : 2.4, a.kind === 'sand' ? Math.min(AREA_MAX_EDGE, SAND_MAX_EDGE) : AREA_MAX_EDGE)
         if (beach) {
-          const n = areas.positions.length / 3
+          const n = into.positions.length / 3
           for (let v = base; v < n; v++) {
-            const x = areas.positions[v * 3], z = areas.positions[v * 3 + 2]
-            const t = beachTint(AREA_TINT.sand, shoreDistance(beach, x, z), x, z)
-            areas.colors[v * 4] = t[0]; areas.colors[v * 4 + 1] = t[1]; areas.colors[v * 4 + 2] = t[2]
+            const x = into.positions[v * 3], z = into.positions[v * 3 + 2]
+            const t = beachTint(SAND_ON_PAGE, shoreDistance(beach, x, z), x, z)
+            into.colors[v * 4] = t[0]; into.colors[v * 4 + 1] = t[1]; into.colors[v * 4 + 2] = t[2]
           }
         }
       }
@@ -2682,6 +2691,15 @@ export class City {
       meshes.push(m)
     }
 
+    if (sandOut.triangles > 0 && !this.off.has('areas')) {
+      // (named under `areas:` so the ground group draws it with the areas, before the corridor and the paths on it)
+      const m = new Mesh(`areas:sand:${k}`, this.scene)
+      this.terrain.drapeRaw(sandOut.positions)
+      sandOut.toVertexData().applyToMesh(m)
+      m.material = groundLayerMaterial(this.scene, this.roadAssets, 'sand', 'beach')
+      m.renderingGroupId = GROUP.areas
+      meshes.push(m)
+    }
     for (const [builder, group, name] of [[areas, GROUP.areas, 'areas'], [walks, GROUP.walk, 'walks']] as const) {
       if (builder.triangles === 0 || this.off.has(name)) continue
       const m = new Mesh(`${name}:${k}`, this.scene)

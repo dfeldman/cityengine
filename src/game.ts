@@ -85,6 +85,7 @@ import { Vegetation, foliageLights } from './render/vegetation.ts'
 import { updateCartoonEye } from './render/cartoon-material.ts'
 import { DAYLIGHT, updateEye } from './render/facade-material.ts'
 import { surfLayer } from './render/surf.ts'
+import { beachRuns, beachSurfLayer, shoreRamp } from './render/beach-surf.ts'
 import { updateWater } from './render/water-material.ts'
 import { Hud } from './ui/hud.ts'
 import { PBR_FOG, photoMode, setRegionFog } from './render/photo.ts'
@@ -397,6 +398,14 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   })()
   const city = new City(scene, { name: pkg.name, ground: pkg.ground, region: pkg.region, terrain: pkg.terrain, sea: index.sea,
     water: pkg.water, box: index.box, walls: index.walls, contentBox }, atlas, ASSETS).omit(off)
+  /*
+   * The sandy beaches' coastline (render/beach-surf.ts), and the beach face it gives the ground: the elevation data has
+   * the sand 3 m over the sea at the waterline. Set before any tile drapes its ground.
+   */
+  const beachShore = index.sea !== undefined && index.sea !== null
+    ? beachRuns(index.zones ?? [], wholeWater(pkg).filter((a) => a.sea).map((a) => ({ ring: unpackPoints(a.ring), holes: (a.holes ?? []).map(unpackPoints) })), index.box ?? undefined)
+    : []
+  if (index.sea !== undefined && index.sea !== null) city.terrain.shore = shoreRamp(beachShore, index.sea)
   plog('City ctor', Math.round(performance.now() - __t2))
   /*
    * Streaming (PARIS_EXPAND §2): each tile, when it arrives, is prepared (landmarks' buildings out, restyles
@@ -647,6 +656,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   if (index.sea !== undefined && index.sea !== null && !off.has('surf')) {
     const surf = surfLayer(scene, index.zones ?? [], city.terrain, index.sea)
     if (surf) city.addLayer(surf)
+    // the sandy beaches' own surf, rollers and swash (render/beach-surf.ts)
+    const beach = beachSurfLayer(scene, city.terrain, index.sea, beachShore)
+    if (beach) city.addLayer(beach)
   }
   // café terraces on the pavement, where the region sets them out (render/terraces.ts)
   // the mid ring (PARIS_EXPAND §2): every building of a far tile as plain massing, so the city has a horizon

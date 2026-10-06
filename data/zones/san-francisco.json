@@ -152,7 +152,7 @@
     "terrain": "fine",
     "traffic": 0.6,
     "crowd": 1.3,
-    "water": "waves"
+    "water": "beach"
    },
    "ring": [
     [
@@ -3542,7 +3542,7 @@
    "name": "Baker Beach and China Beach",
    "priority": 5,
    "props": {
-    "water": "waves"
+    "water": "beach"
    },
    "ring": [
     [
