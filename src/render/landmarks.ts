@@ -54,6 +54,7 @@ import { signCut, type PlacedSign } from './landmarks/signage.ts'
 import { flatSignMesh } from './sign-plates.ts'
 import { Clocks } from './clocks.ts'
 import { Rotors } from './rotors.ts'
+import { Water } from './water.ts'
 import { region } from '../city/region.ts'
 import { expandIncludes } from '../city/manifest.ts'
 import { Projection } from '../city/geo.ts'
@@ -800,6 +801,8 @@ export class Landmarks {
   private readonly clockHands: Clocks
   /** what turns on a model — the park's windmills' sails (render/rotors.ts) */
   private readonly rotors: Rotors
+  /** fountains' and falls' moving water (render/water.ts) */
+  private readonly water: Water
   private plain: ShaderMaterial | null = null
   private plainMat(): ShaderMaterial {
     if (!this.plain) {
@@ -844,6 +847,7 @@ export class Landmarks {
     this.mat = mat
     this.clockHands = new Clocks(scene, mat, region((pkg as { region?: string }).region).timeZone)
     this.rotors = new Rotors(scene, mat)
+    this.water = new Water(scene)
 
     // ---- the skyline
     const skyMat = cartoonMaterial(scene, 'cartoonSkyline', false)
@@ -1283,6 +1287,7 @@ export class Landmarks {
       // and its clocks' hands, to the real time (render/clocks.ts)
       if (mb.clocks.length) this.clockHands.raise(mb.clocks, m, e.name)
       if (mb.rotors.length) this.rotors.raise(mb.rotors, m, e.name)
+      if (mb.water.length) this.water.raise(mb.water, m, e.name)
       // every placed model is on the list (fountains, statues and the landmark card find their host by it)
       this.placed.push({ name: e.name, x: cx + ox, y, z: cz + oz, hx: fit.hx, hz: fit.hz, rotation, height: modelHeight(mb) })
       /*

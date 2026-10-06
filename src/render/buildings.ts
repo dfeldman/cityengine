@@ -20,6 +20,7 @@
  * rather than one per building. Trail Trainer learned that lesson the expensive way: a triangle budget goes
  * not on detail but on things drawn separately.
  */
+import type { WaterFeature } from './water.ts'
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData'
 import earcut from 'earcut'
 import { KIND_ATLAS, KIND_RAIL, KIND_WALL } from './facade-material.ts'
@@ -71,6 +72,8 @@ export class MeshBuilder {
    * placed at (x, y, z) in the model's frame and spun about (nx, ny, nz) at `rpm` turns a minute — a windmill's sails.
    */
   readonly rotors: { x: number; y: number; z: number; nx: number; ny?: number; nz: number; mb: MeshBuilder; rpm: number }[] = []
+  /** the model's moving water — jets, sheets, pools, splashes (render/water.ts), in its own frame */
+  readonly water: WaterFeature[] = []
 
   /**
    * A raised deck this model plants (render/plants.ts, docs/SKYPARKS.md): a ring in the model's own local

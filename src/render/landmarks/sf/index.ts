@@ -142,7 +142,7 @@ import { stMarysCathedral } from './st-marys.ts'
 import { deYoungMuseum } from './de-young.ts'
 import { alcatrazCellhouse, alcatrazLighthouse, alcatrazWaterTower } from './alcatraz.ts'
 import { graceCathedral } from './grace.ts'
-import { legionOfHonor, legionPyramid } from './legion.ts'
+import { legionOfHonor, legionPyramid, legionFountain } from './legion.ts'
 import { fremont181 } from './fremont181.ts'
 import { transbayBusRampBridge } from './bus-ramp-bridge.ts'
 import { VENUES } from './districts/venues.ts'
@@ -319,6 +319,7 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   graceCathedral,
   legionOfHonor,
   legionPyramid,
+  legionFountain,
   fremont181,
   transbayBusRampBridge,
   ...VENUES,

@@ -24,7 +24,7 @@ import type { Fit } from '../fit.ts'
 import type { Rgb } from '../../models.ts'
 import { box } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
-import { colonnade, cupola } from '../parts.ts'
+import { boxAlong, colonnade, cupola } from '../parts.ts'
 import { sign } from '../signage.ts'
 
 const STONE: Rgb = [0.88, 0.86, 0.80]
@@ -145,4 +145,90 @@ export function legionPyramid(out: MeshBuilder, fit: Fit): void {
     const mx = (ax + bx) / 2, mz = (az + bz) / 2, L = Math.hypot(mx, 0.75, mz)
     out.quad([[ax * h, y0, az * h], [bx * h, y0, bz * h], [0, y1, 0], [0, y1, 0]], [mx / L, 0.75 / L, mz / L], [[0, 0], [1, 0], [0.5, 1], [0.5, 1]], [0.55, 0.68, 0.72], surfaceTag('glass'))
   }
+}
+
+/**
+ * THE LEGION OF HONOR'S FOUNTAIN (node/4023038695; owner, 2026-10-06: "I'm looking at the legion of honor fountain in
+ * particular … just the water with a spray coming out"), in the round at the head of the walk, on the arch's axis.
+ * A round pool in a low stone rim, a stone drum in the middle carrying a shallow bowl, and the WATER (render/water.ts):
+ * a tall jet out of the bowl falling back into it and over its lip, a ring of arching jets from the rim to the middle,
+ * white water where they land. No sculpture (statues are for the GLB pipeline).
+ */
+export function legionFountain(out: MeshBuilder, fit: Fit): void {
+  const stone = surfaceTag('ashlar')
+  const R = Math.max(5, Math.min(fit.hx, fit.hz) - 0.3)
+  // built from y = 0, then stood on the HIGHEST ground round the rim: the model's base is the lowest, and on the
+  // circle's slope the lawn rose over the pool's far side
+  const v0 = out.positions.length, w0 = out.water.length
+  const g = fit.groundAt
+  let lift = 0
+  if (g) for (let k = 0; k < 16; k++) { const a = (k / 16) * Math.PI * 2; lift = Math.max(lift, g(Math.sin(a) * (R + 0.6), Math.cos(a) * (R + 0.6)), g(0, 0)) }
+  const WATER_Y = 0.42
+  // the rim: a ring of stone, a coping on it
+  const N = 40
+  for (let k = 0; k < N; k++) {
+    const a0 = (k / N) * Math.PI * 2, a1 = ((k + 1) / N) * Math.PI * 2
+    const am = (a0 + a1) / 2, L = 2 * (R + 0.35) * Math.sin(Math.PI / N)
+    boxAlong(out, Math.sin(am) * (R + 0.3), 0.3, Math.cos(am) * (R + 0.3), L / 2 + 0.02, 0.3, 0.3, am, STONE, stone)
+    void a0; void a1
+  }
+  // the drum and its bowl in the middle
+  cupolaLessDrum(out, 1.3, 0.75, stone)
+  const pool: { x: number; z: number }[] = []
+  for (let k = 0; k < N; k++) { const a = (k / N) * Math.PI * 2; pool.push({ x: Math.sin(a) * R, z: Math.cos(a) * R }) }
+  out.water.push({ kind: 'pool', ring: pool, y: WATER_Y, colour: [0.2, 0.36, 0.4] })
+  // the bowl's own water, overflowing in a sheet all round its lip
+  const bowl: { x: number; z: number }[] = []
+  for (let k = 0; k < 20; k++) { const a = (k / 20) * Math.PI * 2; bowl.push({ x: Math.sin(a) * 1.75, z: Math.cos(a) * 1.75 }) }
+  out.water.push({ kind: 'pool', ring: bowl, y: 1.22, colour: [0.22, 0.38, 0.42] })
+  for (let k = 0; k < 12; k++) {
+    const a0 = (k / 12) * Math.PI * 2, a1 = ((k + 1) / 12) * Math.PI * 2
+    out.water.push({ kind: 'sheet', a: [Math.sin(a1) * 1.85, 1.24, Math.cos(a1) * 1.85], b: [Math.sin(a0) * 1.85, 1.24, Math.cos(a0) * 1.85], out: 0.5, drop: 1.24 - WATER_Y })
+  }
+  // the tall jet out of the middle, falling back on itself
+  out.water.push({ kind: 'jet', at: [0, 1.3, 0], v: [0, 8.5, 0], width: 0.09, spread: 0.55 })
+  out.water.push({ kind: 'jet', at: [0, 1.3, 0], v: [0.25, 7.6, 0.15], width: 0.06, spread: 0.4 })
+  // the ring of arching jets from the rim toward the drum, and where they land
+  const J = 12
+  for (let k = 0; k < J; k++) {
+    const a = (k / J) * Math.PI * 2
+    const sx = Math.sin(a), sz = Math.cos(a)
+    const r0 = R - 0.2
+    out.water.push({ kind: 'jet', at: [sx * r0, 0.45, sz * r0], v: [-sx * 2.6, 4.6, -sz * 2.6], width: 0.035, spread: 0.18 })
+    // (flight to the pool: t = (4.6 + sqrt(4.6² + 2g·0.13)) / g ≈ 0.96 s, 2.5 m in)
+    out.water.push({ kind: 'splash', at: [sx * (r0 - 2.5), WATER_Y + 0.01, sz * (r0 - 2.5)], r: 0.55 })
+  }
+  out.water.push({ kind: 'splash', at: [0, WATER_Y + 0.01, 0], r: 2.6 })
+  if (lift > 0.01) {
+    for (let i = v0; i < out.positions.length; i += 3) out.positions[i + 1] += lift
+    // the rim's foot carried down to the lowest ground
+    for (let k = 0; k < N; k++) {
+      const am = ((k + 0.5) / N) * Math.PI * 2, L = 2 * (R + 0.35) * Math.sin(Math.PI / N)
+      boxAlong(out, Math.sin(am) * (R + 0.3), lift / 2 - 0.1, Math.cos(am) * (R + 0.3), L / 2 + 0.02, lift / 2 + 0.1, 0.3, am, STONE, stone)
+    }
+    for (let i = w0; i < out.water.length; i++) {
+      const f = out.water[i]
+      if (f.kind === 'pool') f.y += lift
+      else if (f.kind === 'jet' || f.kind === 'splash') f.at[1] += lift
+      else { f.a[1] += lift; f.b[1] += lift }
+    }
+    // the pool's floor, so the lawn under it does not show through the water
+    box(out, 0, lift + 0.05, 0, R * 0.72, 0.05, R * 0.72, [0.16, 0.24, 0.26], 0)
+  }
+}
+
+/** the fountain's middle: a stone drum and a shallow bowl on it */
+function cupolaLessDrum(out: MeshBuilder, r: number, h: number, tag: number): void {
+  const N = 20
+  for (let k = 0; k < N; k++) {
+    const a = ((k + 0.5) / N) * Math.PI * 2, L = 2 * r * Math.sin(Math.PI / N)
+    boxAlong(out, Math.sin(a) * r * 0.97, h / 2, Math.cos(a) * r * 0.97, L / 2 + 0.02, h / 2, 0.12, a, STONE, tag)
+  }
+  box(out, 0, h / 2, 0, r * 0.7, h / 2, r * 0.7, STONE, tag)
+  // the bowl: a wider shallow disc and its lip
+  for (let k = 0; k < N; k++) {
+    const a = ((k + 0.5) / N) * Math.PI * 2, L = 2 * 1.85 * Math.sin(Math.PI / N)
+    boxAlong(out, Math.sin(a) * 1.8, h + 0.25, Math.cos(a) * 1.8, L / 2 + 0.03, 0.25, 0.1, a, SHADE, tag)
+  }
+  box(out, 0, h + 0.05, 0, 1.3, 0.05, 1.3, SHADE, tag)
 }
