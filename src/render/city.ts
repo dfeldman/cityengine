@@ -1450,7 +1450,15 @@ export class City {
   /** Dry land at (x, z)? Only when its tile is in and has no water piece there — an unloaded tile is not known dry. */
   dryAt(x: number, z: number): boolean {
     const here = this.areasIn.get(key(...tileOf(x, z)))
-    if (!here) return false
+    if (!here) {
+      /*
+       * A tile not loaded yet: the package's WHOLE water decides (no breakwaters then, but the shore). It answered "not dry", and a marina
+       * is built when its own tile arrives, often before the land beside it — the Marina East Harbor kept its boats
+       * over the Marina Green, their hulls buried at the water's level under the lawn and the roads and only their
+       * masts standing out of the ground (owner, 2026-10-06).
+       */
+      return !this.inWholeWater(x, z)
+    }
     if (this.waterLevelAt(x, z) === null) return true
     // …or a land area drawn over the water: a breakwater, a quay, a park on the fill (the marina's mole at Fort Baker)
     for (const a of here) {
@@ -1978,6 +1986,40 @@ export class City {
       this.shore = rings.length > 0 ? buildShore(rings, this.pkg.box) : null
     }
     return this.shore
+  }
+
+  /**
+   * Is (x, z) in the package's water, the whole bodies (an island's hole is land)? Without any tile: the edges of every
+   * ring bucketed into 8 m bands of z, so a test counts the crossings of only the edges in its own band.
+   */
+  private waterBands: Map<number, number[]> | null = null
+  inWholeWater(x: number, z: number): boolean {
+    const BAND = 8
+    if (!this.waterBands) {
+      const bands = new Map<number, number[]>()
+      for (const a of wholeWater(this.pkg)) {
+        for (const ring of [unpackPoints(a.ring), ...(a.holes ?? []).map(unpackPoints)]) {
+          for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+            const p = ring[j], q = ring[i]
+            if (p.z === q.z) continue
+            for (let r = Math.floor(Math.min(p.z, q.z) / BAND); r <= Math.floor(Math.max(p.z, q.z) / BAND); r++) {
+              const list = bands.get(r) ?? []
+              list.push(p.x, p.z, q.x, q.z)
+              bands.set(r, list)
+            }
+          }
+        }
+      }
+      this.waterBands = bands
+    }
+    const e = this.waterBands.get(Math.floor(z / BAND))
+    if (!e) return false
+    let o = false
+    for (let k = 0; k < e.length; k += 4) {
+      const ax = e[k], az = e[k + 1], bx = e[k + 2], bz = e[k + 3]
+      if ((az > z) !== (bz > z) && x < ((bx - ax) * (z - az)) / (bz - az) + ax) o = !o
+    }
+    return o
   }
 
   /** Does the middle of this line lie on water (and not on an island in it)? */
