@@ -7,6 +7,8 @@ import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
 import { box, prism, type Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
+import { sign } from '../signage.ts'
+import { tower, towerRing } from '../tower.ts'
 
 type V = [number, number, number]
 const UV: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
@@ -273,4 +275,67 @@ export function brickParkRestaurant(out: MeshBuilder, fit: Fit): void {
   for (const s of [-1, 1] as const) windowsZ(out, s * W, s, -L + 0.8, L - 0.8, Math.max(2, Math.round(L / 1.6)), 1.0, 3.6, 1.0, BOARD, SURR)
   for (const s of [-1, 1] as const) windowsX(out, s * L, s, -W + 0.8, W - 0.8, Math.max(1, Math.round(W / 1.8)), 1.0, 3.6, 1.0, BOARD, SURR)
   standHigh(out, fit, v0, L, W, [0.5, 0.25, 0.2])
+}
+
+/**
+ * FORT MASON CENTER's Landmark Buildings A–E (owner, 2026-10-06: "we're not really doing the Fort Mason Center, which
+ * is old military buildings like the Presidio", photograph): long cream stucco army blocks, three storeys, under red
+ * clay tile hipped roofs that oversail on exposed rafters; small-paned windows in dark red frames, evenly down the
+ * walls; little gabled roof vents along the ridge; a red steel fire stair zig-zagging down an end wall.
+ */
+export function fortMasonBlock(out: MeshBuilder, fit: Fit): void {
+  const ring = towerRing(fit)
+  const H = Math.max(8, Math.min(14, fit.height > 0 ? fit.height - 3 : 11))
+  const RED_FRAME: Rgb = [0.5, 0.14, 0.1]
+  tower(out, { ...fit, ring }, {
+    height: H,
+    tiers: [{ to: 1, face: { kind: 'punched', wall: [0.9, 0.87, 0.78], glass: RED_FRAME, floor: 3.6, pitch: 3.2, solid: 0.62, material: 'stucco' } }],
+    crown: { kind: 'hip', height: Math.min(4.5, fit.hz * 0.45), inset: -0.6, colour: TILE_RED, material: 'tile' },
+  })
+  // the roof vents along the ridge: small gabled boxes
+  const n = Math.max(1, Math.floor(fit.hx / 14))
+  for (let k = 0; k < n; k++) {
+    const x = -fit.hx + ((k + 0.5) / n) * 2 * fit.hx
+    box(out, x, H + Math.min(4.5, fit.hz * 0.45) * 0.75, 0, 1.0, 0.7, 1.0, [0.9, 0.87, 0.78], surfaceTag('stucco'))
+    ridgeX(out, x - 1, x + 1, -1, 1, H + Math.min(4.5, fit.hz * 0.45) * 0.75 + 0.7, 0.6, TILE_RED, surfaceTag('tile'), false, 0.15)
+  }
+  // a red fire stair down the +x end wall: landings at each floor and flights between
+  const FIRE: Rgb = [0.65, 0.12, 0.1]
+  for (let f = 1; f * 3.6 < H; f++) {
+    const y = f * 3.6
+    box(out, fit.hx + 0.7, y, fit.hz * 0.4, 0.7, 0.05, 1.4, FIRE, surfaceTag('metal'))
+    box(out, fit.hx + 1.38, y + 0.5, fit.hz * 0.4, 0.02, 0.5, 1.4, FIRE, surfaceTag('metal'))
+    // the flight up from the landing below
+    const steps = 8
+    for (let k = 0; k < steps; k++) {
+      const t = k / steps
+      box(out, fit.hx + 0.7, y - 3.6 + 3.6 * t, fit.hz * 0.4 + (f % 2 ? -1 : 1) * (1.4 - 2.8 * t), 0.6, 0.03, 0.17, FIRE, surfaceTag('metal'))
+    }
+  }
+}
+
+/**
+ * The FORT MASON CENTER GATE on Marina Boulevard (owner's photograph): two pairs of square cream stucco piers, each
+ * with a small hipped red tile cap, an arched FORT MASON CENTER plaque and the Park Service arrowhead on the tall
+ * inner piers, low tiled walls stepping out either side, the drive between.
+ */
+export function fortMasonGate(out: MeshBuilder, _fit: Fit): void {
+  const st = surfaceTag('stucco'), tile = surfaceTag('tile')
+  const CRM: Rgb = [0.9, 0.85, 0.72]
+  const pier = (x: number, w: number, h: number): void => {
+    box(out, x, h / 2, 0, w, h / 2, w, CRM, st)
+    box(out, x, h + 0.1, 0, w + 0.12, 0.1, w + 0.12, CRM, st)
+    prism(out, x, 0, h + 0.2, h + 0.2 + w * 0.8, (w + 0.35) * 1.41, 4, TILE_RED, tile, 0.08)
+  }
+  for (const s of [-1, 1]) {
+    pier(s * 6.5, 1.25, 5.4)
+    // the plaque, arched, and the arrowhead under it, on the face toward the street (+z)
+    box(out, s * 6.5, 4.4, 1.27, 0.95, 0.28, 0.02, [0.22, 0.2, 0.18], 0)
+    box(out, s * 6.5, 3.5, 1.27, 0.22, 0.32, 0.02, [0.42, 0.33, 0.24], 0)
+    sign(out, { type: 'flat', text: 'FORT MASON CENTER', h: 0.12, face: 'roman', colour: [0.9, 0.88, 0.8], lit: 'none', w: 1.7 }, { x: s * 6.5, y: 4.4, z: 1.3, heading: 0 })
+    // the wall stepping out, with its tiled coping, and a small outer pier
+    box(out, s * 10, 1.6, 0, 2.3, 1.6, 0.35, CRM, st)
+    ridgeX(out, s * 10 - 2.3, s * 10 + 2.3, -0.35, 0.35, 3.2, 0.35, TILE_RED, tile, false, 0.12)
+    pier(s * 12.9, 0.7, 3.2)
+  }
 }
