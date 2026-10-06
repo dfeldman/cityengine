@@ -238,6 +238,55 @@ export function countyFairBuilding(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+
+// ---- California Kahve, the kiosk by the carousel ------------------------------------------------------------------
+/**
+ * The kiosk at 300 Bowling Green Drive (way/287951728), now California Kahve. From lotsafunmaps' photographs: a little
+ * pavilion of white textured stucco, tall ROUND-ARCHED windows on every side in dark green frames with fanlights, the
+ * front one a service window over a counter with the menu boards either side, a round wooden sign in the arch, a red
+ * tile hip roof. Planters along the front.
+ */
+export function kahveKiosk(out: MeshBuilder, fit: Fit): void {
+  const STUCCO: Rgb = [0.88, 0.87, 0.82], GREEN: Rgb = [0.13, 0.27, 0.19], GLASS: Rgb = [0.15, 0.18, 0.2]
+  const ROOF: Rgb = [0.44, 0.17, 0.12], WOODC: Rgb = [0.55, 0.36, 0.2]
+  const st = surfaceTag('stucco'), wood = surfaceTag('clapboard')
+  const hx = Math.min(fit.hx, 4.2), hz = Math.min(fit.hz, 3.8), H = 3.8
+  box(out, 0, H / 2, 0, hx, H / 2, hz, STUCCO, st)
+  box(out, 0, H + 0.12, 0, hx + 0.2, 0.12, hz + 0.2, STUCCO, st)
+  hipRoof(out, -hx - 0.45, hx + 0.45, -hz - 0.45, hz + 0.45, H + 0.24, Math.min(hx, hz) * 0.55, ROOF)
+  // the arched windows: green frame, dark glass, a fanlight arch over each (a half-octagon of frame)
+  const arch = (u: number, side: 'x' | 'z', s: number, w: number, counter: boolean): void => {
+    const put = (a: number, y: number, hw: number, hh: number, d: number, c: Rgb, tag: number): void => {
+      if (side === 'z') box(out, a, y, s * (hz + d), hw, hh, 0.05, c, tag)
+      else box(out, s * (hx + d), y, a, 0.05, hh, hw, c, tag)
+    }
+    const y0 = counter ? 1.1 : 0.8, y1 = 2.6
+    put(u, (y0 + y1) / 2, w / 2 + 0.1, (y1 - y0) / 2 + 0.05, 0.02, GREEN, wood)
+    put(u, (y0 + y1) / 2, w / 2 - 0.05, (y1 - y0) / 2 - 0.05, 0.05, counter ? [0.08, 0.08, 0.09] : GLASS, 0)
+    for (let k = 0; k < 4; k++) {
+      const a = (k / 4) * Math.PI, b = ((k + 1) / 4) * Math.PI
+      const r = w / 2 + 0.05
+      const ax = u + Math.cos(a) * r, ay = y1 + Math.sin(a) * r, bx = u + Math.cos(b) * r, by = y1 + Math.sin(b) * r
+      if (side === 'z') strut(out, [ax, ay, s * (hz + 0.04)], [bx, by, s * (hz + 0.04)], 0.1, 0.1, GREEN, wood)
+      else strut(out, [s * (hx + 0.04), ay, ax], [s * (hx + 0.04), by, bx], 0.1, 0.1, GREEN, wood)
+    }
+    put(u, y1 + w * 0.22, w / 2 - 0.15, w * 0.2, 0.04, GLASS, 0)
+    if (counter) put(u, y0 - 0.05, w / 2 + 0.25, 0.05, 0.25, [0.9, 0.9, 0.88], st)
+  }
+  for (const u of [-hx * 0.5, hx * 0.5]) arch(u, 'z', 1, 1.3, false)
+  arch(0, 'z', -1, 1.8, true)
+  for (const u of [-hx * 0.55, hx * 0.55]) arch(u, 'z', -1, 1.1, false)
+  for (const s of [-1, 1]) arch(0, 'x', s, 1.3, false)
+  // the round sign in the front arch, the menu boards beside the counter, planters
+  prism(out, 0, -hz - 0.12, 2.75, 2.8, 0.38, 14, WOODC, wood)
+  box(out, 0, 3.05, -hz - 0.1, 0.38, 0.38, 0.03, WOODC, wood)
+  for (const u of [-1.4, 1.4]) box(out, u, 1.7, -hz - 0.35, 0.4, 0.55, 0.03, [0.86, 0.78, 0.6], wood)
+  for (const u of [-hx + 0.6, hx - 0.6]) {
+    box(out, u, 0.3, -hz - 0.5, 0.45, 0.3, 0.3, [0.6, 0.35, 0.25], 0)
+    prism(out, u, -hz - 0.5, 0.6, 1.2, 0.45, 7, [0.2, 0.36, 0.17], 0, 0.2)
+  }
+}
+
 export const GGP_BUILDINGS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  conservatoryGlasshouse, pioneerLogCabin, anglersLodge, countyFairBuilding,
+  conservatoryGlasshouse, pioneerLogCabin, anglersLodge, countyFairBuilding, kahveKiosk,
 }

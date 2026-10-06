@@ -174,6 +174,8 @@ export const EXPLICIT: Record<string, NonbuildingKind> = {
  * "everything is classified" test meaningful. Only needed for names that look like nonbuildings and are not.
  */
 export const BUILDINGS_OK: string[] = [
+  // a café in a small stuccoed park pavilion with windows and a roof (California Kahve, ggp-buildings.ts): "kiosk" in the name, a building in fact
+  'kahveKiosk',
   // churches and a funeral chapel whose names carry "Memorial" or "Chapel" (sf/churches-5.ts, 2026-10-03)
   'hamiltonMemorialChurchOfGodInChrist', 'jonesMemorialUnitedMethodistChurch', 'sinaiMemorialChapel',
   // a HOTEL whose proper name contains "Plaza": Hotel Riu Plaza Fisherman's Wharf. The pattern is
