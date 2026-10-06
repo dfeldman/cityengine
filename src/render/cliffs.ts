@@ -8,8 +8,9 @@
 import type { Scene } from '@babylonjs/core/scene'
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import { MeshBuilder } from './buildings.ts'
-import { prism, type Rgb } from './models.ts'
-import { cartoonMaterial, surfaceTag } from './cartoon-material.ts'
+import type { Rgb } from './models.ts'
+import { surfaceTag } from './cartoon-material.ts'
+import { rockMaterial } from './rock-material.ts'
 import type { Terrain } from '../city/terrain.ts'
 import type { TileLayer } from './city.ts'
 import { inRing } from '../map/zones.ts'
@@ -32,10 +33,51 @@ const STEEP = 0.36
  */
 const SHORE = 18
 const AROUND = Array.from({ length: 12 }, (_, i) => [Math.cos((i / 12) * Math.PI * 2), Math.sin((i / 12) * Math.PI * 2)])
-/** the rock: a dark weathered grey-brown (serpentine and greywacke), lighter and darker in patches several metres
- * across rather than cell by cell — a colour per 2 m cell read as a beige chequerboard */
-const ROCK: Rgb = [0.25, 0.245, 0.235]
-const BOULDERS: Rgb[] = [[0.3, 0.29, 0.27], [0.36, 0.34, 0.31], [0.24, 0.23, 0.22]]
+/** the rock's tint over its texture (render/rock-material.ts), lighter and darker in patches several metres across */
+const ROCK: Rgb = [0.6, 0.59, 0.57]
+/** the jointed blocks standing out of the steep ground: one candidate every so many metres, and the share placed */
+const BLOCK_STEP = 2.4
+const BLOCK_SHARE = 0.8
+
+/**
+ * A block of rock: a box turned `yaw` about the vertical, its local +z pointing down the slope, from `y0` up to `y1`,
+ * `hx` along the contour and `hz` into the slope. The faces are upright and the top level, which is what JOINTED rock
+ * is — greywacke breaks along its bedding and its joints into blocks and ledges, and a slope of such blocks reads as
+ * a crag where a smooth 37° ramp reads as a lawn painted grey.
+ */
+function block(out: MeshBuilder, cx: number, cz: number, y0: number, y1: number, hx: number, hz: number, yaw: number, tint: Rgb, tag: number): void {
+  const c = Math.cos(yaw), s = Math.sin(yaw)
+  // local (x, z) to world: +z is (sin yaw, cos yaw), +x is (cos yaw, −sin yaw)
+  const P = (lx: number, y: number, lz: number): [number, number, number] => [cx + lx * c + lz * s, y, cz - lx * s + lz * c]
+  const N = (lx: number, ly: number, lz: number): [number, number, number] => [lx * c + lz * s, ly, -lx * s + lz * c]
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  // the top a little lighter (weathered, lit), the sides as given
+  const top: Rgb = [tint[0] * 1.08, tint[1] * 1.08, tint[2] * 1.06]
+  // broken, not sawn: each top corner at its own height, the top drawn in a little (the edges spalled off), the front
+  // leaning back a touch, so no two blocks are the same box
+  const j = (k: number): number => { const v = Math.sin(cx * 12.9898 + cz * 78.233 + k * 37.719) * 43758.5453; return v - Math.floor(v) }
+  const H = y1 - y0
+  const t = [y1 - j(1) * H * 0.18, y1 - j(2) * H * 0.18, y1 - j(3) * H * 0.18, y1 - j(4) * H * 0.18]
+  const ix = hx * (0.78 + 0.15 * j(5)), iz = hz * (0.75 + 0.15 * j(6)), lean = hz * 0.15 * j(7)
+  const b = [P(-hx, y0, -hz), P(hx, y0, -hz), P(hx, y0, hz), P(-hx, y0, hz)]
+  const u = [P(-ix, t[0], -iz), P(ix, t[1], -iz), P(ix, t[2], iz - lean), P(-ix, t[3], iz - lean)]
+  const face = (a: [number, number, number], bb: [number, number, number], cc: [number, number, number], d: [number, number, number], colour: Rgb): void => {
+    // the normal from the quad itself (it is not axis-aligned now)
+    const e1 = [bb[0] - a[0], bb[1] - a[1], bb[2] - a[2]], e2 = [d[0] - a[0], d[1] - a[1], d[2] - a[2]]
+    const n: [number, number, number] = [e1[1] * e2[2] - e1[2] * e2[1], e1[2] * e2[0] - e1[0] * e2[2], e1[0] * e2[1] - e1[1] * e2[0]]
+    const L = Math.hypot(n[0], n[1], n[2]) || 1
+    // outward: away from the block's middle
+    const mx = (a[0] + cc[0]) / 2 - cx, mz = (a[2] + cc[2]) / 2 - cz, my = (a[1] + cc[1]) / 2 - (y0 + y1) / 2
+    const sgn = n[0] * mx + n[1] * my + n[2] * mz < 0 ? -1 : 1
+    out.quad([a, bb, cc, d], [sgn * n[0] / L, sgn * n[1] / L, sgn * n[2] / L], uv, colour, tag)
+  }
+  face(u[0], u[1], u[2], u[3], top)
+  face(b[3], b[2], u[2], u[3], tint)
+  face(b[1], b[0], u[0], u[1], tint)
+  face(b[2], b[1], u[1], u[2], tint)
+  face(b[0], b[3], u[3], u[0], tint)
+  void N
+}
 
 const hash = (a: number, b: number): number => {
   const h = Math.imul(Math.imul(Math.floor(a) ^ 0x9e3779b9, 0x85ebca6b) ^ Math.imul(Math.floor(b), 0xc2b2ae35), 0x27d4eb2d) >>> 0
@@ -112,16 +154,40 @@ export function cliffsLayer(scene: Scene, zones: Zone[], terrain: Terrain, sea: 
           // a boulder now and then, on the ledges and at the feet
           if (hash(cx * 11, cz * 13) < 0.06 && !onWay(cx, cz, 3.5)) {
             const r = 0.4 + hash(cx * 5, cz * 3) * 0.9
-            const y = low
-            prism(out, cx, cz, y - 0.2, y + r * 1.2, r, 5 + Math.floor(hash(cz, cx) * 3), BOULDERS[Math.floor(hash(cz * 2, cx) * BOULDERS.length)], rock, r * 0.6)
+            const t = 0.5 + 0.2 * hash(cz * 2, cx)
+            block(out, cx, cz, low - 0.3, low + r * (0.8 + hash(cz, cx) * 0.8), r, r * (0.6 + 0.5 * hash(cx, cz * 9)), hash(cx * 7, cz) * Math.PI, [t, t * 0.98, t * 0.95], rock)
+          }
+        }
+      }
+      // THE CRAGS: jointed blocks standing out of the steep ground, upright faces and level tops, stepping down the slope
+      for (let x = rect.x0; x < rect.x1; x += BLOCK_STEP) {
+        for (let z = rect.z0; z < rect.z1; z += BLOCK_STEP) {
+          const cx = x + BLOCK_STEP * (0.2 + 0.6 * hash(x * 3, z)), cz = z + BLOCK_STEP * (0.2 + 0.6 * hash(x, z * 3))
+          if (hash(cx * 17, cz * 19) > BLOCK_SHARE || !here.some((zn) => inRing(zn.ring, cx, cz))) continue
+          const g = terrain.rawHeightAt(cx, cz)
+          const gx = (terrain.rawHeightAt(cx + 1, cz) - terrain.rawHeightAt(cx - 1, cz)) / 2
+          const gz = (terrain.rawHeightAt(cx, cz + 1) - terrain.rawHeightAt(cx, cz - 1)) / 2
+          const slope = Math.hypot(gx, gz)
+          if (slope < STEEP * 0.95 || (sea != null && g < sea + 0.5) || wet(cx, cz) || onWay(cx, cz, 4)) continue
+          // down the slope, give or take: the joints run a little across it
+          const yaw = Math.atan2(-gx, -gz) + (hash(cx, cz * 5) - 0.5) * 0.5
+          const hx = 1.0 + hash(cx * 3, cz * 7) * 1.6, hz = 0.7 + hash(cx * 9, cz * 2) * 1.0
+          // its top a little over the ground at its middle, its foot below the ground at its front
+          const y1 = g + 0.25 + hash(cx * 5, cz * 11) * (0.8 + slope * 1.2)
+          const y0 = g - hz * slope - 0.5
+          const t = (0.5 + 0.18 * patch(cx, cz, 14) + 0.06 * hash(cx, cz)) * (1 - Math.min(0.15, (slope - STEEP) * 0.12))
+          block(out, cx, cz, y0, y1, hx, hz, yaw, [t, t * 0.985, t * 0.955], rock)
+          // and now and then a smaller one stacked on it, set back into the slope
+          if (hash(cx * 23, cz * 29) < 0.3) {
+            const bx = cx - Math.sin(yaw) * hz * 0.5, bz = cz - Math.cos(yaw) * hz * 0.5
+            block(out, bx, bz, y1 - 0.4, y1 + 0.5 + hash(cx, cz * 31) * 1.0, hx * 0.6, hz * 0.6, yaw + (hash(cz, cx) - 0.5) * 0.6, [t * 1.04, t * 1.02, t], rock)
           }
         }
       }
       if (out.triangles === 0) return []
       const m = new Mesh(`cliffs:${rect.x0},${rect.z0}`, scene)
       out.toVertexData().applyToMesh(m)
-      const mat = cartoonMaterial(scene, 'cartoonStatic', false)
-      m.material = mat
+      m.material = rockMaterial(scene)
       m.renderingGroupId = 3
       m.isPickable = false
       m.freezeWorldMatrix()
