@@ -82,9 +82,8 @@ export class StreetFleet {
     const h = hash(v.id)
     const seed = 1 + (h % SEEDS)
     if (v.kind === 'bus') {
-      const car = this.fleet.add(randomSpec('bus', seed, 'transit'))
-      car.paint = [...v.colour]
-      return car
+      // Muni's livery, silver-grey with its two red bands (carkit `transit`), not the sim's random colour
+      return this.fleet.add(randomSpec('bus', seed, 'transit'))
     }
     // the sim says which cars are taxis (it lets them onto car-free Market Street): those are drawn as taxis, and no
     // other car is
