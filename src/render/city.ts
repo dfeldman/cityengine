@@ -2895,7 +2895,13 @@ export class City {
           // what stands on the pavement is regional: Paris hangs its lamps on the buildings
           // a bench only where the pavement has room to sit on it, and not at every other lamp post
           if ((e.id + n) % 14 === 0 && walk >= 2.5) {
-            if (this.region.furniture.benches) placeModel(furniture, bench, px, 0.15, pz, heading)
+            /*
+             * Along the kerb, not across the pavement (owner, 2026-10-06: "benches on the street are almost always
+             * parallel to the street … all of ours are [perpendicular]"), facing the road, in the slot a lamp post
+             * would take (the building side has the racks and bins). `heading` turns a model's +z ALONG the street; a
+             * bench is long in x and faces +z, so it takes the normal towards the road.
+             */
+            if (this.region.furniture.benches && !nearStairMouth(px, pz)) placeModel(furniture, bench, px, 0.15, pz, Math.atan2(dz * side, -dx * side))
           } else if (this.region.furniture.lampPosts && !nearStairMouth(px, pz)) {
             placeModel(furniture, market ? pathOfGold : lampPost, px, 0.15, pz, heading)
           }

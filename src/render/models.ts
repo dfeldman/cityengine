@@ -611,12 +611,64 @@ export function bollard(colour: Rgb, height: number): (out: MeshBuilder) => void
   }
 }
 
+/**
+ * A box of half-extents (hx, hy, hz) about (cx, cy, cz), turned `tilt` radians about the x axis (positive leans its
+ * top towards −z). For a bench's slats and its frames' raked members.
+ */
+function slab(out: MeshBuilder, cx: number, cy: number, cz: number, hx: number, hy: number, hz: number, tilt: number,
+              colour: Rgb, tag = FIXED): void {
+  const c = Math.cos(tilt), s = Math.sin(tilt)
+  // (y, z) turned about x: y' = y c + z s, z' = −y s + z c
+  const P = (sx: number, sy: number, sz: number): [number, number, number] => {
+    const y = sy * hy, z = sz * hz
+    return [cx + sx * hx, cy + y * c + z * s, cz - y * s + z * c]
+  }
+  const N = (x: number, y: number, z: number): [number, number, number] => [x, y * c + z * s, -y * s + z * c]
+  const faces: [[number, number, number][], [number, number, number]][] = [
+    [[[-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1]], N(0, 0, 1)],
+    [[[1, -1, -1], [-1, -1, -1], [-1, 1, -1], [1, 1, -1]], N(0, 0, -1)],
+    [[[1, -1, 1], [1, -1, -1], [1, 1, -1], [1, 1, 1]], N(1, 0, 0)],
+    [[[-1, -1, -1], [-1, -1, 1], [-1, 1, 1], [-1, 1, -1]], N(-1, 0, 0)],
+    [[[-1, 1, 1], [1, 1, 1], [1, 1, -1], [-1, 1, -1]], N(0, 1, 0)],
+    [[[-1, -1, -1], [1, -1, -1], [1, -1, 1], [-1, -1, 1]], N(0, -1, 0)],
+  ]
+  for (const [corners, n] of faces) out.quad(corners.map(([a, b, d]) => P(a, b, d)), n, [[0, 0], [1, 0], [1, 1], [0, 1]], colour, tag)
+}
+
+/**
+ * A park bench of the kind on San Francisco's pavements (owner, 2026-10-06: "the geometry could be improved to look
+ * more realistic"): hardwood slats, four in the seat raked back a little and three in the back reclined, on two
+ * cast-iron end frames — a front leg, a rear leg running up into the back's support, an armrest over each end — and a
+ * stretcher between them low down. 1.8 m long, seat 0.45 m up. Faces +z, the sitter's back towards −z.
+ */
 export function bench(out: MeshBuilder): void {
-  const wood: Rgb = [0.45, 0.30, 0.18]
-  const iron: Rgb = [0.18, 0.19, 0.20]
-  box(out, 0, 0.44, 0, 0.82, 0.04, 0.24, wood, FIXED)
-  box(out, 0, 0.70, -0.22, 0.82, 0.22, 0.04, wood, FIXED)
-  for (const s of [-1, 1]) box(out, s * 0.72, 0.22, 0, 0.05, 0.22, 0.22, iron, FIXED)
+  const iron: Rgb = [0.11, 0.13, 0.12]
+  const woods: Rgb[] = [[0.47, 0.33, 0.20], [0.44, 0.31, 0.19], [0.49, 0.35, 0.22], [0.45, 0.32, 0.20]]
+  const L = 0.9                                 // half its length
+  const SEAT_TILT = 0.07, BACK_TILT = 0.26
+  // the seat: four slats front to back, the front edge a touch higher
+  for (let i = 0; i < 4; i++) {
+    const z = 0.17 - i * 0.105
+    slab(out, 0, 0.445 - (0.17 - z) * Math.tan(SEAT_TILT), z, L, 0.016, 0.045, SEAT_TILT, woods[i])
+  }
+  // the back: three slats, reclined
+  for (let i = 0; i < 3; i++) {
+    const t = 0.56 + i * 0.12
+    slab(out, 0, t, -0.21 - (t - 0.5) * Math.tan(BACK_TILT), L, 0.045, 0.016, BACK_TILT, woods[(i + 1) % 4])
+  }
+  // the end frames, set in from the ends, and one in the middle under the seat
+  for (const x of [-0.74, 0.74]) {
+    slab(out, x, 0.22, 0.17, 0.025, 0.22, 0.025, -0.08, iron)                         // the front leg
+    slab(out, x, 0.40, -0.16, 0.025, 0.40, 0.025, 0.2, iron)                          // the rear leg, up into the back
+    slab(out, x, 0.42, 0.0, 0.022, 0.022, 0.2, SEAT_TILT, iron)                       // the seat rail
+    slab(out, x, 0.64, 0.02, 0.028, 0.018, 0.21, 0, iron)                             // the armrest
+    slab(out, x, 0.53, 0.2, 0.02, 0.11, 0.02, 0, iron)                                // its post
+    box(out, x, 0.012, 0.18, 0.04, 0.012, 0.05, iron, FIXED)                          // the feet
+    box(out, x, 0.012, -0.24, 0.04, 0.012, 0.05, iron, FIXED)
+  }
+  slab(out, 0, 0.42, 0.0, 0.02, 0.022, 0.19, SEAT_TILT, iron)                         // the middle rail
+  slab(out, 0, 0.21, 0.17, 0.02, 0.21, 0.02, -0.08, iron)                             // and its leg
+  box(out, 0, 0.12, -0.02, 0.74, 0.015, 0.015, iron, FIXED)                           // the stretcher
 }
 
 /** An upright n-sided prism about the y axis, from y0 to y1, radius r (optionally narrowing to r1 at the top). */
