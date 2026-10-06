@@ -112,29 +112,116 @@ export const ODDITIES: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   },
 
   /**
-   * way/168942987 — Camera Obscura, at the Cliff House site, Point Lobos Ave. A tiny (~4×4 m) shed literally
-   * built in the shape of a giant box camera: a plain dark box body and a "lens" — a stubby cylinder —
-   * projecting from the seaward wall. Too small and too odd a shape for any kit facade; a two-primitive
-   * hand model is the right amount of effort.
+   * way/168942987 — the Camera Obscura (the Giant Camera, 1946), on the Cliff House terrace over the sea. A little
+   * building made to look like a box camera (owner's photographs, 2026-10-06; it was a stack of boxes): a pale yellow
+   * body with every horizontal edge chamfered, the ends cut steeply top and bottom so the long side reads as a
+   * stretched octagon; a light-blue band edged in black all round it, black round "knobs" on the ends by the front;
+   * on the land side the entrance — a blue portal with an arched opening and a ticket window, its two cream doors
+   * folded back, and over it the black board CAMERA OBSCURA AND HOLOGRAPH GALLERY; GIANT CAMERA in dark capitals on
+   * the south end beside its own door. On the roof the lens house: a planked drum with a bulging blue ring, a dark
+   * rim, and a shingled cone with the lens window looking out to sea.
+   *
+   * The footprint's long axis is local z; local +x faces the land (ESE, the terrace), −x the sea.
    */
   cameraObscura_168942987: (out: MeshBuilder, fit: Fit): void => {
-    // the Giant Camera (1946): a little building shaped like a box camera — a cream lower storey, a yellow camera body
-    // with dark trim on top of it, and the lens turret on the roof turning over the sea (appearance pass, 2026-10-02:
-    // it was a black box)
-    const hx = Math.max(fit.hx, 3)
-    const hz = Math.max(fit.hz, 3)
-    const CREAM: [number, number, number] = [0.86, 0.82, 0.70]
-    const YELLOW: [number, number, number] = [0.85, 0.68, 0.22]
-    const DARK: [number, number, number] = [0.12, 0.11, 0.12]
-    box(out, 0, 1.3, 0, hx, 1.3, hz, CREAM, 2)
-    box(out, 0, 2.66, 0, hx + 0.15, 0.1, hz + 0.15, DARK, 2)
-    box(out, 0, 3.9, 0, hx * 0.82, 1.15, hz * 0.82, YELLOW, 2)
-    box(out, 0, 5.1, 0, hx * 0.86, 0.08, hz * 0.86, DARK, 2)
-    // the lens turret on the roof, its lens looking out to sea
-    prism(out, 0, 0, 5.18, 6.3, 0.95, 12, DARK, 2)
-    box(out, 0, 6.0, 0.9, 0.45, 0.35, 0.5, DARK, 2)
-    // a dark band of the camera's "bellows" and its door
-    box(out, 0, 1.1, hz + 0.02, 0.6, 1.1, 0.03, DARK, 2)
+    const hx = Math.max(fit.hx, 3), hz = Math.max(fit.hz, 4)
+    // built from y = 0 and then stood on the HIGHEST ground under it: the terrace slopes, and from the model's base
+    // (its lowest ground) the body sank a metre into the paving on the land side
+    const v0 = out.positions.length, s0 = out.signs.length
+    const g = fit.groundAt
+    const lift = g ? Math.max(0, ...[[-1, -1], [-1, 1], [1, -1], [1, 1], [0, 0]].map(([a, b]) => g(a * (hx - 0.6), b * (hz - 1.1)))) : 0
+    const BODY: [number, number, number] = [0.90, 0.85, 0.62]
+    const BLUE: [number, number, number] = [0.55, 0.74, 0.86]
+    const PORTAL: [number, number, number] = [0.50, 0.70, 0.84]
+    const BLACK: [number, number, number] = [0.07, 0.07, 0.08]
+    const SHINGLE: [number, number, number] = [0.40, 0.45, 0.42]
+    const wall = 2, dark = surfaceTag('metal')
+    // the body, lofted through chamfered rectangles: [y, inset across, inset along]
+    const levels: [number, number, number][] = [[0, 0.55, 1.05], [1.0, 0, 0], [2.7, 0, 0], [3.25, 0.22, 0.62]]
+    for (let k = 0; k + 1 < levels.length; k++) {
+      const [ya, ia, ja] = levels[k], [yb, ib, jb] = levels[k + 1]
+      const Xa = hx - ia, Za = hz - ja, Xb = hx - ib, Zb = hz - jb
+      for (const sx of [-1, 1]) {
+        const n = [yb - ya, -(Xb - Xa)]; const L = Math.hypot(n[0], n[1]) || 1
+        out.quad([[sx * Xa, ya, -Za], [sx * Xa, ya, Za], [sx * Xb, yb, Zb], [sx * Xb, yb, -Zb]], [sx * n[0] / L, n[1] / L, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], BODY, wall)
+      }
+      for (const sz of [-1, 1]) {
+        const n = [yb - ya, -(Zb - Za)]; const L = Math.hypot(n[0], n[1]) || 1
+        out.quad([[-Xa, ya, sz * Za], [Xa, ya, sz * Za], [Xb, yb, sz * Zb], [-Xb, yb, sz * Zb]], [0, n[1] / L, sz * n[0] / L], [[0, 0], [1, 0], [1, 1], [0, 1]], BODY, wall)
+      }
+    }
+    const rX = hx - 0.22, rZ = hz - 0.62
+    out.quad([[-rX, 3.25, -rZ], [rX, 3.25, -rZ], [rX, 3.25, rZ], [-rX, 3.25, rZ]], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], BODY, wall)
+    // the black edge round the roof
+    for (const sx of [-1, 1]) box(out, sx * rX, 3.27, 0, 0.05, 0.05, rZ + 0.05, BLACK, dark)
+    for (const sz of [-1, 1]) box(out, 0, 3.27, sz * rZ, rX + 0.05, 0.05, 0.05, BLACK, dark)
+    // the band all round the upright walls: black, light blue, black
+    for (const [y0, y1, c] of [[1.50, 1.56, BLACK], [1.56, 1.80, BLUE], [1.80, 1.86, BLACK]] as const) {
+      const yc = (y0 + y1) / 2, hy = (y1 - y0) / 2
+      for (const sx of [-1, 1]) box(out, sx * (hx + 0.015), yc, 0, 0.015, hy, hz, c, sx > 0 ? dark : wall)
+      for (const sz of [-1, 1]) box(out, 0, yc, sz * (hz + 0.015), hx, hy, 0.015, c, wall)
+    }
+    // the camera's knobs: black discs on each end, by the front corner
+    const disc = (x: number, y: number, sz: number, r: number, c: [number, number, number]): void => {
+      const z0 = sz * hz, z1 = sz * (hz + 0.1), N = 16
+      for (let k = 0; k < N; k++) {
+        const a0 = (k / N) * Math.PI * 2, a1 = ((k + 1) / N) * Math.PI * 2
+        const p = (a: number, z: number): [number, number, number] => [x + Math.cos(a) * r, y + Math.sin(a) * r, z]
+        out.quad([[x, y, z1], p(a0, z1), p(a1, z1), [x, y, z1]], [0, 0, sz], [[0, 0], [1, 0], [1, 1], [0, 1]], c, dark)
+        const am = (a0 + a1) / 2
+        out.quad([p(a0, z0), p(a1, z0), p(a1, z1), p(a0, z1)], [Math.cos(am), Math.sin(am), 0], [[0, 0], [1, 0], [1, 1], [0, 1]], c, dark)
+      }
+    }
+    for (const sz of [-1, 1]) disc(hx - 0.95, 1.68, sz, 0.55, BLACK)
+    // THE ENTRANCE, on the land side: a blue portal standing out of the wall, an arched opening, the ticket window
+    const fx = hx, PW = 1.65, PH = 2.65
+    box(out, fx + 0.2, PH / 2, -PW + 0.12, 0.2, PH / 2, 0.12, PORTAL, wall)                // the jambs
+    box(out, fx + 0.2, PH / 2, PW - 0.12, 0.2, PH / 2, 0.12, PORTAL, wall)
+    box(out, fx + 0.2, PH - 0.14, 0, 0.2, 0.14, PW, PORTAL, wall)                          // the lintel
+    // the arch's spandrels, stepped in a quarter circle each side
+    for (let k = 0; k < 5; k++) {
+      const t = (k + 0.5) / 5, w = 0.55 * (1 - Math.sqrt(1 - t * t))
+      for (const sz of [-1, 1]) box(out, fx + 0.36, PH - 0.28 - 0.5 * (1 - t), sz * (PW - 0.24 - w / 2), 0.04, 0.05, w / 2 + 0.01, PORTAL, wall)
+    }
+    box(out, fx + 0.01, 1.2, 0, 0.01, 1.2, PW - 0.2, [0.62, 0.78, 0.88], wall)             // the vestibule's back wall
+    box(out, fx + 0.3, 0.45, -0.95, 0.12, 0.45, 0.45, PORTAL, wall)                        // the ticket counter
+    box(out, fx + 0.33, 1.3, -0.95, 0.02, 0.38, 0.42, [0.2, 0.26, 0.3], surfaceTag('glass'))
+    box(out, fx + 0.37, 0.48, -0.95, 0.01, 0.12, 0.3, [0.85, 0.12, 0.12], wall)           // NOW OPEN, red
+    // the two cream doors, folded back almost flat to the wall either side
+    for (const sz of [-1, 1]) {
+      const hingeZ = sz * PW, dirx = 0.32, dirz = sz * 0.95, W = 1.3
+      boxAlong(out, fx + 0.4 + dirx * W / 2, 1.3, hingeZ + dirz * W / 2, W / 2, 1.3, 0.04, Math.atan2(-dirz, dirx), BODY, wall)   // (boxAlong's local x runs (cos h, −sin h))
+    }
+    // the board over the door: black, a cream border, the name
+    box(out, fx + 0.45, 3.35, 0, 0.06, 0.62, 1.85, [0.86, 0.82, 0.66], wall)
+    box(out, fx + 0.5, 3.35, 0, 0.02, 0.55, 1.77, BLACK, dark)
+    const toLand = Math.PI / 2
+    sign(out, { type: 'flat', text: 'CAMERA OBSCURA', h: 0.26, face: 'roman', colour: [0.9, 0.88, 0.8], tracking: 0.06, lit: 'none', w: 3.2 }, { x: fx + 0.54, y: 3.66, z: 0, heading: toLand })
+    sign(out, { type: 'flat', text: 'AND', h: 0.13, face: 'roman', colour: [0.9, 0.88, 0.8], lit: 'none' }, { x: fx + 0.54, y: 3.37, z: 0, heading: toLand })
+    sign(out, { type: 'flat', text: 'HOLOGRAPH   GALLERY', h: 0.17, face: 'roman', colour: [0.9, 0.88, 0.8], tracking: 0.05, lit: 'none', w: 3.1 }, { x: fx + 0.54, y: 3.07, z: 0, heading: toLand })
+    // the south end: GIANT CAMERA, and the door into the dark room
+    sign(out, { type: 'flat', text: 'GIANT CAMERA', h: 0.34, face: 'grotesque', weight: 'bold', colour: [0.1, 0.12, 0.2], tracking: 0.1, lit: 'none', w: 2.9 },
+      { x: -hx + 1.75, y: 2.25, z: -hz - 0.02, heading: Math.PI })
+    box(out, hx - 2.45, 1.05, -hz - 0.02, 0.42, 1.05, 0.03, [0.62, 0.64, 0.66], wall)
+    box(out, hx - 2.45, 1.05, -hz - 0.04, 0.35, 0.98, 0.01, [0.12, 0.12, 0.13], dark)
+    // THE LENS HOUSE on the roof
+    const C: [number, number, number] = [0.9, 0.86, 0.66]
+    prism(out, 0, 0, 3.25, 4.4, 1.3, 24, C, surfaceTag('clapboard'))
+    prism(out, 0, 0, 3.66, 3.72, 1.48, 24, BLACK, dark)
+    prism(out, 0, 0, 3.72, 4.0, 1.52, 24, BLUE, wall, 1.46)
+    prism(out, 0, 0, 4.0, 4.06, 1.48, 24, BLACK, dark)
+    prism(out, 0, 0, 4.4, 4.5, 1.4, 24, BLACK, dark)
+    prism(out, 0, 0, 4.5, 5.75, 1.3, 16, SHINGLE, surfaceTag('tile'), 0.34)
+    prism(out, 0, 0, 5.75, 5.92, 0.36, 12, [0.3, 0.3, 0.3], dark)
+    // the lens window, a dark hood out of the cone towards the sea, its round eye
+    boxAlong(out, -0.62, 5.2, 0, 0.32, 0.26, 0.28, -Math.PI / 2, [0.35, 0.33, 0.3], wall)
+    boxAlong(out, -0.91, 5.2, 0, 0.17, 0.17, 0.02, -Math.PI / 2, [0.08, 0.06, 0.08], dark)
+    if (lift > 0.02) {
+      for (let i = v0; i < out.positions.length; i += 3) out.positions[i + 1] += lift
+      for (let i = s0; i < out.signs.length; i++) out.signs[i].y += lift
+      // the plinth it stands on, down into the low side of the terrace
+      box(out, 0, lift / 2 - 0.15, 0, hx - 0.5, lift / 2 + 0.15, hz - 1.0, [0.62, 0.61, 0.58], surfaceTag('concrete'))
+    }
   },
 
   /**

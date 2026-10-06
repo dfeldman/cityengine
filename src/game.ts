@@ -84,6 +84,7 @@ import { capTextures } from './render/texture-cap.ts'
 import { Vegetation, foliageLights } from './render/vegetation.ts'
 import { updateCartoonEye } from './render/cartoon-material.ts'
 import { DAYLIGHT, updateEye } from './render/facade-material.ts'
+import { obscuraView } from './render/obscura.ts'
 import { beachRuns, beachSurfLayer, inBeachZone, shoreFrame, shoreRamp } from './render/beach-surf.ts'
 import { BeachCrowd } from './render/beach-crowd.ts'
 import { updateWater } from './render/water-material.ts'
@@ -1835,12 +1836,22 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     //  over its roof, 65 m from the tower — owner, 2026-10-06)
     { name: 'the de Young\'s Hamon Tower', lat: 37.772015, lon: -122.468316, top: 47 },
     { name: 'the Transamerica Pyramid', lat: 37.79519, lon: -122.40279, top: 230 },
-  ].map((o) => ({ ...o, ...proj.toLocal({ lat: o.lat, lon: o.lon }) })) : []
+    /*
+     * Not a top but a dark room (owner, 2026-10-06: "push O to observe in the camera obscura"): the eye at the Giant
+     * Camera's lens, turning slowly round as its mirror does, and the picture thrown onto the round table inside
+     * (render/obscura.ts). Offered only close to it.
+     */
+    { name: 'the Camera Obscura', lat: 37.778257, lon: -122.514234, top: 6, obscura: 'Camera Obscura', reach: 45 },
+  ].map((o) => ({ obscura: undefined as string | undefined, reach: 150, ...o, ...proj.toLocal({ lat: o.lat, lon: o.lon }) })) : []
   let observing: string | null = null
   const nearTop = (at: { x: number; z: number }): (typeof OBSERVE)[number] | null =>
-    OBSERVE.find((o) => Math.hypot(o.x - at.x, o.z - at.z) < 150) ?? null
+    OBSERVE.find((o) => Math.hypot(o.x - at.x, o.z - at.z) < o.reach) ?? null
+  let table: { dispose(): void } | null = null
+  let turning: (() => void) | null = null
   const comeDown = (): void => {
     observing = null
+    table?.dispose(); table = null
+    if (turning) { scene.onBeforeRenderObservable.removeCallback(turning); turning = null }
     frozen = false
     orbit.active = false
     debug.frozen(false)
@@ -1859,12 +1870,29 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     // the eye just over the MODEL's own top where one is placed there (the guessed heights put it inside Coit Tower)
     let topY = city.terrain.heightAt(o.x, o.z) + o.top
     for (const p of landmarks?.placed ?? []) {
+      if (o.obscura) {
+        // the lens: just over the camera's own roof, wherever the model stands (not over the Cliff House beside it)
+        if (p.name === o.obscura && p.y !== undefined && p.height !== undefined) { l.x = p.x; l.z = p.z; topY = p.y + p.height + 0.6 }
+        continue
+      }
       if (Math.hypot(p.x - o.x, p.z - o.z) < 40 && p.y !== undefined && p.height !== undefined) topY = Math.max(topY, p.y + p.height + 2)
     }
     orbit.lift = topY - city.terrain.heightAt(o.x, o.z) - 1.5
     observing = o.name
     debug.frozen(true)
     lookPad?.show(true)
+    if (o.obscura) {
+      // looking out a little down over the sea, the mirror turning once in three minutes
+      l.pitch = -0.22
+      l.dist = 0.5
+      orbit.lift = topY - city.terrain.heightAt(l.x, l.z)
+      table = obscuraView(camera)
+      let last = performance.now()
+      turning = () => { const now = performance.now(); l.yaw += ((now - last) / 1000) * (Math.PI * 2 / 180); last = now }
+      scene.onBeforeRenderObservable.add(turning)
+      hud.banner('Inside the Camera Obscura', touchScreen() ? 'the lens turns slowly · drag to look · ⏸ to come out' : 'the lens turns slowly · drag to look · O to come out', 4500)
+      return
+    }
     hud.banner(`The top of ${o.name}`, touchScreen() ? 'drag to look round · ⏸ to come down' : 'drag to look round · O to come down', 4500)
   }
   addEventListener('keydown', (e) => {
@@ -1877,7 +1905,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const observeTick = (at: { x: number; z: number }): void => {
     if (observing && !frozen) observing = null
     const o = frozen ? null : nearTop(at)
-    hud.observe(o ? (touchScreen() ? `🔭 Observe from the top of ${o.name}` : `🔭 Press O to observe from the top of ${o.name}`) : null, o ? () => goUp(o) : undefined)
+    const what = o?.obscura ? `look in ${o.name}` : `observe from the top of ${o?.name}`
+    hud.observe(o ? (touchScreen() ? `🔭 ${what[0].toUpperCase()}${what.slice(1)}` : `🔭 Press O to ${what}`) : null, o ? () => goUp(o) : undefined)
   }
   /*
    * Jump to a landmark: a menu beside the city menu of every modelled landmark, restyled place and named
