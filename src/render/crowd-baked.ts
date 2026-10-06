@@ -59,9 +59,9 @@ const CYCLE_SPEED = 4.2
 /** How many of the variants are cyclists, built early so the first cyclist in the road is not a box. */
 const CYCLISTS = 2
 /** The skin tone the variants are built with; each walker's own is multiplied in relative to it. */
-const BASE_SKIN = [0xdc / 255, 0x9c / 255, 0x70 / 255] as const
+export const BASE_SKIN = [0xdc / 255, 0x9c / 255, 0x70 / 255] as const
 
-type Part = 'skin' | 'top' | 'bottom' | 'hair' | 'plain' | 'frame'
+export type Part = 'skin' | 'top' | 'bottom' | 'hair' | 'plain' | 'frame'
 
 interface Variant {
   /** `near`: the distance a part is drawn out to (metres; Infinity for the whole crowd) */
@@ -164,62 +164,7 @@ export class BakedCrowd {
     const manager = new BakedVertexAnimationManager(this.scene)
     manager.texture = baker.textureFromBakedVertexData(data)
 
-    const parts: { mesh: Mesh; part: Part; near: number }[] = []
-    const topId = spec.clothes[0]?.id
-    const bottomId = spec.clothes[1]?.id
-    for (const m of meshes) {
-      const n = m.name
-      // the tiny transparent layers are not worth a draw call each at crowd distance
-      if (n.endsWith('.cornea') || n.includes('.eyelashes.') || n.includes('.tongue.') || n.includes('.teeth.')) {
-        m.dispose()
-        continue
-      }
-      const part: Part = n.endsWith('.body') ? 'skin'
-        : n.includes('.hair.') || n.includes('.eyebrows.') ? 'hair'
-        : topId && n.endsWith(`.clothes.${topId}`) ? 'top'
-        : bottomId && n.endsWith(`.clothes.${bottomId}`) ? 'bottom'
-        : 'plain'
-      // no expressions on a stranger: the morph targets cost per vertex, per instance, for nothing
-      m.morphTargetManager = null
-      m.bakedVertexAnimationManager = manager
-      m.thinInstanceRegisterAttribute('bakedVertexAnimationSettingsInstanced', 4)
-      m.thinInstanceRegisterAttribute('color', 4)
-      m.thinInstanceCount = 0
-      m.alwaysSelectAsActiveMesh = true
-      m.isPickable = false
-      // with the buildings: the ground layers clear depth, and group 0 would be painted over
-      m.renderingGroupId = 3
-      /*
-       * A plain lit material in place of the kit's physically based one. The kit's skin takes part in a
-       * scene-wide subsurface-scattering pass at its high quality tier, and eight crowd bodies' worth of
-       * those materials — each with baked animation and instancing on top — was enough shader variants to
-       * take the whole tab down on a machine that picks the high tier. A stranger at twenty metres needs
-       * their texture and their colour, not film skin; this keeps both and costs far less to draw.
-       *
-       * Cut-outs, not blending, for the same reason as the trees: a thin-instanced mesh is sorted once as a
-       * single object, and blended hair on two hundred heads sorted as one would draw over everything.
-       */
-      const kit = m.material as PBRMaterial | null
-      const mat = new StandardMaterial(`${n}.crowd`, this.scene)
-      if (kit) {
-        mat.diffuseTexture = kit.albedoTexture
-        mat.diffuseColor = kit.albedoColor.clone()
-        if (kit.albedoTexture && kit.albedoTexture.hasAlpha) {
-          mat.transparencyMode = 1
-          mat.alphaCutOff = 0.5
-          mat.useAlphaFromDiffuseTexture = true
-        }
-        mat.backFaceCulling = kit.backFaceCulling
-      }
-      mat.specularColor.set(0.08, 0.08, 0.08)
-      mat.emissiveColor.set(0.08, 0.075, 0.07)   // a little lift, so the shaded side is not a silhouette
-      m.material = mat
-      m.layerMask = 0x0fffffff | PEOPLE
-      kit?.dispose(false, false)
-      // eyes and brows only close up; shoes only to SHOES (past it a foot is a few pixels, and the plainest pair is
-      // 2 000 triangles: 358 k of the park crowd's 2.1 M, perf audit 2026-10-05)
-      parts.push({ mesh: m, part, near: n.endsWith('.eyes') || n.includes('.eyebrows.') ? NEAR : n.includes('.clothes.shoes') ? SHOES : Infinity })
-    }
+    const parts = instancedParts(this.scene, meshes, spec, manager)
     /*
      * The kit's own bike, fitted to this body so the feet meet the pedals, frozen with its cranks level and
      * merged by material into a few meshes, instanced with the rider. The legs pedal; the cranks do not turn
@@ -340,6 +285,72 @@ export class BakedCrowd {
       }
     })
   }
+}
+
+
+/**
+ * A baked kit body's meshes made ready to thin-instance: the tiny transparent layers dropped, each part named for
+ * the colour it takes (skin, top, bottom, hair, or plain), the baked animation and per-instance colour attributes
+ * registered, and a plain lit material in place of the kit's PBR one. Shared with the beach (render/beach-crowd.ts).
+ */
+export function instancedParts(scene: Scene, meshes: Mesh[], spec: AvatarSpec, manager: BakedVertexAnimationManager): { mesh: Mesh; part: Part; near: number }[] {
+  const parts: { mesh: Mesh; part: Part; near: number }[] = []
+  const topId = spec.clothes[0]?.id
+  const bottomId = spec.clothes[1]?.id
+  for (const m of meshes) {
+    const n = m.name
+    // the tiny transparent layers are not worth a draw call each at crowd distance
+    if (n.endsWith('.cornea') || n.includes('.eyelashes.') || n.includes('.tongue.') || n.includes('.teeth.')) {
+      m.dispose()
+      continue
+    }
+    const part: Part = n.endsWith('.body') ? 'skin'
+      : n.includes('.hair.') || n.includes('.eyebrows.') ? 'hair'
+      : topId && n.endsWith(`.clothes.${topId}`) ? 'top'
+      : bottomId && n.endsWith(`.clothes.${bottomId}`) ? 'bottom'
+      : 'plain'
+    // no expressions on a stranger: the morph targets cost per vertex, per instance, for nothing
+    m.morphTargetManager = null
+    m.bakedVertexAnimationManager = manager
+    m.thinInstanceRegisterAttribute('bakedVertexAnimationSettingsInstanced', 4)
+    m.thinInstanceRegisterAttribute('color', 4)
+    m.thinInstanceCount = 0
+    m.alwaysSelectAsActiveMesh = true
+    m.isPickable = false
+    // with the buildings: the ground layers clear depth, and group 0 would be painted over
+    m.renderingGroupId = 3
+    /*
+     * A plain lit material in place of the kit's physically based one. The kit's skin takes part in a
+     * scene-wide subsurface-scattering pass at its high quality tier, and eight crowd bodies' worth of
+     * those materials — each with baked animation and instancing on top — was enough shader variants to
+     * take the whole tab down on a machine that picks the high tier. A stranger at twenty metres needs
+     * their texture and their colour, not film skin; this keeps both and costs far less to draw.
+     *
+     * Cut-outs, not blending, for the same reason as the trees: a thin-instanced mesh is sorted once as a
+     * single object, and blended hair on two hundred heads sorted as one would draw over everything.
+     */
+    const kit = m.material as PBRMaterial | null
+    const mat = new StandardMaterial(`${n}.crowd`, scene)
+    if (kit) {
+      mat.diffuseTexture = kit.albedoTexture
+      mat.diffuseColor = kit.albedoColor.clone()
+      if (kit.albedoTexture && kit.albedoTexture.hasAlpha) {
+        mat.transparencyMode = 1
+        mat.alphaCutOff = 0.5
+        mat.useAlphaFromDiffuseTexture = true
+      }
+      mat.backFaceCulling = kit.backFaceCulling
+    }
+    mat.specularColor.set(0.08, 0.08, 0.08)
+    mat.emissiveColor.set(0.08, 0.075, 0.07)   // a little lift, so the shaded side is not a silhouette
+    m.material = mat
+    m.layerMask = 0x0fffffff | PEOPLE
+    kit?.dispose(false, false)
+    // eyes and brows only close up; shoes only to SHOES (past it a foot is a few pixels, and the plainest pair is
+    // 2 000 triangles: 358 k of the park crowd's 2.1 M, perf audit 2026-10-05)
+    parts.push({ mesh: m, part, near: n.endsWith('.eyes') || n.includes('.eyebrows.') ? NEAR : n.includes('.clothes.shoes') ? SHOES : Infinity })
+  }
+  return parts
 }
 
 /** One stride of the kit's walk (or run) at this pace, found by watching its gait phase wrap: 0..1 per stride. */

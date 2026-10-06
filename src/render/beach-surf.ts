@@ -372,6 +372,44 @@ export function shoreRamp(runs: ReturnType<typeof beachRuns>, sea: number): ((x:
   }
 }
 
+
+/**
+ * Where a point stands relative to the nearest beach coastline: `s` metres seaward of it (negative up the beach) and
+ * the seaward normal there, or null away from every beach. For placing things on the sand (render/beach-crowd.ts).
+ */
+export function shoreFrame(runs: ReturnType<typeof beachRuns>, reach = 120): (x: number, z: number) => { s: number; nx: number; nz: number } | null {
+  const CELL = 20
+  const grid = new Map<string, { x: number; z: number; nx: number; nz: number }[]>()
+  for (const r of runs) {
+    for (let i = 0; i < r.pts.length; i++) {
+      const p = r.pts[i]
+      const k = `${Math.floor(p.x / CELL)},${Math.floor(p.z / CELL)}`
+      const list = grid.get(k) ?? []
+      list.push({ x: p.x, z: p.z, nx: r.nx[i], nz: r.nz[i] })
+      grid.set(k, list)
+    }
+  }
+  const R = Math.ceil(reach / CELL)
+  return (x, z) => {
+    const cx = Math.floor(x / CELL), cz = Math.floor(z / CELL)
+    let best = reach * reach, near: { x: number; z: number; nx: number; nz: number } | null = null
+    for (let j = cz - R; j <= cz + R; j++) for (let i = cx - R; i <= cx + R; i++) {
+      for (const q of grid.get(`${i},${j}`) ?? []) {
+        const d2 = (q.x - x) ** 2 + (q.z - z) ** 2
+        if (d2 < best) { best = d2; near = q }
+      }
+    }
+    return near ? { s: (x - near.x) * near.nx + (z - near.z) * near.nz, nx: near.nx, nz: near.nz } : null
+  }
+}
+
+
+/** Is (x, z) in a sandy beach's zone? */
+export function inBeachZone(zones: Zone[]): (x: number, z: number) => boolean {
+  const beach = zones.filter((z) => z.props.water === 'beach')
+  return (x, z) => beach.some((zn) => x >= zn.bbox[0] && x <= zn.bbox[2] && z >= zn.bbox[1] && z <= zn.bbox[3] && inRing(zn.ring, x, z))
+}
+
 export function beachSurfLayer(scene: Scene, terrain: Terrain, sea: number,
                                runs: ReturnType<typeof beachRuns>): TileLayer | null {
   if (!runs.length) return null

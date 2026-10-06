@@ -85,7 +85,8 @@ import { Vegetation, foliageLights } from './render/vegetation.ts'
 import { updateCartoonEye } from './render/cartoon-material.ts'
 import { DAYLIGHT, updateEye } from './render/facade-material.ts'
 import { surfLayer } from './render/surf.ts'
-import { beachRuns, beachSurfLayer, shoreRamp } from './render/beach-surf.ts'
+import { beachRuns, beachSurfLayer, inBeachZone, shoreFrame, shoreRamp } from './render/beach-surf.ts'
+import { BeachCrowd } from './render/beach-crowd.ts'
 import { updateWater } from './render/water-material.ts'
 import { Hud } from './ui/hud.ts'
 import { PBR_FOG, photoMode, setRegionFog } from './render/photo.ts'
@@ -653,12 +654,20 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     if (cl) city.addLayer(cl)
   }
   // the surf on the rocks, in zones with `water: 'waves'` (render/surf.ts)
+  let beachCrowd: BeachCrowd | null = null
   if (index.sea !== undefined && index.sea !== null && !off.has('surf')) {
     const surf = surfLayer(scene, index.zones ?? [], city.terrain, index.sea)
     if (surf) city.addLayer(surf)
     // the sandy beaches' own surf, rollers and swash (render/beach-surf.ts)
     const beach = beachSurfLayer(scene, city.terrain, index.sea, beachShore)
     if (beach) city.addLayer(beach)
+    // and the people on the sand, on towels, under umbrellas (render/beach-crowd.ts)
+    if (beachShore.length && !off.has('beachcrowd')) {
+      beachCrowd = new BeachCrowd(scene)
+      city.addLayer(beachCrowd.layer(city.terrain, shoreFrame(beachShore), inBeachZone(index.zones ?? [])))
+      const bc = beachCrowd
+      ;(window as unknown as Record<string, unknown>).__beachLineup = (x: number, z: number) => bc.lineup(x, z, (a, b) => city.terrain.rawHeightAt(a, b))
+    }
   }
   // café terraces on the pavement, where the region sets them out (render/terraces.ts)
   // the mid ring (PARIS_EXPAND §2): every building of a far tile as plain massing, so the city has a horizon
@@ -2512,6 +2521,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         for (const b of bay) b.update(dt, focus)
       }
       sky?.update(dt, at)
+      beachCrowd?.update(dt)
       // the raised decks (docs/SKYPARKS.md), drained before both layers update: a deck arrives when its
       // landmark's tile streams in, so a one-time hookup at startup would miss every one of them. Trees and
       // shrubs read the same `landmarks.decks` entries.
