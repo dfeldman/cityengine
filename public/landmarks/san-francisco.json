@@ -576,5 +576,8 @@
  },
  {
   "include": "san-francisco/scratch-3.json"
+ },
+ {
+  "include": "san-francisco/batch-1006.json"
  }
 ]

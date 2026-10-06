@@ -30,7 +30,6 @@
   {"osm": ["way/398609305"], "name": "Fort Mason Center Landmark Building C", "restyle": "presidio", "note": "Army Mission Revival: white stucco, red tile roof (2026-10-03)."},
   {"osm": ["way/398613751"], "name": "Fort Mason Center Landmark Building D", "restyle": "presidio", "note": "Army Mission Revival: white stucco, red tile roof (2026-10-03)."},
   {"osm": ["way/398613752"], "name": "Fort Mason Center Landmark Building E", "restyle": "presidio", "note": "Army Mission Revival: white stucco, red tile roof (2026-10-03)."},
-  {"osm": ["way/288387355"], "name": "Fort Mason General's Residence", "restyle": "presidio", "note": "Army Mission Revival: white stucco, red tile roof (2026-10-03)."},
   {"osm": ["way/288387357"], "name": "Fort Mason William H. Whelan Building", "restyle": "presidio", "note": "Army Mission Revival: white stucco, red tile roof (2026-10-03)."},
   {"name": "Seal Rocks", "procedural": "seaStacks", "lat": 37.778164, "lon": -122.515685, "size": [40, 40], "rotateDeg": 0, "deckAbove": 0, "height": 18, "note": "The largest stack (OSM way/969197372)."},
   {"name": "Seal Rocks (west)", "procedural": "seaStacks", "lat": 37.778374, "lon": -122.516561, "size": [30, 30], "rotateDeg": 40, "deckAbove": 0, "height": 12, "note": "way/969197373"},
