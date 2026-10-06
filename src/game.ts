@@ -1401,7 +1401,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           routeTo(ev.job[ev.stop])
         }
       } else if (ev.kind === 'forfeit') {
-        // a jump on the map: the job is off, unpaid (no teleporting to the door)
+        // a jump on the map: the job is off, unpaid (no teleporting to the door). And an offer still on the card goes
+        // with it (owner, 2026-10-05: a jump with the offer open left it stuck — the job was gone, so its buttons did
+        // nothing and it never timed out)
+        deliveryCard.hideOffer()
+        opts.platform?.endOffer()
         deliveryCard.going(null)
         light(null, 'pickup')
         routeTo(null)
