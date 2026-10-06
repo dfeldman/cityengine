@@ -164,6 +164,8 @@ export interface LandmarkEntry {
   accent?: string
   /** the ground floor where it is painted differently from the rest — a dark shopfront under pale flats */
   groundWall?: string
+  /** false: no footprint shadow (a model that is not a solid on flat ground: a cascade down a hillside) */
+  shadow?: boolean
   /** for a standalone model: its footprint, for the shadow and the fit, in metres (width × depth) */
   size?: [number, number]
   /**
@@ -1293,7 +1295,9 @@ export class Landmarks {
       // building is right, but a low one spread over a big outline — a coastal battery's parapets and pits on 63 × 114 m
       // (2026-10-04) — came out a dark field; a low solid one loses only a metre or two of shadow past its walls
       const mh = modelHeight(mb)
-      if (e.baseY === undefined && e.deckAbove === undefined && mh >= 6) addShadow(shadows, under, mh * 0.85, shadowOffset(DAYLIGHT.sun), SHADOW_Y)
+      // (…nor one that says it casts none: a cascade down a hillside is not a box, and its footprint's shadow, draped only
+      //  at its corners, lay across Strawberry Hill as dark planes through the slope — Huntington Falls, 2026-10-05)
+      if (e.baseY === undefined && e.deckAbove === undefined && e.shadow !== false && mh >= 6) addShadow(shadows, under, mh * 0.85, shadowOffset(DAYLIGHT.sun), SHADOW_Y)
       if (shadows.triangles > 0) {
         const sm = new Mesh(`landmark:shadow:${e.name}`, this.scene)
         this.terrain.drape(shadows.positions)

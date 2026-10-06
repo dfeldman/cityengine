@@ -15,6 +15,7 @@ import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
 import type { Rgb } from '../../models.ts'
 import { box, prism, strut } from '../../models.ts'
+import { boxAlong } from '../parts.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 
 /** the falls' line follows OSM's stream (way/120479794, /120479802) from the reservoir east to the lake */
@@ -24,47 +25,115 @@ const h = (a: number, b: number): number => { const v = Math.sin(a * 127.1 + b *
 
 export function huntingtonFalls(out: MeshBuilder, fit: Fit): void {
   /*
-   * Straight down over rock (owner: "the falls should be straight down over rocks"): the stream leaves the reservoir
-   * and drops in three SHEER falls, each over the face of a great step of rock, a short pool between, the last into
-   * a churned pool at the lake's edge. Local frame: the stream's line along +x (rotateDeg 0, centre FALLS_CENTRE).
+   * REBUILT 2026-10-05 from the owner's photograph ("it looks really bad … the real site is quite beautiful"): an
+   * ARTIFICIAL CLIFF of tan and brown rock built out of the hillside in great steps, the water falling in thin white
+   * ribbons down each sheer face into a pool on the ledge below, ferns and shrubs in every crack, two wooden
+   * footbridges with X-braced rails across the falls, and a stone-rimmed pool at the lake's edge.
+   *
+   * The natural ground falls a steady 45% here (30 m to 3 m over 60 m, measured), so the cliff is the model's own: each
+   * terrace a flat ledge of piled rock standing out of the slope, ending in a face 6–10 m sheer. Rocks are flat-shaded
+   * (no surface tag: the granite library drew a masonry grid on them and they read as stone towers), broad and low.
+   * Local frame: the stream's line along +x, downhill (rotateDeg 0, centre FALLS_CENTRE); z across.
    */
-  const g = fit.groundAt ?? ((x: number): number => Math.max(0, (22 - x) * 0.6))
-  const rock = surfaceTag('granite')
-  const ROCK: Rgb = [0.44, 0.42, 0.39], WATER: Rgb = [0.55, 0.68, 0.74], FOAM: Rgb = [0.93, 0.95, 0.96]
-  const zAt = (x: number): number => -5 + ((x + 26) / 48) * 9
+  const g = fit.groundAt ?? ((x: number): number => Math.max(0, (22 - x) * 0.55))
+  const WATER: Rgb = [0.42, 0.56, 0.6], FOAM: Rgb = [0.94, 0.96, 0.97], SPRAY: Rgb = [0.8, 0.88, 0.92]
+  const WOOD: Rgb = [0.46, 0.3, 0.2], WOOD_DK: Rgb = [0.34, 0.22, 0.15]
+  const rockC = (k: number): Rgb => {
+    const t = h(k, 4), m = h(k, 5)
+    // (weathered tan, brown and mossy grey, set dark: the lit material brightens them)
+    const base: Rgb = m < 0.25 ? [0.27, 0.28, 0.22] : t < 0.5 ? [0.37, 0.31, 0.25] : [0.29, 0.25, 0.21]
+    const v = 0.9 + h(k, 6) * 0.2
+    return [base[0] * v, base[1] * v, base[2] * v]
+  }
+  const GREENS: Rgb[] = [[0.13, 0.22, 0.09], [0.17, 0.26, 0.11], [0.11, 0.19, 0.09], [0.2, 0.28, 0.12]]
   const both = (q: [number, number, number][], n: [number, number, number], c: Rgb): void => {
     out.quad(q, n, [[0, 0], [1, 0], [1, 1], [0, 1]], c, 0)
     out.quad([...q].reverse() as [number, number, number][], [-n[0], -n[1], -n[2]], [[0, 0], [1, 0], [1, 1], [0, 1]], c, 0)
   }
-  // the three faces, where the ground has fallen a third of the way each time
-  const faces = [-14, 0, 16]
-  let prevX = -26
-  for (const [i, fx] of faces.entries()) {
-    const topY = g(prevX, zAt(prevX)) + 0.6, baseY = g(fx + 5, zAt(fx + 5))
-    const zc = zAt(fx), W = 6.5 - i
-    // the step of rock: a mass of boulders from the ground up to the ledge, across the stream and either side
-    for (let x = prevX; x <= fx; x += 2.5) for (const side of [-1, -0.4, 0.4, 1]) {
-      const k = x * 7 + side * 13 + i
-      const cz = zAt(x) + side * (W * 0.55 + h(k, 1))
-      const top = topY + (Math.abs(side) > 0.5 ? 0.6 + h(k, 2) * 1.6 : -0.4)
-      const r = 2 + h(k, 3) * 1.4
-      prism(out, x, cz, g(x, cz) - 1, top, r, 6, [ROCK[0] + h(k, 4) * 0.08, ROCK[1] + h(k, 4) * 0.07, ROCK[2] + h(k, 4) * 0.05], rock, r * 0.75)
+  // the stream bends a little across the hill
+  const zAt = (x: number): number => -3 + ((x + 26) / 48) * 6
+  /** the terraces: [from x, face x, ledge level], each ledge standing out of the slope down to its sheer face */
+  const tiers: [number, number, number][] = [
+    [-28, -15, g(-28, zAt(-28)) + 0.6],
+    [-14, -1, g(-14, zAt(-14)) - 0.5],
+    [0, 12, g(0, zAt(0)) - 0.5],
+  ]
+  const W = 8
+  let k = 0
+  for (const [ti, [x0, xf, top]] of tiers.entries()) {
+    const next = ti + 1 < tiers.length ? tiers[ti + 1][2] : g(xf + 4, zAt(xf + 4))
+    // the mass: broad low blocks from below the ground up to the ledge, higher shoulders either side of the channel
+    for (let x = x0; x <= xf; x += 2.1) {
+      for (let z = -W; z <= W; z += 2.2) {
+        k++
+        const cz = zAt(x) + z + (h(k, 1) - 0.5) * 0.8
+        const side = Math.abs(z) / W
+        const lift = side > 0.35 ? 0.6 + side * 3 * h(k, 2) : -0.25
+        const y1 = top + lift + (h(k, 3) - 0.5) * 0.4
+        // (well into the ground: the model's frame starts at the LOWEST ground under its footprint, the lake shore)
+        const y0 = Math.min(g(x, cz) - 2.5 - h(k, 15) * 0.4, y1 - 0.5)
+        const r = 1.4 + h(k, 7) * 0.8
+        boxAlong(out, x + (h(k, 8) - 0.5) * 0.6, (y0 + y1) / 2, cz, r, (y1 - y0) / 2, r * (0.7 + h(k, 10) * 0.4), h(k, 13) * Math.PI, rockC(k), 0)
+      }
     }
-    // the pool on the ledge, and the sheet of white water straight down its face
-    both([[prevX, topY + 0.1, zAt(prevX) - 2], [prevX, topY + 0.1, zAt(prevX) + 2], [fx + 0.5, topY + 0.1, zc + 2], [fx + 0.5, topY + 0.1, zc - 2]], [0, 1, 0], WATER)
-    for (let j = 0; j < 5; j++) {
-      const zz = zc - 2 + j * 0.8, c = j % 2 ? FOAM : [0.82, 0.9, 0.94] as Rgb
-      both([[fx + 1.6, topY + 0.1, zz], [fx + 1.6, topY + 0.1, zz + 0.8], [fx + 2.2, baseY + 0.3, zz + 0.8], [fx + 2.2, baseY + 0.3, zz]], [1, 0, 0], c)
+    // the face: boulders stacked down it, proud by turns, so it is craggy and not a wall of columns
+    for (let y = next - 0.5; y < top; y += 1.3) {
+      for (let z = -W + 1; z <= W - 1; z += 1.7) {
+        k++
+        if (Math.abs(z) < 3) continue   // the fall's own slot, clear of the blocks' reach
+        // angular blocks at all headings, staggered in and out: prisms read as columns of masonry, then as lampshades
+        const r = 1 + h(k, 7) * 1.1
+        const cx = xf + 0.2 + h(k, 2) * 1.6
+        const yy = y + (h(k, 11) - 0.5) * 0.8
+        const hh = r * (0.45 + h(k, 3) * 0.35)
+        boxAlong(out, cx, yy + hh, zAt(xf) + z + (h(k, 12) - 0.5) * 0.8, r, hh, r * (0.6 + h(k, 9) * 0.5), h(k, 14) * Math.PI, rockC(k), 0)
+      }
     }
-    prism(out, fx + 3.2, zc, baseY + 0.1, baseY + 0.5, 2.2, 10, FOAM, 0)
-    prevX = fx + 3
+    // the slot behind the fall, darker, and the water: a pool along the ledge, then thin white ribbons down the face
+    const zc = zAt(xf)
+    both([[xf + 0.4, next, zc - 2.8], [xf + 0.4, next, zc + 2.8], [xf + 0.4, top, zc + 2.8], [xf + 0.4, top, zc - 2.8]], [1, 0, 0], [0.2, 0.17, 0.14])
+    // the slot's rock sides
+    for (const sz of [-1, 1]) boxAlong(out, xf + 1.3, (next + top) / 2, zc + sz * 2.6, 1.2, (top - next) / 2, 0.4, 0, rockC(k + sz * 31), 0)
+    // (one face, up: a pair back to back is two coplanar surfaces to the depth buffer)
+    out.quad([[x0 + 2, top + 0.12, zAt(x0 + 2) + 1.2], [xf + 0.9, top + 0.12, zc + 1.4], [xf + 0.9, top + 0.12, zc - 1.4], [x0 + 2, top + 0.12, zAt(x0 + 2) - 1.2]], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], WATER, 0)
+    const ribbons = ti === 0 ? [[-0.8, 1.0], [0.8, 0.7]] : [[-0.2, 1.6]]
+    for (const [dz, w] of ribbons) {
+      for (let s = 0; s < 3; s++) {
+        const zz = zc + dz - w / 2 + (s * w) / 3
+        both([[xf + 1.4, top + 0.1, zz], [xf + 1.4, top + 0.1, zz + w / 3], [xf + 2.0 + s * 0.15, next + 0.2, zz + w / 3], [xf + 2.0 + s * 0.15, next + 0.2, zz]], [1, 0, 0], s === 1 ? SPRAY : FOAM)
+      }
+    }
+    prism(out, xf + 2.2, zc, next - 0.05, next + 0.35, 1.6, 10, FOAM, 0, 1.2)
+    // greenery: ferns and shrubs on the ledge and in the cracks of the shoulders
+    for (let n = 0; n < 26; n++) {
+      k++
+      const x = x0 + h(k, 1) * (xf - x0 + 1)
+      const z = (h(k, 2) < 0.5 ? -1 : 1) * (1.8 + h(k, 3) * (W - 1.5))
+      const r = 0.6 + h(k, 4) * 1.1
+      const y = top + (Math.abs(z) / W > 0.35 ? 0.6 + (Math.abs(z) / W) * 1.5 * h(k, 5) : 0)
+      prism(out, x, zAt(x) + z, y - 0.2, y + r * (0.8 + h(k, 6)), r, 6, GREENS[n % GREENS.length], 0, r * 0.35)
+    }
   }
-  // the pool at the foot, by the lake, and boulders round its rim
-  const last = faces[faces.length - 1], zl = zAt(last), yl = g(last + 6, zl)
-  prism(out, last + 6, zl, yl - 0.2, yl + 0.25, 6, 14, WATER, surfaceTag('glass'))
-  for (let i = 0; i < 7; i++) {
-    const a = (i / 7) * Math.PI * 1.4 - 0.7, r = 1 + h(i, 8) * 1.2
-    prism(out, last + 6 + Math.cos(a) * 6.5, zl + Math.sin(a) * 6.5, yl - 0.3, yl + r, r, 6, ROCK, rock, r * 0.5)
+  // the two footbridges across the falls, on the upper ledges just above their faces: plank decks, posts, X-braced rails
+  for (const [bx, top] of [[tiers[0][1] - 2.5, tiers[0][2]], [tiers[1][1] - 2.5, tiers[1][2]]] as [number, number][]) {
+    const zc = zAt(bx), y = top + 0.9, half = 3.4
+    box(out, bx, y, zc, 0.8, 0.07, half, WOOD, 0)
+    for (const sx of [-0.75, 0.75]) {
+      for (let zz = -half; zz <= half + 0.01; zz += half) box(out, bx + sx, y + 0.55, zc + zz, 0.06, 0.55, 0.06, WOOD_DK, 0)
+      box(out, bx + sx, y + 1.08, zc, 0.05, 0.05, half, WOOD, 0)
+      box(out, bx + sx, y + 0.12, zc, 0.04, 0.04, half, WOOD, 0)
+      for (const [za, zb] of [[-half, 0], [0, half]]) {
+        strut(out, [bx + sx, y + 0.12, zc + za], [bx + sx, y + 1.05, zc + zb], 0.04, 0.04, WOOD, 0)
+        strut(out, [bx + sx, y + 1.05, zc + za], [bx + sx, y + 0.12, zc + zb], 0.04, 0.04, WOOD, 0)
+      }
+    }
+  }
+  // the pool at the foot, by the lake, rimmed with rounded stones
+  const xl = tiers[2][1] + 6, zl = zAt(xl), yl = g(xl, zl)
+  prism(out, xl, zl, yl - 0.2, yl + 0.22, 6.5, 16, WATER, surfaceTag('glass'))
+  for (let i = 0; i < 16; i++) {
+    const a = (i / 16) * Math.PI * 1.6 - 0.8 + Math.PI, r = 0.5 + h(i, 8) * 0.6
+    prism(out, xl + Math.cos(a) * 6.6, zl + Math.sin(a) * 6.6, yl - 2.5, yl + r * 0.9, r, 6, rockC(i + 900), 0, r * 0.6)
   }
 }
 
