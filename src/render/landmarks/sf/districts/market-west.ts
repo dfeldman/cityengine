@@ -335,21 +335,6 @@ function stripRoof(out: MeshBuilder, e: Edge, u0: number, u1: number, d: number,
 }
 
 /**
- * A screen standing up from the roof edge along a wall, its top a curve: `hMid` above the roof in the middle of
- * the wall, `hEnd` at its ends (the Federal Building's scooped skyline).
- */
-function crest(out: MeshBuilder, e: Edge, y: number, hMid: number, hEnd: number, c: Rgb, tag: number, n = 10): void {
-  const h = (u: number): number => hMid + (hEnd - hMid) * (2 * u / e.L - 1) ** 2
-  for (let k = 0; k < n; k++) {
-    const u0 = (k / n) * e.L
-    const u1 = ((k + 1) / n) * e.L
-    const A = at(e, u0, 0.1)
-    const B = at(e, u1, 0.1)
-    quad(out, [[A.x, y, A.z], [B.x, y, B.z], [B.x, y + h(u1), B.z], [A.x, y + h(u0), A.z]], [e.nx, 0, e.nz], c, tag)
-  }
-}
-
-/**
  * A colonnade standing in front of a wall: round columns `r` thick every `pitch` metres (in pairs `pair` apart
  * when given), `o` out, from y0 to y1, over a darker panel for the loggia behind them.
  */
@@ -855,47 +840,6 @@ export const MARKET_WEST: Record<string, (out: MeshBuilder, fit: Fit) => void> =
     tiers: [{ to: 1, face: { kind: 'punched', material: 'metal', wall: [0.19, 0.2, 0.21], glass: [0.4, 0.5, 0.54], pitch: 2.6, solid: 0.35, floor: 3.1 } }],
     roof: [0.32, 0.32, 0.33],
     crown: { kind: 'parapet', height: 1.1, colour: [0.2, 0.21, 0.22] },
-  }),
-
-  /**
-   * The San Francisco Federal Building (2007, Thom Mayne / Morphosis), 90 Seventh Street at Mission: an 18-storey
-   * slab 110 m long and only 20 m thick. The south-east face is a skin of perforated stainless steel, silver, with
-   * slots of window behind it, a solid panel with three boxed windows, and a three-storey sky garden cut into it;
-   * the north-west face is hung with tall frosted-glass sunshades; the metal skin rises past the roof in a
-   * scooped crest, high at the ends. (Commons: "San Francisco Federal Building (main structure, seen from Mission
-   * and 7th, 2020).jpg", "San Francisco Federal Building.jpg".)
-   */
-  federalBuilding: specPlus({
-    height: 72,
-    base: { height: 6, face: { kind: 'curtain', material: 'metal', wall: [0.55, 0.56, 0.56], glass: [0.26, 0.3, 0.32], pitch: 3, floor: 6 } },
-    tiers: [{ to: 1, face: { kind: 'bands', material: 'metal', wall: [0.62, 0.65, 0.67], glass: [0.26, 0.29, 0.32], solid: 0.78, floor: 3.65 } }],
-    roof: [0.55, 0.56, 0.56],
-  }, (out, ring, H) => {
-    const steel: Rgb = [0.64, 0.67, 0.69]
-    const nw = edgeNear(ring, 109.8)
-    // the sunshades: frosted glass fins the height of the north-west face
-    faceOn(out, nw, 1, nw.L - 1, 8, H - 1, { kind: 'fins', material: 'glass', wall: [0.82, 0.86, 0.84], glass: [0.3, 0.36, 0.38], pitch: 1.6, solid: 0.3, depth: 1.1, floor: 3.65 })
-    crest(out, nw, H, 1.5, 8, steel, T.metal)
-    const se = edgeNear(ring, 49.8)
-    crest(out, se, H, 2, 7, steel, T.metal, 6)
-    const sw = edgeNear(ring, 34.8)
-    crest(out, sw, H, 7, 3, steel, T.metal, 4)
-    // the solid panel with its three boxed windows, and the sky garden
-    const u = se.L * 0.25
-    panel(out, se, u - 5, u + 5, 0.16, 18, H - 2, [0.72, 0.74, 0.75], T.metal)
-    for (const y of [24, 36, 48]) {
-      slab(out, se, u - 1.8, u + 1.8, 0, 1.2, y, y + 3.4, [0.9, 0.91, 0.92], T.metal)
-      panel(out, se, u - 1.2, u + 1.2, 1.22, y + 0.6, y + 2.8, [0.25, 0.3, 0.34], T.glass)
-    }
-    panel(out, se, se.L * 0.42, se.L * 0.68, 0.2, H * 0.5, H * 0.5 + 11, [0.1, 0.11, 0.12], FIXED)
-  }),
-
-  /** The Federal Building's annex: five storeys of dark glass between white end walls, on the plaza. */
-  federalBuildingAnnex: spec({
-    height: 21,
-    tiers: [{ to: 1, face: { kind: 'curtain', material: 'metal', wall: [0.82, 0.84, 0.85], glass: [0.22, 0.32, 0.38], pitch: 2.2, floor: 4.2 } }],
-    roof: [0.6, 0.6, 0.6],
-    crown: { kind: 'parapet', height: 1, colour: [0.9, 0.9, 0.9] },
   }),
 
   /**
