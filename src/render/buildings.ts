@@ -66,6 +66,11 @@ export class MeshBuilder {
    * in every city we ever do").
    */
   readonly clocks: { x: number; y: number; z: number; nx: number; nz: number; r: number; hands?: [number, number, number] }[] = []
+  /**
+   * The parts of the model that TURN (render/rotors.ts): each drawn into its own builder about its hub at the origin,
+   * placed at (x, y, z) in the model's frame and spun about (nx, ny, nz) at `rpm` turns a minute — a windmill's sails.
+   */
+  readonly rotors: { x: number; y: number; z: number; nx: number; ny?: number; nz: number; mb: MeshBuilder; rpm: number }[] = []
 
   /**
    * A raised deck this model plants (render/plants.ts, docs/SKYPARKS.md): a ring in the model's own local

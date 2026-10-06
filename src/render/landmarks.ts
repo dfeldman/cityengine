@@ -53,6 +53,7 @@ const shed = (m: Mesh): void => {
 import { signCut, type PlacedSign } from './landmarks/signage.ts'
 import { flatSignMesh } from './sign-plates.ts'
 import { Clocks } from './clocks.ts'
+import { Rotors } from './rotors.ts'
 import { region } from '../city/region.ts'
 import { expandIncludes } from '../city/manifest.ts'
 import { Projection } from '../city/geo.ts'
@@ -797,6 +798,8 @@ export class Landmarks {
   private readonly mat: ShaderMaterial
   /** the public clocks' hands (render/clocks.ts), turned to the city's own time */
   private readonly clockHands: Clocks
+  /** what turns on a model — the park's windmills' sails (render/rotors.ts) */
+  private readonly rotors: Rotors
   private plain: ShaderMaterial | null = null
   private plainMat(): ShaderMaterial {
     if (!this.plain) {
@@ -840,6 +843,7 @@ export class Landmarks {
     mat.backFaceCulling = false
     this.mat = mat
     this.clockHands = new Clocks(scene, mat, region((pkg as { region?: string }).region).timeZone)
+    this.rotors = new Rotors(scene, mat)
 
     // ---- the skyline
     const skyMat = cartoonMaterial(scene, 'cartoonSkyline', false)
@@ -1278,6 +1282,7 @@ export class Landmarks {
       this.raiseSigns(mb.signs, m, e.name)
       // and its clocks' hands, to the real time (render/clocks.ts)
       if (mb.clocks.length) this.clockHands.raise(mb.clocks, m, e.name)
+      if (mb.rotors.length) this.rotors.raise(mb.rotors, m, e.name)
       // every placed model is on the list (fountains, statues and the landmark card find their host by it)
       this.placed.push({ name: e.name, x: cx + ox, y, z: cz + oz, hx: fit.hx, hz: fit.hz, rotation, height: modelHeight(mb) })
       /*
@@ -1376,6 +1381,7 @@ export class Landmarks {
    */
   update(eye: Vector3): void {
     this.clockHands.update()
+    this.rotors.update()
     /*
      * The signs, first: a name too far to read is not drawn at all. A 5 % band round the cut, so a rider
      * sitting exactly on it does not make the sign flicker on and off between frames.

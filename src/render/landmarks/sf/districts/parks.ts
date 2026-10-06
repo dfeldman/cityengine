@@ -4,7 +4,7 @@
  * undulating green roof, a windmill's sails, a bandshell's colonnade) — so most are hand-built on the shared
  * parts rather than a recipe.
  */
-import { capPolygon, type MeshBuilder } from '../../../buildings.ts'
+import { capPolygon, MeshBuilder } from '../../../buildings.ts'
 import { box, prism, type Rgb } from '../../../models.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
 import type { Fit } from '../../fit.ts'
@@ -114,21 +114,37 @@ function smockTower(height: number, capHeight: number, taper: number, wall: Rgb,
  * offset is perpendicular to a sideways arm but nearly PARALLEL to an up/down one, which is what silently
  * turned the up/down sails into bare poles with no crosspiece (BUGS.md #162, round 2).
  */
-function sailAssembly(out: MeshBuilder, hub: [number, number, number], armLen: number, spar: number, sparThin: number, crossAt: number, crossHalf: number, cross: number, crossThin: number): void {
+function sailAssembly(out: MeshBuilder, hub: [number, number, number], armLen: number, spar: number, sparThin: number, _crossAt: number, _crossHalf: number, cross: number, crossThin: number, rpm = 8): void {
+  /*
+   * The sails TURN (owner, 2026-10-06: "they should really turn"): drawn about the hub at the origin into a builder of
+   * their own and handed to the model as a rotor (render/rotors.ts), which spins it about the hub's axis (local +z,
+   * the way the cap faces). And each is a LATTICE SAIL now, as the park's mills carry: the whip (the main spar) from
+   * the hub to the tip, and from a fifth of the way out a frame of sail bars across it between two rails, a narrow
+   * strip on the leading side of the whip and the broad part trailing.
+   */
+  const sails = new MeshBuilder()
+  const O: [number, number, number] = [0, 0, 0]
+  const W = armLen * 0.21
   for (const a of [0, 90, 180, 270]) {
     const rad = (a * Math.PI) / 180
-    const dx = Math.sin(rad)
-    const dy = Math.cos(rad)
-    const px = dy    // perpendicular to (dx, dy) in the X-Y plane
-    const py = -dx
-    const tip: [number, number, number] = [hub[0] + dx * armLen, hub[1] + dy * armLen, hub[2]]
-    orientedBeam(out, hub, tip, spar, sparThin, SAIL_WOOD)
-    const cx = hub[0] + dx * crossAt
-    const cy = hub[1] + dy * crossAt
-    const crossA: [number, number, number] = [cx - px * crossHalf, cy - py * crossHalf, hub[2]]
-    const crossB: [number, number, number] = [cx + px * crossHalf, cy + py * crossHalf, hub[2]]
-    orientedBeam(out, crossA, crossB, cross, crossThin, SAIL_WOOD)
+    const dx = Math.sin(rad), dy = Math.cos(rad)
+    const px = dy, py = -dx    // across the sail, in the plane of the sails
+    const P = (along: number, acrossW: number, z = 0): [number, number, number] => [dx * along + px * acrossW * W, dy * along + py * acrossW * W, z]
+    orientedBeam(sails, O, P(armLen, 0), spar, sparThin, SAIL_WOOD)
+    const r0 = armLen * 0.2
+    // the two rails, the leading one close by the whip, the trailing one out at the sail's full width
+    orientedBeam(sails, P(r0, -0.28, 0.06), P(armLen, -0.28, 0.06), cross * 1.1, crossThin, SAIL_WOOD)
+    orientedBeam(sails, P(r0, 0.72, 0.06), P(armLen, 0.72, 0.06), cross * 1.1, crossThin, SAIL_WOOD)
+    // the sail bars, about a metre apart
+    const n = Math.max(6, Math.round((armLen - r0) / 1.0))
+    for (let k = 0; k <= n; k++) {
+      const r = r0 + ((armLen - r0) * k) / n
+      orientedBeam(sails, P(r, -0.28, 0.08), P(r, 0.72, 0.08), cross * 0.7, crossThin, SAIL_WOOD)
+    }
   }
+  // the hub's boss, and the stock it is fixed to
+  orientedBeam(sails, [0, 0, -1.2], [0, 0, 0.5], spar * 1.6, spar * 1.6, [0.2, 0.18, 0.16])
+  out.rotors.push({ x: hub[0], y: hub[1], z: hub[2], nx: 0, nz: 1, mb: sails, rpm })
 }
 
 const WHITE: Rgb = [0.93, 0.92, 0.88]
@@ -161,14 +177,14 @@ export const PARKS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     const tow = smockTower(20, 6, 0.55, MILL_STUCCO, MILL_CAP)
     return (out: MeshBuilder, fit: Fit): void => {
       const cap = tow(out, fit)
-      sailAssembly(out, cap.hub, 17, 0.55, 0.14, 14, 1.4, 1.7, 0.1)
+      sailAssembly(out, cap.hub, 17, 0.55, 0.14, 14, 1.4, 0.22, 0.1, 9)
     }
   })(),
   murphyWindmill: (() => {
     const tow = smockTower(24, 7, 0.52, MILL_STUCCO, MILL_CAP)
     return (out: MeshBuilder, fit: Fit): void => {
       const cap = tow(out, fit)
-      sailAssembly(out, cap.hub, 22, 0.6, 0.16, 18, 1.7, 2, 0.12)
+      sailAssembly(out, cap.hub, 22, 0.6, 0.16, 18, 1.7, 0.26, 0.12, 7)
     }
   })(),
 
