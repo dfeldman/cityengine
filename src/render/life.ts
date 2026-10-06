@@ -293,8 +293,26 @@ export class Life {
       if (!r.heights && kind >= 2 && kind <= 4 && this.joinRail(points, length, kind)) continue
       this.rails.push({ points, length, kind, heights: r.heights, stops })
     }
+    /*
+     * ONE TRAIN TO A BUNDLE OF TRACK (owner, 2026-10-06: "WAYYYY too many trains at the caltrain station … around 20
+     * at once … the train yard has a lot of short segments of train tracks. We should have some non-spawning tracks").
+     * Every main-line rail took a train, and a station throat or a yard is a dozen parallel tracks in short pieces.
+     * A main-line rail now takes a train only if no rail that already has one runs alongside it — its middle within
+     * 45 m and its line within 25° — so a station keeps a few trains standing and moving, not one on every siding.
+     */
+    const mid = (r: Life['rails'][number]): { x: number; z: number; dx: number; dz: number } => {
+      const a = r.points[0], b = r.points[r.points.length - 1], m = r.points[Math.floor(r.points.length / 2)]
+      const L = Math.hypot(b.x - a.x, b.z - a.z) || 1
+      return { x: m.x, z: m.z, dx: (b.x - a.x) / L, dz: (b.z - a.z) / L }
+    }
+    const trained = this.trains.map((t) => this.rails[t.rail]).filter((r) => r.kind === 0).map(mid)
     this.rails.forEach((r, i) => {
       if (i < from) return
+      if (r.kind === 0) {
+        const m = mid(r)
+        if (trained.some((o) => Math.hypot(o.x - m.x, o.z - m.z) < 45 && Math.abs(o.dx * m.dx + o.dz * m.dz) > 0.9)) return
+        trained.push(m)
+      }
       const k = this.stockPools[r.kind].kind
       const speed = r.kind === 0 ? k.speed * (0.8 + (i % 3) * 0.2) : k.speed
       const kp = this.stockPools[r.kind]
