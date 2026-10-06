@@ -32,7 +32,7 @@ import { plog } from './profile.ts'
 import { quaysLayer } from './render/quays.ts'
 import { LoadingScreen, closeWelcome, welcomeOpen, welcomeScreen } from './ui/loading.ts'
 import { TravelCard } from './ui/travel.ts'
-import { SF_STATIONS, FARES, destinations, type Station } from './game/stations.ts'
+import { SF_STATIONS, fareFrom, destinations, type Station } from './game/stations.ts'
 import { LandmarkCard } from './ui/landmark-card.ts'
 import { Plants } from './render/plants.ts'
 import { quickMarksLayer } from './render/quickmarks.ts'
@@ -85,6 +85,7 @@ import { Vegetation, foliageLights } from './render/vegetation.ts'
 import { updateCartoonEye } from './render/cartoon-material.ts'
 import { DAYLIGHT, updateEye } from './render/facade-material.ts'
 import { obscuraView } from './render/obscura.ts'
+import { bouldersLayer } from './render/boulders.ts'
 import { beachRuns, beachSurfLayer, inBeachZone, shoreFrame, shoreRamp } from './render/beach-surf.ts'
 import { BeachCrowd } from './render/beach-crowd.ts'
 import { updateWater } from './render/water-material.ts'
@@ -655,6 +656,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   if (!off.has('cliffs')) {
     const cl = cliffsLayer(scene, index.zones ?? [], city.terrain, index.sea)
     if (cl) city.addLayer(cl)
+  }
+  // and Trail Trainer's boulders on them (render/boulders.ts), once their models have loaded
+  if (!off.has('boulders')) {
+    void bouldersLayer(scene, index.zones ?? [], city.terrain, index.sea, new URL('./', document.baseURI).href).then((l) => { if (l) city.addLayer(l) })
   }
   // the surf: on the sandy beaches rollers and swash, on the rocks (`water: 'waves'`) rollers and spray (render/beach-surf.ts)
   let beachCrowd: BeachCrowd | null = null
@@ -2408,7 +2413,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         let here: (typeof stations)[number] | null = null
         // (a ferry terminal is a big building out over the water; the street in front of it is 100 m off its centre)
         for (const st of stations) if (Math.hypot(st.x - at.x, st.z - at.z) < (st.line === 'ferry' ? 140 : 70)) { here = st; break }
-        travel.at(here, here ? destinations(here, stations) : [], here ? FARES[here.line] : 0)
+        travel.at(here, here ? destinations(here, stations) : [], here ? fareFrom(here) : 0)
       }
       // and the tiles to build them from, round wherever is being looked at, a few times a second
       if (now - lastWant > 250) {

@@ -69,6 +69,40 @@ function lady(body: Rgb, accent: Rgb, bayLeft: boolean) {
     for (let k = 0; k < 8; k++) box(out, dx, 0.11 + k * 0.22, f + 0.3 + (8 - k) * 0.28, 0.75, 0.11 + k * 0.22, 0.14, WHITE, 0)
     // corner boards
     for (const s of [-1, 1]) box(out, s * (hx - 0.06), E / 2, f + 0.02, 0.1, E / 2, 0.06, WHITE, 0)
+    /*
+     * MORE ELABORATE (owner, 2026-10-06: "they are more elaborate"): the gable's fish-scale shingles in courses of
+     * scallops between bands, a sunburst panel at its peak and a finial; a spindlework frieze and paired brackets under
+     * the deep cornice at the eaves; colonnettes at the bay's corners; an arched porch hood on colonnettes over the
+     * door; a garage under the bay in the raised basement.
+     */
+    for (let r = 0; r < 5; r++) {
+      const y = E + 0.5 + r * 0.55
+      const w = hx * (1 - (y - E) / G) - 0.2
+      if (w < 0.4) break
+      const n = Math.max(2, Math.round((2 * w) / 0.32))
+      for (let k = 0; k < n; k++) {
+        const x = -w + ((k + 0.5) / n) * 2 * w
+        box(out, x, y, f + 0.27, 0.13, 0.13, 0.02, r % 2 ? accent : body, 0)
+      }
+      box(out, 0, y - 0.28, f + 0.28, w, 0.03, 0.02, WHITE, 0)
+    }
+    for (let k = 0; k < 5; k++) box(out, 0, E + G - 0.9, f + 0.29, 0.03, 0.55, 0.02, WHITE, 0)
+    box(out, 0, E + G + 0.25, f + 0.25, 0.05, 0.35, 0.05, WHITE, 0)
+    box(out, 0, E + G + 0.62, f + 0.25, 0.09, 0.09, 0.09, accent, 0)
+    // the spindlework frieze under the eaves, and the brackets
+    for (let x = -hx + 0.2; x <= hx - 0.19; x += 0.18) box(out, x, E - 0.35, f + 0.18, 0.025, 0.18, 0.025, WHITE, 0)
+    box(out, 0, E - 0.12, f + 0.2, hx, 0.05, 0.06, accent, 0)
+    for (const s of [-1, 1]) for (const d of [0, 0.3]) box(out, s * (hx - 0.25 - d), E - 0.3, f + 0.25, 0.06, 0.28, 0.2, WHITE, 0)
+    // colonnettes at the bay's front corners, and its panels picked out
+    for (const s of [-1, 1]) box(out, bx + s * bw, 5.05, f + 1.1, 0.07, 3.25, 0.07, WHITE, 0)
+    for (const y of [2.05, 5.25]) box(out, bx, y, f + 1.13, bw * 0.7, 0.18, 0.03, accent, 0)
+    // the porch hood: an arch on two colonnettes over the door, a pediment over it
+    for (const s of [-1, 1]) box(out, dx + s * 0.78, 3.0, f + 0.55, 0.06, 1.2, 0.06, WHITE, 0)
+    for (let k = 0; k < 5; k++) { const t = (k + 0.5) / 5; box(out, dx + 0.78 * (1 - Math.sqrt(1 - t * t)) * (k % 2 ? 1 : -1) * 0, 4.2 + t * 0.4, f + 0.55, 0.78 * Math.sqrt(1 - t * t) + 0.04, 0.05, 0.08, WHITE, 0) }
+    box(out, dx, 4.75, f + 0.55, 0.95, 0.08, 0.6, accent, 0)
+    // the garage under the bay
+    box(out, bx, 0.95, f + 0.04, bw * 0.85, 0.9, 0.04, [0.32, 0.3, 0.3], 0)
+    box(out, bx, 1.92, f + 0.06, bw * 0.95, 0.08, 0.06, WHITE, 0)
   }
 }
 

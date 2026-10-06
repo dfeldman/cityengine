@@ -16,7 +16,8 @@ import { box, prism } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 import { tower } from '../tower.ts'
 
-const CONCRETE: Rgb = [0.74, 0.72, 0.64]
+// (pale pinkish cream, weathered: the owner's photographs of the cell blocks, 2026-10-06; was a darker grey-beige)
+const CONCRETE: Rgb = [0.85, 0.8, 0.74]
 const WINDOWS: Rgb = [0.18, 0.19, 0.20]
 const WHITE: Rgb = [0.90, 0.89, 0.85]
 const BLACK: Rgb = [0.12, 0.12, 0.13]

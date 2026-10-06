@@ -192,6 +192,8 @@ const KNOWN: Record<string, string[]> = {
     'duplicate | figureOnPedestal',
     // the Muni Metro tunnel portals (sf/portals.ts, 2026-10-06): one generic builder placed at each standalone point
     'duplicate | tunnelPortal',
+    // the Taj Mahal houseboat's float meets the marina's water plane (batch-1006.ts): a float on the water is coplanar by design
+    'coplanar | Taj Mahal houseboat',
     'height | One Maritime Plaza Park',
     'intersects | One Maritime Plaza Park',
     'intersects | Oracle Park',

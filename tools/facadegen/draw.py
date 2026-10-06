@@ -241,6 +241,26 @@ def wall_siding(size: int, rnd: random.Random) -> Image.Image:
     return img
 
 
+def wall_shingle(size: int, rnd: random.Random) -> Image.Image:
+    """Cape Cod (Sausalito, owner 2026-10-06): weathered cedar shingles in staggered courses, each shingle its own
+    tone, the butt of every course casting a line on the one below."""
+    img = Image.new('RGBA', (size, size), (236, 234, 230, TINT))
+    d = ImageDraw.Draw(img)
+    course = size // 18
+    for i, y in enumerate(range(0, size, course)):
+        off = (i % 2) * (course // 2)
+        x = -off
+        while x < size:
+            w = rnd.randint(course * 3 // 4, course * 3 // 2)
+            v = rnd.randint(-14, 10)
+            d.rectangle([x, y, x + w - 1, y + course - 1], fill=(236 + v, 234 + v, 230 + v, TINT))
+            d.line([(x, y), (x, y + course - 1)], fill=(200, 198, 194, TINT))
+            x += w
+        line(d, [(0, y + course - 1), (size, y + course - 1)], (190, 188, 184), TINT, 2)
+    grain(img, rnd, 3)
+    return img
+
+
 def wall_terracotta(size: int, rnd: random.Random) -> Image.Image:
     """Chicago: glazed terracotta blocks, larger and smoother than stone, with fine joints."""
     return wall_ashlar(size, rnd, course_px=size // 12, joint=1)
@@ -298,6 +318,8 @@ WALLS = {
     # the Presidio's (owner, 2026-10-02): the Army's smooth white stucco, and the Main Post's red brick
     'presidio': lambda s, r: wall_render(s, r, stipple=3),
     'presidioBrick': wall_brick,
+    # Sausalito's Cape Cod houses (owner, 2026-10-06): cedar shingle
+    'capecod': wall_shingle,
 }
 
 
@@ -761,6 +783,7 @@ WINDOWS = {
     'towerblock': win_punched,
     'presidio': win_sash,
     'presidioBrick': win_sash,
+    'capecod': win_sash,
 }
 
 

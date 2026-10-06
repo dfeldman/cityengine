@@ -237,8 +237,9 @@
    "priority": 1,
    "props": {
     "terrain": "fine",
-    "traffic": 0.15,
-    "crowd": 0.2
+    "traffic": 0.05,
+    "crowd": 0.2,
+    "buildings": "presidio"
    },
    "ring": [
     [
@@ -257,7 +258,8 @@
      37.844,
      -122.54
     ]
-   ]
+   ],
+   "note": " 2026-10-06 owner: low traffic (it was 'full of cars'), and the old army posts' white walls and red roofs (Fort Cronkhite, Fort Barry)."
   },
   {
    "ref": "plant-city",
@@ -2620,6 +2622,127 @@
         ]
        }
       ]
+     },
+     "lawn": {
+      "density": 0.004,
+      "clump": 0.6,
+      "species": [
+       {
+        "form": "olive",
+        "weight": 2,
+        "h": [
+         4,
+         7
+        ]
+       },
+       {
+        "form": "blossom",
+        "weight": 2,
+        "h": [
+         4,
+         7
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 2,
+        "h": [
+         5,
+         9
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 1,
+        "h": [
+         8,
+         13
+        ]
+       },
+       {
+        "form": "fan",
+        "weight": 1,
+        "h": [
+         5,
+         9
+        ]
+       },
+       {
+        "form": "flowering",
+        "weight": 2,
+        "h": [
+         4,
+         7
+        ]
+       }
+      ]
+     },
+     "park": {
+      "density": 0.004,
+      "clump": 0.6,
+      "species": [
+       {
+        "form": "olive",
+        "weight": 2,
+        "h": [
+         4,
+         7
+        ]
+       },
+       {
+        "form": "blossom",
+        "weight": 2,
+        "h": [
+         4,
+         7
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 2,
+        "h": [
+         5,
+         9
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 1,
+        "h": [
+         8,
+         13
+        ]
+       },
+       {
+        "form": "fan",
+        "weight": 1,
+        "h": [
+         5,
+         9
+        ]
+       },
+       {
+        "form": "flowering",
+        "weight": 2,
+        "h": [
+         4,
+         7
+        ]
+       }
+      ]
+     },
+     "shrubs": {
+      "density": 1.8,
+      "shrubs": [
+       "bush_flowering",
+       "rhododendron",
+       "bush_green",
+       "juniper_scrub"
+      ],
+      "flowers": [
+       "daisy",
+       "poppy"
+      ]
      }
     }
    },
@@ -2640,7 +2763,8 @@
      37.872,
      -122.505
     ]
-   ]
+   ],
+   "note": " 2026-10-06 owner: 'a LOT more plants and gardens, with the open space': garden trees over the lawns and open ground, shrubs and flowers thick."
   },
   {
    "ref": "presidio-buildings",
@@ -3290,11 +3414,11 @@
    "name": "Sausalito",
    "priority": 5,
    "props": {
-    "traffic": 0.2,
+    "traffic": 0.08,
     "crowd": 1.2,
     "buildings": "mediterranean"
    },
-   "note": "Owner, 2026-10-02: 'a destination \u2026 little car traffic \u2026 many low stucco Spanish colonial buildings, not big boxy buildings'.",
+   "note": "Owner, 2026-10-02: 'a destination \u2026 little car traffic \u2026 many low stucco Spanish colonial buildings, not big boxy buildings'. 2026-10-06 owner: light traffic only.",
    "ring": [
     [
      37.844,
@@ -4206,121 +4330,73 @@
    "props": {
     "plant": {
      "wood": {
-      "density": 0.004,
+      "density": 0.0015,
       "clump": 0.85,
       "species": [
        {
         "form": "cypress",
-        "weight": 3,
+        "weight": 4,
         "h": [
-         8,
-         15
+         7,
+         13
         ]
        },
        {
         "form": "pine",
-        "weight": 2,
-        "h": [
-         8,
-         15
-        ]
-       },
-       {
-        "form": "eucalyptus",
-        "weight": 2,
-        "h": [
-         12,
-         22
-        ]
-       },
-       {
-        "form": "oak",
         "weight": 1,
         "h": [
-         6,
-         10
+         8,
+         13
         ]
        }
       ]
      },
      "park": {
-      "density": 0.0006,
+      "density": 8e-05,
       "clump": 0.85,
       "species": [
        {
         "form": "cypress",
-        "weight": 3,
+        "weight": 4,
         "h": [
-         8,
-         15
+         7,
+         13
         ]
        },
        {
         "form": "pine",
-        "weight": 2,
-        "h": [
-         8,
-         15
-        ]
-       },
-       {
-        "form": "eucalyptus",
-        "weight": 2,
-        "h": [
-         12,
-         22
-        ]
-       },
-       {
-        "form": "oak",
         "weight": 1,
         "h": [
-         6,
-         10
+         8,
+         13
         ]
        }
       ]
      },
      "lawn": {
-      "density": 0.0006,
+      "density": 5e-05,
       "clump": 0.85,
       "species": [
        {
         "form": "cypress",
-        "weight": 3,
+        "weight": 4,
         "h": [
-         8,
-         15
+         7,
+         13
         ]
        },
        {
         "form": "pine",
-        "weight": 2,
-        "h": [
-         8,
-         15
-        ]
-       },
-       {
-        "form": "eucalyptus",
-        "weight": 2,
-        "h": [
-         12,
-         22
-        ]
-       },
-       {
-        "form": "oak",
         "weight": 1,
         "h": [
-         6,
-         10
+         8,
+         13
         ]
        }
       ]
      },
      "shrubs": {
-      "density": 0.8,
+      "density": 1.4,
       "shrubs": [
        "juniper_scrub",
        "bush_green",
@@ -4330,7 +4406,7 @@
      }
     }
    },
-   "note": "2026-10-04 (views audit): the Marin Headlands are open coastal scrub with wind-bent cypress and a few eucalyptus groves; under the city's default mix they grew pink blossom and street trees. Rough rectangle south of Sausalito's own zone.",
+   "note": "2026-10-04 (views audit): the Marin Headlands are open coastal scrub with wind-bent cypress and a few eucalyptus groves; under the city's default mix they grew pink blossom and street trees. Rough rectangle south of Sausalito's own zone. 2026-10-06 owner (photograph): very few trees, dry hills under low coastal scrub, a few cypresses in the valleys; eucalyptus and oak out, densities cut, scrub thicker.",
    "ring": [
     [
      37.8215,
@@ -5208,6 +5284,34 @@
     [
      37.837,
      -122.53
+    ]
+   ]
+  },
+  {
+   "ref": "angel-island",
+   "name": "Angel Island State Park",
+   "priority": 3,
+   "props": {
+    "traffic": 0,
+    "crowd": 0.3
+   },
+   "note": "owner, 2026-10-06: 'Angel also should have no cars, it's all a park'.",
+   "ring": [
+    [
+     37.852,
+     -122.448
+    ],
+    [
+     37.852,
+     -122.415
+    ],
+    [
+     37.875,
+     -122.415
+    ],
+    [
+     37.875,
+     -122.448
     ]
    ]
   }

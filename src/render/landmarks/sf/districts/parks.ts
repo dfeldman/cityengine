@@ -11,7 +11,6 @@ import type { Fit } from '../../fit.ts'
 import { tower, towerRing, insetRing } from '../../tower.ts'
 import { boxAlong, edgeAt, edgeFacing, arcade, roundRing } from '../../parts.ts'
 import { beam } from '../golden-gate.ts'
-import { fromRecipe } from '../recipes.ts'
 import { calAcademy } from '../cal-academy.ts'
 
 /**
@@ -151,12 +150,10 @@ const WHITE: Rgb = [0.93, 0.92, 0.88]
 /** the Conservatory's panes are WHITEWASHED (the shading paint on a Victorian glasshouse): milky white, not clear glass
  *  — drawn as glass they took the sky and the whole house came out blue-grey (views audit, 2026-10-04) */
 const SAIL_WOOD: Rgb = [0.58, 0.56, 0.51]
-const CREAM: Rgb = [0.87, 0.83, 0.73]
 /** pale cream-grey smock-mill stucco (Dutch/Murphy Windmill) — deliberately lighter and greyer than `CREAM`
  * so it reads distinctly against the dark cap and dark sails at any lighting angle. */
 const MILL_STUCCO: Rgb = [0.83, 0.8, 0.72]
 const MILL_CAP: Rgb = [0.15, 0.14, 0.13]
-const CHALET_ROOF: Rgb = [0.42, 0.22, 0.18]
 
 export const PARKS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** California Academy of Sciences: sf/cal-academy.ts (rebuilt 2026-10-04, the seven hills, portholes, canopy) */
@@ -188,11 +185,6 @@ export const PARKS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     }
   })(),
 
-  /** Beach Chalet (1925, Willis Polk): cream stucco, two storeys, a red-brown hipped tile roof, at the west end. */
-  beachChalet: fromRecipe('edwardian-terracotta', {
-    height: 12, wall: CREAM, glass: [0.22, 0.24, 0.24], base: 4, baseWall: [0.3, 0.27, 0.22],
-    crown: { kind: 'hip', height: 5, inset: 1, colour: CHALET_ROOF, material: 'tile' },
-  }),
 
   /**
    * Spreckels Temple of Music (1900, Reid Brothers): the Music Concourse bandshell, facing EAST across the bowl — a

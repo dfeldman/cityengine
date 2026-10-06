@@ -15,7 +15,7 @@ import ZONES from '../../../data/zones/san-francisco.json' with { type: 'json' }
 export type Archetype =
   | 'rowhouse' | 'marinaHouse' | 'apartment' | 'chinatown' | 'loft' | 'prewarOffice' | 'tower' | 'modern'
   | 'retailBox' | 'civic' | 'church' | 'hotel' | 'pier' | 'midcentury' | 'contemporary' | 'edwardianHouse'
-  | 'apartmentTower' | 'presidio' | 'presidioBrick'
+  | 'apartmentTower' | 'presidio' | 'presidioBrick' | 'capeCod'
 
 export type District = keyof typeof DISTRICTS.districts
 
@@ -99,7 +99,12 @@ export function archetypeOf(f: Features): { archetype: Archetype; district: Dist
     // 26 000 m²) came out as pink palazzi under acres of tile (Sausalito audit, 2026-10-05). A footprint past 2000 m²
     // in a town of houses is a shed, plain and flat-roofed.
     if (f.area > 2000) return a('retailBox', 'sausalito-marinship')
-    return f.roll < 0.4 ? a('presidio', 'sausalito-revival') : a('marinaHouse', 'sausalito-stucco')
+    /*
+     * …and its houses are CAPE COD and MODERN (owner, 2026-10-06: "it doesn't have the edwardian/victorian houses.
+     * instead it's much more cape cod style and modern style"): shingled gabled houses for most, flat-roofed modern ones
+     * on the hillsides, a few stucco ones left of the old mix.
+     */
+    return f.roll < 0.55 ? a('capeCod', 'sausalito-capecod') : f.roll < 0.85 ? a('contemporary', 'sausalito-modern') : a('marinaHouse', 'sausalito-stucco')
   }
 
   /*
@@ -232,6 +237,7 @@ export const STYLE_OF: Record<Archetype, StyleId> = {
   apartmentTower: 'towerblock',
   presidio: 'presidio',
   presidioBrick: 'presidioBrick',
+  capeCod: 'capecod',
   midcentury: 'bauhaus',
   contemporary: 'bauhaus',
 }

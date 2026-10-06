@@ -222,6 +222,11 @@ export const SF_ROUTES: BayRoute[] = [
   { name: 'Cityfront sailing', fleet: [SAILBOAT, SAILBOAT, SAILBOAT, SAILBOAT, SAILBOAT, SAILBOAT, SAILBOAT, SAILBOAT], points: [
     [37.8110, -122.4700], [37.8120, -122.4550], [37.8150, -122.4380], [37.8190, -122.4250], [37.8240, -122.4350],
     [37.8230, -122.4550], [37.8170, -122.4680]] },
+  // (owner, 2026-10-06: "scenic sailboats off shore from the beach"): a long loop 700–900 m off Ocean Beach, in sight
+  // from the sand and the Great Highway, inside the box's west edge
+  { name: 'Off Ocean Beach', fleet: [SAILBOAT, SAILBOAT, SAILBOAT, SAILBOAT, SAILBOAT], points: [
+    [37.7560, -122.5195], [37.7640, -122.5215], [37.7720, -122.5222], [37.7765, -122.5200], [37.7700, -122.5180],
+    [37.7610, -122.5172]] },
   { name: 'Richardson Bay sailing', fleet: [SAILBOAT, SAILBOAT, SAILBOAT, SAILBOAT], points: [
     [37.8530, -122.4700], [37.8600, -122.4640], [37.8610, -122.4620], [37.8580, -122.4560], [37.8540, -122.4600]] },
   { name: 'Bay cruise: Pier 39, under the Golden Gate, round Alcatraz', fleet: [CRUISE, CRUISE], points: [

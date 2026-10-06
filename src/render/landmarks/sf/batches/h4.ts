@@ -28,8 +28,6 @@ export const H4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** way/151185875 — San Francisco Curb Exchange Building. Historic downtown office, 1914, 16 m, restored facade. */
   h4_curbExchange: fromRecipe('edwardian-terracotta', { height: 16, wall: [0.78, 0.70, 0.60], glass: [0.24, 0.26, 0.28] }),
 
-  /** way/257004417 — Spreckels Mansion. Historic mansion, 1920s, 15 m, mansion in Pacific Heights style. */
-  h4_spreckelsMansion: fromRecipe('edwardian-terracotta', { height: 15, wall: [0.80, 0.72, 0.62], glass: [0.22, 0.24, 0.26] }),
 
   /** way/35024342 — The Adelaide Hostel. Modern hotel conversion, 14 m, postwar commercial building. */
   h4_adelaideHostel: fromRecipe('hotel-punched', { height: 14, wall: [0.74, 0.68, 0.60], glass: [0.26, 0.29, 0.32] }),

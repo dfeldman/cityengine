@@ -41,6 +41,8 @@ export type StyleId =
   | 'towerblock'
   // the Presidio's and Golden Gate Park's (owner, 2026-10-02): the Army's white stucco with red tile, and its brick
   | 'presidio' | 'presidioBrick'
+  // Sausalito's (owner, 2026-10-06): Cape Cod cedar shingle
+  | 'capecod'
 
 export type GroundKind = 'shopfront' | 'stoop' | 'arcade' | 'glazed' | 'recessed' | 'plain' | 'garage'
 export type TopKind = 'cornice' | 'parapet' | 'mansard' | 'entablature' | 'flatband' | 'crown' | 'gable'

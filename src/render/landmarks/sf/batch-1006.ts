@@ -367,3 +367,430 @@ export function windArrows(out: MeshBuilder, _fit: Fit): void {
     out.rotors.push({ x: 0.2, y, z: 0, nx: 0, ny: 1, nz: 0, mb: vane, rpm: (k % 2 ? 1 : -1) * (0.8 + ((k * 0.37) % 1) * 1.6) })
   }
 }
+
+/**
+ * way/257004417 — the SPRECKELS MANSION, 2080 Washington St (1913, George Applegarth; owner, 2026-10-06: "we do have a
+ * custom model of it, but it's not very good"): a white limestone Beaux-Arts palace facing Lafayette Park. Three
+ * storeys on a rusticated base; fluted Ionic pilasters through the two upper storeys; tall round-arched French windows
+ * with carved cartouches over them and little bowed iron balconies; a deep modillioned cornice over a frieze, and a
+ * balustraded parapet; on the garden side a bowed central bay.
+ */
+export function spreckelsMansion(out: MeshBuilder, fit: Fit): void {
+  const ring = towerRing(fit)
+  const STONE: Rgb = [0.93, 0.92, 0.88]
+  const st = surfaceTag('ashlar')
+  const H = 17
+  tower(out, { ...fit, ring }, {
+    height: H,
+    base: { height: 4.6, face: { kind: 'punched', wall: [0.9, 0.89, 0.85], glass: GLASS, floor: 4.6, pitch: 3.4, solid: 0.55, arched: true, material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: STONE, glass: GLASS, floor: 5.4, pitch: 3.4, solid: 0.5, arched: true, head: 'architrave', material: 'ashlar' } }],
+    cornices: [{ at: 4.7, depth: 0.35, colour: STONE }, { at: H - 1.4, depth: 0.9, height: 0.7, colour: STONE }],
+    crown: { kind: 'balustrade', height: 1.1, colour: STONE, material: 'ashlar' },
+  })
+  const hx = fit.hx, hz = fit.hz
+  // the pilasters, fluted (in courses), between the bays of the street front and the garden front
+  for (const s of [-1, 1]) {
+    for (let x = -hx + 1.7; x <= hx - 1.6; x += 3.4) {
+      box(out, x, (4.8 + H - 1.6) / 2, s * (hz + 0.12), 0.3, (H - 1.6 - 4.8) / 2, 0.12, STONE, st)
+      box(out, x, H - 1.75, s * (hz + 0.2), 0.42, 0.18, 0.2, STONE, st)                   // the Ionic capital
+    }
+    // the cartouches and the little bowed balconies at the piano nobile
+    for (let x = -hx + 3.4; x <= hx - 3.3; x += 3.4) {
+      box(out, x, 10.4, s * (hz + 0.1), 0.45, 0.35, 0.1, [0.88, 0.87, 0.83], st)
+      box(out, x, 5.4, s * (hz + 0.35), 0.8, 0.06, 0.35, [0.2, 0.2, 0.2], surfaceTag('metal'))
+      for (let k = 0; k < 6; k++) box(out, x - 0.7 + k * 0.28, 5.85, s * (hz + 0.68), 0.015, 0.45, 0.015, [0.15, 0.15, 0.15], 0)
+      box(out, x, 6.3, s * (hz + 0.68), 0.8, 0.03, 0.03, [0.15, 0.15, 0.15], 0)
+    }
+  }
+  // the bowed bay in the middle of the garden front (−z): a half drum, its own windows
+  prism(out, 0, -hz, 0, H - 1.4, hx * 0.28, 16, STONE, st)
+  for (let k = 0; k < 5; k++) {
+    const a = Math.PI + (k + 0.5) / 5 * Math.PI
+    const r = hx * 0.28 + 0.03
+    box(out, Math.cos(a) * r, 8.2, -hz + Math.sin(a) * r, 0.5, 2.0, 0.04, GLASS, surfaceTag('glass'))
+  }
+}
+
+/**
+ * The SPRECKELS MANSION'S GREENHOUSE, behind it (way/257004424; owner: "we render the backyard greenhouse as a partially
+ * submerged victorian house, not as a glass building"): a long glass conservatory on a low stone wall, white glazing
+ * bars, a curved (barrel) glass roof, and a rounded glass end.
+ */
+export function spreckelsGreenhouse(out: MeshBuilder, fit: Fit): void {
+  const L = Math.max(5, fit.hx - 0.3), W = Math.max(2.5, Math.min(fit.hz - 0.3, 5))
+  const GL: Rgb = [0.62, 0.74, 0.76], BAR: Rgb = [0.95, 0.95, 0.93]
+  const gt = surfaceTag('glass')
+  // the stone sill wall
+  box(out, 0, 0.35, 0, L, 0.35, W, [0.86, 0.84, 0.8], surfaceTag('ashlar'))
+  // the glass walls, with bars every 0.9 m
+  const E = 2.6
+  for (const s of [-1, 1]) {
+    box(out, 0, 0.7 + E / 2, s * W, L, E / 2, 0.02, GL, gt)
+    for (let x = -L; x <= L + 0.01; x += 0.9) box(out, x, 0.7 + E / 2, s * (W + 0.02), 0.03, E / 2, 0.03, BAR, 0)
+  }
+  box(out, -L, 0.7 + E / 2, 0, 0.02, E / 2, W, GL, gt)
+  // the barrel roof: glass panels round a half circle, bars along it
+  const N = 10
+  for (let k = 0; k < N; k++) {
+    const a0 = (k / N) * Math.PI, a1 = ((k + 1) / N) * Math.PI
+    const p = (a: number, x: number): [number, number, number] => [x, 0.7 + E + Math.sin(a) * W * 0.65, Math.cos(a) * W]
+    const am = (a0 + a1) / 2
+    out.quad([p(a0, -L), p(a1, -L), p(a1, L), p(a0, L)], [0, Math.sin(am), Math.cos(am)], UV, GL, gt)
+    for (let x = -L; x <= L + 0.01; x += 1.8) box(out, x, 0.7 + E + Math.sin(a0) * W * 0.65, Math.cos(a0) * W, 0.03, 0.03, 0.03, BAR, 0)
+  }
+  // the rounded end: a half drum of glass and its dome
+  prism(out, L, 0, 0.7, 0.7 + E, W, 16, GL, gt)
+  prism(out, L, 0, 0.7 + E, 0.7 + E + W * 0.6, W, 16, GL, gt, 0.25)
+  prism(out, L, 0, 0, 0.7, W + 0.05, 16, [0.86, 0.84, 0.8], surfaceTag('ashlar'))
+}
+
+/**
+ * way/28691595 — the BEACH CHALET (1925, Willis Polk), at the park's ocean end (owner: "could use a more detailed
+ * model"): a long two-storey block under a red tile hipped roof. Upstairs, the restaurant: a continuous band of small-
+ * paned windows in dark red frames looking out to sea. Below, the WPA frescoed lobby behind a colonnade of plain round
+ * cream columns in pairs, round-arched doorways in the cream wall behind; planting before it.
+ */
+export function beachChalet(out: MeshBuilder, fit: Fit): void {
+  const st = surfaceTag('stucco')
+  const L = Math.max(14, fit.hx), W = Math.max(7, fit.hz)
+  const CRM: Rgb = [0.92, 0.88, 0.78], FR: Rgb = [0.48, 0.14, 0.1]
+  const G = 4.6, U = 4.2
+  // the ground storey set back behind the colonnade on the front (+z) and the sea side, the upper storey over all
+  box(out, 0, G / 2, -1.5, L, G / 2, W - 1.5, CRM, st)
+  box(out, 0, G + U / 2, 0, L, U / 2, W, CRM, st)
+  box(out, 0, G + 0.15, 0, L + 0.2, 0.15, W + 0.2, CRM, st)
+  ridgeX(out, -L, L, -W, W, G + U, 3.2, TILE_RED, surfaceTag('tile'), true, 0.9)
+  // the upstairs band of windows, all round: small panes in red frames
+  for (const s of [-1, 1] as const) {
+    box(out, 0, G + U / 2 + 0.1, s * (W + 0.03), L - 0.8, 1.3, 0.03, GLASS, surfaceTag('glass'))
+    for (let x = -L + 0.8; x <= L - 0.79; x += 0.75) box(out, x, G + U / 2 + 0.1, s * (W + 0.06), 0.05, 1.3, 0.03, FR, 0)
+    for (const y of [G + U / 2 - 1.2, G + U / 2 + 0.1, G + U / 2 + 1.4]) box(out, 0, y, s * (W + 0.06), L - 0.8, 0.05, 0.03, FR, 0)
+  }
+  for (const s of [-1, 1] as const) {
+    box(out, s * (L + 0.03), G + U / 2 + 0.1, 0, 0.03, 1.3, W - 0.8, GLASS, surfaceTag('glass'))
+    for (let z = -W + 0.8; z <= W - 0.79; z += 0.75) box(out, s * (L + 0.06), G + U / 2 + 0.1, z, 0.03, 1.3, 0.05, FR, 0)
+  }
+  // the colonnade along the front: paired round columns, and the arched doorways in the wall behind
+  for (let x = -L + 1.5; x <= L - 1.4; x += 4) {
+    for (const dx of [-0.35, 0.35]) prism(out, x + dx, W - 0.4, 0, G, 0.24, 10, CRM, st, 0.22)
+  }
+  for (let x = -L + 3.5; x <= L - 3.4; x += 4) {
+    box(out, x, 1.5, W - 3 + 0.03, 0.85, 1.5, 0.03, [0.3, 0.2, 0.14], 0)
+    for (let k = 0; k < 4; k++) { const t = (k + 0.5) / 4; box(out, x, 3 + t * 0.85, W - 3 + 0.03, 0.85 * Math.sqrt(1 - t * t), 0.11, 0.03, [0.3, 0.2, 0.14], 0) }
+  }
+  sign(out, { type: 'flat', text: 'BEACH CHALET', h: 0.4, face: 'roman', colour: [0.4, 0.15, 0.1], tracking: 0.15, lit: 'front' }, { x: 0, y: G - 0.35, z: W + 0.02, heading: 0 })
+}
+
+/**
+ * way/30680616 — the BAY MODEL VISITOR CENTER, Sausalito (a 1942 Marinship warehouse; owner, 2026-10-06: "a huge
+ * warehouse with a series of semicircular roofs", photograph from the water): a long, low pinkish-beige shed whose
+ * roof is a row of barrel vaults side by side, each ending on the waterfront in a semicircular arch — the arches open
+ * or glazed over deep shadowed porches, plain walls between their feet, a round window or two. Local x along the row
+ * of vaults (the long side faces +z, the water).
+ */
+export function bayModel(out: MeshBuilder, fit: Fit): void {
+  const L = Math.max(30, fit.hx), W = Math.max(15, fit.hz)
+  const WALL: Rgb = [0.84, 0.72, 0.62], ROOF: Rgb = [0.7, 0.68, 0.64], SHADE: Rgb = [0.25, 0.22, 0.2]
+  const st = surfaceTag('stucco'), conc = surfaceTag('concrete')
+  const E = 6                                         // the walls' height, where each vault springs
+  const n = Math.max(3, Math.round((2 * L) / 22))
+  const r = L / n                                     // each vault's radius (its span is 2r)
+  box(out, 0, E / 2, 0, L, E / 2, W, WALL, st)
+  for (let k = 0; k < n; k++) {
+    const cx = -L + r + k * 2 * r
+    // the vault, running back from the water (along z), as a half cylinder of panels
+    const N = 12
+    for (let i = 0; i < N; i++) {
+      const a0 = (i / N) * Math.PI, a1 = ((i + 1) / N) * Math.PI
+      const P = (a: number, z: number): [number, number, number] => [cx + Math.cos(a) * r, E + Math.sin(a) * r * 0.55, z]
+      const am = (a0 + a1) / 2
+      out.quad([P(a0, -W), P(a1, -W), P(a1, W), P(a0, W)], [Math.cos(am), Math.sin(am), 0], UV, ROOF, conc)
+      // the arch's face on the water front and the back: the lunette, shadowed (a deep porch / tall window)
+      for (const s of [-1, 1]) {
+        out.quad(s > 0 ? [[cx, E, W], P(a0, W), P(a1, W), [cx, E, W]] : [[cx, E, -W], P(a1, -W), P(a0, -W), [cx, E, -W]], [0, 0, s], UV, s > 0 ? SHADE : WALL, 0)
+      }
+      // the arch's rim, a thick band
+      box(out, cx + Math.cos(am) * r, E + Math.sin(am) * r * 0.55, W + 0.15, 0.25 + Math.abs(Math.sin(am)) * 0.2, 0.25 + Math.abs(Math.cos(am)) * 0.3, 0.2, WALL, st)
+    }
+    // the porch under each arch: a dark recess with a pale wall and a round window in it
+    box(out, cx, E / 2, W - 1.2, r * 0.7, E / 2 - 0.2, 0.05, [0.78, 0.66, 0.56], st)
+    box(out, cx - r * 0.3, 3.2, W - 1.1, 0.5, 0.5, 0.03, SHADE, 0)
+  }
+  // the piers between the arches' feet, standing proud on the water front
+  for (let k = 0; k <= n; k++) box(out, -L + k * 2 * r, E / 2, W + 0.2, 0.9, E / 2, 0.4, WALL, st)
+}
+
+/**
+ * The TAJ MAHAL HOUSEBOAT, Sausalito Yacht Harbor (owner, 2026-10-06: "a funny landmark", photograph down the dock):
+ * a white Mughal pavilion on a float. A square two-storey front with a tall cusped (pointed) arch in the middle under
+ * a panel of floral relief, smaller pointed arches either side, slim pinnacles at the corners; on the roof two open
+ * chhatris — cusped arcades under wide eaves and onion domes — and a flagstaff between them; lattice (jali) rails
+ * along the deck. Local frame: the arch faces +z (down the dock).
+ */
+export function tajMahalHouseboat(out: MeshBuilder, _fit: Fit): void {
+  const W: Rgb = [0.95, 0.96, 0.95], SH: Rgb = [0.78, 0.82, 0.8], DARK: Rgb = [0.55, 0.6, 0.58]
+  const st = surfaceTag('stucco')
+  const hx = 6, hz = 5, H = 6.4
+  // the float
+  box(out, 0, -0.1, 0, hx + 0.4, 0.45, hz + 0.4, [0.3, 0.3, 0.32], 0)
+  box(out, 0, H / 2 + 0.35, 0, hx, H / 2, hz, W, st)
+  box(out, 0, H + 0.45, 0, hx + 0.15, 0.12, hz + 0.15, W, st)
+  // the front: the big cusped arch, the relief panel over it, side arches
+  const arch = (x: number, w: number, y0: number, h: number): void => {
+    box(out, x, y0 + h * 0.35, hz + 0.02, w, h * 0.35, 0.03, SH, 0)
+    // the pointed head: courses closing to a point
+    for (let k = 0; k < 7; k++) {
+      const t = (k + 0.5) / 7
+      box(out, x, y0 + h * 0.7 + t * h * 0.3, hz + 0.02, w * (1 - t) ** 0.8, h * 0.3 / 14, 0.03, SH, 0)
+    }
+    box(out, x, y0 + h + 0.15, hz + 0.05, 0.12, 0.12, 0.04, W, 0)
+  }
+  arch(0, 1.6, 0.6, 4.4)
+  for (let k = 0; k < 8; k++) box(out, -1.6 + k * 0.46, 5.75, hz + 0.04, 0.12, 0.12, 0.02, DARK, 0)
+  for (const s of [-1, 1]) { arch(s * 3.8, 0.9, 0.6, 2.8); arch(s * 3.8, 0.9, 3.7, 1.9) }
+  for (const s of [-1, 1]) box(out, s * 2.3, H / 2 + 0.35, hz + 0.08, 0.12, H / 2, 0.08, W, st)
+  // the corner pinnacles
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
+    prism(out, sx * (hx + 0.1), sz * (hz + 0.1), 0.35, H + 1.4, 0.16, 8, W, st, 0.13)
+    prism(out, sx * (hx + 0.1), sz * (hz + 0.1), H + 1.4, H + 1.8, 0.16, 8, W, st, 0.02)
+  }
+  // the two chhatris on the roof: four posts and a cusped arcade, a wide eave, a drum, the onion dome and finial
+  for (const s of [-1, 1]) {
+    const cx = s * 3.6, y0 = H + 0.55, C = 1.6
+    for (const ax of [-1, 1]) for (const az of [-1, 1]) box(out, cx + ax * C, y0 + 1.1, az * C, 0.12, 1.1, 0.12, W, st)
+    for (const [nx, nz] of [[0, 1], [0, -1], [1, 0], [-1, 0]]) box(out, cx + nx * C, y0 + 2.0, nz * C, nz ? C : 0.06, 0.18, nx ? C : 0.06, W, st)
+    box(out, cx, y0 + 2.3, 0, C + 0.5, 0.08, C + 0.5, W, st)
+    prism(out, cx, 0, y0 + 2.38, y0 + 2.8, 1.25, 16, W, st)
+    // the onion: swelling out and drawing in to a point
+    const prof: [number, number][] = [[0, 1.25], [0.35, 1.5], [0.75, 1.45], [1.1, 1.1], [1.4, 0.6], [1.65, 0.2], [1.8, 0.02]]
+    for (let k = 0; k + 1 < prof.length; k++) prism(out, cx, 0, y0 + 2.8 + prof[k][0], y0 + 2.8 + prof[k + 1][0], prof[k][1], 16, W, st, prof[k + 1][1])
+    box(out, cx, y0 + 4.75, 0, 0.04, 0.2, 0.04, W, 0)
+  }
+  prism(out, 0, 0, H + 0.55, H + 6.5, 0.05, 6, W, surfaceTag('metal'), 0.03)
+  // the jali rail along the deck at the front
+  for (let x = -hx; x <= hx; x += 0.25) box(out, x, 0.75, hz + 0.35, 0.02, 0.4, 0.02, W, 0)
+  box(out, 0, 1.15, hz + 0.35, hx, 0.04, 0.04, W, 0)
+}
+
+/**
+ * USF's main campus (owner, 2026-10-06, photographs: "a boring but very regular architectural style").
+ *
+ * way/273590288 — HARNEY SCIENCE CENTER: a long cream five-storey block, its wall ribbed by tall thin vertical fins
+ * between the windows, each bay closed at the parapet by a shallow scalloped arch; square stair towers at the ends,
+ * their open landings screened by patterned grilles.
+ */
+export function harneyScience(out: MeshBuilder, fit: Fit): void {
+  const ring = towerRing(fit)
+  const CRM: Rgb = [0.89, 0.83, 0.68]
+  const H = Math.max(16, Math.min(22, fit.height || 18))
+  tower(out, { ...fit, ring }, {
+    height: H,
+    tiers: [{ to: 1, face: { kind: 'fins', wall: CRM, glass: GLASS, floor: 3.8, pitch: 1.6, solid: 0.45, depth: 0.35, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 0.9, colour: CRM, material: 'stucco' },
+  })
+  // the scallops along the parapet, front and back
+  for (const s of [-1, 1]) for (let x = -fit.hx + 0.8; x < fit.hx - 0.7; x += 1.6) {
+    for (let k = 0; k < 3; k++) { const t = (k + 0.5) / 3; box(out, x + 0.8 * (1 - Math.sqrt(1 - t * t)) * 0, H - 0.6 + t * 0.4, s * (fit.hz + 0.2), 0.75 * Math.sqrt(1 - t * t), 0.07, 0.05, [0.8, 0.74, 0.6], 0) }
+  }
+  // the stair towers at the ends, a little taller, their grilles
+  for (const s of [-1, 1]) {
+    const x = s * (fit.hx + 2.2)
+    box(out, x, (H + 2) / 2, fit.hz * 0.4, 2.2, (H + 2) / 2, 2.4, CRM, surfaceTag('stucco'))
+    for (let f = 1; f < H / 3.8; f++) box(out, x, f * 3.8 - 0.6, fit.hz * 0.4 + 2.42, 1.4, 1.0, 0.03, [0.78, 0.72, 0.58], 0)
+  }
+}
+
+/**
+ * way/273590282 — KALMANOVITZ HALL, 2081 Fulton (1920s, the old St Ignatius school): a long white three-storey block
+ * on a tall retaining wall along Fulton. Grouped small-paned windows in threes and fours, end pavilions a storey
+ * proud with blind panels, a centre bay rising over the cornice with a pedimented door and a cartouche.
+ */
+export function kalmanovitzHall(out: MeshBuilder, fit: Fit): void {
+  const ring = towerRing(fit)
+  const WH: Rgb = [0.94, 0.92, 0.86]
+  const H = 15
+  tower(out, { ...fit, ring }, {
+    height: H,
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WH, glass: GLASS, floor: 4.6, pitch: 1.5, solid: 0.35, head: 'architrave', material: 'stucco' } }],
+    cornices: [{ at: H - 0.9, depth: 0.6, height: 0.5, colour: WH }],
+    crown: { kind: 'parapet', height: 1.0, colour: WH, material: 'stucco' },
+  })
+  const f = fit.hz
+  // the end pavilions, standing proud and a little higher, blind
+  for (const s of [-1, 1]) box(out, s * (fit.hx - 4), (H + 1.5) / 2, f + 0.3, 4, (H + 1.5) / 2, 0.4, WH, surfaceTag('stucco'))
+  // the centre bay over the cornice, the cartouche, the pedimented door
+  box(out, 0, (H + 2.6) / 2, f + 0.35, 3.2, (H + 2.6) / 2, 0.45, WH, surfaceTag('stucco'))
+  box(out, 0, H + 2.2, f + 0.85, 0.7, 0.45, 0.08, [0.85, 0.8, 0.66], 0)
+  box(out, 0, 1.7, f + 0.82, 1.1, 1.7, 0.04, [0.35, 0.25, 0.18], 0)
+  for (let k = 0; k < 4; k++) box(out, 0, 3.6 + k * 0.2, f + 0.85, 1.6 - k * 0.38, 0.1, 0.1, WH, 0)
+  // the retaining wall along the street, in front
+  box(out, 0, -0.2, f + 5, fit.hx + 2, 1.8, 0.4, [0.9, 0.88, 0.82], surfaceTag('concrete'))
+}
+
+/**
+ * way/262600160 — KENDRICK HALL, USF School of Law (owner's photograph): a white three-storey block with ribbon windows,
+ * and across its entrance a tall portico of square red-granite piers carrying a deep flat canopy lettered KENDRICK
+ * HALL; behind them a curved two-storey glass lobby; wide brick steps up to it.
+ */
+export function kendrickHall(out: MeshBuilder, fit: Fit): void {
+  const ring = towerRing(fit)
+  const WH: Rgb = [0.9, 0.89, 0.85], GRAN: Rgb = [0.48, 0.3, 0.27], BRICK: Rgb = [0.66, 0.36, 0.26]
+  const H = 13
+  tower(out, { ...fit, ring }, {
+    height: H,
+    tiers: [{ to: 1, face: { kind: 'bands', wall: WH, glass: GLASS, floor: 4.2, solid: 0.45, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 0.6, colour: WH, material: 'concrete' },
+  })
+  const f = fit.hz, W = Math.min(fit.hx * 0.6, 11)
+  // the curved glass lobby
+  prism(out, 0, f, 0, 8, W * 0.55, 18, [0.3, 0.36, 0.4], surfaceTag('glass'))
+  // the granite piers and the canopy
+  for (let k = 0; k < 5; k++) box(out, -W + (k / 4) * 2 * W, 6.6, f + 5, 0.55, 6.6, 0.55, GRAN, surfaceTag('granite'))
+  box(out, 0, 13.6, f + 3, W + 0.8, 0.8, 3.4, [0.88, 0.86, 0.82], surfaceTag('concrete'))
+  sign(out, { type: 'flat', text: 'KENDRICK  HALL', h: 0.55, face: 'roman', colour: [0.35, 0.33, 0.3], tracking: 0.3, lit: 'none' }, { x: 0, y: 13.6, z: f + 6.42, heading: 0 })
+  // the brick steps, the full width
+  for (let k = 0; k < 6; k++) box(out, 0, 0.09 + k * 0.17, f + 8 - k * 0.4, W + 2, 0.09 + k * 0.17, 0.2 + k * 0.2, BRICK, surfaceTag('brick'))
+}
+
+/**
+ * way/273590287 — the WAR MEMORIAL GYM at the SOBRATO CENTER (owner's photograph): a tall hall faced with a wall of pale
+ * grey folded panels on a light frame under a thin oversailing roof on exposed beams; at its foot a zig-zag folded-
+ * plate canopy over dark doors; a cream end block lettered UNIVERSITY OF SAN FRANCISCO / SOBRATO CENTER; a raised
+ * planted terrace with steps up from the street.
+ */
+export function usfGym(out: MeshBuilder, fit: Fit): void {
+  const hx = fit.hx, hz = fit.hz
+  const CRM: Rgb = [0.9, 0.86, 0.74], PANEL: Rgb = [0.78, 0.8, 0.8], FRAME: Rgb = [0.6, 0.66, 0.72]
+  const H = Math.max(12, Math.min(18, fit.height || 15))
+  box(out, 0, H / 2, 0, hx, H / 2, hz, CRM, surfaceTag('stucco'))
+  // the folded panel wall on the front: panels angled alternately
+  const n = Math.max(4, Math.round(hx / 3))
+  for (let k = 0; k < n; k++) {
+    const x0 = -hx + 4 + (k / n) * (2 * hx - 6), x1 = -hx + 4 + ((k + 1) / n) * (2 * hx - 6)
+    const out1 = k % 2 ? 0.6 : 0.1, out2 = k % 2 ? 0.1 : 0.6
+    out.quad([[x0, 4.5, hz + out1], [x1, 4.5, hz + out2], [x1, H - 0.5, hz + out2], [x0, H - 0.5, hz + out1]], [0, 0, 1], UV, PANEL, 0)
+    box(out, x0, (H + 4) / 2, hz + out1 + 0.03, 0.05, (H - 4.5) / 2, 0.05, FRAME, 0)
+    for (const y of [7, 9.5, 12]) if (y < H - 1) box(out, (x0 + x1) / 2, y, hz + 0.4, (x1 - x0) / 2, 0.04, 0.05, FRAME, 0)
+  }
+  // the thin roof on its beams
+  box(out, 0, H + 0.1, 0.5, hx + 0.5, 0.12, hz + 1.2, [0.85, 0.85, 0.83], 0)
+  for (let x = -hx + 1; x < hx; x += 2.2) box(out, x, H - 0.2, hz + 0.9, 0.08, 0.18, 0.5, [0.8, 0.74, 0.6], 0)
+  // the zig-zag canopy over the doors
+  for (let k = 0; k < n; k++) {
+    const x0 = -hx + 4 + (k / n) * (2 * hx - 6), x1 = -hx + 4 + ((k + 1) / n) * (2 * hx - 6), xm = (x0 + x1) / 2
+    out.quad([[x0, 4.6, hz], [xm, 4.0, hz], [xm, 4.0, hz + 2.2], [x0, 4.6, hz + 2.2]], [0, 1, 0], UV, [0.88, 0.88, 0.86], 0)
+    out.quad([[xm, 4.0, hz], [x1, 4.6, hz], [x1, 4.6, hz + 2.2], [xm, 4.0, hz + 2.2]], [0, 1, 0], UV, [0.88, 0.88, 0.86], 0)
+  }
+  box(out, 0, 1.9, hz + 0.03, hx - 4, 1.9, 0.03, [0.15, 0.15, 0.16], 0)
+  // the end block and its lettering
+  box(out, -hx + 2, (H - 2) / 2, hz + 0.4, 2.2, (H - 2) / 2, 0.4, CRM, surfaceTag('stucco'))
+  sign(out, { type: 'flat', text: 'UNIVERSITY OF SAN FRANCISCO', h: 0.3, face: 'roman', colour: [0.25, 0.25, 0.25], lit: 'none', w: 3.8 }, { x: -hx + 2, y: H - 4, z: hz + 0.85, heading: 0 })
+  sign(out, { type: 'flat', text: 'SOBRATO CENTER', h: 0.25, face: 'roman', colour: [0.25, 0.25, 0.25], lit: 'none', w: 2.6 }, { x: -hx + 2, y: H - 4.6, z: hz + 0.85, heading: 0 })
+  // the planted terrace in front, its wall to the street
+  box(out, 2, 0.75, hz + 4.5, hx - 2, 0.75, 2.2, CRM, surfaceTag('stucco'))
+  for (let k = 0; k < 8; k++) box(out, -hx + 4 + k * 0.05, 0.1 + k * 0.1, hz + 6.4 - k * 0.3, 1.6, 0.1 + k * 0.1, 0.16, [0.7, 0.68, 0.65], surfaceTag('concrete'))
+}
+
+/**
+ * ALCATRAZ'S SMOKESTACK, beside the Powerhouse (owner, 2026-10-06, photograph: "a prominent smokestack"): a tall round
+ * stack of weathered concrete, streaked rust and grey, tapering a little, with a band near the top and iron ladder
+ * rungs up one side.
+ */
+export function alcatrazSmokestack(out: MeshBuilder, _fit: Fit): void {
+  const C1: Rgb = [0.58, 0.52, 0.47], C2: Rgb = [0.5, 0.42, 0.37]
+  const H = 30
+  for (let k = 0; k < 10; k++) {
+    const y0 = (k / 10) * H, y1 = ((k + 1) / 10) * H
+    prism(out, 0, 0, y0, y1, 1.45 - k * 0.04, 16, k % 3 === 1 ? C2 : C1, surfaceTag('concrete'), 1.45 - (k + 1) * 0.04)
+  }
+  prism(out, 0, 0, H - 1.2, H - 0.8, 1.15, 16, [0.4, 0.34, 0.3], surfaceTag('concrete'))
+  prism(out, 0, 0, H, H + 0.05, 0.95, 16, [0.08, 0.08, 0.08], 0)
+  for (let y = 2; y < H - 1; y += 0.5) box(out, 0, y, 1.45 - (y / H) * 0.4 + 0.12, 0.22, 0.015, 0.015, [0.3, 0.25, 0.22], 0)
+}
+
+/**
+ * THE GREAT HIGHWAY TOWNHOUSES, 700–798 Great Highway (owner, 2026-10-06: "the beach front townhouses are extremely
+ * unique. we display them as office buildings now", photographs): a long row of narrow three-storey houses facing the
+ * sea over the dunes, each its own soft pastel (grey-blue, lilac, sage, cream), with a big bay window — a gable or a
+ * bow — over a garage at street level, the bay's windows many-paned, white trim, a chimney on the party wall.
+ * One builder, its colour and its bay from the house's OSM id.
+ */
+function beachTownhouse(seed: number) {
+  const BODIES: Rgb[] = [[0.66, 0.73, 0.8], [0.74, 0.68, 0.8], [0.7, 0.78, 0.68], [0.9, 0.86, 0.74], [0.82, 0.76, 0.7], [0.62, 0.7, 0.72]]
+  return (out: MeshBuilder, fit: Fit): void => {
+    const h = (k: number): number => { const v = Math.sin(seed * 12.9898 + k * 78.233) * 43758.5453; return v - Math.floor(v) }
+    const body = BODIES[Math.floor(h(1) * BODIES.length)]
+    const clap = surfaceTag('clapboard')
+    const hx = Math.max(3.5, Math.min(fit.hx, 5)), hz = fit.hz
+    const H = 10.5
+    box(out, 0, H / 2, 0, hx, H / 2, hz, body, clap)
+    // the roof: a gable to the street, or a flat roof with a parapet
+    const gable = h(2) < 0.6
+    if (gable) {
+      const R = 3.2
+      for (const s of [-1, 1]) out.quad(s > 0
+        ? [[0, H + R, -hz], [0, H + R, hz + 0.3], [hx + 0.3, H, hz + 0.3], [hx + 0.3, H, -hz]]
+        : [[-hx - 0.3, H, -hz], [-hx - 0.3, H, hz + 0.3], [0, H + R, hz + 0.3], [0, H + R, -hz]], [s * R, hx, 0], UV, [0.4, 0.4, 0.42], 0)
+      out.quad([[-hx, H, hz + 0.2], [hx, H, hz + 0.2], [0, H + R - 0.1, hz + 0.2], [0, H + R - 0.1, hz + 0.2]], [0, 0, 1], UV, body, clap)
+    } else box(out, 0, H + 0.4, hz - 0.1, hx + 0.1, 0.4, 0.15, WHITE, 0)
+    // the bay over the garage: gabled or bowed, its windows many-paned
+    const bw = hx * 0.75
+    if (h(3) < 0.5) {
+      prism(out, 0, hz, 3.0, H - 0.2, bw, 12, body, clap)
+      for (const y of [4.6, 7.8]) prism(out, 0, hz, y - 1.0, y + 1.0, bw + 0.03, 12, GLASS, surfaceTag('glass'))
+    } else {
+      box(out, 0, (3.0 + H) / 2, hz + 0.7, bw, (H - 3.0) / 2, 0.7, body, clap)
+      for (const y of [4.6, 7.8]) {
+        box(out, 0, y, hz + 1.42, bw * 0.8, 1.0, 0.03, GLASS, surfaceTag('glass'))
+        for (let k = -3; k <= 3; k++) box(out, k * bw * 0.8 / 3.5, y, hz + 1.45, 0.02, 1.0, 0.02, WHITE, 0)
+        box(out, 0, y, hz + 1.45, bw * 0.8, 0.02, 0.02, WHITE, 0)
+      }
+      ridgeX(out, -bw, bw, hz, hz + 1.4, H - 0.2, 0.01, [0.4, 0.4, 0.42], 0, false, 0.1)
+    }
+    // the garage, the door beside it up a few steps, white trim
+    box(out, -hx * 0.15, 1.2, hz + 0.03, hx * 0.6, 1.2, 0.03, [0.92, 0.92, 0.9], 0)
+    for (let k = 0; k < 4; k++) box(out, -hx * 0.15, 0.3 + k * 0.6, hz + 0.06, hx * 0.6, 0.02, 0.02, [0.75, 0.75, 0.73], 0)
+    box(out, hx * 0.72, 1.6, hz + 0.03, 0.5, 1.1, 0.03, [0.3, 0.25, 0.22], 0)
+    for (const s of [-1, 1]) box(out, s * (hx - 0.06), H / 2, hz + 0.05, 0.1, H / 2, 0.06, WHITE, 0)
+    // the chimney on the party wall
+    box(out, hx - 0.5, H + (gable ? 2.6 : 1.3), -hz * 0.3, 0.35, 1.3, 0.45, [0.6, 0.35, 0.28], surfaceTag('brick'))
+  }
+}
+
+/**
+ * The STEPPED CONDOMINIUMS at 1224–1361 Great Highway (owner, 2026-10-06): cream stucco blocks four storeys high,
+ * terraced back from the sea a storey at a time, balconies along each step, glazed sun-room bays with curved glass
+ * roofs, square chimney stacks with red caps.
+ */
+export function steppedCondo(out: MeshBuilder, fit: Fit): void {
+  const st = surfaceTag('stucco')
+  const CRM: Rgb = [0.92, 0.88, 0.8]
+  const hx = fit.hx, hz = fit.hz
+  const F = 2.9, N = 4
+  for (let k = 0; k < N; k++) {
+    // each storey set back from the one below on the sea side (+z)
+    const front = hz - k * (hz * 0.35)
+    const d = (front + hz) / 2
+    box(out, 0, (k + 0.5) * F, front - d, hx, F / 2, d, CRM, st)
+    // the balcony rail along the step
+    box(out, 0, (k + 1) * F + 0.5, front - 0.1, hx, 0.05, 0.05, WHITE, 0)
+    for (let x = -hx; x <= hx; x += 0.3) box(out, x, (k + 1) * F + 0.25, front - 0.1, 0.015, 0.25, 0.015, WHITE, 0)
+    // windows along the storey's face
+    box(out, 0, (k + 0.5) * F, front + 0.02, hx - 0.8, 0.8, 0.02, GLASS, surfaceTag('glass'))
+    // a sun-room bay every so often: a glazed box with a curved glass roof
+    for (let x = -hx + 3; x < hx - 2; x += 7) {
+      box(out, x, (k + 0.5) * F, front + 0.7, 1.4, F / 2 - 0.1, 0.7, [0.55, 0.65, 0.7], surfaceTag('glass'))
+      prism(out, x, front + 0.7, (k + 1) * F - 0.1, (k + 1) * F + 0.35, 1.4, 8, [0.6, 0.72, 0.76], surfaceTag('glass'), 0.4)
+    }
+  }
+  // the chimneys with their red caps
+  for (let x = -hx + 2; x < hx; x += 9) {
+    box(out, x, N * F + 0.9, -hz * 0.6, 0.6, 1.2, 0.6, CRM, st)
+    box(out, x, N * F + 2.2, -hz * 0.6, 0.75, 0.12, 0.75, [0.72, 0.25, 0.18], 0)
+  }
+}
+
+export const BEACH_TOWNHOUSES: Record<string, (out: MeshBuilder, fit: Fit) => void> = Object.fromEntries(
+  [287283877, 287283863, 287283846, 287283848, 287283852, 287283853, 287283851, 287283857, 287283861, 287283843, 287283856,
+    287283862, 287283834, 287283858, 287283844, 287283867, 287283868, 287283869, 287283871, 287283842, 287283860, 287283866,
+    287283874, 287283865, 287283876, 287283875].map((id) => [`beachTownhouse_${id}`, beachTownhouse(id)]))

@@ -17,23 +17,34 @@ export interface Station {
   lon: number
   /** for a ferry: the terminals it sails to from here (the boats all run from the Ferry Building) */
   to?: string[]
+  /** an island's terminal: the ferry back from it is free (there is no way to earn a fare on an island) */
+  island?: true
 }
 
 export const FARES: Record<Station['line'], number> = { ferry: 5, metro: 1 }
+
+/**
+ * The fare from a station: its line's, except the ferry home from an island, which is FREE (owner, 2026-10-06: "the
+ * ferry back from any island TO SF should be free. since there's no way to make money on any island, and if you don't
+ * have $5, you'd be stuck forever").
+ */
+export function fareFrom(s: Station): number {
+  return s.line === 'ferry' && s.island ? 0 : FARES[s.line]
+}
 
 export const SF_STATIONS: Station[] = [
   // the ferries (OSM: the Ferry Building's gates, the Sausalito terminal, the Treasure Island terminal)
   { name: 'Ferry Building', line: 'ferry', lat: 37.79560, lon: -122.39320, to: ['Sausalito', 'Treasure Island', 'Angel Island (Ayala Cove)'] },
   { name: 'Sausalito', line: 'ferry', lat: 37.85600, lon: -122.47790, to: ['Ferry Building'] },
-  { name: 'Treasure Island', line: 'ferry', lat: 37.81616, lon: -122.37320, to: ['Ferry Building'] },
+  { name: 'Treasure Island', line: 'ferry', island: true, lat: 37.81616, lon: -122.37320, to: ['Ferry Building'] },
   // Alcatraz (BUGS.md #263, owner 2026-10-04: "we should add a (fictional) ferry route to Alcatraz and a tiny bike
   // circuit"): from the real Alcatraz Landing at Pier 33 to the island's dock; the island's paths are kept for it
   // (region `ferryIslands`) and opened to bikes (the `alcatraz` zone's `trails: 'bike'`)
   { name: 'Pier 33 (Alcatraz Landing)', line: 'ferry', lat: 37.80770, lon: -122.40540, to: ['Alcatraz'] },
-  { name: 'Alcatraz', line: 'ferry', lat: 37.82690, lon: -122.42280, to: ['Pier 33 (Alcatraz Landing)'] },
+  { name: 'Alcatraz', line: 'ferry', island: true, lat: 37.82690, lon: -122.42280, to: ['Pier 33 (Alcatraz Landing)'] },
   // Angel Island (OSM's ferry route "Angel Island - San Francisco Ferry Building"): Ayala Cove, and the 8 km Perimeter
   // Road round the island (asphalt, bicycle=yes) kept for it by the region's `ferryIslands`
-  { name: 'Angel Island (Ayala Cove)', line: 'ferry', lat: 37.86840, lon: -122.43530, to: ['Ferry Building'] },
+  { name: 'Angel Island (Ayala Cove)', line: 'ferry', island: true, lat: 37.86840, lon: -122.43530, to: ['Ferry Building'] },
   // Muni Metro: select stops, chosen to take a rider round or under the hills
   { name: 'Embarcadero', line: 'metro', lat: 37.79290, lon: -122.39690 },
   { name: 'Montgomery', line: 'metro', lat: 37.78890, lon: -122.40180 },

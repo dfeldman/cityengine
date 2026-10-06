@@ -22,6 +22,7 @@ import { surfaceTag } from '../../cartoon-material.ts'
 import { tower, towerRing } from '../tower.ts'
 import { boxAlong, cupola } from '../parts.ts'
 import { frontFrame } from './macang.ts'
+import { sign } from '../signage.ts'
 
 const CREAM: Rgb = [0.9, 0.86, 0.74]
 const BODY: Rgb = [0.74, 0.69, 0.6]
@@ -91,8 +92,24 @@ export function saintIgnatiusChurch(out: MeshBuilder, fit: Fit): void {
     prism(out, x, z, G + 2.2, G + 14.4, 0.75, 12, CREAM, st, 0.66)
     prism(out, x, z, G + 14.4, G + 15.2, 1, 12, SHADE, st)
   }
-  for (const u of [-pw * 0.3, 0, pw * 0.3]) f.on(u, 4.5, 0.06, 2.8, 7, 0.1, DARK, 0)
+  /*
+   * The owner's photograph (2026-10-06, "we have a model but it could be improved"): FIVE round-arched doors between the
+   * columns, each under a round medallion; ST. IGNATIUS CHURCH across the frieze; a balustrade along the entablature;
+   * the steps the full width of the front.
+   */
+  for (let k = 0; k < 5; k++) {
+    const u = -pw / 2 + 1.2 + ((k + 0.5) * (pw - 2.4)) / (cols - 1)
+    f.on(u, 3.6, 0.06, 2.6, 5.2, 0.1, [0.32, 0.24, 0.16], 0)
+    for (let j = 0; j < 4; j++) { const t = (j + 0.5) / 4; f.on(u, 6.2 + t * 1.3, 0.06, 2.6 * Math.sqrt(1 - t * t), 0.33, 0.1, [0.32, 0.24, 0.16], 0) }
+    f.on(u, 9.6, 0.1, 0.9, 0.9, 0.15, SHADE, st)
+  }
   f.on(0, 15.9, 1.1, pw + 1, 1.6, 2.6, CREAM, st)
+  sign(out, { type: 'flat', text: 'ST. IGNATIUS CHURCH', h: 0.75, face: 'roman', italic: true, colour: [0.45, 0.4, 0.32], tracking: 0.12, lit: 'none' },
+    (() => { const [x, z] = f.at(0, 2.45); return { x, y: G + 15.9, z, heading: f.heading } })())
+  // the balustrade along the entablature
+  for (let k = 0; k < Math.round(pw / 0.7); k++) f.on(-pw / 2 + 0.35 + k * 0.7, 17.4, 2.0, 0.22, 0.9, 0.22, CREAM, st)
+  f.on(0, 18.0, 2.0, pw + 1, 0.25, 0.45, CREAM, st)
+  for (let k = 0; k < 6; k++) f.on(0, 0.12 + k * 0.16, 6.5 - k * 0.45, L + 2, 0.16 + k * 0.16, 1.4, SHADE, st)
   // the upper stage: a screen wall up to the nave, four columns, the pediment
   const uw = Math.min(NW, pw - 2)
   f.on(0, 17 + 6, -0.6, uw, 12, 1.4, CREAM, st)
