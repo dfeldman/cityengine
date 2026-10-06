@@ -13,7 +13,7 @@ import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
 import { tower, towerRing, type Face } from '../tower.ts'
 import { facade } from '../facade.ts'
-import { boxAlong, cupola, edgeAt } from '../parts.ts'
+import { boxAlong, cupola, edgeAt, edgeFacing } from '../parts.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 import { sign } from '../signage.ts'
 import { dome as domePart } from '../kit.ts'
@@ -288,6 +288,46 @@ export const ODDITIES: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     for (let i = v0; i < out.positions.length; i += 3) { out.positions[i] = -out.positions[i]; out.normals[i] = -out.normals[i] }
     for (let i = i0; i < out.indices.length; i += 3) { const t = out.indices[i + 1]; out.indices[i + 1] = out.indices[i + 2]; out.indices[i + 2] = t }
     for (let i = s0; i < out.signs.length; i++) out.signs[i].x = -out.signs[i].x
+  },
+
+  /**
+   * way/705309578 — the Randall Museum (1951, 199 Museum Way), in the trees under Corona Heights' bare rock (owner,
+   * 2026-10-06, with a photograph). A long, low mid-century block: cream walls, a ribbon of clerestory windows under a
+   * thin flat roof that oversails on a deep fascia, and the ENTRANCE framed by two red-brick piers — between them a
+   * wall of glazed doors in red frames under a slim green canopy on posts, the dark name board beside it with the
+   * museum's leaf emblem — and a row of flags along the roof's edge over the door.
+   */
+  randallMuseum_705309578: (out: MeshBuilder, fit: Fit): void => {
+    const ring = towerRing(fit)
+    const H = 4.6
+    const CREAM: [number, number, number] = [0.88, 0.85, 0.74]
+    const BRICK: [number, number, number] = [0.62, 0.3, 0.22]
+    const RED: [number, number, number] = [0.6, 0.16, 0.12]
+    const GREEN: [number, number, number] = [0.34, 0.45, 0.36]
+    // the walls: plain cream to the sills, a clerestory ribbon above
+    tower(out, { ...fit, ring }, {
+      height: H,
+      tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.22, 0.26, 0.28], floor: H, pitch: 2.4, solid: 0.45, material: 'stucco' } }],
+      crown: { kind: 'parapet', height: 0.35, colour: [0.82, 0.8, 0.72], material: 'stucco' },
+    })
+    // the roof's oversailing fascia, all round
+    const e = edgeAt(ring, edgeFacing(ring))
+    // THE ENTRANCE on the front edge: brick piers, the glazed red doors, the canopy, the board, the flags
+    const at = (u: number, o: number): [number, number] => [e.mid.x + e.tx * u + e.nx * o, e.mid.z + e.tz * u + e.nz * o]
+    for (const u of [-4.2, 4.2]) { const [x, z] = at(u, 0.3); boxAlong(out, x, 1.9, z, 0.9, 1.9, 0.45, e.heading, BRICK, surfaceTag('brick')) }
+    { const [x, z] = at(0, 0.06); boxAlong(out, x, 1.45, z, 3.3, 1.45, 0.05, e.heading, [0.16, 0.2, 0.22], surfaceTag('glass')) }
+    for (let k = 0; k <= 8; k++) { const [x, z] = at(-3.3 + k * 0.825, 0.12); boxAlong(out, x, 1.45, z, 0.04, 1.45, 0.05, e.heading, RED, 0) }
+    for (const y of [0.1, 2.15, 2.85]) { const [x, z] = at(0, 0.12); boxAlong(out, x, y, z, 3.3, 0.05, 0.05, e.heading, RED, 0) }
+    { const [x, z] = at(0, 1.6); boxAlong(out, x, 3.25, z, 5.4, 0.08, 1.6, e.heading, GREEN, surfaceTag('metal')) }
+    for (const u of [-2.6, 2.6]) { const [x, z] = at(u, 3.0); boxAlong(out, x, 1.6, z, 0.05, 1.6, 0.05, e.heading, [0.85, 0.85, 0.82], surfaceTag('metal')) }
+    { const [x, z] = at(-6.6, 0.12); boxAlong(out, x, 1.7, z, 1.2, 1.1, 0.04, e.heading, [0.16, 0.17, 0.2], 0) }
+    sign(out, { type: 'flat', text: 'RANDALL MUSEUM', h: 0.17, face: 'grotesque', colour: [0.9, 0.88, 0.82], tracking: 0.1, lit: 'none', w: 2.0 },
+      { ring, edge: edgeFacing(ring), y: 1.25, along: 0.5 - 6.6 / Math.max(1, e.L) })
+    for (let k = 0; k < 5; k++) {
+      const [x, z] = at(-6 + k * 3, 0.4)
+      boxAlong(out, x, H + 1.3, z, 0.025, 1.0, 0.025, e.heading, [0.85, 0.85, 0.82], surfaceTag('metal'))
+      boxAlong(out, x + e.tx * 0.32, H + 1.95, z + e.tz * 0.32, 0.3, 0.22, 0.01, e.heading, k % 2 ? [0.25, 0.35, 0.7] : [0.75, 0.2, 0.3], 0)
+    }
   },
 
   /**
