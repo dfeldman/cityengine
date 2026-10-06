@@ -31,6 +31,9 @@ import { DAYLIGHT, NIGHT } from './facade-material.ts'
 
 interface Zone { ring: number[]; bbox: [number, number, number, number]; props: { water?: string } }
 type P = { x: number; z: number }
+/** a stretch of coastline, sampled every STEP metres: its seaward normals, where its along-shore metres start, and
+ *  whether it is rock (`water: 'waves'`: no sand to run up, spray against it) or a sandy beach */
+export interface Run { pts: P[]; nx: number[]; nz: number[]; u0: number; rock: boolean }
 
 /** the strip's rows across the shore, metres from the waterline (seaward positive) */
 const ROWS = ((): number[] => {
@@ -40,6 +43,12 @@ const ROWS = ((): number[] => {
   for (const d of [95, 102, 110, 120, 132, 145, 160]) r.push(d)
   return r
 })()
+/** on the rocks: no rows up the land, and not so far out (coves would fold the strip over itself) */
+const ROCK_ROWS = ROWS.filter((d) => d >= 0 && d <= 62)
+/** the spray ribbon's height, metres, its foot a little out from the waterline, and how far its top leans out to sea */
+const SPRAY_H = 7
+const SPRAY_OUT = 0.6
+const SPRAY_LEAN = 2.5
 /** metres between samples along the shore */
 const STEP = 4
 
@@ -54,6 +63,7 @@ varying vec2 vUD;
 varying float vFade;
 varying float vDepth;
 varying float vH;
+varying float vRock;
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float noise(vec2 p) {
@@ -64,7 +74,9 @@ float noise(vec2 p) {
 const float T = 9.0;       // seconds between waves
 const float C = 5.0;       // metres a second they run in
 float wobble(float u) { return (noise(vec2(u * 0.011, 0.0)) - 0.5) * 0.45 + (noise(vec2(u * 0.045, 5.0)) - 0.5) * 0.10; }
-float breakAt(float u, float wave) { return 45.0 + 30.0 * noise(vec2(u * 0.018, wave * 0.37)); }
+float rockFlag;
+// (off the rocks the bottom drops away close in: the waves stand up and break much nearer the shore)
+float breakAt(float u, float wave) { return rockFlag > 0.5 ? 14.0 + 16.0 * noise(vec2(u * 0.03, wave * 0.37)) : 45.0 + 30.0 * noise(vec2(u * 0.018, wave * 0.37)); }
 /*
  * The water's height over the sea at (u, d): a swell offshore that steepens and grows as it nears its break, a lip
  * pitching up at the break, then a bore of white water running in that shrinks to nothing at the shore.
@@ -90,6 +102,8 @@ float waveHeight(float u, float d, float time) {
 void main(void) {
   vUD = uv;
   vFade = color.r;
+  vRock = color.g;
+  rockFlag = color.g;
   float h = waveHeight(uv.x, uv.y, time);
   vH = h;
   gl_Position = worldViewProjection * vec4(position + vec3(0.0, h, 0.0), 1.0);
@@ -106,7 +120,8 @@ uniform float fogDensity;
 varying vec2 vUD;
 varying float vFade;
 varying float vDepth;
-
+varying float vRock;
+float rockFlag;
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float noise(vec2 p) {
@@ -117,7 +132,7 @@ float noise(vec2 p) {
 const float T = 9.0;
 const float C = 5.0;
 float wobble(float u) { return (noise(vec2(u * 0.011, 0.0)) - 0.5) * 0.45 + (noise(vec2(u * 0.045, 5.0)) - 0.5) * 0.10; }
-float breakAt(float u, float wave) { return 32.0 + 18.0 * noise(vec2(u * 0.018, wave * 0.37)); }
+float breakAt(float u, float wave) { return rockFlag > 0.5 ? 14.0 + 16.0 * noise(vec2(u * 0.03, wave * 0.37)) : 32.0 + 18.0 * noise(vec2(u * 0.018, wave * 0.37)); }
 /*
  * The water's height over the sea at (u, d): a swell offshore that steepens and grows as it nears its break, a lip
  * pitching up at the break, then a bore of white water running in that shrinks to nothing at the shore.
@@ -147,6 +162,8 @@ const float PI = 3.14159265;
 
 void main(void) {
   float u = vUD.x, d = vUD.y;
+  rockFlag = vRock;
+  bool rock = vRock > 0.5;
   // the crest lines bend along the shore, broadly and a little finely
   float wob = wobble(u);
   // phase: 0 on a crest, rising seaward behind it (so at a fixed place it rises with time: the crest runs shoreward)
@@ -169,10 +186,12 @@ void main(void) {
     // the shallows, paler and greener than the open sea, inside and just beyond the break
     float shallow = 1.0 - smoothstep(brk * 0.7, brk + 35.0, d);
     col = vec3(0.30, 0.45, 0.46);
-    a = 0.38 * shallow;
+    a = (rock ? 0.22 : 0.38) * shallow;
     // the face of a wave standing up before it breaks: darker and greener, lit through at its top
     float face = smoothstep(0.86, 0.985, p) * (1.0 - broken) * smoothstep(130.0, brk + 5.0, d);
-    if (face * 0.55 > a) { col = mix(vec3(0.12, 0.27, 0.29), vec3(0.35, 0.55, 0.55), smoothstep(0.9, 0.99, p)); a = face * 0.55; }
+    // (off the rocks the face is short and steep, and the strip's curves would trace it round every cove: kept faint)
+    float faceA = rock ? 0.22 : 0.55;
+    if (face * faceA > a) { col = mix(vec3(0.12, 0.27, 0.29), rock ? vec3(0.22, 0.36, 0.40) : vec3(0.35, 0.55, 0.55), smoothstep(0.9, 0.99, p)); a = face * faceA; }
     // the swell offshore: a soft light band on each crest, fading out to sea
     float swell = exp(-p / 0.05) * smoothstep(0.0, 0.01, p) * (1.0 - broken) * (1.0 - smoothstep(110.0, 150.0, d));
     if (0.22 * swell > a) { col = white; a = 0.22 * swell; }
@@ -193,13 +212,20 @@ void main(void) {
     if (churn > 0.0) { col = mix(col, white, smoothstep(0.0, 0.3, churn)); a = max(a, churn); }
   }
 
-  // the swash, up the sand
+  // against the rocks: the bore slams in and the water boils white along the foot of the cliff, then sucks back
   float q = fract(time / T + wob);
   float n = floor(time / T + wob);
+  if (rock && d >= 0.0) {
+    float boil = exp(-q / 0.22) * (1.0 - smoothstep(1.0, 9.0 + 6.0 * noise(vec2(u * 0.05, n)), d));
+    float lace = smoothstep(0.3, 0.65, fbm(vec2(u * 0.45, d * 0.5 + q * 3.0 + n)));
+    float wash = boil * (0.45 + 0.55 * lace) + 0.3 * (1.0 - smoothstep(0.0, 2.5, d)) * lace;
+    if (wash > 0.0) { col = mix(col, white, smoothstep(0.0, 0.4, wash)); a = max(a, min(1.0, wash)); }
+  }
+  // the swash, up the sand
   float R = 4.0 + 7.0 * noise(vec2(u * 0.028, n * 0.71));
   float up = 0.55;                                   // the share of the cycle the water is on the sand
   float reach = q < up ? -R * sin(PI * q / up) : 0.0;
-  if (d < 3.0) {
+  if (d < 3.0 && !rock) {
     if (d > reach && d < 0.5) {
       // a thin glassy film, brighter towards the leading edge
       float film = 0.28 + 0.25 * smoothstep(reach + 2.5, reach, d);
@@ -218,6 +244,8 @@ void main(void) {
     }
   }
 
+  // on the rocks the strip is short (a cove's strips would cross): everything fades out well inside its edge
+  if (rock) a *= 1.0 - smoothstep(34.0, 58.0, d);
   a *= vFade;
   if (a < 0.004) discard;
   // a little shading on the moving water: the raised lip is brightest
@@ -227,15 +255,85 @@ void main(void) {
 }
 `
 
+/*
+ * SPRAY on the rocks: an upright ribbon along a rocky shore (u along it, v 0 at the sea to 1 at its top), clear until
+ * the wave's bore reaches the shore there, then bursting up a few metres to as much as ten off the points, hanging,
+ * and falling away. Timed by the strip's own clock, so it goes up as the white water arrives.
+ */
+const SPRAY_VERTEX = `
+precision highp float;
+attribute vec3 position;
+attribute vec2 uv;
+attribute vec4 color;
+uniform mat4 worldViewProjection;
+varying vec2 vUV;
+varying float vFade;
+varying float vDepth;
+void main(void) {
+  vUV = uv;
+  vFade = color.r;
+  gl_Position = worldViewProjection * vec4(position, 1.0);
+  vDepth = gl_Position.w;
+}
+`
+
+const SPRAY_FRAGMENT = `
+precision highp float;
+uniform float time;
+uniform float light;
+uniform vec3 fogColour;
+uniform float fogDensity;
+varying vec2 vUV;
+varying float vFade;
+varying float vDepth;
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float noise(vec2 p) {
+  vec2 i = floor(p), f = fract(p);
+  f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y);
+}
+float fbm(vec2 p) { return noise(p) * 0.55 + noise(p * 2.13 + 3.1) * 0.3 + noise(p * 4.7 + 7.3) * 0.15; }
+const float T = 9.0;
+float wobble(float u) { return (noise(vec2(u * 0.011, 0.0)) - 0.5) * 0.45 + (noise(vec2(u * 0.045, 5.0)) - 0.5) * 0.10; }
+void main(void) {
+  float u = vUV.x, v = vUV.y;
+  float q = fract(time / T + wobble(u));
+  float n = floor(time / T + wobble(u));
+  // how big this wave throws it here: most of the shore a few metres, the odd point a great burst
+  float big = noise(vec2(u * 0.06, n * 0.83));
+  float H = 0.12 + 0.88 * big * big * big;            // the share of the ribbon's height it reaches
+  // up fast as the bore hits, hanging, then the top thinning and falling back
+  float rise = 1.0 - exp(-q / 0.035);
+  float top = H * rise * (1.0 - 0.35 * smoothstep(0.2, 0.45, q));
+  float life = smoothstep(0.0, 0.01, q) * (1.0 - smoothstep(0.12, 0.42, q));
+  // torn, streaky white: columns along the shore, mist toward the top
+  float streak = fbm(vec2(u * 0.55, v * 2.2 - q * 5.0 + n));
+  float edge = 1.0 - smoothstep(top - 0.18 * (0.4 + streak), top, v);
+  // thin and broken: individual plumes along the shore, never a wall
+  float plumes = smoothstep(0.35, 0.75, noise(vec2(u * 0.22, n * 1.7)));
+  float a = 0.8 * life * edge * plumes * smoothstep(0.35, 0.7, streak) * (1.0 - 0.7 * v / max(top, 0.05)) * vFade;
+  if (a < 0.01) discard;
+  vec3 c = vec3(0.95, 0.97, 0.98) * light;
+  float fog = 1.0 - exp(-vDepth * fogDensity);
+  gl_FragColor = vec4(mix(c, fogColour, clamp(fog, 0.0, 1.0)), a);
+}
+`
+
 let registered = false
 
-function material(scene: Scene): ShaderMaterial {
+function material(scene: Scene, shader: 'beachSurf' | 'rockSpray' = 'beachSurf'): ShaderMaterial {
   if (!registered) {
     Effect.ShadersStore['beachSurfVertexShader'] = VERTEX
     Effect.ShadersStore['beachSurfFragmentShader'] = FRAGMENT
+    Effect.ShadersStore['rockSprayVertexShader'] = SPRAY_VERTEX
+    Effect.ShadersStore['rockSprayFragmentShader'] = SPRAY_FRAGMENT
     registered = true
   }
-  const m = new ShaderMaterial('beachSurf', scene, 'beachSurf', {
+  return shaded(scene, shader)
+}
+
+function shaded(scene: Scene, shader: 'beachSurf' | 'rockSpray'): ShaderMaterial {
+  const m = new ShaderMaterial(shader, scene, shader, {
     attributes: ['position', 'uv', 'color'],
     uniforms: ['worldViewProjection', 'time', 'light', 'fogColour', 'fogDensity'],
     needAlphaBlending: true,
@@ -262,9 +360,9 @@ function material(scene: Scene): ShaderMaterial {
  * The coastline inside the beach zones, as runs of points every `STEP` metres with their seaward normals. `sea`: the
  * sea's rings (outer and island holes), `box` the rideable box (a clip artefact runs along it, and is no shore).
  */
-export function beachRuns(zones: Zone[], seaRings: { ring: P[]; holes: P[][] }[], box?: { x0: number; x1: number; z0: number; z1: number }):
-  { pts: P[]; nx: number[]; nz: number[]; u0: number }[] {
-  const beach = zones.filter((z) => z.props.water === 'beach')
+export function beachRuns(zones: Zone[], seaRings: { ring: P[]; holes: P[][] }[], box?: { x0: number; x1: number; z0: number; z1: number },
+                          kind: 'beach' | 'waves' = 'beach'): Run[] {
+  const beach = zones.filter((z) => z.props.water === kind)
   if (!beach.length) return []
   const inBeach = (x: number, z: number): boolean => beach.some((zn) => x >= zn.bbox[0] && x <= zn.bbox[2] && z >= zn.bbox[1] && z <= zn.bbox[3] && inRing(zn.ring, x, z))
   const onBox = (a: P, b: P): boolean => !!box && [[a.x, b.x, box.x0], [a.x, b.x, box.x1], [a.z, b.z, box.z0], [a.z, b.z, box.z1]]
@@ -277,7 +375,7 @@ export function beachRuns(zones: Zone[], seaRings: { ring: P[]; holes: P[][] }[]
     return o
   }
   const isSea = (x: number, z: number): boolean => seaRings.some((s) => inside(s.ring, x, z) && !s.holes.some((h) => inside(h, x, z)))
-  const runs: { pts: P[]; nx: number[]; nz: number[]; u0: number }[] = []
+  const runs: Run[] = []
   for (const s of seaRings) {
     for (const ring of [s.ring, ...s.holes]) {
       let cur: P[] = []
@@ -306,7 +404,7 @@ export function beachRuns(zones: Zone[], seaRings: { ring: P[]; holes: P[][] }[]
         let vote = 0
         for (let i = 0; i < pts.length; i += Math.max(1, Math.floor(pts.length / 15))) vote += isSea(pts[i].x + nx[i] * 12, pts[i].z + nz[i] * 12) ? 1 : -1
         if (vote < 0) for (let i = 0; i < pts.length; i++) { nx[i] = -nx[i]; nz[i] = -nz[i] }
-        runs.push({ pts, nx, nz, u0: Math.round(pts[0].x * 0.37 + pts[0].z * 0.61) })
+        runs.push({ pts, nx, nz, u0: Math.round(pts[0].x * 0.37 + pts[0].z * 0.61), rock: kind === 'waves' })
         cur = []
       }
       for (let i = 0; i < ring.length; i++) {
@@ -328,7 +426,7 @@ export function beachRuns(zones: Zone[], seaRings: { ring: P[]; holes: P[][] }[]
  * waterline and carries on down under it, and blends back to the data where that is lower or further away. Faded out
  * over the last 40 m of each run, so a beach's end is not a cliff.
  */
-export function shoreRamp(runs: ReturnType<typeof beachRuns>, sea: number): ((x: number, z: number, h: number) => number) | null {
+export function shoreRamp(runs: Run[], sea: number): ((x: number, z: number, h: number) => number) | null {
   if (!runs.length) return null
   const LAND = 90, SEA = 40, SLOPE = 0.05, CELL = 20
   const grid = new Map<string, { x: number; z: number; nx: number; nz: number; w: number }[]>()
@@ -377,7 +475,7 @@ export function shoreRamp(runs: ReturnType<typeof beachRuns>, sea: number): ((x:
  * Where a point stands relative to the nearest beach coastline: `s` metres seaward of it (negative up the beach) and
  * the seaward normal there, or null away from every beach. For placing things on the sand (render/beach-crowd.ts).
  */
-export function shoreFrame(runs: ReturnType<typeof beachRuns>, reach = 120): (x: number, z: number) => { s: number; nx: number; nz: number } | null {
+export function shoreFrame(runs: Run[], reach = 120): (x: number, z: number) => { s: number; nx: number; nz: number } | null {
   const CELL = 20
   const grid = new Map<string, { x: number; z: number; nx: number; nz: number }[]>()
   for (const r of runs) {
@@ -411,17 +509,20 @@ export function inBeachZone(zones: Zone[]): (x: number, z: number) => boolean {
 }
 
 export function beachSurfLayer(scene: Scene, terrain: Terrain, sea: number,
-                               runs: ReturnType<typeof beachRuns>): TileLayer | null {
+                               runs: Run[]): TileLayer | null {
   if (!runs.length) return null
   const mat = material(scene)
+  const spray = material(scene, 'rockSpray')
   return {
     name: 'beachSurf',
     range: 4,
     build(_near, rect) {
       const pos: number[] = [], uvs: number[] = [], cols: number[] = [], idx: number[] = []
-      const nR = ROWS.length
+      const sp: number[] = [], suv: number[] = [], scol: number[] = [], sidx: number[] = []
       for (const run of runs) {
         const { pts, nx, nz } = run
+        const rows = run.rock ? ROCK_ROWS : ROWS
+        const nR = rows.length
         // along-shore metres, and a fade over the run's first and last 40 m (a zone's edge is not a shore's end)
         const us: number[] = [run.u0]
         for (let i = 1; i < pts.length; i++) us.push(us[i - 1] + Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z))
@@ -433,15 +534,25 @@ export function beachSurfLayer(scene: Scene, terrain: Terrain, sea: number,
           for (const k of [i, i + 1]) {
             const along = us[k] - run.u0
             const fade = Math.min(1, along / 40, (total - along) / 40)
-            for (const d of ROWS) {
+            for (const d of rows) {
               const x = pts[k].x + nx[k] * d, z = pts[k].z + nz[k] * d
               // on the sand: lying on it; out at sea: at the water's level, where the occluder is held under
               const ground = terrain.rawHeightAt(x, z)
               const y = d <= 0 ? Math.max(ground, sea) + 0.07 : sea + 0.07
               pos.push(x, y, z)
               uvs.push(us[k], d)
-              cols.push(Math.max(0, fade), 0, 0, 1)
+              cols.push(Math.max(0, fade), run.rock ? 1 : 0, 0, 1)
             }
+            if (run.rock) {
+              const x = pts[k].x + nx[k] * SPRAY_OUT, z = pts[k].z + nz[k] * SPRAY_OUT
+              sp.push(x, sea, z, x + nx[k] * SPRAY_LEAN, sea + SPRAY_H, z + nz[k] * SPRAY_LEAN)
+              suv.push(us[k], 0, us[k], 1)
+              scol.push(Math.max(0, fade), 0, 0, 1, Math.max(0, fade), 0, 0, 1)
+            }
+          }
+          if (run.rock) {
+            const sb = sp.length / 3 - 4
+            sidx.push(sb, sb + 1, sb + 3, sb, sb + 3, sb + 2)
           }
           for (let r = 0; r + 1 < nR; r++) {
             const a = base + r, b = base + r + 1, c = base + nR + r + 1, e = base + nR + r
@@ -450,6 +561,21 @@ export function beachSurfLayer(scene: Scene, terrain: Terrain, sea: number,
         }
       }
       if (!idx.length) return []
+      const out: Mesh[] = []
+      if (sidx.length) {
+        const sv = new VertexData()
+        sv.positions = sp
+        sv.uvs = suv
+        sv.colors = scol
+        sv.indices = sidx
+        const s = new Mesh(`rockSpray:${rect.x0},${rect.z0}`, scene)
+        sv.applyToMesh(s)
+        s.material = spray
+        s.isPickable = false
+        s.renderingGroupId = 3
+        s.alphaIndex = 2
+        out.push(s)
+      }
       const vd = new VertexData()
       vd.positions = pos
       vd.uvs = uvs
@@ -461,7 +587,8 @@ export function beachSurfLayer(scene: Scene, terrain: Terrain, sea: number,
       m.isPickable = false
       m.renderingGroupId = 3
       m.alphaIndex = 1
-      return [m]
+      out.push(m)
+      return out
     },
   }
 }

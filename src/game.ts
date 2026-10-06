@@ -84,7 +84,6 @@ import { capTextures } from './render/texture-cap.ts'
 import { Vegetation, foliageLights } from './render/vegetation.ts'
 import { updateCartoonEye } from './render/cartoon-material.ts'
 import { DAYLIGHT, updateEye } from './render/facade-material.ts'
-import { surfLayer } from './render/surf.ts'
 import { beachRuns, beachSurfLayer, inBeachZone, shoreFrame, shoreRamp } from './render/beach-surf.ts'
 import { BeachCrowd } from './render/beach-crowd.ts'
 import { updateWater } from './render/water-material.ts'
@@ -403,9 +402,12 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * The sandy beaches' coastline (render/beach-surf.ts), and the beach face it gives the ground: the elevation data has
    * the sand 3 m over the sea at the waterline. Set before any tile drapes its ground.
    */
-  const beachShore = index.sea !== undefined && index.sea !== null
-    ? beachRuns(index.zones ?? [], wholeWater(pkg).filter((a) => a.sea).map((a) => ({ ring: unpackPoints(a.ring), holes: (a.holes ?? []).map(unpackPoints) })), index.box ?? undefined)
+  const seaRings = index.sea !== undefined && index.sea !== null
+    ? wholeWater(pkg).filter((a) => a.sea).map((a) => ({ ring: unpackPoints(a.ring), holes: (a.holes ?? []).map(unpackPoints) }))
     : []
+  const beachShore = seaRings.length ? beachRuns(index.zones ?? [], seaRings, index.box ?? undefined) : []
+  // and the rocky shores' (`water: 'waves'`), which get the same rollers breaking close in, and spray, but no beach face
+  const rockShore = seaRings.length ? beachRuns(index.zones ?? [], seaRings, index.box ?? undefined, 'waves') : []
   if (index.sea !== undefined && index.sea !== null) city.terrain.shore = shoreRamp(beachShore, index.sea)
   plog('City ctor', Math.round(performance.now() - __t2))
   /*
@@ -653,13 +655,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     const cl = cliffsLayer(scene, index.zones ?? [], city.terrain, index.sea)
     if (cl) city.addLayer(cl)
   }
-  // the surf on the rocks, in zones with `water: 'waves'` (render/surf.ts)
+  // the surf: on the sandy beaches rollers and swash, on the rocks (`water: 'waves'`) rollers and spray (render/beach-surf.ts)
   let beachCrowd: BeachCrowd | null = null
   if (index.sea !== undefined && index.sea !== null && !off.has('surf')) {
-    const surf = surfLayer(scene, index.zones ?? [], city.terrain, index.sea)
-    if (surf) city.addLayer(surf)
-    // the sandy beaches' own surf, rollers and swash (render/beach-surf.ts)
-    const beach = beachSurfLayer(scene, city.terrain, index.sea, beachShore)
+    const beach = beachSurfLayer(scene, city.terrain, index.sea, [...beachShore, ...rockShore])
     if (beach) city.addLayer(beach)
     // and the people on the sand, on towels, under umbrellas (render/beach-crowd.ts)
     if (beachShore.length && !off.has('beachcrowd')) {
