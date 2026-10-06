@@ -192,7 +192,7 @@ export function goldenGatePavilion(out: MeshBuilder, fit: Fit): void {
 export function musicConcourse(out: MeshBuilder, fit: Fit): void {
   const g = fit.groundAt ?? (() => 0)
   const HL = 100, HW = 52
-  const DG: Rgb = [0.6, 0.54, 0.44], BARK: Rgb = [0.56, 0.52, 0.45], LEAF: Rgb = [0.26, 0.37, 0.19], STONE: Rgb = [0.78, 0.76, 0.71]
+  const DG: Rgb = [0.6, 0.54, 0.44], STONE: Rgb = [0.78, 0.76, 0.71]
   const inOval = (x: number, z: number): boolean => (x / HL) ** 2 + (z / HW) ** 2 < 1
   const fountains = [-49, 0, 49]
   const nearFountain = (x: number, z: number): boolean => fountains.some((f) => Math.hypot(x - f, z) < 14)
@@ -211,13 +211,14 @@ export function musicConcourse(out: MeshBuilder, fit: Fit): void {
     for (let z = -HW + 6; z < HW - 2; z += 8) {
       if (Math.abs(z) < 10 || !inOval(x, z) || nearFountain(x, z)) continue
       const y = g(x, z)
-      // the trunk, the knuckled limbs pruned back to knobs, the low flat canopy they carry
-      prism(out, x, z, y, y + 3.4, 0.32, 5, BARK, 0, 0.26, false)
-      for (let k = 0; k < 3; k++) {
-        const a = (k / 3) * Math.PI * 2 + 0.4
-        strut(out, [x, y + 3.2, z], [x + Math.cos(a) * 1.2, y + 4.7, z + Math.sin(a) * 1.2], 0.2, 0.2, BARK, 0, false)
-      }
-      prism(out, x, z, y + 4.6, y + 6.6, 3.6, 6, LEAF, 0, 3.0)
+      /*
+       * A REAL TREE from the city's tree library, not a trunk and a green prism (owner, 2026-10-06: "the Spreckels
+       * Temple trees could just be real tree models instead of green boxes"): a deck one metre square at the grid point,
+       * planted at a pitch wider than itself, gets exactly one tree (render/vegetation.ts `addDeck`, `deckRow`); no
+       * shrubs, so the gravel under the grid stays bare as it is.
+       */
+      out.decks.push({ ring: [{ x: x - 0.5, z: z - 0.5 }, { x: x + 0.5, z: z - 0.5 }, { x: x + 0.5, z: z + 0.5 }, { x: x - 0.5, z: z + 0.5 }],
+        y, keepOff: 0, trees: true, shrubs: false, spacing: 2 })
     }
   }
   // the fountains' stone rims (OSM maps the basins' water), and in each a pedestal and a bowl. The middle one is the
