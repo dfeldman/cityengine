@@ -794,3 +794,42 @@ export const BEACH_TOWNHOUSES: Record<string, (out: MeshBuilder, fit: Fit) => vo
   [287283877, 287283863, 287283846, 287283848, 287283852, 287283853, 287283851, 287283857, 287283861, 287283843, 287283856,
     287283862, 287283834, 287283858, 287283844, 287283867, 287283868, 287283869, 287283871, 287283842, 287283860, 287283866,
     287283874, 287283865, 287283876, 287283875].map((id) => [`beachTownhouse_${id}`, beachTownhouse(id)]))
+
+/**
+ * ANGEL ISLAND'S LIGHTS (owner, 2026-10-06: "none of the significant Angel Island buildings are there … lighthouse"):
+ * Point Blunt and Point Stuart are small white fog-signal stations on the bluffs — a square white building with a
+ * hipped red roof, and on its corner a short white post-tower carrying a black lantern.
+ */
+export function angelLight(out: MeshBuilder, fit: Fit): void {
+  const v0 = out.positions.length
+  const L = Math.max(3, Math.min(fit.hx, 6)), W = Math.max(3, Math.min(fit.hz, 5))
+  box(out, 0, 1.6, 0, L, 1.6, W, WHITE, surfaceTag('clapboard'))
+  ridgeX(out, -L, L, -W, W, 3.2, 1.4, TILE_RED, surfaceTag('tile'), true, 0.3)
+  windowsZ(out, W, 1, -L + 0.8, L - 0.8, 2, 1.0, 2.4, 0.7, GLASS, WHITE)
+  const tx = L + 0.9
+  box(out, tx, 2.6, 0, 0.8, 2.6, 0.8, WHITE, surfaceTag('stucco'))
+  box(out, tx, 5.3, 0, 1.0, 0.08, 1.0, [0.12, 0.12, 0.13], 0)
+  prism(out, tx, 0, 5.38, 6.4, 0.55, 8, [0.6, 0.7, 0.72], surfaceTag('glass'))
+  prism(out, tx, 0, 6.4, 7.0, 0.62, 8, [0.1, 0.1, 0.11], 0, 0.1)
+  standHigh(out, fit, v0, L, W, [0.8, 0.79, 0.76])
+}
+
+/**
+ * The ANGEL ISLAND IMMIGRATION STATION's Detention Barracks (way/104694642, now the museum): a long two-storey white
+ * clapboard barracks on a raised concrete base, rows of small double-hung windows under a low grey hipped roof,
+ * an exterior stair and porch at one end.
+ */
+export function detentionBarracks(out: MeshBuilder, fit: Fit): void {
+  const v0 = out.positions.length
+  const L = Math.max(8, fit.hx), W = Math.max(5, fit.hz)
+  box(out, 0, 0.6, 0, L + 0.1, 0.6, W + 0.1, [0.7, 0.69, 0.66], surfaceTag('concrete'))
+  box(out, 0, 1.2 + 3.3, 0, L, 3.3, W, [0.94, 0.93, 0.89], surfaceTag('clapboard'))
+  ridgeX(out, -L, L, -W, W, 7.8, 2.0, [0.42, 0.43, 0.42], surfaceTag('tile'), true, 0.5)
+  for (const s of [-1, 1] as const) {
+    windowsZ(out, s * W, s, -L + 1, L - 1, Math.round(L / 1.8), 2.0, 3.6, 0.8, GLASS, [0.36, 0.44, 0.38])
+    windowsZ(out, s * W, s, -L + 1, L - 1, Math.round(L / 1.8), 5.2, 6.8, 0.8, GLASS, [0.36, 0.44, 0.38])
+  }
+  for (let k = 0; k < 10; k++) box(out, L + 0.5 + k * 0.3, 0.2 + k * 0.33, W * 0.3, 0.15, 0.2 + k * 0.33, 0.6, [0.9, 0.9, 0.88], 0)
+  box(out, L + 0.9, 3.55, W * 0.3, 0.9, 0.06, 1.2, [0.9, 0.9, 0.88], 0)
+  standHigh(out, fit, v0, L, W, [0.72, 0.71, 0.68])
+}
