@@ -31,6 +31,7 @@ import { facesStreet, streetIndex, type StreetIndex } from '../city/frontage.ts'
 import { planFacade, type FacadePlan } from '../city/facade.ts'
 import type { Region } from '../city/region.ts'
 import { onSurface } from './city.ts'
+import { Carriageways } from '../city/carriageways.ts'
 import type { TileLayer } from './city.ts'
 import { TILE, tileKey, type Near } from '../city/tiles.ts'
 
@@ -405,7 +406,8 @@ export class Signs implements TileLayer {
         meshes.push(...r.meshes)
         c.plaques = r.placed
       } else {
-        const r = blades(this.scene, this.corners, k, js, terrain, this.probe)
+        const roads = new Carriageways(near.around.edges.filter((e) => onSurface(e)))
+        const r = blades(this.scene, this.corners, k, js, terrain, this.probe, (x, z) => roads.inside(x, z, 0.5))
         meshes.push(...r.meshes)
         c.plaques = r.n
       }
@@ -679,7 +681,8 @@ export function wordAtlas(scene: Scene): TextAtlas {
 }
 
 function projectingSigns(scene: Scene, atlas: TextAtlas, owner: string, hung: Hung[],
-                         probe: { x?: number; y?: number; z?: number; ax?: number; az?: number } = {}): { meshes: Mesh[]; n: number } {
+                         probe: { x?: number; y?: number; z?: number; ax?: number; az?: number } = {},
+                onRoad: (x: number, z: number) => boolean = () => false): { meshes: Mesh[]; n: number } {
   const ranked = hung.map((h) => ({ h, r: bladeRank(h) })).filter((c) => c.r > 0).sort((a, b) => b.r - a.r)
   const chosen: Hung[] = []
   for (const { h } of ranked) {
@@ -933,7 +936,8 @@ export function bladeAtlas(scene: Scene): TextAtlas {
 
 /** The street blades at the junctions of one tile. */
 function blades(scene: Scene, atlas: TextAtlas, owner: string, junctions: SignedJunction[], terrain: Terrain,
-                probe: { x?: number; y?: number; z?: number; ax?: number; az?: number } = {}): { meshes: Mesh[]; n: number } {
+                probe: { x?: number; y?: number; z?: number; ax?: number; az?: number } = {},
+                onRoad: (x: number, z: number) => boolean = () => false): { meshes: Mesh[]; n: number } {
   const green: [number, number, number] = [0x0b / 255, 0x6b / 255, 0x3a / 255]
   const pole: [number, number, number] = [0.3, 0.32, 0.33]
   const pages = new PageOut()
@@ -956,9 +960,44 @@ function blades(scene: Scene, atlas: TextAtlas, owner: string, junctions: Signed
     if (cl < 0.2) continue          // the two run straight through each other: no corner between them
     cx /= cl
     cz /= cl
-    const reach = (Math.max(a1.width, a2.width) / 2 + Math.max(a1.walk, a2.walk) * 0.5) * 1.35
-    const px = j.at.x + cx * reach
-    const pz = j.at.z + cz * reach
+    /*
+     * ON THE CORNER, where the two kerbs meet, a little back onto the pavement (owner, 2026-10-05: blades "well away
+     * from the curb, closer to the middle of the street"). It was a reach along the bisector set by the WIDER street,
+     * which is the corner only where two equal streets cross square: where a broad street meets a narrow one, or
+     * the two meet at a slant, the pole stood out in the narrower street's roadway. Now each street's kerb line
+     * (its half-width plus 0.6 m of pavement, towards the other street) and the pole at their intersection.
+     */
+    const n1 = { x: d2.x - (d2.x * d1.x + d2.z * d1.z) * d1.x, z: d2.z - (d2.x * d1.x + d2.z * d1.z) * d1.z }
+    const n2 = { x: d1.x - (d1.x * d2.x + d1.z * d2.z) * d2.x, z: d1.z - (d1.x * d2.x + d1.z * d2.z) * d2.z }
+    const l1 = Math.hypot(n1.x, n1.z), l2 = Math.hypot(n2.x, n2.z)
+    let px = j.at.x + cx * (Math.max(a1.width, a2.width) / 2 + 0.6) * 1.35
+    let pz = j.at.z + cz * (Math.max(a1.width, a2.width) / 2 + 0.6) * 1.35
+    if (l1 > 0.3 && l2 > 0.3) {
+      n1.x /= l1; n1.z /= l1; n2.x /= l2; n2.z /= l2
+      const o1 = a1.width / 2 + (a1.walk > 0 ? 0.6 : 0.4), o2 = a2.width / 2 + (a2.walk > 0 ? 0.6 : 0.4)
+      const det = n1.x * n2.z - n1.z * n2.x
+      if (Math.abs(det) > 0.25) {
+        const sx = (o1 * n2.z - o2 * n1.z) / det, sz = (n1.x * o2 - n2.x * o1) / det
+        // (a very acute corner throws the meeting point far down the street: no farther than it is wide again)
+        const far = Math.max(a1.width, a2.width) + 3
+        const L = Math.hypot(sx, sz)
+        px = j.at.x + sx * Math.min(1, far / L)
+        pz = j.at.z + sz * Math.min(1, far / L)
+      }
+    }
+    /*
+     * …and then out along the corner until it is clear of every DRAWN carriageway. The junction is the ride graph's,
+     * which merges a boulevard's two carriageways and a cluster of nodes into one, so its point and its widths are not
+     * the drawn streets' (Pine at Powell: the pole stood 3 m into the side street). A corner that never clears in 12 m
+     * (a junction inside a wide square) gets no sign.
+     */
+    let clear = !onRoad(px, pz)
+    for (let step = 0; step < 24 && !clear; step++) {
+      px += cx * 0.5
+      pz += cz * 0.5
+      clear = !onRoad(px, pz)
+    }
+    if (!clear) continue
     const g = terrain.heightAt(px, pz)
     // the pole, up to the lower blade: the blades sit on its cap, they are not threaded on it (owner, 2026-10-02:
     // "street signs are always obstructing the sign with the pole" — it ran on to 2.7 m, through both names)
