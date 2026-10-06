@@ -190,6 +190,8 @@ const KNOWN: Record<string, string[]> = {
     // a generic figure-on-a-pedestal builder shared by standalone monuments (sf/monuments.ts, 2026-10-04): each entry is
     // placed by its own point — standalone entries cannot shadow one another
     'duplicate | figureOnPedestal',
+    // the Muni Metro tunnel portals (sf/portals.ts, 2026-10-06): one generic builder placed at each standalone point
+    'duplicate | tunnelPortal',
     'height | One Maritime Plaza Park',
     'intersects | One Maritime Plaza Park',
     'intersects | Oracle Park',

@@ -2162,6 +2162,8 @@
         "walk": 1000
       },
       "note": "Market Street's broad sidewalk to the building line (bike audit 2026-10-05: the bake's 3.2 m left a strip of bare grass ground between it and the mapped footway; nearest building 35.4 m from the centreline)"
-    }
+    },
+  {"op": "suppress", "ref": "s7990490773-8374070675", "note": "Harvey Milk Recreational Arts Center: OSM's service way 857028540 runs along its north wall, half under the building; cars and buses drove through it (owner 2026-10-06)"},
+  {"op": "suppress", "ref": "s7990490771-8374070675", "note": "the same service way's stub from Scott Street"}
   ]
 }
