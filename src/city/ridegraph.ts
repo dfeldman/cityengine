@@ -1500,9 +1500,16 @@ export function rideExits(g: CityGraph, nodeId: number, arrivedOn: number | null
   const all = legal.length > 0 ? legal : every
   let keep = all.filter((x) => Math.abs(x.angle) <= 150 * DEG)
   if (keep.length === 0 && all.length > 0) keep = [all[0]]
+  // (the street the rider is on goes first: where its continuation and a cross street leave within 20° of each
+  // other, the continuation is the one kept — the Embarcadero at Washington, 2026-10-06)
+  const onTrunk = arrivedOn === null ? undefined : trunkName(g.edges.get(arrivedOn)?.name)
   const pref = [...keep].sort((p, q) => {
     const ep = g.edges.get(p.edgeId)!
     const eq = g.edges.get(q.edgeId)!
+    if (onTrunk !== undefined) {
+      const sp = trunkName(ep.name) === onTrunk, sq = trunkName(eq.name) === onTrunk
+      if (sp !== sq) return sp ? -1 : 1
+    }
     if (!!ep.name !== !!eq.name) return ep.name ? -1 : 1
     return eq.length - ep.length
   })
@@ -1540,7 +1547,40 @@ export function rideExits(g: CityGraph, nodeId: number, arrivedOn: number | null
     })) continue
     chosen.push(x)
   }
-  return chosen.sort((p, q) => Math.abs(p.angle) - Math.abs(q.angle))
+  chosen.sort((p, q) => Math.abs(p.angle) - Math.abs(q.angle))
+  /*
+   * STRAIGHT ON IS THE SAME STREET (owner, 2026-10-06, the Embarcadero at Washington: "very hard to go straight").
+   * OSM's southbound Embarcadero jogs west through that junction to meet Washington Street, so its own continuation
+   * leaves at ~70° while Washington, dead straight across, leaves nearer the rider's heading: "straight" took
+   * Washington. Where the street the rider arrived on goes on, and only one exit does, within 100°, that exit IS
+   * straight on — first in the list, and the others are turns by their side.
+   */
+  const arrived = arrivedOn === null ? undefined : g.edges.get(arrivedOn)
+  const trunk = trunkName(arrived?.name)
+  if (trunk !== undefined) {
+    // (judged 30 m out, not by the first 8 m that `exits` reads: the jog at the junction is what hid it)
+    const out30 = (edgeId: number): number => {
+      const e = g.edges.get(edgeId)!
+      const pts = e.a === nodeId ? e.points : [...e.points].reverse()
+      let i = 1, run = 0
+      while (i < pts.length - 1 && (run += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z)) < 30) i++
+      return bearing(pts[0], pts[i])
+    }
+    // (both ways: the arrival jogs into the junction just as the continuation jogs out)
+    const heading = out30(arrivedOn!) + Math.PI
+    const far = (edgeId: number): number => Math.abs(angleDiff(heading, out30(edgeId)))
+    const same = chosen.filter((x) => trunkName(g.edges.get(x.edgeId)!.name) === trunk && far(x.edgeId) < 70 * DEG)
+    if (same.length === 1 && same[0].turn !== 'straight') {
+      const on = same[0]
+      for (const x of chosen) if (x !== on && x.turn === 'straight') x.turn = x.angle < 0 ? 'left' : 'right'
+      on.turn = 'straight'
+      // (and shown as the way the street really goes, not the jog)
+      on.angle = angleDiff(heading, out30(on.edgeId))
+      chosen.splice(chosen.indexOf(on), 1)
+      chosen.unshift(on)
+    }
+  }
+  return chosen
 }
 
 /** The map edge under a point `s` metres along a ride edge (its own id on a map graph). */
