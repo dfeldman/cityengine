@@ -110,12 +110,14 @@ export function cliffsLayer(scene: Scene, zones: Zone[], terrain: Terrain, sea: 
       const wet = (x: number, z: number): boolean =>
         water.some((w) => inside(w.ring, x, z) && !w.holes.some((h) => inside(h, x, z)))
       // the ways here, so no boulder lies on a path (Alcatraz's Agave Trail ran through one — BUGS.md #263)
-      const ways = [...near.tile.edges, ...near.around.edges].map((e) => unpackPoints(e.points))
-      const onWay = (x: number, z: number, r: number): boolean => ways.some((p) => {
+      // (with their half-widths: the rock and the crags keep off a path's own width, not only its centreline — the
+      // trail under the Cliff House went "underground" under the new crags, owner 2026-10-06)
+      const ways = [...near.tile.edges, ...near.around.edges].map((e) => ({ p: unpackPoints(e.points), half: (e.width ?? 2) / 2 + (e.walk ?? 0) }))
+      const onWay = (x: number, z: number, r: number): boolean => ways.some(({ p, half }) => {
         for (let i = 1; i < p.length; i++) {
           const a = p[i - 1], b = p[i], dx = b.x - a.x, dz = b.z - a.z, L2 = dx * dx + dz * dz || 1e-6
           const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / L2))
-          if (Math.hypot(x - a.x - dx * t, z - a.z - dz * t) < r) return true
+          if (Math.hypot(x - a.x - dx * t, z - a.z - dz * t) < r + half) return true
         }
         return false
       })
@@ -133,8 +135,9 @@ export function cliffsLayer(scene: Scene, zones: Zone[], terrain: Terrain, sea: 
           const gx = ((h10 - h00) + (h11 - h01)) / (2 * STEP), gz = ((h01 - h00) + (h11 - h10)) / (2 * STEP)
           const slope = Math.hypot(gx, gz)
           const low = Math.min(h00, h01, h10, h11)
-          // never under the water: the sea floor falls away steeply
-          if ((sea != null && Math.max(h00, h01, h10, h11) < sea + 0.3) || wet(cx, cz)) continue
+          // never under the water: the sea floor falls away steeply; and never over a path (a cell is 2 m: its middle
+          // within a metre and a half of the path's edge would lap onto it)
+          if ((sea != null && Math.max(h00, h01, h10, h11) < sea + 0.3) || wet(cx, cz) || onWay(cx, cz, 1.5)) continue
           // (a little ragged at the edge of the rock: not every cell at the threshold)
           const ragged = 0.85 + 0.3 * hash(cx * 3, cz * 7)
           if (slope < STEEP * ragged) {
@@ -152,7 +155,7 @@ export function cliffsLayer(scene: Scene, zones: Zone[], terrain: Terrain, sea: 
           out.quad([[x, h00 + lift, z], [x, h01 + lift, z + STEP], [x + STEP, h11 + lift, z + STEP], [x + STEP, h10 + lift, z]],
             [n[0] / L, n[1] / L, n[2] / L], [[0, 0], [0, 1], [1, 1], [1, 0]], [c[0] * k, c[1] * k, c[2] * k], rock)
           // a boulder now and then, on the ledges and at the feet
-          if (hash(cx * 11, cz * 13) < 0.06 && !onWay(cx, cz, 3.5)) {
+          if (hash(cx * 11, cz * 13) < 0.06 && !onWay(cx, cz, 2.2)) {
             const r = 0.4 + hash(cx * 5, cz * 3) * 0.9
             const t = 0.5 + 0.2 * hash(cz * 2, cx)
             block(out, cx, cz, low - 0.3, low + r * (0.8 + hash(cz, cx) * 0.8), r, r * (0.6 + 0.5 * hash(cx, cz * 9)), hash(cx * 7, cz) * Math.PI, [t, t * 0.98, t * 0.95], rock)
@@ -168,10 +171,12 @@ export function cliffsLayer(scene: Scene, zones: Zone[], terrain: Terrain, sea: 
           const gx = (terrain.rawHeightAt(cx + 1, cz) - terrain.rawHeightAt(cx - 1, cz)) / 2
           const gz = (terrain.rawHeightAt(cx, cz + 1) - terrain.rawHeightAt(cx, cz - 1)) / 2
           const slope = Math.hypot(gx, gz)
-          if (slope < STEEP * 0.95 || (sea != null && g < sea + 0.5) || wet(cx, cz) || onWay(cx, cz, 4)) continue
+          if (slope < STEEP * 0.95 || (sea != null && g < sea + 0.5) || wet(cx, cz)) continue
           // down the slope, give or take: the joints run a little across it
           const yaw = Math.atan2(-gx, -gz) + (hash(cx, cz * 5) - 0.5) * 0.5
           const hx = 1.0 + hash(cx * 3, cz * 7) * 1.6, hz = 0.7 + hash(cx * 9, cz * 2) * 1.0
+          // clear of every path by the block's whole reach (its corner), and the one stacked behind it
+          if (onWay(cx, cz, Math.hypot(hx, hz) + 0.8)) continue
           // its top a little over the ground at its middle, its foot below the ground at its front
           const y1 = g + 0.25 + hash(cx * 5, cz * 11) * (0.8 + slope * 1.2)
           const y0 = g - hz * slope - 0.5
