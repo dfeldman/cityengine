@@ -806,7 +806,7 @@ function drawPlate(ctx: CanvasRenderingContext2D, x0: number, y0: number, name: 
   let size = 44
   const text = name.toUpperCase()
   ctx.font = `600 ${size}px Georgia, 'Times New Roman', serif`
-  while (ctx.measureText(text).width > PLATE_W - 40 && size > 14) {
+  while (ctx.measureText(text).width > PLATE_W - 20 && size > 14) {
     size -= 1
     ctx.font = `600 ${size}px Georgia, 'Times New Roman', serif`
   }
@@ -814,14 +814,15 @@ function drawPlate(ctx: CanvasRenderingContext2D, x0: number, y0: number, name: 
   if (size < 26 && text.includes(' ')) {
     const mid = text.lastIndexOf(' ', Math.floor(text.length / 2) + 4)
     const [l1, l2] = [text.slice(0, mid), text.slice(mid + 1)]
-    size = 34
+    // (as large as the cell takes — two lines of 40 px in its 96: at 34 with 20 px margins it read as a smudge)
+    size = 40
     ctx.font = `600 ${size}px Georgia, 'Times New Roman', serif`
-    while (Math.max(ctx.measureText(l1).width, ctx.measureText(l2).width) > PLATE_W - 40 && size > 12) {
+    while (Math.max(ctx.measureText(l1).width, ctx.measureText(l2).width) > PLATE_W - 16 && size > 12) {
       size -= 1
       ctx.font = `600 ${size}px Georgia, 'Times New Roman', serif`
     }
-    ctx.fillText(l1, cx, cy - size * 0.55)
-    ctx.fillText(l2, cx, cy + size * 0.55)
+    ctx.fillText(l1, cx, cy - size * 0.52)
+    ctx.fillText(l2, cx, cy + size * 0.52)
   } else {
     ctx.fillText(text, cx, cy)
   }
@@ -847,17 +848,22 @@ function landmarkPlates(scene: Scene, atlas: TextAtlas, owner: string, reg: Regi
     const plain = quadUV(atlas.blank(got.page))
     const f = l.frontage
     const c = got
-    const w = l.tier === 1 ? 2.4 : 1.4
-    const h = l.tier === 1 ? 0.5 : 0.35
+    // (the smaller plates a third larger than they were, 1.4 × 0.35 m: a two-line name on them was too small to read)
+    const w = l.tier === 1 ? 2.4 : 1.8
+    const h = l.tier === 1 ? 0.5 : 0.45
     const y = terrain.heightAt(f.x, f.z) + 3.5
     const q = plateQuad(f, w, h, y)
     out.quad(q, [f.nx, 0, f.nz], [[c.u0, c.v1], [c.u1, c.v1], [c.u1, c.v0], [c.u0, c.v0]], tint, 0)
-    // the kind marker at the plate's left end, a hair proud of it
+    /*
+     * The kind marker just OUTSIDE the plate's left end (owner, 2026-10-06: "all of our landmark signs are unreadable").
+     * It stood on the plate over its left end, and the name, centred across the whole plate, ran under it: every
+     * plate lost its first letter or two ("ONEER LOG CABIN").
+     */
     const ax = -f.nz
     const az = f.nx
     const s = h * 0.62
-    const lx = q[0][0] + ax * (0.08 + s / 2) + f.nx * 0.012
-    const lz = q[0][2] + az * (0.08 + s / 2) + f.nz * 0.012
+    const lx = q[0][0] - ax * (0.05 + s / 2) + f.nx * 0.012
+    const lz = q[0][2] - az * (0.05 + s / 2) + f.nz * 0.012
     out.quad([[lx - ax * s / 2, y - s / 2, lz - az * s / 2], [lx + ax * s / 2, y - s / 2, lz + az * s / 2],
       [lx + ax * s / 2, y + s / 2, lz + az * s / 2], [lx - ax * s / 2, y + s / 2, lz - az * s / 2]],
       [f.nx, 0, f.nz], plain, KIND_COLOUR[l.kind], 0)
