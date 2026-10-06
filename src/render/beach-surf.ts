@@ -302,6 +302,7 @@ void main(void) {
   // how big this wave throws it here: most of the shore a few metres, the odd point a great burst
   float big = noise(vec2(u * 0.06, n * 0.83));
   float H = 0.12 + 0.88 * big * big * big;            // the share of the ribbon's height it reaches
+  H *= 0.35 + 0.65 * noise(vec2(u * 0.6, n * 3.1));   // (ragged along the shore: no plume with a ruled top)
   // up fast as the bore hits, hanging, then the top thinning and falling back
   float rise = 1.0 - exp(-q / 0.035);
   float top = H * rise * (1.0 - 0.35 * smoothstep(0.2, 0.45, q));
@@ -310,8 +311,10 @@ void main(void) {
   float streak = fbm(vec2(u * 0.55, v * 2.2 - q * 5.0 + n));
   float edge = 1.0 - smoothstep(top - 0.18 * (0.4 + streak), top, v);
   // thin and broken: individual plumes along the shore, never a wall
-  float plumes = smoothstep(0.35, 0.75, noise(vec2(u * 0.22, n * 1.7)));
-  float a = 0.8 * life * edge * plumes * smoothstep(0.35, 0.7, streak) * (1.0 - 0.7 * v / max(top, 0.05)) * vFade;
+  // (soft at their sides, and faded out close to the eye, where a plume's flat ribbon showed as a glassy wedge)
+  float plumes = smoothstep(0.4, 0.9, noise(vec2(u * 0.22, n * 1.7))) * smoothstep(0.2, 0.6, noise(vec2(u * 0.9, n * 2.3 + v)));
+  float near = smoothstep(6.0, 30.0, vDepth);
+  float a = 0.6 * life * edge * plumes * smoothstep(0.4, 0.75, streak) * (1.0 - 0.7 * v / max(top, 0.05)) * vFade * near;
   if (a < 0.01) discard;
   vec3 c = vec3(0.95, 0.97, 0.98) * light;
   float fog = 1.0 - exp(-vDepth * fogDensity);

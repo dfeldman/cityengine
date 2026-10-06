@@ -18,6 +18,7 @@
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
 import { Constants } from '@babylonjs/core/Engines/constants'
 import { Effect } from '@babylonjs/core/Materials/effect'
+import { Texture } from '@babylonjs/core/Materials/Textures/texture'
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial'
 import type { Scene } from '@babylonjs/core/scene'
 import { DAYLIGHT, NIGHT, type SkyLook } from './facade-material.ts'
@@ -83,6 +84,7 @@ uniform float fogDensity;
 uniform float night;
 uniform float stone;
 uniform float flood;
+uniform sampler2D rockTex;
 varying vec3 vWorld;
 varying float vSurface;
 varying vec2 vUV;
@@ -243,6 +245,19 @@ vec3 surfaceLook(vec3 c, vec3 n, float sid) {
     float shade = smoothstep(0.0, 0.3, fract(p.y / 0.3)) * 0.2 + 0.8;
     return c * shade * (0.9 + 0.2 * hash2(vec2(row, floor(u)))) * mix(1.0, 0.95, nearFade(20.0, 50.0));
   }
+  if (sid > 11.5) {
+    // 12 ROCK: the photographed rock (render/rock-material.ts), from the three axes by the normal, a texture every 4 m
+    // and again at a third of the scale, cooled to greywacke grey and tinted by the colour given
+    vec3 w = pow(abs(n), vec3(4.0));
+    w /= (w.x + w.y + w.z);
+    vec3 q = vWorld / 4.0;
+    vec3 r = texture2D(rockTex, q.zy).rgb * w.x + texture2D(rockTex, q.xz).rgb * w.y + texture2D(rockTex, q.xy).rgb * w.z;
+    vec3 q2 = vWorld / 13.0 + 0.37;
+    vec3 r2 = texture2D(rockTex, q2.zy).rgb * w.x + texture2D(rockTex, q2.xz).rgb * w.y + texture2D(rockTex, q2.xy).rgb * w.z;
+    vec3 rock = mix(r, r2, 0.4);
+    rock = mix(vec3(dot(rock, vec3(0.333))), rock, 0.3);
+    return c * rock * 1.8;
+  }
   // 11 CLAPBOARD: horizontal boards 0.15 m, each with its shadow line
   float board = fract(p.y / 0.15);
   return c * (0.93 + 0.07 * smoothstep(0.0, 0.25, board)) * mix(1.0, 0.95 + 0.1 * hash2(vec2(floor(p.y / 0.15), floor(p.x / 4.0))), nearFade(15.0, 40.0));
@@ -325,7 +340,7 @@ let registered = false
  * landmark material (in world metres, so every building shares the same brick and stone). A builder passes
  * `surfaceTag(SURFACES.brick)` as the quad's tag. Tag 0 is the old default, pale dressed stone by colour.
  */
-export const SURFACES = { ashlar: 1, brick: 2, granite: 3, terracotta: 4, concrete: 5, glass: 6, metal: 7, stucco: 8, copper: 9, tile: 10, clapboard: 11 } as const
+export const SURFACES = { ashlar: 1, brick: 2, granite: 3, terracotta: 4, concrete: 5, glass: 6, metal: 7, stucco: 8, copper: 9, tile: 10, clapboard: 11, rock: 12 } as const
 export type Surface = keyof typeof SURFACES
 export const surfaceTag = (s: Surface): number => SURFACES[s] / 64
 
@@ -349,7 +364,12 @@ export function cartoonMaterial(scene: Scene, name = 'cartoon', instanced = true
       : ['position', 'normal', 'color', 'uv'],
     uniforms: ['world', 'viewProjection', 'eye', 'sunDir', 'sunColour', 'skyColour', 'groundColour',
       'fogColour', 'fogDensity', 'night', 'stone', 'flood'],
+    samplers: ['rockTex'],
   })
+  // the photographed rock for the `rock` surface (Poly Haven via Trail Trainer: public/rocks/textures)
+  const rockTex = new Texture(typeof document === 'undefined' ? 'rocks/textures/rock_grey_diff.jpg' : new URL('rocks/textures/rock_grey_diff.jpg', document.baseURI).href, scene)
+  rockTex.wrapU = rockTex.wrapV = Texture.WRAP_ADDRESSMODE
+  mat.setTexture('rockTex', rockTex)
   applyCartoonLook(mat, DAYLIGHT)
   // the monuments' pale surfaces as dressed stone (BUGS.md #8); everything else stays flat
   mat.setFloat('stone', name === 'cartoonLandmark' || name === 'cartoonBridge' ? 1 : 0)
