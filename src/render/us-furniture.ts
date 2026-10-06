@@ -21,20 +21,39 @@ const WHITE: Rgb = [0.94, 0.94, 0.92]
 
 export function stopSign(out: MeshBuilder): void {
   box(out, 0, 1.2, 0, 0.035, 1.2, 0.035, STEEL, FIXED)
-  // the octagon, a white border and the red face, on the side toward the traffic (+z)
-  const oct = (r: number, z: number, c: Rgb): void => {
+  // the octagon, a white border and the red face, on the side toward the traffic (+z). The layers a few centimetres
+  // apart, not millimetres: at 5 mm they z-fought from across a junction (owner, 2026-10-05)
+  const oct = (r: number, z: number, c: Rgb, n: [number, number, number] = [0, 0, 1]): void => {
     for (let i = 0; i < 8; i++) {
       const a0 = (i / 8) * Math.PI * 2 + Math.PI / 8
       const a1 = ((i + 1) / 8) * Math.PI * 2 + Math.PI / 8
-      out.quad([[0, 2.25, z], [Math.cos(a0) * r, 2.25 + Math.sin(a0) * r, z], [Math.cos(a1) * r, 2.25 + Math.sin(a1) * r, z], [0, 2.25, z]],
-        [0, 0, 1], [[0, 0], [1, 0], [1, 1], [0, 1]], c, FIXED)
+      const q: [number, number, number][] = [[0, 2.25, z], [Math.cos(a0) * r, 2.25 + Math.sin(a0) * r, z], [Math.cos(a1) * r, 2.25 + Math.sin(a1) * r, z], [0, 2.25, z]]
+      out.quad(n[2] > 0 ? q : [q[3], q[2], q[1], q[0]], n, [[0, 0], [1, 0], [1, 1], [0, 1]], c, FIXED)
     }
   }
   oct(0.4, 0.05, WHITE)
-  oct(0.36, 0.055, [0.78, 0.1, 0.1])
-  // "STOP": a white bar of letters
-  box(out, 0, 2.25, 0.06, 0.24, 0.07, 0.005, WHITE, FIXED)
-  oct(0.4, 0.035, [0.6, 0.6, 0.62])        // the back
+  oct(0.36, 0.07, [0.78, 0.1, 0.1])
+  oct(0.4, 0.04, [0.6, 0.6, 0.62], [0, 0, -1])        // the back
+  /*
+   * "STOP" in letters, not a white bar: a red disc with a white bar is a DO NOT ENTER sign, and that is what the owner
+   * read it as. Four block letters 0.17 m tall, from strokes (a 3 × 5 grid, each stroke a thin box).
+   */
+  const H = 0.17, W = 0.1, t = 0.022, z = 0.085
+  const seg = (cx: number, x0: number, y0: number, x1: number, y1: number): void => {
+    const X = cx - W / 2 + Math.min(x0, x1) * W, Y = 2.25 - H / 2 + Math.min(y0, y1) * H
+    const w = Math.max(Math.abs(x1 - x0) * W, t), h = Math.max(Math.abs(y1 - y0) * H, t)
+    // (mirrored in x: the face is read looking down −z, so the reader's right is local −x)
+    box(out, -(X + w / 2 - (x0 === x1 ? t / 2 : 0)), Y + h / 2 - (y0 === y1 ? t / 2 : 0), z, w / 2, h / 2, 0.004, WHITE, FIXED)
+  }
+  const xs = [-0.195, -0.065, 0.065, 0.195]
+  // S
+  seg(xs[0], 0, 1, 1, 1); seg(xs[0], 0, 0.5, 0, 1); seg(xs[0], 0, 0.5, 1, 0.5); seg(xs[0], 1, 0, 1, 0.5); seg(xs[0], 0, 0, 1, 0)
+  // T
+  seg(xs[1], 0, 1, 1, 1); seg(xs[1], 0.5, 0, 0.5, 1)
+  // O
+  seg(xs[2], 0, 0, 1, 0); seg(xs[2], 0, 1, 1, 1); seg(xs[2], 0, 0, 0, 1); seg(xs[2], 1, 0, 1, 1)
+  // P
+  seg(xs[3], 0, 0, 0, 1); seg(xs[3], 0, 1, 1, 1); seg(xs[3], 1, 0.5, 1, 1); seg(xs[3], 0, 0.5, 1, 0.5)
 }
 
 /** San Francisco's Muni stop: the yellow band round the pole, the sign flag at the top. */
