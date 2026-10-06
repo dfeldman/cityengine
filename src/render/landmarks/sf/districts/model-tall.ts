@@ -76,6 +76,14 @@ function mira(out: MeshBuilder, fit: Fit): void {
     }
     s += e.L
   }
+  // the ROOF (owner, 2026-10-06: "a great facade, but no roof"): the plate over the shaft, a little in from the bays,
+  // and a plant screen in the middle
+  capPolygon(out, ring, H, [0.62, 0.63, 0.64], surfaceTag('concrete'))
+  {
+    let cx = 0, cz = 0
+    for (const q of ring) { cx += q.x / ring.length; cz += q.z / ring.length }
+    box(out, cx, H + 2, cz, Math.min(fit.hx, fit.hz) * 0.35, 2, Math.min(fit.hx, fit.hz) * 0.35, [0.7, 0.71, 0.72], panel)
+  }
   // the top: the bays run out as a jagged white parapet, as they do on the real tower
   for (let i = 0; i < ring.length; i++) {
     const e = edgeAt(ring, i)
