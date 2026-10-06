@@ -1783,6 +1783,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     held = null
     frozen = !frozen
     orbit.active = frozen
+    // (⏸ out of an observation: the Camera Obscura's table goes with it — on a phone it is the only way out)
+    if (!frozen && observing) { observing = null; leaveTable() }
     if (frozen) {
       // start the look exactly where the chase camera already is, so freezing does not jump the view
       const l = orbit.look
@@ -1848,10 +1850,14 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     OBSERVE.find((o) => Math.hypot(o.x - at.x, o.z - at.z) < o.reach) ?? null
   let table: { dispose(): void } | null = null
   let turning: (() => void) | null = null
-  const comeDown = (): void => {
-    observing = null
+  /** off the Camera Obscura's table, by whatever way the view ended (O, ⏸, the map) */
+  const leaveTable = (): void => {
     table?.dispose(); table = null
     if (turning) { scene.onBeforeRenderObservable.removeCallback(turning); turning = null }
+  }
+  const comeDown = (): void => {
+    observing = null
+    leaveTable()
     frozen = false
     orbit.active = false
     debug.frozen(false)
@@ -1903,7 +1909,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   })
   /** once a frame, from the ride loop: the pill by a tall landmark */
   const observeTick = (at: { x: number; z: number }): void => {
-    if (observing && !frozen) observing = null
+    // (unpaused some other way — ⏸ on a phone, a jump on the map: the table and its turning go too)
+    if (observing && !frozen) { observing = null; leaveTable() }
     const o = frozen ? null : nearTop(at)
     const what = o?.obscura ? `look in ${o.name}` : `observe from the top of ${o?.name}`
     hud.observe(o ? (touchScreen() ? `🔭 ${what[0].toUpperCase()}${what.slice(1)}` : `🔭 Press O to ${what}`) : null, o ? () => goUp(o) : undefined)
