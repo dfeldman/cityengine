@@ -2419,6 +2419,7 @@ function roofFor(
     // the Presidio's and the parks' Army buildings: red tile, gabled — hipped where the block is too wide for a gable
     // to stay low (owner, 2026-10-02: "white with gabled red tile roofs"); the Main Post's brick barracks the same
     else if (styleId === 'presidio' || styleId === 'presidioBrick') shape = span < 16 ? 'gabled' : 'hipped'
+    else if (styleId === 'capecod') shape = 'gabled'
     else if (span < 7 && tags.building === 'garage') shape = 'skillion'
     else shape = 'flat'
   }
