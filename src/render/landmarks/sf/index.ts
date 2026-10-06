@@ -144,7 +144,7 @@ import { alcatrazCellhouse, alcatrazLighthouse, alcatrazWaterTower } from './alc
 import { graceCathedral } from './grace.ts'
 import { legionOfHonor, legionPyramid, legionFountain } from './legion.ts'
 import { tunnelPortal } from './portals.ts'
-import { presidioChapel, fortMasonChapel, generalsResidence, haskellHouse, brickParkRestaurant, fortMasonBlock, fortMasonGate } from './batch-1006.ts'
+import { presidioChapel, fortMasonChapel, generalsResidence, haskellHouse, brickParkRestaurant, fortMasonBlock, fortMasonGate, windArrows } from './batch-1006.ts'
 import { fremont181 } from './fremont181.ts'
 import { transbayBusRampBridge } from './bus-ramp-bridge.ts'
 import { VENUES } from './districts/venues.ts'
@@ -323,7 +323,7 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   legionPyramid,
   legionFountain,
   tunnelPortal,
-  presidioChapel, fortMasonChapel, generalsResidence, haskellHouse, brickParkRestaurant, fortMasonBlock, fortMasonGate,
+  presidioChapel, fortMasonChapel, generalsResidence, haskellHouse, brickParkRestaurant, fortMasonBlock, fortMasonGate, windArrows,
   fremont181,
   transbayBusRampBridge,
   ...VENUES,

@@ -339,3 +339,31 @@ export function fortMasonGate(out: MeshBuilder, _fit: Fit): void {
     pier(s * 12.9, 0.7, 3.2)
   }
 }
+
+/**
+ * WIND ARROWS (owner, 2026-10-06, photographs: the Exploratorium's piece by the water): a tall white fluted pole and,
+ * up one side of it, a column of slim rods on pivots, each tipped with a small red or dark arrowhead vane. Each vane
+ * turns on its own pivot (render/rotors.ts) at its own slow pace, so the column flickers as wind does, never in step.
+ */
+export function windArrows(out: MeshBuilder, _fit: Fit): void {
+  const POLE: Rgb = [0.93, 0.93, 0.92]
+  const H = 12
+  prism(out, 0, 0, 0, H, 0.16, 12, POLE, surfaceTag('metal'), 0.13)
+  prism(out, 0, 0, H, H + 0.25, 0.13, 12, POLE, surfaceTag('metal'), 0.02)
+  prism(out, 0, 0, -0.05, 0.25, 0.4, 12, [0.75, 0.75, 0.73], surfaceTag('concrete'), 0.36)
+  const N = 22
+  for (let k = 0; k < N; k++) {
+    const y = 3.2 + (k / (N - 1)) * (H - 2.8)
+    // the pivot on the pole, and a vane on its rod: drawn about the pivot, turning about the vertical
+    const vane = new (out.constructor as new () => MeshBuilder)()
+    const L = 0.9
+    box(vane, L / 2, 0.25, 0, L / 2, 0.012, 0.012, [0.35, 0.36, 0.38], 0)
+    const red = k % 5 === 2 || k % 7 === 4 ? [0.3, 0.12, 0.14] as Rgb : [0.88, 0.32, 0.2] as Rgb
+    vane.quad([[L - 0.02, 0.25, 0], [L + 0.32, 0.25, 0], [L + 0.32, 0.25, 0], [L + 0.05, 0.38, 0]], [0, 0, 1], UV, red, 0)
+    vane.quad([[L - 0.02, 0.25, 0], [L + 0.05, 0.12, 0], [L + 0.32, 0.25, 0], [L + 0.32, 0.25, 0]], [0, 0, 1], UV, red, 0)
+    vane.quad([[L + 0.32, 0.25, 0], [L - 0.02, 0.25, 0], [L + 0.05, 0.38, 0], [L + 0.05, 0.38, 0]], [0, 0, -1], UV, red, 0)
+    vane.quad([[L + 0.32, 0.25, 0], [L + 0.05, 0.12, 0], [L - 0.02, 0.25, 0], [L - 0.02, 0.25, 0]], [0, 0, -1], UV, red, 0)
+    box(out, 0.17, y, 0, 0.04, 0.05, 0.04, [0.6, 0.6, 0.6], 0)
+    out.rotors.push({ x: 0.2, y, z: 0, nx: 0, ny: 1, nz: 0, mb: vane, rpm: (k % 2 ? 1 : -1) * (0.8 + ((k * 0.37) % 1) * 1.6) })
+  }
+}
