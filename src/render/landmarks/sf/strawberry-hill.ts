@@ -36,6 +36,8 @@ export function huntingtonFalls(out: MeshBuilder, fit: Fit): void {
    * Local frame: the stream's line along +x, downhill (rotateDeg 0, centre FALLS_CENTRE); z across.
    */
   const g = fit.groundAt ?? ((x: number): number => Math.max(0, (22 - x) * 0.55))
+  // the cliff in the photographed rock (cartoon-material.ts `rock`), tinted by each block's own colour
+  const ROCK_TAG = surfaceTag('rock')
   const WATER: Rgb = [0.42, 0.56, 0.6], FOAM: Rgb = [0.94, 0.96, 0.97], SPRAY: Rgb = [0.8, 0.88, 0.92]
   const WOOD: Rgb = [0.46, 0.3, 0.2], WOOD_DK: Rgb = [0.34, 0.22, 0.15]
   const rockC = (k: number): Rgb => {
@@ -73,7 +75,7 @@ export function huntingtonFalls(out: MeshBuilder, fit: Fit): void {
         // (well into the ground: the model's frame starts at the LOWEST ground under its footprint, the lake shore)
         const y0 = Math.min(g(x, cz) - 2.5 - h(k, 15) * 0.4, y1 - 0.5)
         const r = 1.4 + h(k, 7) * 0.8
-        boxAlong(out, x + (h(k, 8) - 0.5) * 0.6, (y0 + y1) / 2, cz, r, (y1 - y0) / 2, r * (0.7 + h(k, 10) * 0.4), h(k, 13) * Math.PI, rockC(k), 0)
+        boxAlong(out, x + (h(k, 8) - 0.5) * 0.6, (y0 + y1) / 2, cz, r, (y1 - y0) / 2, r * (0.7 + h(k, 10) * 0.4), h(k, 13) * Math.PI, rockC(k), ROCK_TAG)
       }
     }
     // the face: boulders stacked down it, proud by turns, so it is craggy and not a wall of columns
@@ -86,24 +88,25 @@ export function huntingtonFalls(out: MeshBuilder, fit: Fit): void {
         const cx = xf + 0.2 + h(k, 2) * 1.6
         const yy = y + (h(k, 11) - 0.5) * 0.8
         const hh = r * (0.45 + h(k, 3) * 0.35)
-        boxAlong(out, cx, yy + hh, zAt(xf) + z + (h(k, 12) - 0.5) * 0.8, r, hh, r * (0.6 + h(k, 9) * 0.5), h(k, 14) * Math.PI, rockC(k), 0)
+        boxAlong(out, cx, yy + hh, zAt(xf) + z + (h(k, 12) - 0.5) * 0.8, r, hh, r * (0.6 + h(k, 9) * 0.5), h(k, 14) * Math.PI, rockC(k), ROCK_TAG)
       }
     }
     // the slot behind the fall, darker, and the water: a pool along the ledge, then thin white ribbons down the face
     const zc = zAt(xf)
     both([[xf + 0.4, next, zc - 2.8], [xf + 0.4, next, zc + 2.8], [xf + 0.4, top, zc + 2.8], [xf + 0.4, top, zc - 2.8]], [1, 0, 0], [0.2, 0.17, 0.14])
     // the slot's rock sides
-    for (const sz of [-1, 1]) boxAlong(out, xf + 1.3, (next + top) / 2, zc + sz * 2.6, 1.2, (top - next) / 2, 0.4, 0, rockC(k + sz * 31), 0)
+    for (const sz of [-1, 1]) boxAlong(out, xf + 1.3, (next + top) / 2, zc + sz * 2.6, 1.2, (top - next) / 2, 0.4, 0, rockC(k + sz * 31), ROCK_TAG)
     // (one face, up: a pair back to back is two coplanar surfaces to the depth buffer)
     out.quad([[x0 + 2, top + 0.12, zAt(x0 + 2) + 1.2], [xf + 0.9, top + 0.12, zc + 1.4], [xf + 0.9, top + 0.12, zc - 1.4], [x0 + 2, top + 0.12, zAt(x0 + 2) - 1.2]], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], WATER, 0)
+    // the falls themselves, MOVING (render/water.ts; owner, 2026-10-06: "maybe we can reuse the water spray system for
+    // Huntington Falls too"): each a sheet leaving the lip eastward and falling to the ledge below, white where it lands
     const ribbons = ti === 0 ? [[-0.8, 1.0], [0.8, 0.7]] : [[-0.2, 1.6]]
     for (const [dz, w] of ribbons) {
-      for (let s = 0; s < 3; s++) {
-        const zz = zc + dz - w / 2 + (s * w) / 3
-        both([[xf + 1.4, top + 0.1, zz], [xf + 1.4, top + 0.1, zz + w / 3], [xf + 2.0 + s * 0.15, next + 0.2, zz + w / 3], [xf + 2.0 + s * 0.15, next + 0.2, zz]], [1, 0, 0], s === 1 ? SPRAY : FOAM)
-      }
+      out.water.push({ kind: 'sheet', a: [xf + 1.4, top + 0.1, zc + dz - w / 2], b: [xf + 1.4, top + 0.1, zc + dz + w / 2], out: 0.9, drop: top - next - 0.1 })
+      out.water.push({ kind: 'splash', at: [xf + 2.3, next + 0.32, zc + dz], r: 0.9 + w * 0.4 })
     }
-    prism(out, xf + 2.2, zc, next - 0.05, next + 0.35, 1.6, 10, FOAM, 0, 1.2)
+    prism(out, xf + 2.2, zc, next - 0.05, next + 0.3, 1.6, 10, WATER, 0, 1.2)
+    void FOAM; void SPRAY
     // greenery: ferns and shrubs on the ledge and in the cracks of the shoulders
     for (let n = 0; n < 26; n++) {
       k++
@@ -130,7 +133,10 @@ export function huntingtonFalls(out: MeshBuilder, fit: Fit): void {
   }
   // the pool at the foot, by the lake, rimmed with rounded stones
   const xl = tiers[2][1] + 6, zl = zAt(xl), yl = g(xl, zl)
-  prism(out, xl, zl, yl - 0.2, yl + 0.22, 6.5, 16, WATER, surfaceTag('glass'))
+  prism(out, xl, zl, yl - 0.2, yl + 0.05, 6.5, 16, [0.16, 0.22, 0.2], 0)
+  const foot: { x: number; z: number }[] = []
+  for (let i = 0; i < 24; i++) { const a = (i / 24) * Math.PI * 2; foot.push({ x: xl + Math.cos(a) * 6.4, z: zl + Math.sin(a) * 6.4 }) }
+  out.water.push({ kind: 'pool', ring: foot, y: yl + 0.2, colour: [0.2, 0.3, 0.28] })
   for (let i = 0; i < 16; i++) {
     const a = (i / 16) * Math.PI * 1.6 - 0.8 + Math.PI, r = 0.5 + h(i, 8) * 0.6
     prism(out, xl + Math.cos(a) * 6.6, zl + Math.sin(a) * 6.6, yl - 2.5, yl + r * 0.9, r, 6, rockC(i + 900), 0, r * 0.6)
