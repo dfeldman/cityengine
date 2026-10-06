@@ -225,6 +225,72 @@ export const ODDITIES: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   },
 
   /**
+   * way/250216260 — the Lands End Lookout (the visitor centre, 680 Point Lobos Ave, 2012), from the owner's photographs
+   * (2026-10-06: "the Lands End Lookout is pretty neat"). Long and low: a board-formed concrete wall along the front
+   * with a band of sea-green glazed tile lettered LANDS END LOOKOUT beside the Park Service arrowhead; over the wall a
+   * row of clerestory windows in white frames and a thin flat roof standing well out on a dark fascia; behind it the
+   * building is weathered dark timber. At the east end the wall turns into a concrete frame round a display window,
+   * and beyond it blue steel beams carry a canopy over the entrance (a lime-green door), red posts and a rope keeping
+   * people off the planting. (The stone lion by the wall is a statue: the GLB pipeline's.)
+   */
+  landsEndLookout_250216260: (out: MeshBuilder, fit: Fit): void => {
+    const hx = Math.max(fit.hx, 8), hz = Math.max(fit.hz, 4)
+    const CONCRETE: [number, number, number] = [0.71, 0.7, 0.67]
+    const TIMBER: [number, number, number] = [0.33, 0.28, 0.24]
+    const TILE: [number, number, number] = [0.55, 0.69, 0.67]
+    const FASCIA: [number, number, number] = [0.19, 0.2, 0.21]
+    const BLUE: [number, number, number] = [0.14, 0.34, 0.76]
+    const conc = surfaceTag('concrete'), wood = surfaceTag('clapboard')
+    const wallEnd = hx * 0.6          // where the long wall stops and the frame begins
+    // (drawn with the frame and the canopy at +x, then MIRRORED: seen from the front, +x is on the viewer's left, and
+    // the photographs have the name on the left and the frame, the 680 and the blue steel at the right-hand end)
+    const v0 = out.positions.length, i0 = out.indices.length, s0 = out.signs.length
+    // the timber building behind everything
+    box(out, 0, 2.3, -0.3, hx - 0.4, 2.3, hz - 0.6, TIMBER, wood)
+    // THE WALL along the front, and the tile band with the name
+    box(out, (-hx + wallEnd) / 2, 1.85, hz - 0.2, (hx + wallEnd) / 2, 1.85, 0.2, CONCRETE, conc)
+    // (the formwork's joints, faint, in panels)
+    for (let x = -hx + 2.4; x < wallEnd; x += 2.4) box(out, x, 1.85, hz + 0.005, 0.012, 1.85, 0.005, [0.64, 0.63, 0.6], conc)
+    const b0 = -hx * 0.62, b1 = wallEnd - 0.6
+    box(out, (b0 + b1) / 2, 2.45, hz + 0.02, (b1 - b0) / 2, 0.52, 0.02, TILE, surfaceTag('tile'))
+    // the arrowhead, and the name in pale metal letters
+    // (the arrowhead before the name: at −x here, which the mirror below puts on the viewer's left)
+    box(out, b0 + 0.7, 2.45, hz + 0.05, 0.22, 0.34, 0.02, [0.86, 0.85, 0.8], conc)
+    box(out, b0 + 0.7, 2.43, hz + 0.065, 0.15, 0.26, 0.01, [0.42, 0.33, 0.24], conc)
+    sign(out, { type: 'flat', text: 'LANDS END LOOKOUT', h: 0.36, face: 'grotesque', colour: [0.93, 0.94, 0.92], tracking: 0.32, lit: 'none', w: (b1 - b0) - 2.2 },
+      { x: (b0 + 1.4 + b1) / 2, y: 2.45, z: hz + 0.06, heading: 0 })
+    // the house number high on the wall's end
+    sign(out, { type: 'flat', text: '680', h: 0.28, face: 'grotesque', colour: [0.85, 0.85, 0.82], lit: 'none' }, { x: wallEnd - 0.7, y: 3.35, z: hz + 0.02, heading: 0 })
+    // THE FRAME at the wall's end, round a display window, and the clerestory over the wall
+    box(out, wallEnd + 0.25, 1.85, hz - 0.2, 0.25, 1.85, 0.2, CONCRETE, conc)
+    box(out, hx - 0.25, 1.85, hz - 0.2, 0.25, 1.85, 0.2, CONCRETE, conc)
+    box(out, (wallEnd + hx) / 2, 3.45, hz - 0.2, (hx - wallEnd) / 2, 0.25, 0.2, CONCRETE, conc)
+    box(out, (wallEnd + hx) / 2, 0.3, hz - 0.2, (hx - wallEnd) / 2, 0.3, 0.2, CONCRETE, conc)
+    box(out, (wallEnd + 0.5 + hx * 0.8) / 2, 1.9, hz - 0.3, (hx * 0.8 - wallEnd - 0.5) / 2, 1.3, 0.02, [0.2, 0.3, 0.3], surfaceTag('glass'))
+    for (let x = -hx + 1.2; x < hx - 1; x += 2.1) {
+      box(out, x, 4.15, hz - 0.62, 0.95, 0.42, 0.04, [0.32, 0.42, 0.48], surfaceTag('glass'))
+      box(out, x, 4.15, hz - 0.6, 1.0, 0.47, 0.03, [0.93, 0.93, 0.9], surfaceTag('metal'))
+    }
+    // the thin flat roof, well out over the walls, on its dark fascia
+    box(out, 0, 4.82, -0.1, hx + 1.0, 0.1, hz + 0.9, FASCIA, surfaceTag('metal'))
+    box(out, 0, 4.7, -0.1, hx + 0.95, 0.04, hz + 0.85, [0.55, 0.5, 0.45], wood)
+    // the BLUE STEEL over the entrance at the east end, and the lime-green door under it
+    for (const x of [hx - 0.35, hx - 3.2]) box(out, x, 5.15, 0.8, 0.14, 0.2, hz + 1.6, BLUE, surfaceTag('metal'))
+    box(out, hx - 1.8, 5.15, hz + 2.3, 1.9, 0.18, 0.14, BLUE, surfaceTag('metal'))
+    box(out, hx - 1.8, 4.6, hz + 2.3, 1.9, 0.08, 0.1, BLUE, surfaceTag('metal'))
+    box(out, hx * 0.86, 1.15, hz - 0.15, 0.6, 1.15, 0.03, [0.62, 0.7, 0.2], wood)
+    // red posts and a rope along the planting in front of the timber end
+    for (let k = 0; k < 4; k++) {
+      const x = wallEnd + 0.8 + k * ((hx - wallEnd) / 3.4)
+      box(out, x, 0.55, hz + 1.6, 0.06, 0.55, 0.06, [0.72, 0.28, 0.18], wood)
+    }
+    box(out, (wallEnd + 0.8 + hx) / 2, 0.85, hz + 1.6, (hx - wallEnd - 0.8) / 2, 0.012, 0.012, [0.85, 0.85, 0.82], 0)
+    for (let i = v0; i < out.positions.length; i += 3) { out.positions[i] = -out.positions[i]; out.normals[i] = -out.normals[i] }
+    for (let i = i0; i < out.indices.length; i += 3) { const t = out.indices[i + 1]; out.indices[i + 1] = out.indices[i + 2]; out.indices[i + 2] = t }
+    for (let i = s0; i < out.signs.length; i++) out.signs[i].x = -out.signs[i].x
+  },
+
+  /**
    * way/168942988 — Cliff House, 1090 Point Lobos Ave. The current (third) building, 1909, Reid Brothers,
    * Neo-Classical: a long low cream building stepping down the cliff edge toward the ocean rather than
    * standing as a single block — low massing, not height, is the point. A plain punched wall over a
