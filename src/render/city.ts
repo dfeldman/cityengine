@@ -2421,6 +2421,7 @@ export class City {
      */
     const brick = this.region.brickStreets
     // the painted transit busways of this tile, for `buswayBeside`
+    const zebras: { x: number; z: number; a: { x: number; z: number }; b: { x: number; z: number } }[] = []
     const busways = groundEdges.filter((o) => o.kind === 'busway' && o.paint && o.paint & 1).map((o) => ({ name: o.name, pts: unpackPoints(o.points) }))
     const buswayBeside = (e: PackedEdge, pts: { x: number; z: number }[]): boolean => {
       if (busways.length === 0) return false
@@ -2508,6 +2509,33 @@ export class City {
           const road = this.widestNear(pts)
           const inner = onCarriageway(pts, road)
           // Paris's passages piétons: the same bars, wider apart, across a broader crossing
+          /*
+           * ONE zebra per crossing (owner, 2026-10-05: "sometimes there are two crosswalks on top of each other"). A crossing
+           * split at the road's centre node, or mapped twice (a footway and a cycle crossing side by side), gave each piece
+           * its own kerb-to-kerb zebra, a metre or two apart. A second one whose middle is within 3.5 m of one already
+           * painted in this tile is the same crossing.
+           */
+          if (inner.length >= 2) {
+            const cm = { x: (inner[0].x + inner[inner.length - 1].x) / 2, z: (inner[0].z + inner[inner.length - 1].z) / 2 }
+            // (and drawn by the tile its middle is in: a crossing split at the centre line has a piece in each of two
+            //  tiles, and each painted the whole zebra)
+            if (key(Math.floor(cm.x / TILE), Math.floor(cm.z / TILE)) !== k) continue
+            const a0 = inner[0], a1 = inner[inner.length - 1]
+            const segD = (p: { x: number; z: number }, s0: { x: number; z: number }, s1: { x: number; z: number }): number => {
+              const dx = s1.x - s0.x, dz = s1.z - s0.z
+              const t = Math.max(0, Math.min(1, ((p.x - s0.x) * dx + (p.z - s0.z) * dz) / (dx * dx + dz * dz || 1e-9)))
+              return Math.hypot(s0.x + dx * t - p.x, s0.z + dz * t - p.z)
+            }
+            // …or one lying across it at a skew: within 2 m of one already painted and within 45° of parallel
+            const same = (q: { x: number; z: number; a: { x: number; z: number }; b: { x: number; z: number } }): boolean => {
+              if (Math.hypot(q.x - cm.x, q.z - cm.z) < 3.5) return true
+              const ux = a1.x - a0.x, uz = a1.z - a0.z, vx = q.b.x - q.a.x, vz = q.b.z - q.a.z
+              const cos = Math.abs(ux * vx + uz * vz) / ((Math.hypot(ux, uz) * Math.hypot(vx, vz)) || 1)
+              return cos > 0.7 && Math.min(segD(a0, q.a, q.b), segD(a1, q.a, q.b), segD(cm, q.a, q.b), segD(q, a0, a1)) < 2
+            }
+            if (zebras.some(same)) continue
+            zebras.push({ ...cm, a: a0, b: a1 })
+          }
           if (inner.length >= 2) {
             // the Castro's rainbow crossings: six solid bands along the crossing, not white bars (Region `rainbowCrossings`)
             const mid = inner[Math.floor(inner.length / 2)]
