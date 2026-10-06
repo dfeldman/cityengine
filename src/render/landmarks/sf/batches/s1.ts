@@ -24,8 +24,6 @@ const STUCCO_CREAM: Rgb = [0.88, 0.86, 0.82]
 const TILE_RED: Rgb = [0.55, 0.28, 0.2]
 const CONCRETE_GREY: Rgb = [0.62, 0.61, 0.59]
 const CONCRETE_DARK: Rgb = [0.48, 0.47, 0.45]
-const WOOD_NATURAL: Rgb = [0.52, 0.42, 0.32]
-const WOOD_DARK: Rgb = [0.3, 0.24, 0.18]
 const METAL_DARK: Rgb = [0.24, 0.25, 0.27]
 const METAL_RAILING: Rgb = [0.35, 0.36, 0.38]
 
@@ -165,39 +163,6 @@ export const s1_sutro_baths_32776564 = (out: MeshBuilder, fit: Fit): void => {
   box(out, bx0 + 6, 2.2, L * 0.98 - 3.05, 2.2, 2.4, 0.1, [0.06, 0.06, 0.07], 0)
 }
 
-/**
- * Pioneer Log Cabin (way/120479798) — Golden Gate Park. Simple log cabin on actual footprint,
- * built from fit.ring.
- */
-export const s1_pioneer_log_cabin_120479798 = (out: MeshBuilder, fit: Fit): void => {
-  const ring = towerRing(fit)
-  const wood = surfaceTag('clapboard')
-
-  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
-  for (const p of ring) {
-    x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x)
-    z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z)
-  }
-  const cx = (x0 + x1) / 2
-  const cz = (z0 + z1) / 2
-  const hx = (x1 - x0) / 2
-  const hz = (z1 - z0) / 2
-  const eaves = 3
-
-  // Log walls on the real footprint
-  faceBand(out, ring, 0, eaves, { kind: 'blank', wall: WOOD_NATURAL, material: 'clapboard' })
-
-  // Gable roof pitched over the footprint
-  for (let i = 0; i < Math.round(hx * 2); i++) {
-    const x = -hx + (i + 0.5) * (hx * 2 / Math.round(hx * 2))
-    box(out, cx + x, eaves + 0.08, cz, (hx * 2 / Math.round(hx * 2)) / 2, 0.08, hz * 1.1, WOOD_DARK, wood)
-  }
-
-  // Simple door opening on front
-  const doorEdge = 0
-  const de = edgeAt(ring, doorEdge)
-  box(out, de.mid.x + de.nx * hz * 0.3, 1.2, de.mid.z + de.nz * hz * 0.3, 1, 1.2, 0.15, [0.1, 0.08, 0.06], 0)
-}
 
 /**
  * Fort Mason Shed A (way/25372350) — Long gabled shed on piers, built on actual footprint from fit.ring.
@@ -447,7 +412,6 @@ export const s1_pier_14_23605173 = (out: MeshBuilder, fit: Fit): void => {
 export const S1 = {
   s1_presidio_theatre_32650566,
   s1_sutro_baths_32776564,
-  s1_pioneer_log_cabin_120479798,
   s1_fort_mason_shed_a_25372350,
   s1_fort_mason_shed_b_25372352,
   s1_fort_mason_shed_d_25372355,

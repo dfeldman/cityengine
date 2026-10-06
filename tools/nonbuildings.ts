@@ -180,7 +180,7 @@ export const BUILDINGS_OK: string[] = [
   // matching a word inside a brand name, not a public plaza.
   'hotelRiuPlazaFishermansWharf',
   // in PARKS, and buildings: glasshouses, a tea house, a clubhouse, a restaurant
-  'conservatoryOfFlowers', 'californiaAcademyOfSciences', 'teaGardenTeaHouse', 'teaGardenGiftShop', 'sparkTent', 'sparkUmbrella', 'sparkTruck', 'beachChalet',
+  'conservatoryGlasshouse', 'californiaAcademyOfSciences', 'teaGardenTeaHouse', 'teaGardenGiftShop', 'sparkTent', 'sparkUmbrella', 'sparkTruck', 'beachChalet',
   'presidioOfficersClub',
   // a 1924 gymnasium named "Pavilion" (kezar.ts)
   'kezarPavilion',

@@ -9,7 +9,7 @@ import { box, prism, type Rgb } from '../../../models.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
 import type { Fit } from '../../fit.ts'
 import { tower, towerRing, insetRing } from '../../tower.ts'
-import { boxAlong, edgeAt, edgeFacing, arcade, cupola, roundRing } from '../../parts.ts'
+import { boxAlong, edgeAt, edgeFacing, arcade, roundRing } from '../../parts.ts'
 import { beam } from '../golden-gate.ts'
 import { fromRecipe } from '../recipes.ts'
 import { calAcademy } from '../cal-academy.ts'
@@ -134,7 +134,6 @@ function sailAssembly(out: MeshBuilder, hub: [number, number, number], armLen: n
 const WHITE: Rgb = [0.93, 0.92, 0.88]
 /** the Conservatory's panes are WHITEWASHED (the shading paint on a Victorian glasshouse): milky white, not clear glass
  *  — drawn as glass they took the sky and the whole house came out blue-grey (views audit, 2026-10-04) */
-const MILKY: Rgb = [0.9, 0.92, 0.9]
 const SAIL_WOOD: Rgb = [0.58, 0.56, 0.51]
 const CREAM: Rgb = [0.87, 0.83, 0.73]
 /** pale cream-grey smock-mill stucco (Dutch/Murphy Windmill) — deliberately lighter and greyer than `CREAM`
@@ -144,25 +143,6 @@ const MILL_CAP: Rgb = [0.15, 0.14, 0.13]
 const CHALET_ROOF: Rgb = [0.42, 0.22, 0.18]
 
 export const PARKS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  /**
-   * Conservatory of Flowers (1878, rebuilt after fire): a white Victorian glasshouse — a long barrel-vaulted
-   * greenhouse wing each side of a domed central pavilion. Glass and white-painted wood.
-   */
-  conservatoryOfFlowers: (out: MeshBuilder, fit: Fit): void => {
-    const ring = towerRing(fit)
-    // the long glasshouse body: a low white timber base and a shallow-hipped glass roof reads as the vaulted wings
-    tower(out, fit, {
-      height: 11,
-      base: { height: 2.2, face: { kind: 'blank', wall: WHITE, material: 'clapboard' } },
-      tiers: [{ to: 1, face: { kind: 'curtain', wall: WHITE, glass: MILKY, pitch: 2.4, floor: 3, solid: 0.22, material: 'metal' } }],
-      roof: MILKY,
-      crown: { kind: 'hip', height: 3.2, inset: 3, colour: MILKY, material: 'stucco' },
-    })
-    // the domed central pavilion, standing taller in the middle of the ridge
-    const c = ring.reduce((a, p) => ({ x: a.x + p.x / ring.length, z: a.z + p.z / ring.length }), { x: 0, z: 0 })
-    cupola(out, c, 11, 11, { drum: 4, dome: 9, colour: WHITE, domeColour: MILKY, material: 'clapboard', domeMaterial: 'stucco', lantern: true })
-  },
-
   /** California Academy of Sciences: sf/cal-academy.ts (rebuilt 2026-10-04, the seven hills, portholes, canopy) */
   californiaAcademyOfSciences: calAcademy,
 

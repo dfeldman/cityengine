@@ -11,7 +11,6 @@ import { fromRecipe } from '../recipes.ts'
 
 export const H2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** Anglers Lodge: civic, small historic lodge. No photo; 1900s–1920s terracotta era guess. */
-  anglersLodge: fromRecipe('edwardian-terracotta', {}),
   /** Argonaut Hotel: civic, historic hotel. No photo; 1900s–1920s terracotta era guess. */
   argonautHotel: fromRecipe('edwardian-terracotta', {}),
   /*

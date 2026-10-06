@@ -126,6 +126,7 @@ import { THIRTY_OTIS } from './thirty-otis.ts'
 import { TIBURON_DEPOT } from './tiburon-depot.ts'
 import { WEILL } from './weill.ts'
 import { FEDERAL_BUILDING } from './federal-building.ts'
+import { GGP_BUILDINGS } from './ggp-buildings.ts'
 import { SHEDS } from './sheds.ts'
 import { MURAL_ALLEYS } from './mural-alleys.ts'
 import { POINT_BONITA } from './point-bonita.ts'
@@ -296,6 +297,7 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   ...TIBURON_DEPOT,
   ...WEILL,
   ...FEDERAL_BUILDING,
+  ...GGP_BUILDINGS,
   ...SHEDS,
   ...MURAL_ALLEYS,
   ...POINT_BONITA,
