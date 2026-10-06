@@ -23,6 +23,7 @@ import { box } from './render/models.ts'
 import { PROCEDURAL } from './render/landmarks/procedural.ts'
 import { SF_VEHICLES } from './render/sf/trains.ts'
 import { bartEntrance } from './render/sf/furniture.ts'
+import { bench } from './render/models.ts'
 import { court } from './render/sports.ts'
 import { fitCourt, type CourtSport } from './city/sports.ts'
 import { cartoonMaterial, updateCartoonEye } from './render/cartoon-material.ts'
@@ -43,7 +44,7 @@ export async function modelShowcase(canvas: HTMLCanvasElement, name: string, siz
   // a landmark builder, or a vehicle (the rolling stock's models, which take no fit)
   const vehicle = (SF_VEHICLES as Record<string, ((o: MeshBuilder) => void) | undefined>)[name]
   // (and street furniture, drawn in the game's own static material: `?model=bartEntrance`)
-  const FURNITURE: Record<string, (o: MeshBuilder) => void> = { bartEntrance }
+  const FURNITURE: Record<string, (o: MeshBuilder) => void> = { bartEntrance, bench }
   /*
    * THE SPORTS COURTS (BUGS.md #214). Each is built on a ROTATED, slightly off-square ring — the polygon a
    * mapper actually draws — rather than an axis-aligned rectangle, because an axis-aligned shot would prove
