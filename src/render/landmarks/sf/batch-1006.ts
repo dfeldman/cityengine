@@ -833,3 +833,36 @@ export function detentionBarracks(out: MeshBuilder, fit: Fit): void {
   box(out, L + 0.9, 3.55, W * 0.3, 0.9, 0.06, 1.2, [0.9, 0.9, 0.88], 0)
   standHigh(out, fit, v0, L, W, [0.72, 0.71, 0.68])
 }
+
+/**
+ * A RESTAURANT ON A PIER (Sausalito's waterfront; owner, 2026-10-06: "there are a number of small piers on the
+ * waterfront, which seem to all be restaurants now"): a timber deck on piles over the water, and on it a low shingled
+ * house with a wall of windows to the bay, a shallow gable, a deck railing round its seaward end, and the name on a
+ * board over the door (the name from the manifest's `label` cannot reach a builder, so each is its own builder).
+ * Frame: the water at y = 0 (`deckAbove: 0`), +z toward the bay.
+ */
+function pierRestaurant(name: string, wall: Rgb) {
+  return (out: MeshBuilder, fit: Fit): void => {
+    const hx = Math.max(8, Math.min(fit.hx, 18)), hz = Math.max(6, Math.min(fit.hz, 14))
+    const D = 2.2
+    box(out, 0, D - 0.15, 0, hx, 0.15, hz, [0.5, 0.42, 0.34], surfaceTag('clapboard'))
+    for (let x = -hx + 1; x <= hx; x += 3) for (let z = -hz + 1; z <= hz; z += 3) prism(out, x, z, -1.5, D - 0.3, 0.18, 6, [0.3, 0.26, 0.22], 0)
+    const bx = hx * 0.75, bz = hz * 0.6
+    box(out, 0, D + 1.9, -hz * 0.25, bx, 1.9, bz, wall, surfaceTag('clapboard'))
+    ridgeX(out, -bx, bx, -hz * 0.25 - bz, -hz * 0.25 + bz, D + 3.8, 1.4, [0.38, 0.38, 0.4], surfaceTag('tile'), false, 0.5)
+    // the wall of windows to the bay
+    box(out, 0, D + 1.8, -hz * 0.25 + bz + 0.03, bx - 0.4, 1.3, 0.03, GLASS, surfaceTag('glass'))
+    for (let x = -bx + 0.8; x < bx; x += 1.2) box(out, x, D + 1.8, -hz * 0.25 + bz + 0.06, 0.04, 1.3, 0.03, WHITE, 0)
+    // the railing round the deck's bay end
+    for (let x = -hx; x <= hx; x += 0.6) box(out, x, D + 0.5, hz - 0.1, 0.03, 0.5, 0.03, WHITE, 0)
+    box(out, 0, D + 1.0, hz - 0.1, hx, 0.04, 0.05, WHITE, 0)
+    // the name, over the door on the land side
+    box(out, 0, D + 3.2, -hz * 0.25 - bz - 0.06, Math.min(bx - 0.5, name.length * 0.22), 0.35, 0.04, [0.12, 0.2, 0.3], 0)
+    sign(out, { type: 'flat', text: name, h: 0.32, face: 'roman', colour: [0.95, 0.93, 0.86], lit: 'front', w: Math.min(2 * bx - 1.2, name.length * 0.4) },
+      { x: 0, y: D + 3.2, z: -hz * 0.25 - bz - 0.12, heading: Math.PI })
+  }
+}
+
+export const PIER_RESTAURANTS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+  pierBarrelHouse: pierRestaurant('BARREL HOUSE', [0.58, 0.46, 0.36]),
+}

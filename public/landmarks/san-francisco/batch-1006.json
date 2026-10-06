@@ -120,5 +120,6 @@
   {"osm": ["way/7656235"], "name": "Embarcadero Center podium core, Drumm & Clay", "restyle": "bauhaus", "wall": "#e4dfd3", "noShops": true, "roof": "flat", "note": "owner, 2026-10-06 ('this building at embarcadero plaza looks bad'): it was a grey Chicago-school block with a penthouse box among the Embarcadero Center's towers; the Center's podium is pale board-formed concrete like its towers."},
   {"osm": ["way/104694642"], "name": "Angel Island Immigration Station: Detention Barracks", "procedural": "detentionBarracks", "front": "street", "height": 10, "note": "batch-1006.ts (owner, 2026-10-06)."},
   {"osm": ["way/288802544"], "name": "Point Blunt Light", "procedural": "angelLight", "front": "street", "height": 7, "note": "batch-1006.ts (owner, 2026-10-06)."},
-  {"osm": ["way/1051744772"], "name": "Point Stuart Light", "procedural": "angelLight", "front": "street", "height": 7, "note": "batch-1006.ts (owner, 2026-10-06)."}
+  {"osm": ["way/1051744772"], "name": "Point Stuart Light", "procedural": "angelLight", "front": "street", "height": 7, "note": "batch-1006.ts (owner, 2026-10-06)."},
+  {"name": "Barrel House (pier)", "procedural": "pierBarrelHouse", "lat": 37.85515, "lon": -122.47855, "size": [22, 12], "front": 270, "deckAbove": 0, "height": 7, "sign": false, "note": "batch-1006.ts pierRestaurant, over the water behind 660 Bridgeway; position approximate."}
 ]
