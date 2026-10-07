@@ -253,15 +253,6 @@
  },
  {
   "osm": [
-   "way/35176927"
-  ],
-  "name": "742-748 Market Street",
-  "restyle": "chicago",
-  "note": "Pre-war commercial block.",
-  "levels": 5
- },
- {
-  "osm": [
    "way/149335982"
   ],
   "name": "716 Market Street",
@@ -277,15 +268,6 @@
   "restyle": "bauhaus",
   "note": "Charles Moore's 1964 annex to 1 Kearny: plain modern slab.",
   "levels": 12
- },
- {
-  "osm": [
-   "relation/4669301"
-  ],
-  "name": "800-830 Market Street",
-  "restyle": "chicago",
-  "note": "Nine-storey pre-war retail block opposite the Flood Building.",
-  "levels": 9
  },
  {
   "osm": [
@@ -322,15 +304,6 @@
   "restyle": "brick",
   "note": "Two-storey retail front.",
   "levels": 2
- },
- {
-  "osm": [
-   "way/1259112449"
-  ],
-  "name": "Garfield Building",
-  "restyle": "chicago",
-  "note": "Seven-storey pre-war commercial block.",
-  "levels": 7
  },
  {
   "osm": [

@@ -521,6 +521,57 @@ export function geary940203045(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+// ---------------------------------------------------------------- 800-830 Market Street (1910s; relation/4669301)
+/**
+ * Nine storeys opposite the Flood Building (Mapillary a0, a1): a dark granite shopfront under a green-canopied awning,
+ * then a grey-buff Chicago-style shaft of punched windows in tall ribbons, a cornice at the top of the base, and a
+ * copper-green parapet on the roof.
+ */
+function market800(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.6, 0.58, 0.55]
+  const DARK: Rgb = [0.2, 0.2, 0.21]
+  tower(out, fit, {
+    height: 32,
+    base: { height: 4.6, face: { kind: 'punched', wall: DARK, glass: [0.22, 0.26, 0.3], floor: 4.6, pitch: 3.2, solid: 0.5, material: 'granite' }, canopy: { depth: 2.2, colour: [0.22, 0.3, 0.27] } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: STONE, glass: [0.2, 0.25, 0.3], floor: 3.6, pitch: 3, solid: 0.42, material: 'ashlar' } }],
+    cornices: [{ at: 4.6, depth: 0.5, colour: DARK }],
+    crown: { kind: 'parapet', height: 1.6, colour: [0.36, 0.46, 0.42], material: 'copper' },
+  })
+}
+
+// ---------------------------------------------------------------- 742-748 Market Street (1900s; way/35176927)
+/**
+ * Five storeys of cream stone (Mapillary b0, b1): a black-awninged shopfront at street level, then tall two-storey
+ * windows divided by pale muntins under a plain cornice and parapet.
+ */
+function market742(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.86, 0.83, 0.75]
+  const SHOP: Rgb = [0.16, 0.16, 0.17]
+  tower(out, fit, {
+    height: 21,
+    base: { height: 4.2, face: { kind: 'punched', wall: CREAM, glass: [0.14, 0.16, 0.18], floor: 4.2, pitch: 3.6, solid: 0.3, material: 'ashlar' }, canopy: { depth: 2.4, colour: SHOP } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.32, 0.4, 0.46], floor: 3.6, pitch: 3.2, solid: 0.38, material: 'ashlar' } }],
+    cornices: [{ at: 4.2, depth: 0.45, colour: CREAM }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'ashlar' },
+  })
+}
+
+// ---------------------------------------------------------------- Garfield Building (way/1259112449)
+/**
+ * Seven storeys of buff brick (Mapillary c0, c1): a dark granite ground floor, a tan brick shaft with a cornice band
+ * under each upper floor group, and a plain parapet on top.
+ */
+function garfieldBuilding(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.74, 0.62, 0.48]
+  tower(out, fit, {
+    height: 25,
+    base: { height: 4.4, face: { kind: 'punched', wall: [0.18, 0.18, 0.19], glass: [0.24, 0.28, 0.3], floor: 4.4, pitch: 3.4, solid: 0.5, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: [0.26, 0.3, 0.34], floor: 3.5, pitch: 2.9, solid: 0.4, material: 'brick' } }],
+    cornices: [{ at: 4.4, depth: 0.4, colour: TAN }, { at: 0.66, depth: 0.3, colour: TAN }],
+    crown: { kind: 'parapet', height: 1.4, colour: TAN, material: 'brick' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -550,4 +601,7 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   market720,
   kearny1,
   geary940203045,
+  market800,
+  market742,
+  garfieldBuilding,
 }

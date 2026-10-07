@@ -244,5 +244,29 @@
   "height": 28,
   "sign": false,
   "note": "market-fidi.ts: unnamed block between Geary and Market, dark-glass shopfronts under a cream stone upper block and cornice; Mapillary frame c0."
+ },
+ {
+  "osm": ["relation/4669301"],
+  "name": "800-830 Market Street",
+  "procedural": "market800",
+  "height": 32,
+  "sign": false,
+  "note": "market-fidi.ts: 800-830 Market, nine storeys of grey Chicago-style stone over a dark granite shopfront and a copper-green parapet; Mapillary frames a0 and a1 (the Flood Building behind)."
+ },
+ {
+  "osm": ["way/35176927"],
+  "name": "742-748 Market Street",
+  "procedural": "market742",
+  "height": 21,
+  "sign": false,
+  "note": "market-fidi.ts: 742-748 Market, five storeys of cream stone with a black-awninged shopfront and tall muntined upper windows; Mapillary frames b0 and b1."
+ },
+ {
+  "osm": ["way/1259112449"],
+  "name": "Garfield Building",
+  "procedural": "garfieldBuilding",
+  "height": 25,
+  "sign": false,
+  "note": "market-fidi.ts: Garfield Building, seven storeys of buff brick over a dark granite ground floor with cornice bands; Mapillary frames c0 and c1 (identity of c0 uncertain: its signage reads 944-8)."
  }
 ]
