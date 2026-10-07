@@ -607,6 +607,46 @@ export function yullyBuilding(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** 1017–1019 MARKET: a seven-storey Edwardian hotel block in red brick over a shopfront, a stone band at the base and a stone cornice under the parapet (Mapillary pB0, the brick block with fire escapes). */
+export function market1017(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.6, 0.36, 0.26]
+  const STONE: Rgb = [0.84, 0.8, 0.7]
+  tower(out, fit, {
+    height: 27,
+    base: { height: 4.5, face: { kind: 'curtain', wall: [0.18, 0.18, 0.18], glass: [0.16, 0.18, 0.2], pitch: 3, floor: 4.5, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: [0.2, 0.23, 0.27], floor: 3.6, pitch: 3, solid: 0.6, material: 'brick' } }],
+    cornices: [{ at: 4.5, depth: 0.35, colour: STONE }, { at: 24.3, depth: 0.5, colour: STONE }],
+    crown: { kind: 'parapet', height: 1.2, colour: STONE, material: 'ashlar' },
+  })
+}
+
+/** 1075 MARKET: an eight-storey grey panel-clad loft (Mapillary pB1): a grey shaft over a shopfront, its top two floors set back behind a parapet. */
+export function market1075(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.55, 0.57, 0.58]
+  const GLASS: Rgb = [0.2, 0.25, 0.3]
+  tower(out, fit, {
+    height: 29,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.2, 0.2, 0.2], glass: [0.16, 0.18, 0.2], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [
+      { to: 0.78, face: { kind: 'bands', wall: GREY, glass: GLASS, floor: 3.6, solid: 0.5, material: 'metal' } },
+      { to: 1, inset: 2.5, face: { kind: 'bands', wall: GREY, glass: GLASS, floor: 3.6, solid: 0.5, material: 'metal' } },
+    ],
+    crown: { kind: 'parapet', height: 1, colour: GREY, material: 'metal' },
+  })
+}
+
+/** ISLAMIC SOCIETY OF SAN FRANCISCO, 20 Jones at Market: a three-storey cream-tan block on a shopfront base, dark window openings between tan piers, a deep cornice and parapet (Mapillary pC1). No dome, no minaret, no signs. */
+export function islamicSociety20Jones(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.8, 0.76, 0.66]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.2, 0.2, 0.2], glass: [0.16, 0.18, 0.2], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: [0.2, 0.22, 0.25], floor: 4.5, pitch: 3.6, solid: 0.6, material: 'stucco' } }],
+    cornices: [{ at: 12, depth: 0.6, colour: TAN }],
+    crown: { kind: 'parapet', height: 1, colour: TAN, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -642,4 +682,7 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   donnellyHotel,
   wellsFargo1256Market,
   yullyBuilding,
+  market1017,
+  market1075,
+  islamicSociety20Jones,
 }

@@ -298,5 +298,35 @@
   "height": 15,
   "sign": false,
   "note": "market-fidi.ts: Yully Building, 1212 Market, a small four-storey loft in grey-brown brick with piers between the bays and a dark ground floor; Mapillary frame c0 (c1 shows the UC Law building instead)."
+ },
+ {
+  "osm": [
+   "way/136100940"
+  ],
+  "name": "1017 Market Street",
+  "procedural": "market1017",
+  "height": 27,
+  "sign": false,
+  "note": "market-fidi.ts: 1017-1019 Market, a seven-storey Edwardian hotel block in red brick with a stone band and cornice, shopfront base; Mapillary frame pB0 (the brick block with fire escapes); frame pA0/pA1 did not show it clearly."
+ },
+ {
+  "osm": [
+   "way/1059927483"
+  ],
+  "name": "1075 Market Street",
+  "procedural": "market1075",
+  "height": 29,
+  "sign": false,
+  "note": "market-fidi.ts: 1075 Market, an eight-storey grey panel-clad loft with the top two floors set back, shopfront base; Mapillary frame pB1."
+ },
+ {
+  "osm": [
+   "way/32864985"
+  ],
+  "name": "Islamic Society of San Francisco",
+  "procedural": "islamicSociety20Jones",
+  "height": 13,
+  "sign": false,
+  "note": "market-fidi.ts: Islamic Society of San Francisco, 20 Jones at Market, a three-storey cream-tan block with a deep cornice and a shopfront base, no dome or signs; Mapillary frame pC1."
  }
 ]
