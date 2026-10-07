@@ -192,6 +192,7 @@ const KNOWN: Record<string, string[]> = {
     'duplicate | figureOnPedestal',
     // the Muni Metro tunnel portals (sf/portals.ts, 2026-10-06): one generic builder placed at each standalone point
     'duplicate | tunnelPortal',
+    'duplicate | rampPortal',
     // Angel Island's two fog-signal lights (batch-1006.ts): one builder on two OSM outlines
     'duplicate | angelLight',
     // the Taj Mahal houseboat's float meets the marina's water plane (batch-1006.ts): a float on the water is coplanar by design

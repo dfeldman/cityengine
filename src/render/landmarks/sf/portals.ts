@@ -44,3 +44,32 @@ export function tunnelPortal(out: MeshBuilder, fit: Fit): void {
   // the hill over the tunnel's first metres, so the headwall is not a free-standing screen
   box(out, 0, H + 1.7, -D / 2 - T / 2, W + 2.0, 1.7, D / 2, [0.33, 0.4, 0.26], 0)
 }
+
+/**
+ * A portal in a street's MEDIAN (the Embarcadero's, the Central Subway's on 4th Street): no hill to bore into, so the
+ * track goes down a ramp between two low concrete parapets and under a low headwall. The free-standing hill portal
+ * stood there as a 30 m black box with a lawn on top, along the middle of the Embarcadero (owner, 2026-10-06: "keep
+ * working on embarcadero"). The ground cannot be cut, so the ramp is drawn as its dark floor stepping down between
+ * the walls, and the mouth as a dark opening under a headwall a metre high. Local frame as `tunnelPortal`'s: the
+ * surface track comes in from +z, the tunnel runs to −z.
+ */
+export function rampPortal(out: MeshBuilder, fit: Fit): void {
+  const conc = surfaceTag('concrete')
+  const W = Math.max(4.6, fit.hx * 0.6)   // half the trench's width
+  const L = 34                            // the ramp's length, from the mouth (z = 0) back up to grade (z = L)
+  // the parapets either side, full length, and their coping
+  for (const s of [-1, 1]) {
+    box(out, s * (W + 0.2), 0.55, L / 2, 0.2, 0.55, L / 2, CONCRETE, conc)
+    box(out, s * (W + 0.2), 1.13, L / 2, 0.26, 0.03, L / 2, COPING, conc)
+  }
+  // the ramp's floor: dark bands stepping down toward the mouth (the trench's depth, read as shade)
+  for (let k = 0; k < 8; k++) {
+    const t = k / 8, z0 = L * t, z1 = L * (t + 1 / 8)
+    const shade = 0.06 + 0.3 * t
+    box(out, 0, 0.03, (z0 + z1) / 2, W, 0.03, (z1 - z0) / 2, [shade * 0.9, shade * 0.9, shade * 0.85], 0)
+  }
+  // the headwall over the mouth: a low concrete beam with the dark opening under it, and the end walls
+  box(out, 0, 0.75, -0.6, W + 0.4, 0.75, 0.6, CONCRETE, conc)
+  box(out, 0, 1.53, -0.6, W + 0.5, 0.03, 0.7, COPING, conc)
+  box(out, 0, 0.6, 0.02, W - 0.2, 0.6, 0.02, DARK, 0)
+}

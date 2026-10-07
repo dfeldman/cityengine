@@ -143,7 +143,7 @@ import { deYoungMuseum } from './de-young.ts'
 import { alcatrazCellhouse, alcatrazLighthouse, alcatrazWaterTower } from './alcatraz.ts'
 import { graceCathedral } from './grace.ts'
 import { legionOfHonor, legionPyramid, legionFountain } from './legion.ts'
-import { tunnelPortal } from './portals.ts'
+import { tunnelPortal, rampPortal } from './portals.ts'
 import { presidioChapel, fortMasonChapel, generalsResidence, haskellHouse, brickParkRestaurant, fortMasonBlock, fortMasonGate, windArrows, spreckelsMansion, spreckelsGreenhouse, beachChalet as beachChalet1006, bayModel, tajMahalHouseboat, harneyScience, kalmanovitzHall, kendrickHall, usfGym, alcatrazSmokestack, steppedCondo, BEACH_TOWNHOUSES, angelLight, detentionBarracks, PIER_RESTAURANTS, oneFrontPavilion } from './batch-1006.ts'
 import { fremont181 } from './fremont181.ts'
 import { EMBARCADERO_PLAZA } from './embarcadero-plaza.ts'
@@ -327,7 +327,7 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   legionOfHonor,
   legionPyramid,
   legionFountain,
-  tunnelPortal,
+  tunnelPortal, rampPortal,
   presidioChapel, fortMasonChapel, generalsResidence, haskellHouse, brickParkRestaurant, fortMasonBlock, fortMasonGate, windArrows, spreckelsMansion, spreckelsGreenhouse, beachChalet1006, bayModel, tajMahalHouseboat, harneyScience, kalmanovitzHall, kendrickHall, usfGym, alcatrazSmokestack, steppedCondo, angelLight, detentionBarracks,
   ...BEACH_TOWNHOUSES,
   ...PIER_RESTAURANTS,
