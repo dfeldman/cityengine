@@ -68,5 +68,15 @@
   "height": 47,
   "sign": false,
   "note": "market-fidi.ts: Prism, 1028 Market, 13-storey 2010s apartments, cream panelled cladding in paired dark-framed ribbon windows, teal glazed ground floor, one setback; from Mapillary frames on Market and at Jones."
+ },
+ {
+  "osm": [
+   "way/332515949"
+  ],
+  "name": "945 Market Street (Livat)",
+  "procedural": "livat945Market",
+  "height": 18,
+  "sign": false,
+  "note": "market-fidi.ts: Livat, 945 Market, five-storey retail mall: dark-framed shopfront base, grey corrugated metal bands with louvred vents, grey parapet; from Mapillary frame at the Market front."
  }
 ]

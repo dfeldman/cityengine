@@ -187,6 +187,27 @@ function prism1028Market(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+// ---------------------------------------------------------------- Livat, 945 Market Street (retail mall, c.1980s–2010s; way/332515949)
+/**
+ * Mapillary frame at the Market front (pick 0): a glazed shopfront of dark-framed panes at street level under a
+ * grey painted lintel band, then a band of grey corrugated metal panels cut by long louvred vents, and a grey
+ * render cap. Five storeys, a plain flat roof. Recognisable, not accurate. (Pick 1 and 2 were brick alley and
+ * neighbours, not this front.)
+ */
+function livat945Market(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.5, 0.52, 0.54]
+  const DARK: Rgb = [0.3, 0.31, 0.33]
+  const shops: Face = { kind: 'curtain', wall: DARK, glass: [0.22, 0.3, 0.32], pitch: 3.2, floor: 4.5, material: 'metal' }
+  const upper: Face = { kind: 'bands', wall: GREY, glass: [0.2, 0.22, 0.24], floor: 3.4, solid: 0.7, material: 'metal' }
+  tower(out, fit, {
+    height: 18,
+    base: { height: 4.5, face: shops },
+    tiers: [{ to: 1, face: upper, cornice: { depth: 0.4, height: 0.5, colour: DARK } }],
+    crown: { kind: 'parapet', height: 1.2, colour: DARK, material: 'metal' },
+    penthouse: 2,
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -195,4 +216,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   jamesBongBuilding,
   haleBrothers901Market,
   prism1028Market,
+  livat945Market,
 }

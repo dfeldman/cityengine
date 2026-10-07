@@ -424,15 +424,6 @@
  },
  {
   "osm": [
-   "way/332515949"
-  ],
-  "name": "945 Market Street (Livat)",
-  "restyle": "bauhaus",
-  "note": "Post-war retail block, plain and horizontal.",
-  "levels": 5
- },
- {
-  "osm": [
    "way/332517080"
   ],
   "name": "969 Market Street",
