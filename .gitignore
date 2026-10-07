@@ -52,3 +52,4 @@ __pycache__/
 tools/lidar/.venv/
 # Trail Trainer rockgen boulders, copied by hand (public/rocks/index.json lists them)
 public/rocks/*.glb
+*.swp

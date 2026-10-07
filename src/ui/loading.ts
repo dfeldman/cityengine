@@ -47,7 +47,7 @@ export class LoadingScreen {
     this.mode = device === 'treadmill' ? 'on foot' : 'by bike'
     this.root = document.createElement('div')
     this.root.className = 'sr-loading'
-    this.root.innerHTML = `<div class="sr-card"><span class="sr-pill">Dandyhorse</span><h1>Street Runner</h1>
+    this.root.innerHTML = `<div class="sr-card"><span class="sr-pill">Dandyhorse</span><h1>Cycle Dash</h1>
       <div class="city"></div><div class="bar"><div class="fill"></div></div><div class="what">Starting…</div></div>`
     this.city(cityName)
     this.fill = this.root.querySelector('.fill')!
@@ -147,7 +147,7 @@ export function welcomeScreen(cityName: string, slowInput = false): void {
   const touch = typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches
   const rows = CONTROLS.map(([k, d]) => (k === '← →' && slowInput ? [k, 'pick your turn at the next junction, before you reach it'] : [k, d])).map(([k, d]) => `<tr><td class="k"><kbd>${k}</kbd></td><td class="d">${d}</td></tr>`).join('')
   const hl = HIGHLIGHTS.map(([e, t, d]) => `<div><span class="e">${e}</span><div><b>${t}</b><span>${d}</span></div></div>`).join('')
-  root.innerHTML = `<div class="sr-card"><span class="sr-pill">Dandyhorse</span><h1>Street Runner</h1>
+  root.innerHTML = `<div class="sr-card"><span class="sr-pill">Dandyhorse</span><h1>Cycle Dash</h1>
     <p class="lede">Ride ${cityName} for real — every street, every building, where they actually are.</p>
     <div class="hl">${hl}</div>
     ${touch ? '' : `<table>${rows}</table><div class="more">F fly · P photo mode · G go to a place</div>`}

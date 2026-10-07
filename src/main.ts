@@ -68,7 +68,7 @@ if (params.get('model')) {
       // say so, in the console's look, rather than sit on "loading…" for ever
       const box = document.createElement('div')
       box.className = 'sr-loading'
-      box.innerHTML = '<div class="sr-card"><span class="sr-pill">Dandyhorse</span><h1>Street Runner</h1><div class="city"></div>'
+      box.innerHTML = '<div class="sr-card"><span class="sr-pill">Dandyhorse</span><h1>Cycle Dash</h1><div class="city"></div>'
         + '<div class="what"></div></div>'
       box.querySelector('.city')!.textContent = 'Could not start the session'
       box.querySelector('.what')!.textContent = `${e instanceof Error ? e.message : String(e)}. Opened outside Dandyhorse? `
