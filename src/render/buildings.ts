@@ -697,7 +697,10 @@ export function buildBuilding(
     y: eaves,
     height: low ? 0 : roofSpec?.height ?? 0,
     direction: roofSpec?.direction,
-    colour: roofSpec?.colour ?? rgb(plan.palette.roof),
+    // (a FLAT stucco roof is tar and gravel: the palette's roof is the colour of its tiles, and on a flat top it painted
+    //  the Sunset and the Marina as acres of orange slabs from any hill — Golden Gate Heights, 2026-10-06)
+    colour: roofSpec?.colour ?? ((low || (roofSpec?.shape ?? 'flat') === 'flat') && plan.style === 'stucco'
+      ? [0.5, 0.49, 0.47] as [number, number, number] : rgb(plan.palette.roof)),
   }
   if (holes.length > 0) buildRoofAroundCourts(out, ring, holes, spec)
   else buildRoof(out, ring, spec)

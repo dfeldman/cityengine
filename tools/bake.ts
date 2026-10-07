@@ -2489,7 +2489,9 @@ function roofFor(
     roofDirection: p.buildingRoofDirection !== undefined && Number.isFinite(p.buildingRoofDirection)
       ? (p.buildingRoofDirection * Math.PI) / 180
       : undefined,
-    roofColour: colour,
+    // (a FLAT stucco roof is tar and gravel, not the palette's tile: the Sunset and the Marina were acres of orange slabs
+    //  seen from any hill — Golden Gate Heights, 2026-10-06; render/buildings.ts does the same where no colour is baked)
+    roofColour: shape === 'flat' && styleId === 'stucco' ? [0.5, 0.49, 0.47] : colour,
   }
 }
 
