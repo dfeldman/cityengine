@@ -392,5 +392,21 @@
   "height": 29,
   "sign": false,
   "note": "market-fidi.ts: taupe granite office block at Pine and Battery Streets on a dark glazed ground floor, with a glass band over the upper floors and a stepped parapet; Mapillary frames c0, c1."
+ },
+ {
+  "osm": ["way/256067724"],
+  "name": "550 California Sacramento Tower",
+  "procedural": "california550Sacramento",
+  "height": 36,
+  "sign": false,
+  "note": "market-fidi.ts: 550 California's Sacramento Street wing, eleven storeys (two of dark granite over nine of taupe-clad ribbon windows with cross-braces) under a plain parapet; Mapillary frames pa0, pa1."
+ },
+ {
+  "osm": ["way/260286438"],
+  "name": "Hind Building, 220-230 California Street",
+  "procedural": "hindBuilding",
+  "height": 26,
+  "sign": false,
+  "note": "market-fidi.ts: Hind Building, six storeys: cream rusticated ground floor and entablature, cream stone storeys with architraves, buff brick upper floors with pedimented heads; Mapillary frame pb1 (pb0 shows the Tadich Grill neighbour at 240)."
  }
 ]

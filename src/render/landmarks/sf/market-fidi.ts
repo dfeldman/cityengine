@@ -757,6 +757,34 @@ export function fidi256067720(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** 550 California, the Sacramento Street wing (way/256067724): eleven storeys, two of dark granite over nine of taupe-clad ribbon windows with cross-braces, under a plain parapet. Mapillary pa0 and pa1. */
+export function california550Sacramento(out: MeshBuilder, fit: Fit): void {
+  const TAUPE: Rgb = [0.74, 0.65, 0.58]
+  const GRANITE: Rgb = [0.28, 0.28, 0.3]
+  tower(out, fit, {
+    height: 36,
+    base: { height: 7.5, face: { kind: 'punched', wall: GRANITE, glass: [0.18, 0.22, 0.26], pitch: 6, floor: 3.75, solid: 0.45, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: TAUPE, glass: [0.3, 0.34, 0.38], floor: 3, solid: 0.55, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 1, colour: TAUPE, material: 'concrete' },
+  })
+}
+
+/** Hind Building, 220–230 California Street (way/260286438): six storeys of cream rusticated ground floor and entablature over cream stone and buff brick upper floors, architrave and pedimented heads. Mapillary pb1 (pb0 shows the Tadich Grill neighbour at 240). */
+export function hindBuilding(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.86, 0.8, 0.68]
+  const BUFF: Rgb = [0.7, 0.58, 0.44]
+  tower(out, fit, {
+    height: 26,
+    base: { height: 5.5, face: { kind: 'punched', wall: CREAM, glass: [0.22, 0.3, 0.28], pitch: 4, floor: 5.5, solid: 0.3, material: 'ashlar' } },
+    tiers: [
+      { to: 13, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.24, 0.26], pitch: 3.2, floor: 3.75, solid: 0.5, material: 'ashlar' } },
+      { to: 1, face: { kind: 'punched', wall: BUFF, glass: [0.2, 0.24, 0.26], pitch: 3.2, floor: 3.9, solid: 0.5, material: 'brick' } },
+    ],
+    cornices: [{ at: 5.8, depth: 0.6, height: 0.8, colour: CREAM }, { at: 13, depth: 0.4, height: 0.5, colour: CREAM }],
+    crown: { kind: 'parapet', height: 1, colour: CREAM, material: 'ashlar' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -799,4 +827,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   sansome500,
   hotalingBuilding, jacksonSquare256072726, jacksonSquare930905519,
   fidi1279452198, battery617, fidi256067720,
+  california550Sacramento, hindBuilding,
 }
