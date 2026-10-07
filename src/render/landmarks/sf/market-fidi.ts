@@ -162,6 +162,31 @@ function haleBrothers901Market(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+// ---------------------------------------------------------------- Prism, 1028 Market Street (2010s flats; way/32864957)
+/**
+ * Mapillary frames on Market and at Jones: a thirteen-storey apartment block of cream-grey panelled cladding ruled by
+ * horizontal joints, its windows in dark-framed ribbons in pairs between narrow vertical reveals. A glazed ground floor
+ * of teal shopfront glass under a dark band, a single setback near the top, and a dark roof parapet. Recognisable, not
+ * accurate.
+ */
+function prism1028Market(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.86, 0.84, 0.78]
+  const GLASS: Rgb = [0.3, 0.36, 0.4]
+  const DARK: Rgb = [0.3, 0.31, 0.33]
+  const shops: Face = { kind: 'curtain', wall: DARK, glass: [0.55, 0.78, 0.74], pitch: 4, floor: 4.5, material: 'metal' }
+  const upper: Face = { kind: 'punched', wall: CREAM, glass: GLASS, floor: 3.4, pitch: 3.8, solid: 0.5, material: 'metal' }
+  tower(out, fit, {
+    height: 47,
+    base: { height: 5, face: shops },
+    tiers: [
+      { to: 0.82, face: upper, cornice: { depth: 0.3, height: 0.4, colour: DARK } },
+      { to: 1, face: upper, inset: 2.5 },
+    ],
+    crown: { kind: 'parapet', height: 1, colour: DARK, material: 'metal' },
+    penthouse: 1,
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -169,4 +194,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   serif960Market,
   jamesBongBuilding,
   haleBrothers901Market,
+  prism1028Market,
 }

@@ -35,7 +35,6 @@
   {"osm": ["way/136100937"], "name": "1023 Market Street", "restyle": "brick", "levels": 4, "note": "Brick loft."},
   {"osm": ["way/136100936"], "name": "1025 Market Street", "restyle": "brick", "levels": 3, "note": "Small brick infill."},
   {"osm": ["way/256035270"], "name": "1035 Market Street", "restyle": "brick", "levels": 3, "note": "Small brick infill."},
-  {"osm": ["way/32864957"], "name": "Prism, 1028 Market Street", "restyle": "skyscraper", "levels": 13, "note": "2010s flats: panel and glass."},
   {"osm": ["way/256035271"], "name": "1039 Market Street", "restyle": "brick", "levels": 3, "note": "Brick infill."},
   {"osm": ["way/32864968"], "name": "50 Jones", "restyle": "skyscraper", "levels": 12, "note": "2010s flats above the Market frontage."},
   {"osm": ["way/256035267"], "name": "1049 Market Street", "restyle": "chicago", "levels": 7, "note": "1910s loft with wide Chicago bays."},
