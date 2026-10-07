@@ -187,4 +187,31 @@ export function steuartGravelGardens(out: MeshBuilder, fit: Fit): void {
   drapeOn(out, fit, v0)
 }
 
-export const EMBARCADERO_SOUTH: Record<string, (out: MeshBuilder, fit: Fit) => void> = { infinityTower, twoFolsom, twoOOneSpear, oneSteuartLane, towersAtRincon, hillsPlazaTower, steuartGravelGardens }
+/**
+ * 188 THE EMBARCADERO (Bayside Plaza, now Google's): a long curved front of white banded spandrels and blue ribbon
+ * glazing, stepping back in terraces toward the top (Mapillary, 2026-10-06).
+ */
+export function baysidePlaza(out: MeshBuilder, fit: Fit): void {
+  const BAND: Face = { kind: 'bands', wall: [0.9, 0.9, 0.88], glass: [0.3, 0.42, 0.55], floor: 3.8, solid: 0.42, material: 'concrete' }
+  tower(out, fit, {
+    height: 32,
+    base: { height: 5, face: { kind: 'curtain', wall: [0.85, 0.85, 0.83], glass: [0.2, 0.25, 0.3], pitch: 3 } },
+    tiers: [{ to: 0.7, face: BAND, cornice: { depth: 0.6 } }, { to: 0.86, inset: 2.2, face: BAND, cornice: { depth: 0.5 } }, { to: 1, inset: 2.2, face: BAND }],
+    crown: { kind: 'flat' },
+  })
+}
+
+/**
+ * THE FRANCISCAN, Pier 43 1/2: a two-storey glass pavilion ringed by tall white angled fins under a wide flat roof
+ * slab (Mapillary, 2026-10-06).
+ */
+export function franciscan(out: MeshBuilder, fit: Fit): void {
+  const ring = towerRing(fit)
+  faceBand(out, ring, 0, 8, { kind: 'fins', wall: [0.95, 0.95, 0.93], glass: [0.2, 0.26, 0.3], floor: 4, pitch: 2.2, solid: 0.2, depth: 0.9, material: 'concrete' })
+  const lip = ring.map((p) => ({ x: p.x * 1.12, z: p.z * 1.12 }))
+  faceBand(out, lip, 8, 8.8, { kind: 'blank', wall: [0.95, 0.95, 0.93], material: 'concrete' })
+  capPolygon(out, lip, 8.8, [0.85, 0.85, 0.83], 0)
+  capPolygon(out, ring, 0.02, [0.6, 0.6, 0.58], 0)
+}
+
+export const EMBARCADERO_SOUTH: Record<string, (out: MeshBuilder, fit: Fit) => void> = { infinityTower, twoFolsom, twoOOneSpear, oneSteuartLane, towersAtRincon, hillsPlazaTower, steuartGravelGardens, baysidePlaza, franciscan }
