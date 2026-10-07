@@ -169,7 +169,11 @@ export function archetypeOf(f: Features): { archetype: Archetype; district: Dist
     const house = use === 'SRES' || (use === 'MRES' && (rec!.units <= 4 || h <= 13))
     if (era === 'victorian' && wood && house && h <= 16) return a('rowhouse', 'victorian-house')
     if (era === 'edwardian' && house && h <= 16) return a('edwardianHouse', 'edwardian-house')
-    if (era === 'interwar' && house && h <= 13) return a(wood && district !== 'marina' && district !== 'cowhollow' && f.roll < 0.35 ? 'rowhouse' : 'marinaHouse', 'interwar-house')
+    if (era === 'interwar' && house && h <= 13) return a(wood && district !== 'marina' && district !== 'cowhollow' && district !== 'sunset' && f.roll < 0.35 ? 'rowhouse' : 'marinaHouse', 'interwar-house')
+    // a post-war house — Golden Gate Heights, the outer Sunset, the Excelsior — is stucco, never a Victorian: with no rule
+    // of its own it fell through to the 25-foot-lot default and was drawn as a painted rowhouse (owner's photos of
+    // Golden Gate Heights, 2026-10-06)
+    if ((era === 'midcentury' || era === 'modern') && house && h <= 13) return a(era === 'modern' && f.roll < 0.4 ? 'contemporary' : 'marinaHouse', 'postwar-house')
     if (use === 'IND' || ((masonry || use === 'COMM') && f.area > 500 && (era === 'victorian' || era === 'edwardian' || era === 'interwar')
       && (district === 'soma' || district === 'yerbabuena' || district === 'rincon' || district === 'embarcadero' || district === 'northbeach' || district === 'wharf' || district === 'fidi'))) return a('loft', 'industrial-loft')
     if (era === 'midcentury' && h >= 12) return a(rec!.construction === 'B' && f.area > 1500 ? 'modern' : 'midcentury', 'midcentury-tall')
@@ -190,6 +194,8 @@ export function archetypeOf(f: Features): { archetype: Archetype; district: Dist
   if (DOWNTOWN.has(district)) return a(h >= 20 ? 'prewarOffice' : district === 'soma' ? 'loft' : 'apartment', 'downtown-default')
   if (district === 'tenderloin') return a(h >= 9 ? 'apartment' : 'rowhouse', 'tenderloin')
   // the 25-foot lot: a house, of the Victorian city or of the Marina's 1930s
+  // the Sunset and Golden Gate Heights: the 1920s-50s stucco rows, not Victorians (owner's photos, 2026-10-06)
+  if (district === 'sunset' && h <= 13) return a('marinaHouse', 'sunset-house')
   if (f.frontage <= 11 && h <= 15) {
     if (district === 'marina') return a('marinaHouse', 'marina-lot')
     if (district === 'cowhollow' && f.roll < 0.4) return a('marinaHouse', 'cowhollow-lot')
