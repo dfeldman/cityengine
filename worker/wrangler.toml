@@ -2,6 +2,8 @@ name = "cycle-dash"
 main = "index.js"
 compatibility_date = "2026-09-01"
 workers_dev = true
+# in front of the bucket's own custom domain: every request on dash goes through the Worker (so / serves index.html)
+routes = [{ pattern = "dash.dfeldman.org/*", zone_name = "dfeldman.org" }]
 
 [[r2_buckets]]
 binding = "BUCKET"
