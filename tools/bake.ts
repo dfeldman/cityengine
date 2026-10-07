@@ -912,7 +912,8 @@ async function bake(spec: CitySpec): Promise<void> {
     }
   }
   for (const w of areaWays) {
-    const kind = areaKind(w)
+    // (a pitch the region says is gone — `courtSports` 'none' — leaves no patch of turf either)
+    const kind = streetRegion.courtSports?.[String(w.id)] === 'none' ? null : areaKind(w)
     if (!kind || !w.geometry || w.geometry.length < 4) continue
     const ring = w.geometry.slice(0, -1).map((g) => proj.toLocal(g))
     if (area(ring) < 40) continue
