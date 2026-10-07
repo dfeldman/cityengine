@@ -2,6 +2,8 @@ node_modules/
 dist/
 .DS_Store
 incoming_models/
+api_key
+api_token
 
 # ---- generated, never committed -------------------------------------------------
 # The repo is kept under 100 MB. Everything below is rebuilt by a tool, and what to

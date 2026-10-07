@@ -169,7 +169,10 @@ let registered = false
 
 function material(scene: Scene, kind: 'flow' | 'pool' | 'splash'): ShaderMaterial {
   if (!registered) {
-    Effect.ShadersStore['waterVertexShader'] = VERTEX
+    // (its OWN name: `waterVertexShader` is the bay's (render/water-material.ts), and registering a fountain under it
+    //  replaced the sea's vertex shader whenever a fountain loaded first — the whole bay drew as the green ground under
+    //  it, owner 2026-10-07)
+    Effect.ShadersStore['fountainWaterVertexShader'] = VERTEX
     Effect.ShadersStore['waterFlowFragmentShader'] = FLOW_FRAGMENT
     Effect.ShadersStore['waterPoolFragmentShader'] = POOL_FRAGMENT
     Effect.ShadersStore['waterSplashFragmentShader'] = SPLASH_FRAGMENT
@@ -178,7 +181,7 @@ function material(scene: Scene, kind: 'flow' | 'pool' | 'splash'): ShaderMateria
   const name = { flow: 'waterFlow', pool: 'waterPool', splash: 'waterSplash' }[kind]
   const have = scene.getMaterialByName(name)
   if (have) return have as ShaderMaterial
-  const m = new ShaderMaterial(name, scene, { vertex: 'water', fragment: name }, {
+  const m = new ShaderMaterial(name, scene, { vertex: 'fountainWater', fragment: name }, {
     attributes: ['position', 'uv', 'color'],
     uniforms: ['world', 'viewProjection', 'time', 'light', 'fogColour', 'fogDensity'],
     needAlphaBlending: true,
