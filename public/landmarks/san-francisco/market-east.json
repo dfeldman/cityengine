@@ -502,15 +502,6 @@
  },
  {
   "osm": [
-   "way/149840694"
-  ],
-  "name": "Stevenson Place",
-  "restyle": "skyscraper",
-  "levels": 29,
-  "note": "71 Stevenson (1970s), behind 525 Market."
- },
- {
-  "osm": [
    "way/149837256"
   ],
   "name": "49 Stevenson Street",

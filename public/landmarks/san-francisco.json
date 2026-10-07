@@ -578,6 +578,9 @@
   "include": "san-francisco/harrison-waterfront.json"
  },
  {
+  "include": "san-francisco/market-fidi.json"
+ },
+ {
   "include": "san-francisco/embarcadero-pass.json"
  }
 ]
