@@ -408,5 +408,13 @@
   "height": 26,
   "sign": false,
   "note": "market-fidi.ts: Hind Building, six storeys: cream rusticated ground floor and entablature, cream stone storeys with architraves, buff brick upper floors with pedimented heads; Mapillary frame pb1 (pb0 shows the Tadich Grill neighbour at 240)."
+ },
+ {
+  "osm": ["way/32946665"],
+  "name": "First National Bank of Northern California",
+  "procedural": "firstNationalBankNorCal",
+  "height": 43,
+  "sign": false,
+  "note": "market-fidi.ts: eleven-storey cream stone bank, rusticated base, two arched storeys with pilasters, shaft, cornices, balustrade; Mapillary frame p0 (p1 showed a dark neighbour)."
  }
 ]

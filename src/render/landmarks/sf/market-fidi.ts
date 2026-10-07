@@ -785,6 +785,37 @@ export function hindBuilding(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+// ---------------------------------------------------------------- First National Bank of Northern California (way/32946665)
+/**
+ * Mapillary frame pa0 (Post Street side): an eleven-storey cream stone bank block. A rusticated ground storey, two tall
+ * arched windows storeys between pilasters (the giant order), a deep dentilled cornice, a shaft of small punched
+ * windows between pilasters, a second cornice and a balustraded attic. Recognisable, not accurate.
+ */
+function firstNationalBankNorCal(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.84, 0.8, 0.7]
+  const DARK: Rgb = [0.2, 0.22, 0.24]
+  const hall: Face = { kind: 'punched', wall: STONE, glass: DARK, floor: 7, pitch: 4.6, solid: 0.45, arched: true, material: 'ashlar' }
+  const shaft: Face = { kind: 'punched', wall: STONE, glass: DARK, floor: 3.4, pitch: 3.4, solid: 0.5, material: 'ashlar' }
+  tower(out, fit, {
+    height: 43,
+    base: { height: 4.5, face: { kind: 'punched', wall: [0.78, 0.74, 0.65], glass: DARK, floor: 4.5, pitch: 5, solid: 0.4, material: 'granite' } },
+    cornices: [{ at: 5, depth: 0.5, height: 0.6, colour: STONE }],
+    tiers: [
+      { to: 15, face: hall, cornice: { depth: 1.0, height: 1.0, colour: STONE } },
+      { to: 38.5, face: shaft, cornice: { depth: 1.2, height: 1.2, colour: STONE } },
+      { to: 1.0, face: { kind: 'blank', wall: STONE, material: 'ashlar' }, inset: 0.4 },
+    ],
+    roof: [0.55, 0.53, 0.5],
+    crown: { kind: 'balustrade', height: 1.0, colour: STONE, material: 'ashlar', pier: true },
+  })
+  const ring = towerRing(fit)
+  for (let i = 0; i < ring.length; i++) {
+    const e = edgeAt(ring, i)
+    if (e.L < 8) continue
+    colonnade(out, e.a, e.b, 4.5, 14.5, Math.max(2, Math.round(e.L / 4.6)), { order: 'ionic', colour: STONE, material: 'ashlar', radius: 0.4, out: 0.3, entablature: 0.01, tier: 'far' })
+  }
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -828,4 +859,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   hotalingBuilding, jacksonSquare256072726, jacksonSquare930905519,
   fidi1279452198, battery617, fidi256067720,
   california550Sacramento, hindBuilding,
+  firstNationalBankNorCal,
 }
