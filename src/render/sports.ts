@@ -30,6 +30,7 @@ type Rgb = [number, number, number]
 const SURFACE: Record<CourtSport, Rgb> = {
   tennis: [0.16, 0.33, 0.26],
   pickleball: [0.17, 0.30, 0.42],
+  padel: [0.20, 0.45, 0.27],
   basketball: [0.26, 0.28, 0.31],
   four_square: [0.30, 0.31, 0.33],
   volleyball: [0.44, 0.38, 0.30],
@@ -169,12 +170,13 @@ function hoop(out: MeshBuilder, to: (lx: number, ly: number, lz: number) => [num
  * court — so a park half-court a third of the size keeps its key and its arc in proportion instead of
  * getting a full-size key painted over the whole of it.
  */
-export function court(out: MeshBuilder, fit: CourtFit): void {
+export function court(out: MeshBuilder, fit: CourtFit, glass?: MeshBuilder): void {
   // a playground is furnished, not painted (render/playground.ts)
   if (fit.sport === 'playground') { playground(out, fit); return }
   const to = frame(fit)
   const hl = fit.len / 2
   const hw = fit.wid / 2
+  if (fit.sport === 'padel') { padel(out, glass ?? out, fit, to, hl, hw); return }
   // the surface itself, a little proud of the pitch area it stands on
   quadLocal(out, to, -hl - 0.25, -hw - 0.25, hl + 0.25, hw + 0.25, SURFACE_Y, SURFACE[fit.sport])
 
@@ -258,5 +260,93 @@ export function court(out: MeshBuilder, fit: CourtFit): void {
   if (!fit.half) {
     stripe(out, to, 0, -hw, 0, hw)
     arc(out, to, 0, 0, 1.8 * k, 0, Math.PI * 2, 16)
+  }
+}
+
+/**
+ * A PADEL court (owner, 2026-10-06, at Embarcadero Plaza: "the pickleball courts in the plaza are wrapped in glass"):
+ * 20 x 10 m of green turf inside its cage — black steel posts every 2 m, glass to 3 m at the ends with mesh above to
+ * 4 m, the side walls glass to 3 m for the first 2 m, then to 2 m, then mesh in the middle; the service lines 6.95 m
+ * from the net; a tall curved light pole over each corner. The glass and the mesh go to `glass`, which the city draws
+ * see-through, so the court and its players show through the walls as they do.
+ */
+function padel(out: MeshBuilder, glass: MeshBuilder, fit: CourtFit, to: (lx: number, ly: number, lz: number) => [number, number, number],
+               hl: number, hw: number): void {
+  const k = fit.len / 20
+  quadLocal(out, to, -hl, -hw, hl, hw, SURFACE_Y, SURFACE.padel)
+  const svc = 6.95 * k
+  stripe(out, to, -svc, -hw, -svc, hw)
+  stripe(out, to, svc, -hw, svc, hw)
+  stripe(out, to, -svc, 0, svc, 0)
+  net(out, to, 0, hw, 0.88, 0.92)
+  const STEEL: Rgb = [0.07, 0.07, 0.08]
+  const GLASS: Rgb = [0.62, 0.78, 0.8]
+  const MESH: Rgb = [0.1, 0.1, 0.11]
+  // a wall panel from (ax,az) to (bx,bz) between heights y0 and y1, one quad (the see-through material draws both faces)
+  const pane = (ax: number, az: number, bx: number, bz: number, y0: number, y1: number, c: Rgb): void => {
+    const nx = -(bz - az), nz = bx - ax, L = Math.hypot(nx, nz) || 1
+    const [p0, p1, p2, p3] = [to(ax, y0, az), to(bx, y0, bz), to(bx, y1, bz), to(ax, y1, az)]
+    const c0 = to(0, 0, 0), cn = to(nx / L, 0, nz / L)
+    glass.quad([p0, p1, p2, p3], [cn[0] - c0[0], 0, cn[2] - c0[2]], [[0, 0], [1, 0], [1, 1], [0, 1]], c, FIXED)
+  }
+  const post = (lx: number, lz: number, h: number): void => {
+    const p = to(lx, 0, lz)
+    box(out, p[0], h / 2, p[2], 0.05, h / 2, 0.05, STEEL, FIXED)
+  }
+  const beam = (ax: number, az: number, bx: number, bz: number, y: number): void => {
+    const a = to(ax, y, az), b = to(bx, y, bz)
+    const dx = b[0] - a[0], dz = b[2] - a[2], len = Math.hypot(dx, dz)
+    const ang = Math.atan2(dz, dx), c = Math.cos(ang), sn = Math.sin(ang), w = 0.04, hgt = 0.04
+    const corners = [[-len / 2, -w], [len / 2, -w], [len / 2, w], [-len / 2, w]].map(([u, v]) => [(a[0] + b[0]) / 2 + u * c - v * sn, (a[2] + b[2]) / 2 + u * sn + v * c])
+    out.quad(corners.map(([x, z]) => [x, y + hgt, z]) as [number, number, number][], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], STEEL, FIXED)
+    for (const sd of [-1, 1]) {
+      const [q0, q1] = sd < 0 ? [corners[0], corners[1]] : [corners[2], corners[3]]
+      out.quad([[q0[0], y - hgt, q0[1]], [q1[0], y - hgt, q1[1]], [q1[0], y + hgt, q1[1]], [q0[0], y + hgt, q0[1]]], [-sn * sd, 0, c * sd], [[0, 0], [1, 0], [1, 1], [0, 1]], STEEL, FIXED)
+    }
+  }
+  // the ends: glass to 3 m, mesh to 4 m, a post every 2 m
+  for (const e of [-1, 1]) {
+    const x = e * hl
+    pane(x, -hw, x, hw, 0.04, 3, GLASS)
+    pane(x, -hw, x, hw, 3, 4, MESH)
+    for (let z = -hw; z <= hw + 1e-6; z += 2 * k) post(x, z, 4)
+    beam(x, -hw, x, hw, 3)
+    beam(x, -hw, x, hw, 4)
+  }
+  // the sides, in 2 m bays from each end in: [glass top, mesh top] per bay
+  const bays: [number, number][] = [[3, 4], [2, 3], [0, 3], [0, 3], [0, 3]]
+  for (const sz of [-1, 1]) {
+    const z = sz * hw
+    for (const e of [-1, 1]) {
+      for (let i = 0; i < 5; i++) {
+        const xa = e * (hl - i * 2 * k), xb = e * (hl - (i + 1) * 2 * k)
+        const [gTop, mTop] = bays[i]
+        // the door gap: the middle bay's outer half on each side, where the players come in
+        if (i === 4 && e > 0) { post(xb, z, mTop); continue }
+        if (gTop > 0) pane(xa, z, xb, z, 0.04, gTop, GLASS)
+        pane(xa, z, xb, z, gTop || 0.04, mTop, MESH)
+        post(xa, z, i === 0 ? 4 : bays[i - 1][1])
+        beam(xa, z, xb, z, mTop)
+        if (gTop > 0) beam(xa, z, xb, z, gTop)
+      }
+    }
+  }
+  // the light poles: tall, curving in over each corner
+  for (const ex of [-1, 1]) for (const ez of [-1, 1]) {
+    const bx = ex * (hl - 3.5 * k), bz = ez * (hw + 0.6)
+    const H = 7, R = 1.2
+    post(bx, bz, H - R)
+    // the arm: a quarter circle from the top of the pole over toward the court
+    let prev = to(bx, H - R, bz)
+    for (let i = 1; i <= 5; i++) {
+      const a = (i / 5) * Math.PI / 2
+      const cur = to(bx, H - R + R * Math.sin(a), bz - ez * R * (1 - Math.cos(a)))
+      box(out, (prev[0] + cur[0]) / 2, (prev[1] + cur[1]) / 2, (prev[2] + cur[2]) / 2,
+        0.05 + Math.abs(cur[0] - prev[0]) / 2, 0.05 + Math.abs(cur[1] - prev[1]) / 2, 0.05 + Math.abs(cur[2] - prev[2]) / 2, STEEL, FIXED)
+      prev = cur
+    }
+    // the lamp head, its face down over the court
+    box(out, prev[0], prev[1] - 0.06, prev[2], 0.35, 0.06, 0.2, [0.15, 0.15, 0.16], FIXED)
+    box(out, prev[0], prev[1] - 0.13, prev[2], 0.3, 0.01, 0.16, [0.95, 0.95, 0.88], FIXED)
   }
 }

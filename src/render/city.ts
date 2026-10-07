@@ -15,6 +15,7 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData'
 import type { Scene } from '@babylonjs/core/scene'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
+import { Color3 } from '@babylonjs/core/Maths/math.color'
 import { stopSign, uspsBox, billboard, muniStop, plainStop, newsRacks, parkingMeter, utilityPole, pathOfGold } from './us-furniture.ts'
 import { streetClockPost } from './street-clock.ts'
 import { clockFace } from './landmarks/parts.ts'
@@ -79,6 +80,19 @@ export let VIEW = 3
  */
 let GROUND_STRIDE = 1
 export function setGroundStride(n: number): void { GROUND_STRIDE = Math.max(1, Math.round(n)) }
+/** The see-through glass and mesh of a padel court's walls (render/sports.ts `padel`): its vertex colours, mostly clear. */
+function courtGlassMaterial(scene: Scene): StandardMaterial {
+  const name = 'courtGlass'
+  const had = scene.getMaterialByName(name)
+  if (had) return had as StandardMaterial
+  const m = new StandardMaterial(name, scene)
+  m.diffuseColor = new Color3(1, 1, 1)
+  m.specularColor = new Color3(0.35, 0.38, 0.4)
+  m.alpha = 0.32
+  m.backFaceCulling = false
+  return m
+}
+
 function groundGrid(t: PackedTerrain | undefined | null): PackedTerrain | undefined {
   if (!t || GROUND_STRIDE === 1) return t ?? undefined
   const k = GROUND_STRIDE
@@ -2352,12 +2366,14 @@ export class City {
      * is painted over the greens because it is the more specific statement about the same piece of land —
      * Ocean Beach is mapped as `natural=beach` inside the park polygon, so without this the park wins by
      * arriving first and the beach is a lawn again at the last moment (BUGS.md #200); then a square paved
-     * by hand, last, over the park OSM spreads across it.
+     * by hand over the park OSM spreads across it, under what is mapped inside it.
      */
     const rank = (a: { kind: string; top?: boolean; beds?: boolean }): number =>
       // (planted beds over the parks they lie in — the Presidio's own park polygon covers the Tunnel Tops — and the lawns
       //  over the beds)
-      a.top ? 3 : a.kind === 'paved' || a.kind === 'lot' ? 0 : a.kind === 'sand' || a.kind === 'dirt' ? 2 : a.beds ? 1.5 : a.kind === 'grass' ? 1.6 : 1
+      // (a square paved by hand goes over the park, but under the lawns, beds and pitches mapped inside it — owner,
+      //  2026-10-06: the bowling lawn at the east end of Embarcadero Plaza was brick)
+      a.top ? 1.2 : a.kind === 'paved' || a.kind === 'lot' ? 0 : a.kind === 'sand' || a.kind === 'dirt' ? 2 : a.beds ? 1.5 : a.kind === 'grass' ? 1.6 : a.kind === 'pitch' ? 1.7 : 1
     const areasHere = this.areasIn.get(k) ?? []
     const ordered = [...areasHere].sort((p, q) => rank(p) - rank(q))
     /*
@@ -2792,13 +2808,24 @@ export class City {
      * a court is on the ground the park is on, not at a street's level (BUGS.md #38).
      */
     const courts = new MeshBuilder()
-    if (!this.off.has('courts')) for (const c of this.courtsIn.get(k) ?? []) court(courts, c)
+    // (a padel court's glass and mesh walls, drawn see-through: the court and its players show through them)
+    const courtGlass = new MeshBuilder()
+    if (!this.off.has('courts')) for (const c of this.courtsIn.get(k) ?? []) court(courts, c, courtGlass)
     if (courts.triangles > 0) {
       const m = new Mesh(`courts:${k}`, this.scene)
       this.terrain.drapeRaw(courts.positions)
       courts.toVertexData().applyToMesh(m)
       m.material = cartoonMaterial(this.scene, 'cartoonStatic', false)
       m.renderingGroupId = GROUP.walk
+      meshes.push(m)
+    }
+    if (courtGlass.triangles > 0) {
+      const m = new Mesh(`courtGlass:${k}`, this.scene)
+      this.terrain.drapeRaw(courtGlass.positions)
+      courtGlass.toVertexData().applyToMesh(m)
+      m.material = courtGlassMaterial(this.scene)
+      m.renderingGroupId = GROUP.walk
+      m.isPickable = false
       meshes.push(m)
     }
     if (markings.triangles > 0 && !this.off.has('roads')) {

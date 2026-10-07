@@ -946,7 +946,7 @@ async function bake(spec: CitySpec): Promise<void> {
   let courtsExcluded = 0
   for (const w of areaWays) {
     if (w.tags.leisure !== 'pitch' || !w.geometry || w.geometry.length < 4) continue
-    const sport = courtSport(w.tags.sport)
+    const sport = courtSport(streetRegion.courtSports?.[String(w.id)] ?? w.tags.sport)
     if (!sport) continue
     const ring = w.geometry.slice(0, -1).map((g) => proj.toLocal(g))
     const m2 = ringArea(ring)

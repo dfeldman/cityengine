@@ -140,6 +140,8 @@ export interface Region {
   /** squares OSM maps only as lines (the Trocadéro's parvis): paved areas by hand, rings of [lat, lon] */
   /** `brick`: laid in the region's street brick (`brickStreets.colour`) */
   pavedSquares?: { name: string; ring: [number, number][]; brick?: boolean }[]
+  /** a pitch's sport where OSM has it wrong, by way id (with a note in regions.json saying who said so) */
+  courtSports?: Record<string, string>
   /**
    * A waterfront street's wharf apron: paving from its bay-side kerb out over the seawall, `reach` metres from the
    * centreline, wherever there is water on that side. OSM maps the apron along the Embarcadero as nothing, so the
@@ -197,6 +199,7 @@ export function region(id: string | undefined): Region {
     footBridgeLayers: own?.footBridgeLayers ?? base.footBridgeLayers,
     ferryIslands: own?.ferryIslands ?? base.ferryIslands,
     pavedSquares: own?.pavedSquares ?? base.pavedSquares,
+    courtSports: own?.courtSports ?? base.courtSports,
     wharfAprons: own?.wharfAprons ?? base.wharfAprons,
     brickStreets: own?.brickStreets ?? base.brickStreets,
     timeZone: own?.timeZone ?? base.timeZone,
