@@ -48,7 +48,29 @@ function dogpatch(out: MeshBuilder, fit: Fit, sp: Spec): void {
   }
 }
 
+/**
+ * A MULTI-STOREY PARKING GARAGE (the UCSF Mission Bay Community Center garage, OSM way/82486636: 8 levels, which OSM's
+ * 48 m drew as a 48 m office box; no usable photograph — Mapillary's only frame there is mis-geotagged). Open decks
+ * behind pale concrete spandrels at 3.1 m a level, the dark of the deck between, a glazed stair-and-lift tower at one
+ * corner rising above the roof.
+ */
+export function parkingGarage(out: MeshBuilder, fit: Fit): void {
+  const levels = 8, F = 3.1, H = levels * F
+  tower(out, { ...fit, height: H }, {
+    height: H,
+    base: { height: F, face: { kind: 'fins', wall: [0.74, 0.74, 0.72], glass: [0.12, 0.13, 0.14], pitch: 9, solid: 0.12, depth: 0.5, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: [0.78, 0.78, 0.76], glass: [0.14, 0.15, 0.16], floor: F, solid: 0.38, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 1.1, colour: [0.78, 0.78, 0.76] },
+  })
+  const ring = towerRing(fit), c = ring[0]
+  const cx = ring.reduce((a, p) => a + p.x, 0) / ring.length, cz = ring.reduce((a, p) => a + p.z, 0) / ring.length
+  const k = 0.88, tx = cx + (c.x - cx) * k, tz = cz + (c.z - cz) * k
+  box(out, tx, (H + 3.5) / 2, tz, 2.6, (H + 3.5) / 2, 2.6, [0.3, 0.42, 0.48], surfaceTag('glass'))
+  box(out, tx, H + 3.7, tz, 2.8, 0.2, 2.8, [0.78, 0.78, 0.76], surfaceTag('concrete'))
+}
+
 export const DOGPATCH_CORNER: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+  parkingGarage,
   dogpatchCopperColumns: (out, fit) => dogpatch(out, fit, { height: 20, pilotis: true, boxes: true }),
   dogpatchCopperBoxes: (out, fit) => dogpatch(out, fit, { height: 17, pilotis: false, boxes: true }),
   dogpatchGrey: (out, fit) => dogpatch(out, fit, { height: 14, pilotis: false, boxes: false }),

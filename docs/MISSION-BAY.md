@@ -24,7 +24,7 @@ Inventory: `node --experimental-strip-types <scratch>/mbinv.ts` (204 buildings o
 | 135103710 | Byers Hall, 1700 4th St | 30 | b9 office recipe | **done** `byersHall` (#244) |
 | 84805700 | Gladstone Institutes, 1650 Owens | 41 | b3 lab recipe | **done** `gladstoneInstitutes` (#244) |
 | 84812339 | UCSF Community Center (Rutter Center), 1675 Owens | 48? | generic | **done** `rutterCenter` (#259; from descriptions) |
-| 82486636 | Community Center garage | 48? | generic | todo |
+| 82486636 | Community Center garage | 25 | generic | **done** `parkingGarage` (#559; no photo, a standard open-deck garage) |
 | 135103715 | Weill Neurosciences Building (OSM; not Sandler) | 29 | h1 recipe | checked 2026-10-04 — has its model |
 | 135103721 | Smith Cardiovascular Research Building | 31 | generic | **done** `smithCardiovascular` (#258) |
 | 142845120 | Helen Diller Family Cancer Research Building | 28 | generic | **done** `helenDiller` (#258) |
