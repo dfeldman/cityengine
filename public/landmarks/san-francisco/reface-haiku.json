@@ -4,7 +4,7 @@
       "way/260318176"
     ],
     "name": "One Hawthorne Street",
-    "restyle": "towerblock",
+    "procedural": "e14_ribbonTower_260318176",
     "wall": "#d4c8b8",
     "by": "haiku",
     "image": "way-260318176.jpg",

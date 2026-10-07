@@ -606,7 +606,7 @@
    "way/940192492"
   ],
   "name": "Pacific Place Tower",
-  "restyle": "skyscraper",
+  "procedural": "e12_pacificPlace_256029755",
   "levels": 16,
   "note": "1990s tower behind the Pacific Building; no reference photo found."
  },

@@ -4,7 +4,7 @@
   {"osm": ["way/259065179"], "name": "Bellaire Tower", "procedural": "bellaireTower", "front": "street", "height": 70, "note": "1930 white Spanish-deco terracotta, ornate base"},
   {"osm": ["way/262482831"], "name": "1000 Green Street", "procedural": "oneThousandGreen", "front": "street", "height": 45, "note": "1950 plain white midcentury slab pair"},
   {"osm": ["way/262741037"], "name": "1080 Chestnut Street", "procedural": "tenEightyChestnut", "front": "street", "height": 62, "note": "1962 cream punched-window midcentury tower"},
-  {"osm": ["way/262482835"], "name": "Green Hill Tower", "restyle": "sfapartment", "height": 72, "levels": 22, "note": "white 1960s apartment tower, not glass"},
+  {"osm": ["way/262482835"], "name": "Green Hill Tower", "procedural": "e12_greenHillTower_262482835", "height": 72, "levels": 22, "note": "white 1960s apartment tower, not glass"},
   {"osm": ["way/262741035"], "name": "1090 Chestnut Street", "restyle": "sfapartment", "height": 49, "levels": 13, "note": "cream midcentury apartment building"},
   {"osm": ["way/262480460"], "name": "945 Green Street", "restyle": "sfapartment", "height": 56, "levels": 14, "note": "white midcentury apartment tower"},
   {"osm": ["way/262552545"], "name": "2238 Hyde Street", "restyle": "sfapartment", "height": 55, "levels": 16, "note": "white midcentury apartment tower"},

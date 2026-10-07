@@ -143,7 +143,7 @@
     "name": "1200 Van Ness Avenue",
     "height": 68,
     "levels": 3,
-    "restyle": "stucco",
+    "procedural": "e12_1200vanNess_148428437",
     "note": "Rule check 2026-10-04 (Mapillary): salmon and cream postmodern with an arched centre bay; colour from the frame.",
     "wall": "#c99a8b",
     "trim": "#e9dfcc",

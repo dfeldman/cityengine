@@ -360,7 +360,7 @@ export const UNREFERENCED_OK = {
    * `fortyFourMontgomery` vs `montgomery44`); the rest are simply unplaced. Shrink this list, never grow it.
    */
   known: [
-    'h4_hiltonUnionSquare',
+   
     /*
      * `batteryChamberlin` and `batteryYates` WERE here, as dead `chicago-block` recipes in batches/h2.ts.
      * Real builders now exist in districts/batteries.ts and Chamberlin is placed from
@@ -395,11 +395,11 @@ export const UNREFERENCED_OK = {
      * three ids absent from the bake entirely, and a Hilton outline that double-drew its own tower.
      */
     // (EBMUD's injector station is in the East Bay, outside the city: built, never placeable — 2026-10-02)
-    'h3_injectorStation_1038340434',
-    'ccsfChinatownAnnex', 'fiftyCaliforniaStreet', 'foGuangShanSanBaoTemple', 'fortyFourMontgomery',
-    'fourTwentyFiveMarket', 'fulton501', 'hunterDulin', 'newcomerSchool', 'oneSansomeStreet',
+   
+    'fiftyCaliforniaStreet', 'fortyFourMontgomery',
+    'fourTwentyFiveMarket', 'hunterDulin', 'oneSansomeStreet',
     'pgeGeneralOffice', 'twoThirtyFivePine', 'twoTwentyFiveBush', 'unnamedNineHundredBlock',
-    'unnamedPineStreet', 'unnamedSeventyThreeMeterTower',
+    'unnamedPineStreet', 'unnamedSeventyThreeMeterTower', 'h3_injectorStation_1038340434',
     'unnamedTower256477866', 'usAppraisersBuilding',
     // the piers: modelled in piers.ts, absent from piers.json, which places sixteen of the twenty-two
     'pier3', 'pier19', 'pier29', 'pier45',

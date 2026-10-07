@@ -1,0 +1,10 @@
+[
+  {"osm": ["way/1309156123"], "name": "Exchange Block Building, 369 Pine", "procedural": "e10_exchangeBlock_369Pine", "sign": false, "note": "wired-builders (2026-10-07 audit): this builder existed and was registered but no manifest named it; the building was drawn generic."},
+  {"osm": ["way/260283286"], "name": "Leidesdorff Place, 340 Pine", "procedural": "e10_leidesdorffPlace_340Pine", "sign": false, "note": "wired-builders (2026-10-07 audit): this builder existed and was registered but no manifest named it; the building was drawn generic."},
+  {"osm": ["way/256067726"], "name": "348 Pine Street", "procedural": "e10_sliver_348Pine", "sign": false, "note": "wired-builders (2026-10-07 audit): this builder existed and was registered but no manifest named it; the building was drawn generic."},
+  {"osm": ["way/260523200"], "name": "Building way/260523200", "procedural": "e12_unnamed_260523200", "sign": false, "note": "wired-builders (2026-10-07 audit): this builder existed and was registered but no manifest named it; the building was drawn generic."},
+  {"osm": ["way/260283290"], "name": "Mid-rise way/260283290", "procedural": "e9_260283290", "sign": false, "note": "wired-builders (2026-10-07 audit): this builder existed and was registered but no manifest named it; the building was drawn generic."},
+  {"osm": ["way/132125164"], "name": "Crocker Galleria", "procedural": "e9_CrockerGalleria", "sign": false, "note": "wired-builders (2026-10-07 audit): this builder existed and was registered but no manifest named it; the building was drawn generic."},
+  {"osm": ["way/700791868"], "name": "Hilton San Francisco Union Square", "procedural": "h4_hiltonUnionSquare", "sign": false, "note": "wired-builders (2026-10-07 audit): this builder existed and was registered but no manifest named it; the building was drawn generic."},
+  {"osm": ["way/256076599"], "name": "AT&T, 430 Bush", "procedural": "e9_ATT_430Bush", "sign": false, "note": "wired-builders (2026-10-07 audit): this builder existed and was registered but no manifest named it; the building was drawn generic."}
+]
