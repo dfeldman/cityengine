@@ -208,6 +208,31 @@ function livat945Market(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+// ---------------------------------------------------------------- Bank of America Building, Market at New Montgomery (way/941649434)
+/**
+ * Mapillary frames on Market and on New Montgomery (picks 0–2): a dark grey granite base of shops and a stone
+ * ground floor under the 33 New Montgomery frontage, then a white-cream shaft of punched windows in dark-framed
+ * columns, rising well above its neighbours' cornices, with a setback and a dark parapet at the top. OSM: a
+ * plain building outline, 14 levels, no height tag; the photographs support the height given in the manifest.
+ */
+function bofaMarketNewMontgomery(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.88, 0.83]
+  const GRANITE: Rgb = [0.42, 0.42, 0.43]
+  const DARK: Rgb = [0.3, 0.31, 0.33]
+  const base: Face = { kind: 'bands', wall: GRANITE, glass: [0.2, 0.23, 0.26], floor: 4, solid: 0.7, material: 'granite' }
+  const shaft: Face = { kind: 'punched', wall: CREAM, glass: DARK, floor: 3.4, pitch: 3.6, solid: 0.5, material: 'ashlar' }
+  tower(out, fit, {
+    height: 50,
+    base: { height: 9, face: base },
+    tiers: [
+      { to: 0.8, face: shaft, cornice: { depth: 0.5, height: 0.6, colour: GRANITE } },
+      { to: 1, face: shaft, inset: 2.5 },
+    ],
+    crown: { kind: 'parapet', height: 1.2, colour: GRANITE, material: 'granite' },
+    penthouse: 1,
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -217,4 +242,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   haleBrothers901Market,
   prism1028Market,
   livat945Market,
+  bofaMarketNewMontgomery,
 }
