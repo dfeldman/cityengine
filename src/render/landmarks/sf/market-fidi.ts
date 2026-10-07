@@ -395,6 +395,49 @@ export function frontierTower1Sixth(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+// ---------------------------------------------------------------- 605 and 607 Market Street (pre-war offices; way/79377175, way/148285587)
+/**
+ * One buff punched tower on the south-east side of Market, about fourteen storeys: a tan stone grid of square dark
+ * windows, a stepped crown and a dark shopfront at street level (Mapillary frames across the street, pA0 and pB1).
+ * The photographs show ONE building, so 605 and 607 both call this helper and look identical.
+ */
+function marketTan14(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.72, 0.64, 0.52]
+  const DARK: Rgb = [0.14, 0.15, 0.17]
+  tower(out, fit, {
+    height: 54,
+    base: { height: 5, face: { kind: 'punched', wall: [0.3, 0.28, 0.26], glass: DARK, pitch: 3, floor: 5, solid: 0.8, material: 'ashlar' } },
+    tiers: [
+      { to: 0.9, face: { kind: 'punched', wall: TAN, glass: DARK, pitch: 2.8, floor: 3.6, solid: 0.55, material: 'ashlar' } },
+      { to: 1, inset: 1.2, face: { kind: 'punched', wall: TAN, glass: DARK, pitch: 2.8, floor: 3.6, solid: 0.55, material: 'ashlar' }, cornice: { depth: 0.5 } },
+    ],
+    crown: { kind: 'stepped', steps: 2, height: 3, inset: 1.2, material: 'ashlar' },
+  })
+}
+
+function market605(out: MeshBuilder, fit: Fit): void {
+  marketTan14(out, fit)
+}
+
+function market607(out: MeshBuilder, fit: Fit): void {
+  marketTan14(out, fit)
+}
+
+// ---------------------------------------------------------------- 49 Stevenson Street (commercial block behind Market; way/149837256)
+/**
+ * Behind Market on Stevenson: a pale grey panelled shaft of about seventeen storeys, its panels in horizontal courses
+ * with small punched windows, and a dark ground floor with a roller shutter and a glazed base (Mapillary frame pC0).
+ */
+function stevenson49(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.7, 0.69, 0.66]
+  tower(out, fit, {
+    height: 60,
+    base: { height: 5, face: { kind: 'curtain', wall: [0.3, 0.3, 0.3], glass: [0.16, 0.18, 0.2], pitch: 3, floor: 5, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: GREY, glass: [0.2, 0.26, 0.3], pitch: 3, floor: 3.5, solid: 0.6, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 1, colour: GREY, material: 'concrete' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -415,4 +458,7 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   market979,
   market973,
   frontierTower1Sixth,
+  market605,
+  market607,
+  stevenson49,
 }

@@ -172,5 +172,29 @@
   "height": 16,
   "sign": false,
   "note": "market-fidi.ts: Frontier Tower, 1 Sixth Street: four storeys of white panels with green spandrels over a glazed shopfront; Mapillary frames pC0, pC1."
+ },
+ {
+  "osm": ["way/79377175"],
+  "name": "605 Market Street",
+  "procedural": "market605",
+  "height": 54,
+  "sign": false,
+  "note": "market-fidi.ts: 605 Market, fourteen storeys of tan stone with square dark windows and a stepped crown; same building as 607 (shared helper); Mapillary frames pA0, pB1."
+ },
+ {
+  "osm": ["way/148285587"],
+  "name": "607 Market Street",
+  "procedural": "market607",
+  "height": 54,
+  "sign": false,
+  "note": "market-fidi.ts: 607 Market, the same tan fourteen-storey tower as 605 (shared helper); Mapillary frame pB1."
+ },
+ {
+  "osm": ["way/149837256"],
+  "name": "49 Stevenson Street",
+  "procedural": "stevenson49",
+  "height": 60,
+  "sign": false,
+  "note": "market-fidi.ts: 49 Stevenson, a pale grey panelled shaft of about seventeen storeys with a dark ground floor; Mapillary frame pC0."
  }
 ]

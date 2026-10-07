@@ -539,24 +539,6 @@
  },
  {
   "osm": [
-   "way/79377175"
-  ],
-  "name": "605 Market Street",
-  "restyle": "chicago",
-  "levels": 14,
-  "note": "Fourteen-storey pre-war office block; no reference photo found, so a Chicago-style facade rather than a model."
- },
- {
-  "osm": [
-   "way/148285587"
-  ],
-  "name": "607 Market Street",
-  "restyle": "chicago",
-  "levels": 14,
-  "note": "Fourteen-storey pre-war office block; no reference photo found."
- },
- {
-  "osm": [
    "way/79377223"
   ],
   "name": "33 New Montgomery",
