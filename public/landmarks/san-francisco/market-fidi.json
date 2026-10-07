@@ -268,5 +268,35 @@
   "height": 25,
   "sign": false,
   "note": "market-fidi.ts: Garfield Building, seven storeys of buff brick over a dark granite ground floor with cornice bands; Mapillary frames c0 and c1 (identity of c0 uncertain: its signage reads 944-8)."
+ },
+ {
+  "osm": [
+   "way/35176496"
+  ],
+  "name": "Donnelly Hotel",
+  "procedural": "donnellyHotel",
+  "height": 16,
+  "sign": false,
+  "note": "market-fidi.ts: Donnelly Hotel, 1272 Market, five storeys of cream plaster with arched upper windows over a dark shopfront base and a plain parapet; Mapillary frames a0 and a1."
+ },
+ {
+  "osm": [
+   "way/35176497"
+  ],
+  "name": "Wells Fargo, 1256 Market Street",
+  "procedural": "wellsFargo1256Market",
+  "height": 10,
+  "sign": false,
+  "note": "market-fidi.ts: Wells Fargo, 1256 Market, a low two-storey bank branch in tan-yellow brick with ground-floor doors and a stepped parapet; no logo; Mapillary frames b0 and b1."
+ },
+ {
+  "osm": [
+   "way/35112013"
+  ],
+  "name": "Yully Building",
+  "procedural": "yullyBuilding",
+  "height": 15,
+  "sign": false,
+  "note": "market-fidi.ts: Yully Building, 1212 Market, a small four-storey loft in grey-brown brick with piers between the bays and a dark ground floor; Mapillary frame c0 (c1 shows the UC Law building instead)."
  }
 ]

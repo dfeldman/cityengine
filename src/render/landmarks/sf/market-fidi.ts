@@ -572,6 +572,41 @@ function garfieldBuilding(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** DONNELLY HOTEL, 1272 Market (1910s): five storeys of cream plaster, arched upper windows, a dark shopfront base, a parapet (Mapillary a0, a1). */
+export function donnellyHotel(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.86, 0.82, 0.72]
+  tower(out, fit, {
+    height: 16,
+    base: { height: 3.2, face: { kind: 'curtain', wall: [0.18, 0.18, 0.18], glass: [0.14, 0.17, 0.19], pitch: 3, floor: 3.2, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.26, 0.3, 0.32], floor: 3.2, pitch: 3.2, solid: 0.6, arched: true, material: 'stucco' } }],
+    cornices: [{ at: 3.2, depth: 0.35, colour: CREAM }],
+    crown: { kind: 'parapet', height: 1, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** WELLS FARGO, 1256 Market: a low two-storey bank branch in tan-yellow brick, a row of ground-floor doors, a stepped parapet (Mapillary b0, b1). No logo or sign. */
+export function wellsFargo1256Market(out: MeshBuilder, fit: Fit): void {
+  const YELLOW: Rgb = [0.8, 0.68, 0.42]
+  tower(out, fit, {
+    height: 10,
+    tiers: [{ to: 1, face: { kind: 'punched', wall: YELLOW, glass: [0.2, 0.22, 0.24], floor: 5, pitch: 4, solid: 0.7, material: 'brick' } }],
+    cornices: [{ at: 0.5, depth: 0.2, colour: YELLOW }],
+    crown: { kind: 'parapet', height: 1.2, colour: YELLOW, material: 'brick' },
+  })
+}
+
+/** YULLY BUILDING, 1212 Market: a small four-storey loft in grey-brown brick, piers between the bays, dark-glass shopfront, parapet (Mapillary c0). */
+export function yullyBuilding(out: MeshBuilder, fit: Fit): void {
+  const BROWN: Rgb = [0.5, 0.46, 0.42]
+  tower(out, fit, {
+    height: 15,
+    base: { height: 3.6, face: { kind: 'curtain', wall: [0.2, 0.2, 0.2], glass: [0.16, 0.18, 0.18], pitch: 3, floor: 3.6, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'fins', wall: BROWN, glass: [0.2, 0.22, 0.22], floor: 3.8, pitch: 3.2, solid: 0.55, depth: 0.35, material: 'brick' } }],
+    cornices: [{ at: 13.5, depth: 0.4, colour: BROWN }],
+    crown: { kind: 'parapet', height: 1.2, colour: BROWN, material: 'brick' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -604,4 +639,7 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   market800,
   market742,
   garfieldBuilding,
+  donnellyHotel,
+  wellsFargo1256Market,
+  yullyBuilding,
 }
