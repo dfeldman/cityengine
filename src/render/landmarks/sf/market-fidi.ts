@@ -233,6 +233,25 @@ function bofaMarketNewMontgomery(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+// ---------------------------------------------------------------- 715-719 Market Street, Digital Garage (pre-war; way/149332501)
+/**
+ * Mapillary on Market (picks 0-1): an eight-storey pre-war office block with a glazed shopfront under a stone band,
+ * a grey shaft of ribbon windows in deep spandrels, and a plain stone-capped parapet.
+ */
+function digitalGarage715Market(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.72, 0.7, 0.66]
+  const GREY: Rgb = [0.74, 0.74, 0.72]
+  const GLASS: Rgb = [0.24, 0.28, 0.32]
+  const shopfront: Face = { kind: 'curtain', wall: STONE, glass: GLASS, floor: 4.5, pitch: 2.4, material: 'granite' }
+  const shaft: Face = { kind: 'bands', wall: GREY, glass: GLASS, floor: 3.3, solid: 0.45, material: 'concrete' }
+  tower(out, fit, {
+    height: 33,
+    base: { height: 4.5, face: shopfront },
+    tiers: [{ to: 1, face: shaft, cornice: { depth: 0.6, height: 0.8, colour: STONE } }],
+    crown: { kind: 'parapet', height: 1.0, colour: STONE, material: 'granite' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -243,4 +262,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   prism1028Market,
   livat945Market,
   bofaMarketNewMontgomery,
+  digitalGarage715Market,
 }

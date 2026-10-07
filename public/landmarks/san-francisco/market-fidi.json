@@ -88,5 +88,15 @@
   "height": 50,
   "sign": false,
   "note": "market-fidi.ts: Bank of America Building, Market at New Montgomery: dark grey granite base of shops under a white-cream punched shaft in dark-framed columns, setback and dark parapet; from Mapillary frames on Market and New Montgomery (picks 0-2)."
+ },
+ {
+  "osm": [
+   "way/149332501"
+  ],
+  "name": "715-719 Market Street (Digital Garage)",
+  "procedural": "digitalGarage715Market",
+  "height": 33,
+  "sign": false,
+  "note": "market-fidi.ts: 715-719 Market Street, Digital Garage: pre-war eight-storey office block, glazed shopfront under a stone band, grey ribbon-window shaft and stone-capped parapet; from Mapillary frames on Market (picks 0-1)."
  }
 ]

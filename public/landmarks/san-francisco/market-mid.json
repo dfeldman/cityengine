@@ -235,15 +235,6 @@
  },
  {
   "osm": [
-   "way/149332501"
-  ],
-  "name": "715-719 Market Street (Digital Garage)",
-  "restyle": "chicago",
-  "note": "Pre-war office block with a glazed ground floor.",
-  "levels": 8
- },
- {
-  "osm": [
    "way/149332499"
   ],
   "name": "721 Market Street",
