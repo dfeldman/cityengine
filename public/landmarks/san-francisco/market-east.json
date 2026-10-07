@@ -481,7 +481,7 @@
    "way/148710880"
   ],
   "name": "Battery Street tower (north)",
-  "restyle": "skyscraper",
+  "procedural": "unnamedSutterStreet",
   "levels": 24
  },
  {
@@ -489,7 +489,7 @@
    "way/148710883"
   ],
   "name": "Battery Street tower (south)",
-  "restyle": "skyscraper",
+  "procedural": "unnamedSutterStreetTwo",
   "levels": 24
  },
  {

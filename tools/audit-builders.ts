@@ -399,7 +399,7 @@ export const UNREFERENCED_OK = {
     'ccsfChinatownAnnex', 'fiftyCaliforniaStreet', 'foGuangShanSanBaoTemple', 'fortyFourMontgomery',
     'fourTwentyFiveMarket', 'fulton501', 'hunterDulin', 'newcomerSchool', 'oneSansomeStreet',
     'pgeGeneralOffice', 'twoThirtyFivePine', 'twoTwentyFiveBush', 'unnamedNineHundredBlock',
-    'unnamedPineStreet', 'unnamedSeventyThreeMeterTower', 'unnamedSutterStreet', 'unnamedSutterStreetTwo',
+    'unnamedPineStreet', 'unnamedSeventyThreeMeterTower',
     'unnamedTower256477866', 'usAppraisersBuilding',
     // the piers: modelled in piers.ts, absent from piers.json, which places sixteen of the twenty-two
     'pier3', 'pier19', 'pier29', 'pier45',

@@ -632,8 +632,8 @@
    "way/79377223"
   ],
   "name": "33 New Montgomery",
-  "restyle": "skyscraper",
-  "levels": 20,
+  "procedural": "e12_33newMontgomery_79377223",
+  "height": 80,
   "note": "1980s office tower; no reference photo found, so a plain modern facade."
  },
  {

@@ -29,7 +29,7 @@
       "way/32947380"
     ],
     "name": "Wells Fargo",
-    "restyle": "chicago",
+    "procedural": "e9_WellsFargo",
     "wall": "#e8e4d8",
     "trim": "#f5f2ed",
     "by": "haiku",
