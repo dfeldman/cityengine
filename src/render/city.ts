@@ -645,12 +645,21 @@ function dashedLine(out: MeshBuilder, pts: { x: number; z: number }[], offset: n
         const z0 = a.z + uz * t + oz
         const x1 = a.x + ux * (t + seg) + ox
         const z1 = a.z + uz * (t + seg) + oz
-        const hx = (-uz * width) / 2
-        const hz = (ux * width) / 2
-        out.quad(
-          [[x0 + hx, y, z0 + hz], [x0 - hx, y, z0 - hz], [x1 - hx, y, z1 - hz], [x1 + hx, y, z1 + hz]],
-          [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], white, 0,
-        )
+        /*
+         * A wide band (Market's red centre lanes, 6.6 m; a painted busway) is cut ACROSS into strips of at most 1.2 m:
+         * the marking is draped vertex by vertex, and across 6 m with only its two edges sampled it hung flat as a chord
+         * under the crown of the road between them — the road showed through it in torn patches (owner, 2026-10-06,
+         * Market at 6th: "red pavement looks bad here").
+         */
+        const strips = Math.max(1, Math.ceil(width / 1.2))
+        for (let k = 0; k < strips; k++) {
+          const f0 = -0.5 + k / strips, f1 = -0.5 + (k + 1) / strips
+          const a0x = -uz * width * f0, a0z = ux * width * f0, a1x = -uz * width * f1, a1z = ux * width * f1
+          out.quad(
+            [[x0 + a1x, y, z0 + a1z], [x0 + a0x, y, z0 + a0z], [x1 + a0x, y, z1 + a0z], [x1 + a1x, y, z1 + a1z]],
+            [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], white, 0,
+          )
+        }
         t += seg
       } else {
         t += Math.max(1e-3, period - phase)   // see the note in `zebra`: a zero step hangs the tab
@@ -1210,8 +1219,21 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain
   // …except a street tunnel's mouths (render/tunnels.ts), BEFORE the occluder: a mouth is below the raw ground by
   // nature — the road runs down into it in a cut — and the occluder, drawn first, hid its floor and the foot of its
   // portal, so the street outside seemed to run on up into the arch. They are only shown near and in front.
+  /*
+   * …and the road MARKINGS near the eye (owner, 2026-10-06, Market at 6th: "red pavement looks bad here"): the
+   * carriageway is drawn in the group below, untouched by the occluder, but its paint is in this one, and wherever the
+   * occluder's coarse triangles stood a few centimetres over the street the red lanes came out in torn patches. Near
+   * (within 250 m of the camera) the paint goes before the occluder, as the tunnel mouths do; far off it stays after
+   * it, so a street behind a hill keeps its paint hidden.
+   */
+  const nearEye = (mesh: { getBoundingInfo?: () => { boundingSphere: { centerWorld: { x: number; z: number } } } }): boolean => {
+    const cam = scene.activeCamera
+    const c = mesh.getBoundingInfo?.().boundingSphere.centerWorld
+    return !!cam && !!c && Math.hypot(c.x - cam.globalPosition.x, c.z - cam.globalPosition.z) < 250
+  }
   const rank = (mesh: { name: string }): number =>
     mesh.name.startsWith('tunnel:entry') || mesh.name.startsWith('tunnel:portals') ? -1
+      : mesh.name.startsWith('markings:') && nearEye(mesh as never) ? -1
       : mesh.name.startsWith('ground:occluder') ? 0 : mesh.name.startsWith('areas:') ? 1 : mesh.name.startsWith('corridor:') ? 2 : 3
   for (const group of [GROUP.areas, GROUP.road, GROUP.building]) {
     scene.setRenderingOrder(group, (a, b) => rank(a.getMesh()) - rank(b.getMesh()))
@@ -2785,6 +2807,9 @@ export class City {
       markings.toVertexData().applyToMesh(m)
       m.material = cartoonMaterial(this.scene, 'cartoonStatic', false)
       m.renderingGroupId = GROUP.walk      // after the road surface, before the buildings
+      // (6 cm clear of the graded carriageway that shares this group: it runs straight between the edge's points while
+      // the paint is draped point by point, and where they parted the street came through the red lanes in patches)
+      m.position.y = 0.06
       meshes.push(m)
     }
 
