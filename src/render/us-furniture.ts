@@ -96,10 +96,13 @@ function adFace(out: MeshBuilder, c: [number, number, number], hw: number, hh: n
     [[0.2, 0.6, 0.64], [0.98, 0.98, 0.96], [0.98, 0.5, 0.2]],
   ]
   const [bg, ink, accent] = palettes[Math.floor(r(1) * palettes.length)]
-  const face = (u: number, v: number, w: number, h: number, col: Rgb, lift: number, glow = false): void => {
+  // (the layers a few CENTIMETRES apart, as thin slabs: a few millimetres fought at the distance a billboard is
+  //  read from — owner, 2026-10-06, "billboards have z fighting")
+  const face = (u: number, v: number, w: number, h: number, col: Rgb, lift0: number, glow = false): void => {
+    const lift = lift0 * 10
     const [x, y, z] = c
-    if (axis === 'z') box(out, x + u, y + v, z + lift, w, h, 0.002, col, glow ? EMIT : FIXED)
-    else box(out, x + lift, y + v, z + u, 0.002, h, w, col, glow ? EMIT : FIXED)
+    if (axis === 'z') box(out, x + u, y + v, z + lift, w, h, 0.004, col, glow ? EMIT : FIXED)
+    else box(out, x + lift, y + v, z + u, 0.004, h, w, col, glow ? EMIT : FIXED)
   }
   face(0, 0, hw, hh, bg, 0, true)
   /*
@@ -132,14 +135,14 @@ export function billboard(out: MeshBuilder, seed = 0): void {
   const hh = 2.15
   strut(out, [0, 0, -0.6], [0, top - hh, -0.6], 0.9, 0.9, STEEL, FIXED)
   box(out, 0, top, -0.35, hw + 0.2, hh + 0.2, 0.2, DARK, FIXED)                 // the frame
-  adFace(out, [0, top, -0.13], hw, hh, 'z', seed)
+  adFace(out, [0, top, -0.1], hw, hh, 'z', seed)
   box(out, 0, top - hh - 0.35, 0.3, hw, 0.05, 0.5, STEEL, FIXED)                // the catwalk
   for (let x = -hw + 1; x < hw; x += 3.2) {
     strut(out, [x, top - hh - 0.3, 0.5], [x, top - hh - 0.1, 1.2], 0.06, 0.06, STEEL, FIXED)
     box(out, x, top - hh - 0.05, 1.25, 0.2, 0.06, 0.12, [1, 0.96, 0.85], EMIT)
   }
   // the back, plain steel
-  box(out, 0, top, -0.56, hw, hh, 0.02, [0.42, 0.44, 0.46], FIXED)
+  box(out, 0, top, -0.6, hw, hh, 0.02, [0.42, 0.44, 0.46], FIXED)
 }
 
 /** The USPS collection box: the blue box on its four legs, the rounded top, the pull-down slot. */

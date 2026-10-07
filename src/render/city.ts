@@ -3662,8 +3662,15 @@ export class City {
     // signals, tram and bus stops and métro entrances do stand in the middle of a road)
     const pointKerb = new Carriageways(groundEdges)
     const kerbOnly = new Set(['column', 'kiosk', 'billboard', 'postbox', 'hydrant', 'bikeshare', 'fountain'])
+    // (one billboard where OSM maps two a few metres apart — the two faces of one sign, or one sign twice: 14.6 m boards
+    //  2-8 m apart stood through each other and fought — owner, 2026-10-06, "billboards have z fighting")
+    const boards: { x: number; z: number }[] = []
     for (const f of this.pointsIn.get(k) ?? []) {
       if (kerbOnly.has(f.kind) && skippedIf(pointKerb.whyNoFurniture(f.x, f.z), f.x, f.z, `osm ${f.kind}`)) continue
+      if (f.kind === 'billboard') {
+        if (boards.some((q) => Math.hypot(q.x - f.x, q.z - f.z) < 16)) continue
+        boards.push({ x: f.x, z: f.z })
+      }
       // a subway entrance a model draws itself (its `coversRaised` footprint): the open BART plazas on Mission Street
       if (f.kind === 'metro' && this.inCover(f.x, f.z)) continue
       const heading = this.streetBearing(f.x, f.z, f.kind === 'bikeshare' || f.kind === 'column')
