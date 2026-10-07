@@ -4,7 +4,8 @@
  * rest is the object of that name. Hashed bundles (assets/) and the big city data are cached hard; index.html is
  * revalidated so a new build shows at once.
  *
- *   cd worker && npx wrangler deploy
+ *   cd worker && npx wrangler deploy     (CLOUDFLARE_ACCOUNT_ID, and CLOUDFLARE_API_KEY + CLOUDFLARE_EMAIL from ../api_key)
+ *   live: https://cycle-dash.dfeldman-mn.workers.dev
  */
 const TYPES = {
   html: 'text/html; charset=utf-8', js: 'text/javascript; charset=utf-8', mjs: 'text/javascript; charset=utf-8',
