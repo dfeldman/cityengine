@@ -158,8 +158,11 @@ export const ODDITIES: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     // the band all round the upright walls: black, light blue, black
     for (const [y0, y1, c] of [[1.50, 1.56, BLACK], [1.56, 1.80, BLUE], [1.80, 1.86, BLACK]] as const) {
       const yc = (y0 + y1) / 2, hy = (y1 - y0) / 2
-      for (const sx of [-1, 1]) box(out, sx * (hx + 0.015), yc, 0, 0.015, hy, hz, c, sx > 0 ? dark : wall)
-      for (const sz of [-1, 1]) box(out, 0, yc, sz * (hz + 0.015), hx, hy, 0.015, c, wall)
+      // (6 cm proud, and round the corners: at 3 cm the band flickered through the body seen from the terrace — owner,
+      //  2026-10-07, "z fighting on cam obscura")
+      const d = c === BLUE ? 0.06 : 0.065
+      for (const sx of [-1, 1]) box(out, sx * (hx + d / 2), yc, 0, d / 2, hy, hz + d, c, sx > 0 ? dark : wall)
+      for (const sz of [-1, 1]) box(out, 0, yc, sz * (hz + d / 2), hx + d, hy, d / 2, c, wall)
     }
     // the camera's knobs: black discs on each end, by the front corner
     const disc = (x: number, y: number, sz: number, r: number, c: [number, number, number]): void => {
@@ -183,7 +186,7 @@ export const ODDITIES: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
       const t = (k + 0.5) / 5, w = 0.55 * (1 - Math.sqrt(1 - t * t))
       for (const sz of [-1, 1]) box(out, fx + 0.36, PH - 0.28 - 0.5 * (1 - t), sz * (PW - 0.24 - w / 2), 0.04, 0.05, w / 2 + 0.01, PORTAL, wall)
     }
-    box(out, fx + 0.01, 1.2, 0, 0.01, 1.2, PW - 0.2, [0.62, 0.78, 0.88], wall)             // the vestibule's back wall
+    box(out, fx + 0.04, 1.2, 0, 0.04, 1.2, PW - 0.2, [0.62, 0.78, 0.88], wall)             // the vestibule's back wall
     box(out, fx + 0.3, 0.45, -0.95, 0.12, 0.45, 0.45, PORTAL, wall)                        // the ticket counter
     box(out, fx + 0.33, 1.3, -0.95, 0.02, 0.38, 0.42, [0.2, 0.26, 0.3], surfaceTag('glass'))
     box(out, fx + 0.37, 0.48, -0.95, 0.01, 0.12, 0.3, [0.85, 0.12, 0.12], wall)           // NOW OPEN, red
@@ -202,13 +205,13 @@ export const ODDITIES: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     // the south end: GIANT CAMERA, and the door into the dark room
     sign(out, { type: 'flat', text: 'GIANT CAMERA', h: 0.34, face: 'grotesque', weight: 'bold', colour: [0.1, 0.12, 0.2], tracking: 0.1, lit: 'none', w: 2.9 },
       { x: -hx + 1.75, y: 2.25, z: -hz - 0.02, heading: Math.PI })
-    box(out, hx - 2.45, 1.05, -hz - 0.02, 0.42, 1.05, 0.03, [0.62, 0.64, 0.66], wall)
-    box(out, hx - 2.45, 1.05, -hz - 0.04, 0.35, 0.98, 0.01, [0.12, 0.12, 0.13], dark)
+    box(out, hx - 2.45, 1.05, -hz - 0.04, 0.42, 1.05, 0.04, [0.62, 0.64, 0.66], wall)
+    box(out, hx - 2.45, 1.05, -hz - 0.1, 0.35, 0.98, 0.02, [0.12, 0.12, 0.13], dark)
     // THE LENS HOUSE on the roof
     const C: [number, number, number] = [0.9, 0.86, 0.66]
     prism(out, 0, 0, 3.25, 4.4, 1.3, 24, C, surfaceTag('clapboard'))
     prism(out, 0, 0, 3.66, 3.72, 1.48, 24, BLACK, dark)
-    prism(out, 0, 0, 3.72, 4.0, 1.52, 24, BLUE, wall, 1.46)
+    prism(out, 0, 0, 3.72, 4.0, 1.56, 24, BLUE, wall, 1.5)
     prism(out, 0, 0, 4.0, 4.06, 1.48, 24, BLACK, dark)
     prism(out, 0, 0, 4.4, 4.5, 1.4, 24, BLACK, dark)
     prism(out, 0, 0, 4.5, 5.75, 1.3, 16, SHINGLE, surfaceTag('tile'), 0.34)

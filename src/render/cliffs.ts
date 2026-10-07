@@ -123,6 +123,9 @@ export function cliffsLayer(scene: Scene, zones: Zone[], terrain: Terrain, sea: 
       })
       const out = new MeshBuilder()
       const rock = surfaceTag('granite')
+      const wideSlope = (x: number, z: number): number => Math.hypot(
+        (terrain.rawHeightAt(x + 5, z) - terrain.rawHeightAt(x - 5, z)) / 10,
+        (terrain.rawHeightAt(x, z + 5) - terrain.rawHeightAt(x, z - 5)) / 10)
       for (let x = rect.x0; x < rect.x1; x += STEP) {
         for (let z = rect.z0; z < rect.z1; z += STEP) {
           const cx = x + STEP / 2, cz = z + STEP / 2
@@ -133,7 +136,9 @@ export function cliffsLayer(scene: Scene, zones: Zone[], terrain: Terrain, sea: 
           const h00 = terrain.rawHeightAt(x, z), h10 = terrain.rawHeightAt(x + STEP, z)
           const h01 = terrain.rawHeightAt(x, z + STEP), h11 = terrain.rawHeightAt(x + STEP, z + STEP)
           const gx = ((h10 - h00) + (h11 - h01)) / (2 * STEP), gz = ((h01 - h00) + (h11 - h10)) / (2 * STEP)
-          const slope = Math.hypot(gx, gz)
+          // (the slope that decides rock is taken over ±5 m: on the lidar's 4 m ground every bump and terrace step read as a
+          //  cliff at ±1 m, and the headland at Sutro Baths was carpeted in rock — 2026-10-07)
+          const slope = wideSlope(cx, cz)
           const low = Math.min(h00, h01, h10, h11)
           // never under the water: the sea floor falls away steeply; and never over a path (a cell is 2 m: its middle
           // within a metre and a half of the path's edge would lap onto it)
@@ -168,8 +173,8 @@ export function cliffsLayer(scene: Scene, zones: Zone[], terrain: Terrain, sea: 
           const cx = x + BLOCK_STEP * (0.2 + 0.6 * hash(x * 3, z)), cz = z + BLOCK_STEP * (0.2 + 0.6 * hash(x, z * 3))
           if (hash(cx * 17, cz * 19) > BLOCK_SHARE || !here.some((zn) => inRing(zn.ring, cx, cz))) continue
           const g = terrain.rawHeightAt(cx, cz)
-          const gx = (terrain.rawHeightAt(cx + 1, cz) - terrain.rawHeightAt(cx - 1, cz)) / 2
-          const gz = (terrain.rawHeightAt(cx, cz + 1) - terrain.rawHeightAt(cx, cz - 1)) / 2
+          const gx = (terrain.rawHeightAt(cx + 5, cz) - terrain.rawHeightAt(cx - 5, cz)) / 10
+          const gz = (terrain.rawHeightAt(cx, cz + 5) - terrain.rawHeightAt(cx, cz - 5)) / 10
           const slope = Math.hypot(gx, gz)
           if (slope < STEEP * 0.95 || (sea != null && g < sea + 0.5) || wet(cx, cz)) continue
           // down the slope, give or take: the joints run a little across it

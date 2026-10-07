@@ -15,7 +15,7 @@ import type { Fit } from '../../fit.ts'
 import { boxAlong, edgeAt, longestEdge, gunPit, stair, stripRoof } from '../../parts.ts'
 import { prism } from '../../../models.ts'
 import { faceBand, towerRing } from '../../tower.ts'
-import { capPolygon, capPolygonWithHoles } from '../../../buildings.ts'
+import { capPolygon } from '../../../buildings.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
 
 const CONCRETE: [number, number, number] = [0.65, 0.64, 0.61]
@@ -26,19 +26,6 @@ const EARTH_DARK: [number, number, number] = [0.38, 0.35, 0.31]
 
 type P2 = { x: number; z: number }
 
-/**
- * Helper to define a point in the battery's local coordinate frame.
- * `u` = distance along the seaward edge (0 = left, L = right)
- * `v` = distance inland (negative = seaward, positive = inland) from the seaward edge's baseline
- * `y` = height
- */
-function makeCoord(edge: ReturnType<typeof edgeAt>, u: number, v: number, y: number): [number, number, number] {
-  return [
-    edge.a.x + edge.tx * u - edge.nx * v,
-    y,
-    edge.a.z + edge.tz * u - edge.nz * v,
-  ]
-}
 
 /**
  * Draw a magazine room doorway: a dark recessed opening in the wall with a concrete lintel above.
@@ -111,7 +98,6 @@ export const BATTERIES: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     const parapetHeight = 3.5
     const deckHeight = 0.3
     const magHeight = 2.8
-    const bermHeight = 2.3
     const parapeDepth = 2.4  // thickness of parapet
 
     // ===== THE GUN PIT: SUNKEN CIRCULAR EMPLACEMENT IN THE PARAPET =====
@@ -141,8 +127,6 @@ export const BATTERIES: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
 
     // ===== THE GUN DECK: FLAT PLATFORM BEHIND THE PARAPET =====
     const deckDepth = 4.5
-    const deckX = seaward.a.x + seaward.tx * (seaward.L / 2) - seaward.nx * (parapeDepth + deckDepth / 2)
-    const deckZ = seaward.a.z + seaward.tz * (seaward.L / 2) - seaward.nz * (parapeDepth + deckDepth / 2)
     capPolygon(
       out,
       [

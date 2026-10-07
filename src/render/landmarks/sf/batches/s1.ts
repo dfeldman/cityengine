@@ -148,15 +148,20 @@ export const s1_sutro_baths_32776564 = (out: MeshBuilder, fit: Fit): void => {
   wall(bx0 - 2, -L * 0.95, bx0 - 2, L * 0.15, 3.2, 3.2, DARK)
   wall(bx0 - 2, L * 0.32, bx0 - 2, L * 0.95, 3.2, 3.2, DARK)
   for (const [z, s] of [[L * 0.2, 1.6], [L * 0.24, 1.1], [L * 0.28, 1.4]] as const) box(out, bx0 - 3 + s * 0.3, s * 0.3, z, s, s * 0.7, s, DARK, concrete)
-  // the foundations climbing the cliff in terraces, a stair between each pair
+  // the foundations climbing the cliff in terraces, a stair between each pair — each a slab ON the ground under it
+  // (2026-10-07: they were solid blocks rising 2.5–16 m from the sea's level, sized for the old smoothed hillside; on the
+  // lidar ground the real slope falls away and they stood out as a white slab 80 m long, their column stumps floating on
+  // and around it — owner, "floating cubes at sutro baths")
+  const gAt = (x: number, z: number): number => fit.groundAt ? fit.groundAt(x, z) : 0
   for (let t = 0; t < 4; t++) {
-    const x0 = bx1 + 2 + t * ((W - bx1) / 4)
-    const y = 2.5 + t * 4.5
-    box(out, x0 + (W - bx1) / 8, y / 2, 0, (W - bx1) / 8, y / 2, L * (0.8 - t * 0.12), OLD, concrete)
-    // the column stumps on each terrace
-    for (let k = -4; k <= 4; k++) box(out, x0 + 2, y + 0.6, k * L * 0.16, 0.5, 0.6, 0.5, DARK, concrete)
-    // the stair up to it, at the south end
-    for (let st = 0; st < 6; st++) box(out, x0 - 1 + st * 0.45, (y - 4.5) + (st + 1) * 0.75 * (4.5 / 4.5) / 1, -L * (0.8 - t * 0.12) - 1.5, 0.3, 0.38, 1.4, OLD, concrete)
+    const x0 = bx1 + 2 + t * ((W - bx1) / 4), hw = (W - bx1) / 8, xc = x0 + hw, hl = L * (0.8 - t * 0.12)
+    // the slab's top: the lowest ground along its length (so it never stands proud), and at least the sea + 1 m
+    let y = Infinity
+    for (let k = -4; k <= 4; k++) y = Math.min(y, gAt(xc, (k / 4) * hl))
+    y = Math.max(1, y + 0.3)
+    box(out, xc, y - 0.6, 0, hw, 0.6, hl, OLD, concrete)
+    // the column stumps on each terrace, standing on its top
+    for (let k = -4; k <= 4; k++) box(out, x0 + 2, y + 0.6, k * L * 0.16 * (hl / (L * 0.8)), 0.5, 0.6, 0.5, DARK, concrete)
   }
   // the tunnel's portal in the headland at the north end
   box(out, bx0 + 6, 4, L * 0.98, 6, 4, 3, DARK, concrete)

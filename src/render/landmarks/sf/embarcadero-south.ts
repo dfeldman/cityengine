@@ -107,7 +107,7 @@ const RINCON_COURT = [
   rp([[1713, -122], [1706, -115], [1698, -113], [1694, -108], [1682, -107], [1706, -131], [1711, -132], [1715, -124]]),
 ]
 export function towersAtRincon(out: MeshBuilder, _fit: Fit): void {
-  const GRANITE: Rgb = [0.8, 0.79, 0.76], PALE: Rgb = [0.86, 0.86, 0.84], GLASS: Rgb = [0.22, 0.27, 0.32]
+  const GRANITE: Rgb = [0.8, 0.79, 0.76], PALE: Rgb = [0.86, 0.86, 0.84]
   const conc = surfaceTag('concrete')
   const PODIUM_H = 22
   for (const ring of RINCON_PODIUM) {

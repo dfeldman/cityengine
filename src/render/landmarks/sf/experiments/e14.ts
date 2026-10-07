@@ -31,8 +31,8 @@ export const EXP_14: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
    */
   e14_residentialTower_320721969: (out, fit) => {
     facade(out, fit, {
-      ground: { kind: 'recessed', storeys: 2, depth: 0.8 },
-      shaft: { storeys: Math.max(1, Math.round((fit.height - 7.2) / 3.2)), windows: 'bays' },
+      ground: { kind: 'recessed', storeys: 2, depth: 0.8, material: null },
+      shaft: { storeys: Math.max(1, Math.round((fit.height - 7.2) / 3.2)), windows: 'bays', material: null },
       top: null,
       bands: { aboveGround: null, belowTop: 'string', top: null },
       crown: { kind: 'flat' },
@@ -49,8 +49,8 @@ export const EXP_14: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
    */
   e14_ribbonTower_260318176: (out, fit) => {
     facade(out, fit, {
-      ground: { kind: 'plain', storeys: 2 },
-      shaft: { storeys: Math.max(1, Math.round((fit.height - 7.2) / 3.2)), windows: 'continuous' },
+      ground: { kind: 'plain', storeys: 2, material: null },
+      shaft: { storeys: Math.max(1, Math.round((fit.height - 7.2) / 3.2)), windows: 'continuous', material: null },
       top: null,
       bands: { aboveGround: null, belowTop: null, top: null },
       crown: { kind: 'flat' },
@@ -67,9 +67,9 @@ export const EXP_14: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
    */
   e14_mixedUseTower_1249412094: (out, fit) => {
     facade(out, fit, {
-      ground: { kind: 'plain', storeys: 3 },
-      shaft: { storeys: Math.max(1, Math.round((fit.height - 10.8) / 3.6)), windows: 'balanced' },
-      top: { kind: 'glazed', storeys: 1 },
+      ground: { kind: 'plain', storeys: 3, material: null },
+      shaft: { storeys: Math.max(1, Math.round((fit.height - 10.8) / 3.6)), windows: 'balanced', material: null },
+      top: { kind: 'glazed', storeys: 1, material: null },
       bands: { aboveGround: null, belowTop: 'string', top: null },
       crown: { kind: 'flat' },
       frame: null,
