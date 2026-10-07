@@ -442,15 +442,6 @@
  },
  {
   "osm": [
-   "way/1072899109"
-  ],
-  "name": "Serif (960 Market Street)",
-  "restyle": "bauhaus",
-  "note": "2021 grey concrete tower over the old Wilson Building.",
-  "levels": 12
- },
- {
-  "osm": [
    "way/332517080"
   ],
   "name": "969 Market Street",

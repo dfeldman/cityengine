@@ -89,8 +89,33 @@ function unionTrustBank(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+// ---------------------------------------------------------------- Serif, 960 Market (2021; way/1072899109)
+/**
+ * Mapillary frames on Market: a 12-storey apartment block of pale grey-white cladding, its wall in deep bowed
+ * bay windows stacked one per floor with dark glass, a flat roof with a slight step, and a glazed ground floor
+ * under a cream band and dark soffit. Recognisable, not accurate.
+ */
+function serif960Market(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.84, 0.85, 0.84]
+  const GLASS: Rgb = [0.22, 0.26, 0.3]
+  const DARK: Rgb = [0.18, 0.2, 0.22]
+  const bays: Face = { kind: 'punched', wall: GREY, glass: GLASS, floor: 3.1, pitch: 4.2, solid: 0.5, material: 'concrete' }
+  tower(out, fit, {
+    height: 37,
+    base: { height: 4.2, face: { kind: 'curtain', wall: DARK, glass: [0.2, 0.26, 0.3], pitch: 2.6, floor: 4.2, material: 'metal' } },
+    cornices: [{ at: 4.6, depth: 0.5, height: 0.6, colour: GREY }],
+    tiers: [
+      { to: 0.9, face: bays },
+      { to: 1.0, face: bays, inset: 1, cornice: { depth: 0.4, height: 0.6, colour: GREY } },
+    ],
+    roof: [0.7, 0.7, 0.7],
+    crown: { kind: 'parapet', height: 1.0, colour: GREY, material: 'concrete' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
   unionTrustBank,
+  serif960Market,
 }
