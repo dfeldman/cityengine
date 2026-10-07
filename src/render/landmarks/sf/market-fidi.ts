@@ -312,6 +312,51 @@ function aidaHotel1083Market(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** 1119 Market: four storeys of tan terracotta over a dark shopfront, beside the Strand (Mapillary a0, a1). */
+function market1119(out: MeshBuilder, fit: Fit): void {
+  const TERRA: Rgb = [0.7, 0.5, 0.36]
+  const SHOP: Rgb = [0.16, 0.14, 0.13]
+  const GLASS: Rgb = [0.14, 0.17, 0.19]
+  tower(out, fit, {
+    height: 15.5,
+    base: { height: 4, face: { kind: 'curtain', wall: SHOP, glass: GLASS, pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [
+      { to: 1.0, face: { kind: 'punched', wall: TERRA, glass: GLASS, floor: 3.8, pitch: 3, solid: 0.45, material: 'terracotta' }, cornice: { depth: 0.45, height: 0.6, colour: TERRA } },
+    ],
+    crown: { kind: 'parapet', height: 0.9, colour: TERRA, material: 'terracotta' },
+  })
+}
+
+/** Budget Inn, 1139 Market: a brick hotel of about four storeys at 3.2 m, dark shopfront, plain parapet (Mapillary b0, b1). */
+function budgetInn1139Market(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.6, 0.38, 0.27]
+  const SHOP: Rgb = [0.2, 0.18, 0.17]
+  const GLASS: Rgb = [0.2, 0.22, 0.24]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 3.2, face: { kind: 'curtain', wall: SHOP, glass: GLASS, pitch: 3, floor: 3.2, material: 'metal' } },
+    tiers: [
+      { to: 1.0, face: { kind: 'punched', wall: BRICK, glass: GLASS, floor: 3.2, pitch: 2.6, solid: 0.6, material: 'brick' }, cornice: { depth: 0.3, height: 0.4, colour: BRICK } },
+    ],
+    crown: { kind: 'parapet', height: 0.8, colour: BRICK, material: 'brick' },
+  })
+}
+
+/** 1100 Market annexe, north-west side by Leavenworth: six storeys of grey panelled 1920s commercial, arched heads (Mapillary c0). */
+function market1100Annexe(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.6, 0.6, 0.58]
+  const SHOP: Rgb = [0.14, 0.14, 0.15]
+  const GLASS: Rgb = [0.18, 0.2, 0.22]
+  tower(out, fit, {
+    height: 23,
+    base: { height: 4, face: { kind: 'curtain', wall: SHOP, glass: GLASS, pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [
+      { to: 1.0, face: { kind: 'punched', wall: GREY, glass: GLASS, floor: 3.8, pitch: 3.2, solid: 0.5, arched: true, material: 'concrete' }, cornice: { depth: 0.4, height: 0.6, colour: GREY } },
+    ],
+    crown: { kind: 'parapet', height: 1.2, colour: GREY, material: 'concrete' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -326,4 +371,7 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   ppic500Washington,
   grantBuilding1095Market,
   aidaHotel1083Market,
+  market1119,
+  budgetInn1139Market,
+  market1100Annexe,
 }

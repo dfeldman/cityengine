@@ -124,5 +124,29 @@
   "height": 26,
   "sign": false,
   "note": "market-fidi.ts: Aida Hotel, 1083-1087 Market: about seven-storey 1910s stucco hotel over a shopfront, flat parapet; Mapillary frame hidden by trees, massing from outline."
+ },
+ {
+  "osm": ["way/255960480"],
+  "name": "1119 Market Street",
+  "procedural": "market1119",
+  "height": 15.5,
+  "sign": false,
+  "note": "market-fidi.ts: 1119 Market, four storeys of tan terracotta over a dark shopfront, beside the Strand; Mapillary frames a0, a1 (storeys counted, OSM 44 m rejected)."
+ },
+ {
+  "osm": ["way/255960478"],
+  "name": "Budget Inn, 1139 Market Street",
+  "procedural": "budgetInn1139Market",
+  "height": 13,
+  "sign": false,
+  "note": "market-fidi.ts: Budget Inn, 1139 Market: brick hotel of about four storeys at 3.2 m, dark shopfront, plain parapet; Mapillary frames b0, b1 (OSM 31 m rejected)."
+ },
+ {
+  "osm": ["way/32865004"],
+  "name": "1100 Market Street annexe",
+  "procedural": "market1100Annexe",
+  "height": 23,
+  "sign": false,
+  "note": "market-fidi.ts: 1100 Market annexe, NW side by Leavenworth: six storeys of grey panelled 1920s commercial, arched heads on the upper floors; Mapillary frame c0 (OSM 42 m rejected)."
  }
 ]
