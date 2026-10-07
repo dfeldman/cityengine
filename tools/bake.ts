@@ -1455,6 +1455,52 @@ async function bake(spec: CitySpec): Promise<void> {
     if (n) console.log(`  raw relief kept in ${rawZones.length} zone(s): ${n} fine samples unopened`)
   }
   /*
+   * …and where a zone says `lidar: true`, the LIDAR bare earth (tools/lidar/dtm.py → tools/cache/lidar/dtm-<city>.json):
+   * the zoom-15 tiles top out at ~37° at Lands End however little they are smoothed, the data itself being blurred,
+   * and the cliffs "look wrong when smoothed over" (owner, 2026-10-06). The lidar has them at up to 81°. Sampled
+   * bilinearly at each fine post; shifted by the median difference between the two over the zone, so the datums
+   * (NAVD88 and the tiles') agree; a post with no lidar ground under it, or in the water, keeps the tile's height.
+   */
+  {
+    const dtmFile = resolve(import.meta.dirname, 'cache', 'lidar', `dtm-${spec.id}.json`)
+    const lidarZones = loadZones(spec, (lat, lon) => proj.toLocal({ lat, lon })).filter((zn) => zn.props.lidar)
+    if (lidarZones.length && !existsSync(dtmFile)) console.log(`  !! ${lidarZones.length} zone(s) ask for lidar ground, and there is no ${dtmFile} — run tools/lidar/dtm.py`)
+    if (lidarZones.length && existsSync(dtmFile)) {
+      const dtm = JSON.parse(readFileSync(dtmFile, 'utf8')) as { zones: { name: string; x0: number; z0: number; step: number; cols: number; rows: number; h: (number | null)[] }[] }
+      for (const g of dtm.zones) {
+        const zn = lidarZones.find((q) => q.name === g.name)
+        if (!zn) continue
+        const at = (x: number, z: number): number | null => {
+          const fc = (x - g.x0) / g.step, fr = (z - g.z0) / g.step
+          const c = Math.floor(fc), r = Math.floor(fr)
+          if (c < 0 || r < 0 || c + 1 >= g.cols || r + 1 >= g.rows) return null
+          const v = [g.h[r * g.cols + c], g.h[r * g.cols + c + 1], g.h[(r + 1) * g.cols + c], g.h[(r + 1) * g.cols + c + 1]]
+          if (v.some((q) => q === null)) return null
+          const tx = fc - c, tz = fr - r
+          return ((v[0]! * (1 - tx) + v[1]! * tx) * (1 - tz) + (v[2]! * (1 - tx) + v[3]! * tx) * tz)
+        }
+        const posts: [number, number][] = []
+        const diffs: number[] = []
+        const [x0, z0, x1, z1] = zn.bbox
+        for (let r = Math.max(0, Math.floor((z0 - fz0) / FINE_STEP)); r < Math.min(frows, Math.ceil((z1 - fz0) / FINE_STEP)); r++) {
+          for (let c = Math.max(0, Math.floor((x0 - fx0) / FINE_STEP)); c < Math.min(fcols, Math.ceil((x1 - fx0) / FINE_STEP)); c++) {
+            const i = r * fcols + c
+            if (fineWet[i] || !zonesAt([zn], fx0 + c * FINE_STEP, fz0 + r * FINE_STEP).length) continue
+            const v = at(fx0 + c * FINE_STEP, fz0 + r * FINE_STEP)
+            if (v === null) continue
+            posts.push([i, v])
+            diffs.push(fineGround[i] - v)
+          }
+        }
+        if (!posts.length) continue
+        diffs.sort((p, q) => p - q)
+        const shift = diffs[diffs.length >> 1]
+        for (const [i, v] of posts) fineGround[i] = v + shift
+        console.log(`  lidar ground in ${g.name}: ${posts.length} fine posts (datum shift ${shift.toFixed(2)} m)`)
+      }
+    }
+  }
+  /*
    * The sea bed is not the ground (BUGS.md #58). The elevation tiles carry BATHYMETRY: off the Embarcadero the
    * bay floor drops to −108 m, so the shoreline came out as a cliff, the water plane sat in a pit far out from
    * the quays, and the piers — which stand on the bed — hung over a canyon or appeared to be on dry land.

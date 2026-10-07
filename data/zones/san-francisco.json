@@ -123,7 +123,7 @@
     "crowd": 0.8,
     "trails": "bike",
     "water": "waves",
-    "cliffs": true,
+    "lidar": true, "cliffs": true,
     "relief": "raw"
    },
    "ring": [
