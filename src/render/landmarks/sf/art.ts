@@ -61,9 +61,10 @@ function basin(out: MeshBuilder, cx: number, cz: number, r: number, wallH: numbe
 // ---------------------------------------------------------------------------------------------------------------
 export function vaillancourtFountain(out: MeshBuilder, _fit?: Fit): void {
   const basinR = 9
+  const v0 = out.positions.length, w0 = out.water.length
   disc(out, 0, 0, 0, 0, basinR, [0.55, 0.53, 0.5], 32, CONC_TAG)
-  prism(out, 0, 0, -0.3, 0.4, basinR, 32, [0.5, 0.48, 0.45], CONC_TAG, basinR + 0.4)
-  disc(out, 0, 0.15, 0, 0, basinR * 0.94, WATER, 32)
+  // (the rim uncapped: capped, its top covered the whole basin at 0.4 m and hid the water under it)
+  prism(out, 0, 0, -0.3, 0.4, basinR, 32, [0.5, 0.48, 0.45], CONC_TAG, basinR + 0.4, false)
 
   // a square-section hollow tube: four thin slabs round a box, so it reads as a hollow beam not a solid one
   const s = 1.1 // half the tube's outer size
@@ -100,8 +101,47 @@ export function vaillancourtFountain(out: MeshBuilder, _fit?: Fit): void {
   for (const [a, b] of members) tube(a, b)
   // a few uprights straight from the basin so it stands rooted, not floating
   for (const [x, z] of [[-4, -3], [4, 3], [-3, 4], [3.5, -4], [0, 0]]) box(out, x, 0.3, z, s * 1.1, 0.5, s * 1.1, CONCRETE, CONC_TAG)
-  // water spilling from a few tube mouths: thin pale-blue drop boxes
-  for (const [x, y, z] of [[-4, 6.2, -3], [4, 8.7, 3], [0, 11.2, 0]] as V3[]) box(out, x, y / 2, z, 0.25, y / 2, 0.25, [0.65, 0.78, 0.82], 0)
+  /*
+   * THE WATER (owner, 2026-10-06: "the fountain at embarcadero plaza has no water"; render/water.ts): the basin's
+   * pool, and the fountain's signature — water ROARING out of the tube mouths in thick falls and arcing jets into the
+   * basin, white where it lands. (Was three pale-blue sticks.)
+   */
+  const pool: { x: number; z: number }[] = []
+  for (let k = 0; k < 32; k++) { const a = (k / 32) * Math.PI * 2; pool.push({ x: Math.cos(a) * basinR * 0.94, z: Math.sin(a) * basinR * 0.94 }) }
+  out.water.push({ kind: 'pool', ring: pool, y: 0.3, colour: [0.24, 0.34, 0.36] })
+  // falls out of the horizontal tubes' ends: a sheet across each mouth, falling to the basin
+  const falls: [V3, V3, number][] = [
+    [[-4.9, 6.5, -3.6], [-4.3, 6.5, -2.0], 6.3], [[4.9, 9, 3.6], [4.2, 9, 2.0], 8.8], [[-0.8, 5, 4.9], [0.9, 5, 4.9], 4.8],
+    [[4.9, 4, -0.8], [4.9, 4, 0.8], 3.8], [[-0.8, 2, -5.9], [0.8, 2, -5.9], 1.8], [[-5.9, 4, 0.8], [-5.9, 4, -0.8], 3.8],
+  ]
+  for (const [a, b, drop] of falls) {
+    out.water.push({ kind: 'sheet', a, b, out: 1.4, drop })
+    out.water.push({ kind: 'splash', at: [(a[0] + b[0]) / 2 * 1.15, 0.22, (a[2] + b[2]) / 2 * 1.15], r: 1.4 })
+  }
+  // jets arcing out of the high tube mouths into the basin
+  for (const [x, y, z, vx, vz] of [[0, 11.6, 0, 2.2, -1.5], [3.5, 7.6, -4, -1.2, 2.0], [-3, 8.2, 4, 1.6, -1.2], [0, 10.2, -0.5, -2.4, 0.4]] as [number, number, number, number, number][]) {
+    out.water.push({ kind: 'jet', at: [x, y, z], v: [vx, 1.5, vz], width: 0.25, spread: 0.5 })
+  }
+  out.water.push({ kind: 'splash', at: [0, 0.22, 0], r: 3.5 })
+  /*
+   * Stood on the HIGHEST ground round the basin (its base is the lowest, and the plaza falls across it): from there
+   * the basin floor and its water were under the paving, and the terrain's depth occluder hid them.
+   */
+  const g = _fit?.groundAt
+  if (g) {
+    let lift = 0
+    for (let k = 0; k < 16; k++) { const a = (k / 16) * Math.PI * 2; lift = Math.max(lift, g(Math.cos(a) * basinR, Math.sin(a) * basinR), g(0, 0)) }
+    if (lift > 0.02) {
+      for (let i = v0; i < out.positions.length; i += 3) out.positions[i + 1] += lift
+      for (let i = w0; i < out.water.length; i++) {
+        const f = out.water[i]
+        if (f.kind === 'pool') f.y += lift
+        else if (f.kind === 'sheet') { f.a[1] += lift; f.b[1] += lift }
+        else f.at[1] += lift
+      }
+      prism(out, 0, 0, -0.3, lift - 0.3, basinR + 0.4, 32, [0.5, 0.48, 0.45], CONC_TAG, basinR + 0.4, false)
+    }
+  }
 }
 
 // ---------------------------------------------------------------------------------------------------------------
