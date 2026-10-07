@@ -8,5 +8,15 @@
   "height": 103,
   "sign": false,
   "note": "market-fidi.ts: 71 Stevenson, brown granite base with cream bands, cream-piered shaft, three setbacks, small gabled crown; from Commons Stevenson Place.jpg and Mapillary."
+ },
+ {
+  "osm": [
+   "way/208345686"
+  ],
+  "name": "1177 Market at Trinity Place",
+  "procedural": "trinityPlace1177",
+  "height": 61,
+  "sign": false,
+  "note": "market-fidi.ts: 17-storey tan precast flats, punched bays, glazed strip, setback top; from Mapillary frames on Market and 8th."
  }
 ]
