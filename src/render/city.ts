@@ -2089,6 +2089,34 @@ export class City {
     const [cx, cz] = tileOf(mid.x, mid.z)
     let best = 0
     let on: { a: Point; b: Point } | null = null
+    /*
+     * The street the crossing CROSSES first — its centre line meets the crossing's own line — and only failing that
+     * the widest near it. A crossing split at the centre node of the street it crosses (the north side of Taylor at
+     * California, owner 2026-10-07: "crosswalks … shining through") is two half-crossings, each a few metres from a
+     * wider street; trimmed to the wider one's carriageway, each came out a single stray bar in the lane.
+     */
+    const meets = (a: Point, b: Point): boolean => {
+      for (let j = 1; j < pts.length; j++) {
+        const p = pts[j - 1], q = pts[j]
+        if (pointToSegment(p, a, b) < 0.6 || pointToSegment(q, a, b) < 0.6 || pointToSegment(a, p, q) < 0.6 || pointToSegment(b, p, q) < 0.6) return true
+        const d1 = (b.x - a.x) * (p.z - a.z) - (b.z - a.z) * (p.x - a.x), d2 = (b.x - a.x) * (q.z - a.z) - (b.z - a.z) * (q.x - a.x)
+        const d3 = (q.x - p.x) * (a.z - p.z) - (q.z - p.z) * (a.x - p.x), d4 = (q.x - p.x) * (b.z - p.z) - (q.z - p.z) * (b.x - p.x)
+        if (d1 * d2 < 0 && d3 * d4 < 0) return true
+      }
+      return false
+    }
+    for (let dz = -1; dz <= 1; dz++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        for (const e of this.edgesIn.get(key(cx + dx, cz + dz)) ?? []) {
+          if (e.foot) continue
+          const line = unpackPoints(e.points)
+          for (let i = 1; i < line.length; i++) {
+            if (e.width > best && meets(line[i - 1], line[i])) { best = e.width; on = { a: line[i - 1], b: line[i] } }
+          }
+        }
+      }
+    }
+    if (on) return { span: best + 0.4, on }
     for (let dz = -1; dz <= 1; dz++) {
       for (let dx = -1; dx <= 1; dx++) {
         for (const e of this.edgesIn.get(key(cx + dx, cz + dz)) ?? []) {

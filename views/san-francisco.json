@@ -6142,5 +6142,75 @@
    -122.3905,
    20
   ]
+ },
+ {
+  "name": "NB Taylor-California top",
+  "group": "landmark",
+  "from": [
+   37.791624,
+   -122.4125,
+   45
+  ],
+  "to": [
+   37.79166,
+   -122.4125,
+   0
+  ]
+ },
+ {
+  "name": "QQTaylorCal top",
+  "group": "landmark",
+  "from": [
+   37.791624,
+   -122.4125,
+   45
+  ],
+  "to": [
+   37.79166,
+   -122.4125,
+   0
+  ]
+ },
+ {
+  "name": "QQTaylorCal from N low",
+  "group": "landmark",
+  "from": [
+   37.791857,
+   -122.412522,
+   2
+  ],
+  "to": [
+   37.79166,
+   -122.4125,
+   0
+  ]
+ },
+ {
+  "name": "QQTaylorCal from N mid",
+  "group": "landmark",
+  "from": [
+   37.791857,
+   -122.412522,
+   6
+  ],
+  "to": [
+   37.79166,
+   -122.4125,
+   0
+  ]
+ },
+ {
+  "name": "QQTaylorCal from N high",
+  "group": "landmark",
+  "from": [
+   37.791857,
+   -122.412522,
+   14
+  ],
+  "to": [
+   37.79166,
+   -122.4125,
+   0
+  ]
  }
 ]
