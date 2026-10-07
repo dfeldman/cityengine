@@ -92,14 +92,21 @@ export function parkMask(areas: readonly PackedArea[], minPieceM2: number, build
    * quarter park is a quarter park however many pieces the clipper left it in.
    */
   const rings: number[][] = []
-  let total = 0
+  let total = 0, water = 0
   const open = buildings < BUILT_UP
   for (const a of areas) {
+    if (open && a.kind === 'water') water += ringArea(a.ring)
     if (!WILD.has(a.kind) && !(open && BARE.has(a.kind))) continue
     rings.push(a.ring)
     total += ringArea(a.ring)
   }
-  if (rings.length === 0 || total < minPieceM2) return null
+  /*
+   * …and a park's own LAKE counts toward the threshold (not toward the mask): Stow Lake fills most of its tile, so the
+   * park piece left was under the bar and the drive round the lake was drawn by the city's rules — a levelled concrete
+   * corridor standing over the park's hill like a ramp into the air (owner, 2026-10-06, at 37.767296, −122.4729). Only
+   * on a tile that is not built up, so a waterfront block with a pocket park is still the city.
+   */
+  if (rings.length === 0 || total + water < minPieceM2) return null
   return maskOfRings(rings)
 }
 
@@ -180,6 +187,25 @@ export class ParkMap {
     const m = this.byTile.get(`${Math.floor(x / tileSize)},${Math.floor(z / tileSize)}`)
     return m ? m(x, z) : false
   }
+}
+
+/**
+ * The middle of the stretch of a way inside the tile: a way crossing into the next tile had its middle there, outside
+ * every ring of this tile's mask, so this tile's piece of a drive through Golden Gate Park was drawn by the city's rules
+ * (a levelled concrete corridor standing over the hill by Stow Lake — owner, 2026-10-06). Sampled every 2 m; the whole
+ * way's middle where none of it is inside.
+ */
+function midWithin(points: number[], b: { x0: number; z0: number; x1: number; z1: number }): [number, number] {
+  const inside: [number, number][] = []
+  for (let i = 2; i < points.length; i += 2) {
+    const ax = points[i - 2], az = points[i - 1], bx = points[i], bz = points[i + 1]
+    const n = Math.max(1, Math.ceil(Math.hypot(bx - ax, bz - az) / 2))
+    for (let k = 0; k < n; k++) {
+      const x = ax + ((bx - ax) * k) / n, z = az + ((bz - az) * k) / n
+      if (x >= b.x0 && x < b.x1 && z >= b.z0 && z < b.z1) inside.push([x, z])
+    }
+  }
+  return inside.length ? inside[inside.length >> 1] : midOf(points)
 }
 
 /** The middle of a way, which is what decides whether the way is in the park. */
@@ -309,14 +335,14 @@ export function parkTile<T extends {
   areas: PackedArea[]
   furniture: { kind: string; x: number; z: number }[]
   buildings?: unknown[]
-}>(t: T, style: ParkStyle): T {
+}>(t: T, style: ParkStyle, bounds?: { x0: number; z0: number; x1: number; z1: number }): T {
   const mask = parkMask(t.areas, style.minPieceM2, t.buildings?.length ?? 0)
   if (!mask) return t
   const keep = new Set(style.keepFurniture)
   return {
     ...t,
     edges: t.edges.map((e) => {
-      const [x, z] = midOf(e.points)
+      const [x, z] = bounds ? midWithin(e.points, bounds) : midOf(e.points)
       return mask(x, z) ? parkEdge(e, style) : e
     }),
     furniture: t.furniture.filter((f) => keep.has(f.kind) || !mask(f.x, f.z)),

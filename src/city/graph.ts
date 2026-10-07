@@ -42,6 +42,8 @@ export interface Edge {
   crossing?: boolean
   /** a structure (a bridge, a ramp onto one): things on it take their height from `heights`, not the ground */
   raised?: boolean
+  /** through a park (package.ts `park`): what walks it stands on the park's raw ground, as its trail is drawn */
+  park?: boolean
   /**
    * On a ride edge that is the midline of a boulevard drawn twice: how far right of the midline the rider's
    * own carriageway is. Riding the midline itself put the rider on the median (Rue Saint-Antoine).

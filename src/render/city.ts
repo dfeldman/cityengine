@@ -2559,7 +2559,7 @@ export class City {
         // (and a path's asphalt sun-bleached paler than a drive's: the road page at full depth made the web of paths
         //  the darkest thing in the park)
         const tint: [number, number, number] = page === 'asphalt' && w < e.width + 0.01 && e.kind !== 'pedestrian' ? [0.68, 0.68, 0.66] : [0.5, 0.5, 0.5]
-        quadStrip(out, pts, w, 0.15, tint, (x, z) => this.terrain.heightAt(x, z))
+        quadStrip(out, pts, w, 0.15, tint, (x, z) => this.terrain.rawHeightAt(x, z))
       }
       // a brick street's pavements (San Francisco's Market Street), drawn over the concrete a hair higher so
       // it wins every overlap the same way each frame — the kerb-to-wall width only, the carriageway is over it
@@ -2764,7 +2764,9 @@ export class City {
     for (const [page, out] of trails) {
       if (out.triangles === 0 || this.off.has('walks')) continue
       const m = new Mesh(`trail:${page}:${k}`, this.scene)
-      this.terrain.drape(out.positions)
+      // (on the park's own ground, as the park's grass is: on the streets' levelled ground a trail over a hill in Golden Gate
+      //  Park stood up to 1.5 m in the air, its walkers with it — owner, 2026-10-06, at 37.767296, −122.4729)
+      this.terrain.drapeRaw(out.positions)
       out.toVertexData().applyToMesh(m)
       m.material = groundLayerMaterial(this.scene, this.roadAssets, page, 'trail')
       m.renderingGroupId = GROUP.corridor

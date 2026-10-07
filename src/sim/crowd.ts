@@ -55,6 +55,8 @@ export interface Walker {
   y?: number
   /** the street's own level here (its profile): see sim/traffic.ts `Vehicle.level` */
   level?: number
+  /** on a park's way: stands on the park's own (raw) ground, as its trail is drawn, not the streets' levelled ground */
+  park?: boolean
   /** walking, out for a run (athletic kit, running gait), or cycling in the road */
   kind: 'walk' | 'run' | 'cycle'
   /** the walker this one walks with (a group follows its first member), absent for the first/only one */
@@ -558,6 +560,7 @@ export class Crowd {
       // on a bridge, the pavement is 0.15 m above the deck's own height (render/bridges.ts)
       w.y = eNow.raised ? profileAt(eNow.points, eNow.heights, w.s).y + (eNow.foot ? 0.05 : 0.15) : undefined
       w.level = eNow.heights?.length ? profileAt(eNow.points, eNow.heights, w.s).y : undefined
+      w.park = !!eNow.park
 
       /*
        * A street's people leave with the STREET, all together, once it is well out of range — never one by

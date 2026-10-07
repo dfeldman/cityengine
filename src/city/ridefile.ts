@@ -22,6 +22,7 @@ export function mapEdges(edges: PackedEdge[], terrain: { heightAt(x: number, z: 
       name: e.name, foot: e.foot, crossing: e.crossing, heights: e.heights, kind: e.kind, service: e.service, oneway: e.oneway,
       layer: e.layer, bridge: e.bridge, tunnel: e.tunnel, passage: e.passage, ...(e.bore ? { bore: true } : {}),
       ...(e.ridden ? { ridden: true } : {}), ...(e.authored ? { authored: true } : {}), ...(e.trail ? { trail: true } : {}),
+      ...(e.park ? { park: true } : {}),
       // a street tunnel (`bore`) is off the ground too: what drives and walks in it follows its own heights
       ...((onSurface(e) && isRaised(e, terrain)) || e.bore ? { raised: true } : {}),
     }

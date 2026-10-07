@@ -418,7 +418,7 @@ export class Life {
       const swing = Math.sin(w.phase) * (w.kind === 'run' ? 0.95 : 0.62)
       const rot = Quaternion.RotationYawPitchRoll(w.heading, w.kind === 'run' ? 0.12 : w.kind === 'cycle' ? 0.35 : 0, 0)
       const scale = new Vector3(1, w.height, 1)
-      const wy = w.y ?? nearLevel(groundAt(w.at), w.level)
+      const wy = w.y ?? (w.park && terrain ? terrain.rawHeightAt(w.at.x, w.at.z) : nearLevel(groundAt(w.at), w.level))
       if (w.kind === 'cycle') {
         // the bicycle under them, and the rider seated: lifted onto the saddle and leaning to the bars
         Matrix.ComposeToRef(new Vector3(1, 1, 1), Quaternion.RotationYawPitchRoll(w.heading, 0, 0),
