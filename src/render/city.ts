@@ -2958,7 +2958,7 @@ export class City {
           const px = pts[i - 1].x + dx * t + (-dz / seg) * off * side
           const pz = pts[i - 1].z + dz * t + (dx / seg) * off * side
           const heading = Math.atan2(dx, dz) + (side > 0 ? Math.PI : 0)
-          if (skippedIf(kerbside.whyNoFurniture(px, pz), px, pz, 'lamp/bench') || insideTwin(e, pts, px, pz)) { acc += market ? 15 : 22 + ((e.id + n) % 9); n++; continue }
+          if (skippedIf(kerbside.whyNoFurniture(px, pz, market ? 7 : 4), px, pz, 'lamp/bench') || insideTwin(e, pts, px, pz)) { acc += market ? 15 : 22 + ((e.id + n) % 9); n++; continue }
           // what stands on the pavement is regional: Paris hangs its lamps on the buildings
           // a bench only where the pavement has room to sit on it, and not at every other lamp post
           if ((e.id + n) % 14 === 0 && walk >= 2.5) {
@@ -3230,6 +3230,7 @@ export class City {
      * roads merely cross and starts being a place that is controlled — which is most of what separates a
      * city street from a road through a field.
      */
+    const signalKerb = new Carriageways(groundEdges)
     for (const id of pads) {
       const n = this.nodes.get(id)
       if (!n) continue
@@ -3241,6 +3242,14 @@ export class City {
         const kerb = a.half + n.walk * 0.55
         const px = n.at.x + a.ux * set - a.uz * kerb
         const pz = n.at.z + a.uz * set + a.ux * kerb
+        /*
+         * …but never a post standing in another carriageway or its median (owner, 2026-10-06, Market at 4th and at 5th:
+         * "traffic light poles in the middle of the street … we could just remove some as there are a lot"). On
+         * Market, mapped as several parallel ways, an arm's "kerb" is the next carriageway over. Such a post is left out,
+         * with its lamps; its arm's traffic still keeps its timed light (sim/signals.ts), and the other arms' posts
+         * still show it.
+         */
+        if (signalKerb.whyNoFurniture(px, pz, 1.2) !== null) continue
         // the region's own signal: a Paris post, or a North American mast arm out over this arm's lanes
         const signal = this.region.signals === 'mastArm' ? trafficLightMast(a.half * 1.1 + n.walk * 0.55)
           : this.region.signals === 'paris' ? trafficLightParis : trafficLight

@@ -974,7 +974,14 @@ export class Traffic {
          */
         const room = last ? (last.dir > 0 ? last.s : out.length - last.s) - this.halfLen(last) : this.roomThrough(out, v.next.dir, 0)
         // room for the whole car to be clear of the junction beyond its box, plus a margin
-        if (room - taken < r + 2 * this.halfLen(v) + v.driver.s0 + 2) { v.refused = 'no room beyond'; return false }
+        /*
+         * …except after a long wait (owner, 2026-10-06, Market at 5th: "buses are constantly stuck at this
+         * intersection"). Market's parallel ways and their short connectors make RINGS of queues there, each waiting for
+         * room beyond the next; the valve that retires a car stuck 35 s only works out of view, and the rider sat
+         * watching a locked junction. Standing 20 s, a car stops asking for room and goes on its green, rolling up to
+         * whatever is ahead (the look-ahead's contact-only valve keeps it from driving through anything).
+         */
+        if (room - taken < r + 2 * this.halfLen(v) + v.driver.s0 + 2 && (v.still ?? 0) < 20) { v.refused = 'no room beyond'; return false }
       }
     }
     // never into a junction the rider is in (collisions stay rare: only a car ALREADY committed can be hit)
