@@ -424,24 +424,6 @@
  },
  {
   "osm": [
-   "way/243466327"
-  ],
-  "name": "973 Market Street",
-  "restyle": "chicago",
-  "note": "Pre-war commercial block.",
-  "levels": 9
- },
- {
-  "osm": [
-   "way/230778227"
-  ],
-  "name": "979-991 Market Street",
-  "restyle": "chicago",
-  "note": "Six-storey pre-war commercial block.",
-  "levels": 6
- },
- {
-  "osm": [
    "way/256049055"
   ],
   "name": "980 Market Street",
@@ -457,15 +439,6 @@
   "restyle": "brick",
   "note": "Single-storey retail front.",
   "levels": 1
- },
- {
-  "osm": [
-   "way/332516921"
-  ],
-  "name": "Frontier Tower (1 Sixth Street)",
-  "restyle": "chicago",
-  "note": "Pre-war corner block at Sixth Street.",
-  "levels": 4
  },
  {
   "osm": [

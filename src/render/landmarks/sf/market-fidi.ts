@@ -357,6 +357,44 @@ function market1100Annexe(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** 979–991 Market: six storeys of brown brick over a dark shopfront (Mapillary frames pA0, pA1). */
+export function market979(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.4, 0.22, 0.2]
+  const DARK: Rgb = [0.14, 0.14, 0.15]
+  tower(out, fit, {
+    height: 23,
+    base: { height: 4, face: { kind: 'curtain', wall: DARK, glass: [0.18, 0.2, 0.22], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: [0.22, 0.26, 0.3], floor: 3.8, pitch: 3.2, solid: 0.5, material: 'brick' } }],
+    crown: { kind: 'parapet', height: 1.2, colour: BRICK, material: 'brick' },
+  })
+}
+
+/** 973 Market: brick and grey panels over a dark shopfront, about nine storeys (Mapillary frames pB0, pB1). */
+export function market973(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.42, 0.26, 0.22]
+  const GREY: Rgb = [0.55, 0.56, 0.57]
+  const DARK: Rgb = [0.14, 0.14, 0.15]
+  tower(out, fit, {
+    height: 34,
+    base: { height: 4, face: { kind: 'curtain', wall: DARK, glass: [0.18, 0.2, 0.22], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: [0.22, 0.26, 0.3], floor: 3.6, pitch: 3.2, solid: 0.5, material: 'brick' } }],
+    crown: { kind: 'parapet', height: 1.2, colour: GREY, material: 'concrete' },
+  })
+}
+
+/** Frontier Tower, 1 Sixth Street: four storeys of white panels with green spandrels over a glazed shopfront (Mapillary frames pC0, pC1). */
+export function frontierTower1Sixth(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.9, 0.9, 0.86]
+  const GREEN: Rgb = [0.55, 0.75, 0.6]
+  const GLASS: Rgb = [0.18, 0.2, 0.22]
+  tower(out, fit, {
+    height: 16,
+    base: { height: 4, face: { kind: 'curtain', wall: GLASS, glass: [0.2, 0.24, 0.27], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: GREEN, floor: 3.8, pitch: 3, solid: 0.45, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: WHITE, material: 'concrete' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -374,4 +412,7 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   market1119,
   budgetInn1139Market,
   market1100Annexe,
+  market979,
+  market973,
+  frontierTower1Sixth,
 }

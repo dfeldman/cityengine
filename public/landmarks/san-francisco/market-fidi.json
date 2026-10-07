@@ -148,5 +148,29 @@
   "height": 23,
   "sign": false,
   "note": "market-fidi.ts: 1100 Market annexe, NW side by Leavenworth: six storeys of grey panelled 1920s commercial, arched heads on the upper floors; Mapillary frame c0 (OSM 42 m rejected)."
+ },
+ {
+  "osm": ["way/230778227"],
+  "name": "979-991 Market Street",
+  "procedural": "market979",
+  "height": 23,
+  "sign": false,
+  "note": "market-fidi.ts: 979-991 Market, six storeys of brown brick over a dark shopfront; Mapillary frames pA0, pA1 (storeys counted, OSM 30 m rejected)."
+ },
+ {
+  "osm": ["way/243466327"],
+  "name": "973 Market Street",
+  "procedural": "market973",
+  "height": 34,
+  "sign": false,
+  "note": "market-fidi.ts: 973 Market, about nine storeys of brick over a dark shopfront, grey panels at the top; Mapillary frames pB0, pB1 (OSM 32 m checked)."
+ },
+ {
+  "osm": ["way/332516921"],
+  "name": "Frontier Tower (1 Sixth Street)",
+  "procedural": "frontierTower1Sixth",
+  "height": 16,
+  "sign": false,
+  "note": "market-fidi.ts: Frontier Tower, 1 Sixth Street: four storeys of white panels with green spandrels over a glazed shopfront; Mapillary frames pC0, pC1."
  }
 ]
