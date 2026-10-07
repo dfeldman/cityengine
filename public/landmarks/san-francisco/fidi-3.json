@@ -1,6 +1,5 @@
 [
   {"osm": ["way/693629257"], "name": "488 Folsom Street", "procedural": "fourEightyEightFolsom", "front": "street", "height": 188, "note": "Recipe modern-slender: Lumina Tower 1, curved all-glass tower, balconies, mast on the flat top (Commons photograph)."},
-  {"osm": ["way/944990391"], "name": "The Harrison", "procedural": "theHarrison", "front": "street", "height": 165, "note": "Recipe modern-slender: sister tower to Lumina across Beale Street, all-glass with balconies (no Commons photograph found; modelled to match its sibling)."},
   {"osm": ["way/438098525"], "name": "500 Folsom", "procedural": "fiveHundredFolsom", "front": "street", "height": 134, "note": "Recipe glass-tower: blue-green glass curtain-wall condo tower (Commons photograph)."},
   {"osm": ["way/359267373"], "name": "340 Fremont Street", "procedural": "threeFortyFremont", "front": "street", "height": 134, "note": "Recipe modern-slender: The Avery, slender all-glass residential tower (Commons photograph)."},
   {"osm": ["way/160673823"], "name": "Paramount", "procedural": "paramount", "front": "street", "height": 127, "note": "Recipe deco-setback: 680 Mission Street, historicist terracotta Art Deco tower over a stone base (Commons/web description)."},

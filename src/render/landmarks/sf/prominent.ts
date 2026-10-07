@@ -159,16 +159,6 @@ export function oneMissionBay(out: MeshBuilder, fit: Fit): void {
   })
 }
 
-/** SAILORS' UNION OF THE PACIFIC, 450 Harrison (1950; way/260320985): white concrete, tall narrow windows between deep
- *  full-height piers. OSM gives it 54 m with no floors; it is a four-storey hall. Mapillary 3594048927557492. */
-export function sailorsUnion(out: MeshBuilder, fit: Fit): void {
-  tower(out, { ...fit, height: 18 }, {
-    height: 18,
-    tiers: [{ to: 1, face: { kind: 'fins', wall: [0.88, 0.87, 0.84], glass: [0.18, 0.2, 0.22], pitch: 2.6, solid: 0.55, depth: 0.7, floor: 16, material: 'concrete' } }],
-    crown: { kind: 'parapet', height: 1.2, colour: [0.86, 0.85, 0.82], material: 'concrete' },
-  })
-}
-
 /** SYMPHONY TOWERS, Van Ness and Grove (way/256045049, 12 storeys): ochre stucco, rows of white-framed bay windows
  *  stacked up every face over a sandstone base. Mapillary 225398422844615. */
 export function symphonyTowers(out: MeshBuilder, fit: Fit): void {
@@ -250,4 +240,4 @@ export function warmingHut(out: MeshBuilder, fit: Fit): void {
   })
 }
 
-export const PROMINENT: Record<string, (out: MeshBuilder, fit: Fit) => void> = { pofaHall, fairmontHotel, stRegisTower, montgomeryGlassCube, holidayInnTower, holidayInnPodium, somaGrand, gearyTower, isleHouse, sfpucHq, oneMissionBay, sailorsUnion, symphonyTowers, jfkTowers, folsom230, cruiseTerminal27, cableCarBarn, warmingHut }
+export const PROMINENT: Record<string, (out: MeshBuilder, fit: Fit) => void> = { pofaHall, fairmontHotel, stRegisTower, montgomeryGlassCube, holidayInnTower, holidayInnPodium, somaGrand, gearyTower, isleHouse, sfpucHq, oneMissionBay, symphonyTowers, jfkTowers, folsom230, cruiseTerminal27, cableCarBarn, warmingHut }

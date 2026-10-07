@@ -36,7 +36,6 @@
   {"name": "Point Lobos stack", "procedural": "seaStacks", "lat": 37.78031, "lon": -122.517428, "size": [26, 26], "rotateDeg": 80, "deckAbove": 0, "height": 10, "note": "way/969197374"},
   {"osm": ["way/173725078"], "name": "SFPUC Headquarters", "procedural": "sfpucHq", "height": 57, "note": "525 Golden Gate; was a todo tall target drawn generic."},
   {"osm": ["way/563104192"], "name": "One Mission Bay", "procedural": "oneMissionBay", "height": 58, "note": "Mapillary 2839126093018170."},
-  {"osm": ["way/260320985"], "name": "Sailors' Union of the Pacific", "procedural": "sailorsUnion", "height": 18, "note": "OSM height 54 m is wrong; four-storey 1950 hall."},
   {"osm": ["way/256045049"], "name": "Symphony Towers", "procedural": "symphonyTowers", "height": 41, "note": "Ochre stucco and bays; Mapillary 225398422844615."},
   {"osm": ["way/1315380002"], "name": "John F. Kennedy Towers", "procedural": "jfkTowers", "height": 41, "note": "Concave gallery slab; Mapillary 968930874064650."},
   {"osm": ["way/1389914425"], "name": "230 Folsom Street", "procedural": "folsom230", "height": 58, "note": "Terracotta precast grid; Mapillary 1046607004254809."},

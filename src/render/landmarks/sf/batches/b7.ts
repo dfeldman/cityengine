@@ -115,25 +115,6 @@ export const B7: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   },
 
   /**
-   * way/939497446 — Modera Rincon Hill, `building=apartments`, `building:levels=12`, opened 2020, no height
-   * tag. No photograph. Web search confirms a modern (2020) apartment building; own height estimate 40m
-   * (12 levels x ~3.3m, matching the tag). Baked plan (4 vertices) is a clean rectangle. Built as a
-   * contemporary precast/glass apartment slab with continuous glazing and balcony-scale window rhythm.
-   */
-  b7_apartments_939497446: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'recessed', storeys: 1, depth: 0.8, material: 'concrete' },
-      shaft: { storeys: 11, windows: 'continuous', material: 'precast' },
-      top: { kind: 'setback', storeys: 1, by: 1, material: 'precast' },
-      bands: { aboveGround: 'string', belowTop: null, top: null },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'recessed', steps: 1 },
-      material: 'precast',
-    })
-  },
-
-  /**
    * way/256045052 — 555/575 Polk St, `building=yes`, height tagged `"41 m"` (a string with a unit — believed
    * as 41, per the brief's "OSM heights are wrong" note applying to the tag's FORMAT here, not the number).
    * No photograph, unnamed. Baked plan (7 vertices) is strictly orthogonal — a rectangle with one setback

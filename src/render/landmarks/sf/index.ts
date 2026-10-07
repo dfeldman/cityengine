@@ -152,6 +152,7 @@ import { GALILEO } from './galileo.ts'
 import { MARINA_LIBRARY } from './marina-library.ts'
 import { EMBARCADERO_SOUTH } from './embarcadero-south.ts'
 import { CARMELITE } from './carmelite.ts'
+import { FIRST_HARRISON } from './first-harrison.ts'
 import { DOGPATCH_CORNER } from './dogpatch-corner.ts'
 import { transbayBusRampBridge } from './bus-ramp-bridge.ts'
 import { VENUES } from './districts/venues.ts'
@@ -340,6 +341,7 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   ...MARINA_LIBRARY,
   ...EMBARCADERO_SOUTH,
   ...CARMELITE,
+  ...FIRST_HARRISON,
   ...DOGPATCH_CORNER,
   fremont181,
   transbayBusRampBridge,

@@ -236,15 +236,6 @@
  },
  {
   "osm": [
-   "way/944990390"
-  ],
-  "name": "One Rincon Hill",
-  "procedural": "oneRinconHill",
-  "height": 195,
-  "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."
- },
- {
-  "osm": [
    "way/129142347"
   ],
   "name": "Russ Building",
@@ -579,6 +570,9 @@
  },
  {
   "include": "san-francisco/batch-1006.json"
+ },
+ {
+  "include": "san-francisco/first-harrison.json"
  },
  {
   "include": "san-francisco/embarcadero-pass.json"

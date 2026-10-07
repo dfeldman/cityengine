@@ -13,7 +13,6 @@ export const FIDI_3: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** 488 Folsom / Lumina Tower 1 (2015): all-glass curved slender tower, mid-blue glass, balconies, a mast on the flat top. */
   fourEightyEightFolsom: fromRecipe('modern-slender', { height: 188, wall: [0.55, 0.66, 0.74], glass: [0.32, 0.5, 0.62], base: 8, crown: { kind: 'mast', height: 8, width: 0.5 } }),
   /** The Harrison (2021, sister tower to Lumina across Beale): all-glass slender tower, balconies, blue-green glass, flat top. */
-  theHarrison: fromRecipe('modern-slender', { height: 165, wall: [0.5, 0.62, 0.68], glass: [0.3, 0.46, 0.54], base: 7, crown: { kind: 'flat' } }),
   /** 500 Folsom (2008): blue-green glass curtain-wall condo tower, plain rectangular block, flat top. */
   fiveHundredFolsom: fromRecipe('glass-tower', { height: 134, wall: [0.5, 0.58, 0.6], glass: [0.28, 0.42, 0.48], base: 7 }),
   /** 340 Fremont Street / The Avery (2020): slender all-glass residential tower, cool grey-blue glass, flat top. */

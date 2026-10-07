@@ -183,7 +183,6 @@ export const TOWER_PRESETS = {
   millenniumTower: preset({ height: 197, wall: [0.62, 0.66, 0.7], glass: [0.38, 0.47, 0.56], pattern: 'grid', pitch: 3.2, solid: 0.18, setbacks: [[0.85, 3], [0.93, 3]], crown: 'flat' }),
   // (181 Fremont was a grid preset here; it is its own model now, sf/fremont181.ts — the braces are the building)
   /** One Rincon Hill (2008): pale glass and white bands, the flat crown */
-  oneRinconHill: preset({ height: 195, wall: [0.84, 0.86, 0.88], glass: [0.44, 0.55, 0.64], pattern: 'horizontal', pitch: 3, solid: 0.2, crown: 'lantern' }),
   /** the Russ Building (1927): buff terracotta Gothic, stepping in to its tower */
   russBuilding: preset({ height: 133, wall: [0.86, 0.8, 0.68], glass: [0.3, 0.3, 0.3], pattern: 'vertical', pitch: 2.2, solid: 0.55, setbacks: [[0.72, 4], [0.86, 4]], crown: 'stepped' }),
   /** the Shell Building (1929): Art Deco terracotta, setbacks to a crowned top */
