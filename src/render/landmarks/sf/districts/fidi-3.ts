@@ -20,8 +20,6 @@ export const FIDI_3: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   threeFortyFremont: fromRecipe('modern-slender', { height: 134, wall: [0.58, 0.62, 0.66], glass: [0.3, 0.4, 0.5], base: 9, crown: { kind: 'flat' } }),
   /** Paramount / 680 Mission (2002): a historicist terracotta-clad Art Deco tower over a 1920s-style base, buff piers, setback crown. */
   paramount: fromRecipe('deco-setback', { height: 127, wall: [0.82, 0.76, 0.65], glass: [0.24, 0.26, 0.28], base: 8, baseWall: [0.5, 0.42, 0.36] }),
-  /** The Infinity I (2008): curved all-glass residential tower, pale blue-green glass, rounded corners, flat top. */
-  theInfinityI: fromRecipe('glass-tower', { height: 117, wall: [0.55, 0.62, 0.62], glass: [0.34, 0.48, 0.5], base: 6 }),
   /** Steuart Tower / former Standard Oil Building (1974): banded precast midcentury slab, pale grey, dark glass, flat top. */
   steuartTower: fromRecipe('midcentury-slab', { height: 111, wall: [0.8, 0.79, 0.76], glass: [0.24, 0.27, 0.3], base: 7 }),
   /** LinkedIn / 222 2nd Street (2015): blue-grey glass curtain-wall office tower, fine mullions, flat top. */

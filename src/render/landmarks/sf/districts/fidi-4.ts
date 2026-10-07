@@ -15,8 +15,6 @@ export const FIDI_4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   fourSeasons706Mission: fromRecipe('modern-slender', { height: 160, wall: [0.72, 0.74, 0.76], glass: [0.14, 0.2, 0.3], pitch: 1.2, solid: 0.16, crown: { kind: 'flat' } }),
   /** 399 Fremont (2018): pale blue-green glass tower, curved corner, zigzag balconies down one face, flat top. */
   threeNinetyNineFremont: fromRecipe('glass-tower', { height: 134, wall: [0.6, 0.64, 0.64], glass: [0.32, 0.52, 0.52], base: 6, crown: { kind: 'parapet', height: 1 } }),
-  /** The Infinity II (2008): pale blue-green glass tower, rounded ends, small balconies, flat top. */
-  infinityII: fromRecipe('glass-tower', { height: 132, wall: [0.58, 0.62, 0.62], glass: [0.28, 0.46, 0.46], base: 6, crown: { kind: 'parapet', height: 1 } }),
   /** LUMINA I (2015): curved teal-blue glass tower with a full-height balcony spine, rounded end, flat top. */
   luminaI: fromRecipe('glass-tower', { height: 120, wall: [0.55, 0.6, 0.6], glass: [0.26, 0.44, 0.48], base: 6, crown: { kind: 'parapet', height: 1 } }),
   /** Spera (2022, Arquitectonica): pale blue glass residential tower near the Transbay tower cluster, flat top. */
@@ -27,8 +25,6 @@ export const FIDI_4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   metropolitanTowerI: fromRecipe('hotel-punched', { height: 102, wall: [0.82, 0.79, 0.72], glass: [0.26, 0.3, 0.33], base: 6, baseWall: [0.6, 0.56, 0.5] }),
   /** Optimizely / 631 Howard (1980s–90s office block): pale curtain-wall office tower, plain grid, flat top. */
   optimizely: fromRecipe('glass-tower', { height: 93, wall: [0.55, 0.56, 0.58], glass: [0.3, 0.36, 0.42], base: 6 }),
-  /** 2 Folsom Street (office tower near the Embarcadero): blue-grey curtain-wall office block, flat top. */
-  twoFolsomStreet: fromRecipe('glass-tower', { height: 91, wall: [0.5, 0.54, 0.58], glass: [0.28, 0.36, 0.44], base: 6 }),
   /** 140 New Montgomery / Pacific Telephone Building (1925, Miller & Pflueger): buff terracotta Art Deco tower, strong vertical piers, a stepped, green-tiled setback crown. */
   oneFortyNewMontgomery: fromRecipe('deco-setback', { height: 88, wall: [0.82, 0.76, 0.64], glass: [0.24, 0.26, 0.28], base: 8, baseWall: [0.4, 0.36, 0.3], crown: { kind: 'stepped', steps: 3, height: 9, inset: 2.5 } }),
   /** The Charles Schwab Building (office tower near Steuart Street): pale curtain-wall office block, flat top. */
