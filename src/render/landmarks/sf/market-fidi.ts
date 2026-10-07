@@ -816,6 +816,36 @@ function firstNationalBankNorCal(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+/**
+ * 570 MARKET STREET (way/148712640): a nine-storey buff masonry block of the 1900s on the north side of Market, over
+ * a dark two-storey shopfront base. Mapillary frames p0 and p1 show the punched windows in rows above a glazed
+ * ground floor and mezzanine, a moulded cornice and a parapet at the top.
+ */
+export function market570(out: MeshBuilder, fit: Fit): void {
+  const BUFF: Rgb = [0.8, 0.72, 0.6]
+  tower(out, fit, {
+    height: 31,
+    base: { height: 6, face: { kind: 'curtain', wall: [0.26, 0.24, 0.22], glass: [0.2, 0.24, 0.28], pitch: 3, floor: 6, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BUFF, glass: [0.24, 0.28, 0.32], pitch: 3.2, floor: 3.4, solid: 0.5, material: 'terracotta' }, cornice: { depth: 0.6, height: 0.8, colour: BUFF } }],
+    crown: { kind: 'parapet', height: 1.4, colour: BUFF, material: 'terracotta' },
+  })
+}
+
+/**
+ * CITIBANK, MARKET AT DRUMM (way/436484074): a four-storey stone-faced bank block on a dark glazed base, no sign or
+ * logo. The Mapillary frames b0 and b1 show glass towers beside it rather than the block itself, so the storey
+ * count and height are OSM's.
+ */
+export function citibankDrumm(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.84, 0.8, 0.72]
+  tower(out, fit, {
+    height: 15,
+    base: { height: 4.5, face: { kind: 'curtain', wall: [0.22, 0.22, 0.24], glass: [0.18, 0.22, 0.26], pitch: 3, floor: 4.5, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: CREAM, glass: [0.2, 0.25, 0.3], floor: 3.6, solid: 0.6, material: 'ashlar' } }],
+    crown: { kind: 'parapet', height: 1, colour: CREAM, material: 'ashlar' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -860,4 +890,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   fidi1279452198, battery617, fidi256067720,
   california550Sacramento, hindBuilding,
   firstNationalBankNorCal,
+  market570, citibankDrumm,
 }

@@ -416,5 +416,21 @@
   "height": 43,
   "sign": false,
   "note": "market-fidi.ts: eleven-storey cream stone bank, rusticated base, two arched storeys with pilasters, shaft, cornices, balustrade; Mapillary frame p0 (p1 showed a dark neighbour)."
+ },
+ {
+  "osm": ["way/148712640"],
+  "name": "570 Market Street",
+  "procedural": "market570",
+  "height": 31,
+  "sign": false,
+  "note": "market-fidi.ts: nine-storey buff masonry block of the 1900s over a dark two-storey shopfront base, punched windows in rows, cornice and parapet; Mapillary frames p0 and p1."
+ },
+ {
+  "osm": ["way/436484074"],
+  "name": "Citibank, Market at Drumm",
+  "procedural": "citibankDrumm",
+  "height": 15,
+  "sign": false,
+  "note": "market-fidi.ts: four-storey stone-faced bank block on a dark glazed base, no sign or logo; the Mapillary frames showed neighbouring glass towers, so the storeys are OSM's."
  }
 ]

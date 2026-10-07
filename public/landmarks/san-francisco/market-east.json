@@ -368,15 +368,6 @@
  },
  {
   "osm": [
-   "way/148712640"
-  ],
-  "name": "570 Market Street",
-  "restyle": "chicago",
-  "levels": 9,
-  "note": "Ten-storey 1900s commercial block on the north side of Market; Chicago School terracotta fits the run."
- },
- {
-  "osm": [
    "way/148712645"
   ],
   "name": "576-580 Market Street",
@@ -467,14 +458,6 @@
   "name": "Market at Fremont infill",
   "restyle": "skyscraper",
   "levels": 6
- },
- {
-  "osm": [
-   "way/436484074"
-  ],
-  "name": "Citibank, Market at Drumm",
-  "restyle": "skyscraper",
-  "levels": 4
  },
  {
   "osm": [
