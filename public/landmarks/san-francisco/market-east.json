@@ -437,9 +437,11 @@
   "osm": [
    "way/148710885"
   ],
-  "name": "Battery Street infill",
-  "restyle": "chicago",
-  "levels": 4
+  "name": "One Front Street pavilion (Philz Coffee, First Republic Bank)",
+  "procedural": "oneFrontPavilion",
+  "front": "street",
+  "height": 9,
+  "note": "batch-1006.ts (owner's Street View, 2026-10-06): the silver-clad wing on One Front's plaza, not a Chicago-school infill."
  },
  {
   "osm": [

@@ -866,3 +866,40 @@ function pierRestaurant(name: string, wall: Rgb) {
 export const PIER_RESTAURANTS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   pierBarrelHouse: pierRestaurant('BARREL HOUSE', [0.58, 0.46, 0.36]),
 }
+
+/**
+ * The PAVILION at One Front Street's plaza (way/148710885; owner, 2026-10-06, Street View: "actually a silver-clad
+ * coffee shop to match the adjacent skyscraper"): a low two-storey wing clad in the tower's silver aluminium panels,
+ * its walls curving round the ends. Philz Coffee in a glass front at ground level with café tables and umbrellas on the
+ * brick plaza; above, a dark glass band under the green FIRST REPUBLIC BANK board; a curved aluminium canopy
+ * reaching out over the tower's entrance at one end, on a round column.
+ */
+export function oneFrontPavilion(out: MeshBuilder, fit: Fit): void {
+  const ring = towerRing(fit)
+  const SILVER: Rgb = [0.82, 0.83, 0.84]
+  const H = 9
+  tower(out, { ...fit, ring }, {
+    height: H,
+    tiers: [{ to: 1, face: { kind: 'blank', wall: SILVER, material: 'metal' } }],
+    crown: { kind: 'parapet', height: 0.4, colour: SILVER, material: 'metal' },
+  })
+  // the front: the long side toward the plaza (+z)
+  const hx = fit.hx, f = fit.hz
+  box(out, 0, 1.7, f + 0.03, hx * 0.55, 1.6, 0.03, [0.3, 0.36, 0.38], surfaceTag('glass'))
+  for (let x = -hx * 0.55; x <= hx * 0.55 + 0.01; x += 1.5) box(out, x, 1.7, f + 0.06, 0.04, 1.6, 0.03, [0.6, 0.62, 0.64], 0)
+  box(out, 0, 3.6, f + 0.1, hx * 0.6, 0.25, 0.1, SILVER, surfaceTag('metal'))
+  box(out, 0, 5.4, f + 0.03, hx * 0.75, 1.1, 0.03, [0.12, 0.14, 0.16], surfaceTag('glass'))
+  box(out, 0, 7.15, f + 0.12, hx * 0.5, 0.45, 0.06, [0.1, 0.32, 0.24], 0)
+  sign(out, { type: 'flat', text: 'FIRST REPUBLIC BANK', h: 0.38, face: 'roman', colour: [0.95, 0.94, 0.88], lit: 'front', w: hx * 0.9 }, { x: 0, y: 7.15, z: f + 0.2, heading: 0 })
+  box(out, 0, 3.95, f + 0.12, 1.4, 0.2, 0.05, [0.25, 0.15, 0.1], 0)
+  sign(out, { type: 'flat', text: 'Philz Coffee', h: 0.22, face: 'roman', italic: true, colour: [0.95, 0.85, 0.6], lit: 'front', w: 2.6 }, { x: 0, y: 3.95, z: f + 0.18, heading: 0 })
+  // the café tables and umbrellas on the plaza
+  for (const x of [-hx * 0.3, hx * 0.3]) {
+    prism(out, x, f + 3, 0, 2.3, 0.03, 6, [0.5, 0.5, 0.5], 0)
+    prism(out, x, f + 3, 2.1, 2.6, 1.3, 8, [0.95, 0.93, 0.86], 0, 0.05)
+    for (const dx of [-0.8, 0.8]) box(out, x + dx, 0.38, f + 3, 0.35, 0.02, 0.35, [0.85, 0.85, 0.83], 0)
+  }
+  // the curved canopy over the tower's entrance at the +x end, on its column
+  prism(out, hx + 3, f - 2, 4.6, 5.4, 4.2, 20, SILVER, surfaceTag('metal'))
+  prism(out, hx + 3, f - 2, 0, 4.6, 0.35, 12, SILVER, surfaceTag('metal'))
+}
