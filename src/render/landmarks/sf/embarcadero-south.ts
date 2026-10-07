@@ -121,4 +121,19 @@ export function towersAtRincon(out: MeshBuilder, _fit: Fit): void {
   }
 }
 
-export const EMBARCADERO_SOUTH: Record<string, (out: MeshBuilder, fit: Fit) => void> = { infinityTower, twoFolsom, twoOOneSpear, oneSteuartLane, towersAtRincon }
+/**
+ * HILLS PLAZA's tower (345 Spear, 1990), rising out of the old Hills Bros. coffee works: cream stone with punched
+ * windows on a red-brick base, stepping back near the top, a stepped crown (owner, 2026-10-06: "red-brick-and-white-
+ * stone … with a stepped white tower in the middle"). It was drawn as a 14 m brick loft.
+ */
+export function hillsPlazaTower(out: MeshBuilder, fit: Fit): void {
+  const STONE: Face = { kind: 'punched', wall: [0.9, 0.87, 0.8], glass: [0.18, 0.2, 0.24], floor: 3.7, pitch: 2.6, solid: 0.45, material: 'ashlar' }
+  tower(out, fit, {
+    height: 50,
+    base: { height: 8, face: { kind: 'punched', wall: [0.56, 0.29, 0.21], glass: [0.16, 0.17, 0.19], floor: 4, pitch: 3, solid: 0.5, arched: true, material: 'brick' } },
+    tiers: [{ to: 0.8, face: STONE }, { to: 0.92, inset: 1.6, face: STONE }, { to: 1, inset: 1.6, face: STONE }],
+    crown: { kind: 'stepped', steps: 2, height: 2.4, inset: 1.2, face: STONE },
+  })
+}
+
+export const EMBARCADERO_SOUTH: Record<string, (out: MeshBuilder, fit: Fit) => void> = { infinityTower, twoFolsom, twoOOneSpear, oneSteuartLane, towersAtRincon, hillsPlazaTower }

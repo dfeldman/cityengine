@@ -154,34 +154,4 @@ export const B2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
       material: 'glass',
     })
   },
-
-  /**
-   * way/136104349 — "Foundry Square II" / Orrick Building, 405 Howard St, 55 m, baked style
-   * "skyscraper"/archetype "tower". Photographed: a dark glass office box, ground-floor retail glazing under
-   * awnings, a continuous curtain shaft, plain flat top.
-
-  /**
-   * way/944986473 — building:part=yes, tagged/baked as 50 m over 13 levels, but photographed
-   * (docs/shots/refs/sf-mapillary/way-944986473-*.jpg) as a low brick industrial/loft building with a tall
-   * round-arched, multi-pane window and a corbelled brick cornice — nothing like a 50 m tower, and its own
-   * footprint is a plain ~20x20 m rectangle consistent with a small building, not a highrise plate. Built at
-   * a corrected ~14 m (the brief: believe the reference over the tag) — a two-storey brick loft with the
-   * photo's big round-arched windows.
-   *
-   * `ground: arcade` was tried first and, like 256730074 above, hit BUGS.md #96 (`arcade()` drew no visible
-   * arches) — swapped for a plain brick ground with an `arched` window shaft as a workaround. #96 is fixed
-   * (see BUGS.md), so this is back to `arcade`, true to the photo's round-arched openings.
-   */
-  b2_loft_944986473: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'arcade', arches: 3, storeys: 1, material: 'dark-brick' },
-      shaft: { storeys: 1, windows: 'arched', material: 'brick' },
-      top: null,
-      bands: { aboveGround: null, belowTop: null, top: 'cornice' },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'door', steps: 0 },
-      material: 'dark-brick',
-    })
-  },
 }

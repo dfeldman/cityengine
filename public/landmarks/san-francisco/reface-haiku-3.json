@@ -17,12 +17,12 @@
       "relation/2280956"
     ],
     "name": "Hills Brothers Building",
-    "restyle": "brutalist",
-    "wall": "#808080",
-    "by": "haiku",
+    "restyle": "brick",
+    "wall": "#8e4a36",
+    "trim": "#e3d8c0",
+    "noShops": true,
     "image": "relation-2280956.jpg",
-    "note": "Raw grey concrete with deep-set windows and floor slabs showing as horizontal bands",
-    "height": 56
+    "note": "owner 2026-10-06 + Mapillary on the Embarcadero: the old Hills Bros. coffee works, red brick with cream trim (a Haiku reface had made it grey brutalist concrete)"
   },
   {
     "osm": [
