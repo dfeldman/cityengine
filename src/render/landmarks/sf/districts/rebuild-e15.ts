@@ -7,6 +7,8 @@ import type { Fit } from '../../fit.ts'
 import { facade, type FacadeSpec } from '../../facade.ts'
 import { towerRing } from '../../tower.ts'
 import { marquee, bladeSign, edgeAt, edgeFacing } from '../../parts.ts'
+import { box } from '../../../models.ts'
+import { surfaceTag } from '../../../cartoon-material.ts'
 
 const spec = (s: FacadeSpec) => (out: MeshBuilder, fit: Fit): void => facade(out, fit, s)
 
@@ -44,16 +46,29 @@ export const REBUILD_E15: Record<string, (out: MeshBuilder, fit: Fit) => void> =
    * "levels >= 8") reads as a tall building; the photograph is a squat block a fraction of that — believe the
    * photograph (BUGS.md #126).
    */
-  rinconAnnex: spec({
-    ground: { kind: 'plain', storeys: 1, material: 'dark-stone' },
-    shaft: { windows: 'vertical', storeys: 3, material: 'stucco' },
-    top: null,
-    bands: { aboveGround: 'string', belowTop: null, top: 'cornice' },
-    crown: { kind: 'parapet', height: 0.8, material: 'stucco' },
-    frame: { verticals: { kind: 'pilaster', width: 0.9, at: 'bays', count: 9 }, horizontals: null, recess: 0, material: 'stucco' },
-    entrance: { at: 'centre', kind: 'portal', steps: 3 },
-    material: 'stucco',
-  }),
+  rinconAnnex: (out: MeshBuilder, fit: Fit): void => {
+    facade(out, fit, {
+      ground: { kind: 'plain', storeys: 1, material: 'dark-stone' },
+      shaft: { windows: 'vertical', storeys: 3, material: 'stucco' },
+      top: null,
+      bands: { aboveGround: 'string', belowTop: null, top: 'cornice' },
+      crown: { kind: 'parapet', height: 0.8, material: 'stucco' },
+      frame: { verticals: { kind: 'pilaster', width: 0.9, at: 'bays', count: 9 }, horizontals: null, recess: 0, material: 'stucco' },
+      entrance: { at: 'centre', kind: 'portal', steps: 3 },
+      material: 'stucco',
+    })
+    // the 1989 atrium's glass roof down the middle of the old post office (owner's aerial, 2026-10-06): a long grid of
+    // square glazed bays over a dark frame, raised a little in a stepped ridge
+    const H = fit.height, L = fit.hx * 0.62, W = Math.min(fit.hz * 0.42, 14)
+    const FRAME: [number, number, number] = [0.22, 0.24, 0.26], PANE: [number, number, number] = [0.32, 0.42, 0.5]
+    box(out, 0, H + 0.25, 0, L + 0.4, 0.25, W + 0.4, FRAME, 0)
+    const nx = Math.max(4, Math.round(L / 3.2)), nz = Math.max(2, Math.round(W / 3.2))
+    for (let i = 0; i < nx; i++) for (let j = 0; j < nz; j++) {
+      const x = -L + (2 * L * (i + 0.5)) / nx, z = -W + (2 * W * (j + 0.5)) / nz
+      const lift = 0.9 * (1 - Math.abs(z) / W)
+      box(out, x, H + 0.55 + lift, z, L / nx - 0.22, 0.06, W / nz - 0.22, PANE, surfaceTag('glass'))
+    }
+  },
 
   /**
    * 1500 Mission (way/693627612), 2016: a pale precast-and-glass residential tower whose street corner is

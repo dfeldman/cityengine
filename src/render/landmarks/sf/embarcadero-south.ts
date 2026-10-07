@@ -79,46 +79,70 @@ export function oneSteuartLane(out: MeshBuilder, fit: Fit): void {
 }
 
 /**
- * THE TOWERS AT RINCON / RINCON CENTER (1989, 88 Howard and 101 Spear): the owner's Street View (2026-10-06, "rincon
- * center towers") — two pale towers rising out of a stone podium, their shafts lined with stacked balconies, each
- * ending in a round drum with a stepped crown and a small finial; on the podium a glazed barrel vault and a glass
- * pyramid. Standalone over the bake's outline (local x east, z north, centre at the outline's middle).
+ * THE TOWERS AT RINCON / RINCON CENTER (1989, Spear/Howard/Steuart): two 93 m residential wings on a six-storey
+ * granite podium, a one-storey round court between them, the old Rincon Annex post office on the north half of the
+ * block (its own model, rinconAnnex). From the owner's Street View and aerial (2026-10-06: "rincon center is huge"):
+ * grey granite and glass podium on tall square piers; the wings pale, banded with stacked balconies, each stepping
+ * back near the top to a rounded glass lantern and a mast. Built on OSM's own parts (ways 944891683-88, 1301393950/1),
+ * in the frame of the manifest's centre (1720, −113).
  */
+const RINCON_C = { x: 1720, z: -113 }
+const rp = (pts: [number, number][]): { x: number; z: number }[] => {
+  const r = pts.map(([x, z]) => ({ x: x - RINCON_C.x, z: z - RINCON_C.z }))
+  let a = 0
+  for (let i = 0; i < r.length; i++) { const p = r[i], q = r[(i + 1) % r.length]; a += p.x * q.z - q.x * p.z }
+  return a > 0 ? r : r.reverse()
+}
+const RINCON_PODIUM = [
+  rp([[1709, -81], [1725, -65], [1744, -83], [1732, -95], [1737, -101], [1737, -115], [1733, -119], [1746, -131], [1736, -141], [1722, -128], [1715, -134], [1703, -134], [1697, -128], [1684, -141], [1667, -123], [1682, -107], [1706, -131], [1715, -124], [1713, -122], [1718, -116], [1723, -111], [1733, -110], [1733, -105]]),
+  rp([[1695, -152], [1724, -153], [1727, -155], [1712, -169]]),
+  rp([[1755, -94], [1771, -111], [1760, -122], [1758, -120], [1758, -103]]),
+]
+const RINCON_TOWERS = [
+  rp([[1684, -141], [1697, -128], [1703, -134], [1715, -134], [1722, -128], [1736, -141], [1724, -153], [1712, -154], [1704, -154], [1695, -152]]),
+  rp([[1746, -131], [1733, -119], [1737, -115], [1737, -101], [1732, -95], [1744, -83], [1755, -94], [1758, -103], [1758, -120]]),
+]
+const RINCON_COURT = [
+  rp([[1723, -111], [1733, -105], [1709, -81], [1707, -83], [1709, -93], [1715, -97], [1717, -104]]),
+  rp([[1713, -122], [1706, -115], [1698, -113], [1694, -108], [1682, -107], [1706, -131], [1711, -132], [1715, -124]]),
+]
 export function towersAtRincon(out: MeshBuilder, _fit: Fit): void {
-  const STONE: Rgb = [0.84, 0.81, 0.74], PALE: Rgb = [0.88, 0.87, 0.83], GREY: Rgb = [0.55, 0.57, 0.58]
-  const conc = surfaceTag('concrete'), glass = surfaceTag('glass')
-  // the podium, six storeys of stone with windows, over most of the block
-  const pod = [{ x: -40, z: -38 }, { x: 38, z: -38 }, { x: 38, z: 38 }, { x: -40, z: 38 }]
-  faceBand(out, pod, 0, 5, { kind: 'fins', wall: STONE, glass: [0.18, 0.2, 0.22], pitch: 4, solid: 0.35, material: 'ashlar' })
-  faceBand(out, pod, 5, 22, { kind: 'punched', wall: STONE, glass: [0.18, 0.2, 0.22], floor: 3.4, pitch: 3, solid: 0.5, material: 'ashlar' })
-  capPolygon(out, pod, 22, [0.6, 0.6, 0.58], 0)
-  // the glazed barrel vault along the middle of the podium roof, and the glass pyramid at its end
-  for (let k = 0; k < 10; k++) {
-    const a0 = (k / 10) * Math.PI, a1 = ((k + 1) / 10) * Math.PI, R = 6
-    const y0 = 22 + Math.sin(a0) * R, y1 = 22 + Math.sin(a1) * R, x0 = Math.cos(a0) * R, x1 = Math.cos(a1) * R
-    out.quad([[x0 - 6, y0, -20], [x1 - 6, y1, -20], [x1 - 6, y1, 18], [x0 - 6, y0, 18]], [(x0 + x1) / 2 / R, Math.sin((a0 + a1) / 2), 0], [[0, 0], [1, 0], [1, 1], [0, 1]], [0.5, 0.62, 0.66], glass)
+  const GRANITE: Rgb = [0.8, 0.79, 0.76], PALE: Rgb = [0.86, 0.86, 0.84], GLASS: Rgb = [0.22, 0.27, 0.32]
+  const conc = surfaceTag('concrete')
+  const PODIUM_H = 22
+  for (const ring of RINCON_PODIUM) {
+    faceBand(out, ring, 0, 6, { kind: 'fins', wall: GRANITE, glass: [0.18, 0.2, 0.22], pitch: 6, solid: 0.3, depth: 0.6, material: 'concrete' })
+    faceBand(out, ring, 6, PODIUM_H, { kind: 'bands', wall: GRANITE, glass: [0.3, 0.36, 0.42], floor: 4, solid: 0.6, material: 'concrete' })
+    capPolygon(out, ring, PODIUM_H, [0.6, 0.6, 0.58], 0)
   }
-  prism(out, 22, 24, 22, 30, 7, 4, [0.55, 0.66, 0.7], glass, 0.2)
-  // the two towers: [centre x, z, half x, half z]
-  for (const [cx, cz, hx, hz] of [[-13, -29, 24, 12], [26, 4, 12, 22]] as [number, number, number, number][]) {
-    const shaft = [{ x: cx - hx, z: cz - hz }, { x: cx + hx, z: cz - hz }, { x: cx + hx, z: cz + hz }, { x: cx - hx, z: cz + hz }]
-    faceBand(out, shaft, 22, 74, { kind: 'bands', wall: PALE, glass: [0.22, 0.26, 0.3], floor: 3, solid: 0.35, material: 'concrete' })
-    capPolygon(out, shaft, 74, PALE, 0)
-    // stacked balconies down the long faces
-    const along = hx > hz
-    for (let y = 25; y < 74; y += 3) {
-      for (const s of [-1, 1]) {
-        if (along) box(out, cx, y, cz + s * (hz + 0.7), hx * 0.8, 0.09, 0.7, PALE, conc)
-        else box(out, cx + s * (hx + 0.7), y, cz, 0.7, 0.09, hz * 0.8, PALE, conc)
-      }
+  // the round court between the wings: a one-storey glazed ring under the podium's edge
+  for (const ring of RINCON_COURT) {
+    faceBand(out, ring, 0, 3.5, { kind: 'curtain', wall: [0.8, 0.8, 0.78], glass: [0.3, 0.38, 0.42], pitch: 2 })
+    capPolygon(out, ring, 3.5, [0.62, 0.6, 0.57], 0)
+  }
+  const shrink = (ring: { x: number; z: number }[], d: number): { x: number; z: number }[] => {
+    const cx = ring.reduce((a, p) => a + p.x, 0) / ring.length, cz = ring.reduce((a, p) => a + p.z, 0) / ring.length
+    return ring.map((p) => { const L = Math.hypot(p.x - cx, p.z - cz) || 1; const k = Math.max(0.2, (L - d) / L); return { x: cx + (p.x - cx) * k, z: cz + (p.z - cz) * k } })
+  }
+  const BAND: Face = { kind: 'bands', wall: PALE, glass: [0.42, 0.47, 0.52], floor: 3, solid: 0.6, material: 'concrete' }
+  for (const ring of RINCON_TOWERS) {
+    faceBand(out, ring, PODIUM_H, 76, BAND)
+    // the stacked balconies: a slab every floor, standing proud of the wall round the whole wing
+    for (let y = PODIUM_H + 3; y < 76; y += 3) {
+      const lip = shrink(ring, -1.1)
+      faceBand(out, lip, y, y + 0.22, { kind: 'blank', wall: PALE, material: 'concrete' })
     }
-    // the round drum, the stepped crown, the finial
-    const r = Math.min(hx, hz) * 0.95
-    prism(out, cx, cz, 74, 86, r, 24, PALE, conc)
-    for (let k = 0; k < 6; k++) prism(out, cx, cz, 75 + k * 2, 75.4 + k * 2, r + 0.2, 24, [0.24, 0.27, 0.3], glass)
-    prism(out, cx, cz, 86, 89, r * 0.8, 24, GREY, conc)
-    prism(out, cx, cz, 89, 91.5, r * 0.55, 24, GREY, conc)
-    prism(out, cx, cz, 91.5, 97, 0.5, 8, GREY, surfaceTag('metal'), 0.05)
+    // stepping back: two tiers, then the rounded glass lantern and its mast
+    const t1 = shrink(ring, 3), t2 = shrink(ring, 6)
+    capPolygon(out, ring, 76, PALE, 0)
+    faceBand(out, t1, 76, 84, BAND)
+    capPolygon(out, t1, 84, PALE, 0)
+    faceBand(out, t2, 84, 90, { kind: 'curtain', wall: PALE, glass: [0.32, 0.4, 0.45], pitch: 1.6 })
+    capPolygon(out, t2, 90, [0.7, 0.7, 0.68], 0)
+    const cx = ring.reduce((a, p) => a + p.x, 0) / ring.length, cz = ring.reduce((a, p) => a + p.z, 0) / ring.length
+    prism(out, cx, cz, 90, 93, 4, 20, [0.3, 0.36, 0.4], surfaceTag('glass'))
+    prism(out, cx, cz, 93, 93.6, 4.4, 20, PALE, conc)
+    prism(out, cx, cz, 93.6, 101, 0.25, 8, [0.6, 0.6, 0.6], surfaceTag('metal'), 0.05)
   }
 }
 
