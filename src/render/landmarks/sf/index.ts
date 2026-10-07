@@ -147,6 +147,7 @@ import { tunnelPortal } from './portals.ts'
 import { presidioChapel, fortMasonChapel, generalsResidence, haskellHouse, brickParkRestaurant, fortMasonBlock, fortMasonGate, windArrows, spreckelsMansion, spreckelsGreenhouse, beachChalet as beachChalet1006, bayModel, tajMahalHouseboat, harneyScience, kalmanovitzHall, kendrickHall, usfGym, alcatrazSmokestack, steppedCondo, BEACH_TOWNHOUSES, angelLight, detentionBarracks, PIER_RESTAURANTS, oneFrontPavilion } from './batch-1006.ts'
 import { fremont181 } from './fremont181.ts'
 import { EMBARCADERO_PLAZA } from './embarcadero-plaza.ts'
+import { EC4_PODIUM } from './ec4-podium.ts'
 import { transbayBusRampBridge } from './bus-ramp-bridge.ts'
 import { VENUES } from './districts/venues.ts'
 import { ART } from './art.ts'
@@ -329,6 +330,7 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   ...PIER_RESTAURANTS,
   oneFrontPavilion,
   ...EMBARCADERO_PLAZA,
+  ...EC4_PODIUM,
   fremont181,
   transbayBusRampBridge,
   ...VENUES,
