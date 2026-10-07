@@ -151,6 +151,7 @@ import { EC4_PODIUM } from './ec4-podium.ts'
 import { GALILEO } from './galileo.ts'
 import { MARINA_LIBRARY } from './marina-library.ts'
 import { EMBARCADERO_SOUTH } from './embarcadero-south.ts'
+import { CARMELITE } from './carmelite.ts'
 import { transbayBusRampBridge } from './bus-ramp-bridge.ts'
 import { VENUES } from './districts/venues.ts'
 import { ART } from './art.ts'
@@ -337,6 +338,7 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   ...GALILEO,
   ...MARINA_LIBRARY,
   ...EMBARCADERO_SOUTH,
+  ...CARMELITE,
   fremont181,
   transbayBusRampBridge,
   ...VENUES,
