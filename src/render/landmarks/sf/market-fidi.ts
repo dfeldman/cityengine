@@ -438,6 +438,50 @@ function stevenson49(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * The pre-war Market Street block (725–731 and 735 share the shape, not the colour): a shopfront base, punched
+ * windows up the storeys, a string course over the shops and a parapet. Mapillary frames a0 (735) and b0/b1 (725–731).
+ */
+function marketBlock(out: MeshBuilder, fit: Fit, s: {
+  wall: Rgb; trim: Rgb; shop: Rgb; glass: Rgb; material: NonNullable<Face['material']>; base?: Face
+}): void {
+  tower(out, fit, {
+    height: fit.height,
+    base: { height: 4.5, face: s.base ?? { kind: 'punched', wall: s.shop, glass: s.glass, pitch: 4, floor: 4.5, solid: 0.25, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: s.wall, glass: s.glass, pitch: 2.6, floor: 3.8, solid: 0.6, material: s.material } }],
+    cornices: [{ at: 4.5, depth: 0.25, height: 0.4, colour: s.trim }],
+    crown: { kind: 'parapet', height: 1.2, colour: s.trim, material: s.material },
+  })
+}
+
+/** 735 Market (way/149332505): buff brick, six storeys over a dark granite shopfront (Mapillary a0). */
+function market735(out: MeshBuilder, fit: Fit): void {
+  marketBlock(out, fit, { wall: [0.7, 0.6, 0.46], trim: [0.85, 0.8, 0.7], shop: [0.36, 0.33, 0.3], glass: [0.2, 0.23, 0.25], material: 'brick' })
+}
+
+/** 725–731 Market (way/149332503): cream terracotta, six storeys; the shop base is painted yellow for the mural (Mapillary b0, b1). */
+function market725(out: MeshBuilder, fit: Fit): void {
+  marketBlock(out, fit, {
+    wall: [0.8, 0.74, 0.62], trim: [0.88, 0.84, 0.74], shop: [0.5, 0.45, 0.38], glass: [0.2, 0.22, 0.24], material: 'terracotta',
+    base: { kind: 'punched', wall: [0.86, 0.72, 0.22], glass: [0.14, 0.16, 0.18], pitch: 4, floor: 4.5, solid: 0.3 },
+  })
+}
+
+/** 30–34 Third Street (way/149332504): a cream stone podium of three storeys, a set-back white block above, a teal canopy (Mapillary c0, c1). */
+function third30(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.8, 0.76, 0.64], WHITE: Rgb = [0.9, 0.88, 0.82]
+  tower(out, fit, {
+    height: fit.height,
+    base: { height: 4.5, face: { kind: 'punched', wall: [0.35, 0.34, 0.3], glass: [0.16, 0.2, 0.2], pitch: 4, floor: 4.5, solid: 0.25, material: 'granite' }, canopy: { depth: 1.6, colour: [0.2, 0.42, 0.4] } },
+    tiers: [
+      { to: 12, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.22, 0.24], pitch: 2.8, floor: 3.8, solid: 0.55, material: 'ashlar' } },
+      { to: 1, inset: 1.2, face: { kind: 'punched', wall: WHITE, glass: [0.22, 0.24, 0.27], pitch: 2.8, floor: 3.8, solid: 0.5, material: 'stucco' } },
+    ],
+    cornices: [{ at: 4.5, depth: 0.25, height: 0.4, colour: CREAM }, { at: 12, depth: 0.5, height: 0.6, colour: CREAM }],
+    crown: { kind: 'parapet', height: 1, colour: WHITE, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -461,4 +505,7 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   market605,
   market607,
   stevenson49,
+  market735,
+  market725,
+  third30,
 }

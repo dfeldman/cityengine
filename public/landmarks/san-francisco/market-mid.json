@@ -244,24 +244,6 @@
  },
  {
   "osm": [
-   "way/149332503"
-  ],
-  "name": "725-731 Market Street",
-  "restyle": "chicago",
-  "note": "Pre-war commercial block.",
-  "levels": 7
- },
- {
-  "osm": [
-   "way/149332505"
-  ],
-  "name": "735 Market Street",
-  "restyle": "chicago",
-  "note": "Pre-war commercial block.",
-  "levels": 7
- },
- {
-  "osm": [
    "way/149335988"
   ],
   "name": "2-8 Kearny Street",

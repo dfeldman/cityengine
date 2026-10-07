@@ -196,5 +196,29 @@
   "height": 60,
   "sign": false,
   "note": "market-fidi.ts: 49 Stevenson, a pale grey panelled shaft of about seventeen storeys with a dark ground floor; Mapillary frame pC0."
+ },
+ {
+  "osm": ["way/149332505"],
+  "name": "735 Market Street",
+  "procedural": "market735",
+  "height": 25,
+  "sign": false,
+  "note": "market-fidi.ts: 735 Market, a buff brick block of six storeys over a dark granite shopfront; Mapillary frame a0."
+ },
+ {
+  "osm": ["way/149332503"],
+  "name": "725-731 Market Street",
+  "procedural": "market725",
+  "height": 23,
+  "sign": false,
+  "note": "market-fidi.ts: 725-731 Market, a cream terracotta block of six storeys with the yellow mural across its shop base; Mapillary frames b0, b1."
+ },
+ {
+  "osm": ["way/149332504"],
+  "name": "30-34 3rd Street",
+  "procedural": "third30",
+  "height": 23,
+  "sign": false,
+  "note": "market-fidi.ts: 30-34 Third Street, a cream stone podium of three storeys under a set-back white block, teal canopy over the shops; Mapillary frames c0, c1."
  }
 ]
