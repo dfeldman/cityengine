@@ -329,7 +329,45 @@ const HEART_PAINTS: Record<string, HeartPaint> = {
   heartHaight: { base: [0.95, 0.93, 0.88], accent: [0.1, 0.1, 0.12], design: 'splotch' },
   heartBronze: { base: [0.45, 0.3, 0.18], accent: [0.45, 0.3, 0.18], design: 'plain' },
   heartMetal: { base: [0.62, 0.64, 0.66], accent: [0.62, 0.64, 0.66], design: 'plain' },
+  // (2026-10-07, the last two of OSM's hearts: Migrant Heart by the Presidio's Lyon Street gate; Wesley Skinner's Wave
+  //  Heart, 2025, metal, at Ocean Beach — blue and white, banded like surf)
+  heartMigrant: { base: [0.85, 0.55, 0.2], accent: [0.2, 0.35, 0.6], design: 'stripes' },
+  heartWave: { base: [0.2, 0.45, 0.7], accent: [0.92, 0.95, 0.97], design: 'bands' },
 }
+/**
+ * THE BANKER'S HEART (Masayuki Nagare, "Transcendence", 1969; OSM n3357102023), on the plaza of 555 California: the
+ * hearts survey's one heart that is not heart-shaped — a 200-ton mass of polished black Swedish granite, a heavy rounded
+ * form twisting up off a low base, nicknamed by the bankers it faces. Built as a stack of rounded slabs, each turned a
+ * little on the last, glossy black.
+ */
+function bankersHeart(out: MeshBuilder): void {
+  const BLACK: Rgb = [0.07, 0.07, 0.08]
+  box(out, 0, 0.15, 0, 3.2, 0.15, 2.4, [0.5, 0.49, 0.47], GRAN_TAG)
+  const N = 7
+  for (let k = 0; k < N; k++) {
+    const t = k / (N - 1)
+    const w = 2.6 * (1 - 0.35 * Math.abs(t - 0.35)), d = 1.6 * (1 - 0.3 * t), y0 = 0.3 + k * 0.62
+    const part = new (out.constructor as new () => MeshBuilder)()
+    // a rounded slab: an octagonal prism squashed to the slab's plan
+    for (let i = 0; i < 12; i++) {
+      const a0 = (i / 12) * Math.PI * 2, a1 = ((i + 1) / 12) * Math.PI * 2
+      const p0: [number, number] = [Math.cos(a0) * w, Math.sin(a0) * d], p1: [number, number] = [Math.cos(a1) * w, Math.sin(a1) * d]
+      const nx = Math.cos((a0 + a1) / 2) / w, nz = Math.sin((a0 + a1) / 2) / d, L = Math.hypot(nx, nz)
+      part.quad([[p0[0], y0, p0[1]], [p1[0], y0, p1[1]], [p1[0], y0 + 0.64, p1[1]], [p0[0], y0 + 0.64, p0[1]]], [nx / L, 0, nz / L], [[0, 0], [1, 0], [1, 1], [0, 1]], BLACK, GRAN_TAG)
+      part.quad([[0, y0 + 0.64, 0], [p0[0], y0 + 0.64, p0[1]], [p1[0], y0 + 0.64, p1[1]], [0, y0 + 0.64, 0]], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], BLACK, GRAN_TAG)
+    }
+    const ang = k * 0.22, c = Math.cos(ang), sn = Math.sin(ang), base = out.positions.length / 3
+    for (let i = 0; i < part.positions.length; i += 3) {
+      const x = part.positions[i], z = part.positions[i + 2]
+      out.positions.push(x * c + z * sn + Math.sin(t * 3) * 0.3, part.positions[i + 1], -x * sn + z * c)
+      const nx = part.normals[i], nz = part.normals[i + 2]
+      out.normals.push(nx * c + nz * sn, part.normals[i + 1], -nx * sn + nz * c)
+    }
+    out.uvs.push(...part.uvs); out.colors.push(...part.colors)
+    for (const ix of part.indices) out.indices.push(base + ix)
+  }
+}
+
 const HEARTS: Record<string, (out: MeshBuilder, fit: Fit) => void> = Object.fromEntries(
   Object.entries(HEART_PAINTS).map(([k, paint]) => [k, (out: MeshBuilder) => paintedHeart(out, paint)]))
 
@@ -401,4 +439,5 @@ export const ART: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   // (`heartsInSanFrancisco`, the flat red heart, is unregistered: the hearts are `paintedHeart`'s family now, HEARTS)
   languageOfTheBirds, francisScottKeyCanopy, stevensonMemorial,
   ...HEARTS,
+  bankersHeart,
 }
