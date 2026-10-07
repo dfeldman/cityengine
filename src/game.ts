@@ -2399,6 +2399,12 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         const g = city.terrain.heightAt(at.x, at.z)
         if (!riding && g > groundY && g - groundY < 1.5) groundY = g
       }
+      // …and on a park's trail, on the park's own ground, where the trail and its walkers are drawn (#539): the profile is
+      // the streets' levelled ground, up to 1.5 m off it over a hill in Golden Gate Park
+      if (!riding && nav.edge.foot && nav.edge.kind !== 'steps' && !nav.edge.raised && parkMap.contains(at.x, at.z, TILE)) {
+        const raw = city.terrain.rawHeightAt(at.x, at.z)
+        if (Math.abs(raw - groundY) < 3) groundY = raw
+      }
       // …unless they are on the transit, in which case they are wherever the vehicle is, on its deck
       const onBoard = transit.at
       if (onBoard) {
