@@ -273,6 +273,45 @@ function ppic500Washington(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * GRANT BUILDING, 1095 Market Street (1905 steel-frame loft, corner of 7th): eight storeys of red brick, arched
+ * head windows on the upper floors, a dark shopfront at street level, a corbelled brick crown. Photo: Mapillary,
+ * Market Street facing south-east (grant0).
+ */
+function grantBuilding1095Market(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.55, 0.22, 0.14]
+  const GLASS: Rgb = [0.18, 0.2, 0.22]
+  const SHOP: Rgb = [0.12, 0.13, 0.14]
+  tower(out, fit, {
+    height: 35,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.3, 0.2, 0.18], glass: SHOP, pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [
+      { to: 0.9, face: { kind: 'punched', wall: BRICK, glass: GLASS, floor: 3.6, pitch: 3.4, solid: 0.5, arched: true, material: 'brick' }, cornice: { depth: 0.4, height: 0.6, colour: [0.6, 0.55, 0.48] } },
+      { to: 1.0, face: { kind: 'punched', wall: BRICK, glass: GLASS, floor: 3.6, pitch: 3.4, solid: 0.5, arched: true, material: 'brick' }, inset: 1.2 },
+    ],
+    crown: { kind: 'parapet', height: 1.2, colour: BRICK, material: 'brick' },
+  })
+}
+
+/**
+ * AIDA HOTEL, 1083–1087 Market Street (1910s Tenderloin hotel, next door to the Grant Building): a plain light
+ * stucco front of about seven storeys over a shopfront at street level, a flat parapet. Photo: Mapillary,
+ * foliage hides the upper floors (aida0); massing and colour from the outline and the neighbour's scale.
+ */
+function aidaHotel1083Market(out: MeshBuilder, fit: Fit): void {
+  const STUCCO: Rgb = [0.84, 0.8, 0.7]
+  const GLASS: Rgb = [0.2, 0.24, 0.27]
+  const SHOP: Rgb = [0.16, 0.18, 0.2]
+  tower(out, fit, {
+    height: 26,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.3, 0.26, 0.22], glass: SHOP, pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [
+      { to: 1.0, face: { kind: 'punched', wall: STUCCO, glass: GLASS, floor: 3.4, pitch: 3.2, solid: 0.55, material: 'stucco' }, cornice: { depth: 0.35, height: 0.5, colour: STUCCO } },
+    ],
+    crown: { kind: 'parapet', height: 0.9, colour: STUCCO, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -285,4 +324,6 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   bofaMarketNewMontgomery,
   digitalGarage715Market,
   ppic500Washington,
+  grantBuilding1095Market,
+  aidaHotel1083Market,
 }

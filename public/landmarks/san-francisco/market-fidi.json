@@ -108,5 +108,21 @@
   "height": 33,
   "sign": false,
   "note": "market-fidi.ts: 500 Washington Street, PPIC: eight-storey office block of red-brown brick with deep punched windows, glazed shopfront, top storey set back behind a brick parapet; from Mapillary frames on Washington and Sansome (picks 0-1)."
+ },
+ {
+  "osm": ["way/256035264"],
+  "name": "Grant Building",
+  "procedural": "grantBuilding1095Market",
+  "height": 35,
+  "sign": false,
+  "note": "market-fidi.ts: Grant Building, 1095 Market at 7th: eight-storey 1905 red-brick loft with arched upper windows, dark shopfront, corbelled brick crown; Mapillary frame on Market (grant0)."
+ },
+ {
+  "osm": ["way/256035273"],
+  "name": "Aida Hotel",
+  "procedural": "aidaHotel1083Market",
+  "height": 26,
+  "sign": false,
+  "note": "market-fidi.ts: Aida Hotel, 1083-1087 Market: about seven-storey 1910s stucco hotel over a shopfront, flat parapet; Mapillary frame hidden by trees, massing from outline."
  }
 ]
