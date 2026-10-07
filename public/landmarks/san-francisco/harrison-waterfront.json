@@ -1,0 +1,8 @@
+[
+  {"osm": ["way/124659443"], "name": "Red's Java House", "procedural": "redsJavaHouse", "height": 4, "sign": false, "note": "harrison-waterfront.ts (Harrison survey 2026-10-07; Mapillary): white shack, its name in red along the roof edge."},
+  {"osm": ["way/104600008"], "name": "Hi Dive", "procedural": "hiDive", "height": 5, "sign": false, "note": "harrison-waterfront.ts: teal clapboard under a gabled roof, the deck with rails and umbrellas (Mapillary)."},
+  {"osm": ["way/460085343"], "name": "365 Main Street Data Center", "procedural": "main365", "height": 34, "sign": false, "note": "harrison-waterfront.ts: grey panels in ribbons over a dark base (Mapillary)."},
+  {"osm": ["way/260320986"], "name": "401-403 Main Street", "procedural": "main401", "height": 26, "sign": false, "note": "harrison-waterfront.ts: white eight-storey condominium with balcony bands; was brick with BOOKS/PHARMACY shopfronts (Mapillary)."},
+  {"osm": ["relation/3493239"], "name": "Brick warehouse on Main Street", "procedural": "mainBrickWarehouse", "height": 16, "sign": false, "note": "harrison-waterfront.ts: brown brick, arched windows, under the bridge approach (Mapillary)."},
+  {"osm": ["way/118229927"], "name": "390 Fremont Street", "procedural": "fremont390", "height": 8.5, "sign": false, "note": "harrison-waterfront.ts: grey two-storey loft, many-paned steel windows, red banner (Mapillary)."}
+]

@@ -575,6 +575,9 @@
   "include": "san-francisco/first-harrison.json"
  },
  {
+  "include": "san-francisco/harrison-waterfront.json"
+ },
+ {
   "include": "san-francisco/embarcadero-pass.json"
  }
 ]

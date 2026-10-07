@@ -265,8 +265,38 @@ export function bayBridge(out: MeshBuilder, _fit?: Fit): void {
   deck(out, NEAR_FROM, NEAR_TO, NEAR_UPPER_FROM)
   bikeway(out)
   for (const end of [-END, END]) {
-    for (const side of [-1, 1]) box(out, side * 17, (upperY(end) + 4) / 2, end + Math.sign(end) * 22, 5, (upperY(end) + 4) / 2, 26, CONCRETE, 0)
+    for (const side of [-1, 1]) shoreAnchorage(out, side * 17, end + Math.sign(end) * 22, upperY(end) + 4)
   }
+}
+
+/**
+ * One housing of a shore anchorage, either side of the roadways (5 × 26 m half-sizes, as the plain box it replaces):
+ * the Rincon Hill anchorage is Art Deco concrete — the owner's survey of Harrison Street, 2026-10-07, found it a blank
+ * grey slab — so a battered plinth, the walls cut into tall recessed panels between flat pilasters, a band of fluting
+ * under a stepped crown, and the cable housing on top.
+ */
+function shoreAnchorage(out: MeshBuilder, x: number, z: number, H: number): void {
+  const HX = 5, HZ = 26, DARK: Rgb = [0.6, 0.6, 0.58], LIGHT: Rgb = [0.8, 0.8, 0.77]
+  const P = 2.5                                   // the plinth
+  box(out, x, P / 2, z, HX + 0.8, P / 2, HZ + 0.8, DARK, 0)
+  const top = H - 4
+  box(out, x, (P + top) / 2, z, HX, (top - P) / 2, HZ, CONCRETE, 0)
+  // the pilasters standing proud, the recessed panels between them darker
+  for (let k = -HZ + 2; k <= HZ - 2 + 1e-6; k += 4) {
+    for (const s of [-1, 1]) box(out, x + s * (HX + 0.25), (P + top) / 2, z + k, 0.25, (top - P) / 2, 0.55, LIGHT, 0)
+  }
+  for (let k = -HX + 1.5; k <= HX - 1.5 + 1e-6; k += 3.5) {
+    for (const s of [-1, 1]) box(out, x + k, (P + top) / 2, z + s * (HZ + 0.25), 0.55, (top - P) / 2, 0.25, LIGHT, 0)
+  }
+  for (const s of [-1, 1]) {
+    box(out, x + s * (HX + 0.03), (P + top) / 2 - 1, z, 0.02, (top - P) / 2 - 2, HZ - 1, DARK, 0)
+    box(out, x, (P + top) / 2 - 1, z + s * (HZ + 0.03), HX - 1, (top - P) / 2 - 2, 0.02, DARK, 0)
+  }
+  // a band of fluting under the crown, the crown stepped in twice, and the housing the cables run down into
+  box(out, x, top - 0.6, z, HX + 0.6, 0.6, HZ + 0.6, LIGHT, 0)
+  box(out, x, top + 1, z, HX + 0.2, 1, HZ + 0.2, CONCRETE, 0)
+  box(out, x, top + 2.8, z, HX - 1, 0.8, HZ - 2, LIGHT, 0)
+  box(out, x, top + 3.8, z, HX - 2.2, 0.4, HZ - 6, CONCRETE, 0)
 }
 
 /** how far the near level's roadways run: the lower from where OSM's plain motorway meets the ramps on Rincon
