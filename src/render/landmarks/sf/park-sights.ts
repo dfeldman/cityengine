@@ -13,6 +13,8 @@
 import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
 import { box, prism, type Rgb } from '../../models.ts'
+import { placed } from '../kit.ts'
+import { surfaceTag } from '../../cartoon-material.ts'
 
 const hash = (i: number, k: number): number => { const s = Math.sin(i * 12.9898 + k * 78.233) * 43758.5453; return s - Math.floor(s) }
 
@@ -140,9 +142,7 @@ export function graceLabyrinth(out: MeshBuilder, fit: Fit): void {
   }
 }
 
-const GRANITE: Rgb = [0.62, 0.6, 0.58]
 const MARBLE: Rgb = [0.82, 0.8, 0.76]
-const PIPE: Rgb = [0.16, 0.17, 0.18]
 
 /**
  * THE WAVE ORGAN (Peter Richards and George Gonzalez, 1986), at the tip of the Marina's jetty (OSM n590952130): a
@@ -153,54 +153,58 @@ const PIPE: Rgb = [0.16, 0.17, 0.18]
  * steps down to the water.
  */
 export function waveOrgan(out: MeshBuilder, fit: Fit): void {
+  /*
+   * (Re-cut 2026-10-06 — owner, of the old one: "i'm not sure what it's supposed to be". It was a scatter of white boxes
+   * and black posts. Now it reads as what it is: a small grey stone amphitheatre stepping down into the bay, its seats
+   * long coursed runs of granite, a horseshoe wall round the back, the pipes standing up through the seats in grey
+   * concrete with pale mouths — not black bollards.)
+   */
   const R = Math.max(8, Math.min(fit.hx, fit.hz * 1.4))
-  const stone = (k: number): Rgb => (hash(k, 5) < 0.45 ? MARBLE : hash(k, 6) < 0.5 ? GRANITE : [0.55, 0.53, 0.5])
-  // the terraces: three arcs of salvaged blocks, stepping down toward the water, each a ring of irregular stones
-  for (let t = 0; t < 3; t++) {
-    const r = R * (0.95 - t * 0.28)
-    const y = 1.5 - t * 0.5
-    const n = 11 - t * 2
+  const G1: Rgb = [0.5, 0.5, 0.49], G2: Rgb = [0.42, 0.42, 0.41], G3: Rgb = [0.58, 0.57, 0.54]
+  const stone = (k: number): Rgb => (hash(k, 5) < 0.15 ? MARBLE : hash(k, 6) < 0.5 ? G1 : hash(k, 7) < 0.5 ? G2 : G3)
+  const tag = surfaceTag('granite')
+  // the floor of the bowl, stone flags
+  box(out, 0, 0.05, -R * 0.05, R * 0.95, 0.05, R * 0.6, [0.47, 0.46, 0.44], tag)
+  // the horseshoe wall round the back, two courses of big blocks, open to the bay (+z)
+  const ring = (r: number, y0: number, h: number, depth: number, n: number, k0: number): void => {
     for (let i = 0; i < n; i++) {
-      const a = Math.PI * (0.08 + (0.84 * (i + 0.5)) / n)            // a half circle opening to +z
-      const k = t * 20 + i
-      const x = -Math.cos(a) * r, z = -Math.sin(a) * r * 0.75 + (hash(k, 2) - 0.5) * 0.4
-      const w = (Math.PI * r) / n / 2 - 0.08
-      box(out, x, y / 2, z, w * (0.8 + hash(k, 3) * 0.3), y / 2 + hash(k, 4) * 0.12, 0.45 + hash(k, 7) * 0.25, stone(k), 0)
-      // a moulding left on some: a thin projecting course along the top
-      if (hash(k, 8) < 0.4) box(out, x, y + 0.08, z, w * 0.85, 0.06, 0.55, MARBLE, 0)
+      const a0 = Math.PI * (1 + (i / n)), a1 = Math.PI * (1 + ((i + 1) / n))
+      const am = (a0 + a1) / 2
+      const x = Math.cos(am) * r, z = Math.sin(am) * r * 0.72
+      const seg = Math.hypot(Math.cos(a1) * r - Math.cos(a0) * r, (Math.sin(a1) - Math.sin(a0)) * r * 0.72) / 2
+      const k = k0 + i
+      const ang = Math.atan2(-(Math.sin(a1) - Math.sin(a0)) * 0.72, Math.cos(a1) - Math.cos(a0))
+      const part = new (out.constructor as new () => MeshBuilder)()
+      box(part, 0, y0 + h / 2, 0, seg - 0.04, h / 2 + (hash(k, 3) - 0.5) * 0.08, depth / 2, stone(k), tag)
+      placed(out, part, ang, x, z)
     }
   }
-  // the floor of the bowl, and the steps down to the water at the front
-  box(out, 0, 0.06, -R * 0.2, R * 0.75, 0.06, R * 0.45, GRANITE, 0)
-  for (let k = 0; k < 4; k++) box(out, 0, -0.15 - k * 0.3, R * 0.35 + k * 0.6, R * 0.5 - k * 0.6, 0.15, 0.3, [0.5, 0.49, 0.47], 0)
-  // the cemetery's pieces: column drums standing about, one fluted shaft lying on its side, a carved panel on edge
-  for (let i = 0; i < 5; i++) {
-    const a = Math.PI * (0.15 + 0.7 * hash(i, 11))
-    const r = R * (0.3 + 0.35 * hash(i, 12))
-    prism(out, -Math.cos(a) * r, -Math.sin(a) * r * 0.75, 0, 0.5 + hash(i, 13) * 0.6, 0.35 + hash(i, 14) * 0.15, 12, MARBLE, 0)
+  ring(R, 0, 0.55, 0.9, 16, 0)
+  ring(R, 0.55, 0.5, 0.75, 13, 40)
+  // the seats: three tiers inside the wall, each lower toward the water, long runs of coursed stone
+  for (let t = 0; t < 3; t++) ring(R * (0.82 - t * 0.17), 0, 0.85 - t * 0.25, 0.8, 12 - t * 2, 100 + t * 20)
+  // the front: steps going down into the bay, the lowest under the water
+  for (let k = 0; k < 5; k++) box(out, 0, -0.2 - k * 0.32, R * 0.45 + k * 0.55, R * 0.62 - k * 0.5, 0.16, 0.28, k % 2 ? G2 : G1, tag)
+  // cemetery pieces among the stones: column drums standing, a fluted shaft lying, a carved panel
+  for (let i = 0; i < 4; i++) {
+    const a = Math.PI * (1.15 + 0.7 * hash(i, 11)), r = R * (0.55 + 0.25 * hash(i, 12))
+    prism(out, Math.cos(a) * r, Math.sin(a) * r * 0.72, 0, 0.7 + hash(i, 13) * 0.6, 0.32, 12, MARBLE, 0)
   }
   {
-    const n = 12, L = 2.6, rad = 0.32, cx = R * 0.35, cz = -R * 0.45
-    for (let k = 0; k < n; k++) {
-      const a = (k / n) * Math.PI * 2
-      box(out, cx, rad + Math.sin(a) * rad, cz + Math.cos(a) * rad, L / 2, 0.07, 0.07, MARBLE, 0)
-    }
+    const n = 12, L = 2.4, rad = 0.3, cx = -R * 0.3, cz = R * 0.15
+    for (let k = 0; k < n; k++) { const a = (k / n) * Math.PI * 2; box(out, cx, rad + Math.sin(a) * rad, cz + Math.cos(a) * rad, L / 2, 0.07, 0.07, MARBLE, 0) }
   }
-  box(out, -R * 0.4, 0.6, -R * 0.15, 0.9, 0.6, 0.12, MARBLE, 0)
-  box(out, -R * 0.4, 0.6, -R * 0.15, 0.75, 0.48, 0.16, [0.74, 0.72, 0.68], 0)
-  // the pipes: in clusters through the stone, upright and leaning, each with a flared mouth
-  const PIPES: Rgb[] = [PIPE, [0.55, 0.56, 0.56], [0.78, 0.78, 0.76]]
-  for (let i = 0; i < 26; i++) {
+  // the pipes: in clusters through the seats, grey concrete and PVC, each ending in a pale flared mouth at ear height
+  const PIPES: Rgb[] = [[0.62, 0.62, 0.6], [0.7, 0.7, 0.68], [0.36, 0.37, 0.38]]
+  for (let i = 0; i < 22; i++) {
     const cluster = i % 6
-    const a = Math.PI * (0.12 + (0.76 * (cluster + 0.5)) / 6) + (hash(i, 21) - 0.5) * 0.18
-    const r = R * (0.45 + 0.45 * hash(i, 22))
-    const x = -Math.cos(a) * r, z = -Math.sin(a) * r * 0.75
-    const h = 0.6 + hash(i, 23) * 1.6
-    const rad = 0.1 + hash(i, 24) * 0.09
-    const col = PIPES[Math.floor(hash(i, 25) * PIPES.length)]
-    prism(out, x, z, 0, h, rad, 10, col, 0)
-    // the mouth: a short flared bell, wider than the pipe
-    prism(out, x, z, h, h + 0.22, rad * 1.1, 10, [0.6, 0.6, 0.58], 0, rad * 1.9, true)
+    const a = Math.PI * (1.1 + (0.8 * (cluster + 0.5)) / 6) + (hash(i, 21) - 0.5) * 0.15
+    const r = R * (0.5 + 0.4 * hash(i, 22))
+    const x = Math.cos(a) * r, z = Math.sin(a) * r * 0.72
+    const h = 0.9 + hash(i, 23) * 0.9
+    const rad = 0.09 + hash(i, 24) * 0.06
+    prism(out, x, z, 0, h, rad, 10, PIPES[Math.floor(hash(i, 25) * PIPES.length)], 0)
+    prism(out, x, z, h, h + 0.2, rad * 1.1, 10, [0.78, 0.77, 0.74], 0, rad * 2, true)
   }
 }
 
