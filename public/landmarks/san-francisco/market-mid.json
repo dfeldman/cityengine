@@ -370,15 +370,6 @@
  },
  {
   "osm": [
-   "way/332626852"
-  ],
-  "name": "901 Market Street",
-  "restyle": "chicago",
-  "note": "Five-storey retail block (the old Hale Brothers store).",
-  "levels": 5
- },
- {
-  "osm": [
    "way/1259112449"
   ],
   "name": "Garfield Building",

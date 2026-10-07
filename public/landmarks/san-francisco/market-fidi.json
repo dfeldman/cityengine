@@ -48,5 +48,15 @@
   "height": 54,
   "sign": false,
   "note": "market-fidi.ts: James Bong Building, 12-storey pre-war block of cream stone pilasters, terracotta ground storey, balustrade crown; from Mapillary frames at Fourth and Market."
+ },
+ {
+  "osm": [
+   "way/332626852"
+  ],
+  "name": "901 Market Street",
+  "procedural": "haleBrothers901Market",
+  "height": 29,
+  "sign": false,
+  "note": "market-fidi.ts: 901 Market, the old Hale Brothers store (1912), five-storey cream terracotta palazzo with shopfront base and strong cornice; Mapillary frames missed the front, modelled from the brief's gist."
  }
 ]

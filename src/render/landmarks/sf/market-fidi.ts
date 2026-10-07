@@ -139,10 +139,34 @@ function jamesBongBuilding(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+// ---------------------------------------------------------------- 901 Market Street, the Hale Brothers store (1912; way/332626852)
+/**
+ * Hale Brothers' department store at Market and Fifth: a five-storey cream terracotta commercial palazzo. Shop
+ * windows along the street at ground level, four upper floors of large grouped windows between piers, a strong
+ * projecting cornice and a flat parapet. Modelled from the brief's expected gist: the Mapillary frames taken at this
+ * site show the rear and side service walls, not the Market Street front, so the massing and colour are not yet
+ * checked against a photograph of the front. Recognisable, not accurate.
+ */
+function haleBrothers901Market(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.86, 0.77]
+  const GLASS: Rgb = [0.22, 0.26, 0.3]
+  const shops: Face = { kind: 'curtain', wall: [0.5, 0.42, 0.34], glass: GLASS, pitch: 4, floor: 6.5, material: 'terracotta' }
+  const upper: Face = { kind: 'punched', wall: CREAM, glass: GLASS, floor: 5.5, pitch: 4.4, solid: 0.45, material: 'terracotta' }
+  tower(out, fit, {
+    height: 29,
+    base: { height: 6.5, face: shops },
+    cornices: [{ at: 6.5, depth: 0.5, height: 0.6, colour: CREAM }],
+    tiers: [{ to: 27, face: upper, cornice: { depth: 1, height: 1, colour: CREAM } }],
+    roof: [0.6, 0.6, 0.58],
+    crown: { kind: 'parapet', height: 2, colour: CREAM, material: 'terracotta' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
   unionTrustBank,
   serif960Market,
   jamesBongBuilding,
+  haleBrothers901Market,
 }
