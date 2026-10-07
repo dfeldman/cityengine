@@ -65,6 +65,7 @@ const KNOWN: Record<string, string[]> = {
     // the mural alleys (2026-10-04): the murals are painted ON the alleys' walls, so their panels stand at the walls
     'intersects | Balmy Alley murals',
     'intersects | Clarion Alley murals',
+    'intersects | Dandelion Fountain',
     // the concourse's oval spans the buildings round it at its tips (the bandshell's colonnade, the Academy's terrace) — accepted
     'intersects | Music Concourse',
     'intersects | Ghirardelli sign',

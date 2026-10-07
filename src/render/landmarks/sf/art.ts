@@ -368,6 +368,48 @@ function bankersHeart(out: MeshBuilder): void {
   }
 }
 
+/**
+ * THE DANDELION FOUNTAIN (Bob Woodward; OSM way/1177704967, `amenity=fountain`, layer 1) on the Embarcadero Center
+ * podium: a 14 m round pool in granite, and in the middle on a short bronze stem a sphere of radiating bronze tubes, each
+ * throwing its jet straight out, so the water draws a dandelion clock in the air (#480 waited on a photograph; built
+ * from the design's published description, 2026-10-07 — the owner should say if it reads wrong). Water only, by the
+ * shared system (render/water.ts).
+ */
+function dandelionFountain(out: MeshBuilder): void {
+  const BRONZE: Rgb = [0.42, 0.3, 0.17]
+  const R = 7
+  // the rim, round: its outer wall, its top, and the inner wall down to the water; and the basin floor
+  const N = 40, pool: { x: number; z: number }[] = []
+  const Ri = R - 0.45, top = 0.5
+  for (let i = 0; i < N; i++) {
+    const a = (i / N) * Math.PI * 2, b = ((i + 1) / N) * Math.PI * 2
+    const ca = Math.cos(a), sa = Math.sin(a), cb = Math.cos(b), sb = Math.sin(b), cm = Math.cos((a + b) / 2), sm = Math.sin((a + b) / 2)
+    pool.push({ x: ca * Ri, z: sa * Ri })
+    out.quad([[ca * R, 0, sa * R], [cb * R, 0, sb * R], [cb * R, top, sb * R], [ca * R, top, sa * R]], [cm, 0, sm], [[0, 0], [1, 0], [1, 1], [0, 1]], GRANITE, GRAN_TAG)
+    out.quad([[ca * Ri, top, sa * Ri], [cb * Ri, top, sb * Ri], [cb * R, top, sb * R], [ca * R, top, sa * R]], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], GRANITE, GRAN_TAG)
+    out.quad([[cb * Ri, 0, sb * Ri], [ca * Ri, 0, sa * Ri], [ca * Ri, top, sa * Ri], [cb * Ri, top, sb * Ri]], [-cm, 0, -sm], [[0, 0], [1, 0], [1, 1], [0, 1]], GRANITE, GRAN_TAG)
+  }
+  box(out, 0, 0.03, 0, R - 0.3, 0.03, R - 0.3, [0.3, 0.32, 0.32], GRAN_TAG)
+  out.water.push({ kind: 'pool', ring: pool, y: 0.35, colour: [0.24, 0.34, 0.36] })
+  // the stem and the head: a bronze ball, and tubes out of it in every direction of the upper sphere
+  const H = 2.6, r0 = 0.45
+  box(out, 0, H / 2, 0, 0.12, H / 2, 0.12, BRONZE, METAL_TAG)
+  for (let i = 0; i < 4; i++) box(out, 0, H + (i - 1.5) * 0.22, 0, r0 * Math.cos(((i - 1.5) / 2.5) * Math.PI / 2), 0.11, r0 * Math.cos(((i - 1.5) / 2.5) * Math.PI / 2), BRONZE, METAL_TAG)
+  const TUBES = 46, L = 1.2
+  for (let k = 0; k < TUBES; k++) {
+    // a Fibonacci sphere, the lowest fifth left out (the stem is there)
+    const y = 1 - (k + 0.5) / TUBES * 1.6, rr = Math.sqrt(Math.max(0, 1 - y * y)), th = k * 2.39996
+    const d: [number, number, number] = [Math.cos(th) * rr, y, Math.sin(th) * rr]
+    for (let s = 0; s < 4; s++) {
+      const t = r0 + (L * (s + 0.5)) / 4
+      box(out, d[0] * t, H + d[1] * t, d[2] * t, 0.035, 0.035, 0.035, BRONZE, METAL_TAG)
+    }
+    const tip: [number, number, number] = [d[0] * (r0 + L), H + d[1] * (r0 + L), d[2] * (r0 + L)]
+    out.water.push({ kind: 'jet', at: tip, v: [d[0] * 1.8, d[1] * 1.8 + 0.6, d[2] * 1.8], width: 0.06, spread: 0.15 })
+  }
+  out.water.push({ kind: 'splash', at: [0, 0.37, 0], r: 2.6 })
+}
+
 const HEARTS: Record<string, (out: MeshBuilder, fit: Fit) => void> = Object.fromEntries(
   Object.entries(HEART_PAINTS).map(([k, paint]) => [k, (out: MeshBuilder) => paintedHeart(out, paint)]))
 
@@ -440,4 +482,5 @@ export const ART: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   languageOfTheBirds, francisScottKeyCanopy, stevensonMemorial,
   ...HEARTS,
   bankersHeart,
+  dandelionFountain,
 }
