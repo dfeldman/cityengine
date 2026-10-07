@@ -21,7 +21,7 @@
   {"osm": ["way/404478465", "way/404478466", "way/404478467", "way/404478468"], "name": "Santa Rosa: unclaimed buildings inside its model", "note": "placeholder (2026-10-02 overdraw scan): baked buildings whose centre lies inside this landmark's own modelled footprint, drawn through it."},
   {"osm": ["way/32776568"], "name": "Sutro Baths: the boiler room ruin", "note": "placeholder: OSM's historic=ruins wall, baked as a 12 m generic building standing in the baths' basin; the ruin model draws the walls."},
   {"osm": ["relation/3827675"], "name": "Northpoint Apartments", "restyle": "stucco", "note": "A 1960s stucco complex at Bay and Stockton, baked as Victorian."},
-  {"osm": ["relation/1361062"], "name": "School, 1150 Francisco Street", "restyle": "stucco", "levels": 4, "note": "baked as Victorian"},
+  {"osm": ["relation/1361062"], "name": "Galileo Academy (Galileo High School)", "procedural": "galileoHigh", "lat": 37.803807, "lon": -122.424163, "size": [130, 100], "rotateDeg": 0, "height": 19, "sign": false, "note": "galileo.ts (owner's Street View on Polk, 2026-10-06: 'we have nothing for Galileo High School'); was a stucco restyle of the bake's courtyard block. The outline is the bake's own, centred here with no turn"},
   {"osm": ["relation/3493117"], "name": "School (relation/3493117)", "restyle": "stucco", "levels": 4, "note": "baked as Victorian"},
   {"osm": ["relation/3827661"], "name": "North Point Wet Weather Facility", "restyle": "brutalist", "note": "concrete plant, baked as stucco"},
   {"osm": ["relation/6747683"], "name": "Wharf block (relation/6747683)", "restyle": "brick", "note": "10 000 m2 at Fisherman's Wharf baked as Victorian"},

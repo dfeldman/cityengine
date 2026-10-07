@@ -17,7 +17,7 @@ import { surfaceTag } from '../../cartoon-material.ts'
 import { sign } from '../signage.ts'
 import { beam } from '../kit.ts'
 
-type P = { x: number; z: number }
+export type P = { x: number; z: number }
 const UV: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
 
 const FOOT: P[] = [
@@ -38,7 +38,7 @@ const STEEL: Rgb = [0.24, 0.25, 0.27]
 const RAIL_GLASS: Rgb = [0.72, 0.84, 0.84]
 
 /** the ring moved `d` metres inward (anticlockwise ring: inward is to the left of each edge), corners mitred */
-function inset(ring: P[], d: number): P[] {
+export function inset(ring: P[], d: number): P[] {
   const n = ring.length
   return ring.map((p, i) => {
     const a = ring[(i - 1 + n) % n], b = ring[(i + 1) % n]
@@ -48,15 +48,15 @@ function inset(ring: P[], d: number): P[] {
     return { x: p.x + mx * k, z: p.z + mz * k }
   })
 }
-const norm = (x: number, z: number): P => { const L = Math.hypot(x, z) || 1; return { x: x / L, z: z / L } }
+export const norm = (x: number, z: number): P => { const L = Math.hypot(x, z) || 1; return { x: x / L, z: z / L } }
 /** the outward normal of edge i */
-const outward = (ring: P[], i: number): P => { const a = ring[i], b = ring[(i + 1) % ring.length]; return norm(b.z - a.z, -(b.x - a.x)) }
+export const outward = (ring: P[], i: number): P => { const a = ring[i], b = ring[(i + 1) % ring.length]; return norm(b.z - a.z, -(b.x - a.x)) }
 
 /**
  * A ceiling between the rings `outer` and `inner` (same corners) at y, as thin slabs along each edge: a flat quad facing
  * down drew nothing here (the far roof showed through the gap), while a box's underside draws.
  */
-function soffit(out: MeshBuilder, outer: P[], inner: P[], y: number, c: Rgb, tag: number): void {
+export function soffit(out: MeshBuilder, outer: P[], inner: P[], y: number, c: Rgb, tag: number): void {
   for (let i = 0; i < outer.length; i++) {
     const j = (i + 1) % outer.length
     const a = { x: (outer[i].x + inner[i].x) / 2, z: (outer[i].z + inner[i].z) / 2 }, b = { x: (outer[j].x + inner[j].x) / 2, z: (outer[j].z + inner[j].z) / 2 }
@@ -69,7 +69,7 @@ function soffit(out: MeshBuilder, outer: P[], inner: P[], y: number, c: Rgb, tag
 }
 
 /** every edge of `ring` walled from y0 to y1 */
-function walls(out: MeshBuilder, ring: P[], y0: number, y1: number, c: Rgb, tag: number): void {
+export function walls(out: MeshBuilder, ring: P[], y0: number, y1: number, c: Rgb, tag: number): void {
   for (let i = 0; i < ring.length; i++) {
     const a = ring[i], b = ring[(i + 1) % ring.length], o = outward(ring, i)
     out.quad([[a.x, y0, a.z], [b.x, y0, b.z], [b.x, y1, b.z], [a.x, y1, a.z]], [o.x, 0, o.z], UV, c, tag)
@@ -77,7 +77,7 @@ function walls(out: MeshBuilder, ring: P[], y0: number, y1: number, c: Rgb, tag:
 }
 
 /** a box `w` wide (along the edge) and `d` deep standing at `t` (0..1) along edge i, pushed `off` metres out */
-function onEdge(out: MeshBuilder, ring: P[], i: number, t: number, off: number, w: number, d: number, y0: number, y1: number, c: Rgb, tag: number): void {
+export function onEdge(out: MeshBuilder, ring: P[], i: number, t: number, off: number, w: number, d: number, y0: number, y1: number, c: Rgb, tag: number): void {
   const a = ring[i], b = ring[(i + 1) % ring.length], o = outward(ring, i)
   const tx = b.x - a.x, tz = b.z - a.z, L = Math.hypot(tx, tz) || 1, ux = tx / L, uz = tz / L
   const cx = a.x + tx * t + o.x * off, cz = a.z + tz * t + o.z * off
@@ -85,7 +85,7 @@ function onEdge(out: MeshBuilder, ring: P[], i: number, t: number, off: number, 
 }
 
 /** a box whose local x runs along (ux, uz) */
-function orientedBox(out: MeshBuilder, cx: number, cy: number, cz: number, hx: number, hy: number, hz: number, ux: number, uz: number, c: Rgb, tag: number): void {
+export function orientedBox(out: MeshBuilder, cx: number, cy: number, cz: number, hx: number, hy: number, hz: number, ux: number, uz: number, c: Rgb, tag: number): void {
   const vx = -uz, vz = ux
   const P3 = (sx: number, sy: number, sz: number): [number, number, number] => [cx + ux * hx * sx + vx * hz * sz, cy + hy * sy, cz + uz * hx * sx + vz * hz * sz]
   const faces: [number, number, number, [number, number, number]][] = [[1, 0, 0, [ux, 0, uz]], [-1, 0, 0, [-ux, 0, -uz]], [0, 0, 1, [vx, 0, vz]], [0, 0, -1, [-vx, 0, -vz]], [0, 1, 0, [0, 1, 0]], [0, -1, 0, [0, -1, 0]]]
@@ -99,7 +99,7 @@ function orientedBox(out: MeshBuilder, cx: number, cy: number, cz: number, hx: n
 }
 
 /** piers every ~`pitch` metres along each edge of `ring` */
-function piers(out: MeshBuilder, ring: P[], pitch: number, y0: number, y1: number, size: number, c: Rgb, tag: number, skip?: (i: number) => boolean): void {
+export function piers(out: MeshBuilder, ring: P[], pitch: number, y0: number, y1: number, size: number, c: Rgb, tag: number, skip?: (i: number) => boolean): void {
   for (let i = 0; i < ring.length; i++) {
     if (skip?.(i)) continue
     const a = ring[i], b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z)
