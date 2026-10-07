@@ -45,8 +45,6 @@ export const FIDI_4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   twoHundredSansome: fromRecipe('granite-eighties', { height: 69, wall: [0.66, 0.62, 0.56], glass: [0.28, 0.3, 0.34], base: 6 }),
   /** The Gateway vistaWest (Golden Gateway Center, 1960s): buff precast-concrete tower, the shorter twin of vistaSouth. */
   gatewayVistaWest: fromRecipe('hotel-punched', { height: 67, wall: [0.78, 0.74, 0.64], glass: [0.24, 0.26, 0.28], base: 5, baseWall: [0.6, 0.56, 0.48] }),
-  /** One Steuart Lane (2019, waterfront condos): pale glass residential tower, flat roof. */
-  oneSteuartLane: fromRecipe('glass-tower', { height: 67, wall: [0.7, 0.72, 0.74], glass: [0.32, 0.42, 0.5], base: 6, crown: { kind: 'flat' } }),
   /** 90 New Montgomery Street (1908 commercial block, neighbour of the Pacific Telephone Building): tan brick Chicago-frame office block, heavy cornice. */
   ninetyNewMontgomery: fromRecipe('chicago-block', { height: 65, wall: [0.68, 0.62, 0.52], glass: [0.24, 0.26, 0.28], base: 6, baseWall: [0.5, 0.46, 0.4] }),
   /** Omni San Francisco Hotel / Financial Center Building (1926): tan-cream terracotta Renaissance Revival block, arched top storey, deep cornice. */

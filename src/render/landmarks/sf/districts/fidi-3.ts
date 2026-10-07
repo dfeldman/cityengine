@@ -25,8 +25,6 @@ export const FIDI_3: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** LinkedIn / 222 2nd Street (2015): blue-grey glass curtain-wall office tower, fine mullions, flat top. */
   linkedinTower: fromRecipe('glass-tower', { height: 106, wall: [0.5, 0.54, 0.58], glass: [0.3, 0.4, 0.48], base: 8 }),
   /** 101 2nd Street (1999): blue-green glass curtain-wall office tower, plain rectangular block, flat top. */
-  /** The Towers at Rincon (2008): twin blue-green glass residential towers, curtain-wall grid, flat tops. */
-  towersAtRincon: fromRecipe('glass-tower', { height: 93, wall: [0.5, 0.58, 0.6], glass: [0.3, 0.44, 0.48], base: 6 }),
   /** St. Regis Museum Tower (2005): pale grey glass-and-concrete condo/hotel tower, deep punched reveals, flat top. */
   stRegisMuseumTower: fromRecipe('modern-slender', { height: 89, wall: [0.6, 0.6, 0.6], glass: [0.26, 0.32, 0.38], base: 10, crown: { kind: 'flat' } }),
   /** 400 Beale Street (2001): cream precast residential tower, punched windows and balconies, flat top. */
@@ -35,8 +33,6 @@ export const FIDI_3: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   fourSeventyFiveSansome: fromRecipe('granite-eighties', { height: 82, wall: [0.8, 0.76, 0.68], glass: [0.28, 0.3, 0.33], base: 7 }),
   /** 351 California Street (2018): grey-blue glass curtain-wall office tower, plain block, flat top. */
   threeFiftyOneCalifornia: fromRecipe('glass-tower', { height: 81, wall: [0.5, 0.54, 0.58], glass: [0.28, 0.38, 0.44], base: 6 }),
-  /** 201 Spear Street (1985): blue-green glass curtain-wall office tower over Rincon Hill, flat top. */
-  twoOOneSpear: fromRecipe('glass-tower', { height: 81, wall: [0.48, 0.54, 0.56], glass: [0.3, 0.44, 0.48], base: 7 }),
   /** 155 Jackson Street: pale precast office/residential tower, punched window grid, flat top (no reference photo found; modelled to match its Jackson Square-area neighbours). */
   oneFiftyFiveJackson: fromRecipe('granite-eighties', { height: 78, wall: [0.75, 0.72, 0.66], glass: [0.26, 0.28, 0.3], base: 6 }),
   /** 221 Main Street (1987): blue-green glass curtain-wall office tower, plain block, flat top. */
