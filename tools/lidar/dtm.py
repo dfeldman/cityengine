@@ -50,6 +50,9 @@ def main():
         mx, my = frame.local_to_merc(np.array([x0, x1]), np.array([z0, z1]))
         nodes = [k for k, n in ept.walk(a.dataset, e['bounds'], (mx.min(), my.min(), mx.max(), my.max())) if int(k.split('-')[0]) <= a.depth]
         print(f'{name}: {len(nodes)} nodes to depth {a.depth}', file=sys.stderr)
+        if not nodes:
+            print('  outside the survey: skipped (the bake keeps the tiles there)', file=sys.stderr)
+            continue
         box = (x0 - STEP, z0 - STEP, x0 + cols * STEP, z0 + rows * STEP)
         with ThreadPoolExecutor(8) as ex:
             parts = list(ex.map(lambda k: ept.read_node(a.dataset, k, frame, box, [2], False), nodes))

@@ -3244,7 +3244,7 @@
     "terrain": "fine",
     "traffic": 0,
     "crowd": 0.8,
-    "relief": "raw",
+    "lidar": true, "relief": "raw",
     "cliffs": true,
     "trails": "bike"
    },
@@ -3274,7 +3274,7 @@
    "priority": 1,
    "props": {
     "terrain": "fine",
-    "relief": "raw",
+    "lidar": true, "relief": "raw",
     "trails": "bike"
    },
    "note": "Golden Gate Park audit 2026-10-04: the 60 m opening took the summit off \u2014 a flat mesa 14 m over the lake at 101.7 m, where the zoom-15 data (bare earth here) reads 130.4 m. The ring is the island's own shore (the hole in Stow Lake) pushed 5% out into the water; water samples are never raw, so the lake keeps its level and no ridden way crosses the edge.",
@@ -4701,7 +4701,7 @@
    "priority": 6,
    "props": {
     "terrain": "fine",
-    "relief": "raw",
+    "lidar": true, "relief": "raw",
     "cliffs": true
    },
    "note": "The lighthouse stands ~20 m up a sandstone cliff (owner's photograph, 2026-10-04); the coarse ground put it 2 m above the water. Fine raw relief over the station's shore, as Alcatraz (#257).",
