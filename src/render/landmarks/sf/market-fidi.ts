@@ -482,6 +482,45 @@ function third30(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** 720 Market (way/149335990): cream stone Chicago-style block, arcaded ground floor, cornice under a parapet (Mapillary a0). */
+export function market720(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.84, 0.8, 0.7]
+  tower(out, fit, {
+    height: 42,
+    base: { height: 4.5, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.36, 0.34], pitch: 3, floor: 4.5, solid: 0.35, arched: true, material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.24, 0.27], pitch: 3, floor: 4, solid: 0.45, material: 'ashlar' } }],
+    cornices: [{ at: 4.5, depth: 0.3, height: 0.4, colour: CREAM }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'ashlar' },
+  })
+}
+
+/** 1 Kearny (way/149335979): 2009 glass corner, dark glass shopfront, bands of dark glass and metal, set-back crown (Mapillary b0). */
+export function kearny1(out: MeshBuilder, fit: Fit): void {
+  const DARK: Rgb = [0.2, 0.21, 0.23]
+  tower(out, fit, {
+    height: 47,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.12, 0.13, 0.14], glass: [0.14, 0.17, 0.2], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [
+      { to: 0.7, face: { kind: 'bands', wall: DARK, glass: [0.18, 0.22, 0.26], floor: 3.6, solid: 0.5, material: 'metal' } },
+      { to: 1, inset: 2.5, face: { kind: 'bands', wall: [0.3, 0.31, 0.33], glass: [0.16, 0.2, 0.24], floor: 3.6, solid: 0.5, material: 'metal' } },
+    ],
+    crown: { kind: 'parapet', height: 1, colour: [0.3, 0.31, 0.33], material: 'metal' },
+    penthouse: 1,
+  })
+}
+
+/** the unnamed block between Geary and Market (way/940203045): dark-glass shopfronts under a cream stone upper block (Mapillary c0). */
+export function geary940203045(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.78, 0.74, 0.66]
+  tower(out, fit, {
+    height: 28,
+    base: { height: 4.5, face: { kind: 'curtain', wall: [0.14, 0.15, 0.16], glass: [0.16, 0.2, 0.24], pitch: 3, floor: 4.5, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: STONE, glass: [0.22, 0.26, 0.3], pitch: 3.2, floor: 4.7, solid: 0.4, material: 'ashlar' } }],
+    cornices: [{ at: 4.5, depth: 0.3, height: 0.4, colour: STONE }],
+    crown: { kind: 'parapet', height: 0.9, colour: STONE, material: 'ashlar' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -508,4 +547,7 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   market735,
   market725,
   third30,
+  market720,
+  kearny1,
+  geary940203045,
 }

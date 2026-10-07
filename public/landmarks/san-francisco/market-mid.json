@@ -271,29 +271,11 @@
  },
  {
   "osm": [
-   "way/149335990"
-  ],
-  "name": "720 Market Street",
-  "restyle": "chicago",
-  "note": "Ten-storey pre-war office block.",
-  "levels": 10
- },
- {
-  "osm": [
    "way/151183777"
   ],
   "name": "1 Kearny Street (1964 annex)",
   "restyle": "bauhaus",
   "note": "Charles Moore's 1964 annex to 1 Kearny: plain modern slab.",
-  "levels": 12
- },
- {
-  "osm": [
-   "way/149335979"
-  ],
-  "name": "1 Kearny Street",
-  "restyle": "skyscraper",
-  "note": "The 2009 glass addition on the corner: dark glass and metal.",
   "levels": 12
  },
  {

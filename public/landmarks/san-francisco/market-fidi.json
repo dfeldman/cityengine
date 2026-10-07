@@ -220,5 +220,29 @@
   "height": 23,
   "sign": false,
   "note": "market-fidi.ts: 30-34 Third Street, a cream stone podium of three storeys under a set-back white block, teal canopy over the shops; Mapillary frames c0, c1."
+ },
+ {
+  "osm": ["way/149335990"],
+  "name": "720 Market Street",
+  "procedural": "market720",
+  "height": 42,
+  "sign": false,
+  "note": "market-fidi.ts: 720 Market, a cream stone Chicago-style block: arcaded ground floor, punched upper floors, a cornice under the parapet; Mapillary frame a0."
+ },
+ {
+  "osm": ["way/149335979"],
+  "name": "1 Kearny Street",
+  "procedural": "kearny1",
+  "height": 47,
+  "sign": false,
+  "note": "market-fidi.ts: 1 Kearny, a 2009 glass corner: dark glass shopfront, bands of dark glass and metal, a set-back crown; Mapillary frame b0."
+ },
+ {
+  "osm": ["way/940203045"],
+  "name": "Geary Street block",
+  "procedural": "geary940203045",
+  "height": 28,
+  "sign": false,
+  "note": "market-fidi.ts: unnamed block between Geary and Market, dark-glass shopfronts under a cream stone upper block and cornice; Mapillary frame c0."
  }
 ]
