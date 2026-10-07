@@ -38,5 +38,15 @@
   "height": 37,
   "sign": false,
   "note": "market-fidi.ts: 960 Market, 12-storey 2021 apartments, pale grey cladding in bowed bay windows, glazed ground floor under a cream band; from Mapillary frames on Market."
+ },
+ {
+  "osm": [
+   "way/256029751"
+  ],
+  "name": "James Bong Building",
+  "procedural": "jamesBongBuilding",
+  "height": 54,
+  "sign": false,
+  "note": "market-fidi.ts: James Bong Building, 12-storey pre-war block of cream stone pilasters, terracotta ground storey, balustrade crown; from Mapillary frames at Fourth and Market."
  }
 ]

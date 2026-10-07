@@ -113,9 +113,36 @@ function serif960Market(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+// ---------------------------------------------------------------- James Bong Building, 1 Market / Fourth (pre-war; way/256029751)
+/**
+ * Mapillary frames at Fourth and Market: a twelve-storey pre-war office block of pale cream-grey stone, its upper
+ * floors ruled by tall pilasters with paired windows between them, a moulded cornice band and carved corbels under
+ * the crown, and a red-brown terracotta ground storey of shopfronts with a dark glass band above. Recognisable, not
+ * accurate.
+ */
+function jamesBongBuilding(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.8, 0.78, 0.72]
+  const TERRA: Rgb = [0.5, 0.28, 0.2]
+  const GLASS: Rgb = [0.2, 0.23, 0.25]
+  const shops: Face = { kind: 'punched', wall: TERRA, glass: GLASS, floor: 5, pitch: 4, solid: 0.35, material: 'terracotta' }
+  const upper: Face = { kind: 'punched', wall: STONE, glass: GLASS, floor: 3.6, pitch: 3.2, solid: 0.42, material: 'ashlar' }
+  tower(out, fit, {
+    height: 54,
+    base: { height: 5, face: shops },
+    cornices: [{ at: 5, depth: 0.5, height: 0.7, colour: STONE }],
+    tiers: [
+      { to: 0.86, face: upper, cornice: { depth: 0.9, height: 0.9, colour: STONE } },
+      { to: 1.0, face: upper, inset: 1.5, cornice: { depth: 0.4, height: 0.5, colour: STONE } },
+    ],
+    roof: [0.55, 0.53, 0.5],
+    crown: { kind: 'balustrade', height: 1.6, colour: STONE, material: 'ashlar', pier: true },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
   unionTrustBank,
   serif960Market,
+  jamesBongBuilding,
 }

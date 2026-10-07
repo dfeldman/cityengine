@@ -648,15 +648,6 @@
  },
  {
   "osm": [
-   "way/256029751"
-  ],
-  "name": "James Bong Building",
-  "restyle": "chicago",
-  "levels": 12,
-  "note": "Twelve-storey pre-war block on the Market and Fourth block; no reference photo found."
- },
- {
-  "osm": [
    "way/112928951"
   ],
   "name": "799 Market Street",
