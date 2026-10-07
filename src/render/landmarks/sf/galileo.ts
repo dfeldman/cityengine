@@ -121,8 +121,12 @@ export function galileoHigh(out: MeshBuilder, _fit: Fit): void {
     }
     // the pergola on the roof: posts and a grid of beams
     const yP = EAVES + 1.5
+    // (its own roof deck under it, over the loggia, and the posts down to it: the pergola stood over the tile slope and
+    //  floated — owner, 2026-10-06)
+    const deckY = EAVES + 0.45
+    { const m = P3(0, 0, -1.15); orientedBox(out, m[0], deckY - 0.2, m[2], W + 0.35, 0.2, 2.05, u.x, u.z, CREAM, stucco) }
     for (const s of [-W, -W / 3, W / 3, W]) for (const d of [-2.5, 0.2]) {
-      const p = P3(s, 0, d); box(out, p[0], yP + 1.2, p[2], 0.15, 1.2, 0.15, FRAME, stucco)
+      const p = P3(s, 0, d); box(out, p[0], (deckY + yP + 2.4) / 2, p[2], 0.15, (yP + 2.4 - deckY) / 2, 0.15, FRAME, stucco)
     }
     for (const d of [-2.5, -1.2, 0.2]) { const p = P3(0, 0, d); orientedBox(out, p[0], yP + 2.45, p[2], W + 0.4, 0.1, 0.08, u.x, u.z, FRAME, stucco) }
     for (let s = -W; s <= W + 0.01; s += 0.9) { const p = P3(s, 0, -1.15); orientedBox(out, p[0], yP + 2.6, p[2], 0.06, 0.07, 1.6, u.x, u.z, FRAME, stucco) }
