@@ -647,6 +647,31 @@ export function islamicSociety20Jones(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** THREE TRANSAMERICA CENTER, Mark Twain Place: a nine-storey cream-white office block on a tan base, tall punched bays, a plain parapet (Mapillary frame a0, the Sansome side). */
+export function threeTransamericaCenter(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.88, 0.82]
+  const TAN: Rgb = [0.74, 0.68, 0.56]
+  tower(out, fit, {
+    height: 32,
+    base: { height: 4, face: { kind: 'punched', wall: TAN, glass: [0.2, 0.24, 0.26], floor: 4, pitch: 3.6, solid: 0.5, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.24, 0.28], floor: 3.5, pitch: 3.2, solid: 0.55, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'concrete' },
+  })
+}
+
+/** 500 SANSOME STREET: an eight-storey cream-stone office block on a tan ground floor with glazed bays, pale pilasters and a moulded cornice (Mapillary frame b0). */
+export function sansome500(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.85, 0.82, 0.74]
+  const TAN: Rgb = [0.72, 0.66, 0.54]
+  tower(out, fit, {
+    height: 34,
+    base: { height: 5, face: { kind: 'curtain', wall: TAN, glass: [0.16, 0.2, 0.22], pitch: 3, floor: 5, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: STONE, glass: [0.2, 0.22, 0.25], floor: 4.2, pitch: 3.6, solid: 0.6, material: 'stucco' } }],
+    cornices: [{ at: 0.92, depth: 0.6, colour: STONE }],
+    crown: { kind: 'parapet', height: 1.2, colour: STONE, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -685,4 +710,6 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   market1017,
   market1075,
   islamicSociety20Jones,
+  threeTransamericaCenter,
+  sansome500,
 }

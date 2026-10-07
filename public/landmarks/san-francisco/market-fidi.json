@@ -328,5 +328,21 @@
   "height": 13,
   "sign": false,
   "note": "market-fidi.ts: Islamic Society of San Francisco, 20 Jones at Market, a three-storey cream-tan block with a deep cornice and a shopfront base, no dome or signs; Mapillary frame pC1."
+ },
+ {
+  "osm": ["way/256072710"],
+  "name": "Three Transamerica Center",
+  "procedural": "threeTransamericaCenter",
+  "height": 32,
+  "sign": false,
+  "note": "market-fidi.ts: Three Transamerica Center, Mark Twain Place, a nine-storey cream-white office block on a tan base with tall punched bays and a plain parapet; Mapillary frame a0."
+ },
+ {
+  "osm": ["way/256072719"],
+  "name": "500 Sansome Street",
+  "procedural": "sansome500",
+  "height": 34,
+  "sign": false,
+  "note": "market-fidi.ts: 500 Sansome Street, an eight-storey cream-stone office block on a tan glazed ground floor with pale pilasters and a moulded cornice; Mapillary frame b0."
  }
 ]
