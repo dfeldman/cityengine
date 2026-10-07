@@ -368,5 +368,29 @@
   "height": 10,
   "sign": false,
   "note": "market-fidi.ts: one-storey historic building between Hotaling Place and Montgomery Street, a tall dark glazed shopfront under a plain red brick wall with a parapet; Mapillary frames c0, c1."
+ },
+ {
+  "osm": ["way/1279452198"],
+  "name": "Sacramento and Front Street office block (fidi1279452198)",
+  "procedural": "fidi1279452198",
+  "height": 32,
+  "sign": false,
+  "note": "market-fidi.ts: nine-level red-brick loft-office block at Sacramento and Front Streets, bowed bay windows with multi-pane sashes and a green-tinted glazed ground floor over a stone base; Mapillary frames a0, a1."
+ },
+ {
+  "osm": ["way/256087377"],
+  "name": "617-633 Battery Street",
+  "procedural": "battery617",
+  "height": 25,
+  "sign": false,
+  "note": "market-fidi.ts: 617-633 Battery Street, brick warehouse-loft with arched upper windows, a black steel-framed glazed ground floor and an arched entrance; Mapillary frames b0, b1."
+ },
+ {
+  "osm": ["way/256067720"],
+  "name": "Pine and Battery Street office block (fidi256067720)",
+  "procedural": "fidi256067720",
+  "height": 29,
+  "sign": false,
+  "note": "market-fidi.ts: taupe granite office block at Pine and Battery Streets on a dark glazed ground floor, with a glass band over the upper floors and a stepped parapet; Mapillary frames c0, c1."
  }
 ]

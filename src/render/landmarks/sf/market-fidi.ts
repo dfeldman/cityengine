@@ -721,6 +721,42 @@ function jacksonSquare930905519(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** Sacramento and Front Streets, OSM way/1279452198 (9 levels): a red-brick loft-office block, rust brick with multi-pane sashes in bowed bays, a green-tinted glazed ground floor over a stone base (Mapillary frames a0, a1). */
+export function fidi1279452198(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.62, 0.33, 0.24]
+  tower(out, fit, {
+    height: 32,
+    base: { height: 4.5, face: { kind: 'curtain', wall: [0.5, 0.44, 0.38], glass: [0.2, 0.3, 0.26], pitch: 3, floor: 4.5, material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: [0.22, 0.28, 0.3], pitch: 3.2, floor: 3.5, solid: 0.5, material: 'brick' } }],
+    cornices: [{ at: 0.3, depth: 0.35, colour: [0.56, 0.4, 0.32] }],
+    crown: { kind: 'parapet', height: 1.2, colour: [0.5, 0.3, 0.22], material: 'brick' },
+  })
+}
+
+/** 617-633 Battery Street, OSM way/256087377 (25 m): a brick warehouse-loft with arched upper windows, a black steel-framed glazed ground floor (Mapillary frames b0, b1). */
+export function battery617(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.55, 0.36, 0.27]
+  tower(out, fit, {
+    height: 25,
+    base: { height: 4.5, face: { kind: 'curtain', wall: [0.18, 0.18, 0.18], glass: [0.14, 0.16, 0.18], pitch: 3.2, floor: 4.5, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: [0.2, 0.24, 0.28], pitch: 3.6, floor: 3.6, solid: 0.6, arched: true, material: 'brick' } }],
+    cornices: [{ at: 0.92, depth: 0.25, colour: [0.5, 0.42, 0.36] }],
+    crown: { kind: 'parapet', height: 0.9, colour: [0.5, 0.36, 0.28], material: 'brick' },
+  })
+}
+
+/** Pine and Battery Streets, OSM way/256067720 (29 m): a taupe granite office block on a dark glazed ground floor, with a recessed glass band over the upper floors (Mapillary frames c0, c1). */
+export function fidi256067720(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.38, 0.36, 0.34]
+  tower(out, fit, {
+    height: 29,
+    base: { height: 4.5, face: { kind: 'curtain', wall: [0.3, 0.29, 0.28], glass: [0.16, 0.18, 0.2], pitch: 3, floor: 4.5, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: STONE, glass: [0.18, 0.2, 0.22], floor: 3.6, solid: 0.6, material: 'granite' } }],
+    cornices: [{ at: 0.9, depth: 0.6, colour: STONE }],
+    crown: { kind: 'parapet', height: 1.0, colour: STONE, material: 'granite' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -762,4 +798,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   threeTransamericaCenter,
   sansome500,
   hotalingBuilding, jacksonSquare256072726, jacksonSquare930905519,
+  fidi1279452198, battery617, fidi256067720,
 }
