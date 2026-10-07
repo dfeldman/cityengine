@@ -946,13 +946,15 @@ async function bake(spec: CitySpec): Promise<void> {
   let courtsExcluded = 0
   for (const w of areaWays) {
     if (w.tags.leisure !== 'pitch' || !w.geometry || w.geometry.length < 4) continue
-    const sport = courtSport(streetRegion.courtSports?.[String(w.id)] ?? w.tags.sport)
+    // (a region's own word on a pitch, by id, overrides OSM's sport AND the landmark exclusion: it was looked at)
+    const told = streetRegion.courtSports?.[String(w.id)]
+    const sport = courtSport(told ?? w.tags.sport)
     if (!sport) continue
     const ring = w.geometry.slice(0, -1).map((g) => proj.toLocal(g))
     const m2 = ringArea(ring)
     const c = { x: ring.reduce((s, p) => s + p.x, 0) / ring.length, z: ring.reduce((s, p) => s + p.z, 0) / ring.length }
     const venue = venues.find((v) => pointInRing(v.ring, c.x, c.z))
-    if (!courtEligible(w.tags, m2, venue?.name)) { courtsExcluded++; continue }
+    if (!told && !courtEligible(w.tags, m2, venue?.name)) { courtsExcluded++; continue }
     const fit = fitCourt(ring, sport)
     if (!fit) { courtsExcluded++; continue }
     sportsCourts.push({

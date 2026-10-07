@@ -34,7 +34,12 @@ const RISER = 0.17
 const TRAIL_EARTH: [number, number, number] = [0.34, 0.28, 0.2]
 const TRAIL_TIMBER: [number, number, number] = [0.33, 0.24, 0.16]
 
-export function stairsLayer(scene: Scene, terrain: Terrain, named: Record<string, NamedStairway> = {}, drawnBy?: (x: number, z: number) => boolean): TileLayer {
+/** a painted stairway's risers, bottom up (Ghirardelli Square's steps from Beach Street, owner's Street View 2026-10-06) */
+const RAINBOW: Rgb[] = [[0.62, 0.16, 0.5], [0.85, 0.15, 0.15], [0.93, 0.45, 0.12], [0.95, 0.8, 0.15], [0.6, 0.8, 0.15], [0.15, 0.6, 0.3], [0.15, 0.7, 0.7], [0.15, 0.35, 0.85]]
+const PAINTED_TREAD: Rgb = [0.5, 0.26, 0.2]
+
+export function stairsLayer(scene: Scene, terrain: Terrain, named: Record<string, NamedStairway> = {}, drawnBy?: (x: number, z: number) => boolean,
+                            painted: { x: number; z: number; radius: number }[] = []): TileLayer {
   const concrete = surfaceTag('concrete')
   return {
     name: 'stairs',
@@ -119,6 +124,10 @@ export function stairsLayer(scene: Scene, terrain: Terrain, named: Record<string
         // (a park's steps on the hill as it is: the park ground is draped raw, and on the levelled corridor height the
         //  flights stood ~2 m clear of Strawberry Hill's slopes, 2026-10-04)
         const park = !!e.park
+        // a stairway whose risers are painted in bands of colour (Region `rainbowStairs`), on brick-red treads
+        const mid0 = at[Math.floor(at.length / 2)]
+        const rainbow = painted.some((r) => Math.hypot(mid0.x - r.x, mid0.z - r.z) < r.radius)
+        let riserNo = 0
         const g = at.map((p) => (park ? terrain.rawHeightAt(p.x, p.z) : terrain.heightAt(p.x, p.z)))
         const base = Math.min(g[0], g[g.length - 1])
         const y = g.map((h) => base + Math.round((h - base) / RISER) * RISER + 0.15)
@@ -144,13 +153,14 @@ export function stairsLayer(scene: Scene, terrain: Terrain, named: Record<string
             continue
           }
           // the tread, level, from this point to the next
-          out.quad([P(p, -half, ya), P(p, half, ya), P(q, half, ya), P(q, -half, ya)], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], CONCRETE, concrete)
+          out.quad([P(p, -half, ya), P(p, half, ya), P(q, half, ya), P(q, -half, ya)], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], rainbow ? PAINTED_TREAD : CONCRETE, concrete)
           // the riser up to the next tread (or down from it), facing the lower side
           if (Math.abs(y[i + 1] - ya) > 0.01) {
             const lo = Math.min(ya, y[i + 1])
             const hi = Math.max(ya, y[i + 1])
             const f = y[i + 1] > ya ? -1 : 1
-            out.quad([P(q, -half, lo), P(q, half, lo), P(q, half, hi), P(q, -half, hi)], [p.dx * f, 0, p.dz * f], [[0, 0], [1, 0], [1, 1], [0, 1]], NOSING, concrete)
+            out.quad([P(q, -half, lo), P(q, half, lo), P(q, half, hi), P(q, -half, hi)], [p.dx * f, 0, p.dz * f], [[0, 0], [1, 0], [1, 1], [0, 1]],
+              rainbow ? RAINBOW[riserNo++ % RAINBOW.length] : NOSING, rainbow ? 0 : concrete)
           }
           // the cheek walls, from the ground up past the tread, each side (a park's trail steps have none)
           for (const s of park ? [] : [-1, 1]) {

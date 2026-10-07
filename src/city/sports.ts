@@ -42,7 +42,7 @@
  */
 
 /** The sports the `court` part draws. Everything else is left as the flat `pitch` area it is today. */
-export type CourtSport = 'tennis' | 'pickleball' | 'padel' | 'basketball' | 'four_square' | 'volleyball' | 'playground'
+export type CourtSport = 'tennis' | 'pickleball' | 'padel' | 'american_football' | 'basketball' | 'four_square' | 'volleyball' | 'playground'
 
 export interface CourtFit {
   sport: CourtSport
@@ -74,6 +74,8 @@ const LADDER: Record<CourtSport, Size[]> = {
   pickleball: [{ len: 13.41, wid: 6.10 }],
   // FIP: 20 x 10 inside the walls — and OSM traces padel to the walls, which are the court's edge
   padel: [{ len: 20, wid: 10 }],
+  // NFL/NCAA/high school: 120 x 53 1/3 yd, the end zones included
+  american_football: [{ len: 109.73, wid: 48.77 }],
   // FIBA 28 x 15, then the American high-school court (84 x 50 ft), then a half court (a full width, half
   // the length, which is how a park half-court is actually painted).
   basketball: [{ len: 28, wid: 15 }, { len: 25.6, wid: 15.24 }, { len: 14, wid: 15.24, half: true }],
@@ -94,7 +96,7 @@ export function courtSport(sport: string | undefined): CourtSport | null {
   if (!sport) return null
   for (const raw of sport.split(';')) {
     const s = raw.trim().toLowerCase()
-    if (s === 'tennis' || s === 'pickleball' || s === 'padel' || s === 'basketball' || s === 'four_square' || s === 'volleyball') return s
+    if (s === 'tennis' || s === 'pickleball' || s === 'padel' || s === 'american_football' || s === 'basketball' || s === 'four_square' || s === 'volleyball') return s
     // beach volleyball is the same rectangle with the same net; only the sand differs and the area kind
     // already says that
     if (s === 'beachvolleyball' || s === 'beach_volleyball') return 'volleyball'

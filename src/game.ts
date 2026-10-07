@@ -1072,7 +1072,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // the tram track in the street, and the wires over the electric track (render/street-rails.ts, overhead.ts)
   city.addLayer(streetRailsLayer(scene, city.terrain))
   // the public stairways as stairs (render/stairs.ts)
-  city.addLayer(stairsLayer(scene, city.terrain, pkg.region === 'san-francisco' ? SF_STAIRWAYS : {}, (x, z) => city.inCover(x, z)))
+  city.addLayer(stairsLayer(scene, city.terrain, pkg.region === 'san-francisco' ? SF_STAIRWAYS : {}, (x, z) => city.inCover(x, z),
+    (region(pkg.region).rainbowStairs ?? []).map((r) => ({ ...new Projection(pkg.origin).toLocal({ lat: r.lat, lon: r.lon }), radius: r.radius }))))
   const overhead = off.has('life') ? null : new OverheadLines(scene, city.terrain)
   onTile((a) => {
     // the tram stops first, so the tile's own lines find them

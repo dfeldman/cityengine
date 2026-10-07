@@ -125,6 +125,8 @@ export interface Region {
   lanternStreets?: { street: string; from: [number, number]; to: [number, number]; colour?: [number, number, number] }[]
   /** marked crossings painted in the six rainbow bands within `radius` m of a point (the Castro at 18th Street) */
   rainbowCrossings?: { name: string; lat: number; lon: number; radius: number }[]
+  /** stairways with their risers painted in bands of colour: any flight whose middle is within `radius` m */
+  rainbowStairs?: { name: string; lat: number; lon: number; radius: number }[]
   /** the IANA time zone the city keeps, for its public clocks (render/clocks.ts) */
   timeZone?: string
   /** what the speedometer reads in: miles and mph, or kilometres and km/h (ui/hud.ts) */
@@ -205,6 +207,7 @@ export function region(id: string | undefined): Region {
     timeZone: own?.timeZone ?? base.timeZone,
     lanternStreets: own?.lanternStreets ?? base.lanternStreets,
     rainbowCrossings: own?.rainbowCrossings ?? base.rainbowCrossings,
+    rainbowStairs: own?.rainbowStairs ?? base.rainbowStairs,
     units: own?.units ?? base.units,
     streetPaint: own?.streetPaint ?? base.streetPaint,
     stairways: own?.stairways ?? base.stairways,

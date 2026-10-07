@@ -31,6 +31,7 @@ const SURFACE: Record<CourtSport, Rgb> = {
   tennis: [0.16, 0.33, 0.26],
   pickleball: [0.17, 0.30, 0.42],
   padel: [0.20, 0.45, 0.27],
+  american_football: [0.16, 0.35, 0.17],
   basketball: [0.26, 0.28, 0.31],
   four_square: [0.30, 0.31, 0.33],
   volleyball: [0.44, 0.38, 0.30],
@@ -177,6 +178,7 @@ export function court(out: MeshBuilder, fit: CourtFit, glass?: MeshBuilder): voi
   const hl = fit.len / 2
   const hw = fit.wid / 2
   if (fit.sport === 'padel') { padel(out, glass ?? out, fit, to, hl, hw); return }
+  if (fit.sport === 'american_football') { football(out, fit, to, hl, hw); return }
   // the surface itself, a little proud of the pitch area it stands on
   quadLocal(out, to, -hl - 0.25, -hw - 0.25, hl + 0.25, hw + 0.25, SURFACE_Y, SURFACE[fit.sport])
 
@@ -348,5 +350,65 @@ function padel(out: MeshBuilder, glass: MeshBuilder, fit: CourtFit, to: (lx: num
     // the lamp head, its face down over the court
     box(out, prev[0], prev[1] - 0.06, prev[2], 0.35, 0.06, 0.2, [0.15, 0.15, 0.16], FIXED)
     box(out, prev[0], prev[1] - 0.13, prev[2], 0.3, 0.01, 0.16, [0.95, 0.95, 0.88], FIXED)
+  }
+}
+
+/**
+ * An AMERICAN FOOTBALL field (owner, 2026-10-06: Galileo High School's field, "add that as a type of court, much larger
+ * than the others"): 120 x 53 1/3 yd of turf, the 10-yard end zones in the school's colour, a line every 5 yards, the
+ * hash marks between, and a yellow goalpost on each end line.
+ */
+function football(out: MeshBuilder, fit: CourtFit, to: (lx: number, ly: number, lz: number) => [number, number, number],
+                  hl: number, hw: number): void {
+  const yd = fit.len / 120
+  // (in cells and short pieces, every one draped: a field is 110 m across, and one quad corner to corner cut under the
+  //  ground's own rise and fall, where the ground occluder hid it)
+  const grid = (x0: number, z0: number, x1: number, z1: number, y: number, c: Rgb): void => {
+    const nx = Math.max(1, Math.ceil((x1 - x0) / 6)), nz = Math.max(1, Math.ceil((z1 - z0) / 6))
+    for (let i = 0; i < nx; i++) for (let j = 0; j < nz; j++) {
+      quadLocal(out, to, x0 + ((x1 - x0) * i) / nx, z0 + ((z1 - z0) * j) / nz, x0 + ((x1 - x0) * (i + 1)) / nx, z0 + ((z1 - z0) * (j + 1)) / nz, y, c)
+    }
+  }
+  const line = (x0: number, z0: number, x1: number, z1: number, w = LINE_W): void => {
+    const n = Math.max(1, Math.ceil(Math.hypot(x1 - x0, z1 - z0) / 5))
+    for (let i = 0; i < n; i++) stripe(out, to, x0 + ((x1 - x0) * i) / n, z0 + ((z1 - z0) * i) / n, x0 + ((x1 - x0) * (i + 1)) / n, z0 + ((z1 - z0) * (i + 1)) / n, w)
+  }
+  // a margin of turf beyond the lines, then the field
+  for (const [x0, z0, x1, z1] of [[-hl - 3, -hw - 3, hl + 3, -hw], [-hl - 3, hw, hl + 3, hw + 3], [-hl - 3, -hw, -hl, hw], [hl, -hw, hl + 3, hw]]) grid(x0, z0, x1, z1, SURFACE_Y, [0.15, 0.31, 0.16])
+  const END: Rgb = [0.14, 0.2, 0.42]
+  grid(-hl + 10 * yd, -hw, hl - 10 * yd, hw, SURFACE_Y, SURFACE.american_football)
+  grid(-hl, -hw, -hl + 10 * yd, hw, SURFACE_Y, END)
+  grid(hl - 10 * yd, -hw, hl, hw, SURFACE_Y, END)
+  line(-hl, -hw, hl, -hw, 0.2); line(-hl, hw, hl, hw, 0.2)
+  for (let k = -50; k <= 50; k += 5) {
+    const x = k * yd
+    line(x, -hw, x, hw, k === 0 || Math.abs(k) === 50 ? 0.2 : 0.14)
+  }
+  // the hash marks, a yard apart, 70' 9" in from each sideline (high school: 53' 4")
+  const hash = hw - 16.26
+  for (let k = -49; k <= 49; k++) {
+    if (k % 5 === 0) continue
+    const x = k * yd
+    for (const zs of [-1, 1]) {
+      stripe(out, to, x, zs * hash - 0.3, x, zs * hash + 0.3)
+      stripe(out, to, x, zs * (hw - 0.3), x, zs * (hw - 0.9))
+    }
+  }
+  // the goalposts: a post behind the end line, the crossbar 3.05 m up, uprights 5.64 m apart and 6 m tall
+  const Y: Rgb = [0.95, 0.8, 0.15]
+  for (const s of [-1, 1]) {
+    const x = s * (hl + 0.6)
+    const base = to(x, 0, 0)
+    box(out, base[0], 1.52, base[2], 0.1, 1.52, 0.1, Y, FIXED)
+    const a = to(x, 3.05, -2.82), b = to(x, 3.05, 2.82)
+    const steps = 8
+    for (let i = 0; i < steps; i++) {
+      const p = to(x, 3.05, -2.82 + (5.64 * (i + 0.5)) / steps)
+      box(out, p[0], 3.05, p[2], 0.07 + Math.abs(b[0] - a[0]) / (2 * steps), 0.07, 0.07 + Math.abs(b[2] - a[2]) / (2 * steps), Y, FIXED)
+    }
+    for (const zs of [-1, 1]) {
+      const u = to(x, 0, zs * 2.82)
+      box(out, u[0], 3.05 + 3, u[2], 0.06, 3, 0.06, Y, FIXED)
+    }
   }
 }

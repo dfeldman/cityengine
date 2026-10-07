@@ -324,7 +324,7 @@ export interface TileGround {
 /** A v2 record the format has not folded in yet, carried in v3 units (MAP-FORMAT §11). */
 export interface Boat3 { id: number; ring: number[]; name?: string }
 export interface Court3 {
-  sport: 'tennis' | 'pickleball' | 'padel' | 'basketball' | 'four_square' | 'volleyball' | 'playground'
+  sport: 'tennis' | 'pickleball' | 'padel' | 'american_football' | 'basketball' | 'four_square' | 'volleyball' | 'playground'
   x: number
   y: number
   /** radians, verbatim */

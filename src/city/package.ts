@@ -216,7 +216,7 @@ export interface PackedPoi {
  * kit decided it could honestly be. `render/sports.ts` draws it; nothing downstream needs the polygon.
  */
 export interface PackedCourt {
-  sport: 'tennis' | 'pickleball' | 'padel' | 'basketball' | 'four_square' | 'volleyball' | 'playground'
+  sport: 'tennis' | 'pickleball' | 'padel' | 'american_football' | 'basketball' | 'four_square' | 'volleyball' | 'playground'
   x: number
   z: number
   /** the long axis, radians: the court's length runs along (cos h, sin h) */

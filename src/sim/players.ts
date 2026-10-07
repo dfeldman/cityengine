@@ -45,14 +45,23 @@ export class CourtPlayers {
     const L = c.len / 2, W = c.wid / 2
     const spots: { spot: [number, number]; amp: [number, number]; rate: number; child?: boolean }[] = []
     switch (c.sport) {
-      case 'tennis': case 'pickleball': {
-        const doubles = r() < 0.35
+      case 'tennis': case 'pickleball': case 'padel': {
+        const doubles = c.sport === 'padel' || r() < 0.35
         for (const end of [-1, 1]) {
           const n = doubles ? 2 : 1
           for (let k = 0; k < n; k++) {
             const across = n === 1 ? 0 : (k ? 0.45 : -0.45) * W
             spots.push({ spot: [end * L * (doubles && k ? 0.55 : 0.9), across], amp: [L * 0.12, W * (doubles ? 0.3 : 0.7)], rate: 0.9 + r() * 0.5 })
           }
+        }
+        break
+      }
+      case 'american_football': {
+        // a practice: two lines facing each other near midfield, and a few running routes downfield
+        const n = 6 + Math.floor(r() * 6)
+        for (let k = 0; k < n; k++) {
+          const side = k % 2 ? 1 : -1
+          spots.push({ spot: [side * (2 + r() * 3), (r() - 0.5) * W * 1.1], amp: [k % 3 === 0 ? L * 0.35 : 1.5, k % 3 === 0 ? W * 0.3 : 1.5], rate: 0.5 + r() * 0.6 })
         }
         break
       }
