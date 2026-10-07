@@ -30,7 +30,7 @@
       "way/944039725"
     ],
     "name": "300 Montgomery Street",
-    "restyle": "chicago",
+    "procedural": "e1_300Montgomery",
     "wall": "#d4c8b0",
     "by": "haiku",
     "image": "way-944039725.jpg",
