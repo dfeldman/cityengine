@@ -28,6 +28,7 @@ import type { PortalContext, PortalParts, Rgb, TunnelStyle, V3 } from '../../tun
 
 const UV: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
 const STONE: Rgb = [0.8, 0.79, 0.75]
+const PAVEMENT: Rgb = [0.3, 0.3, 0.31]
 const STONE_DARK: Rgb = [0.66, 0.65, 0.61]
 const STONE_LIGHT: Rgb = [0.86, 0.85, 0.81]
 const RECESS: Rgb = [0.1, 0.1, 0.11]
@@ -138,8 +139,14 @@ function stocktonPortal(c: PortalContext): PortalParts {
   const face = new MeshBuilder()
   let over = -Infinity
   for (let x = -c.half; x <= c.half; x += 1) over = Math.max(over, c.over(x))
+  // (…and the street's own level a little further in: the ground falls from Bush Street's kerb to the mouth over some
+  //  8 m, so 4 m in found the slope's middle, missed the street, and stood the parapet a metre over Bush — owner,
+  //  2026-10-07)
+  let street = -Infinity
+  for (let x = -c.half; x <= c.half; x += 1) for (let z = 2; z <= 12; z += 1) street = Math.max(street, c.ground(x, -z))
   // the deck on top: the street over the mouth when there is one close above, else a parapet 2.2 m over the arch
-  const deck = over > c.crown + 0.8 && over < c.crown + 3.5 ? over : c.crown + 2.2
+  const deck = over > c.crown + 0.8 && over < c.crown + 3.5 ? over
+    : street > c.crown + 0.8 && street < c.crown + 3.5 ? street : c.crown + 2.2
   const W = c.half + 6.2
   const ent0 = deck - 1.3
   // the face, round the opening and the two doorways, up to the entablature
@@ -154,6 +161,32 @@ function stocktonPortal(c: PortalContext): PortalParts {
     return null
   }
   faceWall(face, -W, W, (x) => (Math.abs(x) < c.half ? c.opening(x) ?? 0 : doorAt(x) ?? 0), ent0, 0, STONE, 0.19)
+  /*
+   * …and its BACK, its top and its ends: the face was one sheet, drawn from the front only, so from Bush Street — on
+   * top of it, behind it — the wall vanished and the cornice, the balustrade and the stubs of the columns hung over
+   * the cut like a footbridge (owner, 2026-10-07: "top of the stockton tunnel looks really bad … it doesn't connect to
+   * the ground when viewed from the top"). Now a solid wall 0.6 m thick, closed over the arch up to the deck.
+   */
+  const T = 0.6
+  for (let x = -W; x < W - 1e-6; x += 0.19) {
+    const xb = Math.min(W, x + 0.19)
+    const b0 = Math.abs(x) < c.half ? c.opening(x) ?? 0 : 0
+    const b1 = Math.abs(xb) < c.half ? c.opening(xb) ?? 0 : 0
+    if (b0 >= deck && b1 >= deck) continue
+    face.quad([[xb, b1, -T], [x, b0, -T], [x, deck, -T], [xb, deck, -T]], [0, 0, -1], UV, STONE, 0)
+  }
+  box(face, -W, W, ent0, deck, -T, 0, STONE)
+  for (const s of [-1, 1]) box(face, s > 0 ? W - 0.05 : -W, s > 0 ? W : -W + 0.05, 0, ent0, -T, 0, STONE)
+  // the street's deck from the wall back to where the ground comes up to it: Bush Street bridging the mouth, its
+  // pavement over the slope the terrain draws there
+  // (measured down the middle, over the bore: the sides run into Bush's own sidewalks; and a touch under the street, so
+  //  where the two overlap the street draws)
+  let D = T
+  for (let z = 1; z <= 12; z += 0.5) {
+    D = z
+    if (c.ground(0, -z) >= deck - 0.3) break
+  }
+  if (deck - c.crown > 0.8 && D > T) box(face, -W, W, deck - 0.6, deck - 0.12, -D - 0.5, -T, PAVEMENT)
   archBand(face, c, 0.7, 0.18, STONE_LIGHT)
   // the keystone
   box(face, -0.5, 0.5, c.crown - 0.2, Math.min(ent0, c.crown + 1.0), 0, 0.35, STONE_LIGHT)
