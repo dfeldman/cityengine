@@ -18,5 +18,15 @@
   "height": 61,
   "sign": false,
   "note": "market-fidi.ts: 17-storey tan precast flats, punched bays, glazed strip, setback top; from Mapillary frames on Market and 8th."
+ },
+ {
+  "osm": [
+   "way/149335980"
+  ],
+  "name": "Union Trust Bank Building",
+  "procedural": "unionTrustBank",
+  "height": 20,
+  "sign": false,
+  "note": "market-fidi.ts: 2 Grant, two-storey grey granite banking hall, giant engaged columns, arched windows, bracketed cornice, attic balustrade; from Mapillary frames at Market and Grant."
  }
 ]

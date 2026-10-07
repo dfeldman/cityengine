@@ -6,7 +6,8 @@
  */
 import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
-import { tower, type Face } from '../tower.ts'
+import { tower, towerRing, type Face } from '../tower.ts'
+import { colonnade, edgeAt } from '../parts.ts'
 import type { Rgb } from '../../models.ts'
 
 // ---------------------------------------------------------------- Stevenson Place, 71 Stevenson (1980s; way/149840694)
@@ -61,7 +62,35 @@ function trinityPlace1177(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+// ---------------------------------------------------------------- Union Trust Bank, 2 Grant (1910; way/149335980)
+/**
+ * Mapillary frames at Market and Grant: a two-storey banking hall of pale grey-white granite on a plain pedestal,
+ * a giant order of smooth engaged columns (paired at the corner) between tall two-tier windows with a balcony
+ * shelf and arched heads, a deep bracketed cornice, and a carved attic parapet above.
+ */
+function unionTrustBank(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.8, 0.78, 0.73]
+  const GLASS: Rgb = [0.2, 0.22, 0.22]
+  const wall: Face = { kind: 'punched', wall: STONE, glass: GLASS, floor: 7.2, pitch: 6.5, solid: 0.42, arched: true, head: 'architrave', material: 'granite' }
+  tower(out, fit, {
+    height: 20,
+    base: { height: 1.6, face: { kind: 'blank', wall: [0.7, 0.68, 0.64], material: 'granite' } },
+    tiers: [
+      { to: 17, face: wall, cornice: { depth: 1.3, height: 1.1, colour: STONE } },
+      { to: 1.0, face: { kind: 'blank', wall: STONE, material: 'ashlar' }, inset: 0.7 },
+    ],
+    crown: { kind: 'balustrade', height: 1.0, colour: STONE, material: 'ashlar', pier: true },
+  })
+  const ring = towerRing(fit)
+  for (let i = 0; i < ring.length; i++) {
+    const e = edgeAt(ring, i)
+    if (e.L < 8) continue
+    colonnade(out, e.a, e.b, 1.6, 13.6, Math.max(2, Math.round(e.L / 6.5)), { order: 'ionic', colour: STONE, material: 'granite', radius: 0.6, out: 0.35, entablature: 0.01, tier: 'far' })
+  }
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
+  unionTrustBank,
 }

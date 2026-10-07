@@ -280,15 +280,6 @@
  },
  {
   "osm": [
-   "way/149335980"
-  ],
-  "name": "Union Trust Bank Building",
-  "restyle": "classical",
-  "note": "Classical banking hall at Market and Grant: stone, giant order, no windows above.",
-  "levels": 2
- },
- {
-  "osm": [
    "way/35176927"
   ],
   "name": "742-748 Market Street",
