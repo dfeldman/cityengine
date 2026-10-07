@@ -43,6 +43,8 @@ export interface ZoneProps {
   relief?: 'raw'
   /** the fine ground here comes from the lidar bare earth (tools/lidar/dtm.py), where the tiles blur a cliff */
   lidar?: boolean
+  /** the grass here is dry: scrub and summer-gold grassland, not a lawn (the Marin Headlands) */
+  dry?: boolean
   /** what grows here (docs/MAP-FORMAT.md §7, src/city/zone-planting.ts) — the whole planting, winner-takes-all */
   plant?: ZonePlant
   itemColour?: Record<string, number>

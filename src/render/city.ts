@@ -93,6 +93,15 @@ function courtGlassMaterial(scene: Scene): StandardMaterial {
   return m
 }
 
+/** a point in a ring of flat x, z pairs */
+function pointInFlatRing(r: number[], x: number, z: number): boolean {
+  let o = false
+  for (let i = 0, j = r.length - 2; i < r.length; j = i, i += 2) {
+    if ((r[i + 1] > z) !== (r[j + 1] > z) && x < ((r[j] - r[i]) * (z - r[i + 1])) / (r[j + 1] - r[i + 1]) + r[i]) o = !o
+  }
+  return o
+}
+
 function groundGrid(t: PackedTerrain | undefined | null): PackedTerrain | undefined {
   if (!t || GROUND_STRIDE === 1) return t ?? undefined
   const k = GROUND_STRIDE
@@ -1369,6 +1378,8 @@ export class City {
   /** the region's lantern streets in local metres (Region `lanternStreets`), set by the game */
   /** the region's rainbow crossings in local metres (Region `rainbowCrossings`), set by the game */
   rainbowSpots: { x: number; z: number; radius: number }[] = []
+  /** zones whose grass is dry (ZoneProps `dry`), set by the game */
+  dryZones: { ring: number[]; bbox: [number, number, number, number] }[] = []
   lanternStretches: { street: string; a: { x: number; z: number }; b: { x: number; z: number }; colour: [number, number, number] }[] = []
   /** the bridges' outlines (render/bridge-structures.ts): a way on one draws only its running surfaces */
   private readonly outlines = new Map<number, { ring: { x: number; z: number }[]; x0: number; x1: number; z0: number; z1: number }>()
@@ -2447,6 +2458,24 @@ export class City {
         const tint = a.kind === 'sand' ? SAND_ON_PAGE : a.brick && this.region.brickStreets ? this.region.brickStreets.colour : a.beds ? BEDS : wet ? WET_ROCK : AREA_TINT[a.kind]
         capPolygonWithHoles(into, [unpackPoints(a.ring), ...(a.holes ?? []).map(unpackPoints)],
           0.02, tint, 0, a.kind === 'sand' ? 1 : 2.4, a.kind === 'sand' ? Math.min(AREA_MAX_EDGE, SAND_MAX_EDGE) : AREA_MAX_EDGE)
+        /*
+         * DRY GROUND (ZoneProps `dry`; owner, 2026-10-06: the Marin Headlands are "very dry and covered in low shrubs", and
+         * a green lawn over them read as a golf course): grass, park and wood inside such a zone take the colours of
+         * summer scrub — olive, sage and straw, mixed vertex by vertex on a slow noise so the hills are patched, not
+         * one flat sheet.
+         */
+        if ((a.kind === 'grass' || a.kind === 'park' || a.kind === 'wood') && this.dryZones.length) {
+          const n = into.positions.length / 3
+          for (let v = base; v < n; v++) {
+            const x = into.positions[v * 3], z = into.positions[v * 3 + 2]
+            if (!this.dryZones.some((d) => x >= d.bbox[0] && x <= d.bbox[2] && z >= d.bbox[1] && z <= d.bbox[3] && pointInFlatRing(d.ring, x, z))) continue
+            const t = 0.5 + 0.5 * Math.sin(x * 0.013 + Math.sin(z * 0.009) * 2.1) * Math.cos(z * 0.011 - x * 0.004)
+            const c: [number, number, number] = t < 0.5
+              ? [0.42 + 0.1 * t, 0.45 + 0.02 * t, 0.27 + 0.04 * t]     // olive scrub to sage
+              : [0.47 + 0.16 * (t - 0.5), 0.46 + 0.06 * (t - 0.5), 0.29 + 0.02 * (t - 0.5)]  // to dry straw
+            into.colors[v * 4] = c[0]; into.colors[v * 4 + 1] = c[1]; into.colors[v * 4 + 2] = c[2]
+          }
+        }
         if (beach) {
           const n = into.positions.length / 3
           for (let v = base; v < n; v++) {

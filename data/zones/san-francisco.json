@@ -235,7 +235,7 @@
    "ref": "marin-headlands",
    "name": "Marin Headlands",
    "priority": 1,
-   "props": {
+   "props": {"dry": true, 
     "terrain": "fine",
     "traffic": 0.05,
     "crowd": 0.2,
@@ -5207,7 +5207,7 @@
    "ref": "point-bonita",
    "name": "Point Bonita",
    "priority": 6,
-   "props": {
+   "props": {"dry": true, 
     "terrain": "fine",
     "relief": "raw",
     "cliffs": true,
