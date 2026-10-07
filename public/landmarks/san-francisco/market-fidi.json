@@ -98,5 +98,15 @@
   "height": 33,
   "sign": false,
   "note": "market-fidi.ts: 715-719 Market Street, Digital Garage: pre-war eight-storey office block, glazed shopfront under a stone band, grey ribbon-window shaft and stone-capped parapet; from Mapillary frames on Market (picks 0-1)."
+ },
+ {
+  "osm": [
+   "way/32859287"
+  ],
+  "name": "500 Washington Street (Public Policy Institute of California)",
+  "procedural": "ppic500Washington",
+  "height": 33,
+  "sign": false,
+  "note": "market-fidi.ts: 500 Washington Street, PPIC: eight-storey office block of red-brown brick with deep punched windows, glazed shopfront, top storey set back behind a brick parapet; from Mapillary frames on Washington and Sansome (picks 0-1)."
  }
 ]

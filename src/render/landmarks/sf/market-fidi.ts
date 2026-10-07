@@ -252,6 +252,27 @@ function digitalGarage715Market(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+// ---------------------------------------------------------------- 500 Washington, Public Policy Institute of California (way/32859287)
+/**
+ * Mapillary frames on Washington and Sansome (picks 0-1): an eight-storey office block of dark red-brown brick or
+ * terracotta, its windows cut into deep reveals in a regular grid, a glazed shopfront along the ground floor, and
+ * the top storey set back behind a plain brick parapet. Plain massing; the frames show no further distinctive feature.
+ */
+function ppic500Washington(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.5, 0.27, 0.22]
+  const GLASS: Rgb = [0.22, 0.26, 0.3]
+  const SHOP: Rgb = [0.2, 0.24, 0.27]
+  tower(out, fit, {
+    height: 33,
+    base: { height: 4.5, face: { kind: 'curtain', wall: [0.3, 0.2, 0.18], glass: SHOP, pitch: 2.6, floor: 4.5, material: 'metal' } },
+    tiers: [
+      { to: 0.86, face: { kind: 'punched', wall: BRICK, glass: GLASS, floor: 3.4, pitch: 3.2, solid: 0.55, material: 'brick' }, cornice: { depth: 0.4, height: 0.6, colour: BRICK } },
+      { to: 1.0, face: { kind: 'punched', wall: BRICK, glass: GLASS, floor: 3.4, pitch: 3.2, solid: 0.55, material: 'brick' }, inset: 1.8 },
+    ],
+    crown: { kind: 'parapet', height: 1.0, colour: BRICK, material: 'brick' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -263,4 +284,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   livat945Market,
   bofaMarketNewMontgomery,
   digitalGarage715Market,
+  ppic500Washington,
 }
