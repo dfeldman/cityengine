@@ -31,7 +31,7 @@ export interface PierSpec {
   trim?: Rgb
 }
 
-const STUCCO: Rgb = [0.84, 0.82, 0.76]
+const STUCCO: Rgb = [0.9, 0.85, 0.72]
 const SEA_GREEN: Rgb = [0.13, 0.36, 0.33]
 const ROOF: Rgb = [0.42, 0.44, 0.45]
 const TILE: Rgb = [0.55, 0.28, 0.2]
@@ -93,28 +93,58 @@ export function pier(out: MeshBuilder, fit: Fit, spec: PierSpec): void {
     box(out, x, H / 2, front + 0.12, 0.5, H / 2 - 0.4, 0.25, wall, stucco)
   }
   // the openings: a tall arched window in each bay, the middle bays the portal
+  // (2026-10-06, the Embarcadero survey: the windows were black holes and the portal a box — now glazing with the
+  //  Port's sea-green sash across it, and a portal under a solid round head)
+  const GLAZE: Rgb = [0.2, 0.25, 0.28]
+  const sash = (x: number, y: number, hw: number, hh: number, arched: boolean): void => {
+    box(out, x, y, front + 0.04, hw + 0.15, hh + 0.15, 0.06, trim, metal)
+    box(out, x, y, front + 0.09, hw, hh, 0.04, GLAZE, surfaceTag('glass'))
+    for (const f of [-0.5, 0, 0.5]) box(out, x + f * hw, y, front + 0.15, 0.05, hh, 0.03, trim, metal)
+    for (const f of [-0.34, 0.34]) box(out, x, y + f * hh, front + 0.15, hw, 0.05, 0.03, trim, metal)
+    if (arched) {
+      // the round head over the sash: glazing in four steps, and its sash ring
+      for (let k = 0; k < 4; k++) {
+        const t = (k + 0.5) / 4, w = hw * Math.sqrt(1 - t * t)
+        box(out, x, y + hh + hw * 0.6 * (k + 0.5) / 4, front + 0.09, w, (hw * 0.6) / 8, 0.04, GLAZE, surfaceTag('glass'))
+      }
+      for (let k = 0; k <= 8; k++) {
+        const a = (Math.PI * k) / 8
+        box(out, x + Math.cos(a) * hw, y + hh + Math.sin(a) * hw * 0.6, front + 0.14, 0.09, 0.09, 0.04, trim, metal)
+      }
+    }
+  }
   const mid = Math.floor(bays / 2)
+  const historic = spec.style !== 'plain'
   for (let i = 0; i < bays; i++) {
     const x = -hx + (i + 0.5) * bw
     const portal = i === mid || (bays > 5 && (i === mid - 1 || i === mid + 1))
     if (portal) {
-      // the doorway: a dark recess under a round head, with the sea-green roller door in it
-      box(out, x, 3.1, front + 0.06, bw / 2 - 0.7, 3.1, 0.1, DARK, concrete)
-      box(out, x, 2.6, front + 0.13, bw / 2 - 0.9, 2.6, 0.06, trim, metal)
-      if (spec.style !== 'plain') for (let k = 0; k < 7; k++) {
-        const a = (Math.PI * (k + 0.5)) / 7
-        box(out, x + Math.cos(a) * (bw / 2 - 0.8), 6.2 + Math.sin(a) * (bw / 2 - 0.8) * 0.5, front + 0.08, 0.22, 0.22, 0.08, wall, stucco)
+      const r = bw / 2 - 0.7, spring = 5.6
+      // the doorway: a dark recess with the sea-green roller door, under a round head filled in dark
+      box(out, x, spring / 2, front + 0.06, r, spring / 2, 0.1, DARK, concrete)
+      box(out, x, 2.6, front + 0.13, r - 0.2, 2.6, 0.06, trim, metal)
+      if (historic) {
+        for (let k = 0; k < 6; k++) {
+          const t = (k + 0.5) / 6, w = r * Math.sqrt(1 - t * t)
+          box(out, x, spring + r * (k + 0.5) / 6, front + 0.06, w, r / 12, 0.1, DARK, concrete)
+        }
+        // the voussoirs round it, and a keystone
+        for (let k = 0; k <= 10; k++) {
+          const a = (Math.PI * k) / 10
+          box(out, x + Math.cos(a) * (r + 0.3), spring + Math.sin(a) * (r + 0.3), front + 0.16, 0.32, 0.32, 0.1, wall, stucco)
+        }
+        box(out, x, spring + r + 0.45, front + 0.22, 0.4, 0.55, 0.12, wall, stucco)
       }
     } else {
-      // two storeys of windows
-      for (const [y, h] of [[3.2, 1.5], [7.4, 1.2]] as const) {
-        box(out, x, y, front + 0.07, bw / 2 - 1.1, h, 0.08, DARK, concrete)
-        box(out, x, y, front + 0.12, bw / 2 - 1.2, h - 0.12, 0.04, trim, metal)
-      }
+      // two storeys of windows: the upper ones round-headed on the historic fronts
+      sash(x, 3.0, bw / 2 - 1.2, 1.4, false)
+      sash(x, 7.0, bw / 2 - 1.3, 1.1, historic)
     }
   }
   // the cornice: a moulded band across the front, and the parapet standing on the building behind it
   box(out, 0, H - 0.5, front + 0.25, hx + 0.3, 0.4, 0.35, wall, stucco)
+  box(out, 0, H - 0.05, front + 0.45, hx + 0.45, 0.12, 0.5, [0.95, 0.92, 0.82], stucco)
+  box(out, 0, H - 1.05, front + 0.18, hx + 0.2, 0.1, 0.25, [0.8, 0.75, 0.62], stucco)
   box(out, 0, H + 0.6, front - bulk / 2, hx, 0.7, bulk / 2 - 0.15, wall, stucco)
   // and the panel the number is painted on, standing proud of the parapet's face
   box(out, 0, H + 0.6, front + 0.02, hx * 0.22, 0.75, 0.06, wall, stucco)

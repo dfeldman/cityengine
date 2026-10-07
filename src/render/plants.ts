@@ -20,6 +20,8 @@ import type { Terrain } from '../city/terrain.ts'
 import type { TileArea } from '../city/tiles.ts'
 import type { PackedEdge } from '../city/package.ts'
 import { woodAt } from './infill.ts'
+import { MeshBuilder } from './buildings.ts'
+import { cartoonMaterial } from './cartoon-material.ts'
 import { unpackPlantings, type Planting } from '../city/plantings.ts'
 import type { PlantZones } from '../city/zone-planting.ts'
 
@@ -323,8 +325,10 @@ export class Plants {
         if (!e) { console.warn(`plants: a zone asks for "${species}", which the plant library does not have`); continue }
         const r = await SceneLoader.ImportMeshAsync('', this.base, e.file, this.scene)
         const all = r.meshes.filter((m): m is Mesh => m instanceof Mesh && m.getTotalVertices() > 0)
-        const lod = all.filter((m) => /LOD1/i.test(m.name))
-        const parts = lod.length ? lod : all.filter((m) => !/LOD[1-9]/i.test(m.name))
+        // (LOD0, the full plant: LOD1's thinned leaf cards read at rider height as a few broken twigs lying on the lawn —
+        //  Embarcadero survey, 2026-10-06 — and LOD0 is at most a thousand triangles a shrub)
+        const lod0 = all.filter((m) => !/LOD[1-9]/i.test(m.name))
+        const parts = lod0.length ? lod0 : all
         for (const m of all) if (!parts.includes(m)) m.dispose()
         for (const m of parts) {
           // the same fixes as the trees (render/vegetation.ts): the loader's flip baked in, leaves as cutouts
@@ -334,19 +338,59 @@ export class Plants {
           m.isPickable = false
           m.alwaysSelectAsActiveMesh = true
           const mat = m.material as { transparencyMode?: number | null; alphaCutOff?: number; needDepthPrePass?: boolean } | null
-          if (mat) { mat.transparencyMode = 1; mat.alphaCutOff = 0.45; mat.needDepthPrePass = false }
+          if (mat) { mat.transparencyMode = 1; mat.alphaCutOff = 0.35; mat.needDepthPrePass = false }
           m.setEnabled(false)
         }
         if (parts.length) this.models.push({ kind, species, parts, top: e.height || 1 })
       }
     }
+    /*
+     * A leafy CORE for every shrub: a low, lumpy dome of foliage inside the model's cards. The library's shrubs are a
+     * few branches with leaf cards on them, and at rider height across a lawn their cutout cards read as broken twigs
+     * lying on the grass (Embarcadero survey, 2026-10-06). The core gives each one a bush's mass; the cards still
+     * make its outline. One mesh, instanced on the shrubs' own matrices (unit height: the shrub's is put in `update`).
+     */
+    {
+      const mb = new MeshBuilder()
+      const LEAF = [0.3, 0.44, 0.2]
+      const R = 8, S = 14
+      // a smooth mound: shared vertices with radial normals (one normal per quad shaded it as facets), gentle lumps,
+      // its foot just under the ground so no skirt shows
+      const at = (i: number, j: number): [number, number, number] => {
+        const t = (i / R) * (Math.PI / 2), a = (j / S) * Math.PI * 2
+        const bump = 1 + 0.09 * Math.sin(a * 3 + i * 0.9) + 0.06 * Math.cos(a * 5 - i * 0.7)
+        return [Math.cos(t) * Math.cos(a) * 0.45 * bump, -0.05 + Math.sin(t) * 0.66 * bump, Math.cos(t) * Math.sin(a) * 0.45 * bump]
+      }
+      for (let i = 0; i <= R; i++) for (let j = 0; j <= S; j++) {
+        const [x, y, z] = at(i, j)
+        const L = Math.hypot(x / 0.45, (y + 0.05) / 0.66, z / 0.45) || 1
+        mb.positions.push(x, y, z); mb.normals.push(x / 0.45 / L, (y + 0.05) / 0.66 / L, z / 0.45 / L)
+        mb.uvs.push((j / S) * 4, (i / R) * 2); mb.colors.push(LEAF[0], LEAF[1], LEAF[2], 0)
+      }
+      for (let i = 0; i < R; i++) for (let j = 0; j < S; j++) {
+        const a = i * (S + 1) + j, b = a + 1, c = a + S + 1, d = c + 1
+        mb.indices.push(a, b, d, a, d, c)
+      }
+      const core = new Mesh('plants:core', this.scene)
+      mb.toVertexData().applyToMesh(core)
+      // the shrubs' own leaf material, tiled over it: the mound reads as foliage, its cutouts ragging the edge
+      const leafPart = this.models.find((m) => m.kind === 'shrub')?.parts.find((q) => /leaf|leaves/i.test(q.material?.name ?? ''))
+      core.material = leafPart?.material ?? cartoonMaterial(this.scene, 'cartoonPlantCore', true)
+      core.renderingGroupId = 3
+      core.isPickable = false
+      core.alwaysSelectAsActiveMesh = true
+      core.setEnabled(false)
+      this.core = core
+    }
     this.dirty = true
   }
+  private core: Mesh | null = null
 
   update(): void {
     if (!this.dirty || this.models.length === 0) return
     this.dirty = false
     const buckets = new Map<Mesh, Matrix[]>()
+    const cores: Matrix[] = []
     for (const list of this.byTile.values()) {
       for (const p of list) {
         // the zone's own species where it names them, else the defaults
@@ -363,6 +407,22 @@ export class Plants {
         const mtx = Matrix.Compose(new Vector3(k, k, k), Quaternion.RotationAxis(Vector3.Up(), p.spin),
           new Vector3(p.x, (p.y ?? this.terrain.heightAt(p.x, p.z)) + 0.02, p.z))
         for (const part of model.parts) (buckets.get(part) ?? buckets.set(part, []).get(part)!).push(mtx)
+        if (p.kind === 'shrub' && this.core) {
+          const h = want * 1.0
+          cores.push(Matrix.Compose(new Vector3(h * 1.35, h, h * 1.35), Quaternion.RotationAxis(Vector3.Up(), p.spin),
+            new Vector3(p.x, (p.y ?? this.terrain.heightAt(p.x, p.z)), p.z)))
+        }
+      }
+    }
+    if (this.core) {
+      if (!cores.length) { this.core.thinInstanceCount = 0; this.core.setEnabled(false) } else {
+        const buf = new Float32Array(cores.length * 16)
+        cores.forEach((m, i) => m.copyToArray(buf, i * 16))
+        this.core.thinInstanceSetBuffer('matrix', buf, 16)
+        // (the instanced cartoon shader reads a colour per copy; alpha 0 keeps the mesh's own)
+        this.core.thinInstanceSetBuffer('instColor', new Float32Array(cores.length * 4), 4)
+        this.core.thinInstanceRefreshBoundingInfo(false)
+        this.core.setEnabled(true)
       }
     }
     for (const model of this.models) {
