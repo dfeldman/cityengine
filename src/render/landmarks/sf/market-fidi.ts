@@ -672,6 +672,55 @@ export function sansome500(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+// ---------------------------------------------------------------- Jackson Square, the Hotaling Building, 451 Jackson (1866; way/35537115)
+/**
+ * Mapillary frames a0, a1 on Jackson: a cream-painted Italianate block of three storeys, tall windows in
+ * painted stucco under a moulded cornice, and a dark iron-fronted ground floor. No shop signs.
+ */
+function hotalingBuilding(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.91, 0.88, 0.8]
+  const IRON: Rgb = [0.18, 0.18, 0.19]
+  tower(out, fit, {
+    height: 14,
+    base: { height: 4.2, face: { kind: 'curtain', wall: IRON, glass: [0.2, 0.24, 0.26], pitch: 2.6, floor: 4.2, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.22, 0.24, 0.26], floor: 3.3, pitch: 2.8, solid: 0.5, material: 'stucco' } }],
+    cornices: [{ at: 0.92, depth: 0.5, colour: CREAM }],
+    crown: { kind: 'parapet', height: 1.0, colour: CREAM, material: 'stucco' },
+  })
+}
+
+// ---------------------------------------------------------------- Jackson Square, two-storey stucco near Columbus (way/256072726)
+/**
+ * Mapillary frames b0, b1 near Columbus Avenue and Ils Lane: a two-storey buff painted stucco block, tall punched
+ * windows over a plain glazed ground floor, a cornice band and a flat parapet. No shop signs.
+ */
+function jacksonSquare256072726(out: MeshBuilder, fit: Fit): void {
+  const BUFF: Rgb = [0.8, 0.72, 0.6]
+  tower(out, fit, {
+    height: 9,
+    base: { height: 3.2, face: { kind: 'curtain', wall: [0.5, 0.46, 0.4], glass: [0.2, 0.23, 0.25], pitch: 3, floor: 3.2, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BUFF, glass: [0.2, 0.23, 0.26], floor: 2.9, pitch: 2.6, solid: 0.55, material: 'stucco' } }],
+    cornices: [{ at: 0.66, depth: 0.4, colour: BUFF }],
+    crown: { kind: 'parapet', height: 0.8, colour: BUFF, material: 'stucco' },
+  })
+}
+
+// ---------------------------------------------------------------- Jackson Square, one-storey brick, Montgomery side (way/930905519)
+/**
+ * Mapillary frames c0, c1 between Hotaling Place and Montgomery Street: a tall dark glazed shopfront on iron piers,
+ * a plain red brick wall above and a parapet. No shop signs.
+ */
+function jacksonSquare930905519(out: MeshBuilder, fit: Fit): void {
+  const RED: Rgb = [0.6, 0.34, 0.3]
+  tower(out, fit, {
+    height: 10,
+    base: { height: 6, face: { kind: 'curtain', wall: [0.2, 0.2, 0.2], glass: [0.2, 0.24, 0.26], pitch: 2.6, floor: 6, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'blank', wall: RED, material: 'brick' } }],
+    cornices: [{ at: 0.6, depth: 0.4, colour: RED }],
+    crown: { kind: 'parapet', height: 1.2, colour: RED, material: 'brick' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -712,4 +761,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   islamicSociety20Jones,
   threeTransamericaCenter,
   sansome500,
+  hotalingBuilding, jacksonSquare256072726, jacksonSquare930905519,
 }
