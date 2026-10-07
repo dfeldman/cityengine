@@ -13,6 +13,7 @@ import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
 import { tower, towerRing, faceBand, type Face } from '../tower.ts'
 import { capPolygon } from '../../buildings.ts'
+import { drapeOn } from './embarcadero-plaza.ts'
 import { box, prism, type Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 
@@ -136,4 +137,54 @@ export function hillsPlazaTower(out: MeshBuilder, fit: Fit): void {
   })
 }
 
-export const EMBARCADERO_SOUTH: Record<string, (out: MeshBuilder, fit: Fit) => void> = { infinityTower, twoFolsom, twoOOneSpear, oneSteuartLane, towersAtRincon, hillsPlazaTower }
+/**
+ * THE GRAVEL GARDENS between One Steuart Lane and 201 Spear (OSM ways 1295386895 and 1295386898, `surface=compacted`;
+ * owner, 2026-10-06: "there's also a plaza between those buildings" — grey gravel under the trees, low black stone
+ * planter walls with bench caps, inverted-cone lamps). Standalone, local x east, z north, about (1822, −195).
+ */
+const GRAVEL_BEDS: [number, number][][] = [
+  [[1809.9, -196.7], [1825.3, -181.0], [1828.0, -183.6], [1822.4, -189.2], [1824.8, -191.5], [1821.0, -195.4], [1814.9, -201.6]],
+  [[1839.5, -185.0], [1829.5, -175.3], [1826.0, -178.9], [1832.1, -184.7], [1806.0, -211.7], [1812.6, -218.1], [1822.9, -207.5], [1828.3, -199.3], [1835.8, -190.1]],
+]
+export function steuartGravelGardens(out: MeshBuilder, fit: Fit): void {
+  const v0 = out.positions.length
+  const C = { x: 1822, z: -195 }
+  const BLACK: Rgb = [0.13, 0.13, 0.14], CAP: Rgb = [0.24, 0.23, 0.22], GRAVEL: Rgb = [0.48, 0.47, 0.44]
+  const granite = surfaceTag('granite')
+  for (const bed of GRAVEL_BEDS) {
+    const ring = bed.map(([x, z]) => ({ x: x - C.x, z: z - C.z }))
+    let a = 0
+    for (let i = 0; i < ring.length; i++) { const p = ring[i], q = ring[(i + 1) % ring.length]; a += p.x * q.z - q.x * p.z }
+    const ccw = a > 0 ? ring : [...ring].reverse()
+    capPolygon(out, ccw, 0.08, GRAVEL, surfaceTag('rock'))
+    // the low black stone walls along the bed's edges, a paler bench cap on top; a gap now and then to walk in
+    for (let i = 0; i < ccw.length; i++) {
+      const p = ccw[i], q = ccw[(i + 1) % ccw.length], L = Math.hypot(q.x - p.x, q.z - p.z)
+      if (L < 2.5 || i % 3 === 2) continue
+      const ux = (q.x - p.x) / L, uz = (q.z - p.z) / L, mx = (p.x + q.x) / 2, mz = (p.z + q.z) / 2
+      const ang = Math.atan2(uz, ux)
+      const part = (h: number, y: number, w: number, c: Rgb): void => {
+        const hx = L / 2 - 0.3, hz = w
+        const cs = Math.cos(ang), sn = Math.sin(ang)
+        const P = (sx: number, sy: number, sz: number): [number, number, number] => [mx + cs * hx * sx - sn * hz * sz, y + h * (sy + 1) / 2, mz + sn * hx * sx + cs * hz * sz]
+        for (const [n, q4] of [[[0, 1, 0], [P(-1, 1, -1), P(1, 1, -1), P(1, 1, 1), P(-1, 1, 1)]], [[-sn, 0, cs], [P(-1, -1, 1), P(1, -1, 1), P(1, 1, 1), P(-1, 1, 1)]], [[sn, 0, -cs], [P(1, -1, -1), P(-1, -1, -1), P(-1, 1, -1), P(1, 1, -1)]],
+          [[cs, 0, sn], [P(1, -1, 1), P(1, -1, -1), P(1, 1, -1), P(1, 1, 1)]], [[-cs, 0, -sn], [P(-1, -1, -1), P(-1, -1, 1), P(-1, 1, 1), P(-1, 1, -1)]]] as [[number, number, number], [number, number, number][]][]) {
+          out.quad(q4, n, [[0, 0], [1, 0], [1, 1], [0, 1]], c, granite)
+        }
+      }
+      part(0.42, 0, 0.22, BLACK)
+      part(0.06, 0.42, 0.28, CAP)
+    }
+  }
+  // the inverted-cone lamps along the walk between the beds
+  for (const [x, z] of [[1818, -186], [1830, -192], [1811, -207], [1826, -176]] as [number, number][]) {
+    const lx = x - C.x, lz = z - C.z
+    prism(out, lx, lz, 0, 4.2, 0.07, 8, BLACK, surfaceTag('metal'))
+    prism(out, lx, lz, 4.2, 4.9, 0.12, 12, BLACK, surfaceTag('metal'), 0.45)
+    prism(out, lx, lz, 4.9, 4.95, 0.45, 12, [0.95, 0.93, 0.85], 0)
+    box(out, lx, 0.1, lz, 0.25, 0.1, 0.25, BLACK, 0)
+  }
+  drapeOn(out, fit, v0)
+}
+
+export const EMBARCADERO_SOUTH: Record<string, (out: MeshBuilder, fit: Fit) => void> = { infinityTower, twoFolsom, twoOOneSpear, oneSteuartLane, towersAtRincon, hillsPlazaTower, steuartGravelGardens }
