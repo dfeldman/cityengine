@@ -844,7 +844,23 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * garage's ramps, a hotel's loading bay — 273 of them in San Francisco. Cars spawned in them and drove out of the
    * walls. Streets through a building (an arcade, a covered lane) are still driven.
    */
-  const closed = (e: { kind?: string; passage?: boolean }): boolean => !!e.passage && e.kind === 'service'
+  /*
+   * …and none on SUNSET DUNES, the Upper Great Highway from Lincoln Way to Sloat Boulevard, closed to cars and made a park
+   * in 2025 (owner, 2026-10-07: "famous bikeways … streets for bikes only"). The bake still has it as the primary road it
+   * was; the rider rides it as before. (JFK Promenade and the closed loop of Twin Peaks Boulevard are already a
+   * cycleway and pedestrian ways in OSM, which no car drives.)
+   */
+  const dunes = index.region === 'san-francisco'
+    ? ((p: Projection) => ({ zN: p.toLocal({ lat: 37.7655, lon: -122.509 }).z, zS: p.toLocal({ lat: 37.7354, lon: -122.507 }).z }))(new Projection(pkg.origin))
+    : null
+  const closed = (e: { kind?: string; passage?: boolean; name?: string; points?: { x: number; z: number }[] }): boolean => {
+    if (e.passage && e.kind === 'service') return true
+    if (dunes && e.name === 'Great Highway' && e.points?.length) {
+      const z = e.points[Math.floor(e.points.length / 2)].z
+      return z > dunes.zS && z < dunes.zN
+    }
+    return false
+  }
   const traffic = new Traffic(graph, trafficLevel, { signals, zoneFactor, carFree, closed })
   const courtPlayers = new CourtPlayers()
   // the never-stuck squeeze THROUGH a standing car: only on a trainer, which cannot back up (sim/traffic.ts `squeeze`)
