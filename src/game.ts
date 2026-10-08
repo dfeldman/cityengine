@@ -838,7 +838,14 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     if (v === undefined) { v = e.points[Math.floor(e.points.length / 2)].x > -490; carFreeX.set(e.id, v) }
     return v
   } : undefined
-  const traffic = new Traffic(graph, trafficLevel, { signals, zoneFactor, carFree })
+  /*
+   * …and NO VEHICLE on a service way mapped THROUGH a building (a passage): a private parking aisle under the Muni
+   * yard at Mariposa and York (owner, 2026-10-07: "a tunnel with cars coming out of it … it stores streetcars"), a
+   * garage's ramps, a hotel's loading bay — 273 of them in San Francisco. Cars spawned in them and drove out of the
+   * walls. Streets through a building (an arcade, a covered lane) are still driven.
+   */
+  const closed = (e: { kind?: string; passage?: boolean }): boolean => !!e.passage && e.kind === 'service'
+  const traffic = new Traffic(graph, trafficLevel, { signals, zoneFactor, carFree, closed })
   const courtPlayers = new CourtPlayers()
   // the never-stuck squeeze THROUGH a standing car: only on a trainer, which cannot back up (sim/traffic.ts `squeeze`)
   // …and in the trainer modes (slow input: a rider who may have no controls at all, owner 2026-10-03) the squeeze comes

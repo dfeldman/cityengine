@@ -220,8 +220,10 @@ export class Traffic {
    * Street from 10th to the Embarcadero, car-free since 2020).
    */
   private readonly carFree: (e: Edge) => boolean
+  /** no vehicle at all: a driveway through a building (game.ts `closed`) */
+  private readonly closed: (e: Edge) => boolean
   /** may this vehicle drive this street at all (a private car on a car-free one may not) */
-  private mayUse(v: { kind: VehicleKind; taxi?: boolean }, e: Edge): boolean { return v.kind === 'bus' || !!v.taxi || !this.carFree(e) }
+  private mayUse(v: { kind: VehicleKind; taxi?: boolean }, e: Edge): boolean { return !this.closed(e) && (v.kind === 'bus' || !!v.taxi || !this.carFree(e)) }
   private readonly vehicles: Vehicle[] = []
   /** how many vehicles each street should carry, once it has been seen */
   private readonly target = new Map<number, number>()
@@ -241,9 +243,10 @@ export class Traffic {
   private readonly r = rng(0xc0ffee)
 
   constructor(graph: CityGraph, level: keyof typeof TRAFFIC | TrafficConfig = 'some',
-    opt: { signals?: Signals; zoneFactor?: (p: Point) => number; lookAhead?: boolean; carFree?: (e: Edge) => boolean } = {}) {
+    opt: { signals?: Signals; zoneFactor?: (p: Point) => number; lookAhead?: boolean; carFree?: (e: Edge) => boolean; closed?: (e: Edge) => boolean } = {}) {
     this.lookAhead = opt.lookAhead ?? true
     this.carFree = opt.carFree ?? (() => false)
+    this.closed = opt.closed ?? (() => false)
     this.g = graph
     this.cfg = typeof level === 'string' ? TRAFFIC[level] : level
     this.signals = opt.signals ?? null
@@ -732,6 +735,7 @@ export class Traffic {
     if (refill && this.vehicles.length >= wanted) refill = false
     for (const e of near) {
       if (!drives(e) || e.length < 12 || this.blindAlley(e, 1) || this.blindAlley(e, -1)) continue
+      if (this.closed(e)) continue
       const mid = pointAlong(e.points, e.length / 2)
       if (distance(mid, at) > this.cfg.range) continue
       const known = this.target.get(e.id)
