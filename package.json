@@ -15,6 +15,7 @@
     "movie": "node --experimental-strip-types tools/route-movie.ts",
     "landmarks": "node --experimental-strip-types tools/landmarks.ts",
     "audit:builders": "vite-node tools/audit-builders.ts",
+    "audit:junctions": "vite-node tools/junction-audit.ts --",
     "audit:bake": "vite-node tools/bake-audit.ts --",
     "audit:nonbuildings": "vite-node tools/nonbuildings.ts --",
     "osm:fetch": "node --experimental-strip-types tools/osm-fetch.ts",
