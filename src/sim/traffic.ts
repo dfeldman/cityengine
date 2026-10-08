@@ -319,6 +319,21 @@ export class Traffic {
         const node = toA < toB ? best.e.a : best.e.b
         const r = this.signals?.control(node).radius ?? 6
         if (Math.min(toA, toB) < r + b.len / 2) v.inBox = { nodeId: node, from: best.e.id, turn: 'straight' }
+      } else {
+        /*
+         * …and on a CURVE ACROSS A JUNCTION, lined up with no street (owner, 2026-10-07: "cars going right through a
+         * streetcar near an intersection"): the F-line turning off Market. Matched to nothing, it was in no lane and no
+         * box, and the cross traffic drove through it. It takes the nearest junction box it reaches into instead.
+         */
+        let near: { node: number; from: number; d: number } | null = null
+        for (const e of this.streets) {
+          for (const [node, p] of [[e.a, e.points[0]], [e.b, e.points[e.points.length - 1]]] as [number, Point][]) {
+            const d = Math.hypot(p.x - b.x, p.z - b.z)
+            const r = this.signals?.control(node).radius ?? 6
+            if (d < r + b.len / 2 && (!near || d < near.d)) near = { node, from: e.id, d }
+          }
+        }
+        if (near) v.inBox = { nodeId: near.node, from: near.from, turn: 'straight' }
       }
       if ((v.bumped || v.passed) && this.view && Math.hypot(v.at.x - this.view.at.x, v.at.z - this.view.at.z) > 40) { v.bumped = undefined; v.passed = undefined }
     }
