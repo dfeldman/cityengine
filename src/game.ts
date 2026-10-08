@@ -79,6 +79,7 @@ import { Signs, setTextScale, type SignedJunction } from './render/signs.ts'
 import { GPU_PER_TILE_MB, HEAP_PER_TILE_MB, TIERS, type Tier } from './tier.ts'
 import { MODES, type GameMode } from './modes.ts'
 import SF_KITCHENS from './city/sf/restaurants.json'
+import SF_SLOW_STREETS from './city/sf/slow-streets.json'
 import { Energy } from './sim/energy.ts'
 import { capTextures } from './render/texture-cap.ts'
 import { Vegetation, foliageLights } from './render/vegetation.ts'
@@ -861,7 +862,36 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     }
     return false
   }
-  const traffic = new Traffic(graph, trafficLevel, { signals, zoneFactor, carFree, closed })
+  /*
+   * SLOW STREETS (owner, 2026-10-07: "add slow streets"): SFMTA's corridors — Page, Sanchez, Noe, Lake, Clay, Cabrillo,
+   * Shotwell and the rest, city/sf/slow-streets.json from sfmta.com, each between its two cross streets. Open to local
+   * traffic, closed to through traffic: a car or two, not a street's worth (15%).
+   */
+  const slowSegs = index.region === 'san-francisco'
+    ? ((p: Projection) => (SF_SLOW_STREETS as { name: string; from?: number[]; to?: number[] }[]).map((s) => ({
+        name: s.name,
+        a: s.from ? p.toLocal({ lat: s.from[0], lon: s.from[1] }) : null,
+        b: s.to ? p.toLocal({ lat: s.to[0], lon: s.to[1] }) : null,
+      })))(new Projection(pkg.origin))
+    : []
+  const slowAt = new Map<number, number>()
+  const edgeFactor = (e: { id: number; name?: string; points: { x: number; z: number }[] }): number => {
+    let f = slowAt.get(e.id)
+    if (f !== undefined) return f
+    f = 1
+    const m = e.points[Math.floor(e.points.length / 2)]
+    for (const s of slowSegs) {
+      if (s.name !== e.name) continue
+      if (!s.a || !s.b) { f = 0.15; break }       // a whole alley (SoMa's)
+      const dx = s.b.x - s.a.x, dz = s.b.z - s.a.z, L2 = dx * dx + dz * dz || 1
+      const t = ((m.x - s.a.x) * dx + (m.z - s.a.z) * dz) / L2
+      const off = Math.abs((m.x - s.a.x) * dz - (m.z - s.a.z) * dx) / Math.sqrt(L2)
+      if (t > -0.01 && t < 1.01 && off < 60) { f = 0.15; break }
+    }
+    slowAt.set(e.id, f)
+    return f
+  }
+  const traffic = new Traffic(graph, trafficLevel, { signals, zoneFactor, carFree, closed, edgeFactor })
   const courtPlayers = new CourtPlayers()
   // the never-stuck squeeze THROUGH a standing car: only on a trainer, which cannot back up (sim/traffic.ts `squeeze`)
   // …and in the trainer modes (slow input: a rider who may have no controls at all, owner 2026-10-03) the squeeze comes

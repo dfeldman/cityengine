@@ -221,6 +221,8 @@ export class Traffic {
    */
   private readonly carFree: (e: Edge) => boolean
   /** no vehicle at all: a driveway through a building (game.ts `closed`) */
+  /** how many of a street's usual cars it carries (game.ts: a Slow Street carries a few, for access) */
+  private readonly edgeFactor: (e: Edge) => number
   private readonly closed: (e: Edge) => boolean
   /** may this vehicle drive this street at all (a private car on a car-free one may not) */
   private mayUse(v: { kind: VehicleKind; taxi?: boolean }, e: Edge): boolean { return !this.closed(e) && (v.kind === 'bus' || !!v.taxi || !this.carFree(e)) }
@@ -243,10 +245,11 @@ export class Traffic {
   private readonly r = rng(0xc0ffee)
 
   constructor(graph: CityGraph, level: keyof typeof TRAFFIC | TrafficConfig = 'some',
-    opt: { signals?: Signals; zoneFactor?: (p: Point) => number; lookAhead?: boolean; carFree?: (e: Edge) => boolean; closed?: (e: Edge) => boolean } = {}) {
+    opt: { signals?: Signals; zoneFactor?: (p: Point) => number; lookAhead?: boolean; carFree?: (e: Edge) => boolean; closed?: (e: Edge) => boolean; edgeFactor?: (e: Edge) => number } = {}) {
     this.lookAhead = opt.lookAhead ?? true
     this.carFree = opt.carFree ?? (() => false)
     this.closed = opt.closed ?? (() => false)
+    this.edgeFactor = opt.edgeFactor ?? (() => 1)
     this.g = graph
     this.cfg = typeof level === 'string' ? TRAFFIC[level] : level
     this.signals = opt.signals ?? null
@@ -743,7 +746,7 @@ export class Traffic {
       let want: number
       if (known === undefined) {
         // (a car-free street carries buses and taxis only, and far fewer of them: 40%)
-        const w = (e.length / 1000) * this.cfg.density * this.zoneFactor(mid) * (this.carFree(e) ? 0.4 : 1)
+        const w = (e.length / 1000) * this.cfg.density * this.zoneFactor(mid) * (this.carFree(e) ? 0.4 : 1) * this.edgeFactor(e)
         const r0 = rng(e.id)
         want = Math.floor(w) + (r0() < w - Math.floor(w) ? 1 : 0)
         this.target.set(e.id, want)
