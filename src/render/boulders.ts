@@ -19,6 +19,7 @@ import type { TileLayer } from './city.ts'
 import { inRing } from '../map/zones.ts'
 import { unpackPoints } from '../city/package.ts'
 import { inside } from '../city/park-planting.ts'
+import { assetRootAndFile } from '../assets.ts'
 
 interface Zone { ring: number[]; bbox: [number, number, number, number]; props: { cliffs?: boolean } }
 interface RockEntry { file: string; species: string; form?: string; bounds: { top: number; radius: number; bottom: number } }
@@ -41,7 +42,7 @@ export async function bouldersLayer(scene: Scene, zones: Zone[], terrain: Terrai
       const idx = await fetch(`${base}rocks/index.json`).then((r) => r.json()) as { rocks: RockEntry[] }
       for (const entry of idx.rocks) {
         try {
-          const res = await SceneLoader.ImportMeshAsync('', `${base}rocks/`, entry.file, scene)
+          const res = await SceneLoader.ImportMeshAsync('', ...assetRootAndFile(`${base}rocks/`, entry.file), scene)
           const all = res.meshes.filter((m): m is Mesh => m instanceof Mesh && m.getTotalVertices() > 0)
           const lod0 = all.filter((m) => !/LOD[1-9]/i.test(m.name))
           const keep = (lod0.length ? lod0 : all)[0]

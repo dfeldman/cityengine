@@ -10,6 +10,34 @@ Two directories used to be committed and no longer are. They were **705 MB of th
 | `public/cities/` | 190 MB | the baked city packages and their streamed tiles |
 | `docs/shots/` | 515 MB | every screenshot — model shots, contact sheets, reference photographs |
 
+## The shared asset bucket (the default since 2026-10-13)
+
+The models and textures that are **not** made by the bake now come from the shared asset bucket, so a fresh
+clone needs none of steps 3 and 5 below to ride. `src/assets.ts` reads the assetmgr indexes over public HTTPS
+(no key) and maps each path the game asks for to its file in the bucket:
+
+| what | path the game asks for | index (owner) |
+|---|---|---|
+| trees, plants, rocks | `trees/`, `plants/`, `rocks/*.glb` and their `index.json` | `assetkit-trees`, `-plants`, `-rocks` (assetkit) |
+| the Paris statues | `models/paris/*.glb` | `assetkit-statues-paris` (assetkit) |
+| avatars | `mh/`, `env/` | `avatarkit-*` (avatarkit, through its `loadFromBucket`) |
+| SF street trees, extruded signs | `sftrees/`, `models/signs/` | **`streetrunner`**: this repo's own, `indexes/asset-index-streetrunner.json` |
+
+Everything else (palms, facades, roads, flags, landmarks, the rock surfaces, the city bake) is still read from
+`public/`. `?assets=local` reads all of it from `public/` again, as before; the views tool takes `--assets=local`
+for before-and-after sheets. The phone tier's texture caps match bucket files by the path they stand for, so
+they apply exactly as they did.
+
+After regenerating the street trees or the signs, record and upload them (assetmgr lives at
+github.com/dfeldman/assetmgr, beside this repo by default or at `$ASSETMGR`):
+
+    node --experimental-strip-types tools/assetmgr-import.ts
+    ASSETMGR_ENV_FILE=~/assetmgr/.env npx --prefix ../assetmgr assetmgr upload
+
+A rebuilt file gets a new name (its hash changed): the import adds it to the same asset and marks the old file
+`isDeleted`, and `assetmgr delete --yes` later clears the old one from the bucket. Browse the bucket with
+`~/assetmgr/viewer/index.html`.
+
 ## What a fresh clone needs, in order
 
 **1. The OSM extract** (needed by the bake; ~650 MB, cached, never committed)

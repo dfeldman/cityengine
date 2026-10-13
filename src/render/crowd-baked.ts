@@ -41,6 +41,7 @@ import type { Scene } from '@babylonjs/core/scene'
 import type { Walker } from '../sim/crowd.ts'
 import { distance, type Point } from '../city/geo.ts'
 import { nearLevel, type Terrain } from '../city/terrain.ts'
+import { initAssets } from '../assets.ts'
 
 /** The pace the stride is baked at; each walker's playback is scaled to their own speed from it. */
 const BAKE_SPEED = 1.35
@@ -119,6 +120,7 @@ export class BakedCrowd {
     // one plain shoe for everyone: the wardrobe's range from 2 000 to 8 000 triangles a pair is invisible
     // at crowd distance and multiplied by two hundred pairs of feet
     if (spec.clothes.length >= 3) spec.clothes[spec.clothes.length - 1].id = 'shoes06'
+    await initAssets()
     const geometry = await new GeometryService().request(spec, 'low')
     if (!geometry) return null
     const avatar = new Avatar(this.scene, spec, { geometry, quality: 'low', name: `crowd${index}` })

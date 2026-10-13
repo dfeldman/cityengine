@@ -24,6 +24,7 @@ import { MeshBuilder } from './buildings.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
 import { unpackPlantings, type Planting } from '../city/plantings.ts'
 import type { PlantZones } from '../city/zone-planting.ts'
+import { assetRootAndFile, fetchAssetJson } from '../assets.ts'
 
 interface PlantEntry { species: string; file: string; height: number }
 /**
@@ -309,7 +310,7 @@ export class Plants {
   async load(): Promise<void> {
     let index: { trees: PlantEntry[] }
     try {
-      index = (await (await fetch(`${this.base}index.json`)).json()) as { trees: PlantEntry[] }
+      index = await fetchAssetJson<{ trees: PlantEntry[] }>(`${this.base}index.json`)
     } catch {
       return
     }
@@ -323,7 +324,7 @@ export class Plants {
       for (const species of list) {
         const e = index.trees.find((t) => t.species === species)
         if (!e) { console.warn(`plants: a zone asks for "${species}", which the plant library does not have`); continue }
-        const r = await SceneLoader.ImportMeshAsync('', this.base, e.file, this.scene)
+        const r = await SceneLoader.ImportMeshAsync('', ...assetRootAndFile(this.base, e.file), this.scene)
         const all = r.meshes.filter((m): m is Mesh => m instanceof Mesh && m.getTotalVertices() > 0)
         // (LOD0, the full plant: LOD1's thinned leaf cards read at rider height as a few broken twigs lying on the lawn —
         //  Embarcadero survey, 2026-10-06 — and LOD0 is at most a thousand triangles a shrub)

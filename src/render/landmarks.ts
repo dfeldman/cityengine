@@ -61,6 +61,7 @@ import { Projection } from '../city/geo.ts'
 import { unpackPoints, type CityPackage, type PackedBuilding, type PackedLandmark } from '../city/package.ts'
 import type { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial'
 import type { Terrain } from '../city/terrain.ts'
+import { assetRootAndFile } from '../assets.ts'
 
 export interface LandmarkEntry {
   osm?: string | string[]
@@ -1445,9 +1446,8 @@ export class Landmarks {
    */
   private modelUrl(file: string): [string, string] {
     const base = file.startsWith('models/') ? new URL('../../', this.base).href : this.base
-    const url = new URL(file, base).href
-    const cut = url.lastIndexOf('/') + 1
-    return [url.slice(0, cut), url.slice(cut)]
+    // (generated signs and the like come from the shared asset bucket when it has them: src/assets.ts)
+    return assetRootAndFile(base, file)
   }
 
   /** A downloaded model: imported, its glTF `__root__` baked into the vertices (see vegetation.ts), placed. */

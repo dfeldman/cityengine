@@ -23,6 +23,7 @@ import '@babylonjs/loaders/glTF'
 import { MeshBuilder } from './render/buildings.ts'
 import { box } from './render/models.ts'
 import { palmModel, type PalmKind } from './render/palms.ts'
+import { assetRootAndFile, fetchAssetJson, initAssets } from './assets.ts'
 
 interface Entry { species: string; file: string; bounds: { top: number } }
 
@@ -38,7 +39,8 @@ export async function treeShowcase(canvas: HTMLCanvasElement, lod: 0 | 1 | 2): P
   sun.diffuse = new Color3(1, 0.96, 0.88)
 
   const base = new URL('sftrees/', document.baseURI).href
-  const index = (await (await fetch(`${base}index.json`)).json()) as { trees: Entry[] }
+  await initAssets()
+  const index = await fetchAssetJson<{ trees: Entry[] }>(`${base}index.json`)
   const species = [...new Set(index.trees.map((t) => t.species))]
   const row: Record<string, number> = {}
   let x = 0
@@ -47,7 +49,7 @@ export async function treeShowcase(canvas: HTMLCanvasElement, lod: 0 | 1 | 2): P
     const of = index.trees.filter((t) => t.species === sp)
     row[sp] = x + 4
     for (const t of [of[Math.floor(of.length / 3)], of[of.length - 1]]) {
-      const r = await SceneLoader.ImportMeshAsync('', base, t.file, scene)
+      const r = await SceneLoader.ImportMeshAsync('', ...assetRootAndFile(base, t.file), scene)
       const root = r.meshes[0]
       root.position.x = x
       for (const m of r.meshes) if (m instanceof Mesh && m.getTotalVertices() > 0 && !m.name.startsWith(lodName)) m.setEnabled(false)

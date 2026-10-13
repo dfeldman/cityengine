@@ -24,6 +24,7 @@ import { cartoonMaterial } from './cartoon-material.ts'
 import { block, hex, shade } from './landmarks/kit.ts'
 import { Projection } from '../city/geo.ts'
 import type { Terrain } from '../city/terrain.ts'
+import { assetRootAndFile } from '../assets.ts'
 
 export interface StatueEntry {
   id: string
@@ -148,7 +149,7 @@ export class Statues {
   private async load(s: Slot): Promise<void> {
     s.loading = true
     try {
-      const r = await SceneLoader.ImportMeshAsync('', `${this.base}models/`, s.e.model, this.scene)
+      const r = await SceneLoader.ImportMeshAsync('', ...assetRootAndFile(`${this.base}models/`, s.e.model), this.scene)
       const root = r.meshes.find((m) => m.name === '__root__') ?? r.meshes[0]
       // the loader's root converts glTF's handedness; our holder places, turns and scales everything under it
       const holder = new TransformNode(`statue:${s.e.id}`, this.scene)

@@ -11,6 +11,7 @@
  * nothing, and the phone simply gets full-size textures again — measure with the scratch `mem.mjs`.
  */
 import type { Engine } from '@babylonjs/core/Engines/engine'
+import { logicalUrl } from '../assets.ts'
 
 export function capTextures(engine: Engine, rules: { match: RegExp; max: number }[]): void {
   type Prep = (texture: { url?: string | null }, ...rest: unknown[]) => unknown
@@ -18,7 +19,8 @@ export function capTextures(engine: Engine, rules: { match: RegExp; max: number 
   const prep = e._prepareWebGLTexture
   if (!prep || rules.length === 0) return
   e._prepareWebGLTexture = function (texture, ...rest) {
-    const url = texture?.url ?? ''
+    // (a bucket URL is matched by the public/ path it stands for: src/assets.ts)
+    const url = logicalUrl(texture?.url ?? '')
     const rule = rules.find((r) => r.match.test(url))
     if (!rule) return prep.call(this, texture, ...rest)
     const caps = e.getCaps()

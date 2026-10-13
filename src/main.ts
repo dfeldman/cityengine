@@ -18,6 +18,7 @@ import { THEME_CSS } from './ui/theme.ts'
 import { LOADING_CSS, WELCOME_CSS } from './ui/loading.ts'
 import { CARD_CSS } from './ui/landmark-card.ts'
 import { detectTier } from './tier.ts'
+import { initAssets } from './assets.ts'
 import { chooseMode, MODES, type GameMode } from './modes.ts'
 import { COMPACT_CSS, TOUCH_CSS, compactScreen, touchControls, wantsTouch } from './ui/touch.ts'
 
@@ -27,6 +28,9 @@ const canvas = document.getElementById('view') as HTMLCanvasElement
 const style = document.createElement('style')
 style.textContent = HUD_CSS + MINIMAP_CSS + THEME_CSS + LOADING_CSS + WELCOME_CSS + CARD_CSS + DELIVERY_CSS + TOUCH_CSS + COMPACT_CSS
 document.head.appendChild(style)
+
+// the shared asset bucket's indexes (trees, plants, statues, this game's own): before anything loads a model
+await initAssets()
 
 if (params.get('model')) {
   const { modelShowcase } = await import('./model-showcase.ts')

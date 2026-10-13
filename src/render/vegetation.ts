@@ -40,6 +40,7 @@ import { DEFAULT_FLORA, type Flora } from './flora.ts'
 import { palmModel, type PalmKind } from './palms.ts'
 import { formCode, type TreeForm } from '../city/tree-forms.ts'
 import { thicken } from './infill.ts'
+import { assetRootAndFile, fetchAssetJson } from '../assets.ts'
 
 /** each palm kind's seed family, so the same kind is the same palms everywhere */
 const PALM_SEEDS: Record<PalmKind, number> = { canary: 1, fan: 2, queen: 3, spiky: 4, windmill: 5, treefern: 6 }
@@ -226,7 +227,7 @@ export class Vegetation {
     const libs = [this.base, ...(this.flora.library ? [new URL(`../${this.flora.library}/`, this.base).href] : [])]
     const index: TreeEntry[] = []
     for (const base of libs) {
-      const got = await fetch(`${base}index.json`).then((r) => (r.ok ? r.json() : { trees: [] })).catch(() => ({ trees: [] })) as { trees: TreeEntry[] }
+      const got = await fetchAssetJson<{ trees: TreeEntry[] }>(`${base}index.json`).catch(() => ({ trees: [] as TreeEntry[] }))
       for (const t of got.trees) if (!t.season || t.season === 'summer') index.push({ ...t, base })
     }
 
@@ -275,7 +276,7 @@ export class Vegetation {
       return p
     }
     const importEntry = async (entry: TreeEntry, park: boolean): Promise<Model | null> => {
-      const result = await SceneLoader.ImportMeshAsync('', entry.base ?? this.base, entry.file, this.scene)
+      const result = await SceneLoader.ImportMeshAsync('', ...assetRootAndFile(entry.base ?? this.base, entry.file), this.scene)
       const all = result.meshes.filter((m): m is Mesh => m instanceof Mesh && m.getTotalVertices() > 0)
       /**
        * Only the closest level of detail.

@@ -53,3 +53,7 @@ tools/lidar/.venv/
 # Trail Trainer rockgen boulders, copied by hand (public/rocks/index.json lists them)
 public/rocks/*.glb
 *.swp
+
+# assetmgr: downloaded asset files and the per-checkout hash cache (indexes/ IS committed)
+/assets/
+.assetmgr/

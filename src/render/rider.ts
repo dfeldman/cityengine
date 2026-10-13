@@ -21,15 +21,13 @@ import {
   Bike,
   GeometryService,
   PRESETS,
-  setAssetBase,
-  setStudioHdri,
-  STUDIO_HDRI,
   suggestQuality,
   normalizeSpec,
   cloneSpec,
   type AvatarSpec,
   type Preset,
 } from '@dandyhorse/avatarkit'
+import { initAssets } from '../assets.ts'
 
 /**
  * Standalone the kit's assets sit next to the page (`public/mh` and `public/env` are symlinks into the kit);
@@ -39,8 +37,7 @@ import {
  * resolves against the worker's own script rather than the page, which quietly fetches index.html and fails
  * with a JSON parse error.
  */
-setAssetBase(new URL('mh/', document.baseURI).href)
-setStudioHdri(new URL(`env/${STUDIO_HDRI}`, document.baseURI).href)
+// (where the kit's assets come from, bucket or public/, is set up by initAssets: src/assets.ts)
 
 export interface RiderOptions {
   preset?: Preset
@@ -86,6 +83,7 @@ export class Rider {
   private async build(opts: RiderOptions): Promise<void> {
     const spec = normalizeSpec(opts.spec ?? (opts.preset ?? PRESETS[0]).spec)
     const quality = opts.quality ?? suggestQuality(this.scene.getEngine())
+    await initAssets()
     const geometry = await new GeometryService().request(spec, quality)
     if (!geometry) return
     const avatar = new Avatar(this.scene, spec, { geometry, quality, name: 'player' })

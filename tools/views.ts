@@ -15,7 +15,8 @@
  *   node --experimental-strip-types tools/views.ts --city=paris-marais --seed          propose views for
  *       every modelled landmark missing from the file (street and air), appended with "seeded": true
  *
- * Options: --life (keep the crowd; off by default, it costs load time and hides facades), --without=a,b, --q=high,
+ * Options: --life (keep the crowd; off by default, it costs load time and hides facades), --without=a,b, --q=high, --assets=local
+ * (load the shared assets from public/ rather than the bucket: before/after comparisons of src/assets.ts),
  * --time=dusk, --port=5200, --out=<dir> (default docs/shots/views/<city>/). A view may carry its own
  * `query` (e.g. "paths=1") — views are grouped by query so the page reloads only when it changes.
  *
@@ -80,7 +81,7 @@ async function open(query: string): Promise<void> {
   // --without=a,b: subsystems to leave out as well (the crowd is left out unless --life)
   const without = [arg('life') ? '' : 'life', ...(arg('without') ? arg('without').split(',') : [])].filter(Boolean).join(',')
   const q = [`city=${city}`, 'freeze=1', without ? `without=${without}` : '', arg('q') ? `q=${arg('q')}` : '',
-    arg('time') ? `time=${arg('time')}` : '', query].filter(Boolean).join('&')
+    arg('time') ? `time=${arg('time')}` : '', arg('assets') ? `assets=${arg('assets')}` : '', query].filter(Boolean).join('&')
   await page.goto(`http://localhost:${port}/?${q}`)
   await page.waitForFunction('window.gameReady === true && window.riderReady === true', null, { timeout: 180_000 })
   await page.waitForFunction('window.treesReady === true', null, { timeout: 120_000 }).catch(() => console.warn('  (trees still loading)'))

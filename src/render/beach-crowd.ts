@@ -25,6 +25,7 @@ import { BASE_SKIN, instancedParts, peopleLights, type Part } from './crowd-bake
 import type { TileLayer } from './city.ts'
 import type { Terrain } from '../city/terrain.ts'
 import { unpackPoints } from '../city/package.ts'
+import { initAssets } from '../assets.ts'
 
 type Rgb = [number, number, number]
 
@@ -96,6 +97,7 @@ export class BeachCrowd {
     spec.skin.color = '#dc9c70'
     spec.hair.color = '#ffffff'
     for (const c of spec.clothes) c.color = '#ffffff'
+    await initAssets()
     const geometry = await new GeometryService().request(spec, 'low')
     if (!geometry) return null
     const avatar = new Avatar(this.scene, spec, { geometry, quality: 'low', name: `beach${index}` })
