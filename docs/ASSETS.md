@@ -67,6 +67,9 @@ Writes `public/cities/<city>.json` plus its `tiles/` and `ride-*.json`. **Nothin
 the local extract the OSM phase is a minute or two; the rest of the bake (terrain, facades, the ride graph,
 plantings) is the bulk of the time. The bake also generates the city's signs (step 3) on its own.
 
+Once baked, a city can be published to the city bucket with `npm run city:upload -- <city> --yes` (README,
+"Baked cities"): one unit per city under a bake number, the old bake deleted when the new one is current.
+
 **3. Sign lettering** (also run by the bake; `public/models/signs/`, and `public/models/` is ignored wholesale)
 
     npm run signs

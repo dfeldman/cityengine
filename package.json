@@ -22,7 +22,8 @@
     "osm:compare": "node --experimental-strip-types tools/osm-compare.ts",
     "signs": "sh tools/signgen/build.sh",
     "assets": "node ${ASSETMGR_DIR:-../assetmgr}/dist/cli.js restore",
-    "assets:upload": "node --experimental-strip-types tools/assetmgr-import.ts && node ${ASSETMGR_DIR:-../assetmgr}/dist/cli.js upload"
+    "assets:upload": "node --experimental-strip-types tools/assetmgr-import.ts && node ${ASSETMGR_DIR:-../assetmgr}/dist/cli.js upload",
+    "city:upload": "node --experimental-strip-types tools/city-upload.ts"
   },
   "dependencies": {
     "@babylonjs/core": "9.26.0",

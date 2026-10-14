@@ -6,13 +6,19 @@ lives here too; the engine is meant to serve non-game uses as well. The repo was
 2026-10-14. Its siblings are expected beside it: `assetmgr`, `assetkit` (trees, plants, rocks, statues, carkit) and
 `avatarkit`. See docs/ASSETS.md for what a fresh clone needs.
 
-**Baked cities** (`public/cities/`, derived and large) are not in git and not in the shared asset bucket. The plan is
-a bucket of their own, a whole city uploaded as one unit (its package, terrain, tiles and ride graph) with no
-old versions kept, by a small upload script that is still to be written. Each upload carries a **bake number**
-(`<city>/<bake>/…`, and a small `<city>/current.json` naming the live one): a client moves to a new bake by reading
-`current.json`, and the previous bake is deleted once nothing points at it. They are derived data, not shared
-assets, so assetmgr (provenance, sharing between projects) is the wrong tool for them. Until then `npm run bake`
-rebuilds them locally.
+**Baked cities** (`public/cities/`, derived and large) are not in git and not in the shared asset bucket: they are
+derived data, not shared assets, so assetmgr (provenance, sharing between projects) is the wrong tool. They have a
+bucket of their own (`cityengine-cities`, named in `cities.config.json`, public and keyless to read). A whole city
+is uploaded as one unit under a **bake number**:
+
+    npm run bake san-francisco
+    npm run city:upload -- san-francisco          # dry run: says what it would do
+    npm run city:upload -- san-francisco --yes    # upload as bake N+1, make it current, delete bake N
+
+The bucket holds `<city>/<bake>/` (the package and everything under `public/cities/<city>/`), `<city>/current.json`
+naming the live bake, and `cities.json` listing every city. A client reads `current.json` and fetches from that
+bake's prefix; the old bake is deleted only after the new one is current. The game still reads cities from its
+own `public/cities/`; switching it to the bucket (reading `current.json` for its base URL) is the next step.
 
 ## Street Runner
 
