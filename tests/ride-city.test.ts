@@ -13,6 +13,7 @@ import { buildGraph, type Edge } from '../src/city/graph.ts'
 import { locate, rideExits, rideGraph, rideStats } from '../src/city/ridegraph.ts'
 import { Navigator, polylineLength } from '../src/sim/navigate.ts'
 import { unpackPoints, type CityPackage } from '../src/city/package.ts'
+import { baked } from './baked.ts'
 
 function load(id: string) {
   const file = resolve(import.meta.dirname, '..', 'public', 'cities', `${id}.json`)
@@ -30,8 +31,8 @@ function load(id: string) {
   return { pkg, map, graph: rideGraph(edges, 'bike') }
 }
 
-describe('riding Le Marais', () => {
-  const { pkg, map, graph } = load('paris-marais')
+describe.skipIf(!baked('paris-marais'))('riding Le Marais', () => {
+  const { pkg, map, graph } = baked('paris-marais') ? load('paris-marais') : ({} as ReturnType<typeof load>)
   // the package names its start by MAP edge; this is where that is on the ride graph
   const at = locate(graph, map, pkg.start.edgeId, pkg.start.s)!
   const start = { edgeId: at.edgeId, s: at.s, reversed: false }

@@ -16,13 +16,14 @@ import { describe, expect, it } from 'vitest'
 import {
   AUDITED, auditBuilders, allowedUnreferenced, bakeKey, NOT_IN_BAKE_KNOWN, UNREFERENCED_OK,
 } from '../tools/audit-builders.ts'
+import { baked } from './baked.ts'
 
 const audit = await auditBuilders()
 const city = (id: string) => audit.cities.find((c) => c.city === id)!
 const list = (rows: { procedural: string; name: string; file: string; detail?: string }[]): string =>
   rows.map((r) => `${r.procedural} "${r.name}" [${r.file}]${r.detail ? ` ${r.detail}` : ''}`).join('\n')
 
-describe.each(AUDITED)('landmark builders reach a building — %s', (id) => {
+for (const id of AUDITED) describe.skipIf(!baked(id))(`landmark builders reach a building — ${id}`, () => {
   const c = city(id)
 
   /*
@@ -81,7 +82,7 @@ describe('the audit covers what it claims to', () => {
    * public/cities — paris-marais is superseded by paris-centre, and Chicago and Brooklyn are unfinished and
    * have no landmark manifest — but the set must be a decision, so it is asserted rather than assumed.
    */
-  it('audits exactly the cities it means to', () => {
+  it.skipIf(!AUDITED.every(baked))('audits exactly the cities it means to', () => {
     expect(audit.cities.map((c) => c.city)).toEqual([...AUDITED])
     expect(audit.unchecked).toEqual([])
   })

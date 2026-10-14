@@ -22,6 +22,7 @@ import {
   AUDITED, allNonbuildings, classifiedBuilders, kindOfBuilder, BUILDINGS_OK, EXPLICIT, issueKey, inspectGlb, buildIt,
 } from '../tools/nonbuildings.ts'
 import { namedBuilders } from '../tools/nonbuildings.ts'
+import { baked } from './baked.ts'
 
 const all = await allNonbuildings()
 /** Every builder a manifest or a skyline names in the audited cities, from the audit that already loads them. */
@@ -204,7 +205,7 @@ const KNOWN: Record<string, string[]> = {
   ],
 }
 
-describe.each(AUDITED)('nonbuildings — %s', (id) => {
+for (const id of AUDITED) describe.skipIf(!baked(id))(`nonbuildings — ${id}`, () => {
   const c = city(id)
 
   /*
