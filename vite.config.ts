@@ -1,5 +1,7 @@
+import { existsSync } from 'node:fs'
 import { relative, resolve } from 'node:path'
-import { defineConfig } from 'vite'
+import { configDefaults } from 'vitest/config'
+import { defineConfig, type Plugin } from 'vite'
 
 /*
  * The sibling repos this one uses, from environment variables, defaulting to checkouts beside this one (no
@@ -10,9 +12,28 @@ const sibling = (name: string, env: string): string => resolve(process.env[env] 
 const AVATARKIT_DIR = sibling('avatarkit', 'AVATARKIT_DIR')
 const ASSETKIT_DIR = sibling('assetkit', 'ASSETKIT_DIR')
 
+/*
+ * Dandyhorse's game client library (@dandyhorse/gamekit), for running as a game on the platform (?session=, see
+ * src/platform.ts). It is NOT a dependency: the engine and the standalone game work without Dandyhorse. When a
+ * dandyhorse checkout is found (DANDYHORSE_DIR, default the one beside this repo) its gamekit source is used;
+ * otherwise the import resolves to a module that explains, so the standalone build still succeeds.
+ */
+const DANDYHORSE_DIR = sibling('dandyhorse', 'DANDYHORSE_DIR')
+const GAMEKIT = resolve(DANDYHORSE_DIR, 'libs', 'gamekit', 'src', 'index.ts')
+const HAS_GAMEKIT = existsSync(GAMEKIT)
+const gamekit: Plugin = {
+  name: 'dandyhorse-gamekit',
+  enforce: 'pre',
+  resolveId: (id) => (id === '@dandyhorse/gamekit' ? (HAS_GAMEKIT ? GAMEKIT : '\0gamekit-absent') : null),
+  load: (id) => id === '\0gamekit-absent'
+    ? { code: "throw new Error('This build has no Dandyhorse platform library: set DANDYHORSE_DIR to a dandyhorse checkout and rebuild')\nexport default {}", syntheticNamedExports: true }
+    : null,
+}
+
 // base './' so a build runs from any folder; on Dandyhorse it becomes '/games/streetrunner/'.
 export default defineConfig({
   base: './',
+  plugins: [gamekit],
   define: { __AVATARKIT_DIR__: JSON.stringify(AVATARKIT_DIR), __ASSETKIT_DIR__: JSON.stringify(ASSETKIT_DIR) },
   /*
    * ONE BABYLON for the app and every linked kit (carkit, avatarkit). In a production build a `file:` kit's
@@ -58,7 +79,7 @@ export default defineConfig({
     hmr: process.env.HMR ? undefined : false,
     // avatarkit is a file: dependency outside this app's folder, and its worker is fetched by path; local-assets
     // mode reads avatarkit's and assetkit's public/ through /@fs/
-    fs: { allow: [resolve(import.meta.dirname, '..'), AVATARKIT_DIR, ASSETKIT_DIR] },
+    fs: { allow: [resolve(import.meta.dirname, '..'), AVATARKIT_DIR, ASSETKIT_DIR, resolve(DANDYHORSE_DIR, 'libs', 'gamekit')] },
   },
   preview: { port: 5201, strictPort: false },
   /*
@@ -76,4 +97,6 @@ export default defineConfig({
   // Babylon arrives through the @babylonjs/core barrel, as in the platform's other games
   // public/ is copied into dist/ by tools/link-assets.js, which skips what the asset bucket serves
   build: { chunkSizeWarningLimit: 7500, copyPublicDir: false },
+  // the platform glue's tests need gamekit; without a dandyhorse checkout they are left out
+  test: { exclude: [...configDefaults.exclude, ...(HAS_GAMEKIT ? [] : ['tests/platform.test.ts'])] },
 })

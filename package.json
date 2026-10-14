@@ -30,7 +30,6 @@
     "@babylonjs/loaders": "^9.26.0",
     "avatarkit": "file:../avatarkit",
     "carkit": "file:../assetkit/carkit",
-    "@dandyhorse/gamekit": "file:../dandyhorse/libs/gamekit",
     "@types/earcut": "^3.0.0",
     "@types/pngjs": "^6.0.5",
     "earcut": "^3.2.3",
