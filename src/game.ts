@@ -2205,6 +2205,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       ...(delivery.phase === 'toDropoff' ? [{ label: 'Eat the order', hint: 'full energy, no pay', run: () => onDelivery(delivery.eat()) }] : []),
     ] },
     { label: 'Session', sub: (): MenuItem[] => [
+      // (where, for a bug report: "what is this train doing here?")
+      { label: 'Where', info: `${placeName(lastAt)} · ${(() => { const ll = proj.toLatLon(lastAt); return `${ll.lat.toFixed(5)}, ${ll.lon.toFixed(5)}` })()}` },
       { label: 'Riding time', info: clock(simSeconds) },
       { label: 'Distance', info: far(nav.travelled) },
       ...(simSeconds > 10 ? [{ label: 'Average speed', info: imperialNow()

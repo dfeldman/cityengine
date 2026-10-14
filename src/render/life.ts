@@ -48,6 +48,16 @@ class Pool {
     this.mesh.renderingGroupId = 3
     this.matrices = new Float32Array(capacity * 16)
     this.colours = new Float32Array(capacity * 4)
+    /*
+     * The GPU buffers are made ONCE, at full capacity and updatable, and each frame only refills the part in use and
+     * sets the count (`end`). Handing Babylon a fresh array every frame made it delete and recreate both buffers on
+     * every pool, every frame — and on iOS Safari, which reuses a deleted buffer's name at once, a pool could come to
+     * be drawn with another pool's buffers: Caltrain double-deckers running up California Street where the cable cars
+     * were (owner, 2026-10-14, by the Huntington). It was also a few hundred buffer allocations a second for nothing.
+     */
+    this.mesh.thinInstanceSetBuffer('matrix', this.matrices, 16, false)
+    this.mesh.thinInstanceSetBuffer('instColor', this.colours, 4, false)
+    this.mesh.thinInstanceCount = 0
   }
 
   begin(): void { this.used = 0 }
@@ -67,16 +77,12 @@ class Pool {
     // garbage and the screen fills with huge triangles. An empty pool has to be switched off, not just
     // emptied. This was the flickering in front of the camera.
     this.mesh.setEnabled(this.used > 0)
-    if (this.used === 0) {
-      this.mesh.thinInstanceCount = 0
-      return
-    }
-    // Exactly `used` entries, not the whole capacity. `thinInstanceSetBuffer` takes the instance count from
-    // the buffer's own length, overriding anything set beforehand — so handing it the full array draws the
-    // unused tail as well. Those matrices are all zeros, and a zero matrix sends every vertex to w = 0,
-    // which projects to infinity: the screen fills with huge triangles radiating from a point.
-    this.mesh.thinInstanceSetBuffer('matrix', this.matrices.subarray(0, this.used * 16), 16)
-    this.mesh.thinInstanceSetBuffer('instColor', this.colours.subarray(0, this.used * 4), 4)
+    // Exactly `used` instances drawn, not the whole capacity: the unused tail's matrices are zeros (or stale), and a
+    // zero matrix sends every vertex to w = 0, which projects to infinity — the screen fills with huge triangles
+    this.mesh.thinInstanceCount = this.used
+    if (this.used === 0) return
+    this.mesh.thinInstancePartialBufferUpdate('matrix', this.used, 0)
+    this.mesh.thinInstancePartialBufferUpdate('instColor', this.used, 0)
   }
 
   get count(): number { return this.used }

@@ -69,6 +69,12 @@ interface Variant {
   meshes: { mesh: Mesh; part: Part; near: number }[]
   /** one stride's worth of frames per second, at the baked pace */
   fps: number
+  /**
+   * The instance buffers, kept and given to the meshes once (grown to the next power of two when the crowd outgrows
+   * them), then refilled in place each frame — not a new array and a new GPU buffer per mesh per frame, which on iOS
+   * could leave a mesh drawn with another's buffers (life.ts `Pool`, 2026-10-14).
+   */
+  buf?: { cap: number; matrices: Float32Array; settings: Float32Array; colours: Record<Part, Float32Array> }
   manager: BakedVertexAnimationManager
   /** the gait baked: walkers get walk variants, runners run variants, cyclists pedal on a kit bike */
   gait: 'walk' | 'run' | 'cycle'
@@ -250,12 +256,21 @@ export class BakedCrowd {
         while (k < n && list[k].d < r) k++
         return k
       }
-      const matrices = new Float32Array(n * 16)
-      const settings = new Float32Array(n * 4)
-      const colours: Record<Part, Float32Array> = {
-        skin: new Float32Array(n * 4), top: new Float32Array(n * 4), bottom: new Float32Array(n * 4),
-        hair: new Float32Array(n * 4), plain: new Float32Array(n * 4).fill(1), frame: new Float32Array(n * 4),
+      if (!v.buf || v.buf.cap < n) {
+        let cap = 16
+        while (cap < n) cap *= 2
+        v.buf = { cap, matrices: new Float32Array(cap * 16), settings: new Float32Array(cap * 4), colours: {
+          skin: new Float32Array(cap * 4), top: new Float32Array(cap * 4), bottom: new Float32Array(cap * 4),
+          hair: new Float32Array(cap * 4), plain: new Float32Array(cap * 4).fill(1), frame: new Float32Array(cap * 4),
+        } }
+        for (const { mesh, part } of v.meshes) {
+          mesh.thinInstanceSetBuffer('matrix', v.buf.matrices, 16, false)
+          if (mesh.bakedVertexAnimationManager) mesh.thinInstanceSetBuffer('bakedVertexAnimationSettingsInstanced', v.buf.settings, 4, false)
+          mesh.thinInstanceSetBuffer('color', v.buf.colours[part], 4, false)
+          mesh.thinInstanceCount = 0
+        }
       }
+      const { matrices, settings, colours } = v.buf
       list.forEach(({ w, d }, i) => {
         // a walker's feet are 0.155 m under the kit's root; a bike's wheels stand on it
         const y = (w.y ?? (w.park ? (terrain?.rawHeightAt(w.at.x, w.at.z) ?? 0) : nearLevel(terrain?.heightAt(w.at.x, w.at.z) ?? 0, w.level))) + (v.gait === 'cycle' ? 0 : 0.155)
@@ -277,12 +292,13 @@ export class BakedCrowd {
         // the bike's frame: the box renderer's colour for it, a darker take on the shirt
         colours.frame.set([w.shirt[0] * 0.5 + 0.1, w.shirt[1] * 0.5 + 0.1, w.shirt[2] * 0.5 + 0.1, 1], i * 4)
       })
-      for (const { mesh, part, near: range } of v.meshes) {
+      for (const { mesh, near: range } of v.meshes) {
         const count = within(range)
+        mesh.thinInstanceCount = count
         if (count === 0) { mesh.setEnabled(false); continue }
-        mesh.thinInstanceSetBuffer('matrix', matrices.subarray(0, count * 16), 16, false)
-        if (mesh.bakedVertexAnimationManager) mesh.thinInstanceSetBuffer('bakedVertexAnimationSettingsInstanced', settings.subarray(0, count * 4), 4, false)
-        mesh.thinInstanceSetBuffer('color', colours[part].subarray(0, count * 4), 4, false)
+        mesh.thinInstancePartialBufferUpdate('matrix', count, 0)
+        if (mesh.bakedVertexAnimationManager) mesh.thinInstancePartialBufferUpdate('bakedVertexAnimationSettingsInstanced', count, 0)
+        mesh.thinInstancePartialBufferUpdate('color', count, 0)
         mesh.setEnabled(true)
       }
     })
