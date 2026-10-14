@@ -199,7 +199,7 @@ if (params.get('model')) {
     weather: platform?.weather ?? (params.get('weather') as 'clear' | 'overcast' | 'rain') ?? undefined,
     advance: params.get('advance') ? Number(params.get('advance')) : undefined,
     // road traffic is ON by default since 2026-09-29 (the delivery game's gridlock); ?cars=0 turns it off
-    cars: params.get('cars') !== '0',
+    cars: params.get('cars') !== '0' && settings().cars !== 'off',
     // ?input=fast (held arrows steer, the turn is taken at the corner) is the default; ?input=slow declares turns
     // ahead, for trainers — and is the default on Dandyhorse, where the phone's d-pad arrives on a 1 s poll
     // ?route=manual: deliveries are not routed for you (the default routes them, and takes the turns)

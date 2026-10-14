@@ -92,7 +92,7 @@ import { BeachCrowd } from './render/beach-crowd.ts'
 import { updateWater } from './render/water-material.ts'
 import { Hud } from './ui/hud.ts'
 import { Menu, type MenuItem } from './ui/menu.ts'
-import { SETTING_DEFS, onSettings, setSetting, settings, type SettingDef } from './ui/settings.ts'
+import { FEATURE_OFF, SETTING_DEFS, onSettings, setSetting, settings, type SettingDef } from './ui/settings.ts'
 import { PBR_FOG, photoMode, setRegionFog } from './render/photo.ts'
 import { gpuMB, showMemory, watchHeap } from './render/heap.ts'
 import { Minimap } from './ui/minimap.ts'
@@ -192,6 +192,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   turn?: 'left' | 'straight' | 'right'
 }): Promise<void> {
   const off = opts.without ?? new Set<string>()
+  // (what the URL itself left out, before the tier and the settings add to `off`, which is the same set)
+  const askedWithout = new Set(off)
   /*
    * THE OPENING VIEW (2026-10-01, for the demo): with no `?at=`, no `?start=` and nothing to resume, the ride begins
    * where the city looks its best and facing the right way — not on the bake's arbitrary start edge (a side street,
@@ -211,8 +213,16 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // `?with=grade,plants` puts back what the tier leaves out, to measure it on a device without a code change
   const back = new Set((new URLSearchParams(location.search).get('with') ?? '').split(',').filter(Boolean))
   for (const w of tier.without) if (!back.has(w)) off.add(w)
-  // Menu → Settings → Graphics → Speed streaks
+  // Menu → Settings → Graphics → Speed streaks, and → World (ui/settings.ts): on or off over the tier's choice; an
+  // explicit `?without=` still wins
   if (!settings().motion) off.add('speedlines')
+  for (const [f, names] of Object.entries(FEATURE_OFF)) {
+    const v = settings()[f as keyof typeof FEATURE_OFF]
+    for (const n of names) {
+      if (v === 'off') off.add(n)
+      else if (v === 'on' && !askedWithout.has(n)) off.delete(n)
+    }
+  }
   plog('tier', opts.tier ?? 'desktop')
   /*
    * Load-stage timings (tools/measure-load.ts): each mark is the milliseconds the stage since the previous one

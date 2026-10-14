@@ -79,3 +79,18 @@ The type is big enough to read from a bike.
 4. Settings saved to localStorage (URL parameters override), starting with units, steering, quality and on-screen
    controls.
 5. Fix the welcome screen's stale key list (P is now pause, photo/fog is K).
+
+## The settings system (src/ui/settings.ts)
+
+Each setting is a field of `Settings` plus one entry in `SETTING_DEFS`: its group (Display, World, Graphics,
+Controls, Gameplay, Sound, Equipment), its label, its choices and when it applies (`now`, or `ride`: on the next
+start, and the menu offers a restart). Menu → Settings builds a submenu per group from that list, so a new setting
+needs no menu code. Values are kept per browser. A URL parameter beats a setting, and a setting beats the device's
+tier.
+
+World settings (trees and plants, people, traffic, signs and furniture) are `auto` / `on` / `off`. `auto` is what
+the tier carries; on and off switch the game's subsystems by their `?without=` names (`FEATURE_OFF`). Turning trees
+on for an iPhone can exceed its memory: that is the rider's call, and Auto stays the safe default.
+
+Still to come: Sound, Equipment (trainer and treadmill: speed and incline limits, units of the machine), and
+Gameplay (energy, delivery pace, offers on or off).

@@ -18,10 +18,28 @@ export interface Settings {
   quality: 'auto' | 'desktop' | 'phone' | 'ultra'
   /** the speed streaks at the screen's edges when going fast */
   motion: boolean
+  /**
+   * WHAT THE WORLD HAS IN IT (owner, 2026-10-14: "turn trees on and off, turn NPCs on and off"): `auto` is what the
+   * device's tier carries (src/tier.ts — an iPhone leaves trees and people out for memory); on and off override it.
+   * Each names the subsystems it switches (FEATURE_OFF, the game's `?without=` names).
+   */
+  trees: Feature
+  people: Feature
+  cars: Feature
+  details: Feature
+}
+export type Feature = 'auto' | 'on' | 'off'
+
+/** the game's subsystems (`?without=` names, game.ts `off`) each world setting switches */
+export const FEATURE_OFF: Record<'trees' | 'people' | 'details', string[]> = {
+  trees: ['trees', 'plants'],
+  people: ['crowd', 'beachcrowd'],
+  details: ['signs', 'furniture', 'fountains', 'flags'],
 }
 
 const KEY = 'cycledash.settings'
-const DEFAULTS: Settings = { units: 'auto', minimap: false, controls: 'auto', steering: 'auto', quality: 'auto', motion: true }
+const DEFAULTS: Settings = { units: 'auto', minimap: false, controls: 'auto', steering: 'auto', quality: 'auto', motion: true,
+  trees: 'auto', people: 'auto', cars: 'auto', details: 'auto' }
 
 let current: Settings | null = null
 const listeners = new Set<(s: Settings) => void>()
@@ -52,7 +70,7 @@ export function onSettings(f: (s: Settings) => void): void {
  */
 export interface SettingDef<K extends keyof Settings = keyof Settings> {
   key: K
-  group: 'Display' | 'Graphics' | 'Controls' | 'Sound' | 'Equipment'
+  group: 'Display' | 'World' | 'Graphics' | 'Controls' | 'Gameplay' | 'Sound' | 'Equipment'
   label: string
   choices: { value: Settings[K]; label: string }[]
   /** `ride`: takes effect when the ride next starts (the menu offers to restart) */
@@ -66,6 +84,9 @@ export const SETTING_DEFS: SettingDef[] = [
     choices: [{ value: 'auto', label: 'Local' }, { value: 'mph', label: 'mph' }, { value: 'kmh', label: 'km/h' }] }),
   def({ key: 'minimap', group: 'Display', label: 'Corner map', applies: 'now',
     choices: [{ value: false, label: 'Off' }, { value: true, label: 'On' }] }),
+  ...(['trees', 'people', 'cars', 'details'] as const).map((key) => def({ key, group: 'World', applies: 'ride',
+    label: { trees: 'Trees and plants', people: 'People on the pavements', cars: 'Traffic', details: 'Signs and street furniture' }[key],
+    choices: [{ value: 'auto', label: 'Auto' }, { value: 'on', label: 'On' }, { value: 'off', label: 'Off' }] })),
   def({ key: 'quality', group: 'Graphics', label: 'Quality', applies: 'ride',
     choices: [{ value: 'auto', label: 'Auto' }, { value: 'ultra', label: 'Low' }, { value: 'phone', label: 'Medium' }, { value: 'desktop', label: 'High' }] }),
   def({ key: 'motion', group: 'Graphics', label: 'Speed streaks', applies: 'ride',
