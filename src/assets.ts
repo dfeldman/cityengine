@@ -63,8 +63,8 @@ export function initAssets(): Promise<void> {
     // The avatar kit's base must be ABSOLUTE: it builds bodies in a worker, where './mh/' would resolve against
     // the worker's script and quietly fetch index.html.
     const localAvatars = () => {
-      setAssetBase(new URL('mh/', document.baseURI).href)
-      setStudioHdri(new URL(STUDIO_HDRI, document.baseURI).href)
+      setAssetBase(siblingUrl(AVATARKIT, 'public/mh/'))
+      setStudioHdri(siblingUrl(AVATARKIT, `public/${STUDIO_HDRI}`))
     }
     if (assetSource() === 'local') return localAvatars()
     const base = ASSET_BUCKET
@@ -116,6 +116,23 @@ function setAssetManifestOff(): void {
   setAssetManifest(null)
 }
 
+/*
+ * Local-assets mode (?assets=local, or no bucket): the shared libraries are read from the sibling repos'
+ * public/ folders through the dev server's /@fs/ route, at the paths vite.config.ts takes from AVATARKIT_DIR and
+ * ASSETKIT_DIR. Nothing is symlinked into this repo.
+ */
+const AVATARKIT = typeof __AVATARKIT_DIR__ === 'string' ? __AVATARKIT_DIR__ : ''
+const ASSETKIT = typeof __ASSETKIT_DIR__ === 'string' ? __ASSETKIT_DIR__ : ''
+const siblingUrl = (dir: string, rel: string): string => new URL(`/@fs${dir}/${rel}`, location.origin).href
+
+/** In local mode: where a path the game asks for lives in a sibling repo (trees, plants, rock models), or as given. */
+function localAsset(url: string): string {
+  const p = relPath(url)
+  if (!p || !ASSETKIT) return url
+  if (p.startsWith('trees/') || p.startsWith('plants/') || (p.startsWith('rocks/') && p.endsWith('.glb'))) return siblingUrl(ASSETKIT, `public/${p}`)
+  return url
+}
+
 /** The site-relative path of an absolute URL under the page, or null. */
 function relPath(url: string): string | null {
   const root = new URL('./', document.baseURI).href
@@ -124,7 +141,7 @@ function relPath(url: string): string | null {
 
 /** Where to fetch an asset from: its bucket URL when the bucket has it, else the URL as given. */
 export function resolveAsset(url: string): string {
-  if (!active) return url
+  if (!active) return localAsset(url)
   const p = relPath(url)
   return (p && toBucket.get(p)) || url
 }
@@ -141,7 +158,7 @@ export async function fetchAssetJson<T>(url: string): Promise<T> {
   const p = active ? relPath(url) : null
   const hit = p ? synthetic.get(p) : undefined
   if (hit) return structuredClone(hit) as T
-  const r = await fetch(url)
+  const r = await fetch(active ? url : localAsset(url))
   if (!r.ok) throw new Error(`${url}: HTTP ${r.status}`)
   return (await r.json()) as T
 }

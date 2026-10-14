@@ -25,8 +25,8 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-# assetkit (github.com/dfeldman/assetkit), checked out beside this repo, or wherever $ASSETKIT points
-TT = Path(os.environ.get('ASSETKIT') or Path(__file__).resolve().parents[3] / 'assetkit') / 'tools'
+# assetkit (github.com/dfeldman/assetkit), checked out beside this repo, or wherever $ASSETKIT_DIR points
+TT = Path(os.environ.get('ASSETKIT_DIR') or Path(__file__).resolve().parents[3] / 'assetkit') / 'tools'
 sys.path.insert(0, str(TT))
 
 from treekit import genkit  # noqa: E402

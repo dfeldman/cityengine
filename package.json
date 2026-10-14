@@ -20,7 +20,9 @@
     "audit:nonbuildings": "vite-node tools/nonbuildings.ts --",
     "osm:fetch": "node --experimental-strip-types tools/osm-fetch.ts",
     "osm:compare": "node --experimental-strip-types tools/osm-compare.ts",
-    "signs": "sh tools/signgen/build.sh"
+    "signs": "sh tools/signgen/build.sh",
+    "assets": "node ${ASSETMGR_DIR:-../assetmgr}/dist/cli.js restore",
+    "assets:upload": "node --experimental-strip-types tools/assetmgr-import.ts && node ${ASSETMGR_DIR:-../assetmgr}/dist/cli.js upload"
   },
   "dependencies": {
     "@babylonjs/core": "9.26.0",

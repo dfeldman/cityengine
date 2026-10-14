@@ -31,8 +31,8 @@ from pathlib import Path
 from PIL import Image, ImageChops, ImageDraw, ImageFilter
 
 HERE = Path(__file__).resolve().parent
-# assetkit (github.com/dfeldman/assetkit), checked out beside this repo, or wherever $ASSETKIT points
-TT = Path(os.environ.get('ASSETKIT') or Path(__file__).resolve().parents[3] / 'assetkit') / 'tools' / 'deciduousgen'
+# assetkit (github.com/dfeldman/assetkit), checked out beside this repo, or wherever $ASSETKIT_DIR points
+TT = Path(os.environ.get('ASSETKIT_DIR') or Path(__file__).resolve().parents[3] / 'assetkit') / 'tools' / 'deciduousgen'
 sys.path.insert(0, str(TT))
 import pages as tt  # noqa: E402  (Trail Trainer's compositor: components, cluster, graded, regrade)
 

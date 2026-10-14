@@ -29,10 +29,9 @@ for before-and-after sheets. The phone tier's texture caps match bucket files by
 they apply exactly as they did.
 
 After regenerating the street trees or the signs, record and upload them (assetmgr lives at
-github.com/dfeldman/assetmgr, beside this repo by default or at `$ASSETMGR`):
+github.com/dfeldman/assetmgr, `$ASSETMGR_DIR`, default the checkout beside this repo):
 
-    node --experimental-strip-types tools/assetmgr-import.ts
-    ASSETMGR_ENV_FILE=~/assetmgr/.env npx --prefix ../assetmgr assetmgr upload
+    ASSETMGR_ENV_FILE=~/assetmgr/.env npm run assets:upload   # records (tools/assetmgr-import.ts), then uploads
 
 A rebuilt file gets a new name (its hash changed): the import adds it to the same asset and marks the old file
 `isDeleted`, and `assetmgr delete --yes` later clears the old one from the bucket. Browse the bucket with
@@ -44,7 +43,11 @@ A rebuilt file gets a new name (its hash changed): the import adds it to the sam
 this repo (`npm install` in assetmgr builds its CLI), then put back the textures the game reads by fixed name
 (facades, palms, roads, rock surfaces) from the shared asset bucket, public and keyless:
 
-    npx --prefix ../assetmgr assetmgr restore     # or: node ../assetmgr/dist/cli.js restore
+    npm run assets            # assetmgr restore; assetmgr is found at $ASSETMGR_DIR, default ../assetmgr
+
+Sibling repos are found through environment variables, each defaulting to the checkout beside this one:
+`ASSETMGR_DIR`, `ASSETKIT_DIR`, `AVATARKIT_DIR`. Nothing is symlinked between repos. (The `file:` dependencies in
+package.json are the one exception npm imposes: they assume the siblings are beside this repo.)
 
 
 **1. The OSM extract** (needed by the bake; ~650 MB, cached, never committed)
@@ -83,8 +86,8 @@ then record and upload the result with `node --experimental-strip-types tools/as
 
     python3 tools/sftrees/library.py
 
-Blender-generated, from the species definitions in `tools/sftrees/species/`, with assetkit's treekit (the repo
-beside this one, or `$ASSETKIT`). The index (`tools/sftrees/library.json`) is committed, so the list of what exists
+Blender-generated, from the species definitions in `tools/sftrees/species/`, with assetkit's treekit (`$ASSETKIT_DIR`, default the
+repo beside this one). The index (`tools/sftrees/library.json`) is committed, so the list of what exists
 survives even when the meshes do not. The game itself reads all of these from the bucket (src/assets.ts), so
 this step is only for changing them; `public/trees` and `public/plants` are links into assetkit's generated
 libraries, used only with `?assets=local`.

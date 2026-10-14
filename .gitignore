@@ -68,3 +68,9 @@ public/rocks/textures/*.jpg
 public/og.jpg
 gondola-ride.png
 platform/screenshot.jpg
+
+# never symlinks into sibling repos: local-assets mode reads them through /@fs/ (src/assets.ts, vite.config.ts)
+public/mh
+public/env
+public/trees
+public/plants

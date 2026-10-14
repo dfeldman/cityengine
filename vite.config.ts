@@ -1,9 +1,19 @@
-import { resolve } from 'node:path'
+import { relative, resolve } from 'node:path'
 import { defineConfig } from 'vite'
+
+/*
+ * The sibling repos this one uses, from environment variables, defaulting to checkouts beside this one (no
+ * symlinks, no submodules): AVATARKIT_DIR (avatarkit) and ASSETKIT_DIR (assetkit). Only the dev server's
+ * local-assets mode (?assets=local) reads files from them by path; normally everything comes from the bucket.
+ */
+const sibling = (name: string, env: string): string => resolve(process.env[env] || resolve(import.meta.dirname, '..', name))
+const AVATARKIT_DIR = sibling('avatarkit', 'AVATARKIT_DIR')
+const ASSETKIT_DIR = sibling('assetkit', 'ASSETKIT_DIR')
 
 // base './' so a build runs from any folder; on Dandyhorse it becomes '/games/streetrunner/'.
 export default defineConfig({
   base: './',
+  define: { __AVATARKIT_DIR__: JSON.stringify(AVATARKIT_DIR), __ASSETKIT_DIR__: JSON.stringify(ASSETKIT_DIR) },
   /*
    * ONE BABYLON for the app and every linked kit (carkit, avatarkit). In a production build a `file:` kit's
    * `@babylonjs/core` import resolves to the kit's OWN copy, so carkit registered its shaders with a Babylon the
@@ -46,8 +56,9 @@ export default defineConfig({
      *    before it was diagnosed, and the render loops now carry a re-wait guard because of it.
      */
     hmr: process.env.HMR ? undefined : false,
-    // avatarkit is a file: dependency outside this app's folder, and its worker is fetched by path
-    fs: { allow: [resolve(import.meta.dirname, '..')] },
+    // avatarkit is a file: dependency outside this app's folder, and its worker is fetched by path; local-assets
+    // mode reads avatarkit's and assetkit's public/ through /@fs/
+    fs: { allow: [resolve(import.meta.dirname, '..'), AVATARKIT_DIR, ASSETKIT_DIR] },
   },
   preview: { port: 5201, strictPort: false },
   /*
@@ -59,11 +70,10 @@ export default defineConfig({
    * syntax error". Scanning every source file and naming the barrels means one bundle, made once.
    */
   optimizeDeps: {
-    entries: ['index.html', 'src/**/*.ts', '../avatarkit/src/**/*.ts'],
+    entries: ['index.html', 'src/**/*.ts', `${relative(import.meta.dirname, AVATARKIT_DIR)}/src/**/*.ts`],
     include: ['@babylonjs/core', '@babylonjs/loaders', '@babylonjs/loaders/glTF', 'earcut'],
   },
   // Babylon arrives through the @babylonjs/core barrel, as in the platform's other games
-  // public/mh and public/env are symlinks into the avatar kit's 300 MB of MakeHuman assets, which Vite would
-  // dereference and copy on build; they are relinked into dist/ afterwards instead.
+  // public/ is copied into dist/ by tools/link-assets.js, which skips what the asset bucket serves
   build: { chunkSizeWarningLimit: 7500, copyPublicDir: false },
 })
