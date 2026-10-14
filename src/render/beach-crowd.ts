@@ -13,7 +13,7 @@
  * Placed per tile, deterministically (a hash of the place), so a group is always where it was: a jittered grid over the
  * tile's sand, kept between the swash (16 m up from the waterline) and the dune grass (80 m).
  */
-import { Avatar, GeometryService, LOUNGE_CLIPS, beachChair, beachSpec, beachUmbrella, cloneSpec, loadClips, normalizeSpec, towel, type AvatarSpec, type PropGeometry } from '@dandyhorse/avatarkit'
+import { Avatar, GeometryService, LOUNGE_CLIPS, beachChair, beachSpec, beachUmbrella, cloneSpec, loadClips, normalizeSpec, towel, type AvatarSpec, type PropGeometry } from 'avatarkit'
 import { BakedVertexAnimationManager } from '@babylonjs/core/BakedVertexAnimation/bakedVertexAnimationManager'
 import { VertexAnimationBaker } from '@babylonjs/core/BakedVertexAnimation/vertexAnimationBaker'
 import { Matrix, Quaternion, Vector3 } from '@babylonjs/core/Maths/math.vector'

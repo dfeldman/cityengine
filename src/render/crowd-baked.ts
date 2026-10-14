@@ -25,7 +25,7 @@ import {
   normalizeSpec,
   randomSpec,
   type AvatarSpec,
-} from '@dandyhorse/avatarkit'
+} from 'avatarkit'
 import { BakedVertexAnimationManager } from '@babylonjs/core/BakedVertexAnimation/bakedVertexAnimationManager'
 import { VertexAnimationBaker } from '@babylonjs/core/BakedVertexAnimation/vertexAnimationBaker'
 import { Matrix, Quaternion, Vector3 } from '@babylonjs/core/Maths/math.vector'

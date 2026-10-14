@@ -1,7 +1,7 @@
 /**
  * The player, as the avatar kit's body on the avatar kit's bike.
  *
- * Not a hand-built one. `@dandyhorse/avatarkit` is the platform's own human — MakeHuman geometry, proper
+ * Not a hand-built one. `avatarkit` is the platform's own human — MakeHuman geometry, proper
  * skin and clothes, a cycling and a running gait — and it is what Trail Trainer and the rest of the platform
  * put on screen. A city game inventing its own box person would be both worse and inconsistent with every
  * other game the rider has played. The strangers on the pavement stay cheap (there are two hundred of them);
@@ -26,7 +26,7 @@ import {
   cloneSpec,
   type AvatarSpec,
   type Preset,
-} from '@dandyhorse/avatarkit'
+} from 'avatarkit'
 import { initAssets } from '../assets.ts'
 
 /**

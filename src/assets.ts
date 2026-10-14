@@ -18,7 +18,7 @@
  *
  * If the bucket can't be read, the game falls back to `public/` and says so in the console.
  */
-import { assetManifest, loadFromBucket, setAssetManifest, setAssetBase, setStudioHdri, STUDIO_HDRI } from '@dandyhorse/avatarkit'
+import { assetManifest, loadFromBucket, setAssetManifest, setAssetBase, setStudioHdri, STUDIO_HDRI } from 'avatarkit'
 
 /** The shared asset bucket's public URL. */
 export const ASSET_BUCKET = 'https://pub-32f6f3f21c18414cbeaf4bf0ac34ebe5.r2.dev'

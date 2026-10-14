@@ -1,7 +1,7 @@
 /**
  * `tsc --noEmit`, reporting only this project's own errors.
  *
- * `@dandyhorse/avatarkit` is a `file:` dependency, so TypeScript follows imports straight into its source
+ * `avatarkit` is a `file:` dependency, so TypeScript follows imports straight into its source
  * and reports its lint there as if it were ours. It is not ours to fix from here and it must not fail this
  * build; anything under our own `src/`, `tools/` or `tests/` still does.
  */

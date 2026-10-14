@@ -46,7 +46,7 @@ export default defineConfig({
      *    before it was diagnosed, and the render loops now carry a re-wait guard because of it.
      */
     hmr: process.env.HMR ? undefined : false,
-    // @dandyhorse/avatarkit is a file: dependency outside this app's folder, and its worker is fetched by path
+    // avatarkit is a file: dependency outside this app's folder, and its worker is fetched by path
     fs: { allow: [resolve(import.meta.dirname, '..')] },
   },
   preview: { port: 5201, strictPort: false },

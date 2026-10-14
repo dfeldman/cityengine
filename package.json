@@ -25,8 +25,8 @@
   "dependencies": {
     "@babylonjs/core": "9.26.0",
     "@babylonjs/loaders": "^9.26.0",
-    "@dandyhorse/avatarkit": "file:../avatarkit",
-    "@dandyhorse/carkit": "file:../assetkit/carkit",
+    "avatarkit": "file:../avatarkit",
+    "carkit": "file:../assetkit/carkit",
     "@dandyhorse/gamekit": "file:../dandyhorse/libs/gamekit",
     "@types/earcut": "^3.0.0",
     "@types/pngjs": "^6.0.5",

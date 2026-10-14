@@ -10,7 +10,7 @@
  * Trains, streetcars and cable cars are not carkit's: render/life.ts and rolling-stock.ts still draw those.
  */
 import type { Scene } from '@babylonjs/core/scene'
-import { Fleet, randomSpec, slopePose, steerForCurvature, type Archetype, type Car, type Livery } from '@dandyhorse/carkit'
+import { Fleet, randomSpec, slopePose, steerForCurvature, type Archetype, type Car, type Livery } from 'carkit'
 import { DAYLIGHT, NIGHT } from './facade-material.ts'
 import type { Vehicle } from '../sim/traffic.ts'
 
