@@ -146,6 +146,27 @@ export class Rider {
     for (const m of this.meshes()) m.renderingGroupId = 3
   }
 
+  /**
+   * And drawn AFTER the city, within that group: last in the scene's mesh list, which is the order opaque meshes are
+   * drawn in. The skin's subsurface scattering is a screen-space pass over the pixels the pre-pass marked as skin, and
+   * the city's own shaders do not write that mark — so a building drawn after the body, in front of it, left the
+   * body's mark under the wall, and the skin was painted over the wall: a pale, bare rider showing through a building
+   * the rider had clipped into, clothes and all gone (owner, 2026-10-14; reproduced on the iPhone tier). Drawn last,
+   * the body behind a wall fails the depth test and marks nothing. Tiles stream in all the time and are appended
+   * after the rider, so this is checked every frame and costs nothing while the rider is already last.
+   */
+  private drawLast(): void {
+    const list = this.scene.meshes
+    const mine = this.meshes()
+    if (!mine.length || mine.includes(list[list.length - 1] as AbstractMesh)) return
+    const own = new Set<unknown>(mine)
+    const rest = list.filter((m) => !own.has(m))
+    const ours = list.filter((m) => own.has(m))
+    if (!ours.length) return
+    list.length = 0
+    list.push(...rest, ...ours)
+  }
+
   private look: { skin: string; hair: string; top: string; bottom: string } | null = null
 
   /**
@@ -244,6 +265,7 @@ export class Rider {
       this.claimed = this.meshes().length
       this.claimRenderingGroup()
     }
+    this.drawLast()
 
     if (this.riding) {
       // `crank` rather than a cadence: the animator follows the angle the ride model integrated, so the legs
