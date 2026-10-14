@@ -71,6 +71,17 @@ export function authoredWays(region: string, origin: { lat: number; lon: number 
   const nodeAt = new Map<number, { lat: number; lon: number }>()
   for (const w of osm) w.nodes.forEach((n, i) => { if (w.geometry?.[i]) nodeAt.set(n, w.geometry[i]) })
   /*
+   * The area this bake covers, from the OSM it was given. A region's authored ways are drawn for the whole region;
+   * a bake of part of it (a test area such as sausalito-mini) leaves out the ones that are not inside it, instead
+   * of failing to find the bridge deck they join (the bake crashed on exactly that, 2026-10-14).
+   */
+  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+  for (const at of nodeAt.values()) {
+    const q = proj.toLocal(at)
+    x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z)
+  }
+  const inside = (q: { x: number; z: number }): boolean => q.x >= x0 && q.x <= x1 && q.z >= z0 && q.z <= z1
+  /*
    * The nearest point ON a way of this kind and layer — and a node put in the way there. OSM maps the Bay Bridge's
    * three-kilometre spans with three nodes each (the bake densifies them later), so there is no junction to join
    * a way onto in the middle of a span: one is made, in the OSM way itself, before the bake splits ways at junctions.
@@ -110,6 +121,10 @@ export function authoredWays(region: string, origin: { lat: number; lon: number 
   if (!pl) continue
   for (const w of group.ways) {
     const world = w.points.map((q) => ({ ...toWorld(pl, q), y: pl.baseY + q.y * pl.scale }))
+    if (!world.every(inside)) {
+      console.log(`  authored way ${w.name}: outside this bake, left out`)
+      continue
+    }
     const end = (e: AuthoredEnd, q: { x: number; z: number }): number => {
       if ('node' in e) return e.node
       if ('onto' in e) {
