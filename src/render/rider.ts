@@ -226,7 +226,10 @@ export class Rider {
     // Enforced every frame, not once at build. The kit re-asserts it as materials are created — clothes and
     // hair arrive over several seconds — so setting it once left the city washed out again a moment later.
     // Two property writes a frame is nothing; a city that is a third too bright is not.
+    // The skin's subsurface pre-pass would otherwise turn it back on before every camera pass (its composition
+    // step), and each flip re-dirties every material in the scene: 360 ms a frame with AO off (2026-10-14).
     const ip = this.scene.imageProcessingConfiguration
+    if (this.scene.prePassRenderer) this.scene.prePassRenderer.disableGammaTransform = true
     if (ip.applyByPostProcess || ip.toneMappingEnabled) {
       ip.applyByPostProcess = false
       ip.toneMappingEnabled = false
