@@ -738,7 +738,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   city.addLayer(boatsLayer(scene))
   // …and the boats under way on it (render/river-traffic.ts)
   let river: RiverTraffic | null = null
-  if (!off.has('life')) void riverLine(document.baseURI, opts.city).then((pts) => { if (pts) river = new RiverTraffic(scene, pts, (x, z) => city.waterLevelAt(x, z),
+  // (a river line is a region with a river fleet — Paris and the Seine; San Francisco's boats run the bay's routes, below,
+  // and asking it for a river.json was a 404 on every start)
+  if (!off.has('life') && regionKit(pkg.region).fleet) void riverLine(document.baseURI, opts.city).then((pts) => { if (pts) river = new RiverTraffic(scene, pts, (x, z) => city.waterLevelAt(x, z),
     regionKit(pkg.region).fleet) })
   // …and on open water, the region's routes: San Francisco's ferries and sailboats (render/sf/boats.ts)
   const bay: RiverTraffic[] = []
