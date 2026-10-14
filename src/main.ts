@@ -29,6 +29,9 @@ const style = document.createElement('style')
 style.textContent = HUD_CSS + MINIMAP_CSS + THEME_CSS + LOADING_CSS + WELCOME_CSS + CARD_CSS + DELIVERY_CSS + TOUCH_CSS + COMPACT_CSS
 document.head.appendChild(style)
 
+// iOS Safari ignores `user-scalable=no` (index.html): a pinch anywhere zoomed the whole game, HUD and all
+for (const ev of ['gesturestart', 'gesturechange']) document.addEventListener(ev, (e) => e.preventDefault(), { passive: false })
+
 // the shared asset bucket's indexes (trees, plants, statues, this game's own): before anything loads a model
 await initAssets()
 

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <title>Cycle Dash</title>
     <!-- the share card (Open Graph / Twitter): public/og.jpg, 1200×630, the chase camera over Lombard Street -->
     <meta property="og:type" content="website" />
@@ -19,6 +19,10 @@
     <style>
       :root { color-scheme: dark }
       html, body { margin: 0; height: 100%; background: #14161a; overflow: hidden }
+      /* a game, not a page: no text selection, no long-press callout, no double-tap zoom (pinch: main.ts) */
+      html, body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent; touch-action: manipulation; overscroll-behavior: none }
+      input, textarea, [contenteditable] { -webkit-user-select: text; user-select: text }
       #view { width: 100vw; height: 100vh; display: block; touch-action: none }
       #label {
         position: fixed; left: 16px; bottom: 14px; font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;

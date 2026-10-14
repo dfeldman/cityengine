@@ -21,7 +21,7 @@ const ctx = await browser.newContext(ctxOpts)
 const page = await ctx.newPage()
 const errs = []
 page.on('pageerror', (e) => errs.push(String(e).slice(0, 200)))
-const url = `${base}/?city=${arg('city', 'san-francisco')}&at=${arg('at', '37.788,-122.4075')}${flag('hud') ? '' : '&freeze=1'}${arg('q') ? '&' + arg('q') : ''}`
+const url = `${base}/?city=${arg('city', 'san-francisco')}&at=${arg('at', '37.788,-122.4075')}${flag('hud') ? '' : '&freeze=1'}&mem=1${arg('q') ? '&' + arg('q') : ''}`
 await page.goto(url)
 await page.waitForFunction('window.gameReady === true', null, { timeout: 180_000 })
 await page.waitForTimeout(Number(arg('settle', '15000')))
@@ -57,5 +57,6 @@ const measure = `async (n, scale) => {
 }`
 const results = []
 for (const sc of scales.length ? scales : [0]) results.push(await page.evaluate(`(${measure})(${frames}, ${sc})`))
-console.log(JSON.stringify({ browser: kind, mobile: flag('mobile'), q: arg('q') || '(default)', at: arg('at', '37.788,-122.4075'), results, errors: errs.slice(0, 3) }))
+const mem = await page.evaluate(() => [...document.querySelectorAll('div')].map((d) => d.textContent).find((t) => /GPU ~/.test(t ?? '')) ?? '')
+console.log(JSON.stringify({ mem: mem.replace(/\n/g, ' | '), browser: kind, mobile: flag('mobile'), q: arg('q') || '(default)', at: arg('at', '37.788,-122.4075'), results, errors: errs.slice(0, 3) }))
 await browser.close()

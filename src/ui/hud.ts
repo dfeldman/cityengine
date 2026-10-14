@@ -53,7 +53,7 @@ export class Hud {
     this.gpsEl = root.querySelector('.sr-gps')!
     this.speedoEl = document.createElement('div')
     this.speedoEl.className = 'sr-speedo'
-    this.speedoEl.innerHTML = '<b>0</b><i>km/h</i><span></span>'
+    this.speedoEl.innerHTML = '<b>0</b><i>km/h</i><span></span><em></em>'
     document.body.appendChild(this.speedoEl)
     this.transitEl = root.querySelector('.sr-transit')!
     // (tappable: on a phone the transit line is the button — board, get off — owner, 2026-10-03)
@@ -200,13 +200,15 @@ export class Hud {
     // the speedometer: the speed, its unit, and how far the ride has come
     const v = this.imperial ? stats.speed * 2.23694 : stats.speed * 3.6
     const far = this.imperial ? `${(stats.distance / 1609.344).toFixed(2)} mi` : `${(stats.distance / 1000).toFixed(2)} km`
-    const [num, unit, dist] = this.speedoEl.children as unknown as HTMLElement[]
+    const [num, unit, dist, watts] = this.speedoEl.children as unknown as HTMLElement[]
     const vs = v < 10 ? v.toFixed(1) : String(Math.round(v))
     if (num.textContent !== vs) num.textContent = vs
     const us = this.imperial ? 'mph' : 'km/h'
     if (unit.textContent !== us) unit.textContent = us
-    const ds = stats.device === 'bike' && stats.power !== null ? `${far} · ${Math.round(stats.power)} W` : far
-    if (dist.textContent !== ds) dist.textContent = ds
+    if (dist.textContent !== far) dist.textContent = far
+    // (its own element: a phone's one-line speedometer shows the watts and not the distance)
+    const ws = stats.device === 'bike' && stats.power !== null ? `${Math.round(stats.power)} W` : ''
+    if (watts.textContent !== ws) watts.textContent = ws
 
     this.turnsEl.innerHTML = (['left', 'straight', 'right'] as Turn[]).map((t) => {
       const offered = j?.turns.has(t) ?? false
@@ -300,10 +302,19 @@ export const HUD_CSS = `
   box-shadow: var(--shadow); backdrop-filter: blur(6px) }
 .sr-speedo b { display: block; font: 800 44px/1 var(--font); font-variant-numeric: tabular-nums; letter-spacing: -1px }
 .sr-speedo i { display: block; font: 700 12px/1.2 var(--font); font-style: normal; opacity: .7; letter-spacing: .08em; text-transform: uppercase }
-.sr-speedo span { display: block; margin-top: 4px; font: 700 15px/1.2 var(--font); font-variant-numeric: tabular-nums }
-.sr-compact .sr-speedo { right: 10px; bottom: auto; top: 66px; min-width: 84px; padding: 6px 10px 7px }
-.sr-compact .sr-speedo b { font-size: 32px }
+.sr-speedo span, .sr-speedo em { display: inline-block; margin-top: 4px; font: 700 15px/1.2 var(--font); font-style: normal;
+  font-variant-numeric: tabular-nums }
+.sr-speedo em:not(:empty)::before { content: ' · ' }
+/*
+ * A phone: one line, top centre, in the band between the 🗺 and ⏸ buttons (owner, 2026-10-14, a screenshot of the
+ * job line running under the speedometer): the speed and the watts; the distance is left out.
+ */
+.sr-compact .sr-speedo { right: auto; left: 50%; transform: translateX(-50%); bottom: auto; top: 14px; min-width: 0;
+  padding: 6px 14px; display: flex; align-items: baseline; gap: 5px; white-space: nowrap }
+.sr-compact .sr-speedo b { font-size: 28px; letter-spacing: -.5px }
+.sr-compact .sr-speedo i { font-size: 11px }
+.sr-compact .sr-speedo span { display: none }
+.sr-compact .sr-speedo em { margin: 0; font-size: 14px }
 /* stopped to look round, a phone has no room for it over the paused note */
 .sr-compact.sr-looking .sr-speedo { display: none }
-.sr-compact .sr-speedo span { font-size: 13px }
 `

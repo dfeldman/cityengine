@@ -71,6 +71,11 @@ export class LocalControls implements Controls {
     addEventListener('keyup', (e) => this.key(e, false))
     // a key released while the window had no focus never sends its keyup: forget them all
     addEventListener('blur', () => this.down.clear())
+    // the touch screen's effort slider sets the watts outright (ui/touch.ts)
+    addEventListener('sr-watts', (e) => {
+      const w = Number((e as CustomEvent).detail)
+      if (Number.isFinite(w)) this.watts = Math.max(REVERSE_WATTS, Math.min(700, w))
+    })
   }
 
   steerAxis(): -1 | 0 | 1 {

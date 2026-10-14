@@ -37,10 +37,10 @@ await page.addInitScript(() => {
   window.__long = []
   try { new PerformanceObserver((l) => { for (const e of l.getEntries()) window.__long.push([Math.round(e.startTime), Math.round(e.duration)]) }).observe({ type: 'longtask', buffered: true }) } catch {}
 })
-if (process.argv.includes('--warm')) { await page.goto(`${base}/?city=${city}`); await page.waitForFunction('window.__marks && window.__marks.firstFrame !== undefined', null, { timeout: 300_000 }); await page.waitForTimeout(30000); reqs.clear(); await page.evaluate(() => { window.__long = [] }) }
+if (process.argv.includes('--warm')) { await page.goto(`${base}/${arg("page", "")}?city=${city}`); await page.waitForFunction('window.__marks && window.__marks.firstFrame !== undefined', null, { timeout: 300_000 }); await page.waitForTimeout(30000); reqs.clear(); await page.evaluate(() => { window.__long = [] }) }
 const t0 = Date.now()
 const wallStart = await cdp.send('Runtime.evaluate', { expression: 'Date.now()' }).catch(() => null)
-await page.goto(`${base}/?city=${city}${arg('q') ? '&' + arg('q') : ''}`, { waitUntil: 'commit' })
+await page.goto(`${base}/${arg("page", "")}?city=${city}${arg('q') ? '&' + arg('q') : ''}`, { waitUntil: 'commit' })
 let firstFrame = null
 try {
   await page.waitForFunction('window.__marks && window.__marks.firstFrame !== undefined', null, { timeout: 300_000 })

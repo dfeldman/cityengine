@@ -206,7 +206,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   setGroundStride(tier.groundStride)
   setKeepGeometry(tier.keepGeometry)
   if (!tier.ao) off.add('ao')
-  for (const w of tier.without) off.add(w)
+  // `?with=grade,plants` puts back what the tier leaves out, to measure it on a device without a code change
+  const back = new Set((new URLSearchParams(location.search).get('with') ?? '').split(',').filter(Boolean))
+  for (const w of tier.without) if (!back.has(w)) off.add(w)
   plog('tier', opts.tier ?? 'desktop')
   /*
    * Load-stage timings (tools/measure-load.ts): each mark is the milliseconds the stage since the previous one

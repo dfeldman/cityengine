@@ -64,11 +64,13 @@ export const TIERS: Record<Tier, TierSettings> = {
    * streets, the buildings of the rider's own tile in full, simple massing two tiles out, the landmarks' skyline,
    * the cars — no plants, no street trees, no crowd, no furniture, no signs; the canvas at 1x, the textures small,
    * the ground meshes on a 40 m grid. Substantial sacrifices, by design: a game that runs (BUGS.md #243).
+   * The grade pass came back 2026-10-14 (owner: "aliasing on mobile is really bad"): it carries the FXAA, the only
+   * antialiasing there is once anything draws off-screen, for ~10 MB and ~0.7 ms (docs/PERFORMANCE.md).
    */
   ultra: { view: 0, mid: 2, maxDpr: 1, ao: false, textScale: 0.35,
     textureCaps: [{ match: /\/(sftrees|trees|plants|palms|mh)\//, max: 256 }, { match: /\/facades\//, max: 1024 }], bodies: 0,
     keepGeometry: false, recoverContext: false, memoryBudget: 380, minMid: 1,
-    without: ['plants', 'trees', 'crowd', 'furniture', 'signs', 'fountains', 'courts', 'grade', 'rain'], groundStride: 2,
+    without: ['plants', 'trees', 'crowd', 'furniture', 'signs', 'fountains', 'courts', 'rain'], groundStride: 2,
     // measured: the production build's live heap ~115 MB on this tier; the dev server's ~170 (its module source)
     heapBase: 150 },
   phone: { view: 1, mid: 5, maxDpr: 1.5, ao: false, textScale: 0.5,
