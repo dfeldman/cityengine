@@ -18,7 +18,6 @@ export class Hud {
   private readonly root: HTMLElement
   private readonly turnsEl: HTMLElement
   private readonly nextEl: HTMLElement
-  private readonly statsEl: HTMLElement
   private readonly gpsEl: HTMLElement
   /**
    * THE SPEEDOMETER (owner, 2026-10-04: "there is no display of speed and miles traveled (which are only small on the
@@ -38,18 +37,15 @@ export class Hud {
       <div class="sr-transit" hidden></div>
       <div class="sr-action" hidden></div>
       <div class="sr-action sr-observe" hidden></div>
-      <button class="sr-back" title="Turn around here (U)">↩</button>
-      <div class="sr-turns"></div>
-      <div class="sr-exits" hidden></div>
       <div class="sr-next"></div>
-      <div class="sr-stats"></div>`
+      <div class="sr-exits" hidden></div>
+      <div class="sr-steer"><button class="sr-back" title="Turn around here (U)">↩</button><div class="sr-turns"></div></div>`
     // its own element, outside the arrows, which are rewritten every frame and would swallow the click
     const back = root.querySelector<HTMLButtonElement>('.sr-back')!
     if (onBack) back.addEventListener('click', () => { onBack(); back.blur() })
     else back.remove()
     this.turnsEl = root.querySelector('.sr-turns')!
     this.nextEl = root.querySelector('.sr-next')!
-    this.statsEl = root.querySelector('.sr-stats')!
     this.gpsEl = root.querySelector('.sr-gps')!
     this.speedoEl = document.createElement('div')
     this.speedoEl.className = 'sr-speedo'
@@ -173,7 +169,6 @@ export class Hud {
     if (text !== null && this.gpsEl.textContent !== text) this.gpsEl.textContent = text
   }
 
-  private landmark: string | null = null
   private noteText = ''
   private noteUntil = 0
 
@@ -183,20 +178,10 @@ export class Hud {
     this.noteUntil = performance.now() + 1200
   }
 
-  /** A landmark the rider is passing, named on the second line when no junction needs it (item K). */
-  landmarkNear(name: string | null, side: 'left' | 'right' = 'right'): void {
-    this.landmark = name ? (side === 'left' ? `← ${name}` : `${name} →`) : null
-  }
-
   update(j: Junction | null, requested: Turn, committed: boolean, stats: {
     speed: number; power: number | null; distance: number; street?: string; device: string
   }): void {
-    const kmh = (stats.speed * 3.6).toFixed(1)
-    const power = stats.power === null ? '—' : `${Math.round(stats.power)} W`
-    // a runner thinks in pace, minutes a kilometre; a rider in watts
-    const pace = stats.speed > 0.5 ? (() => { const t = Math.round(1000 / stats.speed); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')} /km` })() : '—:— /km'
-    this.statsEl.textContent =
-      `${kmh} km/h   ${stats.device === 'bike' ? power : pace}   ${(stats.distance / 1000).toFixed(2)} km`
+    // (the old stats line — km/h, watts, km, always metric — said again what the speedometer says: gone, docs/HUD.md)
     // the speedometer: the speed, its unit, and how far the ride has come
     const v = this.imperial ? stats.speed * 2.23694 : stats.speed * 3.6
     const far = this.imperial ? `${(stats.distance / 1609.344).toFixed(2)} mi` : `${(stats.distance / 1000).toFixed(2)} km`
@@ -221,11 +206,13 @@ export class Hud {
       this.nextEl.textContent = this.noteText
       return
     }
-    // nothing to announce: no junction, or only the street going on under another name — or it is still a
-    // way off, in which case a landmark being passed is the more useful thing to say
-    if (!j || j.passThrough || (this.landmark && j.ahead > 60 && !committed)) {
-      this.nextEl.textContent = this.landmark ?? ''
-      this.root.classList.remove('committed')
+    /*
+     * No street names and no distances to the next junction (owner, 2026-10-14: "user neither knows nor cares about
+     * street names"): the arrows say what the junction offers. The line is for notes, and for a dead end ahead.
+     */
+    if (!j || j.passThrough || !j.deadEnd) {
+      this.nextEl.textContent = ''
+      this.root.classList.toggle('committed', !!j && !j.passThrough && committed)
       return
     }
     if (j.deadEnd) {
@@ -236,17 +223,14 @@ export class Hud {
       this.root.classList.add('committed')
       return
     }
-    const where = j.names[requested] ?? j.names.straight
-    this.nextEl.textContent = committed
-      ? `${ARROW[requested]} ${where ?? 'ahead'}`
-      : `${Math.round(j.ahead)} m${where ? ` · ${where}` : ''}`
-    this.root.classList.toggle('committed', committed)
   }
 }
 
 export const HUD_CSS = `
+/* the corner map is a setting, off by default (Menu → Settings → Display; docs/HUD.md); the big map is always there */
+html:not(.sr-minimap) #minimap:not(.large) { display: none }
 /* couch mode's energy bar (sim/energy.ts), bottom left above the attribution: lime, amber when low, red when spent */
-.sr-energy { position: fixed; left: 16px; bottom: 72px; z-index: 6; display: flex; align-items: center; gap: 8px;
+.sr-energy { position: fixed; left: 16px; bottom: 18px; z-index: 6; display: flex; align-items: center; gap: 8px;
   font: 700 12px/1 var(--font); color: var(--text); letter-spacing: .06em; text-transform: uppercase;
   background: var(--panel); border: 1px solid var(--border); border-radius: 999px; padding: 7px 12px; box-shadow: var(--shadow);
   pointer-events: none }
@@ -260,7 +244,7 @@ export const HUD_CSS = `
  * They are both pinned to the same edge, so the stats line and the ODbL credit were drawing on top of one
  * another in every screenshot. The padding here reserves the label's band rather than the two guessing.
  */
-#hud { position: fixed; left: 0; right: 0; bottom: 0; padding: 18px 22px 46px;
+#hud { position: fixed; left: 0; right: 0; bottom: 0; padding: 18px 22px 16px;
   font: 600 15px/1.4 var(--font); color: var(--text); font-variant-numeric: tabular-nums;
   text-shadow: 0 1px 4px rgba(0,0,0,.8); pointer-events: none; display: flex;
   flex-direction: column; align-items: center; gap: 4px; }
@@ -269,12 +253,14 @@ export const HUD_CSS = `
 #hud .sr-arrow.on { opacity: .62 }
 #hud .sr-arrow.picked { opacity: 1; color: var(--c-amber); transform: translateY(-2px) }
 #hud .sr-arrow.locked { color: var(--c-lime) }
-#hud .sr-back { position: absolute; left: calc(50% - 150px); top: 18px; pointer-events: auto; cursor: pointer;
+#hud .sr-steer { display: flex; align-items: center; gap: 14px }
+#hud .sr-back { pointer-events: auto; cursor: pointer; touch-action: manipulation;
   font: 26px/1 var(--font); color: var(--text); opacity: .7;
   background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px 11px;
   text-shadow: inherit; transition: opacity .12s }
 #hud .sr-back:hover { opacity: 1 }
-#hud .sr-next { font-size: 15px; opacity: .9; min-height: 1.4em }
+#hud .sr-next { font-size: 15px; opacity: .9 }
+#hud .sr-next:empty { display: none }
 #hud .sr-exits { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 760px; pointer-events: auto }
 /* (display: flex beats the hidden attribute: a star junction's buttons stayed on screen long after it, all the way
    through the Stockton Tunnel, 2026-09-29) */
@@ -284,7 +270,6 @@ export const HUD_CSS = `
 #hud .sr-exits button.picked { background: var(--c-amber); color: var(--on-amber); border-color: var(--c-amber) }
 #hud .sr-exit-arrow { display: inline-block; font-size: 15px }
 #hud .sr-gps { font: 700 15px/1.3 var(--font); color: var(--on-page); background: var(--page); border-radius: 999px; padding: 6px 16px; text-shadow: none; box-shadow: var(--shadow) }
-#hud .sr-gps:not([hidden]) + .sr-back { top: 50px }
 #hud .sr-transit { align-self: center; font: 700 15px/1.3 var(--font); color: var(--on-amber); background: var(--c-amber);
   border-radius: 999px; padding: 6px 16px; text-shadow: none; box-shadow: var(--shadow); cursor: pointer; pointer-events: auto }
 #hud .sr-action { align-self: center; font: 700 15px/1.3 var(--font); color: var(--text); background: var(--panel);
@@ -296,25 +281,24 @@ export const HUD_CSS = `
   font: 800 24px/1.25 var(--font); box-shadow: var(--shadow); backdrop-filter: blur(8px) }
 .sr-banner.on { opacity: 1; transform: translate(-50%, 0) }
 .sr-banner-sub { font: 600 15px/1.4 var(--font); color: var(--muted); margin-top: 4px }
-#hud .sr-stats { font-size: 13px; opacity: .72; letter-spacing: .4px }
-.sr-speedo { position: fixed; right: 18px; bottom: 24px; z-index: 6; pointer-events: none; min-width: 112px; text-align: center;
+.sr-speedo { position: fixed; z-index: 6; pointer-events: none; text-align: center;
   color: var(--text); background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 14px 9px;
   box-shadow: var(--shadow); backdrop-filter: blur(6px) }
-.sr-speedo b { display: block; font: 800 44px/1 var(--font); font-variant-numeric: tabular-nums; letter-spacing: -1px }
-.sr-speedo i { display: block; font: 700 12px/1.2 var(--font); font-style: normal; opacity: .7; letter-spacing: .08em; text-transform: uppercase }
-.sr-speedo span, .sr-speedo em { display: inline-block; margin-top: 4px; font: 700 15px/1.2 var(--font); font-style: normal;
-  font-variant-numeric: tabular-nums }
-.sr-speedo em:not(:empty)::before { content: ' · ' }
+.sr-speedo b { font: 800 36px/1 var(--font); font-variant-numeric: tabular-nums; letter-spacing: -1px }
+.sr-speedo i { font: 700 12px/1.2 var(--font); font-style: normal; opacity: .7; letter-spacing: .08em; text-transform: uppercase }
+.sr-speedo em { font: 700 16px/1.2 var(--font); font-style: normal; font-variant-numeric: tabular-nums }
+.sr-speedo em:not(:empty)::before { content: '· ' }
 /*
- * A phone: one line, top centre, in the band between the 🗺 and ⏸ buttons (owner, 2026-10-14, a screenshot of the
- * job line running under the speedometer): the speed and the watts; the distance is left out.
+ * One line, top centre, on every screen (docs/HUD.md; owner, 2026-10-14, a phone screenshot of the job line running
+ * under the speedometer): the speed and the watts. The distance is Menu → Session.
  */
-.sr-compact .sr-speedo { right: auto; left: 50%; transform: translateX(-50%); bottom: auto; top: 14px; min-width: 0;
-  padding: 6px 14px; display: flex; align-items: baseline; gap: 5px; white-space: nowrap }
+.sr-speedo { left: 50%; transform: translateX(-50%); top: 14px; padding: 6px 16px;
+  display: flex; align-items: baseline; gap: 6px; white-space: nowrap }
+.sr-speedo span { display: none }
+.sr-compact .sr-speedo { padding: 6px 14px }
 .sr-compact .sr-speedo b { font-size: 28px; letter-spacing: -.5px }
 .sr-compact .sr-speedo i { font-size: 11px }
-.sr-compact .sr-speedo span { display: none }
-.sr-compact .sr-speedo em { margin: 0; font-size: 14px }
+.sr-compact .sr-speedo em { font-size: 14px }
 /* stopped to look round, a phone has no room for it over the paused note */
 .sr-compact.sr-looking .sr-speedo { display: none }
 `

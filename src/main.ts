@@ -20,13 +20,15 @@ import { CARD_CSS } from './ui/landmark-card.ts'
 import { detectTier } from './tier.ts'
 import { initAssets } from './assets.ts'
 import { chooseMode, MODES, type GameMode } from './modes.ts'
-import { COMPACT_CSS, TOUCH_CSS, compactScreen, touchControls, wantsTouch } from './ui/touch.ts'
+import { COMPACT_CSS, TOUCH_CSS, compactScreen, showTouchWhenUsed, touchControls } from './ui/touch.ts'
+import { MENU_CSS } from './ui/menu.ts'
+import { settings } from './ui/settings.ts'
 
 const params = new URLSearchParams(location.search)
 const canvas = document.getElementById('view') as HTMLCanvasElement
 
 const style = document.createElement('style')
-style.textContent = HUD_CSS + MINIMAP_CSS + THEME_CSS + LOADING_CSS + WELCOME_CSS + CARD_CSS + DELIVERY_CSS + TOUCH_CSS + COMPACT_CSS
+style.textContent = HUD_CSS + MINIMAP_CSS + THEME_CSS + LOADING_CSS + WELCOME_CSS + CARD_CSS + DELIVERY_CSS + TOUCH_CSS + COMPACT_CSS + MENU_CSS
 document.head.appendChild(style)
 
 // iOS Safari ignores `user-scalable=no` (index.html): a pinch anywhere zoomed the whole game, HUD and all
@@ -171,8 +173,11 @@ if (params.get('model')) {
     box.classList.add('sr-mode-welcome')
     ;(window as unknown as { __modeSwitch?: HTMLElement }).__modeSwitch = box
   }
-  // the touch buttons on a phone or tablet (ui/touch.ts; `?touch=1|0`)
-  if (wantsTouch(params.get('touch'))) touchControls({ trainer: mode === 'trainer' })
+  // the touch buttons (ui/touch.ts): made everywhere, shown while touch is the way in (`?touch=1|0` decides)
+  if (params.get('touch') !== '0') {
+    touchControls({ trainer: mode === 'trainer' })
+    showTouchWhenUsed(params.get('touch'))
+  }
   document.documentElement.classList.toggle('sr-compact', compactScreen(params.get('compact')))
   const { game } = await import('./game.ts')
   void game(canvas, {
@@ -200,9 +205,10 @@ if (params.get('model')) {
     // ?route=manual: deliveries are not routed for you (the default routes them, and takes the turns)
     route: params.get('route') === 'manual' ? 'manual' : 'auto',
     // ?tier=phone|desktop: how much the device can hold (src/tier.ts); phones and tablets are guessed
-    tier: detectTier(params.get('tier')),
+    // (a URL parameter wins; then Menu → Settings, ui/settings.ts; then the device and the mode)
+    tier: detectTier(params.get('tier') ?? (settings().quality === 'auto' ? null : settings().quality)),
     input: params.get('input') === 'slow' || params.get('input') === 'fast' ? params.get('input') as 'fast' | 'slow'
-      : MODES[mode].input,
+      : settings().steering === 'held' ? 'fast' : settings().steering === 'junctions' ? 'slow' : MODES[mode].input,
     // couch, trainer or trainer debug (src/modes.ts); `?speedup=` overrides the mode's
     mode,
     speedup: params.get('speedup') ? Number(params.get('speedup')) : undefined,

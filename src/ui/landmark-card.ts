@@ -9,7 +9,7 @@
 export interface LandmarkInfo { kind: string; year?: string; text: string }
 
 export const CARD_CSS = `
-.sr-landmark-card { position: fixed; left: 16px; bottom: 44px; width: min(360px, 44vw); padding: 14px 16px 14px;
+.sr-landmark-card { position: fixed; left: 16px; bottom: 64px; width: min(360px, 44vw); padding: 14px 16px 14px;
   z-index: 5; transition: opacity .4s ease, transform .4s ease; }
 .sr-landmark-card.hidden { opacity: 0; transform: translateY(8px); pointer-events: none; }
 .sr-landmark-card h2 { margin: 8px 0 2px; font: 800 21px/1.2 var(--font); }
@@ -61,7 +61,9 @@ export class LandmarkCard {
     }
   }
 
-  private set(on: boolean): void {
+  get isOn(): boolean { return this.on }
+
+  set(on: boolean): void {
     this.on = on
     try { localStorage.setItem(KEY, on ? 'on' : 'off') } catch { /* private window */ }
     this.showing = null
@@ -69,7 +71,9 @@ export class LandmarkCard {
   }
 
   private apply(): void {
-    this.toggle.style.display = this.on ? 'none' : ''
+    // (the ⓘ button that brought the card back is not shown any more: Menu → Settings → Display → Landmark notes,
+    // or I — docs/HUD.md, nothing on screen that is not needed in the next ten seconds)
+    this.toggle.style.display = 'none'
     if (!this.on) this.card.classList.add('hidden')
   }
 

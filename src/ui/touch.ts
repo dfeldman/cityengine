@@ -17,6 +17,7 @@
  * is no slider, only ▲ "straight" (ArrowUp: it cancels a declared turn, slow input).
  */
 import { REVERSE_WATTS } from '../sim/ride.ts'
+import { onSettings, settings } from './settings.ts'
 
 /** the slider's top: a strong rider's sustained effort; the keyboard still goes to 700 */
 const SLIDER_MAX_WATTS = 400
@@ -42,6 +43,8 @@ export const TOUCH_CSS = `
   font-variant-numeric: tabular-nums }
 .sr-slider.held .thumb { box-shadow: 0 0 0 3px var(--text) }
 .sr-touch.small button { width: 48px; height: 48px; font-size: 22px }
+/* shown only while touch is the way in (showTouchWhenUsed): a keyboard needs none of them (owner, 2026-10-14) */
+html:not(.sr-touch-on) .sr-touch { display: none }
 /* looking round a paused scene: the riding pads give way to the look pad (ui/debug.ts LookPad) */
 .sr-looking .sr-touch.steer, .sr-looking .sr-touch.effort { display: none }
 `
@@ -54,10 +57,14 @@ export const TOUCH_CSS = `
  */
 export const COMPACT_CSS = `
 .sr-compact #minimap:not(.large) { display: none }
-.sr-compact #hud .sr-back, .sr-compact #hud .sr-turns, .sr-compact #hud .sr-exits,
-.sr-compact #hud .sr-next, .sr-compact #hud .sr-stats, .sr-compact #hud .sr-gps { display: none }
-.sr-compact #label { font-size: 9px; line-height: 1.2; bottom: 4px; left: 8px; max-width: 70vw; white-space: nowrap;
-  overflow: hidden; text-overflow: ellipsis; opacity: .7 }
+/* (the turn buttons and the notes stay: "buttons are needed though or the user will have no idea what's going on") */
+.sr-compact #hud .sr-gps { display: none }
+.sr-compact #hud { font-size: 13px }
+.sr-compact #hud .sr-turns { font-size: 30px; letter-spacing: 10px }
+.sr-compact #hud .sr-back { font-size: 22px; padding: 4px 9px }
+.sr-compact #label { font-size: 9px !important; bottom: 2px; right: 6px; max-width: 40vw }
+.sr-compact .sr-banner { top: 160px; padding: 10px 18px; font-size: 18px; max-width: calc(100vw - 32px) }
+.sr-compact .sr-banner-sub { font-size: 13px }
 /* the order, one line across the top: what, where to, how far, and the two buttons */
 .sr-compact .sr-offer { left: 8px; right: 8px; top: 70px; transform: translateY(-8px); padding: 8px 10px; max-width: none;
   width: auto; display: flex; align-items: center; gap: 8px; flex-wrap: wrap }
@@ -78,14 +85,33 @@ export const COMPACT_CSS = `
 .sr-compact .sr-nav .clock { font-size: 24px }
 .sr-compact .sr-job { top: 118px; left: 8px; font-size: 13px; padding: 4px 12px }
 /*
- * The bottom, from the edge up (owner, 2026-10-14, a screenshot of "Eat the bagel dozen" over the energy bar): the
- * credit line, the one tappable chip (hop on, eat the order: #hud's only child left on a phone), the energy bar,
- * the cash. Each its own band.
+ * A phone, top to bottom (owner, 2026-10-14, screenshots of things drawn over each other; docs/HUD.md):
+ *   🗺 · speed · ☰  |  the job's compass and clock, the ENERGY beside it  |  the job line  |  (the scene, banners)
+ *   ◀ ▶ and the slider  |  the chip (hop on, eat…)  |  cash · ↩ ← ↑ → · the credit in the corner
  */
-.sr-compact #hud { padding-bottom: 24px }
-.sr-compact .sr-energy { bottom: 66px }
-.sr-compact .sr-cash { bottom: 104px }
+.sr-compact #hud { padding: 0 8px 16px }
+.sr-compact .sr-energy { left: auto; right: 8px; bottom: auto; top: 76px; padding: 6px 10px; gap: 6px; font-size: 10px }
+.sr-compact .sr-energy .track { width: 70px }
+.sr-compact .sr-cash { left: 8px; bottom: 12px; font-size: 13px; padding: 3px 9px }
 `
+
+/**
+ * WHEN the touch controls show (owner, 2026-10-14: "slider and arrow buttons probably not needed when there's a
+ * keyboard"): on a phone or tablet from the start; on anything else once the screen is touched; and gone again when a
+ * real key is pressed. Menu → Settings → Controls can make it always or never; `?touch=1|0` beats both.
+ */
+export function showTouchWhenUsed(asked: string | null): void {
+  const html = document.documentElement
+  let used = wantsTouch(asked)
+  const apply = (): void => {
+    const c = settings().controls
+    html.classList.toggle('sr-touch-on', asked === '1' || (asked !== '0' && (c === 'always' || (c === 'auto' && used))))
+  }
+  addEventListener('pointerdown', (e) => { if (e.pointerType === 'touch' && !used) { used = true; apply() } }, true)
+  // (isTrusted: the buttons themselves send synthetic keys, which must not hide them)
+  addEventListener('keydown', (e) => { if (e.isTrusted && used && asked !== '1') { used = false; apply() } }, true)
+  onSettings(apply)
+}
 
 /** Is this a phone's screen? (`?compact=1|0` decides, else a touch screen whose short side is under 600 px.) */
 export function compactScreen(asked: string | null): boolean {

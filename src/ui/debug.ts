@@ -165,12 +165,13 @@ export class DebugPanel {
     if (onPaths) button('⌇ paths (J)', 'Show the paths the rider can take and the junctions where there is a choice', onPaths)
     // keyboard commands for the advanced (owner, 2026-10-01): F C G J; the buttons only with `?buttons=1`
     if (new URLSearchParams(location.search).get('buttons') === '1') document.body.appendChild(panel)
-    // a phone has no P: a pause button of its own, always there
+    // a phone has no P: looking round (Menu → Look around) shows a ▶ to ride on again, beside the ☰ (ui/menu.ts)
     if (touchScreen()) {
       const pause = document.createElement('button')
-      pause.textContent = '⏸'
-      pause.title = 'Pause and look around'
-      pause.style.cssText = 'position:fixed;right:12px;top:12px;z-index:6;width:44px;height:44px;border-radius:999px;'
+      pause.textContent = '▶'
+      pause.title = 'Ride on'
+      pause.hidden = true
+      pause.style.cssText = 'position:fixed;right:72px;top:14px;z-index:9;width:48px;height:48px;border-radius:999px;'
         + 'background:var(--panel);color:var(--text);border:1px solid var(--border);font:600 20px var(--font);box-shadow:var(--shadow)'
       pause.addEventListener('click', () => { onFreeze(); pause.blur() })
       document.body.appendChild(pause)
@@ -196,7 +197,7 @@ export class DebugPanel {
 
   frozen(on: boolean): void {
     this.freezeBtn.textContent = on ? '▶ ride on (P)' : '⏸ pause (P)'
-    if (this.pauseBtn) this.pauseBtn.textContent = on ? '▶' : '⏸'
+    if (this.pauseBtn) this.pauseBtn.hidden = !on
     this.toast(on
       ? (touchScreen() ? 'paused — arrows to move, drag to turn, pinch to zoom; ▶ to ride on'
         : 'paused — look around with W A S D, Q/E down and up, drag to orbit, wheel to zoom, shift = fast; P to ride on')

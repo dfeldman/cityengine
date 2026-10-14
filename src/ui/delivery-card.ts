@@ -35,7 +35,7 @@ export const DELIVERY_CSS = `
 .sr-offer kbd { font: 800 11px/1 var(--font); opacity: .75; margin-left: 6px }
 .sr-offer .clock { height: 3px; margin-top: 10px; border-radius: 3px; background: var(--c-amber); transform-origin: left;
   transition: transform linear }
-.sr-job { position: fixed; top: 128px; left: 14px; z-index: 6; display: none; max-width: calc(100vw - 28px);
+.sr-job { position: fixed; top: 154px; left: 14px; z-index: 6; display: none; max-width: calc(100vw - 28px);
   font: 700 14px/1.3 var(--font); color: var(--on-amber); background: var(--c-amber); border-radius: 999px;
   padding: 5px 14px; box-shadow: var(--shadow); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
 .sr-job.on { display: block }
@@ -43,7 +43,7 @@ export const DELIVERY_CSS = `
 .sr-job.drop { background: #34d27a; color: #111 }
 .sr-nav.drop .dial path { fill: #34d27a }
 /* up by the top bar, under the buttons on the left (owner: "it needs to be near the top bar") */
-.sr-nav { position: fixed; top: 56px; left: 14px; z-index: 6; display: none;
+.sr-nav { position: fixed; top: 70px; left: 14px; z-index: 6; display: none;
   align-items: center; gap: 14px; padding: 8px 18px 8px 10px; color: var(--text); background: var(--panel);
   border: 2px solid var(--page); border-radius: 999px; box-shadow: var(--shadow); backdrop-filter: blur(8px) }
 .sr-nav.on { display: flex }
@@ -69,10 +69,12 @@ export const DELIVERY_CSS = `
 .sr-receipt .pay { display: flex; justify-content: center; gap: 14px; font: 800 15px/1 var(--font) }
 .sr-receipt .pay b { font-size: 22px; color: #34d27a }
 .sr-receipt .pay small { display: block; font: 600 11px/1.3 var(--font); opacity: .7 }
-.sr-cash { position: fixed; z-index: 6; left: 16px; bottom: 112px; padding: 4px 12px; border-radius: 999px;
+.sr-cash { position: fixed; z-index: 6; left: 270px; bottom: 20px; padding: 4px 12px; border-radius: 999px;
   font: 800 15px/1.2 var(--font); color: #111; background: #34d27a; box-shadow: var(--shadow);
   font-variant-numeric: tabular-nums; transition: transform .25s }
 .sr-cash.bump { transform: scale(1.25) }
+/* beside the energy bar; where there is none (a trainer's own legs), in its place */
+body:not(:has(.sr-energy)) .sr-cash { left: 16px }
 .sr-confetti { position: fixed; inset: 0; pointer-events: none; z-index: 8 }
 `
 

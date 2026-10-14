@@ -75,7 +75,7 @@ select.sr-routes { top: 66px !important; }
 .sr-mode button.on { background: var(--page); color: var(--on-page); }
 .sr-mode button:focus-visible { outline: 3px solid var(--page); outline-offset: 2px; }
 
-#label { font: 12px/1.5 var(--font) !important; color: var(--muted) !important; }
+#label { font: 10px/1.3 var(--font) !important; color: var(--muted) !important; opacity: .75 }
 
 /* a card: the landmark box, the banners, the loading panel */
 .sr-card {

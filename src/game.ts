@@ -91,6 +91,8 @@ import { beachRuns, beachSurfLayer, inBeachZone, shoreFrame, shoreRamp } from '.
 import { BeachCrowd } from './render/beach-crowd.ts'
 import { updateWater } from './render/water-material.ts'
 import { Hud } from './ui/hud.ts'
+import { Menu, type MenuItem } from './ui/menu.ts'
+import { SETTING_DEFS, onSettings, setSetting, settings, type SettingDef } from './ui/settings.ts'
 import { PBR_FOG, photoMode, setRegionFog } from './render/photo.ts'
 import { gpuMB, showMemory, watchHeap } from './render/heap.ts'
 import { Minimap } from './ui/minimap.ts'
@@ -209,6 +211,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // `?with=grade,plants` puts back what the tier leaves out, to measure it on a device without a code change
   const back = new Set((new URLSearchParams(location.search).get('with') ?? '').split(',').filter(Boolean))
   for (const w of tier.without) if (!back.has(w)) off.add(w)
+  // Menu → Settings → Graphics → Speed streaks
+  if (!settings().motion) off.add('speedlines')
   plog('tier', opts.tier ?? 'desktop')
   /*
    * Load-stage timings (tools/measure-load.ts): each mark is the milliseconds the stage since the previous one
@@ -1283,7 +1287,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     return { el, fill: el.querySelector('.fill') as HTMLElement }
   })() : null
   const hud = new Hud(document.getElementById('hud')!, () => (controls.press ? controls.press('back') : nav.turnAround()))
-  hud.setUnits(region(pkg.region).units)
+  // (units: Menu → Settings → Display, the region's own by default — set with the menu, below)
 
   /*
    * THE DELIVERY GAME (src/game/delivery.ts, 2026-09-29): a job offer pops up — pick up at one building, deliver to
@@ -1645,9 +1649,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     tour = null
     replan()
     if (!route) { hud.banner('No route there', 'the pin is off the streets that can be ridden'); clearRoute(); return }
-    hud.banner(`Destination: ${placeName(p)}`, `${(route.length / 1000).toFixed(1)} km · ${minutes(route.length)} · Esc clears`)
+    hud.banner(`Destination: ${placeName(p)}`, `${(route.length / 1000).toFixed(1)} km · ${minutes(route.length)} · N clears`)
   }
-  addEventListener('keydown', (e) => { if (e.code === 'Escape' || e.code === 'KeyN') clearRoute() })
+  // (N only: Escape is the pause menu now, which has Ride → Clear the route)
+  addEventListener('keydown', (e) => { if (e.code === 'KeyN' && !(e.target instanceof HTMLElement && e.target.closest('input, textarea, select'))) clearRoute() })
   // the navigator's steering state, for probes of the two input modes (read-only)
   ;(window as unknown as Record<string, unknown>).__nav = () => {
     const j = nav.next()
@@ -1675,7 +1680,6 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   seenRaw.length = 0
   mark('minimap')
   minimap.landmarks = (pkg.landmarks ?? []).map((l) => ({ x: l.x, z: l.z, name: l.name, tier: l.tier }))
-  const tier1 = (pkg.landmarks ?? []).filter((l) => l.tier === 1)
 
   addEventListener('keydown', (e) => {
     // Escape leaves the big map from anywhere — the landmark search has the focus while it is open, and M typed there is
@@ -1842,7 +1846,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   }
   // the paused camera's arrows on a touch screen (ui/debug.ts LookPad)
   const lookPad = touchScreen() ? new LookPad(orbit) : null
-  const debug = new DebugPanel(() => {
+  /** P, or Menu → Look around: stop the rider and fly the camera; again to ride on */
+  const toggleLook = (): void => {
     held = null
     frozen = !frozen
     orbit.active = frozen
@@ -1861,7 +1866,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     }
     debug.frozen(frozen)
     lookPad?.show(frozen)
-  }, () => {
+  }
+  const debug = new DebugPanel(toggleLook, () => {
     const at = frozen ? { x: orbit.look.x, z: orbit.look.z } : lastAt
     const ll = proj.toLatLon(at)
     const text = `${ll.lat.toFixed(6)}, ${ll.lon.toFixed(6)}`
@@ -2045,7 +2051,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const label = document.getElementById('label')
   // ODbL: the attribution has to travel with the data and be visible, not just sit in the package. The
   // short form is the one OSM asks for on a screen; the full notice Overpass returned is in the package.
-  if (label) label.textContent = `${pkg.name} · © OpenStreetMap contributors (ODbL)`
+  if (label) label.textContent = `© OpenStreetMap contributors`
 
   const camera = new FreeCamera('chase', new Vector3(0, 2, 0), scene)
   // a tighter near plane wastes depth precision, and the ground layers are only centimetres apart
@@ -2093,6 +2099,126 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       last.mid = MID
     }, 5000)
   }
+
+  /*
+   * THE PAUSE MENU (ui/menu.ts, docs/HUD.md): everything a rider does not need in the next ten seconds. ☰ on every
+   * screen, Escape, a remote's Menu or Back; the ride is held while it is open. What it lists is built each time a
+   * list is shown, so it is always current (on a cable car, carrying an order, looking round).
+   */
+  const devTools = editing || ['dev', 'buttons'].some((k) => new URLSearchParams(location.search).get(k) === '1')
+  let minimapOn = false
+  let menuHeld = false
+  const imperialNow = (): boolean => {
+    const u = settings().units
+    return u === 'auto' ? region(pkg.region).units === 'imperial' : u === 'mph'
+  }
+  onSettings((s) => {
+    hud.setUnits(imperialNow() ? 'imperial' : 'metric')
+    minimapOn = s.minimap
+    document.documentElement.classList.toggle('sr-minimap', s.minimap)
+  })
+  /** what a key does, for a menu item that does the same: the key's own handler stays the one place it is done */
+  const press = (code: string): void => {
+    const key = code.replace(/^Key/, '').toLowerCase()
+    dispatchEvent(new KeyboardEvent('keydown', { code, key, bubbles: true }))
+    dispatchEvent(new KeyboardEvent('keyup', { code, key, bubbles: true }))
+  }
+  const far = (m: number): string => (imperialNow() ? `${(m / 1609.344).toFixed(2)} mi` : `${(m / 1000).toFixed(2)} km`)
+  /** a distance still to go: feet or metres when short, a tenth of a mile or kilometre when not */
+  const toGo = (m: number): string => imperialNow()
+    ? (m < 805 ? `${Math.round(m * 3.28084 / 50) * 50} ft` : `${(m / 1609.344).toFixed(1)} mi`)
+    : (m < 1000 ? `${Math.round(m / 10) * 10} m` : `${(m / 1000).toFixed(1)} km`)
+  const clock = (sec: number): string => {
+    const t = Math.round(sec)
+    const mm = String(Math.floor(t / 60) % 60), ss = String(t % 60).padStart(2, '0')
+    return t >= 3600 ? `${Math.floor(t / 3600)}:${mm.padStart(2, '0')}:${ss}` : `${mm}:${ss}`
+  }
+  let restartNeeded = false
+  const settingsGroup = (group: SettingDef['group']): MenuItem[] => [
+    ...SETTING_DEFS.filter((d) => d.group === group).map((d): MenuItem => ({
+      label: d.label,
+      choices: d.choices.map((c) => c.label),
+      value: () => Math.max(0, d.choices.findIndex((c) => c.value === settings()[d.key])),
+      set: (i) => { setSetting(d.key, d.choices[i].value as never); if (d.applies === 'ride') restartNeeded = true },
+      note: d.applies === 'ride' ? 'Takes effect when the ride restarts' : undefined,
+    })),
+    ...(group === 'Display' && card ? [{ label: 'Landmark notes', choices: ['Off', 'On'], value: () => (card.isOn ? 1 : 0),
+      set: (i: number) => card.set(i === 1) }] : []),
+    ...(restartNeeded ? [{ label: 'Restart the ride now', run: () => location.reload() }] : []),
+  ]
+  const groups = [...new Set(SETTING_DEFS.map((d) => d.group))]
+  /** a key's name beside an item, where there is a keyboard to press it on */
+  const keyHint = (k: string): string | undefined => (document.documentElement.classList.contains('sr-touch-on') ? undefined : k)
+  const menu = new Menu(() => [
+    { label: frozen ? 'Ride on' : 'Resume', run: () => { if (frozen) toggleLook() } },
+    { label: 'Map', hint: keyHint('M'), run: () => press('KeyM') },
+    ...(frozen ? [] : [{ label: 'Look around', hint: keyHint('P'), run: toggleLook }]),
+    { label: 'Ride', sub: (): MenuItem[] => [
+      { label: 'Turn around', hint: keyHint('U'), run: () => (controls.press ? controls.press('back') : nav.turnAround()) },
+      ...(transit.aboard ? [{ label: 'Get off', hint: keyHint('B'), run: transitAction },
+        { label: 'Get off right here', hint: 'if stuck', run: () => {
+          const pos = transit.abandon(placeOnGraph)
+          if (pos) backOnStreet(pos)
+          hud.banner('Off the transit', 'put back on the nearest street')
+        } }] : transit.boardable ? [{ label: 'Get on', hint: keyHint('B'), run: transitAction }] : []),
+      ...(destination || route ? [{ label: 'Clear the route', hint: keyHint('N'), run: clearRoute }] : []),
+    ] },
+    { label: 'Deliveries', sub: (): MenuItem[] => [
+      { label: 'Earned', info: `$${earned.toFixed(2)}` },
+      { label: 'Delivered', info: String(delivered) },
+      { label: 'Level', info: String(delivery.level) },
+      ...(delivery.phase === 'toDropoff' ? [{ label: 'Eat the order', hint: 'full energy, no pay', run: () => onDelivery(delivery.eat()) }] : []),
+    ] },
+    { label: 'Session', sub: (): MenuItem[] => [
+      { label: 'Riding time', info: clock(simSeconds) },
+      { label: 'Distance', info: far(nav.travelled) },
+      ...(simSeconds > 10 ? [{ label: 'Average speed', info: imperialNow()
+        ? `${(nav.travelled / simSeconds * 2.23694).toFixed(1)} mph` : `${(nav.travelled / simSeconds * 3.6).toFixed(1)} km/h` }] : []),
+      ...(energy ? [{ label: 'Energy', info: `${Math.round(energy.level * 100)}%` }] : []),
+    ] },
+    { label: 'Settings', sub: (): MenuItem[] => groups.map((g) => ({ label: g, sub: () => settingsGroup(g) })) },
+    { label: 'Help', sub: (): MenuItem[] => touchScreen() ? [
+      { label: 'Steer', info: '◀ ▶' }, { label: 'Effort', info: 'the slider' }, { label: 'Turn around', info: '↩' },
+      { label: 'Menu', info: '☰' }, { label: 'Look around', info: 'drag, pinch' },
+    ] : [
+      { label: 'Steer', info: '← →' }, { label: 'Effort', info: '↑ ↓' }, { label: 'Coast', info: 'Space' },
+      { label: 'Turn around', info: 'U' }, { label: 'Get on / off', info: 'B' }, { label: 'Map', info: 'M' },
+      { label: 'Look around', info: 'P' }, { label: 'Menu', info: 'Esc' },
+    ] },
+    { label: 'About', sub: (): MenuItem[] => [
+      { label: 'Map data', info: '© OpenStreetMap contributors, ODbL' },
+      { label: 'Engine', info: 'Babylon.js, Apache 2.0' },
+      { label: 'Tag rules', info: 'streets-gl, MIT' },
+      { label: 'Buildings, trees, cars', info: 'made here, CC0' },
+    ] },
+    ...(devTools ? [{ label: 'Developer', sub: (): MenuItem[] => [
+      { label: 'Copy location', hint: keyHint('C'), run: () => press('KeyC') },
+      { label: 'Go to…', hint: keyHint('G'), run: () => press('KeyG') },
+      { label: 'Paths', hint: keyHint('J'), run: () => press('KeyJ') },
+      { label: 'Fog', hint: keyHint('K'), run: () => press('KeyK') },
+      { label: 'Copy view', hint: keyHint('V'), run: () => press('KeyV') },
+    ] }] : []),
+  ])
+  menu.onChange = (open) => { menuHeld = open }
+  if (!opts.freeze) {
+    const b = document.createElement('button')
+    b.className = 'sr-menu-button'
+    b.textContent = '☰'
+    b.title = 'Menu (Esc)'
+    b.setAttribute('aria-label', 'Menu')
+    b.addEventListener('click', () => { menu.toggle(); b.blur() })
+    document.body.appendChild(b)
+  }
+  // Escape (or a remote's Menu / Back) opens it — unless something else open is what Escape should close
+  addEventListener('keydown', (e) => {
+    if (menu.isOpen || e.repeat || (e.target instanceof HTMLElement && e.target.closest('input, textarea, select'))) return
+    const k = e.code || e.key
+    if (k !== 'Escape' && k !== 'ContextMenu' && k !== 'GoBack') return
+    if (minimap.isLarge || travel?.isOpen || welcomeOpen()) return
+    e.stopImmediatePropagation()
+    e.preventDefault()
+    menu.open()
+  }, true)
 
   let last = performance.now()
   let frames = 0
@@ -2277,16 +2403,18 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           : junction.exits.find((x) => x.edgeId === want) ?? exits(rides, junction.nodeId, nav.edge.id).find((x) => x.edgeId === want)
         if (exit && nav.requestedEdge !== exit.edgeId) { nav.request(exit.turn); nav.requestEdge(exit.edgeId) }
       }
-      if (route) {
+      /*
+       * The route's line: how far, and the next turn. Not during a delivery, whose compass pill already says how far,
+       * and with no street names (owner, 2026-10-14: "user neither knows nor cares about street names"); the turn
+       * itself shows on the arrows.
+       */
+      if (route && !delivery.job) {
         const want = junction ? route.leave.get(junction.nodeId) : undefined
         const exit = want === undefined || !junction ? undefined : junction.exits.find((x) => x.edgeId === want)
-        const km = route.length >= 1000 ? `${(route.length / 1000).toFixed(1)} km` : `${Math.round(route.length / 10) * 10} m`
-        const street = exit ? rides.edges.get(exit.edgeId)?.name : undefined
-        const next = route.turnRound ? 'turn round' : exit && junction
-          ? `${exit.turn === 'straight' ? 'straight on' : exit.turn}${street ? ` onto ${street}` : ''} in ${Math.round(junction.ahead / 10) * 10} m`
-          : 'ahead'
-        hud.gps(`⌖ ${tour ? `${tour.of - tour.left.length}/${tour.of} · ` : ''}${km} · ${next}`)
-      }
+        const left = toGo(route.length)
+        const next = route.turnRound ? 'turn round' : exit && junction && exit.turn !== 'straight' ? `${exit.turn} soon` : ''
+        hud.gps(`⌖ ${tour ? `${tour.of - tour.left.length}/${tour.of} · ` : ''}${left}${next ? ` · ${next}` : ''}`)
+      } else if (route) hud.gps(null)
       paths.follow(nav.at())
       paths.update(nav.edge.id, junction, nav.requested)
       const edge = nav.edge
@@ -2328,11 +2456,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         if (welcomePedal > 2 || welcomeFor > 20) closeWelcome()
       }
       // …and while the rider is picking themselves up after a collision (render/rider.ts `tumble`)
-      const hold = frozen || controls.paused() || riding || !!rider?.tumbling || stillInWay(lastRider, now) || welcomeOpen()
+      const hold = frozen || menuHeld || controls.paused() || riding || !!rider?.tumbling || stillInWay(lastRider, now) || welcomeOpen()
         // (waiting at the gondola's station: the cabin is boarded, the track is not ridden; and in a lift)
         || (!riding && nav.edge.name === GONDOLA_NAME)
         || (!riding && nav.edge.name === LIFT_NAME && liftUsed !== nav.position.edgeId)
-      if (hold) holdWhy = frozen ? 'frozen' : controls.paused() ? 'paused' : riding ? 'riding' : rider?.tumbling ? 'tumbling'
+      if (hold) holdWhy = frozen ? 'frozen' : menuHeld ? 'menu' : controls.paused() ? 'paused' : riding ? 'riding' : rider?.tumbling ? 'tumbling'
         : welcomeOpen() ? 'welcome' : nav.edge.name === GONDOLA_NAME ? 'gondola' : nav.edge.name === LIFT_NAME ? 'lift' : 'in the way'
       else holdWhy = ''
       // the watts the rider gets: what was measured (or typed), less what an empty energy bar will not pay for
@@ -2736,37 +2864,17 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       life.riderShadow(at, pose.heading, groundY)
 
       opts.platform?.frame()
-      minimap.draw(at, heading, junction && !junction.passThrough ? rides.nodes.get(junction.nodeId)?.at ?? null : null)
+      // (the corner map is a setting, off by default: not drawn while hidden — it was ~1.5 ms a frame, docs/PERFORMANCE.md)
+      if (minimap.isLarge || minimapOn) minimap.draw(at, heading, junction && !junction.passThrough ? rides.nodes.get(junction.nodeId)?.at ?? null : null)
 
       // a running count of what is actually on screen, which is the only way to tell an empty street from a
-      // broken instance buffer
+      // broken instance buffer: for developers (`?dev=1`); a rider sees only the credit
       frames++
-      if (label && frames % 30 === 0 && !document.documentElement.classList.contains('sr-compact')) {
+      if (label && devTools && frames % 30 === 0) {
         const s = life.stats
-        label.textContent = `${pkg.name} · © OpenStreetMap contributors (ODbL)`
-          + `  —  ${s.vehicles} vehicles, ${s.people} people, ${trees.count} trees`
+        label.textContent = `© OpenStreetMap · ${s.vehicles} vehicles, ${s.people} people, ${trees.count} trees`
           + `, ${signs?.count ?? 0} signs, ${signs?.plaques ?? 0} plaques, ${signs?.named ?? 0} named`
           + `  ·  ${(ground.grade * 100).toFixed(1)}%`
-      }
-
-      /*
-       * The nearest top-tier landmark whose frontage is within 40 m and AHEAD, named on the HUD with the side
-       * it is on: "Église Saint-Paul-Saint-Louis →". Checked a few times a second, not every frame.
-       */
-      if (frames % 10 === 0) {
-        const fx = Math.sin(heading)
-        const fz = Math.cos(heading)
-        let best: { name: string; d: number; side: 'left' | 'right' } | null = null
-        for (const l of tier1) {
-          const dx = l.frontage.x - at.x
-          const dz = l.frontage.z - at.z
-          const d = Math.hypot(dx, dz)
-          if (d > 40 || dx * fx + dz * fz < 0) continue
-          // right of the direction of travel is (cos h, −sin h)
-          const side = dx * fz - dz * fx > 0 ? 'right' : 'left'
-          if (!best || d < best.d) best = { name: l.name, d, side }
-        }
-        hud.landmarkNear(best?.name ?? null, best?.side)
       }
       card?.update(at, heading)
       hud.update(riding ? null : junction, nav.requested, nav.isCommitted, {
