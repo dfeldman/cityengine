@@ -23,6 +23,7 @@ import { chooseMode, MODES, type GameMode } from './modes.ts'
 import { COMPACT_CSS, TOUCH_CSS, compactScreen, showTouchWhenUsed, touchControls } from './ui/touch.ts'
 import { MENU_CSS } from './ui/menu.ts'
 import { settings } from './ui/settings.ts'
+import { beginRun, recoverFromCrash } from './ui/crashguard.ts'
 
 const params = new URLSearchParams(location.search)
 const canvas = document.getElementById('view') as HTMLCanvasElement
@@ -37,7 +38,11 @@ for (const ev of ['gesturestart', 'gesturechange']) document.addEventListener(ev
 // the loading screen (in index.html, ui/loading.ts): a ride follows it; anything else takes it down at once
 const showcasing = ['model', 'trees', 'palms', 'showcase'].some((k) => params.get(k))
 if (showcasing || params.get('freeze') === '1') LoadingScreen.dismiss()
-else LoadingScreen.get().stage('boot')
+else {
+  LoadingScreen.get().stage('boot')
+  // did the last ride crash (a setting too big for this device)? then a step down, before the tier is chosen
+  recoverFromCrash()
+}
 
 // the shared asset bucket's indexes (trees, plants, statues, this game's own): before anything loads a model
 await initAssets()
@@ -187,6 +192,9 @@ if (params.get('model')) {
     showTouchWhenUsed(params.get('touch'))
   }
   document.documentElement.classList.toggle('sr-compact', compactScreen(params.get('compact')))
+  // (a URL parameter wins; then Menu → Settings, ui/settings.ts; then the device)
+  const tier = detectTier(params.get('tier') ?? (settings().quality === 'auto' ? null : settings().quality))
+  if (params.get('freeze') !== '1') beginRun(tier)
   const { game } = await import('./game.ts')
   void game(canvas, {
     city,
@@ -214,7 +222,7 @@ if (params.get('model')) {
     route: params.get('route') === 'manual' ? 'manual' : 'auto',
     // ?tier=phone|desktop: how much the device can hold (src/tier.ts); phones and tablets are guessed
     // (a URL parameter wins; then Menu → Settings, ui/settings.ts; then the device and the mode)
-    tier: detectTier(params.get('tier') ?? (settings().quality === 'auto' ? null : settings().quality)),
+    tier,
     input: params.get('input') === 'slow' || params.get('input') === 'fast' ? params.get('input') as 'fast' | 'slow'
       : settings().steering === 'held' ? 'fast' : settings().steering === 'junctions' ? 'slow' : MODES[mode].input,
     // couch, trainer or trainer debug (src/modes.ts); `?speedup=` overrides the mode's

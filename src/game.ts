@@ -92,6 +92,7 @@ import { BeachCrowd } from './render/beach-crowd.ts'
 import { updateWater } from './render/water-material.ts'
 import { Hud } from './ui/hud.ts'
 import { Menu, type MenuItem } from './ui/menu.ts'
+import { recoveryNote, riding as ridingNow } from './ui/crashguard.ts'
 import { FEATURE_OFF, SETTING_DEFS, onSettings, setSetting, settings, type SettingDef } from './ui/settings.ts'
 import { PBR_FOG, photoMode, setRegionFog } from './render/photo.ts'
 import { gpuMB, showMemory, watchHeap } from './render/heap.ts'
@@ -2903,6 +2904,12 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       mark('streets')
       loading?.hide()
       loading = null
+      // the load did not crash (ui/crashguard.ts); and if the last one did, say what was turned down
+      ridingNow()
+      const recovered = recoveryNote()
+      // (once the welcome card is gone: under it, nobody reads it)
+      const tell = (): void => { if (welcomeOpen()) setTimeout(tell, 500); else hud.banner('Settings changed', recovered!, 9000) }
+      if (recovered) setTimeout(tell, 800)
       // and the welcome screen over the city, gone at the first key (BUGS.md #165)
       if (!opts.freeze) welcomeScreen(src.index?.name ?? opts.city, !nav.fast)
     }
