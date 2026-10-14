@@ -214,7 +214,7 @@ export function welcomeScreen(cityName: string, slowInput = false): void {
   root.innerHTML = `<div class="sr-card"><span class="sr-pill">Dandyhorse</span><h1>Cycle Dash</h1>
     <p class="lede">Ride ${cityName} for real — every street, every building, where they actually are.</p>
     <div class="hl">${hl}</div>
-    ${touch ? '' : `<table>${rows}</table><div class="more">Esc menu &amp; settings · M map · P look around</div>`}
+    ${touch ? '<div class="more">Touch the left or right of the picture to steer · the slider is your effort</div>' : `<table>${rows}</table><div class="more">Esc menu &amp; settings · M map · P look around</div>`}
     <div class="go">${touch ? 'tap to ride' : 'press any key to ride'}</div></div>`
   /*
    * The bike/run switch lives here now, and only here (main.ts builds it): choosing the machine is a thing

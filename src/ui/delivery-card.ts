@@ -73,8 +73,6 @@ export const DELIVERY_CSS = `
   font: 800 15px/1.2 var(--font); color: #111; background: #34d27a; box-shadow: var(--shadow);
   font-variant-numeric: tabular-nums; transition: transform .25s }
 .sr-cash.bump { transform: scale(1.25) }
-/* beside the energy bar; where there is none (a trainer's own legs), in its place */
-body:not(:has(.sr-energy)) .sr-cash { left: 16px }
 .sr-confetti { position: fixed; inset: 0; pointer-events: none; z-index: 8 }
 `
 

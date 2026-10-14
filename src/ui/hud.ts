@@ -27,6 +27,12 @@ export class Hud {
    */
   private readonly speedoEl: HTMLElement
   private imperial = false
+  /**
+   * Turns picked at junctions (slow input: the trainer modes, or Settings → Controls → Steering): only then the arrows,
+   * ↩ and a star junction's exits. Held steering (couch) needs none of them — U, or a double tap low on a touch
+   * screen, turns round.
+   */
+  pickingTurns(on: boolean): void { this.root.classList.toggle('sr-picking', on) }
   /** miles and mph (the United States), or kilometres and km/h */
   setUnits(units: 'imperial' | 'metric' | undefined): void { this.imperial = units === 'imperial' }
 
@@ -230,6 +236,8 @@ export const HUD_CSS = `
 /* the corner map is a setting, off by default (Menu → Settings → Display; docs/HUD.md); the big map is always there */
 html:not(.sr-minimap) #minimap:not(.large) { display: none }
 /* couch mode's energy bar (sim/energy.ts), bottom left above the attribution: lime, amber when low, red when spent */
+.sr-corner { position: fixed; left: 16px; bottom: 16px; z-index: 6; display: flex; align-items: center; gap: 8px; pointer-events: none }
+.sr-corner > * { position: static !important }
 .sr-energy { position: fixed; left: 16px; bottom: 18px; z-index: 6; display: flex; align-items: center; gap: 8px;
   font: 700 12px/1 var(--font); color: var(--text); letter-spacing: .06em; text-transform: uppercase;
   background: var(--panel); border: 1px solid var(--border); border-radius: 999px; padding: 7px 12px; box-shadow: var(--shadow);
@@ -254,6 +262,7 @@ html:not(.sr-minimap) #minimap:not(.large) { display: none }
 #hud .sr-arrow.picked { opacity: 1; color: var(--c-amber); transform: translateY(-2px) }
 #hud .sr-arrow.locked { color: var(--c-lime) }
 #hud .sr-steer { display: flex; align-items: center; gap: 14px }
+#hud:not(.sr-picking) .sr-steer, #hud:not(.sr-picking) .sr-exits { display: none }
 #hud .sr-back { pointer-events: auto; cursor: pointer; touch-action: manipulation;
   font: 26px/1 var(--font); color: var(--text); opacity: .7;
   background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px 11px;

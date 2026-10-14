@@ -44,7 +44,7 @@ export const TOUCH_CSS = `
 .sr-slider.held .thumb { box-shadow: 0 0 0 3px var(--text) }
 .sr-touch.small button { width: 48px; height: 48px; font-size: 22px }
 /* shown only while touch is the way in (showTouchWhenUsed): a keyboard needs none of them (owner, 2026-10-14) */
-html:not(.sr-touch-on) .sr-touch { display: none }
+html:not(.sr-touch-on) .sr-touch, .sr-map-open .sr-touch { display: none }
 /* looking round a paused scene: the riding pads give way to the look pad (ui/debug.ts LookPad) */
 .sr-looking .sr-touch.steer, .sr-looking .sr-touch.effort { display: none }
 `
@@ -86,13 +86,14 @@ export const COMPACT_CSS = `
 .sr-compact .sr-job { top: 118px; left: 8px; font-size: 13px; padding: 4px 12px }
 /*
  * A phone, top to bottom (owner, 2026-10-14, screenshots of things drawn over each other; docs/HUD.md):
- *   🗺 · speed · ☰  |  the job's compass and clock, the ENERGY beside it  |  the job line  |  (the scene, banners)
- *   ◀ ▶ and the slider  |  the chip (hop on, eat…)  |  cash · ↩ ← ↑ → · the credit in the corner
+ *   speed · ☰  |  the job's compass and clock  |  the job line  |  (the scene, banners; touch it to steer)
+ *   the slider  |  the chip (hop on, eat…), the turn arrows when turns are picked  |  energy · cash · the credit
  */
-.sr-compact #hud { padding: 0 8px 16px }
-.sr-compact .sr-energy { left: auto; right: 8px; bottom: auto; top: 76px; padding: 6px 10px; gap: 6px; font-size: 10px }
+.sr-compact #hud { padding: 0 8px 50px }
+.sr-compact .sr-corner { left: 8px; bottom: 12px; gap: 6px }
+.sr-compact .sr-energy { padding: 6px 10px; gap: 6px; font-size: 10px }
 .sr-compact .sr-energy .track { width: 70px }
-.sr-compact .sr-cash { left: 8px; bottom: 12px; font-size: 13px; padding: 3px 9px }
+.sr-compact .sr-cash { font-size: 13px; padding: 3px 9px }
 `
 
 /**
@@ -131,7 +132,8 @@ export function wantsTouch(asked: string | null): boolean {
 function slider(parent: HTMLElement, start: number): void {
   const el = document.createElement('div')
   el.className = 'sr-slider'
-  el.innerHTML = '<span>harder</span><div class="track"><div class="fill"></div><div class="thumb"></div></div><span>easier</span>'
+  // (no "harder" / "easier" labels: the thumb's watts say it — owner, 2026-10-14)
+  el.innerHTML = '<div class="track"><div class="fill"></div><div class="thumb"></div></div>'
   const track = el.querySelector('.track') as HTMLElement
   const fill = el.querySelector('.fill') as HTMLElement
   const thumb = el.querySelector('.thumb') as HTMLElement
@@ -166,6 +168,42 @@ function slider(parent: HTMLElement, start: number): void {
   track.addEventListener('contextmenu', (e) => e.preventDefault())
   show()
   parent.appendChild(el)
+}
+
+/**
+ * STEERING BY TOUCHING THE PICTURE (owner, 2026-10-14: "instead of arrow buttons to turn you could just touch left or
+ * right halves of the screen"): a finger on the left half holds ←, on the right half →, for as long as it is down —
+ * held steering, or the turn picked at the next junction where turns are picked. A double tap low on the screen (the
+ * bottom fifth) turns round, U ("U turn is rarely needed, it could be double tapping bottom of the screen"). Always, on
+ * a touch, except while looking round, when the paused camera has the picture.
+ */
+function touchSteering(send: (type: 'keydown' | 'keyup', code: string, key: string) => void): void {
+  const view = document.getElementById('view')
+  if (!view) return
+  const html = document.documentElement
+  const held = new Map<number, string>()
+  let lowTap = 0
+  view.addEventListener('pointerdown', (e) => {
+    // (whatever Settings → Controls says about the slider: a touch screen with no way to steer is a dead end — the owner
+    // turned the buttons off and could not turn at all, 2026-10-14)
+    if (e.pointerType === 'mouse' || html.classList.contains('sr-looking')) return
+    if (e.clientY > innerHeight * 0.8) {
+      const now = performance.now()
+      if (now - lowTap < 350) { lowTap = 0; send('keydown', 'KeyU', 'u'); send('keyup', 'KeyU', 'u'); return }
+      lowTap = now
+    }
+    const code = e.clientX < innerWidth / 2 ? 'ArrowLeft' : 'ArrowRight'
+    held.set(e.pointerId, code)
+    send('keydown', code, code)
+  })
+  const up = (e: PointerEvent): void => {
+    const code = held.get(e.pointerId)
+    if (!code) return
+    held.delete(e.pointerId)
+    if (![...held.values()].includes(code)) send('keyup', code, code)
+  }
+  view.addEventListener('pointerup', up)
+  view.addEventListener('pointercancel', up)
 }
 
 export function touchControls(opts: { trainer: boolean; watts?: number }): void {
@@ -207,16 +245,12 @@ export function touchControls(opts: { trainer: boolean; watts?: number }): void 
     b.addEventListener('contextmenu', (e) => e.preventDefault())
     parent.appendChild(b)
   }
-  const steer = pad('steer')
-  button(steer, '◀', 'ArrowLeft', 'ArrowLeft')
-  button(steer, '▶', 'ArrowRight', 'ArrowRight')
+  // (no ◀ ▶ any more: the picture itself steers — touchSteering, below)
+  touchSteering(send)
   const effort = pad('effort')
   if (opts.trainer) button(effort, '▲', 'ArrowUp', 'ArrowUp', 'straight')
   else slider(effort, opts.watts ?? 180)
-  const small = pad('small')
-  // (no ⏸ here: the one at the top right — ui/debug.ts — pauses AND opens the look-around camera; two pause buttons,
-  // one of which only stopped the clock, is how the owner found "no way to move around the camera when paused")
-  button(small, '🗺', 'KeyM', 'm')
+  // (no 🗺 any more: Menu → Map — owner, 2026-10-14: "we don't need the always visible map button")
 }
 
 /**

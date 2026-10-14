@@ -1293,14 +1293,21 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * them until it has refilled a little. Shown under the speed.
    */
   const energy = play.energy ? new Energy() : null
+  // the bottom-left corner: the energy bar and the cash, side by side in one row, so neither can be drawn over the
+  // other however wide the bar's label grows ("energy · spent"; owner, 2026-10-14: overlapping there)
+  const corner = document.createElement('div')
+  corner.className = 'sr-corner'
+  if (!opts.freeze) document.body.appendChild(corner)
   const energyBar = energy && !opts.freeze ? (() => {
     const el = document.createElement('div')
     el.className = 'sr-energy'
     el.innerHTML = '<span class="label">energy</span><span class="track"><span class="fill"></span></span>'
-    document.body.appendChild(el)
+    corner.appendChild(el)
     return { el, fill: el.querySelector('.fill') as HTMLElement }
   })() : null
   const hud = new Hud(document.getElementById('hud')!, () => (controls.press ? controls.press('back') : nav.turnAround()))
+  // the turn arrows only where turns are picked at junctions (owner, 2026-10-14: "not needed in couch mode")
+  hud.pickingTurns(!nav.fast)
   // (units: Menu → Settings → Display, the region's own by default — set with the menu, below)
 
   /*
@@ -1430,7 +1437,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   }, { crossings, autoAccept: play.autoAccept, sources: kitchens })
   delivery.level = levelFor(delivered)
   const deliveryCard = new DeliveryCard()
-  if (!opts.freeze) deliveryCard.cash(earned)
+  if (!opts.freeze) {
+    deliveryCard.cash(earned)
+    const cash = document.querySelector('.sr-cash')
+    if (cash) corner.appendChild(cash)
+  }
   /*
    * FERRIES AND MUNI METRO (game/stations.ts, ui/travel.ts): ride up to a terminal or a stop, pick where to go, pay the
    * fare from what the deliveries earned (it may go below zero: travel is never refused), fade to black, and arrive.
@@ -1657,13 +1668,15 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       const ll = new Projection(pkg.origin).toLatLon(p)
       const why = opts.goTo(`${ll.lat}, ${ll.lon}`, true)
       if (why) debug.toast(why)
+      // (there: the map's job is done, and the street is what to look at)
+      else if (minimap.isLarge) toggleMap()
       return
     }
     destination = p
     tour = null
     replan()
     if (!route) { hud.banner('No route there', 'the pin is off the streets that can be ridden'); clearRoute(); return }
-    hud.banner(`Destination: ${placeName(p)}`, `${(route.length / 1000).toFixed(1)} km · ${minutes(route.length)} · N clears`)
+    hud.banner(`Destination: ${placeName(p)}`, `${toGo(route.length)} · ${minutes(route.length)}${touchScreen() ? '' : ' · N clears'}`)
   }
   // (N only: Escape is the pause menu now, which has Ride → Clear the route)
   addEventListener('keydown', (e) => { if (e.code === 'KeyN' && !(e.target instanceof HTMLElement && e.target.closest('input, textarea, select'))) clearRoute() })
@@ -1695,13 +1708,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   mark('minimap')
   minimap.landmarks = (pkg.landmarks ?? []).map((l) => ({ x: l.x, z: l.z, name: l.name, tier: l.tier }))
 
-  addEventListener('keydown', (e) => {
-    // Escape leaves the big map from anywhere — the landmark search has the focus while it is open, and M typed there is
-    // a letter (owner, 2026-10-03: "hard to get out of map mode … you should just be able to press escape")
-    const leaving = e.code === 'Escape' && minimap.isLarge
-    if (!leaving && (e.code !== 'KeyM' || (e.target instanceof HTMLElement && e.target.closest('input, textarea, select')))) return
-    if (leaving) e.preventDefault()
+  /** the big map, open or shut (M, Esc, Menu → Map, ☰ while it is open) */
+  const toggleMap = (): void => {
     minimap.toggle()
+    // (☰ becomes ✕ while it is open: on a phone that is the way out, ui/menu.ts)
+    document.documentElement.classList.toggle('sr-map-open', minimap.isLarge)
     // the landmark search belongs to the large map: it arrives with it and leaves with it
     if (mapSearch) {
       mapSearch.classList.toggle('on', minimap.isLarge)
@@ -1709,6 +1720,14 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       if (minimap.isLarge) { const f = mapSearch; setTimeout(() => f.focus(), 0) }
       else { mapSearch.value = ''; mapSearch.blur() }
     }
+  }
+  addEventListener('keydown', (e) => {
+    // Escape leaves the big map from anywhere — the landmark search has the focus while it is open, and M typed there is
+    // a letter (owner, 2026-10-03: "hard to get out of map mode … you should just be able to press escape")
+    const leaving = e.code === 'Escape' && minimap.isLarge
+    if (!leaving && (e.code !== 'KeyM' || (e.target instanceof HTMLElement && e.target.closest('input, textarea, select')))) return
+    if (leaving) e.preventDefault()
+    toggleMap()
   })
 
   /*
@@ -2002,9 +2021,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * Jump to a landmark: a menu beside the city menu of every modelled landmark, restyled place and named
    * building, which goes there by the same road as a pasted "lat, lon" (ui/goto.ts).
    */
-  /** the landmark search, shown with the large map (M) */
+  /** the landmark search, shown with the large map (M) — for developers only for now (`?dev=1`; owner, 2026-10-14:
+   *  "search landmarks has never worked … hide this box until we know what it's for"). It was also what zoomed iOS:
+   *  focusing a field under 16 px makes Safari zoom the page, and the map focused it on opening. */
   let mapSearch: HTMLInputElement | null = null
-  if (opts.goTo) {
+  if (opts.goTo && new URLSearchParams(location.search).get('dev') === '1') {
     const where = new Map<string, { x: number; z: number }>()
     for (const l of landmarks?.placed ?? []) where.set(l.name, l)
     for (const e of landmarkList) {
@@ -2156,7 +2177,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       set: (i) => { setSetting(d.key, d.choices[i].value as never); if (d.applies === 'ride') restartNeeded = true },
       note: d.applies === 'ride' ? 'Takes effect when the ride restarts' : undefined,
     })),
-    ...(group === 'Display' && card ? [{ label: 'Landmark notes', choices: ['Off', 'On'], value: () => (card.isOn ? 1 : 0),
+    ...(group === 'Display' && card ? [{ label: 'Facts about nearby landmarks', choices: ['Off', 'On'], value: () => (card.isOn ? 1 : 0),
       set: (i: number) => card.set(i === 1) }] : []),
     ...(restartNeeded ? [{ label: 'Restart the ride now', run: () => location.reload() }] : []),
   ]
@@ -2165,7 +2186,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const keyHint = (k: string): string | undefined => (document.documentElement.classList.contains('sr-touch-on') ? undefined : k)
   const menu = new Menu(() => [
     { label: frozen ? 'Ride on' : 'Resume', run: () => { if (frozen) toggleLook() } },
-    { label: 'Map', hint: keyHint('M'), run: () => press('KeyM') },
+    { label: 'Map', hint: keyHint('M'), run: toggleMap },
     ...(frozen ? [] : [{ label: 'Look around', hint: keyHint('P'), run: toggleLook }]),
     { label: 'Ride', sub: (): MenuItem[] => [
       { label: 'Turn around', hint: keyHint('U'), run: () => (controls.press ? controls.press('back') : nav.turnAround()) },
@@ -2192,8 +2213,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     ] },
     { label: 'Settings', sub: (): MenuItem[] => groups.map((g) => ({ label: g, sub: () => settingsGroup(g) })) },
     { label: 'Help', sub: (): MenuItem[] => touchScreen() ? [
-      { label: 'Steer', info: '◀ ▶' }, { label: 'Effort', info: 'the slider' }, { label: 'Turn around', info: '↩' },
-      { label: 'Menu', info: '☰' }, { label: 'Look around', info: 'drag, pinch' },
+      { label: 'Steer', info: 'touch left or right' }, { label: 'Effort', info: 'the slider' },
+      { label: 'Turn around', info: 'double-tap low down' }, { label: 'Map', info: 'Menu → Map' },
+      { label: 'Look around', info: 'drag, pinch' },
     ] : [
       { label: 'Steer', info: '← →' }, { label: 'Effort', info: '↑ ↓' }, { label: 'Coast', info: 'Space' },
       { label: 'Turn around', info: 'U' }, { label: 'Get on / off', info: 'B' }, { label: 'Map', info: 'M' },
@@ -2220,7 +2242,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     b.textContent = '☰'
     b.title = 'Menu (Esc)'
     b.setAttribute('aria-label', 'Menu')
-    b.addEventListener('click', () => { menu.toggle(); b.blur() })
+    b.addEventListener('click', () => { if (minimap.isLarge) toggleMap(); else menu.toggle(); b.blur() })
     document.body.appendChild(b)
   }
   // Escape (or a remote's Menu / Back) opens it — unless something else open is what Escape should close

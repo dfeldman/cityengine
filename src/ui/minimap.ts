@@ -124,47 +124,63 @@ export class Minimap {
   jobPins: { at: Point; n: 1 | 2; next?: boolean }[] = []
 
   private listen(): void {
+    /*
+     * One finger or the mouse: drag pans, a tap or click sets the destination, and a DOUBLE tap or click goes there.
+     * Two fingers: pinch zooms (owner, 2026-10-14: on a phone "jump to location on map doesn't work", "double tapping
+     * the map doesn't work" — iOS sends no dblclick, and the zoom was the mouse wheel's alone). Pointer events, so
+     * one code path for the mouse, a pen and fingers.
+     */
+    const fingers = new Map<number, { x: number; y: number }>()
     let down: { x: number; y: number; px: number; pz: number } | null = null
     let moved = false
+    let pinch: { d: number; zoom: number } | null = null
+    let lastTap: { t: number; x: number; y: number } | null = null
+    const at = (e: { clientX: number; clientY: number }): Point => {
+      const rect = this.canvas.getBoundingClientRect()
+      const k = this.zoom / (this.size / 2)
+      const cx = e.clientX - rect.left - rect.width / 2
+      const cy = e.clientY - rect.top - rect.height / 2
+      return { x: this.lastAt.x + this.panX + cx * k, z: this.lastAt.z + this.panZ - cy * k }
+    }
+    const spread = (): number => { const [a, b] = [...fingers.values()]; return Math.hypot(a.x - b.x, a.y - b.y) }
     this.canvas.addEventListener('pointerdown', (e) => {
       if (!this.large) return
+      e.preventDefault()
+      this.canvas.setPointerCapture(e.pointerId)
+      fingers.set(e.pointerId, { x: e.clientX, y: e.clientY })
+      if (fingers.size === 2) { pinch = { d: spread(), zoom: this.zoom }; moved = true; return }
       down = { x: e.clientX, y: e.clientY, px: this.panX, pz: this.panZ }
       moved = false
-      this.canvas.setPointerCapture(e.pointerId)
     })
     this.canvas.addEventListener('pointermove', (e) => {
+      if (!fingers.has(e.pointerId)) return
+      fingers.set(e.pointerId, { x: e.clientX, y: e.clientY })
+      if (pinch && fingers.size === 2) {
+        this.zoom = Math.max(150, Math.min(this.maxZoom, pinch.zoom * pinch.d / Math.max(10, spread())))
+        return
+      }
       if (!down) return
       const k = this.zoom / (this.size / 2)
-      if (Math.hypot(e.clientX - down.x, e.clientY - down.y) > 4) moved = true
+      if (Math.hypot(e.clientX - down.x, e.clientY - down.y) > 6) moved = true
       this.panX = down.px - (e.clientX - down.x) * k
       this.panZ = down.pz + (e.clientY - down.y) * k
     })
-    this.canvas.addEventListener('pointerup', (e) => {
-      if (!down) return
-      const start = down
+    const up = (e: PointerEvent): void => {
+      if (!fingers.delete(e.pointerId)) return
+      if (fingers.size > 0) { down = null; return }
+      pinch = null
+      const tap = down && !moved && e.type === 'pointerup'
       down = null
-      if (moved || !this.onPick) return
-      const rect = this.canvas.getBoundingClientRect()
-      const k = this.zoom / (this.size / 2)
-      const cx = e.clientX - rect.left - rect.width / 2
-      const cy = e.clientY - rect.top - rect.height / 2
-      void start
-      this.onPick({ x: this.lastAt.x + this.panX + cx * k, z: this.lastAt.z + this.panZ - cy * k }, e.shiftKey)
-    })
-    /*
-     * Double-click goes there. Shift-click did it from the start, but nobody could be expected to guess that
-     * (user, 2026-09-22: "i don't know how to click to travel on map. when i click, it sets a destination"), and
-     * a jump no longer reloads the page (BUGS.md #61), so it is worth having a plain way to ask for it.
-     */
-    this.canvas.addEventListener('dblclick', (e) => {
-      if (!this.large || !this.onPick) return
-      e.preventDefault()
-      const rect = this.canvas.getBoundingClientRect()
-      const k = this.zoom / (this.size / 2)
-      const cx = e.clientX - rect.left - rect.width / 2
-      const cy = e.clientY - rect.top - rect.height / 2
-      this.onPick({ x: this.lastAt.x + this.panX + cx * k, z: this.lastAt.z + this.panZ - cy * k }, true)
-    })
+      if (!tap || !this.onPick) return
+      const now = performance.now()
+      const again = lastTap && now - lastTap.t < 400 && Math.hypot(e.clientX - lastTap.x, e.clientY - lastTap.y) < 40
+      lastTap = again ? null : { t: now, x: e.clientX, y: e.clientY }
+      // (the second tap of a pair goes there; shift-click still does it in one)
+      this.onPick(at(e), !!again || e.shiftKey)
+    }
+    this.canvas.addEventListener('pointerup', up)
+    this.canvas.addEventListener('pointercancel', up)
+    this.canvas.style.touchAction = 'none'
     this.canvas.addEventListener('wheel', (e) => {
       if (!this.large) return
       e.preventDefault()
@@ -449,7 +465,8 @@ export class Minimap {
     // what a click does, said on the map itself: nobody guesses shift-click
     if (this.large) {
       ctx.font = '600 11px -apple-system, system-ui, sans-serif'
-      const hint = 'click: set destination · double-click or shift-click: go there'
+      const hint = matchMedia('(pointer: coarse)').matches ? 'tap: destination · double-tap: go there'
+        : 'click: set destination · double-click: go there · wheel: zoom'
       const w = ctx.measureText(hint).width
       ctx.fillStyle = 'rgba(12,14,18,0.66)'
       ctx.beginPath()

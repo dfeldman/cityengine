@@ -47,7 +47,7 @@ The owner's brief:
 | distance on the speedometer | Menu → Session |
 | the credit line's debug counts (vehicles, people, trees…) | only with `?mem=1` / debug |
 | big centre banners ("Bonk!") | the toast slot, smaller |
-| landmark card + ⓘ toggle | Settings → Landmark notes (stays a card, but off by default on a phone?) |
+| landmark card + ⓘ toggle | Settings → Display → Facts about nearby landmarks (I) |
 | travel pill (ferry, Metro) | the action chip |
 | debug buttons (copy location, go to, paths), K fog, [ ] distance, V view | Menu → Developer (only with `?dev=1`) |
 | welcome screen's mode picker | still on the welcome, and Settings → Mode |

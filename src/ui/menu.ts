@@ -28,6 +28,8 @@ export const MENU_CSS = `
   border: 2px solid var(--border); background: var(--panel); color: var(--text); font: 800 22px/1 var(--font);
   box-shadow: var(--shadow); backdrop-filter: blur(6px); display: grid; place-items: center; padding: 0; cursor: pointer;
   touch-action: manipulation; -webkit-tap-highlight-color: transparent }
+/* while the big map is open the button closes it (game.ts toggleMap): ☰ becomes ✕ */
+.sr-map-open .sr-menu-button { font-size: 0; z-index: 7 } .sr-map-open .sr-menu-button::after { content: '✕'; font-size: 22px }
 .sr-menu { position: fixed; inset: 0; z-index: 50; display: none; place-items: center; background: rgba(6,8,14,.55);
   backdrop-filter: blur(3px); font: 600 18px/1.3 var(--font); color: var(--text) }
 .sr-menu.on { display: grid }

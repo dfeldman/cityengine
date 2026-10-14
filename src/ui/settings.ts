@@ -10,7 +10,8 @@ export interface Settings {
   units: 'auto' | 'mph' | 'kmh'
   /** the small corner map (owner, 2026-10-14: a setting, off by default); the big map (M, Menu → Map) is always there */
   minimap: boolean
-  /** the touch buttons and slider: `auto` shows them once the screen is touched and hides them when a key is pressed */
+  /** the touch effort slider: `auto` shows it once the screen is touched and hides it when a key is pressed (touching
+   *  the picture steers whatever this says) */
   controls: 'auto' | 'always' | 'never'
   /** steering: held (fast input) or a turn declared at the next junction (slow input); `auto` is the mode's default */
   steering: 'auto' | 'held' | 'junctions'
@@ -93,6 +94,6 @@ export const SETTING_DEFS: SettingDef[] = [
     choices: [{ value: true, label: 'On' }, { value: false, label: 'Off' }] }),
   def({ key: 'steering', group: 'Controls', label: 'Steering', applies: 'ride',
     choices: [{ value: 'auto', label: 'Auto' }, { value: 'held', label: 'Hold to steer' }, { value: 'junctions', label: 'Pick at junctions' }] }),
-  def({ key: 'controls', group: 'Controls', label: 'On-screen buttons', applies: 'now',
+  def({ key: 'controls', group: 'Controls', label: 'Effort slider', applies: 'now',
     choices: [{ value: 'auto', label: 'When touched' }, { value: 'always', label: 'Always' }, { value: 'never', label: 'Never' }] }),
 ]

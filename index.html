@@ -23,6 +23,8 @@
       html, body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
         -webkit-tap-highlight-color: transparent; touch-action: manipulation; overscroll-behavior: none }
       input, textarea, [contenteditable] { -webkit-user-select: text; user-select: text }
+      /* iOS zooms the page into any field under 16 px that takes the focus */
+      @media (pointer: coarse) { input, select, textarea { font-size: max(16px, 1em) !important } }
       #view { width: 100vw; height: 100vh; display: block; touch-action: none }
       /* the ODbL credit: required and visible, but a corner, not a line of its own (owner, 2026-10-14) */
       #label {

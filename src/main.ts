@@ -34,6 +34,17 @@ document.head.appendChild(style)
 
 // iOS Safari ignores `user-scalable=no` (index.html): a pinch anywhere zoomed the whole game, HUD and all
 for (const ev of ['gesturestart', 'gesturechange']) document.addEventListener(ev, (e) => e.preventDefault(), { passive: false })
+// …and two fingers never zoom the page (the big map's pinch is its own, on pointer events, which this leaves alone)
+document.addEventListener('touchmove', (e) => { if (e.touches.length > 1) e.preventDefault() }, { passive: false })
+// and if the page is zoomed all the same (owner, 2026-10-14: zoomed and "couldn't un zoom it"), setting the viewport
+// again makes Safari snap back to 1×
+const viewport = document.querySelector('meta[name=viewport]')
+window.visualViewport?.addEventListener('resize', () => {
+  if (!viewport || (window.visualViewport?.scale ?? 1) < 1.01) return
+  const c = viewport.getAttribute('content') ?? ''
+  viewport.setAttribute('content', `${c}, minimum-scale=1`)
+  requestAnimationFrame(() => viewport.setAttribute('content', c))
+})
 
 // the loading screen (in index.html, ui/loading.ts): a ride follows it; anything else takes it down at once
 const showcasing = ['model', 'trees', 'palms', 'showcase'].some((k) => params.get(k))
