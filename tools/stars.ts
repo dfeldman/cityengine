@@ -4,13 +4,16 @@
  *   node --experimental-strip-types tools/stars.ts [city] [--n=20]
  */
 import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+import { shippedDir } from './bake-files.ts'
 import { unpackRide, type RideFile } from '../src/city/ridefile.ts'
 import { rideExits } from '../src/city/ridegraph.ts'
 import { Projection } from '../src/city/geo.ts'
 const city = process.argv[2]?.startsWith('--') ? 'paris-centre' : (process.argv[2] ?? 'paris-centre')
 const n = Number((process.argv.find((a) => a.startsWith('--n=')) ?? '--n=20').slice(4))
-const index = JSON.parse(readFileSync(`public/cities/${city}/index.json`, 'utf8'))
-const g = unpackRide(JSON.parse(readFileSync(`public/cities/${city}/ride-bike.json`, 'utf8')) as RideFile)
+// the shipped files, as the game reads them: the v3 index (origin, region) and the bike ride graph
+const index = JSON.parse(readFileSync(resolve(shippedDir(city), 'index.json'), 'utf8'))
+const g = unpackRide(JSON.parse(readFileSync(resolve(shippedDir(city), 'ride-bike.json'), 'utf8')) as RideFile)
 const proj = new Projection(index.origin)
 const byDeg = new Map<number, number>()
 const stars: { id: number; exits: number; arms: string[] }[] = []

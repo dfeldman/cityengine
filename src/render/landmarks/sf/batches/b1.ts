@@ -3,7 +3,7 @@
  * no builder and no photograph at all. Per the owner's instruction for this batch — "it's fine in nearly all
  * cases if the results are just facade kit generators that aren't perfect" — a plausible `facade()` treatment
  * derived from the real footprint, the tagged height and the classifier's own style/archetype guess (baked into
- * `public/cities/san-francisco/tiles/*.json` as `style`/`archetype`) is a clear improvement over nothing.
+ * `tools/cache/bake/san-francisco/tiles/*.json` as `style`/`archetype`) is a clear improvement over nothing.
  *
  * Only three of the twenty have a Mapillary reference (`docs/shots/refs/sf-mapillary/way-*.jpg`):
  * `way/436648569`, `way/320721969`, `way/432712476`. `436648569` and `432712476` are escalated below (see their

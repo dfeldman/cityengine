@@ -25,7 +25,9 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def osm_rings(city: str):
-    d = json.loads((ROOT / 'public' / 'cities' / f'{city}.json').read_text())
+    # the baked package is bake-private (tools/bake-files.ts), read only when it is the bake that shipped
+    import ept
+    d = json.loads(ept.package_file(city).read_text())
     out = []
     for b in d['buildings']:
         r = np.array(b['ring']).reshape(-1, 2)

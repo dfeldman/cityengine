@@ -6,18 +6,16 @@
  * screenshot: the rider's position jumping across the map at a junction, because `s` was being mirrored on
  * edges travelled against their stored direction. A still frame cannot show it. A continuity check can.
  */
-import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { buildGraph, type Edge } from '../src/city/graph.ts'
 import { locate, rideExits, rideGraph, rideStats } from '../src/city/ridegraph.ts'
 import { Navigator, polylineLength } from '../src/sim/navigate.ts'
-import { unpackPoints, type CityPackage } from '../src/city/package.ts'
+import { unpackPoints } from '../src/city/package.ts'
 import { baked } from './baked.ts'
+import { readPackage } from '../tools/bake-files.ts'
 
 function load(id: string) {
-  const file = resolve(import.meta.dirname, '..', 'public', 'cities', `${id}.json`)
-  const pkg = JSON.parse(readFileSync(file, 'utf8')) as CityPackage
+  const pkg = readPackage(id)
   const edges: Edge[] = pkg.edges.map((e) => {
     const points = unpackPoints(e.points)
     return {

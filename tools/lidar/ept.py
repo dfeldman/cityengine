@@ -43,6 +43,48 @@ STORE = 'https://s3-us-west-2.amazonaws.com/usgs-lidar-public'
 R = 6378137.0
 
 
+# ---- where a bake lives (tools/bake-files.ts) -------------------------------------------------------------
+#
+# The game reads only public/cities/<id>/v3/; the whole CityPackage and the v2 tiles are bake-private, under
+# tools/cache/bake/<id>/. Tools may read the private files because they are easier to process, but never stale
+# ones: both places carry the bake number, and a mismatch means the private files are not what shipped.
+
+def shipped_dir(city: str) -> Path:
+    return ROOT / 'public' / 'cities' / city / 'v3'
+
+
+def work_dir(city: str) -> Path:
+    return ROOT / 'tools' / 'cache' / 'bake' / city
+
+
+def _bake_of(f: Path):
+    try:
+        return json.loads(f.read_text()).get('bake')
+    except (OSError, ValueError):
+        return None
+
+
+def assert_fresh(city: str) -> None:
+    """Exit unless the bake-private files belong to the bake that shipped (tools/bake-files.ts `assertFresh`)."""
+    if not (work_dir(city) / 'package.json').exists():
+        raise SystemExit(f'{city} is not baked here (no {work_dir(city) / "package.json"}): npm run bake -- {city}')
+    s, w = _bake_of(shipped_dir(city) / 'index.json'), _bake_of(work_dir(city) / 'bake.json')
+    if s is None or w is None or s != w:
+        raise SystemExit(f'{city}: the bake-private files (bake {w or "none"}) are not the bake that shipped '
+                         f'({s or "none"}) — re-bake (npm run bake -- {city}) before reading them')
+
+
+def package_file(city: str) -> Path:
+    """The city's whole CityPackage (bake-private), checked fresh."""
+    assert_fresh(city)
+    return work_dir(city) / 'package.json'
+
+
+def baked_package(city: str):
+    """The package file when the city is baked here (checked fresh: a stale one exits), else None."""
+    return package_file(city) if (work_dir(city) / 'package.json').exists() else None
+
+
 # ---- the game's projection, and Web Mercator's ------------------------------------------------------------
 
 class Frame:
@@ -65,10 +107,10 @@ class Frame:
 
 
 def city_frame(city: str) -> tuple[Frame, dict]:
-    """The city's origin and ride box, from the small streamed index (the package JSON can be 100 MB). Before the
+    """The city's origin and ride box, from the shipped v3 index (the package JSON can be 100 MB). Before the
     city's first bake there is no index: the origin is then the city's `centre` in tools/cities.ts, which is what
     the bake uses (so a fresh checkout can make the lidar ground before baking)."""
-    index = ROOT / 'public' / 'cities' / city / 'index.json'
+    index = shipped_dir(city) / 'index.json'
     if index.exists():
         meta = json.loads(index.read_text())
         o = meta['origin']

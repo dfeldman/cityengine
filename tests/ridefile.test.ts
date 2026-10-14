@@ -2,13 +2,13 @@ import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { mapEdges, packRide, rideFor, unpackRide, type RideFile } from '../src/city/ridefile.ts'
 import { Terrain } from '../src/city/terrain.ts'
-import type { CityPackage } from '../src/city/package.ts'
 import { baked } from './baked.ts'
+import { readPackage, shippedDir } from '../tools/bake-files.ts'
 
 // (without the bake: one skipped placeholder instead of the suite, whose set-up reads it)
 if (!baked('paris-marais')) it.skip('the baked ride graph: needs the paris-marais bake', () => {})
 else describe('the baked ride graph is the one the game would build (PARIS_EXPAND §3)', () => {
-  const pkg = JSON.parse(readFileSync('public/cities/paris-marais.json', 'utf8')) as CityPackage
+  const pkg = readPackage('paris-marais')
   const terrain = new Terrain(pkg.terrain)
   const built = rideFor(pkg.id, pkg.origin, mapEdges(pkg.edges, terrain), 'bike', (x, z) => terrain.heightAt(x, z), pkg.region,
     pkg.buildings.filter((b) => (b.minHeight ?? 0) < 2).map((b) => b.ring))
@@ -26,7 +26,7 @@ else describe('the baked ride graph is the one the game would build (PARIS_EXPAN
   })
 
   it('matches what the bake shipped', () => {
-    const shipped = unpackRide(JSON.parse(readFileSync('public/cities/paris-marais/ride-bike.json', 'utf8')) as RideFile)
+    const shipped = unpackRide(JSON.parse(readFileSync(`${shippedDir('paris-marais')}/ride-bike.json`, 'utf8')) as RideFile)
     expect(shipped.edges.size).toBe(built.edges.size)
     const key = (g: typeof built): string[] => [...g.edges.values()].map((e) => e.over.map((o) => o.id).join('.')).sort()
     expect(key(shipped)).toEqual(key(built))

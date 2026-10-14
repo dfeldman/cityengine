@@ -3,7 +3,7 @@
  *
  * The owner: *"We also have a very strict 3GB heap limit. If we exceed it, Chrome kills us every time."* That
  * is not a performance problem that degrades, it is a cliff: the tab dies with no warning and no stack, and
- * the only evidence is that the game was there a moment ago. BUGS.md #121 was exactly this — `TileStore`
+ * the only evidence is that the game was there a moment ago. BUGS.md #121 was exactly this — the old tile store
  * retained the parsed JSON of every tile ever visited, riding hid it because a rider crosses tiles slowly,
  * and JUMPING exposed it because `__jump` sweeps tiles from all over the city in seconds.
  *

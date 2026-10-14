@@ -2,7 +2,7 @@
  * Kit batch 2 (docs/sf-batches/BRIEF-KIT-BATCH.md): 20 given SF ways.
  *
  * One line per building, decided BEFORE any code, from real OSM tag data (`tools/cache/osm/cuts/*.opl`,
- * queried by way id) plus the baked tile footprints (`public/cities/san-francisco/tiles/*.json`) and any
+ * queried by way id) plus the baked tile footprints (`tools/cache/bake/san-francisco/tiles/*.json`) and any
  * reference photo under `docs/shots/refs/`:
  *
  *   494810841   escalate — building:part=yes, height 56-60m, a 36/37-point (non-rectangular) footprint

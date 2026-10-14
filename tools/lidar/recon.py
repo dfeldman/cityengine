@@ -44,7 +44,7 @@ from scipy.interpolate import griddata
 from scipy.spatial import cKDTree
 from skimage.measure import label as sk_label
 
-from ept import thin_voxels
+from ept import baked_package, thin_voxels
 
 ROOT = Path(__file__).resolve().parents[2]
 CACHE = ROOT / 'tools' / 'cache' / 'lidar'
@@ -843,10 +843,11 @@ def main():
     out = Path(a.out) if a.out else CACHE / 'out' / a.city
     out.mkdir(parents=True, exist_ok=True)
     oc = a.osm or a.city
-    cj = ROOT / 'public' / 'cities' / f'{oc}.json'
-    owners = Owners(cj) if oc != 'none' and cj.exists() else None
+    # the baked city's package is bake-private (tools/bake-files.ts): read only when it is the bake that shipped
+    cj = baked_package(oc) if oc != 'none' else None
+    owners = Owners(cj) if cj else None
     if owners:
-        log(f'owners: {len(owners.refs)} OSM buildings from {cj.name}')
+        log(f'owners: {len(owners.refs)} OSM buildings from {oc} ({cj})')
     faces, extra = reconstruct(d, box, p, out if a.debug else None, owners)
     meta = dict(city=a.city, box=list(box), origin=dict(lat=float(d['origin'][0]), lon=float(d['origin'][1])),
                 params=p.__dict__)

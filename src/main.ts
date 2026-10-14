@@ -22,6 +22,7 @@ import { initAssets } from './assets.ts'
 import { chooseMode, MODES, type GameMode } from './modes.ts'
 import { COMPACT_CSS, TOUCH_CSS, compactScreen, showTouchWhenUsed, touchControls } from './ui/touch.ts'
 import { MENU_CSS } from './ui/menu.ts'
+import CITIES from './cities.json'
 import { settings } from './ui/settings.ts'
 import { beginRun, recoverFromCrash } from './ui/crashguard.ts'
 
@@ -73,13 +74,10 @@ if (params.get('model')) {
   void showcase(canvas, params.get('style') ?? undefined)
 } else {
   /*
-   * Which cities exist, from the list the bake writes. A city that is not on it gets a page saying so and
-   * naming the real ones: asking Vite for a package that does not exist returns its index.html with a 200,
-   * and the game then died trying to read a web page as a city ("Unexpected token '<'").
+   * Which cities exist: src/cities.json, the list the bake writes from the live cities in tools/cities.ts — a file of
+   * this repo, bundled, not fetched. A city that is not on it gets a page saying so and naming the real ones.
    */
-  const cities = await fetch(new URL('cities/index.json', document.baseURI).href)
-    .then((r) => r.json() as Promise<CityRef[]>)
-    .catch(() => [] as CityRef[])
+  const cities = CITIES as CityRef[]
   /*
    * On Dandyhorse the session starts before anything is built: the city, the machine, the options and where
    * the rider left off all come from startsession. The gamekit is loaded only then, so the standalone game

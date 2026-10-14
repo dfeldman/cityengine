@@ -5,7 +5,7 @@
  * `docs/shots/refs/` for any of the four (checked by id), so all four are restrained and plainly massed,
  * using the escalation brief's own architectural description (Moorish Revival fortress, pagoda, round
  * café) for material/period colour only — every plan below comes from the baked ring
- * (`public/cities/san-francisco/tiles/*.json`) via `fit.ring`, never from a web search or raw lat/lon.
+ * (`tools/cache/bake/san-francisco/tiles/*.json`) via `fit.ring`, never from a web search or raw lat/lon.
  *
  * Registered through ../index.ts; placed by public/landmarks/san-francisco/scratch-1.json (appended last).
  */
@@ -33,7 +33,7 @@ function ccw(ring: P2[]): P2[] {
  * Peace Pagoda, Japantown, way/1458363734 — `building=pagoda`, a freestanding five-tier tapering spire on a
  * 49-vertex near-circular plan ~13 m across (per the escalation brief); the height tag is a nonsense `0.01`
  * so it is not baked as a building at all (confirmed: no `id: 1458363734` entry appears in any
- * `public/cities/san-francisco/tiles/*.json`) — nothing there to read a ring from. The plan is round, not a
+ * `tools/cache/bake/san-francisco/tiles/*.json`) — nothing there to read a ring from. The plan is round, not a
  * polygon to preserve a repeat of, so this is built with `pagodaTier()` (`./pagoda-kit.ts`, new — see its
  * header for the exact kit gap this fills) rather than measured off a baked ring: five tiers, each a
  * slender drum under a shallow flared roof-disc, narrowing tier over tier, topped by a gilded finial. The
@@ -142,7 +142,7 @@ const RAIL: Rgb = [0.25, 0.26, 0.28]
 /**
  * Woolf House, way/288717109 — the owner's own note: "132-corner plan but simple repeating... deserves a
  * little effort," so the ring itself IS the repeat (measured against the baked ring in
- * `public/cities/san-francisco/tiles/4_-6.json`, in metres — a long sawtooth wall of short alternating
+ * `tools/cache/bake/san-francisco/tiles/4_-6.json`, in metres — a long sawtooth wall of short alternating
  * chords, roughly a 3-5 m diagonal run then a ~1-2 m return, repeated dozens of times along all four sides,
  * rotated ~45°; NOT read off raw lat/lon, which rounds this into fake diagonals per the brief). The ring is
  * CONCAVE (the sawtooth notches cut inward), so every offset below goes through `offsetRing`, never

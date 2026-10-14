@@ -316,46 +316,6 @@ export function splitPackage(pkg: CityPackage, waterLevel: (ring: Point[], area:
   return { index, tiles }
 }
 
-/**
- * Put tiles back together as one package — what the renderer is fed until it streams (and what the bake's
- * check compares with the monolith). Edges and rails de-duplicated by id; areas are the tiles' pieces.
- */
-export type JoinedCity = Omit<CityPackage, 'areas' | 'fringe' | 'landmarks' | 'furniture' | 'plantings' | 'water'>
-  & { areas: TileArea[]; fringe: PackedFringe[]; landmarks: PackedLandmark[]; furniture: PackedFurniture[]; plantings: number[]; water: PackedArea[] }
-
-export function joinTiles(index: Omit<CityIndex, 'tiles'> | CityIndex, tiles: Iterable<TileData>): JoinedCity {
-  const edges = new Map<number, PackedEdge>()
-  const rails = new Map<number, PackedRail>()
-  const bridges = new Map<number, PackedBridge>()
-  const out = {
-    id: index.id, name: index.name, origin: index.origin, radius: index.radius, box: index.box, ground: index.ground,
-    region: index.region, start: index.start, terrain: index.terrain, sea: index.sea, skyline: index.skyline,
-    attribution: index.attribution, baked: index.baked, walls: index.walls,
-    edges: [] as PackedEdge[], buildings: [] as PackedBuilding[], fringe: [] as PackedFringe[], areas: [] as TileArea[],
-    trees: [] as number[], pois: [] as PackedPoi[], furniture: [] as PackedFurniture[], landmarks: [] as PackedLandmark[],
-    rails: [] as PackedRail[], plantings: [] as number[], water: index.water, boats: [] as PackedBoat[], bridges: [] as PackedBridge[],
-    courts: [] as PackedCourt[],
-  }
-  for (const t of tiles) {
-    for (const e of t.edges) edges.set(e.id, e)
-    for (const r of t.rails) rails.set(r.id, r)
-    out.buildings.push(...t.buildings)
-    out.fringe.push(...t.fringe)
-    out.areas.push(...t.areas)
-    for (const v of t.trees) out.trees.push(v)
-    out.pois.push(...t.pois)
-    out.furniture.push(...t.furniture)
-    out.landmarks.push(...t.landmarks)
-    for (const v of t.plantings) out.plantings.push(v)
-    out.boats.push(...(t.boats ?? []))
-    out.courts.push(...(t.courts ?? []))
-    for (const b of t.bridges ?? []) bridges.set(b.id, b)
-  }
-  out.edges = [...edges.values()]
-  out.bridges = [...bridges.values()]
-  out.rails = [...rails.values()]
-  return out
-}
 
 /** Where tiles come from: the prepared whole city cut in memory now, a streaming store later. */
 export interface TileSource { get(key: string): TileData | undefined }

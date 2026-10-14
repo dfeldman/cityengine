@@ -6,9 +6,12 @@
  */
 import { chromium } from 'playwright'
 import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+import { shippedDir } from './bake-files.ts'
 const arg = (n: string, f = ''): string => (process.argv.find((a) => a.startsWith(`--${n}=`)) ?? `=${f}`).split('=').slice(1).join('=')
 const city = arg('city', 'paris-centre')
-const index = JSON.parse(readFileSync(`public/cities/${city}/index.json`, 'utf8'))
+// the city's box, from the shipped v3 index
+const index = JSON.parse(readFileSync(resolve(shippedDir(city), 'index.json'), 'utf8'))
 const box = index.box as { x0: number; x1: number; z0: number; z1: number }
 const step = Number(arg('step', '900'))
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist', '--js-flags=--expose-gc'] })

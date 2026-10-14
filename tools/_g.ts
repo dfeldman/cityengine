@@ -1,6 +1,7 @@
-import { readFileSync } from 'node:fs'
 import { Projection } from '../src/city/geo.ts'
-const pkg = JSON.parse(readFileSync('public/cities/paris-centre.json', 'utf8'))
+import { readPackage } from './bake-files.ts'
+// the bake-private package (tools/bake-files.ts), checked fresh
+const pkg = readPackage('paris-centre')
 const proj = new Projection(pkg.origin)
 const [lat, lon, R] = process.argv.slice(2).map(Number)
 const c = proj.toLocal({ lat, lon })

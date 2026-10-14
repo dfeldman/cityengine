@@ -1,6 +1,6 @@
 /**
  * The river's centre line, for the boats that move on it (render/river-traffic.ts): written to
- * `public/cities/<id>/river.json` as local metres, west to east.
+ * `public/cities/<id>/v3/river.json` (shipped with the bake, under a new bake number) as local metres, west to east.
  *
  * Made from what the city already knows: the midpoint of every bridge over the water (`pkg.bridges`, where it
  * crosses), ordered along the river and joined, then sampled every 15 m and each sample moved to the middle of
@@ -8,12 +8,14 @@
  * smoothed. Where the river splits round an island the bridges of the main arm are the ones on its line.
  *   node --experimental-strip-types tools/river.ts [city]
  */
-import { readFileSync, writeFileSync } from 'node:fs'
+import { writeFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+import { readPackage, recordBake, shippedDir } from './bake-files.ts'
 import { unpackPoints, type CityPackage } from '../src/city/package.ts'
 import { axisOf } from '../src/city/bridge-axis.ts'
 
 const city = process.argv[2] ?? 'paris-centre'
-const pkg = JSON.parse(readFileSync(`public/cities/${city}.json`, 'utf8')) as CityPackage
+const pkg: CityPackage = readPackage(city)
 const water = pkg.areas.filter((a) => a.kind === 'water').map((a) => ({ ring: unpackPoints(a.ring), holes: (a.holes ?? []).map(unpackPoints) }))
 const inside = (r: { x: number; z: number }[], x: number, z: number): boolean => {
   let o = false
@@ -91,7 +93,9 @@ const smooth = mid.map((p, i) => {
   for (let k = -3; k <= 3; k++) { const q = mid[Math.max(0, Math.min(mid.length - 1, i + k))]; x += q.x; z += q.z; n++ }
   return { x: Math.round((x / n) * 10) / 10, z: Math.round((z / n) * 10) / 10 }
 })
-writeFileSync(`public/cities/${city}/river.json`, JSON.stringify({ name: 'Seine', points: smooth.flatMap((p) => [p.x, p.z]) }))
+writeFileSync(resolve(shippedDir(city), 'river.json'), JSON.stringify({ name: 'Seine', points: smooth.flatMap((p) => [p.x, p.z]) }))
+// (a shipped file rewritten: a new bake number for the city)
+recordBake(city)
 let L = 0
 for (let i = 1; i < smooth.length; i++) L += Math.hypot(smooth[i].x - smooth[i - 1].x, smooth[i].z - smooth[i - 1].z)
 console.log(`${city}: ${mids.length} bridges (${mids.map((m) => m.name).join(', ')}), ${smooth.length} points, ${(L / 1000).toFixed(1)} km; ${smooth.filter((p) => !wet(p.x, p.z)).length} off the water`)

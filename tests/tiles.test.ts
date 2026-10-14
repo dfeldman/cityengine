@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { TILE, joinTiles, splitPackage, tilesOfLine } from '../src/city/tiles.ts'
+import { TILE, splitPackage, tilesOfLine } from '../src/city/tiles.ts'
 import type { CityPackage } from '../src/city/package.ts'
 
 const pkg = (over: Partial<CityPackage>): CityPackage => ({
@@ -14,12 +14,11 @@ describe('tiles (PARIS_EXPAND §8)', () => {
     for (const k of ['0,0', '1,1', '2,2']) expect(got.has(k)).toBe(true)
   })
 
-  it('keeps edges whole in each tile and joins them back without duplicates', () => {
+  it('keeps edges whole in each tile', () => {
     const e = { id: 7, a: 1, b: 2, points: [-50, 10, 250, 10], surface: 'asphalt' as const, width: 6, walk: 2, foot: false, kind: 'residential' }
-    const { index, tiles } = splitPackage(pkg({ edges: [e] }), () => 0)
+    const { tiles } = splitPackage(pkg({ edges: [e] }), () => 0)
     expect([...tiles.keys()].sort()).toEqual(['-1,0', '0,0', '1,0'])
     for (const t of tiles.values()) expect(t.edges[0].points).toEqual(e.points)
-    expect(joinTiles(index, tiles.values()).edges).toHaveLength(1)
   })
 
   it('puts a building in the tile of its centre only', () => {

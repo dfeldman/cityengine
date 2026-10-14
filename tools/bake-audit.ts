@@ -71,6 +71,7 @@ import { entryKind, packedIds, type LandmarkEntry } from '../src/render/landmark
 import { expandIncludes } from '../src/city/manifest.ts'
 import { CITIES } from './cities.ts'
 import type { Finding } from './audit-builders.ts'
+import { isBaked, readV2 } from './bake-files.ts'
 
 /**
  * `tools/audit-builders.ts` runs its whole CLI report at module scope (`if (!process.env.VITEST) { … }`), so
@@ -275,20 +276,14 @@ export interface Baked {
 }
 
 export function readBake(city: string): Baked | null {
-  const dir = resolve(ROOT, 'public/cities', city, 'tiles')
-  if (!existsSync(dir)) return null
+  // the bake-private v2 tiles (tools/bake-files.ts); a city not baked here, or baked stale, is null — NOT CHECKED
+  if (!isBaked(city)) return null
   const ids = new Set<number>()
   const partOf = new Set<number>()
   const info = new Map<number, { h: number; area: number; name?: string; parts: number }>()
   const nameOf = new Map<number, string>()
   const ownerOf = new Map<number, number>()
-  for (const f of readdirSync(dir)) {
-    if (!f.endsWith('.json')) continue
-    const t = JSON.parse(readFileSync(resolve(dir, f), 'utf8')) as {
-      buildings?: { id: number; partOf?: number; height?: number; levels?: number; ring: number[]; style?: string }[]
-      fringe?: { id: number; partOf?: number }[]
-      landmarks?: { id: number; name: string }[]
-    }
+  for (const t of readV2(city).tiles) {
     for (const b of t.buildings ?? []) {
       ids.add(b.id)
       if (b.partOf !== undefined) { partOf.add(b.partOf); ownerOf.set(b.id, b.partOf) }
@@ -303,7 +298,7 @@ export function readBake(city: string): Baked | null {
         if (b.partOf !== undefined) prev.parts++
       }
     }
-    for (const b of t.fringe ?? []) { ids.add(b.id); if (b.partOf !== undefined) partOf.add(b.partOf) }
+    for (const b of (t.fringe ?? []) as { id: number; partOf?: number }[]) { ids.add(b.id); if (b.partOf !== undefined) partOf.add(b.partOf) }
     // the bake keeps the NAME on the dropped outline (tools/bake.ts `named`), which is the key we group by
     for (const l of t.landmarks ?? []) nameOf.set(l.id, l.name)
   }
@@ -480,7 +475,7 @@ async function main(): Promise<void> {
     const baked = readBake(city)
     if (!baked) {
       // a city whose bake cannot be found must NEVER read as a clean run: Paris did exactly that for weeks
-      console.log(`  !! NOT CHECKED — no baked tiles at public/cities/${city}/tiles. This is not a pass.`)
+      console.log(`  !! NOT CHECKED — no fresh bake at tools/cache/bake/${city} (not baked here, or not the bake that shipped). This is not a pass.`)
       fatal++
     } else {
       const mf = manifestFor(city)

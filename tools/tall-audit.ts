@@ -25,6 +25,7 @@
  */
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { shippedDir } from './bake-files.ts'
 
 const ROOT = resolve(import.meta.dirname, '..')
 const arg = (n: string, d = ''): string =>
@@ -44,7 +45,8 @@ interface Row {
   x: number; z: number; perStorey: number | null; verdict: string; why: string
 }
 
-const idx = JSON.parse(readFileSync(resolve(ROOT, `public/cities/${city}/index.json`), 'utf8')) as
+// the origin, from the shipped v3 index
+const idx = JSON.parse(readFileSync(resolve(shippedDir(city), 'index.json'), 'utf8')) as
   { origin: { lat: number; lon: number } }
 const R = 6371000
 const kx = (Math.PI / 180) * R * Math.cos((idx.origin.lat * Math.PI) / 180)

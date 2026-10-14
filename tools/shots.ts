@@ -39,11 +39,11 @@ async function main(): Promise<void> {
   const only = arg('style')
   const ride = arg('city')
   // --spots samples the awkward places: junctions, forks, dead ends — where road rendering actually fails
-  const spots = arg('spots') ? spotsFor(loadCity(ride || 'paris-marais'), Number(arg('spots'))) : []
+  const spots = arg('spots') ? spotsFor(loadCity(ride || 'san-francisco'), Number(arg('spots'))) : []
   // --edge=12,345 shoots exactly those edges, for coming back to a place that went wrong
-  const edges = arg('edge') ? arg('edge').split(',').map((e) => `spot:${ride || 'paris-marais'}:${e}:edge ${e}`) : []
+  const edges = arg('edge') ? arg('edge').split(',').map((e) => `spot:${ride || 'san-francisco'}:${e}:edge ${e}`) : []
   const shots = edges.length > 0 ? edges : spots.length > 0
-    ? spots.map((s) => `spot:${ride || 'paris-marais'}:${s.edgeId}:${s.why}`)
+    ? spots.map((s) => `spot:${ride || 'san-francisco'}:${s.edgeId}:${s.why}`)
     : ride ? [`city:${ride}`] : only ? [only] : ['', ...STYLES]
   const stats: Record<string, unknown>[] = []
 

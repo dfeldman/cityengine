@@ -70,7 +70,7 @@
  * Run through vite-node for the same reason `audit-builders.ts` is: plain node cannot import Babylon's
  * extensionless paths. The report is gated on `!VITEST` so the test can import the library half.
  */
-import { readFileSync, existsSync, readdirSync, writeFileSync, mkdirSync } from 'node:fs'
+import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { PROCEDURAL } from '../src/render/landmarks/procedural.ts'
@@ -81,6 +81,7 @@ import { entryKind, packedIds, type LandmarkEntry } from '../src/render/landmark
 import type { StatueEntry } from '../src/render/statues.ts'
 import { expandIncludes } from '../src/city/manifest.ts'
 import { CITIES } from './cities.ts'
+import { isBaked, readV2 } from './bake-files.ts'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const LANDMARKS = resolve(ROOT, 'public/landmarks')
@@ -306,18 +307,14 @@ interface Baked {
 }
 
 function loadBake(city: string): Baked | null {
-  const dir = resolve(ROOT, 'public/cities', city)
-  if (!existsSync(resolve(dir, 'tiles'))) return null
-  const index = JSON.parse(readFileSync(resolve(dir, 'index.json'), 'utf8')) as
-    { origin: Baked['origin']; terrain: Baked['terrain'] }
+  // the bake-private v2 index and tiles (tools/bake-files.ts); not baked here, or baked stale, is null — SKIPPED
+  if (!isBaked(city)) return null
+  const { index, tiles } = readV2(city)
   const buildings: Baked['buildings'] = []
-  for (const f of readdirSync(resolve(dir, 'tiles'))) {
-    if (!f.endsWith('.json')) continue
-    const t = JSON.parse(readFileSync(resolve(dir, 'tiles', f), 'utf8')) as
-      { buildings?: { id: number; ring: number[]; height: number }[]; fringe?: { id: number; ring: number[]; height: number }[] }
-    for (const b of [...(t.buildings ?? []), ...(t.fringe ?? [])]) buildings.push({ id: b.id, ring: b.ring, height: b.height })
+  for (const t of tiles) {
+    for (const b of [...(t.buildings ?? []), ...(t.fringe ?? [])]) buildings.push({ id: b.id, ring: b.ring, height: b.height as number })
   }
-  return { terrain: index.terrain, origin: index.origin, buildings }
+  return { terrain: index.terrain as Baked['terrain'], origin: index.origin, buildings }
 }
 
 /** The bake's own projection, as `src/city/geo.ts` does it: metres east and north of the origin. */
@@ -543,7 +540,7 @@ export async function nonbuildingsOf(city: string): Promise<CityNonbuildings> {
     }
   }
   if (!bake) {
-    issues.push({ check: 'ground', name: city, kind: '-', detail: `no baked tiles: public/cities/${city}/tiles does not exist — every positional check SKIPPED` })
+    issues.push({ check: 'ground', name: city, kind: '-', detail: `no fresh bake at tools/cache/bake/${city} (not baked here, or not the bake that shipped) — every positional check SKIPPED` })
   }
 
   // ---------------- per item

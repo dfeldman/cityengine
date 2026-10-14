@@ -1,10 +1,8 @@
 /**
- * BUGS.md #194: the four aggregates, from the shipped package via `rideFor` — no bake needed.
+ * BUGS.md #194: the four aggregates, from the bake-private package (tools/bake-files.ts) via `rideFor` — no bake needed.
  *   node --experimental-strip-types tools/spikes.ts [city] [--list]
  */
-import { readFileSync } from 'node:fs'
-import { resolve as rpath } from 'node:path'
-import type { CityPackage } from '../src/city/package.ts'
+import { readPackage } from './bake-files.ts'
 import { Terrain } from '../src/city/terrain.ts'
 import { mapEdges, rideFor } from '../src/city/ridefile.ts'
 import { rideExits, rideStats, trunkName, type RideEdge } from '../src/city/ridegraph.ts'
@@ -14,8 +12,8 @@ import { Projection, angleDiff, bearing, distance } from '../src/city/geo.ts'
 const id = process.argv[2]?.startsWith('--') ? 'san-francisco' : (process.argv[2] ?? 'san-francisco')
 const list = process.argv.includes('--list')
 const mode = process.argv.includes('--run') ? 'run' as const : 'bike' as const
-const OUT = rpath(import.meta.dirname, '..', 'public', 'cities')
-const pkg = JSON.parse(readFileSync(rpath(OUT, `${id}.json`), 'utf8')) as CityPackage
+// the whole city from the bake-private package (tools/bake-files.ts), checked fresh
+const pkg = readPackage(id)
 const terrain = new Terrain(pkg.terrain)
 const edges = mapEdges(pkg.edges, terrain)
 const proj = new Projection(pkg.origin)

@@ -6,8 +6,9 @@
  *
  * Layout in the bucket (cities.config.json names it; it is public, read with no key):
  *
- *   <city>/<bake>/<city>.json            the package
- *   <city>/<bake>/…                      everything under public/cities/<city>/ (tiles, terrain, ride graphs)
+ *   <city>/<bake>/…                      the city's shipped bake, public/cities/<city>/v3/ (index, tiles, terrain.bin,
+ *                                        ride graphs, river line): the bake number is the one in its index
+ *                                        (tools/bake-files.ts); the bake-private files never leave this machine
  *   <city>/current.json                  { city, bake, files, bytes, uploaded }: which bake is live
  *   cities.json                          every city and its current bake
  *
@@ -16,7 +17,6 @@
  *
  *   node --experimental-strip-types tools/city-upload.ts san-francisco           what would happen
  *   node --experimental-strip-types tools/city-upload.ts san-francisco --yes     do it
- *   … --bake=7          a specific bake number (default: one more than the current one)
  *   … --keep-old        leave the previous bake in place
  *
  * Credentials: the bucket's S3 keys from the environment, a .env here, or $ASSETMGR_ENV_FILE (assetmgr's names
@@ -34,8 +34,7 @@ const { R2Store, credentialsFromEnv, accountFromEndpoint, loadEnvFiles, runPool 
 const args = process.argv.slice(2)
 const city = args.find((a) => !a.startsWith('--'))
 const flag = (name: string) => args.includes(`--${name}`)
-const opt = (name: string) => args.find((a) => a.startsWith(`--${name}=`))?.split('=')[1]
-if (!city) { console.error('usage: city-upload.ts <city> [--yes] [--bake=N] [--keep-old]'); process.exit(2) }
+if (!city) { console.error('usage: city-upload.ts <city> [--yes] [--keep-old]'); process.exit(2) }
 
 const config = JSON.parse(await readFile(join(ROOT, 'cities.config.json'), 'utf8')) as { bucket: string; publicUrl: string; accountId?: string }
 loadEnvFiles(ROOT)
@@ -44,25 +43,25 @@ const accountId = config.accountId ?? process.env.ASSETMGR_R2_ACCOUNT_ID ?? acco
 if (!creds || !accountId) { console.error('no bucket credentials: set ASSETMGR_ENV_FILE (see assetmgr README)'); process.exit(1) }
 const store = new R2Store({ ...creds, accountId, bucket: config.bucket })
 
-const PUB = join(ROOT, 'public', 'cities')
-const pkg = join(PUB, `${city}.json`)
-if (!existsSync(pkg)) { console.error(`${city} is not baked here (public/cities/${city}.json): run npm run bake ${city}`); process.exit(1) }
+const { isBaked, shippedBake, shippedDir } = await import('./bake-files.ts')
+if (!isBaked(city)) { console.error(`${city} is not baked here, or its private files are not the bake that shipped: npm run bake ${city}`); process.exit(1) }
+const SHIP = shippedDir(city)
 
 async function walk(dir: string): Promise<string[]> {
   if (!existsSync(dir)) return []
   return ((await readdir(dir, { recursive: true, withFileTypes: true })) as { name: string; parentPath: string; isFile(): boolean }[])
     .filter((d) => d.isFile() && !d.name.startsWith('.')).map((d) => join(d.parentPath, d.name))
 }
-const files = [pkg, ...(await walk(join(PUB, city)))]
+const files = await walk(SHIP)
 let bytes = 0
 for (const f of files) bytes += (await stat(f)).size
 
 const decode = (b: Uint8Array | null) => (b ? JSON.parse(new TextDecoder().decode(b)) : null)
-const current = decode(await store.get(`${city}/current.json`)) as { bake: number } | null
-const bake = Number(opt('bake') ?? (current ? current.bake + 1 : 1))
-if (current && bake === current.bake) { console.error(`bake ${bake} is already current; pass a new --bake`); process.exit(1) }
+const current = decode(await store.get(`${city}/current.json`)) as { bake: string } | null
+const bake = shippedBake(city)!
+if (current && bake === current.bake) { console.error(`bake ${bake} is already current: nothing to upload`); process.exit(1) }
 const prefix = `${city}/${bake}/`
-const keyOf = (f: string) => prefix + relative(PUB, f).split(sep).join('/')
+const keyOf = (f: string) => prefix + relative(SHIP, f).split(sep).join('/')
 const TYPES: Record<string, string> = { json: 'application/json', bin: 'application/octet-stream', png: 'image/png', jpg: 'image/jpeg', glb: 'model/gltf-binary' }
 const typeOf = (f: string) => TYPES[f.split('.').pop() ?? ''] ?? 'application/octet-stream'
 

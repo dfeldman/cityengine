@@ -5,7 +5,7 @@
  * separate things have to line up: the builder exists in the registry, a manifest entry (or a city's skyline)
  * names it in its `procedural` key, that entry survives to be placed, and the building it names is in the
  * bake. The audit's unit is therefore a BAKED CITY, not a manifest — `landmarks/paris.json` serves
- * `public/cities/paris-centre/`, and conflating the two names is how Paris went unchecked (BUGS.md #101).
+ * the `paris-centre` bake, and conflating the two names is how Paris went unchecked (BUGS.md #101).
  *
  * Salesforce Tower was a good hand-written model that nobody could see, and there was no way to find the
  * others.
@@ -61,6 +61,7 @@ import { PROCEDURAL } from '../src/render/landmarks/procedural.ts'
 import { entryKind, packedIds, type LandmarkEntry } from '../src/render/landmarks.ts'
 import { expandIncludes } from '../src/city/manifest.ts'
 import { CITIES } from './cities.ts'
+import { WORK, isBaked, readV2 } from './bake-files.ts'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const LANDMARKS = resolve(ROOT, 'public/landmarks')
@@ -160,13 +161,14 @@ function shadowed(entries: Sourced[]): { survivors: Sourced[]; dropped: { e: Sou
 
 /**
  * The cities that HAVE been baked, from disk rather than from a list somebody has to remember to update:
- * `public/cities/<id>/tiles/`. Brooklyn and Chicago were baked and had never been audited, because nothing
+ * every bake-private folder `tools/cache/bake/<id>/` whose files are the bake that shipped (`isBaked`,
+ * tools/bake-files.ts). Brooklyn and Chicago were baked and had never been audited, because nothing
  * enumerated them.
  */
 export function bakedCities(): string[] {
-  const dir = resolve(ROOT, 'public/cities')
-  return readdirSync(dir, { withFileTypes: true })
-    .filter((d) => d.isDirectory() && existsSync(resolve(dir, d.name, 'tiles')))
+  if (!existsSync(WORK)) return []
+  return readdirSync(WORK, { withFileTypes: true })
+    .filter((d) => d.isDirectory() && isBaked(d.name))
     .map((d) => d.name).sort()
 }
 
@@ -186,19 +188,15 @@ export function manifestFor(city: string): string | null {
 
 /**
  * Every building id in a baked city, and which outline each `building:part` belongs to. Read straight off
- * the tiles (`buildings` and `fringe` are both what `addTile` feeds the landmarks), ~2 s for San Francisco's
- * 107k files. Null when the city has not been baked.
+ * the bake-private v2 tiles (`buildings` and `fringe` are both what `addTile` feeds the landmarks), ~2 s for
+ * San Francisco. Null when the city has not been baked here, or its private files are not the bake that shipped.
  */
 function bakedBuildings(city: string): { ids: Set<number>; partsOf: Map<number, number> } | null {
-  const dir = resolve(ROOT, 'public/cities', city, 'tiles')
-  if (!existsSync(dir)) return null
+  if (!isBaked(city)) return null
   const ids = new Set<number>()
   const partsOf = new Map<number, number>()
-  for (const f of readdirSync(dir)) {
-    if (!f.endsWith('.json')) continue
-    const t = JSON.parse(readFileSync(resolve(dir, f), 'utf8')) as
-      { buildings?: { id: number; partOf?: number }[]; fringe?: { id: number; partOf?: number }[] }
-    for (const b of [...(t.buildings ?? []), ...(t.fringe ?? [])]) {
+  for (const t of readV2(city).tiles) {
+    for (const b of [...(t.buildings ?? []), ...(t.fringe ?? [])] as { id: number; partOf?: number }[]) {
       ids.add(b.id)
       if (b.partOf !== undefined) partsOf.set(b.partOf, (partsOf.get(b.partOf) ?? 0) + 1)
     }
@@ -284,7 +282,7 @@ export async function auditCity(city: string): Promise<CityAudit> {
   return {
     city, manifest: base, order, unreached,
     referencedUnregistered, referencedShadowed, inUnreachedFile,
-    bake: baked ? { ok: true, notInBake } : { ok: false, reason: `no baked tiles: public/cities/${city}/tiles does not exist` },
+    bake: baked ? { ok: true, notInBake } : { ok: false, reason: `no fresh bake at tools/cache/bake/${city} (not baked here, or not the bake that shipped)` },
     referenced: [...referenced].sort(), entries: entries.length,
   }
 }

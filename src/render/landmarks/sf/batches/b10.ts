@@ -13,7 +13,7 @@
  *    tiles/-20_4.json, fallback height 6m/2 levels, style `sfapartment`) but that is the bake's generic
  *    fallback, not evidence of the real facade. bail.
  *  - way/34313513  "Harvey Milk Memorial Administration Building" — no reference, and NOT present in the
- *    current bake's `public/cities/san-francisco/tiles/` output at all (searched all ~108,800 tiles by id).
+ *    current bake's `tools/cache/bake/san-francisco/tiles/` output at all (searched all ~108,800 tiles by id).
  *    bail.
  *  - way/112073353 "Harvey Milk Recreational Arts Center" — named and real (overlooks Duboce Park, built
  *    1954, expanded 2009 — sfrecpark.org / friendsofdubocepark.org confirm it exists and its use, not its

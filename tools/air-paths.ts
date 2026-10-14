@@ -31,15 +31,16 @@ import { MeshBuilder } from '../src/render/buildings.ts'
 import { PROCEDURAL } from '../src/render/landmarks/procedural.ts'
 import { placement, toWorld } from '../src/city/bridge-decks.ts'
 import { decksOf } from './deck-conform.ts'
+import { readPackage, shippedDir } from './bake-files.ts'
 
 const args = process.argv.slice(2)
 const city = args.find((a) => !a.startsWith('--')) ?? 'san-francisco'
 const opt = (k: string): string | undefined => args.find((a) => a.startsWith(`--${k}=`))?.split('=')[1]
 const mode = opt('mode') ?? 'bike'
 const top = Number(opt('top') ?? 40)
-const root = resolve(import.meta.dirname, '..', 'public', 'cities')
-const pkg = JSON.parse(readFileSync(resolve(root, `${city}.json`), 'utf8')) as { origin: { lat: number; lon: number }; edges: PackedEdge[]; terrain: never }
-const ride = JSON.parse(readFileSync(resolve(root, city, `ride-${mode}.json`), 'utf8')) as { edges: { id: number; a: number; b: number; name?: string; kind?: string; points: number[]; heights?: number[]; over: number[] }[] }
+// the ways from the bake-private package (tools/bake-files.ts, checked fresh); the ride graph as the game ships it
+const pkg = readPackage(city)
+const ride = JSON.parse(readFileSync(resolve(shippedDir(city), `ride-${mode}.json`), 'utf8')) as { edges: { id: number; a: number; b: number; name?: string; kind?: string; points: number[]; heights?: number[]; over: number[] }[] }
 const proj = new Projection(pkg.origin)
 const terrain = new Terrain(pkg.terrain)
 const nearArg = opt('near')?.split(',').map(Number)
@@ -54,7 +55,7 @@ const decks = decksOf(region, pkg.origin)
  */
 const covers: { ring: { x: number; z: number }[]; y0: number; y1: number }[] = []
 {
-  const dir = resolve(root, '..', 'landmarks', region)
+  const dir = resolve(import.meta.dirname, '..', 'public', 'landmarks', region)
   const file = resolve(dir, 'bridges.json')
   if (existsSync(file)) for (const e of JSON.parse(readFileSync(file, 'utf8')) as { procedural?: string; coversRaised?: boolean; lat: number; lon: number; rotateDeg?: number; baseY?: number; scale?: number; size?: [number, number]; height?: number }[]) {
     const build = e.procedural ? PROCEDURAL[e.procedural] : undefined

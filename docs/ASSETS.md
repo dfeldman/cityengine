@@ -7,7 +7,7 @@ Two directories used to be committed and no longer are. They were **705 MB of th
 
 | | was | what it is |
 |---|---|---|
-| `public/cities/` | 190 MB | the baked city packages and their streamed tiles |
+| `public/cities/<id>/v3/` | ~160 MB (SF) | each city's SHIPPED bake (below); the bake-private files are in `tools/cache/bake/` |
 | `docs/shots/` | 515 MB | every screenshot — model shots, contact sheets, reference photographs |
 
 ## The shared asset bucket (the default since 2026-10-13)
@@ -66,9 +66,21 @@ public Overpass instances, which are rate-limited to the point of being unusable
     npm run bake san-francisco
     npm run bake paris-centre
 
-Writes `public/cities/<city>.json` plus its `tiles/` and `ride-*.json`. **Nothing renders without this.** With
+Writes the city's **shipped bake**, `public/cities/<city>/v3/`, and its **bake-private files**, `tools/cache/bake/<city>/`
+(see "What a bake writes" below). **Nothing renders without this.** With
 the local extract the OSM phase is a minute or two; the rest of the bake (terrain, facades, the ride graph,
 plantings) is the bulk of the time. The bake also generates the city's signs (step 3) on its own.
+
+**What a bake writes** (tools/bake-files.ts; since 2026-10-14):
+
+| Where | What | Who reads it |
+|---|---|---|
+| `public/cities/<id>/v3/` | `index.json` (with the **bake number**), the v3 tiles, `terrain.bin`, `ride-bike.json`, `ride-run.json`, `river.json` (a city with a river) | the game: every file but the index fetched as `?b=<bake>`; the build copies it for the cities on `src/cities.json` |
+| `tools/cache/bake/<id>/` (gitignored) | `package.json` (the whole CityPackage), the v2 `index.json` + `tiles/` + `terrain.bin` v3 is converted from, `decks-undo.json`, `bake.json` | the secondary tools only, through `readPackage` / `readV2`, which refuse when `bake.json` is not the shipped bake number — never stale |
+| `src/cities.json` (committed) | the live cities (`live` in tools/cities.ts) with where each is | the game's city list, bundled |
+
+Anything that rewrites a shipped file (`bake --rides`, `bake --decks`, `npm run map:v3`, `tools/rides.ts`, `tools/river.ts`)
+records a new bake number in both places, so no browser pairs files from two bakes. Only San Francisco is live for now.
 
 Once baked, a city can be published to the city bucket with `npm run city:upload -- <city> --yes` (README,
 "Baked cities"): one unit per city under a bake number, the old bake deleted when the new one is current.

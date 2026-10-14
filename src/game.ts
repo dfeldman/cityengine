@@ -246,7 +246,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   ;(window as unknown as { __marks?: unknown }).__marks = marks
   let firstFrameAt = 0
   const [src, atlas] = await Promise.all([
-    // the index now, the tiles as the rider needs them (city/tilestore.ts); a single-package city is cut up
+    // the index now, the tiles as the rider needs them (city/tilestore.ts, map/store.ts: the shipped bake, v3)
     openCity(document.baseURI, opts.city),
     fetch(`${ASSETS}atlas.json`).then((r) => r.json()) as Promise<AtlasManifest>,
   ])
@@ -509,7 +509,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * Twelve, not four. Bounding the in-flight count bounds the FETCH as well as the tail, and a tile's fetch
    * is a second or more of waiting on the server while costing the main thread nothing (measured: 2.9 s of
    * `loadMs` per tile against 5.9 ms of actual work). At four, the ring filled so slowly that the city took
-   * 229 s to be ready against 37 s unbounded. Twelve — `TileStore.loadMany`'s own figure — keeps the fetches
+   * 229 s to be ready against 37 s unbounded. Twelve — the old tile store's own figure — keeps the fetches
    * saturated; it is the frame budget below, not this number, that protects the frame.
    */
   const INFLIGHT = unbounded ? Infinity : 12
@@ -625,7 +625,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     }
     jobs.sort((p, q) => p[2] - q[2])
     /*
-     * DROP WHAT IS OUT OF RANGE (BUGS.md #121). `TileStore.got` keeps the parsed JSON of every tile it has
+     * DROP WHAT IS OUT OF RANGE (BUGS.md #121). The old tile store kept the parsed JSON of every tile it has
      * ever fetched — buildings with their rings, streets, areas, the lot — and `forget()` existed but was
      * called from NOWHERE, so the raw data of every tile ever visited was retained for the session. Riding
      * hides it, because a rider crosses tiles slowly; JUMPING exposes it, because `__jump` and `?at=` sweep
@@ -740,7 +740,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   let river: RiverTraffic | null = null
   // (a river line is a region with a river fleet — Paris and the Seine; San Francisco's boats run the bay's routes, below,
   // and asking it for a river.json was a 404 on every start)
-  if (!off.has('life') && regionKit(pkg.region).fleet) void riverLine(document.baseURI, opts.city).then((pts) => { if (pts) river = new RiverTraffic(scene, pts, (x, z) => city.waterLevelAt(x, z),
+  if (!off.has('life') && regionKit(pkg.region).fleet) void riverLine(document.baseURI, opts.city, src.stamp).then((pts) => { if (pts) river = new RiverTraffic(scene, pts, (x, z) => city.waterLevelAt(x, z),
     regionKit(pkg.region).fleet) })
   // …and on open water, the region's routes: San Francisco's ferries and sailboats (render/sf/boats.ts)
   const bay: RiverTraffic[] = []

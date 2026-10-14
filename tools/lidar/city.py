@@ -45,8 +45,8 @@ def main():
     out = Path(a.out) if a.out else CACHE / 'out' / f'{a.city}-tiles'
     (out / 'tiles').mkdir(parents=True, exist_ok=True)
     p = Params()
-    cj = ROOT / 'public' / 'cities' / f'{a.city}.json'
-    owners = Owners(cj) if cj.exists() else None       # OSM identity per face (recon.py)
+    cj = ept.baked_package(a.city)                      # bake-private, checked fresh (tools/bake-files.ts)
+    owners = Owners(cj) if cj else None                 # OSM identity per face (recon.py)
     todo = [(i, j) for i in range(rng[0], rng[2] + 1) for j in range(rng[1], rng[3] + 1)]
 
     if a.estimate:

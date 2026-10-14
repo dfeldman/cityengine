@@ -10,13 +10,14 @@
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { shippedDir } from './bake-files.ts'
 
 const RUNTIME = ['traffic', 'crowd'] as const
 
 const city = process.argv.slice(2).find((a) => !a.startsWith('--')) ?? 'san-francisco'
 const root = resolve(import.meta.dirname, '..')
 const source = JSON.parse(readFileSync(resolve(root, 'data', 'zones', `${city}.json`), 'utf8')) as { zones: { ref: string; props: Record<string, unknown> }[] }
-const indexFile = resolve(root, 'public', 'cities', city, 'v3', 'index.json')
+const indexFile = resolve(shippedDir(city), 'index.json')
 const index = JSON.parse(readFileSync(indexFile, 'utf8')) as { zones?: { ref: string; props: Record<string, unknown> }[] }
 
 const byRef = new Map(source.zones.map((z) => [z.ref, z]))

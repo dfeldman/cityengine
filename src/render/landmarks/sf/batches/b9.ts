@@ -8,7 +8,7 @@
  * churches (way/274428408, way/262577281) are NOT modelled here — see docs/sf-batches/ESCALATIONS.md, they
  * belong to the `church()` kit.
  *
- * Baked-ring check: none of these eleven were in the current bake's `public/cities/san-francisco/tiles/`
+ * Baked-ring check: none of these eleven were in the current bake's `tools/cache/bake/san-francisco/tiles/`
  * output except way/135103722, way/574616994, way/135103725, way/135103710 (confirmed by exact height match
  * against the manifest figure). For the other seven, I reconstructed the projected-metre ring myself from
  * the OSM cut's raw node coordinates (`tools/cache/osm/cuts/*.opl`, equirectangular projection about the

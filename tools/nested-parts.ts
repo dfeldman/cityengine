@@ -3,14 +3,16 @@
  * that building's outline — parts the manifest should replace too, or they draw through the model.
  *   node --experimental-strip-types tools/nested-parts.ts [city]
  */
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync } from 'node:fs'
+import { readPackage } from './bake-files.ts'
 // (landmarks.ts imports Babylon, which plain node cannot load: its two helpers, restated)
 type LandmarkEntry = { name: string; osm?: string | string[]; procedural?: string; file?: string; restyle?: string }
 const packedIds = (e: LandmarkEntry): number[] => !e.osm ? [] : (Array.isArray(e.osm) ? e.osm : [e.osm])
   .map((ref) => { const [k, n] = ref.split('/'); return k === 'relation' ? Number(n) * 2 + 1 : Number(n) })
 const entryKind = (e: LandmarkEntry): string => e.restyle ? 'restyle' : (e.procedural || e.file) && packedIds(e).length ? 'replace' : 'other'
-const city = process.argv[2] ?? 'paris-marais'
-const pkg = JSON.parse(readFileSync(`public/cities/${city}.json`, 'utf8'))
+const city = process.argv[2] ?? 'san-francisco'
+// the buildings from the bake-private package (tools/bake-files.ts), checked fresh
+const pkg = readPackage(city)
 // the city's own manifest, else its region's (Paris's cities share public/landmarks/paris.json)
 const manifestFile = [`public/landmarks/${city}.json`, `public/landmarks/${city.split('-')[0]}.json`].find((f) => existsSync(f))!
 const manifest: LandmarkEntry[] = await (await import('../src/city/manifest.ts')).readManifestFile<LandmarkEntry>(manifestFile)

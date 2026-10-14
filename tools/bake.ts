@@ -9,7 +9,8 @@
  *               ──► parks, water, trees
  *                          │
  *                          ▼
- *              public/cities/<id>.json
+ *              public/cities/<id>/v3/          shipped: what the game reads, under a bake number
+ *              tools/cache/bake/<id>/          bake-private: the package and v2 tiles the tools read (tools/bake-files.ts)
  *
  * Two things here are worth explaining because they are not obvious.
  *
@@ -23,6 +24,7 @@
  * rest from the city's own character. Baking it in rather than deciding at runtime means the same building is
  * the same every session, which is what makes two rides down the same street comparable.
  */
+import { SHIPPED, assertFresh, decksUndoFile, isBaked, newBakeId, packageFile, recordBake, shippedDir, workDir } from './bake-files.ts'
 import { applyStreetPaint, markBrickSquares } from './street-paint.ts'
 import { boreTunnels } from './tunnels.ts'
 import { mkdir, writeFile } from 'node:fs/promises'
@@ -97,7 +99,8 @@ import { HUGE_AREA_SPAN, tooBigForAnArea } from '../src/city/park-planting.ts'
 import { localZones, zoneTouchesRect, zonesAt, type LocalZone, type ZoneFile } from '../src/map/zones.ts'
 import { NeighbourGrid, centroid, hasHeightTag, inferLevels, taggedLevels, type TaggedNeighbour } from './heights.ts'
 
-const OUT = resolve(import.meta.dirname, '..', 'public', 'cities')
+// the shipped bake (public/cities/<id>/v3/) and the bake-private files (tools/cache/bake/<id>/): tools/bake-files.ts
+const OUT = SHIPPED
 const DOCS = resolve(import.meta.dirname, '..', 'docs')
 /** how far beyond the box the fringe of plain massing reaches, metres */
 const FRINGE = 700
@@ -2393,8 +2396,10 @@ async function bake(spec: CitySpec): Promise<void> {
   const planted = newPlantReport()
   pkg.plantings = packPlantings(plantCity(pkg, cap, street, plantZones, planted))
   logPlanting(pkg.plantings.length / 5, planted, plantZones.count, cap, km2)
-  await mkdir(OUT, { recursive: true })
-  const file = resolve(OUT, `${spec.id}.json`)
+  await mkdir(workDir(spec.id), { recursive: true })
+  // (bake-private: what the secondary tools read — tools/bake-files.ts; never published)
+  const file = packageFile(spec.id)
+  const bake = newBakeId()
   /*
    * The monolith goes out WITHOUT the fine grid — but `writeTiles` below is given the package that still
    * has it, because cutting it into the tiles is the only thing it is for.
@@ -2405,10 +2410,13 @@ async function bake(spec: CitySpec): Promise<void> {
    */
   await writeFile(file, JSON.stringify(withoutFineGrid(pkg)))
   const kb = Math.round((await import('node:fs')).statSync(file).size / 1024)
-  console.log(`  → public/cities/${spec.id}.json  ${kb} kB`)
-  await writeTiles(pkg, streetRegion.riverDrop ?? 0, shipped, zones, datumRaw)
+  console.log(`  → ${file}  ${kb} kB (bake-private)`)
+  await writeTiles(pkg, streetRegion.riverDrop ?? 0, bake, shipped, zones, datumRaw)
   await writeRides(pkg)
-  if (deckWork) await writeFile(resolve(OUT, spec.id, 'decks-undo.json'), JSON.stringify(deckWork.undo))
+  if (deckWork) await writeFile(decksUndoFile(spec.id), JSON.stringify(deckWork.undo))
+  recordBake(spec.id, bake)
+  await dropOldLayout(spec.id)
+  console.log(`  bake ${bake}`)
   // and last, the checks that genuinely need the finished tiles: direction A confirmed against what was
   // actually written, and direction B — what is standing in the city with nothing but the classifier
   auditStage('3', spec)
@@ -2922,7 +2930,8 @@ async function main(): Promise<void> {
   if (process.argv.includes('--rides')) {
     const { readFileSync } = await import('node:fs')
     for (const spec of list) {
-      const pkg = JSON.parse(readFileSync(resolve(OUT, `${spec.id}.json`), 'utf8')) as CityPackage
+      assertFresh(spec.id)
+      const pkg = JSON.parse(readFileSync(packageFile(spec.id), 'utf8')) as CityPackage
       console.log(`${spec.id}:`)
       // (the bike trails again, from the zones as they are now: a zone edit then needs only --rides)
       const proj = new Projection(pkg.origin)
@@ -2934,8 +2943,10 @@ async function main(): Promise<void> {
         const mid = pts[Math.floor(pts.length / 2)]
         if (trailZones.some((zn) => zonesAt([zn], mid.x, mid.z).length > 0)) { e.trail = true; opened++ }
       }
-      if (opened) { console.log(`  ${opened} more trails opened to bikes`); await writeFile(resolve(OUT, `${spec.id}.json`), JSON.stringify(pkg)) }
+      if (opened) { console.log(`  ${opened} more trails opened to bikes`); await writeFile(packageFile(spec.id), JSON.stringify(pkg)) }
       await writeRides(pkg)
+      // (shipped files rewritten: a new bake number, so no phone pairs the new ride graph with the old one's tiles)
+      console.log(`  bake ${recordBake(spec.id)}`)
     }
     return
   }
@@ -2950,9 +2961,10 @@ async function main(): Promise<void> {
     const { readFileSync, existsSync, writeFileSync } = await import('node:fs')
     const { execFileSync } = await import('node:child_process')
     for (const spec of list) {
-      const file = resolve(OUT, `${spec.id}.json`)
+      assertFresh(spec.id)
+      const file = packageFile(spec.id)
       const pkg = JSON.parse(readFileSync(file, 'utf8')) as CityPackage
-      const undoFile = resolve(OUT, spec.id, 'decks-undo.json')
+      const undoFile = decksUndoFile(spec.id)
       const touched = existsSync(undoFile) ? undoDecks(pkg.edges, JSON.parse(readFileSync(undoFile, 'utf8')) as DeckUndo) : new Set<number>()
       const terrain = new Terrain(pkg.terrain)
       // (and the foot bridges' ends, which a package baked before rampFootBridgeEnds still has standing in the air)
@@ -2970,7 +2982,7 @@ async function main(): Promise<void> {
       let rewritten = 0
       for (const k of tiles) {
         const [tx, tz] = k.split(',').map(Number)
-        const f = resolve(OUT, spec.id, 'tiles', `${tx}_${tz}.json`)
+        const f = resolve(workDir(spec.id), 'tiles', `${tx}_${tz}.json`)
         if (!existsSync(f)) continue
         const t = JSON.parse(readFileSync(f, 'utf8')) as { edges: PackedEdge[] }
         t.edges = t.edges.map((e) => byId.get(e.id) ?? e)
@@ -2998,7 +3010,8 @@ async function main(): Promise<void> {
     }
     const { readFileSync } = await import('node:fs')
     for (const spec of list) {
-      const pkg = JSON.parse(readFileSync(resolve(OUT, `${spec.id}.json`), 'utf8')) as CityPackage
+      assertFresh(spec.id)
+      const pkg = JSON.parse(readFileSync(packageFile(spec.id), 'utf8')) as CityPackage
       // (the reserve boundaries a bake now drops, out of a package baked before it did)
       const before = pkg.areas.length
       pkg.areas = pkg.areas.filter((a) => a.kind === 'water' || !tooBigForAnArea(unpackPoints(a.ring)))
@@ -3018,8 +3031,10 @@ async function main(): Promise<void> {
       pkg.plantings = packPlantings(plantCity(pkg, cap, street, plantZones, planted))
       logPlanting(pkg.plantings.length / 5, planted, plantZones.count, cap, km2)
       console.log(`${spec.id}: ${pkg.plantings.length / 5} trees planted${street ? ` (${street.length} from the city's list)` : ''}`)
-      await writeFile(resolve(OUT, `${spec.id}.json`), JSON.stringify(withoutFineGrid(pkg)))
-      await writeTiles(pkg, region(spec.region).riverDrop ?? 0)
+      await writeFile(packageFile(spec.id), JSON.stringify(withoutFineGrid(pkg)))
+      const bake = newBakeId()
+      await writeTiles(pkg, region(spec.region).riverDrop ?? 0, bake)
+      recordBake(spec.id, bake)
     }
     return
   }
@@ -3030,13 +3045,15 @@ async function main(): Promise<void> {
   const { readFileSync } = await import('node:fs')
   // `live` gates the menu, not the bake: an unfinished city's package can sit in public/cities without being
   // offered to the player, so baking one to look at it does not put it in front of anybody.
-  const index = CITIES.filter((c) => c.live && existsSync(resolve(OUT, `${c.id}.json`))).map((c) => {
-    const pkg = JSON.parse(readFileSync(resolve(OUT, `${c.id}.json`), 'utf8')) as CityPackage
+  void existsSync
+  const index = CITIES.filter((c) => c.live && isBaked(c.id)).map((c) => {
+    const pkg = JSON.parse(readFileSync(packageFile(c.id), 'utf8')) as CityPackage
     // `box` as well as `radius`: the go-to decides what is in the city from the box (BUGS.md #163)
     return { id: c.id, name: c.name, lat: pkg.origin.lat, lon: pkg.origin.lon, radius: pkg.radius, box: pkg.box }
   })
-  await writeFile(resolve(OUT, 'index.json'), JSON.stringify(index, null, 2) + '\n')
-  console.log(`\n  → public/cities/index.json  ${index.length} cities`)
+  // (a file of this repo, bundled into the game, not a bake file: commit it — src/main.ts imports it)
+  await writeFile(resolve(import.meta.dirname, '..', 'src', 'cities.json'), JSON.stringify(index, null, 2) + '\n')
+  console.log(`\n  → src/cities.json  ${index.length} cities (commit it)`)
 }
 
 if (process.argv[1] && import.meta.url === new URL(process.argv[1], 'file:').href) {
@@ -3241,16 +3258,16 @@ function sampleGrid(h: number[], cols: number, rows: number, ox: number, oz: num
 
 
 /**
- * The same city cut into tiles and an index, beside the single package (PARIS_EXPAND.md §2, §8):
- * `public/cities/<id>/index.json` and `public/cities/<id>/tiles/<tx>_<tz>.json`. The old tiles are cleared
- * first, so a smaller box leaves none behind.
+ * The same city cut into tiles and an index (PARIS_EXPAND.md §2, §8): the v2 tiles, bake-private
+ * (`tools/cache/bake/<id>/index.json`, `tiles/<tx>_<tz>.json`, tools/bake-files.ts), and from them the shipped v3
+ * (`public/cities/<id>/v3/`). The old tiles are cleared first, so a smaller box leaves none behind.
  */
 /*
  * `shipped` is absent only on the replant-only path (`--trees`), which rebuilds tiles from the saved monolith: that
  * never held per-tile ground (the fine grid was always left out of it), so those tiles carry none, as before, and
  * no v3 is written from them.
  */
-async function writeTiles(pkg: CityPackage, riverDrop: number, shipped?: GroundModel, zones: LocalZone[] = [], datumRaw?: number): Promise<void> {
+async function writeTiles(pkg: CityPackage, riverDrop: number, bake: string, shipped?: GroundModel, zones: LocalZone[] = [], datumRaw?: number): Promise<void> {
   const { rm } = await import('node:fs/promises')
   const terrain = new Terrain(pkg.terrain)
   // one level per river, however many polygons OSM draws it as (city/package.ts waterLevels)
@@ -3258,7 +3275,9 @@ async function writeTiles(pkg: CityPackage, riverDrop: number, shipped?: GroundM
   const levels = waterLevels(water, (x, z) => terrain.heightAt(x, z), riverDrop, pkg.seaLevel ?? null)
   const byRing = new Map(water.map((a, k) => [a.ring, levels[k]]))
   const { index, tiles } = splitPackage(pkg, (_ring, area) => byRing.get(area.ring), shipped?.blocks)
-  const dir = resolve(OUT, pkg.id)
+  // the v2 tiles, index and terrain.bin are BAKE-PRIVATE (tools/bake-files.ts): what v3 is converted from, and what
+  // the secondary tools read; only v3 ships
+  const dir = workDir(pkg.id)
   await rm(resolve(dir, 'tiles'), { recursive: true, force: true })
   await mkdir(resolve(dir, 'tiles'), { recursive: true })
   const entries: TileEntry[] = []
@@ -3303,22 +3322,33 @@ async function writeTiles(pkg: CityPackage, riverDrop: number, shipped?: GroundM
    * elevation recorded. The game reads v3 when it is there.
    */
   if (shipped) {
-    const v3 = writeV3(dir, { ...full, terrain: full.terrain ? { ...full.terrain, heights: index.terrain!.heights } : undefined },
-      [...tiles.values()], { raw: (x, z) => shipped.heightAt(x, z), zones, datumMsl: datumRaw })
+    const v3 = writeV3(resolve(OUT, pkg.id), { ...full, terrain: full.terrain ? { ...full.terrain, heights: index.terrain!.heights } : undefined },
+      [...tiles.values()], { raw: (x, z) => shipped.heightAt(x, z), zones, datumMsl: datumRaw, bake })
     console.log(`  → public/cities/${pkg.id}/v3/  ${v3.index.tiles.length} tiles, ${Math.round(v3.bytes / 1024)} kB · zFloor ${v3.index.zFloor} cm, `
       + `datum ${v3.index.datumMsl} m above sea level · ${v3.stats.zOverrides} streets with their own junction z, `
       + `${v3.stats.belowFloor} heights below the floor`)
     if (v3.stats.belowFloor > 0) throw new Error('map v3: a real height fell at or below zFloor, where it would read as "no height"')
   }
   const biggest = entries.reduce((m, e) => Math.max(m, e.bytes), 0)
-  console.log(`  → public/cities/${pkg.id}/  ${entries.length} tiles, ${Math.round(total / 1024)} kB `
+  console.log(`  → ${dir}/  (bake-private v2) ${entries.length} tiles, ${Math.round(total / 1024)} kB `
     + `(largest ${Math.round(biggest / 1024)} kB), index ${Math.round(text.length / 1024)} kB`
     + (sidecar ? `, terrain.bin ${Math.round(sidecar / 1024)} kB` : ''))
 }
 
 /**
+ * The layout before 2026-10-14, gone from public/: the single package beside the city's folder, and the v2 tiles,
+ * index, terrain.bin, ride graphs and decks undo in it. Everything shipped is in v3/ now, and the rest is
+ * bake-private (tools/bake-files.ts) — left in public/, they would be published and could be read stale.
+ */
+async function dropOldLayout(id: string): Promise<void> {
+  const { rm } = await import('node:fs/promises')
+  const old = [resolve(OUT, `${id}.json`), ...['tiles', 'index.json', 'terrain.bin', 'ride-bike.json', 'ride-run.json', 'decks-undo.json', 'river.json'].map((f) => resolve(OUT, id, f))]
+  for (const f of old) await rm(f, { recursive: true, force: true })
+}
+
+/**
  * The ride graphs, bike and run, with the city's overrides, as the game would have built them at load
- * (city/ridefile.ts): `public/cities/<id>/ride-bike.json`, `ride-run.json`.
+ * (city/ridefile.ts): `public/cities/<id>/v3/ride-bike.json`, `ride-run.json`.
  */
 async function writeRides(pkg: CityPackage): Promise<void> {
   const terrain = new Terrain(pkg.terrain)
@@ -3327,8 +3357,9 @@ async function writeRides(pkg: CityPackage): Promise<void> {
     const g = rideFor(pkg.id, pkg.origin, edges, mode, (x, z) => terrain.heightAt(x, z), pkg.region,
       pkg.buildings.filter((b) => (b.minHeight ?? 0) < 2).map((b) => b.ring))
     const text = JSON.stringify(packRide(g, mode))
-    await writeFile(resolve(OUT, pkg.id, `ride-${mode}.json`), text)
-    console.log(`  → public/cities/${pkg.id}/ride-${mode}.json  ${g.edges.size} edges, ${Math.round(text.length / 1024)} kB`)
+    await mkdir(shippedDir(pkg.id), { recursive: true })
+    await writeFile(resolve(shippedDir(pkg.id), `ride-${mode}.json`), text)
+    console.log(`  → public/cities/${pkg.id}/v3/ride-${mode}.json  ${g.edges.size} edges, ${Math.round(text.length / 1024)} kB`)
   }
 }
 

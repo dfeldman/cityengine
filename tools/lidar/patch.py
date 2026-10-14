@@ -40,6 +40,7 @@ import shapely
 from scipy.spatial import cKDTree
 from shapely.geometry import Polygon
 
+from ept import package_file
 from simple import LIMITS, encode
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -97,7 +98,8 @@ def main():
     if datum is None:
         raise SystemExit(f'{a.city}: the v3 index has no datumMsl, so NAVD88 heights cannot be placed')
     cm = lambda v: int(round(v * 100))
-    city = json.loads((ROOT / 'public' / 'cities' / f'{a.city}.json').read_text())
+    # (the bake-private package, checked fresh: tools/bake-files.ts, ept.py)
+    city = json.loads(package_file(a.city).read_text())
     looks = Looks(city)
 
     refused: list = []

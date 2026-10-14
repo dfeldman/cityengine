@@ -18,9 +18,10 @@
  * percentage almost always is. Writes docs/review/<city>-drawn-overlaps.txt and prints the top of it.
  */
 import { chromium } from 'playwright'
-import { readFileSync, writeFileSync, existsSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { Projection } from '../src/city/geo.ts'
+import { assertFresh, readV2Tile, shippedDir } from './bake-files.ts'
 
 const BASE = process.env.SHOTS_BASE ?? 'http://localhost:5200'
 const arg = (k: string): string | undefined => process.argv.find((a) => a.startsWith(`--${k}=`))?.slice(k.length + 3)
@@ -28,6 +29,8 @@ const city = arg('city') ?? 'san-francisco'
 // default: downtown San Francisco, Civic Center to the Embarcadero
 const [lat0, lon0, lat1, lon1] = (arg('box') ?? '37.775,-122.420,37.800,-122.388').split(',').map(Number)
 const ROOT = resolve(import.meta.dirname, '..')
+// the bake-private tiles are read at the end: refuse a stale bake now, before the browser run
+assertFresh(city)
 const AREA = /marina|harbo|yacht|plaza|park|deck|podium|court|garden|bridge|pier|square|steps|labyrinth|paddock|turntable|sign|fountain|statue|monument|esplanade/i
 
 interface Placed { name: string; x: number; z: number; height: number }
@@ -91,7 +94,7 @@ try {
 
 // ---- the city's buildings, and what the manifests take away
 type P = { x: number; z: number }
-const index = JSON.parse(readFileSync(resolve(ROOT, 'public/cities', city, 'v3/index.json'), 'utf8')) as { origin: { lat: number; lon: number } }
+const index = JSON.parse(readFileSync(resolve(shippedDir(city), 'index.json'), 'utf8')) as { origin: { lat: number; lon: number } }
 const proj = new Projection(index.origin)
 const LM = resolve(ROOT, 'public/landmarks')
 interface Entry { osm?: string | string[]; include?: string; restyle?: string }
@@ -104,14 +107,14 @@ for (const e of entriesOf(resolve(LM, `${city}.json`))) {
   if (e.restyle) continue
   for (const s of Array.isArray(e.osm) ? e.osm : e.osm ? [e.osm] : []) { const [k, n] = s.split('/'); claimed.add(k === 'relation' ? 2 * Number(n) + 1 : Number(n)) }
 }
-const tilesDir = resolve(ROOT, 'public/cities', city, 'tiles')
+// the buildings from the bake-private v2 tiles (tools/bake-files.ts), checked fresh before the browser run
 const wantTiles = new Set<string>()
 for (const s of plans.values()) for (const c of s) { const [x, z] = c.split(',').map(Number); wantTiles.add(`${Math.floor(x / 200)}_${Math.floor(z / 200)}`) }
 const city_ = new Map<number, { ring: P[]; h: number; minH: number }>()
 for (const k of wantTiles) {
-  const f = resolve(tilesDir, `${k}.json`)
-  if (!existsSync(f)) continue
-  const t = JSON.parse(readFileSync(f, 'utf8')) as { buildings?: { id: number; ring: number[]; height?: number; minHeight?: number; partOf?: number }[] }
+  const [tx, tz] = k.split('_').map(Number)
+  const t = readV2Tile(city, tx, tz)
+  if (!t) continue
   for (const b of t.buildings ?? []) {
     if (claimed.has(b.id) || (b.partOf !== undefined && claimed.has(b.partOf)) || city_.has(b.id)) continue
     const ring: P[] = []

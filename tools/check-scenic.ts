@@ -4,13 +4,16 @@
  *   node --experimental-strip-types tools/check-scenic.ts [city]
  */
 import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+import { shippedDir } from './bake-files.ts'
 import { unpackRide, type RideFile } from '../src/city/ridefile.ts'
 import { Projection } from '../src/city/geo.ts'
 import { SCENIC } from '../src/city/scenic.ts'
 import { nearestOnGraph, planRoute } from '../src/sim/route.ts'
 const city = process.argv[2] ?? 'paris-centre'
-const index = JSON.parse(readFileSync(`public/cities/${city}/index.json`, 'utf8'))
-const g = unpackRide(JSON.parse(readFileSync(`public/cities/${city}/ride-bike.json`, 'utf8')) as RideFile)
+// the shipped files, as the game reads them: the v3 index (origin, region) and the bike ride graph
+const index = JSON.parse(readFileSync(resolve(shippedDir(city), 'index.json'), 'utf8'))
+const g = unpackRide(JSON.parse(readFileSync(resolve(shippedDir(city), 'ride-bike.json'), 'utf8')) as RideFile)
 const proj = new Projection(index.origin)
 let bad = 0
 for (const r of SCENIC[index.region] ?? []) {

@@ -94,7 +94,7 @@ const BALLROOM_V35: P2 = { x: 995.349, z: -1015.835 }
  * LOCAL coordinates around that node — NOT the absolute world metres the vertices above are written in. Each
  * of the three lat/lon entries below therefore gets its own ORIGIN, subtracted from the relevant vertices once
  * here, and that same origin is what the manifest's `lat`/`lon` for that entry convert back to (checked
- * against `public/cities/san-francisco.json`'s own `origin`). Getting this wrong does not error — it silently
+ * against `tools/cache/bake/san-francisco/package.json`'s own `origin`). Getting this wrong does not error — it silently
  * doubles the offset and places the model roughly twice as far from the block as it should be, which is
  * exactly the kind of thing `tools/model-shots.ts --views=rider` (camera fixed on local origin) was used to
  * catch here: the first render of all three came back blank sky.

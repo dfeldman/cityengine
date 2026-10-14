@@ -140,6 +140,12 @@ export interface MapIndex {
   skyline?: CityIndex['skyline']
   attribution: string[]
   baked: string
+  /**
+   * The bake number (tools/bake-files.ts): new whenever any of the city's shipped files is rewritten. The game fetches
+   * every other file of the city as `?b=<bake>` (src/map/store.ts), so nothing from one bake is read with another's
+   * index — whose dictionaries number the kinds, styles and names differently.
+   */
+  bake?: string
   dict: MapDict
   /** the coarse grid, unchanged from v2 (metres, v2 frame; its numbers are in `terrain.bin`) */
   terrain?: PackedTerrain

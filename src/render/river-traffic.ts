@@ -1,7 +1,7 @@
 /**
  * Boats under way on a river (user, 2026-09-22: "moving things to make the world feel more alive"). Shared by
  * every region: the region brings its fleet (Paris's is render/paris/boats.ts — bateaux-mouches, the Batobus,
- * sand barges); a small launch is common to all. They follow the river's centre line (tools/river.ts → `cities/<id>/river.json`),
+ * sand barges); a small launch is common to all. They follow the river's centre line (tools/river.ts → `cities/<id>/v3/river.json`),
  * each keeping to the right of it in the way it is going — as boats on the Seine do — and turning at the ends,
  * with a wake spreading behind (the fountains' moving-water material, render/fountains.ts), a slow roll, and the water's own level under them (`waterAt`, from the tiles:
  * off the built tiles a boat is not drawn).
@@ -179,10 +179,10 @@ export class RiverTraffic {
   }
 }
 
-/** The region's river line, if it has one (tools/river.ts). */
-export async function riverLine(base: string, city: string): Promise<number[] | null> {
+/** The region's river line, if it has one (tools/river.ts): shipped with the bake, stamped with its number. */
+export async function riverLine(base: string, city: string, stamp: string): Promise<number[] | null> {
   try {
-    const r = await fetch(new URL(`cities/${city}/river.json`, base).href)
+    const r = await fetch(new URL(`cities/${city}/v3/river.json?b=${stamp}`, base).href)
     const t = await r.text()
     if (!r.ok || !t.trimStart().startsWith('{')) return null
     return (JSON.parse(t) as { points: number[] }).points

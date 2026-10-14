@@ -7,12 +7,14 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { Projection } from '../src/city/geo.ts'
-import { unpackPoints, type CityPackage } from '../src/city/package.ts'
+import { unpackPoints } from '../src/city/package.ts'
 import { axisOf } from '../src/city/bridge-axis.ts'
+import { readPackage } from './bake-files.ts'
 
 const city = process.argv[2] ?? 'paris-centre'
 const ROOT = resolve(import.meta.dirname, '..')
-const pkg = JSON.parse(readFileSync(resolve(ROOT, 'public', 'cities', `${city}.json`), 'utf8')) as CityPackage
+// the bridges from the bake-private package (tools/bake-files.ts), checked fresh
+const pkg = readPackage(city)
 const proj = new Projection(pkg.origin)
 const file = resolve(ROOT, 'views', `${city}.json`)
 const views = (JSON.parse(readFileSync(file, 'utf8')) as { group?: string }[]).filter((v) => v.group !== 'bridge')

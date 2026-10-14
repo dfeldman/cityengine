@@ -10,7 +10,7 @@ with `npm run map:v3 -- <city>`. §12 is the order things move in, §13–§14 w
 500 m test area of San Francisco that bakes in about 15 s (`npm run bake -- sf-mini`).
 
 Code: `src/map/` — `format.ts` (these types), `convert.ts` + `convert-city.ts` (v2 → v3), `adapt.ts` (v3 → v2),
-`patch.ts`, `store.ts` (the `?map=v3` loader), `footing.ts` (the building-foot rule, shared with the renderer).
+`patch.ts`, `store.ts` (the game's map loader — v3 is its only format since 2026-10-14), `footing.ts` (the building-foot rule, shared with the renderer).
 `tools/map-v3.ts` is the CLI; `tests/map-v3.test.ts` holds the round trip and the patch verbs.
 
 Read [TILE-V2.md](TILE-V2.md) first. It is the measured case for everything in §2, and none of it is
@@ -646,7 +646,8 @@ Each step leaves the game working and is checkable on its own.
    drape, and why.
 4. ✅ **The bake writes v3 natively** (2026-09-28): `v3/` beside the v2 tiles, from the terrain model it
    shipped, with the street levelling in every foot, the zones in the index and `datumMsl`. **The game reads v3
-   by default** when a city has it (`?map=v2` for the old tiles). Still to do in this step: stable refs from
+   by default** when a city has it (`?map=v2` read the old tiles until 2026-10-14, when the v2 tiles became bake-private
+   — tools/bake-files.ts — and the game's v2 loader was removed). Still to do in this step: stable refs from
    the OSM way for streets, areas and point things (the bake has the ids; v2 dropped them).
 4b. **Planting reads zones** (the `plant` property) instead of `sf/parks.ts` and `ParkStyle`.
 5. **A renderer for parts** — buildings drawn whole, parts included, so every renderer that knows buildings

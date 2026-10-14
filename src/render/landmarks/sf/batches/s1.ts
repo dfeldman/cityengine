@@ -3,7 +3,7 @@
  * is simple geometry. Boxes, sheds, gables, decks on piles. Hand-written builders, 50–120 lines each.
  *
  * CRITICAL: all builders use `towerRing(fit)` to take the actual footprint plan from the baked ring
- * (`public/cities/san-francisco/tiles/*.json`), not fixed-size templates. See churches-4.ts / b6.ts for the pattern.
+ * (`tools/cache/bake/san-francisco/tiles/*.json`), not fixed-size templates. See churches-4.ts / b6.ts for the pattern.
  *
  * - Presidio Theatre (way/32650566): 2 photos, Mission Revival, cream stucco, red tile roof, arcaded porch.
  * - Sutro Baths (way/32776564): 1 photo, ruins: roofless concrete walls, flooded pools, sea wall.

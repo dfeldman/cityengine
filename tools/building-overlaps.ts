@@ -4,7 +4,7 @@
  *
  *   npx tsx tools/building-overlaps.ts [city] [--min=15] [--json=out.json]
  *
- * Two lists, from the baked package (public/cities/<city>/tiles) and the landmark manifests:
+ * Two lists, from the baked city (the bake-private v2 tiles, tools/bake-files.ts) and the landmark manifests:
  *
  *   1. LANDMARK vs GENERIC — a modelled building (a `procedural` entry that claims OSM buildings: its footprint is the
  *      union of the rings it claims; a standalone lat/lon entry: its rotated box) whose footprint overlaps a baked
@@ -18,9 +18,10 @@
  * Overlap is AREA, measured on a 0.5 m raster over each candidate pair; a pair is listed from `--min` square metres
  * (default 15) and 10% of the smaller footprint. Each line gives a lat/lon to go and look at.
  */
-import { readFileSync, readdirSync, writeFileSync, existsSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { Projection } from '../src/city/geo.ts'
+import { readV2 } from './bake-files.ts'
 
 type P = { x: number; z: number }
 interface Baked { id: number; ring: P[]; h: number; minH: number; partOf?: number; x0: number; x1: number; z0: number; z1: number }
@@ -35,17 +36,11 @@ const MIN = Number(args.find((a) => a.startsWith('--min='))?.slice(6) ?? 15)
 const jsonOut = args.find((a) => a.startsWith('--json='))?.slice(7)
 const ROOT = resolve(import.meta.dirname, '..')
 
-// ---- the baked buildings
-const tilesDir = resolve(ROOT, 'public/cities', city, 'tiles')
-const index = JSON.parse(readFileSync(resolve(ROOT, 'public/cities', city, 'index.json'), 'utf8')) as { origin?: { lat: number; lon: number } }
-const v3 = resolve(ROOT, 'public/cities', city, 'v3/index.json')
-const origin = index.origin ?? (existsSync(v3) ? (JSON.parse(readFileSync(v3, 'utf8')) as { origin: { lat: number; lon: number } }).origin : null)
-if (!origin) throw new Error('no origin in the city index')
-const proj = new Projection(origin)
+// ---- the baked buildings: the v2 index and every tile, checked fresh
+const v2 = readV2(city)
+const proj = new Projection(v2.index.origin)
 const buildings = new Map<number, Baked>()
-for (const f of readdirSync(tilesDir)) {
-  if (!f.endsWith('.json')) continue
-  const t = JSON.parse(readFileSync(resolve(tilesDir, f), 'utf8')) as { buildings?: { id: number; ring: number[]; height?: number; minHeight?: number; partOf?: number }[] }
+for (const t of v2.tiles) {
   for (const b of t.buildings ?? []) {
     if (buildings.has(b.id)) continue
     const ring: P[] = []

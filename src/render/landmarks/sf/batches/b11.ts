@@ -1,7 +1,7 @@
 /**
  * Kit batch 11 (docs/sf-batches/BRIEF-KIT-BATCH.md): 22 ids from docs/sf-batches/B11-IDS.txt. No id on this
  * list has a fetched Mapillary/street reference (checked `docs/shots/refs/sf-fetch/done.csv` — no rows). None
- * appear in the current bake's `public/cities/san-francisco/tiles/` output under the numeric `way` id either
+ * appear in the current bake's `tools/cache/bake/san-francisco/tiles/` output under the numeric `way` id either
  * (checked every tile file), so every ring and every heading below comes from the raw OSM way, fetched
  * directly from `api.openstreetmap.org` (`way/<id>/full`) and projected to local metres about the way's own
  * first vertex — the same edge-by-edge heading/chord test the brief's "judge the plan from the baked ring"

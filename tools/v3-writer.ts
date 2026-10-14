@@ -26,6 +26,8 @@ export interface V3Options {
   datumMsl?: number
   /** a re-conversion: the zones (already in city centimetres) and datum of the index being replaced */
   keep?: { zones?: Zone[]; datumMsl?: number }
+  /** the bake number (tools/bake-files.ts): what the game stamps every other file of the city with */
+  bake: string
 }
 
 /** Zones as the index carries them: city centimetres, x east and y north (MAP-FORMAT §3, §7). */
@@ -60,8 +62,9 @@ export function writeV3(dir: string, index: CityIndex, tiles: TileData[], opt: V
   }
   const out = join(dir, 'v3')
   mkdirSync(out, { recursive: true })
-  // stale tiles from an earlier write would be served as if current
-  for (const f of readdirSync(out)) if (f.endsWith('.json')) rmSync(join(out, f))
+  // stale tiles from an earlier write would be served as if current (the ride graphs and the river line are the
+  // bake's too, but written after this, by their own steps: kept)
+  for (const f of readdirSync(out)) if (/^-?\d+_-?\d+\.json$/.test(f)) rmSync(join(out, f))
   const byKey = new Map(index.tiles.map((e) => [e.key, e]))
   const written: MapIndex['tiles'] = []
   let bytes = 0
@@ -78,6 +81,18 @@ export function writeV3(dir: string, index: CityIndex, tiles: TileData[], opt: V
   if (opt.datumMsl !== undefined) idx.datumMsl = Math.round(opt.datumMsl * 100) / 100
   else if (opt.keep?.datumMsl !== undefined) idx.datumMsl = opt.keep.datumMsl
   idx.zones = opt.zones ? indexZones(opt.zones) : opt.keep?.zones ?? []
+  idx.bake = opt.bake
+  /*
+   * The coarse grid as a binary sidecar INSIDE v3/, beside the index, so the shipped bake is one folder (it used to be
+   * one level up, shared with the v2 files): Int16 decimetres, no parse (BUGS.md #176).
+   */
+  const h = index.terrain?.heights
+  if (idx.terrain && h && h.length > 0) {
+    const dm = new Int16Array(h.length)
+    for (let i = 0; i < dm.length; i++) dm[i] = Math.max(-32768, Math.min(32767, Math.round(h[i] * 10)))
+    writeFileSync(join(out, 'terrain.bin'), Buffer.from(dm.buffer))
+    idx.terrain = { ...idx.terrain, heights: [], bin: 'terrain.bin' }
+  }
   writeFileSync(join(out, 'index.json'), JSON.stringify(idx))
   return { index: idx, stats, bytes }
 }

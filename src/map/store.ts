@@ -1,6 +1,6 @@
 /**
- * A city read from map format v3 (MAP-FORMAT §12 step 1): the v3 index and tiles, patched as each tile lands,
- * then handed to the game as the v2 `TileData` it already draws. `?map=v3` selects it (city/tilestore.ts).
+ * A city read from map format v3 (MAP-FORMAT §12 step 1), the game's only map format: the v3 index and tiles, patched
+ * as each tile lands, then handed to the game as the `TileData` it draws (city/tilestore.ts `openCity`).
  *
  * The patch sets are `patches/<region>.json` then `patches/<city>.json`, both optional; the city's wins.
  */
@@ -24,7 +24,10 @@ async function json<T>(url: string, init?: RequestInit): Promise<T | null> {
  * deckers up Mason Street (owner, 2026-10-14: the phone kept an old index.json and fetched new tiles, the bucket
  * serving no Cache-Control). The bake's date and a hash of its dictionaries: a new bake is new URLs, every time.
  */
-export function bakeStamp(m: Pick<MapIndex, 'dict'> & { baked?: string }): string {
+export function bakeStamp(m: Pick<MapIndex, 'dict' | 'bake'> & { baked?: string }): string {
+  // the bake number every bake and every rewrite of a shipped file records (tools/bake-files.ts); an index from before
+  // there were bake numbers is told apart by its dictionaries
+  if (m.bake) return m.bake
   let h = 0x811c9dc5
   const s = JSON.stringify(m.dict)
   for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 0x01000193)
@@ -37,7 +40,7 @@ export async function openV3(root: string, id: string): Promise<CitySource | nul
   const m = await json<MapIndex>(`${base}index.json`, { cache: 'no-cache' })
   if (!m || m.v !== 3) return null
   const index = adaptIndex(m)
-  const stamp = bakeStamp(m as MapIndex & { baked?: string })
+  const stamp = bakeStamp(m)
   await readTerrainBin(base, index, `?b=${stamp}`)
 
   const sets: PatchSet[] = []

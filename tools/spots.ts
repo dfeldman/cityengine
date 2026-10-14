@@ -6,11 +6,10 @@
  * the narrowest, the forks, and a couple of dead ends — the cases a union of messy OSM geometry is most
  * likely to get wrong.
  *
- *   node --experimental-strip-types tools/spots.ts paris-marais
+ *   node --experimental-strip-types tools/spots.ts san-francisco
  */
-import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
 import type { CityPackage } from '../src/city/package.ts'
+import { readPackage } from './bake-files.ts'
 
 export interface Spot { edgeId: number; why: string }
 
@@ -58,13 +57,12 @@ export function spotsFor(pkg: CityPackage, count = 8): Spot[] {
   return picked
 }
 
+/** the whole city from the bake-private package (tools/bake-files.ts), checked fresh */
 export function loadCity(id: string): CityPackage {
-  return JSON.parse(
-    readFileSync(resolve(import.meta.dirname, '..', 'public', 'cities', `${id}.json`), 'utf8'),
-  ) as CityPackage
+  return readPackage(id)
 }
 
 if (process.argv[1]?.endsWith('spots.ts')) {
-  const city = process.argv[2] ?? 'paris-marais'
+  const city = process.argv[2] ?? 'san-francisco'
   for (const s of spotsFor(loadCity(city))) console.log(`  edge ${s.edgeId}  ${s.why}`)
 }

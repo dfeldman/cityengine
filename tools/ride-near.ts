@@ -4,13 +4,15 @@
  *   node --experimental-strip-types tools/ride-near.ts --city=paris-centre --at=48.865169,2.298839 [--r=90]
  */
 import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+import { shippedDir } from './bake-files.ts'
 import { unpackRide, type RideFile } from '../src/city/ridefile.ts'
 import { Projection } from '../src/city/geo.ts'
-import type { CityIndex } from '../src/city/tiles.ts'
 const arg = (n: string, f = ''): string => (process.argv.find((a) => a.startsWith(`--${n}=`)) ?? `=${f}`).split('=').slice(1).join('=')
 const city = arg('city', 'paris-centre')
-const index = JSON.parse(readFileSync(`public/cities/${city}/index.json`, 'utf8')) as CityIndex
-const g = unpackRide(JSON.parse(readFileSync(`public/cities/${city}/ride-bike.json`, 'utf8')) as RideFile)
+// the shipped files, as the game reads them: the v3 index (only its origin is needed) and the bike ride graph
+const index = JSON.parse(readFileSync(resolve(shippedDir(city), 'index.json'), 'utf8')) as { origin: { lat: number; lon: number } }
+const g = unpackRide(JSON.parse(readFileSync(resolve(shippedDir(city), 'ride-bike.json'), 'utf8')) as RideFile)
 const [lat, lon] = arg('at').split(',').map(Number)
 const p = new Projection(index.origin).toLocal({ lat, lon })
 const R = Number(arg('r', '90'))

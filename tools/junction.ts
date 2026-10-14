@@ -3,17 +3,15 @@
  * Prints the ride-graph nodes within a radius of a place and the turns offered at each.
  *   node --experimental-strip-types tools/junction.ts 37.7752,-122.4234,40 [city]
  */
-import { readFileSync } from 'node:fs'
-import { resolve as rpath } from 'node:path'
-import type { CityPackage } from '../src/city/package.ts'
+import { readPackage } from './bake-files.ts'
 import { Terrain } from '../src/city/terrain.ts'
 import { mapEdges, rideFor } from '../src/city/ridefile.ts'
 import { rideExits } from '../src/city/ridegraph.ts'
 import { distance, Projection } from '../src/city/geo.ts'
 const [lat, lon, rad] = (process.argv[2] ?? '').split(',').map(Number)
 const id = process.argv.slice(3).find((a) => !a.startsWith('--')) ?? 'san-francisco'
-const OUT = rpath(import.meta.dirname, '..', 'public', 'cities')
-const pkg = JSON.parse(readFileSync(rpath(OUT, `${id}.json`), 'utf8')) as CityPackage
+// the whole city from the bake-private package (tools/bake-files.ts), checked fresh
+const pkg = readPackage(id)
 const terrain = new Terrain(pkg.terrain)
 const proj = new Projection(pkg.origin)
 const c = proj.toLocal({ lat, lon })

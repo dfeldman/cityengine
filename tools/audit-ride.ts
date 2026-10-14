@@ -3,17 +3,18 @@
  * that pass through buildings, and hairpins within an edge. Built exactly as the game builds it.
  *   node --experimental-strip-types tools/audit-ride.ts [city] [--list]
  */
-import { readFileSync } from 'node:fs'
 import { rideGraph, rideExits } from '../src/city/ridegraph.ts'
-import { unpackPoints, type CityPackage } from '../src/city/package.ts'
+import { unpackPoints } from '../src/city/package.ts'
 import type { Edge } from '../src/city/graph.ts'
 import { Terrain } from '../src/city/terrain.ts'
 import { Projection } from '../src/city/geo.ts'
 import { RIDE_OVERRIDES } from '../src/city/overrides.ts'
+import { readPackage } from './bake-files.ts'
 
-const city = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : 'paris-marais'
+const city = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : 'san-francisco'
 const list = process.argv.includes('--list')
-const pkg = JSON.parse(readFileSync(`public/cities/${city}.json`, 'utf8')) as CityPackage
+// the whole city from the bake-private package (tools/bake-files.ts), checked fresh
+const pkg = readPackage(city)
 const terrain = new Terrain(pkg.terrain)
 const proj = new Projection(pkg.origin)
 const edges: Edge[] = pkg.edges.map((e) => {

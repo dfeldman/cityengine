@@ -95,7 +95,9 @@ def osm_blocks(city: str, d: Path, box):
     dbg = pickle.load(open(d / 'debug.pkl', 'rb'))
     g, gb = dbg['dtm'], dbg['box']
     at = lambda x, y: ndi.map_coordinates(g, [np.asarray(y) - gb[1] - 0.5, np.asarray(x) - gb[0] - 0.5], order=1, mode='nearest')
-    cj = json.loads((ROOT / 'public' / 'cities' / f'{city}.json').read_text())
+    # the baked package is bake-private (tools/bake-files.ts), read only when it is the bake that shipped
+    import ept
+    cj = json.loads(ept.package_file(city).read_text())
     rng = np.random.default_rng(7)
     tris, cols = [], []
     for b in cj['buildings']:

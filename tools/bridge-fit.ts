@@ -21,16 +21,18 @@ import { unpackPoints } from '../src/city/package.ts'
 import { BridgeDecks, placement, toModel, type GraphEdge } from '../src/city/bridge-decks.ts'
 import { SF_BRIDGE_DECKS } from '../src/city/sf/bridges.ts'
 import { Terrain } from '../src/city/terrain.ts'
+import { decksUndoFile, readPackage, shippedDir } from './bake-files.ts'
 
 const city = process.argv.slice(2).find((a) => !a.startsWith('--')) ?? 'san-francisco'
 // --baseY=<m>: measure as though the model stood at this datum (to try a change before making it)
 const baseOverride = (() => { const a = process.argv.find((x) => x.startsWith('--baseY=')); return a ? Number(a.split('=')[1]) : null })()
 const root = resolve(import.meta.dirname, '..', 'public')
-const pkg = JSON.parse(readFileSync(resolve(root, 'cities', `${city}.json`), 'utf8'))
+// the ways from the bake-private package (tools/bake-files.ts), checked fresh; the ride graph as the game ships it
+const pkg = readPackage(city)
 const manifest = resolve(root, 'landmarks', city, 'bridges.json')
 if (!existsSync(manifest)) { console.error(`no ${manifest}`); process.exit(1) }
 const entries = JSON.parse(readFileSync(manifest, 'utf8')) as { name: string; procedural: string; lat: number; lon: number; rotateDeg?: number; baseY?: number; scale?: number; offset?: [number, number, number]; size?: [number, number]; height?: number }[]
-const ride = JSON.parse(readFileSync(resolve(root, 'cities', city, 'ride-bike.json'), 'utf8')) as { edges: { id: number; points: number[]; heights?: number[]; kind?: string; name?: string; over: number[] }[] }
+const ride = JSON.parse(readFileSync(resolve(shippedDir(city), 'ride-bike.json'), 'utf8')) as { edges: { id: number; points: number[]; heights?: number[]; kind?: string; name?: string; over: number[] }[] }
 const proj = new Projection(pkg.origin)
 const terrain = new Terrain(pkg.terrain)
 // --step=<m>: how often along the deck to print the profile (default 200)
@@ -50,10 +52,10 @@ if (process.argv.includes('--conform')) {
     if (d) decks.add(placement({ ...e, baseY: baseOverride ?? e.baseY }, proj), d)
   }
   // (from what the ways were BEFORE the bake conformed them, where it kept that)
-  const undoFile = resolve(root, 'cities', city, 'decks-undo.json')
+  const undoFile = decksUndoFile(city)
   if (existsSync(undoFile)) {
     const undo = JSON.parse(readFileSync(undoFile, 'utf8')) as Record<string, Record<string, unknown>>
-    for (const e of pkg.edges as Record<string, unknown>[]) {
+    for (const e of pkg.edges as unknown as Record<string, unknown>[]) {
       const u = undo[e.id as number]
       if (!u) continue
       e.heights = u.heights
@@ -61,7 +63,7 @@ if (process.argv.includes('--conform')) {
       for (const k of ['bridge', 'ramp', 'bore', 'cut']) { if (u[k]) e[k] = true; else delete e[k] }
     }
   }
-  const edges = (pkg.edges as (GraphEdge & { points: never })[]).map((r) => ({ ...r, points: unpackPoints(r.points as number[]), heights: (r.heights as number[] | undefined)?.slice() })) as GraphEdge[]
+  const edges = (pkg.edges as unknown as (GraphEdge & { points: never })[]).map((r) => ({ ...r, points: unpackPoints(r.points as number[]), heights: (r.heights as number[] | undefined)?.slice() })) as GraphEdge[]
   const before = new Map(edges.map((e) => [e.id, e.heights?.slice()]))
   const r = decks.conformGraph(edges, (x, z) => terrain.rawHeightAt(x, z))
   changed = r.changed

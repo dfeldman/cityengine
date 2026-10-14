@@ -23,6 +23,8 @@ import shapely
 from scipy import ndimage as ndi
 from shapely.geometry import Polygon
 
+from ept import package_file
+
 ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -79,7 +81,8 @@ def main():
         out['fit_m'] = fit
 
     # ---- against OSM
-    city = json.loads((ROOT / 'public' / 'cities' / f'{a.city}.json').read_text())
+    # (the bake-private package, checked fresh: tools/bake-files.ts, ept.py)
+    city = json.loads(package_file(a.city).read_text())
     osm = []
     for b in city['buildings']:
         r = np.array(b['ring']).reshape(-1, 2)

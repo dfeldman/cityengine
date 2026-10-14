@@ -5,7 +5,7 @@
  * one of these is built restrained and plainly massed from its baked ring and OSM tags alone. A brief web
  * search was tried for the two named, distinctive buildings (Holy Virgin Cathedral, Star of the Sea) for style
  * context only — **plan geometry below comes from the baked ring**
- * (`public/cities/san-francisco/tiles/*.json`), never from the search, per the brief.
+ * (`tools/cache/bake/san-francisco/tiles/*.json`), never from the search, per the brief.
  *
  * Six of the seven are ordinary nave/tower forms the `church()` kit says directly, the same outcome as all four
  * of `churches-3.ts`. **One, Holy Virgin Cathedral, needed hand-built primitives for its onion domes — a real

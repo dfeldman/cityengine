@@ -66,9 +66,9 @@ const cat = (r) => {
   const u = r.url
   if (/r2\.dev/.test(u)) return /asset-index|master-index/.test(u) ? 'bucket: indexes' : /\.glb/.test(u) ? 'bucket: models' : /\.(png|jpg|webp|ktx2)/.test(u) ? 'bucket: textures' : 'bucket: other (avatar bins etc.)'
   if (/\/assets\/.*\.js/.test(u) || /\.js(\?|$)/.test(u)) return 'js'
-  if (/\/cities\/[^/]+\.json/.test(u)) return 'city package'
-  if (/\/cities\/[^/]+\/(v3\/)?tiles?\//.test(u) || /\/tiles\//.test(u)) return 'city tiles'
-  if (/\/cities\//.test(u)) return 'city other (index, ride, terrain)'
+  // a city ships as public/cities/<id>/v3/ (tools/bake-files.ts): its tiles are <tx>_<ty>.json beside the index
+  if (/\/cities\/[^/]+\/v3\/-?\d+_-?\d+\.json/.test(u)) return 'city tiles'
+  if (/\/cities\//.test(u)) return 'city other (index, ride, terrain, river)'
   if (/\/mh\/|\/env\//.test(u)) return 'avatar (local)'
   if (/\.(png|jpg|webp)/.test(u)) return 'textures (local)'
   if (/\.glb/.test(u)) return 'models (local)'

@@ -1,5 +1,5 @@
 /**
- * A building's REAL outline, read from the baked city on disk, in the frame a builder is fitted in.
+ * A building's REAL outline, read from the baked city on disk (the bake-private v2 tiles, tools/bake-files.ts), in the frame a builder is fitted in.
  *
  * Every tool that renders one builder on its own has to answer the same question — what plot does it stand
  * on — and getting it wrong is not a cosmetic matter. `?model=` builds on a square plot unless it is handed
@@ -21,7 +21,8 @@
 import { readFileSync, existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { Projection } from '../src/city/geo.ts'
-import { TILE } from '../src/city/tiles.ts'
+import { TILE, type CityIndex } from '../src/city/tiles.ts'
+import { readV2, readV2Tile } from './bake-files.ts'
 
 const ROOT = resolve(import.meta.dirname, '..')
 
@@ -41,13 +42,14 @@ interface PackedLike { id: number; ring: number[]; partOf?: number; height?: num
 
 const tiles = new Map<string, PackedLike[]>()
 let proj: Projection | null = null
+let index: CityIndex | null = null
 let city = ''
 
 function load(id: string): void {
   if (city === id) return
-  const index = resolve(ROOT, 'public', 'cities', id, 'index.json')
-  if (!existsSync(index)) throw new Error(`no baked city at public/cities/${id} — run npm run bake ${id}`)
-  proj = new Projection((JSON.parse(readFileSync(index, 'utf8')) as { origin: { lat: number; lon: number } }).origin)
+  // the v2 index, checked fresh (it throws, saying what to bake, when the city is not baked or is stale)
+  index = readV2(id, false).index
+  proj = new Projection(index.origin)
   tiles.clear()
   city = id
 }
@@ -56,8 +58,8 @@ function tileAt(tx: number, tz: number): PackedLike[] {
   const key = `${tx}_${tz}`
   const got = tiles.get(key)
   if (got) return got
-  const f = resolve(ROOT, 'public', 'cities', city, 'tiles', `${key}.json`)
-  const out = existsSync(f) ? ((JSON.parse(readFileSync(f, 'utf8')) as { buildings?: PackedLike[] }).buildings ?? []) : []
+  // (load() has checked the bake fresh)
+  const out = ((readV2Tile(city, tx, tz) as { buildings?: PackedLike[] } | null)?.buildings ?? [])
   tiles.set(key, out)
   return out
 }
@@ -140,8 +142,7 @@ export function planFor(cityId: string, id: number, near?: { lat: number; lon: n
     const tz = Math.floor(p.z / TILE)
     for (let dx = -2; dx <= 2; dx++) for (let dz = -2; dz <= 2; dz++) around.push(...tileAt(tx + dx, tz + dz))
   } else {
-    const index = JSON.parse(readFileSync(resolve(ROOT, 'public', 'cities', cityId, 'index.json'), 'utf8')) as { tiles: { tx: number; tz: number; buildings: number }[] }
-    for (const t of index.tiles) if (t.buildings) around.push(...tileAt(t.tx, t.tz))
+    for (const t of index!.tiles) if (t.buildings) around.push(...tileAt(t.tx, t.tz))
   }
   const own = around.find((b) => b.id === id)
   if (own && own.ring.length >= 6) {

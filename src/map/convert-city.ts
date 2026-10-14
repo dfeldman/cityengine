@@ -39,9 +39,8 @@ export function convertIndex(v2: CityIndex, zFloor: number, dict: MapDict, tiles
   if (v2.box) m.box = v2.box
   if (v2.region) m.region = v2.region
   if (v2.skyline) m.skyline = v2.skyline
-  // the coarse grid keeps its v2 shape; a sidecar stays where it is, one directory up from v3/, and inline
-  // heights (an older city, the Marais) stay inline
-  if (v2.terrain) m.terrain = v2.terrain.bin ? { ...v2.terrain, heights: [], bin: `../${v2.terrain.bin}` } : { ...v2.terrain }
+  // the coarse grid keeps its v2 shape; the writer (tools/v3-writer.ts) puts its numbers in v3/terrain.bin
+  if (v2.terrain) m.terrain = { ...v2.terrain }
   // the sea is at true MSL, which in the datum frame is −datumRaw (BUGS.md #161): so the datum's elevation is −seaLevel
   if (typeof seaLevel === 'number') m.datumMsl = -seaLevel
   return m

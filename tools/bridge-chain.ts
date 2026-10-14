@@ -11,6 +11,7 @@ import { Projection } from '../src/city/geo.ts'
 import { unpackPoints, type PackedEdge } from '../src/city/package.ts'
 import { placement, toModel } from '../src/city/bridge-decks.ts'
 import { Terrain } from '../src/city/terrain.ts'
+import { readPackage } from './bake-files.ts'
 
 const args = process.argv.slice(2).filter((a) => !a.startsWith('--') )
 const which = args[0]
@@ -18,7 +19,8 @@ const city = args[1] ?? 'san-francisco'
 const num = (k: string, d: number): number => { const a = process.argv.find((x) => x.startsWith(`--${k}=`)); return a ? Number(a.split('=')[1]) : d }
 const reach = num('reach', 1500)
 const root = resolve(import.meta.dirname, '..', 'public')
-const pkg = JSON.parse(readFileSync(resolve(root, 'cities', `${city}.json`), 'utf8')) as { origin: { lat: number; lon: number }; edges: PackedEdge[]; terrain: never }
+// the ways from the bake-private package (tools/bake-files.ts), checked fresh
+const pkg = readPackage(city)
 const entry = (JSON.parse(readFileSync(resolve(root, 'landmarks', city, 'bridges.json'), 'utf8')) as { procedural: string; lat: number; lon: number; rotateDeg?: number; baseY?: number }[])
   .find((e) => e.procedural === which) ?? { procedural: which, lat: num('lat', 0), lon: num('lon', 0), rotateDeg: num('rot', 0), baseY: 0 }
 const p = placement(entry, new Projection(pkg.origin))

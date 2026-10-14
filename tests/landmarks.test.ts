@@ -4,6 +4,7 @@ import { entryKind, fitFront, groundedParts, isReplaced, packedIds, partsComplet
 import { PROCEDURAL } from '../src/render/landmarks/procedural.ts'
 import { MeshBuilder } from '../src/render/buildings.ts'
 import { baked } from './baked.ts'
+import { readPackage } from '../tools/bake-files.ts'
 
 /** Where a model-space point lands in the world, as Babylon places it (rotation.y, then position). */
 const place = (f: ReturnType<typeof fitFront>, x: number, z: number): { x: number; z: number } => ({
@@ -123,7 +124,7 @@ describe('every procedural landmark', () => {
 })
 
 it.skipIf(!baked('paris-marais'))('the Place des Vosges restyle takes the houses round the square and nothing in its garden', () => {
-  const pkg = JSON.parse(readFileSync('public/cities/paris-marais.json', 'utf8'))
+  const pkg = readPackage('paris-marais')
   const manifest: LandmarkEntry[] = JSON.parse(readFileSync('public/landmarks/paris.json', 'utf8'))
   const vosges = manifest.find((e) => e.restyle === 'vosges')!
   const taken = restyles([vosges], pkg)

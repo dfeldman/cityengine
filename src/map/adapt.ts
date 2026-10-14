@@ -22,7 +22,7 @@ const r2 = (v: number): number => Math.round(v * 100) / 100
 const intToRgb = (c: number): [number, number, number] => [((c >> 16) & 255) / 255, ((c >> 8) & 255) / 255, (c & 255) / 255]
 const FURNITURE_KIND = new Map(Object.entries(FURNITURE_TYPE).map(([k, v]) => [v, k]))
 
-/** The v2 view of a v3 index: what `TileStore`, `game.ts` and the renderer read. */
+/** The game's view of a v3 index: the `CityIndex` `game.ts` and the renderer read. */
 export function adaptIndex(m: MapIndex): CityIndex {
   return {
     id: m.id, name: m.name, origin: m.origin, radius: m.radius, ground: m.ground, start: m.start,

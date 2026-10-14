@@ -9,9 +9,7 @@
  * approximated by the renderer's rule (three or more driving arms with a pavement: render/city.ts `lightsIn`).
  * Exit code 1 if any vehicle stood still for STUCK seconds, with the chain of who waits for whom.
  */
-import { existsSync, readFileSync } from 'node:fs'
-import { join } from 'node:path'
-import type { CityIndex, TileData } from '../src/city/tiles.ts'
+import { readV2, readV2Tile } from './bake-files.ts'
 import { Terrain } from '../src/city/terrain.ts'
 import { mapEdges } from '../src/city/ridefile.ts'
 import { addEdges, type CityGraph } from '../src/city/graph.ts'
@@ -25,15 +23,14 @@ const city = args[0] ?? 'sf-mini'
 const seconds = Number(args[1] ?? 600)
 const at = { x: Number(args[2] ?? 0), z: Number(args[3] ?? 0) }
 const STUCK = 60
-const dir = join('public/cities', city)
-const index = JSON.parse(readFileSync(join(dir, 'index.json'), 'utf8')) as CityIndex
+// the bake-private v2 index and tiles (tools/bake-files.ts): the index is checked fresh, then the tiles in range read
+const index = readV2(city, false).index
 const terrain = new Terrain(null)
 const graph: CityGraph = { nodes: new Map(), edges: new Map() }
 for (const e of index.tiles) {
   if (Math.hypot((e.tx + 0.5) * 200 - at.x, (e.tz + 0.5) * 200 - at.z) > 800) continue
-  const f = join(dir, 'tiles', `${e.tx}_${e.tz}.json`)
-  if (!existsSync(f)) continue
-  const t = JSON.parse(readFileSync(f, 'utf8')) as TileData
+  const t = readV2Tile(city, e.tx, e.tz)
+  if (!t) continue
   addEdges(graph, mapEdges(t.edges.filter((x) => onSurface(x) && !graph.edges.has(x.id)), terrain))
 }
 const lit = (id: number): boolean => {

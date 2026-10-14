@@ -16,6 +16,7 @@ import { writeFileSync, mkdirSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { photosFor, fetchPhoto, mapillaryToken, type Photo, type Blocker } from './photo.ts'
 import { resolveOsm } from './osm-shape.ts'
+import { readPackage } from './bake-files.ts'
 
 const ROOT = resolve(import.meta.dirname, '..')
 const arg = (n: string, f = ''): string => (process.argv.find((a) => a.startsWith(`--${n}=`)) ?? `=${f}`).split('=').slice(1).join('=')
@@ -64,7 +65,8 @@ const cellKey = (x: number, y: number): string => `${Math.floor(x / CELL)},${Mat
 /** the package's own metre frame, so a lat/lon can be placed in the grid above */
 let pkgOrigin: { la: number; lo: number; mLat: number; mLon: number } | null = null
 try {
-  const pkg = JSON.parse(readFileSync(resolve(ROOT, 'public', 'cities', 'san-francisco.json'), 'utf8')) as
+  // the bake-private package (tools/bake-files.ts), checked fresh: a stale one is refused, not used
+  const pkg = readPackage('san-francisco') as unknown as
     { origin: { lat: number; lon: number }
       buildings: { id: number; ring: number[]; height?: number; name?: string }[]
       fringe?: { id: number; ring: number[]; height?: number }[] }
@@ -88,7 +90,10 @@ try {
   }
   for (const b of pkg.buildings) index(b, true, b.name)
   for (const b of pkg.fringe ?? []) index(b, false)
-} catch { /* no package yet: fall back to the centroid, and to no occlusion test */ }
+} catch (e) {
+  // no package yet, or a stale one: fall back to the centroid, and to no occlusion test — but say so
+  console.warn(`no occlusion test: ${(e as Error).message}`)
+}
 
 /**
  * The neighbours that could stand between a camera and this building.
@@ -256,8 +261,7 @@ writeFileSync(resolve(dir, 'photos.csv'), rows.join('\n') + '\n')
  */
 const list = arg('list')
 if (list) {
-  const pkg = JSON.parse(readFileSync(resolve(ROOT, 'public', 'cities', 'san-francisco.json'), 'utf8')) as
-    { buildings: { id: number; style?: string; archetype?: string }[] }
+  const pkg = readPackage('san-francisco') as unknown as { buildings: { id: number; style?: string; archetype?: string }[] }
   const byId = new Map(pkg.buildings.map((b) => [b.id, b]))
   const md = [`# ${list}: ${want.length} buildings, up to ${each} photographs each\n`,
     'Follow docs/sf-batches/BRIEF-REFACE.md exactly. The photographs are in the directory named below; open',

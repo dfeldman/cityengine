@@ -4,7 +4,7 @@
  * manifest placed.)
  *
  * Every builder in PROCEDURAL (src/render/landmarks/procedural.ts) against every manifest that can place one:
- * public/landmarks/<region>/*.json, public/landmarks/<region>.json, and the city packages' skylines. A builder no
+ * public/landmarks/<region>/*.json, public/landmarks/<region>.json, and the shipped cities' skylines. A builder no
  * manifest names is reported with the file it is in and the OSM way its doc comment was written for, and sorted:
  *
  *   SUPERSEDED  another manifest entry places that same OSM way, with another builder — nothing lost;
@@ -21,6 +21,7 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { join, relative, resolve } from 'node:path'
 import { PROCEDURAL } from '../src/render/landmarks/procedural.ts'
+import { SHIPPED, shippedDir } from './bake-files.ts'
 
 const ROOT = resolve(import.meta.dirname, '..')
 const all = process.argv.includes('--all')
@@ -46,9 +47,11 @@ for (const name of readdirSync(lm)) {
     }
   }
 }
-for (const f of readdirSync(join(ROOT, 'public', 'cities')).filter((f) => f.endsWith('.json') && f !== 'index.json')) {
-  const pkg = JSON.parse(readFileSync(join(ROOT, 'public', 'cities', f), 'utf8')) as { skyline?: { procedural: string }[] }
-  for (const s of pkg.skyline ?? []) used.set(s.procedural, `public/cities/${f} (skyline)`)
+// the skylines as the game reads them: each shipped city's v3 index carries its own
+for (const id of readdirSync(SHIPPED).filter((d) => existsSync(join(shippedDir(d), 'index.json')))) {
+  const f = join(shippedDir(id), 'index.json')
+  const idx = JSON.parse(readFileSync(f, 'utf8')) as { skyline?: { procedural: string }[] }
+  for (const s of idx.skyline ?? []) used.set(s.procedural, `${relative(ROOT, f)} (skyline)`)
 }
 
 // ---- where each builder is written, and the way its comment names

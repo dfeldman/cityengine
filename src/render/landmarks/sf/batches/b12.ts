@@ -5,7 +5,7 @@
  * building at all. Fetching each one directly from `api.openstreetmap.org` (`way/<id>.json`) returned a
  * completely unrelated feature — mostly `tiger:*`-tagged US rural roads or foreign residential streets, one
  * (`way/11009073`, "Fort Point") returning nothing (the way no longer exists). None of the seven appear
- * anywhere in `public/cities/san-francisco/tiles/*.json` either (checked by numeric id across every tile).
+ * anywhere in `tools/cache/bake/san-francisco/tiles/*.json` either (checked by numeric id across every tile).
  * There is no ring, no tags, and nothing to model — these are `bail`, not `escalate`, because there is no
  * building-shaped thing to hand up:
  *
@@ -18,7 +18,7 @@
  *  - `way/6878543` "San Francisco Zen Center" -> now Van Verschuerplein, a residential street in the Netherlands.
  *
  * The remaining 15 ids resolved to real SF buildings. Rings and tags came from
- * `public/cities/san-francisco/tiles/*.json` (numeric `id` match — the baked, metres-projected ring, per the
+ * `tools/cache/bake/san-francisco/tiles/*.json` (numeric `id` match — the baked, metres-projected ring, per the
  * brief's "judge the plan from the baked ring" section) for every one of them except the lighthouse, which is
  * too small to appear as a tile `building` entry; for that one the ring came from `way/291189057/full` on the
  * OSM API directly, projected locally.

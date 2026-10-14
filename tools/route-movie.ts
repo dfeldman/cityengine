@@ -66,6 +66,7 @@ import { homedir } from 'node:os'
 import sharp from 'sharp'
 import { CRR, DEFAULTS } from '../src/sim/ride.ts'
 import { SCENIC } from '../src/city/scenic.ts'
+import { shippedDir } from './bake-files.ts'
 
 const arg = (name: string, fallback = ''): string => {
   const hit = process.argv.slice(2).find((a) => a.startsWith(`--${name}=`))
@@ -127,7 +128,7 @@ const wattsFor = (target: number): number => {
 /** `&at=` for the first stop of the route `--route` names, or null when nothing matches (the page will say). */
 function firstWaypoint(): string | null {
   try {
-    const index = JSON.parse(readFileSync(resolve(import.meta.dirname, '..', 'public', 'cities', city, 'index.json'), 'utf8')) as { region?: string }
+    const index = JSON.parse(readFileSync(resolve(shippedDir(city), 'index.json'), 'utf8')) as { region?: string }
     const want = arg('route').toLowerCase()
     const r = (SCENIC[index.region ?? ''] ?? []).find((q) => q.name.toLowerCase().includes(want))
     return r ? `&at=${r.waypoints[0][0]},${r.waypoints[0][1]}` : null
