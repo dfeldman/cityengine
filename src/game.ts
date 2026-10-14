@@ -232,7 +232,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   let lastMark = performance.now()
   const heapMB = (): number => Math.round(((performance as unknown as { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize ?? 0) / 1e6)
   // the loading screen (ui/loading.ts) follows the stages; `?freeze=1` shots and probes skip it
-  let loading: LoadingScreen | null = opts.freeze ? null : new LoadingScreen(opts.city, opts.device)
+  let loading: LoadingScreen | null = opts.freeze ? null : LoadingScreen.get()
+  if (opts.freeze) LoadingScreen.dismiss()
+  loading?.device(opts.device)
   const mark = (name: string): void => {
     loading?.stage(name)
     const t = performance.now()
@@ -248,6 +250,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     fetch(`${ASSETS}atlas.json`).then((r) => r.json()) as Promise<AtlasManifest>,
   ])
   loading?.city(src.index?.name ?? opts.city)
+  mark('opened')
   // the city's landmarks, or its region's (the Marais and central Paris share Paris's)
   const landmarkList = await landmarkManifest(document.baseURI, opts.city, src.index.region)
   /*
@@ -2897,7 +2900,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     if (marks.firstFrame === undefined) { mark('firstFrame'); firstFrameAt = performance.now() }
     // the loading screen stays until the streets round the rider are built, or four seconds at most
     if (loading && marks.firstFrame !== undefined && (city.idle || performance.now() - firstFrameAt > 4000)) {
-      loading.hide()
+      mark('streets')
+      loading?.hide()
       loading = null
       // and the welcome screen over the city, gone at the first key (BUGS.md #165)
       if (!opts.freeze) welcomeScreen(src.index?.name ?? opts.city, !nav.fast)

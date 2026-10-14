@@ -15,7 +15,7 @@ import { HUD_CSS } from './ui/hud.ts'
 import { DELIVERY_CSS } from './ui/delivery-card.ts'
 import { MINIMAP_CSS } from './ui/minimap.ts'
 import { THEME_CSS } from './ui/theme.ts'
-import { LOADING_CSS, WELCOME_CSS } from './ui/loading.ts'
+import { LOADING_CSS, LoadingScreen, WELCOME_CSS } from './ui/loading.ts'
 import { CARD_CSS } from './ui/landmark-card.ts'
 import { detectTier } from './tier.ts'
 import { initAssets } from './assets.ts'
@@ -34,8 +34,14 @@ document.head.appendChild(style)
 // iOS Safari ignores `user-scalable=no` (index.html): a pinch anywhere zoomed the whole game, HUD and all
 for (const ev of ['gesturestart', 'gesturechange']) document.addEventListener(ev, (e) => e.preventDefault(), { passive: false })
 
+// the loading screen (in index.html, ui/loading.ts): a ride follows it; anything else takes it down at once
+const showcasing = ['model', 'trees', 'palms', 'showcase'].some((k) => params.get(k))
+if (showcasing || params.get('freeze') === '1') LoadingScreen.dismiss()
+else LoadingScreen.get().stage('boot')
+
 // the shared asset bucket's indexes (trees, plants, statues, this game's own): before anything loads a model
 await initAssets()
+if (!showcasing && params.get('freeze') !== '1') LoadingScreen.get().stage('assets')
 
 if (params.get('model')) {
   const { modelShowcase } = await import('./model-showcase.ts')
@@ -75,6 +81,7 @@ if (params.get('model')) {
       platform = new Platform(start, (line) => console.log('streetrunner:', line))
     } catch (e) {
       // say so, in the console's look, rather than sit on "loading…" for ever
+      LoadingScreen.dismiss()
       const box = document.createElement('div')
       box.className = 'sr-loading'
       box.innerHTML = '<div class="sr-card"><span class="sr-pill">Dandyhorse</span><h1>Cycle Dash</h1><div class="city"></div>'
@@ -104,6 +111,7 @@ if (params.get('model')) {
       + '</ul>'
     document.body.appendChild(box)
     document.getElementById('label')!.textContent = ''
+    LoadingScreen.dismiss()
     throw new Error(`unknown city ${city}`)
   }
   // the city menu, top centre (on Dandyhorse the launch chose the city)

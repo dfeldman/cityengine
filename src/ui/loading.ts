@@ -3,24 +3,39 @@
  * stages (game.ts `mark`), and a line saying what it is doing — then it fades away once the first frame is
  * drawn and the streets round the rider are built. In the console's look (ui/theme.ts). Inside Dandyhorse the
  * console's own launch screen hands over to this one, so the two share the colours and the type.
+ *
+ * It is in index.html (`#sr-boot`), so it shows with the page, and this class adopts it (owner, 2026-10-14: "the
+ * progress bar takes a moment to show up, and only really has 3 positions"). The bar is WEIGHTED by how long each
+ * stage takes — measured on a cold load at 25 Mbps / 80 ms (tools/perf), 16.6 s in all — not one
+ * step per stage: fifteen equal steps, fourteen of them in the last second, read as 0, 50, 100. And within a stage
+ * it eases on toward the stage's end with a CSS transform transition, which the compositor runs even while the
+ * main thread is busy building the city.
  */
-const STAGES: [string, string][] = [
-  ['fetched', 'Fetching the map'],
-  ['rideGraph', 'Laying out the streets'],
-  ['city', 'Raising the buildings'],
-  ['fringe', 'The city beyond'],
-  ['terraces', 'Café terraces'],
-  ['quays', 'The quays'],
-  ['passages', 'Passages and arches'],
-  ['landmarks', 'Monuments'],
-  ['signs', 'Shop signs'],
-  ['crowd', 'People'],
-  ['life', 'Trains and boats'],
-  ['vegetation', 'Trees'],
-  ['pathmap', 'Paths'],
-  ['minimap', 'The map'],
-  ['firstFrame', 'Nearly there'],
+const STAGES: [name: string, doing: string, seconds: number][] = [
+  // (each name is the mark that ENDS the stage; `doing` is what the stage is busy with)
+  ['boot', 'Loading the game', 1.1],
+  ['assets', 'Fetching the catalogue', 2.0],
+  ['opened', 'Fetching the map', 3.0],
+  ['fetched', 'Finding the landmarks', 1.5],
+  ['rideGraph', 'Laying out the streets', 1.5],
+  ['city', 'Raising the buildings', 2.5],
+  ['fringe', 'The city beyond', 0.1],
+  ['terraces', 'Café terraces', 0.05],
+  ['quays', 'The quays', 0.05],
+  ['passages', 'Passages and arches', 0.05],
+  ['landmarks', 'Monuments', 0.5],
+  ['signs', 'Shop signs', 0.05],
+  ['crowd', 'People', 0.05],
+  ['life', 'Trains and boats', 0.05],
+  ['vegetation', 'Trees', 0.05],
+  ['pathmap', 'Paths', 0.05],
+  ['minimap', 'The map', 0.5],
+  ['firstFrame', 'First look', 0.5],
+  ['streets', 'Building the streets around you', 3.5],
 ]
+const TOTAL = STAGES.reduce((t, s) => t + s[2], 0)
+/** where each stage starts and ends on the bar, 0..1 */
+const AT = STAGES.map((_, i) => STAGES.slice(0, i).reduce((t, s) => t + s[2], 0) / TOTAL)
 
 export const LOADING_CSS = `
 .sr-loading { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center;
@@ -28,48 +43,97 @@ export const LOADING_CSS = `
 .sr-loading.gone { opacity: 0; pointer-events: none; }
 .sr-loading .sr-card { width: min(520px, 86vw); padding: 30px 34px 28px; text-align: center; }
 .sr-loading h1 { margin: 10px 0 2px; font: 800 38px/1.1 var(--font); letter-spacing: -.01em; }
-.sr-loading .city { font: 600 18px/1.4 var(--font); color: var(--muted); margin-bottom: 22px; }
+.sr-loading .city { font: 600 18px/1.4 var(--font); color: var(--muted); margin-bottom: 22px; min-height: 1.4em }
 .sr-loading .bar { height: 12px; border-radius: 999px; background: var(--panel-2); overflow: hidden; }
-.sr-loading .fill { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, var(--page), var(--c-blue));
-  transition: width .35s ease; }
+.sr-loading .fill { height: 100%; width: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--page), var(--c-blue));
+  transform-origin: left; transform: scaleX(0) }
 .sr-loading .what { margin-top: 12px; font: 15px/1.4 var(--font); color: var(--muted); min-height: 1.4em; }
 `
+
+let current: LoadingScreen | null = null
 
 export class LoadingScreen {
   private readonly root: HTMLElement
   private readonly fill: HTMLElement
   private readonly what: HTMLElement
-  private done = 0
+  private readonly cityEl: HTMLElement
+  /** the stage under way (an index into STAGES) */
+  private stageAt = 0
+  private shown = 0
+  private mode = 'by bike'
 
-  private readonly mode: string
+  /** The one loading screen: the page's own (`#sr-boot`), adopted, or a new one where the page has none. */
+  static get(): LoadingScreen {
+    current ??= new LoadingScreen()
+    return current
+  }
 
-  constructor(cityName: string, device: 'bike' | 'treadmill' = 'bike') {
-    this.mode = device === 'treadmill' ? 'on foot' : 'by bike'
-    this.root = document.createElement('div')
-    this.root.className = 'sr-loading'
-    this.root.innerHTML = `<div class="sr-card"><span class="sr-pill">Dandyhorse</span><h1>Cycle Dash</h1>
-      <div class="city"></div><div class="bar"><div class="fill"></div></div><div class="what">Starting…</div></div>`
-    this.city(cityName)
+  /** Not loading a ride (a showcase, a missing city, a screenshot): the page's screen goes at once. */
+  static dismiss(): void {
+    if (current) current.hide(true)
+    else document.getElementById('sr-boot')?.remove()
+  }
+
+  private constructor() {
+    const boot = document.getElementById('sr-boot')
+    if (boot) this.root = boot
+    else {
+      this.root = document.createElement('div')
+      this.root.className = 'sr-loading'
+      this.root.innerHTML = '<div class="sr-card"><span class="sr-pill">Dandyhorse</span><h1>Cycle Dash</h1>'
+        + '<div class="city"></div><div class="bar"><div class="fill"></div></div><div class="what"></div></div>'
+      document.body.appendChild(this.root)
+    }
     this.fill = this.root.querySelector('.fill')!
     this.what = this.root.querySelector('.what')!
-    document.body.appendChild(this.root)
+    this.cityEl = this.root.querySelector('.city')!
+    this.enter(0)
   }
+
+  /** the machine, for the line under the title */
+  device(device: 'bike' | 'treadmill'): void { this.mode = device === 'treadmill' ? 'on foot' : 'by bike' }
 
   /** a name for the city, once the index has it */
-  city(name: string): void { this.root.querySelector('.city')!.textContent = `${name} · ${this.mode}` }
+  city(name: string): void { this.cityEl.textContent = `${name} · ${this.mode}` }
 
-  /** a load stage finished (game.ts `mark`) */
+  /** a load stage finished (main.ts, game.ts `mark`) */
   stage(name: string): void {
     const i = STAGES.findIndex(([n]) => n === name)
-    if (i < 0) return
-    this.done = Math.max(this.done, i + 1)
-    this.fill.style.width = `${Math.round((this.done / STAGES.length) * 100)}%`
-    this.what.textContent = STAGES[Math.min(STAGES.length - 1, i + 1)][1] + '…'
+    if (i < 0 || i < this.stageAt) return
+    this.enter(i + 1)
   }
 
-  /** everything in: fade out, and leave the page */
-  hide(): void {
-    this.fill.style.width = '100%'
+  /**
+   * Stage `i` begins: the bar goes straight to where it starts (a quick catch-up), then eases toward 85% of the way
+   * to where it ends, over a little longer than the stage should take. A stage that runs long leaves the bar
+   * nearly there rather than jumping past it; one that ends early is caught up by the next.
+   */
+  private enter(i: number): void {
+    this.stageAt = i
+    if (i >= STAGES.length) { this.to(1, 0.3); return }
+    const [, doing, sec] = STAGES[i]
+    this.what.textContent = `${doing}…`
+    const start = AT[i]
+    const end = i + 1 < AT.length ? AT[i + 1] : 1
+    if (start > this.shown + 0.005) this.to(start, 0.25)
+    // (two frames: the catch-up's transform has to be committed before the long ease is set over it)
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (this.stageAt === i) this.to(start + (end - start) * 0.85, sec * 1.6, 'cubic-bezier(.2,.7,.4,1)')
+    }))
+  }
+
+  private to(f: number, seconds: number, ease = 'ease-out'): void {
+    this.shown = f
+    this.fill.style.transition = `transform ${seconds}s ${ease}`
+    this.fill.style.transform = `scaleX(${f.toFixed(4)})`
+  }
+
+  /** everything in: fill up, fade out, and leave the page */
+  hide(now = false): void {
+    if (current === this) current = null
+    this.stageAt = STAGES.length
+    if (now) { this.root.remove(); return }
+    this.to(1, 0.3)
     this.root.classList.add('gone')
     setTimeout(() => this.root.remove(), 800)
   }
