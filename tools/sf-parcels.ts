@@ -17,7 +17,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
 const CACHE = resolve(import.meta.dirname, 'cache')
-const DATASET = 'https://data.sfgov.org/resource/wv5m-vpq2.json'
+const DATASET = 'https://data.sf.gov/resource/wv5m-vpq2.json'
 const YEAR = '2025'
 
 /** One parcel's record: [lon, lat, year built, stories, units, use code, construction type] */
