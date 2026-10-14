@@ -78,7 +78,7 @@ smoother terrain-tile cliffs at Lands End and Sutro)
     python3 -m venv tools/lidar/.venv && tools/lidar/.venv/bin/pip install -r tools/lidar/requirements.txt
     tools/lidar/.venv/bin/python tools/lidar/dtm.py san-francisco     # USGS 3DEP lidar → tools/cache/lidar/dtm-san-francisco.json
 
-Run it before `npm run bake san-francisco`. SF's street trees (DataSF) and assessor rolls (data.sf.gov) are
+Run it before `npm run bake san-francisco` (it needs no earlier bake: the origin comes from tools/cities.ts). SF's street trees (DataSF) and assessor rolls (data.sf.gov) are
 fetched by the bake itself.
 
 **3. Sign lettering** (also run by the bake; `public/models/signs/`, and `public/models/` is ignored wholesale)

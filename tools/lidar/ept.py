@@ -28,6 +28,7 @@ import argparse
 import io
 import json
 import math
+import re
 import sys
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
@@ -64,10 +65,20 @@ class Frame:
 
 
 def city_frame(city: str) -> tuple[Frame, dict]:
-    """The city's origin and ride box, from the small streamed index (the package JSON can be 100 MB)."""
-    meta = json.loads((ROOT / 'public' / 'cities' / city / 'index.json').read_text())
-    o = meta['origin']
-    return Frame(o['lat'], o['lon']), meta
+    """The city's origin and ride box, from the small streamed index (the package JSON can be 100 MB). Before the
+    city's first bake there is no index: the origin is then the city's `centre` in tools/cities.ts, which is what
+    the bake uses (so a fresh checkout can make the lidar ground before baking)."""
+    index = ROOT / 'public' / 'cities' / city / 'index.json'
+    if index.exists():
+        meta = json.loads(index.read_text())
+        o = meta['origin']
+        return Frame(o['lat'], o['lon']), meta
+    src = (ROOT / 'tools' / 'cities.ts').read_text()
+    at = src.find(f"id: '{city}'")
+    m = re.search(r"centre:\s*\{\s*lat:\s*(-?[\d.]+),\s*lon:\s*(-?[\d.]+)", src[at:]) if at >= 0 else None
+    if not m:
+        raise SystemExit(f'{city}: not baked yet, and no centre for it in tools/cities.ts')
+    return Frame(float(m.group(1)), float(m.group(2))), {'origin': {'lat': float(m.group(1)), 'lon': float(m.group(2))}}
 
 
 def thin_voxels(p: dict, voxel: float) -> dict:
