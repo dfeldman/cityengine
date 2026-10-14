@@ -31,8 +31,10 @@ function load(id: string) {
   return { pkg, map, graph: rideGraph(edges, 'bike') }
 }
 
-describe.skipIf(!baked('paris-marais'))('riding Le Marais', () => {
-  const { pkg, map, graph } = baked('paris-marais') ? load('paris-marais') : ({} as ReturnType<typeof load>)
+// (without the bake there is nothing to ride: one skipped placeholder instead of the suite, whose set-up reads it)
+if (!baked('paris-marais')) it.skip('riding Le Marais: needs the paris-marais bake', () => {})
+else describe('riding Le Marais', () => {
+  const { pkg, map, graph } = load('paris-marais')
   // the package names its start by MAP edge; this is where that is on the ride graph
   const at = locate(graph, map, pkg.start.edgeId, pkg.start.s)!
   const start = { edgeId: at.edgeId, s: at.s, reversed: false }

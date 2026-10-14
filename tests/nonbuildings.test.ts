@@ -17,6 +17,7 @@
  * (`npx vite-node tools/nonbuildings.ts --city=<c> --seed-views`, then
  * `node --experimental-strip-types tools/views.ts --city=<c> --group=nonbuilding`), and it is a human's job.
  */
+import { existsSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import {
   AUDITED, allNonbuildings, classifiedBuilders, kindOfBuilder, BUILDINGS_OK, EXPLICIT, issueKey, inspectGlb, buildIt,
@@ -319,7 +320,11 @@ describe('the GLB reader itself', () => {
    */
   it('says so when a file is not there, and reads a real one', () => {
     expect(inspectGlb('/nowhere/at/all.glb')).toEqual({ ok: false, reason: 'file does not exist' })
-    const g = inspectGlb(new URL('../public/models/paris/henri-iv.glb', import.meta.url).pathname)
+    // a real statue: packed by tools/glb/pack.ts into public/models/ (gitignored; the game reads it from the
+    // asset bucket), so a fresh clone may not have one
+    const real = new URL('../public/models/paris/henri-iv.glb', import.meta.url).pathname
+    if (!existsSync(real)) return console.warn('(no public/models/paris/henri-iv.glb here: only the missing-file case was checked)')
+    const g = inspectGlb(real)
     expect(g.ok).toBe(true)
     expect(g.nodes).toBeGreaterThan(0)
   })
