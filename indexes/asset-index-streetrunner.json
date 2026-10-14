@@ -8603,6 +8603,2559 @@
           "path": "models/signs/ripleys.glb"
         }
       }
+    },
+    {
+      "id": "facades-atlas",
+      "name": "atlas",
+      "folder": "cityengine/facades",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade texture atlas",
+        "atlas"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-4a0837e572-facade-texture-atlas.png",
+          "hash": "4a0837e57201add386cf811128c903aa111db70cec35ffa13024b9cd594ec935",
+          "size": 4095448,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/atlas.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/atlas.png"
+        }
+      }
+    },
+    {
+      "id": "facades-sheet",
+      "name": "sheet",
+      "folder": "cityengine/facades",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade texture atlas",
+        "sheet"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-37b49b3315-facade-texture-atlas-sheet.png",
+          "hash": "37b49b3315a5c47468b1df764065e07b26281f74ef3797421cdb908888878217",
+          "size": 3775028,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/sheet.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/sheet.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-bauhaus-far",
+      "name": "bauhaus far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "bauhaus far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-d2ab4b916c-facade-wall-texture-bauhaus-far.png",
+          "hash": "d2ab4b916c62cb078853afde35b06fb1972bb71342147cd0af8186af99f56f57",
+          "size": 33969,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/bauhaus-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/bauhaus-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-bauhaus",
+      "name": "bauhaus",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "bauhaus"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-3de23c5741-facade-wall-texture-bauhaus.png",
+          "hash": "3de23c57411fc34db97ae7509a56c9bd14682f4c08ced654ba28a1b967b54961",
+          "size": 180111,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/bauhaus.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/bauhaus.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-brick-far",
+      "name": "brick far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "brick far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-b39f5dbe41-facade-wall-texture-brick-far.png",
+          "hash": "b39f5dbe414f58ada9e95e1b3345cf8a7b34b535b96ef541e8daa4f831df8cc1",
+          "size": 38847,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/brick-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/brick-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-brick",
+      "name": "brick",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "brick"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-1e082c5dd2-facade-wall-texture-brick.png",
+          "hash": "1e082c5dd2bdd8b889d3cddbf507b71722b85be8e2a48a65ad752d712212b9f4",
+          "size": 228615,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/brick.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/brick.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-brownstone-far",
+      "name": "brownstone far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "brownstone far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-a1e15b9634-facade-wall-texture-brownstone-far.png",
+          "hash": "a1e15b9634c2a427319c5c27a1269bd05ee5c21833992b645d2debe6355563d1",
+          "size": 39158,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/brownstone-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/brownstone-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-brownstone",
+      "name": "brownstone",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "brownstone"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-adac5b6fe2-facade-wall-texture-brownstone.png",
+          "hash": "adac5b6fe22856f156fd652bb476ce00890bcf41f276b8025b7afc500e251ce6",
+          "size": 265034,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/brownstone.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/brownstone.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-brutalist-far",
+      "name": "brutalist far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "brutalist far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-cb3a610f3d-facade-wall-texture-brutalist-far.png",
+          "hash": "cb3a610f3dfe0dbc2f00cbacfcd11352372e25b572033456f571e2bd31e20095",
+          "size": 40537,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/brutalist-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/brutalist-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-brutalist",
+      "name": "brutalist",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "brutalist"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-46066c73d1-facade-wall-texture-brutalist.png",
+          "hash": "46066c73d16b9cf5f3860ff7ea0b8d017d06f3690d6ce1a605de5953f687ce52",
+          "size": 221795,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/brutalist.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/brutalist.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-capecod-far",
+      "name": "capecod far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "capecod far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-6b507588e9-facade-wall-texture-capecod-far.png",
+          "hash": "6b507588e9dc98fd852e5a03deb8a310bb2eebff272a1d4a78aa2e3c5f643116",
+          "size": 36894,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/capecod-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/capecod-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-capecod",
+      "name": "capecod",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "capecod"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-ed3bd1f13e-facade-wall-texture-capecod.png",
+          "hash": "ed3bd1f13eca617533b9762aa8bb7e81af3d1220912beef344d0de6d3c368842",
+          "size": 184617,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/capecod.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/capecod.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-chicago-far",
+      "name": "chicago far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "chicago far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-d1797e0c08-facade-wall-texture-chicago-far.png",
+          "hash": "d1797e0c089a6a5704967dd1dfaf0f9997ab1eff609b5ef8cbdc15d56d395d8c",
+          "size": 25286,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/chicago-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/chicago-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-chicago",
+      "name": "chicago",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "chicago"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-bc08eda90f-facade-wall-texture-chicago.png",
+          "hash": "bc08eda90f2d5ff6fde7169ed090393dbc861052c18cc01da8c184c457a03328",
+          "size": 202621,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/chicago.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/chicago.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-chinatown-far",
+      "name": "chinatown far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "chinatown far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-b7399ff160-facade-wall-texture-chinatown-far.png",
+          "hash": "b7399ff1604f8b7b5621ae77f937c020d6b5d15ca7717e7e5aa07cc723d08cf0",
+          "size": 38985,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/chinatown-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/chinatown-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-chinatown",
+      "name": "chinatown",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "chinatown"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-6fb07ecd2e-facade-wall-texture-chinatown.png",
+          "hash": "6fb07ecd2ed1b63121945ca1f1ff522a147179aadeabf98d278c3a9096f7d346",
+          "size": 233200,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/chinatown.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/chinatown.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-classical-far",
+      "name": "classical far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "classical far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-0d88a9da96-facade-wall-texture-classical-far.png",
+          "hash": "0d88a9da96f4d6fcb45df462542642bcacf9b31a8f5b2d8bfdc6773fe4d4db79",
+          "size": 39871,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/classical-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/classical-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-classical",
+      "name": "classical",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "classical"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-2ae380dbef-facade-wall-texture-classical.png",
+          "hash": "2ae380dbef57697216403923c7652020270075321efde9d8c7361ab3f318f527",
+          "size": 205972,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/classical.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/classical.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-edwardian-far",
+      "name": "edwardian far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "edwardian far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-6ee62f5366-facade-wall-texture-edwardian-far.png",
+          "hash": "6ee62f5366cf90c548e1338052f316310b9d1522abb3b4bdc57757899442cfb0",
+          "size": 39446,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/edwardian-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/edwardian-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-edwardian",
+      "name": "edwardian",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "edwardian"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-fbbd913d99-facade-wall-texture-edwardian.png",
+          "hash": "fbbd913d990005acbb711dc3a52a39804b09340593b81639a3fef547b2685e29",
+          "size": 179678,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/edwardian.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/edwardian.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-haussmann-far",
+      "name": "haussmann far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "haussmann far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-00b42a7084-facade-wall-texture-haussmann-far.png",
+          "hash": "00b42a708430907d24a51e118dfdddba4bb3b765add1356f02dce67e69c69564",
+          "size": 31184,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/haussmann-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/haussmann-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-haussmann",
+      "name": "haussmann",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "haussmann"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-dc66803f11-facade-wall-texture-haussmann.png",
+          "hash": "dc66803f11b767b0be5cf083f0351d3ae7b686a85920ca960aae8687985cfaf2",
+          "size": 201999,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/haussmann.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/haussmann.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-marais-far",
+      "name": "marais far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "marais far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-2089a42268-facade-wall-texture-marais-far.png",
+          "hash": "2089a42268f7369840fe71c9ff44fad05dfef5193fddaddac735fe96c7961557",
+          "size": 26984,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/marais-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/marais-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-marais",
+      "name": "marais",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "marais"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-89bd40ef4c-facade-wall-texture-marais.png",
+          "hash": "89bd40ef4c632c68d8cc32856da2596d1af1273a04ac65f88339c302b01ebd23",
+          "size": 230485,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/marais.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/marais.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-opera-far",
+      "name": "opera far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "opera far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-b4e90ef46f-facade-wall-texture-opera-far.png",
+          "hash": "b4e90ef46fc0b0bffc2c8643406e6b32565f2c72bcb92462146ba1ea05c9f579",
+          "size": 9846,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/opera-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/opera-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-opera",
+      "name": "opera",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "opera"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-e8f8bd4ea4-facade-wall-texture-opera.png",
+          "hash": "e8f8bd4ea4f15548518bffc3c2fe816a6335acf7eaadf03c5db50ed1caa17969",
+          "size": 159394,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/opera.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/opera.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-operaglass-far",
+      "name": "operaGlass far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "operaGlass far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-998af9303c-facade-wall-texture-operaglass-far.png",
+          "hash": "998af9303ccaf27d01481686754fdde6dabb25b145bec13245e462d768bfe92c",
+          "size": 1917,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/operaGlass-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/operaGlass-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-operaglass",
+      "name": "operaGlass",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "operaGlass"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-3c8ce2720f-facade-wall-texture-operaglass.png",
+          "hash": "3c8ce2720f6085b8e8ca5284f1ddd36c73b08cd587f6f3eec5b1480b47240f26",
+          "size": 159115,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/operaGlass.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/operaGlass.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-presidio-far",
+      "name": "presidio far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "presidio far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-bb3805b984-facade-wall-texture-presidio-far.png",
+          "hash": "bb3805b98483406d88d5cf5216568dacb865aac2372bcb8ef0a312bd86af07f9",
+          "size": 38425,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/presidio-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/presidio-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-presidio",
+      "name": "presidio",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "presidio"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-d48c884629-facade-wall-texture-presidio.png",
+          "hash": "d48c8846296fe01d91ebf0cefc8ab087cb0b0b128bf2410ac91bcd3b3bd1c5b9",
+          "size": 180340,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/presidio.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/presidio.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-presidiobrick-far",
+      "name": "presidioBrick far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "presidioBrick far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-2c8c0d34b7-facade-wall-texture-presidiobrick-far.png",
+          "hash": "2c8c0d34b7abbe37e53607131812cb1cd5434ec1d892c4083c36cc5efd526a1e",
+          "size": 43954,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/presidioBrick-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/presidioBrick-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-presidiobrick",
+      "name": "presidioBrick",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "presidioBrick"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-e75777a0cb-facade-wall-texture-presidiobrick.png",
+          "hash": "e75777a0cbf3c00e5bd44b8337aa3639fe5904f2cb1b173eb4e997d7614deb77",
+          "size": 223812,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/presidioBrick.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/presidioBrick.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-sfapartment-far",
+      "name": "sfapartment far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "sfapartment far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-462fb64a6d-facade-wall-texture-sfapartment-far.png",
+          "hash": "462fb64a6d316d810c9b566c358c4d2ac4ec1c28b2a2c1b278a5df543b578cf2",
+          "size": 37348,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/sfapartment-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/sfapartment-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-sfapartment",
+      "name": "sfapartment",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "sfapartment"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-9f41e11200-facade-wall-texture-sfapartment.png",
+          "hash": "9f41e112005bd0020609ba1b8ee8be7993caedcdaa8004cb28bd285f6a0e7d1f",
+          "size": 220510,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/sfapartment.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/sfapartment.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-skyscraper-far",
+      "name": "skyscraper far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "skyscraper far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-801280b966-facade-wall-texture-skyscraper-far.png",
+          "hash": "801280b96634067a66c2b8997aaa9558c8bad92212453d600e1eada1e381ae7c",
+          "size": 1519,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/skyscraper-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/skyscraper-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-skyscraper",
+      "name": "skyscraper",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "skyscraper"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-82e276d058-facade-wall-texture-skyscraper.png",
+          "hash": "82e276d058ba06ab535cd4259f17ac215c893beca9fe19938d1510aa82a272e8",
+          "size": 181686,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/skyscraper.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/skyscraper.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-stucco-far",
+      "name": "stucco far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "stucco far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-f4b6bd140c-facade-wall-texture-stucco-far.png",
+          "hash": "f4b6bd140ca7fee4c12b7a64fe83b6e22356e8438262e2ab6419cd8dd95e6a6a",
+          "size": 40728,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/stucco-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/stucco-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-stucco",
+      "name": "stucco",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "stucco"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-79cc4b815b-facade-wall-texture-stucco.png",
+          "hash": "79cc4b815b07fcdc09157a78e584216a267105209026723633ce45ac7555e8b8",
+          "size": 197225,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/stucco.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/stucco.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-tenement-far",
+      "name": "tenement far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "tenement far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-7e007300e4-facade-wall-texture-tenement-far.png",
+          "hash": "7e007300e46d4a91edeca351eebbc9de3903701bc8059d6f38348441e459e034",
+          "size": 37696,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/tenement-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/tenement-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-tenement",
+      "name": "tenement",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "tenement"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-bb6b17aa7f-facade-wall-texture-tenement.png",
+          "hash": "bb6b17aa7ff8417e8126f333979a9681fe15a0256e62607b34862458b04af495",
+          "size": 312896,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/tenement.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/tenement.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-towerblock-far",
+      "name": "towerblock far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "towerblock far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-03ad3c50b0-facade-wall-texture-towerblock-far.png",
+          "hash": "03ad3c50b0b2066131698be6f76326da5c01b72e4f35d3c49bad629767ca8aa7",
+          "size": 40833,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/towerblock-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/towerblock-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-towerblock",
+      "name": "towerblock",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "towerblock"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-c87e691e60-facade-wall-texture-towerblock.png",
+          "hash": "c87e691e6081d27841564b08b18c4dd674e4e533c350cbd6fc56a9f3f3bffa5b",
+          "size": 211802,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/towerblock.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/towerblock.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-victorian-far",
+      "name": "victorian far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "victorian far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-9f996c2721-facade-wall-texture-victorian-far.png",
+          "hash": "9f996c2721c695bc0c760204846ad777e0ad868c12c332c30d319023a99b1b3b",
+          "size": 36880,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/victorian-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/victorian-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-victorian",
+      "name": "victorian",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "victorian"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-4ac7d43e49-facade-wall-texture-victorian.png",
+          "hash": "4ac7d43e49b9ea649f98f82ef7fb47f508f0bbb9909adb4b7ac54a326015f079",
+          "size": 179884,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/victorian.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/victorian.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-vosges-far",
+      "name": "vosges far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "vosges far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-e4a1a762bb-facade-wall-texture-vosges-far.png",
+          "hash": "e4a1a762bb4e45c3bb68699be4aba31f2da0038796e8cbd3c91b936f1068c9d8",
+          "size": 3662,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/vosges-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/vosges-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-vosges",
+      "name": "vosges",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "vosges"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-5871b85960-facade-wall-texture-vosges.png",
+          "hash": "5871b8596033dbf5d957ae09e47fcdb9ecfceb876f4aa69047a886e9e115c41b",
+          "size": 226158,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/vosges.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/vosges.png"
+        }
+      }
+    },
+    {
+      "id": "palms-canary-frond-a",
+      "name": "canary frond a",
+      "folder": "cityengine/palms",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/palmgen"
+      },
+      "assetKeywords": [
+        "palm texture",
+        "canary frond a"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-6f2759886e-palm-texture-canary-frond-a.png",
+          "hash": "6f2759886e3ac265ad21ac4afdb76b10f42b70076e6ec9f814cf6afcaa134bbd",
+          "size": 154834,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/palms/canary-frond-a.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "palms/canary-frond-a.png"
+        }
+      }
+    },
+    {
+      "id": "palms-canary-frond-b",
+      "name": "canary frond b",
+      "folder": "cityengine/palms",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/palmgen"
+      },
+      "assetKeywords": [
+        "palm texture",
+        "canary frond b"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-056033842c-palm-texture-canary-frond-b.png",
+          "hash": "056033842c09855359f94a276b6a926b7122d2b2ed92d09db9b291fe39b54eda",
+          "size": 156324,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/palms/canary-frond-b.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "palms/canary-frond-b.png"
+        }
+      }
+    },
+    {
+      "id": "palms-canary-knob",
+      "name": "canary knob",
+      "folder": "cityengine/palms",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/palmgen"
+      },
+      "assetKeywords": [
+        "palm texture",
+        "canary knob"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-a20e497114-palm-texture-canary-knob.png",
+          "hash": "a20e497114dceeeb36c29f23ae91442a3cdb296ed48575a88fcb1b2c74173e74",
+          "size": 18517,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/palms/canary-knob.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "palms/canary-knob.png"
+        }
+      }
+    },
+    {
+      "id": "palms-canary-trunk",
+      "name": "canary trunk",
+      "folder": "cityengine/palms",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/palmgen"
+      },
+      "assetKeywords": [
+        "palm texture",
+        "canary trunk"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-9858fe8256-palm-texture-canary-trunk.png",
+          "hash": "9858fe8256313d1cd4fcbdf41b27a1b7754e211eacc39f73e40cd473a2096c3d",
+          "size": 82801,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/palms/canary-trunk.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "palms/canary-trunk.png"
+        }
+      }
+    },
+    {
+      "id": "palms-fan-leaf-a",
+      "name": "fan leaf a",
+      "folder": "cityengine/palms",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/palmgen"
+      },
+      "assetKeywords": [
+        "palm texture",
+        "fan leaf a"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-7e5e61b9c9-palm-texture-fan-leaf-a.png",
+          "hash": "7e5e61b9c92c4fa240206250955e75d03f97c432d6835cdefd18a7c57c3cf604",
+          "size": 35275,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/palms/fan-leaf-a.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "palms/fan-leaf-a.png"
+        }
+      }
+    },
+    {
+      "id": "palms-fan-leaf-b",
+      "name": "fan leaf b",
+      "folder": "cityengine/palms",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/palmgen"
+      },
+      "assetKeywords": [
+        "palm texture",
+        "fan leaf b"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-7f12e87489-palm-texture-fan-leaf-b.png",
+          "hash": "7f12e87489397d6f29d7bf22da903267f978f20dc30ff923fe276f4a8490349d",
+          "size": 35040,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/palms/fan-leaf-b.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "palms/fan-leaf-b.png"
+        }
+      }
+    },
+    {
+      "id": "palms-fan-skirt",
+      "name": "fan skirt",
+      "folder": "cityengine/palms",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/palmgen"
+      },
+      "assetKeywords": [
+        "palm texture",
+        "fan skirt"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-607edcd9ce-palm-texture-fan-skirt.png",
+          "hash": "607edcd9cedfdf31a596a5d877d8a87efe288e97b79e69498b5d9bfb1406149f",
+          "size": 10142,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/palms/fan-skirt.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "palms/fan-skirt.png"
+        }
+      }
+    },
+    {
+      "id": "palms-fan-trunk",
+      "name": "fan trunk",
+      "folder": "cityengine/palms",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/palmgen"
+      },
+      "assetKeywords": [
+        "palm texture",
+        "fan trunk"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-f89e3c878d-palm-texture-fan-trunk.png",
+          "hash": "f89e3c878d3f26c67965dbe9af84e780170847bd9b02bcc4b13816c684ec168e",
+          "size": 62780,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/palms/fan-trunk.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "palms/fan-trunk.png"
+        }
+      }
+    },
+    {
+      "id": "palms-queen-frond-a",
+      "name": "queen frond a",
+      "folder": "cityengine/palms",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/palmgen"
+      },
+      "assetKeywords": [
+        "palm texture",
+        "queen frond a"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-91f0ad94f2-palm-texture-queen-frond-a.png",
+          "hash": "91f0ad94f2fdd5e395f6ceefd96bd857fc1b58ba076900c734bf46acb8094080",
+          "size": 204900,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/palms/queen-frond-a.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "palms/queen-frond-a.png"
+        }
+      }
+    },
+    {
+      "id": "palms-queen-frond-b",
+      "name": "queen frond b",
+      "folder": "cityengine/palms",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/palmgen"
+      },
+      "assetKeywords": [
+        "palm texture",
+        "queen frond b"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-9e739bc8d7-palm-texture-queen-frond-b.png",
+          "hash": "9e739bc8d7461968716fd270cefe41b9b0e74a3316f3c796b3295c35538a91dc",
+          "size": 207271,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/palms/queen-frond-b.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "palms/queen-frond-b.png"
+        }
+      }
+    },
+    {
+      "id": "palms-queen-trunk",
+      "name": "queen trunk",
+      "folder": "cityengine/palms",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/palmgen"
+      },
+      "assetKeywords": [
+        "palm texture",
+        "queen trunk"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-ab678cf0b4-palm-texture-queen-trunk.png",
+          "hash": "ab678cf0b40133572c200447781e7ed810501cba8bea6fe543597a1c6fd2d4e4",
+          "size": 22862,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/palms/queen-trunk.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "palms/queen-trunk.png"
+        }
+      }
+    },
+    {
+      "id": "palms-sheet",
+      "name": "sheet",
+      "folder": "cityengine/palms",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/palmgen"
+      },
+      "assetKeywords": [
+        "palm texture",
+        "sheet"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-122ce96b67-palm-texture-sheet.png",
+          "hash": "122ce96b675b574ebaa1c912175a364c64bcabe7cb8303d7a97c21ba470fb43d",
+          "size": 694262,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/palms/sheet.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "palms/sheet.png"
+        }
+      }
+    },
+    {
+      "id": "palms-strap-tuft-a",
+      "name": "strap tuft a",
+      "folder": "cityengine/palms",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/palmgen"
+      },
+      "assetKeywords": [
+        "palm texture",
+        "strap tuft a"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-2f9cbf9214-palm-texture-strap-tuft-a.png",
+          "hash": "2f9cbf921466c2751fb3a02a74289b77eb371d35112c230b95d351deb8d02f76",
+          "size": 17336,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/palms/strap-tuft-a.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "palms/strap-tuft-a.png"
+        }
+      }
+    },
+    {
+      "id": "palms-strap-tuft-b",
+      "name": "strap tuft b",
+      "folder": "cityengine/palms",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/palmgen"
+      },
+      "assetKeywords": [
+        "palm texture",
+        "strap tuft b"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-1d8f2322fc-palm-texture-strap-tuft-b.png",
+          "hash": "1d8f2322fc5fcf245e58152b304112a4ff5d9c584da02f768f97b78ccea87e1f",
+          "size": 17341,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/palms/strap-tuft-b.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "palms/strap-tuft-b.png"
+        }
+      }
+    },
+    {
+      "id": "roads-asphalt",
+      "name": "asphalt",
+      "folder": "cityengine/roads",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/roadgen"
+      },
+      "assetKeywords": [
+        "road surface texture",
+        "asphalt"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-0baf4ac6a7-road-surface-texture-asphalt.png",
+          "hash": "0baf4ac6a707970e4e88e75262956b1a3c68307b559dc242ab982ecfe7149a3e",
+          "size": 382748,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/roads/asphalt.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "roads/asphalt.png"
+        }
+      }
+    },
+    {
+      "id": "roads-brick",
+      "name": "brick",
+      "folder": "cityengine/roads",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/roadgen"
+      },
+      "assetKeywords": [
+        "road surface texture",
+        "brick"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-e79926d881-road-surface-texture-brick.png",
+          "hash": "e79926d881a5796eaea4b4457804a52584ec5e8ea79e15f8e2452bfbfe704319",
+          "size": 199381,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/roads/brick.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "roads/brick.png"
+        }
+      }
+    },
+    {
+      "id": "roads-cobblestone",
+      "name": "cobblestone",
+      "folder": "cityengine/roads",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/roadgen"
+      },
+      "assetKeywords": [
+        "road surface texture",
+        "cobblestone"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-4832c3561b-road-surface-texture-cobblestone.png",
+          "hash": "4832c3561b03c80d45a20a62fe7a3f86a6de24d721d818c2f354e863604118f5",
+          "size": 261426,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/roads/cobblestone.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "roads/cobblestone.png"
+        }
+      }
+    },
+    {
+      "id": "roads-concrete",
+      "name": "concrete",
+      "folder": "cityengine/roads",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/roadgen"
+      },
+      "assetKeywords": [
+        "road surface texture",
+        "concrete"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-edfda7497c-road-surface-texture-concrete.png",
+          "hash": "edfda7497c8829679f78f2354dbf53c7570debd0a35265ae9976130061efdb43",
+          "size": 217783,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/roads/concrete.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "roads/concrete.png"
+        }
+      }
+    },
+    {
+      "id": "roads-dirt",
+      "name": "dirt",
+      "folder": "cityengine/roads",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/roadgen"
+      },
+      "assetKeywords": [
+        "road surface texture",
+        "dirt"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-cb05231759-road-surface-texture-dirt.png",
+          "hash": "cb05231759c3e6bc28c7de2c42f7b49b2191343741592873eead8eabd3ffd071",
+          "size": 362706,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/roads/dirt.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "roads/dirt.png"
+        }
+      }
+    },
+    {
+      "id": "roads-grass",
+      "name": "grass",
+      "folder": "cityengine/roads",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/roadgen"
+      },
+      "assetKeywords": [
+        "road surface texture",
+        "grass"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-8419f84a86-road-surface-texture-grass.png",
+          "hash": "8419f84a86d43292281179cd49b1aae236681945728b4b7b99e88df098d72332",
+          "size": 361212,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/roads/grass.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "roads/grass.png"
+        }
+      }
+    },
+    {
+      "id": "roads-gravel",
+      "name": "gravel",
+      "folder": "cityengine/roads",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/roadgen"
+      },
+      "assetKeywords": [
+        "road surface texture",
+        "gravel"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-aa0de8ede1-road-surface-texture-gravel.png",
+          "hash": "aa0de8ede1264890e97e63425e2e2feca6bad50a19e96df999f2a96dcc1e6c01",
+          "size": 489353,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/roads/gravel.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "roads/gravel.png"
+        }
+      }
+    },
+    {
+      "id": "roads-sand",
+      "name": "sand",
+      "folder": "cityengine/roads",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/roadgen"
+      },
+      "assetKeywords": [
+        "road surface texture",
+        "sand"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-aeb66bbe12-road-surface-texture-sand.png",
+          "hash": "aeb66bbe12a6040d73fb6e1a2b54140f934b8a8279586aafb9de4e1e6033c808",
+          "size": 293882,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/roads/sand.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "roads/sand.png"
+        }
+      }
+    },
+    {
+      "id": "roads-sheet",
+      "name": "sheet",
+      "folder": "cityengine/roads",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/roadgen"
+      },
+      "assetKeywords": [
+        "road surface texture",
+        "sheet"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-29497dbde2-road-surface-texture-sheet.png",
+          "hash": "29497dbde2db5cbf91718e13d96d72e84cee33f753990e507bb78642104f36c2",
+          "size": 575540,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/roads/sheet.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "roads/sheet.png"
+        }
+      }
+    },
+    {
+      "id": "roads-wood",
+      "name": "wood",
+      "folder": "cityengine/roads",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/roadgen"
+      },
+      "assetKeywords": [
+        "road surface texture",
+        "wood"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-15e95f9447-road-surface-texture-wood.png",
+          "hash": "15e95f9447a2364ff2f2812513f515233fa451213646459074c6cb4bc0829229",
+          "size": 221289,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/roads/wood.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "roads/wood.png"
+        }
+      }
+    },
+    {
+      "id": "rocks-textures-rock-cracked-arm-512-7026fa26",
+      "name": "rock cracked arm 512 7026fa26",
+      "folder": "cityengine/rocks/textures",
+      "downloadDate": "2026-10-14",
+      "attribution": "Poly Haven (polyhaven.com), CC0",
+      "sourceUrl": "https://polyhaven.com",
+      "notes": "See public/rocks/textures/CREDITS.md for the asset each came from.",
+      "type": "2d",
+      "subtype": "texture",
+      "assetKeywords": [
+        "rock surface (Poly Haven, via assetkit rockgen)",
+        "rock cracked arm 512 7026fa26"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-1b2ff90dd5-rock-surface-poly-haven-via-assetkit-rockgen-cracked-arm-512-7026fa26.jpg",
+          "hash": "1b2ff90dd59986c8e23c25cf4a6da3f9a2ed96a147708266452bf2ffa4e3b4be",
+          "size": 30346,
+          "fileFormat": "jpg",
+          "extension": "jpg",
+          "isProd": true,
+          "localPath": "public/rocks/textures/rock_cracked_arm_512_7026fa26.jpg"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "rocks/textures/rock_cracked_arm_512_7026fa26.jpg"
+        }
+      }
+    },
+    {
+      "id": "rocks-textures-rock-cracked-diff",
+      "name": "rock cracked diff",
+      "folder": "cityengine/rocks/textures",
+      "downloadDate": "2026-10-14",
+      "attribution": "Poly Haven (polyhaven.com), CC0",
+      "sourceUrl": "https://polyhaven.com",
+      "notes": "See public/rocks/textures/CREDITS.md for the asset each came from.",
+      "type": "2d",
+      "subtype": "texture",
+      "assetKeywords": [
+        "rock surface (Poly Haven, via assetkit rockgen)",
+        "rock cracked diff"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-984f59090b-rock-surface-poly-haven-via-assetkit-rockgen-cracked-diff.jpg",
+          "hash": "984f59090bc84af7e62bdaef3533f98a0d20743fd154cd513b7402be3b6649ed",
+          "size": 87069,
+          "fileFormat": "jpg",
+          "extension": "jpg",
+          "isProd": true,
+          "localPath": "public/rocks/textures/rock_cracked_diff.jpg"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "rocks/textures/rock_cracked_diff.jpg"
+        }
+      }
+    },
+    {
+      "id": "rocks-textures-rock-cracked-diff-512-3a153ce1",
+      "name": "rock cracked diff 512 3a153ce1",
+      "folder": "cityengine/rocks/textures",
+      "downloadDate": "2026-10-14",
+      "attribution": "Poly Haven (polyhaven.com), CC0",
+      "sourceUrl": "https://polyhaven.com",
+      "notes": "See public/rocks/textures/CREDITS.md for the asset each came from.",
+      "type": "2d",
+      "subtype": "texture",
+      "assetKeywords": [
+        "rock surface (Poly Haven, via assetkit rockgen)",
+        "rock cracked diff 512 3a153ce1"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-984f59090b-rock-surface-poly-haven-via-assetkit-rockgen-cracked-diff-512-3a153ce1.jpg",
+          "hash": "984f59090bc84af7e62bdaef3533f98a0d20743fd154cd513b7402be3b6649ed",
+          "size": 87069,
+          "fileFormat": "jpg",
+          "extension": "jpg",
+          "isProd": true,
+          "localPath": "public/rocks/textures/rock_cracked_diff_512_3a153ce1.jpg"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "rocks/textures/rock_cracked_diff_512_3a153ce1.jpg"
+        }
+      }
+    },
+    {
+      "id": "rocks-textures-rock-cracked-nor-gl-512-5586c2eb",
+      "name": "rock cracked nor gl 512 5586c2eb",
+      "folder": "cityengine/rocks/textures",
+      "downloadDate": "2026-10-14",
+      "attribution": "Poly Haven (polyhaven.com), CC0",
+      "sourceUrl": "https://polyhaven.com",
+      "notes": "See public/rocks/textures/CREDITS.md for the asset each came from.",
+      "type": "2d",
+      "subtype": "texture",
+      "assetKeywords": [
+        "rock surface (Poly Haven, via assetkit rockgen)",
+        "rock cracked nor gl 512 5586c2eb"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-eaa24207f5-rock-surface-poly-haven-via-assetkit-rockgen-cracked-nor-gl-512-5586c2eb.jpg",
+          "hash": "eaa24207f50595871423d86d894cf9688e0b0eac87260303ba22319b79859d88",
+          "size": 105321,
+          "fileFormat": "jpg",
+          "extension": "jpg",
+          "isProd": true,
+          "localPath": "public/rocks/textures/rock_cracked_nor_gl_512_5586c2eb.jpg"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "rocks/textures/rock_cracked_nor_gl_512_5586c2eb.jpg"
+        }
+      }
+    },
+    {
+      "id": "rocks-textures-rock-dark-arm-512-04796ca9",
+      "name": "rock dark arm 512 04796ca9",
+      "folder": "cityengine/rocks/textures",
+      "downloadDate": "2026-10-14",
+      "attribution": "Poly Haven (polyhaven.com), CC0",
+      "sourceUrl": "https://polyhaven.com",
+      "notes": "See public/rocks/textures/CREDITS.md for the asset each came from.",
+      "type": "2d",
+      "subtype": "texture",
+      "assetKeywords": [
+        "rock surface (Poly Haven, via assetkit rockgen)",
+        "rock dark arm 512 04796ca9"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-4a195d637b-rock-surface-poly-haven-via-assetkit-rockgen-dark-arm-512-04796ca9.jpg",
+          "hash": "4a195d637b17db414cb8341aad1e2a7b3f92206cb96dbd70c2dce67e46e871d6",
+          "size": 44774,
+          "fileFormat": "jpg",
+          "extension": "jpg",
+          "isProd": true,
+          "localPath": "public/rocks/textures/rock_dark_arm_512_04796ca9.jpg"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "rocks/textures/rock_dark_arm_512_04796ca9.jpg"
+        }
+      }
+    },
+    {
+      "id": "rocks-textures-rock-dark-diff",
+      "name": "rock dark diff",
+      "folder": "cityengine/rocks/textures",
+      "downloadDate": "2026-10-14",
+      "attribution": "Poly Haven (polyhaven.com), CC0",
+      "sourceUrl": "https://polyhaven.com",
+      "notes": "See public/rocks/textures/CREDITS.md for the asset each came from.",
+      "type": "2d",
+      "subtype": "texture",
+      "assetKeywords": [
+        "rock surface (Poly Haven, via assetkit rockgen)",
+        "rock dark diff"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-667239f26f-rock-surface-poly-haven-via-assetkit-rockgen-dark-diff.jpg",
+          "hash": "667239f26fc093e11ca2bed64bbcffc25aef80efcf4b50e217b5531f7640ef9f",
+          "size": 38431,
+          "fileFormat": "jpg",
+          "extension": "jpg",
+          "isProd": true,
+          "localPath": "public/rocks/textures/rock_dark_diff.jpg"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "rocks/textures/rock_dark_diff.jpg"
+        }
+      }
+    },
+    {
+      "id": "rocks-textures-rock-dark-diff-512-cfa005bc",
+      "name": "rock dark diff 512 cfa005bc",
+      "folder": "cityengine/rocks/textures",
+      "downloadDate": "2026-10-14",
+      "attribution": "Poly Haven (polyhaven.com), CC0",
+      "sourceUrl": "https://polyhaven.com",
+      "notes": "See public/rocks/textures/CREDITS.md for the asset each came from.",
+      "type": "2d",
+      "subtype": "texture",
+      "assetKeywords": [
+        "rock surface (Poly Haven, via assetkit rockgen)",
+        "rock dark diff 512 cfa005bc"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-667239f26f-rock-surface-poly-haven-via-assetkit-rockgen-dark-diff-512-cfa005bc.jpg",
+          "hash": "667239f26fc093e11ca2bed64bbcffc25aef80efcf4b50e217b5531f7640ef9f",
+          "size": 38431,
+          "fileFormat": "jpg",
+          "extension": "jpg",
+          "isProd": true,
+          "localPath": "public/rocks/textures/rock_dark_diff_512_cfa005bc.jpg"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "rocks/textures/rock_dark_diff_512_cfa005bc.jpg"
+        }
+      }
+    },
+    {
+      "id": "rocks-textures-rock-dark-nor-gl-512-eaa61f67",
+      "name": "rock dark nor gl 512 eaa61f67",
+      "folder": "cityengine/rocks/textures",
+      "downloadDate": "2026-10-14",
+      "attribution": "Poly Haven (polyhaven.com), CC0",
+      "sourceUrl": "https://polyhaven.com",
+      "notes": "See public/rocks/textures/CREDITS.md for the asset each came from.",
+      "type": "2d",
+      "subtype": "texture",
+      "assetKeywords": [
+        "rock surface (Poly Haven, via assetkit rockgen)",
+        "rock dark nor gl 512 eaa61f67"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-7319cf21b7-rock-surface-poly-haven-via-assetkit-rockgen-dark-nor-gl-512-eaa61f67.jpg",
+          "hash": "7319cf21b7bcafdca9406aaa3357611c54336336e3f9febf44341770ff2e9047",
+          "size": 86226,
+          "fileFormat": "jpg",
+          "extension": "jpg",
+          "isProd": true,
+          "localPath": "public/rocks/textures/rock_dark_nor_gl_512_eaa61f67.jpg"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "rocks/textures/rock_dark_nor_gl_512_eaa61f67.jpg"
+        }
+      }
+    },
+    {
+      "id": "rocks-textures-rock-grey-arm-512-b6f84372",
+      "name": "rock grey arm 512 b6f84372",
+      "folder": "cityengine/rocks/textures",
+      "downloadDate": "2026-10-14",
+      "attribution": "Poly Haven (polyhaven.com), CC0",
+      "sourceUrl": "https://polyhaven.com",
+      "notes": "See public/rocks/textures/CREDITS.md for the asset each came from.",
+      "type": "2d",
+      "subtype": "texture",
+      "assetKeywords": [
+        "rock surface (Poly Haven, via assetkit rockgen)",
+        "rock grey arm 512 b6f84372"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-feea5a932a-rock-surface-poly-haven-via-assetkit-rockgen-grey-arm-512-b6f84372.jpg",
+          "hash": "feea5a932aec88a40df05071e0cc70b383c39b5d5abaea04f476e511df74981b",
+          "size": 55126,
+          "fileFormat": "jpg",
+          "extension": "jpg",
+          "isProd": true,
+          "localPath": "public/rocks/textures/rock_grey_arm_512_b6f84372.jpg"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "rocks/textures/rock_grey_arm_512_b6f84372.jpg"
+        }
+      }
+    },
+    {
+      "id": "rocks-textures-rock-grey-diff",
+      "name": "rock grey diff",
+      "folder": "cityengine/rocks/textures",
+      "downloadDate": "2026-10-14",
+      "attribution": "Poly Haven (polyhaven.com), CC0",
+      "sourceUrl": "https://polyhaven.com",
+      "notes": "See public/rocks/textures/CREDITS.md for the asset each came from.",
+      "type": "2d",
+      "subtype": "texture",
+      "assetKeywords": [
+        "rock surface (Poly Haven, via assetkit rockgen)",
+        "rock grey diff"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-1b1bb5f1c8-rock-surface-poly-haven-via-assetkit-rockgen-grey-diff.jpg",
+          "hash": "1b1bb5f1c83cc966a48f29b90fd105a037ca685b2c2cbccf21c6881b7e119f74",
+          "size": 79652,
+          "fileFormat": "jpg",
+          "extension": "jpg",
+          "isProd": true,
+          "localPath": "public/rocks/textures/rock_grey_diff.jpg"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "rocks/textures/rock_grey_diff.jpg"
+        }
+      }
+    },
+    {
+      "id": "rocks-textures-rock-grey-diff-512-1172258b",
+      "name": "rock grey diff 512 1172258b",
+      "folder": "cityengine/rocks/textures",
+      "downloadDate": "2026-10-14",
+      "attribution": "Poly Haven (polyhaven.com), CC0",
+      "sourceUrl": "https://polyhaven.com",
+      "notes": "See public/rocks/textures/CREDITS.md for the asset each came from.",
+      "type": "2d",
+      "subtype": "texture",
+      "assetKeywords": [
+        "rock surface (Poly Haven, via assetkit rockgen)",
+        "rock grey diff 512 1172258b"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-1b1bb5f1c8-rock-surface-poly-haven-via-assetkit-rockgen-grey-diff-512-1172258b.jpg",
+          "hash": "1b1bb5f1c83cc966a48f29b90fd105a037ca685b2c2cbccf21c6881b7e119f74",
+          "size": 79652,
+          "fileFormat": "jpg",
+          "extension": "jpg",
+          "isProd": true,
+          "localPath": "public/rocks/textures/rock_grey_diff_512_1172258b.jpg"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "rocks/textures/rock_grey_diff_512_1172258b.jpg"
+        }
+      }
+    },
+    {
+      "id": "rocks-textures-rock-grey-nor-gl-512-42002ef3",
+      "name": "rock grey nor gl 512 42002ef3",
+      "folder": "cityengine/rocks/textures",
+      "downloadDate": "2026-10-14",
+      "attribution": "Poly Haven (polyhaven.com), CC0",
+      "sourceUrl": "https://polyhaven.com",
+      "notes": "See public/rocks/textures/CREDITS.md for the asset each came from.",
+      "type": "2d",
+      "subtype": "texture",
+      "assetKeywords": [
+        "rock surface (Poly Haven, via assetkit rockgen)",
+        "rock grey nor gl 512 42002ef3"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-6f1a8d397a-rock-surface-poly-haven-via-assetkit-rockgen-grey-nor-gl-512-42002ef3.jpg",
+          "hash": "6f1a8d397a61e2ed1493616d1565e1ff252bc35999e64997516a8b886a068299",
+          "size": 55064,
+          "fileFormat": "jpg",
+          "extension": "jpg",
+          "isProd": true,
+          "localPath": "public/rocks/textures/rock_grey_nor_gl_512_42002ef3.jpg"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "rocks/textures/rock_grey_nor_gl_512_42002ef3.jpg"
+        }
+      }
+    },
+    {
+      "id": "og",
+      "name": "og",
+      "folder": "cityengine",
+      "type": "2d",
+      "subtype": "screenshot",
+      "assetKeywords": [
+        "social preview image",
+        "og"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-9e89e63f15-social-preview-image-og.jpg",
+          "hash": "9e89e63f151dc47def0f1d44a068807240127dfedf1efb8820cf41ae7b49a698",
+          "size": 147585,
+          "fileFormat": "jpg",
+          "extension": "jpg",
+          "isProd": true,
+          "localPath": "public/og.jpg"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "og.jpg"
+        }
+      }
+    },
+    {
+      "id": "gondola-ride",
+      "name": "gondola ride",
+      "folder": "cityengine",
+      "type": "2d",
+      "subtype": "screenshot",
+      "assetKeywords": [
+        "screenshot for the docs",
+        "gondola ride"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-65101e55b0-screenshot-for-the-docs-gondola-ride.png",
+          "hash": "65101e55b0eb25fc38b586597adbb0d3deac7723fe53c599a2b224338125545e",
+          "size": 594229,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "gondola-ride.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "gondola-ride.png"
+        }
+      }
+    },
+    {
+      "id": "platform-screenshot",
+      "name": "screenshot",
+      "folder": "cityengine/platform",
+      "type": "2d",
+      "subtype": "screenshot",
+      "assetKeywords": [
+        "the game's screenshot on Dandyhorse",
+        "screenshot"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-c07d0a26f6-the-game-s-screenshot-on-dandyhorse.jpg",
+          "hash": "c07d0a26f6dff95b02463e8edfb164715422314d17b721c727c6d3608d03d07b",
+          "size": 195678,
+          "fileFormat": "jpg",
+          "extension": "jpg",
+          "isProd": true,
+          "localPath": "platform/screenshot.jpg"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "platform/screenshot.jpg"
+        }
+      }
     }
   ]
 }

@@ -20,7 +20,7 @@
 import { createHash } from 'node:crypto'
 import { existsSync } from 'node:fs'
 import { mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
 const ROOT = join(import.meta.dirname, '..')
@@ -84,7 +84,8 @@ async function main() {
     const hash = sha256Bytes(bytes)
     if (a?.assetFiles.some((f) => !f.isDeleted && f.hash === hash)) return false
     if (a) for (const f of a.assetFiles) f.isDeleted = true
-    await addFile(repo, { index: INDEX, indexDir: INDEX_DIR, assetId: id, ...opts })
+    // (the same bytes under two names happen: public/rocks/textures has full and _512 copies of one surface)
+    await addFile(repo, { index: INDEX, indexDir: INDEX_DIR, assetId: id, allowDuplicate: true, ...opts })
     return true
   }
   await mkdir(SCRATCH, { recursive: true })
@@ -180,6 +181,42 @@ async function main() {
     if (changed) signs++
   }
   console.log(`signs: ${signs} added or replaced`)
+
+  // ---- files the game reads from public/ by fixed name (and two screenshots): kept out of git, put back by
+  // `npx assetmgr restore` through their localPath. Bytes are uploaded as they are (no renaming inside).
+  const FIXED = [
+    { dir: 'public/facades', match: /\.png$/, subtype: 'texture', generator: 'tools/facadegen/paint.py', what: 'facade texture atlas' },
+    { dir: 'public/facades/walls', match: /\.png$/, subtype: 'texture', generator: 'tools/facadegen/paint.py', what: 'facade wall texture' },
+    { dir: 'public/palms', match: /\.png$/, subtype: 'texture', generator: 'tools/palmgen', what: 'palm texture' },
+    { dir: 'public/roads', match: /\.png$/, subtype: 'texture', generator: 'tools/roadgen', what: 'road surface texture' },
+    { dir: 'public/rocks/textures', match: /\.jpg$/, subtype: 'texture', polyHaven: true, what: 'rock surface (Poly Haven, via assetkit rockgen)' },
+    { dir: 'public', match: /^og\.jpg$/, subtype: 'screenshot', what: 'social preview image' },
+    { dir: '.', match: /^gondola-ride\.png$/, subtype: 'screenshot', what: 'screenshot for the docs' },
+    { dir: 'platform', match: /^screenshot\.jpg$/, subtype: 'screenshot', what: 'the game\'s screenshot on Dandyhorse' },
+  ]
+  let fixed = 0
+  for (const group of FIXED) {
+    for (const name of (await readdir(join(ROOT, group.dir))).filter((n) => group.match.test(n)).sort()) {
+      const rel = join(group.dir, name).replace(/^\.\//, '')
+      const src = join(ROOT, rel)
+      const stem = name.replace(/\.[a-z]+$/, '')
+      const id = slugify(rel.replace(/^public\//, '').replace(/\.[a-z]+$/, ''))
+      const changed = await upsert(id, {
+        src,
+        asset: {
+          id, name: `${stem.replace(/[-_]/g, ' ')}`, type: '2d', subtype: group.subtype,
+          folder: dirname(rel.replace(/^public\//, '')) === '.' ? 'cityengine' : `cityengine/${dirname(rel.replace(/^public\//, ''))}`,
+          assetKeywords: [group.what, stem.replace(/[-_]/g, ' ')],
+          ...(group.polyHaven ? { attribution: 'Poly Haven (polyhaven.com), CC0', sourceUrl: 'https://polyhaven.com', notes: 'See public/rocks/textures/CREDITS.md for the asset each came from.' } : {}),
+          ...(group.generator ? { generator: { script: `cityengine/${group.generator}` } } : {}),
+          extra: { streetrunner: { path: rel.replace(/^public\//, '') } },
+        },
+        file: { isProd: true, localPath: rel },
+      }, await readFile(src))
+      if (changed) fixed++
+    }
+  }
+  console.log(`fixed-path files: ${fixed} added or replaced`)
   for (const l of repo.indexes) await saveIndex(l)
 }
 
