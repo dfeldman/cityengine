@@ -72,6 +72,15 @@ plantings) is the bulk of the time. The bake also generates the city's signs (st
 Once baked, a city can be published to the city bucket with `npm run city:upload -- <city> --yes` (README,
 "Baked cities"): one unit per city under a bake number, the old bake deleted when the new one is current.
 
+**San Francisco only: the lidar ground under the cliffs** (optional; without it the bake warns and keeps the
+smoother terrain-tile cliffs at Lands End and Sutro)
+
+    python3 -m venv tools/lidar/.venv && tools/lidar/.venv/bin/pip install -r tools/lidar/requirements.txt
+    tools/lidar/.venv/bin/python tools/lidar/dtm.py san-francisco     # USGS 3DEP lidar → tools/cache/lidar/dtm-san-francisco.json
+
+Run it before `npm run bake san-francisco`. SF's street trees (DataSF) and assessor rolls (data.sf.gov) are
+fetched by the bake itself.
+
 **3. Sign lettering** (also run by the bake; `public/models/signs/`, and `public/models/` is ignored wholesale)
 
     npm run signs
