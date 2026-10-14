@@ -1,6 +1,6 @@
 /** Photographs the moving boats (render/river-traffic.ts), each from the quai side as it passes: node --experimental-strip-types tools/boat-shots.ts [0,3,5] */
 import { chromium } from 'playwright'
-const out = '/Users/dfeldman/streetrunner/docs/shots/'
+const out = new URL('../docs/shots/', import.meta.url).pathname
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist'] })
 const page = await browser.newPage({ viewport: { width: 1400, height: 800 } })
 page.on('pageerror', (e) => console.log('page error:', e.message.slice(0, 200)))

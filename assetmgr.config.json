@@ -1,7 +1,21 @@
 {
-  "store": { "type": "r2", "bucket": "assets" },
+  "store": {
+    "type": "r2",
+    "bucket": "assets"
+  },
   "publicUrl": "https://pub-32f6f3f21c18414cbeaf4bf0ac34ebe5.r2.dev",
-  "repo": "https://github.com/dfeldman/streetrunner",
+  "repo": "https://github.com/dfeldman/cityengine",
   "assetsDir": "assets",
-  "ignoreDirs": ["public", "src", "tools", "docs", "dist", "views", "scratchpad", "statues_to_model", "incoming_models", "tests"]
+  "ignoreDirs": [
+    "public",
+    "src",
+    "tools",
+    "docs",
+    "dist",
+    "views",
+    "scratchpad",
+    "statues_to_model",
+    "incoming_models",
+    "tests"
+  ]
 }

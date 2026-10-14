@@ -1,4 +1,16 @@
-# Street Runner
+# cityengine (Street Runner / Cycle Dash)
+
+This repo is **cityengine**: a city model built from OpenStreetMap and open elevation data, with its baking tools,
+landmark builders and renderer. Today its main use is the game Street Runner (public name Cycle Dash), whose code
+lives here too; the engine is meant to serve non-game uses as well. The repo was called `streetrunner` until
+2026-10-14. Its siblings are expected beside it: `assetmgr`, `assetkit` (trees, plants, rocks, statues, carkit) and
+`avatarkit`. See docs/ASSETS.md for what a fresh clone needs.
+
+**Baked cities** (`public/cities/`, derived and large) are not in git and not in the shared asset bucket. The plan is
+a bucket of their own, a whole city uploaded as one unit (its package, terrain, tiles and ride graph) with no
+old versions kept, by a small upload script that is still to be written. Until then `npm run bake` rebuilds them.
+
+## Street Runner
 
 Ride or run through a real city. Not a city that feels real — the actual streets of Le Marais, with the actual
 junctions, taken from OpenStreetMap, and **you choose at every one of them**. Turn left onto Rue Payenne
