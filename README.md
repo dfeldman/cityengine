@@ -8,7 +8,11 @@ lives here too; the engine is meant to serve non-game uses as well. The repo was
 
 **Baked cities** (`public/cities/`, derived and large) are not in git and not in the shared asset bucket. The plan is
 a bucket of their own, a whole city uploaded as one unit (its package, terrain, tiles and ride graph) with no
-old versions kept, by a small upload script that is still to be written. Until then `npm run bake` rebuilds them.
+old versions kept, by a small upload script that is still to be written. Each upload carries a **bake number**
+(`<city>/<bake>/…`, and a small `<city>/current.json` naming the live one): a client moves to a new bake by reading
+`current.json`, and the previous bake is deleted once nothing points at it. They are derived data, not shared
+assets, so assetmgr (provenance, sharing between projects) is the wrong tool for them. Until then `npm run bake`
+rebuilds them locally.
 
 ## Street Runner
 
