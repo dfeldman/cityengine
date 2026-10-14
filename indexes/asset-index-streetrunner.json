@@ -5,7 +5,8 @@
   "defaults": {
     "project": "cycledash",
     "projectName": "Cycle Dash",
-    "repo": "https://github.com/dfeldman/streetrunner"
+    "repo": "https://github.com/dfeldman/streetrunner",
+    "license": "CC0-1.0"
   },
   "assets": [
     {
