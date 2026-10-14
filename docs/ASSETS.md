@@ -48,8 +48,9 @@ this repo (`npm install` in assetmgr builds its CLI), then put back the textures
 Sibling repos are found through environment variables, each defaulting to the checkout beside this one:
 `ASSETMGR_DIR`, `ASSETKIT_DIR`, `AVATARKIT_DIR`, and `DANDYHORSE_DIR` (only for running as a Dandyhorse game:
 its gamekit is found there by vite.config.ts and tools/typecheck.js, and is not an npm dependency; without it the
-engine and the standalone game build and test as usual). Nothing is symlinked between repos. The `file:`
-dependencies in package.json (avatarkit, carkit) are the one exception npm imposes: they assume siblings.
+engine and the standalone game build and test as usual). Nothing is symlinked between repos in git, and
+package.json names no sibling paths: `npm install` runs `tools/link-siblings.mjs`, which points
+`node_modules/avatarkit` and `node_modules/carkit` at `$AVATARKIT_DIR` and `$ASSETKIT_DIR/carkit`.
 
 
 **1. The OSM extract** (needed by the bake; ~650 MB, cached, never committed)

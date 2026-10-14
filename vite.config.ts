@@ -77,7 +77,7 @@ export default defineConfig({
      *    before it was diagnosed, and the render loops now carry a re-wait guard because of it.
      */
     hmr: process.env.HMR ? undefined : false,
-    // avatarkit is a file: dependency outside this app's folder, and its worker is fetched by path; local-assets
+    // avatarkit is linked from outside this app's folder (tools/link-siblings.mjs), and its worker is fetched by path; local-assets
     // mode reads avatarkit's and assetkit's public/ through /@fs/
     fs: { allow: [resolve(import.meta.dirname, '..'), AVATARKIT_DIR, ASSETKIT_DIR, resolve(DANDYHORSE_DIR, 'libs', 'gamekit')] },
   },
