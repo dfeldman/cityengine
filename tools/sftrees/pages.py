@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 San Francisco's leaf pages and barks for tools/sftrees (SF_PLAN.md §5), built from Trail Trainer's photographed
-Poly Haven pages (CC0; ~/trailtrainer/tools/deciduousgen, fetched there by fetch.py) with its own cluster
+Poly Haven pages (CC0; assetkit's tools/deciduousgen, fetched there by fetch.py) with its own cluster
 compositor (pages.py), then graded and painted for the trees this city plants:
 
 - `glossy`     ficus: many small, dark, shiny leaves packed tight — a clipped dome reads as one dark mass
@@ -24,13 +24,15 @@ and two barks, graded from the platanus photograph (its normal and ARM maps are 
 """
 import math
 import random
+import os
 import sys
 from pathlib import Path
 
 from PIL import Image, ImageChops, ImageDraw, ImageFilter
 
 HERE = Path(__file__).resolve().parent
-TT = Path.home() / 'trailtrainer' / 'tools' / 'deciduousgen'
+# assetkit (github.com/dfeldman/assetkit), checked out beside this repo, or wherever $ASSETKIT points
+TT = Path(os.environ.get('ASSETKIT') or Path(__file__).resolve().parents[3] / 'assetkit') / 'tools' / 'deciduousgen'
 sys.path.insert(0, str(TT))
 import pages as tt  # noqa: E402  (Trail Trainer's compositor: components, cluster, graded, regrade)
 

@@ -1,6 +1,6 @@
 """
 San Francisco's street trees as models (SF_PLAN.md §5): Trail Trainer's broadleaf generator
-(~/trailtrainer/tools/treekit, SpeedTree-style generators, Blender headless) with this city's own species
+(assetkit's tools/treekit, SpeedTree-style generators, Blender headless) with this city's own species
 (species/*.json) and leaf pages and barks (pages.py). A species file may extend one of Trail Trainer's
 (`"extends": "tt:maple"`); the rest of the botany is shared, unchanged.
 
@@ -20,11 +20,13 @@ render/vegetation.ts loads either library the same way.
 """
 import copy
 import json
+import os
 import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-TT = Path.home() / 'trailtrainer' / 'tools'
+# assetkit (github.com/dfeldman/assetkit), checked out beside this repo, or wherever $ASSETKIT points
+TT = Path(os.environ.get('ASSETKIT') or Path(__file__).resolve().parents[3] / 'assetkit') / 'tools'
 sys.path.insert(0, str(TT))
 
 from treekit import genkit  # noqa: E402
