@@ -117,7 +117,7 @@ they were being regenerated constantly, so nearly all of that half-gigabyte was 
 
 ## Reference photographs
 
-`statues_to_model/` (gathered for hand modelling) and `docs/shots/refs/` (fetched for the refacing ladder) are
+`statues_to_model/` (gathered for hand modelling; moved to assetkit on 2026-10-14, beside the statue work) and `docs/shots/refs/` (fetched for the refacing ladder) are
 not committed. They are re-fetchable — `tools/sf-photos.ts` for the ladder's street-level views — and their
 licences belong to Wikimedia and Mapillary, so the repo is not the right place to hold copies.
 
