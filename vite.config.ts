@@ -59,7 +59,7 @@ export default defineConfig({
    * syntax error". Scanning every source file and naming the barrels means one bundle, made once.
    */
   optimizeDeps: {
-    entries: ['index.html', 'src/**/*.ts', '../dandyhorse/libs/avatarkit/src/**/*.ts'],
+    entries: ['index.html', 'src/**/*.ts', '../avatarkit/src/**/*.ts'],
     include: ['@babylonjs/core', '@babylonjs/loaders', '@babylonjs/loaders/glTF', 'earcut'],
   },
   // Babylon arrives through the @babylonjs/core barrel, as in the platform's other games
