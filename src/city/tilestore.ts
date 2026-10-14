@@ -75,7 +75,7 @@ export class TileStore {
  * The coarse ground grid's binary sidecar, read into the index in place (shared by the v2 store and the v3 one,
  * src/map/store.ts).
  */
-export async function readTerrainBin(base: string, index: Pick<CityIndex, 'terrain'>): Promise<void> {
+export async function readTerrainBin(base: string, index: Pick<CityIndex, 'terrain'>, query = ''): Promise<void> {
   /*
    * The coarse ground grid arrives as an `ArrayBuffer` beside the index, not inside it (BUGS.md #176).
    * It was 20.5 MB of a 26.2 MB index — 78% of the one file that must be fetched and parsed on the main
@@ -91,7 +91,7 @@ export async function readTerrainBin(base: string, index: Pick<CityIndex, 'terra
   const t = index.terrain
   if (t?.bin) {
     try {
-      const b = await fetch(`${base}${t.bin}`)
+      const b = await fetch(`${base}${t.bin}${query}`)
       if (b.ok) {
         const dm = new Int16Array(await b.arrayBuffer())
         const m = new Float32Array(dm.length)
@@ -130,8 +130,9 @@ export async function loadWhole(base: string, id: string): Promise<CityPackage> 
 }
 
 /** The baked ride graph for this device, or null when the city has none (baked before ride files). */
-export async function loadRide(base: string, id: string, mode: RideMode): Promise<RideGraph | null> {
-  const r = await fetch(new URL(`cities/${id}/ride-${mode}.json`, new URL('./', base)).href).catch(() => null)
+export async function loadRide(base: string, id: string, mode: RideMode, stamp?: string): Promise<RideGraph | null> {
+  // (stamped with its bake, like the tiles: map/store.ts `bakeStamp`)
+  const r = await fetch(new URL(`cities/${id}/ride-${mode}.json${stamp ? `?b=${stamp}` : ''}`, new URL('./', base)).href).catch(() => null)
   if (!r || !r.ok || !(r.headers.get('content-type') ?? '').includes('json')) return null
   return unpackRide(await r.json() as RideFile)
 }
@@ -142,6 +143,8 @@ export async function loadRide(base: string, id: string, mode: RideMode): Promis
  */
 export interface CitySource {
   index: CityIndex
+  /** the bake this source is (map/store.ts `bakeStamp`), for the URLs of the files that must match it */
+  stamp?: string
   has(key: string): boolean
   load(key: string): Promise<TileData | null>
   /**

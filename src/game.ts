@@ -333,7 +333,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * junctions carry the corner plaques — and it says where the ride starts, so the right tiles come first.
    */
   const mode = opts.device === 'treadmill' ? 'run' : 'bike'
-  const baked = await loadRide(document.baseURI, opts.city, mode)
+  const baked = await loadRide(document.baseURI, opts.city, mode, src.stamp)
   if (!baked) throw new Error(`${opts.city} has no baked ride graph — npm run bake -- ${opts.city}`)
   const rides: RideGraph = baked
   mark('rideGraph')
