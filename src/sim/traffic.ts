@@ -1125,7 +1125,11 @@ export class Traffic {
     if (toGo < CHOOSE) {
       for (const o of boxes.get(node) ?? []) {
         if (o === v || !o.inBox || o.inBox.from !== e.id || o.edgeId === e.id) continue
-        const oe = this.g.edges.get(o.edgeId)!
+        // (the box's occupants include the streetcars and cable cars, `occupancy`; one on no street has edgeId −1 and
+        // no edge here — reading its length froze the game, every frame, a few seconds after boarding a cable car on a
+        // phone, owner 2026-10-14. It is still an obstacle: the swept test below takes trams on no street)
+        const oe = this.g.edges.get(o.edgeId)
+        if (!oe) continue
         obstacles.push([toGo + (o.dir > 0 ? o.s : oe.length - o.s) - this.halfLen(v) - this.halfLen(o) - turning(o), o.speed]); whys.push(`box car ${o.id}`)
       }
     }

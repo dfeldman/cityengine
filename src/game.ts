@@ -2290,7 +2290,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * ride cost the rider no time at all.
    */
   let simSeconds = 0
-  engine.runRenderLoop(() => {
+  const frame = (): void => {
     /*
      * Nothing to draw into: a hidden or collapsed pane leaves the canvas a pixel or so tall, render targets scaled
      * from it round to zero, and WebGL logs "Framebuffer is incomplete: Attachment has zero size" every frame (the
@@ -2938,6 +2938,23 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       if (recovered) setTimeout(tell, 800)
       // and the welcome screen over the city, gone at the first key (BUGS.md #165)
       if (!opts.freeze) welcomeScreen(src.index?.name ?? opts.city, !nav.fast)
+    }
+  }
+  /*
+   * One frame's exception must not end the session. Thrown out of the render loop, it is thrown again on every frame
+   * after, and the game stands frozen with nothing on screen to say why (owner, 2026-10-14: a phone frozen a few
+   * seconds after boarding a cable car, a traffic bug). It is reported, once per message, and the next frame tries
+   * again: a passing fault costs a frame, not the ride.
+   */
+  const failed = new Set<string>()
+  engine.runRenderLoop(() => {
+    try {
+      frame()
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e)
+      if (!failed.has(msg)) { failed.add(msg); console.error('frame failed:', e) }
+      // (still drawn, so the picture is not stuck too)
+      try { scene.render() } catch { /* the scene itself is broken: nothing more to do this frame */ }
     }
   })
 
