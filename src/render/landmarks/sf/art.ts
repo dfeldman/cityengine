@@ -123,25 +123,31 @@ export function vaillancourtFountain(out: MeshBuilder, _fit?: Fit): void {
     out.water.push({ kind: 'jet', at: [x, y, z], v: [vx, 1.5, vz], width: 0.25, spread: 0.5 })
   }
   out.water.push({ kind: 'splash', at: [0, 0.22, 0], r: 3.5 })
-  /*
-   * Stood on the HIGHEST ground round the basin (its base is the lowest, and the plaza falls across it): from there
-   * the basin floor and its water were under the paving, and the terrain's depth occluder hid them.
-   */
-  const g = _fit?.groundAt
-  if (g) {
-    let lift = 0
-    for (let k = 0; k < 16; k++) { const a = (k / 16) * Math.PI * 2; lift = Math.max(lift, g(Math.cos(a) * basinR, Math.sin(a) * basinR), g(0, 0)) }
-    if (lift > 0.02) {
-      for (let i = v0; i < out.positions.length; i += 3) out.positions[i + 1] += lift
-      for (let i = w0; i < out.water.length; i++) {
-        const f = out.water[i]
-        if (f.kind === 'pool') f.y += lift
-        else if (f.kind === 'sheet') { f.a[1] += lift; f.b[1] += lift }
-        else f.at[1] += lift
-      }
-      prism(out, 0, 0, -0.3, lift - 0.3, basinR + 0.4, 32, [0.5, 0.48, 0.45], CONC_TAG, basinR + 0.4, false)
-    }
+  standOnHighest(out, _fit, basinR, v0, w0, [0.5, 0.48, 0.45], CONC_TAG, 0.4)
+}
+
+/**
+ * A basin on a slope, stood on the HIGHEST ground round its rim, with a skirt down to the base. Its base is the
+ * lowest ground under the footprint (render/landmarks.ts `place`) and the plaza falls across it: from there the
+ * basin floor and its water were under the paving, and the terrain's depth occluder hid them (the Vaillancourt
+ * Fountain; and Ruth Asawa's mermaid fountain on Ghirardelli Square's terraces, a granite sliver in the paving —
+ * the nonbuildings audit's relief check, 2026-10-14). Water stands level, so a basin cannot follow the slope: it
+ * steps up onto it, as the real ones do. Everything built since `v0` / `w0` is lifted.
+ */
+function standOnHighest(out: MeshBuilder, fit: Fit | undefined, r: number, v0: number, w0: number, skirt: Rgb, tag: number, over: number): void {
+  const g = fit?.groundAt
+  if (!g) return
+  let lift = g(0, 0)
+  for (let k = 0; k < 16; k++) { const a = (k / 16) * Math.PI * 2; lift = Math.max(lift, g(Math.cos(a) * r, Math.sin(a) * r)) }
+  if (lift <= 0.02) return
+  for (let i = v0; i < out.positions.length; i += 3) out.positions[i + 1] += lift
+  for (let i = w0; i < out.water.length; i++) {
+    const f = out.water[i]
+    if (f.kind === 'pool') f.y += lift
+    else if (f.kind === 'sheet') { f.a[1] += lift; f.b[1] += lift }
+    else f.at[1] += lift
   }
+  prism(out, 0, 0, -0.3, lift - 0.3, r + over, 32, skirt, tag, r + over, false)
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -190,10 +196,13 @@ export function cupidsSpan(out: MeshBuilder, _fit?: Fit): void {
 // ---------------------------------------------------------------------------------------------------------------
 export function asawaMermaidFountain(out: MeshBuilder, _fit?: Fit): void {
   const r = 5.5
+  const v0 = out.positions.length, w0 = out.water.length
   basin(out, 0, 0, r, 0.5, GRANITE, GRAN_TAG)
   // a low stepped granite plinth at the centre, clear of the water, for the mermaid group to stand on
   prism(out, 0, 0, 0.55, 0.85, 1.6, 16, GRANITE, GRAN_TAG, 1.45)
   prism(out, 0, 0, 0.85, 1.05, 1.35, 16, GRANITE, GRAN_TAG, 1.1)
+  // (on the plaza's terrace, not sunk into it: the square falls 1.9 m across the basin)
+  standOnHighest(out, _fit, r, v0, w0, GRANITE, GRAN_TAG, 0.3)
 }
 
 // ---------------------------------------------------------------------------------------------------------------

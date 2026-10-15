@@ -86,31 +86,6 @@ const KNOWN: Record<string, string[]> = {
     'intersects | Civic Center Plaza',
     // #109 — not on the ground. The Opera Plaza courtyard's +3.80 m is a RAISED DECK and is probably right;
     // Union Square sunk 3.20 m with 6.0 m of relief across 120 × 78 m is the one to look at first.
-    // TERRAIN RELIEF across a footprint (> 1.5 m: the high side buried or the low side floating). Back in view on
-    // 2026-10-14: since the coarse grid moved to terrain.bin (BUGS.md #176) this audit read an index with no heights,
-    // every height was 0 and the check could not fire; reading the bake through tools/bake-files.ts fills them in.
-    // Each is to be looked at — many are real slopes a builder already follows (fit.grade), which the check cannot see.
-    'ground | 24th St Mission BART Plaza (south-west)',
-    'ground | Alcatraz smokestack',
-    'ground | Civic Center Plaza',
-    'ground | Clarion Alley murals',
-    'ground | Ferry Building Gates E, F and G',
-    'ground | Ferry Plaza deck',
-    'ground | Ghirardelli sign',
-    'ground | Golden Gate Bridge',
-    'ground | Huntington Falls',
-    'ground | Japanese Tea Garden grounds',
-    'ground | Music Concourse',
-    'ground | Opera Plaza courtyard',
-    'ground | Oracle Park',
-    'ground | Pier 35',
-    'ground | Point Bonita suspension footbridge',
-    'ground | Portsmouth Square — deck, pagodas and the skybridge to the Hilton',
-    'ground | Ruth Asawa Mermaid Fountain',
-    'ground | Sunset Tunnel, east portal',
-    'ground | Sunset Tunnel, west portal',
-    'ground | Union Square',
-    "ground | Yerba Buena Public Square and Children's Garden",
     'height | Opera Plaza courtyard',
     'height | Union Square Market Street Headhouse',
     'height | Powell Street Station Canopy',

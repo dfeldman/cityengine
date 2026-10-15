@@ -384,6 +384,37 @@ export function buildIt(procedural: string, size?: [number, number], height?: nu
 }
 
 /**
+ * Builders whose model is MEANT to meet the slope as the default placement puts it — lowest ground minus 0.5 m, the
+ * high side into the hill — judged on the contact sheet (2026-10-14, the owner's go-ahead to triage the audit): not
+ * defects, so the relief check passes them. Add one only after looking; say what was seen.
+ */
+export const SLOPE_OK: Record<string, string> = {
+  tunnelPortal: 'a portal cut into the hillside: the high side buried in the hill is the model (Sunset Tunnel, both ends)',
+  oraclePark: '3.6 m over 271 m: the stands and the outer wall take it; nothing floats',
+  msGardens: 'the gardens are a raised deck over Moscone; the low side is the deck edge over the street',
+  portsmouthSquareDeck: 'the deck over the garage at Kearny Street level, the garage wall below it on the downhill side, as built',
+  alcatrazSmokestack: 'a 3 m chimney on the cliff edge: its foot set into the rock',
+  operaPlazaCourtyard: 'the raised courtyard deck (+3.8 m, docs/BUGFIX): flat, its pool level, its edge the courtyard wall',
+  pointBonitaBridge: 'a footbridge high over the chasm between the cliffs: its towers stand on the rock either side',
+}
+
+/**
+ * Does the builder read the ground under it — `fit.groundAt` or `fit.grade` (render/landmarks.ts `place`)? Then it
+ * follows the slope itself (steps, a raised deck, a terraced garden), and the relief under its footprint is its own
+ * business, not a defect of the default placement. Found by building it with a fit that notices being asked.
+ */
+export function readsGround(procedural: string, size?: [number, number], height?: number): boolean {
+  const build = PROCEDURAL[procedural]
+  if (!build) return false
+  let read = false
+  const fit = { hx: (size?.[0] ?? 20) / 2, hz: (size?.[1] ?? 20) / 2, height: height ?? 20 }
+  Object.defineProperty(fit, 'groundAt', { enumerable: true, get: () => { read = true; return () => 0 } })
+  Object.defineProperty(fit, 'grade', { enumerable: true, get: () => { read = true; return 0 } })
+  try { build(new MeshBuilder(), fit) } catch { /* a builder that throws is the geometry check's to report */ }
+  return read
+}
+
+/**
  * The z-fighting HEURISTIC. Coplanar horizontal surfaces are this category's recurring defect (#67, Salesforce
  * Park), and they are recognisable in the built geometry: two large horizontal facets at almost the same
  * height. This cannot prove z-fighting — that depends on the depth buffer at a real camera — so a hit is a
@@ -611,7 +642,18 @@ export async function nonbuildingsOf(city: string): Promise<CityNonbuildings> {
        * footprint is exactly how far the far side floats. San Francisco has 122 m of it; a flat plaza on a
        * 10% street is a metre of daylight under one edge.
        */
-      if (relief > 1.5) issues.push({ ...label, check: 'ground', detail: `${relief.toFixed(1)} m of terrain relief across its ${(hx * 2).toFixed(0)}×${(hz * 2).toFixed(0)} m footprint — the high side is buried or the low side floats` })
+      /*
+       * …only for what `place()` actually puts there: not an entry with its own level (`baseY`, `deckAbove`) or draped
+       * over the ground (`drape`); not a bridge, pier or vessel, which stand on their own piers as the height check
+       * allows; not a builder that reads the ground itself (`readsGround`) and so follows the slope by design; and not
+       * one judged on the contact sheet to meet the slope as it should (`SLOPE_OK`).
+       */
+      const e = it.entry as { baseY?: number; deckAbove?: number; drape?: boolean }
+      const placedOwnWay = e.baseY !== undefined || e.deckAbove !== undefined || e.drape === true
+        || ['pier', 'bridge', 'vessel'].includes(it.kind)
+        || (it.procedural !== undefined && readsGround(it.procedural, it.size, it.height))
+        || (it.procedural !== undefined && it.procedural in SLOPE_OK)
+      if (relief > 1.5 && !placedOwnWay) issues.push({ ...label, check: 'ground', detail: `${relief.toFixed(1)} m of terrain relief across its ${(hx * 2).toFixed(0)}×${(hz * 2).toFixed(0)} m footprint — the high side is buried or the low side floats` })
 
       // what it intersects: buildings the entry does NOT claim, whose footprint its own overlaps
       const own = new Set(it.osm)
