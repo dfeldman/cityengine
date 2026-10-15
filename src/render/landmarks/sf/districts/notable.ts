@@ -1435,9 +1435,349 @@ function mallochBuilding_1360_Montgomery(out: MeshBuilder, fit: Fit): void {
   else emanuElCopy(out, m, 1, 0, 0, 0)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// Fugazi Bank Building
+// ---------------------------------------------------------------------------------------------------------------
+
+/**
+ * OSM way/32946083's eight distinct vertices (docs/shots/refs/notable/fugazi-bank/EVIDENCE.md) in OSM's own local frame
+ * (x east, z north, metres), anticlockwise: the NW back corner, the long south-west edge down Columbus Avenue to the
+ * prow's first vertex, the OSM prow (four short facets round the south end), then the long east edge up Montgomery
+ * Street and the 33 m back wall on the neighbours. This is the model's DESIGN frame; `fgPlace` carries it onto `fit.ring`.
+ */
+const FG_PLAN: P2[] = [[-28.2, 19.3], [6.0, -10.3], [7.5, -11.3], [8.7, -11.7], [9.7, -11.2], [10.2, -10.2], [10.2, -8.8], [4.3, 24.8]]
+  .map(([x, z]) => ({ x, z }))
+/** Radius of the prow's round (m) and the number of facets it is drawn with. */
+const FG_R = 2.0, FG_N = 12
+/** Heights: plinth, ground storey, second storey, main cornice, third storey, upper cornice, roof (balustrade on top). */
+const FG_YB = 1.2, FG_Y1 = 6.0, FG_Y2 = 10.6, FG_YC = 11.9, FG_Y3 = 14.6, FG_YR = 15.6, FG_YT = 16.8
+
+const FG_WALL: Rgb = [0.925, 0.905, 0.862]     // #ece7dc, the white glazed terra cotta
+const FG_TRIM: Rgb = [0.885, 0.862, 0.81]
+const FG_DEEP: Rgb = [0.74, 0.715, 0.665]      // arch reveals, the shadow of a cornice
+const FG_BASE: Rgb = [0.82, 0.80, 0.755]       // the rusticated base
+const FG_GLASS: Rgb = [0.13, 0.15, 0.18]
+const FG_FRAME: Rgb = [0.15, 0.14, 0.13]
+const FG_BRONZE: Rgb = [0.2, 0.15, 0.1]
+const FG_COL: Rgb = [0.08, 0.08, 0.09]         // the polished dark columns of the entrance
+const FG_GOLD: Rgb = [0.5, 0.4, 0.2]           // brass: lettering, capitals, the medallions
+const FG_ROOF: Rgb = [0.6, 0.58, 0.55]
+const FG_MT = surfaceTag('metal')
+const FG_CN = surfaceTag('concrete')
+
+/** The rotation + translation carrying FG_PLAN's frame onto `ring` (as `mbPlace`: Procrustes, else long edges). */
+function fgPlace(ring: P2[] | undefined): { c: number; s: number; tx: number; tz: number; res: number } | null {
+  type T = { c: number; s: number; tx: number; tz: number; res: number }
+  if (!ring || ring.length < 4) return null
+  let R = ring
+  const n = FG_PLAN.length
+  if (R.length === n + 1 && Math.hypot(R[0].x - R[n].x, R[0].z - R[n].z) < 0.3) R = R.slice(0, n)
+  let best: T | null = null
+  if (R.length === n) {
+    const cb = { x: R.reduce((t, p) => t + p.x, 0) / n, z: R.reduce((t, p) => t + p.z, 0) / n }
+    const ca = { x: FG_PLAN.reduce((t, p) => t + p.x, 0) / n, z: FG_PLAN.reduce((t, p) => t + p.z, 0) / n }
+    for (const rev of [false, true]) {
+      const Q = rev ? [...FG_PLAN].reverse() : FG_PLAN
+      for (let o = 0; o < n; o++) {
+        let sn = 0, cs = 0
+        for (let i = 0; i < n; i++) {
+          const a = Q[(i + o) % n]
+          const ax = a.x - ca.x, az = a.z - ca.z, bx = R[i].x - cb.x, bz = R[i].z - cb.z
+          cs += ax * bx + az * bz
+          sn += ax * bz - az * bx
+        }
+        const th = Math.atan2(sn, cs), c = Math.cos(th), s = Math.sin(th)
+        let e = 0
+        for (let i = 0; i < n; i++) {
+          const a = Q[(i + o) % n]
+          const x = (a.x - ca.x) * c - (a.z - ca.z) * s + cb.x, z = (a.x - ca.x) * s + (a.z - ca.z) * c + cb.z
+          e += (x - R[i].x) ** 2 + (z - R[i].z) ** 2
+        }
+        const res = Math.sqrt(e / n)
+        if (!best || res < best.res) best = { c, s, tx: cb.x - (ca.x * c - ca.z * s), tz: cb.z - (ca.x * s + ca.z * c), res }
+      }
+    }
+    if (best && best.res <= 2.5) return best
+  }
+  const ca = emanuElCentroid(FG_PLAN), cb = emanuElCentroid(R)
+  const edges = (r: P2[]): { L: number; a: number }[] => r.map((p, i) => {
+    const q = r[(i + 1) % r.length]
+    return { L: Math.hypot(q.x - p.x, q.z - p.z), a: Math.atan2(q.z - p.z, q.x - p.x) }
+  })
+  best = null
+  for (const a of edges(FG_PLAN).filter((e) => e.L > 15)) {
+    for (const b of edges(R).filter((e) => e.L > 15)) {
+      if (Math.abs(a.L - b.L) > 0.2 * a.L) continue
+      const th = b.a - a.a, c = Math.cos(th), s = Math.sin(th)
+      const tx = cb.x - (ca.x * c - ca.z * s), tz = cb.z - (ca.x * s + ca.z * c)
+      const T = FG_PLAN.map((p) => ({ x: p.x * c - p.z * s + tx, z: p.x * s + p.z * c + tz }))
+      let e = 0
+      for (const v of R) {
+        let d = Infinity
+        for (let i = 0; i < T.length; i++) {
+          const p = T[i], q = T[(i + 1) % T.length]
+          const dx = q.x - p.x, dz = q.z - p.z
+          const u = Math.max(0, Math.min(1, ((v.x - p.x) * dx + (v.z - p.z) * dz) / (dx * dx + dz * dz || 1)))
+          d = Math.min(d, Math.hypot(v.x - p.x - dx * u, v.z - p.z - dz * u))
+        }
+        e += d * d
+      }
+      const res = Math.sqrt(e / R.length)
+      if (!best || res < best.res) best = { c, s, tx, tz, res }
+    }
+  }
+  return best && best.res <= 2.5 ? best : null
+}
+
+/**
+ * The wedge's outline with a true round at the sharp end. The prow is found from the plan itself: the two long edges
+ * (vertex 0 to 1 along Columbus, vertex 6 to 7 along Montgomery) are extended to meet at the apex of the flatiron (a 39
+ * degree angle, 4.5 m past the OSM prow's tip); the vertex with the smallest interior angle is that apex, and the prow is
+ * the circle of radius FG_R tangent to both edges, drawn as FG_N facets (OSM's own prow is four flats round the same
+ * point). Returns the outline (anticlockwise: P0, the arc T1..T2, P7), the circle's centre and the arc's mid angle/sweep.
+ */
+function fgOutline(): { pts: P2[]; c: P2; tip: number; sweep: number } {
+  const P = FG_PLAN
+  const nz = (x: number, z: number): P2 => { const l = Math.hypot(x, z); return { x: x / l, z: z / l } }
+  const d1 = nz(P[1].x - P[0].x, P[1].z - P[0].z), d2 = nz(P[7].x - P[6].x, P[7].z - P[6].z)
+  const det = -d1.x * d2.z + d1.z * d2.x
+  const t = (-(P[6].x - P[1].x) * d2.z + (P[6].z - P[1].z) * d2.x) / det
+  const A = { x: P[1].x + t * d1.x, z: P[1].z + t * d1.z }
+  const b = nz(-d1.x + d2.x, -d1.z + d2.z)
+  const h = Math.acos(-d1.x * d2.x - d1.z * d2.z) / 2
+  const k = FG_R / Math.sin(h), td = FG_R / Math.tan(h)
+  const c = { x: A.x + b.x * k, z: A.z + b.z * k }
+  const T1 = { x: A.x - d1.x * td, z: A.z - d1.z * td }, T2 = { x: A.x + d2.x * td, z: A.z + d2.z * td }
+  const a1 = Math.atan2(T1.z - c.z, T1.x - c.x), a2 = Math.atan2(T2.z - c.z, T2.x - c.x)
+  const tip = Math.atan2(-b.z, -b.x)
+  let sweep = (a2 - a1 + 4 * Math.PI) % (2 * Math.PI)
+  const wrap = (a: number): number => Math.atan2(Math.sin(a), Math.cos(a))
+  if (Math.abs(wrap(a1 + sweep / 2 - tip)) > 1) sweep -= 2 * Math.PI
+  const pts: P2[] = [P[0]]
+  for (let i = 0; i <= FG_N; i++) {
+    const a = a1 + (sweep * i) / FG_N
+    pts.push({ x: c.x + FG_R * Math.cos(a), z: c.z + FG_R * Math.sin(a) })
+  }
+  pts.push(P[7])
+  return { pts, c, tip, sweep }
+}
+
+/**
+ * The Fugazi Bank Building (Banca Popolare Operaia Italiana, 1909, Charles Peter Paff; 4 Columbus Avenue, later the first
+ * Transamerica headquarters): a WHITE glazed terra-cotta flatiron between Columbus Avenue and Montgomery Street, its
+ * sharp end rounded into a curved prow. NOT Club Fugazi (Green Street). Photographs: docs/shots/refs/notable/fugazi-bank/
+ * wiki-image (the prow: a round tower, three storeys, the entrance in dark polished columns at its foot, a cross
+ * medallion over it, bracketed cornice, two paired bay windows a floor with iron balconettes, a heavy corbelled cornice,
+ * smaller windows above, a flagpole), mapillary-1 (the Columbus side: a rusticated base, tall ROUND-ARCHED ground
+ * windows between piers, tall square windows with ornate brackets and balconettes on floor 2, a heavy dentilled cornice,
+ * small windows in the attic storey, a second cornice and a balustrade), mapillary-0 (the same side running up Columbus
+ * under the Pyramid). mapillary-2/3/4 are the neighbours' walls and not used.
+ *
+ * Plan: OSM way/32946083 in its own frame (FG_PLAN), carried onto `fit.ring` by `fgPlace`; the sharp end is re-drawn as
+ * a true round (`fgOutline`). The back wall (33 m, on the neighbours) is plain. Storeys, from the photographs over the
+ * numbers: plinth to 1.2, ground storey (arches) to 6.0, string course, second storey to 10.6, the heavy cornice
+ * to 11.9, the attic storey to 14.6, upper cornice to 15.6 (LiDAR median 15.9 m), balustrade to 16.8. The assessor's
+ * "four storeys" counts a mezzanine; OSM's "2 levels" is out of date (the third storey was added; the cupola is gone).
+ */
+function fugaziBank_4_Columbus(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const place = fgPlace(fit.ring)
+  const { pts, c, tip } = fgOutline()
+  const NS = pts.length, up: V3 = [0, 1, 0], down: V3 = [0, -1, 0]
+  const nrm = (x: number, z: number): V3 => [x, 0, z]
+  const Q = (p: V3[], n: V3, col: Rgb, tag = TC): void => m.quad(p, n, uv, col, tag)
+  type Seg = { a: P2; b: P2; L: number; t: P2; n: P2 }
+  const segs: Seg[] = pts.map((a, i) => {
+    const b = pts[(i + 1) % NS]
+    const L = Math.hypot(b.x - a.x, b.z - a.z)
+    const t = { x: (b.x - a.x) / L, z: (b.z - a.z) / L }
+    return { a, b, L, t, n: { x: t.z, z: -t.x } }
+  })
+  const COL = 0, MONT = FG_N + 1, BACK = NS - 1
+  const isArc = (j: number): boolean => j >= 1 && j <= FG_N
+  /** vertex i of the outline pushed d outward along the mitre of the two walls that meet there */
+  const off = (i: number, d: number, y: number): V3 => {
+    const j = i % NS, k = (j + NS - 1) % NS
+    const n1 = segs[k].n, n2 = segs[j].n
+    const den = 1 + n1.x * n2.x + n1.z * n2.z
+    return [segs[j].a.x + ((n1.x + n2.x) / den) * d, y, segs[j].a.z + ((n1.z + n2.z) / den) * d]
+  }
+  /** a course round the building (not on the party wall unless `bk`): outer face at d, top and soffit; din starts the top inside */
+  const band = (y0: number, y1: number, d: number, col: Rgb, bk = false, din = 0, tag = TC): void => {
+    for (let j = 0; j < NS; j++) {
+      if (j === BACK && !bk) continue
+      const n = nrm(segs[j].n.x, segs[j].n.z)
+      Q([off(j, d, y0), off(j + 1, d, y0), off(j + 1, d, y1), off(j, d, y1)], n, col, tag)
+      Q([off(j, din, y1), off(j + 1, din, y1), off(j + 1, d, y1), off(j, d, y1)], up, col, tag)
+      if (d > 0.2) Q([off(j, 0, y0), off(j + 1, 0, y0), off(j + 1, d, y0), off(j, d, y0)], down, FG_DEEP, tag)
+    }
+  }
+  /** dark slits (dentils / balusters' gaps) every `sp` m along a wall at offset d */
+  const slits = (j: number, y0: number, y1: number, d: number, sp: number, w: number, col: Rgb): void => {
+    const s = segs[j]
+    const k = Math.max(1, Math.floor(s.L / sp))
+    for (let i = 0; i < k; i++) {
+      const u = (s.L * (i + 0.5)) / k
+      const P = (uu: number, y: number): V3 => [s.a.x + s.t.x * uu + s.n.x * d, y, s.a.z + s.t.z * uu + s.n.z * d]
+      Q([P(u - w / 2, y0), P(u + w / 2, y0), P(u + w / 2, y1), P(u - w / 2, y1)], nrm(s.n.x, s.n.z), col)
+    }
+  }
+  /** a block on wall j from u0 to u1, standing d proud, y0 to y1 */
+  const slab = (j: number, u0: number, u1: number, d: number, y0: number, y1: number, col: Rgb, tag = TC): void => {
+    const s = segs[j]
+    const P = (u: number, dd: number, y: number): V3 => [s.a.x + s.t.x * u + s.n.x * dd, y, s.a.z + s.t.z * u + s.n.z * dd]
+    Q([P(u0, d, y0), P(u1, d, y0), P(u1, d, y1), P(u0, d, y1)], nrm(s.n.x, s.n.z), col, tag)
+    Q([P(u0, 0, y1), P(u1, 0, y1), P(u1, d, y1), P(u0, d, y1)], up, col, tag)
+    Q([P(u0, 0, y0), P(u0, d, y0), P(u0, d, y1), P(u0, 0, y1)], nrm(-s.t.x, -s.t.z), col, tag)
+    Q([P(u1, d, y0), P(u1, 0, y0), P(u1, 0, y1), P(u1, d, y1)], nrm(s.t.x, s.t.z), col, tag)
+  }
+  /** an opening painted on wall j at u: a rectangle or (rise > 0) a round-headed one */
+  const opening = (j: number, u: number, y0: number, spring: number, halfW: number, rise: number, col: Rgb, tag: number, proud: number, seg = 8): void => {
+    const s = segs[j]
+    emOpening(m, s.a.x + s.t.x * u, s.a.z + s.t.z * u, s.t.x, s.t.z, s.n.x, s.n.z, y0, spring, halfW, rise, col, tag, proud, seg)
+  }
+
+  // ---- the walls: one face per segment from the ground to the roof, the plinth and its courses, the string course -------
+  for (let j = 0; j < NS; j++) {
+    Q([off(j, 0, 0), off(j + 1, 0, 0), off(j + 1, 0, FG_YR), off(j, 0, FG_YR)], nrm(segs[j].n.x, segs[j].n.z), FG_WALL)
+  }
+  band(0, FG_YB, 0.12, FG_BASE)
+  for (const y of [0.4, 0.8]) band(y, y + 0.04, 0.135, FG_DEEP)
+  band(FG_Y1, FG_Y1 + 0.5, 0.3, FG_TRIM)
+  // the heavy cornice (a corbel table with dark slits under a deep, flat-topped course) and the upper one
+  band(FG_Y2, FG_Y2 + 0.4, 0.5, FG_TRIM)
+  band(FG_Y2 + 0.4, FG_YC, 0.9, FG_TRIM)
+  band(FG_Y3, FG_Y3 + 0.4, 0.28, FG_TRIM)
+  band(FG_Y3 + 0.4, FG_YR, 0.5, FG_TRIM)
+  for (let j = 0; j < NS; j++) {
+    if (j === BACK || (isArc(j) && j % 2 === 0)) continue
+    slits(j, FG_Y2 + 0.04, FG_Y2 + 0.36, 0.52, 0.7, 0.2, FG_DEEP)
+    slits(j, FG_Y3 + 0.04, FG_Y3 + 0.36, 0.3, 0.7, 0.2, FG_DEEP)
+  }
+
+  // ---- the balustrade: plinth, pale balusters with dark gaps, a top rail, a plain inner face -----------------------------
+  band(FG_YR, FG_YR + 0.35, 0.34, FG_TRIM, true)
+  for (let j = 0; j < NS; j++) {
+    const s = segs[j], n = nrm(s.n.x, s.n.z)
+    Q([off(j, 0.2, FG_YR + 0.35), off(j + 1, 0.2, FG_YR + 0.35), off(j + 1, 0.2, FG_YT - 0.25), off(j, 0.2, FG_YT - 0.25)], n, FG_BASE)
+    Q([off(j + 1, -0.15, FG_YR), off(j, -0.15, FG_YR), off(j, -0.15, FG_YT), off(j + 1, -0.15, FG_YT)], nrm(-s.n.x, -s.n.z), FG_TRIM)
+    if (!isArc(j) || j % 2 === 1) slits(j, FG_YR + 0.4, FG_YT - 0.3, 0.215, isArc(j) ? 0.5 : 0.46, 0.17, FG_FRAME)
+  }
+  band(FG_YT - 0.25, FG_YT, 0.36, FG_TRIM, true, -0.15)
+
+  // ---- the roof ---------------------------------------------------------------------------------------------------------
+  capPolygonWithHoles(m, [pts], FG_YR, FG_ROOF, FG_CN)
+
+  // ---- the long sides: bays of arched ground windows, bracketed windows above, piers between -----------------------------
+  const bays = (j: number, u0: number, u1: number): void => {
+    const s = segs[j]
+    const k = Math.max(1, Math.round((u1 - u0) / 4.4)), pitch = (u1 - u0) / k
+    for (let i = 0; i <= k; i++) {
+      const u = u0 + pitch * i
+      // the pier: rusticated up the ground storey, a plain pilaster above, a capital under the cornice
+      slab(j, u - 0.55, u + 0.55, 0.22, FG_YB, FG_Y2 - 0.7, FG_WALL)
+      slab(j, u - 0.7, u + 0.7, 0.36, FG_Y2 - 0.7, FG_Y2, FG_TRIM)
+      for (let y = FG_YB + 0.75; y < FG_Y1 - 0.1; y += 0.75) {
+        const P = (uu: number): V3 => [s.a.x + s.t.x * uu + s.n.x * 0.235, y, s.a.z + s.t.z * uu + s.n.z * 0.235]
+        const Pu = (uu: number): V3 => [P(uu)[0], y + 0.04, P(uu)[2]]
+        Q([P(u - 0.55), P(u + 0.55), Pu(u + 0.55), Pu(u - 0.55)], nrm(s.n.x, s.n.z), FG_DEEP)
+      }
+      slab(j, u - 0.28, u + 0.28, 0.5, FG_YR + 0.35, FG_YT - 0.05, FG_TRIM)
+      if (i === k) continue
+      const uc = u + pitch / 2
+      // ground storey: the round-arched window in its reveal, a transom and a mullion, a keystone
+      opening(j, uc, FG_YB + 0.1, 4.1, 1.42, 1.42, FG_DEEP, TC, 0.05)
+      opening(j, uc, FG_YB + 0.4, 4.1, 1.15, 1.15, FG_GLASS, GL, 0.1)
+      opening(j, uc, 3.35, 3.47, 1.15, 0, FG_FRAME, TC, 0.13)
+      opening(j, uc, FG_YB + 0.4, 3.35, 0.035, 0, FG_FRAME, TC, 0.13)
+      opening(j, uc, 5.1, 5.85, 0.17, 0, FG_TRIM, TC, 0.09)
+      // second storey: a tall window in a surround, an iron balconette, bracketed sill, hood
+      slab(j, uc - 0.85, uc + 0.85, 0.26, 6.6, 7.2, FG_TRIM)
+      opening(j, uc, 7.2, 10.3, 0.98, 0, FG_TRIM, TC, 0.06)
+      opening(j, uc, 7.4, 10.05, 0.74, 0, FG_GLASS, GL, 0.1)
+      opening(j, uc, 7.4, 10.05, 0.03, 0, FG_FRAME, TC, 0.12)
+      slab(j, uc - 0.95, uc + 0.95, 0.3, 7.35, 7.95, FG_FRAME, FG_MT)
+      slab(j, uc - 1.05, uc + 1.05, 0.3, 10.25, 10.5, FG_TRIM)
+      // attic storey: a small window in a surround
+      opening(j, uc, 12.4, 14.3, 0.7, 0, FG_TRIM, TC, 0.06)
+      opening(j, uc, 12.6, 14.1, 0.5, 0, FG_GLASS, GL, 0.1)
+      slab(j, uc - 0.8, uc + 0.8, 0.2, 14.3, 14.45, FG_TRIM)
+    }
+  }
+  bays(COL, 1.0, segs[COL].L - 0.9)
+  bays(MONT, 0.9, segs[MONT].L - 1.0)
+
+  // ---- the prow: the round tower with its portal, medallions, paired bay windows ---------------------------------------
+  const AP = (phi: number, rr: number, y: number): V3 => [c.x + Math.cos(tip + phi) * rr, y, c.z + Math.sin(tip + phi) * rr]
+  const dg = (phi: number): V3 => nrm(Math.cos(tip + phi), Math.sin(tip + phi))
+  const arcRect = (p0: number, p1: number, rr: number, y0: number, y1: number, col: Rgb, tag = TC): void => {
+    const k = Math.max(1, Math.ceil(Math.abs(p1 - p0) / 0.11))
+    for (let i = 0; i < k; i++) {
+      const a = p0 + ((p1 - p0) * i) / k, b = p0 + ((p1 - p0) * (i + 1)) / k
+      Q([AP(a, rr, y0), AP(b, rr, y0), AP(b, rr, y1), AP(a, rr, y1)], dg((a + b) / 2), col, tag)
+    }
+  }
+  const arcBand = (p0: number, p1: number, d: number, y0: number, y1: number, col: Rgb, tag = TC): void => {
+    const k = Math.max(1, Math.ceil(Math.abs(p1 - p0) / 0.11))
+    for (let i = 0; i < k; i++) {
+      const a = p0 + ((p1 - p0) * i) / k, b = p0 + ((p1 - p0) * (i + 1)) / k
+      Q([AP(a, FG_R + d, y0), AP(b, FG_R + d, y0), AP(b, FG_R + d, y1), AP(a, FG_R + d, y1)], dg((a + b) / 2), col, tag)
+      Q([AP(a, FG_R, y1), AP(b, FG_R, y1), AP(b, FG_R + d, y1), AP(a, FG_R + d, y1)], up, col, tag)
+      if (d > 0.2) Q([AP(a, FG_R, y0), AP(b, FG_R, y0), AP(b, FG_R + d, y0), AP(a, FG_R + d, y0)], down, FG_DEEP, tag)
+    }
+  }
+  const D = Math.PI / 180
+  // the portal: dark bronze doors, glazed, between four dark polished columns carrying a lintel with lettering
+  arcRect(-30 * D, 30 * D, FG_R + 0.05, 0.3, 4.4, FG_BRONZE)
+  arcRect(-20 * D, -4 * D, FG_R + 0.09, 0.9, 3.7, FG_GLASS, GL)
+  arcRect(4 * D, 20 * D, FG_R + 0.09, 0.9, 3.7, FG_GLASS, GL)
+  arcRect(-24 * D, 24 * D, FG_R + 0.09, 3.8, 4.35, FG_GLASS, GL)
+  for (const ph of [-40, -14, 14, 40]) {
+    const x = AP(ph * D, FG_R + 0.85, 0)
+    prism(m, x[0], x[2], 0.3, 4.5, 0.27, 8, FG_COL, FG_MT)
+    prism(m, x[0], x[2], 0.3, 0.55, 0.36, 8, FG_TRIM, TC)
+    prism(m, x[0], x[2], 4.2, 4.5, 0.36, 8, FG_GOLD, FG_MT)
+  }
+  arcBand(-52 * D, 52 * D, 1.15, 4.5, 5.25, FG_TRIM)
+  arcRect(-40 * D, 40 * D, FG_R + 1.17, 4.75, 4.98, FG_GOLD, FG_MT)
+  // the cross medallion over the portal and a plaque either side
+  for (const [ph, r] of [[0, 0.3], [-27, 0.2], [27, 0.2]] as [number, number][]) {
+    const O = AP(ph * D, FG_R + 0.06, 5.62), tg = [-Math.sin(tip + ph * D), Math.cos(tip + ph * D)]
+    const ring: V3[] = []
+    for (let k = 0; k < 8; k++) {
+      const a = (k / 8) * Math.PI * 2
+      ring.push([O[0] + tg[0] * r * Math.cos(a), O[1] + r * Math.sin(a), O[2] + tg[1] * r * Math.cos(a)])
+    }
+    for (let k = 0; k < 8; k += 2) Q([O, ring[k], ring[k + 1], ring[(k + 2) % 8]], dg(ph * D), FG_GOLD, FG_MT)
+  }
+  // the pilaster-like side bays of the prow's ground storey: a narrow dark window each side
+  for (const ph of [-56, 56]) {
+    arcRect((ph - 5) * D, (ph + 5) * D, FG_R + 0.06, 1.6, 4.4, FG_DEEP)
+    arcRect((ph - 3.5) * D, (ph + 3.5) * D, FG_R + 0.1, 1.9, 4.2, FG_GLASS, GL)
+  }
+  // floors 2 and 3: two windows either side of the centre pier, and one each side near the flanks
+  for (const ph of [-21, 21, -50, 50]) {
+    const w = 10.5
+    arcBand((ph - w - 3) * D, (ph + w + 3) * D, 0.2, 6.6, 7.2, FG_TRIM)
+    arcRect((ph - w - 2) * D, (ph + w + 2) * D, FG_R + 0.06, 7.2, 10.3, FG_TRIM)
+    arcRect((ph - w) * D, (ph + w) * D, FG_R + 0.1, 7.4, 10.05, FG_GLASS, GL)
+    arcBand((ph - w - 1) * D, (ph + w + 1) * D, 0.3, 7.35, 7.95, FG_FRAME, FG_MT)
+    arcRect((ph - w + 1) * D, (ph + w - 1) * D, FG_R + 0.06, 12.4, 14.3, FG_TRIM)
+    arcRect((ph - w + 3) * D, (ph + w - 3) * D, FG_R + 0.1, 12.6, 14.1, FG_GLASS, GL)
+  }
+  // the flagpole on the prow
+  prism(m, c.x, c.z, FG_YR, FG_YT + 7.5, 0.05, 4, [0.8, 0.8, 0.8], FG_MT)
+  prism(m, c.x, c.z, FG_YT + 7.5, FG_YT + 7.7, 0.1, 6, FG_GOLD, FG_MT)
+
+  if (place) emanuElCopy(out, m, place.c, place.s, place.tx, place.tz)
+  else emanuElCopy(out, m, 1, 0, 0, 0)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
   pier43FerryArch,
   mallochBuilding_1360_Montgomery,
+  fugaziBank_4_Columbus,
 }
