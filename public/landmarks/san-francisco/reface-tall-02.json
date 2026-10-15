@@ -1,0 +1,14 @@
+[
+{"osm": ["way/813225688"], "restyle": "bauhaus", "wall": "#f2f0ea", "trim": "#2a2e33", "by": "haiku", "image": "way-813225688-03.jpg", "note": "white render with dark window frames"},
+{"osm": ["way/27955297"], "restyle": "skyscraper", "wall": "#6aa7b5", "trim": "#b9b4a8", "by": "haiku", "image": "way-27955297-01.jpg", "note": "teal-tinted glass skin with stone piers"},
+{"osm": ["way/259246006"], "restyle": "towerblock", "wall": "#cbbfa8", "by": "haiku", "image": "way-259246006-03.jpg", "note": "tan-beige punched-window tower"},
+{"osm": ["way/261095627"], "restyle": "brick", "wall": "#a5503c", "by": "haiku", "image": "way-261095627-02.jpg", "note": "red brick block with recessed balconies"},
+{"osm": ["way/288475444"], "restyle": "towerblock", "wall": "#d9cbb3", "by": "haiku", "image": "way-288475444-03.jpg", "note": "beige tower with glazed balconies"},
+{"osm": ["way/79377215"], "restyle": "brick", "wall": "#b26a43", "trim": "#d9c9a3", "by": "haiku", "image": "way-79377215-02.jpg", "note": "orange brick with stone cornice"},
+{"osm": ["way/7059627"], "restyle": "bauhaus", "wall": "#eeece6", "trim": "#2e3436", "by": "haiku", "image": "way-7059627-01.jpg", "note": "off-white render with dark window frames"},
+{"osm": ["way/964389113"], "restyle": "brick", "wall": "#b55a3c", "by": "haiku", "image": "way-964389113-02.jpg", "note": "red brick loft with balconies"},
+{"osm": ["way/676719997"], "restyle": "towerblock", "wall": "#e8e6e0", "groundWall": "#2e8b8b", "by": "haiku", "image": "way-676719997-02.jpg", "note": "pale grey punched tower with teal ground floor"},
+{"osm": ["way/173886663"], "restyle": "brick", "wall": "#8a857c", "by": "haiku", "image": "way-173886663-01.jpg", "note": "taupe-grey render with punched windows"},
+{"osm": ["way/288649887"], "restyle": "towerblock", "wall": "#e9e4d6", "accent": "#d8b25a", "by": "haiku", "image": "way-288649887-01.jpg", "note": "cream block with yellow balcony panels"},
+{"osm": ["way/256495490"], "restyle": "towerblock", "wall": "#4a505a", "trim": "#cbbf9f", "by": "haiku", "image": "way-256495490-03.jpg", "note": "dark grey tower with tan bands"}
+]
