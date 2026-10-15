@@ -1,0 +1,18 @@
+[
+{"osm": ["way/260291407"], "restyle": "classical", "wall": "#c9bda6", "trim": "#e4dccb", "by": "haiku", "image": "way-260291407-01.jpg", "note": "pale stone office block; tall Ionic columns at the entrance, heavy entablature and cornice"},
+{"osm": ["way/1154189645"], "restyle": "bauhaus", "wall": "#cfc9bd", "trim": "#7f97ad", "by": "haiku", "image": "way-1154189645-03.jpg", "note": "four-storey smooth light-grey block with continuous horizontal glazed ribbons and blue-grey spandrel bands"},
+{"osm": ["way/257939517"], "restyle": "towerblock", "wall": "#d8c69c", "by": "haiku", "image": "way-257939517-03.jpg", "note": "beige rendered flats with punched windows and projecting balconies, flat top"},
+{"osm": ["way/1262627708"], "restyle": "sfapartment", "wall": "#b9b2a3", "by": "haiku", "image": "way-1262627708-01.jpg", "note": "grey-beige stucco block of about seven storeys with fire escapes across the front"},
+{"osm": ["way/256989686"], "restyle": "chicago", "wall": "#9a4a33", "groundWall": "#7d7872", "by": "haiku", "image": "way-256989686-02.jpg", "note": "red-brown brick tower, about eleven storeys, grey stone base to the first floors, heavy cornice on top"},
+{"osm": ["way/256062980"], "restyle": "towerblock", "wall": "#e9e6dc", "groundWall": "#2a9fb3", "accent": "#7fd3a4", "by": "haiku", "image": "way-256062980-02.jpg", "note": "white render block with green panels on the upper wing, teal painted base, stacked balconies"},
+{"osm": ["way/256987955"], "restyle": "brick", "wall": "#a4553a", "trim": "#d8c7a0", "by": "haiku", "image": "way-256987955-03.jpg", "note": "red brick apartment block with a cream top band, punched windows and parapet"},
+{"osm": ["way/941564337"], "restyle": "bauhaus", "wall": "#d2bd98", "accent": "#2f3a40", "by": "haiku", "image": "way-941564337-01.jpg", "note": "four-storey tan commercial block with horizontal dark glazed ribbons and blind arched openings"},
+{"osm": ["way/1547771522"], "restyle": "classical", "wall": "#e6dfcd", "groundWall": "#1e2d57", "by": "haiku", "image": "way-1547771522-03.jpg", "note": "cream Italianate block with a dark navy painted ground floor"},
+{"osm": ["way/218148108"], "restyle": "brick", "wall": "#9c4a33", "by": "haiku", "image": "way-218148108-01.jpg", "note": "red brick warehouse block with arched and punched windows and a stepped gable"},
+{"osm": ["way/257724798"], "restyle": "brick", "wall": "#a4503a", "by": "haiku", "image": "way-257724798-01.jpg", "note": "red brick warehouse with punched windows and a painted ghost sign, flat top"},
+{"osm": ["way/256047651"], "restyle": "tenement", "wall": "#e8e3d4", "trim": "#d9a53f", "groundWall": "#1e2c4a", "by": "haiku", "image": "way-256047651-02.jpg", "note": "cream stucco block of about seven storeys, fire escapes across the front, ochre window surrounds, navy shopfront"},
+{"osm": ["way/253360376"], "restyle": "sfapartment", "wall": "#e6dccb", "trim": "#f3efe6", "by": "haiku", "image": "way-253360376-01.jpg", "note": "cream painted masonry apartment block, fire escapes on the front, white cornice"},
+{"osm": ["way/846998576"], "restyle": "towerblock", "wall": "#9e3d33", "by": "haiku", "image": "way-846998576-01.jpg", "note": "painted red wall of about nine storeys with fire escapes, punched windows, flat parapet top"},
+{"osm": ["way/79377180"], "restyle": "bauhaus", "wall": "#ecebe6", "by": "haiku", "image": "way-79377180-02.jpg", "note": "white seven-storey block with flat roof, recessed glazed balcony bands and no ornament"},
+{"osm": ["way/260183842"], "restyle": "sfapartment", "wall": "#ece6d7", "trim": "#f5f2ea", "by": "haiku", "image": "way-260183842-03.jpg", "note": "cream-white stucco block with stacked bay windows and fire escapes"}
+]
