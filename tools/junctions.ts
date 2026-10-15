@@ -64,7 +64,8 @@ const offDrawn = (pts: { x: number; z: number }[]): number => {
       const t = L > 0 ? d / L : 0
       const x = pts[i - 1].x + (pts[i].x - pts[i - 1].x) * t, z = pts[i - 1].z + (pts[i].z - pts[i - 1].z) * t
       const near = drawn.near(x, z)
-      worst = Math.max(worst, near.length ? Math.min(...near.map((n) => n.d)) : 99)
+      // (outside the carriageway's edge, not from its centre line: 3.7 m off a 16 m street's centre is in its lanes)
+      worst = Math.max(worst, near.length ? Math.min(...near.map((n) => Math.max(0, n.d - n.s.half))) : 99)
     }
   }
   return worst
@@ -113,7 +114,7 @@ for (const n of g.nodes.values()) {
     const off = offDrawn(s.pts)
     if (!corner) { if (off > 1) cause.pipeline++; else cause.osm++ }
     score = Math.max(score, s.stray + s.bend / 20)
-    why.push(`${s.name ?? '?'} strays ${s.stray.toFixed(1)} m, bends ${s.bend.toFixed(0)}°, off the drawn street ${off.toFixed(1)} m${corner ? ' (corner)' : ''}`)
+    why.push(`${s.name ?? '?'} strays ${s.stray.toFixed(1)} m, bends ${s.bend.toFixed(0)}°, outside the asphalt ${off.toFixed(1)} m${corner ? ' (corner)' : ''}`)
   }
   // the last 12 m before the crossing: a sharp turn there is what the owner meant
   {
@@ -133,7 +134,7 @@ for (const n of g.nodes.values()) {
 worst.sort((p, q) => q.score - p.score)
 const q = (a: number[], f: number): number => { const s = [...a].sort((x, y) => x - y); return s[Math.floor(f * (s.length - 1))] ?? 0 }
 console.log(`${city}: ${junctions} street junctions of 3-4 ways (last ${APPROACH} m of each approach)`)
-console.log(`  repairable zigzag (stray ${STRAY}-4 m or bend ${BEND}-60°): ${bucket.repairable} junctions — approaches off the drawn street (the ride graph's own kink): ${cause.pipeline}, on it (the street's): ${cause.osm}`)
+console.log(`  repairable zigzag (stray ${STRAY}-4 m or bend ${BEND}-60°): ${bucket.repairable} junctions — approaches outside the drawn carriageway > 1 m: ${cause.pipeline}, on it: ${cause.osm}`)
 console.log(`  real corners (bend > 60° or stray > 4 m): ${bucket.corner}; of which skewed (no through pair within 15°, judged too, node not moved): ${bucket.skewed}`)
 console.log(`  a sharp turn (> ${ZIG_NEAR}°, a street's own bend over 60° excepted) in the last 12 m before the crossing: ${nearZig} junctions`)
 console.log(`  …in the last 6 m (right at the crossing): ${near6} junctions`)
