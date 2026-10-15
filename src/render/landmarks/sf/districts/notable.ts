@@ -3063,6 +3063,173 @@ function stJosephsHospital_355_BuenaVista(out: MeshBuilder, fit: Fit): void {
   emanuElCopy(out, m, T.c, T.s, T.tx, T.tz)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// Rialto Building, 116 New Montgomery Street at Mission
+// ---------------------------------------------------------------------------------------------------------------
+
+const RB_BRICK: Rgb = [0.69, 0.53, 0.38]        // buff tan brick (wiki-image.jpg; was too orange)
+const RB_BRICK_LT: Rgb = [0.74, 0.58, 0.42]
+const RB_BRICK_DK: Rgb = [0.62, 0.47, 0.34]      // the court and party walls
+const RB_STONE: Rgb = [0.74, 0.69, 0.6]         // #c9bba3 stone base and trim, weathered
+const RB_CORN: Rgb = [0.78, 0.72, 0.62]         // #cfc2a8 cornice
+const RB_GLASS: Rgb = [0.13, 0.16, 0.19]
+const RB_SHOP: Rgb = [0.1, 0.13, 0.15]
+const RB_FRAME: Rgb = [0.72, 0.68, 0.6]
+const RB_ROOF: Rgb = [0.4, 0.38, 0.36]
+
+/**
+ * The Rialto Building, 116 New Montgomery Street at Mission (1902, Meyer & O'Brien with Walter Danforth Bliss, Renaissance
+ * Revival): a nine-storey buff-brick office block with a two-storey rusticated stone base (big shop windows between
+ * rusticated piers, an ornate round-arched entrance with a smaller arch beside it), a stone belt, seven brick storeys of
+ * stone-framed window groups between brick piers, then a frieze storey of small paired windows under a deep projecting
+ * dentilled cornice. A light court cuts into the back of the plan, so the brick "U" has two New Montgomery fronts either
+ * side of it. Photographs: docs/shots/refs/notable/rialto/ wiki-image.jpg (the whole block: brick shaft, stone base,
+ * cornice), mapillary-3 (the arched entrance, MDCCCCI lettering, cartouche), -2 (the shaft and base head-on: groups of three
+ * windows in stone surrounds, brick piers, shop windows with a spandrel), -0 (the Mission front). -1 is a neighbour, ignored.
+ *
+ * Orientation: the manifest says front 46 (New Montgomery), so the fronts are the long ring edges whose outward normal faces
+ * local -z; Mission is the long edge facing +x (bearing 315, measured). Both are found from the ring's geometry in the fit
+ * frame, never from OSM's vertex order; the court and the party walls get plain brick.
+ *
+ * Where the photographs overruled the numbers: OSM's flat 34 m and the Assessor's nine storeys agree with the photographs,
+ * but the photographs show the ninth storey is the frieze under the cornice, so the brick shaft is seven storeys over the
+ * two-storey base; the base is stone with rustication on its piers, not brick.
+ */
+function rialtoBuilding_116_NewMontgomery(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const BK = surfaceTag('brick')
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  const n = ring.length
+  const TOP = 34, Y_BASE = 7.6, Y_FR = 30.6, Y_FRT = 32.4
+
+  const info = ring.map((a, i) => {
+    const b = ring[(i + 1) % n], l = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    return { i, a, b, l, nx: (b.z - a.z) / l, nz: -(b.x - a.x) / l }
+  })
+  // the front edges (-z) and the Mission edge (+x); the entrance goes on the longest front edge
+  const isFront = (e: typeof info[number]): boolean => e.l > 12 && e.nz < -0.85
+  const isMission = (e: typeof info[number]): boolean => e.l > 12 && e.nx > 0.85
+  const fronts = info.filter(isFront)
+  const entr = fronts.length ? fronts.reduce((p, c) => (c.l > p.l ? c : p)).i : -1
+
+  for (const e of info) {
+    const { a, b, l, nx, nz } = e
+    if (l < 0.5) continue
+    const tx = (b.x - a.x) / l, tz = (b.z - a.z) / l
+    const h = Math.atan2(nx, nz)
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const panel = (u0: number, u1: number, y0: number, y1: number, pr: number, c: Rgb, tag: number): void => {
+      m.quad([P(u0, y0, pr), P(u1, y0, pr), P(u1, y1, pr), P(u0, y1, pr)], [nx, 0, nz], uv, c, tag)
+    }
+    const slab = (u0: number, u1: number, y0: number, y1: number, pr0: number, pr1: number, c: Rgb): void => {
+      boxAlong(m, a.x + tx * (u0 + u1) / 2 + nx * (pr0 + pr1) / 2, (y0 + y1) / 2, a.z + tz * (u0 + u1) / 2 + nz * (pr0 + pr1) / 2,
+        (u1 - u0) / 2, (y1 - y0) / 2, (pr1 - pr0) / 2, h, c, ST)
+    }
+    const op = (u: number, y0: number, y1: number, hw: number, rise: number, c: Rgb, tag: number, proud: number, seg = 6): void => {
+      emOpening(m, a.x + tx * u, a.z + tz * u, tx, tz, nx, nz, y0, y1, hw, rise, c, tag, proud, seg)
+    }
+    const street = isFront(e) || isMission(e)
+
+    if (!street) {
+      // the court and party walls: plain darker brick, a few punched windows, a modest cornice
+      panel(0, l, -3, TOP, 0, RB_BRICK_DK, BK)
+      for (let y = 2; y < TOP - 1; y += 3.2) panel(0, l, y, y + 0.06, 0.015, RB_BRICK, BK)
+      if (l > 4) {
+        const k = Math.floor((l - 1.5) / 3.4)
+        for (let j = 0; j < k; j++) {
+          const u = 0.75 + ((l - 1.5) * (j + 0.5)) / k
+          for (let r = 0; r < 8; r++) {
+            const y0 = 3.2 + 3.35 * r
+            panel(u - 0.55, u + 0.55, y0, y0 + 1.7, 0.06, RB_GLASS, GL)
+          }
+        }
+      }
+      slab(-0.1, l + 0.1, TOP - 1.0, TOP, 0, 0.45, RB_CORN)
+      continue
+    }
+
+    // ---- the wall and the stone base ------------------------------------------------------------------------------------
+    panel(0, l, -3, TOP, 0, RB_BRICK, BK)
+    for (let y = 8.2; y < Y_FR; y += 1.6) panel(0, l, y, y + 0.05, 0.015, RB_BRICK_LT, BK)       // brick courses
+    panel(0, l, -3, Y_BASE, 0.1, RB_STONE, BK)                                                   // the stone base
+    slab(-0.1, l + 0.1, Y_BASE, Y_BASE + 0.55, 0, 0.4, RB_STONE)                                  // the belt course over it
+    slab(-0.1, l + 0.1, 0, 0.5, 0, 0.3, RB_STONE)                                                  // the plinth
+
+    const kb = Math.max(2, Math.round(l / 5.0))
+    const w = l / kb
+    const door = e.i === entr ? Math.floor(kb / 2) : -1
+    for (let j = 0; j <= kb; j++) {                                                               // rusticated piers
+      const u = w * j
+      const u0 = Math.max(0, u - 0.62), u1 = Math.min(l, u + 0.62)
+      slab(u0, u1, 0.5, Y_BASE, 0, 0.28, RB_STONE)
+      for (let y = 1.4; y < Y_BASE; y += 0.95) panel(u0, u1, y, y + 0.07, 0.29, RB_FRAME, ST)   // the rustication joints
+    }
+    for (let j = 0; j < kb; j++) {
+      const uc = w * (j + 0.5), hw = w / 2 - 0.85
+      if (j === door) {
+        // the ornate round-arched entrance: a stone surround, dark doorway, keystone cartouche, the lettered frieze above
+        op(uc, 0, 3.6, hw + 0.2, hw + 0.2, RB_STONE, BK, 0.34, 10)
+        op(uc, 0, 3.4, hw - 0.25, hw - 0.25, RB_SHOP, GL, 0.4, 10)
+        op(uc, 0, 3.4, 0.05, hw - 0.25, RB_FRAME, ST, 0.44, 10)
+        slab(uc - hw - 0.5, uc + hw + 0.5, 0.5, 0.75, 0, 0.7, RB_STONE)                           // the step
+        slab(uc - 0.45, uc + 0.45, 3.4 + hw + 0.1, 3.4 + hw + 1.1, 0.34, 0.6, RB_STONE)          // the keystone cartouche
+        slab(uc - hw - 0.3, uc + hw + 0.3, 6.0, 7.0, 0.28, 0.5, RB_CORN)                          // the lettered frieze block
+        panel(uc - hw, uc + hw, 6.25, 6.7, 0.51, [0.42, 0.38, 0.33], ST)
+        continue
+      }
+      // shop window and mezzanine window, a stone spandrel panel between
+      op(uc, 0.9, 3.3, hw, 0, RB_SHOP, GL, 0.16)
+      op(uc, 0.9, 3.3, 0.05, 0, RB_FRAME, ST, 0.2)
+      op(uc, 4.0, 6.6, hw, 0, RB_SHOP, GL, 0.16)
+      op(uc, 4.0, 6.6, 0.05, 0, RB_FRAME, ST, 0.2)
+      slab(uc - hw - 0.15, uc + hw + 0.15, 3.3, 4.0, 0.08, 0.3, RB_STONE)                         // the spandrel
+      slab(uc - hw - 0.15, uc + hw + 0.15, 6.6, 6.9, 0.08, 0.32, RB_STONE)                        // the lintel
+    }
+
+    // ---- the brick shaft: groups of three windows in stone surrounds between brick piers -----------------------------------
+    for (let j = 0; j < kb; j++) {
+      const uc = w * (j + 0.5), hw = Math.min(w / 2 - 0.75, 2.0)
+      for (let r = 0; r < 7; r++) {
+        const y0 = 8.8 + 3.2 * r, y1 = y0 + 2.0
+        op(uc, y0 - 0.2, y1 + 0.25, hw + 0.18, 0, RB_STONE, BK, 0.1)                              // the stone surround
+        op(uc, y0, y1, hw, 0, RB_GLASS, GL, 0.18)
+        for (const s of [-1, 1]) op(uc + s * hw / 3, y0, y1, 0.06, 0, RB_FRAME, ST, 0.22)         // the two mullions
+        slab(uc - hw - 0.3, uc + hw + 0.3, y0 - 0.38, y0 - 0.2, 0, 0.26, RB_STONE)               // the sill
+      }
+    }
+    panel(0, l, Y_FR, Y_FRT, 0.05, RB_CORN, ST)                                                    // the stone frieze ground
+    for (let j = 0; j < kb; j++) {                                                                  // windows cut through it
+      const uc = w * (j + 0.5)
+      for (const s of [-1, 1]) {
+        op(uc + s * 0.85, 30.95, 32.05, 0.4, 0, RB_STONE, BK, 0.12)
+        op(uc + s * 0.85, 31.05, 31.95, 0.3, 0, RB_GLASS, GL, 0.18)
+      }
+      slab(uc - 0.3, uc + 0.3, Y_FR + 0.1, Y_FRT - 0.1, 0.05, 0.2, RB_STONE)                      // the carved boss between them
+    }
+    slab(-0.1, l + 0.1, Y_FR - 0.35, Y_FR, 0, 0.5, RB_STONE)                                        // the belt under the frieze
+    slab(-0.2, l + 0.2, Y_FRT, Y_FRT + 0.4, 0, 0.7, RB_CORN)                                       // the architrave
+    for (let u = 0.2; u < l - 0.2; u += 1.0) slab(u, u + 0.5, Y_FRT + 0.4, Y_FRT + 0.8, 0.3, 0.75, RB_CORN)   // the dentils
+    slab(-0.4, l + 0.4, Y_FRT + 0.8, TOP - 0.35, 0, 1.45, RB_CORN)                                 // the deep projecting cornice
+    slab(-0.5, l + 0.5, TOP - 0.35, TOP, 0, 1.6, RB_STONE)                                         // the cap
+  }
+
+  capPolygonWithHoles(m, [ring], TOP - 0.2, RB_ROOF, surfaceTag('concrete'))
+
+  // the model is already in the fit's own frame
+  for (let i = 0; i < m.positions.length; i++) out.positions.push(m.positions[i])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -3076,4 +3243,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   alhambraTheatre_2330_Polk,
   ywcaResidence_940_Powell,
   stJosephsHospital_355_BuenaVista,
+  rialtoBuilding_116_NewMontgomery,
 }
