@@ -591,5 +591,8 @@
  },
  {
   "include": "san-francisco/transamerica-area.json"
+ },
+ {
+  "include": "san-francisco/lidar-heights.json"
  }
 ]
