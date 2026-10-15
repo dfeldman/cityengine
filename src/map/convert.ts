@@ -213,10 +213,42 @@ export function convertTile(t: TileData, ctx: ConvertContext): MapTile {
     if (b.roofDirection !== undefined) r.dir = Math.round(b.roofDirection * RAD_TO_CDEG)
     return r
   }
+  /*
+   * A building OVER A TUNNEL stands on the hill over it, never in it (2026-10-14, owner: "a partially submerged house
+   * intersecting the tunnel" — 37.797062 −122.412446, over Broadway's east end: on a 10 m slope its foot went to the
+   * lowest ground under it, 0.8 m into the tube's crown). Where its outline is over a bore, the foot is at least the
+   * tube's top: the road's level and TUBE_TOP (the bake fills the hill over a bore to the road + 6 m, tools/bake.ts).
+   */
+  const TUBE_TOP = 5.7
+  const bores = t.edges.filter((e) => e.bore && !e.foot && e.heights?.length)
+  const overBore = (pts: { x: number; z: number }[]): number => {
+    let floor = -Infinity
+    for (const e of bores) {
+      const half = e.width / 2 + Math.max(e.walk, 0.6) + 1
+      // (not near its ends — a mouth: a building at a mouth stands on the street in front of the portal as well)
+      let total = 0
+      for (let i = 2; i < e.points.length; i += 2) total += Math.hypot(e.points[i] - e.points[i - 2], e.points[i + 1] - e.points[i - 1])
+      let run = 0
+      for (let i = 2; i < e.points.length; i += 2) {
+        const ax = e.points[i - 2], az = e.points[i - 1], dx = e.points[i] - ax, dz = e.points[i + 1] - az
+        const l2 = dx * dx + dz * dz || 1e-9
+        const seg = Math.sqrt(l2)
+        run += seg
+        for (const q of pts) {
+          const u = Math.max(0, Math.min(1, ((q.x - ax) * dx + (q.z - az) * dz) / l2))
+          const along = run - seg + seg * u
+          if (along < 8 || along > total - 8) continue
+          if (Math.hypot(ax + dx * u - q.x, az + dz * u - q.z) > half) continue
+          floor = Math.max(floor, e.heights![i / 2 - 1] + (e.heights![i / 2] - e.heights![i / 2 - 1]) * u + TUBE_TOP)
+        }
+      }
+    }
+    return floor
+  }
   const footOf = (ring: number[]): number => {
     const pts: { x: number; z: number }[] = []
     for (let i = 0; i < ring.length; i += 2) pts.push({ x: ring[i], z: ring[i + 1] })
-    return zc(buildingFoot(simplifyRing(pts), standAt))
+    return zc(Math.max(buildingFoot(simplifyRing(pts), standAt), bores.length ? overBore(pts) : -Infinity))
   }
   const centreOf = (ring: number[]): [number, number] => {
     let x = 0
