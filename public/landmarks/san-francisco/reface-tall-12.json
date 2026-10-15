@@ -1,0 +1,11 @@
+[
+{"osm": ["way/148325245"], "restyle": "sfapartment", "wall": "#c9654a", "accent": "#3d4248", "by": "haiku", "image": "way-148325245-01.jpg", "note": "terracotta-red front with stacked dark-framed box bays on every storey; grey tower to the right is not this building"},
+{"osm": ["way/148547439"], "restyle": "brick", "wall": "#ece9e1", "groundWall": "#50545a", "by": "haiku", "image": "way-148547439-01.jpg", "note": "off-white rendered wall, punched windows, fire escapes on the front, dark grey shopfront base; classifier chicago not supported"},
+{"osm": ["way/262686733"], "restyle": "classical", "wall": "#d6c7a3", "groundWall": "#8c8273", "by": "haiku", "image": "way-262686733-01.jpg", "note": "cream stucco apartment tower with red tile roof, stone-look base, fire escape; flat front, no bays on this block"},
+{"osm": ["way/256479478"], "restyle": "towerblock", "wall": "#e0ab9b", "by": "haiku", "image": "way-256479478-01.jpg", "note": "salmon-pink render, individual windows and recessed balconies stacked up a flat-topped block"},
+{"osm": ["way/220376177"], "restyle": "towerblock", "wall": "#d9c9a3", "groundWall": "#9c5a43", "by": "haiku", "image": "way-220376177-02.jpg", "note": "beige render with stacked balconies, stepped massing, brick ground-floor base"},
+{"osm": ["way/259978999"], "restyle": "classical", "wall": "#d6c196", "by": "haiku", "image": "way-259978999-01.jpg", "note": "tan hotel with projecting cornice and stone window surrounds"},
+{"osm": ["way/256989688"], "restyle": "sfapartment", "wall": "#e3d7bc", "by": "haiku", "image": "way-256989688-02.jpg", "note": "cream to beige apartment block with fire escape and stepped parapet along the street"},
+{"osm": ["way/260022008"], "restyle": "tenement", "wall": "#c2a27a", "by": "haiku", "image": "way-260022008-03.jpg", "note": "buff brick corner block with iron fire escapes across the front over graffiti-covered shopfronts"},
+{"osm": ["way/35024363"], "restyle": "classical", "wall": "#c4a57d", "by": "haiku", "image": "way-35024363-01.jpg", "note": "buff brick hotel, arched ground-floor openings, central arched entrance, heavy cornice"}
+]
