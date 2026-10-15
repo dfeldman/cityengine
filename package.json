@@ -23,7 +23,6 @@
     "signs": "sh tools/signgen/build.sh",
     "assets": "node ${ASSETMGR_DIR:-../assetmgr}/dist/cli.js restore",
     "assets:upload": "node --experimental-strip-types tools/assetmgr-import.ts && node ${ASSETMGR_DIR:-../assetmgr}/dist/cli.js upload",
-    "city:upload": "node --experimental-strip-types tools/city-upload.ts",
     "postinstall": "node tools/link-siblings.mjs avatarkit=AVATARKIT_DIR:../avatarkit carkit=ASSETKIT_DIR/carkit:../assetkit/carkit"
   },
   "dependencies": {

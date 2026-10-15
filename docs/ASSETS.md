@@ -82,8 +82,8 @@ plantings) is the bulk of the time. The bake also generates the city's signs (st
 Anything that rewrites a shipped file (`bake --rides`, `bake --decks`, `npm run map:v3`, `tools/rides.ts`, `tools/river.ts`)
 records a new bake number in both places, so no browser pairs files from two bakes. Only San Francisco is live for now.
 
-Once baked, a city can be published to the city bucket with `npm run city:upload -- <city> --yes` (README,
-"Baked cities"): one unit per city under a bake number, the old bake deleted when the new one is current.
+Once baked, a city is published with the site (README, "Baked cities"): its shipped bake goes into the build and
+up to the site's bucket with the code.
 
 **San Francisco only: the lidar ground under the cliffs** (optional; without it the bake warns and keeps the
 smoother terrain-tile cliffs at Lands End and Sutro)

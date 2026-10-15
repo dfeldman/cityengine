@@ -7,18 +7,14 @@ lives here too; the engine is meant to serve non-game uses as well. The repo was
 `avatarkit`. See docs/ASSETS.md for what a fresh clone needs.
 
 **Baked cities** (`public/cities/`, derived and large) are not in git and not in the shared asset bucket: they are
-derived data, not shared assets, so assetmgr (provenance, sharing between projects) is the wrong tool. They have a
-bucket of their own (`cityengine-cities`, named in `cities.config.json`, public and keyless to read). A whole city
-is uploaded as one unit under a **bake number**:
+derived data, not shared assets, so assetmgr (provenance, sharing between projects) is the wrong tool. Each city's
+shipped bake (`public/cities/<city>/v3/`, stamped with its **bake number**) is copied into the build with the code
+(`tools/link-assets.js`, cities on `src/cities.json` only) and published with it to the site's own bucket
+(`tools/r2-upload.sh`): one bucket for code and cities (owner, 2026-10-15: many cities, but not so many they
+cannot all live with the code).
 
     npm run bake san-francisco
-    npm run city:upload -- san-francisco          # dry run: says what it would do
-    npm run city:upload -- san-francisco --yes    # upload as bake N+1, make it current, delete bake N
-
-The bucket holds `<city>/<bake>/` (the package and everything under `public/cities/<city>/`), `<city>/current.json`
-naming the live bake, and `cities.json` listing every city. A client reads `current.json` and fetches from that
-bake's prefix; the old bake is deleted only after the new one is current. The game still reads cities from its
-own `public/cities/`; switching it to the bucket (reading `current.json` for its base URL) is the next step.
+    npm run build && sh tools/r2-upload.sh && sh tools/r2-prune.sh --yes
 
 ## Street Runner
 
