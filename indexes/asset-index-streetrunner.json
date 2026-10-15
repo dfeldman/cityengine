@@ -10726,7 +10726,8 @@
           "fileFormat": "jpg",
           "extension": "jpg",
           "isProd": true,
-          "localPath": "public/rocks/textures/rock_cracked_arm_512_7026fa26.jpg"
+          "localPath": "public/rocks/textures/rock_cracked_arm_512_7026fa26.jpg",
+          "isDeleted": true
         }
       ],
       "extra": {
@@ -10788,7 +10789,8 @@
           "fileFormat": "jpg",
           "extension": "jpg",
           "isProd": true,
-          "localPath": "public/rocks/textures/rock_cracked_diff_512_3a153ce1.jpg"
+          "localPath": "public/rocks/textures/rock_cracked_diff_512_3a153ce1.jpg",
+          "isDeleted": true
         }
       ],
       "extra": {
@@ -10819,7 +10821,8 @@
           "fileFormat": "jpg",
           "extension": "jpg",
           "isProd": true,
-          "localPath": "public/rocks/textures/rock_cracked_nor_gl_512_5586c2eb.jpg"
+          "localPath": "public/rocks/textures/rock_cracked_nor_gl_512_5586c2eb.jpg",
+          "isDeleted": true
         }
       ],
       "extra": {
@@ -10850,7 +10853,8 @@
           "fileFormat": "jpg",
           "extension": "jpg",
           "isProd": true,
-          "localPath": "public/rocks/textures/rock_dark_arm_512_04796ca9.jpg"
+          "localPath": "public/rocks/textures/rock_dark_arm_512_04796ca9.jpg",
+          "isDeleted": true
         }
       ],
       "extra": {
@@ -10912,7 +10916,8 @@
           "fileFormat": "jpg",
           "extension": "jpg",
           "isProd": true,
-          "localPath": "public/rocks/textures/rock_dark_diff_512_cfa005bc.jpg"
+          "localPath": "public/rocks/textures/rock_dark_diff_512_cfa005bc.jpg",
+          "isDeleted": true
         }
       ],
       "extra": {
@@ -10943,7 +10948,8 @@
           "fileFormat": "jpg",
           "extension": "jpg",
           "isProd": true,
-          "localPath": "public/rocks/textures/rock_dark_nor_gl_512_eaa61f67.jpg"
+          "localPath": "public/rocks/textures/rock_dark_nor_gl_512_eaa61f67.jpg",
+          "isDeleted": true
         }
       ],
       "extra": {
@@ -10974,7 +10980,8 @@
           "fileFormat": "jpg",
           "extension": "jpg",
           "isProd": true,
-          "localPath": "public/rocks/textures/rock_grey_arm_512_b6f84372.jpg"
+          "localPath": "public/rocks/textures/rock_grey_arm_512_b6f84372.jpg",
+          "isDeleted": true
         }
       ],
       "extra": {
@@ -11036,7 +11043,8 @@
           "fileFormat": "jpg",
           "extension": "jpg",
           "isProd": true,
-          "localPath": "public/rocks/textures/rock_grey_diff_512_1172258b.jpg"
+          "localPath": "public/rocks/textures/rock_grey_diff_512_1172258b.jpg",
+          "isDeleted": true
         }
       ],
       "extra": {
@@ -11067,7 +11075,8 @@
           "fileFormat": "jpg",
           "extension": "jpg",
           "isProd": true,
-          "localPath": "public/rocks/textures/rock_grey_nor_gl_512_42002ef3.jpg"
+          "localPath": "public/rocks/textures/rock_grey_nor_gl_512_42002ef3.jpg",
+          "isDeleted": true
         }
       ],
       "extra": {
@@ -11148,7 +11157,8 @@
           "fileFormat": "jpg",
           "extension": "jpg",
           "isProd": true,
-          "localPath": "platform/screenshot.jpg"
+          "localPath": "platform/screenshot.jpg",
+          "isDeleted": true
         }
       ],
       "extra": {

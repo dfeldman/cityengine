@@ -193,7 +193,6 @@ async function main() {
     { dir: 'public/rocks/textures', match: /\.jpg$/, subtype: 'texture', polyHaven: true, what: 'rock surface (Poly Haven, via assetkit rockgen)' },
     { dir: 'public', match: /^og\.jpg$/, subtype: 'screenshot', what: 'social preview image' },
     { dir: '.', match: /^gondola-ride\.png$/, subtype: 'screenshot', what: 'screenshot for the docs' },
-    { dir: 'platform', match: /^screenshot\.jpg$/, subtype: 'screenshot', what: 'the game\'s screenshot on Dandyhorse' },
   ]
   let fixed = 0
   for (const group of FIXED) {
