@@ -3397,6 +3397,144 @@ function fourthChurchScientist_300_Funston(out: MeshBuilder, fit: Fit): void {
   for (const idx of m.indices) out.indices.push(base + idx)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// Paige Motor Car Company Building, 1699 Van Ness Avenue at Sacramento
+// ---------------------------------------------------------------------------------------------------------------
+
+const PG_TC: Rgb = [0.85, 0.79, 0.64]          // #d9c9a4 terra cotta
+const PG_TC_LT: Rgb = [0.9, 0.84, 0.7]
+const PG_TC_DK: Rgb = [0.74, 0.68, 0.54]       // party walls, shadowed mouldings
+const PG_WHITE: Rgb = [0.94, 0.94, 0.91]       // #efefe8 window frames
+const PG_GLASS: Rgb = [0.13, 0.15, 0.18]
+const PG_INFILL: Rgb = [0.17, 0.18, 0.2]       // #2c2f33 the dark arch infill
+const PG_ROOF: Rgb = [0.4, 0.38, 0.36]
+
+/**
+ * The Paige Motor Car Company Building, 1699 Van Ness Avenue at Sacramento (1919, auto showroom): a cream terra-cotta corner
+ * block. Ground storey: a giant arcade of round arches (dark infill, shopfront glass low in each, a moulded surround, round
+ * medallions in the spandrels). Above a belt course, two storeys of big white-framed divided-light windows (three panes
+ * across, three rows per storey) in wide bays between slim piers, then a deep bracketed cornice with a dentil band. Flat roof.
+ * Photographs: docs/shots/refs/notable/paige/ wiki-image (the corner, ground truth), mapillary-0/1 (the arcade close up,
+ * medallions, window grids), -2 (the corner from across Van Ness).
+ *
+ * Orientation: the manifest gives front 81 (Van Ness, measured), so the fit's front is local -z and Van Ness is the long ring
+ * edge facing -z; Sacramento (bearing 351) is the long edge facing +x. Both are found from ring geometry in the fit frame and
+ * dressed alike; the other two sides are plain party walls with a cornice.
+ * Photographs vs numbers: OSM's 16 m and the pack's "two storeys over the arcade" agree; the Assessor's four storeys is the
+ * arcade plus two window storeys plus the cornice storey, so the model shows the three the photographs show.
+ */
+function paigeMotorCar_1699_VanNess(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const CN = surfaceTag('concrete')
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  const n = ring.length
+  const TOP = 16, Y_SP = 4.3, Y_BELT = 7.2, Y_W0 = 8.1, Y_W1 = 14.0, Y_FR = 14.2
+
+  const info = ring.map((a, i) => {
+    const b = ring[(i + 1) % n], l = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    return { i, a, b, l, nx: (b.z - a.z) / l, nz: -(b.x - a.x) / l }
+  })
+  const isStreet = (e: typeof info[number]): boolean => e.l > 12 && (e.nz < -0.85 || e.nx > 0.85)
+
+  for (const e of info) {
+    const { a, b, l, nx, nz } = e
+    if (l < 0.5) continue
+    const tx = (b.x - a.x) / l, tz = (b.z - a.z) / l
+    const h = Math.atan2(nx, nz)
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const panel = (u0: number, u1: number, y0: number, y1: number, pr: number, c: Rgb, tag: number): void => {
+      m.quad([P(u0, y0, pr), P(u1, y0, pr), P(u1, y1, pr), P(u0, y1, pr)], [nx, 0, nz], uv, c, tag)
+    }
+    const slab = (u0: number, u1: number, y0: number, y1: number, pr0: number, pr1: number, c: Rgb): void => {
+      boxAlong(m, a.x + tx * (u0 + u1) / 2 + nx * (pr0 + pr1) / 2, (y0 + y1) / 2, a.z + tz * (u0 + u1) / 2 + nz * (pr0 + pr1) / 2,
+        (u1 - u0) / 2, (y1 - y0) / 2, (pr1 - pr0) / 2, h, c, CN)
+    }
+    const op = (u: number, y0: number, y1: number, hw: number, rise: number, c: Rgb, tag: number, proud: number, seg = 8): void => {
+      emOpening(m, a.x + tx * u, a.z + tz * u, tx, tz, nx, nz, y0, y1, hw, rise, c, tag, proud, seg)
+    }
+
+    if (!isStreet(e)) {
+      panel(0, l, -3, TOP, 0, PG_TC_DK, CN)
+      slab(-0.1, l + 0.1, TOP - 1.4, TOP, 0, 0.9, PG_TC)
+      continue
+    }
+
+    panel(0, l, -3, TOP, 0, PG_TC, CN)
+    slab(-0.1, l + 0.1, 0, 0.45, 0, 0.3, PG_TC_DK)                                                    // the plinth
+    const kb = Math.max(3, Math.round(l / 5.2))
+    const w = l / kb
+    const hw = w / 2 - 0.62
+
+    // ---- the ground arcade: piers, round arches with moulded surrounds, dark infill, shopfront glass --------------------
+    for (let j = 0; j <= kb; j++) {
+      const u = w * j, u0 = Math.max(0, u - 0.62), u1 = Math.min(l, u + 0.62)
+      slab(u0, u1, 0.45, Y_SP, 0, 0.3, PG_TC)                                                         // the arcade piers
+      slab(u0 - 0.06, u1 + 0.06, Y_SP, Y_SP + 0.22, 0, 0.36, PG_TC_LT)                                // impost blocks
+    }
+    for (let j = 0; j < kb; j++) {
+      const uc = w * (j + 0.5)
+      op(uc, 0.45, Y_SP, hw + 0.32, hw + 0.32, PG_TC_LT, CN, 0.12, 10)                                 // the moulded arch surround
+      op(uc, 0.45, Y_SP, hw, hw, PG_INFILL, GL, 0.22, 10)                                              // the dark infill
+      op(uc, 0.7, 2.4, hw - 0.1, 0, PG_GLASS, GL, 0.26)                                                 // the shopfront glass
+      op(uc, 2.9, Y_SP + 0.8, hw - 0.3, 0, PG_GLASS, GL, 0.26)
+      for (const s of [-1, 0, 1]) op(uc + s * hw * 0.55, 0.7, Y_SP + 0.8, 0.04, 0, [0.3, 0.31, 0.33], ST, 0.3)   // shopfront mullions
+      slab(uc - 0.14, uc + 0.14, Y_SP + hw + 0.3, Y_SP + hw + 0.85, 0.08, 0.3, PG_TC_LT)               // the keystone
+      // a round medallion over each pier between the arches
+      if (j > 0) {
+        const um = w * j, yc = Y_SP + 2.35
+        for (let k = 0; k < 8; k++) {
+          const a0 = (k / 8) * Math.PI * 2, a1 = ((k + 1) / 8) * Math.PI * 2, r = 0.38
+          m.quad([P(um + Math.cos(a0) * r, yc + Math.sin(a0) * r, 0.2), P(um + Math.cos(a1) * r, yc + Math.sin(a1) * r, 0.2),
+            P(um + Math.cos(a1) * r * 0.55, yc + Math.sin(a1) * r * 0.55, 0.2), P(um + Math.cos(a0) * r * 0.55, yc + Math.sin(a0) * r * 0.55, 0.2)],
+          [nx, 0, nz], uv, PG_TC_DK, CN)
+        }
+        slab(um - 0.22, um + 0.22, yc - 0.22, yc + 0.22, 0.04, 0.2, PG_TC_LT)
+      }
+    }
+    slab(-0.1, l + 0.1, Y_BELT - 0.5, Y_BELT + 0.15, 0, 0.5, PG_TC_LT)                               // the belt course over the arcade
+    slab(-0.1, l + 0.1, Y_BELT + 0.15, Y_BELT + 0.4, 0, 0.35, PG_TC)
+
+    // ---- two storeys of big divided-light windows between slim piers ---------------------------------------------------
+    for (let j = 0; j <= kb; j++) {
+      const u = w * j, u0 = Math.max(0, u - 0.5), u1 = Math.min(l, u + 0.5)
+      slab(u0, u1, Y_BELT + 0.4, Y_FR, 0, 0.3, PG_TC_LT)                                               // the pier strips
+      slab(u0 - 0.06, u1 + 0.06, Y_FR - 0.35, Y_FR, 0, 0.36, PG_TC)                                    // capitals under the cornice
+      slab(u0 - 0.06, u1 + 0.06, Y_BELT + 0.4, Y_BELT + 0.6, 0, 0.36, PG_TC)                           // bases
+    }
+    const whw = w / 2 - 0.55
+    for (let j = 0; j < kb; j++) {
+      const uc = w * (j + 0.5)
+      op(uc, Y_W0, Y_W1, whw + 0.1, 0, PG_TC_DK, CN, 0.06)                                              // the recess
+      op(uc, Y_W0, Y_W1, whw, 0, PG_GLASS, GL, 0.14)                                                    // the glass, both storeys
+      for (const s of [-1, 1]) op(uc + s * whw / 3, Y_W0, Y_W1, 0.04, 0, PG_WHITE, ST, 0.2)            // the mullions, 3 panes across
+      for (const y of [Y_W0, 9.1, 10.1, 11.0, 11.5, 12.5, 13.5, Y_W1 - 0.08]) panel(uc - whw, uc + whw, y, y + 0.08, 0.2, PG_WHITE, ST)  // transoms: 3 rows per storey, a deeper bar between storeys
+      for (const s of [-1, 1]) panel(uc + s * whw - 0.04, uc + s * whw + 0.04, Y_W0, Y_W1, 0.2, PG_WHITE, ST)
+    }
+
+    // ---- the bracketed cornice with its dentil band -----------------------------------------------------------------------
+    panel(0, l, Y_FR, TOP - 1.0, 0.06, PG_TC, CN)                                                      // the frieze
+    slab(-0.15, l + 0.15, Y_FR, Y_FR + 0.25, 0, 0.5, PG_TC_LT)                                          // the architrave
+    for (let u = 0.15; u < l - 0.15; u += 0.55) slab(u, u + 0.28, Y_FR + 0.25, Y_FR + 0.6, 0.3, 0.55, PG_TC_DK)   // the dentil band
+    for (let u = 0.3; u < l - 0.3; u += 1.5) slab(u, u + 0.4, Y_FR + 0.6, TOP - 0.45, 0.4, 0.95, PG_TC_LT)       // the brackets
+    slab(-0.4, l + 0.4, TOP - 0.55, TOP, 0, 1.2, PG_TC)                                                  // the deep cornice
+  }
+
+  capPolygonWithHoles(m, [ring], TOP - 0.2, PG_ROOF, CN)
+
+  for (let i = 0; i < m.positions.length; i++) out.positions.push(m.positions[i])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -3411,5 +3549,6 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   ywcaResidence_940_Powell,
   stJosephsHospital_355_BuenaVista,
   rialtoBuilding_116_NewMontgomery,
+  paigeMotorCar_1699_VanNess,
   fourthChurchScientist_300_Funston,
 }
