@@ -24,8 +24,11 @@
     "osm": [
       "way/262730402"
     ],
-    "procedural": "californiaHistoricalSociety",
-    "name": "California Historical Society"
+    "procedural": "whittierMansion_2090_Jackson",
+    "name": "Whittier Mansion",
+    "height": 21,
+    "front": 180,
+    "note": "whittierMansion_2090_Jackson (2026-10-15, docs/sf-batches/MODEL-WHITTIER.md): 1896 Swain mansion, ochre walls, red-brown sandstone corner turrets, gabled porch front on Jackson (south). Was an edwardian-terracotta office recipe."
   },
   {
     "osm": [

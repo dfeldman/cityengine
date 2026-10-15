@@ -47,6 +47,17 @@ sandstone**; one of few mansions to survive 1906; NRHP, SF Landmark 75. Richards
   `src/render/landmarks/sf/districts/notable.ts` (helpers incl. hip roofs, plan alignment, surfaces, style).
 - Locate the Jackson Street (south) side and the Laguna corner from the plan mapped onto `fit.ring`.
 
+
+## Orientation — do NOT infer a face from the ring's vertex order
+
+Lesson from the Pacific Exchange (2026-10-15): the baked city ring can start at a different vertex than the shot
+tool's, so a builder that picks its front by vertex index put the colonnade on the back wall in the city. Choose
+faces by the fit FRAME: set a numeric `"front"` (the bearing from the building to its main street) in the entry,
+and put the main front on the ring edge facing local −z. Render with `--front=<that bearing>` (the shot tool needs
+the flag to build the ring in that frame). Procrustes alignment of an irregular plan is fine for interior features.
+
+Here: the main front is Jackson Street (south); use `"front": 180` in the entry.
+
 ## Your files — touch ONLY these
 
 - `src/render/landmarks/sf/districts/notable.ts` — ADD `whittierMansion_2090_Jackson` (grep first).

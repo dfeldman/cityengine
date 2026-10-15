@@ -1964,6 +1964,209 @@ function pacificExchange_301_Pine(out: MeshBuilder, fit: Fit): void {
   for (const idx of m.indices) out.indices.push(base + idx)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// Whittier Mansion, 2090 Jackson Street
+// ---------------------------------------------------------------------------------------------------------------
+
+const WH_WALL: Rgb = [0.847, 0.749, 0.431]     // #d8bf6e, the yellow-ochre paint over the walls today (mapillary-0)
+const WH_TRIM: Rgb = [0.9, 0.82, 0.58]         // cornices, pilasters, window surrounds, a shade paler
+const WH_STONE: Rgb = [0.541, 0.29, 0.227]     // #8a4a3a, the bare Arizona sandstone of the corner turret
+const WH_STONE_LT: Rgb = [0.63, 0.37, 0.3]     // the turret's belt courses
+const WH_BASE: Rgb = [0.8, 0.74, 0.63]         // the pale raised basement
+const WH_ROOF: Rgb = [0.58, 0.28, 0.2]        // #a2513a, terracotta tile
+const WH_BRICK: Rgb = [0.5, 0.3, 0.24]
+const WH_CAP: Rgb = [0.36, 0.47, 0.42]         // the weathered copper chimney caps
+const WH_GLASS: Rgb = [0.14, 0.16, 0.19]
+const WH_FRAME: Rgb = [0.93, 0.88, 0.72]
+const WH_DEEP: Rgb = [0.2, 0.15, 0.11]         // the porch recess and the door
+
+/**
+ * The Whittier Mansion (1896, Edward R. Swain; OSM calls it "California Historical Society" after a former occupant),
+ * 2090 Jackson Street at Laguna: Arizona red sandstone behind yellow-ochre paint, three storeys on a raised basement, a
+ * hipped terracotta-tile roof with dormers and tall chimneys, TWO round corner turrets with tiled caps (the south-west one
+ * left bare, red-brown, in the photographs of today), and a gabled centre over a columned porch with a balustraded
+ * balcony. Photographs: docs/shots/refs/notable/whittier/ (mapillary-0 for today's colours, commons-1/2/3 for the massing).
+ *
+ * Orientation: the front is Jackson Street, to the south: the manifest says front 180 and everything is placed from the
+ * fit's own ring, never from OSM's vertex order. The OSM plan is a rectangle turned 8.7 degrees; the model is drawn square
+ * to the house (u along the front, v into it) and turned onto the fit's frame, centred on the ring's bounding box. In the
+ * fit frame -z is the front, the big turret at the west corner and the small one at the east.
+ *
+ * Where the photographs overruled the numbers: the pack's plan has no turrets, only bulges - both are true round
+ * drums of ~3 m radius; the porch is four columns (a pair at each end, a third behind the west pair) round an open
+ * middle; the eaves are the LiDAR median 13.8 m, the chimneys the 21.6 m maximum.
+ */
+function whittierMansion_2090_Jackson(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const AS = surfaceTag('ashlar'), BK = surfaceTag('brick')
+  const Q = (p: V3[], n: V3, c: Rgb, tag = ST): void => m.quad(p, n, uv, c, tag)
+  const bx = (u0: number, u1: number, v0: number, v1: number, y0: number, y1: number, c: Rgb, tag = ST): void => emBlock(m, u0, u1, v0, v1, y0, y1, c, tag)
+  const yE = 13.85                                // the eaves (a cornice course sits just under it)
+  const ROOF_H = 5.4
+  const head = (nx: number, nz: number): number => Math.atan2(nx, nz)
+
+  /** a window on a wall at (px, pz) facing (nx, nz): rectangular y0..y1, or round-headed (y1 the spring, rise = hw) */
+  const win = (px: number, pz: number, nx: number, nz: number, y0: number, y1: number, hw: number, arch = false, sill = true): void => {
+    const tx = -nz, tz = nx
+    const rise = arch ? hw : 0
+    emOpening(m, px, pz, tx, tz, nx, nz, y0 - 0.12, y1 + (arch ? 0 : 0.12), hw + 0.16, rise ? rise + 0.16 : 0, WH_TRIM, ST, 0.04, 6)
+    emOpening(m, px, pz, tx, tz, nx, nz, y0, y1, hw, rise, WH_GLASS, GL, 0.08, 6)
+    emOpening(m, px, pz, tx, tz, nx, nz, y0, y1 + rise * 0.9, 0.035, 0, WH_FRAME, ST, 0.11)
+    const yt = y0 + (y1 - y0) * 0.66
+    emOpening(m, px, pz, tx, tz, nx, nz, yt, yt + 0.07, hw, 0, WH_FRAME, ST, 0.11)
+    if (sill) boxAlong(m, px + nx * 0.12, y0 - 0.22, pz + nz * 0.12, hw + 0.3, 0.09, 0.12, head(nx, nz), WH_TRIM, ST)
+  }
+
+  // ---- the walls: raised basement, three storeys, the frieze and the cornice ----------------------------------------
+  const U0 = -8.6, U1 = 8.8, VF = -9.6, VB = 10.3, VR = 12.3, UN = -4.5      // the block, its rear wing (UN..U1 to VR)
+  bx(U0 - 0.15, U1 + 0.15, VF - 0.15, VB + 0.15, -3, 3.0, WH_BASE)
+  bx(UN - 0.15, U1 + 0.15, VB, VR + 0.15, -3, 3.0, WH_BASE)
+  bx(U0 - 0.15, U1 + 0.15, VF - 0.2, VB + 0.2, 2.9, 3.15, WH_TRIM)           // the sill course on the basement
+  bx(U0, U1, VF, VB, 3.0, yE, WH_WALL)
+  bx(UN, U1, VB, VR, 3.0, yE, WH_WALL)
+  for (const [y0, y1, d] of [[7.2, 7.55, 0.2], [12.55, 13.2, 0.14], [13.2, 13.85, 0.5]] as [number, number, number][]) {
+    bx(-3.7, 4.6, VF - d, VF, y0, y1, y1 > 13 && y0 < 13.3 ? WH_TRIM : WH_TRIM)                       // front, between the turrets
+    bx(U0 - d, U0, -5.3, VB, y0, y1, WH_TRIM)                                                            // west
+    bx(U1, U1 + d, -5.5, VR, y0, y1, WH_TRIM)                                                            // east
+    bx(UN, U1 + d, VR, VR + d, y0, y1, WH_TRIM)                                                          // rear
+    bx(U0 - d, UN, VB, VB + d, y0, y1, WH_TRIM)                                                          // the rear wing's shoulder
+  }
+  // the frieze's dark slits under the cornice on the long sides
+  for (let v = -4.8; v < 10; v += 0.7) Q([[U0 - 0.145, 13.0, v], [U0 - 0.145, 13.0, v + 0.18], [U0 - 0.145, 13.5, v + 0.18], [U0 - 0.145, 13.5, v]], [-1, 0, 0], WH_DEEP)
+  for (let v = -5; v < 12; v += 0.7) Q([[U1 + 0.145, 13.0, v], [U1 + 0.145, 13.0, v + 0.18], [U1 + 0.145, 13.5, v + 0.18], [U1 + 0.145, 13.5, v]], [1, 0, 0], WH_DEEP)
+
+  /** a side facade run from A along t: ground-floor windows, arched second-floor windows between pilasters, basement slits */
+  const facade = (ax: number, az: number, tx: number, tz: number, u0: number, u1: number, gPitch: number, sPitch: number): void => {
+    const nx = tz, nz = -tx
+    const hd = head(nx, nz)
+    const kg = Math.max(1, Math.floor((u1 - u0) / gPitch)), ks = Math.max(1, Math.floor((u1 - u0) / sPitch))
+    for (let i = 0; i < kg; i++) {
+      const u = u0 + ((u1 - u0) * (i + 0.5)) / kg
+      const px = ax + tx * u, pz = az + tz * u
+      win(px, pz, nx, nz, 3.9, 6.5, 0.55)
+      boxAlong(m, px + nx * 0.2, 6.85, pz + nz * 0.2, 0.9, 0.12, 0.2, hd, WH_TRIM, ST)                  // the hood
+      emOpening(m, px, pz, tx, tz, nx, nz, 0.7, 2.2, 0.5, 0, WH_GLASS, GL, 0.2)
+    }
+    for (let i = 0; i < ks; i++) {
+      const u = u0 + ((u1 - u0) * (i + 0.5)) / ks
+      win(ax + tx * u, az + tz * u, nx, nz, 8.4, 10.3, 0.46, true, false)
+    }
+    for (let i = 0; i <= ks; i++) {
+      const u = u0 + ((u1 - u0) * i) / ks
+      boxAlong(m, ax + tx * u + nx * 0.08, 10.1, az + tz * u + nz * 0.08, 0.17, 2.5, 0.08, hd, WH_TRIM, ST)
+    }
+  }
+  facade(U0, VB, 0, -1, 0.9, 15.0, 3.7, 2.15)                  // west
+  facade(U1, -5.5, 0, 1, 0.9, 17.3, 3.7, 2.4)                  // east
+  facade(U1, VR, -1, 0, 0.7, 12.7, 4.2, 2.6)                   // rear
+  facade(UN, VB, -1, 0, 0.5, 3.6, 3.5, 3.5)                    // the rear wing's shoulder
+
+  // ---- the two round turrets: sandstone drums on the pale basement, belt courses, ranks of windows, tiled caps --------
+  const tower = (cx: number, cz: number, r: number, k: number, angles: number[]): void => {
+    prism(m, cx, cz, -3, 3.0, r + 0.15, 20, WH_BASE, ST, r + 0.15, false)
+    prism(m, cx, cz, 2.9, 3.2, r + 0.28, 20, WH_STONE_LT, AS)
+    prism(m, cx, cz, 3.2, 13.4, r, 20, WH_STONE, AS, r, false)
+    for (const [y0, y1] of [[7.0, 7.4], [11.1, 11.5]]) prism(m, cx, cz, y0, y1, r + 0.17, 20, WH_STONE_LT, AS)
+    prism(m, cx, cz, 13.0, 13.4, r + 0.14, 20, WH_STONE_LT, AS, r + 0.14, false)
+    prism(m, cx, cz, 13.4, 13.9, r + 0.4, 20, WH_STONE_LT, AS)
+    const rings: [number, number, number][] = [[13.9, 14.55, 0.95], [14.55, 15.2, 0.7], [15.2, 15.8, 0.38], [15.8, 16.25, 0.07]]
+    let rr = r + 0.15
+    for (const [y0, y1, f] of rings) {
+      const y0k = 13.9 + (y0 - 13.9) * k, y1k = 13.9 + (y1 - 13.9) * k
+      prism(m, cx, cz, y0k, y1k, rr, 20, WH_ROOF, TL, r * f, false)
+      rr = r * f
+    }
+    prism(m, cx, cz, 13.9 + 2.35 * k, 13.9 + 3.25 * k, 0.08, 4, WH_CAP, surfaceTag('copper'))
+    for (const a of angles) {
+      const rad = (a * Math.PI) / 180
+      const px = cx + Math.cos(rad) * (r + 0.06), pz = cz + Math.sin(rad) * (r + 0.06)
+      const nx = Math.cos(rad), nz = Math.sin(rad)
+      win(px, pz, nx, nz, 3.9, 6.5, 0.46)
+      win(px, pz, nx, nz, 8.1, 10.6, 0.46)
+      win(px, pz, nx, nz, 11.9, 13.0, 0.34, false, false)
+    }
+  }
+  tower(-6.2, -8.0, 3.0, 1.0, [-165, -135, -105, -75])          // the big south-west turret
+  tower(6.6, -8.0, 2.7, 0.9, [-100, -72, -44, -16])             // the smaller south-east one
+
+  // ---- the front between the turrets: pilasters, three arched windows over the porch, the gable ---------------------
+  const UC = 0.4
+  for (const u of [-2.95, -0.7, 1.5, 3.75]) boxAlong(m, u, 10.1, VF - 0.08, 0.17, 2.5, 0.08, Math.PI, WH_TRIM, ST)
+  for (const u of [-1.8, UC, 2.6]) win(u, VF, 0, -1, 8.4, 10.3, 0.5, true, false)
+  Q([[-3.0, 3.1, VF - 0.04], [3.6, 3.1, VF - 0.04], [3.6, 7.0, VF - 0.04], [-3.0, 7.0, VF - 0.04]], [0, 0, -1], WH_DEEP)
+  emOpening(m, UC, VF - 0.05, 1, 0, 0, -1, 3.1, 5.2, 1.0, 1.0, WH_TRIM, ST, 0.02, 8)
+  emOpening(m, UC, VF - 0.05, 1, 0, 0, -1, 3.1, 5.2, 0.8, 0.8, WH_GLASS, GL, 0.05, 8)
+  for (const u of [-1.7, 2.5]) emOpening(m, u, VF - 0.05, 1, 0, 0, -1, 3.9, 6.2, 0.5, 0, WH_GLASS, GL, 0.05)
+  // the gable: tympanum with three windows, raking cornice, the tiled roof behind it
+  const GL0 = UC - 4.3, GL1 = UC + 4.3, YR = yE + 3.7, VG = VF - 0.15
+  Q([[GL0, yE, VG], [GL1, yE, VG], [UC, YR, VG], [UC, YR, VG]], [0, 0, -1], WH_WALL)
+  for (const s of [-1, 1]) {
+    const ue = UC + s * 4.45, ux = UC + s * 0.05
+    Q([[ue, yE - 0.1, VF - 0.55], [ux, YR + 0.12, VF - 0.55], [ux, YR + 0.62, VF - 0.55], [ue + s * 0.15, yE + 0.45, VF - 0.55]], [0, 0, -1], WH_TRIM)
+    // the roof slope
+    Q([[UC + s * 4.55, yE - 0.1, VF - 0.55], [UC, YR + 0.45, VF - 0.55], [UC, YR + 0.45, VF + 6.5], [UC + s * 4.55, yE - 0.1, VF + 6.5]], [s * 0.63, 0.78, 0], WH_ROOF, TL)
+  }
+  Q([[UC - 4.55, yE - 0.1, VF - 0.55], [UC + 4.55, yE - 0.1, VF - 0.55], [UC + 4.55, yE + 0.35, VF - 0.55], [UC - 4.55, yE + 0.35, VF - 0.55]], [0, 0, -1], WH_TRIM)
+  for (const du of [-1.7, 0, 1.7]) win(UC + du, VG, 0, -1, 14.35, du === 0 ? 16.1 : 15.5, 0.36, false, false)
+  bx(UC - 4.4, UC + 4.4, VF - 0.55, VF, yE - 0.05, yE + 0.4, WH_TRIM)
+
+  // ---- the porch: four columns, the entablature, the balustraded balcony, the steps ---------------------------------------
+  bx(-3.2, 3.6, -13.4, VF, -3, 3.1, WH_BASE)
+  bx(-1.2, 2.0, -14.5, -13.4, -3, 2.1, WH_BASE)
+  bx(-1.2, 2.0, -13.95, -13.4, -3, 2.6, WH_BASE)
+  for (const [u, v, tier] of [[-2.65, -12.7, 'mid'], [-1.55, -12.7, 'mid'], [2.2, -12.7, 'mid'], [3.1, -12.7, 'mid'], [-2.65, -11.0, 'far'], [3.1, -11.0, 'far']] as [number, number, 'mid' | 'far'][]) {
+    classicalColumn(m, u, v, 3.1, 7.0, 0.32, WH_TRIM, { order: 'ionic', tier, tag: ST, heading: Math.PI, trim: WH_FRAME })
+  }
+  bx(-3.4, 3.8, -13.7, VF, 7.0, 7.9, WH_TRIM)
+  bx(-3.5, 3.9, -13.85, VF, 7.9, 8.1, WH_TRIM)
+  const balu = (u0: number, u1: number, v0: number, v1: number, nx: number, nz: number): void => {
+    bx(u0, u1, v0, v1, 8.1, 8.3, WH_TRIM)
+    bx(u0, u1, v0, v1, 8.3, 8.9, WH_FRAME)
+    bx(u0 - (nx ? 0 : 0.03), u1 + (nx ? 0 : 0.03), v0 - (nx ? 0.03 : 0), v1 + (nx ? 0.03 : 0), 8.9, 9.1, WH_TRIM)
+    const L = nx ? v1 - v0 : u1 - u0, k = Math.floor(L / 0.34)
+    for (let i = 0; i < k; i++) {
+      const t = ((i + 0.5) / k) * L
+      if (nx) Q([[(nx > 0 ? u1 : u0) + nx * 0.01, 8.3, v0 + t - 0.06], [(nx > 0 ? u1 : u0) + nx * 0.01, 8.3, v0 + t + 0.06], [(nx > 0 ? u1 : u0) + nx * 0.01, 8.9, v0 + t + 0.06], [(nx > 0 ? u1 : u0) + nx * 0.01, 8.9, v0 + t - 0.06]], [nx, 0, 0], WH_DEEP)
+      else Q([[u0 + t - 0.06, 8.3, v0 - 0.01], [u0 + t + 0.06, 8.3, v0 - 0.01], [u0 + t + 0.06, 8.9, v0 - 0.01], [u0 + t - 0.06, 8.9, v0 - 0.01]], [0, 0, -1], WH_DEEP)
+    }
+  }
+  balu(-3.4, 3.8, -13.75, -13.6, 0, -1)
+  balu(-3.4, -3.25, -13.6, VF, -1, 0)
+  balu(3.65, 3.8, -13.6, VF, 1, 0)
+
+  // ---- the hipped tile roof, dormers and chimneys ------------------------------------------------------------------------
+  emHip(m, U0 - 0.5, U1 + 0.5, VF - 0.5, VR + 0.5, yE, ROOF_H, 7.4, 7.0, WH_ROOF)
+  const slopeY = (d: number): number => yE + (d * ROOF_H) / 7.4
+  const dormer = (px: number, pz: number, nx: number, nz: number, yb: number): void => {
+    const tx = -nz, tz = nx
+    const P = (t: number, d: number, y: number): V3 => [px + tx * t - nx * d, y, pz + tz * t - nz * d]
+    boxAlong(m, px - nx * 0.8, yb + 0.85, pz - nz * 0.8, 0.9, 0.85, 0.8, head(nx, nz), WH_WALL, ST)
+    emOpening(m, px, pz, tx, tz, nx, nz, yb + 0.35, yb + 1.45, 0.45, 0, WH_GLASS, GL, 0.04)
+    const yt = yb + 1.7
+    for (const s of [-1, 1]) Q([P(s * 1.05, -0.15, yt), P(0, -0.15, yt + 0.8), P(0, 1.7, yt + 0.8), P(s * 1.05, 1.7, yt)], [tx * s * -0.6, 0.8, tz * s * -0.6], WH_ROOF, TL)
+    Q([P(-0.9, 0, yt), P(0.9, 0, yt), P(0, 0, yt + 0.75), P(0, 0, yt + 0.75)], [nx, 0, nz], WH_WALL)
+  }
+  for (const v of [-3, 1.5, 6]) {
+    dormer(U0 + 2.7, v, -1, 0, slopeY(U0 + 2.7 - (U0 - 0.5)) - 0.05)
+    dormer(U1 - 2.7, v, 1, 0, slopeY(U1 + 0.5 - (U1 - 2.7)) - 0.05)
+  }
+  for (const [u, v, top] of [[-6.6, -4.2, 21.0], [3.9, -3.6, 21.6], [-2.8, 7.6, 20.6], [5.9, 9.6, 20.2], [0.4, 2.4, 21.0]] as [number, number, number][]) {
+    bx(u - 0.65, u + 0.65, v - 0.5, v + 0.5, 14.4, top, WH_BRICK, BK)
+    bx(u - 0.8, u + 0.8, v - 0.65, v + 0.65, top, top + 0.25, WH_TRIM)
+    bx(u - 0.6, u + 0.6, v - 0.45, v + 0.45, top + 0.25, top + 0.55, WH_CAP, surfaceTag('copper'))
+  }
+
+  // onto the fit's frame: the house drawn square, turned 8.7 degrees, centred on the ring's bounding box
+  const th = (8.7 * Math.PI) / 180
+  let tx = 0, tz = 0
+  if (fit.ring && fit.ring.length >= 3) {
+    tx = (Math.max(...fit.ring.map((p) => p.x)) + Math.min(...fit.ring.map((p) => p.x))) / 2
+    tz = (Math.max(...fit.ring.map((p) => p.z)) + Math.min(...fit.ring.map((p) => p.z))) / 2
+  }
+  emanuElCopy(out, m, Math.cos(th), Math.sin(th), tx, tz)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -1971,4 +2174,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   mallochBuilding_1360_Montgomery,
   fugaziBank_4_Columbus,
   pacificExchange_301_Pine,
+  whittierMansion_2090_Jackson,
 }
