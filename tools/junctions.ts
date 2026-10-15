@@ -44,6 +44,7 @@ const g: CityGraph = rideGraph(edges, 'bike', {
     return { name: r.name, r: r.r, R: r.R, x: p.x, z: p.z }
   }),
   heightAt: (x, z) => terrain.heightAt(x, z),
+  ground: (x, z) => terrain.heightAt(x, z),
   buildings: pkg.buildings.filter((b) => (b.minHeight ?? 0) < 2).map((b) => b.ring),
   // --raw: the graph as the passes leave it, before `straightenJunctions`
   straighten: !process.argv.includes('--raw'),

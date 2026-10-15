@@ -5314,6 +5314,35 @@
      -122.448
     ]
    ]
+  },
+  {
+   "ref": "broadway-west-cut",
+   "name": "Broadway Tunnel west approach and the Hyde Street bridge",
+   "priority": 2,
+   "props": {
+    "terrain": "fine",
+    "lidar": true,
+    "relief": "raw"
+   },
+   "note": "owner, 2026-10-14: 'a somewhat broken underpass' at 37.796299 -122.418596. Broadway's centre roadway runs down a walled trench to the tunnel, Hyde crosses it on a short bridge, the one-way frontage roads stay at street level beside it. The zoom-15 ground smeared the trench across the banks (~4 m low), so Hyde and every street meeting it were raised as ramps on decks and roofed the junction. The lidar ground has the trench as it is.",
+   "ring": [
+    [
+     37.79587,
+     -122.42018
+    ],
+    [
+     37.79587,
+     -122.41734
+    ],
+    [
+     37.79686,
+     -122.41734
+    ],
+    [
+     37.79686,
+     -122.42018
+    ]
+   ]
   }
  ]
 }

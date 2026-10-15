@@ -1088,6 +1088,8 @@ export interface RideOverrides {
   heightAt: (x: number, z: number) => number
   /** islands a ferry serves (region `ferryIslands`, local frame): their networks are kept, not only the largest */
   keep?: { x: number; z: number; r: number }[]
+  /** the ground, for the links across a split boulevard: none is laid through the air (a trench between) */
+  ground?: (x: number, z: number) => number
   /** false: leave the junctions' approaches as the passes made them (tools/junctions.ts measures both ways) */
   straighten?: boolean
 }
@@ -1311,7 +1313,7 @@ export function applyRoundabout(es: RideEdge[], o: Roundabout, ids: Ids, heightA
  * two sides"). So: from every junction node of one carriageway, a short link square across to the nearest
  * node of the other one of the same name, 15–55 m away — at most one every 90 m.
  */
-export function linkCarriageways(edges: RideEdge[], ids: Ids): RideEdge[] {
+export function linkCarriageways(edges: RideEdge[], ids: Ids, ground?: (x: number, z: number) => number): RideEdge[] {
   const named = new Map<string, RideEdge[]>()
   for (const e of edges) {
     // real streets only: not the synthetic circle and spokes of an override, not paths
@@ -1349,6 +1351,19 @@ export function linkCarriageways(edges: RideEdge[], ids: Ids): RideEdge[] {
           const at = pointAt(o.points, pr.s)
           const cos = Math.abs(((at.x - p.x) * dir.x + (at.z - p.z) * dir.z) / (pr.d * dl))
           if (cos > 0.5) continue
+          /*
+           * …nor over anything but the ground (2026-10-15, Broadway at Hyde): a centre roadway in a TRENCH runs between
+           * its frontage roads, the ends of a link can be at nearly the same level where the trench starts, and the
+           * straight line between them still crossed the trench's deep part 3.5 m in the air.
+           */
+          if (ground && hp !== undefined && hq !== undefined) {
+            let off = 0
+            for (let k = 1; k < 8; k++) {
+              const t = k / 8
+              off = Math.max(off, Math.abs(hp + (hq - hp) * t - ground(p.x + (at.x - p.x) * t, p.z + (at.z - p.z) * t)))
+            }
+            if (off > 1.2) continue
+          }
           if (!best || pr.d < best.d) best = { o, s: pr.s, d: pr.d, at }
         }
         if (!best) continue
@@ -1495,7 +1510,7 @@ export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrid
   // can still omit it — tools/bake.ts did, with `as never`, and every San Francisco bake died at this line.
   if (overrides?.roundabouts?.length) es = pruneStubs(largest(es))
   // last, on the finished graph: the links across a split boulevard
-  if (mode === 'bike') es = linkCarriageways(es, ids)
+  if (mode === 'bike') es = linkCarriageways(es, ids, overrides?.ground)
   // and the little loops all that can leave (BUGS.md #44), and the stubs they leave in turn
   es = pruneStubs(dropLoops(es))
   // and last of all, no edge doubling back on itself (BUGS.md #194), and every edge meeting its junction

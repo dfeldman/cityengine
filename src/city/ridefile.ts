@@ -38,6 +38,7 @@ export function rideFor(city: string, origin: CityPackage['origin'], edges: Edge
       return { name: r.name, r: r.r, R: r.R, x: p.x, z: p.z }
     }),
     heightAt,
+    ground: heightAt,
     buildings,
     keep: (regionOf(region ?? city).ferryIslands ?? []).map((k) => ({ ...proj.toLocal({ lat: k.lat, lon: k.lon }), r: k.radius })),
   })

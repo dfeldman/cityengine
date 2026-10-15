@@ -26,6 +26,7 @@
  */
 import { SHIPPED, assertFresh, decksUndoFile, isBaked, newBakeId, packageFile, recordBake, shippedDir, workDir } from './bake-files.ts'
 import { applyStreetPaint, markBrickSquares } from './street-paint.ts'
+import { StreetGrade } from '../src/city/grade.ts'
 import { boreTunnels } from './tunnels.ts'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
@@ -1878,6 +1879,8 @@ async function bake(spec: CitySpec): Promise<void> {
     if (bedZones.length) console.log(`  ${n} parks laid out as planted beds`)
   }
   const layerCaps = (streetRegion.footBridgeLayers ?? []).map((c) => ({ ...proj.toLocal({ lat: c.lat, lon: c.lon }), radius: c.radius, layer: c.layer }))
+  // (each way's heights before any bridge lifts them: a bridge found later to be at grade over a cut goes back to them)
+  const preBridge = new Map(kept.map((e) => [e.id, e.heights ? [...e.heights] : undefined]))
   const decks = bridgeHeights(kept.filter((e) => !e.authored), { water: waterBodies, ground: groundAt, buried, layerCaps })
   // the ways lifted onto a deck are ramps: said outright, for the renderer (city/package.ts isRaised)
   for (const e of kept) if (decks.raised.has(e.id) && !e.bridge) e.ramp = true
@@ -1910,7 +1913,14 @@ async function bake(spec: CitySpec): Promise<void> {
     if (r.size) console.log(`  ${r.size} foot-bridge ends graded down to the paths they join`)
   }
   // street tunnels under a hill: their own mouth-to-mouth profile, and `bore` — ridden and drawn (tools/tunnels.ts)
-  const bores = boreTunnels(kept, groundAt, (name, why) => console.log(`  tunnel not ridden: ${name} — ${why}`))
+  const bores = boreTunnels(kept, groundAt,
+    (name, why) => console.log(why.startsWith('the street') ? `  ${name}: ${why}` : `  tunnel not ridden: ${name} — ${why}`),
+    // (the fine ground, where a trench into a mouth shows — tools/tunnels.ts TRENCH_RUN — and only the LIDAR's: the
+    //  zoom-15 ground has blurred hollows by every underpass that are no trench, and lowered Geary's and Stockton's)
+    (() => {
+      const lidar = zones.filter((zn) => zn.props.lidar)
+      return (x: number, z: number): number => zonesAt(lidar, x, z).length ? sampleGridF(fineGround, fcols, frows, fx0, fz0, FINE_STEP, x, z) : NaN
+    })())
   if (bores.size > 0) console.log(`  ${bores.size} street-tunnel ways made rideable bores (their pavements included)`)
   /*
    * The ways over a MODELLED bridge take the model's deck heights, and the chain off each end of it is regraded to
@@ -1946,7 +1956,17 @@ async function bake(spec: CitySpec): Promise<void> {
       const PAST_MOUTH = 5
       const mouthNodes = new Set<number>()
       for (const e of boreEdges) { mouthNodes.add(e.a); mouthNodes.add(e.b) }
+      /*
+       * …never under another street standing above the cut (2026-10-14, the same junction): the 8 m margin and the 2:1
+       * banks dug out the ground under Broadway's frontage roads, which then stood on decks over a hole. Beside a
+       * street a cutting is a wall. (Built when the carving runs: after the bridges over cuts are back at grade.)
+       */
+      let banks: StreetGrade | null = null
       const carve = (h: ArrayLike<number> & { [i: number]: number }, x0: number, z0: number, step: number, ncols: number, nrows: number): number => {
+        if (!banks) {
+          banks = new StreetGrade()
+          for (const o of kept) if (!o.cut && !o.bore && !o.tunnel && !o.bridge && !o.foot && o.heights?.length) banks.add(o)
+        }
         let lowered = 0
         for (const e of cuts) {
           const pts = unpackPoints(e.points)
@@ -1986,6 +2006,8 @@ async function bake(spec: CitySpec): Promise<void> {
               const level = e.heights![i - 1] + (e.heights![i] - e.heights![i - 1]) * tt
               const want = level + Math.max(0, d - reach) * 2
               const k = r * ncols + c
+              const street = d > half ? banks!.at(x, z) : null
+              if (street !== null && street > level + 0.5) continue
               if (want < h[k]) { h[k] = want; lowered++ }
             }
           }
@@ -2049,6 +2071,82 @@ async function bake(spec: CitySpec): Promise<void> {
       const ff = fill(fineGround, fx0, fz0, FINE_STEP, fcols, frows)
       const fc = fill(ground, tx0, tz0, STEP, cols, rows)
       console.log(`  bores filled over: ${boreEdges.length} ways, ${ff} fine and ${fc} coarse samples raised to their crown`)
+      /*
+       * A BRIDGE OVER A CUT IS AT GRADE (2026-10-14, owner at 37.796299 −122.418596: "a somewhat broken underpass").
+       * Bridges are lifted before the tunnels are found (bridgeHeights, above), and then the street under the bridge
+       * had its level as "the highest ground across its corridor" — the bank, not the trench. So Hyde Street's short
+       * bridge over Broadway's trench stood 4.5 m over the BANKS, every street meeting it became a ramp on a deck, and
+       * the decks roofed the junction in a grey slab — while the trench was dug as well. Now: a bridge of a street
+       * (not a freeway) under 80 m that crosses a CUT goes back to its heights before the lifting, with the ramps that
+       * lead onto it, when the cut gives it the clearance itself (its ends at least CUT_CLEARS over the cut road).
+       */
+      {
+        const CUT_CLEARS = 3.5
+        const cutEdges = kept.filter((e) => e.cut && e.heights?.length)
+        const crossesAt = (e: typeof kept[number], o: typeof kept[number]): number | null => {
+          const p = unpackPoints(e.points), q = unpackPoints(o.points)
+          for (let i = 1; i < p.length; i++) for (let j = 1; j < q.length; j++) {
+            const r = { x: p[i].x - p[i - 1].x, z: p[i].z - p[i - 1].z }, s2 = { x: q[j].x - q[j - 1].x, z: q[j].z - q[j - 1].z }
+            const den = r.x * s2.z - r.z * s2.x
+            if (Math.abs(den) < 1e-9) continue
+            const t = ((q[j - 1].x - p[i - 1].x) * s2.z - (q[j - 1].z - p[i - 1].z) * s2.x) / den
+            const u = ((q[j - 1].x - p[i - 1].x) * r.z - (q[j - 1].z - p[i - 1].z) * r.x) / den
+            if (t >= 0 && t <= 1 && u >= 0 && u <= 1) return o.heights![j - 1] + (o.heights![j] - o.heights![j - 1]) * u
+          }
+          return null
+        }
+        const byNode = new Map<number, (typeof kept)[number][]>()
+        for (const e of kept) for (const n of [e.a, e.b]) (byNode.get(n) ?? byNode.set(n, []).get(n)!).push(e)
+        // back to the heights before the lifting: the same points if it kept them, else (densified by the lifting) a
+        // straight line between its two ends' former heights
+        const restore = (e: (typeof kept)[number], pre: number[]): number[] => {
+          if (pre.length === e.heights!.length && pre.length > 2) return [...pre]
+          const p = unpackPoints(e.points)
+          const c = [0]
+          for (let i = 1; i < p.length; i++) c.push(c[i - 1] + Math.hypot(p[i].x - p[i - 1].x, p[i].z - p[i - 1].z))
+          const L = c[c.length - 1] || 1
+          return c.map((d) => Math.round((pre[0] + (pre[pre.length - 1] - pre[0]) * (d / L)) * 100) / 100)
+        }
+        let lowered = 0, unramped = 0
+        for (const b of kept) {
+          if (!b.bridge || b.tunnel || !b.heights || ['motorway', 'trunk', 'motorway_link', 'trunk_link'].includes(b.kind ?? '')) continue
+          const pts = unpackPoints(b.points)
+          // (a bridge had no heights of its own before the lifting: then the ground at its two ends, the fine ground,
+          //  which inside a lidar zone has the banks as they are)
+          const fineAt = (q: { x: number; z: number }): number => sampleGridF(fineGround, fcols, frows, fx0, fz0, FINE_STEP, q.x, q.z)
+          const had = preBridge.get(b.id)
+          const pre = had && had.length >= 2 ? had : [fineAt(pts[0]), fineAt(pts[pts.length - 1])]
+          let L = 0
+          for (let i = 1; i < pts.length; i++) L += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z)
+          if (L >= 80) continue
+          let under = Infinity
+          for (const c of cutEdges) { const h = crossesAt(b, c); if (h !== null) under = Math.min(under, h) }
+          if (under === Infinity) continue
+          // (a span's ends are on the banks; one sampled on the trench's slope is not the bank)
+          const clears = Math.max(pre[0], pre[pre.length - 1]) - under
+          console.log(`  bridge ${b.id} ${b.name ?? b.kind} over a cut: ends ${pre[0].toFixed(1)}/${pre[pre.length - 1].toFixed(1)}, cut road ${under.toFixed(1)}, ${clears >= CUT_CLEARS ? 'at grade' : 'stays lifted'}`)
+          if (clears < CUT_CLEARS) continue
+          // a deck at grade runs straight from bank to bank (its old heights followed the ground down into the trench)
+          b.heights = restore(b, [pre[0], pre[pre.length - 1]])
+          lowered++
+          // …and the ramps that led onto it, back to theirs, chain by chain away from its ends
+          const todo = [b.a, b.b]
+          const seen = new Set<number>(todo)
+          while (todo.length) {
+            const n = todo.pop()!
+            for (const r of byNode.get(n) ?? []) {
+              if (!r.ramp || r.bridge) continue
+              const rp = preBridge.get(r.id)
+              if (!rp || !r.heights || rp.length < 2) continue
+              r.heights = restore(r, rp)
+              delete r.ramp
+              unramped++
+              for (const m of [r.a, r.b]) if (!seen.has(m)) { seen.add(m); todo.push(m) }
+            }
+          }
+        }
+        if (lowered) console.log(`  bridges over a cut at grade: ${lowered}, their ${unramped} ramp ways back on the ground`)
+      }
       const nf = carve(fineGround, fx0, fz0, FINE_STEP, fcols, frows)
       const nc = carve(ground, tx0, tz0, STEP, cols, rows)
       // the tiles the cuts touch ship the fine ground, so the cutting keeps its sides

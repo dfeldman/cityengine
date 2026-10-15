@@ -48,6 +48,8 @@ const MOUTH = 20
 export const CLEAR = 6.5
 /** longer than this is not a street tunnel a rider zooms through */
 const LONGEST = 2000
+/** how far out from a mouth a street into it may follow a trench in the ground (`fine`) */
+const TRENCH_RUN = 80
 /** a pavement belongs to a bore if every point of it is this close to the bore's line */
 const BESIDE = 10
 
@@ -79,7 +81,7 @@ function nearest(line: P[], cum: number[], q: P): { along: number; off: number }
  * `edges`; returns the ids made bores. `ground` is the terrain.
  */
 export function boreTunnels(edges: TunnelEdge[], ground: (x: number, z: number) => number,
-  report?: (name: string, why: string) => void): Set<number> {
+  report?: (name: string, why: string) => void, fine?: (x: number, z: number) => number): Set<number> {
   const done = new Set<number>()
   const isBore = (e: TunnelEdge): boolean => !!e.tunnel && !e.foot && STREET.has(e.kind ?? '')
   const candidates = edges.filter(isBore)
@@ -151,6 +153,34 @@ export function boreTunnels(edges: TunnelEdge[], ground: (x: number, z: number) 
         return o.a === n ? o.heights[0] : o.heights[o.heights.length - 1]
       }
       return ground(p.x, p.z)
+    }
+    /*
+     * A STREET IN A TRENCH (2026-10-14, Broadway's west approach): a street's level is the highest ground across its
+     * corridor, which in a walled trench is the BANK, so the road into the mouth floated 4 m over the trench floor,
+     * the mouth was set at the bank's level, and the bridge over the trench (Hyde Street) was lifted to clear a road
+     * that was not there. Where the fine ground along a street into a mouth (the lidar's, in a lidar zone) lies well
+     * below its profile, the street follows it down — over its last TRENCH_RUN metres to the mouth only.
+     */
+    if (fine) for (const n of mouths) {
+      for (const o of byNode.get(n) ?? []) {
+        if (o.tunnel || (o.layer ?? 0) < 0 || o.foot || !o.heights?.length) continue
+        const p = unpackPoints(o.points)
+        const c = lengths(p)
+        const Lo = c[c.length - 1]
+        const fromA = o.a === n
+        const floor = p.map((q, i) => ({ i, d: fromA ? c[i] : Lo - c[i], g: fine(q.x, q.z) }))
+        // (NaN: no trustworthy ground there — outside the lidar, the bake says)
+        const deep = floor.filter((f) => f.d <= TRENCH_RUN && Number.isFinite(f.g) && f.g < o.heights![f.i] - 1.5)
+        if (deep.length < 2) continue
+        const before = o.heights.slice()
+        o.heights = o.heights.map((h, i) => (floor[i].d <= TRENCH_RUN && Number.isFinite(floor[i].g) ? Math.round(Math.min(h, floor[i].g + 0.2) * 100) / 100 : h))
+        // (no step where the run ends: eased back up over the next 20 m)
+        for (const f of floor) if (f.d > TRENCH_RUN && f.d < TRENCH_RUN + 20) {
+          const edge = floor.filter((q) => q.d <= TRENCH_RUN).sort((a, b) => b.d - a.d)[0]
+          if (edge) { const t = (f.d - TRENCH_RUN) / 20; o.heights[f.i] = Math.round((o.heights[edge.i] + (before[f.i] - o.heights[edge.i]) * t) * 100) / 100 }
+        }
+        report?.(name, `the street into a mouth follows its trench: ${deep.length} points lowered up to ${Math.max(...deep.map((f) => before[f.i] - f.g)).toFixed(1)} m`)
+      }
     }
     let y0 = at(mouths[0], line[0])
     let y1 = at(mouths[1], line[line.length - 1])
