@@ -25,7 +25,7 @@
  * the same every session, which is what makes two rides down the same street comparable.
  */
 import { SHIPPED, assertFresh, decksUndoFile, isBaked, newBakeId, packageFile, recordBake, shippedDir, workDir } from './bake-files.ts'
-import { applyStreetPaint, markBrickSquares } from './street-paint.ts'
+import { applyStreetPaint, applyStreetWidths, markBrickSquares } from './street-paint.ts'
 import { Carriageways } from '../src/city/carriageways.ts'
 import { StreetGrade } from '../src/city/grade.ts'
 import { boreTunnels } from './tunnels.ts'
@@ -891,6 +891,12 @@ async function bake(spec: CitySpec): Promise<void> {
   console.log(`  ${bigNonHomes} big shops, offices and institutions no longer dressed as homes`)
   console.log(`  ${buildings.length} buildings`)
   reportRingForms(formScanned, formed, FORM)
+  // (a region's own measure of a street, where OSM's lanes are wrong: before the fit, which only ever shrinks)
+  if (streetRegion.streetWidths?.length) {
+    const n = applyStreetWidths(kept, streetRegion.streetWidths.map((r) => ({ street: r.street, width: r.width,
+      walk: r.walk ?? pavementForNA(r.width), from: proj.toLocal({ lat: r.from[0], lon: r.from[1] }), to: proj.toLocal({ lat: r.to[0], lon: r.to[1] }) })))
+    console.log(`  street widths by hand: ${n.join(' / ')} edges`)
+  }
   if (streetRegion.streetWidth === 'carriageway') fitStreetsBetweenBuildings(kept, buildings)
 
   // ---- the green and the wet, and the paved squares (their own query: only as areas, never as streets)

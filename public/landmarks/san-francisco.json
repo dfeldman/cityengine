@@ -585,5 +585,8 @@
  },
  {
   "include": "san-francisco/embarcadero-pass.json"
+ },
+ {
+  "include": "san-francisco/soma-sixth.json"
  }
 ]

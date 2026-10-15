@@ -137,6 +137,11 @@ export interface Region {
    * lanes from Gough to 3rd and nowhere else, green bike lanes from Gough to 8th.
    */
   streetPaint?: { street: string; from: [number, number]; to: [number, number]; paint: 'transit' | 'bike'; note?: string }[]
+  /**
+   * A named street's measured carriageway (kerb to kerb, m) and sidewalk over a stretch between two points, where
+   * OSM's lanes give the wrong width (tools/street-paint.ts `applyStreetWidths`); `walk` defaults to the region's own
+   */
+  streetWidths?: { street: string; from: [number, number]; to: [number, number]; width: number; walk?: number; note?: string }[]
   /** public stairways OSM does not have, by hand: each a polyline of [lat, lon] from one end to the other */
   stairways?: { name: string; points: [number, number][]; width?: number }[]
   /** squares OSM maps only as lines (the Trocadéro's parvis): paved areas by hand, rings of [lat, lon] */
@@ -210,6 +215,7 @@ export function region(id: string | undefined): Region {
     rainbowStairs: own?.rainbowStairs ?? base.rainbowStairs,
     units: own?.units ?? base.units,
     streetPaint: own?.streetPaint ?? base.streetPaint,
+    streetWidths: own?.streetWidths ?? base.streetWidths,
     stairways: own?.stairways ?? base.stairways,
     pointFurniture: { ...base.pointFurniture, ...(own?.pointFurniture ?? {}) },
     landmarkPlate: { ...base.landmarkPlate, ...(own?.landmarkPlate ?? {}) },

@@ -71,25 +71,50 @@ export interface PaintRule { street: string; from: Pt; to: Pt; paint: 'transit' 
  * Each edge of a rule's street whose middle lies between the rule's two points — along the line from one to the
  * other, and within 80 m of it — gets the rule's paint. Returns the edges painted per rule.
  */
+/** Whether a street's edge lies on the stretch between two points: its midpoint between them, within 80 m of the line. */
+function onStretch(e: { name?: string; foot?: boolean; points: number[] }, street: string, from: Pt, to: Pt): boolean {
+  if (e.foot || e.name !== street) return false
+  const dx = to.x - from.x, dz = to.z - from.z
+  const L = Math.hypot(dx, dz) || 1
+  const p = pts(e.points)
+  if (p.length < 2) return false
+  const m = p[Math.floor(p.length / 2)]
+  const mid = p.length % 2 === 0 ? { x: (p[p.length / 2 - 1].x + m.x) / 2, z: (p[p.length / 2 - 1].z + m.z) / 2 } : m
+  const t = ((mid.x - from.x) * dx + (mid.z - from.z) * dz) / (L * L)
+  const off = Math.abs((mid.x - from.x) * dz - (mid.z - from.z) * dx) / L
+  return t >= 0 && t <= 1 && off <= 80
+}
+
 export function applyStreetPaint(edges: { name?: string; foot?: boolean; points: number[]; paint?: number; busSide?: 1 | 2 | 3 }[], rules: PaintRule[]): number[] {
   return rules.map((r) => {
-    const dx = r.to.x - r.from.x, dz = r.to.z - r.from.z
-    const L = Math.hypot(dx, dz) || 1
     let n = 0
     for (const e of edges) {
-      if (e.foot || e.name !== r.street) continue
-      const p = pts(e.points)
-      if (p.length < 2) continue
-      const m = p[Math.floor(p.length / 2)]
-      const mid = p.length % 2 === 0 ? { x: (p[p.length / 2 - 1].x + m.x) / 2, z: (p[p.length / 2 - 1].z + m.z) / 2 } : m
-      const t = ((mid.x - r.from.x) * dx + (mid.z - r.from.z) * dz) / (L * L)
-      const off = Math.abs((mid.x - r.from.x) * dz - (mid.z - r.from.z) * dx) / L
-      if (t < 0 || t > 1 || off > 80) continue
+      if (!onStretch(e, r.street, r.from, r.to)) continue
       e.paint = (e.paint ?? 0) | (r.paint === 'transit' ? PAINT_TRANSIT : PAINT_BIKE)
       n++
     }
     // the street's red is where the rule puts it, not wherever OSM tags a bus lane
     if (r.paint === 'transit') for (const e of edges) if (e.name === r.street) delete e.busSide
+    return n
+  })
+}
+
+export interface WidthRule { street: string; from: Pt; to: Pt; width: number; walk: number }
+
+/**
+ * A named street's carriageway and sidewalks over a stretch, measured, where OSM's tags give the wrong width (owner,
+ * 2026-10-15: 6th Street south of Folsom is tagged six lanes; it has four and parking, and "a small but real
+ * sidewalk" that the six lanes had squeezed out). Applied before the streets are fitted between their buildings.
+ */
+export function applyStreetWidths(edges: { name?: string; foot?: boolean; points: number[]; width: number; walk: number }[], rules: WidthRule[]): number[] {
+  return rules.map((r) => {
+    let n = 0
+    for (const e of edges) {
+      if (!onStretch(e, r.street, r.from, r.to)) continue
+      e.width = r.width
+      e.walk = r.walk
+      n++
+    }
     return n
   })
 }

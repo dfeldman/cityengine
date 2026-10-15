@@ -325,6 +325,9 @@
     "streetSigns": "blade",
     "awnings": 0.35,
     "brickStreets": { "names": ["Market Street"], "colour": [0.55, 0.32, 0.26] },
+    "streetWidths": [
+      { "street": "6th Street", "from": [37.77990, -122.40750], "to": [37.77660, -122.40330], "width": 19, "walk": 3, "note": "OSM says six lanes, Folsom to Harrison; Mapillary 2025: four and parking, ~3 m sidewalks (owner, 2026-10-15)" }
+    ],
     "streetPaint": [
       { "street": "Market Street", "from": [37.77310, -122.42230], "to": [37.78770, -122.40340], "paint": "transit", "note": "the streetcar lanes red, Gough to 3rd (owner)" },
       { "street": "Market Street", "from": [37.77310, -122.42230], "to": [37.77780, -122.41520], "paint": "bike", "note": "green bike lanes, Gough to 8th (owner)" }
