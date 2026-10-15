@@ -683,7 +683,7 @@ export function project(points: Point[], p: Point): { d: number; s: number; t: n
 }
 
 /** The two edges are one street drawn twice: same name, side by side, pointing the same way (either sense). */
-export function isParallelPair(e: RideEdge, f: RideEdge): boolean {
+export function isParallelPair(e: RideEdge, f: RideEdge, ground?: (x: number, z: number) => number): boolean {
   if (!e.name || e.name !== f.name || e.id === f.id) return false
   if (e.length <= 20 || f.length <= 20) return false
   if (e.a === f.a && e.b === f.b) { /* same ends: still a pair if they run side by side */ }
@@ -705,6 +705,16 @@ export function isParallelPair(e: RideEdge, f: RideEdge): boolean {
       // roadways a couple of metres apart in height, and the averaged midline ran between them over the retaining wall,
       // nothing drawn under the wheel; air-paths, 2026-10-04)
       if (Math.abs(near(e, p) - near(f, p)) > 1.5) return false
+      /*
+       * …nor two carriageways at one level with something LOWER between them (2026-10-15, Broadway's frontage roads
+       * either side of its trench): the midline down the middle rode 1.5 m over the trench, nothing under the wheel.
+       */
+      if (ground) {
+        const q = project(f.points, p)
+        const fp = pointAt(f.points, q.s)
+        const h = (near(e, p) + near(f, p)) / 2
+        if (Math.abs(h - ground((p.x + fp.x) / 2, (p.z + fp.z) / 2)) > 1.5) return false
+      }
     }
   }
   const be = bearing(e.points[0], e.points[e.points.length - 1])
@@ -728,7 +738,7 @@ export function isParallelPair(e: RideEdge, f: RideEdge): boolean {
  * become self-loops and go. The renderer still paints both carriageways from the map graph, so nothing
  * visible changes — the rider simply rides the middle of the boulevard.
  */
-export function mergeParallel(edges: RideEdge[], ids = new Ids()): RideEdge[] {
+export function mergeParallel(edges: RideEdge[], ids = new Ids(), ground?: (x: number, z: number) => number): RideEdge[] {
   let cur = edges
   for (let guard = 0; guard < 5000; guard++) {
     const byName = new Map<string, RideEdge[]>()
@@ -742,7 +752,7 @@ export function mergeParallel(edges: RideEdge[], ids = new Ids()): RideEdge[] {
     search: for (const g of byName.values()) {
       for (let i = 0; i < g.length; i++) {
         for (let j = i + 1; j < g.length; j++) {
-          if (isParallelPair(g[i], g[j]) && midline(g[i], g[j], ids, true)) { pair = [g[i], g[j]]; break search }
+          if (isParallelPair(g[i], g[j], ground) && midline(g[i], g[j], ids, true)) { pair = [g[i], g[j]]; break search }
         }
       }
     }
@@ -1501,7 +1511,7 @@ export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrid
   // only way onto the freeway beyond it)
   let es = pruneStubs(largest(mode === 'bike' ? pruneFreewayTraps(dropSidePaths(classified, ids, blocked)) : classified))
   es = despike(contract(collapseClusters(es, ids, overrides?.wideJunctions), ids))
-  es = mergeParallel(es, ids)
+  es = mergeParallel(es, ids, overrides?.ground)
   es = largest(despike(contract(collapseClusters(es, ids, overrides?.wideJunctions), ids)))
   for (const o of overrides?.roundabouts ?? []) es = applyRoundabout(es, o, ids, overrides!.heightAt)
   // and the stubs a dropped path leaves behind, pruned as the chain prunes them the first time

@@ -2009,6 +2009,9 @@ async function bake(spec: CitySpec): Promise<void> {
               const street = d > half ? banks!.at(x, z) : null
               if (street !== null && street > level + 0.5) continue
               if (want < h[k]) { h[k] = want; lowered++ }
+              // (and under the road itself the ground IS the road: a dip in the lidar under a cut road left it 1.5 m
+              //  over a hole — Broadway's trench, 2026-10-15, tools/air-paths.ts)
+              else if (d <= half && h[k] < level - 0.3) { h[k] = level - 0.3; lowered++ }
             }
           }
         }
