@@ -1,0 +1,21 @@
+[
+  {"osm": ["way/39371963"], "restyle": "towerblock", "wall": "#ebe7dd", "accent": "#a8392f", "by": "haiku", "image": "way-39371963-01.jpg", "note": "six-storey cream render block, punched windows, red panel strip; bauhaus ribbons not visible"},
+  {"osm": ["way/288635411"], "restyle": "towerblock", "wall": "#a39585", "trim": "#ece7dc", "groundWall": "#7d7468", "by": "haiku", "image": "way-288635411-01.jpg", "note": "balconied tower, taupe render with cream trim, grey ground arcade"},
+  {"osm": ["way/1311311659"], "restyle": "brick", "wall": "#a24a36", "trim": "#ece6d6", "by": "haiku", "image": "way-1311311659-02.jpg", "note": "red brick block with cream window panels, punched windows"},
+  {"osm": ["way/262754641"], "restyle": "bauhaus", "wall": "#ebe5d3", "by": "haiku", "image": "way-262754641-01.jpg", "note": "five-storey pale cream render block, flat top"},
+  {"osm": ["way/7652801"], "restyle": "towerblock", "wall": "#d2c6ae", "accent": "#9b4636", "by": "haiku", "image": "way-7652801-01.jpg", "note": "four-storey beige render with red-brown panels and stepped roof; classical not visible"},
+  {"osm": ["way/256487824"], "restyle": "towerblock", "wall": "#c8b596", "trim": "#efe9dc", "by": "haiku", "image": "way-256487824-01.jpg", "note": "tan balconied tower with stepped massing and cream soffits"},
+  {"osm": ["way/1311320206"], "restyle": "towerblock", "wall": "#e4e3dd", "by": "haiku", "image": "way-1311320206-01.jpg", "note": "white-grey flats block, punched windows, one dark glazed strip"},
+  {"osm": ["way/288635410"], "restyle": "towerblock", "wall": "#7b726c", "trim": "#e9e8e4", "accent": "#b8473a", "groundWall": "#5d5955", "by": "haiku", "image": "way-288635410-02.jpg", "note": "grey-taupe balconied tower with red vertical panel and white wing; dark ground band"},
+  {"osm": ["way/257965709"], "restyle": "sfapartment", "wall": "#c4bfb2", "groundWall": "#e0dbcd", "by": "haiku", "image": "way-257965709-01.jpg", "note": "six-storey render block with stacked corner bay windows, garage at ground"},
+  {"osm": ["way/426895503"], "restyle": "towerblock", "wall": "#f2f0ea", "trim": "#f0bb2e", "by": "haiku", "image": "way-426895503-02.jpg", "note": "white block with stacked balconies, yellow vertical bays and orange top"},
+  {"osm": ["way/435831006"], "restyle": "towerblock", "wall": "#ece9e2", "groundWall": "#66635f", "by": "haiku", "image": "way-435831006-01.jpg", "note": "white tower with recessed balconies over dark corrugated concrete podium"},
+  {"osm": ["way/147508936"], "restyle": "brick", "wall": "#d6d0c2", "groundWall": "#4b4d52", "by": "haiku", "image": "way-147508936-01.jpg", "note": "painted cream loft with tall steel-sash windows and dark grey base"},
+  {"osm": ["way/35176122"], "restyle": "towerblock", "wall": "#eeece6", "groundWall": "#7d5d4b", "by": "haiku", "image": "way-35176122-02.jpg", "note": "white office block, regular dark square windows, brown shopfront band"},
+  {"osm": ["way/260519112"], "restyle": "brick", "wall": "#a0553f", "trim": "#e9e4d6", "by": "haiku", "image": "way-260519112-01.jpg", "note": "red-brown brick block, regular windows, cream cornice band"},
+  {"osm": ["way/149167949"], "restyle": "brick", "wall": "#9b4a36", "by": "haiku", "image": "way-149167949-02.jpg", "note": "red brick block with a glazed top storey"},
+  {"osm": ["way/80296754"], "restyle": "brutalist", "wall": "#56585c", "by": "haiku", "image": "way-80296754-01.jpg", "note": "dark grey panelled block, garage-like, openings at left; identification moderate"},
+  {"osm": ["way/256993578"], "restyle": "towerblock", "wall": "#dadbd6", "by": "haiku", "image": "way-256993578-01.jpg", "note": "grey-white nine-storey block, punched windows and small balconies, decorative corner crown"},
+  {"osm": ["way/114711559"], "restyle": "skyscraper", "wall": "#3a3e44", "by": "haiku", "image": "way-114711559-01.jpg", "note": "six-storey dark glass curtain wall with thin frames, stone columns at base"},
+  {"osm": ["way/259245986"], "restyle": "towerblock", "wall": "#ece7dc", "by": "haiku", "image": "way-259245986-01.jpg", "note": "cream nine-storey block with punched windows and stepped top"}
+]
