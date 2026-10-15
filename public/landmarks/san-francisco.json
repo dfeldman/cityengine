@@ -600,5 +600,8 @@
  },
  {
   "include": "san-francisco/reface-tall-02.json"
+ },
+ {
+  "include": "san-francisco/reface-tall-03.json"
  }
 ]
