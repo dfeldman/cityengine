@@ -1,0 +1,12 @@
+[
+{"osm": ["way/259925717"], "restyle": "towerblock", "wall": "#aaa08f", "by": "haiku", "image": "way-259925717-01.jpg", "note": "Ten-storey taupe render block with angled corner bays and balconies; flat top, no cornice"},
+{"osm": ["way/151316272"], "restyle": "classical", "wall": "#eeeae0", "by": "haiku", "image": "way-151316272-01.jpg", "note": "White stucco seven-storey front, arched entrance on a heavy base, iron balconies and a balustraded roofline"},
+{"osm": ["way/148547437"], "restyle": "brick", "wall": "#9a3b2a", "groundWall": "#3a3836", "by": "haiku", "image": "way-148547437-01.jpg", "note": "Saturated red brick six-storey corner with punched windows and a dark glazed ground floor"},
+{"osm": ["way/332235750"], "restyle": "classical", "wall": "#e4dac4", "by": "haiku", "image": "way-332235750-01.jpg", "note": "Cream stone columned front of seven to eight storeys with giant pilasters and a pedimented cornice"},
+{"osm": ["way/288474485"], "restyle": "sfapartment", "wall": "#e7dfcb", "by": "haiku", "image": "way-288474485-03.jpg", "note": "Cream stucco six to seven storeys with stacked projecting bays and balconies"},
+{"osm": ["way/259237566"], "restyle": "towerblock", "wall": "#ede9df", "by": "haiku", "image": "way-259237566-01.jpg", "note": "White nine to ten storey block with individual punched windows and a flat top"},
+{"osm": ["way/151316275"], "restyle": "classical", "wall": "#d6b8a0", "trim": "#f1ebe0", "by": "haiku", "image": "way-151316275-01.jpg", "note": "Peach stucco seven-storey front with white balustrades, cornice and arched entrance"},
+{"osm": ["way/239620173"], "restyle": "sfapartment", "wall": "#ddd6c8", "accent": "#8b5a3c", "groundWall": "#33363a", "by": "haiku", "image": "way-239620173-03.jpg", "note": "Cream five-storey front with a rust-coloured vertical panel, glazed corner bays and a dark ground-floor storefront"},
+{"osm": ["way/197466794"], "restyle": "classical", "wall": "#ebe7dc", "by": "haiku", "image": "way-197466794-01.jpg", "note": "Cream-white eight to nine storey office block with pilasters and columns at the base and a deep cornice"},
+{"osm": ["way/1410895933"], "restyle": "towerblock", "wall": "#7f7b74", "by": "haiku", "image": "way-1410895933-02.jpg", "note": "Grey stone-look seven to eight storey block with punched windows and no cornice"}
+]
