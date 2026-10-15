@@ -167,5 +167,5 @@ synchronous, so the latest one is kept ready.
 5. ☐ A real trainer through a real bridge (Web Bluetooth): the owner's hardware.
 6. ☐ Confirm with the platform team that a **persistent d-pad prompt open for a whole session** is within what
    bridges expect (it worked in the run above).
-7. ☐ The welcome card and the page title say "Cycle Dash"; the platform lists "City Dash" (the owner's words,
-   2026-10-14). One name, the owner's call.
+7. ✅ The name: the platform lists it as **Cycle Dash**, the game's own name (title, cards, site); the goal's "City
+   Dash" read as a slip (2026-10-15). The platform id stays `citydash`.
