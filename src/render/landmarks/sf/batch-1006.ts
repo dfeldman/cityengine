@@ -377,38 +377,50 @@ export function windArrows(out: MeshBuilder, _fit: Fit): void {
  */
 export function spreckelsMansion(out: MeshBuilder, fit: Fit): void {
   const ring = towerRing(fit)
-  const STONE: Rgb = [0.93, 0.92, 0.88]
+  const STONE: Rgb = [0.97, 0.96, 0.92]
   const st = surfaceTag('ashlar')
   const H = 17
   tower(out, { ...fit, ring }, {
     height: H,
-    base: { height: 4.6, face: { kind: 'punched', wall: [0.9, 0.89, 0.85], glass: GLASS, floor: 4.6, pitch: 3.4, solid: 0.55, arched: true, material: 'ashlar' } },
+    base: { height: 4.6, face: { kind: 'punched', wall: [0.95, 0.94, 0.9], glass: GLASS, floor: 4.6, pitch: 3.4, solid: 0.55, arched: true, material: 'ashlar' } },
     tiers: [{ to: 1, face: { kind: 'punched', wall: STONE, glass: GLASS, floor: 5.4, pitch: 3.4, solid: 0.5, arched: true, head: 'architrave', material: 'ashlar' } }],
     cornices: [{ at: 4.7, depth: 0.35, colour: STONE }, { at: H - 1.4, depth: 0.9, height: 0.7, colour: STONE }],
     crown: { kind: 'balustrade', height: 1.1, colour: STONE, material: 'ashlar' },
   })
-  const hx = fit.hx, hz = fit.hz
-  // the pilasters, fluted (in courses), between the bays of the street front and the garden front
-  for (const s of [-1, 1]) {
-    for (let x = -hx + 1.7; x <= hx - 1.6; x += 3.4) {
-      box(out, x, (4.8 + H - 1.6) / 2, s * (hz + 0.12), 0.3, (H - 1.6 - 4.8) / 2, 0.12, STONE, st)
-      box(out, x, H - 1.75, s * (hz + 0.2), 0.42, 0.18, 0.2, STONE, st)                   // the Ionic capital
+  // The columns follow the REAL WALLS (the footprint's own edges), not the bounding box: the footprint is an L with
+  // a bowed garden bay, so box-edge columns stood metres off the wall (the 2026-10-15 defect). Each long axis-aligned
+  // edge gets pairs of fluted columns between its window bays, set into the wall plane and projecting 0.4 m.
+  const Hr = fit.height > 0.6 * H && fit.height < 1.6 * H ? fit.height : H
+  const top = Hr - 1.6
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length]
+    const len = Math.hypot(b.x - a.x, b.z - a.z)
+    if (len < 8 || Math.abs(b.z - a.z) > 0.03 * len) continue
+    const nz = b.x > a.x ? -1 : 1                      // anticlockwise ring: outward is right of travel
+    const zAt = (x: number): number => a.z + ((x - a.x) / (b.x - a.x)) * (b.z - a.z)   // the wall's z at x (OSM edges run a few cm off true)
+    const x0 = Math.min(a.x, b.x)
+    const bays = Math.max(2, Math.round(len / 3.4))     // the tower's own window count and pitch, so columns fall BETWEEN windows
+    const gap = len / bays
+    for (let k = 1; k < bays; k++) {
+      const x = x0 + k * gap
+      const wz = zAt(x)
+      for (const d of [-0.45, 0.45]) {
+        box(out, x + d, (4.8 + top) / 2, wz + nz * 0.2, 0.22, (top - 4.8) / 2, 0.22, STONE, st)         // the shaft
+        box(out, x + d, top - 0.1, wz + nz * 0.25, 0.32, 0.18, 0.3, STONE, st)                            // the capital
+        box(out, x + d, 4.9, wz + nz * 0.25, 0.3, 0.12, 0.28, STONE, st)                                  // the base
+      }
+      box(out, x, 10.4, wz + nz * 0.08, 0.45, 0.35, 0.08, [0.95, 0.94, 0.9], st)           // the cartouche
     }
-    // the cartouches and the little bowed balconies at the piano nobile
-    for (let x = -hx + 3.4; x <= hx - 3.3; x += 3.4) {
-      box(out, x, 10.4, s * (hz + 0.1), 0.45, 0.35, 0.1, [0.88, 0.87, 0.83], st)
-      box(out, x, 5.4, s * (hz + 0.35), 0.8, 0.06, 0.35, [0.2, 0.2, 0.2], surfaceTag('metal'))
-      for (let k = 0; k < 6; k++) box(out, x - 0.7 + k * 0.28, 5.85, s * (hz + 0.68), 0.015, 0.45, 0.015, [0.15, 0.15, 0.15], 0)
-      box(out, x, 6.3, s * (hz + 0.68), 0.8, 0.03, 0.03, [0.15, 0.15, 0.15], 0)
+    for (let k = 0; k < bays; k++) {
+      const x = x0 + (k + 0.5) * gap
+      const wz = zAt(x)
+      box(out, x, 5.4, wz + nz * 0.3, 0.8, 0.06, 0.3, [0.2, 0.2, 0.2], surfaceTag('metal'))   // the little iron balcony
+      for (let j = 0; j < 6; j++) box(out, x - 0.7 + j * 0.28, 5.85, wz + nz * 0.58, 0.015, 0.45, 0.015, [0.15, 0.15, 0.15], 0)
+      box(out, x, 6.3, wz + nz * 0.58, 0.8, 0.03, 0.03, [0.15, 0.15, 0.15], 0)
     }
   }
-  // the bowed bay in the middle of the garden front (−z): a half drum, its own windows
-  prism(out, 0, -hz, 0, H - 1.4, hx * 0.28, 16, STONE, st)
-  for (let k = 0; k < 5; k++) {
-    const a = Math.PI + (k + 0.5) / 5 * Math.PI
-    const r = hx * 0.28 + 0.03
-    box(out, Math.cos(a) * r, 8.2, -hz + Math.sin(a) * r, 0.5, 2.0, 0.04, GLASS, surfaceTag('glass'))
-  }
+  // (the bowed garden bay is already in the footprint ring: the drum once added at the box edge stuck out of the
+  // flat street front, which the HABS elevation shows plain)
 }
 
 /**
