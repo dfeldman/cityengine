@@ -91,7 +91,6 @@ const KNOWN: Record<string, string[]> = {
     'height | Powell Street Station Canopy',
     "height | Cupid's Span",
     'height | Ruth Asawa Mermaid Fountain',
-    'height | Redwood Park pool',
     'height | Union Square',
     // #110 — z-fighting candidates
     'coplanar | Opera Plaza courtyard',
