@@ -191,6 +191,15 @@ export function archetypeOf(f: Features): { archetype: Archetype; district: Dist
   // SoMa and the old waterfront: brick warehouses and lofts
   if ((district === 'soma' || district === 'yerbabuena' || district === 'rincon' || district === 'embarcadero'
     || (district === 'northbeach' && f.lon > -122.405) || district === 'wharf') && f.area > 500) return a('loft', 'soma-warehouse')
+  /*
+   * The old commercial city under 20 m — Jackson Square, Commercial and Clay Streets round the Transamerica Pyramid:
+   * 1906-1915 brick and terracotta, shops below, never flats. With no rule of their own they fell to the downtown
+   * default and were drawn as bay-windowed apartments (owner, 2026-10-15: "the view looks different"). The
+   * Financial District only: across all of downtown it also turned 159 SoMa brick lofts to terracotta.
+   */
+  if (district === 'fidi' && era && era !== 'midcentury' && era !== 'modern' && use && use !== 'MRES' && use !== 'SRES') {
+    return a(masonry || use === 'IND' ? 'loft' : 'prewarOffice', 'downtown-commercial-lowrise')
+  }
   if (DOWNTOWN.has(district)) return a(h >= 20 ? 'prewarOffice' : district === 'soma' ? 'loft' : 'apartment', 'downtown-default')
   if (district === 'tenderloin') return a(h >= 9 ? 'apartment' : 'rowhouse', 'tenderloin')
   // the 25-foot lot: a house, of the Victorian city or of the Marina's 1930s

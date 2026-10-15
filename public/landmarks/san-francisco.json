@@ -588,5 +588,8 @@
  },
  {
   "include": "san-francisco/soma-sixth.json"
+ },
+ {
+  "include": "san-francisco/transamerica-area.json"
  }
 ]

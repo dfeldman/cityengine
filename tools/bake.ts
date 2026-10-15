@@ -93,6 +93,7 @@ const worthNaming = (t: Record<string, string>): boolean =>
 import getBuildingParamsFromOSMTags from '../src/vendor/streets-gl/osm/getBuildingParamsFromOSMTags.ts'
 import { region } from '../src/city/region.ts'
 import { classifierFor } from '../src/city/building-types.ts'
+import { districtOf } from '../src/city/sf/btype.ts'
 import { buildSigns } from './signs.ts'
 import { insetNested } from '../src/city/nesting.ts'
 import { GroundModel } from '../src/map/ground.ts'
@@ -693,9 +694,25 @@ async function bake(spec: CitySpec): Promise<void> {
     if (!ring || tags['building:min_level'] !== undefined || tags.min_height !== undefined) {
       return { tags, inferred: false }
     }
+    /*
+     * The city's own count of storeys, where the mapper gave none and the record is a building's own: an office or
+     * shop on one or two parcels. 559 Clay Street (nine storeys, 1908) and its neighbours by the Transamerica Pyramid
+     * were guessed at three from the houses round about (owner, 2026-10-15: "heights and such are wrong"). Homes are
+     * left to the guess — a condominium's storeys are its units' floors — and the record only ever RAISES the guess,
+     * and only in the Financial District for now: city-wide it lowered 566 buildings, a shop condominium on the ground
+     * floor being recorded as one storey, and raised a few on a stray parcel point.
+     */
     const c = centroid(ring)
     const lv = inferLevels(tags, ring, grid.near(c.x, c.z, reg.levelInference.radius), reg.defaultLevels,
       reg.levelInference)
+    if (lv !== undefined && tags['building:part'] === undefined && recordOf) {
+      const ll = ring.map((q) => proj.toLatLon(q))
+      const rec = recordOf(ll)
+      if (rec?.stories && rec.stories > lv && rec.stories <= 60 && rec.parcels <= 2 && rec.use && rec.use !== 'SRES' && rec.use !== 'MRES'
+        && districtOf(ll[0].lat, ll[0].lon) === 'fidi') {
+        return { tags: { ...tags, 'building:levels': String(rec.stories) }, inferred: true }
+      }
+    }
     return lv === undefined ? { tags, inferred: false } : { tags: { ...tags, 'building:levels': String(lv) }, inferred: true }
   }
   let inferredCount = 0
