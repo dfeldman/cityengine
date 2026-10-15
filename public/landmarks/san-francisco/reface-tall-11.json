@@ -1,0 +1,21 @@
+[
+{"osm": ["way/260133498"], "restyle": "sfapartment", "wall": "#d8b56e", "trim": "#f1ece0", "groundWall": "#7d7f7c", "by": "haiku", "image": "way-260133498-01.jpg", "note": "ochre-yellow stacked bay flats, cream bays, grey ground floor with blue doors"},
+{"osm": ["way/71515252"], "restyle": "tenement", "wall": "#c8a57c", "trim": "#ece3d2", "by": "haiku", "image": "way-71515252-01.jpg", "note": "tan 7-storey block, fire escape down the front over shops, no bays; 7 storeys so tenement under the 8-storey ceiling"},
+{"osm": ["way/173725082"], "restyle": "towerblock", "wall": "#cbbfa5", "groundWall": "#4d4137", "by": "haiku", "image": "way-173725082-01.jpg", "note": "about 10 storeys, khaki-beige render, punched windows, dark brown base band"},
+{"osm": ["way/256030635"], "restyle": "bauhaus", "wall": "#2e4a7c", "by": "haiku", "image": "way-256030635-02.jpg", "note": "navy-painted flat-faced block with horizontal ribbon windows, flat roof"},
+{"osm": ["way/256616019"], "restyle": "sfapartment", "wall": "#ebe8df", "by": "haiku", "image": "way-256616019-02.jpg", "note": "white stucco flats with stacked balconies and bay fronts, 7 storeys"},
+{"osm": ["way/262557729"], "restyle": "sfapartment", "wall": "#e8dfcb", "by": "haiku", "image": "way-262557729-01.jpg", "note": "cream stucco, stacked bays, fire escape on front, ornate parapet"},
+{"osm": ["way/256087383"], "restyle": "chicago", "wall": "#7f8790", "by": "haiku", "image": "way-256087383-01.jpg", "note": "slate-grey 6-storey block with cornice and corner bays, painted grey"},
+{"osm": ["way/93817356"], "restyle": "bauhaus", "wall": "#e4e6e6", "groundWall": "#3f4850", "by": "haiku", "image": "way-93817356-01.jpg", "note": "4-storey pale office block, horizontal glazed bands turning the corner, dark charcoal base"},
+{"osm": ["way/69718205"], "restyle": "sfapartment", "wall": "#d9bd78", "groundWall": "#4f5b4c", "by": "haiku", "image": "way-69718205-01.jpg", "note": "ochre-yellow 6-7 storey corner block with cornice, bays and fire escape; dark green-grey base"},
+{"osm": ["way/256032489"], "restyle": "classical", "wall": "#b48e62", "trim": "#e8dcc0", "by": "haiku", "image": "way-256032489-01.jpg", "note": "tan-brown brick hotel, 8 storeys, cornice and arched upper windows"},
+{"osm": ["way/35024376"], "restyle": "classical", "wall": "#9b4b3a", "trim": "#e9dcc2", "by": "haiku", "image": "way-35024376-02.jpg", "note": "red brick hotel with cream pilaster strips, arched windows and cornice"},
+{"osm": ["way/206623942"], "restyle": "classical", "wall": "#d6c6a8", "by": "haiku", "image": "way-206623942-02.jpg", "note": "6-storey cream-tan stone block, pilasters, heavy cornice, columned ground floor on corner"},
+{"osm": ["way/256479447"], "restyle": "classical", "wall": "#e2d6bd", "by": "haiku", "image": "way-256479447-01.jpg", "note": "cream Beaux-Arts style block, arched windows, rusticated base"},
+{"osm": ["way/256479500"], "restyle": "sfapartment", "wall": "#8e4a3a", "trim": "#e9e3d3", "by": "haiku", "image": "way-256479500-01.jpg", "note": "red brick 8-storey with stacked cream-trimmed bays and fire escapes on front"},
+{"osm": ["way/596677384"], "restyle": "bauhaus", "wall": "#d9cdb5", "trim": "#f4f3ef", "by": "haiku", "image": "way-596677384-03.jpg", "note": "5-storey beige-cream block, white frames, black window surrounds, thin balcony rails"},
+{"osm": ["way/259942655"], "restyle": "sfapartment", "wall": "#c8ae86", "trim": "#efe8d8", "by": "haiku", "image": "way-259942655-02.jpg", "note": "tan-beige 6-storey stucco block with bays, cream trim"},
+{"osm": ["way/214556628"], "restyle": "towerblock", "wall": "#eeeee9", "by": "haiku", "image": "way-214556628-03.jpg", "note": "8-storey white block, punched windows in a grid, flat top, no shopfront"},
+{"osm": ["way/49429845"], "restyle": "classical", "wall": "#a4483a", "trim": "#efe8d8", "groundWall": "#ebe5d6", "by": "haiku", "image": "way-49429845-01.jpg", "note": "7-storey red brick with white corner pilasters, cornice and pale stone base"},
+{"osm": ["way/32963571"], "restyle": "brick", "wall": "#8f7d68", "by": "haiku", "image": "way-32963571-01.jpg", "note": "4-storey taupe-brown render, grouped sash windows, heavy cornice, glazed ground floor"}
+]
