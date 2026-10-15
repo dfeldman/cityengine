@@ -226,16 +226,28 @@ function broadwayWest(c: PortalContext): PortalParts {
   box(face, -W - 0.2, W + 0.2, top, top + 0.35, -0.4, 0.3, CONCRETE_LIGHT)
   // the plaque on the pier (its face only: a box's back showed from inside the tunnel as a black square)
   face.quad([[-0.35, 2.2, 0.06], [0.35, 2.2, 0.06], [0.35, 2.9, 0.06], [-0.35, 2.9, 0.06]], [0, 0, 1], UV, RELIEF, 0)
-  // the retaining walls along the approach, their tops easing down to the ground 30 m out
+  /*
+   * The retaining walls along the approach, their tops easing down to the ground 30 m out. The top is a clean profile
+   * (2026-10-14, owner: "looks pretty bad all around"): the ground beside this cut is the frontage roads' level for
+   * the first ten metres and then the raw ground 3–4 m lower, and a top that followed it point by point tore into a
+   * jagged slab, seen even from inside the tunnel. So: at each point the highest ground still to come (a wall never
+   * rises going out), falling at most 0.35 m a metre, and both faces drawn.
+   */
+  const RUN = 30
   for (const s of [-1, 1]) {
     const x = s * (W + 0.2)
-    const n = 10
-    for (let k = 0; k < n; k++) {
-      const z0 = (30 * k) / n
-      const z1 = (30 * (k + 1)) / n
-      const h = (z: number): number => Math.max(1.1, Math.min(top, top * (1 - z / 30) + (c.ground(x, z) + 1.1) * (z / 30)))
-      face.quad([[x, 0, z0], [x, 0, z1], [x, h(z1), z1], [x, h(z0), z0]], [-s, 0, 0], UV, CONCRETE, 0)
-      face.quad([[x, h(z0), z0], [x, h(z1), z1], [x + s * 0.6, h(z1), z1], [x + s * 0.6, h(z0), z0]], [0, 1, 0], UV, CONCRETE_LIGHT, 0)
+    const want: number[] = []
+    for (let z = 0; z <= RUN; z++) want.push(Math.max(1.1, Math.min(top, top * (1 - z / RUN) + (c.ground(x, z) + 1.1) * (z / RUN))))
+    for (let z = RUN - 1; z >= 0; z--) want[z] = Math.max(want[z], want[z + 1])
+    for (let z = 1; z <= RUN; z++) want[z] = Math.max(want[z], want[z - 1] - 0.35)
+    for (let z = 0; z < RUN; z++) {
+      const z0 = z
+      const z1 = z + 1
+      const h0 = want[z0]
+      const h1 = want[z1]
+      face.quad([[x, 0, z0], [x, 0, z1], [x, h1, z1], [x, h0, z0]], [-s, 0, 0], UV, CONCRETE, 0)
+      face.quad([[x + s * 0.6, 0, z1], [x + s * 0.6, 0, z0], [x + s * 0.6, h0, z0], [x + s * 0.6, h1, z1]], [s, 0, 0], UV, CONCRETE, 0)
+      face.quad([[x, h0, z0], [x, h1, z1], [x + s * 0.6, h1, z1], [x + s * 0.6, h0, z0]], [0, 1, 0], UV, CONCRETE_LIGHT, 0)
     }
   }
   return { face }
