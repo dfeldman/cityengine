@@ -142,13 +142,14 @@ export function straightenJunctions<E extends ShapedEdge>(edges: E[], outside: O
     const used = new Set<number>()
     const through: [number, number][] = []
     for (const [i, j] of pairs) if (!used.has(i) && !used.has(j)) { used.add(i); used.add(j); through.push([i, j]) }
-    if (through.length === 0) continue
+    // (no straight pair — a skewed junction, "much more complicated" (the owner): its node stays where it is, but its
+    //  zigzagging approaches still run straight into it — no sharp turn just before the crossing)
     count.junctions++
     const o = ss[0].pts[0]
     const far = ss.map((s) => s.pts[s.pts.length - 1])
     // where the streets' lines cross
     let moved: Point = o
-    if (!corner.some(Boolean)) {
+    if (!corner.some(Boolean) && through.length > 0) {
       const line = ([i, j]: [number, number]) => ({ p: far[i], d: { x: far[j].x - far[i].x, z: far[j].z - far[i].z } })
       if (through.length >= 2) {
         const A = line(through[0]), B = line(through[1])

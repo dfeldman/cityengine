@@ -91,7 +91,7 @@ for (const n of g.nodes.values()) {
     best = Math.min(best, off)
     if (off < 25) through.push(off)
   }
-  if (best > 15) { bucket.skewed++; continue }
+  if (best > 15) bucket.skewed++
   let kind: 'repairable' | 'corner' | null = null
   const why: string[] = []
   let score = 0
@@ -115,7 +115,7 @@ worst.sort((p, q) => q.score - p.score)
 const q = (a: number[], f: number): number => { const s = [...a].sort((x, y) => x - y); return s[Math.floor(f * (s.length - 1))] ?? 0 }
 console.log(`${city}: ${junctions} street junctions of 3-4 ways (last ${APPROACH} m of each approach)`)
 console.log(`  repairable zigzag (stray ${STRAY}-4 m or bend ${BEND}-60°): ${bucket.repairable} junctions — approaches off the drawn street (the ride graph's own kink): ${cause.pipeline}, on it (the street's): ${cause.osm}`)
-console.log(`  real corners (bend > 60° or stray > 4 m): ${bucket.corner}; skewed (no through pair within 15°), not judged: ${bucket.skewed}`)
+console.log(`  real corners (bend > 60° or stray > 4 m): ${bucket.corner}; of which skewed (no through pair within 15°, judged too, node not moved): ${bucket.skewed}`)
 console.log(`  approach stray: median ${q(strays, 0.5).toFixed(2)} m, 90% ${q(strays, 0.9).toFixed(2)} m, 99% ${q(strays, 0.99).toFixed(2)} m`)
 console.log(`  through streets, degrees off straight: median ${q(through, 0.5).toFixed(1)}, 90% ${q(through, 0.9).toFixed(1)}, 99% ${q(through, 0.99).toFixed(1)}`)
 for (const w of worst.slice(0, list ? 300 : 14)) console.log(`  ${w.at}  ${w.why}`)
