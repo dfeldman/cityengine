@@ -92,6 +92,58 @@ export class Carriageways {
     return null
   }
 
+  /**
+   * The nearest point ON A PAVEMENT to (x, z): between a street's kerb (0.5 m in from it) and its pavement's outer edge,
+   * clear of every carriageway — for a pole (owner, 2026-10-14: "street sign poles are always affixed to the sidewalk.
+   * in our game, they are usually a short distance away from the sidewalk"; and Muni stops standing in the traffic
+   * lane). Clear of the carriageways was the old test, and it is not enough: at a big or slanted junction the corner
+   * between the kerb lines is open asphalt that is no street's carriageway, and a pole there stood in the road. A point
+   * already on a pavement stays; a street with no pavement does not count; with none near, the point is returned as
+   * it is.
+   */
+  toPavement(x: number, z: number): { x: number; z: number } {
+    if (this.onPavement(x, z)) return { x, z }
+    // candidates: onto each nearby street's pavement band, and — at a corner, where one street's pavement is in the
+    // other's carriageway — onto one then the other; the nearest that is truly on a pavement wins
+    const near = this.near(x, z).filter((n) => n.s.walk > 0.5)
+    let best: { x: number; z: number } | null = null
+    let bestD = Infinity
+    const take = (q: { x: number; z: number }): void => {
+      const d = Math.hypot(q.x - x, q.z - z)
+      if (d < bestD && d < 16 && this.onPavement(q.x, q.z)) { bestD = d; best = q }
+    }
+    for (const a of near) {
+      const qa = this.ontoBand(a, x, z)
+      take(qa)
+      for (const n of this.near(qa.x, qa.z)) if (n.s.walk > 0.5 && n.s.edge !== a.s.edge) take(this.ontoBand(n, qa.x, qa.z))
+    }
+    return best ?? { x, z }
+  }
+
+  /** on a pavement: in no carriageway, and within some street's pavement band */
+  onPavement(x: number, z: number): boolean {
+    const near = this.near(x, z)
+    if (near.some((n) => n.d < n.s.half + 0.3)) return false
+    return near.some((n) => n.s.walk > 0.5 && n.d >= n.s.half + 0.3 && n.d <= n.s.half + n.s.walk + 0.05)
+  }
+
+  /** (x, z) moved along the perpendicular from `n`'s street onto its pavement band (0.5 m in from the kerb at least) */
+  private ontoBand(n: Near, x: number, z: number): { x: number; z: number } {
+    const { s } = n
+    const dx = s.bx - s.ax
+    const dz = s.bz - s.az
+    const l2 = dx * dx + dz * dz || 1e-9
+    const t = Math.max(0, Math.min(1, ((x - s.ax) * dx + (z - s.az) * dz) / l2))
+    const qx = s.ax + dx * t
+    const qz = s.az + dz * t
+    let ux = x - qx
+    let uz = z - qz
+    const ul = Math.hypot(ux, uz)
+    if (ul < 1e-3) { const l = Math.sqrt(l2); ux = (-dz / l) * n.side; uz = (dx / l) * n.side } else { ux /= ul; uz /= ul }
+    const want = Math.min(s.half + s.walk - 0.2, Math.max(s.half + 0.5, ul))
+    return { x: qx + ux * want, z: qz + uz * want }
+  }
+
   /** in some street's carriageway (within `margin` of its edge) */
   inside(x: number, z: number, margin = 0.3): boolean {
     return this.near(x, z).some((n) => n.d < n.s.half + margin)

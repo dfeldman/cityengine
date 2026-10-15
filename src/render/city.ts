@@ -3721,7 +3721,8 @@ export class City {
     const bikes = bikeDocks(hexRgb(pf.bikeColour))
     // (the kinds that belong on a pavement, never in a road or its median, whatever OSM says — Carriageways.noFurniture;
     // signals, tram and bus stops and métro entrances do stand in the middle of a road)
-    const pointKerb = new Carriageways(groundEdges)
+    // (from this tile and its neighbours: a stop near the edge of the tile stands by a street that may be in the next one)
+    const pointKerb = new Carriageways(around.filter((e) => !this.raisedIds.has(e.id)))
     const kerbOnly = new Set(['column', 'kiosk', 'billboard', 'postbox', 'hydrant', 'bikeshare', 'fountain'])
     // (one billboard where OSM maps two a few metres apart — the two faces of one sign, or one sign twice: 14.6 m boards
     //  2-8 m apart stood through each other and fought — owner, 2026-10-06, "billboards have z fighting")
@@ -3761,8 +3762,19 @@ export class City {
         continue
       }
       if (!model) continue
-      // a stop sign and a bus stop stand at the kerb, not in the road where OSM puts the node
+      /*
+       * A stop sign and a bus stop stand ON THE PAVEMENT, not in the road where OSM often puts the node. They were
+       * pushed a fixed 5 m to one side, which on a wide street was still the traffic lane (owner, 2026-10-14: Muni's
+       * flag pole "in the lane"); now the push is only for a node in a carriageway, and then onto the nearest pavement
+       * (city/carriageways.ts `toPavement`).
+       */
       const kerb = f.kind === 'stop' || f.kind === 'busstop' ? 5 : 0
+      let px = f.x
+      let pz = f.z
+      if (kerb) {
+        if (pointKerb.inside(px, pz, 0.3)) { px += Math.cos(heading) * kerb; pz -= Math.sin(heading) * kerb }
+        ;({ x: px, z: pz } = pointKerb.toPavement(px, pz))
+      }
       /*
        * A billboard turned to run along the street is a thin edge to anyone riding up it, and only glimpsed at a
        * grazing angle riding past (owner, 2026-10-02: "billboards look really bad"). Real bulletins are angled to the
@@ -3770,7 +3782,7 @@ export class City {
        * board overhangs the kerb by no more than its catwalk.
        */
       const turn = f.kind === 'billboard' ? (Math.round(f.x * 7 + f.z * 13) % 2 ? 1 : -1) * 0.61 : 0
-      placeModel(furniture, model, f.x + Math.cos(heading) * kerb, 0.15, f.z - Math.sin(heading) * kerb, heading + turn)
+      placeModel(furniture, model, px, 0.15, pz, heading + turn)
     }
 
     /*

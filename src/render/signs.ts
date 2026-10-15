@@ -407,7 +407,7 @@ export class Signs implements TileLayer {
         c.plaques = r.placed
       } else {
         const roads = new Carriageways(near.around.edges.filter((e) => onSurface(e)))
-        const r = blades(this.scene, this.corners, k, js, terrain, this.probe, (x, z) => roads.inside(x, z, 0.5))
+        const r = blades(this.scene, this.corners, k, js, terrain, this.probe, (x, z) => roads.inside(x, z, 0.5), (x, z) => roads.toPavement(x, z))
         meshes.push(...r.meshes)
         c.plaques = r.n
       }
@@ -943,7 +943,8 @@ export function bladeAtlas(scene: Scene): TextAtlas {
 /** The street blades at the junctions of one tile. */
 function blades(scene: Scene, atlas: TextAtlas, owner: string, junctions: SignedJunction[], terrain: Terrain,
                 probe: { x?: number; y?: number; z?: number; ax?: number; az?: number } = {},
-                onRoad: (x: number, z: number) => boolean = () => false): { meshes: Mesh[]; n: number } {
+                onRoad: (x: number, z: number) => boolean = () => false,
+                toPavement: (x: number, z: number) => { x: number; z: number } = (x, z) => ({ x, z })): { meshes: Mesh[]; n: number } {
   const green: [number, number, number] = [0x0b / 255, 0x6b / 255, 0x3a / 255]
   const pole: [number, number, number] = [0.3, 0.32, 0.33]
   const pages = new PageOut()
@@ -1004,6 +1005,10 @@ function blades(scene: Scene, atlas: TextAtlas, owner: string, junctions: Signed
       clear = !onRoad(px, pz)
     }
     if (!clear) continue
+    // …and onto the pavement: clear of the carriageways can still be the open asphalt of a big junction's corner
+    // (owner, 2026-10-14, Green at Columbus: "a short distance away from the sidewalk")
+    ;({ x: px, z: pz } = toPavement(px, pz))
+    if (onRoad(px, pz)) continue
     const g = terrain.heightAt(px, pz)
     // the pole, up to the lower blade: the blades sit on its cap, they are not threaded on it (owner, 2026-10-02:
     // "street signs are always obstructing the sign with the pole" — it ran on to 2.7 m, through both names)
