@@ -25,6 +25,8 @@ import {
   type CityGraph, type Edge, type Exit, type OverEntry,
 } from './graph.ts'
 import { onSurface } from './package.ts'
+import { Carriageways } from './carriageways.ts'
+import { straightenJunctions, type Outside } from './junction-shape.ts'
 
 export type RideMode = 'bike' | 'run'
 export type RideEdge = Edge & { over: OverEntry[] }
@@ -1086,6 +1088,8 @@ export interface RideOverrides {
   heightAt: (x: number, z: number) => number
   /** islands a ferry serves (region `ferryIslands`, local frame): their networks are kept, not only the largest */
   keep?: { x: number; z: number; r: number }[]
+  /** false: leave the junctions' approaches as the passes made them (tools/junctions.ts measures both ways) */
+  straighten?: boolean
 }
 
 /** Both crossings of a segment p→q with the circle of radius R round c, as t in 0..1 (may be none). */
@@ -1446,6 +1450,28 @@ export function snapEnds(edges: RideEdge[]): RideEdge[] {
 }
 
 /** The whole chain. */
+/**
+ * How far a path strays OUTSIDE the drawn carriageways (the streets as drawn: the map's edges, not the ride graph's),
+ * worst over it, sampled every metre — `straightenJunctions`' acceptance test: no junction is straightened if that
+ * takes the rider further off the asphalt than they were.
+ */
+function outsideOf(edges: Edge[]): Outside {
+  const drawn = new Carriageways(edges.filter((e) => !e.foot).map((e) => ({ ...e, kind: e.kind ?? 'residential', points: e.points.flatMap((p) => [p.x, p.z]) })))
+  return (pts) => {
+    let worst = 0
+    for (let i = 1; i < pts.length; i++) {
+      const L = Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z)
+      for (let d = 0; d <= L; d += 1) {
+        const t = L > 0 ? d / L : 0
+        const near = drawn.near(pts[i - 1].x + (pts[i].x - pts[i - 1].x) * t, pts[i - 1].z + (pts[i].z - pts[i - 1].z) * t)
+        const out = near.length ? Math.min(...near.map((n) => Math.max(0, n.d - n.s.half))) : 50
+        if (out > worst) worst = out
+      }
+    }
+    return worst
+  }
+}
+
 export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrides): RideGraph {
   const ids = new Ids()
   const keep = overrides?.keep?.length ? (e: Edge): boolean => overrides.keep!.some((k) => e.points.some((p) => Math.hypot(p.x - k.x, p.z - k.z) < k.r)) : undefined
@@ -1474,6 +1500,8 @@ export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrid
   es = pruneStubs(dropLoops(es))
   // and last of all, no edge doubling back on itself (BUGS.md #194), and every edge meeting its junction
   es = despike(snapEnds(es))
+  // …and every ordinary junction's approaches straight, its streets meeting where their lines cross (city/junction-shape.ts)
+  if (overrides?.straighten !== false) es = straightenJunctions(es, outsideOf(edges), blocked).edges
   return buildGraph(es) as RideGraph
 }
 

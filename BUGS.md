@@ -10542,3 +10542,31 @@ OPEN:
   building intersecting the tube, so where it is was not found — needs the owner's coordinate.
 * Through the lower outer corner of each Broadway arch the bore's inside wall is visible 5 m in (the bore is wider
   than the twin openings): a yellow wedge beside the arch. Minor.
+
+### #265 Zigzag approaches at ordinary junctions (owner, 2026-10-14) — STRAIGHTENED in the ride graph
+
+*"We should also devise a way to straighten the paths at 4-way intersections; often several of the paths are
+zigzaggy, not meeting perpendicularly, and this throws the user off every time ... As a general principle paths
+shouldn't take sharp turns right before a crossing."* (#183 wrote `tools/straighten.ts` for OSM's geometry in
+2026-09 and left it unwired: SF's junction-node moves measured tiny. What the rider follows is the RIDE graph,
+after its own passes, and that is where the zigzags are.)
+
+`tools/junctions.ts` (`--raw` for the graph before the fix) builds the ride graph as the game does and judges every
+street junction of three or four ways over the last 25 m of each approach. Before: of 5114, **762 with a repairable
+zigzag** (an approach 0.75–4 m off its chord, or turning 20–60°) — 512 of the zigzagging approaches off the drawn
+street (the ride graph's own kink: a collapsed cluster, a merged boulevard), 660 on it (OSM's); 188 real corners;
+357 skewed junctions (no through pair within 15°: "much more complicated", the owner), not judged.
+
+`straightenJunctions` (src/city/junction-shape.ts, the last pass of `rideGraph`): per junction with a through pair
+and a zigzag, the node moves (≤ 4 m, not at all beside a real corner) to where the streets' lines — drawn between
+the far ends of opposite approaches — cross, and each approach runs straight from 25 m out into it; accepted only
+if no approach strays further off the drawn carriageways than before and none crosses a building, else without the
+move, else not at all. After: **149** repairable zigzags left (mostly Chinatown alleys whose straight line would
+leave the alley), approach stray 90th percentile 0.52 → 0.14 m, through streets 90th percentile 9.5° → 6.4° off
+straight. tools/audit-ride.ts: dead ends 533 = 533, edges through buildings 5 = 5; junctions with a choice
+5439 → 5427 (a street splitting into two carriageways at a median start is no longer offered as two exits; 11
+junctions gain a real exit). tools/air-paths.ts after: 5 stretches, 0.10 km, none at a straightened junction.
+Ride files rebuilt (`bake --rides`), bake 20261015T0536-mhrq.
+
+For the owner to ride (measured straightened): Jones St at 37.784879 −122.412746; Stanyan at 37.764511
+−122.452645; Bryant at 37.783059 −122.393580; Fulton at 37.772285 −122.489561; Van Ness at 37.802283 −122.424757.

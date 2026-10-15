@@ -32,6 +32,8 @@ const g = rideGraph(edges, 'bike', {
   }),
   heightAt: (x, z) => terrain.heightAt(x, z),
   buildings: pkg.buildings.filter((b) => (b.minHeight ?? 0) < 2).map((b) => b.ring),
+  // --raw: before `straightenJunctions`, to compare
+  straighten: !process.argv.includes('--raw'),
 })
 const R = pkg.radius
 const B = pkg.box ?? { x0: -R, x1: R, z0: -R, z1: R }
