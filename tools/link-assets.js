@@ -8,17 +8,35 @@
  *   - and anything that is not a plain file or folder.
  * Everything else (the textures restored by assetmgr, the manifests, the landmarks) is copied.
  */
+import { execFileSync } from 'node:child_process'
 import { cpSync, existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync } from 'node:fs'
-import { join, relative, resolve } from 'node:path'
+import { join, relative, resolve, sep } from 'node:path'
 
 /** served from the asset bucket in a build (src/assets.ts), so not copied */
 const FROM_BUCKET = new Set(['mh', 'env', 'trees', 'plants', 'sftrees', 'models'])
-/**
- * In public/ but not for a build: rocks/*.glb are the bucket's (assetkit-rocks; these local copies were made by hand
- * and are in no index), and roads/roads.json is read by nothing.
- */
-const STRAY = (rel) => /^rocks\/[^/]+\.glb$/.test(rel) || rel === 'roads/roads.json'
 const LIVE = JSON.parse(readFileSync(resolve('src', 'cities.json'), 'utf8')).map((c) => c.id)
+/**
+ * WHAT MAY SHIP: a file of this repo (tracked by git) or an asset of this repo's assetmgr index (restored by
+ * `npm run assets`). Anything else under public/ is unmanaged — a fresh checkout would not have it, and nothing keeps
+ * it current — and the build stops on it rather than publish it (owner, 2026-10-14). The cities are the bake's,
+ * checked separately: each live city's shipped bake, with its bake number.
+ */
+const tracked = new Set(execFileSync('git', ['ls-files', 'public'], { encoding: 'utf8' }).split('\n').filter(Boolean).map((f) => f.slice('public/'.length)))
+const indexed = new Set()
+for (const f of readdirSync('indexes').filter((n) => n.endsWith('.json'))) {
+  const j = JSON.parse(readFileSync(join('indexes', f), 'utf8'))
+  for (const a of Array.isArray(j.assets) ? j.assets : Object.values(j.assets ?? {})) {
+    const p = a?.extra?.streetrunner?.path
+    if (p) indexed.add(p)
+  }
+}
+const unmanaged = []
+const managed = (abs) => {
+  const rel = relative(pub, abs).split(sep).join('/')
+  if (lstatSync(abs).isDirectory() || tracked.has(rel) || indexed.has(rel) || rel.endsWith('.DS_Store')) return true
+  unmanaged.push(rel)
+  return false
+}
 
 const out = resolve(process.argv[2] ?? 'dist')
 const pub = resolve('public')
@@ -36,11 +54,17 @@ for (const name of readdirSync(pub)) {
     for (const id of LIVE) {
       const v3 = join(from, id, 'v3')
       if (!existsSync(v3)) throw new Error(`${id} is on src/cities.json but has no shipped bake (${v3}): npm run bake -- ${id}`)
+      if (!JSON.parse(readFileSync(join(v3, 'index.json'), 'utf8')).bake) throw new Error(`${id}'s shipped bake has no bake number: re-bake it (npm run bake -- ${id})`)
       cpSync(v3, join(to, id, 'v3'), { recursive: true })
     }
     console.log(`  cities -> ${LIVE.join(', ')} (their v3/ only)`)
     continue
   }
-  cpSync(from, to, { recursive: true, filter: (f) => !STRAY(relative(pub, f)) })
+  cpSync(from, to, { recursive: true, filter: (f) => !f.endsWith('.DS_Store') && managed(f) })
   console.log(`  ${name} -> copied`)
+}
+if (unmanaged.length) {
+  console.error(`\npublic/ has ${unmanaged.length} file(s) neither tracked by git nor in an asset index — commit them, record them `
+    + `(npm run assets:upload), or remove them:\n  ${unmanaged.slice(0, 20).join('\n  ')}${unmanaged.length > 20 ? '\n  …' : ''}`)
+  process.exit(1)
 }

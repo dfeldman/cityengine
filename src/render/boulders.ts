@@ -2,8 +2,8 @@
  * BOULDERS from Trail Trainer's rock library (owner, 2026-10-06: "can we figure out a better system for rocks and
  * boulders? Trailtrainer … has great looking rocks and boulders for natural landscapes. I'm thinking for the cliffs,
  * the small offshore islands, and the waterfall"). A coastal subset of its rockgen GLBs — dark stratified, weathered
- * grey, cracked; singles and small groups — is copied into public/rocks/ (index.json lists them; the GLBs are
- * gitignored, as Trail Trainer's are). Each model's LOD0 is loaded once; per tile, in the zones with `cliffs: true`,
+ * grey, cracked; singles and small groups — is listed in public/rocks/index.json (this repo's); the GLBs are
+ * assetkit's, read from the asset bucket (src/assets.ts), or from the assetkit checkout with `?assets=local`. Each model's LOD0 is loaded once; per tile, in the zones with `cliffs: true`,
  * boulders lie where the ground is steep or by the water's edge, each turned and scaled its own way and bedded a
  * little into the ground. Per tile, a clone of each model in use (sharing its geometry) carries that tile's instances,
  * so they go with the tile.

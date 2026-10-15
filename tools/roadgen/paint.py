@@ -248,9 +248,8 @@ def main() -> int:
         img.save(OUT / f'{name}.png')
         print(f'  roads/{name}.png')
 
-    (OUT / 'roads.json').write_text(
-        '{\n "metres": %s,\n "size": %d,\n "surfaces": [%s]\n}\n'
-        % (METRES, SIZE, ', '.join(f'"{k}"' for k in SURFACES)))
+    # (no roads.json beside them any more: nothing read it, and public/ holds only what the game loads — the scale is
+    # METRES here and ROAD_PAGE_METRES in src/render/road-material.ts)
 
     if args.sheet:
         S = 256
