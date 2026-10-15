@@ -10523,10 +10523,14 @@ Fixed (commits 8df3864, 530cad2, 6a0b457; bake 20261015T0333-yunz, live):
   faces (the south wall was invisible from the road).
 
 OPEN:
-* **Larkin over Broadway's west cut** (the "broken underpass", around local −600, 360): the bridge is a dark deck
-  slab with a solid grey abutment block filling the space under its south half, beside the centre roadway. The
-  frontage roads either side of the cut are flagged `ramp` and raised 4–6 m to the bridge, which is likely the
-  source; it needs the bridge-structure code (render/bridge-structures.ts, src/city/bridge-decks.ts).
+* **The "broken underpass" west of Broadway's west mouth** (37.796299 −122.418596, local ≈ −580, 367). What crosses
+  the cut there is not Larkin but a 20 m FOOTBRIDGE (way 73494, footway, layer 1, deck −21.2, 4.6 m over the centre
+  roadway). The "grey block" under it, seen from 100 m west, picks as `tunnel:portals` at (−514.5, −19.6, 376.3):
+  the portal's face, with its arch openings NOT showing (the dark entry should, at < ENTRY_SEEN 120 m). Not yet
+  pinned: the one-way frontage roads either side of the cut (72543/72546/72550/72727/72728) are flagged `ramp` and
+  raised 4–6 m over it near the mouth, and their corridors overlap the cut's by about a metre — the first suspect
+  for what hides the openings. Timeboxed 2026-10-14; next: render that view with the frontage roads' meshes and
+  occluders off, one at a time.
 * **The Broadway house**: a scan along the whole bore from inside every 60 m (scratch `along.ts`) shows no
   building intersecting the tube, so where it is was not found — needs the owner's coordinate.
 * Through the lower outer corner of each Broadway arch the bore's inside wall is visible 5 m in (the bore is wider
