@@ -115,7 +115,10 @@ for (const n of g.nodes.values()) {
     why.push(`${s.name ?? '?'} strays ${s.stray.toFixed(1)} m, bends ${s.bend.toFixed(0)}°, off the drawn street ${off.toFixed(1)} m${corner ? ' (corner)' : ''}`)
   }
   // the last 12 m before the crossing: a sharp turn there is what the owner meant
-  if (es.some((e) => (!!e.name || e.length >= 40) && (() => { const s = approachShape(e, n.id, 6); return !!s && s.bend > ZIG_NEAR && s.bend <= 60 })())) near6++
+  {
+    const k6 = es.findIndex((e) => (!!e.name || e.length >= 40) && (() => { const s = approachShape(e, n.id, 6); return !!s && s.bend > ZIG_NEAR && s.bend <= 60 })())
+    if (k6 >= 0) { near6++; if (process.argv.includes('--six')) { const s = approachShape(es[k6], n.id, 6)!; console.log(`  six: ${ll(n.at.x, n.at.z)}  ${es[k6].name ?? es[k6].kind} bend ${s.bend.toFixed(0)}° ${s.pts.map((q) => q.x.toFixed(1) + ',' + q.z.toFixed(1)).join(' ')} raised ${!!(es[k6] as any).raised}`) } }
+  }
   const sharpK = es.findIndex((e) => (!!e.name || e.length >= 40) && (() => { const s = approachShape(e, n.id, 12); return !!s && s.bend > ZIG_NEAR && s.bend <= 60 })())
   if (sharpK >= 0) { nearZig++; if (process.argv.includes('--near') && nearList.length < 30) { const e = es[sharpK], s = approachShape(e, n.id, 12)!; nearList.push(`${ll(n.at.x, n.at.z)}  ${e.name ?? '?'} bend ${s.bend.toFixed(0)}° len ${Math.round(e.length)} m pts ${s.pts.length} arms ${es.length} skewed ${best > 15}`) } }
   if (kind) { bucket[kind]++; worst.push({ at: ll(n.at.x, n.at.z), why: why.join('; '), score: kind === 'repairable' ? score + 100 : score }) }
