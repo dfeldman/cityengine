@@ -43,8 +43,8 @@ Colours: stucco ≈ `#dcc6b4`; trim ≈ `#efe6da`; tile roofs ≈ `#a5523a`; win
 
 ## Orientation
 
-Choose faces by the fit frame, not vertex order (Pacific Exchange lesson). The street (Buena Vista Avenue East) is
-the building's WEST side (the park lies beyond it) — `"front": 270`; render with `--front=270`; confirm from the plan that the long street edge faces roughly west, and adjust the bearing to that edge's outward normal if not. The detailing is the same all round, so
+Choose faces by the fit frame, not vertex order (Pacific Exchange lesson). Measured against the street graph: Buena Vista Avenue East is
+52 m to the NORTH-WEST (bearing 295°) — `"front": 295`; render with `--front=295`. The detailing is the same all round, so
 this mainly matters for the arched base storey and the slope.
 
 ## Your files — touch ONLY these
@@ -52,14 +52,14 @@ this mainly matters for the arched base storey and the slope.
 - `src/render/landmarks/sf/districts/notable.ts` — ADD `stJosephsHospital_355_BuenaVista` (grep first; read the
   other builders there for helpers incl. hip roofs, surfaces, comment style).
 - `public/landmarks/san-francisco/notable.json` — ADD one entry:
-  `{"osm": ["way/247760730"], "name": "St. Joseph's Hospital (355 Buena Vista East)", "procedural": "stJosephsHospital_355_BuenaVista", "front": 270, "height": 26, "note": "…"}`
+  `{"osm": ["way/247760730"], "name": "St. Joseph's Hospital (355 Buena Vista East)", "procedural": "stJosephsHospital_355_BuenaVista", "front": 295, "height": 26, "note": "…"}`
 - Screenshots in `docs/shots/models/notable/`.
 
 No other file; no git, bake, dev server (one runs on localhost:5200), browser pane.
 
 ## Check before you report
 
-- `node --experimental-strip-types tools/model-shots.ts --entry="St. Joseph's Hospital (355 Buena Vista East)" --front=270 --out=docs/shots/models/notable`;
+- `node --experimental-strip-types tools/model-shots.ts --entry="St. Joseph's Hospital (355 Buena Vista East)" --front=295 --out=docs/shots/models/notable`;
   a side-by-side next to `wiki-image.jpg` (Python PIL); READ it.
 - `npx vitest run tests/landmarks.test.ts`, `node tools/typecheck.js`; aim ≤ 10 k triangles.
 

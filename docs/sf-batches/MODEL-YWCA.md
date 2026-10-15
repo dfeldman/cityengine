@@ -41,22 +41,23 @@ Colours: brick ≈ `#8c4a37`; stone ground storey/trim ≈ `#c9b79a`; windows da
 
 ## Orientation
 
-Choose faces by the fit frame (Pacific Exchange lesson). 940 Powell is on the WEST side of Powell Street → the front
-faces **east**: `"front": 90`; the Powell front is the ring edge facing local −z. Render with `--front=90`.
+Choose faces by the fit frame (Pacific Exchange lesson). Measured against the street graph: Powell Street is 20 m
+WEST of the building (bearing 272°) — `"front": 270`; the Powell front is the ring edge facing local −z. Render with
+`--front=270`.
 
 ## Your files — touch ONLY these
 
 - `src/render/landmarks/sf/districts/notable.ts` — ADD `ywcaResidence_940_Powell` (grep first; the builders there
   show helpers, surfaces, comment style).
 - `public/landmarks/san-francisco/notable.json` — ADD one entry:
-  `{"osm": ["way/260523197"], "name": "YWCA Residence Hall (940 Powell)", "procedural": "ywcaResidence_940_Powell", "front": 90, "height": 28, "note": "…"}`
+  `{"osm": ["way/260523197"], "name": "YWCA Residence Hall (940 Powell)", "procedural": "ywcaResidence_940_Powell", "front": 270, "height": 28, "note": "…"}`
 - Screenshots in `docs/shots/models/notable/`.
 
 No other file; no git, bake, dev server (one runs on localhost:5200), browser pane.
 
 ## Check before you report
 
-- `node --experimental-strip-types tools/model-shots.ts --entry="YWCA Residence Hall (940 Powell)" --front=90 --out=docs/shots/models/notable`;
+- `node --experimental-strip-types tools/model-shots.ts --entry="YWCA Residence Hall (940 Powell)" --front=270 --out=docs/shots/models/notable`;
   a side-by-side next to `mapillary-2.jpg` (Python PIL); READ it.
 - `npx vitest run tests/landmarks.test.ts`, `node tools/typecheck.js`; aim ≤ 5 k triangles.
 

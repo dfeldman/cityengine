@@ -2736,6 +2736,170 @@ function alhambraTheatre_2330_Polk(out: MeshBuilder, fit: Fit): void {
   for (const idx of m.indices) out.indices.push(base + idx)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// The YWCA Residence Hall, 940 Powell Street
+// ---------------------------------------------------------------------------------------------------------------
+
+const YW_BRICK: Rgb = [0.52, 0.265, 0.2]         // #8c4a37 red-brown brick, a shade down (it reads dark in shade)
+const YW_STONE: Rgb = [0.74, 0.66, 0.52]         // #c9b79a the stone ground storey and trim
+const YW_STONE_DK: Rgb = [0.6, 0.53, 0.42]
+const YW_GLASS: Rgb = [0.1, 0.12, 0.14]          // the dark steel-sash windows
+const YW_TILE: Rgb = [0.56, 0.3, 0.2]            // the clay-tile eaves
+
+/**
+ * The YWCA Residence Hall, 940 Powell Street (Julia Morgan, 1932): an eight-storey red-brick tower on a stone-faced ground
+ * storey with round-arched windows and "YWCA" lettered along the belt course above it; seven storeys of regular punched
+ * windows with two stone-quoined piers up the front, a stone-coloured top storey of arched windows under a shaped, tiled
+ * gable in the middle of the front, and lower tile-eaved wings either side. Photographs: docs/shots/refs/notable/ywca/
+ * mapillary-2 (the Powell front, the key reference), -0 and -1 (from up and down the hill: the stepped top and the piers);
+ * -3 (a corner shop) and -4 (foliage) are not this building.
+ *
+ * Orientation: the manifest says front 270 (Powell is west of the building), so the front is the longest ring edge whose
+ * outward normal is within 50 degrees of local -z, found from the ring's geometry in the fit frame. Edges facing the back
+ * (+z) are party walls with plain brick.
+ *
+ * Where the photographs overruled the numbers: LiDAR's 41.6 m maximum is not a tall roof feature; the photographs show only
+ * the shallow central gable stage one storey over the wings (about 27.5 m), so the ground storey, seven brick storeys and
+ * that stage make the eight the Assessor counts.
+ */
+function ywcaResidence_940_Powell(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const BK = surfaceTag('brick')
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  const n = ring.length
+  const info = ring.map((a, i) => {
+    const b = ring[(i + 1) % n], l = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    return { i, a, b, l, nx: (b.z - a.z) / l, nz: -(b.x - a.x) / l }
+  })
+  // the front: the street-most (lowest z) wide edge facing -z, not just the longest
+  let fi = -1, bestZ = Infinity
+  for (const e of info) if (-e.nz > 0.64 && e.l > 8 && (e.a.z + e.b.z) / 2 < bestZ) { bestZ = (e.a.z + e.b.z) / 2; fi = e.i }
+  if (fi < 0) fi = info.reduce((bi, e) => (-e.nz > -info[bi].nz ? e.i : bi), 0)
+  // the street level at the front (Powell is steep): every storey height is measured from here
+  const F0 = info[fi]
+  const G = Math.max(0, fit.groundAt ? fit.groundAt((F0.a.x + F0.b.x) / 2 + F0.nx * 1.5, (F0.a.z + F0.b.z) / 2 + F0.nz * 1.5) : (fit.grade ?? 0))
+  const Y_BELT = G + 5.4, Y_WING = G + 24.6, Y_TOP = G + 27.6, STOREY = 2.65
+
+  for (const e of info) {
+    const { a, b, l, nx, nz } = e
+    if (l < 0.5) continue
+    const tx = (b.x - a.x) / l, tz = (b.z - a.z) / l, h = Math.atan2(nx, nz)
+    const front = e.i === fi
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const panel = (u0: number, u1: number, y0: number, y1: number, pr: number, c: Rgb, tag: number): void => {
+      m.quad([P(u0, y0, pr), P(u1, y0, pr), P(u1, y1, pr), P(u0, y1, pr)], [nx, 0, nz], uv, c, tag)
+    }
+    const W = (u: number, pr = 0): { x: number; z: number } => ({ x: a.x + tx * u + nx * pr, z: a.z + tz * u + nz * pr })
+    const slab = (u0: number, u1: number, y0: number, y1: number, pr0: number, pr1: number, c: Rgb, tag: number): void => {
+      const w = W((u0 + u1) / 2, (pr0 + pr1) / 2)
+      boxAlong(m, w.x, (y0 + y1) / 2, w.z, (u1 - u0) / 2, (y1 - y0) / 2, (pr1 - pr0) / 2, h, c, tag)
+    }
+    const open = (u: number, y0: number, spring: number, hw: number, rise: number, c: Rgb, tag: number, proud: number, seg = 6): void => {
+      const w = W(u)
+      emOpening(m, w.x, w.z, tx, tz, nx, nz, y0, spring, hw, rise, c, tag, proud, seg)
+    }
+    const back = nz > 0.5
+    const wall = front || !back
+    
+    // brick shaft, stone ground storey with rustication courses, belt
+    panel(0, l, G + 5.4, Y_WING, 0, YW_BRICK, BK)
+    panel(0, l, -4, G + 5.4, 0.04, YW_STONE, ST)
+    for (let y = G + 0.9; y < Y_BELT - 0.2; y += 1.5) panel(0, l, y, y + 0.05, 0.07, YW_STONE_DK, ST)
+        slab(0, l, Y_BELT, Y_BELT + 0.85, 0, 0.35, YW_STONE, ST)                              // the belt course (YWCA lettering band)
+    slab(0, l, Y_BELT + 0.85, Y_BELT + 1.0, 0, 0.45, YW_STONE, ST)
+    if (front && l > 6) {                                                                  // "YWCA", four light letters on the belt
+      for (let k = 0; k < 4; k++) panel(l * 0.5 - 1.5 + k * 1.0, l * 0.5 - 1.5 + k * 1.0 + 0.5, Y_BELT + 0.2, Y_BELT + 0.8, 0.4, [0.88, 0.86, 0.8], ST)
+    }
+    // the tiled eave and shallow cornice of the wings
+    slab(-0.1, l + 0.1, Y_WING - 0.35, Y_WING + 0.1, 0, 0.45, YW_STONE, ST)
+    slab(-0.15, l + 0.15, Y_WING + 0.1, Y_WING + 0.38, 0, 0.8, YW_TILE, TL)
+    if (!wall || l < 3) {
+      if (!(l >= 3)) continue
+    }
+    if (back && !front) {
+      // party/back wall: a few plain windows so it is not blank
+      const k = Math.max(1, Math.floor((l - 2) / 3.5))
+      for (let j = 0; j < k; j++) for (let r = 0; r < 7; r++) {
+        const u = 1 + ((l - 2) * (j + 0.5)) / k
+        open(u, G + 6.9 + STOREY * r, G + 8.6 + STOREY * r, 0.5, 0, YW_GLASS, GL, 0.04)
+      }
+      continue
+    }
+
+    // ground storey: round-arched windows in stone surrounds, a doorway on the front
+    const kg = Math.max(1, Math.floor((l - 1) / 3.4))
+    for (let j = 0; j < kg; j++) {
+      const u = 0.5 + ((l - 1) * (j + 0.5)) / kg
+      const door = front && j === 0
+      if (door) {
+        open(u, G, G + 3.2, 1.3, 1.3, YW_STONE_DK, ST, 0.12, 8)
+        open(u, G, G + 3.1, 1.0, 1.0, [0.07, 0.06, 0.05], GL, 0.16, 8)
+        continue
+      }
+      open(u, G + 1.1, G + 3.6, 1.2, 1.2, YW_STONE, ST, 0.1, 8)                             // the stone surround
+      open(u, G + 1.3, G + 3.55, 0.95, 0.95, YW_GLASS, GL, 0.14, 8)
+      open(u, G + 1.3, G + 4.5, 0.03, 0, YW_STONE_DK, ST, 0.17)
+      open(u, G + 0.3, G + 0.7, 0.3, 0, YW_GLASS, GL, 0.1, 4)                              // the small vent grille below
+    }
+
+    // seven storeys of punched windows, a pair of narrower ones in the middle bay of the top
+    const kw = Math.max(1, Math.floor((l - 1) / 2.4))
+    for (let j = 0; j < kw; j++) {
+      const u = 0.5 + ((l - 1) * (j + 0.5)) / kw
+      for (let r = 0; r < 7; r++) {
+        const y0 = G + 6.9 + STOREY * r
+        if (front && (u < l * 0.1 + 0.9 && u > l * 0.1 - 0.9 || u > l * 0.9 - 0.9 && u < l * 0.9 + 0.9)) continue
+        open(u, y0, y0 + 1.75, 0.58, 0, YW_STONE, ST, 0.05)                                 // the surround
+        open(u, y0 + 0.05, y0 + 1.7, 0.5, 0, YW_GLASS, GL, 0.1)
+      }
+    }
+
+    if (front && l > 6) {
+      // the two stone-quoined piers up the front, swelling to the wing cornice
+      for (const uc of [l * 0.1, l * 0.9]) {
+        slab(uc - 0.55, uc + 0.55, Y_BELT + 1.0, Y_WING, 0, 0.18, YW_STONE, ST)
+        for (let y = Y_BELT + 1.6; y < Y_WING - 0.2; y += 2.1) slab(uc - 0.6, uc + 0.6, y, y + 0.08, 0.18, 0.24, YW_STONE_DK, ST)
+      }
+      // the central top stage: a stone-coloured storey of arched windows under a tiled gable, one storey over the wings
+      const sw0 = l * 0.12, sw1 = l * 0.88
+      slab(sw0, sw1, Y_WING - 0.2, Y_TOP - 0.1, 0.0, 0.3, YW_STONE, ST)
+      const ku = 4
+      for (let j = 0; j < ku; j++) {
+        const u = sw0 + ((sw1 - sw0) * (j + 0.5)) / ku
+        open(u, Y_WING + 0.7, Y_WING + 1.9, 0.5, 0.5, YW_STONE_DK, ST, 0.36, 8)
+        open(u, Y_WING + 0.8, Y_WING + 1.85, 0.4, 0.4, YW_GLASS, GL, 0.4, 8)
+        slab(u - 0.55, u + 0.55, Y_WING + 0.45, Y_WING + 0.7, 0.3, 0.55, YW_STONE_DK, ST)   // the little balcony
+      }
+      // the shaped parapet: stepped gable ends and the broad tiled eave with its brackets
+      slab(sw0 - 0.4, sw1 + 0.4, Y_TOP - 0.2, Y_TOP + 0.15, 0, 1.3, YW_TILE, TL)
+      for (let j = 0; j <= 4; j++) slab(sw0 + ((sw1 - sw0) * j) / 4 - 0.1, sw0 + ((sw1 - sw0) * j) / 4 + 0.1, Y_TOP - 1.4, Y_TOP - 0.2, 0.3, 1.0, YW_STONE_DK, ST)
+      const run = 2.8, rise = 1.4, sl = Math.hypot(rise, run)
+      m.quad([P(sw0 - 0.4, Y_TOP + 0.15, 1.3), P(sw1 + 0.4, Y_TOP + 0.15, 1.3), P(sw1 + 0.4, Y_TOP + rise + 0.15, 1.3 - run), P(sw0 - 0.4, Y_TOP + rise + 0.15, 1.3 - run)],
+        [nx * rise / sl, run / sl, nz * rise / sl], uv, YW_TILE, TL)
+    }
+  }
+
+  // roof, with the central stage's block
+  capPolygonWithHoles(m, [ring], Y_WING + 0.3, [0.45, 0.43, 0.4], surfaceTag('concrete'))
+  const fa = info[fi]
+  const ftx = (fa.b.x - fa.a.x) / fa.l, ftz = (fa.b.z - fa.a.z) / fa.l
+  const bcx = fa.a.x + ftx * fa.l / 2 - fa.nx * 3.2, bcz = fa.a.z + ftz * fa.l / 2 - fa.nz * 3.2
+  boxAlong(m, bcx, (Y_WING + Y_TOP) / 2, bcz, fa.l * 0.38, (Y_TOP - Y_WING) / 2, 3.2, Math.atan2(fa.nx, fa.nz), YW_STONE, ST)
+
+  for (let i = 0; i < m.positions.length; i++) out.positions.push(m.positions[i])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -2747,4 +2911,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   bohemianClub_624_Taylor,
   audiffredBuilding_100_Embarcadero,
   alhambraTheatre_2330_Polk,
+  ywcaResidence_940_Powell,
 }
