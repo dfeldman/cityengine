@@ -92,6 +92,8 @@ export interface StraightenCount { junctions: number; moved: number; approaches:
 const ZIG_STRAY = 0.75
 const ZIG_BEND = 20
 const MAX_MOVE = 4
+/** a turn sharper than this within 12 m of the crossing is a sharp turn before it */
+const NEAR_BEND = 30
 const THROUGH = 15
 
 /**
@@ -131,7 +133,10 @@ export function straightenJunctions<E extends ShapedEdge>(edges: E[], outside: O
     const ss = shapes as ApproachShape[]
     const judged = es.map((e) => !!e.name || e.length >= 40)
     const corner = ss.map((s) => s.bend > 60 || s.stray > 4)
-    const zig = ss.some((s, k) => judged[k] && !corner[k] && (s.stray > ZIG_STRAY || s.bend > ZIG_BEND))
+    // (or a sharp turn in the last 12 m though the 25 m span is a corner: a street that bends further out, and kinks
+    //  again just before the crossing — Valencia, Church, Potrero)
+    const nearSharp = es.map((e, k) => { if (!judged[k]) return false; const n = approachShape(e, nid, 12); return !!n && n.bend > NEAR_BEND && n.bend <= 60 })
+    const zig = ss.some((s, k) => judged[k] && !corner[k] && (s.stray > ZIG_STRAY || s.bend > ZIG_BEND)) || nearSharp.some(Boolean)
     if (!zig) continue
     // the through pairs, straightest first, each approach in one pair at most
     const pairs: [number, number, number][] = []
@@ -206,12 +211,14 @@ export function straightenJunctions<E extends ShapedEdge>(edges: E[], outside: O
      * that matters, "no sharp turn right before a crossing" (owner, 2026-10-14).
      */
     for (let k = 0; k < ss.length; k++) {
-      if (take[k] || corner[k]) continue
-      for (const r of [12, 6]) {
+      if (take[k] || (corner[k] && !nearSharp[k])) continue
+      for (const r of [12, 6, 4]) {
         const s2 = approachShape(es[k], nid, r)
         if (!s2 || (s2.stray <= ZIG_STRAY && s2.bend <= ZIG_BEND)) break
         const f2 = s2.pts[s2.pts.length - 1]
-        if (blocked?.(np, f2) || outside([np, f2]) > Math.max(outside(s2.pts), 0.5)) continue
+        // (over the last 6 m the junction's own paving (render/city.ts `junctionHull`) is round the corner: a metre and a
+        //  half off the carriageway there is still paved — never through a building)
+        if (blocked?.(np, f2) || outside([np, f2]) > Math.max(outside(s2.pts), r <= 6 ? 1.5 : 0.5)) continue
         ss[k] = s2
         far[k] = f2
         take[k] = true

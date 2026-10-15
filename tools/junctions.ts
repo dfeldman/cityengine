@@ -76,6 +76,7 @@ const cause = { pipeline: 0, osm: 0 }
 const worst: { at: string; why: string; score: number }[] = []
 const strays: number[] = []
 let nearZig = 0
+const nearList: string[] = []
 const through: number[] = []
 for (const n of g.nodes.values()) {
   if (n.edges.length < 3 || n.edges.length > 4) continue
@@ -113,7 +114,8 @@ for (const n of g.nodes.values()) {
     why.push(`${s.name ?? '?'} strays ${s.stray.toFixed(1)} m, bends ${s.bend.toFixed(0)}°, off the drawn street ${off.toFixed(1)} m${corner ? ' (corner)' : ''}`)
   }
   // the last 12 m before the crossing: a sharp turn there is what the owner meant
-  if (es.some((e, k) => (!!e.name || e.length >= 40) && (() => { const s = approachShape(e, n.id, 12); return !!s && s.bend > ZIG_NEAR && s.bend <= 60 })())) nearZig++
+  const sharpK = es.findIndex((e) => (!!e.name || e.length >= 40) && (() => { const s = approachShape(e, n.id, 12); return !!s && s.bend > ZIG_NEAR && s.bend <= 60 })())
+  if (sharpK >= 0) { nearZig++; if (process.argv.includes('--near') && nearList.length < 30) { const e = es[sharpK], s = approachShape(e, n.id, 12)!; nearList.push(`${ll(n.at.x, n.at.z)}  ${e.name ?? '?'} bend ${s.bend.toFixed(0)}° len ${Math.round(e.length)} m pts ${s.pts.length} arms ${es.length} skewed ${best > 15}`) } }
   if (kind) { bucket[kind]++; worst.push({ at: ll(n.at.x, n.at.z), why: why.join('; '), score: kind === 'repairable' ? score + 100 : score }) }
 }
 worst.sort((p, q) => q.score - p.score)
@@ -125,3 +127,5 @@ console.log(`  a sharp turn (> ${ZIG_NEAR}°, a street's own bend over 60° exce
 console.log(`  approach stray: median ${q(strays, 0.5).toFixed(2)} m, 90% ${q(strays, 0.9).toFixed(2)} m, 99% ${q(strays, 0.99).toFixed(2)} m`)
 console.log(`  through streets, degrees off straight: median ${q(through, 0.5).toFixed(1)}, 90% ${q(through, 0.9).toFixed(1)}, 99% ${q(through, 0.99).toFixed(1)}`)
 for (const w of worst.slice(0, list ? 300 : 14)) console.log(`  ${w.at}  ${w.why}`)
+
+for (const l of nearList) console.log('  near: ' + l)
