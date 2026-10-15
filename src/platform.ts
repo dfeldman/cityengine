@@ -16,7 +16,8 @@ import {
 } from '@dandyhorse/gamekit'
 import type { Controls, Measured, Steer } from './controls.ts'
 
-export const GAME_ID = 'streetrunner'
+/** the game's id on the platform (dandyhorse games/citydash/metadata.json) */
+export const GAME_ID = 'citydash'
 const PROMPT_ID = 'steer'
 /** The d-pad's buttons and the turns they are (INTEGRATION.md §3): up is straight, down is turn round. */
 const DPAD: Record<string, Steer> = { left: 'left', right: 'right', up: 'straight', down: 'back' }

@@ -8,8 +8,10 @@
  *   /?showcase=1               the facade showcase, one building per style
  *   /?showcase=1&style=brick   eight of one style
  *   /?session=<id>             on Dandyhorse: the bridge's session (src/platform.ts; INTEGRATION.md)
+ *   &host=<origin>             …framed by Dandyhorse's shim from another origin: the API through it (src/relay.ts)
  *   /?dandyhorse=bike|run      an ad-hoc debug session on a local Dandyhorse server
  */
+import { relayFetch, relayHost } from './relay.ts'
 import { goTo, parseLatLon, type CityRef } from './ui/goto.ts'
 import { HUD_CSS } from './ui/hud.ts'
 import { DELIVERY_CSS } from './ui/delivery-card.ts'
@@ -88,11 +90,14 @@ if (params.get('model')) {
   const adHoc = params.get('dandyhorse') ?? (params.get('mode') === 'trainer' ? 'bike' : null)
   let platform: import('./platform.ts').Platform | null = null
   if (sessionId || adHoc) {
-    const [{ startSession }, { Platform, GAME_ID }] = await Promise.all([import('@dandyhorse/gamekit'), import('./platform.ts')])
+    const [{ startSession, setFetch }, { Platform, GAME_ID }] = await Promise.all([import('@dandyhorse/gamekit'), import('./platform.ts')])
+    // framed by Dandyhorse's shim from another origin: the API is reached through it (src/relay.ts)
+    const host = relayHost(params)
+    if (host) setFetch(relayFetch(host))
     try {
       const start = await startSession(sessionId ? { sessionId }
         : { gameId: GAME_ID, variant: adHoc === 'run' ? 'run' : 'bike', debug: true, options: params.get('city') ? { city: params.get('city') } : undefined })
-      platform = new Platform(start, (line) => console.log('streetrunner:', line))
+      platform = new Platform(start, (line) => console.log('citydash:', line))
     } catch (e) {
       // say so, in the console's look, rather than sit on "loading…" for ever
       LoadingScreen.dismiss()

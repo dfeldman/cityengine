@@ -3,7 +3,7 @@ import type { GameState, StartPayload } from '@dandyhorse/gamekit'
 import { Platform, type GameLink } from '../src/platform.ts'
 
 const start = (over: Partial<StartPayload> = {}): StartPayload => ({
-  sessionId: 's1', gameId: 'streetrunner', variant: 'bike', gameVersion: '0.1.0', seed: 1, requestedDuration: 1800,
+  sessionId: 's1', gameId: 'citydash', variant: 'bike', gameVersion: '0.1.0', seed: 1, requestedDuration: 1800,
   username: 'u', uid: 1, debug: false, deviceType: 'bike', unitSystem: 'metric', timeZone: 'UTC', bodyData: {},
   achievements: {}, options: { city: 'paris-marais', traffic: 'busy' }, preferences: { global: {}, device: {}, game: {} },
   saveState: { cities: { 'paris-marais': { at: { lat: 48.857, lon: 2.362 }, travelled: 1200, visited: [5, 6] } } },
