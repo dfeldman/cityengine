@@ -10530,18 +10530,22 @@ over the crown (at 5 cm it fought the vault for depth). Road markings moved to t
 went before the occluder within 250 m: the crosswalks through hills).
 
 OPEN:
-* **The "broken underpass" west of Broadway's west mouth** (37.796299 −122.418596, local ≈ −580, 367). What crosses
-  the cut there is not Larkin but a 20 m FOOTBRIDGE (way 73494, footway, layer 1, deck −21.2, 4.6 m over the centre
-  roadway). The "grey block" under it, seen from 100 m west, picks as `tunnel:portals` at (−514.5, −19.6, 376.3):
-  the portal's face, with its arch openings NOT showing (the dark entry should, at < ENTRY_SEEN 120 m). Not yet
-  pinned: the one-way frontage roads either side of the cut (72543/72546/72550/72727/72728) are flagged `ramp` and
-  raised 4–6 m over it near the mouth, and their corridors overlap the cut's by about a metre — the first suspect
-  for what hides the openings. Timeboxed 2026-10-14; next: render that view with the frontage roads' meshes and
-  occluders off, one at a time.
+* ~~**The "broken underpass" west of Broadway's west mouth**~~ FIXED 2026-10-15 (commit 2a0e948, bake
+  20261015T0722-qbur). It was HYDE Street's short bridge over Broadway's walled trench (OSM way 72555), not Larkin
+  and not the portal. The zoom-15 ground smeared the trench over its banks; bridges are lifted before tunnels are
+  found, so Hyde stood 4.5 m over the banks and every street meeting it became a ramp on a deck — the decks roofed
+  the junction in a grey slab — while the road into the mouth took the bank's level and floated 4 m over the trench
+  floor. Now: a lidar zone there (`broadway-west-cut`); the street into a mouth follows its trench where the lidar
+  shows one (tools/tunnels.ts TRENCH_RUN); a street bridge over a cut the cut clears goes back to grade with its
+  ramps (bake); the cut carving never digs under a street standing above it; no ride-graph link across a split
+  boulevard through the air. Seen from the trench, Hyde is now a deck crossing at street level.
 * **The Broadway house**: a scan along the whole bore from inside every 60 m (scratch `along.ts`) shows no
   building intersecting the tube, so where it is was not found — needs the owner's coordinate.
 * Through the lower outer corner of each Broadway arch the bore's inside wall is visible 5 m in (the bore is wider
   than the twin openings): a yellow wedge beside the arch. Minor.
+* A faint lighter oval across the Stockton vault near the mouths, seen only part-way through a sequence of camera
+  jumps (scratch `mouths.ts`), never in a fresh load at the same spot: a streaming transient, not the geometry. Not
+  pinned (not the lid, the portals, the entry or anything else in group 3).
 
 ### #265 Zigzag approaches at ordinary junctions (owner, 2026-10-14) — STRAIGHTENED in the ride graph
 
