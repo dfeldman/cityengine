@@ -10522,6 +10522,13 @@ Fixed (commits 8df3864, 530cad2, 6a0b457; bake 20261015T0333-yunz, live):
 * Broadway west's retaining walls: a clean top (the highest ground still to come, falling ≤ 0.35 m/m) and both
   faces (the south wall was invisible from the road).
 
+Then (commits da694b6, ad7afa9; bake 20261015T0438-pudp): the portals were drawn BEFORE the ground's occluder
+from everywhere (render/city.ts `rank`), which is what put the north portal on surface Stockton's crest 220 m
+away; now each mouth has its own portal mesh, first only while the camera is in front of its face. The bake carves
+each cut 5 m on past a mouth across a portal's width and starts the fill 7 m in. The tube's lid moved to 0.6 m
+over the crown (at 5 cm it fought the vault for depth). Road markings moved to the carriageway's group (they too
+went before the occluder within 250 m: the crosswalks through hills).
+
 OPEN:
 * **The "broken underpass" west of Broadway's west mouth** (37.796299 −122.418596, local ≈ −580, 367). What crosses
   the cut there is not Larkin but a 20 m FOOTBRIDGE (way 73494, footway, layer 1, deck −21.2, 4.6 m over the centre
