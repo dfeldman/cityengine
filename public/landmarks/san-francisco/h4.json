@@ -50,7 +50,10 @@
     "osm": [
       "way/193054136"
     ],
-    "procedural": "h4_audiffredBuilding",
+    "procedural": "audiffredBuilding_100_Embarcadero",
+    "height": 16,
+    "front": 45,
+    "note": "1889 red brick, white quoins, dark storefront band, dormered slate mansard; Embarcadero front faces bearing 45 (docs/sf-batches/MODEL-AUDIFFRED.md)",
     "name": "The Audiffred Building"
   },
   {

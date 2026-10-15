@@ -2335,6 +2335,185 @@ function bohemianClub_624_Taylor(out: MeshBuilder, fit: Fit): void {
   for (const idx of m.indices) out.indices.push(base + idx)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// The Audiffred Building, 100 The Embarcadero at Mission Street
+// ---------------------------------------------------------------------------------------------------------------
+
+const AU_BRICK: Rgb = [0.55, 0.245, 0.18]       // #8f3f2e red brick
+const AU_BRICK_LT: Rgb = [0.6, 0.28, 0.2]
+const AU_TRIM: Rgb = [0.85, 0.8, 0.72]          // #ece6d8 white stone, weathered
+const AU_SLATE: Rgb = [0.34, 0.38, 0.43]        // #5d6670 grey-blue slate
+const AU_SLATE_DK: Rgb = [0.27, 0.3, 0.35]
+const AU_SKY: Rgb = [0.52, 0.6, 0.62]           // the pale metal/glass of the mansard's crown
+const AU_SHOP: Rgb = [0.17, 0.17, 0.18]         // #2a2c2e the dark storefront band
+const AU_GLASS: Rgb = [0.12, 0.15, 0.18]
+const AU_PANEL: Rgb = [0.8, 0.77, 0.7]
+
+/**
+ * The Audiffred Building, 100 The Embarcadero at Mission (1889, SF Landmark 7): two floors of red brick over a dark
+ * storefront band with an ornate lettered frieze, white quoins up the corner and white arched window surrounds, a white
+ * cornice, then a steep grey slate mansard with a row of pedimented dormers (brick stacks between them) and a pale flat
+ * crown. Photographs: docs/shots/refs/notable/audiffred/ wiki-image.jpg (the two street fronts, the key reference),
+ * mapillary-2 and -3 (today, from the corners); -0 and -1 are trees.
+ *
+ * Orientation: the manifest says front 45, the Embarcadero side (the short front, ~14 m) is the ring edge whose outward
+ * normal faces local -z; the long Mission front is the adjacent edge facing -x. Both are found from the ring's geometry in
+ * the fit frame, never from OSM's vertex order. The other two edges (neighbours' party walls) get plain brick.
+ *
+ * Where the photographs overruled the numbers: LiDAR's 15.4 m median agrees, but the Assessor's four storeys are really two
+ * brick floors and the mansard; OSM's "mansard" is a double-pitched slate roof with a flat crown, not a full mansard cap.
+ */
+function audiffredBuilding_100_Embarcadero(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const BK = surfaceTag('brick')
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  const n = ring.length
+  const Y_SHOP = 4.3, Y_FR = 5.1, Y_COR = 9.5, Y_EAVE = 10.2, Y_BREAK = 13.8, Y_TOP = 15.0
+  const D_BREAK = 1.8, D_TOP = 4.2
+
+  const info = ring.map((a, i) => {
+    const b = ring[(i + 1) % n], l = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    return { i, a, b, l, nx: (b.z - a.z) / l, nz: -(b.x - a.x) / l }
+  })
+  const best = (fn: (e: typeof info[number]) => number): number => info.reduce((bi, e) => (fn(e) + e.l * 0.002 > fn(info[bi]) + info[bi].l * 0.002 ? e.i : bi), 0)
+  const fi = best((e) => -e.nz), si = best((e) => -e.nx)       // Embarcadero front (-z), Mission front (-x)
+
+  /** the ring offset inward by d (mitred) */
+  const inset = (d: number): P2[] => info.map((e, i) => {
+    const p = info[(i + n - 1) % n]
+    const k = 1 + (p.nx * e.nx + p.nz * e.nz)
+    return { x: e.a.x - ((p.nx + e.nx) / k) * d, z: e.a.z - ((p.nz + e.nz) / k) * d }
+  })
+  const r1 = inset(D_BREAK), r2 = inset(D_TOP)
+  const rise1 = Y_BREAK - Y_EAVE, rise2 = Y_TOP - Y_BREAK
+
+  for (const e of info) {
+    const { a, b, l, nx, nz } = e
+    if (l < 0.5) continue
+    const tx = (b.x - a.x) / l, tz = (b.z - a.z) / l
+    const h = Math.atan2(nx, nz)
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const panel = (u0: number, u1: number, y0: number, y1: number, pr: number, c: Rgb, tag: number): void => {
+      m.quad([P(u0, y0, pr), P(u1, y0, pr), P(u1, y1, pr), P(u0, y1, pr)], [nx, 0, nz], uv, c, tag)
+    }
+    const slab = (u0: number, u1: number, y0: number, y1: number, pr0: number, pr1: number, c: Rgb, tag = ST): void => {
+      boxAlong(m, a.x + tx * (u0 + u1) / 2 + nx * (pr0 + pr1) / 2, (y0 + y1) / 2, a.z + tz * (u0 + u1) / 2 + nz * (pr0 + pr1) / 2,
+        (u1 - u0) / 2, (y1 - y0) / 2, (pr1 - pr0) / 2, h, c, tag)
+    }
+    const street = e.i === fi || e.i === si
+    // the wall: brick over the dark storefront band
+    panel(0, l, -3, Y_COR, 0, AU_BRICK, BK)
+    if (street) for (let y = 5.6; y < 9.3; y += 0.9) panel(0, l, y, y + 0.05, 0.015, AU_BRICK_LT, BK)
+    // the cornice: a plain course, a dentil row, the projecting cap
+    slab(-0.1, l + 0.1, Y_COR - 0.35, Y_COR + 0.05, 0, 0.2, AU_TRIM)
+    slab(-0.2, l + 0.2, Y_COR + 0.05, Y_EAVE, 0, 0.55, AU_TRIM)
+    if (street) for (let u = 0.3; u < l - 0.2; u += 0.5) slab(u, u + 0.25, Y_COR - 0.7, Y_COR - 0.35, 0, 0.14, AU_TRIM)
+    // the mansard's steep slope up to the break, then the shallow crown slope
+    const A0 = a, B0 = b, A1 = r1[e.i], B1 = r1[(e.i + 1) % n], A2 = r2[e.i], B2 = r2[(e.i + 1) % n]
+    const sl = Math.hypot(D_BREAK, rise1), sn: V3 = [nx * rise1 / sl, D_BREAK / sl, nz * rise1 / sl]
+    m.quad([[A0.x, Y_EAVE, A0.z], [B0.x, Y_EAVE, B0.z], [B1.x, Y_BREAK, B1.z], [A1.x, Y_BREAK, A1.z]], sn, uv, AU_SLATE, TL)
+    const cl2 = Math.hypot(D_TOP - D_BREAK, rise2), cn: V3 = [nx * rise2 / cl2, (D_TOP - D_BREAK) / cl2, nz * rise2 / cl2]
+    m.quad([[A1.x, Y_BREAK, A1.z], [B1.x, Y_BREAK, B1.z], [B2.x, Y_TOP, B2.z], [A2.x, Y_TOP, A2.z]], cn, uv, AU_SKY, ST)
+    // the light cresting round the crown's top
+    if (street) slab(D_TOP, l - D_TOP, Y_TOP, Y_TOP + 0.4, -D_TOP + 0.05, -D_TOP + 0.2, AU_TRIM)
+    if (!street) continue
+
+    // ---- the storefront band: pale base panels, dark piers, dark glazing, the lettered frieze --------------------------
+    panel(0, l, -3, Y_SHOP, 0.04, AU_SHOP, ST)
+    panel(0, l, 0, 1.0, 0.1, AU_PANEL, ST)
+    const kb = Math.max(2, Math.round(l / 3.1))
+    for (let j = 0; j < kb; j++) {
+      const u0 = (l * j) / kb, u1 = (l * (j + 1)) / kb
+      panel(u0 + 0.35, u1 - 0.35, 1.2, 3.9, 0.12, AU_GLASS, GL)
+      panel(u0 + 0.35, u1 - 0.35, 0.05, 0.95, 0.12, AU_TRIM, ST)       // the panelled stall riser
+      panel(u0 + 0.5, u1 - 0.5, 0.2, 0.8, 0.14, AU_PANEL, ST)
+      panel(u0 + 0.35, u1 - 0.35, 3.0, 3.1, 0.15, AU_SHOP, ST)         // the transom bar
+    }
+    for (let j = 0; j <= kb; j++) slab(Math.min(l - 0.22, Math.max(0.22, (l * j) / kb)) - 0.22, Math.min(l - 0.22, Math.max(0.22, (l * j) / kb)) + 0.22, 0, Y_SHOP, 0, 0.3, AU_SHOP)
+    slab(-0.05, l + 0.05, Y_SHOP, Y_FR, 0, 0.35, AU_TRIM)                                // the frieze
+    panel(0.8, l - 0.8, Y_SHOP + 0.12, Y_FR - 0.12, 0.4, [0.72, 0.68, 0.6], ST)
+    panel(l * 0.12, l * 0.62, Y_SHOP + 0.2, Y_FR - 0.2, 0.42, [0.32, 0.32, 0.32], ST)   // the dark sign band: "The Audiffred Building"
+    for (let u = 0.9; u < l - 0.9; u += 1.1) slab(u, u + 0.45, Y_SHOP + 0.12, Y_FR - 0.1, 0.35, 0.5, AU_TRIM)   // ornament blocks
+    slab(-0.1, l + 0.1, Y_FR, Y_FR + 0.15, 0, 0.45, AU_TRIM)
+
+    // ---- the second floor: segmental-arched windows in white surrounds; dormers above each --------------------------
+    const k = Math.max(2, Math.floor((l - 2.6) / 2.7))
+    for (let j = 0; j < k; j++) {
+      const u = 1.3 + ((l - 2.6) * (j + 0.5)) / k
+      const cx = a.x + tx * u, cz = a.z + tz * u
+      emOpening(m, cx, cz, tx, tz, nx, nz, 5.8, 7.9, 0.78, 0.5, AU_TRIM, BK, 0.06, 6)         // the surround
+      emOpening(m, cx, cz, tx, tz, nx, nz, 5.95, 7.9, 0.58, 0.4, AU_GLASS, GL, 0.1, 6)
+      emOpening(m, cx, cz, tx, tz, nx, nz, 5.95, 8.2, 0.03, 0, AU_TRIM, ST, 0.12)             // the mullion
+      slab(u - 0.9, u + 0.9, 5.55, 5.8, 0, 0.18, AU_TRIM)                                       // the sill
+      // the dormer: white frame, dark window, a pediment, slate cheeks
+      const pr = -0.15
+      const dc = (d: number): V3 => P(u + d, 0, pr)
+      void dc
+      slab(u - 0.7, u + 0.7, 10.75, 13.1, -1.5, pr, AU_SLATE_DK)
+      emOpening(m, cx + nx * pr, cz + nz * pr, tx, tz, nx, nz, 10.85, 13.0, 0.66, 0, AU_TRIM, ST, 0.03)
+      emOpening(m, cx + nx * pr, cz + nz * pr, tx, tz, nx, nz, 11.05, 12.8, 0.45, 0, AU_GLASS, GL, 0.06)
+      emOpening(m, cx + nx * pr, cz + nz * pr, tx, tz, nx, nz, 11.05, 12.8, 0.03, 0, AU_TRIM, ST, 0.08)
+      const q = (uu: number, y: number, p: number): V3 => P(u + uu, y, p)
+      m.quad([q(-0.85, 13.05, pr + 0.05), q(0.85, 13.05, pr + 0.05), q(0, 13.85, pr + 0.05), q(0, 13.85, pr + 0.05)], [nx, 0, nz], uv, AU_TRIM, ST)
+      m.quad([q(-0.55, 13.15, pr + 0.08), q(0.55, 13.15, pr + 0.08), q(0, 13.65, pr + 0.08), q(0, 13.65, pr + 0.08)], [nx, 0, nz], uv, AU_SLATE_DK, ST)
+      for (const s of [-1, 1]) m.quad([q(s * 0.85, 13.05, pr), q(s * 0.85, 13.05, -1.6), q(0, 13.85, -1.6), q(0, 13.85, pr)],
+        [-s * tx * 0.5 + nx * 0.3, 0.8, -s * tz * 0.5 + nz * 0.3], uv, AU_SLATE, TL)
+      // a brick stack on the eave line between this dormer and the next (every second bay)
+      if (j % 2 === 0 && j < k - 1) {
+        const us = 1.3 + ((l - 2.6) * (j + 1)) / k
+        slab(us - 0.3, us + 0.3, Y_EAVE, 14.0, -0.75, -0.15, AU_BRICK, BK)
+        slab(us - 0.38, us + 0.38, 13.5, 13.65, -0.83, -0.07, AU_TRIM)
+        slab(us - 0.38, us + 0.38, 14.0, 14.2, -0.83, -0.07, AU_TRIM)
+      }
+    }
+    // white pilasters ending the front at each end
+    slab(0, 0.35, 5.15, Y_COR - 0.35, 0, 0.14, AU_TRIM)
+    slab(l - 0.35, l, 5.15, Y_COR - 0.35, 0, 0.14, AU_TRIM)
+  }
+
+  // ---- the corner shared by the two fronts: quoins up the second floor, a corner dormer ---------------------------------
+  const E = info[fi], S = info[si]
+  const shared = [E.a, E.b].find((p) => Math.hypot(p.x - S.a.x, p.z - S.a.z) < 0.5 || Math.hypot(p.x - S.b.x, p.z - S.b.z) < 0.5)
+  if (shared) {
+    for (const e of [E, S]) {
+      const atA = Math.hypot(e.a.x - shared.x, e.a.z - shared.z) < 0.5
+      const tx = (e.b.x - e.a.x) / e.l, tz = (e.b.z - e.a.z) / e.l
+      const h = Math.atan2(e.nx, e.nz), sgn = atA ? 1 : -1
+      let alt = e === E ? 0 : 1
+      for (let y = 5.2; y < Y_COR - 0.2; y += 0.55, alt++) {
+        const w = alt % 2 === 0 ? 0.95 : 0.55
+        const u = atA ? w / 2 - 0.05 : e.l - w / 2 + 0.05
+        boxAlong(m, e.a.x + tx * u + e.nx * 0.07, y + 0.25, e.a.z + tz * u + e.nz * 0.07, w / 2, 0.24, 0.1, h, AU_TRIM, ST)
+      }
+      void sgn
+    }
+    // the corner dormer, on the diagonal, a taller pediment than its neighbours
+    const bx = E.nx + S.nx, bz = E.nz + S.nz, bl = Math.hypot(bx, bz) || 1
+    const dn = { x: bx / bl, z: bz / bl }, hh = Math.atan2(dn.x, dn.z)
+    const cxp = shared.x - dn.x * 0.5, czp = shared.z - dn.z * 0.5
+    boxAlong(m, cxp - dn.x * 0.7, 11.75, czp - dn.z * 0.7, 0.8, 1.25, 0.85, hh, AU_SLATE_DK, ST)
+    boxAlong(m, cxp + dn.x * 0.1, 12.0, czp + dn.z * 0.1, 0.72, 1.2, 0.07, hh, AU_GLASS, GL)
+    boxAlong(m, cxp + dn.x * 0.05, 14.0, czp + dn.z * 0.05, 0.95, 0.55, 0.1, hh, AU_TRIM, ST)
+    boxAlong(m, cxp + dn.x * 0.05, 13.35, czp + dn.z * 0.05, 0.95, 0.12, 0.2, hh, AU_TRIM, ST)
+  }
+
+  // the roof's crown, and the plan's floor
+  capPolygonWithHoles(m, [r2], Y_TOP, AU_SKY, surfaceTag('concrete'))
+
+  for (let i = 0; i < m.positions.length; i++) out.positions.push(m.positions[i])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -2344,4 +2523,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   pacificExchange_301_Pine,
   whittierMansion_2090_Jackson,
   bohemianClub_624_Taylor,
+  audiffredBuilding_100_Embarcadero,
 }
