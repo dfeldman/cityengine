@@ -258,7 +258,8 @@ export class Tunnels {
       if (m.name.startsWith('ground:occluder:')) m.isVisible = !inside
       // …and the ground's SHADOW decals (render/shadows.ts): draped over a mouth they follow the cut road down through
       // the tube's inside, and the Sutter-Stockton Garage's lay across the Stockton vault as a dark oval (2026-10-15)
-      else if (m.name.startsWith('landmark:shadow:') || m.name.startsWith('shadow:')) { m.isVisible = !inside; if (inside) this.hiddenShadows.push(m) }
+      // (and the quiet overlay of the paths round about, render/pathmap.ts, draped the same way: a pale ring on the vault)
+      else if (m.name.startsWith('landmark:shadow:') || m.name.startsWith('shadow:') || m.name === 'pathsoft') { m.isVisible = !inside; if (inside) this.hiddenShadows.push(m) }
     }
     for (const m of this.scene.meshes) set(m)
     // (and the ones streamed in while inside; dropped again on the way out)

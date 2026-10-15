@@ -10555,8 +10555,8 @@ OPEN:
   a tunnel every group's ground occluder is hidden now.
 * ~~The oval on the Stockton vault~~ FIXED: the Sutter-Stockton Garage's ground-shadow decal, draped over the south
   mouth down into the cut road, i.e. through the tube; shadow decals are hidden while the camera is in a tunnel (kept
-  hidden each frame: the landmarks show their meshes again). A faint ring was left only after a 500 m camera jump
-  from Broadway in the test script (never on a fresh load, nor approaching the mouth normally).
+  hidden each frame: the landmarks show their meshes again). The faint ring left after a camera jump was the quiet path
+  overlay (render/pathmap.ts `pathsoft`), draped the same way: hidden in a tunnel too (2026-10-15).
 * ~~Steps hanging inside Stockton's north mouth~~ FIXED: OSM's portal stairwells (little loops of steps, half at
   layer 0) are not drawn within a bore's width (render/stairs.ts).
 
