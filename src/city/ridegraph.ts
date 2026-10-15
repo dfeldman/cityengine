@@ -1752,7 +1752,7 @@ export function rideStats(g: CityGraph): {
 }
 
 /** Does the straight line a→b pass through any of these footprints (sampled every metre)? */
-function footprintTest(rings: number[][]): (a: Point, b: Point) => boolean {
+export function footprintTest(rings: number[][]): (a: Point, b: Point) => boolean {
   const CELL = 50
   const grid = new Map<string, number[][]>()
   for (const r of rings) {

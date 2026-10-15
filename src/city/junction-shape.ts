@@ -135,7 +135,9 @@ export function straightenJunctions<E extends ShapedEdge>(edges: E[], outside: O
     const corner = ss.map((s) => s.bend > 60 || s.stray > 4)
     // (or a sharp turn in the last 12 m though the 25 m span is a corner: a street that bends further out, and kinks
     //  again just before the crossing — Valencia, Church, Potrero)
-    const nearSharp = es.map((e, k) => { if (!judged[k]) return false; const n = approachShape(e, nid, 12); return !!n && n.bend > NEAR_BEND && n.bend <= 60 })
+    // (12 m, else 6 m: a street that jogs ten metres out — Kearny below Vallejo — is a corner over 12 m and still kinked
+    //  at 5)
+    const nearSharp = es.map((e, k) => { if (!judged[k]) return false; return [12, 6].some((r) => { const n = approachShape(e, nid, r); return !!n && n.bend > NEAR_BEND && n.bend <= 60 }) })
     const zig = ss.some((s, k) => judged[k] && !corner[k] && (s.stray > ZIG_STRAY || s.bend > ZIG_BEND)) || nearSharp.some(Boolean)
     if (!zig) continue
     // the through pairs, straightest first, each approach in one pair at most
@@ -185,12 +187,23 @@ export function straightenJunctions<E extends ShapedEdge>(edges: E[], outside: O
       }
       if (Math.hypot(moved.x - o.x, moved.z - o.z) > MAX_MOVE) moved = o
     }
+    /*
+     * An approach left as it is, when the node moves: its points within 6 m of the OLD node are dropped, so it runs
+     * straight into the new one — kept, the first of them (4–5 m out) made a fresh kink just before the crossing
+     * (Harrison at 14th, 7th at Brannan, Beale at Mission…, 2026-10-15). Its far end always stays.
+     */
+    const rest = (k: number, n: Point): Point[] => {
+      const p = ss[k].pts.slice(1)
+      if (n === o) return p
+      const kept = p.filter((q, i) => i === p.length - 1 || Math.hypot(q.x - o.x, q.z - o.z) > 6)
+      return kept
+    }
     // accepted only if no approach then strays further off the drawn streets than it did
     const tryAt = (n: Point): boolean[] | null => {
       const take: boolean[] = []
       for (let k = 0; k < ss.length; k++) {
         const straight = !corner[k]
-        const path = straight ? [n, far[k]] : [n, ...ss[k].pts.slice(1)]
+        const path = straight ? [n, far[k]] : [n, ...rest(k, n)]
         // (nor through a building: a straightened approach in a narrow alley cut the corner of one — Rose Pak's Way)
         const through = straight && blocked?.(n, far[k])
         if (through || outside(path) > Math.max(outside(ss[k].pts), 0.5)) {
@@ -201,35 +214,52 @@ export function straightenJunctions<E extends ShapedEdge>(edges: E[], outside: O
       }
       return take
     }
-    let np = moved
-    let take = tryAt(np)
-    if (!take && np !== o) { np = o; take = tryAt(o) }
-    if (!take) { count.declined++; continue }
     /*
-     * An approach that cannot run straight for its whole 25 m (it would leave the asphalt or clip a building — a narrow
-     * alley, a street that curves into the junction) is straightened over the last 12 m, else the last 6 m: the part
-     * that matters, "no sharp turn right before a crossing" (owner, 2026-10-14).
+     * One attempt at node `n`: which approaches run straight (in full, else over their last 12…4 m). Each attempt has its
+     * own copy of the shapes. A MOVED node is refused if it leaves a sharp kink (> NEAR_BEND) within 6 m of the crossing
+     * on any approach: the node is better where it was (owner, 2026-10-14, "no sharp turns right before a crossing" —
+     * Harrison at 14th, 7th at Brannan…, 2026-10-15, straight before the move and kinked after it).
      */
-    for (let k = 0; k < ss.length; k++) {
-      if (take[k] || (corner[k] && !nearSharp[k])) continue
-      for (const r of [12, 10, 8, 6, 4]) {
-        const s2 = approachShape(es[k], nid, r)
-        if (!s2 || (s2.stray <= ZIG_STRAY && s2.bend <= ZIG_BEND)) break
-        const f2 = s2.pts[s2.pts.length - 1]
-        // (over the last 6 m the junction's own paving (render/city.ts `junctionHull`) is round the corner: a metre and a
-        //  half off the carriageway there is still paved — never through a building)
-        if (blocked?.(np, f2) || outside([np, f2]) > Math.max(outside(s2.pts), r <= 8 ? 1.5 : r <= 10 ? 1 : 0.5)) continue
-        ss[k] = s2
-        far[k] = f2
-        take[k] = true
-        break
+    const attempt = (n: Point): { take: boolean[]; ss: ApproachShape[]; far: Point[] } | null => {
+      const t0 = tryAt(n)
+      if (!t0) return null
+      const sx = [...ss], fx = [...far], take = [...t0]
+      for (let k = 0; k < sx.length; k++) {
+        if (take[k] || (corner[k] && !nearSharp[k])) continue
+        for (const r of [12, 10, 8, 6, 4]) {
+          const s2 = approachShape(es[k], nid, r)
+          if (!s2 || (s2.stray <= ZIG_STRAY && s2.bend <= ZIG_BEND && n === o)) break
+          const f2 = s2.pts[s2.pts.length - 1]
+          // (over the last 8 m the junction's own paving (render/city.ts `junctionHull`) is round the corner: a metre and a
+          //  half off the carriageway there is still paved — never through a building)
+          if (blocked?.(n, f2) || outside([n, f2]) > Math.max(outside(s2.pts), r <= 8 ? 1.5 : r <= 10 ? 1 : 0.5)) continue
+          sx[k] = s2
+          fx[k] = f2
+          take[k] = true
+          break
+        }
       }
+      if (n !== o) {
+        for (let k = 0; k < sx.length; k++) {
+          const pts = take[k] ? [n, fx[k], ...(() => { const q = es[k].a === nid ? es[k].points : [...es[k].points].reverse(); return [along(q, sx[k].reach + 3).p] })()]
+            : [n, ...rest(k, n)]
+          const s6 = approachShape({ a: 0, b: 1, points: pts, length: pts.slice(1).reduce((acc, q, i) => acc + Math.hypot(q.x - pts[i].x, q.z - pts[i].z), 0) }, 0, 6)
+          if (s6 && s6.bend > NEAR_BEND && !corner[k]) return null
+        }
+      }
+      return { take, ss: sx, far: fx }
     }
+    let np = moved
+    let got = attempt(np)
+    if (!got && np !== o) { np = o; got = attempt(o) }
+    if (!got) { count.declined++; continue }
+    const take = got.take
+    for (let k = 0; k < ss.length; k++) { ss[k] = got.ss[k]; far[k] = got.far[k] }
     if (np !== o) count.moved++
     for (let k = 0; k < ss.length; k++) {
       if (!take[k] && np === o) continue
       const e = es[k]
-      const shape: ApproachShape = take[k] ? { ...ss[k], pts: [np, far[k]] } : { ...ss[k], pts: [np, ...ss[k].pts.slice(1)] }
+      const shape: ApproachShape = take[k] ? { ...ss[k], pts: [np, far[k]] } : { ...ss[k], pts: [np, ...rest(k, np)] }
       const rec = ends.get(e.id) ?? {}
       if (e.a === nid) rec.a = { node: np, shape }
       else rec.b = { node: np, shape }
@@ -252,6 +282,19 @@ export function straightenJunctions<E extends ShapedEdge>(edges: E[], outside: O
         ps: [...spanEnd.pts.slice(0, -1), cut.p, ...tail],
         h: h ? [h[0], ...spanEnd.pts.slice(1, -1).map((q) => interpAt(ps, h, nearestAlong(ps, q))), farH!, ...h.slice(cut.i)] : undefined,
       }
+    }
+    /*
+     * A SHORT edge repaired at both ends (under 30 m: the two spans overlap) is one straight line from junction to
+     * junction — repaired end by end, the second repair bent the first (14th at Harrison, 13 m: a 35° kink 4.7 m from
+     * the crossing, 2026-10-15). Heights: straight between its ends' too.
+     */
+    // (and repaired at ONE end only: its first 40 % straightened, its rest met it at an angle — the same kink; straight
+    //  to its other end instead)
+    if ((rec.a || rec.b) && e.length < 30) {
+      const A = rec.a?.node ?? e.points[0], B = rec.b?.node ?? e.points[e.points.length - 1]
+      const h0 = hs?.[0], h1 = hs?.[hs.length - 1]
+      const L = Math.hypot(B.x - A.x, B.z - A.z)
+      return { ...e, points: [A, B], heights: hs ? [h0!, h1!] : undefined, length: L }
     }
     if (rec.a) { const r = apply(rec.a.shape, pts, hs); pts = r.ps; hs = r.h }
     if (rec.b) {
