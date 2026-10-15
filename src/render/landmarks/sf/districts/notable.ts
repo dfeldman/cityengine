@@ -1774,10 +1774,201 @@ function fugaziBank_4_Columbus(out: MeshBuilder, fit: Fit): void {
   else emanuElCopy(out, m, 1, 0, 0, 0)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// Pacific Exchange, 301 Pine Street
+// ---------------------------------------------------------------------------------------------------------------
+
+const PX_STONE: Rgb = [0.725, 0.722, 0.698]    // #b9b8b2, the Yosemite granite
+const PX_LIGHT: Rgb = [0.784, 0.776, 0.749]    // #c8c6bf, the sculptures a shade lighter
+const PX_LINE: Rgb = [0.62, 0.615, 0.6]        // the courses between the blocks
+const PX_DEEP: Rgb = [0.5, 0.495, 0.485]       // the recess behind the columns
+const PX_GLASS: Rgb = [0.12, 0.13, 0.15]
+const PX_ROOF: Rgb = [0.5, 0.5, 0.52]
+const PX_FRONT_Z = -1                          // the fit's front is local -z (fitFront: -z faces the manifest bearing; grade is measured at (0, -hz))
+const PX_GR = surfaceTag('granite')
+const PX_CN = surfaceTag('concrete')
+
+/**
+ * The Pacific Exchange (the Pacific Coast Stock Exchange), 301 Pine Street at Sansome: the 1915 U.S. Treasury
+ * subtreasury (Milton Dyer) remodelled in 1930 by Miller & Pflueger, with Ralph Stackpole's two granite groups.
+ * ONLY the low granite temple, not the 1930 Stock Exchange Tower behind it (155 Sansome, its own model).
+ * Photographs: docs/shots/refs/notable/pacific-exchange/ — wiki-image (the Pine front: ten giant unfluted columns
+ * in a deep recess between two plain end pylons, a plain entablature and attic over them, wide steps, a Stackpole
+ * group against each pylon), mapillary-0 (the colonnade from up Pine), -3 (a group close up), -1 (the Sansome wall).
+ * mapillary-2 is the tower's door and is ignored.
+ *
+ * OSM's outline is a 40 x 25 m parallelogram with Pine Street on its NORTH long side (the tower, Mills Tower and Bush
+ * Street are all south of it; the pack's "south" is wrong, and the photographs agree: Sansome's wall is on the right of
+ * the Pine front). The manifest gives front 351.4 (Pine's outward bearing), so the fit's FRONT (local -z, the ring edge
+ * whose outward normal faces -z) is Pine; nothing depends on the ring's vertex order. Everything is built on that edge.
+ *
+ * Where the photographs overruled the numbers: the columns are ~1.4 m through the shaft (the pack says ~1 m; against a
+ * 1.75 m passer-by they are one-seventh of their height), the groups are ~4.7 m tall, standing on a low step against the
+ * pylons (not "tall plinths"), and the recess is deep (mapillary-0 shows a second dark rank of openings behind).
+ */
+function pacificExchange_301_Pine(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  const n = ring.length
+  const len = (i: number): number => Math.hypot(ring[(i + 1) % n].x - ring[i].x, ring[(i + 1) % n].z - ring[i].z)
+  // the Pine edge is the fit's FRONT (the manifest says front 351.4, Pine's outward bearing): the ring edge whose
+  // outward normal best faces PX_FRONT_Z in the fit frame (edgeFacing's rule), never OSM's vertex order
+  const pi = ((): number => {
+    let best = 0, sc = -Infinity
+    for (let i = 0; i < n; i++) {
+      const a = ring[i], b = ring[(i + 1) % n], l = len(i) || 1
+      const s = ((-(b.x - a.x)) / l) * PX_FRONT_Z + l * 0.002
+      if (s > sc) { sc = s; best = i }
+    }
+    return best
+  })()
+  const A = ring[pi], B = ring[(pi + 1) % n]
+  const L = len(pi)
+  const t = { x: (B.x - A.x) / L, z: (B.z - A.z) / L }       // along the front, to the WEST (Pine runs east to west here)
+  const N = { x: t.z, z: -t.x }                               // out of the building, over the street
+  const head = Math.atan2(N.x, N.z)
+  const Mx = (A.x + B.x) / 2, Mz = (A.z + B.z) / 2
+  const EL = L / 2
+  /** (e, v, y): e east along the front from its middle, v out of the building from the front plane, y up */
+  const W = (e: number, v: number, y: number): V3 => [Mx - t.x * e + N.x * v, y, Mz - t.z * e + N.z * v]
+  const gAt = (e: number, v: number): number => {
+    const g = fit.groundAt
+    if (!g) return fit.grade ?? 0
+    const p = W(e, v, 0)
+    return Math.max(0, g(p[0], p[2]))
+  }
+  /** a box by its extents in the front frame (e0..e1 east, v0..v1 out, y0..y1) */
+  const bx = (e0: number, e1: number, v0: number, v1: number, y0: number, y1: number, c: Rgb, tag = PX_GR): void => {
+    const p = W((e0 + e1) / 2, (v0 + v1) / 2, (y0 + y1) / 2)
+    boxAlong(m, p[0], p[1], p[2], (e1 - e0) / 2, (y1 - y0) / 2, (v1 - v0) / 2, head, c, tag)
+  }
+  /** a rectangle facing out (+v) at depth v, e0 < e1 east; wound left-to-right as the street sees it */
+  const fOut = (e0: number, e1: number, v: number, y0: number, y1: number, c: Rgb, tag = PX_GR): void => {
+    m.quad([W(e1, v, y0), W(e0, v, y0), W(e0, v, y1), W(e1, v, y1)], [N.x, 0, N.z], uv, c, tag)
+  }
+  /** a rectangle at e facing east (dir +1) or west (dir -1), from v0 to v1 */
+  const fSide = (e: number, v0: number, v1: number, y0: number, y1: number, dir: 1 | -1, c: Rgb, tag = PX_GR): void => {
+    const nrm: V3 = [-t.x * dir, 0, -t.z * dir]
+    if (dir === 1) m.quad([W(e, v1, y0), W(e, v0, y0), W(e, v0, y1), W(e, v1, y1)], nrm, uv, c, tag)
+    else m.quad([W(e, v0, y0), W(e, v1, y0), W(e, v1, y1), W(e, v0, y1)], nrm, uv, c, tag)
+  }
+
+  const gP = Math.min(4, gAt(0, 2))                       // the Pine Street pavement at the steps
+  const TOP = gP + 16, PLAT = gP + 1.6
+  const COL1 = TOP - 3.9                                  // the capitals' top = the entablature's foot
+  const DEP = 6.2                                         // the recess, from the front plane to its back wall
+  const WE = 5.5, EE = 6.5                                // the west and east pylons' widths on the front
+  const eW = -EL + WE, eE = EL - EE                       // their inner faces
+  const CE = (eW + eE) / 2, CS = 2.85                     // ten columns about the opening's middle
+
+  // ---- the three other walls and the roof --------------------------------------------------------------------------
+  for (let i = 0; i < n; i++) {
+    if (i === pi) continue
+    const a = ring[i], b = ring[(i + 1) % n]
+    const l = Math.hypot(b.x - a.x, b.z - a.z)
+    if (l < 0.5) continue
+    const tx = (b.x - a.x) / l, tz = (b.z - a.z) / l, nx = tz, nz = -tx
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const panel = (u0: number, u1: number, y0: number, y1: number, pr: number, c: Rgb, tag: number): void => {
+      m.quad([P(u0, y0, pr), P(u1, y0, pr), P(u1, y1, pr), P(u0, y1, pr)], [nx, 0, nz], uv, c, tag)
+    }
+    panel(0, l, 0, TOP, 0, PX_STONE, PX_GR)
+    for (let y = gP + 1.1; y < TOP - 2; y += 1.1) panel(0, l, y, y + 0.07, 0.02, PX_LINE, PX_GR)   // the ashlar courses
+    // tall punched windows high in the wall, each in a lighter surround on a sill
+    const k = Math.floor((l - 3) / 4.2)
+    for (let j = 0; j < k; j++) {
+      const u = 1.5 + ((l - 3) * (j + 0.5)) / k
+      const y0 = gP + 4.6, y1 = gP + 11.2
+      panel(u - 0.95, u + 0.95, y0 - 0.25, y1 + 0.35, 0.03, PX_LIGHT, PX_GR)
+      panel(u - 0.7, u + 0.7, y0, y1, 0.07, PX_GLASS, GL)
+      boxAlong(m, a.x + tx * u + nx * 0.15, y0 - 0.35, a.z + tz * u + nz * 0.15, 1.1, 0.1, 0.18, Math.atan2(nx, nz), PX_LIGHT, PX_GR)
+    }
+    const cx = a.x + tx * l / 2, cz = a.z + tz * l / 2, h = Math.atan2(nx, nz)
+    boxAlong(m, cx + nx * 0.35, COL1 + 1.0, cz + nz * 0.35, l / 2 + 0.3, 0.9, 0.35, h, PX_LIGHT, PX_GR)          // frieze and cornice
+    boxAlong(m, cx + nx * 0.7, COL1 + 2.5, cz + nz * 0.7, l / 2 + 0.5, 0.4, 0.7, h, PX_STONE, PX_GR)
+    boxAlong(m, cx + nx * 0.1, COL1 + 3.4, cz + nz * 0.1, l / 2, 0.5, 0.2, h, PX_STONE, PX_GR)                  // the attic
+  }
+  capPolygonWithHoles(m, [ring], TOP, PX_ROOF, PX_CN)
+
+  // ---- the Pine front: pylons, recess, ten columns, entablature, attic -----------------------------------------------
+  bx(-EL + 0.03, eW, -DEP, 0, 0, COL1, PX_STONE)                       // the west pylon (its outer face is the side wall)
+  bx(eE, EL - 0.03, -DEP, 0, 0, COL1, PX_STONE)                        // the east pylon
+  for (let y = gP + 1.1; y < COL1; y += 1.1) {                         // the courses on the pylons' fronts
+    fOut(-EL + 0.1, eW - 0.1, 0.02, y, y + 0.07, PX_LINE)
+    fOut(eE + 0.1, EL - 0.1, 0.02, y, y + 0.07, PX_LINE)
+  }
+  // the recess: floor, back wall, dark openings, and the soffit under the entablature
+  bx(eW, eE, -DEP, 0.5, 0, PLAT, PX_STONE)
+  fOut(eW, eE, -DEP + 0.02, PLAT, COL1, PX_DEEP)
+  for (const j of [1, 3, 5, 7]) {
+    const e = CE + (j - 4) * CS
+    fOut(e - 0.85, e + 0.85, -DEP + 0.06, PLAT + 0.3, PLAT + 8.2, PX_GLASS, GL)
+    bx(e - 1.0, e + 1.0, -DEP + 0.02, -DEP + 0.2, PLAT + 8.2, PLAT + 8.6, PX_STONE)
+  }
+  m.quad([W(eW, -DEP, COL1), W(eE, -DEP, COL1), W(eE, 0, COL1), W(eW, 0, COL1)], [0, -1, 0], uv, PX_DEEP, PX_GR)
+  fSide(eW, -DEP, 0, PLAT, COL1, 1, PX_DEEP)                           // the pylons' inner faces
+  fSide(eE, -DEP, 0, PLAT, COL1, -1, PX_DEEP)
+  // the wide steps across the opening, eight risers, the top one the recess floor
+  for (let j = 1; j < 8; j++) bx(eW, eE, 0, 0.5 * (9 - j), 0, gP + (PLAT - gP) * (j / 8), PX_STONE)
+  for (let j = 1; j < 8; j++) { const y = gP + (PLAT - gP) * (j / 8); fOut(eW, eE, 0.5 * (9 - j) + 0.01, y - 0.2, y, PX_LINE) }
+  // the ten unfluted Doric columns, ≈ 1.4 m through the shaft and ten times that tall
+  for (let i = 0; i < 10; i++) {
+    const p = W(CE + (i - 4.5) * CS, -1.8, 0)
+    classicalColumn(m, p[0], p[2], PLAT, COL1, 0.72, PX_STONE, { order: 'doric', tag: PX_GR, heading: head, trim: PX_LIGHT })
+  }
+  // architrave, the frieze (the lettering's band, a shade paler), the projecting cornice, the plain attic over it
+  bx(-EL, EL, -DEP, -0.1, COL1, COL1 + 1.0, PX_STONE)
+  bx(-EL, EL, -DEP, 0, COL1 + 1.0, COL1 + 2.1, PX_LIGHT)
+  fOut(-EL + 3, EL - 3, 0.02, COL1 + 1.35, COL1 + 1.75, PX_LINE)
+  bx(-EL - 0.2, EL + 0.2, -DEP, 0.8, COL1 + 2.1, COL1 + 2.9, PX_STONE)
+  bx(-EL + 0.3, EL - 0.3, -1.2, -0.3, COL1 + 2.9, TOP + 0.3, PX_STONE)
+
+  // ---- Stackpole's two groups, one against each pylon: a stele, a low step, two standing figures and a child --------------
+  const group = (ec: number): void => {
+    const g = Math.max(gP, gAt(ec, 1.2))
+    bx(ec - 2.1, ec + 2.1, 0.05, 2.5, g, g + 0.5, PX_STONE)           // the step
+    const y0 = g + 0.5
+    bx(ec - 1.6, ec + 1.6, 0.05, 1.3, y0, y0 + 4.2, PX_STONE)         // the carved block the figures stand against
+    bx(ec - 1.4, ec + 1.4, 0.05, 1.5, y0 + 4.2, y0 + 4.5, PX_STONE)
+    const head = (e: number, y: number, r: number): void => {
+      const p = W(e, 1.62, 0)
+      prism(m, p[0], p[2], y, y + r * 2.3, r, 8, PX_LIGHT, PX_GR, r * 0.8)
+    }
+    // the man on the left, hand to his chest: a long skirt, broad chest, forearm across it, a head
+    bx(ec - 1.5, ec - 0.35, 1.3, 2.1, y0, y0 + 1.9, PX_LIGHT)
+    bx(ec - 1.45, ec - 0.4, 1.3, 2.05, y0 + 1.9, y0 + 3.4, PX_LIGHT)
+    bx(ec - 1.15, ec - 0.35, 1.9, 2.3, y0 + 2.5, y0 + 2.9, PX_LIGHT)
+    head(ec - 0.95, y0 + 3.4, 0.3)
+    // the man on the right, a shade taller, arm folded, the boy at his knee
+    bx(ec + 0.0, ec + 1.15, 1.3, 2.1, y0, y0 + 2.1, PX_LIGHT)
+    bx(ec - 0.05, ec + 1.15, 1.3, 2.05, y0 + 2.1, y0 + 3.7, PX_LIGHT)
+    bx(ec + 0.1, ec + 1.1, 2.0, 2.3, y0 + 2.6, y0 + 3.1, PX_LIGHT)
+    head(ec + 0.55, y0 + 3.7, 0.32)
+    bx(ec + 1.0, ec + 1.55, 1.5, 2.3, y0, y0 + 1.1, PX_LIGHT)
+    bx(ec + 1.0, ec + 1.55, 1.55, 2.2, y0 + 1.1, y0 + 1.75, PX_LIGHT)
+    head(ec + 1.28, y0 + 1.75, 0.2)
+    fOut(ec - 0.3, ec - 0.05, 2.06, y0 + 0.1, y0 + 3.9, PX_DEEP)         // the shadow cut between the two men
+  }
+  group(-EL + 2.7)
+  group(EL - 3.1)
+
+  // the model is already in the fit's own frame
+  for (let i = 0; i < m.positions.length; i++) out.positions.push(m.positions[i])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  out.uvs.push(...m.uvs)
+  out.colors.push(...m.colors)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
   pier43FerryArch,
   mallochBuilding_1360_Montgomery,
   fugaziBank_4_Columbus,
+  pacificExchange_301_Pine,
 }

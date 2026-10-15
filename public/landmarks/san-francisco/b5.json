@@ -61,9 +61,11 @@
     "osm": [
       "way/256066230"
     ],
-    "procedural": "b5_bank_256066230",
+    "procedural": "pacificExchange_301_Pine",
     "name": "San Francisco Pacific Exchange Building",
-    "height": 16
+    "height": 16,
+    "front": 351.4,
+    "note": "notable.ts pacificExchange_301_Pine (2026-10-15, docs/sf-batches/MODEL-PACIFIC-EXCHANGE.md): granite temple, ten-column recessed colonnade between two pylons on Pine (the north edge), Stackpole groups. Replaces b5_bank_256066230, which drew no columns."
   },
   {
     "osm": [
