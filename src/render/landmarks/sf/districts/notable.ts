@@ -790,7 +790,171 @@ function ritzCarlton_600_Stockton(out: MeshBuilder, fit: Fit): void {
   else emanuElCopy(out, m, 1, 0, 0, 0)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// Pier 43 Ferry Arch
+// ---------------------------------------------------------------------------------------------------------------
+
+/** OSM way/288472570 (docs/sf-batches/MODEL-PIER43-ARCH.md), used only when the loader gives no `fit.ring`. */
+const P43_RING: P2[] = [[-5.5, -4.6], [0.1, -7.3], [1.4, -4.7], [2.3, -5.2], [11.6, 13.2], [4.5, 16.8], [-4.8, -1.6],
+  [-4.1, -1.9]].map(([x, z]) => ({ x, z }))
+const P43_WALL: Rgb = [0.925, 0.92, 0.9]       // #ecebe6, white-painted board
+const P43_TRIM: Rgb = [0.84, 0.84, 0.82]       // cornice, archivolt: light grey
+const P43_LINE: Rgb = [0.72, 0.72, 0.7]        // the channelled rustication, a shade down
+const P43_SHADE: Rgb = [0.6, 0.58, 0.54]       // the soffit inside the arch, in the shade
+const P43_ROOF: Rgb = [0.6, 0.6, 0.6]
+const P43_GLASS: Rgb = [0.3, 0.36, 0.42]
+
+/**
+ * The Pier 43 Ferry Arch (1914 headhouse of the Belt Railroad's car-ferry slip, rebuilt 2002–03): a white boarded
+ * triumphal-arch pavilion on the end of a pier, the rails running through it. Photographs: docs/shots/refs/notable/
+ * pier43-arch/ commons-1 and -5 (the face square on: one great round arch, half the face wide, rising to two-thirds of
+ * the height; outer piers channelled by horizontal rustication; a dentilled cornice; a shallow pediment over it), -2
+ * and -4 (the oblique: the opening goes THROUGH the thin dimension, the soffit shaded, a low plain annex at one end),
+ * -3 (the arch from the water).
+ *
+ * The plan (OSM, 25 × 8 m) is a 20.6 × 8 m block whose LONG edge is the arch's face, plus a 3 × 6 m annex off one short
+ * end. The model is drawn in a frame on that long edge — u along the face, v through the thickness — found from
+ * `fit.ring`'s longest edge, so it follows whatever turn the fit gave the footprint. The annex goes at whichever end
+ * the ring bulges. Own geometry: round arch 9.6 m wide to 9.3 m, 1.2 m archivolt to the ground, 11 m to the cornice,
+ * the pediment to 14.8 m (LiDAR median 14.6, max 16.1 with the pigeons), annex 4.9 m.
+ *
+ * Where the photographs overruled the numbers: the long side is the face (the pack says so too, but its "opening
+ * through the SHORT side" is the same thing seen from the pier); the annex measured from the plan is 3 m long, and
+ * the photographs agree (a sixth of the face).
+ */
+function pier43FerryArch(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const ring = fit.ring && fit.ring.length >= 4 ? fit.ring : P43_RING
+  // the longest edge is the face
+  let ei = 0, el = 0
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length]
+    const l = Math.hypot(b.x - a.x, b.z - a.z)
+    if (l > el + 0.05) { el = l; ei = i }
+  }
+  const a = ring[ei], b = ring[(ei + 1) % ring.length]
+  const L = el
+  const t = { x: (b.x - a.x) / L, z: (b.z - a.z) / L }
+  let n = { x: -t.z, z: t.x }
+  const cen = { x: ring.reduce((s, p) => s + p.x, 0) / ring.length, z: ring.reduce((s, p) => s + p.z, 0) / ring.length }
+  if ((cen.x - a.x) * n.x + (cen.z - a.z) * n.z < 0) n = { x: -n.x, z: -n.z }
+  const loc = ring.map((p) => ({ u: (p.x - a.x) * t.x + (p.z - a.z) * t.z, v: (p.x - a.x) * n.x + (p.z - a.z) * n.z }))
+  let D = 0
+  for (const p of loc) if (p.u > -0.3 && p.u < L + 0.3) D = Math.max(D, p.v)
+  D = Math.max(5, Math.min(D, 12))
+  // the annex: which end the ring bulges past, how far, and across what depth
+  const umin = Math.min(...loc.map((p) => p.u)), umax = Math.max(...loc.map((p) => p.u))
+  let su = 0, annexLen = 0
+  if (umin < -0.8 && -umin >= umax - L) { su = -1; annexLen = -umin } else if (umax > L + 0.8) { su = 1; annexLen = umax - L }
+  const beyond = loc.filter((p) => (su < 0 ? p.u < -0.3 : p.u > L + 0.3))
+  const av0 = beyond.length ? Math.min(...beyond.map((p) => p.v)) : 0, av1 = beyond.length ? Math.max(...beyond.map((p) => p.v)) : 0
+
+  // the frame: centre of the block, u along the face, v through it
+  const M = { x: a.x + t.x * L / 2 + n.x * D / 2, z: a.z + t.z * L / 2 + n.z * D / 2 }
+  const W = (u: number, v: number, y: number): V3 => [M.x + t.x * u + n.x * v, y, M.z + t.z * u + n.z * v]
+  const head = Math.atan2(n.x, n.z)
+  const q = (p: V3[], nu: number, nv: number, ny: number, c: Rgb, tag = ST): void => {
+    m.quad(p, [t.x * nu + n.x * nv, ny, t.z * nu + n.z * nv], uv, c, tag)
+  }
+  /** a box in the frame: centre (u, v, y), half sizes along the face, through it, up */
+  const bx = (u: number, v: number, y: number, hu: number, hv: number, hy: number, c: Rgb, tag = ST): void => {
+    const p = W(u, v, y)
+    boxAlong(m, p[0], p[1], p[2], hu, hy, hv, head, c, tag)
+  }
+
+  const HW = L / 2 - 0.5, BD = D / 2 - 0.4           // the body inside the cornice's overhang
+  const TOP = 11.0, CORN = 11.7, APEX = Math.max(13.5, Math.min(15.2, fit.height || 14.8))
+  const R = 4.8, YS = 4.5, N = 14, BAND = 1.2         // the arch: half-width, springing, segments, archivolt width
+  const arc = (k: number, r: number): [number, number] => {
+    const th = Math.PI - (k / N) * Math.PI
+    return [r * Math.cos(th), YS + r * Math.sin(th)]
+  }
+
+  for (const f of [-1, 1]) {
+    const vf = f * BD
+    // the piers either side of the arch
+    for (const s of [-1, 1]) {
+      q([W(s * HW, vf, 0), W(s * R, vf, 0), W(s * R, vf, TOP), W(s * HW, vf, TOP)], 0, f, 0, P43_WALL)
+    }
+    // the spandrel over the arch, in strips from the curve up to the cornice
+    for (let k = 0; k < N; k++) {
+      const [u0, y0] = arc(k, R), [u1, y1] = arc(k + 1, R)
+      q([W(u0, vf, y0), W(u1, vf, y1), W(u1, vf, TOP), W(u0, vf, TOP)], 0, f, 0, P43_WALL)
+    }
+    // the archivolt: a moulded band round the opening, down the jambs to the ground
+    const pv = vf + f * 0.18
+    for (let k = 0; k < N; k++) {
+      const [u0, y0] = arc(k, R), [u1, y1] = arc(k + 1, R)
+      const [w0, z0] = arc(k, R + BAND), [w1, z1] = arc(k + 1, R + BAND)
+      q([W(u0, pv, y0), W(u1, pv, y1), W(w1, pv, z1), W(w0, pv, z0)], 0, f, 0, P43_TRIM)
+    }
+    for (const s of [-1, 1]) {
+      q([W(s * R, pv, 0), W(s * (R + BAND), pv, 0), W(s * (R + BAND), pv, YS), W(s * R, pv, YS)], 0, f, 0, P43_TRIM)
+      // the band's outer edge, so it stands off the wall
+      q([W(s * (R + BAND), vf, 0), W(s * (R + BAND), pv, 0), W(s * (R + BAND), pv, YS), W(s * (R + BAND), vf, YS)], s, 0, 0, P43_LINE)
+    }
+    // the channelled rustication on the outer piers, and a shield panel high on each
+    for (const s of [-1, 1]) {
+      for (let y = 0.9; y < TOP - 0.4; y += 0.9) {
+        q([W(s * (HW - 2.3), vf + f * 0.03, y), W(s * HW, vf + f * 0.03, y), W(s * HW, vf + f * 0.03, y + 0.09), W(s * (HW - 2.3), vf + f * 0.03, y + 0.09)], 0, f, 0, P43_LINE)
+      }
+      q([W(s * (HW - 1.2) - 0.5, vf + f * 0.03, 8.0), W(s * (HW - 1.2) + 0.5, vf + f * 0.03, 8.0), W(s * (HW - 1.2) + 0.5, vf + f * 0.03, 9.8), W(s * (HW - 1.2) - 0.5, vf + f * 0.03, 9.8)], 0, f, 0, P43_LINE)
+    }
+    // the frieze band and its dentils under the cornice
+    q([W(-HW, vf + f * 0.04, TOP - 0.55), W(HW, vf + f * 0.04, TOP - 0.55), W(HW, vf + f * 0.04, TOP), W(-HW, vf + f * 0.04, TOP)], 0, f, 0, P43_LINE)
+    for (let u = -HW + 0.4; u < HW; u += 0.8) bx(u, f * (BD + 0.1), TOP + 0.05, 0.22, 0.12, 0.2, P43_TRIM)
+    // the raking cornice of the pediment on the face, and the tympanum inside it
+    const E = L / 2 - 0.2, cv = f * (D / 2)
+    q([W(-E, cv, CORN), W(E, cv, CORN), W(0, cv, APEX), W(0, cv, APEX)], 0, f, 0, P43_WALL)
+    for (const s of [-1, 1]) {
+      const cv2 = cv + f * 0.12
+      q([W(s * E, cv2, CORN), W(0, cv2, APEX), W(0, cv2, APEX - 0.75), W(s * (E - 0.1), cv2, CORN + 0.0 + 0.0)], 0, f, 0, P43_TRIM)
+      q([W(s * E, cv2, CORN), W(s * E, cv2, CORN + 0.5), W(0, cv2, APEX), W(0, cv2, APEX - 0.7)], s * 0.3, f, 0.9, P43_TRIM)
+    }
+  }
+  // the end faces of the body: channelled like the piers
+  for (const s of [-1, 1]) {
+    q([W(s * HW, -BD, 0), W(s * HW, BD, 0), W(s * HW, BD, TOP), W(s * HW, -BD, TOP)], s, 0, 0, P43_WALL)
+    for (let y = 0.9; y < TOP - 0.4; y += 0.9) {
+      q([W(s * (HW + 0.03), -BD, y), W(s * (HW + 0.03), BD, y), W(s * (HW + 0.03), BD, y + 0.09), W(s * (HW + 0.03), -BD, y + 0.09)], s, 0, 0, P43_LINE)
+    }
+  }
+  // the tunnel: soffit, jambs, and the dark rail floor edge
+  for (let k = 0; k < N; k++) {
+    const [u0, y0] = arc(k, R), [u1, y1] = arc(k + 1, R)
+    const th = Math.PI - ((k + 0.5) / N) * Math.PI
+    q([W(u0, -BD, y0), W(u1, -BD, y1), W(u1, BD, y1), W(u0, BD, y0)], -Math.cos(th), 0, -Math.sin(th), P43_SHADE)
+  }
+  for (const s of [-1, 1]) q([W(s * R, -BD, 0), W(s * R, BD, 0), W(s * R, BD, YS), W(s * R, -BD, YS)], -s, 0, 0, P43_SHADE)
+  // the cornice, and the roof of the pediment
+  bx(0, 0, TOP + 0.35, L / 2, D / 2, 0.35, P43_TRIM)
+  bx(0, 0, CORN + 0.04, L / 2 - 0.05, D / 2 - 0.05, 0.05, P43_LINE)
+  const E = L / 2 - 0.2, RV = D / 2 - 0.1
+  for (const s of [-1, 1]) {
+    const nu = s * (APEX - CORN), nyy = E
+    const nl = Math.hypot(nu, nyy)
+    q([W(s * E, -RV, CORN), W(s * E, RV, CORN), W(0, RV, APEX), W(0, -RV, APEX)], nu / nl, 0, nyy / nl, P43_ROOF, RZ_CN)
+  }
+  // the low plain annex at one end of the face, with a cap and a window
+  if (su !== 0 && annexLen > 0.8) {
+    const AH = 4.9
+    const u0 = su < 0 ? -L / 2 - annexLen : L / 2, u1 = su < 0 ? -L / 2 : L / 2 + annexLen
+    const vA0 = av0 - D / 2, vA1 = av1 - D / 2
+    const cu = (u0 + u1) / 2, cv = (vA0 + vA1) / 2, hu = (u1 - u0) / 2, hv = (vA1 - vA0) / 2
+    bx(cu, cv, AH / 2, hu - 0.05, hv - 0.05, AH / 2, P43_WALL)
+    bx(cu, cv, AH + 0.17, hu + 0.15, hv + 0.15, 0.17, P43_TRIM)
+    bx(cu, cv, AH + 0.38, hu + 0.05, hv + 0.05, 0.05, P43_LINE)
+    // a window on each long side
+    const wu = cu + su * 0, wv0 = vA0 - 0.03, wv1 = vA1 + 0.03
+    q([W(wu - 0.6, wv0, 1.6), W(wu + 0.6, wv0, 1.6), W(wu + 0.6, wv0, 3.5), W(wu - 0.6, wv0, 3.5)], 0, -1, 0, P43_GLASS, GL)
+    q([W(wu - 0.6, wv1, 1.6), W(wu + 0.6, wv1, 1.6), W(wu + 0.6, wv1, 3.5), W(wu - 0.6, wv1, 3.5)], 0, 1, 0, P43_GLASS, GL)
+  }
+  emanuElCopy(out, m, 1, 0, 0, 0)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
+  pier43FerryArch,
 }
