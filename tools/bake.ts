@@ -1931,7 +1931,17 @@ async function bake(spec: CitySpec): Promise<void> {
    */
   {
     const cuts = kept.filter((e) => e.cut && e.heights?.length)
-    if (cuts.length) {
+    /*
+     * …and FILL THE HILL BACK OVER THE BORES (2026-10-14, owner: the Stockton Tunnel's north portal seen from behind,
+     * "should be occluded and I think is in the wrong place"; Broadway's entrance "open top"). Behind a portal the
+     * real ground is a sheer wall up to the street over it, and the elevation data smears that wall into a slope a
+     * few metres deep — so the ground just inside a mouth stood BELOW the tube's crown, a pit where the back of the
+     * portal and the bore's own top stood in the open (surface Stockton dead-ends 10 m short of the north mouth,
+     * and from it the whole arch showed). Over each bore, mouth to mouth and never past a mouth (the cut in front
+     * stays open), the ground is at least the crown and a little cover, falling away at 2:1 beside it. Never lower.
+     */
+    const boreEdges = kept.filter((e) => e.bore && !e.foot && e.heights?.length)
+    if (cuts.length || boreEdges.length) {
       const MARGIN = 8
       const carve = (h: ArrayLike<number> & { [i: number]: number }, x0: number, z0: number, step: number, ncols: number, nrows: number): number => {
         let lowered = 0
@@ -1970,10 +1980,50 @@ async function bake(spec: CitySpec): Promise<void> {
         }
         return lowered
       }
+      // the tube is 5.4 m high (tools/tunnels.ts CLEAR); 0.6 m of cover over its crown
+      const OVER = 6
+      const fill = (h: ArrayLike<number> & { [i: number]: number }, x0: number, z0: number, step: number, ncols: number, nrows: number): number => {
+        let raised = 0
+        for (const e of boreEdges) {
+          const pts = unpackPoints(e.points)
+          const half = e.width / 2 + Math.max(e.walk ?? 0, 0.6) + 1
+          for (let i = 1; i < pts.length; i++) {
+            const a = pts[i - 1]
+            const b = pts[i]
+            const dx = b.x - a.x
+            const dz = b.z - a.z
+            const l2 = dx * dx + dz * dz
+            if (l2 < 1e-6) continue
+            const reach = half + 8
+            const c0 = Math.max(0, Math.floor((Math.min(a.x, b.x) - reach - x0) / step))
+            const c1 = Math.min(ncols - 1, Math.ceil((Math.max(a.x, b.x) + reach - x0) / step))
+            const r0 = Math.max(0, Math.floor((Math.min(a.z, b.z) - reach - z0) / step))
+            const r1 = Math.min(nrows - 1, Math.ceil((Math.max(a.z, b.z) + reach - z0) / step))
+            for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) {
+              const x = x0 + c * step
+              const z = z0 + r * step
+              const t = ((x - a.x) * dx + (z - a.z) * dz) / l2
+              // within the bore's own length: an edge's end is exact (a mouth), a bend between pieces overlaps a little
+              if (t < (i === 1 ? 0 : -0.05) || t > (i === pts.length - 1 ? 1 : 1.05)) continue
+              const tt = Math.max(0, Math.min(1, t))
+              const d = Math.hypot(x - (a.x + dx * tt), z - (a.z + dz * tt))
+              if (d > reach) continue
+              const level = e.heights![i - 1] + (e.heights![i] - e.heights![i - 1]) * tt
+              const want = level + OVER - Math.max(0, d - half) * 2
+              const k = r * ncols + c
+              if (want > h[k]) { h[k] = want; raised++ }
+            }
+          }
+        }
+        return raised
+      }
+      const ff = fill(fineGround, fx0, fz0, FINE_STEP, fcols, frows)
+      const fc = fill(ground, tx0, tz0, STEP, cols, rows)
+      console.log(`  bores filled over: ${boreEdges.length} ways, ${ff} fine and ${fc} coarse samples raised to their crown`)
       const nf = carve(fineGround, fx0, fz0, FINE_STEP, fcols, frows)
       const nc = carve(ground, tx0, tz0, STEP, cols, rows)
       // the tiles the cuts touch ship the fine ground, so the cutting keeps its sides
-      for (const e of cuts) for (const q of unpackPoints(e.points)) {
+      for (const e of [...cuts, ...boreEdges]) for (const q of unpackPoints(e.points)) {
         for (const [dx, dz] of [[0, 0], [30, 0], [-30, 0], [0, 30], [0, -30]]) {
           const k = `${Math.floor((q.x + dx) / TILE)},${Math.floor((q.z + dz) / TILE)}`
           if (blockTiles.some(([tx, tz]) => `${tx},${tz}` === k)) fineTiles.add(k)

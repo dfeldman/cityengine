@@ -26,12 +26,16 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { Color3 } from '@babylonjs/core/Maths/math.color'
 import type { Scene } from '@babylonjs/core/scene'
+import type { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh'
+import type { Observer } from '@babylonjs/core/Misc/observable'
 import { MeshBuilder } from './buildings.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
 import { unpackPoints, type PackedEdge } from '../city/package.ts'
 import type { Terrain } from '../city/terrain.ts'
 
 type P = { x: number; z: number }
+/** the buildings' group (render/city.ts GROUP.building), which the tube, its portals and the ground's occluders share */
+const OCCLUDED_GROUP = 3
 export type Rgb = [number, number, number]
 export type V3 = [number, number, number]
 
@@ -152,6 +156,8 @@ export class Tunnels {
   private readonly bores = new Map<number, PackedEdge>()
   private tunnels: Tunnel[] = []
   private dirty = false
+  private occludersOff = false
+  private added: Observer<AbstractMesh> | null = null
   private readonly edgeTunnel = new Map<number, Tunnel>()
   private unlit: StandardMaterial | null = null
 
@@ -203,7 +209,7 @@ export class Tunnels {
     if (this.dirty) { this.dirty = false; this.rebuild() }
     for (const t of this.tunnels) {
       const inside = this.contains(t, camera)
-      if (inside !== t.inside) { t.inside = inside; t.tube.setEnabled(inside) }
+      if (inside !== t.inside) { t.inside = inside; t.tube.setEnabled(inside); this.occluders(this.cameraInside) }
       const near = t.mouths.some((m) => Math.hypot(camera.x - m.p.x, camera.z - m.p.z) < PORTAL_SEEN)
       if (near !== t.portals.isEnabled()) t.portals.setEnabled(near)
       // (a building over a mouth is a building: seen from as far as the city draws them)
@@ -212,6 +218,26 @@ export class Tunnels {
         if (show !== m.shown) { m.shown = show; m.entry.setEnabled(show) }
       }
     }
+  }
+
+  /**
+   * Inside a bore the tube itself is what hides the world, so the ground's depth-only occluders in the tube's group
+   * (render/city.ts: the ground and the carriageways, drawn first in the buildings' group) are switched off while the
+   * camera is in one (2026-10-14, owner inside Broadway: "stretched triangles", "water"). Wherever the elevation
+   * data dips into the tube — a hollow over it, the smeared wall over a portal — that invisible ground stood between
+   * the eye and the vault, and what the earlier groups had painted there (grass, a pond, the road over the hill)
+   * showed through it in jagged pieces. Nothing outside can be seen from in here but through the mouths.
+   */
+  private occluders(inside: boolean): void {
+    if (inside === this.occludersOff) return
+    this.occludersOff = inside
+    const set = (m: AbstractMesh): void => {
+      if (m.renderingGroupId === OCCLUDED_GROUP && m.name.startsWith('ground:occluder:')) m.isVisible = !inside
+    }
+    for (const m of this.scene.meshes) set(m)
+    // (and the ones streamed in while inside; dropped again on the way out)
+    if (inside) this.added = this.scene.onNewMeshAddedObservable.add((m) => queueMicrotask(() => set(m)))
+    else if (this.added) { this.scene.onNewMeshAddedObservable.remove(this.added); this.added = null }
   }
 
   /** the camera is in the bore: over its line, between its walls, under its crown */
@@ -472,7 +498,7 @@ export class Tunnels {
       mat.backFaceCulling = true
       m.material = mat
     }
-    m.renderingGroupId = 3
+    m.renderingGroupId = OCCLUDED_GROUP
     m.isPickable = false
     m.alwaysSelectAsActiveMesh = true
     m.freezeWorldMatrix()
