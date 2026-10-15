@@ -212,13 +212,13 @@ export function straightenJunctions<E extends ShapedEdge>(edges: E[], outside: O
      */
     for (let k = 0; k < ss.length; k++) {
       if (take[k] || (corner[k] && !nearSharp[k])) continue
-      for (const r of [12, 6, 4]) {
+      for (const r of [12, 10, 8, 6, 4]) {
         const s2 = approachShape(es[k], nid, r)
         if (!s2 || (s2.stray <= ZIG_STRAY && s2.bend <= ZIG_BEND)) break
         const f2 = s2.pts[s2.pts.length - 1]
         // (over the last 6 m the junction's own paving (render/city.ts `junctionHull`) is round the corner: a metre and a
         //  half off the carriageway there is still paved — never through a building)
-        if (blocked?.(np, f2) || outside([np, f2]) > Math.max(outside(s2.pts), r <= 6 ? 1.5 : 0.5)) continue
+        if (blocked?.(np, f2) || outside([np, f2]) > Math.max(outside(s2.pts), r <= 8 ? 1.5 : r <= 10 ? 1 : 0.5)) continue
         ss[k] = s2
         far[k] = f2
         take[k] = true
