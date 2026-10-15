@@ -36,6 +36,8 @@ import type { Terrain } from '../city/terrain.ts'
 type P = { x: number; z: number }
 /** the buildings' group (render/city.ts GROUP.building), which the tube, its portals and the ground's occluders share */
 const OCCLUDED_GROUP = 3
+/** the carriageways' group (render/city.ts GROUP.road), whose ground occluder is hidden in a tunnel too */
+const ROAD_GROUP = 2
 export type Rgb = [number, number, number]
 export type V3 = [number, number, number]
 
@@ -55,6 +57,8 @@ const UV: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
 const ENTRY = 16
 const ENTRY_SEEN = 120
 const PORTAL_SEEN = 250
+/** the slab over a mouth reaches this far back from the portal's face (past the bake's 7 m gap before the hill) */
+const MOUTH_ROOF = 12
 /** the generic headwall stands at least this much, and at most this much, over the top of the opening */
 const BAND = 1.0
 const TALLEST = 4
@@ -243,7 +247,8 @@ export class Tunnels {
     if (inside === this.occludersOff) return
     this.occludersOff = inside
     const set = (m: AbstractMesh): void => {
-      if (m.renderingGroupId === OCCLUDED_GROUP && m.name.startsWith('ground:occluder:')) m.isVisible = !inside
+      // (the road group's too: looking out of Broadway's west mouth, the trench road showed as lawn — 2026-10-15)
+      if (m.renderingGroupId >= ROAD_GROUP && m.name.startsWith('ground:occluder:')) m.isVisible = !inside
     }
     for (const m of this.scene.meshes) set(m)
     // (and the ones streamed in while inside; dropped again on the way out)
@@ -499,6 +504,23 @@ export class Tunnels {
         for (let k = 0; k < src.indices.length; k += 3) out.indices.push(base + src.indices[k], base + src.indices[k + 2], base + src.indices[k + 1])
       }
       put(own.face, face)
+      /*
+       * A ROOF over the mouth (owner, 2026-10-14, the Broadway Tunnel: "the entrance has an open top (no lid over the
+       * bores)"). Behind a portal the ground is the cut's level for a few metres before the hill begins (the bake carves
+       * past the mouth so the face's foot is clear, and fills the hill from 7 m in), and from above that gap showed the
+       * mouth's dark insides. A concrete slab closes it: over the bore, just above its crown, back from the face.
+       */
+      {
+        const roof = new MeshBuilder()
+        const hw = s.half + 0.7
+        const y = s.crown + 0.7
+        const back = -MOUTH_ROOF
+        const col: Rgb = [0.5, 0.5, 0.48]
+        roof.quad([[-hw, y, back], [hw, y, back], [hw, y, 0], [-hw, y, 0]], [0, 1, 0], UV, col, 0)
+        for (const sx of [-1, 1]) roof.quad([[sx * hw, 0, back], [sx * hw, 0, 0], [sx * hw, y, 0], [sx * hw, y, back]], [sx, 0, 0], UV, col, 0)
+        // (no back face: it walled off the bore; the hill the bake fills from 7 m in meets the slab at its own level)
+        put(roof, face)
+      }
       put(own.mass, mass)
     }
     return { faces, mass }

@@ -30,6 +30,8 @@ export interface TunnelEdge {
   bore?: boolean
   cut?: boolean
   name?: string
+  width?: number
+  walk?: number
 }
 
 /** street classes a bore may be (never motorway, trunk or service: a highway tunnel, a garage ramp) */
@@ -48,6 +50,8 @@ const MOUTH = 20
 export const CLEAR = 6.5
 /** longer than this is not a street tunnel a rider zooms through */
 const LONGEST = 2000
+/** a footway carrying a tunnel's pavement out of a mouth eases from the pavement's level to its own over this far */
+const PAVEMENT_EASE = 40
 /** how far out from a mouth a street into it may follow a trench in the ground (`fine`) */
 const TRENCH_RUN = 80
 /** a pavement belongs to a bore if every point of it is this close to the bore's line */
@@ -163,7 +167,7 @@ export function boreTunnels(edges: TunnelEdge[], ground: (x: number, z: number) 
      */
     if (fine) for (const n of mouths) {
       for (const o of byNode.get(n) ?? []) {
-        if (o.tunnel || (o.layer ?? 0) < 0 || o.foot || !o.heights?.length) continue
+        if (o.tunnel || (o.layer ?? 0) < 0 || !o.heights?.length) continue
         const p = unpackPoints(o.points)
         const c = lengths(p)
         const Lo = c[c.length - 1]
@@ -174,6 +178,17 @@ export function boreTunnels(edges: TunnelEdge[], ground: (x: number, z: number) 
         if (deep.length < 2) continue
         const before = o.heights.slice()
         o.heights = o.heights.map((h, i) => (floor[i].d <= TRENCH_RUN && Number.isFinite(floor[i].g) ? Math.round(Math.min(h, floor[i].g + 0.2) * 100) / 100 : h))
+        // (under a bridge the lidar has no ground — the street over it, not the trench, or nothing: there the floor is
+        //  the line between the lowered points either side, else the road humped 2 m under Hyde Street)
+        const low = floor.filter((f) => f.d <= TRENCH_RUN && o.heights![f.i] < before[f.i] - 0.5).sort((a, b) => a.d - b.d)
+        for (const f of floor) {
+          if (f.d > TRENCH_RUN) continue
+          const lo = [...low].reverse().find((q) => q.d < f.d), hi = low.find((q) => q.d > f.d)
+          if (!lo || !hi) continue
+          const t = (f.d - lo.d) / (hi.d - lo.d || 1)
+          const line = o.heights[lo.i] + (o.heights[hi.i] - o.heights[lo.i]) * t
+          if (o.heights[f.i] > line + 0.3) o.heights[f.i] = Math.round(line * 100) / 100
+        }
         // (no step where the run ends: eased back up over the next 20 m)
         for (const f of floor) if (f.d > TRENCH_RUN && f.d < TRENCH_RUN + 20) {
           const edge = floor.filter((q) => q.d <= TRENCH_RUN).sort((a, b) => b.d - a.d)[0]
@@ -230,6 +245,23 @@ export function boreTunnels(edges: TunnelEdge[], ground: (x: number, z: number) 
     if (!covered) continue
     // (only now, a bore for certain, are the streets into a lowered mouth sloped down to it)
     for (const [n, y] of lowered) approach(n, y)
+    /*
+     * A STUB OF CARRIAGEWAY from a mouth to where only footways go is a footway (2026-10-15, Broadway's west mouth:
+     * OSM's 6 m of "Broadway, primary" from the mouth north to the node where the tunnel's pavement meets the sidewalk
+     * outside, drawn 9.2 m wide across the mouth — a dark slab slicing the left arch).
+     */
+    for (const n of mouths) for (const o of byNode.get(n) ?? []) {
+      if (o.tunnel || o.foot || (o.layer ?? 0) < 0) continue
+      const far = o.a === n ? o.b : o.a
+      const p = unpackPoints(o.points)
+      const len = lengths(p)[p.length - 1]
+      if (len >= 12 || !(byNode.get(far) ?? []).every((x) => x === o || x.foot)) continue
+      o.foot = true
+      o.kind = 'footway'
+      o.width = 3
+      o.walk = 0
+      report?.(name, `the street into a mouth: a ${len.toFixed(0)} m stub of carriageway to the pavements only, made a footway`)
+    }
     // and every street into either mouth is in a CUT: drawn at its own level, below the ground beside it
     for (const n of mouths) for (const o of byNode.get(n) ?? []) if (!o.tunnel && (o.layer ?? 0) >= 0) o.cut = true
 
@@ -245,10 +277,41 @@ export function boreTunnels(edges: TunnelEdge[], ground: (x: number, z: number) 
       if (!f.tunnel || !f.foot || f.bore) continue
       const p = unpackPoints(f.points)
       const near = p.map((q) => nearest(line, cum, q))
-      if (near.some((n) => n.off > BESIDE)) continue
+      // (its two ends a little further: at a mouth a pavement turns to meet the sidewalk outside — Broadway's south one
+      //  ends 11 m off the line, and left out it was a footway over the top of the hill, 15 m above the tunnel)
+      if (near.some((n, i) => n.off > (i === 0 || i === near.length - 1 ? BESIDE + 6 : BESIDE))) continue
       f.heights = near.map((n) => Math.round(y(n.along) * 100) / 100)
       f.bore = true
       done.add(f.id)
+      /*
+       * …and the footway carrying a pavement on OUT of the mouth starts where the pavement ends (2026-10-15, Broadway's
+       * west mouth: the pavement inside ended at the mouth's level, the sidewalk outside began 4 m higher, at its own,
+       * and its first metres stood in the air across the portal), easing back to its own over PAVEMENT_EASE metres.
+       */
+      for (const end of [f.a, f.b]) {
+        const hEnd = end === f.a ? f.heights[0] : f.heights[f.heights.length - 1]
+        for (const o of byNode.get(end) ?? []) {
+          if (o === f || o.tunnel || !o.foot || !o.heights?.length) continue
+          const op = unpackPoints(o.points)
+          const oc = lengths(op)
+          const OL = oc[oc.length - 1]
+          const fromA = o.a === end
+          // (in a trench it is the trench's sidewalk: down to the floor first, as the street beside it is)
+          if (fine) o.heights = o.heights.map((h, i) => {
+            const d = fromA ? oc[i] : OL - oc[i]
+            const g = fine(op[i].x, op[i].z)
+            return d <= TRENCH_RUN && Number.isFinite(g) && g < h - 1.5 ? Math.round((g + 0.2) * 100) / 100 : h
+          })
+          const start = fromA ? o.heights[0] : o.heights[o.heights.length - 1]
+          if (Math.abs(start - hEnd) < 0.3) continue
+          o.heights = o.heights.map((h, i) => {
+            const d = fromA ? oc[i] : OL - oc[i]
+            if (d >= PAVEMENT_EASE) return h
+            const t = d / PAVEMENT_EASE
+            return Math.round((hEnd + (h - hEnd) * t) * 100) / 100
+          })
+        }
+      }
     }
   }
   return done
