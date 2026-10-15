@@ -17,8 +17,11 @@
     "osm": [
       "way/48995281"
     ],
-    "procedural": "bohemianClub",
-    "name": "Bohemian Club"
+    "procedural": "bohemianClub_624_Taylor",
+    "name": "Bohemian Club",
+    "height": 27,
+    "front": 180,
+    "note": "notable.ts bohemianClub_624_Taylor (2026-10-15, docs/sf-batches/MODEL-BOHEMIAN.md): six-storey red-brick block, ivy patches on Taylor and Post, arched entrance on Taylor, flags at the Post/Taylor roof corner. Replaces the grey edwardian-terracotta recipe."
   },
   {
     "osm": [

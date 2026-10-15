@@ -2167,6 +2167,174 @@ function whittierMansion_2090_Jackson(out: MeshBuilder, fit: Fit): void {
   emanuElCopy(out, m, Math.cos(th), Math.sin(th), tx, tz)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// Bohemian Club, 624 Taylor Street at Post
+// ---------------------------------------------------------------------------------------------------------------
+
+const BC_BRICK: Rgb = [0.5, 0.25, 0.185]        // the red-brown brick, a shade under #8e4a36 (it reads darker in shade, mapillary-2)
+const BC_BRICK_LT: Rgb = [0.56, 0.29, 0.21]
+const BC_STONE: Rgb = [0.78, 0.74, 0.66]        // #d8cdb8 trim, weathered
+const BC_IVY_DK: Rgb = [0.27, 0.43, 0.2]        // #4f7a3a, dimmed
+const BC_IVY_MID: Rgb = [0.33, 0.5, 0.23]
+const BC_IVY_LT: Rgb = [0.435, 0.6, 0.29]       // #6f9a4a
+const BC_GLASS: Rgb = [0.15, 0.17, 0.19]
+const BC_FRAME: Rgb = [0.3, 0.38, 0.34]         // the green-grey window frames of mapillary-3
+const BC_DOOR: Rgb = [0.1, 0.09, 0.08]
+const BC_ROOF: Rgb = [0.42, 0.4, 0.38]
+
+/**
+ * The Bohemian Club's clubhouse, 624 Taylor Street at Post (1934, Lewis P. Hobart): a six-storey masonry block of red-brown
+ * brick, a stone base course, tall regular windows with stone sills, a stone belt over the sixth floor and a darker top storey
+ * of narrow paired windows under a cornice; ivy mantles the lower three or four storeys of the Taylor and Post fronts in large
+ * ragged patches; flags fly from the roof at the Post/Taylor corner; the entrance is a tall round arch on Taylor near Post.
+ * Photographs: docs/shots/refs/notable/bohemian/ — mapillary-3 (brick, stone trim, the ivy mantle, the window proportions),
+ * -2 (the block from down Post: flags on the roof corner, belt course, darker top storey), -5 (an arched doorway in a brick
+ * front), -0 (ivy and stone plinth at the base). -4 is the Dakota Hotel and -1 the Emperor Norton Inn, both ignored.
+ *
+ * Orientation: the manifest says front 180, so Post (the south edge) is the fit's front: the ring edge whose outward normal
+ * faces local -z; Taylor is the ring edge whose normal faces local -x (the west). Both are found from the ring's geometry in the
+ * fit frame, never from OSM's vertex order; every other edge (the neighbours' party walls) gets plain brick without ivy.
+ *
+ * Where the photographs overruled the numbers: the Assessor says four storeys but the photographs and LiDAR (26.8 m median)
+ * show six storeys plus a top storey; the ivy is not a band but big irregular patches that stop short of the upper storeys and
+ * leave the windows clear; the stone is a base plinth under the brick, not rustication.
+ */
+function bohemianClub_624_Taylor(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const BK = surfaceTag('brick')
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  // wind it so (tz, -tx) is the outward normal
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  const n = ring.length
+  const TOP = 27, ROOF = 26.6
+  const rnd = (i: number): number => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x) }
+
+  // the edges' roles: the front (Post) faces -z, Taylor faces -x
+  const info = ring.map((a, i) => {
+    const b = ring[(i + 1) % n], l = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    return { i, a, b, l, nx: (b.z - a.z) / l, nz: -(b.x - a.x) / l }
+  })
+  const best = (fn: (e: typeof info[number]) => number): number => info.reduce((bi, e) => (fn(e) + e.l * 0.002 > fn(info[bi]) + info[bi].l * 0.002 ? e.i : bi), 0)
+  const pi = best((e) => -e.nz), ti = best((e) => -e.nx)
+
+  const win = (a: P2, tx: number, tz: number, nx: number, nz: number, u: number, y0: number, y1: number, hw: number, sill: boolean): void => {
+    const cx = a.x + tx * u, cz = a.z + tz * u
+    emOpening(m, cx, cz, tx, tz, nx, nz, y0 - 0.15, y1 + 0.2, hw + 0.2, 0, BC_STONE, BK, 0.2)       // the stone surround
+    emOpening(m, cx, cz, tx, tz, nx, nz, y0, y1, hw, 0, BC_GLASS, GL, 0.25)
+    emOpening(m, cx, cz, tx, tz, nx, nz, y0, y1, 0.04, 0, BC_FRAME, ST, 0.28)                    // the mullion
+    const yt = y0 + (y1 - y0) * 0.7
+    emOpening(m, cx, cz, tx, tz, nx, nz, yt, yt + 0.07, hw, 0, BC_FRAME, ST, 0.28)                // the transom
+    if (sill) emOpening(m, cx, cz, tx, tz, nx, nz, y0 - 0.32, y0 - 0.15, hw + 0.3, 0, BC_STONE, BK, 0.3)
+  }
+
+  for (const e of info) {
+    const { a, b, l, nx, nz } = e
+    if (l < 0.5) continue
+    const tx = (b.x - a.x) / l, tz = (b.z - a.z) / l
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const panel = (u0: number, u1: number, y0: number, y1: number, pr: number, c: Rgb, tag: number): void => {
+      m.quad([P(u0, y0, pr), P(u1, y0, pr), P(u1, y1, pr), P(u0, y1, pr)], [nx, 0, nz], uv, c, tag)
+    }
+    const street = e.i === pi || e.i === ti
+    panel(0, l, -3, TOP, 0, BC_BRICK, BK)
+    for (let y = 1.6; y < 23; y += 2.4) panel(0, l, y, y + 0.05, 0.015, BC_BRICK_LT, BK)             // a few courses, so the brick reads as brick
+    panel(0, l, -3, 1.3, 0.07, BC_STONE, BK)                                                         // the stone base course
+    panel(0, l, 1.3, 1.5, 0.12, BC_STONE, BK)
+    panel(0, l, 22.95, 23.55, 0.12, BC_STONE, BK)                                                    // the belt under the top storey
+    panel(0, l, 23.55, 26.0, 0.02, [0.42, 0.2, 0.15], BK)                                            // the top storey, darker
+    const cx = a.x + tx * l / 2, cz = a.z + tz * l / 2, h = Math.atan2(nx, nz)
+    boxAlong(m, cx + nx * 0.4, 26.25, cz + nz * 0.4, l / 2 + 0.3, 0.4, 0.4, h, BC_STONE, BK)         // the cornice
+    boxAlong(m, cx + nx * 0.05, 25.6, cz + nz * 0.05, l / 2, 0.2, 0.15, h, BC_STONE, BK)
+    if (!street && e.l < 8) continue
+
+    // regular windows: six tall rows over the base, narrow pairs in the top storey
+    const k = Math.max(1, Math.floor((l - 3) / 3.3))
+    const door = e.i === ti ? ((): number => (a.z > b.z ? l - 8.5 : 8.5))() : -99
+    for (let j = 0; j < k; j++) {
+      const u = 1.5 + ((l - 3) * (j + 0.5)) / k
+      for (let r = 0; r < 6; r++) {
+        const y0 = 2.35 + 3.55 * r
+        if (r === 0 && Math.abs(u - door) < 2.2) continue
+        win(a, tx, tz, nx, nz, u, y0, y0 + 2.45, 0.72, true)
+      }
+      for (const du of [-0.45, 0.45]) win(a, tx, tz, nx, nz, u + du, 23.95, 25.45, 0.27, false)
+    }
+    for (let j = 0; j <= k; j++) {                                                                  // brick piers swell to stone caps at the belt
+      const u = 1.5 + ((l - 3) * j) / k
+      panel(u - 0.3, u + 0.3, 23.55, 26.0, 0.07, BC_BRICK_LT, BK)
+    }
+
+    if (e.i === ti) {                                                                                 // the arched entrance on Taylor
+      const cx0 = a.x + tx * door, cz0 = a.z + tz * door
+      emOpening(m, cx0, cz0, tx, tz, nx, nz, 0, 3.4, 1.9, 1.9, BC_STONE, BK, 0.22, 8)
+      emOpening(m, cx0, cz0, tx, tz, nx, nz, 0.05, 3.3, 1.5, 1.5, BC_DOOR, GL, 0.3, 8)
+      emOpening(m, cx0, cz0, tx, tz, nx, nz, 0.05, 3.3, 0.04, 1.5, BC_FRAME, ST, 0.33, 8)
+      boxAlong(m, cx0 + nx * 0.3, 0.12, cz0 + nz * 0.3, 2.0, 0.12, 0.6, h, BC_STONE, BK)          // the step
+      boxAlong(m, cx0 + nx * 0.3, 5.5, cz0 + nz * 0.3, 2.3, 0.15, 0.3, h, BC_STONE, BK)           // the hood over it
+    }
+
+    // the ivy: big ragged patches on the lower storeys of Post and Taylor, thick on Taylor, half-height on Post
+    if (!street) continue
+    const seed = e.i * 31 + 7
+    const cell = 0.45
+    const nc = Math.floor(l / cell)
+    // a continuous ragged top edge per layer (sums of sines + a little noise), cut off where the doorway or the hedge is
+    const topAt = (u: number, layer: number): number => {
+      const ph = seed * 1.7 + layer * 4.1
+      let hgt = (e.i === ti ? 12.5 : 7.5) + Math.sin(u * 0.19 + ph) * 3.4 + Math.sin(u * 0.47 + ph * 2) * 2.2 + Math.sin(u * 1.3 + ph * 3) * 1.1
+      if (e.i === pi && u > l * 0.62) hgt = -1                                  // Post's eastern half stays brick over a hedge
+      if (e.i === ti && u > l - 4) hgt *= 0.5
+      if (layer === 1) hgt = hgt * 0.7 - 1
+      if (Math.abs(u - door) < 1.9) hgt = -1                                      // the doorway stays clear
+      return hgt
+    }
+    for (let layer = 0; layer < 2; layer++) {
+      for (let c = 0; c < nc; c++) {
+        const u0 = c * cell, u1 = u0 + cell
+        const h0 = topAt(u0, layer) + (rnd(c + seed + layer * 5) - 0.5) * 0.5, h1 = topAt(u1, layer) + (rnd(c + 1 + seed + layer * 5) - 0.5) * 0.5
+        if (h0 < 0.8 && h1 < 0.8) continue
+        const sh = 0.85 + rnd(c * 7 + seed + layer) * 0.3
+        const base = layer === 0 ? (rnd(c + seed) < 0.5 ? BC_IVY_DK : BC_IVY_MID) : (rnd(c + seed) < 0.6 ? BC_IVY_LT : BC_IVY_MID)
+        const col: Rgb = [base[0] * sh, base[1] * sh, base[2] * sh]
+        const pr = 0.1 + layer * 0.05
+        m.quad([P(u0, -0.2, pr), P(u1, -0.2, pr), P(u1, Math.max(h1, 0.3), pr), P(u0, Math.max(h0, 0.3), pr)], [nx, 0, nz], uv, col, ST)
+      }
+    }
+  }
+
+  // roof, and the flags on the Post/Taylor corner
+  capPolygonWithHoles(m, [ring], ROOF, BC_ROOF, surfaceTag('concrete'))
+  const cA = info[pi].a                                           // the corner shared by the front edge and Taylor
+  const cn = { x: info[pi].nx + info[ti].nx, z: info[pi].nz + info[ti].nz }
+  const cl = Math.hypot(cn.x, cn.z) || 1
+  const inx = -cn.x / cl, inz = -cn.z / cl
+  const flagCols: Rgb[] = [[0.78, 0.12, 0.14], [0.95, 0.95, 0.95], [0.85, 0.7, 0.18]]
+  const poles: [number, number, number][] = [[1.7, 1.2, 8.5], [3.4, 0.6, 6.8], [2.4, 2.8, 6.0]]
+  const tdx = info[pi].b.x - info[pi].a.x, tdz = info[pi].b.z - info[pi].a.z, tl = Math.hypot(tdx, tdz) || 1
+  poles.forEach(([di, dt, ph], k) => {
+    const px = cA.x + inx * di + (tdx / tl) * dt, pz = cA.z + inz * di + (tdz / tl) * dt
+    prism(m, px, pz, ROOF, ROOF + ph, 0.05, 4, [0.85, 0.85, 0.85], ST)
+    const fx = tdx / tl, fz = tdz / tl
+    const fw = 1.6, fh = 1.0, y1 = ROOF + ph - 0.1, y0 = y1 - fh
+    const Q: V3[] = [[px, y0, pz], [px + fx * fw, y0 + 0.05, pz + fz * fw], [px + fx * fw, y1 - 0.1, pz + fz * fw], [px, y1, pz]]
+    m.quad(Q, [fz, 0, -fx], uv, flagCols[k], ST)
+    m.quad([Q[1], Q[0], Q[3], Q[2]], [-fz, 0, fx], uv, flagCols[k], ST)
+  })
+
+  // the model is already in the fit's own frame
+  for (let i = 0; i < m.positions.length; i++) out.positions.push(m.positions[i])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -2175,4 +2343,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   fugaziBank_4_Columbus,
   pacificExchange_301_Pine,
   whittierMansion_2090_Jackson,
+  bohemianClub_624_Taylor,
 }
