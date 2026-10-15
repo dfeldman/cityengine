@@ -663,6 +663,16 @@ const BUS_RED: [number, number, number] = [0.46, 0.14, 0.12]
 const BIKE_GREEN: [number, number, number] = [0.27, 0.52, 0.3]
 const RAINBOW: [number, number, number][] = [[0.82, 0.12, 0.12], [0.92, 0.48, 0.1], [0.95, 0.85, 0.15], [0.15, 0.6, 0.25], [0.15, 0.35, 0.8], [0.45, 0.2, 0.6]]
 
+/**
+ * The page a CARRIAGEWAY is drawn with. A concrete street (OSM `surface=concrete`: some 1600 of San Francisco's ways —
+ * Mason on Nob Hill, many service lanes) is drawn as road, not on the concrete page: that page is the pavement's,
+ * and the street vanished into its own sidewalks (owner, 2026-10-15: "Mason street … displays as sidewalk texture").
+ * Only the drawing: the ride still reads the surface OSM gives (rolling resistance, graph.ts).
+ */
+function drawnSurface(e: { surface: string; foot?: boolean }): string {
+  return !e.foot && e.surface === 'concrete' ? 'asphalt' : e.surface
+}
+
 function dashedLine(out: MeshBuilder, pts: { x: number; z: number }[], offset: number, y: number,
                     width: number, on: number, period: number,
                     white: [number, number, number] = [0.86, 0.85, 0.79]): void {
@@ -2734,8 +2744,8 @@ export class City {
         continue
       }
 
-      const out = roads.get(e.surface) ?? new MeshBuilder()
-      roads.set(e.surface, out)
+      const out = roads.get(drawnSurface(e)) ?? new MeshBuilder()
+      roads.set(drawnSurface(e), out)
       quadStrip(out, pts, e.width, 0.05, [0.5, 0.5, 0.5])
 
       // the kerb, cut back from each junction so it stops at the corner rather than crossing the mouth of
@@ -2774,7 +2784,7 @@ export class City {
         if (dot > 0.9) continue      // within about 25° of straight on
       }
       const tally = new Map<string, number>()
-      for (const a of drive) tally.set(a.surface, (tally.get(a.surface) ?? 0) + 1)
+      for (const a of drive) { const sf = a.surface === 'concrete' ? 'asphalt' : a.surface; tally.set(sf, (tally.get(sf) ?? 0) + 1) }
       const surface = [...tally].sort((x, y) => y[1] - x[1])[0][0]
       const out = roads.get(surface) ?? new MeshBuilder()
       roads.set(surface, out)
@@ -3499,8 +3509,8 @@ export class City {
               off = Math.max(off, Math.abs(ha - g))
             }
             if (off >= FLAT_MIN) {
-              const out = flat.get(e.surface) ?? new MeshBuilder()
-              flat.set(e.surface, out)
+              const out = flat.get(drawnSurface(e)) ?? new MeshBuilder()
+              flat.set(drawnSurface(e), out)
               /*
                * TESSELLATED, and lifted a hair (BUGS.md #221d). One quad the full width of the carriageway
                * z-fought with the markings, which share this rendering group — the owner: *"it often has z
