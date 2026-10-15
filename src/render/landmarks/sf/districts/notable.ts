@@ -7,7 +7,7 @@
 import { MeshBuilder, capPolygonWithHoles } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { box, prism, type Rgb } from '../../../models.ts'
-import { boxAlong } from '../../parts.ts'
+import { boxAlong, marquee, bladeSign, signText } from '../../parts.ts'
 import { classicalColumn } from '../../column.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
 
@@ -2514,6 +2514,228 @@ function audiffredBuilding_100_Embarcadero(out: MeshBuilder, fit: Fit): void {
   for (const idx of m.indices) out.indices.push(base + idx)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// The Alhambra Theatre, 2330 Polk Street
+// ---------------------------------------------------------------------------------------------------------------
+
+const AL_WALL: Rgb = [0.9, 0.83, 0.71]          // #e6d4b6 cream stucco
+const AL_TRIM: Rgb = [0.85, 0.76, 0.63]         // #d9c3a0 carved cast stone, the minaret caps
+const AL_RIB: Rgb = [0.7, 0.6, 0.48]            // darker relief and ribs
+const AL_TILE: Rgb = [0.6, 0.353, 0.235]        // #9a5a3c the eave's clay tile
+const AL_TEAL: Rgb = [0.29, 0.56, 0.54]         // #4a8f8a
+const AL_RED: Rgb = [0.69, 0.25, 0.227]         // #b0403a
+const AL_NAVY: Rgb = [0.1, 0.1, 0.24]
+const AL_GOLD: Rgb = [0.93, 0.7, 0.2]
+const AL_SHOP: Rgb = [0.13, 0.13, 0.15]
+const AL_GLASS_C: Rgb = [0.1, 0.13, 0.17]
+
+/**
+ * The Alhambra Theatre, 2330 Polk Street (1926, Miller & Pflueger, SF Landmark 1996; Crunch Fitness now): a Moorish Revival
+ * movie palace. A cream stucco street front under a deep clay-tile eave on a row of carved brackets, a frieze of navy star
+ * panels between the brackets, three pointed-arched windows over a carved ledge, two slender minarets at the front corners
+ * (square carved shaft, a lattice balcony drum with a flared lip, a teal-tiled round shaft, a tiled cap), the marquee with
+ * its scalloped crest and the tall blade sign "ALHAMBRA". The auditorium behind is a plain stucco box.
+ * Photographs: docs/shots/refs/notable/alhambra/ wiki-image.jpg (the key reference), mapillary-0 (marquee, star frieze) and
+ * mapillary-2 (blade sign, eave).
+ *
+ * Orientation: the front is found from the ring in the fit frame (the long straight edge facing local -z), never from OSM's
+ * vertex order. Where the pack and the geometry disagreed: the pack says "west side of Polk, front 90"; the plan's only
+ * long straight edge (29.5 m, the width the two minarets stand apart in wiki-image) is the one nearest Polk, so the manifest
+ * front is whichever bearing puts that edge at -z.
+ */
+function alhambraTheatre_2330_Polk(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  const n = ring.length
+  const Y_EAVE = 11.8, Y_ROOF = 13.6
+  const info = ring.map((a, i) => {
+    const b = ring[(i + 1) % n], l = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    return { i, a, b, l, nx: (b.z - a.z) / l, nz: -(b.x - a.x) / l }
+  })
+  // the front: the longest edge whose outward normal is within 50 degrees of -z
+  let fi = 0, bestScore = -1
+  for (const e of info) if (-e.nz > 0.64 && e.l > bestScore) { bestScore = e.l; fi = e.i }
+  if (bestScore < 0) fi = info.reduce((bi, e) => (-e.nz > -info[bi].nz ? e.i : bi), 0)
+
+  const wallEdge = (e: typeof info[number], top: number): void => {
+    const { a, b, nx, nz } = e
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + (b.x - a.x) * u / e.l + nx * pr, y, a.z + (b.z - a.z) * u / e.l + nz * pr]
+    m.quad([P(0, -3), P(e.l, -3), P(e.l, top), P(0, top)], [nx, 0, nz], uv, AL_WALL, ST)
+  }
+
+  for (const e of info) {
+    if (e.i === fi) continue
+    wallEdge(e, Y_ROOF)
+    const h = Math.atan2(e.nx, e.nz), tx = (e.b.x - e.a.x) / e.l, tz = (e.b.z - e.a.z) / e.l
+    boxAlong(m, e.a.x + tx * e.l / 2 + e.nx * 0.15, Y_ROOF + 0.1, e.a.z + tz * e.l / 2 + e.nz * 0.15, e.l / 2 + 0.1, 0.15, 0.2, h, AL_TRIM, ST)
+    // blind pointed windows along the side street walls
+    if (e.l > 6) {
+      const k = Math.floor(e.l / 3.4)
+      for (let j = 0; j < k; j++) {
+        const u = (e.l * (j + 0.5)) / k, cx = e.a.x + tx * u, cz = e.a.z + tz * u
+        emOpening(m, cx, cz, tx, tz, e.nx, e.nz, 6.0, 8.0, 0.5, 0.45, AL_RIB, ST, 0.03, 4)
+      }
+    }
+  }
+
+  // ---- the front --------------------------------------------------------------------------------------------------
+  const F = info[fi], { a, b, l: L, nx, nz } = F
+  const tx = (b.x - a.x) / L, tz = (b.z - a.z) / L
+  const h = Math.atan2(nx, nz)
+  const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+  const W = (u: number, pr = 0): { x: number; z: number } => ({ x: a.x + tx * u + nx * pr, z: a.z + tz * u + nz * pr })
+  const panel = (u0: number, u1: number, y0: number, y1: number, pr: number, c: Rgb, tag: number): void => {
+    m.quad([P(u0, y0, pr), P(u1, y0, pr), P(u1, y1, pr), P(u0, y1, pr)], [nx, 0, nz], uv, c, tag)
+  }
+  const slab = (u0: number, u1: number, y0: number, y1: number, pr0: number, pr1: number, c: Rgb, tag = ST): void => {
+    const w = W((u0 + u1) / 2, (pr0 + pr1) / 2)
+    boxAlong(m, w.x, (y0 + y1) / 2, w.z, (u1 - u0) / 2, (y1 - y0) / 2, (pr1 - pr0) / 2, h, c, tag)
+  }
+  const open = (u: number, y0: number, spring: number, hw: number, rise: number, c: Rgb, tag: number, proud: number, seg = 6): void => {
+    const w = W(u)
+    emOpening(m, w.x, w.z, tx, tz, nx, nz, y0, spring, hw, rise, c, tag, proud, seg)
+  }
+  // which end the marquee and sign stand at: measured from the end the viewer sees on the left (see the render)
+  const flip = false
+  const U = (f: number): number => (flip ? 1 - f : f) * L
+
+  panel(0, L, -3, Y_EAVE, 0, AL_WALL, ST)
+  // the ground floor: dark glazing and the shop sign band, under the marquee
+  panel(0, L, -3, 4.1, 0.05, AL_SHOP, ST)
+  const kg = Math.floor(L / 2.6)
+  for (let j = 0; j < kg; j++) {
+    const u0 = (L * j) / kg + 0.12, u1 = (L * (j + 1)) / kg - 0.12
+    panel(u0, u1, 0.5, 3.8, 0.1, AL_GLASS_C, GL)
+  }
+  slab(0, L, 0, 0.5, 0, 0.18, AL_RIB)
+  slab(0, L, 4.1, 4.75, 0, 0.35, [0.3, 0.3, 0.32], ST)                     // the shop-sign band
+  slab(-0.05, L + 0.05, 4.75, 5.4, 0, 0.8, AL_WALL)                         // the carved ledge across the front
+  slab(-0.05, L + 0.05, 5.4, 5.55, 0, 0.85, AL_TRIM)
+  // the carved panel band over the ledge, and the three pointed windows (a small one at the sign end)
+  panel(0.8, L - 0.8, 5.7, 9.2, 0.04, AL_WALL, ST)
+  for (const f of [0.52, 0.67, 0.83]) {
+    const u = U(f)
+    open(u, 5.7, 9.0, 1.05, 0.9, AL_TRIM, ST, 0.08)                         // the carved surround
+    open(u, 5.9, 7.7, 0.55, 0.0, AL_GLASS_C, GL, 0.12)
+    open(u, 7.7, 7.7, 0.55, 0.7, AL_GLASS_C, GL, 0.12, 5)
+    open(u, 5.9, 7.9, 0.03, 0.0, AL_RIB, ST, 0.15)
+    slab(u - 0.85, u + 0.85, 5.55, 5.9, 0, 0.45, AL_TRIM)
+  }
+  for (const f of [0.045, 0.3]) {
+    const u = U(f)
+    open(u, 6.6, 7.9, 0.4, 0.35, AL_GLASS_C, GL, 0.08, 4)
+  }
+  // the bracketed eave: star panels between carved brackets, the fascia, and the clay-tile slope
+  const nb = Math.round((L - 1.0) / 1.3)
+  for (let j = 0; j <= nb; j++) {
+    const u = 0.5 + ((L - 1.0) * j) / nb
+    slab(u - 0.12, u + 0.12, 10.4, 11.8, 0, 0.8, AL_TRIM)                     // the bracket, under the tile
+    if (j < nb) {
+      const un = (u + (0.5 + ((L - 1.0) * (j + 1)) / nb)) / 2, hwp = (L - 1.0) / nb / 2 - 0.14
+      panel(un - hwp, un + hwp, 10.0, 11.3, 0.06, AL_NAVY, ST)
+      const c = P(un, 10.65, 0.1)
+      for (const [sx, sy] of [[0.12, 0.5], [0.5, 0.12]] as [number, number][]) {
+        const dx = tx * sx, dz = tz * sx
+        m.quad([[c[0] - dx, c[1], c[2] - dz], [c[0], c[1] - sy, c[2]], [c[0] + dx, c[1], c[2] + dz], [c[0], c[1] + sy, c[2]]], [nx, 0, nz], uv, AL_GOLD, ST)
+      }
+    }
+  }
+  slab(-0.3, L + 0.3, 11.3, 11.9, 0.7, 1.25, AL_TILE, surfaceTag('tile'))      // the tile eave's thick edge
+  const rise = Y_ROOF - 11.9, run = 1.25 + 4.0, sl = Math.hypot(rise, run)
+  const sn: V3 = [nx * rise / sl, run / sl, nz * rise / sl]
+  const Q = (u: number, y: number, pr: number): V3 => P(u, y, pr)
+  m.quad([Q(-0.3, 11.9, 1.25), Q(L + 0.3, 11.9, 1.25), Q(L + 0.3, Y_ROOF, -4), Q(-0.3, Y_ROOF, -4)], sn, uv, AL_TILE, TL)
+  // the roof over the rest, inside the tile slope
+  const cap = ring.map((p, i) => (i === fi || i === (fi + 1) % n) ? { x: p.x - nx * 4, z: p.z - nz * 4 } : p)
+  capPolygonWithHoles(m, [cap], Y_ROOF, [0.6, 0.58, 0.55], surfaceTag('concrete'))
+
+  // ---- the minarets: one at each front corner, rising from the ground to 19 m --------------------------------------------
+  const ngon = (cx: number, cz: number, r0: number, r1: number, y0: number, y1: number, k: number, c: Rgb, tag: number, rot = 0.3927): void => {
+    for (let i = 0; i < k; i++) {
+      const t0 = rot + (Math.PI * 2 * i) / k, t1 = rot + (Math.PI * 2 * (i + 1)) / k, tm = (t0 + t1) / 2
+      const p = (t: number, r: number, y: number): V3 => [cx + Math.cos(t) * r, y, cz + Math.sin(t) * r]
+      const rs = Math.hypot(r0 - r1, y1 - y0)
+      m.quad([p(t0, r0, y0), p(t1, r0, y0), p(t1, r1, y1), p(t0, r1, y1)],
+        [Math.cos(tm) * (y1 - y0) / rs, (r0 - r1) / rs, Math.sin(tm) * (y1 - y0) / rs], uv, c, tag)
+    }
+  }
+  const disc = (cx: number, cz: number, r: number, y: number, k: number, c: Rgb, rot = 0.3927): void => {
+    for (let i = 0; i + 2 <= k; i += 2) {
+      const p = (j: number): V3 => [cx + Math.cos(rot + (Math.PI * 2 * j) / k) * r, y, cz + Math.sin(rot + (Math.PI * 2 * j) / k) * r]
+      m.quad([[cx, y, cz], p(i), p(i + 1), p(i + 2)], [0, 1, 0], uv, c, ST)
+    }
+  }
+  const minaret = (u: number): void => {
+    const C = W(u, -0.35), hw = 1.05
+    // the carved square shaft, with its relief bands and corner ribs
+    boxAlong(m, C.x, 4.5, C.z, hw, 7.5, hw, h, AL_TRIM, ST)
+    boxAlong(m, C.x + nx * 0.06, 8.7, C.z + nz * 0.06, hw + 0.06, 0.2, hw + 0.06, h, AL_TRIM, ST)
+    for (const y of [1.6, 3.4, 5.2, 7.0, 8.8]) boxAlong(m, C.x + nx * (hw + 0.03), y, C.z + nz * (hw + 0.03), hw * 0.7, 0.7, 0.04, h, AL_RIB, ST)
+    for (const sx of [-1, 1]) boxAlong(m, C.x + tx * sx * (hw + 0.02), 6.5, C.z + tz * sx * (hw + 0.02), 0.04, 2.2, hw * 0.6, h, AL_RIB, ST)
+    // the swelling collar of carved cast stone up to the balcony
+    boxAlong(m, C.x, 11.0, C.z, hw + 0.1, 0.9, hw + 0.1, h, AL_TRIM, ST)
+    ngon(C.x, C.z, 1.0, 1.15, 11.9, 12.7, 8, AL_TRIM, ST)
+    ngon(C.x, C.z, 1.15, 1.35, 12.7, 13.0, 8, AL_RIB, ST)
+    disc(C.x, C.z, 1.35, 13.0, 8, AL_TRIM)
+    // the open lattice balcony drum: dark openwork between eight light posts
+    ngon(C.x, C.z, 0.95, 0.95, 13.0, 14.5, 8, [0.45, 0.38, 0.3], ST)
+    for (let i = 0; i < 8; i++) {
+      const t = 0.3927 + (Math.PI * 2 * (i + 0.5)) / 8
+      boxAlong(m, C.x + Math.cos(t) * 1.0, 13.75, C.z + Math.sin(t) * 1.0, 0.07, 0.75, 0.07, 0, AL_TRIM, ST)
+    }
+    for (let i = 0; i < 8; i++) {                                              // the pierced lattice panels, pale on dark
+      const t = 0.3927 + (Math.PI * 2 * i) / 8
+      boxAlong(m, C.x + Math.cos(t) * 1.0, 13.45, C.z + Math.sin(t) * 1.0, 0.3, 0.14, 0.04, -t + Math.PI / 2, AL_TRIM, ST)
+    }
+    ngon(C.x, C.z, 1.05, 1.28, 14.5, 14.95, 8, AL_TRIM, TC)                      // the flared, scalloped lip
+    disc(C.x, C.z, 1.28, 14.95, 8, AL_TRIM)
+    // the teal-tiled round shaft and its tiled cap
+    ngon(C.x, C.z, 0.62, 0.62, 14.95, 17.9, 8, AL_TEAL, TL, 0)
+    for (const y of [15.6, 16.5]) ngon(C.x, C.z, 0.64, 0.64, y, y + 0.14, 8, AL_TRIM, TL, 0)
+    ngon(C.x, C.z, 0.68, 0.68, 17.9, 18.1, 8, AL_TRIM, TL, 0)
+    ngon(C.x, C.z, 0.68, 0.1, 18.1, 18.85, 8, AL_TEAL, TL, 0)
+    boxAlong(m, C.x, 19.0, C.z, 0.05, 0.2, 0.05, 0, AL_GOLD, ST)
+  }
+  minaret(1.3)
+  minaret(L - 1.3)
+
+  // ---- the marquee and the blade sign ------------------------------------------------------------------------------------
+  const mw = 5.6, mu = U(0.3), mo = 2.6, my = 4.9
+  const mp = W(mu)
+  marquee(m, mp.x, my, mp.z, mw, mo, '', { heading: h, body: [0.72, 0.84, 0.85], band: [0.95, 0.93, 0.88], letters: [0.1, 0.1, 0.14], height: 1.7 })
+  const put = (u: number, y: number, o: number, hu: number, hv: number, ho: number, c: Rgb): void => {
+    const w = W(mu + u, o)
+    boxAlong(m, w.x, y, w.z, hu, hv, ho, h, c, 0)
+  }
+  put(0, my - 0.7, mo + 0.05, mw, 0.1, 0.05, AL_RED)                            // the red and teal trim bands along the lower edge
+  put(0, my - 0.55, mo + 0.05, mw, 0.07, 0.06, AL_TEAL)
+  // the scalloped crest over the marquee's front, in teal with a red lettered name
+  put(0, my + 1.05, mo / 2, mw, 0.14, mo / 2, AL_TEAL)
+  for (let i = 0; i < 9; i++) {
+    const u = -mw + 0.6 + (i * (2 * mw - 1.2)) / 8
+    const r = 0.45 + 0.25 * (i === 4 ? 1 : 0.3 + 0.7 * Math.abs(Math.sin(i * 1.7)))
+    put(u, my + 1.3 + r / 2, mo - 0.15, 0.6, r / 2 + 0.05, 0.08, i % 2 ? AL_RED : AL_TEAL)
+  }
+  const crest = W(mu, mo - 0.05)
+  signText(m, 'ALHAMBRA', crest.x, my + 1.55, crest.z, 0.6, AL_RED, { heading: h, lit: true })
+  // the blade sign: tall, teal with cream letters, standing on the marquee's near end and rising above the eave
+  const sp = W(mu - mw + 1.0)
+  bladeSign(m, sp.x, 14.6, sp.z, 9.0, 'ALHAMBRA', { body: AL_TEAL, letters: [0.95, 0.92, 0.82], width: 1.3, out: 1.5, heading: h })
+
+  for (let i = 0; i < m.positions.length; i++) out.positions.push(m.positions[i])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -2524,4 +2746,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   whittierMansion_2090_Jackson,
   bohemianClub_624_Taylor,
   audiffredBuilding_100_Embarcadero,
+  alhambraTheatre_2330_Polk,
 }

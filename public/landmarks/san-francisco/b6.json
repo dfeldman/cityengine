@@ -1,5 +1,5 @@
 [
-  { "osm": ["way/206662303"], "procedural": "b6_theatre_206662303", "name": "Alhambra Theatre", "height": 14 },
+  { "osm": ["way/206662303"], "procedural": "alhambraTheatre_2330_Polk", "name": "Alhambra Theatre", "height": 14, "front": 270, "note": "Moorish Revival movie palace (1926): bracketed tile eave, star frieze, two minarets, marquee and blade sign; front found from the ring in the fit frame" },
   { "osm": ["way/242973692"], "procedural": "b6_industrial_242973692", "name": "Pioneer Building", "height": 13 },
   { "osm": ["way/220522604"], "procedural": "b6_theatre_220522604", "name": "Harding Theater", "height": 13 },
   { "osm": ["way/273181546"], "procedural": "b6_mansion_273181546", "name": "Koshland House", "height": 13 },
