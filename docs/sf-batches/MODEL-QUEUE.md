@@ -28,3 +28,25 @@ whose Wikidata entry is the tenant company (Plaid, CRV, UserTesting), anything o
 ## B. Haiku-tier models of notable buildings (b*/h*/s1/batch-1006): review → redo only the clearly poor, prominent ones
 
 Review sheets: model shots beside a Mapillary photo, graded fine / minor (manifest fix) / wrong (redo).
+
+Reviewed 2026-10-15 (sheets: model corner view beside a Mapillary photo, all 106). Heights in the city are right
+(spot-checked Castagnola's, Dolphin Club, Fugazi); the fault is a generic grey office box where the building has a
+face of its own. Redo, in order (landmark × how much of the city sees it):
+
+| # | building | entry | why |
+|---|---|---|---|
+| B1 | Spreckels Mansion | h4 `spreckelsMansion` | BROKEN: its columns float detached in front of the house |
+| B2 | Fugazi Bank Building (Columbus/Montgomery) | h2 `fugaziBank` | ornate white corner bank drawn as a grey office recipe |
+| B3 | California Historical Society (Whittier Mansion) | h2 `californiaHistoricalSociety` | red sandstone mansion drawn as an office block |
+| B4 | Pacific Exchange (301 Pine) | b5 `b5_bank_256066230` | plain stone grid; the giant columns and Stackpole statues are missing |
+| B5 | Bohemian Club | h2 `bohemianClub` | ivy-covered brick club drawn as an office recipe |
+| B6 | Audiffred Building | h4 `h4_audiffredBuilding` | 1889 brick with mansard drawn as a glass-base box |
+| B7 | Alhambra Theatre (Polk) | b6 `b6_theatre_206662303` | Moorish front and marquee missing |
+| B8 | Victoria Theatre / Swedish American Hall / Olympic Club / Ocean Climate Center | b6/b6/b4/b11 | |
+
+Re-checked at full size: the Old Mint (BANK_TEMPLES override: Doric portico) and The Cannery (arched brick) are
+fine — the review thumbnails were too small to judge; always confirm at full size.
+
+Acceptable as they are (gist right): Women's Building, Castro Theatre, San Francisco Mint (1937), Old Federal
+Reserve Bank, Presidio chapel, Yerba Buena lighthouse, carousel. Alcatraz/Treasure Island quarters/Mile Rocks:
+generic but out of the way — later.

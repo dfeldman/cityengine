@@ -4,10 +4,11 @@
  * from a full evidence pack (docs/sf-batches/MODEL-<name>.md): OSM outline and parts, LiDAR heights, the Assessor's
  * record, Mapillary and Commons photographs.
  */
-import { MeshBuilder } from '../../../buildings.ts'
+import { MeshBuilder, capPolygonWithHoles } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { box, prism, type Rgb } from '../../../models.ts'
 import { boxAlong } from '../../parts.ts'
+import { classicalColumn } from '../../column.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
 
 type P2 = { x: number; z: number }
@@ -471,6 +472,325 @@ function templeEmanuEl(out: MeshBuilder, fit: Fit): void {
   else emanuElCopy(out, m, 1, 0, 0, 0)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// The Ritz-Carlton, 600 Stockton Street
+// ---------------------------------------------------------------------------------------------------------------
+
+/**
+ * OSM relation/14543549's outer ring (docs/shots/refs/notable/ritz-carlton/EVIDENCE.md), anticlockwise, in the evidence
+ * frame: x east, z north, metres. Stockton Street is the west side. Everything below is drawn in this frame and carried
+ * onto the city's `fit.ring` by `rzFit`.
+ */
+const RZ_OUT: P2[] = [[-46.6, 1.1], [-44.7, -10.1], [-42.4, -9.7], [-38.4, -9.1], [-37.7, -13.2], [-35.3, -12.8], [-30.4, -42.7],
+  [-2.6, -38.2], [-2.0, -41.3], [42.2, -34.1], [40.9, -26.2], [40.3, -23.1], [39.1, -15.5], [38.0, -8.9], [43.6, -8.0], [40.8, 9.2],
+  [34.6, 8.1], [31.0, 29.8], [38.6, 30.9], [41.2, 31.3], [41.8, 31.4], [38.6, 49.9], [25.6, 47.7], [-44.1, 36.4], [-39.2, 6.3],
+  [-41.3, 5.9], [-40.6, 2.1], [-44.3, 1.5]].map(([x, z]) => ({ x, z }))
+/** The garden courtyard (the OSM hole), clockwise, so that every wall's outward normal looks into it. */
+const RZ_HOLE: P2[] = [[-17.4, 18.5], [28.0, 25.1], [33.2, -10.5], [-10.4, -16.9], [-11.2, -11.1], [-6.6, -10.4], [-9.9, 11.8],
+  [-16.3, 10.9]].map(([x, z]) => ({ x, z }))
+
+/**
+ * The rotation + translation carrying the evidence frame onto `ring`: a 2-D Procrustes fit of RZ_OUT's 28 vertices
+ * against the ring's, over both orders and every start vertex, smallest RMS residual kept; if the ring has another
+ * vertex count the edge-matching fit (`emanuElPlaceLoose`'s method) is used. Null when nothing fits within 2 m.
+ */
+function rzFit(ring: P2[] | undefined): { c: number; s: number; tx: number; tz: number; res: number } | null {
+  if (!ring) return null
+  type T = { c: number; s: number; tx: number; tz: number; res: number }
+  let R = ring
+  if (R.length === RZ_OUT.length + 1 && Math.hypot(R[0].x - R[R.length - 1].x, R[0].z - R[R.length - 1].z) < 0.3) R = R.slice(0, -1)
+  const n = RZ_OUT.length
+  const loose = (): T | null => {
+    if (R.length < 4) return null
+    const ca = emanuElCentroid(RZ_OUT), cb = emanuElCentroid(R)
+    const edges = (r: P2[]): { L: number; a: number }[] => r.map((p, i) => {
+      const q = r[(i + 1) % r.length]
+      return { L: Math.hypot(q.x - p.x, q.z - p.z), a: Math.atan2(q.z - p.z, q.x - p.x) }
+    })
+    const ea = edges(RZ_OUT).filter((e) => e.L > 15), eb = edges(R).filter((e) => e.L > 15)
+    let best: T | null = null
+    for (const a of ea) for (const b of eb) {
+      if (Math.abs(a.L - b.L) > 0.2 * a.L) continue
+      const th = b.a - a.a, c = Math.cos(th), s = Math.sin(th)
+      const tx = cb.x - (ca.x * c - ca.z * s), tz = cb.z - (ca.x * s + ca.z * c)
+      const Tp = RZ_OUT.map((p) => ({ x: p.x * c - p.z * s + tx, z: p.x * s + p.z * c + tz }))
+      let e = 0
+      for (const v of R) {
+        let d = Infinity
+        for (let i = 0; i < Tp.length; i++) {
+          const p = Tp[i], q = Tp[(i + 1) % Tp.length]
+          const dx = q.x - p.x, dz = q.z - p.z
+          const u = Math.max(0, Math.min(1, ((v.x - p.x) * dx + (v.z - p.z) * dz) / (dx * dx + dz * dz || 1)))
+          d = Math.min(d, Math.hypot(v.x - p.x - dx * u, v.z - p.z - dz * u))
+        }
+        e += d * d
+      }
+      const res = Math.sqrt(e / R.length)
+      if (!best || res < best.res) best = { c, s, tx, tz, res }
+    }
+    return best && (best as T).res <= 2 ? best : null
+  }
+  if (R.length !== n) return loose()
+  const cb = { x: R.reduce((t, p) => t + p.x, 0) / n, z: R.reduce((t, p) => t + p.z, 0) / n }
+  const ca = { x: RZ_OUT.reduce((t, p) => t + p.x, 0) / n, z: RZ_OUT.reduce((t, p) => t + p.z, 0) / n }
+  let best: T | null = null
+  for (const rev of [false, true]) {
+    const Q = rev ? [...RZ_OUT].reverse() : RZ_OUT
+    for (let o = 0; o < n; o++) {
+      let sn = 0, cs = 0
+      for (let i = 0; i < n; i++) {
+        const a = Q[(i + o) % n]
+        const ax = a.x - ca.x, az = a.z - ca.z, bx = R[i].x - cb.x, bz = R[i].z - cb.z
+        cs += ax * bx + az * bz
+        sn += ax * bz - az * bx
+      }
+      const th = Math.atan2(sn, cs), c = Math.cos(th), s = Math.sin(th)
+      let e = 0
+      for (let i = 0; i < n; i++) {
+        const a = Q[(i + o) % n]
+        const x = (a.x - ca.x) * c - (a.z - ca.z) * s + cb.x
+        const z = (a.x - ca.x) * s + (a.z - ca.z) * c + cb.z
+        e += (x - R[i].x) ** 2 + (z - R[i].z) ** 2
+      }
+      const res = Math.sqrt(e / n)
+      if (!best || res < best.res) best = { c, s, tx: cb.x - (ca.x * c - ca.z * s), tz: cb.z - (ca.x * s + ca.z * c), res }
+    }
+  }
+  return best && best.res <= 2 ? best : loose()
+}
+
+const RZ_WALL: Rgb = [0.985, 0.975, 0.945]       // #ece8de, white glazed terra cotta
+const RZ_TRIM: Rgb = [0.96, 0.95, 0.92]       // cornices, sills, balustrades
+const RZ_LINE: Rgb = [0.88, 0.87, 0.84]         // the channels between the courses
+const RZ_GLASS: Rgb = [0.13, 0.15, 0.19]
+const RZ_DARK: Rgb = [0.07, 0.07, 0.08]
+const RZ_ROOF: Rgb = [0.5, 0.5, 0.52]
+const RZ_GREEN: Rgb = [0.42, 0.6, 0.5]
+const RZ_CN = surfaceTag('concrete')
+const RZ_TC = surfaceTag('stucco')       // the lightest wall page: terracotta and ashlar read grey
+
+/**
+ * The Ritz-Carlton, 600 Stockton Street at California, Nob Hill: the former Metropolitan Life Insurance Building
+ * (1909, Napoleon LeBrun & Sons; extended to the 1950s). White glazed terra cotta, neoclassical.
+ *
+ * Reference photographs: docs/shots/refs/notable/ritz-carlton/ — the Commons front from the south-west (the Ionic
+ * portico on its balustraded terrace, the wing receding to the north), the pediment close-up (sculpted tympanum, frieze
+ * with two roundels, Ionic capitals), Mapillary 0, 1, 3, 6, 7 (the channelled wall, paired punched windows, barred
+ * rusticated ground storey, heavy cornice) and 4 (the terrace over the drive, the pilastered upper storeys).
+ *
+ * - the WHITE BLOCK: OSM's outer ring extruded to a heavy cornice (30.5 m) and parapet, round the garden courtyard
+ *   (the hole left open, its walls drawn), channelled courses, a rusticated barred ground storey, seven rows of paired
+ *   punched windows; the Stockton wings carry tall pilasters over the lower storeys;
+ * - the STOCKTON PORTICO: on the west front the plan juts 6.3 m between its two 11.4 m faces; there stands a podium
+ *   with the drive opening, the terrace with a pierced balustrade, five Ionic columns on the front and two on each side
+ *   (13 m, fluted), an entablature with the roundelled frieze, and a pediment with a sculpted tympanum, up to ≈26 m.
+ *
+ * Placement: the evidence plan is carried onto `fit.ring` by a 2-D Procrustes fit (`rzFit`, residual well under 2 m); the
+ * colonnade is on the ring's west edge in the evidence frame, i.e. the Stockton edge, wherever the ring is turned.
+ *
+ * Where the photographs overrode the numbers: the pediment spans the whole 11.4 m front with five columns (a count of the
+ * Commons frame), not a narrow porch; the portico rises from a ≈7 m terrace over the drive, so the columns run through
+ * ≈3 storeys (≈13 m) and the pediment peaks below the wing cornice, as in the photograph; OSM's 8 levels / 30 m read as
+ * eight storeys plus a deep cornice in the Mapillary frames (ground storey 5.5 m, then seven 3.3 m rows).
+ */
+function ritzCarlton_600_Stockton(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const place = rzFit(fit.ring)
+  /** the ground above the model's base at an evidence-frame point (the street, where it was measured) */
+  const gAt = (x: number, z: number): number => {
+    const g = fit.groundAt
+    if (!g) return fit.grade ?? 0
+    const p = place ? { x: x * place.c - z * place.s + place.tx, z: x * place.s + z * place.c + place.tz } : { x, z }
+    return Math.max(0, g(p.x, p.z))
+  }
+  const FLOOR0 = 5.5, STOREY = 3.3, ROWS = 7, CORN = 28.9, TOP = 30.5
+
+  // ---- the portico's frame: the plan's west front (vertices 0 and 1) --------------------------------------------------
+  const F1 = RZ_OUT[1], F2 = RZ_OUT[0]
+  const fl = Math.hypot(F2.x - F1.x, F2.z - F1.z)
+  const T = { x: (F2.x - F1.x) / fl, z: (F2.z - F1.z) / fl }
+  const N = { x: -T.z, z: T.x }                         // out of the building, towards Stockton
+  const M = { x: (F1.x + F2.x) / 2, z: (F1.z + F2.z) / 2 }
+  const loc = (p: P2): { u: number; v: number } => ({ u: (p.x - M.x) * T.x + (p.z - M.z) * T.z, v: (p.x - M.x) * N.x + (p.z - M.z) * N.z })
+  const HW = fl / 2                                      // half the front, 5.7 m
+  const D = -(loc(RZ_OUT[3]).v + loc(RZ_OUT[26]).v) / 2   // the porch's depth to the main wall, ≈ 6.3 m
+  const W3 = (u: number, v: number, y: number): V3 => [M.x + T.x * u + N.x * v, y, M.z + T.z * u + N.z * v]
+  const head = Math.atan2(N.x, N.z)
+  /** a box in the portico's frame: centre (u, v, y), half sizes along the front (hu), out of it (hv), up (hy) */
+  const lbox = (u: number, v: number, y: number, hu: number, hv: number, hy: number, c: Rgb, tag = RZ_TC): void => {
+    const p = W3(u, v, y)
+    boxAlong(m, p[0], p[1], p[2], hu, hy, hv, head, c, tag)
+  }
+  /** a rectangle on a plane of the portico frame facing out (+v), at depth v */
+  const lface = (u0: number, u1: number, v: number, y0: number, y1: number, c: Rgb, tag = RZ_TC): void => {
+    m.quad([W3(u0, v, y0), W3(u1, v, y0), W3(u1, v, y1), W3(u0, v, y1)], [N.x, 0, N.z], uv, c, tag)
+  }
+
+  const gP = Math.min(3.5, gAt(M.x, M.z))               // the street at the portico's foot
+  const TER = gP + 7.0                                  // the terrace, over the drive
+  const COL0 = TER + 0.2, COL1 = TER + 13.4             // the columns' foot and the top of their capitals
+  const ENT = COL1 + 3.6                                // top of the cornice: the pediment's base
+  const APEX = ENT + 4.2
+
+  // ---- the block's walls, edge by edge ---------------------------------------------------------------------------------
+  const PORT = new Set([26, 27, 0, 1, 2])               // edges of the ring that bound the portico (start vertex)
+  const wallRun = (a: P2, b: P2, top: number, o: { windows: boolean; lines: boolean; west: boolean; portico: boolean }): void => {
+    const L = Math.hypot(b.x - a.x, b.z - a.z)
+    if (L < 0.2) return
+    const tx = (b.x - a.x) / L, tz = (b.z - a.z) / L, nx = tz, nz = -tx
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const panel = (u0: number, u1: number, y0: number, y1: number, pr: number, c: Rgb, tag: number): void => {
+      m.quad([P(u0, y0, pr), P(u1, y0, pr), P(u1, y1, pr), P(u0, y1, pr)], [nx, 0, nz], uv, c, tag)
+    }
+    panel(0, L, 0, top, 0, RZ_WALL, RZ_TC)
+    // the channelled courses
+    const cut = o.portico ? top : TOP
+    for (let y = 1.1; y < Math.min(FLOOR0, cut); y += 1.1) panel(0, L, y, y + 0.07, 0.02, RZ_LINE, RZ_TC)
+    if (o.lines) for (let y = FLOOR0 + 1.1; y < CORN - 1; y += 1.65) panel(0, L, y, y + 0.07, 0.02, RZ_LINE, RZ_TC)
+    if (!o.windows) return
+    const mid = { x: a.x + tx * L / 2, z: a.z + tz * L / 2 }
+    const gE = Math.min(3.0, gAt(mid.x, mid.z))
+    // the ground storey: tall barred openings, set in rusticated piers
+    const k0 = Math.floor((L - 1.2) / 3.3)
+    for (let i = 0; i < k0; i++) {
+      const u = 0.6 + ((L - 1.2) * (i + 0.5)) / k0
+      const y0 = gE + 0.9, y1 = Math.min(gE + 4.6, FLOOR0 - 0.5)
+      if (y1 - y0 > 1.4) panel(u - 0.75, u + 0.75, y0, y1, 0.05, RZ_GLASS, GL)
+      if (o.west && i % 2 === 0 && y1 - y0 > 1.4) {
+        // the dark awnings over the Stockton shopfronts and doors
+        boxAlong(m, a.x + tx * u + nx * 0.5, y1 + 0.35, a.z + tz * u + nz * 0.5, 0.95, 0.09, 0.55, Math.atan2(nx, nz), RZ_DARK, RZ_TC)
+      }
+    }
+    // the upper storeys: paired punched windows with sills
+    const k = Math.floor((L - 1.2) / 2.5)
+    for (let i = 0; i < k; i++) {
+      const u = 0.6 + ((L - 1.2) * (i + 0.5)) / k
+      for (let r = 0; r < ROWS; r++) {
+        const y0 = FLOOR0 + r * STOREY + 0.75
+        if (y0 + 2.1 > CORN) continue
+        panel(u - 0.55, u + 0.55, y0, y0 + 2.1, 0.05, RZ_GLASS, GL)
+        panel(u - 0.7, u + 0.7, y0 - 0.12, y0, 0.1, RZ_TRIM, RZ_TC)
+      }
+    }
+    // the Stockton wings: tall pilasters between the bays, through the lower storeys
+    if (o.west && k >= 1) {
+      for (let i = 0; i <= k; i += 2) {
+        const u = 0.6 + ((L - 1.2) * i) / k
+        if (u < 0.5 || u > L - 0.5) continue
+        { const hh = Math.atan2(nx, nz), px = a.x + tx * u + nx * 0.25, pz = a.z + tz * u + nz * 0.25
+          boxAlong(m, px, (FLOOR0 + 20.2) / 2, pz, 0.55, (20.2 - FLOOR0) / 2, 0.25, hh, RZ_WALL, RZ_TC)
+          boxAlong(m, px + nx * 0.1, 20.55, pz + nz * 0.1, 0.8, 0.35, 0.35, hh, RZ_TRIM, RZ_TC)
+          boxAlong(m, px + nx * 0.05, FLOOR0 + 0.3, pz + nz * 0.05, 0.7, 0.3, 0.3, hh, RZ_TRIM, RZ_TC) }
+      }
+      boxAlong(m, a.x + tx * L / 2 + nx * 0.3, 21.2, a.z + tz * L / 2 + nz * 0.3, L / 2, 0.6, 0.45, Math.atan2(nx, nz), RZ_TRIM, RZ_TC)
+    }
+  }
+  const cornice = (a: P2, b: P2): void => {
+    const L = Math.hypot(b.x - a.x, b.z - a.z)
+    if (L < 0.2) return
+    const tx = (b.x - a.x) / L, tz = (b.z - a.z) / L, nx = tz, nz = -tx, h = Math.atan2(nx, nz)
+    const cx = a.x + tx * L / 2, cz = a.z + tz * L / 2
+    boxAlong(m, cx + nx * 0.5, CORN + 0.8, cz + nz * 0.5, L / 2 + 0.3, 0.8, 0.55, h, RZ_TRIM, RZ_TC)             // the cornice
+    boxAlong(m, cx + nx * 0.05, CORN - 0.35, cz + nz * 0.05, L / 2, 0.35, 0.1, h, RZ_LINE, RZ_TC)                // its frieze
+    boxAlong(m, cx + nx * 0.25, TOP + 0.5, cz + nz * 0.25, L / 2 + 0.2, 0.5, 0.2, h, RZ_WALL, RZ_TC)             // the parapet
+  }
+  const ring = RZ_OUT
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length]
+    const L = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    const nx = (b.z - a.z) / L
+    if (PORT.has(i)) {
+      wallRun(a, b, TER, { windows: false, lines: false, west: false, portico: true })       // the podium under the terrace
+      continue
+    }
+    wallRun(a, b, TOP, { windows: true, lines: true, west: nx < -0.6, portico: false })
+    cornice(a, b)
+  }
+  for (let i = 0; i < RZ_HOLE.length; i++) {
+    const a = RZ_HOLE[i], b = RZ_HOLE[(i + 1) % RZ_HOLE.length]
+    wallRun(a, b, TOP, { windows: true, lines: true, west: false, portico: false })
+    cornice(a, b)
+  }
+  // the flat grey roof, round the courtyard and without the porch's footprint
+  const roofRing = ring.filter((_, i) => ![0, 1, 2, 27].includes(i))
+  capPolygonWithHoles(m, [roofRing, RZ_HOLE], TOP, RZ_ROOF, RZ_CN)
+  // the terrace, over the podium
+  capPolygonWithHoles(m, [[26, 27, 0, 1, 2, 3].map((i) => ring[i])], TER, RZ_TRIM, RZ_TC)
+
+  // ---- the Stockton portico ------------------------------------------------------------------------------------------
+  // the podium's front: the drive opening under the terrace, flanked by piers, a lion on a pedestal at each
+  lface(-2.4, 2.4, 0.05, gP, gP + 4.8, RZ_DARK, GL)
+  lface(-2.9, 2.9, 0.04, gP + 4.8, gP + 5.2, RZ_TRIM, RZ_TC)
+  for (const s of [-1, 1]) lbox(s * 3.9, 0.45, gP + 0.7, 0.55, 0.45, 0.7, RZ_TRIM, RZ_TC)
+  // the terrace edge and the pierced balustrade across the front and down both sides
+  lbox(0, -D / 2 + 0.1, TER - 0.2, HW + 0.25, D / 2 + 0.35, 0.2, RZ_TRIM, RZ_TC)
+  const bal = (u0: number, v0: number, u1: number, v1: number): void => {
+    const L = Math.hypot(u1 - u0, v1 - v0)
+    const du = (u1 - u0) / L, dv = (v1 - v0) / L
+    const c = W3((u0 + u1) / 2, (v0 + v1) / 2, TER + 0.55)
+    // the rail runs along (du, dv) and faces the local normal (dv, −du)
+    const fu = dv, fv = -du
+    const fx = T.x * fu + N.x * fv, fz = T.z * fu + N.z * fv
+    boxAlong(m, c[0], c[1], c[2], L / 2, 0.55, 0.14, Math.atan2(fx, fz), RZ_TRIM, RZ_TC)
+    boxAlong(m, c[0], TER + 1.15, c[2], L / 2 + 0.08, 0.1, 0.22, Math.atan2(fx, fz), RZ_WALL, RZ_TC)
+    const k = Math.max(2, Math.round(L / 0.9))
+    for (let i = 0; i < k; i++) {
+      const w = (i + 0.5) / k
+      const uu = u0 + (u1 - u0) * w, vv = v0 + (v1 - v0) * w
+      for (const sg of [1, -1]) {
+        const p0 = W3(uu - du * 0.28 + fu * sg * 0.15, vv - dv * 0.28 + fv * sg * 0.15, 0)
+        const p1 = W3(uu + du * 0.28 + fu * sg * 0.15, vv + dv * 0.28 + fv * sg * 0.15, 0)
+        m.quad([[p0[0], TER + 0.3, p0[2]], [p1[0], TER + 0.3, p1[2]], [p1[0], TER + 0.8, p1[2]], [p0[0], TER + 0.8, p0[2]]],
+          [fx * sg, 0, fz * sg], uv, RZ_LINE, RZ_TC)
+      }
+    }
+  }
+  bal(-HW + 0.1, -0.35, HW - 0.1, -0.35)
+  bal(-HW + 0.35, -0.35, -HW + 0.35, -D + 0.3)
+  bal(HW - 0.35, -D + 0.3, HW - 0.35, -0.35)
+  // the porch's back wall, up to the cornice, with the two tiers of tall windows between the columns
+  lface(-HW, HW, -D + 0.02, TER, TOP, RZ_WALL, RZ_TC)
+  for (const u of [-4.1, -1.4, 1.4, 4.1]) {
+    lface(u - 0.85, u + 0.85, -D + 0.07, TER + 1.4, TER + 6.4, RZ_GLASS, GL)
+    lface(u - 0.85, u + 0.85, -D + 0.07, TER + 7.2, TER + 12.4, RZ_GLASS, GL)
+    lface(u - 1.0, u + 1.0, -D + 0.05, TER + 6.4, TER + 6.8, RZ_TRIM, RZ_TC)
+  }
+  for (const u of [-5.4, -2.75, 0, 2.75, 5.4]) lbox(u, -D + 0.3, (TER + COL1) / 2, 0.3, 0.3, (COL1 - TER) / 2, RZ_TRIM, RZ_TC)
+  // the Ionic columns: five across the front, two more down each side
+  const colAt = (u: number, v: number): void => {
+    const p = W3(u, v, 0)
+    classicalColumn(m, p[0], p[2], COL0, COL1, 1.0, RZ_WALL, { order: 'ionic', tag: RZ_TC, heading: head, flutes: true, trim: RZ_TRIM })
+  }
+  for (const u of [-4.7, -2.35, 0, 2.35, 4.7]) colAt(u, -1.3)
+  for (const s of [-1, 1]) for (const v of [-4.0]) colAt(s * 4.7, v)
+  // the entablature: architrave, the frieze with its two green roundels, the projecting cornice
+  lbox(0, -D / 2 - 0.3, COL1 + 0.5, HW + 0.2, D / 2 - 0.1, 0.5, RZ_TRIM, RZ_TC)
+  lbox(0, -D / 2 - 0.3, COL1 + 1.5, HW + 0.2, D / 2 - 0.1, 0.5, RZ_WALL, RZ_TC)
+  for (const u of [-3.4, 3.4]) lbox(u, 0.0, COL1 + 1.5, 0.4, 0.07, 0.4, RZ_GREEN, GL)
+  for (const u of [-4.8, -2.0, 0, 2.0, 4.8]) lbox(u, 0.0, COL1 + 1.5, 0.3, 0.06, 0.4, RZ_LINE, RZ_TC)
+  lbox(0, -D / 2 + 0.1, COL1 + 2.6, HW + 0.7, D / 2 + 0.4, 0.4, RZ_TRIM, RZ_TC)
+  // the pediment: raking cornice, the tympanum with its sculpted figures, the roof behind
+  const hb = HW + 0.7
+  const slope = (APEX - ENT) / hb
+  for (const s of [-1, 1]) {
+    m.quad([W3(s * hb, 0.45, ENT), W3(0, 0.45, APEX), W3(0, -D, APEX), W3(s * hb, -D, ENT)], [T.x * s * slope, 1, T.z * s * slope], uv, RZ_ROOF, RZ_CN)
+    // the raking cornice band on the front
+    m.quad([W3(s * hb, 0.5, ENT), W3(0, 0.5, APEX), W3(0, 0.5, APEX - 0.6), W3(s * (hb - 0.5), 0.5, ENT)],
+      [N.x, 0, N.z], uv, RZ_TRIM, RZ_TC)
+  }
+  // the tympanum field, a shade deeper than the cornice round it
+  m.quad([W3(-(hb - 0.7), 0.0, ENT), W3(hb - 0.7, 0.0, ENT), W3(0, 0.0, APEX - 0.75), W3(0, 0.0, APEX - 0.75)], [N.x, 0, N.z], uv, [0.8, 0.78, 0.73], RZ_TC)
+  for (const [u, y, hu, hy] of [[-3.4, 0.45, 1.0, 0.28], [-1.8, 0.7, 0.45, 0.5], [0, 0.9, 0.5, 0.65], [1.6, 0.7, 0.45, 0.5],
+    [3.2, 0.5, 0.9, 0.3]] as const) lbox(u, 0.12, ENT + y, hu, 0.12, hy, RZ_WALL, RZ_TC)
+  lbox(0, 0.1, APEX + 0.3, 0.5, 0.2, 0.3, RZ_TRIM, RZ_TC)                    // the acroterion
+  lbox(0, -D / 2 - 0.3, ENT - 0.05, HW + 0.3, D / 2, 0.05, RZ_TRIM, RZ_TC)
+
+  if (place) emanuElCopy(out, m, place.c, place.s, place.tx, place.tz)
+  else emanuElCopy(out, m, 1, 0, 0, 0)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
+  ritzCarlton_600_Stockton,
 }
