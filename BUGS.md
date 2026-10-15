@@ -10539,8 +10539,13 @@ OPEN:
   shows one (tools/tunnels.ts TRENCH_RUN); a street bridge over a cut the cut clears goes back to grade with its
   ramps (bake); the cut carving never digs under a street standing above it; no ride-graph link across a split
   boulevard through the air. Seen from the trench, Hyde is now a deck crossing at street level.
-* **The Broadway house**: a scan along the whole bore from inside every 60 m (scratch `along.ts`) shows no
-  building intersecting the tube, so where it is was not found — needs the owner's coordinate.
+* ~~**The Broadway house**~~ FIXED 2026-10-15 (commit 31929f7, bake 20261015T0746-ge67): building 257014128
+  (37.797062 −122.412446), on a 10 m slope over the east end, had its foot at its lowest ground, 0.8 m into the tube's
+  crown. Found by listing every building over a bore with its foot against the tube's top (scratch `overtube.ts`);
+  the baked foot over a bore (away from its mouths) is now at least the tube's top. Two Stockton buildings the same
+  list flagged are lifted by the same rule; inside both tubes, nothing shows.
+* ~~**air-paths in the air**~~ FIXED 2026-10-15 (7dcf26c): Broadway's frontage roads merged into a midline over the
+  trench, and Geary's; mergeParallel now needs the ground under a midline within 1.5 m. air-paths: 0 in the air.
 * Through the lower outer corner of each Broadway arch the bore's inside wall is visible 5 m in (the bore is wider
   than the twin openings): a yellow wedge beside the arch. Minor.
 * A faint lighter oval across the Stockton vault near the mouths, seen only part-way through a sequence of camera
