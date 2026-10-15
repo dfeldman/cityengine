@@ -594,5 +594,8 @@
  },
  {
   "include": "san-francisco/lidar-heights.json"
+ },
+ {
+  "include": "san-francisco/reface-tall-01.json"
  }
 ]
