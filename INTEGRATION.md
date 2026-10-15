@@ -1,31 +1,48 @@
-# Street Runner on Dandyhorse
+# City Dash on Dandyhorse
 
-What it takes to run Street Runner on the exercise platform (`~/dandyhorse`). It covers only the points where
-the two meet; the game's own rules are in [README.md](README.md). The platform's contract is
+What it takes to run City Dash (this repo's game) on the exercise platform (`~/dandyhorse`). It covers only the
+points where the two meet; the game's own rules are in [README.md](README.md). The platform's contract is
 `dandyhorse/docs/GAME_AUTHORING.md`.
 
-**Status (2026-09-22): the adapter is built and unit-tested; it has not yet run end to end** against a live
-server (that needs a logged-in console). `src/platform.ts` implements `Controls` on gamekit's `SessionClient`;
-`main.ts` makes it when `?session=` is in the URL (or `?dandyhorse=bike|run` for an ad-hoc debug session) and
-never loads the gamekit otherwise. `tests/platform.test.ts` covers the launch options, measured-not-requested,
-the d-pad mapping, the tick bodies for both machines, the paused grade and the achievements. The checklist in §9
-says what is left.
+**Status (2026-10-15): working end to end.** On a local Dandyhorse server with a simulated bike: the game is listed as
+City Dash, launches from the bridge, 200 W moves the rider, the street's grade (−10.9 % to +10.3 %) reaches the
+bridge to set the trainer's resistance, a d-pad turn is accepted and taken, 0 W brings the bike to rest, and History
+gets its picture. Run against both the local dev server and https://dash.dfeldman.org (the script is described in §9).
 
 ## 1. The shape of it
 
+**The game stays its own project, on its own site** (owner, 2026-10-14: "cityengine can remain entirely separate
+from Dandyhorse, it just needs the thin API connection and a metadata.json file"). Dandyhorse holds three small files
+in `games/citydash/` and nothing else of the game:
+
 ```
-machine ─► bridge ─► server ─► getstate (1 Hz) ─► DandyhorseControls.measured()  = power / belt speed
-game ─► setstate (1 Hz): grade request, x/y/z, score, requestedInput  ─► History, the machine
-phone/console buttons ─► getstate.inputs ─► Controls.steering()       ◄── the important one
-game ─► putsave: { cities: { <id>: { edgeId, s, travelled, visited } } }
+bridge page ─ iframe ─► dandyhorse /games/citydash/index.html  (the SHIM, Dandyhorse's origin)
+                          └ iframe ─► https://dash.dfeldman.org/index.html?session=…&variant=…&host=<dandyhorse origin>
+game ── postMessage {dh:'fetch', …} ──► shim ── fetch /gameapi/… (with the session cookie) ──► server
+game ◄─ postMessage {dh:'reply', …} ─── shim
 ```
 
-- **Location:** `games/streetrunner`, a static Vite build with `base: '/games/streetrunner/'` and the dev proxy
-  from `games/rollinghills/vite.config.ts`. Babylon is bundled from npm; the baked cities and the painted
-  facade and road pages ship as static files, so it needs no internet at all.
-- **The adapter:** one new file, `src/platform.ts`, implementing `Controls` (`src/controls.ts`) on top of
-  gamekit's `SessionClient`. `main.ts` uses it when `?session=` is in the URL and keeps `LocalControls`
-  otherwise. No other file changes.
+- **Why a shim, not a redirect:** gamekit talks to `/gameapi/*` with the session cookie, same-origin. A game on
+  another origin has no cookie (and a third-party one is blocked anyway), so a redirect would need the server to
+  grow CORS and token auth. Instead the shim, which IS on the server's origin, makes the calls: gamekit's transport
+  is swapped (`setFetch`) for [src/relay.ts](src/relay.ts), which posts each request to the shim and resolves its
+  reply. No server change.
+- **Safety:** the shim answers only the City Dash origins it lists (dash.dfeldman.org, and localhost:5200 for a
+  development copy), only for `/gameapi/`, only GET/POST/PUT; the game sends only to the origin in `?host=` (the
+  browser drops it if the parent is anyone else) and takes replies only from its parent at that origin.
+- **A development copy:** `?citydash=http://localhost:5200` on the shim's URL once (remembered in that browser;
+  `?citydash=default` forgets).
+- **The platform glue:** `src/platform.ts` implements `Controls` on gamekit's `SessionClient`; `main.ts` makes it
+  when `?session=` is in the URL (or `?dandyhorse=bike` for an ad-hoc debug session on a local server) and never
+  loads the gamekit otherwise. gamekit is not a dependency: the build bundles it from a dandyhorse checkout beside
+  this one (`DANDYHORSE_DIR`, vite.config.ts); without one the standalone game still builds.
+
+```
+machine ─► bridge ─► server ─► getstate (1 Hz) ─► Platform.measured()  = power / belt speed
+game ─► setstate (1 Hz): grade request, x/y/z, score, requestedInput  ─► History, the machine
+phone/console buttons ─► getstate.inputs ─► Controls.steering()
+game ─► putsave: { cities: { <id>: { at, travelled, visited } } }
+```
 
 ## 2. Effort → movement
 
@@ -118,13 +135,14 @@ because the route is the rider's own choices rather than a fixed loop.
 
 ## 7. metadata.json
 
-A draft is in [platform/metadata.json](platform/metadata.json).
+`dandyhorse/games/citydash/metadata.json` (id `citydash`, which `src/platform.ts` `GAME_ID` matches).
 
-- **Variants:** a bike variant and a treadmill variant, both writing grade.
-- **Launch options:** `city`, and `traffic` for how alive the streets are — which will be the setting that
-  meaningfully costs GPU once there are people and vehicles in them.
+- **Variants:** bike only, `controls.bike: grade`. Running is switched off in the game for now (README), so there is no
+  treadmill variant until it is back.
+- **Launch options:** `traffic`, `time`, `weather`. No `city`: San Francisco is the only city kept current.
 - **Capabilities:** `input: true` is not optional here — it is the game. `saveState: true` for the position and
   the visited set. `seed: false`: a real city is the same every time on purpose.
+- **Screenshot:** `games/citydash/screenshot.jpg`, in the asset bucket like every game's (index dandyhorse-games).
 
 ## 8. Session image
 
@@ -137,15 +155,17 @@ synchronous, so the latest one is kept ready.
 
 1. ✅ `src/platform.ts`: `Platform implements Controls`, `steering()` off the d-pad prompt's answers, save state,
    achievements, pause card with the server's own message, the end of the workout.
-2. ✅ `main.ts`: `?session=` (and `?dandyhorse=bike|run` ad hoc); city, options and resume point from startsession;
-   the city menu and the Bike/Run switch hidden on the platform. An error card if startsession fails.
-3. ✅ Base path: `vite.config.ts` builds with `base: './'`, which serves from `/games/streetrunner/` unchanged. Still
-   to add when it moves into `dandyhorse/games/`: the dev proxy for `/gameapi` etc. (as in
-   `games/nightracer/vite.config.ts`), so `npm run dev` can talk to a local server. Not added here yet: a
-   config change restarts the running dev server.
-4. ✅ `platform/metadata.json` and `platform/screenshot.jpg` (1280×720) are ready to copy into place.
-5. ☐ Run it end to end: console → bridge (simulated bike, then simulated treadmill) → game → server, and check
-   the d-pad, the grade/incline, a pause, a resume from save, the History image.
+2. ✅ `main.ts`: `?session=` (and `?dandyhorse=bike|run` ad hoc); options and resume point from startsession; with
+   `?host=` the API through the shim (`src/relay.ts`).
+3. ✅ Dandyhorse's `games/citydash/`: metadata.json, the shim (index.html), README, screenshot (asset bucket).
+4. ✅ Run end to end (2026-10-15), local server, simulated bike, both against `localhost:5200` and the live site:
+   log in (`POST /api/login {uid}` — the stub), `POST /api/sessions/launch {gameId:'citydash', variant:'bike',
+   debug:true}`, be the bridge (`POST /bridgeapi/putstate` every 500 ms with a `sim:` fitness device and
+   `actual.power`), open the shim as the bridge does, and read `GET /bridgeapi/getstate` — `requested.grade` is
+   what the bridge sets the trainer to; `requestedInput` is the d-pad. End with `{status:'complete'}` and
+   `GET /api/sessions/<id>/image` is the History picture (a discard sends none, by design).
+5. ☐ A real trainer through a real bridge (Web Bluetooth): the owner's hardware.
 6. ☐ Confirm with the platform team that a **persistent d-pad prompt open for a whole session** is within what
-   bridges expect, and that `inputs` is delivered reliably at the rate a steering rider generates it.
-7. ☐ Confirm that a `complete` session part-way through a city is recorded as a success.
+   bridges expect (it worked in the run above).
+7. ☐ The welcome card and the page title say "Cycle Dash"; the platform lists "City Dash" (the owner's words,
+   2026-10-14). One name, the owner's call.
