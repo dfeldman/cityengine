@@ -42,10 +42,11 @@ export function along(pts: Point[], d: number): { p: Point; i: number } {
  * The approach of edge `e` to node `node`, judged over APPROACH metres or 40% of the edge, whichever is less (the
  * other end has a junction of its own). Null for an edge too short to have an approach (under 6 m).
  */
-export function approachShape(e: { a: number; b: number; points: Point[]; length: number; name?: string }, node: number): ApproachShape | null {
+export function approachShape(e: { a: number; b: number; points: Point[]; length: number; name?: string }, node: number,
+  upTo = APPROACH): ApproachShape | null {
   if (e.length < 6) return null
   const pts = e.a === node ? e.points : [...e.points].reverse()
-  const reach = Math.min(APPROACH, e.length * 0.4)
+  const reach = Math.min(upTo, e.length * 0.4)
   const end = along(pts, reach)
   const span = [...pts.slice(0, end.i), end.p]
   const o = span[0]
@@ -199,6 +200,24 @@ export function straightenJunctions<E extends ShapedEdge>(edges: E[], outside: O
     let take = tryAt(np)
     if (!take && np !== o) { np = o; take = tryAt(o) }
     if (!take) { count.declined++; continue }
+    /*
+     * An approach that cannot run straight for its whole 25 m (it would leave the asphalt or clip a building — a narrow
+     * alley, a street that curves into the junction) is straightened over the last 12 m, else the last 6 m: the part
+     * that matters, "no sharp turn right before a crossing" (owner, 2026-10-14).
+     */
+    for (let k = 0; k < ss.length; k++) {
+      if (take[k] || corner[k]) continue
+      for (const r of [12, 6]) {
+        const s2 = approachShape(es[k], nid, r)
+        if (!s2 || (s2.stray <= ZIG_STRAY && s2.bend <= ZIG_BEND)) break
+        const f2 = s2.pts[s2.pts.length - 1]
+        if (blocked?.(np, f2) || outside([np, f2]) > Math.max(outside(s2.pts), 0.5)) continue
+        ss[k] = s2
+        far[k] = f2
+        take[k] = true
+        break
+      }
+    }
     if (np !== o) count.moved++
     for (let k = 0; k < ss.length; k++) {
       if (!take[k] && np === o) continue
