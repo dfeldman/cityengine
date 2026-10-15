@@ -272,7 +272,8 @@ export function straightenJunctions<E extends ShapedEdge>(edges: E[], outside: O
   const out = edges.map((e) => {
     const rec = ends.get(e.id)
     if (!rec) {
-      if (e.foot || e.bridge || e.tunnel || e.raised || e.a === e.b) return e
+      // (a bridge deck too: the cut is under a metre, still on the deck — tools/air-paths.ts checks)
+      if (e.foot || e.tunnel || e.a === e.b) return e
       let pts = e.points
       let hs = e.heights && e.heights.length === e.points.length ? e.heights : undefined
       if (junctionEnd(e.a)) { const q = ease(pts, hs); pts = q.ps; hs = q.h }
@@ -307,13 +308,15 @@ export function straightenJunctions<E extends ShapedEdge>(edges: E[], outside: O
       const L = Math.hypot(B.x - A.x, B.z - A.z)
       return { ...e, points: [A, B], heights: hs ? [h0!, h1!] : undefined, length: L }
     }
-    if (rec.a) { const r = apply(rec.a.shape, pts, hs); pts = r.ps; hs = r.h; const q = ease(pts, hs); pts = q.ps; hs = q.h }
+    if (rec.a) { const r = apply(rec.a.shape, pts, hs); pts = r.ps; hs = r.h }
     if (rec.b) {
       const r = apply(rec.b.shape, [...pts].reverse(), hs ? [...hs].reverse() : undefined)
-      const q = ease(r.ps, r.h)
-      pts = q.ps.reverse()
-      hs = q.h?.reverse()
+      pts = r.ps.reverse()
+      hs = r.h?.reverse()
     }
+    // (eased at BOTH ends where each is a junction, repaired or not: Mariposa at Pennsylvania, repaired at its far end)
+    if (rec.a || junctionEnd(e.a)) { const q = ease(pts, hs); pts = q.ps; hs = q.h }
+    if (rec.b || junctionEnd(e.b)) { const q = ease([...pts].reverse(), hs ? [...hs].reverse() : undefined); pts = q.ps.reverse(); hs = q.h?.reverse() }
     let length = 0
     for (let i = 1; i < pts.length; i++) length += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z)
     return { ...e, points: pts, heights: hs, length }
@@ -355,10 +358,10 @@ function nearestAlong(pts: Point[], q: Point): number {
  * "no sharp turns right before a crossing" (2026-10-14) where straightening could not reach (Church at Market, Townsend,
  * Pierce…, 2026-10-15). Heights by the same cut.
  */
-const EASE = 15
+const EASE = 18
 function ease(ps: Point[], hs: number[] | undefined): { ps: Point[]; h?: number[] } {
   let p = ps, h = hs
-  for (let pass = 0; pass < 4; pass++) {
+  for (let pass = 0; pass < 6; pass++) {
     const np: Point[] = [p[0]]
     const nh: number[] | undefined = h ? [h[0]] : undefined
     let acc = 0
