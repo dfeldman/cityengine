@@ -1246,20 +1246,14 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain
   // first from everywhere, the Stockton Tunnel's north portal showed through the hill, standing on surface Stockton's
   // crest 220 m away. From behind it goes after the occluder like any building, and the hill hides it.)
   /*
-   * …and the road MARKINGS near the eye (owner, 2026-10-06, Market at 6th: "red pavement looks bad here"): the
-   * carriageway is drawn in the group below, untouched by the occluder, but its paint is in this one, and wherever the
-   * occluder's coarse triangles stood a few centimetres over the street the red lanes came out in torn patches. Near
-   * (within 250 m of the camera) the paint goes before the occluder, as the tunnel mouths do; far off it stays after
-   * it, so a street behind a hill keeps its paint hidden.
+   * (The road MARKINGS used to go before the occluder too, within 250 m of the eye — owner, 2026-10-06, Market at 6th:
+   * where the occluder's coarse triangles stood a few centimetres over the street the red lanes came out in torn
+   * patches. But a whole tile's paint went first by its centre's distance, so crosswalks a few hundred metres off
+   * showed through the hill in front of them — "crosswalks shining through steep hills", owner, 2026-10-14. They are
+   * in the carriageway's own group now, where the occluder is 0.6 m down: see where the markings are built.)
    */
-  const nearEye = (mesh: { getBoundingInfo?: () => { boundingSphere: { centerWorld: { x: number; z: number } } } }): boolean => {
-    const cam = scene.activeCamera
-    const c = mesh.getBoundingInfo?.().boundingSphere.centerWorld
-    return !!cam && !!c && Math.hypot(c.x - cam.globalPosition.x, c.z - cam.globalPosition.z) < 250
-  }
   const rank = (mesh: { name: string }): number =>
     mesh.name.startsWith('tunnel:entry') || (mesh.name.startsWith('tunnel:portals') && (mesh as { metadata?: { first?: boolean } }).metadata?.first) ? -1
-      : mesh.name.startsWith('markings:') && nearEye(mesh as never) ? -1
       : mesh.name.startsWith('ground:occluder') ? 0 : mesh.name.startsWith('areas:') ? 1 : mesh.name.startsWith('corridor:') ? 2 : 3
   for (const group of [GROUP.areas, GROUP.road, GROUP.building]) {
     scene.setRenderingOrder(group, (a, b) => rank(a.getMesh()) - rank(b.getMesh()))
@@ -2895,9 +2889,16 @@ export class City {
       this.terrain.drape(markings.positions)
       markings.toVertexData().applyToMesh(m)
       m.material = cartoonMaterial(this.scene, 'cartoonStatic', false)
-      m.renderingGroupId = GROUP.walk      // after the road surface, before the buildings
-      // (6 cm clear of the graded carriageway that shares this group: it runs straight between the edge's points while
-      // the paint is draped point by point, and where they parted the street came through the red lanes in patches)
+      /*
+       * In the carriageway's own group (2026-10-14; it was the buildings' group): there the ground's occluder is 0.6 m
+       * down, the margin the streets themselves need, so the paint is never torn by it — and a crest that hides the
+       * street hides its paint. In the buildings' group the occluder is only 0.15 m down, and the paint either tore
+       * (Market at 6th) or, drawn before it to stop that, showed through hills ("crosswalks shining through steep
+       * hills", owner, 2026-10-14).
+       * (6 cm clear of the graded carriageway: it runs straight between the edge's points while the paint is draped
+       * point by point, and where they parted the street came through the red lanes in patches)
+       */
+      m.renderingGroupId = GROUP.road
       m.position.y = 0.06
       meshes.push(m)
     }
