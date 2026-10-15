@@ -1,0 +1,17 @@
+[
+{"osm": ["way/260126027"], "restyle": "sfapartment", "wall": "#a59d8c", "groundWall": "#26292e", "by": "haiku", "image": "way-260126027-01.jpg", "note": "grey-beige stucco block with stacked bays and fire escapes; dark ground floor"},
+{"osm": ["way/79377206"], "restyle": "brick", "wall": "#a9583c", "trim": "#d8c8a8", "by": "haiku", "image": "way-79377206-02.jpg", "note": "orange-red brick loft with cream stone sills and bands"},
+{"osm": ["way/114709404"], "restyle": "towerblock", "wall": "#f2f2ee", "by": "haiku", "image": "way-114709404-02.jpg", "note": "white render, punched windows with green and blue arched surrounds, flat top"},
+{"osm": ["way/1259143521"], "restyle": "sfapartment", "wall": "#cfc9bf", "accent": "#6b2f29", "groundWall": "#5a2a25", "by": "haiku", "image": "way-1259143521-02.jpg", "note": "pale grey-taupe corner block with dark red-brown bay boxes and dark red ground floor"},
+{"osm": ["way/256987418"], "restyle": "sfapartment", "wall": "#d9bc84", "groundWall": "#8a6a48", "by": "haiku", "image": "way-256987418-01.jpg", "note": "ochre-yellow stucco with stacked bays and balconies"},
+{"osm": ["way/260186727"], "restyle": "towerblock", "wall": "#f3f2ee", "by": "haiku", "image": "way-260186727-01.jpg", "note": "white punched-window tower behind a grey bay building"},
+{"osm": ["way/259234171"], "restyle": "towerblock", "wall": "#d9cdb4", "by": "haiku", "image": "way-259234171-01.jpg", "note": "cream stucco, punched windows, fire escapes, flat top; not horizontal ribbons"},
+{"osm": ["way/151980106"], "restyle": "towerblock", "wall": "#d4ecec", "by": "haiku", "image": "way-151980106-02.jpg", "note": "pale aqua render with punched windows and a stair-tower block at the centre"},
+{"osm": ["way/259255639"], "restyle": "classical", "wall": "#dfe2de", "by": "haiku", "image": "way-259255639-02.jpg", "note": "pale grey Beaux-Arts style block with pilasters and pediment-like gables"},
+{"osm": ["way/197354894"], "restyle": "sfapartment", "wall": "#8a3b2a", "trim": "#e8dcc4", "groundWall": "#b9a88a", "by": "haiku", "image": "way-197354894-02.jpg", "note": "red brick corner block with stacked white bays, fire escape and stone-tan ground floor"},
+{"osm": ["way/79377156"], "restyle": "chicago", "wall": "#5f5a54", "trim": "#ece8df", "groundWall": "#2f3136", "by": "haiku", "image": "way-79377156-01.jpg", "note": "white piers with grey-brown spandrels in a regular grid; dark ground-floor glazing"},
+{"osm": ["way/253360375"], "restyle": "sfapartment", "wall": "#b8b1a2", "trim": "#ddd6c6", "by": "haiku", "image": "way-253360375-01.jpg", "note": "warm grey stucco block with pilasters, projecting bays and fire escapes"},
+{"osm": ["way/288794273"], "restyle": "skyscraper", "wall": "#5f7c84", "trim": "#c4bba8", "groundWall": "#9aa08a", "by": "haiku", "image": "way-288794273-02.jpg", "note": "framed blue-green glass curtain wall with stone bands and a green stone base"},
+{"osm": ["way/71209403"], "restyle": "towerblock", "wall": "#e3dccb", "accent": "#6f7880", "by": "haiku", "image": "way-71209403-02.jpg", "note": "cream punched-window tower with grey spandrel bands; school playground in foreground"},
+{"osm": ["way/112865463"], "restyle": "bauhaus", "wall": "#efeee9", "by": "haiku", "image": "way-112865463-02.jpg", "note": "three-storey white render with large multi-pane windows and a stepped parapet"}
+]
