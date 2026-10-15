@@ -10497,3 +10497,37 @@ has a dead end or two where the rider turns round; the switchback road up to the
 `steps` in places — whether the circuit should be extended with an authored way up to the lighthouse is for the
 owner.
 
+
+### #264 The street tunnels, owner's reports 2026-10-14 evening (MOSTLY FIXED; three left OPEN)
+
+The owner, with screenshots: Broadway's entrance "looks pretty bad all around" (open top over the bores, grass
+patches), inside it "stretched triangles" and "water"; at 37.791781 −122.407464 and 37.790789 −122.407254 (surface
+Stockton over the Stockton Tunnel) an arch of the tunnel "which should be occluded and I think is in the wrong
+place"; the Larkin St crossing at 37.796299 −122.418596 "a somewhat broken underpass"; a "partially submerged house
+intersecting the tunnel" on Broadway.
+
+Measured (scratch `mouths.ts`: every mouth from outside far/near, from over the bore behind the portal, from
+inside looking out and in): the elevation data smears the sheer wall over a portal into a slope, so just inside
+each mouth the ground stood BELOW the crown. Surface Stockton dead-ends 10 m short of the north mouth over the
+bore, and from it the portal's back showed in that pit (both Stockton reports are this one view). Inside Broadway
+the invisible ground occluder (group 3) stood between the eye and the vault, so whatever the earlier groups had
+painted — grass, a pond, the road over the hill — showed through it.
+
+Fixed (commits 8df3864, 530cad2, 6a0b457; bake 20261015T0333-yunz, live):
+* the bake fills the ground back over every bore, mouth to mouth, to crown + cover (tools/bake.ts, next to the
+  cuts' carving); the tiles the bores cross ship fine ground;
+* inside a bore the ground's depth-only occluders in the tube's group are switched off (render/tunnels.ts
+  `occluders`); a lid over the crown and a sole under the floors close the slots a twin bore leaves over and under
+  its pier;
+* Broadway west's retaining walls: a clean top (the highest ground still to come, falling ≤ 0.35 m/m) and both
+  faces (the south wall was invisible from the road).
+
+OPEN:
+* **Larkin over Broadway's west cut** (the "broken underpass", around local −600, 360): the bridge is a dark deck
+  slab with a solid grey abutment block filling the space under its south half, beside the centre roadway. The
+  frontage roads either side of the cut are flagged `ramp` and raised 4–6 m to the bridge, which is likely the
+  source; it needs the bridge-structure code (render/bridge-structures.ts, src/city/bridge-decks.ts).
+* **The Broadway house**: a scan along the whole bore from inside every 60 m (scratch `along.ts`) shows no
+  building intersecting the tube, so where it is was not found — needs the owner's coordinate.
+* Through the lower outer corner of each Broadway arch the bore's inside wall is visible 5 m in (the bore is wider
+  than the twin openings): a yellow wedge beside the arch. Minor.
