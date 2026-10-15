@@ -1943,6 +1943,9 @@ async function bake(spec: CitySpec): Promise<void> {
     const boreEdges = kept.filter((e) => e.bore && !e.foot && e.heights?.length)
     if (cuts.length || boreEdges.length) {
       const MARGIN = 8
+      const PAST_MOUTH = 5
+      const mouthNodes = new Set<number>()
+      for (const e of boreEdges) { mouthNodes.add(e.a); mouthNodes.add(e.b) }
       const carve = (h: ArrayLike<number> & { [i: number]: number }, x0: number, z0: number, step: number, ncols: number, nrows: number): number => {
         let lowered = 0
         for (const e of cuts) {
@@ -1964,12 +1967,21 @@ async function bake(spec: CitySpec): Promise<void> {
               const x = x0 + c * step
               const z = z0 + r * step
               const t = ((x - a.x) * dx + (z - a.z) * dz) / l2
-              // alongside this piece only (the street's own ends included, never beyond them)
+              // alongside this piece only (the street's own ends included, never beyond them)…
               const endA = i === 1 ? 0 : -0.05
               const endB = i === pts.length - 1 ? 1 : 1.05
-              if (t < endA || t > endB) continue
+              // …but for PAST_MOUTH metres on into a tunnel mouth, as wide as a portal's face (the street and 4 m:
+              // render/landmarks/sf/tunnels.ts faces reach the bore's half + 7): on the 4 m grid the step from the cut
+              // up to the hill otherwise straddled the face, and the raw hill stood in front of its lower corners
+              // (2026-10-14, the Stockton Tunnel's south face) — behind the face, the face hides it
+              const len = Math.sqrt(l2)
+              const extA = i === 1 && mouthNodes.has(e.a) ? PAST_MOUTH / len : 0
+              const extB = i === pts.length - 1 && mouthNodes.has(e.b) ? PAST_MOUTH / len : 0
+              if (t < endA - extA || t > endB + extB) continue
               const tt = Math.max(0, Math.min(1, t))
-              const d = Math.hypot(x - (a.x + dx * tt), z - (a.z + dz * tt))
+              const past = t < endA || t > endB
+              const d = past ? Math.abs((x - a.x) * dz - (z - a.z) * dx) / len : Math.hypot(x - (a.x + dx * tt), z - (a.z + dz * tt))
+              if (past && d > half + 4) continue
               if (d > reach + 12) continue
               const level = e.heights![i - 1] + (e.heights![i] - e.heights![i - 1]) * tt
               const want = level + Math.max(0, d - reach) * 2
@@ -1982,11 +1994,25 @@ async function bake(spec: CitySpec): Promise<void> {
       }
       // the tube is 5.4 m high (tools/tunnels.ts CLEAR); 0.6 m of cover over its crown
       const OVER = 6
+      /*
+       * …starting this far in from a mouth (the cut is carved on 5 m past it: PAST_MOUTH). On the 4 m grid the step
+       * from the cut's level up to the fill is one cell wide, and centred on the portal's face it stood in front of the
+       * face's lower corners — and the portals are
+       * drawn after the ground's occluder (render/city.ts `rank`), which then hid them.
+       */
+      const INSET = 7
+      const boreEnds = new Map<number, number>()
+      for (const e of boreEdges) for (const n of [e.a, e.b]) boreEnds.set(n, (boreEnds.get(n) ?? 0) + 1)
       const fill = (h: ArrayLike<number> & { [i: number]: number }, x0: number, z0: number, step: number, ncols: number, nrows: number): number => {
         let raised = 0
         for (const e of boreEdges) {
           const pts = unpackPoints(e.points)
           const half = e.width / 2 + Math.max(e.walk ?? 0, 0.6) + 1
+          const cum = [0]
+          for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z))
+          const L = cum[cum.length - 1]
+          const mouthA = (boreEnds.get(e.a) ?? 0) === 1
+          const mouthB = (boreEnds.get(e.b) ?? 0) === 1
           for (let i = 1; i < pts.length; i++) {
             const a = pts[i - 1]
             const b = pts[i]
@@ -2006,6 +2032,9 @@ async function bake(spec: CitySpec): Promise<void> {
               // within the bore's own length: an edge's end is exact (a mouth), a bend between pieces overlaps a little
               if (t < (i === 1 ? 0 : -0.05) || t > (i === pts.length - 1 ? 1 : 1.05)) continue
               const tt = Math.max(0, Math.min(1, t))
+              // not right at a mouth: the fill's slope down to the cut would stand in front of the portal's foot
+              const s = cum[i - 1] + (cum[i] - cum[i - 1]) * tt
+              if ((mouthA && s < INSET) || (mouthB && L - s < INSET)) continue
               const d = Math.hypot(x - (a.x + dx * tt), z - (a.z + dz * tt))
               if (d > reach) continue
               const level = e.heights![i - 1] + (e.heights![i] - e.heights![i - 1]) * tt

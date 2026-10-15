@@ -134,6 +134,8 @@ interface Mouth {
   fz: number
   y: number
   entry: Mesh
+  /** this end's portal (its face, wings, deck); `metadata.first` while the camera is in front of it */
+  portal: Mesh
   shown: boolean
 }
 
@@ -145,7 +147,6 @@ interface Tunnel {
   cum: number[]
   section: Section
   tube: Mesh
-  portals: Mesh
   mass: Mesh | null
   mouths: Mouth[]
   inside: boolean
@@ -212,10 +213,18 @@ export class Tunnels {
     for (const t of this.tunnels) {
       const inside = this.contains(t, camera)
       if (inside !== t.inside) { t.inside = inside; t.tube.setEnabled(inside); this.occluders(this.cameraInside) }
-      const near = t.mouths.some((m) => Math.hypot(camera.x - m.p.x, camera.z - m.p.z) < PORTAL_SEEN)
-      if (near !== t.portals.isEnabled()) t.portals.setEnabled(near)
       // (a building over a mouth is a building: seen from as far as the city draws them)
       for (const m of t.mouths) {
+        const near = Math.hypot(camera.x - m.p.x, camera.z - m.p.z) < PORTAL_SEEN
+        if (near !== m.portal.isEnabled()) m.portal.setEnabled(near)
+        /*
+         * In front of its face a portal is drawn BEFORE the ground's occluder (render/city.ts `rank`): its foot stands
+         * in a cut the 4 m ground cannot quite follow, and the occluder hid the foot and the face's lower corners.
+         * Behind it, it takes its ordinary place after the occluder, so the hill over the tunnel hides it — drawn first
+         * from everywhere, the Stockton Tunnel's north portal stood on surface Stockton's crest 220 m away
+         * (owner, 2026-10-14).
+         */
+        ;(m.portal.metadata as { first: boolean }).first = (camera.x - m.p.x) * m.fx + (camera.z - m.p.z) * m.fz > 0
         const show = !inside && inFront(m, t.section.half, camera)
         if (show !== m.shown) { m.shown = show; m.entry.setEnabled(show) }
       }
@@ -251,7 +260,7 @@ export class Tunnels {
   }
 
   private rebuild(): void {
-    for (const t of this.tunnels) { t.tube.dispose(); t.portals.dispose(); t.mass?.dispose(); for (const m of t.mouths) m.entry.dispose() }
+    for (const t of this.tunnels) { t.tube.dispose(); t.mass?.dispose(); for (const m of t.mouths) { m.entry.dispose(); m.portal.dispose() } }
     this.tunnels = []
     this.edgeTunnel.clear()
     const roads = [...this.bores.values()].filter((e) => !e.foot)
@@ -305,7 +314,7 @@ export class Tunnels {
       this.bore(tube, section, line, ys, cum, 0, L, () => 1)
       const parts = this.portals(style, section, line, ys)
       const t: Tunnel = { name, edges: new Set(chain.map((e) => e.id)), line, ys, cum, section, inside: false,
-        tube: this.mesh(tube, 'tunnel:tube', 'unlit'), portals: this.mesh(parts.face, 'tunnel:portals', 'face'),
+        tube: this.mesh(tube, 'tunnel:tube', 'unlit'),
         mass: parts.mass.triangles > 0 ? this.mesh(parts.mass, 'tunnel:mass', 'face') : null, mouths: [] }
       t.tube.setEnabled(false)
       for (const end of [0, 1] as const) {
@@ -320,7 +329,9 @@ export class Tunnels {
         const depth = (d: number): number => (end === 0 ? d : L - d)
         this.bore(entry, section, line, ys, cum, from, to, (d) => Math.max(0.1, 1 - 0.88 * (depth(d) / ENTRY)))
         this.darkEnd(entry, section, line, ys, cum, end === 0 ? to : from, end === 0 ? 1 : -1)
-        const m: Mouth = { p: line[i], fx, fz, y: ys[i], entry: this.mesh(entry, 'tunnel:entry', 'unlit'), shown: false }
+        const portal = this.mesh(parts.faces[end], 'tunnel:portals', 'face')
+        portal.metadata = { first: false }
+        const m: Mouth = { p: line[i], fx, fz, y: ys[i], entry: this.mesh(entry, 'tunnel:entry', 'unlit'), portal, shown: false }
         m.entry.setEnabled(false)
         t.mouths.push(m)
       }
@@ -381,16 +392,17 @@ export class Tunnels {
         out.quad([w(s0, oa, ha), w(s0, ob, hb), w(s1, ob, hb), w(s1, oa, ha)], [s0.nx * no, ny, s0.nz * no], UV, tint(sg.col, sh), 0)
       }
       /*
-       * A lid over the whole width just above the crown, facing down. Nothing should show it — the vault is below it
+       * A lid over the whole width 0.6 m over the crown, facing down (at 5 cm it fought the vault for depth down the
+       * tube: a swirl of lid across the ceiling). Nothing should show it — the vault is below it
        * everywhere — but a twin bore's two vaults leave a slot over their pier, and with the ground's occluders off
        * inside a tunnel (`occluders`) the city showed through it all the way along Broadway.
        */
       {
-        const y = s.crown + 0.05
+        const y = s.crown + 0.6
         const o = s.half + 0.5
         out.quad([w(s0, -o, y), w(s1, -o, y), w(s1, o, y), w(s0, o, y)], [0, -1, 0], UV, tint(LID, sh), 0)
         // …and a sole under the floors, for the same slot at the foot of the pier
-        const f = Math.min(...s.floors.map((q) => q.y)) - 0.05
+        const f = Math.min(...s.floors.map((q) => q.y)) - 0.3
         out.quad([w(s0, -o, f), w(s0, o, f), w(s1, o, f), w(s1, -o, f)], [0, 1, 0], UV, tint(ROAD, sh), 0)
       }
       // rails: a tube's worth of posts and a top rail, every 2 m
@@ -442,10 +454,12 @@ export class Tunnels {
   }
 
   /** both portals: the style's own where it has one, the generic headwall and wings otherwise */
-  private portals(style: TunnelStyle, s: Section, line: P[], ys: number[]): { face: MeshBuilder; mass: MeshBuilder } {
-    const face = new MeshBuilder()
+  private portals(style: TunnelStyle, s: Section, line: P[], ys: number[]): { faces: MeshBuilder[]; mass: MeshBuilder } {
+    const faces: MeshBuilder[] = []
     const mass = new MeshBuilder()
     for (const end of [0, 1]) {
+      const face = new MeshBuilder()
+      faces.push(face)
       const i = end === 0 ? 0 : line.length - 1
       const j = end === 0 ? 1 : line.length - 2
       const p = line[i]
@@ -487,7 +501,7 @@ export class Tunnels {
       put(own.face, face)
       put(own.mass, mass)
     }
-    return { face, mass }
+    return { faces, mass }
   }
 
   private mesh(out: MeshBuilder, name: string, kind: 'unlit' | 'face'): Mesh {

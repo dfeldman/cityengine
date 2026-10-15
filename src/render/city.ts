@@ -1242,6 +1242,9 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain
   // …except a street tunnel's mouths (render/tunnels.ts), BEFORE the occluder: a mouth is below the raw ground by
   // nature — the road runs down into it in a cut — and the occluder, drawn first, hid its floor and the foot of its
   // portal, so the street outside seemed to run on up into the arch. They are only shown near and in front.
+  // (A PORTAL only while the camera is in front of its face, 2026-10-14 — render/tunnels.ts sets `metadata.first`: drawn
+  // first from everywhere, the Stockton Tunnel's north portal showed through the hill, standing on surface Stockton's
+  // crest 220 m away. From behind it goes after the occluder like any building, and the hill hides it.)
   /*
    * …and the road MARKINGS near the eye (owner, 2026-10-06, Market at 6th: "red pavement looks bad here"): the
    * carriageway is drawn in the group below, untouched by the occluder, but its paint is in this one, and wherever the
@@ -1255,7 +1258,7 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain
     return !!cam && !!c && Math.hypot(c.x - cam.globalPosition.x, c.z - cam.globalPosition.z) < 250
   }
   const rank = (mesh: { name: string }): number =>
-    mesh.name.startsWith('tunnel:entry') || mesh.name.startsWith('tunnel:portals') ? -1
+    mesh.name.startsWith('tunnel:entry') || (mesh.name.startsWith('tunnel:portals') && (mesh as { metadata?: { first?: boolean } }).metadata?.first) ? -1
       : mesh.name.startsWith('markings:') && nearEye(mesh as never) ? -1
       : mesh.name.startsWith('ground:occluder') ? 0 : mesh.name.startsWith('areas:') ? 1 : mesh.name.startsWith('corridor:') ? 2 : 3
   for (const group of [GROUP.areas, GROUP.road, GROUP.building]) {
