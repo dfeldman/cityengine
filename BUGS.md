@@ -10546,8 +10546,12 @@ OPEN:
   list flagged are lifted by the same rule; inside both tubes, nothing shows.
 * ~~**air-paths in the air**~~ FIXED 2026-10-15 (7dcf26c): Broadway's frontage roads merged into a midline over the
   trench, and Geary's; mergeParallel now needs the ground under a midline within 1.5 m. air-paths: 0 in the air.
-* Through the lower outer corner of each Broadway arch the bore's inside wall is visible 5 m in (the bore is wider
-  than the twin openings): a yellow wedge beside the arch. Minor.
+* ~~Through the lower outer corner of each Broadway arch, a yellow wedge~~ gone since the west retaining walls were
+  rebuilt (6a0b457); the dark blade then left over the left arch was OSM's 6 m carriageway stub across the mouth,
+  now a footway (d3d3fbd). Also d3d3fbd: a slab over each mouth (the "open top"), the road group's occluder hidden
+  inside a tunnel (the trench road read as lawn from inside), the trench road's hump under Hyde 2 m -> ~1 m.
+* Looking out of Broadway's west mouth, a small pale patch beside the trench road flickers (it changes with any
+  re-render: a depth fight or a pinhole in the ground layer there, not water). OPEN.
 * A faint lighter oval across the Stockton vault near the mouths, seen only part-way through a sequence of camera
   jumps (scratch `mouths.ts`), never in a fresh load at the same spot: a streaming transient, not the geometry. Not
   pinned (not the lid, the portals, the entry or anything else in group 3).
