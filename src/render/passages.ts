@@ -33,6 +33,12 @@ function inside(r: P[], x: number, z: number): boolean {
 
 /** A passage's half-width and arch height, shared by the vault here and the hole the building cuts. */
 export function archSize(e: { width: number; foot: boolean }, buildingTop: number): { half: number; top: number } {
+  /*
+   * A porte cochère is a carriage's width, 2.4 m either side at most. But a whole STREET under a building — Minna Street
+   * through the brick block at 37.7819 −122.4065 (owner, 2026-10-15: "truck trying to go through pedestrian tunnel")
+   * — keeps its own width and a lorry's headroom: its traffic is drawn at full size.
+   */
+  if (!e.foot && e.width >= 6) return { half: e.width / 2 + 0.5, top: Math.min(5, Math.max(3, buildingTop - 1.5)) }
   return { half: Math.max(1.4, Math.min(2.4, (e.foot ? e.width : e.width + 1) / 2)), top: Math.min(4.2, Math.max(3, buildingTop - 1.5)) }
 }
 
@@ -74,6 +80,25 @@ export function passageArches(ring: P[], height: number, passages: { points: num
         out.set(i, list)
       }
     }
+  }
+  /*
+   * Arches that overlap on one wall, or leave less than a pier's width between them, are one opening: a street through
+   * a building mapped with its two pavements beside it (Minna Street, 2026-10-15) came out as three arches on two brick
+   * piers, and the traffic at the carriageway's edge drove through the piers.
+   */
+  for (const [i, list] of out) {
+    list.sort((a, b) => a.t - b.t)
+    const merged: { t: number; half: number; top: number }[] = []
+    for (const a of list) {
+      const last = merged[merged.length - 1]
+      if (last && a.t - a.half < last.t + last.half + 1.2) {
+        const lo = Math.min(last.t - last.half, a.t - a.half), hi = Math.max(last.t + last.half, a.t + a.half)
+        last.t = (lo + hi) / 2
+        last.half = (hi - lo) / 2
+        last.top = Math.max(last.top, a.top)
+      } else merged.push({ ...a })
+    }
+    out.set(i, merged)
   }
   return out
 }
@@ -135,9 +160,37 @@ function buildPassages(scene: Scene, pkg: Pick<CityPackage, 'edges' | 'buildings
     const t = Math.max(0, Math.min(1, ((p.x - sg.a.x) * dx + (p.z - sg.a.z) * dz) / (dx * dx + dz * dz || 1)))
     return Math.hypot(sg.a.x + dx * t - p.x, sg.a.z + dz * t - p.z) < d
   })
+  /*
+   * A pavement beside a street passage (Minna Street through its block: the carriageway and both pavements are passages)
+   * is IN the street's opening — its own vault and surround would be a second and third arch, with piers in the way.
+   * The street's opening is widened over it instead (`extra`), and the pavement draws nothing of its own.
+   */
+  const streets = passages.filter((e) => !e.foot && e.width >= 6)
+  const besideStreet = (f: typeof passages[number]): number => {
+    if (!f.foot) return 0
+    const r = unpackPoints(f.points)
+    const m = r[Math.floor(r.length / 2)]
+    for (const st of streets) {
+      const q = unpackPoints(st.points)
+      for (let i = 1; i < q.length; i++) {
+        const dx = q[i].x - q[i - 1].x, dz = q[i].z - q[i - 1].z, l2 = dx * dx + dz * dz || 1
+        const t = Math.max(0, Math.min(1, ((m.x - q[i - 1].x) * dx + (m.z - q[i - 1].z) * dz) / l2))
+        const d = Math.hypot(q[i - 1].x + dx * t - m.x, q[i - 1].z + dz * t - m.z)
+        if (d < st.width / 2 + 5) return d
+      }
+    }
+    return 0
+  }
+  const extra = new Map<typeof passages[number], number>()
+  for (const f of passages) {
+    const d = besideStreet(f)
+    if (!d) continue
+    for (const st of streets) extra.set(st, Math.max(extra.get(st) ?? 0, d + f.width / 2 - st.width / 2 - 0.5))
+  }
   const out = new MeshBuilder()
   let arches = 0
   for (const e of passages) {
+    if (besideStreet(e)) continue
     const raw = unpackPoints(e.points)
     if (raw.length < 2) continue
     // carried 3 m past both ends: OSM splits a way where it meets the building line, often a metre inside,
@@ -147,7 +200,7 @@ function buildPassages(scene: Scene, pkg: Pick<CityPackage, 'edges' | 'buildings
       return { x: p.x + ((p.x - q.x) / l) * 3, z: p.z + ((p.z - q.z) / l) * 3 }
     }
     const pts = [ext(raw[0], raw[1]), ...raw, ext(raw[raw.length - 1], raw[raw.length - 2])]
-    const half = archSize(e, 10).half
+    const half = archSize(e, 10).half + Math.max(0, extra.get(e) ?? 0)
     // samples every half metre along the way, each marked inside or outside a building
     const samples: { p: P; ux: number; uz: number; top: number | null }[] = []
     for (let i = 1; i < pts.length; i++) {

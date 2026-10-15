@@ -20,7 +20,9 @@ const DARK: Rgb = [0.14, 0.14, 0.15]
 const WHITE: Rgb = [0.94, 0.94, 0.92]
 
 export function stopSign(out: MeshBuilder): void {
-  box(out, 0, 1.2, 0, 0.035, 1.2, 0.035, STEEL, FIXED)
+  // the pole up to just inside the plate's lower edge, not through it: run on to 2.4 m it showed through the face as a
+  // white needle across the T (owner, 2026-10-15, Minna at Mary: "stop sign is deformed")
+  box(out, 0, 0.95, 0, 0.035, 0.95, 0.035, STEEL, FIXED)
   // the octagon, a white border and the red face, on the side toward the traffic (+z). The layers a few centimetres
   // apart, not millimetres: at 5 mm they z-fought from across a junction (owner, 2026-10-05)
   const oct = (r: number, z: number, c: Rgb, n: [number, number, number] = [0, 0, 1]): void => {

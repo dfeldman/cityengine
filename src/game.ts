@@ -876,8 +876,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const dunes = index.region === 'san-francisco'
     ? ((p: Projection) => ({ zN: p.toLocal({ lat: 37.7655, lon: -122.509 }).z, zS: p.toLocal({ lat: 37.7354, lon: -122.507 }).z }))(new Projection(pkg.origin))
     : null
-  const closed = (e: { kind?: string; passage?: boolean; name?: string; points?: { x: number; z: number }[] }): boolean => {
+  const closed = (e: { kind?: string; service?: string; passage?: boolean; name?: string; points?: { x: number; z: number }[] }): boolean => {
     if (e.passage && e.kind === 'service') return true
+    // nor a driveway or a car park's aisle: they lead into a building's garage, and the traffic drove into the wall
+    // (owner, 2026-10-15, Minna Street: "truck going into a building … several on this block")
+    if (e.kind === 'service' && (e.service === 'driveway' || e.service === 'parking_aisle' || e.service === 'drive-through')) return true
     if (dunes && e.name === 'Great Highway' && e.points?.length) {
       const z = e.points[Math.floor(e.points.length / 2)].z
       return z > dunes.zS && z < dunes.zN

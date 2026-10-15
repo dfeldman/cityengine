@@ -157,6 +157,19 @@ export function straightenJunctions<E extends ShapedEdge>(edges: E[], outside: O
           const t = ((B.p.x - A.p.x) * B.d.z - (B.p.z - A.p.z) * B.d.x) / den
           moved = { x: A.p.x + A.d.x * t, z: A.p.z + A.d.z * t }
         }
+      } else if (ss.length === 4) {
+        /*
+         * One straight pair and a cross street that is not straight through: its two approaches are the cross street
+         * all the same, and the line between their far ends is where it runs (Turk at Taylor, 2026-10-15: Taylor kinks
+         * 40° into a node 4 m off the real crossing, and projecting onto Turk alone moved the node 0.3 m).
+         */
+        const rest = [0, 1, 2, 3].filter((k) => !through[0].includes(k)) as [number, number]
+        const A = line(through[0]), B = line(rest)
+        const den = A.d.x * B.d.z - A.d.z * B.d.x
+        if (Math.abs(den) > 1e-6) {
+          const t = ((B.p.x - A.p.x) * B.d.z - (B.p.z - A.p.z) * B.d.x) / den
+          moved = { x: A.p.x + A.d.x * t, z: A.p.z + A.d.z * t }
+        }
       } else {
         const A = line(through[0])
         const l2 = A.d.x * A.d.x + A.d.z * A.d.z || 1e-9

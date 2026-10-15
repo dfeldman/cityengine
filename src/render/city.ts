@@ -316,6 +316,25 @@ function placeModel(out: MeshBuilder, model: (b: MeshBuilder) => void, x: number
   for (let i = 0; i < tmp.uvs.length; i++) out.uvs.push(tmp.uvs[i])
   for (let i = 0; i < tmp.colors.length; i++) out.colors.push(tmp.colors[i])
   for (const idx of tmp.indices) out.indices.push(base + idx)
+  RIGID.get(out)?.push([base, tmp.positions.length / 3, x, z])
+}
+
+/**
+ * Models placed RIGIDLY: a builder registered here has each `placeModel` remembered (its vertices, its anchor), and
+ * `drapeRigid` lifts those vertices by the ground under the ANCHOR, not each by the ground under itself. Draped vertex
+ * by vertex, a stop sign standing at a kerb — where the levelled street meets the pavement and the ground steps —
+ * came out sheared, its plate rolled and its letters torn (owner, 2026-10-15, Minna at Mary: "stop sign is deformed").
+ */
+const RIGID = new WeakMap<MeshBuilder, [number, number, number, number][]>()
+function drapeRigid(out: MeshBuilder, terrain: Terrain): void {
+  if (terrain.flat) return
+  const pos = out.positions
+  const own = new Float64Array(pos.length / 3).fill(NaN)
+  for (const [start, count, x, z] of RIGID.get(out) ?? []) {
+    const g = terrain.heightAt(x, z)
+    for (let v = start; v < start + count; v++) own[v] = g
+  }
+  for (let v = 0; v < own.length; v++) pos[v * 3 + 1] += Number.isNaN(own[v]) ? terrain.heightAt(pos[v * 3], pos[v * 3 + 2]) : own[v]
 }
 
 /** A flat ribbon of the given width along a polyline: one street, one layer. */
@@ -2566,6 +2585,25 @@ export class City {
     // the painted transit busways of this tile, for `buswayBeside`
     const zebras: { x: number; z: number; a: { x: number; z: number }; b: { x: number; z: number } }[] = []
     const busways = groundEdges.filter((o) => o.kind === 'busway' && o.paint && o.paint & 1).map((o) => ({ name: o.name, pts: unpackPoints(o.points) }))
+    /*
+     * …nor a red band that lies on a WIDER painted carriageway of the same street (2026-10-15, owner: "z fighting in red
+     * pavement on market street", at 3rd: OSM's one-way side carriageway runs 5 m from the centre one, its red band lay
+     * on the centre one's, both at 5.8 cm, and the two fought in patches). The wider one's band is the one kept.
+     */
+    const reds = groundEdges.filter((o) => o.paint && o.paint & 1 && o.width >= 5 && !o.foot).map((o) => ({ id: o.id, name: o.name, width: o.width, pts: unpackPoints(o.points) }))
+    const redUnderWider = (e: PackedEdge, pts: { x: number; z: number }[]): boolean => {
+      const m = pts[Math.floor(pts.length / 2)]
+      return reds.some((r) => {
+        if (r.id === e.id || r.name !== e.name || r.width < e.width) return false
+        if (r.width === e.width && r.id < e.id) return false
+        for (let i = 1; i < r.pts.length; i++) {
+          const a = r.pts[i - 1], b = r.pts[i], dx = b.x - a.x, dz = b.z - a.z, l2 = dx * dx + dz * dz || 1e-9
+          const t = Math.max(0, Math.min(1, ((m.x - a.x) * dx + (m.z - a.z) * dz) / l2))
+          if (Math.hypot(a.x + dx * t - m.x, a.z + dz * t - m.z) < r.width / 2) return true
+        }
+        return false
+      })
+    }
     const buswayBeside = (e: PackedEdge, pts: { x: number; z: number }[]): boolean => {
       if (busways.length === 0) return false
       const m = pts[Math.floor(pts.length / 2)]
@@ -2760,7 +2798,7 @@ export class City {
       const paintPts = e.paint ? slice(full, 3, 3) : []
       if (e.paint && e.paint & 1 && e.kind === 'busway' && paintPts.length >= 2) dashedLine(markings, paintPts, 0, 0.058, e.width + 0.2, 1, 1, BUS_RED)
       if (e.paint && e.width >= 5 && paintPts.length >= 2) {
-        if (e.paint & 1 && !buswayBeside(e, paintPts)) {
+        if (e.paint & 1 && !buswayBeside(e, paintPts) && !redUnderWider(e, paintPts)) {
           const W = Math.min(3.4, e.width / 2 - 0.5)
           if (e.oneway) dashedLine(markings, paintPts, e.width / 2 - 0.4 - W / 2, 0.058, W, 1, 1, BUS_RED)
           else dashedLine(markings, paintPts, 0, 0.058, Math.min(6.6, e.width - 4), 1, 1, BUS_RED)
@@ -2946,6 +2984,7 @@ export class City {
     // and there. Both are cheap boxes, and a street without them reads as a rendering of a street: they are
     // the small evidence that somebody maintains the place.
     const furniture = new MeshBuilder()
+    RIGID.set(furniture, [])
     // never in a road, nor in the median of one mapped as two ways (Carriageways.noFurniture)
     const kerbside = new Carriageways(groundEdges)
     /*
@@ -3782,6 +3821,30 @@ export class City {
        * board overhangs the kerb by no more than its catwalk.
        */
       const turn = f.kind === 'billboard' ? (Math.round(f.x * 7 + f.z * 13) % 2 ? 1 : -1) * 0.61 : 0
+      /*
+       * A SUBWAY ENTRANCE is big — BART's is 4.4 m wide and 13 m long, laid along the street — and OSM's node is its
+       * middle: a node 3 m from the kerb put its outer half in the traffic lane (owner, 2026-10-15, Market at New
+       * Montgomery: "metro station partially in road"). Moved away from the nearest carriageway until its whole outline
+       * (its long side along the street, `heading`) is clear of every one.
+       */
+      if (f.kind === 'metro') {
+        const along = { x: Math.sin(heading), z: Math.cos(heading) }
+        const across = { x: Math.cos(heading), z: -Math.sin(heading) }
+        const corners = (cx: number, cz: number): { x: number; z: number }[] => [-1, 1].flatMap((a) => [-1, 1].map((c) =>
+          ({ x: cx + along.x * a * 6.9 + across.x * c * 2.3, z: cz + along.z * a * 6.9 + across.z * c * 2.3 })))
+        const inLane = (cx: number, cz: number): boolean => corners(cx, cz).some((q) => pointKerb.inside(q.x, q.z, 0.2))
+        if (inLane(px, pz)) {
+          // which way is away from the road: the side of the nearest carriageway the node is on
+          const nr = pointKerb.near(px, pz).sort((a, b) => a.d - b.d)[0]
+          const sgn = nr ? Math.sign((px - nr.s.ax) * across.x + (pz - nr.s.az) * across.z) || 1 : 1
+          let moved = false
+          for (let k = 1; k <= 20 && !moved; k++) {
+            const cx = px + across.x * sgn * 0.5 * k, cz = pz + across.z * sgn * 0.5 * k
+            if (!inLane(cx, cz)) { px = cx; pz = cz; moved = true }
+          }
+          if (!moved && skippedIf('road', px, pz, 'metro entrance')) continue
+        }
+      }
       placeModel(furniture, model, px, 0.15, pz, heading + turn)
     }
 
@@ -3820,7 +3883,7 @@ export class City {
 
     if (furniture.triangles > 0 && !this.off.has('furniture')) {
       const m = new Mesh(`street:${k}`, this.scene)
-      this.terrain.drape(furniture.positions)
+      drapeRigid(furniture, this.terrain)
       furniture.toVertexData().applyToMesh(m)
       // the static variant: street furniture is baked into the tile, not instanced
       m.material = cartoonMaterial(this.scene, 'cartoonStatic', false)

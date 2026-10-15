@@ -797,10 +797,17 @@ function midline(e: RideEdge, f0: RideEdge, ids: Ids, dryRun: boolean)
     moved.set(ends[i], target)
   }
   const longer = e.length >= f.length ? e : f
-  // half the distance between the two carriageways' centre lines: where the rider's own carriageway is
-  let spread = 0
-  for (let i = 0; i < re.pts.length; i++) spread += distance(re.pts[i], rf.pts[i])
-  const lane = Math.round((spread / re.pts.length / 2) * 100) / 100
+  /*
+   * Half the distance between the two carriageways' centre lines: where the rider's own carriageway is. ONE number for
+   * the whole edge, so the SMALLEST spread along it (the 25th percentile, against a stray sample), not the mean: Market
+   * at Beale, the side carriageway 3.6 m off the midline here and veering 9 m away further on, gave a mean of 6.3 m and
+   * put the rider 2.7 m past the side carriageway, on the pavement among the BART plaza's planters, the camera through
+   * the buildings (owner, 2026-10-15). Too little only keeps the rider nearer the middle of the road.
+   */
+  const spreads = re.pts.map((p, i) => distance(p, rf.pts[i])).sort((a, b) => a - b)
+  // (the smallest spread, less a metre: the rider rides the inner half of their carriageway, away from its kerb — a
+  //  merged pair's side carriageway is often a narrow slip lane along the buildings, Market at Beale)
+  const lane = Math.round(Math.max(0, spreads[Math.floor(spreads.length * 0.1)] / 2 - 1) * 100) / 100
   const edge: RideEdge = {
     ...longer, id: ids.nextEdge(), a: na.id, b: nb.id, points: pts, heights: hs, length: lengthOf(pts),
     over: [...e.over, ...f.over], ...(lane > 1 ? { lane } : {}),

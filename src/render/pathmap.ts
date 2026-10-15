@@ -124,7 +124,9 @@ export class PathMap {
     this.exitsOf = exitsOf
     this.baseMat = flatMaterial(scene, 'pathmap', -2)
     this.liveMat = flatMaterial(scene, 'pathmap-live', -4)
-    this.softMat = softMaterial(scene, 'pathsoft', 0.28, -2)
+    // (0.16, not 0.28: on Market's red lanes the 0.28 cream line read as a pale stain fighting the paint — owner,
+    //  2026-10-15, "z fighting in red pavement on market street")
+    this.softMat = softMaterial(scene, 'pathsoft', 0.16, -2)
     this.softLiveMat = softMaterial(scene, 'pathsoft-live', 0.75, -3)
   }
 

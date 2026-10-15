@@ -26,6 +26,7 @@
  */
 import { SHIPPED, assertFresh, decksUndoFile, isBaked, newBakeId, packageFile, recordBake, shippedDir, workDir } from './bake-files.ts'
 import { applyStreetPaint, markBrickSquares } from './street-paint.ts'
+import { Carriageways } from '../src/city/carriageways.ts'
 import { StreetGrade } from '../src/city/grade.ts'
 import { boreTunnels } from './tunnels.ts'
 import { mkdir, writeFile } from 'node:fs/promises'
@@ -2440,6 +2441,31 @@ async function bake(spec: CitySpec): Promise<void> {
       console.log(`  open country: ${touched} ways restyled at source (${fixed} from a photographed row in `
         + `city/park-roads.json), ${before - outside.length} pieces of street furniture dropped inside it`)
     }
+  }
+
+  /*
+   * KERB-SIDE FURNITURE ON THE PAVEMENT (2026-10-15, owner at 37.788538 −122.406212: "posters hanging in free spaces in
+   * the middle of the road"). OSM's node for a poster column, a post box, a hydrant is often in the carriageway. The
+   * renderer dropped such a column — and the posters layer, which reads the same nodes, still hung its posters round
+   * the column that was not there. Settled once, here, so every layer agrees: moved onto the nearest pavement
+   * (city/carriageways.ts `toPavement`), and dropped when there is none to move to.
+   */
+  {
+    const KERB_ONLY = new Set(['column', 'kiosk', 'postbox', 'hydrant', 'bikeshare', 'fountain', 'billboard'])
+    const lanes = new Carriageways(kept.filter((e) => !e.bridge && !e.tunnel && !e.bore))
+    let moved = 0, dropped = 0
+    const keepF = furniture.filter((f) => {
+      if (!KERB_ONLY.has(f.kind) || lanes.whyNoFurniture(f.x, f.z) === null) return true
+      const q = lanes.toPavement(f.x, f.z)
+      if (lanes.whyNoFurniture(q.x, q.z) !== null) { dropped++; return false }
+      f.x = Math.round(q.x * 10) / 10
+      f.z = Math.round(q.z * 10) / 10
+      moved++
+      return true
+    })
+    furniture.length = 0
+    furniture.push(...keepF)
+    console.log(`  kerb-side furniture: ${moved} moved out of the road onto the pavement, ${dropped} with none near dropped`)
   }
 
   // ---- the ride graph, built here only to be measured (the game builds its own at load, IMPROVEMENTS §2.2)

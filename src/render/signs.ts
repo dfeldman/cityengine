@@ -1009,6 +1009,30 @@ function blades(scene: Scene, atlas: TextAtlas, owner: string, junctions: Signed
     // (owner, 2026-10-14, Green at Columbus: "a short distance away from the sidewalk")
     ;({ x: px, z: pz } = toPavement(px, pz))
     if (onRoad(px, pz)) continue
+    /*
+     * …and out of the junction's own asphalt: the city paves a junction as the hull of its streets' mouths
+     * (render/city.ts `junctionHull`, `reach` = 1.35 × the widest half + 0.4 m out), whose straight edge cuts across each
+     * corner — a pole at the kerb lines' meeting stood on that asphalt, at the end of the crosswalk (owner,
+     * 2026-10-15, 4th St at Mission: "lamppost in middle of street"). Out along the corner until it is clear.
+     */
+    {
+      const reach = Math.max(...j.arms.map((a) => a.width / 2)) * 1.35 + 0.4
+      const ring = j.arms.flatMap((a) => {
+        const ux = Math.sin(a.bearing), uz = Math.cos(a.bearing), h = a.width / 2
+        const cx2 = j.at.x + ux * reach, cz2 = j.at.z + uz * reach
+        return [{ x: cx2 - uz * h, z: cz2 + ux * h }, { x: cx2 + uz * h, z: cz2 - ux * h }]
+      }).sort((p, q) => Math.atan2(p.x - j.at.x, p.z - j.at.z) - Math.atan2(q.x - j.at.x, q.z - j.at.z))
+      const inHull = (x: number, z: number): boolean => {
+        let hit = false
+        for (let i = 0, k = ring.length - 1; i < ring.length; k = i++) {
+          const a = ring[i], b = ring[k]
+          if ((a.z > z) !== (b.z > z) && x < ((b.x - a.x) * (z - a.z)) / (b.z - a.z) + a.x) hit = !hit
+        }
+        return hit
+      }
+      for (let step = 0; step < 16 && inHull(px, pz); step++) { px += cx * 0.4; pz += cz * 0.4 }
+      if (inHull(px, pz) || onRoad(px, pz)) continue
+    }
     const g = terrain.heightAt(px, pz)
     // the pole, up to the lower blade: the blades sit on its cap, they are not threaded on it (owner, 2026-10-02:
     // "street signs are always obstructing the sign with the pole" — it ran on to 2.7 m, through both names)
