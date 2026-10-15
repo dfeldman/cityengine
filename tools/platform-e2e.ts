@@ -51,6 +51,7 @@ while (Date.now() - t0 < 240000) {
   await page.waitForTimeout(2000)
 }
 console.log('game ready after', Math.round((Date.now() - t0) / 1000), 's; frame', inner?.url().slice(0, 120))
+if (!inner) { console.log('no game frame from', GAME, '— is it running?'); clearInterval(bridge); await api('POST', `/api/sessions/${sid}/end`, { status: 'discarded' }); await b.close(); process.exit(1) }
 for (let s = 0; s < SECS; s += 10) {
   await page.waitForTimeout(10000)
   const game = await inner.evaluate(() => { const hud = document.querySelector('.sr-speed, [class*=speed]'); return hud?.textContent?.trim().slice(0, 40) ?? null }).catch((e: any) => String(e))
