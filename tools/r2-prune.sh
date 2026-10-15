@@ -23,7 +23,17 @@ export RCLONE_CONFIG_R2_TYPE=s3 RCLONE_CONFIG_R2_PROVIDER=Cloudflare RCLONE_CONF
 
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
-rclone lsf "r2:$BUCKET_NAME" --files-only -R --fast-list 2>/dev/null | sort > "$TMP/bucket"
+# (a content-hashed bundle uploaded in the last KEEP_DAYS stays: a tab still holding the previous index.html asks for
+# the previous build's bundles, and deleting them broke it — 2026-10-14)
+KEEP_DAYS=${KEEP_DAYS:-3}
+rclone lsf "r2:$BUCKET_NAME" --files-only -R --fast-list --use-server-modtime --format "tp" --separator ";" 2>/dev/null \
+  | python3 -c "
+import sys, datetime
+cut = datetime.datetime.now() - datetime.timedelta(days=$KEEP_DAYS)
+for line in sys.stdin:
+    t, p = line.rstrip('\\n').split(';', 1)
+    if p.startswith('assets/') and datetime.datetime.strptime(t[:19], '%Y-%m-%d %H:%M:%S') > cut: continue
+    print(p)" | sort > "$TMP/bucket"
 (cd dist && find -L . -type f ! -name .DS_Store | sed 's#^\./##' | sort) > "$TMP/dist"
 comm -23 "$TMP/bucket" "$TMP/dist" > "$TMP/go"
 echo "bucket $(wc -l < "$TMP/bucket" | tr -d ' ') files, build $(wc -l < "$TMP/dist" | tr -d ' '), not in the build $(wc -l < "$TMP/go" | tr -d ' ')"

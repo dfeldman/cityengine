@@ -11,5 +11,11 @@ KID=$(curl -s -H "Authorization: Bearer $BUCKET_ACCESS_KEY" "https://api.cloudfl
   | python3 -c "import sys,json; print(json.load(sys.stdin)['result']['id'])")
 export RCLONE_CONFIG_R2_TYPE=s3 RCLONE_CONFIG_R2_PROVIDER=Cloudflare RCLONE_CONFIG_R2_ACCESS_KEY_ID="$KID" \
   RCLONE_CONFIG_R2_SECRET_ACCESS_KEY="$BUCKET_SECRET_KEY" RCLONE_CONFIG_R2_ENDPOINT="$BUCKET_URL" RCLONE_CONFIG_R2_NO_CHECK_BUCKET=true
-exec rclone copy "${R2_SRC:-dist}" "r2:$BUCKET_NAME" --copy-links --exclude '.DS_Store' --exclude '*.swp' \
+# index.html LAST and on its own (2026-10-14: a tab holding the previous index.html asked for bundles a prune had
+# just deleted, 404): everything it points at is in place before it changes, and it goes up with `no-cache`, so a
+# browser revalidates it every load instead of keeping it by heuristic (the bundles are content-hashed; the bake's
+# files are stamped with its number — those may be kept for ever).
+SRC="${R2_SRC:-dist}"
+rclone copy "$SRC" "r2:$BUCKET_NAME" --copy-links --exclude '.DS_Store' --exclude '*.swp' --exclude '/index.html' \
   --checksum --transfers 32 --checkers 32 --fast-list --stats 30s --stats-one-line "$@"
+exec rclone copyto "$SRC/index.html" "r2:$BUCKET_NAME/index.html" --header-upload "Cache-Control: no-cache" "$@"
