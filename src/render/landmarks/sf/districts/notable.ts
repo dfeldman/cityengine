@@ -3230,6 +3230,173 @@ function rialtoBuilding_116_NewMontgomery(out: MeshBuilder, fit: Fit): void {
   for (const idx of m.indices) out.indices.push(base + idx)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// Fourth Church of Christ, Scientist (now the Internet Archive), 300 Funston Avenue
+// ---------------------------------------------------------------------------------------------------------------
+
+const FC_IV: Rgb = [0.937, 0.925, 0.894]       // #efece4, the white/ivory stone
+const FC_SH: Rgb = [0.784, 0.776, 0.753]       // #c8c6c0, the shadowed recess
+const FC_LINE: Rgb = [0.84, 0.83, 0.8]
+const FC_DOOR: Rgb = [0.24, 0.15, 0.13]
+const FC_GLASS: Rgb = [0.16, 0.18, 0.22]
+const FC_ROOF: Rgb = [0.8, 0.8, 0.78]
+const FC_CN = surfaceTag('concrete')
+
+/**
+ * The Fourth Church of Christ, Scientist (1923), now the Internet Archive, 300 Funston Avenue: a white Greek temple. The
+ * Funston (west) front has SIX giant fluted Ionic columns standing in front of a recessed wall with three tall arched doors,
+ * between two solid end bays, under a deep plain entablature (inscribed frieze, projecting cornice) and a raised attic with
+ * urns at its corners; wide steps climb to the portico. The Clement (north) side and the rear are plain white walls with
+ * pilasters and tall arched windows. Photographs: docs/shots/refs/notable/fourth-church/ (wiki-image from the corner,
+ * mapillary-0 the portico's end and steps, -1 the Clement side, -2 the front across Funston).
+ *
+ * Orientation: the manifest gives front 267 (Funston, measured), so the fit's FRONT is local -z. The portico is placed on the
+ * ring's front-facing edges (outward normal toward -z) and nothing depends on OSM's vertex order.
+ * Photographs overruled the pack: the side wall is plain ashlar with pilasters and high arched windows, not a second colonnade.
+ */
+function fourthChurchScientist_300_Funston(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  const n = ring.length
+  // front-facing edges (outward normal toward -z) within 3.5 m of the frontmost ring z, grouped by x; the longest group is the
+  // main front, and the edges within 1.5 m of its frontmost z are the portico's line (the end bays stand a little behind it)
+  let zmin0 = Infinity
+  for (const p of ring) zmin0 = Math.min(zmin0, p.z)
+  type Fe = { i: number; x0: number; x1: number; z: number }
+  const fe: Fe[] = []
+  for (let i = 0; i < n; i++) {
+    const a = ring[i], b = ring[(i + 1) % n], l = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    if ((b.x - a.x) / l > 0.9 && l > 2 && (a.z + b.z) / 2 < zmin0 + 3.5) fe.push({ i, x0: a.x, x1: b.x, z: (a.z + b.z) / 2 })
+  }
+  fe.sort((p, q) => p.x0 - q.x0)
+  const groups: Fe[][] = []
+  for (const e of fe) {
+    const g = groups[groups.length - 1]
+    if (g && e.x0 - g[g.length - 1].x1 < 3) g.push(e); else groups.push([e])
+  }
+  const span = (g: Fe[]): number => g[g.length - 1].x1 - g[0].x0
+  const grp = groups.sort((p, q) => span(q) - span(p))[0] ?? [{ i: -1, x0: -fit.hx, x1: fit.hx, z: -fit.hz }]
+  const zf = Math.min(...grp.map((e) => e.z))
+  const porch = grp.filter((e) => e.z < zf + 1.5)
+  const isFront: boolean[] = ring.map((_, i) => porch.some((e) => e.i === i))
+  const px0 = Math.min(...porch.map((e) => e.x0)), px1 = Math.max(...porch.map((e) => e.x1))
+  const gx0 = grp[0].x0, gx1 = grp[grp.length - 1].x1                 // the whole main front, end bays included
+  const c0 = (px0 + px1) / 2
+  const PW = px1 - px0
+  const gP = Math.min(4, Math.max(0, fit.groundAt ? fit.groundAt(c0, zf - 2) : fit.grade ?? 0))
+  const H1 = gP + 14.4, TOP = gP + 16.4, PLAT = gP + 1.7, COL1 = gP + 11.6
+  const DEP = Math.min(5.6, Math.max(2.6, (grp.find((e) => e.z >= zf + 1.5)?.z ?? zf + 3.1) - zf)), PIER = Math.min(3.4, PW / 6)
+  const bx = (x0: number, x1: number, d0: number, d1: number, y0: number, y1: number, c: Rgb, tag = FC_CN): void =>
+    boxAlong(m, (x0 + x1) / 2, (y0 + y1) / 2, zf + (d0 + d1) / 2, (x1 - x0) / 2, (y1 - y0) / 2, (d1 - d0) / 2, 0, c, tag)
+  const xa = c0 - PW / 2, xb = c0 + PW / 2
+  /** a face looking out of the front (toward -z) at depth d (d<0 = in front of the front plane) */
+  const fF = (x0: number, x1: number, d: number, y0: number, y1: number, c: Rgb, tag = FC_CN): void => {
+    m.quad([[x1, y0, zf + d], [x0, y0, zf + d], [x0, y1, zf + d], [x1, y1, zf + d]], [0, 0, -1], uv, c, tag)
+  }
+
+  // ---- the walls: ring edges, pilasters, tall arched windows, a cornice ----------------------------------------------
+  for (let i = 0; i < n; i++) {
+    const a = ring[i], b = ring[(i + 1) % n]
+    const l = Math.hypot(b.x - a.x, b.z - a.z)
+    if (l < 0.5 || isFront[i]) continue
+    const tx = (b.x - a.x) / l, tz = (b.z - a.z) / l, nx = tz, nz = -tx
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const panel = (u0: number, u1: number, y0: number, y1: number, pr: number, c: Rgb, tag = FC_CN): void => {
+      m.quad([P(u0, y0, pr), P(u1, y0, pr), P(u1, y1, pr), P(u0, y1, pr)], [nx, 0, nz], uv, c, tag)
+    }
+    const h = Math.atan2(nx, nz)
+    panel(0, l, 0, H1, 0, FC_IV)
+    if (l > 5) {
+      // pilasters every ~6 m, tall arched windows between them
+      const k = Math.max(1, Math.round((l - 1.2) / 6.2))
+      for (let j = 0; j <= k; j++) {
+        const u = 0.6 + ((l - 1.2) * j) / k
+        const p = P(u, 0, 0.2)
+        boxAlong(m, p[0], (gP + 0.4 + H1 - 0.3) / 2, p[2], 0.45, (H1 - 0.7 - gP - 0.4) / 2, 0.2, h, FC_IV, FC_CN)
+      }
+      for (let j = 0; j < k; j++) {
+        const u = 0.6 + ((l - 1.2) * (j + 0.5)) / k
+        panel(u - 0.9, u + 0.9, gP + 4.8, gP + 11.2, 0.04, FC_SH)
+        panel(u - 0.7, u + 0.7, gP + 5.0, gP + 10.6, 0.08, FC_GLASS, GL)
+        panel(u - 0.45, u + 0.45, gP + 10.6, gP + 11.0, 0.08, FC_GLASS, GL)
+      }
+    }
+    const cx = a.x + tx * l / 2, cz = a.z + tz * l / 2
+    boxAlong(m, cx + nx * 0.4, H1 - 0.55, cz + nz * 0.4, l / 2 + 0.3, 0.55, 0.4, h, FC_IV, FC_CN)         // frieze and cornice
+    boxAlong(m, cx + nx * 0.7, H1 + 0.2, cz + nz * 0.7, l / 2 + 0.5, 0.2, 0.7, h, FC_IV, FC_CN)
+  }
+  capPolygonWithHoles(m, [ring], H1 + 0.4, FC_ROOF, FC_CN)
+  // the raised attic block over the nave, set back from the walls
+  let xmin = Infinity, xmax = -Infinity, zmin = Infinity, zmax = -Infinity
+  for (const p of ring) { xmin = Math.min(xmin, p.x); xmax = Math.max(xmax, p.x); zmin = Math.min(zmin, p.z); zmax = Math.max(zmax, p.z) }
+  bx(gx0 + 1.0, gx1 - 1.0, 0.6, zmax - zf - 6, H1 + 0.4, TOP, FC_IV)
+  bx(gx0 + 0.7, gx1 - 0.7, 0.3, zmax - zf - 5.7, TOP, TOP + 0.35, FC_LINE)
+
+  // ---- the Funston front: end bays, recessed wall with doors, six columns, entablature, attic, steps ------------------
+  const xi0 = xa + PIER, xi1 = xb - PIER
+  bx(xa, xi0, 1.9, DEP, 0, COL1, FC_IV)                              // the two solid end bays, behind the end columns
+  bx(xi1, xb, 1.9, DEP, 0, COL1, FC_IV)
+  bx(xa, xi0, 0.3, 1.9, 0, PLAT, FC_IV)                              // the podium the end columns stand on
+  bx(xi1, xb, 0.3, 1.9, 0, PLAT, FC_IV)
+  for (const xm of [xa + PIER / 2, xb - PIER / 2]) {                  // a round medallion on each bay (mapillary-0)
+    fF(xm - 0.6, xm + 0.6, 1.88, gP + 7.9, gP + 9.1, FC_SH)
+    fF(xm - 0.35, xm + 0.35, 1.86, gP + 8.15, gP + 8.85, FC_LINE)
+    fF(xm - 0.45, xm + 0.45, 1.88, gP + 3.6, gP + 6.0, FC_GLASS, GL)  // the pierced panel low on the bay
+  }
+  bx(xi0, xi1, 0.5, DEP, 0, PLAT, FC_IV)                              // the portico floor
+  fF(xi0, xi1, DEP - 0.02, PLAT, COL1, FC_SH)                         // the recessed wall
+  const doorW = 2.3, dxs = [-1, 0, 1].map((j) => c0 + j * ((xi1 - xi0) / 3.2))
+  for (const x of dxs) {
+    fF(x - doorW / 2 - 0.25, x + doorW / 2 + 0.25, DEP - 0.05, PLAT, PLAT + 7.0, FC_IV)
+    fF(x - doorW / 2, x + doorW / 2, DEP - 0.1, PLAT, PLAT + 5.2, FC_DOOR)
+    fF(x - doorW / 2 + 0.1, x + doorW / 2 - 0.1, DEP - 0.12, PLAT + 5.2, PLAT + 6.0, FC_SH)
+    fF(x - 0.55, x + 0.55, DEP - 0.1, PLAT + 8.4, PLAT + 9.4, FC_GLASS, GL)         // the small windows above the doors
+  }
+  m.quad([[xi0, COL1, zf + DEP], [xi1, COL1, zf + DEP], [xi1, COL1, zf], [xi0, COL1, zf]], [0, -1, 0], uv, FC_SH, FC_CN)   // soffit
+  // wide steps across the whole portico, seven risers
+  for (let j = 1; j <= 7; j++) bx(xa - 0.3, xb + 0.3, -0.6 * (8 - j), 0.5, 0, gP + (PLAT - gP) * (j / 7), FC_IV)
+  bx(xa - 0.6, xa + 0.7, -4.8, 0.5, 0, PLAT + 0.7, FC_IV)             // the cheek blocks at the foot, each with an urn
+  bx(xb - 0.7, xb + 0.6, -4.8, 0.5, 0, PLAT + 0.7, FC_IV)
+  for (const x of [xa + 0.05, xb - 0.05]) {
+    prism(m, x, zf - 4.2, PLAT + 0.7, PLAT + 1.2, 0.45, 8, FC_IV, FC_CN)
+    prism(m, x, zf - 4.2, PLAT + 1.2, PLAT + 2.3, 0.4, 8, FC_IV, FC_CN, 0.2)
+  }
+  // the six giant fluted Ionic columns, evenly across the front
+  const S = (PW - 4) / 5
+  for (let i = 0; i < 6; i++) {
+    const x = c0 + (i - 2.5) * S
+    classicalColumn(m, x, zf + 0.9, PLAT, COL1, 0.78, FC_IV, { order: 'ionic', tag: FC_CN, heading: Math.PI, trim: FC_IV, flutes: true })
+  }
+  // second row of columns behind each end column, as the photographs show the corner pairs
+  for (const x of [c0 - 2.5 * S, c0 + 2.5 * S]) {
+    classicalColumn(m, x, zf + 4.1, PLAT, COL1, 0.7, FC_IV, { order: 'ionic', tag: FC_CN, heading: Math.PI, trim: FC_IV, flutes: true })
+  }
+  // architrave, frieze (the inscription band), the deep projecting cornice, the attic with urns at its corners
+  bx(xa, xb, 0.1, 0.0 + DEP, COL1, COL1 + 1.0, FC_IV)
+  bx(xa - 0.1, xb + 0.1, -0.15, DEP, COL1 + 1.0, COL1 + 2.2, FC_IV)
+  fF(xa + 2.5, xb - 2.5, -0.17, COL1 + 1.4, COL1 + 1.9, FC_SH)
+  bx(xa - 0.4, xb + 0.4, -0.9, DEP, COL1 + 2.2, COL1 + 3.0, FC_IV)
+  bx(xa + 0.2, xb - 0.2, -0.1, 3.4, COL1 + 3.0, TOP + 0.3, FC_IV)
+  fF(xa + 3.5, xb - 3.5, -0.12, TOP - 1.4, TOP - 0.7, FC_SH)         // the cut lettering, FOURTH CHURCH OF CHRIST, SCIENTIST
+  bx(xa + 0.2, xb - 0.2, -0.3, 3.4, TOP + 0.3, TOP + 0.55, FC_LINE)
+  for (const [x, d] of [[xa + 0.9, -0.1], [xb - 0.9, -0.1], [xa + 0.9, 2.6], [xb - 0.9, 2.6], [c0 - 5, -0.1], [c0 + 5, -0.1]] as [number, number][]) {
+    const y = TOP + 0.55
+    prism(m, x, zf + d, y, y + 0.4, 0.5, 8, FC_IV, FC_CN)
+    prism(m, x, zf + d, y + 0.4, y + 1.5, 0.38, 8, FC_IV, FC_CN, 0.52)
+    prism(m, x, zf + d, y + 1.5, y + 1.8, 0.2, 8, FC_IV, FC_CN)
+  }
+
+  for (let i = 0; i < m.positions.length; i++) out.positions.push(m.positions[i])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  out.uvs.push(...m.uvs)
+  out.colors.push(...m.colors)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -3244,4 +3411,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   ywcaResidence_940_Powell,
   stJosephsHospital_355_BuenaVista,
   rialtoBuilding_116_NewMontgomery,
+  fourthChurchScientist_300_Funston,
 }
