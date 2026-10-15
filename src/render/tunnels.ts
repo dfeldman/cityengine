@@ -36,8 +36,6 @@ import type { Terrain } from '../city/terrain.ts'
 type P = { x: number; z: number }
 /** the buildings' group (render/city.ts GROUP.building), which the tube, its portals and the ground's occluders share */
 const OCCLUDED_GROUP = 3
-/** the carriageways' group (render/city.ts GROUP.road), whose ground occluder is hidden in a tunnel too */
-const ROAD_GROUP = 2
 export type Rgb = [number, number, number]
 export type V3 = [number, number, number]
 
@@ -164,6 +162,7 @@ export class Tunnels {
   private tunnels: Tunnel[] = []
   private dirty = false
   private occludersOff = false
+  private hiddenShadows: AbstractMesh[] = []
   private added: Observer<AbstractMesh> | null = null
   private readonly edgeTunnel = new Map<number, Tunnel>()
   private unlit: StandardMaterial | null = null
@@ -214,9 +213,11 @@ export class Tunnels {
   /** Every frame: build what arrived; show each tunnel's inside, or the mouths the camera is in front of. */
   update(camera: { x: number; y: number; z: number }): void {
     if (this.dirty) { this.dirty = false; this.rebuild() }
+    // (after the loop below has set `inside`: last frame's answer is good enough for one frame)
+    this.occluders(this.cameraInside)
     for (const t of this.tunnels) {
       const inside = this.contains(t, camera)
-      if (inside !== t.inside) { t.inside = inside; t.tube.setEnabled(inside); this.occluders(this.cameraInside) }
+      if (inside !== t.inside) { t.inside = inside; t.tube.setEnabled(inside) }
       // (a building over a mouth is a building: seen from as far as the city draws them)
       for (const m of t.mouths) {
         const near = Math.hypot(camera.x - m.p.x, camera.z - m.p.z) < PORTAL_SEEN
@@ -244,11 +245,20 @@ export class Tunnels {
    * showed through it in jagged pieces. Nothing outside can be seen from in here but through the mouths.
    */
   private occluders(inside: boolean): void {
-    if (inside === this.occludersOff) return
+    if (inside === this.occludersOff) {
+      // (the landmarks show their meshes again as they update: kept hidden every frame while inside)
+      if (inside) for (const m of this.hiddenShadows) m.isVisible = false
+      return
+    }
     this.occludersOff = inside
+    if (!inside) { for (const m of this.hiddenShadows) if (!m.isDisposed()) m.isVisible = true; this.hiddenShadows = [] }
     const set = (m: AbstractMesh): void => {
-      // (the road group's too: looking out of Broadway's west mouth, the trench road showed as lawn — 2026-10-15)
-      if (m.renderingGroupId >= ROAD_GROUP && m.name.startsWith('ground:occluder:')) m.isVisible = !inside
+      // (every group's: looking out of Broadway's west mouth the road group's showed the trench road as lawn, and the
+      //  areas group's hid its sidewalk, so the sea plane far below showed through as "water" — 2026-10-15)
+      if (m.name.startsWith('ground:occluder:')) m.isVisible = !inside
+      // …and the ground's SHADOW decals (render/shadows.ts): draped over a mouth they follow the cut road down through
+      // the tube's inside, and the Sutter-Stockton Garage's lay across the Stockton vault as a dark oval (2026-10-15)
+      else if (m.name.startsWith('landmark:shadow:') || m.name.startsWith('shadow:')) { m.isVisible = !inside; if (inside) this.hiddenShadows.push(m) }
     }
     for (const m of this.scene.meshes) set(m)
     // (and the ones streamed in while inside; dropped again on the way out)

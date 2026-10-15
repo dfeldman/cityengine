@@ -53,7 +53,22 @@ export function stairsLayer(scene: Scene, terrain: Terrain, named: Record<string
        * one already kept, running the same way, is the same stair.
        */
       const kept: { mx: number; mz: number; dx: number; dz: number }[] = []
+      /*
+       * …nor IN A BORE's width (2026-10-15, the Stockton Tunnel's north portal: OSM maps its stairwells as little loops of
+       * steps, half of each at layer 0, right at the mouth — drawn, their treads hung inside the tube beside the road).
+       */
+      const bores = (near.around.edges ?? []).filter((r) => r.bore && !r.foot).map((r) => ({ half: r.width / 2 + Math.max(r.walk ?? 0, 0.6) + 1, pts: unpackPoints(r.points) }))
+      const inBore = (q: { x: number; z: number }): boolean => bores.some((b) => {
+        for (let i = 1; i < b.pts.length; i++) {
+          const a = b.pts[i - 1], c = b.pts[i], dx = c.x - a.x, dz = c.z - a.z, l2 = dx * dx + dz * dz || 1e-9
+          const t = ((q.x - a.x) * dx + (q.z - a.z) * dz) / l2
+          if (t < -0.02 || t > 1.02) continue
+          if (Math.hypot(a.x + dx * Math.max(0, Math.min(1, t)) - q.x, a.z + dz * Math.max(0, Math.min(1, t)) - q.z) < b.half) return true
+        }
+        return false
+      })
       const flights = (near.tile.edges ?? []).filter((e) => e.kind === 'steps' && !e.tunnel && !((e.layer ?? 0) < 0))
+        .filter((e) => !(bores.length && unpackPoints(e.points).some(inBore)))
         // (nor a flight a hand-built model draws itself: the stairs down into the open BART plazas, #248)
         .filter((e) => !drawnBy?.(e.points[Math.floor(e.points.length / 4) * 2], e.points[Math.floor(e.points.length / 4) * 2 + 1])).filter((e) => {
         const p = unpackPoints(e.points)

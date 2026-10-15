@@ -10550,11 +10550,16 @@ OPEN:
   rebuilt (6a0b457); the dark blade then left over the left arch was OSM's 6 m carriageway stub across the mouth,
   now a footway (d3d3fbd). Also d3d3fbd: a slab over each mouth (the "open top"), the road group's occluder hidden
   inside a tunnel (the trench road read as lawn from inside), the trench road's hump under Hyde 2 m -> ~1 m.
-* Looking out of Broadway's west mouth, a small pale patch beside the trench road flickers (it changes with any
-  re-render: a depth fight or a pinhole in the ground layer there, not water). OPEN.
-* A faint lighter oval across the Stockton vault near the mouths, seen only part-way through a sequence of camera
-  jumps (scratch `mouths.ts`), never in a fresh load at the same spot: a streaming transient, not the geometry. Not
-  pinned (not the lid, the portals, the entry or anything else in group 3).
+* ~~Looking out of Broadway's west mouth, a pale "water" patch beside the trench road~~ FIXED: the sea plane far
+  below, seen where the areas group's ground occluder (still drawn inside a tunnel) hid the trench's sidewalk. Inside
+  a tunnel every group's ground occluder is hidden now.
+* ~~The oval on the Stockton vault~~ FIXED: the Sutter-Stockton Garage's ground-shadow decal, draped over the south
+  mouth down into the cut road, i.e. through the tube; shadow decals are hidden while the camera is in a tunnel (kept
+  hidden each frame: the landmarks show their meshes again). A faint ring was left only after a 500 m camera jump
+  from Broadway in the test script (never on a fresh load, nor approaching the mouth normally).
+* ~~Steps hanging inside Stockton's north mouth~~ FIXED: OSM's portal stairwells (little loops of steps, half at
+  layer 0) are not drawn within a bore's width (render/stairs.ts).
+
 
 ### #265 Zigzag approaches at ordinary junctions (owner, 2026-10-14) — STRAIGHTENED in the ride graph
 
