@@ -232,7 +232,7 @@ export function straightenJunctions<E extends ShapedEdge>(edges: E[], outside: O
           const f2 = s2.pts[s2.pts.length - 1]
           // (over the last 8 m the junction's own paving (render/city.ts `junctionHull`) is round the corner: a metre and a
           //  half off the carriageway there is still paved — never through a building)
-          if (blocked?.(n, f2) || outside([n, f2]) > Math.max(outside(s2.pts), r <= 8 ? 1.5 : r <= 10 ? 1 : 0.5)) continue
+          if (blocked?.(n, f2) || outside([n, f2]) > Math.max(outside(s2.pts), 1.5)) continue
           sx[k] = s2
           fx[k] = f2
           take[k] = true
@@ -267,10 +267,21 @@ export function straightenJunctions<E extends ShapedEdge>(edges: E[], outside: O
       if (take[k]) count.approaches++
     }
   }
-  if (ends.size === 0) return { edges, count }
+  // (every street end at a junction of three or four is eased, repaired or not: `ease` below)
+  const junctionEnd = (n: number): boolean => { const l = at.get(n); return !!l && l.length >= 3 && l.length <= 4 }
   const out = edges.map((e) => {
     const rec = ends.get(e.id)
-    if (!rec) return e
+    if (!rec) {
+      if (e.foot || e.bridge || e.tunnel || e.raised || e.a === e.b) return e
+      let pts = e.points
+      let hs = e.heights && e.heights.length === e.points.length ? e.heights : undefined
+      if (junctionEnd(e.a)) { const q = ease(pts, hs); pts = q.ps; hs = q.h }
+      if (junctionEnd(e.b)) { const q = ease([...pts].reverse(), hs ? [...hs].reverse() : undefined); pts = q.ps.reverse(); hs = q.h?.reverse() }
+      if (pts === e.points) return e
+      let length = 0
+      for (let i = 1; i < pts.length; i++) length += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z)
+      return { ...e, points: pts, heights: hs, length }
+    }
     let pts = e.points
     let hs = e.heights && e.heights.length === e.points.length ? e.heights : undefined
     const apply = (spanEnd: ApproachShape, ps: Point[], h: number[] | undefined): { ps: Point[]; h?: number[] } => {
@@ -296,11 +307,12 @@ export function straightenJunctions<E extends ShapedEdge>(edges: E[], outside: O
       const L = Math.hypot(B.x - A.x, B.z - A.z)
       return { ...e, points: [A, B], heights: hs ? [h0!, h1!] : undefined, length: L }
     }
-    if (rec.a) { const r = apply(rec.a.shape, pts, hs); pts = r.ps; hs = r.h }
+    if (rec.a) { const r = apply(rec.a.shape, pts, hs); pts = r.ps; hs = r.h; const q = ease(pts, hs); pts = q.ps; hs = q.h }
     if (rec.b) {
       const r = apply(rec.b.shape, [...pts].reverse(), hs ? [...hs].reverse() : undefined)
-      pts = r.ps.reverse()
-      hs = r.h?.reverse()
+      const q = ease(r.ps, r.h)
+      pts = q.ps.reverse()
+      hs = q.h?.reverse()
     }
     let length = 0
     for (let i = 1; i < pts.length; i++) length += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z)
@@ -334,4 +346,44 @@ function nearestAlong(pts: Point[], q: Point): number {
     acc += Math.sqrt(L2)
   }
   return at
+}
+
+/**
+ * A street that really turns a few metres from its junction must turn somewhere on the way in; it need not turn
+ * SHARPLY. Within EASE metres of the junction (`ps[0]`, which stays), every vertex turning more than NEAR_BEND is cut
+ * (Chaikin: the corner replaced by two points a quarter of the way along its two sides), until none does — the owner's
+ * "no sharp turns right before a crossing" (2026-10-14) where straightening could not reach (Church at Market, Townsend,
+ * Pierce…, 2026-10-15). Heights by the same cut.
+ */
+const EASE = 15
+function ease(ps: Point[], hs: number[] | undefined): { ps: Point[]; h?: number[] } {
+  let p = ps, h = hs
+  for (let pass = 0; pass < 4; pass++) {
+    const np: Point[] = [p[0]]
+    const nh: number[] | undefined = h ? [h[0]] : undefined
+    let acc = 0
+    let cut = false
+    for (let i = 1; i < p.length; i++) {
+      acc += Math.hypot(p[i].x - p[i - 1].x, p[i].z - p[i - 1].z)
+      const last = i === p.length - 1
+      if (!last && acc <= EASE) {
+        const ax = p[i].x - p[i - 1].x, az = p[i].z - p[i - 1].z, bx = p[i + 1].x - p[i].x, bz = p[i + 1].z - p[i].z
+        const la = Math.hypot(ax, az), lb = Math.hypot(bx, bz)
+        const turn = la > 0.2 && lb > 0.2 ? (Math.acos(Math.max(-1, Math.min(1, (ax * bx + az * bz) / (la * lb)))) * 180) / Math.PI : 0
+        if (turn > NEAR_BEND && turn <= 60) {
+          const q = (t: number, a: Point, b: Point): Point => ({ x: a.x + (b.x - a.x) * t, z: a.z + (b.z - a.z) * t })
+          np.push(q(0.75, p[i - 1], p[i]), q(0.25, p[i], p[i + 1]))
+          if (nh && h) nh.push(h[i - 1] + (h[i] - h[i - 1]) * 0.75, h[i] + (h[i + 1] - h[i]) * 0.25)
+          cut = true
+          continue
+        }
+      }
+      np.push(p[i])
+      if (nh && h) nh.push(h[i])
+    }
+    p = np
+    h = nh
+    if (!cut) break
+  }
+  return { ps: p, h }
 }
