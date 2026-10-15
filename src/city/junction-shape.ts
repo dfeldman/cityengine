@@ -358,7 +358,7 @@ function nearestAlong(pts: Point[], q: Point): number {
  * "no sharp turns right before a crossing" (2026-10-14) where straightening could not reach (Church at Market, Townsend,
  * Pierce…, 2026-10-15). Heights by the same cut.
  */
-const EASE = 18
+const EASE = 25
 function ease(ps: Point[], hs: number[] | undefined): { ps: Point[]; h?: number[] } {
   let p = ps, h = hs
   for (let pass = 0; pass < 6; pass++) {
