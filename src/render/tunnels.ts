@@ -43,6 +43,8 @@ const ROAD: Rgb = [0.24, 0.24, 0.25]
 const PAINT: Rgb = [0.95, 0.8, 0.2]
 const KERB: Rgb = [0.55, 0.54, 0.51]
 const RAIL: Rgb = [0.35, 0.33, 0.3]
+/** the lid over the crown (only ever seen through a gap between vaults) */
+const LID: Rgb = [0.3, 0.29, 0.27]
 const LAMP: Rgb = [1, 0.96, 0.82]
 const CONCRETE: Rgb = [0.66, 0.64, 0.6]
 const RING: Rgb = [0.74, 0.72, 0.67]
@@ -377,6 +379,19 @@ export class Tunnels {
         const no = dy / l
         const ny = -dx / l
         out.quad([w(s0, oa, ha), w(s0, ob, hb), w(s1, ob, hb), w(s1, oa, ha)], [s0.nx * no, ny, s0.nz * no], UV, tint(sg.col, sh), 0)
+      }
+      /*
+       * A lid over the whole width just above the crown, facing down. Nothing should show it — the vault is below it
+       * everywhere — but a twin bore's two vaults leave a slot over their pier, and with the ground's occluders off
+       * inside a tunnel (`occluders`) the city showed through it all the way along Broadway.
+       */
+      {
+        const y = s.crown + 0.05
+        const o = s.half + 0.5
+        out.quad([w(s0, -o, y), w(s1, -o, y), w(s1, o, y), w(s0, o, y)], [0, -1, 0], UV, tint(LID, sh), 0)
+        // …and a sole under the floors, for the same slot at the foot of the pier
+        const f = Math.min(...s.floors.map((q) => q.y)) - 0.05
+        out.quad([w(s0, -o, f), w(s0, o, f), w(s1, o, f), w(s1, -o, f)], [0, 1, 0], UV, tint(ROAD, sh), 0)
       }
       // rails: a tube's worth of posts and a top rail, every 2 m
       for (const r of s.rails) {
