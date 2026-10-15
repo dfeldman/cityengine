@@ -225,8 +225,9 @@ if (params.get('model')) {
     view: params.get('view') === 'high' ? 'high' : 'ride',
     freeze: params.get('freeze') === '1',
     paths: params.get('paths') === '1',
-    time: platform?.time ?? (params.get('time') as 'dawn' | 'day' | 'dusk' | 'night') ?? undefined,
-    weather: platform?.weather ?? (params.get('weather') as 'clear' | 'overcast' | 'rain') ?? undefined,
+    // (a Dandyhorse launch first, then the address, then Menu → Settings → Graphics)
+    time: platform?.time ?? (params.get('time') as 'dawn' | 'day' | 'dusk' | 'night') ?? (settings().time === 'auto' ? undefined : settings().time),
+    weather: platform?.weather ?? (params.get('weather') as 'clear' | 'overcast' | 'rain') ?? (settings().weather === 'auto' ? undefined : settings().weather),
     advance: params.get('advance') ? Number(params.get('advance')) : undefined,
     // road traffic is ON by default since 2026-09-29 (the delivery game's gridlock); ?cars=0 turns it off
     cars: params.get('cars') !== '0' && settings().cars !== 'off',

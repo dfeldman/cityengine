@@ -19,6 +19,12 @@ export interface Settings {
   quality: 'auto' | 'desktop' | 'phone' | 'ultra'
   /** the speed streaks at the screen's edges when going fast */
   motion: boolean
+  /** the haze that thickens with distance (owner, 2026-10-15: "a graphics setting to turn fog on or off") */
+  fog: boolean
+  /** the hour and the weather (owner, 2026-10-15: "we should add weather to settings"); `auto` is the default look, or
+   *  what a Dandyhorse launch or the address (`?time=`, `?weather=`) asks for — those win over this */
+  time: 'auto' | 'dawn' | 'day' | 'dusk' | 'night'
+  weather: 'auto' | 'clear' | 'overcast' | 'rain'
   /**
    * WHAT THE WORLD HAS IN IT (owner, 2026-10-14: "turn trees on and off, turn NPCs on and off"): `auto` is what the
    * device's tier carries (src/tier.ts — an iPhone leaves trees and people out for memory); on and off override it.
@@ -39,7 +45,7 @@ export const FEATURE_OFF: Record<'trees' | 'people' | 'details', string[]> = {
 }
 
 const KEY = 'cycledash.settings'
-const DEFAULTS: Settings = { units: 'auto', minimap: false, controls: 'auto', steering: 'auto', quality: 'auto', motion: true,
+const DEFAULTS: Settings = { units: 'auto', minimap: false, controls: 'auto', steering: 'auto', quality: 'auto', motion: true, fog: true, time: 'auto', weather: 'auto',
   trees: 'auto', people: 'auto', cars: 'auto', details: 'auto' }
 
 let current: Settings | null = null
@@ -90,6 +96,12 @@ export const SETTING_DEFS: SettingDef[] = [
     choices: [{ value: 'auto', label: 'Auto' }, { value: 'on', label: 'On' }, { value: 'off', label: 'Off' }] })),
   def({ key: 'quality', group: 'Graphics', label: 'Quality', applies: 'ride',
     choices: [{ value: 'auto', label: 'Auto' }, { value: 'ultra', label: 'Low' }, { value: 'phone', label: 'Medium' }, { value: 'desktop', label: 'High' }] }),
+  def({ key: 'time', group: 'Graphics', label: 'Time of day', applies: 'ride',
+    choices: [{ value: 'auto', label: 'Auto' }, { value: 'dawn', label: 'Dawn' }, { value: 'day', label: 'Day' }, { value: 'dusk', label: 'Dusk' }, { value: 'night', label: 'Night' }] }),
+  def({ key: 'weather', group: 'Graphics', label: 'Weather', applies: 'ride',
+    choices: [{ value: 'auto', label: 'Auto' }, { value: 'clear', label: 'Clear' }, { value: 'overcast', label: 'Overcast' }, { value: 'rain', label: 'Rain' }] }),
+  def({ key: 'fog', group: 'Graphics', label: 'Fog', applies: 'ride',
+    choices: [{ value: true, label: 'On' }, { value: false, label: 'Off' }] }),
   def({ key: 'motion', group: 'Graphics', label: 'Speed streaks', applies: 'ride',
     choices: [{ value: true, label: 'On' }, { value: false, label: 'Off' }] }),
   def({ key: 'steering', group: 'Controls', label: 'Steering', applies: 'ride',

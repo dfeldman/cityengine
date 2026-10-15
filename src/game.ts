@@ -345,6 +345,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   setTimeOfDay(opts.time ?? 'day')
   // and then the weather on top of it, for the same reason and in this order: it modifies the hour it is
   setWeather(opts.weather ?? 'clear')
+  // Menu → Settings → Graphics → Fog (owner, 2026-10-15): off clears the air — every material reads this density as
+  // it is made, so like the time of day it applies from the next ride
+  if (!settings().fog) DAYLIGHT.fogDensity = 0
 
   const __t0 = performance.now()
   // (`limitDeviceRatio`: an iPhone's 3x is nine times the pixels — the framebuffer and every full-screen target)
