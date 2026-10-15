@@ -373,7 +373,7 @@ function ease(ps: Point[], hs: number[] | undefined): { ps: Point[]; h?: number[
         const ax = p[i].x - p[i - 1].x, az = p[i].z - p[i - 1].z, bx = p[i + 1].x - p[i].x, bz = p[i + 1].z - p[i].z
         const la = Math.hypot(ax, az), lb = Math.hypot(bx, bz)
         const turn = la > 0.2 && lb > 0.2 ? (Math.acos(Math.max(-1, Math.min(1, (ax * bx + az * bz) / (la * lb)))) * 180) / Math.PI : 0
-        if (turn > NEAR_BEND && turn <= 60) {
+        if (turn > ZIG_BEND && turn <= 60) {
           const q = (t: number, a: Point, b: Point): Point => ({ x: a.x + (b.x - a.x) * t, z: a.z + (b.z - a.z) * t })
           np.push(q(0.75, p[i - 1], p[i]), q(0.25, p[i], p[i + 1]))
           if (nh && h) nh.push(h[i - 1] + (h[i] - h[i - 1]) * 0.75, h[i] + (h[i + 1] - h[i]) * 0.25)
