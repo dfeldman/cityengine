@@ -953,8 +953,491 @@ function pier43FerryArch(out: MeshBuilder, fit: Fit): void {
   emanuElCopy(out, m, 1, 0, 0, 0)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// Malloch Building, 1360 Montgomery Street
+// ---------------------------------------------------------------------------------------------------------------
+
+/**
+ * OSM way/262076706's 13 vertices (docs/shots/refs/notable/malloch/EVIDENCE.md), anticlockwise, TURNED so the 22 m edge
+ * that runs along Montgomery Street (vertices 0 to 1, the longest straight edge parallel to the street grid, with the
+ * Montgomery-side neighbours across it) lies along z at the west, and recentred: the model's design frame, x east,
+ * z north. Everything below is drawn in this frame and carried onto the city's `fit.ring` by `mbPlace`.
+ */
+const MB_PLAN: P2[] = [[-15.7, 9.2], [-15.7, -12.8], [10.8, -12.8], [10.8, -7.4], [10.8, -5.6], [1.0, -5.5], [1.0, -1.5], [2.7, -1.5],
+  [2.7, -1.4], [2.7, 9.2], [2.7, 10.4], [-6.9, 10.5], [-6.9, 9.2]].map(([x, z]) => ({ x, z }))
+/** The same outline with its 0.1 m jitters squared off and the collinear vertices dropped: ten corners. */
+const MB_D: P2[] = [[-15.7, 9.2], [-15.7, -12.8], [10.8, -12.8], [10.8, -5.5], [1.0, -5.5], [1.0, -1.5], [2.7, -1.5], [2.7, 10.4],
+  [-6.9, 10.4], [-6.9, 9.2]].map(([x, z]) => ({ x, z }))
+/** Corner radii of MB_D: the north-west and south-east/north-east corners are the Streamline rounds (photo commons-3). */
+const MB_RAD = [2.2, 0.7, 2.2, 1.6, 0, 0, 0, 2.0, 0, 0]
+/** The tall block is west of x = −3.2 (north of the wing) and of x = 1.0 (south of z = −5.5); the rest is a storey lower. */
+const mbTall = (x: number, z: number): boolean => (z < -5.49 ? x < 1.01 : x < -3.19)
+
+const MB_WALL: Rgb = [0.945, 0.94, 0.918]     // #f2f1ec, the white paint
+const MB_WALL2: Rgb = [0.8, 0.8, 0.78]        // soffits and the undersides of the bands
+const MB_FOUND: Rgb = [0.56, 0.55, 0.53]      // the concrete under the garage floors
+const MB_FRAME: Rgb = [0.86, 0.86, 0.84]      // thin pale window frames
+const MB_GLASS: Rgb = [0.4, 0.45, 0.51]
+const MB_BLOCK: Rgb = [0.7, 0.8, 0.82]        // glass block
+const MB_SILVER: Rgb = [0.7, 0.72, 0.74]      // the ribbed aluminium band at the entrance
+const MB_MURAL: Rgb = [0.76, 0.775, 0.79]    // #b9bcbf, the silver-grey sgraffito ground
+const MB_MURAL_D: Rgb = [0.6, 0.62, 0.65]
+const MB_MURAL_L: Rgb = [0.9, 0.915, 0.93]
+const MB_BLUE: Rgb = [0.72, 0.82, 0.93]
+const MB_RAIL: Rgb = [0.92, 0.92, 0.9]
+const MB_ROOF: Rgb = [0.76, 0.76, 0.74]
+const MB_DARK: Rgb = [0.1, 0.1, 0.11]
+const MB_MT = surfaceTag('metal')
+const MB_CN = surfaceTag('concrete')
+
+/**
+ * The rotation + translation carrying MB_PLAN's frame onto `ring`: a 2-D Procrustes fit of the plan's 13 vertices against
+ * the ring's (both orders, every start vertex, smallest RMS kept); with another vertex count, the long edges are laid
+ * on each other (centroids coincident) and the best RMS wins. Null when nothing fits within 2.5 m.
+ */
+function mbPlace(ring: P2[] | undefined): { c: number; s: number; tx: number; tz: number; res: number } | null {
+  type T = { c: number; s: number; tx: number; tz: number; res: number }
+  if (!ring || ring.length < 4) return null
+  let R = ring
+  const n = MB_PLAN.length
+  if (R.length === n + 1 && Math.hypot(R[0].x - R[n].x, R[0].z - R[n].z) < 0.3) R = R.slice(0, n)
+  let best: T | null = null
+  if (R.length === n) {
+    const cb = { x: R.reduce((t, p) => t + p.x, 0) / n, z: R.reduce((t, p) => t + p.z, 0) / n }
+    const ca = { x: MB_PLAN.reduce((t, p) => t + p.x, 0) / n, z: MB_PLAN.reduce((t, p) => t + p.z, 0) / n }
+    for (const rev of [false, true]) {
+      const Q = rev ? [...MB_PLAN].reverse() : MB_PLAN
+      for (let o = 0; o < n; o++) {
+        let sn = 0, cs = 0
+        for (let i = 0; i < n; i++) {
+          const a = Q[(i + o) % n]
+          const ax = a.x - ca.x, az = a.z - ca.z, bx = R[i].x - cb.x, bz = R[i].z - cb.z
+          cs += ax * bx + az * bz
+          sn += ax * bz - az * bx
+        }
+        const th = Math.atan2(sn, cs), c = Math.cos(th), s = Math.sin(th)
+        let e = 0
+        for (let i = 0; i < n; i++) {
+          const a = Q[(i + o) % n]
+          const x = (a.x - ca.x) * c - (a.z - ca.z) * s + cb.x, z = (a.x - ca.x) * s + (a.z - ca.z) * c + cb.z
+          e += (x - R[i].x) ** 2 + (z - R[i].z) ** 2
+        }
+        const res = Math.sqrt(e / n)
+        if (!best || res < best.res) best = { c, s, tx: cb.x - (ca.x * c - ca.z * s), tz: cb.z - (ca.x * s + ca.z * c), res }
+      }
+    }
+    if (best && best.res <= 2.5) return best
+  }
+  const ca = emanuElCentroid(MB_PLAN), cb = emanuElCentroid(R)
+  const edges = (r: P2[]): { L: number; a: number }[] => r.map((p, i) => {
+    const q = r[(i + 1) % r.length]
+    return { L: Math.hypot(q.x - p.x, q.z - p.z), a: Math.atan2(q.z - p.z, q.x - p.x) }
+  })
+  best = null
+  for (const a of edges(MB_PLAN).filter((e) => e.L > 15)) {
+    for (const b of edges(R).filter((e) => e.L > 15)) {
+      if (Math.abs(a.L - b.L) > 0.2 * a.L) continue
+      const th = b.a - a.a, c = Math.cos(th), s = Math.sin(th)
+      const tx = cb.x - (ca.x * c - ca.z * s), tz = cb.z - (ca.x * s + ca.z * c)
+      const T = MB_PLAN.map((p) => ({ x: p.x * c - p.z * s + tx, z: p.x * s + p.z * c + tz }))
+      let e = 0
+      for (const v of R) {
+        let d = Infinity
+        for (let i = 0; i < T.length; i++) {
+          const p = T[i], q = T[(i + 1) % T.length]
+          const dx = q.x - p.x, dz = q.z - p.z
+          const u = Math.max(0, Math.min(1, ((v.x - p.x) * dx + (v.z - p.z) * dz) / (dx * dx + dz * dz || 1)))
+          d = Math.min(d, Math.hypot(v.x - p.x - dx * u, v.z - p.z - dz * u))
+        }
+        e += d * d
+      }
+      const res = Math.sqrt(e / R.length)
+      if (!best || res < best.res) best = { c, s, tx, tz, res }
+    }
+  }
+  return best && best.res <= 2.5 ? best : null
+}
+
+/** A closed polygon with the chosen corners rounded by a quarter circle of the given radius (anticlockwise in, out). */
+function mbRound(pts: P2[], rad: number[], N = 4): { p: P2; e: number; arc: boolean }[] {
+  const n = pts.length, res: { p: P2; e: number; arc: boolean }[] = []
+  for (let i = 0; i < n; i++) {
+    const v = pts[i], pv = pts[(i + n - 1) % n], nx = pts[(i + 1) % n]
+    const lin = Math.hypot(v.x - pv.x, v.z - pv.z), lout = Math.hypot(nx.x - v.x, nx.z - v.z)
+    const r = Math.min(rad[i] ?? 0, lin / 2, lout / 2)
+    if (r < 0.05) { res.push({ p: v, e: i, arc: false }); continue }
+    const tin = { x: (v.x - pv.x) / lin, z: (v.z - pv.z) / lin }
+    const nin = { x: tin.z, z: -tin.x }
+    const c = { x: v.x - tin.x * r - nin.x * r, z: v.z - tin.z * r - nin.z * r }
+    const a0 = Math.atan2(nin.z, nin.x)
+    for (let k = 0; k <= N; k++) {
+      const ang = a0 + (k / N) * (Math.PI / 2)
+      res.push({ p: { x: c.x + r * Math.cos(ang), z: c.z + r * Math.sin(ang) }, e: k < N ? (i + n - 1) % n : i, arc: k < N })
+    }
+  }
+  return res
+}
+
+/**
+ * The Malloch Building (Malloch Apartments, 1936-37, Irvin Goldstine; 1360 Montgomery Street, Telegraph Hill): the
+ * "ocean-liner house", Streamline Moderne. Photographs: docs/shots/refs/notable/malloch/ commons-3 (the whole house from
+ * the corner of Filbert: WHITE walls, rounded corners, balcony bands with pipe rails wrapping them, ribbon windows, a
+ * roof terrace with railings, a slim stair tower above the roof, the tall silver mural on the west wall), commons-1 (the
+ * explorer mural, the white returns), commons-2 (the entrance under the 2nd-floor balcony: a horizontally ribbed silver
+ * band lettered 1360 MONTGOMERY ST., glass block, an open stair), mapillary-1 (the house from the street, white, 4-5
+ * storeys).
+ *
+ * Plan: OSM way/262076706 (13 vertices, 469 m²) in MB_PLAN's frame, with the corners squared and then the Streamline
+ * rounds put back (the OSM corners are square, the building's are not). The WEST edge is not assumed from the fit's "front": the
+ * plan is laid on `fit.ring` by `mbPlace` (Procrustes over the 13 vertices), and the plan's 22 m vertex-0-to-1 edge, parallel
+ * to the street grid with the 1321 Montgomery houses across it, is Montgomery. The north face is the 9 m + 10 m pair with
+ * the 1.2 m jog, Filbert beyond it.
+ *
+ * Massing (photos over numbers): four storeys of 3.15 m from Montgomery's pavement (LiDAR median 13.8, max 16.8 with
+ * the tower; roof 12.6 m + coping, tower 3.4 m more), plus two floors below that stand only on the downhill (east,
+ * south) side. West of x = −3.2 (and of 1.0 on the south strip) the block is full height; the east end, the notch's
+ * far side and the wing are a storey lower with a roof terrace and railing, which is what commons-3 shows left of the
+ * tall block. The 3 floors of balcony bands (slab 0.3 m, 1.0 m out, thin pipe rails) wrap the low part.
+ *
+ * Slope: `G`, the pavement on Montgomery, is `fit.groundAt` at the west edge's middle (just outside it) above the model's
+ * base, else `fit.grade`, else a floor and a half (4.7 m, so the shot tool shows the garage floor below the street). Every wall's foot
+ * follows `groundAt` along it (concrete below the sub-basement floor G − 6.3), windows are not cut below the ground, and
+ * the bands are not drawn where the ground is above them. The ground floor, the entrance recess and the murals are set
+ * from G; without groundAt the ground is the base (flat), and the house stands on it as the downhill corner would.
+ */
+function mallochBuilding_1360_Montgomery(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const place = mbPlace(fit.ring)
+  const toRing = (x: number, z: number): P2 => place ? { x: x * place.c - z * place.s + place.tx, z: x * place.s + place.c * z + place.tz } : { x, z }
+  /** the ground above the model's base at a design-frame point */
+  const gnd = (x: number, z: number): number => {
+    if (!fit.groundAt) return 0
+    const p = toRing(x, z)
+    return Math.max(0, fit.groundAt(p.x, p.z))
+  }
+  const S = 3.15
+  const G = Math.max(0, Math.min(14, fit.groundAt ? gnd(-16.7, -1.8) : (fit.grade ?? 1.5 * S)))
+  const R = G + 4 * S, RL = G + 3 * S, YF = G - 2 * S, YW = Math.max(YF, 0)
+  const roofAt = (x: number, z: number): number => (mbTall(x, z) ? R : RL)
+  const foot = (x: number, z: number): number => Math.max(0, gnd(x, z) - 0.3)
+
+  const nrm = (x: number, z: number): V3 => [x, 0, z]
+  const up: V3 = [0, 1, 0], down: V3 = [0, -1, 0]
+  const Q = (p: V3[], n: V3, c: Rgb, tag = ST): void => m.quad(p, n, uv, c, tag)
+
+  // ---- the walls, edge by edge ---------------------------------------------------------------------------------------
+  const E = MB_D.map((a, i) => {
+    const b = MB_D[(i + 1) % MB_D.length]
+    const L = Math.hypot(b.x - a.x, b.z - a.z)
+    const t = { x: (b.x - a.x) / L, z: (b.z - a.z) / L }
+    return { a, b, L, t, n: { x: t.z, z: -t.x } }
+  })
+  type Seg = { a: P2; b: P2; e: number; arc: boolean }
+  const segs: Seg[] = []
+  {
+    const path = mbRound(MB_D, MB_RAD)
+    for (let j = 0; j < path.length; j++) {
+      const a = path[j], b = path[(j + 1) % path.length]
+      const horiz = Math.abs(a.p.z - b.p.z) < 1e-6 && !a.arc
+      const X = horiz ? (a.p.z > -5.4 ? -3.2 : a.p.z < -5.6 ? 1.0 : NaN) : NaN
+      if (horiz && Number.isFinite(X) && Math.min(a.p.x, b.p.x) < X - 1e-6 && Math.max(a.p.x, b.p.x) > X + 1e-6) {
+        const mid = { x: X, z: a.p.z }
+        segs.push({ a: a.p, b: mid, e: a.e, arc: false }, { a: mid, b: b.p, e: a.e, arc: false })
+      } else segs.push({ a: a.p, b: b.p, e: a.e, arc: a.arc })
+    }
+  }
+  const NS = segs.length
+  const nrmOf = segs.map((s) => {
+    const L = Math.hypot(s.b.x - s.a.x, s.b.z - s.a.z)
+    return { x: (s.b.z - s.a.z) / L, z: -(s.b.x - s.a.x) / L, L }
+  })
+  /** the point i of the path pushed d outward along the mitre (the join of segments i−1 and i) */
+  const off = (i: number, d: number, y: number): V3 => {
+    const j = i % NS, k = (j + NS - 1) % NS
+    const n1 = nrmOf[k], n2 = nrmOf[j]
+    const den = 1 + n1.x * n2.x + n1.z * n2.z
+    return [segs[j].a.x + ((n1.x + n2.x) / den) * d, y, segs[j].a.z + ((n1.z + n2.z) / den) * d]
+  }
+  const segMid = (s: Seg): P2 => ({ x: (s.a.x + s.b.x) / 2, z: (s.a.z + s.b.z) / 2 })
+
+  /** the segments of the north-west round */
+  const NW = (q: Seg): boolean => q.arc && q.a.x < -13.4 && q.a.z > 6.9
+  // the entrance recess in the west wall (edge 0, measured from the north end): 5.2 m wide, three floors tall
+  const RC0 = 8.2, RC1 = 13.4
+  const yRc = G + 3 * S - 0.3
+  for (let j = 0; j < NS; j++) {
+    const s = segs[j], { x: nx, z: nz, L } = nrmOf[j]
+    const mid = segMid(s)
+    const top = roofAt(mid.x, mid.z)
+    const t = { x: (s.b.x - s.a.x) / L, z: (s.b.z - s.a.z) / L }
+    const ya = foot(s.a.x, s.a.z), yb = foot(s.b.x, s.b.z)
+    const piece = (u0: number, u1: number, y0: number, y1: number, c: Rgb, tag = ST): void => {
+      const A: V3 = [s.a.x + t.x * u0, y0, s.a.z + t.z * u0], B: V3 = [s.a.x + t.x * u1, y0, s.a.z + t.z * u1]
+      Q([A, B, [B[0], y1, B[2]], [A[0], y1, A[2]]], nrm(nx, nz), c, tag)
+    }
+    const found = (u0: number, u1: number): void => {
+      const f0 = ya + (yb - ya) * (u0 / L), f1 = ya + (yb - ya) * (u1 / L)
+      if (Math.min(f0, YF) >= YF - 0.02 && Math.min(f1, YF) >= YF - 0.02) return
+      const A: V3 = [s.a.x + t.x * u0, Math.min(f0, YF), s.a.z + t.z * u0], B: V3 = [s.a.x + t.x * u1, Math.min(f1, YF), s.a.z + t.z * u1]
+      Q([A, B, [B[0], YF, B[2]], [A[0], YF, A[2]]], nrm(nx, nz), MB_FOUND, MB_CN)
+    }
+    if (s.e === 0 && !s.arc) {
+      const u0 = RC0 - 2.2, u1 = RC1 - 2.2          // the recess along this segment (it starts 2.2 m down, after the north-west round)
+      found(0, u0); piece(0, u0, YW, top, MB_WALL)
+      found(u1, L); piece(u1, L, YW, top, MB_WALL)
+      piece(u0, u1, yRc, top, MB_WALL)
+      found(u0, u1); piece(u0, u1, YW, G, MB_FOUND, MB_CN)
+      continue
+    }
+    found(0, L)
+    if (NW(s)) {
+      // the north-west corner is SQUARE up to the top floor (commons-3); only the top storey is the rounded glass-block bay
+      piece(0, L, G + 3 * S, top, MB_WALL)
+      if (s.a.x > -13.6) {
+        const sq = (a: P2, b: P2, n: V3): void => Q([[a.x, YW, a.z], [b.x, YW, b.z], [b.x, G + 3 * S, b.z], [a.x, G + 3 * S, a.z]], n, MB_WALL)
+        sq({ x: -13.5, z: 9.2 }, { x: -15.7, z: 9.2 }, nrm(0, 1))
+        sq({ x: -15.7, z: 9.2 }, { x: -15.7, z: 7.0 }, nrm(-1, 0))
+        // the ledge the corner leaves outside the bay
+        const cp: P2[] = segs.filter(NW).map((q) => q.a).concat([{ x: -15.7, z: 7.0 }])
+        for (let i = 0; i + 1 < cp.length; i++) Q([[-15.7, G + 3 * S, 9.2], [cp[i].x, G + 3 * S, cp[i].z], [cp[i + 1].x, G + 3 * S, cp[i + 1].z], [-15.7, G + 3 * S, 9.2]], up, MB_ROOF, MB_CN)
+      }
+      continue
+    }
+    piece(0, L, YW, top, MB_WALL)
+  }
+
+  // ---- the entrance recess: back wall, jambs, ceiling, glass-block pillar, stair, the ribbed band -----------------------
+  {
+    const x0 = -15.7, x1 = x0 + 1.8, v0 = 9.2 - RC1, v1 = 9.2 - RC0
+    Q([[x1, G, v1], [x1, G, v0], [x1, yRc, v0], [x1, yRc, v1]], nrm(-1, 0), MB_DARK)
+    Q([[x0, G, v1], [x1, G, v1], [x1, yRc, v1], [x0, yRc, v1]], nrm(0, -1), MB_WALL2)
+    Q([[x1, G, v0], [x0, G, v0], [x0, yRc, v0], [x1, yRc, v0]], nrm(0, 1), MB_WALL2)
+    Q([[x0, yRc, v1], [x1, yRc, v1], [x1, yRc, v0], [x0, yRc, v0]], down, MB_WALL2)
+    Q([[x0, G + 0.02, v1], [x1, G + 0.02, v1], [x1, G + 0.02, v0], [x0, G + 0.02, v0]], up, [0.3, 0.3, 0.3], MB_CN)
+    prism(m, x0 + 0.9, v1 - 1.3, G, G + 2 * S - 0.3, 0.3, 8, MB_BLOCK, GL)              // the glass-block pillar
+    // the open stair climbing along the back wall, with its white string and rail
+    const sx = x1 - 0.55
+    Q([[sx, G, v0 + 0.3], [sx, G, v1 - 1.9], [sx, G + S, v1 - 0.4], [sx, G + S, v0 + 1.8]], nrm(-1, 0), MB_WALL)
+    Q([[sx, G + 0.02, v0 + 0.3], [sx + 0.9, G + 0.02, v0 + 0.3], [sx + 0.9, G + S, v0 + 1.8], [sx, G + S, v0 + 1.8]], up, MB_WALL2)
+    // the aluminium balcony band over the stair: horizontally ribbed, lettered, with a glass rail above
+    const yb0 = G + 2 * S - 0.25, yb1 = yb0 + 1.2, px = x0 - 0.55
+    Q([[px, yb0, v1 + 0.15], [px, yb0, v0 - 0.15], [px, yb1, v0 - 0.15], [px, yb1, v1 + 0.15]], nrm(-1, 0), MB_SILVER, MB_MT)
+    for (let k = 1; k < 8; k++) {
+      const y = yb0 + (k * (yb1 - yb0)) / 8
+      Q([[px - 0.03, y, v1 + 0.15], [px - 0.03, y, v0 - 0.15], [px - 0.03, y + 0.045, v0 - 0.15], [px - 0.03, y + 0.045, v1 + 0.15]], nrm(-1, 0), [0.45, 0.47, 0.5], MB_MT)
+    }
+    Q([[px, yb1, v1 + 0.15], [x0, yb1, v1 + 0.15], [x0, yb1, v0 - 0.15], [px, yb1, v0 - 0.15]], up, MB_SILVER, MB_MT)
+    Q([[px, yb0, v1 + 0.15], [px, yb0, v0 - 0.15], [x0, yb0, v0 - 0.15], [x0, yb0, v1 + 0.15]], down, MB_WALL2)
+    Q([[px, yb0, v1 + 0.15], [x0, yb0, v1 + 0.15], [x0, yb1, v1 + 0.15], [px, yb1, v1 + 0.15]], nrm(0, 1), MB_SILVER, MB_MT)
+    Q([[x0, yb0, v0 - 0.15], [px, yb0, v0 - 0.15], [px, yb1, v0 - 0.15], [x0, yb1, v0 - 0.15]], nrm(0, -1), MB_SILVER, MB_MT)
+    // "1360" tall, "MONTGOMERY ST." low, in white letters on the lowest ribs
+    Q([[px - 0.05, yb0 + 0.1, v1 + 1.0], [px - 0.05, yb0 + 0.1, v1 + 2.35], [px - 0.05, yb0 + 0.55, v1 + 2.35], [px - 0.05, yb0 + 0.55, v1 + 1.0]], nrm(-1, 0), MB_WALL)
+    Q([[px - 0.05, yb0 + 0.1, v1 + 2.55], [px - 0.05, yb0 + 0.1, v0 - 1.0], [px - 0.05, yb0 + 0.34, v0 - 1.0], [px - 0.05, yb0 + 0.34, v1 + 2.55]], nrm(-1, 0), MB_WALL)
+    Q([[px - 0.06, yb1, v1 + 0.15], [px - 0.06, yb1, v0 - 0.15], [px - 0.06, yb1 + 1.0, v0 - 0.15], [px - 0.06, yb1 + 1.0, v1 + 0.15]], nrm(-1, 0), [0.74, 0.82, 0.84], GL)
+    Q([[px - 0.07, yb1 + 1.0, v1 + 0.15], [px - 0.07, yb1 + 1.0, v0 - 0.15], [px - 0.07, yb1 + 1.06, v0 - 0.15], [px - 0.07, yb1 + 1.06, v1 + 0.15]], nrm(-1, 0), MB_RAIL, MB_MT)
+  }
+
+  // ---- the three zones' roofs and the walls between them ------------------------------------------------------------------
+  const roundRing = (pts: [number, number][], rad: number[]): P2[] => mbRound(pts.map(([x, z]) => ({ x, z })), rad).map((q) => q.p)
+  const ROOFTAG = MB_CN
+  capPolygonWithHoles(m, [roundRing([[-15.7, 9.2], [-15.7, -12.8], [1.0, -12.8], [1.0, -5.5], [-3.2, -5.5], [-3.2, 10.4], [-6.9, 10.4], [-6.9, 9.2]],
+    [2.2, 0.7, 0, 0, 0, 0, 0, 0])], R, MB_ROOF, ROOFTAG)
+  capPolygonWithHoles(m, [roundRing([[-3.2, -5.5], [1.0, -5.5], [1.0, -1.5], [2.7, -1.5], [2.7, 10.4], [-3.2, 10.4]], [0, 0, 0, 0, 2.0, 0])], RL, MB_ROOF, ROOFTAG)
+  capPolygonWithHoles(m, [roundRing([[1.0, -12.8], [10.8, -12.8], [10.8, -5.5], [1.0, -5.5]], [0, 2.2, 1.6, 0])], RL, MB_ROOF, ROOFTAG)
+  // the faces the tall block shows over the low roofs
+  Q([[-3.2, RL, -5.5], [-3.2, RL, 10.4], [-3.2, R, 10.4], [-3.2, R, -5.5]], nrm(1, 0), MB_WALL)
+  Q([[-3.2, RL, -5.5], [1.0, RL, -5.5], [1.0, R, -5.5], [-3.2, R, -5.5]], nrm(0, 1), MB_WALL)
+  Q([[1.0, RL, -12.8], [1.0, RL, -5.5], [1.0, R, -5.5], [1.0, R, -12.8]], nrm(1, 0), MB_WALL)
+
+  // ---- coping and pipe rails round every roof edge ------------------------------------------------------------------------
+  const rail = (a: V3, b: V3, nx: number, nz: number, y: number, hh: number): void => {
+    Q([[a[0], y, a[2]], [b[0], y, b[2]], [b[0], y + hh, b[2]], [a[0], y + hh, a[2]]], nrm(nx, nz), MB_RAIL, MB_MT)
+  }
+  /** posts (two crossed slivers) every ~2.4 m along a->b, from y, 1 m high */
+  const posts = (a: V3, b: V3, y: number): void => {
+    const L = Math.hypot(b[0] - a[0], b[2] - a[2])
+    const k = Math.max(1, Math.round(L / 2.4))
+    const tx = (b[0] - a[0]) / (L || 1), tz = (b[2] - a[2]) / (L || 1)
+    for (let i = 0; i < k; i++) {
+      const x = a[0] + (b[0] - a[0]) * (i / k), z = a[2] + (b[2] - a[2]) * (i / k)
+      Q([[x - tx * 0.04, y, z - tz * 0.04], [x + tx * 0.04, y, z + tz * 0.04], [x + tx * 0.04, y + 1, z + tz * 0.04], [x - tx * 0.04, y + 1, z - tz * 0.04]], nrm(tz, -tx), MB_RAIL, MB_MT)
+      Q([[x - tz * 0.04, y, z + tx * 0.04], [x + tz * 0.04, y, z - tx * 0.04], [x + tz * 0.04, y + 1, z - tx * 0.04], [x - tz * 0.04, y + 1, z + tx * 0.04]], nrm(tx, tz), MB_RAIL, MB_MT)
+    }
+  }
+  for (let j = 0; j < NS; j++) {
+    const s = segs[j], { x: nx, z: nz } = nrmOf[j]
+    const mid = segMid(s)
+    const y = roofAt(mid.x, mid.z)
+    const o0 = off(j, 0.14, y), o1 = off(j + 1, 0.14, y), i0 = off(j, -0.12, y), i1 = off(j + 1, -0.12, y)
+    const h = 0.42
+    Q([[o0[0], y - 0.04, o0[2]], [o1[0], y - 0.04, o1[2]], [o1[0], y + h, o1[2]], [o0[0], y + h, o0[2]]], nrm(nx, nz), MB_WALL)
+    Q([[i0[0], y + h, i0[2]], [i1[0], y + h, i1[2]], [o1[0], y + h, o1[2]], [o0[0], y + h, o0[2]]], up, MB_WALL)
+    Q([[i1[0], y, i1[2]], [i0[0], y, i0[2]], [i0[0], y + h, i0[2]], [i1[0], y + h, i1[2]]], nrm(-nx, -nz), MB_WALL2)
+    // the pipe rail, set in from the coping
+    const r0 = off(j, -0.3, y + h), r1 = off(j + 1, -0.3, y + h)
+    rail(r0, r1, nx, nz, y + h + 0.95, 0.07)
+    rail(r0, r1, nx, nz, y + h + 0.5, 0.05)
+    posts(r0, r1, y + h)
+  }
+
+  // ---- the balcony bands: slab, rail, wrapping the low part -------------------------------------------------------------
+  const BD = 1.1, BT = 0.42
+  const lowSeg = segs.map((s) => { const q = segMid(s); return !mbTall(q.x, q.z) })
+  for (const k of [0, 1, 2]) {
+    const y = G + k * S
+    for (let j = 0; j < NS; j++) {
+      if (!lowSeg[j]) continue
+      const s = segs[j], { x: nx, z: nz } = nrmOf[j]
+      if (foot(s.a.x, s.a.z) > y - 0.15 && foot(s.b.x, s.b.z) > y - 0.15) continue
+      const a0 = off(j, 0, y), b0 = off(j + 1, 0, y), a1 = off(j, BD, y), b1 = off(j + 1, BD, y)
+      const lo = (p: V3, yy: number): V3 => [p[0], yy, p[2]]
+      Q([lo(a1, y - BT), lo(b1, y - BT), b1, a1], nrm(nx, nz), MB_WALL)
+      Q([a0, b0, b1, a1], up, MB_WALL)
+      Q([lo(a0, y - BT), lo(b0, y - BT), lo(b1, y - BT), lo(a1, y - BT)], down, MB_WALL2)
+      const r0 = off(j, BD - 0.1, y), r1 = off(j + 1, BD - 0.1, y)
+      rail(r0, r1, nx, nz, y + 0.95, 0.06)
+      rail(r0, r1, nx, nz, y + 0.5, 0.045)
+      posts(r0, r1, y)
+      // the slab's end where the band stops against the tall block
+      if (!lowSeg[(j + NS - 1) % NS]) Q([lo(a0, y - BT), lo(a1, y - BT), a1, a0], nrm(-nrmOf[j].z, nrmOf[j].x), MB_WALL)
+      if (!lowSeg[(j + 1) % NS]) Q([lo(b1, y - BT), lo(b0, y - BT), b0, b1], nrm(nrmOf[j].z, -nrmOf[j].x), MB_WALL)
+    }
+  }
+
+  // ---- windows ----------------------------------------------------------------------------------------------------------
+  const winAt = (cx: number, cz: number, n: P2, y0: number, w: number, h: number, mull = true): void => {
+    const t = { x: -n.z, z: n.x }
+    const P = (u: number, y: number, pr: number): V3 => [cx + t.x * u + n.x * pr, y, cz + t.z * u + n.z * pr]
+    const nn = nrm(n.x, n.z)
+    Q([P(-w / 2 - 0.1, y0 - 0.1, 0.03), P(w / 2 + 0.1, y0 - 0.1, 0.03), P(w / 2 + 0.1, y0 + h + 0.1, 0.03), P(-w / 2 - 0.1, y0 + h + 0.1, 0.03)], nn, MB_FRAME)
+    Q([P(-w / 2, y0, 0.06), P(w / 2, y0, 0.06), P(w / 2, y0 + h, 0.06), P(-w / 2, y0 + h, 0.06)], nn, MB_GLASS, GL)
+    if (mull && w > 0.95) Q([P(-0.035, y0, 0.09), P(0.035, y0, 0.09), P(0.035, y0 + h, 0.09), P(-0.035, y0 + h, 0.09)], nn, MB_FRAME)
+  }
+  /** a window on design edge ei, s metres along it, on floor k above the pavement (negative: the garage floors) */
+  const win = (ei: number, s: number, w: number, k: number, h = 1.45): void => {
+    const e = E[ei]
+    const cx = e.a.x + e.t.x * s, cz = e.a.z + e.t.z * s
+    const y0 = G + k * S + 0.85
+    if (y0 < 0.3 || y0 + h > roofAt(cx, cz) - 0.35) return
+    if (y0 < gnd(cx + e.n.x * 0.4, cz + e.n.z * 0.4) + 0.25) return
+    winAt(cx, cz, e.n, y0, w, h, ei !== 0 || w > 1.3)
+  }
+  const col = (ei: number, s: number, ks: number[], w = 1.1, h = 1.45): void => { for (const k of ks) win(ei, s, w, k, h) }
+  const ALL = [-2, -1, 0, 1, 2, 3], LOW = [-2, -1, 0, 1, 2]
+  // west (Montgomery): the top-floor ribbon runs over the entrance, single windows between the murals
+  col(0, 7.2, [0, 1, 2])
+  for (const s of [6.9, 9.3, 11.7, 14.1, 16.5]) win(0, s, 2.1, 3, 1.3)
+  for (const s of [14.6, 16.2]) col(0, s, [0, 1, 2], 1.3)
+  // south
+  for (const s of [2.6, 5.4, 8.2, 11.0, 13.8]) col(1, s, ALL)
+  for (const s of [18.6, 21.4]) col(1, s, LOW)
+  col(2, 3.9, LOW)
+  for (const s of [3.4, 5.8, 8.2]) col(3, s, LOW)
+  col(4, 2.0, LOW, 1.0)
+  // east face of the main block, with the glass-block stair strip
+  for (const s of [2.4, 5.0]) col(6, s, LOW)
+  // north: the low end, then the tall block either side of the jog, the woman mural between
+  col(7, 4.0, LOW)
+  for (const s of [7.0, 8.7]) col(7, s, ALL)
+  col(9, 1.2, ALL, 0.8)
+  col(9, 2.4, LOW, 0.8)
+  win(9, 4.4, 1.1, 3)
+  col(9, 6.9, [0, 1, 2], 1.5)
+  // the faces the tall block shows above the low roofs: one ribbon floor
+  for (const v of [-3.8, -1.0, 1.8, 4.6, 7.4]) winAt(-3.2, v, { x: 1, z: 0 }, RL + 0.85, 1.6, 1.3)
+  winAt(-1.1, -5.5, { x: 0, z: 1 }, RL + 0.85, 1.6, 1.3)
+  for (const v of [-7.4, -9.6, -11.8]) winAt(1.0, v, { x: 1, z: 0 }, RL + 0.85, 1.4, 1.3)
+
+  const strip = (ei: number, s: number, w: number, y0: number, y1: number): void => {
+    const e = E[ei], nn = nrm(e.n.x, e.n.z)
+    const P = (u: number, y: number, pr: number): V3 => [e.a.x + e.t.x * (s + u) + e.n.x * pr, y, e.a.z + e.t.z * (s + u) + e.n.z * pr]
+    Q([P(0, y0, 0.05), P(w, y0, 0.05), P(w, y1, 0.05), P(0, y1, 0.05)], nn, MB_BLOCK, GL)
+    for (let k = 1; k < 6; k++) { const y = y0 + ((y1 - y0) * k) / 6; Q([P(0, y, 0.07), P(w, y, 0.07), P(w, y + 0.05, 0.07), P(0, y + 0.05, 0.07)], nn, MB_FRAME) }
+    for (let k = 1; k < 2; k++) Q([P(w / 2 - 0.025, y0, 0.07), P(w / 2 + 0.025, y0, 0.07), P(w / 2 + 0.025, y1, 0.07), P(w / 2 - 0.025, y1, 0.07)], nn, MB_FRAME)
+  }
+  strip(6, 7.6, 0.9, G + 0.4, G + 3 * S - 0.5)
+  strip(1, 16.1, 0.9, G + 0.4, G + 4 * S - 0.7)
+  // the glass-block bay that turns the north-west corner on the top floor
+  for (const s of segs) {
+    if (!NW(s)) continue
+    const { x: nx, z: nz, L } = nrmOf[segs.indexOf(s)]
+    const n = nrm(nx, nz)
+    const P = (p: P2, y: number): V3 => [p.x + nx * 0.05, y, p.z + nz * 0.05]
+    Q([P(s.a, G + 3 * S + 0.55), P(s.b, G + 3 * S + 0.55), P(s.b, G + 3 * S + 2.5), P(s.a, G + 3 * S + 2.5)], n, MB_BLOCK, GL)
+    for (let k = 1; k < 5; k++) { const y = G + 3 * S + 0.55 + (1.95 * k) / 5; Q([P(s.a, y), P(s.b, y), P(s.b, y + 0.04), P(s.a, y + 0.04)], n, MB_FRAME) }
+    void L
+  }
+
+  // ---- the sgraffito murals: silver-grey panels with the figures in relief tones --------------------------------------
+  const mural = (ei: number, s0: number, w: number, y0: number, h: number, kind: 'worker' | 'explorer' | 'woman'): void => {
+    const e = E[ei], nn = nrm(e.n.x, e.n.z)
+    const P = (u: number, y: number, pr: number): V3 => [e.a.x + e.t.x * (s0 + u) + e.n.x * pr, y, e.a.z + e.t.z * (s0 + u) + e.n.z * pr]
+    const rect = (u0: number, u1: number, a: number, b: number, c: Rgb, pr = 0.06): void => Q([P(u0, y0 + a, pr), P(u1, y0 + a, pr), P(u1, y0 + b, pr), P(u0, y0 + b, pr)], nn, c)
+    const poly = (pts: [number, number][], c: Rgb, pr = 0.07): void => {
+      for (let i = 1; i + 1 < pts.length; i += 2) {
+        const q = pts[Math.min(i + 2, pts.length - 1)]
+        Q([P(pts[0][0], y0 + pts[0][1], pr), P(pts[i][0], y0 + pts[i][1], pr), P(pts[i + 1][0], y0 + pts[i + 1][1], pr), P(q[0], y0 + q[1], pr)], nn, c)
+      }
+    }
+    const disc = (cx: number, cy: number, r: number, c: Rgb, pr = 0.07): void => {
+      const pts: [number, number][] = []
+      for (let k = 0; k < 8; k++) pts.push([cx + r * Math.cos((k / 8) * Math.PI * 2), cy + r * Math.sin((k / 8) * Math.PI * 2)])
+      poly(pts, c, pr)
+    }
+    const D = MB_MURAL_D, Lt = MB_MURAL_L
+    rect(0, w, 0, h, MB_MURAL, 0.04)
+    if (kind === 'worker') {
+      for (const y of [0.9, 1.4, 1.9]) rect(0, w, y, y + 0.14, Lt)
+      rect(0, w, 2.3, 2.55, D)
+      rect(0.7, 0.85, 2.3, 3.9, D); rect(2.3, 2.45, 2.3, 3.9, D)
+      rect(1.2, 1.6, 2.7, 6.2, D, 0.08); rect(1.7, 2.1, 2.7, 6.2, D, 0.08)
+      poly([[1.1, 6.2], [2.2, 6.2], [2.35, 8.9], [0.95, 8.9]], D, 0.08)
+      disc(1.65, 9.5, 0.38, D, 0.08)
+      disc(0.7, 7.4, 0.7, D, 0.08); disc(0.7, 7.4, 0.55, Lt, 0.09)
+      poly([[0.95, 8.3], [1.15, 8.75], [0.55, 7.95], [0.45, 7.6]], D, 0.09)
+      rect(0, w, h - 0.8, h - 0.65, Lt)
+    } else if (kind === 'explorer') {
+      for (const y of [0.4, 0.7]) rect(0, w, y, y + 0.1, Lt)
+      poly([[0.8, 0.9], [2.4, 0.9], [2.2, 1.6], [1.0, 1.6]], D)
+      rect(1.55, 1.62, 1.6, 3.4, D); poly([[1.0, 1.8], [1.5, 1.8], [1.5, 3.3], [1.0, 2.9]], Lt, 0.08); poly([[1.7, 1.8], [2.3, 1.8], [2.3, 2.9], [1.7, 3.3]], Lt, 0.08)
+      disc(1.9, 4.7, 0.95, D); disc(1.9, 4.7, 0.8, Lt, 0.08)
+      poly([[1.9, 4.0], [2.05, 4.7], [1.9, 5.4], [1.75, 4.7]], D, 0.09); poly([[1.2, 4.7], [1.9, 4.55], [2.6, 4.7], [1.9, 4.85]], D, 0.09)
+      rect(0.9, 1.3, 5.8, 8.0, D, 0.08); rect(1.4, 1.8, 5.8, 8.0, D, 0.08)
+      poly([[0.85, 8.0], [1.85, 8.0], [2.0, 9.6], [0.7, 9.6]], D, 0.08)
+      poly([[1.85, 8.1], [2.7, 6.9], [2.8, 9.2], [2.0, 9.6]], D, 0.08)
+      disc(1.35, 10.1, 0.38, D, 0.08)
+      poly([[0.7, 9.4], [0.85, 9.6], [0.2, 10.7], [0.05, 10.55]], D, 0.09)
+      rect(0.15, 0.7, 5.8, 6.9, D, 0.08)
+    } else {
+      rect(0, w, 0.3, 0.42, Lt); rect(0, w, 0.7, 0.8, Lt)
+      disc(w / 2, h - 2.2, 0.95, MB_BLUE); disc(w / 2, h - 2.2, 0.78, MB_MURAL, 0.08)
+      rect(0, w, h - 0.5, h - 0.32, MB_BLUE); rect(0.15, w - 0.15, h - 0.9, h - 0.76, MB_BLUE)
+      poly([[0.75, 1.2], [1.45, 1.2], [1.8, 5.2], [0.4, 5.2]], D, 0.08)
+      disc(1.1, 5.6, 0.28, D, 0.08)
+      poly([[1.35, 3.0], [2.05, 3.0], [2.05, 4.3], [1.35, 4.3]], Lt, 0.09)
+    }
+  }
+  mural(0, 2.4, 3.1, G + 0.5, 3 * S + 1.7, 'worker')
+  mural(0, 18.0, 3.0, G + 0.5, 3 * S + 1.7, 'explorer')
+  mural(9, 3.4, 2.0, G + 0.9, 3 * S - 0.5, 'woman')
+
+  // ---- the stair tower, chimney, vents --------------------------------------------------------------------------------------
+  box(m, -13.1, R + 1.9, -1.7, 1.9, 1.9, 2.3, MB_WALL, ST)
+  box(m, -13.1, R + 3.92, -1.7, 2.1, 0.12, 2.5, MB_WALL2, ST)
+  box(m, -13.1, R + 4.1, -1.7, 1.2, 0.07, 1.6, MB_WALL, ST)
+  Q([[-15.0 - 0.03, R + 0.9, -0.5], [-15.0 - 0.03, R + 0.9, -2.9], [-15.0 - 0.03, R + 3.0, -2.9], [-15.0 - 0.03, R + 3.0, -0.5]], nrm(-1, 0), MB_GLASS, GL)
+  Q([[-11.2 + 0.03, R + 0.9, -2.9], [-11.2 + 0.03, R + 0.9, -0.5], [-11.2 + 0.03, R + 3.0, -0.5], [-11.2 + 0.03, R + 3.0, -2.9]], nrm(1, 0), MB_GLASS, GL)
+  prism(m, -9.0, 4.0, R + 0.4, R + 2.1, 0.28, 8, MB_WALL2, ST)
+  prism(m, -9.0, 4.0, R + 2.1, R + 2.3, 0.42, 8, MB_WALL, ST)
+
+  if (place) emanuElCopy(out, m, place.c, place.s, place.tx, place.tz)
+  else emanuElCopy(out, m, 1, 0, 0, 0)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
   pier43FerryArch,
+  mallochBuilding_1360_Montgomery,
 }
