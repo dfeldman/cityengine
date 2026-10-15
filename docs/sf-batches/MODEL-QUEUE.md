@@ -50,3 +50,13 @@ fine — the review thumbnails were too small to judge; always confirm at full s
 Acceptable as they are (gist right): Women's Building, Castro Theatre, San Francisco Mint (1937), Old Federal
 Reserve Bank, Presidio chapel, Yerba Buena lighthouse, carousel. Alcatraz/Treasure Island quarters/Mile Rocks:
 generic but out of the way — later.
+
+## Done 2026-10-15 (one at a time, each checked in model shots AND in the city)
+
+Temple Emanu-El · The Ritz-Carlton · Pier 43 Ferry Arch · Malloch Building · Fugazi Bank (redo) · Pacific Exchange
+(redo) · Whittier Mansion (redo) · Bohemian Club (redo) · Spreckels Mansion (repair) · Audiffred Building (redo) ·
+Alhambra Theatre (redo) · YWCA 940 Powell · St. Joseph's Hospital.
+
+Open questions: St. Joseph's — which end carries the taller pavilion is unconfirmed (one photo, from one side).
+Lesson: measure which side of the building its street is on (scratchpad side.ts against the street graph) before
+writing a pack's `front` — two packs had it wrong by guess (Pacific Exchange, Alhambra/YWCA).

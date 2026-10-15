@@ -2900,6 +2900,169 @@ function ywcaResidence_940_Powell(out: MeshBuilder, fit: Fit): void {
   for (const idx of m.indices) out.indices.push(base + idx)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// St. Joseph's Hospital, 355 Buena Vista Avenue East
+// ---------------------------------------------------------------------------------------------------------------
+
+const SJ_WALL: Rgb = [0.85, 0.75, 0.69]       // #dcc6b4 the pink-beige stucco
+const SJ_WALL_LO: Rgb = [0.8, 0.71, 0.64]         // the base storey, a shade deeper
+const SJ_TRIM: Rgb = [0.937, 0.902, 0.855]       // #efe6da cornices, surrounds
+const SJ_TILE: Rgb = [0.6, 0.3, 0.21]       // #a5523a the clay-tile hips
+const SJ_GLASS: Rgb = [0.13, 0.14, 0.16]
+const SJ_TAR: Rgb = [0.42, 0.4, 0.38]
+
+/** OSM way/247760730's plan, local metres (x east, z north), the pack's vertex order without the closing repeat. */
+const SJ_RING: P2[] = [[-30.6, -23.2], [-27.6, -23.6], [-27.7, -25.6], [-26.1, -27.6], [-21.5, -28.2], [-19.5, -26.9], [-19.2, -25.4],
+  [-16.1, -25.8], [-14.5, -17.1], [-11.0, -17.7], [-11.5, -20.6], [-7.1, -21.4], [-7.4, -23.2], [3.6, -25.2], [3.3, -26.9], [8.9, -27.8],
+  [9.5, -23.5], [10.8, -23.3], [11.8, -22.7], [12.8, -21.8], [13.9, -20.5], [14.3, -19.8], [14.3, -18.7], [14.3, -17.7], [14.0, -16.9],
+  [13.6, -15.4], [12.7, -14.8], [11.4, -14.0], [12.0, -9.7], [6.6, -8.8], [6.3, -10.4], [-4.7, -8.4], [-4.6, -8.0], [-8.9, -7.2], [-9.4, -10.1],
+  [-13.1, -9.4], [-4.5, 37.6], [2.7, 48.2], [20.0, 59.1], [19.0, 60.9], [21.0, 62.2], [22.0, 64.4], [19.7, 68.0], [17.0, 68.2], [15.3, 67.3],
+  [12.4, 72.3], [-7.5, 60.0], [-19.9, 42.4]].map(([x, z]) => ({ x, z }))
+
+/** The rotation + translation carrying SJ_RING onto the fit's ring (a 2-D Procrustes over both orders and every start). */
+function sjPlace(ring: P2[] | undefined): { c: number; s: number; tx: number; tz: number } {
+  if (!ring) return { c: 1, s: 0, tx: 0, tz: 0 }
+  let R = ring
+  if (R.length > 1 && Math.hypot(R[0].x - R[R.length - 1].x, R[0].z - R[R.length - 1].z) < 0.3) R = R.slice(0, -1)
+  const n = SJ_RING.length
+  if (R.length !== n) {
+    // a bake that re-cut the outline: match the long axis only, centred on the bounding boxes
+    const cx = (Math.max(...R.map((p) => p.x)) + Math.min(...R.map((p) => p.x))) / 2, cz = (Math.max(...R.map((p) => p.z)) + Math.min(...R.map((p) => p.z))) / 2
+    return { c: 1, s: 0, tx: cx, tz: cz }
+  }
+  const cb = { x: R.reduce((t, p) => t + p.x, 0) / n, z: R.reduce((t, p) => t + p.z, 0) / n }
+  const ca = { x: SJ_RING.reduce((t, p) => t + p.x, 0) / n, z: SJ_RING.reduce((t, p) => t + p.z, 0) / n }
+  let best = { c: 1, s: 0, tx: cb.x - ca.x, tz: cb.z - ca.z, res: Infinity }
+  for (const rev of [false, true]) {
+    const Q = rev ? [...SJ_RING].reverse() : SJ_RING
+    for (let o = 0; o < n; o++) {
+      let sn = 0, cs = 0
+      for (let i = 0; i < n; i++) {
+        const a = Q[(i + o) % n]
+        const ax = a.x - ca.x, az = a.z - ca.z, bx = R[i].x - cb.x, bz = R[i].z - cb.z
+        cs += ax * bx + az * bz
+        sn += ax * bz - az * bx
+      }
+      const th = Math.atan2(sn, cs), c = Math.cos(th), s = Math.sin(th)
+      let e = 0
+      for (let i = 0; i < n; i++) {
+        const a = Q[(i + o) % n]
+        const ax = a.x - ca.x, az = a.z - ca.z
+        e += (ax * c - az * s - (R[i].x - cb.x)) ** 2 + (ax * s + az * c - (R[i].z - cb.z)) ** 2
+      }
+      if (e < best.res) best = { c, s, tx: cb.x - (ca.x * c - ca.z * s), tz: cb.z - (ca.x * s + ca.z * c), res: e }
+    }
+  }
+  return best
+}
+
+/**
+ * St. Joseph's Hospital, 355 Buena Vista Avenue East (1928, Bakewell & Brown; now condominiums): a long six-storey block of
+ * pale pink-beige stucco in stepped wings round a courtyard-less spine, red clay-tile hipped roofs with deep eaves over each
+ * wing, a base storey of tall round-arched windows under a belt course, regular punched windows above, a cornice under the
+ * eaves, and a taller pavilion at the street end with its own hip. Photographs: docs/shots/refs/notable/st-josephs/
+ * wiki-image (the park side, the key reference), mapillary-0 and -2 (the arched base storey and the cornice); -1 and -3 are
+ * neighbouring houses and -4 is trees.
+ *
+ * Orientation: the plan is drawn in OSM's own frame and carried onto the fit's ring by a Procrustes fit (as Temple Emanu-El),
+ * so nothing depends on vertex order. The storeys are counted up from the ground beside each wall (`fit.groundAt`), the
+ * eaves held at one level: the street side is shorter and the downhill side shows extra storeys.
+ *
+ * Where the photographs overruled the numbers: LiDAR's single footprint covers only the south-west part, so the eaves come
+ * from the pack's 24-27 m and the photographs' six storeys over the arched base.
+ */
+function stJosephsHospital_355_BuenaVista(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const T = sjPlace(fit.ring)
+  const gAt = (x: number, z: number): number =>
+    Math.max(0, fit.groundAt ? fit.groundAt(x * T.c - z * T.s + T.tx, x * T.s + z * T.c + T.tz) : (fit.grade ?? 0))
+  const ring = SJ_RING
+  const n = ring.length
+  const Y_E = 21.6 + Math.min(4, fit.grade ?? 0)                       // the eaves: six floors over the street-side base
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+
+  for (let i = 0; i < n; i++) {
+    const a = ring[i], b = ring[(i + 1) % n]
+    const l = Math.hypot(b.x - a.x, b.z - a.z)
+    if (l < 0.3) continue
+    const tx = (b.x - a.x) / l, tz = (b.z - a.z) / l, nx = tz, nz = -tx, h = Math.atan2(nx, nz)
+    const mx = (a.x + b.x) / 2, mz = (a.z + b.z) / 2
+    const gE = Math.min(Y_E - 9, gAt(mx + nx * 1.5, mz + nz * 1.5))      // the ground beside this wall
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const panel = (u0: number, u1: number, y0: number, y1: number, pr: number, c: Rgb, tag: number): void =>
+      m.quad([P(u0, y0, pr), P(u1, y0, pr), P(u1, y1, pr), P(u0, y1, pr)], [nx, 0, nz], uv, c, tag)
+    const slab = (u0: number, u1: number, y0: number, y1: number, pr0: number, pr1: number, c: Rgb, tag: number): void => {
+      const w = P((u0 + u1) / 2, (y0 + y1) / 2, (pr0 + pr1) / 2)
+      boxAlong(m, w[0], w[1], w[2], (u1 - u0) / 2, (y1 - y0) / 2, (pr1 - pr0) / 2, h, c, tag)
+    }
+    const open = (u: number, y0: number, spring: number, hw: number, rise: number, c: Rgb, tag: number, proud: number, seg = 5): void => {
+      const w = P(u, 0)
+      emOpening(m, w[0], w[2], tx, tz, nx, nz, y0, spring, hw, rise, c, tag, proud, seg)
+    }
+    const yB = gE + 4.9                                                   // the belt course over the arched base storey
+    panel(0, l, -3, gE + 1.0, 0.03, SJ_WALL_LO, ST)
+    panel(0, l, gE + 1.0, yB, 0, SJ_WALL, ST)
+    panel(0, l, yB, Y_E, 0, SJ_WALL, ST)
+    if (l < 1.2) continue
+    slab(-0.05, l + 0.05, yB, yB + 0.4, 0, 0.3, SJ_TRIM, ST)              // the belt
+    slab(-0.1, l + 0.1, Y_E - 0.7, Y_E, 0, 0.55, SJ_TRIM, ST)             // the cornice
+    slab(-0.1, l + 0.1, Y_E - 1.05, Y_E - 0.7, 0, 0.3, SJ_WALL_LO, ST)
+    if (l < 2.6) continue
+    const k = Math.max(1, Math.floor((l - 1.4) / 3.5))
+    const nF = Math.max(1, Math.floor((Y_E - 1.4 - (yB + 0.9)) / 3.15))
+    const pitch = (Y_E - 1.4 - (yB + 0.9)) / nF
+    for (let j = 0; j < k; j++) {
+      const u = 0.7 + ((l - 1.4) * (j + 0.5)) / k
+      // the arched base storey: a surround, then the glazing with its mullions
+      open(u, gE + 0.9, gE + 3.2, 1.05, 1.05, SJ_TRIM, ST, 0.07)
+      open(u, gE + 0.95, gE + 3.2, 0.9, 0.9, SJ_GLASS, GL, 0.1)
+      open(u, gE + 0.95, gE + 4.1, 0.03, 0, SJ_TRIM, ST, 0.13)
+      for (let r = 0; r < nF; r++) {
+        const y0 = yB + 0.9 + pitch * r
+        open(u, y0, y0 + 1.85, 0.6, 0, SJ_TRIM, ST, 0.05)
+        open(u, y0 + 0.07, y0 + 1.8, 0.5, 0, SJ_GLASS, GL, 0.09)
+      }
+    }
+  }
+
+  // flat links under and between the hips
+  capPolygonWithHoles(m, [ring.slice().reverse()], Y_E, SJ_TAR, surfaceTag('concrete'))
+
+  /** a hipped tile roof over an oriented rectangle: centre, direction of the long axis, half length and half width */
+  const wingRoof = (cx: number, cz: number, dx: number, dz: number, hl: number, hw: number, y0: number, rise: number, over = 1.1): void => {
+    const sub = new MeshBuilder()
+    const iz = hw + over - 0.3
+    emHip(sub, -hl - over, hl + over, -hw - over, hw + over, y0, rise, iz, iz, SJ_TILE)
+    emanuElCopy(m, sub, dx, dz, cx, cz)
+  }
+  /** the taller end pavilion: a stage over the eaves with its own windows, then a steeper hip */
+  const pavilion = (cx: number, cz: number, dx: number, dz: number, hl: number, hw: number, hStage: number): void => {
+    const sub = new MeshBuilder()
+    emBlock(sub, -hl, hl, -hw, hw, Y_E - 0.05, Y_E + hStage, SJ_WALL)
+    emBlock(sub, -hl - 0.3, hl + 0.3, -hw - 0.3, hw + 0.3, Y_E + hStage - 0.5, Y_E + hStage, SJ_TRIM)
+    const cs: [P2, P2, number, number][] = [
+      [{ x: -hl, z: -hw }, { x: hl, z: -hw }, 0, -1], [{ x: hl, z: -hw }, { x: hl, z: hw }, 1, 0],
+      [{ x: hl, z: hw }, { x: -hl, z: hw }, 0, 1], [{ x: -hl, z: hw }, { x: -hl, z: -hw }, -1, 0]]
+    for (const [p, q, nx, nz] of cs) emRow(sub, p, q, nx, nz, Y_E + 0.7, Y_E + 2.4, 0.5, 0.5, 3.4, SJ_GLASS, GL)
+    emHip(sub, -hl - 1.0, hl + 1.0, -hw - 1.0, hw + 1.0, Y_E + hStage, 4.6, hw + 0.7, hw + 0.7, SJ_TILE)
+    emanuElCopy(m, sub, dx, dz, cx, cz)
+  }
+  const dB = { x: 0.182, z: 0.983 }, dD = { x: 0.846, z: 0.533 }, dA = { x: 0.985, z: -0.174 }
+  const rise = 4.2
+  wingRoof(-0.2, -16.9, dA.x, dA.z, 14.2, 7.4, Y_E + 0.1, rise)                // the south arm
+  wingRoof(-16.08, 20.64, dB.x, dB.z, 27.0, 6.9, Y_E + 0.1, rise)              // the long spine
+  wingRoof(5.16, 58.84, dD.x, dD.z, 15.7, 7.6, Y_E + 0.1, rise)                // the north-east wing
+  pavilion(-22.75, -15.34, dB.x, dB.z, 9.4, 6.6, 3.0)                         // the taller street-end block
+
+  // chimneys and little roof stacks
+  for (const [x, z, top] of [[-14, 12, 4.8], [-10.5, 30, 4.4], [4, 60, 4.2], [-2, -18, 4.6]] as [number, number, number][]) {
+    emBlock(m, x - 0.6, x + 0.6, z - 0.5, z + 0.5, Y_E + 2, Y_E + 2 + top, SJ_WALL_LO)
+    emBlock(m, x - 0.75, x + 0.75, z - 0.65, z + 0.65, Y_E + 2 + top, Y_E + 2.3 + top, SJ_TRIM)
+  }
+
+  emanuElCopy(out, m, T.c, T.s, T.tx, T.tz)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -2912,4 +3075,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   audiffredBuilding_100_Embarcadero,
   alhambraTheatre_2330_Polk,
   ywcaResidence_940_Powell,
+  stJosephsHospital_355_BuenaVista,
 }
