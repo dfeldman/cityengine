@@ -78,3 +78,17 @@ Ocean Climate Center (b11) and the Alcatraz/Treasure Island Haiku models. Open: 
 ~38 m), The Oak (5 vs 12 storeys), St. Joseph's pavilion end.
 Resolved by the owner 2026-10-15: Hotel VIA = 2-storey lobby + 10 room floors + mechanical floor (now 44 m; its
 glass-tower recipe still deserves a proper model showing those three parts); The Oak = 12 storeys (now 38 m).
+
+## Done 2026-10-16 (night, owner's reports + queue)
+
+Embarcadero Center podiums on Davis · Ferry Building (signs + tower/pavilion rework) · Hilton Financial District
+(reshaped, moved onto its tower part) · 2 Folsom / Gap HQ (Opus) · Hotel VIA (proper model) · Webster St footbridge ·
+Sing Chong, Sing Fat, Chinese Telephone Exchange, Six Companies (Chinatown) · St. Mary's Cathedral plaza ·
+2 Bryant (the owner's "1 Bryant": there is no 1) · Language of the Birds · giant laurel figs (sf_ficus_giant).
+Restyles by judgement: Mission Bay lab offices 84821722 / 84812340 / 84821715; 600 Harrison, 620 Folsom,
+795 Folsom, 730 Stanyan. Systems: ivy (render/landmarks/ivy.ts + foliage surface), two-sided signs, Chinese shop
+names/boards in Chinatown, front-gable roofs capped at the lot depth, subway entrances never inside buildings,
+short underpasses ridden, unnamed slip lanes as side paths.
+Former theatres (Northpoint, Red Vic, Grandview, Surf): repurposed buildings — not worth models now.
+Next: 288719494 (4th & Harrison rounded corner, builder drafted), Hotel Kabuki tower (681442041, drafted),
+Uber HQ Mission Bay (Opus, in progress), Ping Yuen (generic but gist right — later).
