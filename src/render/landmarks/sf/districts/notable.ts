@@ -9048,6 +9048,41 @@ function chinatownYWCA_965_Clay(out: MeshBuilder, fit: Fit): void {
   prism(out, cx, cz, H + 6, H + 7.6, 2.6, 4, TILE, TL, 0.15)
 }
 
+/**
+ * Julius' Castle, 1541 Montgomery on Telegraph Hill (1923; Commons "Julius' Castle San Francisco.jpg",
+ * docs/shots/refs/notable/julius): a two-storey restaurant of grey-green shingle dressed as a castle — a crenellated
+ * round turret at one corner, battlements along the roof terrace, big lettering JULIUS' CASTLE across the bay front,
+ * bands of windows, a tall basement wall on the slope below. Front (Montgomery, the bay side) on −z.
+ */
+function juliusCastle_1541_Montgomery(out: MeshBuilder, fit: Fit): void {
+  const SAGE: Rgb = [0.52, 0.54, 0.48], STONE: Rgb = [0.62, 0.62, 0.58], DARK: Rgb = [0.15, 0.17, 0.19]
+  const SH = surfaceTag('clapboard'), CN = surfaceTag('concrete'), GL = surfaceTag('glass')
+  const hx = Math.max(6, Math.min(fit.hx, 12)), hz = Math.max(4, Math.min(fit.hz, 8)), B = 3.0, E = B + 6.2, fz = -hz
+  box(out, 0, B / 2, 0, hx, B / 2, hz, STONE, CN)                                    // the basement wall on the slope
+  box(out, 0, (B + E) / 2, 0, hx, (E - B) / 2, hz, SAGE, SH)
+  // window bands, two storeys, on the front and the ends
+  for (const [y0, y1] of [[B + 0.6, B + 2.6], [B + 3.6, B + 5.4]]) {
+    for (let x = -hx + 1.2; x < hx - 0.8; x += 2.0) box(out, x, (y0 + y1) / 2, fz - 0.03, 0.8, (y1 - y0) / 2, 0.04, DARK, GL)
+    for (let z = -hz + 1.2; z < hz - 0.8; z += 2.0) for (const sd of [-1, 1]) box(out, sd * (hx + 0.03), (y0 + y1) / 2, z, 0.04, (y1 - y0) / 2, 0.8, DARK, GL)
+  }
+  // the battlements round the roof terrace
+  box(out, 0, E + 0.4, 0, hx, 0.4, hz, SAGE, SH)
+  for (let x = -hx + 0.4; x <= hx; x += 1.2) for (const sd of [-1, 1]) box(out, x, E + 1.0, sd * (hz - 0.2), 0.3, 0.25, 0.2, SAGE, SH)
+  for (let z = -hz + 0.4; z <= hz; z += 1.2) for (const sd of [-1, 1]) box(out, sd * (hx - 0.2), E + 1.0, z, 0.2, 0.25, 0.3, SAGE, SH)
+  // the name across the front
+  sign(out, { type: 'flat', text: "JULIUS' CASTLE", h: 0.9, face: 'roman', weight: 'bold', colour: [0.95, 0.94, 0.9], lit: 'front' },
+    { x: hx * 0.2, y: E - 0.3, z: fz - 0.08, heading: Math.PI })
+  // the crenellated round turret at the front corner
+  const tx = -hx + 1.6, tz = fz + 0.8
+  prism(out, tx, tz, 0, E + 3.2, 2.1, 12, SAGE, SH)
+  for (const y of [B + 1.5, B + 4.5, E + 1.6]) for (let k = 0; k < 4; k++) {
+    const a = Math.PI + (k - 1.5) * 0.6
+    boxAlong(out, tx + Math.sin(a) * 2.12, y, tz + Math.cos(a) * 2.12, 0.3, 0.6, 0.03, a, DARK, GL)
+  }
+  prism(out, tx, tz, E + 3.2, E + 3.6, 2.35, 12, SAGE, SH)
+  for (let k = 0; k < 10; k++) { const a = (k / 10) * Math.PI * 2; box(out, tx + Math.cos(a) * 2.15, E + 4.0, tz + Math.sin(a) * 2.15, 0.28, 0.4, 0.28, SAGE, SH) }
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -9103,6 +9138,7 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   coastGuardStation_CrissyField,
   torpedoAssembly_YBI,
   chinatownYWCA_965_Clay,
+  juliusCastle_1541_Montgomery,
   officersQuarters: (out: MeshBuilder, fit: Fit) => officersQuarters(out, fit),
   officersQuartersNimitz: (out: MeshBuilder, fit: Fit) => officersQuarters(out, fit, true),
   gapHQ_2_Folsom,

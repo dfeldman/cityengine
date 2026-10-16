@@ -177,8 +177,11 @@
     "osm": [
       "way/262079667"
     ],
-    "procedural": "juliesCastle",
-    "name": "Julius' Castle"
+    "procedural": "juliusCastle_1541_Montgomery",
+    "name": "Julius' Castle",
+    "front": 102,
+    "height": 14,
+    "note": "2026-10-16 from Commons: grey-green shingle castle restaurant, crenellated turret, battlements, lettering; was a Haiku terracotta tower"
   },
   {
     "osm": [

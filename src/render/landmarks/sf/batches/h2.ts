@@ -55,8 +55,6 @@ export const H2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   hotelUnion: fromRecipe('edwardian-terracotta', {}),
   /** Inn at the Presidio: civic, historic inn at Presidio Officers' Club. No photo; 1900s–1920s terracotta era guess. */
   innAtThePresidio: fromRecipe('edwardian-terracotta', {}),
-  /** Julius' Castle: civic, historic mansion/restaurant in Telegraph Hill. No photo; 1920s–1930s era guess. */
-  juliesCastle: fromRecipe('edwardian-terracotta', {}),
   /** Langley Porter Psychiatric Institute: civic, medical facility on Parnassus. No photo; 1960s-80s concrete guess. */
   langleyPorterPsychiatricInstitute: fromRecipe('concrete-piers', { height: 30 }),
 }
