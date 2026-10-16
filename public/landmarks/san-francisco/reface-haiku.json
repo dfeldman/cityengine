@@ -174,12 +174,11 @@
       "way/71504442"
     ],
     "name": "The Clift Royal Sonesta San Francisco",
-    "restyle": "sfapartment",
+    "restyle": "chicago",
     "height": 64,
-    "wall": "#c9b89c",
-    "by": "haiku",
-    "image": "way-71504442.jpg",
-    "note": "stacked bay windows and fire escape, classic SF apartment"
+    "wall": "#b8b0a0",
+    "noShops": true,
+    "note": "2026-10-16 (Mapillary, docs/shots/refs/notable/clift): a 1913 seventeen-storey buff-grey brick hotel tower, regular punched windows over an arched stone base — not bays and fire escapes (was the Haiku sfapartment restyle)"
   },
   {
     "osm": [
