@@ -59,7 +59,7 @@
   {"osm": ["way/103538672"], "name": "1455 Market Street podium outline", "restyle": "brutalist", "levels": 6, "note": "The low block round the tower (OSM keeps the outline as well as the parts)."},
   {"osm": ["way/172111606"], "name": "1500 Market Street", "restyle": "brick", "levels": 3, "note": "Brick block."},
   {"osm": ["way/172111612"], "name": "1540 Market Street", "restyle": "brick", "levels": 4, "note": "Brick block."},
-  {"osm": ["way/172111614"], "name": "The Oak", "restyle": "sfapartment", "levels": 12, "height": 38, "note": "55 Oak Street flats: twelve storeys (owner, 2026-10-15; was 5)."},
+  {"osm": ["way/172111614"], "name": "The Oak", "restyle": "bauhaus", "wall": "#e6e8e6", "groundWall": "#2e3033", "noShops": true, "levels": 12, "height": 38, "note": "55 Oak Street: a modern twelve-storey block — white frame, large glass windows with recessed balconies, dark ground floor (owner's photo 2026-10-15, docs/shots/refs/notable/the-oak-owner.png; was an Edwardian sfapartment at 5 storeys)."},
   {"osm": ["way/172111622"], "name": "1560 Market Street", "restyle": "sfapartment", "levels": 6, "note": "Flats over shops."},
   {"osm": ["way/288804930"], "name": "1600 Market Street", "restyle": "brick", "levels": 5, "note": "Brick block."},
   {"osm": ["way/401333362"], "name": "1610 Market Street", "restyle": "brick", "levels": 2, "note": "Shopfront."},
