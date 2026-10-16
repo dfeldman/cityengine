@@ -1180,6 +1180,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   city.addLayer(stairsLayer(scene, city.terrain, pkg.region === 'san-francisco' ? SF_STAIRWAYS : {}, (x, z) => city.inCover(x, z),
     (region(pkg.region).rainbowStairs ?? []).map((r) => ({ ...new Projection(pkg.origin).toLocal({ lat: r.lat, lon: r.lon }), radius: r.radius }))))
   const overhead = off.has('life') ? null : new OverheadLines(scene, city.terrain)
+  // (its poles keep clear of the point furniture and the standalone models — shelters, kiosks: render/overhead.ts)
+  if (overhead) overhead.blocked = (x, z) => city.furnitureNear(x, z, 1.6)
+    || (landmarks?.standalone() ?? []).some((p) => Math.hypot(p.x - x, p.z - z) < p.r)
   onTile((a) => {
     // the tram stops first, so the tile's own lines find them
     life.addStops((a.ready.furniture ?? []).filter((f) => f.kind === 'tramstop'))

@@ -802,6 +802,17 @@ export class Landmarks {
   private readonly ownedBy = new Map<number, LandmarkEntry>()
   /** entries not yet placed: each waits for the tile its building, or its point, is in */
   private pending: LandmarkEntry[]
+  /**
+   * Where the STANDALONE models (lat/lon entries: shelters, kiosks, signs) stand, in local metres with a radius, known
+   * from the manifest before any is placed: what the overhead line's poles keep clear of (render/overhead.ts).
+   */
+  standalone(): { x: number; z: number; r: number }[] {
+    return (this.standaloneCache ??= this.pending.filter((e) => e.lat !== undefined && e.lon !== undefined).map((e) => {
+      const p = this.proj.toLocal({ lat: e.lat!, lon: e.lon! })
+      return { x: p.x, z: p.z, r: Math.hypot(...(e.size ?? [2, 2])) / 2 + 0.6 }
+    }))
+  }
+  private standaloneCache?: { x: number; z: number; r: number }[]
   private readonly named: PackedLandmark[]
   private readonly proj: Projection
   private readonly mat: ShaderMaterial

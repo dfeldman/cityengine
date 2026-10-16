@@ -23,6 +23,9 @@ const SPAN = 38
 export class OverheadLines {
   private readonly done = new Set<number>()
 
+  /** a pole may not stand here (a shelter, a kiosk: owner, 2026-10-16, poles inside a shelter and a toilet) */
+  blocked: ((x: number, z: number) => boolean) | null = null
+
   constructor(private readonly scene: Scene, private readonly terrain: Terrain) {}
 
   /** A tile's railways: the electric tram track among them gets its wire and poles (once each). */
@@ -52,12 +55,13 @@ export class OverheadLines {
             0.03, 0.03, WIRE, 0, false)
           sinceLast += L / n
           // a pole on the right of the track every span, its arm reaching over to the wire
-          if (sinceLast >= SPAN) {
+          const nx = (b.z - a.z) / L
+          const nz = -(b.x - a.x) / L
+          const px = p1.x + nx * 4.6
+          const pz = p1.z + nz * 4.6
+          // (a pole whose spot is taken goes on along the track to the next clear one, up to half a span late)
+          if (sinceLast >= SPAN && (sinceLast > SPAN * 1.5 || !this.blocked?.(px, pz))) {
             sinceLast = 0
-            const nx = (b.z - a.z) / L
-            const nz = -(b.x - a.x) / L
-            const px = p1.x + nx * 4.6
-            const pz = p1.z + nz * 4.6
             const g = ground(px, pz)
             box(out, px, g + 3.9, pz, 0.12, 3.9, 0.12, POLE, 0)
             box(out, px, g + 0.3, pz, 0.22, 0.3, 0.22, POLE, 0)

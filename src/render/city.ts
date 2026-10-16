@@ -1935,6 +1935,15 @@ export class City {
   }
 
   /** inside any hand-built model's declared footprint (`coverRaised`) */
+  /** OSM's point furniture within `r` metres (a kiosk, a column, a toilet): what the overhead line's poles keep clear of */
+  furnitureNear(x: number, z: number, r: number): boolean {
+    const tx = Math.floor(x / TILE), tz = Math.floor(z / TILE)
+    for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {
+      for (const f of this.pointsIn.get(key(tx + dx, tz + dz)) ?? []) if (Math.hypot(f.x - x, f.z - z) < r) return true
+    }
+    return false
+  }
+
   inCover(x: number, z: number): boolean {
     return this.coverAreas.some((a) => x >= a.x0 - 1 && x <= a.x1 + 1 && z >= a.z0 - 1 && z <= a.z1 + 1 && inOutline(a.ring, x, z, 1))
   }

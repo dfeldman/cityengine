@@ -10730,7 +10730,8 @@ before it is useful.
   way; a sideways step in the line ridden (0.5–8 m) is now eased out over ~1 s. Measured riding there: worst sideways step
   0.13 m/frame over 1 800 frames.
 - **#287 Overhead-line poles inside furniture** — in an F-line shelter (37.801255 −122.399280), in a toilet kiosk
-  (37.799395 −122.397532). A one-time clearance pass. OPEN.
+  (37.799395 −122.397532). FIXED: a pole whose spot is within 1.6 m of point furniture or inside a standalone model's
+  footprint (from the manifest, known before placing) goes on along the track to the next clear spot (≤ half a span).
 - **#288 Detailed cable car model** — the streetcar is detailed, the cable car is not. OPEN.
 - **#289 Pier 27 cruise terminal** — shape right, feel wrong: raised plaza with a retaining wall (CRUISE TERMINAL PLAZA
   lettering, benches), lawn, cypresses, glass terminal with fins (owner's Street View + aerial). OPEN.
