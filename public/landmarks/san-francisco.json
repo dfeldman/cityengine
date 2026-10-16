@@ -9,6 +9,9 @@
   "include": "san-francisco/mission-bay.json"
  },
  {
+  "include": "san-francisco/photo-pass-1016.json"
+ },
+ {
   "include": "san-francisco/golden-gate-park.json"
  },
  {
