@@ -180,8 +180,6 @@ export const BUILDINGS_OK: string[] = [
   'kahveKiosk',
   // churches and a funeral chapel whose names carry "Memorial" or "Chapel" (sf/churches-5.ts, 2026-10-03)
   'hamiltonMemorialChurchOfGodInChrist', 'jonesMemorialUnitedMethodistChurch', 'sinaiMemorialChapel',
-  // a HOTEL whose proper name contains "Plaza": Hotel Riu Plaza Fisherman's Wharf. The pattern is
-  // matching a word inside a brand name, not a public plaza.
   // in PARKS, and buildings: glasshouses, a tea house, a clubhouse, a restaurant
   'conservatoryGlasshouse', 'californiaAcademyOfSciences', 'teaGardenTeaHouse', 'teaGardenGiftShop', 'sparkTent', 'sparkUmbrella', 'sparkTruck', 'beachChalet1006', 'oneFrontPavilion',
   'presidioOfficersClub',
