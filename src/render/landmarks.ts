@@ -740,7 +740,7 @@ export class Landmarks {
    */
   readonly decks: { ring: { x: number; z: number }[]; y: number; keepOff?: number; trees?: boolean; shrubs?: boolean; spacing?: number }[] = []
   /** the single plants procedural landmarks place (MeshBuilder.plants), in world metres */
-  readonly plants: { x: number; z: number; species: string; h: number; spin: number }[] = []
+  readonly plants: { x: number; z: number; species: string; h: number; spin: number; dy?: number }[] = []
 
   /**
    * Every footprint a landmark declared it draws its own raised structure over (`coversRaised`), in world
@@ -1274,7 +1274,7 @@ export class Landmarks {
         this.plants.push({
           x: cx + ox + (q.x * cosR + q.z * sinR) * scale,
           z: cz + oz + (-q.x * sinR + q.z * cosR) * scale,
-          species: q.species, h: q.h * scale, spin: q.spin - rotation,
+          species: q.species, h: q.h * scale, spin: q.spin - rotation, dy: q.dy !== undefined ? q.dy * scale : undefined,
         })
       }
       // and the ground it paves at street level (MeshBuilder.grounds), in world metres, for the city to drape

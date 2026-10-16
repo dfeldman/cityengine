@@ -1229,6 +1229,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // the Transit Center's roof); its ring only exists once the landmark's own tile has arrived, so this is
   // drained a few at a time below rather than read once here
   let decksPlanted = 0
+  let plantsPlaced = 0
 
   const controls: Controls = opts.platform ?? new LocalControls(() => opts.device)
   // ?start=<edgeId> drops the rider onto a particular street, which is how the shot harness samples the
@@ -2817,6 +2818,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           if (d.shrubs !== false) plants.addDeck(d.ring, d.y, d.keepOff !== undefined)
           if (d.trees !== false) trees.addDeck(d.ring, d.y, d.keepOff, d.spacing)
         }
+      }
+      // the single plants landmarks place (Lombard Street's hydrangeas), the same way: as their tiles stream in
+      if (landmarks && plantsPlaced < landmarks.plants.length) {
+        plants.addPlants(landmarks.plants.slice(plantsPlaced))
+        plantsPlaced = landmarks.plants.length
       }
       trees.update(camera.position)
       plants.update()

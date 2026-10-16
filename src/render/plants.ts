@@ -38,7 +38,7 @@ interface PlantEntry { species: string; file: string; height: number }
  * Salesforce Park — thousands of plants in the air, and a standing report of them missing — as well as the
  * Yerba Buena decks.
  */
-interface Planted { x: number; z: number; s: number; spin: number; kind: 'shrub' | 'flower'; y?: number }
+interface Planted { x: number; z: number; s: number; spin: number; kind: 'shrub' | 'flower'; y?: number; species?: string; dy?: number }
 
 /** the library's species used, by role */
 const SHRUBS = ['bush_green', 'bush_flowering', 'rhododendron', 'hazel']
@@ -236,7 +236,7 @@ export class Plants {
   private readonly terrain: Terrain
   private readonly base: string
   readonly byTile = new Map<string, Planted[]>()
-  models: { kind: 'shrub' | 'flower'; species: string; parts: Mesh[]; top: number }[] = []
+  models: { kind: 'shrub' | 'flower'; species: string; parts: Mesh[]; top: number; named?: boolean }[] = []
   /** the city's planting zones, when it has them (map format v3): which shrubs and flowers grow where */
   zones: PlantZones | null = null
   private dirty = false
@@ -279,7 +279,7 @@ export class Plants {
     if (!this.clearings.includes(ring)) this.clearings.push(ring)
     for (const [k, ps] of this.byTile) {
       // (a raised deck's planting stands ON a footprint: it is the skypark's own)
-      if (k.startsWith('deck:')) continue
+      if (k.startsWith('deck:') || k.startsWith('lm:')) continue
       const kept = this.cleared(ps, [ring])
       if (kept.length !== ps.length) { this.byTile.set(k, kept); this.dirty = true }
     }
@@ -307,6 +307,58 @@ export class Plants {
     }
   }
 
+  /** One library file, imported and made ready to instance: its LOD0 parts, flipped, cut out, hidden. */
+  private async importModel(file: string): Promise<Mesh[]> {
+    const r = await SceneLoader.ImportMeshAsync('', ...assetRootAndFile(this.base, file), this.scene)
+    const all = r.meshes.filter((m): m is Mesh => m instanceof Mesh && m.getTotalVertices() > 0)
+    // (LOD0, the full plant: LOD1's thinned leaf cards read at rider height as a few broken twigs lying on the lawn —
+    //  Embarcadero survey, 2026-10-06 — and LOD0 is at most a thousand triangles a shrub)
+    const lod0 = all.filter((m) => !/LOD[1-9]/i.test(m.name))
+    const parts = lod0.length ? lod0 : all
+    for (const m of all) if (!parts.includes(m)) m.dispose()
+    for (const m of parts) {
+      // the same fixes as the trees (render/vegetation.ts): the loader's flip baked in, leaves as cutouts
+      m.setParent(null)
+      m.bakeCurrentTransformIntoVertices()
+      m.renderingGroupId = 3
+      m.isPickable = false
+      m.alwaysSelectAsActiveMesh = true
+      const mat = m.material as { transparencyMode?: number | null; alphaCutOff?: number; needDepthPrePass?: boolean } | null
+      if (mat) { mat.transparencyMode = 1; mat.alphaCutOff = 0.35; mat.needDepthPrePass = false }
+      m.setEnabled(false)
+    }
+    return parts
+  }
+
+  /** the library's index, once `load` has it (a landmark's named species are looked up in it) */
+  private index: { trees: PlantEntry[] } | null = null
+  private named = new Map<string, Promise<void>>()
+  private placed = 0
+
+  /**
+   * Single plants a landmark places itself (MeshBuilder.plants → Landmarks.plants): a named species at a given
+   * height, standing on the terrain. Every file of that species is loaded the first time one is asked for (a
+   * hydrangea bed wants its twelve colour variants, not one), and they are kept out of the city's default pools.
+   */
+  addPlants(list: { x: number; z: number; species: string; h: number; spin: number; dy?: number }[]): void {
+    if (!list.length) return
+    this.byTile.set(`lm:${this.placed++}`, list.map((q) => ({ x: q.x, z: q.z, s: q.h, spin: q.spin, kind: 'shrub' as const, species: q.species, dy: q.dy })))
+    for (const sp of new Set(list.map((q) => q.species))) if (!this.named.has(sp)) this.named.set(sp, this.loadNamed(sp))
+    this.dirty = true
+  }
+
+  private async loadNamed(species: string): Promise<void> {
+    for (let tries = 0; !this.index && tries < 120; tries++) await new Promise((r) => setTimeout(r, 500))
+    if (!this.index) return
+    const files = this.index.trees.filter((t) => t.species === species)
+    if (!files.length) { console.warn(`plants: a landmark asks for "${species}", which the plant library does not have`); return }
+    for (const e of files) {
+      const parts = await this.importModel(e.file)
+      if (parts.length) this.models.push({ kind: 'shrub', species, parts, top: e.height || 1, named: true })
+    }
+    this.dirty = true
+  }
+
   async load(): Promise<void> {
     let index: { trees: PlantEntry[] }
     try {
@@ -314,6 +366,7 @@ export class Plants {
     } catch {
       return
     }
+    this.index = index
     // the defaults, and every species a zone names (a zone's "tropical shrubs"): all loaded once, up front
     const wanted = { shrub: new Set<string>(SHRUBS), flower: new Set<string>(FLOWERS) }
     for (const s of this.zones?.allShrubs() ?? []) {
@@ -324,24 +377,7 @@ export class Plants {
       for (const species of list) {
         const e = index.trees.find((t) => t.species === species)
         if (!e) { console.warn(`plants: a zone asks for "${species}", which the plant library does not have`); continue }
-        const r = await SceneLoader.ImportMeshAsync('', ...assetRootAndFile(this.base, e.file), this.scene)
-        const all = r.meshes.filter((m): m is Mesh => m instanceof Mesh && m.getTotalVertices() > 0)
-        // (LOD0, the full plant: LOD1's thinned leaf cards read at rider height as a few broken twigs lying on the lawn —
-        //  Embarcadero survey, 2026-10-06 — and LOD0 is at most a thousand triangles a shrub)
-        const lod0 = all.filter((m) => !/LOD[1-9]/i.test(m.name))
-        const parts = lod0.length ? lod0 : all
-        for (const m of all) if (!parts.includes(m)) m.dispose()
-        for (const m of parts) {
-          // the same fixes as the trees (render/vegetation.ts): the loader's flip baked in, leaves as cutouts
-          m.setParent(null)
-          m.bakeCurrentTransformIntoVertices()
-          m.renderingGroupId = 3
-          m.isPickable = false
-          m.alwaysSelectAsActiveMesh = true
-          const mat = m.material as { transparencyMode?: number | null; alphaCutOff?: number; needDepthPrePass?: boolean } | null
-          if (mat) { mat.transparencyMode = 1; mat.alphaCutOff = 0.35; mat.needDepthPrePass = false }
-          m.setEnabled(false)
-        }
+        const parts = await this.importModel(e.file)
         if (parts.length) this.models.push({ kind, species, parts, top: e.height || 1 })
       }
     }
@@ -397,21 +433,24 @@ export class Plants {
         // the zone's own species where it names them, else the defaults
         const z = this.zones?.shrubs(p.x, p.z)
         const names = p.kind === 'shrub' ? z?.shrubs : z?.flowers
-        let pool = names && names.length ? this.models.filter((m) => m.kind === p.kind && names.includes(m.species)) : []
-        if (!pool.length) pool = this.models.filter((m) => m.kind === p.kind && (p.kind === 'shrub' ? SHRUBS : FLOWERS).includes(m.species))
+        let pool = p.species ? this.models.filter((m) => m.species === p.species)
+          : names && names.length ? this.models.filter((m) => m.kind === p.kind && names.includes(m.species)) : []
+        if (p.species && !pool.length) continue
+        if (!pool.length) pool = this.models.filter((m) => !m.named && m.kind === p.kind && (p.kind === 'shrub' ? SHRUBS : FLOWERS).includes(m.species))
         if (!pool.length) continue
         // a flower bed is one kind: pick by the bed's rounded position, a shrub by its own
         const key = p.kind === 'flower' ? hash(Math.round(p.x / 4) * 4, Math.round(p.z / 4) * 4, 11) : hash(p.x, p.z, 12)
         const model = pool[Math.floor(key * pool.length) % pool.length]
-        const want = p.kind === 'shrub' ? 1.7 * p.s : 0.5 * p.s
+        // (a landmark's named plant carries its height in metres in `s`)
+        const want = p.species ? p.s : p.kind === 'shrub' ? 1.7 * p.s : 0.5 * p.s
         const k = Math.max(0.2, Math.min(3, want / model.top))
         const mtx = Matrix.Compose(new Vector3(k, k, k), Quaternion.RotationAxis(Vector3.Up(), p.spin),
-          new Vector3(p.x, (p.y ?? this.terrain.heightAt(p.x, p.z)) + 0.02, p.z))
+          new Vector3(p.x, (p.y ?? this.terrain.heightAt(p.x, p.z)) + (p.dy ?? 0) + 0.02, p.z))
         for (const part of model.parts) (buckets.get(part) ?? buckets.set(part, []).get(part)!).push(mtx)
         if (p.kind === 'shrub' && this.core) {
           const h = want * 1.0
           cores.push(Matrix.Compose(new Vector3(h * 1.35, h, h * 1.35), Quaternion.RotationAxis(Vector3.Up(), p.spin),
-            new Vector3(p.x, (p.y ?? this.terrain.heightAt(p.x, p.z)), p.z)))
+            new Vector3(p.x, (p.y ?? this.terrain.heightAt(p.x, p.z)) + (p.dy ?? 0), p.z)))
         }
       }
     }

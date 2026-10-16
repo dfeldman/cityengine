@@ -93,6 +93,12 @@ export class MeshBuilder {
   readonly grounds: { x: number; z: number }[][] = []
   /** `spacing`: trees at this pitch, past the area density (park-planting.ts `deckRow`) — a row along a path */
   readonly decks: { ring: { x: number; z: number }[]; y: number; keepOff?: number; trees?: boolean; shrubs?: boolean; spacing?: number }[] = []
+  /**
+   * Single plants from the plant library the landmark places itself, in its own frame, standing on the terrain
+   * (or `dy` above it: a bed set to a road's grade rather than the raw slope) (render/plants.ts `addPlants`): Lombard Street's hydrangeas, bed by bed, where the city's lattice would scatter
+   * whatever its defaults are. `species` is a library species; `h` the height wanted, metres.
+   */
+  readonly plants: { x: number; z: number; species: string; h: number; spin: number; dy?: number }[] = []
 
   /** One quad, wound so its face points along `n`. `uv` is the four corners, in order bl, br, tr, tl. */
   quad(
