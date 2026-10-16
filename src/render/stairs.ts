@@ -122,6 +122,13 @@ export function stairsLayer(scene: Scene, terrain: Terrain, named: Record<string
           continue
         }
         const half = Math.max(0.8, Math.min(3, (e.width || 2.4) / 2))
+        /*
+         * …and BESIDE THE KERB, not over it (owner, 2026-10-16, Lombard's crooked block: "because of the path shape a car
+         * is actually on the stairs"). OSM draws a sidewalk stair 2 m from the centre of a 4 m street at the hairpins, so
+         * the flight's middle lay across the carriageway the trimmed ends had left. Every point is kept a stair's
+         * half-width and a kerb outside each carriageway.
+         */
+        keepOffRoads(pts, roads, half)
         // resample the polyline at the tread's pitch
         const at: { x: number; z: number; dx: number; dz: number }[] = []
         for (let i = 1; i < pts.length; i++) {
@@ -234,6 +241,26 @@ function toLine(x: number, z: number, pts: { x: number; z: number }[]): number {
  * point, walking in from that end, more than the street's half-width (plus a kerb's 0.3 m) from its centre line.
  * Null when nothing is left (a "flight" wholly on a street).
  */
+/** Push each point of a flight out of every carriageway's corridor, to its kerb plus the flight's own half-width. */
+export function keepOffRoads(pts: { x: number; z: number }[], roads: { half: number; pts: { x: number; z: number }[] }[], half: number): void {
+  for (const p of pts) {
+    for (const r of roads) {
+      const need = r.half + half + 0.15
+      let best = Infinity, qx = 0, qz = 0
+      for (let i = 1; i < r.pts.length; i++) {
+        const a = r.pts[i - 1], b = r.pts[i], dx = b.x - a.x, dz = b.z - a.z
+        const t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.z - a.z) * dz) / (dx * dx + dz * dz || 1)))
+        const d = Math.hypot(a.x + dx * t - p.x, a.z + dz * t - p.z)
+        if (d < best) { best = d; qx = a.x + dx * t; qz = a.z + dz * t }
+      }
+      if (best < need && best > 0.05) {
+        p.x = qx + ((p.x - qx) / best) * need
+        p.z = qz + ((p.z - qz) / best) * need
+      }
+    }
+  }
+}
+
 export function kerbTrim(pts: { x: number; z: number }[], ys: number[], roads: { half: number; pts: { x: number; z: number }[] }[]):
   { pts: { x: number; z: number }[]; ys: number[] } | null {
   const onRoad = (x: number, z: number): boolean => roads.some((r) => toLine(x, z, r.pts) < r.half + 0.3)

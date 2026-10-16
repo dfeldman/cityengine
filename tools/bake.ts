@@ -161,6 +161,9 @@ function surfaceOf(tags: Record<string, string>): PackedEdge['surface'] {
 function widthOf(tags: Record<string, string>): number {
   const w = parseFloat(tags.width ?? '')
   if (Number.isFinite(w) && w > 0.5 && w < 40) return w
+  // a flight of steps IN a sidewalk (OSM steps=sidewalk: Lombard's crooked block, Kearny, Filbert) is a sidewalk's width,
+  // not the 3 m of a free-standing stairway (owner, 2026-10-16: Lombard's stairs "much narrower than in our model")
+  if (tags.highway === 'steps' && tags.steps === 'sidewalk') return 1.5
   const lanes = parseInt(tags.lanes ?? '', 10)
   if (Number.isFinite(lanes) && lanes > 0) return Math.min(24, lanes * 3.2)
   switch (tags.highway) {
@@ -221,6 +224,8 @@ function wayTags(t: Record<string, string>): Pick<PackedEdge, 'kind' | 'service'
 function widthOfNA(tags: Record<string, string>): number {
   const w = parseFloat(tags.width ?? '')
   if (Number.isFinite(w) && w > 0.5 && w < 40) return w
+  // steps in a sidewalk are a sidewalk's width (see widthOf)
+  if (tags.highway === 'steps' && tags.steps === 'sidewalk') return 1.5
   const lanes = parseInt(tags.lanes ?? '', 10)
   if (Number.isFinite(lanes) && lanes > 0) return Math.min(24, lanes * 3.4 + 2.4)   // lanes plus parking
   switch (tags.highway) {
