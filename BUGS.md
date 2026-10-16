@@ -10705,3 +10705,24 @@ nothing, so a wrong OSM height stands. Found and capped: 58 Main (151 m → 12),
 Hotel Des Arts (55 → 30); 153 Kearny's levels raised to its real 11. A scan against the 2010 LiDAR (>45 m baked vs
 peak) gives 169 hits, nearly all post-2010 towers or model-drawn parts — needs filtering by "claimed by a model"
 before it is useful.
+
+### #282–#294 Owner's reports, 2026-10-16 afternoon — the queue, in the order they are being worked
+
+- **#282 Retaining walls on steep hills, citywide** — pale walls along the sidewalk's building side and across corners
+  (owner's screenshot). New since this morning's bakes; suspect the street-grade walls (render/city.ts `retaining:`) meeting
+  corridors that changed (alleys 4 m, sidewalk steps 1.5 m). OPEN.
+- **#283 Submerged cars, 37.793186 −122.407746** (steep Chinatown street by the Stockton tunnel). OPEN.
+- **#284 Cable cars get stuck** — probably running the wrong way along their path, always traffic in front. OPEN.
+- **#285 Dead end: the instant flip** — turn round slowly enough to see it. OPEN.
+- **#286 Path jolt, 37.803194 −122.401006** — a sidewalk path each side becomes one down the middle; the bike lurches. OPEN.
+- **#287 Overhead-line poles inside furniture** — in an F-line shelter (37.801255 −122.399280), in a toilet kiosk
+  (37.799395 −122.397532). A one-time clearance pass. OPEN.
+- **#288 Detailed cable car model** — the streetcar is detailed, the cable car is not. OPEN.
+- **#289 Pier 27 cruise terminal** — shape right, feel wrong: raised plaza with a retaining wall (CRUISE TERMINAL PLAZA
+  lettering, benches), lawn, cypresses, glass terminal with fins (owner's Street View + aerial). OPEN.
+- **#290 Fisherman's Wharf, the carnival** — the pretzel kiosk by the aquarium (red drum, scalloped glass canopy), the
+  Aquarium of the Bay's front, marinas full of boats, Pier 39's activity centre, the PIER 39 flag clusters, the ferris
+  wheel, the black storefronts round Hotel Zephyr, Burgers & Best Pies theatre sign, chocolate and candy buildings, the
+  Klamath propeller frame, the big Boudin bakery. Thousands of photos exist. OPEN (a series of its own).
+- #291 Cable car passengers "in a hot tub" — FIXED (hollow saloon, benches).
+- #292 Bench inside the Taylor Street stairs (37.790831 −122.412358) — FIXED (furniture kept off the whole flight).
