@@ -111,7 +111,7 @@ import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { facade } from '../../facade.ts'
 import { towerRing } from '../../tower.ts'
-import { edgeAt, edgeFacing, bladeSign } from '../../parts.ts'
+import { edgeAt, edgeFacing, roundRing, bladeSign } from '../../parts.ts'
 import { capPolygon } from '../../../buildings.ts'
 import type { Rgb } from '../../../models.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
@@ -144,6 +144,38 @@ function wallBand(out: MeshBuilder, ring: { x: number; z: number }[], y0: number
 }
 
 export const B11: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+  /**
+   * way/847856761 — Mile Rocks Lighthouse. Post-1966 form: a squat white cylinder with a helipad deck, NOT
+   * the original tapering tower. Ring is genuinely circular (confirmed: 9 near-equal chords sweeping ~360
+   * degrees), so this is a straight vertical drum, not a facade() case.
+   */
+  b11_mileRocksLighthouse_847856761: (out: MeshBuilder, fit: Fit): void => {
+    const ring = towerRing(fit)
+    const H = fit.height || 15
+    const white: Rgb = [0.92, 0.91, 0.88]
+    const dark: Rgb = [0.15, 0.15, 0.16]
+    const wallTag = surfaceTag('concrete')
+    const r = roundRing(ring, Math.max(fit.hx, fit.hz), 10)
+    // straight drum: same ring top and bottom, no taper
+    wallBand(out, r, 0, H, white, wallTag)
+    // the helipad deck, flush and dark, standing slightly proud
+    const deck = roundRing(ring, Math.max(fit.hx, fit.hz) * 1.05, 10)
+    wallBand(out, deck, H, H + 0.3, dark, wallTag)
+    capPolygon(out, deck, H + 0.3, dark, wallTag)
+  },
+
+  /** way/179746882 — Mithila Hotel, 972 Sutter St. Ordinary small hotel, no distinctive exterior found. */
+  b11_mithilaHotel_179746882: (out: MeshBuilder, fit: Fit): void =>
+    facade(out, fit, {
+      ground: { kind: 'shopfronts', bays: 3, storeys: 1, material: 'brick' },
+      shaft: { storeys: 3, windows: 'balanced', material: 'stucco' },
+      top: null,
+      bands: { aboveGround: 'string', belowTop: null, top: 'cornice' },
+      crown: { kind: 'parapet', height: 0.8 },
+      frame: null,
+      entrance: { at: 'centre', kind: 'door', steps: 1 },
+      material: 'stucco',
+    }),
 
   /** way/24433389 — Model Industries Building, Alcatraz. Plain concrete industrial block, big sash windows. */
   b11_modelIndustriesBuilding_24433389: (out: MeshBuilder, fit: Fit): void =>
