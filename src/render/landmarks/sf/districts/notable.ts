@@ -8924,6 +8924,43 @@ function clarkeMansion_250_Douglass(out: MeshBuilder, fit: Fit): void {
   box(out, hx * 0.15, E + 6, hz * 0.3, 0.6, 2.4, 0.6, BRICK, surfaceTag('brick'))
 }
 
+/**
+ * The Greater Farallones visitor center at Crissy Field, the old Coast Guard station (1915; Mapillary
+ * docs/shots/refs/notable/farallones): two storeys of white clapboard under a red hipped roof with a glazed watch
+ * lookout on the ridge, a red-roofed porch round the ground floor.
+ */
+function coastGuardStation_CrissyField(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.92, 0.92, 0.9], RED: Rgb = [0.5, 0.18, 0.14], DARK: Rgb = [0.15, 0.17, 0.2]
+  const CB = surfaceTag('clapboard'), TL = surfaceTag('tile'), GL = surfaceTag('glass')
+  const hx = Math.max(4, Math.min(fit.hx, 11)), hz = Math.max(4, Math.min(fit.hz, 8)), E = 6.8
+  box(out, 0, E / 2, 0, hx, E / 2, hz, WHITE, CB)
+  for (const [y0, y1] of [[0.9, 2.5], [4.0, 5.8]]) {
+    for (let u = -hx + 1.2; u < hx - 0.8; u += 2.2) for (const sd of [-1, 1]) box(out, u, (y0 + y1) / 2, sd * (hz + 0.02), 0.45, (y1 - y0) / 2, 0.04, DARK, GL)
+    for (let u = -hz + 1.2; u < hz - 0.8; u += 2.2) for (const sd of [-1, 1]) box(out, sd * (hx + 0.02), (y0 + y1) / 2, u, 0.04, (y1 - y0) / 2, 0.45, DARK, GL)
+  }
+  const q: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const hip = (Y: number, ex: number, ez: number, rise: number): void => {
+    const r = Math.abs(ex - ez), alongX = ex >= ez
+    const A: V3 = alongX ? [-r, Y + rise, 0] : [0, Y + rise, -r], B: V3 = alongX ? [r, Y + rise, 0] : [0, Y + rise, r], c = (x: number, z: number): V3 => [x, Y, z]
+    if (alongX) {
+      out.quad([c(-ex, -ez), c(ex, -ez), B, A], [0, ez, -rise], q, RED, TL); out.quad([c(ex, ez), c(-ex, ez), A, B], [0, ez, rise], q, RED, TL)
+      out.quad([c(ex, -ez), c(ex, ez), B, B], [rise, ex, 0], q, RED, TL); out.quad([c(-ex, ez), c(-ex, -ez), A, A], [-rise, ex, 0], q, RED, TL)
+    } else {
+      out.quad([c(ex, -ez), c(ex, ez), B, A], [rise, ex, 0], q, RED, TL); out.quad([c(-ex, ez), c(-ex, -ez), A, B], [-rise, ex, 0], q, RED, TL)
+      out.quad([c(-ex, -ez), c(ex, -ez), A, A], [0, ez, -rise], q, RED, TL); out.quad([c(ex, ez), c(-ex, ez), B, B], [0, ez, rise], q, RED, TL)
+    }
+  }
+  hip(E, hx + 0.5, hz + 0.5, Math.min(hx, hz) * 0.5)
+  // the watch lookout on the ridge
+  const ry = E + Math.min(hx, hz) * 0.5
+  box(out, 0, ry + 0.6, 0, 1.4, 0.9, 1.4, WHITE, CB)
+  for (const sd of [-1, 1]) { box(out, 0, ry + 0.8, sd * 1.42, 1.1, 0.45, 0.02, DARK, GL); box(out, sd * 1.42, ry + 0.8, 0, 0.02, 0.45, 1.1, DARK, GL) }
+  box(out, 0, ry + 1.6, 0, 1.7, 0.12, 1.7, RED, TL)
+  // the red-roofed porch along the long side
+  box(out, 0, 3.0, -hz - 1.3, hx * 0.8, 0.12, 1.4, RED, TL)
+  for (let x = -hx * 0.8 + 0.2; x <= hx * 0.8; x += hx * 0.4) box(out, x, 1.5, -hz - 2.6, 0.1, 1.5, 0.1, WHITE, CB)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -8976,6 +9013,7 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   lightHouse_651_Dolores,
   kearnyTopPlanters,
   clarkeMansion_250_Douglass,
+  coastGuardStation_CrissyField,
   officersQuarters: (out: MeshBuilder, fit: Fit) => officersQuarters(out, fit),
   officersQuartersNimitz: (out: MeshBuilder, fit: Fit) => officersQuarters(out, fit, true),
   gapHQ_2_Folsom,
