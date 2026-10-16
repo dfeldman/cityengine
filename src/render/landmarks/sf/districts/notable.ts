@@ -9529,7 +9529,87 @@ function gguLaw_536_Mission(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+/**
+ * The Irving Murray Scott School, 1060 Tennessee (1895; Commons "Irving Murray Scott School (San Francisco).JPG",
+ * docs/shots/refs/notable/irving-scott): a two-storey wooden Italianate schoolhouse on a low base — cream clapboard
+ * with white trim, fluted pilasters at the corners, a deep cornice on paired brackets with modillions over a frieze,
+ * a flat roof; tall double-hung windows under little hoods, one long ribbon of classroom windows per storey on the
+ * side, an open wooden stair climbing the yard face, a porch on posts at one end. Front (Tennessee) on −z.
+ */
+function irvingScottSchool_1060_Tennessee(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.8, 0.74, 0.55], TRIM: Rgb = [0.9, 0.88, 0.8], GLASS: Rgb = [0.18, 0.2, 0.22], ROOF: Rgb = [0.4, 0.39, 0.37]
+  const CB = surfaceTag('clapboard'), CN = surfaceTag('concrete'), GL = surfaceTag('glass')
+  const UVQ: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const ring = ringCCW(fit)
+  const B = 1.0, S1 = 4.6, E = B + 2 * S1                         // base, two tall storeys, the eaves at 10.2
+  ecWalls(out, ring, 0, B, [0.66, 0.62, 0.52], CN)
+  ecWalls(out, ring, B, E, CREAM, CB)
+  ecWalls(out, ecInset(ring, -0.08), E - 0.9, E, TRIM, CB)                  // the frieze
+  ecWalls(out, ecInset(ring, -0.75), E, E + 0.45, TRIM, CB)                 // the cornice
+  capPolygonWithHoles(out, [ecInset(ring, -0.75)], E + 0.45, ROOF, CN)
+  ecWalls(out, ecInset(ring, -0.02), B + S1 - 0.1, B + S1 + 0.12, TRIM, CB) // the belt between the storeys
+  let fi = 0, best = Infinity
+  ring.forEach((a, i) => { const b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z), nz = -(b.x - a.x) / (L || 1); if (L > 6 && nz * L < best) { best = nz * L; fi = i } })
+  let side = -1, sideL = 0
+  ring.forEach((a, i) => { const b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z), nz = -(b.x - a.x) / (L || 1); if (i !== fi && Math.abs(nz) < 0.4 && L > sideL) { sideL = L; side = i } })
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z)
+    if (L < 3) continue
+    const tx = (b.x - a.x) / L, tz = (b.z - a.z) / L, nx = tz, nz = -tx, h = Math.atan2(nx, nz)
+    const P = (u: number, y: number, o: number): V3 => [a.x + tx * u + nx * o, y, a.z + tz * u + nz * o]
+    const flat = (u0: number, u1: number, y0: number, y1: number, o: number, c: Rgb, tag: number): void =>
+      out.quad([P(u0, y0, o), P(u1, y0, o), P(u1, y1, o), P(u0, y1, o)], [nx, 0, nz], UVQ, c, tag)
+    const blk = (u: number, y: number, o: number, hw: number, hh: number, hd: number, c: Rgb, tag: number): void => {
+      const p = P(u, y, o); boxAlong(out, p[0], p[1], p[2], hw, hh, hd, h, c, tag)
+    }
+    // brackets in pairs under the cornice
+    for (let u = 0.8; u < L - 0.5; u += 2.2) for (const d of [-0.18, 0.18]) blk(u + d, E - 0.2, 0.35, 0.06, 0.2, 0.35, TRIM, CB)
+    // fluted corner pilasters at each end of a face
+    if (L > 6) for (const u of [0.35, L - 0.35]) {
+      blk(u, (B + E - 0.9) / 2, 0.08, 0.32, (E - 0.9 - B) / 2, 0.08, TRIM, CB)
+      for (const d of [-0.14, 0, 0.14]) flat(u + d - 0.025, u + d + 0.025, B + 0.3, E - 1.1, 0.17, [0.72, 0.7, 0.63], CB)
+    }
+    const win = (u: number, y0: number, w: number, hgt: number): void => {
+      flat(u - w / 2 - 0.1, u + w / 2 + 0.1, y0 - 0.12, y0 + hgt + 0.1, 0.03, TRIM, CB)
+      flat(u - w / 2, u + w / 2, y0, y0 + hgt, 0.05, GLASS, GL)
+      flat(u - w / 2 - 0.02, u + w / 2 + 0.02, y0 + hgt * 0.5 - 0.03, y0 + hgt * 0.5 + 0.03, 0.06, TRIM, CB)
+      blk(u, y0 + hgt + 0.22, 0.12, w / 2 + 0.2, 0.08, 0.12, TRIM, CB)                // the hood
+    }
+    if (i === side) {
+      // the classroom side: a ribbon of tall windows per storey toward one end, single windows beyond
+      for (const y0 of [B + 0.8, B + S1 + 0.6]) {
+        for (let k = 0; k < 5; k++) win(L * 0.18 + k * 1.0, y0, 0.8, 3.0)
+        for (let u = L * 0.18 + 6.5; u < L - 1.5; u += 2.6) win(u, y0 + 0.4, 0.9, 2.4)
+      }
+      // the open wooden stair up the face to a first-floor door, on posts
+      const s0 = L * 0.62, s1 = Math.min(L - 1, s0 + 6)
+      out.quad([P(s0, 0.2, 1.4), P(s1, B + S1, 1.4), P(s1, B + S1, 0.2), P(s0, 0.2, 0.2)], [0, 1, 0], UVQ, [0.72, 0.68, 0.55], CB)
+      for (const o of [0.2, 1.4]) for (const yy of [0.9]) {
+        out.quad([P(s0, 0.2 + yy, o), P(s1, B + S1 + yy, o), P(s1, B + S1 + yy + 0.06, o), P(s0, 0.2 + yy + 0.06, o)], [nx, 0, nz], UVQ, TRIM, CB)
+      }
+      blk(s1 + 0.6, B + S1, 0.7, 0.8, 0.08, 0.7, [0.72, 0.68, 0.55], CB)
+      for (const u of [s0 + 2, s0 + 4, s1]) blk(u, (B + S1) * (u - s0) / (s1 - s0) / 2, 1.4, 0.06, (B + S1) * (u - s0) / (s1 - s0) / 2, 0.06, TRIM, CB)
+      continue
+    }
+    // other faces: tall single windows, evenly spaced
+    const n = Math.max(1, Math.floor(L / 2.6)), du = L / n
+    for (let k = 0; k < n; k++) {
+      const u = (k + 0.5) * du
+      if (u < 1 || u > L - 1) continue
+      if (i === fi && Math.abs(u - L / 2) < 1.3) continue
+      for (const y0 of [B + 0.9, B + S1 + 0.7]) win(u, y0, 0.9, 2.6)
+    }
+    if (i === fi) {
+      // the entrance: a porch on four posts under a flat roof, the door behind
+      flat(L / 2 - 0.8, L / 2 + 0.8, B, B + 2.6, 0.05, [0.35, 0.3, 0.24], 0)
+      blk(L / 2, B + 3.1, 1.6, 2.4, 0.15, 1.6, TRIM, CB)
+      for (const u of [L / 2 - 2.2, L / 2 + 2.2]) for (const o of [0.4, 3.0]) blk(u, (B + 3) / 2, o, 0.1, (B + 3) / 2, 0.1, TRIM, CB)
+    }
+  }
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+  irvingScottSchool_1060_Tennessee,
   gguLaw_536_Mission,
   franklinSchool_1430_Scott,
   alcatrazBuilding64,
