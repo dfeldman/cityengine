@@ -2171,8 +2171,8 @@ function whittierMansion_2090_Jackson(out: MeshBuilder, fit: Fit): void {
 // Bohemian Club, 624 Taylor Street at Post
 // ---------------------------------------------------------------------------------------------------------------
 
-const BC_BRICK: Rgb = [0.5, 0.25, 0.185]        // the red-brown brick, a shade under #8e4a36 (it reads darker in shade, mapillary-2)
-const BC_BRICK_LT: Rgb = [0.56, 0.29, 0.21]
+const BC_BRICK: Rgb = [0.36, 0.19, 0.14]        // the red-brown brick, a shade under #8e4a36 (it reads darker in shade, mapillary-2)
+const BC_BRICK_LT: Rgb = [0.41, 0.22, 0.16]
 const BC_STONE: Rgb = [0.78, 0.74, 0.66]        // #d8cdb8 trim, weathered
 const BC_IVY_DK: Rgb = [0.27, 0.43, 0.2]        // #4f7a3a, dimmed
 const BC_IVY_MID: Rgb = [0.33, 0.5, 0.23]
@@ -3535,6 +3535,221 @@ function paigeMotorCar_1699_VanNess(out: MeshBuilder, fit: Fit): void {
   for (const idx of m.indices) out.indices.push(base + idx)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// The Olympic Club, 524 Post Street
+// ---------------------------------------------------------------------------------------------------------------
+
+const OC_WHITE: Rgb = [0.85, 0.85, 0.83]         // #ecebe6 the white stone/stucco base and trim, a shade down for sun
+const OC_WHITE_SH: Rgb = [0.72, 0.71, 0.68]      // its grooves and the shadow under the cornice
+const OC_FRONT = -1                             // the front faces local -z in the fit frame (sign of nz); the city turns -z to the manifest bearing
+// the brown brick of wiki-image (the shared BC_ red-brown rendered orange in the city), and no ivy: the photos
+// disagree on which end carries it, and the wedge it drew read worse than none (review 2026-10-15)
+const OC_BRICK: Rgb = [0.3, 0.17, 0.13]
+const OC_BRICK_LT: Rgb = [0.34, 0.2, 0.15]
+const OC_IVY = false
+const OC_PINK: Rgb = [0.68, 0.42, 0.42]          // the faded pink iron balconettes (wiki-image)
+
+/**
+ * The Olympic Club, 524 Post Street (1912): a deep six-storey plot whose Post Street front is a white rusticated two-storey
+ * base with a four-column portico (the columns in two pairs) and a balustraded ledge over it; above that, red-brown brick
+ * with a row of tall ROUND-ARCHED windows on the third floor (cartouches between them), two rows of paired rectangular
+ * windows (pink iron balconettes at the west end), a shorter top row, and a deep white modillioned cornice; flags on poles
+ * over the entrance; ivy mantling the east end of the base (mapillary-2/-3).
+ *
+ * Photographs: docs/shots/refs/notable/olympic-club/ wiki-image.jpg (the key reference: the whole front along Post),
+ * mapillary-0 (base/brick junction, arches, balustrade, portico), -1 (the west end: plain white base, lamp post, balconette),
+ * -2 and -3 (the ivy). A delivery truck in -0 and -2 is ignored.
+ *
+ * Orientation: the manifest says front 171 (measured, Post Street), so the Post front is the ring's edges whose outward
+ * normal faces local -z (the fit frame, as bohemianClub_624_Taylor does); there are two (a long one and a short one at a
+ * slight angle). Edges are found from the ring's geometry, never OSM's vertex order. Every other edge is a party wall.
+ *
+ * Where the photographs overruled the numbers: the brief says the TOP windows are arched, but in wiki-image the arches are on
+ * the floor just above the base and the top storey is rectangular pairs under the cornice; the Assessor's five storeys and
+ * OSM's six agree with the photographs only if the base counts as two (it does: two window rows in white stone).
+ */
+function olympicClub_524_Post(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const BK = surfaceTag('brick')
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  const n = ring.length
+  const TOP = 27, ROOF = 26.6
+  const Y_BASE = 9.5, Y_LEDGE = 10.4, Y_CORN = 24.8
+  const rnd = (i: number): number => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x) }
+
+  const info = ring.map((a, i) => {
+    const b = ring[(i + 1) % n], l = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    return { i, a, b, l, nx: (b.z - a.z) / l, nz: -(b.x - a.x) / l }
+  })
+  let main = 0
+  main = info.reduce((bi, e) => (OC_FRONT * e.nz > 0.8 && (OC_FRONT * info[bi].nz <= 0.8 || e.l > info[bi].l) ? e.i : bi), 0)
+
+  for (const e of info) {
+    const { a, b, l, nx, nz } = e
+    if (l < 0.5) continue
+    const tx = (b.x - a.x) / l, tz = (b.z - a.z) / l
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const panel = (u0: number, u1: number, y0: number, y1: number, pr: number, c: Rgb, tag: number): void => {
+      m.quad([P(u0, y0, pr), P(u1, y0, pr), P(u1, y1, pr), P(u0, y1, pr)], [nx, 0, nz], uv, c, tag)
+    }
+    const h = Math.atan2(nx, nz)
+    const cx = a.x + tx * l / 2, cz = a.z + tz * l / 2
+    const front = OC_FRONT * nz > 0.8 && l > 2.5
+    panel(0, l, -3, TOP, 0, OC_BRICK, BK)
+    for (let y = 1.2; y < Y_CORN; y += 1.2) panel(0, l, y, y + 0.05, 0.015, OC_BRICK_LT, BK)       // brick courses
+    if (!front) {                                                                                   // a party wall: plain brick, a stone cap
+      boxAlong(m, cx + nx * 0.3, 26.5, cz + nz * 0.3, l / 2 + 0.2, 0.5, 0.3, h, OC_WHITE, BK)
+      continue
+    }
+
+    // ---- the white rusticated base, two storeys
+    panel(0, l, -3, Y_BASE, 0.08, OC_WHITE, ST)
+    for (let y = 1.1; y < Y_BASE - 0.3; y += 1.1) panel(0, l, y, y + 0.07, 0.1, OC_WHITE_SH, ST)  // the rustication grooves
+    panel(0, l, Y_BASE - 0.5, Y_BASE + 0.05, 0.3, OC_WHITE, ST)                                    // string course
+    boxAlong(m, cx + nx * 0.45, Y_BASE + 0.25, cz + nz * 0.45, l / 2 + 0.05, 0.28, 0.45, h, OC_WHITE, ST) // the ledge
+    // the balustrade: a white rail, dark gaps between the balusters, a coping
+    boxAlong(m, cx + nx * 0.4, Y_LEDGE + 0.9, cz + nz * 0.4, l / 2 + 0.05, 0.07, 0.17, h, OC_WHITE, ST)
+    panel(0, l, Y_LEDGE, Y_LEDGE + 0.85, 0.5, OC_WHITE, ST)
+    for (let u = 0.25; u < l - 0.1; u += 0.5) panel(u, u + 0.22, Y_LEDGE + 0.1, Y_LEDGE + 0.8, 0.52, OC_WHITE_SH, ST)
+
+    // ---- bays: nine on the long front, the short one gets what fits
+    const k = Math.max(1, Math.floor((l - 2) / 3.6))
+    const bay = (j: number): number => 1 + ((l - 2) * (j + 0.5)) / k
+    const isMain = e.i === main
+    let porticoBay = -1
+    if (isMain) {
+      let best = 1e9
+      for (let j = 0; j < k; j++) { const d = Math.abs(bay(j) - l * 0.66); if (d < best) { best = d; porticoBay = j } }
+    }
+    const win = (u: number, y0: number, y1: number, hw: number, arch: boolean, pair: boolean): void => {
+      const c0x = a.x + tx * u, c0z = a.z + tz * u
+      const rise = arch ? hw : 0
+      emOpening(m, c0x, c0z, tx, tz, nx, nz, y0 - 0.15, y1 - rise + 0.15, hw + 0.25, rise > 0 ? rise + 0.25 : 0, OC_WHITE, ST, 0.1, 8)
+      emOpening(m, c0x, c0z, tx, tz, nx, nz, y0, y1 - rise, hw, rise, BC_GLASS, GL, 0.16, 8)
+      emOpening(m, c0x, c0z, tx, tz, nx, nz, y0, y1 - rise, 0.05, rise, OC_WHITE, ST, 0.2, 2)       // the mullion
+      if (!arch) {
+        const yt = y0 + (y1 - y0) * 0.72
+        emOpening(m, c0x, c0z, tx, tz, nx, nz, yt, yt + 0.08, hw, 0, OC_WHITE, ST, 0.2)
+        emOpening(m, c0x, c0z, tx, tz, nx, nz, y0 - 0.32, y0 - 0.12, hw + 0.35, 0, OC_WHITE, ST, 0.3)  // the sill
+      } else {
+        const yt = y0 + (y1 - rise - y0) * 0.78
+        emOpening(m, c0x, c0z, tx, tz, nx, nz, yt, yt + 0.08, hw, 0, OC_WHITE, ST, 0.2)
+      }
+      void pair
+    }
+    for (let j = 0; j < k; j++) {
+      const u = bay(j)
+      const atPortico = j === porticoBay
+      // base: a low window and a tall one per bay (the portico bay and the west door excepted)
+      if (!atPortico) {
+        if (!(isMain && j === 0)) win(u, 2.0, 4.1, 0.6, false, false)
+        win(u, 5.6, 8.0, 0.65, false, false)
+      }
+      // third floor: tall round-arched windows, a carved cartouche between them
+      win(u, 10.7, 14.2, 0.95, true, false)
+      if (j < k - 1) panel(bay(j) + (bay(j + 1) - bay(j)) / 2 - 0.3, bay(j) + (bay(j + 1) - bay(j)) / 2 + 0.3, 14.3, 15.3, 0.14, OC_WHITE, ST)
+      // fourth and fifth floors: paired rectangular windows, then the shorter top row under the cornice
+      for (const du of [-0.62, 0.62]) {
+        win(u + du, 14.9, 17.1, 0.4, false, false)
+        win(u + du, 18.4, 20.6, 0.4, false, false)
+        win(u + du, 21.8, 23.9, 0.36, false, false)
+      }
+      panel(u - 1.05, u + 1.05, 20.9, 21.15, 0.12, OC_WHITE, ST)                                  // stone string between floors
+    }
+    if (isMain) {                                                                                   // the west door of the base and the balconettes
+      const u0 = bay(0)
+      emOpening(m, a.x + tx * u0, a.z + tz * u0, tx, tz, nx, nz, 0, 3.2, 1.1, 0, BC_DOOR, GL, 0.14)
+      emOpening(m, a.x + tx * u0, a.z + tz * u0, tx, tz, nx, nz, 3.2, 3.5, 1.25, 0, OC_WHITE, ST, 0.16)
+      for (const [by, bu] of [[14.0, bay(0) - 0.62], [17.6, bay(0) - 0.62]] as [number, number][]) {
+        boxAlong(m, a.x + tx * bu + nx * 0.5, by, a.z + tz * bu + nz * 0.5, 0.75, 0.35, 0.45, h, OC_PINK, ST)
+      }
+    }
+
+    // ---- the white cornice: frieze, modillion row, deep crown, parapet
+    panel(0, l, Y_CORN - 0.2, Y_CORN + 0.9, 0.12, OC_WHITE, ST)
+    boxAlong(m, cx + nx * 0.5, Y_CORN + 0.55, cz + nz * 0.5, l / 2 + 0.2, 0.3, 0.5, h, OC_WHITE_SH, ST)
+    for (let u = 0.5; u < l - 0.3; u += 0.9) {
+      boxAlong(m, a.x + tx * u + nx * 0.55, Y_CORN + 0.95, a.z + tz * u + nz * 0.55, 0.17, 0.2, 0.3, h, OC_WHITE, ST)
+    }
+    boxAlong(m, cx + nx * 0.75, Y_CORN + 1.65, cz + nz * 0.75, l / 2 + 0.4, 0.4, 0.75, h, OC_WHITE, ST)
+    boxAlong(m, cx + nx * 0.3, TOP - 0.3, cz + nz * 0.3, l / 2 + 0.2, 0.3, 0.3, h, OC_WHITE, ST)
+
+    // ---- the portico: four columns in two pairs, an entablature, side walls, the door, a flight of steps
+    if (isMain) {
+      const u0 = bay(porticoBay)
+      const px = a.x + tx * u0, pz = a.z + tz * u0
+      const D = 2.4
+      for (const du of [-2.15, -1.05, 1.05, 2.15]) {
+        classicalColumn(m, px + tx * du + nx * (D - 0.5), pz + tz * du + nz * (D - 0.5), 0.2, Y_BASE - 0.7, 0.42, OC_WHITE, { order: 'tuscan' })
+      }
+      boxAlong(m, px + nx * (D / 2 + 0.1), Y_BASE - 0.4, pz + nz * (D / 2 + 0.1), 3.3, 0.3, D / 2 + 0.1, h, OC_WHITE, ST)   // the entablature
+      for (const s of [-1, 1]) boxAlong(m, px + tx * s * 3.0 + nx * (D / 2), 4.3, pz + tz * s * 3.0 + nz * (D / 2), 0.35, 4.3, D / 2, h, OC_WHITE, ST)
+      emOpening(m, px, pz, tx, tz, nx, nz, 0.2, 4.4, 1.15, 0, BC_DOOR, GL, 0.3)
+      emOpening(m, px, pz, tx, tz, nx, nz, 4.4, 5.2, 1.5, 0, OC_WHITE_SH, ST, 0.28)
+      boxAlong(m, px + nx * (D + 0.3), 0.1, pz + nz * (D + 0.3), 3.2, 0.1, 0.5, h, OC_WHITE, ST)
+      boxAlong(m, px + nx * (D + 0.8), 0.04, pz + nz * (D + 0.8), 3.2, 0.04, 0.4, h, OC_WHITE, ST)
+      // two flags on poles raked out from the fourth floor over the entrance (the stars-and-stripes and the club's own)
+      const flags: [number, number, Rgb, boolean][] = [[-1.2, 0.6, [0.78, 0.13, 0.15], true], [1.9, -0.4, [0.92, 0.9, 0.9], false]]
+      for (const [fu, dir, col, usa] of flags) {
+        const bx = px + tx * fu + nx * 0.6, bz = pz + tz * fu + nz * 0.6
+        const ex = bx + (tx * dir * 1.2 + nx * 2.3), ez = bz + (tz * dir * 1.2 + nz * 2.3), by = 15.4, ey = 17.6
+        for (const w of [[0.03, 0], [0, 0.03]]) {
+          m.quad([[bx - w[0], by, bz - w[1]], [bx + w[0], by, bz + w[1]], [ex + w[0], ey, ez + w[1]], [ex - w[0], ey, ez - w[1]]],
+            [0, 1, 0], uv, [0.8, 0.8, 0.8], ST)
+        }
+        const ux = (ex - bx), uz = (ez - bz), ul = Math.hypot(ux, uz) || 1
+        const fx = ux / ul, fz = uz / ul
+        const mx = bx + ux * 0.45, mz = bz + uz * 0.45
+        const FQ: V3[] = [[mx, by + 1.7, mz], [mx + fx * 2.4 + tx * dir * 0.4, by + 0.9, mz + fz * 2.4 + tz * dir * 0.4],
+          [mx + fx * 2.3 + tx * dir * 0.4, by - 0.2, mz + fz * 2.3 + tz * dir * 0.4], [mx, by + 0.4, mz]]
+        const fn: V3 = [fz, 0, -fx]
+        m.quad(FQ, fn, uv, col, ST)
+        m.quad([FQ[1], FQ[0], FQ[3], FQ[2]], [-fn[0], 0, -fn[2]], uv, col, ST)
+        if (usa) m.quad([FQ[0], [mx + fx * 0.9, by + 1.5, mz + fz * 0.9], [mx + fx * 0.9, by + 0.6, mz + fz * 0.9], FQ[3]], fn, uv, [0.15, 0.2, 0.5], ST)
+      }
+    }
+
+    // ---- ivy on the east (right) end of the front: ragged patches climbing the base, thicker at the corner
+    const topAt = (u: number, layer: number): number => {
+      const ph = e.i * 5 + layer * 4.1
+      let hgt = 8.5 + Math.sin(u * 0.9 + ph) * 3.2 + Math.sin(u * 2.3 + ph * 2) * 1.6
+      if (layer === 1) hgt = hgt * 0.65 - 0.5
+      return hgt
+    }
+    const ivyFrom = isMain ? l - 7 : 0, cell = 0.45
+    if (!isMain && l < 6) { /* the short front stays plain */ } else if (isMain && OC_IVY) {
+      for (let layer = 0; layer < 2; layer++) {
+        for (let u0 = ivyFrom; u0 + cell <= l + 1e-6; u0 += cell) {
+          const lean = Math.min(1, (u0 - ivyFrom) / 1.2)                                            // thin at the west edge of the patch
+          const h0 = (topAt(u0, layer) + (rnd(u0 * 9 + layer) - 0.5) * 0.6) * lean
+          const h1 = (topAt(u0 + cell, layer) + (rnd((u0 + cell) * 9 + layer) - 0.5) * 0.6) * Math.min(1, (u0 + cell - ivyFrom) / 1.2)
+          if (h0 < 0.8 && h1 < 0.8) continue
+          const sh = 0.7 + rnd(u0 * 7 + layer) * 0.3
+          const base = layer === 0 ? (rnd(u0) < 0.6 ? BC_IVY_DK : BC_IVY_MID) : (rnd(u0) < 0.35 ? BC_IVY_LT : BC_IVY_MID)
+          const col: Rgb = [base[0] * sh, base[1] * sh, base[2] * sh]
+          const pr = 0.2 + layer * 0.05
+          m.quad([P(u0, -0.2, pr), P(u0 + cell, -0.2, pr), P(u0 + cell, Math.max(h1, 0.3), pr), P(u0, Math.max(h0, 0.3), pr)], [nx, 0, nz], uv, col, ST)
+        }
+      }
+    }
+  }
+
+  capPolygonWithHoles(m, [ring], ROOF, BC_ROOF, surfaceTag('concrete'))
+
+  for (let i = 0; i < m.positions.length; i++) out.positions.push(m.positions[i])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -3544,6 +3759,7 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   pacificExchange_301_Pine,
   whittierMansion_2090_Jackson,
   bohemianClub_624_Taylor,
+  olympicClub_524_Post,
   audiffredBuilding_100_Embarcadero,
   alhambraTheatre_2330_Polk,
   ywcaResidence_940_Powell,
