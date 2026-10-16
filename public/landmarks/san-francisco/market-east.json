@@ -490,7 +490,8 @@
   "name": "Oceanwide Center site",
   "restyle": "skyscraper",
   "levels": 7,
-  "note": "OSM carries a 160 m building:part on the stalled Oceanwide Center site at First and Market; nothing of that tower was built, so this keeps it to the seven storeys of the outline (way/159280395)."
+  "height": 24,
+  "note": "2026-10-16: `levels` alone never overrode the part's tagged 160 m, so a phantom tower stood here; height set. OSM carries a 160 m building:part on the stalled Oceanwide Center site at First and Market; nothing of that tower was built, so this keeps it to the seven storeys of the outline (way/159280395)."
  },
   {"osm": ["way/1258748458"], "name": "Shell Building (100 Bush), tower", "procedural": "shellBuildingTower", "height": 115.22, "note": "shell-building.ts: Kelham 1929 Art Deco, buff terracotta piers, stepped top, fluted crown (Wikipedia/Commons, 2026-10-04); was the bake's chicago."},
   {"osm": ["way/1258748457"], "name": "Shell Building (100 Bush), Battery Street wing", "procedural": "shellBuildingWing", "height": 40, "note": "shell-building.ts: the ten-storey wing in the same terracotta (#313's 'granite pier and brass doorway')."}
