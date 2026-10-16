@@ -191,8 +191,6 @@ export const BUILDINGS_OK: string[] = [
   'montgomeryWashingtonTower', 'goldenGateTheatre', 'warMemorialOperaHouse', 'warMemorialVeterans',
   'hamiltonSquareBaptistChurch', 'goldenGateValleyLibrary', 'stockExchangeTower', 'martinLutherTower',
   'mcallisterTower', 'chaseCenter', 'oneHundredFirstPlaza', 'h4_oneMarketPlaza', 'h4_unionSquarePlazaHotel',
-  // a BUILDING named after Harvey Milk (Treasure Island's Job Corps administration building), not a memorial
-  'h3_harveyMilkMemorial_34313513',
   // it is a pyramid and it is 260 m of offices
   'transamericaPyramid',
   // way/1458363734, building=pagoda: a real freestanding building, not a park pavilion
