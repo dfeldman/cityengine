@@ -4925,6 +4925,173 @@ function archCrownOffice_King_149167950(out: MeshBuilder, fit: Fit): void {
   for (const idx of m.indices) out.indices.push(base + idx)
 }
 
+const SP_BRICK: Rgb = [0.36, 0.16, 0.13]        // #8b3b2f coded ~30 % down: brick renders orange in the city
+const SP_BRICK_DK: Rgb = [0.27, 0.115, 0.095]   // the reveals: deep shadow inside the recesses
+const SP_DARK: Rgb = [0.145, 0.16, 0.176]       // #25292d frames, top storey, roof
+const SP_ROOF: Rgb = [0.06, 0.065, 0.075]       // the dark sloping roof edge
+const SP_GLASS: Rgb = [0.25, 0.31, 0.37]        // window panes (#4c5a64, darker in the recess)
+const SP_GLASS_GR: Rgb = [0.34, 0.45, 0.47]     // the pale teal ground-floor glazing
+
+/**
+ * 510 Townsend (Stripe HQ, 2019; OSM way/496374691, seven levels): six storeys of red brick, about 24 m, in a deep grid of
+ * tall windows set 0.55 m behind proud brick piers; a glazed ground floor between the piers with a dark canopy at the
+ * entrance; and a seventh storey of dark glass stepped back ~3 m, under a dark roof slab that overhangs the glass and
+ * slopes up to a flat top near 30 m. Photographs: docs/shots/refs/notable/w496374691/way-496374691-02 and -03 (the whole
+ * block from Townsend: brick grid, dark top, sloping roof edge), mapillary-0 (brick and deep windows up close),
+ * mapillary-2 (the glazed ground floor). The 2010 LiDAR measured the demolished buildings and is ignored.
+ *
+ * Orientation: manifest front 135 (Townsend), the fit's front is local -z; the dark entrance canopy goes on the longest
+ * ring edge facing -z. The window grid is the same on every side.
+ */
+function stripeHQ_510_Townsend(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const BK = surfaceTag('brick')
+  const MT = surfaceTag('metal')
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  const signedArea = (r: P2[]): number => {
+    let a = 0
+    for (let i = 0; i < r.length; i++) { const p = r[i], q = r[(i + 1) % r.length]; a += p.x * q.z - q.x * p.z }
+    return a
+  }
+  if (signedArea(ring) < 0) ring.reverse()
+  const edgesOf = (r: P2[]) => r.map((a, i) => {
+    const b = r[(i + 1) % r.length], l = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    return { i, a, b, l, nx: (b.z - a.z) / l, nz: -(b.x - a.x) / l }
+  })
+  /** inward mitre offset by d (negative grows the ring) */
+  const inset = (r: P2[], d: number): P2[] => {
+    const e = edgesOf(r), n = r.length
+    return r.map((p, i) => {
+      const e0 = e[(i + n - 1) % n], e1 = e[i]
+      const k = 1 + e0.nx * e1.nx + e0.nz * e1.nz
+      return { x: p.x - ((e0.nx + e1.nx) / k) * d, z: p.z - ((e0.nz + e1.nz) / k) * d }
+    })
+  }
+  // the top storey's plan: the outline with its small jogs ironed out
+  let simple = ring.slice()
+  for (;;) {
+    const e = edgesOf(simple)
+    let k = -1, best = 6
+    for (let i = 0; i < e.length; i++) if (e[i].l < best) { best = e[i].l; k = i }
+    if (k < 0 || simple.length <= 4) break
+    simple.splice((k + 1) % simple.length, 1)
+  }
+  const info = edgesOf(ring)
+  const fronts = info.filter((e) => e.l > 12 && e.nz < -0.85)
+  const front = fronts.length ? fronts.reduce((p, c) => (c.l > p.l ? c : p)) : info.reduce((p, c) => (c.nz < p.nz ? c : p))
+
+  const Y1 = 4.6, FL = 3.9, NF = 5, YT = Y1 + FL * NF          // ground floor, five brick floors, top storey base 24.1
+  const YG = YT + 4.0, YR = YT + 6.0                            // glass top, roof high point
+  const RECESS = 0.55
+
+  const qd = (pts: V3[], nrm: V3, c: Rgb, tag: number): void => {
+    const e1: V3 = [pts[1][0] - pts[0][0], pts[1][1] - pts[0][1], pts[1][2] - pts[0][2]]
+    const e2: V3 = [pts[3][0] - pts[0][0], pts[3][1] - pts[0][1], pts[3][2] - pts[0][2]]
+    const cx = e1[1] * e2[2] - e1[2] * e2[1], cy = e1[2] * e2[0] - e1[0] * e2[2], cz = e1[0] * e2[1] - e1[1] * e2[0]
+    const ok = cx * nrm[0] + cy * nrm[1] + cz * nrm[2] < 0
+    m.quad(ok ? pts : [pts[0], pts[3], pts[2], pts[1]], nrm, uv, c, tag)
+  }
+
+  for (const e of info) {
+    const { a, b, l, nx, nz } = e
+    if (l < 0.4) continue
+    const tx = (b.x - a.x) / l, tz = (b.z - a.z) / l
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const face = (u0: number, u1: number, ya: number, yb: number, pr: number, c: Rgb, tag: number): void =>
+      qd([P(u0, ya, pr), P(u1, ya, pr), P(u1, yb, pr), P(u0, yb, pr)], [nx, 0, nz], c, tag)
+    // a quad running into the wall (a reveal): from the face at u0..u1/ya..yb to pr = -RECESS
+    const sideL = (u: number, ya: number, yb: number, c: Rgb): void =>
+      qd([P(u, ya, 0), P(u, ya, -RECESS), P(u, yb, -RECESS), P(u, yb, 0)], [tx, 0, tz], c, BK)
+    const sideR = (u: number, ya: number, yb: number, c: Rgb): void =>
+      qd([P(u, ya, 0), P(u, ya, -RECESS), P(u, yb, -RECESS), P(u, yb, 0)], [-tx, 0, -tz], c, BK)
+    const head = (u0: number, u1: number, y: number, c: Rgb): void =>
+      qd([P(u0, y, 0), P(u1, y, 0), P(u1, y, -RECESS), P(u0, y, -RECESS)], [0, -1, 0], c, BK)
+    const sill = (u0: number, u1: number, y: number, c: Rgb): void =>
+      qd([P(u0, y, 0), P(u1, y, 0), P(u1, y, -RECESS), P(u0, y, -RECESS)], [0, 1, 0], c, BK)
+
+    // the brick wall as a whole, from below the street up to the top storey
+    if (l < 3.4) { face(0, l, -3, YT, 0, SP_BRICK, BK); continue }
+    const kb = Math.max(1, Math.round(l / 5.0)), w = l / kb
+    const pw = w * 0.22                                       // pier width
+    const isFront = e === info[front.i]
+    for (let j = 0; j < kb; j++) {
+      const ua = w * j + (j === 0 ? 0 : pw / 2), ub = w * (j + 1) - (j === kb - 1 ? 0 : pw / 2)   // the opening between piers
+      const ua2 = j === 0 ? pw / 2 : ua, ub2 = j === kb - 1 ? l - pw / 2 : ub
+      // pier (left side of the bay)
+      if (j === 0) face(0, ua2, -3, YT, 0, SP_BRICK, BK)
+      face(ub2, j === kb - 1 ? l : ub2 + pw, -3, YT, 0, SP_BRICK, BK)
+      // ground floor: pale glazing behind the piers, dark band over it
+      sideL(ua2, 0, Y1 - 0.5, SP_BRICK_DK); sideR(ub2, 0, Y1 - 0.5, SP_BRICK_DK)
+      face(ua2, ub2, 0.15, Y1 - 0.5, -RECESS, SP_GLASS_GR, GL)
+      face(ua2, ub2, 0, 0.15, -RECESS, SP_DARK, MT)
+      face(ua2, ub2, Y1 - 0.5, Y1 + 0.9, 0, SP_BRICK, BK)       // brick lintel band over the ground floor
+      head(ua2, ub2, Y1 - 0.5, SP_BRICK_DK)
+      for (let r = 0; r < NF; r++) {
+        const f = Y1 + FL * r, ya = f + 0.9, yb = f + 3.4
+        sideL(ua2, ya, yb, SP_BRICK_DK); sideR(ub2, ya, yb, SP_BRICK_DK)
+        head(ua2, ub2, yb, SP_BRICK_DK); sill(ua2, ub2, ya, SP_BRICK_DK)
+        face(ua2, ub2, ya, yb, -RECESS, SP_GLASS, GL)
+        const um = (ua2 + ub2) / 2
+        face(um - 0.05, um + 0.05, ya, yb, -RECESS + 0.04, SP_DARK, MT)       // the central mullion
+        if (r < NF - 1) face(ua2, ub2, yb, f + FL + 0.9, 0, SP_BRICK, BK)   // spandrel up to the next sill
+      }
+      face(ua2, ub2, Y1 + FL * (NF - 1) + 3.4, YT, 0, SP_BRICK, BK)           // top spandrel up to the parapet
+    }
+    // the entrance on the Townsend front: a dark canopy over the ground floor, centred on the long edge
+    if (isFront) {
+      const uc = l * 0.55
+      boxAlong(m, a.x + tx * uc + nx * 1.1, Y1 - 0.2, a.z + tz * uc + nz * 1.1, 4.2, 0.18, 1.2, Math.atan2(nx, nz), SP_DARK, MT)
+      face(uc - 3.5, uc + 3.5, 0.2, Y1 - 0.5, -RECESS + 0.02, [0.06, 0.07, 0.08], GL)
+    }
+  }
+  // brick parapet cap: the terrace round the top storey
+  const ring2 = inset(simple, 3.0)
+  capPolygonWithHoles(m, [ring, ring2], YT, [0.16, 0.17, 0.18], BK)
+
+  // the seventh storey: dark glass between thin frames, set back
+  const info2 = edgesOf(ring2)
+  for (const e of info2) {
+    const { a, b, l, nx, nz } = e
+    if (l < 0.5) continue
+    const tx = (b.x - a.x) / l, tz = (b.z - a.z) / l
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const face = (u0: number, u1: number, ya: number, yb: number, pr: number, c: Rgb, tag: number): void =>
+      qd([P(u0, ya, pr), P(u1, ya, pr), P(u1, yb, pr), P(u0, yb, pr)], [nx, 0, nz], c, tag)
+    face(0, l, YT, YG, 0, [0.13, 0.17, 0.21], GL)
+    const k = Math.max(2, Math.round(l / 2.4))
+    for (let j = 0; j <= k; j++) {
+      const u = (l * j) / k
+      face(Math.max(0, u - 0.07), Math.min(l, u + 0.07), YT, YG, 0.05, SP_DARK, MT)
+    }
+    face(0, l, YT + 1.9, YT + 2.0, 0.05, SP_DARK, MT)
+  }
+  // the dark roof: a vertical fascia overhanging the glass, then a slope rising to the flat top
+  const ringO = inset(ring2, -0.7), ring3 = inset(ring2, 3.2)
+  const eO = edgesOf(ringO)
+  const n2 = ring2.length
+  for (let i = 0; i < n2; i++) {
+    const a = ringO[i], b = ringO[(i + 1) % n2], a3 = ring3[i], b3 = ring3[(i + 1) % n2]
+    const { nx, nz } = eO[i]
+    qd([[a.x, YG - 0.3, a.z], [b.x, YG - 0.3, b.z], [b.x, YG + 0.4, b.z], [a.x, YG + 0.4, a.z]], [nx, 0, nz], SP_ROOF, MT)
+    const sl = Math.hypot(YR - YG - 0.4, 3.9) || 1
+    const sn: V3 = [nx * (YR - YG - 0.4) / sl, 3.9 / sl, nz * (YR - YG - 0.4) / sl]
+    qd([[a.x, YG + 0.4, a.z], [b.x, YG + 0.4, b.z], [b3.x, YR, b3.z], [a3.x, YR, a3.z]], sn, SP_ROOF, MT)
+    // underside of the overhang
+    qd([[a.x, YG - 0.3, a.z], [b.x, YG - 0.3, b.z], [ring2[(i + 1) % n2].x, YG - 0.3, ring2[(i + 1) % n2].z], [ring2[i].x, YG - 0.3, ring2[i].z]], [0, -1, 0], SP_ROOF, MT)
+  }
+  capPolygonWithHoles(m, [ring3], YR, SP_ROOF, MT)
+
+  for (let i = 0; i < m.positions.length; i++) out.positions.push(m.positions[i])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -4947,4 +5114,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   zyngaHQ_650_Townsend,
   thePacific_2121_Webster,
   archCrownOffice_King_149167950,
+  stripeHQ_510_Townsend,
 }
