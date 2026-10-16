@@ -6426,6 +6426,235 @@ function planningBuilding_1650_Mission(out: MeshBuilder, fit: Fit): void {
   for (const idx of m.indices) out.indices.push(base + idx)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// Hotel Metropolis (Found Study), 2-16 Turk Street at Mason
+// ---------------------------------------------------------------------------------------------------------------
+
+const HM_WALL: Rgb = [0.72, 0.67, 0.56]       // cream, less saturated (rendered yellow in the city)
+const HM_STONE: Rgb = [0.78, 0.74, 0.65]
+const HM_TRIM: Rgb = [0.88, 0.83, 0.7]
+const HM_GROOVE: Rgb = [0.74, 0.69, 0.56]
+const HM_CORN: Rgb = [0.149, 0.188, 0.169]
+const HM_CORN2: Rgb = [0.12, 0.18, 0.15]
+const HM_BASE: Rgb = [0.165, 0.169, 0.176]
+const HM_NAVY: Rgb = [0.12, 0.15, 0.23]
+const HM_GLASS: Rgb = [0.2, 0.25, 0.3]
+const HM_SHOP: Rgb = [0.3, 0.38, 0.4]
+const HM_IRON: Rgb = [0.04, 0.04, 0.045]
+const HM_ORANGE: Rgb = [0.78, 0.26, 0.1]
+
+/**
+ * Former Hotel Metropolis (now Found Study), 2-16 Turk Street at Mason (1911, ten storeys). Own geometry from
+ * docs/shots/refs/notable/metropolis (mapillary-0/1/2, way-260127277-01..03), on the OSM plan from `fit.ring`, Turk
+ * (south) the front on local -z and Mason (east) on +x:
+ * - a dark storefront storey (glazed, a small canopy, orange piers at the corner), two rusticated lighter storeys over
+ *   it and a belt course, then a five-floor cream shaft of paired sash windows with light surrounds and a few shallow
+ *   bays stacked up the Turk front, a top storey of small windows between pilasters;
+ * - the green-black cornice: a coved soffit flaring 1.6 m out from the wall, a fascia, and a hipped sloping cap;
+ * - a black iron fire escape zig-zagging up the north end of the Mason face; the rear (north) wall painted dark navy
+ *   with sparse small windows (mapillary-0); the west party wall plain; a small stair penthouse behind the cornice.
+ */
+function hotelMetropolis_2_Turk(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const ST = surfaceTag('stucco'), AS = surfaceTag('ashlar'), MT = surfaceTag('metal'), GL = surfaceTag('glass')
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  // iron out the plan's small jogs
+  for (let k = 0; k < 30 && ring.length > 4; k++) {
+    let j = -1
+    for (let i = 0; i < ring.length; i++) {
+      const a = ring[i], b = ring[(i + 1) % ring.length]
+      if (Math.hypot(b.x - a.x, b.z - a.z) < 1.8) { j = i; break }
+    }
+    if (j < 0) break
+    ring.splice((j + 1) % ring.length, 1)
+  }
+  const n = ring.length
+  const Y0 = -3, YB = 4.8, YR = 11.7, YS = 12.2, FS = 3.2, YT = 28.2, YC = 30.6, YF = 32.2, YFT = 33.4, YTOP = 35.0
+  const info = ring.map((a, i) => {
+    const b = ring[(i + 1) % n], l = Math.hypot(b.x - a.x, b.z - a.z) || 1e-6
+    return { a, b, l, tx: (b.x - a.x) / l, tz: (b.z - a.z) / l, nx: (b.z - a.z) / l, nz: -(b.x - a.x) / l }
+  })
+  const vo = ring.map((_, k) => {
+    const e0 = info[(k + n - 1) % n], e1 = info[k]
+    const kk = Math.max(0.35, 1 + e0.nx * e1.nx + e0.nz * e1.nz)
+    return { x: (e0.nx + e1.nx) / kk, z: (e0.nz + e1.nz) / kk }
+  })
+  const hash = (a: number, b: number): number => { const v = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453; return v - Math.floor(v) }
+
+  for (let ei = 0; ei < n; ei++) {
+    const { a, b, l, tx, tz, nx, nz } = info[ei]
+    const h = Math.atan2(nx, nz)
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const panel = (u0: number, u1: number, y0: number, y1: number, pr: number, c: Rgb, tag: number): void => {
+      if (u1 - u0 < 0.01) return
+      m.quad([P(u0, y0, pr), P(u1, y0, pr), P(u1, y1, pr), P(u0, y1, pr)], [nx, 0, nz], uv, c, tag)
+    }
+    const slab = (u0: number, u1: number, y0: number, y1: number, pr0: number, pr1: number, c: Rgb, tag = ST): void => {
+      boxAlong(m, a.x + tx * (u0 + u1) / 2 + nx * (pr0 + pr1) / 2, (y0 + y1) / 2, a.z + tz * (u0 + u1) / 2 + nz * (pr0 + pr1) / 2,
+        (u1 - u0) / 2, (y1 - y0) / 2, (pr1 - pr0) / 2, h, c, tag)
+    }
+    const front = l > 10 && nz < -0.7, mason = l > 10 && nx > 0.7, rear = l > 10 && nz > 0.7
+    const street = front || mason
+    // the A/B points of the cornice, mitred at the vertices
+    const va = vo[ei], vb = vo[(ei + 1) % n]
+    const A = (y: number, off: number): V3 => [a.x + va.x * off, y, a.z + va.z * off]
+    const B = (y: number, off: number): V3 => [b.x + vb.x * off, y, b.z + vb.z * off]
+
+    // ---- walls ----
+    if (l < 0.5) continue
+    panel(0, l, Y0, YC, 0, rear ? HM_NAVY : HM_WALL, ST)
+    // ---- the cornice ----
+    {
+      const ns = nx * 0.72, nzs = nz * 0.72
+      m.quad([A(YC, 0), B(YC, 0), B(YF, 1.6), A(YF, 1.6)], [ns, -0.69, nzs], uv, HM_CORN, ST)
+      m.quad([A(YF, 1.6), B(YF, 1.6), B(YFT, 1.6), A(YFT, 1.6)], [nx, 0, nz], uv, HM_CORN, ST)
+      m.quad([A(YFT, 1.6), B(YFT, 1.6), B(YTOP, -1.4), A(YTOP, -1.4)], [nx * 0.6, 0.8, nz * 0.6], uv, HM_CORN2, ST)
+      // the lighter drip band under the fascia and a scalloped tile edge
+      if (l > 2) {
+        for (let u = 0.4; u < l - 0.3; u += 0.9) {
+          const t0 = u / l, t1 = Math.min(1, (u + 0.55) / l)
+          const q = (t: number, y: number, off: number): V3 => {
+            const p = A(y, off), r = B(y, off)
+            return [p[0] + (r[0] - p[0]) * t, y, p[2] + (r[2] - p[2]) * t]
+          }
+          m.quad([q(t0, YFT, 1.66), q(t1, YFT, 1.66), q(t1, YFT + 0.18, 1.66), q(t0, YFT + 0.18, 1.66)], [nx, 0, nz], uv, HM_CORN2, ST)
+        }
+      }
+    }
+    if (l < 3) continue
+
+    if (street || rear) {
+      // ---- the dark base ----
+      if (street) {
+        panel(0, l, Y0, YB, 0.14, HM_BASE, ST)
+        panel(0, l, YB - 0.5, YB, 0.2, HM_TRIM, ST)
+        const nw = Math.max(2, Math.round((l - 2) / 3.6)), pw = (l - 2) / nw
+        for (let k = 0; k < nw; k++) {
+          const u0 = 1 + k * pw + 0.2
+          panel(u0, u0 + pw - 0.4, 0.5, 3.6, 0.17, HM_SHOP, GL)
+          panel(u0 - 0.05, u0 + 0.05, 0.4, 3.7, 0.2, HM_BASE, MT)
+        }
+        slab(0, l, 3.7, 4.2, 0.14, 0.3, HM_BASE)
+        // two ground-floor pieces of identity: a canopy on the Turk front, orange piers at the corner
+        if (front) {
+          slab(l * 0.4, l * 0.4 + 5, 3.4, 3.7, 0.14, 1.6, [0.12, 0.2, 0.17])
+          slab(l - 7.2, l - 6.7, 0, 3.6, 0.16, 0.6, HM_ORANGE)
+          slab(l - 2.7, l - 2.2, 0, 3.6, 0.16, 0.6, HM_ORANGE)
+        }
+      } else {
+        panel(0, l, Y0, YB + 0.5, 0.1, HM_BASE, ST)
+      }
+    } else {
+      panel(0, l, Y0, 1.2, 0.05, HM_GROOVE, ST)
+    }
+
+    if (street) {
+      // ---- rusticated storeys, belt course ----
+      panel(0, l, YB, YR, 0.04, HM_STONE, AS)
+      for (let y = YB + 0.4; y < YR; y += 0.85) panel(0, l, y, y + 0.07, 0.07, HM_GROOVE, AS)
+      slab(0, l, YR, YR + 0.5, 0, 0.35, HM_TRIM)
+      slab(0, l, YB, YB + 0.18, 0, 0.22, HM_TRIM)
+      slab(0, l, YT - 0.3, YT + 0.1, 0, 0.3, HM_TRIM)
+      slab(0, l, YC - 0.35, YC, 0, 0.5, HM_TRIM)
+      // ---- windows ----
+      const nc = Math.max(2, Math.round((l - 1.6) / 3.3)), pit = (l - 1.6) / nc
+      const rows: { y: number; hh: number; rust: boolean }[] = [
+        { y: 5.7, hh: 1.9, rust: true }, { y: 9.2, hh: 1.9, rust: true },
+      ]
+      for (let f = 0; f < 5; f++) rows.push({ y: YS + 0.55 + f * FS + 0.3, hh: 2.05, rust: false })
+      const BAYS = [[1, 1], [2, 2], [2, 4], [3, 4], [4, 3]]
+      for (let c = 0; c < nc; c++) {
+        const uc = 0.8 + pit * (c + 0.5)
+        rows.forEach((r, ri) => {
+          const w = 1.9
+          panel(uc - w / 2 - 0.2, uc + w / 2 + 0.2, r.y - 0.15, r.y + r.hh + 0.25, 0.07, HM_TRIM, ST)
+          const bay = front && !r.rust && BAYS.some(([bc, bf]) => bc === c && bf === ri - 2)
+          if (bay) {
+            const pr = 0.7
+            slab(uc - w / 2 - 0.15, uc + w / 2 + 0.15, r.y - 0.55, r.y - 0.1, 0.05, pr + 0.1, HM_TRIM)
+            slab(uc - w / 2 - 0.1, uc + w / 2 + 0.1, r.y + r.hh + 0.1, r.y + r.hh + 0.35, 0.05, pr + 0.1, HM_TRIM)
+            panel(uc - w / 2, uc + w / 2, r.y, r.y + r.hh, pr, HM_GLASS, GL)
+            panel(uc - 0.04, uc + 0.04, r.y, r.y + r.hh, pr + 0.03, HM_TRIM, ST)
+            for (const s of [-1, 1]) {
+              m.quad([P(uc + s * w / 2, r.y, 0.05), P(uc + s * w / 2, r.y, pr), P(uc + s * w / 2, r.y + r.hh, pr), P(uc + s * w / 2, r.y + r.hh, 0.05)],
+                [tx * s, 0, tz * s], uv, HM_TRIM, ST)
+            }
+          } else {
+            panel(uc - w / 2, uc + w / 2, r.y, r.y + r.hh, 0.1, hash(uc, r.y) > 0.8 ? [0.55, 0.6, 0.62] : HM_GLASS, GL)
+            panel(uc - 0.04, uc + 0.04, r.y, r.y + r.hh, 0.13, HM_TRIM, ST)
+            panel(uc - w / 2, uc + w / 2, r.y + r.hh * 0.5, r.y + r.hh * 0.5 + 0.07, 0.13, HM_TRIM, ST)
+            slab(uc - w / 2 - 0.25, uc + w / 2 + 0.25, r.y - 0.25, r.y - 0.1, 0.05, 0.28, HM_TRIM)
+          }
+        })
+        // the top storey: two small windows between pilasters
+        for (const s of [-0.55, 0.55]) panel(uc + s - 0.3, uc + s + 0.3, YT + 0.5, YT + 1.6, 0.08, HM_GLASS, GL)
+        slab(uc - 1.35, uc - 1.15, YT + 0.1, YC - 0.4, 0, 0.18, HM_TRIM)
+        panel(uc - 0.9, uc + 0.9, YC - 0.95, YC - 0.45, 0.08, HM_GROOVE, ST)
+      }
+    } else {
+      // party / rear walls: sparse small windows
+      const cols = Math.max(1, Math.round(l / 6))
+      for (let c = 0; c < cols; c++) {
+        const uc = l * (c + 0.5) / cols
+        if (!rear && ei % 2 === 1) continue
+        for (let f = 0; f < 8; f++) {
+          if (hash(uc + ei, f) > 0.75 && !rear) continue
+          const y = 6.5 + f * 3.3
+          panel(uc - 0.4, uc + 0.4, y, y + 1.3, 0.05, rear ? [0.65, 0.68, 0.7] : HM_GLASS, GL)
+        }
+      }
+    }
+
+    // ---- the fire escape: the north end of the Mason face ----
+    if (mason) {
+      const u0 = l - 6.2, u1 = l - 2.0, pr = 0.5, d = 1.1
+      const flo = [YS + 0.55 + 0.1 - 0.3]
+      for (let f = 1; f < 5; f++) flo.push(YS + 0.55 + f * FS - 0.2)
+      const lev = [8.7, ...flo, YT + 0.3]
+      for (let i = 0; i < lev.length; i++) {
+        const y = lev[i]
+        slab(u0, u1, y - 0.05, y + 0.05, pr, pr + d, HM_IRON, MT)
+        m.quad([P(u0, y + 0.05, pr + d), P(u1, y + 0.05, pr + d), P(u1, y + 1.0, pr + d), P(u0, y + 1.0, pr + d)], [nx, 0, nz], uv, HM_IRON, MT)
+        slab(u0, u1, y + 0.95, y + 1.0, pr + d - 0.04, pr + d, HM_IRON, MT)
+        for (const s of [u0, u1]) m.quad([P(s, y + 0.05, pr), P(s, y + 0.05, pr + d), P(s, y + 1.0, pr + d), P(s, y + 1.0, pr)],
+          [tx * (s === u0 ? -1 : 1), 0, tz * (s === u0 ? -1 : 1)], uv, HM_IRON, MT)
+        if (i + 1 < lev.length) {
+          // the stair to the next landing, zig-zag
+          const up = i % 2 === 0
+          const sa = up ? u0 + 0.2 : u1 - 0.2, sb = up ? u1 - 0.2 : u0 + 0.2
+          const y1 = lev[i + 1], w = 0.5
+          m.quad([P(sa, y + 0.05, pr + 0.05), P(sb, y1 + 0.05, pr + 0.05), P(sb, y1 + 0.05, pr + 0.05 + w), P(sa, y + 0.05, pr + 0.05 + w)], [0, 1, 0], uv, HM_IRON, MT)
+          m.quad([P(sa, y + 0.05, pr + w + 0.05), P(sb, y1 + 0.05, pr + w + 0.05), P(sb, y1 + 0.9, pr + w + 0.05), P(sa, y + 0.9, pr + w + 0.05)], [nx, 0, nz], uv, HM_IRON, MT)
+        }
+      }
+      // the drop ladder to the street
+      slab(u0 + 0.2, u0 + 0.5, 4.0, lev[0], pr + 0.2, pr + 0.3, HM_IRON, MT)
+    }
+  }
+
+  // ---- the roof cap and a small stair penthouse behind the cornice ----
+  const top = ring.map((p, k) => ({ x: p.x - vo[k].x * 1.4, z: p.z - vo[k].z * 1.4 }))
+  capPolygonWithHoles(m, [top], YTOP, HM_CORN2, ST)
+  {
+    const cx = ring.reduce((t, p) => t + p.x, 0) / n, cz = ring.reduce((t, p) => t + p.z, 0) / n
+    box(m, cx - 4, YTOP + 1.3, cz + 3.5, 2.2, 1.3, 1.8, HM_WALL, ST)
+    box(m, cx - 4, YTOP + 2.65, cz + 3.5, 2.4, 0.08, 2.0, HM_CORN, ST)
+  }
+
+  for (let q = 0; q < m.positions.length; q++) out.positions.push(m.positions[q])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -6454,4 +6683,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   brannanApartments_200_Brannan,
   office_235_Second,
   planningBuilding_1650_Mission,
+  hotelMetropolis_2_Turk,
 }
