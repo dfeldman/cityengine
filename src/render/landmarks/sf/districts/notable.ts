@@ -9731,7 +9731,58 @@ function doelgerBuilding_320_Judah(out: MeshBuilder, fit: Fit): void {
   q(wx0 + 1.17, wx0 + 1.4, 5.37, 5.43, zf - 0.09, BLACK, MT)
 }
 
+/**
+ * The Abner Phelps House, 1111 Oak (1850, the oldest house standing in the city; Commons "Abner Phelps House (San
+ * Francisco).JPG", docs/shots/refs/notable/abner-phelps), back from Oak Street at the end of a drive: a white
+ * clapboard Gothic Revival cottage on a raised basement under a steep side-gabled roof of grey shingles broken by five
+ * gabled dormers — the middle one larger, with fretwork bargeboards — and across the whole front a veranda on slim
+ * columns whose roof is a balcony with a white balustrade; a long straight stair rises to the porch at one side.
+ * Front (toward Oak) on −z; the veranda takes the front 2.4 m of the outline.
+ */
+function abnerPhelpsHouse_1111_Oak(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.9, 0.9, 0.87], ROOF: Rgb = [0.5, 0.49, 0.46], GLASS: Rgb = [0.2, 0.23, 0.27], BASE: Rgb = [0.78, 0.78, 0.75]
+  const CB = surfaceTag('clapboard'), TL = surfaceTag('tile'), GL = surfaceTag('glass')
+  const UVQ: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const hx = Math.max(5, fit.hx), hz = Math.max(4, fit.hz), zf = -hz, V = 2.4, zw = zf + V
+  const B = 1.7, P = 4.9, E = 5.4, R = E + (hz - V / 2) * 0.95          // porch floor, balcony deck, eaves, ridge
+  const dz = (hz * 2 - V) / 2, cz = zw + dz                              // the house body's half-depth and centre
+  box(out, 0, B / 2, cz, hx, B / 2, dz, BASE, CB)
+  box(out, 0, (B + E) / 2, cz, hx, (E - B) / 2, dz, WHITE, CB)
+  // the roof, its gable ends
+  for (const s of [-1, 1]) {
+    out.quad([[-hx - 0.3, E, cz + s * (dz + 0.35)], [hx + 0.3, E, cz + s * (dz + 0.35)], [hx + 0.3, R, cz], [-hx - 0.3, R, cz]], [0, dz, s * (R - E)], UVQ, ROOF, TL)
+    out.quad([[s * hx, E, cz - dz], [s * hx, E, cz + dz], [s * hx, R, cz], [s * hx, R, cz]], [s, 0, 0], UVQ, WHITE, CB)
+  }
+  // the dormers: five, the middle one larger, each a little gabled box out of the front slope
+  const slope = (R - E) / (dz + 0.35)
+  for (const [x, w, big] of [[-hx * 0.78, 1.0, false], [-hx * 0.45, 1.0, false], [0, 1.6, true], [hx * 0.42, 1.0, false], [hx * 0.78, 1.0, false]] as [number, number, boolean][]) {
+    const zF = zw - 0.05, h0 = E, h1 = E + (big ? 2.4 : 2.0), apex = h1 + w * 0.9, back = zw + (apex - E) / slope
+    box(out, x, (h0 + h1) / 2, (zF + back) / 2, w, (h1 - h0) / 2, (back - zF) / 2, WHITE, CB)
+    out.quad([[x + w, h1, zF], [x - w, h1, zF], [x, apex, zF], [x, apex, zF]], [0, 0, -1], UVQ, WHITE, CB)
+    for (const s of [-1, 1]) out.quad([[x + s * (w + 0.15), h1 - 0.1, zF - 0.1], [x, apex + 0.1, zF - 0.1], [x, apex + 0.1, back], [x + s * (w + 0.15), h1 - 0.1, back]], [s, 1, 0], UVQ, ROOF, TL)
+    out.quad([[x + w * 0.55, E + 0.4, zF - 0.02], [x - w * 0.55, E + 0.4, zF - 0.02], [x - w * 0.55, h1 - 0.15, zF - 0.02], [x + w * 0.55, h1 - 0.15, zF - 0.02]], [0, 0, -1], UVQ, GLASS, GL)
+    if (big) for (const s of [-1, 1]) out.quad([[x + s * w * 0.95, h1 - 0.05, zF - 0.06], [x + s * 0.15, apex - 0.3, zF - 0.06], [x + s * 0.15, apex - 0.55, zF - 0.06], [x + s * w * 0.75, h1 - 0.35, zF - 0.06]], [0, 0, -1], UVQ, WHITE, CB)
+  }
+  // the veranda: the porch deck, the columns, the balcony deck and its balustrade, the porch windows behind
+  box(out, 0, B - 0.1, zf + V / 2, hx, 0.1, V / 2, WHITE, CB)
+  box(out, 0, P - 0.15, zf + V / 2, hx + 0.1, 0.15, V / 2 + 0.1, WHITE, CB)
+  for (let k = 0; k <= 5; k++) { const x = -hx + 0.2 + k * ((2 * hx - 0.4) / 5); prism(out, x, zf + 0.25, B, P - 0.3, 0.12, 8, WHITE, CB) }
+  box(out, 0, P + 0.95, zf + 0.08, hx, 0.05, 0.06, WHITE, CB)
+  for (let x = -hx + 0.15; x <= hx; x += 0.22) box(out, x, P + 0.45, zf + 0.08, 0.025, 0.45, 0.025, WHITE, CB)
+  for (const sx of [-1, 1]) {
+    box(out, sx * (hx - 0.05), P + 0.95, zf + V / 2, 0.06, 0.05, V / 2, WHITE, CB)
+  }
+  for (const x of [-hx * 0.55, -hx * 0.05, hx * 0.5]) out.quad([[x + 0.7, B + 0.4, zw - 0.03], [x - 0.7, B + 0.4, zw - 0.03], [x - 0.7, B + 2.5, zw - 0.03], [x + 0.7, B + 2.5, zw - 0.03]], [0, 0, -1], UVQ, GLASS, GL)
+  // the stair: straight up the front at the left to the porch
+  const sx0 = -hx * 0.62
+  out.quad([[sx0 + 0.7, 0, zf - 3.2], [sx0 - 0.7, 0, zf - 3.2], [sx0 - 0.7, B, zf], [sx0 + 0.7, B, zf]], [0, 1, -0.5], UVQ, WHITE, CB)
+  for (const s of [-1, 1]) out.quad([[sx0 + s * 0.75, 0.9, zf - 3.2], [sx0 + s * 0.75, B + 0.9, zf], [sx0 + s * 0.75, B + 0.95, zf], [sx0 + s * 0.75, 0.95, zf - 3.2]], [s, 0, 0], UVQ, WHITE, CB)
+  // the chimney
+  box(out, -hx * 0.3, R + 0.3, cz + 0.6, 0.25, 0.9, 0.25, [0.45, 0.3, 0.25], surfaceTag('brick'))
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+  abnerPhelpsHouse_1111_Oak,
   doelgerBuilding_320_Judah,
   stJohnEvangelist_15th,
   irvingScottSchool_1060_Tennessee,
