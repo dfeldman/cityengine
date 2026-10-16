@@ -102,7 +102,55 @@ function cableTrucks(out: MeshBuilder, zs: number[]): void {
   }
 }
 
-/** The Powell Street cable car: open grip section forward (+z), the saloon behind, 8.4 m over the bumpers. */
+/** an upright disc facing +z (or −z with `back`): a headlamp, a number roundel */
+function discZ(out: MeshBuilder, cx: number, cy: number, z: number, r: number, c: Rgb, tag: number, back = false, n = 14): void {
+  for (let k = 0; k < n; k++) {
+    const a0 = (k / n) * Math.PI * 2, a1 = ((k + 1) / n) * Math.PI * 2
+    const p = (a: number): [number, number, number] => [cx + Math.cos(a) * r, cy + Math.sin(a) * r, z]
+    const q: [number, number, number][] = back ? [[cx, cy, z], p(a1), p(a0), p(a0)] : [[cx, cy, z], p(a0), p(a1), p(a1)]
+    out.quad(q, [0, 0, back ? -1 : 1], [[0, 0], [1, 0], [1, 1], [0, 1]], c, tag)
+  }
+}
+
+/**
+ * An ARCH-TOPPED window in a car's side (x = `sx`, facing out along ±x): the glass, its wood frame and the rounded head
+ * (a fan of glass under a frame band), centred `z` along the car, sill at `y0`, `h` to the spring of the arch, `w` wide.
+ */
+function archWindow(out: MeshBuilder, sx: number, z: number, y0: number, h: number, w: number, frame: Rgb): void {
+  const s = Math.sign(sx), x = sx + s * 0.01
+  const nrm: [number, number, number] = [s, 0, 0]
+  const UVQ: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const q = (pts: [number, number, number][], c: Rgb, tag: number): void => out.quad(s > 0 ? pts : [pts[1], pts[0], pts[3], pts[2]], nrm, UVQ, c, tag)
+  // the frame round it, then the glass over the frame a hair further out
+  q([[x, y0 - 0.06, z - w / 2 - 0.06], [x, y0 - 0.06, z + w / 2 + 0.06], [x, y0 + h, z + w / 2 + 0.06], [x, y0 + h, z - w / 2 - 0.06]], frame, FIXED)
+  const xg = sx + s * 0.02
+  out.quad(s > 0 ? [[xg, y0, z - w / 2], [xg, y0, z + w / 2], [xg, y0 + h, z + w / 2], [xg, y0 + h, z - w / 2]] : [[xg, y0, z + w / 2], [xg, y0, z - w / 2], [xg, y0 + h, z - w / 2], [xg, y0 + h, z + w / 2]], nrm, UVQ, GLASS, FIXED)
+  // the arched head: a half-disc of glass in a frame band
+  const n = 8, r = w / 2
+  for (let k = 0; k < n; k++) {
+    const a0 = (k / n) * Math.PI, a1 = ((k + 1) / n) * Math.PI
+    const p = (a: number, rr: number, xx: number): [number, number, number] => [xx, y0 + h + Math.sin(a) * rr, z + Math.cos(a) * rr]
+    q([p(a0, r + 0.06, x), p(a1, r + 0.06, x), [x, y0 + h, z], [x, y0 + h, z]], frame, FIXED)
+    q([p(a0, r, xg), p(a1, r, xg), [xg, y0 + h, z], [xg, y0 + h, z]], GLASS, FIXED)
+  }
+}
+
+/**
+ * The Powell Street cable car (owner, 2026-10-16: "we could use a detailed model of the cable car. our streetcar model is
+ * quite detailed"; Commons "Powell-Mason cable car 17 at Powell and Ellis 20250606", "Cable car 58 at Powell and
+ * California", "Cable Car No. 15, Powell Market turntable" — docs/shots/refs/cablecar): 8.4 m over the bumpers, the open
+ * GRIP SECTION forward (+z) and the enclosed SALOON behind.
+ *
+ *  - the grip section: its cream DASH at the front (number board, the round headlamp, the destination board over it),
+ *    open sides, two outward-facing benches back to back under a centre backrest, white and brass grab poles at the
+ *    bench ends and middles, the running boards outside, and the gripman's brass lever and the brake handles;
+ *  - the saloon: the cream lower body (hollow: its benches inside, render/cable-riders.ts) under a dark belt rail, tall
+ *    ARCH-TOPPED windows in wood frames down each side, the bulkhead with its door and windows to the grip section;
+ *  - the open back platform with its railing; the arched roof over all, its eaves boards and the ROUTE BOARDS along
+ *    them, the clerestory along the crown over the saloon with its little windows; the number roundels on the sides.
+ *
+ * Panels in [1,1,1] take the line's livery; the rest is fixed colour.
+ */
 function cableCar(out: MeshBuilder): void {
   const floor = 0.78
   const front = 4.1
@@ -110,43 +158,86 @@ function cableCar(out: MeshBuilder): void {
   const back = -3.7
   const half = 1.2
   const roofY = 2.95
+  const WOODD: Rgb = [0.36, 0.22, 0.13], BELT: Rgb = [0.32, 0.12, 0.1], POLE: Rgb = [0.92, 0.92, 0.88], GOLD: Rgb = [0.82, 0.68, 0.32]
   // the running gear, dark under the floor, and the floor itself
   box(out, 0, 0.4, 0.2, 0.85, 0.25, 3.4, DARK, FIXED)
   box(out, 0, floor - 0.06, 0.2, half, 0.08, 3.9, WOOD, FIXED)
-  // the running boards the length of the open section, and the step at the back
-  for (const s of [-1, 1]) box(out, s * (half + 0.18), floor - 0.25, (front + split) / 2, 0.2, 0.04, (front - split) / 2, WOOD, FIXED)
-  // the grip section: the cream dash at the front with its number board, destination and lamp
-  box(out, 0, floor + 0.55, front - 0.05, half, 0.55, 0.06, CREAM, FIXED)
-  box(out, 0, floor + 0.2, front - 0.02, half, 0.2, 0.04, [1, 1, 1])          // the lower dash: the livery
-  box(out, -0.55, floor + 0.75, front + 0.02, 0.32, 0.25, 0.01, [0.45, 0.22, 0.18], FIXED)   // the destination board
-  box(out, 0.55, floor + 0.75, front + 0.02, 0.3, 0.22, 0.01, [0.2, 0.45, 0.35], FIXED)      // the ad panel
-  box(out, 0, floor + 1.02, front + 0.02, 0.16, 0.08, 0.01, DARK, FIXED)       // the number
-  prism(out, 0, front + 0.03, floor + 0.35, floor + 0.36, 0.14, 10, LAMP, EMIT)   // the headlamp (a disc, in fact)
-  box(out, 0, floor + 0.4, front + 0.04, 0.12, 0.12, 0.02, LAMP, EMIT)
-  // the outward benches down the middle of the open section, back to back, and the poles at their ends
-  box(out, 0, floor + 0.45, (front + split) / 2, 0.12, 0.45, (front - split) / 2 - 0.2, WOOD, FIXED)
-  for (const s of [-1, 1]) box(out, s * 0.45, floor + 0.42, (front + split) / 2, 0.32, 0.05, (front - split) / 2 - 0.25, WOOD, FIXED)
-  for (const z of [front - 0.15, (front + split) / 2, split + 0.15]) {
-    for (const s of [-1, 1]) box(out, s * (half - 0.05), (floor + roofY) / 2, z, 0.04, (roofY - floor) / 2, 0.04, [0.9, 0.9, 0.86], FIXED)
-  }
-  // the grip itself: the lever standing up in the middle, the gripman's post
-  box(out, 0.15, floor + 0.7, front - 0.8, 0.04, 0.7, 0.04, BRASS, FIXED)
-  // the saloon: maroon below, cream-framed windows, the end windows
-  saloonShell(out, floor, half, back + 0.6, split)
+  // the skirts below the floor's edge, in the livery, the length of the car
+  for (const s of [-1, 1]) box(out, s * (half - 0.01), floor - 0.2, 0.2, 0.02, 0.14, 3.85, [1, 1, 1])
+  // the running boards the length of the open section, on their brackets
   for (const s of [-1, 1]) {
-    box(out, s * half, floor + 1.35, (split + back) / 2 + 0.3, 0.03, 0.5, (split - back) / 2 - 0.3, CREAM, FIXED)
-    for (let k = 0; k < 4; k++) {
-      const z = back + 0.9 + k * 0.85
-      box(out, s * (half + 0.045), floor + 1.38, z, 0.01, 0.36, 0.3, GLASS, FIXED)    // clear of the cream band: no z-fighting
+    box(out, s * (half + 0.18), floor - 0.25, (front + split) / 2, 0.2, 0.035, (front - split) / 2, WOOD, FIXED)
+    for (const z of [split + 0.3, (front + split) / 2, front - 0.3]) box(out, s * (half + 0.08), floor - 0.18, z, 0.1, 0.05, 0.04, DARK, FIXED)
+  }
+  // ---- the grip section
+  // the dash at the front: cream, its gold-lined number board, the headlamp, the destination board over it
+  box(out, 0, floor + 0.55, front - 0.05, half, 0.55, 0.06, CREAM, FIXED)
+  box(out, 0, floor + 0.2, front - 0.01, half, 0.2, 0.02, [1, 1, 1])                         // the lower dash: the livery
+  box(out, 0, floor + 0.98, front + 0.02, 0.22, 0.1, 0.01, GOLD, FIXED)
+  box(out, 0, floor + 0.98, front + 0.03, 0.18, 0.07, 0.01, DARK, FIXED)                      // the number
+  discZ(out, 0, floor + 0.62, front + 0.03, 0.17, BRASS, FIXED)
+  discZ(out, 0, floor + 0.62, front + 0.04, 0.13, LAMP, EMIT)                                 // the headlamp
+  box(out, -0.62, floor + 0.7, front + 0.02, 0.3, 0.18, 0.01, [0.45, 0.22, 0.18], FIXED)       // the ad panels either side
+  box(out, 0.62, floor + 0.7, front + 0.02, 0.3, 0.18, 0.01, [0.2, 0.45, 0.35], FIXED)
+  box(out, 0, roofY - 0.2, front + 0.12, 0.85, 0.13, 0.02, DARK, FIXED)                       // the destination board
+  box(out, 0, roofY - 0.2, front + 0.13, 0.7, 0.07, 0.01, [0.95, 0.9, 0.7], FIXED)
+  // the benches: outward-facing seats back to back, the backrest between, the end arm posts
+  const gz = (front + split) / 2, gl = (front - split) / 2 - 0.25
+  box(out, 0, floor + 0.62, gz, 0.07, 0.42, gl, WOODD, FIXED)                                 // the backrest
+  for (const s of [-1, 1]) {
+    box(out, s * 0.42, floor + 0.43, gz, 0.33, 0.04, gl, WOOD, FIXED)                          // the seat
+    box(out, s * 0.62, floor + 0.2, gz, 0.12, 0.2, gl - 0.05, WOODD, FIXED)                    // its front
+    for (const z of [gz - gl, gz + gl]) box(out, s * 0.4, floor + 0.62, z, 0.36, 0.2, 0.03, WOODD, FIXED)
+  }
+  // the grab poles at the corners and the middle of the open sides, and the rail over the running boards
+  for (const z of [front - 0.15, gz, split + 0.15]) {
+    for (const s of [-1, 1]) {
+      box(out, s * (half - 0.04), (floor + roofY) / 2, z, 0.035, (roofY - floor) / 2, 0.035, POLE, FIXED)
+      box(out, s * (half - 0.04), floor + 1.1, z, 0.045, 0.05, 0.045, BRASS, FIXED)
     }
   }
-  box(out, 0, floor + 1.35, split, half, 0.55, 0.05, CREAM, FIXED)
-  box(out, 0, floor + 1.4, split + 0.01, 0.9, 0.36, 0.02, GLASS, FIXED)
-  // the back platform, open, with its rail
-  box(out, 0, floor + 0.55, back + 0.02, half, 0.55, 0.05, CREAM, FIXED)
-  // the roof: an arch the length of the car, the clerestory over the saloon, its lamp and the route boards
+  for (const s of [-1, 1]) box(out, s * (half - 0.04), roofY - 0.35, gz, 0.025, 0.025, gl + 0.25, BRASS, FIXED)
+  // the grip lever standing up in the middle of the floor, the brake handles beside it
+  box(out, 0.15, floor + 0.7, front - 0.8, 0.04, 0.7, 0.04, BRASS, FIXED)
+  box(out, 0.15, floor + 1.42, front - 0.8, 0.08, 0.04, 0.04, DARK, FIXED)
+  for (const s of [-1, 1]) box(out, s * 0.45, floor + 0.55, front - 0.55, 0.03, 0.55, 0.03, DARK, FIXED)
+  // ---- the saloon
+  saloonShell(out, floor, half, back + 0.6, split)
+  for (const s of [-1, 1]) {
+    // the belt rail at the sill, the posts between the windows, the arched windows, the frieze over them
+    box(out, s * half, floor + 0.93, (split + back + 0.6) / 2, 0.035, 0.05, (split - back - 0.6) / 2, BELT, FIXED)
+    const z0 = back + 0.6, z1 = split, n = 5, pitch = (z1 - z0) / n
+    for (let k = 0; k <= n; k++) box(out, s * half, (floor + 0.98 + roofY - 0.1) / 2, z0 + k * pitch, 0.04, (roofY - 0.1 - floor - 0.98) / 2, 0.06, CREAM, FIXED)
+    for (let k = 0; k < n; k++) archWindow(out, s * half, z0 + (k + 0.5) * pitch, floor + 1.0, 0.95, pitch - 0.16, WOODD)
+    box(out, s * half, roofY - 0.22, (z0 + z1) / 2, 0.03, 0.12, (z1 - z0) / 2, CREAM, FIXED)
+    // the number roundel on the panel
+    for (const z of [-1.6]) {
+      const x = s * (half + 0.01)
+      for (let k = 0; k < 12; k++) {
+        const a0 = (k / 12) * Math.PI * 2, a1 = ((k + 1) / 12) * Math.PI * 2
+        const p = (a: number, r: number): [number, number, number] => [x, floor + 0.5 + Math.sin(a) * r, z + Math.cos(a) * r]
+        const pts: [number, number, number][] = [[x, floor + 0.5, z], p(a0, 0.2), p(a1, 0.2), p(a1, 0.2)]
+        out.quad(s > 0 ? pts : [pts[0], pts[2], pts[1], pts[1]], [s, 0, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], GOLD, FIXED)
+      }
+    }
+  }
+  // the bulkhead between the sections: cream, its door and the windows either side
+  box(out, 0, (floor + roofY) / 2, split, half, (roofY - floor) / 2, 0.05, CREAM, FIXED)
+  box(out, 0, floor + 0.95, split + 0.06, 0.32, 0.95, 0.01, WOODD, FIXED)
+  box(out, 0, floor + 1.45, split + 0.07, 0.24, 0.35, 0.01, GLASS, FIXED)
+  for (const s of [-1, 1]) box(out, s * 0.75, floor + 1.45, split + 0.06, 0.28, 0.38, 0.01, GLASS, FIXED)
+  // ---- the back: the saloon's end wall, the open platform behind it with its railing
+  box(out, 0, (floor + roofY) / 2, back + 0.6, half, (roofY - floor) / 2, 0.05, CREAM, FIXED)
+  box(out, 0, floor + 1.45, back + 0.54, 0.75, 0.38, 0.01, GLASS, FIXED)
+  box(out, 0, floor + 0.95, back + 0.02, half, 0.04, 0.03, BRASS, FIXED)
+  for (const x of [-half + 0.05, -0.4, 0.4, half - 0.05]) box(out, x, floor + 0.48, back + 0.02, 0.025, 0.48, 0.025, BRASS, FIXED)
+  for (const s of [-1, 1]) box(out, s * (half - 0.04), (floor + roofY) / 2, back + 0.05, 0.035, (roofY - floor) / 2, 0.035, POLE, FIXED)
+  // ---- the roof: an arch the length of the car, the eaves boards and the route boards on them, the clerestory
   archedRoof(out, back - 0.25, front + 0.3, half + 0.14, roofY - 0.04, 0.34, 0.75, WOOD)
-  // the clerestory along the crown over the saloon: its little windows (cream-framed), its own roof
+  for (const s of [-1, 1]) {
+    box(out, s * (half + 0.16), roofY - 0.1, (back + front) / 2, 0.02, 0.1, (front - back) / 2, [1, 1, 1])
+    box(out, s * (half + 0.18), roofY - 0.1, (back + front) / 2 - 0.5, 0.01, 0.06, 2.0, [0.95, 0.9, 0.7], FIXED)   // the route board
+  }
   box(out, 0, roofY + 0.42, -1.2, 0.5, 0.12, 2.0, [0.62, 0.12, 0.1], FIXED)
   for (const s of [-1, 1]) for (let k = 0; k < 5; k++) box(out, s * 0.51, roofY + 0.42, -2.8 + k * 0.8, 0.01, 0.07, 0.25, GLASS, FIXED)
   archedRoof(out, -3.2, 0.8, 0.56, roofY + 0.54, 0.1, 0.3, WOOD)
@@ -221,8 +312,11 @@ function californiaCar(out: MeshBuilder): void {
   // the saloon between the two open ends
   saloonShell(out, floor, half, -inner, inner)
   for (const s of [-1, 1]) {
-    box(out, s * half, floor + 1.35, 0, 0.03, 0.5, inner, CREAM, FIXED)
-    for (let w = 0; w < 4; w++) box(out, s * (half + 0.045), floor + 1.38, -inner + 0.45 + w * 0.8, 0.01, 0.36, 0.3, GLASS, FIXED)
+    box(out, s * half, floor + 0.93, 0, 0.035, 0.05, inner, [0.32, 0.12, 0.1], FIXED)               // the belt rail
+    const pitch = (2 * inner) / 4
+    for (let w = 0; w <= 4; w++) box(out, s * half, (floor + 0.98 + roofY - 0.1) / 2, -inner + w * pitch, 0.04, (roofY - 0.1 - floor - 0.98) / 2, 0.06, CREAM, FIXED)
+    for (let w = 0; w < 4; w++) archWindow(out, s * half, -inner + (w + 0.5) * pitch, floor + 1.0, 0.95, pitch - 0.16, [0.36, 0.22, 0.13])
+    box(out, s * half, roofY - 0.22, 0, 0.03, 0.12, inner, CREAM, FIXED)
   }
   // the roof, the clerestory, the lamps at both ends, the route boards
   archedRoof(out, -end - 0.25, end + 0.25, half + 0.14, roofY - 0.04, 0.34, 0.75, WOOD)
