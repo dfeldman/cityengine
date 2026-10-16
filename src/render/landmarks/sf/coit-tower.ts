@@ -15,8 +15,8 @@ import { box, type Rgb } from '../../models.ts'
 import type { Fit } from '../fit.ts'
 
 type V3 = [number, number, number]
-const CONCRETE: Rgb = [0.9, 0.87, 0.8]
-const SHADE: Rgb = [0.74, 0.71, 0.65]
+const CONCRETE: Rgb = [0.72, 0.7, 0.66]   // grey-beige unpainted concrete (Commons 2022); 0.9/0.87/0.8 read cream-yellow (2026-10-16)
+const SHADE: Rgb = [0.6, 0.58, 0.55]
 const DARK: Rgb = [0.3, 0.3, 0.32]
 /** the tall niches are open loggias in shadow, not holes: the concrete inside them, darker */
 const NICHE: Rgb = [0.56, 0.53, 0.49]
