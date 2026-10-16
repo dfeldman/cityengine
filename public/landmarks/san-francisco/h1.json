@@ -19,10 +19,10 @@
     "osm": [
       "way/1243657270"
     ],
-    "procedural": "ucsfPritzker",
     "front": "street",
     "height": 23,
-    "name": "UCSF Nancy Friend Pritzker Psychiatry Building"
+    "name": "UCSF Nancy Friend Pritzker Psychiatry Building",
+    "procedural": "ucsfPritzker"
   },
   {
     "osm": [
@@ -63,9 +63,12 @@
     "osm": [
       "way/167176657"
     ],
-    "procedural": "h1_thirdSpace",
     "name": "Third Space",
-    "height": 9
+    "height": 9,
+    "restyle": "stucco",
+    "wall": "#eeeeea",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: its own material and colour (was a grey Haiku recipe)"
   },
   {
     "osm": [
@@ -82,9 +85,12 @@
     "osm": [
       "way/218258617"
     ],
-    "procedural": "h1_uspsToyndsend",
     "name": "USPS Townsend Street Facility",
-    "height": 7
+    "height": 7,
+    "restyle": "brutalist",
+    "wall": "#bdb6a8",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: its own material and colour (was a grey Haiku recipe)"
   },
   {
     "osm": [
@@ -101,16 +107,23 @@
     "osm": [
       "way/256633746"
     ],
-    "procedural": "h1_helenDillerCancerCenter",
-    "name": "Helen Diller Family Comprehensive Cancer Center"
+    "name": "Helen Diller Family Comprehensive Cancer Center",
+    "restyle": "bauhaus",
+    "wall": "#d9d9d4",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: its own material and colour (was a grey Haiku recipe)",
+    "accent": "#2f6f8f"
   },
   {
     "osm": [
       "way/260462493"
     ],
-    "procedural": "h1_boysGirlsClub",
     "name": "Boys & Girls Club",
-    "height": 9
+    "height": 9,
+    "restyle": "bauhaus",
+    "wall": "#3e6f9a",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: its own material and colour (was a grey Haiku recipe)"
   },
   {
     "osm": [
@@ -124,9 +137,12 @@
     "osm": [
       "way/261105868"
     ],
-    "procedural": "h1_sevenTepeesYouth",
     "name": "Seven Tepees Youth Program",
-    "height": 9
+    "height": 9,
+    "restyle": "stucco",
+    "wall": "#e9ecec",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: its own material and colour (was a grey Haiku recipe)"
   },
   {
     "osm": [
@@ -140,9 +156,12 @@
     "osm": [
       "way/264494855"
     ],
-    "procedural": "h1_wallerCenter",
     "name": "The Waller Center",
-    "height": 10
+    "height": 10,
+    "restyle": "stucco",
+    "wall": "#b9d4cf",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: its own material and colour (was a grey Haiku recipe)"
   },
   {
     "osm": [
@@ -180,9 +199,12 @@
     "osm": [
       "way/287700862"
     ],
-    "procedural": "h1_talismanBanquetHall",
     "name": "Talisman Banquet Hall",
-    "height": 5
+    "height": 5,
+    "restyle": "stucco",
+    "wall": "#e8a99a",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: its own material and colour (was a grey Haiku recipe)"
   },
   {
     "osm": [
@@ -200,15 +222,21 @@
     "osm": [
       "way/960975186"
     ],
-    "procedural": "h1_noisebridge",
-    "name": "Noisebridge"
+    "name": "Noisebridge",
+    "restyle": "brick",
+    "wall": "#7a4a33",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: its own material and colour (was a grey Haiku recipe)"
   },
   {
     "osm": [
       "way/1164266280"
     ],
-    "procedural": "h1_ussPampanitEducation",
-    "name": "USS Pampanito Education Office"
+    "name": "USS Pampanito Education Office",
+    "restyle": "stucco",
+    "wall": "#f0eee8",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: its own material and colour (was a grey Haiku recipe)"
   },
   {
     "osm": [
