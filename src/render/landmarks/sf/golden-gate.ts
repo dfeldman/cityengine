@@ -31,6 +31,7 @@ const F = 0
 const ORANGE: Rgb = [0.78, 0.25, 0.14]
 const ORANGE_DARK: Rgb = [0.6, 0.19, 0.11]
 const CONCRETE: Rgb = [0.8, 0.78, 0.72]
+const PYLON_SHADE: Rgb = [0.58, 0.56, 0.52]
 const ROAD: Rgb = [0.2, 0.2, 0.21]
 const LAMP: Rgb = [0.72, 0.7, 0.62]
 const PIER: Rgb = [0.6, 0.6, 0.58]
@@ -223,6 +224,16 @@ function pylon(out: MeshBuilder, zc: number, y0: number): void {
       const yb = y0 + ((top - y0) * (i + 1)) / 4
       bx(out, side * (DECK_HALF + 5), (ya + yb) / 2, zc, 5 - i * 0.7, (yb - ya) / 2, 7 - i * 0.9, CONCRETE, F)
     }
+    // the Art Deco dress the real pylons wear (2026-10-16, from the bay they read as blank slabs): deep vertical
+    // flutes down each face, in shadow, and a stepped crown under the deck
+    const x0 = side * (DECK_HALF + 5)
+    for (const k of [-0.5, 0, 0.5]) {
+      bx(out, x0 + side * 5.02, (y0 + top * 0.75) / 2, zc + k * 7, 0.05, (top * 0.75 - y0) / 2, 0.35, PYLON_SHADE, F)
+      bx(out, x0 + k * 5, (y0 + top * 0.75) / 2, zc - 7.02, 0.35, (top * 0.75 - y0) / 2, 0.05, PYLON_SHADE, F)
+      bx(out, x0 + k * 5, (y0 + top * 0.75) / 2, zc + 7.02, 0.35, (top * 0.75 - y0) / 2, 0.05, PYLON_SHADE, F)
+    }
+    bx(out, x0, top + 0.6, zc, 2.9, 0.6, 3.9, CONCRETE, F)
+    bx(out, x0, top + 1.6, zc, 2.2, 0.4, 3.0, CONCRETE, F)
   }
 }
 
