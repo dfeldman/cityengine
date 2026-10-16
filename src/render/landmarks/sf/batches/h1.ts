@@ -85,9 +85,6 @@ export const H1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** way/287700862 — Talisman Banquet Hall. Event venue, likely converted historic or simple modern. */
   h1_talismanBanquetHall: fromRecipe('brick-loft', { height: 5, wall: [0.55, 0.38, 0.30], glass: [0.20, 0.22, 0.24] }),
 
-  /** way/403167643 — Chinese Hospital. Medical facility, modern institutional design. */
-  h1_chineseHospital: fromRecipe('concrete-piers', { height: 30, wall: [0.76, 0.74, 0.70], glass: [0.28, 0.31, 0.34] }),
-
   /** way/862431309 — EBMUD Outfall Transition/Drop Structure. Utility/infrastructure facility, simple concrete. */
 
   /** way/960975186 — Noisebridge. Hacker collective space, likely converted industrial/warehouse. */

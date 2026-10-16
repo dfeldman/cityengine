@@ -9083,6 +9083,12 @@ function juliusCastle_1541_Montgomery(out: MeshBuilder, fit: Fit): void {
   for (let k = 0; k < 10; k++) { const a = (k / 10) * Math.PI * 2; box(out, tx + Math.cos(a) * 2.15, E + 4.0, tz + Math.sin(a) * 2.15, 0.28, 0.4, 0.28, SAGE, SH) }
 }
 
+/** The Chinese Hospital's bilingual sign over its Jackson Street door (Mapillary): CHINESE 東華醫院 HOSPITAL on a cream band. */
+function chineseHospitalSign(out: MeshBuilder, _fit: Fit): void {
+  sign(out, { type: 'flat', text: 'CHINESE 東華醫院 HOSPITAL', h: 0.45, face: 'grotesque', weight: 'bold', colour: [0.15, 0.17, 0.2], panel: [0.88, 0.85, 0.78], lit: 'none' },
+    { x: 0, y: 4.2, z: 0, heading: 0 })
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -9139,6 +9145,7 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   torpedoAssembly_YBI,
   chinatownYWCA_965_Clay,
   juliusCastle_1541_Montgomery,
+  chineseHospitalSign,
   officersQuarters: (out: MeshBuilder, fit: Fit) => officersQuarters(out, fit),
   officersQuartersNimitz: (out: MeshBuilder, fit: Fit) => officersQuarters(out, fit, true),
   gapHQ_2_Folsom,
