@@ -6,7 +6,7 @@
  */
 import { MeshBuilder, capPolygonWithHoles } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
-import { box, prism, type Rgb } from '../../../models.ts'
+import { box, prism, EMIT, type Rgb } from '../../../models.ts'
 import { boxAlong, marquee, bladeSign, signText } from '../../parts.ts'
 import { classicalColumn } from '../../column.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
@@ -9670,7 +9670,69 @@ function stJohnEvangelist_15th(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+/**
+ * The Henry Doelger Building, 320 Judah (1932; the developer of the Sunset's houses built his office here; Commons
+ * "Doelger Building.JPG", docs/shots/refs/notable/doelger): Streamline Moderne in white stucco. On the right a tall
+ * block under a stepped parapet with a dark coping, its front one deep recessed frame round a tall window gridded in
+ * thin black bars over stainless doors with porthole windows, glass block beside them; on the left a lower wing with
+ * a rounded corner, black speed lines across it over a band of glass block, glass block above, a blue neon clock, a
+ * black tiled plinth and a patterned black grille closing the drive. Front (Judah) on −z; the tall block is +x.
+ */
+function doelgerBuilding_320_Judah(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.88, 0.87, 0.83], BLACK: Rgb = [0.1, 0.1, 0.11], STEEL: Rgb = [0.62, 0.63, 0.64]
+  const BLOCK: Rgb = [0.7, 0.75, 0.76], GLASS: Rgb = [0.3, 0.4, 0.45], BLUE: Rgb = [0.25, 0.35, 0.85]
+  const ST = surfaceTag('stucco'), GL = surfaceTag('glass'), MT = surfaceTag('metal')
+  const hx = Math.max(6, fit.hx), hz = Math.max(6, fit.hz), zf = -hz
+  const xs = -hx + 0.48 * 2 * hx                                    // the split between the wing (−x) and the tall block
+  const W = 7.2, T = 10.6
+  box(out, 0, W / 2, 0, hx, W / 2, hz, WHITE, ST)                   // the low body over the whole lot
+  const bd = Math.min(2 * hz, 13)
+  box(out, (xs + hx) / 2, T / 2, zf + bd / 2, (hx - xs) / 2, T / 2, bd / 2, WHITE, ST)
+  // the stepped parapet: a raised middle, a notch each side, a dark coping on every step
+  const bw = hx - xs, bc = (xs + hx) / 2
+  const steps: [number, number][] = [[bw / 2, T], [bw * 0.38, T + 0.45], [bw * 0.28, T + 0.9]]
+  for (const [w, y] of steps) {
+    box(out, bc, y + 0.225, zf + 0.6, w, 0.225, 0.6, WHITE, ST)
+    box(out, bc, y + 0.47, zf + 0.6, w + 0.04, 0.03, 0.62, BLACK, MT)
+  }
+  box(out, (-hx + xs) / 2, W + 0.03, zf + 0.5, (xs + hx) / 2, 0.04, 0.52, BLACK, MT)
+  // the tall block's front: a deep frame, the gridded window, the doors
+  const fx0 = xs + bw * 0.18, fx1 = hx - bw * 0.18, fm = (fx0 + fx1) / 2, fw = (fx1 - fx0) / 2
+  box(out, fx0 - 0.25, 4.6, zf - 0.35, 0.3, 4.6, 0.35, WHITE, ST)
+  box(out, fx1 + 0.25, 4.6, zf - 0.35, 0.3, 4.6, 0.35, WHITE, ST)
+  box(out, fm, 8.85, zf - 0.35, fw + 0.55, 0.35, 0.35, WHITE, ST)
+  const q = (x0: number, x1: number, y0: number, y1: number, z: number, c: Rgb, tag: number): void =>
+    out.quad([[x1, y0, z], [x0, y0, z], [x0, y1, z], [x1, y1, z]], [0, 0, -1], [[0, 0], [1, 0], [1, 1], [0, 1]], c, tag)
+  // an upright disc facing the street (−z): a porthole, a clock face
+  const disc = (cx: number, cy: number, z: number, r: number, c: Rgb, tag: number): void => {
+    const n = 16
+    for (let k = 0; k < n; k += 2) {
+      const p = (m: number): V3 => { const a = (m / n) * Math.PI * 2; return [cx - Math.cos(a) * r, cy + Math.sin(a) * r, z] }
+      out.quad([[cx, cy, z], p(k), p(k + 1), p(k + 2)], [0, 0, -1], [[0, 0], [1, 0], [1, 1], [0, 1]], c, tag)
+    }
+  }
+  q(fx0 + 0.3, fx1 - 0.3, 2.6, 8.2, zf - 0.03, GLASS, GL)
+  for (const x of [fm - fw * 0.55, fm - fw * 0.2, fm + fw * 0.2, fm + fw * 0.55]) q(x - 0.025, x + 0.025, 2.6, 8.2, zf - 0.05, BLACK, MT)
+  for (const y of [3.4, 7.3, 7.7]) q(fx0 + 0.3, fx1 - 0.3, y - 0.025, y + 0.025, zf - 0.05, BLACK, MT)
+  q(fm - 0.9, fm + 0.9, 0, 2.5, zf - 0.04, STEEL, MT)                         // the stainless doors
+  for (const s of [-0.45, 0.45]) disc(fm + s, 1.5, zf - 0.06, 0.28, GLASS, GL)
+  for (const s of [-1, 1]) q(fm + s * 1.0, fm + s * (fw - 0.3), 0, 2.5, zf - 0.03, BLOCK, GL)
+  // the wing: speed lines over a glass-block band, glass block above, the clock, the plinth, the grille
+  const wx0 = -hx, wx1 = xs - 0.6, wm = (wx0 + wx1) / 2
+  for (const y of [3.75, 3.95, 4.15]) box(out, (wx0 + wx1) / 2, y, zf - 0.12, (wx1 - wx0) / 2, 0.06, 0.12, BLACK, MT)
+  q(wm - 0.2, wx1 - 0.3, 0.9, 3.5, zf - 0.03, BLOCK, GL)
+  q(wm - 0.2, wx1 - 0.3, 4.9, 6.3, zf - 0.03, BLOCK, GL)
+  box(out, wm + 1, 0.45, zf - 0.08, (wx1 - wm) / 2 + 0.3, 0.45, 0.08, BLACK, MT)
+  q(wx0 + 0.3, wm - 0.4, 0, 3.4, zf - 0.04, BLACK, MT)                         // the drive's grille gate
+  for (let x = wx0 + 0.6; x < wm - 0.5; x += 0.5) q(x - 0.12, x + 0.12, 0.3, 3.1, zf - 0.06, [0.25, 0.25, 0.27], MT)
+  disc(wx0 + 1.2, 5.4, zf - 0.05, 0.55, BLUE, EMIT)                              // the neon clock's ring
+  disc(wx0 + 1.2, 5.4, zf - 0.07, 0.45, WHITE, ST)
+  q(wx0 + 1.17, wx0 + 1.23, 5.37, 5.7, zf - 0.09, BLACK, MT)
+  q(wx0 + 1.17, wx0 + 1.4, 5.37, 5.43, zf - 0.09, BLACK, MT)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+  doelgerBuilding_320_Judah,
   stJohnEvangelist_15th,
   irvingScottSchool_1060_Tennessee,
   gguLaw_536_Mission,
