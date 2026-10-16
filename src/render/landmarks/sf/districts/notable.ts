@@ -9410,12 +9410,13 @@ function franklinSchool_1430_Scott(out: MeshBuilder, fit: Fit): void {
 /**
  * Golden Gate University, 536 Mission (the School of Law; the owner's Street View frames 2026-10-16, docs/shots/refs/
  * notable/ggu-law): six storeys whose Mission front is cut by a deep forecourt. Read from the photographs, west to east:
- *  - the SOUTH-WEST face, onto the JPMorgan plaza: a white concrete frame with brick infill and glass, every floor
- *    standing further out than the one below (an inverted setback), the top floor a deep cantilever with a coffered
- *    soffit;
- *  - at the west corner a plain ROUND concrete stair tower, a little taller than the roof;
- *  - the west stretch of the Mission front: bands of red brick capped by concrete, ribbons of dark glass between,
- *    again stepping out floor by floor, and CURVING round into the forecourt's west wall;
+ *  - the west stretch of the Mission front: a white concrete frame with brick infill and glass, every floor standing
+ *    further out than the one below (an inverted setback), the top floor a deep cantilever with a coffered soffit;
+ *  - at the INNER corner, where the front turns into the forecourt, a plain ROUND concrete stair tower, a little
+ *    taller than the roof (the owner, 2026-10-16: "the concrete tower is on the interior corner that is close to the
+ *    entrance");
+ *  - the forecourt's west wall: bands of red brick capped by concrete, ribbons of dark glass between, stepping out
+ *    floor by floor, and CURVING round into the entrance;
  *  - across the back of the forecourt the ENTRANCE: a flat grid of glass between concrete floor edges over a recessed
  *    ground floor on round concrete columns, a sloped glazed canopy, GOLDEN GATE UNIVERSITY in letters along it.
  * The other faces get the plain glass-and-concrete grid. Front (Mission) on −z; the plaza side is −x.
@@ -9440,11 +9441,9 @@ function gguLaw_536_Mission(out: MeshBuilder, fit: Fit): void {
   const back = front.filter((e) => e.mz > zFront + 5).sort((p, q) => q.L - p.L)[0]
   const west = outer[0]
   const corner = west ? (west.a.x < west.b.x ? west.a : west.b) : ring[0]
-  const xWest = Math.min(...ring.map((p) => p.x))
   const kindOf = (e: E): 'frame' | 'bands' | 'entrance' | 'grid' => {
     if (e === back) return 'entrance'
-    if (e.nx < -0.85 && e.mx < xWest + 25 && e.mz < (back ? back.mz : 1e9)) return 'frame'
-    if (e === west) return 'bands'
+    if (e === west) return 'frame'
     if (back && e.nx > 0.85 && e.mz > zFront && e.mz < back.mz && e.mx < back.mx) return 'bands'
     return 'grid'
   }
@@ -9514,12 +9513,14 @@ function gguLaw_536_Mission(out: MeshBuilder, fit: Fit): void {
       flat(0, e.L, 0, G - 0.35, -0.95, GLASS, GL)
     }
   }
-  // the round tower at the west corner, and the brick bands' curve where the Mission front turns into the forecourt
-  prism(out, corner.x + 1.4, corner.z + 1.4, 0, H + 1.6, 3.1, 20, CONC, CN)
-  for (let k = 1; k < 7; k++) prism(out, corner.x + 1.4, corner.z + 1.4, k * 3.6 - 0.03, k * 3.6 + 0.03, 3.13, 20, [0.6, 0.59, 0.56], CN, 3.13, false)
+  // the round tower at the inner corner where the Mission front turns into the forecourt (owner, 2026-10-16), and the
+  // brick bands' curve where the forecourt's side wall turns into the entrance
+  const turn = west ? (west.a.x < west.b.x ? west.b : west.a) : corner
+  prism(out, turn.x + 0.6, turn.z + 1.8, 0, H + 1.6, 3.1, 20, CONC, CN)
+  for (let k = 1; k < 7; k++) prism(out, turn.x + 0.6, turn.z + 1.8, k * 3.6 - 0.03, k * 3.6 + 0.03, 3.13, 20, [0.6, 0.59, 0.56], CN, 3.13, false)
   if (west && back) {
-    const turn = west.a.x < west.b.x ? west.b : west.a, r = 3.4
-    const cx = turn.x - r * 0.7, cz = turn.z + r * 0.7
+    const inner = back.a.x < back.b.x ? back.a : back.b, r = 3.2
+    const cx = inner.x + r * 0.3, cz = inner.z - r * 0.3
     for (let k = 0; k < NF; k++) {
       const y = G + k * S, o = 0.1 + 0.3 * k
       prism(out, cx, cz, y, y + 1.55, r + o, 16, BRICK, BK)
