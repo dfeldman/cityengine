@@ -2323,8 +2323,22 @@ async function bake(spec: CitySpec): Promise<void> {
   const CULTURE = new Set(['theatre', 'cinema', 'library', 'museum', 'gallery', 'attraction'])
   const pois: PackedPoi[] = []
   const seen = new Set<string>()
+  /*
+   * In a district whose shops sign in another language (Chinatown: region shopDistricts), a place OSM also names in
+   * that language shows that name on its board half the time — the real Chinese names (owner, 2026-10-16: "many signs
+   * in chinese. not all ... maybe half").
+   */
+  const zhRings = (region(spec.region).shopDistricts ?? []).filter((d) => d.lang === 'zh').map((d) => d.ring)
+  const inZh = (lat: number, lon: number): boolean => zhRings.some((r) => {
+    let c = false
+    for (let i = 0, j = r.length - 1; i < r.length; j = i++) if ((r[i][0] > lat) !== (r[j][0] > lat) && lon < ((r[j][1] - r[i][1]) * (lat - r[i][0])) / (r[j][0] - r[i][0]) + r[i][1]) c = !c
+    return c
+  })
+  let zhNamed = 0
   for (const n of nodes) {
-    const name = n.tags.name
+    let name = n.tags.name
+    const zh = n.tags['name:zh-Hant'] ?? n.tags['name:yue'] ?? n.tags['name:zh']
+    if (name && zh && zh.length <= 12 && inZh(n.lat, n.lon) && (n.id % 2 === 0)) { name = zh; zhNamed++ }
     if (!name || name.length > 26) continue
     const amenity = n.tags.amenity ?? n.tags.tourism ?? ''
     if (!n.tags.shop && !amenity) continue
@@ -2338,7 +2352,7 @@ async function bake(spec: CitySpec): Promise<void> {
       kind: n.tags.shop ? 'shop' : FOOD.has(amenity) ? 'food' : CULTURE.has(amenity) ? 'culture' : 'service',
     })
   }
-  console.log(`  ${pois.length} named places`)
+  console.log(`  ${pois.length} named places${zhNamed ? ` (${zhNamed} in Chinatown by their Chinese name)` : ''}`)
 
   /*
    * ---- names on the buildings that matter: a plate on the street-facing wall, and for the top tier a
