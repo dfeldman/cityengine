@@ -167,7 +167,8 @@ function panel(out: MeshBuilder, e: Edge, u0: number, u1: number, o: number, y0:
 /**
  * A theatre marquee: a box `w` wide and `h` tall hung `depth` out over the pavement at `y0`, centred `u` along
  * the edge; a lit readerboard on its front and cheeks, the name's band of lamps above it, the soffit lit
- * underneath. The letters themselves are not drawn: at a rider's distance a marquee is its colours and its glow.
+ * underneath. Words on the board (`lines`) and the name (`nameText`) go through the sign system, which drops them
+ * beyond legible range; without them the marquee is its colours and its glow.
  */
 function marquee(out: MeshBuilder, e: Edge, u: number, w: number, y0: number, h: number, depth: number, o: {
   frame: Rgb; board: Rgb; name?: Rgb; nameShare?: number; soffit?: Rgb
