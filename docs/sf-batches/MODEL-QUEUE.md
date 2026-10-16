@@ -60,3 +60,7 @@ Alhambra Theatre (redo) · YWCA 940 Powell · St. Joseph's Hospital.
 Open questions: St. Joseph's — which end carries the taller pavilion is unconfirmed (one photo, from one side).
 Lesson: measure which side of the building its street is on (scratchpad side.ts against the street graph) before
 writing a pack's `front` — two packs had it wrong by guess (Pacific Exchange, Alhambra/YWCA).
+Lesson 2: `tools/model-shots.ts`'s auto cameras look from the fit's +z side, but the city puts the manifest `front`
+bearing on −z — so the auto "front" shot shows the BACK. Every pack must say: front on the ring edge facing −z,
+check it with an explicit `--view=<name>:-1.5708,1.5,40,0,8,0`. (Swedish American Hall was first built facing +z.)
+Lesson 3: brick renders much brighter/oranger in the city than in the shots — specify brick ≈ 30 % darker than the photo.

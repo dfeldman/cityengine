@@ -3967,6 +3967,240 @@ function victoriaTheatre_2961_16th(out: MeshBuilder, fit: Fit): void {
   for (const idx of m.indices) out.indices.push(base + idx)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// Swedish American Hall, 2174 Market Street
+// ---------------------------------------------------------------------------------------------------------------
+
+const SW_SHINGLE: Rgb = [0.29, 0.205, 0.157]      // #4a3428, the dark brown shingles
+const SW_SHINGLE2: Rgb = [0.235, 0.165, 0.125]    // the courses, a shade down
+const SW_WHITE: Rgb = [0.99, 0.98, 0.945]         // #ece8de, the rendered panels
+const SW_BOARD: Rgb = [1, 0.995, 0.965]        // the bargeboards, whiter than the render
+const SW_TIMBER: Rgb = [0.165, 0.19, 0.17]        // #2a312c, half-timbering and window frames
+const SW_SLATE: Rgb = [0.3, 0.34, 0.31]           // #4c5650, the grey-green roofs
+const SW_BRICK: Rgb = [0.42, 0.2, 0.15]
+const SW_GLASS: Rgb = [0.2, 0.25, 0.27]
+const SW_AMBER: Rgb = [0.4, 0.28, 0.18]           // the shuttered shopfront panes
+const SW_DOOR: Rgb = [0.3, 0.17, 0.1]
+const SW_TILE: Rgb = [0.1, 0.14, 0.14]
+
+/**
+ * The Swedish American Hall (1907, August Nordin; OSM calls it "Cafe du Nord" after the basement tenant), 2174 Market Street:
+ * an Arts-and-Crafts / Scandinavian half-timbered front on a dark-shingled body. Two tall steep white gables stand side by
+ * side (an "M" in elevation) over a white rendered face cut by dark timbers, a four-pane window group and a balcony rail;
+ * each has a deep scalloped bargeboard and a dark arched opening under its peak. Smaller white-trimmed dormer gables sit
+ * either side in a steep grey-green roof. Below: a hooded entrance canopy at the left (SWEDISH AMERICAN HALL), a shingled
+ * oriel, iron fire balconies across the centre, a tall pointed-arched window bay at the right, brown arched double doors and
+ * two dark-framed shopfront windows. Photographs: docs/shots/refs/notable/swedish-hall/commons-1.jpg (the Market Street front,
+ * head-on, the reference for everything); the mapillary frames are tree-blocked and show only the green and red neighbours.
+ *
+ * Orientation: front 137 (Market Street, measured): the front is the ring's edge that faces the street, found from the ring
+ * in the fit frame, never from OSM's vertex order. f runs 0..1 across it from the viewer's left; y is metres; pr is out
+ * from the front.
+ *
+ * Where the photographs overruled the numbers: the lot is ~16 m wide, so the front is one flat plane and the M of the
+ * gables spans the middle three quarters of it; the pack's 17.2 m LiDAR maximum is the gable peaks and the eaves are ~10 m.
+ */
+function swedishAmericanHall_2174_Market(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const CL = surfaceTag('clapboard'), BK = surfaceTag('brick')
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  const n = ring.length
+  const info = ring.map((a, i) => {
+    const b = ring[(i + 1) % n], l = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    return { i, a, b, l, nx: (b.z - a.z) / l, nz: -(b.x - a.x) / l }
+  })
+  // the front: the edge facing the street (the city puts the manifest front on local -z: the frontmost edge whose outward normal is nearest -z)
+  let fi = 0, fbest = -1e9
+  for (const e of info) {
+    if (-e.nz < 0.64) continue
+    const score = -(e.a.z + e.b.z) / 2 + e.l * 0.01
+    if (score > fbest) { fbest = score; fi = e.i }
+  }
+  const F = info[fi], { a, nx, nz } = F
+  const tx = (F.b.x - F.a.x) / F.l, tz = (F.b.z - F.a.z) / F.l
+  const h = Math.atan2(nx, nz)
+  let u0 = 1e9, u1 = -1e9, back = 0
+  for (const p of ring) {
+    const u = (p.x - a.x) * tx + (p.z - a.z) * tz, pr = (p.x - a.x) * nx + (p.z - a.z) * nz
+    if (pr > -3) { u0 = Math.min(u0, u); u1 = Math.max(u1, u) }
+    back = Math.min(back, pr)
+  }
+  const L = u1 - u0
+  const YE = 10.0, RIDGE = 15.0
+  const P = (f: number, y: number, pr = 0): V3 => { const u = u0 + f * L; return [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr] }
+  const mf = (mm: number): number => mm / L
+  /** a polygon painted on the front plane, convex, (f, y) points */
+  const fq = (pts: [number, number][], pr: number, c: Rgb, tag = ST): void => {
+    for (let i = 1; i + 1 < pts.length; i++) m.quad([P(pts[0][0], pts[0][1], pr), P(pts[i][0], pts[i][1], pr), P(pts[i + 1][0], pts[i + 1][1], pr), P(pts[i + 1][0], pts[i + 1][1], pr)], [nx, 0, nz], uv, c, tag)
+  }
+  const rect = (f0: number, f1: number, y0: number, y1: number, pr: number, c: Rgb, tag = ST): void => fq([[f0, y0], [f1, y0], [f1, y1], [f0, y1]], pr, c, tag)
+  const slab = (f0: number, f1: number, y0: number, y1: number, pr0: number, pr1: number, c: Rgb, tag = ST): void => {
+    const u = u0 + ((f0 + f1) / 2) * L, pr = (pr0 + pr1) / 2
+    boxAlong(m, a.x + tx * u + nx * pr, (y0 + y1) / 2, a.z + tz * u + nz * pr, ((f1 - f0) * L) / 2, (y1 - y0) / 2, (pr1 - pr0) / 2, h, c, tag)
+  }
+  /** a half disc about (f, y): pointing up (an arch) or down (a scallop) */
+  const semi = (f: number, y: number, r: number, pr: number, c: Rgb, up = true, tag = ST, k = 6): void => {
+    const pts: [number, number][] = [[f, y]]
+    for (let i = 0; i <= k; i++) { const t = (Math.PI * i) / k; pts.push([f + mf(Math.cos(t) * r), y + (up ? 1 : -1) * Math.sin(t) * r]) }
+    fq(pts, pr, c, tag)
+  }
+  const plane = (pts: V3[], c: Rgb, tag = TL): void => {
+    const e1 = [pts[1][0] - pts[0][0], pts[1][1] - pts[0][1], pts[1][2] - pts[0][2]]
+    const e2 = [pts[2][0] - pts[0][0], pts[2][1] - pts[0][1], pts[2][2] - pts[0][2]]
+    let nn: V3 = [e1[1] * e2[2] - e1[2] * e2[1], e1[2] * e2[0] - e1[0] * e2[2], e1[0] * e2[1] - e1[1] * e2[0]]
+    const len = Math.hypot(...nn) || 1
+    nn = [nn[0] / len, nn[1] / len, nn[2] / len]
+    const cen = pts.reduce((t, p) => [t[0] + p[0] / pts.length, t[1] + p[1] / pts.length, t[2] + p[2] / pts.length], [0, 0, 0])
+    const ins = P(0.5, 5, -8)
+    if ((cen[0] - ins[0]) * nn[0] + (cen[1] - ins[1]) * nn[1] + (cen[2] - ins[2]) * nn[2] < 0) nn = [-nn[0], -nn[1], -nn[2]]
+    m.quad(pts.length === 3 ? [pts[0], pts[1], pts[2], pts[2]] : pts, nn, uv, c, tag)
+  }
+  /** a bargeboard along (f0,y0)-(f1,y1): a band w metres deep (vertically), with scallops hanging under it */
+  const board = (f0: number, y0: number, f1: number, y1: number, w: number, pr: number, scal: number): void => {
+    fq([[f0, y0 - w], [f1, y1 - w], [f1, y1], [f0, y0]], pr, SW_BOARD)
+    fq([[f0, y0 - w - 0.13], [f1, y1 - w - 0.13], [f1, y1 - w], [f0, y0 - w]], pr - 0.02, SW_TIMBER)
+    if (scal > 0) {
+      const len = Math.hypot((f1 - f0) * L, y1 - y0), k = Math.max(1, Math.round(len / scal))
+      for (let i = 0; i < k; i++) {
+        const t = (i + 0.5) / k
+        semi(f0 + (f1 - f0) * t, y0 + (y1 - y0) * t - w - 0.05, scal * 0.38, pr, SW_BOARD, false)
+      }
+    }
+  }
+
+  // ---- the body: shingled walls to the eaves, courses on the front -----------------------------------------------------
+  for (const e of info) {
+    m.quad([[e.a.x, -3, e.a.z], [e.b.x, -3, e.b.z], [e.b.x, YE, e.b.z], [e.a.x, YE, e.a.z]], [e.nx, 0, e.nz], uv, SW_SHINGLE, CL)
+  }
+  capPolygonWithHoles(m, [ring], YE - 0.02, SW_SLATE, surfaceTag('concrete'))
+  for (let y = 0.5; y < 9.8; y += 0.46) rect(-0.002, 1.002, y, y + 0.15, 0.015, SW_SHINGLE2, CL)
+
+  // ---- the hipped grey-green roof: ridge along the depth, steep ---------------------------------------------------------
+  const pe = 0.8, bk = back - 0.3, rf = 0.5
+  const run = (L / 2 + 0.3)
+  const rs = pe - run, re = bk + run                                     // ridge from rs (front) to re (rear)
+  const eaveL = -0.3 / L, eaveR = 1 + 0.3 / L
+  plane([P(eaveL, YE, pe), P(eaveR, YE, pe), P(rf, RIDGE, rs)], SW_SLATE)
+  plane([P(eaveR, YE, pe), P(eaveR, YE, bk), P(rf, RIDGE, re), P(rf, RIDGE, rs)], SW_SLATE)
+  plane([P(eaveL, YE, pe), P(rf, RIDGE, rs), P(rf, RIDGE, re), P(eaveL, YE, bk)], SW_SLATE)
+  plane([P(eaveL, YE, bk), P(rf, RIDGE, re), P(eaveR, YE, bk)], SW_SLATE)
+  const roofY = (f: number, pr: number): number => Math.min(YE + (pe - pr) * ((RIDGE - YE) / run), YE + (Math.min(f, 1 - f) * L + 0.3) * ((RIDGE - YE) / run))
+
+  // ---- the twin gables: the white face, an "M" in elevation --------------------------------------------------------------
+  const GP = 0.5                                                          // the face stands this far proud of the shingles
+  const fA = 0.123, fB = 0.422, fC = 0.5, fD = 0.578, fE = 0.877, yA = 9.6, yB = 17.7, yC = 15.4
+  const fl = (y: number): number => fA + ((y - yA) / (yB - yA)) * (fB - fA)       // the left edge at height y
+  fq([[fA, yA], [fE, yA], [fC, yC]], GP, SW_WHITE)
+  fq([[fA, yA], [fC, yC], [fB, yB]], GP, SW_WHITE)
+  fq([[fC, yC], [fE, yA], [fD, yB]], GP, SW_WHITE)
+  // the dark timbers: horizontals, verticals, braces
+  const hbar = (y: number, t: number, f0: number, f1: number): void => slab(f0, f1, y, y + t, GP - 0.02, GP + 0.1, SW_TIMBER)
+  const vbar = (f: number, y0: number, y1: number, wm = 0.26): void => slab(f - mf(wm) / 2, f + mf(wm) / 2, y0, y1, GP - 0.02, GP + 0.1, SW_TIMBER)
+  slab(fA, fE, 9.45, 9.75, 0, GP + 0.15, SW_BOARD)                        // the soffit under the face
+  hbar(11.55, 0.2, fl(11.55) + 0.003, 1 - fl(11.55) - 0.003)
+  hbar(14.3, 0.2, fl(14.3) + 0.003, 1 - fl(14.3) - 0.003)
+  hbar(9.75, 0.2, fA, fE)
+  for (const f of [0.25, 0.37, 0.5, 0.63, 0.75]) vbar(f, 9.75, 11.55)
+  for (const f of [0.43, 0.57]) vbar(f, 14.3, 15.3, 0.12)
+  for (const f of [0.31, 0.69]) vbar(f, 14.3, 15.0, 0.12)
+  for (const f of [0.36, 0.5, 0.64]) vbar(f, 11.55, 14.3)
+  for (const f of [0.36, 0.5, 0.64]) vbar(f, 14.3, 15.3)
+  for (const f of [fB, fD]) vbar(f, 14.5, 16.4, 0.2)
+  vbar(0.31, 11.55, 14.3); vbar(0.69, 11.55, 14.3)
+  for (const f of [fB, fD]) { semi(f, 15.85, 0.62, GP + 0.04, SW_TIMBER); semi(f, 15.9, 0.34, GP + 0.07, SW_WHITE, false) }   // the dark arch under each peak
+  // the window group and the balcony rail
+  rect(0.372, 0.628, 12.0, 14.12, GP + 0.04, SW_TIMBER)
+  for (let i = 0; i < 4; i++) rect(0.378 + i * 0.0625, 0.378 + i * 0.0625 + 0.054, 12.12, 14.0, GP + 0.07, SW_GLASS, GL)
+  slab(0.36, 0.64, 12.0, 12.1, GP, GP + 0.75, SW_TIMBER)
+  slab(0.36, 0.64, 12.85, 12.95, GP + 0.7, GP + 0.78, [0.75, 0.75, 0.72], surfaceTag('metal'))
+  for (let i = 0; i <= 16; i++) rect(0.36 + (0.28 * i) / 16 - 0.002, 0.36 + (0.28 * i) / 16 + 0.002, 12.1, 12.85, GP + 0.78, [0.75, 0.75, 0.72], surfaceTag('metal'))
+  // the white render piers running down the middle of the shingles, behind the fire escape
+  rect(0.29, 0.318, 5.7, 9.6, GP, SW_WHITE); rect(0.7, 0.728, 5.7, 9.6, GP, SW_WHITE)
+  // the scalloped bargeboards: deep on the outer slopes, lighter in the valley
+  board(fA, yA, fB, yB, 1.35, GP + 0.25, 1.1)
+  board(fD, yB, fE, yA, 1.35, GP + 0.25, 1.1)
+  board(fB, yB, fC, yC, 0.9, GP + 0.25, 0.8)
+  board(fC, yC, fD, yB, 0.9, GP + 0.25, 0.8)
+  // the gable roofs behind the boards, running back into the hip
+  const dp = -5.5
+  for (const [fa, ya, fb, yb] of [[fA, yA, fB, yB], [fB, yB, fC, yC], [fC, yC, fD, yB], [fD, yB, fE, yA]] as [number, number, number, number][]) {
+    plane([P(fa, ya, GP + 0.2), P(fb, yb, GP + 0.2), P(fb, yb, dp), P(fa, ya, dp)], SW_SLATE)
+  }
+  fq([[fA, yA], [fE, yA], [fC, yC]], dp, SW_SLATE)
+  fq([[fA, yA], [fC, yC], [fB, yB]], dp, SW_SLATE)
+  fq([[fC, yC], [fE, yA], [fD, yB]], dp, SW_SLATE)
+
+  // ---- the two dormer gables in the roof either side -----------------------------------------------------------------------
+  const dormer = (fc: number): void => {
+    const hw = mf(1.2), dpr = -1.2, by = roofY(fc, dpr) - 0.25
+    slab(fc - hw, fc + hw, by, 13.0, dpr - 2.0, dpr, SW_SHINGLE, CL)
+    rect(fc - hw, fc + hw, by, 13.0, dpr + 0.02, SW_SHINGLE2, CL)
+    rect(fc - mf(0.42), fc + mf(0.42), 12.0, 13.4, dpr + 0.06, SW_TIMBER)
+    rect(fc - mf(0.34), fc + mf(0.34), 12.1, 13.3, dpr + 0.09, SW_GLASS, GL)
+    rect(fc - mf(0.02), fc + mf(0.02), 12.1, 13.3, dpr + 0.11, SW_BOARD)
+    fq([[fc - hw, 13.0], [fc + hw, 13.0], [fc, 15.0]], dpr + 0.02, SW_WHITE)
+    board(fc - hw - mf(0.1), 12.95, fc, 15.15, 0.7, dpr + 0.14, 0.7)
+    board(fc, 15.15, fc + hw + mf(0.1), 12.95, 0.7, dpr + 0.14, 0.7)
+    for (const s of [-1, 1]) plane([P(fc + s * (hw + mf(0.1)), 12.95, dpr + 0.15), P(fc, 15.15, dpr + 0.15), P(fc, 15.15, dpr - 2.6), P(fc + s * (hw + mf(0.1)), 12.95, dpr - 2.6)], SW_SLATE)
+  }
+  dormer(0.136); dormer(0.864)
+  // the chimneys at either end, shingled
+  slab(0.01, 0.065, 11.3, 15.2, -2.3, -1.0, SW_SHINGLE, CL); slab(0.005, 0.07, 15.2, 15.45, -2.4, -0.9, SW_SHINGLE2, CL)
+  slab(0.935, 0.99, 11.3, 15.9, -2.3, -1.0, SW_SHINGLE, CL); slab(0.93, 0.995, 15.9, 16.15, -2.4, -0.9, SW_SHINGLE2, CL)
+
+  // ---- the front below the gables ----------------------------------------------------------------------------------------
+  // upper windows: the small one over the oriel, the oriel itself, the tall pointed-arched bay
+  rect(0.09, 0.17, 7.9, 9.5, 0.03, SW_TIMBER); rect(0.104, 0.156, 8.1, 9.3, 0.07, SW_GLASS, GL)
+  slab(0.07, 0.215, 5.35, 7.75, 0, 0.7, SW_TIMBER)
+  rect(0.085, 0.2, 5.65, 7.45, 0.72, SW_GLASS, GL)
+  for (const f of [0.123, 0.162]) rect(f - 0.002, f + 0.002, 5.65, 7.45, 0.74, SW_TIMBER)
+  plane([P(0.06, 7.75, 0.85), P(0.225, 7.75, 0.85), P(0.225, 8.6, 0.1), P(0.06, 8.6, 0.1)], SW_SLATE)
+  plane([P(0.06, 7.75, 0.85), P(0.06, 8.6, 0.1), P(0.06, 7.75, 0.1)], SW_SLATE)
+  plane([P(0.225, 7.75, 0.85), P(0.225, 8.6, 0.1), P(0.225, 7.75, 0.1)], SW_SLATE)
+  fq([[0.8, 5.4], [0.94, 5.4], [0.94, 8.0], [0.87, 9.15], [0.8, 8.0]], 0.04, SW_TIMBER)
+  fq([[0.812, 5.55], [0.928, 5.55], [0.928, 7.95], [0.87, 8.95], [0.812, 7.95]], 0.08, SW_GLASS, GL)
+  for (const f of [0.84, 0.87, 0.9]) rect(f - 0.002, f + 0.002, 5.55, f === 0.87 ? 8.9 : 8.1, 0.11, SW_TIMBER)
+  for (const y of [6.3, 7.0, 7.7]) rect(0.812, 0.928, y, y + 0.08, 0.11, SW_TIMBER)
+  // the iron fire balcony
+  slab(0.295, 0.72, 5.6, 5.75, 0.1, 0.95, SW_TIMBER, surfaceTag('metal'))
+  slab(0.295, 0.72, 6.6, 6.7, 0.9, 0.97, SW_TIMBER, surfaceTag('metal'))
+  for (let i = 0; i <= 22; i++) { const f = 0.295 + (0.425 * i) / 22; rect(f - 0.0015, f + 0.0015, 5.75, 6.6, 0.96, SW_TIMBER, surfaceTag('metal')) }
+  // ground floor: brick piers, the dark tile base, the lintel, the shopfront windows and the doors
+  slab(0, 0.045, 0, 4.4, 0, 0.12, SW_BRICK, BK); slab(0.225, 0.272, 0, 4.4, 0, 0.12, SW_BRICK, BK); slab(0.975, 1.0, 0, 4.4, 0, 0.12, SW_BRICK, BK)
+  rect(0.272, 0.98, 0, 0.75, 0.05, SW_TILE, surfaceTag('tile'))
+  slab(0.265, 0.985, 3.4, 3.95, 0, 0.22, SW_TIMBER)
+  for (const [f0, f1] of [[0.275, 0.535], [0.715, 0.975]] as [number, number][]) {
+    slab(f0, f1, 0.75, 3.4, 0, 0.12, SW_TIMBER)
+    const w = (f1 - f0 - 0.03) / 3
+    for (let i = 0; i < 3; i++) rect(f0 + 0.01 + i * (w + 0.005), f0 + 0.01 + i * (w + 0.005) + w, 0.95, 3.15, 0.14, f0 > 0.5 && i === 1 ? SW_GLASS : SW_AMBER, GL)
+  }
+  rect(0.585, 0.67, 0, 3.0, 0.1, SW_DOOR); semi(0.6275, 3.0, L * 0.0425, 0.1, SW_DOOR)
+  rect(0.62, 0.635, 0, 3.0, 0.12, SW_TIMBER); slab(0.575, 0.68, 3.35, 3.5, 0, 0.5, SW_TIMBER)
+  // the entrance: the dark recess, doors, and the hooded canopy with its sign band
+  rect(0.06, 0.215, 0, 3.9, 0.06, [0.08, 0.075, 0.07]); rect(0.09, 0.19, 0, 2.7, 0.1, [0.17, 0.1, 0.07])
+  const cf0 = -0.015, cf1 = 0.26, ch = 1.4
+  fq([[cf0, 3.95], [cf1, 3.95], [(cf0 + cf1) / 2, 5.3]], ch, SW_WHITE)
+  board(cf0 - 0.01, 3.95, (cf0 + cf1) / 2, 5.4, 0.45, ch + 0.05, 0)
+  board((cf0 + cf1) / 2, 5.4, cf1 + 0.01, 3.95, 0.45, ch + 0.05, 0)
+  slab(cf0 + 0.01, cf1 - 0.01, 3.4, 3.95, ch - 0.12, ch, SW_BOARD)
+  for (const [s0, s1] of [[0.03, 0.095], [0.105, 0.205], [0.215, 0.25]] as [number, number][]) slab(s0, s1, 3.58, 3.78, ch, ch + 0.04, SW_TIMBER)
+  for (const s of [-1, 1]) plane([P((cf0 + cf1) / 2 + s * (cf1 - cf0) / 2 * 1.04, 3.95, ch + 0.06), P((cf0 + cf1) / 2, 5.4, ch + 0.06), P((cf0 + cf1) / 2, 5.4, 0.1), P((cf0 + cf1) / 2 + s * (cf1 - cf0) / 2 * 1.04, 3.95, 0.1)], SW_SLATE)
+  for (const f of [0.0, 0.245]) slab(f, f + 0.02, 0, 3.4, ch - 0.15, ch, SW_BOARD)
+
+  for (let i = 0; i < m.positions.length; i++) out.positions.push(m.positions[i])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -3985,4 +4219,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   rialtoBuilding_116_NewMontgomery,
   paigeMotorCar_1699_VanNess,
   fourthChurchScientist_300_Funston,
+  swedishAmericanHall_2174_Market,
 }
