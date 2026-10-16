@@ -6655,6 +6655,215 @@ function hotelMetropolis_2_Turk(out: MeshBuilder, fit: Fit): void {
   for (const idx of m.indices) out.indices.push(base + idx)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// The Chateau, 2701 Van Ness Avenue at Greenwich Street
+// ---------------------------------------------------------------------------------------------------------------
+
+const CH_WALL: Rgb = [0.85, 0.81, 0.73]        // #e6dcc8 cream stucco
+const CH_BASE: Rgb = [0.78, 0.73, 0.65]          // the rusticated base, a shade deeper
+const CH_TRIM: Rgb = [0.9, 0.875, 0.83]      // #f1ebdf lighter trim
+const CH_SLATE: Rgb = [0.29, 0.306, 0.333]      // #4a4e55 slate
+const CH_SLATE_DK: Rgb = [0.22, 0.235, 0.262]
+const CH_IRON: Rgb = [0.227, 0.227, 0.227]      // #3a3a3a fire escapes
+const CH_GLASS: Rgb = [0.15, 0.18, 0.22]
+const CH_DOOR: Rgb = [0.11, 0.1, 0.095]
+const CH_CHIM: Rgb = [0.74, 0.7, 0.64]
+
+/**
+ * The Chateau, 2701 Van Ness at Greenwich (1929, seven storeys): a French Chateau-style apartment block. Cream stucco over
+ * a rusticated base with round-arched garage and entrance doors, six storeys of paired windows in light surrounds, a
+ * cornice, then a steep dark slate mansard (two pitches) with a row of pedimented dormers, cream-walled gabled pavilions
+ * at the corners (and mid-way on Greenwich), tall chimneys and black fire escapes on the street fronts.
+ * Photographs: docs/shots/refs/notable/chateau/ way-69707522-02 (Van Ness front) and -03 (the corner), -01 (the corner
+ * gable and chimneys), mapillary-0/1 (the arched base, the escapes), mapillary-2 (the Greenwich wall).
+ *
+ * Orientation: the manifest says front 81 (Van Ness), the 27.6 m east edge, on local -z; Greenwich is the long edge facing
+ * local -x. The plan is a U open to the north (a light court), so those edges are plain wall with windows. Both fronts are
+ * found from the ring's geometry in the fit frame, never from OSM's vertex order.
+ *
+ * Where the photographs overruled the numbers: OSM's eight levels are seven storeys plus the mansard (the Assessor says 7);
+ * LiDAR's 26 m median is the mansard's mean height, so the cream wall stops at ~22.8 m and the roof rises to 30 m.
+ */
+function theChateau_2701_VanNess(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  const n = ring.length
+  const Y_BASE = 5.2, FH = 2.9, Y_EAVE = Y_BASE + 0.2 + 6 * FH     // 22.8
+  const D1 = 2.8, Y1 = Y_EAVE + 5.0, D2 = 6.4, Y2 = Y_EAVE + 6.3  // the steep lower slope, the shallower upper one
+  const surf = (d: number): number => (d <= D1 ? Y_EAVE + (d * (Y1 - Y_EAVE)) / D1 : Y1 + ((Math.min(d, D2) - D1) * (Y2 - Y1)) / (D2 - D1))
+
+  const info = ring.map((a, i) => {
+    const b = ring[(i + 1) % n], l = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    return { i, a, b, l, nx: (b.z - a.z) / l, nz: -(b.x - a.x) / l }
+  })
+  const best = (fn: (e: typeof info[number]) => number, not = -1): number =>
+    info.reduce((bi, e) => (e.i === not ? bi : bi === -1 || fn(e) + e.l * 0.01 > fn(info[bi]) + info[bi].l * 0.01 ? e.i : bi), -1)
+  const fi = best((e) => -e.nz), si = best((e) => -e.nx, fi)       // Van Ness front (-z), Greenwich (-x)
+  const inset = (d: number): P2[] => info.map((e, i) => {
+    const p = info[(i + n - 1) % n]
+    const k = 1 + (p.nx * e.nx + p.nz * e.nz)
+    return { x: e.a.x - ((p.nx + e.nx) / k) * d, z: e.a.z - ((p.nz + e.nz) / k) * d }
+  })
+  const r1 = inset(D1), r2 = inset(D2)
+
+  for (const e of info) {
+    const { a, b, l, nx, nz } = e
+    if (l < 0.5) continue
+    const tx = (b.x - a.x) / l, tz = (b.z - a.z) / l
+    const h = Math.atan2(nx, nz)
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const panel = (u0: number, u1: number, y0: number, y1: number, pr: number, c: Rgb, tag: number): void => {
+      m.quad([P(u0, y0, pr), P(u1, y0, pr), P(u1, y1, pr), P(u0, y1, pr)], [nx, 0, nz], uv, c, tag)
+    }
+    const slab = (u0: number, u1: number, y0: number, y1: number, pr0: number, pr1: number, c: Rgb, tag = ST): void => {
+      boxAlong(m, a.x + tx * (u0 + u1) / 2 + nx * (pr0 + pr1) / 2, (y0 + y1) / 2, a.z + tz * (u0 + u1) / 2 + nz * (pr0 + pr1) / 2,
+        (u1 - u0) / 2, (y1 - y0) / 2, (pr1 - pr0) / 2, h, c, tag)
+    }
+    const street = e.i === fi || e.i === si
+    const tri = (p0: V3, p1: V3, p2: V3, c: Rgb, tag: number, nrm: V3): void => { m.quad([p0, p1, p2, p2], nrm, uv, c, tag) }
+
+    // the wall, the rusticated base and its stringcourse, the cornice
+    panel(0, l, -3, Y_EAVE, 0, CH_WALL, ST)
+    panel(0, l, 0, Y_BASE, 0.05, CH_BASE, ST)
+    if (street) for (let y = 0.9; y < Y_BASE - 0.3; y += 0.9) panel(0, l, y, y + 0.07, 0.09, CH_WALL, ST)
+    slab(-0.1, l + 0.1, Y_BASE - 0.12, Y_BASE + 0.2, 0, 0.26, CH_TRIM)
+    slab(-0.15, l + 0.15, Y_EAVE - 0.55, Y_EAVE + 0.05, 0, 0.55, CH_TRIM)
+    slab(-0.1, l + 0.1, Y_EAVE - 1.0, Y_EAVE - 0.55, 0, 0.18, CH_TRIM)
+    // the roof's two slopes
+    const A1 = r1[e.i], B1 = r1[(e.i + 1) % n], A2 = r2[e.i], B2 = r2[(e.i + 1) % n]
+    const sl = Math.hypot(D1, Y1 - Y_EAVE)
+    m.quad([[a.x, Y_EAVE, a.z], [b.x, Y_EAVE, b.z], [B1.x, Y1, B1.z], [A1.x, Y1, A1.z]], [nx * (Y1 - Y_EAVE) / sl, D1 / sl, nz * (Y1 - Y_EAVE) / sl], uv, CH_SLATE, TL)
+    const s2 = Math.hypot(D2 - D1, Y2 - Y1)
+    m.quad([[A1.x, Y1, A1.z], [B1.x, Y1, B1.z], [B2.x, Y2, B2.z], [A2.x, Y2, A2.z]], [nx * (Y2 - Y1) / s2, (D2 - D1) / s2, nz * (Y2 - Y1) / s2], uv, CH_SLATE, TL)
+
+    // ---- the window storeys: paired sashes in a light surround -----------------------------------------------------
+    const nb = Math.max(1, Math.round(l / 3.3)), pitch = l / nb
+    const bayU = (j: number): number => pitch * (j + 0.5)
+    // arched openings at the base: [centre fraction, half width, door?]
+    const arches: [number, number, boolean][] = e.i === fi ? [[0.2, 1.65, true], [0.5, 0.6, false], [0.76, 1.65, true]]
+      : e.i === si ? [[0.3, 1.65, true], [0.52, 0.6, false], [0.7, 1.65, true], [0.92, 0.6, false]] : []
+    for (const [fr, hw, door] of arches) {
+      const cx = a.x + tx * l * fr, cz = a.z + tz * l * fr
+      const top = door ? 3.5 : 3.0
+      emOpening(m, cx, cz, tx, tz, nx, nz, door ? 0.2 : 1.3, top, hw + 0.3, hw + 0.2, CH_TRIM, ST, 0.1, 6)
+      emOpening(m, cx, cz, tx, tz, nx, nz, door ? 0.2 : 1.45, top, hw, hw * 0.9, door ? CH_DOOR : CH_GLASS, door ? ST : GL, 0.14, 6)
+    }
+    for (let f = 0; f < 6; f++) {
+      const y0 = Y_BASE + 0.2 + f * FH
+      for (let j = 0; j < nb; j++) {
+        const u = bayU(j)
+        if (f === 0 && arches.some(([fr, hw]) => Math.abs(u - l * fr) < hw + 0.9 && false)) continue
+        const hw = Math.min(1.15, pitch * 0.36)
+        panel(u - hw - 0.12, u + hw + 0.12, y0 + 0.7, y0 + 2.4, 0.04, CH_TRIM, ST)
+        panel(u - hw, u - 0.07, y0 + 0.82, y0 + 2.3, 0.08, CH_GLASS, GL)
+        panel(u + 0.07, u + hw, y0 + 0.82, y0 + 2.3, 0.08, CH_GLASS, GL)
+        panel(u - 0.07, u + 0.07, y0 + 0.82, y0 + 2.3, 0.09, CH_TRIM, ST)
+        if (street) panel(u - hw - 0.22, u + hw + 0.22, y0 + 0.58, y0 + 0.72, 0.1, CH_TRIM, ST)
+      }
+      if (street && f >= 1) panel(0, l, y0 + 0.5, y0 + 0.56, 0.03, CH_BASE, ST)   // a shallow belt under the sills
+    }
+    // corner pilasters up both ends of a street front
+    if (street) for (const u of [0.28, l - 0.28]) slab(u - 0.28, u + 0.28, Y_BASE + 0.2, Y_EAVE - 0.55, 0, 0.14, CH_TRIM)
+
+    // ---- dormers along the eave: a cream frame, a window, a pediment, slate cheeks -------------------------------------
+    const dormer = (u: number, tall = 0): void => {
+      const pr = -0.25, hw = 0.95, yb = Y_EAVE + 0.25, yh = Y_EAVE + 3.0 + tall, ya = yh + 0.9
+      panel(u - hw, u + hw, yb, yh, pr, CH_TRIM, ST)
+      panel(u - hw + 0.28, u - 0.05, yb + 0.25, yh - 0.25, pr + 0.04, CH_GLASS, GL)
+      panel(u + 0.05, u + hw - 0.28, yb + 0.25, yh - 0.25, pr + 0.04, CH_GLASS, GL)
+      tri(P(u - hw - 0.08, yh, pr + 0.06), P(u + hw + 0.08, yh, pr + 0.06), P(u, ya + 0.1, pr + 0.06), CH_TRIM, ST, [nx, 0, nz])
+      tri(P(u - 0.55, yh + 0.1, pr + 0.1), P(u + 0.55, yh + 0.1, pr + 0.1), P(u, ya - 0.2, pr + 0.1), CH_SLATE_DK, ST, [nx, 0, nz])
+      const dB = surf(-pr), dR = Math.min(2.6 + tall * 0.6, D2 - 0.4)
+      for (const s of [-1, 1]) {
+        const sn: V3 = [s * tx * 0.8 + nx * 0.3, 0.6, s * tz * 0.8 + nz * 0.3]
+        m.quad([P(u + s * hw, yh, pr), P(u, ya, pr), P(u, ya + 0.15, -dR), P(u + s * hw, Math.max(yh, surf(dR)), -dR)], sn, uv, CH_SLATE, TL)
+        tri(P(u + s * hw, dB, pr), P(u + s * hw, yh, pr), P(u + s * hw, Math.max(yh, surf(dR)), -dR), CH_SLATE_DK, TL, [s * tx, 0, s * tz])
+      }
+    }
+    const nd = street ? nb : Math.floor(nb / 2)
+    for (let j = 0; j < nd; j++) {
+      const u = street ? bayU(j) : pitch * (j * 2 + 1)
+      const clear = street && (u < 4.4 || u > l - 4.4 || (e.i === si && Math.abs(u - l / 2) < 2.6))
+      if (!clear && u > 1.2 && u < l - 1.2) dormer(u)
+    }
+
+    // ---- cream gabled pavilions rising through the mansard: both ends of a front, and mid-way on Greenwich -----------
+    if (street) {
+      const gus = [3.2, l - 3.2].concat(e.i === si ? [l / 2] : [])
+      for (const u of gus) {
+        const w = 2.9, yA = Y_EAVE + 6.0, yR = Y_EAVE + 7.0, dR = 3.7
+        tri(P(u - w, Y_EAVE, 0.02), P(u + w, Y_EAVE, 0.02), P(u, yA, 0.02), CH_WALL, ST, [nx, 0, nz])
+        tri(P(u - w + 0.3, Y_EAVE + 0.1, 0.05), P(u + w - 0.3, Y_EAVE + 0.1, 0.05), P(u, yA - 0.4, 0.05), CH_TRIM, ST, [nx, 0, nz])
+        for (const du of [-1.4, 0, 1.4]) {
+          const hh = du === 0 ? 0.6 : 0.46
+          emOpening(m, a.x + tx * (u + du) + nx * 0.06, a.z + tz * (u + du) + nz * 0.06, tx, tz, nx, nz, Y_EAVE + 0.55, Y_EAVE + (du === 0 ? 2.7 : 2.2), hh + 0.12, hh * 0.9, CH_TRIM, ST, 0.07, 6)
+          emOpening(m, a.x + tx * (u + du) + nx * 0.06, a.z + tz * (u + du) + nz * 0.06, tx, tz, nx, nz, Y_EAVE + 0.65, Y_EAVE + (du === 0 ? 2.7 : 2.2), hh, hh * 0.85, CH_GLASS, GL, 0.1, 6)
+        }
+        for (const s of [-1, 1]) {
+          const bk = surf(dR)
+          const sn: V3 = [s * tx * 0.85 + nx * 0.2, 0.7, s * tz * 0.85 + nz * 0.2]
+          m.quad([P(u + s * w, Y_EAVE, 0.12), P(u, yA, 0.12), P(u, yR, -dR), P(u + s * w, bk, -dR)], sn, uv, CH_SLATE, TL)
+          tri(P(u + s * w, Y_EAVE, 0), P(u + s * w, Y_EAVE, -0.01), P(u + s * w, bk, -dR), CH_SLATE_DK, TL, [s * tx, 0, s * tz])
+        }
+        slab(u - 0.12, u + 0.12, yA - 0.1, yA + 0.35, -0.1, 0.1, CH_TRIM)      // the finial
+      }
+    }
+
+    // ---- black fire escapes up the street fronts ---------------------------------------------------------------------
+    const escape = (u: number): void => {
+      for (let f = 0; f < 6; f++) {
+        const y = Y_BASE + 0.2 + f * FH + 0.55
+        slab(u - 1.05, u + 1.05, y - 0.05, y + 0.05, 0.02, 1.0, CH_IRON, ST)
+        slab(u - 1.05, u + 1.05, y + 0.95, y + 1.0, 0.96, 1.0, CH_IRON, ST)
+        slab(u - 1.05, u - 1.0, y + 0.05, y + 1.0, 0.02, 1.0, CH_IRON, ST)
+        slab(u + 1.0, u + 1.05, y + 0.05, y + 1.0, 0.02, 1.0, CH_IRON, ST)
+        if (f > 0) {
+          const dir = f % 2 === 0 ? 1 : -1, uc = u + dir * 0.45, p = 1.02
+          const q: V3[] = [P(uc - 0.3, y - FH, p), P(uc + 0.3, y - FH, p), P(uc + 0.3 - dir * 0.9, y, p), P(uc - 0.3 - dir * 0.9, y, p)]
+          m.quad(q, [nx, 0, nz], uv, CH_IRON, ST)
+          m.quad([q[1], q[0], q[3], q[2]], [-nx, 0, -nz], uv, CH_IRON, ST)
+        }
+      }
+    }
+    if (e.i === fi) escape(l * 0.72)
+    if (e.i === si) { escape(l * 0.4); escape(l * 0.84) }
+  }
+
+  // ---- chimneys: tall cream stacks with a cap, along the roof's upper slope ------------------------------------------------
+  const chim = (e: typeof info[number], fr: number, d: number): void => {
+    const tx = (e.b.x - e.a.x) / e.l, tz = (e.b.z - e.a.z) / e.l
+    const cx = e.a.x + tx * e.l * fr - e.nx * d, cz = e.a.z + tz * e.l * fr - e.nz * d
+    const h = Math.atan2(e.nx, e.nz), y0 = surf(d) - 0.3
+    boxAlong(m, cx, (y0 + 30.1) / 2, cz, 0.55, (30.1 - y0) / 2, 0.45, h, CH_CHIM, ST)
+    boxAlong(m, cx, 30.2, cz, 0.7, 0.14, 0.6, h, CH_TRIM, ST)
+    boxAlong(m, cx, 30.5, cz, 0.45, 0.16, 0.35, h, CH_SLATE_DK, ST)
+  }
+  const bigStack = (e: typeof info[number], fr: number, d: number): void => {
+    const tx = (e.b.x - e.a.x) / e.l, tz = (e.b.z - e.a.z) / e.l
+    const cx = e.a.x + tx * e.l * fr - e.nx * d, cz = e.a.z + tz * e.l * fr - e.nz * d, h = Math.atan2(e.nx, e.nz)
+    boxAlong(m, cx, (surf(d) - 0.3 + 30.3) / 2, cz, 1.0, (30.3 - surf(d) + 0.3) / 2, 0.8, h, CH_SLATE_DK, ST)
+    boxAlong(m, cx, 30.4, cz, 1.15, 0.1, 0.95, h, CH_TRIM, ST)
+  }
+  const E = info[fi], S = info[si]
+  chim(E, 0.36, 5.2); chim(E, 0.64, 5.6)
+  chim(S, 0.22, 5.4); bigStack(S, 0.42, 5.4); chim(S, 0.62, 5.6); chim(S, 0.82, 5.2)
+
+  capPolygonWithHoles(m, [r2], Y2, CH_SLATE, surfaceTag('concrete'))
+
+  for (let i = 0; i < m.positions.length; i++) out.positions.push(m.positions[i])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -6684,4 +6893,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   office_235_Second,
   planningBuilding_1650_Mission,
   hotelMetropolis_2_Turk,
+  theChateau_2701_VanNess,
 }
