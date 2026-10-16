@@ -92,3 +92,11 @@ short underpasses ridden, unnamed slip lanes as side paths.
 Former theatres (Northpoint, Red Vic, Grandview, Surf): repurposed buildings — not worth models now.
 Next: 288719494 (4th & Harrison rounded corner, builder drafted), Hotel Kabuki tower (681442041, drafted),
 Uber HQ Mission Bay (Opus, in progress), Ping Yuen (generic but gist right — later).
+
+Later 2026-10-16 (03:00-04:45): Uber HQ B1+B2 (Opus) · Hotel Kabuki tower · 4th & Harrison apartments · Kong Chow
+Temple · Grant & Sacramento corner (Bank of America / Gold Mountain) · Waverly Place painted row · East Ping Yuen
+restyle · Ocean Climate Center (Crissy Field) · Yerba Buena Island officers' quarters ×8 · Metro Theatre · The Light
+House (651 Dolores) · The Clift (restyle) · 243571728 (restyle) · phantom towers 58 Main / Oceanwide removed ·
+555 California and Southern Pacific brick darkened (see BUGS.md #280: the colour grade is the cause).
+Checked and fine as they are: Dragon Gate, Hilton Union Square tower, Alcatraz cellhouse.
+Skipped (no usable photo): Nob Hill Theatre, GGU School of Law.
