@@ -37,7 +37,9 @@ export function bakeStamp(m: Pick<MapIndex, 'dict' | 'bake'> & { baked?: string 
 export async function openV3(root: string, id: string): Promise<CitySource | null> {
   const base = `${root}cities/${id}/v3/`
   // the index is asked about every time (a 304 when it has not changed): it decides the stamp on everything else
-  const m = await json<MapIndex>(`${base}index.json`, { cache: 'no-cache' })
+  // (`?v=2`: a new URL for the index, past the copy a corporate proxy kept under the old cache header — Zscaler,
+  //  2026-10-16, 404s on pruned tiles; the worker now serves it private, so no proxy can keep this one)
+  const m = await json<MapIndex>(`${base}index.json?v=2`, { cache: 'no-cache' })
   if (!m || m.v !== 3) return null
   const index = adaptIndex(m)
   const stamp = bakeStamp(m)
