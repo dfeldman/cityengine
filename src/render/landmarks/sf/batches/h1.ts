@@ -26,9 +26,6 @@ export const H1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   h1_ucsf_grand: fromRecipe('concrete-piers', { height: 9, wall: [0.76, 0.74, 0.70], glass: [0.26, 0.28, 0.30] }),
 
 
-  /** way/256633745 — UCSF Medical Center at Mount Zion. Medical campus, modern institutional design. */
-  h1_ucsf_mountZion: fromRecipe('midcentury-slab', { height: 29, wall: [0.75, 0.71, 0.65], glass: [0.26, 0.30, 0.35] }),
-
   /** way/108409080 — Headlands Center for the Arts. Artist community in historic building, likely renovated Victoriana. */
 
   /** way/112433952 — Sharon Art Studio. Small arts building, simple brick or stucco. */
@@ -43,14 +40,8 @@ export const H1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** way/167176657 — Third Space. Community gathering place, modern simple building. */
   h1_thirdSpace: fromRecipe('midcentury-slab', { height: 9, wall: [0.70, 0.67, 0.62], glass: [0.24, 0.27, 0.30] }),
 
-  /** way/206652621 — Chinatown Public Health Center. Health facility, modern concrete institutional. */
-  h1_chinatownPublicHealth: fromRecipe('concrete-piers', { height: 18, wall: [0.74, 0.73, 0.70], glass: [0.28, 0.30, 0.33] }),
-
   /** way/218258617 — USPS Townsend Street Facility. Government/industrial building, utilitarian modern. */
   h1_uspsToyndsend: fromRecipe('midcentury-slab', { height: 7, wall: [0.65, 0.62, 0.58], glass: [0.22, 0.25, 0.28] }),
-
-  /** way/256633744 — Hellman Building. Institutional/civic building, modern design. */
-  h1_hellmanBuilding: fromRecipe('concrete-piers', { height: 19, wall: [0.76, 0.74, 0.70], glass: [0.26, 0.28, 0.31] }),
 
   /** way/256633746 — Helen Diller Family Comprehensive Cancer Center. Medical facility, modern glass and concrete. */
   h1_helenDillerCancerCenter: fromRecipe('concrete-piers', { height: 30, wall: [0.74, 0.72, 0.68], glass: [0.30, 0.32, 0.35] }),

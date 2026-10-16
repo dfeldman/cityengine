@@ -28,9 +28,12 @@
     "osm": [
       "way/256633745"
     ],
-    "procedural": "h1_ucsf_mountZion",
     "name": "UCSF Medical Center at Mount Zion",
-    "height": 29
+    "height": 29,
+    "restyle": "classical",
+    "wall": "#d9c7a6",
+    "noShops": true,
+    "note": "Mount Zion: tan Beaux-Arts stone front with a later white wing (Mapillary 2026-10-16; was a grey banded box)"
   },
   {
     "osm": [
@@ -68,9 +71,12 @@
     "osm": [
       "way/206652621"
     ],
-    "procedural": "h1_chinatownPublicHealth",
     "name": "Chinatown Public Health Center",
-    "height": 18
+    "height": 18,
+    "restyle": "brutalist",
+    "wall": "#8c8a86",
+    "noShops": true,
+    "note": "1970s dark concrete with a big grid of windows (Mapillary 2026-10-16)"
   },
   {
     "osm": [
@@ -84,9 +90,12 @@
     "osm": [
       "way/256633744"
     ],
-    "procedural": "h1_hellmanBuilding",
     "name": "Hellman Building",
-    "height": 19
+    "height": 19,
+    "restyle": "classical",
+    "wall": "#b59a76",
+    "noShops": true,
+    "note": "a 1900s buff stone-and-brick block (Mapillary 2026-10-16; was a grey concrete box)"
   },
   {
     "osm": [
