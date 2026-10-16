@@ -10588,3 +10588,33 @@ Ride files rebuilt (`bake --rides`), bake 20261015T0536-mhrq.
 
 For the owner to ride (measured straightened): Jones St at 37.784879 −122.412746; Stanyan at 37.764511
 −122.452645; Bryant at 37.783059 −122.393580; Fulton at 37.772285 −122.489561; Van Ness at 37.802283 −122.424757.
+
+
+### #266 Floating newspaper boxes near 37.784606 −122.422846 (owner, 2026-10-15 night) — OPEN
+
+### #267 St. Mary's Cathedral forecourt / parking plaza is barely modelled (owner, 2026-10-15) — OPEN
+
+Only two odd raised walkways. Really: a raised patterned terracotta plaza with white star tiling over the garage,
+running from Geary to the cathedral, with sunken terracotta parking courts either side (planter islands) and
+stairs down. Satellite: `docs/shots/refs/bugs/267-cathedral-plaza.webp`.
+
+### #268 Webster Street pedestrian bridge over Geary (Japantown) is worth a model (owner, 2026-10-15) — OPEN
+
+Orange-red steel arch deck on tapered piers (black-painted bases), black railings, Japanese lanterns on red
+posts, ramps both ends. Photo: `docs/shots/refs/bugs/268-webster-bridge.webp`.
+
+### #269 A roof plane hangs detached above its building (owner, 2026-10-15) — OPEN, location unknown
+
+Screenshot `docs/shots/refs/bugs/269-roof-detached.webp`: a grey sloped slab floating over a beige office block; a
+Gothic church tower in the background (St. Dominic's/St. Mary's area?).
+
+### #270 Fillmore overpass over Geary: ride paths broken at 37.784459 −122.432795 (owner, 2026-10-15) — OPEN
+
+Hard to go straight under; most paths climb into the air to the overpass; on top, both streets just make U-turns.
+
+### #271 Embarcadero Center podiums drawn as generic apartments at 37.794374 −122.397746 (owner, 2026-10-15) — OPEN
+
+Both sides of the street: they are the brutalist concrete podium extensions of the towers (deep overhanging
+pergola roofs, ivy, skybridges over Davis). Photo: `docs/shots/refs/bugs/271-embarcadero-podium.webp`.
+
+### #272 Two paths on one street with no median near 37.786900 −122.398178 (owner, 2026-10-15) — OPEN

@@ -10,6 +10,7 @@ import { box, prism, type Rgb } from '../../../models.ts'
 import { boxAlong, marquee, bladeSign, signText } from '../../parts.ts'
 import { classicalColumn } from '../../column.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
+import { inset as ecInset, walls as ecWalls, soffit as ecSoffit, piers as ecPiers, onEdge as ecOnEdge } from '../ec4-podium.ts'
 
 type P2 = { x: number; z: number }
 type V3 = [number, number, number]
@@ -7610,6 +7611,62 @@ function marltonManor_Jones_Eddy(out: MeshBuilder, fit: Fit): void {
 }
 
 
+// ---------------------------------------------------------------------------------------------------------------
+// Embarcadero Center 2 and 3: the podium blocks either side of Davis Street (BUGS.md #271)
+// ---------------------------------------------------------------------------------------------------------------
+
+/**
+ * The two three-storey podium blocks flanking Davis Street between Sacramento and Clay (OSM ways 132121543, west, and
+ * 132121548, east — untagged `building:levels=3`, drawn as tan Edwardian apartments until 2026-10-16). They are the
+ * Center's own brutalist concrete: shops recessed behind square piers at the street, a tall blank board-formed wall
+ * with ivy trailing over its top, a glazed top storey set back under a deep concrete pergola on slender posts. The
+ * owner's Street View down Davis: docs/shots/refs/bugs/271-embarcadero-podium.webp. The same all round, so no front.
+ */
+function ecPodium_Davis(out: MeshBuilder, fit: Fit): void {
+  const conc = surfaceTag('concrete'), glass = surfaceTag('glass')
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  const CONC: Rgb = [0.78, 0.75, 0.69], CONC_DK: Rgb = [0.62, 0.6, 0.56], SHOP: Rgb = [0.26, 0.3, 0.31]
+  const GLZ: Rgb = [0.2, 0.24, 0.27], IVY: Rgb = [0.19, 0.29, 0.15], IVY2: Rgb = [0.23, 0.34, 0.17]
+  const G = 4.6, W = 10.6, P = 13.4, TOP = 14.2
+
+  // the street storey: shopfronts a metre back behind square piers, a soffit over the recess
+  const shop = ecInset(ring, 1.0)
+  ecWalls(out, shop, 0, G, SHOP, glass)
+  ecSoffit(out, ring, shop, G - 0.25, CONC_DK, conc)
+  ecPiers(out, ring, 6.5, 0, G, 0.9, CONC, conc)
+  // the blank wall, ivy trailing over its top in ragged curtains
+  ecWalls(out, ring, G, W, CONC, conc)
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z)
+    const n = Math.floor(L / 2.2)
+    for (let k = 0; k < n; k++) {
+      const drop = 1.2 + ((k * 37 + i * 11) % 7) * 0.42
+      if ((k * 13 + i) % 5 === 0) continue
+      ecOnEdge(out, ring, i, (k + 0.5) / n, 0.18, L / n + 0.15, 0.3, W - drop, W + 0.3, (k & 1) ? IVY : IVY2, 0)
+    }
+  }
+  capPolygonWithHoles(out, [ring], W, [0.5, 0.48, 0.45], conc)
+  // the top storey, set back, glazed, under the pergola
+  const top = ecInset(ring, 2.6)
+  ecWalls(out, top, W, P, GLZ, glass)
+  capPolygonWithHoles(out, [top], P, [0.45, 0.43, 0.4], conc)
+  ecPiers(out, ring, 6.5, W, P, 0.45, CONC, conc)
+  // the pergola: a deep edge beam out past the wall, louvres across to the top storey
+  const rim = ecInset(ring, -1.2), rimIn = ecInset(ring, 0.2)
+  ecSoffit(out, rim, rimIn, P, CONC, conc)
+  ecWalls(out, rim, P, TOP, CONC, conc)
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z)
+    const n = Math.floor(L / 1.6)
+    for (let k = 1; k < n; k++) ecOnEdge(out, ring, i, k / n, -1.1, 0.25, 4.6, P + 0.3, TOP, CONC, conc)
+  }
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -7644,4 +7701,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   apartments_2400_Pacific,
   decoBlock_1015_VanNess,
   marltonManor_Jones_Eddy,
+  ecPodium_Davis,
 }
