@@ -7350,6 +7350,111 @@ function markerHotel_501_Geary(out: MeshBuilder, fit: Fit): void {
   for (const idx of m.indices) out.indices.push(base + idx)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// 1015-1035 Van Ness Avenue at Geary (Art Deco-revival block)
+// ---------------------------------------------------------------------------------------------------------------
+
+const VN_SAND: Rgb = [0.7, 0.64, 0.52]
+const VN_TAN: Rgb = [0.62, 0.5, 0.35]
+const VN_SPAN: Rgb = [0.5, 0.44, 0.34]
+const VN_GLASS: Rgb = [0.13, 0.15, 0.18]
+const VN_STORE: Rgb = [0.23, 0.24, 0.25]
+
+/**
+ * 1015-1035 Van Ness Avenue at Geary (2004): an eight-storey sand-coloured block. A darker tan three-storey base (dark
+ * storefront storey, two rows of windows), over it five storeys ruled by tall cream piers standing ~0.4 m proud and
+ * running the full height, between them recessed bays of dark windows over darker spandrels, and the piers rising above
+ * the roof as a sawtooth crown of stepped pier-heads, alternately tall and short.
+ *
+ * Photographs: docs/shots/refs/notable/1015-vanness/ way-256479475-02 (the Van Ness front head-on, the key reference),
+ * -01 and -03 (the corner with Geary and the long side). Neighbouring glass towers are not ours.
+ *
+ * Orientation: front 81 (Van Ness) on local -z, Geary on the adjacent +x edge; both found from edge normals, never from
+ * OSM vertex order. Every other edge is a plainer party/rear wall.
+ */
+function decoBlock_1015_VanNess(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const CN = surfaceTag('concrete')
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  const n = ring.length
+  const TOP = 25, Y_G = 4.4, Y_B = 10.4, FL = 2.9
+
+  for (let i = 0; i < n; i++) {
+    const a = ring[i], b = ring[(i + 1) % n], l = Math.hypot(b.x - a.x, b.z - a.z)
+    if (l < 0.5) continue
+    const tx = (b.x - a.x) / l, tz = (b.z - a.z) / l, nx = tz, nz = -tx
+    const h = Math.atan2(nx, nz)
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const panel = (u0: number, u1: number, y0: number, y1: number, pr: number, c: Rgb, tag: number): void => {
+      m.quad([P(u0, y0, pr), P(u1, y0, pr), P(u1, y1, pr), P(u0, y1, pr)], [nx, 0, nz], uv, c, tag)
+    }
+    const slab = (u0: number, u1: number, y0: number, y1: number, pr0: number, pr1: number, c: Rgb): void => {
+      boxAlong(m, a.x + tx * (u0 + u1) / 2 + nx * (pr0 + pr1) / 2, (y0 + y1) / 2, a.z + tz * (u0 + u1) / 2 + nz * (pr0 + pr1) / 2,
+        (u1 - u0) / 2, (y1 - y0) / 2, (pr1 - pr0) / 2, h, c, CN)
+    }
+    const street = l > 8 && (nz < -0.7 || nx > 0.7)
+    panel(0, l, -3, TOP, 0, street ? VN_SPAN : VN_SAND, CN)
+    if (!street) {
+      for (let u = 2; u < l - 1.2; u += 3.4) for (let f = 0; f < 8; f++) {
+        const y = f === 0 ? 1.2 : Y_G + (f - 1) * FL + 0.7
+        panel(u, u + 1.2, y, y + 1.5, 0.05, VN_GLASS, GL)
+      }
+      slab(-0.1, l + 0.1, TOP - 0.5, TOP, 0, 0.3, VN_TAN)
+      continue
+    }
+    const kb = Math.max(3, Math.round(l / 2.9)), w = l / kb
+    // the tan base: storefront storey (dark glass between piers), two rows of windows with lintel bands
+    panel(0, l, -3, Y_B, 0.02, VN_TAN, CN)
+    panel(0, l, 0.3, Y_G - 0.5, 0.06, VN_STORE, ST)
+    for (let j = 0; j < kb; j++) {
+      const uc = w * (j + 0.5)
+      panel(uc - w * 0.36, uc + w * 0.36, 0.6, Y_G - 0.7, 0.1, VN_GLASS, GL)
+      for (let f = 0; f < 2; f++) {
+        const y0 = Y_G + f * 3.0 + 0.6
+        panel(uc - w * 0.3, uc + w * 0.3, y0, y0 + 1.6, 0.08, VN_GLASS, GL)
+        slab(uc - w * 0.33, uc + w * 0.33, y0 + 1.6, y0 + 1.85, 0, 0.18, VN_SAND)
+      }
+    }
+    for (let j = 0; j <= kb; j++) {
+      const u = w * j
+      slab(Math.max(0, u - 0.35), Math.min(l, u + 0.35), 0, Y_B, 0, 0.22, VN_TAN)
+    }
+    slab(-0.05, l + 0.05, Y_G - 0.5, Y_G - 0.1, 0, 0.3, VN_SAND)
+    slab(-0.05, l + 0.05, Y_B - 0.25, Y_B + 0.15, 0, 0.45, VN_SAND)                                       // the string course
+    // five storeys of recessed bays between proud piers
+    for (let j = 0; j < kb; j++) {
+      const uc = w * (j + 0.5)
+      for (let f = 0; f < 5; f++) {
+        const y0 = Y_B + 0.15 + f * FL
+        panel(uc - w * 0.2, uc + w * 0.2, y0 + 0.85, y0 + 2.35, 0.07, VN_GLASS, GL)
+      }
+      slab(uc - w * 0.3, uc + w * 0.3, TOP - 0.5, TOP - 0.1, 0, 0.35, VN_SAND)                          // the top balconies
+    }
+    for (let j = 0; j <= kb; j++) {
+      const u = w * j, u0 = Math.max(0, u - 0.8), u1 = Math.min(l, u + 0.8)
+      slab(u0, u1, Y_B + 0.15, TOP, 0, 0.4, VN_SAND)                                                    // the proud pier
+      const tall = j % 2 === 0, H = TOP + (tall ? 2.6 : 1.6)
+      slab(u0 + 0.1, u1 - 0.1, TOP, H - 0.7, 0, 0.4, VN_SAND)                                            // pier-head shaft
+      slab(u0 - 0.08, u1 + 0.08, H - 0.7, H, -0.05, 0.48, VN_TAN)                                        // stepped cap
+      slab(u0 + 0.12, u1 - 0.12, H, H + 0.25, 0, 0.36, VN_SAND)
+    }
+  }
+  capPolygonWithHoles(m, [ring], TOP - 0.2, [0.45, 0.43, 0.4], CN)
+
+  for (let i = 0; i < m.positions.length; i++) out.positions.push(m.positions[i])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
 
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
@@ -7383,4 +7488,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   markerHotel_501_Geary,
   theChateau_2701_VanNess,
   apartments_2400_Pacific,
+  decoBlock_1015_VanNess,
 }
