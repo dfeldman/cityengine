@@ -10034,7 +10034,46 @@ function engineCo2_460_Bush(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+/**
+ * The F-line SHELTERS on the Embarcadero's streetcar platforms (Commons "Streetcar shelter and Pier 35, March 2026.jpg",
+ * docs/shots/refs/fline): a roof of pale green frosted glass that ARCHES — up toward its middle along the platform and
+ * curved over front to back like a wave — on curved steel ribs carried by four square grey posts, a glazed ad panel at
+ * one end, two perch seats, and a dark name band under the front eave. One per platform (manifest
+ * `fline-shelters.json`, generated from OSM's tram platforms); local x along the platform, z across it.
+ */
+function flineShelter(out: MeshBuilder, _fit: Fit): void {
+  const STEEL: Rgb = [0.55, 0.57, 0.58], DARK: Rgb = [0.16, 0.17, 0.18], GLASS: Rgb = [0.6, 0.76, 0.72], PANEL: Rgb = [0.5, 0.62, 0.66]
+  const MT = surfaceTag('metal'), GL = surfaceTag('glass')
+  const UVQ: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const HL = 3.4, HD = 1.45, PX = 2.3, PZ = 0.95, POST = 2.55
+  // the roof's height over (u, v), u along (-HL..HL), v across (-HD..HD): an arch each way
+  const roof = (u: number, v: number): number => POST + 0.25 + 0.45 * Math.cos((u / HL) * Math.PI / 2) + 0.28 * Math.cos((v / HD) * Math.PI / 2)
+  const NU = 12, NV = 5
+  for (let i = 0; i < NU; i++) for (let j = 0; j < NV; j++) {
+    const u0 = -HL + (2 * HL * i) / NU, u1 = -HL + (2 * HL * (i + 1)) / NU, v0 = -HD + (2 * HD * j) / NV, v1 = -HD + (2 * HD * (j + 1)) / NV
+    const q: V3[] = [[u0, roof(u0, v0), v0], [u1, roof(u1, v0), v0], [u1, roof(u1, v1), v1], [u0, roof(u0, v1), v1]]
+    out.quad(q, [-(roof(u1, v0) - roof(u0, v0)) / (u1 - u0), 1, -(roof(u0, v1) - roof(u0, v0)) / (v1 - v0)], UVQ, GLASS, GL)
+  }
+  // the edge beams round the glass and the ribs across it
+  const beamAlong = (v: number): void => { for (let i = 0; i < NU; i++) { const u0 = -HL + (2 * HL * i) / NU, u1 = u0 + (2 * HL) / NU; out.quad([[u0, roof(u0, v) - 0.12, v], [u1, roof(u1, v) - 0.12, v], [u1, roof(u1, v) + 0.02, v], [u0, roof(u0, v) + 0.02, v]], [0, 0, Math.sign(v)], UVQ, STEEL, MT) } }
+  beamAlong(-HD); beamAlong(HD)
+  for (const u of [-HL, -PX, 0, PX, HL]) for (let j = 0; j < NV; j++) {
+    const v0 = -HD + (2 * HD * j) / NV, v1 = v0 + (2 * HD) / NV
+    out.quad([[u - 0.04, roof(u, v0) - 0.14, v0], [u - 0.04, roof(u, v1) - 0.14, v1], [u - 0.04, roof(u, v1) + 0.01, v1], [u - 0.04, roof(u, v0) + 0.01, v0]], [-1, 0, 0], UVQ, STEEL, MT)
+  }
+  // the four posts, up to the ribs
+  for (const x of [-PX, PX]) for (const z of [-PZ, PZ]) box(out, x, (roof(x, z) - 0.1) / 2, z, 0.07, (roof(x, z) - 0.1) / 2, 0.07, STEEL, MT)
+  // the ad panel at one end, glass, lit, in a steel frame
+  box(out, -PX - 0.05, 1.25, 0, 0.05, 0.95, 0.75, STEEL, MT)
+  box(out, -PX - 0.11, 1.25, 0, 0.01, 0.85, 0.65, PANEL, EMIT)
+  box(out, -PX + 0.01, 1.25, 0, 0.01, 0.85, 0.65, PANEL, EMIT)
+  // the name band under the front eave, and two perch seats
+  box(out, 0, POST - 0.05, -PZ, 1.6, 0.1, 0.03, DARK, MT)
+  for (const x of [-0.35, 0.35]) { box(out, x, 0.72, 0.6, 0.28, 0.05, 0.18, [0.78, 0.76, 0.7], MT); box(out, x, 0.35, 0.6, 0.04, 0.35, 0.04, STEEL, MT) }
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+  flineShelter,
   engineCo2_460_Bush,
   hammettPlace_20,
   batteryMarcusMiller,

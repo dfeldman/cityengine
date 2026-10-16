@@ -216,6 +216,8 @@ const KNOWN: Record<string, string[]> = {
     'duplicate | figureOnPedestal',
     // the Muni Metro tunnel portals (sf/portals.ts, 2026-10-06): one generic builder placed at each standalone point
     'duplicate | tunnelPortal',
+    // the F-line shelters (fline-shelters.json, 2026-10-16): one builder placed on each Embarcadero tram platform
+    'duplicate | flineShelter',
     'duplicate | rampPortal',
     // Angel Island's two fog-signal lights (batch-1006.ts): one builder on two OSM outlines
     'duplicate | angelLight',
