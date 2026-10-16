@@ -5623,6 +5623,280 @@ function zincApartments_8th_Brannan(out: MeshBuilder, fit: Fit): void {
   else emanuElCopy(out, m, 1, 0, 0, 0)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// 200 Brannan Street apartments (South Beach)
+// ---------------------------------------------------------------------------------------------------------------
+
+/** OSM way/113103853's outline (docs/sf-batches/MODEL-200-BRANNAN.md), anticlockwise, in the pack's frame (x east, z north). */
+const BA_OUT: P2[] = [[-47.1, -2.3], [-42.2, -7.2], [-37.6, -2.8], [-0.7, -38.4], [-5.9, -43.2], [7.6, -56.3], [56.8, -6.4],
+  [65.7, 2.7], [38.6, 30.4], [17.3, 52.2], [-19.7, 15.8], [-15.5, 11.3], [-13.4, 13.4], [-3.7, 4.0], [-1.9, 8.0], [0.1, 7.0],
+  [1.7, 11.1], [3.3, 10.1], [5.3, 14.7], [6.9, 13.6], [8.7, 18.1], [10.2, 17.4], [11.9, 22.2], [16.9, 23.8], [18.7, 25.8],
+  [21.7, 23.4], [18.7, 20.3], [37.1, 3.5], [16.4, -17.3], [21.8, -22.5], [17.7, -27.1], [12.2, -24.8], [10.6, -19.8],
+  [8.6, -20.4], [7.1, -16.1], [5.4, -17.0], [4.0, -13.0], [2.1, -13.5], [1.0, -10.3], [-1.3, -10.9], [-2.3, -7.2], [-4.3, -7.9],
+  [-5.6, -4.0], [-7.9, -5.0], [-9.3, -1.1], [-11.3, -1.9], [-12.8, 2.1], [-17.4, 0.2], [-19.2, 4.5], [-20.7, 4.0], [-22.2, 7.8],
+  [-25.2, 6.5], [-28.0, 13.0], [-32.2, 11.6]].map(([x, z]) => ({ x, z }))
+
+type BaFit = { c: number; s: number; tx: number; tz: number; res: number }
+
+/**
+ * Carries BA_OUT onto `ring`: a 2-D Procrustes fit over both orders and every start vertex (the smallest RMS wins), or,
+ * when the city's ring has another vertex count, a match of the long edges. Null when nothing fits within 2 m.
+ */
+function baFit(ring: P2[] | undefined): BaFit | null {
+  if (!ring || ring.length < 4) return null
+  let R = ring
+  if (R.length === BA_OUT.length + 1 && Math.hypot(R[0].x - R[R.length - 1].x, R[0].z - R[R.length - 1].z) < 0.3) R = R.slice(0, -1)
+  const n = BA_OUT.length
+  const ca = emanuElCentroid(BA_OUT), cb = emanuElCentroid(R)
+  let best: BaFit | null = null
+  if (R.length === n) {
+    const mean = (r: P2[]): P2 => ({ x: r.reduce((t, p) => t + p.x, 0) / r.length, z: r.reduce((t, p) => t + p.z, 0) / r.length })
+    const ma = mean(BA_OUT), mb = mean(R)
+    for (const rev of [false, true]) {
+      const Q = rev ? [...BA_OUT].reverse() : BA_OUT
+      for (let o = 0; o < n; o++) {
+        let sn = 0, cs = 0
+        for (let i = 0; i < n; i++) {
+          const a = Q[(i + o) % n]
+          const ax = a.x - ma.x, az = a.z - ma.z, bx = R[i].x - mb.x, bz = R[i].z - mb.z
+          cs += ax * bx + az * bz
+          sn += ax * bz - az * bx
+        }
+        const th = Math.atan2(sn, cs), c = Math.cos(th), s = Math.sin(th)
+        let e = 0
+        for (let i = 0; i < n; i++) {
+          const a = Q[(i + o) % n]
+          e += ((a.x - ma.x) * c - (a.z - ma.z) * s + mb.x - R[i].x) ** 2 + ((a.x - ma.x) * s + (a.z - ma.z) * c + mb.z - R[i].z) ** 2
+        }
+        const res = Math.sqrt(e / n)
+        if (!best || res < best.res) best = { c, s, tx: mb.x - (ma.x * c - ma.z * s), tz: mb.z - (ma.x * s + ma.z * c), res }
+      }
+    }
+    if (best && best.res <= 2) return best
+    best = null
+  }
+  const edges = (r: P2[]): { L: number; a: number }[] => r.map((p, i) => {
+    const q = r[(i + 1) % r.length]
+    return { L: Math.hypot(q.x - p.x, q.z - p.z), a: Math.atan2(q.z - p.z, q.x - p.x) }
+  })
+  for (const a of edges(BA_OUT).filter((e) => e.L > 15)) {
+    for (const b of edges(R).filter((e) => e.L > 15)) {
+      if (Math.abs(a.L - b.L) > 0.2 * a.L) continue
+      const th = b.a - a.a, c = Math.cos(th), s = Math.sin(th)
+      const tx = cb.x - (ca.x * c - ca.z * s), tz = cb.z - (ca.x * s + ca.z * c)
+      const T = BA_OUT.map((p) => ({ x: p.x * c - p.z * s + tx, z: p.x * s + p.z * c + tz }))
+      let e = 0
+      for (const v of R) {
+        let d = Infinity
+        for (let i = 0; i < T.length; i++) {
+          const p = T[i], q = T[(i + 1) % T.length]
+          const dx = q.x - p.x, dz = q.z - p.z
+          const u = Math.max(0, Math.min(1, ((v.x - p.x) * dx + (v.z - p.z) * dz) / (dx * dx + dz * dz || 1)))
+          d = Math.min(d, Math.hypot(v.x - p.x - dx * u, v.z - p.z - dz * u))
+        }
+        e += d * d
+      }
+      const res = Math.sqrt(e / R.length)
+      if (!best || res < best.res) best = { c, s, tx, tz, res }
+    }
+  }
+  return best && (best as BaFit).res <= 2 ? best : null
+}
+
+const BA_PANEL: Rgb = [0.64, 0.67, 0.68]
+const BA_BRICK: Rgb = [0.37, 0.17, 0.13]
+const BA_GLASS: Rgb = [0.24, 0.33, 0.35]
+const BA_TGLASS: Rgb = [0.36, 0.47, 0.49]
+const BA_FRAME: Rgb = [0.9, 0.91, 0.91]
+const BA_STEEL: Rgb = [0.28, 0.3, 0.32]
+const BA_BASE: Rgb = [0.34, 0.36, 0.37]
+const BA_SPAN: Rgb = [0.6, 0.66, 0.66]
+const BA_ROOF: Rgb = [0.36, 0.37, 0.38]
+
+/**
+ * What each outline edge (index into BA_OUT, edge i runs to i+1) is dressed with, as [kind, metres] runs from its start:
+ * p = pale grey panel (flush to the full 26 m), b = red-brown brick (to 23.3 m with a set-back grey top storey), t = the
+ * glass corner tower. Edges not listed are courtyard walls (the saw-tooth bays and the slot's end), plain grey to 23.3 m.
+ */
+const BA_SECS: Record<number, [string, number][]> = {
+  0: [['p', 1]], 1: [['p', 1]], 2: [['p', 12], ['b', 10], ['p', 11], ['b', 8], ['p', 10.3]], 3: [['b', 1]],
+  4: [['b', 9], ['p', 9.8]], 5: [['p', 10], ['b', 9], ['p', 12], ['b', 7], ['p', 12.1], ['b', 20]], 6: [['t', 1]],
+  7: [['t', 12], ['b', 8], ['p', 10], ['b', 8.8]], 8: [['p', 10], ['b', 10], ['p', 10.5]],
+  9: [['b', 8], ['p', 13], ['b', 10], ['p', 12], ['b', 8.9]], 10: [['p', 1]], 53: [['b', 10], ['p', 10.4]],
+}
+
+/**
+ * 200 Brannan Street, a 2000s apartment block filling the Brannan / Delancey / Federal / 1st block in South Beach (OSM
+ * way/113103853; docs/sf-batches/MODEL-200-BRANNAN.md). Own geometry from the photographs in docs/shots/refs/notable/w113103853:
+ *
+ * - the plan, saw-tooth courtyard and all, drawn in the pack's frame and carried onto `fit.ring` by `baFit` (Procrustes);
+ * - nine storeys (a dark glazed ground storey, eight floors) in long runs that alternate PALE GREY PANEL (full 26 m, big
+ *   white-framed multi-pane windows with a mullion) and RED-BROWN BRICK (tall paired windows, to 23.3 m with a set-back grey
+ *   top storey above) — the photographs' rhythm along Brannan and Delancey;
+ * - the GLASS CORNER TOWER where Brannan meets Delancey (the plan's east corner, vertex 7): a 12 m square of green-grey
+ *   curtain wall in a mullion grid to 30 m, under a flat glass canopy on steel beams with a row of upstanding steel fins.
+ *   The pack describes the crown as radiating blades; the photographs show a pergola of parallel fins over a glass slab.
+ */
+function brannanApartments_200_Brannan(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const CON = surfaceTag('concrete'), BR = surfaceTag('brick'), GL = surfaceTag('glass'), MTL = surfaceTag('metal'), ST = surfaceTag('stucco')
+  const G = 4.4, FL = 2.7, HB = G + 7 * FL, HP = G + 8 * FL, HT = 30
+  const N = BA_OUT.length
+  const Q = (p: V3[], n: V3, col: Rgb, tag = 0): void => m.quad(p, n, uv, col, tag)
+  const lerp = (a: P2, b: P2, s: number): P2 => ({ x: a.x + (b.x - a.x) * s, z: a.z + (b.z - a.z) * s })
+
+  /** a wall strip from a to b (outward = right of a→b), y0..y1, `d` off the wall */
+  const wall = (a: P2, b: P2, y0: number, y1: number, col: Rgb, tag: number, d = 0): void => {
+    const L = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    const nx = (b.z - a.z) / L, nz = -(b.x - a.x) / L
+    Q([[a.x + nx * d, y0, a.z + nz * d], [b.x + nx * d, y0, b.z + nz * d], [b.x + nx * d, y1, b.z + nz * d], [a.x + nx * d, y1, a.z + nz * d]],
+      [nx, 0, nz], col, tag)
+  }
+  /** a window centred at u along a→b, hw wide, y0..y1, with a white frame (and a mullion when `mull`) */
+  const win = (a: P2, b: P2, u: number, hw: number, y0: number, y1: number, framed: boolean, mull: boolean): void => {
+    const L = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    const tx = (b.x - a.x) / L, tz = (b.z - a.z) / L
+    const c = { x: a.x + tx * u, z: a.z + tz * u }
+    const p0 = { x: c.x - tx * hw, z: c.z - tz * hw }, p1 = { x: c.x + tx * hw, z: c.z + tz * hw }
+    if (framed) {
+      wall(p0, p1, y0 - 0.07, y1 + 0.07, BA_FRAME, MTL, 0.03)
+      wall({ x: p0.x + tx * 0.07, z: p0.z + tz * 0.07 }, { x: p1.x - tx * 0.07, z: p1.z - tz * 0.07 }, y0, y1, BA_GLASS, GL, 0.06)
+      if (mull) wall({ x: c.x - tx * 0.04, z: c.z - tz * 0.04 }, { x: c.x + tx * 0.04, z: c.z + tz * 0.04 }, y0, y1, BA_FRAME, MTL, 0.09)
+    } else wall(p0, p1, y0, y1, BA_GLASS, GL, 0.05)
+  }
+  /** a box standing on the section a→b, `depth` inward, from y0 to y1: its outer face, two ends and its top */
+  const block = (a: P2, b: P2, inset: number, depth: number, y0: number, y1: number, col: Rgb, tag: number): void => {
+    const L = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    const nx = (b.z - a.z) / L, nz = -(b.x - a.x) / L
+    const at = (p: P2, k: number): P2 => ({ x: p.x - nx * k, z: p.z - nz * k })
+    const a0 = at(a, inset), b0 = at(b, inset), a1 = at(a, inset + depth), b1 = at(b, inset + depth)
+    wall(a0, b0, y0, y1, col, tag)
+    wall(a0, a1, y0, y1, col, tag)
+    wall(b1, b0, y0, y1, col, tag)
+    Q([[a0.x, y1, a0.z], [b0.x, y1, b0.z], [b1.x, y1, b1.z], [a1.x, y1, a1.z]], [0, 1, 0], BA_ROOF, CON)
+  }
+
+  const A7 = BA_OUT[7], A6 = BA_OUT[6], A8 = BA_OUT[8]
+  const L7 = Math.hypot(A8.x - A7.x, A8.z - A7.z)
+  const towerD = lerp(A7, A8, 12 / L7)
+
+  for (let i = 0; i < N; i++) {
+    const a = BA_OUT[i], b = BA_OUT[(i + 1) % N]
+    const L = Math.hypot(b.x - a.x, b.z - a.z)
+    const secs = BA_SECS[i]
+    if (!secs) {
+      // courtyard wall: plain grey with a glazed ground storey and a plain window per floor
+      wall(a, b, 0, HB, BA_PANEL, ST)
+      const nw = Math.max(1, Math.floor(L / 3.2))
+      for (let k = 0; k < nw; k++) {
+        const u = (L * (k + 0.5)) / nw
+        win(a, b, u, Math.min(0.85, L / nw / 2 - 0.4), 0.5, 3.5, false, false)
+        for (let f = 0; f < 7; f++) if (f > 0 || L > 4) win(a, b, u, Math.min(0.85, L / nw / 2 - 0.4), G + f * FL + 0.5, G + f * FL + 2.2, false, false)
+      }
+      continue
+    }
+    let s0 = 0
+    for (const [kind, len0] of secs) {
+      const sec = secs.length === 1 ? L : len0
+      const e0 = Math.min(L, s0), e1 = Math.min(L, s0 + sec)
+      s0 += sec
+      if (e1 - e0 < 0.2) continue
+      const pa = lerp(a, b, e0 / L), pb = lerp(a, b, e1 / L)
+      const Ls = e1 - e0
+      if (kind === 't') {
+        const FT = (HT - G) / 9
+        wall(pa, pb, G, HT, BA_SPAN, GL)
+        wall(pa, pb, 0, G, BA_BASE, CON)
+        const nb = Math.max(2, Math.round(Ls / 1.9))
+        for (let f = 0; f < 9; f++) {
+          wall(pa, pb, G + f * FT, G + f * FT + 0.55, BA_SPAN, MTL, 0.04)
+          wall(pa, pb, G + f * FT + 0.6, G + (f + 1) * FT - 0.05, BA_TGLASS, GL, 0.05)
+        }
+        for (let j = 0; j <= nb; j++) {
+          const u = (Ls * j) / nb
+          const q0 = lerp(pa, pb, Math.max(0, u - 0.05) / Ls), q1 = lerp(pa, pb, Math.min(Ls, u + 0.05) / Ls)
+          wall(q0, q1, G, HT, BA_STEEL, MTL, 0.09)
+        }
+        // the ground storey: dark glass between pale piers
+        const ng = Math.max(2, Math.round(Ls / 3.2))
+        for (let j = 0; j < ng; j++) win(pa, pb, (Ls * (j + 0.5)) / ng, Ls / ng / 2 - 0.35, 0.5, G - 0.5, true, true)
+        continue
+      }
+      const high = kind === 'p'
+      const H = high ? HP : HB
+      const col = high ? BA_PANEL : BA_BRICK, tag = high ? ST : BR
+      wall(pa, pb, G, H, col, tag)
+      wall(pa, pb, 0, G, BA_BASE, CON)
+      wall(pa, pb, G - 0.3, G, BA_SPAN, CON, 0.18)
+      // the glazed ground storey in a grid
+      const ng = Math.max(1, Math.round(Ls / 5))
+      for (let j = 0; j < ng; j++) {
+        const u = (Ls * (j + 0.5)) / ng
+        win(pa, pb, u, Math.min(1.9, Ls / ng / 2 - 0.8), 0.45, G - 0.7, true, true)
+      }
+      // upper windows
+      const bay = high ? 3.7 : 3.3
+      const nw = Math.max(1, Math.round(Ls / bay))
+      const hw = high ? 1.3 : 0.82
+      const nf = high ? 8 : 7
+      for (let j = 0; j < nw; j++) {
+        const u = (Ls * (j + 0.5)) / nw
+        if (Ls / nw / 2 < hw + 0.3) continue
+        for (let f = 0; f < nf; f++) win(pa, pb, u, hw, G + f * FL + 0.35, G + f * FL + 2.35, true, true)
+      }
+      if (high) block(pa, pb, 0, 4, HB, HP, BA_PANEL, ST)
+      else {
+        // the set-back grey top storey with its three windows
+        block(pa, pb, 2.6, 4, HB, HP, BA_PANEL, ST)
+        const rp = lerp(pa, pb, 0), rq = lerp(pa, pb, 1)
+        const L2 = Math.hypot(rq.x - rp.x, rq.z - rp.z) || 1
+        const nx = (rq.z - rp.z) / L2, nz = -(rq.x - rp.x) / L2
+        const ia = { x: pa.x - nx * 2.6, z: pa.z - nz * 2.6 }, ib = { x: pb.x - nx * 2.6, z: pb.z - nz * 2.6 }
+        const nt = Math.max(1, Math.round(Ls / 4))
+        for (let j = 0; j < nt; j++) win(ia, ib, (Ls * (j + 0.5)) / nt, 0.9, HB + 0.35, HB + 2.2, false, false)
+        // the railing line on the roof edge
+        wall(pa, pb, HB, HB + 1.0, BA_SPAN, MTL, 0.0)
+      }
+    }
+  }
+
+  // the roof of the whole block, at the brick sections' parapet; the full-height runs stand above it
+  capPolygonWithHoles(m, [BA_OUT], HB - 0.3, BA_ROOF, CON)
+
+  // the tower's roof, its two inner faces, and the canopy
+  const towerB = { x: A6.x + (towerD.x - A7.x), z: A6.z + (towerD.z - A7.z) }
+  wall(towerD, towerB, HB, HT, BA_TGLASS, GL)
+  wall(towerB, A6, HB, HT, BA_TGLASS, GL)
+  Q([[A6.x, HT, A6.z], [A7.x, HT, A7.z], [towerD.x, HT, towerD.z], [towerB.x, HT, towerB.z]], [0, 1, 0], BA_ROOF, CON)
+  // the glass canopy and its steel: a slab a metre above the roof, beams under it, fins standing on it
+  const ex = { x: (A7.x - A6.x) / Math.hypot(A7.x - A6.x, A7.z - A6.z), z: (A7.z - A6.z) / Math.hypot(A7.x - A6.x, A7.z - A6.z) }
+  const ez = { x: (towerD.x - A7.x) / 12, z: (towerD.z - A7.z) / 12 }
+  const cen = { x: (A6.x + A7.x + towerD.x + towerB.x) / 4, z: (A6.z + A7.z + towerD.z + towerB.z) / 4 }
+  const hx = Math.hypot(A7.x - A6.x, A7.z - A6.z) / 2 + 1.1, hz = 6 + 1.1
+  const CP = (u: number, v: number, y: number): V3 => [cen.x + ex.x * u + ez.x * v, y, cen.z + ex.z * u + ez.z * v]
+  Q([CP(-hx, -hz, HT + 1.1), CP(hx, -hz, HT + 1.1), CP(hx, hz, HT + 1.4), CP(-hx, hz, HT + 1.4)], [0, 1, 0], [0.62, 0.74, 0.74], GL)
+  Q([CP(-hx, -hz, HT + 1.1), CP(-hx, hz, HT + 1.4), CP(hx, hz, HT + 1.4), CP(hx, -hz, HT + 1.1)], [0, -1, 0], [0.45, 0.52, 0.53], GL)
+  const head = Math.atan2(-ez.z, ez.x) // boxAlong's heading for a box whose local x runs along ez
+  const NB = 8
+  for (let j = 0; j < NB; j++) {
+    const u = -hx + 0.4 + ((2 * hx - 0.8) * j) / (NB - 1)
+    const c = CP(u, 0, HT + 0.95)
+    boxAlong(m, c[0], c[1], c[2], hz, 0.12, 0.08, head, BA_STEEL, MTL)
+    const f = CP(u, 0, HT + 1.9)
+    boxAlong(m, f[0], f[1], f[2], hz, 0.3, 0.035, head, BA_STEEL, MTL)
+  }
+  for (let j = 0; j < 3; j++) {
+    const v = -hz + 0.6 + ((2 * hz - 1.2) * j) / 2
+    const c = CP(0, v, HT + 0.95)
+    boxAlong(m, c[0], c[1], c[2], 0.08, 0.12, 0.08, head, BA_STEEL, MTL)
+  }
+
+  const t = baFit(fit.ring)
+  if (t) emanuElCopy(out, m, t.c, t.s, t.tx, t.tz)
+  else emanuElCopy(out, m, 1, 0, 0, 0)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -5648,4 +5922,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stripeHQ_510_Townsend,
   chinaBasinLanding_185_Berry,
   zincApartments_8th_Brannan,
+  brannanApartments_200_Brannan,
 }
