@@ -9090,7 +9090,131 @@ function chineseHospitalSign(out: MeshBuilder, _fit: Fit): void {
     { x: 0, y: 4.2, z: 0, heading: 0 })
 }
 
+/**
+ * Building 64 on Alcatraz, the barracks at the ferry dock (1905; Commons "Building 64, Alcatraz.jpg",
+ * docs/shots/refs/notable/b64): the first thing every visitor sees. A long four-storey block of weathered cream
+ * concrete under a low eaved roof: a tall mottled ground storey, then a two-tier GALLERY the whole length of the dock
+ * face — a deck on posts propped by raking struts, a second railing on its roof — and two storeys of plain windows
+ * above, with iron fire escapes. Out of the middle of the dock face stands a pier carrying the painted board UNITED
+ * STATES PENITENTIARY, and over it the red INDIANS WELCOME of the 1969 occupation; low bookstore pavilions with green
+ * hip roofs lean against the ground storey either side. Front (the dock) on −z; its north-west end is −x.
+ */
+function alcatrazBuilding64(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.73, 0.72, 0.67], STAIN: Rgb = [0.6, 0.59, 0.54], DARK: Rgb = [0.14, 0.15, 0.16]
+  const RAIL: Rgb = [0.66, 0.56, 0.3], GREEN: Rgb = [0.24, 0.33, 0.25], ROOF: Rgb = [0.42, 0.41, 0.39], IRON: Rgb = [0.2, 0.2, 0.21]
+  const CN = surfaceTag('concrete'), GL = surfaceTag('glass'), MT = surfaceTag('metal'), TL = surfaceTag('tile')
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  const G = 5.2, D2 = 8.8, EAVE = 15.6
+  ecWalls(out, ring, 0, G, STAIN, CN)
+  ecWalls(out, ring, G, EAVE, CREAM, CN)
+  ecWalls(out, ecInset(ring, -0.6), EAVE - 0.05, EAVE + 0.3, ROOF, CN)
+  capPolygonWithHoles(out, [ecInset(ring, -0.6)], EAVE + 0.3, ROOF, MT)
+  capPolygonWithHoles(out, [ecInset(ring, 3)], EAVE + 1.3, ROOF, MT)
+  ecWalls(out, ecInset(ring, 3), EAVE + 0.3, EAVE + 1.3, ROOF, MT)
+  // the dock face: the long edge facing −z
+  let fi = 0, best = Infinity
+  ring.forEach((a, i) => { const b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z); const nz = -(b.x - a.x) / (L || 1); if (L > 20 && nz * L < best) { best = nz * L; fi = i } })
+  const beam = (p: V3, q: V3, r: number, c: Rgb): void => {
+    const dx = q[0] - p[0], dy = q[1] - p[1], dz = q[2] - p[2], L = Math.hypot(dx, dy, dz)
+    const h = Math.atan2(dx, dz), hl = Math.hypot(dx, dz), pitch = Math.atan2(dy, hl)
+    // a square rod: four quads round the axis
+    const ax: V3 = [dx / L, dy / L, dz / L]
+    const s1: V3 = [Math.cos(h), 0, -Math.sin(h)]
+    const s2: V3 = [ax[1] * s1[2] - ax[2] * s1[1], ax[2] * s1[0] - ax[0] * s1[2], ax[0] * s1[1] - ax[1] * s1[0]]
+    void pitch
+    const off = (v: V3, a: number, b: number): V3 => [v[0] + s1[0] * a + s2[0] * b, v[1] + s1[1] * a + s2[1] * b, v[2] + s1[2] * a + s2[2] * b]
+    const cs: [number, number][] = [[-r, -r], [r, -r], [r, r], [-r, r]]
+    for (let k = 0; k < 4; k++) {
+      const [a0, b0] = cs[k], [a1, b1] = cs[(k + 1) % 4]
+      const nm: V3 = [s1[0] * (a0 + a1) + s2[0] * (b0 + b1), s1[1] * (a0 + a1) + s2[1] * (b0 + b1), s1[2] * (a0 + a1) + s2[2] * (b0 + b1)]
+      out.quad([off(p, a0, b0), off(p, a1, b1), off(q, a1, b1), off(q, a0, b0)], nm, [[0, 0], [1, 0], [1, 1], [0, 1]], c, CN)
+    }
+  }
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z)
+    if (L < 4) continue
+    const tx = (b.x - a.x) / L, tz = (b.z - a.z) / L, nx = tz, nz = -tx, h = Math.atan2(nx, nz)
+    const at = (u: number, y: number, o: number): V3 => [a.x + tx * u + nx * o, y, a.z + tz * u + nz * o]
+    const front = i === fi
+    // the pier with the sign stands 55 % of the way from the north-west (−x) end
+    const uPier = tx >= 0 ? L * 0.55 : L * 0.45
+    const n = Math.floor(L / 3.3)
+    for (let k = 0; k < n; k++) {
+      const u = (k + 0.5) * (L / n)
+      if (front && Math.abs(u - uPier) < 3.6) continue
+      for (const y of [6.9, 10.5, 13.9]) { const c = at(u, y, 0.04); boxAlong(out, c[0], c[1], c[2], 0.5, 0.85, 0.04, h, DARK, GL) }
+      if (k % 3 === 1) { const c = at(u, 2.4, 0.04); boxAlong(out, c[0], c[1], c[2], 0.55, 0.8, 0.04, h, DARK, GL) }
+    }
+    if (!front) continue
+    // the gallery: a deck at G, its roof at D2, posts between, raking struts under, a railing on each tier
+    const DEP = 2.6, u0 = 1.2, u1 = L - 1.2
+    const spans: [number, number][] = [[u0, uPier - 3.4], [uPier + 3.4, u1]]
+    for (const [s0, s1] of spans) {
+      if (s1 - s0 < 2) continue
+      const m = (s0 + s1) / 2, hw = (s1 - s0) / 2
+      for (const y of [G, D2]) {
+        const c = at(m, y + 0.15, DEP / 2); boxAlong(out, c[0], c[1], c[2], hw, 0.18, DEP / 2, h, CREAM, CN)
+        const r = at(m, y + 1.25, DEP - 0.05); boxAlong(out, r[0], r[1], r[2], hw, 0.05, 0.05, h, RAIL, MT)
+        const r2 = at(m, y + 0.75, DEP - 0.05); boxAlong(out, r2[0], r2[1], r2[2], hw, 0.03, 0.03, h, RAIL, MT)
+      }
+      const np = Math.max(1, Math.round((s1 - s0) / 3.1))
+      for (let k = 0; k <= np; k++) {
+        const u = s0 + k * ((s1 - s0) / np)
+        const c = at(u, (G + D2) / 2 + 0.15, DEP - 0.2); boxAlong(out, c[0], c[1], c[2], 0.16, (D2 - G) / 2, 0.16, h, CREAM, CN)
+        beam(at(u, 2.6, 0.05), at(u, G, DEP - 0.25), 0.11, CREAM)
+      }
+    }
+    // the pier and its boards
+    const pc = at(uPier, 4.0, 0.9); boxAlong(out, pc[0], pc[1], pc[2], 3.1, 4.0, 0.9, h, CREAM, CN)
+    const bc = at(uPier, 4.3, 1.82); boxAlong(out, bc[0], bc[1], bc[2], 1.5, 1.35, 0.04, h, [0.88, 0.87, 0.83], 0)
+    const ph = Math.atan2(nx, nz)
+    const lines: [string, number, Rgb][] = [['UNITED STATES', 5.25, [0.6, 0.12, 0.1]], ['PENITENTIARY', 4.8, [0.6, 0.12, 0.1]],
+      ['ALCATRAZ ISLAND', 4.25, DARK], ['ONLY GOVERNMENT BOATS PERMITTED', 3.85, DARK], ['NO ONE ALLOWED ASHORE', 3.5, DARK]]
+    for (const [t, y, col] of lines) {
+      const sp = at(uPier, y, 1.88)
+      sign(out, { type: 'flat', text: t, h: t.length > 16 ? 0.14 : 0.3, face: 'grotesque', weight: 'bold', colour: col, lit: 'none', w: t.length > 16 ? 2.6 : undefined },
+        { x: sp[0], y: sp[1], z: sp[2], heading: ph })
+    }
+    for (const [t, y] of [['INDIANS', 7.2], ['WELCOME', 6.35]] as [string, number][]) {
+      const sp = at(uPier, y, 1.82)
+      sign(out, { type: 'flat', text: t, h: 0.6, face: 'grotesque', weight: 'bold', colour: [0.66, 0.16, 0.12], lit: 'none' },
+        { x: sp[0], y: sp[1], z: sp[2], heading: ph })
+    }
+    // fire escapes on the upper storeys
+    for (const f of [0.3, 0.78]) {
+      const u = L * f
+      for (const y of [D2 + 3.4, D2 + 6.7]) {
+        const c = at(u, y, 0.6); boxAlong(out, c[0], c[1], c[2], 1.6, 0.05, 0.6, h, IRON, MT)
+        const r = at(u, y + 0.9, 1.18); boxAlong(out, r[0], r[1], r[2], 1.6, 0.03, 0.03, h, IRON, MT)
+      }
+      beam(at(u - 1.2, D2 + 1.25, 0.9), at(u + 1.2, D2 + 3.4, 0.9), 0.06, IRON)
+      beam(at(u + 1.2, D2 + 3.4, 0.9), at(u - 1.2, D2 + 6.7, 0.9), 0.06, IRON)
+    }
+    // the bookstore pavilions either side of the pier: one storey, green hip roofs
+    for (const [p0, p1] of [[uPier - 13, uPier - 3.2], [uPier + 3.2, uPier + 12]] as [number, number][]) {
+      const q0 = Math.max(1, p0), q1 = Math.min(L - 1, p1)
+      if (q1 - q0 < 3) continue
+      const m = (q0 + q1) / 2, hw = (q1 - q0) / 2, c = at(m, 1.7, 2.7)
+      boxAlong(out, c[0], c[1], c[2], hw, 1.7, 2.7, h, [0.82, 0.8, 0.74], CN)
+      const pr = at(m, 3.4, 2.7)
+      out.quad([at(q0 - 0.3, 3.4, 5.7), at(q1 + 0.3, 3.4, 5.7), at(q1 - 1.2, 4.9, 2.9), at(q0 + 1.2, 4.9, 2.9)], [nx, 1.5, nz], [[0, 0], [1, 0], [1, 1], [0, 1]], GREEN, TL)
+      out.quad([at(q0 + 1.2, 4.9, 2.9), at(q1 - 1.2, 4.9, 2.9), at(q1 + 0.3, 3.4, -0.1), at(q0 - 0.3, 3.4, -0.1)], [-nx, 1.5, -nz], [[0, 0], [1, 0], [1, 1], [0, 1]], GREEN, TL)
+      for (const [e, o] of [[q0, -1], [q1, 1]] as [number, number][]) {
+        out.quad([at(e + o * 0.3, 3.4, o > 0 ? 5.7 : -0.1), at(e + o * 0.3, 3.4, o > 0 ? -0.1 : 5.7), at(e - o * 1.2, 4.9, 2.9), at(e - o * 1.2, 4.9, 2.9)], [tx * o, 1.5, tz * o], [[0, 0], [1, 0], [1, 1], [0, 1]], GREEN, TL)
+      }
+      void pr
+      for (let u = q0 + 1.2; u < q1 - 0.8; u += 1.6) { const w = at(u, 1.9, 5.42); boxAlong(out, w[0], w[1], w[2], 0.6, 1.1, 0.03, h, DARK, GL) }
+    }
+  }
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+  alcatrazBuilding64,
   templeEmanuEl,
   ritzCarlton_600_Stockton,
   pier43FerryArch,
