@@ -126,3 +126,4 @@ removed).
 07:40-07:55: every pier preset (1–48, Fort Mason) now carries PIER n, sized to its bulkhead (smaller under the
 mission tile pents) · Geary Theater / A.C.T.: the A, C, T banners · Lotta's Fountain muted from orange to bronze
 (grade, #280) · the stored "Market — Ferry Building" view re-aimed at the tower.
+07:55-08:00: pier names checked on Piers 9, 17, 23, 35 and Fort Mason 2/3; a larger size tried and reverted (it rose above the beaux parapets).
