@@ -10618,3 +10618,28 @@ Both sides of the street: they are the brutalist concrete podium extensions of t
 pergola roofs, ivy, skybridges over Davis). Photo: `docs/shots/refs/bugs/271-embarcadero-podium.webp`.
 
 ### #272 Two paths on one street with no median near 37.786900 −122.398178 (owner, 2026-10-15) — OPEN
+
+### #273 Chinatown should feel like Chinatown (owner, 2026-10-16) — OPEN
+
+Custom buildings with appropriate signs; "many signs in chinese. not all, it's not china, but maybe half".
+
+### #274 Indian laurel fig trees (owner, 2026-10-16) — OPEN
+
+A handful in the city, extremely unusual: pale, twisting multi-stem trunks fanning up to a dense, flat-bottomed,
+rounded canopy. The famous ones line Columbus near Broadway. A species for the plants db.
+
+### #275 A dormer hangs off its house at 37.801264 −122.406128 (owner, 2026-10-16) — OPEN
+
+### #276 Kearny's stair sidewalks (owner, 2026-10-16) — OPEN, location to research
+
+Several blocks of Kearny where the SIDEWALKS are staircases but the roadway is a road; cars can go UP, but the top
+has a fence and planters, so no car can come down (bikes and pedestrians can pass).
+
+### #277 Cars go underground at 37.793172 −122.407723 (owner, 2026-10-16) — OPEN
+
+### Done 2026-10-16 night (owner's reports)
+
+Ferry Building PORT OF / SAN FRANCISCO roof signs + model rework; ivy system (render/landmarks/ivy.ts); Oracle Park
+scoreboard heading; Hilton Financial District reshaped and moved onto its tower part; Old Saint Mary's off the
+roads; Language of the Birds as a flying flock; subway entrances never inside buildings; 2 Folsom (Gap HQ) modelled.
+"1 Bryant Street": no such building in OSM or near Bryant & the Embarcadero — ask the owner which one.
