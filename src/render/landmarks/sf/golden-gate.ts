@@ -292,6 +292,9 @@ export function goldenGateBridge(out: MeshBuilder, _fit?: Fit): void {
   const topS = deckY(a1 - hS) - 1.5
   const topN = deckY(zNa + 30) - 1.5
   bx(out, 0, topS / 2, a1 - hS, 24, topS / 2, hS - 1, ANCHOR, F)
+  // its Art Deco banding: shadowed vertical recesses down both long faces, a stepped coping
+  for (let k = -3; k <= 3; k++) for (const sd of [-1, 1]) bx(out, sd * 24.03, topS * 0.45, a1 - hS + k * (hS - 2) / 3.5, 0.05, topS * 0.42, 0.6, PYLON_SHADE, F)
+  bx(out, 0, topS + 0.4, a1 - hS, 24.4, 0.4, hS - 0.6, ANCHOR, F)
   bx(out, 0, topN / 2, zNa + 30, 24, topN / 2, 26, ANCHOR, F)
   /*
    * THE STEEL ENDS WHERE THE STRAIGHT DOES (src/city/sf/bridges.ts `GG_SOUTH_END`, `GG_NORTH_END`). The owner, with
