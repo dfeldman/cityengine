@@ -123,3 +123,6 @@ day-time reference yet for colours.
 07:30-07:40: HILLS BROS COFFEE open-frame roof sign on the coffee works (own `kind: sign` entry; the building stays a
 restyle) · Embarcadero pier bulkheads read PIER 1 / 3 / 5 / 9 in capitals (were 3×5 block digits; `paintedNumber`
 removed).
+07:40-07:55: every pier preset (1–48, Fort Mason) now carries PIER n, sized to its bulkhead (smaller under the
+mission tile pents) · Geary Theater / A.C.T.: the A, C, T banners · Lotta's Fountain muted from orange to bronze
+(grade, #280) · the stored "Market — Ferry Building" view re-aimed at the tower.
