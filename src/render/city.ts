@@ -3046,8 +3046,26 @@ export class City {
       const q = unpackPoints(e.points)
       if (q.length > 0) stairMouths.push(q[0], q[q.length - 1])
     }
+    /*
+     * …nor ON a flight anywhere along it (owner, 2026-10-16, Taylor Street at 37.790831 −122.412358: "bench inside some
+     * stairs"): a stairway that runs along a sidewalk takes the pavement the furniture is spaced over. Kept clear by its
+     * half-width and a metre, from this tile's flights and the neighbours' (a flight crosses tile edges).
+     */
+    const flights: { a: { x: number; z: number }; b: { x: number; z: number }; clear: number }[] = []
+    for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {
+      for (const e of this.edgesIn.get(key(ktx + dx, ktz + dz)) ?? []) {
+        if (e.kind !== 'steps') continue
+        const q = unpackPoints(e.points)
+        for (let i = 1; i < q.length; i++) flights.push({ a: q[i - 1], b: q[i], clear: (e.width || 2) / 2 + 1 })
+      }
+    }
+    const onFlight = (x: number, z: number): boolean => flights.some(({ a, b, clear }) => {
+      const dx = b.x - a.x, dz = b.z - a.z
+      const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1)))
+      return Math.hypot(a.x + dx * t - x, a.z + dz * t - z) < clear
+    })
     const nearStairMouth = (x: number, z: number): boolean =>
-      stairMouths.some((m) => Math.abs(m.x - x) < 6 && Math.abs(m.z - z) < 6)
+      stairMouths.some((m) => Math.abs(m.x - x) < 6 && Math.abs(m.z - z) < 6) || onFlight(x, z)
 
     /*
      * A street mapped as TWO ways, one each way (Market at Van Ness, 10th, 8th …): each way's pavement on the inside is
