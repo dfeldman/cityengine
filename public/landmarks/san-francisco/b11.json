@@ -3,7 +3,8 @@
     "osm": [
       "way/259118885"
     ],
-    "procedural": "b11_metroTheatre_259118885",
+    "procedural": "metroTheatre_2055_Union",
+    "front": 351,
     "name": "Metro Theatre",
     "height": 12
   },

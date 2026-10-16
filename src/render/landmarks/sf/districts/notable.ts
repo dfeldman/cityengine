@@ -8787,6 +8787,30 @@ function officersQuarters(out: MeshBuilder, fit: Fit, big = false): void {
   for (const x of [-pw + 0.2, -pw / 3, pw / 3, pw - 0.2]) box(out, x, 1.7, -hz - 2.7, 0.1, 1.3, 0.1, WHITE, CB)
 }
 
+/**
+ * The Metro Theatre, 2055 Union Street (1924, Art Deco remodel 1941; now a gym, the marquee kept): a tan stucco front
+ * of four storeys' height, flat pilasters, two tiers of paired sash windows over a shopfront band, a triangular
+ * marquee in the middle lettered METRO and a tall blade sign above it (Mapillary docs/shots/refs/notable/metro-theatre).
+ * Front (Union) on −z.
+ */
+function metroTheatre_2055_Union(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.74, 0.68, 0.56], DK: Rgb = [0.2, 0.2, 0.22], GLZ: Rgb = [0.18, 0.22, 0.26]
+  const ST = surfaceTag('stucco'), GL = surfaceTag('glass')
+  const hx = fit.hx, hz = fit.hz, H = 12, fz = -hz
+  box(out, 0, H / 2, 0, hx, H / 2, hz, TAN, ST)
+  box(out, 0, H + 0.4, fz + 0.4, hx, 0.4, 0.4, TAN, ST)
+  box(out, 0, 2.1, fz - 0.03, hx - 0.5, 1.8, 0.05, DK, GL)                                    // the shop band
+  box(out, 0, 4.3, fz - 0.15, hx, 0.25, 0.2, [0.6, 0.55, 0.45], ST)
+  for (let x = -hx + 0.4; x <= hx; x += (2 * hx - 0.8) / 5) box(out, x, H / 2 + 2, fz - 0.12, 0.35, H / 2 - 2, 0.12, [0.8, 0.74, 0.62], ST)
+  for (const y of [6.2, 9.4]) for (let x = -hx + 2.2; x < hx - 1.5; x += (2 * hx - 4.4) / 4) {
+    if (Math.abs(x) < 3) continue
+    for (const d of [-0.55, 0.55]) box(out, x + d, y, fz - 0.03, 0.45, 0.9, 0.05, GLZ, GL)
+  }
+  // the marquee (heading π: its face toward −z) and the blade sign over it
+  marquee(out, 0, 4.6, fz, 7, 1.6, 'METRO', { body: [0.12, 0.12, 0.14], band: [0.95, 0.93, 0.86], letters: [0.12, 0.12, 0.14], heading: Math.PI })
+  bladeSign(out, 0, H + 4, fz, 6.5, 'METRO', { body: [0.14, 0.14, 0.16], letters: [0.95, 0.75, 0.3], width: 1.3, out: 1.0, heading: Math.PI })
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -8835,6 +8859,7 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   kongChowTemple_855_Stockton,
   grantSacramentoCorner,
   oceanClimateCenter_CrissyField,
+  metroTheatre_2055_Union,
   officersQuarters: (out: MeshBuilder, fit: Fit) => officersQuarters(out, fit),
   officersQuartersNimitz: (out: MeshBuilder, fit: Fit) => officersQuarters(out, fit, true),
   gapHQ_2_Folsom,
