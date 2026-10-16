@@ -19,6 +19,7 @@ import { box, strut, type Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 import type { Fit } from '../fit.ts'
 import { signText } from '../parts.ts'
+import { sign } from '../signage.ts'
 
 export interface PierSpec {
   /** the number over the portal, as it is painted (33, 39, "1½") */
@@ -36,40 +37,6 @@ const SEA_GREEN: Rgb = [0.13, 0.36, 0.33]
 const ROOF: Rgb = [0.42, 0.44, 0.45]
 const TILE: Rgb = [0.55, 0.28, 0.2]
 const DARK: Rgb = [0.12, 0.13, 0.14]
-
-/**
- * A digit or two painted on a wall, as blocks: a 3 × 5 grid per glyph, 1 for a lit cell. Big numbers on a
- * bulkhead read from right down the Embarcadero, and are what tells one pier from the next.
- */
-const GLYPHS: Record<string, number[]> = {
-  '0': [1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1], '1': [0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1],
-  '2': [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1], '3': [1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1],
-  '4': [1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1], '5': [1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1],
-  '6': [1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1], '7': [1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0],
-  '8': [1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1], '9': [1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1],
-  '½': [1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
-}
-
-/** The text painted flat on a wall at (cx, cy), facing +z, each glyph `h` tall. */
-export function paintedNumber(out: MeshBuilder, text: string, cx: number, cy: number, z: number, h: number, c: Rgb, tag = 0): void {
-  const cell = h / 5
-  const w = cell * 3
-  const gap = cell * 0.8
-  const total = text.length * w + (text.length - 1) * gap
-  text.split('').forEach((ch, i) => {
-    const g = GLYPHS[ch]
-    if (!g) return
-    // right to left in local +x: the wall faces +z, where local +x is the viewer's LEFT, so text laid out along
-    // +x reads mirrored (the same flip as the blade signs, BUGS.md #50)
-    const x0 = cx + total / 2 - i * (w + gap) - w
-    for (let r = 0; r < 5; r++) {
-      for (let k = 0; k < 3; k++) {
-        if (!g[r * 3 + k]) continue
-        box(out, x0 + (2.5 - k) * cell, cy + (4.5 - r) * cell - h / 2, z, cell / 2, cell / 2, 0.02, c, tag)
-      }
-    }
-  })
-}
 
 export function pier(out: MeshBuilder, fit: Fit, spec: PierSpec): void {
   const stucco = surfaceTag('stucco')
@@ -155,8 +122,9 @@ export function pier(out: MeshBuilder, fit: Fit, spec: PierSpec): void {
       box(out, x, H + 1.5, front + 0.15, (hx * 2) / Math.round(hx) / 2, 0.12, 0.7, TILE, surfaceTag('tile'))
     }
   }
-  // the number over the portal, in the frieze
-  paintedNumber(out, spec.number, 0, H + 0.6, front + 0.06, 1.1, spec.style === 'plain' ? DARK : trim, concrete)
+  // PIER and its number over the portal, in the frieze: classical capitals, read from far down the Embarcadero
+  sign(out, { type: 'flat', text: `PIER ${spec.number}`, h: 0.95, face: 'roman', weight: 'bold', colour: spec.style === 'plain' ? DARK : trim, tracking: 0.12, lit: 'none', w: Math.min(hx * 0.42, 6 + spec.number.length * 0.9) },
+    { x: 0, y: H + 0.6, z: front + 0.08, heading: 0 })
 
   // ---- the shed behind: a long hall with a clerestory, on the deck
   const shedH = Math.min(7.5, H - 3)
