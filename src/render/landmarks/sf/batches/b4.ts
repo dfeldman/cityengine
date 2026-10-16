@@ -150,24 +150,6 @@ export const B4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     })
   },
 
-  /**
-   * way/48995282 — The Olympic Club, 524 Post St, private club, 6 levels, 27 m. No photograph. Plan is a
-   * clean rectilinear footprint. Built BLIND as a historic stone clubhouse in the Union Square area: a
-   * rusticated base, dressed windows above, a proper cornice — the kind of significant building that is
-   * still just a box, per the brief's own caution against escalating on significance alone.
-   */
-  b4_club_48995282: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'rusticated', storeys: 1, material: 'dark-stone' },
-      shaft: { storeys: 4, windows: 'dressed', material: 'limestone' },
-      top: { kind: 'attic', storeys: 1, material: 'limestone' },
-      bands: { aboveGround: 'string', belowTop: 'string', top: 'bracketed' },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'portal', steps: 4 },
-      material: 'limestone',
-    })
-  },
 
 
   /**

@@ -156,30 +156,6 @@ export const B5: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     })
   },
 
-  /**
-   * way/256066230 — San Francisco Pacific Exchange Building (old_name Pacific Coast Stock Exchange), 301
-   * Pine St, 16 m. Reference photos (`exp1`/`exp1-commons`, eleven frames): a monumental grey granite block,
-   * a run of eight fluted columns three storeys tall standing IN FRONT of the wall under a plain entablature,
-   * with solid end blocks flanking them (the wall visible between the columns, not blank behind them) — this
-   * is the exact `giant-order` example named in `src/render/landmarks/facade.ts`'s own doc comment
-   * (`flanks: true` "is exactly the Pacific Exchange"). Corner statue groups on plinths are separate
-   * sculptures clear of the building mass and are not modelled.
-   */
-  b5_bank_256066230: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: {
-        kind: 'giant-order', columns: 8, storeys: 3, order: 'doric', windows: 'dressed',
-        engaged: false, flanks: true, pediment: false, material: 'granite',
-      },
-      shaft: null,
-      top: { kind: 'attic', storeys: 1, material: 'granite' },
-      bands: { aboveGround: null, belowTop: 'string', top: 'dentil' },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'portal', steps: 3 },
-      material: 'granite',
-    })
-  },
 
 
   /**

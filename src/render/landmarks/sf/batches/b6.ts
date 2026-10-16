@@ -61,27 +61,6 @@ import type { Fit } from '../../fit.ts'
 import { facade } from '../../facade.ts'
 
 export const B6: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  /**
-   * way/206662303 — Alhambra Theatre, 2330 Polk St, 14 m. No photograph. Web search: 1926 Moorish Revival
-   * movie palace (Timothy Pflueger), twin corner turrets flanking the entrance, richly ornamented facade —
-   * now a gym, interior largely intact. Baked plan (9 vertices) is an orthogonal box with two straight
-   * splayed corners at the front, matching the twin-turret massing (the splays are straight chamfers, not a
-   * curve — a kit parameter, not an escalation trigger). Unusual ornament/colour is a kit PARAMETER: built
-   * with an arched, richly dressed ground floor and a decorative cornice standing in for the Moorish detail;
-   * individual turret domes are not modelled.
-   */
-  b6_theatre_206662303: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'arcade', arches: 5, storeys: 1, material: 'terracotta', on: 'front' },
-      shaft: { storeys: 2, windows: 'pedimented', material: 'terracotta' },
-      top: { kind: 'attic', storeys: 1, material: 'terracotta' },
-      bands: { aboveGround: 'cornice', belowTop: 'string', top: 'modillion' },
-      crown: null,
-      frame: { verticals: { kind: 'pier', width: 0.6, at: 'corners' }, horizontals: null, recess: 0, material: 'terracotta' },
-      entrance: { at: 'centre', kind: 'portal', steps: 2 },
-      material: 'terracotta',
-    })
-  },
 
   /**
    * way/242973692 — Pioneer Building (old_name Pioneer Trunk Factory), 3180 18th St, industrial, 2 levels,
@@ -144,43 +123,7 @@ export const B6: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     })
   },
 
-  /**
-   * way/121024973 — Cafe du Nord / Swedish American Hall, 2170-2174 Market St, commercial, 3 levels + 1
-   * underground, 13 m. No photograph. Web search: 1907 Arts and Crafts hall, wood shingle and brick primary
-   * facade, expressive woodwork. Baked plan (7 vertices) is a clean orthogonal box. Built as a shingled
-   * Arts-and-Crafts commercial hall with a plain dark-brick shopfront base (Cafe du Nord's street entrance).
-   */
-  b6_hall_121024973: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'shopfronts', bays: 3, storeys: 1, material: 'dark-brick' },
-      shaft: { storeys: 2, windows: 'balanced', material: 'stucco' },
-      top: { kind: 'attic', storeys: 1, material: 'stucco' },
-      bands: { aboveGround: 'string', belowTop: 'string', top: 'cornice' },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'recessed', steps: 1 },
-      material: 'stucco',
-    })
-  },
 
-  /**
-   * way/260351423 — Victoria Theatre, 2961 16th St, Mission, 1908, 13 m. No photograph. Web search: ornate
-   * Edwardian-era theatre (O'Brien & Werner), the oldest operating theatre in SF; facade detail is not
-   * documented beyond "ornate and stately". Baked plan (11 vertices) is strictly orthogonal. Built as a
-   * modest ornamented theatre front — arcaded ground, banded brick shaft.
-   */
-  b6_theatre_260351423: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'arcade', arches: 3, storeys: 1, material: 'dark-brick', on: 'front' },
-      shaft: { storeys: 2, windows: 'balanced', material: 'brick' },
-      top: null,
-      bands: { aboveGround: 'cornice', belowTop: null, top: 'cornice' },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'portal', steps: 1 },
-      material: 'brick',
-    })
-  },
 
   /**
    * way/263823315 — Mish House (alt_name Sarah Mish House), 1153 Oak St, Haight-Ashbury, 1885, 13 m. No

@@ -20,12 +20,8 @@ export const H2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
    * `...BATTERIES` these stale keys silently overrode them: the batteries were registered, placed, and
    * drawn as offices. Removed rather than renamed, so the duplicate cannot come back (BUGS.md #213c).
    */
-  /** Bohemian Club: civic, historic social club at Kearny and Pine. No photo; 1900s–1920s terracotta era guess. */
-  bohemianClub: fromRecipe('edwardian-terracotta', {}),
   /** Building (unidentified): civic. No photo or name; generic 1900s–1920s guess. */
   buildingUnidentified: fromRecipe('edwardian-terracotta', {}),
-  /** California Historical Society: civic, cultural institution. No photo; 1900s–1920s terracotta era guess. */
-  californiaHistoricalSociety: fromRecipe('edwardian-terracotta', {}),
   /** Castagnola's: civic, historic waterfront restaurant. No photo; 1960s-80s commercial era guess. */
   castagnolaS: fromRecipe('hotel-punched', {}),
   /** Clay Theatre: civic, historic cinema at Fillmore and Clay. No photo; 1900s–1920s terracotta era guess. */
@@ -39,8 +35,6 @@ export const H2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** Ferry Station Post Office Building: civic, federal building at Ferry Building area. No photo; 1900s–1920s terracotta era guess. */
   /** Former Military Chapel: civic, historic religious building. No photo; 1900s–1920s terracotta era guess. */
   formerMilitaryChapel: fromRecipe('chicago-block', {}),
-  /** Fugazi Bank Building: civic, historic bank in North Beach. No photo; 1900s–1920s terracotta era guess. */
-  fugaziBank: fromRecipe('edwardian-terracotta', {}),
   /** Galleria Park Hotel: civic, historic hotel at Kearny and Post. No photo; 1900s–1920s terracotta era guess. */
   galleriaParallelHotel: fromRecipe('edwardian-terracotta', {}),
   /** Golden Gate Club: civic, historic social club. No photo; 1900s–1920s terracotta era guess. */

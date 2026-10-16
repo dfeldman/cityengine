@@ -48,6 +48,17 @@ Colours: brick ≈ `#8e4a36`; trim/stone ≈ `#d8cdb8`; ivy green ≈ `#4f7a3a` 
 - Read the builders in `src/render/landmarks/sf/districts/notable.ts` (plan alignment, finding edges, surfaces,
   comment style). Identify the Post and Taylor street fronts from the plan mapped onto `fit.ring`.
 
+
+## Orientation — do NOT infer a face from the ring's vertex order
+
+Lesson from the Pacific Exchange (2026-10-15): the baked city ring can start at a different vertex than the shot
+tool's, so a builder that picks its front by vertex index put the colonnade on the back wall in the city. Choose
+faces by the fit FRAME: set a numeric `"front"` (the bearing from the building to its main street) in the entry,
+and put the main front on the ring edge facing local −z. Render with `--front=<that bearing>` (the shot tool needs
+the flag to build the ring in that frame). Procrustes alignment of an irregular plan is fine for interior features.
+
+Here: the corner sits at Post (south) and Taylor (west); use `"front": 180` (Post) and find Taylor as the edge facing local ±x accordingly — check which in a shot.
+
 ## Your files — touch ONLY these
 
 - `src/render/landmarks/sf/districts/notable.ts` — ADD `bohemianClub_624_Taylor` (grep first).
