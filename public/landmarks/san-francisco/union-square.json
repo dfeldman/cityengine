@@ -176,7 +176,7 @@
   {"osm": ["way/333814179"], "name": "266;270;280 Sutter Street", "restyle": "classical", "note": "a stone-fronted commercial block, rusticated base and cornice", "levels": 5},
   {"osm": ["way/333814487"], "name": "256;262 Sutter Street", "restyle": "classical", "note": "a stone-fronted commercial block, rusticated base and cornice", "levels": 7},
   {"osm": ["way/333814736"], "name": "246;248;250 Sutter Street", "restyle": "classical", "note": "a stone-fronted commercial block, rusticated base and cornice", "levels": 7},
-  {"osm": ["way/333823795"], "name": "153 Kearny Street", "restyle": "chicago", "note": "a steel-framed commercial block dressed in terracotta", "levels": 7},
+  {"osm": ["way/333823795"], "name": "153 Kearny Street", "restyle": "chicago", "note": "a steel-framed commercial block dressed in terracotta; 11 storeys (assessor 1907; LiDAR ~37 m), not 7 (2026-10-16)", "levels": 11, "height": 39},
   {"osm": ["way/333827281"], "name": "The White House Building", "restyle": "classical", "note": "the White House department store (1908): white terracotta, rusticated base, cornice", "levels": 9},
   {"osm": ["way/474354570"], "name": "way/474354570", "restyle": "chicago", "note": "a steel-framed commercial block dressed in terracotta", "levels": 12},
   {"osm": ["way/474354572"], "name": "576;578;580;588 Sutter Street", "restyle": "stucco", "note": "a low stuccoed shopfront building"},
@@ -207,7 +207,7 @@
   {"osm": ["way/1432655283"], "name": "141 Kearny Street", "procedural": "e9_141Kearny", "note": "a stone-fronted commercial block, rusticated base and cornice", "levels": 8},
   {"name": "Union Square", "procedural": "unionSquarePlaza", "lat": 37.787933, "lon": -122.407514, "front": 171, "size": [120, 78], "height": 30, "drape": true, "note": "The square itself, standalone at its own point (OSM's way/25278818 is a park, not a building): the granite deck over the garage with its steps, the lawn panels, the Dewey Monument's column and Victory, the two glass cafe pavilions and the palms. Grid frame, -z to Geary."},
   {"osm": ["way/115921776", "way/115921779", "way/616479963", "way/616479964"], "name": "Union Square: OSM café pavilions and their roofs", "note": "placeholder (owner 2026-10-07: \"stray buildings in plaza\" at 37.788127, -122.406734): the plaza model (unionSquarePlaza) draws both café pavilions under their trellises itself; these outlines drew again as grey boxes on the deck."},
-  {"osm": ["way/474341709"], "name": "Hotel Des Arts", "restyle": "tenement", "levels": 9, "note": "A narrow post-fire hotel at Bush and Grant: brick, shops below, the fire escape zig-zagging down the front (Commons: \"Hotel des Arts San Francisco.jpg\")."},
+  {"osm": ["way/474341709"], "name": "Hotel Des Arts", "restyle": "tenement", "levels": 9, "height": 30, "note": "2026-10-16: height set — `levels` alone left OSM's 55 m standing. A narrow post-fire hotel at Bush and Grant: brick, shops below, the fire escape zig-zagging down the front (Commons: \"Hotel des Arts San Francisco.jpg\")."},
   {"osm": ["way/1420679236"], "name": "The Pickwick Hotel", "procedural": "pickwickHotel", "note": "pickwick.ts: dark red-brown brick over a Gothic-arched stone ground storey, the vertical PICKWICK HOTEL blade on the corner of 5th and Mission (Mapillary, hotel census 2026-10-04)."},
   {"osm": ["way/1420679237"], "name": "The Pickwick Hotel (light court)", "procedural": "pickwickCourt", "note": "pickwick.ts: the same brick."}
 ]
