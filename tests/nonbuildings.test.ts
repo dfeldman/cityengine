@@ -165,6 +165,9 @@ const KNOWN: Record<string, string[]> = {
     "height | St. Mary's Cathedral plaza",
     "height | St. Mary's Cathedral plaza",
     "intersects | St. Mary's Cathedral plaza",
+    // the Chinese Hospital's sign hangs on its wall 4 m up, by design (2026-10-16)
+    'height | Chinese Hospital sign',
+    'intersects | Chinese Hospital sign',
     'intersects | Language of the Birds',
     /*
      * `coplanar` is a HEURISTIC (tools/nonbuildings.ts §coplanarSlabs) and this is a candidate, not a

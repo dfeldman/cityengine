@@ -9085,6 +9085,7 @@ function juliusCastle_1541_Montgomery(out: MeshBuilder, fit: Fit): void {
 
 /** The Chinese Hospital's bilingual sign over its Jackson Street door (Mapillary): CHINESE 東華醫院 HOSPITAL on a cream band. */
 function chineseHospitalSign(out: MeshBuilder, _fit: Fit): void {
+  box(out, 0, 4.2, -0.06, 4.2, 0.4, 0.05, [0.86, 0.83, 0.76], surfaceTag('concrete'))   // the band it is lettered on
   sign(out, { type: 'flat', text: 'CHINESE 東華醫院 HOSPITAL', h: 0.45, face: 'grotesque', weight: 'bold', colour: [0.15, 0.17, 0.2], panel: [0.88, 0.85, 0.78], lit: 'none' },
     { x: 0, y: 4.2, z: 0, heading: 0 })
 }
