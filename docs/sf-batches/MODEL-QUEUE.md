@@ -109,3 +109,8 @@ McAllister · FIFTEEN Haiku "no photo" models replaced by photo-matched restyles
 Park, Golden Gate Club, Green Tortoise, HI Fort Mason, Harbor Court, Riu Plaza, Triton, Hotel Union, Inn at the
 Presidio, Langley Porter, Queen Anne Hotel, Red Victorian, Curb Exchange). Lesson: a Haiku entry whose builder note
 says "No photo" or "guess" is almost always wrong — review those first.
+
+2026-10-16 06:45-07:05: Alcatraz dock — Building 64 (own model: gallery on struts, UNITED STATES PENITENTIARY board,
+INDIANS WELCOME, bookstore pavilions), the steel lattice dock guard tower, restrooms down to one storey; the
+Warden's House and the Officers' Club as roofless burnt-out shells (`ruinShell`). Sutro Baths ruins checked: gist
+right. BUGS #279 triage finished.
