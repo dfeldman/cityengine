@@ -4680,6 +4680,251 @@ function thePacific_2121_Webster(out: MeshBuilder, fit: Fit): void {
   emanuElCopy(out, m, c, s, cb.x - ca.x, cb.z - ca.z)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// Arched-crown red-brick office, King Street between 2nd and 3rd (OSM way/149167950)
+// ---------------------------------------------------------------------------------------------------------------
+
+const AC_BRICK: Rgb = [0.36, 0.17, 0.14]       // #8a3a30 coded ~30 % down: it renders orange in the city
+const AC_BRICK_DK: Rgb = [0.3, 0.14, 0.115]   // the plainer rear and flank walls
+const AC_CREAM: Rgb = [0.66, 0.6, 0.5]         // the string course and cornice
+const AC_GLASS: Rgb = [0.3, 0.38, 0.44]        // blue-grey upper glass
+const AC_DARK: Rgb = [0.1, 0.1, 0.11]          // the dark storefront and the lower floors' dark panes
+const AC_FRAME: Rgb = [0.78, 0.79, 0.78]       // pale window frames and mullions
+const AC_STEEL: Rgb = [0.79, 0.8, 0.82]        // the arch frame, #c9ccd0
+const AC_WHITE: Rgb = [0.95, 0.95, 0.94]
+const AC_ROOF: Rgb = [0.4, 0.4, 0.4]
+
+/**
+ * The 2002 red-brick office on King Street between 2nd and 3rd (OSM way/149167950, nine storeys): a dark storefront storey,
+ * two floors of dark arched windows, a cream string course, five floors of large blue-grey windows in pale frames, a cream
+ * cornice, then a set-back glass top floor on the King front with a shallow lens-shaped steel canopy over its terrace and,
+ * behind it, a curved brick crown wall carrying a round white emblem. Photographs: docs/shots/refs/notable/w149167950/
+ * way-149167950-02 (the King front: the crown, the canopy, the window rows), -01 (the flank from King: arched upper rows,
+ * string course), mapillary-0/1 (the dark arched base floors and the cream course up close), mapillary-2 (the rear wall).
+ *
+ * Orientation: manifest front 134 (King), the fit's FRONT is local -z; the arch goes on the longest ring edge whose outward
+ * normal faces -z, found from geometry. Photographs overruled the pack: the crown wall peaks near 35 m (the pack's ~36 m is
+ * the LiDAR max), and the steel canopy is a low lens over the terrace in front of the crown, not the crown itself.
+ */
+function archCrownOffice_King_149167950(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const BK = surfaceTag('brick')
+  const MT = surfaceTag('metal')
+  const CN = surfaceTag('concrete')
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  const n = ring.length
+  const TOP = 32, Y_CORN = 28.4, SET = 2.6, PAR = 29.5
+
+  const edgesOf = (r: P2[]) => r.map((a, i) => {
+    const b = r[(i + 1) % r.length], l = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    return { i, a, b, l, nx: (b.z - a.z) / l, nz: -(b.x - a.x) / l }
+  })
+  const info = edgesOf(ring)
+  const fronts = info.filter((e) => e.l > 12 && e.nz < -0.85)
+  const front = fronts.length ? fronts.reduce((p, c) => (c.l > p.l ? c : p)) : info.reduce((p, c) => (c.nz < p.nz ? c : p))
+
+  // the upper ring: the King front's top floor stands back from the edge
+  const ring2: P2[] = ring.map((p, i) => {
+    const onFront = i === front.i || i === (front.i + 1) % n
+    return onFront ? { x: p.x - front.nx * SET, z: p.z - front.nz * SET } : p
+  })
+  const info2 = edgesOf(ring2)
+
+  /** a quad whose winding is fixed from its outward normal */
+  const qd = (pts: V3[], nrm: V3, c: Rgb, tag: number): void => {
+    const e1: V3 = [pts[1][0] - pts[0][0], pts[1][1] - pts[0][1], pts[1][2] - pts[0][2]]
+    const e2: V3 = [pts[3][0] - pts[0][0], pts[3][1] - pts[0][1], pts[3][2] - pts[0][2]]
+    const cx = e1[1] * e2[2] - e1[2] * e2[1], cy = e1[2] * e2[0] - e1[0] * e2[2], cz = e1[0] * e2[1] - e1[1] * e2[0]
+    const ok = cx * nrm[0] + cy * nrm[1] + cz * nrm[2] < 0
+    m.quad(ok ? pts : [pts[0], pts[3], pts[2], pts[1]], nrm, uv, c, tag)
+  }
+  /** a square-section beam from p to q */
+  const beam = (p: V3, q: V3, r: number, c: Rgb): void => {
+    const d: V3 = [q[0] - p[0], q[1] - p[1], q[2] - p[2]]
+    const dl = Math.hypot(d[0], d[1], d[2]) || 1
+    d[0] /= dl; d[1] /= dl; d[2] /= dl
+    let s: V3 = [d[2], 0, -d[0]]                      // d x up, horizontal
+    let sl = Math.hypot(s[0], s[2])
+    if (sl < 1e-3) { s = [1, 0, 0]; sl = 1 }
+    s = [s[0] / sl, 0, s[2] / sl]
+    const u: V3 = [s[1] * d[2] - s[2] * d[1], s[2] * d[0] - s[0] * d[2], s[0] * d[1] - s[1] * d[0]]
+    const c4 = (a: V3, sa: number, ua: number): V3 => [a[0] + s[0] * sa * r + u[0] * ua * r, a[1] + s[1] * sa * r + u[1] * ua * r, a[2] + s[2] * sa * r + u[2] * ua * r]
+    const faces: [number, number, V3][] = [[1, 0, s], [-1, 0, [-s[0], -s[1], -s[2]]], [0, 1, u], [0, -1, [-u[0], -u[1], -u[2]]]]
+    for (const [a, b, nrm] of faces) {
+      const t1 = a !== 0 ? [a, -1] : [-1, b], t2 = a !== 0 ? [a, 1] : [1, b]
+      qd([c4(p, t1[0], t1[1]), c4(q, t1[0], t1[1]), c4(q, t2[0], t2[1]), c4(p, t2[0], t2[1])], nrm, c, MT)
+    }
+  }
+
+  const doEdge = (e: ReturnType<typeof edgesOf>[number], y0: number, y1: number, upper: boolean): void => {
+    const { a, b, l, nx, nz } = e
+    if (l < 0.5) return
+    const tx = (b.x - a.x) / l, tz = (b.z - a.z) / l
+    const h = Math.atan2(nx, nz)
+    const isFront = e.a === front.a || (upper && Math.abs(e.nx - front.nx) < 0.02 && Math.abs(e.nz - front.nz) < 0.02 && e.l > 12)
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const panel = (u0: number, u1: number, ya: number, yb: number, pr: number, c: Rgb, tag: number): void => {
+      qd([P(u0, ya, pr), P(u1, ya, pr), P(u1, yb, pr), P(u0, yb, pr)], [nx, 0, nz], c, tag)
+    }
+    const slab = (u0: number, u1: number, ya: number, yb: number, pr0: number, pr1: number, c: Rgb): void => {
+      boxAlong(m, a.x + tx * (u0 + u1) / 2 + nx * (pr0 + pr1) / 2, (ya + yb) / 2, a.z + tz * (u0 + u1) / 2 + nz * (pr0 + pr1) / 2,
+        (u1 - u0) / 2, (yb - ya) / 2, (pr1 - pr0) / 2, h, c, CN)
+    }
+    const arched = (u: number, ya: number, yb: number, hw: number, rise: number, pr: number, c: Rgb, tag: number): void => {
+      emOpening(m, a.x + tx * u, a.z + tz * u, tx, tz, nx, nz, ya, yb, hw, rise, c, tag, pr, 4)
+    }
+    const kb = Math.max(1, Math.round(l / 4.6))
+    const w = l / kb
+    const hw = Math.min(1.7, w * 0.37)
+    const wall = isFront ? AC_BRICK : (l > 12 ? AC_BRICK : AC_BRICK_DK)
+
+    if (!upper) {
+      panel(0, l, -3, y1, 0, wall, BK)
+      // the dark storefront storey: tall dark panes between brick piers, a dark band over them
+      panel(0, l, 0.5, 4.6, 0.04, AC_DARK, GL)
+      for (let j = 0; j <= kb; j++) {
+        const u = w * j
+        slab(Math.max(0, u - 0.55), Math.min(l, u + 0.55), 0.5, 4.6, 0, 0.2, AC_BRICK)
+      }
+      slab(-0.05, l + 0.05, 4.6, 5.0, 0, 0.45, AC_DARK)
+      if (isFront) {
+        for (let j = 0; j < kb; j++) {
+          const uc = w * (j + 0.5)
+          panel(uc - hw, uc + hw, 0.8, 3.6, 0.08, [0.2, 0.2, 0.22], GL)
+        }
+      }
+      // two floors of dark arched windows (the lower row segmental-headed), brick sills
+      for (let j = 0; j < kb; j++) {
+        const uc = w * (j + 0.5)
+        arched(uc, 5.9, 7.8, hw, 0.45, 0.07, AC_DARK, GL)
+        if (isFront) panel(uc - 0.05, uc + 0.05, 5.9, 8.25, 0.1, [0.25, 0.25, 0.27], GL)
+        panel(uc - hw, uc + hw, 9.0, 11.0, 0.07, AC_DARK, GL)
+        if (isFront) panel(uc - 0.05, uc + 0.05, 9.0, 11.0, 0.1, [0.25, 0.25, 0.27], GL)
+        if (isFront) panel(uc - hw - 0.1, uc + hw + 0.1, 5.65, 5.85, 0.14, AC_BRICK, BK)
+        if (isFront) panel(uc - hw - 0.1, uc + hw + 0.1, 8.75, 8.95, 0.14, AC_BRICK, BK)
+      }
+      slab(-0.1, l + 0.1, 11.5, 12.1, 0, 0.4, AC_CREAM)                                    // the cream string course
+      // five floors of big blue-grey windows in pale frames; the top one arched
+      for (let j = 0; j < kb; j++) {
+        const uc = w * (j + 0.5)
+        for (let r = 0; r < 5; r++) {
+          const ya = 12.9 + 3.2 * r, yb = ya + 1.95
+          if (r === 4) {
+            arched(uc, ya - 0.1, yb, hw + 0.1, 0.5, 0.06, AC_FRAME, ST)
+            arched(uc, ya, yb, hw, 0.42, 0.1, AC_GLASS, GL)
+          } else {
+            if (isFront) panel(uc - hw - 0.1, uc + hw + 0.1, ya - 0.1, yb + 0.1, 0.06, AC_FRAME, ST)
+            panel(uc - hw, uc + hw, ya, yb, isFront ? 0.1 : 0.07, AC_GLASS, GL)
+          }
+          if (isFront) {
+            panel(uc - 0.04, uc + 0.04, ya, yb + (r === 4 ? 0.4 : 0), 0.13, AC_FRAME, ST)
+            if (r !== 4) panel(uc - hw, uc + hw, ya + 1.1, ya + 1.17, 0.13, AC_FRAME, ST)
+          }
+          if (isFront) panel(uc - hw - 0.15, uc + hw + 0.15, ya - 0.28, ya - 0.1, 0.16, AC_CREAM, ST)
+        }
+      }
+      slab(-0.3, l + 0.3, Y_CORN - 0.5, Y_CORN, 0, 0.55, AC_CREAM)                          // the cornice
+      if (isFront) slab(-0.3, l + 0.3, Y_CORN, PAR, 0, 0.35, AC_BRICK)                      // the parapet round the terrace
+    } else {
+      // the top floor
+      const yb = isFront ? TOP : TOP
+      if (isFront) {
+        panel(0, l, y0, yb, 0, AC_DARK, GL)                                                 // continuous glazing, dark piers
+        const k2 = Math.max(2, Math.round(l / 2.3))
+        for (let j = 0; j <= k2; j++) {
+          const u = (l * j) / k2
+          panel(Math.max(0, u - 0.07), Math.min(l, u + 0.07), y0, yb, 0.05, AC_FRAME, ST)
+        }
+        panel(0, l, y0 + 1.4, y0 + 1.5, 0.05, AC_FRAME, ST)
+        slab(-0.05, l + 0.05, yb - 0.5, yb, 0, 0.35, AC_BRICK)                              // brick fascia over the glazing
+        slab(-0.2, l + 0.2, yb, yb + 0.25, 0, 0.5, AC_CREAM)
+      } else {
+        panel(0, l, y0, yb, 0, wall, BK)
+        for (let j = 0; j < kb; j++) {
+          const uc = w * (j + 0.5)
+          panel(uc - hw, uc + hw, y0 + 0.6, y0 + 2.5, 0.07, AC_GLASS, GL)
+          panel(uc - hw - 0.15, uc + hw + 0.15, y0 + 0.35, y0 + 0.55, 0.12, AC_CREAM, ST)
+        }
+        slab(-0.3, l + 0.3, yb - 0.5, yb, 0, 0.55, AC_CREAM)
+      }
+    }
+  }
+  for (const e of info) doEdge(e, 0, Y_CORN, false)
+  for (const e of info2) doEdge(e, Y_CORN, TOP, true)
+
+  // the terrace in front of the set-back floor
+  {
+    const { a, b, nx, nz } = front
+    qd([[a.x, Y_CORN, a.z], [b.x, Y_CORN, b.z], [b.x - nx * SET, Y_CORN, b.z - nz * SET], [a.x - nx * SET, Y_CORN, a.z - nz * SET]], [0, 1, 0], AC_ROOF, CN)
+  }
+  capPolygonWithHoles(m, [ring2], TOP, AC_ROOF, CN)
+
+  // ---- the crown: a curved brick wall on the setback line and the round emblem; the lens-shaped steel canopy before it ------
+  {
+    const { a, b, l, nx, nz } = front
+    const tx = (b.x - a.x) / l, tz = (b.z - a.z) / l
+    // the setback line: a point on it at u along the front, pr out of it
+    const Q = (u: number, y: number, pr: number): V3 => [a.x + tx * u - nx * SET + nx * pr, y, a.z + tz * u - nz * SET + nz * pr]
+    const uc = l / 2, HW = Math.min(9.6, l * 0.28), DEPTH = 0.7
+    const Y0 = TOP + 0.2, YE = TOP + 0.9, RISE = 2.3
+    const prof = (x: number): number => YE + RISE * (1 - (x / HW) * (x / HW))
+    const K = 10
+    for (let k = 0; k < K; k++) {
+      const x0 = -HW + (2 * HW * k) / K, x1 = -HW + (2 * HW * (k + 1)) / K
+      qd([Q(uc + x0, Y0, 0), Q(uc + x1, Y0, 0), Q(uc + x1, prof(x1), 0), Q(uc + x0, prof(x0), 0)], [nx, 0, nz], AC_BRICK, BK)
+      qd([Q(uc + x0, prof(x0), 0), Q(uc + x1, prof(x1), 0), Q(uc + x1, prof(x1), DEPTH), Q(uc + x0, prof(x0), DEPTH)], [0, 1, 0], AC_CREAM, ST)
+      qd([Q(uc + x0, prof(x0) - 0.35, 0.05), Q(uc + x1, prof(x1) - 0.35, 0.05), Q(uc + x1, prof(x1) - 0.05, 0.05), Q(uc + x0, prof(x0) - 0.05, 0.05)], [nx, 0, nz], AC_CREAM, ST)
+    }
+    for (const sgn of [-1, 1]) {                                                          // the two ends of the crown wall
+      const x = sgn * HW
+      qd([Q(uc + x, Y0, 0), Q(uc + x, YE, 0), Q(uc + x, YE, DEPTH), Q(uc + x, Y0, DEPTH)], [tx * sgn, 0, tz * sgn], AC_BRICK, BK)
+    }
+    // the round emblem: a dark ring and a white disc
+    const ey = YE + RISE - 1.3, ER = 1.0
+    const disc = (r: number, pr: number, c: Rgb): void => {
+      const N = 14
+      for (let k = 0; k < N; k++) {
+        const t0 = (2 * Math.PI * k) / N, t1 = (2 * Math.PI * (k + 1)) / N
+        qd([Q(uc, ey, pr), Q(uc + r * Math.cos(t0), ey + r * Math.sin(t0), pr), Q(uc + r * Math.cos(t1), ey + r * Math.sin(t1), pr),
+          Q(uc + r * Math.cos(t1), ey + r * Math.sin(t1), pr)], [nx, 0, nz], c, MT)
+      }
+    }
+    disc(ER + 0.2, 0.06, AC_DARK)
+    disc(ER - 0.1, 0.1, AC_WHITE)
+    // the canopy: two arched steel ribs (one nearer the glass, one out over the terrace) joined by purlins, open beneath
+    const CW = Math.min(8.2, l * 0.24), CY = PAR + 0.3, CR = 2.0
+    const arc = (x: number): number => CY + CR * (1 - (x / CW) * (x / CW))
+    const KR = 12
+    const ribPr = [0.5, SET - 0.3]
+    for (const pr of ribPr) {
+      for (let k = 0; k < KR; k++) {
+        const x0 = -CW + (2 * CW * k) / KR, x1 = -CW + (2 * CW * (k + 1)) / KR
+        beam(Q(uc + x0, arc(x0), pr), Q(uc + x1, arc(x1), pr), 0.09, AC_STEEL)
+      }
+    }
+    for (let k = 0; k <= KR; k += 2) {
+      const x = -CW + (2 * CW * k) / KR
+      beam(Q(uc + x, arc(x), ribPr[0]), Q(uc + x, arc(x), ribPr[1]), 0.07, AC_STEEL)           // ties across the terrace
+      if (k > 0 && k < KR) beam(Q(uc + x, PAR, ribPr[1]), Q(uc + x, arc(x), ribPr[1]), 0.06, AC_STEEL)   // hangers
+    }
+    for (const sgn of [-1, 1]) for (const pr of ribPr) beam(Q(uc + sgn * CW, PAR, pr), Q(uc + sgn * CW, arc(sgn * CW), pr), 0.1, AC_STEEL)
+  }
+
+  // the model is already in the fit's own frame
+  for (let i = 0; i < m.positions.length; i++) out.positions.push(m.positions[i])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -4701,4 +4946,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   swedishAmericanHall_2174_Market,
   zyngaHQ_650_Townsend,
   thePacific_2121_Webster,
+  archCrownOffice_King_149167950,
 }
