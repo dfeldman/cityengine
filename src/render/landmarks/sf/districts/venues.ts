@@ -390,7 +390,8 @@ function oraclePark(out: MeshBuilder, fit: Fit): void {
     return lift(beta)
   }
   const sb = at(HP[0] + dirAt(16)[0] * 126, HP[1] + dirAt(16)[1] * 126)
-  const sbh = Math.atan2(home.z - sb.z, -(home.x - sb.x))
+  // boxAlong's face (+z) runs along (sin h, cos h): so this faces home plate (it was side-on, owner 2026-10-16)
+  const sbh = Math.atan2(home.x - sb.x, home.z - sb.z)
   const sby = rimAt(sb) + 5.5
   boxAlong(out, sb.x, sby, sb.z, 23, 5.5, 0.9, sbh, [0.08, 0.09, 0.11], T_METAL)
   boxAlong(out, sb.x, sby, sb.z, 22, 4.8, 1.2, sbh, [0.10, 0.14, 0.18], EMIT)
