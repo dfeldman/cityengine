@@ -1888,6 +1888,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   /** the drawn point and heading last frame, and a U-turn being shown (below) */
   let lastDrawn: { x: number; z: number; heading: number } | null = null
   let uTurn: { x: number; z: number; heading: number; t: number; sign: 1 | -1 } | null = null
+  /** a sideways jump in the line ridden, being eased out (below) */
+  const ease = { x: 0, z: 0 }
   /** hidden inside a streetcar */
   let riderHidden = false
   let lastY = 0
@@ -2719,7 +2721,25 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           heading = wrap(uTurn.heading + uTurn.sign * Math.PI * e)
         } else uTurn = null
       }
+      /*
+       * …and a JUMP across the street eased out (owner, 2026-10-16, the Embarcadero at 37.803194 −122.401006: "we go from
+       * having a path on each side of the street, to one down the middle… your bike suddenly jolts toward the middle"). A
+       * street mapped as two one-way carriageways meets the same street mapped as one way, and the line ridden steps
+       * metres sideways at the node. Any step the motion does not account for (more than half a metre, less than eight,
+       * not a U-turn) is carried as an offset that decays over about a second, so the bike drifts across instead.
+       */
+      if (!onBoard && !uTurn && lastDrawn) {
+        const sp = lastState?.speed ?? 0
+        const ex = lastDrawn.x + Math.sin(lastDrawn.heading) * sp * dt, ez = lastDrawn.z + Math.cos(lastDrawn.heading) * sp * dt
+        const jx = at.x + ease.x - ex, jz = at.z + ease.z - ez, j = Math.hypot(jx, jz)
+        if (j > 0.5 && j < 8) { ease.x -= jx; ease.z -= jz }
+      }
+      if (onBoard || uTurn) { ease.x = 0; ease.z = 0 }
+      const decay = Math.exp(-dt * 2.5)
+      ease.x *= decay; ease.z *= decay
+      if (Math.hypot(ease.x, ease.z) > 0.01) at = { x: at.x + ease.x, z: at.z + ease.z }
       lastDrawn = { x: at.x, z: at.z, heading }
+      ;(window as unknown as Record<string, unknown>).__drawn = lastDrawn
       lastAt = at
       lastY = groundY
       if (!frozen) city.update(at.x, at.z)

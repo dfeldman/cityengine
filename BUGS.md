@@ -10726,7 +10726,9 @@ before it is useful.
   not reproduced. NEEDS where the owner saw them stuck (with the rider riding, or a particular corner). OPEN.
 - **#285 Dead end: the instant flip** — FIXED: a reversal within 8 m is drawn as a U-turn round a half-circle over 1.6 s
   (the bike's pose had treated the jump across the street as a teleport and snapped). Measured: 3.1 rad turned over ~1.1 s.
-- **#286 Path jolt, 37.803194 −122.401006** — a sidewalk path each side becomes one down the middle; the bike lurches. OPEN.
+- **#286 Path jolt, 37.803194 −122.401006** — FIXED: the Embarcadero switches between two one-way carriageways and one
+  way; a sideways step in the line ridden (0.5–8 m) is now eased out over ~1 s. Measured riding there: worst sideways step
+  0.13 m/frame over 1 800 frames.
 - **#287 Overhead-line poles inside furniture** — in an F-line shelter (37.801255 −122.399280), in a toilet kiosk
   (37.799395 −122.397532). A one-time clearance pass. OPEN.
 - **#288 Detailed cable car model** — the streetcar is detailed, the cable car is not. OPEN.
