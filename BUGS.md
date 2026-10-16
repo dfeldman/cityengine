@@ -10651,3 +10651,15 @@ Ferry Building PORT OF / SAN FRANCISCO roof signs + model rework; ivy system (re
 scoreboard heading; Hilton Financial District reshaped and moved onto its tower part; Old Saint Mary's off the
 roads; Language of the Birds as a flying flock; subway entrances never inside buildings; 2 Folsom (Gap HQ) modelled.
 "1 Bryant Street": no such building in OSM or near Bryant & the Embarcadero — ask the owner which one.
+
+### #278 The skyline from the water (owner: "look at pictures of the skyline from the waterfront", 2026-10-16) — FIRST PASS
+
+Reference: Commons "View of the Ferry Building from Treasure Island, San Francisco dllu" (2026,
+docs/shots/refs/skyline/ti0.jpg). Game views from Treasure Island (2.9 km) and from the bay 1.2 km NE of the Ferry
+Building (scratchpad tools: look.ts / lookfov.ts).
+1. **Haze**: from Treasure Island the whole downtown is a pale silhouette barely darker than the sky; at 1.2 km it is
+   still washed to pastel. The real skyline at those distances is crisp and dark (day photos too: ti1.jpg). The
+   fog density is a global look decision — OWNER DECISION — but it is the single biggest skyline mismatch.
+2. Silhouette order is right at the gist level (Salesforce Tower left of the Ferry Building tower, Embarcadero Center
+   to the right, Transamerica beyond); not yet compared building-by-building — needs a camera matched to the
+   photo's position and lens (the FOV override in lookfov.ts does not stick; the orbit camera resets it).
