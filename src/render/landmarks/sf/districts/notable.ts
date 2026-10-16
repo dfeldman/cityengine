@@ -9111,6 +9111,26 @@ function rod(out: MeshBuilder, p: V3, q: V3, r: number, c: Rgb, tag: number): vo
 }
 
 /**
+ * The HILLS BROS COFFEE sign on the roof of the old coffee works, 2 Harrison at the Embarcadero (Commons "Hills Bros
+ * Coffee San Francisco.jpg", docs/shots/refs/notable/hills): big dark capitals on an open steel frame along the
+ * Embarcadero front, read from the street and the Bay Bridge. The building is a restyle (reface-haiku-3); this entry
+ * stands on its roof (24 m in the bake), local x along the front, readable from both sides as a frame sign is.
+ */
+function hillsBrosRoofSign(out: MeshBuilder, _fit: Fit): void {
+  const STEEL: Rgb = [0.2, 0.2, 0.21], MT = surfaceTag('metal')
+  const ROOF = 24, L = 15, H = 2.6, Y0 = ROOF + 2.0
+  box(out, 0, ROOF + 0.45, 0, L, 0.06, 0.06, STEEL, MT)
+  box(out, 0, Y0 + H + 0.15, -0.25, L, 0.05, 0.05, STEEL, MT)
+  for (let x = -L; x <= L + 0.01; x += 3) {
+    box(out, x, (ROOF + Y0 + H + 0.2) / 2, -0.25, 0.07, (Y0 + H + 0.2 - ROOF) / 2, 0.07, STEEL, MT)
+    rod(out, [x, ROOF, -1.6], [x, Y0 + H * 0.6, -0.3], 0.05, STEEL, MT)
+  }
+  sign(out, { type: 'flat', text: 'HILLS BROS COFFEE', h: H, face: 'grotesque', weight: 'bold', colour: [0.12, 0.12, 0.13], lit: 'none', twoSided: true, w: 2 * L - 1 },
+    { x: 0, y: Y0 + H / 2, z: -0.18, heading: 0 })
+}
+
+
+/**
  * The guard tower on the Alcatraz dock (Commons category "Alcatraz Island Watchtower", docs/shots/refs/notable/
  * alc-tower): a steel lattice of four raking legs, X-braced, carrying at about 12 m a square glazed cab with a railed
  * catwalk round it under a red-brown pyramid roof and a finial. Centred on the fit; OSM's 19 m² is its footing.
@@ -9319,6 +9339,7 @@ function alcatrazBuilding64(out: MeshBuilder, fit: Fit): void {
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   alcatrazBuilding64,
   alcatrazDockTower,
+  hillsBrosRoofSign,
   alcatrazWardensHouseRuin: (out: MeshBuilder, fit: Fit) => ruinShell(out, fit, 3, false),
   alcatrazOfficersClubRuin: (out: MeshBuilder, fit: Fit) => ruinShell(out, fit, 1, true),
   templeEmanuEl,
