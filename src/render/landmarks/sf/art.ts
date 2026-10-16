@@ -27,7 +27,6 @@ type V3 = [number, number, number]
 const CONCRETE: Rgb = [0.62, 0.6, 0.56]
 const GRANITE: Rgb = [0.42, 0.4, 0.38]
 const GRANITE_DK: Rgb = [0.3, 0.29, 0.28]
-const IRON: Rgb = [0.16, 0.18, 0.2]
 const BRONZE: Rgb = [0.32, 0.26, 0.16]
 const BRONZE_LT: Rgb = [0.42, 0.35, 0.22]
 const WATER: Rgb = [0.42, 0.58, 0.62]
@@ -423,21 +422,35 @@ const HEARTS: Record<string, (out: MeshBuilder, fit: Fit) => void> = Object.from
   Object.entries(HEART_PAINTS).map(([k, paint]) => [k, (out: MeshBuilder) => paintedHeart(out, paint)]))
 
 // ---------------------------------------------------------------------------------------------------------------
-// Language of the Birds, Brenda Way / Vito Acconci / PROXY? — actually Brian Goggin & Dorka Keehn, 2016, at
-// Broadway & Columbus (37.7978, -122.4069): translucent resin "books" suspended on tall poles over the
-// pavement, as if flung open in flight. Pale glassy panels, thin steel poles.
+// Language of the Birds, Brian Goggin & Dorka Keehn, 2008, at Broadway & Columbus (37.7978, -122.4069): a flock of
+// open books flying over the corner, hung on wires so fine they vanish — no poles (the owner's Street View,
+// 2026-10-16: "it's books, up in the air"; the first model stood them on posts in the roadway). Cream pages,
+// spread like wings, tilted every way, between about 6 m and 13 m up; LED-lit after dark.
 // ---------------------------------------------------------------------------------------------------------------
 export function languageOfTheBirds(out: MeshBuilder, _fit?: Fit): void {
-  const GLASS: Rgb = [0.82, 0.88, 0.92]
-  const poles: V3[] = [[-2.2, 0, -1.5], [1.8, 0, -0.5], [-0.6, 0, 1.8], [2.6, 0, 1.6], [0.4, 0, -2.4]]
-  for (const [px, , pz] of poles) {
-    const h = 5 + Math.abs(px * pz) * 0.15
-    box(out, px, h / 2, pz, 0.06, h / 2, 0.06, IRON, METAL_TAG)
-    // one or two open "books" near the top of each pole: two angled panels meeting at a spine, like flung pages
-    const by = h - 0.6 + (px > 0 ? 0.3 : 0)
-    for (const s of [-1, 1]) {
-      const heading = Math.atan2(pz, px) + s * 0.5
-      boxAlong(out, px + Math.cos(heading) * 0.5, by + s * 0.15, pz + Math.sin(heading) * 0.5, 0.55, 0.02, 0.4, heading, GLASS, surfaceTag('glass'))
+  const PAGE: Rgb = [0.95, 0.9, 0.72], COVER: Rgb = [0.96, 0.92, 0.76]   // lit from inside after dark: cream from below too
+  const rnd = (i: number): number => { const x = Math.sin(i * 91.7 + 13.1) * 43758.5453; return x - Math.floor(x) }
+  const N = 26
+  for (let i = 0; i < N; i++) {
+    // a loose flock over the corner: an ellipse ~22 x 12 m, denser toward the middle, rising toward one side
+    const a = rnd(i) * Math.PI * 2, r = Math.sqrt(rnd(i + 50))
+    const x = Math.cos(a) * r * 11, z = Math.sin(a) * r * 6
+    const y = 6.2 + rnd(i + 100) * 5.5 + (x + 11) * 0.08
+    const yaw = rnd(i + 150) * Math.PI * 2, open = 0.35 + rnd(i + 200) * 0.6, roll = (rnd(i + 250) - 0.5) * 0.8
+    const w = 0.42 + rnd(i + 300) * 0.12, d = 0.32
+    // each half: a thin page block hinged at the spine, lifted by `open` like a wing
+    for (const s of [-1, 1] as const) {
+      const ang = s * open + roll                              // each half lifted like a wing about the spine
+      const ux = Math.cos(yaw), uz = Math.sin(yaw)             // across the spread
+      const off = w / 2 * Math.cos(ang), lift = w / 2 * Math.sin(ang) * s
+      const cx = x + ux * off * s, cz = z + uz * off * s, cy = y + lift
+      const ex = ux * (w / 2) * Math.cos(ang), ez = uz * (w / 2) * Math.cos(ang), ey = (w / 2) * Math.sin(ang) * s
+      const vx = -uz * d, vz = ux * d
+      const c0: V3 = [cx - ex - vx, cy - ey, cz - ez - vz], c1: V3 = [cx + ex - vx, cy + ey, cz + ez - vz]
+      const c2: V3 = [cx + ex + vx, cy + ey, cz + ez + vz], c3: V3 = [cx - ex + vx, cy - ey, cz - ez + vz]
+      const nx = -Math.sin(ang) * s * ux, ny = Math.cos(ang), nz = -Math.sin(ang) * s * uz
+      out.quad([c0, c1, c2, c3], [nx, ny, nz], [[0, 0], [1, 0], [1, 1], [0, 1]], PAGE, 0)
+      out.quad([c3, c2, c1, c0].map((p) => [p[0], p[1] - 0.025, p[2]] as V3), [-nx, -ny, -nz], [[0, 0], [1, 0], [1, 1], [0, 1]], COVER, 0)
     }
   }
 }
