@@ -23,6 +23,7 @@ import { boxAlong, edgeAt, longestEdge, offsetRing } from '../../parts.ts'
 import { classicalColumn } from '../../column.ts'
 import { column } from '../../kit.ts'
 import { fromRecipe } from '../recipes.ts'
+import { sign } from '../../signage.ts'
 
 type P2 = { x: number; z: number }
 const FIXED = 0
@@ -174,6 +175,10 @@ function marquee(out: MeshBuilder, e: Edge, u: number, w: number, y0: number, h:
   nameBack?: Rgb; letters?: number
   /** the bulbs round its edges */
   bulb?: Rgb
+  /** words on the readerboard, top line first — dark letters on the lit board, through the sign system */
+  lines?: string[]
+  /** the name written on its band in `name`'s colour, instead of a lit block a letter */
+  nameText?: string
 }): void {
   const u0 = u - w / 2
   const u1 = u + w / 2
@@ -194,12 +199,24 @@ function marquee(out: MeshBuilder, e: Edge, u: number, w: number, y0: number, h:
   }
   cheek(u0, -1)
   cheek(u1, 1)
+  if (o.lines?.length) {
+    const n = o.lines.length, row = (yt - yb) / n, cu = u, heading = Math.atan2(e.nx, e.nz)
+    o.lines.forEach((t, k) => {
+      const y = yt - row * (k + 0.5)
+      sign(out, { type: 'flat', text: t, h: Math.min(0.55, row * 0.62), face: 'grotesque', weight: 'bold', colour: [0.1, 0.1, 0.12], lit: 'back', w: Math.min(w - 0.9, t.length * row * 0.62) },
+        { x: e.a.x + e.tx * cu + e.nx * (depth + 0.05), y, z: e.a.z + e.tz * cu + e.nz * (depth + 0.05), heading })
+    })
+  }
   if (o.name) {
     // the name: a panel, and a lamp-lit block per letter on it
     const ya = yt + h * 0.05
     const yz = y0 + h * 0.9
     panel(out, e, u0 + 0.4, u1 - 0.4, depth + 0.05, ya, yz, o.nameBack ?? o.frame, T.metal)
-    const n = o.letters ?? 0
+    const n = o.nameText ? -1 : o.letters ?? 0
+    if (o.nameText) {
+      sign(out, { type: 'flat', text: o.nameText, h: (yz - ya) * 0.62, face: 'grotesque', weight: 'bold', colour: o.name, lit: 'self', w: Math.min(w - 1.8, o.nameText.length * (yz - ya) * 0.7) },
+        { x: e.a.x + e.tx * u + e.nx * (depth + 0.08), y: (ya + yz) / 2, z: e.a.z + e.tz * u + e.nz * (depth + 0.08), heading: Math.atan2(e.nx, e.nz) })
+    }
     if (n === 0) panel(out, e, u0 + 0.8, u1 - 0.8, depth + 0.08, ya + (yz - ya) * 0.18, yz - (yz - ya) * 0.18, o.name, EMIT)
     const span = (u1 - u0 - 1.6) / Math.max(1, n)
     for (let k = 0; k < n; k++) {
@@ -214,12 +231,18 @@ function marquee(out: MeshBuilder, e: Edge, u: number, w: number, y0: number, h:
 
 /**
  * A vertical blade sign standing out from the wall at `u` along the edge, `y0..y1`, `depth` out, `t` thick; the
- * name down both faces as a lit strip.
+ * name down both faces — its letters when `text` is given, else a lit strip.
  */
-function blade(out: MeshBuilder, e: Edge, u: number, y0: number, y1: number, depth: number, t: number, body: Rgb, lit: Rgb): void {
+function blade(out: MeshBuilder, e: Edge, u: number, y0: number, y1: number, depth: number, t: number, body: Rgb, lit: Rgb, text?: string): void {
   slab(out, e, u - t / 2, u + t / 2, 0.3, 0.3 + depth, y0, y1, body, T.metal)
   for (const s of [-1, 1]) {
     const uu = u + s * (t / 2 + 0.02)
+    if (text) {
+      const oo = 0.3 + depth / 2
+      sign(out, { type: 'flat', text, h: Math.min(depth * 0.8, (y1 - y0 - 1.2) / (text.length * 1.35)), face: 'grotesque', weight: 'bold', colour: lit, vertical: true, lit: 'self' },
+        { x: e.a.x + e.tx * uu + e.nx * oo, y: (y0 + y1) / 2, z: e.a.z + e.tz * uu + e.nz * oo, heading: Math.atan2(e.tx * s, e.tz * s) })
+      continue
+    }
     const P = (oo: number, y: number): [number, number, number] => [e.a.x + e.tx * uu + e.nx * oo, y, e.a.z + e.tz * uu + e.nz * oo]
     quad(out, [P(0.3 + depth * 0.8, y0 + 0.6), P(0.3 + depth * 0.2, y0 + 0.6), P(0.3 + depth * 0.2, y1 - 0.6), P(0.3 + depth * 0.8, y1 - 0.6)], [e.tx * s, 0, e.tz * s], lit, EMIT)
   }
@@ -390,7 +413,7 @@ export const MARKET_WEST: Record<string, (out: MeshBuilder, fit: Fit) => void> =
     // the mullion down the middle of each pair of windows in the shaft
     faceBand(out, ring, 16.5, 35, { kind: 'fins', material: 'terracotta', wall: CREAM_TERRACOTTA, glass: WARM_GLASS, pitch: 2.6, solid: 0.07, depth: 0.12, floor: 3.7 })
     const e = edgeNear(ring, 46.7)
-    marquee(out, e, e.L * 0.68, 13, 4.6, 5.2, 3.2, { frame: [0.36, 0.17, 0.17], board: [0.95, 0.94, 0.9], name: [0.98, 0.6, 0.16], nameShare: 0.4, nameBack: [0.42, 0.3, 0.26], letters: 8 })
+    marquee(out, e, e.L * 0.68, 13, 4.6, 5.2, 3.2, { frame: [0.36, 0.17, 0.17], board: [0.95, 0.94, 0.9], name: [0.98, 0.6, 0.16], nameShare: 0.4, nameBack: [0.42, 0.3, 0.26], nameText: 'THE WARFIELD', lines: ['LIVE MUSIC', 'TONIGHT'] })
   }),
 
   /**
@@ -501,15 +524,16 @@ export const MARKET_WEST: Record<string, (out: MeshBuilder, fit: Fit) => void> =
     // (the blades stand at the ends of the cut corner, square to it, so from up Market they read face on)
     for (const [u0, u1] of [[-2.1, -0.2], [corner.L + 0.2, corner.L + 2.1]]) {
       slab(out, corner, u0, u1, 0.1, 0.7, 9.5, H - 1, body, T.metal)
-      // G-O-L-D-E-N G-A-T-E down it, a lit block a letter
-      const step = (H - 11.5) / 11
-      for (let k = 0; k < 11; k++) if (k !== 6) panel(out, corner, u0 + 0.45, u1 - 0.45, 0.72, H - 1.8 - step * (k + 1) + step * 0.2, H - 1.8 - step * k, lit, EMIT)
+      // GOLDEN GATE down its face, lit letters on the dark blade
+      const um = (u0 + u1) / 2
+      sign(out, { type: 'flat', text: 'GOLDEN GATE', h: 1.05, face: 'grotesque', weight: 'bold', colour: lit, vertical: true, lit: 'self' },
+        { x: corner.a.x + corner.tx * um + corner.nx * 0.72, y: (9.5 + H - 1) / 2, z: corner.a.z + corner.tz * um + corner.nz * 0.72, heading: Math.atan2(corner.nx, corner.nz) })
     }
     const frame: Rgb = [0.13, 0.13, 0.14]
     const board: Rgb = [0.94, 0.95, 0.97]
-    marquee(out, corner, corner.L / 2, corner.L + 0.4, 4.4, 2.4, 2.6, { frame, board })
-    marquee(out, sides[0], sides[0].L - 4, 7.6, 4.4, 2.4, 2.6, { frame, board })
-    marquee(out, sides[1], 4, 7.6, 4.4, 2.4, 2.6, { frame, board })
+    marquee(out, corner, corner.L / 2, corner.L + 0.4, 4.4, 2.4, 2.6, { frame, board, lines: ['GOLDEN GATE', 'THEATRE'] })
+    marquee(out, sides[0], sides[0].L - 4, 7.6, 4.4, 2.4, 2.6, { frame, board, lines: ['BROADWAY SF', 'NOW PLAYING'] })
+    marquee(out, sides[1], 4, 7.6, 4.4, 2.4, 2.6, { frame, board, lines: ['BROADWAY SF', 'TICKETS'] })
   }),
 
   /**
@@ -549,10 +573,10 @@ export const MARKET_WEST: Record<string, (out: MeshBuilder, fit: Fit) => void> =
     // the blade, up past the eaves, and its little crowned top; the marquee under it
     const u = e.L * 0.5
     const bronze: Rgb = [0.6, 0.52, 0.32]
-    blade(out, e, u, 9.5, 31, 1.5, 0.9, bronze, [0.95, 0.9, 0.72])
+    blade(out, e, u, 9.5, 31, 1.5, 0.9, bronze, [0.95, 0.9, 0.72], 'ORPHEUM')
     slab(out, e, u - 0.7, u + 0.7, 0.2, 2.2, 31, 32.2, bronze, T.metal)
     prism(out, at(e, u, 1.2).x, at(e, u, 1.2).z, 32.2, 34, 0.5, 4, bronze, T.metal, 0.05)
-    marquee(out, e, u + 1.5, 10, 4.2, 2.2, 2.4, { frame: [0.13, 0.2, 0.18], board: [0.9, 0.85, 0.66] })
+    marquee(out, e, u + 1.5, 10, 4.2, 2.2, 2.4, { frame: [0.13, 0.2, 0.18], board: [0.9, 0.85, 0.66], lines: ['ORPHEUM', 'BROADWAY SF'] })
   },
 
   /**
