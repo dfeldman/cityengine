@@ -123,8 +123,8 @@ export function pier(out: MeshBuilder, fit: Fit, spec: PierSpec): void {
     }
   }
   // PIER and its number over the portal, in the frieze: classical capitals, read from far down the Embarcadero
-  sign(out, { type: 'flat', text: `PIER ${spec.number}`, h: 0.95, face: 'roman', weight: 'bold', colour: spec.style === 'plain' ? DARK : trim, tracking: 0.12, lit: 'none', w: Math.min(hx * 0.42, 6 + spec.number.length * 0.9) },
-    { x: 0, y: H + 0.6, z: front + 0.08, heading: 0 })
+  sign(out, { type: 'flat', text: `PIER ${spec.number}`, h: spec.style === 'mission' ? 0.85 : 1.2, face: 'roman', weight: 'bold', colour: spec.style === 'plain' ? DARK : trim, tracking: 0.12, lit: 'none', w: spec.style === 'mission' ? Math.min(hx * 0.3, 5 + spec.number.length * 0.8) : Math.min(hx * 0.42, 7.5 + spec.number.length * 1.15) },
+    { x: 0, y: spec.style === 'mission' ? H + 0.45 : H + 0.6, z: front + 0.08, heading: 0 })
 
   // ---- the shed behind: a long hall with a clerestory, on the deck
   const shedH = Math.min(7.5, H - 3)
