@@ -10668,6 +10668,9 @@ Building (scratchpad tools: look.ts / lookfov.ts).
 2. Silhouette order is right at the gist level (Salesforce Tower left of the Ferry Building tower, Embarcadero Center
    to the right, Transamerica beyond); not yet compared building-by-building — needs a camera matched to the
    photo's position and lens (the FOV override in lookfov.ts does not stick; the orbit camera resets it).
+3. (2026-10-16 04:20, `?fog=off`) Building by building from Treasure Island: 555 California read as a bright
+   brick-red tower — darkened. Otherwise the silhouette order matches (Salesforce, Millennium, Embarcadero Center,
+   Transamerica); the hills behind downtown are low (#260, owner decision).
 
 ### #279 Building parts in the air with nothing under them — a scan (2026-10-16, from #269) — OPEN, to triage
 
