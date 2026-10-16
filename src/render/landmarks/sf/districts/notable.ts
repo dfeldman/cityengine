@@ -7456,6 +7456,160 @@ function decoBlock_1015_VanNess(out: MeshBuilder, fit: Fit): void {
 }
 
 
+// ---------------------------------------------------------------------------------------------------------------
+// Marlton Manor, Jones Street at Eddy (Tenderloin)
+// ---------------------------------------------------------------------------------------------------------------
+
+const MM_WALL: Rgb = [0.47, 0.52, 0.45]        // #8f9480 sage grey-green stucco
+const MM_TRIM: Rgb = [0.82, 0.82, 0.78]        // #d6d6cc window frames, bay bands
+const MM_CORN: Rgb = [0.6, 0.63, 0.58]         // #b8b9ae cornice
+const MM_BASE: Rgb = [0.185, 0.19, 0.2]        // #2f3133 storefront base
+const MM_BAND: Rgb = [0.3, 0.34, 0.31]         // the dark string courses
+const MM_GLASS: Rgb = [0.17, 0.21, 0.25]
+const MM_SHOP: Rgb = [0.24, 0.3, 0.32]
+const MM_AWN: Rgb = [0.2, 0.34, 0.3]
+
+/**
+ * Marlton Manor, Jones at Eddy (1925, eight storeys): sage-grey stucco apartment block. A dark storefront base, then seven
+ * storeys of paired white-framed windows with vertical strips of stacked shallow bays (a tall one at the corner) up both
+ * street fronts, dark string courses, and a deep projecting cornice. Photographs: docs/shots/refs/notable/marlton/
+ * way-35176313-02 (the corner from across the street), -01, -03.
+ *
+ * Orientation: front 351 (Eddy Street, 30 m) on local -z; Jones (31 m) is the neighbouring edge on the corner. Both are
+ * found from the ring in the fit frame (the front edge with the lowest mid z; Jones the longer neighbour), not from
+ * OSM's vertex order. The plan has a light court notched into the south-east, which gets plain windows.
+ */
+function marltonManor_Jones_Eddy(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const ST = surfaceTag('stucco'), MT = surfaceTag('metal'), GL = surfaceTag('glass')
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  const n = ring.length
+  const Y0 = -3, YB = 4.6, FL = 2.8, YT = YB + 7 * FL, YC = YT + 0.2, YF = YC + 1.0, YTOP = YC + 2.3
+  const info = ring.map((a, i) => {
+    const b = ring[(i + 1) % n], l = Math.hypot(b.x - a.x, b.z - a.z) || 1e-6
+    return { a, b, l, tx: (b.x - a.x) / l, tz: (b.z - a.z) / l, nx: (b.z - a.z) / l, nz: -(b.x - a.x) / l }
+  })
+  const vo = ring.map((_, k) => {
+    const e0 = info[(k + n - 1) % n], e1 = info[k]
+    const kk = Math.max(0.35, 1 + e0.nx * e1.nx + e0.nz * e1.nz)
+    return { x: (e0.nx + e1.nx) / kk, z: (e0.nz + e1.nz) / kk }
+  })
+  // the Eddy front and the Jones edge
+  let eddy = -1
+  for (let i = 0; i < n; i++) {
+    const e = info[i]
+    if (e.l > 10 && e.nz < -0.7 && (eddy < 0 || (e.a.z + e.b.z) < (info[eddy].a.z + info[eddy].b.z))) eddy = i
+  }
+  if (eddy < 0) eddy = 0
+  const nxt = (eddy + 1) % n, prv = (eddy + n - 1) % n
+  const jones = info[nxt].l >= info[prv].l ? nxt : prv
+  const cornerAtEnd = jones === nxt   // the shared vertex is Eddy's end (u = l) and Jones's start (u = 0)
+
+  for (let ei = 0; ei < n; ei++) {
+    const { a, b, l, tx, tz, nx, nz } = info[ei]
+    if (l < 0.5) continue
+    const h = Math.atan2(nx, nz)
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const panel = (u0: number, u1: number, y0: number, y1: number, pr: number, c: Rgb, tag: number): void => {
+      if (u1 - u0 < 0.01) return
+      m.quad([P(u0, y0, pr), P(u1, y0, pr), P(u1, y1, pr), P(u0, y1, pr)], [nx, 0, nz], uv, c, tag)
+    }
+    const slab = (u0: number, u1: number, y0: number, y1: number, pr0: number, pr1: number, c: Rgb, tag = ST): void => {
+      boxAlong(m, a.x + tx * (u0 + u1) / 2 + nx * (pr0 + pr1) / 2, (y0 + y1) / 2, a.z + tz * (u0 + u1) / 2 + nz * (pr0 + pr1) / 2,
+        (u1 - u0) / 2, (y1 - y0) / 2, (pr1 - pr0) / 2, h, c, tag)
+    }
+    const isEddy = ei === eddy, isJones = ei === jones
+    const street = isEddy || isJones
+    const va = vo[ei], vb = vo[(ei + 1) % n]
+    const A = (y: number, off: number): V3 => [a.x + va.x * off, y, a.z + va.z * off]
+    const B = (y: number, off: number): V3 => [b.x + vb.x * off, y, b.z + vb.z * off]
+
+    // ---- wall and the deep cornice ----
+    panel(0, l, Y0, YC, 0, MM_WALL, ST)
+    m.quad([A(YC, 0), B(YC, 0), B(YF, 1.4), A(YF, 1.4)], [nx * 0.72, -0.69, nz * 0.72], uv, MM_CORN, ST)
+    m.quad([A(YF, 1.4), B(YF, 1.4), B(YTOP, 1.4), A(YTOP, 1.4)], [nx, 0, nz], uv, MM_CORN, ST)
+    m.quad([A(YTOP, 1.4), B(YTOP, 1.4), B(YTOP + 0.35, -0.8), A(YTOP + 0.35, -0.8)], [nx * 0.5, 0.85, nz * 0.5], uv, MM_CORN, ST)
+    if (l < 3) continue
+
+    if (!street) {
+      // court and party walls: sparse plain windows
+      if (info[ei].l < 8 || Math.abs(nx) > 0.7 && nx > 0) continue
+      const cols = Math.max(1, Math.round(l / 4.5))
+      for (let c = 0; c < cols; c++) {
+        const uc = l * (c + 0.5) / cols
+        for (let f = 0; f < 7; f++) panel(uc - 0.55, uc + 0.55, YB + f * FL + 0.7, YB + f * FL + 2.1, 0.05, MM_GLASS, GL)
+      }
+      continue
+    }
+
+    // ---- dark storefront base ----
+    panel(0, l, Y0, YB, 0.12, MM_BASE, ST)
+    const nw = Math.max(2, Math.round((l - 2) / 4)), pw = (l - 2) / nw
+    for (let k = 0; k < nw; k++) {
+      const u0 = 1 + k * pw + 0.25
+      panel(u0, u0 + pw - 0.5, 0.4, 3.5, 0.15, MM_SHOP, GL)
+      slab(u0 - 0.3, u0 + 0.0, 0, 3.7, 0.12, 0.3, MM_BAND)
+    }
+    slab(0, l, 3.7, YB + 0.15, 0.1, 0.32, MM_BAND)
+    for (const f of (isEddy ? [0.3, 0.7] : [0.55])) slab(l * f, l * f + 4, 3.0, 3.4, 0.12, 1.3, MM_AWN, MT)
+    // ---- string courses ----
+    slab(0, l, YB + FL + 0.95, YB + FL + 1.2, 0, 0.22, MM_BAND)
+    slab(0, l, YT - 0.45, YT - 0.2, 0, 0.3, MM_TRIM)
+    slab(0, l, YC - 0.25, YC + 0.05, 0, 0.45, MM_BAND)
+
+    // ---- bay strips: the corner one, and one or two more along the front ----
+    const du = (d: number): number => cornerAtEnd === isEddy ? l - d : d   // distance from the corner -> u
+    const bayC = [2.3, 12.0, 20.5].map(du)
+    const bw = 4.2, pr = 0.65
+    for (const bc of bayC) {
+      if (bc - bw / 2 < 0.2 || bc + bw / 2 > l - 0.2) continue
+      const y0 = YB + 0.5, y1 = YT - 0.4
+      slab(bc - bw / 2, bc + bw / 2, y0, y1, 0.02, pr, MM_WALL)
+      for (let f = 0; f < 7; f++) {
+        const yf = YB + f * FL
+        slab(bc - bw / 2 - 0.1, bc + bw / 2 + 0.1, yf - 0.05, yf + 0.2, 0, pr + 0.1, MM_TRIM)
+        for (let w = 0; w < 3; w++) {
+          const uc = bc - bw / 2 + bw * (w + 0.5) / 3
+          panel(uc - 0.46, uc + 0.46, yf + 0.65, yf + 2.2, pr + 0.02, MM_GLASS, GL)
+          panel(uc - 0.55, uc + 0.55, yf + 0.55, yf + 0.65, pr + 0.04, MM_TRIM, ST)
+          panel(uc - 0.04, uc + 0.04, yf + 0.65, yf + 2.2, pr + 0.04, MM_TRIM, ST)
+        }
+      }
+      slab(bc - bw / 2 - 0.1, bc + bw / 2 + 0.1, y1 - 0.1, y1 + 0.2, 0, pr + 0.15, MM_TRIM)
+    }
+
+    // ---- plain windows between the bays ----
+    const nc = Math.max(2, Math.round((l - 1.6) / 3.0)), pit = (l - 1.6) / nc
+    for (let c = 0; c < nc; c++) {
+      const uc = 0.8 + pit * (c + 0.5)
+      if (bayC.some((bc) => Math.abs(uc - bc) < bw / 2 + 0.9)) continue
+      for (let f = 0; f < 7; f++) {
+        const yf = YB + f * FL
+        panel(uc - 0.75, uc + 0.75, yf + 0.55, yf + 2.25, 0.06, MM_TRIM, ST)
+        panel(uc - 0.62, uc + 0.62, yf + 0.65, yf + 2.15, 0.09, MM_GLASS, GL)
+        panel(uc - 0.04, uc + 0.04, yf + 0.65, yf + 2.15, 0.11, MM_TRIM, ST)
+      }
+    }
+  }
+
+  const top = ring.map((p, k) => ({ x: p.x - vo[k].x * 1.0, z: p.z - vo[k].z * 1.0 }))
+  capPolygonWithHoles(m, [top], YTOP + 0.3, MM_CORN, ST)
+
+  for (let q = 0; q < m.positions.length; q++) out.positions.push(m.positions[q])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -7489,4 +7643,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   theChateau_2701_VanNess,
   apartments_2400_Pacific,
   decoBlock_1015_VanNess,
+  marltonManor_Jones_Eddy,
 }
