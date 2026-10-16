@@ -120,3 +120,6 @@ words (one tangent sign a word round the tank), the Internet Archive's attic ins
 for other "a block a letter" stand-ins: none left. Open: the Geary Theater (A.C.T.) has no marquee — needs a photo.
 Skyline (#278) compared again from Treasure Island against ti1.jpg: order and relative heights right; no
 day-time reference yet for colours.
+07:30-07:40: HILLS BROS COFFEE open-frame roof sign on the coffee works (own `kind: sign` entry; the building stays a
+restyle) · Embarcadero pier bulkheads read PIER 1 / 3 / 5 / 9 in capitals (were 3×5 block digits; `paintedNumber`
+removed).
