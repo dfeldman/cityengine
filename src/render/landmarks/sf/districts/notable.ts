@@ -9150,6 +9150,63 @@ function alcatrazDockTower(out: MeshBuilder, _fit: Fit): void {
 }
 
 /**
+ * A burnt-out shell, roofless, the sky through its windows: the Warden's House and the Post Exchange / Officers' Club
+ * on Alcatraz (both gutted in the 1970 fire; Commons category "Alcatraz Warden's House", docs/shots/refs/notable/
+ * warden). Pale tan stucco walls round the outline, each storey's window holes left open between piers and
+ * spandrels, the top ragged, a Mission Revival shaped gable stepping up over each short end; no floors, no roof.
+ */
+function ruinShell(out: MeshBuilder, fit: Fit, storeys: number, arched: boolean): void {
+  const STUCCO: Rgb = [0.68, 0.64, 0.58], SOOT: Rgb = [0.5, 0.47, 0.43]
+  const CN = surfaceTag('concrete')
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  ring = ecInset(ring, 0.2)
+  const SH = 3.3, H = storeys * SH + 0.6, T = 0.2
+  const hash = (x: number): number => { const s = Math.sin(x * 91.7 + 13.1) * 43758.5; return s - Math.floor(s) }
+  const lens = ring.map((a, i) => { const b = ring[(i + 1) % ring.length]; return Math.hypot(b.x - a.x, b.z - a.z) })
+  const sorted = lens.filter((L) => L > 5).sort((p, q) => p - q)
+  const gableMax = sorted.length >= 4 ? sorted[1] : -1
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length], L = lens[i]
+    if (L < 0.4) continue
+    const tx = (b.x - a.x) / L, tz = (b.z - a.z) / L, h = Math.atan2(tz, -tx)
+    const at = (u: number, y: number, hw: number, hh: number, c: Rgb = STUCCO): void =>
+      boxAlong(out, a.x + tx * u, y, a.z + tz * u, hw, hh, T, h, c, CN)
+    const n = Math.floor(L / 2.7)
+    if (n < 1) { at(L / 2, H / 2, L / 2 + T, H / 2); continue }
+    const step = L / n, ww = Math.min(1.25, step * 0.5)
+    // piers between the openings, full height, their tops ragged
+    for (let k = 0; k <= n; k++) {
+      const lo = Math.max(0, k * step - (step - ww) / 2), hi = Math.min(L, k * step + (step - ww) / 2)
+      const top = H - hash(i * 31 + k) * (k === 0 || k === n ? 0.2 : 1.1)
+      at((lo + hi) / 2, top / 2, (hi - lo) / 2 + (k === 0 || k === n ? T : 0), top / 2)
+    }
+    // the spandrels under and over each opening, storey by storey
+    for (let k = 0; k < n; k++) {
+      const u = (k + 0.5) * step
+      for (let s = 0; s < storeys; s++) {
+        const y0 = s * SH, sill = y0 + (s === 0 && arched ? 0.05 : 0.95), head = y0 + (arched && s === 0 ? 2.9 : 2.55), y1 = Math.min(H, y0 + SH)
+        if (sill > y0 + 0.01) at(u, (y0 + sill) / 2, ww / 2, (sill - y0) / 2)
+        const top = s === storeys - 1 ? H - hash(i * 7 + k) * 0.9 : y1
+        if (top > head) at(u, (head + top) / 2, ww / 2, (top - head) / 2, s === storeys - 1 ? SOOT : STUCCO)
+        if (arched && s === 0) for (const sd of [-1, 1]) at(u + sd * ww * 0.36, head - 0.25, ww * 0.14, 0.25)
+      }
+    }
+    // the shaped gable over a short end
+    if (L <= gableMax && L > 5) {
+      const steps: [number, number][] = [[0.42, 0.9], [0.3, 0.8], [0.16, 0.6]]
+      let y = H
+      for (const [f, dh] of steps) { at(L / 2, y + dh / 2, L * f, dh / 2); y += dh }
+      at(L / 2, y + 0.15, 0.45, 0.15)
+    }
+  }
+}
+
+/**
  * Building 64 on Alcatraz, the barracks at the ferry dock (1905; Commons "Building 64, Alcatraz.jpg",
  * docs/shots/refs/notable/b64): the first thing every visitor sees. A long four-storey block of weathered cream
  * concrete under a low eaved roof: a tall mottled ground storey, then a two-tier GALLERY the whole length of the dock
@@ -9260,6 +9317,8 @@ function alcatrazBuilding64(out: MeshBuilder, fit: Fit): void {
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   alcatrazBuilding64,
   alcatrazDockTower,
+  alcatrazWardensHouseRuin: (out: MeshBuilder, fit: Fit) => ruinShell(out, fit, 3, false),
+  alcatrazOfficersClubRuin: (out: MeshBuilder, fit: Fit) => ruinShell(out, fit, 1, true),
   templeEmanuEl,
   ritzCarlton_600_Stockton,
   pier43FerryArch,
