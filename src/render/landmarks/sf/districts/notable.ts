@@ -9090,6 +9090,65 @@ function chineseHospitalSign(out: MeshBuilder, _fit: Fit): void {
     { x: 0, y: 4.2, z: 0, heading: 0 })
 }
 
+/** A square rod from `p` to `q`, `r` its half-thickness: a strut, a lattice leg, a ladder rail. */
+function rod(out: MeshBuilder, p: V3, q: V3, r: number, c: Rgb, tag: number): void {
+  const dx = q[0] - p[0], dy = q[1] - p[1], dz = q[2] - p[2], L = Math.hypot(dx, dy, dz)
+  if (L < 1e-6) return
+  const ax: V3 = [dx / L, dy / L, dz / L]
+  // a side vector square to the rod: horizontal unless the rod is vertical
+  let s1: V3 = Math.abs(ax[1]) > 0.99 ? [1, 0, 0] : [ax[2], 0, -ax[0]]
+  const n1 = Math.hypot(s1[0], s1[1], s1[2]); s1 = [s1[0] / n1, s1[1] / n1, s1[2] / n1]
+  const s2: V3 = [ax[1] * s1[2] - ax[2] * s1[1], ax[2] * s1[0] - ax[0] * s1[2], ax[0] * s1[1] - ax[1] * s1[0]]
+  const off = (v: V3, a: number, b: number): V3 => [v[0] + s1[0] * a + s2[0] * b, v[1] + s1[1] * a + s2[1] * b, v[2] + s1[2] * a + s2[2] * b]
+  const cs: [number, number][] = [[-r, -r], [r, -r], [r, r], [-r, r]]
+  for (let k = 0; k < 4; k++) {
+    const [a0, b0] = cs[k], [a1, b1] = cs[(k + 1) % 4]
+    const nm: V3 = [s1[0] * (a0 + a1) + s2[0] * (b0 + b1), s1[1] * (a0 + a1) + s2[1] * (b0 + b1), s1[2] * (a0 + a1) + s2[2] * (b0 + b1)]
+    out.quad([off(p, a0, b0), off(p, a1, b1), off(q, a1, b1), off(q, a0, b0)], nm, [[0, 0], [1, 0], [1, 1], [0, 1]], c, tag)
+  }
+}
+
+/**
+ * The guard tower on the Alcatraz dock (Commons category "Alcatraz Island Watchtower", docs/shots/refs/notable/
+ * alc-tower): a steel lattice of four raking legs, X-braced, carrying at about 12 m a square glazed cab with a railed
+ * catwalk round it under a red-brown pyramid roof and a finial. Centred on the fit; OSM's 19 m² is its footing.
+ */
+function alcatrazDockTower(out: MeshBuilder, _fit: Fit): void {
+  const STEEL: Rgb = [0.17, 0.17, 0.18], CAB: Rgb = [0.36, 0.22, 0.17], ROOF: Rgb = [0.42, 0.2, 0.14], DARK: Rgb = [0.12, 0.13, 0.15]
+  const MT = surfaceTag('metal'), GL = surfaceTag('glass'), TL = surfaceTag('tile')
+  const B = 1.7, T = 1.05, P = 11.6
+  const leg = (sx: number, sz: number, y: number): V3 => { const w = B + (T - B) * (y / P); return [sx * w, y, sz * w] }
+  const corners: [number, number][] = [[-1, -1], [1, -1], [1, 1], [-1, 1]]
+  for (const [sx, sz] of corners) rod(out, leg(sx, sz, 0), leg(sx, sz, P), 0.1, STEEL, MT)
+  const levels = [0.3, 2.6, 4.9, 7.2, 9.4, P]
+  for (let k = 0; k < 4; k++) {
+    const [ax, az] = corners[k], [bx, bz] = corners[(k + 1) % 4]
+    for (let j = 0; j + 1 < levels.length; j++) {
+      const y0 = levels[j], y1 = levels[j + 1]
+      rod(out, leg(ax, az, y0), leg(bx, bz, y1), 0.04, STEEL, MT)
+      rod(out, leg(bx, bz, y0), leg(ax, az, y1), 0.04, STEEL, MT)
+      rod(out, leg(ax, az, y1), leg(bx, bz, y1), 0.05, STEEL, MT)
+    }
+  }
+  // the stair up the middle, a zigzag of flights
+  for (let j = 0; j + 1 < levels.length; j++) rod(out, [j % 2 ? 0.5 : -0.5, levels[j], 0], [j % 2 ? -0.5 : 0.5, levels[j + 1], 0], 0.12, STEEL, MT)
+  // the catwalk deck and its railing, the cab, its windows, the roof
+  box(out, 0, P + 0.1, 0, 2.1, 0.12, 2.1, STEEL, MT)
+  for (const s of [-1, 1]) {
+    box(out, 0, P + 1.15, s * 2.08, 2.1, 0.04, 0.04, STEEL, MT); box(out, s * 2.08, P + 1.15, 0, 0.04, 0.04, 2.1, STEEL, MT)
+    box(out, 0, P + 0.7, s * 2.08, 2.1, 0.02, 0.02, STEEL, MT); box(out, s * 2.08, P + 0.7, 0, 0.02, 0.02, 2.1, STEEL, MT)
+  }
+  for (const [sx, sz] of corners) box(out, sx * 2.08, P + 0.65, sz * 2.08, 0.04, 0.55, 0.04, STEEL, MT)
+  const C0 = P + 0.2, C1 = P + 2.6
+  box(out, 0, C0 + 0.45, 0, 1.4, 0.45, 1.4, CAB, MT)
+  box(out, 0, (C0 + 0.9 + C1) / 2, 0, 1.36, (C1 - C0 - 0.9) / 2, 1.36, DARK, GL)
+  for (const [sx, sz] of corners) box(out, sx * 1.38, (C0 + 0.9 + C1) / 2, sz * 1.38, 0.06, (C1 - C0 - 0.9) / 2, 0.06, CAB, MT)
+  box(out, 0, C1 + 0.06, 0, 1.75, 0.08, 1.75, ROOF, TL)
+  prism(out, 0, 0, C1 + 0.12, C1 + 1.25, 2.4, 4, ROOF, TL, 0.06)
+  box(out, 0, C1 + 1.55, 0, 0.04, 0.35, 0.04, STEEL, MT)
+  box(out, 0, C1 + 1.95, 0, 0.12, 0.06, 0.12, STEEL, MT)
+}
+
 /**
  * Building 64 on Alcatraz, the barracks at the ferry dock (1905; Commons "Building 64, Alcatraz.jpg",
  * docs/shots/refs/notable/b64): the first thing every visitor sees. A long four-storey block of weathered cream
@@ -9119,22 +9178,7 @@ function alcatrazBuilding64(out: MeshBuilder, fit: Fit): void {
   // the dock face: the long edge facing −z
   let fi = 0, best = Infinity
   ring.forEach((a, i) => { const b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z); const nz = -(b.x - a.x) / (L || 1); if (L > 20 && nz * L < best) { best = nz * L; fi = i } })
-  const beam = (p: V3, q: V3, r: number, c: Rgb): void => {
-    const dx = q[0] - p[0], dy = q[1] - p[1], dz = q[2] - p[2], L = Math.hypot(dx, dy, dz)
-    const h = Math.atan2(dx, dz), hl = Math.hypot(dx, dz), pitch = Math.atan2(dy, hl)
-    // a square rod: four quads round the axis
-    const ax: V3 = [dx / L, dy / L, dz / L]
-    const s1: V3 = [Math.cos(h), 0, -Math.sin(h)]
-    const s2: V3 = [ax[1] * s1[2] - ax[2] * s1[1], ax[2] * s1[0] - ax[0] * s1[2], ax[0] * s1[1] - ax[1] * s1[0]]
-    void pitch
-    const off = (v: V3, a: number, b: number): V3 => [v[0] + s1[0] * a + s2[0] * b, v[1] + s1[1] * a + s2[1] * b, v[2] + s1[2] * a + s2[2] * b]
-    const cs: [number, number][] = [[-r, -r], [r, -r], [r, r], [-r, r]]
-    for (let k = 0; k < 4; k++) {
-      const [a0, b0] = cs[k], [a1, b1] = cs[(k + 1) % 4]
-      const nm: V3 = [s1[0] * (a0 + a1) + s2[0] * (b0 + b1), s1[1] * (a0 + a1) + s2[1] * (b0 + b1), s1[2] * (a0 + a1) + s2[2] * (b0 + b1)]
-      out.quad([off(p, a0, b0), off(p, a1, b1), off(q, a1, b1), off(q, a0, b0)], nm, [[0, 0], [1, 0], [1, 1], [0, 1]], c, CN)
-    }
-  }
+  const beam = (p: V3, q: V3, r: number, c: Rgb): void => rod(out, p, q, r, c, CN)
   for (let i = 0; i < ring.length; i++) {
     const a = ring[i], b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z)
     if (L < 4) continue
@@ -9215,6 +9259,7 @@ function alcatrazBuilding64(out: MeshBuilder, fit: Fit): void {
 
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   alcatrazBuilding64,
+  alcatrazDockTower,
   templeEmanuEl,
   ritzCarlton_600_Stockton,
   pier43FerryArch,
