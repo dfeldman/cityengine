@@ -42,7 +42,7 @@ const LATIN = {
   sf_cypress: 'Hesperocyparis macrocarpa', sf_ficus: 'Ficus microcarpa', sf_gum: 'Eucalyptus', sf_mpine: 'Pinus radiata',
   sf_myrtle: 'Metrosideros excelsa', sf_pear: 'Pyrus calleryana', sf_pepper: 'Schinus molle', sf_plum: 'Prunus cerasifera',
   sf_bottlebrush: 'Callistemon', sf_blossom: 'Prunus', sf_jacaranda: 'Jacaranda mimosifolia', sf_mayten: 'Maytenus boaria',
-  sf_olive: 'Olea europaea',
+  sf_olive: 'Olea europaea', sf_ficus_giant: 'Ficus microcarpa',
 }
 
 async function codeHash(dir) {
