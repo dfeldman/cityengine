@@ -8681,6 +8681,20 @@ function kongChowTemple_855_Stockton(out: MeshBuilder, fit: Fit): void {
   box(out, hx - 0.8, 8, fz - 0.52, 0.3, 3.0, 0.02, GOLD, 0)
 }
 
+/**
+ * The Grant & Sacramento corner (Bank of America's Chinatown branch at 701 Grant, the Gold Mountain Monastery behind
+ * at 800 Sacramento — one outline in OSM, way/260524896): cream walls under green-tiled pagoda eaves, a pagoda roof at
+ * the corner, and the bank's RED COLUMNS along the street floor (Mapillary docs/shots/refs/notable/boa-chinatown/m2).
+ * Front Sacramento (171) on −z; Grant is the +x end.
+ */
+function grantSacramentoCorner(out: MeshBuilder, fit: Fit): void {
+  pagodaCorner(out, fit, { wall: [0.86, 0.8, 0.64], trim: [0.82, 0.62, 0.22], tile: [0.18, 0.44, 0.32], corner: 1, storeys: 3 })
+  const RED: Rgb = [0.62, 0.1, 0.08], GOLD: Rgb = [0.8, 0.62, 0.22]
+  const hx = fit.hx, hz = fit.hz
+  for (let x = -hx + 1; x <= hx - 0.5; x += 2.6) { prism(out, x, -hz - 0.5, 0, 3.6, 0.22, 10, RED, 0); box(out, x, 3.65, -hz - 0.5, 0.3, 0.06, 0.3, GOLD, 0) }
+  for (let z = -hz + 1; z <= hz - 0.5; z += 2.6) { prism(out, hx + 0.5, z, 0, 3.6, 0.22, 10, RED, 0); box(out, hx + 0.5, 3.65, z, 0.3, 0.06, 0.3, GOLD, 0) }
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -8727,6 +8741,7 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   hotelKabuki_1625_Post,
   apartments_4th_Harrison,
   kongChowTemple_855_Stockton,
+  grantSacramentoCorner,
   gapHQ_2_Folsom,
   uberHQ1_1455_3rd,
   uberHQ2_1515_3rd,

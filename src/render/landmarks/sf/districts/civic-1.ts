@@ -7,7 +7,7 @@ import { capPolygon, type MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { fromRecipe } from '../recipes.ts'
 import { faceBand, insetRing, tower, towerRing } from '../../tower.ts'
-import { boxAlong, colonnade, cupola, edgeAt, edgeFacing, roundRing, signText, spireOn } from '../../parts.ts'
+import { boxAlong, colonnade, edgeAt, edgeFacing, roundRing, signText, spireOn } from '../../parts.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
 import { beam } from '../golden-gate.ts'
 import { church } from '../../church.ts'
@@ -89,17 +89,6 @@ export const CIVIC_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     boxAlong(out, bx, spring + rise + 1.4, bz, e.L * 0.3, 1.3, 0.2, e.heading, [0.88, 0.9, 0.9], surfaceTag('metal'))
   },
 
-  /**
-   * Gold Mountain Sagely Monastery (800 Sacramento St, ex-mattress-factory brick building bought 1970): a
-   * three-storey cream Chinatown facade with a red-and-gold pagoda-eaved tower over the corner entrance.
-   */
-  goldMountainMonastery: (out: MeshBuilder, fit: Fit): void => {
-    fromRecipe('chicago-block', { height: 11, base: 0, wall: [0.85, 0.78, 0.6], glass: [0.18, 0.18, 0.2], pitch: 3, floor: 3.6, solid: 0.5, material: 'stucco', crown: { kind: 'parapet', height: 0.6, colour: [0.85, 0.78, 0.6], material: 'stucco' } })(out, fit)
-    const ring = towerRing(fit)
-    const e = edgeAt(ring, edgeFacing(ring, 0))
-    // the pagoda-eaved tower over the corner entrance, in Chinatown red and gold
-    cupola(out, e.a, 11, 1.1, { drum: 1.4, dome: 1.6, colour: [0.82, 0.2, 0.16], domeColour: [0.18, 0.4, 0.32], material: 'stucco', domeMaterial: 'tile', lantern: false })
-  },
 
   /**
    * Mount Zion Baptist Church (1321 Oak St at Baker, built 1906): a modest wood-frame neighbourhood church,
