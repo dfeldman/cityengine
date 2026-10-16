@@ -10642,6 +10642,11 @@ barrier=block nodes across the top at Vallejo (37.79895 −122.40565). Above Val
 WEST one is flat because OSM maps steps there only near the top (Mapillary shows them the whole block); the
 roadway reads asphalt (it is concrete); the planters at the top are not drawn. Traffic cannot come down already
 (oneway). Left: a west-side steps patch, concrete surface, the planters.
+Later (2026-10-16 03:10): OSM DOES map the west side as steps too (way/70077931 Broadway→, way/1453717490 to
+Vallejo, footway=sidewalk, both connected — their end nodes are shared by 3 ways each), they are in every Overpass
+cache, but they are NOT in the package (the east ones are: edges 75206/75207). Something in the bake drops them;
+not found yet (not largestComponent — they connect; not the new road-stub pass — steps are foot). Next: trace
+w70077931 through tools/bake.ts edge building.
 
 ### #277 Cars go underground at 37.793172 −122.407723 (owner, 2026-10-16) — BY DESIGN? (the point is 35 m inside the Stockton Tunnel's north mouth, OSM way 417099350: cars there are in the tunnel. If what looked wrong is the mouth itself — no portal visible from where the owner stood — that needs the owner's viewpoint)
 
