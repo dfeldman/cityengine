@@ -739,6 +739,8 @@ export class Landmarks {
    * actually is — including any standing placement error, which this deliberately does not correct.
    */
   readonly decks: { ring: { x: number; z: number }[]; y: number; keepOff?: number; trees?: boolean; shrubs?: boolean; spacing?: number }[] = []
+  /** the single plants procedural landmarks place (MeshBuilder.plants), in world metres */
+  readonly plants: { x: number; z: number; species: string; h: number; spin: number }[] = []
 
   /**
    * Every footprint a landmark declared it draws its own raised structure over (`coversRaised`), in world
@@ -831,6 +833,15 @@ export class Landmarks {
      */
     const claimed = new Map<number, string>()
     this.pending = entries.filter((e) => entryKind(e) !== 'restyle' && entryKind(e) !== 'placeholder').filter((e) => {
+      /*
+       * A manifest newer than the code (a cached script with a fresh manifest — 2 Folsom, 2026-10-16: "not rendering at
+       * all. Just leaving empty grass"): a builder the code does not have claims nothing, so the city's own building
+       * stands there instead of a hole.
+       */
+      if (e.procedural && !PROCEDURAL[e.procedural]) {
+        console.warn(`landmark ${e.name}: no procedural builder "${e.procedural}" in this build — its building is left to the city`)
+        return false
+      }
       const ids = packedIds(e)
       const clash = ids.find((id) => claimed.has(id))
       if (clash !== undefined) {
@@ -1258,6 +1269,13 @@ export class Landmarks {
           z: cz + oz + (-p.x * sinR + p.z * cosR) * scale,
         }))
         this.decks.push({ ring, y: y + d.y * scale, keepOff: d.keepOff, trees: d.trees, shrubs: d.shrubs, spacing: d.spacing ? d.spacing * scale : undefined })
+      }
+      for (const q of mb.plants) {
+        this.plants.push({
+          x: cx + ox + (q.x * cosR + q.z * sinR) * scale,
+          z: cz + oz + (-q.x * sinR + q.z * cosR) * scale,
+          species: q.species, h: q.h * scale, spin: q.spin - rotation,
+        })
       }
       // and the ground it paves at street level (MeshBuilder.grounds), in world metres, for the city to drape
       for (const g of mb.grounds) {

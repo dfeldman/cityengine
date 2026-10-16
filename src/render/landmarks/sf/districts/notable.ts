@@ -7681,14 +7681,40 @@ const GAP_FRONT = 53
  * implies, (front + 180)°, with the bounding boxes' centres made to coincide, which is how the loader frames the ring.
  */
 function gapPlace(ring: P2[] | undefined): { c: number; s: number; tx: number; tz: number; res: number } {
-  const th0 = ((GAP_FRONT + 180) * Math.PI) / 180, c0 = Math.cos(th0), s0 = Math.sin(th0)
+  let R = ring ?? []
+  if (R.length > 3 && Math.hypot(R[0].x - R[R.length - 1].x, R[0].z - R[R.length - 1].z) < 0.3) R = R.slice(0, -1)
+  /*
+   * The turn when the outline cannot be matched point for point — and in the city it never can: the loader hands the
+   * builder a simplified box (8 points), not OSM's 19 (owner, 2026-10-16: "due to a rotation/scaling issue extends a bit
+   * into the street"). The front bearing alone (53°) is not the walls' direction (they run at 45° in the plan): turned
+   * by it, the block stood 8° askew and its corners in the Embarcadero. So the walls decide: the plan's dominant wall
+   * direction is turned onto the box's, taking whichever of the four quarter-turns is nearest the bearing's.
+   */
+  const th0 = ((GAP_FRONT + 180) * Math.PI) / 180
+  const wallAngle = (r: P2[]): number => {
+    let sx = 0, sy = 0
+    for (let i = 0; i < r.length; i++) {
+      const a = r[i], b = r[(i + 1) % r.length], l = Math.hypot(b.x - a.x, b.z - a.z), q = Math.atan2(b.z - a.z, b.x - a.x) * 4
+      sx += Math.cos(q) * l; sy += Math.sin(q) * l
+    }
+    return Math.atan2(sy, sx) / 4
+  }
+  let th = th0
+  if (R.length >= 3) {
+    const d = wallAngle(R) - wallAngle(GAP_RING)
+    let bestD = Infinity
+    for (let k = -4; k <= 4; k++) {
+      const cand = d + (k * Math.PI) / 2
+      const off = Math.abs(Math.atan2(Math.sin(cand - th0), Math.cos(cand - th0)))
+      if (off < bestD) { bestD = off; th = cand }
+    }
+  }
+  const c0 = Math.cos(th), s0 = Math.sin(th)
   const T = GAP_RING.map((p) => ({ x: p.x * c0 - p.z * s0, z: p.x * s0 + p.z * c0 }))
   const mid = (r: P2[]): P2 => {
     const xs = r.map((p) => p.x), zs = r.map((p) => p.z)
     return { x: (Math.max(...xs) + Math.min(...xs)) / 2, z: (Math.max(...zs) + Math.min(...zs)) / 2 }
   }
-  let R = ring ?? []
-  if (R.length > 3 && Math.hypot(R[0].x - R[R.length - 1].x, R[0].z - R[R.length - 1].z) < 0.3) R = R.slice(0, -1)
   const mT = mid(T), mR = R.length >= 3 ? mid(R) : { x: 0, z: 0 }
   const fallback = { c: c0, s: s0, tx: mR.x - mT.x, tz: mR.z - mT.z, res: -1 }
   const n = GAP_RING.length
