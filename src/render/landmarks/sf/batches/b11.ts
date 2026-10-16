@@ -299,108 +299,11 @@ export const B11: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     capPolygon(out, base, H + stackH, [0.2, 0.2, 0.2], stackTag)
   },
 
-  /** way/291188933 — Quarters 1 / Nimitz House, Treasure Island (1900). The largest of the officers' houses:
-   * a two-storey Colonial-Revival mansion, clapboard, hip roof, a porch at the entrance. */
-  b11_quarters1NimitzHouse_291188933: (out: MeshBuilder, fit: Fit): void =>
-    facade(out, fit, {
-      ground: { kind: 'plain', storeys: 1, material: 'stucco' },
-      shaft: { storeys: 1, windows: 'balanced', material: 'stucco' },
-      top: null,
-      bands: { aboveGround: 'string', belowTop: null, top: null },
-      crown: { kind: 'hip', height: 3, inset: 0.4, colour: [0.3, 0.2, 0.16] },
-      frame: null,
-      entrance: { at: 'centre', kind: 'door', steps: 2 },
-      material: 'stucco',
-    }),
 
-  /** way/291188936 — Quarters 2, Treasure Island (1900). Plain Colonial-Revival officers' house. */
-  b11_quarters2_291188936: (out: MeshBuilder, fit: Fit): void =>
-    facade(out, fit, {
-      ground: { kind: 'plain', storeys: 1, material: 'stucco' },
-      shaft: { storeys: 1, windows: 'balanced', material: 'stucco' },
-      top: null,
-      bands: { aboveGround: null, belowTop: null, top: null },
-      crown: { kind: 'hip', height: 2.6, inset: 0.35, colour: [0.3, 0.2, 0.16] },
-      frame: null,
-      entrance: { at: 'centre', kind: 'door', steps: 1 },
-      material: 'stucco',
-    }),
 
-  /** way/291188941 — Quarters 3, Treasure Island (1900). Same plan family as Quarters 2/4. */
-  b11_quarters3_291188941: (out: MeshBuilder, fit: Fit): void =>
-    facade(out, fit, {
-      ground: { kind: 'plain', storeys: 1, material: 'stucco' },
-      shaft: { storeys: 1, windows: 'balanced', material: 'stucco' },
-      top: null,
-      bands: { aboveGround: null, belowTop: null, top: null },
-      crown: { kind: 'hip', height: 2.6, inset: 0.35, colour: [0.3, 0.2, 0.16] },
-      frame: null,
-      entrance: { at: 'centre', kind: 'door', steps: 1 },
-      material: 'stucco',
-    }),
 
-  /** way/291188937 — Quarters 4, Treasure Island (1900). Same plan family as Quarters 2/3. */
-  b11_quarters4_291188937: (out: MeshBuilder, fit: Fit): void =>
-    facade(out, fit, {
-      ground: { kind: 'plain', storeys: 1, material: 'stucco' },
-      shaft: { storeys: 1, windows: 'balanced', material: 'stucco' },
-      top: null,
-      bands: { aboveGround: null, belowTop: null, top: null },
-      crown: { kind: 'hip', height: 2.8, inset: 0.35, colour: [0.3, 0.2, 0.16] },
-      frame: null,
-      entrance: { at: 'centre', kind: 'door', steps: 1 },
-      material: 'stucco',
-    }),
 
-  /** way/291188938 — Quarters 5, Treasure Island (1900). */
-  b11_quarters5_291188938: (out: MeshBuilder, fit: Fit): void =>
-    facade(out, fit, {
-      ground: { kind: 'plain', storeys: 1, material: 'stucco' },
-      shaft: { storeys: 1, windows: 'balanced', material: 'stucco' },
-      top: null,
-      bands: { aboveGround: null, belowTop: null, top: null },
-      crown: { kind: 'hip', height: 2.8, inset: 0.35, colour: [0.3, 0.2, 0.16] },
-      frame: null,
-      entrance: { at: 'centre', kind: 'door', steps: 1 },
-      material: 'stucco',
-    }),
 
-  /** way/291188939 — Quarters 6, Treasure Island (1903). Plain 4-vertex box plan. */
-  b11_quarters6_291188939: (out: MeshBuilder, fit: Fit): void =>
-    facade(out, fit, {
-      ground: { kind: 'plain', storeys: 1, material: 'stucco' },
-      shaft: { storeys: 1, windows: 'balanced', material: 'stucco' },
-      top: null,
-      bands: { aboveGround: null, belowTop: null, top: null },
-      crown: { kind: 'hip', height: 2.6, inset: 0.35, colour: [0.3, 0.2, 0.16] },
-      frame: null,
-      entrance: { at: 'centre', kind: 'door', steps: 1 },
-      material: 'stucco',
-    }),
 
-  /** way/291188940 — Quarters 7, Treasure Island (1903). Plain 4-vertex box plan. */
-  b11_quarters7_291188940: (out: MeshBuilder, fit: Fit): void =>
-    facade(out, fit, {
-      ground: { kind: 'plain', storeys: 1, material: 'stucco' },
-      shaft: { storeys: 1, windows: 'balanced', material: 'stucco' },
-      top: null,
-      bands: { aboveGround: null, belowTop: null, top: null },
-      crown: { kind: 'hip', height: 2.4, inset: 0.35, colour: [0.3, 0.2, 0.16] },
-      frame: null,
-      entrance: { at: 'centre', kind: 'door', steps: 1 },
-      material: 'stucco',
-    }),
 
-  /** way/291188963 — Quarters 9, Treasure Island (1916, Coast Guard). Strictly orthogonal 18-vertex plan. */
-  b11_quarters9_291188963: (out: MeshBuilder, fit: Fit): void =>
-    facade(out, fit, {
-      ground: { kind: 'plain', storeys: 1, material: 'stucco' },
-      shaft: { storeys: 1, windows: 'balanced', material: 'stucco' },
-      top: null,
-      bands: { aboveGround: null, belowTop: null, top: null },
-      crown: { kind: 'hip', height: 2.2, inset: 0.3, colour: [0.3, 0.2, 0.16] },
-      frame: null,
-      entrance: { at: 'centre', kind: 'door', steps: 1 },
-      material: 'stucco',
-    }),
 }

@@ -8740,6 +8740,53 @@ function oceanClimateCenter_CrissyField(out: MeshBuilder, fit: Fit): void {
   for (const x of [-hx * 0.45, hx * 0.45]) box(out, x, 1.3, -hz - 2.5, 0.1, 1.3, 0.1, WHITE, CB)
 }
 
+/**
+ * The Senior Officers' Quarters on Yerba Buena Island (1900-1916; HABS photos, docs/shots/refs/notable/ybi-quarters):
+ * two-storey white clapboard Colonial Revival houses, a low HIPPED grey roof with a little eave, tall brick chimneys
+ * standing proud of a wall, sash windows with dark frames, a porch on the bay side. One builder for all of them;
+ * `big` for Quarters 1 (the Nimitz House), a storey taller with a wider porch.
+ */
+function officersQuarters(out: MeshBuilder, fit: Fit, big = false): void {
+  const WHITE: Rgb = [0.92, 0.92, 0.89], ROOF: Rgb = [0.38, 0.39, 0.41], DARK: Rgb = [0.16, 0.18, 0.2], BRICK: Rgb = [0.42, 0.3, 0.24]
+  const CB = surfaceTag('clapboard'), GL = surfaceTag('glass'), TL = surfaceTag('tile'), BK = surfaceTag('brick')
+  const hx = Math.max(3.5, Math.min(fit.hx, 14)), hz = Math.max(3.5, Math.min(fit.hz, 12)), N = big ? 3 : 2, FL = 3.3, E = N * FL + 0.4
+  box(out, 0, E / 2, 0, hx, E / 2, hz, WHITE, CB)
+  box(out, 0, E - 0.15, 0, hx + 0.25, 0.18, hz + 0.25, WHITE, CB)                              // the cornice
+  for (let f = 0; f < N; f++) {
+    const y0 = f * FL + 0.9, y1 = y0 + 1.7
+    for (let u = -hx + 1.4; u < hx - 0.8; u += 2.3) for (const sd of [-1, 1]) box(out, u, (y0 + y1) / 2, sd * (hz + 0.02), 0.45, (y1 - y0) / 2, 0.04, DARK, GL)
+    for (let u = -hz + 1.4; u < hz - 0.8; u += 2.3) for (const sd of [-1, 1]) box(out, sd * (hx + 0.02), (y0 + y1) / 2, u, 0.04, (y1 - y0) / 2, 0.45, DARK, GL)
+  }
+  // the hipped roof: a squat pyramid, ridged along the long side
+  const rise = Math.min(hx, hz) * 0.45
+  {
+    // a true hip over the rectangle: ridge along the longer side, four sloped faces, 0.4 m eaves
+    const ex = hx + 0.4, ez = hz + 0.4, alongX = ex >= ez, r = alongX ? ex - ez : ez - ex
+    const A: V3 = alongX ? [-r, E + rise, 0] : [0, E + rise, -r], B: V3 = alongX ? [r, E + rise, 0] : [0, E + rise, r]
+    const c = (x: number, z: number): V3 => [x, E, z]
+    const uvr: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+    if (alongX) {
+      out.quad([c(-ex, -ez), c(ex, -ez), B, A], [0, ez, -rise], uvr, ROOF, TL)
+      out.quad([c(ex, ez), c(-ex, ez), A, B], [0, ez, rise], uvr, ROOF, TL)
+      out.quad([c(ex, -ez), c(ex, ez), B, B], [rise, ex, 0], uvr, ROOF, TL)
+      out.quad([c(-ex, ez), c(-ex, -ez), A, A], [-rise, ex, 0], uvr, ROOF, TL)
+    } else {
+      out.quad([c(ex, -ez), c(ex, ez), B, A], [rise, ex, 0], uvr, ROOF, TL)
+      out.quad([c(-ex, ez), c(-ex, -ez), A, B], [-rise, ex, 0], uvr, ROOF, TL)
+      out.quad([c(-ex, -ez), c(ex, -ez), A, A], [0, ez, -rise], uvr, ROOF, TL)
+      out.quad([c(ex, ez), c(-ex, ez), B, B], [0, ez, rise], uvr, ROOF, TL)
+    }
+  }
+  // a tall chimney against one end wall, another through the roof
+  box(out, hx + 0.35, (E + rise + 1.5) / 2, 0, 0.45, (E + rise + 1.5) / 2, 0.75, BRICK, BK)
+  box(out, -hx * 0.4, E + rise * 0.6 + 0.8, hz * 0.2, 0.35, 0.8, 0.35, BRICK, BK)
+  // the porch on the −z side
+  const pw = big ? hx * 0.8 : hx * 0.55
+  box(out, 0, 3.0, -hz - 1.4, pw, 0.12, 1.5, ROOF, TL)
+  box(out, 0, 0.4, -hz - 1.4, pw, 0.4, 1.5, WHITE, CB)
+  for (const x of [-pw + 0.2, -pw / 3, pw / 3, pw - 0.2]) box(out, x, 1.7, -hz - 2.7, 0.1, 1.3, 0.1, WHITE, CB)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -8788,6 +8835,8 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   kongChowTemple_855_Stockton,
   grantSacramentoCorner,
   oceanClimateCenter_CrissyField,
+  officersQuarters: (out: MeshBuilder, fit: Fit) => officersQuarters(out, fit),
+  officersQuartersNimitz: (out: MeshBuilder, fit: Fit) => officersQuarters(out, fit, true),
   gapHQ_2_Folsom,
   uberHQ1_1455_3rd,
   uberHQ2_1515_3rd,
