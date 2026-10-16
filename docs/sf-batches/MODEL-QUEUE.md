@@ -64,3 +64,4 @@ Lesson 2: `tools/model-shots.ts`'s auto cameras look from the fit's +z side, but
 bearing on −z — so the auto "front" shot shows the BACK. Every pack must say: front on the ring edge facing −z,
 check it with an explicit `--view=<name>:-1.5708,1.5,40,0,8,0`. (Swedish American Hall was first built facing +z.)
 Lesson 3: brick renders much brighter/oranger in the city than in the shots — specify brick ≈ 30 % darker than the photo.
+Lesson 4: when an entry claims building:parts, give the agent each part's POLYGON (evidence.py lists only centres/areas) — The Pacific's parts had to be approximated.

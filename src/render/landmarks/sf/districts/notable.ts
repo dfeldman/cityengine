@@ -4452,6 +4452,234 @@ function zyngaHQ_650_Townsend(out: MeshBuilder, fit: Fit): void {
   for (const idx of m.indices) out.indices.push(base + idx)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// The Pacific, 2121 Webster Street
+// ---------------------------------------------------------------------------------------------------------------
+
+/**
+ * OSM way/32965108's outline (docs/shots/refs/notable/the-pacific/EVIDENCE.md), anticlockwise, in the evidence frame: x east,
+ * z north, metres. Sacramento Street is the south side (bearing 171°), Webster Street the east side (81°).
+ */
+const PAC_RING: P2[] = [[-40.8, 19.0], [-39.5, 11.0], [-34.8, -17.8], [-34.7, -18.5], [-25.3, -17.0], [-17.8, -15.8], [15.7, -10.5],
+  [15.6, -10.1], [33.0, -7.3], [34.2, -7.1], [34.1, -6.4], [37.1, 0.1], [32.1, 30.7], [31.9, 30.7]].map(([x, z]) => ({ x, z }))
+const pacPoly = (a: number[][]): P2[] => a.map(([x, z]) => ({ x, z }))
+// The pack gives each building:part's area, height and centre but not its polygon, so the parts are cut from the outline to
+// their areas: the 124 m² west strip (10 m), the 760 m² north wing (8 m), the 1 878 m² main block (36 m: 1 902 here, the
+// 23 m² porch being drawn on top), and the two set-back storeys (1 046 m² to 39.5 m; the top one pulled in a further 2 m).
+const PAC_MAIN = pacPoly([[-31.55, -18.00], [-25.30, -17.00], [-17.80, -15.80], [15.70, -10.50], [15.60, -10.10], [33.00, -7.30],
+  [34.20, -7.10], [34.10, -6.40], [37.10, 0.10], [33.85, 20.01], [-35.82, 8.97]])
+const PAC_WING = pacPoly([[33.85, 20.01], [32.10, 30.70], [31.90, 30.70], [-37.49, 19.53], [-35.82, 8.97]])
+const PAC_STRIP = pacPoly([[-40.80, 19.00], [-39.50, 11.00], [-34.80, -17.80], [-34.70, -18.50], [-31.55, -18.00], [-37.49, 19.53]])
+const PAC_UP1 = pacPoly([[-28.71, -11.30], [29.73, -1.90], [31.04, 0.92], [28.69, 15.29], [-31.42, 5.77]])
+const PAC_UP2 = pacPoly([[-27.05, -9.01], [28.36, -0.09], [28.96, 1.21], [27.04, 13.00], [-29.13, 4.11]])
+
+const PAC_PANEL: Rgb = [0.66, 0.65, 0.62]        // the grey-beige wall panels (a touch darker than the pack's #d6d2c8: the photos' shade)
+const PAC_FRAME: Rgb = [0.82, 0.81, 0.78]       // the paler surround each window sits in: the grid
+const PAC_WHITE: Rgb = [0.945, 0.94, 0.925]      // #f1f0ec, window-box frames and hoods
+const PAC_GLASS: Rgb = [0.427, 0.529, 0.588]     // #6d8796
+const PAC_GLASS_B: Rgb = [0.36, 0.5, 0.56]       // the second facet of a window box, in shade
+const PAC_MULL: Rgb = [0.2, 0.27, 0.31]          // dark mullions and the shop glazing
+const PAC_STONE: Rgb = [0.784, 0.761, 0.706]     // #c8c2b4, the podium stone
+const PAC_PIER: Rgb = [0.52, 0.48, 0.43]         // the bronze-taupe corner piers
+const PAC_ROOF: Rgb = [0.6, 0.6, 0.58]
+const PAC_HEDGE: Rgb = [0.3, 0.42, 0.24]
+const CN = surfaceTag('concrete')
+const AS = surfaceTag('ashlar')
+const MT = surfaceTag('metal')
+
+type PacFace = { a: P2; tx: number; tz: number; nx: number; nz: number; L: number }
+/** An edge's frame: along it (t), out of the wall (n = (tz, −tx), the outward side of an anticlockwise ring). */
+function pacFace(a: P2, b: P2): PacFace {
+  const dx = b.x - a.x, dz = b.z - a.z, L = Math.hypot(dx, dz)
+  return { a, tx: dx / L, tz: dz / L, nx: dz / L, nz: -dx / L, L }
+}
+const pacAt = (F: PacFace, s: number, y: number, o: number): V3 => [F.a.x + F.tx * s + F.nx * o, y, F.a.z + F.tz * s + F.nz * o]
+const PAC_UV: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+
+/** One triangle wound to face `n`. */
+function pacTri(m: MeshBuilder, p: V3[], n: V3, c: Rgb, tag: number): void {
+  const base = m.positions.length / 3
+  for (let i = 0; i < 3; i++) {
+    m.positions.push(p[i][0], p[i][1], p[i][2])
+    m.normals.push(n[0], n[1], n[2])
+    m.uvs.push(PAC_UV[i][0], PAC_UV[i][1])
+    m.colors.push(c[0], c[1], c[2], tag)
+  }
+  const e1 = [p[1][0] - p[0][0], p[1][1] - p[0][1], p[1][2] - p[0][2]]
+  const e2 = [p[2][0] - p[0][0], p[2][1] - p[0][1], p[2][2] - p[0][2]]
+  const facing = (e1[1] * e2[2] - e1[2] * e2[1]) * n[0] + (e1[2] * e2[0] - e1[0] * e2[2]) * n[1] + (e1[0] * e2[1] - e1[1] * e2[0]) * n[2]
+  if (facing > 0) m.indices.push(base, base + 2, base + 1)
+  else m.indices.push(base, base + 1, base + 2)
+}
+
+function pacInside(p: P2, poly: P2[]): boolean {
+  let c = false
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const a = poly[i], b = poly[j]
+    if ((a.z > p.z) !== (b.z > p.z) && p.x < ((b.x - a.x) * (p.z - a.z)) / (b.z - a.z) + a.x) c = !c
+  }
+  return c
+}
+
+/** A flat window: the pale surround on the wall, the glass in it, one dark mullion. s = centre along the edge. */
+function pacWindow(m: MeshBuilder, F: PacFace, s: number, y0: number, w: number, h: number, mull = true): void {
+  const n: V3 = [F.nx, 0, F.nz]
+  const sq = (s0: number, s1: number, a: number, b: number, o: number, c: Rgb, tag: number): void =>
+    m.quad([pacAt(F, s0, a, o), pacAt(F, s1, a, o), pacAt(F, s1, b, o), pacAt(F, s0, b, o)], n, PAC_UV, c, tag)
+  sq(s - w / 2 - 0.2, s + w / 2 + 0.2, y0 - 0.2, y0 + h + 0.2, 0.06, PAC_FRAME, CN)
+  sq(s - w / 2, s + w / 2, y0, y0 + h, 0.1, PAC_GLASS, GL)
+  if (mull) sq(s + w * 0.16 - 0.04, s + w * 0.16 + 0.04, y0, y0 + h, 0.13, PAC_MULL, MT)
+}
+
+/** A window box: a shallow bay folded out of the wall, two glass facets meeting at a ridge `dep` out, a white sill and hood. */
+function pacBox(m: MeshBuilder, F: PacFace, s: number, y0: number, w: number, h: number, dep: number): void {
+  const n: V3 = [F.nx, 0, F.nz]
+  const y1 = y0 + h, hw = w / 2
+  m.quad([pacAt(F, s - hw - 0.2, y0 - 0.2, 0.06), pacAt(F, s + hw + 0.2, y0 - 0.2, 0.06), pacAt(F, s + hw + 0.2, y1 + 0.2, 0.06),
+    pacAt(F, s - hw - 0.2, y1 + 0.2, 0.06)], n, PAC_UV, PAC_FRAME, CN)
+  const A = (y: number, o = 0.1): V3 => pacAt(F, s - hw, y, o), B = (y: number, o = 0.1): V3 => pacAt(F, s + hw, y, o), C = (y: number, o = dep): V3 => pacAt(F, s, y, o)
+  const dd = dep - 0.1, k = Math.hypot(dd, hw)
+  const nl: V3 = [(-F.tx * dd + F.nx * hw) / k, 0, (-F.tz * dd + F.nz * hw) / k]
+  const nr: V3 = [(F.tx * dd + F.nx * hw) / k, 0, (F.tz * dd + F.nz * hw) / k]
+  m.quad([A(y0), C(y0), C(y1), A(y1)], nl, PAC_UV, PAC_GLASS, GL)
+  m.quad([C(y0), B(y0), B(y1), C(y1)], nr, PAC_UV, PAC_GLASS_B, GL)
+  // the white sill plate (a wedge 0.2 thick) and the hood over it
+  const sill = 0.22, ce = dep + 0.12
+  pacTri(m, [A(y0, 0.06), B(y0, 0.06), C(y0, ce)], [0, 1, 0], PAC_WHITE, MT)
+  pacTri(m, [A(y0 - sill, 0.06), B(y0 - sill, 0.06), C(y0 - sill, ce)], [0, -1, 0], PAC_WHITE, MT)
+  m.quad([A(y0 - sill, 0.06), C(y0 - sill, ce), C(y0, ce), A(y0, 0.06)], nl, PAC_UV, PAC_WHITE, MT)
+  m.quad([C(y0 - sill, ce), B(y0 - sill, 0.06), B(y0, 0.06), C(y0, ce)], nr, PAC_UV, PAC_WHITE, MT)
+  pacTri(m, [A(y1, 0.06), B(y1, 0.06), C(y1, ce)], [0, -1, 0], PAC_WHITE, MT)
+  pacTri(m, [A(y1 + 0.04, 0.06), B(y1 + 0.04, 0.06), C(y1 + 0.04, ce)], [0, 1, 0], PAC_WHITE, MT)
+}
+
+/**
+ * The Pacific (2121 Webster Street, 2016 — the former Pacific Medical Center site, Pacific Heights). Photographs:
+ * docs/shots/refs/notable/the-pacific/ — the Sacramento/Webster corner (Mapillary 0, 2 and the photo pass's frames from
+ * the slope), the Webster face (Mapillary 3) and the Sacramento podium door (Mapillary 1). Own geometry, drawn in the
+ * evidence plan's frame and carried onto `fit.ring`:
+ *
+ * - the STEPPED MASSING from the OSM parts: the 36 m main block, the set-back storey to 39.5 m and the top glazed storey
+ *   (pulled in again) to 43 m, the low 8 m north wing and the 10 m west strip (a stone podium either side of the garden);
+ * - a stone PODIUM 5.6 m high round the main block with a dark-glazed ground floor on Sacramento and Webster and clipped
+ *   hedges along the street, the white ledge at its head, bronze-taupe corner piers, and the little 6 m porch (way/1315764833);
+ * - above it eight floors of pale grey-beige panel wall, each window in a paler surround — the grid — and on a diagonal
+ *   third of the bays a projecting WINDOW BOX: two glass facets folded out to a ridge 0.55 m off the wall, a white wedge
+ *   sill under, a white hood over (Mapillary 0 and 2 show exactly this, the sill a triangle in plan).
+ *
+ * Where the photographs overruled the numbers: the pack's panel #d6d2c8 reads a shade darker and the corner piers are
+ * bronze-taupe, not panel; the part polygons are cut from the outline to the pack's areas, since only centres were given
+ * (those centres do not tile the outline, so they were not used); the top storey is a set-back glass pavilion.
+ */
+function thePacific_2121_Webster(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const POD = 5.6, FL = (36 - POD) / 8
+  type Part = { poly: P2[]; y0: number; y1: number }
+  const parts: Part[] = [
+    { poly: PAC_MAIN, y0: 0, y1: 36 }, { poly: PAC_WING, y0: 0, y1: 8 }, { poly: PAC_STRIP, y0: 0, y1: 10 },
+    { poly: PAC_UP1, y0: 36, y1: 39.5 }, { poly: PAC_UP2, y0: 39.5, y1: 43 },
+  ]
+  const covered = (x: number, z: number, y: number, self: Part): boolean =>
+    parts.some((p) => p !== self && y > p.y0 && y < p.y1 && pacInside({ x, z }, p.poly))
+  const edges = (poly: P2[]): PacFace[] => poly.map((a, i) => pacFace(a, poly[(i + 1) % poly.length]))
+  /** Windows along a part's edges for the band y0…y1: boxes on a diagonal third when `boxes`. */
+  const row = (P: Part, F: PacFace, k: number, y0: number, w: number, h: number, bay: number, boxes: boolean): void => {
+    const n = Math.max(1, Math.round((F.L - 2.2) / bay))
+    for (let i = 0; i < n; i++) {
+      const s = 1.1 + ((i + 0.5) * (F.L - 2.2)) / n
+      if (covered(F.a.x + F.tx * s + F.nx * 0.4, F.a.z + F.tz * s + F.nz * 0.4, y0 + h / 2, P)) continue
+      if (boxes && (i + 2 * k) % 3 === 0) pacBox(m, F, s, y0 - 0.1, w + 0.45, h + 0.2, 0.8)
+      else pacWindow(m, F, s, y0, w, h)
+    }
+  }
+
+  for (const P of parts) {
+    const stone = P.y1 <= 10
+    const glassTop = P.y0 === 39.5
+    for (const F of edges(P.poly)) {
+      const n: V3 = [F.nx, 0, F.nz]
+      const col = glassTop ? PAC_GLASS : stone ? PAC_STONE : PAC_PANEL
+      m.quad([pacAt(F, 0, P.y0, 0), pacAt(F, F.L, P.y0, 0), pacAt(F, F.L, P.y1, 0), pacAt(F, 0, P.y1, 0)], n, PAC_UV, col,
+        glassTop ? GL : stone ? AS : CN)
+      if (F.L < 3.5) continue
+      if (glassTop) {
+        // the set-back glass pavilion: pale mullions every 2.8 m
+        const k = Math.max(1, Math.round(F.L / 2.8))
+        for (let i = 0; i <= k; i++) {
+          const s = (i * F.L) / k
+          m.quad([pacAt(F, s - 0.07, 39.5, 0.05), pacAt(F, s + 0.07, 39.5, 0.05), pacAt(F, s + 0.07, 43, 0.05), pacAt(F, s - 0.07, 43, 0.05)], n,
+            PAC_UV, PAC_FRAME, MT)
+        }
+        continue
+      }
+      if (P.y1 === 36) {
+        // the podium: the dark-glazed ground floor on the street faces, the white ledge at its head, then the grid
+        const street = F.nz < -0.3 || F.nx > 0.3
+        if (street) {
+          const k = Math.max(1, Math.round((F.L - 2) / 4.2))
+          for (let i = 0; i < k; i++) {
+            const s = 1 + ((i + 0.5) * (F.L - 2)) / k
+            if (!covered(F.a.x + F.tx * s + F.nx * 0.4, F.a.z + F.tz * s + F.nz * 0.4, 2, P) && i % 4 !== 2) {
+              m.quad([pacAt(F, s - 1.6, 0.9, 0.08), pacAt(F, s + 1.6, 0.9, 0.08), pacAt(F, s + 1.6, 4.3, 0.08), pacAt(F, s - 1.6, 4.3, 0.08)], n,
+                PAC_UV, PAC_MULL, GL)
+            }
+          }
+          // clipped hedges along the pavement, and the ledge
+          m.quad([pacAt(F, 0.6, 0, 1.3), pacAt(F, F.L - 0.6, 0, 1.3), pacAt(F, F.L - 0.6, 0.8, 1.3), pacAt(F, 0.6, 0.8, 1.3)], n, PAC_UV, PAC_HEDGE, ST)
+          m.quad([pacAt(F, 0.6, 0.8, 1.3), pacAt(F, F.L - 0.6, 0.8, 1.3), pacAt(F, F.L - 0.6, 0.8, 0.5), pacAt(F, 0.6, 0.8, 0.5)], [0, 1, 0], PAC_UV,
+            PAC_HEDGE, ST)
+        }
+        m.quad([pacAt(F, 0, POD - 0.3, 0.22), pacAt(F, F.L, POD - 0.3, 0.22), pacAt(F, F.L, POD + 0.25, 0.22), pacAt(F, 0, POD + 0.25, 0.22)], n,
+          PAC_UV, PAC_WHITE, CN)
+        m.quad([pacAt(F, 0, POD + 0.25, 0.22), pacAt(F, F.L, POD + 0.25, 0.22), pacAt(F, F.L, POD + 0.25, 0), pacAt(F, 0, POD + 0.25, 0)], [0, 1, 0],
+          PAC_UV, PAC_WHITE, CN)
+        for (let k = 0; k < 8; k++) row(P, F, k, POD + k * FL + 0.8, 1.95, 2.55, 3.0, true)
+      } else if (P.y1 === 39.5) {
+        row(P, F, 0, 36.7, 1.95, 2.3, 3.0, false)
+      } else {
+        // the stone wings: two rows of plain windows
+        row(P, F, 0, 1.0, 2.2, 2.6, 3.6, false)
+        if (P.y1 > 9) row(P, F, 1, 4.9, 2.2, 2.6, 3.6, false)
+      }
+    }
+    capPolygonWithHoles(m, [P.poly], P.y1, PAC_ROOF, CN)
+  }
+  // the parapet's white coping where the main roof meets the set-back storey is the ledge on UP1's foot
+  for (const F of edges(PAC_UP1)) {
+    const n: V3 = [F.nx, 0, F.nz]
+    m.quad([pacAt(F, 0, 36, 0.12), pacAt(F, F.L, 36, 0.12), pacAt(F, F.L, 36.4, 0.12), pacAt(F, 0, 36.4, 0.12)], n, PAC_UV, PAC_WHITE, CN)
+  }
+  // the bronze-taupe corner piers of the main block, full height, where the plan turns by more than 30°
+  const M = PAC_MAIN
+  for (let i = 0; i < M.length; i++) {
+    const p = M[(i + M.length - 1) % M.length], q = M[i], r = M[(i + 1) % M.length]
+    const F1 = pacFace(p, q), F2 = pacFace(q, r)
+    if (F1.L < 3.5 || F2.L < 3.5) continue
+    if (Math.abs(F1.tx * F2.tz - F1.tz * F2.tx) < 0.5 || covered(q.x, q.z, 20, parts[0])) continue
+    const w = 0.7
+    m.quad([pacAt(F1, F1.L - w, 0, 0.1), pacAt(F1, F1.L, 0, 0.1), pacAt(F1, F1.L, 36, 0.1), pacAt(F1, F1.L - w, 36, 0.1)], [F1.nx, 0, F1.nz],
+      PAC_UV, PAC_PIER, MT)
+    m.quad([pacAt(F2, 0, 0, 0.1), pacAt(F2, w, 0, 0.1), pacAt(F2, w, 36, 0.1), pacAt(F2, 0, 36, 0.1)], [F2.nx, 0, F2.nz], PAC_UV, PAC_PIER, MT)
+  }
+  // the 6 m porch on Sacramento (way/1315764833, centre (−17.1, −15.4)): a stone block standing 0.5 m proud of the podium
+  {
+    const F = pacFace(PAC_MAIN[1], PAC_MAIN[2])
+    const s0 = 0.6, s1 = 5.4
+    const lo = (s: number, y: number, o: number): V3 => pacAt(F, s, y, o)
+    const n: V3 = [F.nx, 0, F.nz]
+    m.quad([lo(s0, 0, 0.5), lo(s1, 0, 0.5), lo(s1, 6, 0.5), lo(s0, 6, 0.5)], n, PAC_UV, PAC_STONE, AS)
+    m.quad([lo(s0, 6, 0.5), lo(s1, 6, 0.5), lo(s1, 6, 0), lo(s0, 6, 0)], [0, 1, 0], PAC_UV, PAC_STONE, AS)
+    m.quad([lo(s0, 0, 0), lo(s0, 0, 0.5), lo(s0, 6, 0.5), lo(s0, 6, 0)], [-F.tx, 0, -F.tz], PAC_UV, PAC_STONE, AS)
+    m.quad([lo(s1, 0, 0.5), lo(s1, 0, 0), lo(s1, 6, 0), lo(s1, 6, 0.5)], [F.tx, 0, F.tz], PAC_UV, PAC_STONE, AS)
+  }
+
+  // ---- onto the city's ring: the evidence frame turned by the entry's front (171°) as the loader turns the ring ------
+  const th = ((171 + 180) * Math.PI) / 180, c = Math.cos(th), s = Math.sin(th)
+  const ca = emanuElCentroid(PAC_RING.map((p) => ({ x: p.x * c - p.z * s, z: p.x * s + p.z * c })))
+  const cb = fit.ring && fit.ring.length >= 4 ? emanuElCentroid(fit.ring) : { x: 0, z: 0 }
+  emanuElCopy(out, m, c, s, cb.x - ca.x, cb.z - ca.z)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -4472,4 +4700,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   fourthChurchScientist_300_Funston,
   swedishAmericanHall_2174_Market,
   zyngaHQ_650_Townsend,
+  thePacific_2121_Webster,
 }
