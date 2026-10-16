@@ -5092,6 +5092,183 @@ function stripeHQ_510_Townsend(out: MeshBuilder, fit: Fit): void {
   for (const idx of m.indices) out.indices.push(base + idx)
 }
 
+const CB_FRAME: Rgb = [0.62, 0.63, 0.64]        // #d9dbdc coded down: pale grey-white concrete frame
+const CB_WHITE: Rgb = [0.72, 0.73, 0.73]        // #e9eaea the pavilions
+const CB_GLASS: Rgb = [0.2, 0.28, 0.34]         // #6d8392 blue-grey glazing, darker in the recesses
+const CB_BLUE: Rgb = [0.27, 0.38, 0.5]          // the bluer upper-floor glass
+const CB_MULL: Rgb = [0.66, 0.67, 0.68]         // fine white mullions
+const CB_GLASS0: Rgb = [0.15, 0.21, 0.25]
+const CB_DARK: Rgb = [0.14, 0.16, 0.18]         // dark spandrel bands, the door
+const CB_PLINTH: Rgb = [0.44, 0.45, 0.47]       // the concrete plinth under the glass
+
+/**
+ * China Basin Landing, 185 Berry Street (OSM way/46264110 Berry Street Building, 25 m; way/46264108 Wharfside Building,
+ * 23 m): two ~250 m converted-warehouse office blocks that are ONE design, so both manifest entries use this builder on
+ * their own footprints. Photographs: docs/shots/refs/notable/china-basin/way-46264110-02 (the Berry Street front: a pale
+ * concrete frame of piers and floor bands round big gridded blue-grey glass, an arched entrance pavilion with square
+ * openings and steps, a railing on the plinth), -01 and way-46264108-01/02 (the pavilion again; the upper two storeys
+ * are bluer glass stepped back behind a projecting band, which the pack's "five storeys of grid" does not say),
+ * mapillary-0 (the stepped upper glass and the railed plinth). The grid runs round all four sides; the arched white
+ * pavilions, ~8 m wide, ~2 m above the roof, stand every ~60 m on the front only.
+ *
+ * Orientation: front on local -z (manifest front 315 Berry Street Building, 135 Wharfside Building); the pavilions go on
+ * the longest ring edge facing -z.
+ */
+function chinaBasinLanding_185_Berry(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const CC = surfaceTag('concrete')
+  const MT = surfaceTag('metal')
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  const signedArea = (r: P2[]): number => {
+    let a = 0
+    for (let i = 0; i < r.length; i++) { const p = r[i], q = r[(i + 1) % r.length]; a += p.x * q.z - q.x * p.z }
+    return a
+  }
+  if (signedArea(ring) < 0) ring.reverse()
+  const edgesOf = (r: P2[]) => r.map((a, i) => {
+    const b = r[(i + 1) % r.length], l = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    return { i, a, b, l, nx: (b.z - a.z) / l, nz: -(b.x - a.x) / l }
+  })
+  const inset = (r: P2[], d: number): P2[] => {
+    const e = edgesOf(r), n = r.length
+    return r.map((p, i) => {
+      const e0 = e[(i + n - 1) % n], e1 = e[i]
+      const k = 1 + e0.nx * e1.nx + e0.nz * e1.nz
+      return { x: p.x - ((e0.nx + e1.nx) / k) * d, z: p.z - ((e0.nz + e1.nz) / k) * d }
+    })
+  }
+  let simple = ring.slice()
+  for (;;) {
+    const e = edgesOf(simple)
+    let k = -1, best = 6
+    for (let i = 0; i < e.length; i++) if (e[i].l < best) { best = e[i].l; k = i }
+    if (k < 0 || simple.length <= 4) break
+    simple.splice((k + 1) % simple.length, 1)
+  }
+  const info = edgesOf(ring)
+  const fronts = info.filter((e) => e.l > 40 && e.nz < -0.85)
+  const front = fronts.length ? fronts.reduce((p, c) => (c.l > p.l ? c : p)) : info.reduce((p, c) => (c.nz < p.nz ? c : p))
+
+  const H = fit.height > 10 ? fit.height : 25
+  const PL = 1.1                                   // plinth
+  const FL = (H - PL - 0.4) / 5                    // storey
+  const YB = PL + FL * 3                           // the break: three frame storeys, then two set back
+  const STEP = 2.6
+  const qd = (pts: V3[], nrm: V3, c: Rgb, tag: number): void => {
+    const e1: V3 = [pts[1][0] - pts[0][0], pts[1][1] - pts[0][1], pts[1][2] - pts[0][2]]
+    const e2: V3 = [pts[3][0] - pts[0][0], pts[3][1] - pts[0][1], pts[3][2] - pts[0][2]]
+    const cx = e1[1] * e2[2] - e1[2] * e2[1], cy = e1[2] * e2[0] - e1[0] * e2[2], cz = e1[0] * e2[1] - e1[1] * e2[0]
+    const ok = cx * nrm[0] + cy * nrm[1] + cz * nrm[2] < 0
+    m.quad(ok ? pts : [pts[0], pts[3], pts[2], pts[1]], nrm, uv, c, tag)
+  }
+  /** A wall's frame: P(u, y, pr) in metres along, up and out of the edge */
+  const wall = (a: P2, b: P2, nx: number, nz: number, l: number) => {
+    const tx = (b.x - a.x) / l, tz = (b.z - a.z) / l
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const face = (u0: number, u1: number, ya: number, yb: number, pr: number, c: Rgb, tag: number): void =>
+      qd([P(u0, ya, pr), P(u1, ya, pr), P(u1, yb, pr), P(u0, yb, pr)], [nx, 0, nz], c, tag)
+    return { tx, tz, P, face }
+  }
+
+  for (const e of info) {
+    const { a, b, l, nx, nz } = e
+    if (l < 0.4) continue
+    const { tx, tz, P, face } = wall(a, b, nx, nz, l)
+    const isFront = e === info[front.i]
+    face(0, l, -3, PL, 0, CB_PLINTH, CC)
+    face(0, l, PL, YB, 0, CB_FRAME, CC)
+    if (l < 3.4) continue
+    // railing along the plinth: a top rail, a foot rail and posts every 6 m
+    face(0, l, PL + 0.85, PL + 0.95, 0.3, CB_MULL, MT)
+    face(0, l, PL + 0.05, PL + 0.12, 0.3, CB_MULL, MT)
+    for (let u = 3; u < l - 1; u += 6) face(u - 0.04, u + 0.04, PL, PL + 0.95, 0.3, CB_MULL, MT)
+    const kb = Math.max(1, Math.round(l / 5.5)), w = l / kb
+    for (let s = 0; s < 3; s++) {
+      const f = PL + FL * s
+      face(0, l, f + 0.7, f + FL - 0.5, 0.05, s === 0 ? CB_GLASS0 : CB_GLASS, GL)          // glazing, ground storey a little darker
+      face(0, l, f + FL * 0.5 + 0.05, f + FL * 0.5 + 0.13, 0.1, CB_MULL, MT)             // transom
+      face(0, l, f + FL - 0.5, f + FL + 0.12, 0.2, CB_FRAME, CC)                         // floor band
+      qd([P(0, f + FL - 0.5, 0.2), P(l, f + FL - 0.5, 0.2), P(l, f + FL - 0.5, 0), P(0, f + FL - 0.5, 0)], [0, -1, 0], CB_FRAME, CC)
+    }
+    for (let j = 0; j <= kb; j++) {
+      const u = w * j
+      const u0 = Math.max(0, u - 0.28), u1 = Math.min(l, u + 0.28)
+      face(u0, u1, PL, YB, 0.16, CB_FRAME, CC)                                            // pier
+      if (u0 > 0) qd([P(u0, PL, 0), P(u0, PL, 0.16), P(u0, YB, 0.16), P(u0, YB, 0)], [-tx, 0, -tz], CB_FRAME, CC)
+      if (u1 < l) qd([P(u1, PL, 0), P(u1, PL, 0.16), P(u1, YB, 0.16), P(u1, YB, 0)], [tx, 0, tz], CB_FRAME, CC)
+      if (j < kb) for (const t of [1 / 3, 2 / 3]) face(u + w * t - 0.03, u + w * t + 0.03, PL + 0.7, YB, 0.12, CB_MULL, MT) // the mullions
+    }
+    // the projecting band at the break
+    face(0, l, YB - 0.9, YB + 0.2, 0.35, CB_FRAME, CC)
+    qd([P(0, YB + 0.2, 0.35), P(l, YB + 0.2, 0.35), P(l, YB + 0.2, 0), P(0, YB + 0.2, 0)], [0, 1, 0], CB_FRAME, CC)
+
+    if (isFront) {
+      const k = Math.max(1, Math.round(l / 60))
+      for (let q = 0; q < k; q++) {
+        const uc = (l * (q + 0.5)) / k
+        const hd = Math.atan2(nx, nz)
+        const D = 1.3, PW = 5.0
+        const top = H + 2.2
+        const cx = a.x + tx * uc + nx * (0.7 - D / 2), cz = a.z + tz * uc + nz * (0.7 - D / 2)
+        boxAlong(m, cx, (top - 2) / 2, cz, PW, (top + 2) / 2, D / 2, hd, CB_WHITE, CC)
+        const pf = 0.74
+        const sq = (uOff: number, y: number): void => face(uc + uOff - 0.6, uc + uOff + 0.6, y, y + 1.2, pf + 0.03, CB_DARK, GL)
+        for (const sgn of [-1, 1]) { sq(sgn * 4.1, PL + 2.6); sq(sgn * 4.1, PL + 2.6 + FL * 1.3); sq(sgn * 4.1, PL + 2.6 + FL * 2.6) }
+        // the arch window at the top, a dark spandrel band under it, the wide window, a band, the door
+        const sp = H - 3.4
+        emOpening(m, a.x + tx * uc + nx * 0, a.z + tz * uc + nz * 0, tx, tz, nx, nz, H - 6.4, sp, 3.0, 3.0, CB_GLASS, GL, pf + 0.03, 10)
+        face(uc - 0.04, uc + 0.04, H - 6.4, sp + 3.0, pf + 0.06, CB_MULL, MT)
+        face(uc - 3.0, uc + 3.0, sp - 0.04, sp + 0.04, pf + 0.06, CB_MULL, MT)
+        face(uc - 3.6, uc + 3.6, H - 8.2, H - 6.6, pf + 0.25, CB_DARK, MT)
+        qd([P(uc - 3.6, H - 6.6, pf + 0.25), P(uc + 3.6, H - 6.6, pf + 0.25), P(uc + 3.6, H - 6.6, pf), P(uc - 3.6, H - 6.6, pf)], [0, 1, 0], CB_DARK, MT)
+        face(uc - 3.3, uc + 3.3, H - 13.0, H - 8.5, pf + 0.03, CB_GLASS, GL)
+        face(uc - 3.3, uc + 3.3, H - 11.2, H - 11.1, pf + 0.06, CB_MULL, MT)
+        for (let g = -2; g <= 2; g++) face(uc + g * 1.3 - 0.03, uc + g * 1.3 + 0.03, H - 13.0, H - 8.5, pf + 0.06, CB_MULL, MT)
+        face(uc - 3.6, uc + 3.6, H - 14.6, H - 13.3, pf + 0.25, CB_DARK, MT)
+        face(uc - 2.8, uc + 2.8, PL, PL + 4.2, pf + 0.03, CB_DARK, GL)
+        // steps up to the door
+        for (let s = 0; s < 3; s++) {
+          boxAlong(m, a.x + tx * uc + nx * (0.7 + 0.3 * (s + 0.5)), PL * (0.34 * (3 - s)) / 2 + 0.0, a.z + tz * uc + nz * (0.7 + 0.3 * (s + 0.5)),
+            3.0, PL * 0.17 * (3 - s), 0.15, hd, CB_PLINTH, CC)
+        }
+      }
+    }
+  }
+
+  // the stepped-back upper storeys: bluer glass in fine frames
+  const ring2 = inset(simple, STEP)
+  capPolygonWithHoles(m, [ring, ring2], YB + 0.2, CB_FRAME, CC)
+  const info2 = edgesOf(ring2)
+  for (const e of info2) {
+    const { a, b, l, nx, nz } = e
+    if (l < 0.5) continue
+    const { face } = wall(a, b, nx, nz, l)
+    face(0, l, YB + 0.2, H, 0, CB_BLUE, GL)
+    for (let s = 0; s < 2; s++) {
+      const f = YB + 0.2 + (H - YB - 0.2) * s / 2
+      face(0, l, f + (H - YB - 0.2) / 2 - 0.12, f + (H - YB - 0.2) / 2 + 0.02, 0.1, CB_FRAME, MT)
+    }
+    const k = Math.max(1, Math.round(l / 3.0))
+    for (let j = 0; j <= k; j++) {
+      const u = (l * j) / k
+      face(Math.max(0, u - 0.05), Math.min(l, u + 0.05), YB + 0.2, H, 0.08, CB_MULL, MT)
+    }
+    face(0, l, H - 0.1, H + 0.3, 0.12, CB_FRAME, CC)
+  }
+  capPolygonWithHoles(m, [ring2], H + 0.3, CB_FRAME, CC)
+  capPolygonWithHoles(m, [ring], YB - 0.9, CB_FRAME, CC)
+
+  for (let i = 0; i < m.positions.length; i++) out.positions.push(m.positions[i])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -5115,4 +5292,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   thePacific_2121_Webster,
   archCrownOffice_King_149167950,
   stripeHQ_510_Townsend,
+  chinaBasinLanding_185_Berry,
 }
