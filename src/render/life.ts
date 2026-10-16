@@ -145,7 +145,7 @@ export class Life {
    * b→a, null a single track down the middle that is run both ways (owner, 2026-10-01: half the streetcars ran on the
    * wrong side of the street, head-on into the cars — every track was run both ways, turning round at each end).
    */
-  trackDirection: ((points: { x: number; z: number }[]) => { dir: 1 | -1 | null; d: number; lane: number } | undefined) | null = null
+  trackDirection: ((points: { x: number; z: number }[]) => { dir: 1 | -1 | null; d: number; lane: number; keep?: boolean } | undefined) | null = null
   /** the rider is aboard a train (game.ts): no train stops for them then — they are standing in it */
   riderAboard = false
   /** the highest road surface drawn at a point, or null off the streets (game.ts: city.deckAt) */
@@ -600,7 +600,8 @@ export class Life {
            * trams passing each other clear by 0.4 m, and neither sees the other as in its way (`consider`).
            */
           const off = Math.max(d.lane, vp.shadow[1] / 2 + 0.2)
-          t.shift = off - d.d
+          // (a one-way street's track keeps its own place: `keep`)
+          t.shift = d.keep ? 0 : off - d.d
         }
       }
       if (t.s < 0 || t.s > rail.length) {

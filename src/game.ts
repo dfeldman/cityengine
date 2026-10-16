@@ -1152,6 +1152,19 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     if (!best) return undefined
     // a single track down the middle, run both ways: still on the lane line to the right of whichever way it goes
     if (best.d < 0.5) return { dir: null, d: best.d, lane: best.e ? laneOf(best.e) : 0 }
+    /*
+     * A ONE-WAY street (owner, 2026-10-16: "cable cars seem to get stuck a lot. probably just pointing the wrong
+     * direction"): every lane runs the street's way, so the track does too, wherever it lies across the street — the
+     * right-of-centre rule below sent a cable car on Jackson or Washington against all the traffic, held behind it for
+     * good. It runs the way the street runs, and stays on its own track.
+     */
+    if (best.e?.oneway) {
+      const ep = best.e.points
+      let sx = 0, sz = 0
+      for (let i = 1; i < ep.length; i++) { sx += ep[i].x - ep[i - 1].x; sz += ep[i].z - ep[i - 1].z }
+      if (best.e.onewayBack) { sx = -sx; sz = -sz }
+      return { dir: sx * dir.x + sz * dir.z >= 0 ? 1 : -1, d: best.d, lane: best.d, keep: true }
+    }
     // the right of the direction a→b is (dz, −dx): the track to the right of the street's line, it runs a→b
     const side = (mid.x - best.q.x) * dir.z - (mid.z - best.q.z) * dir.x
     // and onto the traffic's lane line for that street: `laneOf` to the right of its way, from `best.d` now

@@ -10717,7 +10717,13 @@ before it is useful.
   street's profile, and Sacramento ramps down inside Stockton's flat 16 m carriageway; now on the highest carriageway drawn
   (StreetGrade.deckAt). LEFT: the bake grades Sacramento's last 6 m into the junction at 31 % (−43.4 → −41.5), a crest that
   hides cars below it — a grading fix for the bake (hold the junction level out to the crossing carriageway's edge).
-- **#284 Cable cars get stuck** — probably running the wrong way along their path, always traffic in front. OPEN.
+- **#293 The Sacramento ramp** (owner: "definitely do the sacramento ramp issue too"): grade a steep street into a flat
+  junction over more than its last few metres — hold the junction's level out to the crossing carriageway's edge, then
+  ramp. Bake. OPEN.
+- **#284 Cable cars get stuck** — probably running the wrong way along their path, always traffic in front. A one-way
+  street's track now runs the street's way and keeps its own place (was: the right-of-centre rule, wrong on Jackson/Washington).
+  Measured headless (rider idle, 60 s, three spots on the lines): held 1-2 %, none standing over 15 s, mean 2.6-2.9 m/s —
+  not reproduced. NEEDS where the owner saw them stuck (with the rider riding, or a particular corner). OPEN.
 - **#285 Dead end: the instant flip** — turn round slowly enough to see it. OPEN.
 - **#286 Path jolt, 37.803194 −122.401006** — a sidewalk path each side becomes one down the middle; the bike lurches. OPEN.
 - **#287 Overhead-line poles inside furniture** — in an F-line shelter (37.801255 −122.399280), in a toilet kiosk
