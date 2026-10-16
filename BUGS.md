@@ -10693,3 +10693,11 @@ the whole frame with **saturation 1.28 and exposure 1.14** after the day light (
 brick comes out bright orange-red. Options: (a) keep the grade and keep coding brick dark (what every builder does
 now); (b) lower saturation to ~1.1 globally — every colour in the city shifts, needs the owner's eye; (c) a per-surface
 desaturation of the `brick` surface in cartoon-material.ts (reds only). Try with `?grade=1.14,1.1,1.06` in the URL.
+
+### #281 Phantom towers — restyles that set `levels` but not `height` (2026-10-16) — FIXED where found
+
+A restyle's `levels` only replaces INVENTED storeys (render/prepare.ts); on a building with a tagged height it does
+nothing, so a wrong OSM height stands. Found and capped: 58 Main (151 m → 12), Oceanwide site part (160 → 24),
+Hotel Des Arts (55 → 30); 153 Kearny's levels raised to its real 11. A scan against the 2010 LiDAR (>45 m baked vs
+peak) gives 169 hits, nearly all post-2010 towers or model-drawn parts — needs filtering by "claimed by a model"
+before it is useful.
