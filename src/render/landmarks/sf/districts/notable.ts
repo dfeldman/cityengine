@@ -7650,6 +7650,277 @@ function ecPodium_Davis(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// 2 Folsom Street: Gap Inc. headquarters (Robert A.M. Stern Architects, 2001), the Embarcadero at Folsom
+// ---------------------------------------------------------------------------------------------------------------
+
+/**
+ * The plan in the evidence pack's frame (docs/shots/refs/notable/2-folsom/EVIDENCE.md, PARTS.md): metres, x east, z
+ * north, anticlockwise. GAP_RING is OSM way/93817368's outline (closing vertex dropped); GAP_DIAMOND the middle block
+ * (way/944981401); GAP_TOWER and GAP_CROWN the limestone tower and its crown stage (ways 1487162810, 1487162811).
+ */
+const GAP_RING: P2[] = [[-39.3, -0.9], [9.4, -49.3], [12.6, -46.2], [15.5, -49.1], [39.0, -25.9], [36.8, -23.6], [46.4, -14.1],
+  [48.7, -16.5], [72.1, 6.8], [17.5, 61.1], [-5.6, 38.1], [-3.4, 35.8], [-13.0, 26.2], [-15.5, 28.7], [-34.0, 10.3],
+  [-36.3, 8.0], [-38.9, 5.5], [-37.0, 3.6], [-35.9, 2.5]].map(([x, z]) => ({ x, z }))
+const GAP_DIAMOND: P2[] = [[-28.8, -3.5], [6.0, -37.5], [37.5, -5.6], [28.7, 3.0], [33.0, 7.3], [30.2, 10.0], [32.7, 12.5],
+  [22.4, 22.5], [20.1, 20.2], [18.0, 22.2], [13.7, 17.8], [2.7, 28.4]].map(([x, z]) => ({ x, z }))
+const GAP_TOWER: P2[] = [[19.8, -0.4], [29.9, 9.9], [20.1, 19.4], [10.0, 9.1]].map(([x, z]) => ({ x, z }))
+const GAP_CROWN: P2[] = [[20.2, 2.3], [27.4, 9.6], [20.2, 16.5], [13.0, 9.2]].map(([x, z]) => ({ x, z }))
+/** the Embarcadero edge of GAP_RING (index 8, (72.1, 6.8) → (17.5, 61.1)): the limestone entrance pavilion stands on it */
+const GAP_FRONT_EDGE = 8
+/** the manifest's front bearing: the city turns the plan by front + 180° (tools/model-shots.ts fitForEntry) */
+const GAP_FRONT = 53
+
+/**
+ * The turn and shift carrying the plan onto `ring`: a Procrustes fit over the outline's 19 vertices (both orders, every
+ * start), kept under 1.5 m RMS. Otherwise — no ring (tests) or a bake that dropped a jog — the turn the manifest front
+ * implies, (front + 180)°, with the bounding boxes' centres made to coincide, which is how the loader frames the ring.
+ */
+function gapPlace(ring: P2[] | undefined): { c: number; s: number; tx: number; tz: number; res: number } {
+  const th0 = ((GAP_FRONT + 180) * Math.PI) / 180, c0 = Math.cos(th0), s0 = Math.sin(th0)
+  const T = GAP_RING.map((p) => ({ x: p.x * c0 - p.z * s0, z: p.x * s0 + p.z * c0 }))
+  const mid = (r: P2[]): P2 => {
+    const xs = r.map((p) => p.x), zs = r.map((p) => p.z)
+    return { x: (Math.max(...xs) + Math.min(...xs)) / 2, z: (Math.max(...zs) + Math.min(...zs)) / 2 }
+  }
+  let R = ring ?? []
+  if (R.length > 3 && Math.hypot(R[0].x - R[R.length - 1].x, R[0].z - R[R.length - 1].z) < 0.3) R = R.slice(0, -1)
+  const mT = mid(T), mR = R.length >= 3 ? mid(R) : { x: 0, z: 0 }
+  const fallback = { c: c0, s: s0, tx: mR.x - mT.x, tz: mR.z - mT.z, res: -1 }
+  const n = GAP_RING.length
+  if (R.length !== n) return fallback
+  const cb = { x: R.reduce((t, p) => t + p.x, 0) / n, z: R.reduce((t, p) => t + p.z, 0) / n }
+  const ca = { x: GAP_RING.reduce((t, p) => t + p.x, 0) / n, z: GAP_RING.reduce((t, p) => t + p.z, 0) / n }
+  let best: { c: number; s: number; tx: number; tz: number; res: number } | null = null
+  for (const rev of [false, true]) {
+    const Q = rev ? [...GAP_RING].reverse() : GAP_RING
+    for (let o = 0; o < n; o++) {
+      let sn = 0, cs = 0
+      for (let i = 0; i < n; i++) {
+        const a = Q[(i + o) % n], ax = a.x - ca.x, az = a.z - ca.z, bx = R[i].x - cb.x, bz = R[i].z - cb.z
+        cs += ax * bx + az * bz
+        sn += ax * bz - az * bx
+      }
+      const th = Math.atan2(sn, cs), c = Math.cos(th), s = Math.sin(th)
+      let e = 0
+      for (let i = 0; i < n; i++) {
+        const a = Q[(i + o) % n]
+        e += ((a.x - ca.x) * c - (a.z - ca.z) * s + cb.x - R[i].x) ** 2 + ((a.x - ca.x) * s + (a.z - ca.z) * c + cb.z - R[i].z) ** 2
+      }
+      const res = Math.sqrt(e / n)
+      if (!best || res < best.res) best = { c, s, tx: cb.x - (ca.x * c - ca.z * s), tz: cb.z - (ca.x * s + ca.z * c), res }
+    }
+  }
+  return best && best.res <= 1.5 ? best : fallback
+}
+
+const GAP_BRICK: Rgb = [0.31, 0.17, 0.12]       // #8e4a32 red-brown brick, coded well down (brick renders orange; 0.42 still read orange in the city)
+const GAP_STONE: Rgb = [0.86, 0.84, 0.78]       // #e6e0d2 limestone, kept grey-ish (cream turns yellow in the city)
+const GAP_STONE_DK: Rgb = [0.76, 0.74, 0.68]    // the fluted band, soffits, the shadowed stone
+const GAP_GLASS: Rgb = [0.22, 0.27, 0.31]
+const GAP_MULL: Rgb = [0.09, 0.1, 0.11]
+const GAP_RAIL: Rgb = [0.72, 0.82, 0.83]        // the terraces' glass balustrades
+const GAP_ROOF: Rgb = [0.6, 0.59, 0.56]
+const GAP_HEDGE: Rgb = [0.26, 0.4, 0.2]
+
+/**
+ * 2 FOLSOM STREET, Gap Inc.'s headquarters (Robert A.M. Stern, 2001; OSM way/93817368, parts 12734155, 944981401,
+ * 1487162810/1): a Postmodern-classical block on the Embarcadero stepping up in three masses. The BASE fills the
+ * outline to 28 m: a two-storey limestone ground floor (tall shopfronts, a fluted band), four storeys of red-brown brick
+ * in a cream stone grid (sill bands, stone blocks at the piers), a stone cornice and a roof terrace behind glass
+ * balustrades and planting; on the Embarcadero an all-limestone entrance pavilion with very tall narrow bays to 33 m.
+ * The MIDDLE BLOCK, the plan's diamond, is the same brick and stone: four storeys to 44 m, then set back on its Folsom
+ * and Spear sides (terraces with glass rails) to the 72 m cornice. The TOWER, cream limestone with giant corner pilasters
+ * and punched windows, stands on the diamond's Embarcadero face and ends in a stepped crown: shaft to 64 m, three
+ * setback stages with tall framed windows to 88 m (LiDAR peak).
+ *
+ * Photographs (docs/shots/refs/notable/2-folsom/): c-GAPheadquartersfromt.jpg (from the Embarcadero at Folsom: base,
+ * pavilion, middle block, tower), c-TheGapheadquartersjp.jpg (the 4 + 9 storey brick steps beside the crown), m0–m4
+ * (ground floor). Where numbers and photos disagree: both photographs put the shaft's first setback BELOW the brick
+ * block's 72 m cornice, so the shaft stops at 64 m and the crown stages carry it to 88 (OSM height 91, LiDAR 88).
+ *
+ * Placement: everything is drawn in the pack's plan frame and carried onto `fit.ring` by `gapPlace` (Procrustes on the
+ * 19 outline vertices; the front-bearing turn when the ring does not match).
+ */
+function gapHQ_2_Folsom(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const BK = surfaceTag('brick'), AS = surfaceTag('ashlar'), GLs = surfaceTag('glass')
+  const UVQ: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  type E = { a: P2; l: number; tx: number; tz: number; nx: number; nz: number }
+  const edges = (r: P2[]): E[] => r.map((a, i) => {
+    const b = r[(i + 1) % r.length], l = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    return { a, l, tx: (b.x - a.x) / l, tz: (b.z - a.z) / l, nx: (b.z - a.z) / l, nz: -(b.x - a.x) / l }
+  })
+  /** a quad on an edge's face: u0..u1 along it, ya..yb up, pr out from the wall */
+  const F = (e: E, u0: number, u1: number, ya: number, yb: number, pr: number, c: Rgb, tag: number): void => {
+    const P = (u: number, y: number): V3 => [e.a.x + e.tx * u + e.nx * pr, y, e.a.z + e.tz * u + e.nz * pr]
+    m.quad([P(u0, ya), P(u1, ya), P(u1, yb), P(u0, yb)], [e.nx, 0, e.nz], UVQ, c, tag)
+  }
+  /** a box on an edge: u0..u1 along, pr0..pr1 out, y0..y1; `top` false skips its lid */
+  const B = (e: E, u0: number, u1: number, pr0: number, pr1: number, y0: number, y1: number, c: Rgb, tag: number, top = true): void => {
+    const P = (u: number, y: number, pr: number): V3 => [e.a.x + e.tx * u + e.nx * pr, y, e.a.z + e.tz * u + e.nz * pr]
+    m.quad([P(u0, y0, pr1), P(u1, y0, pr1), P(u1, y1, pr1), P(u0, y1, pr1)], [e.nx, 0, e.nz], UVQ, c, tag)
+    m.quad([P(u1, y0, pr1), P(u1, y0, pr0), P(u1, y1, pr0), P(u1, y1, pr1)], [e.tx, 0, e.tz], UVQ, c, tag)
+    m.quad([P(u0, y0, pr0), P(u0, y0, pr1), P(u0, y1, pr1), P(u0, y1, pr0)], [-e.tx, 0, -e.tz], UVQ, c, tag)
+    if (top) m.quad([P(u0, y1, pr1), P(u1, y1, pr1), P(u1, y1, pr0), P(u0, y1, pr0)], [0, 1, 0], UVQ, c, tag)
+  }
+
+  /**
+   * The brick-and-stone grid: brick wall y0..y1 in `floors` storeys; square glazed bays (~3.6 m pitch, one dark mullion
+   * each), a stone sill band per storey, a stone block where each pier crosses it, stone quoins at the corners.
+   * `skip(i)` leaves an edge bare (the pavilion's).
+   */
+  const brickGrid = (r: P2[], y0: number, y1: number, floors: number, skip?: (i: number, e: E) => [number, number] | null): void => {
+    const fh = (y1 - y0) / floors
+    edges(r).forEach((e, i) => {
+      F(e, 0, e.l, y0, y1, 0, GAP_BRICK, BK)
+      if (e.l < 2.5) return
+      const hole = skip?.(i, e) ?? null
+      F(e, 0, Math.min(0.9, e.l / 4), y0, y1, 0.08, GAP_STONE, AS)                    // the corner quoins
+      F(e, Math.max(e.l - 0.9, e.l * 0.75), e.l, y0, y1, 0.08, GAP_STONE, AS)
+      const n = Math.max(1, Math.round((e.l - 1.8) / 3.6)), bw = (e.l - 1.8) / n
+      for (let f = 0; f < floors; f++) {
+        const y = y0 + fh * f
+        F(e, 0, e.l, y + 1.0, y + 1.4, 0.06, GAP_STONE, AS)                           // sill band over the brick spandrel
+        for (let k = 0; k < n; k++) {
+          const u0 = 0.9 + bw * k
+          if (hole && u0 + bw > hole[0] && u0 < hole[1]) continue
+          F(e, u0 + 0.6, u0 + bw - 0.6, y + 1.4, y + fh - 0.35, 0.03, GAP_GLASS, GLs)
+          if (k > 0) F(e, u0 - 0.45, u0 + 0.45, y + 0.5, y + 1.0, 0.07, GAP_STONE, AS)   // stone block at the pier
+        }
+      }
+      for (let k = 0; k < n; k++) {                                                    // one mullion per bay column
+        const uc = 0.9 + bw * (k + 0.5)
+        if (hole && uc > hole[0] - bw / 2 && uc < hole[1] + bw / 2) continue
+        F(e, uc - 0.06, uc + 0.06, y0 + 1.4, y1 - 0.35, 0.05, GAP_MULL, GLs)
+      }
+    })
+  }
+  /** a stone cornice: a band proud of the wall, its soffit, the roof, a glass balustrade (both faces) a little in */
+  const cornice = (r: P2[], y: number, rail: boolean): void => {
+    const o = ecInset(r, -0.45)
+    ecWalls(m, o, y - 1.0, y, GAP_STONE, AS)
+    ecSoffit(m, o, r, y - 1.0, GAP_STONE_DK, AS)
+    capPolygonWithHoles(m, [o], y, GAP_ROOF, AS)
+    if (!rail) return
+    const g = ecInset(r, 0.4)
+    ecWalls(m, g, y, y + 1.1, GAP_RAIL, GLs)
+    ecWalls(m, [...g].reverse(), y, y + 1.1, GAP_RAIL, GLs)
+  }
+  const planters = (r: P2[], y: number, every: number): void => {
+    const g = ecInset(r, 1.2)
+    for (let i = 0; i < g.length; i++) {
+      const a = g[i], b = g[(i + 1) % g.length], L = Math.hypot(b.x - a.x, b.z - a.z)
+      if (L < 8 || i % every) continue
+      ecOnEdge(m, g, i, 0.5, 0, L * 0.6, 1.1, y, y + 1.2, GAP_HEDGE, 0)
+    }
+  }
+
+  // ---- the base: limestone ground floor, brick to the cornice at 28 m
+  const YG = 9.0, YB = 27.6
+  const PAV = { u0: 3.5, u1: 21.5, top: 33.0 }
+  const baseE = edges(GAP_RING)
+  baseE.forEach((e, i) => {
+    F(e, 0, e.l, -1.5, YG, 0, GAP_STONE, AS)
+    if (e.l < 2.5) return
+    const n = Math.max(1, Math.round(e.l / 7)), bw = e.l / n
+    for (let k = 0; k < n; k++) {
+      const u0 = bw * k
+      if (i === GAP_FRONT_EDGE && u0 + bw > PAV.u0 && u0 < PAV.u1) continue
+      F(e, u0 + 0.8, u0 + bw - 0.8, 0.3, 4.7, 0.03, GAP_GLASS, GLs)                    // shopfront
+      F(e, u0 + 0.8, u0 + bw - 0.8, 6.1, 8.2, 0.03, GAP_GLASS, GLs)                    // second storey
+      F(e, u0 + 0.8, u0 + bw - 0.8, 4.7, 4.85, 0.06, GAP_MULL, GLs)
+    }
+    F(e, 0, e.l, 4.95, 5.95, 0.1, GAP_STONE_DK, AS)                                     // the fluted band
+    F(e, 0, e.l, YG - 0.6, YG, 0.12, GAP_STONE, AS)                                     // string course
+  })
+  brickGrid(GAP_RING, YG, YB, 4, (i) => (i === GAP_FRONT_EDGE ? [PAV.u0, PAV.u1] : null))
+  cornice(GAP_RING, YB + 1.0, true)
+  planters(GAP_RING, YB + 1.0, 1)
+
+  // ---- the Embarcadero entrance pavilion: all limestone, very tall narrow glazed bays, a flat stone attic
+  {
+    const e = baseE[GAP_FRONT_EDGE], { u0, u1, top } = PAV
+    B(e, u0, u1, -12, 0.5, YG - 0.6, top, GAP_STONE, AS, false)
+    capPolygonWithHoles(m, [[[0, -12], [0, 0.5], [1, 0.5], [1, -12]].map(([t, p]) => ({ x: e.a.x + e.tx * (t ? u1 : u0) + e.nx * p, z: e.a.z + e.tz * (t ? u1 : u0) + e.nz * p }))], top - 0.3, GAP_ROOF, AS)
+    B(e, u0 - 0.4, u1 + 0.4, -12.4, 0.9, top - 1.1, top - 0.3, GAP_STONE, AS)          // its cornice
+    F(e, u0, u1, -1.5, YG - 0.6, 0.5, GAP_STONE, AS)
+    const nb = 5, w = (u1 - u0 - 6) / nb
+    for (let k = 0; k < nb; k++) {
+      const a = u0 + 3 + w * k
+      F(e, a + 0.45, a + w - 0.45, 0.3, top - 5.5, 0.53, GAP_GLASS, GLs)
+      F(e, a + w / 2 - 0.06, a + w / 2 + 0.06, 0.3, top - 5.5, 0.56, GAP_MULL, GLs)
+      for (let y = 4.9; y < top - 6; y += 4.6) F(e, a + 0.45, a + w - 0.45, y, y + 0.25, 0.56, GAP_MULL, GLs)
+    }
+    F(e, u0 + 3, u1 - 3, top - 5.5, top - 4.9, 0.6, GAP_STONE_DK, AS)
+  }
+
+  // ---- the middle block: four brick storeys over the whole diamond, then set back on the Folsom and Spear faces
+  const YM1 = 44.0, YM2 = 72.0
+  brickGrid(GAP_DIAMOND, YB + 1.0, YM1, 4)
+  cornice(GAP_DIAMOND, YM1 + 0.6, true)
+  planters(GAP_DIAMOND, YM1 + 0.6, 3)
+  {
+    // the upper tier: the diamond's four corners with its south-west and south-east faces moved 5.5 m in
+    const [W, S, Ea, N] = [GAP_DIAMOND[0], GAP_DIAMOND[1], GAP_DIAMOND[2], GAP_DIAMOND[11]]
+    const sh = (p: P2, q: P2, d: number): [P2, P2] => {
+      const l = Math.hypot(q.x - p.x, q.z - p.z), ix = -(q.z - p.z) / l * d, iz = (q.x - p.x) / l * d
+      return [{ x: p.x + ix, z: p.z + iz }, { x: q.x + ix, z: q.z + iz }]
+    }
+    const meet = (a: [P2, P2], b: [P2, P2]): P2 => {
+      const [p, q] = a, [r, s] = b
+      const d = (q.x - p.x) * (s.z - r.z) - (q.z - p.z) * (s.x - r.x)
+      const t = ((r.x - p.x) * (s.z - r.z) - (r.z - p.z) * (s.x - r.x)) / d
+      return { x: p.x + (q.x - p.x) * t, z: p.z + (q.z - p.z) * t }
+    }
+    const lSW = sh(W, S, 5.5), lSE = sh(S, Ea, 5.5), lNE: [P2, P2] = [Ea, N], lNW: [P2, P2] = [N, W]
+    const up = [meet(lNW, lSW), meet(lSW, lSE), meet(lSE, lNE), N]
+    brickGrid(up, YM1 + 0.6, YM2, 7)
+    cornice(up, YM2 + 0.8, false)
+  }
+
+  // ---- the tower: limestone shaft with giant corner pilasters and punched windows, then the stepped crown
+  const stoneStage = (r: P2[], y0: number, y1: number, floors: number, perFace: number, tall: boolean): void => {
+    const fh = (y1 - y0) / floors
+    edges(r).forEach((e) => {
+      F(e, 0, e.l, y0, y1, 0, GAP_STONE, AS)
+      B(e, -0.3, 1.5, -0.3, 0.35, y0, y1, GAP_STONE, AS, false)                          // the corner pilasters
+      B(e, e.l - 1.5, e.l + 0.3, -0.3, 0.35, y0, y1, GAP_STONE, AS, false)
+      const span = e.l - 3.4, w = span / perFace
+      for (let k = 0; k < perFace; k++) {
+        const a = 1.7 + w * k
+        if (tall) {
+          F(e, a + 0.35, a + w - 0.35, y0 + 0.8, y1 - 1.0, 0.03, GAP_GLASS, GLs)
+          F(e, a + w / 2 - 0.07, a + w / 2 + 0.07, y0 + 0.8, y1 - 1.0, 0.05, GAP_MULL, GLs)
+          F(e, a + 0.35, a + w - 0.35, (y0 + y1) / 2 - 0.12, (y0 + y1) / 2 + 0.12, 0.05, GAP_MULL, GLs)
+          F(e, a - 0.15, a + 0.35, y0, y1, 0.12, GAP_STONE_DK, AS)                      // the stone frame between
+        } else {
+          for (let f = 0; f < floors; f++) {
+            const y = y0 + fh * f
+            F(e, a + 0.55, a + w - 0.55, y + 0.9, y + fh - 0.5, 0.03, GAP_GLASS, GLs)
+          }
+          F(e, a + w / 2 - 0.06, a + w / 2 + 0.06, y0 + 0.9, y1 - 0.5, 0.05, GAP_MULL, GLs)
+        }
+      }
+      for (let f = 1; f < floors; f += 3) F(e, 1.5, e.l - 1.5, y0 + fh * f - 0.15, y0 + fh * f + 0.25, 0.1, GAP_STONE, AS)
+    })
+  }
+  const YT1 = 64.0, YT2 = 76.0, YT3 = 84.0, YT4 = 88.0
+  stoneStage(GAP_TOWER, YB + 1.0, YT1, 9, 3, false)
+  cornice(GAP_TOWER, YT1 + 0.5, true)
+  const t2 = ecInset(GAP_TOWER, 1.2)
+  stoneStage(t2, YT1 + 0.5, YT2, 3, 3, false)
+  cornice(t2, YT2 + 0.5, true)
+  stoneStage(GAP_CROWN, YT2 + 0.5, YT3, 1, 2, true)
+  cornice(GAP_CROWN, YT3 + 0.5, false)
+  const t4 = ecInset(GAP_CROWN, 1.8)
+  stoneStage(t4, YT3 + 0.5, YT4 - 0.6, 1, 1, true)
+  cornice(t4, YT4, false)
+
+  const t = gapPlace(fit.ring)
+  emanuElCopy(out, m, t.c, t.s, t.tx, t.tz)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -7685,4 +7956,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   decoBlock_1015_VanNess,
   marltonManor_Jones_Eddy,
   ecPodium_Davis,
+  gapHQ_2_Folsom,
 }
