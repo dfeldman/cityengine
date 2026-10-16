@@ -7999,6 +7999,56 @@ function hotelVia_138_King(out: MeshBuilder, fit: Fit): void {
   for (const idx of m.indices) out.indices.push(base + idx)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// The Webster Street pedestrian bridge over Geary (Japantown), BUGS.md #268
+// ---------------------------------------------------------------------------------------------------------------
+
+/**
+ * The footbridge carrying Webster Street's sidewalk over Geary's cut (owner's photo, 2026-10-16,
+ * docs/shots/refs/bugs/268-webster-bridge.webp): an orange-red steel deck whose side girders arch over the roadway —
+ * deep at the ends, shallow in the middle — black railings, Japanese lanterns on red posts along both rails, tapered
+ * piers with black-painted bases. Drawn whole (`coversRaised`: the city's grey slab is hidden), local z along the
+ * bridge, y = 0 the walking surface, which the entry's `baseY` puts at the ride graph's own deck height.
+ */
+function websterBridge_Geary(out: MeshBuilder, _fit: Fit): void {
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const ST = surfaceTag('metal'), CN = surfaceTag('concrete')
+  const RED: Rgb = [0.66, 0.24, 0.14], BLACK: Rgb = [0.09, 0.09, 0.1], DECK: Rgb = [0.62, 0.6, 0.56], LAMP: Rgb = [0.95, 0.9, 0.78]
+  const HL = 30, HW = 1.8
+  box(out, 0, -0.25, 0, HW + 0.15, 0.25, HL, DECK, CN)                                                   // the deck
+  // the arched side girders: deep at the ends, shallow over the road
+  const depth = (z: number): number => 0.6 + 1.3 * (z / HL) ** 2
+  for (const sx of [-1, 1]) {
+    const x = sx * (HW + 0.2)
+    for (let z = -HL; z < HL - 0.01; z += 2) {
+      const z1 = Math.min(HL, z + 2), b0 = -depth(z), b1 = -depth(z1)
+      out.quad([[x, b0, z], [x, b1, z1], [x, 0.3, z1], [x, 0.3, z]], [sx, 0, 0], uv, RED, ST)
+      out.quad([[x - sx * 0.25, b1, z1], [x - sx * 0.25, b0, z], [x - sx * 0.25, 0.3, z], [x - sx * 0.25, 0.3, z1]], [-sx, 0, 0], uv, RED, ST)
+      out.quad([[x, b0, z], [x - sx * 0.25, b0, z], [x - sx * 0.25, b1, z1], [x, b1, z1]], [0, -1, 0], uv, [0.5, 0.18, 0.11], ST)
+    }
+    box(out, x - sx * 0.12, 0.35, 0, 0.14, 0.05, HL, RED, ST)                                            // the girder's cap
+    // black railings on the girders
+    for (let z = -HL; z <= HL; z += 1.5) box(out, x - sx * 0.12, 0.95, z, 0.03, 0.55, 0.03, BLACK, ST)
+    box(out, x - sx * 0.12, 1.5, 0, 0.04, 0.04, HL, BLACK, ST)
+    box(out, x - sx * 0.12, 0.95, 0, 0.02, 0.02, HL, BLACK, ST)
+    // Japanese lanterns on red posts
+    for (let z = -HL + 4; z <= HL - 4; z += 8) {
+      box(out, x - sx * 0.12, 1.4, z, 0.07, 1.05, 0.07, RED, ST)
+      box(out, x - sx * 0.12, 2.6, z, 0.2, 0.18, 0.2, LAMP, 0)
+      box(out, x - sx * 0.12, 2.83, z, 0.28, 0.05, 0.28, BLACK, ST)
+    }
+  }
+  // tapered piers down into the cut, black-painted bases
+  for (const z of [-17, 4, 18]) for (const sx of [-1, 1]) {
+    const x = sx * 1.1, top = -depth(z), bot = -9
+    out.quad([[x - 0.25, bot, z - 0.25], [x + 0.25, bot, z - 0.25], [x + 0.45, top, z - 0.45], [x - 0.45, top, z - 0.45]], [0, 0.03, -1], uv, RED, ST)
+    out.quad([[x + 0.25, bot, z + 0.25], [x - 0.25, bot, z + 0.25], [x - 0.45, top, z + 0.45], [x + 0.45, top, z + 0.45]], [0, 0.03, 1], uv, RED, ST)
+    out.quad([[x + 0.25, bot, z - 0.25], [x + 0.25, bot, z + 0.25], [x + 0.45, top, z + 0.45], [x + 0.45, top, z - 0.45]], [1, 0.03, 0], uv, RED, ST)
+    out.quad([[x - 0.25, bot, z + 0.25], [x - 0.25, bot, z - 0.25], [x - 0.45, top, z - 0.45], [x - 0.45, top, z + 0.45]], [-1, 0.03, 0], uv, RED, ST)
+    box(out, x, bot + 1.2, z, 0.34, 1.2, 0.34, BLACK, ST)
+  }
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -8035,5 +8085,6 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   marltonManor_Jones_Eddy,
   ecPodium_Davis,
   hotelVia_138_King,
+  websterBridge_Geary,
   gapHQ_2_Folsom,
 }
