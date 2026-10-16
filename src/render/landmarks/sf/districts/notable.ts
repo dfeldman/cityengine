@@ -8997,6 +8997,57 @@ function torpedoAssembly_YBI(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+/**
+ * The Chinatown YWCA, 965 Clay (Julia Morgan, 1932; now the Chinese Historical Society of America museum; Mapillary
+ * docs/shots/refs/notable/chsa): two storeys of red brick round a courtyard, a green glazed-tile coping, an arched
+ * carved-stone doorway with a YWCA blade sign beside it, and a small square tower under a tiled hip at the back
+ * corner. Front (Clay) on −z.
+ */
+function chinatownYWCA_965_Clay(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.31, 0.16, 0.12], TILE: Rgb = [0.25, 0.4, 0.33], STONE: Rgb = [0.65, 0.6, 0.52], DARK: Rgb = [0.16, 0.17, 0.19]
+  const BK = surfaceTag('brick'), TL = surfaceTag('tile'), GL = surfaceTag('glass')
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  const H = 8.5
+  ecWalls(out, ring, 0, H, BRICK, BK)
+  capPolygonWithHoles(out, [ring], H, [0.4, 0.38, 0.36], surfaceTag('concrete'))
+  // the green tiled coping
+  ecWalls(out, ecInset(ring, -0.25), H, H + 0.45, TILE, TL)
+  // windows, and on the front the doorway and the sign
+  let fi = 0, fz = Infinity
+  ring.forEach((a, i) => { const b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z); const nz = -(b.x - a.x) / (L || 1); if (L > 8 && nz < fz) { fz = nz; fi = i } })
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z)
+    if (L < 4) continue
+    const tx = (b.x - a.x) / L, tz = (b.z - a.z) / L, nx = tz, nz = -tx, h = Math.atan2(nx, nz)
+    const n = Math.floor(L / 3.4)
+    for (let k = 0; k < n; k++) {
+      const u = (k + 0.5) * (L / n)
+      if (i === fi && Math.abs(u - L * 0.55) < 2.4) continue
+      for (const y of [2.2, 5.9]) boxAlong(out, a.x + tx * u + nx * 0.04, y, a.z + tz * u + nz * 0.04, 0.6, 0.9, 0.04, h, DARK, GL)
+    }
+    if (i === fi) {
+      const u = L * 0.55, cx = a.x + tx * u, cz = a.z + tz * u
+      boxAlong(out, cx + nx * 0.06, 2.2, cz + nz * 0.06, 1.7, 2.2, 0.08, h, STONE, surfaceTag('ashlar'))
+      boxAlong(out, cx + nx * 0.12, 1.6, cz + nz * 0.12, 1.0, 1.6, 0.05, h, [0.22, 0.24, 0.2], 0)
+      boxAlong(out, cx + nx * 0.12, 3.6, cz + nz * 0.12, 1.0, 0.45, 0.05, h, DARK, GL)
+      sign(out, { type: 'flat', text: 'YWCA', h: 0.35, face: 'roman', weight: 'bold', colour: [0.85, 0.8, 0.7], panel: [0.35, 0.3, 0.32], vertical: true, lit: 'none' },
+        { x: cx - tx * 3 + nx * 0.2, y: 4.2, z: cz - tz * 3 + nz * 0.2, heading: Math.atan2(nx, nz) })
+    }
+  }
+  // the little square tower at the back corner (the vertex with the greatest z)
+  let c = ring[0]
+  for (const p of ring) if (p.z > c.z) c = p
+  const cx = c.x * 0.8, cz = c.z * 0.8
+  box(out, cx, (H + 4) / 2 + 2, cz, 1.9, (H + 4) / 2, 1.9, BRICK, BK)
+  for (const sd of [-1, 1]) { box(out, cx, H + 4.5, cz + sd * 1.92, 0.6, 0.6, 0.03, DARK, GL); box(out, cx + sd * 1.92, H + 4.5, cz, 0.03, 0.6, 0.6, DARK, GL) }
+  prism(out, cx, cz, H + 6, H + 7.6, 2.6, 4, TILE, TL, 0.15)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -9051,6 +9102,7 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   clarkeMansion_250_Douglass,
   coastGuardStation_CrissyField,
   torpedoAssembly_YBI,
+  chinatownYWCA_965_Clay,
   officersQuarters: (out: MeshBuilder, fit: Fit) => officersQuarters(out, fit),
   officersQuartersNimitz: (out: MeshBuilder, fit: Fit) => officersQuarters(out, fit, true),
   gapHQ_2_Folsom,
