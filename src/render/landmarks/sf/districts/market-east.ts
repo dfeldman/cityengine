@@ -351,7 +351,7 @@ function bushPlazaPavilion(out: MeshBuilder, fit: Fit): void {
 // ---------------------------------------------------------------------------------------------------------------
 // the 1900s–20s office palaces of lower Market
 
-const SP_BRICK: Rgb = [0.58, 0.33, 0.26]
+const SP_BRICK: Rgb = [0.4, 0.24, 0.19]   // 0.58/0.33/0.26 rendered bright red in the city (2026-10-16)
 const SP_STONE: Rgb = [0.83, 0.79, 0.7]
 const PT_BRICK: Rgb = [0.36, 0.19, 0.15]
 const PT_TRIM: Rgb = [0.44, 0.25, 0.2]
