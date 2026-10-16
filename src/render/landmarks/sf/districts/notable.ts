@@ -6115,6 +6115,317 @@ function office_235_Second(out: MeshBuilder, fit: Fit): void {
   for (const idx of m.indices) out.indices.push(base + idx)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// 1650 Mission Street (the former SF Planning Department building)
+// ---------------------------------------------------------------------------------------------------------------
+
+const PM_ST: Rgb = [1.0, 0.98, 0.93]          // #b9b6ae light stone courses and piers
+const PM_WALL: Rgb = [0.92, 0.9, 0.85]        // the wall plane between the courses
+const PM_DK: Rgb = [0.7, 0.69, 0.65]          // #8f8c86 darker bands and the dado
+const PM_INLAY: Rgb = [0.6, 0.6, 0.57]       // the mottled inlay strip in each course
+const PM_WIN: Rgb = [0.3, 0.44, 0.54]         // #3d4f5e ribbon windows
+const PM_WIN2: Rgb = [0.42, 0.58, 0.66]        // a paler pane, reflecting sky
+const PM_FRAME: Rgb = [0.12, 0.15, 0.18]
+const PM_BLUE: Rgb = [0.36, 0.56, 0.76]       // #3e6187 the blue glass top storey
+const PM_BLUE2: Rgb = [0.6, 0.78, 0.9]
+const PM_BLUE_MUL: Rgb = [0.2, 0.3, 0.42]
+const PM_EDGE: Rgb = [0.82, 0.81, 0.78]       // #d6d4cf the thin projecting roof edge
+const PM_ROOF: Rgb = [0.32, 0.33, 0.34]
+const PM_TOWER: Rgb = [0.27, 0.4, 0.5]        // the dark glass grid section
+const PM_TOWER_PIER: Rgb = [0.27, 0.29, 0.31]
+const PM_DOOR: Rgb = [0.4, 0.44, 0.47]
+
+/** The plan in the model frame (front 318 on -z), used where no footprint is given. */
+const PM_RING: P2[] = [[35.7, -27.7], [44.7, -16.2], [51.0, -8.7], [50.1, -7.0], [28.8, 33.1], [21.1, 28.8], [-3.3, 15.5], [-11.7, 11.4],
+  [-51.0, -6.7], [-37.7, -32.2], [-4.0, -31.6], [31.3, -29.4], [33.3, -29.0], [34.5, -28.5]].map(([x, z]) => ({ x, z }))
+
+/**
+ * 1650 Mission Street (the former San Francisco Planning Department, c.1990; OSM way/288794276, 22 m, LiDAR 21.8 median /
+ * 28.0 max): a five-storey civic block in light and dark grey banded stone. Each floor is a deep stone spandrel with a dark
+ * mottled inlay strip, a long ribbon window split into panes between stone piers, and a stone head; a granite dado and two
+ * garage doors at the base. The corner at Otis and Gough is a big rounded curve whose courses and ribbon windows follow it,
+ * and the top storey there is blue glass wrapping the curve (and 20 m along Otis, all Gough) under a thin pale roof edge.
+ * At the far end of the Otis front a dark glass grid section stands proud and rises to 26 m. Photographs
+ * docs/shots/refs/notable/1650-mission/mapillary-1 and -2 (the curve and the blue storey), way-288794276-02/-03 (the Otis
+ * front, the glass section), -01 (stone courses and dado detail).
+ *
+ * Orientation: manifest front 318 (Otis) is local -z. The curve is found from the footprint, not placed by number: OSM draws
+ * it as a chain of short consecutive edges that turn together (here 4 vertices, ~50 degrees, next to the Otis front); each
+ * such chain is replaced by a true arc (radius 15 for the one beside the front, 4.5 for the others), and the Otis front
+ * is the long edge facing -z.
+ */
+function planningBuilding_1650_Mission(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const AS = surfaceTag('ashlar'), GR = surfaceTag('granite'), MT = surfaceTag('metal')
+  const uvq: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  let R: P2[] = fit.ring && fit.ring.length >= 4 ? fit.ring.slice() : PM_RING.slice()
+  if (R.length > 3 && Math.hypot(R[0].x - R[R.length - 1].x, R[0].z - R[R.length - 1].z) < 0.3) R = R.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < R.length; i++) { const a = R[i], b = R[(i + 1) % R.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) R.reverse()
+  const len = (a: P2, b: P2): number => Math.hypot(b.x - a.x, b.z - a.z)
+
+  // ---- the plan: iron out jogs, find the curved corners (chains of short edges) and replace them with arcs ----------------
+  for (let k = 0; k < 40 && R.length > 4; k++) {
+    let j = -1
+    for (let i = 0; i < R.length; i++) if (len(R[i], R[(i + 1) % R.length]) < 0.8) { j = i; break }
+    if (j < 0) break
+    R.splice((j + 1) % R.length, 1)
+  }
+  const n0 = R.length
+  const el = R.map((a, i) => len(a, R[(i + 1) % n0]))
+  // the Otis front: the longest edge facing -z
+  let fe = 0
+  for (let i = 0; i < n0; i++) {
+    const b = R[(i + 1) % n0], L = el[i]
+    const nz = -(b.x - R[i].x) / L
+    const fz = -(R[fe + 1 === n0 ? 0 : fe + 1].x - R[fe].x) / el[fe]
+    if (nz < -0.85 && (fz >= -0.85 || L > el[fe])) fe = i
+  }
+  // rotate so vertex 0 starts the front edge
+  R = [...R.slice(fe), ...R.slice(0, fe)]
+  const el2 = R.map((a, i) => len(a, R[(i + 1) % R.length]))
+  const n1 = R.length
+  type DP = { x: number; z: number; arc: number }   // arc: -1 none, else arc id; tangent points are arc points
+  const D: DP[] = []
+  let arcId = 0
+  let i = 0
+  while (i < n1) {
+    // a chain of short edges starting at vertex i?
+    let j = i
+    while (j < n1 && el2[j % n1] < 4.0 && j - i < 6) j++
+    if (j > i && i > 0) {
+      const a = R[(i + n1 - 1) % n1], va = R[i], vb = R[j % n1], b = R[(j + 1) % n1]
+      const u1 = { x: (va.x - a.x) / len(a, va), z: (va.z - a.z) / len(a, va) }
+      const u2 = { x: (b.x - vb.x) / len(vb, b), z: (b.z - vb.z) / len(vb, b) }
+      const den = u1.x * u2.z - u1.z * u2.x
+      const turn = Math.atan2(den, u1.x * u2.x + u1.z * u2.z)
+      if (turn > 0.2) {
+        const t = ((vb.x - va.x) * u2.z - (vb.z - va.z) * u2.x) / den
+        const C = { x: va.x + u1.x * t, z: va.z + u1.z * t }
+        const adjFront = (i - 1 + n1) % n1 === 0 || ((i - 1 + n1) % n1) === 0
+        let r = adjFront ? 15 : 4.5
+        const dmax = 0.45 * Math.min(len(a, C), len(C, b))
+        r = Math.min(r, dmax / Math.tan(turn / 2))
+        const d = r * Math.tan(turn / 2)
+        const T1 = { x: C.x - u1.x * d, z: C.z - u1.z * d }
+        const cen = { x: T1.x - u1.z * r, z: T1.z + u1.x * r }
+        const a1 = Math.atan2(T1.z - cen.z, T1.x - cen.x)
+        const ns = Math.max(3, Math.ceil((turn * r) / 1.2))
+        for (let s = 0; s <= ns; s++) D.push({ x: cen.x + Math.cos(a1 + (turn * s) / ns) * r, z: cen.z + Math.sin(a1 + (turn * s) / ns) * r, arc: arcId })
+        arcId++
+        i = j + 1
+        continue
+      }
+    }
+    D.push({ x: R[i].x, z: R[i].z, arc: -1 })
+    i++
+  }
+  const N = D.length
+  type Seg = { a: DP; b: DP; L: number; tx: number; tz: number; nx: number; nz: number; s0: number }
+  const S: Seg[] = []
+  let tot = 0
+  for (let k = 0; k < N; k++) {
+    const a = D[k], b = D[(k + 1) % N], L = Math.hypot(b.x - a.x, b.z - a.z) || 1e-6
+    S.push({ a, b, L, tx: (b.x - a.x) / L, tz: (b.z - a.z) / L, nx: (b.z - a.z) / L, nz: -(b.x - a.x) / L, s0: tot })
+    tot += L
+  }
+  // miter offset vector at each vertex
+  const vo = D.map((_, k) => {
+    const e0 = S[(k + N - 1) % N], e1 = S[k]
+    const kk = 1 + e0.nx * e1.nx + e0.nz * e1.nz
+    return { x: (e0.nx + e1.nx) / kk, z: (e0.nz + e1.nz) / kk }
+  })
+  const segAt = (s: number): number => {
+    let k = 0
+    while (k < N - 1 && S[k + 1].s0 <= s + 1e-9) k++
+    return k
+  }
+  /** a point on the plan at arclength s, pushed `off` out (mitered at the vertices) */
+  const P = (k: number, t: number, y: number, off: number): V3 => {
+    const sg = S[k], v0 = vo[k], v1 = vo[(k + 1) % N]
+    return [sg.a.x + (sg.b.x - sg.a.x) * t + (v0.x + (v1.x - v0.x) * t) * off, y, sg.a.z + (sg.b.z - sg.a.z) * t + (v0.z + (v1.z - v0.z) * t) * off]
+  }
+  const each = (s0: number, s1: number, f: (k: number, ta: number, tb: number) => void): void => {
+    if (s1 - s0 < 0.01) return
+    for (let k = segAt(s0); k < N && S[k].s0 < s1 - 1e-9; k++) {
+      const ta = Math.max(0, (s0 - S[k].s0) / S[k].L), tb = Math.min(1, (s1 - S[k].s0) / S[k].L)
+      if (tb - ta > 1e-6) f(k, ta, tb)
+    }
+  }
+  /** a vertical strip of wall from s0 to s1, y0..y1, `off` proud of the plan */
+  const strip = (s0: number, s1: number, y0: number, y1: number, off: number, col: Rgb, tag: number): void =>
+    each(s0, s1, (k, ta, tb) => m.quad([P(k, ta, y0, off), P(k, tb, y0, off), P(k, tb, y1, off), P(k, ta, y1, off)], [S[k].nx, 0, S[k].nz], uvq, col, tag))
+  /** a course standing `off` proud: its face and its top (and underside) */
+  const slab = (s0: number, s1: number, y0: number, y1: number, off: number, col: Rgb, tag: number, under = false): void => {
+    strip(s0, s1, y0, y1, off, col, tag)
+    each(s0, s1, (k, ta, tb) => {
+      m.quad([P(k, ta, y1, 0), P(k, tb, y1, 0), P(k, tb, y1, off), P(k, ta, y1, off)], [0, 1, 0], uvq, col, tag)
+      if (under) m.quad([P(k, ta, y0, off), P(k, tb, y0, off), P(k, tb, y0, 0), P(k, ta, y0, 0)], [0, -1, 0], uvq, col, tag)
+    })
+  }
+  /** a vertical return at arclength s, from `o0` to `o1` out; dir +1 faces along the plan's direction of travel */
+  const cap = (s: number, y0: number, y1: number, o0: number, o1: number, dir: number, col: Rgb, tag: number): void => {
+    const k = segAt(Math.min(s, tot - 1e-6)), t = Math.min(1, Math.max(0, (s - S[k].s0) / S[k].L))
+    m.quad([P(k, t, y0, o0), P(k, t, y0, o1), P(k, t, y1, o1), P(k, t, y1, o0)], [S[k].tx * dir, 0, S[k].tz * dir], uvq, col, tag)
+  }
+
+  // ---- heights ---------------------------------------------------------------------------------------------------------------
+  const Y0 = -1.2, YG = 4.4, FL = 4.0, YT = YG + FL * 3, YR = 21.6, YE = 22.0, YTW = 26.0
+  // ---- zones along the plan ------------------------------------------------------------------------------------------------------
+  const arcs: { s0: number; s1: number }[] = []
+  D.forEach((d, k) => {
+    if (d.arc < 0) return
+    const a = arcs[d.arc] ?? (arcs[d.arc] = { s0: S[k].s0, s1: S[k].s0 })
+    a.s1 = S[k].s0
+  })
+  const fa = arcs[0] ?? { s0: tot * 0.2, s1: tot * 0.24 }
+  const ga = arcs[1] ?? { s0: fa.s1 + 22, s1: fa.s1 + 26 }
+  // the blue storey: 40 m of the Otis (NW) front before the curve, the curve, and the first 9 m of the wall round it
+  const sBlue0 = Math.max(S[0].L * 0.15, fa.s0 - 40)
+  const sBlue1 = Math.min(fa.s1 + 9, ga.s0 - 3)
+  // the dark glass grid section: the 17 m of the wall after the second (south-west) corner
+  const sT0 = ga.s1, sT1 = Math.min(sT0 + 17, tot - 3)
+  // run boundaries: every sharp vertex, every arc end, the blue storey's ends, the glass section's ends
+  const cuts: number[] = [0, tot, sT0, sT1, sBlue0, sBlue1]
+  D.forEach((d, k) => {
+    const e0 = S[(k + N - 1) % N], e1 = S[k]
+    const sharp = d.arc < 0 && e0.tx * e1.tx + e0.tz * e1.tz < 0.94
+    const edge = (d.arc >= 0 && (D[(k + N - 1) % N].arc !== d.arc || D[(k + 1) % N].arc !== d.arc))
+    if (sharp || edge) cuts.push(S[k].s0)
+  })
+  cuts.sort((a, b) => a - b)
+  const runs: number[][] = []
+  for (let q = 0; q + 1 < cuts.length; q++) if (cuts[q + 1] - cuts[q] > 1.0) runs.push([cuts[q], cuts[q + 1]])
+  if (runs.length) runs[runs.length - 1][1] = tot
+
+  const hash = (a: number, b: number): number => { const v = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453; return v - Math.floor(v) }
+  const PIER = 1.4
+  for (const [r0, r1] of runs) {
+    const mid = (r0 + r1) / 2, rl = r1 - r0
+    const isArc = mid > fa.s0 && mid < fa.s1 || arcs.some((a) => mid > a.s0 && mid < a.s1)
+    const tower = mid > sT0 && mid < sT1
+    const blue = !tower && mid > sBlue0 && mid < sBlue1
+    // the wall plane, dado, plinth, ground course
+    strip(r0, r1, Y0, YE, 0, PM_WALL, AS)
+    strip(r0, r1, Y0, 3.0, 0.04, PM_DK, GR)
+    slab(r0, r1, Y0, 0.4, 0.14, PM_DK, GR)
+    for (let u = r0 + 1.1; u < r1 - 0.3; u += 1.9) strip(u - 0.03, u + 0.03, 0.4, 3.0, 0.07, PM_INLAY, GR)
+    slab(r0, r1, 3.0, YG, 0.18, PM_ST, AS, true)
+    slab(r0, r1, 3.55, 3.85, 0.22, PM_INLAY, GR)
+    // bays
+    const pitch = isArc ? 6.2 : 8.6
+    const nb = Math.max(1, Math.round((rl - PIER + 1.0) / pitch))
+    const bw = (rl - PIER - (nb - 1) * PIER) / nb
+    const floors: { y0: number; h: number }[] = []
+    if (!tower) { for (let f = 0; f < 3; f++) floors.push({ y0: YG + FL * f, h: FL }) }
+    else for (let f = 0; f < 3; f++) floors.push({ y0: YG + FL * f, h: FL })
+    for (const { y0, h } of floors) {
+      slab(r0, r1, y0, y0 + 1.5, 0.22, PM_ST, AS, true)
+      slab(r0, r1, y0 + 0.55, y0 + 0.95, 0.27, PM_INLAY, GR)
+      slab(r0, r1, y0 + 1.15, y0 + 1.22, 0.3, PM_DK, AS)
+      slab(r0, r1, y0 + h - 0.7, y0 + h, 0.2, PM_ST, AS, true)
+      for (let b = 0; b < nb; b++) {
+        const u0 = r0 + PIER / 2 + b * (bw + PIER), u1 = u0 + bw
+        if (rl < 3) continue
+        const np = Math.max(1, Math.round(bw / 2.4)), pw = bw / np
+        for (let p = 0; p < np; p++) {
+          const c = hash(u0 + p, y0) > 0.6 ? PM_WIN2 : PM_WIN
+          strip(u0 + pw * p, u0 + pw * (p + 1), y0 + 1.5, y0 + h - 0.7, 0.03, c, GL)
+          if (p > 0) strip(u0 + pw * p - 0.05, u0 + pw * p + 0.05, y0 + 1.5, y0 + h - 0.7, 0.07, PM_FRAME, MT)
+        }
+        strip(u0, u1, y0 + 1.5, y0 + 1.62, 0.08, PM_FRAME, MT)
+        // a stone pier after each bay
+        if (b < nb - 1) slab(u1, u1 + PIER, y0 + 1.5, y0 + h - 0.7, 0.2, PM_ST, AS)
+      }
+      // the end piers
+      slab(r0, r0 + PIER / 2, y0 + 1.5, y0 + h - 0.7, 0.2, PM_ST, AS)
+      slab(r1 - PIER / 2, r1, y0 + 1.5, y0 + h - 0.7, 0.2, PM_ST, AS)
+    }
+    // ---- the top storey ----
+    if (blue) {
+      slab(r0, r1, YT, YT + 1.1, 0.24, PM_ST, AS, true)
+      slab(r0, r1, YT + 0.4, YT + 0.75, 0.28, PM_INLAY, GR)
+      const gy0 = YT + 1.1, gy1 = YR
+      const nm = Math.max(2, Math.round(rl / 1.5)), pw = rl / nm
+      for (let p = 0; p < nm; p++) {
+        const c = hash(r0 + p, 3) > 0.7 ? PM_BLUE2 : PM_BLUE
+        strip(r0 + pw * p, r0 + pw * (p + 1), gy0, gy1, 0.1, c, GL)
+        strip(r0 + pw * p - 0.04, r0 + pw * p + 0.04, gy0, gy1, 0.14, PM_BLUE_MUL, MT)
+      }
+      for (const y of [gy0 + 1.0, gy0 + 2.5]) strip(r0, r1, y, y + 0.1, 0.15, PM_BLUE_MUL, MT)
+      strip(r0, r1, gy1 - 0.35, gy1, 0.16, PM_BLUE_MUL, MT)
+    } else if (!tower) {
+      const y0 = YT
+      slab(r0, r1, y0, y0 + 1.9, 0.22, PM_ST, AS, true)
+      slab(r0, r1, y0 + 0.8, y0 + 1.15, 0.27, PM_INLAY, GR)
+      slab(r0, r1, YR - 0.7, YR, 0.2, PM_ST, AS, true)
+      const wy0 = y0 + 1.9, wy1 = wy0 + 2.05
+      slab(r0, r1, wy1, YR - 0.7, 0.2, PM_ST, AS)
+      for (let b = 0; b < nb; b++) {
+        const u0 = r0 + PIER / 2 + b * (bw + PIER), u1 = u0 + bw
+        const np = Math.max(1, Math.round(bw / 2.4)), pw = bw / np
+        for (let p = 0; p < np; p++) {
+          strip(u0 + pw * p, u0 + pw * (p + 1), wy0, wy1, 0.03, hash(u0 + p, 9) > 0.6 ? PM_WIN2 : PM_WIN, GL)
+          if (p > 0) strip(u0 + pw * p - 0.05, u0 + pw * p + 0.05, wy0, wy1, 0.07, PM_FRAME, MT)
+        }
+        if (b < nb - 1) slab(u1, u1 + PIER, wy0, wy1, 0.2, PM_ST, AS)
+      }
+      slab(r0, r0 + PIER / 2, wy0, wy1, 0.2, PM_ST, AS)
+      slab(r1 - PIER / 2, r1, wy0, wy1, 0.2, PM_ST, AS)
+    } else {
+      // the dark glass grid section: a glass box standing 0.6 proud, banded by a piers grid, rising to 26 m
+      strip(r0, r1, YT, YR, 0.0, PM_WALL, AS)
+      const np = Math.max(2, Math.round(rl / 4.2)), pw = rl / np
+      strip(r0, r1, YG, YTW, 0.6, PM_TOWER, GL)
+      for (let p = 0; p <= np; p++) {
+        const u = r0 + pw * p
+        slab(Math.max(r0, u - 0.28), Math.min(r1, u + 0.28), YG, YTW, 0.9, PM_TOWER_PIER, MT)
+      }
+      for (let y = YG; y < YTW - 1; y += 4.4) slab(r0, r1, y + 0.1, y + 1.1, 0.7, PM_TOWER_PIER, MT)
+      cap(r0, YG, YTW, 0, 0.6, -1, PM_TOWER_PIER, MT)
+      cap(r1, YG, YTW, 0, 0.6, 1, PM_TOWER_PIER, MT)
+      slab(r0, r1, YTW - 0.1, YTW + 0.4, 1.1, PM_EDGE, AS, true)
+      // its top, a box running back 7 m with a roof
+      const k0 = segAt(r0 + 0.01), k1 = segAt(r1 - 0.01)
+      const back = (k: number, t: number, y: number): V3 => P(k, t, y, -7)
+      const ta = (r0 - S[k0].s0) / S[k0].L, tb = (r1 - S[k1].s0) / S[k1].L
+      m.quad([P(k0, ta, YTW, 0.9), P(k1, tb, YTW, 0.9), back(k1, tb, YTW), back(k0, ta, YTW)], [0, 1, 0], uvq, PM_ROOF, AS)
+      m.quad([back(k1, tb, YE), back(k0, ta, YE), back(k0, ta, YTW), back(k1, tb, YTW)], [-S[k0].nx, 0, -S[k0].nz], uvq, PM_WALL, AS)
+      for (const [kk, tt, sg] of [[k0, ta, -1], [k1, tb, 1]] as [number, number, number][]) {
+        m.quad([P(kk, tt, YE, 0), P(kk, tt, YE, -7), P(kk, tt, YTW, -7), P(kk, tt, YTW, 0)], [S[kk].tx * sg, 0, S[kk].tz * sg], uvq, PM_WALL, AS)
+      }
+    }
+    // the thin projecting roof edge over everything
+    if (!tower) slab(r0, r1, YR, YE, 0.55, PM_EDGE, AS, true)
+    else slab(r0, r1, YR, YE, 0.2, PM_EDGE, AS, true)
+  }
+
+  // ---- doors and louvres on the Otis wall round the curve (photographs -02, -03, mapillary-2) ----------------------------------
+  const door = (sc: number, w: number, h: number, col: Rgb): void => {
+    strip(sc - w / 2 - 0.12, sc + w / 2 + 0.12, 0.0, h + 0.15, 0.1, PM_DK, GR)
+    strip(sc - w / 2, sc + w / 2, 0.0, h, 0.16, col, MT)
+    strip(sc - 0.03, sc + 0.03, 0.0, h, 0.2, PM_FRAME, MT)
+  }
+  const sw = fa.s1, lw = ga.s0 - fa.s1
+  if (lw > 14) {
+    door(sw + 2.6, 1.3, 2.6, PM_DOOR)
+    for (let y = 0.5; y < 3.0; y += 0.28) strip(sw + 4.6, sw + 5.8, y, y + 0.1, 0.18, PM_FRAME, MT)
+    door(sw + 9.6, 5.2, 3.6, PM_DOOR)
+    if (lw > 22) door(sw + 17, 4.6, 3.6, [0.22, 0.26, 0.3])
+  }
+
+  // the roof
+  capPolygonWithHoles(m, [D.map((d) => ({ x: d.x, z: d.z }))], YE, PM_ROOF, AS)
+
+  for (let q = 0; q < m.positions.length; q++) out.positions.push(m.positions[q])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -6142,4 +6453,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   zincApartments_8th_Brannan,
   brannanApartments_200_Brannan,
   office_235_Second,
+  planningBuilding_1650_Mission,
 }
