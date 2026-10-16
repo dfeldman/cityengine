@@ -33,6 +33,7 @@ export const TREE_FORMS = [
   'oak',          // the park oak: a big spreading deciduous or coast live oak, not the clipped street Quercus
   // (appended, never inserted: the codes are baked by position)
   'treefern',     // tree fern (Dicksonia, Cyathea): a short shaggy trunk, a wide flat crown of fronds — Golden Gate Park's dell
+  'ficusGiant',   // the OLD Indian laurel figs (trunk 30 in and up — Columbus at Broadway): many pale stems under a high, broad dome
 ] as const
 
 export type TreeForm = (typeof TREE_FORMS)[number]
@@ -53,7 +54,7 @@ export const CROWN: Record<TreeForm, number> = {
   '': 0.3, plane: 0.3, evergreen: 0.22, laurel: 0.22, ficus: 0.25, myrtle: 0.3, olive: 0.3, bottlebrush: 0.25,
   plum: 0.3, blossom: 0.35, pear: 0.2, flowering: 0.3, deciduous: 0.3, columnar: 0.08, weeping: 0.3,
   eucalyptus: 0.2, pine: 0.25, cypress: 0.27, canary: 0.3, fan: 0.12, queen: 0.15, spiky: 0.15, windmill: 0.12,
-  oak: 0.35, treefern: 0.6,
+  oak: 0.35, treefern: 0.6, ficusGiant: 0.5,
 }
 
 /** a planting's crown radius, metres */

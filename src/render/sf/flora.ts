@@ -30,6 +30,7 @@ export function sfFlora(toLatLon: (x: number, z: number) => { lat: number; lon: 
       evergreen: [['sf_brisbane', 1]],
       laurel: [['sf_laurel', 1]],
       ficus: [['sf_ficus', 1]],
+      ficusGiant: [['sf_ficus_giant', 1]],
       myrtle: [['sf_myrtle', 1]],
       olive: [['sf_olive', 1]],
       bottlebrush: [['sf_bottlebrush', 1]],
@@ -67,7 +68,7 @@ export function sfFlora(toLatLon: (x: number, z: number) => { lat: number; lon: 
       windmill: [['palm:windmill', 1]],
       treefern: [['palm:treefern', 1]],
     },
-    formModels: { oak: 4, cypress: 6, pine: 6, eucalyptus: 4, plane: 5, laurel: 4, evergreen: 4, ficus: 4, deciduous: 4, plum: 4, canary: 4, fan: 3, queen: 3, spiky: 3, treefern: 3 },
+    formModels: { oak: 4, cypress: 6, pine: 6, eucalyptus: 4, plane: 5, laurel: 4, evergreen: 4, ficus: 4, ficusGiant: 3, deciduous: 4, plum: 4, canary: 4, fan: 3, queen: 3, spiky: 3, treefern: 3 },
     palmChance: (x, z) => {
       const { lat, lon } = toLatLon(x, z)
       return PALMS[districtOf(lat, lon)] ?? 0.03

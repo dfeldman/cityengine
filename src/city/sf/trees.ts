@@ -80,6 +80,7 @@ export function sfHeight(form: TreeForm, dbh: number, r: number): number {
     case 'fan': return d ? Math.min(20, 8 + 0.5 * d) : 10 + r * 6
     case 'queen': return d ? Math.min(13, 6 + 0.4 * d) : 8 + r * 3
     case 'spiky': return 3 + r * 2.5
+    case 'ficusGiant': return Math.min(18, 8 + 0.15 * d)
     case 'windmill': return d ? Math.min(8, 3 + 0.35 * d) : 4 + r * 3
     case 'eucalyptus': return d ? Math.min(24, 5 + 0.55 * d) : 12 + r * 5
     case 'flowering': case 'blossom': case 'pear': case 'plum': case 'bottlebrush': return d ? Math.min(9, 3.5 + 0.35 * d) : 5 + r * 1.5
@@ -89,13 +90,21 @@ export function sfHeight(form: TreeForm, dbh: number, r: number): number {
   }
 }
 
+/**
+ * The famous row on Columbus between Broadway and Vallejo (owner, 2026-10-16, with a Street View: four great
+ * pale-stemmed figs over the sidewalk): the city's list gives two of them 16-17 in trunks, which are wrong.
+ */
+const inFamousFigs = (lat: number, lon: number): boolean => lat > 37.7973 && lat < 37.7981 && lon > -122.4067 && lon < -122.4057
+
 /** The street trees as plantings, in local metres. */
 export function sfPlantings(trees: [number, number, string, number][], toLocal: (g: { lat: number; lon: number }) => { x: number; z: number },
                             inBox: (x: number, z: number) => boolean): Planting[] {
   const out: Planting[] = []
   for (const [lon, lat, latin, dbh] of trees) {
-    const form = sfForm(latin)
+    let form = sfForm(latin)
     if (!form) continue
+    // the old giants are another tree to look at, not a bigger clipped dome (owner, 2026-10-16: "extremely unusual")
+    if (form === 'ficus' && ((dbh >= 30 && dbh < 80) || inFamousFigs(lat, lon))) form = 'ficusGiant'
     const { x, z } = toLocal({ lat, lon })
     if (!inBox(x, z)) continue
     // (a hash, not a random stream: the same tree gets the same spin however the list is ordered)

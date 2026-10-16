@@ -29,6 +29,8 @@ TABLE = {
     'sf_mayten':        (4,  (6, 10),  (0.85, 1.15), (0, 6)),
     'sf_pepper':        (3,  (7, 11),  (0.85, 1.15), (2, 8)),
     'sf_jacaranda':     (4,  (5, 9),   (0.85, 1.2),  (0, 5)),
+    # the old giants (trunk over 30 in, Columbus at Broadway): many pale stems under a high, broad dome
+    'sf_ficus_giant':   (3,  (13, 18), (0.95, 1.2),  (0, 4)),
 }
 
 

@@ -1,0 +1,57 @@
+{
+ "name": "sf_ficus_giant",
+ "extends": "sf_ficus",
+ "about": "The old Indian laurel figs (Ficus microcarpa / retusa, 30-70 inch trunks \u2014 Columbus at Broadway, owner 2026-10-16): a short pale trunk that forks almost at once into many long, smooth, twisting grey stems fanning steeply up and out, carrying a broad, dense, flat-bottomed dome high overhead \u2014 the stems bare under it",
+ "height": [
+  15,
+  2
+ ],
+ "trunk": {
+  "radius": [
+   0.062,
+   0.006
+  ],
+  "splits": {
+   "count": [
+    6,
+    1
+   ],
+   "at": [
+    0.1,
+    0.03
+   ],
+   "angle": [
+    30,
+    6
+   ],
+   "length": [
+    0.97,
+    0.03
+   ],
+   "extend": true
+  }
+ },
+ "envelope": {
+  "base": 0.46,
+  "top": 1.0,
+  "width": 1.0,
+  "profile": [
+   0.86,
+   1.0,
+   1.0,
+   0.98,
+   0.9,
+   0.72,
+   0.4
+  ]
+ },
+ "budget": [
+  6000,
+  9000
+ ],
+ "set": [
+  "leaves.size=[0.06,0.008]",
+  "leaves.outward=0.8",
+  "leaves.first=0.1"
+ ]
+}
