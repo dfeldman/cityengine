@@ -100,3 +100,12 @@ House (651 Dolores) · The Clift (restyle) · 243571728 (restyle) · phantom tow
 555 California and Southern Pacific brick darkened (see BUGS.md #280: the colour grade is the cause).
 Checked and fine as they are: Dragon Gate, Hilton Union Square tower, Alcatraz cellhouse.
 Skipped (no usable photo): Nob Hill Theatre, GGU School of Law.
+
+2026-10-16 05:00-06:00: Coit Tower recoloured · Saints Peter and Paul white spires (church kit `masonrySpires`) · Grace
+Cathedral taller towers · Clarke (Caselli) Mansion · Greater Farallones / old Coast Guard station · Torpedo Assembly
+Building (YBI) · Chinatown YWCA (CHSA) · Julius' Castle · Peace Pagoda (rework) · Ferry Building true arches ·
+Kearny top planters · Chinese place names in Chinatown (bake) · phantom heights: Hotel Des Arts, 153 Kearny, 60
+McAllister · FIFTEEN Haiku "no photo" models replaced by photo-matched restyles (Argonaut, Clay Theatre, Galleria
+Park, Golden Gate Club, Green Tortoise, HI Fort Mason, Harbor Court, Riu Plaza, Triton, Hotel Union, Inn at the
+Presidio, Langley Porter, Queen Anne Hotel, Red Victorian, Curb Exchange). Lesson: a Haiku entry whose builder note
+says "No photo" or "guess" is almost always wrong — review those first.
