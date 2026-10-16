@@ -1,6 +1,6 @@
 [
   {"osm": ["way/256720482"], "name": "SFJAZZ Center", "procedural": "sfjazzCenter", "front": "street", "height": 13, "note": "Recipe midcentury-slab: grey precast panel box, banded dark glass, glazed corner (Commons photograph)."},
-  {"osm": ["way/260523829"], "name": "Kong Chow Temple", "restyle": "chinatown", "levels": 5, "height": 16, "note": "Chinatown temple floor atop a plain building; restyled rather than modelled (Commons photograph)."},
+  {"osm": ["way/260523829"], "name": "Kong Chow Temple", "procedural": "kongChowTemple_855_Stockton", "front": 81, "height": 17, "note": "notable.ts (2026-10-16, Commons photos): the temple floor on the roof, its lettered band and eave, the post office below. Was: Chinatown temple floor atop a plain building; restyled rather than modelled (Commons photograph)."},
   {"osm": ["way/35174746"], "name": "Quaker Meeting House", "restyle": "brick", "levels": 3, "height": 8, "note": "No reference photo found (Commons empty, WebSearch had no architectural detail); a small plain SoMa meeting house."},
   {"osm": ["way/260466858"], "name": "Canon Barcus Community House", "restyle": "stucco", "levels": 5, "height": 15, "note": "No photo found; WebSearch: 2002-built 5-storey affordable housing block, 670 Natoma Street."},
   {"osm": ["way/263824672"], "name": "New Antioch Baptist Church", "restyle": "victorian", "levels": 3, "height": 9, "note": "No reference photo found; treated as a small converted storefront church typical of the area."},

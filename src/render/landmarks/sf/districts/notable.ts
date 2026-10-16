@@ -8641,6 +8641,46 @@ function apartments_4th_Harrison(out: MeshBuilder, fit: Fit): void {
   prism(out, cx, cz, TOP + FL, TOP + FL + 1.2, R + 0.3, 20, GREY, CN, R + 0.1)
 }
 
+/**
+ * The Kong Chow Temple, 855 Stockton (1977 building; the temple founded 1849): a plain four-storey block — brown tiled
+ * piers either side of a dark glass centre, the Chinatown post office at the street — carrying the TEMPLE on its roof:
+ * a concrete band lettered 岡州古廟 (read right to left, so written here 廟古州岡), then a recessed top floor behind a red railing under a tiled eave with KONG CHOW
+ * TEMPLE on its fascia, a round window at one end. Commons photos in docs/shots/refs/notable/kong-chow. Front
+ * (Stockton) on −z.
+ */
+function kongChowTemple_855_Stockton(out: MeshBuilder, fit: Fit): void {
+  const BROWN: Rgb = [0.42, 0.3, 0.22], GLZ: Rgb = [0.12, 0.13, 0.15], CON: Rgb = [0.8, 0.78, 0.72], RED: Rgb = [0.6, 0.14, 0.1],
+    TILE: Rgb = [0.55, 0.32, 0.18], GOLD: Rgb = [0.8, 0.62, 0.22]
+  const BK = surfaceTag('tile'), GL = surfaceTag('glass'), CN = surfaceTag('concrete')
+  const hx = fit.hx, hz = fit.hz, fz = -hz, BAND = 13, TOP = 16.5
+  box(out, 0, BAND / 2, 0, hx, BAND / 2, hz, BROWN, BK)
+  // the glass centre bay up the front, the post office under it
+  box(out, 0, 7.5, fz - 0.03, hx * 0.42, 5.2, 0.05, GLZ, GL)
+  for (let k = -2; k <= 2; k++) box(out, (k * hx * 0.42) / 2.5, 7.5, fz - 0.07, 0.05, 5.2, 0.05, [0.3, 0.3, 0.32], 0)
+  box(out, 0, 1.6, fz - 0.03, hx - 0.6, 1.5, 0.05, [0.18, 0.19, 0.2], GL)
+  sign(out, { type: 'flat', text: 'UNITED STATES POST OFFICE', h: 0.32, face: 'grotesque', weight: 'bold', colour: [0.92, 0.92, 0.9], panel: [0.12, 0.12, 0.13], lit: 'none' },
+    { x: 0, y: 3.4, z: fz - 0.1, heading: Math.PI })
+  // the concrete band with the characters
+  box(out, 0, BAND + 0.9, 0, hx + 0.2, 0.9, hz + 0.2, CON, CN)
+  sign(out, { type: 'flat', text: '廟古州岡', h: 1.1, face: 'roman', weight: 'bold', colour: [0.25, 0.22, 0.2], tracking: 0.6, lit: 'front' },
+    { x: 0, y: BAND + 0.9, z: fz - 0.3, heading: Math.PI })
+  // the temple floor: set back 1.2 m, a red railing on the band, red posts
+  box(out, 0, (BAND + 1.8 + TOP) / 2, 0.6, hx - 1.2, (TOP - BAND - 1.8) / 2, hz - 1.8, CON, CN)
+  box(out, 0, BAND + 2.4, fz + 0.15, hx, 0.05, 0.05, RED, 0)
+  for (let x = -hx + 0.2; x <= hx; x += 0.5) box(out, x, BAND + 2.1, fz + 0.15, 0.03, 0.3, 0.03, RED, 0)
+  for (const x of [-hx + 1.4, -hx / 3, hx / 3, hx - 1.4]) box(out, x, (BAND + 1.8 + TOP) / 2, fz + 1.3, 0.18, (TOP - BAND - 1.8) / 2, 0.18, RED, 0)
+  // the tiled eave and its lettered fascia, upturned ends
+  box(out, 0, TOP + 0.25, 0, hx + 0.8, 0.25, hz + 0.8, TILE, surfaceTag('tile'))
+  box(out, 0, TOP - 0.25, fz - 0.6, hx + 0.6, 0.35, 0.08, CON, CN)
+  for (const sx of [-1, 1]) box(out, sx * (hx + 0.8), TOP + 0.6, fz - 0.8, 0.2, 0.35, 0.2, TILE, BK)
+  sign(out, { type: 'flat', text: 'KONG CHOW TEMPLE', h: 0.45, face: 'grotesque', weight: 'bold', colour: [0.3, 0.3, 0.34], lit: 'none' },
+    { x: 0, y: TOP - 0.25, z: fz - 0.7, heading: Math.PI })
+  // the round window and a vertical blade with gold characters on the right pier
+  box(out, -hx + 1.2, TOP - 1.3, fz + 1.15, 0.6, 0.6, 0.05, GLZ, GL)
+  box(out, hx - 0.8, 8, fz - 0.4, 0.5, 3.5, 0.1, [0.42, 0.18, 0.12], 0)
+  box(out, hx - 0.8, 8, fz - 0.52, 0.3, 3.0, 0.02, GOLD, 0)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -8686,6 +8726,7 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   office_2_Bryant,
   hotelKabuki_1625_Post,
   apartments_4th_Harrison,
+  kongChowTemple_855_Stockton,
   gapHQ_2_Folsom,
   uberHQ1_1455_3rd,
   uberHQ2_1515_3rd,
