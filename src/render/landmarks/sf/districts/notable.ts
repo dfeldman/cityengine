@@ -9782,7 +9782,66 @@ function abnerPhelpsHouse_1111_Oak(out: MeshBuilder, fit: Fit): void {
   box(out, -hx * 0.3, R + 0.3, cz + 0.6, 0.25, 0.9, 0.25, [0.45, 0.3, 0.25], surfaceTag('brick'))
 }
 
+/**
+ * Battery Marcus Miller (1898), on the Presidio bluffs west of the Golden Gate Bridge: an Endicott-era concrete gun
+ * battery. No photograph of Miller itself came to hand; it is drawn in the idiom of its neighbour on the same bluff,
+ * Battery Boutelle (Commons "San Francisco (CA, USA), Battery Boutelle -- 2022 -- 3042.jpg", docs/shots/refs/notable/
+ * battery-miller), which the Army built the same way: a lower wall of weathered concrete along a rear walkway with the
+ * magazine doors in it, concrete stair flights climbing it to the gun deck, pipe railings along the deck's edge, and
+ * on the seaward side the emplacements' curved parapet walls standing a couple of metres over the deck. The sea is
+ * −z (front 315); the doors and stairs go on the landward faces.
+ */
+function batteryMarcusMiller(out: MeshBuilder, fit: Fit): void {
+  const CONC: Rgb = [0.63, 0.61, 0.55], DARK: Rgb = [0.2, 0.19, 0.18], RAIL: Rgb = [0.35, 0.34, 0.32], DECK: Rgb = [0.58, 0.56, 0.5]
+  const CN = surfaceTag('concrete'), MT = surfaceTag('metal')
+  const UVQ: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const ring = ringCCW(fit)
+  const D = 3.6, P = 1.9                                              // the deck's height, the parapet over it
+  ecWalls(out, ring, 0, D, CONC, CN)
+  capPolygonWithHoles(out, [ring], D, DECK, CN)
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z)
+    if (L < 2) continue
+    const tx = (b.x - a.x) / L, tz = (b.z - a.z) / L, nx = tz, nz = -tx, h = Math.atan2(nx, nz)
+    const P3 = (u: number, y: number, o: number): V3 => [a.x + tx * u + nx * o, y, a.z + tz * u + nz * o]
+    const blk = (u: number, y: number, o: number, hw: number, hh: number, hd: number, c: Rgb, tag: number): void => {
+      const p = P3(u, y, o); boxAlong(out, p[0], p[1], p[2], hw, hh, hd, h, c, tag)
+    }
+    if (nz < -0.3) {
+      // seaward: the parapet wall along the edge, the gun deck's curved emplacement walls behind it
+      blk(L / 2, D + P / 2, -0.5, L / 2, P / 2, 0.5, CONC, CN)
+      continue
+    }
+    // landward: the deck railing, magazine doors in the wall, and a stair flight every so often
+    blk(L / 2, D + 1.0, -0.15, L / 2, 0.03, 0.03, RAIL, MT)
+    for (let u = 0.8; u < L - 0.3; u += 2.5) blk(u, D + 0.5, -0.15, 0.03, 0.5, 0.03, RAIL, MT)
+    if (L < 5) continue
+    for (let u = 3; u < L - 2; u += 9) {
+      out.quad([P3(u - 0.9, 0, 0.03), P3(u + 0.9, 0, 0.03), P3(u + 0.9, 2.4, 0.03), P3(u - 0.9, 2.4, 0.03)], [nx, 0, nz], UVQ, DARK, 0)
+      const s0 = u + 1.6, s1 = Math.min(L - 0.4, s0 + 4.2)
+      if (s1 - s0 < 2.5) continue
+      out.quad([P3(s0, 0, 1.4), P3(s1, D, 1.4), P3(s1, D, 0.05), P3(s0, 0, 0.05)], [0, 1, 0], UVQ, DECK, CN)
+      blk((s0 + s1) / 2, D / 2 - 0.2, 1.42, (s1 - s0) / 2, D / 2 - 0.2, 0.06, CONC, CN)   // the flight's side wall
+    }
+  }
+  // the emplacements: a curved parapet just inside each of the two longest seaward edges, standing over the deck
+  const sea = ring.map((a, i) => { const b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z); return { a, b, L, nz: -(b.x - a.x) / (L || 1) } })
+    .filter((e) => e.nz < -0.3 && e.L > 6).sort((p, q) => q.L - p.L).slice(0, 2)
+  for (const e of sea) {
+    const tx = (e.b.x - e.a.x) / e.L, tz = (e.b.z - e.a.z) / e.L, r = Math.min(4, e.L * 0.3)
+    const cx = (e.a.x + e.b.x) / 2 - tz * (r + 1.2), cz = (e.a.z + e.b.z) / 2 + tx * (r + 1.2)
+    const base = Math.atan2(tz, -tx)                                    // the outward normal's angle in x/z
+    for (let k = 0; k < 7; k++) {
+      const a0 = base - Math.PI / 2 + (k / 7) * Math.PI, a1 = base - Math.PI / 2 + ((k + 1) / 7) * Math.PI
+      const p0 = [cx + Math.cos(a0) * r, cz + Math.sin(a0) * r], p1 = [cx + Math.cos(a1) * r, cz + Math.sin(a1) * r]
+      const mx = (p0[0] + p1[0]) / 2, mz = (p0[1] + p1[1]) / 2, len = Math.hypot(p1[0] - p0[0], p1[1] - p0[1])
+      boxAlong(out, mx, D + P / 2, mz, len / 2 + 0.1, P / 2, 0.3, Math.atan2(mx - cx, mz - cz), CONC, CN)
+    }
+  }
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+  batteryMarcusMiller,
   abnerPhelpsHouse_1111_Oak,
   doelgerBuilding_320_Judah,
   stJohnEvangelist_15th,
