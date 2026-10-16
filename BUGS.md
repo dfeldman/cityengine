@@ -10684,6 +10684,10 @@ building:min_level=1, 37.76568 −122.41612), way/1540093676 + 1540144962 (3.3�
 way/773887797 (4–12 m, 37.79021 −122.39551), way/773887802/803 (8–12 m by Transbay). Fixed so far: #269's atrium,
 Sutro Tower's transmitter part (patch b1346721787 minH 0). The scan is in this session's notes; re-run it with
 the package (minHeight ≥ 3, area ≥ 60, no supporting ring under the centroid).
+Triage finished 2026-10-16 06:55: 773887797/802/803 are Salesforce Transit Center `building:part=transportation`
+decks, claimed (hidden) by the Transit Center model — not drawn; 1540093676/1540144962 are a connector wing
+(3.3–16 m, round a 4-storey core) of the VA Medical Center at Fort Miley, relation/3927809 — plausible, out of the
+way, left; 1343562514 and 1018179001 grounded by patch (minH 0) earlier tonight. Nothing else large left open.
 
 ### #280 Why brick keeps rendering orange (2026-10-16 night) — OWNER DECISION
 
