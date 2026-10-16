@@ -8811,6 +8811,40 @@ function metroTheatre_2055_Union(out: MeshBuilder, fit: Fit): void {
   bladeSign(out, 0, H + 4, fz, 6.5, 'METRO', { body: [0.14, 0.14, 0.16], letters: [0.95, 0.75, 0.3], width: 1.3, out: 1.0, heading: Math.PI })
 }
 
+/**
+ * The Light House, 651 Dolores (the former Second Church of Christ, Scientist, 1915; now flats): a white classical
+ * temple — a deep cornice and plain frieze lettered THE LIGHT HOUSE, giant pilasters, an arched entrance between two
+ * columns up a broad flight of steps, a low copper-grey dome over the auditorium (Mapillary
+ * docs/shots/refs/notable/lighthouse-dolores). Front (Dolores) on −z.
+ */
+function lightHouse_651_Dolores(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.9, 0.89, 0.85], SHADE: Rgb = [0.74, 0.73, 0.7], DOME: Rgb = [0.5, 0.5, 0.5], DARK: Rgb = [0.18, 0.18, 0.2]
+  const ST = surfaceTag('stucco'), GL = surfaceTag('glass')
+  const hx = fit.hx, hz = fit.hz, H = 11, fz = -hz
+  box(out, 0, H / 2, 0, hx, H / 2, hz, WHITE, ST)
+  box(out, 0, H + 0.45, 0, hx + 0.5, 0.45, hz + 0.5, WHITE, ST)                               // the cornice
+  box(out, 0, H - 0.8, fz - 0.06, hx, 0.6, 0.06, SHADE, ST)                                   // the frieze
+  sign(out, { type: 'flat', text: 'THE LIGHT HOUSE', h: 0.5, face: 'roman', colour: [0.45, 0.44, 0.42], tracking: 0.25, lit: 'none' },
+    { x: 0, y: H - 0.8, z: fz - 0.14, heading: Math.PI })
+  // the entrance bay: set forward, an arch between two columns, the steps
+  const bw = Math.min(5, hx * 0.45)
+  box(out, 0, (H - 1.4) / 2, fz - 0.8, bw, (H - 1.4) / 2, 0.8, WHITE, ST)
+  for (const s of [-1, 1]) prism(out, s * bw * 0.62, fz - 1.75, 1.6, H - 1.6, 0.4, 12, WHITE, ST)
+  box(out, 0, 4.0, fz - 1.62, bw * 0.38, 2.4, 0.05, DARK, GL)
+  for (let k = 0; k < 6; k++) box(out, 0, 1.4 - 0.25 * k - 0.12, fz - 1.9 - 0.4 * k, bw + 0.3, 0.12 + 0.25 * k / 2, 0.2, SHADE, ST)
+  // pilasters and tall windows along the long walls
+  for (const s of [-1, 1]) for (let z = -hz + 2; z < hz - 1; z += 3.2) {
+    box(out, s * (hx + 0.1), H / 2, z, 0.12, H / 2 - 0.3, 0.35, SHADE, ST)
+    box(out, s * (hx + 0.03), 5.5, z + 1.6, 0.05, 2.6, 0.6, DARK, GL)
+  }
+  // the low dome
+  for (let k = 0; k < 6; k++) {
+    const t = k / 6, t1 = (k + 1) / 6, R = Math.min(hx, hz) * 0.7
+    prism(out, 0, hz * 0.15, H + 0.9 + Math.sin(t * Math.PI / 2) * R * 0.5, H + 0.9 + Math.sin(t1 * Math.PI / 2) * R * 0.5,
+      R * Math.cos(t * Math.PI / 2) + 0.3, 16, DOME, surfaceTag('metal'), R * Math.cos(t1 * Math.PI / 2) + 0.3)
+  }
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -8860,6 +8894,7 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   grantSacramentoCorner,
   oceanClimateCenter_CrissyField,
   metroTheatre_2055_Union,
+  lightHouse_651_Dolores,
   officersQuarters: (out: MeshBuilder, fit: Fit) => officersQuarters(out, fit),
   officersQuartersNimitz: (out: MeshBuilder, fit: Fit) => officersQuarters(out, fit, true),
   gapHQ_2_Folsom,

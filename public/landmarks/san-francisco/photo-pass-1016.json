@@ -16,5 +16,6 @@
   {"osm": ["way/256729649"], "name": "143-147 Waverly Place", "restyle": "chinatown", "wall": "#3a8088", "note": "Waverly Place (Commons photos, docs/shots/refs/notable/tin-how; owner #273): the painted row — each front its own bright colour."},
   {"osm": ["way/256729088"], "name": "146-150 Waverly Place", "restyle": "chinatown", "wall": "#e8d6a8", "note": "Waverly Place (Commons photos, docs/shots/refs/notable/tin-how; owner #273): the painted row — each front its own bright colour."},
   {"osm": ["way/256729647"], "name": "151-155 Waverly Place", "restyle": "chinatown", "wall": "#c8553d", "note": "Waverly Place (Commons photos, docs/shots/refs/notable/tin-how; owner #273): the painted row — each front its own bright colour."},
-  {"osm": ["way/256729083"], "name": "160-162 Waverly Place", "restyle": "chinatown", "wall": "#2f8a55", "note": "Waverly Place (Commons photos, docs/shots/refs/notable/tin-how; owner #273): the painted row — each front its own bright colour."}
+  {"osm": ["way/256729083"], "name": "160-162 Waverly Place", "restyle": "chinatown", "wall": "#2f8a55", "note": "Waverly Place (Commons photos, docs/shots/refs/notable/tin-how; owner #273): the painted row — each front its own bright colour."},
+  {"osm": ["way/260108214"], "name": "The Light House (651 Dolores)", "procedural": "lightHouse_651_Dolores", "front": 266, "height": 16, "note": "The former Second Church of Christ, Scientist (1915), now flats: white classical temple front, arched entrance between columns, low dome (Mapillary)."}
 ]
