@@ -32,9 +32,9 @@ import { towerRing } from '../tower.ts'
 type P2 = { x: number; z: number }
 
 /** polished carnelian granite — red-brown, not grey and not black (the point of the building) */
-const STONE: Rgb = [0.6, 0.255, 0.19]
+const STONE: Rgb = [0.4, 0.185, 0.15]   // 0.6/0.255/0.19 read bright brick-red from the bay (skyline pass 2026-10-16)
 /** the same stone in the shade: the recessed band under the parapet, the reveals */
-const SHADE: Rgb = [0.33, 0.145, 0.12]
+const SHADE: Rgb = [0.24, 0.11, 0.09]
 /** bronze-tinted glass, dark enough that the teeth read as stone edges against it */
 const GLASS_C: Rgb = [0.13, 0.115, 0.12]
 const ROOF_C: Rgb = [0.3, 0.29, 0.29]
