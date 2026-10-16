@@ -67,8 +67,12 @@
     "osm": [
       "way/256733177"
     ],
-    "procedural": "eastPingYuen",
-    "name": "East Ping Yuen"
+    "restyle": "stucco",
+    "wall": "#f4f2ec",
+    "accent": "#c8553d",
+    "noShops": true,
+    "name": "East Ping Yuen",
+    "note": "1951 public housing on Pacific Avenue (Mapillary 2026-10-16, docs/shots/refs/notable/ping-yuen): white walls with a red-and-green Chinese-patterned band over a green-painted ground floor. Was the hotel-punched recipe."
   },
   {
     "osm": [
