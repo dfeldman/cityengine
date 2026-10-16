@@ -126,6 +126,8 @@ export interface SignSpec {
   w?: number
   /** extruded only: the GLB under public/models, e.g. `signs/ghirardelli.glb` (built by tools/signs.ts) */
   model?: string
+  /** flat only: drawn from behind as well, mirrored — a free-standing frame sign on a roof, never a wall sign */
+  twoSided?: boolean
   /** how far the sign stands off the surface it is on, metres (default 0.06 — see sign-plates.ts on z-fighting) */
   standoff?: number
 }

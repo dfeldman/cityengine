@@ -8,7 +8,7 @@
  * - the **tower** over the middle of the Embarcadero front: a square shaft with a clock on each face three-fifths of
  *   the way up, a balustraded cornice, an open colonnaded belfry, a smaller colonnaded stage above that, and the
  *   lantern with its flag;
- * - the "SAN FRANCISCO" letters on the roof, facing the bay.
+ * - the PORT OF and SAN FRANCISCO roof signs either side of the tower, facing the bay.
  *
  * Local frame: long axis x, the Embarcadero (city) front toward −z, the bay +z; fitted to OSM's way.
  */
@@ -16,6 +16,7 @@ import type { MeshBuilder } from '../../buildings.ts'
 import { box, prism, type Rgb } from '../../models.ts'
 import type { Fit } from '../fit.ts'
 import { clockFace } from '../parts.ts'
+import { sign } from '../signage.ts'
 
 const STONE: Rgb = [0.88, 0.84, 0.74]   // Colusa sandstone: a warm pale buff, not grey (2026-10-03)
 const STONE_DARK: Rgb = [0.75, 0.71, 0.61]
@@ -54,11 +55,22 @@ export function ferryBuilding(out: MeshBuilder, fit: Fit): void {
     arcade(out, -hx + 18, hx - 18, s * hz, s, 22, 8.2, 13.6, 3.2)
     box(out, 0, 7.4, s * (hz + 0.2), hx, 0.25, 0.2, STONE_DARK, 0)       // the string course
   }
-  // the SAN FRANCISCO letters on their frame over the bay front
-  box(out, 0, eaves + 6.5, hz - 3, 34, 0.15, 0.3, DARK, 0)
-  for (let i = 0; i < 13; i++) {
-    if (i === 3) continue                                                   // the space between the words
-    box(out, -30 + i * 5, eaves + 4.6, hz - 2.8, 1.6, 1.8, 0.25, DARK, 0)
+  // the two roof signs facing the bay, either side of the tower: PORT OF to the south (+x, the reader's left from
+  // the water), SAN FRANCISCO to the north — dark letters by day, red neon by night, on open steel frames
+  // (Commons "Ferry Building San Francisco from Hyatt Regency ... 2026 dllu" and "Ferry Building at night";
+  // docs/shots/refs/notable/ferry-signs). Sizes from the 2026 photo, scaled by the tower's 14.4 m.
+  const sz = hz - 6, sy = eaves + 6.6, cap = 3.2
+  for (const [text, cx, w] of [['PORT OF', 26, 21], ['SAN FRANCISCO', -38, 42]] as [string, number, number][]) {
+    sign(out, { type: 'flat', text, h: cap, w, face: 'grotesque', weight: 'bold', colour: [0.13, 0.13, 0.14], lit: 'self', standoff: 0.15, twoSided: true },
+      { x: cx, y: sy, z: sz, heading: 0 })
+    box(out, cx, sy - cap / 2 - 0.5, sz - 0.1, w / 2 + 0.6, 0.12, 0.12, DARK, 0)                  // the bottom rail
+    box(out, cx, sy + cap / 2 + 0.4, sz - 0.1, w / 2 + 0.6, 0.08, 0.08, DARK, 0)                  // the top rail
+    const n = Math.round(w / 3)
+    for (let i = 0; i <= n; i++) {                                                                 // the posts
+      const x = cx - w / 2 - 0.4 + ((w + 0.8) * i) / n
+      box(out, x, (eaves + 3.2 + sy + cap / 2 + 0.4) / 2, sz - 0.1, 0.07, (sy + cap / 2 + 0.4 - eaves - 3.2) / 2, 0.07, DARK, 0)
+      if (i < n) box(out, x + (w + 0.8) / n / 2, sy, sz - 0.25, (w + 0.8) / n / 2, 0.05, 0.05, DARK, 0)   // the bracing
+    }
   }
   // the tower, over the middle of the city front
   const tz = -hz + 6

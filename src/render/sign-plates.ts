@@ -236,7 +236,7 @@ const plates = new Map<string, Plate>()
 
 /** Everything about a sign that changes its PICTURE (not where it stands): the cache key. */
 const recipe = (s: SignSpec): string => JSON.stringify([s.text, s.face, s.weight, s.italic, s.colour, s.panel,
-  s.halo, s.tracking, s.vertical, s.lit])
+  s.halo, s.tracking, s.vertical, s.lit, s.twoSided])
 
 export function signPlate(scene: Scene, spec: SignSpec): Plate | null {
   const key = recipe(spec)
@@ -289,7 +289,8 @@ export function signPlate(scene: Scene, spec: SignSpec): Plate | null {
     mat.setTexture('glow', tex)
     mat.setFloat('hasGlow', 0)
   }
-  mat.backFaceCulling = true
+  // a free-standing roof sign is seen from behind too, its letters mirrored (the Ferry Building's from the city)
+  mat.backFaceCulling = !spec.twoSided
   mat.depthFunction = Constants.LEQUAL
   // see the header: the standoff separates the surfaces, this separates the DEPTH TEST (BUGS.md #15)
   mat.zOffset = -2
