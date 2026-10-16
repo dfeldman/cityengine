@@ -180,24 +180,6 @@ export const B4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   },
 
   /**
-   * way/256720468 — French American International School, 150 Oak St, 7 levels, 23 m. No photograph. Plan
-   * is a rectilinear footprint with a couple of setback-scale notches. Built BLIND as a plain modern
-   * institutional school building: glazed ground floor, plain panelled storeys above, no ornament invented.
-   */
-  b4_school_256720468: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'recessed', storeys: 1, depth: 1, material: 'glass' },
-      shaft: { storeys: 6, windows: 'horizontal', material: 'precast' },
-      top: null,
-      bands: { aboveGround: 'string', belowTop: null, top: null },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'recessed', steps: 1 },
-      material: 'precast',
-    })
-  },
-
-  /**
    * way/151316276 — Gramercy Towers, 18 levels, 49 m. Reference photo (`batch5/way-151316276.jpg`) shows a
    * plain grey corrugated-metal-clad flank wall, no windows visible on this elevation — again a side wall,
    * not the main front, next to a Victorian neighbour and a scaffolded construction site. Modelled as a
