@@ -182,7 +182,6 @@ export const BUILDINGS_OK: string[] = [
   'hamiltonMemorialChurchOfGodInChrist', 'jonesMemorialUnitedMethodistChurch', 'sinaiMemorialChapel',
   // a HOTEL whose proper name contains "Plaza": Hotel Riu Plaza Fisherman's Wharf. The pattern is
   // matching a word inside a brand name, not a public plaza.
-  'hotelRiuPlazaFishermansWharf',
   // in PARKS, and buildings: glasshouses, a tea house, a clubhouse, a restaurant
   'conservatoryGlasshouse', 'californiaAcademyOfSciences', 'teaGardenTeaHouse', 'teaGardenGiftShop', 'sparkTent', 'sparkUmbrella', 'sparkTruck', 'beachChalet1006', 'oneFrontPavilion',
   'presidioOfficersClub',
