@@ -8049,6 +8049,123 @@ function websterBridge_Geary(out: MeshBuilder, _fit: Fit): void {
   }
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// Sing Chong and Sing Fat, Grant Avenue at California (1908): Chinatown's pagoda corner towers (BUGS.md #273)
+// ---------------------------------------------------------------------------------------------------------------
+
+/**
+ * The pair that set Chinatown's look after the fire: four-storey commercial blocks dressed with green-tiled pagoda
+ * eaves turned up at the ends over the second storey and the roof, and on the Grant/California corner a square
+ * tower rising two flared tiers above the roof to a little pavilion. Sing Chong (north-west corner) is buff brick
+ * with red awnings and round red medallions; Sing Fat (south-west) is painted cream with turquoise trim. Photos:
+ * docs/shots/refs/notable/sing-chong/ (Commons and Mapillary). Front = California on −z; `corner` says which end
+ * of that front (local ±x) is Grant.
+ */
+function pagodaCorner(out: MeshBuilder, fit: Fit, o: { wall: Rgb; trim: Rgb; tile: Rgb; corner: 1 | -1; storeys: number }): void {
+  const CN = surfaceTag('brick'), GL = surfaceTag('glass'), TL = surfaceTag('tile')
+  const GLASS: Rgb = [0.18, 0.2, 0.22], RED: Rgb = [0.62, 0.1, 0.09], GOLD: Rgb = [0.8, 0.62, 0.22]
+  const hx = fit.hx, hz = fit.hz, FL = 3.6, TOP = o.storeys * FL + 0.6
+  box(out, 0, TOP / 2, 0, hx, TOP / 2, hz, o.wall, CN)
+  // windows on the two street faces (front −z and the corner's side)
+  for (let f = 0; f < o.storeys; f++) {
+    const y0 = f * FL + (f === 0 ? 0.3 : 1.0), y1 = f * FL + (f === 0 ? 3.0 : 2.8)
+    const glass = f === 0 ? [0.12, 0.13, 0.14] as Rgb : GLASS
+    for (let u = -hx + 1.8; u < hx - 1.2; u += 2.8) box(out, u, (y0 + y1) / 2, -hz - 0.03, 0.85, (y1 - y0) / 2, 0.05, glass, GL)
+    for (let u = -hz + 1.8; u < hz - 1.2; u += 2.8) box(out, o.corner * (hx + 0.03), (y0 + y1) / 2, u, 0.05, (y1 - y0) / 2, 0.85, glass, GL)
+  }
+  // red awnings over the shops
+  box(out, 0, 3.4, -hz - 0.6, hx - 0.5, 0.18, 0.6, RED, 0)
+  box(out, o.corner * (hx + 0.6), 3.4, 0, 0.6, 0.18, hz - 0.5, RED, 0)
+  // the green pagoda eaves: a sloping band with turned-up ends, over the 2nd storey and at the roof
+  const eave = (y: number, out2: number): void => {
+    for (const [cx, cz, lx, lz] of [[0, -hz, hx, 0], [0, hz, hx, 0], [-hx, 0, 0, hz], [hx, 0, 0, hz]] as [number, number, number, number][]) {
+      const nx = Math.sign(cx), nz = Math.sign(cz)
+      const L = lx || lz
+      box(out, cx + nx * out2 / 2, y, cz + nz * out2 / 2, lx ? L + out2 : out2 / 2 + 0.05, 0.22, lz ? L + out2 : out2 / 2 + 0.05, o.tile, TL)
+      box(out, cx + nx * out2 * 0.15, y + 0.3, cz + nz * out2 * 0.15, lx ? L : 0.25, 0.12, lz ? L : 0.25, o.trim, CN)
+    }
+    for (const sx of [-1, 1]) for (const sz of [-1, 1]) box(out, sx * (hx + out2), y + 0.35, sz * (hz + out2), 0.18, 0.35, 0.18, o.tile, TL)   // upturned ends
+  }
+  eave(2 * FL + 0.2, 1.0)
+  eave(TOP, 1.2)
+  // round medallions between the upper windows
+  for (let u = -hx + 3.2; u < hx - 2; u += 5.6) { box(out, u, 3 * FL - 0.4, -hz - 0.08, 0.55, 0.55, 0.06, RED, 0); box(out, u, 3 * FL - 0.4, -hz - 0.12, 0.3, 0.3, 0.05, GOLD, 0) }
+  // the corner tower: a square shaft from the roof, two flared tiers, a pavilion and finial
+  const tx = o.corner * (hx - 3), tz = -hz + 3
+  box(out, tx, TOP + 2.2, tz, 2.8, 2.2, 2.8, o.wall, CN)
+  for (const [y, r] of [[TOP + 4.6, 4.2], [TOP + 8.6, 3.2]] as [number, number][]) {
+    prism(out, tx, tz, y, y + 0.9, r, 4, o.tile, TL, 0.55)
+    for (const sx of [-1, 1]) for (const sz of [-1, 1]) box(out, tx + sx * r * 0.72, y + 0.55, tz + sz * r * 0.72, 0.16, 0.3, 0.16, o.tile, TL)
+  }
+  box(out, tx, TOP + 6.9, tz, 2.0, 1.4, 2.0, o.trim, CN)
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) box(out, tx + sx * 1.6, TOP + 6.9, tz + sz * 1.6, 0.18, 1.4, 0.18, RED, 0)
+  prism(out, tx, tz, TOP + 9.5, TOP + 10.6, 1.4, 4, o.tile, TL, 0.3)
+  prism(out, tx, tz, TOP + 10.6, TOP + 11.6, 0.12, 6, GOLD, 0)
+}
+const singChong_Grant_California = (out: MeshBuilder, fit: Fit): void =>
+  pagodaCorner(out, fit, { wall: [0.68, 0.58, 0.42], trim: [0.82, 0.76, 0.62], tile: [0.22, 0.42, 0.3], corner: 1, storeys: 4 })
+const singFat_Grant_California = (out: MeshBuilder, fit: Fit): void =>
+  pagodaCorner(out, fit, { wall: [0.8, 0.75, 0.62], trim: [0.25, 0.55, 0.55], tile: [0.2, 0.45, 0.42], corner: 1, storeys: 4 })
+
+/**
+ * The Chinese Telephone Exchange, 743 Washington (1909; now a bank): a small two-storey hall under THREE stacked
+ * green-tiled pagoda roofs with upturned corners, red lacquered columns along the street front, gold trim. Mapillary
+ * docs/shots/refs/notable/telephone-exchange/m0. Front (Washington) on −z.
+ */
+function telephoneExchange_743_Washington(out: MeshBuilder, fit: Fit): void {
+  const RED: Rgb = [0.6, 0.1, 0.08], TILE: Rgb = [0.18, 0.42, 0.3], WALL: Rgb = [0.82, 0.74, 0.58], GOLD: Rgb = [0.8, 0.62, 0.22]
+  const CN = surfaceTag('stucco'), TL = surfaceTag('tile'), GL = surfaceTag('glass')
+  const hx = Math.max(4, fit.hx), hz = Math.max(4, fit.hz)
+  box(out, 0, 3.6, 0, hx - 0.6, 3.6, hz - 0.6, WALL, CN)
+  box(out, 0, 1.8, -hz + 0.55, hx - 1.2, 1.6, 0.05, [0.14, 0.15, 0.17], GL)
+  box(out, 0, 5.4, -hz + 0.55, hx - 1.2, 1.1, 0.05, [0.2, 0.22, 0.25], GL)
+  for (let u = -hx + 0.8; u <= hx - 0.7; u += (2 * hx - 1.6) / 4) prism(out, u, -hz + 0.4, 0, 7.2, 0.28, 8, RED, 0)
+  box(out, 0, 7.4, -hz + 0.4, hx, 0.25, 0.3, GOLD, 0)
+  const tiers: [number, number, number][] = [[7.6, hx + 1.0, hz + 1.0], [10.6, hx * 0.72, hz * 0.72], [13.2, hx * 0.48, hz * 0.48]]
+  tiers.forEach(([y, rx, rz], i) => {
+    // a flared hip: a wide thin eave, then the roof rising to the next tier's walls
+    box(out, 0, y + 0.15, 0, rx, 0.15, rz, TILE, TL)
+    for (const sx of [-1, 1]) for (const sz of [-1, 1]) box(out, sx * rx, y + 0.45, sz * rz, 0.2, 0.3, 0.2, TILE, TL)
+    if (i < 2) {
+      box(out, 0, y + 1.4, 0, rx * 0.72, 1.1, rz * 0.72, i === 0 ? RED : WALL, CN)
+      box(out, 0, y + 2.6, 0, rx * 0.74, 0.12, rz * 0.74, GOLD, 0)
+    } else {
+      prism(out, 0, 0, y + 0.3, y + 1.8, Math.max(rx, rz), 4, TILE, TL, 0.15)
+      prism(out, 0, 0, y + 1.8, y + 2.6, 0.15, 6, GOLD, 0)
+    }
+  })
+}
+
+/**
+ * The Chinese Six Companies (Chinese Consolidated Benevolent Association), 843 Stockton (1908): a narrow cream
+ * three-storey front under a green-tiled pagoda crown with upturned ends, two storeys of RECESSED balconies between
+ * red and blue-green columns with red railings, and a green-tiled canopy on red columns over the door. Mapillary
+ * docs/shots/refs/notable/six-companies/m2. Front (Stockton) on −z; the rest of the block is plain.
+ */
+function sixCompanies_843_Stockton(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.84, 0.8, 0.68], TILE: Rgb = [0.15, 0.4, 0.32], RED: Rgb = [0.62, 0.12, 0.1], BLUE: Rgb = [0.2, 0.42, 0.5], GOLD: Rgb = [0.8, 0.62, 0.22]
+  const ST = surfaceTag('stucco'), TL = surfaceTag('tile'), GL = surfaceTag('glass')
+  const hx = fit.hx, hz = fit.hz, TOP = 13.5, fz = -hz
+  box(out, 0, TOP / 2, 0.6, hx, TOP / 2, hz - 0.6, CREAM, ST)                                 // the block, its front set back 1.2 m
+  box(out, 0, 1.9, fz + 0.65, hx - 0.8, 1.7, 0.06, [0.14, 0.15, 0.17], GL)                   // ground floor glass
+  // the two balcony storeys: dark recess, columns, red railings, the floor slabs
+  for (const [y0, y1] of [[4.4, 8.0], [8.4, 11.8]] as [number, number][]) {
+    box(out, 0, (y0 + y1) / 2, fz + 1.15, hx - 0.6, (y1 - y0) / 2, 0.05, [0.24, 0.22, 0.2], GL)
+    box(out, 0, y0 - 0.15, fz + 0.6, hx, 0.15, 0.6, CREAM, ST)
+    box(out, 0, y0 + 0.55, fz + 0.15, hx - 0.4, 0.5, 0.05, RED, 0)
+    for (let u = -hx + 0.45, k = 0; u <= hx - 0.4; u += (2 * hx - 0.9) / 4, k++) box(out, u, (y0 + y1) / 2, fz + 0.2, 0.22, (y1 - y0) / 2, 0.22, k % 2 ? BLUE : RED, 0)
+  }
+  box(out, 0, 12.3, fz + 0.6, hx, 0.5, 0.6, GOLD, 0)                                          // the name band
+  // the crown: a wide green tiled eave, upturned at its corners, and a ridge
+  box(out, 0, TOP + 0.2, fz + 1.0, hx + 0.9, 0.22, 1.5, TILE, TL)
+  for (const sx of [-1, 1]) box(out, sx * (hx + 0.9), TOP + 0.55, fz - 0.4, 0.2, 0.35, 0.2, TILE, TL)
+  box(out, 0, TOP + 0.9, fz + 1.4, hx, 0.5, 0.9, TILE, TL)
+  box(out, 0, TOP + 1.5, fz + 1.4, hx - 0.6, 0.12, 0.12, GOLD, 0)
+  // the door canopy on red columns
+  box(out, 0, 3.75, fz - 0.6, 2.4, 0.2, 1.0, TILE, TL)
+  for (const sx of [-1, 1]) { box(out, sx * 2.6, 4.0, fz - 1.5, 0.15, 0.3, 0.15, TILE, TL); box(out, sx * 1.9, 1.8, fz - 1.3, 0.14, 1.8, 0.14, RED, 0) }
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -8086,5 +8203,9 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   ecPodium_Davis,
   hotelVia_138_King,
   websterBridge_Geary,
+  singChong_Grant_California,
+  singFat_Grant_California,
+  telephoneExchange_743_Washington,
+  sixCompanies_843_Stockton,
   gapHQ_2_Folsom,
 }

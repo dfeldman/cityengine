@@ -354,6 +354,9 @@ export class Signs implements TileLayer {
   private readonly terrain: Terrain
   private readonly noSign: Set<number>
   private readonly invented: ReturnType<typeof inventShopNames>
+  /** Chinatown's own (see `districtOf`) */
+  private readonly chinatown: ReturnType<typeof inventShopNames>
+  private readonly districtOf: (x: number, z: number) => 'zh' | null
   private readonly junctionsIn = new Map<string, SignedJunction[]>()
   private readonly shops: TextAtlas
   private readonly corners: TextAtlas | null
@@ -370,7 +373,9 @@ export class Signs implements TileLayer {
    */
   private readonly inPark: (x: number, z: number) => boolean
   constructor(scene: Scene, cityId: string, reg: Region, terrain: Terrain, junctions: SignedJunction[] = [],
-              noSign: Set<number> = new Set(), inPark: (x: number, z: number) => boolean = () => false) {
+              noSign: Set<number> = new Set(), inPark: (x: number, z: number) => boolean = () => false,
+              districtOf: (x: number, z: number) => 'zh' | null = () => null) {
+    this.districtOf = districtOf
     this.inPark = inPark
     this.scene = scene
     this.reg = reg
@@ -379,6 +384,7 @@ export class Signs implements TileLayer {
     let seed = 0x5eed
     for (const ch of cityId) seed = Math.imul(seed ^ ch.charCodeAt(0), 0x01000193) >>> 0
     this.invented = inventShopNames(reg.shopNames, INVENTED, seed)
+    this.chinatown = inventShopNames('zh', 120, seed ^ 0x2a)
     for (const j of junctions) {
       const k = tileKey(Math.floor(j.at.x / TILE), Math.floor(j.at.z / TILE))
       const list = this.junctionsIn.get(k)
@@ -480,24 +486,29 @@ export class Signs implements TileLayer {
         if (planOf(b.id)?.ground !== 'shopfront') continue
         const spot = frontage(b, streets)
         if (!spot) continue
-        let j = Math.abs(b.id) % invented.length
+        // in Chinatown, its own names (offset past the city's in `used`, so the two lists never collide)
+        const zh = this.districtOf(spot.x, spot.z) === 'zh'
+        const list0 = zh ? this.chinatown : invented, base = zh ? invented.length : 0
+        let j = Math.abs(b.id) % list0.length
         let ok = false
-        for (let tries = 0; tries < invented.length; tries++, j = (j + 1) % invented.length) {
-          const near = (used.get(j) ?? []).some((q) => Math.hypot(q.x - spot.x, q.z - spot.z) < REPEAT)
+        for (let tries = 0; tries < list0.length; tries++, j = (j + 1) % list0.length) {
+          const near = (used.get(base + j) ?? []).some((q) => Math.hypot(q.x - spot.x, q.z - spot.z) < REPEAT)
           if (!near) { ok = true; break }
         }
+        const pickd = list0[j]
+        j += base
         const mine = (() => { const q = centreOf(b); return inTile(q.x, q.z) })()
         if (!ok) { if (mine) c.blank++; continue }
         const list = used.get(j) ?? []
         list.push({ x: spot.x, z: spot.z })
         used.set(j, list)
         if (!mine) continue
-        const cell = this.shops.acquire(invented[j].name, k)
+        const cell = this.shops.acquire(pickd.name, k)
         if (!cell) continue
-        board(pages.on(cell.page), spot, BOARD[invented[j].kind], cell.u0, cell.v0, terrain.heightAt(spot.x, spot.z),
+        board(pages.on(cell.page), spot, BOARD[pickd.kind], cell.u0, cell.v0, terrain.heightAt(spot.x, spot.z),
           fascia(b.id))
-        hung.push({ spot, name: invented[j].name, tint: BOARD[invented[j].kind], ground: terrain.heightAt(spot.x, spot.z),
-          fascia: fascia(b.id), kind: invented[j].kind, real: false })
+        hung.push({ spot, name: pickd.name, tint: BOARD[pickd.kind], ground: terrain.heightAt(spot.x, spot.z),
+          fascia: fascia(b.id), kind: pickd.kind, real: false })
         placed++
       }
     }

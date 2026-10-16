@@ -8,7 +8,7 @@
  */
 import type { PackedPoi } from './package.ts'
 
-export type ShopLanguage = 'fr' | 'en'
+export type ShopLanguage = 'fr' | 'en' | 'zh'
 
 interface Vocabulary {
   /** a trade and the kind of board it gets; `%` is where a name goes, or it stands alone */
@@ -50,10 +50,26 @@ const EN: Vocabulary = {
   ],
 }
 
+/**
+ * San Francisco's Chinatown (owner, 2026-10-16: "many signs in chinese. not all, it's not china, but maybe half"):
+ * Cantonese trade names in characters — a family or lucky name and a trade — and as many again in Chinatown's
+ * English, the romanised names over the same trades.
+ */
+const ZH: Vocabulary = {
+  trades: [
+    ['%酒家', 'food'], ['%茶樓', 'food'], ['%餅家', 'food'], ['%燒臘', 'food'], ['%海味', 'shop'], ['%藥材', 'service'],
+    ['%珠寶', 'shop'], ['%雜貨', 'shop'], ['%麵家', 'food'], ['%書局', 'culture'], ['%金行', 'shop'], ['%茶行', 'shop'],
+    ['% Bakery', 'food'], ['% Restaurant', 'food'], ['% Jewelry', 'shop'], ['% Herbs', 'service'], ['% Market', 'shop'],
+    ['% Gift Shop', 'shop'], ['% Tea Co.', 'shop'], ['% Noodle House', 'food'], ['% Trading Co.', 'shop'], ['% Seafood', 'food'],
+  ],
+  names: ['金龍', '新華', '永利', '和記', '同興', '福來', '大中華', '萬利', '廣東', '鴻運', '美華', '泰和'],
+}
+const ZH_EN = ['Golden Dragon', 'Sun Wah', 'Wing Lee', 'Wo Kee', 'Tung Hing', 'Fook Loy', 'Great China', 'Man Lee', 'Canton', 'Hung Wan', 'Mei Wah', 'Tai Wo']
+
 /** `count` distinct invented names, the same ones every session for the same seed. */
 export function inventShopNames(lang: ShopLanguage, count: number, seed: number):
   { name: string; kind: PackedPoi['kind'] }[] {
-  const v = lang === 'fr' ? FR : EN
+  const v = lang === 'fr' ? FR : lang === 'zh' ? ZH : EN
   let a = seed >>> 0
   const r = (): number => {
     a = (a + 0x6d2b79f5) >>> 0
@@ -66,7 +82,9 @@ export function inventShopNames(lang: ShopLanguage, count: number, seed: number)
   const out: { name: string; kind: PackedPoi['kind'] }[] = []
   for (let tries = 0; out.length < count && tries < count * 20; tries++) {
     const [trade, kind] = v.trades[Math.floor(r() * v.trades.length)]
-    const who = v.names[Math.floor(r() * v.names.length)]
+    const wi = Math.floor(r() * v.names.length)
+    // (an English trade takes the romanised name: Sun Wah Bakery, not 新華 Bakery)
+    const who = lang === 'zh' && /[A-Za-z]/.test(trade) ? ZH_EN[wi] : v.names[wi]
     const name = trade.replace('%', who)
     if (seen.has(name)) continue
     seen.add(name)

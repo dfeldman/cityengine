@@ -141,6 +141,8 @@ export interface Region {
    * A named street's measured carriageway (kerb to kerb, m) and sidewalk over a stretch between two points, where
    * OSM's lanes give the wrong width (tools/street-paint.ts `applyStreetWidths`); `walk` defaults to the region's own
    */
+  /** districts whose invented shop names are in their own language (Chinatown), rings of [lat, lon] */
+  shopDistricts?: { lang: 'zh'; name?: string; ring: [number, number][] }[]
   streetWidths?: { street: string; from: [number, number]; to: [number, number]; width: number; walk?: number; note?: string }[]
   /** public stairways OSM does not have, by hand: each a polyline of [lat, lon] from one end to the other */
   stairways?: { name: string; points: [number, number][]; width?: number }[]
@@ -216,6 +218,7 @@ export function region(id: string | undefined): Region {
     units: own?.units ?? base.units,
     streetPaint: own?.streetPaint ?? base.streetPaint,
     streetWidths: own?.streetWidths ?? base.streetWidths,
+    shopDistricts: own?.shopDistricts ?? base.shopDistricts,
     stairways: own?.stairways ?? base.stairways,
     pointFurniture: { ...base.pointFurniture, ...(own?.pointFurniture ?? {}) },
     landmarkPlate: { ...base.landmarkPlate, ...(own?.landmarkPlate ?? {}) },

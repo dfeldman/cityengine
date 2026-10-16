@@ -806,8 +806,15 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   }
   // the names of real places, on boards above the shopfronts, and the streets' own names at the corners
   const noSign = new Set(landmarkList.filter((e) => e.sign === false).flatMap(packedIds))
+  // (Chinatown's shops invent their names in Chinese and Chinatown English: region shopDistricts)
+  const shopRings = (region(pkg.region).shopDistricts ?? []).map((d) => ({ lang: d.lang, ring: d.ring.map(([lat, lon]) => new Projection(pkg.origin).toLocal({ lat, lon })) }))
+  const insideShopRing = (r: { x: number; z: number }[], x: number, z: number): boolean => {
+    let c = false
+    for (let i = 0, j = r.length - 1; i < r.length; j = i++) if ((r[i].z > z) !== (r[j].z > z) && x < ((r[j].x - r[i].x) * (z - r[i].z)) / (r[j].z - r[i].z) + r[i].x) c = !c
+    return c
+  }
   const signs = off.has('signs') ? null : new Signs(scene, pkg.id, region(pkg.region), city.terrain, junctions, noSign,
-    (x, z) => parkMap.contains(x, z, TILE))
+    (x, z) => parkMap.contains(x, z, TILE), (x, z) => shopRings.find((d) => insideShopRing(d.ring, x, z))?.lang ?? null)
   if (signs) city.addLayer(signs)
   mark('signs')
   const level = opts.traffic ?? 'some'
