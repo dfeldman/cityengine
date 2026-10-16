@@ -17,7 +17,8 @@ import type { Fit } from '../../fit.ts'
 import { tower, towerRing, faceBand, insetRing, type TowerSpec, type Face } from '../../tower.ts'
 import { prism, strut, EMIT, type Rgb } from '../../../models.ts'
 import { surfaceTag, type Surface } from '../../../cartoon-material.ts'
-import { offsetRing } from '../../parts.ts'
+import { offsetRing, boxAlong } from '../../parts.ts'
+import { sign } from '../../signage.ts'
 
 type P2 = { x: number; z: number }
 type V3 = [number, number, number]
@@ -1149,9 +1150,10 @@ function vcMorris(out: MeshBuilder, fit: Fit): void {
  * The Geary Theater (1909, Bliss & Faville; now the Toni Rembe Theater, home of A.C.T.), 415 Geary: a buff
  * terracotta front in the Italian manner — three tall arched windows between coupled columns over a marquee of
  * three scalloped arches, panels of blue-green glazed ornament between them, a heavy dentilled cornice, and plain
- * brick flanks. (Commons: "San Francisco Geary Theatre.jpg".)
+ * brick flanks. (Commons: "San Francisco Geary Theatre.jpg".) A.C.T.'s three tall banners hang between the columns —
+ * A on dark blue, C on light blue, T on green, each letter white near the banner's foot (docs/shots/refs/notable/geary).
  */
-const gearyTheater = spec({
+const gearyTheaterBody = spec({
   height: 23,
   base: { height: 6.5, face: { kind: 'curtain', material: 'metal', wall: [0.35, 0.3, 0.22], glass: [0.5, 0.42, 0.24], pitch: 3.5, floor: 6.5 }, canopy: { depth: 2.2, colour: [0.72, 0.66, 0.52] } },
   tiers: [
@@ -1160,6 +1162,33 @@ const gearyTheater = spec({
   ],
   roof: [0.5, 0.48, 0.44],
 })
+
+function gearyTheater(out: MeshBuilder, fit: Fit): void {
+  gearyTheaterBody(out, fit)
+  // the street face: of the edges over 4 m, the one whose middle lies furthest toward −z
+  const r = towerRing(fit)
+  let fi = 0, lowest = Infinity
+  for (let i = 0; i < r.length; i++) {
+    const a = r[i], b = r[(i + 1) % r.length]
+    if (Math.hypot(b.x - a.x, b.z - a.z) > 4 && (a.z + b.z) / 2 < lowest) { lowest = (a.z + b.z) / 2; fi = i }
+  }
+  const a = r[fi], b = r[(fi + 1) % r.length], L = Math.hypot(b.x - a.x, b.z - a.z)
+  const tz = (b.z - a.z) / L, tx = (b.x - a.x) / L
+  // the outward normal of this edge, whichever way the ring winds: away from the centre
+  const mx = (a.x + b.x) / 2, mz = (a.z + b.z) / 2
+  let nx = tz, nz = -tx
+  if (nx * mx + nz * mz < 0) { nx = -nx; nz = -nz }
+  const h = Math.atan2(nx, nz)
+  // across the face from the viewer's left to right
+  const rx = -nz, rz = nx
+  const banners: [number, string, Rgb][] = [[-0.2, 'A', [0.1, 0.17, 0.45]], [-0.05, 'C', [0.36, 0.58, 0.82]], [0.13, 'T', [0.45, 0.6, 0.22]]]
+  for (const [f, letter, col] of banners) {
+    const x = mx + rx * f * L + nx * 0.5, z = mz + rz * f * L + nz * 0.5
+    boxAlong(out, x, 11.8, z, 0.6, 3.3, 0.02, h, col, 0)
+    sign(out, { type: 'flat', text: letter, h: 0.9, face: 'grotesque', weight: 'bold', colour: [0.97, 0.97, 0.95], lit: 'none' },
+      { x: x + nx * 0.04, y: 9.4, z: z + nz * 0.04, heading: h })
+  }
+}
 
 /**
  * The Kensington Park Hotel (1924, as the Elks Club), 450 Post: fourteen storeys of buff brick and terracotta in
