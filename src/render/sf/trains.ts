@@ -79,6 +79,21 @@ function archedRoof(out: MeshBuilder, z0: number, z1: number, half: number, y0: 
   for (const sd of [-1, 1]) box(out, sd * half, y0 - 0.05, (z0 + z1) / 2, 0.03, 0.06, (z1 - z0) / 2, [0.28, 0.17, 0.1], FIXED)
 }
 
+/**
+ * A saloon's lower body, HOLLOW: the livery panels down each side to the sill and the benches along them inside, the
+ * passengers sitting on those (render/cable-riders.ts). It was one solid block, and the seated riders sat buried in it
+ * to the chest — "in a hot tub" (owner, 2026-10-16).
+ */
+function saloonShell(out: MeshBuilder, floor: number, half: number, z0: number, z1: number): void {
+  const zm = (z0 + z1) / 2, hz = (z1 - z0) / 2
+  for (const s of [-1, 1]) {
+    box(out, s * (half - 0.03), floor + 0.45, zm, 0.03, 0.45, hz, [1, 1, 1])                     // the panel (livery)
+    box(out, s * (half - 0.28), floor + 0.44, zm, 0.22, 0.04, hz - 0.1, WOOD, FIXED)              // the bench seat
+    box(out, s * (half - 0.28), floor + 0.2, zm, 0.2, 0.2, hz - 0.1, [0.3, 0.2, 0.13], FIXED)     // its front
+  }
+  box(out, 0, floor + 0.01, zm, half - 0.06, 0.01, hz, [0.36, 0.24, 0.15], FIXED)                 // the saloon floor
+}
+
 /** a cable car's two trucks: dark frames under the floor and four wheels each */
 function cableTrucks(out: MeshBuilder, zs: number[]): void {
   for (const z of zs) {
@@ -117,7 +132,7 @@ function cableCar(out: MeshBuilder): void {
   // the grip itself: the lever standing up in the middle, the gripman's post
   box(out, 0.15, floor + 0.7, front - 0.8, 0.04, 0.7, 0.04, BRASS, FIXED)
   // the saloon: maroon below, cream-framed windows, the end windows
-  box(out, 0, floor + 0.45, (split + back) / 2 + 0.3, half, 0.45, (split - back) / 2 - 0.3, [1, 1, 1])
+  saloonShell(out, floor, half, back + 0.6, split)
   for (const s of [-1, 1]) {
     box(out, s * half, floor + 1.35, (split + back) / 2 + 0.3, 0.03, 0.5, (split - back) / 2 - 0.3, CREAM, FIXED)
     for (let k = 0; k < 4; k++) {
@@ -204,7 +219,7 @@ function californiaCar(out: MeshBuilder): void {
     box(out, 0, floor + 1.4, e * (inner + 0.01), 0.9, 0.36, 0.02, GLASS, FIXED)
   }
   // the saloon between the two open ends
-  box(out, 0, floor + 0.45, 0, half, 0.45, inner, [1, 1, 1])
+  saloonShell(out, floor, half, -inner, inner)
   for (const s of [-1, 1]) {
     box(out, s * half, floor + 1.35, 0, 0.03, 0.5, inner, CREAM, FIXED)
     for (let w = 0; w < 4; w++) box(out, s * (half + 0.045), floor + 1.38, -inner + 0.45 + w * 0.8, 0.01, 0.36, 0.3, GLASS, FIXED)
