@@ -6864,6 +6864,337 @@ function theChateau_2701_VanNess(out: MeshBuilder, fit: Fit): void {
   for (const idx of m.indices) out.indices.push(base + idx)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// 2400 Pacific Avenue (apartments, Pacific Heights, 1932)
+// ---------------------------------------------------------------------------------------------------------------
+
+const AP_WALL: Rgb = [0.91, 0.875, 0.8]        // #e8dfcd cream stucco
+const AP_TRIM: Rgb = [0.95, 0.925, 0.88]       // #f2ece0
+const AP_SLATE: Rgb = [0.294, 0.31, 0.337]     // #4b4f56
+const AP_SLATE_DK: Rgb = [0.22, 0.235, 0.262]
+const AP_ESC: Rgb = [0.54, 0.23, 0.17]         // #8a3b2c fire escape
+const AP_GLASS: Rgb = [0.14, 0.17, 0.21]
+const AP_DOOR: Rgb = [0.1, 0.09, 0.085]
+const AP_CHIM: Rgb = [0.8, 0.76, 0.69]
+
+/**
+ * 2400 Pacific Avenue at Fillmore (1932, eight storeys): cream stucco, canted bays stacked from the second floor up,
+ * a dark slate mansard with pointed cream gables over every bay and a corner tower, a round-arched entrance at the
+ * south-east corner under a stone balcony, a red-brown fire escape and the garage door on the Fillmore wall.
+ * Photographs: docs/shots/refs/notable/2400-pacific/ way-262128047-01..03 (the corner from down Pacific, the long side)
+ * and mapillary-0/1/2 (the corner tower, the Fillmore wall with its escape, the garage).
+ *
+ * Orientation: manifest front 171 (Pacific, the long edge with the five bays) on local -z; Fillmore is the east edge, local +x,
+ * so the entrance corner is (+x, -z). Found from the ring's geometry in the fit frame, never from OSM's vertex order.
+ *
+ * Where the photographs overruled the numbers: OSM and LiDAR say ~27-30 m with a 26.6 m median; the cream wall stops at 24 m
+ * and the mansard (slate and gables, 5.6 m) carries it to 29.6 m, chimneys and gable peaks to 30.5. OSM draws Pacific's bays
+ * as rectangular jogs; the photographs show them canted, so the jogs are rebuilt as three-facet bays that start at the
+ * second-floor belt (the walls under them are flat). Fillmore is a flat edge in OSM but the photographs show canted bays on it
+ * too, so three are added. The last Pacific "bay" in OSM is the corner tower's front facet.
+ */
+function apartments_2400_Pacific(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  const YB = -6, Y_BAY = 6.2, Y_EAVE = 24.0
+  const D1 = 2.2, Y1 = Y_EAVE + 4.4, D2 = 6.0, Y2 = Y_EAVE + 5.6
+  const surf = (d: number): number => (d <= 0 ? Y_EAVE : d <= D1 ? Y_EAVE + (d * (Y1 - Y_EAVE)) / D1 : Y1 + ((Math.min(d, D2) - D1) * (Y2 - Y1)) / (D2 - D1))
+  const gnd = (x: number, z: number): number => (fit.groundAt ? Math.max(0, fit.groundAt(x, z)) : 0)
+  // window storeys: basement, second, then five above the belt
+  const FLOORS: [number, number][] = [[0.9, 2.5], [3.6, 5.7], [7.0, 9.2], [10.25, 12.45], [13.5, 15.7], [16.75, 18.95], [20.0, 22.2]]
+
+  type Fr = { a: P2; l: number; tx: number; tz: number; nx: number; nz: number }
+  const frame = (a: P2, b: P2): Fr => {
+    const l = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    const tx = (b.x - a.x) / l, tz = (b.z - a.z) / l
+    return { a, l, tx, tz, nx: tz, nz: -tx }
+  }
+  const pt = (f: Fr, u: number, y: number, pr = 0): V3 => [f.a.x + f.tx * u + f.nx * pr, y, f.a.z + f.tz * u + f.nz * pr]
+  const pt2 = (f: Fr, u: number, pr = 0): P2 => ({ x: f.a.x + f.tx * u + f.nx * pr, z: f.a.z + f.tz * u + f.nz * pr })
+  const panel = (f: Fr, u0: number, u1: number, y0: number, y1: number, pr: number, c: Rgb, tag: number): void => {
+    m.quad([pt(f, u0, y0, pr), pt(f, u1, y0, pr), pt(f, u1, y1, pr), pt(f, u0, y1, pr)], [f.nx, 0, f.nz], uv, c, tag)
+  }
+  const slab = (f: Fr, u0: number, u1: number, y0: number, y1: number, pr0: number, pr1: number, c: Rgb, tag = ST): void => {
+    boxAlong(m, f.a.x + f.tx * (u0 + u1) / 2 + f.nx * (pr0 + pr1) / 2, (y0 + y1) / 2, f.a.z + f.tz * (u0 + u1) / 2 + f.nz * (pr0 + pr1) / 2,
+      (u1 - u0) / 2, (y1 - y0) / 2, (pr1 - pr0) / 2, Math.atan2(f.nx, f.nz), c, tag)
+  }
+  const tri = (p0: V3, p1: V3, p2: V3, c: Rgb, tag: number, nrm: V3): void => { m.quad([p0, p1, p2, p2], nrm, uv, c, tag) }
+  const win = (f: Fr, u: number, y0: number, y1: number, hw: number, detail: boolean, pr = 0): void => {
+    if (detail) {
+      panel(f, u - hw - 0.1, u + hw + 0.1, y0 - 0.15, y1 + 0.12, pr + 0.03, AP_TRIM, ST)
+      panel(f, u - hw, u + hw, y0, y1, pr + 0.07, AP_GLASS, GL)
+      panel(f, u - 0.04, u + 0.04, y0, y1, pr + 0.09, AP_TRIM, ST)
+    } else panel(f, u - hw, u + hw, y0, y1, pr + 0.04, AP_GLASS, GL)
+  }
+
+  // ---- the plan: edges, front, Fillmore, the bays --------------------------------------------------------------------------
+  const info = ring.map((a, i) => ({ i, b: ring[(i + 1) % ring.length], ...frame(a, ring[(i + 1) % ring.length]) }))
+  const n = ring.length
+  const zMin = Math.min(...ring.map((p) => p.z))
+  const isFront = (e: typeof info[number]): boolean => e.nz < -0.6 && e.l > 0.5 && e.a.z < zMin + 7
+  const fronts = info.filter(isFront)
+  const lastFront = fronts.length ? fronts.reduce((p, e) => (e.b.x > p.b.x ? e : p)) : info[0]
+  const C = lastFront.b
+  const eastE = info.filter((e) => e.nx > 0.8 && e.l > 10).reduce<typeof info[number] | null>((p, e) => (!p || e.l > p.l ? e : p), null)
+  const nF = { x: lastFront.nx, z: lastFront.nz }
+  const nS = eastE ? { x: eastE.nx, z: eastE.nz } : { x: 1, z: 0 }
+
+  type Bay = { i: number; p: P2; q: P2; a: P2; b: P2; corner: boolean }
+  const bays: Bay[] = []
+  const skipV = new Set<number>()
+  for (const e of info) {
+    if (!isFront(e) || e.l < 2.0 || e.l > 3.6) continue
+    const p = info[(e.i + n - 1) % n], q = info[(e.i + 1) % n]
+    const o1 = (e.a.x - p.a.x) * e.nx + (e.a.z - p.a.z) * e.nz, o2 = (q.b.x - e.b.x) * e.nx + (q.b.z - e.b.z) * e.nz
+    if (p.l < 1 && q.l < 1 && o1 > 0.3 && o2 < -0.3) {
+      bays.push({ i: e.i, p: p.a, q: q.b, a: e.a, b: e.b, corner: Math.hypot((e.a.x + e.b.x) / 2 - C.x, (e.a.z + e.b.z) / 2 - C.z) < 4.5 })
+      skipV.add(e.i); skipV.add((e.i + 1) % n)
+    }
+  }
+  const wr = ring.filter((_, i) => !skipV.has(i))          // the plan with the bay jogs ironed out
+  const wn = wr.length
+
+  // ---- the roof's outline: the convex hull (the bay tips lie on it; the light well is roofed over) ----------------------
+  const hull = (() => {
+    const pts = ring.slice().sort((p, q) => p.x - q.x || p.z - q.z)
+    const cr = (o: P2, a: P2, b: P2): number => (a.x - o.x) * (b.z - o.z) - (a.z - o.z) * (b.x - o.x)
+    const lo: P2[] = [], up: P2[] = []
+    for (const p of pts) { while (lo.length >= 2 && cr(lo[lo.length - 2], lo[lo.length - 1], p) <= 0) lo.pop(); lo.push(p) }
+    for (const p of pts.slice().reverse()) { while (up.length >= 2 && cr(up[up.length - 2], up[up.length - 1], p) <= 0) up.pop(); up.push(p) }
+    let h = lo.slice(0, -1).concat(up.slice(0, -1))
+    for (let again = true; again && h.length > 3;) {
+      again = false
+      for (let i = 0; i < h.length; i++) {
+        const a = h[(i + h.length - 1) % h.length], b = h[i], c = h[(i + 1) % h.length]
+        const l1 = Math.hypot(b.x - a.x, b.z - a.z), l2 = Math.hypot(c.x - b.x, c.z - b.z)
+        if (Math.abs(cr(a, b, c)) / (l1 * l2) < 0.04 || l2 < 0.8) { h = h.filter((_, k) => k !== i); again = true; break }
+      }
+    }
+    return h
+  })()
+  const hn = hull.length
+  const hinfo = hull.map((a, i) => ({ i, b: hull[(i + 1) % hn], ...frame(a, hull[(i + 1) % hn]) }))
+  const inset = (d: number): P2[] => hinfo.map((e, i) => {
+    const p = hinfo[(i + hn - 1) % hn]
+    const k = 1 + (p.nx * e.nx + p.nz * e.nz)
+    return { x: e.a.x - ((p.nx + e.nx) / k) * d, z: e.a.z - ((p.nz + e.nz) / k) * d }
+  })
+  const r1 = inset(D1), r2 = inset(D2)
+  for (const e of hinfo) {
+    const A1 = r1[e.i], B1 = r1[(e.i + 1) % hn], A2 = r2[e.i], B2 = r2[(e.i + 1) % hn]
+    const sl = Math.hypot(D1, Y1 - Y_EAVE), s2 = Math.hypot(D2 - D1, Y2 - Y1)
+    m.quad([[e.a.x, Y_EAVE, e.a.z], [e.b.x, Y_EAVE, e.b.z], [B1.x, Y1, B1.z], [A1.x, Y1, A1.z]],
+      [e.nx * (Y1 - Y_EAVE) / sl, D1 / sl, e.nz * (Y1 - Y_EAVE) / sl], uv, AP_SLATE, TL)
+    m.quad([[A1.x, Y1, A1.z], [B1.x, Y1, B1.z], [B2.x, Y2, B2.z], [A2.x, Y2, A2.z]],
+      [e.nx * (Y2 - Y1) / s2, (D2 - D1) / s2, e.nz * (Y2 - Y1) / s2], uv, AP_SLATE, TL)
+    // the cornice: a deep cream course, wide enough to hide the recesses between the bays
+    slab(e, -0.1, e.l + 0.1, Y_EAVE - 0.75, Y_EAVE + 0.05, -1.0, 0.3, AP_TRIM)
+    slab(e, -0.1, e.l + 0.1, Y_EAVE - 1.2, Y_EAVE - 0.75, -0.9, 0.12, AP_TRIM)
+  }
+  capPolygonWithHoles(m, [r2], Y2, AP_SLATE, surfaceTag('concrete'))
+
+  // ---- gables, dormers (shared by every wall) ---------------------------------------------------------------------------
+  const gable = (f: Fr, u: number, w: number, pr0: number, hp: number): void => {
+    const yA = Y_EAVE + 3.7, dR = 3.4, bk = surf(dR), yE = bk + 0.45, pb = hp - dR
+    tri(pt(f, u - w, Y_EAVE, pr0), pt(f, u + w, Y_EAVE, pr0), pt(f, u, yA, pr0), AP_TRIM, ST, [f.nx, 0, f.nz])
+    tri(pt(f, u - w + 0.3, Y_EAVE + 0.1, pr0 + 0.03), pt(f, u + w - 0.3, Y_EAVE + 0.1, pr0 + 0.03), pt(f, u, yA - 0.62, pr0 + 0.03), AP_WALL, ST, [f.nx, 0, f.nz])
+    const nw = w > 1.5 ? 3 : 2
+    for (let k = 0; k < nw; k++) {
+      const du = nw === 3 ? (k - 1) * 0.95 : (k - 0.5) * 0.9, hh = nw === 3 && k === 1 ? 0.42 : 0.34
+      win(f, u + du, Y_EAVE + 0.6, Y_EAVE + (nw === 3 && k === 1 ? 2.35 : 1.95), hh, true, pr0 + 0.02)
+    }
+    for (const s of [-1, 1]) {
+      const sn: V3 = [s * f.tx * 0.85 + f.nx * 0.2, 0.7, s * f.tz * 0.85 + f.nz * 0.2]
+      m.quad([pt(f, u + s * w, Y_EAVE, pr0 - 0.04), pt(f, u, yA, pr0 - 0.04), pt(f, u, yE, pb), pt(f, u + s * w, bk, pb)], sn, uv, AP_SLATE, TL)
+      tri(pt(f, u + s * w, Y_EAVE, pr0 - 0.04), pt(f, u + s * w, Y_EAVE - 0.01, pr0 - 0.05), pt(f, u + s * w, bk, pb), AP_SLATE_DK, TL, [s * f.tx, 0, s * f.tz])
+      slab(f, u + s * w - 0.14, u + s * w + 0.14, Y_EAVE, Y_EAVE + 0.9, pr0 - 0.14, pr0 + 0.14, AP_TRIM)   // the scrolled shoulder's knob
+      tri(pt(f, u + s * (w - 0.1), Y_EAVE + 0.05, pr0 + 0.02), pt(f, u + s * (w + 0.55), Y_EAVE + 0.05, pr0 + 0.02), pt(f, u + s * (w - 0.1), Y_EAVE + 1.3, pr0 + 0.02), AP_TRIM, ST, [f.nx, 0, f.nz])   // the scroll's flare
+    }
+    slab(f, u - 0.09, u + 0.09, yA - 0.1, yA + 0.5, pr0 - 0.09, pr0 + 0.09, AP_TRIM)                         // the finial
+  }
+  const dormer = (f: Fr, u: number, off: number, tall = 0): void => {
+    const pr = off - 0.9, hw = 0.85, yb = Y_EAVE + 0.2, yh = Y_EAVE + 2.7 + tall, ya = yh + 0.8
+    panel(f, u - hw, u + hw, yb, yh, pr, AP_TRIM, ST)
+    panel(f, u - hw + 0.25, u - 0.05, yb + 0.25, yh - 0.25, pr + 0.04, AP_GLASS, GL)
+    panel(f, u + 0.05, u + hw - 0.25, yb + 0.25, yh - 0.25, pr + 0.04, AP_GLASS, GL)
+    tri(pt(f, u - hw - 0.08, yh, pr + 0.06), pt(f, u + hw + 0.08, yh, pr + 0.06), pt(f, u, ya + 0.1, pr + 0.06), AP_TRIM, ST, [f.nx, 0, f.nz])
+    const dB = surf(0.9), dR = Math.min(2.6 + tall * 0.6, D2 - 0.4)
+    for (const s of [-1, 1]) {
+      const sn: V3 = [s * f.tx * 0.8 + f.nx * 0.3, 0.6, s * f.tz * 0.8 + f.nz * 0.3]
+      m.quad([pt(f, u + s * hw, yh, pr), pt(f, u, ya, pr), pt(f, u, ya + 0.15, off - 0.9 - dR), pt(f, u + s * hw, Math.max(yh, surf(dR + 0.9)), off - 0.9 - dR)], sn, uv, AP_SLATE, TL)
+      tri(pt(f, u + s * hw, dB, pr), pt(f, u + s * hw, yh, pr), pt(f, u + s * hw, Math.max(yh, surf(dR + 0.9)), off - 0.9 - dR), AP_SLATE_DK, TL, [s * f.tx, 0, s * f.tz])
+    }
+  }
+
+  // a canted bay: three facets from the belt to the eave, a window to each facet on each upper floor, a gable above
+  const canted = (f: Fr, uc: number, pr0: number, hwC: number, hwO: number, hp: number): void => {
+    const Q = [pt2(f, uc - hwO, 0), pt2(f, uc - hwC, pr0), pt2(f, uc + hwC, pr0), pt2(f, uc + hwO, 0)]
+    const y0 = Y_BAY - 0.55
+    m.quad([[Q[0].x, y0, Q[0].z], [Q[1].x, y0, Q[1].z], [Q[2].x, y0, Q[2].z], [Q[3].x, y0, Q[3].z]], [0, -1, 0], uv, AP_TRIM, ST)
+    for (let k = 0; k < 3; k++) {
+      const g = frame(Q[k], Q[k + 1])
+      panel(g, 0, g.l, y0, Y_EAVE, 0, AP_WALL, ST)
+      panel(g, -0.04, g.l + 0.04, y0, y0 + 0.3, 0.04, AP_TRIM, ST)
+      panel(g, -0.04, g.l + 0.04, Y_EAVE - 0.45, Y_EAVE - 0.1, 0.04, AP_TRIM, ST)
+      for (let fl = 2; fl < 7; fl++) win(g, g.l / 2, FLOORS[fl][0], FLOORS[fl][1], Math.min(0.5, g.l * 0.33), true, 0.0)
+    }
+    gable(f, uc, hwC + 0.95 + pr0 * 0.4, pr0, hp)
+  }
+
+  // ---- the walls --------------------------------------------------------------------------------------------------------
+  for (let k = 0; k < wn; k++) {
+    const A = wr[k], B = wr[(k + 1) % wn]
+    const f = frame(A, B)
+    if (f.l < 0.15) continue
+    panel(f, 0, f.l, YB, Y_EAVE, 0, AP_WALL, ST)
+    const bayHere = bays.find((b) => b.p === A && b.q === B)
+    const isFrontW = f.nz < -0.6 && A.z < zMin + 7 && f.l > 0.5
+    const isEast = f.nx > 0.8 && f.l > 10
+    const street = isFrontW || isEast
+    if (street) {
+      slab(f, -0.05, f.l + 0.05, Y_BAY - 0.15, Y_BAY + 0.1, 0, 0.14, AP_TRIM)       // the belt over the second floor
+      slab(f, 0.0, 0.3, YB, Y_EAVE - 1.2, 0, 0.1, AP_TRIM)
+    }
+    // bays on this wall: [centre, projection, half-width centre facet, half-width at the wall]
+    const wb: [number, number, number, number][] = []
+    if (bayHere && !bayHere.corner) {
+      const uc = ((bayHere.a.x + bayHere.b.x) / 2 - A.x) * f.tx + ((bayHere.a.z + bayHere.b.z) / 2 - A.z) * f.tz
+      wb.push([uc, 0.6, 0.55, 1.3])
+    }
+    if (isEast) for (const u of [9.0, 18.0, 27.0]) if (u < f.l - 2.5) wb.push([u, 1.0, 0.9, 2.0])
+    for (const [uc, pr0, hwC, hwO] of wb) canted(f, uc, pr0, hwC, hwO, isEast ? 0 : 0.6)
+    // windows: the lower two storeys everywhere on a street front, the upper five between the bays
+    const nbW = Math.max(1, Math.round(f.l / 2.0)), pitch = f.l / nbW
+    if (bayHere?.corner) continue
+    const detail = street
+    for (let j = 0; j < nbW; j++) {
+      const u = pitch * (j + 0.5)
+      if (isEast && u < 4.6) continue
+      if (!street && Math.abs(f.nz) < 0.6 && Math.abs(f.nx) < 0.6) continue
+      const x = A.x + f.tx * u, z = A.z + f.tz * u
+      const nearBay = wb.some(([uc, , , hwO]) => Math.abs(u - uc) < hwO + 0.5)
+      const nearBayBack = !!bayHere
+      for (let fl = 0; fl < 7; fl++) {
+        if (!street && fl < 3) continue
+        if (fl >= 2 && (nearBay || nearBayBack)) continue
+        if (fl < 2 && gnd(x, z) > FLOORS[fl][0] - 0.3) continue
+        if (isEast && fl === 0 && Math.abs(u - 21.5) < 2.2) continue
+        win(f, u, FLOORS[fl][0], FLOORS[fl][1], Math.min(0.62, pitch * 0.3), detail)
+      }
+    }
+    // dormers over the flats of the street fronts
+    if (street && f.l > 3.4) {
+      const off = isFrontW ? 0.35 : 0
+      const nd = isEast ? [13.5, 22.5].filter((u) => u < f.l - 2) : [f.l / 2]
+      if (!bayHere) for (const u of nd) dormer(f, u, off)
+    }
+    // the fire escape and the garage on Fillmore
+    if (isEast) {
+      const u0 = 21.5
+      for (let fl = 1; fl < 7; fl++) {
+        const y = FLOORS[fl][0] - 0.55
+        m.quad([pt(f, u0 - 1.0, y, 0.02), pt(f, u0 + 1.0, y, 0.02), pt(f, u0 + 1.0, y, 1.0), pt(f, u0 - 1.0, y, 1.0)], [0, 1, 0], uv, AP_ESC, ST)
+        for (const [r0, r1] of [[0, 0.07], [0.45, 0.5], [0.88, 0.96]] as [number, number][]) {
+          panel(f, u0 - 1.0, u0 + 1.0, y + r0, y + r1, 1.0, AP_ESC, ST)
+          m.quad([pt(f, u0 + 1.0, y + r0, 1.0), pt(f, u0 - 1.0, y + r0, 1.0), pt(f, u0 - 1.0, y + r1, 1.0), pt(f, u0 + 1.0, y + r1, 1.0)], [-f.nx, 0, -f.nz], uv, AP_ESC, ST)
+        }
+        for (const s of [-1, 1]) for (const [r0, r1] of [[0, 0.07], [0.88, 0.96]] as [number, number][]) {
+          const q: V3[] = [pt(f, u0 + s * 1.0, y + r0, 0.02), pt(f, u0 + s * 1.0, y + r0, 1.0), pt(f, u0 + s * 1.0, y + r1, 1.0), pt(f, u0 + s * 1.0, y + r1, 0.02)]
+          m.quad(q, [s * f.tx, 0, s * f.tz], uv, AP_ESC, ST)
+          m.quad([q[1], q[0], q[3], q[2]], [-s * f.tx, 0, -s * f.tz], uv, AP_ESC, ST)
+        }
+        if (fl > 1) {
+          const dir = fl % 2 === 0 ? 1 : -1, uc = u0 + dir * 0.4, yb = FLOORS[fl - 1][0] - 0.55
+          const q: V3[] = [pt(f, uc - 0.3, yb, 1.02), pt(f, uc + 0.3, yb, 1.02), pt(f, uc + 0.3 - dir * 0.9, y, 1.02), pt(f, uc - 0.3 - dir * 0.9, y, 1.02)]
+          m.quad(q, [f.nx, 0, f.nz], uv, AP_ESC, ST)
+          m.quad([q[1], q[0], q[3], q[2]], [-f.nx, 0, -f.nz], uv, AP_ESC, ST)
+        }
+      }
+      const gx = A.x + f.tx * u0, gz = A.z + f.tz * u0, gg = gnd(gx, gz)
+      panel(f, u0 - 1.65, u0 + 1.65, gg, gg + 3.0, 0.05, AP_TRIM, ST)
+      panel(f, u0 - 1.45, u0 + 1.45, gg, gg + 2.85, 0.09, AP_DOOR, ST)
+    }
+  }
+
+  // ---- the corner tower: three canted facets, the arched entrance, the balcony, the gable and the hipped slate cap -----------
+  {
+    const R = 3.1, kx = C.x - nS.x * 1.9 - nF.x * 1.9, kz = C.z - nS.z * 1.9 - nF.z * 1.9
+    const TV: P2[] = [-22.5, 22.5, 67.5, 112.5].map((deg) => {
+      const al = (deg * Math.PI) / 180, c = Math.cos(al), s = Math.sin(al)
+      return { x: kx + R * (c * nF.x + s * nS.x) + 0, z: kz + R * (c * nF.z + s * nS.z) + 0 }
+    })
+    const fr = [0, 1, 2].map((k) => frame(TV[k], TV[k + 1]))
+    const PR = 0.28
+    const gC = gnd(C.x, C.z)
+    for (let k = 0; k < 3; k++) {
+      const g = fr[k]
+      panel(g, 0, g.l, YB, Y_EAVE, PR, AP_WALL, ST)
+      panel(g, -0.05, g.l + 0.05, Y_BAY - 0.3, Y_BAY + 0.1, PR + 0.06, AP_TRIM, ST)
+      panel(g, -0.05, g.l + 0.05, Y_EAVE - 0.55, Y_EAVE - 0.05, PR + 0.08, AP_TRIM, ST)
+      slab(g, -0.1, g.l + 0.1, Y_BAY - 0.6, Y_BAY - 0.1, -0.1, PR + 0.55, AP_TRIM)      // the balcony slab
+      slab(g, -0.1, g.l + 0.1, Y_BAY + 0.1, Y_BAY + 0.95, PR + 0.4, PR + 0.58, AP_TRIM)   // the balustrade
+      slab(g, -0.14, g.l + 0.14, Y_BAY + 0.95, Y_BAY + 1.1, PR + 0.36, PR + 0.62, AP_TRIM)
+      for (const u of [0, g.l]) slab(g, u - 0.17, u + 0.17, Y_BAY + 0.1, Y_BAY + 1.3, PR + 0.37, PR + 0.63, AP_TRIM)
+      for (let fl = 2; fl < 7; fl++) win(g, g.l / 2, FLOORS[fl][0], FLOORS[fl][1], 0.55, true, PR)
+      slab(g, g.l / 2 - 0.9, g.l / 2 + 0.9, FLOORS[3][0] - 0.3, FLOORS[3][0] - 0.12, PR, PR + 0.1, AP_TRIM)
+    }
+    // the end caps close the tower against the walls
+    for (const [P, d, back] of [[TV[0], -1, nF], [TV[3], 1, nS]] as [P2, number, P2][]) {
+      const g = fr[d < 0 ? 0 : 2], Q = { x: P.x - back.x * 1.4, z: P.z - back.z * 1.4 }
+      m.quad([[P.x, YB, P.z], [Q.x, YB, Q.z], [Q.x, Y_EAVE, Q.z], [P.x, Y_EAVE, P.z]], [d * g.tx, 0, d * g.tz], uv, AP_WALL, ST)
+    }
+    // the arch on the diagonal facet: a carved surround, a dark door, a medallion over it
+    {
+      const g = fr[1], u = g.l / 2, cx = g.a.x + g.tx * u + g.nx * PR, cz = g.a.z + g.tz * u + g.nz * PR
+      emOpening(m, cx, cz, g.tx, g.tz, g.nx, g.nz, gC, gC + 3.0, 1.15, 1.2, AP_TRIM, ST, 0.07, 8)
+      emOpening(m, cx, cz, g.tx, g.tz, g.nx, g.nz, gC, gC + 2.95, 0.88, 1.0, AP_DOOR, ST, 0.12, 8)
+      panel(g, u - 0.55, u + 0.55, Y_BAY - 1.5, Y_BAY - 0.85, PR + 0.08, AP_TRIM, ST)
+      for (const s of [-1, 1]) slab(g, u + s * 1.25 - 0.14, u + s * 1.25 + 0.14, gC, gC + 3.9, PR, PR + 0.2, AP_TRIM)
+      // the pointed cream gable over the corner and its finial
+      const w = 1.4, yA = Y_EAVE + 4.6, pr0 = PR + 0.05
+      tri(pt(g, u - w, Y_EAVE, pr0), pt(g, u + w, Y_EAVE, pr0), pt(g, u, yA, pr0), AP_TRIM, ST, [g.nx, 0, g.nz])
+      tri(pt(g, u - w + 0.28, Y_EAVE + 0.1, pr0 + 0.03), pt(g, u + w - 0.28, Y_EAVE + 0.1, pr0 + 0.03), pt(g, u, yA - 0.6, pr0 + 0.03), AP_WALL, ST, [g.nx, 0, g.nz])
+      for (const du of [-0.55, 0.55]) win(g, u + du, Y_EAVE + 0.6, Y_EAVE + 2.2, 0.3, true, pr0 + 0.02)
+      slab(g, u - 0.09, u + 0.09, yA - 0.1, yA + 0.7, pr0 - 0.09, pr0 + 0.09, AP_TRIM)
+    }
+    // the cap: a four-sided hip rising to a point over the middle of the tower
+    const apex: V3 = [kx + (nF.x + nS.x) * 0.45, Y_EAVE + 5.4, kz + (nF.z + nS.z) * 0.45]
+    for (let k = 0; k < 3; k++) {
+      const g = fr[k], p0 = pt(g, 0, Y_EAVE, PR), p1 = pt(g, g.l, Y_EAVE, PR)
+      tri(p0, p1, apex, AP_SLATE, TL, [g.nx * 0.6, 0.8, g.nz * 0.6])
+    }
+    tri(pt(fr[2], fr[2].l, Y_EAVE, PR), pt(fr[0], 0, Y_EAVE, PR), apex, AP_SLATE_DK, TL, [-nF.x - nS.x, 0.2, -nF.z - nS.z])
+    boxAlong(m, apex[0], apex[1] + 0.35, apex[2], 0.07, 0.5, 0.07, 0, AP_TRIM, ST)
+  }
+
+  // ---- chimneys: cream stacks up the mansard's flat ---------------------------------------------------------------------
+  const chim = (e: typeof hinfo[number], fr_: number, d: number, big = false): void => {
+    const cx = e.a.x + e.tx * e.l * fr_ - e.nx * d, cz = e.a.z + e.tz * e.l * fr_ - e.nz * d
+    const h = Math.atan2(e.nx, e.nz), y0 = surf(d) - 0.3, top = 30.1
+    boxAlong(m, cx, (y0 + top) / 2, cz, big ? 0.8 : 0.5, (top - y0) / 2, big ? 0.6 : 0.42, h, AP_CHIM, ST)
+    boxAlong(m, cx, top + 0.1, cz, big ? 0.95 : 0.65, 0.12, big ? 0.75 : 0.55, h, AP_TRIM, ST)
+  }
+  const hFront = hinfo.reduce((p, e) => (e.nz < p.nz ? e : p), hinfo[0])
+  const hEast = hinfo.reduce((p, e) => (e.nx > p.nx ? e : p), hinfo[0])
+  const hBack = hinfo.reduce((p, e) => (e.nz > p.nz ? e : p), hinfo[0])
+  chim(hFront, 0.22, 4.8); chim(hFront, 0.52, 5.3, true); chim(hFront, 0.8, 4.6)
+  chim(hEast, 0.4, 4.9); chim(hEast, 0.75, 5.0)
+  chim(hBack, 0.4, 4.8)
+
+  for (let i = 0; i < m.positions.length; i++) out.positions.push(m.positions[i])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -6894,4 +7225,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   planningBuilding_1650_Mission,
   hotelMetropolis_2_Turk,
   theChateau_2701_VanNess,
+  apartments_2400_Pacific,
 }

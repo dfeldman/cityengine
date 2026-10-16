@@ -65,3 +65,14 @@ bearing on −z — so the auto "front" shot shows the BACK. Every pack must say
 check it with an explicit `--view=<name>:-1.5708,1.5,40,0,8,0`. (Swedish American Hall was first built facing +z.)
 Lesson 3: brick renders much brighter/oranger in the city than in the shots — specify brick ≈ 30 % darker than the photo.
 Lesson 4: when an entry claims building:parts, give the agent each part's POLYGON (evidence.py lists only centres/areas) — The Pacific's parts had to be approximated.
+
+Also done 2026-10-15 (evening): Rialto Building · Internet Archive (Fourth Church) · Paige Motor Car Co. · Olympic
+Club (redo) · Victoria Theatre (redo) · Swedish American Hall (redo) · 650 Townsend (Zynga) · The Pacific ·
+arched-crown office on King (way/149167950) · 510 Townsend (Stripe) · China Basin Landing (2) · 8th & Brannan zinc
+apartments · 200 Brannan · 235 Second · 1650 Mission · Hotel Metropolis · The Chateau · 2400 Pacific.
+
+Next in line (photo-pass model-worthy, by prominence): way/1047709622 and the Mission Bay glass offices
+(84821722, 84812340, 84821715 — judgement calls, maybe restyles), 93817363, 288719494, 681442041, 113347425,
+25759093, 1185421909, 71504453 (Beaux-Arts hotel cornice), 256479475; theatres Northpoint/Red Vic/Grandview/Surf;
+Ocean Climate Center (b11) and the Alcatraz/Treasure Island Haiku models. Open: Hotel VIA height (22 m model vs
+~38 m), The Oak (5 vs 12 storeys), St. Joseph's pavilion end.
