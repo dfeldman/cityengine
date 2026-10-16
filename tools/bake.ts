@@ -164,6 +164,9 @@ function widthOf(tags: Record<string, string>): number {
   // a flight of steps IN a sidewalk (OSM steps=sidewalk: Lombard's crooked block, Kearny, Filbert) is a sidewalk's width,
   // not the 3 m of a free-standing stairway (owner, 2026-10-16: Lombard's stairs "much narrower than in our model")
   if (tags.highway === 'steps' && tags.steps === 'sidewalk') return 1.5
+  // an ALLEY is one lane between walls, whatever class OSM gives it (Montclair Terrace, above Lombard's crooked block: a
+  // residential street's 9 m and pavements made an 8 m corridor that levelled the Lombard beds and stairs 4 m up, 2026-10-16)
+  if (tags.service === 'alley') return 4
   const lanes = parseInt(tags.lanes ?? '', 10)
   if (Number.isFinite(lanes) && lanes > 0) return Math.min(24, lanes * 3.2)
   switch (tags.highway) {
@@ -226,6 +229,9 @@ function widthOfNA(tags: Record<string, string>): number {
   if (Number.isFinite(w) && w > 0.5 && w < 40) return w
   // steps in a sidewalk are a sidewalk's width (see widthOf)
   if (tags.highway === 'steps' && tags.steps === 'sidewalk') return 1.5
+  // an ALLEY is one lane between walls, whatever class OSM gives it (Montclair Terrace, above Lombard's crooked block: a
+  // residential street's 9 m and pavements made an 8 m corridor that levelled the Lombard beds and stairs 4 m up, 2026-10-16)
+  if (tags.service === 'alley') return 4
   const lanes = parseInt(tags.lanes ?? '', 10)
   if (Number.isFinite(lanes) && lanes > 0) return Math.min(24, lanes * 3.4 + 2.4)   // lanes plus parking
   switch (tags.highway) {

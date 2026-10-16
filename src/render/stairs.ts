@@ -241,23 +241,36 @@ function toLine(x: number, z: number, pts: { x: number; z: number }[]): number {
  * point, walking in from that end, more than the street's half-width (plus a kerb's 0.3 m) from its centre line.
  * Null when nothing is left (a "flight" wholly on a street).
  */
-/** Push each point of a flight out of every carriageway's corridor, to its kerb plus the flight's own half-width. */
+/**
+ * Push each point of a flight out of every carriageway's corridor, to its kerb plus the flight's own half-width — on the
+ * side of the road the flight as a whole runs along. Pushed straight away from the nearest point of the road, a point at
+ * a hairpin went the wrong way, across the bend and into the bed inside it (Lombard, 2026-10-16).
+ */
 export function keepOffRoads(pts: { x: number; z: number }[], roads: { half: number; pts: { x: number; z: number }[] }[], half: number): void {
-  for (const p of pts) {
-    for (const r of roads) {
-      const need = r.half + half + 0.15
-      let best = Infinity, qx = 0, qz = 0
+  for (const r of roads) {
+    const need = r.half + half + 0.15
+    // each point's nearest place on the road, its distance and which side it is on
+    const near = pts.map((p) => {
+      let best = Infinity, qx = 0, qz = 0, nx = 0, nz = 0, side = 0
       for (let i = 1; i < r.pts.length; i++) {
-        const a = r.pts[i - 1], b = r.pts[i], dx = b.x - a.x, dz = b.z - a.z
-        const t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.z - a.z) * dz) / (dx * dx + dz * dz || 1)))
+        const a = r.pts[i - 1], b = r.pts[i], dx = b.x - a.x, dz = b.z - a.z, L = Math.hypot(dx, dz) || 1
+        const t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.z - a.z) * dz) / (L * L)))
         const d = Math.hypot(a.x + dx * t - p.x, a.z + dz * t - p.z)
-        if (d < best) { best = d; qx = a.x + dx * t; qz = a.z + dz * t }
+        if (d < best) { best = d; qx = a.x + dx * t; qz = a.z + dz * t; nx = -dz / L; nz = dx / L; side = Math.sign((p.x - qx) * nx + (p.z - qz) * nz) }
       }
-      if (best < need && best > 0.05) {
-        p.x = qx + ((p.x - qx) / best) * need
-        p.z = qz + ((p.z - qz) / best) * need
-      }
-    }
+      return { best, qx, qz, nx, nz, side }
+    })
+    if (!near.some((q) => q.best < need)) continue
+    // the flight's side: where its points that are clear of the road lie (all of them, weighted by how clear, if none is)
+    let vote = 0
+    for (const q of near) vote += q.side * Math.max(0.05, q.best - r.half)
+    const side = vote >= 0 ? 1 : -1
+    pts.forEach((p, k) => {
+      const q = near[k]
+      if (q.best >= need && q.side === side) return
+      p.x = q.qx + q.nx * side * need
+      p.z = q.qz + q.nz * side * need
+    })
   }
 }
 
