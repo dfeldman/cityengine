@@ -1947,6 +1947,67 @@ async function bake(spec: CitySpec): Promise<void> {
     })())
   if (bores.size > 0) console.log(`  ${bores.size} street-tunnel ways made rideable bores (their pavements included)`)
   /*
+   * A SHORT UNDERPASS is a street, not a tunnel (owner, 2026-10-16, Geary under the Fillmore overpass: "hard to go
+   * straight under, most paths go in the air to the overpass above"). OSM maps the 26 m of Geary's main lanes beneath
+   * the Fillmore deck as tunnel=yes; no bore takes it (no hill), so it was neither drawn nor ridden, and the main
+   * lanes dead-ended at both mouths. A road tunnel under 60 m that no bore took is ridden in the open at its cut's
+   * level, its heights run straight between the streets that meet its two ends.
+   */
+  {
+    const endsAt = new Map<number, number[]>()
+    for (const e of kept) {
+      if (e.tunnel || !e.heights?.length) continue
+      ;(endsAt.get(e.a) ?? endsAt.set(e.a, []).get(e.a)!).push(e.heights[0])
+      ;(endsAt.get(e.b) ?? endsAt.set(e.b, []).get(e.b)!).push(e.heights[e.heights.length - 1])
+    }
+    let n = 0
+    for (const e of kept) {
+      if (!e.tunnel || e.bore || e.foot || /^(footway|path|cycleway|pedestrian|steps|service)$/.test(e.kind ?? '')) continue
+      const pts = unpackPoints(e.points)
+      let L = 0
+      for (let i = 1; i < pts.length; i++) L += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z)
+      const ha = endsAt.get(e.a), hb = endsAt.get(e.b)
+      if (L >= 60 || !ha?.length || !hb?.length) continue
+      const y0 = Math.min(...ha), y1 = Math.min(...hb)
+      let c = 0
+      e.heights = pts.map((p, i) => { if (i) c += Math.hypot(p.x - pts[i - 1].x, p.z - pts[i - 1].z); return Math.round((y0 + (y1 - y0) * (L ? c / L : 0)) * 100) / 100 })
+      delete e.tunnel
+      if ((e.layer ?? 0) < 0) delete e.layer
+      n++
+    }
+    if (n) console.log(`  short road underpasses ridden in the open: ${n}`)
+  }
+  /*
+   * …and a ROAD that ends at a node only footways use, metres above or below it, is a false link between levels:
+   * Geary's main lanes, in their cut, each ran a few metres on to a node of the Fillmore overpass's sidewalks
+   * overhead, and the ride graph sent the rider up them into the air (owner, 2026-10-16). Dropped.
+   */
+  {
+    const footY = new Map<number, number[]>(), roadAt = new Map<number, number>()
+    const isFootKind = (e: PackedEdge): boolean => !!e.foot || /^(footway|path|cycleway|pedestrian|steps)$/.test(e.kind ?? '')
+    for (const e of kept) {
+      if (!e.heights?.length) continue
+      for (const [nd, y] of [[e.a, e.heights[0]], [e.b, e.heights[e.heights.length - 1]]] as const) {
+        // (the footway on a BRIDGE at that node: the crossings down to it from the street take the stub's own level)
+        if (isFootKind(e) && e.bridge) (footY.get(nd) ?? footY.set(nd, []).get(nd)!).push(y)
+        else if (isFootKind(e)) continue
+        else roadAt.set(nd, (roadAt.get(nd) ?? 0) + 1)
+      }
+    }
+    const drop = new Set<number>()
+    for (const e of kept) {
+      if (isFootKind(e) || !e.heights?.length) continue
+      for (const [nd, y] of [[e.a, e.heights[0]], [e.b, e.heights[e.heights.length - 1]]] as const) {
+        const f = footY.get(nd)
+        if (f?.length && (roadAt.get(nd) ?? 0) === 1 && Math.min(...f.map((fy) => Math.abs(fy - y))) > 2) drop.add(e.id)
+      }
+    }
+    if (drop.size) {
+      for (let i = kept.length - 1; i >= 0; i--) if (drop.has(kept[i].id)) kept.splice(i, 1)
+      console.log(`  roads ending on a footway at another level, dropped: ${drop.size}`)
+    }
+  }
+  /*
    * The ways over a MODELLED bridge take the model's deck heights, and the chain off each end of it is regraded to
    * meet them (src/city/bridge-decks.ts, tools/deck-conform.ts): the Golden Gate's roadway and sidewalks, both
    * decks of the Bay Bridge and the ramps on Rincon Hill. Before the cuts are carved: a deck that comes out of a
