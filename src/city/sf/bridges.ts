@@ -453,7 +453,22 @@ const FERRY_GATE_DECKS: DeckDecl[] = FERRY_GANGWAYS.map((g) => {
   return { from: 0, to: L + 2 * X, half: 2.2, path, y: (s: number) => gangwayY((s - X) / L), kinds: ['footway'] }
 })
 
+/** OSM relation/7814688, the plaza deck over the garage (pedestrian area, layer 2), in this model's frame (x east, z north). */
+export const CATHEDRAL_PLAZA_RING: { x: number; z: number }[] = ([[-55.6, -64.2], [-54.2, -72.8], [-52.8, -81.4], [-30.3, -77.7], [-25.5, -107.7], [-8.7, -105], [-2.8, -104],
+  [27.3, -99], [33, -98.1], [50.1, -95.2], [45.4, -65.4], [66, -62.2], [64.6, -53.6], [63.2, -44.8], [42.6, -47.8], [38, -19], [19.6, -22],
+  [15.6, 4.3], [11, 35.3], [-9.1, 31.9], [-28.5, 28.7], [-24, -1.7], [-19.9, -28.3], [-37.7, -31.1], [-33.1, -60.2]] as [number, number][]).map(([x, z]) => ({ x, z }))
+export const CATHEDRAL_HOLE: { x: number; z: number }[] = ([[-34.5, -33.3], [35.2, -22.3], [46.6, -92.4], [-22.8, -103.5]] as [number, number][]).map(([x, z]) => ({ x, z }))
+/** the deck's walking surface, absolute: Geary's sidewalk at the plaza's north edge (the ride graph's -20.6) */
+export const CATHEDRAL_PLAZA_Y = -20.45
+
+/** St. Mary's Cathedral plaza (BUGS.md #267): its walks on the deck, the stairs and paths up to it graded from the street */
+const CATHEDRAL_PLAZA_DECKS: DeckDecl[] = [
+  // (y in the MODEL's frame, whose 0 the entry's baseY, CATHEDRAL_PLAZA_Y, puts at the deck)
+  { from: 0, to: 0, half: 0, y: () => 0, ring: CATHEDRAL_PLAZA_RING, kinds: ['footway', 'path', 'pedestrian'], vertical: true, joins: true },
+]
+
 export const SF_BRIDGE_DECKS: Record<string, DeckDecl[]> = {
+  cathedralPlaza_Geary: CATHEDRAL_PLAZA_DECKS,
   pier7Promenade: PIER7_DECKS,
   ferryGatesEFG: FERRY_GATE_DECKS,
   embarcaderoPodium: EMBARCADERO_PODIUM_DECKS,

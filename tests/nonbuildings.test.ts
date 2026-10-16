@@ -156,6 +156,15 @@ const KNOWN: Record<string, string[]> = {
      * corner's buildings as the real one does.
      */
     'height | Language of the Birds',
+    /*
+     * St. Mary's Cathedral plaza (BUGS.md #267): a deck on the garage roof, so it is placed by `baseY` at the deck and
+     * its walls run 2.6 m down to the courts (`height` both ways); its terracotta field and star lattice are layered
+     * centimetres apart by design (`coplanar`); it covers the garage and the courts (`intersects`).
+     */
+    "coplanar | St. Mary's Cathedral plaza",
+    "height | St. Mary's Cathedral plaza",
+    "height | St. Mary's Cathedral plaza",
+    "intersects | St. Mary's Cathedral plaza",
     'intersects | Language of the Birds',
     /*
      * `coplanar` is a HEURISTIC (tools/nonbuildings.ts §coplanarSlabs) and this is a candidate, not a

@@ -11,6 +11,7 @@ import { boxAlong, marquee, bladeSign, signText } from '../../parts.ts'
 import { classicalColumn } from '../../column.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
 import { ivyWall } from '../../ivy.ts'
+import { CATHEDRAL_PLAZA_RING, CATHEDRAL_HOLE } from '../../../../city/sf/bridges.ts'
 import { inset as ecInset, walls as ecWalls, soffit as ecSoffit, piers as ecPiers, onEdge as ecOnEdge } from '../ec4-podium.ts'
 
 type P2 = { x: number; z: number }
@@ -8166,6 +8167,66 @@ function sixCompanies_843_Stockton(out: MeshBuilder, fit: Fit): void {
   for (const sx of [-1, 1]) { box(out, sx * 2.6, 4.0, fz - 1.5, 0.15, 0.3, 0.15, TILE, TL); box(out, sx * 1.9, 1.8, fz - 1.3, 0.14, 1.8, 0.14, RED, 0) }
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// St. Mary's Cathedral plaza, Geary at Gough (BUGS.md #267)
+// ---------------------------------------------------------------------------------------------------------------
+
+/**
+ * The cathedral's forecourt (owner's satellite, docs/shots/refs/bugs/267-cathedral-plaza.webp): a raised plaza on the
+ * garage roof running from Geary to the cathedral doors, a concrete-bordered field of terracotta tiles laid in a white
+ * star pattern; either side, a step down, a terracotta-paved parking court with a planted island; white stairs down
+ * from the deck's flanks. y = 0 is the deck (the entry's baseY); the courts are 1.5 m down, at the ground there.
+ */
+function cathedralPlaza_Geary(out: MeshBuilder, _fit: Fit): void {
+  const CON: Rgb = [0.72, 0.7, 0.66], TERRA: Rgb = [0.66, 0.36, 0.27], CREAM: Rgb = [0.9, 0.86, 0.78], GREEN: Rgb = [0.24, 0.36, 0.18], LINE: Rgb = [0.92, 0.9, 0.84]
+  const CN = surfaceTag('concrete'), TL = surfaceTag('tile')
+  const th = (8.6 * Math.PI) / 180, cu = Math.cos(th), su = Math.sin(th)
+  const O = { x: -4.8, z: 3 }
+  const G = (u: number, v: number): P2 => ({ x: O.x + u * cu - v * su, z: O.z + u * su + v * cu })
+  const head = Math.atan2(-su, cu)          // boxAlong heading that runs a box's x along grid-east
+  const gbox = (u: number, v: number, y: number, hu: number, hy: number, hv: number, c: Rgb, tag: number): void => {
+    const p = G(u, v); boxAlong(out, p.x, y, p.z, hu, hy, hv, head, c, tag)
+  }
+  // the deck: its slab and the walls down to the courts
+  capPolygonWithHoles(out, [CATHEDRAL_PLAZA_RING, CATHEDRAL_HOLE], 0, CON, CN)
+  for (let i = 0; i < CATHEDRAL_PLAZA_RING.length; i++) {
+    const a = CATHEDRAL_PLAZA_RING[i], b = CATHEDRAL_PLAZA_RING[(i + 1) % CATHEDRAL_PLAZA_RING.length], L = Math.hypot(b.x - a.x, b.z - a.z)
+    const nx = (b.z - a.z) / L, nz = -(b.x - a.x) / L
+    out.quad([[a.x, -2.6, a.z], [b.x, -2.6, b.z], [b.x, 0, b.z], [a.x, 0, a.z]], [nx, 0, nz], [[0, 0], [1, 0], [1, 1], [0, 1]], CON, CN)
+    // the parapet, except along Geary (the north edge, where the plaza opens onto the sidewalk)
+    if (!(a.z > 25 && b.z > 25)) boxAlong(out, (a.x + b.x) / 2 - nx * 0.15, 0.45, (a.z + b.z) / 2 - nz * 0.15, L / 2, 0.45, 0.15, Math.atan2(nx, nz), CON, CN)
+  }
+  // the terracotta field down the middle, white star lattice over it
+  gbox(0, 2, 0.02, 15, 0.02, 26, TERRA, TL)
+  for (let u = -13.5; u <= 13.6; u += 4.5) for (let v = -22; v <= 26; v += 4.5) {
+    const c = G(u, v), r = 1.25
+    for (const [dx, dz] of [[1, 1], [1, -1], [-1, 1], [-1, -1]]) {
+      const ex = c.x + (dx * cu - dz * su) * r * 0.5, ez = c.z + (dx * su + dz * cu) * r * 0.5
+      boxAlong(out, ex, 0.05, ez, r * 0.72, 0.012, 0.09, head + (dx * dz > 0 ? Math.PI / 4 : -Math.PI / 4), CREAM, TL)
+    }
+    // …and the square over it: together an eight-pointed star, as laid
+    for (const [du, dv] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const q = G(u + du * r * 0.62, v + dv * r * 0.62)
+      boxAlong(out, q.x, 0.055, q.z, du ? 0.09 : r * 0.62, 0.012, du ? r * 0.62 : 0.09, head, CREAM, TL)
+    }
+  }
+  // the two parking courts, a step down, and the stairs to them
+  for (const [u0, u1, v0, v1] of [[-58, -22, -26, 11], [21, 59, -11, 29]] as [number, number, number, number][]) {
+    const uc = (u0 + u1) / 2, vc = (v0 + v1) / 2, hu = (u1 - u0) / 2, hv = (v1 - v0) / 2
+    gbox(uc, vc, -1.47, hu, 0.03, hv, TERRA, TL)
+    // a border band and the stall lines along its two long sides
+    for (const s of [-1, 1]) {
+      gbox(uc, vc + s * (hv - 0.6), -1.43, hu, 0.012, 0.6, [0.6, 0.33, 0.25], TL)
+      for (let u = u0 + 2.5; u < u1 - 2; u += 2.7) gbox(u, vc + s * (hv - 3.2), -1.43, 0.06, 0.012, 2.6, LINE, 0)
+    }
+    gbox(uc, vc, -1.0, 3.2, 0.5, 3.2, CON, CN)                                                    // the planter island
+    gbox(uc, vc, -0.4, 2.9, 0.15, 2.9, GREEN, surfaceTag('foliage'))
+    // the white stair from the deck's flank down into it
+    const us = u0 < 0 ? -21 : 21.5, dir = u0 < 0 ? -1 : 1
+    for (let k = 0; k < 6; k++) gbox(us + dir * (0.5 + k * 0.35), (u0 < 0 ? -2 : 8), -0.13 - k * 0.25, 0.18, 0.13, 2.2, [0.93, 0.92, 0.9], CN)
+  }
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -8207,5 +8268,6 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   singFat_Grant_California,
   telephoneExchange_743_Washington,
   sixCompanies_843_Stockton,
+  cathedralPlaza_Geary,
   gapHQ_2_Folsom,
 }
