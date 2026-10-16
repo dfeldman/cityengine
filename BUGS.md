@@ -10668,3 +10668,13 @@ Building (scratchpad tools: look.ts / lookfov.ts).
 2. Silhouette order is right at the gist level (Salesforce Tower left of the Ferry Building tower, Embarcadero Center
    to the right, Transamerica beyond); not yet compared building-by-building — needs a camera matched to the
    photo's position and lens (the FOV override in lookfov.ts does not stick; the orbit camera resets it).
+
+### #279 Building parts in the air with nothing under them — a scan (2026-10-16, from #269) — OPEN, to triage
+
+84 parts start ≥ 3 m up over ≥ 60 m² with no building under their centre reaching their base. Most are by design
+(gas-station canopies 4.5–5 m, modelled landmarks' crowns, skybridges, Golden Gate towers). Worth a look, largest
+first: way/1343562514 (parking deck 4–6.5 m, 37.78159 −122.44718), way/1018179001 (apartments
+building:min_level=1, 37.76568 −122.41612), way/1540093676 + 1540144962 (3.3–16 m, 37.782 −122.505),
+way/773887797 (4–12 m, 37.79021 −122.39551), way/773887802/803 (8–12 m by Transbay). Fixed so far: #269's atrium,
+Sutro Tower's transmitter part (patch b1346721787 minH 0). The scan is in this session's notes; re-run it with
+the package (minHeight ≥ 3, area ≥ 60, no supporting ring under the centroid).
