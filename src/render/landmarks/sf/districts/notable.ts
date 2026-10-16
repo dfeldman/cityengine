@@ -3371,7 +3371,9 @@ function fourthChurchScientist_300_Funston(out: MeshBuilder, fit: Fit): void {
   fF(xa + 2.5, xb - 2.5, -0.17, COL1 + 1.4, COL1 + 1.9, FC_SH)
   bx(xa - 0.4, xb + 0.4, -0.9, DEP, COL1 + 2.2, COL1 + 3.0, FC_IV)
   bx(xa + 0.2, xb - 0.2, -0.1, 3.4, COL1 + 3.0, TOP + 0.3, FC_IV)
-  fF(xa + 3.5, xb - 3.5, -0.12, TOP - 1.4, TOP - 0.7, FC_SH)         // the cut lettering, FOURTH CHURCH OF CHRIST, SCIENTIST
+  // the cut lettering on the attic, engraved capitals a shade darker than the stone
+  sign(out, { type: 'flat', text: 'FOURTH CHURCH OF CHRIST SCIENTIST', h: 0.42, face: 'roman', colour: [0.55, 0.53, 0.5], tracking: 0.18, lit: 'none', w: Math.min(xb - xa - 7, 19) },
+    { x: c0, y: TOP - 1.05, z: zf - 0.12, heading: Math.PI })
   bx(xa + 0.2, xb - 0.2, -0.3, 3.4, TOP + 0.3, TOP + 0.55, FC_LINE)
   for (const [x, d] of [[xa + 0.9, -0.1], [xb - 0.9, -0.1], [xa + 0.9, 2.6], [xb - 0.9, 2.6], [c0 - 5, -0.1], [c0 + 5, -0.1]] as [number, number][]) {
     const y = TOP + 0.55

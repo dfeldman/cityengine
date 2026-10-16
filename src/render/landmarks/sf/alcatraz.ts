@@ -54,7 +54,7 @@ export function alcatrazLighthouse(out: MeshBuilder, _fit: Fit): void {
  * THE WATER TOWER (1940; way/660870452), on the island's north end: a riveted steel tank on eight tall braced legs,
  * the tallest thing on Alcatraz after the lighthouse, and from the ferries its most legible mark — the 1969–71
  * occupation's lettering in red down the tank ("Peace and Freedom. Welcome. Home of the Free Indian Land"),
- * restored in 2012. Drawn as the tank, its conical roof, the legs and their bracing, and the red lettering as bands.
+ * restored in 2012. Drawn as the tank, its conical roof, the legs and their bracing, and the red words as signs.
  */
 export function alcatrazWaterTower(out: MeshBuilder, _fit: Fit): void {
   const metal = surfaceTag('metal')
