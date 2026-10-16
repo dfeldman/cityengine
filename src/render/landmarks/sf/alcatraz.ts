@@ -9,6 +9,7 @@
  * (Building 64, the New Industries building, the dining hall, the quartermaster's) is restyled pale in
  * public/landmarks/san-francisco/alcatraz.json.
  */
+import { sign } from '../signage.ts'
 import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
 import type { Rgb } from '../../models.ts'
@@ -72,15 +73,22 @@ export function alcatrazWaterTower(out: MeshBuilder, _fit: Fit): void {
   prism(out, 0, 0, LEG - 0.3, LEG, R + 0.6, 16, BLACK, metal)
   prism(out, 0, 0, LEG, LEG + 8, R, 20, RUSTY, metal)
   prism(out, 0, 0, LEG + 8, LEG + 10.2, R + 0.15, 20, RUSTY, metal, 0.3)
-  // the red lettering, read as lines of type across the side that faces the city (−z)
-  for (let line = 0; line < 4; line++) {
-    const y = LEG + 6.6 - line * 1.6
-    const w = [3.0, 3.6, 3.2, 3.8][line]
-    for (let j = 0; j < 7; j++) {
-      const u = -w + (j + 0.5) * (2 * w / 7)
-      if ((line * 7 + j) % 5 === 3) continue        // the gaps between the words
-      const a = Math.asin(Math.max(-0.95, Math.min(0.95, u / R)))
-      box(out, Math.sin(a) * (R + 0.04), y, -Math.cos(a) * (R + 0.04), 0.32, 0.5, 0.04, RED, 0)
-    }
-  }
+  // the red lettering of the 1969 occupation, restored 2012, across the side that faces the city (−z): each word its
+  // own flat sign laid tangent to the tank at its angle, so the words follow the curve
+  const lines: [string, number][] = [['PEACE AND FREEDOM', 0.48], ['WELCOME', 0.85], ['HOME OF THE FREE', 0.5], ['INDIAN LAND', 0.66]]
+  lines.forEach(([text, h], k) => {
+    const y = LEG + 6.7 - k * 1.55
+    const words = text.split(' ')
+    const ww = words.map((wd) => wd.length * h * 0.85)
+    const gap = h * 0.5
+    const total = ww.reduce((p, q) => p + q, 0) + gap * (words.length - 1)
+    let arc = -total / 2
+    words.forEach((wd, j) => {
+      const a = (arc + ww[j] / 2) / R
+      arc += ww[j] + gap
+      const r = R + 0.06
+      sign(out, { type: 'flat', text: wd, h, face: 'grotesque', weight: 'bold', colour: RED, lit: 'none', w: ww[j] },
+        { x: Math.sin(a) * r, y, z: -Math.cos(a) * r, heading: Math.atan2(Math.sin(a), -Math.cos(a)) })
+    })
+  })
 }
