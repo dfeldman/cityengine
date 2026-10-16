@@ -181,6 +181,11 @@ export interface LandmarkEntry {
   deckAbove?: number
   /** every vertex lifted onto the ground under it (a model that follows a slope: Lombard Street's hedges) */
   drape?: boolean
+  /**
+   * draped on the RAW hillside, not the ground the streets are graded into: Lombard's beds lie between two loops of the
+   * lane, and the graded ground there steps 3-5 m where the loops' corridors meet — draped on it, the beds tore open
+   */
+  drapeRaw?: boolean
   /** only what stands over the water is drawn (a marina's boats, not on its breakwater) */
   waterOnly?: boolean
   /**
@@ -740,7 +745,7 @@ export class Landmarks {
    */
   readonly decks: { ring: { x: number; z: number }[]; y: number; keepOff?: number; trees?: boolean; shrubs?: boolean; spacing?: number }[] = []
   /** the single plants procedural landmarks place (MeshBuilder.plants), in world metres */
-  readonly plants: { x: number; z: number; species: string; h: number; spin: number; dy?: number }[] = []
+  readonly plants: { x: number; z: number; species: string; h: number; spin: number; dy?: number; raw?: boolean }[] = []
 
   /**
    * Every footprint a landmark declared it draws its own raised structure over (`coversRaised`), in world
@@ -1228,7 +1233,7 @@ export class Landmarks {
           const px = mb.positions[i], pz = mb.positions[i + 2]
           const wx = cx + ox + (px * cr + pz * sr) * sc
           const wz = cz + oz + (-px * sr + pz * cr) * sc
-          mb.positions[i + 1] += (this.terrain.heightAt(wx, wz) - y) / sc
+          mb.positions[i + 1] += ((e.drapeRaw ? this.terrain.rawHeightAt(wx, wz) : this.terrain.heightAt(wx, wz)) - y) / sc
         }
       }
       /*
@@ -1274,7 +1279,7 @@ export class Landmarks {
         this.plants.push({
           x: cx + ox + (q.x * cosR + q.z * sinR) * scale,
           z: cz + oz + (-q.x * sinR + q.z * cosR) * scale,
-          species: q.species, h: q.h * scale, spin: q.spin - rotation, dy: q.dy !== undefined ? q.dy * scale : undefined,
+          species: q.species, h: q.h * scale, spin: q.spin - rotation, dy: q.dy !== undefined ? q.dy * scale : undefined, raw: e.drapeRaw,
         })
       }
       // and the ground it paves at street level (MeshBuilder.grounds), in world metres, for the city to drape

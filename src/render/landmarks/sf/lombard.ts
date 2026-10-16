@@ -12,12 +12,14 @@
  *  - the stairs both sides are the city's (sidewalk steps, 1.5 m: tools/bake.ts widthOf), the trees OSM's.
  *
  * Frame: centred at 37.80215, −122.4187, rotateDeg 0, so local x is east and z north (OSM projected the same way).
- * Placed with `drape: true`: every vertex lifted onto the slope under it; the plants stand on the terrain themselves.
+ * Placed with `drape` and `drapeRaw`: every vertex lifted onto the raw hillside under it (the graded ground steps between
+ * the loops), and the plants stand on the same raw ground.
  */
 import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
 import type { Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
+import earcut from 'earcut'
 
 const BEDS: [number, number][][] = [
   /* way/471737901 */ [[3.9,-9.2],[3.6,-3.9],[4.5,-3.8],[2.8,-1.6],[2.4,-1.1],[2.0,-0.6],[1.5,-0.2],[1.1,0.2],[0.5,0.5],[-0.0,0.8],[-0.5,1.1],[-1.1,1.2],[-1.7,1.1],[-2.1,1.0],[-2.6,0.8],[-3.1,0.6],[-3.5,0.3],[-3.8,0.1],[-4.1,-0.3],[-4.2,-0.7],[-6.9,-8.1],[-7.4,-9.2],[-7.9,-10.2],[-8.5,-11.2],[-9.2,-12.2],[-7.2,-11.6],[-5.2,-11.0],[-3.3,-10.3],[-1.5,-9.9],[0.1,-9.6],[1.3,-9.4],[2.6,-9.3]],
@@ -40,29 +42,29 @@ const HEDGE_RUNS: [number, number][][] = [
 ]
 
 /*
- * Each bed vertex's LIFT off the raw ground to the road's own grade beside it (the ride edges' height at the nearest point
- * of road, the loop that edge borders; scratch lombard/dy.ts, from the 2026-10-16 bake). The crooked lane is graded down its hairpins, the raw
+ * Each bed vertex's LIFT off the raw ground to the path beside it (the ride edges' height at the nearest point of lane OR
+ * sidewalk stair — whichever that edge of the bed borders; scratch lombard/dy.ts, from the 2026-10-16 bake). The crooked lane is graded down its hairpins, the raw
  * slope is not: set on the raw slope, a bed's hedge stood a metre or two off the road beside it, a dark wall. Lifted,
  * each bed banks from the loop below it to the loop above, as the real ones do.
  */
 const BED_LIFT: number[][] = [
-  [-0.52,0.25,0.42,0.38,0.30,0.19,0.09,0.20,0.46,0.68,0.81,0.59,0.43,0.30,0.23,0.32,0.29,0.30,0.41,0.58,2.17,2.28,2.46,2.59,2.57,2.88,3.29,3.54,3.80,-1.29,-1.01,-0.71],
-  [0.54,0.68,0.83,0.93,1.00,0.73,0.55,0.41,0.47,0.37,0.27,0.17,0.08,-0.04,-0.02,-0.04,-0.10,-0.19,-0.15,-0.16,-0.17,-0.19,-0.06,1.56,1.45,1.32],
-  [1.38,1.33,1.11,1.11,1.14,1.05,0.99,1.00,1.08,1.41,1.46,1.44,1.39,1.41,1.37,1.23,1.06,0.82,0.24,0.05,-0.19,-0.24,-0.27,-0.31,-0.35,-0.33,-0.36,-0.40,-0.44,2.78,2.17,1.77,1.48,1.32,1.25],
-  [0.15,0.17,0.18,0.18,0.20,0.21,0.21,0.20,0.20,0.90,0.98,1.06,1.11,1.13,1.13,1.11,1.06,0.95,0.65,0.56,0.44,0.32,0.19,0.05,-0.09,-0.16,-0.20,-0.43,-0.46,-0.49,-0.41,-0.37,-0.32,-0.19],
-  [2.01,0.96,0.91,0.87,1.10,1.39,1.33,1.30,1.11,1.11,0.70,-0.25,-0.30,-0.55,-0.65,-0.64,-0.61,-0.66,-0.52,-1.03,-1.35,-1.49,-1.85,-1.89,4.17,3.29,3.05,2.90,2.70],
-  [0.19,0.21,0.27,0.29,0.39,0.40,0.51,0.42,0.44,0.33,0.23,0.61],
-  [0.02,0.13,0.11,0.12,0.11,0.09,0.01,-0.00],
-  [-0.12,-0.09,-0.07,-0.06,-0.06,-0.06,-0.09,-0.10,-0.10,-0.10,-0.10,0.01,0.01,0.00,0.02,0.01,0.01,0.02,0.03,0.04,0.05,0.17,0.16,0.13,0.11,0.09,0.09],
-  [-0.89,-0.62,-0.60,-0.55,-0.49,-0.43,-0.36,-0.32,-0.24,-0.17,-0.09,0.00,0.08,0.15,0.19,0.23,0.27,0.20,0.17,0.08,-0.06,-0.12],
-  [1.78,1.52,1.43,1.24,0.66,0.35,0.23,0.21,0.16,0.19,0.24,0.34,0.37,1.20],
-  [0.47,0.44,0.45,0.44,0.39,0.23,0.19,0.14,0.12,0.04,-0.43,-0.14,-0.11,-0.03,-0.02,0.06,-0.00,0.03,-0.02,0.01,0.13,0.16,0.17,0.40],
-  [1.95,-0.06,-0.06,-0.08,0.02,-0.04,0.08,0.23,0.43,0.65,0.85,1.16,1.24,1.15,1.08,1.00,0.93,0.88,0.80,0.70,0.65,0.60],
+  [0.01,0.25,0.42,0.38,0.30,0.19,0.09,0.20,0.46,0.68,0.81,0.59,0.43,0.30,0.23,0.32,0.29,0.30,0.41,0.58,2.17,2.28,2.46,1.27,1.59,1.13,0.67,0.21,-0.08,-0.06,0.00,-0.05],
+  [0.10,0.12,0.07,0.09,1.00,0.73,0.55,0.41,0.47,0.37,0.27,0.17,0.08,-0.04,-0.02,-0.04,-0.10,-0.19,-0.15,-0.16,-0.17,-0.19,0.07,0.07,0.02,0.04],
+  [0.25,0.46,0.46,0.46,0.48,0.25,0.29,0.40,1.08,1.41,1.46,1.44,1.39,1.41,1.37,1.23,1.06,0.82,0.24,0.05,-0.19,-0.24,-0.27,-0.31,-0.35,-0.33,-0.36,-0.40,-0.44,0.36,0.18,0.08,0.34,0.31,0.33],
+  [0.02,0.01,0.01,-0.00,-0.00,0.21,0.21,0.20,0.20,0.90,0.98,1.06,1.11,1.13,1.13,1.11,1.06,0.95,0.65,0.56,0.44,0.32,0.19,0.05,-0.09,-0.16,-0.20,-0.43,-0.46,-0.49,-0.22,-0.07,0.01,0.13],
+  [2.01,0.96,0.91,0.87,1.10,1.39,1.33,1.30,1.11,1.11,0.70,-0.25,-0.30,-0.55,-0.65,0.02,-0.05,-0.10,-0.25,0.29,0.54,0.74,0.89,0.96,0.94,0.63,0.40,0.10,-0.23],
+  [0.19,0.21,0.27,0.29,0.39,0.40,0.51,0.42,0.03,0.00,0.02,-0.02],
+  [-0.00,0.13,0.11,0.12,0.11,0.09,0.05,0.06],
+  [0.31,0.34,0.36,0.37,0.37,0.37,-0.09,-0.10,-0.10,-0.10,-0.10,0.01,0.01,0.00,0.02,0.01,0.01,0.02,0.03,0.04,0.05,0.36,0.33,0.32,0.27,0.25,0.22],
+  [0.78,0.90,0.91,0.95,0.99,1.05,1.01,1.04,-0.24,-0.17,-0.09,0.00,0.08,0.15,0.19,0.23,0.27,0.20,0.17,0.94,0.89,0.83],
+  [0.36,1.52,1.43,1.24,0.66,0.35,0.23,0.21,0.16,0.19,0.24,0.34,0.37,-0.26],
+  [0.47,0.44,0.45,0.44,0.39,0.23,0.19,0.14,0.12,0.04,0.85,0.85,0.81,0.76,0.03,0.05,0.05,0.16,0.34,0.53,0.57,0.16,0.17,0.40],
+  [0.29,-0.06,-0.06,-0.08,0.02,-0.04,0.08,0.23,0.43,0.65,0.85,1.16,1.24,1.15,1.08,1.00,0.93,0.88,-0.38,-0.29,-0.14,-0.16],
 ]
 const RUN_LIFT: number[][] = [
-  [-0.63,-1.99,-1.69],
-  [-0.47,-1.13,-0.83],
-  [-0.58,0.64],
+  [-0.63,0.31,0.14],
+  [-0.03,0.06,0.29],
+  [-0.02,0.14],
 ]
 
 const HEDGE: Rgb = [0.07, 0.15, 0.06]           // dark, as clipped box is; the grade lifts it (BUGS #280)
@@ -141,21 +143,45 @@ function hedge(out: MeshBuilder, pts: P2[], closed: boolean, w: number, h: numbe
 export function lombardGardens(out: MeshBuilder, _fit: Fit): void {
   const leaf = surfaceTag('foliage')
   BEDS.forEach((bed, bi) => {
-    const lift = BED_LIFT[bi]
-    // the mulch floor, a fan from the bed's middle (each bed is near enough convex from its centroid), a hand above the ground
-    let cx = 0, cz = 0
-    for (const [x, z] of bed) { cx += x; cz += z }
-    cx /= bed.length; cz /= bed.length
+    /*
+     * The lifts, relaxed so the bed's surface is never steeper than the hill's own grade (~0.4): where the outline passes
+     * from beside one loop to beside the next, neighbouring points jumped 2 m and the floor tore into a cliff with kerb
+     * wedges standing in it. Each pass pulls every pair of points (not just neighbours) to within the grade of each other.
+     */
+    // (never below the raw ground: where the lane is cut into the hill the bed stands above it on its kerb, as the real
+    //  raised beds do — sunk, its hydrangeas were buried and the ground's own soil showed in strips)
+    const lift = BED_LIFT[bi].map((v) => Math.max(0, v))
+    for (let pass = 0; pass < 40; pass++) {
+      let moved = false
+      for (let i = 0; i < bed.length; i++) for (let j = i + 1; j < bed.length; j++) {
+        const lim = 0.4 * Math.hypot(bed[i][0] - bed[j][0], bed[i][1] - bed[j][1]), d = lift[i] - lift[j]
+        if (Math.abs(d) > lim + 1e-3) { const e = (Math.abs(d) - lim) / 2 * Math.sign(d); lift[i] -= e; lift[j] += e; moved = true }
+      }
+      if (!moved) break
+    }
     // the lift at any point of the bed: inverse-square from its outline's own
     const liftAt = (x: number, z: number): number => {
       let w = 0, t = 0
       bed.forEach(([bx, bz], i) => { const k = 1 / ((bx - x) ** 2 + (bz - z) ** 2 + 0.5); w += k; t += k * lift[i] })
       return t / w
     }
-    const lc = liftAt(cx, cz)
-    for (let i = 0; i < bed.length; i++) {
-      const j = (i + 1) % bed.length, a = bed[i], b = bed[j]
-      out.quad([[cx, lc + 0.06, cz], [a[0], lift[i] + 0.06, a[1]], [b[0], lift[j] + 0.06, b[1]], [b[0], lift[j] + 0.06, b[1]]], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], MULCH, 0)
+    // the mulch floor, triangulated (a fan from the middle spilled out of the concave beds and buried their plants)
+    const tri = earcut(bed.flat())
+    // the floor's height at a point: on the triangle it falls in (plants stand on this, so they and the mulch agree)
+    const floorAt = (x: number, z: number): number => {
+      for (let t = 0; t < tri.length; t += 3) {
+        const [i, j, k] = [tri[t], tri[t + 1], tri[t + 2]], A = bed[i], B = bed[j], C = bed[k]
+        const d = (B[1] - C[1]) * (A[0] - C[0]) + (C[0] - B[0]) * (A[1] - C[1])
+        if (Math.abs(d) < 1e-9) continue
+        const u = ((B[1] - C[1]) * (x - C[0]) + (C[0] - B[0]) * (z - C[1])) / d
+        const v = ((C[1] - A[1]) * (x - C[0]) + (A[0] - C[0]) * (z - C[1])) / d
+        if (u >= -1e-6 && v >= -1e-6 && u + v <= 1 + 1e-6) return u * lift[i] + v * lift[j] + (1 - u - v) * lift[k]
+      }
+      return liftAt(x, z)
+    }
+    for (let t = 0; t < tri.length; t += 3) {
+      const [a, b, c] = [tri[t], tri[t + 1], tri[t + 2]].map((k) => [bed[k][0], lift[k] + 0.06, bed[k][1]] as [number, number, number])
+      out.quad([a, b, c, c], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], MULCH, 0)
     }
     // the bed's sides: a kerb wall from its edge down 5 m, so a bed standing proud of the raw slope (to the lane's grade)
     // is a solid terrace with a retaining kerb, not a sheet in the air; draped with the top, its foot stays buried
@@ -185,7 +211,7 @@ export function lombardGardens(out: MeshBuilder, _fit: Fit): void {
       for (let z = Math.ceil(z0 / STEP) * STEP; z < z1; z += STEP) {
         const jx = x + (hash(x, z, 1) - 0.5) * 0.5, jz = z + (hash(x, z, 2) - 0.5) * 0.5
         if (!inside(bed, jx, jz) || edgeDist(bed, jx, jz) < 0.75) continue
-        out.plants.push({ x: jx, z: jz, species: 'hydrangea', h: 0.95 + hash(x, z, 3) * 0.4, spin: hash(x, z, 4) * Math.PI * 2, dy: liftAt(jx, jz) })
+        out.plants.push({ x: jx, z: jz, species: 'hydrangea', h: 0.95 + hash(x, z, 3) * 0.4, spin: hash(x, z, 4) * Math.PI * 2, dy: floorAt(jx, jz) + 0.06 })
       }
     }
   })

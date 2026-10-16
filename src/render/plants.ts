@@ -38,7 +38,7 @@ interface PlantEntry { species: string; file: string; height: number }
  * Salesforce Park — thousands of plants in the air, and a standing report of them missing — as well as the
  * Yerba Buena decks.
  */
-interface Planted { x: number; z: number; s: number; spin: number; kind: 'shrub' | 'flower'; y?: number; species?: string; dy?: number }
+interface Planted { x: number; z: number; s: number; spin: number; kind: 'shrub' | 'flower'; y?: number; species?: string; dy?: number; raw?: boolean }
 
 /** the library's species used, by role */
 const SHRUBS = ['bush_green', 'bush_flowering', 'rhododendron', 'hazel']
@@ -340,9 +340,9 @@ export class Plants {
    * height, standing on the terrain. Every file of that species is loaded the first time one is asked for (a
    * hydrangea bed wants its twelve colour variants, not one), and they are kept out of the city's default pools.
    */
-  addPlants(list: { x: number; z: number; species: string; h: number; spin: number; dy?: number }[]): void {
+  addPlants(list: { x: number; z: number; species: string; h: number; spin: number; dy?: number; raw?: boolean }[]): void {
     if (!list.length) return
-    this.byTile.set(`lm:${this.placed++}`, list.map((q) => ({ x: q.x, z: q.z, s: q.h, spin: q.spin, kind: 'shrub' as const, species: q.species, dy: q.dy })))
+    this.byTile.set(`lm:${this.placed++}`, list.map((q) => ({ x: q.x, z: q.z, s: q.h, spin: q.spin, kind: 'shrub' as const, species: q.species, dy: q.dy, raw: q.raw })))
     for (const sp of new Set(list.map((q) => q.species))) if (!this.named.has(sp)) this.named.set(sp, this.loadNamed(sp))
     this.dirty = true
   }
@@ -445,12 +445,12 @@ export class Plants {
         const want = p.species ? p.s : p.kind === 'shrub' ? 1.7 * p.s : 0.5 * p.s
         const k = Math.max(0.2, Math.min(3, want / model.top))
         const mtx = Matrix.Compose(new Vector3(k, k, k), Quaternion.RotationAxis(Vector3.Up(), p.spin),
-          new Vector3(p.x, (p.y ?? this.terrain.heightAt(p.x, p.z)) + (p.dy ?? 0) + 0.02, p.z))
+          new Vector3(p.x, (p.y ?? (p.raw ? this.terrain.rawHeightAt(p.x, p.z) : this.terrain.heightAt(p.x, p.z))) + (p.dy ?? 0) + 0.02, p.z))
         for (const part of model.parts) (buckets.get(part) ?? buckets.set(part, []).get(part)!).push(mtx)
         if (p.kind === 'shrub' && this.core) {
           const h = want * 1.0
           cores.push(Matrix.Compose(new Vector3(h * 1.35, h, h * 1.35), Quaternion.RotationAxis(Vector3.Up(), p.spin),
-            new Vector3(p.x, (p.y ?? this.terrain.heightAt(p.x, p.z)) + (p.dy ?? 0), p.z)))
+            new Vector3(p.x, (p.y ?? (p.raw ? this.terrain.rawHeightAt(p.x, p.z) : this.terrain.heightAt(p.x, p.z))) + (p.dy ?? 0), p.z)))
         }
       }
     }
