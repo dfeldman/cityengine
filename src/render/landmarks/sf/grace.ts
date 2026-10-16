@@ -58,5 +58,5 @@ export function cathedral(out: MeshBuilder, fit: Fit, c: CathedralSpec): void {
 }
 
 export function graceCathedral(out: MeshBuilder, fit: Fit): void {
-  cathedral(out, fit, { bays: 7, towerStages: 4, towerTop: 'flat', material: 'limestone', colour: [0.66, 0.66, 0.63], fleche: 14 })
+  cathedral(out, fit, { bays: 7, towerStages: 6, towerTop: 'flat', material: 'limestone', colour: [0.66, 0.66, 0.63], fleche: 14 })
 }
