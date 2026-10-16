@@ -8695,6 +8695,51 @@ function grantSacramentoCorner(out: MeshBuilder, fit: Fit): void {
   for (let z = -hz + 1; z <= hz - 0.5; z += 2.6) { prism(out, hx + 0.5, z, 0, 3.6, 0.22, 10, RED, 0); box(out, hx + 0.5, 3.65, z, 0.3, 0.06, 0.3, GOLD, 0) }
 }
 
+/**
+ * The Ocean Climate Center at Crissy Field, the old Coast Guard station's officer's quarters (1890; Mapillary
+ * docs/shots/refs/notable/ocean-climate): a two-storey white clapboard house under a STEEP RED GAMBREL roof with
+ * dormers, a little lantern cupola on the ridge, brick chimneys, a red-roofed porch on the front. Same all round.
+ */
+function oceanClimateCenter_CrissyField(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.93, 0.93, 0.9], RED: Rgb = [0.5, 0.17, 0.13], DARK: Rgb = [0.15, 0.17, 0.2], BRICK: Rgb = [0.45, 0.25, 0.18]
+  const CB = surfaceTag('clapboard'), TL = surfaceTag('tile'), GL = surfaceTag('glass')
+  const hx = Math.max(4, fit.hx), hz = Math.max(4, fit.hz), E = 5.6
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  box(out, 0, E / 2, 0, hx, E / 2, hz, WHITE, CB)
+  // windows, both storeys, all round
+  for (const [y0, y1] of [[0.9, 2.4], [3.4, 4.9]]) {
+    for (let u = -hx + 1.6; u < hx - 1; u += 2.4) for (const s of [-1, 1]) box(out, u, (y0 + y1) / 2, s * (hz + 0.02), 0.45, (y1 - y0) / 2, 0.04, DARK, GL)
+    for (let u = -hz + 1.6; u < hz - 1; u += 2.4) for (const s of [-1, 1]) box(out, s * (hx + 0.02), (y0 + y1) / 2, u, 0.04, (y1 - y0) / 2, 0.45, DARK, GL)
+  }
+  // the gambrel along x: a steep lower slope to the knee, a shallow upper one to the ridge
+  const K = { y: E + 2.8, z: hz - 1.0 }, R = { y: E + 4.4, z: 0 }
+  for (const s of [-1, 1]) {
+    const lower: V3[] = [[-hx - 0.3, E - 0.1, s * (hz + 0.35)], [hx + 0.3, E - 0.1, s * (hz + 0.35)], [hx + 0.3, K.y, s * K.z], [-hx - 0.3, K.y, s * K.z]]
+    const upper: V3[] = [[-hx - 0.3, K.y, s * K.z], [hx + 0.3, K.y, s * K.z], [hx + 0.3, R.y, 0], [-hx - 0.3, R.y, 0]]
+    out.quad(lower, [0, 0.35, s], uv, RED, TL)
+    out.quad(upper, [0, 1, s * 0.25], uv, RED, TL)
+    // the gable ends, white
+    const gx = s * (hx + 0.02)
+    out.quad([[gx, E, -hz], [gx, E, hz], [gx, K.y, K.z], [gx, K.y, -K.z]], [s, 0, 0], uv, WHITE, CB)
+    out.quad([[gx, K.y, -K.z], [gx, K.y, K.z], [gx, R.y, 0], [gx, R.y, 0]], [s, 0, 0], uv, WHITE, CB)
+    box(out, s * (hx + 0.03), E + 2.0, 0, 0.04, 0.6, 0.45, DARK, GL)
+    // dormers on the lower slope
+    for (const u of [-hx * 0.45, hx * 0.45]) {
+      box(out, u, E + 1.6, s * (hz - 0.2), 0.9, 0.9, 0.6, WHITE, CB)
+      box(out, u, E + 2.6, s * (hz - 0.2), 1.05, 0.12, 0.75, RED, TL)
+      box(out, u, E + 1.6, s * (hz + 0.42), 0.5, 0.55, 0.03, DARK, GL)
+    }
+  }
+  // the cupola and chimneys on the ridge
+  box(out, 0, R.y + 0.8, 0, 0.9, 0.8, 0.9, WHITE, CB)
+  for (const s of [-1, 1]) box(out, 0, R.y + 0.8, s * 0.92, 0.6, 0.45, 0.03, DARK, GL)
+  prism(out, 0, 0, R.y + 1.6, R.y + 2.5, 1.3, 4, RED, TL, 0.1)
+  for (const x of [-hx * 0.7, hx * 0.7]) box(out, x, R.y + 0.4, 0, 0.35, 1.2, 0.35, BRICK, surfaceTag('brick'))
+  // the porch on the south side, red-roofed
+  box(out, 0, 2.7, -hz - 1.3, hx * 0.5, 0.12, 1.4, RED, TL)
+  for (const x of [-hx * 0.45, hx * 0.45]) box(out, x, 1.3, -hz - 2.5, 0.1, 1.3, 0.1, WHITE, CB)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -8742,6 +8787,7 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   apartments_4th_Harrison,
   kongChowTemple_855_Stockton,
   grantSacramentoCorner,
+  oceanClimateCenter_CrissyField,
   gapHQ_2_Folsom,
   uberHQ1_1455_3rd,
   uberHQ2_1515_3rd,

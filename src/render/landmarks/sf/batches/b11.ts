@@ -253,19 +253,6 @@ export const B11: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
       material: 'stucco',
     }),
 
-  /** way/288365547 — Ocean Climate Center, former Officer In Charge Quarters, Fort Point (1890). Small
-   * Victorian wood-frame keeper's cottage, one storey, hip roof. */
-  b11_oceanClimateCenter_288365547: (out: MeshBuilder, fit: Fit): void =>
-    facade(out, fit, {
-      ground: { kind: 'plain', storeys: 1, material: 'stucco' },
-      shaft: null,
-      top: null,
-      bands: { aboveGround: null, belowTop: null, top: null },
-      crown: { kind: 'hip', height: 2.2, inset: 0.3, colour: [0.32, 0.22, 0.18] },
-      frame: null,
-      entrance: { at: 'centre', kind: 'door', steps: 1 },
-      material: 'stucco',
-    }),
 
   /** way/260279404 — Orchard Garden Hotel, 466 Bush St (2006). Modern glass curtain tower, minimal ornament. */
   b11_orchardGardenHotel_260279404: (out: MeshBuilder, fit: Fit): void =>
