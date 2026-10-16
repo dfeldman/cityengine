@@ -9840,7 +9840,88 @@ function batteryMarcusMiller(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+/**
+ * Dashiell Hammett Place, 20 Dashiell Hammett Street (1912; Mapillary docs/shots/refs/notable/hammett/m0.jpg, the
+ * frame the photo tool aimed at it — the only one, from about 40 m, so the detail is the gist): an Edwardian
+ * apartment house in pale grey paint over a dark red-brown brick ground storey with a round-arched entrance at one end
+ * and a broad glazed shopfront. Over it two three-sided bay windows run up both upper storeys, small-paned sashes
+ * under scrolled hoods, dark ornamental panels between the floors; plain windows between the bays, quoins at the
+ * corner, a fire escape down one side, a cornice. Front (the street) on −z.
+ */
+function hammettPlace_20(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.64, 0.67, 0.69], BRICK: Rgb = [0.3, 0.17, 0.14], DARK: Rgb = [0.17, 0.18, 0.2], TRIM: Rgb = [0.84, 0.85, 0.86]
+  const GLASS: Rgb = [0.22, 0.25, 0.28], IRON: Rgb = [0.2, 0.2, 0.21]
+  const ST = surfaceTag('stucco'), BK = surfaceTag('brick'), GL = surfaceTag('glass'), MT = surfaceTag('metal')
+  const UVQ: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const ring = ringCCW(fit)
+  const G = 3.9, S = 3.2, H = G + 2 * S + 0.6
+  ecWalls(out, ring, 0, G, BRICK, BK)
+  ecWalls(out, ring, G, H, GREY, ST)
+  ecWalls(out, ecInset(ring, -0.35), H - 0.1, H + 0.35, TRIM, ST)
+  capPolygonWithHoles(out, [ecInset(ring, -0.35)], H + 0.35, [0.42, 0.41, 0.4], surfaceTag('concrete'))
+  ecWalls(out, ecInset(ring, -0.25), G - 0.25, G + 0.1, DARK, MT)                  // the cornice over the shopfront
+  let fi = 0, best = Infinity
+  ring.forEach((a, i) => { const b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z), nz = -(b.x - a.x) / (L || 1); if (L > 5 && nz * L < best) { best = nz * L; fi = i } })
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z)
+    if (L < 3) continue
+    const tx = (b.x - a.x) / L, tz = (b.z - a.z) / L, nx = tz, nz = -tx, h = Math.atan2(nx, nz)
+    const P = (u: number, y: number, o: number): V3 => [a.x + tx * u + nx * o, y, a.z + tz * u + nz * o]
+    const flat = (u0: number, u1: number, y0: number, y1: number, o: number, c: Rgb, tag: number): void =>
+      out.quad([P(u0, y0, o), P(u1, y0, o), P(u1, y1, o), P(u0, y1, o)], [nx, 0, nz], UVQ, c, tag)
+    const blk = (u: number, y: number, o: number, hw: number, hh: number, hd: number, c: Rgb, tag: number): void => {
+      const p = P(u, y, o); boxAlong(out, p[0], p[1], p[2], hw, hh, hd, h, c, tag)
+    }
+    const sash = (u: number, y0: number, w: number, hh: number, o: number): void => {
+      flat(u - w / 2 - 0.08, u + w / 2 + 0.08, y0 - 0.08, y0 + hh + 0.08, o, TRIM, ST)
+      flat(u - w / 2, u + w / 2, y0, y0 + hh, o + 0.02, GLASS, GL)
+      for (const f of [-0.25, 0.25]) flat(u + f * w - 0.015, u + f * w + 0.015, y0, y0 + hh, o + 0.03, TRIM, ST)
+      flat(u - w / 2, u + w / 2, y0 + hh * 0.55 - 0.02, y0 + hh * 0.55 + 0.02, o + 0.03, TRIM, ST)
+    }
+    if (i !== fi) {
+      for (let u = 1.6; u < L - 1; u += 2.4) for (let k = 0; k < 2; k++) sash(u, G + k * S + 0.8, 0.9, 1.6, 0.03)
+      continue
+    }
+    // the front: quoins at both ends, the ground storey, the two bays, plain windows between
+    for (const u of [0.25, L - 0.25]) for (let y = G + 0.2; y < H - 0.4; y += 0.6) blk(u, y + 0.13, 0.03, 0.28 + (Math.round(y / 0.6) % 2) * 0.1, 0.13, 0.04, TRIM, ST)
+    const doorU = 1.6
+    flat(doorU - 0.9, doorU + 0.9, 0, 2.7, 0.03, DARK, 0)
+    out.quad([P(doorU - 1.05, 2.7, 0.05), P(doorU + 1.05, 2.7, 0.05), P(doorU + 0.6, 3.35, 0.05), P(doorU - 0.6, 3.35, 0.05)], [nx, 0, nz], UVQ, TRIM, ST)
+    flat(doorU + 1.6, L - 1.6, 0.25, G - 0.35, 0.03, GLASS, GL)
+    for (const f of [0.33, 0.66]) { const u = doorU + 1.6 + (L - 3.2 - doorU) * f; flat(u - 0.03, u + 0.03, 0.25, G - 0.35, 0.05, IRON, MT) }
+    flat(doorU + 1.6, L - 1.6, G - 1.3, G - 1.25, 0.05, IRON, MT)
+    flat(L - 1.3, L - 0.5, 0, 2.5, 0.03, [0.42, 0.45, 0.48], 0)
+    const bays = [L * 0.3, L * 0.78]
+    for (const bu of bays) {
+      const w = Math.min(1.9, L * 0.12), d = 0.75
+      // the bay: a front and two angled cheeks, both upper storeys, with a cornice band at each floor
+      blk(bu, G + S, d / 2, w, S, d / 2, GREY, ST)
+      for (const k of [0, 1]) {
+        const y0 = G + k * S + 0.75
+        sash(bu, y0, w * 1.2, 1.9, d + 0.01)
+        for (const s of [-1, 1]) {
+          const cu = bu + s * (w + 0.01)                                                    // the bay's side window
+          out.quad([P(cu, y0, 0.12), P(cu, y0, d - 0.12), P(cu, y0 + 1.9, d - 0.12), P(cu, y0 + 1.9, 0.12)], [tx * s, 0, tz * s], UVQ, GLASS, GL)
+        }
+        blk(bu, y0 + 2.15, d + 0.06, w * 0.55, 0.12, 0.06, DARK, ST)                        // the scrolled hood
+        if (k === 0) blk(bu, G + S + 0.15, d + 0.02, w * 0.75, 0.32, 0.02, DARK, ST)          // the ornamental panel
+      }
+      blk(bu, G + 2 * S + 0.1, d / 2 + 0.05, w + 0.1, 0.12, d / 2 + 0.05, TRIM, ST)
+    }
+    const mid = (bays[0] + bays[1]) / 2
+    for (const k of [0, 1]) sash(mid, G + k * S + 0.85, 0.95, 1.7, 0.03)
+    // the fire escape down the end beyond the first bay
+    const fu = Math.max(1.4, bays[0] - 2.9)
+    for (const k of [0, 1]) {
+      const y = G + k * S + 0.1
+      blk(fu, y, 0.55, 1.1, 0.04, 0.55, IRON, MT)
+      blk(fu, y + 0.9, 1.08, 1.1, 0.025, 0.025, IRON, MT)
+    }
+  }
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+  hammettPlace_20,
   batteryMarcusMiller,
   abnerPhelpsHouse_1111_Oak,
   doelgerBuilding_320_Judah,
