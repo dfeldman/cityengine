@@ -558,7 +558,8 @@ export const MARKET_MID: Record<string, (out: MeshBuilder, fit: Fit) => void> = 
    * (Commons: "Lotta's Fountain (San Francisco) July 2022.jpg".) Placed by lat/lon, not on a building.
    */
   lottasFountain: (out) => {
-    const bronze: Rgb = [0.66, 0.42, 0.16]
+    // a penny bronze, coded muted: the frame's grade (BUGS #280) turned [0.66, 0.42, 0.16] traffic-cone orange
+    const bronze: Rgb = [0.5, 0.36, 0.2]
     const tag = surfaceTag('copper')
     const stone = surfaceTag('granite')
     box(out, 0, 0.1, 0, 1.5, 0.1, 1.5, [0.55, 0.54, 0.52], stone)                 // the granite step
