@@ -5269,6 +5269,360 @@ function chinaBasinLanding_185_Berry(out: MeshBuilder, fit: Fit): void {
   for (const idx of m.indices) out.indices.push(base + idx)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// Zinc-and-timber apartments, 8th & Brannan
+// ---------------------------------------------------------------------------------------------------------------
+
+/**
+ * OSM relation/7814535's outer ring (docs/shots/refs/notable/w15629071/EVIDENCE.md), anticlockwise, in the evidence frame
+ * (x east, z north). Brannan Street is the long NW face (bearing 315), 8th Street the SW one (225, the faceted run with
+ * the undulating bays), Townsend the SE one; the rounded zinc corner is the W corner where 8th meets Brannan.
+ */
+const ZA_OUT: P2[] = [[-53.1, -11.6], [-47.2, -17.4], [-44.2, -14.5], [-41.8, -16.8], [-43.1, -18.1], [-40.8, -20.4], [-42.6, -22.2],
+  [-34.6, -30.0], [-31.9, -34.1], [-25.6, -39.2], [-23.9, -42.1], [-19.8, -44.6], [-8.6, -57.3], [-5.9, -59.0], [-2.3, -59.0],
+  [-0.0, -58.0], [40.8, -15.5], [50.0, -5.9], [49.1, -5.0], [51.6, -2.4], [50.1, -0.3], [14.4, 35.2], [21.2, 42.0], [18.7, 44.5],
+  [36.6, 62.2], [45.8, 72.5], [47.7, 74.3], [39.9, 82.0], [3.1, 45.1], [5.1, 43.2], [-2.6, 35.5], [35.6, -2.3], [31.7, -6.1],
+  [27.7, -10.2], [-9.9, 27.0], [-18.1, 18.9], [-20.3, 21.1]].map(([x, z]) => ({ x, z }))
+/** The courtyard (the OSM hole), clockwise so that every wall's normal looks into it. */
+const ZA_HOLE: P2[] = [[-29.2, -3.8], [-19.0, 6.6], [6.7, -19.2], [-3.8, -29.4]].map(([x, z]) => ({ x, z }))
+
+/**
+ * The rotation + translation carrying the evidence frame onto `ring` (a 2-D Procrustes fit of ZA_OUT's 37 vertices over
+ * both orders and every start vertex; the edge-matching fit when the ring has another vertex count). Null when nothing
+ * fits within 2 m — the caller then keeps the evidence frame.
+ */
+function zaFit(ring: P2[] | undefined): { c: number; s: number; tx: number; tz: number; res: number } | null {
+  if (!ring) return null
+  type T = { c: number; s: number; tx: number; tz: number; res: number }
+  const plan = ZA_OUT
+  let R = ring
+  if (R.length === plan.length + 1 && Math.hypot(R[0].x - R[R.length - 1].x, R[0].z - R[R.length - 1].z) < 0.3) R = R.slice(0, -1)
+  const n = plan.length
+  const loose = (): T | null => {
+    if (R.length < 4) return null
+    const ca = emanuElCentroid(plan), cb = emanuElCentroid(R)
+    const edges = (r: P2[]): { L: number; a: number }[] => r.map((p, i) => {
+      const q = r[(i + 1) % r.length]
+      return { L: Math.hypot(q.x - p.x, q.z - p.z), a: Math.atan2(q.z - p.z, q.x - p.x) }
+    })
+    const ea = edges(plan).filter((e) => e.L > 15), eb = edges(R).filter((e) => e.L > 15)
+    let best: T | null = null
+    for (const a of ea) for (const b of eb) {
+      if (Math.abs(a.L - b.L) > 0.2 * a.L) continue
+      const th = b.a - a.a, c = Math.cos(th), s = Math.sin(th)
+      const tx = cb.x - (ca.x * c - ca.z * s), tz = cb.z - (ca.x * s + ca.z * c)
+      const Tp = plan.map((p) => ({ x: p.x * c - p.z * s + tx, z: p.x * s + p.z * c + tz }))
+      let e = 0
+      for (const v of R) {
+        let d = Infinity
+        for (let i = 0; i < Tp.length; i++) {
+          const p = Tp[i], q = Tp[(i + 1) % Tp.length]
+          const dx = q.x - p.x, dz = q.z - p.z
+          const u = Math.max(0, Math.min(1, ((v.x - p.x) * dx + (v.z - p.z) * dz) / (dx * dx + dz * dz || 1)))
+          d = Math.min(d, Math.hypot(v.x - p.x - dx * u, v.z - p.z - dz * u))
+        }
+        e += d * d
+      }
+      const res = Math.sqrt(e / R.length)
+      if (!best || res < best.res) best = { c, s, tx, tz, res }
+    }
+    return best && (best as T).res <= 2 ? best : null
+  }
+  if (R.length !== n) return loose()
+  const cb = { x: R.reduce((t, p) => t + p.x, 0) / n, z: R.reduce((t, p) => t + p.z, 0) / n }
+  const ca = { x: plan.reduce((t, p) => t + p.x, 0) / n, z: plan.reduce((t, p) => t + p.z, 0) / n }
+  let best: T | null = null
+  for (const rev of [false, true]) {
+    const Q = rev ? [...plan].reverse() : plan
+    for (let o = 0; o < n; o++) {
+      let sn = 0, cs = 0
+      for (let i = 0; i < n; i++) {
+        const a = Q[(i + o) % n]
+        const ax = a.x - ca.x, az = a.z - ca.z, bx = R[i].x - cb.x, bz = R[i].z - cb.z
+        cs += ax * bx + az * bz
+        sn += ax * bz - az * bx
+      }
+      const th = Math.atan2(sn, cs), c = Math.cos(th), s = Math.sin(th)
+      let e = 0
+      for (let i = 0; i < n; i++) {
+        const a = Q[(i + o) % n]
+        const x = (a.x - ca.x) * c - (a.z - ca.z) * s + cb.x
+        const z = (a.x - ca.x) * s + (a.z - ca.z) * c + cb.z
+        e += (x - R[i].x) ** 2 + (z - R[i].z) ** 2
+      }
+      const res = Math.sqrt(e / n)
+      if (!best || res < best.res) best = { c, s, tx: cb.x - (ca.x * c - ca.z * s), tz: cb.z - (ca.x * s + ca.z * c), res }
+    }
+  }
+  return best && best.res <= 2 ? best : loose()
+}
+
+const ZA_ZINC_A: Rgb = [0.52, 0.56, 0.57]
+const ZA_ZINC_B: Rgb = [0.45, 0.49, 0.5]
+const ZA_ZINC_C: Rgb = [0.57, 0.61, 0.62]
+const ZA_CAP: Rgb = [0.3, 0.32, 0.34]
+const ZA_BROWN: Rgb = [0.15, 0.085, 0.065]
+const ZA_FIN_A: Rgb = [0.24, 0.13, 0.095]
+const ZA_FIN_B: Rgb = [0.2, 0.105, 0.08]
+const ZA_GLASS: Rgb = [0.17, 0.19, 0.22]
+const ZA_FRAME: Rgb = [0.88, 0.89, 0.9]
+const ZA_SHOP: Rgb = [0.34, 0.43, 0.48]
+const ZA_LINTEL: Rgb = [0.12, 0.13, 0.14]
+const ZA_CONC: Rgb = [0.6, 0.6, 0.58]
+const ZA_SOFFIT: Rgb = [0.17, 0.18, 0.19]
+const ZA_GREY: Rgb = [0.62, 0.62, 0.6]
+const ZA_ROOF: Rgb = [0.36, 0.36, 0.37]
+
+/**
+ * What a ring edge is dressed with, in the ring's anticlockwise order: z = bowed zinc (wall swells out in shallow
+ * arcs, ~9.5 m bays), b = brown timber fins on a flat wall, p = flat zinc, g = plain grey (slot and courtyard walls).
+ * Lengths are proportions of the edge. Edges not listed are flat zinc; the corner arc (`a`) and the faceted 8th Street
+ * run (`c`, whose plan already undulates) are zinc panels without a further bow.
+ */
+const ZA_SECS: Record<number, [string, number][]> = {
+  36: [['b', 9.3], ['z', 29.5]], 34: [['z', 1]], 29: [['z', 1]], 27: [['z', 13.5], ['b', 12], ['z', 13.5], ['b', 13]],
+  26: [['b', 1]], 20: [['b', 20], ['z', 15], ['b', 15.3]], 15: [['z', 12], ['b', 28], ['z', 18.9]], 16: [['b', 1]],
+  6: [['z', 1]], 7: [['c', 1]], 8: [['c', 1]], 9: [['c', 1]], 10: [['c', 1]], 11: [['c', 1]], 12: [['c', 1]], 13: [['c', 1]], 14: [['c', 1]],
+  30: [['g', 1]], 31: [['g', 1]], 32: [['g', 1]], 33: [['g', 1]],
+}
+
+/**
+ * Zinc-and-timber apartments, 8th & Brannan (OSM relation/7814535, six storeys round a courtyard; the 2010s block with
+ * Peet's, Trek and Wells Fargo at the ground). Own geometry from docs/shots/refs/notable/w15629071 (Mapillary 1–3 and the
+ * Commons frames; mapillary-0 is the white neighbour with the Trek shop, ignored):
+ *
+ * - the plan, drawn in the evidence frame and carried onto `fit.ring` by `zaFit` (Procrustes); the courtyard hole (not in
+ *   the ring) goes through the same transform and is capped out of the roof with `capPolygonWithHoles`;
+ * - a glazed shop storey (dark teal glass between grey piers, a dark lintel) set back 2.2 m under the upper floors;
+ * - the street fronts in alternating long sections: BOWED ZINC — custom polygon strips of ~1.15 m standing-seam panels
+ *   whose wall swells out up to 1.3 m in shallow bays, each bay with a white-framed ribbon of three tall windows and
+ *   a balcony — and BROWN TIMBER: a flat dark wall faced in thin vertical fins (3 quads each) with deep punched windows;
+ * - the big ROUNDED ZINC CORNER where 8th meets Brannan: an 8 m radius arc, ten facets, rebuilt over OSM's square corner
+ *   (the photographs, not the outline, show it); the south tip is already a round in the plan;
+ * - plain grey walls to the courtyard and the slot between the wings.
+ */
+function zincApartments_8th_Brannan(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const MTL = surfaceTag('metal'), CON = surfaceTag('concrete')
+  const H = 22, G = 4.8, FL = 3.4, B = 0.9, GI = 2.2, NF = 5
+  const Q = (p: V3[], n: V3, col: Rgb, tag = 0): void => m.quad(p, n, uv, col, tag)
+
+  // ---- the ring with the 8th/Brannan corner turned into an arc ---------------------------------------------------------
+  const nO = ZA_OUT.length
+  const R0 = 7.5, NA = 10
+  const ring: P2[] = [], kind: number[] = []
+  for (let i = 1; i < nO; i++) { ring.push(ZA_OUT[i]); kind.push(i) }   // edge i starts at vertex i
+  {
+    const P0 = ZA_OUT[0], Pm = ZA_OUT[nO - 1], P1 = ZA_OUT[1]
+    const l1 = Math.hypot(P0.x - Pm.x, P0.z - Pm.z), l2 = Math.hypot(P1.x - P0.x, P1.z - P0.z)
+    const d1 = { x: (P0.x - Pm.x) / l1, z: (P0.z - Pm.z) / l1 }, d2 = { x: (P1.x - P0.x) / l2, z: (P1.z - P0.z) / l2 }
+    const n1 = { x: d1.z, z: -d1.x }, n2 = { x: d2.z, z: -d2.x }
+    const T1 = { x: P0.x - d1.x * R0, z: P0.z - d1.z * R0 }
+    const C = { x: T1.x - n1.x * R0, z: T1.z - n1.z * R0 }
+    const a1 = Math.atan2(n1.z, n1.x)
+    let da = Math.atan2(n2.z, n2.x) - a1
+    da = ((da + Math.PI) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI) - Math.PI
+    // edge 36 now ends at T1 (the arc's first point); the arc's edges are 'a'; the last arc point T2 starts the rest of edge 0
+    for (let k = 0; k <= NA; k++) {
+      const a = a1 + (da * k) / NA
+      ring.push({ x: C.x + Math.cos(a) * R0, z: C.z + Math.sin(a) * R0 })
+      kind.push(k === NA ? 0 : 100 + k)
+    }
+  }
+  const roofOuter: P2[] = []
+
+  /** One wall ring (outer or the courtyard): walls, shop storey, soffits, windows, balconies; returns the roof line. */
+  const buildRing = (rp: P2[], kinds: number[], hole: boolean, top: P2[]): void => {
+    const N = rp.length
+    const nrm = rp.map((a, i) => {
+      const b = rp[(i + 1) % N]
+      const L = Math.hypot(b.x - a.x, b.z - a.z) || 1
+      return { L, tx: (b.x - a.x) / L, tz: (b.z - a.z) / L, nx: (b.z - a.z) / L, nz: -(b.x - a.x) / L }
+    })
+    /** vertex i pushed d into the material along the mitre of its two walls */
+    const off = (i: number, d: number): P2 => {
+      const a = nrm[(i + N - 1) % N], b = nrm[i % N]
+      const den = Math.max(0.25, 1 + a.nx * b.nx + a.nz * b.nz)
+      return { x: rp[i % N].x - ((a.nx + b.nx) / den) * d, z: rp[i % N].z - ((a.nz + b.nz) / den) * d }
+    }
+    const bIn = hole ? 0 : B
+    const gIn = hole ? 0.35 : GI
+    const at = (i: number, s: number, d: number, b = 0): P2 => {
+      const p = off(i, d), q = off(i + 1, d), e = nrm[i]
+      return { x: p.x + (q.x - p.x) * s + e.nx * b, z: p.z + (q.z - p.z) * s + e.nz * b }
+    }
+    const P3 = (p: P2, y: number): V3 => [p.x, y, p.z]
+    /** a wall frame at fraction s: centre, tangent, normal, with the bay bow `bf` */
+    const frame = (i: number, s: number, bf: (s: number) => number): { p: P2; tx: number; tz: number; nx: number; nz: number } => {
+      const e = 0.003
+      const a = at(i, Math.max(0, s - e), bIn, bf(Math.max(0, s - e))), b = at(i, Math.min(1, s + e), bIn, bf(Math.min(1, s + e)))
+      const l = Math.hypot(b.x - a.x, b.z - a.z) || 1
+      const tx = (b.x - a.x) / l, tz = (b.z - a.z) / l
+      return { p: at(i, s, bIn, bf(s)), tx, tz, nx: tz, nz: -tx }
+    }
+    const win = (f: { p: P2; tx: number; tz: number; nx: number; nz: number }, y0: number, y1: number, hw: number, col: Rgb, tag: number, proud: number): void => {
+      const cx = f.p.x + f.nx * proud, cz = f.p.z + f.nz * proud
+      Q([[cx - f.tx * hw, y0, cz - f.tz * hw], [cx + f.tx * hw, y0, cz + f.tz * hw], [cx + f.tx * hw, y1, cz + f.tz * hw],
+        [cx - f.tx * hw, y1, cz - f.tz * hw]], [f.nx, 0, f.nz], col, tag)
+    }
+    const flat = (_s: number): number => 0
+
+    for (let i = 0; i < N; i++) {
+      const e = nrm[i]
+      const k = kinds[i]
+      const L = e.L
+      const arcK = typeof k === 'number' && k >= 100 ? k - 100 : -1
+      const secs: [string, number][] = arcK >= 0 ? [['a', 1]] : (hole ? [['g', 1]] : (ZA_SECS[k] ?? [['p', 1]]))
+      const tot = secs.reduce((t, x) => t + x[1], 0)
+
+      // ---- the shop storey: plinth, glass between piers, a dark lintel; soffit handled with the upper wall ----
+      const gl = (a: number, b: number): void => {
+        const bays = Math.max(1, Math.round((b - a) * L / 5.5))
+        for (let j = 0; j < bays; j++) {
+          const s0 = a + ((b - a) * j) / bays, s1 = a + ((b - a) * (j + 1)) / bays
+          const p0 = at(i, s0, gIn), p1 = at(i, s1, gIn)
+          const n3: V3 = [e.nx, 0, e.nz]
+          Q([P3(p0, 0), P3(p1, 0), P3(p1, 0.35), P3(p0, 0.35)], n3, ZA_CONC, CON)
+          Q([P3(p0, 0.35), P3(p1, 0.35), P3(p1, G - 0.7), P3(p0, G - 0.7)], n3, ZA_SHOP, GL)
+          Q([P3(at(i, s0, gIn - 0.08), G - 0.7), P3(at(i, s1, gIn - 0.08), G - 0.7), P3(at(i, s1, gIn - 0.08), G), P3(at(i, s0, gIn - 0.08), G)], n3, ZA_LINTEL, CON)
+          if (j > 0 && L * (b - a) > 6 && bays > 1) {
+            // a grey pier between the shop bays (front and both cheeks)
+            const hw = 0.28 / L, pf = 0.3
+            const pa = at(i, s0 - hw, gIn, pf), pb = at(i, s0 + hw, gIn, pf), qa = at(i, s0 - hw, gIn), qb = at(i, s0 + hw, gIn)
+            Q([P3(pa, 0), P3(pb, 0), P3(pb, G - 0.7), P3(pa, G - 0.7)], n3, ZA_CONC, CON)
+            Q([P3(qa, 0), P3(pa, 0), P3(pa, G - 0.7), P3(qa, G - 0.7)], [-e.tx, 0, -e.tz], ZA_CONC, CON)
+            Q([P3(pb, 0), P3(qb, 0), P3(qb, G - 0.7), P3(pb, G - 0.7)], [e.tx, 0, e.tz], ZA_CONC, CON)
+          }
+        }
+      }
+      if (L > 0.6) gl(0, 1)
+      else Q([P3(at(i, 0, gIn), 0), P3(at(i, 1, gIn), 0), P3(at(i, 1, gIn), G), P3(at(i, 0, gIn), G)], [e.nx, 0, e.nz], ZA_CONC, CON)
+
+      // ---- the upper walls, section by section ----
+      let acc = 0
+      let secIdx = 0
+      for (const [sk, w] of secs) {
+        const s0 = acc / tot, s1 = (acc + w) / tot
+        acc += w
+        const Ls = (s1 - s0) * L
+        const nBay = Math.max(1, Math.round(Ls / 8.5))
+        const seed = (typeof k === 'number' ? k : 40) * 3 + secIdx
+        secIdx++
+        const bowOf = (s: number): number => {
+          if (sk !== 'z') return 0
+          const loc = ((s - s0) / (s1 - s0)) * nBay
+          const bay = Math.min(nBay - 1, Math.floor(loc + 1e-9))
+          const amp = 1.2 + 0.45 * (((bay + seed) * 7) % 3) / 2
+          return amp * Math.abs(Math.sin(Math.PI * loc))
+        }
+        const soffit = (sa: number, sb: number, ba: number, bb: number): void => {
+          if (hole) return
+          Q([P3(at(i, sa, gIn), G), P3(at(i, sb, gIn), G), P3(at(i, sb, bIn, bb), G), P3(at(i, sa, bIn, ba), G)], [0, -1, 0], ZA_SOFFIT, CON)
+        }
+        if (sk === 'b') {
+          // flat dark wall with the fins
+          const p0 = at(i, s0, bIn), p1 = at(i, s1, bIn)
+          const n3: V3 = [e.nx, 0, e.nz]
+          Q([P3(p0, G), P3(p1, G), P3(p1, H - 0.7), P3(p0, H - 0.7)], n3, ZA_BROWN)
+          Q([P3(p0, H - 0.7), P3(p1, H - 0.7), P3(p1, H), P3(p0, H)], n3, ZA_CAP, MTL)
+          soffit(s0, s1, 0, 0)
+          top.push(p0)
+          const nf = Math.max(1, Math.floor(Ls / 0.72))
+          for (let j = 0; j < nf; j++) {
+            const s = s0 + ((s1 - s0) * (j + 0.5)) / nf
+            const hw = 0.13 / L
+            const col = j % 2 ? ZA_FIN_A : ZA_FIN_B
+            const wa = at(i, s - hw, bIn), wb = at(i, s + hw, bIn)
+            const fa = at(i, s - hw, bIn, 0.22), fb = at(i, s + hw, bIn, 0.22)
+            Q([P3(fa, G), P3(fb, G), P3(fb, H - 0.75), P3(fa, H - 0.75)], n3, col)
+            Q([P3(wa, G), P3(fa, G), P3(fa, H - 0.75), P3(wa, H - 0.75)], [-e.tx, 0, -e.tz], col)
+            Q([P3(fb, G), P3(wb, G), P3(wb, H - 0.75), P3(fb, H - 0.75)], [e.tx, 0, e.tz], col)
+          }
+          // deep punched windows, over the fins
+          const nw = Math.max(1, Math.floor(Ls / 3.2))
+          for (let j = 0; j < nw; j++) {
+            const f = frame(i, s0 + ((s1 - s0) * (j + 0.5)) / nw, flat)
+            for (let fl = 0; fl < NF; fl++) win(f, G + fl * FL + 0.55, G + fl * FL + 2.85, 0.6, ZA_GLASS, GL, 0.24)
+          }
+          continue
+        }
+        // panelled zinc (bowed 'z', facetted 'c'/'a', flat 'p', grey 'g')
+        const panW = sk === 'p' ? 2.4 : sk === 'g' ? 3.0 : sk === 'a' ? 5 : 1.15
+        const nP = Math.max(1, Math.round(Ls / panW))
+        for (let j = 0; j < nP; j++) {
+          const sa = s0 + ((s1 - s0) * j) / nP, sb = s0 + ((s1 - s0) * (j + 1)) / nP
+          const ba = bowOf(sa), bb = bowOf(sb)
+          const pa = at(i, sa, bIn, ba), pb = at(i, sb, bIn, bb)
+          const dl = Math.hypot(pb.x - pa.x, pb.z - pa.z) || 1
+          const n3: V3 = [(pb.z - pa.z) / dl, 0, -(pb.x - pa.x) / dl]
+          const col = sk === 'g' ? ZA_GREY : sk === 'a' ? (arcK % 2 ? ZA_ZINC_A : ZA_ZINC_C) : j % 3 === 0 ? ZA_ZINC_C : j % 2 ? ZA_ZINC_A : ZA_ZINC_B
+          Q([P3(pa, G), P3(pb, G), P3(pb, H - 0.7), P3(pa, H - 0.7)], n3, col, sk === 'g' ? CON : MTL)
+          Q([P3(pa, H - 0.7), P3(pb, H - 0.7), P3(pb, H), P3(pa, H)], n3, ZA_CAP, MTL)
+          soffit(sa, sb, ba, bb)
+          top.push(pa)
+        }
+        // windows and balconies
+        if (sk === 'z') {
+          for (let bay = 0; bay < nBay; bay++) {
+            const sm = s0 + ((s1 - s0) * (bay + 0.5)) / nBay
+            for (const dx of [-1.35, 0, 1.35]) {
+              const f = frame(i, sm + dx / L, bowOf)
+              win(f, G + 0.45, H - 1.0, 0.4, ZA_FRAME, MTL, 0.03)
+              for (let fl = 0; fl < NF; fl++) win(f, G + fl * FL + 0.5, G + fl * FL + 2.9, 0.27, ZA_GLASS, GL, 0.07)
+            }
+            const f = frame(i, sm, bowOf)
+            const lv = ((bay + seed) % 2) ? [2, 4] : [1, 3]
+            for (const fl of lv) {
+              const hd = Math.atan2(f.nx, f.nz)
+              boxAlong(m, f.p.x + f.nx * 0.45, G + fl * FL - 0.05, f.p.z + f.nz * 0.45, 1.25, 0.4, 0.45, hd, ZA_ZINC_B, MTL)
+              boxAlong(m, f.p.x + f.nx * 0.45, G + fl * FL + 0.38, f.p.z + f.nz * 0.45, 1.3, 0.04, 0.5, hd, ZA_FRAME, MTL)
+            }
+          }
+        } else if (sk === 'a') {
+          // the rounded corner: a white-framed window ribbon on every other facet, balconies on the middle ones
+          for (let j = 0; j < 1; j++) {
+            if (arcK % 2 === 0) continue
+            const f = frame(i, 0.5, flat)
+            win(f, G + 0.45, H - 1.0, 0.62, ZA_FRAME, MTL, 0.03)
+            for (let fl = 0; fl < NF; fl++) win(f, G + fl * FL + 0.5, G + fl * FL + 2.9, 0.45, ZA_GLASS, GL, 0.07)
+            if (arcK >= 3 && arcK <= 7) {
+              const hd = Math.atan2(f.nx, f.nz)
+              for (const fl of (arcK % 4 === 3 ? [1, 3] : [2, 4])) {
+                boxAlong(m, f.p.x + f.nx * 0.4, G + fl * FL - 0.05, f.p.z + f.nz * 0.4, 1.05, 0.4, 0.4, hd, ZA_ZINC_B, MTL)
+                boxAlong(m, f.p.x + f.nx * 0.4, G + fl * FL + 0.38, f.p.z + f.nz * 0.4, 1.1, 0.04, 0.45, hd, ZA_FRAME, MTL)
+              }
+            }
+          }
+        } else if (sk === 'c') {
+          const nw = Math.max(1, Math.floor(Ls / 3.4))
+          for (let j = 0; j < nw; j++) {
+            const f = frame(i, s0 + ((s1 - s0) * (j + 0.5)) / nw, flat)
+            win(f, G + 0.45, H - 1.0, 0.5, ZA_FRAME, MTL, 0.03)
+            for (let fl = 0; fl < NF; fl++) win(f, G + fl * FL + 0.5, G + fl * FL + 2.9, 0.36, ZA_GLASS, GL, 0.07)
+          }
+        } else if (Ls > 3.2) {
+          const nw = Math.max(1, Math.floor(Ls / 3.0))
+          for (let j = 0; j < nw; j++) {
+            const f = frame(i, s0 + ((s1 - s0) * (j + 0.5)) / nw, flat)
+            for (let fl = 0; fl < NF; fl++) win(f, G + fl * FL + 0.5, G + fl * FL + 2.9, 0.55, ZA_GLASS, GL, 0.06)
+          }
+        }
+      }
+    }
+  }
+
+  buildRing(ring, kind, false, roofOuter)
+  const holeKinds = ZA_HOLE.map(() => 0 as number)
+  const roofHole: P2[] = []
+  buildRing(ZA_HOLE, holeKinds, true, roofHole)
+  capPolygonWithHoles(m, [roofOuter, roofHole], H, ZA_ROOF, CON)
+
+  const t = zaFit(fit.ring)
+  if (t) emanuElCopy(out, m, t.c, t.s, t.tx, t.tz)
+  else emanuElCopy(out, m, 1, 0, 0, 0)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -5293,4 +5647,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   archCrownOffice_King_149167950,
   stripeHQ_510_Townsend,
   chinaBasinLanding_185_Berry,
+  zincApartments_8th_Brannan,
 }
