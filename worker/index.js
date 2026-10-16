@@ -1,8 +1,8 @@
 /**
  * Cycle Dash on Cloudflare: serves the R2 bucket `dash` (the production build, `npm run build` then
  * `sh tools/r2-upload.sh`) as a website. `/`, and any path without a file extension, is the game's index.html; the
- * rest is the object of that name. Hashed bundles (assets/) and the big city data are cached hard; index.html is
- * revalidated so a new build shows at once.
+ * rest is the object of that name. Hashed bundles (assets/) and bake-stamped city data (?b=) are cached hard; the page and
+ * every index or manifest are private and revalidated, so a new build or bake shows at once, even behind a proxy.
  *
  *   cd worker && npx wrangler deploy     (CLOUDFLARE_ACCOUNT_ID, and CLOUDFLARE_API_KEY + CLOUDFLARE_EMAIL from ../api_key)
  *   live: https://cycle-dash.dfeldman-mn.workers.dev
@@ -34,9 +34,17 @@ export default {
     headers.set('etag', obj.httpEtag)
     const ext = (key.split('.').pop() ?? '').toLowerCase()
     if (TYPES[ext]) headers.set('content-type', TYPES[ext])
-    headers.set('cache-control', key === 'index.html' ? 'no-cache'
-      : key.startsWith('assets/') ? 'public, max-age=31536000, immutable'
-      : 'public, max-age=86400')
+    /*
+     * What may be cached, and by whom. A corporate proxy (Zscaler, 2026-10-16: "a series of 404s… even in incognito")
+     * kept a day-old map index under `public, max-age=86400` and ignored the game's no-cache, so it asked for tiles
+     * that later bakes had pruned. Now: anything a new bake or build changes in place — the page, every index and
+     * manifest — is `private, no-cache` (no shared cache may keep it; the browser revalidates, a 304 when unchanged);
+     * what is named per bake (`?b=<bake>`) or per build (assets/, content-hashed) can never change, so it is cached hard.
+     */
+    const stamped = url.searchParams.has('b')
+    headers.set('cache-control', key.startsWith('assets/') || stamped ? 'public, max-age=31536000, immutable'
+      : key === 'index.html' || ext === 'json' || ext === 'webmanifest' ? 'private, no-cache'
+      : 'public, max-age=3600')
     headers.set('access-control-allow-origin', '*')
 
     // a conditional request the object already satisfies: no body
