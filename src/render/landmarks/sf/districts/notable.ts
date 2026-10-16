@@ -9920,7 +9920,96 @@ function hammettPlace_20(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+/**
+ * San Francisco Fire Department Engine Co. No. 2, 460 Bush (1909; Commons "San Francisco Fire Department Engine Co.
+ * No. 2.jpg", docs/shots/refs/notable/engine2): a narrow Beaux-Arts firehouse in grey-buff stone. The ground storey is
+ * heavy banded rustication round one great round-arched engine door (glazed now, a fanlight over it) under a big
+ * wedge keystone, a small window either side; over a moulded belt two Ionic columns and corner pilasters frame three
+ * tall dark-framed windows, an S.F. 2 F.D. cartouche between the column tops; a dentilled cornice on end brackets and
+ * a balustrade of dark grilles between stone posts with urns. Two red globe lamps by the arch. Front (Bush) on −z.
+ */
+function engineCo2_460_Bush(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.64, 0.63, 0.59], SHADE: Rgb = [0.54, 0.53, 0.5], DARK: Rgb = [0.13, 0.14, 0.15], GLASS: Rgb = [0.2, 0.23, 0.26]
+  const RED: Rgb = [0.85, 0.15, 0.15]
+  const AS = surfaceTag('ashlar'), GL = surfaceTag('glass'), MT = surfaceTag('metal')
+  const UVQ: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const ring = ringCCW(fit)
+  const G = 6.0, U = 11.6, H = 12.7                                   // ground storey, cornice, balustrade top
+  ecWalls(out, ring, 0, U, STONE, AS)
+  capPolygonWithHoles(out, [ring], U, [0.42, 0.41, 0.4], surfaceTag('concrete'))
+  let fi = 0, best = Infinity
+  ring.forEach((a, i) => { const b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z), nz = -(b.x - a.x) / (L || 1); if (L > 4 && nz * L < best) { best = nz * L; fi = i } })
+  const a = ring[fi], b = ring[(fi + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z)
+  const tx = (b.x - a.x) / L, tz = (b.z - a.z) / L, nx = tz, nz = -tx, h = Math.atan2(nx, nz)
+  const P = (u: number, y: number, o: number): V3 => [a.x + tx * u + nx * o, y, a.z + tz * u + nz * o]
+  const flat = (u0: number, u1: number, y0: number, y1: number, o: number, c: Rgb, tag: number): void =>
+    out.quad([P(u0, y0, o), P(u1, y0, o), P(u1, y1, o), P(u0, y1, o)], [nx, 0, nz], UVQ, c, tag)
+  const blk = (u: number, y: number, o: number, hw: number, hh: number, hd: number, c: Rgb, tag: number): void => {
+    const p = P(u, y, o); boxAlong(out, p[0], p[1], p[2], hw, hh, hd, h, c, tag)
+  }
+  const m = L / 2, r = Math.min(2.2, L * 0.28), spring = 3.4
+  // the rusticated ground storey: bands either side of the arch, a dark joint between each
+  for (let y = 0.45; y < G - 0.3; y += 0.62) {
+    blk(m - (m + r + 0.15) / 2 - 0.05, y, 0.14, (m - r - 0.15) / 2, 0.27, 0.14, STONE, AS)
+    blk(m + (m + r + 0.15) / 2 + 0.05, y, 0.14, (m - r - 0.15) / 2, 0.27, 0.14, STONE, AS)
+    if (y + 0.3 > spring + r + 0.1) flat(0, L, y + 0.29, y + 0.33, 0.29, SHADE, AS)
+    else for (const [u0, u1] of [[0, m - r - 0.15], [m + r + 0.15, L]]) flat(u0, u1, y + 0.29, y + 0.33, 0.29, SHADE, AS)
+  }
+  // the arch: the opening, its fanlight and glazed doors, the voussoir ring and the keystone
+  flat(m - r, m + r, 0, spring, 0.05, GLASS, GL)
+  for (const f of [-0.5, 0, 0.5]) flat(m + f * r - 0.04, m + f * r + 0.04, 0, spring, 0.07, DARK, MT)
+  flat(m - r, m + r, spring - 0.06, spring + 0.06, 0.07, DARK, MT)
+  const n = 12
+  for (let k = 0; k < n; k++) {
+    const a0 = Math.PI - (k / n) * Math.PI, a1 = Math.PI - ((k + 1) / n) * Math.PI
+    const p = (aa: number, rr: number, o: number): V3 => P(m + Math.cos(aa) * rr, spring + Math.sin(aa) * rr, o)
+    out.quad([P(m, spring, 0.05), p(a0, r, 0.05), p(a1, r, 0.05), p(a1, r, 0.05)], [nx, 0, nz], UVQ, GLASS, GL)
+    out.quad([p(a0, r, 0.3), p(a0, r + 0.75, 0.3), p(a1, r + 0.75, 0.3), p(a1, r, 0.3)], [nx, 0, nz], UVQ, STONE, AS)
+    if (k % 3 === 0 && k > 0) out.quad([p(a0 - 0.02, r * 0.3, 0.08), p(a0 + 0.02, r * 0.3, 0.08), p(a0 + 0.02, r, 0.08), p(a0 - 0.02, r, 0.08)], [nx, 0, nz], UVQ, DARK, MT)   // a fanlight spoke
+  }
+  out.quad([P(m - 0.45, spring + r + 0.85, 0.34), P(m + 0.45, spring + r + 0.85, 0.34), P(m + 0.3, spring + r - 0.05, 0.34), P(m - 0.3, spring + r - 0.05, 0.34)], [nx, 0, nz], UVQ, STONE, AS)
+  for (const s of [-1, 1]) {
+    flat(m + s * (r + 1.0) - 0.4, m + s * (r + 1.0) + 0.4, 2.3, 3.1, 0.3, GLASS, GL)                // the small windows
+    blk(m + s * (r + 0.9), 3.85, 0.55, 0.22, 0.22, 0.22, RED, EMIT)                                     // the red globes
+  }
+  // the belt, the piano nobile: corner pilasters, two Ionic columns, three tall windows, the cartouche
+  blk(m, G + 0.15, 0.25, m, 0.2, 0.25, STONE, AS)
+  for (const u of [0.45, L - 0.45]) blk(u, (G + U - 1.2) / 2 + 0.2, 0.18, 0.4, (U - 1.2 - G) / 2, 0.18, STONE, AS)
+  const cw = (L - 1.7) / 3
+  for (const s of [-1, 1]) {
+    const cu = m + s * cw / 2
+    blk(cu, (G + 0.35 + U - 1.6) / 2, 0.35, 0.24, (U - 1.95 - G) / 2, 0.24, STONE, AS)
+    blk(cu, U - 1.45, 0.35, 0.4, 0.15, 0.3, STONE, AS)                                                 // the volute capital
+  }
+  for (const k of [-1, 0, 1]) {
+    const cu = m + k * cw, ww = cw * 0.36
+    flat(cu - ww - 0.08, cu + ww + 0.08, G + 0.5, U - 2.4, 0.03, DARK, MT)
+    flat(cu - ww, cu + ww, G + 0.6, U - 2.5, 0.05, GLASS, GL)
+    for (const f of [-0.33, 0.33]) flat(cu + f * ww - 0.025, cu + f * ww + 0.025, G + 0.6, U - 2.5, 0.06, DARK, MT)
+    for (const y of [G + 2.0, G + 3.4]) flat(cu - ww, cu + ww, y - 0.025, y + 0.025, 0.06, DARK, MT)
+  }
+  blk(m, U - 2.0, 0.08, 0.75, 0.35, 0.08, SHADE, AS)
+  sign(out, { type: 'flat', text: 'S.F. 2 F.D.', h: 0.22, face: 'roman', colour: [0.45, 0.43, 0.38], lit: 'none', w: 1.3 }, { x: P(m, 0, 0.17)[0], y: U - 2.0, z: P(m, 0, 0.17)[2], heading: h })
+  // the entablature and cornice on end brackets, the balustrade with its grilles, posts and urns
+  blk(m, U - 0.75, 0.3, m, 0.45, 0.3, STONE, AS)
+  for (let u = 0.6; u < L - 0.3; u += 0.55) blk(u, U - 0.38, 0.65, 0.09, 0.08, 0.08, SHADE, AS)
+  blk(m, U - 0.1, 0.55, m + 0.1, 0.18, 0.55, STONE, AS)
+  for (const u of [0.45, L - 0.45]) blk(u, U - 0.9, 0.5, 0.35, 0.6, 0.3, STONE, AS)
+  const posts = [0.45, L * 0.36, L * 0.64, L - 0.45]
+  for (const u of posts) {
+    blk(u, (U + H) / 2, 0.2, 0.32, (H - U) / 2, 0.25, STONE, AS)
+    const p = P(u, 0, 0.2)
+    prism(out, p[0], p[2], H, H + 0.55, 0.22, 8, STONE, AS, 0.06)
+  }
+  for (let k = 0; k + 1 < posts.length; k++) {
+    for (let u = posts[k] + 0.5; u < posts[k + 1] - 0.4; u += 0.3) flat(u - 0.03, u + 0.03, U + 0.2, H - 0.2, 0.12, DARK, MT)
+    flat(posts[k] + 0.32, posts[k + 1] - 0.32, (U + H) / 2 - 0.03, (U + H) / 2 + 0.03, 0.12, DARK, MT)
+    blk((posts[k] + posts[k + 1]) / 2, H - 0.1, 0.2, (posts[k + 1] - posts[k]) / 2 - 0.3, 0.1, 0.22, STONE, AS)
+  }
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+  engineCo2_460_Bush,
   hammettPlace_20,
   batteryMarcusMiller,
   abnerPhelpsHouse_1111_Oak,
