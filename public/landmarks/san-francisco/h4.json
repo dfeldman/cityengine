@@ -11,8 +11,13 @@
     "osm": [
       "way/924360762"
     ],
-    "procedural": "h4_queenAnneHotel",
-    "name": "Queen Anne Hotel"
+    "name": "Queen Anne Hotel",
+    "restyle": "victorian",
+    "wall": "#e9dfb8",
+    "levels": 4,
+    "height": 17,
+    "note": "1890 Victorian hotel at Sutter & Octavia: cream clapboard, bay towers (2026-10-16 Mapillary; was a Haiku office box)",
+    "noShops": true
   },
   {
     "osm": [
@@ -26,9 +31,13 @@
     "osm": [
       "way/151185875"
     ],
-    "procedural": "h4_curbExchange",
     "name": "San Francisco Curb Exchange Building",
-    "height": 16
+    "height": 16,
+    "restyle": "classical",
+    "wall": "#c9c2b4",
+    "levels": 4,
+    "note": "1923 Curb Exchange, 350 Bush: a grey stone temple front with columns (2026-10-16 Mapillary; was a plain box)",
+    "noShops": true
   },
   {
     "osm": [
@@ -82,8 +91,13 @@
     "osm": [
       "way/220614203"
     ],
-    "procedural": "h4_redVictorian",
-    "name": "The Red Victorian"
+    "name": "The Red Victorian",
+    "restyle": "victorian",
+    "wall": "#e8609e",
+    "levels": 3,
+    "height": 12,
+    "note": "the Haight icon: a hot-pink three-storey Victorian with bays and fire escapes (2026-10-16 Mapillary; was a tall brown box)",
+    "noShops": true
   },
   {
     "osm": [

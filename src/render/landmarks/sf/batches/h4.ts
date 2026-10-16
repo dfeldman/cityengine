@@ -19,15 +19,8 @@ export const H4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** way/132238424 — One Market Plaza. Downtown office tower, modern glass, 28 m. */
   h4_oneMarketPlaza: fromRecipe('glass-tower', { height: 28, wall: [0.50, 0.56, 0.60], glass: [0.32, 0.45, 0.54] }),
 
-  /** way/924360762 — Queen Anne Hotel. Postwar hotel building, modest residential hotel. */
-  h4_queenAnneHotel: fromRecipe('hotel-punched', { height: 32, wall: [0.76, 0.70, 0.62], glass: [0.26, 0.29, 0.32] }),
-
   /** way/79377184 — SPUR Urban Center. Mid-20th century office building, 17 m, institutional. */
   h4_spurUrbanCenter: fromRecipe('hotel-punched', { height: 17, wall: [0.74, 0.68, 0.60], glass: [0.26, 0.29, 0.32] }),
-
-  /** way/151185875 — San Francisco Curb Exchange Building. Historic downtown office, 1914, 16 m, restored facade. */
-  h4_curbExchange: fromRecipe('edwardian-terracotta', { height: 16, wall: [0.78, 0.70, 0.60], glass: [0.24, 0.26, 0.28] }),
-
 
   /** way/35024342 — The Adelaide Hostel. Modern hotel conversion, 14 m, postwar commercial building. */
   h4_adelaideHostel: fromRecipe('hotel-punched', { height: 14, wall: [0.74, 0.68, 0.60], glass: [0.26, 0.29, 0.32] }),
@@ -41,9 +34,6 @@ export const H4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
 
   /** way/79377217 — The Montgomery. Historic downtown office tower, 1914, 33 m, Edwardian commercial. */
   h4_theMontgomery: fromRecipe('edwardian-terracotta', { height: 33, wall: [0.80, 0.74, 0.64], glass: [0.24, 0.26, 0.28] }),
-
-  /** way/220614203 — The Red Victorian. Historic converted guest house, Haight-Ashbury, 1890s conversion. */
-  h4_redVictorian: fromRecipe('brick-loft', { height: 22, wall: [0.62, 0.50, 0.40], glass: [0.20, 0.23, 0.26] }),
 
   /** way/160705972 — The Smith-Kettlewell Eye Research Institute. Historic research building, 4 storeys, 12 m. */
   h4_smithKettlewell: fromRecipe('brick-loft', { height: 12, wall: [0.68, 0.56, 0.46], glass: [0.22, 0.25, 0.28] }),
