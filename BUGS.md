@@ -10603,7 +10603,7 @@ stairs down. Satellite: `docs/shots/refs/bugs/267-cathedral-plaza.webp`.
 Orange-red steel arch deck on tapered piers (black-painted bases), black railings, Japanese lanterns on red
 posts, ramps both ends. Photo: `docs/shots/refs/bugs/268-webster-bridge.webp`.
 
-### #269 A roof plane hangs detached above its building (owner, 2026-10-15) — OPEN, location unknown
+### #269 A roof plane hangs detached above its building (owner, 2026-10-15) — FIXED 2026-10-16 (found by a scan for big pitched parts high on nothing: way/1340831358, a glass skillion atrium, 37.7851 −122.4326; modelled as glass, districts/atria.ts. 75 other skillion parts exist — most are crowns of modelled towers)
 
 Screenshot `docs/shots/refs/bugs/269-roof-detached.webp`: a grey sloped slab floating over a beige office block; a
 Gothic church tower in the background (St. Dominic's/St. Mary's area?).
