@@ -10726,5 +10726,6 @@ before it is useful.
   Klamath propeller frame, the big Boudin bakery. Thousands of photos exist. OPEN (a series of its own).
   Owner: the ferris wheel a HIGH-QUALITY detailed model; and survey ALL the distinctive Wharf buildings ("dozens… you can
   find them faster than I can") and do as many as possible. No time limit — none to be forgotten.
+  Owner: "ideally - press O to observe from the ferris wheel" — ride a gondola round, the view from the top.
 - #291 Cable car passengers "in a hot tub" — FIXED (hollow saloon, benches).
 - #292 Bench inside the Taylor Street stairs (37.790831 −122.412358) — FIXED (furniture kept off the whole flight).
