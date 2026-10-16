@@ -16,7 +16,6 @@ import { box, prism, type Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 import { edgeAt, offsetRing, longestEdge, boxAlong } from '../parts.ts'
 import { towerRing, faceBand } from '../tower.ts'
-import { pagodaTier, pagodaFinial } from './pagoda-kit.ts'
 
 type P2 = { x: number; z: number }
 
@@ -41,25 +40,40 @@ function ccw(ring: P2[]): P2[] {
  * drums; no photograph exists here, so ornament stays minimal — the tier taper and the eave overhang are
  * the whole shape, nothing invented beyond it.
  */
-const PAGODA_CONCRETE: Rgb = [0.72, 0.7, 0.66]
-const PAGODA_ROOF: Rgb = [0.22, 0.24, 0.24]
-const PAGODA_GOLD: Rgb = [0.75, 0.62, 0.28]
 
 export function peacePagoda(out: MeshBuilder, fit: Fit): void {
-  const cx = 0
-  const cz = 0
-  let r = 4.6
-  let y = 0
-  const tiers = 5
-  const shrink = 0.78
-  for (let t = 0; t < tiers; t++) {
-    const nextR = t < tiers - 1 ? r * shrink : r * 0.32
-    const drumH = Math.max(0.9, 2.6 - t * 0.35)
-    const roofH = Math.max(1.1, 2.4 - t * 0.25)
-    y = pagodaTier(out, cx, cz, y, { r, drumH, roofH }, nextR, PAGODA_CONCRETE, PAGODA_ROOF)
-    r = nextR
-  }
-  pagodaFinial(out, cx, cz, y, 3.4, Math.max(0.4, r), PAGODA_GOLD)
+  /*
+   * Reworked 2026-10-16 from a Commons photograph (docs/shots/refs/notable/peace-pagoda): it is WHITE concrete, five
+   * thin flat round roofs on a slender shaft of columns, each roof's underside ribbed with radial brackets, the topmost
+   * carrying a tall sorin of nine rings and a finial — not grey roofs over drums.
+   */
+  const WHITE: Rgb = [0.9, 0.9, 0.88], SHADE: Rgb = [0.74, 0.74, 0.72], RING: Rgb = [0.82, 0.8, 0.74]
+  const CN = surfaceTag('concrete')
+  // the base storey: a ring of columns round a core, on a step
+  prism(out, 0, 0, 0, 0.6, 5.6, 16, SHADE, CN)
+  prism(out, 0, 0, 0.6, 5.6, 2.2, 12, SHADE, CN)
+  for (let i = 0; i < 12; i++) { const a2 = (i / 12) * Math.PI * 2; prism(out, Math.cos(a2) * 3.6, Math.sin(a2) * 3.6, 0.6, 5.6, 0.32, 8, WHITE, CN) }
+  let y = 5.6
+  const radii = [6.2, 5.6, 5.2, 4.8, 4.4]
+  radii.forEach((R, t) => {
+    // the roof: a thin flat disc with an upturned lip, its underside ribbed
+    prism(out, 0, 0, y, y + 0.35, R, 24, WHITE, CN)
+    prism(out, 0, 0, y + 0.35, y + 0.55, R, 24, WHITE, CN, R - 0.3)
+    for (let i = 0; i < 16; i++) {
+      const a2 = (i / 16) * Math.PI * 2
+      boxAlong(out, Math.cos(a2) * R * 0.55, y - 0.35, Math.sin(a2) * R * 0.55, 0.08, 0.35, R * 0.45, Math.atan2(Math.cos(a2), Math.sin(a2)), SHADE, CN)
+    }
+    if (t < radii.length - 1) {
+      // the open storey above: a slim core and its columns
+      prism(out, 0, 0, y + 0.55, y + 3.0, 1.2, 12, SHADE, CN)
+      for (let i = 0; i < 8; i++) { const a2 = (i / 8) * Math.PI * 2; prism(out, Math.cos(a2) * 2.2, Math.sin(a2) * 2.2, y + 0.55, y + 3.0, 0.18, 6, WHITE, CN) }
+      y += 3.0
+    } else y += 0.55
+  })
+  // the sorin: a mast with nine rings and a finial
+  prism(out, 0, 0, y, y + 9, 0.22, 8, WHITE, CN)
+  for (let k = 0; k < 9; k++) prism(out, 0, 0, y + 1 + k * 0.8, y + 1.25 + k * 0.8, 0.75 - k * 0.03, 12, RING, CN)
+  prism(out, 0, 0, y + 9, y + 10, 0.35, 8, RING, CN, 0.05)
   void fit
 }
 
