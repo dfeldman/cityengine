@@ -16,23 +16,43 @@ const BLOOMS: Rgb[] = [[0.46, 0.24, 0.38], [0.58, 0.34, 0.42], [0.34, 0.36, 0.56
 
 /** the hedges and flower beds along both sides of the switchbacks (placed with `drape`: each lifted onto the slope) */
 export function lombardGardens(out: MeshBuilder, _fit: Fit): void {
-  const leaf = surfaceTag('concrete')
+  const leaf = surfaceTag('foliage')
+  /*
+   * 2026-10-16 (owner: the buildings "too close to accommodate this road"): the roadway is ONE brick lane, ~4.2 m
+   * (regions.json streetWidths), the hedges at its edges — 2.75 m off the centreline, not 3.9, which put them into the
+   * houses at the bends. On the OUTSIDE of a tight bend the road swings close to the stairway and the houses, so the
+   * hedge is left out there; the beds fill the INSIDE of every bend, as in the famous view.
+   */
+  const OFF = 2.75
+  // the turn at each vertex: + bends left (toward local +z of the travel), − right
+  const turn = (i: number): number => {
+    const a = LINE[Math.max(0, i - 3)], b = LINE[i], c = LINE[Math.min(LINE.length - 1, i + 3)]
+    return (b[0] - a[0]) * (c[1] - b[1]) - (b[1] - a[1]) * (c[0] - b[0])
+  }
   for (let i = 1; i < LINE.length; i++) {
     const [ax, az] = LINE[i - 1], [bx, bz] = LINE[i]
     const L = Math.hypot(bx - ax, bz - az)
     if (L < 0.3) continue
     const tx = (bx - ax) / L, tz = (bz - az) / L
+    const k = turn(i)
     for (let t = 0; t < L; t += 1.2) {
       const cx = ax + tx * t, cz = az + tz * t
       // the crooked block only, not the straight approaches into Hyde and Leavenworth
       if (cx < -66 || cx > 47) continue
       for (const s of [-1, 1]) {
-        const x = cx - tz * s * 3.9, z = cz + tx * s * 3.9
-        const y = 0
+        // s = +1 is the left of travel; a bend's outside is the side opposite its turn
+        if (Math.abs(k) > 1.5 && Math.sign(k) !== s) continue
+        const x = cx - tz * s * OFF, z = cz + tx * s * OFF
         const c = Math.sin(x * 3.1 + z * 1.7) > 0.7 ? BLOOMS[Math.abs(Math.round(x * 7 + z * 3)) % BLOOMS.length] : HEDGE
-        // a 1.2 m run of hedge, 0.9 m high, 1.1 m deep, turned along the road
-        const hx = 0.6, hz = 0.55
-        box(out, x, y + 0.45, z, Math.abs(tx) * hx + Math.abs(tz) * hz, 0.45, Math.abs(tz) * hx + Math.abs(tx) * hz, c, leaf)
+        // a 1.2 m run of hedge, 0.9 m high, 0.9 m deep, turned along the road
+        const hx = 0.6, hz = 0.45
+        box(out, x, 0.45, z, Math.abs(tx) * hx + Math.abs(tz) * hz, 0.45, Math.abs(tz) * hx + Math.abs(tx) * hz, c, leaf)
+        // inside a bend, the planted bed behind the hedge: a lower mass of shrubs and flowers
+        if (Math.abs(k) > 1.5) {
+          const x2 = cx - tz * s * (OFF + 1.5), z2 = cz + tx * s * (OFF + 1.5)
+          const c2 = Math.sin(x2 * 2.3 + z2 * 2.9) > 0.2 ? BLOOMS[Math.abs(Math.round(x2 * 5 + z2 * 7)) % BLOOMS.length] : HEDGE
+          box(out, x2, 0.35, z2, 0.7, 0.35, 0.7, c2, leaf)
+        }
       }
     }
   }

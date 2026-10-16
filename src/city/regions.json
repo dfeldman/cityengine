@@ -326,7 +326,8 @@
     "awnings": 0.35,
     "brickStreets": { "names": ["Market Street"], "colour": [0.55, 0.32, 0.26] },
     "streetWidths": [
-      { "street": "6th Street", "from": [37.77990, -122.40750], "to": [37.77660, -122.40330], "width": 19, "walk": 3, "note": "OSM says six lanes, Folsom to Harrison; Mapillary 2025: four and parking, ~3 m sidewalks (owner, 2026-10-15)" }
+      { "street": "6th Street", "from": [37.77990, -122.40750], "to": [37.77660, -122.40330], "width": 19, "walk": 3, "note": "OSM says six lanes, Folsom to Harrison; Mapillary 2025: four and parking, ~3 m sidewalks (owner, 2026-10-15)" },
+      { "street": "Lombard Street", "from": [37.80200, -122.41950], "to": [37.80222, -122.41790], "width": 4.2, "walk": 0, "note": "the crooked block: one brick lane between hedges, its sidewalks the separate stairways (owner, 2026-10-16: 'too narrow to accommodate the zigzag road'; LiDAR shows the buildings are where OSM has them)" }
     ],
     "streetPaint": [
       { "street": "Market Street", "from": [37.77310, -122.42230], "to": [37.78770, -122.40340], "paint": "transit", "note": "the streetcar lanes red, Gough to 3rd (owner)" },
