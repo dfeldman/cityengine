@@ -4201,6 +4201,257 @@ function swedishAmericanHall_2174_Market(out: MeshBuilder, fit: Fit): void {
   for (const idx of m.indices) out.indices.push(base + idx)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// 650 Townsend Street, the former Zynga headquarters (docs/sf-batches/MODEL-ZYNGA.md, 2026-10-15)
+// ---------------------------------------------------------------------------------------------------------------
+
+const ZY_BRICK: Rgb = [0.38, 0.17, 0.14]
+const ZY_BRICK_D: Rgb = [0.3, 0.13, 0.11]
+const ZY_STONE: Rgb = [0.6, 0.52, 0.47]
+const ZY_STONE_L: Rgb = [0.68, 0.64, 0.6]
+const ZY_GLASS: Rgb = [0.3, 0.39, 0.47]
+const ZY_SPAN: Rgb = [0.4, 0.5, 0.58]
+const ZY_FRAME: Rgb = [0.2, 0.22, 0.25]
+const ZY_DARK: Rgb = [0.07, 0.08, 0.1]
+const ZY_RED: Rgb = [0.62, 0.13, 0.15]
+const ZY_WHITE: Rgb = [1, 1, 1]
+const ZY_DECK: Rgb = [0.6, 0.6, 0.58]
+const ZY_TEAL: Rgb = [0.2, 0.42, 0.45]
+const ZY_ROOF: Rgb = [0.5, 0.5, 0.49]
+const ZY_BK = surfaceTag('brick')
+const ZY_CN = surfaceTag('concrete')
+
+/** the bulldog in profile, head right, on a 10 x 10 grid: convex pieces (u, y) */
+const ZY_DOG: [number, number][][] = [
+  [[1.3, 4.2], [6.2, 4.2], [6.2, 7.0], [1.0, 6.4]],
+  [[5.4, 3.9], [7.2, 3.9], [7.4, 7.6], [5.4, 7.4]],
+  [[6.4, 6.2], [9.4, 6.2], [9.6, 8.6], [6.8, 9.0]],
+  [[8.8, 6.0], [9.9, 6.4], [9.9, 7.8], [8.8, 7.8]],
+  [[6.8, 9.0], [7.6, 9.9], [8.3, 8.9], [8.3, 8.9]],
+  [[8.0, 8.9], [8.9, 9.7], [9.2, 8.7], [9.2, 8.7]],
+  [[5.6, 0], [6.9, 0], [6.9, 4.3], [5.6, 4.3]],
+  [[4.6, 0], [5.5, 0], [5.5, 4.3], [4.6, 4.3]],
+  [[1.4, 0], [2.7, 0], [2.9, 4.3], [1.4, 4.3]],
+  [[2.9, 0], [3.8, 0], [3.8, 4.2], [2.9, 4.2]],
+  [[0.5, 6.3], [1.3, 6.3], [0.9, 8.0], [0.2, 8.2]],
+]
+
+/**
+ * 650 Townsend's plan: the four long edges of the fit ring, intersected into corners and each rounded with a tangent
+ * arc (the kit's walls are flat). The south corner (the −x end of the −z Townsend front, towards 8th Street) is the big
+ * drum that carries the bulldog; the west corner is the arch-logo corner; the other two are tight roundings.
+ */
+function zyPlan(ring?: P2[]): { pts: P2[]; kind: number[]; drum: { c: P2; r: number; phi: number; i0: number; i1: number } } {
+  let R = ring && ring.length >= 4 ? ring : [{ x: -73, z: -47 }, { x: 67, z: -48 }, { x: 67, z: 35 }, { x: -73, z: 35 }]
+  const n = R.length
+  let area = 0
+  for (let i = 0; i < n; i++) { const a = R[i], b = R[(i + 1) % n]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) R = [...R].reverse()
+  const es = R.map((a, i) => ({ a, b: R[(i + 1) % n], L: Math.hypot(R[(i + 1) % n].x - a.x, R[(i + 1) % n].z - a.z) })).filter((e) => e.L > 15)
+  let corners: P2[]
+  if (es.length === 4) {
+    corners = es.map((e, i) => {
+      const f = es[(i + 1) % 4]
+      const d1 = { x: e.b.x - e.a.x, z: e.b.z - e.a.z }, d2 = { x: f.b.x - f.a.x, z: f.b.z - f.a.z }
+      const den = d1.x * d2.z - d1.z * d2.x
+      const s = ((f.a.x - e.a.x) * d2.z - (f.a.z - e.a.z) * d2.x) / (Math.abs(den) < 1e-6 ? 1e-6 : den)
+      return { x: e.a.x + d1.x * s, z: e.a.z + d1.z * s }
+    })
+  } else {
+    const xs = R.map((p) => p.x), zs = R.map((p) => p.z)
+    const x0 = Math.min(...xs), x1 = Math.max(...xs), z0 = Math.min(...zs), z1 = Math.max(...zs)
+    corners = [{ x: x0, z: z0 }, { x: x1, z: z0 }, { x: x1, z: z1 }, { x: x0, z: z1 }]
+  }
+  let B = 0
+  corners.forEach((p, i) => { if (p.x + p.z < corners[B].x + corners[B].z) B = i })
+  let A = -1
+  corners.forEach((p, i) => { if (i !== B && (A < 0 || p.x < corners[A].x)) A = i })
+  const pts: P2[] = []
+  const kind: number[] = []
+  let drum = { c: { x: 0, z: 0 }, r: 1, phi: 0, i0: 0, i1: 0 }
+  for (let k = 0; k < 4; k++) {
+    const C = corners[k], P = corners[(k + 3) % 4], Qn = corners[(k + 1) % 4]
+    const r = k === B ? 15 : k === A ? 7 : 4
+    const l1 = Math.hypot(P.x - C.x, P.z - C.z), l2 = Math.hypot(Qn.x - C.x, Qn.z - C.z)
+    const v1 = { x: (P.x - C.x) / l1, z: (P.z - C.z) / l1 }, v2 = { x: (Qn.x - C.x) / l2, z: (Qn.z - C.z) / l2 }
+    const th = Math.acos(Math.max(-1, Math.min(1, v1.x * v2.x + v1.z * v2.z)))
+    const d = r / Math.tan(th / 2)
+    const bis = { x: v1.x + v2.x, z: v1.z + v2.z }
+    const bl = Math.hypot(bis.x, bis.z)
+    const dist = r / Math.sin(th / 2)
+    const c = { x: C.x + (bis.x / bl) * dist, z: C.z + (bis.z / bl) * dist }
+    const t1 = { x: C.x + v1.x * d, z: C.z + v1.z * d }, t2 = { x: C.x + v2.x * d, z: C.z + v2.z * d }
+    const a1 = Math.atan2(t1.z - c.z, t1.x - c.x)
+    let dl = Math.atan2(t2.z - c.z, t2.x - c.x) - a1
+    while (dl > Math.PI) dl -= 2 * Math.PI
+    while (dl < -Math.PI) dl += 2 * Math.PI
+    const ns = Math.max(2, Math.ceil(Math.abs(dl) / (k === B ? 0.1 : 0.2)))
+    const i0 = pts.length
+    for (let s = 0; s <= ns; s++) {
+      pts.push({ x: c.x + Math.cos(a1 + (dl * s) / ns) * r, z: c.z + Math.sin(a1 + (dl * s) / ns) * r })
+      kind.push(s === ns ? 0 : k === B ? 2 : k === A ? 3 : 1)
+    }
+    if (k === B) drum = { c, r, phi: Math.atan2(C.z - c.z, C.x - c.x), i0, i1: i0 + ns }
+  }
+  return { pts, kind, drum }
+}
+
+function zyngaHQ_650_Townsend(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const { pts, kind, drum } = zyPlan(fit.ring)
+  const NS = pts.length
+  const H = 20, HD = 24, Y0 = -1
+  const up: V3 = [0, 1, 0]
+  const nrm = (x: number, z: number): V3 => [x, 0, z]
+  const Q = (p: V3[], nv: V3, col: Rgb, tag = ZY_BK): void => m.quad(p, nv, uv, col, tag)
+  type Seg = { a: P2; b: P2; L: number; t: P2; n: P2; k: number }
+  const S: Seg[] = pts.map((a, i) => {
+    const b = pts[(i + 1) % NS]
+    const L = Math.hypot(b.x - a.x, b.z - a.z)
+    const t = { x: (b.x - a.x) / L, z: (b.z - a.z) / L }
+    return { a, b, L, t, n: { x: t.z, z: -t.x }, k: kind[i] }
+  })
+  const P3 = (s: Seg, u: number, d: number, y: number): V3 => [s.a.x + s.t.x * u + s.n.x * d, y, s.a.z + s.t.z * u + s.n.z * d]
+  const rect = (s: Seg, u0: number, u1: number, d: number, y0: number, y1: number, col: Rgb, tag = ZY_BK): void =>
+    Q([P3(s, u0, d, y0), P3(s, u1, d, y0), P3(s, u1, d, y1), P3(s, u0, d, y1)], nrm(s.n.x, s.n.z), col, tag)
+  /** a block standing d proud on wall s */
+  const slab = (s: Seg, u0: number, u1: number, d: number, y0: number, y1: number, col: Rgb, tag = ZY_CN): void => {
+    rect(s, u0, u1, d, y0, y1, col, tag)
+    Q([P3(s, u0, 0, y1), P3(s, u1, 0, y1), P3(s, u1, d, y1), P3(s, u0, d, y1)], up, col, tag)
+    Q([P3(s, u0, 0, y0), P3(s, u0, d, y0), P3(s, u0, d, y1), P3(s, u0, 0, y1)], nrm(-s.t.x, -s.t.z), col, tag)
+    Q([P3(s, u1, d, y0), P3(s, u1, 0, y0), P3(s, u1, 0, y1), P3(s, u1, d, y1)], nrm(s.t.x, s.t.z), col, tag)
+  }
+
+  // ---- the garage: open grey decks on the 8th Street (−x) wall, beside the drum -------------------------------------------
+  let gj = -1
+  S.forEach((s, j) => { if (s.k === 0 && s.L > 15 && (gj < 0 || s.n.x < S[gj].n.x)) gj = j })
+  const G0z = drum.c.z + drum.r + 3, G1z = G0z + 40
+  const gu = (z: number): number => (z - S[gj].a.z) / S[gj].t.z
+  const gA = Math.max(0, Math.min(gu(G0z), gu(G1z))), gB = Math.min(S[gj].L, Math.max(gu(G0z), gu(G1z)))
+
+  // ---- the walls ----------------------------------------------------------------------------------------------------------
+  const wall = (j: number, u0: number, u1: number, top: number): void => {
+    const s = S[j]
+    if (u1 - u0 < 0.05) return
+    rect(s, u0, u1, 0, Y0, top, ZY_BRICK)
+    // brick courses read as a darker plinth
+    rect(s, u0, u1, 0.05, Y0, 0.9, ZY_BRICK_D)
+    slab(s, u0, u1, 0.18, 4.5, 5.3, ZY_STONE)
+    slab(s, u0, u1, 0.4, top - 1.0, top, ZY_STONE_L)
+    if (s.k === 3) {
+      // the arch-logo corner: a dark arched recess and white outline strokes
+      rect(s, u0, u1, 0.1, 7.5, 16.5, ZY_DARK, ZY_CN)
+      rect(s, u0, u1, 0.14, 11.8, 12.1, ZY_WHITE, ZY_CN)
+      rect(s, u0, u1, 0.14, 7.5, 7.8, ZY_WHITE, ZY_CN)
+      rect(s, u0, u1, 0.14, 16.2, 16.5, ZY_WHITE, ZY_CN)
+      return
+    }
+    if (s.k !== 0 || s.L < 4) return
+    // ground storey: dark storefront glass between brick piers
+    for (let u = u0 + 1.0; u + 3.2 < u1; u += 4.6) rect(s, u, u + 3.2, 0.1, 0.9, 4.2, ZY_DARK, surfaceTag('glass'))
+    // upper storeys: blue glass bands between red-brick piers, a pale strip in each pier
+    const pitch = 9, pier = 3.2, gw = pitch - pier
+    for (let u = u0 + pier / 2 + 0.3; u + gw + pier / 2 < u1; u += pitch) {
+      const y0 = 5.9, y1 = top - 1.4
+      rect(s, u, u + gw, 0.1, y0, y1, ZY_GLASS, GL)
+      for (let q = 1; q < 4; q++) rect(s, u + (gw * q) / 4 - 0.04, u + (gw * q) / 4 + 0.04, 0.14, y0, y1, ZY_FRAME, ZY_CN)
+      for (let y = y0 + 3.2; y < y1 - 0.5; y += 3.2) rect(s, u, u + gw, 0.14, y - 0.25, y + 0.25, ZY_SPAN, ZY_CN)
+      rect(s, u + gw + pier / 2 - 0.25, u + gw + pier / 2 + 0.25, 0.1, 5.6, top - 1.0, ZY_STONE_L)
+    }
+  }
+  for (let j = 0; j < NS; j++) {
+    const s = S[j]
+    if (s.k === 2) continue
+    if (j === gj) { wall(j, 0, gA, H); wall(j, gB, s.L, H) } else wall(j, 0, s.L, H)
+  }
+  // the teal-glass canopy over the "650" entrance, on the Townsend front
+  let fj = 0
+  S.forEach((s, j) => { if (s.k === 0 && s.L > 15 && s.n.z < S[fj].n.z) fj = j })
+  {
+    const s = S[fj], u = s.L * 0.5
+    slab(s, u, u + 12, 3.2, 4.9, 5.3, ZY_TEAL, GL)
+    rect(s, u, u + 12, 0.12, 0.9, 4.6, ZY_DARK, GL)
+    rect(s, u, u + 12, 0.12, 5.9, 12, [0.25, 0.4, 0.55], GL)
+  }
+
+  // garage decks
+  if (gj >= 0 && gB - gA > 6) {
+    const s = S[gj]
+    const DEP = 5
+    rect(s, gA, gB, -DEP, Y0, H, ZY_DARK, ZY_CN)
+    for (let y = 0; y < H; y += 4) {
+      Q([P3(s, gA, -DEP, y + 0.45), P3(s, gB, -DEP, y + 0.45), P3(s, gB, 0, y + 0.45), P3(s, gA, 0, y + 0.45)], up, ZY_DECK, ZY_CN)
+      slab(s, gA, gB, 0.15, y, y + 1.0, ZY_DECK, ZY_CN)
+    }
+    for (let u = gA; u <= gB + 0.01; u += (gB - gA) / Math.round((gB - gA) / 6)) {
+      Q([P3(s, u - 0.3, 0.05, 0), P3(s, u + 0.3, 0.05, 0), P3(s, u + 0.3, 0.05, H), P3(s, u - 0.3, 0.05, H)], nrm(s.n.x, s.n.z), ZY_DECK, ZY_CN)
+    }
+    for (const [u, sg] of [[gA, -1], [gB, 1]] as [number, number][]) {
+      Q([P3(s, u, 0, Y0), P3(s, u, -DEP, Y0), P3(s, u, -DEP, H), P3(s, u, 0, H)], nrm(s.t.x * sg, s.t.z * sg), ZY_BRICK)
+    }
+  }
+
+  // ---- the drum --------------------------------------------------------------------------------------------------------------
+  const { c, r, phi } = drum
+  const AP = (a: number, rr: number, y: number): V3 => [c.x + Math.cos(a) * rr, y, c.z + Math.sin(a) * rr]
+  const ring3 = (a0: number, a1: number, rr: number, y0: number, y1: number, col: Rgb, tag = ZY_BK, step = 0.09): void => {
+    const k = Math.max(1, Math.ceil(Math.abs(a1 - a0) / step))
+    for (let i = 0; i < k; i++) {
+      const a = a0 + ((a1 - a0) * i) / k, b = a0 + ((a1 - a0) * (i + 1)) / k
+      Q([AP(a, rr, y0), AP(b, rr, y0), AP(b, rr, y1), AP(a, rr, y1)], nrm(Math.cos((a + b) / 2), Math.sin((a + b) / 2)), col, tag)
+    }
+  }
+  const SP = Math.PI / 4
+  const a0 = phi - SP, a1 = phi + SP
+  ring3(a0, a1, r, Y0, HD, ZY_BRICK)
+  ring3(a0, a1, r + 0.05, Y0, 0.9, ZY_BRICK_D)
+  // stone courses and cornice
+  ring3(a0, a1, r + 0.2, 6.0, 6.7, ZY_STONE)
+  ring3(a0, a1, r + 0.15, 7.4, 7.6, ZY_STONE_L)
+  ring3(a0, a1, r + 0.15, 19.6, 19.8, ZY_STONE_L)
+  ring3(a0, a1, r + 0.4, HD - 1.4, HD, ZY_STONE_L)
+  // perforated brick bands above and below the red panel: dark red ground with dark slits
+  for (const [y0, y1] of [[7.9, 9.3], [19.9, 21.3]] as [number, number][]) {
+    ring3(phi - 0.62, phi + 0.62, r + 0.12, y0, y1, ZY_BRICK_D)
+    for (let a = phi - 0.6; a < phi + 0.6; a += 0.045) ring3(a, a + 0.02, r + 0.16, y0 + 0.2, y1 - 0.2, ZY_DARK, ZY_CN)
+  }
+  // the red panel
+  ring3(phi - 0.39, phi + 0.39, r + 0.2, 9.4, 19.7, ZY_RED, ZY_CN, 0.06)
+  // the bulldog: convex pieces mapped onto the curve (head to the viewer's right = increasing angle here, as the plan runs)
+  const rp = r + 0.3, sc = 0.98
+  const dy = (y: number): number => (y <= 4.3 ? y * 0.7 : 3.0 + (y - 4.3) * 0.95) // a stocky dog: short legs
+  for (const piece of ZY_DOG) {
+    const pp: V3[] = piece.map(([u, y]) => AP(phi + ((u - 5) * sc) / rp, rp, 10.6 + dy(y) * sc))
+    const am = phi + ((piece.reduce((t, q) => t + q[0], 0) / piece.length - 5) * sc) / rp
+    Q(pp, nrm(Math.cos(am), Math.sin(am)), ZY_WHITE, ZY_CN)
+  }
+  // the pale-stone portal ("Townsend Center") at the foot of the curve, and the tall glass slits either side
+  ring3(phi - 0.2, phi + 0.2, r + 0.3, 0, 6.0, ZY_STONE_L)
+  ring3(phi - 0.1, phi + 0.1, r + 0.34, 0, 4.4, ZY_DARK, ZY_CN, 0.1)
+  for (const sg of [-1, 1]) {
+    for (const [o0, o1] of [[0.52, 0.6], [0.66, 0.74]]) ring3(phi + sg * o0, phi + sg * o1, r + 0.1, 8.5, 19.4, ZY_GLASS, GL, 0.04)
+  }
+  // the drum's roof, a step up from the 20 m block
+  const roofPts: P2[] = []
+  for (let i = drum.i0; i <= drum.i1; i++) roofPts.push(pts[i])
+  roofPts.push(c)
+  capPolygonWithHoles(m, [roofPts], HD, ZY_ROOF, ZY_CN)
+  for (const [e, sg] of [[pts[drum.i0], -1], [pts[drum.i1], 1]] as [P2, number][]) {
+    const dx = c.x - e.x, dz = c.z - e.z, l = Math.hypot(dx, dz)
+    Q([[e.x, H, e.z], [c.x, H, c.z], [c.x, HD, c.z], [e.x, HD, e.z]], nrm((sg * dz) / l, (-sg * dx) / l), ZY_BRICK)
+  }
+  // ---- the main roof -----------------------------------------------------------------------------------------------------------
+  capPolygonWithHoles(m, [pts], H, ZY_ROOF, ZY_CN)
+
+  for (let i = 0; i < m.positions.length; i++) out.positions.push(m.positions[i])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -4220,4 +4471,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   paigeMotorCar_1699_VanNess,
   fourthChurchScientist_300_Funston,
   swedishAmericanHall_2174_Market,
+  zyngaHQ_650_Townsend,
 }
