@@ -10671,6 +10671,9 @@ Building (scratchpad tools: look.ts / lookfov.ts).
 3. (2026-10-16 04:20, `?fog=off`) Building by building from Treasure Island: 555 California read as a bright
    brick-red tower — darkened. Otherwise the silhouette order matches (Salesforce, Millennium, Embarcadero Center,
    Transamerica); the hills behind downtown are low (#260, owner decision).
+4. From the top of Dolores Park (Commons "Mission Dolores Park view January 2026", docs/shots/refs/skyline/
+   dolores.jpg): the downtown cluster is right in order and scale. Caution for tools: a `?fog=off` shot taken a few
+   seconds after a jump shows the mid-distance city as bare grass — the tiles had not streamed yet, not a defect.
 
 ### #279 Building parts in the air with nothing under them — a scan (2026-10-16, from #269) — OPEN, to triage
 
