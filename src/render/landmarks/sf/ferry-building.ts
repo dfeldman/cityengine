@@ -26,14 +26,21 @@ const CLOCK: Rgb = [0.92, 0.92, 0.88]
 
 /** Round-arched openings along a face at z = zf (facing sign s), from x0 to x1, `n` of them, sill y0 to crown y1. */
 function arcade(out: MeshBuilder, x0: number, x1: number, zf: number, s: number, n: number, y0: number, y1: number, w: number): void {
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const z = zf + s * 0.05, r = w / 2, spring = y1 - r
   for (let i = 0; i < n; i++) {
     const x = x0 + ((x1 - x0) * (i + 0.5)) / n
-    box(out, x, (y0 + y1 - w / 2) / 2, zf + s * 0.05, w / 2, (y1 - w / 2 - y0) / 2, 0.06, DARK, 0)
-    // the arch's head: a small stack standing in for the semicircle
-    for (let k = 1; k <= 3; k++) {
-      const hw = (w / 2) * Math.cos((k / 4) * (Math.PI / 2))
-      box(out, x, y1 - w / 2 + (k * w) / 8, zf + s * 0.05, hw, w / 16, 0.06, DARK, 0)
+    box(out, x, (y0 + spring) / 2, z, r, (spring - y0) / 2, 0.06, DARK, 0)
+    // the head: a true semicircle, a fan of eight slices from the springing line
+    for (let k = 0; k < 8; k++) {
+      const a0 = (k / 8) * Math.PI, a1 = ((k + 1) / 8) * Math.PI
+      const p0: [number, number, number] = [x + Math.cos(a0) * r, spring + Math.sin(a0) * r, z + s * 0.06]
+      const p1: [number, number, number] = [x + Math.cos(a1) * r, spring + Math.sin(a1) * r, z + s * 0.06]
+      const c: [number, number, number] = [x, spring, z + s * 0.06]
+      out.quad([c, p0, p1, p1], [0, 0, s], uv, DARK, 0)
     }
+    // the keystone over it
+    box(out, x, y1 + 0.15, z + s * 0.08, 0.22, 0.3, 0.06, STONE_DARK, 0)
   }
 }
 
