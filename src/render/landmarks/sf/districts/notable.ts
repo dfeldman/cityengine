@@ -8283,6 +8283,364 @@ function office_2_Bryant(out: MeshBuilder, fit: Fit): void {
   out.signs.push(...m.signs)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// Uber headquarters, 1455 and 1515 3rd Street, Mission Bay (SHoP Architects, 2019)
+// ---------------------------------------------------------------------------------------------------------------
+
+/*
+ * Evidence (docs/sf-batches/MODEL-UBER-MISSION-BAY.md, 2026-10-16). The pack's Commons photographs c0/c1 are NOT these
+ * two buildings: the same curved, copper-finned block and perforated-screen podium are in
+ * docs/shots/refs/sf-mapillary/way-1410183655-01.jpg, and mapillary-master.csv puts way/1410183655 and way/1410182008
+ * at 37.7672 / 37.7687 — the Chase Center office pair at 3rd and 16th, 140–310 m south, already modelled (uberHqWing,
+ * uberHqCorner in sf/scratch-3.ts). So no curved corner and no copper fin band here. What does show 1455/1515:
+ * the pack's m0–m2 (B2's 3rd Street face: blue glass, staggered angled panes kicked out at the bottom, bronze
+ * mullions, a dark recessed ground floor under a wood-toned soffit) and docs/shots/tall-01/way-1047709622-01..03.jpg
+ * and docs/review/san-francisco/refs/way-1047709621-0/1.jpg (looking south down 3rd St: the TALL flat-glass block
+ * nearest, i.e. north = Building 1, a plaza, then the LOWER ~7-storey block with a bronze-framed corner = Building 2).
+ * That agrees with OSM (B1 12 levels 53.7 m, B2 7 levels 31.9 m), so the heights are OSM's.
+ *
+ * Both are drawn in their pack's plan frame (metres, x east, z north, about the EVIDENCE origin) and carried onto
+ * `fit.ring` by `uberPlace`.
+ */
+
+const UB_GLASS: Rgb = [0.16, 0.22, 0.32]       // dark blue reflective glass
+const UB_PANE: Rgb = [0.25, 0.33, 0.46]        // an angled pane, tipped up to the sky
+const UB_MULL: Rgb = [0.3, 0.33, 0.37]         // mullions, floor lines
+const UB_BRONZE: Rgb = [0.27, 0.19, 0.13]       // B2's corner frames and the panes' cheeks
+const UB_WOOD: Rgb = [0.62, 0.4, 0.24]         // the soffit over the ground floor
+const UB_GROUND: Rgb = [0.12, 0.13, 0.15]      // the recessed ground floor
+const UB_ROOF: Rgb = [0.46, 0.47, 0.48]
+const UB_GL = surfaceTag('glass')
+const UB_MT = surfaceTag('metal')
+const UB_WD = surfaceTag('metal')        // the wood soffit reads as a smooth panel, no grain at this scale
+
+/** B1's outline (way/1047709621) in its pack's plan frame; the drawn masses are its two parts. */
+const UB1_OUTLINE: P2[] = [[-38.8, 15.2], [-36.5, -14.2], [-21.9, -13.1], [-18.6, -12.9], [-17.5, -12.8], [-14.2, -12.5],
+  [22.8, -9.6], [36.8, -8.6], [36.8, -7.5], [34.6, 20.4], [34.5, 20.9], [20.5, 19.8]].map(([x, z]) => ({ x, z }))
+const UB1_TOWER: P2[] = [[-38.8, 15.2], [-36.5, -14.2], [22.8, -9.6], [20.5, 19.8]].map(([x, z]) => ({ x, z }))   // way/1047709623
+const UB1_PAVILION: P2[] = [[20.5, 19.8], [22.8, -9.6], [36.8, -8.6], [34.55, 20.6]].map(([x, z]) => ({ x, z }))  // way/1047709624
+/** B2's outline (way/1047709622) in ITS pack's frame, and the drawn rectangle */
+const UB2_OUTLINE: P2[] = [[-19.9, 17.0], [-13.9, -65.6], [31.0, -62.5], [24.9, 20.4], [13.3, 19.5], [9.9, 19.3],
+  [-10.9, 17.7], [-14.4, 17.4]].map(([x, z]) => ({ x, z }))
+const UB2_BLOCK: P2[] = [[-19.9, 17.0], [-13.9, -65.6], [31.0, -62.5], [24.9, 20.4]].map(([x, z]) => ({ x, z }))
+/**
+ * The skybridges (OSM building=bridge) in B2's frame: B1's pack coordinates + (15.05, 52.73), the offset between the
+ * two EVIDENCE origins. Each: the end on B2's north face, the end on B1's south face, half-width, underside, top.
+ * They splay — way/1047709619 runs NNE from B2's west end, way/1047709620 NNW from its middle.
+ */
+const UB_BRIDGES: { a: P2; b: P2; hw: number; y0: number; y1: number }[] = [
+  { a: { x: -12.7, z: 17.5 }, b: { x: -5.2, z: 39.7 }, hw: 1.75, y0: 13.8, y1: 18.2 },     // way/1047709619
+  { a: { x: 11.55, z: 19.4 }, b: { x: -0.8, z: 40.1 }, hw: 1.7, y0: 22.6, y1: 26.9 },      // way/1047709620
+]
+
+/**
+ * The turn + shift carrying a plan-frame outline onto the city's `fit.ring`: turns within ±45° of the manifest front's
+ * (bearing + 180°, as render/landmarks.ts fitAt; fitSnug may take a few degrees more), area centroids made to coincide,
+ * scored by the RMS distance of the ring's vertices to the turned outline. A rectangle fits as well turned 180°, so
+ * the search never strays far from the front's own turn. With no ring: the front's turn, centred as the shot tool does.
+ */
+function uberPlace(plan: P2[], ring: P2[] | undefined, front: number): { c: number; s: number; tx: number; tz: number; res: number } {
+  const th0 = ((front + 180) * Math.PI) / 180
+  const ca = emanuElCentroid(plan)
+  if (!ring || ring.length < 3) {
+    const c = Math.cos(th0), s = Math.sin(th0)
+    const T = plan.map((p) => ({ x: p.x * c - p.z * s, z: p.x * s + p.z * c }))
+    const xs = T.map((p) => p.x), zs = T.map((p) => p.z)
+    return { c, s, tx: -(Math.max(...xs) + Math.min(...xs)) / 2, tz: -(Math.max(...zs) + Math.min(...zs)) / 2, res: -1 }
+  }
+  const cb = emanuElCentroid(ring)
+  let best = { c: 1, s: 0, tx: 0, tz: 0, res: Infinity }
+  for (let d = -45; d <= 45; d += 0.25) {
+    const th = th0 + (d * Math.PI) / 180, c = Math.cos(th), s = Math.sin(th)
+    const tx = cb.x - (ca.x * c - ca.z * s), tz = cb.z - (ca.x * s + ca.z * c)
+    const T = plan.map((p) => ({ x: p.x * c - p.z * s + tx, z: p.x * s + p.z * c + tz }))
+    let e = 0
+    for (const v of ring) {
+      let dm = Infinity
+      for (let i = 0; i < T.length; i++) {
+        const p = T[i], q = T[(i + 1) % T.length], dx = q.x - p.x, dz = q.z - p.z
+        const t = Math.max(0, Math.min(1, ((v.x - p.x) * dx + (v.z - p.z) * dz) / (dx * dx + dz * dz || 1)))
+        dm = Math.min(dm, Math.hypot(v.x - p.x - dx * t, v.z - p.z - dz * t))
+      }
+      e += dm * dm
+    }
+    const res = Math.sqrt(e / ring.length)
+    if (res < best.res) best = { c, s, tx, tz, res }
+  }
+  return best
+}
+
+/** `r` anticlockwise (positive twice-area), copied */
+function uberCcw(r: P2[]): P2[] {
+  let a = 0
+  for (let i = 0; i < r.length; i++) { const p = r[i], q = r[(i + 1) % r.length]; a += p.x * q.z - q.x * p.z }
+  return a < 0 ? [...r].reverse() : [...r]
+}
+
+/** An anticlockwise ring moved `d` outward (negative: inward), mitred. */
+function uberOffset(r: P2[], d: number): P2[] {
+  const n = r.length
+  return r.map((p, i) => {
+    const a = r[(i + n - 1) % n], b = r[(i + 1) % n]
+    const l1 = Math.hypot(p.x - a.x, p.z - a.z), l2 = Math.hypot(b.x - p.x, b.z - p.z)
+    const n1 = { x: (p.z - a.z) / l1, z: -(p.x - a.x) / l1 }, n2 = { x: (b.z - p.z) / l2, z: -(b.x - p.x) / l2 }
+    const mx = n1.x + n2.x, mz = n1.z + n2.z, k = (mx * n1.x + mz * n1.z) || 1
+    return { x: p.x + (mx / k) * d, z: p.z + (mz / k) * d }
+  })
+}
+
+/** Walls of an anticlockwise ring from y0 to y1, facing out (or in, `inward`). */
+function uberWalls(m: MeshBuilder, r: P2[], y0: number, y1: number, c: Rgb, tag: number, inward = false): void {
+  for (let i = 0; i < r.length; i++) {
+    const a = r[i], b = r[(i + 1) % r.length], L = Math.hypot(b.x - a.x, b.z - a.z)
+    if (L < 0.05) continue
+    const nx = (b.z - a.z) / L, nz = -(b.x - a.x) / L, sg = inward ? -1 : 1
+    m.quad([[a.x, y0, a.z], [b.x, y0, b.z], [b.x, y1, b.z], [a.x, y1, a.z]], [nx * sg, 0, nz * sg],
+      [[0, 0], [L / 4, 0], [L / 4, (y1 - y0) / 4], [0, (y1 - y0) / 4]], c, tag)
+  }
+}
+
+/** a small deterministic hash in [0, 1) */
+function uberHash(a: number, b: number, c: number): number {
+  const v = Math.sin(a * 127.1 + b * 311.7 + c * 74.7) * 43758.5453
+  return v - Math.floor(v)
+}
+
+/**
+ * The SHoP skin on one anticlockwise ring, both buildings: a dark storefront recessed `rec` under a wood soffit and
+ * fascia to `g`; above it blue glass to `top` with a mullion every ~1.5 m and a floor line every `fl`; and, on a
+ * staggered diagonal, panes hinged at their head and kicked out at the foot (m1: the dark wedge under each), their
+ * faces tipped to the sky. `paneRate` is the share of bays that kick. Returns nothing; draws into `m`.
+ */
+function uberSkin(m: MeshBuilder, ring: P2[], g: number, top: number, fl: number, rec: number, paneRate: number, seed: number): void {
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  // the ground floor: recessed storefront, the soffit, the fascia
+  const inner = uberOffset(ring, -rec)
+  uberWalls(m, inner, 0, g, UB_GROUND, UB_GL)
+  capPolygonWithHoles(m, [ring, [...inner].reverse()], g, UB_WOOD, UB_WD)                        // drawn up: the ledge
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length], ia = inner[i], ib = inner[(i + 1) % ring.length]
+    m.quad([[a.x, g - 0.02, a.z], [b.x, g - 0.02, b.z], [ib.x, g - 0.02, ib.z], [ia.x, g - 0.02, ia.z]], [0, -1, 0], uv, UB_WOOD, UB_WD)   // the soffit
+  }
+  // the canopy: a wood-lined slab standing 1.2 m out over the pavement, a metre deep (tall-01 -02: the brown band)
+  const can = uberOffset(ring, 1.2)
+  uberWalls(m, can, g - 0.25, g + 0.75, UB_WOOD, UB_WD)
+  capPolygonWithHoles(m, [can, [...ring].reverse()], g + 0.75, UB_MULL, UB_MT)
+  for (let i = 0; i < ring.length; i++) {
+    const a = can[i], b = can[(i + 1) % ring.length], ia = ring[i], ib = ring[(i + 1) % ring.length]
+    m.quad([[a.x, g - 0.25, a.z], [b.x, g - 0.25, b.z], [ib.x, g - 0.25, ib.z], [ia.x, g - 0.25, ia.z]], [0, -1, 0], uv, UB_WOOD, UB_WD)
+  }
+  // the glass and its parapet (glass carried a metre up, a metal inner face)
+  uberWalls(m, ring, g + 0.75, top + 1.1, UB_GLASS, UB_GL)
+  uberWalls(m, uberOffset(ring, -0.3), top, top + 1.1, UB_ROOF, UB_MT, true)
+  capPolygonWithHoles(m, [ring, [...uberOffset(ring, -0.3)].reverse()], top + 1.1, UB_MULL, UB_MT)
+  capPolygonWithHoles(m, [uberOffset(ring, -0.3)], top, UB_ROOF, UB_MT)
+  const floors = Math.round((top - g) / fl)
+  const fh = (top - g) / floors
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z)
+    if (L < 2) continue
+    const tx = (b.x - a.x) / L, tz = (b.z - a.z) / L, nx = tz, nz = -tx
+    const P = (u: number, y: number, pr: number): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const bays = Math.max(1, Math.round(L / 1.5)), w = L / bays
+    // mullions, one tall strip each
+    for (let k = 1; k < bays; k++) {
+      const u = k * w
+      m.quad([P(u - 0.05, g + 0.75, 0.06), P(u + 0.05, g + 0.75, 0.06), P(u + 0.05, top + 1.1, 0.06), P(u - 0.05, top + 1.1, 0.06)], [nx, 0, nz], uv, UB_MULL, UB_MT)
+    }
+    // floor lines
+    for (let f = 1; f <= floors; f++) {
+      const y = g + f * fh
+      m.quad([P(0, y - 0.14, 0.07), P(L, y - 0.14, 0.07), P(L, y + 0.14, 0.07), P(0, y + 0.14, 0.07)], [nx, 0, nz], uv, UB_MULL, UB_MT)
+    }
+    // the kicked panes: diagonal runs (bay − floor) with a little scatter, never in the corner bays
+    for (let f = 0; f < floors; f++) {
+      for (let k = 1; k < bays - 1; k++) {
+        const diag = (((k - 2 * f + seed * 5 + i * 3) % 9) + 9) % 9
+        const hit = diag < 2 ? uberHash(i + seed, k, f) < paneRate * 3.2 : uberHash(k, f, i + seed) < paneRate * 0.25
+        if (!hit) continue
+        const u0 = k * w + 0.06, u1 = (k + 1) * w - 0.06
+        const yb = g + 0.75 + f * fh + 0.25, yt = g + 0.75 + (f + 1) * fh - 0.35, d = 0.55
+        const hh = yt - yb, nl = Math.hypot(hh, d)
+        // the pane: foot out by d, head at the wall, facing up-and-out
+        m.quad([P(u0, yb, d), P(u1, yb, d), P(u1, yt, 0.02), P(u0, yt, 0.02)], [nx * hh / nl, d / nl, nz * hh / nl], uv, UB_PANE, UB_GL)
+        // the dark wedge underneath and its bronze cheeks
+        m.quad([P(u0, yb, 0.02), P(u1, yb, 0.02), P(u1, yb, d), P(u0, yb, d)], [0, -1, 0], uv, UB_GROUND, UB_MT)
+        m.quad([P(u0, yb, 0.02), P(u0, yb, d), P(u0, yt, 0.02), P(u0, yt, 0.02)], [-tx, 0, -tz], uv, UB_BRONZE, UB_MT)
+        m.quad([P(u1, yb, d), P(u1, yb, 0.02), P(u1, yt, 0.02), P(u1, yt, 0.02)], [tx, 0, tz], uv, UB_BRONZE, UB_MT)
+      }
+    }
+  }
+}
+
+/** Copy the plan-frame `m` onto `out` by `uberPlace`'s turn and shift. */
+function uberCopy(out: MeshBuilder, m: MeshBuilder, pl: { c: number; s: number; tx: number; tz: number }): void {
+  emanuElCopy(out, m, pl.c, pl.s, pl.tx, pl.tz)
+}
+
+/**
+ * 1455 3RD STREET, Uber Headquarters Building 1 (OSM way/1047709621, parts 1047709623 and 1047709624): the tall block,
+ * a 60 × 30 m slab of dark blue curtain glass to 53.7 m (12 levels) with its long side on the plaza and its short
+ * side on 3rd Street, flat-faced (docs/review/san-francisco/refs/way-1047709621-0/1.jpg: a regular mullion grid, few
+ * kicked panes), over a recessed dark ground floor under a deep wood-toned soffit; a one-storey glass pavilion (5.1 m)
+ * on its east end. No curved corner — see the evidence note above.
+ */
+function uberHQ1_1455_3rd(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const TOP = Math.max(48, Math.min(56, fit.height || 53.7)), G = 5.6
+  const tower = uberCcw(UB1_TOWER), pav = uberCcw(UB1_PAVILION)
+  uberSkin(m, tower, G, TOP - 1.1, 4.35, 1.6, 0.05, 1)
+  // a plant screen set back on the roof
+  const pen = uberOffset(tower, -7)
+  uberWalls(m, pen, TOP - 1.1, TOP + 3, UB_MULL, UB_MT)
+  capPolygonWithHoles(m, [pen], TOP + 3, UB_ROOF, UB_MT)
+  // the pavilion: a glass box with a wood fascia and a flat roof
+  uberWalls(m, pav, 0, 4.4, UB_GLASS, UB_GL)
+  uberWalls(m, uberOffset(pav, 0.1), 4.4, 5.1, UB_WOOD, UB_WD)
+  capPolygonWithHoles(m, [uberOffset(pav, 0.1)], 5.1, UB_ROOF, UB_MT)
+  uberCopy(out, m, uberPlace(UB1_OUTLINE, fit.ring, 265))
+}
+
+/**
+ * 1515 3RD STREET, Uber Headquarters Building 2 (OSM way/1047709622, 7 levels 31.9 m; Assessor 2021): the long low
+ * block, 85 m down 3rd Street and 45 m deep, in the same blue glass but busier — the kicked panes in diagonal runs
+ * (pack m0–m2) — with a bronze frame standing proud at the corners and round the roof edge
+ * (docs/shots/tall-01/way-1047709622-02/03.jpg), over the same recessed ground floor and wood soffit. No rounded
+ * corner in any photograph of it. Also draws the two glass skybridges (way/1047709619 at 13.8–18.2 m,
+ * way/1047709620 at 22.6–26.9 m) across to Building 1's south face.
+ */
+function uberHQ2_1515_3rd(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const TOP = Math.max(28, Math.min(34, fit.height || 31.9)), G = 5.4
+  const blk = uberCcw(UB2_BLOCK)
+  uberSkin(m, blk, G, TOP - 1.1, 4.35, 1.5, 0.12, 2)
+  // the bronze frame: a proud pier up each corner and a band round the top
+  for (let i = 0; i < blk.length; i++) {
+    const p = blk[i], q = blk[(i + 1) % blk.length], o = blk[(i + blk.length - 1) % blk.length]
+    const L1 = Math.hypot(q.x - p.x, q.z - p.z), L0 = Math.hypot(p.x - o.x, p.z - o.z)
+    const t1 = { x: (q.x - p.x) / L1, z: (q.z - p.z) / L1 }, t0 = { x: (p.x - o.x) / L0, z: (p.z - o.z) / L0 }
+    const pier: P2[] = uberCcw([{ x: p.x - t0.x * 1.4, z: p.z - t0.z * 1.4 }, { x: p.x, z: p.z }, { x: p.x + t1.x * 1.4, z: p.z + t1.z * 1.4 }])
+    const fat = uberOffset(pier, 0.25)
+    uberWalls(m, fat, G - 0.1, TOP + 0.3, UB_BRONZE, UB_MT)
+    capPolygonWithHoles(m, [fat], TOP + 0.3, UB_BRONZE, UB_MT)
+  }
+  // bronze fins every ~9 m between them (tall-01 -03: the brown verticals dividing the glass)
+  for (let i = 0; i < blk.length; i++) {
+    const a = blk[i], b = blk[(i + 1) % blk.length], L = Math.hypot(b.x - a.x, b.z - a.z), n = Math.max(1, Math.round(L / 9))
+    const h = Math.atan2(b.z - a.z, -(b.x - a.x)), nx = (b.z - a.z) / L, nz = -(b.x - a.x) / L
+    for (let k = 1; k < n; k++) {
+      const u = (k * L) / n
+      boxAlong(m, a.x + ((b.x - a.x) * u) / L + nx * 0.2, (G + TOP) / 2, a.z + ((b.z - a.z) * u) / L + nz * 0.2, 0.22, (TOP - G) / 2, 0.22, h, UB_BRONZE, UB_MT)
+    }
+  }
+  uberWalls(m, uberOffset(blk, 0.3), TOP - 1.4, TOP + 0.3, UB_BRONZE, UB_MT)
+  capPolygonWithHoles(m, [uberOffset(blk, 0.3), [...uberOffset(blk, -0.3)].reverse()], TOP + 0.3, UB_BRONZE, UB_MT)
+  const pen = uberOffset(blk, -13)
+  uberWalls(m, pen, TOP - 1.1, TOP + 2.6, UB_MULL, UB_MT)
+  capPolygonWithHoles(m, [pen], TOP + 2.6, UB_ROOF, UB_MT)
+  // the skybridges: glass tubes, a bronze floor and roof slab, a frame every 3 m, run 1 m into each wall
+  for (const br of UB_BRIDGES) {
+    const dx = br.b.x - br.a.x, dz = br.b.z - br.a.z, L = Math.hypot(dx, dz), ux = dx / L, uz = dz / L
+    const cx = (br.a.x + br.b.x) / 2, cz = (br.a.z + br.b.z) / 2, h = Math.atan2(ux, uz), hl = L / 2 + 1
+    boxAlong(m, cx, (br.y0 + br.y1) / 2, cz, br.hw - 0.05, (br.y1 - br.y0) / 2 - 0.35, hl, h, UB_PANE, UB_GL)
+    boxAlong(m, cx, br.y0 + 0.2, cz, br.hw + 0.1, 0.2, hl, h, UB_BRONZE, UB_MT)
+    boxAlong(m, cx, br.y1 - 0.2, cz, br.hw + 0.1, 0.2, hl, h, UB_BRONZE, UB_MT)
+    for (let s = -L / 2 + 1.5; s < L / 2 - 1; s += 3) {
+      boxAlong(m, cx + ux * s, (br.y0 + br.y1) / 2, cz + uz * s, br.hw + 0.06, (br.y1 - br.y0) / 2 - 0.3, 0.08, h, UB_MULL, UB_MT)
+    }
+  }
+  uberCopy(out, m, uberPlace(UB2_OUTLINE, fit.ring, 265))
+}
+
+/**
+ * Hotel Kabuki's tower, 1625 Post Street, Japantown (1968, 15 storeys): a square concrete tower in warm beige, every
+ * storey a continuous band of balcony slab and parapet running right round it with the windows recessed behind, and
+ * a wide flat roof slab overhanging all round like an eave. Mapillary docs/shots/tall-02/way-681442041-0{1,2,3}.
+ * The same on every face.
+ */
+function hotelKabuki_1625_Post(out: MeshBuilder, fit: Fit): void {
+  const CN = surfaceTag('concrete'), GL = surfaceTag('glass')
+  const BEIGE: Rgb = [0.8, 0.74, 0.62], SHADE: Rgb = [0.55, 0.5, 0.42], GLZ: Rgb = [0.2, 0.22, 0.25]
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  const N = 15, FL = 3.05, BASE = 4.2, TOP = BASE + (N - 1) * FL
+  const core = ecInset(ring, 1.1)
+  // the recessed glass wall behind the balconies, a dark base storey
+  ecWalls(out, core, 0, BASE, [0.16, 0.17, 0.18], GL)
+  ecWalls(out, core, BASE, TOP, GLZ, GL)
+  // a pier at each corner, full height
+  for (const p of ring) box(out, p.x * 0.97, TOP / 2, p.z * 0.97, 0.45, TOP / 2, 0.45, BEIGE, CN)
+  // every storey: the slab edge and its solid parapet, right round
+  for (let f = 0; f < N; f++) {
+    const y = BASE + f * FL
+    ecWalls(out, ring, y - 0.3, y + 0.95, BEIGE, CN)
+    ecSoffit(out, ring, core, y - 0.3, SHADE, CN)
+  }
+  capPolygonWithHoles(out, [core], TOP + 0.2, [0.5, 0.48, 0.45], CN)
+  // the flared roof slab, overhanging 1.8 m, its fascia thickening outward
+  const eave = ecInset(ring, -1.8)
+  ecWalls(out, eave, TOP + 0.9, TOP + 1.5, BEIGE, CN)
+  ecSoffit(out, eave, ring, TOP + 0.9, SHADE, CN)
+  capPolygonWithHoles(out, [eave], TOP + 1.5, [0.55, 0.53, 0.5], CN)
+  ecWalls(out, ring, TOP, TOP + 0.9, SHADE, CN)
+}
+
+/**
+ * The apartments at 4th and Harrison (way/288719494, 2000, 6-7 storeys, 160 units; photo pass TALL-02): a long pale
+ * grey and white block whose fronts step in and out in shallow bays (the OSM plan's 90 vertices are those bays),
+ * balconies with rails on every storey, a glazed shop floor; at the 4th/Harrison corner a ROUNDED tower rising a
+ * storey above the rest under a curved parapet. Front 225 (4th Street); the corner is found as the ring vertex
+ * nearest local (−x, −z)… measured, not assumed: the vertex with the least x+z in the fit frame.
+ */
+function apartments_4th_Harrison(out: MeshBuilder, fit: Fit): void {
+  const CN = surfaceTag('stucco'), GL = surfaceTag('glass'), MT = surfaceTag('metal')
+  const PALE: Rgb = [0.84, 0.84, 0.82], GREY: Rgb = [0.62, 0.64, 0.66], GLZ: Rgb = [0.22, 0.25, 0.29], RAIL: Rgb = [0.3, 0.32, 0.34]
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  const FL = 3.1, G = 4.4, N = 6, TOP = G + (N - 1) * FL
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z)
+    if (L < 0.3) continue
+    const tx = (b.x - a.x) / L, tz = (b.z - a.z) / L, nx = tz, nz = -tx, h = Math.atan2(nx, nz)
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const panel = (u0: number, u1: number, y0: number, y1: number, pr: number, c: Rgb, tag: number): void => {
+      out.quad([P(u0, y0, pr), P(u1, y0, pr), P(u1, y1, pr), P(u0, y1, pr)], [nx, 0, nz], uv, c, tag)
+    }
+    panel(0, L, 0, G, -0.05, GLZ, GL)                                           // the shop floor
+    panel(0, L, G, TOP, 0, i % 3 === 0 ? GREY : PALE, CN)
+    if (L < 2.5) continue
+    const n = Math.max(1, Math.round(L / 3.2)), w = L / n
+    for (let f = 0; f < N - 1; f++) {
+      const y = G + f * FL
+      for (let k = 0; k < n; k++) panel(k * w + 0.5, (k + 1) * w - 0.5, y + 0.9, y + 2.6, 0.04, GLZ, GL)
+      if (L > 5) {                                                               // a balcony rail on the longer faces
+        boxAlong(out, a.x + tx * L / 2 + nx * 0.7, y + 0.08, a.z + tz * L / 2 + nz * 0.7, L / 2 - 0.4, 0.08, 0.7, h, PALE, CN)
+        boxAlong(out, a.x + tx * L / 2 + nx * 1.38, y + 0.6, a.z + tz * L / 2 + nz * 1.38, L / 2 - 0.4, 0.45, 0.02, h, RAIL, MT)
+      }
+    }
+    boxAlong(out, a.x + tx * L / 2 + nx * 0.1, TOP + 0.3, a.z + tz * L / 2 + nz * 0.1, L / 2 + 0.1, 0.3, 0.12, h, PALE, CN)
+  }
+  capPolygonWithHoles(out, [ring], TOP, [0.5, 0.5, 0.5], CN)
+  // the rounded corner tower at 4th & Harrison: the ring's vertex with the least x + z (the corner toward −x, −z)
+  let c = ring[0]
+  for (const p of ring) if (p.x + p.z < c.x + c.z) c = p
+  const cx = c.x + 6, cz = c.z + 6, R = 7.5
+  prism(out, cx, cz, 0, G, R - 0.2, 20, GLZ, GL)
+  prism(out, cx, cz, G, TOP + FL, R, 20, PALE, CN)
+  for (let f = 0; f < N; f++) prism(out, cx, cz, G + f * FL + 0.9, G + f * FL + 2.6, R + 0.03, 20, GLZ, GL)
+  for (let f = 0; f < N; f++) prism(out, cx, cz, G + f * FL - 0.1, G + f * FL + 0.12, R + 0.5, 20, PALE, CN)
+  prism(out, cx, cz, TOP + FL, TOP + FL + 1.2, R + 0.3, 20, GREY, CN, R + 0.1)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -8326,5 +8684,9 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   sixCompanies_843_Stockton,
   cathedralPlaza_Geary,
   office_2_Bryant,
+  hotelKabuki_1625_Post,
+  apartments_4th_Harrison,
   gapHQ_2_Folsom,
+  uberHQ1_1455_3rd,
+  uberHQ2_1515_3rd,
 }
