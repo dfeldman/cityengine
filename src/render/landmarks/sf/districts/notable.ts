@@ -8961,6 +8961,42 @@ function coastGuardStation_CrissyField(out: MeshBuilder, fit: Fit): void {
   for (let x = -hx * 0.8 + 0.2; x <= hx * 0.8; x += hx * 0.4) box(out, x, 1.5, -hz - 2.6, 0.1, 1.5, 0.1, WHITE, CB)
 }
 
+/**
+ * The Torpedo Assembly Building on Yerba Buena Island (1891; HAER CA-232, docs/shots/refs/notable/torpedo): a long
+ * one-storey brick shed under a low gable roof, its gable ends with a big arched door between two arched windows and a
+ * half-moon lunette over. The gable runs along the longer side of the fit.
+ */
+function torpedoAssembly_YBI(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.36, 0.22, 0.17], ROOF: Rgb = [0.34, 0.33, 0.33], DOOR: Rgb = [0.55, 0.52, 0.47]
+  const BK = surfaceTag('brick'), TL = surfaceTag('metal')
+  const alongX = fit.hx >= fit.hz, L = alongX ? fit.hx : fit.hz, W = alongX ? fit.hz : fit.hx, E = 6.5, R = W * 0.42
+  const P = (u: number, y: number, v: number): V3 => alongX ? [u, y, v] : [v, y, u]
+  const q: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  if (alongX) box(out, 0, E / 2, 0, L, E / 2, W, BRICK, BK); else box(out, 0, E / 2, 0, W, E / 2, L, BRICK, BK)
+  for (const s of [-1, 1]) {
+    // the roof slopes
+    out.quad([P(-L - 0.3, E, s * (W + 0.4)), P(L + 0.3, E, s * (W + 0.4)), P(L + 0.3, E + R, 0), P(-L - 0.3, E + R, 0)], alongX ? [0, W, s * R] : [s * R, W, 0], q, ROOF, TL)
+    // the gable end and its openings
+    const u = s * (L + 0.02)
+    out.quad([P(u, E, -W), P(u, E, W), P(u, E + R, 0), P(u, E + R, 0)], alongX ? [s, 0, 0] : [0, 0, s], q, BRICK, BK)
+    const opening = (v: number, y0: number, h: number, w: number): void => {
+      const c = P(u + s * 0.03, y0 + h / 2, v)
+      if (alongX) box(out, c[0], c[1], c[2], 0.04, h / 2, w / 2, DOOR, 0); else box(out, c[0], c[1], c[2], w / 2, h / 2, 0.04, DOOR, 0)
+      const t = P(u + s * 0.03, y0 + h + w * 0.22, v)
+      if (alongX) box(out, t[0], t[1], t[2], 0.04, w * 0.22, w * 0.36, DOOR, 0); else box(out, t[0], t[1], t[2], w * 0.36, w * 0.22, 0.04, DOOR, 0)
+    }
+    opening(0, 0, 4.2, 3.4)
+    opening(-W * 0.6, 1.2, 2.8, 1.6)
+    opening(W * 0.6, 1.2, 2.8, 1.6)
+    opening(0, E + 0.3, 0.6, 2.2)
+  }
+  // arched windows down the long sides
+  for (const s of [-1, 1]) for (let u = -L + 3; u < L - 2; u += 4.5) {
+    const c = P(u, 3.2, s * (W + 0.03))
+    if (alongX) box(out, c[0], c[1], c[2], 0.8, 1.4, 0.04, DOOR, 0); else box(out, c[0], c[1], c[2], 0.04, 1.4, 0.8, DOOR, 0)
+  }
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -9014,6 +9050,7 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   kearnyTopPlanters,
   clarkeMansion_250_Douglass,
   coastGuardStation_CrissyField,
+  torpedoAssembly_YBI,
   officersQuarters: (out: MeshBuilder, fit: Fit) => officersQuarters(out, fit),
   officersQuartersNimitz: (out: MeshBuilder, fit: Fit) => officersQuarters(out, fit, true),
   gapHQ_2_Folsom,
