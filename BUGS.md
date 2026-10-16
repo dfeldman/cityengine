@@ -10590,7 +10590,7 @@ For the owner to ride (measured straightened): Jones St at 37.784879 −122.4127
 −122.452645; Bryant at 37.783059 −122.393580; Fulton at 37.772285 −122.489561; Van Ness at 37.802283 −122.424757.
 
 
-### #266 Floating newspaper boxes near 37.784606 −122.422846 (owner, 2026-10-15 night) — OPEN
+### #266 Floating newspaper boxes near 37.784606 −122.422846 (owner, 2026-10-15 night) — NOT REPRODUCED (2026-10-16: the racks at Franklin & Geary stand on the drawn sidewalk, 0.15 m up; raw/drawn ground differ 0.6 m there. Needs the owner's screenshot)
 
 ### #267 St. Mary's Cathedral forecourt / parking plaza is barely modelled (owner, 2026-10-15) — OPEN
 
@@ -10617,7 +10617,7 @@ Hard to go straight under; most paths climb into the air to the overpass; on top
 Both sides of the street: they are the brutalist concrete podium extensions of the towers (deep overhanging
 pergola roofs, ivy, skybridges over Davis). Photo: `docs/shots/refs/bugs/271-embarcadero-podium.webp`.
 
-### #272 Two paths on one street with no median near 37.786900 −122.398178 (owner, 2026-10-15) — OPEN
+### #272 Two paths on one street with no median near 37.786900 −122.398178 (owner, 2026-10-15) — FIXED 2026-10-16 (Howard's unnamed secondary_link slip lane onto 2nd: unnamed *_link lanes beside their street are side paths in the ride graph)
 
 ### #273 Chinatown should feel like Chinatown (owner, 2026-10-16) — IN PROGRESS (Sing Chong, Sing Fat, Telephone Exchange, Six Companies modelled; half the painted shop boards and invented names in Chinese)
 
