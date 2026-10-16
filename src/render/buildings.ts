@@ -150,6 +150,23 @@ function uvFor(atlas: AtlasManifest, element: string, variant: number): { u0: nu
   return set[Math.min(set.length - 1, Math.floor(variant * set.length))]
 }
 
+/** How far the ring runs inward from the middle of edge i, along its inward normal (to the first other edge hit). */
+function depthBehind(ring: { x: number; z: number }[], i: number): number {
+  const a = ring[i], b = ring[(i + 1) % ring.length]
+  const L = Math.hypot(b.x - a.x, b.z - a.z) || 1
+  const mx = (a.x + b.x) / 2, mz = (a.z + b.z) / 2, dx = -(b.z - a.z) / L, dz = (b.x - a.x) / L   // inward, CCW ring
+  let best = Infinity
+  for (let j = 0; j < ring.length; j++) {
+    if (j === i) continue
+    const p = ring[j], q = ring[(j + 1) % ring.length]
+    const ex = q.x - p.x, ez = q.z - p.z, den = dx * ez - dz * ex
+    if (Math.abs(den) < 1e-9) continue
+    const t = ((p.x - mx) * ez - (p.z - mz) * ex) / den, u = ((p.x - mx) * dz - (p.z - mz) * dx) / den
+    if (t > 0.05 && u >= 0 && u <= 1) best = Math.min(best, t)
+  }
+  return best
+}
+
 /** Build one wall of a building, from corner `a` to corner `b`, at the plan's storey heights. */
 function wall(
   out: MeshBuilder,
@@ -162,6 +179,8 @@ function wall(
   street: StreetFacing | null = null,
   /** where a passage goes through this wall: its centre `t` along it, half-width, and the arch's height */
   arches: Arch[] = [],
+  /** how far the building runs back behind this wall's middle (a front gable's roof may not run further) */
+  depth = Infinity,
 ): void {
   const dx = b.x - a.x
   const dz = b.z - a.z
@@ -240,7 +259,7 @@ function wall(
     if (arches.some((h) => f.y0 < h.top && (f.x1 ?? len) > h.t - h.half && (f.x0 ?? 0) < h.t + h.half)) continue
     if (f.kind === 'bay') bay(out, f, at, ux, uz, nx, nz, plan, atlas, seed, tint)
     else if (f.kind === 'fireEscape') fireEscape(out, f, at, nx, nz)
-    else if (f.kind === 'gable') gable(out, f, at, nx, nz, len, rgb(plan.palette.trim))
+    else if (f.kind === 'gable') gable(out, f, at, nx, nz, len, rgb(plan.palette.trim), depth)
     else feature(out, f, a, b, ux, uz, nx, nz, len, baseY, plan)
   }
   if (street && arches.length === 0) awnings(out, w.cells, plan, seed, at, ux, uz, nx, nz, street)
@@ -325,7 +344,7 @@ function fireEscape(out: MeshBuilder, f: Feature, at: (t: number, y: number) => 
 
 /** A gable on the street wall: a triangle above the cornice, in the wall colour, edged in the trim. */
 function gable(out: MeshBuilder, f: Feature, at: (t: number, y: number) => [number, number, number],
-               nx: number, nz: number, len: number, trim: [number, number, number]): void {
+               nx: number, nz: number, len: number, trim: [number, number, number], depth = Infinity): void {
   const off = (q: [number, number, number], o: number): [number, number, number] => [q[0] + nx * o, q[1], q[2] + nz * o]
   const apex = at(len / 2, f.y1)
   const tint = rgb(f.colour)
@@ -343,7 +362,9 @@ function gable(out: MeshBuilder, f: Feature, at: (t: number, y: number) => [numb
    * closes them at the back — a front-gabled house, as the Italianates and Stick houses are. As deep as the front is
    * wide, within 3–7 m: the street sees a roof, and it does not run out over a short lot.
    */
-  const deep = Math.max(3, Math.min(7, len))
+  // …and never past the back of the building: on a short lot it ran out over the neighbour, a roof in mid-air
+  // (owner, 2026-10-16, upper Kearny: "dormer disconnected from house")
+  const deep = Math.min(Math.max(3, Math.min(7, len)), Math.max(1, depth - 0.3))
   const back = (q: [number, number, number]): [number, number, number] => [q[0] - nx * deep, q[1], q[2] - nz * deep]
   const l0 = at(-0.1, f.y0 - 0.05)
   const r0 = at(len + 0.1, f.y0 - 0.05)
@@ -680,7 +701,7 @@ export function buildBuilding(
 ): void {
   for (let i = 0; i < ring.length; i++) {
     wall(out, ring[i], ring[(i + 1) % ring.length], plan, atlas, seed ^ (i * 0x9e3779b1), baseY,
-      facesStreet?.(i) ?? null, arches?.(i) ?? [])
+      facesStreet?.(i) ?? null, arches?.(i) ?? [], depthBehind(ring, i))
   }
   // the court walls: a clockwise ring's outward normal (uz, −ux) points into the court
   holes.forEach((h, k) => {
