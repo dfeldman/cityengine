@@ -9608,7 +9608,70 @@ function irvingScottSchool_1060_Tennessee(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+/**
+ * The Episcopal Church of St. John the Evangelist, 15th Street at Julian (1910; Commons "Episcopal Church of St. John
+ * the Evangelist.JPG", docs/shots/refs/notable/st-john-evangelist): a dark brown shingled Gothic church under a steep
+ * brown roof, its ridge along 15th Street. The east gable, onto Julian, is all one great pointed window of white
+ * tracery between white-trimmed rakes, a pinnacle at each shoulder and a cross at the apex; along 15th Street tall
+ * pointed windows in white frames, and little white-trimmed gablets breaking the eave. Front (15th) on −z, so the
+ * Julian gable is the −x end.
+ */
+function stJohnEvangelist_15th(out: MeshBuilder, fit: Fit): void {
+  const SHINGLE: Rgb = [0.27, 0.19, 0.14], ROOF: Rgb = [0.36, 0.29, 0.24], WHITE: Rgb = [0.88, 0.87, 0.83], GLASS: Rgb = [0.55, 0.58, 0.6]
+  const SH = surfaceTag('clapboard'), TL = surfaceTag('tile'), GL = surfaceTag('glass'), CN = surfaceTag('concrete')
+  const UVQ: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const hx = Math.max(8, fit.hx), hz = Math.max(5, fit.hz), E = 8, R = E + hz * 0.95       // eaves, ridge
+  box(out, 0, 0.4, 0, hx, 0.4, hz, [0.36, 0.2, 0.16], surfaceTag('brick'))
+  box(out, 0, (E + 0.8) / 2, 0, hx, (E - 0.8) / 2, hz, SHINGLE, SH)
+  // the roof slopes, the gable triangles, white rakes
+  for (const s of [-1, 1]) {
+    out.quad([[-hx - 0.4, E - 0.3, s * (hz + 0.6)], [hx + 0.4, E - 0.3, s * (hz + 0.6)], [hx + 0.4, R, 0], [-hx - 0.4, R, 0]], [0, hz, s * (R - E)], UVQ, ROOF, TL)
+    const x = s * hx
+    out.quad([[x, E, -hz], [x, E, hz], [x, R - 0.1, 0], [x, R - 0.1, 0]], [s, 0, 0], UVQ, SHINGLE, SH)
+    for (const sz of [-1, 1]) {
+      const a: V3 = [x + s * 0.45, E - 0.2, sz * (hz + 0.5)], b: V3 = [x + s * 0.45, R + 0.15, 0]
+      const nrm: V3 = [s, 0, 0]
+      out.quad([a, [a[0], a[1] + 0.35, a[2]], [b[0], b[1] + 0.35, b[2]], b], nrm, UVQ, WHITE, CN)
+    }
+  }
+  // the great pointed window across the Julian gable (−x), white tracery over pale glass
+  const gx = -hx - 0.06, w = hz * 0.4, y0 = 2.2, ys = E + 0.6, yt = Math.min(R - 1.4, ys + w * 1.5)
+  out.quad([[gx - 0.02, y0 - 0.3, w + 0.35], [gx - 0.02, y0 - 0.3, -w - 0.35], [gx - 0.02, ys, -w - 0.35], [gx - 0.02, ys, w + 0.35]], [-1, 0, 0], UVQ, WHITE, CN)
+  out.quad([[gx - 0.02, ys, w + 0.35], [gx - 0.02, ys, -w - 0.35], [gx - 0.02, yt + 0.4, 0], [gx - 0.02, yt + 0.4, 0]], [-1, 0, 0], UVQ, WHITE, CN)
+  out.quad([[gx - 0.05, y0, w], [gx - 0.05, y0, -w], [gx - 0.05, ys, -w], [gx - 0.05, ys, w]], [-1, 0, 0], UVQ, GLASS, GL)
+  out.quad([[gx - 0.05, ys, w], [gx - 0.05, ys, -w], [gx - 0.05, yt, 0], [gx - 0.05, yt, 0]], [-1, 0, 0], UVQ, GLASS, GL)
+  for (const z of [-w * 0.5, 0, w * 0.5]) box(out, gx - 0.08, (y0 + ys) / 2, z, 0.03, (ys - y0) / 2, 0.08, WHITE, CN)   // mullions
+  for (const y of [y0 + 2, y0 + 4, ys]) box(out, gx - 0.08, y, 0, 0.03, 0.06, w, WHITE, CN)                              // transoms
+  // pinnacles at the gable's shoulders and the cross at its apex
+  for (const sz of [-1, 1]) {
+    box(out, -hx - 0.1, E + 1.6, sz * (hz + 0.1), 0.3, 1.6, 0.3, SHINGLE, SH)
+    prism(out, -hx - 0.1, sz * (hz + 0.1), E + 3.2, E + 5.2, 0.42, 4, WHITE, CN, 0.02)
+  }
+  box(out, -hx - 0.2, R + 1.2, 0, 0.08, 1.1, 0.08, WHITE, CN)
+  box(out, -hx - 0.2, R + 1.6, 0, 0.08, 0.08, 0.45, WHITE, CN)
+  // the long sides: pointed windows in white frames, and gablets in the eave over every other bay
+  for (const s of [-1, 1]) {
+    const z = s * (hz + 0.04), nz = s
+    for (let x = -hx + 3; x <= hx - 2.5; x += 4.2) {
+      const ww = 0.85, a0 = 1.8, a1 = 5.6, ap = 6.6
+      out.quad([[x - ww - 0.2, a0 - 0.2, z], [x + ww + 0.2, a0 - 0.2, z], [x + ww + 0.2, a1, z], [x - ww - 0.2, a1, z]], [0, 0, nz], UVQ, WHITE, CN)
+      out.quad([[x - ww - 0.2, a1, z], [x + ww + 0.2, a1, z], [x, ap + 0.25, z], [x, ap + 0.25, z]], [0, 0, nz], UVQ, WHITE, CN)
+      out.quad([[x - ww, a0, z + s * 0.02], [x + ww, a0, z + s * 0.02], [x + ww, a1, z + s * 0.02], [x - ww, a1, z + s * 0.02]], [0, 0, nz], UVQ, GLASS, GL)
+      out.quad([[x - ww, a1, z + s * 0.02], [x + ww, a1, z + s * 0.02], [x, ap, z + s * 0.02], [x, ap, z + s * 0.02]], [0, 0, nz], UVQ, GLASS, GL)
+      box(out, x, (a0 + a1) / 2, z + s * 0.04, 0.03, (a1 - a0) / 2, 0.02, WHITE, CN)
+    }
+    for (let x = -hx + 5.1; x < hx - 3; x += 8.4) {
+      // a gablet: a little white-edged gable face standing at the eave, its own roof back into the slope
+      const zf = s * (hz + 0.2), gw = 1.3, gb = E - 0.2, gt = E + 1.8
+      out.quad([[x - gw, gb, zf], [x + gw, gb, zf], [x, gt, zf], [x, gt, zf]], [0, 0, s], UVQ, WHITE, CN)
+      out.quad([[x - gw + 0.25, gb + 0.2, zf + s * 0.02], [x + gw - 0.25, gb + 0.2, zf + s * 0.02], [x, gt - 0.4, zf + s * 0.02], [x, gt - 0.4, zf + s * 0.02]], [0, 0, s], UVQ, SHINGLE, SH)
+      for (const sx of [-1, 1]) out.quad([[x + sx * gw, gb, zf], [x, gt, zf], [x, gt - 0.2, s * (hz - 1.6)], [x + sx * gw, gb, s * (hz - 0.4)]], [sx, 1, 0], UVQ, ROOF, TL)
+    }
+  }
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+  stJohnEvangelist_15th,
   irvingScottSchool_1060_Tennessee,
   gguLaw_536_Mission,
   franklinSchool_1430_Scott,
