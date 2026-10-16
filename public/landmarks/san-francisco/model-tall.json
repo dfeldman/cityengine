@@ -25,9 +25,9 @@
     ],
     "name": "Hilton San Francisco Financial District",
     "procedural": "hiltonFinancialDistrict",
-    "front": "street",
-    "height": 111,
-    "note": "Tower grammar (concrete-piers): Clement Chen with John Carl Warnecke, 1971, the Brutalist hotel slab over Portsmouth Square — tan concrete piers, slot windows, deep parapet, two roof boxes. OSM says 111 m / 32 levels; it is 27 storeys and 298 ft, so 91 m (Wikipedia, confirmed by the street views)."
+    "front": 172,
+    "height": 97,
+    "note": "Reworked 2026-10-16 from Commons photos + LiDAR (docs/shots/refs/notable/hilton-fidi): tower on the east 63 m only, glazed ribbed slab between blank end pylons with twin stacks, everything flaring over the bottom storeys; Kearny podium where the skybridge lands. Was: Tower grammar (concrete-piers): Clement Chen with John Carl Warnecke, 1971, the Brutalist hotel slab over Portsmouth Square — tan concrete piers, slot windows, deep parapet, two roof boxes. OSM says 111 m / 32 levels; it is 27 storeys and 298 ft, so 91 m (Wikipedia, confirmed by the street views)."
   },
   {
     "osm": [

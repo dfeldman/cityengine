@@ -3,8 +3,9 @@ import { capPolygon, type MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { fromRecipe } from '../recipes.ts'
 import { faceBand, towerRing, tower, type TowerSpec } from '../../tower.ts'
-import { boxAlong, edgeAt, longestEdge, offsetRing } from '../../parts.ts'
+import { boxAlong, edgeAt, longestEdge } from '../../parts.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
+import { sign } from '../../signage.ts'
 import { box, type Rgb } from '../../../models.ts'
 
 const spec = (s: TowerSpec) => (out: MeshBuilder, fit: Fit): void => tower(out, fit, s)
@@ -196,72 +197,98 @@ export const MODEL_TALL: Record<string, (out: MeshBuilder, fit: Fit) => void> = 
    */
   hiltonFinancialDistrict: (out: MeshBuilder, fit: Fit): void => {
     /*
-     * Reworked 2026-10-02 from the owner's aerial ("the Hilton hotel there looks all wrong"): the legs leaned together
-     * over half the tower in ten stair-steps and the square-facing ends were a dark blank — a dark stepped pyramid
-     * with a hole in it. The real one is a slender PALE concrete slab, ribbed top to bottom with its windows between
-     * the ribs on every face, that FLARES only over its bottom few storeys into two splayed legs — the skybridge from
-     * the square landing in the gap between them.
+     * Reworked again 2026-10-16 (owner: "the hilton is the wrong shape and also in slightly the wrong place"), from
+     * six Commons photographs (docs/shots/refs/notable/hilton-fidi: c0-c5) and the USGS LiDAR (lidar-heights.png):
+     *
+     *  - PLACE: the tower is OSM's part way/1092160236, the outline's east 63 m; the west 16 m (part 1092160237) is a
+     *    two-storey podium on Kearny where the skybridge from Portsmouth Square lands. The old model centred a 68 m
+     *    tower on the whole outline, 10 m too far west, over the podium.
+     *  - SHAPE: a pale ribbed concrete slab, glazed on its long sides, ~88 m; at each SHORT end a blank concrete
+     *    pylon, narrower than the slab, with a slit of small windows up its middle and two hollow stacks on top
+     *    (~97 m in the LiDAR); over the bottom four storeys everything FLARES — the long sides slope out as glazed
+     *    skirts, the pylons widen into battered trapezoids — out to the full footprint at the ground.
+     *
+     * Frame: the fit's long axis is x. The Kearny (podium) end is found as the NARROWER end of the ring, never by
+     * vertex order or a sign convention.
      */
-    const H = 91
-    const wall: [number, number, number] = [0.74, 0.73, 0.70]
-    const rib: [number, number, number] = [0.80, 0.79, 0.76]
-    const glass: [number, number, number] = [0.22, 0.23, 0.25]
-    const face = { kind: 'punched' as const, wall, glass, pitch: 2.6, floor: 3.15, solid: 0.5, material: 'concrete' as const }
-    const concrete = surfaceTag('concrete')
-    const hx = Math.min(fit.hx, 34)
-    const T = Math.max(7, Math.min(fit.hz * 0.45, 11))   // the slab's half-thickness
-    const HZ = Math.max(T + 4, fit.hz)                    // where the legs reach the ground
-    const FLARE = 16                                      // the top of the splay
-    const GAP = 4.5                                       // half the opening between the legs
-    const ARCH = 9                                        // its height
-
-    // the slab, from the top of the flare to the roof
-    const slab = [{ x: -hx, z: -T }, { x: hx, z: -T }, { x: hx, z: T }, { x: -hx, z: T }]
-    faceBand(out, slab, FLARE, H - 4, face)
-    // its ribs: a pale fin every 3 m down every face, standing out of the windows
-    for (let i = 0; i < slab.length; i++) {
-      const e = edgeAt(slab, i)
-      const n = Math.round(e.L / 3)
-      for (let k = 1; k < n; k++) {
-        const t = k / n
-        boxAlong(out, e.a.x + e.tx * e.L * t + e.nx * 0.35, (FLARE + H - 4) / 2, e.a.z + e.tz * e.L * t + e.nz * 0.35, 0.25, (H - 4 - FLARE) / 2, 0.35, e.heading, rib, concrete)
-      }
+    const ring = fit.ring && fit.ring.length >= 3 ? fit.ring : [{ x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+    let xmin = Infinity, xmax = -Infinity, zmin = Infinity, zmax = -Infinity
+    for (const p of ring) { xmin = Math.min(xmin, p.x); xmax = Math.max(xmax, p.x); zmin = Math.min(zmin, p.z); zmax = Math.max(zmax, p.z) }
+    const depthNear = (x0: number): number => {
+      let lo = Infinity, hi = -Infinity
+      for (const p of ring) if (Math.abs(p.x - x0) < 10) { lo = Math.min(lo, p.z); hi = Math.max(hi, p.z) }
+      return hi - lo
     }
-    // the crown: a deeper band, flared a little, the plant boxes on top
-    const crown = offsetRing(slab, 1.2)
-    faceBand(out, crown, H - 4, H, { kind: 'blank', wall: rib, material: 'concrete' })
-    capPolygon(out, crown, H, [0.62, 0.61, 0.58], concrete)
-    box(out, -hx * 0.45, H + 2, 0, 5, 2, T * 0.6, wall, concrete)
-    box(out, hx * 0.45, H + 2, 0, 5, 2, T * 0.6, wall, concrete)
-
-    // THE LEGS: on each side, a solid splay from the slab's face out to the footprint at the ground, its outer face a
-    // slope, its inner face vertical beside the gap; the gap open to ARCH, closed above it
+    const e = depthNear(xmin) < depthNear(xmax) ? -1 : 1        // the side the Kearny podium is on
+    const podEnd = e < 0 ? xmin : xmax, farEnd = e < 0 ? xmax : xmin
+    const LEN = Math.min(63, (xmax - xmin) * 0.82)
+    const cx = farEnd + e * LEN / 2, cz = (zmin + zmax) / 2
+    const ZG = Math.min(19.5, (zmax - zmin) / 2)                  // the skirt's reach at the ground
+    const A = LEN / 2 - 3                                          // the slab's half-length; the pylons take the last 3 m
+    const T = 11.5, FLARE = 15, ROOF = 88, PY = 6.5, PYTOP = 92
+    const wall: Rgb = [0.74, 0.73, 0.7], rib: Rgb = [0.8, 0.79, 0.76], glass: Rgb = [0.24, 0.26, 0.29]
+    const concrete = surfaceTag('concrete'), glz = surfaceTag('glass')
     const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+    const X = (x: number): number => cx + x, Z = (z: number): number => cz + z
+
+    // the slab: glazed long sides in a concrete frame, ribbed every 3.1 m, from the top of the flare to the roof
+    const slab = [{ x: X(-A), z: Z(-T) }, { x: X(A), z: Z(-T) }, { x: X(A), z: Z(T) }, { x: X(-A), z: Z(T) }]
+    faceBand(out, slab, FLARE, ROOF - 3, { kind: 'punched', wall, glass, pitch: 3.1, floor: 3.15, solid: 0.38, material: 'concrete' })
     for (const s of [-1, 1] as const) {
-      const zIn = s * GAP
-      const zOut0 = s * HZ
-      const zOut1 = s * T
-      const k = (HZ - T) / FLARE
-      // the sloping outer face, with its windows as dark bands
-      out.quad([[-hx, 0, zOut0], [hx, 0, zOut0], [hx, FLARE, zOut1], [-hx, FLARE, zOut1]], [0, k, s], uv, wall, concrete)
-      for (let f = 1; f < 4; f++) {
-        const y = (f / 4) * FLARE
-        const z = zOut0 + (zOut1 - zOut0) * (y / FLARE)
-        out.quad([[-hx + 1, y - 1.1, z + s * 0.05], [hx - 1, y - 1.1, z + s * 0.05], [hx - 1, y + 0.4, z + s * 0.05 - s * 0.15], [-hx + 1, y + 0.4, z + s * 0.05 - s * 0.15]], [0, k, s], uv, glass, surfaceTag('glass'))
+      const n = Math.round((2 * A) / 3.1)
+      for (let k = 1; k < n; k++) {
+        const x = -A + (2 * A * k) / n
+        box(out, X(x), (FLARE + ROOF) / 2, Z(s * (T + 0.3)), 0.22, (ROOF - FLARE) / 2, 0.3, rib, concrete)
       }
-      // the inner face beside the gap, to the arch's head
-      out.quad([[-hx, 0, zIn], [hx, 0, zIn], [hx, ARCH, zIn], [-hx, ARCH, zIn]], [0, 0, -s], uv, rib, concrete)
-      // the ends: the trapezoid of the splay, at x = ±hx
-      for (const ex of [-1, 1] as const) {
-        const x = ex * hx
-        out.quad([[x, 0, zIn], [x, 0, zOut0], [x, FLARE, zOut1], [x, FLARE, zIn]], [ex, 0, 0], uv, wall, concrete)
+      // the crown: a deep fascia with a row of raking brackets under it
+      box(out, cx, ROOF - 1.5, Z(s * (T + 0.7)), A, 1.5, 0.7, rib, concrete)
+      for (let k = 0; k <= n; k++) {
+        const x = -A + (2 * A * k) / n
+        out.quad([[X(x) - 0.2, ROOF - 3, Z(s * T)], [X(x) + 0.2, ROOF - 3, Z(s * T)], [X(x) + 0.2, ROOF - 3, Z(s * (T + 1.4))], [X(x) - 0.2, ROOF - 3, Z(s * (T + 1.4))]], [0, -1, 0], uv, wall, concrete)
+        boxAlong(out, X(x), ROOF - 4.6, Z(s * (T + 0.45)), 0.18, 1.6, 0.45, 0, rib, concrete)
+      }
+      // the glazed skirt: from the slab's face at FLARE down and out to the footprint
+      const k = (ZG - T) / FLARE
+      out.quad([[X(-A), 0, Z(s * ZG)], [X(A), 0, Z(s * ZG)], [X(A), FLARE, Z(s * T)], [X(-A), FLARE, Z(s * T)]], [0, k, s], uv, glass, glz)
+      for (let f = 1; f < 5; f++) {                                                     // its floor lines
+        const y = (f / 5) * FLARE, z = ZG + (T - ZG) * (y / FLARE)
+        out.quad([[X(-A), y - 0.18, Z(s * (z + 0.05))], [X(A), y - 0.18, Z(s * (z + 0.05))], [X(A), y + 0.18, Z(s * (z + 0.03))], [X(-A), y + 0.18, Z(s * (z + 0.03))]], [0, k, s], uv, wall, concrete)
       }
     }
-    // over the gap: the arch's soffit and the wall above it, up to the slab
-    out.quad([[-hx, ARCH, -GAP], [hx, ARCH, -GAP], [hx, ARCH, GAP], [-hx, ARCH, GAP]], [0, -1, 0], uv, rib, concrete)
-    for (const ex of [-1, 1] as const) {
-      const x = ex * hx
-      out.quad([[x, ARCH, -GAP], [x, ARCH, GAP], [x, FLARE, GAP], [x, FLARE, -GAP]], [ex, 0, 0], uv, wall, concrete)
+    capPolygon(out, slab, ROOF, [0.6, 0.59, 0.56], concrete)
+
+    // the pylons at both short ends: blank, a slit of small windows up the middle, battered out over the flare
+    for (const s of [-1, 1] as const) {
+      const x0 = X(s * A), x1 = X(s * (A + 3)), xm = (x0 + x1) / 2
+      box(out, xm, (FLARE + PYTOP) / 2, cz, 1.5, (PYTOP - FLARE) / 2, PY, wall, concrete)
+      for (let y = FLARE + 2; y < PYTOP - 4; y += 3.15) box(out, x1 + s * 0.02, y, cz, 0.05, 0.75, 0.45, glass, glz)
+      // the batter: the end face a trapezoid from the shaft's width at FLARE + 4 to the skirt's at the ground
+      const yb = FLARE + 4
+      out.quad([[x1, 0, Z(-ZG)], [x1, 0, Z(ZG)], [x1, yb, Z(PY)], [x1, yb, Z(-PY)]], [s, 0, 0], uv, wall, concrete)
+      for (const t of [-1, 1] as const) {
+        const nz = t, ny = (ZG - PY) / yb
+        out.quad([[x0, 0, Z(t * ZG)], [x1, 0, Z(t * ZG)], [x1, yb, Z(t * PY)], [x0, yb, Z(t * PY)]], [0, ny, nz], uv, wall, concrete)
+      }
+      // the two hollow stacks on top
+      for (const t of [-1, 1] as const) {
+        box(out, xm, PYTOP + 2.5, Z(t * 2.6), 1.5, 2.5, 2.2, wall, concrete)
+        box(out, xm, PYTOP + 4.6, Z(t * 2.6), 0.8, 0.45, 1.4, [0.2, 0.2, 0.21], concrete)
+      }
+      box(out, xm, PYTOP + 0.4, cz, 1.6, 0.4, PY + 0.2, rib, concrete)
+    }
+
+    // the Kearny podium, where the skybridge lands: a concrete deck on piers over the porte-cochère, the Chinese
+    // Culture Center's red-tiled roofs on it, the blue Hilton sign on its fascia
+    const p0 = X(e * (A + 3)), p1 = podEnd
+    const pm = (p0 + p1) / 2, ph = Math.abs(p1 - p0) / 2, PD = Math.min(12, ZG - 1)
+    if (ph > 2) {
+      box(out, pm, 7.4, cz, ph, 0.9, PD, wall, concrete)
+      box(out, p1 - e * 0.6, 3.25, cz, 0.6, 3.25, PD * 0.7, [0.3, 0.32, 0.34], glz)                  // the lobby's glass
+      for (const t of [-1, 1] as const) box(out, p1 - e * 2, 3.25, Z(t * (PD - 1.5)), 0.7, 3.25, 0.7, wall, concrete)
+      box(out, pm, 9.6, cz, ph * 0.7, 1.3, PD * 0.55, [0.62, 0.22, 0.16], surfaceTag('tile'))          // the CCC roofs
+      box(out, pm, 11.2, cz, ph * 0.45, 0.6, PD * 0.35, [0.62, 0.22, 0.16], surfaceTag('tile'))
+      sign(out, { type: 'flat', text: 'Hilton', h: 1.1, face: 'roman', weight: 'bold', colour: [0.97, 0.97, 0.97], panel: [0.12, 0.2, 0.42], lit: 'back' },
+        { x: p1 + e * 0.15, y: 7.4, z: cz, heading: e * Math.PI / 2 })
     }
   },
 
