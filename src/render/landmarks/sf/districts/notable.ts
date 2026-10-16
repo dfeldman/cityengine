@@ -9336,7 +9336,79 @@ function alcatrazBuilding64(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+/** The fit's outline, anticlockwise, without a closing duplicate (a box when there is none): edge i's outward normal is (tz, −tx). */
+function ringCCW(fit: Fit): P2[] {
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  return ring
+}
+
+/**
+ * The Benjamin Franklin Middle School building, 1430 Scott at O'Farrell (1920s; now KIPP San Francisco Bay Academy;
+ * Commons "Benjamin Franklin High School (4609288362).jpg", docs/shots/refs/notable/franklin-ms): a comb of
+ * three-storey wings in buff brick — a pale base under a ground storey of small windows, then two storeys of tall
+ * blue-framed windows in pairs, the bays divided every few windows by FLUTED Deco pilasters with fan tops, a
+ * terracotta frieze of chevrons under the parapet and a dentil course at the top. Every face of the outline gets
+ * the same elevation; the street fronts (Scott on −z) look the same as the yard ones in the photograph.
+ */
+function franklinSchool_1430_Scott(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.56, 0.46, 0.33], BASE: Rgb = [0.74, 0.71, 0.64], TC: Rgb = [0.66, 0.57, 0.42]
+  const FRAME: Rgb = [0.2, 0.31, 0.48], GLASS: Rgb = [0.15, 0.17, 0.2], ROOF: Rgb = [0.42, 0.41, 0.4]
+  const BK = surfaceTag('brick'), CN = surfaceTag('concrete'), GL = surfaceTag('glass'), TT = surfaceTag('terracotta')
+  const ring = ringCCW(fit)
+  const H = 14.8, G = 4.2
+  ecWalls(out, ring, 0, 1.8, BASE, CN)
+  ecWalls(out, ring, 1.8, H, BRICK, BK)
+  ecWalls(out, ecInset(ring, -0.12), 12.7, 13.5, TC, TT)            // the chevron frieze band
+  ecWalls(out, ecInset(ring, -0.18), H - 0.5, H - 0.2, TC, TT)      // the dentil course
+  capPolygonWithHoles(out, [ring], H, ROOF, CN)
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z)
+    if (L < 5) continue
+    const tx = (b.x - a.x) / L, tz = (b.z - a.z) / L, nx = tz, nz = -tx, h = Math.atan2(nx, nz)
+    const at = (u: number, y: number, o: number, hw: number, hh: number, hd: number, c: Rgb, tag: number): void =>
+      boxAlong(out, a.x + tx * u + nx * o, y, a.z + tz * u + nz * o, hw, hh, hd, h, c, tag)
+    // a flat face only, `o` proud of the wall: windows, dentils, flutes — what is never seen edge-on
+    const flat = (u: number, y: number, o: number, hw: number, hh: number, c: Rgb, tag: number): void => {
+      const P = (du: number, dy: number): V3 => [a.x + tx * (u + du) + nx * o, y + dy, a.z + tz * (u + du) + nz * o]
+      out.quad([P(-hw, -hh), P(hw, -hh), P(hw, hh), P(-hw, hh)], [nx, 0, nz], [[0, 0], [1, 0], [1, 1], [0, 1]], c, tag)
+    }
+    // the chevrons and dentils, a block every so often along the bands
+    for (let u = 0.6; u < L - 0.4; u += 0.9) {
+      flat(u, 13.1, 0.14, 0.18, 0.18, [0.58, 0.49, 0.35], TT)
+      flat(u, H - 0.6, 0.2, 0.12, 0.1, [0.52, 0.44, 0.32], TT)
+    }
+    // bays: windows in pairs at 2.1 m, a fluted pilaster pair between every two pairs
+    const pitch = 2.1, n = Math.max(1, Math.floor((L - 1.6) / pitch)), u0 = (L - n * pitch) / 2
+    for (let k = 0; k < n; k++) {
+      const u = u0 + (k + 0.5) * pitch
+      flat(u, 2.9, 0.03, 0.55, 0.7, GLASS, GL)                                   // the ground storey's small windows
+      for (const [y0, y1] of [[G + 0.7, 8.2], [8.9, 12.3]]) {
+        flat(u, (y0 + y1) / 2, 0.03, 0.82, (y1 - y0) / 2 + 0.08, FRAME, 0)
+        flat(u, (y0 + y1) / 2, 0.05, 0.7, (y1 - y0) / 2, GLASS, GL)
+        flat(u, (y0 + y1) / 2, 0.07, 0.035, (y1 - y0) / 2, FRAME, 0)               // the mullion
+        flat(u, y0 + (y1 - y0) * 0.62, 0.07, 0.7, 0.035, FRAME, 0)                 // the transom
+      }
+      if (k % 2 === 1 && k < n - 1) {
+        const up = u + pitch / 2
+        for (const s of [-0.32, 0.32]) {
+          at(up + s, (G + 12.7) / 2, 0.15, 0.22, (12.7 - G) / 2, 0.15, TC, TT)
+          for (const f of [-0.08, 0.08]) flat(up + s + f, (G + 12.7) / 2, 0.31, 0.025, (12.7 - G) / 2 - 0.2, [0.5, 0.42, 0.3], TT)
+          at(up + s, 12.95, 0.22, 0.3, 0.4, 0.2, TC, TT)                              // the fan top
+        }
+      }
+    }
+    // the corner pavilions: the parapet steps up a little over each end of a long face
+    if (L > 20) for (const u of [2.2, L - 2.2]) at(u, H + 0.35, -0.2, 2.2, 0.35, 0.2, BRICK, BK)
+  }
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+  franklinSchool_1430_Scott,
   alcatrazBuilding64,
   alcatrazDockTower,
   hillsBrosRoofSign,
