@@ -15,8 +15,8 @@ import { box, type Rgb } from '../../models.ts'
 import type { Fit } from '../fit.ts'
 
 type V3 = [number, number, number]
-const CONCRETE: Rgb = [0.72, 0.7, 0.66]   // grey-beige unpainted concrete (Commons 2022); 0.9/0.87/0.8 read cream-yellow (2026-10-16)
-const SHADE: Rgb = [0.6, 0.58, 0.55]
+const CONCRETE: Rgb = [0.6, 0.6, 0.58]   // grey-beige unpainted concrete (Commons 2022); 0.9/0.87/0.8 read cream-yellow (2026-10-16)
+const SHADE: Rgb = [0.5, 0.5, 0.48]
 const DARK: Rgb = [0.3, 0.3, 0.32]
 /** the tall niches are open loggias in shadow, not holes: the concrete inside them, darker */
 const NICHE: Rgb = [0.56, 0.53, 0.49]
@@ -75,7 +75,7 @@ export function coitTower(out: MeshBuilder, fit?: Fit): void {
   box(out, 0, 3, -fz - 0.6, 3, 3, 0.6, SHADE, 0)
   box(out, 0, 2.4, -fz - 1.25, 1.4, 2.4, 0.05, DARK, 0)
   // the shaft, fluted, to the gallery
-  shaft(out, 9, 48, 16, 0.35, CONCRETE, [0.86, 0.83, 0.76])
+  shaft(out, 9, 48, 16, 0.35, CONCRETE, [0.66, 0.65, 0.62])
   // the gallery storey: plain, with its eight tall niches and their balustrades
   shaft(out, 48, 58, 8, 0, CONCRETE, CONCRETE)
   for (let i = 0; i < 8; i++) {
