@@ -8845,6 +8845,25 @@ function lightHouse_651_Dolores(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+/**
+ * The barrier at the top of Kearny's Peter Macchiarini Steps, at Vallejo (owner #276: "the top has a fence and
+ * planters making it impossible to go down for cars, accessible for bikes and pedestrians"): a row of concrete
+ * planters with shrubs across the 7 m roadway, gaps a bike passes through, a low steel fence between them. Local x
+ * across the street.
+ */
+function kearnyTopPlanters(out: MeshBuilder, _fit: Fit): void {
+  const CON: Rgb = [0.7, 0.68, 0.64], GREEN: Rgb = [0.24, 0.38, 0.18], STEEL: Rgb = [0.22, 0.24, 0.26]
+  const CN = surfaceTag('concrete')
+  for (const x of [-2.9, 0, 2.9]) {
+    box(out, x, 0.4, 0, 0.75, 0.4, 0.75, CON, CN)
+    box(out, x, 1.0, 0, 0.6, 0.3, 0.6, GREEN, surfaceTag('foliage'))
+  }
+  for (const [x0, x1] of [[-3.65, -2.15], [2.15, 3.65]]) {
+    box(out, (x0 + x1) / 2, 0.95, 0.9, (x1 - x0) / 2, 0.03, 0.03, STEEL, 0)
+    for (const x of [x0, x1]) box(out, x, 0.5, 0.9, 0.03, 0.5, 0.03, STEEL, 0)
+  }
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -8895,6 +8914,7 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   oceanClimateCenter_CrissyField,
   metroTheatre_2055_Union,
   lightHouse_651_Dolores,
+  kearnyTopPlanters,
   officersQuarters: (out: MeshBuilder, fit: Fit) => officersQuarters(out, fit),
   officersQuartersNimitz: (out: MeshBuilder, fit: Fit) => officersQuarters(out, fit, true),
   gapHQ_2_Folsom,
