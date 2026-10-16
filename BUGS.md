@@ -10630,7 +10630,7 @@ rounded canopy. The famous ones line Columbus near Broadway. A species for the p
 
 ### #275 A dormer hangs off its house at 37.801264 −122.406128 (owner, 2026-10-16) — FIXED (front-gable roofs capped at the building's depth; for the owner to look again)
 
-### #276 Kearny's stair sidewalks (owner, 2026-10-16) — OPEN, location to research
+### #276 Kearny's stair sidewalks (owner, 2026-10-16) — FIXED 2026-10-16 (both sidewalks stairs, 7 m roadway; planters at the top still not drawn)
 
 Several blocks of Kearny where the SIDEWALKS are staircases but the roadway is a road; cars can go UP, but the top
 has a fence and planters, so no car can come down (bikes and pedestrians can pass).
