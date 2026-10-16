@@ -914,8 +914,11 @@ export function dropSidePaths(edges: RideEdge[], ids = new Ids(), blocked?: (a: 
   const RANK: Record<string, number> = { primary: 5, primary_link: 4, secondary: 4, secondary_link: 3, tertiary: 3,
     tertiary_link: 2, unclassified: 2, residential: 2, living_street: 1, service: 1 }
   const rank = (e: RideEdge): number => RANK[e.kind ?? 'residential'] ?? 2
+  // an unnamed turn lane mapped beside its street (Howard's slip lane onto 2nd, owner 2026-10-16: "two paths on one
+  // street that has no median") is the street too: the rider was offered both
+  const slip = (e: RideEdge): boolean => !e.name && /^(primary|secondary|tertiary)_link$/.test(e.kind ?? '')
   const candidate = (e: RideEdge): boolean =>
-    (e.kind === 'pedestrian' && !!e.name) || e.kind === 'cycleway' || (e.kind === 'service' && !e.name) || (!!e.name && rank(e) <= 3)
+    (e.kind === 'pedestrian' && !!e.name) || e.kind === 'cycleway' || (e.kind === 'service' && !e.name) || (!!e.name && rank(e) <= 3) || slip(e)
   const beside = (e: RideEdge): RideEdge | null => {
     if (e.length < 6) return null
     const near = new Set<RideEdge>()
@@ -932,13 +935,13 @@ export function dropSidePaths(edges: RideEdge[], ids = new Ids(), blocked?: (a: 
       if (e.kind === 'pedestrian' && e.name !== r.name) continue
       // a named street only beside a MORE important road of its own name (the contre-allées of the Avenue de
       // New York beside its carriageways)
-      const street = e.kind !== 'pedestrian' && e.kind !== 'cycleway' && !(e.kind === 'service' && !e.name)
+      const street = e.kind !== 'pedestrian' && e.kind !== 'cycleway' && !(e.kind === 'service' && !e.name) && !slip(e)
       if (street && (e.name !== r.name || rank(r) <= rank(e))) continue
       // never beside a road on another LEVEL (Stockton at Bush, 2026-09-29): the surface street north of Bush was
       // dropped as a "side path" of lower Stockton, 4 m below it in its cut, and of the tunnel under it
       if (layerOf(e) !== layerOf(r) || !!e.bore !== !!r.bore || (street && apart(e, r))) continue
       // cycle tracks and lanes further out: along the Seine they run under the trees 20 m from the carriageway
-      const reach = e.kind === 'pedestrian' ? Math.max(14, r.width / 2 + r.walk + 9) : Math.max(24, r.width / 2 + r.walk + 12)
+      const reach = slip(e) ? r.width / 2 + 6 : e.kind === 'pedestrian' ? Math.max(14, r.width / 2 + r.walk + 9) : Math.max(24, r.width / 2 + r.walk + 12)
       let alongside = 0
       for (const p of samples) {
         const q = project(r.points, p)
