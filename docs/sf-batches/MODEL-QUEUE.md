@@ -127,3 +127,9 @@ removed).
 mission tile pents) · Geary Theater / A.C.T.: the A, C, T banners · Lotta's Fountain muted from orange to bronze
 (grade, #280) · the stored "Market — Ferry Building" view re-aimed at the tower.
 07:55-08:00: pier names checked on Piers 9, 17, 23, 35 and Fort Mason 2/3; a larger size tried and reverted (it rose above the beaux parapets).
+
+2026-10-16 (morning, owner's pick of 8 from NOTABLE-UNMODELLED): Benjamin Franklin Middle School · Irving Murray
+Scott School · St. John the Evangelist (15th) · Henry Doelger Building · Abner Phelps House · Battery Marcus Miller
+(no photo of Miller: drawn in Battery Boutelle's idiom) · Dashiell Hammett Place (one Mapillary frame, ~40 m) ·
+Engine Co. No. 2. Also GGU School of Law from the owner's Street View frames (tower on the inner corner by the
+entrance — owner's correction).
