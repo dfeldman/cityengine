@@ -34,7 +34,8 @@ export function saintsPeterAndPaul(out: MeshBuilder, fit: Fit): void {
     chancel: { kind: 'square' },
     tower: { at: 'twin', stages: 5, plan: 'square', top: 'spire' },
     front: { kind: 'gable', portal: 'triple', window: 'rose', steps: 5 },
-    walls: { material: 'limestone', openings: 'lancet', buttresses: 'plain' },
+    // white as photographed (Commons, Washington Square), its spires the same white masonry, not slate
+    walls: { material: 'limestone', openings: 'lancet', buttresses: 'plain', colour: [0.88, 0.88, 0.86], masonrySpires: true },
   })
 }
 

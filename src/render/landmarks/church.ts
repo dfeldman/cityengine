@@ -136,6 +136,8 @@ export interface Walls {
   /** the wall colour where the material's own is wrong for this building — buff brick, say (First Church of Christ,
    *  Scientist); the material still sets the surface */
   colour?: Rgb
+  /** spires of the wall's own masonry rather than slate or lead (Saints Peter and Paul's white open spires) */
+  masonrySpires?: boolean
 }
 
 /** One place of worship, in slots. **Every key is required; any value but `nave`, `front` and `walls` may be null.** */
@@ -899,7 +901,7 @@ function build(out: MeshBuilder, L: number, W: number, H: number, spec: ChurchSp
     const stageH = Math.max(3.2, eaves * 0.52, (H * 1.32) / Math.max(2, Math.round(tower.stages)))
     for (const at of towers) {
       churchTower(out, at, 0, towerR, tower.stages, stageH, tower.top, tower.plan,
-        { wall, material: surf, roof: roofC, roofMaterial: roofM, trim })
+        { wall, material: surf, roof: walls.masonrySpires ? trim : roofC, roofMaterial: walls.masonrySpires ? surf : roofM, trim })
     }
   }
 
