@@ -245,6 +245,18 @@ vec3 surfaceLook(vec3 c, vec3 n, float sid) {
     float shade = smoothstep(0.0, 0.3, fract(p.y / 0.3)) * 0.2 + 0.8;
     return c * shade * (0.9 + 0.2 * hash2(vec2(row, floor(u)))) * mix(1.0, 0.95, nearFade(20.0, 50.0));
   }
+  if (sid > 12.5) {
+    // 13 FOLIAGE: ivy and creepers (render/landmarks/ivy.ts) — overlapping leaves about 0.12 m, dark gaps between them,
+    // a lighter, yellower face to each leaf, broad clumps of tone; the leaves fade to the clumps with distance
+    vec2 q = p + vec2(vnoise(p * 1.1), vnoise(p * 1.1 + 7.3)) * 0.5;
+    float leaf = vnoise(q * 9.0);
+    float sheen = vnoise(q * 21.0 + 3.1);
+    float clump = vnoise(p * 0.8 + 2.7);
+    float near = nearFade(12.0, 32.0);
+    float gap = smoothstep(0.34, 0.12, leaf) * near;
+    vec3 tint = mix(c * vec3(0.84, 1.0, 0.86), c * vec3(1.14, 1.1, 0.82), clump);
+    return tint * (0.86 + (0.3 * sheen + 0.16 * leaf - 0.23) * near) * (1.0 - 0.5 * gap);
+  }
   if (sid > 11.5) {
     // 12 ROCK: the photographed rock (render/rock-material.ts), from the three axes by the normal, a texture every 4 m
     // and again at a third of the scale, cooled to greywacke grey and tinted by the colour given
@@ -340,7 +352,7 @@ let registered = false
  * landmark material (in world metres, so every building shares the same brick and stone). A builder passes
  * `surfaceTag(SURFACES.brick)` as the quad's tag. Tag 0 is the old default, pale dressed stone by colour.
  */
-export const SURFACES = { ashlar: 1, brick: 2, granite: 3, terracotta: 4, concrete: 5, glass: 6, metal: 7, stucco: 8, copper: 9, tile: 10, clapboard: 11, rock: 12 } as const
+export const SURFACES = { ashlar: 1, brick: 2, granite: 3, terracotta: 4, concrete: 5, glass: 6, metal: 7, stucco: 8, copper: 9, tile: 10, clapboard: 11, rock: 12, foliage: 13 } as const
 export type Surface = keyof typeof SURFACES
 export const surfaceTag = (s: Surface): number => SURFACES[s] / 64
 

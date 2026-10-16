@@ -10,6 +10,7 @@ import { box, prism, type Rgb } from '../../../models.ts'
 import { boxAlong, marquee, bladeSign, signText } from '../../parts.ts'
 import { classicalColumn } from '../../column.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
+import { ivyWall } from '../../ivy.ts'
 import { inset as ecInset, walls as ecWalls, soffit as ecSoffit, piers as ecPiers, onEdge as ecOnEdge } from '../ec4-podium.ts'
 
 type P2 = { x: number; z: number }
@@ -2213,7 +2214,6 @@ function bohemianClub_624_Taylor(out: MeshBuilder, fit: Fit): void {
   if (area < 0) ring.reverse()
   const n = ring.length
   const TOP = 27, ROOF = 26.6
-  const rnd = (i: number): number => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x) }
 
   // the edges' roles: the front (Post) faces -z, Taylor faces -x
   const info = ring.map((a, i) => {
@@ -2282,8 +2282,6 @@ function bohemianClub_624_Taylor(out: MeshBuilder, fit: Fit): void {
     // the ivy: big ragged patches on the lower storeys of Post and Taylor, thick on Taylor, half-height on Post
     if (!street) continue
     const seed = e.i * 31 + 7
-    const cell = 0.45
-    const nc = Math.floor(l / cell)
     // a continuous ragged top edge per layer (sums of sines + a little noise), cut off where the doorway or the hedge is
     const topAt = (u: number, layer: number): number => {
       const ph = seed * 1.7 + layer * 4.1
@@ -2294,18 +2292,8 @@ function bohemianClub_624_Taylor(out: MeshBuilder, fit: Fit): void {
       if (Math.abs(u - door) < 1.9) hgt = -1                                      // the doorway stays clear
       return hgt
     }
-    for (let layer = 0; layer < 2; layer++) {
-      for (let c = 0; c < nc; c++) {
-        const u0 = c * cell, u1 = u0 + cell
-        const h0 = topAt(u0, layer) + (rnd(c + seed + layer * 5) - 0.5) * 0.5, h1 = topAt(u1, layer) + (rnd(c + 1 + seed + layer * 5) - 0.5) * 0.5
-        if (h0 < 0.8 && h1 < 0.8) continue
-        const sh = 0.85 + rnd(c * 7 + seed + layer) * 0.3
-        const base = layer === 0 ? (rnd(c + seed) < 0.5 ? BC_IVY_DK : BC_IVY_MID) : (rnd(c + seed) < 0.6 ? BC_IVY_LT : BC_IVY_MID)
-        const col: Rgb = [base[0] * sh, base[1] * sh, base[2] * sh]
-        const pr = 0.1 + layer * 0.05
-        m.quad([P(u0, -0.2, pr), P(u1, -0.2, pr), P(u1, Math.max(h1, 0.3), pr), P(u0, Math.max(h0, 0.3), pr)], [nx, 0, nz], uv, col, ST)
-      }
-    }
+    // the mantle itself — two layers, leaves in the shader — from render/landmarks/ivy.ts; its outline is the one above
+    ivyWall(m, a, b, { x: nx, z: nz }, { from: 'ground', y: -0.2, reach: 0, extent: (u) => topAt(u, 0), taper: 0, seed })
   }
 
   // roof, and the flags on the Post/Taylor corner
@@ -7631,7 +7619,7 @@ function ecPodium_Davis(out: MeshBuilder, fit: Fit): void {
   for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
   if (area < 0) ring.reverse()
   const CONC: Rgb = [0.78, 0.75, 0.69], CONC_DK: Rgb = [0.62, 0.6, 0.56], SHOP: Rgb = [0.26, 0.3, 0.31]
-  const GLZ: Rgb = [0.2, 0.24, 0.27], IVY: Rgb = [0.19, 0.29, 0.15], IVY2: Rgb = [0.23, 0.34, 0.17]
+  const GLZ: Rgb = [0.2, 0.24, 0.27]
   const G = 4.6, W = 10.6, P = 13.4, TOP = 14.2
 
   // the street storey: shopfronts a metre back behind square piers, a soffit over the recess
@@ -7639,16 +7627,11 @@ function ecPodium_Davis(out: MeshBuilder, fit: Fit): void {
   ecWalls(out, shop, 0, G, SHOP, glass)
   ecSoffit(out, ring, shop, G - 0.25, CONC_DK, conc)
   ecPiers(out, ring, 6.5, 0, G, 0.9, CONC, conc)
-  // the blank wall, ivy trailing over its top in ragged curtains
+  // the blank wall, ivy trailing over its top from the planters (render/landmarks/ivy.ts)
   ecWalls(out, ring, G, W, CONC, conc)
   for (let i = 0; i < ring.length; i++) {
-    const a = ring[i], b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z)
-    const n = Math.floor(L / 2.2)
-    for (let k = 0; k < n; k++) {
-      const drop = 1.2 + ((k * 37 + i * 11) % 7) * 0.42
-      if ((k * 13 + i) % 5 === 0) continue
-      ecOnEdge(out, ring, i, (k + 0.5) / n, 0.18, L / n + 0.15, 0.3, W - drop, W + 0.3, (k & 1) ? IVY : IVY2, 0)
-    }
+    const a = ring[i], b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    ivyWall(out, a, b, { x: (b.z - a.z) / L, z: -(b.x - a.x) / L }, { from: 'top', y: W + 0.2, reach: 2.4, vary: 1.3, max: W - G - 0.4, seed: i * 17 + 3 })
   }
   capPolygonWithHoles(out, [ring], W, [0.5, 0.48, 0.45], conc)
   // the top storey, set back, glazed, under the pergola
