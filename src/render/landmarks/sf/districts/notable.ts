@@ -9407,7 +9407,130 @@ function franklinSchool_1430_Scott(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+/**
+ * Golden Gate University, 536 Mission (the School of Law; the owner's Street View frames 2026-10-16, docs/shots/refs/
+ * notable/ggu-law): six storeys whose Mission front is cut by a deep forecourt. Read from the photographs, west to east:
+ *  - the SOUTH-WEST face, onto the JPMorgan plaza: a white concrete frame with brick infill and glass, every floor
+ *    standing further out than the one below (an inverted setback), the top floor a deep cantilever with a coffered
+ *    soffit;
+ *  - at the west corner a plain ROUND concrete stair tower, a little taller than the roof;
+ *  - the west stretch of the Mission front: bands of red brick capped by concrete, ribbons of dark glass between,
+ *    again stepping out floor by floor, and CURVING round into the forecourt's west wall;
+ *  - across the back of the forecourt the ENTRANCE: a flat grid of glass between concrete floor edges over a recessed
+ *    ground floor on round concrete columns, a sloped glazed canopy, GOLDEN GATE UNIVERSITY in letters along it.
+ * The other faces get the plain glass-and-concrete grid. Front (Mission) on −z; the plaza side is −x.
+ */
+function gguLaw_536_Mission(out: MeshBuilder, fit: Fit): void {
+  const CONC: Rgb = [0.7, 0.69, 0.66], WHITE: Rgb = [0.8, 0.79, 0.76], BRICK: Rgb = [0.31, 0.14, 0.12]
+  const GLASS: Rgb = [0.16, 0.19, 0.22], PALE: Rgb = [0.42, 0.48, 0.52], ROOF: Rgb = [0.45, 0.44, 0.42]
+  const CN = surfaceTag('concrete'), BK = surfaceTag('brick'), GL = surfaceTag('glass')
+  const UVQ: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const ring = ringCCW(fit)
+  const G = 5.4, S = 3.85, NF = 5, H = G + NF * S          // ground storey, five floors over it: 24.65 m
+  type E = { a: P2; b: P2; L: number; tx: number; tz: number; nx: number; nz: number; mx: number; mz: number }
+  const edges: E[] = ring.map((a, i) => {
+    const b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    const tx = (b.x - a.x) / L, tz = (b.z - a.z) / L
+    return { a, b, L, tx, tz, nx: tz, nz: -tx, mx: (a.x + b.x) / 2, mz: (a.z + b.z) / 2 }
+  })
+  // which edge is which, from the fit frame (see the comment above)
+  const front = edges.filter((e) => e.nz < -0.85 && e.L > 3)
+  const zFront = Math.min(...front.map((e) => e.mz))
+  const outer = front.filter((e) => e.mz < zFront + 2).sort((p, q) => p.mx - q.mx)
+  const back = front.filter((e) => e.mz > zFront + 5).sort((p, q) => q.L - p.L)[0]
+  const west = outer[0]
+  const corner = west ? (west.a.x < west.b.x ? west.a : west.b) : ring[0]
+  const xWest = Math.min(...ring.map((p) => p.x))
+  const kindOf = (e: E): 'frame' | 'bands' | 'entrance' | 'grid' => {
+    if (e === back) return 'entrance'
+    if (e.nx < -0.85 && e.mx < xWest + 25 && e.mz < (back ? back.mz : 1e9)) return 'frame'
+    if (e === west) return 'bands'
+    if (back && e.nx > 0.85 && e.mz > zFront && e.mz < back.mz && e.mx < back.mx) return 'bands'
+    return 'grid'
+  }
+  // the body: walls a metre inside the outline (the frame and the bands stand out from it), its roof and plant
+  const inner = ecInset(ring, 1.0)
+  ecWalls(out, inner, 0, H, GLASS, GL)
+  capPolygonWithHoles(out, [ring], H, ROOF, CN)
+  ecWalls(out, ring, H - 0.6, H + 0.5, CONC, CN)
+  const c = fit.ring ? { x: ring.reduce((p, q) => p + q.x, 0) / ring.length, z: ring.reduce((p, q) => p + q.z, 0) / ring.length } : { x: 0, z: 0 }
+  box(out, c.x, H + 1.4, c.z, 6, 1.4, 4, CONC, CN)
+  for (const e of edges) {
+    if (e.L < 2.5) continue
+    const kind = kindOf(e), h = Math.atan2(e.nx, e.nz)
+    const P = (u: number, y: number, o: number): V3 => [e.a.x + e.tx * u + e.nx * o, y, e.a.z + e.tz * u + e.nz * o]
+    const flat = (u0: number, u1: number, y0: number, y1: number, o: number, col: Rgb, tag: number): void =>
+      out.quad([P(u0, y0, o), P(u1, y0, o), P(u1, y1, o), P(u0, y1, o)], [e.nx, 0, e.nz], UVQ, col, tag)
+    const slab = (u0: number, u1: number, y0: number, y1: number, o0: number, o1: number, col: Rgb, tag: number): void => {
+      const u = (u0 + u1) / 2, o = (o0 + o1) / 2, p = P(u, (y0 + y1) / 2, o)
+      boxAlong(out, p[0], p[1], p[2], (u1 - u0) / 2, (y1 - y0) / 2, (o1 - o0) / 2, h, col, tag)
+    }
+    if (kind === 'frame') {
+      // floors stepping out as they rise: thick white slab edges, a brick parapet wall and glass set back over it,
+      // white fins at the ends; the top floor a deep cantilever with a coffered soffit
+      for (let k = 0; k <= NF; k++) {
+        const y = G + k * S, o = -0.2 + 0.45 * k, top = k === NF
+        slab(0, e.L, y - (top ? 1.0 : 0.5), y + 0.05, -1, o + (top ? 1.2 : 0), WHITE, CN)
+        if (top) for (let u = 1.6; u < e.L - 1; u += 3.2) flat(u - 1.3, u + 1.3, y - 1.02, y - 1.0, -0.4, [0.58, 0.57, 0.54], CN)
+        if (k < NF) {
+          const y1 = y + S - 0.5, ob = o + 0.45
+          slab(0.3, e.L - 0.3, y + 0.05, y + 1.25, ob - 0.25, ob, BRICK, BK)          // the brick parapet wall
+          flat(0.3, e.L - 0.3, y + 1.25, y1, ob - 0.9, GLASS, GL)                       // glass set back over it
+          slab(0, 0.45, y + 0.05, y1, -1, ob, WHITE, CN)                                // the white end fins
+          slab(e.L - 0.45, e.L, y + 0.05, y1, -1, ob, WHITE, CN)
+        }
+      }
+      flat(0.2, e.L - 0.2, 0.2, G - 0.5, -0.95, BRICK, BK)
+      continue
+    }
+    if (kind === 'bands') {
+      // red brick spandrels under a concrete band, dark glass ribbons between; out a little more each floor
+      for (let k = 0; k < NF; k++) {
+        const y = G + k * S, o = 0.1 + 0.3 * k
+        slab(0, e.L, y, y + 1.55, -1, o, BRICK, BK)
+        slab(0, e.L, y + 1.55, y + 1.85, -1, o + 0.08, CONC, CN)
+        flat(0, e.L, y + 1.85, y + S, -0.98, GLASS, GL)
+      }
+      slab(0, e.L, G - 1.6, G, -1, 0.1, BRICK, BK)                                   // the ground storey's own band
+      flat(0, e.L, 0, G - 1.6, -0.98, GLASS, GL)
+      for (let u = 3; u < e.L - 1; u += 6) slab(u - 0.3, u + 0.3, 0, G - 1.6, -0.9, -0.3, CONC, CN)
+      continue
+    }
+    // the glass-and-concrete grid: floor edges, mullions; on the entrance face the recessed ground floor too
+    for (let k = 0; k <= NF; k++) slab(0, e.L, G + k * S - 0.35, G + k * S + 0.25, -1, 0.05, CONC, CN)
+    for (let k = 0; k < NF; k++) {
+      flat(0, e.L, G + k * S + 0.25, G + (k + 1) * S - 0.35, -0.95, k % 2 ? GLASS : PALE, GL)
+      for (let u = 1.6; u < e.L - 0.4; u += 1.6) flat(u - 0.04, u + 0.04, G + k * S + 0.25, G + (k + 1) * S - 0.35, -0.9, CONC, CN)
+    }
+    if (kind === 'entrance') {
+      flat(0, e.L, 0, G - 1.2, -3.5, GLASS, GL)                                      // the lobby, set back
+      slab(0, e.L, G - 1.2, G - 0.35, -3.6, 0.05, CONC, CN)                          // the fascia
+      out.quad([P(0, G - 0.35, 0.4), P(e.L, G - 0.35, 0.4), P(e.L, G + 1.0, -0.95), P(0, G + 1.0, -0.95)], [e.nx, 1, e.nz], UVQ, PALE, GL) // the sloped canopy
+      for (const f of [0.3, 0.7]) { const p = P(e.L * f, 0, -1.4); prism(out, p[0], p[2], 0, G - 1.2, 0.75, 12, CONC, CN) }
+      const p = P(e.L / 2, G - 0.78, 0.1)
+      sign(out, { type: 'flat', text: 'GOLDEN GATE UNIVERSITY', h: 0.42, face: 'roman', colour: [0.33, 0.29, 0.24], tracking: 0.2, lit: 'none', w: Math.min(e.L - 1.5, 12) },
+        { x: p[0], y: p[1], z: p[2], heading: h })
+    } else {
+      flat(0, e.L, 0, G - 0.35, -0.95, GLASS, GL)
+    }
+  }
+  // the round tower at the west corner, and the brick bands' curve where the Mission front turns into the forecourt
+  prism(out, corner.x + 1.4, corner.z + 1.4, 0, H + 1.6, 3.1, 20, CONC, CN)
+  for (let k = 1; k < 7; k++) prism(out, corner.x + 1.4, corner.z + 1.4, k * 3.6 - 0.03, k * 3.6 + 0.03, 3.13, 20, [0.6, 0.59, 0.56], CN, 3.13, false)
+  if (west && back) {
+    const turn = west.a.x < west.b.x ? west.b : west.a, r = 3.4
+    const cx = turn.x - r * 0.7, cz = turn.z + r * 0.7
+    for (let k = 0; k < NF; k++) {
+      const y = G + k * S, o = 0.1 + 0.3 * k
+      prism(out, cx, cz, y, y + 1.55, r + o, 16, BRICK, BK)
+      prism(out, cx, cz, y + 1.55, y + 1.85, r + o + 0.08, 16, CONC, CN)
+      prism(out, cx, cz, y + 1.85, y + S, r - 0.2, 16, GLASS, GL)
+    }
+  }
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+  gguLaw_536_Mission,
   franklinSchool_1430_Scott,
   alcatrazBuilding64,
   alcatrazDockTower,
