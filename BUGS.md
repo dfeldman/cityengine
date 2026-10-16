@@ -10592,7 +10592,7 @@ For the owner to ride (measured straightened): Jones St at 37.784879 −122.4127
 
 ### #266 Floating newspaper boxes near 37.784606 −122.422846 (owner, 2026-10-15 night) — NOT REPRODUCED (2026-10-16: the racks at Franklin & Geary stand on the drawn sidewalk, 0.15 m up; raw/drawn ground differ 0.6 m there. Needs the owner's screenshot)
 
-### #267 St. Mary's Cathedral forecourt / parking plaza is barely modelled (owner, 2026-10-15) — OPEN
+### #267 St. Mary's Cathedral forecourt / parking plaza is barely modelled (owner, 2026-10-15) — MODELLED 2026-10-16 (notable.ts cathedralPlaza_Geary + a deck for its walks)
 
 Only two odd raised walkways. Really: a raised patterned terracotta plaza with white star tiling over the garage,
 running from Geary to the cathedral, with sunken terracotta parking courts either side (planter islands) and
