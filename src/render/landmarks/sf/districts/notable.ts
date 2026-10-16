@@ -7195,6 +7195,162 @@ function apartments_2400_Pacific(out: MeshBuilder, fit: Fit): void {
   for (const idx of m.indices) out.indices.push(base + idx)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// The Marker hotel (former Hotel Californian), 501 Geary Street at Taylor
+// ---------------------------------------------------------------------------------------------------------------
+
+const MK_WALL: Rgb = [0.72, 0.67, 0.55]        // the buff brick, greyed (cream renders yellow in the city)
+const MK_STONE: Rgb = [0.69, 0.65, 0.56]       // the rusticated base
+const MK_GROOVE: Rgb = [0.6, 0.56, 0.47]
+const MK_TRIM: Rgb = [0.83, 0.79, 0.69]        // cornice, frames, belt courses
+const MK_PLINTH: Rgb = [0.12, 0.115, 0.115]    // the black granite at the foot
+const MK_GLASS: Rgb = [0.14, 0.17, 0.2]
+const MK_AWN: Rgb = [0.16, 0.18, 0.17]
+
+/**
+ * The Marker hotel (former Hotel Californian), 501 Geary Street at Taylor (1910s, nine storeys). Own geometry from
+ * docs/shots/refs/notable/w71504453 (way-71504453-01 the corner, -02 the Geary base), on the OSM plan from `fit.ring`:
+ * - a black plinth, then a two-storey rusticated stone base of tall round-arched windows (light frames, dark glazing with
+ *   a mullion grid) on Geary (front, local -z) and on Taylor, the street edge that meets it; awnings over a few arches;
+ * - a belt course and seven floors of buff brick with regular double-sash windows, a top row between the cornice brackets;
+ * - a deep cream cornice (coved soffit, bracket blocks, fascia, sloped cap) and a chamfer-like corner pavilion with a
+ *   pyramidal crown rising ~3 m higher where Geary meets Taylor;
+ * - the light-well and rear walls plain brick with sparse windows.
+ * Both street fronts are found from the ring geometry in the fit frame, never from OSM's vertex order.
+ * The photographs show seven brick storeys over the base with the cornice at ~28 m, agreeing with OSM's 28 m.
+ */
+function markerHotel_501_Geary(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const ST = surfaceTag('stucco'), AS = surfaceTag('ashlar'), GL = surfaceTag('glass'), CN = surfaceTag('concrete')
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  const n = ring.length
+  const Y0 = -3, YP = 1.5, YB = 8.6, FS = 2.5, YS = YB + 0.6, YT = YS + 7 * FS, YC = YT + 0.6, YF = YC + 2.0, YFT = YF + 0.9, YTOP = YFT + 0.9
+  const info = ring.map((a, i) => {
+    const b = ring[(i + 1) % n], l = Math.hypot(b.x - a.x, b.z - a.z) || 1e-6
+    return { a, b, l, tx: (b.x - a.x) / l, tz: (b.z - a.z) / l, nx: (b.z - a.z) / l, nz: -(b.x - a.x) / l }
+  })
+  const vo = ring.map((_, k) => {
+    const e0 = info[(k + n - 1) % n], e1 = info[k]
+    const kk = Math.max(0.35, 1 + e0.nx * e1.nx + e0.nz * e1.nz)
+    return { x: (e0.nx + e1.nx) / kk, z: (e0.nz + e1.nz) / kk }
+  })
+  // the Geary front: the longest edge facing -z; Taylor: the long edge sharing a vertex with it, facing across x
+  let fi = -1
+  info.forEach((e, i) => { if (e.nz < -0.7 && e.l > 10 && (fi < 0 || e.l > info[fi].l)) fi = i })
+  let ti = -1
+  for (const j of [(fi + 1) % n, (fi + n - 1) % n]) if (fi >= 0 && info[j].l > 10 && Math.abs(info[j].nx) > 0.6) ti = j
+  const corner = fi < 0 || ti < 0 ? -1 : (ti === (fi + 1) % n ? ti : fi)   // the vertex where they meet
+
+  for (let ei = 0; ei < n; ei++) {
+    const { a, l, tx, tz, nx, nz } = info[ei]
+    if (l < 0.5) continue
+    const h = Math.atan2(nx, nz)
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const panel = (u0: number, u1: number, y0: number, y1: number, pr: number, c: Rgb, tag: number): void => {
+      if (u1 - u0 < 0.01) return
+      m.quad([P(u0, y0, pr), P(u1, y0, pr), P(u1, y1, pr), P(u0, y1, pr)], [nx, 0, nz], uv, c, tag)
+    }
+    const slab = (u0: number, u1: number, y0: number, y1: number, pr0: number, pr1: number, c: Rgb, tag = ST): void => {
+      boxAlong(m, a.x + tx * (u0 + u1) / 2 + nx * (pr0 + pr1) / 2, (y0 + y1) / 2, a.z + tz * (u0 + u1) / 2 + nz * (pr0 + pr1) / 2,
+        (u1 - u0) / 2, (y1 - y0) / 2, (pr1 - pr0) / 2, h, c, tag)
+    }
+    const street = ei === fi || ei === ti
+    const va = vo[ei], vb = vo[(ei + 1) % n]
+    const A = (y: number, off: number): V3 => [a.x + va.x * off, y, a.z + va.z * off]
+    const B = (y: number, off: number): V3 => [info[ei].b.x + vb.x * off, y, info[ei].b.z + vb.z * off]
+
+    // ---- the wall, the cornice ----
+    panel(0, l, Y0, YC, 0, MK_WALL, ST)
+    m.quad([A(YC, 0), B(YC, 0), B(YF, 1.5), A(YF, 1.5)], [nx * 0.72, -0.69, nz * 0.72], uv, MK_TRIM, ST)
+    m.quad([A(YF, 1.5), B(YF, 1.5), B(YFT, 1.5), A(YFT, 1.5)], [nx, 0, nz], uv, MK_TRIM, ST)
+    m.quad([A(YFT, 1.5), B(YFT, 1.5), B(YTOP, -1.0), A(YTOP, -1.0)], [nx * 0.6, 0.8, nz * 0.6], uv, MK_TRIM, ST)
+    if (l < 3) continue
+    if (street) {
+      for (let u = 0.9; u < l - 0.6; u += 1.7) slab(u, u + 0.45, YC - 0.1, YF - 0.45, 0.02, 0.7, MK_TRIM)
+      m.quad([A(YF, 1.5), B(YF, 1.5), B(YF, 0.0), A(YF, 0.0)], [0, -1, 0], uv, MK_GROOVE, ST)
+    }
+    if (!street) {
+      // light-well and rear walls: sparse plain windows
+      const cols = Math.max(1, Math.round(l / 4.5))
+      for (let c = 0; c < cols; c++) {
+        const uc = l * (c + 0.5) / cols
+        for (let f = 0; f < 8; f++) panel(uc - 0.45, uc + 0.45, 3.4 + f * 3.0, 4.9 + f * 3.0, 0.04, MK_GLASS, GL)
+      }
+      continue
+    }
+
+    // ---- the street fronts: plinth, arched base, belt course, brick shaft ----
+    panel(0, l, Y0, YP, 0.1, MK_PLINTH, CN)
+    panel(0, l, YP, YB, 0.06, MK_STONE, AS)
+    for (let y = YP + 0.5; y < YB - 0.2; y += 0.8) panel(0, l, y, y + 0.07, 0.1, MK_GROOVE, AS)
+    slab(0, l, YB - 0.1, YB + 0.5, 0, 0.35, MK_TRIM)
+    slab(0, l, YT - 0.2, YT + 0.15, 0, 0.3, MK_TRIM)
+    const nc = Math.max(2, Math.round((l - 1.6) / 3.1)), pit = (l - 1.6) / nc
+    const ARCH = (uc: number, hw: number, ys: number, yt: number, pr: number, c: Rgb, tag: number): void => {
+      const R = hw, spring = yt - R, N = 8
+      const x = (i: number): number => uc - hw + (2 * hw * i) / N
+      const top = (i: number): number => spring + Math.sqrt(Math.max(0, R * R - (x(i) - uc) * (x(i) - uc)))
+      for (let i = 0; i < N; i++) {
+        m.quad([P(x(i), ys, pr), P(x(i + 1), ys, pr), P(x(i + 1), top(i + 1), pr), P(x(i), top(i), pr)], [nx, 0, nz], uv, c, tag)
+      }
+    }
+    for (let c = 0; c < nc; c++) {
+      const uc = 0.8 + pit * (c + 0.5)
+      // the tall round-arched window: light frame, dark glazing, mullion grid
+      ARCH(uc, 1.45, YP + 0.35, YB - 0.7, 0.1, MK_TRIM, ST)
+      ARCH(uc, 1.2, YP + 0.7, YB - 1.0, 0.13, MK_GLASS, GL)
+      panel(uc - 0.04, uc + 0.04, YP + 0.7, YB - 2.2, 0.16, MK_TRIM, ST)
+      for (const y of [YP + 2.3, YP + 3.6]) panel(uc - 1.2, uc + 1.2, y, y + 0.07, 0.16, MK_TRIM, ST)
+      if (c % 3 === 1) slab(uc - 1.3, uc + 1.3, YP + 2.6, YP + 2.9, 0.1, 1.2, MK_AWN)
+      // seven floors of double-sash windows
+      for (let f = 0; f < 7; f++) {
+        const y = YS + f * FS + 0.45
+        panel(uc - 0.98, uc + 0.98, y - 0.15, y + 1.8, 0.05, MK_TRIM, ST)
+        panel(uc - 0.84, uc + 0.84, y, y + 1.65, 0.09, MK_GLASS, GL)
+        panel(uc - 0.03, uc + 0.03, y, y + 1.65, 0.11, MK_TRIM, ST)
+        panel(uc - 0.84, uc + 0.84, y + 0.8, y + 0.86, 0.11, MK_TRIM, ST)
+      }
+    }
+    // pilaster strips at the ends, giving the corner weight
+    for (const u0 of [0, l - 0.7]) panel(u0, u0 + 0.7, YB, YC, 0.08, MK_GROOVE, ST)
+  }
+
+  // ---- the roof, and the corner pavilion with its crown ----
+  const top = ring.map((p, k) => ({ x: p.x - vo[k].x * 1.0, z: p.z - vo[k].z * 1.0 }))
+  capPolygonWithHoles(m, [top], YTOP, MK_GROOVE, ST)
+  if (corner >= 0) {
+    const p = ring[corner], d = vo[corner]
+    const cx = p.x - d.x * 1.7, cz = p.z - d.z * 1.7
+    const hd = Math.atan2(info[fi].nx, info[fi].nz)
+    boxAlong(m, cx, (YTOP + YTOP + 2.6) / 2, cz, 2.5, 1.3, 2.5, hd, MK_WALL, ST)
+    boxAlong(m, cx, YTOP + 2.7, cz, 2.9, 0.15, 2.9, hd, MK_TRIM, ST)
+    const s = Math.sin(hd), co = Math.cos(hd)
+    const C = (dx: number, dz: number, y: number): V3 => [cx + dx * co + dz * s, y, cz - dx * s + dz * co]
+    const r = 2.5, y0 = YTOP + 2.8, y1 = YTOP + 5.4
+    const cs: [number, number][] = [[-r, r], [r, r], [r, -r], [-r, -r]]
+    for (let i = 0; i < 4; i++) {
+      const [x0, z0] = cs[i], [x1, z1] = cs[(i + 1) % 4]
+      const mx = (x0 + x1) / 2, mz = (z0 + z1) / 2
+      const nrm = [mx * co + mz * s, 0.5, -mx * s + mz * co] as V3
+      m.quad([C(x0, z0, y0), C(x1, z1, y0), C(0, 0, y1), C(0, 0, y1)], nrm, uv, MK_TRIM, ST)
+    }
+  }
+
+  for (let q = 0; q < m.positions.length; q++) out.positions.push(m.positions[q])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -7224,6 +7380,7 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   office_235_Second,
   planningBuilding_1650_Mission,
   hotelMetropolis_2_Turk,
+  markerHotel_501_Geary,
   theChateau_2701_VanNess,
   apartments_2400_Pacific,
 }
