@@ -5897,6 +5897,224 @@ function brannanApartments_200_Brannan(out: MeshBuilder, fit: Fit): void {
   else emanuElCopy(out, m, 1, 0, 0, 0)
 }
 
+const O2_BRICK: Rgb = [0.42, 0.21, 0.15]        // #a2563e coded ~30 % down: brick renders orange in the city
+const O2_BRICK_DK: Rgb = [0.3, 0.15, 0.11]      // the lintel courses and spandrels
+const O2_STONE: Rgb = [0.58, 0.55, 0.47]        // #d4ccbc the plinth blocks and sills, coded down
+const O2_GLASS: Rgb = [0.19, 0.31, 0.29]        // #3d5a55 dark green curtain-wall vision glass
+const O2_SPAN: Rgb = [0.1, 0.17, 0.16]          // the dark green spandrels and the lobby glass
+const O2_WIN: Rgb = [0.2, 0.28, 0.32]           // the brick walls' window panes
+const O2_CANOPY: Rgb = [0.3, 0.31, 0.33]        // #5a5d60 the thin flat canopy slabs
+const O2_FRAME: Rgb = [0.07, 0.09, 0.09]        // window frames, mullions
+
+/**
+ * 235 Second Street (former CBS Interactive / CNET, 2001; OSM way/80296730, 5 levels, 27 m, LiDAR 26.7 median / 30.8 max):
+ * a mixed brick and glass block on a 47 x 84 m plan. Brick blocks (warm red-brown, four floors of square punched windows
+ * with stone sills over a stone plinth and an arched loggia at the base) are interlocked with dark-green curtain-wall
+ * towers that stand a few storeys clear to 30 m under thin flat canopy slabs projecting ~1.5 m; a recessed dark glass sixth
+ * storey sits on the brick under a projecting canopy at 27 m. Photographs docs/shots/refs/notable/w80296730/
+ * way-80296730-02 (brick block with arches beside the glass tower under its canopy), -03 (the corner: brick wings, loggia,
+ * glass between), -01 and mapillary-0/1/2 (window pattern, stone plinth blocks, the glazed lobby base).
+ *
+ * Orientation: manifest front 225 (2nd Street) is local -z; the plan is the six-edge ring (jogs ironed out) and each edge is
+ * dressed by its place after the front edge in anticlockwise order: the front (loggia + tower + brick), the jog, the notch,
+ * the long Folsom-side wall, the back and the long Tehama wall (-x) with the second loggia at its 2nd Street end.
+ */
+function office_235_Second(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const BK = surfaceTag('brick')
+  const MT = surfaceTag('metal')
+  const AS = surfaceTag('ashlar')
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  const signedArea = (r: P2[]): number => {
+    let a = 0
+    for (let i = 0; i < r.length; i++) { const p = r[i], q = r[(i + 1) % r.length]; a += p.x * q.z - q.x * p.z }
+    return a
+  }
+  if (signedArea(ring) < 0) ring.reverse()
+  const edgesOf = (r: P2[]) => r.map((a, i) => {
+    const b = r[(i + 1) % r.length], l = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    return { i, a, b, l, tx: (b.x - a.x) / l, tz: (b.z - a.z) / l, nx: (b.z - a.z) / l, nz: -(b.x - a.x) / l }
+  })
+  const inset = (r: P2[], d: number): P2[] => {
+    const e = edgesOf(r), n = r.length
+    return r.map((p, i) => {
+      const e0 = e[(i + n - 1) % n], e1 = e[i]
+      const k = 1 + e0.nx * e1.nx + e0.nz * e1.nz
+      return { x: p.x - ((e0.nx + e1.nx) / k) * d, z: p.z - ((e0.nz + e1.nz) / k) * d }
+    })
+  }
+  // the plan with its small jogs ironed out
+  const S = ring.slice()
+  for (;;) {
+    const e = edgesOf(S)
+    let k = -1, best = 7
+    for (let i = 0; i < e.length; i++) if (e[i].l < best) { best = e[i].l; k = i }
+    if (k < 0 || S.length <= 4) break
+    S.splice((k + 1) % S.length, 1)
+  }
+  const info = edgesOf(S)
+  const nE = info.length
+  const fronts = info.filter((e) => e.l > 12 && e.nz < -0.85)
+  const front = fronts.length ? fronts.reduce((p, c) => (c.l > p.l ? c : p)) : info.reduce((p, c) => (c.nz < p.nz ? c : p))
+
+  const YP = 1.3, Y1 = 5.0, FL = 4.3, YB = Y1 + FL * 4, YT = YB + 4.8, YTW = 30.0   // plinth, ground floor, brick top 22.2, glass top 27, tower top 30
+  const SET = 1.4
+  const GND = -2.0
+
+  type Seg = { u0: number; u1: number; k: 'brick' | 'tower' | 'loggia' }
+  const plan = (k: number, l: number): Seg[] => {
+    const T = (u0: number, w: number): Seg => ({ u0, u1: Math.min(l, u0 + w), k: 'tower' })
+    const fill = (spans: Seg[]): Seg[] => {
+      const o: Seg[] = []
+      let u = 0
+      for (const s of spans) { if (s.u0 > u + 0.01) o.push({ u0: u, u1: s.u0, k: 'brick' }); o.push(s); u = s.u1 }
+      if (u < l - 0.01) o.push({ u0: u, u1: l, k: 'brick' })
+      return o
+    }
+    if (nE !== 6) return fill(l > 24 ? [T(l * 0.4, 11)] : [])
+    if (k === 0) return fill([{ u0: 0, u1: 11.2, k: 'loggia' }, T(l - 11.2 > 11.2 ? 11.2 : l * 0.4, 11)])
+    if (k === 3) return fill([T(l * 0.26, 11), T(l * 0.66, 12)])
+    if (k === 4) return fill([T(l * 0.31, 13)])
+    if (k === 5) return fill([T(l * 0.28, 14), T(l - 25.2, 14), { u0: l - 11.2, u1: l, k: 'loggia' }])
+    return fill([])
+  }
+
+  const quadE = (a: P2, tx: number, tz: number, nx: number, nz: number, u0: number, u1: number, ya: number, yb: number, pr: number, c: Rgb, tag: number): void => {
+    m.quad([[a.x + tx * u0 + nx * pr, ya, a.z + tz * u0 + nz * pr], [a.x + tx * u1 + nx * pr, ya, a.z + tz * u1 + nz * pr],
+      [a.x + tx * u1 + nx * pr, yb, a.z + tz * u1 + nz * pr], [a.x + tx * u0 + nx * pr, yb, a.z + tz * u0 + nz * pr]], [nx, 0, nz],
+    [[0, 0], [1, 0], [1, 1], [0, 1]], c, tag)
+  }
+  /** a box in an edge's frame: u0..u1 along, pr0..pr1 out (pr1 the outer face), y0..y1 */
+  const boxE = (a: P2, tx: number, tz: number, nx: number, nz: number, u0: number, u1: number, pr0: number, pr1: number,
+    y0: number, y1: number, c: Rgb, tag: number): void => {
+    const P = (u: number, y: number, pr: number): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+    m.quad([P(u0, y0, pr1), P(u1, y0, pr1), P(u1, y1, pr1), P(u0, y1, pr1)], [nx, 0, nz], uv, c, tag)
+    m.quad([P(u1, y0, pr0), P(u0, y0, pr0), P(u0, y1, pr0), P(u1, y1, pr0)], [-nx, 0, -nz], uv, c, tag)
+    m.quad([P(u1, y0, pr1), P(u1, y0, pr0), P(u1, y1, pr0), P(u1, y1, pr1)], [tx, 0, tz], uv, c, tag)
+    m.quad([P(u0, y0, pr0), P(u0, y0, pr1), P(u0, y1, pr1), P(u0, y1, pr0)], [-tx, 0, -tz], uv, c, tag)
+    m.quad([P(u0, y1, pr1), P(u1, y1, pr1), P(u1, y1, pr0), P(u0, y1, pr0)], [0, 1, 0], uv, c, tag)
+    m.quad([P(u0, y0, pr0), P(u1, y0, pr0), P(u1, y0, pr1), P(u0, y0, pr1)], [0, -1, 0], uv, c, tag)
+  }
+
+  for (const e of info) {
+    const { a, l, tx, tz, nx, nz } = e
+    if (l < 1) continue
+    const kOff = (e.i - front.i + nE) % nE
+    const F = (u0: number, u1: number, ya: number, yb: number, pr: number, c: Rgb, tag: number): void =>
+      quadE(a, tx, tz, nx, nz, u0, u1, ya, yb, pr, c, tag)
+    const B = (u0: number, u1: number, pr0: number, pr1: number, y0: number, y1: number, c: Rgb, tag: number): void =>
+      boxE(a, tx, tz, nx, nz, u0, u1, pr0, pr1, y0, y1, c, tag)
+    for (const sg of plan(kOff, l)) {
+      const { u0, u1 } = sg
+      if (u1 - u0 < 0.3) continue
+      if (sg.k === 'tower') {
+        // the curtain-wall tower: a glass box proud of the brick, to 30 m, banded by dark spandrels and thin mullions
+        const T0 = u0 + 0.0, T1 = u1, PR = 0.7
+        B(T0, T1, -8, PR, GND, YTW, O2_GLASS, GL)
+        F(T0, T1, GND, Y1 - 0.2, PR + 0.04, O2_SPAN, GL)                               // the dark lobby glazing
+        F(T0, T1, Y1 - 0.2, Y1 + 0.5, PR + 0.06, O2_STONE, AS)                         // stone transom over the lobby
+        for (let f = 0; f < 6; f++) {
+          const y = Y1 + FL * f
+          F(T0, T1, y + 0.5, y + 1.5, PR + 0.04, O2_SPAN, GL)                          // spandrel
+          F(T0, T1, y + 3.3, y + 4.3, PR + 0.04, O2_SPAN, GL)                          // transom band
+        }
+        const nm = Math.max(2, Math.round((T1 - T0) / 1.9))
+        for (let j = 0; j <= nm; j++) {
+          const u = T0 + ((T1 - T0) * j) / nm
+          F(Math.max(T0, u - 0.04), Math.min(T1, u + 0.04), Y1 + 0.5, YTW, PR + 0.08, O2_FRAME, MT)
+        }
+        // the canopy: a thin flat slab projecting well past the glass
+        B(T0 - 1.6, T1 + 1.6, -8, PR + 1.9, YTW, YTW + 0.6, O2_CANOPY, MT)
+        continue
+      }
+      // brick wall to the top of the fifth level, over the plinth
+      F(u0, u1, GND, YB, 0, O2_BRICK, BK)
+      F(u0, u1, GND, YP, 0.08, O2_STONE, AS)
+      F(u0, u1, Y1 - 0.45, Y1 - 0.1, 0.1, O2_STONE, AS)                                // string course over the ground storey
+      F(u0, u1, YB - 0.2, YB + 0.0, 0.16, O2_STONE, AS)                                // cornice course
+      F(u0, u1, YB - 1.0, YB - 0.2, 0.03, O2_BRICK_DK, BK)                             // dark brick frieze
+      if (sg.k === 'loggia') {
+        // the round-arched loggia: dark openings between brick piers, each arch a chord fan with a stone archivolt
+        const na = Math.max(2, Math.floor((u1 - u0) / 3.4)), aw = (u1 - u0) / na, ow = aw - 1.0, R = ow / 2, ys = 3.1
+        for (let j = 0; j < na; j++) {
+          const uc = u0 + aw * (j + 0.5)
+          F(uc - R, uc + R, 0.9, ys, 0.08, O2_SPAN, GL)
+          const K = 6
+          for (let q = 0; q < K; q++) {
+            const t0 = Math.PI * q / K, t1 = Math.PI * (q + 1) / K
+            const x0 = uc - R * Math.cos(t0), x1 = uc - R * Math.cos(t1), y0 = ys + R * Math.sin(t0), y1 = ys + R * Math.sin(t1)
+            const P = (u: number, y: number, pr: number): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+            m.quad([P(x0, ys, 0.08), P(x1, ys, 0.08), P(x1, y1, 0.08), P(x0, y0, 0.08)], [nx, 0, nz], [[0, 0], [1, 0], [1, 1], [0, 1]], O2_SPAN, GL)
+            const R2 = R + 0.35
+            const ox0 = uc - R2 * Math.cos(t0), ox1 = uc - R2 * Math.cos(t1), oy0 = ys + R2 * Math.sin(t0), oy1 = ys + R2 * Math.sin(t1)
+            m.quad([P(x0, y0, 0.07), P(x1, y1, 0.07), P(ox1, oy1, 0.07), P(ox0, oy0, 0.07)], [nx, 0, nz], [[0, 0], [1, 0], [1, 1], [0, 1]], O2_STONE, AS)
+          }
+          F(uc - R - 0.35, uc - R, ys - 0.2, ys, 0.07, O2_STONE, AS)
+          F(uc + R, uc + R + 0.35, ys - 0.2, ys, 0.07, O2_STONE, AS)
+          F(uc - R, uc + R, 3.9, 4.15, 0.12, O2_FRAME, MT)                              // the balcony rail across the openings
+        }
+      } else {
+        // dark glazed ground storey in bays
+        const kb = Math.max(1, Math.round((u1 - u0) / 4.2)), bw = (u1 - u0) / kb
+        for (let j = 0; j < kb; j++) F(u0 + bw * j + 0.6, u0 + bw * (j + 1) - 0.6, YP + 0.3, Y1 - 0.8, 0.06, O2_SPAN, GL)
+      }
+      // four floors of square punched windows with stone sills
+      const kw = Math.max(1, Math.round((u1 - u0) / 3.7)), ww = (u1 - u0) / kw
+      for (let j = 0; j < kw; j++) {
+        const uc = u0 + ww * (j + 0.5), h = Math.min(1.25, ww * 0.34)
+        for (let r = 0; r < 4; r++) {
+          const ya = Y1 + FL * r + 1.05, yb = ya + 2.3
+          F(uc - h - 0.07, uc + h + 0.07, ya - 0.07, yb + 0.07, 0.04, O2_FRAME, MT)
+          F(uc - h, uc + h, ya, yb, 0.07, O2_WIN, GL)
+          F(uc - 0.04, uc + 0.04, ya, yb, 0.09, O2_FRAME, MT)
+          F(uc - h - 0.1, uc + h + 0.1, ya - 0.2, ya - 0.04, 0.14, O2_STONE, AS)
+          F(uc - h - 0.1, uc + h + 0.1, yb + 0.07, yb + 0.3, 0.05, O2_BRICK_DK, BK)
+        }
+      }
+    }
+  }
+
+  // the roof of the brick storeys and the recessed dark-glass sixth storey
+  const ring2 = inset(S, SET)
+  capPolygonWithHoles(m, [S, ring2], YB, [0.16, 0.17, 0.18], BK)
+  const info2 = edgesOf(ring2)
+  for (const e of info2) {
+    const { a, l, tx, tz, nx, nz } = e
+    if (l < 0.5) continue
+    const F = (u0: number, u1: number, ya: number, yb: number, pr: number, c: Rgb, tag: number): void =>
+      quadE(a, tx, tz, nx, nz, u0, u1, ya, yb, pr, c, tag)
+    F(0, l, YB, YT, 0, O2_GLASS, GL)
+    F(0, l, YB, YB + 0.9, 0.04, O2_SPAN, GL)
+    const k = Math.max(2, Math.round(l / 2.4))
+    for (let j = 0; j <= k; j++) {
+      const u = (l * j) / k
+      F(Math.max(0, u - 0.04), Math.min(l, u + 0.04), YB + 0.9, YT, 0.06, O2_FRAME, MT)
+    }
+    F(0, l, YB + 2.7, YB + 2.8, 0.06, O2_FRAME, MT)
+  }
+  // the canopy over it: a thin flat slab, fascia and soffit
+  const ringO = inset(S, -0.8)
+  const eO = edgesOf(ringO)
+  for (let i = 0; i < nE; i++) {
+    const a = ringO[i], b = ringO[(i + 1) % nE], { nx, nz } = eO[i]
+    const c = ring2[i], d = ring2[(i + 1) % nE]
+    const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+    m.quad([[a.x, YT, a.z], [b.x, YT, b.z], [b.x, YT + 0.5, b.z], [a.x, YT + 0.5, a.z]], [nx, 0, nz], uv, O2_CANOPY, MT)
+    m.quad([[a.x, YT, a.z], [b.x, YT, b.z], [d.x, YT, d.z], [c.x, YT, c.z]], [0, -1, 0], uv, O2_CANOPY, MT)
+  }
+  capPolygonWithHoles(m, [ringO], YT + 0.5, O2_CANOPY, MT)
+
+  for (let i = 0; i < m.positions.length; i++) out.positions.push(m.positions[i])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -5923,4 +6141,5 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   chinaBasinLanding_185_Berry,
   zincApartments_8th_Brannan,
   brannanApartments_200_Brannan,
+  office_235_Second,
 }
