@@ -3750,6 +3750,223 @@ function olympicClub_524_Post(out: MeshBuilder, fit: Fit): void {
   for (const idx of m.indices) out.indices.push(base + idx)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// The Victoria Theatre, 2961 16th Street
+// ---------------------------------------------------------------------------------------------------------------
+
+const VT_RED: Rgb = [0.5, 0.125, 0.135]          // #9e2a2b, a shade down: it renders bright in the city
+const VT_RED_DK: Rgb = [0.4, 0.1, 0.11]
+const VT_CREAM: Rgb = [0.925, 0.89, 0.83]        // #ece4d4 trim
+const VT_TEAL: Rgb = [0.1, 0.22, 0.22]           // the dark green-teal coping and window frames
+const VT_TILE: Rgb = [0.3, 0.17, 0.12]           // the brown tile hood
+const VT_GLASS: Rgb = [0.09, 0.1, 0.13]
+const VT_MURAL: Rgb = [0.85, 0.83, 0.8]          // #d8d4cc
+const VT_GREY: Rgb = [0.62, 0.62, 0.64]
+const VT_LIT = 0.5                               // the emissive surface tag (models.ts EMIT)
+
+/**
+ * The Victoria Theatre, 2961 16th Street (1908, San Francisco's oldest operating theatre): a small Mission-Revival front
+ * in deep red stucco with cream trim. The parapet is STEPPED and rises toward the west (photographs, not the pack's
+ * "peak at the centre"): a low left step with a scalloped cap, a middle run, and a tall right step with a scalloped
+ * cap. A brown tile hood runs across the middle of the front, a cream-framed marquee shelters the doors, the vertical
+ * blade sign "VICTORIA" stands at the left third, three quatrefoil medallions sit over the marquee, and arched and
+ * square windows stack up the left and right ends. The long Capp Street (east) side is red with a big off-white mural
+ * panel (a grey face) over a colourful graffiti band; the plain auditorium runs back to 13.2 m.
+ * Photographs: docs/shots/refs/notable/victoria/ mapillary-review and -0 (the front), -2 (corner: mural, sign), -1 (side).
+ *
+ * Orientation: front 356 (16th Street, measured). The front plane is the ring's frontmost edge in the fit frame, spread
+ * across the whole width (OSM jogs the wings back 3.5 m; the photographs show one flat front). The Capp wall is the long
+ * edge facing -x (east, the viewer's left from the street).
+ */
+function victoriaTheatre_2961_16th(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  const n = ring.length
+  const Y_ROOF = 13.2
+  const info = ring.map((a, i) => {
+    const b = ring[(i + 1) % n], l = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    return { i, a, b, l, nx: (b.z - a.z) / l, nz: -(b.x - a.x) / l }
+  })
+  // the front: the edge facing -z that sticks out furthest (the central bay)
+  let fi = 0, fbest = -1e9
+  for (const e of info) {
+    if (-e.nz < 0.64) continue
+    const score = -(e.a.z + e.b.z) / 2 + e.l * 0.01
+    if (score > fbest) { fbest = score; fi = e.i }
+  }
+  const F = info[fi], { a, nx, nz } = F
+  const tx = (F.b.x - F.a.x) / F.l, tz = (F.b.z - F.a.z) / F.l
+  const h = Math.atan2(nx, nz)
+  // the front span: every ring vertex within 8 m of the front line, in (u along, pr out) coordinates
+  let u0 = 1e9, u1 = -1e9, back = 0
+  for (const p of ring) {
+    const u = (p.x - a.x) * tx + (p.z - a.z) * tz, pr = (p.x - a.x) * nx + (p.z - a.z) * nz
+    if (pr > -8) { u0 = Math.min(u0, u); u1 = Math.max(u1, u) }
+    back = Math.min(back, pr)
+  }
+  const L = u1 - u0
+  const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+  const W = (u: number, pr = 0): { x: number; z: number } => ({ x: a.x + tx * u + nx * pr, z: a.z + tz * u + nz * pr })
+  // f is the fraction across the front from the viewer's LEFT (the east end, Capp Street)
+  const leftIsLow = true
+  const U = (f: number): number => u0 + (leftIsLow ? f : 1 - f) * L
+  const panel = (f0: number, f1: number, y0: number, y1: number, pr: number, c: Rgb, tag = ST): void => {
+    const ua = U(f0), ub = U(f1)
+    const lo = Math.min(ua, ub), hi = Math.max(ua, ub)
+    m.quad([P(lo, y0, pr), P(hi, y0, pr), P(hi, y1, pr), P(lo, y1, pr)], [nx, 0, nz], uv, c, tag)
+  }
+  const slab = (f0: number, f1: number, y0: number, y1: number, pr0: number, pr1: number, c: Rgb, tag = ST): void => {
+    const ua = U(f0), ub = U(f1)
+    const w = W((ua + ub) / 2, (pr0 + pr1) / 2)
+    boxAlong(m, w.x, (y0 + y1) / 2, w.z, Math.abs(ub - ua) / 2, (y1 - y0) / 2, (pr1 - pr0) / 2, h, c, tag)
+  }
+  // a convex polygon painted on the front plane: points are (metres along, y) about a centre
+  const poly = (f: number, cy: number, pts: [number, number][], pr: number, c: Rgb, tag = ST): void => {
+    const sgn = leftIsLow ? 1 : -1
+    const pp = (p: [number, number]): V3 => P(U(f) + sgn * p[0], cy + p[1], pr)
+    for (let i = 1; i + 1 < pts.length; i += 2) m.quad([pp(pts[0]), pp(pts[i]), pp(pts[i + 1]), pp(pts[Math.min(i + 2, pts.length - 1)])], [nx, 0, nz], uv, c, tag)
+  }
+  const disc = (f: number, cy: number, r: number, k: number, pr: number, c: Rgb, tag = ST): void => {
+    const pts: [number, number][] = [[0, 0]]
+    for (let i = 0; i <= k; i++) pts.push([Math.cos((Math.PI * 2 * i) / k) * r, Math.sin((Math.PI * 2 * i) / k) * r])
+    poly(f, cy, pts, pr, c, tag)
+  }
+  const cap = (f: number, cy: number, r: number, pr: number, c: Rgb): void => {
+    const pts: [number, number][] = [[0, 0]]
+    for (let i = 0; i <= 6; i++) pts.push([Math.cos(Math.PI * i / 6) * r, Math.sin(Math.PI * i / 6) * r])
+    poly(f, cy, pts, pr, c, ST)
+  }
+  const wallAt = (f: number, y0: number, y1: number, hw: number, pr: number, c: Rgb, tag = ST): void => panel(f - hw / L, f + hw / L, y0, y1, pr, c, tag)
+  const arch = (f: number, y0: number, spring: number, hw: number, pr: number, c: Rgb, tag: number): void => {
+    wallAt(f, y0, spring, hw, pr, c, tag)
+    const pts: [number, number][] = [[0, 0]]
+    for (let i = 0; i <= 6; i++) pts.push([Math.cos(Math.PI * i / 6) * hw, Math.sin(Math.PI * i / 6) * hw])
+    poly(f, spring, pts, pr, c, tag)
+  }
+  const stepY = [14.4, 15.0, 16.2]                // left step, middle run, tall right step
+  const fL = 0.16, fR = 0.62                      // where the steps change (fraction from the left)
+
+  // ---- the walls: all red to 13.2 m ----
+  for (const e of info) {
+    m.quad([[e.a.x, -3, e.a.z], [e.b.x, -3, e.b.z], [e.b.x, Y_ROOF, e.b.z], [e.a.x, Y_ROOF, e.a.z]], [e.nx, 0, e.nz], uv, VT_RED, ST)
+  }
+  capPolygonWithHoles(m, [ring], Y_ROOF, [0.45, 0.43, 0.42], surfaceTag('concrete'))
+
+  // ---- the front block: one flat red front across the full width, stepped parapet ----
+  const dep = Math.min(4.2, -back - 0.5)
+  slab(0, fL, -3, stepY[0], -dep, 0, VT_RED)
+  slab(fL, fR, -3, stepY[1], -dep, 0, VT_RED)
+  slab(fR, 1, -3, stepY[2], -dep, 0, VT_RED)
+  slab(-0.005, fL, stepY[0], stepY[0] + 0.25, -0.5, 0.18, VT_TEAL)
+  slab(fL, fR, stepY[1], stepY[1] + 0.25, -0.5, 0.18, VT_TEAL)
+  slab(fR, 1.005, stepY[2], stepY[2] + 0.25, -0.5, 0.18, VT_TEAL)
+  slab(fL - 0.002, fL + 0.002, stepY[0], stepY[1], -0.5, 0.15, VT_CREAM)
+  slab(fR - 0.002, fR + 0.002, stepY[1], stepY[2], -0.5, 0.15, VT_CREAM)
+  // the scalloped caps, outlined in teal and cream
+  cap(0.08, stepY[0] + 0.25, 0.95, 0.06, VT_TEAL)
+  cap(0.08, stepY[0] + 0.25, 0.78, 0.08, VT_CREAM)
+  cap(0.08, stepY[0] + 0.25, 0.6, 0.1, VT_RED)
+  cap(0.8, stepY[2] + 0.25, 1.5, 0.06, VT_TEAL)
+  cap(0.8, stepY[2] + 0.25, 1.28, 0.08, VT_CREAM)
+  cap(0.8, stepY[2] + 0.25, 1.05, 0.1, VT_RED)
+  slab(0.02, 0.98, 12.3, 12.55, -0.1, 0.12, VT_CREAM)
+  slab(0.02, 0.98, 10.0, 10.2, -0.1, 0.1, VT_CREAM)
+
+  // ---- the brown tile hood across the middle of the front, on cream brackets ----
+  slab(0.14, 0.64, 10.6, 11.4, -0.1, 0.5, VT_RED_DK)
+  const nb = 9
+  for (let j = 0; j <= nb; j++) slab(0.16 + (0.46 * j) / nb - 0.004, 0.16 + (0.46 * j) / nb + 0.004, 10.7, 11.5, 0.1, 0.8, VT_CREAM)
+  {
+    const lo = Math.min(U(0.13), U(0.65)), hi = Math.max(U(0.13), U(0.65))
+    const rise = 0.9, run = 1.6, sl = Math.hypot(rise, run)
+    m.quad([P(lo, 11.5, 0.9), P(hi, 11.5, 0.9), P(hi, 12.4, -0.1), P(lo, 12.4, -0.1)], [nx * rise / sl, run / sl, nz * rise / sl], uv, VT_TILE, TL)
+    slab(0.13, 0.65, 11.2, 11.6, 0.5, 0.95, VT_TILE, TL)
+  }
+
+  // ---- windows ----
+  arch(0.075, 7.9, 8.9, 0.42, 0.04, VT_CREAM, ST)
+  arch(0.075, 8.05, 8.9, 0.28, 0.07, VT_GLASS, GL)
+  wallAt(0.075, 5.3, 6.9, 0.45, 0.04, VT_TEAL)
+  wallAt(0.075, 5.45, 6.75, 0.3, 0.07, VT_CREAM)
+  arch(0.865, 10.0, 11.0, 0.5, 0.04, VT_CREAM, ST)
+  arch(0.865, 10.15, 11.0, 0.33, 0.07, VT_GLASS, GL)
+  wallAt(0.88, 7.1, 8.9, 0.62, 0.04, VT_TEAL)
+  wallAt(0.88, 7.3, 8.7, 0.46, 0.07, VT_CREAM)
+  disc(0.9, 4.9, 0.55, 8, 0.04, VT_TEAL)
+  disc(0.9, 4.9, 0.36, 8, 0.07, VT_CREAM)
+  wallAt(0.9, 0.0, 3.1, 0.55, 0.04, VT_RED_DK)
+  for (const f of [0.255, 0.4, 0.555]) {                                    // the quatrefoil medallions over the marquee
+    disc(f, 6.7, 0.78, 8, 0.04, VT_TEAL)
+    disc(f, 6.7, 0.52, 8, 0.07, VT_CREAM)
+    disc(f, 6.7, 0.25, 8, 0.1, VT_TEAL)
+  }
+
+  // ---- the ground floor and the marquee ----
+  panel(0.1, 0.66, 0, 3.7, 0.05, [0.07, 0.06, 0.07], ST)
+  for (const f of [0.21, 0.255, 0.4, 0.45, 0.545]) wallAt(f, 0.4, 2.8, 0.2, 0.1, [0.85, 0.65, 0.3], VT_LIT)
+  wallAt(0.125, 0.4, 3.0, 0.38, 0.1, [0.75, 0.18, 0.15], VT_LIT)
+  wallAt(0.635, 0.4, 3.0, 0.38, 0.1, [0.75, 0.18, 0.15], VT_LIT)
+  const mw = L * 0.31, mu = U(0.34), mo = 2.2, my = 4.0
+  const mp = W(mu)
+  marquee(m, mp.x, my, mp.z, mw, mo, '', { heading: h, body: [0.93, 0.91, 0.85], band: [0.55, 0.55, 0.55], letters: [0.1, 0.1, 0.12], height: 1.7 })
+  const sp = W(U(0.3))
+  bladeSign(m, sp.x, 14.2, sp.z, 8.0, 'VICTORIA', { body: [0.62, 0.62, 0.62], letters: [0.94, 0.92, 0.85], width: 1.0, out: 1.1, heading: h })
+
+  // ---- Capp Street: the long east wall ----
+  let ci = -1, cbest = 0
+  for (const e of info) {
+    if (e.i === fi) continue
+    const d = e.nx * tx + e.nz * tz
+    if (d < -0.7 && e.l > cbest) { cbest = e.l; ci = e.i }
+  }
+  if (ci >= 0) {
+    const e = info[ci]
+    const etx = (e.b.x - e.a.x) / e.l, etz = (e.b.z - e.a.z) / e.l
+    const dEnd = (e.b.x - a.x) * nx + (e.b.z - a.z) * nz, dStart = (e.a.x - a.x) * nx + (e.a.z - a.z) * nz
+    const fromB = dEnd > dStart                                   // b is the front end
+    const at = (d: number, y: number, pr = 0.05): V3 => {
+      const s = fromB ? e.l - d : d
+      return [e.a.x + etx * s + e.nx * pr, y, e.a.z + etz * s + e.nz * pr]
+    }
+    const sp2 = (d0: number, d1: number, y0: number, y1: number, pr: number, c: Rgb, tag = ST): void => {
+      m.quad(fromB ? [at(d1, y0, pr), at(d0, y0, pr), at(d0, y1, pr), at(d1, y1, pr)] : [at(d0, y0, pr), at(d1, y0, pr), at(d1, y1, pr), at(d0, y1, pr)],
+        [e.nx, 0, e.nz], uv, c, tag)
+    }
+    const D = Math.min(e.l, 26)
+    sp2(15.5, D, 3.4, Y_ROOF, 0.03, VT_GREY)
+    sp2(2.2, 15.0, 3.6, 11.8, 0.04, VT_CREAM)
+    sp2(2.5, 14.7, 3.9, 11.5, 0.07, VT_MURAL)
+    sp2(6.0, 9.4, 6.6, 10.2, 0.1, [0.78, 0.76, 0.73])
+    sp2(6.6, 8.8, 7.4, 9.6, 0.12, [0.9, 0.87, 0.82])
+    sp2(6.3, 9.1, 9.0, 10.4, 0.12, [0.5, 0.48, 0.46])
+    sp2(4.8, 10.6, 3.9, 6.2, 0.1, [0.62, 0.6, 0.58])
+    sp2(3.0, 5.6, 5.2, 7.2, 0.1, [0.3, 0.3, 0.32])
+    sp2(9.8, 13.6, 4.6, 6.0, 0.1, [0.35, 0.35, 0.4])
+    const cols: Rgb[] = [[0.93, 0.78, 0.15], [0.2, 0.45, 0.75], [0.7, 0.25, 0.55], [0.95, 0.5, 0.15], [0.25, 0.65, 0.6], [0.55, 0.3, 0.7]]
+    let d = 0.3, k = 0
+    while (d < D - 0.5) {
+      const w = 1.4 + ((k * 7) % 5) * 0.55
+      sp2(d, Math.min(d + w, D), 0.3, 1.7 + ((k * 3) % 4) * 0.5, 0.06, cols[k % cols.length])
+      sp2(d + 0.3, Math.min(d + w - 0.1, D), 1.2, 2.2 + ((k * 5) % 3) * 0.4, 0.09, cols[(k + 2) % cols.length])
+      sp2(d, Math.min(d + w, D), 2.6, 3.4, 0.05, [0.82, 0.84, 0.88])
+      d += w + 0.2; k++
+    }
+  }
+
+  for (let i = 0; i < m.positions.length; i++) out.positions.push(m.positions[i])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -3762,6 +3979,7 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   olympicClub_524_Post,
   audiffredBuilding_100_Embarcadero,
   alhambraTheatre_2330_Polk,
+  victoriaTheatre_2961_16th,
   ywcaResidence_940_Powell,
   stJosephsHospital_355_BuenaVista,
   rialtoBuilding_116_NewMontgomery,

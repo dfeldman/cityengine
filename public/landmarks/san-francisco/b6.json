@@ -4,7 +4,7 @@
   { "osm": ["way/220522604"], "procedural": "b6_theatre_220522604", "name": "Harding Theater", "height": 13 },
   { "osm": ["way/273181546"], "procedural": "b6_mansion_273181546", "name": "Koshland House", "height": 13 },
   { "osm": ["way/121024973"], "procedural": "b6_hall_121024973", "name": "Swedish American Hall", "height": 13 },
-  { "osm": ["way/260351423"], "procedural": "b6_theatre_260351423", "name": "Victoria Theatre", "height": 13 },
+  { "osm": ["way/260351423"], "procedural": "victoriaTheatre_2961_16th", "name": "Victoria Theatre", "height": 13, "front": 356, "note": "Victoria Theatre, 1908: red Mission-Revival front on 16th St (front 356, measured), stepped scalloped parapet, marquee, blade sign; mural and graffiti on the Capp St side" },
   { "osm": ["way/263823315"], "procedural": "b6_house_263823315", "name": "Mish House", "height": 13 },
   { "osm": ["way/260353691"], "procedural": "b6_hotel_260353691", "name": "Union Hotel", "height": 13 },
   { "osm": ["way/169204245"], "procedural": "b6_warehouse_169204245", "name": "Rainbow Grocery Coop", "height": 11 },
