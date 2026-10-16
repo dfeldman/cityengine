@@ -83,7 +83,7 @@
   {"osm": ["way/35176131"], "name": "BEI Hotel San Francisco", "restyle": "skyscraper", "levels": 16, "note": "50 Eighth Street: a 1970s hotel slab."},
   {"osm": ["way/256042697"], "name": "Civic Center Residence", "restyle": "chicago", "levels": 12, "note": "44 McAllister: a 1920s residential tower."},
   {"osm": ["way/256042679"], "name": "Dorothy Day Community", "restyle": "chicago", "levels": 11, "note": "54 McAllister."},
-  {"osm": ["way/256042692"], "name": "60 McAllister Street", "restyle": "chicago", "levels": 11, "note": "Its neighbour."},
+  {"osm": ["way/256042692"], "name": "60 McAllister Street", "restyle": "tenement", "wall": "#7a4a30", "levels": 5, "height": 18, "note": "2026-10-16 (Mapillary): a five-storey brick walk-up with white bays and fire escapes and a bracketed cornice — not an 11-storey office (stood at OSM's 42 m)."},
   {"osm": ["way/940206079"], "name": "1 Polk Street annexe", "restyle": "skyscraper", "levels": 13, "note": "2010s flats beside the Argenta."},
   {"osm": ["way/35111958"], "name": "1TENth", "restyle": "skyscraper", "levels": 10, "note": "875 Stevenson: a 2000s office block."},
   {"osm": ["way/35536670"], "name": "St Anthony's Vera Haile Senior Housing", "restyle": "brutalist", "levels": 10, "note": "121 Golden Gate."},
