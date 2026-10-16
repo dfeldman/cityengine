@@ -3,141 +3,193 @@
     "osm": [
       "way/32650734"
     ],
-    "procedural": "h3_firestationQ_32650734",
     "name": "San Francisco Fire Station Q",
-    "height": 6
+    "height": 6,
+    "restyle": "presidio",
+    "wall": "#ece6d8",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: restyled to its own material and colour (was the shared dark chicago-block recipe)"
   },
   {
     "osm": [
       "way/112073353"
     ],
-    "procedural": "h3_harveyMilkRecreational_112073353",
     "name": "Harvey Milk Recreational Arts Center",
-    "height": 9
+    "height": 9,
+    "restyle": "stucco",
+    "wall": "#e8e2d4",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: restyled to its own material and colour (was the shared dark chicago-block recipe)"
   },
   {
     "osm": [
       "way/115433822"
     ],
-    "procedural": "h3_firestation6_115433822",
     "name": "San Francisco Fire Station 6",
-    "height": 10
+    "height": 10,
+    "restyle": "brick",
+    "wall": "#6e3a2c",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: restyled to its own material and colour (was the shared dark chicago-block recipe)"
   },
   {
     "osm": [
       "way/120481448"
     ],
-    "procedural": "h3_goldenGateParkAid_120481448",
     "name": "Golden Gate Park Aid Station",
-    "height": 6
+    "height": 6,
+    "restyle": "presidio",
+    "wall": "#e8dfcc",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: restyled to its own material and colour (was the shared dark chicago-block recipe)"
   },
   {
     "osm": [
       "way/135620203"
     ],
-    "procedural": "h3_fireChiefsResidence_135620203",
     "name": "Fire Chief's Residence",
-    "height": 12
+    "height": 12,
+    "restyle": "brick",
+    "wall": "#5f3328",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: restyled to its own material and colour (was the shared dark chicago-block recipe)"
   },
   {
     "osm": [
       "way/161504247"
     ],
-    "procedural": "h3_firestation12_161504247",
     "name": "San Francisco Fire Station 12",
-    "height": 9
+    "height": 9,
+    "restyle": "stucco",
+    "wall": "#e6d6bc",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: restyled to its own material and colour (was the shared dark chicago-block recipe)"
   },
   {
     "osm": [
       "way/161504250"
     ],
-    "procedural": "h3_firestation14_161504250",
-    "name": "San Francisco Fire Station 14"
+    "name": "San Francisco Fire Station 14",
+    "restyle": "stucco",
+    "wall": "#e9e2d3",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: restyled to its own material and colour (was the shared dark chicago-block recipe)"
   },
   {
     "osm": [
       "way/162470913"
     ],
-    "procedural": "h3_firestation23_162470913",
     "name": "San Francisco Fire Station #23",
-    "height": 8
+    "height": 8,
+    "restyle": "stucco",
+    "wall": "#e2dccf",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: restyled to its own material and colour (was the shared dark chicago-block recipe)"
   },
   {
     "osm": [
       "way/218148097"
     ],
-    "procedural": "h3_firestation29_218148097",
     "name": "San Francisco Fire Station 29",
-    "height": 10
+    "height": 10,
+    "restyle": "brick",
+    "wall": "#7a3a2c",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: restyled to its own material and colour (was the shared dark chicago-block recipe)"
   },
   {
     "osm": [
       "way/242973686"
     ],
-    "procedural": "h3_oldMissionPolicStation_242973686",
     "name": "Old Mission Police Station",
-    "height": 11
+    "height": 11,
+    "restyle": "classical",
+    "wall": "#d2b996",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: restyled to its own material and colour (was the shared dark chicago-block recipe)"
   },
   {
     "osm": [
       "way/256461082"
     ],
-    "procedural": "h3_bryantStreetStation_256461082",
     "name": "Bryant Street Station",
-    "height": 6
+    "height": 6,
+    "restyle": "bauhaus",
+    "wall": "#efe6cf",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: restyled to its own material and colour (was the shared dark chicago-block recipe)"
   },
   {
     "osm": [
       "way/260327749"
     ],
-    "procedural": "h3_missionPolicStation_260327749",
     "name": "Mission Police Station",
-    "height": 9
+    "height": 9,
+    "restyle": "stucco",
+    "wall": "#e8e0cf",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: restyled to its own material and colour (was the shared dark chicago-block recipe)"
   },
   {
     "osm": [
       "way/261105865"
     ],
-    "procedural": "h3_odcTheater_261105865",
     "name": "ODC Theater",
-    "height": 10
+    "height": 10,
+    "restyle": "bauhaus",
+    "wall": "#e8ecec",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: restyled to its own material and colour (was the shared dark chicago-block recipe)"
   },
   {
     "osm": [
       "way/415417770"
     ],
-    "procedural": "h3_dorraineZiefLaw_415417770",
-    "name": "Dorraine Zief Law Library"
+    "name": "Dorraine Zief Law Library",
+    "restyle": "bauhaus",
+    "wall": "#d8d8d4",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: restyled to its own material and colour (was the shared dark chicago-block recipe)"
   },
   {
     "osm": [
       "way/1186109887"
     ],
-    "procedural": "h3_firestation5_1186109887",
-    "name": "San Francisco Fire Station 5"
+    "name": "San Francisco Fire Station 5",
+    "restyle": "bauhaus",
+    "wall": "#d5d2c8",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: restyled to its own material and colour (was the shared dark chicago-block recipe)"
   },
   {
     "osm": [
       "way/32946359"
     ],
-    "procedural": "h3_aliotoveronese_32946359",
     "name": "Alioto - Veronese Building",
-    "height": 11
+    "height": 11,
+    "restyle": "classical",
+    "wall": "#d8cdb8",
+    "noShops": true,
+    "note": "2026-10-16 Mapillary pass: restyled to its own material and colour (was the shared dark chicago-block recipe)"
   },
   {
     "osm": [
       "way/34313513"
     ],
-    "procedural": "h3_harveyMilkMemorial_34313513",
     "name": "Harvey Milk Memorial Administration Building",
-    "note": "Restored 2026-10-02 by tools/builder-audit.ts: the builder existed, the manifest never placed it."
+    "note": "2026-10-16 Mapillary pass: restyled to its own material and colour (was the shared dark chicago-block recipe)",
+    "restyle": "stucco",
+    "wall": "#e4ddcf",
+    "noShops": true
   },
   {
     "osm": [
       "way/764313741"
     ],
-    "procedural": "h3_firestationH_764313741",
     "name": "Fire Station H",
-    "note": "Restored 2026-10-02 by tools/builder-audit.ts: the builder existed, the manifest never placed it."
+    "note": "2026-10-16 Mapillary pass: restyled to its own material and colour (was the shared dark chicago-block recipe)",
+    "restyle": "stucco",
+    "wall": "#e6dfd0",
+    "noShops": true
   }
 ]
