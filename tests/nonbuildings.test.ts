@@ -168,6 +168,9 @@ const KNOWN: Record<string, string[]> = {
     // the Chinese Hospital's sign hangs on its wall 4 m up, by design (2026-10-16)
     'height | Chinese Hospital sign',
     'intersects | Chinese Hospital sign',
+    // the HILLS BROS COFFEE letters stand on the coffee works' roof, 24 m up, by design (2026-10-16)
+    'height | Hills Bros. Coffee roof sign',
+    'intersects | Hills Bros. Coffee roof sign',
     'intersects | Language of the Birds',
     /*
      * `coplanar` is a HEURISTIC (tools/nonbuildings.ts §coplanarSlabs) and this is a candidate, not a
