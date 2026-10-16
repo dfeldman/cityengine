@@ -1885,6 +1885,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     hud.note(e.code === 'KeyA' ? '← nudge' : 'nudge →')
   })
   let lastAt = { x: 0, z: 0 }
+  /** the drawn point and heading last frame, and a U-turn being shown (below) */
+  let lastDrawn: { x: number; z: number; heading: number } | null = null
+  let uTurn: { x: number; z: number; heading: number; t: number; sign: 1 | -1 } | null = null
   /** hidden inside a streetcar */
   let riderHidden = false
   let lastY = 0
@@ -2691,6 +2694,32 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         if (kind === 'streetcar') { if (!riderHidden) { rider?.hide(); riderHidden = true } }
         else if (riderHidden) { rider?.show(); riderHidden = false }
       }
+      /*
+       * THE TURN ROUND, SHOWN (owner, 2026-10-16: "when arriving at a dead end, you instantly flip around. this is
+       * confusing for new users. you should flip, but slow enough to see what's happening"). The navigator reverses at
+       * the node, and the drawn point jumps across to the other side of the street (riders keep right): the bike snapped
+       * round in one frame. Now a reversal within a few metres starts a U-turn: the bike swings round a half-circle from
+       * where it was to where it now is, over 1.6 s, and the camera, which follows the drawn heading, swings with it.
+       */
+      if (!onBoard && !uTurn && lastDrawn && Math.abs(wrap(heading - lastDrawn.heading)) > 2.4
+          && Math.hypot(at.x - lastDrawn.x, at.z - lastDrawn.z) < 8) {
+        // which way round: the side the new point lies on, from the old heading (keep right: a left-hand swing)
+        const side = (at.x - lastDrawn.x) * Math.cos(lastDrawn.heading) - (at.z - lastDrawn.z) * Math.sin(lastDrawn.heading)
+        uTurn = { x: lastDrawn.x, z: lastDrawn.z, heading: lastDrawn.heading, t: 0, sign: side >= 0 ? 1 : -1 }
+      }
+      if (uTurn) {
+        uTurn.t += dt / 1.6
+        const k = Math.min(1, uTurn.t), e = k * k * (3 - 2 * k)
+        // round the half-circle whose diameter is old point → new point
+        const cx = (uTurn.x + at.x) / 2, cz = (uTurn.z + at.z) / 2
+        const rx = uTurn.x - cx, rz = uTurn.z - cz
+        const a = -uTurn.sign * Math.PI * e, ca = Math.cos(a), sa = Math.sin(a)
+        if (k < 1) {
+          at = { x: cx + rx * ca - rz * sa, z: cz + rx * sa + rz * ca }
+          heading = wrap(uTurn.heading + uTurn.sign * Math.PI * e)
+        } else uTurn = null
+      }
+      lastDrawn = { x: at.x, z: at.z, heading }
       lastAt = at
       lastY = groundY
       if (!frozen) city.update(at.x, at.z)
