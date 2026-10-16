@@ -10598,7 +10598,7 @@ Only two odd raised walkways. Really: a raised patterned terracotta plaza with w
 running from Geary to the cathedral, with sunken terracotta parking courts either side (planter islands) and
 stairs down. Satellite: `docs/shots/refs/bugs/267-cathedral-plaza.webp`.
 
-### #268 Webster Street pedestrian bridge over Geary (Japantown) is worth a model (owner, 2026-10-15) — OPEN
+### #268 Webster Street pedestrian bridge over Geary (Japantown) is worth a model (owner, 2026-10-15) — MODELLED 2026-10-16 (notable.ts websterBridge_Geary)
 
 Orange-red steel arch deck on tapered piers (black-painted bases), black railings, Japanese lanterns on red
 posts, ramps both ends. Photo: `docs/shots/refs/bugs/268-webster-bridge.webp`.
@@ -10608,27 +10608,27 @@ posts, ramps both ends. Photo: `docs/shots/refs/bugs/268-webster-bridge.webp`.
 Screenshot `docs/shots/refs/bugs/269-roof-detached.webp`: a grey sloped slab floating over a beige office block; a
 Gothic church tower in the background (St. Dominic's/St. Mary's area?).
 
-### #270 Fillmore overpass over Geary: ride paths broken at 37.784459 −122.432795 (owner, 2026-10-15) — OPEN
+### #270 Fillmore overpass over Geary: ride paths broken at 37.784459 −122.432795 (owner, 2026-10-15) — FIXED 2026-10-16 (bake: short underpasses ridden in the open; four road stubs up to the overpass sidewalks dropped)
 
 Hard to go straight under; most paths climb into the air to the overpass; on top, both streets just make U-turns.
 
-### #271 Embarcadero Center podiums drawn as generic apartments at 37.794374 −122.397746 (owner, 2026-10-15) — OPEN
+### #271 Embarcadero Center podiums drawn as generic apartments at 37.794374 −122.397746 (owner, 2026-10-15) — MODELLED 2026-10-16
 
 Both sides of the street: they are the brutalist concrete podium extensions of the towers (deep overhanging
 pergola roofs, ivy, skybridges over Davis). Photo: `docs/shots/refs/bugs/271-embarcadero-podium.webp`.
 
 ### #272 Two paths on one street with no median near 37.786900 −122.398178 (owner, 2026-10-15) — OPEN
 
-### #273 Chinatown should feel like Chinatown (owner, 2026-10-16) — OPEN
+### #273 Chinatown should feel like Chinatown (owner, 2026-10-16) — IN PROGRESS (Sing Chong, Sing Fat, Telephone Exchange, Six Companies modelled; half the painted shop boards and invented names in Chinese)
 
 Custom buildings with appropriate signs; "many signs in chinese. not all, it's not china, but maybe half".
 
-### #274 Indian laurel fig trees (owner, 2026-10-16) — OPEN
+### #274 Indian laurel fig trees (owner, 2026-10-16) — DONE (sf_ficus_giant species, form ficusGiant: trunks ≥30 in and the Columbus row)
 
 A handful in the city, extremely unusual: pale, twisting multi-stem trunks fanning up to a dense, flat-bottomed,
 rounded canopy. The famous ones line Columbus near Broadway. A species for the plants db.
 
-### #275 A dormer hangs off its house at 37.801264 −122.406128 (owner, 2026-10-16) — OPEN
+### #275 A dormer hangs off its house at 37.801264 −122.406128 (owner, 2026-10-16) — FIXED (front-gable roofs capped at the building's depth; for the owner to look again)
 
 ### #276 Kearny's stair sidewalks (owner, 2026-10-16) — OPEN, location to research
 
