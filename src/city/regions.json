@@ -330,6 +330,7 @@
     ],
     "streetWidths": [
       { "street": "6th Street", "from": [37.77990, -122.40750], "to": [37.77660, -122.40330], "width": 19, "walk": 3, "note": "OSM says six lanes, Folsom to Harrison; Mapillary 2025: four and parking, ~3 m sidewalks (owner, 2026-10-15)" },
+      { "street": "Kearny Street", "from": [37.79800, -122.40549], "to": [37.79890, -122.40565], "width": 7, "walk": 0, "note": "Broadway to Vallejo, the Peter Macchiarini Steps: the sidewalks ARE stairways; OSM's 9 m corridor round a centreline set west of the street's middle swallowed the west flight, which the stair renderer then trimmed away as 'in the road' (owner #276)" },
       { "street": "Lombard Street", "from": [37.80200, -122.41950], "to": [37.80222, -122.41790], "width": 4.2, "walk": 0, "note": "the crooked block: one brick lane between hedges, its sidewalks the separate stairways (owner, 2026-10-16: 'too narrow to accommodate the zigzag road'; LiDAR shows the buildings are where OSM has them)" }
     ],
     "streetPaint": [
@@ -341,6 +342,11 @@
       {
         "name": "Embarcadero Center 3-4 crossing",
         "points": [[37.795210, -122.396908], [37.795273, -122.396557]],
+        "width": 3
+      },
+      {
+        "name": "Peter Macchiarini Steps (Kearny's west sidewalk, Broadway to Vallejo)",
+        "points": [[37.798115, -122.405540], [37.798672, -122.405657], [37.798877, -122.405701]],
         "width": 3
       }
     ]
