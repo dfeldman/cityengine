@@ -11,6 +11,7 @@ import { boxAlong, marquee, bladeSign, signText } from '../../parts.ts'
 import { classicalColumn } from '../../column.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
 import { ivyWall } from '../../ivy.ts'
+import { sign } from '../../signage.ts'
 import { CATHEDRAL_PLAZA_RING, CATHEDRAL_HOLE } from '../../../../city/sf/bridges.ts'
 import { inset as ecInset, walls as ecWalls, soffit as ecSoffit, piers as ecPiers, onEdge as ecOnEdge } from '../ec4-podium.ts'
 
@@ -8227,6 +8228,61 @@ function cathedralPlaza_Geary(out: MeshBuilder, _fit: Fit): void {
   }
 }
 
+/**
+ * 2 Bryant Street, under the Bay Bridge at the Embarcadero (Mapillary docs/shots/refs/notable/2-bryant): a white
+ * three-storey office, its walls a grid of big blue-green windows with horizontal sunshade louvres over them, a
+ * parapet band, "2 BRYANT" over the door. A diamond plan (OSM way/105026993). Every edge facing the streets the same.
+ */
+function office_2_Bryant(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const WHITE: Rgb = [0.9, 0.9, 0.88], GLZ: Rgb = [0.24, 0.42, 0.46], GREY: Rgb = [0.55, 0.57, 0.6], DARK: Rgb = [0.18, 0.2, 0.22]
+  const CN = surfaceTag('stucco'), GL = surfaceTag('glass'), MT = surfaceTag('metal')
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  const FL = 4.4, N = 3, TOP = N * FL + 1.4
+  let fi = 0, fz = Infinity
+  ring.forEach((a, i) => { const b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z); const nz = -(b.x - a.x) / (L || 1); if (L > 8 && nz < fz) { fz = nz; fi = i } })
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z)
+    if (L < 0.5) continue
+    const tx = (b.x - a.x) / L, tz = (b.z - a.z) / L, nx = tz, nz = -tx, h = Math.atan2(nx, nz)
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const panel = (u0: number, u1: number, y0: number, y1: number, pr: number, c: Rgb, tag: number): void => {
+      m.quad([P(u0, y0, pr), P(u1, y0, pr), P(u1, y1, pr), P(u0, y1, pr)], [nx, 0, nz], uv, c, tag)
+    }
+    panel(0, L, 0, TOP, 0, WHITE, CN)
+    const n = Math.max(1, Math.round(L / 4.2)), w = L / n
+    for (let f = 0; f < N; f++) {
+      const y0 = f * FL + (f === 0 ? 0.4 : 1.0), y1 = f * FL + FL - 0.5
+      for (let k = 0; k < n; k++) {
+        const u0 = k * w + 0.45, u1 = (k + 1) * w - 0.45
+        panel(u0, u1, y0, y1, 0.04, f === 0 && i === fi && k === Math.floor(n / 2) ? DARK : GLZ, GL)
+        for (let j = 1; j < 3; j++) panel(u0 + ((u1 - u0) * j) / 3 - 0.04, u0 + ((u1 - u0) * j) / 3 + 0.04, y0, y1, 0.07, GREY, MT)     // mullions
+        // the sunshade: a louvred blade standing out over each window
+        boxAlong(m, a.x + tx * (u0 + u1) / 2 + nx * 0.55, y1 + 0.15, a.z + tz * (u0 + u1) / 2 + nz * 0.55, (u1 - u0) / 2 + 0.1, 0.05, 0.55, h, GREY, MT)
+      }
+    }
+    boxAlong(m, a.x + tx * L / 2 + nx * 0.15, TOP - 0.5, a.z + tz * L / 2 + nz * 0.15, L / 2 + 0.15, 0.5, 0.15, h, WHITE, CN)   // parapet band
+  }
+  capPolygonWithHoles(m, [ring], TOP - 0.2, [0.5, 0.5, 0.5], CN)
+  // the name over the door
+  const a0 = ring[fi], b0 = ring[(fi + 1) % ring.length], L0 = Math.hypot(b0.x - a0.x, b0.z - a0.z)
+  sign(m, { type: 'flat', text: '2 BRYANT', h: 0.7, face: 'grotesque', weight: 'bold', colour: [0.3, 0.32, 0.35], lit: 'none' }, { ring, edge: fi, y: FL * 2 + 0.3, along: 0.5 })
+  void L0
+  for (let i = 0; i < m.positions.length; i++) out.positions.push(m.positions[i])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+  out.signs.push(...m.signs)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -8269,5 +8325,6 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   telephoneExchange_743_Washington,
   sixCompanies_843_Stockton,
   cathedralPlaza_Geary,
+  office_2_Bryant,
   gapHQ_2_Folsom,
 }
