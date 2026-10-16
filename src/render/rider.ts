@@ -223,6 +223,19 @@ export class Rider {
   hide(): void { this.root.setEnabled(false) }
   show(): void { this.root.setEnabled(true) }
 
+  /**
+   * STANDING, off the bike: aboard a cable car (owner, 2026-10-16: "they should be visible, standing inside the cable
+   * car"). The bike is put away and the rider stands, idling, wherever `update` puts them; off again, back on the bike.
+   */
+  setStanding(on: boolean): void {
+    if (this.standing === on) return
+    this.standing = on
+    this.bike?.root.setEnabled(!on)
+    // the body's mesh count changes with the bike's, so the rendering group is claimed again
+    this.claimed = -1
+  }
+  private standing = false
+
   /** Every mesh the rider is made of, for a shadow generator to cast from. */
   meshes(): AbstractMesh[] {
     const out: AbstractMesh[] = this.avatar ? this.avatar.getMeshes() : []
@@ -242,7 +255,7 @@ export class Rider {
     // their side about the tyres' contact with the road, stay down a moment, and get up
     const roll = this.tumbleRoll(dt)
     this.body.rotationQuaternion = Quaternion.RotationAxis(
-      Vector3.Forward(), roll ?? Math.max(-0.35, Math.min(0.35, lean)))
+      Vector3.Forward(), this.standing ? 0 : roll ?? Math.max(-0.35, Math.min(0.35, lean)))
 
     // Enforced every frame, not once at build. The kit re-asserts it as materials are created — clothes and
     // hair arrive over several seconds — so setting it once left the city washed out again a moment later.
@@ -267,7 +280,9 @@ export class Rider {
     }
     this.drawLast()
 
-    if (this.riding) {
+    if (this.standing) {
+      avatar.setMotion({ mode: 'idle', speed: 0 })
+    } else if (this.riding) {
       // `crank` rather than a cadence: the animator follows the angle the ride model integrated, so the legs
       // stop when the rider stops pedalling while the bike keeps rolling. That is the visual half of coasting.
       const cadence = working ? Math.max(40, Math.min(110, speed * 9)) : 0

@@ -137,14 +137,42 @@ function cableCar(out: MeshBuilder): void {
   archedRoof(out, -3.2, 0.8, 0.56, roofY + 0.54, 0.1, 0.3, WOOD)
   prism(out, 0, front - 0.25, roofY + 0.18, roofY + 0.36, 0.13, 10, LAMP, EMIT)
   cableTrucks(out, [front - 1.3, back + 1.2])
-  // the riders: standing on the running boards holding on, and the seated ones on the benches and in the saloon
-  let k = 3
-  for (const s of [-1, 1]) {
-    for (const z of [front - 0.6, (front + split) / 2 + 0.3, split + 0.5]) rider(out, s * (half + 0.22), floor - 0.22, z, k++, true)
-    for (const z of [front - 1.2, split + 1.2]) rider(out, s * 0.62, floor + 0.47, z, k++, false)
-    for (const z of [back + 1.2, back + 2.4]) rider(out, s * 0.7, floor + 0.45, z, k++, false)
-  }
+  // (the riders are real avatar-kit bodies placed on the car each frame: render/cable-riders.ts, from CABLE_SEATS)
 }
+
+/**
+ * WHERE PEOPLE RIDE a cable car, in the car's own frame (x across, + to the right of the way it faces; z along, + to the
+ * front; y up in the model's frame): standing on the running boards facing out, holding the poles; sitting on the outward
+ * benches of the open grip section, facing out; sitting along the saloon's sides, facing in. `yaw` is the way the
+ * body faces, relative to the car. Read by render/cable-riders.ts (owner, 2026-10-16: "the other passengers in the
+ * cable cars should get real avatars too"). `PLAYER_SPOT` is where a rider who boards stands — inside the open
+ * section, on the right, clear of the seated passengers there (none are seated on that side).
+ */
+export interface CableSeat { x: number; y: number; z: number; yaw: number; standing: boolean }
+// (the model's own heights: the car is placed 0.25 m over the rail, render/life.ts)
+const FLOOR = 0.78
+const BOARD = 0.78 - 0.21
+const powellSeats = (): CableSeat[] => {
+  const out: CableSeat[] = []
+  for (const sd of [-1, 1]) {
+    for (const z of [3.5, 2.75, 1.1]) out.push({ x: sd * 1.42, y: BOARD, z, yaw: sd * Math.PI / 2, standing: true })
+    if (sd < 0) for (const z of [2.9, 1.8]) out.push({ x: sd * 0.62, y: FLOOR, z, yaw: sd * Math.PI / 2, standing: false })
+    for (const z of [-2.5, -1.3]) out.push({ x: sd * 0.7, y: FLOOR, z, yaw: -sd * Math.PI / 2, standing: false })
+  }
+  return out
+}
+const californiaSeats = (): CableSeat[] => {
+  const out: CableSeat[] = []
+  for (const e of [-1, 1]) for (const sd of [-1, 1]) {
+    for (const z of [4.0, 2.3]) out.push({ x: sd * 1.44, y: BOARD, z: e * z, yaw: sd * Math.PI / 2, standing: true })
+    if (!(e > 0 && sd > 0)) out.push({ x: sd * 0.62, y: FLOOR, z: e * 3.15, yaw: sd * Math.PI / 2, standing: false })
+  }
+  for (const sd of [-1, 1]) for (const z of [-0.8, 0.8]) out.push({ x: sd * 0.7, y: FLOOR, z, yaw: -sd * Math.PI / 2, standing: false })
+  return out
+}
+export const CABLE_SEATS = { powell: powellSeats(), california: californiaSeats() }
+/** where a boarding rider stands, by car (`ahead`, `side` for Life.carPoint) */
+export const PLAYER_SPOT = { powell: { ahead: 2.35, side: 0.92 }, california: { ahead: 3.15, side: 0.92 } }
 
 /**
  * The California Street car: double-ended — an open grip section at each end, the enclosed saloon between them —
@@ -159,7 +187,6 @@ function californiaCar(out: MeshBuilder): void {
   const roofY = 2.98
   box(out, 0, 0.4, 0, 0.85, 0.25, end - 0.8, DARK, FIXED)
   box(out, 0, floor - 0.06, 0, half, 0.08, end - 0.1, WOOD, FIXED)
-  let k = 11
   for (const e of [-1, 1]) {
     // the dash and its lamp, the running boards, the outward benches, the poles, the riders standing and sitting
     box(out, 0, floor + 0.55, e * (end - 0.05), half, 0.55, 0.06, CREAM, FIXED)
@@ -170,8 +197,6 @@ function californiaCar(out: MeshBuilder): void {
       box(out, s * (half + 0.18), floor - 0.25, e * (end + inner) / 2, 0.2, 0.04, (end - inner) / 2, WOOD, FIXED)
       box(out, s * 0.45, floor + 0.42, e * (end + inner) / 2, 0.32, 0.05, (end - inner) / 2 - 0.2, WOOD, FIXED)
       for (const z of [end - 0.15, inner + 0.15]) box(out, s * (half - 0.05), (floor + roofY) / 2, e * z, 0.04, (roofY - floor) / 2, 0.04, [0.9, 0.9, 0.86], FIXED)
-      for (const z of [end - 0.6, inner + 0.6]) rider(out, s * (half + 0.22), floor - 0.22, e * z, k++, true)
-      rider(out, s * 0.62, floor + 0.47, e * (end + inner) / 2, k++, false)
     }
     box(out, 0, floor + 0.45, e * (end + inner) / 2, 0.12, 0.45, (end - inner) / 2 - 0.15, WOOD, FIXED)
     box(out, 0.15, floor + 0.7, e * (end - 0.8), 0.04, 0.7, 0.04, BRASS, FIXED)
@@ -183,7 +208,6 @@ function californiaCar(out: MeshBuilder): void {
   for (const s of [-1, 1]) {
     box(out, s * half, floor + 1.35, 0, 0.03, 0.5, inner, CREAM, FIXED)
     for (let w = 0; w < 4; w++) box(out, s * (half + 0.045), floor + 1.38, -inner + 0.45 + w * 0.8, 0.01, 0.36, 0.3, GLASS, FIXED)
-    for (const z of [-0.8, 0.8]) rider(out, s * 0.7, floor + 0.45, z, k++, false)
   }
   // the roof, the clerestory, the lamps at both ends, the route boards
   archedRoof(out, -end - 0.25, end + 0.25, half + 0.14, roofY - 0.04, 0.34, 0.75, WOOD)

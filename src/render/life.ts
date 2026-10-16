@@ -148,7 +148,7 @@ export class Life {
   trackDirection: ((points: { x: number; z: number }[]) => { dir: 1 | -1 | null; d: number; lane: number } | undefined) | null = null
   /** the rider is aboard a train (game.ts): no train stops for them then — they are standing in it */
   riderAboard = false
-  readonly transitBodies: { id: string; x: number; z: number; y: number; heading: number; speed: number; len: number; wid: number; kind: number }[] = []
+  readonly transitBodies: { id: string; x: number; z: number; y: number; heading: number; speed: number; len: number; wid: number; kind: number; pitch?: number; seed?: number }[] = []
   /** the stations trains stop at (the métro viaduct's), in local metres */
   private readonly stations: { x: number; z: number }[]
   /** the streetcar and cable-car stops (OSM railway=tram_stop), as the tiles bring them */
@@ -355,6 +355,31 @@ export class Life {
     return this.trains.map((t, i) => ({ ...this.train(i)!, id: i, kind: this.rails[t.rail].kind }))
   }
 
+  /**
+   * A point on a car's floor, in world metres: `ahead` along the car from its middle (toward the front), `side` across
+   * (+ to the right of the way it faces). On the car's own pitch, so a rider standing at the front of a cable car on
+   * Hyde Street's 21% stands on the floor there, not on the middle's height. The head car of train `id`.
+   */
+  carPoint(id: number, ahead: number, side: number): { x: number; z: number; y: number; heading: number } | null {
+    const t = this.trains[id]
+    if (!t) return null
+    const r = this.rails[t.rail]
+    const c = this.train(id)
+    if (!c) return null
+    const h = c.heading
+    const railY = (q: number): number => {
+      const qq = Math.max(0, Math.min(r.length, q))
+      return r.heights ? profileAt(r.points, r.heights, qq).y : (this.terrain?.heightAt(along(r.points, qq).x, along(r.points, qq).z) ?? 0)
+    }
+    const deck = this.stockPools[r.kind]?.kind.deck ?? 0.9
+    return {
+      x: c.x + Math.sin(h) * ahead + Math.cos(h) * side,
+      z: c.z + Math.cos(h) * ahead - Math.sin(h) * side,
+      y: railY(t.s + t.dir * ahead) + 0.25 + deck,
+      heading: h,
+    }
+  }
+
   /** One train, without building the whole list — what the game asks for every frame while a rider is aboard. */
   train(id: number): { id: number; kind: number; x: number; z: number; y: number; heading: number; v: number; wait: number; stops: number } | null {
     const t = this.trains[id]
@@ -362,6 +387,12 @@ export class Life {
     const r = this.rails[t.rail]
     const p = along(r.points, t.s)
     const q = along(r.points, Math.max(0, Math.min(r.length, t.s - t.dir * 5)))
+    // onto its lane, as it is drawn (`t.shift`): left out, a rider aboard a streetcar or cable car rode the rail's centre
+    // line beside the car they were on (owner, 2026-10-16: "the user's avatar is visible and off to the side")
+    if (t.shift) {
+      const h = Math.atan2(p.x - q.x, p.z - q.z)
+      p.x += Math.cos(h) * t.shift; p.z -= Math.sin(h) * t.shift
+    }
     const s = Math.max(0, Math.min(r.length, t.s))
     const y = r.heights ? profileAt(r.points, r.heights, s).y : (this.terrain?.heightAt(p.x, p.z) ?? 0)
     // the FLOOR, not the axle: a rider carried by this vehicle stands on its deck (render/rolling-stock.ts
@@ -624,7 +655,7 @@ export class Life {
         const liv = vp.liveries ? vp.liveries[t.rail % vp.liveries.length] : k.colour
         // a full pool drops the carriage; its shadow has to go with it, or a rail yard is full of trains that
         // are not there (user, 2026-09-22: "trains that randomly disappear - but leave their shadow")
-        if (street) this.transitBodies.push({ id: `${ti}:${c}`, x: p.x, z: p.z, y: (yF + yB) / 2, heading, speed: t.wait > 0 ? 0 : t.v, len: vp.shadow[0], wid: vp.shadow[1], kind: rail.kind })
+        if (street) this.transitBodies.push({ id: `${ti}:${c}`, x: p.x, z: p.z, y: (yF + yB) / 2, heading, speed: t.wait > 0 ? 0 : t.v, len: vp.shadow[0], wid: vp.shadow[1], kind: rail.kind, pitch, seed: ti * 31 + c })
         if (!pool.push(this.m, liv[0], liv[1], liv[2])) continue
         blob(p, heading, vp.shadow[0], vp.shadow[1], vp.shadow[2])
       }

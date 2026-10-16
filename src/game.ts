@@ -73,6 +73,8 @@ import { Beacon } from './render/beacon.ts'
 import { SIZE, boxOf, overlap } from './sim/collide.ts'
 import { inRing } from './map/zones.ts'
 import { BakedCrowd, cityClothes, peopleLights } from './render/crowd-baked.ts'
+import { CableRiders } from './render/cable-riders.ts'
+import { PLAYER_SPOT } from './render/sf/trains.ts'
 import { randomSpec } from 'avatarkit'
 import { Rider } from './render/rider.ts'
 import { Signs, setTextScale, type SignedJunction } from './render/signs.ts'
@@ -1191,10 +1193,13 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * session as a shadow with no one above it. Until they exist, the crowd is drawn as boxes.
    */
   let strangers: BakedCrowd | null = null
+  let cableRiders: CableRiders | null = null
   void (rider?.ready ?? Promise.resolve()).then(() => {
     ;(window as unknown as { riderReady?: boolean }).riderReady = true
     if (off.has('life')) return
     const c = new BakedCrowd(scene, opts.bodies ?? tier.bodies)
+    // the cable cars' passengers (render/cable-riders.ts), built after the street crowd: one body at a time
+    void c.ready.then(() => { cableRiders = new CableRiders(scene) })
     void c.ready.then(() => {
       strangers = c
       ;(window as unknown as { crowdReady?: boolean }).crowdReady = true
@@ -1866,6 +1871,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     hud.note(e.code === 'KeyA' ? '← nudge' : 'nudge →')
   })
   let lastAt = { x: 0, z: 0 }
+  /** hidden inside a streetcar */
+  let riderHidden = false
   let lastY = 0
   /**
    * A camera held exactly somewhere (tools/views.ts, `window.__view`): the view files store the best place to
@@ -2283,6 +2290,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   let camHeading = nav.heading()
   let camHeight = 3.6
   let camBack = 7.5
+  /** how far the camera stands off to the right: aboard a cable car, beside it */
+  let camSide = 0
   // where the camera is LOOKING, in height: the road's own profile ahead, eased (BUGS.md #207)
   let aimY = nav.elevationAhead(12)
 
@@ -2651,6 +2660,23 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         heading = onBoard.heading
         groundY = onBoard.y
       }
+      /*
+       * HOW the rider rides it (owner, 2026-10-16): in a streetcar they are inside it, out of sight; on a cable car they
+       * stand in the open grip section, off the bike, where they can be seen (sf/trains.ts `PLAYER_SPOT`).
+       */
+      {
+        const kind = transit.aboard?.kind
+        if (kind === 'cable') {
+          const id = Number(transit.aboard!.id)
+          const len = life.transitBodies.find((b) => b.id === `${id}:0`)?.len ?? 8.4
+          const spot = len > 8.8 ? PLAYER_SPOT.california : PLAYER_SPOT.powell
+          const p = life.carPoint(id, spot.ahead, spot.side)
+          if (p) { at = { x: p.x, z: p.z }; heading = p.heading; groundY = p.y }
+        }
+        rider?.setStanding(kind === 'cable')
+        if (kind === 'streetcar') { if (!riderHidden) { rider?.hide(); riderHidden = true } }
+        else if (riderHidden) { rider?.show(); riderHidden = false }
+      }
       lastAt = at
       lastY = groundY
       if (!frozen) city.update(at.x, at.z)
@@ -2803,6 +2829,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         strangers?.update(dt, walkers, at, city.terrain)
         const focus = frozen ? (held ? held.to : orbit.look) : at
         life.update(dt, traffic.all.filter((v) => !tunnels.hides(v.edgeId)), walkers, at, strangers?.drawn, city.terrain, focus)
+        cableRiders?.update(dt, life.transitBodies, focus)
         river?.update(dt, focus)
         for (const b of bay) b.update(dt, focus)
       }
@@ -2864,7 +2891,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
        * behind the car and a little higher makes the ride what it is meant to be — the view from the
        * running board.
        */
-      const want = high ? 46 : riding ? 22 : 7.5
+      // …except a cable car, which is open: the camera stands off its right side, close and low, where the rider stands
+      // in the grip section and the people on the running boards are seen (owner, 2026-10-16)
+      const onCable = transit.aboard?.kind === 'cable'
+      const want = high ? 46 : onCable ? 6.5 : riding ? 22 : 7.5
+      camSide += ((onCable && !high ? 4.2 : 0) - camSide) * Math.min(1, dt * 3)
       const room = high || riding ? want : city.clearBehind(at.x, at.z, -fx, -fz, want)
       camBack += (room - camBack) * Math.min(1, dt * (room < camBack ? 12 : 3))
       /*
@@ -2893,14 +2924,15 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       // cut the vault with its near plane — render/tunnels.ts `headroom`)
       const vault = high ? null : city.passageAt(at.x - fx * camBack, at.z - fz * camBack) ?? city.passageAt(at.x, at.z)
         ?? tunnels.headroom(at.x - fx * camBack, at.z - fz * camBack, camBack) ?? tunnels.headroom(at.x, at.z, 0)
-      const lift = high ? 34 : riding ? 6.5 : vault === null ? 3.5 : Math.max(1.9, Math.min(3.5, vault - 1.0))
+      const lift = high ? 34 : onCable ? 2.6 : riding ? 6.5 : vault === null ? 3.5 : Math.max(1.9, Math.min(3.5, vault - 1.0))
       camHeight += (lift + groundY - camHeight) * Math.min(1, dt * (vault === null ? 4 : 8))
       // (only on the ground, the rider's own speed: not aboard, not from above)
       const felt = high || riding || speedLines === null ? 0 : (lastState?.speed ?? 0)
       camera.fov += (fovFor(felt) - camera.fov) * Math.min(1, dt * 2)
       speedLines?.update(dt, felt)
       if (!frozen) {
-        camera.position.set(at.x - fx * camBack, camHeight, at.z - fz * camBack)
+        // (the right of the way the rider faces is (fz, −fx))
+        camera.position.set(at.x - fx * camBack + fz * camSide, camHeight, at.z - fz * camBack - fx * camSide)
         camera.setTarget(new Vector3(at.x + fx * (high ? 26 : 9), (high ? 6 : 1.9) + aheadY,
           at.z + fz * (high ? 26 : 9)))
       }
