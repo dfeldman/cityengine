@@ -10635,6 +10635,14 @@ rounded canopy. The famous ones line Columbus near Broadway. A species for the p
 Several blocks of Kearny where the SIDEWALKS are staircases but the roadway is a road; cars can go UP, but the top
 has a fence and planters, so no car can come down (bikes and pedestrians can pass).
 
+Researched 2026-10-16: it is ONE block, Kearny from Broadway to Vallejo — OSM's "Peter Macchiarini Steps"
+(highway=steps, footway=sidewalk), concrete roadway (w26938164 oneway up; w47108713 the last stretch), three
+barrier=block nodes across the top at Vallejo (37.79895 −122.40565). Above Vallejo the sidewalks are ordinary
+(Mapillary, docs/shots/refs/bugs/276-kearny/). In the game: the EAST sidewalk already draws as a railed stairway; the
+WEST one is flat because OSM maps steps there only near the top (Mapillary shows them the whole block); the
+roadway reads asphalt (it is concrete); the planters at the top are not drawn. Traffic cannot come down already
+(oneway). Left: a west-side steps patch, concrete surface, the planters.
+
 ### #277 Cars go underground at 37.793172 −122.407723 (owner, 2026-10-16) — OPEN
 
 ### Done 2026-10-16 night (owner's reports)
