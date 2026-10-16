@@ -114,3 +114,9 @@ says "No photo" or "guess" is almost always wrong — review those first.
 INDIANS WELCOME, bookstore pavilions), the steel lattice dock guard tower, restrooms down to one storey; the
 Warden's House and the Officers' Club as roofless burnt-out shells (`ruinShell`). Sutro Baths ruins checked: gist
 right. BUGS #279 triage finished.
+07:05-07:30: placeholder LETTERING replaced by real words through the sign system — Golden Gate Theatre (GOLDEN GATE
+blades, readerboards), Warfield (THE WARFIELD), Orpheum (ORPHEUM blade and board), the Alcatraz water tower's 1969
+words (one tangent sign a word round the tank), the Internet Archive's attic inscription. Swept src/render/landmarks
+for other "a block a letter" stand-ins: none left. Open: the Geary Theater (A.C.T.) has no marquee — needs a photo.
+Skyline (#278) compared again from Treasure Island against ti1.jpg: order and relative heights right; no
+day-time reference yet for colours.
