@@ -14,12 +14,12 @@
     "osm": ["way/260520154"],
     "name": "Old Saint Mary's Cathedral",
     "procedural": "oldSaintMarysCathedral",
-    "lat": 37.792811,
-    "lon": -122.405854,
-    "size": [24, 40],
+    "lat": 37.792829,
+    "lon": -122.405837,
+    "size": [21, 37],
     "front": 180,
     "height": 19,
-    "note": "church kit: 1854 brick, one square front tower with a flat parapet and no spire, facing south onto California Street. Replaces the rule 1 chinatown restyle. Placed by point and size at the CHURCH's own centre: the OSM way (45 x 49 m) merges the cathedral with its parish house to the east."
+    "note": "church kit: 1854 brick, one square front tower with a flat parapet and no spire, facing south onto California Street. Replaces the rule 1 chinatown restyle. Placed by point and size at the CHURCH's own centre: the OSM way (45 x 49 m) merges the cathedral with its parish house to the east. 2026-10-16 (owner: 'a bit too big and goes into the road'): 2 m east and north, 21 x 37 m, from the LiDAR (west wall on Grant's property line, tower front ~20 m south of the old centre)."
   },
   {
     "osm": ["way/32963425"],
