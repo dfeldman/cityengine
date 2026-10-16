@@ -10,8 +10,13 @@
     "osm": [
       "way/25372348"
     ],
-    "procedural": "argonautHotel",
-    "name": "Argonaut Hotel"
+    "name": "Argonaut Hotel",
+    "restyle": "brick",
+    "wall": "#8a3b2a",
+    "levels": 4,
+    "height": 16,
+    "noShops": true,
+    "note": "1907 Cannery-era red brick warehouse hotel at the Wharf (2026-10-16 from Mapillary; was a Haiku office-box recipe built without a photograph)"
   },
   {
     "osm": [
@@ -53,8 +58,13 @@
     "osm": [
       "way/197374076"
     ],
-    "procedural": "clayTheatre",
-    "name": "Clay Theatre"
+    "name": "Clay Theatre",
+    "restyle": "stucco",
+    "wall": "#e4ddd0",
+    "levels": 2,
+    "height": 9,
+    "noShops": true,
+    "note": "1910 single-screen cinema, a low pale front (2026-10-16 from Mapillary; was a Haiku office-box recipe built without a photograph)"
   },
   {
     "osm": [
@@ -94,36 +104,61 @@
     "osm": [
       "way/132125160"
     ],
-    "procedural": "galleriaParallelHotel",
-    "name": "Galleria Park Hotel"
+    "name": "Galleria Park Hotel",
+    "restyle": "chicago",
+    "wall": "#9c8a74",
+    "levels": 8,
+    "height": 28,
+    "noShops": true,
+    "note": "1911 eight-storey brick hotel at Sutter & Kearny (2026-10-16 from Mapillary; was a Haiku office-box recipe built without a photograph)"
   },
   {
     "osm": [
       "way/288340243"
     ],
-    "procedural": "goldenGateClub",
-    "name": "Golden Gate Club"
+    "name": "Golden Gate Club",
+    "restyle": "presidio",
+    "wall": "#efece4",
+    "levels": 2,
+    "height": 9,
+    "noShops": true,
+    "note": "1949 Spanish-revival Presidio club: white stucco, red tile (2026-10-16 from Mapillary; was a Haiku office-box recipe built without a photograph)"
   },
   {
     "osm": [
       "way/70077928"
     ],
-    "procedural": "greenTortoiseHostel",
-    "name": "Green Tortoise Hostel"
+    "name": "Green Tortoise Hostel",
+    "restyle": "tenement",
+    "wall": "#b9c9a8",
+    "levels": 3,
+    "height": 12,
+    "noShops": true,
+    "note": "a three-storey pastel corner building on Broadway (2026-10-16 from Mapillary; was a Haiku office-box recipe built without a photograph)"
   },
   {
     "osm": [
       "way/288387353"
     ],
-    "procedural": "hiSanFranciscoFishermansWharf",
-    "name": "HI San Francisco Fisherman's Wharf"
+    "name": "HI San Francisco Fisherman's Wharf",
+    "restyle": "presidio",
+    "wall": "#f1efe8",
+    "levels": 3,
+    "height": 11,
+    "noShops": true,
+    "note": "Fort Mason army building: white walls, red roof (2026-10-16 from Mapillary; was a Haiku office-box recipe built without a photograph)"
   },
   {
     "osm": [
       "way/193054138"
     ],
-    "procedural": "harborCourtHotel",
-    "name": "Harbor Court Hotel"
+    "name": "Harbor Court Hotel",
+    "restyle": "classical",
+    "wall": "#c9a77e",
+    "levels": 6,
+    "height": 22,
+    "noShops": true,
+    "note": "1907 Embarcadero YMCA: buff brick and stone, arched ground floor (2026-10-16 from Mapillary; was a Haiku office-box recipe built without a photograph)"
   },
   {
     "osm": [
@@ -137,24 +172,37 @@
     "osm": [
       "way/93422615"
     ],
-    "procedural": "hotelRiuPlazaFishermansWharf",
     "name": "Hotel Riu Plaza Fisherman's Wharf",
-    "height": 30
+    "height": 15,
+    "restyle": "stucco",
+    "wall": "#d8c6ab",
+    "levels": 4,
+    "noShops": true,
+    "note": "a four-storey stucco motor hotel at Bay & Columbus (2026-10-16 from Mapillary; was a Haiku office-box recipe built without a photograph)"
   },
   {
     "osm": [
       "way/135174116"
     ],
-    "procedural": "hotelTriton",
     "name": "Hotel Triton",
-    "height": 25
+    "height": 24,
+    "restyle": "tenement",
+    "wall": "#b8a38a",
+    "levels": 7,
+    "noShops": true,
+    "note": "1913 seven-storey hotel at Grant & Bush, fire escapes (2026-10-16 from Mapillary; was a Haiku office-box recipe built without a photograph)"
   },
   {
     "osm": [
       "way/171178110"
     ],
-    "procedural": "hotelUnion",
-    "name": "Hotel Union"
+    "name": "Hotel Union",
+    "restyle": "tenement",
+    "wall": "#9a8f80",
+    "levels": 7,
+    "height": 24,
+    "noShops": true,
+    "note": "an Edwardian hotel with fire escapes over a stone base (2026-10-16 from Mapillary; was a Haiku office-box recipe built without a photograph)"
   },
   {
     "osm": [
@@ -170,8 +218,13 @@
     "osm": [
       "way/288340256"
     ],
-    "procedural": "innAtThePresidio",
-    "name": "Inn at the Presidio"
+    "name": "Inn at the Presidio",
+    "restyle": "brick",
+    "wall": "#7a3528",
+    "levels": 3,
+    "height": 12,
+    "noShops": true,
+    "note": "Pershing Hall (1903): red brick, white columned porches (2026-10-16 from Mapillary; was a Haiku office-box recipe built without a photograph)"
   },
   {
     "osm": [
@@ -187,8 +240,12 @@
     "osm": [
       "way/288632202"
     ],
-    "procedural": "langleyPorterPsychiatricInstitute",
     "name": "Langley Porter Psychiatric Institute",
-    "height": 30
+    "height": 22,
+    "restyle": "classical",
+    "wall": "#d1c1a3",
+    "levels": 6,
+    "noShops": true,
+    "note": "1942 tan institutional block, arched ground-floor windows (2026-10-16 from Mapillary; was a Haiku office-box recipe built without a photograph)"
   }
 ]
