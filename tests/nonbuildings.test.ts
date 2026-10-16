@@ -151,6 +151,13 @@ const KNOWN: Record<string, string[]> = {
     'height | MLK Memorial Waterfall',
     'height | Moscone Skybridge',
     /*
+     * By design (owner, 2026-10-16, with a Street View): Language of the Birds IS a flock of books hung on fine wires
+     * 6-13 m over Broadway & Columbus — so its lowest vertex is far off the ground, and the flock overhangs the
+     * corner's buildings as the real one does.
+     */
+    'height | Language of the Birds',
+    'intersects | Language of the Birds',
+    /*
      * `coplanar` is a HEURISTIC (tools/nonbuildings.ts §coplanarSlabs) and this is a candidate, not a
      * defect. A public garden IS layered surfaces a few centimetres apart — the paved deck, the checker
      * band over it, the ring path round the lawn, the lawn itself, the walkway on the terrace garden. They

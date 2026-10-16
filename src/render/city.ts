@@ -3776,6 +3776,7 @@ export class City {
     // (one billboard where OSM maps two a few metres apart — the two faces of one sign, or one sign twice: 14.6 m boards
     //  2-8 m apart stood through each other and fought — owner, 2026-10-06, "billboards have z fighting")
     const boards: { x: number; z: number }[] = []
+    let metroRings: { x: number; z: number }[][] | null = null
     for (const f of this.pointsIn.get(k) ?? []) {
       if (kerbOnly.has(f.kind) && skippedIf(pointKerb.whyNoFurniture(f.x, f.z), f.x, f.z, `osm ${f.kind}`)) continue
       if (f.kind === 'billboard') {
@@ -3853,6 +3854,32 @@ export class City {
             if (!inLane(cx, cz)) { px = cx; pz = cz; moved = true }
           }
           if (!moved && skippedIf('road', px, pz, 'metro entrance')) continue
+        }
+        /*
+         * …nor into a building (owner, 2026-10-16, Stockton at Washington: "a muni metro station halfway inside a
+         * building", twice): the push off the road, or OSM's node on a narrow pavement, left half the headhouse in the
+         * block. Slid along the street until it is clear of both, else not drawn — an entrance with no room for a
+         * headhouse is one built into the building, which the building already is.
+         */
+        metroRings ??= (() => {
+          const rs: { x: number; z: number }[][] = []
+          for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {
+            for (const b of this.buildingsIn.get(key(ktx + dx, ktz + dz)) ?? []) if ((b.minHeight ?? 0) < 3) rs.push(unpackPoints(b.ring))
+          }
+          return rs
+        })()
+        const inBlock = (cx: number, cz: number): boolean => [{ x: cx, z: cz }, ...corners(cx, cz)].some((q) => metroRings!.some((r) => insideRing(r, q.x, q.z)))
+        // OSM's node itself inside a building: the entrance is IN it (Chinatown–Rose Pak's headhouse is its own building)
+        if (metroRings.some((r) => insideRing(r, f.x, f.z)) && skippedIf('building', f.x, f.z, 'metro entrance')) continue
+        if (inBlock(px, pz)) {
+          let found = false
+          for (let k = 1; k <= 24 && !found; k++) {
+            for (const sg of [1, -1]) {
+              const cx = px + along.x * sg * 0.5 * k, cz = pz + along.z * sg * 0.5 * k
+              if (!inBlock(cx, cz) && !inLane(cx, cz)) { px = cx; pz = cz; found = true; break }
+            }
+          }
+          if (!found && skippedIf('building', px, pz, 'metro entrance')) continue
         }
       }
       placeModel(furniture, model, px, 0.15, pz, heading + turn)
