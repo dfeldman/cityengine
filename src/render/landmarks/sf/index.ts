@@ -42,6 +42,7 @@ import { ODDITIES } from './oddities.ts'
 import { TIERA_3 } from './districts/tierA-3.ts'
 import { TIERA_4 } from './districts/tierA-4.ts'
 import { NOTABLE } from './districts/notable.ts'
+import { ATRIA } from './districts/atria.ts'
 import { TIERA_5 } from './districts/tierA-5.ts'
 import { TIERA_6 } from './districts/tierA-6.ts'
 import { TIERA_7 } from './districts/tierA-7.ts'
@@ -218,6 +219,7 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   ...TIERA_3,
   ...TIERA_4,
   ...NOTABLE,
+  ...ATRIA,
   ...TIERA_5,
   ...TIERA_6,
   ...TIERA_7,
