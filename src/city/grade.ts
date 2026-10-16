@@ -17,6 +17,8 @@ const endKey = (x: number, z: number): string => `${Math.round(x * 10)},${Math.r
 
 interface Seg {
   ax: number; az: number; bx: number; bz: number; ha: number; hb: number; half: number; cut: boolean
+  /** the carriageway's own half-width (no pavement): where the road surface itself is drawn */
+  road: number
   /** a ramp's first / last segment: its corridor stops SQUARE at that end (see `add`) */
   squareA?: boolean; squareB?: boolean
 }
@@ -35,7 +37,7 @@ export class StreetGrade {
     this.seen.add(e.id)
     const half = (e.foot ? e.width / 2 : e.width / 2 + Math.max(e.walk, 0.6)) + 0.3
     for (let i = 2; i < e.points.length; i += 2) {
-      const sg: Seg = { ax: e.points[i - 2], az: e.points[i - 1], bx: e.points[i], bz: e.points[i + 1], ha: e.heights[i / 2 - 1], hb: e.heights[i / 2], half, cut: !!e.cut }
+      const sg: Seg = { ax: e.points[i - 2], az: e.points[i - 1], bx: e.points[i], bz: e.points[i + 1], ha: e.heights[i / 2 - 1], hb: e.heights[i / 2], half, cut: !!e.cut, road: e.foot ? 0 : e.width / 2 }
       /*
        * A ramp's corridor is its embankment's fill, and it ends SQUARE: the round cap of an ordinary street (which
        * is what joins a street to its junction) spilled off the end of the embankment where the ramp meets its
@@ -69,6 +71,28 @@ export class StreetGrade {
   cutAt(x: number, z: number): number | null {
     const n = this.nearest(x, z)
     return n && n.cut ? n.h : null
+  }
+
+  /**
+   * The HIGHEST road surface over (x, z): every carriageway that covers the point, not only the nearest street's. At a
+   * junction the crossing street's flat carriageway spans the whole width of the street coming in, and where that street
+   * ramps down within a few metres of the node its own profile runs under the surface drawn there (owner, 2026-10-16,
+   * Sacramento at Stockton: "submerged cars"). Cars stand on this. Null off every carriageway.
+   */
+  deckAt(x: number, z: number): number | null {
+    const list = this.cells.get(cellKey(Math.floor(x / 10), Math.floor(z / 10)))
+    if (!list) return null
+    let best: number | null = null
+    for (const sg of list) {
+      if (sg.road <= 0) continue
+      const dx = sg.bx - sg.ax, dz = sg.bz - sg.az, l2 = dx * dx + dz * dz || 1e-9
+      const t = Math.max(0, Math.min(1, ((x - sg.ax) * dx + (z - sg.az) * dz) / l2))
+      const ex = x - sg.ax - dx * t, ez = z - sg.az - dz * t
+      if (ex * ex + ez * ez > sg.road * sg.road) continue
+      const h = sg.ha + (sg.hb - sg.ha) * t
+      if (best === null || h > best) best = h
+    }
+    return best
   }
 
   private nearest(x: number, z: number): { h: number; cut: boolean } | null {

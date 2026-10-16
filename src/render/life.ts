@@ -148,6 +148,8 @@ export class Life {
   trackDirection: ((points: { x: number; z: number }[]) => { dir: 1 | -1 | null; d: number; lane: number } | undefined) | null = null
   /** the rider is aboard a train (game.ts): no train stops for them then — they are standing in it */
   riderAboard = false
+  /** the highest road surface drawn at a point, or null off the streets (game.ts: city.deckAt) */
+  gradeAt?: (x: number, z: number) => number | null
   readonly transitBodies: { id: string; x: number; z: number; y: number; heading: number; speed: number; len: number; wid: number; kind: number; pitch?: number; seed?: number }[] = []
   /** the stations trains stop at (the métro viaduct's), in local metres */
   private readonly stations: { x: number; z: number }[]
@@ -432,7 +434,17 @@ export class Life {
       this.blobs.push(this.m, 1, 1, 1, 0)
     }
 
-    if (this.fleet) this.fleet.update(dt, vehicles, (x, z) => groundAt({ x, z }), blob)
+    /*
+     * The DRAWN street level where it is above the ground (owner, 2026-10-16, Sacramento at Stockton: "submerged cars"):
+     * a junction's flat surface spans the crossing street's whole width, but the street coming into it may ramp down
+     * within a few metres of the node — its cars followed the ramp under the junction's surface. city.gradeAt is what is
+     * drawn; a car never stands under it.
+     */
+    if (this.fleet) this.fleet.update(dt, vehicles, (x, z) => {
+      const g = groundAt({ x, z })
+      const d = this.gradeAt?.(x, z)
+      return d !== null && d !== undefined && d > g ? d : g
+    }, blob)
     else for (const v of vehicles) {
       Matrix.ComposeToRef(
         Vector3.OneReadOnly,

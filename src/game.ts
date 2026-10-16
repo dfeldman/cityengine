@@ -1235,6 +1235,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // drained a few at a time below rather than read once here
   let decksPlanted = 0
   let plantsPlaced = 0
+  life.gradeAt = (x, z) => city.deckAt(x, z)
 
   const controls: Controls = opts.platform ?? new LocalControls(() => opts.device)
   // ?start=<edgeId> drops the rider onto a particular street, which is how the shot harness samples the

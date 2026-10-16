@@ -1561,6 +1561,8 @@ export class City {
 
   /** The level of the street whose corridor (x, z) is in — the nearest, where two overlap — or null. */
   gradeAt(x: number, z: number): number | null { return this.grade.at(x, z) }
+  /** the highest road surface drawn over a point (city/grade.ts `deckAt`): what a car stands on */
+  deckAt(x: number, z: number): number | null { return this.grade.deckAt(x, z) }
 
   ingest(t: TileData): void {
     if (this.ingested.has(t.key)) return

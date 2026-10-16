@@ -10713,7 +10713,10 @@ before it is useful.
   corridors that changed (alleys 4 m, sidewalk steps 1.5 m). Checked and ruled out: the alley change (headless count, +0.1 % of
   wall), the 1.5 m steps (all on Lombard), the stairs' keepOffRoads (22nd St identical with it off). Street-grade walls
   themselves unchanged today. NEEDS the screenshot's location from the owner. OPEN.
-- **#283 Submerged cars, 37.793186 −122.407746** (steep Chinatown street by the Stockton tunnel). OPEN.
+- **#283 Submerged cars, 37.793186 −122.407746** (Sacramento at Stockton). FIXED for cars: they stood on the nearest
+  street's profile, and Sacramento ramps down inside Stockton's flat 16 m carriageway; now on the highest carriageway drawn
+  (StreetGrade.deckAt). LEFT: the bake grades Sacramento's last 6 m into the junction at 31 % (−43.4 → −41.5), a crest that
+  hides cars below it — a grading fix for the bake (hold the junction level out to the crossing carriageway's edge).
 - **#284 Cable cars get stuck** — probably running the wrong way along their path, always traffic in front. OPEN.
 - **#285 Dead end: the instant flip** — turn round slowly enough to see it. OPEN.
 - **#286 Path jolt, 37.803194 −122.401006** — a sidewalk path each side becomes one down the middle; the bike lurches. OPEN.
