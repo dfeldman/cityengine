@@ -10684,3 +10684,12 @@ building:min_level=1, 37.76568 −122.41612), way/1540093676 + 1540144962 (3.3�
 way/773887797 (4–12 m, 37.79021 −122.39551), way/773887802/803 (8–12 m by Transbay). Fixed so far: #269's atrium,
 Sutro Tower's transmitter part (patch b1346721787 minH 0). The scan is in this session's notes; re-run it with
 the package (minHeight ≥ 3, area ≥ 60, no supporting ring under the centroid).
+
+### #280 Why brick keeps rendering orange (2026-10-16 night) — OWNER DECISION
+
+Every builder's brick has had to be coded ~30–40 % darker than the photo (lesson 3 of the model queue; tonight
+2 Folsom, 555 California twice, the Southern Pacific Building). The cause is global: `render/grade.ts` GRADE grades
+the whole frame with **saturation 1.28 and exposure 1.14** after the day light (sun 1.16/1.05/0.87). A mid red-brown
+brick comes out bright orange-red. Options: (a) keep the grade and keep coding brick dark (what every builder does
+now); (b) lower saturation to ~1.1 globally — every colour in the city shifts, needs the owner's eye; (c) a per-surface
+desaturation of the `brick` surface in cartoon-material.ts (reds only). Try with `?grade=1.14,1.1,1.06` in the URL.
