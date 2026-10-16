@@ -10724,5 +10724,7 @@ before it is useful.
   Aquarium of the Bay's front, marinas full of boats, Pier 39's activity centre, the PIER 39 flag clusters, the ferris
   wheel, the black storefronts round Hotel Zephyr, Burgers & Best Pies theatre sign, chocolate and candy buildings, the
   Klamath propeller frame, the big Boudin bakery. Thousands of photos exist. OPEN (a series of its own).
+  Owner: the ferris wheel a HIGH-QUALITY detailed model; and survey ALL the distinctive Wharf buildings ("dozens… you can
+  find them faster than I can") and do as many as possible. No time limit — none to be forgotten.
 - #291 Cable car passengers "in a hot tub" — FIXED (hollow saloon, benches).
 - #292 Bench inside the Taylor Street stairs (37.790831 −122.412358) — FIXED (furniture kept off the whole flight).
