@@ -12,5 +12,5 @@
   {"osm": ["way/24274434"], "name": "Treasure Island Building 2", "procedural": "tiHangar", "height": 20, "note": "Exposition palace, then Navy hangar: barrel vault, glazed ends."},
   {"osm": ["way/34313540"], "name": "Treasure Island Building 3", "procedural": "tiHangar", "height": 20, "note": "Exposition palace, then Navy hangar: barrel vault, glazed ends."},
   {"osm": ["way/103383866"], "name": "San Francisco County Jail #2", "procedural": "countyJailTwo", "height": 19, "note": "425 7th Street: wavy glass curtain over a recessed ground floor (owner, 2026-10-02; Mapillary). Was a brick restyle."},
-  {"name": "Lombard Street gardens", "procedural": "lombardGardens", "lat": 37.80215, "lon": -122.4187, "size": [150, 30], "rotateDeg": 0, "drape": true, "height": 1, "note": "Hedges and flower beds along the crooked block's switchbacks, from OSM's centreline (way/402111597)."}
+  {"name": "Lombard Street gardens", "procedural": "lombardGardens", "lat": 37.80215, "lon": -122.4187, "size": [150, 30], "rotateDeg": 0, "drape": true, "height": 1, "note": "2026-10-16: OSM's twelve beds (leisure=garden) planted edge to edge with library hydrangeas, each ringed by a continuous clipped hedge; was hedge boxes along the centreline."}
 ]
