@@ -156,9 +156,11 @@
     "osm": [
       "way/148547438"
     ],
-    "procedural": "hotelVia",
+    "procedural": "hotelVia_138_King",
     "name": "Hotel VIA",
-    "height": 44
+    "front": 139,
+    "height": 43,
+    "note": "notable.ts hotelVia_138_King (2026-10-16): two-storey glass lobby, ten room floors of terracotta with white-banded window strips, glass corner bays, a set-back mechanical floor with a roof terrace (owner + Mapillary)."
   },
   {
     "osm": [

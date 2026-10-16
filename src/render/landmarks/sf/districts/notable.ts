@@ -7921,6 +7921,84 @@ function gapHQ_2_Folsom(out: MeshBuilder, fit: Fit): void {
   emanuElCopy(out, m, t.c, t.s, t.tx, t.tz)
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// Hotel VIA, 138 King Street (2017)
+// ---------------------------------------------------------------------------------------------------------------
+
+/**
+ * Hotel VIA (owner, 2026-10-15: "a 2 story lobby, 10 floors of rooms, and a mechanical floor on top"; Mapillary m2 in
+ * docs/shots/refs/notable/hotel-via): terracotta panel walls, the windows stacked in vertical strips framed by WHITE
+ * panel bands, a stack of glass corner bays up the west corner, a dark glazed two-storey lobby, and a recessed
+ * mechanical floor with a rail round the roof terrace and a glass corner pavilion. Front 139 (King Street) on −z.
+ */
+function hotelVia_138_King(out: MeshBuilder, fit: Fit): void {
+  const m = new MeshBuilder()
+  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  const CN = surfaceTag('concrete'), GL = surfaceTag('glass')
+  const WALL: Rgb = [0.6, 0.36, 0.24], BAND: Rgb = [0.86, 0.85, 0.82], GLZ: Rgb = [0.2, 0.25, 0.29], LOBBY: Rgb = [0.15, 0.17, 0.19]
+  let ring: P2[] = fit.ring && fit.ring.length >= 3 ? fit.ring.slice() : [
+    { x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
+  if (ring.length > 3 && Math.hypot(ring[0].x - ring[ring.length - 1].x, ring[0].z - ring[ring.length - 1].z) < 0.3) ring = ring.slice(0, -1)
+  let area = 0
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a.x * b.z - b.x * a.z }
+  if (area < 0) ring.reverse()
+  const LOB = 8, FL = 3.1, ROOMS = 10, ROOF = LOB + ROOMS * FL, TOP = ROOF + 4.2
+  // the front: the edge facing −z most squarely (lowest mid z among long edges)
+  let fi = 0, fz = Infinity
+  ring.forEach((a, i) => { const b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z); const nz = -(b.x - a.x) / (L || 1); if (L > 8 && nz < fz) { fz = nz; fi = i } })
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length], L = Math.hypot(b.x - a.x, b.z - a.z)
+    if (L < 0.5) continue
+    const tx = (b.x - a.x) / L, tz = (b.z - a.z) / L, nx = tz, nz = -tx, h = Math.atan2(nx, nz)
+    const P = (u: number, y: number, pr = 0): V3 => [a.x + tx * u + nx * pr, y, a.z + tz * u + nz * pr]
+    const panel = (u0: number, u1: number, y0: number, y1: number, pr: number, c: Rgb, tag: number): void => {
+      m.quad([P(u0, y0, pr), P(u1, y0, pr), P(u1, y1, pr), P(u0, y1, pr)], [nx, 0, nz], uv, c, tag)
+    }
+    const street = i === fi || i === (fi + ring.length - 1) % ring.length
+    // the lobby: dark glass between terracotta piers, a canopy over the front door
+    panel(0, L, 0, LOB, -0.4, LOBBY, GL)
+    for (let u = 0; u <= L + 0.01; u += L / Math.max(2, Math.round(L / 7))) {
+      boxAlong(m, a.x + tx * u + nx * 0.05, LOB / 2, a.z + tz * u + nz * 0.05, 0.45, LOB / 2, 0.45, h, WALL, CN)
+    }
+    if (i === fi) boxAlong(m, a.x + tx * L * 0.55 + nx * 1.6, LOB * 0.5, a.z + tz * L * 0.55 + nz * 1.6, 4, 0.15, 1.6, h, LOBBY, CN)
+    // the room floors: terracotta wall; on the streets, white-banded strips of windows every ~3.4 m
+    panel(0, L, LOB, ROOF, 0, WALL, CN)
+    const n = Math.max(1, Math.round(L / 3.4)), w = L / n
+    for (let k = 0; k < n; k++) {
+      const u = (k + 0.5) * w
+      if (street || k % 2 === 0) {
+        if (street && k % 3 !== 1) panel(u - 1.15, u + 1.15, LOB, ROOF, 0.05, BAND, CN)
+        for (let f = 0; f < ROOMS; f++) panel(u - 0.65, u + 0.65, LOB + f * FL + 0.9, LOB + f * FL + 2.6, 0.08, GLZ, GL)
+      }
+    }
+    boxAlong(m, a.x + tx * L / 2 + nx * 0.25, LOB + 0.25, a.z + tz * L / 2 + nz * 0.25, L / 2 + 0.25, 0.25, 0.25, h, BAND, CN)   // band over the lobby
+    boxAlong(m, a.x + tx * L / 2 + nx * 0.2, ROOF + 0.3, a.z + tz * L / 2 + nz * 0.2, L / 2 + 0.2, 0.3, 0.2, h, WALL, CN)      // parapet
+    // the mechanical floor, set back 1.5 m; a rail round the roof terrace in front of it
+    panel(1.5, L - 1.5, ROOF, TOP, -1.5, [0.5, 0.33, 0.24], CN)
+    for (let u = 0.3; u < L; u += 1.6) boxAlong(m, a.x + tx * u + nx * 0.1, ROOF + 1.05, a.z + tz * u + nz * 0.1, 0.03, 0.45, 0.03, h, [0.3, 0.3, 0.32], CN)
+    boxAlong(m, a.x + tx * L / 2 + nx * 0.1, ROOF + 1.5, a.z + tz * L / 2 + nz * 0.1, L / 2, 0.03, 0.03, h, [0.3, 0.3, 0.32], CN)
+  }
+  capPolygonWithHoles(m, [ring], ROOF + 0.05, [0.42, 0.4, 0.38], CN)
+  // the mechanical floor's roof (the ring inset by ~1.5 m, built from the edges' midpoints is enough for a 4-sided plan)
+  const c = ring.reduce((s, p) => ({ x: s.x + p.x / ring.length, z: s.z + p.z / ring.length }), { x: 0, z: 0 })
+  const inner = ring.map((p) => { const d = Math.hypot(p.x - c.x, p.z - c.z) || 1, k = Math.max(0, d - 2.1) / d; return { x: c.x + (p.x - c.x) * k, z: c.z + (p.z - c.z) * k } })
+  capPolygonWithHoles(m, [inner], TOP, [0.36, 0.35, 0.34], CN)
+  // the glass corner bays up the west corner (the front edge's start), and the glass pavilion on the roof over them
+  const a0 = ring[fi], b0 = ring[(fi + 1) % ring.length], L0 = Math.hypot(b0.x - a0.x, b0.z - a0.z)
+  const tx0 = (b0.x - a0.x) / L0, tz0 = (b0.z - a0.z) / L0, h0 = Math.atan2(tz0, -tx0)
+  const bx = a0.x + tx0 * 2.2 + tz0 * 0.6, bz = a0.z + tz0 * 2.2 - tx0 * 0.6
+  for (let f = 0; f < ROOMS; f++) boxAlong(m, bx, LOB + f * FL + 1.6, bz, 1.9, 1.2, 1.0, h0, GLZ, GL)
+  boxAlong(m, bx - tz0 * 1.5, ROOF + 2.2, bz + tx0 * 1.5, 2.2, 2.2, 2.2, h0, GLZ, GL)
+  boxAlong(m, bx - tz0 * 1.5, ROOF + 4.6, bz + tx0 * 1.5, 2.6, 0.2, 2.6, h0, [0.3, 0.3, 0.32], CN)
+
+  for (let i = 0; i < m.positions.length; i++) out.positions.push(m.positions[i])
+  const base = (out.positions.length - m.positions.length) / 3
+  for (const x of m.normals) out.normals.push(x)
+  for (const x of m.uvs) out.uvs.push(x)
+  for (const x of m.colors) out.colors.push(x)
+  for (const idx of m.indices) out.indices.push(base + idx)
+}
+
 export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   templeEmanuEl,
   ritzCarlton_600_Stockton,
@@ -7956,5 +8034,6 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   decoBlock_1015_VanNess,
   marltonManor_Jones_Eddy,
   ecPodium_Davis,
+  hotelVia_138_King,
   gapHQ_2_Folsom,
 }
