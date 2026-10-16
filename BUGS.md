@@ -10643,7 +10643,7 @@ WEST one is flat because OSM maps steps there only near the top (Mapillary shows
 roadway reads asphalt (it is concrete); the planters at the top are not drawn. Traffic cannot come down already
 (oneway). Left: a west-side steps patch, concrete surface, the planters.
 
-### #277 Cars go underground at 37.793172 −122.407723 (owner, 2026-10-16) — OPEN
+### #277 Cars go underground at 37.793172 −122.407723 (owner, 2026-10-16) — BY DESIGN? (the point is 35 m inside the Stockton Tunnel's north mouth, OSM way 417099350: cars there are in the tunnel. If what looked wrong is the mouth itself — no portal visible from where the owner stood — that needs the owner's viewpoint)
 
 ### Done 2026-10-16 night (owner's reports)
 
