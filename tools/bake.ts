@@ -729,6 +729,7 @@ async function bake(spec: CitySpec): Promise<void> {
     if (lv !== undefined) tallest.set(owner.id, Math.max(tallest.get(owner.id) ?? 0, lv))
   }
   const buildings: PackedBuilding[] = []
+  const raisedOutlines = new Set<number>()
   /*
    * The footprint-form scan (src/city/ring-forms.ts, PLAN §Soon.0): which buildings the slot kit cannot
    * express, so the queue routes them to from-scratch modelling (LADDER §3c treatment 4+) instead of
@@ -876,6 +877,9 @@ async function bake(spec: CitySpec): Promise<void> {
      * counted the floors in a photograph should be allowed to correct the invention while never touching the
      * survey (src/render/prepare.ts).
      */
+    // (a whole building raised by its tags — not a part, a bridge or a canopy: grounded below if nothing holds it up)
+    if (!w.tags['building:part'] && !/^(roof|carport|shelter|gazebo|bridge)$/.test(w.tags.building ?? '')
+      && (w.tags['building:min_level'] !== undefined || w.tags.min_height !== undefined)) raisedOutlines.add(w.id)
     buildings.push({
       id: w.id,
       ring: packPoints(ccwRing),
@@ -2606,6 +2610,32 @@ async function bake(spec: CitySpec): Promise<void> {
   const nested = insetNested(buildings)
   buildings.length = 0
   buildings.push(...nested)
+  /*
+   * A BUILDING IN THE AIR with nothing under it (BUGS.md #279, 2026-10-16): OSM raises a whole building by
+   * `building:min_level` where its shop floor is a separate way — or is not mapped at all, and then the apartments over
+   * Mission & 18th hung 4 m over the sidewalk. A raised OUTLINE (not a part: a part is raised on purpose, over its own
+   * podium) with no building under its centre that reaches its base comes down to the ground.
+   */
+  {
+    const rings = buildings.map((b) => {
+      const r = unpackPoints(b.ring)
+      let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+      for (const q of r) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
+      return { b, r, x0, x1, z0, z1 }
+    })
+    let grounded = 0
+    for (const R of rings) {
+      const mh = R.b.minHeight ?? 0
+      if (mh < 2 || !raisedOutlines.has(R.b.id)) continue
+      let cx = 0, cz = 0
+      for (const q of R.r) { cx += q.x; cz += q.z }
+      cx /= R.r.length; cz /= R.r.length
+      const held = rings.some((o) => o.b.id !== R.b.id && cx >= o.x0 && cx <= o.x1 && cz >= o.z0 && cz <= o.z1
+        && (o.b.minHeight ?? 0) < mh && o.b.height !== undefined && o.b.height >= mh - 1.5 && pointInRing(o.r, cx, cz))
+      if (!held) { delete R.b.minHeight; grounded++ }
+    }
+    if (grounded) console.log(`  raised buildings with nothing under them, grounded: ${grounded}`)
+  }
   const pkg: CityPackage = {
     id: spec.id, name: spec.name, origin: spec.centre, radius: spec.radius, ground: spec.ground, region: spec.region,
     seaLevel,
