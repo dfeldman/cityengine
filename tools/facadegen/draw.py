@@ -809,6 +809,10 @@ _FONTS = ['/System/Library/Fonts/Supplemental/Georgia Bold.ttf', '/System/Librar
           '/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf']
 
 
+_FONTS_CJK = ['/System/Library/Fonts/STHeiti Medium.ttc', '/System/Library/Fonts/Hiragino Sans GB.ttc',
+              '/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc']
+
+
 def _word(img, d, box, word, ink):
     """A shop's word painted on its fascia in real letters — a serif as a sign-writer's — sized to fill the
     board. Painted blocks in place of letters read, close up, as a row of dashes (user: signs hard to read).
@@ -816,7 +820,9 @@ def _word(img, d, box, word, ink):
     from PIL import ImageFont
     x0, y0, x1, y1 = box
     font = None
-    for path in _FONTS:
+    # (characters take a Chinese face: Georgia has none and drew boxes)
+    cjk = any(ord(ch) > 0x2E80 for ch in word)
+    for path in (_FONTS_CJK if cjk else _FONTS):
         try:
             size = int((y1 - y0) * 0.72)
             font = ImageFont.truetype(path, size)
@@ -1129,14 +1135,24 @@ def ground_garage(size, rnd, accent):
     return img
 
 
+# (about half in characters — owner, 2026-10-16: "many signs in chinese. not all, it's not china, but maybe half")
 SIGN_WORDS_CHINATOWN = ['RESTAURANT', 'BAKERY', 'TEA', 'HERBS', 'JEWELRY', 'IMPORTS', 'DIM SUM', 'NOODLES',
-                        'SEAFOOD', 'GIFTS', 'MARKET', 'PHARMACY', 'BBQ', 'CAFE']
+                        'SEAFOOD', 'GIFTS', 'MARKET', 'PHARMACY', 'BBQ', 'CAFE',
+                        '酒家', '茶樓', '餅家', '藥材', '珠寶', '海味', '麵家', '燒臘', '雜貨', '金行', '點心', '百貨', '茶行', '海鮮']
+
+
+_CT_COUNT = 0
 
 
 def ground_chinatown(size, rnd, accent):
     """Chinatown's shops: the ordinary shopfront, but its sign in the street's own colours — red on gold,
     gold on red, white on green — and its awning striped the same way."""
-    img = ground_shopfront(size, rnd, (170, 44, 38), SIGN_WORDS_CHINATOWN)
+    # (the style has two shopfront cells: one lettered in characters, one in English — half the shops each)
+    zh = [w for w in SIGN_WORDS_CHINATOWN if ord(w[0]) > 0x2E80]
+    en = [w for w in SIGN_WORDS_CHINATOWN if ord(w[0]) <= 0x2E80]
+    global _CT_COUNT
+    _CT_COUNT += 1
+    img = ground_shopfront(size, rnd, (170, 44, 38), zh if _CT_COUNT % 2 == 0 else en)
     d = ImageDraw.Draw(img)
     # a pair of red lanterns under the fascia, one shop in two
     if rnd.random() < 0.5:

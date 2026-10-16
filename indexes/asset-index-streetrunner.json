@@ -8625,6 +8625,16 @@
           "fileFormat": "png",
           "extension": "png",
           "isProd": true,
+          "isDeleted": true,
+          "localPath": "public/facades/atlas.png"
+        },
+        {
+          "filename": "asset-10c82f05b7-facade-texture-atlas.png",
+          "hash": "10c82f05b77b754e5d7ee988ee2bcc878121719f302bd03b389768b5027b812e",
+          "size": 4095367,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
           "localPath": "public/facades/atlas.png"
         }
       ],
@@ -8652,6 +8662,16 @@
           "filename": "asset-37b49b3315-facade-texture-atlas-sheet.png",
           "hash": "37b49b3315a5c47468b1df764065e07b26281f74ef3797421cdb908888878217",
           "size": 3775028,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "isDeleted": true,
+          "localPath": "public/facades/sheet.png"
+        },
+        {
+          "filename": "asset-d91241499a-facade-texture-atlas-sheet.png",
+          "hash": "d91241499a5f1076090214d22dcb6766bf5fe23fe57f0974a3b65a538c32c09b",
+          "size": 3982600,
           "fileFormat": "png",
           "extension": "png",
           "isProd": true,
