@@ -76,3 +76,5 @@ Next in line (photo-pass model-worthy, by prominence): way/1047709622 and the Mi
 25759093, 1185421909, 71504453 (Beaux-Arts hotel cornice), 256479475; theatres Northpoint/Red Vic/Grandview/Surf;
 Ocean Climate Center (b11) and the Alcatraz/Treasure Island Haiku models. Open: Hotel VIA height (22 m model vs
 ~38 m), The Oak (5 vs 12 storeys), St. Joseph's pavilion end.
+Resolved by the owner 2026-10-15: Hotel VIA = 2-storey lobby + 10 room floors + mechanical floor (now 44 m; its
+glass-tower recipe still deserves a proper model showing those three parts); The Oak = 12 storeys (now 38 m).

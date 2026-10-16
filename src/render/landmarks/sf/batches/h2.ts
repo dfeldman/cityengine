@@ -62,7 +62,8 @@ export const H2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** Hotel Union: civic, historic hotel in downtown. No photo; 1900s–1920s terracotta era guess. */
   hotelUnion: fromRecipe('edwardian-terracotta', {}),
   /** Hotel VIA: civic, modern hotel near Ferry Building. No photo; 1990s contemporary guess. */
-  hotelVia: fromRecipe('glass-tower', { height: 22 }),
+  // owner, 2026-10-15: a two-storey lobby, ten floors of rooms and a mechanical floor on top — about 44 m, not 22
+  hotelVia: fromRecipe('glass-tower', { height: 44 }),
   /** Inn at the Presidio: civic, historic inn at Presidio Officers' Club. No photo; 1900s–1920s terracotta era guess. */
   innAtThePresidio: fromRecipe('edwardian-terracotta', {}),
   /** Julius' Castle: civic, historic mansion/restaurant in Telegraph Hill. No photo; 1920s–1930s era guess. */
