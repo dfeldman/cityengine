@@ -10797,8 +10797,8 @@ Please look at / decide:
 
 Logged, not fixed:
 - Hotel Zephyr: FIXED 2026-10-17 — the baked outline has no courtyard notches, so the hotel body now starts 16 m behind
-  the Jefferson boxes and The Yard (pavers, fire pits, giant games, the camper) lies open between. The real hotel's two
-  smaller courtyards are not cut (the outline doesn't have them).
+  the Jefferson boxes and The Yard (pavers, fire pits, giant games, the camper) lies open between. The hotel's courtyard (OSM's one
+  inner ring, way/93422625) is cut open with its own walls, placed from the inner ring (the placed outline had lost it).
 - Owner to pin: "the alley of restaurants at 476 Jefferson" — no 476 exists in OSM or on the web (498 Capurro's, 496 the Bay
   Company, 490 the Port's vacant building, then a lot, then 440 Alioto-Lazio); the only alley there is a service lane.
 - Alioto's No. 8: replaced 2026-10-17 by Alioto's Plaza as it now is (demolished Jan 2026, plaza opened 2026-09-02); the old
