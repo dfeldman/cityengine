@@ -4,7 +4,7 @@
   "osm": [
    "relation/1358120"
   ],
-  "procedural": "hotelZephyr",
+  "procedural": "zephyrHotel",
   "front": 352,
   "height": 13,
   "note": "BUGS.md #290h, 2026-10-17: the row of black board-clad shop boxes with planted roofs along Jefferson (Mapillary 1295248042335348, 512970293136899), the ZEPHYR pylon and light masts, the charcoal hotel set back behind; BURGERS & BEST PIES' theatre marquee at the Mason end (owner's report, no photo found)."
@@ -66,14 +66,14 @@
   "note": "BUGS.md #290m, 2026-10-17: the white board seafood house on Pier 47, a ribbon of windows on the water, SCOMA'S in red over the door and on the roof (Commons 'Boats moored at Fisherman's Wharf, San Francisco 11')."
  },
  {
-  "name": "Alioto's No. 8",
+  "name": "Jefferson & Taylor corner: Tarantino's, Guardino's, Sabella & La Torre, Nick's Lighthouse",
   "osm": [
    "way/103339436"
   ],
-  "procedural": "aliotos",
+  "procedural": "taylorCorner",
   "front": 171,
-  "height": 12,
-  "note": "BUGS.md #290m, 2026-10-17: the corner of Jefferson and Taylor — dark red-brown, the turquoise 8 and ALIOTO'S, the roof board facing the lagoon, the awnings of Alioto's Waterside Cafe and Crab Stand, Sabella & La Torre, Nick's Lighthouse (Commons 'Fisherman's Wharf, San Francisco, CA, USA - panoramio (125)', 'Boats moored at fisherman's wharf... against the backdrop of Alioto's')."
+  "height": 9,
+  "note": "Water-side audit 2026-10-17: this way is the CORNER BLOCK, not Alioto's (that is way/103339444 north of it on Taylor). Tarantino's grey two-storey with the red timber pergola and the T sign, Guardino's pent-roofed corner stall, the crab stands up Taylor (Mapillary 1280197440176160, 2217044922129857, 958597956412771 Aug 2025; 1048502846417659, 205306128566845 Jun 2022)."
  },
  {
   "name": "The Chowder Hut",
@@ -132,7 +132,7 @@
   "procedural": "shellfishShed",
   "front": 180,
   "height": 8,
-  "note": "BUGS.md #290m, 2026-10-17: the white gabled working shed beside Cioppino's, name across the Jefferson gable, two turbine ventilators (Commons 'Cioppino's Restaurant near Fisherman's Wharf, San Francisco USA - panoramio', left)."
+  "note": "Water-side audit 2026-10-17: white two-storey with its low gable to Jefferson, CALIFORNIA SHELLFISH CO. in green, green stripe, windows in two rows, roll-up door (Mapillary 4259374474387637, Aug 2025). Was a one-storey gabled shed from a Commons photo."
  },
  {
   "name": "Hard Rock Cafe frontage (Pier 39 Building Q)",
@@ -165,5 +165,247 @@
   "front": "street",
   "height": 11,
   "note": "2026-10-17: OSM amenity=parking, parking=multi-storey, 11 m — open concrete decks, not the dark glass box the classifier gave it (Wharf aerial)."
+ },
+ {
+  "osm": [
+   "way/103339444"
+  ],
+  "name": "Alioto's No. 8",
+  "procedural": "aliotos8",
+  "front": 90,
+  "height": 15,
+  "note": "Water-side audit 2026-10-17: terracotta stucco, the 8 on the stair tower, the turquoise ALIOTO'S board and green neon script, the green awning 'since 1925' (Mapillary 665751065030692, 668559711440485 Jun 2022; 1526843651633790 Aug 2025). CLOSED 2020 and DEMOLISHED Jan 2026 for Alioto's Plaza (opened 2026-09-02, hoodline/kion) — modelled as it stood; the owner to decide whether to show the plaza."
+ },
+ {
+  "osm": [
+   "way/288391839"
+  ],
+  "name": "Capurro's",
+  "procedural": "capurros",
+  "front": 171,
+  "height": 7,
+  "note": "Water-side audit 2026-10-17: barn-red clapboard false front, CAPURRO'S in cream-gold, Sicilian-cart window frames, yellow valances, barn lamps, the logo disc, the painted planter patio (Mapillary 1588899552070570, Aug 2025)."
+ },
+ {
+  "osm": [
+   "way/288391830"
+  ],
+  "name": "490 Jefferson",
+  "procedural": "jefferson490",
+  "front": 171,
+  "height": 10,
+  "note": "Water-side audit 2026-10-17: grey-beige clapboard Mission false front over three empty open bays (Mapillary 700777169642818, 3765812980391910, Aug 2025)."
+ },
+ {
+  "osm": [
+   "way/229326475"
+  ],
+  "name": "Alioto-Lazio Fish Co. (440 Jefferson)",
+  "procedural": "aliotoLazio",
+  "front": 171,
+  "height": 8,
+  "note": "Water-side audit 2026-10-17: white two-storey fish market, ALIOTO - LAZIO in red, two blue-framed open bays (Mapillary 1348062383560287, Aug 2025)."
+ },
+ {
+  "osm": [
+   "way/229326469"
+  ],
+  "name": "Parking lot between 490 and 440 Jefferson (no building)",
+  "note": "Water-side audit 2026-10-17: OSM's building here is a parking lot behind a mural wall in every 2025 photograph (Mapillary 1678206009533840, 1291165745851962). A placeholder: the building is removed, nothing is drawn."
+ },
+ {
+  "osm": [
+   "way/229326471"
+  ],
+  "name": "The Wharf Store (398 Jefferson)",
+  "procedural": "wharfStore",
+  "front": 171,
+  "height": 8,
+  "note": "Water-side audit 2026-10-17: beige stucco two storeys, navy board THE WHARF STORE (Mapillary 632460753240577, Aug 2025)."
+ },
+ {
+  "osm": [
+   "way/229326458"
+  ],
+  "name": "The Wharf Store's mural wing",
+  "procedural": "wharfStoreWing",
+  "front": 171,
+  "height": 5,
+  "note": "Water-side audit 2026-10-17: one-storey wall with the Golden Gate mural and THE WHARF STORE letters (Mapillary 632460753240577)."
+ },
+ {
+  "osm": [
+   "way/224941192"
+  ],
+  "name": "Frank's Fisherman (366 Jefferson)",
+  "procedural": "franksFisherman",
+  "front": 171,
+  "height": 8,
+  "note": "Water-side audit 2026-10-17: beige stucco, navy FRANK'S FISHERMAN board, fishing floats (Mapillary 4635265953366739, Aug 2025)."
+ },
+ {
+  "osm": [
+   "way/93703727"
+  ],
+  "name": "General Store / Only in California (360 Jefferson)",
+  "procedural": "generalStore",
+  "front": 171,
+  "height": 7,
+  "note": "Water-side audit 2026-10-17: grey board-and-batten gable to the street, orange GENERAL STORE awning (Mapillary 1677664382947889, Aug 2025)."
+ },
+ {
+  "osm": [
+   "way/229326476"
+  ],
+  "name": "Grey-blue clapboard shed (for lease)",
+  "procedural": "leaseShed",
+  "front": 171,
+  "height": 5,
+  "note": "Water-side audit 2026-10-17: one-storey grey-blue clapboard, white sash windows, navy hoods, FOR LEASE (Mapillary 673192261722622, Aug 2025)."
+ },
+ {
+  "osm": [
+   "way/229326456"
+  ],
+  "name": "Lou's Fish Shack (300 Jefferson)",
+  "procedural": "lousFishShack",
+  "front": 171,
+  "height": 9,
+  "note": "Water-side audit 2026-10-17: brown boards, maroon corrugated gable, round red Lou's signs (Mapillary 750262764600839, Aug 2025)."
+ },
+ {
+  "osm": [
+   "way/288391832"
+  ],
+  "name": "The Bay Company (496 Jefferson)",
+  "restyle": "wharf",
+  "note": "Water-side audit 2026-10-17: white clapboard two storeys, blue trim and cornice, souvenir shopfronts with lattice valances and flags (Mapillary 2275436329641501, 2200062860513937, Aug 2025).",
+  "wall": "#f2f1ec",
+  "trim": "#2f5f9e",
+  "accent": "#1f3f75",
+  "roof": "flat",
+  "levels": 2,
+  "height": 7.5,
+  "stone": false
+ },
+ {
+  "osm": [
+   "way/288391833",
+   "way/288391836",
+   "way/1350611177",
+   "way/288391835"
+  ],
+  "name": "Bay Company sheds on the Hyde Street Pier lane",
+  "restyle": "capecod",
+  "note": "Water-side audit 2026-10-17: white/grey clapboard sheds behind the Bay Company along the lane (Mapillary 2200062860513937, Aug 2025).",
+  "wall": "#e8e6df",
+  "trim": "#2f5f9e",
+  "roof": "gabled",
+  "roofColour": "#5c5e60",
+  "noShops": true,
+  "levels": 1,
+  "height": 4.5,
+  "stone": false,
+  "roofHeight": 2.2
+ },
+ {
+  "osm": [
+   "way/288391840",
+   "way/288391829",
+   "way/288391831"
+  ],
+  "name": "Hyde Street Pier (National Park) sheds",
+  "restyle": "capecod",
+  "note": "Water-side audit 2026-10-17: tan and white board-and-batten gabled sheds with dark green trim and a green-railed loading balcony along the pier walk (Mapillary 822464381955703, 913035926212490, Oct 2017).",
+  "wall": "#d8ccb2",
+  "trim": "#2e5a44",
+  "roof": "gabled",
+  "roofColour": "#55575a",
+  "noShops": true,
+  "levels": 1,
+  "height": 6,
+  "stone": false,
+  "roofHeight": 2.2
+ },
+ {
+  "osm": [
+   "way/224941190"
+  ],
+  "name": "Hyde Street Pier waterside shed",
+  "restyle": "capecod",
+  "note": "Water-side audit 2026-10-17: small white board shed over the water off the pier lane (seen from the lane, Mapillary 2200062860513937).",
+  "wall": "#ecebe6",
+  "trim": "#2e5a44",
+  "roof": "gabled",
+  "noShops": true,
+  "levels": 1,
+  "height": 3.5,
+  "stone": false,
+  "roofHeight": 1.4
+ },
+ {
+  "osm": [
+   "way/229326465",
+   "way/229326462",
+   "way/229326464",
+   "way/229326473"
+  ],
+  "name": "Al Scoma Way sheds",
+  "restyle": "capecod",
+  "note": "Water-side audit 2026-10-17: the backs along Al Scoma Way: white clapboard working sheds with stepped false fronts, wiring and roll doors (Mapillary 190427056263786, Jun 2018).",
+  "wall": "#e9e8e3",
+  "trim": "#f7f7f5",
+  "roof": "gabled",
+  "roofColour": "#6a6c6e",
+  "noShops": true,
+  "levels": 1,
+  "height": 5,
+  "stone": false,
+  "roofHeight": 2.2
+ },
+ {
+  "osm": [
+   "way/288472569"
+  ],
+  "name": "Blazing Saddles bike rental kiosk (Pier 41)",
+  "restyle": "capecod",
+  "note": "Water-side audit 2026-10-17: a small white kiosk by the Pier 41 ferry gates.",
+  "wall": "#f2f2ee",
+  "trim": "#c4302b",
+  "roof": "flat",
+  "noShops": true,
+  "levels": 1,
+  "height": 3,
+  "stone": false
+ },
+ {
+  "osm": [
+   "way/556413444",
+   "way/556413445"
+  ],
+  "name": "Public toilets by Pier 41",
+  "restyle": "presidio",
+  "note": "Water-side audit 2026-10-17: two small white toilet kiosks.",
+  "wall": "#e9e8e2",
+  "roof": "flat",
+  "noShops": true,
+  "levels": 1,
+  "height": 3,
+  "stone": false
+ },
+ {
+  "osm": [
+   "way/1164266281"
+  ],
+  "name": "USS Pampanito admissions booth",
+  "restyle": "capecod",
+  "note": "Water-side audit 2026-10-17: small white ticket booth on Pier 45 at the submarine's gangway.",
+  "wall": "#f0eee8",
+  "trim": "#1f3a5a",
+  "roof": "flat",
+  "noShops": true,
+  "levels": 1,
+  "height": 3,
+  "stone": false
  }
 ]

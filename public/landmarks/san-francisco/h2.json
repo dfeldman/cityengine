@@ -11,10 +11,10 @@
       "way/25372348"
     ],
     "name": "Argonaut Hotel (Haslett Warehouse)",
-    "procedural": "haslettWarehouse",
-    "front": 90,
-    "height": 16,
-    "note": "BUGS.md #290m, 2026-10-17: the 1909 red brick warehouse, now the Argonaut Hotel and the visitor centre — arched windows, string courses, the navy ARGONAUT blade sign at Jefferson & Hyde, the Blue Mermaid marquee, the visitor centre's board on the parapet (Commons 'Haslett Warehouse (San Francisco)', 'Argonaut Hotel - San Francisco, CA - DSC02048'). Was a brick restyle."
+    "procedural": "argonautHotel",
+    "front": 261,
+    "height": 17,
+    "note": "2026-10-17 (owner: 'we don't have customs for ... Argonaut Hotel' — the old haslettWarehouse in wharf-shops.ts drew a dense grid of round arches in dark maroon, and with front 90 put the blade sign, the Blue Mermaid and the visitor centre board on the EAST wall, facing the Cannery). Now argonautHotel in wharf-landside.ts, front 261 = Hyde: orange-red brick in pilastered bays, pairs of segmental-arched white-sashed windows, iron tie-rod plates, corbelled cornice, stepped end parapets; the navy ARGONAUT/HOTEL blade on the Jefferson & Hyde corner, the angled National Park Visitor Center board with gooseneck lamps on the Hyde parapet, the BLUE MERMAID box sign, navy dome awnings and topiary on Jefferson (Commons 'Argonaut Hotel, San Francisco, California, US', 'Argonaut Hotel - San Francisco, California', 'San Francisco, CA USA - Argonaut Hotel (Haslett Warehouse) - panoramio'; Mapillary 5656549471127981, 4253030981483855)."
   },
   {
     "osm": [

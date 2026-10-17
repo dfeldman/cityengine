@@ -9,7 +9,6 @@ import { fromRecipe } from '../recipes.ts'
 import { faceBand, insetRing, tower, towerRing } from '../../tower.ts'
 import { boxAlong, colonnade, edgeAt, edgeFacing, roundRing, signText, spireOn } from '../../parts.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
-import { beam } from '../golden-gate.ts'
 import { church } from '../../church.ts'
 
 const CREAM: [number, number, number] = [0.86, 0.82, 0.72]
@@ -25,69 +24,6 @@ export const CIVIC_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     const ring = towerRing(fit)
     const e = edgeAt(ring, edgeFacing(ring, 0))
     colonnade(out, e.a, e.b, 0, 3.6, 4, { colour: CREAM })
-  },
-
-  /**
-   * Ripley's Believe It or Not (175 Jefferson St, height 13 m): the Fisherman's Wharf attraction's scalloped
-   * red facade of round arches under a jagged red parapet, its name lit across the top.
-   */
-  ripleysBelieveItOrNot: (out: MeshBuilder, fit: Fit): void => {
-    /*
-     * 175 Jefferson, rebuilt from a photograph 2026-09-22. The first pass was a plain block with a sawtooth
-     * parapet; what makes this building is that it is BRIGHT RED, that its whole upper wall is a painted
-     * mural (the Golden Gate Bridge, a cable-car XING sign, the Palace of Fine Arts), and that the entrance
-     * is a wide silver ARCH under a yellow sign, between silver fins.
-     */
-    const ring = towerRing(fit)
-    const RED: [number, number, number] = [0.79, 0.11, 0.13]
-    const SILVER: [number, number, number] = [0.72, 0.73, 0.75]
-    const H = 13
-    faceBand(out, ring, 0, 4.2, { kind: 'blank', wall: RED, material: 'stucco' })
-    // the mural band: not paintable here, so it reads as a pale sky panel with the bridge's red towers on it
-    faceBand(out, ring, 4.2, H, { kind: 'blank', wall: [0.62, 0.74, 0.82], material: 'stucco' })
-    const e = edgeAt(ring, edgeFacing(ring, 0))
-    for (const f of [-0.34, -0.12, 0.12, 0.34]) {
-      const x = e.mid.x + e.tx * e.L * f + e.nx * 0.12
-      const z = e.mid.z + e.tz * e.L * f + e.nz * 0.12
-      // shallow, and stopping below the sign band: at 0.3 deep they stood further out than the lettering and
-      // swallowed half of it
-      boxAlong(out, x, (4.2 + H) / 2 - 0.4, z, 1.1, (H - 4.2) / 2 - 1.6, 0.1, e.heading, [0.85, 0.2, 0.18], surfaceTag('metal'))
-    }
-    faceBand(out, ring, H, H + 1.2, { kind: 'blank', wall: RED, material: 'stucco' })
-    // (a grey roof inside the red parapet: painted red, the colour grade made it a bright red slab from above — 2026-10-17)
-    capPolygon(out, ring, H + 1.2, [0.42, 0.42, 0.44], 0)
-    /*
-     * The arched canopy. Built with `beam`, which runs a strut between two arbitrary points in 3D: a row of
-     * boxes cannot make an arch, because boxAlong only turns in plan, so each box stays level and the curve
-     * comes out as a stair. Chaining beams along the arc gives a smooth soffit.
-     */
-    const span = e.L * 0.5
-    const rise = 3.0
-    const spring = 4.6
-    const arc = (t: number): [number, number, number] => {
-      const a = Math.PI * t
-      const u = -Math.cos(a) * span / 2
-      return [e.mid.x + e.tx * u + e.nx * 1.6, spring + Math.sin(a) * rise, e.mid.z + e.tz * u + e.nz * 1.6]
-    }
-    for (let k = 0; k < 16; k++) beam(out, arc(k / 16), arc((k + 1) / 16), 0.34, 0.34, SILVER, false)
-    for (let k = 0; k < 16; k++) {
-      const a = arc(k / 16)
-      const b = arc((k + 1) / 16)
-      beam(out, [a[0] - e.nx * 1.2, a[1], a[2] - e.nz * 1.2], [b[0] - e.nx * 1.2, b[1], b[2] - e.nz * 1.2], 0.3, 0.3, SILVER, false)
-    }
-    for (const f of [-0.3, -0.18, 0.18, 0.3]) {
-      const x = e.mid.x + e.tx * e.L * f + e.nx * 1.5
-      const z = e.mid.z + e.tz * e.L * f + e.nz * 1.5
-      boxAlong(out, x, 2.6, z, 0.22, 2.6, 0.5, e.heading, SILVER, surfaceTag('metal'))
-    }
-    /*
-     * The sign itself is a GLB in a real bold italic (tools/signgen, `signs/ripleys.glb`) placed by its own
-     * manifest entry above the arch — mixed case with an exclamation mark, neither of which the 3x5 block
-     * font can carry, and this sign is most of what identifies the building. All that is drawn here is the
-     * band it sits on.
-     */
-    const [bx, bz] = [e.mid.x + e.nx * 0.5, e.mid.z + e.nz * 0.5]
-    boxAlong(out, bx, spring + rise + 1.4, bz, e.L * 0.3, 1.3, 0.2, e.heading, [0.88, 0.9, 0.9], surfaceTag('metal'))
   },
 
 

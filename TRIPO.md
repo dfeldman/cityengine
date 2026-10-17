@@ -25,5 +25,8 @@ are modelled directly.
 | 13 | Ghirardelli's GHIRARDELLI roof sign | Ghirardelli Square | — | done by the sign kit, not Tripo |
 | 14 | Hard Rock Cafe's giant red guitar sculpture | Pier 39 entrance plaza by Building Q, ~37.80866 −122.40983 (OSM node 643445596 is the café) | Commons "Pier 39 2018.jpg" (right of frame) | not drawn |
 | 15 | Aunt Fanny's pretzel finial / a real photo of the kiosk | Pier 39, by Building L (OSM node 4611835603) | none found (no Mapillary on the pier deck) | `pretzelKiosk` built from the owner's description (red drum, scalloped canopy, tube pretzel) |
+| 16 | The Argonaut Hotel's little pink figure on top of its ARGONAUT blade sign (a dancing/leaping figure, rose-pink, ~1 m) | Jefferson & Hyde corner, 37.80752 −122.42063, ~16 m up | Commons "Argonaut Hotel, San Francisco, California, US" (top of the blade) | a plinth only (`argonautHotel`, wharf-landside.ts) |
+| 17 | The Franciscan's crab-and-mermaid emblem (red Dungeness crab, a green-tailed mermaid riding it, ~2.5 m, flat relief) | Pier 43½ parapet wall, 37.80905 −122.41465, ~6 m up | Mapillary 190325623495572 (Jun 2022) | flat red crab of lozenges + legs (`franciscanCrab`, wharf-shops.ts) |
+| 18 | Painted fibreglass sea lions on rock bases (street art, several along Jefferson) | Bay Company corner 37.8077 −122.4206; Frank's Fisherman 37.8080 −122.4186 | Mapillary 2275436329641501, 4635265953366739 (Aug 2025) | none |
 
 Add rows as they are found; mark a row DONE with the GLB's path when it is placed.

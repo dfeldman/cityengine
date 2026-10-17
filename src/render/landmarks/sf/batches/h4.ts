@@ -26,8 +26,6 @@ export const H4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   h4_adelaideHostel: fromRecipe('hotel-punched', { height: 14, wall: [0.74, 0.68, 0.60], glass: [0.26, 0.29, 0.32] }),
 
 
-  /** way/288391070 — The Cannery. Historic converted warehouse, Fisherman's Wharf, brick structure. */
-  h4_cannery: fromRecipe('brick-loft', { height: 20, wall: [0.60, 0.48, 0.38], glass: [0.22, 0.25, 0.28] }),
 
   /** way/192305909 — The Folger Coffee Company Building. Historic commercial building, 5 storeys, early 20th century. */
   h4_folgerCoffee: fromRecipe('brick-loft', { height: 17.5, wall: [0.64, 0.52, 0.42], glass: [0.22, 0.25, 0.28] }),

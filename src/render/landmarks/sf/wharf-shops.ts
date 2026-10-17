@@ -15,7 +15,7 @@ import { surfaceTag } from '../../cartoon-material.ts'
 import { sign, type SignSpec } from '../signage.ts'
 import { tower, towerRing, faceBand } from '../tower.ts'
 import { edgeAt, edgeFacing, boxAlong, offsetRing } from '../parts.ts'
-import { tube, ellipse, lozenge, type V3 } from './wharf-carnival.ts'
+import { tube, lozenge, type V3 } from './wharf-carnival.ts'
 
 type P2 = { x: number; z: number }
 type Edge = ReturnType<typeof edgeAt>
@@ -175,15 +175,15 @@ export function jeffersonAttractions(out: MeshBuilder, fit: Fit): void {
     bulbs(out, Q(t0, 0.06), Q(t1, 0.06), 0.4, 0.045)
     bulbs(out, Q(t0, 1.2), Q(t1, 1.2), 0.4, 0.045)
   }
-  signAt(out, e, ui, MY + 1.42, 0.35 + MD + 0.04, { type: 'flat', text: "IT'SUGAR", h: 0.8, face: 'grotesque', weight: 'bold', colour: [0.95, 0.93, 0.96], lit: 'self', tracking: 0.08 })
+  signAt(out, e, ui, MY + 1.42, 0.35 + MD + 0.04, { type: 'flat', w: 2 * MW - 0.6, text: "IT'SUGAR", h: 0.8, face: 'grotesque', weight: 'bold', colour: [0.95, 0.93, 0.96], lit: 'self', tracking: 0.08 })
   // the box sign over the door: magenta, gold lettering, bulbs round its face, on its two faces out and one side
   slab(out, e, ui, 1.2, 2.7, 3.6, 1.5, 2.2, MAG, MT)
   for (const [y0, y1] of [[2.72, 2.72], [4.18, 4.18]]) bulbs(out, on(e, ui - 1.8, y0, 2.33), on(e, ui + 1.8, y1, 2.33), 0.22, 0.035)
   bulbs(out, on(e, ui - 1.8, 2.72, 2.33), on(e, ui - 1.8, 4.18, 2.33), 0.22, 0.035)
   bulbs(out, on(e, ui + 1.8, 2.72, 2.33), on(e, ui + 1.8, 4.18, 2.33), 0.22, 0.035)
-  signAt(out, e, ui, 3.75, 2.36, { type: 'flat', text: "WORLD'S LARGEST", h: 0.17, face: 'grotesque', weight: 'bold', colour: [0.98, 0.9, 0.9], lit: 'back' })
-  signAt(out, e, ui, 3.35, 2.36, { type: 'flat', text: 'CANDY', h: 0.36, face: 'block', colour: YEL, lit: 'back', tracking: 0.05 })
-  signAt(out, e, ui, 2.95, 2.36, { type: 'flat', text: 'DEPARTMENT STORE', h: 0.15, face: 'grotesque', weight: 'bold', colour: [0.98, 0.9, 0.9], lit: 'back' })
+  signAt(out, e, ui, 3.75, 2.36, { type: 'flat', w: 3.3, text: "WORLD'S LARGEST", h: 0.17, face: 'grotesque', weight: 'bold', colour: [0.98, 0.9, 0.9], lit: 'back' })
+  signAt(out, e, ui, 3.35, 2.36, { type: 'flat', w: 3.3, text: 'CANDY', h: 0.36, face: 'block', colour: YEL, lit: 'back', tracking: 0.05 })
+  signAt(out, e, ui, 2.95, 2.36, { type: 'flat', w: 3.3, text: 'DEPARTMENT STORE', h: 0.15, face: 'grotesque', weight: 'bold', colour: [0.98, 0.9, 0.9], lit: 'back' })
   // candy posters on the piers, at eye level
   for (const pu of piers) {
     slab(out, e, pu, 0.62, 1.2, 1.1, 1.9, 0.06, MAG, MT)
@@ -199,13 +199,13 @@ export function jeffersonAttractions(out: MeshBuilder, fit: Fit): void {
     slab(out, e, tm, 1.1, 3.25, tw, 0.18, 2.0, [0.62, 0.62, 0.64], MT)
     bulbs(out, on(e, t0, 3.3, 2.12), on(e, t1, 3.3, 2.12), 0.3, 0.05)
     bulbs(out, on(e, t0, 5.08, 0.52), on(e, t1, 5.08, 0.52), 0.3, 0.05)
-    signAt(out, e, tm, 4.2, 0.52, { type: 'flat', text: 'Madame Tussauds', h: 0.75, face: 'brush', colour: YEL, lit: 'front' })
+    signAt(out, e, tm, 4.2, 0.52, { type: 'flat', w: tw - 1.2, text: 'Madame Tussauds', h: 0.75, face: 'brush', colour: YEL, lit: 'front' })
     // the vertical banner, hung off the wall on a bracket, both faces
     const bu = t1 - 1.5
     slab(out, e, bu, 0.9, 5.6, 0.12, 5.0, 1.0, RED, MT)
     for (const sd of [1, -1]) {
       const p = on(e, bu + sd * 0.07, 8.1, 0.9)
-      sign(out, { type: 'flat', text: 'TUSSAUDS', h: 0.36, face: 'didone', weight: 'bold', colour: YEL, lit: 'front', vertical: true },
+      sign(out, { type: 'flat', w: 0.9, text: 'TUSSAUDS', h: 0.36, face: 'didone', weight: 'bold', colour: YEL, lit: 'front', vertical: true },
         { x: p[0], y: 8.1, z: p[2], heading: e.heading + (sd > 0 ? -Math.PI / 2 : Math.PI / 2) })
     }
     tube(out, on(e, bu, 10.8, 0.05), on(e, bu, 10.6, 1.5), 0.04, 5, IRON, MT)
@@ -214,139 +214,12 @@ export function jeffersonAttractions(out: MeshBuilder, fit: Fit): void {
   const c0 = 1.0, c1 = Math.max(c0 + 6, Math.min(ue, piers[0] - 1.2))
   const cm = (c0 + c1) / 2, cw = c1 - c0
   slab(out, e, cm, 0.25, 3.5, cw, 0.9, 0.3, CHOC, WT)
-  signAt(out, e, cm, 3.95, 0.42, { type: 'flat', text: 'San Francisco Chocolate Store', h: 0.55, face: 'roman', weight: 'bold', colour: GOLD, lit: 'front' })
+  signAt(out, e, cm, 3.95, 0.42, { type: 'flat', w: cw - 0.6, text: 'San Francisco Chocolate Store', h: 0.55, face: 'roman', weight: 'bold', colour: GOLD, lit: 'front' })
   const stripes = Math.max(4, Math.round(cw / 0.6))
   for (let k = 0; k < stripes; k++) {
     const u0 = c0 + (cw * k) / stripes, u1 = c0 + (cw * (k + 1)) / stripes
     out.quad([on(e, u0, 3.4, 0.4), on(e, u1, 3.4, 0.4), on(e, u1, 2.75, 1.6), on(e, u0, 2.75, 1.6)], [e.nx * 0.5, 0.85, e.nz * 0.5], UVQ, k % 2 ? CREAM : CHOC, WT)
     out.quad([on(e, u0, 2.75, 1.6), on(e, u1, 2.75, 1.6), on(e, u1, 2.45, 1.6), on(e, u0, 2.45, 1.6)], [e.nx, 0, e.nz], UVQ, k % 2 ? CREAM : CHOC, WT)
-  }
-}
-
-/**
- * HOTEL ZEPHYR, 250 Beach Street (relation/1358120), and its JEFFERSON STREET FRONT (owner: "the black storefronts round
- * Hotel Zephyr"): along Jefferson a row of one-storey boxes clad in black boards, each a shop behind a glass front with a
- * white street number, rust-brick piers between them, planted roofs, tall white light masts with spotlight arms, and the
- * hotel's white ZEPHYR pylon (Mapillary 1295248042335348, 512970293136899) — and set back behind them the hotel, a
- * charcoal 1960s block of window bands. At the Mason Street end a theatre marquee for BURGERS & BEST PIES (the owner's
- * report; no photograph of it found, so its marquee is the generic theatre kind). `front` 352: Jefferson is the ring's
- * edge facing local −z.
- */
-export function hotelZephyr(out: MeshBuilder, fit: Fit): void {
-  const BLACK: Rgb = [0.08, 0.08, 0.09], RUST: Rgb = [0.56, 0.29, 0.17], CHAR: Rgb = [0.36, 0.36, 0.37], GREEN: Rgb = [0.3, 0.45, 0.22]
-  /*
-   * The ring this builder receives is missing the Jefferson & Mason corner of the relation's outer way (seen in a
-   * top-down shot, 2026-10-17; where it is lost — the fit of a relation, simplifyRing — is not yet found), which cut
-   * the block on a diagonal. A WORKAROUND: the block is all but square to its streets, so where the ring covers much
-   * less than its own box, the box is the footprint.
-   */
-  let ring = towerRing(fit)
-  const area = Math.abs(ring.reduce((a, p, i) => { const q = ring[(i + 1) % ring.length]; return a + p.x * q.z - q.x * p.z }, 0)) / 2
-  if (area < 0.85 * 4 * fit.hx * fit.hz) ring = [{ x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }]
-  const e = frontEdge(ring)
-  const L = e.L
-  const D = 8                                                                     // how deep the row of shops is
-  const body = clipBehind(ring, e, D)
-  const H = fit.height > 9 && fit.height < 20 ? fit.height : 13
-  if (body.length >= 3) {
-    tower(out, { ...fit, ring: body, height: H }, {
-      height: H,
-      base: { height: 4.2, face: { kind: 'curtain', wall: [0.14, 0.14, 0.15], glass: [0.24, 0.28, 0.3], pitch: 3, floor: 4.2, material: 'glass' } },
-      tiers: [{ to: 1, face: { kind: 'bands', wall: CHAR, glass: [0.42, 0.45, 0.47], floor: (H - 4.2) / 3, solid: 0.5, material: 'stucco' }, cornice: { depth: 0.5, height: 0.5, colour: [0.86, 0.86, 0.84] } }],
-      crown: { kind: 'flat' },
-    })
-  }
-  // the strip in front: paved, then the boxes on it
-  const strip = [on(e, 0, 0, 0), on(e, L, 0, 0), on(e, L, 0, -D), on(e, 0, 0, -D)].map((p) => ({ x: p[0], z: p[2] }))
-  capPolygon(out, strip.slice().reverse(), 0.04, [0.58, 0.57, 0.55], CT)
-  /*
-   * The shops from the WEST end (u = L at the Mason corner: the ring runs anticlockwise, so u grows westward), with
-   * their OSM nodes' order along Jefferson. Widths in metres; a 0 name is the hotel's walk-through to its courtyard.
-   */
-  const shops: [string, number, number][] = [
-    ['BURGERS & BEST PIES', 9, 5.2], ['Harley-Davidson', 11, 4.6], ['Aquamassage', 6, 4.4], ['Made in San Francisco', 9, 5.0],
-    ['The Socialite', 8, 4.6], ['', 5, 0], ['Lids', 8, 5.4], ['LUSH', 7, 4.6], ['Pearl Factory', 7, 5.0],
-    ['Museum of 3D Illusions', 9, 5.2], ['Mango Crazy', 6, 4.4], ['Starbucks', 8, 4.8],
-  ]
-  const total = shops.reduce((a, s) => a + s[1], 0)
-  const k = (L - 2) / total
-  let w0 = L - 1
-  let num = 61
-  for (const [name, wRaw, h] of shops) {
-    const w = wRaw * k, u = w0 - w / 2
-    w0 -= w
-    if (!name) {
-      // the walk-through: a black steel frame over it, HOTEL ZEPHYR on its beam
-      for (const s of [-1, 1]) slab(out, e, u + s * (w / 2 - 0.2), -0.4, 0, 0.3, 5.2, 0.3, BLACK, MT)
-      slab(out, e, u, -0.4, 4.6, w, 0.6, 0.35, BLACK, MT)
-      signAt(out, e, u, 4.9, -0.2, { type: 'flat', text: 'HOTEL ZEPHYR', h: 0.32, face: 'grotesque', weight: 'bold', colour: WHITE, lit: 'back', tracking: 0.15 })
-      continue
-    }
-    // the box: black boards, a glass front from the sill to the transom, the door
-    slab(out, e, u, -D / 2 + 0.1, 0, w - 0.25, h, D - 0.2, BLACK, WT)
-    slab(out, e, u, 0.04, 0.35, w - 1.4, 2.75, 0.08, [0.2, 0.24, 0.27], GT)
-    slab(out, e, u, 0.09, 3.1, w - 1.4, 0.08, 0.06, [0.2, 0.2, 0.2], MT)
-    slab(out, e, u + w * 0.22, 0.1, 0.0, 1.1, 2.5, 0.05, [0.12, 0.12, 0.12], MT)
-    // the rust-brick pier at its west side
-    slab(out, e, u + w / 2 - 0.1, 0.05, 0, 0.75, 3.2, 0.4, RUST, BT)
-    // the planted roof: a low bed of green and a few shrubs standing up out of it
-    slab(out, e, u, -D / 2, h, w - 1.2, 0.35, D - 1.4, GREEN, FT)
-    for (let s = 0; s < 3; s++) {
-      const p = on(e, u - w * 0.3 + s * w * 0.3, h + 0.35, -1.4 - s * 1.7)
-      prism(out, p[0], p[2], p[1], p[1] + 0.7 + 0.4 * ((s + num) % 3), 0.45 + 0.1 * s, 6, [0.24 + 0.04 * s, 0.4, 0.2], FT, 0.15)
-    }
-    // the number, white, at the top corner; the shop's name on a dark board in the middle
-    signAt(out, e, u + w / 2 - 0.9, h - 0.9, 0.06, { type: 'flat', text: String(num), h: 0.32, face: 'grotesque', weight: 'bold', colour: WHITE, lit: 'none' })
-    num += 4
-    if (name === 'BURGERS & BEST PIES') {
-      /*
-       * A THEATRE MARQUEE: a deep box over the street with chaser bulbs round its faces, a white letterboard
-       * with red letters, a red crest on top with the name in lit script.
-       */
-      const MO = 2.2
-      slab(out, e, u, MO / 2, 3.4, w - 0.6, 1.3, MO, [0.72, 0.1, 0.12], MT)
-      slab(out, e, u, MO + 0.02, 3.55, w - 1.2, 1.0, 0.04, [0.97, 0.95, 0.88], MT)
-      signAt(out, e, u, 4.3, MO + 0.07, { type: 'flat', text: 'BURGERS & BEST PIES', h: 0.32, face: 'condensed', weight: 'bold', colour: [0.75, 0.08, 0.1], lit: 'back', tracking: 0.08 })
-      signAt(out, e, u, 3.82, MO + 0.07, { type: 'flat', text: 'OPEN DAILY · SHAKES · FRIES', h: 0.16, face: 'condensed', colour: [0.15, 0.15, 0.15], lit: 'back' })
-      for (const y of [3.42, 4.68]) bulbs(out, on(e, u - w / 2 + 0.35, y, MO + 0.05), on(e, u + w / 2 - 0.35, y, MO + 0.05), 0.25, 0.04)
-      for (const s of [-1, 1]) bulbs(out, on(e, u + s * (w / 2 - 0.35), 3.42, MO + 0.05), on(e, u + s * (w / 2 - 0.35), 4.68, MO + 0.05), 0.25, 0.04)
-      // the crest over it: a half-disc of red with the name in lit cream script
-      const cy = 4.7, cr = 1.5
-      for (let s = 0; s < 10; s++) {
-        const a0 = (s / 10) * Math.PI, a1 = ((s + 1) / 10) * Math.PI
-        out.quad([on(e, u, cy, MO - 0.3), on(e, u + Math.cos(a0) * cr * 1.7, cy + Math.sin(a0) * cr, MO - 0.3), on(e, u + Math.cos(a1) * cr * 1.7, cy + Math.sin(a1) * cr, MO - 0.3), on(e, u, cy, MO - 0.3)], [e.nx, 0, e.nz], UVQ, [0.72, 0.1, 0.12], MT)
-        const b = on(e, u + Math.cos(a0) * cr * 1.7, cy + Math.sin(a0) * cr, MO - 0.26)
-        box(out, b[0], b[1], b[2], 0.05, 0.05, 0.05, WARM, EMIT)
-      }
-      signAt(out, e, u, cy + 0.55, MO - 0.24, { type: 'flat', text: 'Burgers', h: 0.5, face: 'brush', colour: [1, 0.93, 0.7], lit: 'self' })
-      continue
-    }
-    slab(out, e, u, 0.06, h - 1.7, Math.min(w - 1.6, 5.2), 0.75, 0.06, [0.12, 0.13, 0.15], MT)
-    const face = name === 'LUSH' ? 'block' : name === 'Starbucks' ? 'grotesque' : name === 'Lids' ? 'grotesque' : name === 'Harley-Davidson' ? 'block' : 'roman'
-    const col: Rgb = name === 'Harley-Davidson' ? [0.95, 0.5, 0.12] : name === 'Starbucks' ? [0.25, 0.7, 0.45] : WHITE
-    signAt(out, e, u, h - 1.32, 0.1, { type: 'flat', text: name, h: name.length > 12 ? 0.24 : 0.4, face, weight: 'bold', italic: name === 'Lids', colour: col, lit: 'back' })
-  }
-  // the light masts: tall white poles a little out on the pavement, two spotlight arms near the top
-  for (let u = 6; u < L - 3; u += 17) {
-    const b = on(e, u, 0, 1.3), t = on(e, u, 9.0, 1.3)
-    tube(out, b, t, 0.11, 8, WHITE, MT, 0.08)
-    for (const s of [-1, 1]) {
-      const arm = on(e, u + s * 0.7, 8.6, 1.3)
-      tube(out, on(e, u, 8.6, 1.3), arm, 0.035, 5, WHITE, MT)
-      box(out, arm[0], arm[1] - 0.12, arm[2], 0.1, 0.1, 0.1, [0.85, 0.85, 0.85], MT)
-    }
-  }
-  // the ZEPHYR pylon at the Powell end: two black posts, a tall white panel, the name and its round mark
-  const pu = 9
-  for (const s of [-1, 1]) slab(out, e, pu + s * 0.75, 1.2, 0, 0.18, 10.5, 0.18, BLACK, MT)
-  slab(out, e, pu, 1.2, 4.6, 0.35, 5.6, 1.5, WHITE, MT)
-  for (const sd of [1, -1]) {
-    const nx = Math.sin(e.heading + Math.PI / 2) * sd, nz = Math.cos(e.heading + Math.PI / 2) * sd
-    const c = on(e, pu, 0, 1.2)
-    const hd = e.heading + (sd > 0 ? Math.PI / 2 : -Math.PI / 2)
-    sign(out, { type: 'flat', text: 'ZEPHYR', h: 0.5, face: 'grotesque', colour: [0.25, 0.27, 0.3], lit: 'back', vertical: true }, { x: c[0] + nx * 0.19, y: 7.0, z: c[2] + nz * 0.19, heading: hd })
-    sign(out, { type: 'flat', text: 'HOTEL', h: 0.2, face: 'grotesque', weight: 'bold', colour: [0.85, 0.15, 0.15], lit: 'back' }, { x: c[0] + nx * 0.19, y: 9.9, z: c[2] + nz * 0.19, heading: hd })
-    ellipse(out, [c[0] + nx * 0.19, 4.0, c[2] + nz * 0.19], [Math.cos(hd), 0, -Math.sin(hd)], [0, 1, 0], [nx, 0, nz], 0.5, 0.5, 16, [0.25, 0.27, 0.3], MT)
   }
 }
 
@@ -426,58 +299,96 @@ function pier45Shed(name: string, musee: boolean): (out: MeshBuilder, fit: Fit) 
     if (musee) {
       // the museum's long cream banner over the door, red letters, and its sandwich boards by the door
       slab(out, e, m, 0.2, 4.95, cwid * 0.95, 1.1, 0.06, [0.96, 0.92, 0.8], MT)
-      signAt(out, e, m, 5.5, 0.26, { type: 'flat', text: 'MUSÉE MÉCANIQUE', h: 0.6, face: 'didone', weight: 'bold', colour: [0.7, 0.12, 0.12], lit: 'front', tracking: 0.08 })
+      signAt(out, e, m, 5.5, 0.26, { type: 'flat', w: cwid * 0.9, text: 'MUSÉE MÉCANIQUE', h: 0.6, face: 'didone', weight: 'bold', colour: [0.7, 0.12, 0.12], lit: 'front', tracking: 0.08 })
       for (const sd of [-1, 1]) {
         const p = on(e, m + sd * (cwid * 0.4 + 0.6), 0.55, 1.3)
         boxAlong(out, p[0], p[1], p[2], 0.35, 0.55, 0.06, e.heading, [0.75, 0.1, 0.1], MT)
-        signAt(out, e, m + sd * (cwid * 0.4 + 0.6), 0.65, 1.37, { type: 'flat', text: 'FREE', h: 0.18, face: 'block', colour: [1, 0.85, 0.3], lit: 'none' })
+        signAt(out, e, m + sd * (cwid * 0.4 + 0.6), 0.65, 1.37, { type: 'flat', w: 0.6, text: 'FREE', h: 0.18, face: 'block', colour: [1, 0.85, 0.3], lit: 'none' })
       }
     }
-    signAt(out, e, m, H + 2.6, 0.32, { type: 'flat', text: name, h: 0.75, face: 'engraved', colour: [0.42, 0.4, 0.36], lit: 'front', tracking: 0.25 })
+    signAt(out, e, m, H + 2.6, 0.32, { type: 'flat', w: Math.min(L - 4, gw + 6), text: name, h: 0.75, face: 'engraved', colour: [0.42, 0.4, 0.36], lit: 'front', tracking: 0.25 })
   }
 }
 
 /**
- * The RED AND WHITE FLEET's booth at Pier 43½ (way/1092477935): a white ticket booth with a red band and the fleet's
- * name, a round red-and-white drum sign on its roof, and over it the tall white tapered mast of white tubes — a tripod
- * of legs braced in rings — carrying PIER 43½ and BAY CRUISE & FERRY TERMINAL boards, topped by a blue and red finial
- * (Mapillary 267159458189554). `front` 181: the booth faces the Embarcadero, local −z.
+ * The RED AND WHITE FLEET at Pier 43½ (way/1092477935, the booth; Mapillary 464203832503192, 1803507563334446, Jun 2022,
+ * and the owner's photo 2026-10-17): (1) a low white KIOSK, a thin red band at its foot, red-trimmed door, dark ticket
+ * windows, a deep white fascia reading FAMILY OWNED · SINCE 1892 with the round red-and-white logo at its corner; (2)
+ * beside and behind it a round DRUM up on a white column and short legs — a red-banded deck at about 4.5 m, a white
+ * cylinder lettered RED & WHITE FLEET in red with red wave marks; (3) rising from the drum a tall white A-FRAME MAST, two
+ * splayed legs cross-braced, carrying PIER 43½ (small, upper) and BAY CRUISE & FERRY TERMINAL (larger, lower) in red on
+ * white, and on top a flat cut-out of a white ferry with red stripes on blue-and-white waves, tilted a little. `front`
+ * 181: the booth faces the Embarcadero, local −z.
  */
 export function redWhiteBooth(out: MeshBuilder, fit: Fit): void {
-  const RED: Rgb = [0.78, 0.1, 0.12], BLUE: Rgb = [0.15, 0.3, 0.65]
+  const RED: Rgb = [0.8, 0.1, 0.12], BLUE: Rgb = [0.15, 0.35, 0.75], GLASSD: Rgb = [0.15, 0.18, 0.2]
   const ring = towerRing(fit)
-  const e = edgeAt(ring, edgeFacing(ring, 180))
-  faceBand(out, ring, 0, 3.0, { kind: 'blank', wall: WHITE, material: 'clapboard' })
-  faceBand(out, ring, 3.0, 3.6, { kind: 'blank', wall: RED, material: 'metal' })
-  capPolygon(out, ring, 3.6, [0.8, 0.8, 0.8], MT)
-  // the ticket windows on the front
+  const e = edgeAt(ring, edgeFacing(ring, 180)), L = e.L
+  // the kiosk
+  faceBand(out, ring, 0, 0.35, { kind: 'blank', wall: RED, material: 'metal' })
+  faceBand(out, ring, 0.35, 2.7, { kind: 'blank', wall: WHITE, material: 'clapboard' })
+  faceBand(out, offsetRing(ring, 0.25), 2.7, 3.6, { kind: 'blank', wall: WHITE, material: 'metal' })
+  capPolygon(out, offsetRing(ring, 0.25), 3.6, [0.82, 0.82, 0.82], MT)
+  capPolygon(out, offsetRing(ring, 0.25), 2.7, WHITE, MT)
   for (const s of [-1, 1]) {
-    slab(out, e, e.L / 2 + s * e.L * 0.22, 0.03, 1.1, e.L * 0.3, 1.3, 0.05, DARKGL, GT)
-    slab(out, e, e.L / 2 + s * e.L * 0.22, 0.25, 1.0, e.L * 0.34, 0.06, 0.5, [0.7, 0.7, 0.7], MT)
+    slab(out, e, L / 2 + s * L * 0.24, 0.03, 1.0, L * 0.34, 1.4, 0.05, GLASSD, GT)
+    slab(out, e, L / 2 + s * L * 0.24, 0.25, 0.95, L * 0.38, 0.06, 0.5, [0.75, 0.75, 0.75], MT)
   }
-  signAt(out, e, e.L / 2, 3.3, 0.04, { type: 'flat', text: 'RED AND WHITE FLEET', h: 0.2, face: 'grotesque', weight: 'bold', colour: WHITE, lit: 'back' })
-  // the drum on the roof: a white ring with a red band, the name round the front
-  const c = on(e, e.L / 2, 0, -2)
-  prism(out, c[0], c[2], 3.6, 4.1, 2.1, 20, WHITE, MT)
-  prism(out, c[0], c[2], 4.1, 4.9, 2.3, 20, RED, MT)
-  prism(out, c[0], c[2], 4.9, 5.1, 2.4, 20, WHITE, MT)
-  signAt(out, e, e.L / 2, 4.5, -2 + 2.3 + 0.03, { type: 'flat', text: 'RED & WHITE FLEET', h: 0.26, face: 'grotesque', weight: 'bold', colour: WHITE, lit: 'self' })
-  // the mast: three white legs from the drum's rim rising to a point, braced by rings, the boards on its front
+  signAt(out, e, L / 2, 3.15, 0.3, { type: 'flat', text: 'FAMILY OWNED · SINCE 1892', h: 0.24, w: L * 0.7, face: 'grotesque', weight: 'bold', colour: RED, lit: 'front' })
+  const lc = on(e, L - 0.1, 3.15, 0.45)
+  lozenge(out, lc, [e.tx, 0, e.tz], [0, 1, 0], [e.nx, 0, e.nz], 0.55, 0.55, 0.08, RED, MT, 18)
+  lozenge(out, [lc[0] + e.nx * 0.05, lc[1], lc[2] + e.nz * 0.05], [e.tx, 0, e.tz], [0, 1, 0], [e.nx, 0, e.nz], 0.38, 0.38, 0.04, WHITE, MT, 18)
+  const side = edgeToward(ring, -e.tx, -e.tz, 1)
+  slab(out, side, side.L / 2, 0.03, 0, 1.0, 2.2, 0.05, [0.2, 0.2, 0.22], MT)
+  for (const s of [-1, 1]) slab(out, side, side.L / 2 + s * 0.55, 0.06, 0, 0.1, 2.3, 0.08, RED, MT)
+  // the drum: behind the kiosk, a little to one side, up on a column and three legs
+  const d = on(e, -2.8, 0, 1.2)                                                 // beside the kiosk, west, on the pier head (behind it is water)
+  const R = 2.5
+  prism(out, d[0], d[2], 0, 4.2, 0.45, 12, WHITE, MT)
+  for (let k = 0; k < 3; k++) { const a = (k / 3) * Math.PI * 2 + 0.4; tube(out, [d[0] + Math.sin(a) * 1.6, 0, d[2] + Math.cos(a) * 1.6], [d[0] + Math.sin(a) * 1.0, 4.2, d[2] + Math.cos(a) * 1.0], 0.12, 6, WHITE, MT) }
+  prism(out, d[0], d[2], 4.2, 4.6, R + 0.3, 24, RED, MT)
+  prism(out, d[0], d[2], 4.6, 6.0, R, 24, WHITE, MT)
+  prism(out, d[0], d[2], 6.0, 6.15, R + 0.1, 24, RED, MT)
+  for (const hd of [e.heading, e.heading + Math.PI]) {
+    const nx = Math.sin(hd), nz = Math.cos(hd)
+    sign(out, { type: 'flat', text: 'RED & WHITE FLEET', h: 0.3, w: 3.4, face: 'grotesque', weight: 'bold', colour: RED, lit: 'front' }, { x: d[0] + nx * (R + 0.05), y: 5.3, z: d[2] + nz * (R + 0.05), heading: hd })
+    for (const s of [-1, 1]) {
+      const c: V3 = [d[0] + nx * (R - 0.4) + Math.cos(hd) * s * 2.0, 5.3, d[2] + nz * (R - 0.4) - Math.sin(hd) * s * 2.0]
+      for (let k = 0; k < 3; k++) box(out, c[0] + nx * 0.4, c[1] - 0.3 + k * 0.25, c[2] + nz * 0.4, 0.2, 0.05, 0.2, RED, MT)
+    }
+  }
+  // the A-frame mast from the drum, two splayed legs braced, the boards, the ferry on top
   const TOP = 17
-  const legs: V3[] = [0, 1, 2].map((k) => { const a = (k / 3) * Math.PI * 2 + Math.PI / 2; return [c[0] + Math.sin(a + e.heading) * 1.7, 5.1, c[2] + Math.cos(a + e.heading) * 1.7] })
-  const apex: V3 = [c[0], TOP, c[2]]
-  for (const l of legs) tube(out, l, apex, 0.12, 6, WHITE, MT, 0.06)
-  for (const t of [0.3, 0.55, 0.78]) {
-    const pts = legs.map((l): V3 => [l[0] + (apex[0] - l[0]) * t, l[1] + (apex[1] - l[1]) * t, l[2] + (apex[2] - l[2]) * t])
-    for (let k = 0; k < 3; k++) tube(out, pts[k], pts[(k + 1) % 3], 0.05, 5, WHITE, MT)
+  const ft = (s: number, y: number): V3 => { const k = (TOP - y) / (TOP - 6.1); return [d[0] + e.tx * s * 1.9 * k, y, d[2] + e.tz * s * 1.9 * k] }
+  for (const s of [-1, 1]) tube(out, ft(s, 6.1), ft(s, TOP), 0.13, 6, WHITE, MT, 0.08)
+  for (const y of [8.4, 11.6, 14.4]) tube(out, ft(-1, y), ft(1, y), 0.06, 5, WHITE, MT)
+  for (const [y0, y1] of [[8.4, 11.6], [11.6, 14.4]]) { tube(out, ft(-1, y0), ft(1, y1), 0.04, 4, WHITE, MT); tube(out, ft(1, y0), ft(-1, y1), 0.04, 4, WHITE, MT) }
+  const mast = { ...e, a: { x: d[0], z: d[2] } }
+  for (const [y, txt, hh, w] of [[13.0, 'PIER 43½', 0.42, 2.6], [10.0, 'BAY CRUISE & FERRY TERMINAL', 0.4, 4.6]] as [number, string, number, number][]) {
+    slab(out, mast, 0, 0.2, y - hh * 1.3 - (w > 3 ? 0.35 : 0), w, hh * 2.6 + (w > 3 ? 0.7 : 0), 0.12, WHITE, MT)
+    if (w > 3) {
+      signAt(out, mast, 0, y + 0.3, 0.3, { type: 'flat', text: 'BAY CRUISE &', h: hh, w: w - 0.4, face: 'grotesque', weight: 'bold', colour: RED, lit: 'front' })
+      signAt(out, mast, 0, y - 0.45, 0.3, { type: 'flat', text: 'FERRY TERMINAL', h: hh, w: w - 0.4, face: 'grotesque', weight: 'bold', colour: RED, lit: 'front' })
+    } else signAt(out, mast, 0, y, 0.3, { type: 'flat', text: txt, h: hh, w: w - 0.4, face: 'grotesque', weight: 'bold', colour: RED, lit: 'front' })
   }
-  tube(out, apex, [c[0], TOP + 2.5, c[2]], 0.09, 6, BLUE, MT)
-  lozenge(out, [c[0], TOP + 2.0, c[2]], [1, 0, 0], [0, 0, 1], [0, 1, 0], 0.3, 0.3, 0.5, RED, MT, 10)
-  // the boards, hung on the front legs
-  for (const [y, txt, hh, w] of [[11.4, 'PIER 43½', 0.45, 2.6], [9.6, 'BAY CRUISE & FERRY TERMINAL', 0.24, 4.6]] as [number, string, number, number][]) {
-    slab(out, e, e.L / 2, -2 + 1.2, y - hh * 1.1, w, hh * 2.2, 0.1, WHITE, MT)
-    signAt(out, e, e.L / 2, y, -2 + 1.27, { type: 'flat', text: txt, h: hh, face: 'grotesque', weight: 'bold', colour: [0.15, 0.15, 0.18], lit: 'front' })
+  // the ferry cut-out: waves, hull, cabins, red stripes, tilted
+  const tilt = 0.12
+  const F = (x: number, y: number, o = 0.25): V3 => {
+    const xr = x * Math.cos(tilt) - y * Math.sin(tilt), yr = x * Math.sin(tilt) + y * Math.cos(tilt)
+    return [d[0] + e.tx * xr + e.nx * o, TOP + 0.8 + yr, d[2] + e.tz * xr + e.nz * o]
   }
+  const QD = (x0: number, y0: number, x1: number, y1: number, c: Rgb, o = 0.25): void => {
+    out.quad([F(x0, y0, o), F(x1, y0, o), F(x1, y1, o), F(x0, y1, o)], [e.nx, 0, e.nz], UVQ, c, MT)
+    out.quad([F(x1, y0, o - 0.05), F(x0, y0, o - 0.05), F(x0, y1, o - 0.05), F(x1, y1, o - 0.05)], [-e.nx, 0, -e.nz], UVQ, c, MT)
+  }
+  QD(-2.6, -0.9, 2.6, -0.3, BLUE)
+  for (let k = 0; k < 6; k++) QD(-2.5 + k * 0.85, -0.45, -2.1 + k * 0.85, -0.3, WHITE, 0.28)
+  QD(-2.2, -0.3, 2.3, 0.5, WHITE)
+  QD(-2.0, 0.05, 2.1, 0.25, RED, 0.28)
+  QD(-1.4, 0.5, 1.4, 1.1, WHITE)
+  QD(-0.6, 1.1, 0.7, 1.6, WHITE)
+  QD(-1.3, 0.75, 1.3, 0.85, RED, 0.28)
+  tube(out, ft(0, TOP - 0.2), F(0, -0.9, 0.2), 0.07, 4, WHITE, MT)
 }
 
 /**
@@ -500,10 +411,10 @@ export function pretzelKiosk(out: MeshBuilder, _fit: Fit): void {
   // the band: a red ring with the name on two sides
   prism(out, 0, 0, 2.2, 2.55, R + 0.05, 20, RED, MT)
   for (const hd of [0, Math.PI]) {
-    sign(out, { type: 'flat', text: "AUNT FANNY'S", h: 0.17, face: 'slab', weight: 'bold', colour: CREAM, lit: 'self' }, { x: Math.sin(hd) * (R + 0.08), y: 2.42, z: Math.cos(hd) * (R + 0.08), heading: hd })
-    sign(out, { type: 'flat', text: 'HOT PRETZELS', h: 0.09, face: 'slab', weight: 'bold', colour: [1, 0.85, 0.4], lit: 'self' }, { x: Math.sin(hd) * (R + 0.08), y: 2.27, z: Math.cos(hd) * (R + 0.08), heading: hd })
+    sign(out, { type: 'flat', w: 1.9, text: "AUNT FANNY'S", h: 0.17, face: 'slab', weight: 'bold', colour: CREAM, lit: 'self' }, { x: Math.sin(hd) * (R + 0.08), y: 2.42, z: Math.cos(hd) * (R + 0.08), heading: hd })
+    sign(out, { type: 'flat', w: 1.6, text: 'HOT PRETZELS', h: 0.09, face: 'slab', weight: 'bold', colour: [1, 0.85, 0.4], lit: 'self' }, { x: Math.sin(hd) * (R + 0.08), y: 2.27, z: Math.cos(hd) * (R + 0.08), heading: hd })
   }
-  for (const hd of [Math.PI / 2, -Math.PI / 2]) sign(out, { type: 'flat', text: 'PRETZELS', h: 0.18, face: 'slab', weight: 'bold', colour: CREAM, lit: 'self' }, { x: Math.sin(hd) * (R + 0.08), y: 2.38, z: Math.cos(hd) * (R + 0.08), heading: hd })
+  for (const hd of [Math.PI / 2, -Math.PI / 2]) sign(out, { type: 'flat', w: 1.9, text: 'PRETZELS', h: 0.18, face: 'slab', weight: 'bold', colour: CREAM, lit: 'self' }, { x: Math.sin(hd) * (R + 0.08), y: 2.38, z: Math.cos(hd) * (R + 0.08), heading: hd })
   // the canopy: a shallow glass cone out past the drum, a red rim, scallops hanging off it
   const CR = 2.05, N = 24, Y0 = 2.6, Y1 = 3.25
   for (let k = 0; k < N; k++) {
@@ -576,7 +487,7 @@ export function klamathPropellers(out: MeshBuilder, _fit: Fit): void {
   // the marker: a brown post and a sloped plaque before the frame
   box(out, 0, 0.7, 1.0, 0.06, 0.4, 0.06, BROWN, WT)
   out.quad([[-0.4, 0.95, 1.12], [0.4, 0.95, 1.12], [0.4, 1.25, 0.92], [-0.4, 1.25, 0.92]], [0, 0.6, 0.8], UVQ, BROWN, MT)
-  sign(out, { type: 'flat', text: 'KLAMATH', h: 0.1, face: 'slab', weight: 'bold', colour: [0.95, 0.92, 0.85], lit: 'none' }, { x: 0, y: 1.18, z: 1.0, heading: 0 })
+  sign(out, { type: 'flat', w: 0.75, text: 'KLAMATH', h: 0.1, face: 'slab', weight: 'bold', colour: [0.95, 0.92, 0.85], lit: 'none' }, { x: 0, y: 1.18, z: 1.0, heading: 0 })
 }
 
 /**
@@ -616,8 +527,8 @@ export function jeffersonInNOut(out: MeshBuilder, fit: Fit): void {
     out.quad([on(e, IW * t0, y(t0) - 0.45, 0.55), on(e, IW * t1, y(t1) - 0.45, 0.55), on(e, IW * t1, y(t1) - 0.45, 1.6), on(e, IW * t0, y(t0) - 0.45, 1.6)], [0, -1, 0], UVQ, [0.9, 0.7, 0.08], MT)
   }
   // the sign: IN-N-OUT in white with a black edge, BURGER under it, the yellow arrow beneath
-  signAt(out, e, im, 5.75, 0.6, { type: 'flat', text: 'IN-N-OUT', h: 0.7, face: 'block', colour: [1, 1, 1], halo: [0.1, 0.1, 0.1], lit: 'self', tracking: 0.04 })
-  signAt(out, e, im + 2.2, 5.05, 0.6, { type: 'flat', text: 'BURGER', h: 0.32, face: 'block', colour: [1, 1, 1], lit: 'self' })
+  signAt(out, e, im, 5.75, 0.6, { type: 'flat', w: IW - 1, text: 'IN-N-OUT', h: 0.7, face: 'block', colour: [1, 1, 1], halo: [0.1, 0.1, 0.1], lit: 'self', tracking: 0.04 })
+  signAt(out, e, im + 2.2, 5.05, 0.6, { type: 'flat', w: IW * 0.4, text: 'BURGER', h: 0.32, face: 'block', colour: [1, 1, 1], lit: 'self' })
   for (const [u0, y0, u1, y1] of [[im + 3.0, 4.75, im - 3.6, 4.75], [im - 3.6, 4.75, im - 3.1, 4.5], [im - 3.6, 4.75, im - 3.1, 5.0]] as [number, number, number, number][]) {
     const a = on(e, u0, y0, 0.64), b = on(e, u1, y1, 0.64)
     tube(out, a, b, 0.09, 4, YEL, EMIT)
@@ -629,7 +540,7 @@ export function jeffersonInNOut(out: MeshBuilder, fit: Fit): void {
   for (let k = 0; k < n; k++) {
     const u = IW + 0.5 + sw * (k + 0.5)
     slab(out, e, u, 0.15, 3.3, sw - 1.0, 0.8, 0.2, k === 1 ? [0.92, 0.35, 0.55] : CREAMW, WT)
-    signAt(out, e, u, 3.7, 0.27, { type: 'flat', text: names[k], h: 0.36, face: k === 2 ? 'slab' : 'roman', weight: 'bold', colour: k === 1 ? [1, 1, 1] : [0.2, 0.2, 0.25], lit: 'front' })
+    signAt(out, e, u, 3.7, 0.27, { type: 'flat', w: sw - 1.4, text: names[k], h: 0.36, face: k === 2 ? 'slab' : 'roman', weight: 'bold', colour: k === 1 ? [1, 1, 1] : [0.2, 0.2, 0.25], lit: 'front' })
   }
 }
 
@@ -664,131 +575,99 @@ export function scomas(out: MeshBuilder, fit: Fit): void {
   const c = on(back, back.L / 2, 0, -3)
   const pc = { x: c[0], z: c[2] }
   slab(out, { ...back, a: { x: pc.x - back.tx * 4, z: pc.z - back.tz * 4 } }, 4, 0, H + 0.35, 7.5, 1.5, 0.15, WHITE, WT)
-  signAt(out, { ...back, a: { x: pc.x - back.tx * 4, z: pc.z - back.tz * 4 } }, 4, H + 1.1, 0.09, { type: 'flat', text: "SCOMA'S", h: 1.0, face: 'roman', weight: 'bold', colour: RED, lit: 'front' })
+  signAt(out, { ...back, a: { x: pc.x - back.tx * 4, z: pc.z - back.tz * 4 } }, 4, H + 1.1, 0.09, { type: 'flat', w: 7.0, text: "SCOMA'S", h: 1.0, face: 'roman', weight: 'bold', colour: RED, lit: 'front' })
   for (const d of [-2.5, 2.5]) slab(out, { ...back, a: { x: pc.x - back.tx * 4, z: pc.z - back.tz * 4 } }, 4 + d, -0.6, H + 0.35, 0.1, 1.2, 1.2, [0.4, 0.4, 0.42], MT)
 }
 
 /**
- * THE FISHERMEN'S AND SEAMEN'S MEMORIAL CHAPEL on Pier 45 (way/1092465159, untagged in OSM; Commons "Fisherman's and
- * Seamen's Memorial Chapel, San Francisco", taken 13 m east of it): a small chapel of barn-red boards under a steep roof
- * of dark shingles, a tall STAINED-GLASS window filling each gable (blue waves round a ship's wheel), timber knee braces
- * under the rakes, black double doors with the name on a board above, a plank deck with white-capped rails before the
- * door, and beside it a free-standing square BELL TOWER of the same boards with louvres and an open belfry under a
- * pyramid cap. `front` 90: the door gable faces east, the edge facing local −z.
+ * THE FISHERMEN'S AND SEAMEN'S MEMORIAL CHAPEL on Pier 45 (way/1092465159, untagged in OSM; the owner's street photo of
+ * 2026-10-17, Commons "Fisherman's and Seamen's Memorial Chapel, San Francisco"): a small chapel of PALE GREY-WHITE
+ * clapboard under a steep roof of dark grey asphalt shingle, white barge boards and white knee-brace brackets under the
+ * rakes, a tall POINTED stained-glass window in the gable (blues and greens, leaded), double doors of leaded glass in a
+ * warm natural-wood frame with a brass lamp each side; to its left a free-standing square WHITE clapboard BELL TOWER with
+ * louvred vents, an open belfry with the bell in it and a low hipped dark cap on wide white eaves; a plank deck before it
+ * with wooden rails capped grey, and a short ramp with steel handrails up to the doors. `front` 90: the door gable faces
+ * east, the edge facing local −z.
  */
 export function memorialChapel(out: MeshBuilder, fit: Fit): void {
-  const RED: Rgb = [0.5, 0.2, 0.18], TRIMR: Rgb = [0.42, 0.16, 0.14], SHINGLE: Rgb = [0.3, 0.31, 0.33]
-  const GLASS: Rgb = [0.22, 0.36, 0.62], BLACK: Rgb = [0.08, 0.08, 0.09], DECK: Rgb = [0.55, 0.47, 0.38]
+  const CLAP: Rgb = [0.9, 0.91, 0.9], TRIMW: Rgb = [0.98, 0.98, 0.97], SHINGLE: Rgb = [0.27, 0.28, 0.3]
+  const DECK: Rgb = [0.55, 0.47, 0.38], RAIL: Rgb = [0.55, 0.56, 0.57], WOOD: Rgb = [0.6, 0.4, 0.22], BRASS: Rgb = [0.78, 0.62, 0.3]
+  const SG: Rgb[] = [[0.15, 0.35, 0.7], [0.2, 0.55, 0.5], [0.3, 0.6, 0.85], [0.12, 0.42, 0.35]]
   const RT = surfaceTag('tile')
   const hx = Math.min(fit.hx, 5.2), hz = Math.min(fit.hz, 6)
   const E = 3.4, R = E + hx * 1.05, OV = 0.55
-  box(out, 0, E / 2, 0, hx, E / 2, hz, RED, WT)
-  // the gables and their glass, both ends
+  box(out, 0, E / 2, 0, hx, E / 2, hz, CLAP, WT)
   for (const sz of [-1, 1]) {
     const z = sz * hz
-    out.quad([[-hx, E, z], [hx, E, z], [0, R, z], [0, R, z]], [0, 0, sz], UVQ, RED, WT)
+    out.quad([[-hx, E, z], [hx, E, z], [0, R, z], [0, R, z]], [0, 0, sz], UVQ, CLAP, WT)
     const gz = z + sz * 0.04
-    // the window: a tall pane rising into the gable's point, a black frame and cross
-    const w = 1.25, y0 = 2.95, y1 = E + 1.4, yt = E + 2.7
-    out.quad([[-w, y0, gz], [w, y0, gz], [w, y1, gz], [-w, y1, gz]], [0, 0, sz], UVQ, GLASS, GT)
-    out.quad([[-w, y1, gz], [w, y1, gz], [0, yt, gz], [0, yt, gz]], [0, 0, sz], UVQ, GLASS, GT)
-    box(out, 0, (y0 + yt) / 2, gz + sz * 0.02, 0.06, (yt - y0) / 2, 0.03, BLACK, MT)
-    box(out, 0, y1 - 0.4, gz + sz * 0.02, w, 0.05, 0.03, BLACK, MT)
-    // the barge boards along both rakes, and a knee brace under each
+    // the pointed window: leaded panes in blues and greens, a white frame, rising into the gable
+    const w = 1.1, y0 = 2.7, y1 = E + 1.3, yt = E + 2.6
+    const rows = 6
+    for (let r = 0; r < rows; r++) {
+      const ya = y0 + ((y1 - y0) * r) / rows, yb = y0 + ((y1 - y0) * (r + 1)) / rows
+      for (let c = 0; c < 3; c++) {
+        const xa = -w + (2 * w * c) / 3, xb = -w + (2 * w * (c + 1)) / 3
+        out.quad([[xa, ya, gz], [xb, ya, gz], [xb, yb, gz], [xa, yb, gz]], [0, 0, sz], UVQ, SG[(r + c) % 4], GT)
+      }
+    }
+    out.quad([[-w, y1, gz], [w, y1, gz], [0, yt, gz], [0, yt, gz]], [0, 0, sz], UVQ, SG[2], GT)
+    for (const x of [-w / 3, w / 3]) box(out, x, (y0 + y1) / 2, gz + sz * 0.02, 0.03, (y1 - y0) / 2, 0.02, [0.2, 0.2, 0.22], MT)
+    for (const sx of [-1, 1]) tube(out, [sx * (w + 0.08), y0 - 0.1, gz + sz * 0.03], [sx * (w + 0.08), y1, gz + sz * 0.03], 0.07, 4, TRIMW, WT)
+    for (const sx of [-1, 1]) tube(out, [sx * (w + 0.08), y1, gz + sz * 0.03], [0, yt + 0.1, gz + sz * 0.03], 0.07, 4, TRIMW, WT)
+    box(out, 0, y0 - 0.12, gz + sz * 0.03, w + 0.2, 0.06, 0.05, TRIMW, WT)
+    // white barge boards along both rakes, white knee braces under them
     for (const sx of [-1, 1]) {
       const a: V3 = [sx * (hx + OV), E - OV * 1.05, z + sz * 0.35], b: V3 = [0, R + 0.1, z + sz * 0.35]
-      tube(out, a, b, 0.14, 4, TRIMR, WT)
-      tube(out, [sx * (hx - 0.6), E - 1.3, z + sz * 0.3], [sx * (hx - 0.6), E + 0.6, z + sz * 0.3], 0.08, 4, TRIMR, WT)
+      tube(out, a, b, 0.13, 4, TRIMW, WT)
+      tube(out, [sx * (hx - 0.05), E - 0.9, z + sz * 0.3], [sx * (hx + 0.35), E - 0.3, z + sz * 0.3], 0.07, 4, TRIMW, WT)
+      tube(out, [sx * (hx - 0.05), E - 0.9, z + sz * 0.3], [sx * (hx - 0.05), E - 0.3, z + sz * 0.3], 0.06, 4, TRIMW, WT)
     }
+    for (const sx of [-1, 1]) box(out, sx * (hx - 0.06), E / 2, z + sz * 0.04, 0.08, E / 2, 0.05, TRIMW, WT)  // corner boards
   }
-  // the roof: two slopes of shingle, overhanging all round
   for (const sx of [-1, 1]) {
     out.quad([[sx * (hx + OV), E - OV * 1.05, -hz - 0.45], [sx * (hx + OV), E - OV * 1.05, hz + 0.45], [0, R + 0.08, hz + 0.45], [0, R + 0.08, -hz - 0.45]],
       [sx * 0.7, 0.7, 0], UVQ, SHINGLE, RT)
+    for (let z = -hz + 1.5; z < hz; z += 2.6) box(out, sx * (hx + 0.04), 1.7, z, 0.04, 0.7, 0.45, [0.3, 0.33, 0.36], GT)
   }
-  // the door end: black double doors in a red-brown frame, the name board above, two lamps
+  // the door end: leaded-glass double doors in a natural-wood frame, brass lamps each side
   const fz = -hz - 0.04
-  box(out, 0, 1.3, fz, 1.0, 1.3, 0.04, BLACK, WT)
-  for (const sx of [-1, 1]) box(out, sx * 0.5, 1.3, fz - 0.03, 0.34, 1.05, 0.02, [0.62, 0.36, 0.32], WT)
-  box(out, 0, 1.3, fz - 0.05, 0.03, 1.3, 0.02, BLACK, MT)
-  box(out, 0, 2.78, fz - 0.03, 1.5, 0.16, 0.03, [0.32, 0.22, 0.14], WT)
-  sign(out, { type: 'flat', text: "FISHERMEN'S AND SEAMEN'S MEMORIAL CHAPEL", h: 0.1, w: 2.8, face: 'roman', weight: 'bold', colour: [0.85, 0.75, 0.5], lit: 'front' },
-    { x: 0, y: 2.78, z: fz - 0.07, heading: Math.PI })
-  for (const sx of [-1, 1]) box(out, sx * 1.9, 2.5, fz - 0.12, 0.09, 0.14, 0.09, WARM, EMIT)
-  // the chapel stands on Pier 45's plank apron over the water: a deck round it and the tower, on piles
+  box(out, 0, 1.3, fz, 1.0, 1.3, 0.04, WOOD, WT)
+  for (const sx of [-1, 1]) box(out, sx * 0.47, 1.25, fz - 0.03, 0.36, 1.05, 0.02, [0.45, 0.6, 0.7], GT)
+  for (const sx of [-1, 1]) for (const y of [0.7, 1.25, 1.8]) box(out, sx * 0.47, y, fz - 0.05, 0.36, 0.015, 0.01, WOOD, WT)
+  box(out, 0, 2.7, fz - 0.03, 1.4, 0.13, 0.03, TRIMW, WT)
+  sign(out, { type: 'flat', text: "FISHERMEN'S AND SEAMEN'S MEMORIAL CHAPEL", h: 0.09, w: 2.6, face: 'roman', weight: 'bold', colour: [0.25, 0.25, 0.3], lit: 'front' },
+    { x: 0, y: 2.7, z: fz - 0.07, heading: Math.PI })
+  for (const sx of [-1, 1]) { box(out, sx * 1.35, 2.0, fz - 0.1, 0.1, 0.16, 0.08, BRASS, MT); box(out, sx * 1.35, 1.96, fz - 0.12, 0.06, 0.1, 0.05, WARM, EMIT) }
+  // Pier 45's plank apron round it and the tower, on piles
   const x0 = -(hx + 3.4), x1 = hx + 0.8, z0 = -hz - 4.6, z1 = hz + 0.8
   box(out, (x0 + x1) / 2, 0.05, (z0 + z1) / 2, (x1 - x0) / 2, 0.12, (z1 - z0) / 2, [0.5, 0.43, 0.35], WT)
   for (let x = x0 + 0.3; x <= x1; x += 2.4) for (const z of [z0 + 0.3, z1 - 0.3]) box(out, x, -1.6, z, 0.16, 1.6, 0.16, [0.28, 0.24, 0.2], WT)
   for (let z = z0 + 2.7; z < z1 - 1; z += 2.4) for (const x of [x0 + 0.3, x1 - 0.3]) box(out, x, -1.6, z, 0.16, 1.6, 0.16, [0.28, 0.24, 0.2], WT)
-  // the deck before the door, rails capped in white
-  box(out, 0, 0.22, -hz - 2.2, 2.6, 0.06, 2.2, DECK, WT)
+  // the deck before the door, wooden rails capped grey, and the ramp up to the sill with its steel handrails
+  box(out, 0, 0.32, -hz - 1.3, 1.6, 0.06, 1.3, DECK, WT)
   for (const sx of [-1, 1]) {
-    for (const z of [-hz - 0.4, -hz - 2.2, -hz - 4.2]) box(out, sx * 1.4, 0.6, z, 0.07, 0.5, 0.07, DECK, WT)
-    box(out, sx * 1.4, 1.12, -hz - 2.3, 0.1, 0.04, 1.95, WHITE, WT)
+    for (const z of [-hz - 0.3, -hz - 1.4, -hz - 2.5]) box(out, sx * 1.6, 0.85, z, 0.06, 0.5, 0.06, DECK, WT)
+    box(out, sx * 1.6, 1.38, -hz - 1.4, 0.09, 0.04, 1.2, RAIL, WT)
   }
-  // the bell tower, free-standing at the door's left
-  const tx = -(hx + 2.0), tz = -hz + 0.6, TH = 6.8
-  box(out, tx, TH / 2, tz, 0.95, TH / 2, 0.95, RED, WT)
+  out.quad([[-0.7, 0.12, -hz - 5.0], [0.7, 0.12, -hz - 5.0], [0.7, 0.38, -hz - 2.6], [-0.7, 0.38, -hz - 2.6]], [0, 0.99, -0.1], UVQ, DECK, WT)
+  for (const sx of [-0.75, 0.75]) {
+    tube(out, [sx, 1.0, -hz - 5.0], [sx, 1.26, -hz - 2.6], 0.03, 4, [0.7, 0.72, 0.75], MT)
+    for (const z of [-hz - 5.0, -hz - 3.8, -hz - 2.6]) tube(out, [sx, 0.12 + (z + hz + 5.0) * 0.11, z], [sx, 1.0 + (z + hz + 5.0) * 0.11, z], 0.025, 4, [0.7, 0.72, 0.75], MT)
+  }
+  // the bell tower, free-standing at the door's left: white boards, louvres, the open belfry and its bell, the low cap
+  const tx = -(hx + 2.0), tz = -hz + 0.6, TH = 6.2
+  box(out, tx, TH / 2, tz, 0.95, TH / 2, 0.95, CLAP, WT)
   for (const [nx, nz] of [[0, -1], [0, 1], [-1, 0], [1, 0]]) {
-    box(out, tx + nx * 0.97, 5.3, tz + nz * 0.97, nz ? 0.5 : 0.02, 0.7, nx ? 0.5 : 0.02, [0.2, 0.12, 0.1], WT)
+    for (let k = 0; k < 5; k++) box(out, tx + nx * 0.98, 4.5 + k * 0.18, tz + nz * 0.98, nz ? 0.45 : 0.03, 0.03, nx ? 0.45 : 0.03, [0.75, 0.76, 0.76], WT)
   }
-  for (const sx of [-1, 1]) for (const sz of [-1, 1]) box(out, tx + sx * 0.8, TH + 0.7, tz + sz * 0.8, 0.1, 0.7, 0.1, TRIMR, WT)
-  box(out, tx, TH + 0.9, tz, 0.22, 0.3, 0.22, [0.45, 0.38, 0.2], MT)
-  box(out, tx, TH + 1.45, tz, 1.15, 0.06, 1.15, TRIMR, WT)
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) box(out, tx + sx * 0.82, TH + 0.75, tz + sz * 0.82, 0.1, 0.75, 0.1, TRIMW, WT)
+  box(out, tx, TH + 0.05, tz, 1.0, 0.06, 1.0, TRIMW, WT)
+  prism(out, tx, tz, TH + 0.5, TH + 1.15, 0.12, 10, BRASS, MT, 0.38)
+  box(out, tx, TH + 1.55, tz, 1.4, 0.07, 1.4, TRIMW, WT)
   for (const [a, b] of [[[-1, -1], [1, -1]], [[1, -1], [1, 1]], [[1, 1], [-1, 1]], [[-1, 1], [-1, -1]]] as [number, number][][]) {
-    out.quad([[tx + a[0] * 1.2, TH + 1.5, tz + a[1] * 1.2], [tx + b[0] * 1.2, TH + 1.5, tz + b[1] * 1.2], [tx, TH + 3.0, tz], [tx, TH + 3.0, tz]],
-      [(a[0] + b[0]) / 2, 0.7, (a[1] + b[1]) / 2], UVQ, SHINGLE, RT)
-  }
-}
-
-/**
- * THE HASLETT WAREHOUSE, Jefferson & Hyde (way/25372348; 1909, now the Argonaut Hotel and the Maritime park's visitor
- * centre; Commons "Haslett Warehouse (San Francisco)", "Argonaut Hotel - San Francisco, CA - DSC02048"): four storeys of
- * red brick, rows of segmental-arched windows with dark sashes under brick hoods, string courses at every floor, the
- * parapet stepping up over the end bays; at the Jefferson–Hyde corner the navy ARGONAUT HOTEL blade sign standing out
- * from the wall, the BLUE MERMAID marquee at the corner's foot, and on the parapet over Hyde a NATIONAL PARK VISITOR
- * CENTER board under four gooseneck lamps. `front` 90: the Hyde face is the edge facing local −z; Jefferson is +x.
- */
-export function haslettWarehouse(out: MeshBuilder, fit: Fit): void {
-  const BRICK: Rgb = [0.6, 0.24, 0.16], NAVY: Rgb = [0.12, 0.16, 0.3], STEEL: Rgb = [0.5, 0.52, 0.55]
-  const ring = towerRing(fit)
-  const H = Math.max(14, Math.min(18, fit.height))
-  faceBand(out, ring, 0, H - 1.2, { kind: 'punched', wall: BRICK, glass: DARKGL, floor: (H - 1.2) / 4, pitch: 3.4, solid: 0.6, arched: true, material: 'brick' })
-  faceBand(out, ring, H - 1.2, H, { kind: 'blank', wall: BRICK, material: 'brick' })
-  // string courses at each floor, a little proud
-  for (let k = 1; k <= 4; k++) faceBand(out, offsetRing(ring, 0.06), (k * (H - 1.2)) / 4 - 0.12, (k * (H - 1.2)) / 4, { kind: 'blank', wall: [0.52, 0.2, 0.14], material: 'brick' })
-  faceBand(out, offsetRing(ring, 0.1), H - 0.3, H, { kind: 'blank', wall: [0.5, 0.2, 0.14], material: 'brick' })
-  capPolygon(out, ring, H, [0.36, 0.34, 0.33], CT)
-  // the Hyde face, and the Jefferson corner: its end of the front edge that lies to local +x
-  const e = frontEdge(ring, facingFront(ring, 10))
-  const cu = e.tx > 0 ? e.L - 0.4 : 0.4
-  // the blade sign, standing out from the Hyde wall at the corner, both faces lettered down
-  const out1 = 1.3
-  const bc = on(e, cu - (e.tx > 0 ? 0.6 : -0.6), 0, out1)
-  boxAlong(out, bc[0], 9.0, bc[2], 0.08, 3.4, 0.55, e.heading, NAVY, MT)
-  boxAlong(out, bc[0], 12.55, bc[2], 0.12, 0.15, 0.8, e.heading, STEEL, MT)
-  boxAlong(out, bc[0], 5.4, bc[2], 0.12, 0.3, 0.72, e.heading, NAVY, MT)
-  for (const sd of [-1, 1]) {
-    const hd = e.heading + (sd * Math.PI) / 2
-    const ox = Math.sin(hd) * 0.1, oz = Math.cos(hd) * 0.1
-    'ARGONAUT'.split('').forEach((ch, k) => sign(out, { type: 'flat', text: ch, h: 0.62, face: 'didone', colour: [0.95, 0.95, 0.92], lit: 'front' },
-      { x: bc[0] + ox, y: 11.8 - k * 0.78, z: bc[2] + oz, heading: hd }))
-    sign(out, { type: 'flat', text: 'HOTEL', h: 0.32, face: 'didone', colour: [0.95, 0.95, 0.92], lit: 'front' }, { x: bc[0] + ox * 1.3, y: 5.3, z: bc[2] + oz * 1.3, heading: hd })
-  }
-  // the Blue Mermaid marquee at the corner's foot
-  const mu = cu - (e.tx > 0 ? 3.2 : -3.2)
-  slab(out, e, mu, 0.8, 3.2, 3.6, 0.7, 1.4, [0.96, 0.95, 0.9], MT)
-  signAt(out, e, mu, 3.7, 1.52, { type: 'flat', text: 'BLUE MERMAID', h: 0.3, face: 'roman', weight: 'bold', colour: [0.15, 0.3, 0.6], lit: 'back' })
-  bulbs(out, on(e, mu - 1.7, 3.15, 1.52), on(e, mu + 1.7, 3.15, 1.52), 0.3)
-  // the visitor centre's board on the parapet over Hyde, four gooseneck lamps over it
-  const vu = e.tx > 0 ? e.L - 9 : 9
-  slab(out, e, vu, 0.05, H, 6.5, 1.2, 0.2, [0.3, 0.36, 0.33], MT)
-  signAt(out, e, vu, H + 0.6, 0.17, { type: 'flat', text: 'National Park Visitor Center', h: 0.36, face: 'grotesque', weight: 'bold', colour: [0.97, 0.97, 0.95], lit: 'front' })
-  for (const d of [-2.4, -0.8, 0.8, 2.4]) {
-    const b = on(e, vu + d, H + 1.2, -0.1), t = on(e, vu + d, H + 2.6, -0.1), h = on(e, vu + d, H + 2.5, 0.5)
-    tube(out, b, t, 0.04, 5, STEEL, MT)
-    tube(out, t, h, 0.04, 5, STEEL, MT)
-    box(out, h[0], h[1] - 0.12, h[2], 0.16, 0.08, 0.16, STEEL, MT)
+    out.quad([[tx + a[0] * 1.3, TH + 1.6, tz + a[1] * 1.3], [tx + b[0] * 1.3, TH + 1.6, tz + b[1] * 1.3], [tx, TH + 2.4, tz], [tx, TH + 2.4, tz]],
+      [(a[0] + b[0]) / 2, 0.8, (a[1] + b[1]) / 2], UVQ, SHINGLE, RT)
   }
 }
 
@@ -807,40 +686,6 @@ function awning(out: MeshBuilder, e: Edge, u: number, w: number, y: number, c: R
   signAt(out, e, u, y - 0.19, d + 0.03, { type: 'flat', text: name, h: 0.22, w: w * 0.9, face: 'grotesque', weight: 'bold', colour: ink, lit: 'front' })
 }
 
-/**
- * ALIOTO'S No. 8, the corner of Jefferson and Taylor (way/103339436; Commons "Fisherman's Wharf, San Francisco, CA, USA -
- * panoramio (125)", "Boats moored at fisherman's wharf… against the backdrop of Alioto's"): a dark red-brown block,
- * glazed in bands where the dining rooms look over the lagoon, a huge turquoise 8 on the Taylor corner and ALIOTO'S in
- * turquoise along the top; a turquoise board on the roof facing the boats; along Jefferson the turquoise awnings of
- * Alioto's Waterside Cafe and Crab Stand, then Sabella & La Torre's and Nick's Lighthouse's. `front` 171: Jefferson is
- * the edge facing local −z, Taylor at its +x end.
- */
-export function aliotos(out: MeshBuilder, fit: Fit): void {
-  const WALL: Rgb = [0.33, 0.19, 0.16], TURQ: Rgb = [0.3, 0.78, 0.74], DGREEN: Rgb = [0.06, 0.26, 0.22]
-  const ring = towerRing(fit)
-  const H = Math.max(10, Math.min(13, fit.height))
-  faceBand(out, ring, 0, 3.6, { kind: 'punched', wall: WALL, glass: DARKGL, floor: 3.6, pitch: 3.2, solid: 0.4, material: 'stucco' })
-  faceBand(out, ring, 3.6, H - 1.4, { kind: 'punched', wall: WALL, glass: DARKGL, floor: (H - 5) / 2, pitch: 2.6, solid: 0.3, material: 'stucco' })
-  faceBand(out, ring, H - 1.4, H, { kind: 'blank', wall: WALL, material: 'stucco' })
-  capPolygon(out, ring, H, [0.36, 0.34, 0.33], CT)
-  const e = frontEdge(ring, facingFront(ring, 10))
-  const tay = e.tx > 0 ? e.L : 0, dir = e.tx > 0 ? -1 : 1
-  // ALIOTO'S along the top of the Jefferson face from the corner, and the 8 on the corner
-  signAt(out, e, tay + dir * 10, H - 0.75, 0.08, { type: 'flat', text: "ALIOTO'S", h: 1.6, face: 'condensed', weight: 'bold', colour: TURQ, lit: 'self' })
-  signAt(out, e, tay + dir * 2.2, H - 2.9, 0.08, { type: 'flat', text: '8', h: 3.6, face: 'grotesque', weight: 'bold', colour: TURQ, lit: 'self' })
-  // the turquoise board on the roof, facing the lagoon behind
-  let bi = 0
-  for (let i = 0; i < ring.length; i++) { const q = edgeAt(ring, i); if (q.L > 6 && q.nz > edgeAt(ring, bi).nz) bi = i }
-  const back = edgeAt(ring, bi)
-  slab(out, back, back.L / 2, -1.5, H, Math.min(14, back.L * 0.7), 2.0, 0.18, TURQ, MT)
-  signAt(out, back, back.L / 2, H + 1.0, -1.5 + 0.1, { type: 'flat', text: "ALIOTO'S", h: 1.3, face: 'condensed', weight: 'bold', colour: DGREEN, lit: 'front' })
-  for (const d of [-4, 0, 4]) slab(out, back, back.L / 2 + d, -2.4, H, 0.12, 1.6, 0.12, [0.3, 0.3, 0.32], MT)
-  // the awnings along Jefferson, from the corner west
-  const shops: [string, Rgb, Rgb][] = [["ALIOTO'S WATERSIDE CAFE", TURQ, DGREEN], ["ALIOTO'S CRAB STAND", TURQ, DGREEN],
-    ['SABELLA & LA TORRE', [0.16, 0.3, 0.62], WHITE], ["NICK'S LIGHTHOUSE", [0.72, 0.12, 0.12], WHITE]]
-  const sw = Math.min(8, (e.L - 6) / shops.length)
-  shops.forEach(([n, c, ink], k) => awning(out, e, tay + dir * (6 + sw * (k + 0.5)), sw - 0.6, 3.0, c, n, ink))
-}
 
 /**
  * FISHERMEN'S GROTTO No. 9 (way/103339449; Commons "No. 9 Fishermans Grotto, San Francisco", "Fisherman's Wharf… panoramio
@@ -850,7 +695,7 @@ export function aliotos(out: MeshBuilder, fit: Fit): void {
  * shoulder (neon at night). `front` 81: the Taylor / Embarcadero face is the edge facing local −z.
  */
 export function grotto9(out: MeshBuilder, fit: Fit): void {
-  const WALL: Rgb = [0.95, 0.94, 0.9], TILE: Rgb = [0.66, 0.27, 0.18], BLUE: Rgb = [0.12, 0.2, 0.55], YEL: Rgb = [0.98, 0.82, 0.2]
+  const WALL: Rgb = [0.95, 0.94, 0.9], TILE: Rgb = [0.5, 0.25, 0.19], BLUE: Rgb = [0.12, 0.2, 0.55], YEL: Rgb = [0.98, 0.82, 0.2]
   const STEEL: Rgb = [0.42, 0.44, 0.47]
   const H = Math.max(7, Math.min(10, fit.height))
   tower(out, fit, {
@@ -860,9 +705,43 @@ export function grotto9(out: MeshBuilder, fit: Fit): void {
   })
   const ring = towerRing(fit)
   const e = frontEdge(ring, facingFront(ring, 10))
-  // the blue awnings along the front
-  const n = Math.max(1, Math.min(4, Math.floor(e.L / 9)))
-  for (let k = 0; k < n; k++) awning(out, e, (e.L * (k + 0.5)) / n, Math.min(7, e.L / n - 1), 3.0, BLUE, "No 9 FISHERMEN'S GROTTO", YEL)
+  /*
+   * The street front (Mapillary 2723595057776031, 1304393406647064): navy DOME awnings lettered No 9 Fishermen's Grotto
+   * in yellow, a row of Venetian BARBER-POLE posts striped black and white with lanterns on top, a white lattice fence on
+   * planter boxes round the outdoor tables, and a navy oriel bay of diamond-leaded glass on the upper floor.
+   */
+  const n = Math.max(1, Math.min(3, Math.floor(e.L / 11)))
+  for (let k = 0; k < n; k++) {
+    const u = (e.L * (k + 0.5)) / n, w = Math.min(8, e.L / n - 2)
+    for (let s2 = 0; s2 < 10; s2++) {
+      const a0 = (s2 / 10) * Math.PI, a1 = ((s2 + 1) / 10) * Math.PI
+      const P = (a: number, uu: number): V3 => on(e, uu, 2.8 + Math.sin(a) * 1.1, 0.05 + (1 - Math.cos(a)) * 0.85)
+      out.quad([P(a0, u - w / 2), P(a0, u + w / 2), P(a1, u + w / 2), P(a1, u - w / 2)], [e.nx * Math.cos(a0 + 0.15), Math.sin(a0 + 0.15), e.nz * Math.cos(a0 + 0.15)], UVQ, BLUE, WT)
+    }
+    for (const s2 of [-1, 1]) for (let a = 0; a < 8; a++) {
+      const a0 = (a / 8) * Math.PI, a1 = ((a + 1) / 8) * Math.PI
+      out.quad([on(e, u + s2 * w / 2, 2.8, 0.05), on(e, u + s2 * w / 2, 2.8 + Math.sin(a0) * 1.1, 0.05 + (1 - Math.cos(a0)) * 0.85), on(e, u + s2 * w / 2, 2.8 + Math.sin(a1) * 1.1, 0.05 + (1 - Math.cos(a1)) * 0.85), on(e, u + s2 * w / 2, 2.8, 0.05)], [e.tx * s2, 0, e.tz * s2], UVQ, BLUE, WT)
+    }
+    signAt(out, e, u, 3.25, 1.62, { type: 'flat', text: "No9 Fishermen's Grotto", h: 0.34, w: w * 0.85, face: 'roman', weight: 'bold', colour: YEL, lit: 'front' })
+  }
+  for (let u = 1.5; u < e.L - 1; u += 4.5) {
+    const b = on(e, u, 0, 3.2)
+    for (let k = 0; k < 10; k++) tube(out, [b[0], k * 0.32, b[2]], [b[0], (k + 1) * 0.32, b[2]], 0.09, 6, k % 2 ? [0.96, 0.96, 0.95] : [0.1, 0.1, 0.12], WT)
+    prism(out, b[0], b[2], 3.2, 3.6, 0.2, 6, [0.15, 0.15, 0.15], MT, 0.26)
+    box(out, b[0], 3.45, b[2], 0.12, 0.1, 0.12, WARM, EMIT)
+  }
+  for (let u = 0.5; u < e.L - 0.5; u += 2.2) {
+    slab(out, e, u + 1.1, 3.2, 0, 2.0, 0.45, 0.5, [0.18, 0.22, 0.38], WT)                 // the planter box
+    for (let d = -0.9; d <= 0.9; d += 0.3) { slab(out, e, u + 1.1 + d, 3.2, 0.45, 0.04, 0.8, 0.04, WHITE, WT) }
+    slab(out, e, u + 1.1, 3.2, 1.2, 2.0, 0.06, 0.06, WHITE, WT)
+    for (let d = 0.45; d < 1.25; d += 0.27) slab(out, e, u + 1.1, 3.2, d, 2.0, 0.03, 0.04, WHITE, WT)
+  }
+  const ob = e.L * 0.35
+  slab(out, e, ob, 0.45, H * 0.5 + 0.4, 2.6, 2.4, 0.9, BLUE, WT)
+  for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) {
+    const p = on(e, ob - 0.9 + c * 0.6, H * 0.5 + 0.8 + r * 0.5, 0.92)
+    lozenge(out, p, [e.tx, 0, e.tz], [0, 1, 0], [e.nx, 0, e.nz], 0.26, 0.22, 0.02, [0.45, 0.5, 0.6], GT, 4)
+  }
   // the rooftop sign on its truss, over the front half, both faces lettered
   const L = Math.min(18, e.L * 0.8), Y = H + 4.2, o = -6
   for (const t of [-L / 2 + 0.5, -L / 4, 0, L / 4, L / 2 - 0.5]) {
@@ -881,7 +760,7 @@ export function grotto9(out: MeshBuilder, fit: Fit): void {
     // No 9 in a blue roundel at the left end, the fisherman's panel at the right
     const lx = mid - L / 2 + 1.3, rx = mid + L / 2 - 1.4
     slab(out, f2, lx, fo - 0.05, Y - 1.3, 2.2, 2.6, 0.08, BLUE, MT)
-    signAt(out, f2, lx, Y + 0.1, fo + 0.02, { type: 'flat', text: 'No9', h: 1.0, face: 'grotesque', weight: 'bold', colour: YEL, lit: 'self' })
+    signAt(out, f2, lx, Y + 0.1, fo + 0.02, { type: 'flat', w: 2.0, text: 'No9', h: 1.0, face: 'grotesque', weight: 'bold', colour: YEL, lit: 'self' })
     slab(out, f2, rx, fo - 0.05, Y - 1.4, 2.6, 4.2, 0.08, BLUE, MT)
     // the old fisherman: oilskin coat, sou'wester, the rod
     slab(out, f2, rx, fo + 0.03, Y - 1.0, 0.9, 2.0, 0.04, YEL, EMIT)
@@ -956,7 +835,7 @@ export function buenaVista(out: MeshBuilder, fit: Fit): void {
   }
   const e = frontEdge(ring, facingFront(ring, 6))
   const hyde = e.tx > 0 ? 0 : e.L, dir = e.tx > 0 ? 1 : -1
-  signAt(out, e, hyde + dir * 6.5, 2.6, 0.06, { type: 'flat', text: 'COCKTAILS', h: 0.28, face: 'grotesque', weight: 'bold', colour: RED, lit: 'self' })
+  signAt(out, e, hyde + dir * 6.5, 2.6, 0.06, { type: 'flat', w: 3.0, text: 'COCKTAILS', h: 0.28, face: 'grotesque', weight: 'bold', colour: RED, lit: 'self' })
   // the hanging sign on the corner: a shaped cream board on a bracket, the name in red neon script, both faces
   const c = on(e, hyde, 0, 0)
   const ox = c[0] + e.nx * 1.3 - e.tx * dir * 0.2, oz = c[2] + e.nz * 1.3 - e.tz * dir * 0.2
@@ -965,69 +844,110 @@ export function buenaVista(out: MeshBuilder, fit: Fit): void {
   boxAlong(out, ox, 5.0, oz, 1.15, 0.85, 0.08, hd, [0.92, 0.9, 0.82], MT)
   for (const sd of [1, -1]) {
     const h2 = hd + (sd > 0 ? 0 : Math.PI), dx = Math.sin(h2) * 0.1, dz = Math.cos(h2) * 0.1
-    sign(out, { type: 'flat', text: 'the', h: 0.32, face: 'script', colour: RED, lit: 'self' }, { x: ox + dx, y: 5.5, z: oz + dz, heading: h2 })
-    sign(out, { type: 'flat', text: 'buena', h: 0.38, face: 'script', colour: RED, lit: 'self' }, { x: ox + dx, y: 5.0, z: oz + dz, heading: h2 })
-    sign(out, { type: 'flat', text: 'vista', h: 0.38, face: 'script', colour: RED, lit: 'self' }, { x: ox + dx, y: 4.5, z: oz + dz, heading: h2 })
+    sign(out, { type: 'flat', w: 2.0, text: 'the', h: 0.32, face: 'script', colour: RED, lit: 'self' }, { x: ox + dx, y: 5.5, z: oz + dz, heading: h2 })
+    sign(out, { type: 'flat', w: 2.0, text: 'buena', h: 0.38, face: 'script', colour: RED, lit: 'self' }, { x: ox + dx, y: 5.0, z: oz + dz, heading: h2 })
+    sign(out, { type: 'flat', w: 2.0, text: 'vista', h: 0.38, face: 'script', colour: RED, lit: 'self' }, { x: ox + dx, y: 4.5, z: oz + dz, heading: h2 })
   }
 }
 
 /**
- * CASTAGNOLA'S, Jefferson at Jones (way/229326454; Commons "Castagnola's, San Francisco", "Castagnola's"): the ground floor
- * in red brick on Jefferson, a row of round-arched bays with teal roll shutters and the green "Since 1916" board over the
- * door, white boards toward the boats; over it a terrace all round behind a teal railing, the dining room glazed behind
- * it under a skirt of red tile, and above the tile a cream board parapet with CASTAGNOLA'S in dark raised capitals on
- * every face. `front` 180: Jefferson is the edge facing local −z.
+ * CASTAGNOLA'S, 286 Jefferson at Al Scoma Way (way/229326454; Mapillary 1300527804795812, 1353802022974978, 1272994787953175,
+ * Aug 2025; the restaurant closed in March 2020): SHOPS ON THE STREET, THE RESTAURANT UPSTAIRS (owner, 2026-10-17). The
+ * ground floor on Jefferson is red brick, four wide segmental arches on royal-blue piers, a shopfront in each, and the
+ * green arched board over the middle — Since 1916 / CASTAGNOLA'S / STEAK · SEAFOOD · COCKTAILS on a red strip; round the
+ * lagoon side the ground floor is white boards and windows. Over it the terrace runs all round behind a teal railing on
+ * a teal fascia; the dining room is set back behind it in glass under a green-and-white striped valance, a skirt of red
+ * tile at its eaves and a cream board parapet lettered CASTAGNOLA'S on every face. Everything stands on the sidewalk's
+ * level (graded()). `front` 180: Jefferson is the edge facing local −z.
  */
 export function castagnolas(out: MeshBuilder, fit: Fit): void {
-  const BRICK: Rgb = [0.6, 0.25, 0.18], TEAL: Rgb = [0.18, 0.4, 0.42], TILE: Rgb = [0.7, 0.3, 0.2], CREAM: Rgb = [0.9, 0.87, 0.78]
-  const GREEN: Rgb = [0.1, 0.42, 0.22], INK: Rgb = [0.22, 0.2, 0.2]
+  const BRICK: Rgb = [0.62, 0.27, 0.19], TEAL: Rgb = [0.15, 0.38, 0.38], TILE: Rgb = [0.74, 0.34, 0.22], CREAM: Rgb = [0.92, 0.9, 0.84]
+  const GREEN: Rgb = [0.12, 0.5, 0.25], INK: Rgb = [0.2, 0.2, 0.22], RBLUE: Rgb = [0.2, 0.32, 0.72], RED: Rgb = [0.82, 0.16, 0.12]
   const ring = towerRing(fit)
-  const e = frontEdge(ring, facingFront(ring, 8))
-  // the ground floor: white boards all round, the brick front laid over them on Jefferson
-  faceBand(out, ring, 0, 3.6, { kind: 'bands', wall: WHITE, glass: DARKGL, floor: 3.6, solid: 0.3, material: 'clapboard' })
-  slab(out, e, e.L / 2, 0.12, 0, e.L, 3.6, 0.24, BRICK, BT)
-  const n = Math.max(3, Math.round(e.L / 4.6)), bw = e.L / n
+  const e = frontEdge(ring, facingFront(ring, 8)), L = e.L
+  const F = 3.7                                                                    // the terrace floor
+  // the ground floor: white boards and windows all round, the brick front over it on Jefferson (returning 3 m)
+  faceBand(out, ring, 0, F, { kind: 'punched', wall: WHITE, glass: DARKGL, floor: F, pitch: 2.4, solid: 0.35, material: 'clapboard' }, offFront(ring, e))
+  slab(out, e, L / 2, 0.15, 2.75, L + 0.3, F - 2.75, 0.3, BRICK, BT)
+  slab(out, e, L / 2, -1.6, 0, L - 0.6, 2.75, 0.1, [0.25, 0.22, 0.2], CT)                     // the back of the arcade
+  for (const s of [0, L]) {
+    const side = edgeToward(ring, e.tx * (s ? 1 : -1), e.tz * (s ? 1 : -1), 2)
+    const near = Math.hypot(side.a.x - (e.a.x + e.tx * s), side.a.z - (e.a.z + e.tz * s)) < Math.hypot(side.b.x - (e.a.x + e.tx * s), side.b.z - (e.a.z + e.tz * s))
+    slab(out, side, near ? 1.5 : side.L - 1.5, 0.15, 0, 3.0, F, 0.3, BRICK, BT)
+  }
+  // the four arches: a shop in each, blue piers between
+  const n = 4, bw = (L - 1) / n
+  const shops: [string, Rgb][] = [['SOUVENIRS', [0.98, 0.82, 0.2]], ['SWEATSHIRTS · T-SHIRTS', [0.95, 0.95, 0.95]], ['CHOCOLATE · CANDY', [0.95, 0.55, 0.75]], ['SF GIFTS', [0.6, 0.85, 0.98]]]
   for (let k = 0; k < n; k++) {
-    const u = bw * (k + 0.5)
-    slab(out, e, u, 0.25, 0.1, bw - 0.9, 2.5, 0.04, DARKGL, GT)
-    slab(out, e, u, 0.27, 2.0, bw - 0.9, 0.9, 0.04, TEAL, MT)      // the roll shutter, half up
-    for (let a = 0; a <= 8; a++) {                                  // the arch's brick head
+    const u = 0.5 + bw * (k + 0.5)
+    goodsWindow(out, e, u, 0.15, bw - 1.2, 2.4, k * 2)
+    for (const sd of [-1, 1]) slab(out, e, u + sd * (bw / 2 - 0.25), 0.15, 0, 0.5, 2.8, 0.3, BRICK, BT)   // the brick jambs
+    slab(out, e, u, 0.32, 0, bw - 1.0, 0.15, 0.05, [0.3, 0.3, 0.3], MT)
+    // the arch's head: a segment of brick voussoirs, a painted board in the tympanum with the shop's name
+    for (let a = 0; a <= 8; a++) {
       const t = (a / 8) * Math.PI
-      slab(out, e, u - Math.cos(t) * (bw - 0.7) / 2, 0.27, 2.6 + Math.sin(t) * 0.55, 0.32, 0.16, 0.06, [0.52, 0.2, 0.14], BT)
+      slab(out, e, u - Math.cos(t) * (bw - 0.8) / 2, 0.32, 2.75 + Math.sin(t) * 0.45, 0.4, 0.2, 0.06, [0.5, 0.2, 0.14], BT)
+    }
+    if (k !== 1) {
+      slab(out, e, u, 0.34, 2.6, bw - 1.6, 0.42, 0.04, [0.15, 0.15, 0.17], MT)
+      signAt(out, e, u, 2.81, 0.38, { type: 'flat', text: shops[k][0], h: 0.22, w: bw - 1.9, face: 'grotesque', weight: 'bold', colour: shops[k][1], lit: 'self' })
     }
   }
-  const door = Math.floor(n / 2), du = bw * (door + 0.5)
-  slab(out, e, du, 0.4, 2.75, bw - 0.6, 0.75, 0.08, GREEN, MT)
-  signAt(out, e, du, 3.18, 0.45, { type: 'flat', text: 'Since 1916', h: 0.14, face: 'script', colour: [1, 1, 1], lit: 'front' })
-  signAt(out, e, du, 2.95, 0.45, { type: 'flat', text: "CASTAGNOLA'S", h: 0.22, face: 'grotesque', weight: 'bold', colour: [1, 1, 1], lit: 'front' })
-  slab(out, e, du, 0.42, 2.62, bw - 0.6, 0.16, 0.06, [0.8, 0.12, 0.12], MT)
-  // the terrace: a deck all round at 3.6 m, the railing on its edge
+  for (let k = 0; k <= n; k++) slab(out, e, 0.5 + bw * k, 0.4, 0, 0.55, 3.3, 0.25, RBLUE, MT)
+  // the green arched board over the second arch, Since 1916 / CASTAGNOLA'S / the red strip
+  const du = 0.5 + bw * 1.5, bwid = Math.min(5.2, bw - 0.4)
+  slab(out, e, du, 0.45, 2.45, bwid, 0.9, 0.08, GREEN, MT)
+  for (let a = 0; a < 8; a++) {
+    const t0 = (a / 8) * Math.PI, t1 = ((a + 1) / 8) * Math.PI
+    out.quad([on(e, du, 3.35, 0.49), on(e, du - Math.cos(t0) * bwid / 2, 3.35 + Math.sin(t0) * 0.35, 0.49), on(e, du - Math.cos(t1) * bwid / 2, 3.35 + Math.sin(t1) * 0.35, 0.49), on(e, du, 3.35, 0.49)], [e.nx, 0, e.nz], UVQ, GREEN, MT)
+  }
+  slab(out, e, du, 0.5, 2.45, bwid, 0.24, 0.05, RED, MT)
+  signAt(out, e, du, 3.45, 0.55, { type: 'flat', text: 'Since 1916', h: 0.15, w: 1.6, face: 'script', colour: [1, 0.95, 0.8], lit: 'front' })
+  signAt(out, e, du, 3.0, 0.55, { type: 'flat', text: "CASTAGNOLA'S", h: 0.36, w: bwid - 0.4, face: 'roman', weight: 'bold', colour: [1, 0.95, 0.8], lit: 'front' })
+  signAt(out, e, du, 2.57, 0.57, { type: 'flat', text: 'STEAK · SEAFOOD · COCKTAILS', h: 0.13, w: bwid - 0.5, face: 'grotesque', weight: 'bold', colour: [1, 0.9, 0.5], lit: 'front' })
+  // the terrace all round at F: deck, teal fascia, railing
   const deck = offsetRing(ring, 0.05)
-  capPolygon(out, deck, 3.62, [0.5, 0.44, 0.38], WT)
-  faceBand(out, offsetRing(ring, 0.1), 3.6, 3.9, { kind: 'blank', wall: TEAL, material: 'clapboard' })
+  capPolygon(out, deck, F + 0.02, [0.5, 0.44, 0.38], WT)
+  faceBand(out, offsetRing(ring, 0.32), F - 0.15, F + 0.3, { kind: 'blank', wall: TEAL, material: 'clapboard' })
   for (let i = 0; i < ring.length; i++) {
     const q = edgeAt(ring, i)
     if (q.L < 1) continue
-    slab(out, q, q.L / 2, 0.1, 4.7, q.L, 0.08, 0.08, TEAL, MT)
-    for (let u = 0.2; u < q.L; u += 0.35) slab(out, q, u, 0.1, 3.9, 0.04, 0.8, 0.04, TEAL, MT)
+    slab(out, q, q.L / 2, 0.3, F + 1.15, q.L, 0.08, 0.1, TEAL, MT)
+    for (let u = 0.2; u < q.L; u += 0.3) slab(out, q, u, 0.3, F + 0.3, 0.04, 0.85, 0.04, TEAL, MT)
   }
-  // the dining room, set back behind the terrace: glass between white posts
-  const room = offsetRing(ring, -2.2)
-  faceBand(out, room, 3.62, 6.4, { kind: 'curtain', wall: WHITE, glass: DARKGL, pitch: 2.2, material: 'clapboard' })
-  // the tile skirt: from the room's eaves out over the terrace, and the cream parapet above it with the name
-  const eave = offsetRing(ring, -0.6)
+  // the dining room, set back, glass between white posts; the striped valance; the tile skirt; the parapet and name
+  const room = offsetRing(ring, -2.0)
+  faceBand(out, room, F, 6.6, { kind: 'curtain', wall: WHITE, glass: DARKGL, pitch: 2.0, material: 'clapboard' })
+  for (let i = 0; i < room.length; i++) {
+    const q = edgeAt(room, i)
+    if (q.L < 2) continue
+    const m = Math.max(4, Math.round(q.L / 0.45))
+    for (let k = 0; k < m; k++) {
+      const u0 = (q.L * k) / m, u1 = (q.L * (k + 1)) / m
+      out.quad([on(q, u0, 6.55, 0.02), on(q, u1, 6.55, 0.02), on(q, u1, 6.1, 0.75), on(q, u0, 6.1, 0.75)], [q.nx * 0.6, 0.8, q.nz * 0.6], UVQ, k % 2 ? WHITE : [0.1, 0.42, 0.28], WT)
+    }
+  }
+  const eave = offsetRing(ring, -0.7)
   for (let i = 0; i < eave.length; i++) {
     const j = (i + 1) % eave.length
     const a = eave[i], b = eave[j], c = room[j], d = room[i]
     const mx = (a.x + b.x) / 2 - (c.x + d.x) / 2, mz = (a.z + b.z) / 2 - (c.z + d.z) / 2, ml = Math.hypot(mx, mz) || 1
-    out.quad([[a.x, 6.0, a.z], [b.x, 6.0, b.z], [c.x, 7.0, c.z], [d.x, 7.0, d.z]], [(mx / ml) * 0.6, 0.8, (mz / ml) * 0.6], UVQ, TILE, surfaceTag('tile'))
+    // only at the corners: the photographs show the tile skirt on the ends of the room, the striped valance between
+    const q = edgeAt(room, i)
+    if (q.L > 9) {
+      for (const [s0, s1] of [[0, 0.18], [0.82, 1]]) {
+        const A = { x: a.x + (b.x - a.x) * s0, z: a.z + (b.z - a.z) * s0 }, B = { x: a.x + (b.x - a.x) * s1, z: a.z + (b.z - a.z) * s1 }
+        const C = { x: d.x + (c.x - d.x) * s1, z: d.z + (c.z - d.z) * s1 }, D = { x: d.x + (c.x - d.x) * s0, z: d.z + (c.z - d.z) * s0 }
+        out.quad([[A.x, 6.3, A.z], [B.x, 6.3, B.z], [C.x, 7.1, C.z], [D.x, 7.1, D.z]], [(mx / ml) * 0.6, 0.8, (mz / ml) * 0.6], UVQ, TILE, TT)
+      }
+    } else out.quad([[a.x, 6.3, a.z], [b.x, 6.3, b.z], [c.x, 7.1, c.z], [d.x, 7.1, d.z]], [(mx / ml) * 0.6, 0.8, (mz / ml) * 0.6], UVQ, TILE, TT)
   }
-  faceBand(out, room, 7.0, 8.6, { kind: 'blank', wall: CREAM, material: 'clapboard' })
-  capPolygon(out, room, 8.6, [0.4, 0.4, 0.4], CT)
+  faceBand(out, room, 6.6, 8.4, { kind: 'blank', wall: CREAM, material: 'clapboard' })
+  capPolygon(out, room, 8.4, [0.4, 0.4, 0.4], CT)
   for (let i = 0; i < room.length; i++) {
     const q = edgeAt(room, i)
     if (q.L < 8) continue
-    signAt(out, q, q.L / 2, 7.8, 0.06, { type: 'flat', text: "CASTAGNOLA'S", h: 0.85, w: q.L * 0.8, face: 'didone', weight: 'bold', colour: INK, lit: 'front' })
+    signAt(out, q, q.L / 2, 7.6, 0.06, { type: 'flat', text: "CASTAGNOLA'S", h: 0.8, w: q.L * 0.8, face: 'didone', weight: 'bold', colour: INK, lit: 'front' })
   }
 }
 
@@ -1090,7 +1010,7 @@ export function longshoremensHall(out: MeshBuilder, fit: Fit): void {
   for (const d of [-0.12, 0.12]) slab(out, e, u + d * e.L, 0.1, 0, 0.3, 2.6, 0.2, TEAL, MT)
   slab(out, e, u + e.L * 0.17, 0.08, 0.3, 2.4, 2.0, 0.04, DARKGL, GT)
   slab(out, e, u - e.L * 0.2, 0.1, 0.2, 1.4, 2.0, 0.08, [0.12, 0.2, 0.55], MT)
-  signAt(out, e, u - e.L * 0.2, 1.95, 0.16, { type: 'flat', text: 'ILWU', h: 0.2, face: 'grotesque', weight: 'bold', italic: true, colour: [0.12, 0.2, 0.55], panel: [1, 1, 1], lit: 'front' } as SignSpec)
+  signAt(out, e, u - e.L * 0.2, 1.95, 0.16, { type: 'flat', w: 1.2, text: 'ILWU', h: 0.2, face: 'grotesque', weight: 'bold', italic: true, colour: [0.12, 0.2, 0.55], panel: [1, 1, 1], lit: 'front' } as SignSpec)
 }
 
 /**
@@ -1120,7 +1040,7 @@ export function cioppinos(out: MeshBuilder, fit: Fit): void {
     }
     slab(out, e, u, d, y - 0.4, w, 0.4, 0.04, GREEN, WT)
     signAt(out, e, u, y - 0.2, d + 0.03, { type: 'flat', text: word, h: 0.18, w: w * 0.8, face: 'roman', weight: 'bold', colour: CREAM, lit: 'front' })
-    signAt(out, e, u, y + 0.45, (0.05 + d) / 2 + 0.25, { type: 'flat', text: "CIOPPINO'S", h: 0.2, face: 'roman', weight: 'bold', colour: CREAM, panel: GREEN, lit: 'front' })
+    signAt(out, e, u, y + 0.45, (0.05 + d) / 2 + 0.25, { type: 'flat', w: w * 0.45, text: "CIOPPINO'S", h: 0.2, face: 'roman', weight: 'bold', colour: CREAM, panel: GREEN, lit: 'front' })
     const lamp = on(e, u, H - 0.6, 0.1), arm = on(e, u, H - 0.6, 0.7)
     tube(out, lamp, arm, 0.03, 4, [0.15, 0.15, 0.15], MT)
     box(out, arm[0], arm[1] - 0.12, arm[2], 0.14, 0.08, 0.14, WARM, EMIT)
@@ -1138,43 +1058,9 @@ export function cioppinos(out: MeshBuilder, fit: Fit): void {
   slab(out, e, cu, 0.25, 2.6, 2.8, 4.4, 0.5, CREAM, ST)
   signAt(out, e, cu, 6.4, 0.53, { type: 'flat', text: "CIOPPINO'S", h: 0.42, w: 2.5, face: 'roman', weight: 'bold', colour: RED, lit: 'self' })
   signAt(out, e, cu, 5.75, 0.53, { type: 'flat', text: 'RESTAURANT', h: 0.28, w: 2.3, face: 'roman', weight: 'bold', colour: [0.92, 0.38, 0.2], lit: 'self' })
-  signAt(out, e, cu, 4.6, 0.53, { type: 'flat', text: 'BAR', h: 0.34, face: 'roman', weight: 'bold', colour: [0.92, 0.38, 0.2], lit: 'self' })
+  signAt(out, e, cu, 4.6, 0.53, { type: 'flat', w: 2.3, text: 'BAR', h: 0.34, face: 'roman', weight: 'bold', colour: [0.92, 0.38, 0.2], lit: 'self' })
 }
 
-/**
- * CALIFORNIA SHELLFISH CO., the working shed beside Cioppino's on Jefferson (way/229326468; Commons "Cioppino's Restaurant
- * near Fisherman's Wharf…", left): a long low gabled shed of white-painted boards, its gable end to the street with the
- * company's name across it in black capitals, a pale grey roof and two round turbine ventilators on the ridge, a loading
- * door in the gable. `front` 180: the Jefferson gable faces local −z.
- */
-export function shellfishShed(out: MeshBuilder, fit: Fit): void {
-  const ROOF: Rgb = [0.66, 0.66, 0.64], INK: Rgb = [0.12, 0.13, 0.15], GREY: Rgb = [0.5, 0.52, 0.55]
-  const hx = fit.hx, hz = fit.hz, E = 4.6, R = E + hx * 0.42
-  box(out, 0, E / 2, 0, hx, E / 2, hz, WHITE, WT)
-  for (const sz of [-1, 1]) {
-    out.quad([[-hx, E, sz * hz], [hx, E, sz * hz], [0, R, sz * hz], [0, R, sz * hz]], [0, 0, sz], UVQ, WHITE, WT)
-    // the barge boards
-    for (const sx of [-1, 1]) tube(out, [sx * (hx + 0.3), E - 0.15, sz * (hz + 0.08)], [0, R + 0.1, sz * (hz + 0.08)], 0.12, 4, WHITE, WT)
-  }
-  for (const sx of [-1, 1]) {
-    out.quad([[sx * (hx + 0.35), E - 0.15, -hz - 0.3], [sx * (hx + 0.35), E - 0.15, hz + 0.3], [0, R + 0.05, hz + 0.3], [0, R + 0.05, -hz - 0.3]],
-      [sx * 0.4, 0.9, 0], UVQ, ROOF, MT)
-  }
-  // the two turbine ventilators on the ridge
-  for (const z of [-hz * 0.35, hz * 0.35]) {
-    prism(out, 0, z, R, R + 0.9, 0.22, 8, GREY, MT)
-    prism(out, 0, z, R + 0.9, R + 1.5, 0.45, 10, GREY, MT)
-    prism(out, 0, z, R + 1.5, R + 1.65, 0.2, 8, GREY, MT)
-  }
-  // the street gable: the name, a loading door, a window either side
-  const fz = -hz - 0.03
-  sign(out, { type: 'flat', text: 'CALIFORNIA  SHELLFISH  CO.', h: 0.42, w: hx * 1.3, face: 'grotesque', weight: 'bold', colour: INK, lit: 'front' },
-    { x: 0, y: E + 0.6, z: fz - 0.02, heading: Math.PI })
-  box(out, 0, 1.6, fz, 1.6, 1.6, 0.04, [0.32, 0.34, 0.36], MT)
-  for (const sx of [-1, 1]) box(out, sx * hx * 0.6, 2.2, fz, 1.0, 0.8, 0.04, DARKGL, GT)
-  // a band of windows down each long side
-  for (const sx of [-1, 1]) for (let z = -hz + 3; z < hz - 2; z += 4) box(out, sx * (hx + 0.03), 2.6, z, 0.04, 0.6, 1.2, DARKGL, GT)
-}
 
 /**
  * THE HARD ROCK CAFE's frontage at Pier 39's entrance (OSM node 643445596 in Building Q, way/288396171; Commons "Hard Rock
@@ -1188,17 +1074,17 @@ export function hardRockFront(out: MeshBuilder, _fit: Fit): void {
   box(out, 0, 2.05, 0.14, W / 2 - 0.6, 1.05, 0.02, [0.2, 0.16, 0.12], GT)
   for (let x = -W / 2 + 0.6; x <= W / 2 - 0.5; x += 2.4) box(out, x, 2.05, 0.17, 0.06, 1.05, 0.03, WHITE, WT)
   box(out, 0, 3.35, 0.18, W / 2, 0.05, 0.04, WHITE, WT)
-  sign(out, { type: 'flat', text: 'Hard Rock Cafe', h: 0.6, face: 'script', colour: RED, lit: 'self' }, { x: -3.5, y: 3.8, z: 0.16, heading: 0 })
+  sign(out, { type: 'flat', w: 8.5, text: 'Hard Rock Cafe', h: 0.6, face: 'script', colour: RED, lit: 'self' }, { x: -3.5, y: 3.8, z: 0.16, heading: 0 })
   for (let k = 0; k < 16; k++) {
     const a0 = (k / 16) * Math.PI * 2, a1 = ((k + 1) / 16) * Math.PI * 2
     out.quad([[5, 3.8, 0.15], [5 + Math.cos(a0) * 0.75, 3.8 + Math.sin(a0) * 0.75, 0.15], [5 + Math.cos(a1) * 0.75, 3.8 + Math.sin(a1) * 0.75, 0.15], [5, 3.8, 0.15]],
       [0, 0, 1], UVQ, [0.85, 0.72, 0.4], MT)
   }
-  sign(out, { type: 'flat', text: 'Hard Rock', h: 0.22, face: 'script', colour: RED, lit: 'self' }, { x: 5, y: 3.8, z: 0.18, heading: 0 })
+  sign(out, { type: 'flat', w: 1.4, text: 'Hard Rock', h: 0.22, face: 'script', colour: RED, lit: 'self' }, { x: 5, y: 3.8, z: 0.18, heading: 0 })
   for (const x of [-6, 6]) {
     box(out, x, 8.0, -0.3, 2.7, 0.8, 0.1, WHITE, MT)
     box(out, x, 8.0, -0.18, 2.55, 0.7, 0.03, BLUE, MT)
-    sign(out, { type: 'flat', text: 'PIER 39', h: 0.95, face: 'didone', weight: 'bold', colour: [0.98, 0.98, 0.96], lit: 'front' }, { x, y: 8.0, z: -0.13, heading: 0 })
+    sign(out, { type: 'flat', w: 5.0, text: 'PIER 39', h: 0.95, face: 'didone', weight: 'bold', colour: [0.98, 0.98, 0.96], lit: 'front' }, { x, y: 8.0, z: -0.13, heading: 0 })
     box(out, x, 6.6, -0.4, 0.09, 0.65, 0.09, [0.3, 0.3, 0.3], MT)
   }
   for (const x of [-7, -2.5, 2.5, 7]) {
@@ -1319,8 +1205,8 @@ function boathouse(name: string, sub?: string): (out: MeshBuilder, fit: Fit) => 
     slab(out, e, e.L / 2, 1.95, 4.4, e.L - 1, 0.08, 0.1, BLUE, WT)
     for (let u = 0.6; u <= e.L - 0.5; u += 0.4) slab(out, e, u, 1.95, 3.5, 0.05, 0.9, 0.05, WHITE, WT)
     slab(out, e, e.L / 2, 0.08, 2.35, Math.min(5, e.L * 0.6), 0.55, 0.06, WHITE, WT)
-    signAt(out, e, e.L / 2, 2.62, 0.13, { type: 'flat', text: name, h: 0.3, face: sub ? 'script' : 'grotesque', weight: 'bold', colour: BLUE, lit: 'front' })
-    if (sub) signAt(out, e, e.L / 2, 2.25, 0.13, { type: 'flat', text: sub, h: 0.18, face: 'grotesque', weight: 'bold', colour: BLUE, lit: 'front' })
+    signAt(out, e, e.L / 2, 2.62, 0.13, { type: 'flat', w: Math.min(5, e.L * 0.6) - 0.4, text: name, h: 0.3, face: sub ? 'script' : 'grotesque', weight: 'bold', colour: BLUE, lit: 'front' })
+    if (sub) signAt(out, e, e.L / 2, 2.25, 0.13, { type: 'flat', w: Math.min(5, e.L * 0.6) - 0.4, text: sub, h: 0.18, face: 'grotesque', weight: 'bold', colour: BLUE, lit: 'front' })
     // the boat doors: two wide blue-framed doors under the board
     for (const d of [-1, 1]) {
       slab(out, e, e.L / 2 + d * 1.4, 0.04, 0, 2.4, 2.1, 0.06, WHITE, WT)
@@ -1328,6 +1214,677 @@ function boathouse(name: string, sub?: string): (out: MeshBuilder, fit: Fit) => 
       slab(out, e, e.L / 2 + d * 1.4, 0.09, 2.05, 2.4, 0.08, 0.04, BLUE, WT)
     }
   }
+}
+
+
+/* ================================================================================================================
+ * THE WATER SIDE OF JEFFERSON, building by building (audit of 2026-10-17, owner: "most of the buildings on the water
+ * side are white, low, and many have gabled roofs … more shoddy looking wood … every store is trying to get your
+ * attention"). Each builder names the Mapillary image it follows; the ledger is in the audit's scratch folder.
+ * ================================================================================================================ */
+
+const TT = surfaceTag('tile')
+
+/** the edge of `ring` whose outward normal points most nearly along (dx, dz), at least `min` long */
+function edgeToward(ring: P2[], dx: number, dz: number, min = 3): Edge {
+  let best = 0, score = -Infinity
+  for (let i = 0; i < ring.length; i++) {
+    const q = edgeAt(ring, i)
+    if (q.L < min) continue
+    const s = q.nx * dx + q.nz * dz
+    if (s > score) { score = s; best = i }
+  }
+  return edgeAt(ring, best)
+}
+
+/** the part of `ring` on the near side of the line across edge `e` at `u` — `keepLow` keeps u below it */
+function clipAcross(ring: P2[], e: Edge, u: number, keepLow: boolean): P2[] {
+  const p = on(e, u, 0, 0), s = keepLow ? 1 : -1
+  const cut = { ...e, a: { x: p[0], z: p[2] }, nx: e.tx * s, nz: e.tz * s }
+  return clipBehind(ring, cut, 0)
+}
+
+/** the indices of `ring`'s edges that are NOT pieces of the front `e` (for drawing a ground floor everywhere but there) */
+function offFront(ring: P2[], e: Edge): number[] {
+  return ring.map((_, i) => i).filter((i) => {
+    const q = edgeAt(ring, i)
+    const onLine = Math.abs((q.mid.x - e.a.x) * e.nx + (q.mid.z - e.a.z) * e.nz) < 1.5
+    return !(onLine && q.nx * e.nx + q.nz * e.nz > 0.9)
+  })
+}
+
+/** a striped awning (two colours alternating across it), its valance lettered */
+function stripedAwning(out: MeshBuilder, e: Edge, u: number, w: number, y: number, c1: Rgb, c2: Rgb, name: string, ink: Rgb, d = 1.5, face: SignSpec['face'] = 'grotesque'): void {
+  const n = Math.max(3, Math.round(w / 0.55))
+  for (let k = 0; k < n; k++) {
+    const u0 = u - w / 2 + (w * k) / n, u1 = u - w / 2 + (w * (k + 1)) / n
+    out.quad([on(e, u0, y + 0.75, 0.05), on(e, u1, y + 0.75, 0.05), on(e, u1, y, d), on(e, u0, y, d)], [e.nx * 0.6, 0.8, e.nz * 0.6], UVQ, k % 2 ? c2 : c1, WT)
+  }
+  slab(out, e, u, d, y - 0.4, w, 0.4, 0.04, c1, WT)
+  if (name) signAt(out, e, u, y - 0.2, d + 0.03, { type: 'flat', text: name, h: 0.2, w: w * 0.88, face, weight: 'bold', colour: ink, lit: 'front' })
+}
+
+/** a white gooseneck "barn" lamp on the wall at `u`, `y` */
+function barnLamp(out: MeshBuilder, e: Edge, u: number, y: number, c: Rgb = WHITE): void {
+  tube(out, on(e, u, y - 0.3, 0.02), on(e, u, y, 0.05), 0.025, 4, c, MT)
+  tube(out, on(e, u, y, 0.05), on(e, u, y + 0.1, 0.45), 0.025, 4, c, MT)
+  const h = on(e, u, y - 0.02, 0.55)
+  prism(out, h[0], h[2], h[1] - 0.14, h[1] + 0.06, 0.24, 8, c, MT, 0.06)
+  box(out, h[0], h[1] - 0.16, h[2], 0.07, 0.03, 0.07, WARM, EMIT)
+}
+
+/** a dark shop window with goods in it — a few bright blocks on shelves behind the glass */
+function goodsWindow(out: MeshBuilder, e: Edge, u: number, y0: number, w: number, h: number, seed: number): void {
+  slab(out, e, u, -0.25, y0, w, h, 0.05, [0.95, 0.9, 0.75], EMIT)
+  const C: Rgb[] = [[0.9, 0.2, 0.2], [0.2, 0.45, 0.85], [0.98, 0.8, 0.2], [0.2, 0.65, 0.4], [0.95, 0.5, 0.15], [0.85, 0.3, 0.6]]
+  for (let r = 0; r < 3; r++) for (let k = 0; k < Math.max(2, Math.round(w / 0.5)); k++) {
+    const uu = u - w / 2 + 0.25 + k * 0.5
+    if (uu > u + w / 2 - 0.2) break
+    slab(out, e, uu, -0.15, y0 + 0.1 + r * (h / 3), 0.38, h / 3 - 0.2, 0.12, C[(seed + r * 3 + k) % C.length], MT)
+  }
+  slab(out, e, u, 0.03, y0, w, h, 0.03, [0.32, 0.38, 0.42], GT)
+}
+
+/** a gabled shed on the fit's box: walls `E` high, ridge along local x (`ridgeX`) or z, eaves out `ov` */
+function gabledBox(out: MeshBuilder, hx: number, hz: number, E: number, rise: number, wall: Rgb, roof: Rgb, ridgeX: boolean, wallTag = WT, roofTag = MT, ov = 0.4): void {
+  box(out, 0, E / 2, 0, hx, E / 2, hz, wall, wallTag)
+  const R = E + rise
+  if (ridgeX) {
+    for (const sx of [-1, 1]) out.quad([[sx * hx, E, -hz], [sx * hx, E, hz], [sx * hx, R, 0], [sx * hx, R, 0]], [sx, 0, 0], UVQ, wall, wallTag)
+    for (const sz of [-1, 1]) out.quad([[-hx - ov, E - ov * rise / hz, sz * (hz + ov)], [hx + ov, E - ov * rise / hz, sz * (hz + ov)], [hx + ov, R + 0.05, 0], [-hx - ov, R + 0.05, 0]], [0, 0.8, sz * 0.6], UVQ, roof, roofTag)
+  } else {
+    for (const sz of [-1, 1]) out.quad([[-hx, E, sz * hz], [hx, E, sz * hz], [0, R, sz * hz], [0, R, sz * hz]], [0, 0, sz], UVQ, wall, wallTag)
+    for (const sx of [-1, 1]) out.quad([[sx * (hx + ov), E - ov * rise / hx, -hz - ov], [sx * (hx + ov), E - ov * rise / hx, hz + ov], [0, R + 0.05, hz + ov], [0, R + 0.05, -hz - ov]], [sx * 0.6, 0.8, 0], UVQ, roof, roofTag)
+  }
+}
+
+/** a low hipped roof over `ring` from `y`, rising `rise` to a ridge ring scaled by `k` toward the middle */
+function hipOver(out: MeshBuilder, ring: P2[], y: number, rise: number, c: Rgb, tag: number, ov = 0.5, k = 0.3): void {
+  let cx = 0, cz = 0
+  for (const q of ring) { cx += q.x; cz += q.z }
+  cx /= ring.length; cz /= ring.length
+  const eave = offsetRing(ring, ov)
+  const top = ring.map((q) => ({ x: cx + (q.x - cx) * k, z: cz + (q.z - cz) * k }))
+  for (let i = 0; i < eave.length; i++) {
+    const j = (i + 1) % eave.length
+    const mx = (eave[i].x + eave[j].x) / 2 - cx, mz = (eave[i].z + eave[j].z) / 2 - cz, ml = Math.hypot(mx, mz) || 1
+    out.quad([[eave[i].x, y, eave[i].z], [eave[j].x, y, eave[j].z], [top[j].x, y + rise, top[j].z], [top[i].x, y + rise, top[i].z]], [(mx / ml) * 0.6, 0.8, (mz / ml) * 0.6], UVQ, c, tag)
+  }
+  capPolygon(out, top, y + rise, c, tag)
+}
+
+/**
+ * CAPURRO'S, 498 Jefferson at the Hyde Street Pier lane (way/288391839; Mapillary 1588899552070570, Aug 2025): one tall
+ * storey of BARN-RED clapboard under a false front with stepped corners and a cream coping; CAPURRO'S in big raised
+ * cream-gold capitals with "Restaurant & Bar" in script under them and CUCINA SICILIANA · SERVING FRESH FISH SINCE 1946
+ * along a band; four windows and the door in frames painted like a Sicilian cart, a yellow patterned valance over each,
+ * white gooseneck barn lamps along the top, a round logo disc standing off the west corner; on the sidewalk the patio of
+ * painted planter boxes, a blue picket fence and yellow picnic tables. `front` 173: Jefferson is local −z, Hyde at −x.
+ */
+export function capurros(out: MeshBuilder, fit: Fit): void {
+  const RED: Rgb = [0.66, 0.11, 0.1], CREAM: Rgb = [0.95, 0.88, 0.62], YEL: Rgb = [0.98, 0.82, 0.18], BLUE: Rgb = [0.18, 0.45, 0.85]
+  const TEAL: Rgb = [0.15, 0.62, 0.62], DRED: Rgb = [0.42, 0.05, 0.05]
+  const ring = towerRing(fit)
+  const B = 5.4, H = 6.8
+  faceBand(out, ring, 0, B, { kind: 'blank', wall: RED, material: 'clapboard' })
+  capPolygon(out, ring, B, [0.42, 0.4, 0.4], MT)
+  const e = frontEdge(ring, facingFront(ring, 8)), L = e.L
+  const west = e.tx > 0 ? 0 : L, wd = e.tx > 0 ? 1 : -1          // u at the Hyde end, and the way east
+  const U = (d: number): number => west + wd * d                     // d metres east of the west corner
+  // the false front: red boards up to the coping, the corners stepping up, cream trim round it all
+  slab(out, e, L / 2, -0.05, B, L, H - B - 0.3, 0.3, RED, WT)
+  for (const s of [0, 1]) {
+    const cu = s ? L - 1.2 : 1.2
+    slab(out, e, cu, -0.05, H - 0.3, 2.4, 0.45, 0.3, RED, WT)
+    slab(out, e, cu, 0.0, H + 0.15, 2.6, 0.16, 0.42, CREAM, WT)
+    slab(out, e, cu > L / 2 ? L - 0.2 : 0.2, 0.08, 0, 0.4, H + 0.15, 0.2, CREAM, WT)   // the corner boards
+  }
+  slab(out, e, L / 2, 0.0, H - 0.4, L - 4.8, 0.14, 0.4, CREAM, WT)
+  slab(out, e, L / 2, 0.06, 3.85, L, 0.12, 0.12, CREAM, WT)                             // the band's rule
+  signAt(out, e, L / 2, H - 1.35, 0.12, { type: 'flat', text: "CAPURRO'S", h: 0.95, w: L * 0.62, face: 'slab', weight: 'bold', colour: CREAM, halo: DRED, lit: 'front', tracking: 0.04 })
+  signAt(out, e, L / 2 + 1.2, B - 0.9, 0.1, { type: 'flat', text: 'Restaurant & Bar', h: 0.4, w: L * 0.3, face: 'script', colour: [0.98, 0.85, 0.7], lit: 'front' })
+  signAt(out, e, L / 2, 4.25, 0.1, { type: 'flat', text: 'CUCINA SICILIANA · SERVING FRESH FISH SINCE 1946', h: 0.24, w: L * 0.82, face: 'grotesque', weight: 'bold', colour: CREAM, lit: 'front' })
+  // the windows and the door, their frames painted in cart colours, a yellow valance over each, fish between
+  const bays = [0.12, 0.3, 0.6, 0.8], door = 0.45
+  for (const [k, f] of bays.entries()) {
+    const u = U(f * L), w = Math.min(3.0, L * 0.15)
+    goodsWindow(out, e, u, 0.9, w, 1.9, k)
+    for (const [dy, hh] of [[0.8, 0.12], [2.8, 0.12]] as [number, number][]) slab(out, e, u, 0.06, dy, w + 0.3, hh, 0.08, [YEL, TEAL, BLUE, YEL][k], WT)
+    for (const s of [-1, 1]) slab(out, e, u + s * (w / 2 + 0.08), 0.06, 0.8, 0.16, 2.1, 0.08, [TEAL, YEL, YEL, BLUE][k], WT)
+    stripedAwning(out, e, u, w + 0.4, 3.1, YEL, [0.9, 0.3, 0.15], '', DRED, 0.6)
+    const fu = u + (k % 2 ? 1 : -1) * (w / 2 + 0.55)
+    const fp = on(e, fu, 2.2, 0.08)
+    lozenge(out, fp, [e.tx, 0, e.tz], [0, 1, 0], [e.nx, 0, e.nz], 0.42, 0.16, 0.04, [0.7, 0.74, 0.78], MT, 10)
+  }
+  const du = U(door * L)
+  slab(out, e, du, 0.04, 0, 2.2, 2.6, 0.05, [0.2, 0.14, 0.1], WT)
+  slab(out, e, du, 0.07, 0.15, 1.7, 2.2, 0.03, [0.3, 0.36, 0.4], GT)
+  slab(out, e, du, 0.06, 2.6, 2.6, 0.25, 0.08, YEL, WT)
+  for (let u = 1.6; u < L - 1; u += 2.6) barnLamp(out, e, u, 3.55)
+  // the logo disc, standing off the west corner on a bracket: a cream disc in a red rim, both faces
+  const lc = on(e, west, 4.7, 0.9)
+  tube(out, on(e, west, 5.4, 0), [lc[0], 5.4, lc[2]], 0.04, 4, [0.2, 0.2, 0.2], MT)
+  const hd = e.heading + Math.PI / 2
+  lozenge(out, lc, [e.nx, 0, e.nz], [0, 1, 0], [Math.sin(hd), 0, Math.cos(hd)], 0.72, 0.72, 0.12, [0.66, 0.1, 0.1], MT, 20)
+  sign(out, { type: 'flat', text: "CAPURRO'S", h: 0.12, face: 'slab', weight: 'bold', colour: [0.3, 0.05, 0.05], panel: CREAM, lit: 'front', ring: { below: 'RESTAURANT & BAR' }, twoSided: true },
+    { x: lc[0], y: lc[1], z: lc[2], heading: hd })
+  // the lane (Hyde Street Pier) face: the red board and its name again (Mapillary 1126088902792319)
+  const lane = edgeToward(ring, -e.tx * wd, -e.tz * wd, 4)
+  slab(out, lane, lane.L / 2, 0.02, B - 0.4, lane.L - 0.4, 1.6, 0.12, RED, WT)
+  signAt(out, lane, lane.L / 2, B + 0.35, 0.1, { type: 'flat', text: "CAPURRO'S", h: 0.75, w: lane.L * 0.7, face: 'slab', weight: 'bold', colour: CREAM, halo: DRED, lit: 'front' })
+  for (let u = 1.5; u < lane.L - 1; u += 2.6) barnLamp(out, lane, u, 3.55)
+  // the patio on the sidewalk: painted planter boxes and a blue picket fence 2.6 m out, yellow picnic tables inside
+  const PC: Rgb[] = [[0.2, 0.4, 0.85], [0.95, 0.75, 0.15], [0.85, 0.2, 0.2], [0.15, 0.6, 0.55]]
+  for (let u = 0.8, k = 0; u < L - 0.8; u += 2.2, k++) {
+    if (Math.abs(u - du) < 1.6) continue
+    if (k % 2 === 0) {
+      slab(out, e, u, 2.6, 0, 1.6, 0.6, 0.55, PC[k % PC.length], WT)
+      const g = on(e, u, 0.6, 2.6)
+      prism(out, g[0], g[2], 0.6, 1.05, 0.55, 6, [0.25, 0.5, 0.22], FT, 0.25)
+    } else {
+      slab(out, e, u, 2.6, 0, 2.0, 0.1, 0.06, BLUE, WT)
+      for (let p = -0.9; p <= 0.9; p += 0.3) slab(out, e, u + p, 2.6, 0, 0.09, 1.0, 0.05, BLUE, WT)
+      slab(out, e, u, 2.6, 0.75, 2.0, 0.09, 0.06, BLUE, WT)
+      slab(out, e, u, 1.45, 0.7, 1.6, 0.06, 0.75, YEL, WT)                  // a picnic table
+      for (const s of [-1, 1]) slab(out, e, u, 1.45 + s * 0.6, 0.42, 1.6, 0.05, 0.25, YEL, WT)
+      for (const s of [-0.6, 0.6]) slab(out, e, u + s, 1.45, 0, 0.08, 0.7, 0.6, YEL, WT)
+    }
+  }
+}
+
+/**
+ * 490 JEFFERSON (way/288391830; Mapillary 700777169642818, 3765812980391910, Aug 2025): the empty Port building next to
+ * Capurro's — grey-beige clapboard, a two-storey MISSION FALSE FRONT whose parapet swells into a round hump over the
+ * middle between stepped shoulders, a row of little clerestory windows under it, and a one-storey front of panelled
+ * boards over three open garage bays (LEASE OPPORTUNITIES). `front` 173: Jefferson is local −z.
+ */
+export function jefferson490(out: MeshBuilder, fit: Fit): void {
+  const W: Rgb = [0.74, 0.72, 0.66], TR: Rgb = [0.84, 0.82, 0.77], IN: Rgb = [0.8, 0.78, 0.73]
+  const ring = towerRing(fit)
+  const H = 7.4
+  const e = frontEdge(ring, facingFront(ring, 6)), L = e.L
+  faceBand(out, ring, 0, 4.0, { kind: 'blank', wall: W, material: 'clapboard' }, offFront(ring, e))
+  faceBand(out, ring, 4.0, H, { kind: 'blank', wall: W, material: 'clapboard' })
+  capPolygon(out, ring, H, [0.5, 0.5, 0.5], MT)
+  // the one-storey front: three open bays recessed 2.4 m, panelled boards over them, a cornice
+  const n = 3, bw = (L - 1.2) / n
+  for (let k = 0; k < n; k++) {
+    const u = 0.6 + bw * (k + 0.5)
+    slab(out, e, u, -1.25, 0, bw - 0.5, 4.0, 2.4, [0.22, 0.21, 0.2], CT)          // the hollow of the bay
+    slab(out, e, u, -2.45, 0.02, bw - 0.6, 3.9, 0.06, IN, WT)                       // its back wall, a door in it
+    slab(out, e, u, -2.38, 0, 1.6, 2.4, 0.05, [0.92, 0.9, 0.86], WT)
+  }
+  for (let k = 0; k <= n; k++) slab(out, e, 0.6 + bw * k, 0.05, 0, 0.45, 4.1, 0.3, TR, WT)
+  for (let k = 0; k < 4; k++) slab(out, e, 0.6 + ((L - 1.2) * (k + 0.5)) / 4, 0.1, 4.4, (L - 1.2) / 4 - 0.3, 0.9, 0.06, IN, WT)
+  slab(out, e, L / 2, 0.2, 5.45, L, 0.2, 0.5, TR, WT)
+  signAt(out, e, 0.6 + bw * 2 + 0.08, 2.3, 0.22, { type: 'flat', text: '490', h: 0.28, w: 0.4, face: 'grotesque', weight: 'bold', colour: [0.25, 0.25, 0.25], lit: 'none', vertical: true })
+  signAt(out, e, L / 2, 4.0, 0.12, { type: 'flat', text: 'LEASE OPPORTUNITIES', h: 0.1, w: 1.2, face: 'grotesque', weight: 'bold', colour: [0.15, 0.3, 0.6], panel: [1, 1, 1], lit: 'none' })
+  // the clerestory windows, and the Mission parapet: shoulders stepping up to a round hump in the middle
+  for (let k = 0; k < 5; k++) slab(out, e, L * (0.2 + k * 0.15), 0.04, 6.3, 1.3, 0.35, 0.05, DARKGL, GT)
+  slab(out, e, L / 2, 0.0, H, L - 0.4, 0.8, 0.3, W, WT)
+  for (const s of [-1, 1]) slab(out, e, L / 2 + s * (L / 2 - 0.6), 0.0, H, 1.2, 1.3, 0.34, W, WT)
+  for (const s of [-1, 1]) slab(out, e, L / 2 + s * 2.8, 0.0, H, 1.6, 1.2, 0.32, W, WT)
+  const R = Math.min(2.6, L * 0.17), cy = H + 0.8
+  for (let k = 0; k < 12; k++) {
+    const a0 = (k / 12) * Math.PI, a1 = ((k + 1) / 12) * Math.PI
+    const P = (a: number, r: number, o: number): V3 => on(e, L / 2 + Math.cos(a) * r, cy + Math.sin(a) * r * 0.75, o)
+    out.quad([P(a0, 0, 0.02), P(a0, R, 0.02), P(a1, R, 0.02), P(a1, 0, 0.02)], [e.nx, 0, e.nz], UVQ, W, WT)
+    out.quad([P(a0, 0, -0.3), P(a1, 0, -0.3), P(a1, R, -0.3), P(a0, R, -0.3)], [-e.nx, 0, -e.nz], UVQ, W, WT)
+    tube(out, P(a0, R + 0.06, 0.05), P(a1, R + 0.06, 0.05), 0.09, 4, TR, WT)
+  }
+  slab(out, e, L / 2, 0.06, cy - 0.2, L - 0.4, 0.14, 0.12, TR, WT)
+}
+
+/**
+ * ALIOTO–LAZIO FISH CO., 440 Jefferson (way/229326475; Mapillary 1348062383560287, Aug 2025): the working fish market — a
+ * plain white two-storey block, F. ALIOTO FISH CO. small over ALIOTO - LAZIO in red across the front, a steel-sashed
+ * window above, two big open bays framed in blue full of crates and yellow signs. `front` 173: Jefferson is local −z.
+ */
+export function aliotoLazio(out: MeshBuilder, fit: Fit): void {
+  const W: Rgb = [0.95, 0.95, 0.93], BLUE: Rgb = [0.16, 0.32, 0.66], RED: Rgb = [0.75, 0.12, 0.12], YEL: Rgb = [0.98, 0.85, 0.15]
+  const ring = towerRing(fit)
+  const H = 8
+  faceBand(out, ring, 0, H, { kind: 'blank', wall: W, material: 'stucco' })
+  faceBand(out, offsetRing(ring, 0.08), H - 0.35, H + 0.4, { kind: 'blank', wall: W, material: 'stucco' })
+  capPolygon(out, ring, H, [0.5, 0.5, 0.5], CT)
+  const e = frontEdge(ring, facingFront(ring, 6)), L = e.L
+  const bw = Math.min(4.2, (L - 3) / 2.4)
+  for (const f of [0.38, 0.72]) {
+    const u = L * f
+    slab(out, e, u, -1.2, 0, bw, 3.6, 2.2, [0.12, 0.12, 0.13], CT)
+    goodsWindow(out, e, u, 0.2, bw - 0.4, 2.6, Math.round(f * 10))
+    for (const s of [-1, 1]) slab(out, e, u + s * (bw / 2 + 0.12), 0.04, 0, 0.25, 3.8, 0.12, BLUE, MT)
+    slab(out, e, u, 0.04, 3.65, bw + 0.5, 0.22, 0.12, BLUE, MT)
+    slab(out, e, u, 0.12, 3.0, bw * 0.55, 0.5, 0.05, YEL, MT)
+    signAt(out, e, u, 3.25, 0.16, { type: 'flat', text: f < 0.5 ? 'FRESH CRAB' : 'LIVE CRAB', h: 0.2, w: bw * 0.5, face: 'block', colour: RED, lit: 'front' })
+  }
+  slab(out, e, L * 0.92, 0.03, 0, 1.0, 2.2, 0.04, [0.4, 0.42, 0.45], MT)
+  signAt(out, e, L * 0.55, 5.1, 0.06, { type: 'flat', text: 'F. ALIOTO FISH CO.', h: 0.22, w: L * 0.4, face: 'grotesque', weight: 'bold', colour: [0.25, 0.25, 0.28], lit: 'front' })
+  signAt(out, e, L * 0.55, 4.45, 0.06, { type: 'flat', text: 'ALIOTO - LAZIO', h: 0.5, w: L * 0.6, face: 'grotesque', weight: 'bold', colour: RED, lit: 'front', tracking: 0.08 })
+  gridWindow(out, e, L * 0.75, 5.6, 2.0, 1.4, 4, 3, [0.25, 0.27, 0.28])
+}
+
+/**
+ * THE JEFFERSON & TAYLOR CORNER BLOCK (way/103339436 — NOT Alioto's, which is the next way north on Taylor; Mapillary
+ * 1280197440176160, 2217044922129857, 958597956412771 (Aug 2025), 1048502846417659, 205306128566845 (Jun 2022)):
+ *  · TARANTINO'S, the west two-thirds on Jefferson: two storeys of pale grey stucco under a low hipped roof, a teal-green
+ *    ground floor behind a RED-BROWN TIMBER PERGOLA standing out over the sidewalk, green awnings (Tarantino's, FINE WINE
+ *    BEER COCKTAILS, DUNGENESS CRAB est. 1946), and on the roof its tall T sign — a green "Tarantino's" board over a
+ *    vertical RESTAURANT blade on a steel truss;
+ *  · GUARDINO'S on the corner: a one-storey white stall under a grey shingle pent roof on posts wrapping the corner, a
+ *    white parapet box over it with GUARDINO'S in blue on both streets;
+ *  · up Taylor, the crab stands under their awnings: a green one with the crab, SABELLA & LA TORRE (cream parapet board,
+ *    navy awning), NICK'S LIGHTHOUSE (maroon awning, the LIGHTHOUSE board painted above), blue-checked tables out front.
+ * `front` 171: Jefferson is local −z; Taylor is the +x end.
+ */
+export function taylorCorner(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.78, 0.77, 0.74], TEALG: Rgb = [0.22, 0.42, 0.38], GREEN: Rgb = [0.05, 0.36, 0.26], TIMBER: Rgb = [0.55, 0.25, 0.18]
+  const SH: Rgb = [0.34, 0.34, 0.35], NAVY: Rgb = [0.1, 0.16, 0.42], MAROON: Rgb = [0.45, 0.1, 0.12], CREAMB: Rgb = [0.93, 0.9, 0.78], GBLUE: Rgb = [0.12, 0.45, 0.78]
+  const ring = towerRing(fit)
+  const e = frontEdge(ring, facingFront(ring, 10)), L = e.L
+  const tay = e.tx > 0 ? L : 0, dir = e.tx > 0 ? -1 : 1                       // u at the Taylor corner, and the way west
+  const U = (d: number): number => tay + dir * d
+  const GW = 9                                                                 // Guardino's frontage on each street
+  // the one-storey stalls everywhere first: white boards, 4.4 m, a flat roof
+  faceBand(out, ring, 0, 4.4, { kind: 'bands', wall: WHITE, glass: [0.3, 0.33, 0.35], floor: 4.4, solid: 0.45, material: 'clapboard' })
+  capPolygon(out, ring, 4.4, [0.45, 0.45, 0.45], MT)
+  // TARANTINO'S: the part of the block west of Guardino's, back to 24 m from Jefferson
+  const tRing = clipBehind(clipAcross(ring, e, U(GW + 1), dir > 0 ? false : true), { ...e, a: on2(e, 0, -24), nx: -e.nx, nz: -e.nz }, 0)
+  if (tRing.length >= 3) {
+    faceBand(out, tRing, 0, 3.6, { kind: 'punched', wall: TEALG, glass: DARKGL, floor: 3.6, pitch: 3.4, solid: 0.45, material: 'clapboard' })
+    faceBand(out, tRing, 3.6, 7.6, { kind: 'bands', wall: GREY, glass: [0.35, 0.38, 0.4], floor: 4, solid: 0.55, material: 'stucco' })
+    hipOver(out, tRing, 7.6, 1.6, [0.52, 0.52, 0.5], MT, 0.7, 0.45)
+  }
+  const t0 = GW + 1.5, t1 = L - 0.5                                            // Tarantino's run along Jefferson (metres from Taylor)
+  // the pergola: posts 2.2 m out every ~4.5 m, two beams, rafters back to the wall
+  for (let d = t0; d <= t1 + 0.01; d += (t1 - t0) / Math.max(1, Math.round((t1 - t0) / 4.5))) {
+    slab(out, e, U(d), 2.2, 0, 0.32, 6.6, 0.32, TIMBER, WT)
+    slab(out, e, U(d), 1.1, 6.3, 0.18, 0.28, 2.3, TIMBER, WT)
+  }
+  for (const y of [5.4, 6.4]) slab(out, e, U((t0 + t1) / 2), 2.2, y, t1 - t0 + 0.4, 0.3, 0.26, TIMBER, WT)
+  for (let d = t0; d < t1; d += 1.1) slab(out, e, U(d), 1.2, 6.7, 0.1, 0.16, 2.4, TIMBER, WT)
+  // its awnings under the pergola
+  const aw: [string, number][] = [["Tarantino's", 0.25], ['FINE WINE · BEER · COCKTAILS', 0.55], ['DUNGENESS CRAB est. 1946', 0.82]]
+  for (const [txt, f] of aw) {
+    const u = U(t0 + (t1 - t0) * f), w = Math.min(6.5, (t1 - t0) * 0.28)
+    awning(out, e, u, w, 3.0, GREEN, txt, WHITE, 1.3)
+  }
+  signAt(out, e, U(t0 + (t1 - t0) * 0.25), 3.45, 0.75, { type: 'flat', text: "Tarantino's", h: 0.38, w: 4.5, face: 'script', colour: WHITE, lit: 'front' })
+  // the T sign on the roof: a steel lattice mast, the vertical RESTAURANT blade, the green name board across the top
+  const m = on(e, U(t0 + (t1 - t0) * 0.3), 0, -12)
+  for (const [dx, dz] of [[-0.6, -0.6], [0.6, -0.6], [0.6, 0.6], [-0.6, 0.6]]) tube(out, [m[0] + dx, 8.4, m[2] + dz], [m[0] + dx * 0.4, 14.5, m[2] + dz * 0.4], 0.06, 4, [0.6, 0.6, 0.62], MT)
+  for (let y = 9; y < 14.5; y += 1.4) tube(out, [m[0] - 0.55, y, m[2] - 0.55], [m[0] + 0.55, y + 0.7, m[2] + 0.55], 0.03, 4, [0.6, 0.6, 0.62], MT)
+  const blade = { ...e, a: { x: m[0], z: m[2] } }
+  slab(out, blade, 0, 0.7, 10.0, 1.1, 4.6, 0.25, [0.9, 0.9, 0.86], MT)
+  sign(out, { type: 'flat', text: 'RESTAURANT', h: 0.34, w: 4.2, face: 'grotesque', weight: 'bold', colour: [0.1, 0.35, 0.3], lit: 'front', vertical: true },
+    { x: m[0] + e.nx * 0.84, y: 12.3, z: m[2] + e.nz * 0.84, heading: e.heading })
+  slab(out, blade, 0, 0.7, 14.6, 5.2, 1.5, 0.3, [0.2, 0.55, 0.45], MT)
+  slab(out, blade, 0, 0.86, 14.75, 4.9, 1.2, 0.03, [0.92, 0.94, 0.9], MT)
+  sign(out, { type: 'flat', text: "Tarantino's", h: 0.6, w: 4.6, face: 'script', colour: [0.1, 0.4, 0.32], lit: 'self', twoSided: true },
+    { x: m[0] + e.nx * 0.9, y: 15.35, z: m[2] + e.nz * 0.9, heading: e.heading })
+  // GUARDINO'S: the pent roof on posts round the corner, the parapet box over it, its name on both streets
+  const tf = edgeToward(ring, e.tx * -dir, e.tz * -dir, 6)                     // Taylor's face
+  const tc = (tf.a.x - (e.a.x + e.tx * tay)) * tf.tx + (tf.a.z - (e.a.z + e.tz * tay)) * tf.tz   // corner's u on Taylor (negated)
+  const tdir = Math.abs(tc) < 2 ? 1 : -1, t0u = Math.abs(tc) < 2 ? 0 : tf.L      // Taylor's u at the corner, and its way north
+  const T = (d: number): number => t0u + tdir * d
+  for (const [q, uu, dd] of [[e, U(GW / 2), 1], [tf, T(GW / 2), tdir]] as [Edge, number, number][]) {
+    void dd
+    out.quad([on(q, uu - GW / 2 - 0.1, 3.9, 0.05), on(q, uu + GW / 2 + 0.1, 3.9, 0.05), on(q, uu + GW / 2 + 0.1, 3.0, 2.3), on(q, uu - GW / 2 - 0.1, 3.0, 2.3)], [q.nx * 0.5, 0.85, q.nz * 0.5], UVQ, SH, TT)
+    slab(out, q, uu, 2.3, 2.9, GW + 0.2, 0.14, 0.12, WHITE, WT)
+    for (let k = 0; k <= 3; k++) slab(out, q, uu - GW / 2 + (GW * k) / 3, 2.2, 0, 0.2, 3.0, 0.2, [0.4, 0.33, 0.25], WT)
+    slab(out, q, uu, -1.0, 4.4, GW, 1.4, 0.2, WHITE, WT)
+    signAt(out, q, uu, 5.1, -0.87, { type: 'flat', text: "GUARDINO'S", h: 0.75, w: GW - 1, face: 'block', colour: GBLUE, halo: [0.95, 0.95, 0.98], lit: 'front' })
+    goodsWindow(out, q, uu, 0.6, GW * 0.5, 2.0, 3)
+  }
+  // up Taylor: the crab stands
+  const stands: [string, Rgb, Rgb, string | null, Rgb][] = [
+    ["CRAB STATION · SEAFOOD", GREEN, WHITE, null, WHITE],
+    ['Sabella & LaTorre · Since 1927', NAVY, WHITE, 'SABELLA ⁄ LA TORRE', CREAMB],
+    ["NICK'S LIGHTHOUSE · FRESH FISH · PASTA", MAROON, WHITE, 'LIGHTHOUSE', [0.55, 0.72, 0.85]],
+  ]
+  const run = Math.max(6, tf.L - GW - 0.5), sw = run / stands.length
+  stands.forEach(([name, c, ink, board, bc], k) => {
+    const uu = T(GW + 0.3 + sw * (k + 0.5))
+    goodsWindow(out, tf, uu, 0.8, sw - 1.6, 1.6, k + 4)
+    slab(out, tf, uu, 0.6, 0.85, sw - 1.4, 0.15, 1.0, [0.85, 0.87, 0.9], MT)            // the counter / ice bed
+    awning(out, tf, uu, sw - 0.4, 3.2, c, name, ink, 1.8)
+    if (board) {
+      slab(out, tf, uu, 0.15, 4.4, sw - 0.6, 1.1, 0.12, bc, WT)
+      signAt(out, tf, uu, 4.95, 0.23, { type: 'flat', text: board, h: 0.5, w: sw - 1.2, face: k === 1 ? 'grotesque' : 'didone', weight: 'bold', colour: k === 1 ? [0.15, 0.15, 0.2] : MAROON, lit: 'front' })
+    }
+    // blue-checked tables on the sidewalk
+    for (const s of [-1, 1]) {
+      const p = on(tf, uu + s * sw * 0.25, 0.75, 3.0)
+      box(out, p[0], 0.75, p[2], 0.45, 0.03, 0.45, [0.3, 0.5, 0.85], WT)
+      tube(out, [p[0], 0, p[2]], [p[0], 0.73, p[2]], 0.03, 4, [0.2, 0.2, 0.2], MT)
+    }
+  })
+}
+
+/** a point `o` out from edge `e`'s first corner along its normal, `u` along it, as a P2 */
+function on2(e: Edge, u: number, o: number): P2 { return { x: e.a.x + e.tx * u + e.nx * o, z: e.a.z + e.tz * u + e.nz * o } }
+
+/**
+ * ALIOTO'S No. 8, on Taylor between Nick's Lighthouse and the Grotto (way/103339444; Mapillary 665751065030692,
+ * 668559711440485 (Jun 2022), 1526843651633790 (Aug 2025)): three storeys of TERRACOTTA-ORANGE stucco; at the Jefferson
+ * end a tall plain stair tower with the big turquoise 8 on it; the dining floor above in a band of dark glass under a
+ * deep brown bracketed eave, white half-moon valances in its windows; on the roof edge the turquoise ALIOTO'S board and
+ * behind it the green neon "Alioto's" script sign; on the street a long dark-green awning "ALIOTO'S since 1925", a little
+ * terracotta pediment over the door and a steel stair up the tower's side. Closed 2020 and demolished January 2026 for
+ * Alioto's Plaza (opened 2 September 2026) — modelled as it stood, the owner to decide. `front` 90: Taylor is local −z,
+ * north the +x end.
+ */
+export function aliotos8(out: MeshBuilder, fit: Fit): void {
+  const TC: Rgb = [0.66, 0.37, 0.28], TCD: Rgb = [0.55, 0.3, 0.23], TURQ: Rgb = [0.25, 0.68, 0.66], BROWN: Rgb = [0.3, 0.2, 0.14], GREEN: Rgb = [0.08, 0.26, 0.18]
+  const ring = towerRing(fit)
+  const H = 11
+  faceBand(out, ring, 0, 3.6, { kind: 'blank', wall: TCD, material: 'stucco' })
+  faceBand(out, ring, 3.6, H, { kind: 'punched', wall: TC, glass: DARKGL, floor: (H - 3.6) / 2, pitch: 3.2, solid: 0.55, material: 'stucco' })
+  capPolygon(out, ring, H, [0.45, 0.42, 0.4], CT)
+  const e = frontEdge(ring, facingFront(ring, 8)), L = e.L
+  const south = e.tx > 0 ? 0 : L, nd = e.tx > 0 ? 1 : -1
+  const N = (d: number): number => south + nd * d
+  // the stair tower at the south end, its 8 facing Taylor and Jefferson
+  const TW = 6
+  const tp = on(e, N(TW / 2), 0, -4)
+  boxAlong(out, tp[0], 7.4, tp[2], TW / 2, 7.4, 4, e.heading, TC, ST)
+  signAt(out, e, N(TW / 2), 11.0, 0.06, { type: 'flat', text: '8', h: 3.4, w: 3.6, face: 'grotesque', weight: 'bold', colour: TURQ, halo: [0.1, 0.25, 0.25], lit: 'self' })
+  const sth = edgeToward(ring, -e.tx * nd, -e.tz * nd, 3)
+  signAt(out, sth, sth.L / 2, 11.0, 4 + 0.06 - Math.min(4, sth.L / 2), { type: 'flat', text: '8', h: 3.0, w: 3.2, face: 'grotesque', weight: 'bold', colour: TURQ, lit: 'self' })
+  // the steel stair zigzagging up the tower's north side, on the Taylor face
+  for (let k = 0; k < 3; k++) {
+    const y0 = 3.6 + k * 2.4
+    tube(out, on(e, N(TW + 0.3 + (k % 2 ? 3 : 0)), y0, 0.6), on(e, N(TW + 0.3 + (k % 2 ? 0 : 3)), y0 + 2.4, 0.6), 0.05, 4, [0.25, 0.25, 0.27], MT)
+  }
+  // the dining floor: a band of dark glass between terracotta mullions, white half-moon valances, the brown bracketed eave
+  const g0 = TW + 0.5, g1 = L - 0.5
+  slab(out, e, N((g0 + g1) / 2), 0.04, 6.3, g1 - g0, 3.4, 0.05, DARKGL, GT)
+  for (let d = g0; d <= g1 + 0.01; d += (g1 - g0) / Math.max(1, Math.round((g1 - g0) / 2.4))) slab(out, e, N(d), 0.1, 6.3, 0.3, 3.4, 0.16, TC, ST)
+  for (let d = g0 + 1.2; d < g1; d += 2.4) {
+    for (let s = 0; s < 6; s++) {
+      const a0 = (s / 6) * Math.PI, a1 = ((s + 1) / 6) * Math.PI, c = on(e, N(d), 9.6, 0.12)
+      const P = (a: number): V3 => [c[0] + e.tx * nd * Math.cos(a) * 1.0, 9.6 - Math.sin(a) * 0.7, c[2] + e.tz * nd * Math.cos(a) * 1.0]
+      out.quad([c, P(a0), P(a1), c], [e.nx, 0, e.nz], UVQ, [0.96, 0.95, 0.92], WT)
+    }
+  }
+  slab(out, e, N((g0 + g1) / 2), 0.7, 9.8, g1 - g0 + 0.6, 0.45, 1.4, BROWN, WT)
+  for (let d = g0; d <= g1; d += 1.6) slab(out, e, N(d), 0.55, 9.3, 0.18, 0.5, 1.0, BROWN, WT)
+  // the roof board on the Taylor edge, and the green neon script behind
+  slab(out, e, N((g0 + g1) / 2), 0.1, H, Math.min(13, g1 - g0), 1.7, 0.15, TURQ, MT)
+  signAt(out, e, N((g0 + g1) / 2), H + 0.85, 0.2, { type: 'flat', text: "ALIOTO'S", h: 1.15, w: Math.min(12, g1 - g0 - 1), face: 'didone', weight: 'bold', colour: [0.08, 0.2, 0.2], lit: 'front', tracking: 0.12 })
+  const ns = on(e, N(L * 0.45), 0, -10)
+  const sb = { ...sth, a: { x: ns[0] - sth.tx * 4, z: ns[2] - sth.tz * 4 } }
+  for (const s of [-2.5, 2.5]) tube(out, on(sb, 4 + s, H, -0.4), on(sb, 4 + s, H + 3.0, 0), 0.06, 4, [0.4, 0.4, 0.42], MT)
+  lozenge(out, on(sb, 4, H + 2.6, 0), [sb.tx, 0, sb.tz], [0, 1, 0], [sb.nx, 0, sb.nz], 4.2, 1.1, 0.2, [0.45, 0.72, 0.55], MT, 18)
+  signAt(out, sb, 4, H + 2.6, 0.12, { type: 'flat', text: "Alioto's", h: 0.9, w: 6.6, face: 'script', colour: [0.4, 1.0, 0.55], halo: GREEN, lit: 'self' })
+  // the street: the green awning along Taylor, the terracotta pediment over the door
+  awning(out, e, N((g0 + L * 0.65) / 2), L * 0.65 - g0, 3.0, GREEN, '', WHITE, 1.4)
+  signAt(out, e, N((g0 + L * 0.65) / 2), 3.4, 0.8, { type: 'flat', text: "ALIOTO'S", h: 0.42, w: 5, face: 'roman', colour: [0.95, 0.94, 0.88], lit: 'front', tracking: 0.08 })
+  signAt(out, e, N((g0 + L * 0.65) / 2), 2.95, 1.2, { type: 'flat', text: 'since 1925', h: 0.2, w: 3, face: 'roman', colour: [0.95, 0.94, 0.88], lit: 'front' })
+  const pu = N(L * 0.8)
+  slab(out, e, pu, 0.6, 2.7, 3.6, 1.0, 1.2, TC, ST)
+  for (const s of [-1, 1]) out.quad([on(e, pu - 1.9, 3.7, 1.25 + (s > 0 ? 0 : -1.2)), on(e, pu + 1.9, 3.7, 1.25 + (s > 0 ? 0 : -1.2)), on(e, pu, 5.1, 1.25 + (s > 0 ? 0 : -1.2)), on(e, pu, 5.1, 1.25 + (s > 0 ? 0 : -1.2))], [e.nx * s, 0, e.nz * s], UVQ, TC, ST)
+  awning(out, e, pu, 3.4, 2.6, GREEN, 'CRAB STAND', WHITE, 1.6)
+}
+
+/**
+ * THE FRANCISCAN CRAB RESTAURANT, Pier 43½ (way/288472567; Mapillary 1190184554941387, 190325623495572, 1805446189820665,
+ * Jun 2022, and two owner photos 2026-10-17): white STREAMLINE MODERNE. At the west, a two-storey ROUNDED PAVILION — a
+ * curved wall of tall dark glass between white tapering fins under a deep oversailing roof with three thin dark-blue
+ * speed lines on its fascia and a row of blue seagull cut-outs on the edge; a royal-blue base and the Pier 43½ shop with
+ * red-framed windows under a scalloped canopy. Out to the street the ROUNDED CORNER TOWER: a white band of round
+ * PORTHOLES with "Franciscan Crab Restaurant" in script, teal glass between white columns over it, a rounded balcony of
+ * three white speed-line rails, and a crown of stacked white rings. East of it the tall plain parapet wall with its
+ * stepped coping: FRANCISCAN in big dark capitals, CRAB RESTAURANT in red under it, the crab-and-mermaid emblem, three
+ * wavy lines; below, the black canopy over Frankie's / Pier 43 and WORLD FAMOUS FISHWICH, orange bollards at the kerb.
+ * `front` 180: the Embarcadero is local −z.
+ */
+export function franciscanCrab(out: MeshBuilder, fit: Fit): void {
+  const W: Rgb = [0.96, 0.96, 0.95], NAVY: Rgb = [0.12, 0.18, 0.4], TEAL: Rgb = [0.18, 0.62, 0.7], RBLUE: Rgb = [0.15, 0.3, 0.75], RED: Rgb = [0.8, 0.12, 0.1]
+  const DGR: Rgb = [0.24, 0.25, 0.27], BLACK: Rgb = [0.08, 0.08, 0.09]
+  const ring = towerRing(fit)
+  // the tower: the ring's corner standing furthest out toward the street
+  let ti = 0
+  for (let i = 0; i < ring.length; i++) if (ring[i].z < ring[ti].z) ti = i
+  const tq = ring[ti]
+  const e = frontEdge(ring, facingFront(ring, 8)), L = e.L
+  const tu = (tq.x - e.a.x) * e.tx + (tq.z - e.a.z) * e.tz
+  const wEnd = tu < L / 2 ? 0 : L, wd = tu < L / 2 ? 1 : -1                     // the pavilion's end, and the way east
+  const split = Math.abs(tu - wEnd) + 3                                         // pavilion to the west of here, parapet east
+  // the whole: white walls to 4.2 (the shops), then the two parts above
+  faceBand(out, ring, 0, 0.7, { kind: 'blank', wall: RBLUE, material: 'stucco' })
+  faceBand(out, ring, 0.7, 4.2, { kind: 'curtain', wall: W, glass: [0.2, 0.22, 0.25], pitch: 2.4, material: 'stucco' })
+  const west = clipAcross(ring, e, wEnd + wd * split, wd > 0)
+  const east = clipAcross(ring, e, wEnd + wd * split, wd < 0)
+  if (west.length >= 3) {
+    faceBand(out, west, 4.2, 8.2, { kind: 'fins', wall: W, glass: [0.12, 0.15, 0.2], floor: 4, pitch: 2.2, solid: 0.2, depth: 0.7, material: 'stucco' })
+    const lip = offsetRing(west, 1.1)
+    faceBand(out, lip, 8.2, 9.0, { kind: 'blank', wall: W, material: 'stucco' })
+    for (const y of [8.35, 8.6, 8.85]) faceBand(out, offsetRing(west, 1.13), y - 0.05, y, { kind: 'blank', wall: NAVY, material: 'metal' })
+    capPolygon(out, lip, 9.0, [0.85, 0.85, 0.83], CT)
+    capPolygon(out, lip, 8.2, W, CT)
+    // the seagulls along the roof edge: flat blue cut-outs, wings up
+    for (let i = 0; i < lip.length; i++) {
+      const q = edgeAt(lip, i)
+      for (let u = 1; u < q.L - 0.5; u += 3) {
+        const c = on(q, u, 9.6, -0.2)
+        for (const s of [-1, 1]) out.quad([[c[0], c[1] - 0.15, c[2]], [c[0] + q.tx * s * 0.6, c[1] + 0.35, c[2] + q.tz * s * 0.6], [c[0] + q.tx * s * 0.65, c[1] + 0.2, c[2] + q.tz * s * 0.65], [c[0], c[1] - 0.3, c[2]]], [q.nx, 0, q.nz], UVQ, RBLUE, MT)
+        tube(out, [c[0], 9.0, c[2]], [c[0], c[1] - 0.2, c[2]], 0.02, 3, [0.3, 0.3, 0.3], MT)
+      }
+    }
+  }
+  if (east.length >= 3) {
+    faceBand(out, east, 4.2, 9.6, { kind: 'blank', wall: W, material: 'stucco' })
+    capPolygon(out, east, 9.6, [0.8, 0.8, 0.78], CT)
+    for (const [o, y] of [[0.25, 9.6], [0.45, 9.85]] as [number, number][]) faceBand(out, offsetRing(east, o), y, y + 0.22, { kind: 'blank', wall: y > 9.7 ? W : NAVY, material: 'stucco' })
+  }
+  // the parapet wall's face: the name, the emblem, the waves
+  const pm = wEnd + wd * (split + (L - split) * 0.38)
+  signAt(out, e, pm, 8.1, 0.08, { type: 'flat', text: 'FRANCISCAN', h: 1.15, w: Math.min(13, (L - split) * 0.7), face: 'grotesque', weight: 'bold', colour: DGR, lit: 'front', tracking: 0.12 })
+  signAt(out, e, pm, 7.15, 0.08, { type: 'flat', text: 'CRAB RESTAURANT', h: 0.55, w: Math.min(11, (L - split) * 0.6), face: 'grotesque', weight: 'bold', colour: RED, halo: [0.3, 0.05, 0.05], lit: 'self' })
+  // the crab emblem, flat on the wall: a red shell, its legs and two claws (the mermaid riding it is a TRIPO.md row)
+  const em = on(e, pm, 6.0, 0.1)
+  lozenge(out, em, [e.tx, 0, e.tz], [0, 1, 0], [e.nx, 0, e.nz], 1.05, 0.62, 0.06, RED, MT, 18)
+  lozenge(out, [em[0] + e.nx * 0.04, em[1] + 0.12, em[2] + e.nz * 0.04], [e.tx, 0, e.tz], [0, 1, 0], [e.nx, 0, e.nz], 0.7, 0.3, 0.03, [0.92, 0.35, 0.2], MT, 14)
+  for (const s of [-1, 1]) {
+    for (let k = 0; k < 3; k++) tube(out, on(e, pm + s * 0.9, 5.85 - k * 0.18, 0.08), on(e, pm + s * (1.45 + k * 0.08), 5.55 - k * 0.25, 0.08), 0.05, 4, RED, MT)
+    tube(out, on(e, pm + s * 0.8, 6.2, 0.08), on(e, pm + s * 1.3, 6.5, 0.08), 0.07, 4, RED, MT)
+    lozenge(out, on(e, pm + s * 1.35, 6.62, 0.08), [e.tx, 0, e.tz], [0, 1, 0], [e.nx, 0, e.nz], 0.28, 0.18, 0.05, RED, MT, 10)
+  }
+  for (let k = 0; k < 3; k++) {
+    const y = 4.9 + k * 0.28
+    for (let s = 0; s < 16; s++) {
+      const a = (s / 16) * (L - split) * 0.7, b = ((s + 1) / 16) * (L - split) * 0.7
+      const u0 = pm - (L - split) * 0.35 + a, u1 = pm - (L - split) * 0.35 + b
+      tube(out, on(e, u0, y + Math.sin(s * 0.9) * 0.08, 0.08), on(e, u1, y + Math.sin((s + 1) * 0.9) * 0.08, 0.08), 0.025, 3, DGR, MT)
+    }
+  }
+  // the black canopy along the east front, lettered, the bollards
+  const c0 = split + 0.5, c1 = L - 0.5
+  slab(out, e, wEnd + wd * (c0 + c1) / 2, 1.2, 3.6, c1 - c0, 0.6, 2.4, BLACK, MT)
+  signAt(out, e, wEnd + wd * (c0 + (c1 - c0) * 0.3), 3.9, 2.43, { type: 'flat', text: 'COFFEE BAR', h: 0.3, w: 4, face: 'grotesque', weight: 'bold', colour: WHITE, lit: 'self' })
+  signAt(out, e, wEnd + wd * (c0 + (c1 - c0) * 0.72), 3.9, 2.43, { type: 'flat', text: 'WORLD FAMOUS FISHWICH', h: 0.34, w: (c1 - c0) * 0.42, face: 'grotesque', weight: 'bold', colour: WHITE, lit: 'self' })
+  for (let d = c0; d < c1; d += 2.2) slab(out, e, wEnd + wd * d, 3.0, 0, 0.25, 1.0, 0.25, [0.85, 0.42, 0.15], MT)
+  // the pavilion shop: red frames, the scalloped canopy
+  const pu = wEnd + wd * (split / 2)
+  for (let k = -2; k <= 2; k++) slab(out, e, pu + k * (split / 5.5), 0.1, 0.7, 0.14, 3.0, 0.1, RED, MT)
+  for (let s = 0; s < Math.round(split / 1.6); s++) {
+    const u = wEnd + wd * (1 + s * 1.6)
+    const c = on(e, u, 3.7, 1.3)
+    out.quad([on(e, u - 0.8, 4.0, 0.1), on(e, u + 0.8, 4.0, 0.1), on(e, u + 0.8, 3.5, 1.4), on(e, u - 0.8, 3.5, 1.4)], [e.nx * 0.5, 0.85, e.nz * 0.5], UVQ, W, MT)
+    for (let a = 0; a < 6; a++) {
+      const a0 = (a / 6) * Math.PI, a1 = ((a + 1) / 6) * Math.PI
+      out.quad([[c[0], 3.5, c[2]], on(e, u - Math.cos(a0) * 0.8, 3.5 - Math.sin(a0) * 0.3, 1.4), on(e, u - Math.cos(a1) * 0.8, 3.5 - Math.sin(a1) * 0.3, 1.4), [c[0], 3.5, c[2]]], [e.nx, 0, e.nz], UVQ, RBLUE, MT)
+    }
+  }
+  signAt(out, e, pu, 4.45, 0.1, { type: 'flat', text: 'PIER 43½ · GIFTS · SNACKS', h: 0.24, w: split * 0.8, face: 'grotesque', weight: 'bold', colour: RBLUE, lit: 'front' })
+  // THE TOWER at the street corner: porthole band, the teal glass storey, balcony rails, the crown of rings
+  const R = 3.3, tx = tq.x - e.nx * (R - 0.6), tz = tq.z - e.nz * (R - 0.6)
+  prism(out, tx, tz, 0, 3.0, R - 0.4, 24, [0.14, 0.5, 0.6], GT)
+  prism(out, tx, tz, 3.0, 4.6, R, 24, W, ST)
+  for (let k = 0; k < 24; k += 2) {
+    const a = (k / 24) * Math.PI * 2, n: V3 = [Math.sin(a), 0, Math.cos(a)]
+    if (n[0] * e.nx + n[2] * e.nz < -0.3) continue
+    const c: V3 = [tx + n[0] * (R + 0.03), 3.8, tz + n[2] * (R + 0.03)]
+    lozenge(out, c, [Math.cos(a), 0, -Math.sin(a)], [0, 1, 0], n, 0.36, 0.36, 0.06, TEAL, GT, 12)
+    lozenge(out, [c[0] - n[0] * 0.02, c[1], c[2] - n[2] * 0.02], [Math.cos(a), 0, -Math.sin(a)], [0, 1, 0], n, 0.44, 0.44, 0.04, W, ST, 12)
+  }
+  sign(out, { type: 'flat', text: 'Franciscan Crab Restaurant', h: 0.3, w: 3.6, face: 'script', colour: RBLUE, lit: 'front' },
+    { x: tx + e.nx * (R + 0.08), y: 3.35, z: tz + e.nz * (R + 0.08), heading: e.heading })
+  for (const [y, r] of [[4.6, R + 0.5], [4.85, R + 0.5], [5.1, R + 0.5]] as [number, number][]) prism(out, tx, tz, y, y + 0.12, r, 24, y === 4.85 ? NAVY : W, ST)
+  prism(out, tx, tz, 4.6, 8.6, R - 0.6, 24, TEAL, GT)
+  for (let k = 0; k < 6; k++) { const a = (k / 6) * Math.PI * 2; prism(out, tx + Math.sin(a) * (R - 0.5), tz + Math.cos(a) * (R - 0.5), 4.6, 8.6, 0.35, 8, W, ST) }
+  prism(out, tx, tz, 8.6, 9.0, R + 0.2, 24, W, ST)
+  for (let k = 0; k < 4; k++) prism(out, tx, tz, 9.4 + k * 0.45, 9.52 + k * 0.45, R - 0.1 - k * 0.25, 24, W, ST, R - 0.1 - k * 0.25, false)
+  for (let k = 0; k < 6; k++) { const a = (k / 6) * Math.PI * 2 + 0.3; tube(out, [tx + Math.sin(a) * (R - 0.4), 9.0, tz + Math.cos(a) * (R - 0.4)], [tx + Math.sin(a) * (R - 0.9), 10.9, tz + Math.cos(a) * (R - 0.9)], 0.05, 4, W, ST) }
+}
+
+
+/** One plain Wharf shop building, as photographed: its walls, roof, the board across its front, an awning, its windows. */
+interface ShopSpec {
+  wall: Rgb
+  material: 'clapboard' | 'stucco'
+  /** wall height at the street */
+  H: number
+  /** 'flat' (a parapet), 'gable' (gable end to the street), 'side' (eaves to the street, ridge along it) */
+  roof: 'flat' | 'gable' | 'side'
+  rise?: number
+  roofColour?: Rgb
+  /** a sign board across the front: its words, its second line, colours, face, centre height */
+  board?: { text: string; sub?: string; bg: Rgb; ink: Rgb; face?: SignSpec['face']; y: number; h?: number; halo?: Rgb; lit?: SignSpec['lit'] }
+  awning?: { c1: Rgb; c2?: Rgb; text: string; ink: Rgb; y?: number }
+  /** two storeys: a row of sash windows upstairs */
+  upper?: boolean
+  /** storefront glass full of goods, or plain windows and a door (a shed) */
+  shop?: boolean
+  trim?: Rgb
+  extra?: (out: MeshBuilder, e: Edge, fit: Fit) => void
+}
+
+function wharfShop(sp: ShopSpec): (out: MeshBuilder, fit: Fit) => void {
+  return (out, fit) => {
+    const ring = towerRing(fit)
+    const e = frontEdge(ring, facingFront(ring, 4))
+    const trim = sp.trim ?? WHITE
+    const roofC = sp.roofColour ?? [0.42, 0.43, 0.44]
+    if (sp.roof === 'flat') {
+      faceBand(out, ring, 0, sp.H, { kind: 'blank', wall: sp.wall, material: sp.material })
+      faceBand(out, offsetRing(ring, 0.08), sp.H - 0.3, sp.H + 0.5, { kind: 'blank', wall: trim, material: sp.material })
+      capPolygon(out, ring, sp.H, roofC, MT)
+    } else {
+      // the gabled shed on the fit's box: local −z is the street
+      gabledBox(out, fit.hx, fit.hz, sp.H, sp.rise ?? Math.min(3, (sp.roof === 'gable' ? fit.hx : fit.hz) * 0.35), sp.wall, roofC, sp.roof === 'side', sp.material === 'stucco' ? ST : WT)
+    }
+    const fe: Edge = sp.roof === 'flat' ? e : edgeAt([{ x: -fit.hx, z: -fit.hz }, { x: fit.hx, z: -fit.hz }, { x: fit.hx, z: fit.hz }, { x: -fit.hx, z: fit.hz }], 0)
+    const FL = fe.L
+    // the ground floor: shop glass full of goods between trim piers, or windows and a door
+    if (sp.shop !== false) {
+      const n = Math.max(1, Math.round(FL / 4.5)), bw = (FL - 0.6) / n
+      for (let k = 0; k < n; k++) {
+        const u = 0.3 + bw * (k + 0.5)
+        if (k === Math.floor(n / 2)) { slab(out, fe, u, 0.03, 0, Math.min(1.8, bw * 0.4), 2.4, 0.05, [0.3, 0.36, 0.4], GT); goodsWindow(out, fe, u + bw * 0.3, 0.6, bw * 0.3, 2.0, k); continue }
+        goodsWindow(out, fe, u, 0.5, bw - 0.7, 2.3, k + Math.round(FL))
+      }
+      for (let k = 0; k <= n; k++) slab(out, fe, 0.3 + bw * k, 0.05, 0, 0.35, 3.0, 0.12, trim, sp.material === 'stucco' ? ST : WT)
+    } else {
+      for (const f of [0.2, 0.8]) gridWindow(out, fe, FL * f, 1.0, Math.min(2.2, FL * 0.2), 1.5, 2, 2, trim)
+      slab(out, fe, FL / 2, 0.04, 0, 1.1, 2.3, 0.05, [0.45, 0.5, 0.55], WT)
+    }
+    if (sp.upper) for (let u = 2; u < FL - 1.5; u += 3.2) gridWindow(out, fe, u + 0.6, Math.min(sp.H - 2.2, 4.6), 1.6, 1.4, 2, 2, trim)
+    if (sp.awning) {
+      const a = sp.awning
+      if (a.c2) stripedAwning(out, fe, FL / 2, FL - 0.8, a.y ?? 2.9, a.c1, a.c2, a.text, a.ink, 1.4)
+      else awning(out, fe, FL / 2, FL - 0.8, a.y ?? 2.9, a.c1, a.text, a.ink, 1.4)
+    }
+    if (sp.board) {
+      const b = sp.board, bh = b.h ?? (b.sub ? 1.5 : 1.0)
+      slab(out, fe, FL / 2, 0.12, b.y - bh / 2, FL - 0.8, bh, 0.16, b.bg, MT)
+      signAt(out, fe, FL / 2, b.y + (b.sub ? bh * 0.17 : 0), 0.22, { type: 'flat', text: b.text, h: bh * (b.sub ? 0.36 : 0.5), w: FL - 1.6, face: b.face ?? 'grotesque', weight: 'bold', colour: b.ink, halo: b.halo, lit: b.lit ?? 'front' })
+      if (b.sub) signAt(out, fe, FL / 2, b.y - bh * 0.3, 0.22, { type: 'flat', text: b.sub, h: bh * 0.14, w: FL - 1.8, face: 'grotesque', weight: 'bold', colour: b.ink, lit: b.lit ?? 'front' })
+    }
+    sp.extra?.(out, fe, fit)
+  }
+}
+
+/** a string of orange fishing floats hung along edge `e` at `y`, from u0 to u1 */
+function floats(out: MeshBuilder, e: Edge, u0: number, u1: number, y: number): void {
+  for (let u = u0; u < u1; u += 0.9) { const p = on(e, u, y - 0.25 * Math.abs(Math.sin(u * 1.7)), 0.35); prism(out, p[0], p[2], p[1] - 0.18, p[1] + 0.18, 0.18, 8, [0.95, 0.45, 0.15], MT, 0.12) }
+}
+
+const WHARF_ROW = {
+  /** THE WHARF STORE, 398 Jefferson at Leavenworth (way/229326471; Mapillary 632460753240577, Aug 2025): two storeys of beige stucco, a navy board THE WHARF STORE / GIFTS · SOUVENIRS · SPORTSWEAR, ribbon windows upstairs, shop glass full of sweatshirts. `front` 171. */
+  wharfStore: wharfShop({ wall: [0.86, 0.8, 0.68], material: 'stucco', H: 7.6, roof: 'flat', trim: [0.92, 0.88, 0.8], upper: true,
+    board: { text: 'THE WHARF STORE', sub: 'GIFTS · SOUVENIRS · SPORTSWEAR', bg: [0.18, 0.24, 0.4], ink: [0.97, 0.97, 0.95], face: 'slab', y: 3.6 } }),
+  /** the Wharf Store's long low wing (way/229326458; Mapillary 632460753240577): a one-storey wall painted with a mural of the Golden Gate and the bay, THE WHARF STORE in white letters along its top, ENTRANCE. `front` 171. */
+  wharfStoreWing: wharfShop({ wall: [0.9, 0.88, 0.84], material: 'stucco', H: 4.6, roof: 'flat', shop: false,
+    extra: (out, e) => {
+      const L = e.L
+      slab(out, e, L / 2, 0.06, 0.4, L - 0.6, 3.4, 0.04, [0.45, 0.68, 0.85], ST)          // the bay
+      slab(out, e, L / 2, 0.08, 0.4, L - 0.6, 0.9, 0.04, [0.3, 0.52, 0.72], ST)
+      slab(out, e, L * 0.3, 0.09, 1.0, L * 0.3, 1.0, 0.04, [0.75, 0.62, 0.42], ST)        // the headlands
+      slab(out, e, L * 0.75, 0.09, 1.0, L * 0.2, 0.7, 0.04, [0.85, 0.82, 0.6], ST)
+      for (const f of [0.18, 0.42]) slab(out, e, L * f, 0.1, 1.4, 0.18, 2.3, 0.04, [0.85, 0.35, 0.2], ST)   // the bridge's towers
+      tube(out, on(e, L * 0.18, 3.6, 0.12), on(e, L * 0.42, 3.6, 0.12), 0.05, 4, [0.85, 0.35, 0.2], ST)
+      slab(out, e, L / 2, 0.06, 4.0, L - 0.4, 0.5, 0.1, [0.3, 0.32, 0.35], MT)
+      signAt(out, e, L * 0.7, 4.25, 0.14, { type: 'flat', text: 'THE WHARF STORE', h: 0.32, w: L * 0.45, face: 'slab', weight: 'bold', colour: WHITE, lit: 'front' })
+      signAt(out, e, L * 0.25, 4.25, 0.14, { type: 'flat', text: 'ENTRANCE', h: 0.18, w: 2.4, face: 'grotesque', weight: 'bold', colour: [0.2, 0.2, 0.2], panel: WHITE, lit: 'front' })
+    } }),
+  /** FRANK'S FISHERMAN, 366 Jefferson (way/224941192; Mapillary 4635265953366739, Aug 2025): beige stucco two storeys under a deep cornice, the navy board FRANK'S FISHERMAN with GIFTS · CLOTHING / Since 1946 / MARINE SUPPLIES, orange fishing floats hung along the windows. `front` 171. */
+  franksFisherman: wharfShop({ wall: [0.88, 0.83, 0.7], material: 'stucco', H: 7.4, roof: 'flat', trim: [0.93, 0.9, 0.82], upper: true,
+    board: { text: "FRANK'S FISHERMAN", sub: 'GIFTS · CLOTHING · SINCE 1946 · MARINE SUPPLIES', bg: [0.16, 0.3, 0.6], ink: [0.98, 0.98, 0.95], face: 'roman', y: 3.7 },
+    extra: (out, e) => floats(out, e, 0.8, e.L - 0.8, 2.75) }),
+  /** the GENERAL STORE (Only in California), 360 Jefferson (way/93703727; Mapillary 1677664382947889, Aug 2025): a grey BOARD-AND-BATTEN shed with its gable to the street, a window in the gable, a long orange awning GENERAL STORE peaked over the door with ONLY IN CALIFORNIA and the bear. `front` 171. */
+  generalStore: wharfShop({ wall: [0.52, 0.56, 0.6], material: 'clapboard', H: 4.4, roof: 'gable', rise: 2.6, roofColour: [0.48, 0.5, 0.52], trim: [0.92, 0.92, 0.9],
+    awning: { c1: [0.92, 0.35, 0.22], text: 'GENERAL STORE · ONLY IN CALIFORNIA · GENERAL STORE', ink: [1, 0.85, 0.2], y: 3.3 },
+    extra: (out, e, fit) => {
+      for (let u = 0.3; u < e.L; u += 0.6) slab(out, e, u, 0.04, 0, 0.08, 4.4, 0.05, [0.48, 0.52, 0.56], WT)      // the battens
+      gridWindow(out, e, e.L / 2, 4.9, 1.4, 1.0, 2, 1, WHITE)
+      void fit
+    } }),
+  /** the grey-blue clapboard shed next to Lou's (way/229326476; Mapillary 673192261722622, Aug 2025): one storey, white-trimmed sash windows under little navy awnings, gooseneck lamps, FOR LEASE. `front` 171. */
+  leaseShed: wharfShop({ wall: [0.56, 0.62, 0.68], material: 'clapboard', H: 4.6, roof: 'flat', shop: false, trim: WHITE,
+    extra: (out, e) => {
+      for (const f of [0.15, 0.32, 0.68, 0.85]) { gridWindow(out, e, e.L * f, 1.0, 1.4, 1.6, 2, 2, WHITE); slab(out, e, e.L * f, 0.3, 2.7, 1.7, 0.3, 0.6, [0.15, 0.2, 0.35], WT) }
+      for (const f of [0.24, 0.6, 0.94]) barnLamp(out, e, e.L * f, 3.9, [0.15, 0.15, 0.15])
+      slab(out, e, e.L * 0.22, 0.06, 3.3, 1.6, 0.9, 0.04, [0.2, 0.18, 0.35], MT)
+      signAt(out, e, e.L * 0.22, 3.75, 0.1, { type: 'flat', text: 'FOR LEASE', h: 0.18, w: 1.4, face: 'grotesque', weight: 'bold', colour: WHITE, lit: 'none' })
+    } }),
+  /** LOU'S FISH SHACK, 300 Jefferson (way/229326456; Mapillary 750262764600839, Aug 2025): two storeys of weathered brown boards, the east half a gable of maroon CORRUGATED iron, gridded windows upstairs, glass roll-up doors between timber posts below, a barn door, two round red Lou's signs. `front` 171. */
+  lousFishShack: wharfShop({ wall: [0.45, 0.32, 0.24], material: 'clapboard', H: 7.2, roof: 'flat', shop: false, trim: [0.55, 0.4, 0.3],
+    extra: (out, e) => {
+      const L = e.L, MR: Rgb = [0.42, 0.14, 0.12]
+      slab(out, e, L * 0.72, 0.1, 3.3, L * 0.5, 3.9, 0.12, MR, MT)
+      for (const s of [-1, 1]) out.quad([on(e, L * 0.72 + s * L * 0.25, 7.2, 0.16), on(e, L * 0.72, 9.2, 0.16), on(e, L * 0.72, 9.2, 0.16), on(e, L * 0.72 + s * L * 0.25, 7.2, 0.16)], [e.nx, 0, e.nz], UVQ, MR, MT)
+      out.quad([on(e, L * 0.47, 7.2, 0.16), on(e, L * 0.97, 7.2, 0.16), on(e, L * 0.72, 9.2, 0.16), on(e, L * 0.72, 9.2, 0.16)], [e.nx, 0, e.nz], UVQ, MR, MT)
+      for (let k = 0; k < 8; k++) gridWindow(out, e, L * (0.12 + k * 0.105), 4.0, L * 0.09, 1.9, 2, 3, [0.2, 0.15, 0.12], 0.2)
+      for (const f of [0.45, 0.78]) { slab(out, e, L * f, 0.05, 0, L * 0.22, 3.0, 0.05, [0.15, 0.16, 0.17], GT); for (let y = 0.6; y < 3; y += 0.6) slab(out, e, L * f, 0.09, y, L * 0.22, 0.05, 0.03, [0.1, 0.1, 0.1], MT) }
+      for (const f of [0.32, 0.6, 0.92]) slab(out, e, L * f, 0.15, 0, 0.5, 3.3, 0.3, [0.55, 0.38, 0.26], WT)
+      slab(out, e, L * 0.1, 0.06, 0, L * 0.16, 2.9, 0.06, [0.62, 0.5, 0.42], WT)                 // the barn door, its Z
+      tube(out, on(e, L * 0.02, 0.2, 0.1), on(e, L * 0.18, 2.7, 0.1), 0.07, 4, [0.62, 0.5, 0.42], WT)
+      for (const [f, y] of [[0.72, 8.0], [0.04, 5.6]] as [number, number][]) {
+        const c = on(e, L * f, y, f < 0.5 ? 0.6 : 0.25)
+        lozenge(out, c, [e.tx, 0, e.tz], [0, 1, 0], [e.nx, 0, e.nz], 0.85, 0.85, 0.12, [0.82, 0.12, 0.12], MT, 18)
+        sign(out, { type: 'flat', text: "Lou's", h: 0.38, w: 1.3, face: 'script', colour: WHITE, lit: 'self' }, { x: c[0] + e.nx * 0.08, y: y + 0.1, z: c[2] + e.nz * 0.08, heading: e.heading })
+        sign(out, { type: 'flat', text: 'FISH SHACK', h: 0.12, w: 1.1, face: 'grotesque', weight: 'bold', colour: WHITE, lit: 'self' }, { x: c[0] + e.nx * 0.08, y: y - 0.32, z: c[2] + e.nz * 0.08, heading: e.heading })
+      }
+      for (let u = 1; u < L * 0.45; u += 1.2) box(out, on(e, u, 6.5, 0.4)[0], 6.5 - 0.2 * Math.abs(Math.sin(u)), on(e, u, 6.5, 0.4)[2], 0.05, 0.05, 0.05, WARM, EMIT)   // string lights
+    } }),
+  /** CALIFORNIA SHELLFISH CO., next to Cioppino's (way/229326468; Mapillary 4259374474387637, Aug 2025): a white two-storey working building with its low gable to Jefferson, CALIFORNIA SHELLFISH CO. in green letters across it, a green stripe at the floor line, two rows of windows, a green door and a big roll-up door, a turbine ventilator on the ridge. `front` 180. */
+  shellfishShed: wharfShop({ wall: [0.95, 0.95, 0.93], material: 'stucco', H: 6.8, roof: 'gable', rise: 1.4, roofColour: [0.6, 0.62, 0.62], shop: false,
+    extra: (out, e, fit) => {
+      const L = e.L, G: Rgb = [0.1, 0.38, 0.25]
+      slab(out, e, L / 2, 0.05, 3.25, L, 0.16, 0.05, G, WT)
+      signAt(out, e, L / 2, 5.95, 0.08, { type: 'flat', text: 'CALIFORNIA  SHELLFISH  CO.', h: 0.42, w: L * 0.8, face: 'grotesque', weight: 'bold', colour: G, lit: 'front' })
+      for (const f of [0.15, 0.32, 0.5]) gridWindow(out, e, L * f, 4.0, L * 0.13, 1.1, 2, 1, [0.2, 0.2, 0.2])
+      for (const f of [0.12, 0.25, 0.48, 0.6]) gridWindow(out, e, L * f, 1.2, L * 0.09, 1.0, 2, 1, [0.2, 0.2, 0.2])
+      slab(out, e, L * 0.37, 0.04, 0, 1.0, 2.3, 0.05, G, WT)
+      slab(out, e, L * 0.84, 0.04, 0, L * 0.2, 3.2, 0.05, [0.3, 0.32, 0.33], MT)
+      slab(out, e, L * 0.84, 0.04, 3.6, L * 0.2, 2.6, 0.05, [0.85, 0.85, 0.83], MT)
+      const R = 6.8 + 1.4
+      prism(out, 0, 0, R, R + 0.6, 0.2, 8, [0.5, 0.52, 0.55], MT)
+      prism(out, 0, 0, R + 0.6, R + 1.1, 0.4, 10, [0.5, 0.52, 0.55], MT)
+      void fit
+    } }),
 }
 
 /**
@@ -1340,15 +1897,19 @@ function graded(build: (out: MeshBuilder, fit: Fit) => void, skirt: Rgb = [0.42,
   return (out, fit) => {
     const g = fit.grade ?? 0
     if (Math.abs(g) < 0.1) { build(out, fit); return }
-    const v0 = out.positions.length / 3
+    const v0 = out.positions.length / 3, s0 = out.signs.length
     build(out, { ...fit, grade: 0, groundAt: fit.groundAt ? (x, z) => fit.groundAt!(x, z) - g : undefined })
     for (let i = v0; i < out.positions.length / 3; i++) out.positions[i * 3 + 1] += g
+    // and the signs, which go to their own list: left behind, every sign of a lifted model sat g metres down its wall
+    // (Castagnola's name under its board, 2026-10-17)
+    for (let i = s0; i < out.signs.length; i++) out.signs[i] = { ...out.signs[i], y: out.signs[i].y + g }
     if (g > 0) faceBand(out, towerRing(fit), 0, g + 0.05, { kind: 'blank', wall: skirt, material: 'concrete' })
   }
 }
 
 export const WHARF_SHOPS: Record<string, (out: MeshBuilder, fit: Fit) => void> = Object.fromEntries(Object.entries({
-  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, aliotos, grotto9, chowderHut, buenaVista, castagnolas, longshoremensHall, cioppinos, shellfishShed, hardRockFront, pumpingStation2,
+  jeffersonAttractions, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, grotto9,
+  capurros, jefferson490, aliotoLazio, taylorCorner, aliotos8, franciscanCrab, chowderHut, buenaVista, castagnolas, longshoremensHall, cioppinos, ...WHARF_ROW, hardRockFront, pumpingStation2,
   dolphinClubBoathouse: boathouse('DOLPHIN CLUB'), southEndRowingClub: boathouse('Since 1877', 'SOUTH END ROWING CLUB'), pretzelKiosk, klamathPropellers,
   pier45ShedA: pier45Shed('PIER 45', true),
   pier45ShedB: pier45Shed('PIER 45', false),

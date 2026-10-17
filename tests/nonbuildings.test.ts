@@ -252,6 +252,17 @@ const KNOWN: Record<string, string[]> = {
     'intersects | Fog Harbor Fish House and Wipeout Bar & Grill frontage (Pier 39, way/128240149 east face)',
     'intersects | Pier 39 sea lion viewing rail and platform (K-Dock)',
     'intersects | Players Sports Grill & Arcade / Bubba Gump frontage (Pier 39, way/128240131 west face)',
+    // the Wharf's interior courts (wharf-landside.ts, 2026-10-17): shop rows laid against the courts' walls, the court's
+    // furnishings touching them, the Cannery's court and glass bridge between its two wings
+    "duplicate | Anchor's Landing court: shops on the In-N-Out wing's east wall / Anchor's Landing court: shops on the In-N-Out wing's south wall",
+    "duplicate | Anchor's Landing court: shops on the In-N-Out wing's south wall / Anchor's Landing passage from Jefferson: west wall shops",
+    "duplicate | Anchor's Landing court: the anchor, festoons, cafe tables / Anchor's Landing court: shops on the In-N-Out wing's east wall",
+    "intersects | Anchor's Landing court: shops on the In-N-Out wing's east wall",
+    "intersects | Anchor's Landing court: shops on the In-N-Out wing's south wall",
+    "intersects | Anchor's Landing court: the anchor, festoons, cafe tables",
+    "intersects | Anchor's Landing passage from Jefferson: mouth",
+    "intersects | Anchor's Landing passage from Jefferson: west wall shops",
+    "intersects | The Cannery's olive court and its glass bridge",
   ],
 }
 

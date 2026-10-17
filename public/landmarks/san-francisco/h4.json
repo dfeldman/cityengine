@@ -69,8 +69,11 @@
     "osm": [
       "way/288391070"
     ],
-    "procedural": "h4_cannery",
-    "name": "The Cannery"
+    "procedural": "canneryBeach",
+    "name": "The Cannery, south wing (Beach & Leavenworth)",
+    "front": 171,
+    "height": 13,
+    "note": "2026-10-17 land-side audit: was h4_cannery, a 20 m tan brick-loft recipe; the Cannery is three storeys of rough red brick with round arches and THE CANNERY over its Beach arches (Mapillary 3350093498463803). Now canneryBeach (wharf-landside.ts)."
   },
   {
     "osm": [
