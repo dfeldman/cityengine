@@ -2344,6 +2344,13 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   let camBack = 7.5
   /** how far the camera stands off to the right: aboard a cable car, beside it */
   let camSide = 0
+  /**
+   * …and, on a trainer, back toward the middle of the carriageway (owner, 2026-10-17: "in trainer mode, the camera is
+   * going through trees most of the time… the camera should be closer to the center of the road while pointing at the
+   * avatar"). The bike keeps right, by the kerb, and a camera straight behind it stood under the street trees; on the
+   * couch the rider weaves and steers round them, so there it stays behind. Eased, so a change of lane swings it gently.
+   */
+  let camCentre = 0
   // where the camera is LOOKING, in height: the road's own profile ahead, eased (BUGS.md #207)
   let aimY = nav.elevationAhead(12)
 
@@ -2997,6 +3004,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       const onCable = transit.aboard?.kind === 'cable'
       const want = high ? 46 : onCable ? 6.5 : riding ? 22 : 7.5
       camSide += ((onCable && !high ? 4.2 : 0) - camSide) * Math.min(1, dt * 3)
+      camCentre += ((!nav.fast && !riding && !high ? -0.85 * nav.sideOffset : 0) - camCentre) * Math.min(1, dt * 1.5)
       const room = high || riding ? want : city.clearBehind(at.x, at.z, -fx, -fz, want)
       camBack += (room - camBack) * Math.min(1, dt * (room < camBack ? 12 : 3))
       /*
@@ -3038,7 +3046,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         camera.setTarget(wheelCam.look)
       } else if (!frozen) {
         // (the right of the way the rider faces is (fz, −fx))
-        camera.position.set(at.x - fx * camBack + fz * camSide, camHeight, at.z - fz * camBack - fx * camSide)
+        camera.position.set(at.x - fx * camBack + fz * (camSide + camCentre), camHeight, at.z - fz * camBack - fx * (camSide + camCentre))
         camera.setTarget(new Vector3(at.x + fx * (high ? 26 : 9), (high ? 6 : 1.9) + aheadY,
           at.z + fz * (high ? 26 : 9)))
       }

@@ -192,6 +192,8 @@ export class Navigator {
   private speed = 0
 
   get position(): Position { return this.pos }
+  /** how far right of its carriageway's centre the rider is riding (the steered/woven offset, without a merged boulevard's `lane`) */
+  get sideOffset(): number { return this.offset }
 
   /**
    * Turn round, here, now.
