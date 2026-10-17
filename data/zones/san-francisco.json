@@ -114,6 +114,33 @@
    ]
   },
   {
+   "ref": "embarcadero-plaza-trails",
+   "name": "Embarcadero Plaza and Harry Bridges Plaza: paths open to bikes",
+   "note": "owner, 2026-10-17: 'right now its hard to get to embarcadero downtown from the street grid because there are few paths across the plaza. we should make more of these bikeable'. East of the Embarcadero Center podium (its raised walks stay foot-only).",
+   "priority": 1,
+   "props": {
+    "trails": "bike"
+   },
+   "ring": [
+    [
+     37.7937,
+     -122.3958
+    ],
+    [
+     37.7962,
+     -122.3958
+    ],
+    [
+     37.7962,
+     -122.3922
+    ],
+    [
+     37.7937,
+     -122.3922
+    ]
+   ]
+  },
+  {
    "ref": "lands-end",
    "name": "Lands End and Sutro Heights",
    "priority": 1,
