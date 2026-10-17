@@ -11,5 +11,18 @@
   ],
   "height": 47,
   "note": "BUGS.md #290c, 2026-10-16: the standing parts (A-frames, deck, arched canopy with SKYSTAR, ticket booth); the wheel and its 36 gondolas turn in render/sf/ferris.ts and are boarded with B. OSM node 11423890645."
+ },
+ {
+  "name": "Pier 39 gate",
+  "procedural": "pier39Gate",
+  "lat": 37.80879,
+  "lon": -122.41011,
+  "rotateDeg": 0,
+  "size": [
+   14,
+   2
+  ],
+  "height": 8.5,
+  "note": "BUGS.md #290d, 2026-10-16: a timber gate over the walkway in, carrying the blue PIER 39 board (Commons 'Pier 39 sign (TK1)'); the flags are public/flags/san-francisco-placed.json."
  }
 ]

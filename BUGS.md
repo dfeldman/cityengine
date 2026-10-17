@@ -10751,7 +10751,7 @@ before it is useful.
   [x] a. the giant Fisherman's Wharf crab sign — wharfSign rebuilt (wharf-carnival.ts): rope-bound piles, steel-bound wheel, ring lettering (new SignSpec.ring), 3D crab
   [ ] b. the street crab stands / steaming cauldrons and the neon restaurant signs on Jefferson (Alioto's, Grotto No. 9…)
   [x] c. the ferris wheel — SkyStar (render/sf/ferris.ts turning + 36 upright gondolas + LEDs; skystarWheel landmark legs/deck/canopy); B boards the bottom gondola, one turn (150 s) with the camera in the cabin panning the bay, off at the bottom
-  [ ] d. the PIER 39 flag clusters, and the Pier 39 entrance gate sign
+  [x] d. the PIER 39 flag clusters (render/flags.ts: several flags a pole, streamers, black poles, the pier39 design; public/flags/san-francisco-placed.json), and pier39Gate with the blue PIER 39 board
   [ ] e. the Pier 39 activity centre (circus-like: striped tops, arcade, mirror maze look)
   [ ] f. the marinas full of boats (Pier 39 west/east marinas, the Wharf's lagoon of fishing boats)
   [ ] g. the Aquarium of the Bay front, and the pretzel kiosk by it (red drum, scalloped glass canopy)

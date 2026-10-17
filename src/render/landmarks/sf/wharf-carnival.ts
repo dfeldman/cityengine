@@ -236,4 +236,39 @@ export function skystarWheel(out: MeshBuilder, _fit: Fit): void {
     { x: -CW - 2.2, y: 2.75, z: CZ1 + 0.58, heading: Math.PI })
 }
 
-export const WHARF_CARNIVAL: Record<string, (out: MeshBuilder, fit: Fit) => void> = { wharfSign, skystarWheel }
+/**
+ * PIER 39's GATE over the walkway in from the Embarcadero (OSM way 28518695, "Pier 39"), between Buildings A and Q: two
+ * heavy posts of weathered salvaged timber with knee braces, a doubled beam across, and on it the pier's sign — white
+ * serif PIER 39 on a royal-blue board in a white rule (Commons "Pier 39 sign (TK1)"), both faces, floodlit by two
+ * gooseneck lamps. The pier's signs are on its buildings; the gate is the style, set where the rider comes in.
+ * Placed at the walkway, rotateDeg 0: the board faces south down the plaza to the Embarcadero.
+ */
+export function pier39Gate(out: MeshBuilder, _fit: Fit): void {
+  const TIMBER: Rgb = [0.38, 0.3, 0.22], DARKT: Rgb = [0.27, 0.21, 0.16], BLUE: Rgb = [0.18, 0.36, 0.72], WHITE: Rgb = [0.95, 0.95, 0.93]
+  const WT = surfaceTag('clapboard'), MT = surfaceTag('metal')
+  const HALF = 6.2, TOP = 6.4
+  for (const sx of [-1, 1]) {
+    box(out, sx * HALF, TOP / 2, 0, 0.32, TOP / 2, 0.32, TIMBER, WT)
+    box(out, sx * HALF, 0.15, 0, 0.5, 0.15, 0.5, DARKT, WT)
+    // the knee brace up to the beam
+    tube(out, [sx * HALF, TOP - 2.0, 0], [sx * (HALF - 1.6), TOP - 0.4, 0], 0.13, 4, DARKT, WT)
+    // a gooseneck lamp over the board, each face
+    for (const sz of [-1, 1]) {
+      tube(out, [sx * 3.2, TOP + 2.25, sz * 0.25], [sx * 3.2, TOP + 2.6, sz * 0.25], 0.04, 6, [0.15, 0.15, 0.16], MT)
+      tube(out, [sx * 3.2, TOP + 2.6, sz * 0.25], [sx * 3.2, TOP + 2.6, sz * 0.9], 0.04, 6, [0.15, 0.15, 0.16], MT)
+      box(out, sx * 3.2, TOP + 2.52, sz * 0.95, 0.18, 0.08, 0.14, [0.15, 0.15, 0.16], MT)
+    }
+  }
+  // the doubled beam, each end run past the posts
+  box(out, 0, TOP - 0.15, -0.2, HALF + 0.7, 0.2, 0.14, TIMBER, WT)
+  box(out, 0, TOP - 0.15, 0.2, HALF + 0.7, 0.2, 0.14, TIMBER, WT)
+  // the board: blue, a white rule round it, the letters on both faces
+  box(out, 0, TOP + 1.05, 0, 4.9, 0.95, 0.12, WHITE, MT)
+  box(out, 0, TOP + 1.05, 0, 4.75, 0.82, 0.16, BLUE, MT)
+  for (const side of [1, -1]) {
+    sign(out, { type: 'flat', text: 'PIER 39', h: 1.0, face: 'didone', weight: 'bold', colour: WHITE, lit: 'front', tracking: 0.08 },
+      { x: 0, y: TOP + 1.0, z: side * 0.2, heading: side > 0 ? 0 : Math.PI })
+  }
+}
+
+export const WHARF_CARNIVAL: Record<string, (out: MeshBuilder, fit: Fit) => void> = { wharfSign, skystarWheel, pier39Gate }

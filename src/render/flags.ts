@@ -17,12 +17,22 @@ import { cartoonMaterial } from './cartoon-material.ts'
 import type { TileLayer } from './city.ts'
 import type { Terrain } from '../city/terrain.ts'
 
-export interface FlagPole { lat: number; lon: number; flag: string; pole: number; roof?: number; osm?: number }
+export interface FlagPole {
+  lat: number; lon: number; flag: string; pole: number; roof?: number; osm?: number
+  /** more flags down the same pole, under the first (Pier 39's poles carry two) */
+  more?: string[]
+  /** long ribbon streamers flying from the pole: their colours, top down (`streamer_<colour>` cells) */
+  streamers?: string[]
+  /** a black pole, not a white one */
+  black?: boolean
+}
 
 const KINDS = ['us', 'california', 'sanfrancisco', 'pride', 'taiwan', 'china', 'france', 'germany', 'italy', 'ireland',
-  'japan', 'korea', 'uk', 'ukraine', 'un', 'india', 'uae', 'philippines', 'mexico', 'canada', 'banner', 'banner2', 'banner3', 'banner4']
+  'japan', 'korea', 'uk', 'ukraine', 'un', 'india', 'uae', 'philippines', 'mexico', 'canada', 'banner', 'banner2', 'banner3', 'banner4',
+  // (appended: Pier 39's own flag, and the plain colours its streamers are cut from)
+  'pier39', 'streamer_orange', 'streamer_yellow', 'streamer_green', 'streamer_red', 'streamer_sky']
 const COLS = 6
-const ROWS = 4
+const ROWS = 5
 const W = 240
 const H = 150
 
@@ -149,6 +159,20 @@ function draw(c: Ctx, kind: string, x: number, y: number): void {
       star(c, x + W / 2, y + H / 2, 34, '#d52b1e')
       break
     }
+    case 'pier39': {
+      // PIER 39's own (Commons "Flags of Pier 39 (TK)"): blue over white over blue, the name in black serif capitals
+      stripes(c, x, y, ['#2f63b8', '#ffffff', '#ffffff', '#2f63b8'], false)
+      c.fillStyle = '#ffffff'; c.fillRect(x, y + H * 0.27, W, H * 0.46)
+      c.fillStyle = '#17181a'; c.font = `bold ${Math.round(H * 0.3)}px Georgia, 'Times New Roman', serif`
+      c.textAlign = 'center'; c.textBaseline = 'middle'
+      c.fillText('PIER 39', x + W / 2, y + H / 2 + 2)
+      break
+    }
+    case 'streamer_orange': c.fillStyle = '#f26a2e'; c.fillRect(x, y, W, H); break
+    case 'streamer_yellow': c.fillStyle = '#f5c518'; c.fillRect(x, y, W, H); break
+    case 'streamer_green': c.fillStyle = '#2bb24c'; c.fillRect(x, y, W, H); break
+    case 'streamer_red': c.fillStyle = '#e0242c'; c.fillRect(x, y, W, H); break
+    case 'streamer_sky': c.fillStyle = '#7fc4f0'; c.fillRect(x, y, W, H); break
     default: {
       // a banner — a team's, a hotel's, a shop's: bold colours and a band, by its number
       const n = kind === 'banner' ? 0 : Number(kind.slice(-1)) || 0
@@ -200,25 +224,57 @@ export function flagsLayer(scene: Scene, poles: FlagPole[], toLocal: (lat: numbe
       for (const p of here) {
         const y0 = terrain.heightAt(p.x, p.z) + (p.roof ?? 0)
         const top = y0 + p.pole
-        prism(posts, p.x, p.z, y0, top, 0.07, 6, [0.86, 0.86, 0.84])
-        prism(posts, p.x, p.z, top, top + 0.22, 0.13, 6, [0.82, 0.68, 0.3])
+        const poleC: [number, number, number] = p.black ? [0.12, 0.12, 0.13] : [0.86, 0.86, 0.84]
+        prism(posts, p.x, p.z, y0, top, p.black ? 0.09 : 0.07, 6, poleC)
+        prism(posts, p.x, p.z, top, top + 0.22, 0.13, 6, p.black ? [0.15, 0.15, 0.16] : [0.82, 0.68, 0.3])
         // the flag, flying east on the west wind, give or take
         const a = (((p.i * 37) % 41) - 20) * (Math.PI / 180)
         const dx = Math.cos(a), dz = Math.sin(a)
         const L = Math.max(1.4, Math.min(3.2, p.pole * 0.2))
         const Hf = L * 0.62
-        const [u0, v0, u1, v1] = cellOf(p.flag)
         const N = 8
         const phase = p.i * 1.7
-        const at = (s: number, y: number): [number, number, number] => {
-          const w = Math.sin(s * Math.PI * 1.6 + phase) * 0.14 * L * s
-          return [p.x + dx * L * s - dz * w, y, p.z + dz * L * s + dx * w]
-        }
-        for (let k = 0; k < N; k++) {
-          const s0 = k / N, s1 = (k + 1) / N
-          cloth.quad([at(s0, top - Hf), at(s1, top - Hf), at(s1, top), at(s0, top)], [-dz, 0, dx],
-            [[u0 + (u1 - u0) * s0, v0], [u0 + (u1 - u0) * s1, v0], [u0 + (u1 - u0) * s1, v1], [u0 + (u1 - u0) * s0, v1]], [1, 1, 1], 0)
-        }
+        const flags = [p.flag, ...(p.more ?? [])]
+        // (each flag hangs under the last, a streamer's width apart when there are streamers between them)
+        const gap = p.streamers?.length ? 1.3 : 0.35
+        const flagTop = (k: number): number => top - (p.streamers?.length ? 1.1 : 0) - k * (Hf + gap)
+        flags.forEach((kind, f) => {
+          const [u0, v0, u1, v1] = cellOf(kind)
+          const ft = flagTop(f)
+          const ph = phase + f * 2.1
+          const at = (s: number, y: number): [number, number, number] => {
+            const w = Math.sin(s * Math.PI * 1.6 + ph) * 0.14 * L * s
+            return [p.x + dx * L * s - dz * w, y, p.z + dz * L * s + dx * w]
+          }
+          for (let k = 0; k < N; k++) {
+            const s0 = k / N, s1 = (k + 1) / N
+            cloth.quad([at(s0, ft - Hf), at(s1, ft - Hf), at(s1, ft), at(s0, ft)], [-dz, 0, dx],
+              [[u0 + (u1 - u0) * s0, v0], [u0 + (u1 - u0) * s1, v0], [u0 + (u1 - u0) * s1, v1], [u0 + (u1 - u0) * s0, v1]], [1, 1, 1], 0)
+          }
+        })
+        /*
+         * The streamers: long tapering ribbons, one over the top flag and one between each pair, rippling more than the
+         * flags do and drooping toward their tails, each a little off the flags' line (Commons "Pier 39 01 Flags").
+         */
+        ;(p.streamers ?? []).forEach((colour, k) => {
+          const [u0, v0, u1, v1] = cellOf(`streamer_${colour}`)
+          const yA = k === 0 ? top - 0.1 : flagTop(k) + gap * 0.75
+          const SL = L * 1.6, sw = 0.32
+          const turn = (k % 2 ? 0.35 : -0.3)
+          const ex = Math.cos(a + turn), ez = Math.sin(a + turn)
+          const ph = phase + k * 1.3
+          const M = 12
+          const at = (s: number, off: number): [number, number, number] => {
+            const w = Math.sin(s * Math.PI * 2.6 + ph) * 0.35 * s
+            return [p.x + ex * SL * s - ez * w, yA - s * s * 0.9 + off, p.z + ez * SL * s + ex * w]
+          }
+          for (let m = 0; m < M; m++) {
+            const s0 = m / M, s1 = (m + 1) / M
+            const w0 = sw * (1 - s0 * 0.85), w1 = sw * (1 - s1 * 0.85)
+            cloth.quad([at(s0, -w0), at(s1, -w1), at(s1, 0), at(s0, 0)], [-ez, 0, ex],
+              [[u0 + 0.1 * (u1 - u0), v0 + 0.1 * (v1 - v0)], [u0 + 0.9 * (u1 - u0), v0 + 0.1 * (v1 - v0)], [u0 + 0.9 * (u1 - u0), v0 + 0.9 * (v1 - v0)], [u0 + 0.1 * (u1 - u0), v0 + 0.9 * (v1 - v0)]], [1, 1, 1], 0)
+          }
+        })
       }
       const out: Mesh[] = []
       const pm = new Mesh(`flagpoles:${rect.x0},${rect.z0}`, scene)
@@ -240,9 +296,15 @@ export function flagsLayer(scene: Scene, poles: FlagPole[], toLocal: (lat: numbe
 
 /** The city's flagpoles (public/flags/<city>.json), or none. */
 export async function flagPoles(base: string, city: string): Promise<FlagPole[]> {
-  try {
-    const r = await fetch(new URL(`flags/${city}.json`, base).href)
-    const text = await r.text()
-    return r.ok && text.trimStart().startsWith('[') ? JSON.parse(text) as FlagPole[] : []
-  } catch { return [] }
+  // OSM's (tools/flags.ts writes it), and the poles placed by hand that OSM does not map (`<city>-placed.json`, edited
+  // directly: Pier 39's flags, 2026-10-16)
+  const one = async (name: string): Promise<FlagPole[]> => {
+    try {
+      const r = await fetch(new URL(`flags/${name}.json`, base).href)
+      const text = await r.text()
+      return r.ok && text.trimStart().startsWith('[') ? JSON.parse(text) as FlagPole[] : []
+    } catch { return [] }
+  }
+  const [osm, placed] = await Promise.all([one(city), one(`${city}-placed`)])
+  return [...osm, ...placed]
 }
