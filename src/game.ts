@@ -1072,8 +1072,14 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // THROUGH it (owner, 2026-09-29: "you start moving BEFORE the car")
   let hitBy: Vehicle | null = null
   let hitUntil = 0
+  /*
+   * …but only while it is MOVING clear, and for a few seconds at most (owner, 2026-10-17: "after a car hits you, you
+   * should be able to continue. right now you get stuck because you and the car are in a deadlock"). A car that hit the
+   * rider and then stopped — at a light, behind the queue — held them for 12 s while it never cleared. A bumped car is
+   * not solid to the rider (traffic.solidAt), so once it stands still they ride on round it or creep past.
+   */
   const stillInWay = (r: RiderNow | null, now: number): boolean => {
-    if (!hitBy || !r || now > hitUntil) { hitBy = null; return false }
+    if (!hitBy || !r || now > hitUntil || hitBy.speed < 1) { hitBy = null; return false }
     const hb = boxOf(hitBy.at.x, hitBy.at.z, hitBy.heading, hitBy.kind === 'bus' ? SIZE.bus : SIZE.car)
     const fx = Math.sin(r.heading)
     const fz = Math.cos(r.heading)
@@ -2909,13 +2915,16 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           // topple away from the car: onto the side it is not on
           const hv = hits[0].vehicle
           hitBy = hv
-          hitUntil = now + 12000
+          hitUntil = now + 4000
           const side = Math.sin(heading) * (hv.at.z - at.z) - Math.cos(heading) * (hv.at.x - at.x) > 0 ? 1 : -1
           rider?.tumble(side)
           const lines = ['Oops!', 'Whoa there!', 'Bonk!', 'Oof!']
           hud.banner(lines[collisions % lines.length], `bumped a ${hv.transit ?? hv.kind}${hits[0].nodeId >= 0 ? ' in the junction' : ''} · ${collisions} this ride`, 2600)
           sfx.bump()
           onDelivery(delivery.collided())
+          // and the standing cars round the crash let the rider through at once: the car that hit them has stopped
+          // against the queue it was in, and nothing about the rider getting up should mean waiting out the stall valve
+          if (riderNow) traffic.squeezeAround(riderNow, 12)
           ;(window as unknown as Record<string, unknown>).__collisions = collisions
           // what happened, for tuning (read by the shot tools): who was going where, under which light
           const log = ((window as unknown as Record<string, unknown>).__collisionLog ??= []) as unknown[]
