@@ -2439,6 +2439,13 @@ export class City {
     this.nearEdges = aroundEdges
     // raised edges — bridges and the ramps onto them — are structures, built below, not painted
     const groundEdges = (this.edgesIn.get(k) ?? []).filter((e) => !this.raisedIds.has(e.id))
+    /*
+     * …and the streets of this tile AND its neighbours, for every "not in a road" test the furniture makes (BUGS.md #320,
+     * owner 2026-10-17: "fire extinguishers in road", "lamp post in street" — "actually at least 4"). Mission Street by
+     * Yerba Buena is two one-way carriageways filed in two tiles; a hydrant set on one's inner kerb stood in the other's
+     * lanes, which the tile's own list did not have.
+     */
+    const kerbEdges = aroundEdges.filter((e) => !this.raisedIds.has(e.id))
     const areas = new MeshBuilder()
     const sandOut = new MeshBuilder()
     const pagedOut = new Map<string, MeshBuilder>()
@@ -3110,7 +3117,7 @@ export class City {
     const furniture = new MeshBuilder()
     RIGID.set(furniture, [])
     // never in a road, nor in the median of one mapped as two ways (Carriageways.noFurniture)
-    const kerbside = new Carriageways(groundEdges)
+    const kerbside = new Carriageways(kerbEdges)
     /*
      * THE PARK'S OWN LAMPPOSTS (BUGS.md #202, docs/PARKS.md). The owner: *"Almost [no] sidewalks or street
      * furniture except a few classic lampposts."* — an exception written into a list of removals, and the
@@ -3257,7 +3264,7 @@ export class City {
     if (this.region.hydrants) {
       // (not in the road: a street mapped as two parallel ways has one way's kerb in the other's lanes, and a
       // hydrant near a junction was in the cross street — BUGS.md #45)
-      const roads = new Carriageways(groundEdges)
+      const roads = new Carriageways(kerbEdges)
       // the paint, by the hydrant's own position in the street: the same every time the tile is built
       const paint = this.region.hydrantPaint
       const body = paint ? hexRgb(paint.body) : undefined
@@ -3347,7 +3354,7 @@ export class City {
     }
 
     if (this.region.furniture.clutter) {
-      const carriage = new Carriageways(groundEdges)
+      const carriage = new Carriageways(kerbEdges)
       const brickNames = this.region.brickStreets?.names ?? []
       const hash = (a: number, b: number): number => ((Math.imul(a ^ Math.imul(b, 0x27d4eb2d), 0x9e3779b1) >>> 0) % 1000) / 1000
       for (const e of groundEdges) {
@@ -3472,7 +3479,7 @@ export class City {
      * shopfronts, tables and parasols. Clear of the junctions' last 7 m, never in a road or a median.
      */
     if (this.touristRings.length) {
-      const strip = new Carriageways(groundEdges)
+      const strip = new Carriageways(kerbEdges)
       const inside = (x: number, z: number): boolean => this.touristRings.some((r) => {
         let k = false
         for (let i = 0, j = r.length - 1; i < r.length; j = i++) if ((r[i].z > z) !== (r[j].z > z) && x < ((r[j].x - r[i].x) * (z - r[i].z)) / (r[j].z - r[i].z) + r[i].x) k = !k
@@ -3567,7 +3574,7 @@ export class City {
      * roads merely cross and starts being a place that is controlled — which is most of what separates a
      * city street from a road through a field.
      */
-    const signalKerb = new Carriageways(groundEdges)
+    const signalKerb = new Carriageways(kerbEdges)
     for (const id of pads) {
       const n = this.nodes.get(id)
       if (!n) continue

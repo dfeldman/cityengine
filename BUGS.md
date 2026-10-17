@@ -10944,3 +10944,6 @@ Logged, not fixed:
 - **#320** Fire extinguishers in the road, 37.785600, -122.402841.
 - (#316 cause: California at Powell is four nodes, twin carriageways crossing twin carriageways, each levelled on its own —
   1.1 m apart; #317 cause: the junction ease measured its step 12 m down a 25 % street and flattened half the block.)
+- **#321** Lamp posts in the street, 37.774451, -122.419160 ("at least 4"). Same cause as #320: the furniture passes'
+  "not in a road" tests saw only their own tile's ways, so a street mapped as two carriageways filed in two tiles had
+  one's kerb furniture standing in the other's lanes. Fixed 2026-10-17 (render/city.ts `kerbEdges`, 3x3 tiles).
