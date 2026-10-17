@@ -8,12 +8,22 @@
  */
 import { districtOf, type District } from '../../city/sf/btype.ts'
 import type { Flora } from '../flora.ts'
+import type { TreeForm } from '../../city/tree-forms.ts'
 
 /** how likely a planting in each district is to be a palm */
 const PALMS: Partial<Record<District, number>> = {
   embarcadero: 0.85, marina: 0.3, wharf: 0.35, fortmason: 0.25, civic: 0.15, soma: 0.1, rincon: 0.12,
   hayes: 0.08, western: 0.06, yerbabuena: 0.12, cowhollow: 0.12,
 }
+
+/**
+ * Trees OSM maps without a species that a photograph shows (Flora.formAt): [lat, lon, form]; a planting within 3 m takes it.
+ */
+const SEEN: [number, number, TreeForm][] = [
+  // Pier 27's lawn (the cruise terminal's plaza, BUGS.md #289): a clump of three wide, dark Monterey cypresses (Mapillary
+  // 849955769226762), drawn as palms by the Embarcadero's palmChance
+  [37.8044924, -122.4018024, 'cypress'], [37.8044405, -122.4017441, 'cypress'], [37.8045035, -122.4017011, 'cypress'],
+]
 
 export function sfFlora(toLatLon: (x: number, z: number) => { lat: number; lon: number }): Flora {
   return {
@@ -69,6 +79,11 @@ export function sfFlora(toLatLon: (x: number, z: number) => { lat: number; lon: 
       treefern: [['palm:treefern', 1]],
     },
     formModels: { oak: 4, cypress: 6, pine: 6, eucalyptus: 4, plane: 5, laurel: 4, evergreen: 4, ficus: 4, ficusGiant: 3, deciduous: 4, plum: 4, canary: 4, fan: 3, queen: 3, spiky: 3, treefern: 3 },
+    formAt: (x, z) => {
+      const { lat, lon } = toLatLon(x, z)
+      for (const [la, lo, f] of SEEN) if (Math.hypot((lat - la) * 110574, (lon - lo) * 87950) < 3) return f
+      return null
+    },
     palmChance: (x, z) => {
       const { lat, lon } = toLatLon(x, z)
       return PALMS[districtOf(lat, lon)] ?? 0.03

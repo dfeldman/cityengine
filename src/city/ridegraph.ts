@@ -342,6 +342,21 @@ function trimBehind(points: Point[], heights: number[] | undefined, fromStart: b
 
 /** Every edge with a node remapped moved onto its new node; edges left joining a node to itself go. */
 function reattach(edges: RideEdge[], moved: Map<number, { id: number; at: Point }>): RideEdge[] {
+  /*
+   * One height at the new node: the mean of the ends moved onto it. Each end had kept its own, from a node up to 20 m
+   * away — with a junction's level held into its streets (tools/bake.ts, BUGS.md #293) those part by a metre and more,
+   * and an edge rode its first metres over the street at Bay and Columbus, nothing under the wheel (air-paths, 2026-10-16).
+   */
+  const sum = new Map<number, [number, number]>()
+  const add = (n: number, h: number | undefined): void => {
+    const m = moved.get(n)
+    if (!m || h === undefined) return
+    const v = sum.get(m.id) ?? [0, 0]
+    v[0] += h; v[1]++
+    sum.set(m.id, v)
+  }
+  for (const e of edges) if (e.heights && e.heights.length === e.points.length) { add(e.a, e.heights[0]); add(e.b, e.heights[e.heights.length - 1]) }
+  const level = (id: number): number | undefined => { const v = sum.get(id); return v ? v[0] / v[1] : undefined }
   const out: RideEdge[] = []
   for (const e of edges) {
     const na = moved.get(e.a)
@@ -365,6 +380,12 @@ function reattach(edges: RideEdge[], moved: Map<number, { id: number; at: Point 
       const t = trimBehind(points, heights?.length === points.length ? heights : undefined, false, d)
       points = t.points
       if (t.heights) heights = t.heights
+    }
+    if (heights && heights.length === points.length) {
+      heights = [...heights]
+      const la = na ? level(na.id) : undefined, lb = nb ? level(nb.id) : undefined
+      if (la !== undefined) heights[0] = Math.round(la * 100) / 100
+      if (lb !== undefined) heights[heights.length - 1] = Math.round(lb * 100) / 100
     }
     out.push({ ...e, a, b, points, length: lengthOf(points),
       heights: heights && heights.length === points.length ? heights : undefined })
@@ -699,8 +720,10 @@ export function isParallelPair(e: RideEdge, f: RideEdge, ground?: (x: number, z:
       for (let i = 0; i < x.points.length; i++) { const d = distance(x.points[i], p); if (d < bd) { bd = d; best = i } }
       return x.heights![best]
     }
-    for (const t of [0.25, 0.5, 0.75]) {
-      const p = resample(e.points, undefined, 4).pts[Math.round(t * 4)]
+    // (and near the ends: a junction's level is held a few metres into each carriageway (tools/bake.ts, BUGS.md #293), so
+    // two that agree in the middle can part by a metre and more by the corner — Bay at Columbus, 2026-10-16)
+    for (const t of [0.1, 0.25, 0.5, 0.75, 0.9]) {
+      const p = resample(e.points, undefined, 20).pts[Math.round(t * 20)]
       // (1.5 m, not 4: a SPLIT-LEVEL street — Carolina and De Haro on Potrero Hill, Bridgeway in Sausalito — has its two
       // roadways a couple of metres apart in height, and the averaged midline ran between them over the retaining wall,
       // nothing drawn under the wheel; air-paths, 2026-10-04)

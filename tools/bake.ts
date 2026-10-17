@@ -1854,21 +1854,107 @@ async function bake(spec: CitySpec): Promise<void> {
       nodeH.set(e.a, Math.max(nodeH.get(e.a) ?? -Infinity, h[0]))
       nodeH.set(e.b, Math.max(nodeH.get(e.b) ?? -Infinity, h[h.length - 1]))
     }
+    /*
+     * Eased along CHAINS, not single pieces (owner, 2026-10-16, Sacramento at Stockton: "definitely do the sacramento ramp
+     * issue too"). A street is split into pieces wherever anything joins it, and the ease was at most half a PIECE: a short
+     * last piece into a junction took a 1.9 m step in 8 m (24 %), a crest that hid the cars below it. Now consecutive
+     * pieces meeting end to end (a node with two street ends) are one run; at each run end the junction's level is HELD
+     * out to the crossing carriageways' edge (the flat surface the renderer draws there), then eased into the street's own
+     * line over a length that grows with the step — at most about 8 % on top of the street's grade — up to half the run.
+     */
+    const streetEnds = new Map<number, PackedEdge[]>()
     for (const e of kept) {
-      const pts = unpackPoints(e.points)
-      const h = e.heights!
-      const cum = [0]
-      for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z))
-      const L = cum[cum.length - 1]
-      const ha = nodeH.get(e.a) ?? h[0]
-      const hb = nodeH.get(e.b) ?? h[h.length - 1]
-      const EASE = Math.min(12, L / 2)
-      e.heights = h.map((v, i) => {
-        let out = v
-        if (cum[i] < EASE) out = ha + (v - ha) * (cum[i] / EASE)
-        if (L - cum[i] < EASE) out = hb + (out - hb) * ((L - cum[i]) / EASE)
-        return Math.round(out * 100) / 100
+      if (underground(e) || e.foot) continue
+      for (const n of [e.a, e.b]) (streetEnds.get(n) ?? streetEnds.set(n, []).get(n)!).push(e)
+    }
+    const holdAt = (n: number, self: PackedEdge): number => {
+      let w = 0
+      for (const o of streetEnds.get(n) ?? []) if (o !== self) w = Math.max(w, o.width / 2)
+      return w
+    }
+    const done = new Set<PackedEdge>()
+    let footReady = false
+    const easeRun = (run: { e: PackedEdge; rev: boolean }[]): void => {
+      // every point of the run in order; a node shared by two pieces is one point carrying both pieces' indices
+      const seq: { x: number; z: number; h: number; refs: { e: PackedEdge; i: number }[] }[] = []
+      run.forEach(({ e, rev }, k) => {
+        const pts = unpackPoints(e.points), h = e.heights!
+        for (let j = 0; j < pts.length; j++) {
+          const i = rev ? pts.length - 1 - j : j
+          if (k > 0 && j === 0) { seq[seq.length - 1].refs.push({ e, i }); continue }
+          seq.push({ x: pts[i].x, z: pts[i].z, h: h[i], refs: [{ e, i }] })
+        }
       })
+      const C = [0]
+      for (let i = 1; i < seq.length; i++) C.push(C[i - 1] + Math.hypot(seq[i].x - seq[i - 1].x, seq[i].z - seq[i - 1].z))
+      const L = C[C.length - 1]
+      const H = seq.map((q) => q.h)
+      const first = run[0], last = run[run.length - 1]
+      const na = first.rev ? first.e.b : first.e.a, nb = last.rev ? last.e.a : last.e.b
+      const ha = nodeH.get(na) ?? H[0], hb = nodeH.get(nb) ?? H[H.length - 1]
+      const lineAt = (d: number): number => {
+        let k = 0
+        while (k < C.length - 2 && C[k + 1] < d) k++
+        const t = C[k + 1] > C[k] ? Math.max(0, Math.min(1, (d - C[k]) / (C[k + 1] - C[k]))) : 0
+        return H[k] + (H[k + 1] - H[k]) * t
+      }
+      const holdA = Math.min(L / 4, holdAt(na, first.e)), holdB = Math.min(L / 4, holdAt(nb, last.e))
+      const span = (step: number): number => Math.max(0.01, Math.min(L / 2, Math.max(12, Math.abs(step) / 0.08)))
+      const EA = span(ha - lineAt(Math.min(L, holdA + 12))), EB = span(hb - lineAt(Math.max(0, L - holdB - 12)))
+      seq.forEach((q, i) => {
+        let o = H[i]
+        const da = C[i], db = L - C[i]
+        if (da <= holdA) o = ha
+        else if (da < holdA + EA) o = ha + (o - ha) * ((da - holdA) / EA)
+        if (db <= holdB) o = hb
+        else if (db < holdB + EB) o = hb + (o - hb) * ((db - holdB) / EB)
+        o = Math.round(o * 100) / 100
+        for (const r of q.refs) r.e.heights![r.i] = o
+      })
+    }
+    // the streets first; then the foot ways, against the levels the streets ended with (a crosswalk node on a street
+    // eased into its junction took the street's OLD height and was left 1.9 m under the new one, Sacramento at Stockton)
+    for (const e of [...kept.filter((k) => !k.foot), ...kept.filter((k) => k.foot)]) {
+      if (done.has(e) || underground(e)) continue
+      if (e.foot && !footReady) {
+        footReady = true
+        const streetH = new Map<number, number>()
+        for (const s of done) {
+          const h = s.heights!
+          streetH.set(s.a, Math.max(streetH.get(s.a) ?? -Infinity, h[0]))
+          streetH.set(s.b, Math.max(streetH.get(s.b) ?? -Infinity, h[h.length - 1]))
+        }
+        for (const [n, h] of streetH) nodeH.set(n, h)
+      }
+      if (e.foot) {
+        // (a foot way: one piece, the old ease)
+        const pts = unpackPoints(e.points), h = e.heights!, cum = [0]
+        for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z))
+        const L = cum[cum.length - 1], ha = nodeH.get(e.a) ?? h[0], hb = nodeH.get(e.b) ?? h[h.length - 1], EASE = Math.min(12, L / 2)
+        e.heights = h.map((v, i) => { let out = v; if (cum[i] < EASE) out = ha + (v - ha) * (cum[i] / EASE); if (L - cum[i] < EASE) out = hb + (out - hb) * ((L - cum[i]) / EASE); return Math.round(out * 100) / 100 })
+        done.add(e); continue
+      }
+      // walk back to the run's start (a node that is not a plain two-piece joint), then forward along it
+      const through = (n: number): boolean => (streetEnds.get(n)?.length ?? 0) === 2
+      let cur = e, from = e.a, guard = 0
+      while (through(from) && guard++ < 500) {
+        const o = streetEnds.get(from)!.find((x) => x !== cur)!
+        if (o === e) break
+        from = o.a === from ? o.b : o.a
+        cur = o
+      }
+      // `cur` is the first piece, `from` its outer end; walk forward
+      const run: { e: PackedEdge; rev: boolean }[] = []
+      let node = from, piece: PackedEdge | undefined = cur
+      guard = 0
+      while (piece && !done.has(piece) && guard++ < 500) {
+        const rev = piece.b === node
+        run.push({ e: piece, rev })
+        done.add(piece)
+        node = rev ? piece.a : piece.b
+        piece = through(node) ? streetEnds.get(node)!.find((x) => x !== piece) : undefined
+      }
+      if (run.length) easeRun(run)
     }
   }
 

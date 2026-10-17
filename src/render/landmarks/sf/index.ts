@@ -82,6 +82,7 @@ import { marina, mooringField, plazaDeck } from './marina.ts'
 import { fortPoint } from './fort-point.ts'
 import { countyJailTwo } from './county-jail.ts'
 import { lombardGardens } from './lombard.ts'
+import { pier27Plaza } from './pier27.ts'
 import { PROMINENT } from './prominent.ts'
 import { CIVIC_6 } from './civic-6.ts'
 import { CHURCHES_5 } from './churches-5.ts'
@@ -267,6 +268,7 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   fortPoint,
   countyJailTwo,
   lombardGardens,
+  pier27Plaza,
   ...PROMINENT,
   ...CIVIC_6,
   ...CHURCHES_5,

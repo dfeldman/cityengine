@@ -18,6 +18,11 @@ export interface Flora {
    * the same tree every session.
    */
   palmChance?: (x: number, z: number) => number
+  /**
+   * A FORM for a planting the bake knew none for (an untyped OSM tree), by place: the trees someone has looked at in a
+   * photograph — Pier 27's three Monterey cypresses on the cruise terminal lawn were palms by `palmChance`. Null: as before.
+   */
+  formAt?: (x: number, z: number) => TreeForm | null
   /** another tree library beside public/trees, by its folder under public/: the region's own species (SF: sftrees) */
   library?: string
   /**

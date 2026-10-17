@@ -139,7 +139,9 @@ interface Layout {
   width: number
   height: number
   /** the baseline (horizontal) or the centre of each glyph (vertical) */
-  glyphs: { ch: string; x: number; y: number }[]
+  glyphs: { ch: string; x: number; y: number; rot?: number }[]
+  /** a ring sign's disc and its inner line, in pixels */
+  disc?: { r: number; line: number }
   /** cap heights across the whole picture, so the quad's metres follow from `h` */
   wOverCap: number
   hOverCap: number
@@ -159,9 +161,34 @@ export function layout(ctx: CanvasRenderingContext2D, spec: SignSpec): Layout {
   const padded = spec.panel !== undefined
   const padX = padded ? capPx * 0.55 : capPx * 0.18
   const padY = padded ? capPx * 0.45 : capPx * 0.3
-  const glyphs: { ch: string; x: number; y: number }[] = []
+  const glyphs: Layout["glyphs"] = []
   let width: number
   let height: number
+  if (spec.ring) {
+    // round a disc: the words over the top read left to right with their tops OUT, those under the bottom read left
+    // to right with their tops IN; each word spans at most 0.85 of a half turn, which sets the radius
+    const top = [...spec.text], low = [...(spec.ring.below ?? '')]
+    const run = (cs: string[]): number => cs.reduce((a, c) => a + ctx.measureText(c).width, 0) + track * Math.max(0, cs.length - 1)
+    const span = Math.PI * 0.85
+    const rb = Math.max(run(top), run(low)) / span + capPx * 0.2          // the top words' baseline radius
+    const R = rb + capPx * 1.45
+    width = height = Math.ceil(R * 2)
+    const c = R
+    const lay = (cs: string[], r: number, over: boolean): void => {
+      let a = -run(cs) / r / 2
+      for (const ch of cs) {
+        const w = ctx.measureText(ch).width
+        const m = a + w / 2 / r
+        if (over) glyphs.push({ ch, x: c + Math.sin(m) * r, y: c - Math.cos(m) * r, rot: m })
+        else glyphs.push({ ch, x: c + Math.sin(m) * r, y: c + Math.cos(m) * r, rot: -m })
+        a += (w + track) / r
+      }
+    }
+    lay(top, rb, true)
+    lay(low, rb + capPx, false)
+    return { fontPx, capPx, padX: 0, padY: 0, width, height, glyphs, disc: { r: R, line: rb - capPx * 0.35 },
+      wOverCap: width / capPx, hOverCap: height / capPx }
+  }
   if (spec.vertical) {
     const line = capPx * 1.34
     const wide = Math.max(...chars.map((c) => ctx.measureText(c).width), 1)
@@ -193,33 +220,51 @@ function paint(ctx: CanvasRenderingContext2D, spec: SignSpec, L: Layout, mode: '
   ctx.textBaseline = 'alphabetic'
   const ink = hex(spec.colour, '#f2f0ea')
   const panel = spec.panel ? hex(spec.panel, '#101010') : null
+  // (a ring sign's glyphs each turned about their own baseline centre)
+  const each = (draw: (ch: string, x: number, y: number) => void): void => {
+    for (const g of L.glyphs) {
+      if (g.rot === undefined) { draw(g.ch, g.x, g.y); continue }
+      ctx.save(); ctx.translate(g.x, g.y); ctx.rotate(g.rot); draw(g.ch, 0, 0); ctx.restore()
+    }
+  }
+  if (L.disc) ctx.textAlign = 'center'
   const letters = (style: string): void => {
     ctx.fillStyle = style
-    for (const g of L.glyphs) ctx.fillText(g.ch, g.x, g.y)
+    each((ch, x, y) => ctx.fillText(ch, x, y))
+  }
+  // a ring sign's ground is a disc, with a thin line inside the words
+  const ground = (style: string): void => {
+    ctx.fillStyle = style
+    if (!L.disc) { ctx.fillRect(0, 0, L.width, L.height); return }
+    ctx.beginPath(); ctx.arc(L.width / 2, L.height / 2, L.disc.r, 0, Math.PI * 2); ctx.fill()
   }
   if (mode === 'glow') {
     if (spec.lit === 'self') { letters(ink); return }
     if (spec.lit === 'back') {
       // the panel lights and the letters are cut OUT of it: dark figures on a bright ground
-      ctx.fillStyle = panel ?? '#fff6e0'
-      ctx.fillRect(0, 0, L.width, L.height)
+      ground(panel ?? '#fff6e0')
       ctx.globalCompositeOperation = 'destination-out'
       letters('#000')
       ctx.globalCompositeOperation = 'source-over'
       return
     }
     // `front`: floodlit from outside — the whole face pale, the letters no brighter than the board
-    if (panel) { ctx.fillStyle = panel; ctx.fillRect(0, 0, L.width, L.height) }
+    if (panel) ground(panel)
     letters(ink)
     return
   }
-  if (panel) { ctx.fillStyle = panel; ctx.fillRect(0, 0, L.width, L.height) }
+  if (panel) ground(panel)
+  if (L.disc) {
+    ctx.strokeStyle = ink
+    ctx.lineWidth = Math.max(2, L.capPx * 0.06)
+    ctx.beginPath(); ctx.arc(L.width / 2, L.height / 2, L.disc.line, 0, Math.PI * 2); ctx.stroke()
+  }
   if (spec.halo) {
     // the outline that makes pale letters read against a pale wall, and a dark one against the sky
     ctx.strokeStyle = hex(spec.halo, '#000')
     ctx.lineWidth = Math.max(2, L.capPx * 0.07)
     ctx.lineJoin = 'round'
-    for (const g of L.glyphs) ctx.strokeText(g.ch, g.x, g.y)
+    each((ch, x, y) => ctx.strokeText(ch, x, y))
   }
   letters(ink)
 }
@@ -236,7 +281,7 @@ const plates = new Map<string, Plate>()
 
 /** Everything about a sign that changes its PICTURE (not where it stands): the cache key. */
 const recipe = (s: SignSpec): string => JSON.stringify([s.text, s.face, s.weight, s.italic, s.colour, s.panel,
-  s.halo, s.tracking, s.vertical, s.lit, s.twoSided])
+  s.halo, s.tracking, s.vertical, s.lit, s.twoSided, s.ring])
 
 export function signPlate(scene: Scene, spec: SignSpec): Plate | null {
   const key = recipe(spec)

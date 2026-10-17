@@ -481,7 +481,8 @@ export class Vegetation {
       // a palm where the region plants them (the Embarcadero's row), by the planting's own hash so it is the same
       // tree every session; in parks at half the rate
       const h = plantHash(p.x, p.z)
-      const own = p.form ? this.formPools.get(p.form) : undefined
+      const seen = p.form ? 0 : this.flora.formAt?.(p.x, p.z)
+      const own = p.form ? this.formPools.get(p.form) : seen ? this.formPools.get(formCode(seen)) : undefined
       const palmHere = !own && palms.length > 0 && this.flora.palmChance
         ? ((h >>> 11) % 1000) / 1000 < this.flora.palmChance(p.x, p.z) * (p.park ? 0.5 : 1) : false
       const pool = own ?? (palmHere ? palms : p.park && parkland.length > 0 ? parkland : street.length > 0 ? street : models)

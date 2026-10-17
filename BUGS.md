@@ -10734,7 +10734,11 @@ before it is useful.
   footprint (from the manifest, known before placing) goes on along the track to the next clear spot (≤ half a span).
 - **#288 Detailed cable car model** — the streetcar is detailed, the cable car is not. OPEN.
 - **#289 Pier 27 cruise terminal** — shape right, feel wrong: raised plaza with a retaining wall (CRUISE TERMINAL PLAZA
-  lettering, benches), lawn, cypresses, glass terminal with fins (owner's Street View + aerial). OPEN.
+  lettering, benches), lawn, cypresses, glass terminal with fins (owner's Street View + aerial). Plaza DONE 2026-10-16:
+  `pier27Plaza` (src/render/landmarks/sf/pier27.ts) raises OSM's lawn 1.25 m behind a panelled concrete wall along the
+  Embarcadero sidewalk, CRUISE TERMINAL PLAZA in steel letters, a band of golden grasses/yucca/heather on top, the
+  terminal's planters; OSM's three untyped lawn trees drawn as Monterey cypresses (new Flora.formAt, sf/flora.ts SEEN)
+  instead of palms. Terminal glass/fins still to do.
 - **#290 Fisherman's Wharf, the carnival** — the pretzel kiosk by the aquarium (red drum, scalloped glass canopy), the
   Aquarium of the Bay's front, marinas full of boats, Pier 39's activity centre, the PIER 39 flag clusters, the ferris
   wheel, the black storefronts round Hotel Zephyr, Burgers & Best Pies theatre sign, chocolate and candy buildings, the
@@ -10742,5 +10746,21 @@ before it is useful.
   Owner: the ferris wheel a HIGH-QUALITY detailed model; and survey ALL the distinctive Wharf buildings ("dozens… you can
   find them faster than I can") and do as many as possible. No time limit — none to be forgotten.
   Owner: "ideally - press O to observe from the ferris wheel… or B to board it?" — B, as every other ride is boarded; a gondola round, the view from the top.
+  CHECKLIST (2026-10-16, goal: "a high-quality, detailed, fun Fisherman's Wharf… mimic the style and key places"), each
+  marked as it lands:
+  [ ] a. the giant Fisherman's Wharf crab sign (ship's wheel + crab, Jefferson & Taylor)
+  [ ] b. the street crab stands / steaming cauldrons and the neon restaurant signs on Jefferson (Alioto's, Grotto No. 9…)
+  [ ] c. the ferris wheel (detailed, boardable with B)
+  [ ] d. the PIER 39 flag clusters, and the Pier 39 entrance gate sign
+  [ ] e. the Pier 39 activity centre (circus-like: striped tops, arcade, mirror maze look)
+  [ ] f. the marinas full of boats (Pier 39 west/east marinas, the Wharf's lagoon of fishing boats)
+  [ ] g. the Aquarium of the Bay front, and the pretzel kiosk by it (red drum, scalloped glass canopy)
+  [ ] h. the black storefronts round Hotel Zephyr, and Burgers & Best Pies' theatre sign
+  [ ] i. the chocolate and candy buildings (Ghirardelli's roof sign, chocolate shops, candy stores)
+  [ ] j. the Klamath propeller frame
+  [ ] k. the big Boudin bakery (glass bakery windows, the wheat-sheaf sign)
+  [ ] l. Musée Mécanique and the Pier 45 sheds
+  [ ] m. the survey: every other distinctive Wharf frontage (Wax Museum, Hard Rock, In-N-Out, Blue & Gold / Red & White
+         Fleet ticket booths, Fish Alley, the Maritime Museum bathhouse, Lou's, The Anchorage…)
 - #291 Cable car passengers "in a hot tub" — FIXED (hollow saloon, benches).
 - #292 Bench inside the Taylor Street stairs (37.790831 −122.412358) — FIXED (furniture kept off the whole flight).

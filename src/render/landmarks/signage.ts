@@ -126,6 +126,12 @@ export interface SignSpec {
   w?: number
   /** extruded only: the GLB under public/models, e.g. `signs/ghirardelli.glb` (built by tools/signs.ts) */
   model?: string
+  /**
+   * flat only: the words laid ROUND a disc (`text` over the top, `below` under the bottom, letters' feet to the
+   * middle), the panel a circle, a thin ring inside the words: the Fisherman's Wharf wheel. The quad is square, its
+   * side the disc's diameter; `h` is still the cap height.
+   */
+  ring?: { below?: string }
   /** flat only: drawn from behind as well, mirrored — a free-standing frame sign on a roof, never a wall sign */
   twoSided?: boolean
   /** how far the sign stands off the surface it is on, metres (default 0.06 — see sign-plates.ts on z-fighting) */
