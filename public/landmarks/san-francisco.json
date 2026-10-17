@@ -299,15 +299,15 @@
  {
   "name": "Fisherman's Wharf sign",
   "procedural": "wharfSign",
-  "lat": 37.80815,
-  "lon": -122.41572,
-  "front": 180,
+  "lat": 37.8083294,
+  "lon": -122.4157264,
+  "rotateDeg": 0,
   "size": [
    6,
-   1
+   3
   ],
-  "height": 8,
-  "note": "The crab wheel at Jefferson and Taylor, facing south up Taylor Street."
+  "height": 11.4,
+  "note": "The crab wheel at Jefferson and Taylor (OSM node 5455630121), facing the corner; rebuilt 2026-10-16 from Commons 'California-06102' (wharf-carnival.ts)."
  },
  {
   "name": "Ghirardelli sign",

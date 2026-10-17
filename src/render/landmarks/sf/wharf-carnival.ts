@@ -1,0 +1,158 @@
+/**
+ * FISHERMAN'S WHARF, the carnival (BUGS.md #290; owner 2026-10-16: "it doesn't have to be exactly true to life, but
+ * mimic the style and key places in the area"). The pieces that are not buildings, and the buildings whose look is
+ * their signs and their colour: built one at a time from photographs, each with a note of the one it follows.
+ *
+ * Each builder here is placed by lat/lon with rotateDeg 0 (local x east, z north, y up from the ground) unless its
+ * note says otherwise, and turns itself to face where it faces.
+ */
+import type { MeshBuilder } from '../../buildings.ts'
+import type { Fit } from '../fit.ts'
+import { box, prism, type Rgb } from '../../models.ts'
+import { surfaceTag } from '../../cartoon-material.ts'
+import { sign } from '../signage.ts'
+
+export type V3 = [number, number, number]
+const UVQ: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+
+export const add = (a: V3, b: V3, k = 1): V3 => [a[0] + b[0] * k, a[1] + b[1] * k, a[2] + b[2] * k]
+export const sub = (a: V3, b: V3): V3 => [a[0] - b[0], a[1] - b[1], a[2] - b[2]]
+export const cross = (a: V3, b: V3): V3 => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]]
+export const norm = (a: V3): V3 => { const l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / l, a[1] / l, a[2] / l] }
+const neg = (a: V3): V3 => [-a[0], -a[1], -a[2]]
+const mix = (u: V3, v: V3, a: number, b: number): V3 => [u[0] * a + v[0] * b, u[1] * a + v[1] * b, u[2] * a + v[2] * b]
+
+/** a round bar from p0 to p1, radius r (r1 at the far end), `sides` sided, capped */
+export function tube(out: MeshBuilder, p0: V3, p1: V3, r: number, sides: number, c: Rgb, tag: number, r1 = r): void {
+  const d = norm(sub(p1, p0))
+  const s = norm(cross(d, Math.abs(d[1]) > 0.9 ? [1, 0, 0] : [0, 1, 0]))
+  const t = cross(d, s)
+  const at = (p: V3, rr: number, a: number): V3 => add(add(p, s, Math.cos(a) * rr), t, Math.sin(a) * rr)
+  for (let i = 0; i < sides; i++) {
+    const a0 = (i / sides) * Math.PI * 2, a1 = ((i + 1) / sides) * Math.PI * 2, am = (a0 + a1) / 2
+    out.quad([at(p0, r, a0), at(p0, r, a1), at(p1, r1, a1), at(p1, r1, a0)], mix(s, t, Math.cos(am), Math.sin(am)), UVQ, c, tag)
+  }
+  for (const [p, rr, sg] of [[p0, r, -1], [p1, r1, 1]] as [V3, number, number][]) {
+    if (rr < 0.005) continue
+    for (let i = 1; i + 1 < sides; i++) {
+      out.quad([at(p, rr, 0), at(p, rr, (i / sides) * Math.PI * 2), at(p, rr, ((i + 1) / sides) * Math.PI * 2), at(p, rr, ((i + 1) / sides) * Math.PI * 2)],
+        [d[0] * sg, d[1] * sg, d[2] * sg], UVQ, c, tag)
+    }
+  }
+}
+
+/** a flat ellipse in the plane (u, v) about `centre`, facing n, radii ru along u and rv along v */
+export function ellipse(out: MeshBuilder, centre: V3, u: V3, v: V3, n: V3, ru: number, rv: number, sides: number, c: Rgb, tag: number): void {
+  const P = (k: number): V3 => { const a = (k / sides) * Math.PI * 2; return add(add(centre, u, Math.cos(a) * ru), v, Math.sin(a) * rv) }
+  for (let i = 1; i + 1 < sides; i++) out.quad([P(0), P(i), P(i + 1), P(i + 1)], n, UVQ, c, tag)
+}
+
+/** an ellipse with thickness: the crab's body, a hub */
+export function lozenge(out: MeshBuilder, centre: V3, u: V3, v: V3, n: V3, ru: number, rv: number, th: number, c: Rgb, tag: number, sides = 20): void {
+  ellipse(out, add(centre, n, th / 2), u, v, n, ru, rv, sides, c, tag)
+  ellipse(out, add(centre, n, -th / 2), u, v, neg(n), ru, rv, sides, c, tag)
+  for (let i = 0; i < sides; i++) {
+    const a0 = (i / sides) * Math.PI * 2, a1 = ((i + 1) / sides) * Math.PI * 2, am = (a0 + a1) / 2
+    const P = (a: number, s: number): V3 => add(add(add(centre, u, Math.cos(a) * ru), v, Math.sin(a) * rv), n, (s * th) / 2)
+    out.quad([P(a0, -1), P(a1, -1), P(a1, 1), P(a0, 1)], mix(u, v, Math.cos(am), Math.sin(am)), UVQ, c, tag)
+  }
+}
+
+/**
+ * A DUNGENESS CRAB, flat-on in the plane (u to the picture's right, v up, n out of it), `s` across: the oval carapace,
+ * two big claws raised, four walking legs a side kinked down at the knee, eyes on stalks. Low relief, as a sign's or a
+ * statue's crab is.
+ */
+export function crab(out: MeshBuilder, centre: V3, u: V3, v: V3, n: V3, s: number, shell: Rgb, dark: Rgb, tag: number): void {
+  const at = (a: number, b: number, d = 0): V3 => add(add(add(centre, u, a * s), v, b * s), n, d * s)
+  const leg = s * 0.06
+  for (const side of [-1, 1]) {
+    for (let k = 0; k < 4; k++) {
+      const y = 0.04 - k * 0.1
+      const hip = at(side * 0.34, y, 0.04), knee = at(side * (0.6 + k * 0.03), y + 0.07 - k * 0.025, 0.04), foot = at(side * (0.76 + k * 0.02), y - 0.16 - k * 0.04, 0.04)
+      tube(out, hip, knee, leg, 5, shell, tag, leg * 0.85)
+      tube(out, knee, foot, leg * 0.85, 5, shell, tag, leg * 0.25)
+    }
+    const shoulder = at(side * 0.28, 0.18, 0.05), elbow = at(side * 0.5, 0.38, 0.05), wrist = at(side * 0.38, 0.56, 0.05)
+    tube(out, shoulder, elbow, s * 0.075, 6, shell, tag)
+    tube(out, elbow, wrist, s * 0.075, 6, shell, tag)
+    lozenge(out, at(side * 0.3, 0.66, 0.05), u, v, n, s * 0.13, s * 0.17, s * 0.08, shell, tag, 14)
+    tube(out, at(side * 0.25, 0.75, 0.07), at(side * 0.15, 0.86, 0.07), s * 0.032, 5, dark, tag, s * 0.01)
+    tube(out, at(side * 0.36, 0.77, 0.07), at(side * 0.23, 0.92, 0.07), s * 0.038, 5, shell, tag, s * 0.01)
+  }
+  lozenge(out, at(0, -0.02, 0.06), u, v, n, s * 0.46, s * 0.31, s * 0.12, shell, tag, 24)
+  lozenge(out, at(0, 0.03, 0.12), u, v, n, s * 0.28, s * 0.14, s * 0.02, dark, tag, 18)
+  for (const side of [-1, 1]) tube(out, at(side * 0.07, 0.22, 0.09), at(side * 0.09, 0.3, 0.11), s * 0.016, 5, dark, tag, s * 0.026)
+}
+
+/**
+ * THE FISHERMAN'S WHARF SIGN at Jefferson and Taylor (OSM node 5455630121, "Fishermans Wharf of San Francisco"):
+ * a ship's WHEEL four and a half metres across, its brown rim bound in steel, eight turned spokes standing out past it
+ * as handles; the face a cream disc, FISHERMANS WHARF round the top and OF SAN FRANCISCO round the bottom in brown
+ * serif capitals, an orange-red Dungeness crab in the middle. It stands on a cluster of three tarred timber PILES
+ * bound in thick rope above and below the wheel, an anchor hung on the rope, on a round concrete plinth.
+ * Commons "California-06102 - Fisherman's Wharf Sign and Tram". Faces the corner, south-west; lettered both sides.
+ * (Was a blue-ringed disc on a steel post, 2026-09.)
+ */
+export function wharfSign(out: MeshBuilder, _fit?: Fit): void {
+  const WOOD: Rgb = [0.36, 0.22, 0.13], STEEL: Rgb = [0.66, 0.67, 0.68], PILE: Rgb = [0.25, 0.2, 0.16]
+  const ROPE: Rgb = [0.55, 0.47, 0.36], CREAM: Rgb = [0.93, 0.9, 0.78], INK: Rgb = [0.46, 0.17, 0.09], IRON: Rgb = [0.2, 0.2, 0.21]
+  const SHELL: Rgb = [0.93, 0.36, 0.14], SHELLD: Rgb = [0.86, 0.27, 0.11], CONC: Rgb = [0.6, 0.59, 0.56]
+  const WT = surfaceTag('clapboard'), MT = surfaceTag('metal'), CT = surfaceTag('concrete')
+  // the wheel's plane: n its face (south-west), u across it to the reader's right, up
+  const H = (-135 * Math.PI) / 180
+  const n: V3 = [Math.sin(H), 0, Math.cos(H)], u: V3 = [Math.cos(H), 0, -Math.sin(H)], up: V3 = [0, 1, 0]
+  const C: V3 = [0, 5.9, 0], R = 2.25
+  const P = (a: number, b: number, d = 0): V3 => add(add(add(C, u, a), up, b), n, d)
+  prism(out, 0, 0, 0, 0.55, 1.7, 20, CONC, CT)
+  for (const [dx, dz, top] of [[-0.25, 0.1, 10.6], [0.28, 0.05, 11.4], [0.02, -0.3, 10.1]] as [number, number, number][]) {
+    const off = add(mix(u, n, dx, dz), [0, 0, 0])
+    // (stopped at the wheel and carried on over it: the face is whole, the column behind it, both sides)
+    prism(out, off[0], off[2], 0.5, C[1] - R + 0.3, 0.27, 10, PILE, WT)
+    prism(out, off[0], off[2], C[1] + R - 0.3, top, 0.27, 10, PILE, WT, 0.25)
+  }
+  // the rope: coil on coil, under the wheel and over it
+  for (const [y0, y1, r] of [[0.55, 3.55, 0.82], [8.05, 9.4, 0.72]]) {
+    for (let y = y0; y < y1 - 0.01; y += 0.17) {
+      const k = 0.9 + 0.1 * Math.sin(y * 13)
+      prism(out, 0, 0, y, Math.min(y1, y + 0.16), r + 0.04 * Math.sin(y * 9), 14, [ROPE[0] * k, ROPE[1] * k, ROPE[2] * k], WT)
+    }
+  }
+  // the anchor hung on the rope, and a bronze plaque under it
+  const A = (a: number, b: number): V3 => add(add([0, b, 0], u, a), n, 0.88)
+  tube(out, A(0, 3.0), A(0, 1.75), 0.05, 6, IRON, MT)
+  tube(out, A(-0.3, 2.7), A(0.3, 2.7), 0.04, 6, IRON, MT)
+  for (const s of [-1, 1]) tube(out, A(0, 1.75), A(s * 0.42, 2.05), 0.05, 6, IRON, MT, 0.02)
+  const pl = A(0, 1.25)
+  box(out, pl[0], pl[1], pl[2], 0.2, 0.25, 0.2, [0.45, 0.36, 0.2], MT)
+  // the wheel: the brown rim, its steel band, the spokes and their handles
+  const SEG = 40
+  for (let i = 0; i < SEG; i++) {
+    const a0 = (i / SEG) * Math.PI * 2, a1 = ((i + 1) / SEG) * Math.PI * 2, am = (a0 + a1) / 2
+    const q = (a: number, r: number, d: number): V3 => P(Math.cos(a) * r, Math.sin(a) * r, d)
+    for (const [r0, r1, c, tg] of [[R - 0.32, R - 0.12, WOOD, WT], [R - 0.12, R, STEEL, MT]] as [number, number, Rgb, number][]) {
+      for (const d of [0.2, -0.2]) out.quad([q(a0, r0, d), q(a1, r0, d), q(a1, r1, d), q(a0, r1, d)], d > 0 ? n : neg(n), UVQ, c, tg)
+    }
+    out.quad([q(a0, R, -0.2), q(a1, R, -0.2), q(a1, R, 0.2), q(a0, R, 0.2)], mix(u, up, Math.cos(am), Math.sin(am)), UVQ, STEEL, MT)
+  }
+  for (let k = 0; k < 8; k++) {
+    const a = (k / 8) * Math.PI * 2 + Math.PI / 8
+    const dir = (r: number): V3 => P(Math.cos(a) * r, Math.sin(a) * r, 0)
+    tube(out, dir(R - 0.05), dir(R + 0.35), 0.07, 8, WOOD, WT)
+    tube(out, dir(R + 0.35), dir(R + 0.5), 0.07, 8, WOOD, WT, 0.11)        // the turned handle: a swell…
+    tube(out, dir(R + 0.5), dir(R + 0.82), 0.11, 8, WOOD, WT, 0.06)        // …tapering to a knob
+    tube(out, dir(R + 0.82), dir(R + 0.92), 0.08, 8, WOOD, WT, 0.03)
+  }
+  // the face, both sides: a cream disc, the words round it, the crab standing off it
+  for (const side of [1, -1]) {
+    const nn: V3 = [n[0] * side, 0, n[2] * side], uu: V3 = [u[0] * side, 0, u[2] * side]
+    // (the back of the rim's hole: the disc closes it)
+    ellipse(out, add(C, nn, 0.1), uu, up, nn, R - 0.28, R - 0.28, 48, CREAM, CT)
+    const f = add(C, nn, 0.12)
+    sign(out, { type: 'flat', text: 'FISHERMANS WHARF', ring: { below: 'OF SAN FRANCISCO' }, h: 0.3, w: (R - 0.3) * 2, face: 'didone', weight: 'bold', colour: INK, panel: CREAM, lit: 'front', tracking: 0.05 },
+      { x: f[0], y: f[1], z: f[2], heading: side > 0 ? H : H + Math.PI })
+    crab(out, add(C, nn, 0.14), uu, up, nn, 1.5, SHELL, SHELLD, CT)
+  }
+}
+
+export const WHARF_CARNIVAL: Record<string, (out: MeshBuilder, fit: Fit) => void> = { wharfSign }

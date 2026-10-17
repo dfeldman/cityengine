@@ -10748,7 +10748,7 @@ before it is useful.
   Owner: "ideally - press O to observe from the ferris wheel… or B to board it?" — B, as every other ride is boarded; a gondola round, the view from the top.
   CHECKLIST (2026-10-16, goal: "a high-quality, detailed, fun Fisherman's Wharf… mimic the style and key places"), each
   marked as it lands:
-  [ ] a. the giant Fisherman's Wharf crab sign (ship's wheel + crab, Jefferson & Taylor)
+  [x] a. the giant Fisherman's Wharf crab sign — wharfSign rebuilt (wharf-carnival.ts): rope-bound piles, steel-bound wheel, ring lettering (new SignSpec.ring), 3D crab
   [ ] b. the street crab stands / steaming cauldrons and the neon restaurant signs on Jefferson (Alioto's, Grotto No. 9…)
   [ ] c. the ferris wheel (detailed, boardable with B)
   [ ] d. the PIER 39 flag clusters, and the Pier 39 entrance gate sign
