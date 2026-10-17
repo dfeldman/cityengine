@@ -1776,7 +1776,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   ;(window as unknown as Record<string, unknown>).__route = (lat: number, lon: number) => {
     destination = new Projection(pkg.origin).toLocal({ lat, lon })
     replan()
-    return route ? { length: Math.round(route.length), junctions: route.nodes.length, turnRound: route.turnRound } : null
+    // (and its shape in lat/lon, every 20th point, for a probe to see which way it goes)
+    const pr = new Projection(pkg.origin)
+    return route ? { length: Math.round(route.length), junctions: route.nodes.length, turnRound: route.turnRound,
+      line: route.line.filter((_, i) => i % 20 === 0).map((q) => { const ll = pr.toLatLon(q); return [+ll.lat.toFixed(5), +ll.lon.toFixed(5)] }) } : null
   }
   // the same in the code frame, for probes that ride a delivery (the game itself never draws the job's route)
   ;(window as unknown as Record<string, unknown>).__routeXZ = (x: number, z: number) => {
