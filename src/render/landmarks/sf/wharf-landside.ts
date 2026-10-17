@@ -16,7 +16,8 @@ import { sign, type SignSpec, type Face } from '../signage.ts'
 import { towerRing, faceBand } from '../tower.ts'
 import { edgeAt, boxAlong, offsetRing } from '../parts.ts'
 import { tube, ellipse, lozenge, type V3 } from './wharf-carnival.ts'
-import { openWall, openFront } from './wharf-shops.ts'
+import { openWall, openFront, patioTable } from './wharf-shops.ts'
+import { HOODIE, billboard, blade, placard, aFrame, hoodieRack, postcardSpinner, chevron, wallBanner, bulbLine } from './wharf-loud.ts'
 
 type P2 = { x: number; z: number }
 type Edge = ReturnType<typeof edgeAt>
@@ -486,9 +487,11 @@ function graded(build: (out: MeshBuilder, fit: Fit) => void, skirt: Rgb = [0.42,
   return (out, fit) => {
     const g = fit.grade ?? 0
     if (Math.abs(g) < 0.1) { build(out, fit); return }
-    const v0 = out.positions.length / 3
+    const v0 = out.positions.length / 3, s0 = out.signs.length
     build(out, { ...fit, grade: 0, groundAt: fit.groundAt ? (x, z) => fit.groundAt!(x, z) - g : undefined })
     for (let i = v0; i < out.positions.length / 3; i++) out.positions[i * 3 + 1] += g
+    // the signs too (their own list): left behind, every sign sat g metres down its wall (155 Jefferson, 2026-10-17)
+    for (let i = s0; i < out.signs.length; i++) out.signs[i] = { ...out.signs[i], y: out.signs[i].y + g }
     if (g > 0 && fit.ring) faceBand(out, towerRing(fit), 0, g + 0.05, { kind: 'blank', wall: skirt, material: 'concrete' })
   }
 }
@@ -1320,41 +1323,71 @@ export function taylorRow(out: MeshBuilder, fit: Fit): void {
 
 /**
  * THE $10 HOODIE STORE, 2699 Mason at Jefferson (way/1162388528): a one-storey box painted TURQUOISE all over, its
- * parapet a billboard of its own — a huge gold "$10" and HOODIES in red, "Don't be Chilly…" — and along Mason "ENTER ↓
- * $5 TEES · $5 HATS" over turquoise roll shutters; on its roof a lit billboard (SAINTLY SIPS · Applebee's) (Mapillary
- * 2158505394634382, 2025). OSM's 12 m is a guess; the store is one tall storey. `front` 81: Mason is local −z.
+ * parapet a billboard of its own — a huge gold "$10" and "HOODIES!" in red, "Don't be Chilly…" — and under it a white
+ * band "$5 TEES · $5 HATS" between red ENTER chevrons, the fronts wide OPEN on racks of hoodies, sale placards on every
+ * pier, A-frames, rolling racks and a postcard spinner out on the pavement; on its roof two huge BILLBOARDS on steel
+ * frames — a dark one "YKYK (AND LOCALS KNOW)" and a bright orange-and-blue one for THE PHILHARMONIK with a face on it
+ * (owner's Street View 2026-10-17, from the Jefferson & Mason corner; earlier Mapillary 2158505394634382, 2025). OSM's
+ * 12 m is a guess; the store is one tall storey. `front` 81: Mason is local −z.
  */
 export function hoodieStore(out: MeshBuilder, fit: Fit): void {
   const FRONT = 81
   const ring = towerRing(fit)
-  const H = 6.0, TQ: Rgb = [0.3, 0.78, 0.78], RED: Rgb = [0.8, 0.1, 0.12], GOLD: Rgb = [0.95, 0.72, 0.2]
-  faceBand(out, ring, 0, H, { kind: 'blank', wall: TQ, material: 'stucco' })
+  const H = 6.0, G = 3.0, TQ: Rgb = [0.18, 0.72, 0.72], RED: Rgb = [0.82, 0.08, 0.1], GOLD: Rgb = [0.98, 0.74, 0.12]
+  const eM = frontFacing(ring, FRONT, 81, 6), eJ = frontFacing(ring, FRONT, 351, 6)
+  const skip = new Set<number>()
+  for (const e of [eM, eJ]) if (e) { const keep = new Set(offFront(ring, e)); ring.forEach((_, i) => { if (!keep.has(i)) skip.add(i) }) }
+  faceBand(out, ring, 0, H, { kind: 'blank', wall: TQ, material: 'stucco' }, ring.map((_, i) => i).filter((i) => !skip.has(i)))
   faceBand(out, offsetRing(ring, 0.1), H - 0.25, H, { kind: 'blank', wall: [0.95, 0.95, 0.93], material: 'stucco' })
   capPolygon(out, ring, H, [0.45, 0.45, 0.45], CT)
-  for (const b of [81, 351]) {
-    const e = frontFacing(ring, FRONT, b, 6)
+  const CARDS: [Rgb, string, Rgb, string?][] = [
+    [[0.98, 0.85, 0.1], 'SALE', RED, 'EVERYTHING MUST GO'], [RED, '3 FOR $25', WHITE, 'HOODIES'], [WHITE, '$5', RED, 'TEES'],
+    [[0.1, 0.1, 0.12], 'SF', [0.98, 0.85, 0.1], 'SWEATSHIRTS'], [[0.98, 0.5, 0.1], '50% OFF', WHITE], [[0.15, 0.35, 0.8], '$5 HATS', WHITE],
+  ]
+  let card = 0, seed = 0
+  for (const e of [eM, eJ]) {
     if (!e) continue
-    // the roll shutters and a door or two, all turquoise
-    for (let u = 1.5; u < e.L - 1; u += 3.4) {
-      slab(out, e, u, 0.05, 0, 2.8, 2.9, 0.06, [0.36, 0.84, 0.84], MT)
-      for (let y = 0.2; y < 2.9; y += 0.18) slab(out, e, u, 0.09, y, 2.8, 0.03, 0.02, [0.25, 0.65, 0.65], MT)
+    const isM = e === eM
+    // the open bays, the turquoise wall round them
+    const n = isM ? 3 : 1, bw = isM ? Math.min(5.6, (e.L - 2.4) / 3 - 0.9) : Math.min(7, e.L - 3)
+    const bays = Array.from({ length: n }, (_, k) => (n === 1 ? e.L / 2 : 1.4 + bw / 2 + (k * (e.L - 2.8 - bw)) / (n - 1)))
+    openWall(out, e, 0, H, bays.map((u): [number, number, number] => [u, bw, G - 0.1]), TQ, ST)
+    for (const u of bays) {
+      openFront(out, e, u, bw, 0, G - 0.1, { kind: 'goods', seed: seed++, depth: 3.2, back: [0.9, 0.9, 0.86] })
+      // hoodies hung across the head of the bay, facing the street
+      for (let k = 0; k < Math.floor(bw / 0.55); k++) {
+        const c = HOODIE[(k + seed * 2) % HOODIE.length], hu = u - bw / 2 + 0.35 + k * 0.55
+        panel(out, e, hu, -0.25, G - 1.15, 0.46, 0.8, c, WT)
+        panel(out, e, hu, -0.24, G - 0.42, 0.22, 0.2, c, WT)
+      }
+      // the red ENTER chevrons over the bay, pointing in
+      chevron(out, e, u, G + 0.35, 0.12, 0.22, RED, -1)
     }
-    // the white band and the big words
-    slab(out, e, e.L / 2, 0.06, 3.0, e.L, 0.75, 0.06, WHITE, ST)
-    signAt(out, e, e.L / 2, 3.38, 0.11, { type: 'flat', text: b === 81 ? 'ENTER  ·  $5 TEES  ·  $5 HATS  ·  HOODIES' : 'ENTER  ·  $5 TEES  ·  $5 HATS', h: 0.42, w: e.L - 0.8, face: 'block', colour: RED, lit: 'front' })
-    signAt(out, e, Math.min(2.8, e.L * 0.22), 4.75, 0.11, { type: 'flat', text: '$10', h: 1.3, w: Math.min(3.4, e.L * 0.3), face: 'didone', weight: 'bold', colour: GOLD, halo: [0.4, 0.25, 0.05], lit: 'front' })
-    signAt(out, e, e.L * 0.62, 5.15, 0.11, { type: 'flat', text: "Don't be Chilly…", h: 0.32, w: e.L * 0.55, face: 'brush', colour: RED, lit: 'front' })
-    signAt(out, e, e.L * 0.62, 4.4, 0.11, { type: 'flat', text: 'HOODIES', h: 0.85, w: e.L * 0.62, face: 'didone', weight: 'bold', colour: RED, lit: 'front' })
+    // the cards on the piers between the bays
+    const piers = [0.7, ...bays.slice(1).map((u, k) => (u + bays[k]) / 2), e.L - 0.7]
+    for (const pu of piers) {
+      const cd = CARDS[card++ % CARDS.length]
+      placard(out, e, pu, 0.5, 0.06, 1.0, 1.4, cd[0], cd[1], cd[2], cd[3])
+    }
+    // the white band and its words, the parapet's huge ones
+    slab(out, e, e.L / 2, 0.06, G, e.L, 0.75, 0.06, WHITE, ST)
+    signAt(out, e, e.L / 2, G + 0.38, 0.11, { type: 'flat', text: isM ? 'ENTER  $5 TEES  ·  $5 HATS  ·  HOODIES' : 'ENTER  $5 TEES  ·  $5 HATS', h: 0.4, w: e.L - 2.4, face: 'block', colour: RED, lit: 'front' })
+    for (const [cu, d] of [[0.6, 1], [e.L - 0.6, -2]] as [number, number][]) chevron(out, e, cu, G + 0.38, 0.11, 0.25, RED, d)
+    signAt(out, e, Math.min(2.4, e.L * 0.2), 4.7, 0.11, { type: 'flat', text: '$10', h: 1.5, w: Math.min(3.6, e.L * 0.32), face: 'didone', weight: 'bold', colour: GOLD, halo: [0.45, 0.25, 0.02], lit: 'front' })
+    signAt(out, e, e.L * 0.6, 5.45, 0.11, { type: 'flat', text: "Don't be Chilly…", h: 0.3, w: e.L * 0.5, face: 'brush', colour: [0.1, 0.1, 0.12], lit: 'front' })
+    signAt(out, e, e.L * 0.6, 4.4, 0.11, { type: 'flat', text: 'HOODIES!', h: 1.05, w: e.L * 0.66, face: 'block', colour: RED, halo: WHITE, lit: 'front' })
+    // the pavement: racks of hoodies, A-frames, a postcard spinner
+    for (let k = 0; k < (isM ? 3 : 2); k++) hoodieRack(out, e, (isM ? 3.5 : 2.4) + k * (isM ? 8 : 6.4), 1.2, groundOn(fit, e, 3 + k * 7, 1.2), seed + k, k % 2 ? '$15' : '$10')
+    aFrame(out, e, isM ? 7.2 : 5.6, 2.1, groundOn(fit, e, 6, 2.1), [0.98, 0.85, 0.1], 'HOODIES $10', RED)
+    if (isM) { aFrame(out, e, 15.6, 2.1, groundOn(fit, e, 15, 2.1), RED, 'ENTER →', WHITE); postcardSpinner(out, e, 20.5, 1.0, groundOn(fit, e, 20, 1.0), 3) }
   }
-  // the billboard on the roof, on two legs, lit
-  const e = frontFacing(ring, FRONT, 351, 6)
-  if (e) {
-    const u = e.L * 0.7
-    for (const d of [-1.4, 1.4]) slab(out, e, u + d, -3, H, 0.2, 2.2, 0.2, [0.3, 0.3, 0.32], MT)
-    slab(out, e, u, -3, H + 2.0, 4.6, 2.4, 0.3, [0.08, 0.08, 0.09], MT)
-    slab(out, e, u, -2.83, H + 2.15, 4.3, 2.1, 0.02, [0.35, 0.75, 0.45], EMIT)
-    signAt(out, e, u, H + 3.55, -2.8, { type: 'flat', text: 'SAINTLY SIPS', h: 0.42, w: 3.9, face: 'block', colour: WHITE, lit: 'self' })
-    signAt(out, e, u, H + 2.6, -2.8, { type: 'flat', text: "Applebee's", h: 0.4, w: 3.0, face: 'grotesque', weight: 'bold', colour: [0.85, 0.1, 0.12], lit: 'self', panel: WHITE })
+  // the two billboards on the roof: YKYK over Jefferson, THE PHILHARMONIK over Mason at the Jefferson end
+  if (eJ) billboard(out, eJ, eJ.L * 0.5, -3.2, H, Math.min(8, eJ.L - 1.5), 3.2, 1.8, { bg: [0.08, 0.08, 0.1], text: 'YKYK', ink: WHITE, sub: '(AND LOCALS KNOW)', subInk: [0.98, 0.8, 0.15] })
+  if (eM && eJ) {
+    // which end of the Mason front is Jefferson's
+    const d0 = Math.hypot(eM.a.x - eJ.mid.x, eM.a.z - eJ.mid.z), d1 = Math.hypot(eM.b.x - eJ.mid.x, eM.b.z - eJ.mid.z)
+    const u = d0 < d1 ? eJ.L * 0.5 + 5.2 : eM.L - eJ.L * 0.5 - 5.2
+    billboard(out, eM, u, -2.0, H, 8.4, 3.6, 3.4, { bg: [0.98, 0.5, 0.08], text: 'THE PHILHARMONIK', ink: [0.1, 0.16, 0.45], face: 'didone', sub: 'NOW PLAYING · TICKETS', subInk: WHITE, block: [0.2, 0.45, 0.85], portrait: true })
   }
 }
 
@@ -1402,16 +1435,23 @@ export function wharfInn(out: MeshBuilder, fit: Fit): void {
 }
 
 /**
- * POLLO CAMPERO, 155 Jefferson (way/288473106): the low two-storey building between Ripley's and the old Wax Museum —
- * brown stucco under a dark shingled mansard skirt, a railed balcony across the first floor, the chicken place's yellow
- * and black board over a green awning (Mapillary 1458507285470593, 1289359246072032, 2025). `front` 351.
+ * 155 JEFFERSON (way/288473106), between Ripley's and the old Wax Museum: two storeys of WHITE STUCCO under a grey
+ * shingled mansard skirt, a railed balcony across the first floor. Below it, side by side, the classiest and the
+ * loudest fronts on the street: GALLERIA VITTORIO, a fine-art gallery — a black fascia with gold serif capitals under
+ * two brass picture lamps, a lit white room hung with canvases, at the west end beside Pacific Fair's HOODY $20 — and
+ * POLLO CAMPERO's yellow board and green awning at the east end (its OSM node), between them the exterior stair climbing
+ * back to the upper floor (owner's Street View 2026-10-17: "a classy art
+ * gallery next to HOODY $20"; Mapillary 1458507285470593, 1289359246072032, 2025). The stair's exact form is GUESSED.
+ * `front` 351; along the front u runs from the east corner to the west one.
  */
 export function polloCampero(out: MeshBuilder, fit: Fit): void {
   const FRONT = 351
   const ring = towerRing(fit)
-  const G = 3.4, H = 6.8
-  const BROWN: Rgb = [0.5, 0.4, 0.32], SHINGLE: Rgb = [0.18, 0.18, 0.2]
-  faceBand(out, ring, 0, H, { kind: 'punched', wall: BROWN, glass: [0.18, 0.2, 0.22], floor: G, pitch: 2.4, solid: 0.35, material: 'stucco' })
+  const G = 3.5, H = 6.8
+  const WHITEW: Rgb = [0.86, 0.85, 0.82], SHINGLE: Rgb = [0.36, 0.37, 0.4], BLACK: Rgb = [0.06, 0.06, 0.07], GOLDL: Rgb = [0.86, 0.68, 0.3]
+  const e = frontFacing(ring, FRONT, 351, 5)
+  faceBand(out, ring, 0, G, { kind: 'blank', wall: WHITEW, material: 'stucco' }, e ? offFront(ring, e) : undefined)
+  faceBand(out, ring, G, H, { kind: 'punched', wall: WHITEW, glass: [0.18, 0.2, 0.24], floor: H - G, pitch: 2.3, solid: 0.4, material: 'stucco' })
   capPolygon(out, ring, H + 0.9, [0.3, 0.3, 0.32], CT)
   // the mansard skirt all round
   const outer = offsetRing(ring, 0.9)
@@ -1420,14 +1460,62 @@ export function polloCampero(out: MeshBuilder, fit: Fit): void {
     const nx = B.x - b.x + A.x - a.x, nz = B.z - b.z + A.z - a.z, nl = Math.hypot(nx, nz) || 1
     out.quad([[A.x, H - 0.4, A.z], [B.x, H - 0.4, B.z], [b.x, H + 0.9, b.z], [a.x, H + 0.9, a.z]], [nx / nl * 0.7, 0.7, nz / nl * 0.7], UVQ, SHINGLE, surfaceTag('tile'))
   }
-  const e = frontFacing(ring, FRONT, 351, 5)
   if (!e) return
-  slab(out, e, e.L / 2, 0.6, G, e.L, 0.15, 1.2, [0.4, 0.33, 0.27], CT)
-  slab(out, e, e.L / 2, 1.18, G + 1.0, e.L, 0.06, 0.06, [0.15, 0.15, 0.15], MT)
-  for (let u = 0.2; u < e.L; u += 0.3) slab(out, e, u, 1.18, G + 0.15, 0.04, 0.85, 0.04, [0.15, 0.15, 0.15], MT)
-  shopRow(out, e, 0.3, e.L - 0.3, 0, G - 0.2, [{ name: 'Pollo Campero', sign: 'awning', c: [0.1, 0.45, 0.3], stripe: [0.1, 0.45, 0.3], ink: [1.0, 0.85, 0.15], face: 'brush' }], 81)
-  slab(out, e, e.L / 2, 0.25, G + 0.1, Math.min(4.5, e.L - 1), 0.75, 0.2, [0.98, 0.82, 0.12], MT)
-  signAt(out, e, e.L / 2, G + 0.48, 0.37, { type: 'flat', text: 'POLLO CAMPERO', h: 0.34, w: Math.min(4.2, e.L - 1.3), face: 'block', colour: [0.1, 0.1, 0.1], lit: 'back' })
+  const L = e.L
+  // the ground floor: gallery (east), the stair recess, Pollo Campero (west)
+  const gw = L * 0.42, sw = 1.5, cw = L - gw - sw - 0.8
+  const cu = 0.3 + cw / 2, su = 0.3 + cw + 0.1 + sw / 2, gu = L - 0.3 - gw / 2
+  openWall(out, e, 0, G, [[gu, gw - 0.4, G - 0.9], [su, sw, G - 0.2], [cu, cw - 0.4, G - 0.9]], WHITEW, ST)
+  // GALLERIA VITTORIO
+  openFront(out, e, gu, gw - 0.4, 0, G - 0.9, { kind: 'gallery', seed: 2, depth: 3.4, back: [0.95, 0.94, 0.9] })
+  for (const k of [-0.5, 0.5]) slab(out, e, gu + k * (gw - 0.4), 0.06, 0, 0.12, G - 0.85, 0.1, BLACK, MT)
+  slab(out, e, gu, 0.1, G - 0.85, gw - 0.2, 0.75, 0.16, BLACK, MT)
+  signAt(out, e, gu, G - 0.47, 0.2, { type: 'flat', text: 'GALLERIA VITTORIO', h: 0.34, w: gw - 0.7, face: 'didone', colour: GOLDL, lit: 'front', tracking: 0.12 })
+  signAt(out, e, gu, G - 0.75, 0.2, { type: 'flat', text: 'FINE ART · SINCE 1979', h: 0.07, w: gw - 1.4, face: 'roman', colour: GOLDL, lit: 'front', tracking: 0.2 })
+  for (const k of [-0.28, 0.28]) gooseneck(out, e, gu + k * gw, G - 0.1, [0.62, 0.5, 0.26])
+  // a pair of clipped bay trees in black planters either side of the gallery's door
+  for (const k of [-0.42, 0.42]) {
+    const p = on(e, gu + k * gw, 0, 0.5)
+    prism(out, p[0], p[2], 0, 0.6, 0.25, 8, BLACK, MT)
+    prism(out, p[0], p[2], 0.6, 1.6, 0.06, 4, [0.3, 0.22, 0.14], WT)
+    prism(out, p[0], p[2], 1.4, 2.1, 0.35, 8, [0.2, 0.36, 0.16], FT, 0.12)
+  }
+  // the stair: a steep flight climbing back into the building to the upper floor, a handrail, a light over it
+  for (let k = 0; k < 14; k++) slab(out, e, su, -0.2 - k * 0.3, k * (G / 14), sw - 0.1, G / 14, 0.32, [0.62, 0.6, 0.57], CT)
+  q4wall(out, e, su, sw, G - 0.2, 4.4, [0.7, 0.68, 0.64])
+  tube(out, on(e, su - sw / 2 + 0.12, 0.95, 0.1), on(e, su - sw / 2 + 0.12, G + 0.9, -4.2), 0.025, 4, BLACK, MT)
+  slab(out, e, su, -0.4, G - 0.35, 0.4, 0.06, 0.2, WARM, EMIT)
+  // POLLO CAMPERO: open dining room, green awning, yellow board over it
+  openFront(out, e, cu, cw - 0.4, 0, G - 0.9, { kind: 'dining', seed: 5, depth: 3.4, back: [0.95, 0.85, 0.55], seat: [0.85, 0.65, 0.1], cloth: [0.95, 0.95, 0.9] })
+  for (const k of [-0.5, 0.5]) slab(out, e, cu + k * (cw - 0.4), 0.06, 0, 0.12, G - 0.85, 0.1, [0.1, 0.4, 0.25], MT)
+  const n = Math.max(3, Math.round(cw / 0.5))
+  for (let k = 0; k < n; k++) {
+    const u0 = cu - cw / 2 + (cw * k) / n, u1 = cu - cw / 2 + (cw * (k + 1)) / n
+    out.quad([on(e, u0, G - 0.25, 0.05), on(e, u1, G - 0.25, 0.05), on(e, u1, G - 0.95, 1.2), on(e, u0, G - 0.95, 1.2)], [e.nx * 0.6, 0.8, e.nz * 0.6], UVQ, [0.1, 0.45, 0.3], WT)
+  }
+  slab(out, e, cu, 1.2, G - 1.25, cw, 0.3, 0.03, [0.1, 0.45, 0.3], WT)
+  signAt(out, e, cu, G - 1.1, 1.23, { type: 'flat', text: 'POLLO CAMPERO · CHICKEN · SINCE 1971', h: 0.13, w: cw - 0.5, face: 'grotesque', weight: 'bold', colour: WHITE, lit: 'front' })
+  slab(out, e, cu, 0.25, G + 0.1, Math.min(4.8, cw), 0.85, 0.2, [0.98, 0.8, 0.08], MT)
+  signAt(out, e, cu, G + 0.53, 0.37, { type: 'flat', text: 'Pollo Campero', h: 0.42, w: Math.min(4.4, cw - 0.4), face: 'brush', weight: 'bold', colour: [0.45, 0.2, 0.08], lit: 'back' })
+  // the balcony and its rail across the first floor
+  slab(out, e, L / 2, 0.6, G, L, 0.15, 1.2, [0.8, 0.79, 0.76], CT)
+  slab(out, e, L / 2, 1.18, G + 1.0, L, 0.06, 0.06, [0.15, 0.15, 0.15], MT)
+  for (let u = 0.2; u < L; u += 0.3) slab(out, e, u, 1.18, G + 0.15, 0.04, 0.85, 0.04, [0.15, 0.15, 0.15], MT)
+  // the gallery's banner on the balcony rail, a framed canvas on an easel in the window over it
+  wallBanner(out, e, gu, G + 1.15, 1.25, 0.9, 1.9, [0.55, 0.08, 0.12], 'ART', GOLDL, 'didone')
+  // café tables out in front of Campero
+  patioTable(out, e, cu, 2.3, groundOn(fit, e, cu, 2.3), [0.98, 0.82, 0.12], [0.12, 0.12, 0.13], null)
+}
+
+/** the side walls and ceiling of a recess `w` wide at `u`, `d` deep, `h` tall: two reveals and a soffit */
+function q4wall(out: MeshBuilder, e: Edge, u: number, w: number, h: number, d: number, c: Rgb): void {
+  for (const s of [-1, 1]) {
+    const uu = u + (s * w) / 2
+    out.quad([on(e, uu, 0, 0), on(e, uu, 0, -d), on(e, uu, h, -d), on(e, uu, h, 0)], [-e.tx * s, 0, -e.tz * s], UVQ, c, ST)
+    out.quad([on(e, uu, h, 0), on(e, uu, h, -d), on(e, uu, 0, -d), on(e, uu, 0, 0)], [e.tx * s, 0, e.tz * s], UVQ, c, ST)
+  }
+  out.quad([on(e, u - w / 2, h, 0), on(e, u + w / 2, h, 0), on(e, u + w / 2, h, -d), on(e, u - w / 2, h, -d)], [0, -1, 0], UVQ, c, ST)
+  out.quad([on(e, u - w / 2, 0, -d), on(e, u + w / 2, 0, -d), on(e, u + w / 2, h, -d), on(e, u - w / 2, h, -d)], [e.nx, 0, e.nz], UVQ, [c[0] * 0.7, c[1] * 0.7, c[2] * 0.7], ST)
 }
 
 /** the part of `ring` on one side of the line x = x0 (Sutherland–Hodgman, one half-plane): `less` keeps x < x0 */
@@ -1464,8 +1552,7 @@ function clipX(ring: P2[], x0: number, less: boolean): P2[] {
  * - along Jefferson the row of one-storey boxes clad in black boards with rust-brick piers, white street numbers and
  *   planted roofs, each a shop — A PIECE OF THE CITY, PHONE REPAIR, MADE IN SAN FRANCISCO · ART & GIFT, KARANA Cultural
  *   Gift Shop, LIDS, PEARL FACTORY, MUSEUM OF 3D ILLUSIONS (Mapillary 1580290199612407, 1097001162403781,
- *   1308659187503332, 1508738680289115, 2025) — with the BURGERS & BEST PIES theatre marquee at the Mason end (the
- *   owner's report) and BIG BUS on the Mason corner (Mapillary 3837795086475776); the white light masts with spotlight
+ *   1308659187503332, 1508738680289115, 2025) — with a lime-and-purple HOODIES store at the Mason end (GUESSED) and BIG BUS on the Mason corner (Mapillary 3837795086475776); the white light masts with spotlight
  *   arms and shop boards hung from them; the white ZEPHYR pylon at the Powell end; the HOTEL ZEPHYR walk-through;
  * - behind the boxes THE YARD, the hotel's 8,000 sq ft courtyard (theaureview.com, bostonglobe.com 2016): fire pits made
  *   of recycled soda cans, a life-size Connect Four and Jenga, the city's biggest periscope, tube ping-pong, a vintage
@@ -1544,7 +1631,7 @@ export function zephyrHotel(out: MeshBuilder, fit: Fit): void {
     ['Aquamassage', 6, 4.4, { name: 'Aquamassage', sign: 'board', c: [0.1, 0.4, 0.6], ink: WHITE }],
     ['PHONE', 7, 4.8, { name: 'PHONE REPAIR', sub: 'APPLE · SAMSUNG', sign: 'box', c: [0.85, 0.1, 0.12], ink: WHITE, face: 'block' }],
     ['A PIECE OF THE CITY', 9, 5.2, { name: 'A Piece of the City', sub: 'SAN FRANCISCO GIFTS', sign: 'board', c: [0.96, 0.96, 0.94], ink: [0.1, 0.1, 0.12], face: 'slab' }],
-    ['BURGERS', 9, 5.2, null],
+    ['HOODIES', 9, 5.6, null],
     ['BIG BUS', 8, 5.4, { name: 'BIG BUS', sub: 'SAN FRANCISCO · TICKETS', sign: 'box', c: [0.96, 0.96, 0.94], ink: [0.75, 0.1, 0.25], face: 'block' }],
   ]
   const total = shops.reduce((a, x) => a + x[1], 0)
@@ -1560,7 +1647,8 @@ export function zephyrHotel(out: MeshBuilder, fit: Fit): void {
       signAt(out, e, u, 4.9, -0.2, { type: 'flat', text: 'HOTEL ZEPHYR', h: 0.32, w: w - 0.6, face: 'grotesque', weight: 'bold', colour: WHITE, lit: 'back', tracking: 0.15 })
       continue
     }
-    slab(out, e, u, -D / 2 + 0.1, 0, w - 0.25, h, D - 0.2, BLACK, WT)
+    const yb = name === 'HOODIES' ? 3.1 : 0                                          // (the hoodie store is open under its fascia)
+    slab(out, e, u, -D / 2 + 0.1, yb, w - 0.25, h - yb, D - 0.2, BLACK, WT)
     for (let x = -w / 2 + 0.4; x < w / 2 - 0.2; x += 0.6) panel(out, e, u + x, 0.02, 3.6, 0.04, h - 3.7, [0.13, 0.13, 0.14], WT)
     slab(out, e, u + w / 2 - 0.1, 0.05, 0, 0.75, 3.2, 0.4, RUST, BT)
     slab(out, e, u, -D / 2, h, w - 1.2, 0.35, D - 1.4, GREEN, FT)
@@ -1570,14 +1658,18 @@ export function zephyrHotel(out: MeshBuilder, fit: Fit): void {
     }
     signAt(out, e, u - w / 2 + 0.8, h - 0.9, 0.06, { type: 'flat', text: String(num), h: 0.32, w: 1.0, face: 'grotesque', weight: 'bold', colour: WHITE, lit: 'none' })
     num += 4
-    if (name === 'BURGERS') {
-      // the theatre marquee (the owner's report; no photograph): red box, chaser bulbs, white letterboard, a crest
-      const MO = 2.2
-      slab(out, e, u, MO / 2, 3.4, w - 0.6, 1.3, MO, [0.72, 0.1, 0.12], MT)
-      slab(out, e, u, MO + 0.02, 3.55, w - 1.2, 1.0, 0.04, [0.97, 0.95, 0.88], MT)
-      signAt(out, e, u, 4.3, MO + 0.07, { type: 'flat', text: 'BURGERS & BEST PIES', h: 0.32, w: w - 1.5, face: 'condensed', weight: 'bold', colour: [0.75, 0.08, 0.1], lit: 'back', tracking: 0.08 })
-      signAt(out, e, u, 3.82, MO + 0.07, { type: 'flat', text: 'OPEN DAILY · SHAKES · FRIES', h: 0.16, w: w - 1.5, face: 'condensed', colour: [0.15, 0.15, 0.15], lit: 'back' })
-      for (const y of [3.42, 4.68]) bulbRow(out, on(e, u - w / 2 + 0.35, y, MO + 0.05), on(e, u + w / 2 - 0.35, y, MO + 0.05), 0.25, 0.04)
+    if (name === 'HOODIES') {
+      // ANOTHER hoodie store, lime and purple (GUESSED: the slot where an earlier pass put BURGERS & BEST PIES, which the
+      // owner's Street View shows across Mason on the Wax Museum building): the black box cut open under a lime fascia
+      const LIME: Rgb = [0.55, 0.85, 0.12], PURP: Rgb = [0.42, 0.12, 0.6]
+      openFront(out, e, u, w - 1.2, 0, 3.1, { kind: 'goods', seed: 9, depth: D - 0.8, back: [0.92, 0.9, 0.95] })
+      for (const sd of [-1, 1]) slab(out, e, u + sd * (w / 2 - 0.35), -0.1, 0, 0.45, 3.2, 0.3, PURP, MT)
+      slab(out, e, u, 0.15, 3.1, w - 0.3, 1.6, 0.35, LIME, MT)
+      signAt(out, e, u, 4.15, 0.34, { type: 'flat', text: 'HOODIES', h: 0.7, w: w - 1.0, face: 'block', colour: PURP, halo: WHITE, lit: 'front' })
+      signAt(out, e, u, 3.42, 0.34, { type: 'flat', text: '3 for $25  ·  SAN FRANCISCO', h: 0.22, w: w - 1.2, face: 'grotesque', weight: 'bold', colour: [0.1, 0.1, 0.12], lit: 'front' })
+      blade(out, e, u - w / 2 + 0.4, 3.2, 3.6, PURP, 'SALE', LIME, true, 0.9)
+      for (const k of [-0.25, 0.25]) hoodieRack(out, e, u + k * w, 1.3, groundOn(fit, e, u + k * w, 1.3), num + (k > 0 ? 1 : 0), k > 0 ? '$15' : '3/$25')
+      aFrame(out, e, u, 2.3, groundOn(fit, e, u, 2.3), LIME, '3 FOR $25', PURP)
       continue
     }
     if (shop) loudShop(out, e, u, w - 0.9, 0, 3.6, shop, num)
@@ -1715,9 +1807,13 @@ export function zephyrHotel(out: MeshBuilder, fit: Fit): void {
 export function ripleys(out: MeshBuilder, fit: Fit): void {
   const FRONT = 351
   const ring = towerRing(fit)
-  const RED: Rgb = [0.78, 0.1, 0.12], REDD: Rgb = [0.6, 0.07, 0.09], SKY: Rgb = [0.55, 0.72, 0.88], YEL: Rgb = [1.0, 0.8, 0.12]
+  const RED: Rgb = [0.78, 0.1, 0.12], REDD: Rgb = [0.6, 0.07, 0.09], SKY: Rgb = [0.55, 0.72, 0.88]
   const G = 4.2, SP = 10.4, H = 13.2
-  faceBand(out, ring, 0, H - 0.4, { kind: 'blank', wall: REDD, material: 'stucco' })
+  const eJ = frontFacing(ring, FRONT, 351, 8), eT = frontFacing(ring, FRONT, 261, 8)
+  const skip = new Set<number>()
+  for (const e of [eJ, eT]) if (e) { const keep = new Set(offFront(ring, e)); ring.forEach((_, i) => { if (!keep.has(i)) skip.add(i) }) }
+  faceBand(out, ring, 0, G, { kind: 'blank', wall: REDD, material: 'stucco' }, ring.map((_, i) => i).filter((i) => !skip.has(i)))
+  faceBand(out, ring, G, H - 0.4, { kind: 'blank', wall: REDD, material: 'stucco' })
   capPolygon(out, ring, H - 0.4, [0.42, 0.42, 0.44], CT)
   let bay = 0
   for (const b of [351, 261]) {
@@ -1760,35 +1856,107 @@ export function ripleys(out: MeshBuilder, fit: Fit): void {
         ellipse(out, d, [e.tx, 0, e.tz], [0, 1, 0], [e.nx, 0, e.nz], 1.2, 1.0, 12, [0.75, 0.62, 0.48], MT)
       }
     }
-    // the ground floor: glass between the piers, WHARF CENTRAL's boards
-    panel(out, e, e.L / 2, 0.06, 0.2, e.L - 0.8, G - 0.9, [0.22, 0.25, 0.28], GT)
-    if (b === 261) {
-      // APPLEBEE'S on the Taylor arches: the red apple and the name in white on red
-      const au = e.L * 0.7
-      ellipse(out, on(e, au - 1.6, SP + 0.6, 0.12), [e.tx, 0, e.tz], [0, 1, 0], [e.nx, 0, e.nz], 0.55, 0.55, 14, [0.85, 0.1, 0.12], MT)
-      signAt(out, e, au + 0.6, SP + 0.6, 0.12, { type: 'flat', text: "Applebee's", h: 0.5, w: 3.6, face: 'grotesque', weight: 'bold', colour: WHITE, lit: 'self', halo: [0.6, 0.05, 0.08] })
-      shopRow(out, e, 0.6, e.L - 0.6, 0, G - 0.4, [
-        { name: 'WHARF CENTRAL', sub: 'T-SHIRTS · HOODIES · GIFTS', sign: 'board', c: WHITE, ink: [0.8, 0.1, 0.12], face: 'block', goods: true },
-        { name: 'WHARF CENTRAL', sub: 'SAN FRANCISCO SOUVENIRS', sign: 'board', c: WHITE, ink: [0.8, 0.1, 0.12], face: 'block', goods: true },
-      ], 91)
-    } else {
-      // the name across the Jefferson mural, and the silver fan-arch marquee over the door
-      signAt(out, e, e.L * 0.45, SP - 1.6, 0.16, { type: 'flat', text: "Ripley's Believe It or Not!", h: 0.85, w: e.L * 0.85, face: 'brush', colour: YEL, halo: [0.7, 0.08, 0.08], lit: 'self' })
-      const mu = e.L * 0.3, MW = 5.0
-      const SIL: Rgb = [0.8, 0.81, 0.83]
-      for (let j = 0; j < 10; j++) {
-        const a0 = (j / 10) * Math.PI, a1 = ((j + 1) / 10) * Math.PI
-        const P = (a: number, rr: number): V3 => on(e, mu + Math.cos(a) * rr, G - 0.2 + Math.sin(a) * rr * 0.55, 1.2)
-        out.quad([P(a0, 0), P(a0, MW / 2), P(a1, MW / 2), P(a1, 0)], [e.nx, 0, e.nz], UVQ, j % 2 ? SIL : [0.65, 0.66, 0.7], MT)
-      }
-      slab(out, e, mu, 0.6, G - 0.5, MW + 0.6, 0.35, 1.3, SIL, MT)
-      signAt(out, e, mu, G + 0.45, 1.25, { type: 'flat', text: "Ripley's Believe It or Not!", h: 0.36, w: MW - 0.6, face: 'brush', colour: YEL, halo: [0.7, 0.08, 0.08], lit: 'self' })
-      bulbRow(out, on(e, mu - MW / 2, G - 0.32, 1.27), on(e, mu + MW / 2, G - 0.32, 1.27), 0.25)
-      shopRow(out, e, mu + MW / 2 + 0.6, e.L - 0.6, 0, G - 0.4, [
-        { name: 'WHARF CENTRAL', sub: 'GIFTS · APPAREL', sign: 'board', c: WHITE, ink: [0.8, 0.1, 0.12], face: 'block', goods: true },
-      ], 93)
-    }
+    if (b === 261) ripleysTaylor(out, fit, e, eJ, G, SP)
+    else ripleysJefferson(out, fit, e, G, SP)
   }
+  // the east wall over 155 Jefferson's roof, a painted billboard of its own
+  const eE = frontFacing(ring, FRONT, 81, 12)
+  if (eE) {
+    const u = eE.L * 0.55, w = Math.min(16, eE.L - 6)
+    panel(out, eE, u, 0.06, 7.4, w, 5.0, [0.98, 0.82, 0.12], MT)
+    panel(out, eE, u, 0.07, 7.6, w - 0.4, 0.5, RED, MT)
+    panel(out, eE, u, 0.07, 11.7, w - 0.4, 0.5, RED, MT)
+    signAt(out, eE, u, 10.2, 0.09, { type: 'flat', text: 'Believe It or Not!', h: 1.2, w: w - 1.2, face: 'brush', colour: RED, halo: WHITE, lit: 'front' })
+    signAt(out, eE, u, 8.55, 0.09, { type: 'flat', text: "RIPLEY'S ODDITORIUM · OPEN 10 AM – 10 PM", h: 0.38, w: w - 1.6, face: 'block', colour: [0.1, 0.1, 0.12], lit: 'front' })
+  }
+}
+
+/**
+ * Ripley's JEFFERSON ground floor, east to west (u from the east corner): PACIFIC FAIR SHOPS — two hoodie-and-souvenir
+ * shops under a grey shingled hood with a teal fascia, "HOODY 2 for $20" / "HOODY for $20" boards in red and black,
+ * racks of hoodies and a postcard spinner out front (owner's Street View 2026-10-17; which bays it holds is GUESSED) —
+ * then APPLEBEE'S red-framed glass corner where the red arcade begins (Mapillary 1289359246072032 and the owner's frame
+ * both show Applebee's name at the arcade's EAST end, by Pacific Fair, though its OSM node and address are on Taylor),
+ * Ripley's silver fan-arch marquee over its open lobby, and WHARF CENTRAL's open shops to the Taylor corner.
+ */
+function ripleysJefferson(out: MeshBuilder, fit: Fit, e: Edge, G: number, SP: number): void {
+  const RED: Rgb = [0.78, 0.1, 0.12], REDD: Rgb = [0.6, 0.07, 0.09], YEL: Rgb = [1.0, 0.8, 0.12], TEAL: Rgb = [0.1, 0.55, 0.58]
+  const L = e.L, SH = G - 0.4
+  const PF = Math.min(11, L * 0.34), MW = 5.0, AW = Math.min(7, L * 0.22), au = PF + 0.3 + AW / 2, mu = PF + AW + 0.9 + MW / 2
+  const wc0 = mu + MW / 2 + 0.5, wc1 = L - 0.6
+  const pacific: (Shop & { w?: number })[] = [
+    { name: 'HOODY 2 for $20', sub: 'SWEATSHIRTS · JACKETS · T-SHIRTS', sign: 'board', c: WHITE, ink: [0.82, 0.06, 0.08], face: 'block', goods: true, open: true },
+    { name: 'HOODY for $20', sub: 'SAN FRANCISCO · ALCATRAZ', sign: 'board', c: [0.08, 0.08, 0.09], ink: [0.98, 0.84, 0.12], face: 'block', goods: true, open: true },
+  ]
+  const wharfC: (Shop & { w?: number })[] = [
+    { name: 'WHARF CENTRAL', sub: 'GIFTS · APPAREL', sign: 'box', c: [0.12, 0.3, 0.7], ink: WHITE, face: 'block', goods: true, open: true },
+  ]
+  const holes: [number, number, number][] = [
+    ...shopRowHoles(0.4, PF, SH, pacific),
+    [mu, MW - 1.2, G - 0.9],
+    ...(wc1 - wc0 > 3 ? shopRowHoles(wc0, wc1, SH, wharfC) : []),
+    [au, AW - 0.7, G - 0.6],
+  ]
+  openWall(out, e, 0, G, holes, REDD, ST)
+  shopRow(out, e, 0.4, PF, 0, SH, pacific, 41)
+  if (wc1 - wc0 > 3) shopRow(out, e, wc0, wc1, 0, SH, wharfC, 93)
+  // Pacific Fair's shingled hood, its teal fascia lettered, the hoodies hung under it
+  const hy = G + 0.1, hd = 1.5
+  out.quad([on(e, 0.2, hy + 1.0, 0.05), on(e, PF + 0.2, hy + 1.0, 0.05), on(e, PF + 0.2, hy, hd), on(e, 0.2, hy, hd)], [e.nx * 0.55, 0.83, e.nz * 0.55], UVQ, [0.38, 0.39, 0.42], surfaceTag('tile'))
+  for (const uu of [0.2, PF + 0.2]) out.quad([on(e, uu, hy, 0.05), on(e, uu, hy, hd), on(e, uu, hy + 1.0, 0.05), on(e, uu, hy + 1.0, 0.05)], [e.tx, 0, e.tz], UVQ, [0.3, 0.31, 0.33], surfaceTag('tile'))
+  slab(out, e, PF / 2 + 0.2, hd, hy - 0.5, PF, 0.5, 0.08, TEAL, WT)
+  signAt(out, e, PF / 2 + 0.2, hy - 0.25, hd + 0.05, { type: 'flat', text: 'PACIFIC FAIR SHOPS', h: 0.27, w: PF - 1, face: 'roman', weight: 'bold', colour: WHITE, lit: 'front', tracking: 0.12 })
+  for (let k = 0; k < Math.floor(PF / 0.6); k++) {
+    const c = HOODIE[(k * 3) % HOODIE.length], hu = 0.6 + k * 0.6
+    panel(out, e, hu, hd - 0.05, hy - 1.35, 0.48, 0.8, c, WT)
+  }
+  placard(out, e, PF * 0.25, G + 1.4, 0.2, 2.6, 1.2, [0.82, 0.06, 0.08], 'HOODY $20', WHITE, '2 FOR $20 · ALL SIZES')
+  placard(out, e, PF * 0.75, G + 1.4, 0.2, 2.6, 1.2, [0.98, 0.84, 0.12], 'SALE', [0.82, 0.06, 0.08], 'HOODIES · TEES · HATS')
+  for (const k of [0, 1]) hoodieRack(out, e, 1.8 + k * (PF / 2), 1.5, groundOn(fit, e, 2 + k * 5, 1.5), 4 + k, k ? '2/$20' : '$20')
+  postcardSpinner(out, e, PF - 1.0, 1.1, groundOn(fit, e, PF - 1, 1.1), 2)
+  aFrame(out, e, PF * 0.5, 2.2, groundOn(fit, e, PF * 0.5, 2.2), [0.82, 0.06, 0.08], 'HOODY $20', WHITE)
+  // Ripley's lobby and the silver fan-arch marquee over it
+  openFront(out, e, mu, MW - 1.2, 0, G - 0.9, { kind: 'goods', seed: 7, depth: 3.0, back: [0.3, 0.12, 0.35] })
+  const SIL: Rgb = [0.8, 0.81, 0.83]
+  for (let j = 0; j < 10; j++) {
+    const a0 = (j / 10) * Math.PI, a1 = ((j + 1) / 10) * Math.PI
+    const P = (a: number, rr: number): V3 => on(e, mu + Math.cos(a) * rr, G - 0.2 + Math.sin(a) * rr * 0.55, 1.2)
+    out.quad([P(a0, 0), P(a0, MW / 2), P(a1, MW / 2), P(a1, 0)], [e.nx, 0, e.nz], UVQ, j % 2 ? SIL : [0.65, 0.66, 0.7], MT)
+  }
+  slab(out, e, mu, 0.6, G - 0.5, MW + 0.6, 0.35, 1.3, SIL, MT)
+  signAt(out, e, mu, G + 0.45, 1.25, { type: 'flat', text: "Ripley's Believe It or Not!", h: 0.36, w: MW - 0.6, face: 'brush', colour: YEL, halo: [0.7, 0.08, 0.08], lit: 'self' })
+  bulbLine(out, on(e, mu - MW / 2, G - 0.32, 1.27), on(e, mu + MW / 2, G - 0.32, 1.27), 0.25, 0.05)
+  blade(out, e, mu + MW / 2 + 0.2, G + 1.2, 4.8, RED, 'RIPLEYS', YEL, true, 1.0, 'block')
+  // the name across the Jefferson mural
+  signAt(out, e, L * 0.45, SP - 1.6, 0.16, { type: 'flat', text: "Ripley's Believe It or Not!", h: 0.85, w: L * 0.85, face: 'brush', colour: YEL, halo: [0.7, 0.08, 0.08], lit: 'self' })
+  applebeesCorner(out, e, au, AW, G)
+}
+
+/** APPLEBEE'S glass corner: an open lit dining room behind red mullions, a red fascia with the apple and the name */
+function applebeesCorner(out: MeshBuilder, e: Edge, u: number, w: number, G: number): void {
+  const RED: Rgb = [0.78, 0.06, 0.1]
+  openFront(out, e, u, w - 0.7, 0, G - 0.6, { kind: 'dining', seed: 3, depth: 3.6, back: [0.6, 0.35, 0.25], seat: [0.55, 0.1, 0.1], cloth: [0.3, 0.2, 0.14] })
+  for (let k = 0; k <= 4; k++) slab(out, e, u - (w - 0.7) / 2 + (k * (w - 0.7)) / 4, 0.1, 0, 0.12, G - 0.6, 0.12, RED, MT)
+  for (const y of [0.5, G - 0.75]) slab(out, e, u, 0.1, y, w - 0.6, 0.1, 0.12, RED, MT)
+  slab(out, e, u, 0.25, G - 0.6, w, 0.95, 0.4, RED, MT)
+  ellipse(out, on(e, u - w / 2 + 0.75, G - 0.12, 0.47), [e.tx, 0, e.tz], [0, 1, 0], [e.nx, 0, e.nz], 0.36, 0.36, 12, [0.98, 0.2, 0.2], MT)
+  tube(out, on(e, u - w / 2 + 0.75, G + 0.2, 0.48), on(e, u - w / 2 + 0.95, G + 0.42, 0.48), 0.04, 3, [0.2, 0.55, 0.2], MT)
+  signAt(out, e, u + 0.4, G - 0.13, 0.48, { type: 'flat', text: "Applebee's", h: 0.48, w: w - 1.9, face: 'grotesque', weight: 'bold', colour: WHITE, lit: 'self' })
+}
+
+/** Ripley's TAYLOR face: Applebee's apple on the arches, WHARF CENTRAL's open shops */
+function ripleysTaylor(out: MeshBuilder, _fit: Fit, e: Edge, _eJ: Edge | null, G: number, SP: number): void {
+  const L = e.L, SH = G - 0.4
+  const shops: (Shop & { w?: number })[] = [
+    { name: 'WHARF CENTRAL', sub: 'T-SHIRTS · HOODIES · GIFTS', sign: 'board', c: WHITE, ink: [0.8, 0.1, 0.12], face: 'block', goods: true, open: true },
+    { name: 'WHARF CENTRAL', sub: 'SAN FRANCISCO SOUVENIRS', sign: 'board', c: WHITE, ink: [0.8, 0.1, 0.12], face: 'block', goods: true, open: true },
+  ]
+  openWall(out, e, 0, G, shopRowHoles(0.6, L - 0.6, SH, shops), [0.6, 0.07, 0.09], ST)
+  shopRow(out, e, 0.6, L - 0.6, 0, SH, shops, 91)
+  // APPLEBEE'S on the Taylor arches: the red apple and the name in white on red
+  const ap = L * 0.7
+  ellipse(out, on(e, ap - 1.6, SP + 0.6, 0.12), [e.tx, 0, e.tz], [0, 1, 0], [e.nx, 0, e.nz], 0.55, 0.55, 14, [0.85, 0.1, 0.12], MT)
+  signAt(out, e, ap + 0.6, SP + 0.6, 0.12, { type: 'flat', text: "Applebee's", h: 0.5, w: 3.6, face: 'grotesque', weight: 'bold', colour: WHITE, lit: 'self', halo: [0.6, 0.05, 0.08] })
 }
 
 export const WHARF_LANDSIDE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {

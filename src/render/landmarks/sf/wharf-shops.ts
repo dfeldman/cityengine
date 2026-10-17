@@ -15,7 +15,8 @@ import { surfaceTag } from '../../cartoon-material.ts'
 import { sign, type SignSpec } from '../signage.ts'
 import { tower, towerRing, faceBand } from '../tower.ts'
 import { edgeAt, edgeFacing, boxAlong, offsetRing } from '../parts.ts'
-import { tube, lozenge, type V3 } from './wharf-carnival.ts'
+import { tube, lozenge, ellipse, type V3 } from './wharf-carnival.ts'
+import { bulbLine, blade, placard, aFrame, hoodieRack, postcardSpinner, flagPole, panel } from './wharf-loud.ts'
 
 type P2 = { x: number; z: number }
 type Edge = ReturnType<typeof edgeAt>
@@ -115,7 +116,7 @@ function gridWindow(out: MeshBuilder, e: Edge, u: number, y0: number, w: number,
  */
 
 /** what an open bay holds */
-export type OpenKind = 'crab' | 'bar' | 'tables' | 'goods' | 'dining'
+export type OpenKind = 'crab' | 'bar' | 'tables' | 'goods' | 'dining' | 'gallery' | 'candy'
 export interface OpenSpec {
   kind: OpenKind
   /** how far the room goes in, metres (default 2.6) */
@@ -252,6 +253,34 @@ export function openFront(out: MeshBuilder, e: Edge, u: number, w: number, y0: n
       }
       break
     }
+    case 'gallery': {
+      // a white-walled fine-art room: framed canvases hung on the back wall and both reveals, each under a picture
+      // light, a plinth with a bronze in the middle
+      const n = Math.max(1, Math.min(4, Math.floor((w - 0.6) / 1.3)))
+      for (let k = 0; k < n; k++) {
+        const pu = u - (w - 0.6) / 2 + ((k + 0.5) * (w - 0.6)) / n, ph = 0.9 + 0.3 * ((seed + k) % 2)
+        slab(out, e, pu, -d + 0.05, y0 + 1.1, 0.95, ph, 0.05, [0.62, 0.5, 0.26], WT)
+        slab(out, e, pu, -d + 0.08, y0 + 1.16, 0.83, ph - 0.12, 0.02, GOODS[(seed + k * 3) % GOODS.length], MT)
+        slab(out, e, pu, -d + 0.35, y0 + 1.25 + ph, 0.4, 0.05, 0.05, WARM, EMIT)
+      }
+      for (const s2 of [-1, 1]) slab(out, e, u + s2 * (w / 2 - 0.05), -d * 0.5, y0 + 1.1, 0.04, 0.8, d * 0.45, GOODS[(seed + (s2 > 0 ? 2 : 5)) % GOODS.length], MT)
+      slab(out, e, u, -d * 0.5, y0, 0.5, 0.95, 0.5, [0.95, 0.95, 0.93], CT)
+      prism(out, on(e, u, 0, -d * 0.5)[0], on(e, u, 0, -d * 0.5)[2], y0 + 0.95, y0 + 1.55, 0.14, 6, [0.45, 0.32, 0.15], MT, 0.06)
+      break
+    }
+    case 'candy': {
+      // the candy store: walls of bins and giant lollipops, pink everywhere
+      for (let r = 0; r < 4; r++) {
+        const n = Math.max(2, Math.min(9, Math.round((w - 0.6) / 0.4)))
+        for (let k = 0; k < n; k++) slab(out, e, u - (w - 0.6) / 2 + ((k + 0.5) * (w - 0.6)) / n, -d + 0.15, y0 + 0.25 + r * 0.55, (w - 0.6) / n - 0.06, 0.4, 0.25, GOODS[(seed + k + r * 2) % 6], MT)
+      }
+      for (let k = 0; k < 3; k++) {
+        const p = on(e, u - w * 0.3 + k * w * 0.3, 0, -d * 0.45)
+        tube(out, [p[0], y0, p[2]], [p[0], y0 + 1.5, p[2]], 0.03, 4, WHITE, MT)
+        lozenge(out, [p[0], y0 + 1.75, p[2]], [tx, 0, tz], [0, 1, 0], [e.nx, 0, e.nz], 0.3, 0.3, 0.06, GOODS[(seed + k * 2) % 6], MT, 10)
+      }
+      break
+    }
   }
 }
 
@@ -281,123 +310,208 @@ export function flowerBasket(out: MeshBuilder, e: Edge, u: number, y: number): v
 }
 
 /**
- * THE JEFFERSON STREET ATTRACTIONS BLOCK, 105–145 Jefferson (way/288473107): the old Wax Museum building — a three-storey
- * front of buff brick with tall round-arched windows, a cream cornice and iron balconettes — and its shops. In the middle
- * IT'SUGAR: a tall arched window over the door, a curved magenta marquee with IT'SUGAR in white capitals across the foot
- * of the arch, a lit magenta box sign WORLD'S LARGEST CANDY DEPARTMENT STORE over the door and clusters of yellow bulbs
- * on the piers (Mapillary 1879093319539210). West of it the red MADAME TUSSAUDS fascia in yellow script under rows of
- * bulbs, with a vertical red banner (Commons "Madame Tussauds San Francisco"). East of it the San Francisco Chocolate
- * Store, a chocolate-brown fascia in gold over a striped awning (its OSM node; no photograph of the shopfront itself).
- * `front` 351 in the manifest: the Jefferson face is the ring's edge facing local −z.
+ * THE JEFFERSON STREET ATTRACTIONS BLOCK, 105–145 Jefferson (way/288473107): the old Wax Museum building — buff brick
+ * over a stone ground floor, tall round-arched windows, a cream cornice, iron balconettes, an American flag on a pole on
+ * the roof — and the loudest run of fronts on the Wharf (owner's Street View 2026-10-17, two frames: from the Jefferson &
+ * Mason corner, and straight across from Boudin). East to west, u from the Mason end:
+ * - BURGERS · Breakfast · BEST PIES: a diner under a red theatre marquee with chaser bulbs, a PIES blade and a GAME SHOW
+ *   blade over it, café tables out front (moved here from Zephyr's row, where an earlier pass put it without a photo);
+ * - the SAN FRANCISCO CHOCOLATE STORE under an arched brown sign ringed with bulbs;
+ * - IT'SUGAR in the great central arch: a huge curved hot-pink marquee with bulbs, two pink box signs WORLD'S LARGEST
+ *   CANDY DEPARTMENT STORE standing off the piers, the bay open on a pink candy hall, giant lollipops at the door;
+ * - THE ESCAPE GAME's black sign and GREAT BIG GAME SHOW's window graphics on the west bay (Madame Tussauds, drawn here
+ *   before, is gone — OSM nodes for both sit there);
+ * - at the west end two more souvenir fronts with flags (GUESSED: the owner's "a long row of more shops").
+ * On the Mason return, south of the $10 Hoodie Store, THE ESCAPE GAME's banners over the tall arched windows (photo 1).
+ * Every front is OPEN — a lit room behind the wall, no glass. `front` 351: the Jefferson face is the edge facing local
+ * −z, and along it u runs east to west; local −x is east.
  */
 export function jeffersonAttractions(out: MeshBuilder, fit: Fit): void {
   const BUFF: Rgb = [0.84, 0.72, 0.5], CREAM: Rgb = [0.93, 0.88, 0.76], SILL: Rgb = [0.8, 0.74, 0.62]
-  const MAG: Rgb = [0.78, 0.1, 0.42], MAGD: Rgb = [0.55, 0.06, 0.3], RED: Rgb = [0.66, 0.08, 0.1], YEL: Rgb = [0.98, 0.82, 0.25]
-  const CHOC: Rgb = [0.3, 0.17, 0.1], GOLD: Rgb = [0.9, 0.72, 0.32], IRON: Rgb = [0.16, 0.16, 0.17]
-  const H = fit.height > 9 && fit.height < 16 ? fit.height : 12
-  tower(out, { ...fit, height: H }, {
-    height: H,
-    base: { height: 4.4, face: { kind: 'punched', wall: SILL, glass: DARKGL, pitch: 4.6, floor: 4.4, solid: 0.3, material: 'ashlar' } },
-    tiers: [{ to: 1, face: { kind: 'punched', wall: BUFF, glass: [0.24, 0.28, 0.33], pitch: 4.2, floor: (H - 4.4) / 2, solid: 0.45, arched: true, material: 'brick' }, cornice: { depth: 0.45, height: 0.6, colour: CREAM } }],
-    cornices: [{ at: 4.4, depth: 0.3, height: 0.35, colour: CREAM }],
-    crown: { kind: 'parapet', height: 1.0, colour: CREAM, material: 'ashlar' },
-  })
+  const PINK: Rgb = [0.95, 0.18, 0.58], PINKD: Rgb = [0.62, 0.06, 0.36], RED: Rgb = [0.72, 0.08, 0.1], YEL: Rgb = [0.98, 0.82, 0.25]
+  const CHOC: Rgb = [0.3, 0.17, 0.1], GOLD: Rgb = [0.9, 0.72, 0.32], IRON: Rgb = [0.16, 0.16, 0.17], BLACK: Rgb = [0.06, 0.06, 0.07]
+  const H = fit.height > 9 && fit.height < 16 ? fit.height : 12, G = 4.4
   const ring = towerRing(fit)
   const e = frontEdge(ring)
   const L = e.L
-  const ui = L * 0.55, AW = 4.0
-  // the iron balconettes along the top floor, the length of the front
+  // the walls: stone ground floor (left out across the Jefferson front, which is cut open below), buff brick over it
+  // (every piece of the stepped front, and the jogs between them, within 3 m of the merged front line is left out of the
+  // ground floor: OSM draws the front as a sawtooth up to 2.5 m deep, and a recessed piece showed through the open bays)
+  const dFront = (p: P2): number => (p.x - e.a.x) * e.nx + (p.z - e.a.z) * e.nz
+  const ground = ring.map((_, i) => i).filter((i) => !(dFront(ring[i]) > -3 && dFront(ring[(i + 1) % ring.length]) > -3))
+  faceBand(out, ring, 0, G, { kind: 'punched', wall: SILL, glass: DARKGL, pitch: 4.6, floor: G, solid: 0.3, material: 'ashlar' }, ground)
+  faceBand(out, ring, G, H, { kind: 'punched', wall: BUFF, glass: [0.24, 0.28, 0.33], pitch: 4.2, floor: (H - G) / 2, solid: 0.45, arched: true, material: 'brick' })
+  faceBand(out, offsetRing(ring, 0.3), G - 0.1, G + 0.25, { kind: 'blank', wall: CREAM, material: 'ashlar' })
+  faceBand(out, offsetRing(ring, 0.45), H - 0.6, H, { kind: 'blank', wall: CREAM, material: 'ashlar' })
+  faceBand(out, ring, H, H + 1.0, { kind: 'blank', wall: CREAM, material: 'ashlar' })
+  capPolygon(out, ring, H + 0.05, [0.42, 0.42, 0.44], CT)
+  // where the fronts go
+  const ui = Math.max(27, Math.min(L * 0.5, L - 30)), AW = 4.0
+  const piers = [ui - AW - 1.2, ui + AW + 1.2]
+  const d0 = 0.5, d1 = Math.min(11.5, piers[0] - 10)                    // the diner
+  const c0 = d1 + 0.8, c1 = piers[0] - 1.2                                // the chocolate store
+  const g0 = piers[1] + 1.2, g1 = Math.min(L - 0.5, g0 + 12)             // the escape game / game show
+  const w0 = g1 + 0.8, w1 = L - 0.5                                       // the west shops
+  const westShops = w1 - w0 > 5 ? [[w0, (w0 + w1) / 2 - 0.2], [(w0 + w1) / 2 + 0.2, w1]] : []
+  const bay = (a: number, b: number): [number, number, number] => [(a + b) / 2, b - a - 0.6, G - 1.2]
+  const holes: [number, number, number][] = [bay(d0, d1), bay(c0, c1), [ui, AW * 2 - 0.6, G - 0.3], bay(g0, g1), ...westShops.map(([a, b]) => bay(a, b))]
+  openWall(out, e, 0, G, holes, SILL, AT)
+  // the iron balconettes along the top floor
   for (let u = 2; u < L - 2; u += 4.2) {
     if (Math.abs(u - ui) < AW + 3.6) continue
     slab(out, e, u, 0.35, H - 3.6, 2.4, 0.08, 0.7, IRON, MT)
     for (let k = 0; k <= 6; k++) slab(out, e, u - 1.2 + k * 0.4, 0.68, H - 3.52, 0.04, 0.9, 0.04, IRON, MT)
     slab(out, e, u, 0.68, H - 2.66, 2.4, 0.06, 0.06, IRON, MT)
   }
-  /*
-   * The three shops. The ring runs anticlockwise, so along the front edge u runs from the east corner to the west one:
-   * the Chocolate Store at the east end, It'Sugar a little west of the middle, Madame Tussauds the west third.
-   */
-  const ue = Math.min(L * 0.36, 26)
-  // -- IT'SUGAR: the arch, its surround, the curved marquee, the box sign, the bulb clusters
-  const AR = AW, AY = 5.2                                              // the arch's radius and springing
-  const piers = [ui - AW - 1.2, ui + AW + 1.2]
-  for (const pu of piers) {
-    slab(out, e, pu, 0.3, 0, 2.0, H - 0.4, 0.6, CREAM, AT)                       // the stone piers either side
-    // a cluster of yellow bulbs on a dark frame on each pier, high up
-    slab(out, e, pu, 0.66, H - 2.4, 1.3, 1.0, 0.12, IRON, MT)
-    for (let r = 0; r < 3; r++) for (let c = 0; c < 4; c++) { const p = on(e, pu - 0.45 + c * 0.3, H - 2.15 + r * 0.28, 0.76); box(out, p[0], p[1], p[2], 0.1, 0.1, 0.06, YEL, EMIT) }
+
+  // -- BURGERS · Breakfast · BEST PIES: the open diner, the red theatre marquee, the PIES and GAME SHOW blades
+  {
+    const u = (d0 + d1) / 2, w = d1 - d0
+    openFront(out, e, u, w - 0.6, 0, G - 1.2, { kind: 'dining', seed: 4, depth: 3.4, back: [0.95, 0.88, 0.7], seat: [0.75, 0.1, 0.12], cloth: [0.95, 0.95, 0.92] })
+    const MO = 2.2
+    slab(out, e, u, MO / 2, G - 1.1, w - 0.4, 1.7, MO, RED, MT)
+    slab(out, e, u, MO + 0.02, G - 0.95, w - 1.0, 1.4, 0.04, [0.97, 0.95, 0.88], MT)
+    signAt(out, e, u, G - 0.05, MO + 0.07, { type: 'flat', text: 'BURGERS', h: 0.42, w: w - 1.5, face: 'condensed', weight: 'bold', colour: RED, lit: 'back', tracking: 0.1 })
+    signAt(out, e, u, G - 0.5, MO + 0.07, { type: 'flat', text: 'Breakfast · BEST PIES', h: 0.26, w: w - 1.5, face: 'condensed', weight: 'bold', colour: [0.12, 0.12, 0.14], lit: 'back' })
+    for (const y of [G - 1.08, G + 0.58]) bulbLine(out, on(e, d0 + 0.3, y, MO + 0.05), on(e, d1 - 0.3, y, MO + 0.05), 0.25, 0.05)
+    blade(out, e, d0 + 1.6, G + 1.0, 4.4, RED, 'PIES', WHITE, true, 1.1)
+    blade(out, e, d1 - 1.2, G + 1.6, 5.4, [0.2, 0.15, 0.55], 'GAME SHOW', YEL, true, 1.0)
+    for (const k of [0.25, 0.75]) patioTable(out, e, d0 + w * k, 3.0, 0, [0.95, 0.95, 0.92], [0.12, 0.12, 0.13], RED, RED)
+    aFrame(out, e, u, 3.9, 0, BLACK, 'PIE OF THE DAY', WHITE)
   }
-  // the arch: dark glass filling a round head over a tall opening, mullions radiating, a stone ring round it
-  slab(out, e, ui, 0.08, 0, AW * 2, AY, 0.1, DARKGL, GT)
+
+  // -- the SAN FRANCISCO CHOCOLATE STORE: an arched brown sign ringed with bulbs over its open bay
+  {
+    const u = (c0 + c1) / 2, w = c1 - c0
+    openFront(out, e, u, w - 0.6, 0, G - 1.2, { kind: 'goods', seed: 6, depth: 3.0, back: [0.55, 0.38, 0.25] })
+    slab(out, e, u, 0.2, G - 1.2, w - 0.3, 0.9, 0.3, CHOC, WT)
+    const R = w / 2 - 0.2, S = 10, y0 = G - 0.3
+    for (let k = 0; k < S; k++) {
+      const a0 = (k / S) * Math.PI, a1 = ((k + 1) / S) * Math.PI
+      const P = (a: number, r: number): V3 => on(e, u + Math.cos(a) * r, y0 + Math.sin(a) * r * 0.42, 0.36)
+      out.quad([P(a0, R - 0.9), P(a0, R), P(a1, R), P(a1, R - 0.9)], [e.nx, 0, e.nz], UVQ, CHOC, WT)
+      bulbLine(out, P(a0, R + 0.03), P(a1, R + 0.03), 0.3, 0.05)
+    }
+    signAt(out, e, u, y0 + R * 0.42 - 0.45, 0.4, { type: 'flat', text: 'SAN FRANCISCO', h: 0.34, w: R * 1.3, face: 'roman', weight: 'bold', colour: GOLD, lit: 'front' })
+    signAt(out, e, u, G - 0.75, 0.37, { type: 'flat', text: 'CHOCOLATE STORE', h: 0.42, w: w - 1.0, face: 'roman', weight: 'bold', colour: GOLD, lit: 'front', tracking: 0.08 })
+    bulbLine(out, on(e, c0 + 0.2, G - 1.22, 0.37), on(e, c1 - 0.2, G - 1.22, 0.37), 0.3, 0.05)
+    placard(out, e, c0 + 0.6, 0.6, 0.08, 0.9, 1.3, CHOC, 'FREE', GOLD, 'SAMPLES')
+  }
+
+  // -- IT'SUGAR: the arch, its piers, the giant hot-pink marquee, the two pink box signs, the candy hall
+  for (const pu of piers) {
+    slab(out, e, pu, 0.3, 0, 2.0, H - 0.4, 0.6, CREAM, AT)
+    // bulb clusters high on each pier
+    slab(out, e, pu, 0.66, H - 2.4, 1.3, 1.0, 0.12, IRON, MT)
+    for (let r = 0; r < 3; r++) bulbLine(out, on(e, pu - 0.45, H - 2.15 + r * 0.28, 0.76), on(e, pu + 0.45, H - 2.15 + r * 0.28, 0.76), 0.3, 0.06, YEL)
+    // pink posters at eye level, lollipop artwork on them
+    slab(out, e, pu, 0.62, 0.8, 1.3, 2.4, 0.06, PINK, MT)
+    ellipse(out, on(e, pu, 2.3, 0.66), [e.tx, 0, e.tz], [0, 1, 0], [e.nx, 0, e.nz], 0.45, 0.45, 12, pu < ui ? [0.2, 0.75, 0.9] : YEL, MT)
+    signAt(out, e, pu, 1.25, 0.67, { type: 'flat', text: 'CANDY', h: 0.24, w: 1.1, face: 'block', colour: WHITE, lit: 'none' })
+    // the pink box sign standing off the pier, square to the street, both faces lettered
+    const p = on(e, pu, G + 2.6, 1.6), hd = e.heading + Math.PI / 2
+    boxAlong(out, p[0], p[1], p[2], 1.2, 0.9, 0.18, hd, PINK, MT)
+    for (const k of [0.4, 2.8]) tube(out, on(e, pu, G + 2.6 + (k > 1 ? 0.6 : -0.6), 0.6), on(e, pu, G + 2.6 + (k > 1 ? 0.6 : -0.6), 0.4 + k), 0.04, 4, IRON, MT)
+    for (const sd of [1, -1]) {
+      const h2 = hd + (sd > 0 ? 0 : Math.PI), x = p[0] + Math.sin(h2) * 0.19, z = p[2] + Math.cos(h2) * 0.19
+      sign(out, { type: 'flat', text: "WORLD'S LARGEST", h: 0.18, w: 2.1, face: 'grotesque', weight: 'bold', colour: WHITE, lit: 'back' }, { x, y: p[1] + 0.5, z, heading: h2 })
+      sign(out, { type: 'flat', text: 'CANDY', h: 0.42, w: 2.1, face: 'block', colour: YEL, lit: 'back' }, { x, y: p[1] + 0.02, z, heading: h2 })
+      sign(out, { type: 'flat', text: 'DEPARTMENT STORE', h: 0.16, w: 2.1, face: 'grotesque', weight: 'bold', colour: WHITE, lit: 'back' }, { x, y: p[1] - 0.5, z, heading: h2 })
+    }
+    bulbLine(out, on(e, pu, G + 1.72, 0.45), on(e, pu, G + 1.72, 2.75), 0.25, 0.05)
+    bulbLine(out, on(e, pu, G + 3.48, 0.45), on(e, pu, G + 3.48, 2.75), 0.25, 0.05)
+  }
+  // the candy hall under the arch, and glass in the arch over the marquee
+  openFront(out, e, ui, AW * 2 - 0.6, 0, G - 0.3, { kind: 'candy', seed: 1, depth: 4.0, back: [0.98, 0.72, 0.85] })
+  const AR = AW, AY = 5.2
+  slab(out, e, ui, 0.08, G, AW * 2, AY - G, 0.1, DARKGL, GT)
   const SEG = 14
   for (let k = 0; k < SEG; k++) {
     const a0 = (k / SEG) * Math.PI, a1 = ((k + 1) / SEG) * Math.PI
     const P = (a: number, r: number, o: number): V3 => on(e, ui + Math.cos(a) * r, AY + Math.sin(a) * r, o)
     out.quad([P(a0, 0, 0.14), P(a0, AR, 0.14), P(a1, AR, 0.14), P(a1, 0, 0.14)], [e.nx, 0, e.nz], UVQ, [0.2, 0.27, 0.36], GT)
     out.quad([P(a0, AR, 0.15), P(a0, AR + 0.7, 0.15), P(a1, AR + 0.7, 0.15), P(a1, AR, 0.15)], [e.nx, 0, e.nz], UVQ, CREAM, AT)
-    if (k % 2 === 0) { const m = P(a0, AR / 2, 0.17); boxAlong(out, m[0], m[1], m[2], 0.04, 0.04, 0.03, e.heading, IRON, MT); tube(out, P(a0, 0.1, 0.17), P(a0, AR, 0.17), 0.04, 4, IRON, MT) }
+    if (k % 2 === 0) tube(out, P(a0, 0.1, 0.17), P(a0, AR, 0.17), 0.04, 4, IRON, MT)
   }
-  for (let c = -2; c <= 2; c++) slab(out, e, ui + c * (AW / 2.5), 0.16, 4.6, 0.07, AY - 4.6, 0.05, IRON, MT)
-  // the marquee: a magenta band curved out over the street across the arch's foot, bulbs along its edges
-  const MY = 4.6, MD = 1.4, MW = AW + 1.6
+  // the marquee: a hot-pink band bowed out over the pavement across the arch's foot, rising in the middle, bulbs on both edges
+  const MY = 4.5, MD = 1.9, MW = AW + 2.6, MH = 1.8
   const MS = 12
   for (let k = 0; k < MS; k++) {
     const t0 = k / MS, t1 = (k + 1) / MS
-    const bow = (t: number): number => 0.35 + MD * Math.sin(t * Math.PI)       // how far out the band stands
-    const lift = (t: number): number => 0.9 * Math.sin(t * Math.PI)            // and it rises in the middle, like the arch
+    const bow = (t: number): number => 0.35 + MD * Math.sin(t * Math.PI)
+    const lift = (t: number): number => 1.1 * Math.sin(t * Math.PI)
     const u = (t: number): number => ui - MW + 2 * MW * t
     const Q = (t: number, dy: number): V3 => on(e, u(t), MY + lift(t) + dy, bow(t))
-    out.quad([Q(t0, 0), Q(t1, 0), Q(t1, 1.25), Q(t0, 1.25)], [e.nx, 0, e.nz], UVQ, MAG, MT)
-    out.quad([Q(t0, 1.25), Q(t1, 1.25), on(e, u(t1), MY + lift(t1) + 1.25, 0.2), on(e, u(t0), MY + lift(t0) + 1.25, 0.2)], [0, 1, 0], UVQ, MAGD, MT)
-    out.quad([Q(t0, 0), on(e, u(t0), MY + lift(t0), 0.2), on(e, u(t1), MY + lift(t1), 0.2), Q(t1, 0)], [0, -1, 0], UVQ, MAGD, MT)
-    bulbs(out, Q(t0, 0.06), Q(t1, 0.06), 0.4, 0.045)
-    bulbs(out, Q(t0, 1.2), Q(t1, 1.2), 0.4, 0.045)
+    out.quad([Q(t0, 0), Q(t1, 0), Q(t1, MH), Q(t0, MH)], [e.nx, 0, e.nz], UVQ, PINK, MT)
+    out.quad([Q(t0, MH), Q(t1, MH), on(e, u(t1), MY + lift(t1) + MH, 0.2), on(e, u(t0), MY + lift(t0) + MH, 0.2)], [0, 1, 0], UVQ, PINKD, MT)
+    out.quad([Q(t0, 0), on(e, u(t0), MY + lift(t0), 0.2), on(e, u(t1), MY + lift(t1), 0.2), Q(t1, 0)], [0, -1, 0], UVQ, PINKD, MT)
+    bulbLine(out, Q(t0, 0.08), Q(t1, 0.08), 0.35, 0.06)
+    bulbLine(out, Q(t0, MH - 0.08), Q(t1, MH - 0.08), 0.35, 0.06)
   }
-  signAt(out, e, ui, MY + 1.42, 0.35 + MD + 0.04, { type: 'flat', w: 2 * MW - 0.6, text: "IT'SUGAR", h: 0.8, face: 'grotesque', weight: 'bold', colour: [0.95, 0.93, 0.96], lit: 'self', tracking: 0.08 })
-  // the box sign over the door: magenta, gold lettering, bulbs round its face, on its two faces out and one side
-  slab(out, e, ui, 1.2, 2.7, 3.6, 1.5, 2.2, MAG, MT)
-  for (const [y0, y1] of [[2.72, 2.72], [4.18, 4.18]]) bulbs(out, on(e, ui - 1.8, y0, 2.33), on(e, ui + 1.8, y1, 2.33), 0.22, 0.035)
-  bulbs(out, on(e, ui - 1.8, 2.72, 2.33), on(e, ui - 1.8, 4.18, 2.33), 0.22, 0.035)
-  bulbs(out, on(e, ui + 1.8, 2.72, 2.33), on(e, ui + 1.8, 4.18, 2.33), 0.22, 0.035)
-  signAt(out, e, ui, 3.75, 2.36, { type: 'flat', w: 3.3, text: "WORLD'S LARGEST", h: 0.17, face: 'grotesque', weight: 'bold', colour: [0.98, 0.9, 0.9], lit: 'back' })
-  signAt(out, e, ui, 3.35, 2.36, { type: 'flat', w: 3.3, text: 'CANDY', h: 0.36, face: 'block', colour: YEL, lit: 'back', tracking: 0.05 })
-  signAt(out, e, ui, 2.95, 2.36, { type: 'flat', w: 3.3, text: 'DEPARTMENT STORE', h: 0.15, face: 'grotesque', weight: 'bold', colour: [0.98, 0.9, 0.9], lit: 'back' })
-  // candy posters on the piers, at eye level
-  for (const pu of piers) {
-    slab(out, e, pu, 0.62, 1.2, 1.1, 1.9, 0.06, MAG, MT)
-    slab(out, e, pu, 0.66, 1.3, 0.9, 1.7, 0.04, pu < ui ? [0.2, 0.35, 0.75] : [0.98, 0.95, 0.9], MT)
+  signAt(out, e, ui, MY + 1.1 + MH / 2, 0.35 + MD + 0.05, { type: 'flat', w: 2 * MW - 1.0, text: "IT'SUGAR", h: 1.15, face: 'grotesque', weight: 'bold', colour: WHITE, halo: PINKD, lit: 'self', tracking: 0.06 })
+  // giant lollipops either side of the door
+  for (const sd of [-1, 1]) {
+    const p = on(e, ui + sd * (AW - 0.4), 0, 0.9)
+    tube(out, [p[0], 0, p[2]], [p[0], 2.6, p[2]], 0.06, 5, WHITE, MT)
+    lozenge(out, [p[0], 3.1, p[2]], [e.tx, 0, e.tz], [0, 1, 0], [e.nx, 0, e.nz], 0.6, 0.6, 0.15, sd > 0 ? [0.3, 0.8, 0.95] : YEL, MT, 14)
+    for (let k = 0; k < 3; k++) ellipse(out, [p[0] + e.nx * 0.08, 3.1, p[2] + e.nz * 0.08], [e.tx, 0, e.tz], [0, 1, 0], [e.nx, 0, e.nz], 0.45 - k * 0.15, 0.45 - k * 0.15, 10, k % 2 ? WHITE : PINK, MT)
   }
-  // -- MADAME TUSSAUDS, the west third: a red fascia band in yellow script with bulb rows above and below it, a red
-  // vertical banner at the west end, red panels in the arched windows above
-  const t0 = Math.min(L - 4, piers[1] + 1.5), t1 = L - 1
-  const tw = t1 - t0, tm = (t0 + t1) / 2
-  if (tw > 6) {
-    slab(out, e, tm, 0.3, 3.4, tw, 1.6, 0.4, RED, MT)
-    // the canopy under it, grey, a row of bulbs on its lip
-    slab(out, e, tm, 1.1, 3.25, tw, 0.18, 2.0, [0.62, 0.62, 0.64], MT)
-    bulbs(out, on(e, t0, 3.3, 2.12), on(e, t1, 3.3, 2.12), 0.3, 0.05)
-    bulbs(out, on(e, t0, 5.08, 0.52), on(e, t1, 5.08, 0.52), 0.3, 0.05)
-    signAt(out, e, tm, 4.2, 0.52, { type: 'flat', w: tw - 1.2, text: 'Madame Tussauds', h: 0.75, face: 'brush', colour: YEL, lit: 'front' })
-    // the vertical banner, hung off the wall on a bracket, both faces
-    const bu = t1 - 1.5
-    slab(out, e, bu, 0.9, 5.6, 0.12, 5.0, 1.0, RED, MT)
-    for (const sd of [1, -1]) {
-      const p = on(e, bu + sd * 0.07, 8.1, 0.9)
-      sign(out, { type: 'flat', w: 0.9, text: 'TUSSAUDS', h: 0.36, face: 'didone', weight: 'bold', colour: YEL, lit: 'front', vertical: true },
-        { x: p[0], y: 8.1, z: p[2], heading: e.heading + (sd > 0 ? -Math.PI / 2 : Math.PI / 2) })
+  // the flag on the roof over the arch
+  flagPole(out, e, on(e, ui, H + 1.0, -1.2), 6.5)
+
+  // -- THE ESCAPE GAME / GREAT BIG GAME SHOW: black fascia, a lobby, the game show's graphics in the windows over it
+  {
+    const u = (g0 + g1) / 2, w = g1 - g0
+    openFront(out, e, u, w - 0.6, 0, G - 1.2, { kind: 'bar', seed: 2, depth: 3.4, back: [0.22, 0.12, 0.35], seat: [0.98, 0.75, 0.1] })
+    slab(out, e, u, 0.2, G - 1.2, w - 0.3, 1.0, 0.3, BLACK, MT)
+    signAt(out, e, u, G - 0.7, 0.37, { type: 'flat', text: 'THE ESCAPE GAME', h: 0.5, w: w - 1.2, face: 'grotesque', weight: 'bold', colour: WHITE, lit: 'back', tracking: 0.1 })
+    const PURP: Rgb = [0.38, 0.12, 0.62], BLUE: Rgb = [0.15, 0.45, 0.92]
+    for (let k = 0; k < 3; k++) {
+      const pu = g0 + w * (k + 0.5) / 3
+      panel(out, e, pu, 0.12, G + 0.8, w / 3 - 0.6, 2.6, [PURP, BLUE, PURP][k], MT)
+      bulbLine(out, on(e, pu - (w / 3 - 0.7) / 2, G + 3.35, 0.14), on(e, pu + (w / 3 - 0.7) / 2, G + 3.35, 0.14), 0.3, 0.05, YEL)
     }
-    tube(out, on(e, bu, 10.8, 0.05), on(e, bu, 10.6, 1.5), 0.04, 5, IRON, MT)
+    signAt(out, e, u, G + 2.55, 0.16, { type: 'flat', text: 'GREAT BIG', h: 0.6, w: w - 1.5, face: 'block', colour: YEL, halo: [0.1, 0.05, 0.2], lit: 'self' })
+    signAt(out, e, u, G + 1.45, 0.16, { type: 'flat', text: 'GAME SHOW', h: 0.75, w: w - 1.2, face: 'block', colour: WHITE, halo: [0.85, 0.1, 0.4], lit: 'self' })
+    placard(out, e, g0 + 0.7, 0.6, 0.08, 1.0, 1.6, BLACK, 'ESCAPE', [0.98, 0.55, 0.1], 'BOOK NOW · 60 MIN')
   }
-  // -- the SAN FRANCISCO CHOCOLATE STORE, the east end: brown fascia, gold letters, a cream-and-brown striped awning
-  const c0 = 1.0, c1 = Math.max(c0 + 6, Math.min(ue, piers[0] - 1.2))
-  const cm = (c0 + c1) / 2, cw = c1 - c0
-  slab(out, e, cm, 0.25, 3.5, cw, 0.9, 0.3, CHOC, WT)
-  signAt(out, e, cm, 3.95, 0.42, { type: 'flat', w: cw - 0.6, text: 'San Francisco Chocolate Store', h: 0.55, face: 'roman', weight: 'bold', colour: GOLD, lit: 'front' })
-  const stripes = Math.max(4, Math.round(cw / 0.6))
-  for (let k = 0; k < stripes; k++) {
-    const u0 = c0 + (cw * k) / stripes, u1 = c0 + (cw * (k + 1)) / stripes
-    out.quad([on(e, u0, 3.4, 0.4), on(e, u1, 3.4, 0.4), on(e, u1, 2.75, 1.6), on(e, u0, 2.75, 1.6)], [e.nx * 0.5, 0.85, e.nz * 0.5], UVQ, k % 2 ? CREAM : CHOC, WT)
-    out.quad([on(e, u0, 2.75, 1.6), on(e, u1, 2.75, 1.6), on(e, u1, 2.45, 1.6), on(e, u0, 2.45, 1.6)], [e.nx, 0, e.nz], UVQ, k % 2 ? CREAM : CHOC, WT)
+
+  // -- the west end: two more souvenir fronts with flags (GUESSED)
+  const WEST: [string, string, Rgb, Rgb][] = [['SF GIFTS', 'HOODIES $12.99 · MAGNETS', [0.1, 0.35, 0.75], WHITE], ['ALCATRAZ', 'T-SHIRTS · HOODIES · HATS', [0.98, 0.5, 0.08], BLACK]]
+  westShops.forEach(([a, b], k) => {
+    const u = (a + b) / 2, w = b - a, [name, sub, c, ink] = WEST[k]
+    openFront(out, e, u, w - 0.6, 0, G - 1.2, { kind: 'goods', seed: 11 + k, depth: 3.0, back: [0.92, 0.9, 0.85] })
+    slab(out, e, u, 0.2, G - 1.2, w - 0.3, 1.0, 0.3, c, MT)
+    signAt(out, e, u, G - 0.6, 0.37, { type: 'flat', text: name, h: 0.42, w: w - 0.9, face: 'block', colour: ink, lit: 'front' })
+    signAt(out, e, u, G - 1.0, 0.37, { type: 'flat', text: sub, h: 0.14, w: w - 1.0, face: 'grotesque', weight: 'bold', colour: ink, lit: 'front' })
+    hoodieRack(out, e, u - w * 0.22, 1.4, 0, 6 + k, k ? '$15' : '$12.99')
+    postcardSpinner(out, e, u + w * 0.25, 1.1, 0, 5 + k)
+  })
+  // flags out from the first floor along the west half, banners between them
+  const FLAGS: Rgb[] = [[0.85, 0.1, 0.15], [0.98, 0.8, 0.15], [0.15, 0.45, 0.85], [0.95, 0.45, 0.65], [0.2, 0.65, 0.35]]
+  let f = 0
+  for (let u = g0 + 1; u < L - 1; u += 4.2, f++) {
+    tube(out, on(e, u, G + 1.0, 0.05), on(e, u, G + 2.4, 1.6), 0.03, 4, IRON, MT)
+    const c = FLAGS[f % FLAGS.length]
+    out.quad([on(e, u, G + 2.35, 1.55), on(e, u, G + 1.55, 0.95), on(e, u, G + 0.75, 1.4), on(e, u, G + 1.55, 2.0)], [e.tx, 0, e.tz], UVQ, c, WT)
+    out.quad([on(e, u, G + 1.55, 2.0), on(e, u, G + 0.75, 1.4), on(e, u, G + 1.55, 0.95), on(e, u, G + 2.35, 1.55)], [-e.tx, 0, -e.tz], UVQ, c, WT)
+  }
+
+  // -- the Mason return (the edge facing east, south of the hoodie store): THE ESCAPE GAME's banners over its arches
+  let mi = -1
+  for (let i = 0; i < ring.length; i++) {
+    const q = edgeAt(ring, i)
+    if (q.L > 8 && q.nx < -0.9 && (mi < 0 || q.mid.x < edgeAt(ring, mi).mid.x)) mi = i
+  }
+  if (mi >= 0) {
+    const m = edgeAt(ring, mi)
+    const n = Math.max(1, Math.floor(m.L / 4.6))
+    for (let k = 0; k < n; k++) {
+      const u = (k + 0.5) * (m.L / n)
+      panel(out, m, u, 0.1, G + 0.5, m.L / n - 0.9, H - G - 1.3, k % 2 ? [0.06, 0.06, 0.07] : [0.95, 0.5, 0.08], WT)
+      slab(out, m, u, 0.14, H - 0.85, m.L / n - 0.7, 0.07, 0.07, IRON, MT)
+      signAt(out, m, u, G + (H - G) / 2, 0.13, { type: 'flat', text: k % 2 ? 'THE ESCAPE GAME' : 'ESCAPE', h: 0.5, w: m.L / n - 1.4, face: 'block', colour: k % 2 ? [0.95, 0.5, 0.08] : BLACK, lit: 'front', vertical: k % 2 === 0 })
+    }
   }
 }
 
