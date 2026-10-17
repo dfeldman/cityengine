@@ -17,6 +17,7 @@ import { TOWER_PRESETS } from './ring-tower.ts'
 import { ghirardelliSign } from './wharf.ts'
 import { WHARF_CARNIVAL } from './wharf-carnival.ts'
 import { WHARF_SHOPS } from './wharf-shops.ts'
+import { WHARF_LANDSIDE } from './wharf-landside.ts'
 import { PIER39_FRONTS } from './pier39-fronts.ts'
 import { FIDI_1 } from './districts/fidi-1.ts'
 import { FIDI_2 } from './districts/fidi-2.ts'
@@ -205,7 +206,7 @@ import { SCRATCH_3 } from './scratch-3.ts'
 
 export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   goldenGateBridge, goldenGateBridgeNear, sutroTower, sutroTowerNear, bayBridge, bayBridgeNear, transamericaPyramid, salesforceTower, coitTower, ferryBuilding, cityHall,
-  ...TOWER_PRESETS, fiveFiveFiveCalifornia, ...WHARF_CARNIVAL, ...WHARF_SHOPS, ...PIER39_FRONTS, ghirardelliSign, ...PIERS, sfmoma_151_third, metreon_135_fourth, ica_345_montgomery, columbusTower_916_kearny, palaceOfFineArts_3301_lyon,
+  ...TOWER_PRESETS, fiveFiveFiveCalifornia, ...WHARF_CARNIVAL, ...WHARF_SHOPS, ...WHARF_LANDSIDE, ...PIER39_FRONTS, ghirardelliSign, ...PIERS, sfmoma_151_third, metreon_135_fourth, ica_345_montgomery, columbusTower_916_kearny, palaceOfFineArts_3301_lyon,
   e12_stevensonPlace_149840694, e12_argenta_940206084,
   yerbaBuenaGardens, mosconeNorth, mosconeSkybridge, mosconeSouthDeck, mosconeOpenBridge,
   ...EMBARCADERO,
