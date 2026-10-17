@@ -10754,7 +10754,8 @@ GAME
   10× (filling the letters in) and Ghirardelli's bulbs off to one side. Ghirardelli's rooftop word is the GLB again
   (lit 'front': the bulbs glow, not the letter faces); Ripley's moved onto its Jefferson wall facing the street. Both
   re-uploaded to the asset bucket and verified in shots.
-- #312 Re-check and mark the older open reports (#282–#301): most are fixed; mark what is. OPEN.
+- #312 Re-check and mark the older open reports (#282–#301): DONE 2026-10-17 — all marked; left OPEN only #282 (needs
+  the screenshot's location), #284 (not reproduced; needs where), #289 terminal glass (outside the Wharf), #301 (owner to confirm).
 - #313 TRIPO.md: a list of organic shapes for the owner to make in Tripo (statues, Lotta's Fountain, lamp posts, ships,
   unique signs, the Japanese Tea Garden drum bridge…). STARTED (TRIPO.md, 12 rows); grows as the Wharf work finds more.
 
@@ -10804,7 +10805,7 @@ GAME
   [~] b. the street crab stands — crabStand ×3 at OSM's stand nodes (crabs on ice, cauldrons, striped awning, CRAB · SHRIMP · CHOWDER); the restaurants' neon signs with the shops survey
   [x] c. the ferris wheel — SkyStar (render/sf/ferris.ts turning + 36 upright gondolas + LEDs; skystarWheel landmark legs/deck/canopy); B boards the bottom gondola, one turn (150 s) with the camera in the cabin panning the bay, off at the bottom
   [x] d. the PIER 39 flag clusters (render/flags.ts: several flags a pole, streamers, black poles, the pier39 design; public/flags/san-francisco-placed.json), and pier39Gate with the blue PIER 39 board
-  [~] e. the Pier 39 activity centre — sfCarousel39 (two-tier carousel, striped canopy, turning horses via rotors) and pier39Stage (striped tent stage, booths) DONE; the Pier 39 buildings' own look (painted clapboard, gables, awnings) next
+  [~] e. the Pier 39 activity centre — sfCarousel39 (two-tier carousel, striped canopy, turning horses via rotors) and pier39Stage (striped tent stage, booths) DONE; the Pier 39 buildings' own look (siding, awnings, galleries, OSM's shop names) DONE 2026-10-17; the timber bridge over the main street with its blue 39 signs (pier39StreetBridge; the humped generic bridge suppressed in patches) DONE
   [~] f. the marinas full of boats — wharfMarinaPier39 / wharfMarinaWest / wharfLagoon: boats along OSM's own docks (wharf-docks.ts), crab boats in the lagoon; needs a review shot
   [~] g. the Aquarium of the Bay front — DONE 2026-10-16 (owner: "should have a big aquarium sign like it does irl"): royal-blue wall, AQUARIUM of the BAY in big white serif on the three longest walls, porthole murals (sea lion, fish, crab); the pretzel kiosk by it still to do
   [ ] h. the black storefronts round Hotel Zephyr, and Burgers & Best Pies' theatre sign
