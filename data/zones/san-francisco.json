@@ -5353,9 +5353,11 @@
   {
    "ref": "wharf-crowds",
    "name": "Fisherman's Wharf crowds",
+   "note": "owner, 2026-10-17: 'this area should have low car traffic, and a LOT of NPCs walking around... a fair/festival atmosphere'; 'very few cars on google street view'",
    "priority": 2,
    "props": {
-    "crowd": 4
+    "crowd": 7,
+    "traffic": 0.15
    },
    "ring": [
     [

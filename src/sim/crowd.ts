@@ -356,7 +356,12 @@ export class Crowd {
          * at a jog's 2.6–3.5 m/s they read as people walking briskly)
          */
         const trail = e.foot || this.zoneFactor(mid) > 1.2
-        if (roll < (trail ? 0.35 : 0.24)) {
+        /*
+         * (A zone of 3 or more is a FESTIVAL street, not a park — Fisherman's Wharf, owner 2026-10-17: "a fair/festival
+         * atmosphere", "so many people": a sightseeing throng strolls, and nobody jogs through it.)
+         */
+        const festival = this.zoneFactor(mid) >= 3
+        if (roll < (festival ? 0.02 : trail ? 0.35 : 0.24)) {
           this.walkers.push({ ...base, id: nextWalkerId++, side, kind: 'run', speed: trail ? 3.2 + r() * 1.4 : 2.6 + r() * 0.9,
             height: 0.95 + r() * 0.15, phase: r() * Math.PI * 2, ...dressed(r, true) })
           continue
