@@ -1125,6 +1125,12 @@ const P39_DECK_NORTH = 95
 // ---- the cycle lane --------------------------------------------------------------------------------------------------
 /** the lane's half-width, and how far from its middle no gallery post stands */
 const LANE_HALF = 0.9, LANE_CLEAR = 1.6
+/**
+ * The paint starts at the pier: the entrance pavers' south edge (37.8085732, regions.json). The way itself runs on out to
+ * join The Embarcadero, but painted there it lay across the street, its pavement and the streetcar island (owner,
+ * 2026-10-17: "bike lane from pier 39 goes into the road").
+ */
+const LANE_SOUTH = -146.6
 const LANE: Rgb = [0.2, 0.56, 0.3], LANE_PAINT: Rgb = [0.94, 0.94, 0.9]
 /** how far (x, z) is from the middle of the nearest of the bikeway's ways */
 function laneOff(x: number, z: number): number {
@@ -1157,7 +1163,7 @@ function cycleLane(out: MeshBuilder, pts: { x: number; z: number }[], gr: (x: nu
     return [x, gr(x, z) + dy, z]
   }
   for (let i = 1; i < pts.length; i++) {
-    if (!mine((pts[i - 1].z + pts[i].z) / 2)) continue
+    if (!mine((pts[i - 1].z + pts[i].z) / 2) || (pts[i - 1].z + pts[i].z) / 2 < LANE_SOUTH) continue
     out.quad([P(i - 1, LANE_HALF, 0.06), P(i, LANE_HALF, 0.06), P(i, -LANE_HALF, 0.06), P(i - 1, -LANE_HALF, 0.06)], [0, 1, 0], UVQ, LANE, TT)
     for (const o of [LANE_HALF - 0.04, -(LANE_HALF - 0.04)]) {
       out.quad([P(i - 1, o + 0.05, 0.075), P(i, o + 0.05, 0.075), P(i, o - 0.05, 0.075), P(i - 1, o - 0.05, 0.075)], [0, 1, 0], UVQ, LANE_PAINT, TT)
@@ -1169,7 +1175,7 @@ function cycleLane(out: MeshBuilder, pts: { x: number; z: number }[], gr: (x: nu
     const a = pts[i - 1], b = pts[i], L = Math.hypot(b.x - a.x, b.z - a.z)
     while (next <= run + L) {
       const f = (next - run) / L, cx = a.x + (b.x - a.x) * f, cz = a.z + (b.z - a.z) * f
-      if (mine(cz)) bicycle(out, cx, cz, ((b.x - a.x) / L) * flip, ((b.z - a.z) / L) * flip, gr)
+      if (mine(cz) && cz > LANE_SOUTH) bicycle(out, cx, cz, ((b.x - a.x) / L) * flip, ((b.z - a.z) / L) * flip, gr)
       next += 24
       flip = -flip
     }
