@@ -42,5 +42,19 @@ describe('liftWalksOffTheSea', () => {
     liftWalksOffTheSea([e], SEA, [{ ring: square(0, 0, 40), floating: false }], 3.5, (x) => wet(x))
     expect(e.heights).toEqual([-81.7, -81.7, -81.7])
   })
+  it('with the water given, a pier off LOW land is level with it, not lifted onto the generic deck (Pier 45, 2026-10-17)', () => {
+    // the Wharf's ground reads 0.1 m over the sea: the walks on it are land all the same, and the deck is theirs
+    const e = walk([SEA + 0.1, SEA + 0.1, SEA + 0.1])
+    const wet = (x: number): boolean => x > 10
+    liftWalksOffTheSea([e], SEA, [{ ring: square(0, 0, 40), floating: false }], 3.5, (x) => wet(x))
+    expect(e.heights.map((h) => +h.toFixed(2))).toEqual([SEA + 0.1, SEA + 0.1, SEA + 0.1].map((h) => +h.toFixed(2)))
+  })
+  it('with the water given, a walk off land onto a pier with no dry walks of its own keeps its land end\'s level', () => {
+    // the pier's outline only over the water (x > 10); the walk starts on land at SEA + 0.1
+    const e = walk([SEA + 0.1, -86, -86])
+    const wet = (x: number): boolean => x > 10
+    liftWalksOffTheSea([e], SEA, [{ ring: square(11, 0, 40), floating: false }], 3.5, (x) => wet(x))
+    expect(e.heights.map((h) => +h.toFixed(2))).toEqual([SEA + 0.1, SEA + 0.1, SEA + 0.1].map((h) => +h.toFixed(2)))
+  })
 })
 

@@ -621,7 +621,8 @@ export function liftWalksOffTheSea(edges: { id: number; kind?: string; tunnel?: 
   const onWater = (x: number, z: number, h: number): boolean => (wet ? wet(x, z) : h <= sea + 0.3)
   /*
    * A fixed pier that LEAVES FROM LAND is level with it (2026-10-04, the South Basin): where the outline takes in dry
-   * walks — the promenade, a building's arcade — its deck is the highest of them, held to 1.5–4.5 m over the sea; the
+   * walks — the promenade, a building's arcade — its deck is the highest of them, held to 1.5–4.5 m over the sea (0.05 m
+   * with the water given, where land that low is still known to be land); the
    * generic `deck` stood it 0.7 m over the promenade it joins.
    */
   const dry = boxes.map((b) => {
@@ -631,15 +632,28 @@ export function liftWalksOffTheSea(edges: { id: number; kind?: string; tunnel?: 
       if (!foot(e)) continue
       for (let i = 0; i < e.heights!.length; i++) {
         const x = e.points[i * 2], z = e.points[i * 2 + 1], h = e.heights![i]
-        if (onWater(x, z, h) || h <= sea + 0.3 || !within(b, x, z)) continue
+        // (with the water given, a walk off it is LAND however low: the Wharf's ground reads 0.1 m over the sea, and
+        //  Pier 45's walks were stood on the generic 3.5 m deck, a step up and down off the land — 2026-10-17)
+        if (onWater(x, z, h) || (!wet && h <= sea + 0.3) || !within(b, x, z)) continue
         top = Math.max(top, h)
       }
     }
-    return Number.isFinite(top) ? Math.min(sea + 4.5, Math.max(sea + 1.5, top)) : null
+    return Number.isFinite(top) ? Math.min(sea + 4.5, Math.max(wet ? sea + 0.05 : sea + 1.5, top)) : null
   })
   const changed = new Set<number>()
   for (const e of edges) {
     if (!foot(e)) continue
+    /*
+     * A pier with no dry walks inside its outline gets the generic deck — unless this walk itself comes off LAND (the
+     * water given): then its run over the water is level with its own dry end. Pier 45's apron by the chapel was stood
+     * 3.5 m up between two points on the Wharf's ground (2026-10-17).
+     */
+    let ownDry = -Infinity
+    if (wet) for (let i = 0; i < e.heights!.length; i++) {
+      const x = e.points[i * 2], z = e.points[i * 2 + 1]
+      if (!onWater(x, z, e.heights![i])) ownDry = Math.max(ownDry, e.heights![i])
+    }
+    const ownDeck = Number.isFinite(ownDry) ? Math.min(sea + 4.5, Math.max(sea + 0.05, ownDry)) : null
     for (let i = 0; i < e.heights!.length; i++) {
       const x = e.points[i * 2], z = e.points[i * 2 + 1], h = e.heights![i]
       if (!onWater(x, z, h)) continue
@@ -649,7 +663,7 @@ export function liftWalksOffTheSea(edges: { id: number; kind?: string; tunnel?: 
       boxes.forEach((b, k) => {
         if (!within(b, x, z)) return
         if (b.floating) floatAt = sea + 0.5
-        else deckAt = Math.max(deckAt ?? -Infinity, dry[k] ?? sea + deck)
+        else deckAt = Math.max(deckAt ?? -Infinity, dry[k] ?? ownDeck ?? sea + deck)
       })
       const want: number | null = deckAt ?? floatAt ?? (h < sea - 0.2 ? sea + 0.5 : null)
       if (want === null) continue
