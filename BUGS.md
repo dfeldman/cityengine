@@ -10498,7 +10498,7 @@ has a dead end or two where the rider turns round; the switchback road up to the
 owner.
 
 
-### #264 The street tunnels, owner's reports 2026-10-14 evening (MOSTLY FIXED; three left OPEN)
+### #264 The street tunnels, owner's reports 2026-10-14 evening (FIXED — every item below struck; re-checked 2026-10-17)
 
 The owner, with screenshots: Broadway's entrance "looks pretty bad all around" (open top over the bores, grass
 patches), inside it "stretched triangles" and "water"; at 37.791781 −122.407464 and 37.790789 −122.407254 (surface
@@ -10657,7 +10657,7 @@ scoreboard heading; Hilton Financial District reshaped and moved onto its tower 
 roads; Language of the Birds as a flying flock; subway entrances never inside buildings; 2 Folsom (Gap HQ) modelled.
 "1 Bryant Street": no such building in OSM or near Bryant & the Embarcadero — ask the owner which one.
 
-### #278 The skyline from the water (owner: "look at pictures of the skyline from the waterfront", 2026-10-16) — FIRST PASS
+### #278 The skyline from the water (owner: "look at pictures of the skyline from the waterfront", 2026-10-16) — FIRST PASS DONE; what is left (haze, hill heights #260) is OWNER DECISION
 
 Reference: Commons "View of the Ferry Building from Treasure Island, San Francisco dllu" (2026,
 docs/shots/refs/skyline/ti0.jpg). Game views from Treasure Island (2.9 km) and from the bay 1.2 km NE of the Ferry
@@ -10761,7 +10761,7 @@ GAME
 
 ### FOR THE OWNER — overnight 2026-10-17 (what needs your eye; every item deployed, each a commit to back out)
 
-Done tonight, all live (latest deploy 22d2ef7): Pier 39's timber bridge over the main street with its 39 signs; Pier 45's
+Done tonight, all live (latest deploy 8113d58): Pier 39's timber bridge over the main street with its 39 signs; Pier 45's
 sheds and Musée Mécanique; the Memorial Chapel; Hotel Zephyr's black storefronts; the IT'SUGAR / Tussauds block; In-N-Out;
 the Red & White booth; the pretzel kiosk; the Klamath propellers (stand-in); Scoma's; the Haslett Warehouse / Argonaut;
 Alioto's No. 8; Fishermen's Grotto No. 9; the Chowder Hut; the Buena Vista; Castagnola's; Cioppino's and California
@@ -10791,6 +10791,8 @@ Please look at / decide:
   3.4 m). Pier 14 on the Embarcadero now sits low over the water, level with the promenade — confirm that reads right.
 - Anchorage Square: no usable photo found; left generic.
 - Still waiting on you: #282 (where the retaining walls were), #284 (where cable cars got stuck), #301 (confirm).
+- Older bugs re-checked: #264 (tunnels) is fully fixed; #278 (skyline) is down to your calls on haze and hill heights;
+  #273 (Chinatown) is open-ended modelling outside the Wharf, left for when you want it.
 - Dandyhorse: restart `make serve` to pick up the end screen / bridge changes.
 
 Logged, not fixed:
