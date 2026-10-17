@@ -9,7 +9,7 @@
  *
  * Arithmetic on the baked package, not a render: the same heights the rider rides and the renderer draws.
  */
-import { readPackage } from './bake-files.ts'
+import { readPackage, readV2 } from './bake-files.ts'
 import { Projection } from '../src/city/geo.ts'
 import { Terrain } from '../src/city/terrain.ts'
 import { unpackPoints } from '../src/city/package.ts'
@@ -24,6 +24,8 @@ const near = opt('near')?.split(',').map(Number)
 const pkg = readPackage(city)
 const proj = new Projection(pkg.origin)
 const terrain = new Terrain(pkg.terrain)
+// (and each tile's FINE ground, as the game loads it: parks, the coast, the islands are drawn on it, not on the coarse grid)
+for (const t of readV2(city).tiles) { const [tx, tz] = t.key.split(',').map(Number); terrain.addTile(tx, tz, t.terrain) }
 const centre = near ? proj.toLocal({ lat: near[0], lon: near[1] }) : null
 
 type Hit = { id: number; name: string; depth: number; len: number; grade: number; lat: number; lon: number; foot: boolean }

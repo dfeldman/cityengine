@@ -10800,8 +10800,14 @@ GAME
   [ ] m. the survey: every other distinctive Wharf frontage (Wax Museum, Hard Rock, In-N-Out, Blue & Gold / Red & White
          Fleet ticket booths, Fish Alley, the Maritime Museum bathhouse, Lou's, The Anchorage…)
 - #298 Underground path at 37.790516 −122.410527 (owner, 2026-10-16: "more underground path here"; and "we should do
-  some checks for underground paths on steep hills"). OPEN.
-- #301 "Really bad intersection" at 37.791027 −122.399278 (owner, 2026-10-16). OPEN.
+  some checks for underground paths on steep hills"). FIXED: the bake's last height pass lifts every surface way back onto
+  the shipped ground (and adds a vertex where the ground humps over a chord): 1 155 ways lifted, 1 972 vertices added.
+  tools/underground.ts (city-wide check, fine ground loaded): 13 km buried before → 0 stretches deeper than 0.6 m.
+  Mason at Pine/Bush (the report) sits on the ground.
+- #301 "Really bad intersection" at 37.791027 −122.399278 (owner, 2026-10-16). IMPROVED: Market is mapped there as two
+  parallel ways each drawn 11 m with sidewalks laid over the other's roadway; narrowed to 7.5 m, no sidewalks between
+  (regions.json streetWidths). Left as it is: the plaza triangle between Market, Bush and Battery (real), buses meeting in
+  the junction box. Owner to confirm.
 - #300 Traffic lights' lit lamps out of their housings, e.g. 37.796241 −122.405121 (owner, 2026-10-16, night screenshot:
   the red lamp a dot on the mast arm above the head). FIXED: furniture is placed rigidly (the whole model at its post's
   ground) but the lit lamps took the ground under each lens — on a slope, up on the arm or under the head. Now the post's.
