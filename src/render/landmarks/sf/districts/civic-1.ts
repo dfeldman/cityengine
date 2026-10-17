@@ -54,7 +54,8 @@ export const CIVIC_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
       boxAlong(out, x, (4.2 + H) / 2 - 0.4, z, 1.1, (H - 4.2) / 2 - 1.6, 0.1, e.heading, [0.85, 0.2, 0.18], surfaceTag('metal'))
     }
     faceBand(out, ring, H, H + 1.2, { kind: 'blank', wall: RED, material: 'stucco' })
-    capPolygon(out, ring, H + 1.2, [0.5, 0.1, 0.1], 0)
+    // (a grey roof inside the red parapet: painted red, the colour grade made it a bright red slab from above — 2026-10-17)
+    capPolygon(out, ring, H + 1.2, [0.42, 0.42, 0.44], 0)
     /*
      * The arched canopy. Built with `beam`, which runs a strut between two arbitrary points in 3D: a row of
      * boxes cannot make an arch, because boxAlong only turns in plan, so each box stays level and the curve
