@@ -8562,6 +8562,15 @@
           "size": 4666160,
           "fileFormat": "glb",
           "extension": "glb",
+          "isProd": true,
+          "isDeleted": true
+        },
+        {
+          "filename": "asset-d799287622-sign-ghirardelli.glb",
+          "hash": "d79928762280fd6274f3e313141b2b6d9e1397080b22838b80e5bf5eed72156c",
+          "size": 4923532,
+          "fileFormat": "glb",
+          "extension": "glb",
           "isProd": true
         }
       ],
@@ -8593,6 +8602,15 @@
           "filename": "asset-3a236978a3-sign-ripleys.glb",
           "hash": "3a236978a308f4d5979ff3908980bc96b730ce75a9b0e0fbafb76a165d12fd45",
           "size": 1038216,
+          "fileFormat": "glb",
+          "extension": "glb",
+          "isProd": true,
+          "isDeleted": true
+        },
+        {
+          "filename": "asset-492bdd2372-sign-ripleys.glb",
+          "hash": "492bdd2372acfefdb1d54568c9281c6829b10d7f6c9d26c48cb4080b2748e8bc",
+          "size": 1038748,
           "fileFormat": "glb",
           "extension": "glb",
           "isProd": true
@@ -8635,6 +8653,16 @@
           "fileFormat": "png",
           "extension": "png",
           "isProd": true,
+          "isDeleted": true,
+          "localPath": "public/facades/atlas.png"
+        },
+        {
+          "filename": "asset-1e19b7b77c-facade-texture-atlas.png",
+          "hash": "1e19b7b77c4ab901a2ce1302d1bbb26b82151444a333990740f243cf10a6728c",
+          "size": 4325095,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
           "localPath": "public/facades/atlas.png"
         }
       ],
@@ -8672,6 +8700,16 @@
           "filename": "asset-d91241499a-facade-texture-atlas-sheet.png",
           "hash": "d91241499a5f1076090214d22dcb6766bf5fe23fe57f0974a3b65a538c32c09b",
           "size": 3982600,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "isDeleted": true,
+          "localPath": "public/facades/sheet.png"
+        },
+        {
+          "filename": "asset-62b1769331-facade-texture-atlas-sheet.png",
+          "hash": "62b1769331e9fe1ee06988b69ee475ef62bcd7e44512a7871d1bef78dabc9612",
+          "size": 4182444,
           "fileFormat": "png",
           "extension": "png",
           "isProd": true,
@@ -11424,6 +11462,66 @@
             "file": "sf_ficus_giant_03.glb",
             "bytes": 1253176
           }
+        }
+      }
+    },
+    {
+      "id": "facades-walls-wharf-far",
+      "name": "wharf far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "wharf far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-d8998bb81d-facade-wall-texture-wharf-far.png",
+          "hash": "d8998bb81d62e6c6103fccfaa4fe184f7fb1a3ad551fd56a60fea22b8fca2135",
+          "size": 38440,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/wharf-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/wharf-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-wharf",
+      "name": "wharf",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "wharf"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-b3959523cd-facade-wall-texture-wharf.png",
+          "hash": "b3959523cdb561de31a461148240aa1d6271457b911f3a696ec3ea5c3e98f6d3",
+          "size": 198407,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/wharf.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/wharf.png"
         }
       }
     }

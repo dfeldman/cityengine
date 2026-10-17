@@ -1806,6 +1806,107 @@
     "accent": "#24384a"
    }
   ]
+ },
+ {
+  "id": "wharf",
+  "name": "Fisherman's Wharf",
+  "note": "San Francisco's Fisherman's Wharf (owner, 2026-10-16: 'the feel of Fisherman's Wharf … does NOT need to be a perfect copy'): two- and three-storey restaurants and shops along Jefferson, Beach and Taylor, painted timber in sea-weathered white, pale blue, sea green, butter yellow and barn red, with the odd 1900s brick-red front. Big glazed shopfronts under striped canvas, fascia boards lettered SEAFOOD, CRAB, CHOWDER, GIFTS in bold poster letters, a life-ring or a ship's wheel by the sign; plain sash windows above under a simple cornice.",
+  "levels": [
+   2,
+   3
+  ],
+  "levelHeight": [
+   3.0,
+   3.4
+  ],
+  "groundHeight": [
+   3.9,
+   4.4
+  ],
+  "bayWidth": [
+   2.8,
+   3.6
+  ],
+  "pier": [
+   0.5,
+   0.8
+  ],
+  "window": {
+   "kind": "sash",
+   "widthFrac": [
+    0.46,
+    0.56
+   ],
+   "heightFrac": [
+    0.58,
+    0.68
+   ],
+   "sill": 0.12
+  },
+  "ground": "shopfront",
+  "top": "cornice",
+  "cornice": {
+   "depth": 0.4,
+   "height": 0.7
+  },
+  "stringCourse": true,
+  "palettes": [
+   {
+    "wall": "#f2efe6",
+    "trim": "#26394f",
+    "roof": "#5c6064",
+    "accent": "#b5352c"
+   },
+   {
+    "wall": "#b7cbd6",
+    "trim": "#f6f4ec",
+    "roof": "#566068",
+    "accent": "#22406a"
+   },
+   {
+    "wall": "#a3c2b1",
+    "trim": "#f4f1e6",
+    "roof": "#4d5a55",
+    "accent": "#2a5c46"
+   },
+   {
+    "wall": "#ecd79a",
+    "trim": "#fbf6e6",
+    "roof": "#6a6458",
+    "accent": "#22406a"
+   },
+   {
+    "wall": "#9c3d32",
+    "trim": "#f2e8d4",
+    "roof": "#5a3b33",
+    "accent": "#26394f"
+   },
+   {
+    "wall": "#a39684",
+    "trim": "#f3efe4",
+    "roof": "#4e4a46",
+    "accent": "#8f2b26"
+   },
+   {
+    "wall": "#f4f2ec",
+    "trim": "#2f4a66",
+    "roof": "#646a70",
+    "accent": "#26394f",
+    "ground": "#2f4a66"
+   },
+   {
+    "wall": "#c9d3d4",
+    "trim": "#b5352c",
+    "roof": "#5c6064",
+    "accent": "#b5352c"
+   },
+   {
+    "wall": "#b06450",
+    "trim": "#efe4cc",
+    "roof": "#5a4a40",
+    "accent": "#2a5c46"
+   }
+  ]
  }
   ]
 }

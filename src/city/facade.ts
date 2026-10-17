@@ -43,6 +43,8 @@ export type StyleId =
   | 'presidio' | 'presidioBrick'
   // Sausalito's (owner, 2026-10-06): Cape Cod cedar shingle
   | 'capecod'
+  // Fisherman's Wharf (owner, 2026-10-16): painted timber restaurants and gift shops under striped canvas
+  | 'wharf'
 
 export type GroundKind = 'shopfront' | 'stoop' | 'arcade' | 'glazed' | 'recessed' | 'plain' | 'garage'
 export type TopKind = 'cornice' | 'parapet' | 'mansard' | 'entablature' | 'flatband' | 'crown' | 'gable'
@@ -387,7 +389,14 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number): Wa
       // The variant stream is seeded from the bay and storey, so the same bay is the same on every re-bake but
       // its neighbour is not: this is what stops a wall of identical windows.
       const vr = rng(seed ^ (b * 73856093) ^ (s.index * 19349663))
-      const variant = vr()
+      /*
+       * …but a SHOP runs the width of its frontage (2026-10-17: three identical OYSTER BAR fascias side by side read as a
+       * glitch, and five paintings dealt out bay by bay set the same one beside itself one bay in five): on a shopfront
+       * ground floor, bays go in pairs, one painting a pair, the pairs' paintings stepping through the set so no two
+       * neighbouring shops are the same.
+       */
+      const shopGround = s.kind === 'ground' && plan.ground !== 'plain' && b !== carriageBay
+      const variant = shopGround ? ((rng(seed ^ 0x5e11)() + Math.floor(b / 2) * 0.381966) % 1) : vr()
 
       let element: string
       if (s.kind === 'ground' && b === carriageBay) element = `${plan.style}/carriage`

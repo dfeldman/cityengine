@@ -15,7 +15,7 @@ import ZONES from '../../../data/zones/san-francisco.json' with { type: 'json' }
 export type Archetype =
   | 'rowhouse' | 'marinaHouse' | 'apartment' | 'chinatown' | 'loft' | 'prewarOffice' | 'tower' | 'modern'
   | 'retailBox' | 'civic' | 'church' | 'hotel' | 'pier' | 'midcentury' | 'contemporary' | 'edwardianHouse'
-  | 'apartmentTower' | 'presidio' | 'presidioBrick' | 'capeCod'
+  | 'apartmentTower' | 'presidio' | 'presidioBrick' | 'capeCod' | 'wharf'
 
 export type District = keyof typeof DISTRICTS.districts
 
@@ -163,6 +163,16 @@ export function archetypeOf(f: Features): { archetype: Archetype; district: Dist
   }
   if (use === 'COMH' && h >= 20) return a('hotel', 'hotel-use')
   if (district === 'chinatown' && h < 26 && (!era || era === 'edwardian' || era === 'victorian' || era === 'interwar')) return a('chinatown', 'chinatown')
+  /*
+   * FISHERMAN'S WHARF (owner, 2026-10-16: "the feel of Fisherman's Wharf, with the unique buildings, restaurants,
+   * stores, and decorations … It does NOT need to be a perfect copy"): the low restaurants and gift shops of Jefferson,
+   * Beach and Taylor came out as SoMa's brick lofts and the city's flats, lettered PHARMACY and LAUNDRY. Every era —
+   * the Wharf's 1960s-70s tourist blocks are as much its look as the 1900s ones. Only the strip itself (WHARF_CORE:
+   * North Point to the water, Hyde to Powell — the nearest-seed district runs up Russian Hill and out to Alcatraz),
+   * and only the small ones: the Cannery, the Anchorage and the Pier 45 sheds (over 1 500 m2) stay brick. Pier 39 is
+   * landmark models and left out of the box. Landmarks, piers, churches and civic buildings are decided above.
+   */
+  if (district === 'wharf' && h < 26 && f.area <= 1500 && inWharfCore(f.lat, f.lon)) return a('wharf', 'wharf')
 
   // what the record says, where it says it
   if (era) {
@@ -228,6 +238,14 @@ function inBuiltZone(kind: string, lat: number, lon: number): boolean {
   }
   return false
 }
+/**
+ * Fisherman's Wharf's tourist strip, [lat, lon]: North Point Street (37.8064) to the water (37.8115), Hyde Street
+ * (-122.4232) to Powell (-122.4085), less Pier 39, 41 and 43 (north of Jefferson, east of -122.4125).
+ */
+const WHARF_CORE = { s: 37.8064, n: 37.8115, w: -122.4232, e: -122.4085, piers: { s: 37.8086, w: -122.4125 } }
+const inWharfCore = (lat: number, lon: number): boolean =>
+  lat >= WHARF_CORE.s && lat <= WHARF_CORE.n && lon >= WHARF_CORE.w && lon <= WHARF_CORE.e
+  && !(lat >= WHARF_CORE.piers.s && lon > WHARF_CORE.piers.w)
 /** the Main Post's brick barracks along Montgomery Street, by the Walt Disney Family Museum */
 const MAIN_POST = { lat: 37.8013, lon: -122.4590 }
 const near = (lat: number, lon: number, c: { lat: number; lon: number }, m: number): boolean =>
@@ -253,6 +271,7 @@ export const STYLE_OF: Record<Archetype, StyleId> = {
   presidio: 'presidio',
   presidioBrick: 'presidioBrick',
   capeCod: 'capecod',
+  wharf: 'wharf',
   midcentury: 'bauhaus',
   contemporary: 'bauhaus',
 }

@@ -54,10 +54,14 @@ CELL = 256          # one element's slot in the atlas
 BLEED = 8           # margin smeared with edge pixels so mips do not sample the neighbour
 ART = CELL - 2 * BLEED
 COLS = 8            # 8 across…
-ROWS = 17           # …by 17 down: 2048 × 4352 (a 17th row for the Presidio's two styles, 2026-10-02). It was 8 × 8 until the three American styles filled it; two
+ROWS = 19           # …by 19 down: 2048 × 4864 (a 17th row for the Presidio's two styles, 2026-10-02; an 18th and 19th for
+                    # the Wharf's five shopfronts and the generic storefront's five treatments, 2026-10-16). It was 8 × 8 until the three American styles filled it; two
                     # pages tall keeps every UV the manifest gives and needs nothing new of the material
 WALL = 512          # seamless material page
 VARIANTS = 3        # how many paintings of each element; the grammar picks between them per bay
+# ground storeys painted more than twice: the Wharf's five themed shopfronts, and the generic storefront's five treatments
+# where most of San Francisco's shops are (brick, tenement)
+GROUND_VARIANTS = {'wharf': 5, 'brick': 5, 'tenement': 5}
 
 
 def bleed(art: Image.Image) -> Image.Image:
@@ -120,7 +124,9 @@ def main() -> int:
         accent = draw.hex_rgb(st['palettes'][0]['accent'])
         for v in range(VARIANTS):
             place(f'{sid}/window', draw.WINDOWS[sid](ART, random.Random(args.seed + v * 977 + stable(sid) % 1000)))
-        for v in range(2):
+        # (the Wharf paints five shopfronts, not two: its fascias carry the district's words, and with two every
+        #  shop on Jefferson Street said CRAB or GIFTS)
+        for v in range(GROUND_VARIANTS.get(sid, 2)):
             place(f'{sid}/{st["ground"]}',
                   draw.ground_for(sid, st['ground'])(ART, random.Random(args.seed + 31 + v * 613 + stable(sid) % 1000), accent))
         if st['top'] == 'mansard':

@@ -40,4 +40,15 @@ describe('San Francisco building types from geometry and place (SF_PLAN.md §2)'
     ['a 1912 flat, Pacific Heights', f(37.7925, -122.4340, { height: 10, frontage: 8, record: rec(1912, 'MRES', 'D', 2) }), 'edwardianHouse'],
   ]
   for (const [name, feat, want] of withRecords) it(name, () => expect(archetypeOf(feat).archetype).toBe(want))
+
+  // Fisherman's Wharf (owner, 2026-10-16): the strip's low shops and restaurants, and only the strip
+  const wharf: [string, Features, string][] = [
+    ['a Jefferson Street seafood house', f(37.8082, -122.4160, { height: 9, area: 450, frontage: 15 }), 'wharf'],
+    ['a Beach Street gift shop, 1970s', f(37.8072, -122.4140, { height: 11, area: 800, frontage: 20, record: rec(1972, 'COMR', 'D') }), 'wharf'],
+    ['a 1910 brick shop on Taylor, small', f(37.8070, -122.4155, { height: 10, area: 700, frontage: 18, record: rec(1910, 'COMM', 'C') }), 'wharf'],
+    ['the Cannery-sized brick block stays a loft', f(37.8073, -122.4190, { height: 12, area: 2400, frontage: 40, depth: 60 }), 'loft'],
+    ['a house on Bay Street, Russian Hill side, is not the Wharf', f(37.8050, -122.4200, { height: 9, area: 150, frontage: 7 }), 'rowhouse'],
+    ['Pier 39 is left to its landmark models', f(37.8090, -122.4100, { height: 8, area: 300, frontage: 10 }), 'rowhouse'],
+  ]
+  for (const [name, feat, want] of wharf) it(name, () => expect(archetypeOf(feat).archetype).toBe(want))
 })

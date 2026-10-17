@@ -8,7 +8,7 @@
  */
 import type { PackedPoi } from './package.ts'
 
-export type ShopLanguage = 'fr' | 'en' | 'zh'
+export type ShopLanguage = 'fr' | 'en' | 'zh' | 'wharf'
 
 interface Vocabulary {
   /** a trade and the kind of board it gets; `%` is where a name goes, or it stands alone */
@@ -66,10 +66,32 @@ const ZH: Vocabulary = {
 }
 const ZH_EN = ['Golden Dragon', 'Sun Wah', 'Wing Lee', 'Wo Kee', 'Tung Hing', 'Fook Loy', 'Great China', 'Man Lee', 'Canton', 'Hung Wan', 'Mei Wah', 'Tai Wo']
 
+/**
+ * Fisherman's Wharf (owner, 2026-10-16): the seafood houses, crab stands and souvenir shops, never a laundry or a
+ * pharmacy. Invented — none of these is a real Wharf name (no Alioto's, Scoma's, Boudin, Castagnola's, Sabella's,
+ * Pompei's or Tarantino's): a family name or a sea word and a tourist trade.
+ */
+const WHARF: Vocabulary = {
+  trades: [
+    ['% Seafood', 'food'], ['%’s Crab House', 'food'], ['% Chowder', 'food'], ['% Fish & Chips', 'food'],
+    ['% Oyster Bar', 'food'], ['% Sourdough', 'food'], ['% Grill', 'food'], ['%’s Crab Stand', 'food'],
+    ['% Fish Market', 'food'], ['% Clam Shack', 'food'], ['% Cafe', 'food'], ['% Ice Cream', 'food'],
+    ['% Fudge Co.', 'food'], ['% Chocolates', 'food'], ['% Candy', 'shop'], ['% Saltwater Taffy', 'shop'],
+    ['% Gifts', 'shop'], ['% Souvenirs', 'shop'], ['% T-Shirts', 'shop'], ['% Trading Post', 'shop'],
+    ['% Arcade', 'culture'], ['% Photo', 'culture'], ['% Bay Cruises', 'service'], ['% Bike Rentals', 'service'],
+  ],
+  names: [
+    'Bay Street', 'Golden Gate', 'Pier Side', 'Harbor', 'Anchor', 'Lighthouse', 'Seagull', 'Sea Lion', 'Captain Joe',
+    'Old Wharf', 'Dockside', 'Fog City', 'Tidewater', 'Mariner', 'Salty Pete', 'Bayview', 'Frisco', 'Cable Car',
+    'Crab Pot', 'Netmender', 'Lucky Catch', 'Big Tony', 'Nonna Rosa', 'Lombardi', 'Ferrante', 'Bellini', 'Marino',
+    'Gianelli', 'Paolo', 'North Shore',
+  ],
+}
+
 /** `count` distinct invented names, the same ones every session for the same seed. */
 export function inventShopNames(lang: ShopLanguage, count: number, seed: number):
   { name: string; kind: PackedPoi['kind'] }[] {
-  const v = lang === 'fr' ? FR : lang === 'zh' ? ZH : EN
+  const v = lang === 'fr' ? FR : lang === 'zh' ? ZH : lang === 'wharf' ? WHARF : EN
   let a = seed >>> 0
   const r = (): number => {
     a = (a + 0x6d2b79f5) >>> 0

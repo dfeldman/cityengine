@@ -295,6 +295,26 @@ def wall_pressedbrick(size: int, rnd: random.Random) -> Image.Image:
     return Image.alpha_composite(img, dark)
 
 
+def wall_wharf(size: int, rnd: random.Random) -> Image.Image:
+    """Fisherman's Wharf (owner, 2026-10-16): painted shiplap, wider than a Victorian's clapboard, every board its
+    own sun-faded tone and broken by a butt joint here and there, with the salt air's soft blotching over it.
+    Painted pale with full tint so the palette makes it white, sea green or barn red."""
+    img = Image.new('RGBA', (size, size), (242, 240, 234, TINT))
+    d = ImageDraw.Draw(img)
+    board = size // 16
+    for y in range(0, size, board):
+        v = rnd.randint(-7, 5)
+        rect(d, [0, y, size, y + board - 1], (242 + v, 240 + v, 234 + v), TINT)
+        line(d, [(0, y), (size, y)], (196, 192, 184), TINT, 2)              # the shadow under the board above
+        line(d, [(0, y + 2), (size, y + 2)], (250, 249, 245), TINT, 1)
+        for _ in range(rnd.randint(0, 2)):                                   # a butt joint, wrapping in x
+            x = rnd.randrange(size)
+            line(d, [(x, y + 2), (x, y + board - 1)], (206, 202, 194), TINT, 1)
+    grain(img, rnd, 4)
+    blotches(img, rnd, 12, 9, 20, 70)
+    return img
+
+
 WALLS = {
     'haussmann': lambda s, r: wall_ashlar(s, r, course_px=s // 9),
     'classical': lambda s, r: wall_ashlar(s, r, course_px=s // 7),
@@ -320,6 +340,8 @@ WALLS = {
     'presidioBrick': wall_brick,
     # Sausalito's Cape Cod houses (owner, 2026-10-06): cedar shingle
     'capecod': wall_shingle,
+    # Fisherman's Wharf (owner, 2026-10-16): painted shiplap
+    'wharf': wall_wharf,
 }
 
 
@@ -328,14 +350,15 @@ WALLS = {
 # Every window is: a hole, the shadow the hole's reveal casts, glass, glazing bars, and a frame. Drawn in
 # that order, because each one sits on top of the last.
 
-def glass(img: Image.Image, box, rnd: random.Random, lit: float = 0.0) -> None:
+def glass(img: Image.Image, box, rnd: random.Random, lit: float = 0.0, dressing: bool = True) -> None:
     """Glass: a vertical gradient from the sky reflected at the top to the dark of the room at the bottom,
     with a soft reflection or two across it. `lit` warms it toward a room with a lamp on.
 
     The reflections are drawn on their own layer, blurred, and blended in weakly. An earlier version drew
     them as hard bright bars and every window in the city ended up wearing the same two white stripes — which
     is precisely the uniformity this generator exists to avoid. They vary in number, angle, position and
-    strength, and about one window in six has none at all.
+    strength, and about one window in six has none at all. `dressing=False`: no blind or curtains — a shop
+    window, whose display is painted separately.
     """
     d = ImageDraw.Draw(img)
     x0, y0, x1, y1 = box
@@ -371,6 +394,8 @@ def glass(img: Image.Image, box, rnd: random.Random, lit: float = 0.0) -> None:
     out.putalpha(Image.new('L', (w, h), GLASS))
     img.paste(out, (x0, y0))
 
+    if not dressing:
+        return
     if rnd.random() < 0.28:  # a blind pulled part-way down, which is what real windows do
         drop = int(h * rnd.uniform(0.15, 0.45))
         d.rectangle([x0, y0, x1, y0 + drop], fill=(224, 218, 204, KEEP))
@@ -766,6 +791,36 @@ def win_opera_glass(size, rnd):
     return img
 
 
+def win_wharf(size, rnd):
+    """Fisherman's Wharf, upstairs: a plain sash in a flat painted surround — six-over-six as often as one-over-one,
+    the frame white — and now and then a window box or a half-drawn blind. Offices and lofts over the restaurants,
+    nothing grand."""
+    img, d = _bay(size, rnd, (240, 237, 230))
+    w = int(size * 0.48); x0 = (size - w) // 2; y0 = int(size * 0.15); y1 = int(size * 0.8)
+    rect(d, [x0 - 9, y0 - 9, x0 + w + 9, y1 + 4], (250, 249, 246), TINT_HALF)   # the flat board surround
+    rect(d, [x0 - 13, y0 - 15, x0 + w + 13, y0 - 9], (250, 249, 246), TINT_HALF)  # its little head
+    reveal(d, (x0, y0, x0 + w, y1), 3)
+    glass(img, (x0 + 4, y0 + 4, x0 + w - 4, y1 - 4), rnd, lit=0.2 if rnd.random() < 0.3 else 0.0)
+    f = (246, 244, 238)
+    ym = (y0 + y1) // 2
+    if rnd.random() < 0.3:                                                   # a blind half down
+        rect(d, [x0 + 4, y0 + 4, x0 + w - 4, y0 + int((y1 - y0) * rnd.uniform(0.2, 0.45))], (226, 218, 196), KEEP)
+    rect(d, [x0 + 3, ym - 4, x0 + w - 3, ym + 4], f, KEEP)                    # the meeting rail
+    if rnd.random() < 0.5:                                                   # six over six
+        for t in (1 / 3, 2 / 3):
+            x = int(x0 + w * t)
+            line(d, [(x, y0 + 3), (x, y1 - 3)], f, KEEP, 2)
+    else:
+        rect(d, [x0 + w // 2 - 1, y0 + 3, x0 + w // 2 + 1, ym], f, KEEP)
+    d.rectangle([x0, y0, x0 + w, y1], outline=(*f, KEEP), width=4)
+    rect(d, [x0 - 12, y1 + 2, x0 + w + 12, y1 + 10], (250, 249, 246), TINT_HALF)   # sill
+    if rnd.random() < 0.2:                                                   # a window box
+        rect(d, [x0 - 4, y1 + 10, x0 + w + 4, y1 + 24], (120, 82, 54), KEEP)
+        for px0 in range(x0, x0 + w, 11):
+            d.ellipse([px0, y1 - 2, px0 + 13, y1 + 12], fill=(*rnd.choice([(196, 52, 48), (238, 196, 64), (70, 120, 60)]), KEEP))
+    return img
+
+
 WINDOWS = {
     'haussmann': win_french, 'brownstone': win_sash, 'classical': win_pedimented,
     'brick': win_punched, 'bauhaus': win_ribbon, 'brutalist': win_recessed, 'skyscraper': win_curtain,
@@ -784,6 +839,7 @@ WINDOWS = {
     'presidio': win_sash,
     'presidioBrick': win_sash,
     'capecod': win_sash,
+    'wharf': win_wharf,
 }
 
 
@@ -795,10 +851,10 @@ WINDOWS = {
 
 SIGN_WORDS_FR = ['BOULANGERIE', 'PÂTISSERIE', 'TABAC', 'PHARMACIE', 'FROMAGERIE', 'LIBRAIRIE', 'CAFÉ', 'BISTROT',
                  'FLEURS', 'OPTIQUE', 'BOUCHERIE', 'ÉPICERIE', 'CAVE', 'CHAPELIER', 'GALERIE', 'CRÉMERIE']
-# (English only: the shared list is what every non-Paris style paints, and BOULANGERIE, TABAC, PHARMACIE, OPTIQUE
-#  and FLEURS turned up over San Francisco's shops — BUGS.md #255, 2026-10-02)
-SIGN_WORDS = ['CAFÉ', 'BAKERY', 'DRUGS', 'PHARMACY', 'BOOKS', 'DELI', 'BAR', 'HARDWARE',
-              'LAUNDRY', 'OPTICAL', 'FLOWERS', 'LIQUORS', 'GROCERY', 'BANK', 'SALON', 'TAILOR']
+# (The shared English list — CAFÉ, BAKERY, DRUGS, PHARMACY, BOOKS, DELI, LAUNDRY, LIQUORS… — is gone, 2026-10-16. Owner:
+#  "I've never liked the PHARMACY/BOOKS/LAUNDRY generic signs, they actually are a holdover from our Paris modeling
+#  efforts". The generic shop is `ground_storefront` below: no category words; the real names come from OSM via
+#  src/render/signs.ts, and the painted front must not compete with them.)
 AWNING = [(168, 58, 48), (46, 82, 112), (58, 96, 62), (140, 116, 58), (96, 62, 96), (54, 54, 60)]
 
 
@@ -813,22 +869,24 @@ _FONTS_CJK = ['/System/Library/Fonts/STHeiti Medium.ttc', '/System/Library/Fonts
               '/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc']
 
 
-def _word(img, d, box, word, ink):
+def _word(img, d, box, word, ink, fonts=None):
     """A shop's word painted on its fascia in real letters — a serif as a sign-writer's — sized to fill the
     board. Painted blocks in place of letters read, close up, as a row of dashes (user: signs hard to read).
-    Falls back to the blocks if no font is found."""
+    Falls back to the blocks if no font is found. `fonts` is a style's own list of faces (a path, or a path
+    and the face's index in a .ttc), tried before the shared ones."""
     from PIL import ImageFont
     x0, y0, x1, y1 = box
     font = None
     # (characters take a Chinese face: Georgia has none and drew boxes)
     cjk = any(ord(ch) > 0x2E80 for ch in word)
-    for path in (_FONTS_CJK if cjk else _FONTS):
+    for entry in (_FONTS_CJK if cjk else [*(fonts or []), *_FONTS]):
+        path, index = entry if isinstance(entry, tuple) else (entry, 0)
         try:
             size = int((y1 - y0) * 0.72)
-            font = ImageFont.truetype(path, size)
+            font = ImageFont.truetype(path, size, index=index)
             while font.getlength(word) > (x1 - x0) * 0.92 and size > 8:
                 size -= 1
-                font = ImageFont.truetype(path, size)
+                font = ImageFont.truetype(path, size, index=index)
             break
         except OSError:
             font = None
@@ -845,19 +903,20 @@ def _word(img, d, box, word, ink):
     d.text(((x0 + x1) / 2, (y0 + y1) / 2 + 1), word, font=font, fill=(*ink, KEEP), anchor='mm')
 
 
-def _sign(d, box, rnd, fascia, words=None):
+def _sign(d, box, rnd, fascia, words):
     """A fascia board with a name on it. Drawn as blocks rather than glyphs — at the distance a rider sees it,
     letterforms are noise and the rhythm of a word is the whole signal."""
     x0, y0, x1, y1 = box
     rect(d, [x0, y0, x1, y1], fascia, KEEP)
     line(d, [(x0, y0), (x1, y0)], shade(fascia, 1.3), KEEP, 2)
-    word = rnd.choice(words or SIGN_WORDS)
+    word = rnd.choice(words)
     ink = (240, 236, 226) if sum(fascia) < 380 else (40, 38, 36)
     _word(None, d, (x0 + 6, y0 + 2, x1 - 6, y1 - 2), word, ink)
 
-def ground_shopfront(size, rnd, accent, words=None):
-    """Haussmann and brick: a glazed shop with a stall riser, a fascia sign above it, and about half the time
-    an awning out over the pavement."""
+def ground_shopfront(size, rnd, accent, words):
+    """A glazed shop with a stall riser, a fascia lettered with one of `words`, and about half the time an awning
+    out over the pavement. Only where the words ARE the place: Haussmann's French trades, Chinatown's characters.
+    Everywhere else the generic shop is `ground_storefront`."""
     img, d = _bay(size, rnd, (238, 234, 226))
     x0, x1 = int(size * 0.05), int(size * 0.95)
     fascia_y = int(size * 0.2)
@@ -1163,10 +1222,305 @@ def ground_chinatown(size, rnd, accent):
     return img
 
 
+# Fisherman's Wharf (owner, 2026-10-16): the seafood stands and the souvenir shops, and nothing a neighbourhood has
+# (the style paints five shopfront cells, one from each group in turn, so the strip always has its seafood, its crab,
+#  its chowder, its souvenirs and its sweets — five random draws gave CANDY twice and no SEAFOOD at all)
+WHARF_WORD_GROUPS = [['SEAFOOD', 'FRESH FISH', 'OYSTER BAR', 'OYSTERS'], ['CRAB', 'CRAB HOUSE', 'SHRIMP'],
+                     ['CHOWDER', 'FISH & CHIPS', 'SOURDOUGH', 'CLAM BAR', 'GRILL'],
+                     ['GIFTS', 'SOUVENIRS', 'T-SHIRTS', 'PHOTOS', 'ARCADE'],
+                     ['CANDY', 'FUDGE', 'ICE CREAM', 'CHOCOLATE', 'SALTWATER TAFFY', 'PRETZELS', 'CAFE']]
+_WHARF_COUNT = 0
+# fascia, ink: white on navy, navy on white, red on cream, cream on red, cream on sea green
+WHARF_SIGNS = [((30, 48, 82), (246, 242, 230)), ((244, 241, 232), (28, 46, 80)), ((240, 228, 198), (168, 38, 32)),
+               ((166, 40, 34), (246, 238, 220)), ((34, 88, 70), (244, 238, 220))]
+WHARF_CANVAS = [(178, 40, 34), (30, 58, 102), (34, 98, 68)]
+# the poster faces: a slab serif, then a heavy sans; the shared serif only failing both
+_FONTS_WHARF = [('/System/Library/Fonts/Supplemental/Rockwell.ttc', 2), '/System/Library/Fonts/Supplemental/Arial Black.ttf',
+                '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf']
+
+
+def _life_ring(d, cx, cy, r):
+    """A life-ring hung by the sign: white with four red quarters, the hole dark."""
+    box = [cx - r, cy - r, cx + r, cy + r]
+    d.ellipse(box, fill=(244, 242, 236, KEEP))
+    for a in (0, 90, 180, 270):
+        d.pieslice(box, a + 20, a + 52, fill=(196, 40, 34, KEEP))
+    h = int(r * 0.52)
+    d.ellipse([cx - h, cy - h, cx + h, cy + h], fill=(38, 40, 44, KEEP))
+    d.ellipse(box, outline=(150, 146, 138, KEEP), width=1)
+
+
+def _ships_wheel(d, cx, cy, r):
+    """A ship's wheel: a varnished rim, eight spokes running out past it to their handles, a brass boss."""
+    wood, dark = (150, 96, 50), (96, 60, 30)
+    for k in range(8):
+        a = math.pi * k / 4
+        line(d, [(cx, cy), (cx + math.cos(a) * r * 1.3, cy + math.sin(a) * r * 1.3)], wood, KEEP, 3)
+        hx, hy = cx + math.cos(a) * r * 1.3, cy + math.sin(a) * r * 1.3
+        d.ellipse([hx - 2, hy - 2, hx + 2, hy + 2], fill=(*dark, KEEP))
+    d.ellipse([cx - r, cy - r, cx + r, cy + r], outline=(*wood, KEEP), width=4)
+    d.ellipse([cx - r * 0.3, cy - r * 0.3, cx + r * 0.3, cy + r * 0.3], fill=(196, 160, 72, KEEP))
+
+
+def ground_wharf(size, rnd, accent):
+    """Fisherman's Wharf's shops and restaurants: a deep fascia lettered in poster type — white on navy, navy on
+    white, red on cream — with a thin rule round it; a life-ring or a ship's wheel at one end, one shop in two; a
+    striped canvas blind over most of them; and below, the big glazing in painted wooden frames that the crab
+    stands and the souvenir shops open right up."""
+    img, d = _bay(size, rnd, (238, 235, 228))
+    x0, x1 = int(size * 0.04), int(size * 0.96)
+    fy0, fy1 = int(size * 0.05), int(size * 0.23)
+    fascia, ink = rnd.choice(WHARF_SIGNS)
+    rect(d, [x0 - 4, fy0, x1 + 4, fy1], fascia, KEEP)
+    line(d, [(x0 - 4, fy0), (x1 + 4, fy0)], shade(fascia, 1.25), KEEP, 2)
+    line(d, [(x0 - 4, fy1), (x1 + 4, fy1)], shade(fascia, 0.6), KEEP, 2)
+    d.rectangle([x0 + 1, fy0 + 4, x1 - 1, fy1 - 4], outline=(*ink, KEEP), width=1)   # the poster's inset rule
+    tx0, tx1 = x0 + 6, x1 - 6
+    deco = rnd.random()
+    if deco < 0.5:
+        r = (fy1 - fy0) // 2 - 3
+        left = rnd.random() < 0.5
+        cx = x0 + r + 6 if left else x1 - r - 6
+        (_life_ring if deco < 0.3 else _ships_wheel)(d, cx, (fy0 + fy1) // 2, r if deco < 0.3 else int(r * 0.75))
+        if left:
+            tx0 = cx + r + 4
+        else:
+            tx1 = cx - r - 4
+    global _WHARF_COUNT
+    group = WHARF_WORD_GROUPS[_WHARF_COUNT % len(WHARF_WORD_GROUPS)]
+    _WHARF_COUNT += 1
+    _word(None, d, (tx0, fy0 + 5, tx1, fy1 - 4), rnd.choice(group), ink, _FONTS_WHARF)
+
+    # the shop: big panes in painted wooden frames, a door with a transom, a panelled stall riser
+    y0, y1 = fy1 + 6, int(size * 0.89)
+    frame = rnd.choice([(244, 242, 236), (244, 242, 236), (30, 48, 82), (86, 40, 34)])
+    reveal(d, (x0, y0, x1, y1), 4)
+    glass(img, (x0 + 4, y0 + 4, x1 - 4, y1 - 4), rnd, lit=0.6, dressing=False)
+    riser = y1 - 22
+    rect(d, [x0 + 4, riser, x1 - 4, y1], shade(accent, 0.95), KEEP)
+    d.rectangle([x0 + 10, riser + 5, x1 - 10, y1 - 5], outline=(*shade(accent, 1.3), KEEP), width=1)
+    transom = y0 + int((riser - y0) * 0.24)
+    rect(d, [x0 + 4, transom - 2, x1 - 4, transom + 2], frame, KEEP)
+    door_left = rnd.random() < 0.5
+    dw = int((x1 - x0) * 0.22)
+    dx0 = x0 + 10 if door_left else x1 - 10 - dw
+    rect(d, [dx0, transom + 2, dx0 + dw, y1], shade(frame, 0.9), KEEP)        # the door, a glazed one
+    glass(img, (dx0 + 5, transom + 8, dx0 + dw - 5, y1 - 26), rnd, lit=0.7, dressing=False)
+    rect(d, [dx0 + dw - 9, (transom + y1) // 2, dx0 + dw - 6, (transom + y1) // 2 + 8], (196, 160, 72), KEEP)
+    px0, px1 = (dx0 + dw, x1 - 4) if door_left else (x0 + 4, dx0)
+    panes = rnd.choice([2, 3])
+    for k in range(1, panes):
+        x = px0 + (px1 - px0) * k // panes
+        rect(d, [x - 2, transom, x + 2, riser], frame, KEEP)
+    for k in range(1, 4):                                                    # the transom lights
+        x = x0 + (x1 - x0) * k // 4
+        line(d, [(x, y0 + 4), (x, transom)], frame, KEEP, 2)
+    d.rectangle([x0, y0, x1, y1], outline=(*frame, KEEP), width=4)
+
+    # the canvas blind, striped with white, scalloped along its valance
+    if rnd.random() < 0.7:
+        c = rnd.choice(WHARF_CANVAS)
+        white = (244, 240, 230)
+        ay, ah, sw = fy1 + 4, 30, 16
+        stripe = 0
+        for i in range(x0 - 8, x1 + 8, sw):
+            col = c if stripe % 2 == 0 else white
+            d.polygon([(i, ay), (i + sw, ay), (i + sw + 2, ay + ah), (i - 2, ay + ah)], fill=(*col, KEEP))
+            d.pieslice([i - 2, ay + ah - 8, i + sw + 2, ay + ah + 8], 0, 180, fill=(*col, KEEP))
+            stripe += 1
+        rect(d, [x0 - 8, ay, x1 + 8, ay + 3], shade(c, 0.75), KEEP)
+        line(d, [(x0 - 8, ay + ah + 8), (x1 + 8, ay + ah + 8)], (60, 58, 56), KEEP, 1)   # its shadow on the glass
+    rect(d, [x0 - 6, int(size * 0.93), x1 + 6, size], (206, 202, 196), TINT_HALF)   # the pavement plinth
+    return img
+
+
+# ------------------------------------------------------------------ the generic storefront
+#
+# What a San Francisco shop looks like from a bike (owner, 2026-10-16: the PHARMACY/BOOKS/LAUNDRY boards "are a holdover
+# from our Paris modeling efforts"): not a word. A painted fascia with nothing on it, or a name too small to read at
+# riding speed; a glass front in an aluminium frame with the street number on the transom; an awning; a roll-up gate
+# half down; a 1920s tiled front with a little blade sign. And behind the glass, something — shelves, a rail of
+# clothes, a plant, the tables of a café. The style paints several of them (paint.py GROUND_VARIANTS), one treatment
+# each in turn, so a street is a mix and never a list.
+
+# deep shop colours: bottle green, oxblood, navy, black, teal, charcoal, mustard
+SHOP_PAINT = [(34, 64, 48), (98, 32, 34), (30, 42, 70), (28, 28, 30), (26, 84, 86), (58, 58, 60), (168, 128, 40)]
+ALUMINIUM = (178, 180, 182)
+# short invented names for an awning's valance — painted small, a texture rather than a word at speed
+SHOP_NAMES = ['Marlowe', 'Hollis', 'Juniper', 'Ferro', 'Lucca', 'Oak & Rye', 'Bellweather', 'Two Birds', 'Fennel',
+              'Sable', 'Morrow', 'Little Fox', 'Calder', 'Wren', 'Tamsin', 'Harlan', 'Ostra', 'Pell & Co.']
+_STORE_COUNT = 0
+
+
+def _display(img, d, box, rnd):
+    """Something behind the glass: shelves of goods, a clothes rail, café tables, a plant, or a poster or two —
+    dark, soft shapes in the lower part of the window, so a shop reads as a shop and not as a mirror."""
+    x0, y0, x1, y1 = box
+    kind = rnd.choice(['shelves', 'rail', 'tables', 'plants', 'posters'])
+    if kind == 'shelves':
+        for k in range(3):
+            y = y1 - 6 - k * (y1 - y0) // 5
+            line(d, [(x0 + 4, y), (x1 - 4, y)], (120, 100, 78), KEEP, 2)
+            x = x0 + 6
+            while x < x1 - 10:
+                w = rnd.randint(4, 9)
+                h = rnd.randint(6, 14)
+                rect(d, [x, y - h, x + w, y - 1], jitter(rnd, rnd.choice([(190, 70, 60), (220, 200, 150), (70, 110, 150), (90, 130, 80), (230, 230, 220)]), 20), KEEP)
+                x += w + rnd.randint(1, 4)
+    elif kind == 'rail':
+        ry = y0 + (y1 - y0) // 3
+        line(d, [(x0 + 8, ry), (x1 - 8, ry)], (60, 60, 62), KEEP, 2)
+        for x in range(x0 + 12, x1 - 14, 9):
+            c = jitter(rnd, rnd.choice([(40, 44, 60), (150, 140, 120), (120, 40, 40), (220, 216, 206), (60, 80, 60)]), 15)
+            d.polygon([(x, ry + 2), (x + 8, ry + 2), (x + 10, ry + rnd.randint(30, 50)), (x - 2, ry + rnd.randint(30, 50))], fill=(*c, KEEP))
+    elif kind == 'tables':
+        for x in range(x0 + 14, x1 - 14, 34):
+            ty = y1 - 26
+            rect(d, [x - 10, ty, x + 10, ty + 3], (70, 52, 38), KEEP)
+            line(d, [(x, ty + 3), (x, y1 - 4)], (40, 36, 34), KEEP, 2)
+            d.ellipse([x + 10, ty - 14, x + 20, ty - 2], fill=(46, 40, 38, KEEP))     # someone sitting
+        rect(d, [x0 + 4, y0 + 4, x1 - 4, y0 + 10], (236, 196, 120), KEEP)            # the warm pendant lights
+    elif kind == 'plants':
+        for x in range(x0 + 10, x1 - 16, 26):
+            rect(d, [x, y1 - 16, x + 14, y1 - 2], (170, 110, 76), KEEP)
+            d.ellipse([x - 6, y1 - 46, x + 20, y1 - 12], fill=(*jitter(rnd, (62, 104, 58), 14), KEEP))
+    else:
+        for _ in range(rnd.randint(1, 2)):
+            pw, ph = rnd.randint(18, 30), rnd.randint(26, 40)
+            px0 = rnd.randint(x0 + 6, max(x0 + 7, x1 - pw - 6))
+            py0 = rnd.randint(y0 + 8, max(y0 + 9, y1 - ph - 20))
+            rect(d, [px0, py0, px0 + pw, py0 + ph], rnd.choice([(232, 226, 210), (210, 70, 50), (40, 90, 140), (240, 200, 70)]), KEEP)
+            rect(d, [px0 + 3, py0 + 4, px0 + pw - 3, py0 + ph // 2], jitter(rnd, (90, 90, 96), 30), KEEP)
+
+
+def _small(d, box, text, ink):
+    """Lettering too small to read from the saddle — a name or a street number, in a plain face."""
+    from PIL import ImageFont
+    x0, y0, x1, y1 = box
+    for path in ('/System/Library/Fonts/Supplemental/Arial Bold.ttf', '/System/Library/Fonts/Supplemental/Georgia Bold.ttf',
+                 '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'):
+        try:
+            size = max(8, int((y1 - y0) * 0.8))
+            font = ImageFont.truetype(path, size)
+            while font.getlength(text) > (x1 - x0) and size > 7:
+                size -= 1
+                font = ImageFont.truetype(path, size)
+            d.text(((x0 + x1) / 2, (y0 + y1) / 2), text, font=font, fill=(*ink, KEEP), anchor='mm')
+            return
+        except OSError:
+            continue
+
+
+def _glazing(img, d, box, rnd, frame, door_left, lit=0.55, bulkhead=18):
+    """A shop window and its door: glass, the display behind it, mullions, a glazed door with its handle, a
+    bulkhead below. Returns nothing; draws into `box`."""
+    x0, y0, x1, y1 = box
+    reveal(d, (x0, y0, x1, y1), 4)
+    glass(img, (x0 + 4, y0 + 4, x1 - 4, y1 - 4), rnd, lit=lit, dressing=False)
+    dw = int((x1 - x0) * 0.24)
+    dx0 = x0 + 6 if door_left else x1 - 6 - dw
+    wx0, wx1 = (dx0 + dw, x1 - 4) if door_left else (x0 + 4, dx0)
+    _display(img, d, (wx0 + 2, y0 + 6, wx1 - 2, y1 - bulkhead - 2), rnd)
+    rect(d, [wx0, y1 - bulkhead, wx1, y1], shade(frame, 0.85) if frame != ALUMINIUM else (96, 92, 88), KEEP)   # bulkhead
+    if rnd.random() < 0.5:
+        x = (wx0 + wx1) // 2
+        rect(d, [x - 2, y0 + 4, x + 2, y1 - bulkhead], frame, KEEP)
+    d.rectangle([dx0, y0 + 2, dx0 + dw, y1], outline=(*frame, KEEP), width=4)        # the door
+    rect(d, [dx0 + dw - 9, (y0 + y1) // 2, dx0 + dw - 6, (y0 + y1) // 2 + 10], (200, 196, 186), KEEP)
+    d.rectangle([x0, y0, x1, y1], outline=(*frame, KEEP), width=4)
+
+
+def ground_storefront(size, rnd, accent):
+    """The generic shop, in one of five treatments — see the note above SHOP_PAINT."""
+    global _STORE_COUNT
+    t = _STORE_COUNT % 5
+    _STORE_COUNT += 1
+    img, d = _bay(size, rnd, (238, 234, 226))
+    x0, x1 = int(size * 0.05), int(size * 0.95)
+    paint = rnd.choice(SHOP_PAINT)
+    door_left = rnd.random() < 0.5
+    number = str(rnd.choice([rnd.randint(100, 999), rnd.randint(1000, 3999)]))
+
+    if t == 0:
+        # a plain painted fascia — the building's own colour, darkened, or a shop colour — with nothing on it, and the
+        # street number in gold on the transom
+        fy0, fy1 = int(size * 0.07), int(size * 0.2)
+        if rnd.random() < 0.5:
+            rect(d, [x0 - 4, fy0, x1 + 4, fy1], (150, 146, 140), TINT)               # the wall colour, deeper
+        else:
+            rect(d, [x0 - 4, fy0, x1 + 4, fy1], paint, KEEP)
+        line(d, [(x0 - 4, fy0), (x1 + 4, fy0)], (232, 228, 220), TINT_HALF, 3)     # its moulded top
+        y0, y1 = fy1 + 6, int(size * 0.89)
+        _glazing(img, d, (x0, y0 + 26, x1, y1), rnd, paint, door_left)
+        rect(d, [x0, y0, x1, y0 + 26], shade(paint, 0.9), KEEP)                    # the transom band
+        glass(img, (x0 + 5, y0 + 5, x1 - 5, y0 + 22), rnd, lit=0.3, dressing=False)
+        _small(d, ((x0 + x1) // 2 - 20, y0 + 7, (x0 + x1) // 2 + 20, y0 + 20), number, (214, 176, 84))
+    elif t == 1:
+        # a modern glass front in an aluminium frame, no fascia at all: the glass runs up to the floor above
+        y0, y1 = int(size * 0.06), int(size * 0.89)
+        _glazing(img, d, (x0, y0 + 30, x1, y1), rnd, ALUMINIUM, door_left, lit=0.65, bulkhead=10)
+        rect(d, [x0, y0, x1, y0 + 30], ALUMINIUM, KEEP)
+        glass(img, (x0 + 4, y0 + 4, x1 - 4, y0 + 26), rnd, lit=0.2, dressing=False)
+        for k in range(1, 4):
+            rect(d, [x0 + (x1 - x0) * k // 4 - 1, y0, x0 + (x1 - x0) * k // 4 + 1, y0 + 30], ALUMINIUM, KEEP)
+        _small(d, (x1 - 46, y0 + 8, x1 - 10, y0 + 22), number, (236, 236, 232))
+    elif t == 2:
+        # an awning across the whole front, solid or striped, a short name small on its valance
+        y0, y1 = int(size * 0.1), int(size * 0.89)
+        _glazing(img, d, (x0, y0, x1, y1), rnd, paint, door_left)
+        c = rnd.choice(AWNING)
+        ay, ah = int(size * 0.07), 40
+        striped = rnd.random() < 0.5
+        sw = 14
+        for i in range(x0 - 8, x1 + 8, sw):
+            col = c if not striped or ((i - x0) // sw) % 2 == 0 else (232, 226, 210)
+            d.polygon([(i, ay), (i + sw, ay), (i + sw + 2, ay + ah), (i - 2, ay + ah)], fill=(*col, KEEP))
+        vy = ay + ah
+        rect(d, [x0 - 10, vy, x1 + 10, vy + 14], c, KEEP)                            # the valance
+        line(d, [(x0 - 10, vy + 15), (x1 + 10, vy + 15)], (50, 48, 46), KEEP, 2)
+        _small(d, (x0 + 40, vy + 2, x1 - 40, vy + 12), rnd.choice(SHOP_NAMES), (240, 236, 226))
+    elif t == 3:
+        # a roll-up steel gate, half down over the glass (or right down: closed for the day), under a plain fascia
+        fy0, fy1 = int(size * 0.07), int(size * 0.19)
+        rect(d, [x0 - 4, fy0, x1 + 4, fy1], (150, 146, 140), TINT)
+        y0, y1 = fy1 + 4, int(size * 0.89)
+        _glazing(img, d, (x0, y0, x1, y1), rnd, (60, 60, 62), door_left)
+        gate = y0 + int((y1 - y0) * rnd.choice([0.35, 0.5, 1.0]))
+        rect(d, [x0, y0, x1, gate], (150, 152, 154), KEEP)
+        for y in range(y0, gate, 5):                                                   # the slats
+            line(d, [(x0, y), (x1, y)], (118, 120, 124), KEEP, 1)
+        rect(d, [x0, gate - 4, x1, gate], (90, 92, 96), KEEP)                         # its bottom bar
+        rect(d, [x0 - 4, y0, x0 + 3, y1], (110, 112, 116), KEEP)                       # the guides
+        rect(d, [x1 - 3, y0, x1 + 4, y1], (110, 112, 116), KEEP)
+        rect(d, [x0, y0 - 2, x1, y0 + 8], (120, 122, 126), KEEP)                       # the coil's box
+    else:
+        # the 1920s front: a recessed entry, small tiles on the bulkhead, a prism-glass transom, and a little blade
+        # sign standing off the wall with a plain emblem on it
+        y0, y1 = int(size * 0.08), int(size * 0.89)
+        tr = y0 + 34
+        rect(d, [x0, y0, x1, tr], shade(paint, 1.0), KEEP)
+        for x in range(x0 + 4, x1 - 4, 8):                                             # prism glass
+            for y in range(y0 + 4, tr - 4, 8):
+                rect(d, [x, y, x + 6, y + 6], (196, 200, 186), KEEP)
+        _glazing(img, d, (x0, tr, x1, y1), rnd, paint, door_left, bulkhead=24)
+        tile = rnd.choice([(40, 84, 74), (196, 186, 160), (36, 36, 40), (150, 52, 44)])
+        for x in range(x0 + 4, x1 - 4, 6):                                             # the tiled bulkhead
+            for y in range(y1 - 22, y1 - 2, 6):
+                rect(d, [x, y, x + 4, y + 4], jitter(rnd, tile, 10), KEEP)
+        bx = x0 + 12 if not door_left else x1 - 40
+        line(d, [(bx, tr + 4), (bx + 28, tr + 4)], (40, 40, 42), KEEP, 2)               # the bracket
+        rect(d, [bx + 6, tr + 6, bx + 24, tr + 46], paint, KEEP)                       # the blade
+        d.rectangle([bx + 6, tr + 6, bx + 24, tr + 46], outline=(214, 176, 84, KEEP), width=1)
+        d.ellipse([bx + 9, tr + 18, bx + 21, tr + 30], fill=(214, 176, 84, KEEP))      # an emblem, not a word
+    rect(d, [x0 - 6, int(size * 0.93), x1 + 6, size], (206, 202, 196), TINT_HALF)    # the pavement plinth
+    return img
+
+
 GROUNDS = {
-    'shopfront': ground_shopfront, 'stoop': ground_stoop, 'arcade': ground_arcade,
+    'shopfront': ground_storefront, 'stoop': ground_stoop, 'arcade': ground_arcade,
     'glazed': ground_glazed, 'recessed': ground_recessed, 'garage': ground_garage,
     'chinatown/shopfront': ground_chinatown,
+    'wharf/shopfront': ground_wharf,
     # a style's own painting of a ground kind, where it differs: `<style>/<kind>` wins over `<kind>`
     'marais/shopfront': ground_woodfront,
     # Haussmann is Paris's: its shops are named in French

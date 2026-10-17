@@ -356,6 +356,8 @@ export class Signs implements TileLayer {
   private readonly invented: ReturnType<typeof inventShopNames>
   /** Chinatown's own (see `districtOf`) */
   private readonly chinatown: ReturnType<typeof inventShopNames>
+  /** Fisherman's Wharf's own: over a building that wears the `wharf` style (sf/btype.ts gives it only on the strip) */
+  private readonly wharf: ReturnType<typeof inventShopNames>
   private readonly districtOf: (x: number, z: number) => 'zh' | null
   private readonly junctionsIn = new Map<string, SignedJunction[]>()
   private readonly shops: TextAtlas
@@ -385,6 +387,7 @@ export class Signs implements TileLayer {
     for (const ch of cityId) seed = Math.imul(seed ^ ch.charCodeAt(0), 0x01000193) >>> 0
     this.invented = inventShopNames(reg.shopNames, INVENTED, seed)
     this.chinatown = inventShopNames('zh', 120, seed ^ 0x2a)
+    this.wharf = inventShopNames('wharf', 120, seed ^ 0x3b)
     for (const j of junctions) {
       const k = tileKey(Math.floor(j.at.x / TILE), Math.floor(j.at.z / TILE))
       const list = this.junctionsIn.get(k)
@@ -486,9 +489,12 @@ export class Signs implements TileLayer {
         if (planOf(b.id)?.ground !== 'shopfront') continue
         const spot = frontage(b, streets)
         if (!spot) continue
-        // in Chinatown, its own names (offset past the city's in `used`, so the two lists never collide)
+        // in Chinatown, its own names (offset past the city's in `used`, so the two lists never collide); on the
+        // Wharf, its seafood houses and gift shops — chosen by the building's style, which only the strip wears
         const zh = this.districtOf(spot.x, spot.z) === 'zh'
-        const list0 = zh ? this.chinatown : invented, base = zh ? invented.length : 0
+        const wharf = !zh && b.style === 'wharf'
+        const list0 = zh ? this.chinatown : wharf ? this.wharf : invented
+        const base = zh ? invented.length : wharf ? invented.length + this.chinatown.length : 0
         let j = Math.abs(b.id) % list0.length
         let ok = false
         for (let tries = 0; tries < list0.length; tries++, j = (j + 1) % list0.length) {

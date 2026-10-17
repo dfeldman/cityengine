@@ -10734,7 +10734,12 @@ GAME
   before median 12-17°, max 28°; after median ~4°, max 5°.
 - #309 The Embarcadero's paths — straighten them out (#286 was the jolt; the ways themselves still wander). OPEN.
 - #310 Fisherman's Wharf to high quality: unique buildings, restaurants, stores, decorations, cobblestones (the #290 list
-  and survey). OPEN — the main work.
+  and survey). IN PROGRESS. Done 2026-10-17: a `wharf` facade style (painted shiplap, sash windows, seafood/candy/gift
+  fascias in poster lettering, awnings, life-rings) on ~84 generic buildings in a box from North Point to the water, Hyde to
+  Powell; Wharf names on the hanging signs; Pier 39's shops rebuilt (awnings, galleries, shingle roofs); real boat hulls;
+  squares in planks (Pier 39), brick (Ghirardelli, the Cannery) and cobbles (Jefferson & Taylor, Frank Cresci Plaza).
+  The citywide PHARMACY/BOOKS/LAUNDRY shopfronts replaced by five realistic storefront treatments with no category words
+  (owner: "never liked the PHARMACY/BOOKS/LAUNDRY generic signs"); a shop now spans two bays and its neighbour differs.
 - #311 Block-letter signs (Macy's and others) → real typefaces. DONE: parts.ts `signText` (the 3×5 blocks, 34 callers)
   and union-square.ts `letters` (the 5×7 store names: Macy's, Saks, Tiffany…) now draw the flat real-font signs of
   signage.ts in the same place; the bulb-sign letters (parts.ts, lamps on a frame) stay, as bulbs are the style there.

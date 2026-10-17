@@ -1069,7 +1069,7 @@ async function bake(spec: CitySpec): Promise<void> {
   // squares OSM draws only as lines, paved by hand from the region (the Trocadéro's parvis)
   for (const sq of streetRegion.pavedSquares ?? []) {
     const ring = sq.ring.map(([lat, lon]) => proj.toLocal({ lat, lon }))
-    areas.push({ kind: 'paved', ring: packPoints(ccw(ring)), top: true, ...(sq.brick ? { brick: true as const } : {}) })
+    areas.push({ kind: 'paved', ring: packPoints(ccw(ring)), top: true, ...(sq.brick ? { brick: true as const } : {}), ...(sq.surface ? { surface: sq.surface } : {}) })
   }
   // a waterfront street's wharf apron (region `wharfAprons`): a strip of paving on its bay side, segment by segment,
   // wherever water lies 40–55 m out on that side — under the parks and the water, which are painted over it
