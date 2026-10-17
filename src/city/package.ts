@@ -192,6 +192,12 @@ export interface PackedArea {
   /** a park laid out as planted BEDS — mulch and low native shrubs between its paths, its mapped lawns the only grass
    *  (a zone's `ground: 'beds'`, tools/bake.ts: the Presidio Tunnel Tops, owner's reference list 2026-10-04) */
   beds?: true
+  /**
+   * a surface CAR PARK (OSM `amenity=parking` drawn as a lot, or a region square marked `lot`): render/city.ts lays out
+   * stalls on it and render/street-fleet.ts parks cars in them (owner, 2026-10-17: "surface parking lots look like big
+   * empty asphalt areas right now") — not a pier deck, which is a lot with no cars
+   */
+  parking?: true
   ring: number[]
   /** inner rings: the islands in a river, the courtyard in a park */
   holes?: number[][]

@@ -1109,6 +1109,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   if (budget) console.log('[density] pools', budget, 'traffic', trafficN, 'crowd', crowdN)
   // the cars and buses by carkit (render/street-fleet.ts); `?without=carkit` for the old stand-ins
   const life = new Life(scene, pkg as unknown as CityPackage, budget, regionKit(pkg.region).stock, city.viaductStations, !off.has('carkit'))
+  /** seconds to the next refresh of the parked cars round the rider (city/parking.ts) */
+  let parkClock = 0
   /*
    * SALESFORCE PARK'S GONDOLA (docs/SALESFORCE-PARK.md; the owner, 2026-10-02: "the gondola should be like a cable car
    * or streetcar"): a transit line of one cabin, shuttling between Salesforce Plaza and the park, boarded like the
@@ -2959,6 +2961,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         const walkers = [...crowd.all.filter((w) => !tunnels.hides(w.edgeId)), ...courtPlayers.update(dt, at, city.courtsNear(at.x, at.z, 160))]
         strangers?.update(dt, walkers, at, city.terrain)
         const focus = frozen ? (held ? held.to : orbit.look) : at
+        // the car parks' parked cars, refreshed once a second round the rider (city/parking.ts)
+        parkClock -= dt
+        if (parkClock <= 0) { parkClock = 1; life.park(city.parkedNear(focus.x, focus.z, 260), city.terrain) }
         life.update(dt, traffic.all.filter((v) => !tunnels.hides(v.edgeId)), walkers, at, strangers?.drawn, city.terrain, focus)
         cableRiders?.update(dt, life.transitBodies, focus)
         river?.update(dt, focus)

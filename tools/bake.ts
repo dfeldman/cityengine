@@ -960,7 +960,7 @@ async function bake(spec: CitySpec): Promise<void> {
     if (!kind || !w.geometry || w.geometry.length < 4) continue
     const ring = w.geometry.slice(0, -1).map((g) => proj.toLocal(g))
     if (area(ring) < 40) continue
-    areas.push({ kind, ring: packPoints(ccw(ring)) })
+    areas.push({ kind, ring: packPoints(ccw(ring)), ...(kind === 'lot' && w.tags.amenity === 'parking' ? { parking: true as const } : {}) })
   }
   /*
    * ---- THE SPORTS-PITCH KIT (BUGS.md #214, src/city/sports.ts, src/render/sports.ts)
@@ -1070,7 +1070,7 @@ async function bake(spec: CitySpec): Promise<void> {
   for (const sq of streetRegion.pavedSquares ?? []) {
     const ring = sq.ring.map(([lat, lon]) => proj.toLocal({ lat, lon }))
     // (`lot`: a car park's asphalt, not a square's pale paving — the Wharf's lots, 2026-10-17)
-    areas.push({ kind: sq.lot ? 'lot' : 'paved', ring: packPoints(ccw(ring)), top: true, ...(sq.brick ? { brick: true as const } : {}), ...(sq.surface ? { surface: sq.surface } : {}) })
+    areas.push({ kind: sq.lot || sq.parking ? 'lot' : 'paved', ring: packPoints(ccw(ring)), top: true, ...(sq.parking ? { parking: true as const } : {}), ...(sq.brick ? { brick: true as const } : {}), ...(sq.surface ? { surface: sq.surface } : {}) })
   }
   // a waterfront street's wharf apron (region `wharfAprons`): a strip of paving on its bay side, segment by segment,
   // wherever water lies 40–55 m out on that side — under the parks and the water, which are painted over it
@@ -1172,7 +1172,7 @@ async function bake(spec: CitySpec): Promise<void> {
         // 2026-10 brought in nature_reserve relations running 228 km down the coast, which hung the planting
         // (45 million candidate points on a 6 663-point ring) and would have greened the whole city.
         if (kind !== 'water' && tooBigForAnArea(pts)) { hugeAreas++; continue }
-        areas.push({ kind: kind!, ring: packPoints(ccw(pts)), ...(holes.length > 0 ? { holes } : {}) })
+        areas.push({ kind: kind!, ring: packPoints(ccw(pts)), ...(holes.length > 0 ? { holes } : {}), ...(kind === 'lot' && rel.tags.amenity === 'parking' ? { parking: true as const } : {}) })
       }
       fromRelations++
     }

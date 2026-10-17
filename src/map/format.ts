@@ -287,6 +287,8 @@ export interface Area {
   surface?: 'wood' | 'cobblestone' | 'brick'
   /** a park laid out as planted beds (city/package.ts PackedArea `beds`) */
   beds?: true
+  /** a surface car park (city/package.ts PackedArea `parking`) */
+  parking?: true
   /** water: the whole body's level, cm above zFloor */
   level?: number
   /** which whole area this is a clipped piece of */

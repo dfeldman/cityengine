@@ -161,7 +161,8 @@ export interface Region {
   stairways?: { name: string; points: [number, number][]; width?: number }[]
   /** squares OSM maps only as lines (the Trocadéro's parvis): paved areas by hand, rings of [lat, lon] */
   /** `brick`: laid in the region's street brick (`brickStreets.colour`) */
-  pavedSquares?: { name: string; ring: [number, number][]; brick?: boolean; surface?: 'wood' | 'cobblestone' | 'brick'; lot?: boolean }[]
+  /** (`lot`: asphalt; `parking`: a car park, laid out with stalls and parked cars — city/parking.ts) */
+  pavedSquares?: { name: string; ring: [number, number][]; brick?: boolean; surface?: 'wood' | 'cobblestone' | 'brick'; lot?: boolean; parking?: boolean }[]
   /** a pitch's sport where OSM has it wrong, by way id (with a note in regions.json saying who said so) */
   courtSports?: Record<string, string>
   /**

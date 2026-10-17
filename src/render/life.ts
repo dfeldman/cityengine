@@ -409,6 +409,16 @@ export class Life {
     return out
   }
 
+  /** the car parks' parked cars near the rider (render/street-fleet.ts `park`), from city.parkedNear */
+  private parkedStalls: readonly { x: number; z: number; heading: number; id: number }[] = []
+  park(stalls: readonly { x: number; z: number; heading: number; id: number }[], terrain: Terrain): void {
+    if (!this.fleet) return
+    this.parkedStalls = stalls
+    // (the terrain passed in, not `this.terrain`: the first call comes before the first update, and a car placed at 0 hung
+    //  80 m over the city — parked cars are placed once and never again)
+    this.fleet.park(stalls, (x, z) => terrain.heightAt(x, z))
+  }
+
   get stats(): { vehicles: number; people: number } {
     return { vehicles: this.fleet ? this.fleet.count : this.cars.count + this.buses.count, people: this.bodies.count }
   }
@@ -445,6 +455,7 @@ export class Life {
       const d = this.gradeAt?.(x, z)
       return d !== null && d !== undefined && d > g ? d : g
     }, blob)
+    if (this.fleet) for (const s of this.parkedStalls) blob(s, s.heading, 4.6, 1.9, 1.5)
     else for (const v of vehicles) {
       Matrix.ComposeToRef(
         Vector3.OneReadOnly,

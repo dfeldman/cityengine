@@ -50,6 +50,7 @@ import { unpackPoints, type CityPackage, type PackedArea, type PackedCourt, type
 import { BRIDGE_STYLES, deck, isRaised, railDeck } from './bridges.ts'
 import { FREEWAY_KINDS } from './bridge-structures.ts'
 import { TILE, nearOf, tileKey, tileOf, tilesOfLine, type Near, type TileData, type TileSource } from '../city/tiles.ts'
+import { layoutLot, type Stall } from '../city/parking.ts'
 
 /** A subsystem drawn per tile: `build` returns the tile's meshes (disposed with the tile). */
 export interface TileLayer {
@@ -1408,6 +1409,49 @@ export class City {
   private readonly coveredOutlines = new Set<number>()
   /** the viaduct's stations in local metres (region `viaductStations`), set by the game */
   viaductStations: { x: number; z: number }[] = []
+  /** each loaded tile's car-park stalls (city/parking.ts), laid out once on first asking */
+  private readonly stallCache = new Map<string, Stall[]>()
+
+  /** the stalls of the car parks (PackedArea `parking`) in one tile, avoiding the buildings standing on them */
+  stallsIn(k: string): Stall[] {
+    const got = this.stallCache.get(k)
+    if (got) return got
+    const lots = (this.areasIn.get(k) ?? []).filter((a) => a.parking)
+    let stalls: Stall[] = []
+    if (lots.length) {
+      const [tx, tz] = k.split(',').map(Number)
+      const near: number[][] = []
+      for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) for (const b of this.buildingsIn.get(key(tx + dx, tz + dz)) ?? []) near.push(b.ring)
+      // (and off the drawn carriageways: OSM maps a big lot's driving aisles as service ways, drawn as road)
+      const ways = [...(this.edgesIn.get(k) ?? [])].filter((e) => !e.foot).map((e) => ({ pts: unpackPoints(e.points), half: e.width / 2 + 0.6 }))
+      const onWay = (x: number, z: number): boolean => ways.some((w) => {
+        for (let i = 1; i < w.pts.length; i++) {
+          const a = w.pts[i - 1], b = w.pts[i], dx = b.x - a.x, dz = b.z - a.z
+          const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1e-9)))
+          if (Math.hypot(a.x + dx * t - x, a.z + dz * t - z) < w.half) return true
+        }
+        return false
+      })
+      const blocked = (x: number, z: number): boolean => near.some((r) => pointInFlatRing(r, x, z)) || onWay(x, z)
+      for (const a of lots) stalls = stalls.concat(layoutLot(unpackPoints(a.ring), blocked))
+    }
+    if (this.areasIn.has(k)) this.stallCache.set(k, stalls)
+    return stalls
+  }
+
+  /** the occupied stalls within `r` metres: the parked cars render/street-fleet.ts draws */
+  parkedNear(x: number, z: number, r: number): Stall[] {
+    const out: Stall[] = []
+    const [cx, cz] = tileOf(x, z)
+    const n = Math.ceil(r / TILE)
+    for (let dz = -n; dz <= n; dz++) for (let dx = -n; dx <= n; dx++) {
+      const k = key(cx + dx, cz + dz)
+      if (!this.areasIn.has(k)) continue
+      for (const s of this.stallsIn(k)) if (s.occupied && Math.hypot(s.x - x, s.z - z) < r) out.push(s)
+    }
+    return out
+  }
+
   /** the region's tourist strips in local metres (Region `touristStrips`), set by the game */
   touristRings: { x: number; z: number }[][] = []
   /** the region's lantern streets in local metres (Region `lanternStreets`), set by the game */
@@ -2992,6 +3036,15 @@ export class City {
       m.renderingGroupId = GROUP.walk
       m.isPickable = false
       meshes.push(m)
+    }
+    // a car park's stall lines: white, down each side of every stall (city/parking.ts)
+    this.stallCache.delete(k)
+    for (const st of this.stallsIn(k)) {
+      const vx = -st.uz, vz = st.ux
+      for (const side of [-1.3, 1.3]) {
+        const cx = st.x + st.ux * side, cz = st.z + st.uz * side
+        dashedLine(markings, [{ x: cx - vx * 2.4, z: cz - vz * 2.4 }, { x: cx + vx * 2.4, z: cz + vz * 2.4 }], 0, 0.058, 0.1, 1, 1, [0.78, 0.78, 0.74])
+      }
     }
     if (markings.triangles > 0 && !this.off.has('roads')) {
       const m = new Mesh(`markings:${k}`, this.scene)

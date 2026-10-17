@@ -23,6 +23,11 @@ const MIX: [Archetype, number, Livery][] = [
   ['pickup', 6, 'none'], ['van', 7, 'none'], ['boxtruck', 4, 'none'], ['sedan', 6, 'taxi'], ['minivan', 2, 'taxi'],
   ['sedan', 1, 'police'], ['suv', 1, 'police'], ['van', 1, 'ambulance'], ['boxtruck', 2, 'delivery'],
 ]
+/** what parked cars are painted: mostly white, grey, silver and black, as a real car park is, and the odd colour */
+const PARKED_PAINT: [number, number, number][] = [
+  [0.92, 0.92, 0.9], [0.92, 0.92, 0.9], [0.6, 0.61, 0.62], [0.72, 0.73, 0.75], [0.12, 0.12, 0.13], [0.12, 0.12, 0.13],
+  [0.35, 0.36, 0.38], [0.55, 0.1, 0.1], [0.15, 0.22, 0.42], [0.7, 0.7, 0.66], [0.3, 0.33, 0.3],
+]
 /** metres a wheel may stand above or below the car's centreline: the most a car on a street rolls */
 const ROLL = 0.08
 /** how far a car on a street's profile may be lifted toward a higher surface drawn there, and how much of that may differ front to back */
@@ -237,6 +242,37 @@ export class StreetFleet {
       this.tracks.delete(id)
     }
     this.fleet.update(dt)
+  }
+
+  /**
+   * PARKED CARS in the car parks near the rider (city/parking.ts; owner, 2026-10-17: "the cars do not need to ever
+   * move"): added from the same shapes as the traffic when a stall comes within range, placed once on the ground,
+   * never driven, removed when it goes out of range. Keyed by where they stand.
+   */
+  private readonly parked = new Map<string, Car>()
+  park(stalls: readonly { x: number; z: number; heading: number; id: number }[], groundAt: (x: number, z: number) => number): void {
+    const want = new Set<string>()
+    for (const s of stalls) {
+      const k = `${Math.round(s.x * 10)},${Math.round(s.z * 10)}`
+      want.add(k)
+      if (this.parked.has(k)) continue
+      const h = hash(s.id)
+      // (cars, vans and pickups: no box trucks in a car park)
+      const mix = MIX.filter((m) => m[2] === 'none' && m[0] !== 'boxtruck')
+      const total = mix.reduce((t, m) => t + m[1], 0)
+      let x = (h >>> 8) % total
+      let pick = mix[0]
+      for (const m of mix) { x -= m[1]; if (x < 0) { pick = m; break } }
+      const car = this.fleet.add(randomSpec(pick[0], 1 + (h % SEEDS), 'none'))
+      car.paint = [...PARKED_PAINT[(h >>> 4) % PARKED_PAINT.length]]
+      car.place(s.x, s.z, s.heading, groundAt)
+      this.parked.set(k, car)
+    }
+    for (const [k, car] of this.parked) {
+      if (want.has(k)) continue
+      this.fleet.remove(car)
+      this.parked.delete(k)
+    }
   }
 
   get count(): number { return this.tracks.size }

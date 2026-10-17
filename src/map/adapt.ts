@@ -159,6 +159,7 @@ export function adaptTile(m: MapTile, idx: Pick<MapIndex, 'zFloor' | 'dict' | 't
     if (a.brick) r.brick = true
     if (a.surface) r.surface = a.surface
     if (a.beds) r.beds = true
+    if (a.parking) r.parking = true
     if (a.level !== undefined) r.level = H(a.level)
     t.areas.push(r)
   }

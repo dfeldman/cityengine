@@ -329,6 +329,7 @@ export function convertTile(t: TileData, ctx: ConvertContext): MapTile {
     if (a.brick) r.brick = true
     if (a.surface) r.surface = a.surface
     if (a.beds) r.beds = true
+    if (a.parking) r.parking = true
     if (a.level !== undefined) r.level = zc(a.level)
     areas.push(r)
   }
