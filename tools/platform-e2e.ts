@@ -5,12 +5,12 @@
  * reporting every 500 ms; 0 W after 40 s), opens the platform's shim as the bridge would, and prints both sides
  * every 10 s: the game's HUD, and what the bridge is asked for (`requested.grade`, the d-pad prompt). Presses
  * d-pad left once, ends the session complete and checks History got its picture.
- *   GAME=https://dash.dfeldman.org WATTS=200 SECS=60 node tools/platform-e2e.ts
+ *   [DH=http://localhost:8080] GAME=https://dash.dfeldman.org WATTS=200 SECS=60 node tools/platform-e2e.ts
  */
 import { createRequire } from 'node:module'
 const require = createRequire(import.meta.url)
 const pw = require('playwright')
-const DH = 'http://localhost:8080'
+const DH = process.env.DH ?? 'http://localhost:8080'
 const GAME = process.env.GAME ?? 'http://localhost:5200'
 const WATTS = Number(process.env.WATTS ?? 220)
 const SECS = Number(process.env.SECS ?? 90)
