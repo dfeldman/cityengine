@@ -378,6 +378,12 @@ async function bake(spec: CitySpec): Promise<void> {
     if (w.tags.service || !w.geometry || w.geometry.length < 2) return false
     return w.geometry.filter((g) => inCarPark(g.lat, g.lon)).length / w.geometry.length > 0.6
   }
+  /*
+   * Ways OSM tags as bridges that a rider meets AT GRADE (region `atGrade`): Cyril Magnin Street over the sunken half of
+   * Hallidie Plaza is `bridge=yes layer=1 level=0` — a street at the street's own level spanning a hole — and the bridge
+   * rules lifted it and its traffic, a car riding over a bus at Market (BUGS.md #318, 2026-10-17).
+   */
+  for (const w of ways) if ((streetRegion.atGrade ?? []).includes(w.id)) { delete w.tags.bridge; delete w.tags.layer }
   const allStreets = ways.filter((w) => w.tags.highway && w.geometry && w.geometry.length === w.nodes.length)
   const streets = allStreets.filter((w) => !aisle(w))
   console.log(`  ${allStreets.length - streets.length} car-park aisles left out (drawn as the lot's own stall rows)`)

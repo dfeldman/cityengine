@@ -129,6 +129,8 @@ export interface Region {
    * Taylor (owner, 2026-10-17, with a photo: "distinctive light/dark stripes of concrete, with cobblestone around the
    * streetcar tracks … just one super busy block on jefferson between jones and taylor").
    */
+  /** OSM ways tagged bridge/layer that are ridden at grade (tools/bake.ts): their bridge and layer tags are dropped */
+  atGrade?: number[]
   stripedStreets?: { street: string; from: [number, number]; to: [number, number]; cobbles?: number }[]
   /**
    * Areas whose sidewalks are crowded with furniture (render/city.ts, owner 2026-10-17 of Fisherman's Wharf: "a LOT of
@@ -228,6 +230,7 @@ export function region(id: string | undefined): Region {
     timeZone: own?.timeZone ?? base.timeZone,
     lanternStreets: own?.lanternStreets ?? base.lanternStreets,
     stripedStreets: own?.stripedStreets ?? base.stripedStreets,
+    atGrade: own?.atGrade ?? base.atGrade,
     touristStrips: own?.touristStrips ?? base.touristStrips,
     rainbowCrossings: own?.rainbowCrossings ?? base.rainbowCrossings,
     rainbowStairs: own?.rainbowStairs ?? base.rainbowStairs,
