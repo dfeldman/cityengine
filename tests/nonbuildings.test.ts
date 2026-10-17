@@ -245,6 +245,11 @@ const KNOWN: Record<string, string[]> = {
     'height | Mirror Maze sign',
     'intersects | Mirror Maze sign',
     'height | Pier 39 street bridge',
+    // by design (2026-10-17): the Municipal Pier's piles reach 9 m down into the cove and its deck is the OSM ring's own
+    // outline, with the mapped lot drawn beneath it; the bleachers' height follows the ground (Fit.groundAt), absent here
+    'height | Municipal Pier, Aquatic Park',
+    'coplanar | Municipal Pier, Aquatic Park',
+    'height | Aquatic Park Bleachers',
     // Pier 39's frontages (pier39-fronts.ts, 2026-10-17): point models laid against their buildings' walls, the viewing rail
     // along Building K; standalone fronts within 15 m of the pretzel kiosk and the street bridge
     "duplicate | Aunt Fanny's Hot Pretzels / Players Sports Grill & Arcade / Bubba Gump frontage (Pier 39, way/128240131 west face)",

@@ -12,6 +12,7 @@ import { Projection } from '../src/city/geo.ts'
 import { packPoints, unpackPoints, type PackedEdge } from '../src/city/package.ts'
 import { BridgeDecks, placement, toWorld, type ConformReport, type DeckDecl, type GraphEdge } from '../src/city/bridge-decks.ts'
 import { SF_BRIDGE_DECKS, BAY_BIKEWAY, BAY_RIDDEN_RAMPS, SALESFORCE_PARK_WAYS, type AuthoredEnd, type AuthoredWay } from '../src/city/sf/bridges.ts'
+import { PIER39_ROUTE, PIER39_ROUTE_MODEL } from '../src/city/sf/pier39-route.ts'
 import type { OsmWay } from './overpass.ts'
 
 /** the decks each region's bridge models declare, by `procedural` */
@@ -39,10 +40,11 @@ export function decksOf(region: string, origin: { lat: number; lon: number }): B
 /**
  * Each region's authored ways, by the model whose frame they are drawn in (any manifest of the region may place it),
  * and the freeway ramps it rides. The Bay Bridge Bikeway; since 2026-10-02 Salesforce Park's gondola
- * (docs/SALESFORCE-PARK.md).
+ * (docs/SALESFORCE-PARK.md); since 2026-10-17 the Pier 39 Bikeway (src/city/sf/pier39-route.ts), on the deck.
  */
 const REGION_WAYS: Record<string, { models: { model: string; ways: AuthoredWay[] }[]; ridden: [number, number][] }> = {
-  'san-francisco': { models: [{ model: 'bayBridgeNear', ways: BAY_BIKEWAY }, { model: 'salesforceTransitCenter', ways: SALESFORCE_PARK_WAYS }], ridden: BAY_RIDDEN_RAMPS },
+  'san-francisco': { models: [{ model: 'bayBridgeNear', ways: BAY_BIKEWAY }, { model: 'salesforceTransitCenter', ways: SALESFORCE_PARK_WAYS },
+    { model: PIER39_ROUTE_MODEL, ways: PIER39_ROUTE }], ridden: BAY_RIDDEN_RAMPS },
 }
 
 function placementOf(region: string, procedural: string, origin: { lat: number; lon: number }): ReturnType<typeof placement> | null {

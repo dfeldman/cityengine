@@ -36,6 +36,7 @@ import { boxAlong } from '../parts.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 import { sign, type Face as SignFace } from '../signage.ts'
 import { tube, type V3 } from './wharf-carnival.ts'
+import { PIER39_ROUTE } from '../../../city/sf/pier39-route.ts'
 
 type P2 = { x: number; z: number }
 const UVQ: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
@@ -622,9 +623,19 @@ export function pier39Building(id: number): (out: MeshBuilder, fit: Fit) => void
     if (lift > 0.05) {
       for (let i = v0; i < out.positions.length / 3; i++) out.positions[i * 3 + 1] += lift
       for (let i = s0; i < out.signs.length; i++) out.signs[i] = { ...out.signs[i], y: out.signs[i].y + lift }
-      const { ring } = edgesOf(fit, id)
-      faceBand(out, ring, 0, lift + 0.05, { kind: 'blank', wall: [0.32, 0.28, 0.24], material: 'clapboard' })
     }
+    /*
+     * The skirt of dark piles from the lowest ground under the outline up to the floor. A building seated on the pier deck
+     * by its manifest's `deckAbove` (M, K and L round the carousel, 2026-10-17: seated on the lowest ground, M's floor was
+     * 6.5 m under the carousel plaza and its awnings "touching the ground") has ground that sags BELOW its base — the baked
+     * ground north of the carousel falls to 6 m under the sea — so there the skirt reaches down instead.
+     */
+    const { ring } = edgesOf(fit, id)
+    const low = Math.min(0, ...ring.flatMap((q, i) => {
+      const r = ring[(i + 1) % ring.length]
+      return [fit.groundAt?.(q.x, q.z) ?? 0, fit.groundAt?.((q.x + r.x) / 2, (q.z + r.z) / 2) ?? 0]
+    }))
+    if (lift > 0.05 || low < -0.05) faceBand(out, ring, low, lift + 0.05, { kind: 'blank', wall: [0.32, 0.28, 0.24], material: 'clapboard' })
   }
 }
 
@@ -777,9 +788,17 @@ function drawBuilding(out: MeshBuilder, fit: Fit, id: number, st: P39Style): voi
         for (const s of [-1, 1]) { const p = at(e, u + s * (w / 2 - 0.08), 0, d - 0.08); box(out, p[0], 1.4, p[2], 0.07, 1.4, 0.07, WHITE, WT) }
         const ee: Ed = { ...e, a: { x: e.a.x + e.nx * d, z: e.a.z + e.nz * d } }
         awning(out, ee, u - w / 2, u + w / 2, f.awn)
-        const cs = at(e, u, 3.35, d + 0.03)
-        sign(out, { type: 'flat', text: f.text, h: 0.24, w: w * 0.92, face: 'slab', weight: 'bold', colour: RED, panel: WHITE, lit: 'front' }, { x: cs[0], y: cs[1] - 0.25, z: cs[2], heading: heading(e) })
-        if (f.sub) sign(out, { type: 'flat', text: f.sub, h: 0.2, w: w * 0.6, face: 'script', colour: RED, lit: 'front' }, { x: cs[0], y: cs[1] + 0.2, z: cs[2] + 0.01, heading: heading(e) })
+        /*
+         * Its name on a white board of its own standing on the kiosk's roof, ABOVE the awning (owner, 2026-10-17: "the Gelato
+         * sign is buried in an awning" — lettered at the awning's own top edge, 3.1 m, the canvas covered it): the board from
+         * the roof (3.1 m) to 4.15 m, just behind the awning's head (3.2 m at the kiosk's front), beside the giant cone, not behind it.
+         */
+        const b0 = u - w / 2 + 0.1, b1 = Math.max(b0 + 0.9, u + w / 2 - 1.15), bm = (b0 + b1) / 2
+        slab(out, e, b0, b1, 3.1, 4.15, d - 0.16, d - 0.06, WHITE)
+        slab(out, e, b0 - 0.04, b1 + 0.04, 4.15, 4.22, d - 0.18, d - 0.04, f.awn.a)
+        const cs = at(e, bm, 3.56, d - 0.02)
+        sign(out, { type: 'flat', text: f.text, h: 0.26, w: (b1 - b0) * 0.92, face: 'slab', weight: 'bold', colour: RED, lit: 'front' }, { x: cs[0], y: cs[1], z: cs[2], heading: heading(e) })
+        if (f.sub) sign(out, { type: 'flat', text: f.sub, h: 0.2, w: (b1 - b0) * 0.7, face: 'script', colour: RED, lit: 'front' }, { x: cs[0], y: cs[1] + 0.36, z: cs[2], heading: heading(e) })
         // the giant cone: a waffle cone point-down, three scoops, a cherry (TRIPO.md: the real one)
         const cp = at(e, u + w / 2 - 0.55, 0, d - 0.45)
         tube(out, [cp[0], 3.15, cp[2]], [cp[0], 4.9, cp[2]], 0.02, 10, [0.82, 0.6, 0.3], WT, 0.5)
@@ -915,10 +934,17 @@ export function pier39Galleries(out: MeshBuilder, fit: Fit, part = -1): void {
   const partOf = (z: number): number => (z < -60 ? 0 : z < 35 ? 1 : 2)
   const mine = (z: number): boolean => part < 0 || partOf(z) === part
   const gr = (x: number, z: number): number => fit.groundAt?.(x, z) ?? 0
+  /*
+   * The upper floor the galleries serve, over (x, z): the ground under them + P39_G — except north of the carousel, where
+   * Buildings K, L and M stand on the deck's datum (their manifest `deckAbove`, 2026-10-17) over ground that sags up to 6 m
+   * below it; there the galleries keep to the deck too (their posts and the stairs' feet still reach the real ground).
+   * When the pier's ground is made flat (a zone), this is the same thing.
+   */
+  const floorGr = (x: number, z: number): number => (z > P39_DECK_NORTH ? Math.max(gr(x, z), 0) : gr(x, z))
   const W = 1.35
   for (const g of P39_GALLERY) {
     if (!mine(g.p.reduce((acc, q) => acc + q[1], 0) / g.p.length)) continue
-    const p = g.p.map(([x, z]) => ({ x, z, y: gr(x, z) + P39_G }))
+    const p = g.p.map(([x, z]) => ({ x, z, y: floorGr(x, z) + P39_G }))
     for (let i = 0; i + 1 < p.length; i++) {
       const a = p[i], b = p[i + 1]
       const L = Math.hypot(b.x - a.x, b.z - a.z)
@@ -945,7 +971,8 @@ export function pier39Galleries(out: MeshBuilder, fit: Fit, part = -1): void {
           const u = Math.min(L - 0.1, Math.max(0.1, (L * k) / np))
           const top = Q(u, side * (W - 0.12), -deep)
           const foot: V3 = [top[0], gr(top[0], top[2]), top[2]]
-          beam(out, foot, top, 0.12, BEAM, WT)
+          // (none on the cycle lane: three galleries cross the main walk, and their posts stood in the middle of it)
+          if (laneOff(top[0], top[2]) >= LANE_CLEAR) beam(out, foot, top, 0.12, BEAM, WT)
           if (k < np) beam(out, Q(u, side * (W - 0.12), -deep - 0.95), Q(Math.min(L, u + 0.95), side * (W - 0.12), -deep), 0.06, BEAM, WT)
           if (k > 0) beam(out, Q(u, side * (W - 0.12), -deep - 0.95), Q(Math.max(0, u - 0.95), side * (W - 0.12), -deep), 0.06, BEAM, WT)
         }
@@ -989,7 +1016,7 @@ export function pier39Galleries(out: MeshBuilder, fit: Fit, part = -1): void {
   P39_STAIRS.forEach((s, si) => {
     if (!mine(s.top[1])) return
     const pts = [s.foot, ...s.mid, s.top].map(([x, z]) => ({ x, z }))
-    const y0 = gr(pts[0].x, pts[0].z), y1 = gr(pts[pts.length - 1].x, pts[pts.length - 1].z) + P39_G
+    const y0 = gr(pts[0].x, pts[0].z), y1 = floorGr(pts[pts.length - 1].x, pts[pts.length - 1].z) + P39_G
     let total = 0
     for (let i = 1; i < pts.length; i++) total += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z)
     if (total < 0.5) return
@@ -1087,6 +1114,94 @@ export function pier39Galleries(out: MeshBuilder, fit: Fit, part = -1): void {
       }
     }
   }
+
+  // THE PIER 39 BIKEWAY's lane (src/city/sf/pier39-route.ts): the ways the bike rides, painted on the planks
+  for (const w of PIER39_ROUTE) cycleLane(out, w.points, gr, mine)
+}
+
+/** north of this (the galleries' z), the buildings stand on the deck's datum, not on the ground (`pier39Galleries` floorGr) */
+const P39_DECK_NORTH = 95
+
+// ---- the cycle lane --------------------------------------------------------------------------------------------------
+/** the lane's half-width, and how far from its middle no gallery post stands */
+const LANE_HALF = 0.9, LANE_CLEAR = 1.6
+const LANE: Rgb = [0.2, 0.56, 0.3], LANE_PAINT: Rgb = [0.94, 0.94, 0.9]
+/** how far (x, z) is from the middle of the nearest of the bikeway's ways */
+function laneOff(x: number, z: number): number {
+  let best = Infinity
+  for (const w of PIER39_ROUTE) {
+    const p = w.points
+    for (let i = 1; i < p.length; i++) {
+      const a = p[i - 1], b = p[i], dx = b.x - a.x, dz = b.z - a.z
+      const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1e-9)))
+      best = Math.min(best, Math.hypot(a.x + dx * t - x, a.z + dz * t - z))
+    }
+  }
+  return best
+}
+
+/**
+ * A green cycle lane along one of the bikeway's ways, on the ground under it (the way's own heights are that ground, as
+ * baked): the green strip, a white edge line each side, and every ~24 m a white bicycle painted across it, upright to a
+ * rider coming either way in turn. Each piece goes in the part (`mine`) its middle is in.
+ */
+function cycleLane(out: MeshBuilder, pts: { x: number; z: number }[], gr: (x: number, z: number) => number, mine: (z: number) => boolean): void {
+  // each point's sideways direction: the bisector of its two pieces, so the strip's pieces meet without a gap
+  const side = pts.map((_, i) => {
+    const a = pts[Math.max(0, i - 1)], b = pts[Math.min(pts.length - 1, i + 1)]
+    const L = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    return { x: -(b.z - a.z) / L, z: (b.x - a.x) / L }
+  })
+  const P = (i: number, o: number, dy: number): V3 => {
+    const x = pts[i].x + side[i].x * o, z = pts[i].z + side[i].z * o
+    return [x, gr(x, z) + dy, z]
+  }
+  for (let i = 1; i < pts.length; i++) {
+    if (!mine((pts[i - 1].z + pts[i].z) / 2)) continue
+    out.quad([P(i - 1, LANE_HALF, 0.06), P(i, LANE_HALF, 0.06), P(i, -LANE_HALF, 0.06), P(i - 1, -LANE_HALF, 0.06)], [0, 1, 0], UVQ, LANE, TT)
+    for (const o of [LANE_HALF - 0.04, -(LANE_HALF - 0.04)]) {
+      out.quad([P(i - 1, o + 0.05, 0.075), P(i, o + 0.05, 0.075), P(i, o - 0.05, 0.075), P(i - 1, o - 0.05, 0.075)], [0, 1, 0], UVQ, LANE_PAINT, TT)
+    }
+  }
+  // the bicycles
+  let run = 0, next = 9, flip = 1
+  for (let i = 1; i < pts.length; i++) {
+    const a = pts[i - 1], b = pts[i], L = Math.hypot(b.x - a.x, b.z - a.z)
+    while (next <= run + L) {
+      const f = (next - run) / L, cx = a.x + (b.x - a.x) * f, cz = a.z + (b.z - a.z) * f
+      if (mine(cz)) bicycle(out, cx, cz, ((b.x - a.x) / L) * flip, ((b.z - a.z) / L) * flip, gr)
+      next += 24
+      flip = -flip
+    }
+    run += L
+  }
+}
+
+/** a lane marking's bicycle, flat on the ground at (cx, cz), its top towards (fx, fz): two wheels across the lane, the frame */
+function bicycle(out: MeshBuilder, cx: number, cz: number, fx: number, fz: number, gr: (x: number, z: number) => number): void {
+  // (u forward — the picture's up — and v across, to the picture's right)
+  const W = (u: number, v: number): V3 => {
+    const x = cx + fx * u - fz * v, z = cz + fz * u + fx * v
+    return [x, gr(x, z) + 0.085, z]
+  }
+  const stroke = (u0: number, v0: number, u1: number, v1: number, w = 0.06): void => {
+    const L = Math.hypot(u1 - u0, v1 - v0) || 1, nu = (-(v1 - v0) / L) * w, nv = ((u1 - u0) / L) * w
+    out.quad([W(u0 - nu, v0 - nv), W(u1 - nu, v1 - nv), W(u1 + nu, v1 + nv), W(u0 + nu, v0 + nv)], [0, 1, 0], UVQ, LANE_PAINT, TT)
+  }
+  for (const v of [-0.48, 0.48]) {
+    for (let k = 0; k < 12; k++) {
+      const a0 = (k / 12) * Math.PI * 2, a1 = ((k + 1) / 12) * Math.PI * 2
+      stroke(Math.sin(a0) * 0.3, v + Math.cos(a0) * 0.3, Math.sin(a1) * 0.3, v + Math.cos(a1) * 0.3, 0.035)
+    }
+  }
+  stroke(0, -0.48, 0.42, -0.12)       // the seat stay
+  stroke(0.42, -0.12, 0, 0)           // the seat tube, down to the cranks
+  stroke(0, -0.48, 0, 0)              // the chain stay
+  stroke(0, 0, 0.42, 0.28)            // the down tube
+  stroke(0.42, -0.12, 0.42, 0.28)     // the top tube
+  stroke(0.42, 0.28, 0, 0.48)         // the fork
+  stroke(0.42, 0.28, 0.58, 0.22)      // the stem and bars
+  stroke(0.48, -0.22, 0.48, -0.02, 0.07) // the saddle
 }
 
 /**
