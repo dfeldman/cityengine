@@ -66,7 +66,7 @@ import { Statues, statueManifest } from './render/statues.ts'
 import { Traffic, laneOf, onEdge, type RiderNow, type Vehicle } from './sim/traffic.ts'
 import { Signals } from './sim/signals.ts'
 import { SignalLamps } from './render/lamps.ts'
-import { ATE_LINES, DEFAULTS as DELIVERY_DEFAULTS, Delivery, rate, type DeliveryEvent, type Source, type Stop } from './game/delivery.ts'
+import { ATE_LINES, DEFAULTS as DELIVERY_DEFAULTS, Delivery, rate, type DeliveryEvent, type Job, type Source, type Stop } from './game/delivery.ts'
 import { DeliveryCard } from './ui/delivery-card.ts'
 import { Tunnels } from './render/tunnels.ts'
 import { Beacon } from './render/beacon.ts'
@@ -102,6 +102,7 @@ import { gpuMB, showMemory, watchHeap } from './render/heap.ts'
 import { Minimap } from './ui/minimap.ts'
 import { LocalControls, type Controls } from './controls.ts'
 import type { Platform } from './platform.ts'
+import type { EndDelivery } from './ui/end-screen.ts'
 import { Tools } from '@babylonjs/core/Misc/tools'
 import { Navigator, pointAlong } from './sim/navigate.ts'
 import { Transit, type Placer, type TransitKind, type VehicleView } from './sim/transit.ts'
@@ -1524,6 +1525,13 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     deliveryRouted = true
     replan()
   }
+  // [#303 HOOK, 2026-10-17] this session's jobs, for the end screen on Dandyhorse (src/ui/end-screen.ts, src/platform.ts)
+  const sessionJobs: EndDelivery[] = []
+  const acceptedJobs = new Set<number>()
+  const jobLine = (job: Job, outcome: EndDelivery['outcome'], stars: number, dollars: number, seconds: number): void => {
+    sessionJobs.push({ emoji: job.item?.emoji ?? '📦', what: job.item?.name ?? 'A parcel', from: job.source?.name ?? job.pickup.label,
+      to: job.dropoff.label, stars, dollars, seconds, outcome })
+  }
   const onDelivery = (events: DeliveryEvent[]): void => {
     for (const ev of events) {
       if (ev.kind === 'offer') {
@@ -1536,6 +1544,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         deliveryCard.hideOffer()
         opts.platform?.endOffer()
       } else if (ev.kind === 'accepted') {
+        acceptedJobs.add(ev.job.id)   // [#303 HOOK]
         deliveryCard.hideOffer()
         opts.platform?.endOffer()
         const what = ev.job.item ? `${ev.job.item.emoji} ` : ''
@@ -1567,6 +1576,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         light(null, 'pickup')
         routeTo(null)
         hud.banner('Delivery forfeit', `jumped away from the ${ev.job.item?.name ?? 'order'} · job cancelled, no pay`, 4500)
+        if (acceptedJobs.has(ev.job.id)) jobLine(ev.job, 'forfeit', 0, 0, 0)   // [#303 HOOK]
       } else if (ev.kind === 'spoiled') {
         // a fragile item and a collision: the job is off
         deliveryCard.going(null)
@@ -1574,6 +1584,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         routeTo(null)
         sfx.spoiled()
         hud.banner(`${ev.job.item?.emoji ?? ''} Splat!`, `the ${ev.job.item?.name ?? 'delivery'} did not survive · job cancelled`, 4500)
+        jobLine(ev.job, 'spoiled', 0, 0, 0)   // [#303 HOOK]
       } else if (ev.kind === 'eaten') {
         // the pass: full energy, no pay, one star, and the customer has something to say
         deliveryCard.going(null)
@@ -1584,6 +1595,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         const line = ATE_LINES[Math.floor(Math.random() * ATE_LINES.length)]
         deliveryCard.receipt(ev.job, { stars: 1, fee: 0, tip: 0, line }, ev.seconds, null, `Ate the ${ev.job.item?.name ?? 'order'}`)
         hud.banner(`${ev.job.item?.emoji ?? '🍽'} Mmm.`, 'full energy · no pay for this one', 3500)
+        jobLine(ev.job, 'eaten', 1, 0, ev.seconds)   // [#303 HOOK]
       } else if (ev.kind === 'delivered') {
         deliveryCard.going(null)
         light(null, 'pickup')
@@ -1598,6 +1610,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         try { localStorage.setItem(EARNED_KEY, earned.toFixed(2)) } catch { /* fine */ }
         deliveryCard.receipt(ev.job, r, ev.seconds, delivery.level > was ? delivery.level : null)
         deliveryCard.cash(earned, true)
+        jobLine(ev.job, 'delivered', r.stars, r.fee + r.tip, ev.seconds)   // [#303 HOOK]
       }
     }
   }
@@ -3063,6 +3076,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         speed: state.speed, power: state.power, distance: nav.travelled,
         street: edge.name, device: opts.device,
       })
+    } else if (minimap.isLarge) {
+      // [#304 HOOK, 2026-10-17] paused on Dandyhorse the map is shown (src/platform.ts `mapOnPause`): drawn here, since
+      // nothing above runs while paused
+      minimap.draw(lastAt, camHeading, null)
     }
     scene.render()
     // the first frame builds every tile in view at once: its cost is the stutter a new area would bring
@@ -3275,6 +3292,36 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       travelled: () => nav.travelled,
       // Babylon's own screenshot, not the canvas: a raw toDataURL comes back blank under WebGPU (INTEGRATION.md §8)
       screenshot: () => Tools.CreateScreenshotAsync(engine, camera, { width: 640, height: 360 }, 'image/jpeg', 0.82).catch(() => null),
+      /*
+       * [#304 HOOK, 2026-10-17] What the phone offers besides the d-pad, when it can be done now — the same things as
+       * the keys B, O and E and the HUD's own buttons — and the map, while paused and on request.
+       */
+      actions: () => {
+        const out: { id: string; label: string }[] = []
+        const v = transit.boardable
+        if (transit.aboard) out.push({ id: 'transit', label: transit.aboard.kind === 'wheel' ? '🎡 Get off at the bottom' : '🚋 Get off' })
+        else if (v) out.push({ id: 'transit', label: v.kind === 'wheel' ? '🎡 Ride the SkyStar wheel' : v.kind === 'gondola' ? '🚡 Take the gondola'
+          : `🚋 Board the ${v.name ?? (v.kind === 'cable' ? 'cable car' : 'streetcar')}` })
+        const top = !frozen && !transit.aboard ? nearTop(lastAt) : null
+        if (observing && frozen) out.push({ id: 'observe', label: '🔭 Come down' })
+        else if (top) out.push({ id: 'observe', label: `🔭 ${top.obscura ? 'Look in' : 'Observe from'} ${top.name.replace(/^the /, '')}` })
+        if (delivery.phase === 'toDropoff' && delivery.job && (delivery.elapsed ?? 0) > Delivery.expected(delivery.job, 6.5 * play.speedup) * 1.7) {
+          out.push({ id: 'eat', label: `${delivery.job.item?.emoji ?? '🍽'} Eat the ${delivery.job.item?.name ?? 'order'}` })
+        }
+        out.push({ id: 'map', label: minimap.isLarge ? '🗺️ Close the map' : '🗺️ Map' })
+        return out
+      },
+      act: (id) => {
+        if (id === 'transit') transitAction()
+        else if (id === 'observe') {
+          if (observing && frozen) comeDown()
+          else { const o = !frozen ? nearTop(lastAt) : null; if (o) goUp(o) }
+        } else if (id === 'eat') onDelivery(delivery.eat())
+        else if (id === 'map') toggleMap()
+      },
+      showMap: (on) => { if (on === minimap.isLarge) return false; toggleMap(); return true },
+      // [#303 HOOK] the end screen's numbers: the ride and this session's jobs
+      record: () => ({ travelled: nav.travelled, deliveries: [...sessionJobs], imperial: imperialNow(), place: pkg.name }),
     })
   }
 }

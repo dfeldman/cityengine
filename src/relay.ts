@@ -63,3 +63,16 @@ export function relayFetch(host: string): typeof fetch {
     })
   }
 }
+
+/**
+ * THE KEYS, THROUGH TWO FRAMES (#302, 2026-10-17). On Dandyhorse this page is two iframes deep (bridge → shim → game).
+ * A frame focused while its page is still loading keeps the focus on the iframe ELEMENT without it reaching the
+ * document inside, so the keyboard at the big screen reached nothing at all. While this page has not got the focus,
+ * it asks the shim to hand it on; the shim does only if the focus is its own (the bridge showing the game, not its own
+ * controls), so this never takes the keys from the bridge's buttons.
+ */
+export function keepFocus(host: string): void {
+  const ask = (): void => { if (!document.hasFocus()) window.parent.postMessage({ dh: 'focus' }, host) }
+  setInterval(ask, 500)
+  ask()
+}

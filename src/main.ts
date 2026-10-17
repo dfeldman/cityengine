@@ -11,7 +11,7 @@
  *   &host=<origin>             …framed by Dandyhorse's shim from another origin: the API through it (src/relay.ts)
  *   /?dandyhorse=bike|run      an ad-hoc debug session on a local Dandyhorse server
  */
-import { relayFetch, relayHost } from './relay.ts'
+import { keepFocus, relayFetch, relayHost } from './relay.ts'
 import { goTo, parseLatLon, type CityRef } from './ui/goto.ts'
 import { HUD_CSS } from './ui/hud.ts'
 import { DELIVERY_CSS } from './ui/delivery-card.ts'
@@ -93,11 +93,13 @@ if (params.get('model')) {
     const [{ startSession, setFetch }, { Platform, GAME_ID }] = await Promise.all([import('@dandyhorse/gamekit'), import('./platform.ts')])
     // framed by Dandyhorse's shim from another origin: the API is reached through it (src/relay.ts)
     const host = relayHost(params)
-    if (host) setFetch(relayFetch(host))
+    if (host) { setFetch(relayFetch(host)); keepFocus(host) }
     try {
       const start = await startSession(sessionId ? { sessionId }
         : { gameId: GAME_ID, variant: adHoc === 'run' ? 'run' : 'bike', debug: true, options: params.get('city') ? { city: params.get('city') } : undefined })
       platform = new Platform(start, (line) => console.log('citydash:', line))
+      // (for the probes that drive it from outside: the platform end-to-end scripts)
+      ;(window as unknown as { __platform?: unknown }).__platform = platform
     } catch (e) {
       // say so, in the console's look, rather than sit on "loading…" for ever
       LoadingScreen.dismiss()

@@ -15,6 +15,7 @@ import {
   type EndInfo, type GameState, type InputAnswer, type Json, type StartPayload, type TickBody,
 } from '@dandyhorse/gamekit'
 import type { Controls, Measured, Steer } from './controls.ts'
+import { EndScreen, type EndRecord } from './ui/end-screen.ts'
 
 /** the game's id on the platform (dandyhorse games/citydash/metadata.json) */
 export const GAME_ID = 'citydash'
@@ -27,6 +28,22 @@ const STALE_MS = 3000
 /** Seconds of smoothing on the grade sent to the machine, at the 1 Hz tick. */
 const GRADE_TAU = 2
 const SAVE_EVERY_MS = 5000
+/** How often the actions on offer are looked at, for the phone's buttons (a vehicle passing changes them). */
+const ACTIONS_EVERY_MS = 500
+/** the d-pad's own buttons; an action is never named like one (its label is its answer) */
+const PAD = ['left', 'up', 'right', 'down']
+/** what the server takes as one of a d-pad prompt's choices (dandyhorse lifecycle.py `_validate_prompt`): ≤ 40, ≤ 10 in all */
+const LABEL_MAX = 40
+const ACTIONS_MAX = 6
+
+/** One thing the rider can do right now beyond steering (#304): offered as a button on the phone. */
+export interface GameAction { id: string; label: string }
+
+/** at most `max` characters, counted as the server counts them (code points: an emoji is never cut in half) */
+export const clip = (s: string, max = LABEL_MAX): string => {
+  const chars = Array.from(s)
+  return chars.length <= max ? s : chars.slice(0, max - 1).join('') + '…'
+}
 
 /** What game.ts hands the platform. */
 export interface GameLink {
@@ -44,6 +61,14 @@ export interface GameLink {
   streets: number
   /** a picture for History, 640×360 — asked for now and then, the latest one kept */
   screenshot(): Promise<string | null>
+  /** what the rider can do right now besides steer — board or leave the transit, observe, eat the order (#304) */
+  actions?(): GameAction[]
+  /** …and do one of them (an id from `actions`) */
+  act?(id: string): void
+  /** open (true) or shut the big map; says whether it changed anything (#304: the map while paused) */
+  showMap?(on: boolean): boolean
+  /** the session's ride and deliveries, for the end screen (#303) */
+  record?(): Omit<EndRecord, 'seconds'>
 }
 
 /** What is saved, per city. `at` rather than an edge id: a rebaked city renumbers its edges. */
@@ -86,8 +111,16 @@ export class Platform implements Controls {
   private image: string | null = null
   private finishing = false
   /** a delivery on offer, shown on the phone as a menu beside the d-pad (`offer`), and what its two items do */
-  private offering: { take: () => void; skip: () => void } | null = null
+  private offering: { title: string; until: number; take: () => void; skip: () => void } | null = null
   private rev = 1
+  /** the actions on the phone's buttons now, and when they were last looked at (#304) */
+  private actions: GameAction[] = []
+  private actionsAt = 0
+  /** the map was opened because of a pause, so the end of the pause shuts it (#304) */
+  private mapForPause = false
+  /** the end screen (#303), made before the game so its keys come first */
+  private readonly endScreen: EndScreen | null = null
+  private endWatch: { close: () => Promise<void>; stop: () => void } | null = null
 
   // achievements
   private readonly earned = new Set<string>()
@@ -111,9 +144,15 @@ export class Platform implements Controls {
       buildTick: () => this.buildTick(),
       onState: (s) => { this.latest = s; this.receivedAt = Date.now(); this.showPause() },
       onInput: (a) => this.onAnswer(a),
-      onPause: (p) => this.log(`paused: ${p.reason} — ${p.message}`),
-      onResume: (secs) => this.log(`resumed after ${secs.toFixed(0)} s`),
-      onEnded: (e) => { this.endedInfo = e; this.writeSave(true); this.log(`ended: ${e.status} (${e.reason ?? 'no reason'})`) },
+      onPause: (p) => { this.log(`paused: ${p.reason} — ${p.message}`); this.mapOnPause(true) },
+      onResume: (secs) => { this.log(`resumed after ${secs.toFixed(0)} s`); this.mapOnPause(false) },
+      onEnded: (e) => {
+        this.endedInfo = e
+        this.writeSave(true)
+        this.log(`ended: ${e.status} (${e.reason ?? 'no reason'})`)
+        this.showPause()
+        if (e.status === 'complete') this.showEnd()
+      },
       onError: (ctx, err) => this.log(`${ctx}: ${err instanceof Error ? err.message : String(err)}`),
       onTick: (ok) => { if (!ok) this.pending.unshift(...this.sent); this.sent = [] },
       sessionImage: () => this.image,
@@ -121,10 +160,31 @@ export class Platform implements Controls {
     if (typeof document === 'undefined') return      // (the tests)
     this.pauseCard = document.createElement('div')
     this.pauseCard.className = 'sr-card sr-pause'
-    this.pauseCard.style.cssText = 'position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);z-index:20;'
+    // (high up: the map opens under it while paused, #304)
+    this.pauseCard.style.cssText = 'position:fixed;left:50%;top:84px;transform:translateX(-50%);z-index:20;'
       + 'padding:22px 28px;font:600 18px/1.4 var(--font);max-width:min(460px,86vw);text-align:center;display:none'
     document.body.appendChild(this.pauseCard)
+    this.endScreen = new EndScreen()
     addEventListener('pagehide', () => this.writeSave(true))
+    addEventListener('keydown', (e) => this.key(e))
+  }
+
+  /**
+   * THE KEYBOARD ON DANDYHORSE (#302, 2026-10-17). Standalone the arrows are LocalControls' (src/controls.ts), which is
+   * never made on the platform, so a keyboard at the big screen could not steer at all. The same keys as standalone's
+   * slow input, straight onto the queue (not through the server as the HUD's ↩ is: the key is here, not on a phone):
+   * ← → turn, ↑ or S straight (cancels a turn asked for), U or Backspace turn round. The game's own keys (B, M, O, P,
+   * Esc…) are game.ts's and need nothing here; the game's menu, while open, takes the arrows before this sees them.
+   */
+  private key(e: KeyboardEvent): void {
+    if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey || !this.link || this.paused() || this.ended()) return
+    if (e.target instanceof HTMLElement && e.target.closest('input, textarea, select')) return
+    const s: Steer | undefined = ({ ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'straight', KeyS: 'straight', KeyU: 'back', Backspace: 'back' } as Record<string, Steer>)[e.code]
+    if (!s) return
+    if (e.code.startsWith('Arrow') || e.code === 'Backspace') e.preventDefault()
+    if (e.repeat) return
+    this.queue.push(s)
+    if (s === 'left' || s === 'right') this.achievement('first-turn')
   }
 
   // --- what the launch chose --------------------------------------------------------------------
@@ -141,7 +201,8 @@ export class Platform implements Controls {
   attach(link: GameLink): void {
     this.link = link
     this.visited = new Set(this.save.cities[link.city]?.visited ?? [])
-    this.openSteer()
+    this.actions = this.currentActions()
+    this.refreshPrompt()
     this.client.start()
     // a picture for History now and then, so the one sent at the end is recent without waiting for it then
     const snap = (): void => { void link.screenshot().then((img) => { if (img) this.image = img }) }
@@ -149,29 +210,94 @@ export class Platform implements Controls {
     setInterval(snap, 120_000)
   }
 
-  private openSteer(): void {
-    this.client.openPrompt({ promptId: PROMPT_ID, prompt: 'Turn', choices: ['left', 'up', 'right', 'down'], persistent: true, layout: 'dpad' })
+  /**
+   * THE ONE PROMPT (dandyhorse: only one can be open), rebuilt whenever what it offers changes:
+   * - the steering d-pad, always (INTEGRATION.md §3);
+   * - the actions on offer (#304, 2026-10-17: "buttons for optional things like boarding transit or observing when
+   *   available — remember this is likely to be the user's main control device"): extra buttons under the cross, a
+   *   d-pad prompt's own `choices` (the bridge draws any choice that is not a d-pad button as a big button). The label
+   *   is the answer, so `onAnswer` finds the action by it;
+   * - a delivery on offer: then a MENU for the offer's life — "Take it" and "Skip" as big buttons, the actions after
+   *   them, the d-pad beside, and the seconds until it is taken anyway.
+   */
+  private refreshPrompt(): void {
+    if (!this.link || this.ended()) return
+    const o = this.offering
+    if (o) {
+      this.client.openPrompt(menuPrompt(PROMPT_ID, ++this.rev, {
+        title: o.title, countdown: Math.max(0, Math.round((o.until - Date.now()) / 1000)), buttons: ['left', 'up', 'right', 'down'],
+        items: [{ id: 'take', label: '✅ Take it' }, { id: 'skip', label: '⏭️ Skip' }, ...this.actions.map((a) => ({ id: `act:${a.id}`, label: a.label }))],
+      }))
+      return
+    }
+    this.client.openPrompt({
+      promptId: PROMPT_ID, prompt: 'Turn', persistent: true, layout: 'dpad',
+      choices: [...PAD, ...this.actions.map((a) => a.label)],
+    })
+  }
+
+  /** The actions on offer now, made safe for the prompt: short, distinct, never a d-pad button's name, six at most. */
+  private currentActions(): GameAction[] {
+    const out: GameAction[] = []
+    for (const a of this.link?.actions?.() ?? []) {
+      const label = clip(a.label)
+      if (!label || PAD.includes(label) || out.some((b) => b.label === label || b.id === a.id)) continue
+      out.push({ id: a.id, label })
+      if (out.length === ACTIONS_MAX) break
+    }
+    return out
   }
 
   /**
-   * TRAINER MODE (src/modes.ts): a delivery on offer, on the phone. Only one prompt can be open, so the steering
-   * d-pad becomes a MENU for the offer's life — "Take it" and "Skip" as big buttons, the same d-pad beside them,
-   * and the seconds until it is taken anyway. `endOffer` puts the plain d-pad back.
+   * TRAINER MODE (src/modes.ts): a delivery on offer, on the phone (`refreshPrompt`). `endOffer` puts the d-pad back.
    */
   offer(title: string, seconds: number, take: () => void, skip: () => void): void {
     if (!this.link) return
-    this.offering = { take, skip }
-    this.client.openPrompt(menuPrompt(PROMPT_ID, ++this.rev, {
-      title, countdown: seconds, buttons: ['left', 'up', 'right', 'down'],
-      items: [{ id: 'take', label: '✅ Take it' }, { id: 'skip', label: '⏭️ Skip' }],
-    }))
+    this.offering = { title, until: Date.now() + seconds * 1000, take, skip }
+    this.refreshPrompt()
   }
 
   endOffer(): void {
     if (!this.offering) return
     this.offering = null
-    if (this.link) this.openSteer()
+    this.refreshPrompt()
   }
+
+  /** While paused the game shows its map (#304); the pause's end shuts it again, if the pause opened it. */
+  private mapOnPause(paused: boolean): void {
+    const link = this.link
+    if (!link?.showMap || this.ended()) return
+    if (paused) this.mapForPause = link.showMap(true) || this.mapForPause
+    else if (this.mapForPause) { this.mapForPause = false; link.showMap(false) }
+  }
+
+  // --- the end screen (#303) -----------------------------------------------------------------------
+
+  /**
+   * The session completed (the workout's time up, or End on a bridge): the summary over the city. The platform keeps
+   * the game on screen meanwhile (dandyhorse PLAN.md §6.4.1, `capabilities.endScreen` in games/citydash/metadata.json);
+   * Done here tells it so, and Done on a bridge (or its timeout) is heard through `watchEndScreen` and takes it down.
+   */
+  private showEnd(): void {
+    const link = this.link
+    const screen = this.endScreen
+    if (screen?.isOpen || this.endWatch) return
+    if (!link || !screen) {
+      // ended before the rider was on the street (still loading): nothing to sum up, so let the bridges have the screen
+      this.endWatch = this.client.watchEndScreen(() => {})
+      void this.endWatch.close()
+      return
+    }
+    this.client.closePrompt()
+    const r = link.record?.() ?? { travelled: link.travelled(), deliveries: [], imperial: this.start.unitSystem !== 'metric' }
+    const watch = this.client.watchEndScreen(() => { screen.hide(); this.log('end screen closed') })
+    this.endWatch = watch
+    screen.show({ ...r, seconds: this.elapsedSeconds() }, () => { void watch.close() })
+    this.log(`end screen: ${r.deliveries.length} jobs, ${Math.round(r.travelled)} m`)
+  }
+
+  /** the end screen is up (for the probes) */
+  get endScreenOpen(): boolean { return this.endScreen?.isOpen ?? false }
 
   // --- Controls -----------------------------------------------------------------------------------
 
@@ -214,6 +340,15 @@ export class Platform implements Controls {
     if (link.travelled() >= 10_000) this.achievement('ten-km')
     if (link.streets > 0 && this.visited.size >= link.streets) this.achievement('every-street')
     if (Date.now() - this.lastSave > SAVE_EVERY_MS) this.writeSave(false)
+    // the phone's action buttons follow what is on offer (a cable car pulling in, a tower coming near)
+    if (Date.now() - this.actionsAt > ACTIONS_EVERY_MS && !this.ended()) {
+      this.actionsAt = Date.now()
+      const now = this.currentActions()
+      if (now.map((a) => a.label).join('\n') !== this.actions.map((a) => a.label).join('\n')) {
+        this.actions = now
+        this.refreshPrompt()
+      }
+    }
     // the workout's length is up: a success wherever the rider happens to be (INTEGRATION.md §5)
     const want = this.start.requestedDuration
     if (want && this.elapsedSeconds() >= want && !this.ended()) this.finish()
@@ -235,9 +370,17 @@ export class Platform implements Controls {
     // the offer's two items, while it is on (a late tap on a closed offer does nothing)
     const r = readMenuAnswer(a)
     if (r.kind === 'item') {
+      // (a tap aimed at an older list — an offer since gone, an action since changed — does nothing)
+      if (r.rev !== null && r.rev !== this.rev) return
       const o = this.offering
       if (o && r.id === 'take') o.take()
       else if (o && r.id === 'skip') o.skip()
+      else if (r.id.startsWith('act:')) this.link?.act?.(r.id.slice(4))
+      else {
+        // a d-pad prompt's extra button: its label is its answer
+        const act = this.actions.find((x) => x.label === r.id)
+        if (act) this.link?.act?.(act.id)
+      }
       return
     }
     const s = DPAD[r.button]
@@ -248,7 +391,7 @@ export class Platform implements Controls {
 
   /** the server's own words while paused, as they are (docs/GAME_AUTHORING.md "Paused") */
   private showPause(): void {
-    const msg = this.latest?.sessionStatus === 'paused' ? this.latest.pause?.message ?? 'Paused' : null
+    const msg = this.latest?.sessionStatus === 'paused' && !this.ended() ? this.latest.pause?.message ?? 'Paused' : null
     if (!this.pauseCard) return
     this.pauseCard.style.display = msg ? '' : 'none'
     if (msg && this.pauseCard.textContent !== msg) this.pauseCard.textContent = msg

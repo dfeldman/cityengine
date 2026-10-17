@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { GameState, StartPayload } from '@dandyhorse/gamekit'
-import { Platform, type GameLink } from '../src/platform.ts'
+import { Platform, clip, type GameLink } from '../src/platform.ts'
+import { endScreenHtml, clockWords } from '../src/ui/end-screen.ts'
 
 const start = (over: Partial<StartPayload> = {}): StartPayload => ({
   sessionId: 's1', gameId: 'citydash', variant: 'bike', gameVersion: '0.1.0', seed: 1, requestedDuration: 1800,
@@ -120,5 +121,63 @@ describe('Street Runner on Dandyhorse (src/platform.ts)', () => {
     p.onAnswer({ promptId: 'steer', choice: 'right', t: 2, source: 'game' })
     expect(p.buildTick().achievements).toEqual(['first-turn'])
     expect(p.buildTick().achievements).toBeUndefined()
+  })
+
+  it('offers what can be done now as buttons under the d-pad, and does it by its label (#304)', () => {
+    const p = new Platform(start(), () => {}) as unknown as Inside & {
+      offer: Platform['offer']; frame: Platform['frame']; refreshPrompt(): void; actions: { id: string; label: string }[]
+      client: { prompt: { layout?: string; choices: string[]; items?: { id: string; label: string }[] } | null; requestTick(): Promise<void> }
+    }
+    p.client.requestTick = async () => {}
+    const done: string[] = []
+    let acts = [{ id: 'transit', label: '🚋 Board the Powell–Hyde cable car' }, { id: 'map', label: '🗺️ Map' }, { id: 'bad', label: 'left' }]
+    p.link = { ...link(), actions: () => acts, act: (id) => done.push(id) }
+    p.actions = (p as unknown as { currentActions(): { id: string; label: string }[] }).currentActions()
+    p.refreshPrompt()
+    expect(p.client.prompt?.layout).toBe('dpad')
+    // a d-pad button's name is never an action's label (it would steer)
+    expect(p.client.prompt?.choices).toEqual(['left', 'up', 'right', 'down', '🚋 Board the Powell–Hyde cable car', '🗺️ Map'])
+    p.onAnswer({ promptId: 'steer', choice: '🗺️ Map', t: 1, source: 'bridge:x' })
+    p.onAnswer({ promptId: 'steer', choice: '🚋 Board the Powell–Hyde cable car', t: 2, source: 'bridge:x' })
+    p.onAnswer({ promptId: 'steer', choice: 'left', t: 3, source: 'bridge:x' })
+    expect(done).toEqual(['map', 'transit'])
+    expect(p.steering()).toEqual(['left'])
+    // while a delivery is on offer the actions follow its two items in the menu
+    p.offer('📦 here → there', 12, () => {}, () => {})
+    expect(p.client.prompt?.items?.map((i) => i.id)).toEqual(['take', 'skip', 'act:transit', 'act:map'])
+    const rev = (p.client.prompt as unknown as { rev: number }).rev
+    p.onAnswer({ promptId: 'steer', choice: 'act:map', rev, t: 4, source: 'bridge:x' })
+    // …and a tap aimed at an older list does nothing
+    p.onAnswer({ promptId: 'steer', choice: 'act:map', rev: rev - 1, t: 5, source: 'bridge:x' })
+    expect(done).toEqual(['map', 'transit', 'map'])
+    // the buttons follow what is on offer
+    acts = [{ id: 'map', label: '🗺️ Close the map' }]
+    ;(p as unknown as { actionsAt: number }).actionsAt = 0
+    p.frame()
+    expect(p.client.prompt?.items?.map((i) => i.label)).toEqual(['✅ Take it', '⏭️ Skip', '🗺️ Close the map'])
+  })
+
+  it('keeps an action short enough for the server, an emoji never cut in half', () => {
+    expect(Array.from(clip('🔭 Observe from Transamerica Pyramid, the tall one')).length).toBe(40)
+    expect(clip('🗺️ Map')).toBe('🗺️ Map')
+  })
+
+  it('draws the end screen: the distance, every job with its stars and dollars, the totals (#303)', () => {
+    const html = endScreenHtml({
+      travelled: 5230, seconds: 1805, imperial: false, place: 'San Francisco', deliveries: [
+        { emoji: '🥟', what: 'Dim sum', from: 'Golden Lantern', to: 'Pine & Taylor', stars: 5, dollars: 9.5, seconds: 300, outcome: 'delivered' },
+        { emoji: '🍕', what: 'Pizza', from: 'Slice', to: 'Hyde & Bay', stars: 3, dollars: 6, seconds: 500, outcome: 'delivered' },
+        { emoji: '🍰', what: 'Cake', from: 'Tartine', to: '18th & Dolores', stars: 0, dollars: 0, seconds: 0, outcome: 'spoiled' },
+      ],
+    })
+    expect(html).toContain('5.23 km')
+    expect(html).toContain('30:05')
+    expect(html).toContain('$15.50')          // the session's own earnings
+    expect(html).toContain('4.0 ★')           // the average of the rated ones
+    expect(html).toContain('Golden Lantern → Pine &amp; Taylor')
+    expect(html).toContain('did not survive')
+    expect(html.match(/<li/g)?.length).toBe(3)
+    expect(endScreenHtml({ travelled: 1609.344, seconds: 60, imperial: true, deliveries: [] })).toContain('1.00 mi')
+    expect(clockWords(3725)).toBe('1:02:05')
   })
 })

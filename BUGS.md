@@ -10715,14 +10715,17 @@ always review"; "check in after each major change"; "use nice 20". Organic shape
 Tripo (image → GLB); text signs use the sign kit (GLB text), not block letters.
 
 DANDYHORSE (~/dandyhorse; the Bridge is likely the player's main control device)
-- #302 Keyboard and mouse orbit do not work when the game is played through Dandyhorse (focus/iframe). OPEN.
+- #302 Keyboard and mouse orbit do not work when the game is played through Dandyhorse (focus/iframe). FIXED: the shim
+  focused the frame before the game loaded; focus is now handed on and re-asked for; arrows mapped on the platform.
 - #303 An END SCREEN: distance travelled, each delivery with its star rating and dollars; Dandyhorse must show it at the end
-  instead of killing the game at once. OPEN.
+  instead of killing the game at once. DONE: src/ui/end-screen.ts; platform end-screen contract (dandyhorse PLAN §6.4.1).
+  The owner's Dandyhorse server needs a restart (`make serve`) to pick it up.
 - #304 A PAUSE button on the Bridge (and the map shown while paused); buttons for optional actions when available —
-  board/leave transit (B), observe, etc. OPEN.
+  board/leave transit (B), observe, etc. DONE: Pause/Play on the phone; the map opens while paused; board, observe,
+  eat, map as buttons under the d-pad when available.
 - #305 Remote control from another bridge: the game screen ALWAYS shows a big undismissable "controlled elsewhere"
-  warning; and the power (watts) is not synced. OPEN.
-- #306 The Bridge should display the incline it is receiving from the game, for debugging. OPEN.
+  warning; and the power (watts) is not synced. FIXED: no banner over the game; watts from the server's merged numbers.
+- #306 The Bridge should display the incline it is receiving from the game, for debugging. DONE (strip and LiveCard).
 
 GAME
 - #307 A street with a fire extinguisher (hydrant?) and pedestrians walking down its CENTRE — location unknown (owner could

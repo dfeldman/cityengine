@@ -101,6 +101,38 @@ of traffic. So:
 The console should show the same three arrows the game does, and `answerinput` from the game's own UI and from
 a phone are treated identically.
 
+### 3.1 The keyboard, and the phone's other buttons (2026-10-17)
+
+The owner's report: "keyboard commands (and mouse orbits) do not work … buttons for optional things like boarding
+transit or observing when available — remember this is likely to be the user's main control device".
+
+- **Focus through two frames.** Bridge → shim → game: the bridge focused the shim while the game's frame was still
+  loading, and the focus stayed on the iframe ELEMENT without reaching the game's document, so no key ever arrived
+  (and without P, no orbit either). Now the shim hands the focus on whenever it has it, and the game (`relay.ts`
+  `keepFocus`) posts `{dh: 'focus'}` every half second while it has none; the shim acts on it only when it has the
+  focus itself, so the bridge's own buttons keep theirs. A strip button gives the keys back after a click.
+- **The arrows steer on the platform.** `LocalControls` (where they live standalone) is never made on Dandyhorse;
+  `Platform.key` puts ← → (turn), ↑ / S (straight) and U / Backspace (turn round) straight onto the steering queue.
+  B, M, O, P, E, Esc are game.ts's own and needed nothing but the focus.
+- **Actions on the phone** (`GameLink.actions` / `act`, a small hook in game.ts): board or leave the cable car,
+  streetcar, gondola or SkyStar wheel (B), observe from a tower or look in the Camera Obscura (O), eat a very late
+  order (E), and the map (M). They ride on the steering prompt as extra `choices` of the d-pad (drawn as big buttons
+  under the cross, answering with their label), or as items after "Take it" / "Skip" while an offer's menu is up.
+  Looked at twice a second; the prompt is re-sent only when the list changes.
+- **Paused, the map.** On a pause (the bridge's ⏸, or the machine silent) the game opens its big map and shuts it on
+  resume if the pause opened it (`GameLink.showMap`); it is drawn even though nothing else runs while paused.
+
+## 3.2 The end screen (2026-10-17)
+
+When the session completes — the workout's time up, or ■ End on a bridge — the game shows its summary over the city
+(`src/ui/end-screen.ts`, the game's `sr-card` look): the distance ridden, the riding time, every job of the session
+(what, from where to where, its stars, its dollars; spoiled, eaten and forfeit jobs too, at $0) and the totals. The
+session's own earnings, not the running total kept in the browser.
+
+Dandyhorse keeps the game on screen meanwhile (`capabilities.endScreen` in its metadata.json; dandyhorse PLAN.md
+§6.4.1). It goes when the player presses **Done** — in the game (the button, Enter, Space or Esc), or ✓ Done on any
+bridge — or after the platform's 120 s. A discard shows nothing: the bridge closes the game at once.
+
 ## 4. The grade request
 
 `setstate` carries the street's grade in percent, smoothed over two seconds, exactly as Trail Trainer does. The
@@ -169,3 +201,6 @@ synchronous, so the latest one is kept ready.
    bridges expect (it worked in the run above).
 7. ✅ The name: the platform lists it as **Cycle Dash**, the game's own name (title, cards, site); the goal's "City
    Dash" read as a slip (2026-10-15). The platform id stays `citydash`.
+8. ✅ (2026-10-17) Keys and the mouse orbit through bridge → shim → game; actions on the phone; the map while paused;
+   the end screen. Verified headless against a local Dandyhorse with this repo's dev server (a scripted bridge for
+   the phone, the real bridge page hosting the game).
