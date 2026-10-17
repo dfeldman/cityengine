@@ -10675,7 +10675,7 @@ Building (scratchpad tools: look.ts / lookfov.ts).
    dolores.jpg): the downtown cluster is right in order and scale. Caution for tools: a `?fog=off` shot taken a few
    seconds after a jump shows the mid-distance city as bare grass — the tiles had not streamed yet, not a defect.
 
-### #279 Building parts in the air with nothing under them — a scan (2026-10-16, from #269) — OPEN, to triage
+### #279 Building parts in the air with nothing under them — a scan (2026-10-16, from #269) — TRIAGED (nothing large left; see the end)
 
 84 parts start ≥ 3 m up over ≥ 60 m² with no building under their centre reaching their base. Most are by design
 (gas-station canopies 4.5–5 m, modelled landmarks' crowns, skybridges, Golden Gate towers). Worth a look, largest
