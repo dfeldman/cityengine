@@ -55,7 +55,8 @@ function dogpatch(out: MeshBuilder, fit: Fit, sp: Spec): void {
  * corner rising above the roof.
  */
 export function parkingGarage(out: MeshBuilder, fit: Fit): void {
-  const levels = 8, F = 3.1, H = levels * F
+  // its levels from its height (the UCSF garage's 25 m is 8; the Wharf Garage's 11 m is 3, 2026-10-17)
+  const F = 3.1, levels = Math.max(2, Math.round((fit.height > 0 ? fit.height : 25) / F)), H = levels * F
   tower(out, { ...fit, height: H }, {
     height: H,
     base: { height: F, face: { kind: 'fins', wall: [0.74, 0.74, 0.72], glass: [0.12, 0.13, 0.14], pitch: 9, solid: 0.12, depth: 0.5, material: 'concrete' } },

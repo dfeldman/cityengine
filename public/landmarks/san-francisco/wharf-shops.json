@@ -155,5 +155,15 @@
   "procedural": "pumpingStation2",
   "height": 30,
   "note": "BUGS.md #290m, 2026-10-17: the fire department's 1912 station at the foot of Fort Mason — white stucco, arched windows under red tile pents, notched parapet, the tall concrete chimney (HAER CAL,38-SANFRA,143; Commons 'San Francisco Fire Dept Pumping Station No 2')."
+ },
+ {
+  "name": "The Wharf Garage (350 Beach)",
+  "osm": [
+   "way/288473104"
+  ],
+  "procedural": "parkingGarage",
+  "front": "street",
+  "height": 11,
+  "note": "2026-10-17: OSM amenity=parking, parking=multi-storey, 11 m — open concrete decks, not the dark glass box the classifier gave it (Wharf aerial)."
  }
 ]
