@@ -943,16 +943,87 @@ export function canneryCourt(out: MeshBuilder, fit: Fit): void {
     }
     box(out, x, 0.05, z, 1.4, 0.05, 1.4, [0.35, 0.3, 0.26], CT)
   }
-  // café sets either side, under umbrellas
+  /*
+   * THE OWNER'S STREET VIEWS (2026-10-17, four frames up the court from Jefferson to Beach): the walk zigzags between
+   * the patios; enamel PENDANT LAMPS hang on wires strung across; BLUE MERMAID's patio on the Argonaut side (west, −x)
+   * behind a black iron rail — slatted orange-wood tables, big cantilever umbrellas, round clipped topiary in a raised
+   * bed, its navy-and-white sign on the brick; on the Cannery side (east, +x) a Japanese restaurant's patio (OSM: Flying
+   * Ninja) fenced by timber planter boxes spilling ivy, yellow paper lanterns, a big picture-menu board; and at the
+   * Beach end a brick-walled STAIR up to the street with, at its head, the black arch of boards SHOPS · FOOD · MUSIC
+   * under a scrolled crest.
+   */
+  const IRON2: Rgb = [0.08, 0.08, 0.09], TEAK: Rgb = [0.78, 0.48, 0.22], BRICK: Rgb = [0.56, 0.24, 0.17]
+  // Blue Mermaid's patio: west side, the middle third
+  const bx = -hx + 3.4, bz0 = -hz * 0.25, bz1 = hz * 0.45
+  for (let z = bz0; z <= bz1; z += 1.6) box(out, bx + 2.2, 0.55, z, 0.03, 0.55, 0.03, IRON2, MT)
+  box(out, bx + 2.2, 1.08, (bz0 + bz1) / 2, 0.04, 0.04, (bz1 - bz0) / 2, IRON2, MT)
+  for (let z = bz0 + 2; z < bz1 - 1; z += 3.6) {
+    box(out, bx, 0.75, z, 0.7, 0.04, 1.0, TEAK, WT)
+    for (const sx of [-0.9, 0.9]) box(out, bx + sx, 0.45, z, 0.18, 0.03, 0.9, TEAK, WT)
+    if (Math.round(z) % 2 === 0) {
+      tube(out, [bx - 1.6, 0, z], [bx - 1.6, 2.9, z], 0.05, 6, [0.75, 0.75, 0.75], MT)
+      tube(out, [bx - 1.6, 2.9, z], [bx, 2.6, z], 0.04, 5, [0.75, 0.75, 0.75], MT)
+      prism(out, bx, z, 2.4, 2.75, 2.0, 4, [0.62, 0.6, 0.55], WT, 0.1)
+    }
+  }
+  for (const z of [bz0 + 0.5, bz1 - 0.5]) {
+    box(out, bx + 1.7, 0.3, z, 0.5, 0.3, 0.5, [0.5, 0.48, 0.45], CT)
+    tube(out, [bx + 1.7, 0.6, z], [bx + 1.7, 1.2, z], 0.06, 5, BARK, WT)
+    prism(out, bx + 1.7, z, 1.1, 1.75, 0.6, 10, [0.25, 0.48, 0.2], FT, 0.35)
+  }
+  sign(out, { type: 'flat', text: 'BLUE MERMAID', sub: undefined, h: 0.3, w: 2.6, face: 'grotesque', weight: 'bold', colour: [0.12, 0.2, 0.4], panel: [0.96, 0.96, 0.94], lit: 'front' } as SignSpec,
+    { x: -hx + 0.1, y: 3.6, z: (bz0 + bz1) / 2, heading: Math.PI / 2 })
+  // the Japanese restaurant's patio: east side, opposite
+  const jx = hx - 3.2, jz0 = -hz * 0.15, jz1 = hz * 0.4
+  for (let z = jz0; z <= jz1; z += 2.4) {
+    box(out, jx - 2.0, 0.45, z, 0.25, 0.45, 1.15, [0.48, 0.3, 0.18], WT)
+    prism(out, jx - 2.0, z, 0.9, 1.25, 0.45, 8, [0.22, 0.45, 0.18], FT, 0.2)
+  }
+  for (let z = jz0 + 1.5; z < jz1 - 1; z += 3.4) cafeSet(out, jx + 0.4, z, 0, null, [0.5, 0.32, 0.2])
+  for (const z of [jz0 + 3, jz0 + 9, jz1 - 3]) {
+    prism(out, jx - 2.0, z, 2.0, 2.5, 0.22, 10, [1.0, 0.85, 0.2], EMIT, 0.18)
+    tube(out, [jx - 2.0, 2.5, z], [jx - 2.0, 3.0, z], 0.01, 3, IRON2, MT)
+  }
+  box(out, jx - 2.3, 1.4, jz0 + 0.3, 0.04, 0.55, 0.75, [0.12, 0.12, 0.13], MT)
+  sign(out, { type: 'flat', text: 'Flying Ninja', h: 0.28, w: 2.4, face: 'brush', colour: [0.95, 0.85, 0.3], panel: [0.12, 0.1, 0.1], lit: 'front' } as SignSpec,
+    { x: hx - 0.1, y: 3.6, z: (jz0 + jz1) / 2, heading: -Math.PI / 2 })
+  // (the court's own café tables and bulb festoons stay — owner, 2026-10-17: "keep our lights and tables in the courtyard,
+  // they look great"): tables where the patios are not, festoons zigzagging across between the pendant wires
   const UMB: Rgb[] = [[0.12, 0.3, 0.55], [0.9, 0.9, 0.86], [0.7, 0.12, 0.12]]
-  let k = 0
+  let k2 = 0
   for (let z = -hz + 5; z < hz - 6; z += 6.5) for (const sx of [-1, 1]) {
-    const x = sx * (hx - 2.6)
-    cafeSet(out, x, z, 0, (k++ % 2) ? UMB[k % UMB.length] : null)
+    if (sx < 0 ? z > bz0 - 1.5 && z < bz1 + 1.5 : z > jz0 - 1.5 && z < jz1 + 1.5) continue
+    cafeSet(out, sx * (hx - 2.6), z, 0, (k2++ % 2) ? UMB[k2 % UMB.length] : null)
   }
   for (const z of [-hz + 2, hz - 8]) for (const sx of [-1, 1]) planter(out, sx * (hx - 1.5), z, 0, 0.7)
-  // festoons zigzagging across the court
-  for (let z = -hz + 4; z < hz - 6; z += 7) festoon(out, [-hx + 0.3, 5.0, z], [hx - 0.3, 5.0, z + 3.5], 0.5)
+  for (let z = -hz + 7; z < hz - 6; z += 12) festoon(out, [-hx + 0.3, 5.0, z], [hx - 0.3, 5.0, z + 3.5], 0.5)
+  // enamel pendant lamps on wires across the court
+  for (let z = -hz + 6; z < hz - 8; z += 6) {
+    const a: V3 = [-hx + 0.2, 6.0, z], b: V3 = [hx - 0.2, 6.0, z + 2]
+    tube(out, a, b, 0.012, 3, IRON2, MT)
+    for (const t of [0.3, 0.7]) {
+      const p: V3 = [a[0] + (b[0] - a[0]) * t, 5.6, a[2] + (b[2] - a[2]) * t]
+      prism(out, p[0], p[2], p[1] - 0.18, p[1], 0.34, 10, [0.55, 0.42, 0.32], MT, 0.06)
+      box(out, p[0], p[1] - 0.2, p[2], 0.1, 0.02, 0.1, WARM, EMIT)
+    }
+  }
+  // the brick-walled stair up to Beach at the south end, and the SHOPS · FOOD · MUSIC arch at its head
+  const sz0 = -hz + 1, RISE = 3.0, RUN = 6
+  for (let k = 0; k < 15; k++) { const top = (k + 1) * (RISE / 15); box(out, 0, top / 2, sz0 - (k + 0.5) * (RUN / 15), 1.6, top / 2, RUN / 30, [0.7, 0.68, 0.64], CT) }
+  for (const sx of [-1, 1]) box(out, sx * 1.85, RISE / 2 + 0.3, sz0 - RUN / 2, 0.25, RISE / 2 + 0.3, RUN / 2, BRICK, BT)
+  const az = sz0 - RUN - 0.5
+  for (const sx of [-1, 1]) tube(out, [sx * 1.7, RISE, az], [sx * 1.7, RISE + 4.6, az], 0.06, 6, IRON2, MT)
+  const words = ['SHOPS', 'FOOD', 'MUSIC']
+  words.forEach((wd, i) => {
+    const y = RISE + 4.0 - i * 0.55
+    box(out, 0, y, az, 1.4, 0.22, 0.04, IRON2, MT)
+    for (const sd of [1, -1]) sign(out, { type: 'flat', text: wd, h: 0.24, w: 2.4, face: 'grotesque', weight: 'bold', colour: [0.95, 0.95, 0.92], lit: 'front' } as SignSpec, { x: 0, y, z: az + sd * 0.05, heading: sd > 0 ? 0 : Math.PI })
+  })
+  for (let a = 0; a < 8; a++) {
+    const t0 = (a / 8) * Math.PI, t1 = ((a + 1) / 8) * Math.PI
+    tube(out, [-Math.cos(t0) * 1.7, RISE + 4.6 + Math.sin(t0) * 0.5, az], [-Math.cos(t1) * 1.7, RISE + 4.6 + Math.sin(t1) * 0.5, az], 0.05, 4, [0.85, 0.82, 0.74], MT)
+  }
+  box(out, 0, RISE + 5.2, az, 0.55, 0.28, 0.05, [0.85, 0.82, 0.74], MT)
   // the glass bridge at the Jefferson end, from wall to wall at the first floor
   const zb = hz - 3
   box(out, 0, 6.4, zb, hx + 0.6, 1.5, 1.5, [0.26, 0.32, 0.36], GT)
@@ -1102,8 +1173,13 @@ export function taylorGalleries(out: MeshBuilder, fit: Fit): void {
   signAt(out, e, e.L * 0.85, G - 0.6, 0.3, { type: 'flat', text: 'FINE ART', h: 0.4, w: 3.2, face: 'script', colour: [1.0, 0.18, 0.12], lit: 'self' })
   signAt(out, e, e.L * 0.38, G - 0.6, 0.3, { type: 'flat', text: 'FINE ART & DECOR', h: 0.34, w: 4.0, face: 'didone', colour: WHITE, lit: 'front', panel: [0.1, 0.1, 0.12] })
   signAt(out, e, Math.min(4, e.L * 0.15), G + 0.35, 0.3, { type: 'flat', text: 'ZK GALLERY', h: 0.42, w: 4.5, face: 'grotesque', colour: WHITE, lit: 'front', tracking: 0.2, panel: [0.1, 0.1, 0.12] })
-  // the paintings in the windows: bright rectangles behind the glass
-  for (let u = 1.2; u < e.L - 1; u += 1.7) slab(out, e, u, 0.12, 1.0, 1.0, 1.3, 0.03, TEE[Math.floor(u * 3) % TEE.length], MT)
+  // the paintings in the windows, on each real wall face toward the street (not the merged front line, which runs out in
+  // front of the set-back glass: owner, 2026-10-17, 'colored squares floating in space'), between the pilasters
+  for (let i = 0; i < ring.length; i++) {
+    const q = edgeAt(ring, i)
+    if (q.L < 3 || !near(bearingOf(q, FRONT), 351)) continue
+    for (let u = 1.4; u < q.L - 1; u += 2.5) if (u % 5.0 > 1.2 && u % 5.0 < 3.8) slab(out, q, u, 0.05, 1.0, 1.0, 1.3, 0.02, TEE[Math.floor(u * 3) % TEE.length], MT)
+  }
 }
 
 /**

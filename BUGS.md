@@ -10799,9 +10799,11 @@ Logged, not fixed:
 - Hotel Zephyr: FIXED 2026-10-17 — the baked outline has no courtyard notches, so the hotel body now starts 16 m behind
   the Jefferson boxes and The Yard (pavers, fire pits, giant games, the camper) lies open between. The hotel's courtyard (OSM's one
   inner ring, way/93422625) is cut open with its own walls, placed from the inner ring (the placed outline had lost it).
-- "The alley of restaurants at 476 Jefferson": no such address exists (OSM, web, Redfin); read as AL SCOMA WAY, the lane
-  that leaves Jefferson between 490 and 440 past Castagnola's, Lou's and Scoma's to Pier 47 — and added its 2026 lagoon
-  overlook with the weekly fish market (lagoonOverlook). Owner: say if you meant somewhere else.
+- "476 Jefferson" (owner's Street View, 2026-10-17): Google puts it at ANCHOR'S LANDING's court — the raised court behind
+  the In-N-Out sign. The owner, comparing: "keep our lights and tables in the courtyard… perhaps our courtyard is better
+  now than the real one" — left as it is. The Cannery's pedestrian way (Jefferson to Beach, Hyde–Leavenworth) rebuilt from
+  his four frames: pendant lamps, Blue Mermaid's railed patio, the Japanese patio with lanterns, the brick stair up to
+  Beach under SHOPS · FOOD · MUSIC (its café tables and festoons kept). Al Scoma Way's 2026 lagoon overlook stays (real).
 - Court shops: OSM's own names are used where it has them (Cannery: V Boutique, Flying Ninja, Pomegranate, SF Bicycle
   Rentals, Quickly; Anchor's Landing: Surisan, Spy Shop, Anchorage Liquor); no tenant list or interior photo exists online,
   so the remaining fronts carry trade signs (FUDGE, CHOWDER, ICE CREAM…), not invented shop names.

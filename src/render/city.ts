@@ -3398,6 +3398,13 @@ export class City {
         return k
       })
       const hash = (a: number, b: number): number => ((Math.imul(a ^ Math.imul(b, 0x27d4eb2d), 0x9e3779b1) >>> 0) % 1000) / 1000
+      // (nothing in a building: where a frontage stands out over the pavement a café table ran into its wall — owner,
+      //  2026-10-17, Zea Gallery; tested with a 0.9 m margin all round)
+      const [ktx, ktz] = k.split(',').map(Number)
+      const near9: number[][] = []
+      for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) for (const b of this.buildingsIn.get(key(ktx + dx, ktz + dz)) ?? []) near9.push(b.ring)
+      const walled = (x: number, z: number): boolean => near9.some((r) =>
+        [[0, 0], [0.9, 0], [-0.9, 0], [0, 0.9], [0, -0.9]].some(([ox, oz]) => pointInFlatRing(r, x + ox, z + oz)))
       for (const e of groundEdges) {
         if (e.foot || e.walk < 1.8 || !onSurface(e)) continue
         const pts = unpackPoints(e.points)
@@ -3422,7 +3429,7 @@ export class City {
                 if (h < 0.12) continue
                 const off = shopSide ? e.width / 2 + e.walk - 0.9 : e.width / 2 + 0.7
                 const x = cx - uz * off * side, z = cz + ux * off * side
-                if (strip.whyNoFurniture(x, z)) continue
+                if (strip.whyNoFurniture(x, z) || walled(x, z)) continue
                 const rot = Math.atan2(ux, uz) + (side > 0 ? Math.PI : 0) + Math.PI / 2
                 const seed = e.id * 7 + n * 13 + (side > 0 ? 1 : 0) + (shopSide ? 5 : 0)
                 let model: (o: MeshBuilder) => void
