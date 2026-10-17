@@ -27,6 +27,13 @@ describe('tiles (PARIS_EXPAND §8)', () => {
     expect([...tiles.keys()]).toEqual(['1,0'])
   })
 
+  it('keeps a hand-paved square\'s surface on every piece (the Wharf\'s cobbles were dropped here, 2026-10-17)', () => {
+    const a = { kind: 'paved' as const, ring: [150, 10, 250, 10, 250, 60, 150, 60], top: true, surface: 'cobblestone' as const }
+    const { tiles } = splitPackage(pkg({ areas: [a] }), () => undefined)
+    expect(tiles.size).toBe(2)
+    for (const t of tiles.values()) expect(t.areas[0].surface).toBe('cobblestone')
+  })
+
   it('clips an area into pieces that keep the whole body\'s water level', () => {
     const a = { kind: 'water' as const, ring: [-100, 20, 300, 20, 300, 60, -100, 60] }
     const { tiles } = splitPackage(pkg({ areas: [a] }), () => -3.5)

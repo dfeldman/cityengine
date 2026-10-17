@@ -2904,15 +2904,6 @@ export class City {
       m.renderingGroupId = GROUP.areas
       meshes.push(m)
     }
-    for (const [surface, b] of pagedOut) {
-      if (b.triangles === 0 || this.off.has('areas')) continue
-      const m = new Mesh(`areas:${surface}:${k}`, this.scene)
-      this.terrain.drapeRaw(b.positions)
-      b.toVertexData().applyToMesh(m)
-      m.material = groundLayerMaterial(this.scene, this.roadAssets, surface, `square-${surface}`)
-      m.renderingGroupId = GROUP.areas
-      meshes.push(m)
-    }
     for (const [builder, group, name] of [[areas, GROUP.areas, 'areas'], [walks, GROUP.walk, 'walks']] as const) {
       if (builder.triangles === 0 || this.off.has(name)) continue
       const m = new Mesh(`${name}:${k}`, this.scene)
@@ -2931,6 +2922,20 @@ export class City {
       groundMat.disableDepthWrite = true
       m.material = groundMat
       m.renderingGroupId = group
+      meshes.push(m)
+    }
+    /*
+     * …and the squares in a material of their own AFTER them (2026-10-17): no layer writes depth, so the order they are
+     * made is the order they are drawn, and OSM often maps plain paving on the very outline a square re-lays in setts or
+     * brick — made first, the square would be painted over by it.
+     */
+    for (const [surface, b] of pagedOut) {
+      if (b.triangles === 0 || this.off.has('areas')) continue
+      const m = new Mesh(`areas:${surface}:${k}`, this.scene)
+      this.terrain.drapeRaw(b.positions)
+      b.toVertexData().applyToMesh(m)
+      m.material = groundLayerMaterial(this.scene, this.roadAssets, surface, `square-${surface}`)
+      m.renderingGroupId = GROUP.areas
       meshes.push(m)
     }
     /*
