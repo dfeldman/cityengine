@@ -119,6 +119,45 @@ export function pier39Shop(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+/**
+ * MAGOWAN'S INFINITE MIRROR MAZE's sign on Building O (OSM node 2365845678; Commons "Magowan's Infinite Mirror Maze sign"):
+ * a collage of tilted colour panels — yellow, green, sky blue, navy, raspberry — behind a white bow-tie banner, MIRROR in
+ * fat rainbow capitals on it, MAZE in white below, MAGOWAN'S INFINITE small across the top. Placed on the wall facing the
+ * pier's main street, rotateDeg 0; the board faces bearing 245°.
+ */
+export function mirrorMazeSign(out: MeshBuilder, _fit: Fit): void {
+  const H = (-115 * Math.PI) / 180
+  const n: [number, number, number] = [Math.sin(H), 0, Math.cos(H)], u: [number, number, number] = [Math.cos(H), 0, -Math.sin(H)]
+  const CT = surfaceTag('concrete')
+  // (above the gallery's rail, a little proud of the wall; +u runs to the reader's LEFT, so the letters step along −u)
+  const P = (a: number, b: number, d: number): [number, number, number] => [-u[0] * a + n[0] * (d + 0.25), 6.15 + b, -u[2] * a + n[2] * (d + 0.25)]
+  const panel = (pts: [number, number][], d: number, c: Rgb): void => {
+    const q = pts.map(([a, b]) => P(a, b, d))
+    out.quad([q[0], q[1], q[2], q[3]], n, UVQ, c, CT)
+    out.quad([q[1], q[0], q[3], q[2]], [-n[0], 0, -n[2]], UVQ, [0.3, 0.3, 0.32], CT)
+  }
+  panel([[-2.0, -1.3], [1.4, -1.6], [1.6, 1.2], [-1.8, 1.0]], 0.05, [0.86, 0.72, 0.12])     // yellow
+  panel([[-0.6, 0.6], [1.5, 0.6], [1.6, 1.55], [0.4, 1.3]], 0.08, [0.45, 0.72, 0.22])      // green
+  panel([[-1.9, -1.6], [-0.2, -1.6], [-0.4, -0.6], [-1.8, -0.7]], 0.08, [0.3, 0.6, 0.86])  // sky
+  panel([[-1.6, -1.3], [0.4, -1.3], [0.2, 1.0], [-1.6, 0.95]], 0.11, [0.74, 0.16, 0.36])   // raspberry
+  panel([[0.0, -1.35], [1.3, -1.25], [1.2, 1.0], [0.0, 0.95]], 0.12, [0.12, 0.16, 0.36])   // navy
+  // the bow-tie banner, white, across the middle
+  panel([[-2.3, -0.35], [2.3, -0.5], [2.4, 0.55], [-2.4, 0.4]], 0.16, [0.97, 0.97, 0.95])
+  const at = (b: number, d: number): [number, number, number] => P(0, b, d)
+  const word = (text: string, h: number, b: number, c: Rgb, face: 'grotesque' | 'slab'): void => {
+    const p = at(b, 0.2)
+    sign(out, { type: 'flat', text, h, face, weight: 'bold', colour: c, lit: 'front' }, { x: p[0], y: p[1], z: p[2], heading: H })
+  }
+  word("MAGOWAN'S INFINITE", 0.22, 0.75, [0.97, 0.97, 0.95], 'grotesque')
+  // MIRROR in rainbow: one letter at a time across the banner
+  const cols: Rgb[] = [[0.86, 0.22, 0.14], [0.92, 0.48, 0.12], [0.86, 0.66, 0.1], [0.48, 0.68, 0.18], [0.16, 0.56, 0.3], [0.1, 0.46, 0.3]]
+  'MIRROR'.split('').forEach((ch, i) => {
+    const p = P(-1.75 + i * 0.7, 0.03, 0.21)
+    sign(out, { type: 'flat', text: ch, h: 0.62, face: 'grotesque', weight: 'bold', colour: cols[i], lit: 'front' }, { x: p[0], y: p[1], z: p[2], heading: H })
+  })
+  word('MAZE', 0.52, -0.95, [0.97, 0.97, 0.95], 'grotesque')
+}
+
 /** FISH ALLEY's working sheds behind Jefferson Street (Pier 45 and the inner lagoon): one-storey corrugated metal,
  *  grey-green or rust, a roller door and a low roof — where the bake drew three-metre Victorians. */
 export function fishAlleyShed(out: MeshBuilder, fit: Fit): void {
@@ -132,4 +171,4 @@ export function fishAlleyShed(out: MeshBuilder, fit: Fit): void {
   })
 }
 
-export const PIER_39: Record<string, (out: MeshBuilder, fit: Fit) => void> = { pier39Shop, fishAlleyShed }
+export const PIER_39: Record<string, (out: MeshBuilder, fit: Fit) => void> = { pier39Shop, fishAlleyShed, mirrorMazeSign }

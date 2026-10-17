@@ -110,5 +110,18 @@
   ],
   "height": 19,
   "note": "BUGS.md #290k, 2026-10-17: the white silo with the BOUDIN SOURDOUGH medallion at Jefferson & Taylor (owner's photo)."
+ },
+ {
+  "name": "Mirror Maze sign",
+  "procedural": "mirrorMazeSign",
+  "lat": 37.810125,
+  "lon": -122.410418,
+  "rotateDeg": 0,
+  "size": [
+   5,
+   1
+  ],
+  "height": 7,
+  "note": "BUGS.md #290e, 2026-10-17: Magowan's Infinite Mirror Maze's collage sign on Building O's west wall (Commons photo)."
  }
 ]
