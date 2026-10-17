@@ -1415,6 +1415,8 @@ export class City {
   rainbowSpots: { x: number; z: number; radius: number }[] = []
   /** zones whose grass is dry (ZoneProps `dry`), set by the game */
   dryZones: { ring: number[]; bbox: [number, number, number, number] }[] = []
+  /** the region's striped concrete streets in local metres (Region `stripedStreets`), set by the game */
+  stripedStretches: { street: string; a: { x: number; z: number }; b: { x: number; z: number }; cobbles: number }[] = []
   lanternStretches: { street: string; a: { x: number; z: number }; b: { x: number; z: number }; colour: [number, number, number] }[] = []
   /** the bridges' outlines (render/bridge-structures.ts): a way on one draws only its running surfaces */
   private readonly outlines = new Map<number, { ring: { x: number; z: number }[]; x0: number; x1: number; z0: number; z1: number }>()
@@ -2768,9 +2770,28 @@ export class City {
         continue
       }
 
-      const out = roads.get(drawnSurface(e)) ?? new MeshBuilder()
-      roads.set(drawnSurface(e), out)
+      /*
+       * A striped street (Region `stripedStreets`, Jefferson between Jones and Taylor): the carriageway is laid in cobbles,
+       * and the concrete is painted over it as transverse light and dark bands on either side, leaving the cobbles
+       * showing only down the middle, round the streetcar tracks.
+       */
+      const stripe = this.stripedStretches.find((ls) => {
+        if (e.name !== ls.street) return false
+        const m = pts[Math.floor(pts.length / 2)], dx = ls.b.x - ls.a.x, dz = ls.b.z - ls.a.z, LL = Math.hypot(dx, dz) || 1
+        const t = ((m.x - ls.a.x) * dx + (m.z - ls.a.z) * dz) / (LL * LL)
+        return t >= 0 && t <= 1 && Math.abs((m.x - ls.a.x) * dz - (m.z - ls.a.z) * dx) / LL < 15
+      })
+      const drawn = stripe ? 'cobblestone' : drawnSurface(e)
+      const out = roads.get(drawn) ?? new MeshBuilder()
+      roads.set(drawn, out)
       quadStrip(out, pts, e.width, 0.05, [0.5, 0.5, 0.5])
+      if (stripe && e.width > stripe.cobbles + 2) {
+        const side = (e.width - stripe.cobbles) / 2, off = stripe.cobbles / 2 + side / 2
+        for (const o of [-off, off]) {
+          dashedLine(markings, pts, o, 0.056, side, 1, 1, [0.6, 0.59, 0.55])
+          dashedLine(markings, pts, o, 0.057, side, 1.1, 2.2, [0.47, 0.46, 0.43])
+        }
+      }
 
       // the kerb, cut back from each junction so it stops at the corner rather than crossing the mouth of
       // the side street

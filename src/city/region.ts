@@ -124,6 +124,13 @@ export interface Region {
    */
   lanternStreets?: { street: string; from: [number, number]; to: [number, number]; colour?: [number, number, number] }[]
   /**
+   * Stretches of street whose roadway is poured concrete in transverse light and dark bands, with a strip of cobbles
+   * round the streetcar tracks down the middle (render/city.ts). San Francisco: Jefferson Street between Jones and
+   * Taylor (owner, 2026-10-17, with a photo: "distinctive light/dark stripes of concrete, with cobblestone around the
+   * streetcar tracks … just one super busy block on jefferson between jones and taylor").
+   */
+  stripedStreets?: { street: string; from: [number, number]; to: [number, number]; cobbles?: number }[]
+  /**
    * Areas whose sidewalks are crowded with furniture (render/city.ts, owner 2026-10-17 of Fisherman's Wharf: "a LOT of
    * street furniture… poster boards, official maps on metal kiosks, bike racks, triple trash cans with a poster on the
    * side, outdoor dining… bike racks everywhere"). Rings are [lat, lon].
@@ -219,6 +226,7 @@ export function region(id: string | undefined): Region {
     brickStreets: own?.brickStreets ?? base.brickStreets,
     timeZone: own?.timeZone ?? base.timeZone,
     lanternStreets: own?.lanternStreets ?? base.lanternStreets,
+    stripedStreets: own?.stripedStreets ?? base.stripedStreets,
     touristStrips: own?.touristStrips ?? base.touristStrips,
     rainbowCrossings: own?.rainbowCrossings ?? base.rainbowCrossings,
     rainbowStairs: own?.rainbowStairs ?? base.rainbowStairs,

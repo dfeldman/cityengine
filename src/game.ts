@@ -455,6 +455,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   city.touristRings = (region(pkg.region).touristStrips ?? []).map((t) => t.ring.map(([lat, lon]) => new Projection(pkg.origin).toLocal({ lat, lon })))
   city.lanternStretches = (region(pkg.region).lanternStreets ?? []).map((l) => ({ street: l.street, colour: l.colour ?? [0.78, 0.1, 0.08],
     a: new Projection(pkg.origin).toLocal({ lat: l.from[0], lon: l.from[1] }), b: new Projection(pkg.origin).toLocal({ lat: l.to[0], lon: l.to[1] }) }))
+  city.stripedStretches = (region(pkg.region).stripedStreets ?? []).map((l) => ({ street: l.street, cobbles: l.cobbles ?? 3.4,
+    a: new Projection(pkg.origin).toLocal({ lat: l.from[0], lon: l.from[1] }), b: new Projection(pkg.origin).toLocal({ lat: l.to[0], lon: l.to[1] }) }))
   city.exists = (k) => src.has(k)
   const graph: CityGraph = { nodes: new Map(), edges: new Map() }
   const arrived: { raw: TileData; ready: TileData; edges: Edge[] }[] = []
