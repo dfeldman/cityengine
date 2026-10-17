@@ -229,63 +229,26 @@ function gstrut(out: MeshBuilder, f: Frame, a: V3, b: V3, w: number, h: number, 
 
 
 // ---------------------------------------------------------------------------------------------------------------
-// block letters, for the store names (Macy's, Saks, Tiffany…): a 5×7 bitmap, each row's runs one box
+// store names (Macy's, Saks, Tiffany…), in a real typeface on the wall
 
-const GLYPHS: Record<string, string> = {
-  A: '01110 10001 10001 11111 10001 10001 10001', B: '11110 10001 10001 11110 10001 10001 11110',
-  C: '01111 10000 10000 10000 10000 10000 01111', D: '11110 10001 10001 10001 10001 10001 11110',
-  E: '11111 10000 10000 11110 10000 10000 11111', F: '11111 10000 10000 11110 10000 10000 10000',
-  G: '01111 10000 10000 10011 10001 10001 01111', H: '10001 10001 10001 11111 10001 10001 10001',
-  I: '11111 00100 00100 00100 00100 00100 11111', J: '00111 00010 00010 00010 00010 10010 01100',
-  K: '10001 10010 10100 11000 10100 10010 10001', L: '10000 10000 10000 10000 10000 10000 11111',
-  M: '10001 11011 10101 10101 10001 10001 10001', N: '10001 11001 10101 10011 10001 10001 10001',
-  O: '01110 10001 10001 10001 10001 10001 01110', P: '11110 10001 10001 11110 10000 10000 10000',
-  Q: '01110 10001 10001 10001 10101 10010 01101', R: '11110 10001 10001 11110 10100 10010 10001',
-  S: '01111 10000 10000 01110 00001 00001 11110', T: '11111 00100 00100 00100 00100 00100 00100',
-  U: '10001 10001 10001 10001 10001 10001 01110', V: '10001 10001 10001 10001 10001 01010 00100',
-  W: '10001 10001 10001 10101 10101 10101 01010', X: '10001 10001 01010 00100 01010 10001 10001',
-  Y: '10001 10001 01010 00100 00100 00100 00100', Z: '11111 00001 00010 00100 01000 10000 11111',
-  "'": '00100 00100 01000 00000 00000 00000 00000', '&': '01100 10010 10100 01000 10101 10010 01101',
-  '*': '00100 10101 01110 11111 01110 10101 00100', '.': '00000 00000 00000 00000 00000 00000 00100',
-  '0': '01110 10011 10101 10101 10101 11001 01110', '1': '00100 01100 00100 00100 00100 00100 01110',
-  '4': '00010 00110 01010 10010 11111 00010 00010', '5': '11111 10000 11110 00001 00001 10001 01110',
-  ' ': '00000 00000 00000 00000 00000 00000 00000',
-}
 
 /**
- * Words in block letters on a wall: from the grid-frame point (x, z) along (ux, uz), standing `out` metres proud
- * along the wall's outward normal (nx, nz), letters `h` tall with their foot at y. `vertical` stacks them (a blade).
+ * Words on a wall: from the grid-frame point (x, z) along (ux, uz), `out` metres proud along the wall's outward normal
+ * (nx, nz), letters `h` tall with their foot at y; `vertical` stacks them (a blade). A real typeface (the flat signs
+ * of landmarks/signage.ts) since 2026-10-17 — the owner: "block based text which is not necessary and is hard to read".
+ * Placed where the block letters' middle was, so every store name stays where it was.
  */
 function letters(out: MeshBuilder, f: Frame, text: string, x: number, z: number, ux: number, uz: number, nx: number, nz: number,
                  y: number, h: number, c: Rgb, vertical = false, depth = 0.25, tag = LIT): void {
   const px = h / 7
-  const adv = vertical ? h * 1.25 : px * 6
-  const P = (u: number, yy: number, o: number): V3 => { const p = f.at(x + ux * u + nx * o, z + uz * u + nz * o); return [p.x, yy, p.z] }
   const n = f.dir(nx, nz)
-  const t = f.dir(ux, uz)
-  const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
-  const plate = (u0: number, u1: number, y0: number, y1: number): void => {
-    out.quad([P(u0, y0, depth), P(u1, y0, depth), P(u1, y1, depth), P(u0, y1, depth)], [n.x, 0, n.z], uv, c, tag)
-    if (depth <= 0.08) return   // flat: painted on (one quad a run)
-    out.quad([P(u0, y1, 0), P(u1, y1, 0), P(u1, y1, depth), P(u0, y1, depth)], [0, 1, 0], uv, c, tag)
-    out.quad([P(u0, y0, 0), P(u0, y0, depth), P(u0, y1, depth), P(u0, y1, 0)], [-t.x, 0, -t.z], uv, c, tag)
-    out.quad([P(u1, y0, depth), P(u1, y0, 0), P(u1, y1, 0), P(u1, y1, depth)], [t.x, 0, t.z], uv, c, tag)
-  }
-  const chars = [...text.toUpperCase()]
-  chars.forEach((ch, k) => {
-    const g = GLYPHS[ch] ?? GLYPHS[' ']
-    const rows = g.split(' ')
-    const u0 = vertical ? -px * 2.5 : k * adv
-    const yTop = vertical ? y + (chars.length - k) * adv : y + h
-    rows.forEach((row, r) => {
-      let run = -1
-      for (let i = 0; i <= 5; i++) {
-        const on = i < 5 && row[i] === '1'
-        if (on && run < 0) run = i
-        if (!on && run >= 0) { plate(u0 + run * px, u0 + i * px, yTop - (r + 1) * px, yTop - r * px); run = -1 }
-      }
-    })
-  })
+  const len = [...text].length
+  const w = vertical ? px * 5 : lettersWidth(text, h)
+  const mid = f.at(x + ux * (vertical ? 0 : w / 2) + nx * Math.min(depth, 0.1), z + uz * (vertical ? 0 : w / 2) + nz * Math.min(depth, 0.1))
+  const cy = vertical ? y + (len * h * 1.25) / 2 + h * 0.6 : y + h / 2
+  sign(out, { type: 'flat', text, h: vertical ? h * 0.9 : h, w: vertical ? undefined : w, face: 'grotesque', weight: 'bold', colour: c,
+    lit: tag === LIT || tag === EMIT ? 'self' : 'none', vertical },
+    { x: mid.x, y: cy, z: mid.z, heading: Math.atan2(n.x, n.z) })
 }
 
 /** How wide `letters` draws a word h tall. */

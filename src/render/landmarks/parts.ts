@@ -14,6 +14,7 @@ import { surfaceTag, type Surface } from '../cartoon-material.ts'
 import { faceBand, insetRing, simplifyRing, type Face } from './tower.ts'
 import { capPolygon, capPolygonWithHoles } from '../buildings.ts'
 import { classicalColumn, type ColumnOrder, type ColumnTier } from './column.ts'
+import { sign } from './signage.ts'
 
 export { simplifyRing, insetRing }
 
@@ -111,30 +112,14 @@ const GLYPHS: Record<string, string> = {
  */
 export function signText(out: MeshBuilder, text: string, cx: number, cy: number, z: number, h: number, c: Rgb,
                          opts: { lit?: boolean; tag?: number; vertical?: boolean; heading?: number } = {}): void {
-  const cell = h / 5
-  const w = cell * 3
-  const gap = cell * 0.9
-  const tag = opts.lit ? EMIT : opts.tag ?? 0
-  const chars = text.toUpperCase().split('')
-  const cz0 = z
-  const total = opts.vertical ? chars.length * (h + gap) : chars.length * (w + gap) - gap
-  chars.forEach((ch, i) => {
-    const g = GLYPHS[ch]
-    if (!g) return
-    const x0 = opts.vertical ? cx - w / 2 : cx + total / 2 - i * (w + gap) - w
-    const y0 = opts.vertical ? cy + total / 2 - i * (h + gap) - h : cy - h / 2
-    for (let r = 0; r < 5; r++) {
-      for (let k = 0; k < 3; k++) {
-        if (g[r * 3 + k] !== '1') continue
-        // `heading` turns the whole sign onto any wall (0 faces +z, as a box does)
-        if (opts.heading) {
-          const [tx, tz] = turned(cx, cz0, x0 + (2.5 - k) * cell, z, opts.heading)
-          boxAlong(out, tx, y0 + (4.5 - r) * cell, tz, cell / 2, cell / 2, 0.03, opts.heading, c, tag)
-        }
-        else box(out, x0 + (2.5 - k) * cell, y0 + (4.5 - r) * cell, z, cell / 2, cell / 2, 0.03, c, tag)
-      }
-    }
-  })
+  /*
+   * A real typeface now, not 3×5 blocks (owner, 2026-10-17: "we dont need to render text out of blocks… block based
+   * text… is hard to read"): the flat sign of render/landmarks/signage.ts, centred where the blocks were, facing the
+   * same way, as tall. `lit` (or an EMIT tag) makes it glow after dark.
+   */
+  const lit = opts.lit || opts.tag === EMIT
+  sign(out, { type: 'flat', text, h, face: 'grotesque', weight: 'bold', colour: c, lit: lit ? 'self' : 'none', vertical: opts.vertical },
+    { x: cx, y: cy, z, heading: opts.heading ?? 0 })
 }
 
 /**

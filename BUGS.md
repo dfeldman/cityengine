@@ -10735,10 +10735,13 @@ GAME
 - #309 The Embarcadero's paths — straighten them out (#286 was the jolt; the ways themselves still wander). OPEN.
 - #310 Fisherman's Wharf to high quality: unique buildings, restaurants, stores, decorations, cobblestones (the #290 list
   and survey). OPEN — the main work.
-- #311 Block-letter signs (Macy's and others) → sign-kit GLB text. OPEN.
+- #311 Block-letter signs (Macy's and others) → real typefaces. DONE: parts.ts `signText` (the 3×5 blocks, 34 callers)
+  and union-square.ts `letters` (the 5×7 store names: Macy's, Saks, Tiffany…) now draw the flat real-font signs of
+  signage.ts in the same place; the bulb-sign letters (parts.ts, lamps on a frame) stay, as bulbs are the style there.
+  Verified at the Castro and Macy's.
 - #312 Re-check and mark the older open reports (#282–#301): most are fixed; mark what is. OPEN.
 - #313 TRIPO.md: a list of organic shapes for the owner to make in Tripo (statues, Lotta's Fountain, lamp posts, ships,
-  unique signs, the Japanese Tea Garden drum bridge…). OPEN.
+  unique signs, the Japanese Tea Garden drum bridge…). STARTED (TRIPO.md, 12 rows); grows as the Wharf work finds more.
 
 ### #282–#294 Owner's reports, 2026-10-16 afternoon — the queue, in the order they are being worked
 
