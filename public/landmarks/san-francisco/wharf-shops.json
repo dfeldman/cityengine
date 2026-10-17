@@ -123,5 +123,15 @@
   "front": 180,
   "height": 7,
   "note": "BUGS.md #290m, 2026-10-17: yellow stucco, the green-white-red awnings round both faces, the cream corner tower with red neon (Commons 'Cioppino's Restaurant near Fisherman's Wharf, San Francisco USA - panoramio')."
+ },
+ {
+  "name": "California Shellfish Co.",
+  "osm": [
+   "way/229326468"
+  ],
+  "procedural": "shellfishShed",
+  "front": 180,
+  "height": 8,
+  "note": "BUGS.md #290m, 2026-10-17: the white gabled working shed beside Cioppino's, name across the Jefferson gable, two turbine ventilators (Commons 'Cioppino's Restaurant near Fisherman's Wharf, San Francisco USA - panoramio', left)."
  }
 ]

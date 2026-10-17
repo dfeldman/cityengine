@@ -1143,6 +1143,41 @@ export function cioppinos(out: MeshBuilder, fit: Fit): void {
 }
 
 /**
+ * CALIFORNIA SHELLFISH CO., the working shed beside Cioppino's on Jefferson (way/229326468; Commons "Cioppino's Restaurant
+ * near Fisherman's Wharf…", left): a long low gabled shed of white-painted boards, its gable end to the street with the
+ * company's name across it in black capitals, a pale grey roof and two round turbine ventilators on the ridge, a loading
+ * door in the gable. `front` 180: the Jefferson gable faces local −z.
+ */
+export function shellfishShed(out: MeshBuilder, fit: Fit): void {
+  const ROOF: Rgb = [0.66, 0.66, 0.64], INK: Rgb = [0.12, 0.13, 0.15], GREY: Rgb = [0.5, 0.52, 0.55]
+  const hx = fit.hx, hz = fit.hz, E = 4.6, R = E + hx * 0.42
+  box(out, 0, E / 2, 0, hx, E / 2, hz, WHITE, WT)
+  for (const sz of [-1, 1]) {
+    out.quad([[-hx, E, sz * hz], [hx, E, sz * hz], [0, R, sz * hz], [0, R, sz * hz]], [0, 0, sz], UVQ, WHITE, WT)
+    // the barge boards
+    for (const sx of [-1, 1]) tube(out, [sx * (hx + 0.3), E - 0.15, sz * (hz + 0.08)], [0, R + 0.1, sz * (hz + 0.08)], 0.12, 4, WHITE, WT)
+  }
+  for (const sx of [-1, 1]) {
+    out.quad([[sx * (hx + 0.35), E - 0.15, -hz - 0.3], [sx * (hx + 0.35), E - 0.15, hz + 0.3], [0, R + 0.05, hz + 0.3], [0, R + 0.05, -hz - 0.3]],
+      [sx * 0.4, 0.9, 0], UVQ, ROOF, MT)
+  }
+  // the two turbine ventilators on the ridge
+  for (const z of [-hz * 0.35, hz * 0.35]) {
+    prism(out, 0, z, R, R + 0.9, 0.22, 8, GREY, MT)
+    prism(out, 0, z, R + 0.9, R + 1.5, 0.45, 10, GREY, MT)
+    prism(out, 0, z, R + 1.5, R + 1.65, 0.2, 8, GREY, MT)
+  }
+  // the street gable: the name, a loading door, a window either side
+  const fz = -hz - 0.03
+  sign(out, { type: 'flat', text: 'CALIFORNIA  SHELLFISH  CO.', h: 0.42, w: hx * 1.3, face: 'grotesque', weight: 'bold', colour: INK, lit: 'front' },
+    { x: 0, y: E + 0.6, z: fz - 0.02, heading: Math.PI })
+  box(out, 0, 1.6, fz, 1.6, 1.6, 0.04, [0.32, 0.34, 0.36], MT)
+  for (const sx of [-1, 1]) box(out, sx * hx * 0.6, 2.2, fz, 1.0, 0.8, 0.04, DARKGL, GT)
+  // a band of windows down each long side
+  for (const sx of [-1, 1]) for (let z = -hz + 3; z < hz - 2; z += 4) box(out, sx * (hx + 0.03), 2.6, z, 0.04, 0.6, 1.2, DARKGL, GT)
+}
+
+/**
  * THE AQUATIC PARK BOATHOUSES: the Dolphin Club (way/288391828) and the South End Rowing Club (way/288391837), side by
  * side on the beach at the foot of Jefferson (Commons "Dolphin Club and South End Rowing Club 20170906-8513"): two storeys
  * of white clapboard with blue trim on every corner, window and rail, a hipped roof of grey shingle, a balcony along the
@@ -1204,7 +1239,7 @@ function boathouse(name: string, sub?: string): (out: MeshBuilder, fit: Fit) => 
 }
 
 export const WHARF_SHOPS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, aliotos, grotto9, chowderHut, buenaVista, castagnolas, longshoremensHall, cioppinos,
+  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, aliotos, grotto9, chowderHut, buenaVista, castagnolas, longshoremensHall, cioppinos, shellfishShed,
   dolphinClubBoathouse: boathouse('DOLPHIN CLUB'), southEndRowingClub: boathouse('Since 1877', 'SOUTH END ROWING CLUB'), pretzelKiosk, klamathPropellers,
   pier45ShedA: pier45Shed('PIER 45', true),
   pier45ShedB: pier45Shed('PIER 45', false),
