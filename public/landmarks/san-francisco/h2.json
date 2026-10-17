@@ -68,8 +68,11 @@
     "osm": [
       "way/288391828"
     ],
-    "procedural": "dolphinClub",
-    "name": "Dolphin Club"
+    "procedural": "dolphinClubBoathouse",
+    "name": "Dolphin Club",
+    "front": 0,
+    "height": 10,
+    "note": "BUGS.md #290m, 2026-10-17: the white clapboard boathouse with blue trim, cupola and beach balcony (Commons 'Dolphin Club and South End Rowing Club 20170906-8513'). Was an Edwardian terracotta recipe, built without a photograph."
   },
   {
     "osm": [

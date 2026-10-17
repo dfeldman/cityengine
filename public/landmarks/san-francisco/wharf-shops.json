@@ -93,5 +93,15 @@
   "front": 0,
   "height": 13,
   "note": "BUGS.md #290m, 2026-10-17: the Irish-coffee bar at Hyde & Beach by the cable-car turnaround — sage Edwardian bays, red and blue neon along the bar, the 'the buena vista' neon script sign on the corner (Commons 'Buena Vista Cafe, exterior, San Francisco (May 2025) 01, 03')."
+ },
+ {
+  "name": "South End Rowing Club",
+  "osm": [
+   "way/288391837"
+  ],
+  "procedural": "southEndRowingClub",
+  "front": 0,
+  "height": 10,
+  "note": "BUGS.md #290m, 2026-10-17: the club's white clapboard boathouse beside the Dolphin Club on Aquatic Park's beach — blue trim, cupola, balcony, 'Since 1877' (Commons 'Dolphin Club and South End Rowing Club 20170906-8513')."
  }
 ]

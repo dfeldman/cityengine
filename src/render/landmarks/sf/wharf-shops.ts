@@ -972,8 +972,70 @@ export function buenaVista(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+/**
+ * THE AQUATIC PARK BOATHOUSES: the Dolphin Club (way/288391828) and the South End Rowing Club (way/288391837), side by
+ * side on the beach at the foot of Jefferson (Commons "Dolphin Club and South End Rowing Club 20170906-8513"): two storeys
+ * of white clapboard with blue trim on every corner, window and rail, a hipped roof of grey shingle, a balcony along the
+ * beach side behind a blue-capped white railing, an octagonal white cupola with a little hip roof and a weathervane, and
+ * the club's board over the boat doors — DOLPHIN CLUB in blue on white; the South End's "Since 1877" and its monogram.
+ * Built on the outline as it is; the beach face is the ring's edge facing local −z (`front` in the manifest).
+ */
+function boathouse(name: string, sub?: string): (out: MeshBuilder, fit: Fit) => void {
+  return (out, fit) => {
+    const BLUE: Rgb = [0.13, 0.3, 0.6], ROOF: Rgb = [0.36, 0.37, 0.39]
+    const ring = towerRing(fit)
+    const H = 7.2
+    faceBand(out, ring, 0, 3.4, { kind: 'punched', wall: WHITE, glass: DARKGL, floor: 3.4, pitch: 3.2, solid: 0.55, material: 'clapboard' })
+    faceBand(out, offsetRing(ring, 0.05), 3.3, 3.5, { kind: 'blank', wall: BLUE, material: 'clapboard' })
+    faceBand(out, ring, 3.5, H, { kind: 'bands', wall: WHITE, glass: DARKGL, floor: H - 3.5, solid: 0.45, material: 'clapboard' })
+    faceBand(out, offsetRing(ring, 0.05), H - 0.25, H, { kind: 'blank', wall: BLUE, material: 'clapboard' })
+    // the hipped roof
+    let cx = 0, cz = 0
+    for (const q of ring) { cx += q.x; cz += q.z }
+    cx /= ring.length; cz /= ring.length
+    const eave = offsetRing(ring, 0.5)
+    const top = ring.map((q) => ({ x: cx + (q.x - cx) * 0.25, z: cz + (q.z - cz) * 0.25 }))
+    const RISE = Math.min(3.2, Math.min(fit.hx, fit.hz) * 0.45)
+    for (let i = 0; i < eave.length; i++) {
+      const j = (i + 1) % eave.length
+      const mx = (eave[i].x + eave[j].x) / 2 - cx, mz = (eave[i].z + eave[j].z) / 2 - cz, ml = Math.hypot(mx, mz) || 1
+      out.quad([[eave[i].x, H, eave[i].z], [eave[j].x, H, eave[j].z], [top[j].x, H + RISE, top[j].z], [top[i].x, H + RISE, top[i].z]],
+        [(mx / ml) * 0.7, 0.7, (mz / ml) * 0.7], UVQ, ROOF, surfaceTag('tile'))
+    }
+    capPolygon(out, top, H + RISE, ROOF, surfaceTag('tile'))
+    // the cupola: an octagon of white boards and glass on the ridge, a little hip roof, the weathervane
+    const Y = H + RISE
+    prism(out, cx, cz, Y, Y + 1.6, 1.3, 8, WHITE, WT)
+    prism(out, cx, cz, Y + 0.5, Y + 1.4, 1.33, 8, DARKGL, GT)
+    prism(out, cx, cz, Y + 1.6, Y + 1.8, 1.55, 8, BLUE, WT)
+    for (let k = 0; k < 8; k++) {
+      const a0 = (k / 8) * Math.PI * 2, a1 = ((k + 1) / 8) * Math.PI * 2
+      out.quad([[cx + Math.cos(a0) * 1.6, Y + 1.8, cz + Math.sin(a0) * 1.6], [cx + Math.cos(a1) * 1.6, Y + 1.8, cz + Math.sin(a1) * 1.6],
+        [cx, Y + 2.9, cz], [cx, Y + 2.9, cz]], [Math.cos((a0 + a1) / 2) * 0.7, 0.7, Math.sin((a0 + a1) / 2) * 0.7], UVQ, ROOF, surfaceTag('tile'))
+    }
+    tube(out, [cx, Y + 2.9, cz], [cx, Y + 3.8, cz], 0.03, 4, [0.15, 0.15, 0.15], MT)
+    box(out, cx + 0.25, Y + 3.6, cz, 0.3, 0.03, 0.02, [0.15, 0.15, 0.15], MT)
+    // the beach face: the balcony on posts along it, its railing, and the club's board over the boat doors
+    const e = frontEdge(ring, facingFront(ring, 6))
+    slab(out, e, e.L / 2, 1.0, 3.3, e.L - 1, 0.2, 2.0, [0.55, 0.47, 0.38], WT)
+    for (let u = 0.6; u <= e.L - 0.5; u += 2.4) slab(out, e, u, 1.9, 0, 0.16, 3.3, 0.16, WHITE, WT)
+    slab(out, e, e.L / 2, 1.95, 4.4, e.L - 1, 0.08, 0.1, BLUE, WT)
+    for (let u = 0.6; u <= e.L - 0.5; u += 0.4) slab(out, e, u, 1.95, 3.5, 0.05, 0.9, 0.05, WHITE, WT)
+    slab(out, e, e.L / 2, 0.08, 2.35, Math.min(5, e.L * 0.6), 0.55, 0.06, WHITE, WT)
+    signAt(out, e, e.L / 2, 2.62, 0.13, { type: 'flat', text: name, h: 0.3, face: sub ? 'script' : 'grotesque', weight: 'bold', colour: BLUE, lit: 'front' })
+    if (sub) signAt(out, e, e.L / 2, 2.25, 0.13, { type: 'flat', text: sub, h: 0.18, face: 'grotesque', weight: 'bold', colour: BLUE, lit: 'front' })
+    // the boat doors: two wide blue-framed doors under the board
+    for (const d of [-1, 1]) {
+      slab(out, e, e.L / 2 + d * 1.4, 0.04, 0, 2.4, 2.1, 0.06, WHITE, WT)
+      slab(out, e, e.L / 2 + d * 1.4, 0.09, 0.05, 2.4, 0.08, 0.04, BLUE, WT)
+      slab(out, e, e.L / 2 + d * 1.4, 0.09, 2.05, 2.4, 0.08, 0.04, BLUE, WT)
+    }
+  }
+}
+
 export const WHARF_SHOPS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, aliotos, grotto9, chowderHut, buenaVista, pretzelKiosk, klamathPropellers,
+  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, aliotos, grotto9, chowderHut, buenaVista,
+  dolphinClubBoathouse: boathouse('DOLPHIN CLUB'), southEndRowingClub: boathouse('Since 1877', 'SOUTH END ROWING CLUB'), pretzelKiosk, klamathPropellers,
   pier45ShedA: pier45Shed('PIER 45', true),
   pier45ShedB: pier45Shed('PIER 45', false),
   pier45ShedD: pier45Shed('PIER 45', false),
