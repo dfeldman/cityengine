@@ -10786,6 +10786,11 @@ Please look at / decide:
 - Dandyhorse: restart `make serve` to pick up the end screen / bridge changes.
 
 Logged, not fixed:
+- #244 re-measured (900 s soak, rider fixed at the origin): 9 vehicles stuck > 60 s at the end, in rings of queues round
+  junction clusters with 5 m connectors near the rider — Sacramento & Mason (Mason's 5 m stub between two nodes), Jones
+  and Taylor near Washington. The out-of-view release valve cannot retire them because they are in view, by your rule
+  ("cars never disappear while in view"). Breaking a ring in view needs a choice: let the lowest-id car in a detected
+  cycle squeeze through (a brief overlap), or fade it out after e.g. 90 s even in view. Your call.
 - Pier 39's Hard Rock Cafe frontage (Building Q, way/288396171, node 643445596; Commons "Hard Rock Café Pier 39 (San
   Francisco) July 2022": maroon boards, red neon, the two blue PIER 39 boards on the parapet). Tried as an overlay on
   pier39Shop: built and its signs registered, but drawn on no face visible from the Embarcadero — Building Q's 58-corner
