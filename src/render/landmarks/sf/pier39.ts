@@ -158,6 +158,37 @@ export function mirrorMazeSign(out: MeshBuilder, _fit: Fit): void {
   word('MAZE', 0.52, -0.95, [0.97, 0.97, 0.95], 'grotesque')
 }
 
+/**
+ * The TIMBER BRIDGE across Pier 39's main street at the upper floor (OSM way/1232081304, layer 1, surface wood; Commons
+ * "Pier 39 (San Francisco) July 2022"): a plank deck between the two galleries on heavy timber beams, railings of posts and
+ * X-braces, and hung on both faces the pier's round blue "39" signs. Local x along the span (east), rotateDeg follows it.
+ */
+export function pier39StreetBridge(out: MeshBuilder, _fit: Fit): void {
+  const L = 8.6, W = 1.4, Y = 4.2
+  const T: Rgb = [0.42, 0.34, 0.26], DT: Rgb = [0.3, 0.24, 0.18], BLUE: Rgb = [0.16, 0.36, 0.7]
+  const WT = surfaceTag('clapboard')
+  box(out, 0, Y - 0.06, 0, L, 0.06, W, [0.5, 0.42, 0.33], WT)                  // the planks
+  for (const z of [-W + 0.1, W - 0.1]) box(out, 0, Y - 0.4, z, L, 0.3, 0.12, DT, WT)   // the beams
+  for (const sd of [-1, 1]) {
+    const z = sd * (W - 0.05)
+    box(out, 0, Y + 1.05, z, L, 0.06, 0.07, T, WT)                                // the top rail
+    for (let x = -L; x <= L + 0.01; x += 2.15) box(out, x, Y + 0.52, z, 0.09, 0.52, 0.09, T, WT)
+    for (let x = -L; x < L - 0.01; x += 2.15) {
+      // the X between each pair of posts
+      out.quad([[x, Y, z], [x + 0.12, Y, z], [x + 2.15, Y + 1.0, z], [x + 2.03, Y + 1.0, z]], [0, 0, sd], UVQ, T, WT)
+      out.quad([[x + 2.03, Y, z], [x + 2.15, Y, z], [x + 0.12, Y + 1.0, z], [x, Y + 1.0, z]], [0, 0, sd], UVQ, T, WT)
+    }
+    // the round "39" sign, hung at the middle of each face under the deck
+    const zz = sd * (W + 0.2)
+    for (let k = 0; k < 16; k += 2) {
+      const a0 = (k / 16) * Math.PI * 2, a1 = ((k + 1) / 16) * Math.PI * 2, a2 = ((k + 2) / 16) * Math.PI * 2
+      out.quad([[0, Y - 0.95, zz], [Math.cos(a0) * 0.55, Y - 0.95 + Math.sin(a0) * 0.55, zz], [Math.cos(a1) * 0.55, Y - 0.95 + Math.sin(a1) * 0.55, zz], [Math.cos(a2) * 0.55, Y - 0.95 + Math.sin(a2) * 0.55, zz]], [0, 0, sd], UVQ, BLUE, WT)
+    }
+    sign(out, { type: 'flat', text: '39', h: 0.45, face: 'grotesque', weight: 'bold', colour: [0.97, 0.97, 0.95], lit: 'front' },
+      { x: 0, y: Y - 0.95, z: zz + sd * 0.02, heading: sd > 0 ? 0 : Math.PI })
+  }
+}
+
 /** FISH ALLEY's working sheds behind Jefferson Street (Pier 45 and the inner lagoon): one-storey corrugated metal,
  *  grey-green or rust, a roller door and a low roof — where the bake drew three-metre Victorians. */
 export function fishAlleyShed(out: MeshBuilder, fit: Fit): void {
@@ -171,4 +202,4 @@ export function fishAlleyShed(out: MeshBuilder, fit: Fit): void {
   })
 }
 
-export const PIER_39: Record<string, (out: MeshBuilder, fit: Fit) => void> = { pier39Shop, fishAlleyShed, mirrorMazeSign }
+export const PIER_39: Record<string, (out: MeshBuilder, fit: Fit) => void> = { pier39Shop, fishAlleyShed, mirrorMazeSign, pier39StreetBridge }

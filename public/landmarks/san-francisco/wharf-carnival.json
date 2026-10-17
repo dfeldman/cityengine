@@ -162,5 +162,18 @@
   ],
   "height": 3.8,
   "note": "BUGS.md #290b, 2026-10-17: a Jefferson Street crab stand (counter of crabs on ice, steaming cauldrons, striped awning), at OSM's node."
+ },
+ {
+  "name": "Pier 39 street bridge",
+  "procedural": "pier39StreetBridge",
+  "lat": 37.809014,
+  "lon": -122.410048,
+  "rotateDeg": 9.1,
+  "size": [
+   18,
+   3
+  ],
+  "height": 5.5,
+  "note": "BUGS.md #290e, 2026-10-17: the timber footbridge across the main street at the upper floor with its blue 39 signs (OSM way/1232081304; Commons 'Pier 39 (San Francisco) July 2022')."
  }
 ]

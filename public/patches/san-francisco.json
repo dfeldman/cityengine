@@ -4,6 +4,11 @@
   "ops": [
     {
       "op": "suppress",
+      "ref": "s11428045948-11428045949",
+      "note": "Pier 39's timber bridge between the upper galleries (OSM way/1232081304, layer 1): the galleries are ridden at street level, so the bridge humped 5.5 m over 7.5 m each side; drawn by the pier39StreetBridge landmark instead (2026-10-17)"
+    },
+    {
+      "op": "suppress",
       "ref": "s612033707-7233777929",
       "note": "Sutter-Stockton garage's service bridge (OSM 28843606) along the Stockton cut: the chase camera into the Stockton Tunnel's south mouth was trapped under it; owner 2026-09-29: parking structures are useless in this game"
     },
