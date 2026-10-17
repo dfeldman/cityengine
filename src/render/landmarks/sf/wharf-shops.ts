@@ -1033,6 +1033,68 @@ export function castagnolas(out: MeshBuilder, fit: Fit): void {
 }
 
 /**
+ * LONGSHOREMEN'S HALL, 400 North Point (way/24744117, the ILWU's 1959 hall by Marquis & Stoller; Commons "Longshoremen's
+ * Hall, San Francisco (July 2020) -1, -5"): a hexagon whose whole upper body is a great hipped tent of bronze standing-seam
+ * metal, its faces crossed by battens in big zigzag triangles, sitting on a low wall of buff exposed-aggregate concrete;
+ * at each corner a raking concrete buttress leaning out to the ground; on the North Point face a long flat concrete
+ * canopy on teal posts over the doors, the ILWU credit union's blue ATM. `front` 180: North Point faces local −z.
+ */
+export function longshoremensHall(out: MeshBuilder, fit: Fit): void {
+  const BUFF: Rgb = [0.7, 0.64, 0.5], BRONZE: Rgb = [0.3, 0.27, 0.25], BATTEN: Rgb = [0.21, 0.19, 0.18], TEAL: Rgb = [0.24, 0.48, 0.48]
+  const CON: Rgb = [0.76, 0.73, 0.66]
+  const ring = towerRing(fit)
+  const B = 3.4, H = 14
+  faceBand(out, ring, 0, B, { kind: 'blank', wall: BUFF, material: 'concrete' })
+  let cx = 0, cz = 0
+  for (const q of ring) { cx += q.x; cz += q.z }
+  cx /= ring.length; cz /= ring.length
+  // the tent: from the wall head, flaring a little out, up to a small flat crown
+  const base = offsetRing(ring, 0.6)
+  const top = ring.map((q) => ({ x: cx + (q.x - cx) * 0.55, z: cz + (q.z - cz) * 0.55 }))
+  for (let i = 0; i < base.length; i++) {
+    const j = (i + 1) % base.length
+    const a = base[i], b = base[j], c = top[j], d = top[i]
+    const mx = (a.x + b.x) / 2 - cx, mz = (a.z + b.z) / 2 - cz, ml = Math.hypot(mx, mz) || 1
+    const n: [number, number, number] = [(mx / ml) * 0.8, 0.6, (mz / ml) * 0.8]
+    out.quad([[a.x, B, a.z], [b.x, B, b.z], [c.x, H, c.z], [d.x, H, d.z]], n, UVQ, BRONZE, MT)
+    // the zigzag battens: up and down across the face, a little proud of it
+    const L = Math.hypot(b.x - a.x, b.z - a.z)
+    const k = Math.max(2, Math.round(L / 9))
+    const lift = (p: V3): V3 => [p[0] + n[0] * 0.08, p[1] + n[1] * 0.08, p[2] + n[2] * 0.08]
+    const at = (t: number, h: number): V3 => {
+      const lo = { x: a.x + (b.x - a.x) * t, z: a.z + (b.z - a.z) * t }, hi = { x: d.x + (c.x - d.x) * t, z: d.z + (c.z - d.z) * t }
+      const f = (h - B) / (H - B)
+      return lift([lo.x + (hi.x - lo.x) * f, h, lo.z + (hi.z - lo.z) * f])
+    }
+    const mid = B + (H - B) * 0.55
+    for (let m = 0; m < k; m++) {
+      const t0 = m / k, t1 = (m + 0.5) / k, t2 = (m + 1) / k
+      tube(out, at(t0, B + 0.2), at(t1, mid), 0.1, 4, BATTEN, MT)
+      tube(out, at(t1, mid), at(t2, B + 0.2), 0.1, 4, BATTEN, MT)
+      tube(out, at(t0, mid), at(t1, H - 0.3), 0.08, 4, BATTEN, MT)
+      tube(out, at(t1, H - 0.3), at(t2, mid), 0.08, 4, BATTEN, MT)
+    }
+    tube(out, at(0, mid), at(1, mid), 0.08, 4, BATTEN, MT)
+    // the hip: a heavier rib up the corner
+    tube(out, [a.x, B, a.z], [d.x, H, d.z], 0.18, 5, BATTEN, MT)
+    // the raking buttress at the corner, leaning out to the ground
+    const ox = (ring[i].x - cx), oz = (ring[i].z - cz), ol = Math.hypot(ox, oz) || 1
+    tube(out, [ring[i].x + (ox / ol) * 0.4, B + 1.2, ring[i].z + (oz / ol) * 0.4], [ring[i].x + (ox / ol) * 3.2, 0, ring[i].z + (oz / ol) * 3.2], 0.45, 4, CON, CT)
+  }
+  capPolygon(out, top, H, BRONZE, MT)
+  // the North Point face: the long canopy on teal posts, the doors, the ATM
+  const e = frontEdge(ring, facingFront(ring, 10))
+  const u = e.L / 2
+  slab(out, e, u, 1.6, 2.6, Math.min(18, e.L * 0.6), 0.22, 3.2, CON, CT)
+  for (const d of [-0.22, 0.22]) slab(out, e, u + d * e.L, 0.1, B - 0.6, 0.5, 0.6, 0.2, TEAL, MT)
+  slab(out, e, u, 0.05, 0, Math.min(14, e.L * 0.45), 2.5, 0.05, [0.92, 0.9, 0.85], CT)
+  for (const d of [-0.12, 0.12]) slab(out, e, u + d * e.L, 0.1, 0, 0.3, 2.6, 0.2, TEAL, MT)
+  slab(out, e, u + e.L * 0.17, 0.08, 0.3, 2.4, 2.0, 0.04, DARKGL, GT)
+  slab(out, e, u - e.L * 0.2, 0.1, 0.2, 1.4, 2.0, 0.08, [0.12, 0.2, 0.55], MT)
+  signAt(out, e, u - e.L * 0.2, 1.95, 0.16, { type: 'flat', text: 'ILWU', h: 0.2, face: 'grotesque', weight: 'bold', italic: true, colour: [0.12, 0.2, 0.55], panel: [1, 1, 1], lit: 'front' } as SignSpec)
+}
+
+/**
  * THE AQUATIC PARK BOATHOUSES: the Dolphin Club (way/288391828) and the South End Rowing Club (way/288391837), side by
  * side on the beach at the foot of Jefferson (Commons "Dolphin Club and South End Rowing Club 20170906-8513"): two storeys
  * of white clapboard with blue trim on every corner, window and rail, a hipped roof of grey shingle, a balcony along the
@@ -1094,7 +1156,7 @@ function boathouse(name: string, sub?: string): (out: MeshBuilder, fit: Fit) => 
 }
 
 export const WHARF_SHOPS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, aliotos, grotto9, chowderHut, buenaVista, castagnolas,
+  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, aliotos, grotto9, chowderHut, buenaVista, castagnolas, longshoremensHall,
   dolphinClubBoathouse: boathouse('DOLPHIN CLUB'), southEndRowingClub: boathouse('Since 1877', 'SOUTH END ROWING CLUB'), pretzelKiosk, klamathPropellers,
   pier45ShedA: pier45Shed('PIER 45', true),
   pier45ShedB: pier45Shed('PIER 45', false),

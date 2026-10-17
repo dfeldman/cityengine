@@ -103,5 +103,15 @@
   "front": 0,
   "height": 10,
   "note": "BUGS.md #290m, 2026-10-17: the club's white clapboard boathouse beside the Dolphin Club on Aquatic Park's beach — blue trim, cupola, balcony, 'Since 1877' (Commons 'Dolphin Club and South End Rowing Club 20170906-8513')."
+ },
+ {
+  "name": "Longshoremen's Hall (ILWU)",
+  "osm": [
+   "way/24744117"
+  ],
+  "procedural": "longshoremensHall",
+  "front": 180,
+  "height": 14,
+  "note": "BUGS.md #290m, 2026-10-17: the 1959 hexagonal hall — bronze standing-seam tent with zigzag battens on a buff concrete base, raking corner buttresses, the canopy on North Point (Commons 'Longshoremen's Hall, San Francisco (July 2020) -1, -5')."
  }
 ]
