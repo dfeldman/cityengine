@@ -7,8 +7,8 @@
 import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
 import { box, prism, strut, type Rgb } from '../../models.ts'
-import { tower, towerRing } from '../tower.ts'
-import { boxAlong, edgeAt, edgeFacing, signText } from '../parts.ts'
+import { tower, towerRing, type Face } from '../tower.ts'
+import { boxAlong, edgeAt, edgeFacing, signText, stripRoof } from '../parts.ts'
 import { roof } from '../kit.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 
@@ -479,8 +479,21 @@ export function garage450South(out: MeshBuilder, fit: Fit): void {
  * roof. Was a two-storey brick block. Reusable for the other industrial pier sheds.
  */
 export function pierShed(out: MeshBuilder, fit: Fit): void {
+  shed(out, fit, [0.84, 0.79, 0.62])
+}
+
+/**
+ * 184 Hooper Street (way/1493533717, operator CCA in OSM): the grey corrugated-metal shed across the campus path from
+ * the main building's glass side (Mapillary 2019, off Hooper): tall plain walls, a low-pitched roof. Its 2025 state is
+ * unverified (student housing was once proposed for the site). Until 2026-10-17 it wore the Simpson Makers Building.
+ */
+export function hooperShed(out: MeshBuilder, fit: Fit): void {
+  shed(out, { ...fit, height: 9 }, [0.66, 0.67, 0.68])
+  stripRoof(out, towerRing(fit), 9, 1.4, [0.55, 0.56, 0.57], 'metal')
+}
+
+function shed(out: MeshBuilder, fit: Fit, CREAM: Rgb): void {
   const H = fit.height > 4 && fit.height < 14 ? fit.height : 8
-  const CREAM: Rgb = [0.84, 0.79, 0.62]
   tower(out, { ...fit, height: H }, {
     height: H,
     tiers: [{ to: H, face: { kind: 'fins', material: 'metal', wall: CREAM, glass: [0.74, 0.7, 0.55], pitch: 0.35, solid: 0.6, depth: 0.04, floor: H } }],
@@ -677,22 +690,46 @@ export function owens1670Garage(out: MeshBuilder, fit: Fit): void {
 }
 
 /**
- * California College of the Arts, the Expanded Campus building (Studio Gang, 2024; way/1493533717, Hooper Street),
- * Commons "CCA Dec 21 2024 1.jpg": a board-formed concrete ground storey with tall dark-framed windows and the
- * college's name cut into it; over it three storeys clad in warm timber boards, crossed by a dark steel frame — a
- * beam at every floor and V braces between, the windows set in alternate triangles.
+ * California College of the Arts, the Simpson Family Makers Building (Studio Gang, 2024; 145 Hooper Street, the lot
+ * between the main building's NE end, Hooper and 7th). OSM maps the lot only as `amenity=university` (way/1427026192),
+ * not as a building, so the bake has nothing there and this stands on its own (lat/lon/size in the manifest).
+ * Until 2026-10-17 it was drawn on way/1493533717 (184 Hooper), the grey metal shed across the path from the main
+ * building's campus side — the Commons photograph's own geotag (37.768267, -122.398958) is on the 145 Hooper lot.
+ *
+ * Commons "CCA Dec 21 2024 1.jpg" (the Hooper front) and Mapillary panoramas on 7th Street (Aug 2025): the "double
+ * ground" — a board-formed concrete lower storey over the site with tall dark-framed windows and the college's name
+ * cut into it, its roof a planted terrace (the upper ground); and rising from it on the Hooper front a timber
+ * pavilion, three storeys of warm boards crossed by a dark steel frame — a beam at every floor and V braces between,
+ * windows in alternate triangles. Local +z is the Hooper front (NW), +x runs NE towards 7th Street.
+ * GUESSED: the building's extent on the lot (the 7th Street end is still a fenced car park in 2025), the pavilion's
+ * depth, and the second timber pavilion Studio Gang describe, which no photograph here shows (left out).
  */
 export function ccaExpanded(out: MeshBuilder, fit: Fit): void {
-  const H = 17, BASE = 5
-  const CONC: Rgb = [0.6, 0.59, 0.56], WOOD: Rgb = [0.68, 0.5, 0.33], STEEL: Rgb = [0.13, 0.13, 0.14]
-  tower(out, { ...fit, height: H }, {
+  const H = 17, BASE = 5.5
+  const CONC: Rgb = [0.7, 0.69, 0.66], WOOD: Rgb = [0.68, 0.5, 0.33], STEEL: Rgb = [0.13, 0.13, 0.14]
+  const hx = fit.hx, hz = fit.hz
+  // the pavilion: the Hooper front, from 7 m in from the SW end to the NE end, 18 m deep; the lower storey all round it
+  const PX = -hx + 7, PZ = hz - 18
+  const pav = [{ x: PX, z: PZ }, { x: hx, z: PZ }, { x: hx, z: hz }, { x: PX, z: hz }]
+  const low = [{ x: -hx, z: -hz }, { x: hx, z: -hz }, { x: hx, z: PZ }, { x: PX, z: PZ }, { x: PX, z: hz }, { x: -hx, z: hz }]
+  const lowFace: Face = { kind: 'punched', wall: CONC, glass: [0.22, 0.27, 0.27], pitch: 7, solid: 0.6, floor: BASE, material: 'concrete' }
+  tower(out, { ...fit, ring: low, height: BASE }, { height: BASE, tiers: [{ to: BASE, face: lowFace }], roof: [0.42, 0.5, 0.33], crown: { kind: 'parapet', height: 1.1, colour: CONC, material: 'concrete' } })
+  tower(out, { ...fit, ring: pav, hx: (hx - PX) / 2, hz: 9, height: H }, {
     height: H,
-    base: { height: BASE, face: { kind: 'punched', wall: CONC, glass: [0.22, 0.27, 0.27], pitch: 7, solid: 0.6, floor: BASE, material: 'concrete' } },
+    base: { height: BASE, face: lowFace },
     tiers: [{ to: H, face: { kind: 'blank', wall: WOOD, material: 'clapboard' } }],
     roof: [0.5, 0.5, 0.5],
     crown: { kind: 'parapet', height: 0.5, colour: WOOD, material: 'clapboard' },
   })
-  const ring = towerRing(fit), metal = surfaceTag('metal'), glass = surfaceTag('glass')
+  // the upper ground: planted beds and a few young trees on the terrace
+  const GREEN: Rgb = [0.36, 0.48, 0.27]
+  for (let x = -hx + 4; x < hx - 6; x += 9) {
+    for (let z = -hz + 4; z < PZ - 4; z += 10) {
+      box(out, x + 2, BASE + 0.35, z + 2.5, 3, 0.35, 2.5, GREEN, 0)
+      if ((Math.round(x) + Math.round(z)) % 3 === 0) prism(out, x + 2, z + 2.5, BASE + 0.7, BASE + 4, 1.4, 6, [0.3, 0.42, 0.25], 0, 0.2)
+    }
+  }
+  const ring = pav, metal = surfaceTag('metal'), glass = surfaceTag('glass')
   const FL = (H - BASE) / 3
   for (let i = 0; i < ring.length; i++) {
     const e = edgeAt(ring, i)
@@ -724,22 +761,119 @@ export function ccaExpanded(out: MeshBuilder, fit: Fit): void {
 }
 
 /**
- * California College of the Arts, 1111 Eighth Street (way/39997517; the old Greyhound maintenance shed, the "Montgomery
- * Campus"), Commons "California College of the Arts, San Francisco campus (2019) -1.jpg": a long low white building,
- * a ribbon of windows, solar panels in rows across the roof, and at the corner the glazed entrance pavilion with
- * "cca" in big teal letters on the glass.
+ * California College of the Arts, 1111 Eighth Street (way/39997517): the 1950s Pacific Greyhound bus maintenance
+ * garage, CCA's since 1997 (the "Montgomery Campus"). Rebuilt 2026-10-17 from the owner's Street View (Feb 2025),
+ * Mapillary 2016 (8th St, Irwin St) and 2019 (the campus side off Hooper), Commons "Montgomery Building, California
+ * College of the Arts.jpg" and "California College of the Arts, San Francisco campus (2019) -1/-2.jpg":
+ *  - one tall storey, eaves at ~8.5 m, under a shallow gable whose ends are the 8th Street front and the NE end;
+ *    a plain white fascia along the eaves and up the rakes;
+ *  - the walls a grid of pale glass in ORANGE-RED steel sash (two panes wide and three high to each 3 m bay, a
+ *    heavier red mullion between bays) over a 1.6 m grey concrete base — the whole campus side (NW), most of
+ *    8th Street and the NE end;
+ *  - the Irwin Street side (SE), and the SE ends of 8th Street and of the NE end, cream stucco with two rows of
+ *    red-framed windows (Mapillary 2016, Commons 2019);
+ *  - on 8th Street the recessed glazed entrance under a canopy carrying CALIFORNIA COLLEGE OF THE ARTS and
+ *    MONTGOMERY CAMPUS; on the NE end "CCA" in big teal letters on the glass (2019; not seen since);
+ *  - rows of tilted solar panels across the roof (2019 aerial), which read from the street as a row of small
+ *    gable ends along the eave; bike hoops and a bike-share dock on the 8th Street pavement.
+ * Model frame (manifest front 45): +z is the 8th Street front (SW), −z the NE end, +x the campus side (NW), −x Irwin.
  */
 export function ccaMain(out: MeshBuilder, fit: Fit): void {
-  const H = 9
+  const H = 8.5, BASE = 1.6, RISE = 1.8
+  const RED: Rgb = [0.8, 0.27, 0.16], PANE: Rgb = [0.82, 0.87, 0.9], CONC: Rgb = [0.58, 0.58, 0.56]
+  const CREAM: Rgb = [0.87, 0.85, 0.79], WHITE: Rgb = [0.95, 0.95, 0.93], ROOFC: Rgb = [0.58, 0.58, 0.57]
+  const metal = surfaceTag('metal'), glass = surfaceTag('glass')
+  const ring = towerRing(fit)
+  type Side = 'eighth' | 'ne' | 'nw' | 'se'
+  const sideOf = (i: number): Side => {
+    const e = edgeAt(ring, i)
+    return Math.abs(e.nz) >= Math.abs(e.nx) ? (e.nz > 0 ? 'eighth' : 'ne') : (e.nx > 0 ? 'nw' : 'se')
+  }
+  const edges = (s: Side): number[] => ring.map((_, i) => i).filter((i) => sideOf(i) === s)
+  const glazed: Face = { kind: 'curtain', wall: RED, glass: PANE, pitch: 1.5, floor: (H - BASE) / 3, material: 'glass' }
+  const stucco: Face = { kind: 'blank', wall: CREAM, material: 'stucco' }
   tower(out, { ...fit, height: H }, {
     height: H,
-    tiers: [{ to: H, face: { kind: 'bands', wall: [0.9, 0.9, 0.88], glass: [0.22, 0.26, 0.3], floor: 9, solid: 0.72, material: 'stucco' } }],
-    roof: [0.62, 0.62, 0.6],
-    crown: { kind: 'parapet', height: 0.6, colour: [0.9, 0.9, 0.88], material: 'stucco' },
+    tiers: [
+      { to: BASE, face: { kind: 'blank', wall: CONC, material: 'concrete' }, faceOverrides: [{ edges: edges('se'), face: stucco }] },
+      { to: H, face: glazed, faceOverrides: [{ edges: edges('se'), face: stucco }] },
+    ],
+    roof: ROOFC,
+    crown: { kind: 'flat' },
   })
-  const ring = towerRing(fit), metal = surfaceTag('metal'), glass = surfaceTag('glass')
-  // solar panel rows across the roof, inside the footprint's own box
   const xs = ring.map((p) => p.x), zs = ring.map((p) => p.z)
+  const x0 = Math.min(...xs), x1 = Math.max(...xs), z0 = Math.min(...zs), z1 = Math.max(...zs)
+  const xm = (x0 + x1) / 2, hw = (x1 - x0) / 2
+  const roofY = (x: number): number => H + RISE * Math.max(0, 1 - Math.abs(x - xm) / hw)
+
+  /** A wall segment from a to b (outward normal on the right of a→b), as a little frame for parts. */
+  const wall = (a: { x: number; z: number }, b: { x: number; z: number }) => {
+    const L = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    const tx = (b.x - a.x) / L, tz = (b.z - a.z) / L, nx = tz, nz = -tx
+    const heading = Math.atan2(tz, -tx)
+    const at = (u: number, y: number, o: number, w: number, h: number, d: number, c: Rgb, tag: number): void =>
+      boxAlong(out, a.x + tx * u + nx * o, y, a.z + tz * u + nz * o, w / 2, h / 2, d / 2, heading, c, tag)
+    return { a, b, L, tx, tz, nx, nz, heading, at }
+  }
+  type Wall = ReturnType<typeof wall>
+  /** the red bay mullions and rails on a glazed stretch [u0, u1] of a wall */
+  const sash = (w: Wall, u0: number, u1: number): void => {
+    const n = Math.max(1, Math.round((u1 - u0) / 3))
+    for (let k = 0; k <= n; k++) w.at(u0 + ((u1 - u0) * k) / n, (BASE + H) / 2, 0.06, 0.24, H - BASE, 0.14, RED, metal)
+    w.at((u0 + u1) / 2, BASE + 0.08, 0.07, u1 - u0, 0.16, 0.16, RED, metal)
+    w.at((u0 + u1) / 2, H - 0.1, 0.07, u1 - u0, 0.2, 0.16, RED, metal)
+  }
+  /** cream stucco with two rows of red-framed windows over a stretch [u0, u1] of a wall */
+  const twoRows = (w: Wall, u0: number, u1: number, overlay: boolean): void => {
+    if (overlay) w.at((u0 + u1) / 2, H / 2, 0.05, u1 - u0, H, 0.06, CREAM, surfaceTag('stucco'))
+    for (const [ya, yb] of [[2.3, 4.3], [5.3, 7.5]]) {
+      const n = Math.max(1, Math.round((u1 - u0 - 2) / 2.6))
+      const s = (u1 - u0 - 2) / n
+      w.at((u0 + u1) / 2, (ya + yb) / 2, 0.1, u1 - u0 - 2, yb - ya, 0.04, PANE, glass)
+      w.at((u0 + u1) / 2, ya - 0.06, 0.13, u1 - u0 - 1.8, 0.14, 0.08, RED, metal)
+      w.at((u0 + u1) / 2, yb + 0.06, 0.13, u1 - u0 - 1.8, 0.14, 0.08, RED, metal)
+      for (let k = 0; k <= n; k++) w.at(u0 + 1 + k * s, (ya + yb) / 2, 0.13, k % 2 ? 0.08 : 0.16, yb - ya, 0.08, RED, metal)
+    }
+  }
+
+  // the two long sides: the campus side all glass, Irwin Street stucco and windows (edges as the ring has them)
+  for (const i of edges('nw')) { const e = edgeAt(ring, i); if (e.L > 4) sash(wall(e.a, e.b), 0, e.L) }
+  for (const i of edges('se')) { const e = edgeAt(ring, i); if (e.L > 6) twoRows(wall(e.a, e.b), 0, e.L, false) }
+  // the gable ends as straight walls across the box: 8th Street (+z) runs from the campus corner (+x) to Irwin (−x)
+  const zF = Math.max(...edges('eighth').map((i) => (ring[i].z + ring[(i + 1) % ring.length].z) / 2), z1 - 1)
+  const zB = Math.min(...edges('ne').map((i) => (ring[i].z + ring[(i + 1) % ring.length].z) / 2), z0 + 1)
+  const front = wall({ x: x1, z: zF }, { x: x0, z: zF })
+  const back = wall({ x: x0, z: zB }, { x: x1, z: zB })
+  const SOLID = 0.38      // the share of each end, at its Irwin corner, that is stucco rather than glass
+  sash(front, 0, front.L * (1 - SOLID))
+  twoRows(front, front.L * (1 - SOLID), front.L, true)
+  twoRows(back, 0, back.L * SOLID, true)
+  sash(back, back.L * SOLID, back.L)
+
+  // the shallow gable roof, ridge along the building, white fascia on the eaves and up both rakes
+  roof(out, x0, x1, z0, z1, H, RISE, hw, 0, ROOFC)
+  for (const x of [x0, x1]) box(out, x, H + 0.25, (z0 + z1) / 2, 0.12, 0.35, (z1 - z0) / 2 + 0.1, WHITE, metal)
+  for (const [z, s] of [[z1 + 0.08, 1], [z0 - 0.08, -1]] as const) {
+    strut(out, [x0 - 0.1, H + 0.25, z], [xm, H + RISE + 0.25, z], 0.7, 0.24, WHITE, metal)
+    strut(out, [xm, H + RISE + 0.25, z], [x1 + 0.1, H + RISE * 0 + 0.25, z], 0.7, 0.24, WHITE, metal)
+    // the gable triangle, glazed in the same red sash where the wall below is glass
+    const glassFrom = s > 0 ? x0 + (x1 - x0) * SOLID : x0 + (x1 - x0) * SOLID
+    const tri = (xa: number, xb: number, c: Rgb, tag: number): void => {
+      const ya = roofY(xa), yb = roofY(xb)
+      const q: [number, number, number][] = [[xa, H, z], [xb, H, z], [xb, yb, z], [xa, ya, z]]
+      out.quad(s > 0 ? q : [q[1], q[0], q[3], q[2]], [0, 0, s], [[0, 0], [1, 0], [1, 1], [0, 1]], c, tag)
+    }
+    tri(x0, glassFrom, CREAM, surfaceTag('stucco'))
+    tri(glassFrom, xm, PANE, glass)
+    tri(xm, x1, PANE, glass)
+    for (let x = glassFrom + 1.5; x < x1 - 0.5; x += 1.5) {
+      const top = roofY(x)
+      if (top - H > 0.3) box(out, x, (H + top) / 2, z + s * 0.04, 0.06, (top - H) / 2, 0.04, RED, metal)
+    }
+  }
+
+  // solar arrays: rows along the ridge, tilted to the south-east, in blocks; seen end-on from the street they are the
+  // row of little gables along the eave
   const inside = (x: number, z: number): boolean => {
     let c = false
     for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
@@ -748,25 +882,149 @@ export function ccaMain(out: MeshBuilder, fit: Fit): void {
     }
     return c
   }
-  for (let z = Math.min(...zs) + 5; z < Math.max(...zs) - 5; z += 3.2) {
-    for (let x = Math.min(...xs) + 5; x < Math.max(...xs) - 5; x += 2.1) {
-      if (inside(x - 3, z) && inside(x + 3, z) && inside(x, z - 3) && inside(x, z + 3)) box(out, x, H + 0.45, z, 1, 0.06, 1.1, [0.13, 0.15, 0.22], metal)
+  const PV: Rgb = [0.12, 0.15, 0.24]
+  for (let xr = x0 + 5; xr < x1 - 5; xr += 3.4) {
+    if (Math.abs(xr - xm) < 3) continue
+    const yb = roofY(xr) + 0.15
+    for (let za = z0 + 6; za < z1 - 10; za += 27) {
+      const zb = Math.min(za + 19, z1 - 6)
+      if (!inside(xr - 2, za) || !inside(xr + 2, zb)) continue
+      const lo: [number, number, number][] = [[xr - 0.8, yb, zb], [xr - 0.8, yb, za], [xr + 0.8, yb + 0.75, za], [xr + 0.8, yb + 0.75, zb]]
+      out.quad(lo, [-0.42, 0.9, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], PV, metal)
+      for (const z of [za, zb]) {
+        const d = z === za ? -1 : 1
+        const t: [number, number, number][] = [[xr - 0.8, yb, z], [xr + 0.8, yb, z], [xr + 0.8, yb + 0.75, z], [xr + 0.8, yb + 0.75, z]]
+        out.quad(d > 0 ? t : [t[1], t[0], t[3], t[2]], [0, 0, d], [[0, 0], [1, 0], [1, 1], [0, 1]], [0.55, 0.55, 0.55], metal)
+      }
+      box(out, xr - 0.8, yb + 0.04, (za + zb) / 2, 0.05, 0.05, (zb - za) / 2, RED, metal)
     }
   }
-  // the glazed entrance pavilion at the street front's far end, the name on the glass
-  const e = edgeAt(ring, edgeFacing(ring, 0))
-  const u = e.L / 2 - 11
-  const P = (o: number): [number, number] => [e.mid.x + e.tx * u + e.nx * o, e.mid.z + e.tz * u + e.nz * o]
-  const [gx, gz] = P(1.6)
-  boxAlong(out, gx, H / 2 + 0.6, gz, 10, H / 2 + 0.6, 1.6, e.heading, [0.34, 0.45, 0.5], glass)
-  for (let k = -5; k <= 5; k++) {
-    const [mx, mz] = [gx + e.tx * k * 2, gz + e.tz * k * 2]
-    boxAlong(out, mx + e.nx * 1.62, H / 2 + 0.6, mz + e.nz * 1.62, 0.05, H / 2 + 0.6, 0.03, e.heading, [0.2, 0.2, 0.22], metal)
+  // rooftop plant along the ridge
+  for (let k = 0; k < 5; k++) {
+    const z = z0 + 12 + ((z1 - z0 - 24) * k) / 4
+    if (inside(xm, z)) box(out, xm + (k % 2 ? 3 : -3), roofY(xm + 3) + 0.7, z, 1.4, 0.7, 2.2, [0.7, 0.7, 0.68], metal)
   }
-  const [tx, tz] = P(3.25)
-  signText(out, 'CCA', tx, 4.2, tz, 3.6, [0.25, 0.68, 0.66], { heading: e.heading })
-  const [nx, nz] = P(3.25)
-  signText(out, 'CALIFORNIA COLLEGE OF THE ARTS', nx, 8.2, nz, 0.55, [0.95, 0.95, 0.93], { heading: e.heading })
+
+  // 8th Street: the recessed glazed entrance under its canopy, the name on top and the campus name on its fascia
+  const ue = front.L * 0.32                   // from the campus corner
+  front.at(ue, 1.7, 0.12, 12, 3.4, 0.05, [0.3, 0.36, 0.4], glass)
+  for (let k = -3; k <= 3; k++) front.at(ue + k * 2, 1.7, 0.16, 0.12, 3.4, 0.06, [0.25, 0.25, 0.27], metal)
+  front.at(ue, 3.75, 1.3, 15, 0.4, 2.6, [0.7, 0.71, 0.72], metal)
+  {
+    const p = (o: number): [number, number] => [front.a.x + front.tx * ue + front.nx * o, front.a.z + front.tz * ue + front.nz * o]
+    const [sx, sz] = p(2.62)
+    signText(out, 'MONTGOMERY CAMPUS', sx, 3.75, sz, 0.26, [0.95, 0.95, 0.93], { heading: front.heading })
+    const [tx, tz] = p(2.2)
+    signText(out, 'CALIFORNIA COLLEGE OF THE ARTS', tx, 4.3, tz, 0.55, [0.93, 0.93, 0.92], { heading: front.heading })
+  }
+  // the NE end: "cca" in teal on the glass, and the name across its top
+  {
+    const p = (u: number, o: number): [number, number] => [back.a.x + back.tx * u + back.nx * o, back.a.z + back.tz * u + back.nz * o]
+    const [cx, cz] = p(back.L * 0.58, 0.12)
+    signText(out, 'cca', cx, 4.2, cz, 3.6, [0.22, 0.66, 0.66], { heading: back.heading })
+    const [nx, nz] = p(back.L * 0.78, 0.12)
+    signText(out, 'California College of the Arts', nx, 7.1, nz, 0.8, [0.95, 0.95, 0.93], { heading: back.heading })
+  }
+  // on the 8th Street pavement: a row of bike hoops by the entrance, a bike-share dock towards Irwin
+  const g = (u: number, o: number): number => fit.groundAt?.(front.a.x + front.tx * u + front.nx * o, front.a.z + front.tz * u + front.nz * o) ?? 0
+  const STEEL: Rgb = [0.5, 0.5, 0.52]
+  for (let k = 0; k < 6; k++) {
+    const u = ue - 9.5 - k * 1.1, y = g(u, 1.6)
+    const P = (du: number, h: number): [number, number, number] => [front.a.x + front.tx * (u + du) + front.nx * 1.6, y + h, front.a.z + front.tz * (u + du) + front.nz * 1.6]
+    strut(out, P(-0.35, 0), P(-0.35, 0.85), 0.06, 0.06, STEEL, metal)
+    strut(out, P(0.35, 0), P(0.35, 0.85), 0.06, 0.06, STEEL, metal)
+    strut(out, P(-0.35, 0.85), P(0.35, 0.85), 0.06, 0.06, STEEL, metal)
+  }
+  const ud = front.L * 0.72
+  front.at(ud, g(ud, 2.2) + 1.1, 2.2, 0.5, 2.2, 0.35, [0.16, 0.38, 0.62], metal)
+  for (let k = 1; k <= 9; k++) front.at(ud + k * 0.9, g(ud + k * 0.9, 2.2) + 0.5, 2.2, 0.16, 1.0, 0.22, [0.82, 0.83, 0.84], metal)
+}
+
+/**
+ * 100 HOOPER (Kilroy Realty, 2018–19, Pfau Long; Adobe's offices among its tenants): two long four-storey office bars
+ * between Hooper Street and the Caltrain cut, 7th Street at their NE ends, a bridge between them over the campus path
+ * (way/1416816164). From Mapillary (2024 from a Caltrain window, 2025 panoramas at Hooper & 7th, 2020 on 7th):
+ *  - a tall glazed ground storey, dark glass set behind pale concrete piers;
+ *  - above it three storeys of bronze-brown metal panel alternating with dark glass, in a pale concrete frame — a
+ *    slab-edge band at each floor and heavy verticals every few bays — under a pale parapet band;
+ *  - the Hooper bar's corner at Hooper & 7th swept round in a curve (its OSM corner is square);
+ *  - the rear bar's 7th Street end a plain board-formed concrete wall carrying the red Adobe logo at the top.
+ * Model frame (manifest front 225): +z is the 7th Street end (NE), +x the Hooper side (SE).
+ * GUESSED: the frame's exact rhythm, the far (SW) ends (no photograph; drawn like the rest), the rooftop.
+ */
+/** The edge whose outward normal is most nearly +z (edgeFacing favours long edges, and the 7th Street ends are short). */
+function endZ(ring: { x: number; z: number }[]): number {
+  let best = 0
+  for (let i = 0; i < ring.length; i++) if (edgeAt(ring, i).L > 5 && edgeAt(ring, i).nz > edgeAt(ring, best).nz) best = i
+  return best
+}
+
+function hooperBar(out: MeshBuilder, fit: Fit, rear: boolean): void {
+  const G = 6, FL = 4.5, TOP = G + 3 * FL, H = TOP + 1.2
+  const PALE: Rgb = [0.82, 0.81, 0.78], BRONZE: Rgb = [0.29, 0.21, 0.16], DARK: Rgb = [0.12, 0.14, 0.17]
+  const conc = surfaceTag('concrete')
+  let ring = towerRing(fit)
+  if (!rear) {
+    // the curved corner at Hooper & 7th: the 7th Street end's corner on the Hooper (+x) side, rounded
+    const nearEnd = endZ(ring)
+    const e = edgeAt(ring, nearEnd)
+    const ci = e.a.x > e.b.x ? nearEnd : (nearEnd + 1) % ring.length
+    const p = ring[ci], prev = ring[(ci - 1 + ring.length) % ring.length], next = ring[(ci + 1) % ring.length]
+    const d0 = Math.hypot(p.x - prev.x, p.z - prev.z) || 1, d1 = Math.hypot(next.x - p.x, next.z - p.z) || 1
+    const r = Math.min(11, d0 / 2, d1 / 2)
+    const a = { x: p.x + ((prev.x - p.x) / d0) * r, z: p.z + ((prev.z - p.z) / d0) * r }
+    const b = { x: p.x + ((next.x - p.x) / d1) * r, z: p.z + ((next.z - p.z) / d1) * r }
+    const arc: { x: number; z: number }[] = []
+    for (let k = 0; k <= 6; k++) {
+      const t = k / 6, u = 1 - t
+      arc.push({ x: u * u * a.x + 2 * u * t * p.x + t * t * b.x, z: u * u * a.z + 2 * u * t * p.z + t * t * b.z })
+    }
+    ring = [...ring.slice(0, ci), ...arc, ...ring.slice(ci + 1)]
+  }
+  // the rear bar's 7th Street end: the short wall facing +z
+  const nearIdx = rear ? [endZ(ring)] : []
+  const blank: Face = { kind: 'blank', wall: [0.66, 0.65, 0.62], material: 'concrete' }
+  tower(out, { ...fit, ring, height: H }, {
+    height: H,
+    base: { height: G, face: { kind: 'fins', wall: PALE, glass: DARK, pitch: 9, solid: 0.12, depth: 0.5, floor: G, material: 'concrete' } },
+    tiers: [{
+      to: TOP,
+      face: { kind: 'punched', wall: BRONZE, glass: DARK, pitch: 3.2, solid: 0.4, floor: FL, material: 'metal' },
+      faceOverrides: nearIdx.length ? [{ edges: nearIdx, face: blank }] : undefined,
+    }],
+    roof: [0.5, 0.5, 0.5],
+    crown: { kind: 'parapet', height: 1.2, colour: PALE, material: 'concrete' },
+  })
+  // the pale frame: slab edges at every floor and heavy verticals, on the long walls and the curve alike
+  for (let i = 0; i < ring.length; i++) {
+    const e = edgeAt(ring, i)
+    if (nearIdx.includes(i)) continue
+    const at = (u: number, y: number, w: number, h: number, d: number): void =>
+      boxAlong(out, e.mid.x + e.tx * u + e.nx * (d / 2), y, e.mid.z + e.tz * u + e.nz * (d / 2), w / 2, h / 2, d / 2, e.heading, PALE, conc)
+    for (let k = 0; k < 3; k++) at(0, G + k * FL + 0.2, e.L + 0.3, 0.45, 0.4)
+    if (e.L < 12) continue
+    const n = Math.max(1, Math.round(e.L / 22))
+    for (let k = 0; k <= n; k++) at(-e.L / 2 + (k * e.L) / n, (G + TOP) / 2, 1.1, TOP - G, 0.45)
+  }
+  for (const i of nearIdx) {
+    const e = edgeAt(ring, i)
+    // a strip of glass down the concrete end at its Hooper side, and the logo at the top of the other
+    const P = (u: number, o: number): [number, number] => [e.mid.x + e.tx * u + e.nx * o, e.mid.z + e.tz * u + e.nz * o]
+    const [gx, gz] = P(e.L / 2 - 4, 0.05)
+    boxAlong(out, gx, (G + TOP) / 2, gz, 3, (TOP - G) / 2, 0.05, e.heading, DARK, surfaceTag('glass'))
+    const [sx, sz] = P(-e.L / 2 + 6, 0.12)
+    signText(out, 'Adobe', sx, TOP - 1.3, sz, 1.3, [0.86, 0.12, 0.1], { heading: e.heading })
+  }
+}
+export const hooperOffices = (out: MeshBuilder, fit: Fit): void => hooperBar(out, fit, false)
+export const hooperOfficesRear = (out: MeshBuilder, fit: Fit): void => hooperBar(out, fit, true)
+
+/** 100 Hooper's bridge between its two bars (way/1416816164, levels 1–3): glass and bronze, clear of the path below. */
+export function hooperBridge(out: MeshBuilder, fit: Fit): void {
+  const G = 6, TOP = G + 3 * 4.5
+  box(out, 0, (G + TOP) / 2, 0, fit.hx, (TOP - G) / 2, fit.hz, [0.12, 0.14, 0.17], surfaceTag('glass'))
+  for (let k = 0; k < 3; k++) box(out, 0, G + k * 4.5 + 0.3, 0, fit.hx + 0.02, 0.3, fit.hz + 0.05, [0.82, 0.81, 0.78], surfaceTag('concrete'))
+  box(out, 0, TOP + 0.4, 0, fit.hx + 0.02, 0.4, fit.hz + 0.05, [0.38, 0.29, 0.22], surfaceTag('metal'))
 }
 
 /**
@@ -837,7 +1095,7 @@ export function uiwShop(out: MeshBuilder, fit: Fit): void {
 }
 
 export const MISSION_BAY: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  five88, mb360, thirdStreetGarage, owensGarage, owens1670Garage, ccaExpanded, ccaMain, uiwShop,
+  five88, mb360, thirdStreetGarage, owensGarage, owens1670Garage, ccaExpanded, ccaMain, hooperShed, hooperOffices, hooperOfficesRear, hooperBridge, uiwShop,
   pierShed, ucsfMissionBayHospital, ucsfMbCanopy,
   rutterCenter, garage450South,
   smithCardiovascular, helenDiller, missionHall,
