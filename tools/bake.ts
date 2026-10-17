@@ -355,7 +355,32 @@ async function bake(spec: CitySpec): Promise<void> {
 
   const proj = new Projection(spec.centre)
   const streetRegion = region(spec.region)
-  const streets = ways.filter((w) => w.tags.highway && w.geometry && w.geometry.length === w.nodes.length)
+  /*
+   * No driving aisles inside a surface CAR PARK (owner, 2026-10-17: "we should probably not draw roads inside parking lots
+   * (since they are guesses from OSM and don't line up with the cars)"): the lot is laid out with its own stall rows and
+   * parked cars (city/parking.ts). `service=parking_aisle` goes, and an untagged service way lying mostly inside a surface
+   * `amenity=parking` polygon. Neither was ridden (city/ridegraph.ts NOT_A_STREET), only drawn.
+   */
+  const carParks = ways.filter((w) => w.tags.amenity === 'parking' && !/^(multi-storey|underground|rooftop)$/.test(w.tags.parking ?? '') && w.geometry && w.geometry.length >= 4)
+    .map((w) => {
+      const r = w.geometry!.map((g) => [g.lat, g.lon] as [number, number])
+      return { r, a0: Math.min(...r.map((p) => p[0])), a1: Math.max(...r.map((p) => p[0])), o0: Math.min(...r.map((p) => p[1])), o1: Math.max(...r.map((p) => p[1])) }
+    })
+  const inCarPark = (lat: number, lon: number): boolean => carParks.some(({ r, a0, a1, o0, o1 }) => {
+    if (lat < a0 || lat > a1 || lon < o0 || lon > o1) return false
+    let c = false
+    for (let i = 0, j = r.length - 1; i < r.length; j = i++) if ((r[i][0] > lat) !== (r[j][0] > lat) && lon < ((r[j][1] - r[i][1]) * (lat - r[i][0])) / (r[j][0] - r[i][0]) + r[i][1]) c = !c
+    return c
+  })
+  const aisle = (w: OsmWay): boolean => {
+    if (w.tags.highway !== 'service') return false
+    if (w.tags.service === 'parking_aisle') return true
+    if (w.tags.service || !w.geometry || w.geometry.length < 2) return false
+    return w.geometry.filter((g) => inCarPark(g.lat, g.lon)).length / w.geometry.length > 0.6
+  }
+  const allStreets = ways.filter((w) => w.tags.highway && w.geometry && w.geometry.length === w.nodes.length)
+  const streets = allStreets.filter((w) => !aisle(w))
+  console.log(`  ${allStreets.length - streets.length} car-park aisles left out (drawn as the lot's own stall rows)`)
   // the paths that stop a few metres short of the way they obviously run into, joined to it (tools/gaps.ts)
   const joins = joinNearMisses(streets, (g) => proj.toLocal(g))
   console.log(`  ${joins} near-miss path ends joined to the way beside them`)
