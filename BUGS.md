@@ -10762,6 +10762,12 @@ before it is useful.
   [ ] l. Musée Mécanique and the Pier 45 sheds
   [ ] m. the survey: every other distinctive Wharf frontage (Wax Museum, Hard Rock, In-N-Out, Blue & Gold / Red & White
          Fleet ticket booths, Fish Alley, the Maritime Museum bathhouse, Lou's, The Anchorage…)
+- #298 Underground path at 37.790516 −122.410527 (owner, 2026-10-16: "more underground path here"; and "we should do
+  some checks for underground paths on steep hills"). OPEN.
+- #300 Traffic lights' lit lamps out of their housings, e.g. 37.796241 −122.405121 (owner, 2026-10-16, night screenshot:
+  the red lamp a dot on the mast arm above the head). OPEN.
+- #299 Z-fighting on the new cable car model, the front (owner, 2026-10-16). FIXED: the lower dash's face lay on the
+  dash's, the destination board's on its backing; each layer now stands proud of the one under it.
 - #297 Cars all over a narrow pier at 37.809098 −122.417564 (owner, 2026-10-16, with a screenshot: "tons of cars on a
   narrow pier… which I'm guessing just has shacks for boats on it"; then "that pier does have a big single-story white
   restaurant. still, not a million cars going there"). OPEN.

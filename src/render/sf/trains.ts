@@ -172,15 +172,17 @@ function cableCar(out: MeshBuilder): void {
   // ---- the grip section
   // the dash at the front: cream, its gold-lined number board, the headlamp, the destination board over it
   box(out, 0, floor + 0.55, front - 0.05, half, 0.55, 0.06, CREAM, FIXED)
-  box(out, 0, floor + 0.2, front - 0.01, half, 0.2, 0.02, [1, 1, 1])                         // the lower dash: the livery
-  box(out, 0, floor + 0.98, front + 0.02, 0.22, 0.1, 0.01, GOLD, FIXED)
-  box(out, 0, floor + 0.98, front + 0.03, 0.18, 0.07, 0.01, DARK, FIXED)                      // the number
+  // (each layer a couple of centimetres proud of the one under it: the lower dash's face sat ON the dash's, and the
+  // destination board's on its backing — z-fighting across the front, owner 2026-10-16, BUGS.md #299)
+  box(out, 0, floor + 0.2, front, half, 0.2, 0.02, [1, 1, 1])                                 // the lower dash: the livery
+  box(out, 0, floor + 0.98, front + 0.035, 0.22, 0.1, 0.01, GOLD, FIXED)
+  box(out, 0, floor + 0.98, front + 0.055, 0.18, 0.07, 0.01, DARK, FIXED)                     // the number
   discZ(out, 0, floor + 0.62, front + 0.03, 0.17, BRASS, FIXED)
   discZ(out, 0, floor + 0.62, front + 0.04, 0.13, LAMP, EMIT)                                 // the headlamp
-  box(out, -0.62, floor + 0.7, front + 0.02, 0.3, 0.18, 0.01, [0.45, 0.22, 0.18], FIXED)       // the ad panels either side
-  box(out, 0.62, floor + 0.7, front + 0.02, 0.3, 0.18, 0.01, [0.2, 0.45, 0.35], FIXED)
+  box(out, -0.62, floor + 0.7, front + 0.035, 0.3, 0.18, 0.01, [0.45, 0.22, 0.18], FIXED)      // the ad panels either side
+  box(out, 0.62, floor + 0.7, front + 0.035, 0.3, 0.18, 0.01, [0.2, 0.45, 0.35], FIXED)
   box(out, 0, roofY - 0.2, front + 0.12, 0.85, 0.13, 0.02, DARK, FIXED)                       // the destination board
-  box(out, 0, roofY - 0.2, front + 0.13, 0.7, 0.07, 0.01, [0.95, 0.9, 0.7], FIXED)
+  box(out, 0, roofY - 0.2, front + 0.155, 0.7, 0.07, 0.01, [0.95, 0.9, 0.7], FIXED)
   // the benches: outward-facing seats back to back, the backrest between, the end arm posts
   const gz = (front + split) / 2, gl = (front - split) / 2 - 0.25
   box(out, 0, floor + 0.62, gz, 0.07, 0.42, gl, WOODD, FIXED)                                 // the backrest
