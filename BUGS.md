@@ -10783,6 +10783,20 @@ Later on the 17th: Jefferson between Jones and Taylor is laid in light/dark conc
 F-line tracks (Region `stripedStreets`); Aquatic Park's Municipal Pier is a deck on piles with parapets, lamps and a
 locked gate (muni-pier.ts) instead of a lot lying on the water; the Wharf zone is crowd 7 / traffic 0.15 with no joggers
 in the throng; Baker Beach, China Beach and Crissy Field draw as sand.
+Deployed baa6479 (evening of the 17th): Pier 39 awnings off the ground, the Gelato board, 20 leftover walks suppressed and
+the fictional Pier 39 Bikeway (green lane round the carousel); Boudin's gable on its real walls; the glass Chowder Hut;
+open restaurants with tables (Taylor St row, Castagnola's, Alioto-Lazio, Capurro's, Cioppino's, Jones strip); Supreme
+Crab; Jefferson's hoodie blocks (billboards, giant IT'SUGAR, Galleria Vittorio, Pacific Fair); the Maritime Museum as a
+ship with its Beach St entrance and bay-side loggia; the Fontana twins on one builder; the Aquatic Park bleachers (two
+raised stands, from the satellite view); surface CAR PARKS with stall lines and parked cars (OSM's aisles inside them
+left out); Embarcadero Plaza and Harry Bridges Plaza paths opened to bikes; the tourist furniture strip pulled in to the
+waterfront side of Beach St.
+Follow-ups logged, not done:
+- Pier 39's baked ground dips below sea level north of the carousel and round Buildings B–D; the plaza buildings are
+  held on a deck datum. A zone prop that flattens ground (pier on fill) would fix it at the source — then regenerate the
+  bikeway's heights (generator in the scratchpad p39b/).
+- IT'SUGAR's letters render light grey, not white; the Wax Museum's flags read as hanging diamonds.
+- A region square gets parked cars only with `"parking": true` (the Jefferson lots are plain asphalt, deliberately).
 Please look at / decide:
 - Pier 39's stage (pier39Stage) may belong north-west of the carousel — OSM's "Smartwater Stage" node is at 37.81079
   −122.41072, and the subagent's photo agrees. (pier39Shop's awnings no longer stand in front of the Wipeout and Players
