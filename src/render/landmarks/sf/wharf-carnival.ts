@@ -11,6 +11,8 @@ import type { Fit } from '../fit.ts'
 import { box, prism, EMIT, type Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 import { sign } from '../signage.ts'
+import { boat } from './marina.ts'
+import { WHARF_DOCKS } from './wharf-docks.ts'
 import { SKYSTAR, DECK } from '../../sf/ferris.ts'
 import { PIER39_BRIDGE_PATH, pier39BridgeY } from '../../../city/sf/bridges.ts'
 
@@ -487,4 +489,127 @@ export function pier39Footbridge(out: MeshBuilder, _fit: Fit): void {
   }
 }
 
-export const WHARF_CARNIVAL: Record<string, (out: MeshBuilder, fit: Fit) => void> = { wharfSign, skystarWheel, pier39Gate, sfCarousel39, pier39Stage, pier39Footbridge }
+const hashW = (a: number, b: number): number => { const h = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return h - Math.floor(h) }
+
+/**
+ * A crab boat of the Wharf's fleet, moored along x at (bx, bz): a white or pale blue wooden hull with a coloured
+ * rail stripe, a high wheelhouse forward, the open deck aft with its stacked crab pots, a mast with the outrigger poles
+ * folded up either side — the boats that make the lagoon behind Jefferson Street.
+ */
+function crabBoat(out: MeshBuilder, bx: number, bz: number, heading: number, seed: number): void {
+  const c = Math.cos(heading), s = Math.sin(heading)
+  const P = (u: number, v: number, w: number): V3 => [bx + u * c + w * s, v, bz - u * s + w * c]
+  const MT = surfaceTag('metal'), WT = surfaceTag('clapboard')
+  const hulls: Rgb[] = [[0.93, 0.93, 0.9], [0.72, 0.84, 0.9], [0.9, 0.9, 0.86], [0.3, 0.48, 0.62]]
+  const stripes: Rgb[] = [[0.75, 0.15, 0.12], [0.12, 0.3, 0.58], [0.15, 0.45, 0.3], [0.9, 0.62, 0.15]]
+  const hull = hulls[Math.floor(seed * 4) % 4], stripe = stripes[Math.floor(seed * 13) % 4]
+  const L = 9 + seed * 5, B = L * 0.3
+  const at = (u: number, v: number, w: number): V3 => P(u, v, w)
+  // the hull: a box aft, its bow drawn in to a point, the stripe at the rail
+  const hb = (u0: number, u1: number, y0: number, y1: number, w0: number, w1: number, col: Rgb): void => {
+    for (const sd of [-1, 1]) out.quad([at(u0, y0, sd * w0), at(u1, y0, sd * w1), at(u1, y1, sd * w1), at(u0, y1, sd * w0)], [s * sd, 0, c * sd], UVQ, col, MT)
+  }
+  hb(-L / 2, L * 0.2, -0.3, 1.0, B / 2, B / 2, hull)
+  hb(L * 0.2, L / 2, -0.3, 1.2, B / 2, 0.05, hull)
+  hb(-L / 2, L * 0.2, 1.0, 1.15, B / 2 + 0.02, B / 2 + 0.02, stripe)
+  out.quad([at(-L / 2, -0.3, -B / 2), at(-L / 2, -0.3, B / 2), at(-L / 2, 1.15, B / 2), at(-L / 2, 1.15, -B / 2)], [-c, 0, s], UVQ, hull, MT)
+  out.quad([at(-L / 2, 0.9, -B / 2), at(L * 0.2, 0.9, -B / 2), at(L * 0.2, 0.9, B / 2), at(-L / 2, 0.9, B / 2)], [0, 1, 0], UVQ, [0.55, 0.5, 0.42], WT)
+  // the wheelhouse forward, windows round its top
+  const wh = (u: number, v: number, w: number, du: number, dv: number, dw: number, col: Rgb, tag: number): void => {
+    const p = at(u, v, w)
+    box(out, p[0], p[1], p[2], Math.abs(du * c) + Math.abs(dw * s), dv, Math.abs(du * s) + Math.abs(dw * c), col, tag)
+  }
+  wh(L * 0.08, 1.9, 0, L * 0.12, 1.0, B * 0.36, [0.95, 0.95, 0.93], MT)
+  wh(L * 0.08, 2.4, 0, L * 0.125, 0.3, B * 0.365, [0.18, 0.22, 0.26], surfaceTag('glass'))
+  wh(L * 0.08, 2.95, 0, L * 0.14, 0.06, B * 0.4, stripe, MT)
+  // the mast and its folded outriggers, the crab pots stacked aft
+  tube(out, at(-L * 0.05, 1, 0), at(-L * 0.05, 7.5 + seed * 2, 0), 0.08, 6, [0.85, 0.85, 0.82], MT)
+  for (const sd of [-1, 1]) tube(out, at(-L * 0.05, 1.6, sd * 0.3), at(-L * 0.08, 7 + seed, sd * 1.4), 0.05, 4, [0.6, 0.6, 0.58], MT)
+  for (let k = 0; k < 4 + Math.floor(seed * 4); k++) {
+    const u = -L * 0.4 + (k % 3) * 0.9, w = (Math.floor(k / 3) - 0.5) * 1.0
+    const p = at(u, 1.3, w)
+    box(out, p[0], p[1], p[2], 0.42, 0.35, 0.42, [0.2, 0.22, 0.2], MT)
+  }
+}
+
+/**
+ * THE WHARF'S HARBOURS FULL OF BOATS (owner, 2026-10-16: "more marina filled with boats", "a million private boats in
+ * the marinas near fisherman's wharf", with a satellite view): OSM's own docks (wharf-docks.ts) — the Pier 39 marina's
+ * fingers, the Hyde Street harbour's, the lagoon's quays — with a boat in most berths along every finger pier (a dock line
+ * under 20 m), alongside it, both sides; in the lagoon behind Jefferson Street the fishing fleet, nose to tail along its
+ * quays. `harbour` names the group; placed at its centre with rotateDeg 0, deckAbove 0 (the water at y 0), waterOnly.
+ */
+function wharfMarina(harbour: string): (out: MeshBuilder, fit: Fit) => void {
+  return (out) => {
+    const H = WHARF_DOCKS[harbour]
+    const DOCKC: Rgb = [0.56, 0.52, 0.46], WT = surfaceTag('concrete')
+    const len = (l: [number, number][]): number => l.reduce((a, p, i) => i ? a + Math.hypot(p[0] - l[i - 1][0], p[1] - l[i - 1][1]) : 0, 0)
+    // every dock drawn: a floating walk, 2 m wide on a main dock, 1 m on a finger
+    for (const l of H.lines) {
+      const w = len(l) < 20 ? 0.5 : 1.0
+      for (let i = 1; i < l.length; i++) {
+        const [ax, az] = l[i - 1], [bx, bz] = l[i]
+        const L = Math.hypot(bx - ax, bz - az) || 1
+        const nx = -(bz - az) / L * w, nz = (bx - ax) / L * w
+        out.quad([[ax - nx, 0.5, az - nz], [bx - nx, 0.5, bz - nz], [bx + nx, 0.5, bz + nz], [ax + nx, 0.5, az + nz]], [0, 1, 0], UVQ, DOCKC, WT)
+        for (const sd of [-1, 1]) out.quad([[ax + sd * nx, 0.2, az + sd * nz], [bx + sd * nx, 0.2, bz + sd * nz], [bx + sd * nx, 0.5, bz + sd * nz], [ax + sd * nx, 0.5, az + sd * nz]], [sd * nx, 0, sd * nz], UVQ, [0.4, 0.38, 0.34], WT)
+      }
+    }
+    // a point is clear if no dock line passes within `r` of it
+    const segs: [number, number, number, number][] = []
+    for (const l of H.lines) for (let i = 1; i < l.length; i++) segs.push([l[i - 1][0], l[i - 1][1], l[i][0], l[i][1]])
+    const clear = (x: number, z: number, r: number): boolean => segs.every(([ax, az, bx, bz]) => {
+      const dx = bx - ax, dz = bz - az, t = Math.max(0, Math.min(1, ((x - ax) * dx + (z - az) * dz) / (dx * dx + dz * dz || 1)))
+      return Math.hypot(ax + dx * t - x, az + dz * t - z) >= r
+    })
+    const placed: [number, number][] = []
+    const free = (x: number, z: number, r: number): boolean => placed.every(([px, pz]) => Math.hypot(px - x, pz - z) >= r)
+    const fishing = harbour === 'lagoon'
+    for (const l of H.lines) {
+      const L = len(l)
+      if (!fishing && L >= 20) continue
+      for (let i = 1; i < l.length; i++) {
+        const [ax, az] = l[i - 1], [bx, bz] = l[i]
+        const sl = Math.hypot(bx - ax, bz - az)
+        if (sl < 4) continue
+        const ux = (bx - ax) / sl, uz = (bz - az) / sl
+        const heading = Math.atan2(ux, uz) - Math.PI / 2
+        const step = fishing ? 11 : Math.max(5, sl)
+        for (let d = step / 2; d < sl; d += step) {
+          for (const sd of [-1, 1]) {
+            const h = hashW(ax + d * ux + sd, az + d * uz)
+            if (h > (fishing ? 0.92 : 0.82)) continue
+            const off = fishing ? 2.6 : 2.0
+            const x = ax + ux * d - uz * sd * off, z = az + uz * d + ux * sd * off
+            if (!clear(x, z, fishing ? 2.0 : 1.4) || !free(x, z, fishing ? 8 : 3.2)) continue
+            placed.push([x, z])
+            if (fishing) crabBoat(out, x, z, heading, h)
+            else {
+              // (marina.ts `boat` lies along z: turned onto the finger by placing it in a rotated copy)
+              const tmp = new (out.constructor as new () => MeshBuilder)()
+              // (built at its real spot, so its look — sail or launch, hull colour, length — is its slip's own, then moved
+              // back to the origin to be turned)
+              boat(tmp, x, z, sd)
+              for (let v = 0; v < tmp.positions.length; v += 3) { tmp.positions[v] -= x; tmp.positions[v + 2] -= z }
+              const c = Math.cos(Math.atan2(ux, uz)), s2 = Math.sin(Math.atan2(ux, uz))
+              const base = out.positions.length / 3
+              for (let v = 0; v < tmp.positions.length; v += 3) {
+                const px = tmp.positions[v], py = tmp.positions[v + 1], pz = tmp.positions[v + 2]
+                out.positions.push(x + px * c + pz * s2, py, z - px * s2 + pz * c)
+                const nx = tmp.normals[v], ny = tmp.normals[v + 1], nz = tmp.normals[v + 2]
+                out.normals.push(nx * c + nz * s2, ny, -nx * s2 + nz * c)
+              }
+              out.uvs.push(...tmp.uvs); out.colors.push(...tmp.colors)
+              for (const ix of tmp.indices) out.indices.push(ix + base)
+            }
+          }
+        }
+      }
+    }
+  }
+}
+export const wharfMarinaPier39 = wharfMarina('pier39')
+export const wharfMarinaWest = wharfMarina('west')
+export const wharfLagoon = wharfMarina('lagoon')
+
+export const WHARF_CARNIVAL: Record<string, (out: MeshBuilder, fit: Fit) => void> = { wharfSign, skystarWheel, pier39Gate, sfCarousel39, pier39Stage, pier39Footbridge, wharfMarinaPier39, wharfMarinaWest, wharfLagoon }

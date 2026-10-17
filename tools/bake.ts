@@ -1957,6 +1957,32 @@ async function bake(spec: CitySpec): Promise<void> {
       if (run.length) easeRun(run)
     }
   }
+  /*
+   * …and NEVER UNDER THE GROUND (owner, 2026-10-16, BUGS.md #298: "more underground path here"; "we should do some checks
+   * for underground paths on steep hills"). The renderer draws the ground at the higher of the hillside and a street's
+   * level (city/terrain.ts `heightAt`) — it lifts the ground to a street, never cuts it down to one — so a street the
+   * smoothing above and the junction easing sag below a crest is drawn buried, the rider riding inside the hill (Mason
+   * between Pine and Bush, 2.1 m down; tools/underground.ts found 13 km of such stretches, most on grades over 10 %).
+   * Every surface way is lifted back onto the ground where it lies more than 0.3 m under it: the same ground at a shared
+   * node for every way that ends there, so junctions still agree. Tunnels, bores, cuts and underground layers keep their
+   * depth.
+   */
+  {
+    let lifted = 0
+    for (const e of kept) {
+      if (underground(e) || e.tunnel || e.bore || e.cut || (e.layer ?? 0) < 0 || !e.heights) continue
+      const pts = unpackPoints(e.points)
+      let moved = false
+      const h = e.heights.map((v, i) => {
+        const g = groundFine(pts[i].x, pts[i].z) - 0.3
+        if (v >= g) return v
+        moved = true
+        return Math.round((g + 0.3) * 100) / 100
+      })
+      if (moved) { e.heights = h; lifted++ }
+    }
+    console.log(`  ${lifted} ways lifted out of the ground (more than 0.3 m under it)`)
+  }
 
   /*
    * ---- bridges: their own heights, and ramps onto them (tools/bridges.ts). Before anything reads the

@@ -10753,7 +10753,7 @@ before it is useful.
   [x] c. the ferris wheel — SkyStar (render/sf/ferris.ts turning + 36 upright gondolas + LEDs; skystarWheel landmark legs/deck/canopy); B boards the bottom gondola, one turn (150 s) with the camera in the cabin panning the bay, off at the bottom
   [x] d. the PIER 39 flag clusters (render/flags.ts: several flags a pole, streamers, black poles, the pier39 design; public/flags/san-francisco-placed.json), and pier39Gate with the blue PIER 39 board
   [~] e. the Pier 39 activity centre — sfCarousel39 (two-tier carousel, striped canopy, turning horses via rotors) and pier39Stage (striped tent stage, booths) DONE; the Pier 39 buildings' own look (painted clapboard, gables, awnings) next
-  [ ] f. the marinas full of boats (Pier 39 west/east marinas, the Wharf's lagoon of fishing boats)
+  [~] f. the marinas full of boats — wharfMarinaPier39 / wharfMarinaWest / wharfLagoon: boats along OSM's own docks (wharf-docks.ts), crab boats in the lagoon; needs a review shot
   [~] g. the Aquarium of the Bay front — DONE 2026-10-16 (owner: "should have a big aquarium sign like it does irl"): royal-blue wall, AQUARIUM of the BAY in big white serif on the three longest walls, porthole murals (sea lion, fish, crab); the pretzel kiosk by it still to do
   [ ] h. the black storefronts round Hotel Zephyr, and Burgers & Best Pies' theatre sign
   [ ] i. the chocolate and candy buildings (Ghirardelli's roof sign, chocolate shops, candy stores)
@@ -10764,6 +10764,7 @@ before it is useful.
          Fleet ticket booths, Fish Alley, the Maritime Museum bathhouse, Lou's, The Anchorage…)
 - #298 Underground path at 37.790516 −122.410527 (owner, 2026-10-16: "more underground path here"; and "we should do
   some checks for underground paths on steep hills"). OPEN.
+- #301 "Really bad intersection" at 37.791027 −122.399278 (owner, 2026-10-16). OPEN.
 - #300 Traffic lights' lit lamps out of their housings, e.g. 37.796241 −122.405121 (owner, 2026-10-16, night screenshot:
   the red lamp a dot on the mast arm above the head). FIXED: furniture is placed rigidly (the whole model at its post's
   ground) but the lit lamps took the ground under each lens — on a slope, up on the arm or under the head. Now the post's.

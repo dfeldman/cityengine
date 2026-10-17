@@ -52,5 +52,50 @@
   "height": 7.5,
   "coversRaised": true,
   "note": "BUGS.md #296, 2026-10-16 (owner's Street View): timber girder, blue railings, paired round columns, on the deck declared in src/city/sf/bridges.ts PIER39_BRIDGE_PATH \u2014 the ways take its heights in the bake."
+ },
+ {
+  "name": "Pier 39 marina boats",
+  "procedural": "wharfMarinaPier39",
+  "lat": 37.809739,
+  "lon": -122.409283,
+  "rotateDeg": 0,
+  "size": [
+   349,
+   327
+  ],
+  "deckAbove": 0,
+  "height": 12,
+  "waterOnly": true,
+  "note": "BUGS.md #290f, 2026-10-16: boats along OSM's own docks (wharf-docks.ts), owner's satellite view."
+ },
+ {
+  "name": "Hyde Street harbour boats",
+  "procedural": "wharfMarinaWest",
+  "lat": 37.809819,
+  "lon": -122.421272,
+  "rotateDeg": 0,
+  "size": [
+   238,
+   319
+  ],
+  "deckAbove": 0,
+  "height": 12,
+  "waterOnly": true,
+  "note": "BUGS.md #290f, 2026-10-16: boats along OSM's own docks (wharf-docks.ts), owner's satellite view."
+ },
+ {
+  "name": "Fisherman's Wharf lagoon fleet",
+  "procedural": "wharfLagoon",
+  "lat": 37.8086548,
+  "lon": -122.4164069,
+  "rotateDeg": 0,
+  "size": [
+   100,
+   76
+  ],
+  "deckAbove": 0,
+  "height": 12,
+  "waterOnly": true,
+  "note": "BUGS.md #290f, 2026-10-16: boats along OSM's own docks (wharf-docks.ts), owner's satellite view."
  }
 ]

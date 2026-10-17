@@ -54,7 +54,7 @@ export function marina(out: MeshBuilder, fit: Fit): void {
 }
 
 /** one moored boat at (bx, bz), its bow toward `side` along z: a sailboat (mast, covered main) or a motor launch */
-function boat(out: MeshBuilder, bx: number, bz: number, side: number): void {
+export function boat(out: MeshBuilder, bx: number, bz: number, side: number): void {
   const metal = surfaceTag('metal')
   const len = 7 + hash(bz, bx) * 7
   const beam = len * 0.32
