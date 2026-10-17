@@ -14,7 +14,7 @@ import { box, prism, EMIT, type Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 import { sign, type SignSpec } from '../signage.ts'
 import { tower, towerRing, faceBand } from '../tower.ts'
-import { edgeAt, edgeFacing, boxAlong } from '../parts.ts'
+import { edgeAt, edgeFacing, boxAlong, offsetRing } from '../parts.ts'
 import { tube, ellipse, lozenge, type V3 } from './wharf-carnival.ts'
 
 type P2 = { x: number; z: number }
@@ -741,8 +741,61 @@ export function memorialChapel(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+/**
+ * THE HASLETT WAREHOUSE, Jefferson & Hyde (way/25372348; 1909, now the Argonaut Hotel and the Maritime park's visitor
+ * centre; Commons "Haslett Warehouse (San Francisco)", "Argonaut Hotel - San Francisco, CA - DSC02048"): four storeys of
+ * red brick, rows of segmental-arched windows with dark sashes under brick hoods, string courses at every floor, the
+ * parapet stepping up over the end bays; at the Jefferson–Hyde corner the navy ARGONAUT HOTEL blade sign standing out
+ * from the wall, the BLUE MERMAID marquee at the corner's foot, and on the parapet over Hyde a NATIONAL PARK VISITOR
+ * CENTER board under four gooseneck lamps. `front` 90: the Hyde face is the edge facing local −z; Jefferson is +x.
+ */
+export function haslettWarehouse(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.6, 0.24, 0.16], NAVY: Rgb = [0.12, 0.16, 0.3], STEEL: Rgb = [0.5, 0.52, 0.55]
+  const ring = towerRing(fit)
+  const H = Math.max(14, Math.min(18, fit.height))
+  faceBand(out, ring, 0, H - 1.2, { kind: 'punched', wall: BRICK, glass: DARKGL, floor: (H - 1.2) / 4, pitch: 3.4, solid: 0.6, arched: true, material: 'brick' })
+  faceBand(out, ring, H - 1.2, H, { kind: 'blank', wall: BRICK, material: 'brick' })
+  // string courses at each floor, a little proud
+  for (let k = 1; k <= 4; k++) faceBand(out, offsetRing(ring, 0.06), (k * (H - 1.2)) / 4 - 0.12, (k * (H - 1.2)) / 4, { kind: 'blank', wall: [0.52, 0.2, 0.14], material: 'brick' })
+  faceBand(out, offsetRing(ring, 0.1), H - 0.3, H, { kind: 'blank', wall: [0.5, 0.2, 0.14], material: 'brick' })
+  capPolygon(out, ring, H, [0.36, 0.34, 0.33], CT)
+  // the Hyde face, and the Jefferson corner: its end of the front edge that lies to local +x
+  const e = frontEdge(ring, facingFront(ring, 10))
+  const cu = e.tx > 0 ? e.L - 0.4 : 0.4
+  const corner = on(e, cu, 0, 0)
+  // the blade sign, standing out from the Hyde wall at the corner, both faces lettered down
+  const out1 = 1.3
+  const bc = on(e, cu - (e.tx > 0 ? 0.6 : -0.6), 0, out1)
+  boxAlong(out, bc[0], 9.0, bc[2], 0.08, 3.4, 0.55, e.heading, NAVY, MT)
+  boxAlong(out, bc[0], 12.55, bc[2], 0.12, 0.15, 0.8, e.heading, STEEL, MT)
+  boxAlong(out, bc[0], 5.4, bc[2], 0.12, 0.3, 0.72, e.heading, NAVY, MT)
+  for (const sd of [-1, 1]) {
+    const hd = e.heading + (sd * Math.PI) / 2
+    const ox = Math.sin(hd) * 0.1, oz = Math.cos(hd) * 0.1
+    'ARGONAUT'.split('').forEach((ch, k) => sign(out, { type: 'flat', text: ch, h: 0.62, face: 'didone', colour: [0.95, 0.95, 0.92], lit: 'front' },
+      { x: bc[0] + ox, y: 11.8 - k * 0.78, z: bc[2] + oz, heading: hd }))
+    sign(out, { type: 'flat', text: 'HOTEL', h: 0.32, face: 'didone', colour: [0.95, 0.95, 0.92], lit: 'front' }, { x: bc[0] + ox * 1.3, y: 5.3, z: bc[2] + oz * 1.3, heading: hd })
+  }
+  // the Blue Mermaid marquee at the corner's foot
+  const mu = cu - (e.tx > 0 ? 3.2 : -3.2)
+  slab(out, e, mu, 0.8, 3.2, 3.6, 0.7, 1.4, [0.96, 0.95, 0.9], MT)
+  signAt(out, e, mu, 3.7, 1.52, { type: 'flat', text: 'BLUE MERMAID', h: 0.3, face: 'roman', weight: 'bold', colour: [0.15, 0.3, 0.6], lit: 'back' })
+  bulbs(out, on(e, mu - 1.7, 3.15, 1.52), on(e, mu + 1.7, 3.15, 1.52), 0.3)
+  // the visitor centre's board on the parapet over Hyde, four gooseneck lamps over it
+  const vu = e.tx > 0 ? e.L - 9 : 9
+  slab(out, e, vu, 0.05, H, 6.5, 1.2, 0.2, [0.3, 0.36, 0.33], MT)
+  signAt(out, e, vu, H + 0.6, 0.17, { type: 'flat', text: 'National Park Visitor Center', h: 0.36, face: 'grotesque', weight: 'bold', colour: [0.97, 0.97, 0.95], lit: 'front' })
+  for (const d of [-2.4, -0.8, 0.8, 2.4]) {
+    const b = on(e, vu + d, H + 1.2, -0.1), t = on(e, vu + d, H + 2.6, -0.1), h = on(e, vu + d, H + 2.5, 0.5)
+    tube(out, b, t, 0.04, 5, STEEL, MT)
+    tube(out, t, h, 0.04, 5, STEEL, MT)
+    box(out, h[0], h[1] - 0.12, h[2], 0.16, 0.08, 0.16, STEEL, MT)
+  }
+  void corner
+}
+
 export const WHARF_SHOPS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, pretzelKiosk, klamathPropellers,
+  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, pretzelKiosk, klamathPropellers,
   pier45ShedA: pier45Shed('PIER 45', true),
   pier45ShedB: pier45Shed('PIER 45', false),
   pier45ShedD: pier45Shed('PIER 45', false),

@@ -10,13 +10,11 @@
     "osm": [
       "way/25372348"
     ],
-    "name": "Argonaut Hotel",
-    "restyle": "brick",
-    "wall": "#8a3b2a",
-    "levels": 4,
+    "name": "Argonaut Hotel (Haslett Warehouse)",
+    "procedural": "haslettWarehouse",
+    "front": 90,
     "height": 16,
-    "noShops": true,
-    "note": "1907 Cannery-era red brick warehouse hotel at the Wharf (2026-10-16 from Mapillary; was a Haiku office-box recipe built without a photograph)"
+    "note": "BUGS.md #290m, 2026-10-17: the 1909 red brick warehouse, now the Argonaut Hotel and the visitor centre — arched windows, string courses, the navy ARGONAUT blade sign at Jefferson & Hyde, the Blue Mermaid marquee, the visitor centre's board on the parapet (Commons 'Haslett Warehouse (San Francisco)', 'Argonaut Hotel - San Francisco, CA - DSC02048'). Was a brick restyle."
   },
   {
     "osm": [
