@@ -1621,6 +1621,42 @@ async function bake(spec: CitySpec): Promise<void> {
   for (let i = 0; i < ground.length; i++) ground[i] = Math.round((ground[i] - datum) * 100) / 100
   for (let i = 0; i < fineGround.length; i++) fineGround[i] = Math.round((fineGround[i] - datum) * 100) / 100
   /*
+   * DECKS (ZoneProps `deck`): a pier on fill or piles is level, and the elevation tiles smear it down toward the sea bed
+   * round its edges — Pier 39 sank to 6 m under its own carousel plaza (2026-10-17). Inside the zone the fine ground is
+   * set to sea level + `deck`; within 3 m outside it, blended back to the ground. The coarse grid is averaged from the
+   * fine one below, so both agree.
+   */
+  {
+    const deckZones = loadZones(spec, (lat, lon) => proj.toLocal({ lat, lon })).filter((zn) => typeof zn.props.deck === 'number')
+    let n = 0
+    const BLEND = 3
+    for (const zn of deckZones) {
+      const ring: { x: number; z: number }[] = []
+      for (let i = 0; i < zn.ring.length; i += 2) ring.push({ x: zn.ring[i], z: zn.ring[i + 1] })
+      const target = -datumRaw + zn.props.deck!
+      const edgeDist = (x: number, z: number): number => {
+        let best = Infinity
+        for (let i = 0; i < ring.length; i++) {
+          const a = ring[i], b = ring[(i + 1) % ring.length], dx = b.x - a.x, dz = b.z - a.z
+          const t = Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / (dx * dx + dz * dz || 1e-9)))
+          best = Math.min(best, Math.hypot(a.x + dx * t - x, a.z + dz * t - z))
+        }
+        return best
+      }
+      const [bx0, bz0, bx1, bz1] = zn.bbox
+      const c0 = Math.max(0, Math.floor((bx0 - BLEND - fx0) / FINE_STEP)), c1 = Math.min(fcols - 1, Math.ceil((bx1 + BLEND - fx0) / FINE_STEP))
+      const r0 = Math.max(0, Math.floor((bz0 - BLEND - fz0) / FINE_STEP)), r1 = Math.min(frows - 1, Math.ceil((bz1 + BLEND - fz0) / FINE_STEP))
+      for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) {
+        const x = fx0 + c * FINE_STEP, z = fz0 + r * FINE_STEP
+        const i = r * fcols + c
+        if (zonesAt([zn], x, z).length) { fineGround[i] = Math.round(target * 100) / 100; n++; continue }
+        const d = edgeDist(x, z)
+        if (d < BLEND) { const k = d / BLEND; fineGround[i] = Math.round((target * (1 - k) + fineGround[i] * k) * 100) / 100; n++ }
+      }
+    }
+    if (n) console.log(`  ${n} fine ground samples laid as decks (zones with deck)`)
+  }
+  /*
    * ---- and the coarse grid is DERIVED from the fine one where the fine one reaches.
    *
    * Two independent samplings of one noisy source disagree by exactly the amount of noise, and the seam

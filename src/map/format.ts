@@ -51,6 +51,12 @@ export interface ZoneProps {
   palette?: Record<string, unknown>
   crowd?: number
   traffic?: number
+  /**
+   * the ground here is a DECK this many metres above sea level, dead flat (tools/bake.ts), blended back to the ground
+   * over 3 m outside the zone: a pier built on fill or piles, which the elevation tiles smear down toward the sea bed
+   * (Pier 39 sank below the water north of its carousel, 2026-10-17)
+   */
+  deck?: number
   /** what is BUILT here, where it is not the city's usual (src/city/sf/btype.ts): 'presidio', the Army's and the parks' own */
   buildings?: 'presidio' | 'mediterranean' | 'navy' | 'marin'
   /** 'bike': the trails here (footways, paths, tracks with a riding surface) join the BIKE network (tools/bake.ts) */
