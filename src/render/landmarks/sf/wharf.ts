@@ -11,8 +11,7 @@ import type { MeshBuilder } from '../../buildings.ts'
 import { box, type Rgb } from '../../models.ts'
 import { beam } from './golden-gate.ts'
 import type { Fit } from '../fit.ts'
-import { signText } from '../parts.ts'
-import { surfaceTag } from '../../cartoon-material.ts'
+import { sign } from '../signage.ts'
 
 
 
@@ -30,9 +29,7 @@ export function ghirardelliSign(out: MeshBuilder, _fit?: Fit): void {
    *    braces, as tall again as the letters and quite transparent against the sky. That lattice is as much the
    *    landmark as the word is; without it the sign looks painted onto the roof.
    *
-   * The real sign is in mixed case — a capital G and lowercase after it. The shared glyph font is capitals
-   * only, so this spells it in capitals; at the distance you see it from the bay, the silhouette and the
-   * lattice carry the recognition.
+   * The real sign is in mixed case — a capital G and lowercase after it — which the sign kit's GLB spells.
    */
   const LETTER = 5.0
   const span = 46
@@ -57,5 +54,7 @@ export function ghirardelliSign(out: MeshBuilder, _fit?: Fit): void {
     const x = -span / 2 + (i * span) / bays
     box(out, x, deck + LETTER / 2, 0.25, 0.07, LETTER / 2, 0.07, STEEL_D, 0)
   }
-  signText(out, 'GHIRARDELLI', 0, deck + LETTER / 2 + 0.4, 0.1, LETTER, [0.78, 0.79, 0.8], { tag: surfaceTag('metal') })
+  // the word itself: the sign kit's extruded GLB (tools/signgen/signs.json `signs/ghirardelli.glb`), mixed case in a serif
+  // with its bulbs, centred on its own middle, its face at z = 0 (2026-10-17: was spelled in block capitals)
+  sign(out, { type: 'extruded', text: 'Ghirardelli', h: LETTER, model: 'signs/ghirardelli.glb', lit: 'front' }, { x: 0, y: deck + LETTER / 2 + 0.4, z: 0.3, heading: 0 })
 }

@@ -10738,7 +10738,11 @@ GAME
 - #311 Block-letter signs (Macy's and others) → real typefaces. DONE: parts.ts `signText` (the 3×5 blocks, 34 callers)
   and union-square.ts `letters` (the 5×7 store names: Macy's, Saks, Tiffany…) now draw the flat real-font signs of
   signage.ts in the same place; the bulb-sign letters (parts.ts, lamps on a frame) stay, as bulbs are the style there.
-  Verified at the Castro and Macy's.
+  Verified at the Castro and Macy's. And the sign kit's GLBs (tools/signgen) fixed: every one was exported LYING FLAT
+  (the stand-up rotation was never applied), 10× too deep (the extrusion scaled with the letters), with bevels swollen
+  10× (filling the letters in) and Ghirardelli's bulbs off to one side. Ghirardelli's rooftop word is the GLB again
+  (lit 'front': the bulbs glow, not the letter faces); Ripley's moved onto its Jefferson wall facing the street. Both
+  re-uploaded to the asset bucket and verified in shots.
 - #312 Re-check and mark the older open reports (#282–#301): most are fixed; mark what is. OPEN.
 - #313 TRIPO.md: a list of organic shapes for the owner to make in Tripo (statues, Lotta's Fountain, lamp posts, ships,
   unique signs, the Japanese Tea Garden drum bridge…). STARTED (TRIPO.md, 12 rows); grows as the Wharf work finds more.

@@ -1,43 +1,43 @@
 {
-  "$comment": "EXTRUDED signs only. A flat sign — which is nearly all of them — is not here and needs no build step at all: it is a `sign({ type: 'flat', ... })` call in the builder, rendered in the browser (src/render/sign-plates.ts). This file is the recipe for the few whose letters genuinely stand off the wall, built by tools/signs.ts (which the bake calls) with Blender. The GLBs live under public/models/signs and are gitignored: assets are generated, the recipe is what is kept. A builder names the file in `sign({ type: 'extruded', model: 'signs/x.glb' })`, or a landmark entry in its `file` field as `models/signs/x.glb`.",
-  "fonts": {
-    "serif": "/System/Library/Fonts/Supplemental/Georgia.ttf",
-    "roman": "/System/Library/Fonts/Supplemental/Times New Roman.ttf",
-    "grotesque": "/System/Library/Fonts/Supplemental/Futura.ttc",
-    "condensed": "/System/Library/Fonts/Supplemental/DIN Condensed Bold.ttf",
-    "block": "/System/Library/Fonts/Supplemental/Impact.ttf",
-    "slab": "/System/Library/Fonts/Supplemental/Rockwell.ttc",
-    "engraved": "/System/Library/Fonts/Supplemental/Copperplate.ttc",
-    "didone": "/System/Library/Fonts/Supplemental/Didot.ttc",
-    "script": "/System/Library/Fonts/Supplemental/SnellRoundhand.ttc",
-    "brush": "/System/Library/Fonts/Supplemental/Brush Script.ttf",
-    "bolditalic": "/System/Library/Fonts/Supplemental/Arial Bold Italic.ttf"
-  },
-  "cities": {
-    "san-francisco": [
-      {
-        "out": "signs/ghirardelli.glb",
-        "text": "Ghirardelli",
-        "font": "serif",
-        "height": 5,
-        "depth": 0.35,
-        "bulbs": 0.5,
-        "lit": "self",
-        "note": "Ghirardelli Square's roof sign, read from the bay: mixed case, bulbs along the letters, standing on the steel lattice drawn by the `ghirardelliSign` builder. Extruded because the bulbs ARE the sign — a flat one could not carry them."
-      },
-      {
-        "out": "signs/ripleys.glb",
-        "text": "Believe It or Not!",
-        "font": "bolditalic",
-        "height": 1.5,
-        "depth": 0.25,
-        "bevel": 0.03,
-        "colour": "#f2c318",
-        "metallic": 0.1,
-        "roughness": 0.6,
-        "lit": "front",
-        "note": "Ripley's at 175 Jefferson: the yellow sign over the arched entrance. Bold italic, mixed case, painted rather than steel — so a yellow, unmetallic material rather than the default polished one."
-      }
-    ]
-  }
+ "$comment": "EXTRUDED signs only. A flat sign — which is nearly all of them — is not here and needs no build step at all: it is a `sign({ type: 'flat', ... })` call in the builder, rendered in the browser (src/render/sign-plates.ts). This file is the recipe for the few whose letters genuinely stand off the wall, built by tools/signs.ts (which the bake calls) with Blender. The GLBs live under public/models/signs and are gitignored: assets are generated, the recipe is what is kept. A builder names the file in `sign({ type: 'extruded', model: 'signs/x.glb' })`, or a landmark entry in its `file` field as `models/signs/x.glb`.",
+ "fonts": {
+  "serif": "/System/Library/Fonts/Supplemental/Georgia.ttf",
+  "roman": "/System/Library/Fonts/Supplemental/Times New Roman.ttf",
+  "grotesque": "/System/Library/Fonts/Supplemental/Futura.ttc",
+  "condensed": "/System/Library/Fonts/Supplemental/DIN Condensed Bold.ttf",
+  "block": "/System/Library/Fonts/Supplemental/Impact.ttf",
+  "slab": "/System/Library/Fonts/Supplemental/Rockwell.ttc",
+  "engraved": "/System/Library/Fonts/Supplemental/Copperplate.ttc",
+  "didone": "/System/Library/Fonts/Supplemental/Didot.ttc",
+  "script": "/System/Library/Fonts/Supplemental/SnellRoundhand.ttc",
+  "brush": "/System/Library/Fonts/Supplemental/Brush Script.ttf",
+  "bolditalic": "/System/Library/Fonts/Supplemental/Arial Bold Italic.ttf"
+ },
+ "cities": {
+  "san-francisco": [
+   {
+    "out": "signs/ghirardelli.glb",
+    "text": "Ghirardelli",
+    "font": "serif",
+    "height": 5,
+    "depth": 0.35,
+    "bulbs": 0.9,
+    "lit": "front",
+    "note": "Ghirardelli Square's roof sign, read from the bay: mixed case, bulbs along the letters, standing on the steel lattice drawn by the `ghirardelliSign` builder. Extruded because the bulbs ARE the sign — a flat one could not carry them. 2026-10-17: lit 'front' — with 'self' the letter faces emitted by day and the word blew out to a white bar; the bulbs carry the night."
+   },
+   {
+    "out": "signs/ripleys.glb",
+    "text": "Believe It or Not!",
+    "font": "bolditalic",
+    "height": 1.5,
+    "depth": 0.25,
+    "bevel": 0.03,
+    "colour": "#f2c318",
+    "metallic": 0.1,
+    "roughness": 0.6,
+    "lit": "front",
+    "note": "Ripley's at 175 Jefferson: the yellow sign over the arched entrance. Bold italic, mixed case, painted rather than steel — so a yellow, unmetallic material rather than the default polished one."
+   }
+  ]
+ }
 }

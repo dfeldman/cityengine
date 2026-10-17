@@ -50,6 +50,20 @@ def main() -> None:
 
     bpy.ops.wm.read_factory_settings(use_empty=True)
 
+    # scale so the CAPITALS are `height` tall: measure a capital on its own, not the whole string, or a
+    # descender in a lowercase letter would shrink the word
+    bpy.ops.object.text_add()
+    probe = bpy.context.object
+    probe.data.body = 'H'
+    if os.path.exists(font_path):
+        probe.data.font = bpy.data.fonts.load(font_path)
+    bpy.ops.object.convert(target='MESH')
+    cap = max(v.co.y for v in probe.data.vertices) - min(v.co.y for v in probe.data.vertices)
+    bpy.data.objects.remove(probe, do_unlink=True)
+    # (the scale first, so the bevel and the bulbs' spacing can be given in METRES: set in font units and then scaled up
+    # ~10x with the letters, a 0.03 bevel swelled every stroke by 0.3 m and filled the word in, 2026-10-17)
+    s = height / max(cap, 1e-6)
+
     bpy.ops.object.text_add()
     ob = bpy.context.object
     ob.data.body = text
@@ -59,7 +73,7 @@ def main() -> None:
         print(f'signgen: no font at {font_path}, using Blender\'s default')
     # extrude is half-depth each way in Blender, and a small bevel catches the light on the letter edges
     ob.data.extrude = depth / 2
-    ob.data.bevel_depth = bevel
+    ob.data.bevel_depth = bevel / s
     ob.data.align_x = 'CENTER'
     ob.data.align_y = 'CENTER'
 
@@ -80,7 +94,7 @@ def main() -> None:
                 a = pts[i]
                 b = pts[(i + 1) % len(pts)]
                 seg = ((b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2) ** 0.5
-                n = max(1, int(seg / max(bulb_gap, 1e-3)))
+                n = max(1, int(seg / max(bulb_gap / s, 1e-4)))
                 for k in range(n):
                     t = k / n
                     bulb_pts.append((a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t))
@@ -88,24 +102,12 @@ def main() -> None:
     bpy.ops.object.convert(target='MESH')
     ob = bpy.context.object
 
-    # scale so the CAPITALS are `height` tall: measure a capital on its own, not the whole string, or a
-    # descender in a lowercase letter would shrink the word
-    bpy.ops.object.text_add()
-    probe = bpy.context.object
-    probe.data.body = 'H'
-    if os.path.exists(font_path):
-        probe.data.font = bpy.data.fonts.load(font_path)
-    bpy.ops.object.convert(target='MESH')
-    cap = max(v.co.y for v in probe.data.vertices) - min(v.co.y for v in probe.data.vertices)
-    bpy.data.objects.remove(probe, do_unlink=True)
-
-    s = height / max(cap, 1e-6)
-    ob.scale = (s, s, s)
+    # (x and y only: the extrusion was set in metres, and scaled with the letters a 0.35 m sign came out 3.9 m deep)
+    ob.scale = (s, s, 1)
     bpy.context.view_layer.objects.active = ob
     bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
 
-    # Blender text lies in the XY plane facing +z; the game is Y-up with the sign standing in XY, so rotate
-    # the object's -90 degrees about X to stand it up, then push the front face to z = 0
+    # centred in x and y, its front face pushed to z = 0 (stood up just before export, below)
     ob.rotation_euler = (0, 0, 0)
     lo = Vector((min(v.co.x for v in ob.data.vertices), min(v.co.y for v in ob.data.vertices), min(v.co.z for v in ob.data.vertices)))
     hi = Vector((max(v.co.x for v in ob.data.vertices), max(v.co.y for v in ob.data.vertices), max(v.co.z for v in ob.data.vertices)))
@@ -126,7 +128,7 @@ def main() -> None:
         made = []
         for (bx, by) in bulb_pts:
             bpy.ops.mesh.primitive_uv_sphere_add(radius=r, segments=8, ring_count=6,
-                                                 location=(bx * s - (lo.x + hi.x) / 2 * s, by * s - (lo.y + hi.y) / 2 * s, r * 0.4))
+                                                 location=(bx * s - (lo.x + hi.x) / 2, by * s - (lo.y + hi.y) / 2, r * 0.4))
             sp = bpy.context.object
             sp.data.materials.append(lit)
             made.append(sp)
@@ -155,9 +157,25 @@ def main() -> None:
     ob.data.materials.append(mat)
     bpy.context.view_layer.objects.active = ob
 
+    # STAND IT UP (2026-10-17). Blender's text lies in its XY plane, face to +Z; the glTF exporter turns Blender's Z-up into
+    # Y-up, which left every sign lying on its back, face to the sky (Ghirardelli's was switched off for it, 2026-10-04,
+    # and Ripley's lay flat over its door). Turned +90 degrees about X: the letters' up (+Y) becomes +Z — glTF's up — and
+    # their face (+Z) becomes -Y — glTF's +z — with the front still at 0. The bulbs turn with them.
+    import math
+    for o in bpy.data.objects:
+        if o.type != 'MESH':
+            continue
+        bpy.ops.object.select_all(action='DESELECT')
+        o.select_set(True)
+        bpy.context.view_layer.objects.active = o
+        bpy.ops.object.transform_apply(location=True, rotation=False, scale=True)
+        o.data.transform(__import__('mathutils').Matrix.Rotation(math.pi / 2, 4, 'X'))
+        o.data.update()
+    bpy.context.view_layer.objects.active = ob
+
     os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
     bpy.ops.export_scene.gltf(filepath=out, export_format='GLB', use_selection=False)
-    w = (hi.x - lo.x) * s
+    w = hi.x - lo.x
     print(f'signgen: "{text}" {w:.1f} m wide, caps {height} m -> {out}')
 
 
