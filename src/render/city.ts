@@ -2899,15 +2899,6 @@ export class City {
       meshes.push(m)
     }
 
-    if (sandOut.triangles > 0 && !this.off.has('areas')) {
-      // (named under `areas:` so the ground group draws it with the areas, before the corridor and the paths on it)
-      const m = new Mesh(`areas:sand:${k}`, this.scene)
-      this.terrain.drapeRaw(sandOut.positions)
-      sandOut.toVertexData().applyToMesh(m)
-      m.material = groundLayerMaterial(this.scene, this.roadAssets, 'sand', 'beach')
-      m.renderingGroupId = GROUP.areas
-      meshes.push(m)
-    }
     for (const [builder, group, name] of [[areas, GROUP.areas, 'areas'], [walks, GROUP.walk, 'walks']] as const) {
       if (builder.triangles === 0 || this.off.has(name)) continue
       const m = new Mesh(`${name}:${k}`, this.scene)
@@ -2926,6 +2917,17 @@ export class City {
       groundMat.disableDepthWrite = true
       m.material = groundMat
       m.renderingGroupId = group
+      meshes.push(m)
+    }
+    // (the beaches after the plain areas too: the Presidio's park outline takes in Baker Beach and China Beach, and
+    //  drawn first their sand was painted over by its lawn — owner, 2026-10-17)
+    if (sandOut.triangles > 0 && !this.off.has('areas')) {
+      // (named under `areas:` so the ground group draws it with the areas, before the corridor and the paths on it)
+      const m = new Mesh(`areas:sand:${k}`, this.scene)
+      this.terrain.drapeRaw(sandOut.positions)
+      sandOut.toVertexData().applyToMesh(m)
+      m.material = groundLayerMaterial(this.scene, this.roadAssets, 'sand', 'beach')
+      m.renderingGroupId = GROUP.areas
       meshes.push(m)
     }
     /*
