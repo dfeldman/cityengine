@@ -390,13 +390,13 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number): Wa
       // its neighbour is not: this is what stops a wall of identical windows.
       const vr = rng(seed ^ (b * 73856093) ^ (s.index * 19349663))
       /*
-       * …but a SHOP runs the width of its frontage (2026-10-17: three identical OYSTER BAR fascias side by side read as a
-       * glitch, and five paintings dealt out bay by bay set the same one beside itself one bay in five): on a shopfront
-       * ground floor, bays go in pairs, one painting a pair, the pairs' paintings stepping through the set so no two
-       * neighbouring shops are the same.
+       * …but not on a shop floor (2026-10-17: three identical OYSTER BAR fascias side by side read as a glitch, and five
+       * paintings dealt out bay by bay set the same one beside itself one bay in five): there the paintings step through
+       * the set bay by bay from a seeded start, so no two neighbouring shops are the same. (They went in pairs for a few
+       * hours, a shop two bays wide — but each bay paints its own fascia, so the pair read CLAM BAR | CLAM BAR.)
        */
       const shopGround = s.kind === 'ground' && plan.ground !== 'plain' && b !== carriageBay
-      const variant = shopGround ? ((rng(seed ^ 0x5e11)() + Math.floor(b / 2) * 0.381966) % 1) : vr()
+      const variant = shopGround ? ((rng(seed ^ 0x5e11)() + b * 0.381966) % 1) : vr()
 
       let element: string
       if (s.kind === 'ground' && b === carriageBay) element = `${plan.style}/carriage`
