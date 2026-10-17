@@ -11,6 +11,8 @@ import type { Fit } from '../fit.ts'
 import { box, prism, EMIT, type Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 import { sign } from '../signage.ts'
+import { tower, towerRing } from '../tower.ts'
+import { edgeAt } from '../parts.ts'
 import { boat } from './marina.ts'
 import { WHARF_DOCKS } from './wharf-docks.ts'
 import { SKYSTAR, DECK } from '../../sf/ferris.ts'
@@ -612,4 +614,127 @@ export const wharfMarinaPier39 = wharfMarina('pier39')
 export const wharfMarinaWest = wharfMarina('west')
 export const wharfLagoon = wharfMarina('lagoon')
 
-export const WHARF_CARNIVAL: Record<string, (out: MeshBuilder, fit: Fit) => void> = { wharfSign, skystarWheel, pier39Gate, sfCarousel39, pier39Stage, pier39Footbridge, wharfMarinaPier39, wharfMarinaWest, wharfLagoon }
+/**
+ * BOUDIN BAKERY & MUSEUM, 160 Jefferson (way/37312428; owner, 2026-10-16: "the big boudin sourdough barn"; 2026-10-17:
+ * "isnt it a barn structure?"): a big BARN of grey boards — vertical board-and-batten walls, one steep gabled roof over
+ * the whole length, its gable ends glazed high up — the bakery floor behind tall windows along Jefferson under red
+ * awnings, an upstairs restaurant balcony with its red band, and on the ridge the name in big red letters on a steel
+ * frame (Commons "Boudin Bakery, Fisherman's Wharf rear"; Mapillary 663208991952678).
+ */
+export function boudinBakery(out: MeshBuilder, fit: Fit): void {
+  const H = 8.5, G = 4.6
+  const WALL: Rgb = [0.56, 0.58, 0.57], BATTEN: Rgb = [0.44, 0.46, 0.46], STEEL: Rgb = [0.22, 0.24, 0.25], RED: Rgb = [0.74, 0.12, 0.12]
+  const ROOF: Rgb = [0.34, 0.36, 0.37], GLASSC: Rgb = [0.26, 0.3, 0.32]
+  const WT = surfaceTag('clapboard'), MT = surfaceTag('metal'), GT = surfaceTag('glass')
+  tower(out, { ...fit, height: H }, {
+    height: H,
+    base: { height: G, face: { kind: 'curtain', wall: STEEL, glass: [0.3, 0.32, 0.3], pitch: 2.6, floor: G, material: 'glass' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WALL, glass: GLASSC, pitch: 3.2, floor: H - G, solid: 0.5, material: 'clapboard' } }],
+    crown: { kind: 'flat' },
+  })
+  const ring = towerRing(fit)
+  // the corrugation (a dark rib every 0.45 m up the upper walls) and the pale concrete PIERS between the bays, full height
+  const PIER: Rgb = [0.78, 0.76, 0.71]
+  for (let i = 0; i < ring.length; i++) {
+    const e = edgeAt(ring, i)
+    if (e.L < 2) continue
+    for (let u = 0.25; u < e.L; u += 0.45) {
+      const x = e.a.x + e.tx * u + e.nx * 0.03, z = e.a.z + e.tz * u + e.nz * 0.03
+      box(out, x, (G + H) / 2, z, 0.025, (H - G) / 2, 0.025, BATTEN, MT)
+    }
+    const n = Math.max(1, Math.round(e.L / 8))
+    for (let k = 0; k <= n; k++) {
+      const u = (e.L * k) / n, x = e.a.x + e.tx * u + e.nx * 0.25, z = e.a.z + e.tz * u + e.nz * 0.25
+      box(out, x, H / 2, z, Math.abs(e.tx) * 0.45 + Math.abs(e.nx) * 0.25, H / 2, Math.abs(e.tz) * 0.45 + Math.abs(e.nz) * 0.25, PIER, surfaceTag('concrete'))
+    }
+  }
+  // THE BARN ROOF: a gable over the fit's box, its ridge along the longer side, eaves out 0.8 m, glazed gable ends
+  const along = fit.hx >= fit.hz
+  const L = (along ? fit.hx : fit.hz) + 0.8, W = (along ? fit.hz : fit.hx) + 0.8, RISE = W * 0.75
+  const P = (a: number, w: number, y: number): V3 => along ? [a, y, w] : [w, y, a]
+  for (const sd of [-1, 1]) {
+    // each slope, and its underside
+    out.quad([P(-L, sd * W, H), P(L, sd * W, H), P(L, 0, H + RISE), P(-L, 0, H + RISE)], along ? [0, W, sd * RISE] : [sd * RISE, W, 0], UVQ, ROOF, MT)
+    out.quad([P(-L, sd * W, H - 0.15), P(-L, 0, H + RISE - 0.15), P(L, 0, H + RISE - 0.15), P(L, sd * W, H - 0.15)], [0, -1, 0], UVQ, STEEL, MT)
+  }
+  for (const end of [-1, 1]) {
+    const e = end * (L - 0.8)
+    const nrm: V3 = along ? [end, 0, 0] : [0, 0, end]
+    // the gable wall in boards, and a big window in its upper half
+    out.quad([P(e, -W + 0.8, H), P(e, W - 0.8, H), P(e, 0, H + RISE - 0.6), P(e, 0, H + RISE - 0.6)], nrm, UVQ, WALL, WT)
+    // the big gridded window filling the gable: glass, and a dark steel grid over it (photo: the Taylor Street end)
+    const gw = W * 0.5, g0 = H - 1.2, g1 = H + RISE * 0.62
+    const gx = e + end * 0.05
+    out.quad([P(gx, -gw, g0), P(gx, gw, g0), P(gx, gw, g1), P(gx, -gw, g1)], nrm, UVQ, [0.32, 0.36, 0.38], GT)
+    for (let c = 0; c <= 6; c++) { const w = -gw + (2 * gw * c) / 6; const a = P(gx + end * 0.03, w, (g0 + g1) / 2); box(out, a[0], a[1], a[2], along ? 0.04 : 0.06, (g1 - g0) / 2, along ? 0.06 : 0.04, STEEL, MT) }
+    for (let r = 0; r <= 5; r++) { const y = g0 + ((g1 - g0) * r) / 5; const a = P(gx + end * 0.03, 0, y); box(out, a[0], y, a[2], along ? 0.04 : gw, 0.05, along ? gw : 0.04, STEEL, MT) }
+  }
+  // the CLERESTORY along the ridge: a long low monitor with a band of windows each side
+  for (const sd of [-1, 1]) {
+    out.quad([P(-L * 0.8, sd * 1.6, H + RISE - 1.2), P(L * 0.8, sd * 1.6, H + RISE - 1.2), P(L * 0.8, sd * 1.6, H + RISE + 0.6), P(-L * 0.8, sd * 1.6, H + RISE + 0.6)], along ? [0, 0, sd] : [sd, 0, 0], UVQ, [0.3, 0.34, 0.37], GT)
+    out.quad([P(-L * 0.8, sd * 2.0, H + RISE + 0.6), P(L * 0.8, sd * 2.0, H + RISE + 0.6), P(L * 0.8, 0, H + RISE + 1.2), P(-L * 0.8, 0, H + RISE + 1.2)], along ? [0, 1, sd * 0.4] : [sd * 0.4, 1, 0], UVQ, ROOF, MT)
+  }
+  // the ridge: BOUDIN in big red letters on a steel frame
+  const rs = P(0, 0, H + RISE)
+  for (const k of [-1, 0, 1]) {
+    const q = P(k * 5, 0, 0)
+    box(out, q[0], H + RISE + 1.4, q[2], 0.08, 0.9, 0.08, STEEL, MT)
+  }
+  for (const side of [1, -1]) {
+    sign(out, { type: 'flat', text: 'BOUDIN', h: 2.4, face: 'grotesque', weight: 'bold', colour: RED, lit: 'self', tracking: 0.05 },
+      { x: rs[0] + (along ? 0 : side * 0.15), y: H + RISE + 2.6, z: rs[2] + (along ? side * 0.15 : 0), heading: along ? (side > 0 ? 0 : Math.PI) : (side > 0 ? Math.PI / 2 : -Math.PI / 2) })
+  }
+  // red awnings over the bakery windows on every street side, and the upstairs balcony's red band on Jefferson
+  let front = 0, bestL = 0
+  for (let i = 0; i < ring.length; i++) { const e = edgeAt(ring, i); if (e.nz < -0.3 && e.L > bestL) { bestL = e.L; front = i } }
+  for (let i = 0; i < ring.length; i++) {
+    const e = edgeAt(ring, i)
+    if (e.L < 6) continue
+    const n = Math.max(1, Math.round(e.L / 4.5)), bw = e.L / n
+    const at = (u: number, y: number, o: number): V3 => [e.a.x + e.tx * u + e.nx * o, y, e.a.z + e.tz * u + e.nz * o]
+    for (let k = 0; k < n; k++) {
+      const u0 = k * bw + 0.35, u1 = (k + 1) * bw - 0.35
+      out.quad([at(u0, G - 0.4, 0.05), at(u1, G - 0.4, 0.05), at(u1, G - 1.2, 1.4), at(u0, G - 1.2, 1.4)], [e.nx * 0.6, 0.8, e.nz * 0.6], UVQ, RED, WT)
+      out.quad([at(u0, G - 1.2, 1.4), at(u1, G - 1.2, 1.4), at(u1, G - 1.45, 1.4), at(u0, G - 1.45, 1.4)], [e.nx, 0, e.nz], UVQ, RED, WT)
+    }
+    if (i === front) {
+      out.quad([at(e.L * 0.25, G + 0.15, 0), at(e.L * 0.75, G + 0.15, 0), at(e.L * 0.75, G + 0.15, 1.6), at(e.L * 0.25, G + 0.15, 1.6)], [0, 1, 0], UVQ, [0.4, 0.38, 0.35], WT)
+      out.quad([at(e.L * 0.25, G - 0.2, 1.6), at(e.L * 0.75, G - 0.2, 1.6), at(e.L * 0.75, G + 0.35, 1.6), at(e.L * 0.25, G + 0.35, 1.6)], [e.nx, 0, e.nz], UVQ, RED, WT)
+      const mid = at(e.L * 0.5, G + 0.07, 1.64)
+      sign(out, { type: 'flat', text: 'Restaurant & Bar Upstairs', h: 0.22, face: 'roman', colour: [0.96, 0.94, 0.88], lit: 'front' }, { x: mid[0], y: mid[1], z: mid[2], heading: e.heading })
+    }
+  }
+}
+
+/**
+ * BOUDIN's SILO at Jefferson and Taylor (owner's photo, 2026-10-17): a white grain silo, 18 m, a railed walk round its
+ * top, a catwalk to the barn, and on it the oval BOUDIN SOURDOUGH medallion — red ring, cream field, a wheat sheaf,
+ * "since 1849" — facing the corner and the street. Placed at its own point, rotateDeg 0.
+ */
+export function boudinSilo(out: MeshBuilder, _fit: Fit): void {
+  const R = 3.0, TOP = 18
+  const WHITE: Rgb = [0.93, 0.92, 0.88], RED: Rgb = [0.74, 0.12, 0.12], CREAM: Rgb = [0.95, 0.9, 0.76], GOLD: Rgb = [0.86, 0.68, 0.28]
+  const CT = surfaceTag('concrete'), MT = surfaceTag('metal')
+  prism(out, 0, 0, 0, TOP, R, 28, WHITE, CT)
+  prism(out, 0, 0, TOP, TOP + 0.6, R * 0.85, 28, WHITE, CT, R * 0.4)
+  for (let k = 0; k < 16; k++) {
+    const a = (k / 16) * Math.PI * 2
+    tube(out, [Math.sin(a) * (R + 0.1), TOP, Math.cos(a) * (R + 0.1)], [Math.sin(a) * (R + 0.1), TOP + 1.1, Math.cos(a) * (R + 0.1)], 0.03, 4, [0.85, 0.85, 0.85], MT)
+  }
+  for (let k = 0; k < 24; k++) {
+    const a0 = (k / 24) * Math.PI * 2, a1 = ((k + 1) / 24) * Math.PI * 2
+    tube(out, [Math.sin(a0) * (R + 0.1), TOP + 1.1, Math.cos(a0) * (R + 0.1)], [Math.sin(a1) * (R + 0.1), TOP + 1.1, Math.cos(a1) * (R + 0.1)], 0.04, 4, [0.85, 0.85, 0.85], MT)
+  }
+  // the medallion, on the side facing south-west (the corner)
+  for (const face of [Math.PI * 1.25, Math.PI * 0.75]) {
+    const n: V3 = [Math.sin(face), 0, Math.cos(face)], u: V3 = [Math.cos(face), 0, -Math.sin(face)], up: V3 = [0, 1, 0]
+    const c: V3 = [n[0] * (R + 0.05), 12.5, n[2] * (R + 0.05)]
+    lozenge(out, c, u, up, n, 2.1, 1.5, 0.12, RED, CT, 28)
+    ellipse(out, add(c, n, 0.08), u, up, n, 1.6, 1.05, 28, CREAM, CT)
+    for (let k = -3; k <= 3; k++) tube(out, add(add(c, n, 0.1), add([0, -2.2, 0], u, -2.35 + k * 0.06)), add(add(c, n, 0.1), add([0, 1.6, 0], u, -2.35 + k * 0.12)), 0.05, 4, GOLD, CT)
+    sign(out, { type: 'flat', text: 'BOUDIN', h: 0.5, face: 'didone', weight: 'bold', colour: RED, panel: CREAM, lit: 'front' }, { x: c[0] + n[0] * 0.12, y: 12.85, z: c[2] + n[2] * 0.12, heading: face })
+    sign(out, { type: 'flat', text: 'SOURDOUGH', h: 0.32, face: 'didone', weight: 'bold', colour: RED, panel: CREAM, lit: 'front' }, { x: c[0] + n[0] * 0.12, y: 12.05, z: c[2] + n[2] * 0.12, heading: face })
+  }
+}
+
+export const WHARF_CARNIVAL: Record<string, (out: MeshBuilder, fit: Fit) => void> = { boudinBakery, boudinSilo, wharfSign, skystarWheel, pier39Gate, sfCarousel39, pier39Stage, pier39Footbridge, wharfMarinaPier39, wharfMarinaWest, wharfLagoon }

@@ -97,5 +97,18 @@
   "height": 12,
   "waterOnly": true,
   "note": "BUGS.md #290f, 2026-10-16: boats along OSM's own docks (wharf-docks.ts), owner's satellite view."
+ },
+ {
+  "name": "Boudin silo",
+  "procedural": "boudinSilo",
+  "lat": 37.80842,
+  "lon": -122.41526,
+  "rotateDeg": 0,
+  "size": [
+   7,
+   7
+  ],
+  "height": 19,
+  "note": "BUGS.md #290k, 2026-10-17: the white silo with the BOUDIN SOURDOUGH medallion at Jefferson & Taylor (owner's photo)."
  }
 ]

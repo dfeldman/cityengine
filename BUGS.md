@@ -10804,7 +10804,7 @@ GAME
   [ ] h. the black storefronts round Hotel Zephyr, and Burgers & Best Pies' theatre sign
   [ ] i. the chocolate and candy buildings (Ghirardelli's roof sign, chocolate shops, candy stores)
   [ ] j. the Klamath propeller frame
-  [ ] k. the big Boudin bakery (glass bakery windows, the wheat-sheaf sign)
+  [x] k. the big Boudin bakery — boudinBakery: the gabled barn of corrugated grey on pale piers, clerestory, gridded gable window, red awnings, balcony band, BOUDIN on the ridge; boudinSilo with the medallion at Jefferson & Taylor (owner's photo)
   [ ] l. Musée Mécanique and the Pier 45 sheds
   [ ] m. the survey: every other distinctive Wharf frontage (Wax Museum, Hard Rock, In-N-Out, Blue & Gold / Red & White
          Fleet ticket booths, Fish Alley, the Maritime Museum bathhouse, Lou's, The Anchorage…)
