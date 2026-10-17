@@ -2045,6 +2045,22 @@ export function franciscanCrab(out: MeshBuilder, fit: Fit): void {
   const tu = (tq.x - e.a.x) * e.tx + (tq.z - e.a.z) * e.tz
   const wEnd = tu < L / 2 ? 0 : L, wd = tu < L / 2 ? 1 : -1                     // the pavilion's end, and the way east
   const split = Math.abs(tu - wEnd) + 3                                         // pavilion to the west of here, parapet east
+  /*
+   * A sign on the REAL wall nearest its place on the front line (owner, 2026-10-17: "signs on the franciscan are hanging
+   * midair not on building"). `frontEdge` is a line at the outermost point within 2.5 m of the facade, and where the
+   * wall stands back of it the lettering stood in the air in front.
+   */
+  const signAt = (_out: MeshBuilder, _e: Edge, u: number, y: number, o: number, spec: SignSpec): void => {
+    const p = on(e, u, y, 0)
+    let best = Infinity, q = edgeAt(ring, 0), qt = 0
+    for (let i = 0; i < ring.length; i++) {
+      const ed = edgeAt(ring, i)
+      const t = Math.max(0, Math.min(ed.L, (p[0] - ed.a.x) * ed.tx + (p[2] - ed.a.z) * ed.tz))
+      const d = Math.hypot(ed.a.x + ed.tx * t - p[0], ed.a.z + ed.tz * t - p[2])
+      if (d < best && ed.nx * e.nx + ed.nz * e.nz > 0.5) { best = d; q = ed; qt = t }
+    }
+    sign(out, spec, { x: q.a.x + q.tx * qt + q.nx * o, y, z: q.a.z + q.tz * qt + q.nz * o, heading: q.heading })
+  }
   // the whole: white walls to 4.2 (the shops), then the two parts above
   faceBand(out, ring, 0, 0.7, { kind: 'blank', wall: RBLUE, material: 'stucco' })
   faceBand(out, ring, 0.7, 4.2, { kind: 'curtain', wall: W, glass: [0.2, 0.22, 0.25], pitch: 2.4, material: 'stucco' })
@@ -2076,21 +2092,35 @@ export function franciscanCrab(out: MeshBuilder, fit: Fit): void {
   const pm = wEnd + wd * (split + (L - split) * 0.38)
   signAt(out, e, pm, 8.1, 0.08, { type: 'flat', text: 'FRANCISCAN', h: 1.15, w: Math.min(13, (L - split) * 0.7), face: 'grotesque', weight: 'bold', colour: DGR, lit: 'front', tracking: 0.12 })
   signAt(out, e, pm, 7.15, 0.08, { type: 'flat', text: 'CRAB RESTAURANT', h: 0.55, w: Math.min(11, (L - split) * 0.6), face: 'grotesque', weight: 'bold', colour: RED, halo: [0.3, 0.05, 0.05], lit: 'self' })
+  // (how far the parapet wall stands back of the front line, at the emblem: it and the waves go on the wall too)
+  const back = (() => {
+    const p = on(e, pm, 0, 0)
+    let best = 0, bd = Infinity
+    for (let i = 0; i < ring.length; i++) {
+      const ed = edgeAt(ring, i)
+      if (ed.nx * e.nx + ed.nz * e.nz < 0.9) continue
+      const t = Math.max(0, Math.min(ed.L, (p[0] - ed.a.x) * ed.tx + (p[2] - ed.a.z) * ed.tz))
+      const qx = ed.a.x + ed.tx * t, qz = ed.a.z + ed.tz * t, d = Math.hypot(qx - p[0], qz - p[2])
+      if (d < bd) { bd = d; best = (p[0] - qx) * e.nx + (p[2] - qz) * e.nz }
+    }
+    return best
+  })()
+  const onW = (u: number, y: number, o: number): V3 => on(e, u, y, o - back)
   // the crab emblem, flat on the wall: a red shell, its legs and two claws (the mermaid riding it is a TRIPO.md row)
-  const em = on(e, pm, 6.0, 0.1)
+  const em = onW(pm, 6.0, 0.1)
   lozenge(out, em, [e.tx, 0, e.tz], [0, 1, 0], [e.nx, 0, e.nz], 1.05, 0.62, 0.06, RED, MT, 18)
   lozenge(out, [em[0] + e.nx * 0.04, em[1] + 0.12, em[2] + e.nz * 0.04], [e.tx, 0, e.tz], [0, 1, 0], [e.nx, 0, e.nz], 0.7, 0.3, 0.03, [0.92, 0.35, 0.2], MT, 14)
   for (const s of [-1, 1]) {
-    for (let k = 0; k < 3; k++) tube(out, on(e, pm + s * 0.9, 5.85 - k * 0.18, 0.08), on(e, pm + s * (1.45 + k * 0.08), 5.55 - k * 0.25, 0.08), 0.05, 4, RED, MT)
-    tube(out, on(e, pm + s * 0.8, 6.2, 0.08), on(e, pm + s * 1.3, 6.5, 0.08), 0.07, 4, RED, MT)
-    lozenge(out, on(e, pm + s * 1.35, 6.62, 0.08), [e.tx, 0, e.tz], [0, 1, 0], [e.nx, 0, e.nz], 0.28, 0.18, 0.05, RED, MT, 10)
+    for (let k = 0; k < 3; k++) tube(out, onW(pm + s * 0.9, 5.85 - k * 0.18, 0.08), onW(pm + s * (1.45 + k * 0.08), 5.55 - k * 0.25, 0.08), 0.05, 4, RED, MT)
+    tube(out, onW(pm + s * 0.8, 6.2, 0.08), onW(pm + s * 1.3, 6.5, 0.08), 0.07, 4, RED, MT)
+    lozenge(out, onW(pm + s * 1.35, 6.62, 0.08), [e.tx, 0, e.tz], [0, 1, 0], [e.nx, 0, e.nz], 0.28, 0.18, 0.05, RED, MT, 10)
   }
   for (let k = 0; k < 3; k++) {
     const y = 4.9 + k * 0.28
     for (let s = 0; s < 16; s++) {
       const a = (s / 16) * (L - split) * 0.7, b = ((s + 1) / 16) * (L - split) * 0.7
       const u0 = pm - (L - split) * 0.35 + a, u1 = pm - (L - split) * 0.35 + b
-      tube(out, on(e, u0, y + Math.sin(s * 0.9) * 0.08, 0.08), on(e, u1, y + Math.sin((s + 1) * 0.9) * 0.08, 0.08), 0.025, 3, DGR, MT)
+      tube(out, onW(u0, y + Math.sin(s * 0.9) * 0.08, 0.08), onW(u1, y + Math.sin((s + 1) * 0.9) * 0.08, 0.08), 0.025, 3, DGR, MT)
     }
   }
   // the black canopy along the east front, lettered, the bollards
@@ -2111,7 +2141,7 @@ export function franciscanCrab(out: MeshBuilder, fit: Fit): void {
       out.quad([[c[0], 3.5, c[2]], on(e, u - Math.cos(a0) * 0.8, 3.5 - Math.sin(a0) * 0.3, 1.4), on(e, u - Math.cos(a1) * 0.8, 3.5 - Math.sin(a1) * 0.3, 1.4), [c[0], 3.5, c[2]]], [e.nx, 0, e.nz], UVQ, RBLUE, MT)
     }
   }
-  signAt(out, e, pu, 4.45, 0.1, { type: 'flat', text: 'PIER 43½ · GIFTS · SNACKS', h: 0.24, w: split * 0.8, face: 'grotesque', weight: 'bold', colour: RBLUE, lit: 'front' })
+  signAt(out, e, pu, 4.45, 0.8, { type: 'flat', text: 'PIER 43½ · GIFTS · SNACKS', h: 0.24, w: split * 0.8, face: 'grotesque', weight: 'bold', colour: RBLUE, lit: 'front' })
   // THE TOWER at the street corner: porthole band, the teal glass storey, balcony rails, the crown of rings
   const R = 3.3, tx = tq.x - e.nx * (R - 0.6), tz = tq.z - e.nz * (R - 0.6)
   prism(out, tx, tz, 0, 3.0, R - 0.4, 24, [0.14, 0.5, 0.6], GT)
