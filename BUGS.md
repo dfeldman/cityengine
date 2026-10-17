@@ -10783,6 +10783,11 @@ Please look at / decide:
 - Dandyhorse: restart `make serve` to pick up the end screen / bridge changes.
 
 Logged, not fixed:
+- Pier 39's Hard Rock Cafe frontage (Building Q, way/288396171, node 643445596; Commons "Hard Rock Café Pier 39 (San
+  Francisco) July 2022": maroon boards, red neon, the two blue PIER 39 boards on the parapet). Tried as an overlay on
+  pier39Shop: built and its signs registered, but drawn on no face visible from the Embarcadero — Building Q's 58-corner
+  outline and fitSnug's snapping of `front` to the box axes make "the south face" hard to pick. Needs the face chosen by
+  the OSM node's position (the builder has no world frame); reverted.
 - Birds read as pale grey quads against the night sky (sky.ts: dark instance colour, alpha 0, cartoonSky material) — the
   sky material does not darken them at night. Frozen shots also catch the wings flat.
 - faceBand kind 'bays' drew the Buena Vista's upper floors as black slabs (worked round with 'punched'); the bay geometry
