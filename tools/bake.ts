@@ -2994,9 +2994,10 @@ function roofFor(
     else if (st.top === 'mansard') shape = 'mansard'
     // the pre-Haussmann Marais: a steep slate roof, pitched, with dormers — never flat
     else if (styleId === 'marais') shape = 'hipped'
-    // the Presidio's and the parks' Army buildings: red tile, gabled — hipped where the block is too wide for a gable
-    // to stay low (owner, 2026-10-02: "white with gabled red tile roofs"); the Main Post's brick barracks the same
-    else if (styleId === 'presidio' || styleId === 'presidioBrick') shape = span < 16 ? 'gabled' : 'hipped'
+    // the Presidio's and the old forts' Army buildings — clapboard, brick and Mission stucco alike — under red roofs,
+    // gabled, hipped where the block is too wide for a gable to stay low (owner, 2026-10-02: "white with gabled red
+    // tile roofs"; 2026-10-17: "bright white clapboard with red roofs, OR brick with red roofs")
+    else if (styleId === 'presidio' || styleId === 'presidioBrick' || styleId === 'presidioStucco') shape = span < 16 ? 'gabled' : 'hipped'
     else if (styleId === 'capecod') shape = 'gabled'
     else if (span < 7 && tags.building === 'garage') shape = 'skillion'
     else shape = 'flat'
@@ -3010,8 +3011,16 @@ function roofFor(
       : Math.min(span * 0.42, shape === 'pyramidal' ? 7 : 5.5)
   }
   if (shape === 'flat') height = 0
-  // (a Spanish Colonial roof is low-pitched: about 17°, not a Victorian's steep gable)
-  if ((styleId === 'presidio' || styleId === 'presidioBrick') && !p.buildingRoofHeight && shape !== 'flat') height = Math.min(span * 0.16, 3.2)
+  /*
+   * The pitches (Presidio research, 2026-10-17, Mapillary): the Mission Revival stucco's tile roof is low, about 17°
+   * (Fort Scott); the East Housing's and the Main Post's brick roofs a little steeper, about 24°; the frame quarters'
+   * gables steeper again, about 30° (Funston Avenue, Fort Baker) — never a Victorian's.
+   */
+  if (!p.buildingRoofHeight && shape !== 'flat') {
+    if (styleId === 'presidioStucco') height = Math.min(span * 0.16, 3.2)
+    else if (styleId === 'presidioBrick') height = Math.min(span * 0.22, 3.8)
+    else if (styleId === 'presidio') height = Math.min(span * 0.29, 4.6)
+  }
 
   return {
     roof: shape,

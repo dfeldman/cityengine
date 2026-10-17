@@ -15,7 +15,7 @@ import ZONES from '../../../data/zones/san-francisco.json' with { type: 'json' }
 export type Archetype =
   | 'rowhouse' | 'marinaHouse' | 'apartment' | 'chinatown' | 'loft' | 'prewarOffice' | 'tower' | 'modern'
   | 'retailBox' | 'civic' | 'church' | 'hotel' | 'pier' | 'midcentury' | 'contemporary' | 'edwardianHouse'
-  | 'apartmentTower' | 'presidio' | 'presidioBrick' | 'capeCod' | 'wharf'
+  | 'apartmentTower' | 'presidio' | 'presidioBrick' | 'presidioStucco' | 'capeCod' | 'wharf'
 
 export type District = keyof typeof DISTRICTS.districts
 
@@ -86,12 +86,17 @@ export function archetypeOf(f: Features): { archetype: Archetype; district: Dist
    * the lot and height say; the Main Post's barracks row in brick. A tower is left to the rules below (there are none
    * to speak of; the museums are landmark models).
    */
-  if (h <= 30 && inBuiltZone('presidio', f.lat, f.lon)) {
-    if (near(f.lat, f.lon, MAIN_POST, 220)) return a('presidioBrick', 'presidio-main-post')
-    // the EAST HOUSING round Liggett Avenue and Portola Street (owner, 2026-10-17: "all uniform brick… former military
-    // housing… a mile or so long"; Mapillary 797055755405312: red-brick houses under low hipped roofs)
-    if (f.lat > 37.7905 && f.lat < 37.7985 && f.lon > -122.4570 && f.lon < -122.4470) return a('presidioBrick', 'presidio-east-housing')
-    return a('presidio', 'presidio-park')
+  if (h <= 30 && inBuiltZone('presidio', f.lat, f.lon)) return a(presidioLook(f.lat, f.lon), presidioRule(f.lat, f.lon))
+  /*
+   * FORT MASON, outside the zones (Presidio research, 2026-10-17): the Army's post on the bluff north of Bay Street,
+   * the one former-military neighbourhood just outside the Presidio that photographs as the Presidio does — Upper
+   * Fort Mason's white clapboard officers' quarters and barracks (Mapillary 869075771406569, 853882468804038,
+   * 667682784022755) and Lower Fort Mason's cream stucco, red-tile piers sheds (1479423183264580). The district rules
+   * had them as Victorians and flats. (The Presidio's other edges — Lyon Street, West Pacific, Sea Cliff, Lake Street —
+   * are ordinary city houses: 198042566116258, 1071199301854676, 1541293026853279.)
+   */
+  if (h <= 30 && inFortMason(f.lat, f.lon)) {
+    return f.area > 800 ? a('presidioStucco', 'fort-mason-sheds') : a('presidio', 'fort-mason-quarters')
   }
   /*
    * SAUSALITO (owner, 2026-10-02: "a very different architectural style, many low stucco Spanish colonial buildings,
@@ -255,6 +260,55 @@ const MAIN_POST = { lat: 37.8013, lon: -122.4590 }
 const near = (lat: number, lon: number, c: { lat: number; lon: number }, m: number): boolean =>
   Math.hypot((lat - c.lat) * 111_000, (lon - c.lon) * 111_000 * COS) < m
 
+/*
+ * THE PRESIDIO'S LOOKS, by neighbourhood (owner, 2026-10-17: "in the presidio area, buildings are unique bright white
+ * clapboard with red roofs, OR brick with red roofs"; the areas from Mapillary panoramas, 2023 — the ids are cited
+ * at each). Three looks and the post-war blocks; anything not named here is the white clapboard, which is also what
+ * Fort Baker (Commons "Fort Baker (Sausalito, CA).jpg"), Fort Barry, Angel Island and the Letterman and Funston
+ * Avenue rows are. Areas are boxes and circles in [lat, lon], checked in order.
+ */
+type Area = { box: [number, number, number, number] } | { at: [number, number]; r: number }
+const inArea = (lat: number, lon: number, x: Area): boolean => 'box' in x
+  ? lat > x.box[0] && lat < x.box[1] && lon > x.box[2] && lon < x.box[3]
+  : near(lat, lon, { lat: x.at[0], lon: x.at[1] }, x.r)
+const PRESIDIO_AREAS: { name: string; area: Area; look: Archetype }[] = [
+  // the WHERRY and BAKER BEACH apartments (1950s): plain grey-tan two- and three-storey blocks, not the Army's
+  // houses at all (Mapillary 1046526822991060 Pershing Drive, 255803160430612 Johnstone Drive) — the city's plain
+  // stucco, as Treasure Island's quarters of the same years are (not `midcentury`'s glazed ground floors)…
+  { name: 'presidio-baker-beach-apartments', area: { box: [37.7895, 37.7945, -122.4830, -122.4745] }, look: 'marinaHouse' },
+  // …and the Wallen Court Wherry block below East Housing (1312597209687929, 1001662070825054)
+  { name: 'presidio-wallen-wherry', area: { at: [37.7945, -122.4566], r: 120 }, look: 'marinaHouse' },
+  // the Main Post's brick: the Montgomery Street barracks and the Riley Avenue duplexes (306302501733129,
+  // 1073064896995947), under red roofs
+  { name: 'presidio-main-post', area: { at: [MAIN_POST.lat, MAIN_POST.lon], r: 220 }, look: 'presidioBrick' },
+  // the Hardie Avenue / Barnard Avenue barracks south of it (1255041638546569, 810089917175168)
+  { name: 'presidio-hardie-barracks', area: { at: [37.7968, -122.4580], r: 70 }, look: 'presidioBrick' },
+  // EAST HOUSING (owner: "Housing on Liggett Ave … are all uniform brick … also Portola St"): the 1930s Georgian
+  // Revival brick duplexes of Liggett, Clarke, Sanches, Morton, Rodriguez and Portola under red-brown roofs
+  // (797055755405312, 237668289059428, 2366241453559394, 3500112376932569). Not Simonds Loop and Ruger Street to its
+  // east, which are white frame cottages (6099618843476146, 3582064655453272).
+  { name: 'presidio-east-housing', area: { box: [37.7922, 37.7975, -122.4565, -122.4500] }, look: 'presidioBrick' },
+  // Fort Scott's brick: Wright Loop, Pope and Todd Streets (809997674114962, 657798199149613, 287865083719649)
+  { name: 'fort-scott-brick', area: { at: [37.7983, -122.4737], r: 100 }, look: 'presidioBrick' },
+  // FORT WINFIELD SCOTT round its parade ground: Mission Revival barracks and officers' rows, white stucco and red
+  // tile (1298821577386783 Ralston, 1359139001338251 Upton, 1324647778487839 Greenough, 1019003606126178 Kinzey,
+  // 1419593392151266 Pilots' Row)
+  { name: 'fort-scott-mission', area: { box: [37.7990, 37.8075, -122.4795, -122.4680] }, look: 'presidioStucco' },
+  // the Amatury Loop housing: cream stucco under red tile (1349986875932665, 296268076301593)
+  { name: 'presidio-amatury', area: { at: [37.7960, -122.4683], r: 130 }, look: 'presidioStucco' },
+]
+/** Golden Gate Park's share of the zones: its lodges and stables are stucco and red tile, not frame houses */
+const inGGP = (lat: number, lon: number): boolean => lat < 37.7760 && lat > 37.7630 && lon < -122.4520 && lon > -122.5120
+function presidioArea(lat: number, lon: number): { name: string; look: Archetype } | undefined {
+  for (const x of PRESIDIO_AREAS) if (inArea(lat, lon, x.area)) return x
+  if (inGGP(lat, lon)) return { name: 'ggp-park', look: 'presidioStucco' }
+  return undefined
+}
+const presidioLook = (lat: number, lon: number): Archetype => presidioArea(lat, lon)?.look ?? 'presidio'
+const presidioRule = (lat: number, lon: number): string => presidioArea(lat, lon)?.name ?? 'presidio-park'
+/** Fort Mason (outside the zones): north of Bay Street, Laguna Street to Van Ness — the Safeway at Marina and Laguna left out */
+const inFortMason = (lat: number, lon: number): boolean => lat > 37.8040 && lat < 37.8095 && lon > -122.4325 && lon < -122.4250
+
 /** The style each archetype wears (SF_PLAN.md §3). */
 export const STYLE_OF: Record<Archetype, StyleId> = {
   rowhouse: 'victorian',
@@ -274,6 +328,7 @@ export const STYLE_OF: Record<Archetype, StyleId> = {
   apartmentTower: 'towerblock',
   presidio: 'presidio',
   presidioBrick: 'presidioBrick',
+  presidioStucco: 'presidioStucco',
   capeCod: 'capecod',
   wharf: 'wharf',
   midcentury: 'bauhaus',

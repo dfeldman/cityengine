@@ -39,8 +39,9 @@ export type StyleId =
   | 'stucco' | 'sfapartment' | 'chinatown' | 'edwardian'
   // shared: the post-war residential tower, which every city has and which is NOT an office block
   | 'towerblock'
-  // the Presidio's and Golden Gate Park's (owner, 2026-10-02): the Army's white stucco with red tile, and its brick
-  | 'presidio' | 'presidioBrick'
+  // the Presidio's and the old forts' (owner, 2026-10-02, 2026-10-17): the Army's white clapboard, its brick, and its
+  // Mission Revival stucco — all under red roofs
+  | 'presidio' | 'presidioBrick' | 'presidioStucco'
   // Sausalito's (owner, 2026-10-06): Cape Cod cedar shingle
   | 'capecod'
   // Fisherman's Wharf (owner, 2026-10-16): painted timber restaurants and gift shops under striped canvas

@@ -1617,8 +1617,142 @@
     },
     {
       "id": "presidio",
-      "name": "Presidio colonial",
-      "note": "The Presidio and Golden Gate Park's own (owner, 2026-10-02): the Army's Spanish Colonial Revival — 'white with gabled red tile roofs — simple buildings, obviously government-owned, built as military housing mostly, do not look like houses or offices.' Smooth white stucco, plain sash windows in a regular rhythm, a short stair to the door, a red clay-tile gabled roof (tools/bake.ts roofFor). One to three storeys.",
+      "name": "Presidio clapboard",
+      "note": "The Army's frame buildings (owner, 2026-10-17: 'in the presidio area, buildings are unique bright white clapboard with red roofs, OR brick with red roofs'): the Funston Avenue officers' row, Letterman's wards on O'Reilly, the Simonds Loop and Ruger Street cottages, Fort Baker's parade ground, Upper Fort Mason. Painted lap siding in BRIGHT white (the old smooth cream render read as stone), white casings and corner boards, six-over-six sash, a door under a little porch now and then, a red roof (tools/bake.ts roofFor: gabled, a moderate pitch). Mapillary 6339758482786544 (Funston), 526567306262392 (O'Reilly), 589332340043537 (Simonds); Commons 'Fort Baker (Sausalito, CA).jpg'. One to three storeys.",
+      "levels": [
+        1,
+        3
+      ],
+      "levelHeight": [
+        3.0,
+        3.4
+      ],
+      "groundHeight": [
+        3.0,
+        3.4
+      ],
+      "bayWidth": [
+        2.6,
+        3.2
+      ],
+      "pier": [
+        0.6,
+        1.0
+      ],
+      "window": {
+        "kind": "sash",
+        "widthFrac": [
+          0.38,
+          0.46
+        ],
+        "heightFrac": [
+          0.58,
+          0.68
+        ],
+        "sill": 0.1
+      },
+      "ground": "stoop",
+      "top": "cornice",
+      "cornice": {
+        "depth": 0.3,
+        "height": 0.25
+      },
+      "stringCourse": false,
+      "palettes": [
+        {
+          "wall": "#fbfbf7",
+          "trim": "#ffffff",
+          "roof": "#b5372b",
+          "accent": "#2f4a3a"
+        },
+        {
+          "wall": "#f8f7f1",
+          "trim": "#ffffff",
+          "roof": "#a8352a",
+          "accent": "#3a3a36"
+        },
+        {
+          "wall": "#fdfcf8",
+          "trim": "#ffffff",
+          "roof": "#c0412f",
+          "accent": "#5a2a24"
+        },
+        {
+          "wall": "#f5f5f0",
+          "trim": "#ffffff",
+          "roof": "#9e3a2c",
+          "accent": "#2e3b46"
+        }
+      ]
+    },
+    {
+      "id": "presidioBrick",
+      "name": "Presidio brick",
+      "note": "The Army's brick (owner, 2026-10-17: 'Housing on Liggett Ave near the Presidio are all uniform brick … brick with red roofs'): the EAST HOUSING round Liggett, Clarke, Sanches and Portola (1930s Georgian Revival duplexes — Mapillary 797055755405312, 237668289059428, 3500112376932569), the Main Post's Montgomery Street barracks and Riley Avenue NCO duplexes (306302501733129, 1073064896995947), the Hardie/Barnard barracks and Fort Scott's Wright Loop (1255041638546569, 809997674114962). Orange-red common brick, white six-over-six sash in white frames under a flat white lintel, a white entry portico, a RED roof — red-brown weathered tile in East Housing, a brighter red at the Main Post (the palettes carry both). Two or three storeys.",
+      "levels": [
+        2,
+        3
+      ],
+      "levelHeight": [
+        3.1,
+        3.5
+      ],
+      "groundHeight": [
+        3.1,
+        3.5
+      ],
+      "bayWidth": [
+        2.4,
+        3.0
+      ],
+      "pier": [
+        0.7,
+        1.0
+      ],
+      "window": {
+        "kind": "sash",
+        "widthFrac": [
+          0.4,
+          0.48
+        ],
+        "heightFrac": [
+          0.6,
+          0.7
+        ],
+        "sill": 0.12
+      },
+      "ground": "stoop",
+      "top": "cornice",
+      "cornice": {
+        "depth": 0.3,
+        "height": 0.3
+      },
+      "stringCourse": false,
+      "palettes": [
+        {
+          "wall": "#a9533b",
+          "trim": "#f7f5ef",
+          "roof": "#8e4636",
+          "accent": "#2f3a32"
+        },
+        {
+          "wall": "#9d4a35",
+          "trim": "#f4f2ea",
+          "roof": "#a63c2d",
+          "accent": "#3a2e28"
+        },
+        {
+          "wall": "#b05c42",
+          "trim": "#f7f5ef",
+          "roof": "#874538",
+          "accent": "#26302e"
+        }
+      ]
+    },
+    {
+      "id": "presidioStucco",
+      "name": "Presidio Mission stucco",
+      "note": "The Army's Mission Revival (Presidio research, 2026-10-17): FORT WINFIELD SCOTT's barracks and officers' rows round its parade ground (Mapillary 1298821577386783 Ralston, 1359139001338251 Upton, 1324647778487839 Greenough, 1419593392151266 Pilots' Row), the Amatury Loop housing (1349986875932665), Golden Gate Park's lodges and Lower Fort Mason's sheds: smooth white-to-cream stucco, deep-set sash with no lintel, an arched door, a low-pitched red clay-tile roof (tools/bake.ts roofFor). One to three storeys.",
       "levels": [
         1,
         3
@@ -1642,98 +1776,40 @@
       "window": {
         "kind": "sash",
         "widthFrac": [
-          0.42,
-          0.52
+          0.4,
+          0.5
         ],
         "heightFrac": [
-          0.6,
-          0.7
+          0.58,
+          0.68
         ],
         "sill": 0.1
       },
       "ground": "stoop",
       "top": "cornice",
       "cornice": {
-        "depth": 0.35,
-        "height": 0.3
+        "depth": 0.4,
+        "height": 0.25
       },
       "stringCourse": false,
       "palettes": [
         {
-          "wall": "#f4f1e8",
+          "wall": "#faf8f2",
           "trim": "#ffffff",
-          "roof": "#a8462c",
-          "accent": "#2f4a3a"
+          "roof": "#b4472c",
+          "accent": "#3b4a3a"
         },
         {
-          "wall": "#efeadc",
-          "trim": "#fbf8f0",
-          "roof": "#b2502f",
-          "accent": "#3a3a36"
-        },
-        {
-          "wall": "#f7f4ec",
-          "trim": "#e8e2d2",
-          "roof": "#9c4128",
+          "wall": "#f4efe2",
+          "trim": "#fbf9f3",
+          "roof": "#a8412a",
           "accent": "#4a3a30"
-        }
-      ]
-    },
-    {
-      "id": "presidioBrick",
-      "name": "Presidio brick",
-      "note": "The Presidio's Main Post (owner, 2026-10-02: 'some stretches of the presidio buildings are brick, like around the walt disney museum'): the Montgomery Street barracks — red brick, white-painted sash windows and trim, a dark slate roof. Two or three storeys.",
-      "levels": [
-        2,
-        3
-      ],
-      "levelHeight": [
-        3.2,
-        3.6
-      ],
-      "groundHeight": [
-        3.2,
-        3.6
-      ],
-      "bayWidth": [
-        2.4,
-        3.0
-      ],
-      "pier": [
-        0.7,
-        1.0
-      ],
-      "window": {
-        "kind": "sash",
-        "widthFrac": [
-          0.45,
-          0.55
-        ],
-        "heightFrac": [
-          0.62,
-          0.72
-        ],
-        "sill": 0.12
-      },
-      "ground": "stoop",
-      "top": "cornice",
-      "cornice": {
-        "depth": 0.35,
-        "height": 0.35
-      },
-      "stringCourse": false,
-      "palettes": [
-        {
-          "wall": "#9a4a36",
-          "trim": "#f2efe6",
-          "roof": "#4a4644",
-          "accent": "#2f3a32"
         },
         {
-          "wall": "#8e4432",
-          "trim": "#ece8dc",
-          "roof": "#55504c",
-          "accent": "#3a2e28"
+          "wall": "#f8f6ee",
+          "trim": "#ffffff",
+          "roof": "#c0522f",
+          "accent": "#2f3a44"
         }
       ]
     },

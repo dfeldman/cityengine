@@ -315,6 +315,72 @@ def wall_wharf(size: int, rnd: random.Random) -> Image.Image:
     return img
 
 
+# The Presidio's three (Presidio research, 2026-10-17 — owner: "buildings are unique bright white clapboard with red
+# roofs, OR brick with red roofs"). The old 'presidio' page was smooth cream render and read, in the game, as stone.
+
+def wall_clapboard(size: int, rnd: random.Random) -> Image.Image:
+    """The Army's frame buildings: narrow lap siding (about 11 cm to the weather) painted BRIGHT white. A white wall
+    has nothing to show but its shadows, so each board's lower edge throws a crisp line on the one below, the board
+    face shades a touch darker toward its foot (it tilts out), and a butt joint breaks a board now and then.
+    Painted near-white with full tint, so the palette's white is the wall's white."""
+    img = Image.new('RGBA', (size, size), (250, 250, 247, TINT))
+    d = ImageDraw.Draw(img)
+    # (boards placed at fractional pitch so a whole number of them fills the page: an integer pitch left a sliver
+    #  at the foot that showed as a stripe every 2.4 m once the page tiled)
+    n = 22
+    for i in range(n):
+        y = (i * size) // n
+        board = ((i + 1) * size) // n - y
+        v = rnd.randint(-3, 2)
+        for k in range(board):                                              # the face, lighter at the top
+            c = 252 + v - (k * 9) // board
+            line(d, [(0, y + k), (size, y + k)], (c, c, c - 3), TINT, 1)
+        line(d, [(0, y), (size, y)], (178, 178, 174), TINT, 2)              # the shadow under the board above
+        line(d, [(0, y + 2), (size, y + 2)], (255, 255, 253), TINT, 1)
+        if rnd.random() < 0.3:                                              # a butt joint
+            x = rnd.randrange(size)
+            line(d, [(x, y + 2), (x, y + board - 1)], (214, 214, 210), TINT, 1)
+    grain(img, rnd, 2)
+    blotches(img, rnd, 6, 4, 30, 90)
+    return img
+
+
+def wall_brick_fine(size: int, rnd: random.Random, courses: int = 30) -> Image.Image:
+    """The Presidio's common brick, at its true size (about 8.5 cm a course) rather than the workhorse page's big
+    blocks: a fine running bond, each brick its own shade with the odd burnt one, the mortar pale. Close up it is
+    bricks; across the street it is the even orange-red the East Housing is (owner: 'all uniform brick')."""
+    img = Image.new('RGBA', (size, size), (226, 222, 214, TINT_LOW))
+    d = ImageDraw.Draw(img)
+    # whole bricks and whole courses to the page, at fractional pitch, so the page tiles without a seam
+    across = max(2, round(courses / 3.2))
+    for row in range(courses):
+        y0, y1 = (row * size) // courses, ((row + 1) * size) // courses
+        half = 0.5 if row % 2 else 0.0
+        for k in range(-1, across + 1):
+            x0 = int((k + half) * size / across)
+            x1 = int((k + 1 + half) * size / across)
+            c = jitter(rnd, (234, 226, 218), 14)
+            if rnd.random() < 0.07:
+                c = shade(c, rnd.uniform(0.74, 0.88))
+            for ox in (0, -size, size):                                       # wrapped in x
+                if x1 + ox < 0 or x0 + ox > size:
+                    continue
+                d.rectangle([x0 + ox + 1, y0 + 1, x1 + ox - 2, y1 - 2], fill=(*c, TINT))
+                d.line([(x0 + ox + 1, y1 - 2), (x1 + ox - 2, y1 - 2)], fill=(*shade(c, 0.88), TINT))
+    grain(img, rnd, 5)
+    blotches(img, rnd, 10, 8, 20, 70)
+    return img
+
+
+def wall_mission(size: int, rnd: random.Random) -> Image.Image:
+    """Mission Revival stucco (Fort Scott, Amatury Loop): a smooth, freshly limewashed white — a fine trowel grain
+    and only the faintest unevenness, so it reads as painted render and not as stone."""
+    img = Image.new('RGBA', (size, size), (250, 249, 246, TINT))
+    grain(img, rnd, 3)
+    blotches(img, rnd, 6, 4, 40, 110)
+    return img
+
+
 WALLS = {
     'haussmann': lambda s, r: wall_ashlar(s, r, course_px=s // 9),
     'classical': lambda s, r: wall_ashlar(s, r, course_px=s // 7),
@@ -335,9 +401,10 @@ WALLS = {
     'edwardian': wall_siding,
     # the post-war tower's precast panels — NOT brutalism's board-marked concrete
     'towerblock': wall_precast,
-    # the Presidio's (owner, 2026-10-02): the Army's smooth white stucco, and the Main Post's red brick
-    'presidio': lambda s, r: wall_render(s, r, stipple=3),
-    'presidioBrick': wall_brick,
+    # the Presidio's (owner, 2026-10-17): white clapboard, fine red brick, Mission Revival stucco
+    'presidio': wall_clapboard,
+    'presidioBrick': wall_brick_fine,
+    'presidioStucco': wall_mission,
     # Sausalito's Cape Cod houses (owner, 2026-10-06): cedar shingle
     'capecod': wall_shingle,
     # Fisherman's Wharf (owner, 2026-10-16): painted shiplap
@@ -821,6 +888,92 @@ def win_wharf(size, rnd):
     return img
 
 
+# The Presidio's windows (2026-10-17). Their bays are painted over the style's OWN wall page, tiled at the page's
+# real scale (2.4 m to the page, a cell about one 3 m bay): a plain field behind each window made the brick read as
+# flat red paint between brick corners, and the clapboard's boards would have stopped at every window.
+
+def _wall_bg(page, size: int, rnd: random.Random, metres: float = 3.0):
+    tile = page(512, rnd)
+    px_ = max(16, int(round(size * 2.4 / metres)))
+    tile = tile.resize((px_, px_), Image.LANCZOS)
+    img = Image.new('RGBA', (size, size))
+    for y in range(0, size, px_):
+        for x in range(0, size, px_):
+            img.paste(tile, (x, y))
+    return img, ImageDraw.Draw(img)
+
+
+def _sash(img, d, rnd, box, frame=(250, 250, 248), lights=None, depth=4):
+    """A double-hung sash in its opening: the reveal's shadow, the glass, the meeting rail, and the glazing bars —
+    six over six as the Army built them, sometimes two over two or one over one where they were replaced."""
+    x0, y0, x1, y1 = box
+    reveal(d, box, depth)
+    glass(img, (x0 + 3, y0 + 3, x1 - 3, y1 - 3), rnd, lit=0.2 if rnd.random() < 0.25 else 0.0)
+    lights = lights or rnd.choice(['6/6', '6/6', '6/6', '2/2', '1/1'])
+    ym = (y0 + y1) // 2
+    rect(d, [x0 + 3, ym - 4, x1 - 3, ym + 3], frame, KEEP)                   # the meeting rail
+    w = x1 - x0
+    if lights == '6/6':
+        for t in (1 / 3, 2 / 3):
+            x = int(x0 + w * t)
+            line(d, [(x, y0 + 3), (x, y1 - 3)], frame, KEEP, 2)
+        for yy in ((y0 + ym) // 2, (ym + y1) // 2):
+            line(d, [(x0 + 3, yy), (x1 - 3, yy)], frame, KEEP, 2)
+    elif lights == '2/2':
+        line(d, [(x0 + w // 2, y0 + 3), (x0 + w // 2, y1 - 3)], frame, KEEP, 3)
+    d.rectangle([x0, y0, x1, y1], outline=(*frame, KEEP), width=4)
+
+
+def win_presidio(size, rnd):
+    """White clapboard (Funston Avenue, Letterman, Fort Baker): a sash in a flat white board casing with a little
+    drip cap over its head and a sill under it. The casing covers the boards, so on a white wall it is drawn by its
+    own shadow lines."""
+    img, d = _wall_bg(wall_clapboard, size, rnd)
+    w = int(size * 0.42); x0 = (size - w) // 2; y0 = int(size * 0.17); y1 = int(size * 0.82)
+    trim = (253, 253, 251)
+    rect(d, [x0 - 12, y0 - 12, x0 + w + 12, y1 + 4], trim, KEEP)               # the casing
+    line(d, [(x0 + w + 13, y0 - 10), (x0 + w + 13, y1 + 4)], (196, 196, 192), KEEP, 2)   # its edge shadow
+    rect(d, [x0 - 17, y0 - 20, x0 + w + 17, y0 - 12], trim, KEEP)              # the head and drip cap
+    line(d, [(x0 - 17, y0 - 11), (x0 + w + 17, y0 - 11)], (184, 184, 180), KEEP, 2)
+    rect(d, [x0 - 15, y1 + 4, x0 + w + 15, y1 + 11], trim, KEEP)               # the sill
+    line(d, [(x0 - 15, y1 + 12), (x0 + w + 15, y1 + 12)], (170, 170, 166), KEEP, 2)
+    _sash(img, d, rnd, (x0, y0, x0 + w, y1))
+    return img
+
+
+def win_presidio_brick(size, rnd):
+    """Brick (East Housing, the Main Post): a white-framed sash punched in the brick, under a flat white lintel or —
+    the older barracks' way — a segmental arch of brick on end, and on a white stone sill."""
+    img, d = _wall_bg(wall_brick_fine, size, rnd)
+    w = int(size * 0.44); x0 = (size - w) // 2; y0 = int(size * 0.18); y1 = int(size * 0.8)
+    white = (246, 244, 238)
+    if rnd.random() < 0.6:
+        rect(d, [x0 - 10, y0 - 16, x0 + w + 10, y0 - 3], white, KEEP)           # the flat lintel
+        line(d, [(x0 - 10, y0 - 3), (x0 + w + 10, y0 - 3)], (150, 146, 140), KEEP, 2)
+    else:
+        for i in range(0, w + 16, 8):                                         # a rowlock arch, its bricks on end
+            t = (i / (w + 16)) * 2 - 1
+            lift = int(10 * (1 - t * t))
+            c = jitter(rnd, (214, 204, 196), 10)
+            rect(d, [x0 - 8 + i, y0 - 16 - lift, x0 - 8 + i + 6, y0 - 3 - lift // 2], c, TINT)
+    rect(d, [x0 - 12, y1, x0 + w + 12, y1 + 9], white, KEEP)                   # the sill
+    line(d, [(x0 - 12, y1 + 10), (x0 + w + 12, y1 + 10)], (120, 108, 100), KEEP, 2)
+    _sash(img, d, rnd, (x0, y0, x0 + w, y1), frame=(248, 247, 243), depth=5)
+    return img
+
+
+def win_presidio_stucco(size, rnd):
+    """Mission Revival (Fort Scott): a sash set deep in the thick stucco wall, no lintel, no casing — the wall
+    simply returns into the opening, which is the whole look."""
+    img, d = _wall_bg(wall_mission, size, rnd)
+    w = int(size * 0.42); x0 = (size - w) // 2; y0 = int(size * 0.17); y1 = int(size * 0.8)
+    rect(d, [x0 - 6, y0 - 6, x0 + w + 6, y1 + 6], (236, 234, 228), TINT)        # the return, in the wall's shade
+    rect(d, [x0 - 8, y1 + 4, x0 + w + 8, y1 + 10], (246, 244, 238), TINT)       # a plain sill
+    line(d, [(x0 - 8, y1 + 11), (x0 + w + 8, y1 + 11)], (176, 172, 164), TINT, 2)
+    _sash(img, d, rnd, (x0, y0, x0 + w, y1), depth=8)
+    return img
+
+
 WINDOWS = {
     'haussmann': win_french, 'brownstone': win_sash, 'classical': win_pedimented,
     'brick': win_punched, 'bauhaus': win_ribbon, 'brutalist': win_recessed, 'skyscraper': win_curtain,
@@ -836,8 +989,9 @@ WINDOWS = {
     'chinatown': win_chinatown,
     'edwardian': win_sfapartment,
     'towerblock': win_punched,
-    'presidio': win_sash,
-    'presidioBrick': win_sash,
+    'presidio': win_presidio,
+    'presidioBrick': win_presidio_brick,
+    'presidioStucco': win_presidio_stucco,
     'capecod': win_sash,
     'wharf': win_wharf,
 }
@@ -1516,6 +1670,118 @@ def ground_storefront(size, rnd, accent):
     return img
 
 
+# The Presidio's ground storeys (2026-10-17): houses, not a terrace of front doors — so the painting goes by VARIANT
+# (paint.py paints three and the grammar steps through them bay by bay): the first is the entrance, the others the
+# style's own window over a foundation. About one bay in three is a door.
+
+def _foundation(d, size, colour=(176, 172, 164)):
+    """The concrete footing every frame and stucco building stands on, a hand's height of it showing."""
+    top = int(size * 0.93)
+    rect(d, [0, top, size, size], colour, KEEP)
+    line(d, [(0, top), (size, top)], shade(colour, 0.7), KEEP, 2)
+
+
+def _door(d, box, accent, panels=2, light=True):
+    x0, y0, x1, y1 = box
+    reveal(d, box, 4)
+    rect(d, [x0 + 3, y0 + 3, x1 - 3, y1], shade(accent, 0.9), KEEP)
+    top = y0 + 6
+    if light:                                                                 # the glazed upper panel
+        rect(d, [x0 + 9, y0 + 9, x1 - 9, y0 + (y1 - y0) // 3], (70, 76, 84), GLASS)
+        top = y0 + (y1 - y0) // 3 + 6
+    for k in range(panels):
+        py0 = top + k * (y1 - 8 - top) // panels
+        d.rectangle([x0 + 10, py0, x1 - 10, py0 + (y1 - 8 - top) // panels - 6], outline=(*shade(accent, 0.65), KEEP), width=2)
+    d.ellipse([x1 - 17, (y0 + y1) // 2 + 4, x1 - 11, (y0 + y1) // 2 + 10], fill=(200, 176, 110, KEEP))
+
+
+def _steps(d, size, x0, x1, n=3, colour=(200, 198, 192)):
+    for i in range(n):
+        y = int(size * 0.995) - i * int(size * 0.03)
+        rect(d, [x0 + i * 4, y - int(size * 0.03), x1 - i * 4, y], shade(colour, 1 - 0.05 * i), KEEP)
+        line(d, [(x0 + i * 4, y - int(size * 0.03)), (x1 - i * 4, y - int(size * 0.03))], shade(colour, 1.2), KEEP, 1)
+
+
+def ground_presidio(size, rnd, accent, variant=0):
+    """White clapboard: the door under a little porch — two square white posts, a plain beam, a step or three — or
+    a window over the footing."""
+    if variant:
+        img = win_presidio(size, rnd)
+        _foundation(ImageDraw.Draw(img), size)
+        return img
+    img, d = _wall_bg(wall_clapboard, size, rnd)
+    _foundation(d, size)
+    trim = (253, 253, 251)
+    dx0, dx1 = int(size * 0.33), int(size * 0.67)
+    dy0, dy1 = int(size * 0.2), int(size * 0.84)
+    rect(d, [dx0 - 10, dy0 - 10, dx1 + 10, dy1], trim, KEEP)                  # the door casing
+    _door(d, (dx0, dy0, dx1, dy1), accent)
+    px0, px1 = int(size * 0.12), int(size * 0.88)
+    rect(d, [px0 - 6, int(size * 0.06), px1 + 6, int(size * 0.13)], trim, KEEP)   # the porch beam
+    line(d, [(px0 - 6, int(size * 0.13)), (px1 + 6, int(size * 0.13))], (160, 160, 156), KEEP, 3)
+    for x in (px0, px1 - 12):                                                 # its posts
+        rect(d, [x, int(size * 0.13), x + 12, int(size * 0.9)], trim, KEEP)
+        line(d, [(x + 12, int(size * 0.13)), (x + 12, int(size * 0.9))], (190, 190, 186), KEEP, 2)
+    rail_y = int(size * 0.62)
+    if rnd.random() < 0.6:                                                    # a porch rail with balusters
+        for x0, x1 in ((px0 + 12, dx0 - 14), (dx1 + 14, px1 - 12)):
+            line(d, [(x0, rail_y), (x1, rail_y)], trim, KEEP, 4)
+            for x in range(x0 + 4, x1, 9):
+                line(d, [(x, rail_y), (x, int(size * 0.9))], trim, KEEP, 3)
+    rect(d, [px0 - 4, int(size * 0.9), px1 + 4, int(size * 0.93)], (226, 224, 218), KEEP)   # the porch floor
+    _steps(d, size, dx0 - 6, dx1 + 6, 2)
+    return img
+
+
+def ground_presidio_brick(size, rnd, accent, variant=0):
+    """Brick (East Housing): the entrance under a white classical portico — pilasters, an entablature, now and then
+    a pediment — with a fanlight over the door and steps up to it; or a window over the brick."""
+    if variant:
+        return win_presidio_brick(size, rnd)
+    img, d = _wall_bg(wall_brick_fine, size, rnd)
+    white = (248, 246, 240)
+    dx0, dx1 = int(size * 0.35), int(size * 0.65)
+    dy0, dy1 = int(size * 0.3), int(size * 0.88)
+    for x in (dx0 - 26, dx1 + 10):                                            # the pilasters
+        rect(d, [x, dy0 - 14, x + 16, dy1], white, KEEP)
+        line(d, [(x + 16, dy0 - 14), (x + 16, dy1)], (150, 146, 140), KEEP, 2)
+    rect(d, [dx0 - 32, dy0 - 32, dx1 + 32, dy0 - 14], white, KEEP)            # the entablature
+    line(d, [(dx0 - 32, dy0 - 13), (dx1 + 32, dy0 - 13)], (140, 134, 128), KEEP, 2)
+    if rnd.random() < 0.5:                                                    # a pediment
+        d.polygon([(dx0 - 36, dy0 - 32), ((dx0 + dx1) // 2, dy0 - 66), (dx1 + 36, dy0 - 32)], fill=(*white, KEEP))
+        d.line([(dx0 - 36, dy0 - 32), ((dx0 + dx1) // 2, dy0 - 66), (dx1 + 36, dy0 - 32)], fill=(170, 166, 160, KEEP), width=2)
+    rect(d, [dx0 - 10, dy0 - 14, dx1 + 10, dy1], white, KEEP)                 # the door's own frame
+    d.pieslice([dx0, dy0 - 2, dx1, dy0 + (dx1 - dx0) // 2], 180, 360, fill=(70, 76, 84, GLASS))   # the fanlight
+    _door(d, (dx0, dy0 + (dx1 - dx0) // 4, dx1, dy1), accent, light=False)
+    _steps(d, size, dx0 - 30, dx1 + 30, 3, (214, 210, 202))
+    return img
+
+
+def ground_presidio_stucco(size, rnd, accent, variant=0):
+    """Mission Revival: a round-arched doorway cut deep into the stucco, a plain step; or a window over the
+    footing."""
+    if variant:
+        img = win_presidio_stucco(size, rnd)
+        _foundation(ImageDraw.Draw(img), size, (196, 192, 184))
+        return img
+    img, d = _wall_bg(wall_mission, size, rnd)
+    _foundation(d, size, (196, 192, 184))
+    dx0, dx1 = int(size * 0.32), int(size * 0.68)
+    dy1 = int(size * 0.9)
+    r = (dx1 - dx0) // 2
+    ay = int(size * 0.24)                                                      # the springing of the arch
+    d.pieslice([dx0 - 8, ay - r - 8, dx1 + 8, ay + r + 8], 180, 360, fill=(232, 230, 224, TINT))
+    rect(d, [dx0 - 8, ay, dx1 + 8, dy1], (232, 230, 224), TINT)                 # the deep return
+    d.pieslice([dx0, ay - r, dx1, ay + r], 180, 360, fill=(70, 76, 84, GLASS))   # glass in the arch
+    _door(d, (dx0, ay, dx1, dy1), accent, light=False)
+    _steps(d, size, dx0 - 10, dx1 + 10, 2, (206, 202, 194))
+    return img
+
+
+for _f in (ground_presidio, ground_presidio_brick, ground_presidio_stucco):
+    _f.by_variant = True  # paint.py hands these the variant index
+
+
 GROUNDS = {
     'shopfront': ground_storefront, 'stoop': ground_stoop, 'arcade': ground_arcade,
     'glazed': ground_glazed, 'recessed': ground_recessed, 'garage': ground_garage,
@@ -1526,6 +1792,10 @@ GROUNDS = {
     # Haussmann is Paris's: its shops are named in French
     'haussmann/shopfront': lambda size, rnd, accent: ground_shopfront(size, rnd, accent, SIGN_WORDS_FR),
     'vosges/arcade': ground_vosges_arcade,
+    # the Presidio's (2026-10-17): a porch, a portico, an arched door — one bay in three; the rest windows
+    'presidio/stoop': ground_presidio,
+    'presidioBrick/stoop': ground_presidio_brick,
+    'presidioStucco/stoop': ground_presidio_stucco,
 }
 
 
