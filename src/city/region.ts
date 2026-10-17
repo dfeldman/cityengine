@@ -123,6 +123,12 @@ export interface Region {
    * Grant Avenue through Chinatown, red paper lanterns on wires every few metres (2026-10-04).
    */
   lanternStreets?: { street: string; from: [number, number]; to: [number, number]; colour?: [number, number, number] }[]
+  /**
+   * Areas whose sidewalks are crowded with furniture (render/city.ts, owner 2026-10-17 of Fisherman's Wharf: "a LOT of
+   * street furniture… poster boards, official maps on metal kiosks, bike racks, triple trash cans with a poster on the
+   * side, outdoor dining… bike racks everywhere"). Rings are [lat, lon].
+   */
+  touristStrips?: { name: string; ring: [number, number][] }[]
   /** marked crossings painted in the six rainbow bands within `radius` m of a point (the Castro at 18th Street) */
   rainbowCrossings?: { name: string; lat: number; lon: number; radius: number }[]
   /** stairways with their risers painted in bands of colour: any flight whose middle is within `radius` m */
@@ -213,6 +219,7 @@ export function region(id: string | undefined): Region {
     brickStreets: own?.brickStreets ?? base.brickStreets,
     timeZone: own?.timeZone ?? base.timeZone,
     lanternStreets: own?.lanternStreets ?? base.lanternStreets,
+    touristStrips: own?.touristStrips ?? base.touristStrips,
     rainbowCrossings: own?.rainbowCrossings ?? base.rainbowCrossings,
     rainbowStairs: own?.rainbowStairs ?? base.rainbowStairs,
     units: own?.units ?? base.units,

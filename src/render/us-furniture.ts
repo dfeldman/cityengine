@@ -246,3 +246,103 @@ export function pathOfGold(out: MeshBuilder): void {
   prism(out, 0, 0, 9.08, 9.58, 0.23, 10, glow, EMIT, 0.21)
   prism(out, 0, 0, 9.58, 9.75, 0.06, 6, green, FIXED, 0.01)
 }
+
+/*
+ * THE TOURIST STRIP's furniture (owner, 2026-10-17, Fisherman's Wharf: "a LOT of street furniture in this area. Poster
+ * boards, official maps on metal kiosks, bike racks, triple trash cans with a poster on the side, outdoor dining. in
+ * some parts it is impossible to walk in a straight line on the sidewalk"; "bike racks everywhere"). Each is long in x,
+ * its front toward +z (the street), as `newsRacks`.
+ */
+
+/** A row of inverted-U bike racks, three or four hoops, a bike locked to some of them. */
+export function bikeRack(out: MeshBuilder, seed = 0): void {
+  const r = (k: number): number => ((Math.imul(seed ^ (k * 0x9e3779b1), 0x85ebca6b) >>> 0) % 1000) / 1000
+  const n = 3 + Math.floor(r(1) * 2)
+  const HOOP: Rgb = [0.2, 0.21, 0.23]
+  for (let i = 0; i < n; i++) {
+    const x = (i - (n - 1) / 2) * 0.9
+    for (const dz of [-0.35, 0.35]) strut(out, [x, 0, dz], [x, 0.8, dz], 0.025, 0.025, HOOP, FIXED, false)
+    strut(out, [x, 0.8, -0.35], [x, 0.85, 0], 0.025, 0.025, HOOP, FIXED, false)
+    strut(out, [x, 0.85, 0], [x, 0.8, 0.35], 0.025, 0.025, HOOP, FIXED, false)
+    if (r(i + 5) < 0.55) {
+      // a bike leaning on it: two wheels and a frame, in a colour
+      const c: Rgb = [[0.75, 0.12, 0.1], [0.12, 0.3, 0.6], [0.1, 0.1, 0.1], [0.2, 0.5, 0.3], [0.85, 0.85, 0.82]][Math.floor(r(i + 9) * 5)] as Rgb
+      const bx = x + 0.12
+      // the wheels: an octagon of tyre each, standing in the bike's own plane
+      for (const dz of [-0.55, 0.55]) for (let k = 0; k < 8; k++) {
+        const a0 = (k / 8) * Math.PI * 2, a1 = ((k + 1) / 8) * Math.PI * 2
+        strut(out, [bx, 0.35 + Math.sin(a0) * 0.33, dz + Math.cos(a0) * 0.33], [bx, 0.35 + Math.sin(a1) * 0.33, dz + Math.cos(a1) * 0.33], 0.03, 0.03, [0.08, 0.08, 0.08], FIXED, false)
+      }
+      strut(out, [bx, 0.35, -0.55], [bx, 0.7, 0.05], 0.025, 0.025, c, FIXED, false)
+      strut(out, [bx, 0.7, 0.05], [bx, 0.35, 0.55], 0.025, 0.025, c, FIXED, false)
+      strut(out, [bx, 0.35, -0.55], [bx, 0.35, 0.55], 0.025, 0.025, c, FIXED, false)
+      strut(out, [bx, 0.7, 0.05], [bx, 0.95, -0.15], 0.02, 0.02, [0.1, 0.1, 0.1], FIXED, false)
+    }
+  }
+}
+
+/** The city's triple bin: landfill, recycling, compost side by side in a dark steel housing, a poster panel on its end. */
+export function tripleBin(out: MeshBuilder, seed = 0): void {
+  const POSTERS: Rgb[] = [[0.95, 0.75, 0.15], [0.85, 0.2, 0.25], [0.2, 0.55, 0.85], [0.95, 0.5, 0.2], [0.55, 0.25, 0.7]]
+  box(out, 0, 0.55, 0, 0.9, 0.55, 0.32, [0.2, 0.22, 0.22], FIXED)
+  const lids: Rgb[] = [[0.12, 0.12, 0.12], [0.15, 0.35, 0.7], [0.2, 0.55, 0.25]]
+  lids.forEach((c, i) => box(out, (i - 1) * 0.58, 1.12, 0, 0.27, 0.03, 0.3, c, FIXED))
+  lids.forEach((c, i) => box(out, (i - 1) * 0.58, 0.75, 0.33, 0.2, 0.06, 0.01, c, FIXED))
+  // the poster on the end, lit from inside at night
+  const p = POSTERS[(seed >>> 0) % POSTERS.length]
+  box(out, 0.92, 0.75, 0, 0.02, 0.5, 0.3, p, FIXED)
+  box(out, 0.92, 0.75, 0, 0.025, 0.52, 0.32, [0.2, 0.22, 0.22], FIXED)
+}
+
+/** A free-standing poster board on its post: two faces of bright advertising, lit, a dark steel frame. */
+export function posterBoard(out: MeshBuilder, seed = 0): void {
+  const r = (k: number): number => ((Math.imul(seed ^ (k * 0x9e3779b1), 0x85ebca6b) >>> 0) % 1000) / 1000
+  // (the poster: a band of colour over a pale field and a dark strip of type — read as an advertisement, not a lamp)
+  const ADS: Rgb[] = [[0.75, 0.25, 0.18], [0.15, 0.42, 0.62], [0.8, 0.62, 0.15], [0.45, 0.2, 0.55], [0.15, 0.5, 0.35], [0.75, 0.35, 0.5]]
+  const FR: Rgb = [0.16, 0.17, 0.18]
+  box(out, 0, 1.25, 0, 0.62, 0.9, 0.12, FR, FIXED)
+  for (const [sd, k] of [[1, 1], [-1, 2]] as const) {
+    const c = ADS[Math.floor(r(k) * ADS.length)]
+    box(out, 0, 1.25, sd * 0.125, 0.55, 0.82, 0.005, [0.86, 0.84, 0.78], FIXED)
+    box(out, 0, 1.55, sd * 0.128, 0.55, 0.45, 0.005, c, FIXED)
+    box(out, 0, 0.75, sd * 0.128, 0.42, 0.08, 0.005, [0.15, 0.15, 0.17], FIXED)
+  }
+  box(out, 0, 0.18, 0, 0.3, 0.18, 0.1, FR, FIXED)
+}
+
+/** A wayfinding kiosk: a tall slim metal pylon with the district map on its face and a coloured head band. */
+export function mapKiosk(out: MeshBuilder): void {
+  const M: Rgb = [0.35, 0.37, 0.4]
+  box(out, 0, 1.2, 0, 0.45, 1.2, 0.12, M, FIXED)
+  box(out, 0, 1.3, 0.125, 0.4, 0.7, 0.005, [0.86, 0.88, 0.8], FIXED)          // the map
+  box(out, 0.05, 1.35, 0.13, 0.2, 0.25, 0.004, [0.55, 0.75, 0.6], FIXED)       // its parks and water
+  box(out, -0.15, 1.1, 0.13, 0.12, 0.3, 0.004, [0.55, 0.7, 0.85], FIXED)
+  box(out, 0, 2.3, 0, 0.47, 0.1, 0.14, [0.1, 0.35, 0.6], FIXED)                // the head band
+  box(out, 0, 0.04, 0, 0.5, 0.04, 0.18, M, FIXED)
+}
+
+/** Outdoor dining: a small round table and two chairs, a parasol over some. */
+export function cafeSet(out: MeshBuilder, seed = 0): void {
+  const r = (k: number): number => ((Math.imul(seed ^ (k * 0x9e3779b1), 0x85ebca6b) >>> 0) % 1000) / 1000
+  const T: Rgb = [0.16, 0.16, 0.17]
+  prism(out, 0, 0, 0, 0.72, 0.04, 6, T, FIXED)
+  prism(out, 0, 0, 0.72, 0.75, 0.35, 12, [0.85, 0.84, 0.8], FIXED)
+  for (const sx of [-0.65, 0.65]) {
+    box(out, sx, 0.45, 0, 0.2, 0.02, 0.2, T, FIXED)
+    for (const dx of [-0.17, 0.17]) for (const dz of [-0.17, 0.17]) box(out, sx + dx, 0.22, dz, 0.015, 0.22, 0.015, T, FIXED)
+    box(out, sx + Math.sign(sx) * 0.19, 0.7, 0, 0.015, 0.25, 0.19, T, FIXED)
+  }
+  if (r(1) < 0.6) {
+    const P: Rgb = [[0.75, 0.15, 0.12], [0.12, 0.3, 0.55], [0.92, 0.9, 0.84], [0.2, 0.45, 0.3]][Math.floor(r(2) * 4)] as Rgb
+    strut(out, [0, 0.75, 0], [0, 2.3, 0], 0.02, 0.02, [0.8, 0.8, 0.8], FIXED, false)
+    prism(out, 0, 0, 2.05, 2.3, 1.2, 8, P, FIXED, 0.05)
+  }
+}
+
+/** A wooden planter box of flowers. */
+export function planterBox(out: MeshBuilder, seed = 0): void {
+  const r = (k: number): number => ((Math.imul(seed ^ (k * 0x9e3779b1), 0x85ebca6b) >>> 0) % 1000) / 1000
+  box(out, 0, 0.3, 0, 0.6, 0.3, 0.3, [0.4, 0.3, 0.2], FIXED)
+  box(out, 0, 0.62, 0, 0.55, 0.06, 0.26, [0.18, 0.4, 0.15], FIXED)
+  for (let i = 0; i < 6; i++) box(out, -0.45 + i * 0.18, 0.72, (r(i) - 0.5) * 0.3, 0.07, 0.06, 0.07, [[0.95, 0.3, 0.3], [0.98, 0.8, 0.2], [0.85, 0.45, 0.8], [1, 1, 1]][Math.floor(r(i + 9) * 4)] as Rgb, FIXED)
+}

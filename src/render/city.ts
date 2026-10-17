@@ -16,7 +16,7 @@ import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData'
 import type { Scene } from '@babylonjs/core/scene'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { Color3 } from '@babylonjs/core/Maths/math.color'
-import { stopSign, uspsBox, billboard, muniStop, plainStop, newsRacks, parkingMeter, utilityPole, pathOfGold } from './us-furniture.ts'
+import { stopSign, uspsBox, billboard, muniStop, plainStop, newsRacks, parkingMeter, utilityPole, pathOfGold, bikeRack, tripleBin, posterBoard, mapKiosk, cafeSet, planterBox } from './us-furniture.ts'
 import { streetClockPost } from './street-clock.ts'
 import { clockFace } from './landmarks/parts.ts'
 import { Clocks } from './clocks.ts'
@@ -1408,6 +1408,8 @@ export class City {
   private readonly coveredOutlines = new Set<number>()
   /** the viaduct's stations in local metres (region `viaductStations`), set by the game */
   viaductStations: { x: number; z: number }[] = []
+  /** the region's tourist strips in local metres (Region `touristStrips`), set by the game */
+  touristRings: { x: number; z: number }[][] = []
   /** the region's lantern streets in local metres (Region `lanternStreets`), set by the game */
   /** the region's rainbow crossings in local metres (Region `rainbowCrossings`), set by the game */
   rainbowSpots: { x: number; z: number; radius: number }[] = []
@@ -3377,6 +3379,60 @@ export class City {
             }
             for (let s = 20; s < total - 10; s += 40) put(s + (side > 0 ? 0 : 20), side, e.width / 2 + 0.8, (o) => streetBanners(o, e.id + Math.round(s)), Math.PI / 2)
           }
+        }
+      }
+    }
+
+    /*
+     * THE TOURIST STRIP (Region `touristStrips`, Fisherman's Wharf; owner 2026-10-17: "a LOT of street furniture… in some
+     * parts it is impossible to walk in a straight line on the sidewalk"; "bike racks everywhere"). Down both sides of
+     * every street with a real pavement inside the strip, about every 5 m, staggered: on the kerb line bike racks (most
+     * often), triple bins with their posters, poster boards, the map kiosks and planters; on a wide pavement, by the
+     * shopfronts, tables and parasols. Clear of the junctions' last 7 m, never in a road or a median.
+     */
+    if (this.touristRings.length) {
+      const strip = new Carriageways(groundEdges)
+      const inside = (x: number, z: number): boolean => this.touristRings.some((r) => {
+        let k = false
+        for (let i = 0, j = r.length - 1; i < r.length; j = i++) if ((r[i].z > z) !== (r[j].z > z) && x < ((r[j].x - r[i].x) * (z - r[i].z)) / (r[j].z - r[i].z) + r[i].x) k = !k
+        return k
+      })
+      const hash = (a: number, b: number): number => ((Math.imul(a ^ Math.imul(b, 0x27d4eb2d), 0x9e3779b1) >>> 0) % 1000) / 1000
+      for (const e of groundEdges) {
+        if (e.foot || e.walk < 1.8 || !onSurface(e)) continue
+        const pts = unpackPoints(e.points)
+        const total = lengthOf(pts)
+        if (total < 12) continue
+        let acc = 0, n = 0
+        for (let i = 1; i < pts.length; i++) {
+          const dx = pts[i].x - pts[i - 1].x, dz = pts[i].z - pts[i - 1].z, seg = Math.hypot(dx, dz)
+          if (seg < 0.1) continue
+          const ux = dx / seg, uz = dz / seg
+          for (let s = (3.5 - (acc % 3.5)) % 3.5; s < seg; s += 3.5, n++) {
+            const along = acc + s
+            if (along < 5 || along > total - 5) continue
+            const cx = pts[i - 1].x + ux * s, cz = pts[i - 1].z + uz * s
+            if (!inside(cx, cz)) continue
+            for (const side of [-1, 1]) {
+              // the kerb line every slot but a few, and on a wide pavement the shop side too, staggered against it
+              const lines: boolean[] = [false]
+              if (e.walk >= 3 && (n + (side > 0 ? 1 : 0)) % 2 === 0) lines.push(true)
+              for (const shopSide of lines) {
+                const h = hash(e.id * 31 + n, side + 5 + (shopSide ? 17 : 0))
+                if (h < 0.12) continue
+                const off = shopSide ? e.width / 2 + e.walk - 0.9 : e.width / 2 + 0.7
+                const x = cx - uz * off * side, z = cz + ux * off * side
+                if (strip.whyNoFurniture(x, z)) continue
+                const rot = Math.atan2(ux, uz) + (side > 0 ? Math.PI : 0) + Math.PI / 2
+                const seed = e.id * 7 + n * 13 + (side > 0 ? 1 : 0) + (shopSide ? 5 : 0)
+                let model: (o: MeshBuilder) => void
+                if (shopSide) model = h < 0.75 ? (o) => cafeSet(o, seed) : (o) => planterBox(o, seed)
+                else model = h < 0.55 ? (o) => bikeRack(o, seed) : h < 0.7 ? (o) => tripleBin(o, seed) : h < 0.82 ? (o) => posterBoard(o, seed) : h < 0.9 ? mapKiosk : (o) => planterBox(o, seed)
+                placeModel(furniture, model, x, 0.15, z, rot)
+              }
+            }
+          }
+          acc += seg
         }
       }
     }

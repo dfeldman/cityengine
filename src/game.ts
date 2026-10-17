@@ -452,6 +452,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // (the zones whose grass is dry: the Marin Headlands' summer-gold scrub, not a lawn)
   city.dryZones = (index.zones ?? []).filter((z) => z.props.dry)
   city.rainbowSpots = (region(pkg.region).rainbowCrossings ?? []).map((r) => ({ ...new Projection(pkg.origin).toLocal({ lat: r.lat, lon: r.lon }), radius: r.radius }))
+  city.touristRings = (region(pkg.region).touristStrips ?? []).map((t) => t.ring.map(([lat, lon]) => new Projection(pkg.origin).toLocal({ lat, lon })))
   city.lanternStretches = (region(pkg.region).lanternStreets ?? []).map((l) => ({ street: l.street, colour: l.colour ?? [0.78, 0.1, 0.08],
     a: new Projection(pkg.origin).toLocal({ lat: l.from[0], lon: l.from[1] }), b: new Projection(pkg.origin).toLocal({ lat: l.to[0], lon: l.to[1] }) }))
   city.exists = (k) => src.has(k)
