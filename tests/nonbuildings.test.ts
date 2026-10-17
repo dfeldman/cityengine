@@ -263,6 +263,8 @@ const KNOWN: Record<string, string[]> = {
     "intersects | Anchor's Landing passage from Jefferson: mouth",
     "intersects | Anchor's Landing passage from Jefferson: west wall shops",
     "intersects | The Cannery's olive court and its glass bridge",
+    // the Al Scoma Way lagoon overlook (2026): laid on the lagoon edge between Castagnola's and the Fish Alley shed
+    'intersects | Lagoon overlook and fish market, Al Scoma Way',
   ],
 }
 
