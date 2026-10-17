@@ -24,5 +24,18 @@
   ],
   "height": 8.5,
   "note": "BUGS.md #290d, 2026-10-16: a timber gate over the walkway in, carrying the blue PIER 39 board (Commons 'Pier 39 sign (TK1)'); the flags are public/flags/san-francisco-placed.json."
+ },
+ {
+  "name": "Pier 39 stage",
+  "procedural": "pier39Stage",
+  "lat": 37.81057,
+  "lon": -122.41066,
+  "rotateDeg": 0,
+  "size": [
+   16,
+   6
+  ],
+  "height": 7.6,
+  "note": "BUGS.md #290e, 2026-10-16: the striped tent stage and booths on the carousel plaza (Commons 'Pier 39 - July 2025 - Sarah Stierch')."
  }
 ]

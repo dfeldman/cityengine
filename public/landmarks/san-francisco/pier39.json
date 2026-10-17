@@ -2,7 +2,7 @@
   {"osm": ["way/128240107"], "name": "Pier 39 Building F", "procedural": "pier39Shop", "note": "weathered timber; was a Victorian/brick/stucco mix (waterfront sweep 2026-10-03)"},
   {"osm": ["way/128240115"], "name": "Pier 39 Building B", "procedural": "pier39Shop", "note": "weathered timber; was a Victorian/brick/stucco mix (waterfront sweep 2026-10-03)"},
   {"osm": ["way/128240116"], "name": "Pier 39 Building G", "procedural": "pier39Shop", "note": "weathered timber; was a Victorian/brick/stucco mix (waterfront sweep 2026-10-03)"},
-  {"osm": ["way/128240118"], "name": "Pier 39 San Francisco Carousel", "procedural": "pier39Shop", "note": "weathered timber; was a Victorian/brick/stucco mix (waterfront sweep 2026-10-03)"},
+  {"osm": ["way/128240118"], "name": "Pier 39 San Francisco Carousel", "procedural": "sfCarousel39", "note": "weathered timber; was a Victorian/brick/stucco mix (waterfront sweep 2026-10-03)"},
   {"osm": ["way/128240119"], "name": "Pier 39 Building M", "procedural": "pier39Shop", "note": "weathered timber; was a Victorian/brick/stucco mix (waterfront sweep 2026-10-03)"},
   {"osm": ["way/128240125"], "name": "Pier 39 kiosk", "procedural": "pier39Shop", "note": "weathered timber; was a Victorian/brick/stucco mix (waterfront sweep 2026-10-03)"},
   {"osm": ["way/128240126"], "name": "Pier 39 Building I", "procedural": "pier39Shop", "note": "weathered timber; was a Victorian/brick/stucco mix (waterfront sweep 2026-10-03)"},

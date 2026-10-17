@@ -271,4 +271,157 @@ export function pier39Gate(out: MeshBuilder, _fit: Fit): void {
   }
 }
 
-export const WHARF_CARNIVAL: Record<string, (out: MeshBuilder, fit: Fit) => void> = { wharfSign, skystarWheel, pier39Gate }
+/** a carousel horse, prancing, its nose along +x from (x, y, z) (y the hooves' plane), turned `a` about the vertical */
+function horse(mb: MeshBuilder, x: number, y: number, z: number, a: number, coat: Rgb, saddle: Rgb, tag: number): void {
+  const c = Math.cos(a), s = Math.sin(a)
+  const P = (u: number, v: number, w: number): V3 => [x + u * c - w * s, y + v, z + u * s + w * c]
+  const GOLD: Rgb = [0.85, 0.68, 0.25]
+  tube(mb, P(-0.42, 0.95, 0), P(0.38, 1.0, 0), 0.2, 8, coat, tag, 0.19)              // the barrel
+  tube(mb, P(0.34, 1.02, 0), P(0.55, 1.4, 0), 0.12, 6, coat, tag, 0.09)              // the neck, raised
+  tube(mb, P(0.5, 1.42, 0), P(0.82, 1.3, 0), 0.1, 6, coat, tag, 0.06)                // the head
+  tube(mb, P(0.36, 1.25, 0), P(0.46, 1.55, 0), 0.05, 4, GOLD, tag, 0.03)             // the gilded mane
+  for (const w of [-0.11, 0.11]) {
+    tube(mb, P(0.28, 0.85, w), P(0.5, 0.62, w), 0.05, 5, coat, tag, 0.04)            // forelegs, pawing the air
+    tube(mb, P(0.5, 0.62, w), P(0.42, 0.42, w), 0.04, 5, coat, tag, 0.03)
+    tube(mb, P(-0.36, 0.85, w), P(-0.45, 0.45, w), 0.05, 5, coat, tag, 0.04)         // hind legs
+    tube(mb, P(-0.45, 0.45, w), P(-0.4, 0.08, w), 0.04, 5, coat, tag, 0.035)
+  }
+  tube(mb, P(-0.42, 1.0, 0), P(-0.68, 0.7, 0), 0.06, 5, GOLD, tag, 0.02)             // the tail
+  tube(mb, P(-0.12, 1.16, 0), P(0.12, 1.17, 0), 0.17, 8, saddle, tag, 0.17)          // the saddle and its blanket
+}
+
+/**
+ * The SAN FRANCISCO CAROUSEL at the end of Pier 39 (way/128240118): a two-storey Venetian carousel under a peaked
+ * canopy striped blue and white with gilt trim and a red-and-white finial, its rounding boards bright with painted
+ * panels and ringed with bulbs, horses on brass poles on both decks — and it TURNS (MeshBuilder.rotors), slowly, the
+ * way it does. The stage and booths in front of it are `pier39Stage`. Commons "Pier 39 - July 2025 - Sarah Stierch".
+ * (Was the pier's generic timber shop.)
+ */
+export function sfCarousel39(out: MeshBuilder, fit: Fit): void {
+  const R = Math.max(4.5, Math.min(fit.hx, fit.hz)) - 0.2
+  const BLUE: Rgb = [0.2, 0.42, 0.78], WHITE: Rgb = [0.96, 0.95, 0.92], GOLD: Rgb = [0.88, 0.7, 0.28], RED: Rgb = [0.82, 0.14, 0.16]
+  const CREAM: Rgb = [0.94, 0.88, 0.72], BRASS: Rgb = [0.86, 0.72, 0.36], DECK: Rgb = [0.55, 0.4, 0.28]
+  const MT = surfaceTag('metal'), WT = surfaceTag('clapboard')
+  const UP = 4.2, TOP = 8.2
+  // the standing parts: the round base and its step, the centre column's housing, the outer posts holding the canopy
+  prism(out, 0, 0, 0, 0.35, R + 0.6, 32, [0.62, 0.6, 0.56], surfaceTag('concrete'))
+  for (let k = 0; k < 16; k++) {
+    const a = (k / 16) * Math.PI * 2
+    tube(out, [Math.sin(a) * (R + 0.35), 0.35, Math.cos(a) * (R + 0.35)], [Math.sin(a) * (R + 0.35), TOP, Math.cos(a) * (R + 0.35)], 0.09, 8, k % 2 ? GOLD : WHITE, MT)
+  }
+  // the rounding boards at each storey: a band of painted panels, gilt edges, a ring of bulbs
+  for (const [y0, y1] of [[UP - 0.9, UP], [TOP - 1.1, TOP]] as [number, number][]) {
+    const N = 32
+    for (let k = 0; k < N; k++) {
+      const a0 = (k / N) * Math.PI * 2, a1 = ((k + 1) / N) * Math.PI * 2, am = (a0 + a1) / 2
+      const q = (a: number, y: number): V3 => [Math.sin(a) * (R + 0.5), y, Math.cos(a) * (R + 0.5)]
+      const panel: Rgb = k % 4 === 0 ? RED : k % 4 === 2 ? BLUE : CREAM
+      out.quad([q(a0, y0), q(a1, y0), q(a1, y1), q(a0, y1)], [Math.sin(am), 0, Math.cos(am)], UVQ, panel, WT)
+      out.quad([q(a0, y1 - 0.08), q(a1, y1 - 0.08), q(a1, y1 + 0.06), q(a0, y1 + 0.06)], [Math.sin(am), 0, Math.cos(am)], UVQ, GOLD, MT)
+      out.quad([q(a0, y0 - 0.06), q(a1, y0 - 0.06), q(a1, y0 + 0.08), q(a0, y0 + 0.08)], [Math.sin(am), 0, Math.cos(am)], UVQ, GOLD, MT)
+      const b = q(am, (y0 + y1) / 2)
+      box(out, b[0] * 1.012, b[1], b[2] * 1.012, 0.06, 0.06, 0.06, [1, 0.92, 0.6], EMIT)
+    }
+  }
+  // the upper deck's floor (standing: it is the roof of the lower ring), its rail
+  prism(out, 0, 0, UP - 0.95, UP - 0.75, R + 0.5, 32, DECK, WT)
+  // the canopy: a peaked tent, segments striped blue and white, scalloped gilt valance, the finial with its pennant
+  const SEG = 24
+  for (let k = 0; k < SEG; k++) {
+    const a0 = (k / SEG) * Math.PI * 2, a1 = ((k + 1) / SEG) * Math.PI * 2, am = (a0 + a1) / 2
+    const rim = (a: number): V3 => [Math.sin(a) * (R + 0.9), TOP, Math.cos(a) * (R + 0.9)]
+    const mid = (a: number): V3 => [Math.sin(a) * (R * 0.5), TOP + 1.7, Math.cos(a) * (R * 0.5)]
+    const apex: V3 = [0, TOP + 3.6, 0]
+    const col = k % 2 ? BLUE : WHITE
+    out.quad([rim(a0), rim(a1), mid(a1), mid(a0)], [Math.sin(am) * 0.6, 1, Math.cos(am) * 0.6], UVQ, col, WT)
+    out.quad([mid(a0), mid(a1), apex, apex], [Math.sin(am) * 0.9, 1, Math.cos(am) * 0.9], UVQ, col, WT)
+    // a scallop under each segment's edge
+    const v: V3 = [Math.sin(am) * (R + 0.92), TOP - 0.45, Math.cos(am) * (R + 0.92)]
+    out.quad([rim(a0), rim(a1), v, v], [Math.sin(am), 0, Math.cos(am)], UVQ, GOLD, MT)
+  }
+  tube(out, [0, TOP + 3.5, 0], [0, TOP + 5.2, 0], 0.06, 6, GOLD, MT)
+  lozenge(out, [0, TOP + 3.75, 0], [1, 0, 0], [0, 0, 1], [0, 1, 0], 0.32, 0.32, 0.3, RED, MT, 12)
+  out.quad([[0, TOP + 5.15, 0], [1.1, TOP + 4.95, 0.1], [1.1, TOP + 4.95, 0.1], [0, TOP + 4.7, 0]], [0, 0, 1], UVQ, RED, WT)
+  out.quad([[0, TOP + 5.15, 0], [0, TOP + 4.7, 0], [1.1, TOP + 4.95, 0.1], [1.1, TOP + 4.95, 0.1]], [0, 0, -1], UVQ, WHITE, WT)
+  /*
+   * What turns: both decks, the horses on their brass poles (two rings below, one above), the mirrored centre column —
+   * drawn about the centre, turning about the vertical at about three turns a minute.
+   */
+  const turn = new (out.constructor as new () => MeshBuilder)()
+  prism(turn, 0, 0, 0.35, 0.55, R, 32, DECK, WT)
+  prism(turn, 0, 0, UP - 0.75, UP - 0.6, R - 0.2, 32, DECK, WT)
+  prism(turn, 0, 0, 0.55, TOP - 0.3, 1.2, 12, CREAM, WT)
+  for (const y of [1.6, UP + 1.6]) prism(turn, 0, 0, y, y + 1.0, 1.24, 12, [0.75, 0.82, 0.88], surfaceTag('glass'))
+  const coats: Rgb[] = [[0.95, 0.94, 0.9], [0.55, 0.36, 0.22], [0.25, 0.2, 0.18], [0.92, 0.82, 0.62], [0.7, 0.7, 0.72]]
+  const saddles: Rgb[] = [RED, BLUE, [0.2, 0.55, 0.35], GOLD, [0.6, 0.2, 0.55]]
+  let n = 0
+  for (const [rr, cnt, floor] of [[R - 0.8, 14, 0.55], [R - 2.1, 10, 0.55], [R - 1.0, 12, UP - 0.6]] as [number, number, number][]) {
+    for (let k = 0; k < cnt; k++) {
+      const a = ((k + (floor > 1 ? 0.5 : rr < R - 1.5 ? 0.25 : 0)) / cnt) * Math.PI * 2
+      const x = Math.sin(a) * rr, z = Math.cos(a) * rr
+      // each up or down its pole a little, as they ride
+      const bob = 0.25 * Math.sin(k * 1.9 + rr)
+      tube(turn, [x, floor, z], [x, floor + 3.1, z], 0.035, 6, BRASS, MT)
+      // nose pointing the way it goes round (anticlockwise from above: tangent (cos a, −sin a))
+      horse(turn, x, floor + 0.35 + bob, z, Math.atan2(-Math.sin(a), Math.cos(a)), coats[n % coats.length], saddles[n % saddles.length], WT)
+      n++
+    }
+  }
+  out.rotors.push({ x: 0, y: 0, z: 0, nx: 0, ny: 1, nz: 0, mb: turn, rpm: 3 })
+}
+
+/**
+ * The STAGE on the Pier 39 carousel plaza, and the booths round it: a small stage under a peaked tent canopy striped
+ * blue and white with a gilt-and-red valance and PIER 39 on its board, flanked by two striped ticket booths with
+ * pointed roofs and pennants — the circus-like heart of the pier (owner, 2026-10-16: "a circus-like activity center at
+ * pier 39"). Commons "Pier 39 - July 2025 - Sarah Stierch". Placed on the plaza before the carousel, rotateDeg 0, the
+ * stage facing south down the pier.
+ */
+export function pier39Stage(out: MeshBuilder, _fit: Fit): void {
+  const BLUE: Rgb = [0.18, 0.4, 0.78], WHITE: Rgb = [0.97, 0.96, 0.93], GOLD: Rgb = [0.92, 0.74, 0.25], RED: Rgb = [0.84, 0.16, 0.18]
+  const YEL: Rgb = [0.98, 0.82, 0.2], DECK: Rgb = [0.4, 0.3, 0.22], DARK: Rgb = [0.12, 0.13, 0.16]
+  const MT = surfaceTag('metal'), WT = surfaceTag('clapboard')
+  // the stage: a deck a metre up, a dark back wall, yellow-and-blue posts, the striped tent roof
+  box(out, 0, 0.5, 0, 3.6, 0.5, 2.4, DECK, WT)
+  box(out, 0, 0.9, -2.45, 3.6, 0.1, 0.05, YEL, WT)
+  box(out, 0, 2.6, 2.3, 3.4, 1.6, 0.1, DARK, WT)
+  for (const x of [-3.5, 3.5]) for (const z of [-2.3, 2.3]) tube(out, [x, 1, z], [x, 4.4, z], 0.12, 8, z < 0 ? YEL : BLUE, MT)
+  const SEG = 16
+  const corner = (k: number): V3 => {
+    const t = k / SEG, side = Math.min(3, Math.floor(t * 4)), f = t * 4 - side
+    const pts: [number, number][] = [[-3.7, -2.5], [3.7, -2.5], [3.7, 2.5], [-3.7, 2.5]]
+    const a = pts[side], b = pts[(side + 1) % 4]
+    return [a[0] + (b[0] - a[0]) * f, 4.4, a[1] + (b[1] - a[1]) * f]
+  }
+  for (let k = 0; k < SEG; k++) {
+    const p0 = corner(k), p1 = corner(k + 1)
+    out.quad([p0, p1, [0, 6.6, 0], [0, 6.6, 0]], [p0[0] + p1[0], 6, p0[2] + p1[2]], UVQ, k % 2 ? BLUE : WHITE, WT)
+    // the valance: a red band, gold scallops
+    const m: V3 = [(p0[0] + p1[0]) / 2, 3.95, (p0[2] + p1[2]) / 2]
+    out.quad([p0, p1, [p1[0], 4.1, p1[2]], [p0[0], 4.1, p0[2]]], [p0[0] + p1[0], 0, p0[2] + p1[2]], UVQ, RED, WT)
+    out.quad([[p0[0], 4.1, p0[2]], [p1[0], 4.1, p1[2]], m, m], [p0[0] + p1[0], 0, p0[2] + p1[2]], UVQ, GOLD, MT)
+  }
+  tube(out, [0, 6.5, 0], [0, 7.6, 0], 0.05, 6, GOLD, MT)
+  lozenge(out, [0, 6.7, 0], [1, 0, 0], [0, 0, 1], [0, 1, 0], 0.2, 0.2, 0.2, GOLD, MT, 10)
+  out.quad([[0, 7.55, 0], [0.8, 7.4, 0], [0.8, 7.4, 0], [0, 7.2, 0]], [0, 0, 1], UVQ, RED, WT)
+  out.quad([[0, 7.55, 0], [0, 7.2, 0], [0.8, 7.4, 0], [0.8, 7.4, 0]], [0, 0, -1], UVQ, RED, WT)
+  // the stage's board over the front: PIER 39, white on blue
+  box(out, 0, 4.75, -2.55, 1.6, 0.35, 0.06, BLUE, WT)
+  sign(out, { type: 'flat', text: 'PIER 39', h: 0.4, face: 'didone', weight: 'bold', colour: WHITE, lit: 'front' }, { x: 0, y: 4.72, z: -2.62, heading: Math.PI })
+  // the booths, either side: striped walls, a pointed roof, a pennant
+  for (const sx of [-1, 1]) {
+    const bx = sx * 6.2, bz = -0.5
+    for (let k = 0; k < 8; k++) {
+      const a0 = (k / 8) * Math.PI * 2, a1 = ((k + 1) / 8) * Math.PI * 2
+      const q = (a: number, y: number): V3 => [bx + Math.sin(a) * 1.1, y, bz + Math.cos(a) * 1.1]
+      out.quad([q(a0, 0), q(a1, 0), q(a1, 2.4), q(a0, 2.4)], [Math.sin((a0 + a1) / 2), 0, Math.cos((a0 + a1) / 2)], UVQ, k % 2 ? RED : WHITE, WT)
+      out.quad([q(a0, 2.4), q(a1, 2.4), [bx, 3.9, bz], [bx, 3.9, bz]], [Math.sin((a0 + a1) / 2), 0.8, Math.cos((a0 + a1) / 2)], UVQ, k % 2 ? BLUE : YEL, WT)
+    }
+    box(out, bx, 1.4, bz - 1.08, 0.5, 0.35, 0.03, [0.25, 0.3, 0.35], surfaceTag('glass'))
+    tube(out, [bx, 3.85, bz], [bx, 4.7, bz], 0.03, 5, GOLD, MT)
+    out.quad([[bx, 4.65, bz], [bx + 0.55, 4.5, bz], [bx + 0.55, 4.5, bz], [bx, 4.35, bz]], [0, 0, 1], UVQ, sx > 0 ? RED : BLUE, WT)
+    out.quad([[bx, 4.65, bz], [bx, 4.35, bz], [bx + 0.55, 4.5, bz], [bx + 0.55, 4.5, bz]], [0, 0, -1], UVQ, sx > 0 ? RED : BLUE, WT)
+  }
+}
+
+export const WHARF_CARNIVAL: Record<string, (out: MeshBuilder, fit: Fit) => void> = { wharfSign, skystarWheel, pier39Gate, sfCarousel39, pier39Stage }

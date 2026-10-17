@@ -1226,7 +1226,9 @@ export class Landmarks {
       }
       const built = e.inset === 0 ? fit : e.inset ? { ...fit, hx: fit.hx - e.inset, hz: fit.hz - e.inset, ring: fit.ring ? inward(fit.ring, e.inset) : undefined }
         : ring && !atPoint && fit.ring ? { ...fit, hx: fit.hx - 0.05, hz: fit.hz - 0.05, ring: shrink(fit.ring) } : fit
-      build(mb, built)
+      // (one builder's bug must not take the city down with it: a throw here stopped the game loading, 2026-10-16 —
+      // the model is skipped, said so, and the city's own building, already suppressed, is the price)
+      try { build(mb, built) } catch (err) { console.error(`landmark ${e.name} (${e.procedural}) failed to build:`, err); return }
       // faces lying inside larger coplanar ones — a box's floor on the deck under it, two abutting boxes' touching
       // faces, a band drawn twice — fight, drawn double-sided as landmarks are: dropped (landmarks/coplanar.ts)
       const tc = performance.now()
