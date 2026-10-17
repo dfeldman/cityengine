@@ -8,7 +8,7 @@
  * local +z, turned by `rotateDeg`.
  */
 import type { MeshBuilder } from '../../buildings.ts'
-import { capPolygon } from '../../buildings.ts'
+import { capPolygon, capPolygonWithHoles } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
 import { box, prism, EMIT, type Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
@@ -1308,10 +1308,24 @@ function clipX(ring: P2[], x0: number, less: boolean): P2[] {
  * `front` 352: Jefferson faces local −z; local +x is west.
  */
 export function zephyrHotel(out: MeshBuilder, fit: Fit): void {
-  const ring = towerRing(fit)
+  const ring0 = towerRing(fit)
   const BLACK: Rgb = [0.08, 0.08, 0.09], RUST: Rgb = [0.56, 0.29, 0.17], CHAR: Rgb = [0.34, 0.35, 0.36], GREEN: Rgb = [0.3, 0.45, 0.22]
   let x0 = Infinity, x1 = -Infinity, zN = Infinity, zS = -Infinity
-  for (const p of ring) { x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); zN = Math.min(zN, p.z); zS = Math.max(zS, p.z) }
+  for (const p of ring0) { x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); zN = Math.min(zN, p.z); zS = Math.max(zS, p.z) }
+  /*
+   * THE COURTYARD (relation/1358120's inner ring, way/93422625): the outline the placement hands over has lost it (12
+   * corners, simplified), so capped whole the hotel roofed it over (owner's review, 2026-10-17). Placed from OSM's inner
+   * ring, measured across the block: 30–56 % of the way from Mason (+x) toward Powell, 24–72 % from Beach (+z) toward
+   * Jefferson.
+   */
+  const W = x1 - x0, Dz = zS - zN
+  // (kept 2 m inside the hotel's north wall, which starts 24 m back from Jefferson: a hole touching the outline breaks the cap)
+  const cN = Math.max(zS - 0.72 * Dz, zN + 8 + 16 + 2)
+  const court: P2[] = [
+    { x: x1 - 0.56 * W, z: cN }, { x: x1 - 0.3 * W, z: cN },
+    { x: x1 - 0.3 * W, z: zS - 0.24 * Dz }, { x: x1 - 0.56 * W, z: zS - 0.24 * Dz },
+  ]
+  const ring = ring0
   const CW = 25                                                     // the Powell corner block's width
   // -- the Powell corner block
   const corner = clipX(ring, x0 + CW, true)
@@ -1338,7 +1352,14 @@ export function zephyrHotel(out: MeshBuilder, fit: Fit): void {
     faceBand(out, hotel, 0, 4.0, { kind: 'curtain', wall: [0.14, 0.14, 0.15], glass: [0.24, 0.28, 0.3], pitch: 3, floor: 4.0, material: 'glass' })
     faceBand(out, hotel, 4.0, H - 0.5, { kind: 'bands', wall: CHAR, glass: [0.42, 0.45, 0.47], floor: (H - 4.5) / 3, solid: 0.5, material: 'stucco' })
     faceBand(out, offsetRing(hotel, 0.3), H - 0.5, H, { kind: 'blank', wall: [0.86, 0.86, 0.84], material: 'stucco' })
-    capPolygon(out, hotel, H, [0.4, 0.4, 0.41], CT)
+    if (court.length >= 3) {
+      capPolygonWithHoles(out, [hotel, court], H, [0.4, 0.4, 0.41], CT)
+      // the courtyard's own walls, facing into it, and its floor
+      const inward = [...court].reverse()
+      faceBand(out, inward, 0, H - 0.5, { kind: 'bands', wall: CHAR, glass: [0.42, 0.45, 0.47], floor: (H - 0.5) / 4, solid: 0.5, material: 'stucco' })
+      faceBand(out, inward, H - 0.5, H, { kind: 'blank', wall: [0.86, 0.86, 0.84], material: 'stucco' })
+      capPolygon(out, court, 0.05, [0.55, 0.5, 0.44], CT)
+    } else capPolygon(out, hotel, H, [0.4, 0.4, 0.41], CT)
     // the name on the Beach front
     const bch = frontFacing(hotel, 352, 172, 20)
     if (bch) signAt(out, bch, bch.L * 0.6, H - 1.6, 0.08, { type: 'flat', text: 'HOTEL ZEPHYR', h: 0.9, w: 14, face: 'grotesque', weight: 'bold', colour: WHITE, lit: 'back', tracking: 0.2 })
