@@ -3418,19 +3418,24 @@ export class City {
           const side = hash(e.id, 12) < 0.5 ? 1 : -1
           let last: { x: number; z: number } | null = null
           for (let s = 10; s < total - 6; s += 34) {
-            const here = put(s, side, e.width / 2 + 0.4, (o) => utilityPole(o, e.id + Math.round(s)), Math.PI / 2)
+            // (the crossarm ACROSS the street — the model's local x — with the wires running along it from arm to arm;
+            //  a quarter turn here laid every arm along the kerb, owner 2026-10-17: "our electrical poles are oriented the
+            //  wrong way - parallel to the street instead of perpendicular")
+            const here = put(s, side, e.width / 2 + 0.4, (o) => utilityPole(o, e.id + Math.round(s)))
             if (here && last) {
               const ga = this.terrain.heightAt(last.x, last.z)
               const gb = this.terrain.heightAt(here.x, here.z)
+              const span = Math.hypot(here.x - last.x, here.z - last.z) || 1
+              const ox = -(here.z - last.z) / span, oz = (here.x - last.x) / span
               for (const k of [-1.05, 0.4, 1.05]) {
                 // the wires along the street, one per insulator, sagging 0.35 m between poles
-                const a3: [number, number, number] = [last.x, ga + 10.4 + 0.15, last.z]
-                const b3: [number, number, number] = [here.x, gb + 10.4 + 0.15, here.z]
+                const a3: [number, number, number] = [last.x + ox * k, ga + 10.4 + 0.15, last.z + oz * k]
+                const b3: [number, number, number] = [here.x + ox * k, gb + 10.4 + 0.15, here.z + oz * k]
                 const seg = 4
                 for (let q = 0; q < seg; q++) {
                   const u0 = q / seg
                   const u1 = (q + 1) / seg
-                  const P = (u: number): [number, number, number] => [a3[0] + (b3[0] - a3[0]) * u + k * 0.05, a3[1] + (b3[1] - a3[1]) * u - 0.35 * Math.sin(Math.PI * u), a3[2] + (b3[2] - a3[2]) * u]
+                  const P = (u: number): [number, number, number] => [a3[0] + (b3[0] - a3[0]) * u, a3[1] + (b3[1] - a3[1]) * u - 0.35 * Math.sin(Math.PI * u), a3[2] + (b3[2] - a3[2]) * u]
                   strut(furniture, P(u0), P(u1), 0.012, 0.012, [0.08, 0.08, 0.08], FIXED, false)
                 }
               }
