@@ -180,6 +180,8 @@ export const BUILDINGS_OK: string[] = [
   'kahveKiosk',
   // churches and a funeral chapel whose names carry "Memorial" or "Chapel" (sf/churches-5.ts, 2026-10-03)
   'hamiltonMemorialChurchOfGodInChrist', 'jonesMemorialUnitedMethodistChurch', 'sinaiMemorialChapel',
+  // the Fishermen's and Seamen's Memorial Chapel on Pier 45 (wharf-shops.ts, 2026-10-17)
+  'memorialChapel',
   // in PARKS, and buildings: glasshouses, a tea house, a clubhouse, a restaurant
   'conservatoryGlasshouse', 'californiaAcademyOfSciences', 'teaGardenTeaHouse', 'teaGardenGiftShop', 'sparkTent', 'sparkUmbrella', 'sparkTruck', 'beachChalet1006', 'oneFrontPavilion',
   'presidioOfficersClub',
