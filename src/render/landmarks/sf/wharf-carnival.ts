@@ -737,4 +737,43 @@ export function boudinSilo(out: MeshBuilder, _fit: Fit): void {
   }
 }
 
-export const WHARF_CARNIVAL: Record<string, (out: MeshBuilder, fit: Fit) => void> = { boudinBakery, boudinSilo, wharfSign, skystarWheel, pier39Gate, sfCarousel39, pier39Stage, pier39Footbridge, wharfMarinaPier39, wharfMarinaWest, wharfLagoon }
+/**
+ * A SIDEWALK CRAB STAND on Jefferson (OSM: "Fisherman's Wharf Chowder and Crab Sidewalk Stands", Crab Station, Frankie's
+ * Crab Stand): a stainless counter with the day's Dungeness crabs heaped red on crushed ice under glass, two big steel
+ * cauldrons on burners behind it with their lids half off and steam over them, shrimp cocktails in a row, a striped
+ * canvas awning on poles, and the board over it — CRAB · SHRIMP · CHOWDER. The counter faces the street (local −z).
+ */
+export function crabStand(out: MeshBuilder, _fit: Fit): void {
+  const STEEL: Rgb = [0.5, 0.52, 0.54], ICE: Rgb = [0.82, 0.88, 0.9], RED: Rgb = [0.88, 0.3, 0.14], DARKR: Rgb = [0.7, 0.18, 0.1]
+  const MT = surfaceTag('metal'), WT = surfaceTag('clapboard')
+  const W = 2.6, D = 1.1
+  // the counter, its glass case, the ice and the crabs on it
+  box(out, 0, 0.5, 0, W, 0.5, D, STEEL, MT)
+  box(out, 0, 1.03, -0.3, W - 0.1, 0.03, D - 0.45, ICE, MT)
+  for (let k = 0; k < 9; k++) {
+    const x = -W + 0.35 + (k * (2 * W - 0.7)) / 8, z = -0.35 + (k % 2) * 0.25
+    lozenge(out, [x, 1.14, z], [1, 0, 0], [0, 0, 1], [0, 1, 0], 0.24, 0.17, 0.12, k % 3 ? RED : DARKR, MT, 10)
+    for (const sd of [-1, 1]) tube(out, [x + sd * 0.12, 1.1, z + 0.05], [x + sd * 0.24, 1.08, z + 0.12], 0.025, 4, RED, MT)
+  }
+  // shrimp cocktails in their cups along the back of the counter
+  for (let k = 0; k < 8; k++) prism(out, -W + 0.4 + k * 0.6, 0.55, 1.06, 1.22, 0.07, 8, [0.95, 0.75, 0.66], MT, 0.09)
+  // the cauldrons on their burners, lids ajar, steam rising
+  for (const x of [-1.3, 1.1]) {
+    prism(out, x, 1.6, 0, 0.75, 0.45, 12, [0.2, 0.2, 0.21], MT)
+    prism(out, x, 1.6, 0.75, 1.55, 0.55, 16, STEEL, MT)
+    prism(out, x + 0.15, 1.6, 1.58, 1.62, 0.5, 16, [0.62, 0.63, 0.64], MT)
+    for (let k = 0; k < 3; k++) lozenge(out, [x + Math.sin(k * 1.7) * 0.12, 1.8 + k * 0.28, 1.6 + Math.cos(k) * 0.1], [1, 0, 0], [0, 1, 0], [0, 0, -1], 0.18 - k * 0.04, 0.12 - k * 0.025, 0.12, [0.88, 0.9, 0.92], 0, 10)
+  }
+  // the awning on four poles, red and white stripes, and its board
+  for (const x of [-W - 0.1, W + 0.1]) for (const z of [-D - 0.2, 2.4]) tube(out, [x, 0, z], [x, 2.7, z], 0.04, 6, STEEL, MT)
+  for (let k = 0; k < 10; k++) {
+    const x0 = -W - 0.2 + (k * (2 * W + 0.4)) / 10, x1 = x0 + (2 * W + 0.4) / 10
+    out.quad([[x0, 2.6, -D - 0.5], [x1, 2.6, -D - 0.5], [x1, 2.95, 2.5], [x0, 2.95, 2.5]], [0, 1, -0.1], UVQ, k % 2 ? [0.96, 0.96, 0.94] : [0.78, 0.12, 0.12], WT)
+    out.quad([[x0, 2.6, -D - 0.5], [x1, 2.6, -D - 0.5], [x1, 2.35, -D - 0.5], [x0, 2.35, -D - 0.5]], [0, 0, -1], UVQ, k % 2 ? [0.96, 0.96, 0.94] : [0.78, 0.12, 0.12], WT)
+  }
+  box(out, 0, 3.35, -D - 0.45, W * 0.8, 0.35, 0.05, [0.12, 0.2, 0.42], WT)
+  sign(out, { type: 'flat', text: 'CRAB · SHRIMP · CHOWDER', h: 0.28, w: W * 1.5, face: 'slab', weight: 'bold', colour: [0.98, 0.95, 0.85], lit: 'front' },
+    { x: 0, y: 3.35, z: -D - 0.52, heading: Math.PI })
+}
+
+export const WHARF_CARNIVAL: Record<string, (out: MeshBuilder, fit: Fit) => void> = { boudinBakery, boudinSilo, crabStand, wharfSign, skystarWheel, pier39Gate, sfCarousel39, pier39Stage, pier39Footbridge, wharfMarinaPier39, wharfMarinaWest, wharfLagoon }

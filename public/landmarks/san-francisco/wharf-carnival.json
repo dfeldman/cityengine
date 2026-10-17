@@ -123,5 +123,44 @@
   ],
   "height": 7,
   "note": "BUGS.md #290e, 2026-10-17: Magowan's Infinite Mirror Maze's collage sign on Building O's west wall (Commons photo)."
+ },
+ {
+  "name": "Crab stand (Fisherman's Wharf sidewalk stands)",
+  "procedural": "crabStand",
+  "lat": 37.808071,
+  "lon": -122.415964,
+  "rotateDeg": -10,
+  "size": [
+   6,
+   4
+  ],
+  "height": 3.8,
+  "note": "BUGS.md #290b, 2026-10-17: a Jefferson Street crab stand (counter of crabs on ice, steaming cauldrons, striped awning), at OSM's node."
+ },
+ {
+  "name": "Crab Station",
+  "procedural": "crabStand",
+  "lat": 37.808414,
+  "lon": -122.416003,
+  "rotateDeg": -10,
+  "size": [
+   6,
+   4
+  ],
+  "height": 3.8,
+  "note": "BUGS.md #290b, 2026-10-17: a Jefferson Street crab stand (counter of crabs on ice, steaming cauldrons, striped awning), at OSM's node."
+ },
+ {
+  "name": "Frankie's Crab Stand",
+  "procedural": "crabStand",
+  "lat": 37.809051,
+  "lon": -122.414539,
+  "rotateDeg": -10,
+  "size": [
+   6,
+   4
+  ],
+  "height": 3.8,
+  "note": "BUGS.md #290b, 2026-10-17: a Jefferson Street crab stand (counter of crabs on ice, steaming cauldrons, striped awning), at OSM's node."
  }
 ]

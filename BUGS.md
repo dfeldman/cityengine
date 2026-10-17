@@ -10801,7 +10801,7 @@ GAME
   CHECKLIST (2026-10-16, goal: "a high-quality, detailed, fun Fisherman's Wharf… mimic the style and key places"), each
   marked as it lands:
   [x] a. the giant Fisherman's Wharf crab sign — wharfSign rebuilt (wharf-carnival.ts): rope-bound piles, steel-bound wheel, ring lettering (new SignSpec.ring), 3D crab
-  [ ] b. the street crab stands / steaming cauldrons and the neon restaurant signs on Jefferson (Alioto's, Grotto No. 9…)
+  [~] b. the street crab stands — crabStand ×3 at OSM's stand nodes (crabs on ice, cauldrons, striped awning, CRAB · SHRIMP · CHOWDER); the restaurants' neon signs with the shops survey
   [x] c. the ferris wheel — SkyStar (render/sf/ferris.ts turning + 36 upright gondolas + LEDs; skystarWheel landmark legs/deck/canopy); B boards the bottom gondola, one turn (150 s) with the camera in the cabin panning the bay, off at the bottom
   [x] d. the PIER 39 flag clusters (render/flags.ts: several flags a pole, streamers, black poles, the pier39 design; public/flags/san-francisco-placed.json), and pier39Gate with the blue PIER 39 board
   [~] e. the Pier 39 activity centre — sfCarousel39 (two-tier carousel, striped canopy, turning horses via rotors) and pier39Stage (striped tent stage, booths) DONE; the Pier 39 buildings' own look (painted clapboard, gables, awnings) next
