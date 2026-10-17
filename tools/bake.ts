@@ -1924,17 +1924,48 @@ async function bake(spec: CitySpec): Promise<void> {
      * out to the crossing carriageways' edge (the flat surface the renderer draws there), then eased into the street's own
      * line over a length that grows with the step — at most about 8 % on top of the street's grade — up to half the run.
      */
+    const done = new Set<PackedEdge>()
     const streetEnds = new Map<number, PackedEdge[]>()
     for (const e of kept) {
       if (underground(e) || e.foot) continue
       for (const n of [e.a, e.b]) (streetEnds.get(n) ?? streetEnds.set(n, []).get(n)!).push(e)
+    }
+    /*
+     * ONE LEVEL PER INTERSECTION (BUGS.md #316, owner 2026-10-17, Powell at California: "submerged car"). A boulevard
+     * crossing — twin carriageways meeting twin carriageways — is four nodes joined by short connector pieces, and each
+     * node took its own level: across California at Powell they parted by 1.1 m, the higher crossing's flat surface over
+     * the lower street, and the cars on it sunk to the windows. Nodes joined by a connector — a street piece under 22 m
+     * between two junctions of three or more street ends, rising at most 2 m (a short steep BLOCK is never flattened) —
+     * are one intersection: they take the highest of their levels, and the connectors are laid flat at it (below).
+     */
+    const flatConnectors = new Set<PackedEdge>()
+    {
+      const parent = new Map<number, number>()
+      const find = (n: number): number => { let r = n; while (parent.has(r) && parent.get(r) !== r) r = parent.get(r)!; return r }
+      for (const e of kept) {
+        if (underground(e) || e.foot || !e.heights) continue
+        if ((streetEnds.get(e.a)?.length ?? 0) < 3 || (streetEnds.get(e.b)?.length ?? 0) < 3) continue
+        const pts = unpackPoints(e.points)
+        let L = 0
+        for (let i = 1; i < pts.length; i++) L += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].z - pts[i - 1].z)
+        if (L >= 22 || Math.abs((nodeH.get(e.a) ?? 0) - (nodeH.get(e.b) ?? 0)) > 2) continue
+        flatConnectors.add(e)
+        const ra = find(e.a), rb = find(e.b)
+        if (!parent.has(ra)) parent.set(ra, ra)
+        if (ra !== rb) parent.set(rb, ra)
+      }
+      const level = new Map<number, number>()
+      for (const n of parent.keys()) { const r = find(n); level.set(r, Math.max(level.get(r) ?? -Infinity, nodeH.get(n) ?? -Infinity)) }
+      let raised = 0
+      for (const n of parent.keys()) { const h = level.get(find(n))!; if (h > (nodeH.get(n) ?? h) + 0.05) raised++; nodeH.set(n, h) }
+      for (const e of flatConnectors) { const h = nodeH.get(e.a)!; e.heights = e.heights!.map(() => h); done.add(e) }
+      console.log(`  ${flatConnectors.size} intersection connectors laid flat, ${raised} junction nodes raised to their intersection's level`)
     }
     const holdAt = (n: number, self: PackedEdge): number => {
       let w = 0
       for (const o of streetEnds.get(n) ?? []) if (o !== self) w = Math.max(w, o.width / 2)
       return w
     }
-    const done = new Set<PackedEdge>()
     let footReady = false
     const easeRun = (run: { e: PackedEdge; rev: boolean }[]): void => {
       // every point of the run in order; a node shared by two pieces is one point carrying both pieces' indices
@@ -1962,14 +1993,23 @@ async function bake(spec: CitySpec): Promise<void> {
       }
       const holdA = Math.min(L / 4, holdAt(na, first.e)), holdB = Math.min(L / 4, holdAt(nb, last.e))
       const span = (step: number): number => Math.max(0.01, Math.min(L / 2, Math.max(12, Math.abs(step) / 0.08)))
-      const EA = span(ha - lineAt(Math.min(L, holdA + 12))), EB = span(hb - lineAt(Math.max(0, L - holdB - 12)))
+      /*
+       * The step is the junction's level against the street's own at the END OF THE HOLD, and it is eased out as an
+       * OFFSET on the street's own line — so the street keeps its grade and gains at most ~8 % on top of it (BUGS.md #317,
+       * owner 2026-10-17, Powell between Pine and Bush: "road in the air"). It was measured 12 m further down the street,
+       * which on a 25 % hill is 3 m of the street's own fall, and the ease then blended the street toward the junction's
+       * flat level over 30 m: Powell's east carriageway (the one an alley joins) stood 2.6 m over its twin, a shelf with
+       * the traffic on it.
+       */
+      const stepA = ha - lineAt(Math.min(L, holdA)), stepB = hb - lineAt(Math.max(0, L - holdB))
+      const EA = span(stepA), EB = span(stepB)
       seq.forEach((q, i) => {
         let o = H[i]
         const da = C[i], db = L - C[i]
         if (da <= holdA) o = ha
-        else if (da < holdA + EA) o = ha + (o - ha) * ((da - holdA) / EA)
+        else if (da < holdA + EA) o = H[i] + stepA * (1 - (da - holdA) / EA)
         if (db <= holdB) o = hb
-        else if (db < holdB + EB) o = hb + (o - hb) * ((db - holdB) / EB)
+        else if (db < holdB + EB) o = o + stepB * (1 - (db - holdB) / EB)
         o = Math.round(o * 100) / 100
         for (const r of q.refs) r.e.heights![r.i] = o
       })

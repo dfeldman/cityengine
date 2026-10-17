@@ -377,6 +377,60 @@
    ]
   },
   {
+   "ref": "fifth-street-plaza-trails",
+   "name": "5th Street Plaza, Mission Bay: paths open to bikes",
+   "note": "owner, 2026-10-17: 'this little square has no way to bike through 37.773446, -122.395180' (OSM way/46274019, place=square; its paths are paving-stone footways).",
+   "priority": 1,
+   "props": {
+    "trails": "bike"
+   },
+   "ring": [
+    [
+     37.7728,
+     -122.396
+    ],
+    [
+     37.7741,
+     -122.396
+    ],
+    [
+     37.7741,
+     -122.3944
+    ],
+    [
+     37.7728,
+     -122.3944
+    ]
+   ]
+  },
+  {
+   "ref": "cca-campus-trails",
+   "name": "California College of the Arts campus passage: paths open to bikes",
+   "note": "owner, 2026-10-17: 'very interesting alleyway with no bike path 37.769095, -122.398847' (CCA's passage between 8th and Hooper: footways and bicycle=dismount service ways).",
+   "priority": 1,
+   "props": {
+    "trails": "bike"
+   },
+   "ring": [
+    [
+     37.7684,
+     -122.3995
+    ],
+    [
+     37.7697,
+     -122.3995
+    ],
+    [
+     37.7697,
+     -122.398
+    ],
+    [
+     37.7684,
+     -122.398
+    ]
+   ]
+  },
+  {
    "ref": "embarcadero-plaza-trails",
    "name": "Embarcadero Plaza and Harry Bridges Plaza: paths open to bikes",
    "note": "owner, 2026-10-17: 'right now its hard to get to embarcadero downtown from the street grid because there are few paths across the plaza. we should make more of these bikeable'. East of the Embarcadero Center podium (its raised walks stay foot-only).",
