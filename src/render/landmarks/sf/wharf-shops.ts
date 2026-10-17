@@ -762,7 +762,6 @@ export function haslettWarehouse(out: MeshBuilder, fit: Fit): void {
   // the Hyde face, and the Jefferson corner: its end of the front edge that lies to local +x
   const e = frontEdge(ring, facingFront(ring, 10))
   const cu = e.tx > 0 ? e.L - 0.4 : 0.4
-  const corner = on(e, cu, 0, 0)
   // the blade sign, standing out from the Hyde wall at the corner, both faces lettered down
   const out1 = 1.3
   const bc = on(e, cu - (e.tx > 0 ? 0.6 : -0.6), 0, out1)
@@ -791,11 +790,110 @@ export function haslettWarehouse(out: MeshBuilder, fit: Fit): void {
     tube(out, t, h, 0.04, 5, STEEL, MT)
     box(out, h[0], h[1] - 0.12, h[2], 0.16, 0.08, 0.16, STEEL, MT)
   }
-  void corner
+}
+
+/** the same wall seen from behind: edge `q` turned round, its far end its start, its normal reversed */
+function flip(q: Edge): Edge {
+  const b = on(q, q.L, 0, 0)
+  return { ...q, a: { x: b[0], z: b[2] }, b: q.a, tx: -q.tx, tz: -q.tz, nx: -q.nx, nz: -q.nz, heading: q.heading + Math.PI }
+}
+
+/** a striped canvas awning on edge `e`, centred `u`, `w` wide, its valance lettered with `name` */
+function awning(out: MeshBuilder, e: Edge, u: number, w: number, y: number, c: Rgb, name: string, ink: Rgb, d = 1.6): void {
+  const a = on(e, u - w / 2, y + 0.7, 0.05), b = on(e, u + w / 2, y + 0.7, 0.05)
+  const a2 = on(e, u - w / 2, y, d), b2 = on(e, u + w / 2, y, d)
+  out.quad([a, b, b2, a2], [e.nx * 0.6, 0.8, e.nz * 0.6], UVQ, c, WT)
+  slab(out, e, u, d, y - 0.38, w, 0.38, 0.04, c, WT)
+  signAt(out, e, u, y - 0.19, d + 0.03, { type: 'flat', text: name, h: 0.22, w: w * 0.9, face: 'grotesque', weight: 'bold', colour: ink, lit: 'front' })
+}
+
+/**
+ * ALIOTO'S No. 8, the corner of Jefferson and Taylor (way/103339436; Commons "Fisherman's Wharf, San Francisco, CA, USA -
+ * panoramio (125)", "Boats moored at fisherman's wharf… against the backdrop of Alioto's"): a dark red-brown block,
+ * glazed in bands where the dining rooms look over the lagoon, a huge turquoise 8 on the Taylor corner and ALIOTO'S in
+ * turquoise along the top; a turquoise board on the roof facing the boats; along Jefferson the turquoise awnings of
+ * Alioto's Waterside Cafe and Crab Stand, then Sabella & La Torre's and Nick's Lighthouse's. `front` 171: Jefferson is
+ * the edge facing local −z, Taylor at its +x end.
+ */
+export function aliotos(out: MeshBuilder, fit: Fit): void {
+  const WALL: Rgb = [0.33, 0.19, 0.16], TURQ: Rgb = [0.3, 0.78, 0.74], DGREEN: Rgb = [0.06, 0.26, 0.22]
+  const ring = towerRing(fit)
+  const H = Math.max(10, Math.min(13, fit.height))
+  faceBand(out, ring, 0, 3.6, { kind: 'punched', wall: WALL, glass: DARKGL, floor: 3.6, pitch: 3.2, solid: 0.4, material: 'stucco' })
+  faceBand(out, ring, 3.6, H - 1.4, { kind: 'punched', wall: WALL, glass: DARKGL, floor: (H - 5) / 2, pitch: 2.6, solid: 0.3, material: 'stucco' })
+  faceBand(out, ring, H - 1.4, H, { kind: 'blank', wall: WALL, material: 'stucco' })
+  capPolygon(out, ring, H, [0.36, 0.34, 0.33], CT)
+  const e = frontEdge(ring, facingFront(ring, 10))
+  const tay = e.tx > 0 ? e.L : 0, dir = e.tx > 0 ? -1 : 1
+  // ALIOTO'S along the top of the Jefferson face from the corner, and the 8 on the corner
+  signAt(out, e, tay + dir * 10, H - 0.75, 0.08, { type: 'flat', text: "ALIOTO'S", h: 1.6, face: 'condensed', weight: 'bold', colour: TURQ, lit: 'self' })
+  signAt(out, e, tay + dir * 2.2, H - 2.9, 0.08, { type: 'flat', text: '8', h: 3.6, face: 'grotesque', weight: 'bold', colour: TURQ, lit: 'self' })
+  // the turquoise board on the roof, facing the lagoon behind
+  let bi = 0
+  for (let i = 0; i < ring.length; i++) { const q = edgeAt(ring, i); if (q.L > 6 && q.nz > edgeAt(ring, bi).nz) bi = i }
+  const back = edgeAt(ring, bi)
+  slab(out, back, back.L / 2, -1.5, H, Math.min(14, back.L * 0.7), 2.0, 0.18, TURQ, MT)
+  signAt(out, back, back.L / 2, H + 1.0, -1.5 + 0.1, { type: 'flat', text: "ALIOTO'S", h: 1.3, face: 'condensed', weight: 'bold', colour: DGREEN, lit: 'front' })
+  for (const d of [-4, 0, 4]) slab(out, back, back.L / 2 + d, -2.4, H, 0.12, 1.6, 0.12, [0.3, 0.3, 0.32], MT)
+  // the awnings along Jefferson, from the corner west
+  const shops: [string, Rgb, Rgb][] = [["ALIOTO'S WATERSIDE CAFE", TURQ, DGREEN], ["ALIOTO'S CRAB STAND", TURQ, DGREEN],
+    ['SABELLA & LA TORRE', [0.16, 0.3, 0.62], WHITE], ["NICK'S LIGHTHOUSE", [0.72, 0.12, 0.12], WHITE]]
+  const sw = Math.min(8, (e.L - 6) / shops.length)
+  shops.forEach(([n, c, ink], k) => awning(out, e, tay + dir * (6 + sw * (k + 0.5)), sw - 0.6, 3.0, c, n, ink))
+}
+
+/**
+ * FISHERMEN'S GROTTO No. 9 (way/103339449; Commons "No. 9 Fishermans Grotto, San Francisco", "Fisherman's Wharf… panoramio
+ * (125)"): white Spanish stucco under red tile, arched windows, blue awnings lettered No 9 FISHERMEN'S GROTTO, and over
+ * the roof on a steel truss the long yellow board — No 9 in a blue roundel at one end, Fishermen's Grotto in blue along
+ * it, and at the other end the blue panel with the old fisherman in his yellow oilskins and sou'wester, rod over his
+ * shoulder (neon at night). `front` 81: the Taylor / Embarcadero face is the edge facing local −z.
+ */
+export function grotto9(out: MeshBuilder, fit: Fit): void {
+  const WALL: Rgb = [0.95, 0.94, 0.9], TILE: Rgb = [0.66, 0.27, 0.18], BLUE: Rgb = [0.12, 0.2, 0.55], YEL: Rgb = [0.98, 0.82, 0.2]
+  const STEEL: Rgb = [0.42, 0.44, 0.47]
+  const H = Math.max(7, Math.min(10, fit.height))
+  tower(out, fit, {
+    height: H,
+    tiers: [{ to: H, face: { kind: 'punched', wall: WALL, glass: DARKGL, floor: H / 2, pitch: 3.4, solid: 0.6, arched: true, material: 'stucco' } }],
+    crown: { kind: 'hip', height: 2.6, inset: 0.4, colour: TILE, material: 'tile' },
+  })
+  const ring = towerRing(fit)
+  const e = frontEdge(ring, facingFront(ring, 10))
+  // the blue awnings along the front
+  const n = Math.max(1, Math.min(4, Math.floor(e.L / 9)))
+  for (let k = 0; k < n; k++) awning(out, e, (e.L * (k + 0.5)) / n, Math.min(7, e.L / n - 1), 3.0, BLUE, "No 9 FISHERMEN'S GROTTO", YEL)
+  // the rooftop sign on its truss, over the front half, both faces lettered
+  const L = Math.min(18, e.L * 0.8), Y = H + 4.2, o = -6
+  for (const t of [-L / 2 + 0.5, -L / 4, 0, L / 4, L / 2 - 0.5]) {
+    const p = on(e, e.L / 2 + t, 0, o)
+    tube(out, [p[0], H + 1.5, p[2]], [p[0], Y - 1.2, p[2]], 0.08, 5, STEEL, MT)
+    tube(out, [p[0] - e.nx * 2, H + 1.5, p[2] - e.nz * 2], [p[0], Y - 1.2, p[2]], 0.05, 5, STEEL, MT)
+  }
+  tube(out, on(e, e.L / 2 - L / 2, Y - 1.2, o), on(e, e.L / 2 + L / 2, Y - 1.2, o), 0.07, 5, STEEL, MT)
+  slab(out, e, e.L / 2, o, Y - 1.1, L, 2.2, 0.2, YEL, MT)
+  for (const sd of [1, -1]) {
+    // each face read from its own side: the back is the front edge turned round, its far end its start
+    const f2 = sd > 0 ? e : flip(e)
+    const fo = sd > 0 ? o + 0.12 : -o + 0.12
+    const mid = e.L / 2
+    signAt(out, f2, mid, Y, fo, { type: 'flat', text: "Fishermen's Grotto", h: 1.1, w: L * 0.62, face: 'roman', weight: 'bold', colour: BLUE, lit: 'front' })
+    // No 9 in a blue roundel at the left end, the fisherman's panel at the right
+    const lx = mid - L / 2 + 1.3, rx = mid + L / 2 - 1.4
+    slab(out, f2, lx, fo - 0.05, Y - 1.3, 2.2, 2.6, 0.08, BLUE, MT)
+    signAt(out, f2, lx, Y + 0.1, fo + 0.02, { type: 'flat', text: 'No9', h: 1.0, face: 'grotesque', weight: 'bold', colour: YEL, lit: 'self' })
+    slab(out, f2, rx, fo - 0.05, Y - 1.4, 2.6, 4.2, 0.08, BLUE, MT)
+    // the old fisherman: oilskin coat, sou'wester, the rod
+    slab(out, f2, rx, fo + 0.03, Y - 1.0, 0.9, 2.0, 0.04, YEL, EMIT)
+    slab(out, f2, rx, fo + 0.03, Y + 1.0, 0.5, 0.45, 0.04, [0.95, 0.8, 0.65], MT)
+    slab(out, f2, rx, fo + 0.04, Y + 1.45, 1.0, 0.25, 0.04, YEL, EMIT)
+    const r0 = on(f2, rx + 0.4, Y + 0.3, fo + 0.06), r1 = on(f2, rx + 1.2, Y + 2.2, fo + 0.06)
+    tube(out, r0, r1, 0.03, 4, [0.95, 0.95, 0.9], EMIT)
+  }
 }
 
 export const WHARF_SHOPS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, pretzelKiosk, klamathPropellers,
+  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, aliotos, grotto9, pretzelKiosk, klamathPropellers,
   pier45ShedA: pier45Shed('PIER 45', true),
   pier45ShedB: pier45Shed('PIER 45', false),
   pier45ShedD: pier45Shed('PIER 45', false),

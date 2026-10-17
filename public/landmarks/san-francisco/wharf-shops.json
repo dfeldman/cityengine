@@ -64,5 +64,15 @@
   "front": 81,
   "height": 5,
   "note": "BUGS.md #290m, 2026-10-17: the white board seafood house on Pier 47, a ribbon of windows on the water, SCOMA'S in red over the door and on the roof (Commons 'Boats moored at Fisherman's Wharf, San Francisco 11')."
+ },
+ {
+  "name": "Alioto's No. 8",
+  "osm": [
+   "way/103339436"
+  ],
+  "procedural": "aliotos",
+  "front": 171,
+  "height": 12,
+  "note": "BUGS.md #290m, 2026-10-17: the corner of Jefferson and Taylor — dark red-brown, the turquoise 8 and ALIOTO'S, the roof board facing the lagoon, the awnings of Alioto's Waterside Cafe and Crab Stand, Sabella & La Torre, Nick's Lighthouse (Commons 'Fisherman's Wharf, San Francisco, CA, USA - panoramio (125)', 'Boats moored at fisherman's wharf... against the backdrop of Alioto's')."
  }
 ]
