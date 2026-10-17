@@ -10755,7 +10755,7 @@ GAME
   (lit 'front': the bulbs glow, not the letter faces); Ripley's moved onto its Jefferson wall facing the street. Both
   re-uploaded to the asset bucket and verified in shots.
 - #312 Re-check and mark the older open reports (#282–#301): DONE 2026-10-17 — all marked; left OPEN only #282 (needs
-  the screenshot's location), #284 (not reproduced; needs where), #289 terminal glass (outside the Wharf), #301 (owner to confirm).
+  the screenshot's location), #284 (not reproduced; needs where), #301 (owner to confirm).
 - #313 TRIPO.md: a list of organic shapes for the owner to make in Tripo (statues, Lotta's Fountain, lamp posts, ships,
   unique signs, the Japanese Tea Garden drum bridge…). STARTED (TRIPO.md, 12 rows); grows as the Wharf work finds more.
 
@@ -10834,7 +10834,9 @@ Logged, not fixed:
   `pier27Plaza` (src/render/landmarks/sf/pier27.ts) raises OSM's lawn 1.25 m behind a panelled concrete wall along the
   Embarcadero sidewalk, CRUISE TERMINAL PLAZA in steel letters, a band of golden grasses/yucca/heather on top, the
   terminal's planters; OSM's three untyped lawn trees drawn as Monterey cypresses (new Flora.formAt, sf/flora.ts SEEN)
-  instead of palms. Terminal glass/fins still to do.
+  instead of palms. Terminal DONE 2026-10-17: ribbed silver ground storey with fins, the dark glass hall, the thin
+  oversailing roof, PIER 27 in orange numerals on its ends (Commons "James R. Herman Cruise Terminal at Pier 27 San
+  Francisco (15151185718)").
 - **#290 Fisherman's Wharf, the carnival** — the pretzel kiosk by the aquarium (red drum, scalloped glass canopy), the
   Aquarium of the Bay's front, marinas full of boats, Pier 39's activity centre, the PIER 39 flag clusters, the ferris
   wheel, the black storefronts round Hotel Zephyr, Burgers & Best Pies theatre sign, chocolate and candy buildings, the

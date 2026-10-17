@@ -198,10 +198,20 @@ export function cruiseTerminal27(out: MeshBuilder, fit: Fit): void {
   const H = 11
   tower(out, { ...fit, height: H }, {
     height: H,
-    base: { height: 1, face: { kind: 'blank', wall: [0.3, 0.31, 0.32], material: 'concrete' } },
-    tiers: [{ to: 1, face: { kind: 'curtain', wall: [0.26, 0.27, 0.29], glass: [0.32, 0.4, 0.44], pitch: 2.4, floor: 5, material: 'glass' } }],
+    // (the ground storey in ribbed silver panels with the doors between fins, the glass hall above: Commons "James R.
+    //  Herman Cruise Terminal at Pier 27 San Francisco (15151185718)", 2026-10-17)
+    base: { height: 4.6, face: { kind: 'fins', wall: [0.7, 0.71, 0.72], glass: [0.2, 0.22, 0.24], pitch: 3.2, solid: 0.7, depth: 0.15, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'curtain', wall: [0.22, 0.23, 0.25], glass: [0.24, 0.3, 0.34], pitch: 2.4, floor: 6.4, material: 'glass' } }],
     crown: { kind: 'flat' },
   })
+  // PIER 27 in big orange numerals on the silver panels of each end
+  const ring0 = towerRing(fit)
+  const ends = ring0.map((_, i) => i).filter((i) => edgeAt(ring0, i).L >= 12).sort((p, q) => edgeAt(ring0, p).L - edgeAt(ring0, q).L).slice(0, 2)
+  for (const i of ends) {
+    sign(out, { type: 'flat', text: '27', h: 2.6, face: 'grotesque', weight: 'bold', colour: [0.95, 0.42, 0.12], lit: 'front' }, { ring: ring0, edge: i, y: 2.5, along: 0.3 })
+    sign(out, { type: 'flat', text: 'PIER', h: 0.7, face: 'grotesque', weight: 'bold', colour: [0.95, 0.42, 0.12], lit: 'front' }, { ring: ring0, edge: i, y: 2.5, along: 0.13 })
+    sign(out, { type: 'flat', text: 'JAMES R. HERMAN CRUISE TERMINAL', h: 0.32, face: 'grotesque', weight: 'bold', colour: [0.2, 0.22, 0.25], lit: 'front' }, { ring: ring0, edge: i, y: 4.2, along: 0.3 })
+  }
   // the roof: one slab, 4 m out past the walls
   const eaves = offsetRing(towerRing(fit), 4)
   faceBand(out, eaves, H, H + 0.7, { kind: 'blank', wall: [0.32, 0.33, 0.34], material: 'metal' })
