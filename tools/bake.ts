@@ -2713,6 +2713,49 @@ async function bake(spec: CitySpec): Promise<void> {
     }
     console.log(`  ${lifted} ways lifted out of the ground (more than 0.3 m under it), ${inserted} vertices added on humps`)
   }
+  /*
+   * A FOOTWAY ON A STREET'S CENTRELINE is the same alley mapped twice (owner, 2026-10-17, BUGS.md #307: "a street that has
+   * a fire extinguisher and people walking right down the center"): OSM draws Spofford, Lynch, Water, Genoa Place… as a
+   * street AND as a footway along its middle, and the crowd walked that footway — down the middle of the traffic — with
+   * the furniture on it. A foot way 80 % of whose length lies within 2 m of a street's centreline (a street under 14 m
+   * wide, at grade) is dropped; the street stays, its sidewalks carry the walkers. tools/footways-in-road.ts lists them.
+   */
+  {
+    const CELL = 50
+    const grid = new Map<string, [number, number, number, number][]>()
+    for (const e of kept) {
+      if (e.foot || e.bridge || e.tunnel || (e.layer ?? 0) !== 0 || e.width >= 14 || e.width < 3) continue
+      const p = unpackPoints(e.points)
+      for (let i = 1; i < p.length; i++) {
+        const sgm: [number, number, number, number] = [p[i - 1].x, p[i - 1].z, p[i].x, p[i].z]
+        for (let x = Math.floor(Math.min(sgm[0], sgm[2]) / CELL); x <= Math.floor(Math.max(sgm[0], sgm[2]) / CELL); x++)
+          for (let z = Math.floor(Math.min(sgm[1], sgm[3]) / CELL); z <= Math.floor(Math.max(sgm[1], sgm[3]) / CELL); z++)
+            (grid.get(`${x},${z}`) ?? grid.set(`${x},${z}`, []).get(`${x},${z}`)!).push(sgm)
+      }
+    }
+    const onCentre = (x: number, z: number): boolean => (grid.get(`${Math.floor(x / CELL)},${Math.floor(z / CELL)}`) ?? []).some(([ax, az, bx, bz]) => {
+      const dx = bx - ax, dz = bz - az, t = Math.max(0, Math.min(1, ((x - ax) * dx + (z - az) * dz) / (dx * dx + dz * dz || 1)))
+      return Math.hypot(ax + dx * t - x, az + dz * t - z) < 2
+    })
+    const before = kept.length
+    const dropped = new Set<number>()
+    for (const e of kept) {
+      if (!e.foot || e.bridge || e.tunnel || (e.layer ?? 0) !== 0 || e.kind === 'steps') continue
+      const p = unpackPoints(e.points)
+      let on = 0, all = 0
+      for (let i = 1; i < p.length; i++) {
+        const L = Math.hypot(p[i].x - p[i - 1].x, p[i].z - p[i - 1].z), n = Math.max(1, Math.ceil(L))
+        for (let k = 0; k < n; k++) { const t = (k + 0.5) / n; all += L / n; if (onCentre(p[i - 1].x + (p[i].x - p[i - 1].x) * t, p[i - 1].z + (p[i].z - p[i - 1].z) * t)) on += L / n }
+      }
+      if (all >= 10 && on >= 0.8 * all) dropped.add(e.id)
+    }
+    if (dropped.size) {
+      const keepE = kept.filter((e) => !dropped.has(e.id))
+      kept.length = 0
+      kept.push(...keepE)
+    }
+    console.log(`  ${before - kept.length} foot ways dropped that ran down a street's own centreline (the same alley mapped twice)`)
+  }
   // ---- the ride graph, built here only to be measured (the game builds its own at load, IMPROVEMENTS §2.2)
   const asEdges: Edge[] = kept.map((e) => {
     const points = unpackPoints(e.points)
