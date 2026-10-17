@@ -28,7 +28,7 @@
  */
 
 /** What a rider may get on. Buses and the underground metro are not here, on purpose. */
-export type TransitKind = 'cable' | 'streetcar' | 'gondola'
+export type TransitKind = 'cable' | 'streetcar' | 'gondola' | 'wheel'
 
 /** A vehicle as the boarding logic sees it. `id` must be stable for as long as the vehicle exists. */
 export interface VehicleView {
@@ -71,7 +71,7 @@ export const BOARD_SPEED = 1.2
 /** The furthest a rider may be put from where they got off. Beyond this they stay aboard. */
 export const MAX_DROP = 30
 
-const NAMES: Record<TransitKind, string> = { cable: 'cable car', streetcar: 'streetcar', gondola: 'gondola' }
+const NAMES: Record<TransitKind, string> = { cable: 'cable car', streetcar: 'streetcar', gondola: 'gondola', wheel: 'ferris wheel' }
 
 export type AlightResult =
   | { status: 'ok'; pos: GraphPosition }
@@ -129,7 +129,8 @@ export class Transit {
        */
       // (the gondola's lower station stands back in Salesforce Plaza, 24 m off Mission Street, the nearest street a
       // bike is on: within reach of it, not of the kerb)
-      if (d > (v.kind === 'gondola' ? GONDOLA_NEAR : BOARD_NEAR)) continue
+      // (and the ferris wheel's deck, set back in its lot off Jefferson Street)
+      if (d > (v.kind === 'gondola' || v.kind === 'wheel' ? GONDOLA_NEAR : BOARD_NEAR)) continue
       if (!best || d < best.d) best = { v, d }
     }
     this.candidate = best?.v ?? null

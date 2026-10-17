@@ -8,9 +8,10 @@
  */
 import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
-import { box, prism, type Rgb } from '../../models.ts'
+import { box, prism, EMIT, type Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 import { sign } from '../signage.ts'
+import { SKYSTAR, DECK } from '../../sf/ferris.ts'
 
 export type V3 = [number, number, number]
 const UVQ: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
@@ -155,4 +156,84 @@ export function wharfSign(out: MeshBuilder, _fit?: Fit): void {
   }
 }
 
-export const WHARF_CARNIVAL: Record<string, (out: MeshBuilder, fit: Fit) => void> = { wharfSign }
+/**
+ * The SKYSTAR WHEEL's standing parts (the wheel and its gondolas turn in render/sf/ferris.ts, from the same SKYSTAR):
+ * two splayed A-frames of white tube either side of the hub, braced, on footings; the boarding DECK under the wheel's
+ * foot, railed, with steps up from the front; the arched CANOPY over the queue in front — translucent panels on white
+ * ribs, lit violet and red underneath at night — with SKYSTAR in lit gold letters along its crest; and the ticket booth.
+ * Commons "SkyStar Wheel - Fisherman's Wharf - January 2024 (8775)". Placed at the hub, rotateDeg 0: the wheel's face
+ * looks south (−z), across the lot to Jefferson Street.
+ */
+export function skystarWheel(out: MeshBuilder, _fit: Fit): void {
+  const WHITE: Rgb = [0.93, 0.93, 0.92], GREY: Rgb = [0.62, 0.62, 0.6], DECKC: Rgb = [0.5, 0.5, 0.5], RAIL: Rgb = [0.85, 0.85, 0.86]
+  const PANEL: Rgb = [0.86, 0.84, 0.9], RED: Rgb = [0.78, 0.12, 0.16], VIOLET: Rgb = [0.55, 0.35, 0.95], GOLD: Rgb = [1.0, 0.84, 0.45]
+  const MT = surfaceTag('metal'), CT = surfaceTag('concrete'), GL = surfaceTag('glass')
+  const HUB = SKYSTAR.hub
+  // the A-frames: each side of the hub, two legs splayed across the face down to footings, a tie between their feet,
+  // a brace part way up; the bearing housing on top
+  for (const z of [-3.4, 3.4]) {
+    const top: V3 = [0, HUB, z]
+    for (const sx of [-1, 1]) {
+      const foot: V3 = [sx * 12.5, 0.4, z * 1.7]
+      tube(out, foot, top, 0.62, 10, WHITE, MT, 0.42)
+      box(out, foot[0], 0.2, foot[2], 1.3, 0.4, 1.3, GREY, CT)
+      // the brace, a third of the way up, to the other leg
+      const t = 0.35
+      const b: V3 = [foot[0] + (top[0] - foot[0]) * t, foot[1] + (top[1] - foot[1]) * t, foot[2] + (top[2] - foot[2]) * t]
+      tube(out, b, [0, b[1], b[2]], 0.22, 8, WHITE, MT)
+    }
+    tube(out, [-12.5, 0.6, z * 1.7], [12.5, 0.6, z * 1.7], 0.3, 8, WHITE, MT)
+    box(out, 0, HUB, z, 0.9, 0.9, 0.5, WHITE, MT)
+  }
+  // the axle through the hub (the drum turns on it)
+  tube(out, [0, HUB, -4.0], [0, HUB, 4.0], 0.5, 12, GREY, MT)
+  // the deck: a railed platform at the wheel's foot, the bottom gondola's floor level with it, steps up from the front
+  const DY = DECK.y, X0 = -6, X1 = 6, Z0 = -5.5, Z1 = 3.5
+  box(out, 0, DY / 2, (Z0 + Z1) / 2, (X1 - X0) / 2, DY / 2, (Z1 - Z0) / 2, DECKC, CT)
+  for (let k = 0; k < 6; k++) box(out, 0, (k + 0.5) * DY / 6, Z0 - 0.3 * (6 - k) + 0.15, 2.4, (k + 0.5) * DY / 12 + 0.01, 0.15, GREY, CT)
+  for (const [ax, az, bx, bz] of [[X0, Z0, -2.4, Z0], [2.4, Z0, X1, Z0], [X1, Z0, X1, Z1], [X0, Z0, X0, Z1], [X0, Z1, -1.6, Z1], [1.6, Z1, X1, Z1]]) {
+    tube(out, [ax, DY + 1.05, az], [bx, DY + 1.05, bz], 0.04, 6, RAIL, MT)
+    tube(out, [ax, DY + 0.55, az], [bx, DY + 0.55, bz], 0.025, 6, RAIL, MT)
+    const L = Math.hypot(bx - ax, bz - az)
+    for (let u = 0; u <= L + 0.01; u += 1.5) { const t = L ? u / L : 0; tube(out, [ax + (bx - ax) * t, DY, az + (bz - az) * t], [ax + (bx - ax) * t, DY + 1.05, az + (bz - az) * t], 0.035, 6, RAIL, MT) }
+  }
+  /*
+   * The canopy: a broad shallow arch over the queue in front of the deck, 22 m across and 8 deep, its crest 6.4 m up —
+   * translucent panels between white ribs that fan from the back, a white edge beam, the lights under it.
+   */
+  const CW = 11, CZ0 = -6, CZ1 = -14
+  const crest = (x: number, zf: number): number => 2.9 + 3.5 * Math.cos((x / CW) * Math.PI / 2) * (0.55 + 0.45 * zf)
+  const NX = 14, NZ = 4
+  for (let i = 0; i < NX; i++) for (let j = 0; j < NZ; j++) {
+    const x0 = -CW + (2 * CW * i) / NX, x1 = -CW + (2 * CW * (i + 1)) / NX
+    const f0 = j / NZ, f1 = (j + 1) / NZ
+    const z0 = CZ0 + (CZ1 - CZ0) * f0, z1 = CZ0 + (CZ1 - CZ0) * f1
+    const q: V3[] = [[x0, crest(x0, 1 - f0), z0], [x1, crest(x1, 1 - f0), z0], [x1, crest(x1, 1 - f1), z1], [x0, crest(x0, 1 - f1), z1]]
+    out.quad(q, [0, 1, 0], UVQ, PANEL, GL)
+    out.quad([q[1], q[0], q[3], q[2]], [0, -1, 0], UVQ, (i + j) % 2 ? VIOLET : RED, EMIT)
+  }
+  for (let i = 0; i <= NX; i++) {
+    const x = -CW + (2 * CW * i) / NX
+    tube(out, [x, crest(x, 1), CZ0], [x, crest(x, 0), CZ1], 0.09, 6, WHITE, MT)
+  }
+  for (let i = 0; i < NX * 2; i++) {
+    const x0 = -CW + (CW * i) / NX, x1 = -CW + (CW * (i + 1)) / NX
+    tube(out, [x0, crest(x0, 0), CZ1], [x1, crest(x1, 0), CZ1], 0.16, 8, WHITE, MT)
+    tube(out, [x0, crest(x0, 1), CZ0], [x1, crest(x1, 1), CZ0], 0.12, 8, WHITE, MT)
+  }
+  // its posts, at the ends and two at the front
+  for (const x of [-CW, CW]) for (const z of [CZ0, CZ1]) tube(out, [x, 0, z], [x, crest(x, z === CZ0 ? 1 : 0), z], 0.14, 8, WHITE, MT)
+  for (const x of [-4.5, 4.5]) tube(out, [x, 0, CZ1], [x, crest(x, 0), CZ1], 0.12, 8, WHITE, MT)
+  // SKYSTAR along the crest, gold and lit, both ways
+  for (const side of [1, -1]) sign(out, { type: 'flat', text: 'SKYSTAR', h: 1.1, face: 'grotesque', weight: 'bold', colour: GOLD, lit: 'self', tracking: 0.35 },
+    { x: 0, y: crest(0, 0) + 0.85, z: CZ1 + 0.2 * side, heading: side > 0 ? Math.PI : 0 })
+  tube(out, [-4.2, crest(0, 0) + 0.2, CZ1], [4.2, crest(0, 0) + 0.2, CZ1], 0.05, 6, WHITE, MT)
+  // the ticket booth, by the canopy's west foot
+  box(out, -CW - 2.2, 1.3, CZ1 + 2, 1.4, 1.3, 1.2, WHITE, MT)
+  box(out, -CW - 2.2, 2.75, CZ1 + 2, 1.6, 0.15, 1.4, RED, MT)
+  box(out, -CW - 2.2, 1.6, CZ1 + 0.79, 1.0, 0.5, 0.02, [0.25, 0.3, 0.35], GL)
+  sign(out, { type: 'flat', text: 'TICKETS', h: 0.3, face: 'grotesque', weight: 'bold', colour: [1, 1, 1], panel: RED, lit: 'back' },
+    { x: -CW - 2.2, y: 2.75, z: CZ1 + 0.58, heading: Math.PI })
+}
+
+export const WHARF_CARNIVAL: Record<string, (out: MeshBuilder, fit: Fit) => void> = { wharfSign, skystarWheel }

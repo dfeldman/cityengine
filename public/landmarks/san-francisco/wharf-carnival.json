@@ -1,0 +1,15 @@
+[
+ {
+  "name": "SkyStar Wheel",
+  "procedural": "skystarWheel",
+  "lat": 37.80873,
+  "lon": -122.413413,
+  "rotateDeg": 0,
+  "size": [
+   30,
+   26
+  ],
+  "height": 47,
+  "note": "BUGS.md #290c, 2026-10-16: the standing parts (A-frames, deck, arched canopy with SKYSTAR, ticket booth); the wheel and its 36 gondolas turn in render/sf/ferris.ts and are boarded with B. OSM node 11423890645."
+ }
+]

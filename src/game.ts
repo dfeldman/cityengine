@@ -74,6 +74,7 @@ import { SIZE, boxOf, overlap } from './sim/collide.ts'
 import { inRing } from './map/zones.ts'
 import { BakedCrowd, cityClothes, peopleLights } from './render/crowd-baked.ts'
 import { CableRiders } from './render/cable-riders.ts'
+import { FerrisWheel, SKYSTAR } from './render/sf/ferris.ts'
 import { PLAYER_SPOT } from './render/sf/trains.ts'
 import { randomSpec } from 'avatarkit'
 import { Rider } from './render/rider.ts'
@@ -1210,6 +1211,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    */
   let strangers: BakedCrowd | null = null
   let cableRiders: CableRiders | null = null
+  /** the SkyStar wheel at Fisherman's Wharf (render/sf/ferris.ts): turning, and boarded with B */
+  const skystar = pkg.region === 'san-francisco' && !off.has('life') ? (() => {
+    const p = new Projection(pkg.origin).toLocal({ lat: SKYSTAR.lat, lon: SKYSTAR.lon })
+    return new FerrisWheel(scene, p.x, p.z, city.terrain.heightAt(p.x, p.z))
+  })() : null
   void (rider?.ready ?? Promise.resolve()).then(() => {
     ;(window as unknown as { riderReady?: boolean }).riderReady = true
     if (off.has('life')) return
@@ -1797,6 +1803,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   /** every vehicle worth offering — or, while aboard, just the one being ridden */
   function transitViews(): VehicleView[] {
     const on = transit.aboard
+    if (on?.kind === 'wheel') return skystar?.views() ?? []
     if (on) {
       const t = life.train(Number(on.id))
       return t ? [vehicleView(t)] : []
@@ -1807,7 +1814,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
      * stop", and wrong since boarding became "near enough" (sim/transit.ts `update`). It was also a second
      * silent way to be offered nothing at all, on top of the dwelling test.
      */
-    return life.trainInfo().filter((t) => BOARDABLE.has(t.kind)).map(vehicleView)
+    return [...life.trainInfo().filter((t) => BOARDABLE.has(t.kind)).map(vehicleView), ...(skystar?.views() ?? [])]
   }
   /**
    * Back onto the ride graph, facing the way the vehicle was going. `reversed` is chosen by comparing the
@@ -1838,6 +1845,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     if (e.target instanceof HTMLElement && e.target.closest('input, textarea, select')) return
     if (e.code === 'Escape' && transit.aboard) {
       // the escape hatch: off, here, whatever it takes (sim/transit.ts `abandon`)
+      if (transit.aboard.kind === 'wheel') skystar?.alighted()
       const pos = transit.abandon(placeOnGraph)
       if (pos) backOnStreet(pos)
       hud.banner('Off the transit', 'put back on the nearest street')
@@ -1849,7 +1857,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   /** B, or a tap on the transit line: off if aboard, on if something is boardable (owner, 2026-10-03: no way to board on mobile) */
   function transitAction(): void {
     if (transit.aboard) {
+      // (the wheel lets you off at the bottom, which is the only place there is to get off)
+      if (transit.aboard.kind === 'wheel' && skystar && !skystar.askOff()) { hud.note('off at the bottom, when the gondola comes round'); return }
+      const wasWheel = transit.aboard.kind === 'wheel'
       const r = transit.alight(placeOnGraph)
+      if (r.status === 'ok' && wasWheel) skystar?.alighted()
       if (r.status === 'ok') { backOnStreet(r.pos); hud.banner('Off you get', placeName(nav.at())) }
       else if (transit.prompt()?.includes('Esc')) {
         // (lost: the escape hatch, which on a phone is the same tap)
@@ -1865,7 +1877,10 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       destination = null
       tour = null
       clearRoute()
-      if (v.kind === 'gondola') {
+      if (v.kind === 'wheel') {
+        skystar?.boarded(v.id)
+        hud.banner('Aboard the SkyStar wheel', `once round, over the Wharf · ${keyed('B', 'get off at the bottom')}`)
+      } else if (v.kind === 'gondola') {
         // boarded with B rather than by waiting at the station: it still puts the rider off at the other end
         const a = transit.aboard!
         gondolaFrom = { x: a.x, z: a.z }
@@ -2409,6 +2424,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         if (r.status === 'ok') { backOnStreet(r.pos); hud.banner(onCabin.y - city.terrain.heightAt(onCabin.x, onCabin.z) > 8 ? 'Salesforce Park' : 'Salesforce Plaza', touchScreen() ? 'the transit line takes you off any transit; here it is automatic' : 'B gets you off any transit; here it is automatic') }
         gondolaFrom = null
       }
+      skystar?.update(dt)
+      if (skystar?.dueOff() && transit.aboard?.kind === 'wheel') {
+        const r = transit.alight(placeOnGraph)
+        if (r.status === 'ok') { skystar.alighted(); backOnStreet(r.pos); hud.banner('Back on the Wharf', placeName(nav.at())) }
+      }
       const prompt = transit.prompt()
       // (on a touch screen the line is the button: it says so instead of naming a key)
       if (prompt) hud.transit(touchScreen() ? prompt.replace(/^B · board/, 'Tap · board').replace(/ · (B|Esc) to get off$/, ' · tap to get off') : prompt)
@@ -2696,7 +2716,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           if (p) { at = { x: p.x, z: p.z }; heading = p.heading; groundY = p.y }
         }
         rider?.setStanding(kind === 'cable')
-        if (kind === 'streetcar') { if (!riderHidden) { rider?.hide(); riderHidden = true } }
+        if (kind === 'streetcar' || kind === 'wheel') { if (!riderHidden) { rider?.hide(); riderHidden = true } }
         else if (riderHidden) { rider?.show(); riderHidden = false }
       }
       /*
@@ -2996,7 +3016,12 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       const felt = high || riding || speedLines === null ? 0 : (lastState?.speed ?? 0)
       camera.fov += (fovFor(felt) - camera.fov) * Math.min(1, dt * 2)
       speedLines?.update(dt, felt)
-      if (!frozen) {
+      const wheelCam = transit.aboard?.kind === 'wheel' ? skystar?.cameraAboard() : null
+      if (!frozen && wheelCam) {
+        // up on the wheel: the camera rides beside the gondola, looking out over the Wharf to the bay
+        camera.position.copyFrom(wheelCam.eye)
+        camera.setTarget(wheelCam.look)
+      } else if (!frozen) {
         // (the right of the way the rider faces is (fz, −fx))
         camera.position.set(at.x - fx * camBack + fz * camSide, camHeight, at.z - fz * camBack - fx * camSide)
         camera.setTarget(new Vector3(at.x + fx * (high ? 26 : 9), (high ? 6 : 1.9) + aheadY,
@@ -3219,7 +3244,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // without a bake — `__life.addStops([{x, z}])` puts a stop on a line that has none
   w.__life = life
   w.__transit = transit
-  w.__board = () => (transit.boardable ? transit.board(nav.position) : false)
+  // (as B does it: the wheel and the gondola have their own boarding)
+  w.__board = () => { if (!transit.boardable) return false; transitAction(); return transit.aboard !== null }
   // the prepared tiles, for probing what reached the city (tools/, debugging)
   w.__tiles = prepared.tiles
   // nothing left to stream round the camera's focus (render/city.ts `idle`)
