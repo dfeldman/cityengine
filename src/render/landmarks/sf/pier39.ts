@@ -10,9 +10,18 @@ import { tower, towerRing } from '../tower.ts'
 import { edgeAt, railing } from '../parts.ts'
 import { box, type Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
+import { sign } from '../signage.ts'
 
 const hash = (a: number, b: number): number => { const h = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return h - Math.floor(h) }
 const UVQ: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+/** the pier's shops and cafés as OSM names them (2026-10-17): a shopfront's board takes one, by where it is */
+const SHOPS = ['Alcatraz Gift Shop', 'Alpaca Fashion', 'Biscoff Coffee Corner', 'Bubba Gump Shrimp Co.', 'Build-A-Bear Workshop', 'Candy Baron',
+  'Carmel Honey Company', 'Charms By The Bay', 'Chowders', 'Christmas In San Francisco', 'Crepe Cafe', 'Eagle Cafe', 'Fog Harbor Fish House',
+  'Fun Food Factory', 'Gelato', 'Hot Licks', 'Houdini’s Magic Shop', 'Krazy Kaps', 'Lappert’s Ice Cream', 'Lefty’s', 'Lids', 'Lorenzo’s Pizzeria',
+  'Magnetron', 'Mrs. Fields', 'Na Hoku', 'Old Tyme Treats', 'Only in San Francisco', 'Pearl Factory', 'Pier Market', 'Rock Shop',
+  'SF City Wear', 'San Francisco Sock Market', 'Scentchips', 'Shirtique', 'Solve-It', 'Swiss Louis', 'Taco Cantina', 'The Cable Car Store',
+  'The Dog House', 'The Hook', 'The Shell Cellar', 'The Spice & Tea Exchange', 'Trish’s Mini Donuts', 'Under The Golden Gate', 'We Be Knives',
+  'Wilder West', 'Wipeout Bar & Grill', 'Player’s Sports Grill & Arcade']
 
 /*
  * The timber, weathered as it is (owner, 2026-10-17: "the pier 39 amusement park stuff needs a lot more work"; Commons
@@ -45,10 +54,10 @@ export function pier39Shop(out: MeshBuilder, fit: Fit): void {
   const WT = surfaceTag('clapboard')
   tower(out, { ...fit, height: H }, {
     height: H,
-    base: two ? { height: G, face: { kind: 'curtain', wall: sd.trim, glass: [0.2, 0.23, 0.25], pitch: 3.0, floor: G, material: 'glass' } } : undefined,
+    base: two ? { height: G, face: { kind: 'curtain', wall: sd.trim, glass: [0.66, 0.58, 0.44], pitch: 3.0, floor: G, material: 'glass' } } : undefined,
     tiers: [{ to: 1, face: two
       ? { kind: 'punched', wall: sd.upper, glass: [0.22, 0.24, 0.25], pitch: 2.4, floor: U, solid: 0.62, material: 'clapboard' }
-      : { kind: 'curtain', wall: sd.trim, glass: [0.2, 0.23, 0.25], pitch: 3.0, floor: H, material: 'glass' } }],
+      : { kind: 'curtain', wall: sd.trim, glass: [0.66, 0.58, 0.44], pitch: 3.0, floor: H, material: 'glass' } }],
     crown: { kind: 'hip', height: two ? 2.4 : 1.6, inset: -0.7, colour: [0.42, 0.39, 0.35], material: 'tile', dormers: two ? 2 : 0 },
   })
   // the timber between the shopfronts: a sill board and a fascia band round the whole ground floor
@@ -68,7 +77,7 @@ export function pier39Shop(out: MeshBuilder, fit: Fit): void {
       for (let k = 0; k < n; k++) {
         if (hash(e.mid.x + k, e.mid.z - k) < 0.25) continue
         const u0 = k * bw + 0.2, u1 = (k + 1) * bw - 0.2
-        const top = G - 0.65, low = G - 1.45, outw = 1.3
+        const top = G - 1.15, low = G - 1.85, outw = 1.2
         const stripes = striped ? 6 : 1
         for (let s2 = 0; s2 < stripes; s2++) {
           const a0 = u0 + ((u1 - u0) * s2) / stripes, a1 = u0 + ((u1 - u0) * (s2 + 1)) / stripes
@@ -79,6 +88,13 @@ export function pier39Shop(out: MeshBuilder, fit: Fit): void {
         }
         // its two side cheeks
         for (const u of [u0, u1]) out.quad([at(u, top, 0.05), at(u, low, outw), at(u, low - 0.28, outw), at(u, low - 0.28, 0.05)], [ux, 0, uz], UVQ, solid, WT)
+        // the shop's name on the fascia over its awning: a board in the awning's colour, cream letters
+        if (k % 2 === 0) {
+          const name = SHOPS[Math.floor(hash(e.mid.x * 3 + k, e.mid.z * 3 - k) * SHOPS.length)]
+          const c = at((u0 + u1) / 2 + (k + 1 < n ? bw / 2 : 0), G - 0.68, 0.1)
+          sign(out, { type: 'flat', text: name, h: 0.34, w: Math.min(bw * (k + 1 < n ? 1.8 : 0.9), name.length * 0.27), face: 'slab', weight: 'bold',
+            colour: [0.97, 0.95, 0.88], panel: solid, lit: 'front' }, { x: c[0], y: c[1], z: c[2], heading: e.heading })
+        }
       }
     }
   }
