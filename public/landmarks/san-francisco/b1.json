@@ -5,7 +5,7 @@
   { "osm": ["way/1365382601"], "procedural": "b1_prewarOffice_1365382601", "name": "Way 1365382601", "height": 32 },
   { "osm": ["way/1410929341"], "procedural": "oneHundredFirstPlaza", "name": "100 First Plaza", "height": 136 },
   { "osm": ["way/91626348"], "procedural": "oneHundredFirstPodium", "name": "100 First Plaza podium", "height": 13 },
-  { "osm": ["way/320721969"], "procedural": "b1_tower_320721969", "name": "Way 320721969", "height": 91 },
+  { "osm": ["way/320721969"], "procedural": "b1_tower_320721969", "plan": "union", "name": "Way 320721969", "height": 91 },
   { "osm": ["way/197462674"], "procedural": "holidayInnPodium", "name": "Holiday Inn Golden Gateway podium", "height": 10 },
   { "osm": ["way/436473931"], "procedural": "holidayInnTower", "name": "Holiday Inn Golden Gateway", "height": 101 },
   { "osm": ["way/255960463"], "procedural": "somaGrand", "name": "Soma Grand", "height": 92 }

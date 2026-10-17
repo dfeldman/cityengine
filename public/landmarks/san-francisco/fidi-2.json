@@ -4,7 +4,7 @@
    "way/1279447597"
   ],
   "name": "150 California Street",
-  "procedural": "oneFiftyCalifornia",
+  "procedural": "oneFiftyCalifornia", "plan": "union",
   "front": "street",
   "height": 101,
   "note": "1988 pale granite tower"

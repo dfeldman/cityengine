@@ -74,7 +74,7 @@
       "way/112774489"
     ],
     "name": "303 Second Street",
-    "procedural": "threeOThreeSecondStreet",
+    "procedural": "threeOThreeSecondStreet", "plan": "union",
     "front": "street",
     "height": 62,
     "note": "1988 SoMa office complex over a plaza podium"

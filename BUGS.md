@@ -10765,6 +10765,9 @@ before it is useful.
 - #295 Generic building inside a custom one at 37.785565 −122.409141 (owner, 2026-10-16) — FIXED: the Hotel Nikko's
   outline is two OSM parts in an L round Maria Manor; a parts-fitted model takes their convex HULL unless `"plan":
   "union"`, so the tower stood over the notch. Entry given `plan: union`. (Other L/U-shaped parts-fitted landmarks may do
-  the same: a sweep for generic buildings inside a hull but outside the union is worth running.)
+  the same.) Swept 2026-10-16 (scratch hullsweep.ts: generic buildings whose centre is inside a parts-fitted model's
+  hull but outside its parts): plan union also on the b1 tower 320721969, 150 California, 303 Second Street (each
+  swallowed a 12-23 m building), shot clean. Left: 333 Bush, 555 Montgomery, Symphony Towers, Royal Towers — each
+  hull holds only a 4-8 m structure, buried inside the model.
 - #291 Cable car passengers "in a hot tub" — FIXED (hollow saloon, benches).
 - #292 Bench inside the Taylor Street stairs (37.790831 −122.412358) — FIXED (furniture kept off the whole flight).
