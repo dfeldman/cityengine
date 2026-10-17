@@ -10932,3 +10932,15 @@ Logged, not fixed:
   hull holds only a 4-8 m structure, buried inside the model.
 - #291 Cable car passengers "in a hot tub" — FIXED (hollow saloon, benches).
 - #292 Bench inside the Taylor Street stairs (37.790831 −122.412358) — FIXED (furniture kept off the whole flight).
+
+### #316–#318 Owner's reports, 2026-10-17 evening
+- **#316** Submerged car at 37.791993, -122.409238 (Powell at California, looking down Powell): a taxi sunk into the
+  junction's surface up to its windows, others tilted on the crossing.
+- **#317** Road in the air at 37.790852, -122.408942 (Powell between Pine and Bush): a slice of carriageway with parked
+  traffic on it hangs over the steep street, a junction plateau held up off the slope.
+- **#318** Hallidie Plaza, 37.784258, -122.408329 (Powell & Market BART entrance), "could use more work": red patches
+  of paving at random, two loose stair runs in the middle of the plaza, the sunken entrance as plain boxes.
+- **#319** Yerba Buena Center steps extend halfway into the road, 37.785164, -122.403392.
+- **#320** Fire extinguishers in the road, 37.785600, -122.402841.
+- (#316 cause: California at Powell is four nodes, twin carriageways crossing twin carriageways, each levelled on its own —
+  1.1 m apart; #317 cause: the junction ease measured its step 12 m down a 25 % street and flattened half the block.)

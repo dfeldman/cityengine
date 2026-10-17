@@ -231,7 +231,7 @@ export function yerbaBuenaGardens(out: MeshBuilder, _fit?: Fit): void {
 
   // ---- the whole polygon is surfaced first, and it is PAVED, not grass. The aerials are unambiguous: the
   // east third of the garden is a hardscape band of steps, the memorial walk and a grid of garden rooms.
-  capPolygon(out, ring, DECK_H, PAVING, CONC_TAG, 6)
+  capPolygon(out, notchedForEsplanade(ring), DECK_H, PAVING, CONC_TAG, 6)
 
   // ---- the OVAL lawn, over the centre and west, with its ring path round it and a path crossing it. An
   // oval, not a rectangle: the ring path and the grass are the shape the four obliques show.
@@ -387,9 +387,24 @@ function gardenRooms(out: MeshBuilder): void {
  */
 function missionFrontage(out: MeshBuilder, ring: P2[]): void {
   const e = edge(ring, MISSION_EDGE)
-  const gateEnd = e.L * 0.40   // ring[18] is the EAST end of this run: the gated part is nearest Third Street
-  gatedWall(out, e, 1.5, gateEnd)
-  esplanade(out, e, gateEnd + 3, e.L - 1.5)
+  const [u0, u1] = esplanadeSpan(e)
+  gatedWall(out, e, 1.5, u0 - 3)
+  esplanade(out, e, u0, u1)
+}
+
+/** where along the Mission edge the esplanade runs: ring[18] is the EAST end, the gated part nearest Third Street */
+function esplanadeSpan(e: ReturnType<typeof edge>): [number, number] { return [e.L * 0.40 + 3, e.L - 1.5] }
+const ESPL_RISE = 0.67
+const ESPL_DEPTH = 1.7
+const esplSteps = (): number => Math.max(2, Math.round(DECK_H / ESPL_RISE))
+
+/** The deck's outline with the esplanade's notch cut out of it: the flight steps down INSIDE the garden's edge. */
+function notchedForEsplanade(ring: P2[]): P2[] {
+  const e = edge(ring, MISSION_EDGE)
+  const [u0, u1] = esplanadeSpan(e)
+  const d = esplSteps() * ESPL_DEPTH
+  const at = (u: number, inward: number): P2 => ({ x: e.a.x + e.tx * u - e.nx * inward, z: e.a.z + e.tz * u - e.nz * inward })
+  return [...ring.slice(0, MISSION_EDGE + 1), at(u0, 0), at(u0, d), at(u1, d), at(u1, 0), ...ring.slice(MISSION_EDGE + 1)]
 }
 
 /**
@@ -409,16 +424,21 @@ function esplanade(out: MeshBuilder, e: ReturnType<typeof edge>, u0: number, u1:
    * pavement it has, which makes it 1 in 2.5: a grand shallow WALK, not a ramp. That is also what it is in
    * life, and saying so is more useful than a ridable esplanade that is in the wrong place.
    */
-  const RISE = 0.67
-  const steps = Math.max(2, Math.round(DECK_H / RISE))
+  /*
+   * …and it steps down INSIDE the garden's edge (BUGS.md #319, owner 2026-10-17: "yb center steps extend halfway into the
+   * road"). Our Mission Street pavement is 3.2 m, not the 10 m this was fitted to, so ten metres of terraces out from the
+   * edge stood across the carriageway. The deck is notched (`notchedForEsplanade`) and the lowest terrace meets the
+   * pavement at the garden line, which is where the real flight is.
+   */
+  const steps = esplSteps()
   const rise = DECK_H / steps
-  const DEPTH = 1.7
+  const DEPTH = ESPL_DEPTH
   const ang = e.h
   const um = (u0 + u1) / 2
   const hw = (u1 - u0) / 2
   for (let i = 0; i < steps; i++) {
     const y = DECK_H - (i + 1) * rise
-    const outw = (i + 1) * DEPTH           // how far OUT from the lawn edge this terrace reaches
+    const outw = (i + 1 - steps) * DEPTH   // the terrace's outer lip, measured OUT from the garden edge (≤ 0: inside)
     const cx = e.a.x + e.tx * um + e.nx * (outw - DEPTH / 2)
     const cz = e.a.z + e.tz * um + e.nz * (outw - DEPTH / 2)
     // the grass tread. rise/depth here is about 1 in 5 — shallow enough to read as a ramp of terraces
@@ -433,7 +453,7 @@ function esplanade(out: MeshBuilder, e: ReturnType<typeof edge>, u0: number, u1:
   // a low cheek wall at each end so the terraces do not float off the sides of the frontage
   for (const u of [u0, u1]) {
     const outw = steps * DEPTH
-    boxAlong(out, e.a.x + e.tx * u + e.nx * outw / 2, DECK_H / 2, e.a.z + e.tz * u + e.nz * outw / 2,
+    boxAlong(out, e.a.x + e.tx * u - e.nx * outw / 2, DECK_H / 2, e.a.z + e.tz * u - e.nz * outw / 2,
       0.35, DECK_H / 2, outw / 2, ang, PRECAST_DK, CONC_TAG)
   }
 }
