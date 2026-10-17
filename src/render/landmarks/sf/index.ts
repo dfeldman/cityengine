@@ -75,6 +75,7 @@ import { TIERA_9 } from './districts/tierA-9.ts'
 import { TIERA_10 } from './districts/tierA-10.ts'
 import { PIERS } from './piers.ts'
 import { municipalPier } from './muni-pier.ts'
+import { aquaticBleachers } from './aquatic-bleachers.ts'
 import { MARKET_EAST } from './districts/market-east.ts'
 import { MARKET_MID } from './districts/market-mid.ts'
 import { MARKET_WEST } from './districts/market-west.ts'
@@ -393,6 +394,7 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   // built from their OSM ways by render/stairs.ts, not placed as a landmark
   lyonStreetSteps,
   municipalPier,
+  aquaticBleachers,
   ...SCRATCH_1,
   ...SCRATCH_2,
   ...SCRATCH_3,

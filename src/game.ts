@@ -1768,6 +1768,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   ;(window as unknown as Record<string, unknown>).__routeLeft = () => (route ? Math.round(route.length) : null)
   ;(window as unknown as Record<string, unknown>).__travelled = () => nav.travelled
   // where the rider is, for the bike/run switch to carry over (main.ts)
+  // (the ground's height at a lat/lon, for measuring a landmark's slope from tools/probe-eval.ts)
+  ;(window as unknown as Record<string, unknown>).__ground = (lat: number, lon: number) => { const p = proj.toLocal({ lat, lon }); return city.terrain.rawHeightAt(p.x, p.z) }
   ;(window as unknown as Record<string, unknown>).__here = () => { const ll = proj.toLatLon(lastAt); return `${ll.lat.toFixed(6)},${ll.lon.toFixed(6)}` }
   ;(window as unknown as Record<string, unknown>).__route = (lat: number, lon: number) => {
     destination = new Projection(pkg.origin).toLocal({ lat, lon })
