@@ -1178,6 +1178,40 @@ export function shellfishShed(out: MeshBuilder, fit: Fit): void {
 }
 
 /**
+ * THE HARD ROCK CAFE's frontage at Pier 39's entrance (OSM node 643445596 in Building Q, way/288396171; Commons "Hard Rock
+ * Café Pier 39 (San Francisco) July 2022"): laid against Building Q's south wall as its own point model — maroon boards
+ * and a white-railed window band, HARD ROCK CAFE in red neon script and the round logo, and over it on the parapet the two
+ * royal-blue PIER 39 boards in white serif; red umbrellas on the terrace. Faces local +z (rotateDeg in the manifest).
+ */
+export function hardRockFront(out: MeshBuilder, _fit: Fit): void {
+  const MAROON: Rgb = [0.2, 0.08, 0.08], RED: Rgb = [1.0, 0.14, 0.1], BLUE: Rgb = [0.12, 0.32, 0.7], W = 20
+  box(out, 0, 2.1, 0.06, W / 2, 2.1, 0.06, MAROON, WT)
+  box(out, 0, 2.05, 0.14, W / 2 - 0.6, 1.05, 0.02, [0.2, 0.16, 0.12], GT)
+  for (let x = -W / 2 + 0.6; x <= W / 2 - 0.5; x += 2.4) box(out, x, 2.05, 0.17, 0.06, 1.05, 0.03, WHITE, WT)
+  box(out, 0, 3.35, 0.18, W / 2, 0.05, 0.04, WHITE, WT)
+  sign(out, { type: 'flat', text: 'Hard Rock Cafe', h: 0.6, face: 'script', colour: RED, lit: 'self' }, { x: -3.5, y: 3.8, z: 0.16, heading: 0 })
+  for (let k = 0; k < 16; k++) {
+    const a0 = (k / 16) * Math.PI * 2, a1 = ((k + 1) / 16) * Math.PI * 2
+    out.quad([[5, 3.8, 0.15], [5 + Math.cos(a0) * 0.75, 3.8 + Math.sin(a0) * 0.75, 0.15], [5 + Math.cos(a1) * 0.75, 3.8 + Math.sin(a1) * 0.75, 0.15], [5, 3.8, 0.15]],
+      [0, 0, 1], UVQ, [0.85, 0.72, 0.4], MT)
+  }
+  sign(out, { type: 'flat', text: 'Hard Rock', h: 0.22, face: 'script', colour: RED, lit: 'self' }, { x: 5, y: 3.8, z: 0.18, heading: 0 })
+  for (const x of [-6, 6]) {
+    box(out, x, 8.0, -0.3, 2.7, 0.8, 0.1, WHITE, MT)
+    box(out, x, 8.0, -0.18, 2.55, 0.7, 0.03, BLUE, MT)
+    sign(out, { type: 'flat', text: 'PIER 39', h: 0.95, face: 'didone', weight: 'bold', colour: [0.98, 0.98, 0.96], lit: 'front' }, { x, y: 8.0, z: -0.13, heading: 0 })
+    box(out, x, 6.6, -0.4, 0.09, 0.65, 0.09, [0.3, 0.3, 0.3], MT)
+  }
+  for (const x of [-7, -2.5, 2.5, 7]) {
+    tube(out, [x, 0, 3.2], [x, 2.5, 3.2], 0.04, 4, [0.2, 0.2, 0.2], MT)
+    for (let k = 0; k < 8; k++) {
+      const a0 = (k / 8) * Math.PI * 2, a1 = ((k + 1) / 8) * Math.PI * 2
+      out.quad([[x, 2.75, 3.2], [x + Math.cos(a0) * 1.4, 2.25, 3.2 + Math.sin(a0) * 1.4], [x + Math.cos(a1) * 1.4, 2.25, 3.2 + Math.sin(a1) * 1.4], [x, 2.75, 3.2]], [0, 1, 0], UVQ, [0.7, 0.12, 0.12], WT)
+    }
+  }
+}
+
+/**
  * THE AQUATIC PARK BOATHOUSES: the Dolphin Club (way/288391828) and the South End Rowing Club (way/288391837), side by
  * side on the beach at the foot of Jefferson (Commons "Dolphin Club and South End Rowing Club 20170906-8513"): two storeys
  * of white clapboard with blue trim on every corner, window and rail, a hipped roof of grey shingle, a balcony along the
@@ -1239,7 +1273,7 @@ function boathouse(name: string, sub?: string): (out: MeshBuilder, fit: Fit) => 
 }
 
 export const WHARF_SHOPS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, aliotos, grotto9, chowderHut, buenaVista, castagnolas, longshoremensHall, cioppinos, shellfishShed,
+  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, aliotos, grotto9, chowderHut, buenaVista, castagnolas, longshoremensHall, cioppinos, shellfishShed, hardRockFront,
   dolphinClubBoathouse: boathouse('DOLPHIN CLUB'), southEndRowingClub: boathouse('Since 1877', 'SOUTH END ROWING CLUB'), pretzelKiosk, klamathPropellers,
   pier45ShedA: pier45Shed('PIER 45', true),
   pier45ShedB: pier45Shed('PIER 45', false),

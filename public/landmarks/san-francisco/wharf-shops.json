@@ -133,5 +133,18 @@
   "front": 180,
   "height": 8,
   "note": "BUGS.md #290m, 2026-10-17: the white gabled working shed beside Cioppino's, name across the Jefferson gable, two turbine ventilators (Commons 'Cioppino's Restaurant near Fisherman's Wharf, San Francisco USA - panoramio', left)."
+ },
+ {
+  "name": "Hard Rock Cafe frontage (Pier 39 Building Q)",
+  "procedural": "hardRockFront",
+  "lat": 37.808512,
+  "lon": -122.409863,
+  "rotateDeg": 180,
+  "size": [
+   20,
+   4
+  ],
+  "height": 9,
+  "note": "BUGS.md #290, 2026-10-17: maroon frontage, red neon, the two blue PIER 39 boards, laid against Building Q's south wall (OSM node 643445596; Commons 'Hard Rock Café Pier 39 (San Francisco) July 2022')."
  }
 ]
