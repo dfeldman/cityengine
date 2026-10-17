@@ -1423,7 +1423,10 @@ export class City {
       const near: number[][] = []
       for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) for (const b of this.buildingsIn.get(key(tx + dx, tz + dz)) ?? []) near.push(b.ring)
       // (and off the drawn carriageways: OSM maps a big lot's driving aisles as service ways, drawn as road)
-      const ways = [...(this.edgesIn.get(k) ?? [])].filter((e) => !e.foot).map((e) => ({ pts: unpackPoints(e.points), half: e.width / 2 + 0.6 }))
+      // (from this tile and its neighbours: the street beside a lot is often filed in the next tile — owner, 2026-10-17,
+      //  "cars parked on side of street" on Columbus, where OSM's car park polygon runs out over the carriageway)
+      const ways: { pts: { x: number; z: number }[]; half: number }[] = []
+      for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) for (const e of this.edgesIn.get(key(tx + dx, tz + dz)) ?? []) if (!e.foot) ways.push({ pts: unpackPoints(e.points), half: e.width / 2 + Math.max(e.walk, 0.6) })
       const onWay = (x: number, z: number): boolean => ways.some((w) => {
         for (let i = 1; i < w.pts.length; i++) {
           const a = w.pts[i - 1], b = w.pts[i], dx = b.x - a.x, dz = b.z - a.z

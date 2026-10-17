@@ -985,7 +985,7 @@ async function bake(spec: CitySpec): Promise<void> {
     if (!kind || !w.geometry || w.geometry.length < 4) continue
     const ring = w.geometry.slice(0, -1).map((g) => proj.toLocal(g))
     if (area(ring) < 40) continue
-    areas.push({ kind, ring: packPoints(ccw(ring)), ...(kind === 'lot' && w.tags.amenity === 'parking' ? { parking: true as const } : {}) })
+    areas.push({ kind, ring: packPoints(ccw(ring)), ...(kind === 'lot' && w.tags.amenity === 'parking' && /^(surface)?$/.test(w.tags.parking ?? '') ? { parking: true as const } : {}) })
   }
   /*
    * ---- THE SPORTS-PITCH KIT (BUGS.md #214, src/city/sports.ts, src/render/sports.ts)
@@ -1197,7 +1197,7 @@ async function bake(spec: CitySpec): Promise<void> {
         // 2026-10 brought in nature_reserve relations running 228 km down the coast, which hung the planting
         // (45 million candidate points on a 6 663-point ring) and would have greened the whole city.
         if (kind !== 'water' && tooBigForAnArea(pts)) { hugeAreas++; continue }
-        areas.push({ kind: kind!, ring: packPoints(ccw(pts)), ...(holes.length > 0 ? { holes } : {}), ...(kind === 'lot' && rel.tags.amenity === 'parking' ? { parking: true as const } : {}) })
+        areas.push({ kind: kind!, ring: packPoints(ccw(pts)), ...(holes.length > 0 ? { holes } : {}), ...(kind === 'lot' && rel.tags.amenity === 'parking' && /^(surface)?$/.test(rel.tags.parking ?? '') ? { parking: true as const } : {}) })
       }
       fromRelations++
     }

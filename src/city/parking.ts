@@ -74,6 +74,10 @@ export function layoutLot(ring: P2[], blocked: (x: number, z: number) => boolean
       for (let j = Math.floor(s0 / W); j * W < s1; j++) {
         const sc = j * W + W / 2
         if (!ok(sc, tc)) continue
+        // …and the aisle it backs onto inside the lot too: a strip one car deep is the kerb of a street OSM drew the car
+        // park over, not a car park (owner, 2026-10-17: "cars parked on side of street", Columbus at Grant)
+        const ai = at(sc, tc - dir * (D / 2 + A / 2))
+        if (!inside(ring, ai.x, ai.z)) continue
         const p = at(sc, tc)
         const fx = vx * dir, fz = vz * dir
         const h = (Math.imul(j * 73856093 ^ (2 * k + (dir > 0 ? 1 : 0)) * 19349663, 0x9e3779b1) >>> 0)
