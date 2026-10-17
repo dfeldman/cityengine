@@ -102,7 +102,7 @@ import { gpuMB, showMemory, watchHeap } from './render/heap.ts'
 import { Minimap } from './ui/minimap.ts'
 import { LocalControls, type Controls } from './controls.ts'
 import type { Platform } from './platform.ts'
-import type { EndDelivery } from './ui/end-screen.ts'
+import { EndScreen, type EndDelivery } from './ui/end-screen.ts'
 import { Tools } from '@babylonjs/core/Misc/tools'
 import { Navigator, pointAlong } from './sim/navigate.ts'
 import { Transit, type Placer, type TransitKind, type VehicleView } from './sim/transit.ts'
@@ -1529,6 +1529,23 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   }
   // [#303 HOOK, 2026-10-17] this session's jobs, for the end screen on Dandyhorse (src/ui/end-screen.ts, src/platform.ts)
   const sessionJobs: EndDelivery[] = []
+  /** seconds actually ridden this session (pauses not counted), for the end screen */
+  let rideSeconds = 0
+  /**
+   * The end screen off the platform too (owner, 2026-10-17: "I don't think we ever did that game end screen (if we did
+   * I can't find it)"): it only came up when Dandyhorse ended a session. Menu → End ride shows the same summary; Done
+   * clears the session's tally and rides on.
+   */
+  let endScreen: EndScreen | null = null
+  const endRide = (): void => {
+    endScreen ??= new EndScreen()
+    endScreen.show({ travelled: nav.travelled - rideStartM, seconds: rideSeconds, deliveries: [...sessionJobs], imperial: imperialNow(), place: pkg.name }, () => {
+      sessionJobs.length = 0
+      rideSeconds = 0
+      rideStartM = nav.travelled
+    })
+  }
+  let rideStartM = 0
   const acceptedJobs = new Set<number>()
   const jobLine = (job: Job, outcome: EndDelivery['outcome'], stars: number, dollars: number, seconds: number): void => {
     sessionJobs.push({ emoji: job.item?.emoji ?? '📦', what: job.item?.name ?? 'A parcel', from: job.source?.name ?? job.pickup.label,
@@ -2263,6 +2280,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     { label: frozen ? 'Ride on' : 'Resume', run: () => { if (frozen) toggleLook() } },
     { label: 'Map', hint: keyHint('M'), run: toggleMap },
     ...(frozen ? [] : [{ label: 'Look around', hint: keyHint('P'), run: toggleLook }]),
+    ...(opts.platform ? [] : [{ label: 'End ride', run: endRide }]),
     { label: 'Ride', sub: (): MenuItem[] => [
       { label: 'Turn around', hint: keyHint('U'), run: () => (controls.press ? controls.press('back') : nav.turnAround()) },
       ...(transit.aboard ? [{ label: 'Get off', hint: keyHint('B'), run: transitAction },
@@ -3075,6 +3093,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       // a running count of what is actually on screen, which is the only way to tell an empty street from a
       // broken instance buffer: for developers (`?dev=1`); a rider sees only the credit
       frames++
+      rideSeconds += dt
       if (label && devTools && frames % 30 === 0) {
         const s = life.stats
         label.textContent = `© OpenStreetMap · ${s.vehicles} vehicles, ${s.people} people, ${trees.count} trees`
