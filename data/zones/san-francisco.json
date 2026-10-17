@@ -123,7 +123,8 @@
     "crowd": 0.8,
     "trails": "bike",
     "water": "waves",
-    "lidar": true, "cliffs": true,
+    "lidar": true,
+    "cliffs": true,
     "relief": "raw"
    },
    "ring": [
@@ -235,7 +236,8 @@
    "ref": "marin-headlands",
    "name": "Marin Headlands",
    "priority": 1,
-   "props": {"dry": true, 
+   "props": {
+    "dry": true,
     "terrain": "fine",
     "traffic": 0.05,
     "crowd": 0.2,
@@ -610,7 +612,7 @@
      -122.488
     ]
    ],
-   "note": "`park` = its own wood mix (2026-10-04): without it the Presidio's park areas \u2014 the golf course \u2014 took the city's park mix, palms and pink blossom."
+   "note": "`park` = its own wood mix (2026-10-04): without it the Presidio's park areas — the golf course — took the city's park mix, palms and pink blossom."
   },
   {
    "ref": "plant-presidio-shore",
@@ -753,7 +755,7 @@
      -122.475
     ]
    ],
-   "note": "`park` = its own wood mix (2026-10-04): without it the Presidio's park areas \u2014 the golf course \u2014 took the city's park mix, palms and pink blossom."
+   "note": "`park` = its own wood mix (2026-10-04): without it the Presidio's park areas — the golf course — took the city's park mix, palms and pink blossom."
   },
   {
    "ref": "plant-presidio-east",
@@ -936,7 +938,7 @@
      -122.456
     ]
    ],
-   "note": "`park` = its own wood mix (2026-10-04): without it the Presidio's park areas \u2014 the golf course \u2014 took the city's park mix, palms and pink blossom."
+   "note": "`park` = its own wood mix (2026-10-04): without it the Presidio's park areas — the golf course — took the city's park mix, palms and pink blossom."
   },
   {
    "ref": "plant-ggp-west",
@@ -1239,7 +1241,7 @@
      -122.477
     ]
    ],
-   "_note": "2026-10-03: the park's tropical planting added \u2014 Canary palms, tree ferns, cabbage trees, queen palms (owner: \"golden gate park is a unique mix of tropical and north american plants\")."
+   "_note": "2026-10-03: the park's tropical planting added — Canary palms, tree ferns, cabbage trees, queen palms (owner: \"golden gate park is a unique mix of tropical and north american plants\")."
   },
   {
    "ref": "plant-ggp-east",
@@ -1469,7 +1471,7 @@
      -122.464
     ]
    ],
-   "_note": "2026-10-03: the park's tropical planting added \u2014 Canary palms, tree ferns, cabbage trees, queen palms (owner: \"golden gate park is a unique mix of tropical and north american plants\")."
+   "_note": "2026-10-03: the park's tropical planting added — Canary palms, tree ferns, cabbage trees, queen palms (owner: \"golden gate park is a unique mix of tropical and north american plants\")."
   },
   {
    "ref": "plant-the-hills",
@@ -3244,11 +3246,12 @@
     "terrain": "fine",
     "traffic": 0,
     "crowd": 0.8,
-    "lidar": true, "relief": "raw",
+    "lidar": true,
+    "relief": "raw",
     "cliffs": true,
     "trails": "bike"
    },
-   "note": "Appearance audit 2026-10-02 (BUGS.md #257): on the coarse grid the island topped out 11 m above the sea; it rises about 41 m to the cellhouse. 2026-10-04: cliffs \u2014 the island meets the bay in rock all round (views audit).",
+   "note": "Appearance audit 2026-10-02 (BUGS.md #257): on the coarse grid the island topped out 11 m above the sea; it rises about 41 m to the cellhouse. 2026-10-04: cliffs — the island meets the bay in rock all round (views audit).",
    "ring": [
     [
      37.8245,
@@ -3274,10 +3277,11 @@
    "priority": 1,
    "props": {
     "terrain": "fine",
-    "lidar": true, "relief": "raw",
+    "lidar": true,
+    "relief": "raw",
     "trails": "bike"
    },
-   "note": "Golden Gate Park audit 2026-10-04: the 60 m opening took the summit off \u2014 a flat mesa 14 m over the lake at 101.7 m, where the zoom-15 data (bare earth here) reads 130.4 m. The ring is the island's own shore (the hole in Stow Lake) pushed 5% out into the water; water samples are never raw, so the lake keeps its level and no ridden way crosses the edge.",
+   "note": "Golden Gate Park audit 2026-10-04: the 60 m opening took the summit off — a flat mesa 14 m over the lake at 101.7 m, where the zoom-15 data (bare earth here) reads 130.4 m. The ring is the island's own shore (the hole in Stow Lake) pushed 5% out into the water; water samples are never raw, so the lake keeps its level and no ridden way crosses the edge.",
    "ring": [
     [
      37.767792,
@@ -3418,7 +3422,7 @@
     "crowd": 1.2,
     "buildings": "mediterranean"
    },
-   "note": "Owner, 2026-10-02: 'a destination \u2026 little car traffic \u2026 many low stucco Spanish colonial buildings, not big boxy buildings'. 2026-10-06 owner: light traffic only.",
+   "note": "Owner, 2026-10-02: 'a destination … little car traffic … many low stucco Spanish colonial buildings, not big boxy buildings'. 2026-10-06 owner: light traffic only.",
    "ring": [
     [
      37.844,
@@ -3591,7 +3595,7 @@
     },
     "cliffs": true
    },
-   "note": "Owner, 2026-10-02: 'i'm not seeing those unique buildings' \u2014 a forest stood over the baths, the Cliff House and the Camera Obscura. The real headland is bare cliff and scrub, cypress in ones and twos.",
+   "note": "Owner, 2026-10-02: 'i'm not seeing those unique buildings' — a forest stood over the baths, the Cliff House and the Camera Obscura. The real headland is bare cliff and scrub, cypress in ones and twos.",
    "ring": [
     [
      37.777,
@@ -3784,7 +3788,7 @@
    "props": {
     "buildings": "navy"
    },
-   "note": "Owner, 2026-10-02: 'Treasure Island \u2026 need a lot of work'. The Navy's island: low stucco quarters and new mid-rise blocks, never the city's brick, Victorians or tenements. Landmarks (Building 1, the hangars) are models.",
+   "note": "Owner, 2026-10-02: 'Treasure Island … need a lot of work'. The Navy's island: low stucco quarters and new mid-rise blocks, never the city's brick, Victorians or tenements. Landmarks (Building 1, the hangars) are models.",
    "ring": [
     [
      37.815,
@@ -3841,7 +3845,7 @@
      -122.4004049
     ]
    ],
-   "_note": "2026-10-03: the podium level's walks (src/city/sf/bridges.ts EMBARCADERO_PODIUM_DECKS) are mostly footways; open them to bikes so the promenade, the skybridges and Maritime Plaza are one rideable route (owner: 'walkable/bikeable \u2026 go either on the road beneath or on the aerial walkway'). 2026-10-03: extended north over Golden Gateway Center's 12-13 m podium, so its walks are rideable too (owner: 'the embarcadero decks are not navigable')."
+   "_note": "2026-10-03: the podium level's walks (src/city/sf/bridges.ts EMBARCADERO_PODIUM_DECKS) are mostly footways; open them to bikes so the promenade, the skybridges and Maritime Plaza are one rideable route (owner: 'walkable/bikeable … go either on the road beneath or on the aerial walkway'). 2026-10-03: extended north over Golden Gateway Center's 12-13 m podium, so its walks are rideable too (owner: 'the embarcadero decks are not navigable')."
   },
   {
    "ref": "ggp-tree-fern-dell",
@@ -3929,7 +3933,7 @@
      -122.45985
     ]
    ],
-   "_note": "2026-10-03: the dell of tree ferns below the Conservatory of Flowers (John McLaren's fern dell), by eye from the park map \u2014 refine from OSM if it is mapped."
+   "_note": "2026-10-03: the dell of tree ferns below the Conservatory of Flowers (John McLaren's fern dell), by eye from the park map — refine from OSM if it is mapped."
   },
   {
    "ref": "seward-mini-park",
@@ -4163,7 +4167,7 @@
      }
     }
    },
-   "note": "Viewpoints audit 2026-10-04: the summits are bare grass and coastal scrub, not the hills' park planting (eucalyptus, oak, blossom) \u2014 trees stood on the lawn at the top and in the view.",
+   "note": "Viewpoints audit 2026-10-04: the summits are bare grass and coastal scrub, not the hills' park planting (eucalyptus, oak, blossom) — trees stood on the lawn at the top and in the view.",
    "ring": [
     [
      37.7495,
@@ -4559,7 +4563,7 @@
    "props": {
     "ground": "beds"
    },
-   "note": "The Tunnel Tops (2022) are planted beds \u2014 bark mulch and low native shrubs between tan gravel paths, the oval lawns OSM maps the only grass (Commons 'Presidio Tunnel Tops aerial (cropped).jpg'; the owner's reference list, 2026-10-04). Ring: OSM way/91114607, the park's own outline.",
+   "note": "The Tunnel Tops (2022) are planted beds — bark mulch and low native shrubs between tan gravel paths, the oval lawns OSM maps the only grass (Commons 'Presidio Tunnel Tops aerial (cropped).jpg'; the owner's reference list, 2026-10-04). Ring: OSM way/91114607, the park's own outline.",
    "ring": [
     [
      37.803697,
@@ -4701,7 +4705,8 @@
    "priority": 6,
    "props": {
     "terrain": "fine",
-    "lidar": true, "relief": "raw",
+    "lidar": true,
+    "relief": "raw",
     "cliffs": true
    },
    "note": "The lighthouse stands ~20 m up a sandstone cliff (owner's photograph, 2026-10-04); the coarse ground put it 2 m above the water. Fine raw relief over the station's shore, as Alcatraz (#257).",
@@ -5207,7 +5212,8 @@
    "ref": "point-bonita",
    "name": "Point Bonita",
    "priority": 6,
-   "props": {"dry": true, 
+   "props": {
+    "dry": true,
     "terrain": "fine",
     "relief": "raw",
     "cliffs": true,
@@ -5343,6 +5349,33 @@
      -122.42018
     ]
    ]
+  },
+  {
+   "ref": "wharf-crowds",
+   "name": "Fisherman's Wharf crowds",
+   "priority": 2,
+   "props": {
+    "crowd": 4
+   },
+   "ring": [
+    [
+     37.8055,
+     -122.4245
+    ],
+    [
+     37.8055,
+     -122.4085
+    ],
+    [
+     37.8118,
+     -122.4085
+    ],
+    [
+     37.8118,
+     -122.4245
+    ]
+   ],
+   "note": "owner, 2026-10-17: 'so many people' — the Wharf's sidewalks, Pier 39 and the courts are thick with visitors"
   }
  ]
 }
