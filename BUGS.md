@@ -10769,7 +10769,8 @@ Shellfish Co.; Longshoremen's Hall; the Dolphin Club and South End Rowing Club. 
 Ghirardelli and Cannery brick, Pier 39 planks) are drawn for the first time — the tiler had been dropping their surface.
 Shop fascias no longer repeat side by side; Ripley's roof is grey. The pale grey squares in the night sky were the
 STARS (each lit a whole 0.7° grid cell) — now small soft dots. Pier 39's entrance has the Hard Rock frontage and its two
-blue PIER 39 boards.
+blue PIER 39 boards. The `bays` facade kit (tower.ts) drew edge-to-edge glass with every floor's foot left open — black
+slabs; each bay face is now wall with a framed sash set in it (the Buena Vista back on bays; ten landmarks use it).
 
 Please look at / decide:
 - Burgers & Best Pies' theatre marquee (Hotel Zephyr, Mason end) is a GUESS — no photo or listing found.
@@ -10790,8 +10791,6 @@ Logged, not fixed:
   pier39Shop: built and its signs registered, but drawn on no face visible from the Embarcadero — Building Q's 58-corner
   outline and fitSnug's snapping of `front` to the box axes make "the south face" hard to pick. DONE instead as its own
   point model against the south wall (hardRockFront, 37.808512 −122.409863, rotateDeg 180).
-- faceBand kind 'bays' drew the Buena Vista's upper floors as black slabs (worked round with 'punched'); the bay geometry
-  needs a look, as bays are San Francisco's own facade.
 
 ### #282–#294 Owner's reports, 2026-10-16 afternoon — the queue, in the order they are being worked
 

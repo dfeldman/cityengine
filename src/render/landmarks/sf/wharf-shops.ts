@@ -932,8 +932,7 @@ export function chowderHut(out: MeshBuilder, fit: Fit): void {
 
 /**
  * THE BUENA VISTA, 2765 Hyde at Beach (way/262749432; OSM node 388205890; Commons "Buena Vista Cafe, exterior, San
- * Francisco (May 2025) 01, 03"): a pale sage Edwardian of four storeys, its upper windows framed in white (the deep
- * angled bays drawn flat: as `bays` they read as black slabs from the street); the bar on the ground floor behind sage panelled piers and big windows, a ribbon of red and
+ * Francisco (May 2025) 01, 03"): a pale sage Edwardian of four storeys, its upper floors in deep angled bays; the bar on the ground floor behind sage panelled piers and big windows, a ribbon of red and
  * blue neon running along over them (COCKTAILS in red in one window), and on the Hyde–Beach corner the hanging sign:
  * "the buena vista" in red neon script on a shaped cream board. `front` 0: the Beach face is the edge facing local −z;
  * Hyde is its +x end.
@@ -944,7 +943,7 @@ export function buenaVista(out: MeshBuilder, fit: Fit): void {
   const ring = towerRing(fit)
   const H = Math.max(12, Math.min(15, fit.height))
   faceBand(out, ring, 0, 4.2, { kind: 'punched', wall: DSAGE, glass: [0.24, 0.2, 0.15], floor: 4.2, pitch: 4.4, solid: 0.32, material: 'clapboard' })
-  faceBand(out, ring, 4.2, H - 0.8, { kind: 'punched', wall: SAGE, glass: DARKGL, floor: (H - 5) / 3, pitch: 2.4, solid: 0.55, head: 'architrave', material: 'stucco' })
+  faceBand(out, ring, 4.2, H - 0.8, { kind: 'bays', wall: SAGE, glass: DARKGL, floor: (H - 5) / 3, pitch: 4.4, bay: { depth: 0.75 }, material: 'stucco' })
   faceBand(out, offsetRing(ring, 0.25), H - 0.8, H, { kind: 'blank', wall: TRIMC, material: 'stucco' })
   faceBand(out, offsetRing(ring, 0.12), 4.0, 4.35, { kind: 'blank', wall: TRIMC, material: 'stucco' })
   capPolygon(out, ring, H, [0.36, 0.34, 0.33], CT)

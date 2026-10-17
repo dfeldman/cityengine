@@ -325,11 +325,17 @@ export function faceBand(out: MeshBuilder, ring: P2[], y0: number, y1: number, f
             const P = (u: number, o: number, y: number): [number, number, number] => [a.x + tx * u + nx * o, y, a.z + tz * u + nz * o]
             const mx = (oa + ob) / 2
             const nn: [number, number, number] = [nx * 0.85 + tx * (ob - oa) * 0.15, 0, nz * 0.85 + tz * (ob - oa) * 0.15]
-            // the bay's glass, floor by floor, and the spandrel between
+            // each face, floor by floor: its wall the whole height, and a framed window set into it — a sash with wall
+            // round it, not glass edge to edge (2026-10-17: edge-to-edge glass, with the foot of every floor left open,
+            // read as a black slab — the Buena Vista's bays)
+            const nl = Math.hypot(nn[0], nn[2]) || 1
+            const lift = (q: [number, number, number]): [number, number, number] => [q[0] + (nn[0] / nl) * 0.03, q[1], q[2] + (nn[2] / nl) * 0.03]
+            const L2 = (t: number): [number, number] => [ua + (ub - ua) * t, oa + (ob - oa) * t]
             for (let fl = 0; fl < floors; fl++) {
               const ya = y0 + fl * fh
-              quadAt(out, [P(ua, oa, ya + fh * 0.18), P(ub, ob, ya + fh * 0.18), P(ub, ob, ya + fh * 0.86), P(ua, oa, ya + fh * 0.86)], nn, glass, GLASS)
-              quadAt(out, [P(ua, oa, ya + fh * 0.86), P(ub, ob, ya + fh * 0.86), P(ub, ob, ya + fh * 1.18), P(ua, oa, ya + fh * 1.18)], nn, f.wall, W)
+              quadAt(out, [P(ua, oa, ya), P(ub, ob, ya), P(ub, ob, ya + fh), P(ua, oa, ya + fh)], nn, f.wall, W)
+              const [u1a, o1a] = L2(0.14), [u1b, o1b] = L2(0.86)
+              quadAt(out, [lift(P(u1a, o1a, ya + fh * 0.24)), lift(P(u1b, o1b, ya + fh * 0.24)), lift(P(u1b, o1b, ya + fh * 0.84)), lift(P(u1a, o1a, ya + fh * 0.84))], nn, glass, GLASS)
             }
             void mx
           }
