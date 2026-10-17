@@ -1266,6 +1266,18 @@ export function polloCampero(out: MeshBuilder, fit: Fit): void {
 }
 
 /** the part of `ring` on one side of the line x = x0 (Sutherland–Hodgman, one half-plane): `less` keeps x < x0 */
+/** the part of a ring at z ≥ z0 (Sutherland–Hodgman against one line) */
+function clipZ(ring: P2[], z0: number): P2[] {
+  const out: P2[] = []
+  for (let i = 0; i < ring.length; i++) {
+    const p = ring[i], q = ring[(i + 1) % ring.length]
+    const fp = p.z - z0, fq = q.z - z0
+    if (fp >= 0) out.push(p)
+    if ((fp >= 0) !== (fq >= 0)) { const t = fp / (fp - fq); out.push({ x: p.x + (q.x - p.x) * t, z: p.z + (q.z - p.z) * t }) }
+  }
+  return out
+}
+
 function clipX(ring: P2[], x0: number, less: boolean): P2[] {
   const f = (p: P2): number => (less ? x0 - p.x : p.x - x0)
   const out: P2[] = []
@@ -1316,8 +1328,11 @@ export function zephyrHotel(out: MeshBuilder, fit: Fit): void {
     }
     capPolygon(out, corner, 12.3, [0.45, 0.45, 0.45], CT)
   }
-  // -- the hotel
-  const hotel = clipX(ring, x0 + CW, false)
+  // -- the hotel: behind the boxes and The Yard. The baked outline (the relation's one building:part) has no courtyard
+  // notches and runs right up to the boxes, so capped whole it roofed The Yard over (owner's review, 2026-10-17): the body
+  // starts 16 m behind the boxes, the band between left open.
+  const D0 = 8, YARD = 16
+  const hotel = clipZ(clipX(ring, x0 + CW, false), zN + D0 + YARD)
   const H = 13
   if (hotel.length >= 3) {
     faceBand(out, hotel, 0, 4.0, { kind: 'curtain', wall: [0.14, 0.14, 0.15], glass: [0.24, 0.28, 0.3], pitch: 3, floor: 4.0, material: 'glass' })
@@ -1426,6 +1441,11 @@ export function zephyrHotel(out: MeshBuilder, fit: Fit): void {
     if (westWall && eastWall) bottoms.push(q)
   }
   bottoms.sort((a, b) => b.L - a.L)
+  // (no notch in the outline: The Yard is the middle of the open band behind the boxes)
+  if (!bottoms.length) {
+    const mx = (x0 + CW + x1) / 2
+    bottoms.push(edgeAt([{ x: mx + 13, z: zN + D0 + YARD }, { x: mx - 13, z: zN + D0 + YARD }], 0))
+  }
   const zOpen = zN + D + 2
   // paving: the strip behind the boxes and the floor of each courtyard, warm pavers a little over the ground
   let wingN = zS
