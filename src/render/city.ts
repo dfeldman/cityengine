@@ -2788,8 +2788,8 @@ export class City {
       if (stripe && e.width > stripe.cobbles + 2) {
         const side = (e.width - stripe.cobbles) / 2, off = stripe.cobbles / 2 + side / 2
         for (const o of [-off, off]) {
-          dashedLine(markings, pts, o, 0.056, side, 1, 1, [0.6, 0.59, 0.55])
-          dashedLine(markings, pts, o, 0.057, side, 1.1, 2.2, [0.47, 0.46, 0.43])
+          dashedLine(markings, pts, o, 0.056, side, 1, 1, [0.33, 0.325, 0.31])
+          dashedLine(markings, pts, o, 0.057, side, 1.5, 3, [0.23, 0.225, 0.215])
         }
       }
 
