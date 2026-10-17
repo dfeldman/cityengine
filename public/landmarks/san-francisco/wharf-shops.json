@@ -377,35 +377,5 @@
   "levels": 1,
   "height": 3,
   "stone": false
- },
- {
-  "osm": [
-   "way/556413444",
-   "way/556413445"
-  ],
-  "name": "Public toilets by Pier 41",
-  "restyle": "presidio",
-  "note": "Water-side audit 2026-10-17: two small white toilet kiosks.",
-  "wall": "#e9e8e2",
-  "roof": "flat",
-  "noShops": true,
-  "levels": 1,
-  "height": 3,
-  "stone": false
- },
- {
-  "osm": [
-   "way/1164266281"
-  ],
-  "name": "USS Pampanito admissions booth",
-  "restyle": "capecod",
-  "note": "Water-side audit 2026-10-17: small white ticket booth on Pier 45 at the submarine's gangway.",
-  "wall": "#f0eee8",
-  "trim": "#1f3a5a",
-  "roof": "flat",
-  "noShops": true,
-  "levels": 1,
-  "height": 3,
-  "stone": false
  }
 ]
