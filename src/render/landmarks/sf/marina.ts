@@ -15,7 +15,6 @@ import { box, prism } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 
 const DOCK: Rgb = [0.56, 0.52, 0.46]
-const HULLS: Rgb[] = [[0.92, 0.92, 0.9], [0.92, 0.92, 0.9], [0.9, 0.9, 0.88], [0.14, 0.2, 0.34], [0.55, 0.12, 0.1], [0.12, 0.3, 0.22]]
 const CANVAS: Rgb[] = [[0.1, 0.25, 0.45], [0.75, 0.72, 0.64], [0.12, 0.3, 0.26]]
 
 const hash = (a: number, b: number): number => {
@@ -53,23 +52,57 @@ export function marina(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+/**
+ * A HULL in plan: a square stern, sides running parallel for the after half, then drawn in to a pointed bow — along z,
+ * the bow toward `dir` (±1), `len` long, `beam` wide, from just under the water to `deck`. White topsides with a
+ * coloured boot stripe at the waterline, a pale deck. (2026-10-17: the boats were coloured boxes, red, green and blue —
+ * toys; a marina is white hulls and a forest of masts.)
+ */
+function hull(out: MeshBuilder, bx: number, bz: number, len: number, beam: number, dir: number, deck: number, stripe: Rgb): void {
+  const metal = surfaceTag('metal')
+  const WHITE: Rgb = [0.93, 0.93, 0.91], DECK: Rgb = [0.84, 0.82, 0.76]
+  const h = beam / 2
+  // the outline, stern to bow on one side and back on the other (x across, z along, bow at +len/2 · dir)
+  const half: [number, number][] = [[h * 0.9, -0.5], [h, -0.1], [h, 0.15], [h * 0.82, 0.3], [h * 0.45, 0.42], [0, 0.5]]
+  const ring: [number, number][] = [...half.map(([x, z]) => [x, z] as [number, number]), ...half.slice(0, -1).reverse().map(([x, z]) => [-x, z] as [number, number])]
+  const P = (x: number, z: number, y: number): [number, number, number] => [bx + x, y, bz + z * len * dir]
+  const UV: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+  for (let i = 0; i < ring.length; i++) {
+    const [x0, z0] = ring[i], [x1, z1] = ring[(i + 1) % ring.length]
+    const nx = (z1 - z0) * len * dir, nz = -(x1 - x0) * dir
+    // (the bow rises a little: the sheer)
+    const d0 = deck + Math.max(0, z0) * 0.5, d1 = deck + Math.max(0, z1) * 0.5
+    out.quad([P(x0, z0, -0.15), P(x1, z1, -0.15), P(x1, z1, 0.25), P(x0, z0, 0.25)], [nx, 0, nz], UV, stripe, metal)
+    out.quad([P(x0, z0, 0.25), P(x1, z1, 0.25), P(x1, z1, d1), P(x0, z0, d0)], [nx, 0, nz], UV, WHITE, metal)
+  }
+  // the deck, a fan from the middle
+  const cy = deck + 0.12
+  for (let i = 0; i < ring.length; i++) {
+    const [x0, z0] = ring[i], [x1, z1] = ring[(i + 1) % ring.length]
+    out.quad([P(0, 0, cy), P(x0, z0, deck + Math.max(0, z0) * 0.5), P(x1, z1, deck + Math.max(0, z1) * 0.5), P(x1, z1, deck + Math.max(0, z1) * 0.5)], [0, 1, 0], UV, DECK, metal)
+  }
+}
+
 /** one moored boat at (bx, bz), its bow toward `side` along z: a sailboat (mast, covered main) or a motor launch */
 export function boat(out: MeshBuilder, bx: number, bz: number, side: number): void {
   const metal = surfaceTag('metal')
   const len = 7 + hash(bz, bx) * 7
   const beam = len * 0.32
-  const hull = HULLS[Math.floor(hash(bx, bz + 1) * HULLS.length)]
-  // the hull, the cabin top, and a mast — or a motor launch's wheelhouse
-  box(out, bx, 0.55, bz, beam / 2, 0.75, len / 2, hull, metal)
-  box(out, bx, 0.55, bz + side * len * 0.48, beam * 0.3, 0.7, 0.4, hull, metal)
-  if (hash(bz + 2, bx) < 0.8) {
-    box(out, bx, 1.5, bz - side * len * 0.05, beam * 0.32, 0.25, len * 0.22, [0.9, 0.9, 0.88], metal)
-    prism(out, bx, bz - side * len * 0.02, 1.3, 1.3 + len * 1.45, 0.07, 4, [0.78, 0.78, 0.76], metal)
-    // the furled mainsail along its boom, in its cover
-    box(out, bx, 2.4, bz - side * len * 0.18, 0.18, 0.18, len * 0.2, CANVAS[Math.floor(hash(bx + 3, bz) * CANVAS.length)], metal)
+  // nearly all white, a few dark-hulled; the colour is in the boot stripe and the sail covers
+  const stripes: Rgb[] = [[0.12, 0.2, 0.42], [0.12, 0.2, 0.42], [0.6, 0.12, 0.1], [0.12, 0.34, 0.24], [0.1, 0.1, 0.12], [0.2, 0.45, 0.65]]
+  const stripe = stripes[Math.floor(hash(bx, bz + 1) * stripes.length)]
+  hull(out, bx, bz, len, beam, side, 0.75, stripe)
+  if (hash(bz + 2, bx) < 0.72) {
+    // a sailboat: a low coachroof, the mast, the boom with its furled main in a cover
+    box(out, bx, 1.05, bz - side * len * 0.05, beam * 0.28, 0.22, len * 0.18, [0.93, 0.93, 0.91], metal)
+    box(out, bx, 1.05, bz - side * len * 0.05 + side * len * 0.18, beam * 0.27, 0.12, 0.02, [0.2, 0.24, 0.28], surfaceTag('glass'))
+    prism(out, bx, bz + side * len * 0.06, 1.0, 1.0 + len * 1.45, 0.07, 4, [0.78, 0.78, 0.76], metal)
+    box(out, bx, 2.1, bz - side * len * 0.15, 0.17, 0.17, len * 0.21, CANVAS[Math.floor(hash(bx + 3, bz) * CANVAS.length)], metal)
   } else {
-    box(out, bx, 1.8, bz - side * len * 0.05, beam * 0.38, 0.55, len * 0.22, [0.92, 0.92, 0.9], metal)
-    box(out, bx, 2.0, bz - side * len * 0.05, beam * 0.39, 0.22, len * 0.18, [0.2, 0.24, 0.28], surfaceTag('glass'))
+    // a motor launch: a cabin with a dark windscreen band, a flybridge on the bigger ones
+    box(out, bx, 1.35, bz + side * len * 0.02, beam * 0.36, 0.55, len * 0.2, [0.94, 0.94, 0.92], metal)
+    box(out, bx, 1.55, bz + side * len * 0.02, beam * 0.37, 0.2, len * 0.17, [0.18, 0.22, 0.26], surfaceTag('glass'))
+    if (len > 11) box(out, bx, 2.05, bz - side * len * 0.05, beam * 0.3, 0.1, len * 0.14, [0.92, 0.92, 0.9], metal)
   }
 }
 

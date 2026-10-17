@@ -283,6 +283,8 @@ export interface Area {
   top?: true
   sea?: true
   brick?: true
+  /** a square laid in its own material (city/package.ts PackedArea `surface`) */
+  surface?: 'wood' | 'cobblestone' | 'brick'
   /** a park laid out as planted beds (city/package.ts PackedArea `beds`) */
   beds?: true
   /** water: the whole body's level, cm above zFloor */

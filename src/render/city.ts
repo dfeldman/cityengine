@@ -210,6 +210,10 @@ const WET_ROCK: [number, number, number] = [0.22, 0.21, 0.2]
 const PAVEMENT: [number, number, number] = [0.52, 0.51, 0.485]
 /** sand's tint on the road shader's sand page (which is already sand-coloured): Ocean Beach's pale grey-tan, not gold */
 const SAND_ON_PAGE: [number, number, number] = [0.64, 0.65, 0.72]
+/** a paged square's tint on its page (PackedArea `surface`): weathered grey-brown boards, grey granite setts, red brick */
+const SURFACE_ON_PAGE: Record<'wood' | 'cobblestone' | 'brick', [number, number, number]> = {
+  wood: [0.78, 0.74, 0.68], cobblestone: [0.82, 0.8, 0.78], brick: [0.85, 0.72, 0.66],
+}
 /** a park's foot way's surface page (public/roads/; #201's park has no concrete): asphalt, earth, gravel, boards */
 const TRAIL_PAGE: Record<string, string> = {
   asphalt: 'asphalt', concrete: 'asphalt', dirt: 'dirt', ground: 'dirt', earth: 'dirt', compacted: 'dirt', grass: 'dirt',
@@ -2387,6 +2391,7 @@ export class City {
     const groundEdges = (this.edgesIn.get(k) ?? []).filter((e) => !this.raisedIds.has(e.id))
     const areas = new MeshBuilder()
     const sandOut = new MeshBuilder()
+    const pagedOut = new Map<string, MeshBuilder>()
     const walks = new MeshBuilder()
     const markings = new MeshBuilder()
     const corridor = new MeshBuilder()
@@ -2507,7 +2512,8 @@ export class City {
          * material's page drew sand as long pale stripes, like decking. The bands below still tint it vertex by vertex;
          * its uvs are metres, as the road shader wants.
          */
-        const into = a.kind === 'sand' ? sandOut : areas
+        // (a square in a material of its own — Pier 39's planks, the Wharf's cobbles — on the road shader's page for it, like sand)
+        const into = a.kind === 'sand' ? sandOut : a.surface ? (pagedOut.get(a.surface) ?? pagedOut.set(a.surface, new MeshBuilder()).get(a.surface)!) : areas
         const base = into.positions.length / 3
         // (a square opening off a brick street is laid in its brick: PackedArea `brick`, tools/street-paint.ts)
         // (a park of planted beds is mulch, its lawns drawn over it: PackedArea `beds`, the Tunnel Tops)
@@ -2523,9 +2529,9 @@ export class City {
           const c = r.reduce((q, p) => ({ x: q.x + p.x / r.length, z: q.z + p.z / r.length }), { x: 0, z: 0 })
           return this.terrain.heightAt(c.x, c.z) <= seaLevel + 0.5
         })()
-        const tint = a.kind === 'sand' ? SAND_ON_PAGE : a.brick && this.region.brickStreets ? this.region.brickStreets.colour : a.beds ? BEDS : wet ? WET_ROCK : AREA_TINT[a.kind]
+        const tint = a.surface ? SURFACE_ON_PAGE[a.surface] : a.kind === 'sand' ? SAND_ON_PAGE : a.brick && this.region.brickStreets ? this.region.brickStreets.colour : a.beds ? BEDS : wet ? WET_ROCK : AREA_TINT[a.kind]
         capPolygonWithHoles(into, [unpackPoints(a.ring), ...(a.holes ?? []).map(unpackPoints)],
-          0.02, tint, 0, a.kind === 'sand' ? 1 : 2.4, a.kind === 'sand' ? Math.min(AREA_MAX_EDGE, SAND_MAX_EDGE) : AREA_MAX_EDGE)
+          0.02, tint, 0, a.kind === 'sand' || a.surface ? 1 : 2.4, a.kind === 'sand' ? Math.min(AREA_MAX_EDGE, SAND_MAX_EDGE) : AREA_MAX_EDGE)
         /*
          * DRY GROUND (ZoneProps `dry`; owner, 2026-10-06: the Marin Headlands are "very dry and covered in low shrubs", and
          * a green lawn over them read as a golf course): grass, park and wood inside such a zone take the colours of
@@ -2895,6 +2901,15 @@ export class City {
       this.terrain.drapeRaw(sandOut.positions)
       sandOut.toVertexData().applyToMesh(m)
       m.material = groundLayerMaterial(this.scene, this.roadAssets, 'sand', 'beach')
+      m.renderingGroupId = GROUP.areas
+      meshes.push(m)
+    }
+    for (const [surface, b] of pagedOut) {
+      if (b.triangles === 0 || this.off.has('areas')) continue
+      const m = new Mesh(`areas:${surface}:${k}`, this.scene)
+      this.terrain.drapeRaw(b.positions)
+      b.toVertexData().applyToMesh(m)
+      m.material = groundLayerMaterial(this.scene, this.roadAssets, surface, `square-${surface}`)
       m.renderingGroupId = GROUP.areas
       meshes.push(m)
     }

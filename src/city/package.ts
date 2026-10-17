@@ -184,6 +184,11 @@ export interface PackedArea {
   kind: 'park' | 'grass' | 'water' | 'wood' | 'pitch' | 'paved' | 'sand' | 'dirt' | 'lot'
   /** a paved square laid in the region's street brick: it opens off a brick street (tools/street-paint.ts) */
   brick?: true
+  /**
+   * a square laid in a material of its own, drawn on the road shader's page for it (owner, 2026-10-17: Fisherman's Wharf
+   * "even cobblestone streets where appropriate"; Pier 39 is a plank boardwalk): `wood`, `cobblestone` or `brick`
+   */
+  surface?: 'wood' | 'cobblestone' | 'brick'
   /** a park laid out as planted BEDS — mulch and low native shrubs between its paths, its mapped lawns the only grass
    *  (a zone's `ground: 'beds'`, tools/bake.ts: the Presidio Tunnel Tops, owner's reference list 2026-10-04) */
   beds?: true
