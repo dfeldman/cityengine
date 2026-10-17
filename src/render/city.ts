@@ -210,9 +210,11 @@ const WET_ROCK: [number, number, number] = [0.22, 0.21, 0.2]
 const PAVEMENT: [number, number, number] = [0.52, 0.51, 0.485]
 /** sand's tint on the road shader's sand page (which is already sand-coloured): Ocean Beach's pale grey-tan, not gold */
 const SAND_ON_PAGE: [number, number, number] = [0.64, 0.65, 0.72]
-/** a paged square's tint on its page (PackedArea `surface`): weathered grey-brown boards, grey granite setts, red brick */
+/** a paged square's tint on its page (PackedArea `surface`): weathered grey-brown boards, grey granite setts, red brick —
+ *  the brick and plank pages are orange, and the colour grade saturates them further: the tints pull red DOWN against
+ *  green and blue, or Ghirardelli's courts and Pier 39's deck came out bright orange (2026-10-17) */
 const SURFACE_ON_PAGE: Record<'wood' | 'cobblestone' | 'brick', [number, number, number]> = {
-  wood: [0.78, 0.74, 0.68], cobblestone: [0.82, 0.8, 0.78], brick: [0.85, 0.72, 0.66],
+  wood: [0.6, 0.76, 1.0], cobblestone: [0.82, 0.8, 0.78], brick: [0.5, 0.72, 0.88],
 }
 /** a park's foot way's surface page (public/roads/; #201's park has no concrete): asphalt, earth, gravel, boards */
 const TRAIL_PAGE: Record<string, string> = {
