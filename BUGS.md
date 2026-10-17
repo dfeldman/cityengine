@@ -10743,7 +10743,7 @@ GAME
   and survey). IN PROGRESS. Done 2026-10-17: a `wharf` facade style (painted shiplap, sash windows, seafood/candy/gift
   fascias in poster lettering, awnings, life-rings) on ~84 generic buildings in a box from North Point to the water, Hyde to
   Powell; Wharf names on the hanging signs; Pier 39's shops rebuilt (awnings, galleries, shingle roofs); real boat hulls;
-  squares in planks (Pier 39), brick (Ghirardelli, the Cannery) and cobbles (Jefferson & Taylor, Frank Cresci Plaza).
+  squares in planks (Pier 39), brick (Ghirardelli, the Cannery) and cobbles (Jefferson & Taylor, Frank Cresci Plaza) — drawn only since 2026-10-17 02:40 (the tiler had dropped their `surface`).
   The citywide PHARMACY/BOOKS/LAUNDRY shopfronts replaced by five realistic storefront treatments with no category words
   (owner: "never liked the PHARMACY/BOOKS/LAUNDRY generic signs"); a shop now spans two bays and its neighbour differs.
 - #311 Block-letter signs (Macy's and others) → real typefaces. DONE: parts.ts `signText` (the 3×5 blocks, 34 callers)
