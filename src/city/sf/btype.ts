@@ -87,7 +87,11 @@ export function archetypeOf(f: Features): { archetype: Archetype; district: Dist
    * to speak of; the museums are landmark models).
    */
   if (h <= 30 && inBuiltZone('presidio', f.lat, f.lon)) {
-    return near(f.lat, f.lon, MAIN_POST, 220) ? a('presidioBrick', 'presidio-main-post') : a('presidio', 'presidio-park')
+    if (near(f.lat, f.lon, MAIN_POST, 220)) return a('presidioBrick', 'presidio-main-post')
+    // the EAST HOUSING round Liggett Avenue and Portola Street (owner, 2026-10-17: "all uniform brick… former military
+    // housing… a mile or so long"; Mapillary 797055755405312: red-brick houses under low hipped roofs)
+    if (f.lat > 37.7905 && f.lat < 37.7985 && f.lon > -122.4570 && f.lon < -122.4470) return a('presidioBrick', 'presidio-east-housing')
+    return a('presidio', 'presidio-park')
   }
   /*
    * SAUSALITO (owner, 2026-10-02: "a very different architectural style, many low stucco Spanish colonial buildings,
