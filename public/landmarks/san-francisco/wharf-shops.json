@@ -74,5 +74,14 @@
   "front": 171,
   "height": 12,
   "note": "BUGS.md #290m, 2026-10-17: the corner of Jefferson and Taylor — dark red-brown, the turquoise 8 and ALIOTO'S, the roof board facing the lagoon, the awnings of Alioto's Waterside Cafe and Crab Stand, Sabella & La Torre, Nick's Lighthouse (Commons 'Fisherman's Wharf, San Francisco, CA, USA - panoramio (125)', 'Boats moored at fisherman's wharf... against the backdrop of Alioto's')."
+ },
+ {
+  "name": "The Chowder Hut",
+  "osm": [
+   "way/37312394"
+  ],
+  "procedural": "chowderHut",
+  "height": 8,
+  "note": "BUGS.md #290m, 2026-10-17: the octagonal pavilion at Taylor & Jefferson — dark panels and glass, standing-seam roof and lantern, blue menu awnings all round (Commons 'Fisherman's Wharf, San Francisco, CA, USA - panoramio (125)')."
  }
 ]

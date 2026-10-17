@@ -892,8 +892,46 @@ export function grotto9(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+/**
+ * THE CHOWDER HUT, the octagonal pavilion on the corner of Taylor and Jefferson (way/37312394, "The Chowder Hut Grill";
+ * Commons "Fisherman's Wharf, San Francisco, CA, USA - panoramio (125)", left): one storey of dark painted panels and
+ * glass under a standing-seam metal roof rising to a little lantern, and round every face a blue awning with the menu on
+ * its valance — GRILLED SHRIMP, COLD BEER, FRIED CALAMARI, FULL BAR. Faces the same all round, so no `front`.
+ */
+export function chowderHut(out: MeshBuilder, fit: Fit): void {
+  const WALL: Rgb = [0.18, 0.24, 0.26], ROOF: Rgb = [0.34, 0.4, 0.38], BLUE: Rgb = [0.12, 0.34, 0.68]
+  const ring = towerRing(fit)
+  const H = 4.2
+  faceBand(out, ring, 0, 0.7, { kind: 'blank', wall: WALL, material: 'metal' })
+  faceBand(out, ring, 0.7, 3.3, { kind: 'curtain', wall: WALL, glass: DARKGL, pitch: 1.6, material: 'metal' })
+  faceBand(out, ring, 3.3, H, { kind: 'blank', wall: WALL, material: 'metal' })
+  // the roof: from eaves standing out 0.6 m all round, up to a small ring under the lantern
+  let cx = 0, cz = 0
+  for (const q of ring) { cx += q.x; cz += q.z }
+  cx /= ring.length; cz /= ring.length
+  const eave = offsetRing(ring, 0.6)
+  const top = ring.map((q) => ({ x: cx + (q.x - cx) * 0.14, z: cz + (q.z - cz) * 0.14 }))
+  for (let i = 0; i < eave.length; i++) {
+    const j = (i + 1) % eave.length
+    const mx = (eave[i].x + eave[j].x) / 2 - cx, mz = (eave[i].z + eave[j].z) / 2 - cz, ml = Math.hypot(mx, mz) || 1
+    out.quad([[eave[i].x, H, eave[i].z], [eave[j].x, H, eave[j].z], [top[j].x, H + 3.2, top[j].z], [top[i].x, H + 3.2, top[i].z]],
+      [(mx / ml) * 0.7, 0.7, (mz / ml) * 0.7], UVQ, ROOF, MT)
+  }
+  capPolygon(out, top, H + 3.2, ROOF, MT)
+  // the lantern on the top
+  prism(out, cx, cz, H + 3.2, H + 4.0, 1.0, 8, WALL, MT)
+  prism(out, cx, cz, H + 4.0, H + 4.5, 1.2, 8, ROOF, MT)
+  const menu = ['GRILLED SHRIMP', 'COLD BEER', 'FRIED CALAMARI', 'FULL BAR']
+  let k = 0
+  for (let i = 0; i < ring.length; i++) {
+    const e = edgeAt(ring, i)
+    if (e.L < 3) continue
+    awning(out, e, e.L / 2, e.L - 0.4, 3.2, BLUE, menu[k++ % menu.length], WHITE, 1.4)
+  }
+}
+
 export const WHARF_SHOPS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, aliotos, grotto9, pretzelKiosk, klamathPropellers,
+  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, aliotos, grotto9, chowderHut, pretzelKiosk, klamathPropellers,
   pier45ShedA: pier45Shed('PIER 45', true),
   pier45ShedB: pier45Shed('PIER 45', false),
   pier45ShedD: pier45Shed('PIER 45', false),
