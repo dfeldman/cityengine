@@ -377,5 +377,18 @@
   "levels": 1,
   "height": 3,
   "stone": false
+ },
+ {
+  "name": "Lagoon overlook and fish market, Al Scoma Way",
+  "procedural": "lagoonOverlook",
+  "lat": 37.80842,
+  "lon": -122.41762,
+  "rotateDeg": 90,
+  "size": [
+   16,
+   8
+  ],
+  "height": 3,
+  "note": "2026-10-17: the Fisherman's Wharf Forward lagoon overlook on Al Scoma Way, completed May 2026, with its weekly fish market (sf.funcheap, sf.gov) — the likeliest reading of the owner's 'alley of restaurants at 476 Jefferson' (Al Scoma Way leaves Jefferson between 490 and 440)."
  }
 ]

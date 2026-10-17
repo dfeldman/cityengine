@@ -613,15 +613,19 @@ export function anchorsLandingGarage(out: MeshBuilder, fit: Fit): void {
   }
 }
 
-/** the loud court shops — guessed names in the Wharf's own vocabulary where no photograph of the court exists */
+/**
+ * The loud court shops. OSM's own points round Anchor's Landing come first (Surisan, the Spy Shop; Quickly and Anchorage
+ * Liquor are on the hotel's faces); no tenant list or photograph of the court's interior exists (web search 2026-10-17:
+ * nothing beyond a leasing brochure), so the rest are the Wharf's usual trades, unnamed — no invented shop names.
+ */
 const COURT_SHOPS: Shop[] = [
   { name: 'Quickly', sub: 'BOBA · SNACKS', sign: 'neon', c: [0.4, 1.0, 0.55], stripe: [1.0, 0.5, 0.8], face: 'brush' },
   { name: 'SF SWEATSHIRTS', sub: '2 FOR $25', sign: 'bulbs', c: [0.12, 0.35, 0.75], ink: [1.0, 0.9, 0.3], face: 'block', goods: true },
-  { name: 'Crêpes & Waffles', sign: 'awning', c: [0.95, 0.75, 0.15], stripe: [0.55, 0.25, 0.1], ink: [0.4, 0.15, 0.05], face: 'slab' },
+  { name: 'Surisan', sub: 'KOREAN · SEAFOOD', sign: 'awning', c: [0.95, 0.75, 0.15], stripe: [0.55, 0.25, 0.1], ink: [0.4, 0.15, 0.05], face: 'slab' },
   { name: 'GOLDEN GATE GIFTS', sign: 'box', c: [0.85, 0.2, 0.1], ink: [1.0, 0.92, 0.6], face: 'condensed', blade: 'GIFTS' },
-  { name: 'Henna & Tattoo', sign: 'neon', c: [1.0, 0.3, 0.3], stripe: [0.3, 0.7, 1.0], face: 'script' },
+  { name: 'Spy Shop', sub: 'CAMERAS · GADGETS', sign: 'neon', c: [1.0, 0.3, 0.3], stripe: [0.3, 0.7, 1.0], face: 'grotesque' },
   { name: 'CHOWDER', sub: 'IN A SOURDOUGH BOWL', sign: 'board', c: [0.96, 0.94, 0.85], ink: [0.15, 0.3, 0.55], face: 'slab', blade: 'CHOWDER' },
-  { name: 'Fudge Factory', sign: 'awning', c: [0.45, 0.22, 0.12], stripe: [0.95, 0.88, 0.7], ink: [0.98, 0.9, 0.7], face: 'roman' },
+  { name: 'FUDGE', sign: 'awning', c: [0.45, 0.22, 0.12], stripe: [0.95, 0.88, 0.7], ink: [0.98, 0.9, 0.7], face: 'roman' },
   { name: 'HATS · SUNGLASSES', sign: 'box', c: [0.08, 0.08, 0.1], ink: [1.0, 0.85, 0.15], goods: true },
   { name: 'Alcatraz Tours', sub: 'TICKETS HERE', sign: 'board', c: [0.92, 0.45, 0.12], ink: WHITE, face: 'block', blade: 'TOURS' },
   { name: 'Ice Cream', sub: 'SHAKES · CONES', sign: 'script', c: [1.0, 0.6, 0.85] },

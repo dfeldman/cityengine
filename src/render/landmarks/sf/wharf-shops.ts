@@ -1874,6 +1874,29 @@ export function aliotosPlaza(out: MeshBuilder, fit: Fit): void {
 }
 
 /**
+ * THE LAGOON OVERLOOK on Al Scoma Way (Fisherman's Wharf Forward; completed May 2026, with a weekly fish market — sf.funcheap
+ * "Fisherman's Wharf $10 million makeover", sf.gov): a timber deck at the lagoon's edge beside the lane, a steel rail on
+ * the water side, benches, and the market's stalls — white canopies over iced crates of fish and crab. Faces local +z (the
+ * lagoon); placed by lat/lon with rotateDeg.
+ */
+export function lagoonOverlook(out: MeshBuilder, _fit: Fit): void {
+  const DECK: Rgb = [0.52, 0.42, 0.32], STEEL: Rgb = [0.25, 0.27, 0.29]
+  box(out, 0, 0.12, 0, 8, 0.12, 4, DECK, WT)
+  box(out, 0, 1.05, 4, 8, 0.04, 0.05, STEEL, MT)
+  for (let x = -8; x <= 8.01; x += 2) box(out, x, 0.6, 4, 0.04, 0.48, 0.04, STEEL, MT)
+  for (const x of [-5, 0, 5]) { box(out, x, 0.45, 2.6, 1.0, 0.04, 0.22, DECK, WT); box(out, x, 0.23, 2.6, 0.06, 0.22, 0.15, STEEL, MT) }
+  // the market's stalls along the lane side
+  for (const x of [-5.5, -1.8, 1.9, 5.6]) {
+    for (const [dx, dz] of [[-1.4, -1.0], [1.4, -1.0], [-1.4, -3.4], [1.4, -3.4]]) box(out, x + dx, 1.25, dz, 0.03, 1.1, 0.03, [0.85, 0.85, 0.85], MT)
+    box(out, x, 2.4, -2.2, 1.55, 0.05, 1.35, [0.97, 0.97, 0.95], WT)
+    box(out, x, 0.85, -1.2, 1.3, 0.05, 0.4, [0.55, 0.75, 0.85], MT)           // a tray of ice
+    for (let k = -1; k < 2; k++) box(out, x + k * 0.6, 0.95, -1.2, 0.18, 0.05, 0.1, k === 0 ? [0.85, 0.35, 0.2] : [0.7, 0.72, 0.75], WT)
+    box(out, x, 0.42, -1.2, 1.3, 0.4, 0.4, [0.3, 0.45, 0.6], WT)
+  }
+  sign(out, { type: 'flat', text: 'FISH MARKET', h: 0.35, w: 3.2, face: 'slab', weight: 'bold', colour: [0.12, 0.3, 0.55], lit: 'front' }, { x: -1.8, y: 2.75, z: -0.8, heading: 0 })
+}
+
+/**
  * AT THE STREET'S LEVEL: a model's base is the LOWEST ground under its footprint, and on the Wharf a building that stands
  * out over the water has the sea bed under it — Alioto's and the Grotto were built 3–4 m down, their awnings lying on the
  * sidewalk (owner, 2026-10-17: "awnings on the ground on multiple buildings, including Aliotos and No 9"). The builder
@@ -1894,7 +1917,7 @@ function graded(build: (out: MeshBuilder, fit: Fit) => void, skirt: Rgb = [0.42,
 }
 
 export const WHARF_SHOPS: Record<string, (out: MeshBuilder, fit: Fit) => void> = Object.fromEntries(Object.entries({
-  jeffersonAttractions, aliotosPlaza, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, grotto9,
+  jeffersonAttractions, aliotosPlaza, lagoonOverlook, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, grotto9,
   capurros, jefferson490, aliotoLazio, taylorCorner, franciscanCrab, chowderHut, buenaVista, castagnolas, longshoremensHall, cioppinos, ...WHARF_ROW, hardRockFront, pumpingStation2,
   dolphinClubBoathouse: boathouse('DOLPHIN CLUB'), southEndRowingClub: boathouse('Since 1877', 'SOUTH END ROWING CLUB'), pretzelKiosk, klamathPropellers,
   pier45ShedA: pier45Shed('PIER 45', true),

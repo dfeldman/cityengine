@@ -10799,8 +10799,12 @@ Logged, not fixed:
 - Hotel Zephyr: FIXED 2026-10-17 — the baked outline has no courtyard notches, so the hotel body now starts 16 m behind
   the Jefferson boxes and The Yard (pavers, fire pits, giant games, the camper) lies open between. The hotel's courtyard (OSM's one
   inner ring, way/93422625) is cut open with its own walls, placed from the inner ring (the placed outline had lost it).
-- Owner to pin: "the alley of restaurants at 476 Jefferson" — no 476 exists in OSM or on the web (498 Capurro's, 496 the Bay
-  Company, 490 the Port's vacant building, then a lot, then 440 Alioto-Lazio); the only alley there is a service lane.
+- "The alley of restaurants at 476 Jefferson": no such address exists (OSM, web, Redfin); read as AL SCOMA WAY, the lane
+  that leaves Jefferson between 490 and 440 past Castagnola's, Lou's and Scoma's to Pier 47 — and added its 2026 lagoon
+  overlook with the weekly fish market (lagoonOverlook). Owner: say if you meant somewhere else.
+- Court shops: OSM's own names are used where it has them (Cannery: V Boutique, Flying Ninja, Pomegranate, SF Bicycle
+  Rentals, Quickly; Anchor's Landing: Surisan, Spy Shop, Anchorage Liquor); no tenant list or interior photo exists online,
+  so the remaining fronts carry trade signs (FUDGE, CHOWDER, ICE CREAM…), not invented shop names.
 - Alioto's No. 8: replaced 2026-10-17 by Alioto's Plaza as it now is (demolished Jan 2026, plaza opened 2026-09-02); the old
   building's builder is in git history if you'd rather have it back.
 - #244 re-measured (900 s soak, rider fixed at the origin): 9 vehicles stuck > 60 s at the end, in rings of queues round
