@@ -10754,7 +10754,7 @@ before it is useful.
   [x] d. the PIER 39 flag clusters (render/flags.ts: several flags a pole, streamers, black poles, the pier39 design; public/flags/san-francisco-placed.json), and pier39Gate with the blue PIER 39 board
   [ ] e. the Pier 39 activity centre (circus-like: striped tops, arcade, mirror maze look)
   [ ] f. the marinas full of boats (Pier 39 west/east marinas, the Wharf's lagoon of fishing boats)
-  [ ] g. the Aquarium of the Bay front, and the pretzel kiosk by it (red drum, scalloped glass canopy)
+  [~] g. the Aquarium of the Bay front — DONE 2026-10-16 (owner: "should have a big aquarium sign like it does irl"): royal-blue wall, AQUARIUM of the BAY in big white serif on the three longest walls, porthole murals (sea lion, fish, crab); the pretzel kiosk by it still to do
   [ ] h. the black storefronts round Hotel Zephyr, and Burgers & Best Pies' theatre sign
   [ ] i. the chocolate and candy buildings (Ghirardelli's roof sign, chocolate shops, candy stores)
   [ ] j. the Klamath propeller frame

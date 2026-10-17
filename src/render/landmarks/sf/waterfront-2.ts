@@ -17,11 +17,13 @@
 import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
 import { tower, towerRing, type TowerSpec } from '../tower.ts'
-import { edgeAt, cupola, panelOn } from '../parts.ts'
+import { edgeAt, cupola } from '../parts.ts'
 import { box, prism, type Rgb } from '../../models.ts'
 import { sign } from '../signage.ts'
+import { crab, ellipse, lozenge, tube } from './wharf-carnival.ts'
+import { surfaceTag } from '../../cartoon-material.ts'
 
-const NAVY: Rgb = [0.09, 0.16, 0.32]
+const NAVY: Rgb = [0.12, 0.3, 0.72]      // (royal blue, as painted: Mapillary 516497869459045; was navy)
 const CREAM: Rgb = [0.92, 0.91, 0.86]
 const DECK: Rgb = [0.82, 0.8, 0.74]
 const DARK_GLASS: Rgb = [0.14, 0.18, 0.24]
@@ -51,30 +53,45 @@ export function aquariumOfTheBay(out: MeshBuilder, fit: Fit): void {
   const H = fit.height > 0.6 * spec.height && fit.height < 1.6 * spec.height ? fit.height : spec.height
   const lowerTop = H * 0.62
 
-  // painted marine-life murals: broad colour blocks across the plaza-facing (longest) edge of the navy wall,
-  // per the photograph's big graphics either side of the entrance
-  let front = 0
-  {
-    let bestL = 0
-    for (let i = 0; i < ring.length; i++) { const e = edgeAt(ring, i); if (e.L > bestL) { bestL = e.L; front = i } }
-  }
-  // painted round every long-enough wall, not just the one longest edge: from the photograph the murals wrap
-  // most of the visible frontage, and a rider passes the building on more than one side
-  const muralColours: Rgb[] = [[0.16, 0.38, 0.5], [0.62, 0.72, 0.24], [0.75, 0.22, 0.22]]
+  /*
+   * The PORTHOLES (owner, 2026-10-16: "the aquarium should have a big aquarium sign like it does irl"; Mapillary
+   * 516497869459045): round murals low on the blue wall, each in a heavy dark ring like a ship's port — a sea lion's
+   * face, a fish, a crab — up to three to a long wall. And on every long wall the name, big, in white serif:
+   * AQUARIUM of the BAY, the small words between, as the building is lettered.
+   */
+  const front = (() => { let f = 0, bestL = 0; for (let i = 0; i < ring.length; i++) { const e = edgeAt(ring, i); if (e.L > bestL) { bestL = e.L; f = i } } return f })()
+  const scenes: Rgb[] = [[0.16, 0.5, 0.6], [0.95, 0.55, 0.2], [0.2, 0.62, 0.45]]
+  const lettered = ring.map((_, i) => i).filter((i) => edgeAt(ring, i).L >= 9).sort((a, b) => edgeAt(ring, b).L - edgeAt(ring, a).L).slice(0, 3)
+  let n = 0
   for (let i = 0; i < ring.length; i++) {
-    const eL = edgeAt(ring, i).L
-    if (eL < 6) continue
-    const panelW = Math.min(eL * 0.28, 6)
-    const n = eL > panelW * 2.5 ? 2 : 1
-    for (let k = 0; k < n; k++) {
-      const c = muralColours[(i + k) % muralColours.length]
-      panelOn(out, ring, i, (k + 0.5) / n, lowerTop * 0.52, panelW, lowerTop * 0.78, c, { out: 0.08 })
+    const e = edgeAt(ring, i)
+    if (e.L < 9) continue
+    const u: [number, number, number] = [e.tx, 0, e.tz], up: [number, number, number] = [0, 1, 0], nn: [number, number, number] = [e.nx, 0, e.nz]
+    const count = Math.min(3, Math.floor(e.L / 9))
+    for (let k = 0; k < count; k++) {
+      const t = (k + 0.5) / count, r = Math.min(1.4, lowerTop * 0.15)
+      const px = e.a.x + e.tx * e.L * t + e.nx * 0.05, pz = e.a.z + e.tz * e.L * t + e.nz * 0.05
+      // (stood on the ground in front, which can be a metre and more over the model's base: it is sunk to the lowest)
+      const c: [number, number, number] = [px, (fit.groundAt?.(px + e.nx, pz + e.nz) ?? 0) + r + 0.35, pz]
+      lozenge(out, c, u, up, nn, r, r, 0.3, [0.12, 0.12, 0.13], surfaceTag('metal'), 24)
+      ellipse(out, [c[0] + e.nx * 0.16, c[1], c[2] + e.nz * 0.16], u, up, nn, r * 0.8, r * 0.8, 24, scenes[n % 3], 0)
+      const at: [number, number, number] = [c[0] + e.nx * 0.18, c[1] - r * 0.1, c[2] + e.nz * 0.18]
+      if (n % 3 === 2) crab(out, at, u, up, nn, r * 1.1, [0.9, 0.35, 0.15], [0.7, 0.22, 0.1], 0)
+      else if (n % 3 === 1) {
+        // a fish: an oval body and a tail
+        lozenge(out, at, u, up, nn, r * 0.45, r * 0.22, 0.06, [0.98, 0.85, 0.3], 0, 16)
+        tube(out, [at[0] - e.tx * r * 0.4, at[1], at[2] - e.tz * r * 0.4], [at[0] - e.tx * r * 0.7, at[1], at[2] - e.tz * r * 0.7], r * 0.03, 4, [0.98, 0.85, 0.3], 0, r * 0.22)
+      } else {
+        // a sea lion's face: brown, two dark eyes
+        lozenge(out, at, u, up, nn, r * 0.42, r * 0.38, 0.06, [0.45, 0.32, 0.22], 0, 18)
+        for (const s2 of [-1, 1]) lozenge(out, [at[0] + e.tx * s2 * r * 0.16 + e.nx * 0.05, at[1] + r * 0.1, at[2] + e.tz * s2 * r * 0.16 + e.nz * 0.05], u, up, nn, r * 0.06, r * 0.07, 0.02, [0.05, 0.05, 0.06], 0, 10)
+      }
+      n++
     }
+    // (sized to the wall it is on — `w` sets the width and the letters follow — on the long walls only)
+    if (lettered.includes(i)) sign(out, { type: 'flat', text: 'AQUARIUM of the BAY', h: 1.6, w: Math.min(e.L * 0.78, 20), face: 'roman', colour: [0.97, 0.97, 0.95], lit: 'front' },
+      { ring, edge: i, y: Math.min(lowerTop - 1.2, (fit.groundAt?.(e.mid.x + e.nx, e.mid.z + e.nz) ?? 0) + 5.0) })
   }
-
-  // the sign a rider on the Embarcadero actually reads
-  sign(out, { type: 'flat', text: 'AQUARIUM OF THE BAY', h: 1.1, face: 'grotesque', weight: 'bold', colour: CREAM,
-    lit: 'front' }, { ring, edge: front, y: lowerTop * 0.78 })
 
   // the small square lantern near the ridge, and a line of flagpoles along the deck
   const e = edgeAt(ring, front)
