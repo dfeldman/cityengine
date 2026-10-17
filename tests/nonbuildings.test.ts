@@ -82,6 +82,9 @@ const KNOWN: Record<string, string[]> = {
       'intersects | Stagecoach Greens',
       // the round BART plaza runs up to the building south of it, as in the owner's aerial (#248)
       'intersects | 24th St Mission BART Plaza (south-west)',
+      // Hallidie Plaza's 80 m box takes in both sunken halves either side of the Cyril Magnin bridge, and so the corners of
+      // 1 Powell and One Hallidie Plaza that stand round them; its floors and walls stop at their fronts (#318)
+      'intersects | Hallidie Plaza',
     // (Civic Center Plaza: OSM's own café at 52 Grove and the 1958 garage pay kiosk stand in it, as they do)
     'intersects | Civic Center Plaza',
     // #109 — not on the ground. The Opera Plaza courtyard's +3.80 m is a RAISED DECK and is probably right;

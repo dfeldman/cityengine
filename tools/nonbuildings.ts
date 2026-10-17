@@ -163,7 +163,7 @@ export const EXPLICIT: Record<string, NonbuildingKind> = {
   // the Legion of Honor's glass pyramid skylight, a hospital's entrance canopy (2026-10-04)
   legionPyramid: 'structure', ucsfMbCanopy: 'structure',
   // the squares themselves, and a raised garden deck
-  unionSquarePlaza: 'plaza', operaPlazaCourtyard: 'garden', civicCenterPlaza: 'plaza', bartPlaza24thSW: 'plaza', bartPlaza24thNE: 'plaza', bartPlaza16thNE: 'plaza', bartPlaza16thSW: 'plaza',
+  unionSquarePlaza: 'plaza', operaPlazaCourtyard: 'garden', civicCenterPlaza: 'plaza', bartPlaza24thSW: 'plaza', bartPlaza24thNE: 'plaza', bartPlaza16thNE: 'plaza', bartPlaza16thSW: 'plaza', hallidiePlaza: 'plaza',
   // its own geometry, no OSM building at all: the bronze column at Market/Geary/Kearny/Third
   lottasFountain: 'fountain',
   // a ballpark open to the sky: no facade the kit could say, and nothing a street photograph settles

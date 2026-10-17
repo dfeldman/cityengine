@@ -109,6 +109,7 @@ import { SUTRO_BASE } from './sutro-base.ts'
 import { TEA_GARDEN } from './tea-garden.ts'
 import { MISSION_BAY } from './mission-bay.ts'
 import { BART_PLAZAS } from './bart-plazas.ts'
+import { HALLIDIE_PLAZA } from './hallidie-plaza.ts'
 import { WOMENS_BUILDING } from './womens-building.ts'
 import { HOSPITALS } from './hospitals.ts'
 import { CASTRO_THEATRE } from './castro-theatre.ts'
@@ -295,6 +296,7 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   ...TEA_GARDEN,
   ...MISSION_BAY,
   ...BART_PLAZAS,
+  ...HALLIDIE_PLAZA,
   ...WOMENS_BUILDING,
   ...HOSPITALS,
   ...CASTRO_THEATRE,
