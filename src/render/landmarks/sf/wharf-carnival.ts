@@ -12,6 +12,7 @@ import { box, prism, EMIT, type Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 import { sign } from '../signage.ts'
 import { SKYSTAR, DECK } from '../../sf/ferris.ts'
+import { PIER39_BRIDGE_PATH, pier39BridgeY } from '../../../city/sf/bridges.ts'
 
 export type V3 = [number, number, number]
 const UVQ: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
@@ -424,4 +425,66 @@ export function pier39Stage(out: MeshBuilder, _fit: Fit): void {
   }
 }
 
-export const WHARF_CARNIVAL: Record<string, (out: MeshBuilder, fit: Fit) => void> = { wharfSign, skystarWheel, pier39Gate, sfCarousel39, pier39Stage }
+/**
+ * PIER 39's FOOTBRIDGE over the Embarcadero (BUGS.md #296; owner, 2026-10-16: "we should probably have a custom renderer
+ * for that one particular footbridge though since it's so prominent", with a Street View): a deep girder of dark
+ * red-brown timber, a blue steel railing of close pickets on each side, carried on PAIRS of round pale concrete columns
+ * with square caps, out of the garage's upper floor and across the street. On the deck the ways take their heights from
+ * (city/sf/bridges.ts PIER39_BRIDGE_PATH, pier39BridgeY), so the walkers are on it. Placed at the L's corner, rotateDeg
+ * 0, baseY the street (PIER39_BRIDGE_GROUND).
+ */
+export function pier39Footbridge(out: MeshBuilder, _fit: Fit): void {
+  const GIRDER: Rgb = [0.4, 0.19, 0.15], DECKT: Rgb = [0.5, 0.45, 0.4], BLUE: Rgb = [0.16, 0.36, 0.62], COL: Rgb = [0.82, 0.8, 0.75]
+  const WT = surfaceTag('clapboard'), MT = surfaceTag('metal'), CT = surfaceTag('concrete')
+  const path = PIER39_BRIDGE_PATH
+  const lens: number[] = [0]
+  for (let i = 1; i < path.length; i++) lens.push(lens[i - 1] + Math.hypot(path[i].x - path[i - 1].x, path[i].z - path[i - 1].z))
+  const L = lens[lens.length - 1]
+  const at = (d: number): { x: number; z: number } => {
+    d = Math.max(0, Math.min(L, d))
+    let i = 1
+    while (i < path.length - 1 && lens[i] < d) i++
+    const t = (d - lens[i - 1]) / (lens[i] - lens[i - 1] || 1)
+    return { x: path[i - 1].x + (path[i].x - path[i - 1].x) * t, z: path[i - 1].z + (path[i].z - path[i - 1].z) * t }
+  }
+  const y = (d: number): number => pier39BridgeY(d)
+  // the centre line every half metre, the corner eased over a few metres so the girder bends, not kinks
+  const S: { x: number; z: number; y: number; nx: number; nz: number }[] = []
+  for (let d = 0; d <= L + 0.01; d += 0.5) {
+    const a = at(d - 2.5), b = at(d + 2.5), c = at(d)
+    const tl = Math.hypot(b.x - a.x, b.z - a.z) || 1
+    S.push({ x: c.x, z: c.z, y: y(d), nx: -(b.z - a.z) / tl, nz: (b.x - a.x) / tl })
+  }
+  const HALF = 1.6, DEEP = 1.35
+  const P = (k: number, o: number, dy: number): V3 => [S[k].x + S[k].nx * o, S[k].y + dy, S[k].z + S[k].nz * o]
+  for (let k = 0; k + 1 < S.length; k++) {
+    const nrm = (o: number): V3 => [S[k].nx * Math.sign(o), 0, S[k].nz * Math.sign(o)]
+    // the walking surface, the girder's two faces and its soffit, and the girder's top edge either side
+    out.quad([P(k, -HALF, 0), P(k + 1, -HALF, 0), P(k + 1, HALF, 0), P(k, HALF, 0)], [0, 1, 0], UVQ, DECKT, WT)
+    for (const o of [-HALF - 0.12, HALF + 0.12]) out.quad([P(k, o, -DEEP), P(k + 1, o, -DEEP), P(k + 1, o, 0.25), P(k, o, 0.25)], nrm(o), UVQ, GIRDER, WT)
+    out.quad([P(k, -HALF - 0.12, -DEEP), P(k + 1, -HALF - 0.12, -DEEP), P(k + 1, HALF + 0.12, -DEEP), P(k, HALF + 0.12, -DEEP)], [0, -1, 0], UVQ, GIRDER, WT)
+    for (const [o0, o1] of [[-HALF - 0.12, -HALF], [HALF, HALF + 0.12]]) out.quad([P(k, o0, 0.25), P(k + 1, o0, 0.25), P(k + 1, o1, 0.25), P(k, o1, 0.25)], [0, 1, 0], UVQ, GIRDER, WT)
+    // the railing: a top rail and a mid rail, pickets every 0.25 m, posts every 2.5 m
+    for (const o of [-HALF + 0.05, HALF - 0.05]) {
+      for (const h of [1.12, 0.6]) tube(out, P(k, o, h), P(k + 1, o, h), h > 1 ? 0.04 : 0.025, 4, BLUE, MT)
+      tube(out, P(k, o, 0.25), P(k, o, 1.12), k % 5 === 0 ? 0.04 : 0.012, 4, BLUE, MT)
+      if (k % 5 !== 0) { const m = P(k, o, 0.25); const m1 = P(k + 1, o, 0.25); tube(out, [(m[0] + m1[0]) / 2, m[1], (m[2] + m1[2]) / 2], [(m[0] + m1[0]) / 2, m[1] + 0.87, (m[2] + m1[2]) / 2], 0.012, 4, BLUE, MT) }
+    }
+  }
+  // the columns, in pairs, clear of the carriageways (the Embarcadero crosses the north leg 2.7-15.3 m from the corner,
+  // the busway 15.5-18.5, the service road 22.3-27.3): along the garage, at the corner, and between the roads beyond
+  const corner = lens[2]
+  for (const d of [8, 24, corner - 1, corner + 20.2, corner + 30.5, corner + 40]) {
+    const k = Math.round(d / 0.5)
+    if (k <= 0 || k >= S.length) continue
+    const top = S[k].y - DEEP
+    if (top < 0.6) continue
+    for (const o of [-1.0, 1.0]) {
+      const c = P(k, o, 0)
+      prism(out, c[0], c[2], 0, top - 0.5, 0.38, 12, COL, CT)
+      box(out, c[0], top - 0.25, c[2], 0.5, 0.25, 0.5, COL, CT)
+    }
+  }
+}
+
+export const WHARF_CARNIVAL: Record<string, (out: MeshBuilder, fit: Fit) => void> = { wharfSign, skystarWheel, pier39Gate, sfCarousel39, pier39Stage, pier39Footbridge }

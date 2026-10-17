@@ -467,7 +467,33 @@ const CATHEDRAL_PLAZA_DECKS: DeckDecl[] = [
   { from: 0, to: 0, half: 0, y: () => 0, ring: CATHEDRAL_PLAZA_RING, kinds: ['footway', 'path', 'pedestrian'], vertical: true, joins: true },
 ]
 
+/**
+ * PIER 39's FOOTBRIDGE over the Embarcadero (OSM way/27570856, outline way/555671175; BUGS.md #296): from the upper floor
+ * of the Pier 39 garage, along its north face, then north across the Embarcadero, the busway and the service road, down
+ * to the pier. The bake's generic hump dipped to 3.7 m over the roadway and ramped up along the garage; the real bridge
+ * comes out of the garage at its floor and holds its height across (owner's Street View, 2026-10-16: a deep red-brown
+ * timber girder, blue railings, pairs of round pale columns). Declared here, level at 6 m over the street from the
+ * garage to past the service road, then down to the pier; the model (landmarks/sf/wharf-carnival.ts `pier39Footbridge`)
+ * draws the same line. Model frame: x east, z north about the L's corner, 37.808207 −122.410545.
+ */
+export const PIER39_BRIDGE_PATH: { x: number; z: number }[] = [{ x: -40.64, z: -7.24 }, { x: -36.95, z: -6.57 }, { x: 0, z: 0.11 }, { x: 6.69, z: 45.97 }]
+export const PIER39_BRIDGE_GROUND = -81.3
+/** the deck's top at `along` metres from the garage end (the path is 87.6 m), over the model's base — the street, its
+ *  manifest `baseY` (a deck's heights are in the model's frame, the base added in placing it) */
+export const pier39BridgeY = (along: number): number => {
+  // level from the garage to past the service road, then down to the pier's boards: the way's last node, 84 m along, is
+  // where it meets the pier's walks on the ground (the deck is `vertical`: a junction off it keeps its own level)
+  const top = 6.0, rampFrom = 70, foot = 84
+  return along <= rampFrom ? top : Math.max(0.05, top + (0.05 - top) * ((along - rampFrom) / (foot - rampFrom)))
+}
+const PIER39_BRIDGE_DECKS: DeckDecl[] = [
+  // (vertical: stairs and the garage at its ends, not ramps — the streets round it are not lifted toward it; joins: the foot
+  // ways meeting it come down from it. Without, the Embarcadero's carriageways were raised on banks round its feet)
+  { from: 0, to: 87.6, half: 2.2, path: PIER39_BRIDGE_PATH, y: pier39BridgeY, kinds: ['footway', 'path', 'steps'], model: { from: 0, to: 87.6, half: 1.5 }, layer: 1, vertical: true, joins: true },
+]
+
 export const SF_BRIDGE_DECKS: Record<string, DeckDecl[]> = {
+  pier39Footbridge: PIER39_BRIDGE_DECKS,
   cathedralPlaza_Geary: CATHEDRAL_PLAZA_DECKS,
   pier7Promenade: PIER7_DECKS,
   ferryGatesEFG: FERRY_GATE_DECKS,

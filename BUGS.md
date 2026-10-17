@@ -10770,7 +10770,11 @@ before it is useful.
   bridge-structures laid a bent outline's structure on its axis — the L's diagonal — and switched off the ways' own decks;
   `straightOutline` (city/bridge-axis.ts) leaves outlines filling < 45 % of their axis rectangle to the ways' decks (19 of
   101 in SF). Owner then: "we should probably have a custom renderer for that one particular footbridge though since it's
-  so prominent" — IN PROGRESS.
+  so prominent" (with a Street View; "it actually goes into a parking structure") — DONE: `pier39Footbridge`
+  (wharf-carnival.ts) on a declared deck (city/sf/bridges.ts PIER39_BRIDGE_PATH, `vertical`, `layer: 1`): 6 m over the
+  street from the garage's floor to past the service road, down to the pier; red-brown timber girder, blue picket rails,
+  paired round columns clear of the carriageways. (A deck without `layer: 1` pulled the Embarcadero, the busway and the
+  service road up onto banks round it.)
 - #295 Generic building inside a custom one at 37.785565 −122.409141 (owner, 2026-10-16) — FIXED: the Hotel Nikko's
   outline is two OSM parts in an L round Maria Manor; a parts-fitted model takes their convex HULL unless `"plan":
   "union"`, so the tower stood over the notch. Entry given `plan: union`. (Other L/U-shaped parts-fitted landmarks may do

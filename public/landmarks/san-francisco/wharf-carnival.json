@@ -37,5 +37,20 @@
   ],
   "height": 7.6,
   "note": "BUGS.md #290e, 2026-10-16: the striped tent stage and booths on the carousel plaza (Commons 'Pier 39 - July 2025 - Sarah Stierch')."
+ },
+ {
+  "name": "Pier 39 footbridge",
+  "procedural": "pier39Footbridge",
+  "lat": 37.808207,
+  "lon": -122.410545,
+  "rotateDeg": 0,
+  "baseY": -81.3,
+  "size": [
+   50,
+   56
+  ],
+  "height": 7.5,
+  "coversRaised": true,
+  "note": "BUGS.md #296, 2026-10-16 (owner's Street View): timber girder, blue railings, paired round columns, on the deck declared in src/city/sf/bridges.ts PIER39_BRIDGE_PATH \u2014 the ways take its heights in the bake."
  }
 ]
