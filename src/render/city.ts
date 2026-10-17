@@ -3434,14 +3434,12 @@ export class City {
           const sin = Math.sin(facing)
           const list = this.heads.get(k) ?? this.heads.set(k, []).get(k)!
           for (const l of lamps) {
-            // each lens at the ground under ITSELF: the furniture mesh is draped vertex by vertex (below), so a mast
-            // arm's head out over a sloping street sits at that street's height, not the post's — measured from the
-            // post, the lit lamp floated off its lens (owner, 2026-09-29: "not aligned with the actual signal")
-            const at = l.at.map(([lx, ly, lz]) => {
-              const x = px + lx * cos + lz * sin
-              const z = pz - lx * sin + lz * cos
-              return [x, this.terrain.heightAt(x, z) + 0.15 + ly, z]
-            }) as SignalHead['at']
+            // each lens at the ground under the POST: the furniture is placed RIGIDLY (`drapeRigid`, the whole model at
+            // its anchor's ground), so the head out over a sloping street is at the post's height. (When the mesh was
+            // draped vertex by vertex this took the ground under each lens; after the change it put the lit lamp up on
+            // the mast arm or down below the head — owner, 2026-10-16, 37.796241 −122.405121, BUGS.md #300.)
+            const g = this.terrain.heightAt(px, pz)
+            const at = l.at.map(([lx, ly, lz]) => [px + lx * cos + lz * sin, g + 0.15 + ly, pz - lx * sin + lz * cos]) as SignalHead['at']
             list.push({ nodeId: id, edgeId: a.edgeId, facing, scale: l.scale, at })
           }
         }

@@ -10765,7 +10765,8 @@ before it is useful.
 - #298 Underground path at 37.790516 −122.410527 (owner, 2026-10-16: "more underground path here"; and "we should do
   some checks for underground paths on steep hills"). OPEN.
 - #300 Traffic lights' lit lamps out of their housings, e.g. 37.796241 −122.405121 (owner, 2026-10-16, night screenshot:
-  the red lamp a dot on the mast arm above the head). OPEN.
+  the red lamp a dot on the mast arm above the head). FIXED: furniture is placed rigidly (the whole model at its post's
+  ground) but the lit lamps took the ground under each lens — on a slope, up on the arm or under the head. Now the post's.
 - #299 Z-fighting on the new cable car model, the front (owner, 2026-10-16). FIXED: the lower dash's face lay on the
   dash's, the destination board's on its backing; each layer now stands proud of the one under it.
 - #297 Cars all over a narrow pier at 37.809098 −122.417564 (owner, 2026-10-16, with a screenshot: "tons of cars on a
