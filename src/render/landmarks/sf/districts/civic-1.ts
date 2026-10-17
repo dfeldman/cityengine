@@ -181,9 +181,10 @@ export const CIVIC_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
         out.quad([at(k, r, 0.1), at(k + 1, r, 0.1), at(k + 1, r + 0.16, 0.1), at(k, r + 0.16, 0.1)], [nx, 0, nz], [[0, 0], [1, 0], [1, 1], [0, 1]], [0.93, 0.92, 0.89], 0)
       }
     }
+    const bay = edgeFacing(ring)
     for (let i = 0; i < ring.length; i++) {
       const e = edgeAt(ring, i)
-      if (e.L < 10) continue
+      if (e.L < 10 || i === bay) continue
       // the entrance takes the middle 12 m of the front
       const skip = i === front ? [e.L / 2 - 7, e.L / 2 + 7] : [Infinity, -Infinity]
       const n = Math.floor((e.L - 2) / 3.2)
@@ -223,6 +224,59 @@ export const CIVIC_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
       // the canopy's carved sea creatures, as lighter scrolls along its face
       for (let k = -6; k <= 6; k++) { [x, z] = P(k * 1.05, 1.12); boxAlong(out, x, 5.7 + (k % 2 ? 0.25 : -0.25), z, 0.35, 0.12, 0.03, e.heading, [0.52, 0.6, 0.57], 0) }
       for (let st = 0; st < 3; st++) { [x, z] = P(0, 1.2 + st * 0.45); boxAlong(out, x, 0.27 - st * 0.09, z, 4.2, 0.27 - st * 0.09, 0.23, e.heading, [0.74, 0.73, 0.7], 0) }
+    }
+    /*
+     * The BAY FACE (owner's photo from the beach, 2026-10-17): a ground floor of white-framed windows over a pale green
+     * base, with doors; above it a LOGGIA — deep open bays between square piers, balcony rails across them, lamps hung
+     * from their ceilings and Hilaire Hiler's green-and-white sea murals on the back walls; MARITIME MUSEUM over it; and at
+     * the east end a plain wall with one tall gridded window.
+     */
+    {
+      const e = edgeAt(ring, bay)
+      const P = (along: number, out_: number): [number, number] => [e.a.x + e.tx * along + e.nx * out_, e.a.z + e.tz * along + e.nz * out_]
+      const L = e.L
+      // the ground floor: pale green base, a row of white-framed windows, doors every fifth
+      let [x, z] = P(L / 2, 0.04)
+      boxAlong(out, x, 1.0, z, L / 2 - 1, 0.4, 0.04, e.heading, [0.62, 0.72, 0.66], 0)
+      for (let s = 2; s < L - 2; s += 1.5) {
+        const door = Math.round(s / 1.5) % 5 === 0
+        ;[x, z] = P(s, 0.05)
+        boxAlong(out, x, door ? 1.65 : 2.45, z, 0.6, door ? 1.05 : 0.8, 0.04, e.heading, door ? [0.12, 0.16, 0.3] : [0.34, 0.42, 0.46], 0)
+        ;[x, z] = P(s + 0.72, 0.08)
+        boxAlong(out, x, 2.0, z, 0.07, 1.4, 0.05, e.heading, WHITE, 0)
+      }
+      // the loggia over the middle three-fifths
+      const l0 = L * 0.2, l1 = L * 0.8, nb = Math.max(4, Math.round((l1 - l0) / 5))
+      const bw = (l1 - l0) / nb
+      const MURAL: [number, number, number][] = [[0.2, 0.55, 0.38], [0.88, 0.9, 0.86], [0.12, 0.42, 0.32], [0.55, 0.78, 0.6]]
+      ;[x, z] = P((l0 + l1) / 2, 0.03)
+      boxAlong(out, x, 5.9, z, (l1 - l0) / 2, 1.5, 0.03, e.heading, [0.3, 0.42, 0.38], 0)
+      for (let b = 0; b < nb; b++) {
+        const c = l0 + (b + 0.5) * bw
+        // the mural on the back wall: bold bands and a fin, in the murals' greens and whites
+        for (let k = 0; k < 4; k++) {
+          ;[x, z] = P(c - bw * 0.3 + k * bw * 0.2, 0.06)
+          boxAlong(out, x, 5.4 + ((k + b) % 3) * 0.45, z, bw * 0.09, 0.9 - ((k + b) % 2) * 0.3, 0.02, e.heading, MURAL[(k + b) % 4], 0)
+        }
+        // the lamp hung from the bay's ceiling
+        ;[x, z] = P(c, 1.1)
+        boxAlong(out, x, 7.0, z, 0.02, 0.3, 0.02, e.heading, [0.2, 0.2, 0.2], metal)
+        boxAlong(out, x, 6.65, z, 0.28, 0.08, 0.28, e.heading, [0.25, 0.3, 0.28], 0)
+        // the balcony rail across the bay's mouth
+        const [a0x, a0z] = P(c - bw / 2 + 0.4, 2.0), [a1x, a1z] = P(c + bw / 2 - 0.4, 2.0)
+        for (const h of [4.9, 5.35, 5.8]) strut(out, [a0x, h, a0z], [a1x, h, a1z], 0.04, 0.04, rail, metal, false)
+      }
+      // the piers between the bays and the loggia's floor and ceiling slabs, standing 2 m out from the back wall
+      for (let b = 0; b <= nb; b++) { ;[x, z] = P(l0 + b * bw, 1.0); boxAlong(out, x, 6.1, z, 0.35, 1.7, 1.0, e.heading, WHITE, 0) }
+      ;[x, z] = P((l0 + l1) / 2, 1.0)
+      boxAlong(out, x, 4.45, z, (l1 - l0) / 2 + 0.35, 0.15, 1.0, e.heading, WHITE, 0)
+      boxAlong(out, x, 7.65, z, (l1 - l0) / 2 + 0.35, 0.25, 1.0, e.heading, WHITE, 0)
+      ;[x, z] = P((l0 + l1) / 2, 2.02)
+      signText(out, 'MARITIME MUSEUM', x, 8.05, z, 0.5, [0.55, 0.57, 0.6], { heading: e.heading })
+      // the tall gridded window in the plain wall toward the east end
+      ;[x, z] = P(L * 0.9, 0.05)
+      boxAlong(out, x, 5.9, z, 1.4, 1.6, 0.04, e.heading, [0.27, 0.4, 0.44], 0)
+      for (let g = 0; g < 5; g++) boxAlong(out, x, 4.4 + g * 0.75, z, 1.4, 0.04, 0.07, e.heading, WHITE, 0)
     }
     // a pipe rail round a deck: posts every 2.4 m and three rails
     const pipeRail = (r: { x: number; z: number }[], y: number): void => {
