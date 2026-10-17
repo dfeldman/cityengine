@@ -10762,5 +10762,9 @@ before it is useful.
   [ ] l. Musée Mécanique and the Pier 45 sheds
   [ ] m. the survey: every other distinctive Wharf frontage (Wax Museum, Hard Rock, In-N-Out, Blue & Gold / Red & White
          Fleet ticket booths, Fish Alley, the Maritime Museum bathhouse, Lou's, The Anchorage…)
+- #295 Generic building inside a custom one at 37.785565 −122.409141 (owner, 2026-10-16) — FIXED: the Hotel Nikko's
+  outline is two OSM parts in an L round Maria Manor; a parts-fitted model takes their convex HULL unless `"plan":
+  "union"`, so the tower stood over the notch. Entry given `plan: union`. (Other L/U-shaped parts-fitted landmarks may do
+  the same: a sweep for generic buildings inside a hull but outside the union is worth running.)
 - #291 Cable car passengers "in a hot tub" — FIXED (hollow saloon, benches).
 - #292 Bench inside the Taylor Street stairs (37.790831 −122.412358) — FIXED (furniture kept off the whole flight).
