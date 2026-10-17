@@ -633,8 +633,43 @@ export function jeffersonInNOut(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+/**
+ * SCOMA'S, 1965 Al Scoma Way (way/288391506): the seafood house out on Pier 47 — a long low building of white-painted
+ * boards on the pier's pilings, a ribbon of dining-room windows along the water under a slate-blue trim band, a grey roof
+ * with a deep fascia, and SCOMA'S in red on a white board over the door at the pier end, again on the roof facing the
+ * harbour (Commons "Boats moored at Fisherman's Wharf, San Francisco 11"; its own boat, the SCOMA, ties up alongside).
+ * `front` 81 in the manifest: the door end, facing Al Scoma Way to the east, is the edge facing local −z.
+ */
+export function scomas(out: MeshBuilder, fit: Fit): void {
+  const TRIM: Rgb = [0.36, 0.45, 0.56], RED: Rgb = [0.75, 0.1, 0.1], ROOF: Rgb = [0.5, 0.52, 0.54]
+  const ring = towerRing(fit)
+  const H = 4.6
+  faceBand(out, ring, 0, 0.9, { kind: 'blank', wall: WHITE, material: 'clapboard' })
+  faceBand(out, ring, 0.9, 2.7, { kind: 'bands', wall: WHITE, glass: DARKGL, floor: 1.8, solid: 0.12, material: 'clapboard' })
+  faceBand(out, ring, 2.7, 3.1, { kind: 'blank', wall: TRIM, material: 'clapboard' })
+  faceBand(out, ring, 3.1, H, { kind: 'blank', wall: WHITE, material: 'clapboard' })
+  faceBand(out, ring, H, H + 0.35, { kind: 'blank', wall: ROOF, material: 'metal' })
+  capPolygon(out, ring, H + 0.35, ROOF, MT)
+  // the door end on Al Scoma Way: an entry canopy, the name board over it
+  const e = edgeAt(ring, facingFront(ring, 4))
+  const u = e.L / 2
+  slab(out, e, u, 0.06, 0, Math.min(3.2, e.L * 0.5), 2.5, 0.06, [0.25, 0.2, 0.16], WT)
+  slab(out, e, u, 0.9, 2.6, Math.min(4.2, e.L * 0.7), 0.16, 1.8, TRIM, MT)
+  slab(out, e, u, 0.08, 3.2, Math.min(5.0, e.L * 0.8), 1.1, 0.12, WHITE, WT)
+  signAt(out, e, u, 3.75, 0.16, { type: 'flat', text: "SCOMA'S", h: 0.7, face: 'roman', weight: 'bold', colour: RED, lit: 'front', w: Math.min(4.6, e.L * 0.75) })
+  // and on the roof, a long board facing the harbour: a long side (local +x, the north side with front 81)
+  let bi = 0
+  for (let i = 0; i < ring.length; i++) { const q = edgeAt(ring, i); if (q.L > 6 && q.nx > edgeAt(ring, bi).nx) bi = i }
+  const back = edgeAt(ring, bi)
+  const c = on(back, back.L / 2, 0, -3)
+  const pc = { x: c[0], z: c[2] }
+  slab(out, { ...back, a: { x: pc.x - back.tx * 4, z: pc.z - back.tz * 4 } }, 4, 0, H + 0.35, 7.5, 1.5, 0.15, WHITE, WT)
+  signAt(out, { ...back, a: { x: pc.x - back.tx * 4, z: pc.z - back.tz * 4 } }, 4, H + 1.1, 0.09, { type: 'flat', text: "SCOMA'S", h: 1.0, face: 'roman', weight: 'bold', colour: RED, lit: 'front' })
+  for (const d of [-2.5, 2.5]) slab(out, { ...back, a: { x: pc.x - back.tx * 4, z: pc.z - back.tz * 4 } }, 4 + d, -0.6, H + 0.35, 0.1, 1.2, 1.2, [0.4, 0.4, 0.42], MT)
+}
+
 export const WHARF_SHOPS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, pretzelKiosk, klamathPropellers,
+  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, pretzelKiosk, klamathPropellers,
   pier45ShedA: pier45Shed('PIER 45', true),
   pier45ShedB: pier45Shed('PIER 45', false),
   pier45ShedD: pier45Shed('PIER 45', false),

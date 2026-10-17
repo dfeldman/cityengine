@@ -54,5 +54,15 @@
   ],
   "height": 3.6,
   "note": "BUGS.md #290j, 2026-10-17: the 1925 ferry Klamath's two steel propellers on a frame, at the historical marker's coordinates (hmdb 117351). A stand-in; TRIPO.md row for the real model."
+ },
+ {
+  "name": "Scoma's",
+  "osm": [
+   "way/288391506"
+  ],
+  "procedural": "scomas",
+  "front": 81,
+  "height": 5,
+  "note": "BUGS.md #290m, 2026-10-17: the white board seafood house on Pier 47, a ribbon of windows on the water, SCOMA'S in red over the door and on the roof (Commons 'Boats moored at Fisherman's Wharf, San Francisco 11')."
  }
 ]
