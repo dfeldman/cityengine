@@ -10767,7 +10767,9 @@ the Red & White booth; the pretzel kiosk; the Klamath propellers (stand-in); Sco
 Alioto's No. 8; Fishermen's Grotto No. 9; the Chowder Hut; the Buena Vista; Castagnola's; Cioppino's and California
 Shellfish Co.; Longshoremen's Hall; the Dolphin Club and South End Rowing Club. The hand-paved squares (Wharf cobbles,
 Ghirardelli and Cannery brick, Pier 39 planks) are drawn for the first time — the tiler had been dropping their surface.
-Shop fascias no longer repeat side by side; Ripley's roof is grey.
+Shop fascias no longer repeat side by side; Ripley's roof is grey. The pale grey squares in the night sky were the
+STARS (each lit a whole 0.7° grid cell) — now small soft dots. Pier 39's entrance has the Hard Rock frontage and its two
+blue PIER 39 boards.
 
 Please look at / decide:
 - Burgers & Best Pies' theatre marquee (Hotel Zephyr, Mason end) is a GUESS — no photo or listing found.
@@ -10788,8 +10790,6 @@ Logged, not fixed:
   pier39Shop: built and its signs registered, but drawn on no face visible from the Embarcadero — Building Q's 58-corner
   outline and fitSnug's snapping of `front` to the box axes make "the south face" hard to pick. DONE instead as its own
   point model against the south wall (hardRockFront, 37.808512 −122.409863, rotateDeg 180).
-- Birds read as pale grey quads against the night sky (sky.ts: dark instance colour, alpha 0, cartoonSky material) — the
-  sky material does not darken them at night. Frozen shots also catch the wings flat.
 - faceBand kind 'bays' drew the Buena Vista's upper floors as black slabs (worked round with 'punched'); the bay geometry
   needs a look, as bays are San Francisco's own facade.
 

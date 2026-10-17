@@ -59,9 +59,14 @@ void main(void) {
 
   // stars, once it is dark enough for them. A night sky with nothing in it reads as a bug.
   if (night > 0.5) {
-    vec2 g = floor(d.xz / max(0.012, abs(d.y) * 0.04 + 0.012));
+    // (a small soft dot somewhere in its cell: lit across the whole cell, each star was a pale grey parallelogram ~0.7°
+    //  across, which read as bits of flat geometry in the sky — 2026-10-17)
+    vec2 cell = d.xz / max(0.012, abs(d.y) * 0.04 + 0.012);
+    vec2 g = floor(cell);
     float r = fract(sin(dot(g, vec2(12.9898, 78.233))) * 43758.5453);
-    col += vec3(step(0.9965, r) * max(0.0, d.y) * (0.5 + 0.5 * fract(r * 91.0)));
+    vec2 at = fract(cell) - 0.5 - (vec2(fract(r * 13.0), fract(r * 29.0)) - 0.5) * 0.6;
+    float dot1 = smoothstep(0.16, 0.04, length(at));
+    col += vec3(step(0.9965, r) * dot1 * max(0.0, d.y) * (0.7 + 0.6 * fract(r * 91.0)));
   }
   col = mix(col, sunColour * 1.45, disc);
   gl_FragColor = vec4(col, 1.0);
