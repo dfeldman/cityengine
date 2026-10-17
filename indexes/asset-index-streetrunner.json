@@ -8663,6 +8663,16 @@
           "fileFormat": "png",
           "extension": "png",
           "isProd": true,
+          "isDeleted": true,
+          "localPath": "public/facades/atlas.png"
+        },
+        {
+          "filename": "asset-0e25c6dc7f-facade-texture-atlas.png",
+          "hash": "0e25c6dc7f34fb8026f6f39d30e78d3dc301ca0aa43569674299487f2cef98c8",
+          "size": 4756687,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
           "localPath": "public/facades/atlas.png"
         }
       ],
@@ -8710,6 +8720,16 @@
           "filename": "asset-62b1769331-facade-texture-atlas-sheet.png",
           "hash": "62b1769331e9fe1ee06988b69ee475ef62bcd7e44512a7871d1bef78dabc9612",
           "size": 4182444,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "isDeleted": true,
+          "localPath": "public/facades/sheet.png"
+        },
+        {
+          "filename": "asset-7ab727ae6a-facade-texture-atlas-sheet.png",
+          "hash": "7ab727ae6a69316a1f28dfe2053b087af2faf3dda5d3d0ef45c231771ce0a0b2",
+          "size": 4217285,
           "fileFormat": "png",
           "extension": "png",
           "isProd": true,
@@ -9523,6 +9543,16 @@
           "fileFormat": "png",
           "extension": "png",
           "isProd": true,
+          "isDeleted": true,
+          "localPath": "public/facades/walls/presidio-far.png"
+        },
+        {
+          "filename": "asset-a4215ae60a-facade-wall-texture-presidio-far.png",
+          "hash": "a4215ae60ace7943e85b541fb51321bf2ef9577ca6b18d0f29f82b2ddc0b3689",
+          "size": 20415,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
           "localPath": "public/facades/walls/presidio-far.png"
         }
       ],
@@ -9550,6 +9580,16 @@
           "filename": "asset-d48c884629-facade-wall-texture-presidio.png",
           "hash": "d48c8846296fe01d91ebf0cefc8ab087cb0b0b128bf2410ac91bcd3b3bd1c5b9",
           "size": 180340,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "isDeleted": true,
+          "localPath": "public/facades/walls/presidio.png"
+        },
+        {
+          "filename": "asset-68d3a790d9-facade-wall-texture-presidio.png",
+          "hash": "68d3a790d9193f5b7f5ea759b43b8004c28b55ef53cca8e78b160d5c3905a107",
+          "size": 161670,
           "fileFormat": "png",
           "extension": "png",
           "isProd": true,
@@ -9583,6 +9623,16 @@
           "fileFormat": "png",
           "extension": "png",
           "isProd": true,
+          "isDeleted": true,
+          "localPath": "public/facades/walls/presidioBrick-far.png"
+        },
+        {
+          "filename": "asset-df1f6c7f1c-facade-wall-texture-presidiobrick-far.png",
+          "hash": "df1f6c7f1cc6855481184f1b3b7fef0e2ba5dd04471c510264071dc4f1118007",
+          "size": 58833,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
           "localPath": "public/facades/walls/presidioBrick-far.png"
         }
       ],
@@ -9610,6 +9660,16 @@
           "filename": "asset-e75777a0cb-facade-wall-texture-presidiobrick.png",
           "hash": "e75777a0cbf3c00e5bd44b8337aa3639fe5904f2cb1b173eb4e997d7614deb77",
           "size": 223812,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "isDeleted": true,
+          "localPath": "public/facades/walls/presidioBrick.png"
+        },
+        {
+          "filename": "asset-e6a1ef348a-facade-wall-texture-presidiobrick.png",
+          "hash": "e6a1ef348a985c3bc7c272182ef289797004ad197b25d51426ff60ce20bc1fab",
+          "size": 217976,
           "fileFormat": "png",
           "extension": "png",
           "isProd": true,
@@ -11522,6 +11582,66 @@
       "extra": {
         "streetrunner": {
           "path": "facades/walls/wharf.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-presidiostucco-far",
+      "name": "presidioStucco far",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "presidioStucco far"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-b1d6cc62cf-facade-wall-texture-presidiostucco-far.png",
+          "hash": "b1d6cc62cfc40a0177ba1642d82e8011106a8a96d17b433016124459a3dc78b0",
+          "size": 22453,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/presidioStucco-far.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/presidioStucco-far.png"
+        }
+      }
+    },
+    {
+      "id": "facades-walls-presidiostucco",
+      "name": "presidioStucco",
+      "folder": "cityengine/facades/walls",
+      "type": "2d",
+      "subtype": "texture",
+      "generator": {
+        "script": "cityengine/tools/facadegen/paint.py"
+      },
+      "assetKeywords": [
+        "facade wall texture",
+        "presidioStucco"
+      ],
+      "assetFiles": [
+        {
+          "filename": "asset-eca573e7d3-facade-wall-texture-presidiostucco.png",
+          "hash": "eca573e7d3e4365782989da7f17388473cdedc5ba6e2837675525787711f7c2e",
+          "size": 179962,
+          "fileFormat": "png",
+          "extension": "png",
+          "isProd": true,
+          "localPath": "public/facades/walls/presidioStucco.png"
+        }
+      ],
+      "extra": {
+        "streetrunner": {
+          "path": "facades/walls/presidioStucco.png"
         }
       }
     }
