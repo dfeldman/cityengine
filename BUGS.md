@@ -10706,6 +10706,40 @@ Hotel Des Arts (55 → 30); 153 Kearny's levels raised to its real 11. A scan ag
 peak) gives 169 hits, nearly all post-2010 towers or model-drawn parts — needs filtering by "claimed by a model"
 before it is useful.
 
+### #302–#315 Owner's brief, 2026-10-17 (after a reboot) — the plan, in order
+
+Owner: "priority is finishing Fisherman's Wharf, with high quality… the feel of Fisherman's Wharf, with the unique
+buildings, restaurants, stores, and decorations, and even cobblestone streets where appropriate"; "Don't bother modeling
+any buildings OUTSIDE the Fisherman's Wharf area unless you are out of work to do"; "Launch up to 2 subagents at a time…
+always review"; "check in after each major change"; "use nice 20". Organic shapes go to TRIPO.md for the owner to make in
+Tripo (image → GLB); text signs use the sign kit (GLB text), not block letters.
+
+DANDYHORSE (~/dandyhorse; the Bridge is likely the player's main control device)
+- #302 Keyboard and mouse orbit do not work when the game is played through Dandyhorse (focus/iframe). OPEN.
+- #303 An END SCREEN: distance travelled, each delivery with its star rating and dollars; Dandyhorse must show it at the end
+  instead of killing the game at once. OPEN.
+- #304 A PAUSE button on the Bridge (and the map shown while paused); buttons for optional actions when available —
+  board/leave transit (B), observe, etc. OPEN.
+- #305 Remote control from another bridge: the game screen ALWAYS shows a big undismissable "controlled elsewhere"
+  warning; and the power (watts) is not synced. OPEN.
+- #306 The Bridge should display the incline it is receiving from the game, for debugging. OPEN.
+
+GAME
+- #307 A street with a fire extinguisher (hydrant?) and pedestrians walking down its CENTRE — location unknown (owner could
+  not pause). Find by sweep: walkers/furniture inside carriageways. OPEN.
+- #308 Cars on inclines tilt up far too much — on steep changing grades they look to be tipping over backward (likely the
+  #283 deckAt change). FIXED: each wheel read the higher of the ground and the highest carriageway there, so at a junction
+  the front wheels stood on the crossing street's plateau. A car now stands on its own street's profile, lifted as a whole
+  by at most 0.35 m (front and back within 0.12 m). tools/probe-cars.ts, worst car per frame beyond its street's slope:
+  before median 12-17°, max 28°; after median ~4°, max 5°.
+- #309 The Embarcadero's paths — straighten them out (#286 was the jolt; the ways themselves still wander). OPEN.
+- #310 Fisherman's Wharf to high quality: unique buildings, restaurants, stores, decorations, cobblestones (the #290 list
+  and survey). OPEN — the main work.
+- #311 Block-letter signs (Macy's and others) → sign-kit GLB text. OPEN.
+- #312 Re-check and mark the older open reports (#282–#301): most are fixed; mark what is. OPEN.
+- #313 TRIPO.md: a list of organic shapes for the owner to make in Tripo (statues, Lotta's Fountain, lamp posts, ships,
+  unique signs, the Japanese Tea Garden drum bridge…). OPEN.
+
 ### #282–#294 Owner's reports, 2026-10-16 afternoon — the queue, in the order they are being worked
 
 - **#282 Retaining walls on steep hills, citywide** — pale walls along the sidewalk's building side and across corners

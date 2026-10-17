@@ -25,6 +25,9 @@ const MIX: [Archetype, number, Livery][] = [
 ]
 /** metres a wheel may stand above or below the car's centreline: the most a car on a street rolls */
 const ROLL = 0.08
+/** how far a car on a street's profile may be lifted toward a higher surface drawn there, and how much of that may differ front to back */
+const LIFT = 0.35
+const PITCH_LIFT = 0.12
 /** seeds per archetype: each is a different shape, i.e. a draw call; four keeps the street at ~45 */
 const SEEDS = 4
 
@@ -54,6 +57,8 @@ export class StreetFleet {
   readonly fleet: Fleet
   private readonly tracks = new Map<number, Track>()
   private frame = 0
+  /** the probes' view (tools/probe-cars.ts): this frame's worst pitch beyond the car's own street slope, and where */
+  readonly worst = { excess: 0, x: 0, z: 0, slope: 0, pitch: 0, n: 0 }
   private lookNight = -1
 
   constructor(scene: Scene) {
@@ -107,6 +112,8 @@ export class StreetFleet {
          shadow: (at: { x: number; z: number }, heading: number, long: number, wide: number, tall: number) => void): void {
     this.look()
     this.frame++
+    Object.assign(this.worst, { excess: 0, n: 0 })
+    ;(globalThis as unknown as { __fleetWorst?: unknown }).__fleetWorst = this.worst
     const headlights = NIGHT > 0.3
     for (const v of vehicles) {
       let t = this.tracks.get(v.id)
@@ -164,19 +171,44 @@ export class StreetFleet {
          * profile where it is along the car — the street's slope is the pitch — and the ground adds no more than
          * `ROLL` of camber. A street with no profile keeps the ground, read on the centreline.
          */
+        /*
+         * …and never PITCHED by what is beside its own street (owner, 2026-10-17: "the cars on inclines look tilted up way
+         * too much now… on steep changing inclines they can look like they're tipping over backward"). `groundAt` is the
+         * higher of the ground and the highest carriageway drawn there (#283: no car under a junction's surface), so at a
+         * junction the front wheels read the crossing street's flat plateau while the rear ones stood on the steep approach.
+         * On a street with a profile, the car stands on the PROFILE, lifted as a whole by at most LIFT toward a higher
+         * surface; the lift front and back differ by at most PITCH_LIFT, so the street's own slope is the car's pitch, give
+         * or take a degree or two.
+         */
+        const half = car.spec.length / 2
+        const liftAt = (along: number): number => {
+          if (v.level === undefined) return 0
+          const prof = v.level + (v.slope ?? 0) * along
+          const c = groundAt(cx + fx * along, cz + fz * along)
+          return c > prof && c - prof < 1.5 ? Math.min(LIFT, c - prof) : 0
+        }
+        const lb = liftAt(-half), lf = liftAt(half)
+        const lm = Math.max(lb, lf, liftAt(0))
         const ground = (x: number, z: number): number => {
           const along = (x - cx) * fx + (z - cz) * fz
           const centre = groundAt(cx + fx * along, cz + fz * along)
           const profile = v.level !== undefined ? v.level + (v.slope ?? 0) * along : undefined
-          // the higher of the two, the ground only within reach of the street: a street graded smooth through a rise is
-          // drawn ON the ground there, a ramp above it on its profile
-          const mid = profile === undefined ? centre : centre > profile && centre - profile < 1.5 ? centre : profile
+          // on the street's profile, lifted as a whole (front and back within PITCH_LIFT of each other); a street with no
+          // profile keeps the ground on its centreline
+          const t = Math.max(0, Math.min(1, along / (2 * half) + 0.5))
+          const lift = Math.max(lm - PITCH_LIFT / 2, Math.min(lm, lb + (lf - lb) * t))
+          const mid = profile === undefined ? centre : profile + lift
           const here = groundAt(x, z)
           // (a ground metres off the street — a tunnel's cut, the hill beside an embankment — says nothing about it)
           if (Math.abs(here - mid) > 1.5) return mid
           return mid + Math.max(-ROLL, Math.min(ROLL, here - mid))
         }
         car.place(pose.x, pose.z, pose.heading, ground, dt)
+        if (v.slope !== undefined) {
+          const excess = Math.abs(Math.abs(car.pitch) - Math.abs(Math.atan(v.slope)))   // (magnitudes: `slope` runs along the edge, not always the heading)
+          this.worst.n++
+          if (excess > this.worst.excess) Object.assign(this.worst, { excess, x: pose.x, z: pose.z, slope: v.slope, pitch: -car.pitch })
+        }
         t.grade = 0
       }
       // the front wheels follow the path's curvature (only seen, so the frame-to-frame estimate will do)

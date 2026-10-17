@@ -1957,32 +1957,7 @@ async function bake(spec: CitySpec): Promise<void> {
       if (run.length) easeRun(run)
     }
   }
-  /*
-   * …and NEVER UNDER THE GROUND (owner, 2026-10-16, BUGS.md #298: "more underground path here"; "we should do some checks
-   * for underground paths on steep hills"). The renderer draws the ground at the higher of the hillside and a street's
-   * level (city/terrain.ts `heightAt`) — it lifts the ground to a street, never cuts it down to one — so a street the
-   * smoothing above and the junction easing sag below a crest is drawn buried, the rider riding inside the hill (Mason
-   * between Pine and Bush, 2.1 m down; tools/underground.ts found 13 km of such stretches, most on grades over 10 %).
-   * Every surface way is lifted back onto the ground where it lies more than 0.3 m under it: the same ground at a shared
-   * node for every way that ends there, so junctions still agree. Tunnels, bores, cuts and underground layers keep their
-   * depth.
-   */
-  {
-    let lifted = 0
-    for (const e of kept) {
-      if (underground(e) || e.tunnel || e.bore || e.cut || (e.layer ?? 0) < 0 || !e.heights) continue
-      const pts = unpackPoints(e.points)
-      let moved = false
-      const h = e.heights.map((v, i) => {
-        const g = groundFine(pts[i].x, pts[i].z) - 0.3
-        if (v >= g) return v
-        moved = true
-        return Math.round((g + 0.3) * 100) / 100
-      })
-      if (moved) { e.heights = h; lifted++ }
-    }
-    console.log(`  ${lifted} ways lifted out of the ground (more than 0.3 m under it)`)
-  }
+
 
   /*
    * ---- bridges: their own heights, and ramps onto them (tools/bridges.ts). Before anything reads the
@@ -2693,6 +2668,51 @@ async function bake(spec: CitySpec): Promise<void> {
     console.log(`  kerb-side furniture: ${moved} moved out of the road onto the pavement, ${dropped} with none near dropped`)
   }
 
+  /*
+   * NEVER UNDER THE GROUND (owner, 2026-10-16, BUGS.md #298: "more underground path here"; "we should do some checks
+   * for underground paths on steep hills"). The renderer draws the ground at the higher of the hillside and a street's
+   * level (city/terrain.ts `heightAt`) — it lifts the ground to a street, never cuts it down to one — so a street the
+   * smoothing above and the junction easing sag below a crest is drawn buried, the rider riding inside the hill (Mason
+   * between Pine and Bush, 2.1 m down; tools/underground.ts found 13 km of such stretches, most on grades over 10 %).
+   * Last of all the passes that set heights (the bridges and the decks regrade against the COARSE grid, and parks are
+   * drawn on the fine one, so a lift any earlier was undone there), against the ground as shipped: every surface way is
+   * lifted back onto the ground where it lies more than 0.3 m under it: the same ground at a shared
+   * node for every way that ends there, so junctions still agree. Tunnels, bores, cuts and underground layers keep their
+   * depth.
+   */
+  {
+    let lifted = 0, inserted = 0
+    for (const e of kept) {
+      if (underground(e) || e.tunnel || e.bore || e.cut || (e.layer ?? 0) < 0 || !e.heights) continue
+      const pts = unpackPoints(e.points)
+      const hs = e.heights
+      const G = (x: number, z: number): number => shipped.heightAt(x, z)
+      let moved = false
+      // (and between the vertices: where the ground humps over the straight chord between two of them, a vertex on the
+      // ground at the hump's top — a 7 m chord across a crest was still 2 m into the hill)
+      const outP: { x: number; z: number }[] = [], outH: number[] = []
+      for (let i = 0; i < pts.length; i++) {
+        if (i > 0) {
+          const a = pts[i - 1], b = pts[i], L = Math.hypot(b.x - a.x, b.z - a.z)
+          let worst = 0, at = -1
+          for (let k = 1; k * 2 < L; k++) {
+            const t = (k * 2) / L
+            const d = G(a.x + (b.x - a.x) * t, a.z + (b.z - a.z) * t) - (hs[i - 1] + (hs[i] - hs[i - 1]) * t)
+            if (d > worst) { worst = d; at = t }
+          }
+          if (worst > 0.3 && at > 0) {
+            const q = { x: a.x + (b.x - a.x) * at, z: a.z + (b.z - a.z) * at }
+            outP.push(q); outH.push(Math.round(G(q.x, q.z) * 100) / 100); inserted++; moved = true
+          }
+        }
+        const g = G(pts[i].x, pts[i].z)
+        outP.push(pts[i])
+        if (hs[i] < g - 0.3) { outH.push(Math.round(g * 100) / 100); moved = true } else outH.push(hs[i])
+      }
+      if (moved) { e.points = packPoints(outP); e.heights = outH; lifted++ }
+    }
+    console.log(`  ${lifted} ways lifted out of the ground (more than 0.3 m under it), ${inserted} vertices added on humps`)
+  }
   // ---- the ride graph, built here only to be measured (the game builds its own at load, IMPROVEMENTS §2.2)
   const asEdges: Edge[] = kept.map((e) => {
     const points = unpackPoints(e.points)
