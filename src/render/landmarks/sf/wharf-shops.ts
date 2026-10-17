@@ -930,8 +930,50 @@ export function chowderHut(out: MeshBuilder, fit: Fit): void {
   }
 }
 
+/**
+ * THE BUENA VISTA, 2765 Hyde at Beach (way/262749432; OSM node 388205890; Commons "Buena Vista Cafe, exterior, San
+ * Francisco (May 2025) 01, 03"): a pale sage Edwardian of four storeys, its upper windows framed in white (the deep
+ * angled bays drawn flat: as `bays` they read as black slabs from the street); the bar on the ground floor behind sage panelled piers and big windows, a ribbon of red and
+ * blue neon running along over them (COCKTAILS in red in one window), and on the Hyde–Beach corner the hanging sign:
+ * "the buena vista" in red neon script on a shaped cream board. `front` 0: the Beach face is the edge facing local −z;
+ * Hyde is its +x end.
+ */
+export function buenaVista(out: MeshBuilder, fit: Fit): void {
+  const SAGE: Rgb = [0.86, 0.89, 0.8], DSAGE: Rgb = [0.62, 0.67, 0.58], TRIMC: Rgb = [0.9, 0.9, 0.84], RED: Rgb = [1.0, 0.18, 0.12]
+  const NEONB: Rgb = [0.3, 0.75, 1.0]
+  const ring = towerRing(fit)
+  const H = Math.max(12, Math.min(15, fit.height))
+  faceBand(out, ring, 0, 4.2, { kind: 'punched', wall: DSAGE, glass: [0.24, 0.2, 0.15], floor: 4.2, pitch: 4.4, solid: 0.32, material: 'clapboard' })
+  faceBand(out, ring, 4.2, H - 0.8, { kind: 'punched', wall: SAGE, glass: DARKGL, floor: (H - 5) / 3, pitch: 2.4, solid: 0.55, head: 'architrave', material: 'stucco' })
+  faceBand(out, offsetRing(ring, 0.25), H - 0.8, H, { kind: 'blank', wall: TRIMC, material: 'stucco' })
+  faceBand(out, offsetRing(ring, 0.12), 4.0, 4.35, { kind: 'blank', wall: TRIMC, material: 'stucco' })
+  capPolygon(out, ring, H, [0.36, 0.34, 0.33], CT)
+  // the neon ribbons along the ground floor, on every street face, and the window sign
+  for (let i = 0; i < ring.length; i++) {
+    const e = edgeAt(ring, i)
+    if (e.L < 4) continue
+    slab(out, e, e.L / 2, 0.14, 3.35, e.L - 0.6, 0.05, 0.04, RED, EMIT)
+    slab(out, e, e.L / 2, 0.14, 3.47, e.L - 0.6, 0.04, 0.04, NEONB, EMIT)
+  }
+  const e = frontEdge(ring, facingFront(ring, 6))
+  const hyde = e.tx > 0 ? 0 : e.L, dir = e.tx > 0 ? 1 : -1
+  signAt(out, e, hyde + dir * 6.5, 2.6, 0.06, { type: 'flat', text: 'COCKTAILS', h: 0.28, face: 'grotesque', weight: 'bold', colour: RED, lit: 'self' })
+  // the hanging sign on the corner: a shaped cream board on a bracket, the name in red neon script, both faces
+  const c = on(e, hyde, 0, 0)
+  const ox = c[0] + e.nx * 1.3 - e.tx * dir * 0.2, oz = c[2] + e.nz * 1.3 - e.tz * dir * 0.2
+  const hd = e.heading + (dir > 0 ? Math.PI / 2 : -Math.PI / 2)
+  tube(out, [c[0], 5.4, c[2]], [ox + e.nx * 0.8, 5.4, oz + e.nz * 0.8], 0.05, 5, [0.2, 0.2, 0.2], MT)
+  boxAlong(out, ox, 5.0, oz, 1.15, 0.85, 0.08, hd, [0.92, 0.9, 0.82], MT)
+  for (const sd of [1, -1]) {
+    const h2 = hd + (sd > 0 ? 0 : Math.PI), dx = Math.sin(h2) * 0.1, dz = Math.cos(h2) * 0.1
+    sign(out, { type: 'flat', text: 'the', h: 0.32, face: 'script', colour: RED, lit: 'self' }, { x: ox + dx, y: 5.5, z: oz + dz, heading: h2 })
+    sign(out, { type: 'flat', text: 'buena', h: 0.38, face: 'script', colour: RED, lit: 'self' }, { x: ox + dx, y: 5.0, z: oz + dz, heading: h2 })
+    sign(out, { type: 'flat', text: 'vista', h: 0.38, face: 'script', colour: RED, lit: 'self' }, { x: ox + dx, y: 4.5, z: oz + dz, heading: h2 })
+  }
+}
+
 export const WHARF_SHOPS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, aliotos, grotto9, chowderHut, pretzelKiosk, klamathPropellers,
+  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, aliotos, grotto9, chowderHut, buenaVista, pretzelKiosk, klamathPropellers,
   pier45ShedA: pier45Shed('PIER 45', true),
   pier45ShedB: pier45Shed('PIER 45', false),
   pier45ShedD: pier45Shed('PIER 45', false),

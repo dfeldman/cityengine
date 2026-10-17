@@ -83,5 +83,15 @@
   "procedural": "chowderHut",
   "height": 8,
   "note": "BUGS.md #290m, 2026-10-17: the octagonal pavilion at Taylor & Jefferson — dark panels and glass, standing-seam roof and lantern, blue menu awnings all round (Commons 'Fisherman's Wharf, San Francisco, CA, USA - panoramio (125)')."
+ },
+ {
+  "name": "The Buena Vista",
+  "osm": [
+   "way/262749432"
+  ],
+  "procedural": "buenaVista",
+  "front": 0,
+  "height": 13,
+  "note": "BUGS.md #290m, 2026-10-17: the Irish-coffee bar at Hyde & Beach by the cable-car turnaround — sage Edwardian bays, red and blue neon along the bar, the 'the buena vista' neon script sign on the corner (Commons 'Buena Vista Cafe, exterior, San Francisco (May 2025) 01, 03')."
  }
 ]
