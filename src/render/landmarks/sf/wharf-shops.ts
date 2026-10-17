@@ -102,6 +102,184 @@ function gridWindow(out: MeshBuilder, e: Edge, u: number, y0: number, w: number,
   for (let r = 0; r <= rows; r++) slab(out, e, u, o + 0.04, y0 + (h * r) / rows - 0.035, w, 0.07, 0.05, frame, MT)
 }
 
+/*
+ * ---- OPEN SHOPFRONTS (owner, 2026-10-17: "for the restaurants with closed shutters, we should try to render them as open
+ * with tables and food inside when possible").
+ *
+ * Glass in this renderer is OPAQUE — the glass surface paints the sky and the street in it — so a pane laid over an
+ * interior IS a shutter: the goods behind `goodsWindow`'s pane were never seen, and the Wharf's stalls read as a row of
+ * grey roller doors. An open front has no pane at all: the wall is left out across the bay (`openWall`), and the bay is
+ * a lit room recessed into the building — back wall, reveals, a ceiling with warm strip lights, a floor — with what the
+ * photographs show in it: a crab counter on ice and the steaming pots behind, a bar with stools, tables, or shelves of
+ * goods. Everything is single quads and a few boxes, so a bay costs a couple of hundred triangles.
+ */
+
+/** what an open bay holds */
+export type OpenKind = 'crab' | 'bar' | 'tables' | 'goods' | 'dining'
+export interface OpenSpec {
+  kind: OpenKind
+  /** how far the room goes in, metres (default 2.6) */
+  depth?: number
+  seed?: number
+  /** the back wall and the reveals: a warm tile or panelling (default a warm cream, lit) */
+  back?: Rgb
+  /** the stools' or chairs' colour */
+  seat?: Rgb
+  /** tablecloths, for 'tables' and 'dining' */
+  cloth?: Rgb
+}
+
+const GOODS: Rgb[] = [[0.9, 0.2, 0.2], [0.2, 0.45, 0.85], [0.98, 0.8, 0.2], [0.2, 0.65, 0.4], [0.95, 0.5, 0.15], [0.85, 0.3, 0.6], [0.95, 0.95, 0.95], [0.12, 0.12, 0.14]]
+const CRAB: Rgb = [0.92, 0.24, 0.1], ICE: Rgb = [0.74, 0.84, 0.92], STEELC: Rgb = [0.46, 0.48, 0.51]
+
+/** a flat quad on edge `e`'s line system: corners at (u, y) pairs, `o` out, facing `n` */
+function q4(out: MeshBuilder, e: Edge, pts: [number, number, number][], n: V3, c: Rgb, tag: number): void {
+  out.quad(pts.map(([u, y, o]) => on(e, u, y, o)) as [V3, V3, V3, V3], n, UVQ, c, tag)
+}
+
+/**
+ * The wall of edge `e` from `y0` to `y1` with OPENINGS cut in it — each [u, w, h, sill?]: centred u, w wide, h tall from
+ * `sill` (default 0) over y0 —
+ * as plain quads facing out (piers between the openings, the spandrel over each), from `ua` to `ub` along it. Draw the storey's faceBand on every
+ * other edge (offFront) and this on the open one.
+ */
+export function openWall(out: MeshBuilder, e: Edge, y0: number, y1: number, holes: ([number, number, number] | [number, number, number, number])[], c: Rgb, tag: number, o = 0, ua = 0, ub = e.L): void {
+  const hs = [...holes].sort((a, b) => a[0] - b[0])
+  const n: V3 = [e.nx, 0, e.nz]
+  let u = ua
+  for (const [hu, hw, hh, sill = 0] of hs) {
+    const a = Math.max(u, hu - hw / 2), b = Math.min(ub, hu + hw / 2)
+    if (a > u + 0.01) q4(out, e, [[u, y0, o], [a, y0, o], [a, y1, o], [u, y1, o]], n, c, tag)
+    if (sill > 0.01) q4(out, e, [[a, y0, o], [b, y0, o], [b, y0 + sill, o], [a, y0 + sill, o]], n, c, tag)
+    if (y0 + sill + hh < y1 - 0.01) q4(out, e, [[a, y0 + sill + hh, o], [b, y0 + sill + hh, o], [b, y1, o], [a, y1, o]], n, c, tag)
+    u = Math.max(u, b)
+  }
+  if (u < ub - 0.01) q4(out, e, [[u, y0, o], [ub, y0, o], [ub, y1, o], [u, y1, o]], n, c, tag)
+}
+
+/**
+ * AN OPEN BAY on edge `e`, centred `u`, `w` wide and `h` tall from `y0`, its room going `depth` into the building: the
+ * reveals, back wall, floor and ceiling (single quads facing into the room), two warm strip lights under the ceiling,
+ * and the room's furniture by `kind`. The wall across it must be left out (`openWall`).
+ */
+export function openFront(out: MeshBuilder, e: Edge, u: number, w: number, y0: number, h: number, sp: OpenSpec): void {
+  const d = sp.depth ?? 2.6, seed = sp.seed ?? 0
+  const back = sp.back ?? [0.52, 0.42, 0.32], side: Rgb = [back[0] * 0.8, back[1] * 0.8, back[2] * 0.8]
+  const u0 = u - w / 2, u1 = u + w / 2, y1 = y0 + h
+  const tx = e.tx, tz = e.tz
+  q4(out, e, [[u0, y0, -d], [u1, y0, -d], [u1, y1, -d], [u0, y1, -d]], [e.nx, 0, e.nz], back, WT)                   // back wall
+  q4(out, e, [[u0, y0, 0], [u0, y0, -d], [u0, y1, -d], [u0, y1, 0]], [tx, 0, tz], side, WT)                            // reveals
+  q4(out, e, [[u1, y0, 0], [u1, y0, -d], [u1, y1, -d], [u1, y1, 0]], [-tx, 0, -tz], side, WT)
+  q4(out, e, [[u0, y1, 0], [u1, y1, 0], [u1, y1, -d], [u0, y1, -d]], [0, -1, 0], [0.3, 0.27, 0.24], WT)                // ceiling
+  q4(out, e, [[u0, y0 + 0.02, 0], [u1, y0 + 0.02, 0], [u1, y0 + 0.02, -d], [u0, y0 + 0.02, -d]], [0, 1, 0], [0.45, 0.42, 0.38], CT)
+  for (const f of [0.3, 0.75]) slab(out, e, u, -d * f, y1 - 0.06, w - 0.6, 0.05, 0.12, WARM, EMIT)                     // strip lights
+  // a darker dado along the back, and pendant lamps hung in the room — what says "a lit room" from the street, where
+  // the ceiling lights cannot be seen
+  q4(out, e, [[u0, y0, -d + 0.01], [u1, y0, -d + 0.01], [u1, y0 + 1.0, -d + 0.01], [u0, y0 + 1.0, -d + 0.01]], [e.nx, 0, e.nz], side, WT)
+  const np = Math.max(1, Math.min(4, Math.round(w / 1.6)))
+  for (let k = 0; k < np; k++) {
+    const p = on(e, u0 + (w * (k + 0.5)) / np, 0, -d * 0.5)
+    tube(out, [p[0], y1, p[2]], [p[0], y1 - 0.55, p[2]], 0.012, 3, [0.1, 0.1, 0.1], MT)
+    prism(out, p[0], p[2], y1 - 0.72, y1 - 0.55, 0.16, 6, WARM, EMIT, 0.05)
+  }
+  const seat = sp.seat ?? [0.75, 0.12, 0.12]
+  const nUnits = (step: number): number => Math.max(1, Math.min(6, Math.floor((w - 0.6) / step)))
+  switch (sp.kind) {
+    case 'crab': {
+      // the stainless counter at the front, crab heaped red on crushed ice; the pots steaming behind; a lit menu board
+      slab(out, e, u, -0.45, y0, w - 0.5, 0.95, 0.7, STEELC, CT)
+      slab(out, e, u, -0.45, y0 + 0.95, w - 0.6, 0.06, 0.62, ICE, MT)
+      const n = nUnits(0.55)
+      for (let k = 0; k < n; k++) {
+        const p = on(e, u - (w - 0.9) / 2 + ((k + 0.5) * (w - 0.9)) / n, y0 + 1.06, -0.45 + (k % 2 ? 0.12 : -0.12))
+        lozenge(out, p, [tx, 0, tz], [e.nx, 0, e.nz], [0, 1, 0], 0.2, 0.15, 0.1, k % 3 ? CRAB : [0.72, 0.2, 0.1], MT, 8)
+      }
+      for (const f of [-0.28, 0.28]) {
+        if (w < 2.4 && f > 0) continue
+        const p = on(e, u + f * w, 0, -d + 0.55)
+        prism(out, p[0], p[2], y0, y0 + 0.75, 0.32, 10, [0.18, 0.18, 0.19], MT)
+        prism(out, p[0], p[2], y0 + 0.75, y0 + 1.35, 0.4, 12, STEELC, MT)
+        for (let k = 0; k < 2; k++) lozenge(out, [p[0], y0 + 1.55 + k * 0.3, p[2]], [tx, 0, tz], [0, 1, 0], [e.nx, 0, e.nz], 0.16 - k * 0.04, 0.11, 0.1, [0.9, 0.92, 0.94], 0, 8)
+      }
+      slab(out, e, u, -d + 0.04, y1 - 1.0, Math.min(w - 0.8, 3.2), 0.7, 0.04, [0.1, 0.1, 0.12], MT)                      // the menu
+      for (let k = 0; k < 4; k++) slab(out, e, u - Math.min(w - 0.8, 3.2) / 2 + 0.4 + k * (Math.min(w - 0.8, 3.2) - 0.8) / 3, -d + 0.07, y1 - 0.85, 0.5, 0.35, 0.02, GOODS[(seed + k) % 4], EMIT)
+      break
+    }
+    case 'bar': {
+      // a counter across the room with red stools along it, shelves of bottles on the back wall
+      slab(out, e, u, -d * 0.45, y0, w - 0.8, 1.05, 0.55, [0.32, 0.2, 0.12], WT)
+      slab(out, e, u, -d * 0.45, y0 + 1.05, w - 0.7, 0.05, 0.65, [0.6, 0.6, 0.62], MT)
+      const n = nUnits(0.7)
+      for (let k = 0; k < n; k++) {
+        const p = on(e, u - (w - 1.2) / 2 + ((k + 0.5) * (w - 1.2)) / n, 0, -d * 0.45 + 0.65)
+        prism(out, p[0], p[2], y0, y0 + 0.7, 0.04, 4, [0.2, 0.2, 0.2], MT)
+        prism(out, p[0], p[2], y0 + 0.7, y0 + 0.78, 0.2, 8, seat, WT)
+      }
+      for (const r of [0, 1]) {
+        slab(out, e, u, -d + 0.2, y0 + 1.4 + r * 0.55, w - 0.8, 0.04, 0.3, [0.4, 0.28, 0.18], WT)
+        for (let k = 0; k < nUnits(0.35) * 2 && k < 10; k++) slab(out, e, u - (w - 1.2) / 2 + k * 0.32, -d + 0.2, y0 + 1.44 + r * 0.55, 0.08, 0.28, 0.08, GOODS[(seed + k + r) % GOODS.length], MT)
+      }
+      break
+    }
+    case 'tables':
+    case 'dining': {
+      // tables with cloths and chairs, a counter at the back, pictures on the wall over it
+      slab(out, e, u, -d + 0.35, y0, w - 0.6, 1.0, 0.5, [0.34, 0.24, 0.16], WT)
+      for (const f of [-0.25, 0.25]) {
+        slab(out, e, u + f * w, -d + 0.03, y0 + 1.45, 0.7, 0.55, 0.04, [0.82, 0.7, 0.4], WT)
+        slab(out, e, u + f * w, -d + 0.06, y0 + 1.52, 0.56, 0.41, 0.02, GOODS[(seed + (f > 0 ? 1 : 2)) % GOODS.length], MT)
+      }
+      const n = Math.min(3, nUnits(1.6))
+      const cloth = sp.cloth ?? WHITE
+      for (let k = 0; k < n; k++) {
+        const tu = u - (w - 0.6) / 2 + ((k + 0.5) * (w - 0.6)) / n
+        slab(out, e, tu, -d * 0.45, y0 + 0.72, 0.8, 0.05, 0.8, cloth, WT)
+        slab(out, e, tu, -d * 0.45, y0, 0.08, 0.72, 0.08, [0.2, 0.2, 0.2], MT)
+        for (const s2 of [-1, 1]) slab(out, e, tu + s2 * 0.55, -d * 0.45, y0, 0.36, 0.45, 0.36, seat, WT)
+      }
+      break
+    }
+    case 'goods': {
+      // shelves of bright goods on the back wall and both reveals, a table of goods in the middle
+      for (let r = 0; r < 3; r++) {
+        const n = Math.max(2, Math.min(8, Math.round((w - 0.6) / 0.45)))
+        for (let k = 0; k < n; k++) slab(out, e, u - (w - 0.6) / 2 + ((k + 0.5) * (w - 0.6)) / n, -d + 0.15, y0 + 0.3 + r * 0.7, (w - 0.6) / n - 0.08, 0.5, 0.2, GOODS[(seed + k + r * 3) % GOODS.length], MT)
+      }
+      for (const s2 of [-1, 1]) for (let r = 0; r < 3; r++) slab(out, e, u + s2 * (w / 2 - 0.15), -d * 0.5, y0 + 0.3 + r * 0.7, 0.2, 0.5, d * 0.7, GOODS[(seed + r + (s2 > 0 ? 4 : 1)) % GOODS.length], MT)
+      if (w > 2.2) {
+        slab(out, e, u, -d * 0.45, y0, Math.min(1.6, w - 1.4), 0.8, 0.7, [0.3, 0.22, 0.16], WT)
+        for (let k = 0; k < 3; k++) slab(out, e, u - 0.45 + k * 0.45, -d * 0.45, y0 + 0.8, 0.35, 0.12, 0.5, GOODS[(seed + k + 5) % GOODS.length], MT)
+      }
+      break
+    }
+  }
+}
+
+/** a café table on the pavement at `u`, `o` out from edge `e`: a cloth (checked when `check` is given), two folding chairs, an umbrella */
+export function patioTable(out: MeshBuilder, e: Edge, u: number, o: number, y: number, cloth: Rgb, chair: Rgb, umb: Rgb | null, check?: Rgb): void {
+  slab(out, e, u, o, y + 0.72, 0.9, 0.05, 0.9, cloth, WT)
+  if (check) for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) if ((i + j) % 2 === 0) slab(out, e, u - 0.3 + i * 0.3, o - 0.3 + j * 0.3, y + 0.765, 0.3, 0.012, 0.3, check, WT)
+  slab(out, e, u, o, y, 0.08, 0.72, 0.08, [0.2, 0.2, 0.2], MT)
+  for (const s2 of [-1, 1]) {
+    slab(out, e, u + s2 * 0.75, o, y + 0.42, 0.42, 0.05, 0.42, chair, MT)
+    slab(out, e, u + s2 * 0.95, o, y, 0.05, 0.95, 0.42, chair, MT)
+    for (const f of [-0.17, 0.17]) slab(out, e, u + s2 * 0.6, o + f, y, 0.04, 0.42, 0.04, chair, MT)
+  }
+  if (umb) {
+    const p = on(e, u, 0, o)
+    tube(out, [p[0], y + 0.72, p[2]], [p[0], y + 2.45, p[2]], 0.03, 4, [0.85, 0.85, 0.85], MT)
+    prism(out, p[0], p[2], y + 2.05, y + 2.55, 1.25, 8, umb, WT, 0.06)
+  }
+}
+
+/** a hanging flower basket on a bracket off the wall at `u`, `y` */
+export function flowerBasket(out: MeshBuilder, e: Edge, u: number, y: number): void {
+  tube(out, on(e, u, y + 0.5, 0.02), on(e, u, y + 0.5, 0.55), 0.02, 4, [0.12, 0.12, 0.12], MT)
+  const p = on(e, u, y, 0.55)
+  prism(out, p[0], p[2], y - 0.15, y + 0.2, 0.28, 8, [0.3, 0.55, 0.25], FT, 0.34)
+  prism(out, p[0], p[2], y + 0.2, y + 0.32, 0.3, 8, [0.92, 0.35, 0.55], FT, 0.18)
+}
+
 /**
  * THE JEFFERSON STREET ATTRACTIONS BLOCK, 105–145 Jefferson (way/288473107): the old Wax Museum building — a three-storey
  * front of buff brick with tall round-arched windows, a cream cornice and iron balconettes — and its shops. In the middle
@@ -772,41 +950,149 @@ export function grotto9(out: MeshBuilder, fit: Fit): void {
 }
 
 /**
- * THE CHOWDER HUT, the octagonal pavilion on the corner of Taylor and Jefferson (way/37312394, "The Chowder Hut Grill";
- * Commons "Fisherman's Wharf, San Francisco, CA, USA - panoramio (125)", left): one storey of dark painted panels and
- * glass under a standing-seam metal roof rising to a little lantern, and round every face a blue awning with the menu on
- * its valance — GRILLED SHRIMP, COLD BEER, FRIED CALAMARI, FULL BAR. Faces the same all round, so no `front`.
+ * THE CHOWDER HUT, the octagon on the corner of Taylor and Jefferson (way/37312394, "The Chowder Hut Grill"), as it is
+ * NOW (owner's Street View, 2026; the continuous blue awning of the older photographs — Mapillary 3380975535471777 — is
+ * gone): the old octagon enclosed as a GLASS PAVILION of the same plan, full-height glass in slim BLACK steel frames all
+ * the way round, doors in some bays; along the top of the glass a band of backlit MENU PANELS — food photographs
+ * alternating with navy panels lettered Dungeness Crab, Crab Sandwich, Draught Beer, Smash Burgers, Full Bar, Clam
+ * Chowder, and the round Chowder Hut logo; over it the old green standing-seam roof rising to an octagonal CLERESTORY
+ * DRUM of dark windows with a blue banner on it ($5 Draft Beer & Wine · $6 Margaritas & Cocktails) and a small cap; on
+ * the roof's edge to Jefferson the big sign — "Chowder" in red script over HUT in big white letters on navy, BAR & GRILL
+ * on a navy bar under it. Inside, tables under RED umbrellas seen through the glass (the glass itself is left out below
+ * the transom: this renderer's glass is opaque, and a pane would hide the room); outside, green iron café sets under red
+ * umbrellas and an A-frame menu board. `front` 180: Jefferson is local −z.
  */
 export function chowderHut(out: MeshBuilder, fit: Fit): void {
-  const WALL: Rgb = [0.18, 0.24, 0.26], ROOF: Rgb = [0.34, 0.4, 0.38], BLUE: Rgb = [0.12, 0.34, 0.68]
+  const BLACK: Rgb = [0.08, 0.08, 0.09], GREENR: Rgb = [0.33, 0.5, 0.4], SEAM: Rgb = [0.26, 0.4, 0.32], NAVY: Rgb = [0.08, 0.13, 0.32]
+  const RED: Rgb = [0.82, 0.12, 0.1], IRON: Rgb = [0.12, 0.3, 0.2], BLUEB: Rgb = [0.12, 0.35, 0.75]
   const ring = towerRing(fit)
-  const H = 4.2
-  faceBand(out, ring, 0, 0.7, { kind: 'blank', wall: WALL, material: 'metal' })
-  faceBand(out, ring, 0.7, 3.3, { kind: 'curtain', wall: WALL, glass: DARKGL, pitch: 1.6, material: 'metal' })
-  faceBand(out, ring, 3.3, H, { kind: 'blank', wall: WALL, material: 'metal' })
-  // the roof: from eaves standing out 0.6 m all round, up to a small ring under the lantern
+  const G = 3.6, B = 4.5                                                          // the glass's head; the menu band's top (the eaves)
   let cx = 0, cz = 0
   for (const q of ring) { cx += q.x; cz += q.z }
   cx /= ring.length; cz /= ring.length
-  const eave = offsetRing(ring, 0.6)
-  const top = ring.map((q) => ({ x: cx + (q.x - cx) * 0.14, z: cz + (q.z - cz) * 0.14 }))
+  let R = 0
+  for (const q of ring) R += Math.hypot(q.x - cx, q.z - cz) / ring.length
+  // the floor and the ceiling of the room, warm light rings in the ceiling
+  capPolygon(out, offsetRing(ring, -0.05), 0.04, [0.42, 0.36, 0.3], WT)
+  for (let i = 0; i < ring.length; i++) {
+    const j = (i + 1) % ring.length
+    out.quad([[cx, G, cz], [cx, G, cz], [ring[j].x, G, ring[j].z], [ring[i].x, G, ring[i].z]], [0, -1, 0], UVQ, [0.36, 0.3, 0.24], WT)
+  }
+  const inner = ring.map((q) => ({ x: cx + (q.x - cx) * 0.62, z: cz + (q.z - cz) * 0.62 }))
+  for (let i = 0; i < inner.length; i++) {
+    const a = inner[i], b = inner[(i + 1) % inner.length]
+    tube(out, [a.x, G - 0.05, a.z], [b.x, G - 0.05, b.z], 0.06, 4, WARM, EMIT)
+  }
+  // the bar in the middle: a counter round a kitchen core, its back shelves lit
+  const core = Math.min(R * 0.3, 3.2)
+  prism(out, cx, cz, 0, G, core * 0.75, 8, [0.3, 0.24, 0.2], WT)
+  prism(out, cx, cz, 0, 1.05, core, 8, [0.38, 0.22, 0.12], WT)
+  prism(out, cx, cz, 1.05, 1.12, core + 0.12, 8, [0.62, 0.6, 0.58], MT)
+  prism(out, cx, cz, 1.5, 2.3, core * 0.76, 8, [0.95, 0.78, 0.45], EMIT)
+  // the tables under their red umbrellas, round the room
+  const nt = 7
+  for (let k = 0; k < nt; k++) {
+    const a = (k / nt) * Math.PI * 2 + 0.3, r = Math.min(R * 0.66, R - 1.6)
+    const x = cx + Math.cos(a) * r, z = cz + Math.sin(a) * r
+    prism(out, x, z, 0, 0.72, 0.05, 4, [0.15, 0.15, 0.15], MT)
+    prism(out, x, z, 0.72, 0.77, 0.45, 8, [0.85, 0.82, 0.76], WT)
+    for (const s2 of [-1, 1]) box(out, x + Math.cos(a + 1.57) * 0.6 * s2, 0.45, z + Math.sin(a + 1.57) * 0.6 * s2, 0.2, 0.03, 0.2, [0.2, 0.2, 0.22], MT)
+    tube(out, [x, 0.77, z], [x, 2.6, z], 0.025, 4, [0.85, 0.85, 0.85], MT)
+    prism(out, x, z, 2.2, 2.65, 1.05, 8, RED, WT, 0.06)
+  }
+  // the glass walls: black steel — sill, transom, head, mullions — the transom lights glazed over the doors' height
+  const menu = ['Dungeness Crab', 'Crab Sandwich', 'Draught Beer', 'Smash Burgers', 'Full Bar', 'Clam Chowder']
+  const FOOD: Rgb[] = [[0.88, 0.32, 0.14], [0.86, 0.66, 0.3], [0.95, 0.75, 0.25], [0.55, 0.3, 0.15], [0.92, 0.88, 0.7]]
+  const front = facingFront(ring, 3)
+  let mk = 0
+  for (let i = 0; i < ring.length; i++) {
+    const e = edgeAt(ring, i)
+    if (e.L < 1) continue
+    slab(out, e, e.L / 2, 0, 0, e.L, 0.25, 0.14, BLACK, MT)
+    slab(out, e, e.L / 2, 0, 2.45, e.L, 0.1, 0.12, BLACK, MT)
+    slab(out, e, e.L / 2, 0, 2.55, e.L - 0.1, G - 2.55, 0.03, [0.2, 0.24, 0.27], GT)
+    const nm = Math.max(2, Math.min(12, Math.round(e.L / 1.3)))
+    for (let k = 0; k <= nm; k++) slab(out, e, (e.L * k) / nm, 0, 0, k === 0 || k === nm ? 0.16 : 0.07, G, 0.1, BLACK, MT)
+    // a pair of doors in every other bay: a heavier frame and push bars
+    if (i % 2 === 0 && e.L > 3) {
+      for (const s2 of [-1, 1]) slab(out, e, e.L / 2 + s2 * 0.9, 0.02, 0, 0.12, 2.45, 0.12, BLACK, MT)
+      for (const s2 of [-1, 1]) slab(out, e, e.L / 2 + s2 * 0.45, 0.06, 1.0, 0.6, 0.04, 0.04, [0.7, 0.7, 0.72], MT)
+    }
+    // the menu band: food photographs and navy panels in turn, backlit
+    const np = Math.max(3, Math.min(6, Math.round(e.L / 2.2))), pw = e.L / np
+    slab(out, e, e.L / 2, 0.02, G, e.L + 0.1, B - G, 0.16, BLACK, MT)
+    for (let k = 0; k < np; k++) {
+      const u = pw * (k + 0.5)
+      if (k % 2 === 1) {
+        slab(out, e, u, 0.1, G + 0.08, pw - 0.12, B - G - 0.16, 0.02, NAVY, MT)
+        const logo = i === front && k === Math.floor(np / 2)
+        if (logo) {
+          sign(out, { type: 'flat', text: 'CHOWDER', h: 0.08, w: 0.74, face: 'slab', weight: 'bold', colour: [0.98, 0.96, 0.9], panel: RED, lit: 'back', ring: { below: 'HUT' } },
+            { x: on(e, u, 0, 0.13)[0], y: (G + B) / 2, z: on(e, u, 0, 0.13)[2], heading: e.heading })
+        } else signAt(out, e, u, (G + B) / 2, 0.13, { type: 'flat', text: menu[mk++ % menu.length], h: 0.17, w: pw - 0.35, face: 'grotesque', weight: 'bold', colour: [0.98, 0.98, 0.95], lit: 'back' })
+      } else {
+        slab(out, e, u, 0.1, G + 0.08, pw - 0.12, B - G - 0.16, 0.02, [0.95, 0.9, 0.8], EMIT)
+        const p = on(e, u, (G + B) / 2, 0.13)
+        lozenge(out, p, [e.tx, 0, e.tz], [0, 1, 0], [e.nx, 0, e.nz], Math.min(0.6, pw * 0.3), 0.22, 0.02, FOOD[(i + k) % FOOD.length], MT, 10)
+      }
+    }
+  }
+  // the roof: green standing seam from the eaves up to the drum, ribs down every facet
+  const eave = offsetRing(ring, 0.45)
+  const DR = Math.min(0.42, 3.6 / Math.max(R, 1)), D0 = B + Math.min(2.2, R * 0.26), D1 = D0 + 1.3
+  const drum = ring.map((q) => ({ x: cx + (q.x - cx) * DR, z: cz + (q.z - cz) * DR }))
   for (let i = 0; i < eave.length; i++) {
     const j = (i + 1) % eave.length
     const mx = (eave[i].x + eave[j].x) / 2 - cx, mz = (eave[i].z + eave[j].z) / 2 - cz, ml = Math.hypot(mx, mz) || 1
-    out.quad([[eave[i].x, H, eave[i].z], [eave[j].x, H, eave[j].z], [top[j].x, H + 3.2, top[j].z], [top[i].x, H + 3.2, top[i].z]],
-      [(mx / ml) * 0.7, 0.7, (mz / ml) * 0.7], UVQ, ROOF, MT)
+    out.quad([[eave[i].x, B, eave[i].z], [eave[j].x, B, eave[j].z], [drum[j].x, D0, drum[j].z], [drum[i].x, D0, drum[i].z]],
+      [(mx / ml) * 0.6, 0.8, (mz / ml) * 0.6], UVQ, GREENR, MT)
+    const nr = Math.max(3, Math.min(8, Math.round(Math.hypot(eave[j].x - eave[i].x, eave[j].z - eave[i].z) / 1.1)))
+    for (let k = 1; k < nr; k++) {
+      const t = k / nr
+      tube(out, [eave[i].x + (eave[j].x - eave[i].x) * t + (mx / ml) * 0.03, B + 0.04, eave[i].z + (eave[j].z - eave[i].z) * t + (mz / ml) * 0.03],
+        [drum[i].x + (drum[j].x - drum[i].x) * t, D0 + 0.04, drum[i].z + (drum[j].z - drum[i].z) * t], 0.03, 3, SEAM, MT)
+    }
+    slab(out, edgeAt(eave, i), edgeAt(eave, i).L / 2, 0, B - 0.18, edgeAt(eave, i).L, 0.2, 0.08, SEAM, MT)   // the gutter
   }
-  capPolygon(out, top, H + 3.2, ROOF, MT)
-  // the lantern on the top
-  prism(out, cx, cz, H + 3.2, H + 4.0, 1.0, 8, WALL, MT)
-  prism(out, cx, cz, H + 4.0, H + 4.5, 1.2, 8, ROOF, MT)
-  const menu = ['GRILLED SHRIMP', 'COLD BEER', 'FRIED CALAMARI', 'FULL BAR']
-  let k = 0
-  for (let i = 0; i < ring.length; i++) {
+  // the clerestory drum: dark windows between black posts, the blue banner on the Jefferson side, the cap
+  for (let i = 0; i < drum.length; i++) {
+    const e = edgeAt(drum, i)
+    if (e.L < 0.4) continue
+    slab(out, e, e.L / 2, -0.02, D0, e.L, D1 - D0, 0.06, [0.16, 0.19, 0.22], GT)
+    slab(out, e, 0, 0.02, D0, 0.12, D1 - D0, 0.12, BLACK, MT)
+  }
+  const dfront = edgeAt(drum, front)
+  slab(out, dfront, dfront.L / 2, 0.08, D0 + 0.25, Math.max(1.6, dfront.L - 0.2), 0.8, 0.03, BLUEB, WT)
+  signAt(out, dfront, dfront.L / 2, D0 + 0.85, 0.11, { type: 'flat', text: '$5 Draft Beer & Wine', h: 0.15, w: Math.max(1.4, dfront.L - 0.4), face: 'grotesque', weight: 'bold', colour: [1, 0.95, 0.4], lit: 'front' })
+  signAt(out, dfront, dfront.L / 2, D0 + 0.5, 0.11, { type: 'flat', text: '$6 Margaritas & Cocktails', h: 0.13, w: Math.max(1.4, dfront.L - 0.4), face: 'grotesque', weight: 'bold', colour: WHITE, lit: 'front' })
+  hipOver(out, drum, D1, 0.8, GREENR, MT, 0.25, 0.25)
+  const capR = Math.max(0.3, R * DR * 0.25)
+  prism(out, cx, cz, D1 + 0.8, D1 + 1.2, capR, 8, BLACK, MT)
+  prism(out, cx, cz, D1 + 1.2, D1 + 1.5, capR * 1.3, 8, GREENR, MT, 0.05)
+  // the big sign on the roof's edge to Jefferson: "Chowder" in red script over HUT, BAR & GRILL on a navy bar under it
+  const f = edgeAt(ring, front)
+  const SW = Math.min(6.2, f.L * 0.95)
+  slab(out, f, f.L / 2, 0.15, B - 0.1, SW, 2.7, 0.2, NAVY, MT)
+  slab(out, f, f.L / 2, 0.3, B - 0.45, SW * 0.82, 0.5, 0.18, NAVY, MT)
+  for (const s2 of [-0.35, 0.35]) tube(out, on(f, f.L / 2 + s2 * SW, B + 2.3, 0.05), on(f, f.L / 2 + s2 * SW, B + 0.3, -1.8), 0.05, 4, BLACK, MT)
+  signAt(out, f, f.L / 2, B + 1.95, 0.27, { type: 'flat', text: 'Chowder', h: 0.6, w: SW * 0.8, face: 'script', colour: RED, halo: [0.98, 0.96, 0.92], lit: 'front' })
+  signAt(out, f, f.L / 2, B + 0.75, 0.27, { type: 'flat', text: 'HUT', h: 0.95, w: SW * 0.75, face: 'block', weight: 'bold', colour: [0.98, 0.98, 0.96], lit: 'front', tracking: 0.12 })
+  signAt(out, f, f.L / 2, B - 0.2, 0.41, { type: 'flat', text: 'BAR & GRILL', h: 0.24, w: SW * 0.7, face: 'grotesque', weight: 'bold', colour: [0.98, 0.98, 0.96], lit: 'front', tracking: 0.15 })
+  // outside: green iron café sets under red umbrellas on the Jefferson and Taylor sides, the A-frame menu board
+  const sides = [front, (front + 1) % ring.length, (front + ring.length - 1) % ring.length]
+  for (const i of sides) {
     const e = edgeAt(ring, i)
-    if (e.L < 3) continue
-    awning(out, e, e.L / 2, e.L - 0.4, 3.2, BLUE, menu[k++ % menu.length], WHITE, 1.4)
+    if (e.L < 2) continue
+    if (i === front) {
+      const ap = on(e, e.L * 0.2, 0, 1.2)
+      boxAlong(out, ap[0], 0.55, ap[2], 0.32, 0.55, 0.2, e.heading, BLACK, WT)
+      boxAlong(out, ap[0] + e.nx * 0.21, 0.6, ap[2] + e.nz * 0.21, 0.27, 0.42, 0.01, e.heading, [0.95, 0.93, 0.85], WT)
+      continue
+    }
+    patioTable(out, e, e.L / 2, 2.4, 0, IRON, IRON, RED)
   }
+  const f2 = edgeAt(ring, front)
+  patioTable(out, f2, f2.L * 0.78, 2.6, 0, IRON, IRON, RED)
 }
 
 /**
@@ -869,7 +1155,6 @@ export function castagnolas(out: MeshBuilder, fit: Fit): void {
   // the ground floor: white boards and windows all round, the brick front over it on Jefferson (returning 3 m)
   faceBand(out, ring, 0, F, { kind: 'punched', wall: WHITE, glass: DARKGL, floor: F, pitch: 2.4, solid: 0.35, material: 'clapboard' }, offFront(ring, e))
   slab(out, e, L / 2, 0.15, 2.75, L + 0.3, F - 2.75, 0.3, BRICK, BT)
-  slab(out, e, L / 2, -1.6, 0, L - 0.6, 2.75, 0.1, [0.25, 0.22, 0.2], CT)                     // the back of the arcade
   for (const s of [0, L]) {
     const side = edgeToward(ring, e.tx * (s ? 1 : -1), e.tz * (s ? 1 : -1), 2)
     const near = Math.hypot(side.a.x - (e.a.x + e.tx * s), side.a.z - (e.a.z + e.tz * s)) < Math.hypot(side.b.x - (e.a.x + e.tx * s), side.b.z - (e.a.z + e.tz * s))
@@ -878,9 +1163,11 @@ export function castagnolas(out: MeshBuilder, fit: Fit): void {
   // the four arches: a shop in each, blue piers between
   const n = 4, bw = (L - 1) / n
   const shops: [string, Rgb][] = [['SOUVENIRS', [0.98, 0.82, 0.2]], ['SWEATSHIRTS · T-SHIRTS', [0.95, 0.95, 0.95]], ['CHOCOLATE · CANDY', [0.95, 0.55, 0.75]], ['SF GIFTS', [0.6, 0.85, 0.98]]]
+  // each arch's shop stands OPEN (owner, 2026-10-17): the wall cut round the arches, a lit room of goods in each
+  openWall(out, e, 0, F, Array.from({ length: n }, (_, k) => [0.5 + bw * (k + 0.5), bw - 1.0, 2.75] as [number, number, number]), BRICK, BT)
   for (let k = 0; k < n; k++) {
     const u = 0.5 + bw * (k + 0.5)
-    goodsWindow(out, e, u, 0.15, bw - 1.2, 2.4, k * 2)
+    openFront(out, e, u, bw - 1.0, 0, 2.75, { kind: 'goods', seed: k * 2 + 1, depth: 2.6 })
     for (const sd of [-1, 1]) slab(out, e, u + sd * (bw / 2 - 0.25), 0.15, 0, 0.5, 2.8, 0.3, BRICK, BT)   // the brick jambs
     slab(out, e, u, 0.32, 0, bw - 1.0, 0.15, 0.05, [0.3, 0.3, 0.3], MT)
     // the arch's head: a segment of brick voussoirs, a painted board in the tympanum with the shop's name
@@ -1024,7 +1311,16 @@ export function cioppinos(out: MeshBuilder, fit: Fit): void {
   const YEL: Rgb = [0.84, 0.64, 0.27], GREEN: Rgb = [0.1, 0.42, 0.26], RED: Rgb = [0.82, 0.12, 0.1], CREAM: Rgb = [0.96, 0.92, 0.8]
   const ring = towerRing(fit)
   const H = 5.2
-  faceBand(out, ring, 0, H - 0.5, { kind: 'punched', wall: YEL, glass: [0.18, 0.15, 0.12], floor: H - 0.5, pitch: 3.6, solid: 0.38, material: 'stucco' })
+  // the street faces (every face long enough for its awnings) have their windows OPEN onto the dining room, a table in
+  // each (owner, 2026-10-17); the rest, and any face too long for a believable row (the test box), keep plain windows
+  const openEdge = (i: number): boolean => { const q = edgeAt(ring, i); return q.L >= 6 && Math.floor(q.L / 4.2) <= 8 }
+  faceBand(out, ring, 0, H - 0.5, { kind: 'punched', wall: YEL, glass: [0.18, 0.15, 0.12], floor: H - 0.5, pitch: 3.6, solid: 0.38, material: 'stucco' }, ring.map((_, i) => i).filter((i) => !openEdge(i)))
+  for (let i = 0; i < ring.length; i++) {
+    if (!openEdge(i)) continue
+    const q = edgeAt(ring, i), n = Math.max(1, Math.floor(q.L / 4.2)), w = q.L / n
+    openWall(out, q, 0, H - 0.5, Array.from({ length: n }, (_, m) => [w * (m + 0.5), Math.min(2.6, w - 1.4), 1.9, 0.8] as [number, number, number, number]), YEL, ST)
+    for (let m = 0; m < n; m++) openFront(out, q, w * (m + 0.5), Math.min(2.6, w - 1.4), 0, 2.7, { kind: 'dining', seed: m, depth: 2.4, cloth: CREAM, seat: GREEN, back: [0.74, 0.58, 0.4] })
+  }
   faceBand(out, offsetRing(ring, 0.15), H - 0.5, H, { kind: 'blank', wall: [0.42, 0.5, 0.36], material: 'stucco' })
   capPolygon(out, offsetRing(ring, 0.15), H, [0.42, 0.42, 0.42], CT)
   const words = ["RESTAURANT · BAR", 'SEAFOOD', 'PASTA', 'PIZZA']
@@ -1273,16 +1569,22 @@ function barnLamp(out: MeshBuilder, e: Edge, u: number, y: number, c: Rgb = WHIT
   box(out, h[0], h[1] - 0.16, h[2], 0.07, 0.03, 0.07, WARM, EMIT)
 }
 
-/** a dark shop window with goods in it — a few bright blocks on shelves behind the glass */
+/**
+ * A shop window with goods in it, OPEN to the street: no pane (glass is opaque here, and a pane over the goods made every
+ * Wharf shop a grey shutter — owner, 2026-10-17), but a shallow lit display box standing off the wall — a warm back, shelves
+ * of bright goods, a dark frame round it.
+ */
 function goodsWindow(out: MeshBuilder, e: Edge, u: number, y0: number, w: number, h: number, seed: number): void {
-  slab(out, e, u, -0.25, y0, w, h, 0.05, [0.95, 0.9, 0.75], EMIT)
+  slab(out, e, u, 0.03, y0, w, h, 0.04, [0.95, 0.88, 0.7], EMIT)
   const C: Rgb[] = [[0.9, 0.2, 0.2], [0.2, 0.45, 0.85], [0.98, 0.8, 0.2], [0.2, 0.65, 0.4], [0.95, 0.5, 0.15], [0.85, 0.3, 0.6]]
-  for (let r = 0; r < 3; r++) for (let k = 0; k < Math.max(2, Math.round(w / 0.5)); k++) {
-    const uu = u - w / 2 + 0.25 + k * 0.5
-    if (uu > u + w / 2 - 0.2) break
-    slab(out, e, uu, -0.15, y0 + 0.1 + r * (h / 3), 0.38, h / 3 - 0.2, 0.12, C[(seed + r * 3 + k) % C.length], MT)
+  const n = Math.max(2, Math.min(10, Math.round(w / 0.5)))
+  for (let r = 0; r < 3; r++) {
+    slab(out, e, u, 0.14, y0 + 0.05 + r * (h / 3), w - 0.1, 0.04, 0.2, [0.35, 0.28, 0.2], WT)
+    for (let k = 0; k < n; k++) slab(out, e, u - w / 2 + ((k + 0.5) * w) / n, 0.12, y0 + 0.09 + r * (h / 3), w / n - 0.1, h / 3 - 0.28, 0.14, C[(seed + r * 3 + k) % C.length], MT)
   }
-  slab(out, e, u, 0.03, y0, w, h, 0.03, [0.32, 0.38, 0.42], GT)
+  for (const s2 of [-1, 1]) slab(out, e, u + s2 * (w / 2 + 0.04), 0.02, y0, 0.08, h, 0.36, [0.14, 0.14, 0.15], MT)
+  slab(out, e, u, 0.02, y0 + h, w + 0.16, 0.08, 0.36, [0.14, 0.14, 0.15], MT)
+  slab(out, e, u, 0.02, y0 - 0.08, w + 0.16, 0.08, 0.36, [0.14, 0.14, 0.15], MT)
 }
 
 /** a gabled shed on the fit's box: walls `E` high, ridge along local x (`ridgeX`) or z, eaves out `ov` */
@@ -1326,11 +1628,15 @@ export function capurros(out: MeshBuilder, fit: Fit): void {
   const TEAL: Rgb = [0.15, 0.62, 0.62], DRED: Rgb = [0.42, 0.05, 0.05]
   const ring = towerRing(fit)
   const B = 5.4, H = 6.8
-  faceBand(out, ring, 0, B, { kind: 'blank', wall: RED, material: 'clapboard' })
-  capPolygon(out, ring, B, [0.42, 0.4, 0.4], MT)
   const e = frontEdge(ring, facingFront(ring, 8)), L = e.L
   const west = e.tx > 0 ? 0 : L, wd = e.tx > 0 ? 1 : -1          // u at the Hyde end, and the way east
   const U = (d: number): number => west + wd * d                     // d metres east of the west corner
+  const bays = [0.12, 0.3, 0.6, 0.8], door = 0.45, bwin = Math.min(3.0, L * 0.15)
+  // the windows OPEN onto the dining room (owner, 2026-10-17: render the Wharf's restaurants open, tables inside): the
+  // Jefferson wall is cut round them, a lit room with its tables behind each
+  faceBand(out, ring, 0, B, { kind: 'blank', wall: RED, material: 'clapboard' }, offFront(ring, e))
+  openWall(out, e, 0, B, bays.map((f) => [U(f * L), bwin, 1.9, 0.9] as [number, number, number, number]), RED, WT)
+  capPolygon(out, ring, B, [0.42, 0.4, 0.4], MT)
   // the false front: red boards up to the coping, the corners stepping up, cream trim round it all
   slab(out, e, L / 2, -0.05, B, L, H - B - 0.3, 0.3, RED, WT)
   for (const s of [0, 1]) {
@@ -1345,10 +1651,9 @@ export function capurros(out: MeshBuilder, fit: Fit): void {
   signAt(out, e, L / 2 + 1.2, B - 0.9, 0.1, { type: 'flat', text: 'Restaurant & Bar', h: 0.4, w: L * 0.3, face: 'script', colour: [0.98, 0.85, 0.7], lit: 'front' })
   signAt(out, e, L / 2, 4.25, 0.1, { type: 'flat', text: 'CUCINA SICILIANA · SERVING FRESH FISH SINCE 1946', h: 0.24, w: L * 0.82, face: 'grotesque', weight: 'bold', colour: CREAM, lit: 'front' })
   // the windows and the door, their frames painted in cart colours, a yellow valance over each, fish between
-  const bays = [0.12, 0.3, 0.6, 0.8], door = 0.45
   for (const [k, f] of bays.entries()) {
-    const u = U(f * L), w = Math.min(3.0, L * 0.15)
-    goodsWindow(out, e, u, 0.9, w, 1.9, k)
+    const u = U(f * L), w = bwin
+    openFront(out, e, u, w, 0, 2.8, { kind: 'dining', seed: k, depth: 2.8, cloth: WHITE, seat: [0.3, 0.18, 0.1], back: [0.5, 0.34, 0.24] })
     for (const [dy, hh] of [[0.8, 0.12], [2.8, 0.12]] as [number, number][]) slab(out, e, u, 0.06, dy, w + 0.3, hh, 0.08, [YEL, TEAL, BLUE, YEL][k], WT)
     for (const s of [-1, 1]) slab(out, e, u + s * (w / 2 + 0.08), 0.06, 0.8, 0.16, 2.1, 0.08, [TEAL, YEL, YEL, BLUE][k], WT)
     stripedAwning(out, e, u, w + 0.4, 3.1, YEL, [0.9, 0.3, 0.15], '', DRED, 0.6)
@@ -1444,15 +1749,17 @@ export function aliotoLazio(out: MeshBuilder, fit: Fit): void {
   const W: Rgb = [0.95, 0.95, 0.93], BLUE: Rgb = [0.16, 0.32, 0.66], RED: Rgb = [0.75, 0.12, 0.12], YEL: Rgb = [0.98, 0.85, 0.15]
   const ring = towerRing(fit)
   const H = 8
-  faceBand(out, ring, 0, H, { kind: 'blank', wall: W, material: 'stucco' })
-  faceBand(out, offsetRing(ring, 0.08), H - 0.35, H + 0.4, { kind: 'blank', wall: W, material: 'stucco' })
-  capPolygon(out, ring, H, [0.5, 0.5, 0.5], CT)
   const e = frontEdge(ring, facingFront(ring, 6)), L = e.L
   const bw = Math.min(4.2, (L - 3) / 2.4)
+  // the market's two bays stand OPEN (owner, 2026-10-17): the front wall is cut round them, and in each the counter of
+  // crab on ice, the pots, the menu board
+  faceBand(out, ring, 0, H, { kind: 'blank', wall: W, material: 'stucco' }, offFront(ring, e))
+  openWall(out, e, 0, H, [0.38, 0.72].map((f) => [L * f, bw, 3.6] as [number, number, number]), W, ST)
+  faceBand(out, offsetRing(ring, 0.08), H - 0.35, H + 0.4, { kind: 'blank', wall: W, material: 'stucco' })
+  capPolygon(out, ring, H, [0.5, 0.5, 0.5], CT)
   for (const f of [0.38, 0.72]) {
     const u = L * f
-    slab(out, e, u, -1.2, 0, bw, 3.6, 2.2, [0.12, 0.12, 0.13], CT)
-    goodsWindow(out, e, u, 0.2, bw - 0.4, 2.6, Math.round(f * 10))
+    openFront(out, e, u, bw, 0, 3.6, { kind: 'crab', seed: Math.round(f * 10), depth: 3.2, back: [0.62, 0.64, 0.64] })
     for (const s of [-1, 1]) slab(out, e, u + s * (bw / 2 + 0.12), 0.04, 0, 0.25, 3.8, 0.12, BLUE, MT)
     slab(out, e, u, 0.04, 3.65, bw + 0.5, 0.22, 0.12, BLUE, MT)
     slab(out, e, u, 0.12, 3.0, bw * 0.55, 0.5, 0.05, YEL, MT)
@@ -1485,8 +1792,14 @@ export function taylorCorner(out: MeshBuilder, fit: Fit): void {
   const tay = e.tx > 0 ? L : 0, dir = e.tx > 0 ? -1 : 1                       // u at the Taylor corner, and the way west
   const U = (d: number): number => tay + dir * d
   const GW = 9                                                                 // Guardino's frontage on each street
-  // the one-storey stalls everywhere first: white boards, 4.4 m, a flat roof
-  faceBand(out, ring, 0, 4.4, { kind: 'bands', wall: WHITE, glass: [0.3, 0.33, 0.35], floor: 4.4, solid: 0.45, material: 'clapboard' })
+  const tf = edgeToward(ring, e.tx * -dir, e.tz * -dir, 6)                     // Taylor's face
+  const tc = (tf.a.x - (e.a.x + e.tx * tay)) * tf.tx + (tf.a.z - (e.a.z + e.tz * tay)) * tf.tz   // corner's u on Taylor (negated)
+  const tdir = Math.abs(tc) < 2 ? 1 : -1, t0u = Math.abs(tc) < 2 ? 0 : tf.L      // Taylor's u at the corner, and its way north
+  const T = (d: number): number => t0u + tdir * d
+  // the one-storey stalls everywhere first: white boards, 4.4 m, a flat roof — but not across the two street faces,
+  // where the stalls stand OPEN (owner's Street View of 2815 Taylor, 2026-10-17): their walls are drawn round the bays
+  const offTaylor = new Set(offFront(ring, tf))
+  faceBand(out, ring, 0, 4.4, { kind: 'bands', wall: WHITE, glass: [0.3, 0.33, 0.35], floor: 4.4, solid: 0.45, material: 'clapboard' }, offFront(ring, e).filter((i) => offTaylor.has(i)))
   capPolygon(out, ring, 4.4, [0.45, 0.45, 0.45], MT)
   // TARANTINO'S: the part of the block west of Guardino's, back to 24 m from Jefferson
   const tRing = clipBehind(clipAcross(ring, e, U(GW + 1), dir > 0 ? false : true), { ...e, a: on2(e, 0, -24), nx: -e.nx, nz: -e.nz }, 0)
@@ -1522,43 +1835,73 @@ export function taylorCorner(out: MeshBuilder, fit: Fit): void {
   slab(out, blade, 0, 0.86, 14.75, 4.9, 1.2, 0.03, [0.92, 0.94, 0.9], MT)
   sign(out, { type: 'flat', text: "Tarantino's", h: 0.6, w: 4.6, face: 'script', colour: [0.1, 0.4, 0.32], lit: 'self', twoSided: true },
     { x: m[0] + e.nx * 0.9, y: 15.35, z: m[2] + e.nz * 0.9, heading: e.heading })
-  // GUARDINO'S: the pent roof on posts round the corner, the parapet box over it, its name on both streets
-  const tf = edgeToward(ring, e.tx * -dir, e.tz * -dir, 6)                     // Taylor's face
-  const tc = (tf.a.x - (e.a.x + e.tx * tay)) * tf.tx + (tf.a.z - (e.a.z + e.tz * tay)) * tf.tz   // corner's u on Taylor (negated)
-  const tdir = Math.abs(tc) < 2 ? 1 : -1, t0u = Math.abs(tc) < 2 ? 0 : tf.L      // Taylor's u at the corner, and its way north
-  const T = (d: number): number => t0u + tdir * d
-  for (const [q, uu, dd] of [[e, U(GW / 2), 1], [tf, T(GW / 2), tdir]] as [Edge, number, number][]) {
-    void dd
+  // GUARDINO'S: the pent roof on posts round the corner, the parapet box over it, its name on both streets, and under
+  // the pent roof the stall standing open on both streets — the counter, crab on ice, the pots
+  const BLUEC: Rgb = [0.16, 0.3, 0.62]
+  const gEnd = U(GW + 1)
+  openWall(out, e, 0, 4.4, [[U(GW / 2), GW - 1.4, 3.0]], WHITE, WT, 0, Math.min(U(0), gEnd), Math.max(U(0), gEnd))
+  for (const [q, uu] of [[e, U(GW / 2)], [tf, T(GW / 2)]] as [Edge, number][]) {
     out.quad([on(q, uu - GW / 2 - 0.1, 3.9, 0.05), on(q, uu + GW / 2 + 0.1, 3.9, 0.05), on(q, uu + GW / 2 + 0.1, 3.0, 2.3), on(q, uu - GW / 2 - 0.1, 3.0, 2.3)], [q.nx * 0.5, 0.85, q.nz * 0.5], UVQ, SH, TT)
     slab(out, q, uu, 2.3, 2.9, GW + 0.2, 0.14, 0.12, WHITE, WT)
     for (let k = 0; k <= 3; k++) slab(out, q, uu - GW / 2 + (GW * k) / 3, 2.2, 0, 0.2, 3.0, 0.2, [0.4, 0.33, 0.25], WT)
     slab(out, q, uu, -1.0, 4.4, GW, 1.4, 0.2, WHITE, WT)
     signAt(out, q, uu, 5.1, -0.87, { type: 'flat', text: "GUARDINO'S", h: 0.75, w: GW - 1, face: 'block', colour: GBLUE, halo: [0.95, 0.95, 0.98], lit: 'front' })
-    goodsWindow(out, q, uu, 0.6, GW * 0.5, 2.0, 3)
+    openFront(out, q, uu, GW - 1.4, 0, 3.0, { kind: 'crab', seed: 3, depth: 3.0, back: [0.62, 0.6, 0.56] })
+    for (const f of [-0.33, 0.33]) flowerBasket(out, q, uu + f * GW, 2.55)
   }
-  // up Taylor: the crab stands
-  const stands: [string, Rgb, Rgb, string | null, Rgb][] = [
-    ["CRAB STATION · SEAFOOD", GREEN, WHITE, null, WHITE],
-    ['Sabella & LaTorre · Since 1927', NAVY, WHITE, 'SABELLA ⁄ LA TORRE', CREAMB],
-    ["NICK'S LIGHTHOUSE · FRESH FISH · PASTA", MAROON, WHITE, 'LIGHTHOUSE', [0.55, 0.72, 0.85]],
-  ]
-  const run = Math.max(6, tf.L - GW - 0.5), sw = run / stands.length
-  stands.forEach(([name, c, ink, board, bc], k) => {
-    const uu = T(GW + 0.3 + sw * (k + 0.5))
-    goodsWindow(out, tf, uu, 0.8, sw - 1.6, 1.6, k + 4)
-    slab(out, tf, uu, 0.6, 0.85, sw - 1.4, 0.15, 1.0, [0.85, 0.87, 0.9], MT)            // the counter / ice bed
-    awning(out, tf, uu, sw - 0.4, 3.2, c, name, ink, 1.8)
-    if (board) {
-      slab(out, tf, uu, 0.15, 4.4, sw - 0.6, 1.1, 0.12, bc, WT)
-      signAt(out, tf, uu, 4.95, 0.23, { type: 'flat', text: board, h: 0.5, w: sw - 1.2, face: k === 1 ? 'grotesque' : 'didone', weight: 'bold', colour: k === 1 ? [0.15, 0.15, 0.2] : MAROON, lit: 'front' })
+  /*
+   * Up Taylor: the crab stands, OPEN (owner's Street View of 2815 Taylor, 2026-10-17) — deep fronts with the counters,
+   * steam tables and crab pots inside, a bar of red stools, menus; on the sidewalk Sabella & La Torre's tables in blue-and-
+   * white checked cloths under blue umbrellas, folding chairs; hanging flower baskets.
+   *  · THE CRAB STATION: a green board with the red crab;
+   *  · SABELLA & LA TORRE: SABELLA / LA TORRE on a cream board on top, the navy fascia "Sabella & LaTorre · Since 1927",
+   *    ORIGINAL FISHERMAN'S WHARF RESTAURANT · "If It Swims We Have It";
+   *  · NICK'S LIGHTHOUSE: the maroon awning, the LIGHTHOUSE board painted above.
+   */
+  const run = Math.max(6, tf.L - GW - 0.5), sw = run / 3
+  const holes: [number, number, number][] = [[T(GW / 2), GW - 1.4, 3.0]]
+  const bays: { u: number; w: number; kind: OpenKind; seed: number }[] = []
+  for (let k = 0; k < 3; k++) {
+    const c = T(GW + 0.3 + sw * (k + 0.5)), nb = sw > 6 ? 2 : 1, bw = (sw - 0.6) / nb
+    for (let b = 0; b < nb; b++) {
+      const bu = c - (sw - 0.6) / 2 + bw * (b + 0.5)
+      bays.push({ u: bu, w: bw - 0.5, kind: (['crab', 'crab', 'crab', 'bar', 'bar', 'crab'] as OpenKind[])[k * 2 + b] ?? 'crab', seed: k * 2 + b })
+      holes.push([bu, bw - 0.5, 3.0])
     }
-    // blue-checked tables on the sidewalk
-    for (const s of [-1, 1]) {
-      const p = on(tf, uu + s * sw * 0.25, 0.75, 3.0)
-      box(out, p[0], 0.75, p[2], 0.45, 0.03, 0.45, [0.3, 0.5, 0.85], WT)
-      tube(out, [p[0], 0, p[2]], [p[0], 0.73, p[2]], 0.03, 4, [0.2, 0.2, 0.2], MT)
-    }
-  })
+  }
+  openWall(out, tf, 0, 4.4, holes, WHITE, WT)
+  for (const b of bays) openFront(out, tf, b.u, b.w, 0, 3.0, { kind: b.kind, seed: b.seed, depth: 3.0, back: [0.6, 0.55, 0.46] })
+  const stand = (k: number): number => T(GW + 0.3 + sw * (k + 0.5))
+  // THE CRAB STATION
+  {
+    const uu = stand(0)
+    awning(out, tf, uu, sw - 0.4, 3.2, GREEN, 'FRESH CRAB · CHOWDER · SHRIMP', WHITE, 1.8)
+    slab(out, tf, uu, 0.15, 4.4, sw - 0.6, 1.2, 0.12, GREEN, WT)
+    signAt(out, tf, uu + 0.6, 5.0, 0.23, { type: 'flat', text: 'The Crab Station', h: 0.42, w: sw - 2.6, face: 'slab', weight: 'bold', colour: WHITE, lit: 'front' })
+    const cp = on(tf, uu - (sw - 0.6) / 2 + 0.8, 5.0, 0.25)
+    lozenge(out, cp, [tf.tx, 0, tf.tz], [0, 1, 0], [tf.nx, 0, tf.nz], 0.42, 0.3, 0.06, [0.85, 0.15, 0.1], MT, 12)
+    for (const s2 of [-1, 1]) tube(out, on(tf, uu - (sw - 0.6) / 2 + 0.8 + s2 * 0.3, 5.1, 0.28), on(tf, uu - (sw - 0.6) / 2 + 0.8 + s2 * 0.62, 5.42, 0.28), 0.04, 4, [0.85, 0.15, 0.1], MT)
+  }
+  // SABELLA & LA TORRE
+  {
+    const uu = stand(1)
+    awning(out, tf, uu, sw - 0.4, 3.2, NAVY, "ORIGINAL FISHERMAN'S WHARF RESTAURANT · \u201CIf It Swims We Have It\u201D", WHITE, 1.8)
+    slab(out, tf, uu, 0.15, 4.4, sw - 0.6, 0.7, 0.12, NAVY, WT)
+    signAt(out, tf, uu, 4.75, 0.23, { type: 'flat', text: 'Sabella & LaTorre · Since 1927', h: 0.26, w: sw - 1.2, face: 'roman', weight: 'bold', colour: WHITE, lit: 'front' })
+    slab(out, tf, uu, 0.1, 5.1, sw - 1.4, 1.1, 0.12, CREAMB, WT)
+    signAt(out, tf, uu, 5.65, 0.18, { type: 'flat', text: 'SABELLA ⁄ LA TORRE', h: 0.5, w: sw - 2.0, face: 'grotesque', weight: 'bold', colour: [0.15, 0.15, 0.2], lit: 'front' })
+  }
+  // NICK'S LIGHTHOUSE
+  {
+    const uu = stand(2)
+    awning(out, tf, uu, sw - 0.4, 3.2, MAROON, "NICK'S LIGHTHOUSE · FRESH FISH · PASTA", WHITE, 1.8)
+    slab(out, tf, uu, 0.15, 4.4, sw - 0.6, 1.1, 0.12, [0.55, 0.72, 0.85], WT)
+    signAt(out, tf, uu, 4.95, 0.23, { type: 'flat', text: 'LIGHTHOUSE', h: 0.5, w: sw - 1.2, face: 'didone', weight: 'bold', colour: MAROON, lit: 'front' })
+  }
+  // the flower baskets along the stands, and the tables on the sidewalk: Sabella's and Nick's in blue-and-white checks
+  // under blue umbrellas, folding chairs
+  for (let k = 0; k < 3; k++) for (const f of [-0.42, 0, 0.42]) flowerBasket(out, tf, stand(k) + f * sw, 3.05)
+  for (const k of [1, 2]) for (const f of [-0.27, 0.27]) patioTable(out, tf, stand(k) + f * sw, 3.3, 0, WHITE, [0.55, 0.56, 0.58], BLUEC, BLUEC)
 }
 
 /** a point `o` out from edge `e`'s first corner along its normal, `u` along it, as a P2 */

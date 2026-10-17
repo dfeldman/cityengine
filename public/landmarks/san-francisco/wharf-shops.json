@@ -73,7 +73,7 @@
   "procedural": "taylorCorner",
   "front": 171,
   "height": 9,
-  "note": "Water-side audit 2026-10-17: this way is the CORNER BLOCK, not Alioto's (that is way/103339444 north of it on Taylor). Tarantino's grey two-storey with the red timber pergola and the T sign, Guardino's pent-roofed corner stall, the crab stands up Taylor (Mapillary 1280197440176160, 2217044922129857, 958597956412771 Aug 2025; 1048502846417659, 205306128566845 Jun 2022)."
+  "note": "Water-side audit 2026-10-17: this way is the CORNER BLOCK, not Alioto's (that is way/103339444 north of it on Taylor). Tarantino's grey two-storey with the red timber pergola and the T sign, Guardino's pent-roofed corner stall, the crab stands up Taylor (Mapillary 1280197440176160, 2217044922129857, 958597956412771 Aug 2025; 1048502846417659, 205306128566845 Jun 2022). 2026-10-17 (owner's Street View of 2815 Taylor): Guardino's, The Crab Station, Sabella & La Torre and Nick's Lighthouse drawn OPEN — lit recessed rooms with crab counters, pots and red-stooled bars, blue-checked tables under blue umbrellas, flower baskets."
  },
  {
   "name": "The Chowder Hut",
@@ -81,8 +81,9 @@
    "way/37312394"
   ],
   "procedural": "chowderHut",
+  "front": 180,
   "height": 8,
-  "note": "BUGS.md #290m, 2026-10-17: the octagonal pavilion at Taylor & Jefferson — dark panels and glass, standing-seam roof and lantern, blue menu awnings all round (Commons 'Fisherman's Wharf, San Francisco, CA, USA - panoramio (125)')."
+  "note": "BUGS.md #290m, 2026-10-17: the octagonal pavilion at Taylor & Jefferson. Rebuilt 2026-10-17 from the owner's 2026 Street View: the octagon enclosed as a glass pavilion in black steel frames, backlit menu-panel band (Dungeness Crab, Crab Sandwich, Draught Beer, Smash Burgers, Full Bar, Clam Chowder, round logo), green standing-seam roof to a clerestory drum with the blue $5 Draft Beer banner, the Chowder / HUT / BAR & GRILL sign on the Jefferson edge, red umbrellas inside and green iron café sets outside. front 180: Jefferson is local -z (the older blue-awning look, Mapillary 3380975535471777, is gone)."
  },
  {
   "name": "The Buena Vista",

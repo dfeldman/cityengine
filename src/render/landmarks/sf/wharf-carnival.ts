@@ -648,26 +648,60 @@ export function boudinBakery(out: MeshBuilder, fit: Fit): void {
       box(out, x, H / 2, z, Math.abs(e.tx) * 0.45 + Math.abs(e.nx) * 0.25, H / 2, Math.abs(e.tz) * 0.45 + Math.abs(e.nz) * 0.25, PIER, surfaceTag('concrete'))
     }
   }
-  // THE BARN ROOF: a gable over the fit's box, its ridge along the longer side, eaves out 0.8 m, glazed gable ends
+  /*
+   * THE BARN ROOF: a gable over the barn's BODY, its ridge along the longer side, eaves out 0.8 m, glazed gable ends.
+   * The body is the run of the long axis the footprint covers across its whole width — not the fit's box: OSM draws a
+   * bump on the east end over only the north half, and a gable on the box's end stood 8 m out past the real wall there,
+   * its big window hanging in the air (owner, 2026-10-17: "windows that extend well past the building").
+   */
   const along = fit.hx >= fit.hz
-  const L = (along ? fit.hx : fit.hz) + 0.8, W = (along ? fit.hz : fit.hx) + 0.8, RISE = W * 0.75
-  const P = (a: number, w: number, y: number): V3 => along ? [a, y, w] : [w, y, a]
+  const HX = along ? fit.hx : fit.hz, HZ = along ? fit.hz : fit.hx
+  const ax = (q: { x: number; z: number }): number => (along ? q.x : q.z), cr = (q: { x: number; z: number }): number => (along ? q.z : q.x)
+  // the body's extent along one axis, from lines across it (`across`: the lines run along the long axis instead) —
+  // a line through a little wing (the north-west lean-to) says nothing about the barn, so only lines crossing most of
+  // the box count
+  const extent = (lines: number[], across: boolean, min: number): [number, number] => {
+    let lo = -Infinity, hi = Infinity
+    for (const c of lines) {
+      const xs: number[] = []
+      for (let i = 0; i < ring.length; i++) {
+        const p = ring[i], q = ring[(i + 1) % ring.length]
+        const [ap, aq, cp, cq] = across ? [cr(p), cr(q), ax(p) - c, ax(q) - c] : [ax(p), ax(q), cr(p) - c, cr(q) - c]
+        if ((cp < 0) !== (cq < 0)) xs.push(ap + ((aq - ap) * cp) / (cp - cq))
+      }
+      if (xs.length < 2 || Math.max(...xs) - Math.min(...xs) < min) continue
+      lo = Math.max(lo, Math.min(...xs)); hi = Math.min(hi, Math.max(...xs))
+    }
+    return Number.isFinite(lo) && Number.isFinite(hi) && hi - lo > min ? [lo, hi] : across ? [-HZ, HZ] : [-HX, HX]
+  }
+  const [x0, x1] = extent([-0.7, -0.5, -0.3, -0.1, 0.1, 0.3, 0.5, 0.7].map((t) => t * HZ), false, HX)
+  const [z0, z1] = extent([0.1, 0.25, 0.4, 0.5, 0.6, 0.75, 0.9].map((t) => x0 + (x1 - x0) * t), true, HZ)
+  const XC = (x0 + x1) / 2, LB = (x1 - x0) / 2, ZC = (z0 + z1) / 2
+  const L = LB + 0.8, W = (z1 - z0) / 2 + 0.8, RISE = W * 0.75
+  const P = (a: number, w: number, y: number): V3 => along ? [XC + a, y, ZC + w] : [ZC + w, y, XC + a]
   for (const sd of [-1, 1]) {
     // each slope, and its underside
     out.quad([P(-L, sd * W, H), P(L, sd * W, H), P(L, 0, H + RISE), P(-L, 0, H + RISE)], along ? [0, W, sd * RISE] : [sd * RISE, W, 0], UVQ, ROOF, MT)
     out.quad([P(-L, sd * W, H - 0.15), P(-L, 0, H + RISE - 0.15), P(L, 0, H + RISE - 0.15), P(L, sd * W, H - 0.15)], [0, -1, 0], UVQ, STEEL, MT)
   }
   for (const end of [-1, 1]) {
-    const e = end * (L - 0.8)
+    const e = end * LB
     const nrm: V3 = along ? [end, 0, 0] : [0, 0, end]
     // the gable wall in boards, and a big window in its upper half
     out.quad([P(e, -W + 0.8, H), P(e, W - 0.8, H), P(e, 0, H + RISE - 0.6), P(e, 0, H + RISE - 0.6)], nrm, UVQ, WALL, WT)
-    // the big gridded window filling the gable: glass, and a dark steel grid over it (photo: the Taylor Street end)
-    const gw = W * 0.5, g0 = H - 1.2, g1 = H + RISE * 0.62
+    // the big gridded window filling the gable, above the eaves' line and inside the slopes, so no pane hangs past
+    // the wall it is set in: glass, and a dark steel grid over it (photo: the Taylor Street end)
+    const GH = RISE - 0.6, half = (y: number): number => (W - 0.8) * (1 - (y - H) / GH) - 0.6
+    const g0 = H + 0.3, g1 = H + GH * 0.7
     const gx = e + end * 0.05
-    out.quad([P(gx, -gw, g0), P(gx, gw, g0), P(gx, gw, g1), P(gx, -gw, g1)], nrm, UVQ, [0.32, 0.36, 0.38], GT)
-    for (let c = 0; c <= 6; c++) { const w = -gw + (2 * gw * c) / 6; const a = P(gx + end * 0.03, w, (g0 + g1) / 2); box(out, a[0], a[1], a[2], along ? 0.04 : 0.06, (g1 - g0) / 2, along ? 0.06 : 0.04, STEEL, MT) }
-    for (let r = 0; r <= 5; r++) { const y = g0 + ((g1 - g0) * r) / 5; const a = P(gx + end * 0.03, 0, y); box(out, a[0], y, a[2], along ? 0.04 : gw, 0.05, along ? gw : 0.04, STEEL, MT) }
+    out.quad([P(gx, -half(g0), g0), P(gx, half(g0), g0), P(gx, half(g1), g1), P(gx, -half(g1), g1)], nrm, UVQ, [0.32, 0.36, 0.38], GT)
+    for (let c = -3; c <= 3; c++) {
+      const w = (half(g0) * c) / 3, top = Math.min(g1, H + GH * (1 - (Math.abs(w) + 0.6) / (W - 0.8)))
+      if (top < g0 + 0.3) continue
+      const a = P(gx + end * 0.03, w, (g0 + top) / 2)
+      box(out, a[0], a[1], a[2], along ? 0.04 : 0.06, (top - g0) / 2, along ? 0.06 : 0.04, STEEL, MT)
+    }
+    for (let r = 0; r <= 4; r++) { const y = g0 + ((g1 - g0) * r) / 4; const a = P(gx + end * 0.03, 0, y); box(out, a[0], y, a[2], along ? 0.04 : half(y), 0.05, along ? half(y) : 0.04, STEEL, MT) }
   }
   // the CLERESTORY along the ridge: a long low monitor with a band of windows each side
   for (const sd of [-1, 1]) {
@@ -681,7 +715,7 @@ export function boudinBakery(out: MeshBuilder, fit: Fit): void {
     box(out, q[0], H + RISE + 1.4, q[2], 0.08, 0.9, 0.08, STEEL, MT)
   }
   for (const side of [1, -1]) {
-    sign(out, { type: 'flat', text: 'BOUDIN', h: 2.4, face: 'grotesque', weight: 'bold', colour: RED, lit: 'self', tracking: 0.05 },
+    sign(out, { type: 'flat', text: 'BOUDIN', h: 2.4, w: 13, face: 'grotesque', weight: 'bold', colour: RED, lit: 'self', tracking: 0.05 },
       { x: rs[0] + (along ? 0 : side * 0.15), y: H + RISE + 2.6, z: rs[2] + (along ? side * 0.15 : 0), heading: along ? (side > 0 ? 0 : Math.PI) : (side > 0 ? Math.PI / 2 : -Math.PI / 2) })
   }
   // red awnings over the bakery windows on every street side, and the upstairs balcony's red band on Jefferson

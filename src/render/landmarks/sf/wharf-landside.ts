@@ -15,7 +15,8 @@ import { surfaceTag } from '../../cartoon-material.ts'
 import { sign, type SignSpec, type Face } from '../signage.ts'
 import { towerRing, faceBand } from '../tower.ts'
 import { edgeAt, boxAlong, offsetRing } from '../parts.ts'
-import { tube, ellipse, type V3 } from './wharf-carnival.ts'
+import { tube, ellipse, lozenge, type V3 } from './wharf-carnival.ts'
+import { openWall, openFront } from './wharf-shops.ts'
 
 type P2 = { x: number; z: number }
 type Edge = ReturnType<typeof edgeAt>
@@ -298,7 +299,15 @@ export interface Shop {
   blade?: string
   /** a rack of goods and an A-frame board out on the pavement */
   goods?: boolean
+  /**
+   * OPEN to the street, no glass (owner, 2026-10-17): a lit room of goods recessed behind the front instead of a pane —
+   * the caller must leave the wall out across `loudOpening` (glass is opaque here, and a pane IS a shutter)
+   */
+  open?: boolean
 }
+
+/** the hole an open loud shop needs in its wall: [u, w, h] for `openWall` */
+export const loudOpening = (u: number, w: number, H: number): [number, number, number] => [u, w - 0.3, H - 1.0]
 
 const TEE: Rgb[] = [[0.9, 0.15, 0.15], [0.98, 0.8, 0.2], [0.15, 0.4, 0.8], [0.95, 0.95, 0.95], [0.1, 0.1, 0.12], [0.2, 0.65, 0.35], [0.95, 0.45, 0.65], [0.55, 0.3, 0.7]]
 
@@ -307,6 +316,14 @@ export function loudShop(out: MeshBuilder, e: Edge, u: number, w: number, y: num
   const frame = s.frame ?? [0.1, 0.1, 0.11], ink = s.ink ?? WHITE
   const gl: Rgb = [0.22, 0.25, 0.27]
   const sy = y + H - 0.95                                                            // the sign band's foot
+  if (s.open) {
+    // OPEN: the lit room of goods behind the front (the wall is cut by the caller), the frame round it, a rolled shutter's
+    // drum tucked up under the sign
+    openFront(out, e, u, w - 0.3, y, sy - y - 0.05, { kind: 'goods', seed, depth: 2.8, back: [0.86, 0.84, 0.8] })
+    for (const k of [-0.5, 0.5]) slab(out, e, u + k * (w - 0.3), 0.08, y, 0.12, sy - y - 0.05, 0.08, frame, MT)
+    slab(out, e, u, 0.08, sy - 0.12, w - 0.3, 0.1, 0.08, frame, MT)
+    slab(out, e, u, 0.12, sy - 0.3, w - 0.4, 0.16, 0.16, [0.36, 0.36, 0.38], MT)
+  } else {
   // the front: bulkhead, glass, mullions, the door, a warm strip of interior light along the top of the glass
   slab(out, e, u, 0.04, y, w - 0.2, 0.45, 0.1, frame, MT)
   panel(out, e, u, 0.05, y + 0.45, w - 0.3, sy - y - 0.55, gl, GT)
@@ -322,6 +339,7 @@ export function loudShop(out: MeshBuilder, e: Edge, u: number, w: number, y: num
     const uu = u - (w - 1.6) / 2 + 0.3 + k * 0.6
     if (Math.abs(uu - du) < 0.7) continue
     panel(out, e, uu, 0.075, y + 0.6 + r * 0.75, 0.42, 0.5, TEE[(k + r * 3 + seed) % TEE.length], MT)
+  }
   }
   const bw = w - 0.3, tw = w - 0.9
   const face = s.face ?? 'grotesque'
@@ -433,6 +451,28 @@ export function shopRow(out: MeshBuilder, e: Edge, u0: number, u1: number, y: nu
     u += w
   })
   slab(out, e, u1, 0.06, y, 0.3, H + 0.05, 0.14, [0.85, 0.84, 0.8], CT)
+}
+
+/** the holes `shopRow` with the same arguments needs cut in its wall, for the shops that are `open` */
+function shopRowHoles(u0: number, u1: number, H: number, shops: (Shop & { w?: number })[]): [number, number, number][] {
+  const tot = shops.reduce((a, s) => a + (s.w ?? 1), 0)
+  const holes: [number, number, number][] = []
+  let u = u0
+  for (const s of shops) {
+    const w = ((u1 - u0) * (s.w ?? 1)) / tot
+    if (w > 2.2 && s.open) holes.push(loudOpening(u + w / 2, w - 0.15, H))
+    u += w
+  }
+  return holes
+}
+
+/** the indices of `ring`'s edges that are NOT pieces of the straight front `e` (copied from wharf-shops.ts) */
+function offFront(ring: P2[], e: Edge): number[] {
+  return ring.map((_, i) => i).filter((i) => {
+    const q = edgeAt(ring, i)
+    const onLine = Math.abs((q.mid.x - e.a.x) * e.nx + (q.mid.z - e.a.z) * e.nz) < 1.5
+    return !(onLine && q.nx * e.nx + q.nz * e.nz > 0.9)
+  })
 }
 
 /** the world bearing (degrees) an edge faces, for a claimed building whose manifest `front` is `front` */
@@ -1063,11 +1103,11 @@ export function jonesStrip(out: MeshBuilder, fit: Fit): void {
   const FRONT = 351
   const ring = towerRing(fit)
   const H = 5.2
-  faceBand(out, ring, 0, H, { kind: 'blank', wall: [0.9, 0.89, 0.86], material: 'stucco' })
+  const e = frontFacing(ring, FRONT, 351, 8)
+  faceBand(out, ring, 0, H, { kind: 'blank', wall: [0.9, 0.89, 0.86], material: 'stucco' }, e ? offFront(ring, e) : undefined)
   capPolygon(out, ring, H, [0.4, 0.4, 0.4], CT)
   // the rounded black cap along the parapet
   faceBand(out, offsetRing(ring, 0.12), H - 0.35, H + 0.15, { kind: 'blank', wall: [0.08, 0.08, 0.09], material: 'metal' })
-  const e = frontFacing(ring, FRONT, 351, 8)
   if (!e) return
   // west → east: the ring runs anticlockwise, so u runs from the east end to the west one along the Jefferson face
   const W2E: (Shop & { w?: number; fascia: Rgb })[] = [
@@ -1080,15 +1120,19 @@ export function jonesStrip(out: MeshBuilder, fit: Fit): void {
     { name: 'SF PHONE SHOP', sub: 'PREPAID SIMS · PHONE REPAIR', sign: 'board', c: [0.96, 0.96, 0.94], ink: [0.85, 0.1, 0.1], face: 'condensed', fascia: [0.96, 0.96, 0.94], w: 1.1 },
     { name: 'TEXTURES', sub: 'SAN FRANCISCO VINTAGE', sign: 'board', c: [0.96, 0.96, 0.94], ink: [0.08, 0.08, 0.1], face: 'block', fascia: [0.96, 0.96, 0.94], w: 1.0 },
   ]
-  const shops = [...W2E].reverse()
+  // every shop OPEN (owner, 2026-10-17: the shuttered Wharf shops rendered open, goods inside): the wall cut round them
+  const shops = [...W2E].reverse().map((x) => ({ ...x, open: true }))
   const tot = shops.reduce((a, x) => a + (x.w ?? 1), 0)
+  {
+    let u2 = 0.3
+    const holes = shops.map((sh) => { const w = ((e.L - 0.6) * (sh.w ?? 1)) / tot, h = loudOpening(u2 + w / 2, w - 0.1, 4.15); u2 += w; return h })
+    openWall(out, e, 0, H, holes, [0.9, 0.89, 0.86], ST)
+  }
   let u = 0.3
   shops.forEach((sh, k) => {
     const w = ((e.L - 0.6) * (sh.w ?? 1)) / tot
     // the fascia: the shop's colour from the sign band to the cap
     slab(out, e, u + w / 2, 0.06, 3.2, w, H - 3.55, 0.08, sh.fascia, ST)
-    // a roll shutter half up over the opening, the opening open below
-    slab(out, e, u + w / 2, 0.1, 2.75, w - 0.6, 0.45, 0.06, [0.3, 0.3, 0.32], MT)
     loudShop(out, e, u + w / 2, w - 0.1, 0, 4.15, sh, k)
     gooseneck(out, e, u + w * 0.3, H - 0.6)
     if (w > 6) gooseneck(out, e, u + w * 0.7, H - 0.6)
@@ -1097,50 +1141,87 @@ export function jonesStrip(out: MeshBuilder, fit: Fit): void {
 }
 
 /**
- * SUPREME CRAB and the CAMERA HOUSE, 235–245 Jefferson (way/229326460): a white two-storey block with a long band of
- * windows upstairs and SUPREME CRAB in red script along its top, the ground floor a jumble of loud boards — CAMERA HOUSE,
- * PHONE ACCESSORIES on yellow, Ray-Ban, Samsonite, SALE (Mapillary 1131340342176896); at its west end a tall grey
- * clapboard wall with EAT CRAB down it in red capitals, and a little gabled porch under a green-and-white striped awning
- * with the restaurant's retro red sign — SUPREME CRAB · SEAFOOD BUFFET · OPEN (Mapillary 767512889312382). `front` 351.
+ * SUPREME CRAB and the CAMERA HOUSE, 235–245 Jefferson (way/229326460; owner's Street View 2026-10-17, Mapillary
+ * 1131340342176896, 767512889312382): a two-storey block of pale GREY BOARDS, the whole upper floor one band of big dark
+ * windows in thin frames, "Supreme Crab" in red script across the top with a red crab for its C; at the west end a tall
+ * grey clapboard wall with EAT CRAB down it in red capitals, a little gabled porch under a green-and-white striped awning,
+ * and over it the big red RETRO SIGN standing out from the wall — SUPREME CRAB · SEAFOOD BUFFET · OPEN, neon-style, ringed
+ * with bulbs. The ground floor east of the porch is OPEN shops (owner): phone accessories and the CAMERA HOUSE, dense with
+ * goods, a SALE board, a smoke shop with a green leaf, racks of clothes out on the sidewalk. (The owner placed the retro
+ * sign at the east corner; both Mapillary frames show it at the west end, by the EAT CRAB wall, and it stays there.)
+ * `front` 351.
  */
 export function supremeCrab(out: MeshBuilder, fit: Fit): void {
   const FRONT = 351
   const ring = towerRing(fit)
   const H = 8.6, G = 4.0
-  const WH: Rgb = [0.94, 0.93, 0.9], RED: Rgb = [0.85, 0.1, 0.1], GREY: Rgb = [0.62, 0.64, 0.66]
-  faceBand(out, ring, 0, G, { kind: 'blank', wall: WH, material: 'stucco' })
-  faceBand(out, ring, G, H, { kind: 'bands', wall: WH, glass: [0.22, 0.26, 0.3], floor: H - G, solid: 0.45, material: 'stucco' })
-  faceBand(out, offsetRing(ring, 0.1), H - 1.0, H, { kind: 'blank', wall: WH, material: 'stucco' })
-  capPolygon(out, ring, H, [0.42, 0.42, 0.42], CT)
+  const GREYB: Rgb = [0.78, 0.79, 0.8], RED: Rgb = [0.85, 0.1, 0.1], GREY: Rgb = [0.62, 0.64, 0.66], FRAME: Rgb = [0.2, 0.21, 0.22]
   const e = frontFacing(ring, FRONT, 351, 8)
+  faceBand(out, ring, 0, G, { kind: 'blank', wall: GREYB, material: 'clapboard' }, e ? offFront(ring, e) : undefined)
+  // the upper floor: one band of big dark windows in thin frames, all round
+  faceBand(out, ring, G, H - 1.1, { kind: 'curtain', wall: FRAME, glass: [0.12, 0.14, 0.17], pitch: 2.4, material: 'clapboard' })
+  faceBand(out, offsetRing(ring, 0.06), G - 0.1, G + 0.15, { kind: 'blank', wall: GREYB, material: 'clapboard' })
+  faceBand(out, offsetRing(ring, 0.1), H - 1.1, H, { kind: 'blank', wall: GREYB, material: 'clapboard' })
+  capPolygon(out, ring, H, [0.42, 0.42, 0.42], CT)
   if (!e) return
   // the ring runs anticlockwise: u = L is the WEST end, where the EAT CRAB tower stands
   const tu = e.L - 2.0
   slab(out, e, tu, -1.0, 0, 4.0, H + 3.2, 2.2, GREY, WT)
   for (let y = 0.3; y < H + 3.1; y += 0.3) slab(out, e, tu, 0.12, y, 4.0, 0.03, 0.04, [0.5, 0.52, 0.54], WT)
   'EAT CRAB'.split('').forEach((ch, k) => { if (ch !== ' ') signAt(out, e, tu + 0.6, H + 2.2 - k * 1.05, 0.16, { type: 'flat', text: ch, h: 0.85, w: 1.2, face: 'condensed', weight: 'bold', colour: RED, lit: 'self' }) })
-  // the porch: a little gable on posts under the striped awning, the retro sign standing on its ridge
+  // the porch: a little gable on posts under the striped awning, its door open on the lit buffet
   const pu = e.L - 5.6
-  for (const sd of [-1, 1]) slab(out, e, pu + sd * 1.4, 1.6, 0, 0.14, 2.8, 0.14, WH, WT)
+  for (const sd of [-1, 1]) slab(out, e, pu + sd * 1.4, 1.6, 0, 0.14, 2.8, 0.14, WHITE, WT)
   const n = 8
   for (let k = 0; k < n; k++) {
     const u0 = pu - 1.6 + (3.2 * k) / n, u1 = pu - 1.6 + (3.2 * (k + 1)) / n
-    out.quad([on(e, u0, 3.5, 0.05), on(e, u1, 3.5, 0.05), on(e, u1, 2.8, 1.9), on(e, u0, 2.8, 1.9)], [e.nx * 0.6, 0.8, e.nz * 0.6], UVQ, k % 2 ? WH : [0.1, 0.45, 0.25], WT)
+    out.quad([on(e, u0, 3.5, 0.05), on(e, u1, 3.5, 0.05), on(e, u1, 2.8, 1.9), on(e, u0, 2.8, 1.9)], [e.nx * 0.6, 0.8, e.nz * 0.6], UVQ, k % 2 ? WHITE : [0.1, 0.45, 0.25], WT)
   }
-  slab(out, e, pu, 0.4, 4.2, 3.4, 2.0, 0.2, RED, MT)
-  signAt(out, e, pu, 5.75, 0.56, { type: 'flat', text: 'Supreme Crab', h: 0.34, w: 3.0, face: 'script', colour: WHITE, lit: 'self' })
-  slab(out, e, pu, 0.45, 4.62, 3.1, 0.42, 0.2, WH, MT)
-  signAt(out, e, pu, 4.83, 0.6, { type: 'flat', text: 'SEAFOOD BUFFET', h: 0.22, w: 2.9, face: 'condensed', weight: 'bold', colour: RED, lit: 'back' })
-  signAt(out, e, pu, 4.38, 0.56, { type: 'flat', text: 'OPEN', h: 0.16, w: 1.0, face: 'block', colour: [1.0, 0.3, 0.3], lit: 'self' })
-  bulbRow(out, on(e, pu - 1.7, 6.22, 0.52), on(e, pu + 1.7, 6.22, 0.52), 0.25)
-  // the name along the top of the white block
-  signAt(out, e, e.L * 0.42, H - 0.5, 0.18, { type: 'flat', text: 'Supreme Crab', h: 0.75, w: e.L * 0.6, face: 'script', weight: 'bold', colour: RED, lit: 'self' })
-  // the ground floor east of the porch: the camera shop's pile of boards
-  shopRow(out, e, 0.3, pu - 2.0, 0, G - 0.05, [
-    { name: 'CAMERA HOUSE', sub: 'CANON · SONY · NIKON · OLYMPUS', sign: 'bulbs', c: [0.98, 0.85, 0.15], ink: [0.75, 0.08, 0.08], face: 'block', goods: true, w: 1.4 },
-    { name: 'PHONE ACCESSORIES', sub: 'CASES · CHARGERS · SELFIE STICKS', sign: 'board', c: [0.98, 0.9, 0.3], ink: [0.1, 0.1, 0.5], face: 'condensed', w: 1.2 },
-    { name: 'SALE', sub: '30% – 70% OFF', sign: 'box', c: [0.9, 0.1, 0.1], ink: WHITE, face: 'block', w: 0.7 },
-  ], 61)
+  // the retro sign standing out from the wall over the porch, both faces: a red board with a rounded head, SUPREME /
+  // CRAB in white neon, SEAFOOD BUFFET on a white strip, OPEN in red neon under it, bulbs round it
+  const hd = e.heading + Math.PI / 2, so = 1.4
+  const sc = on(e, pu, 5.6, so)
+  tube(out, on(e, pu, 7.1, 0.02), on(e, pu, 7.1, so + 0.4), 0.05, 4, FRAME, MT)
+  tube(out, on(e, pu, 4.3, 0.02), on(e, pu, 4.3, so - 0.4), 0.05, 4, FRAME, MT)
+  boxAlong(out, sc[0], 5.6, sc[2], 1.1, 1.3, 0.12, hd, RED, MT)
+  lozenge(out, [sc[0], 6.9, sc[2]], [Math.cos(hd), 0, -Math.sin(hd)], [0, 1, 0], [Math.sin(hd), 0, Math.cos(hd)], 1.1, 0.45, 0.24, RED, MT, 14)
+  boxAlong(out, sc[0], 4.85, sc[2], 1.0, 0.24, 0.16, hd, [0.97, 0.96, 0.92], MT)
+  for (const sd of [1, -1]) {
+    const h2 = hd + (sd > 0 ? 0 : Math.PI), dx = Math.sin(h2) * 0.19, dz = Math.cos(h2) * 0.19
+    sign(out, { type: 'flat', text: 'SUPREME', h: 0.32, w: 1.9, face: 'condensed', weight: 'bold', colour: WHITE, lit: 'self', tracking: 0.08 }, { x: sc[0] + dx, y: 6.55, z: sc[2] + dz, heading: h2 })
+    sign(out, { type: 'flat', text: 'CRAB', h: 0.5, w: 1.9, face: 'condensed', weight: 'bold', colour: WHITE, lit: 'self' }, { x: sc[0] + dx, y: 5.75, z: sc[2] + dz, heading: h2 })
+    sign(out, { type: 'flat', text: 'SEAFOOD BUFFET', h: 0.2, w: 1.85, face: 'condensed', weight: 'bold', colour: RED, lit: 'back' }, { x: sc[0] + dx * 1.15, y: 4.85, z: sc[2] + dz * 1.15, heading: h2 })
+    sign(out, { type: 'flat', text: 'OPEN', h: 0.22, w: 1.0, face: 'block', colour: [1.0, 0.35, 0.3], lit: 'self' }, { x: sc[0] + dx, y: 4.45, z: sc[2] + dz, heading: h2 })
+  }
+  for (const [y0, y1] of [[4.35, 4.35], [6.85, 6.85]] as [number, number][]) bulbRow(out, on(e, pu, y0, so - 1.05), on(e, pu, y1, so + 1.05), 0.22)
+  bulbRow(out, on(e, pu, 4.35, so - 1.08), on(e, pu, 6.85, so - 1.08), 0.22)
+  bulbRow(out, on(e, pu, 4.35, so + 1.08), on(e, pu, 6.85, so + 1.08), 0.22)
+  // the name along the top of the block in red script, and the red crab beside it (on the building the crab is the C)
+  const nu = e.L * 0.4
+  signAt(out, e, nu, H - 0.55, 0.18, { type: 'flat', text: 'Supreme Crab', h: 0.85, w: e.L * 0.5, face: 'script', weight: 'bold', colour: RED, lit: 'self' })
+  // (a script of twelve letters at 0.85 m runs about 6 m: the crab stands just before its first letter)
+  const cu = nu - Math.min(e.L * 0.27, 3.6)
+  const cc = on(e, cu, H - 0.55, 0.2)
+  lozenge(out, cc, [e.tx, 0, e.tz], [0, 1, 0], [e.nx, 0, e.nz], 0.42, 0.32, 0.06, RED, MT, 12)
+  for (const sd of [-1, 1]) tube(out, on(e, cu + sd * 0.3, H - 0.45, 0.22), on(e, cu + sd * 0.55, H - 0.1, 0.22), 0.05, 4, RED, MT)
+  // the ground floor east of the porch: open shops, their goods inside and racks out on the sidewalk
+  const shops: (Shop & { w?: number })[] = [
+    { name: 'CAMERA HOUSE', sub: 'CANON · SONY · NIKON · OLYMPUS', sign: 'bulbs', c: [0.98, 0.85, 0.15], ink: [0.75, 0.08, 0.08], face: 'block', goods: true, open: true, w: 1.3 },
+    { name: 'PHONE ACCESSORIES', sub: 'CASES · CHARGERS · SELFIE STICKS', sign: 'board', c: [0.98, 0.9, 0.3], ink: [0.1, 0.1, 0.5], face: 'condensed', goods: true, open: true, w: 1.2 },
+    { name: 'SALE', sub: '30% – 70% OFF', sign: 'box', c: [0.9, 0.1, 0.1], ink: WHITE, face: 'block', open: true, w: 0.8 },
+    { name: 'SMOKE SHOP', sub: 'CBD · VAPE · GLASS', sign: 'board', c: [0.08, 0.3, 0.16], ink: [0.6, 0.95, 0.45], face: 'block', goods: true, open: true, w: 1.0 },
+  ]
+  const r0 = 0.3, r1 = pu - 2.0
+  openWall(out, e, 0, G, [...shopRowHoles(r0, r1, G - 0.05, shops), [pu, 2.2, 2.6]], GREYB, WT)
+  openFront(out, e, pu, 2.2, 0, 2.6, { kind: 'dining', seed: 2, depth: 3.0, cloth: WHITE, seat: [0.6, 0.12, 0.1], back: [0.82, 0.7, 0.55] })
+  shopRow(out, e, r0, r1, 0, G - 0.05, shops, 61)
+  // the smoke shop's green leaf on its board
+  const tot = shops.reduce((a2, x) => a2 + (x.w ?? 1), 0), lw = ((r1 - r0) * (shops[3].w ?? 1)) / tot
+  const lu = r1 - lw + 0.55
+  for (const a2 of [-0.7, 0, 0.7]) {
+    const lp = on(e, lu, G - 0.55, 0.26)
+    lozenge(out, [lp[0], lp[1] + 0.12 * Math.cos(a2), lp[2]], [e.tx * Math.cos(a2), Math.sin(a2), e.tz * Math.cos(a2)], [-e.tx * Math.sin(a2), Math.cos(a2), -e.tz * Math.sin(a2)], [e.nx, 0, e.nz], 0.08, 0.3, 0.02, [0.3, 0.85, 0.3], MT, 8)
+  }
 }
 
 /**
@@ -1154,7 +1235,8 @@ export function taylorGalleries(out: MeshBuilder, fit: Fit): void {
   const FRONT = 351
   const ring = towerRing(fit)
   const H = 10.5, G = 4.2
-  const BUFF: Rgb = [0.86, 0.74, 0.5], TILE: Rgb = [0.72, 0.74, 0.76], STEEL: Rgb = [0.55, 0.57, 0.6]
+  // the frame MUSTARD-OCHRE, the panels grey (owner's Street View, 2026-10-17; Mapillary 2217044922129857)
+  const BUFF: Rgb = [0.8, 0.62, 0.24], TILE: Rgb = [0.7, 0.72, 0.74], STEEL: Rgb = [0.55, 0.57, 0.6]
   faceBand(out, ring, 0, G, { kind: 'curtain', wall: [0.18, 0.18, 0.2], glass: [0.24, 0.28, 0.3], pitch: 2.4, floor: G, material: 'glass' })
   faceBand(out, ring, G, H - 1.2, { kind: 'fins', wall: TILE, glass: [0.22, 0.28, 0.33], floor: (H - 1.2 - G) / 2, pitch: 5.0, solid: 0.35, depth: 0.25, material: 'concrete' })
   faceBand(out, offsetRing(ring, 0.1), H - 1.2, H, { kind: 'blank', wall: BUFF, material: 'stucco' })
@@ -1169,9 +1251,12 @@ export function taylorGalleries(out: MeshBuilder, fit: Fit): void {
   const e = frontFacing(ring, FRONT, 351, 6)
   if (!e) return
   // u = 0 is the east (Taylor) end
-  signAt(out, e, e.L * 0.62, G + 0.35, 0.3, { type: 'flat', text: 'ZEA GALLERY', h: 0.5, w: Math.min(6, e.L * 0.35), face: 'didone', colour: [0.85, 0.86, 0.88], lit: 'front', tracking: 0.15, panel: [0.15, 0.15, 0.17] })
-  signAt(out, e, e.L * 0.85, G - 0.6, 0.3, { type: 'flat', text: 'FINE ART', h: 0.4, w: 3.2, face: 'script', colour: [1.0, 0.18, 0.12], lit: 'self' })
-  signAt(out, e, e.L * 0.38, G - 0.6, 0.3, { type: 'flat', text: 'FINE ART & DECOR', h: 0.34, w: 4.0, face: 'didone', colour: WHITE, lit: 'front', panel: [0.1, 0.1, 0.12] })
+  // ZEA GALLERY and FINE ART & DECOR in white capitals on the dark fascia over the shop fronts (owner, 2026-10-17); the
+  // red FINE ART is the next shop's
+  slab(out, e, e.L * 0.5, 0.2, G + 0.02, e.L * 0.62, 0.7, 0.12, [0.15, 0.15, 0.17], MT)
+  signAt(out, e, e.L * 0.62, G + 0.37, 0.3, { type: 'flat', text: 'ZEA GALLERY', h: 0.4, w: Math.min(6, e.L * 0.3), face: 'didone', weight: 'bold', colour: WHITE, lit: 'front', tracking: 0.15 })
+  signAt(out, e, e.L * 0.33, G + 0.37, 0.3, { type: 'flat', text: 'FINE ART & DECOR', h: 0.3, w: Math.min(5, e.L * 0.28), face: 'didone', weight: 'bold', colour: WHITE, lit: 'front', tracking: 0.1 })
+  signAt(out, e, e.L * 0.85, G - 0.6, 0.3, { type: 'flat', text: 'FINE ART', h: 0.4, w: 3.2, face: 'grotesque', weight: 'bold', colour: [1.0, 0.18, 0.12], lit: 'self' })
   signAt(out, e, Math.min(4, e.L * 0.15), G + 0.35, 0.3, { type: 'flat', text: 'ZK GALLERY', h: 0.42, w: 4.5, face: 'grotesque', colour: WHITE, lit: 'front', tracking: 0.2, panel: [0.1, 0.1, 0.12] })
   // the paintings in the windows, on each real wall face toward the street (not the merged front line, which runs out in
   // front of the set-back glass: owner, 2026-10-17, 'colored squares floating in space'), between the pilasters
