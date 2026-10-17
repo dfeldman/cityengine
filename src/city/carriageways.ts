@@ -85,8 +85,12 @@ export class Carriageways {
         // …and genuinely BESIDE it — two carriageways apart, not the next piece of the same street round a slight bend
         // at a junction, which is nearly on a's own line (that was half of what this took out on Nob Hill's plain grid)
         if (Math.abs(crossB) < a.s.half + b.s.half + 0.5) continue
+        // the point is BETWEEN the two lines: b lies on the point's own side of a, further out than the point (2026-10-17:
+        // this asked for opposite sides, which a point between two carriageways never is — the median rule caught nothing,
+        // and Drumm Street's kerbside hydrant stood on the strip between its two one-way carriageways)
         const sideB = Math.sign(crossB)
-        if (sideA !== 0 && sideB !== 0 && sideA !== sideB) return 'median'
+        const crossP = (ax * (z - a.s.az) - az * (x - a.s.ax)) / al
+        if (sideA !== 0 && sideA === sideB && Math.abs(crossP) < Math.abs(crossB)) return 'median'
       }
     }
     return null

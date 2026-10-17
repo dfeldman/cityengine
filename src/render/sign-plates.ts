@@ -345,11 +345,15 @@ export function signPlate(scene: Scene, spec: SignSpec): Plate | null {
   return plate
 }
 
-/** How big a flat sign's quad is, in metres. `w` overrides the width a wall must fit. */
+/**
+ * How big a flat sign's quad is, in metres. `w` is the most it may take — a long name is shrunk to fit its wall — never a
+ * size to grow to: stretched to `w`, a short word given a wide board came out metres tall and ran off its fascia down the
+ * wall (owner, 2026-10-17: "several of the custom signs overrun their allotted space"; the Chowder Hut's FULL BAR).
+ */
 export function plateSize(spec: SignSpec, plate: Plate): { w: number; h: number } {
-  const w = spec.w ?? spec.h * plate.wOverCap
-  const k = spec.w !== undefined ? spec.w / (spec.h * plate.wOverCap) : 1
-  return { w, h: spec.h * plate.hOverCap * k }
+  const natural = spec.h * plate.wOverCap
+  const k = spec.w !== undefined ? Math.min(1, spec.w / natural) : 1
+  return { w: natural * k, h: spec.h * plate.hOverCap * k }
 }
 
 /**

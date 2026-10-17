@@ -1330,10 +1330,27 @@ function boathouse(name: string, sub?: string): (out: MeshBuilder, fit: Fit) => 
   }
 }
 
-export const WHARF_SHOPS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+/**
+ * AT THE STREET'S LEVEL: a model's base is the LOWEST ground under its footprint, and on the Wharf a building that stands
+ * out over the water has the sea bed under it — Alioto's and the Grotto were built 3–4 m down, their awnings lying on the
+ * sidewalk (owner, 2026-10-17: "awnings on the ground on multiple buildings, including Aliotos and No 9"). The builder
+ * draws as if its front's ground were y 0; everything is then lifted to `fit.grade`, and a skirt of wall closes the gap.
+ */
+function graded(build: (out: MeshBuilder, fit: Fit) => void, skirt: Rgb = [0.42, 0.4, 0.38]): (out: MeshBuilder, fit: Fit) => void {
+  return (out, fit) => {
+    const g = fit.grade ?? 0
+    if (Math.abs(g) < 0.1) { build(out, fit); return }
+    const v0 = out.positions.length / 3
+    build(out, { ...fit, grade: 0, groundAt: fit.groundAt ? (x, z) => fit.groundAt!(x, z) - g : undefined })
+    for (let i = v0; i < out.positions.length / 3; i++) out.positions[i * 3 + 1] += g
+    if (g > 0) faceBand(out, towerRing(fit), 0, g + 0.05, { kind: 'blank', wall: skirt, material: 'concrete' })
+  }
+}
+
+export const WHARF_SHOPS: Record<string, (out: MeshBuilder, fit: Fit) => void> = Object.fromEntries(Object.entries({
   jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, aliotos, grotto9, chowderHut, buenaVista, castagnolas, longshoremensHall, cioppinos, shellfishShed, hardRockFront, pumpingStation2,
   dolphinClubBoathouse: boathouse('DOLPHIN CLUB'), southEndRowingClub: boathouse('Since 1877', 'SOUTH END ROWING CLUB'), pretzelKiosk, klamathPropellers,
   pier45ShedA: pier45Shed('PIER 45', true),
   pier45ShedB: pier45Shed('PIER 45', false),
   pier45ShedD: pier45Shed('PIER 45', false),
-}
+}).map(([k, f]) => [k, graded(f)]))

@@ -122,7 +122,7 @@ export interface SignSpec {
   vertical?: boolean
   /** REQUIRED: what it does after dark. See SignLighting — `none` is a decision, not an omission */
   lit: SignLighting
-  /** the full width in metres, where the sign must fit a given wall rather than follow its own text */
+  /** the most width it may take, metres: a longer text is shrunk to fit its wall (never stretched up to it) */
   w?: number
   /** extruded only: the GLB under public/models, e.g. `signs/ghirardelli.glb` (built by tools/signs.ts) */
   model?: string

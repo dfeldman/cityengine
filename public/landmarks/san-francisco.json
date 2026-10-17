@@ -485,8 +485,8 @@
  {
   "name": "Ripley's sign",
   "file": "models/signs/ripleys.glb",
-  "lat": 37.8081700,
-  "lon": -122.4154475,
+  "lat": 37.8081720,
+  "lon": -122.4155270,
   "front": 171,
   "size": [
    17,
@@ -494,7 +494,7 @@
   ],
   "offset": [
    0,
-   8.2,
+   9.3,
    0
   ],
   "note": "tools/signgen: Arial Bold Italic, 1.5 m capitals, on the band over the arched entrance at 175 Jefferson. 2026-10-17: on the Jefferson wall (way/288473102's north edge, bearing 351°; was at the building's middle facing south, inside it), and the GLB stood up (signgen had exported every sign lying flat)"
