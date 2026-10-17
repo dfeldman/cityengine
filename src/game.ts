@@ -3098,7 +3098,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       const tell = (): void => { if (welcomeOpen()) setTimeout(tell, 500); else hud.banner('Settings changed', recovered!, 9000) }
       if (recovered) setTimeout(tell, 800)
       // and the welcome screen over the city, gone at the first key (BUGS.md #165)
-      if (!opts.freeze) welcomeScreen(src.index?.name ?? opts.city, !nav.fast)
+      if (!opts.freeze) welcomeScreen(src.index?.name ?? opts.city, !nav.fast, !!opts.platform)
     }
   }
   /*

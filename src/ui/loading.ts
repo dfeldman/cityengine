@@ -155,6 +155,13 @@ const CONTROLS: [string, string][] = [
   ['U', 'turn round'],
   ['M', 'the map — search a landmark, click to go'],
 ]
+/** on Dandyhorse the legs are the effort and the phone is the controller (2026-10-17: the card said "↑ ↓ effort — energy bar") */
+const PLATFORM_CONTROLS: [string, string][] = [
+  ['🚲', 'your bike or treadmill is the effort — no energy bar'],
+  ['📱', 'steer, pause, board and take jobs from the bridge on your phone'],
+  ['← →', 'or the keys: turn at the next junction'],
+  ['B  M', 'board a cable car · the map'],
+]
 /** what the game IS, before what the keys do (2026-10-01, for the demo) */
 const HIGHLIGHTS: [string, string, string][] = [
   ['🥡', 'Deliver', 'take a job, find the kitchen, beat the clock for stars and tips'],
@@ -203,13 +210,13 @@ let dismissWelcome: (() => void) | null = null
 export const closeWelcome = (): void => { dismissWelcome?.() }
 
 /** Show it, and take it away at the first key or click. */
-export function welcomeScreen(cityName: string, slowInput = false): void {
+export function welcomeScreen(cityName: string, slowInput = false, platform = false): void {
   welcomeUp = true
   const root = document.createElement('div')
   root.className = 'sr-welcome'
   // slow input (?input=slow, trainers): a press declares the turn at the next junction, well before it
   const touch = typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches
-  const rows = CONTROLS.map(([k, d]) => (k === '← →' && slowInput ? [k, 'pick your turn at the next junction, before you reach it'] : [k, d])).map(([k, d]) => `<tr><td class="k"><kbd>${k}</kbd></td><td class="d">${d}</td></tr>`).join('')
+  const rows = (platform ? PLATFORM_CONTROLS : CONTROLS).map(([k, d]) => (k === '← →' && slowInput ? [k, 'pick your turn at the next junction, before you reach it'] : [k, d])).map(([k, d]) => `<tr><td class="k"><kbd>${k}</kbd></td><td class="d">${d}</td></tr>`).join('')
   const hl = HIGHLIGHTS.map(([e, t, d]) => `<div><span class="e">${e}</span><div><b>${t}</b><span>${d}</span></div></div>`).join('')
   root.innerHTML = `<div class="sr-card"><span class="sr-pill">Dandyhorse</span><h1>Cycle Dash</h1>
     <p class="lede">Ride ${cityName} for real — every street, every building, where they actually are.</p>
