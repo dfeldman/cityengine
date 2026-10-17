@@ -1095,6 +1095,54 @@ export function longshoremensHall(out: MeshBuilder, fit: Fit): void {
 }
 
 /**
+ * CIOPPINO'S, Jefferson at Leavenworth (way/229326455; Commons "Cioppino's Restaurant near Fisherman's Wharf, San Francisco
+ * USA - panoramio"): one storey of warm yellow stucco under a green cornice, a run of Italian-flag awnings — green, white
+ * and red stripes, a green valance lettered RESTAURANT · BAR, SEAFOOD, PASTA, PIZZA and CIOPPINO'S on a green arc — round
+ * both street faces, gooseneck lamps over them, and on the corner a cream tower panel with CIOPPINO'S in red neon down it,
+ * RESTAURANT, the crab and BAR. `front` 180: Jefferson faces local −z, Leavenworth at its east (+x) end.
+ */
+export function cioppinos(out: MeshBuilder, fit: Fit): void {
+  const YEL: Rgb = [0.84, 0.64, 0.27], GREEN: Rgb = [0.1, 0.42, 0.26], RED: Rgb = [0.82, 0.12, 0.1], CREAM: Rgb = [0.96, 0.92, 0.8]
+  const ring = towerRing(fit)
+  const H = 5.2
+  faceBand(out, ring, 0, H - 0.5, { kind: 'punched', wall: YEL, glass: [0.18, 0.15, 0.12], floor: H - 0.5, pitch: 3.6, solid: 0.38, material: 'stucco' })
+  faceBand(out, offsetRing(ring, 0.15), H - 0.5, H, { kind: 'blank', wall: [0.42, 0.5, 0.36], material: 'stucco' })
+  capPolygon(out, offsetRing(ring, 0.15), H, [0.42, 0.42, 0.42], CT)
+  const words = ["RESTAURANT · BAR", 'SEAFOOD', 'PASTA', 'PIZZA']
+  // the striped awning: three bands across its slope
+  const flagAwning = (e: Edge, u: number, w: number, word: string): void => {
+    const y = 3.0, d = 1.3
+    const a = on(e, u - w / 2, y + 0.9, 0.05), b = on(e, u + w / 2, y + 0.9, 0.05), a2 = on(e, u - w / 2, y, d), b2 = on(e, u + w / 2, y, d)
+    const cols: Rgb[] = [GREEN, CREAM, RED, CREAM, GREEN, CREAM, RED]
+    for (let k = 0; k < cols.length; k++) {
+      const t0 = k / cols.length, t1 = (k + 1) / cols.length
+      const L = (p: V3, q: V3, t: number): V3 => [p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t, p[2] + (q[2] - p[2]) * t]
+      out.quad([L(a, b, t0), L(a, b, t1), L(a2, b2, t1), L(a2, b2, t0)], [e.nx * 0.6, 0.8, e.nz * 0.6], UVQ, cols[k], WT)
+    }
+    slab(out, e, u, d, y - 0.4, w, 0.4, 0.04, GREEN, WT)
+    signAt(out, e, u, y - 0.2, d + 0.03, { type: 'flat', text: word, h: 0.18, w: w * 0.8, face: 'roman', weight: 'bold', colour: CREAM, lit: 'front' })
+    signAt(out, e, u, y + 0.45, (0.05 + d) / 2 + 0.25, { type: 'flat', text: "CIOPPINO'S", h: 0.2, face: 'roman', weight: 'bold', colour: CREAM, panel: GREEN, lit: 'front' })
+    const lamp = on(e, u, H - 0.6, 0.1), arm = on(e, u, H - 0.6, 0.7)
+    tube(out, lamp, arm, 0.03, 4, [0.15, 0.15, 0.15], MT)
+    box(out, arm[0], arm[1] - 0.12, arm[2], 0.14, 0.08, 0.14, WARM, EMIT)
+  }
+  let k = 0
+  for (let i = 0; i < ring.length; i++) {
+    const e = edgeAt(ring, i)
+    if (e.L < 6) continue
+    const n = Math.max(1, Math.floor(e.L / 4.2)), w = e.L / n
+    for (let m = 0; m < n; m++) flagAwning(e, w * (m + 0.5), w - 0.5, words[k++ % words.length])
+  }
+  // the corner tower panel at Jefferson & Leavenworth
+  const e = frontEdge(ring, facingFront(ring, 6))
+  const cu = e.tx > 0 ? e.L - 1.4 : 1.4
+  slab(out, e, cu, 0.25, 2.6, 2.8, 4.4, 0.5, CREAM, ST)
+  signAt(out, e, cu, 6.4, 0.53, { type: 'flat', text: "CIOPPINO'S", h: 0.42, w: 2.5, face: 'roman', weight: 'bold', colour: RED, lit: 'self' })
+  signAt(out, e, cu, 5.75, 0.53, { type: 'flat', text: 'RESTAURANT', h: 0.28, w: 2.3, face: 'roman', weight: 'bold', colour: [0.92, 0.38, 0.2], lit: 'self' })
+  signAt(out, e, cu, 4.6, 0.53, { type: 'flat', text: 'BAR', h: 0.34, face: 'roman', weight: 'bold', colour: [0.92, 0.38, 0.2], lit: 'self' })
+}
+
+/**
  * THE AQUATIC PARK BOATHOUSES: the Dolphin Club (way/288391828) and the South End Rowing Club (way/288391837), side by
  * side on the beach at the foot of Jefferson (Commons "Dolphin Club and South End Rowing Club 20170906-8513"): two storeys
  * of white clapboard with blue trim on every corner, window and rail, a hipped roof of grey shingle, a balcony along the
@@ -1156,7 +1204,7 @@ function boathouse(name: string, sub?: string): (out: MeshBuilder, fit: Fit) => 
 }
 
 export const WHARF_SHOPS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, aliotos, grotto9, chowderHut, buenaVista, castagnolas, longshoremensHall,
+  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, aliotos, grotto9, chowderHut, buenaVista, castagnolas, longshoremensHall, cioppinos,
   dolphinClubBoathouse: boathouse('DOLPHIN CLUB'), southEndRowingClub: boathouse('Since 1877', 'SOUTH END ROWING CLUB'), pretzelKiosk, klamathPropellers,
   pier45ShedA: pier45Shed('PIER 45', true),
   pier45ShedB: pier45Shed('PIER 45', false),

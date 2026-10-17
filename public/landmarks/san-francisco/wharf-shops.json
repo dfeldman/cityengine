@@ -113,5 +113,15 @@
   "front": 180,
   "height": 14,
   "note": "BUGS.md #290m, 2026-10-17: the 1959 hexagonal hall — bronze standing-seam tent with zigzag battens on a buff concrete base, raking corner buttresses, the canopy on North Point (Commons 'Longshoremen's Hall, San Francisco (July 2020) -1, -5')."
+ },
+ {
+  "name": "Cioppino's",
+  "osm": [
+   "way/229326455"
+  ],
+  "procedural": "cioppinos",
+  "front": 180,
+  "height": 7,
+  "note": "BUGS.md #290m, 2026-10-17: yellow stucco, the green-white-red awnings round both faces, the cream corner tower with red neon (Commons 'Cioppino's Restaurant near Fisherman's Wharf, San Francisco USA - panoramio')."
  }
 ]
