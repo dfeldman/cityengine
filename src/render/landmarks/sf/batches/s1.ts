@@ -170,114 +170,6 @@ export const s1_sutro_baths_32776564 = (out: MeshBuilder, fit: Fit): void => {
 
 
 /**
- * Fort Mason Shed A (way/25372350) — Long gabled shed on piers, built on actual footprint from fit.ring.
- */
-export const s1_fort_mason_shed_a_25372350 = (out: MeshBuilder, fit: Fit): void => {
-  const ring = towerRing(fit)
-  const concrete = surfaceTag('concrete')
-  const metal = surfaceTag('metal')
-
-  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
-  for (const p of ring) {
-    x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x)
-    z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z)
-  }
-  const cx = (x0 + x1) / 2
-  const cz = (z0 + z1) / 2
-  const hx = (x1 - x0) / 2
-  const hz = (z1 - z0) / 2
-  const eaves = 7
-
-  const sidingColor: Rgb = [0.8, 0.79, 0.75]
-  const roofColor: Rgb = [0.5, 0.5, 0.49]
-
-  // Walls on the actual footprint
-  faceBand(out, ring, 0, eaves, { kind: 'blank', wall: sidingColor, material: 'metal' })
-
-  // The roof ON the footprint: a shallow parapet and a flat grey deck (it was a slab per metre over the footprint's
-  // axis-aligned box, 15% wider again — on these turned sheds a red roof twice their size, owner 2026-10-03)
-  faceBand(out, ring, eaves, eaves + 0.6, { kind: 'blank', wall: sidingColor, material: 'metal' })
-  capPolygon(out, ring, eaves + 0.6, roofColor, metal)
-
-  // Piles supporting over water
-  for (let i = -2; i <= 2; i++) {
-    for (let k = -1; k <= 1; k++) {
-      box(out, cx + i * hx / 2.2, -2, cz + k * hz / 2.2, 0.5, 2, 0.5, CONCRETE_DARK, concrete)
-    }
-  }
-}
-
-/**
- * Fort Mason Shed B (way/25372352) — Similar to Shed A, built on actual footprint.
- */
-export const s1_fort_mason_shed_b_25372352 = (out: MeshBuilder, fit: Fit): void => {
-  const ring = towerRing(fit)
-  const concrete = surfaceTag('concrete')
-  const metal = surfaceTag('metal')
-
-  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
-  for (const p of ring) {
-    x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x)
-    z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z)
-  }
-  const cx = (x0 + x1) / 2
-  const cz = (z0 + z1) / 2
-  const hx = (x1 - x0) / 2
-  const hz = (z1 - z0) / 2
-  const eaves = 7
-
-  const sidingColor: Rgb = [0.8, 0.79, 0.75]
-  const roofColor: Rgb = [0.5, 0.5, 0.49]
-
-  faceBand(out, ring, 0, eaves, { kind: 'blank', wall: sidingColor, material: 'metal' })
-  // the roof on the footprint itself (see Shed A)
-  faceBand(out, ring, eaves, eaves + 0.6, { kind: 'blank', wall: sidingColor, material: 'metal' })
-  capPolygon(out, ring, eaves + 0.6, roofColor, metal)
-  for (let i = -2; i <= 2; i++) {
-    for (let k = -1; k <= 1; k++) {
-      box(out, cx + i * hx / 2.2, -2, cz + k * hz / 2.2, 0.5, 2, 0.5, CONCRETE_DARK, concrete)
-    }
-  }
-}
-
-/**
- * Fort Mason Shed C (way/25372353) — Similar to Sheds A & B.
- */
-
-/**
- * Fort Mason Shed D (way/25372355) — Similar to other sheds.
- */
-export const s1_fort_mason_shed_d_25372355 = (out: MeshBuilder, fit: Fit): void => {
-  const ring = towerRing(fit)
-  const concrete = surfaceTag('concrete')
-  const metal = surfaceTag('metal')
-
-  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
-  for (const p of ring) {
-    x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x)
-    z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z)
-  }
-  const cx = (x0 + x1) / 2
-  const cz = (z0 + z1) / 2
-  const hx = (x1 - x0) / 2
-  const hz = (z1 - z0) / 2
-  const eaves = 7
-
-  const sidingColor: Rgb = [0.8, 0.79, 0.75]
-  const roofColor: Rgb = [0.5, 0.5, 0.49]
-
-  faceBand(out, ring, 0, eaves, { kind: 'blank', wall: sidingColor, material: 'metal' })
-  // the roof on the footprint itself (see Shed A)
-  faceBand(out, ring, eaves, eaves + 0.6, { kind: 'blank', wall: sidingColor, material: 'metal' })
-  capPolygon(out, ring, eaves + 0.6, roofColor, metal)
-  for (let i = -2; i <= 2; i++) {
-    for (let k = -1; k <= 1; k++) {
-      box(out, cx + i * hx / 2.2, -2, cz + k * hz / 2.2, 0.5, 2, 0.5, CONCRETE_DARK, concrete)
-    }
-  }
-}
-
-/**
  * Hyde Street Pier (way/25319880) — Promenade pier on actual footprint: deck on piles, railings, lamps.
  */
 export const s1_hyde_street_pier_25319880 = (out: MeshBuilder, fit: Fit): void => {
@@ -417,9 +309,6 @@ export const s1_pier_14_23605173 = (out: MeshBuilder, fit: Fit): void => {
 export const S1 = {
   s1_presidio_theatre_32650566,
   s1_sutro_baths_32776564,
-  s1_fort_mason_shed_a_25372350,
-  s1_fort_mason_shed_b_25372352,
-  s1_fort_mason_shed_d_25372355,
   s1_hyde_street_pier_25319880,
   pier7Promenade,
 }
