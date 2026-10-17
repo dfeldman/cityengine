@@ -52,6 +52,7 @@ export function pier39Shop(out: MeshBuilder, fit: Fit): void {
   const two = (fit.height || 9) >= 7 && Math.min(fit.hx, fit.hz) > 3
   const G = 4.2, U = two ? 3.4 : 0, H = G + U
   const WT = surfaceTag('clapboard')
+  const covered = (e: { nx: number; nz: number }): boolean => !!fit.bare?.some((v) => e.nx * v.x + e.nz * v.z > 0.85)
   tower(out, { ...fit, height: H }, {
     height: H,
     base: two ? { height: G, face: { kind: 'curtain', wall: sd.trim, glass: [0.66, 0.58, 0.44], pitch: 3.0, floor: G, material: 'glass' } } : undefined,
@@ -69,8 +70,9 @@ export function pier39Shop(out: MeshBuilder, fit: Fit): void {
     for (const [y0, y1, c] of [[0, 0.5, sd.wall], [G - 0.55, G, sd.wall]] as [number, number, Rgb][]) {
       out.quad([at(0, y0, 0.06), at(e.L, y0, 0.06), at(e.L, y1, 0.06), at(0, y1, 0.06)], [nx, 0, nz], UVQ, c, WT)
     }
-    // AWNINGS over the shopfronts, a bay at a time, on every wall long enough for a shop
-    if (e.L >= 4) {
+    // AWNINGS over the shopfronts, a bay at a time, on every wall long enough for a shop — not on a face another
+    // model covers (Fit.bare: the Wipeout and Players fronts, pier39-fronts.ts)
+    if (e.L >= 4 && !covered(e)) {
       const [solid, second] = AWNINGS[Math.floor(hash(e.mid.x, e.mid.z) * AWNINGS.length)]
       const striped = hash(e.mid.z, e.mid.x) > 0.45
       const n = Math.max(1, Math.round(e.L / 3.2)), bw = e.L / n
@@ -100,7 +102,7 @@ export function pier39Shop(out: MeshBuilder, fit: Fit): void {
   }
   // the GALLERY on the long sides of a two-storey building: plank deck, posts to the boardwalk, wooden railing
   if (!two) return
-  const order = ring.map((_, i) => i).filter((i) => edgeAt(ring, i).L >= 10).sort((p, q) => edgeAt(ring, q).L - edgeAt(ring, p).L).slice(0, 2)
+  const order = ring.map((_, i) => i).filter((i) => edgeAt(ring, i).L >= 10 && !covered(edgeAt(ring, i))).sort((p, q) => edgeAt(ring, q).L - edgeAt(ring, p).L).slice(0, 2)
   for (const i of order) {
     const e = edgeAt(ring, i)
     const D = 1.7

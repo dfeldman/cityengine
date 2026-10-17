@@ -64,6 +64,8 @@ import type { Terrain } from '../city/terrain.ts'
 import { assetRootAndFile } from '../assets.ts'
 
 export interface LandmarkEntry {
+  /** bearings of faces another model covers (Fit.bare): the builder leaves its awnings and galleries off them */
+  bare?: number[]
   osm?: string | string[]
   /** false: pale surfaces stay plain paint, not dressed stone (cartoon-material.ts `dressed`) */
   stone?: boolean
@@ -1133,6 +1135,11 @@ export class Landmarks {
     fit.grade = this.terrain.heightAt(cx - fit.hz * Math.sin(rotation), cz - fit.hz * Math.cos(rotation)) - y
     fit.groundAt = (lx: number, lz: number): number =>
       this.terrain.heightAt(cx + lx * Math.cos(rotation) + lz * Math.sin(rotation), cz - lx * Math.sin(rotation) + lz * Math.cos(rotation)) - y
+    // (faces another model covers: world bearings into the model's frame, the inverse of the placement's turn)
+    if (e.bare?.length) fit.bare = e.bare.map((b) => {
+      const wx = Math.sin((b * Math.PI) / 180), wz = Math.cos((b * Math.PI) / 180)
+      return { x: wx * Math.cos(rotation) - wz * Math.sin(rotation), z: wx * Math.sin(rotation) + wz * Math.cos(rotation) }
+    })
 
     /*
      * A model that draws its own raised structure — a skybridge, a canopy, a skywalk, a pergola — claims

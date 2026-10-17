@@ -10775,17 +10775,20 @@ slabs; each bay face is now wall with a framed sash set in it (the Buena Vista b
 Also live: Pier 39 frontages (pier39-fronts.ts, by a subagent, reviewed) — Fog Harbor Fish House's porch, deck and stair
 over Wipeout Bar & Grill's surfboard front; Players Sports Grill / Bubba Gump's corrugated front by the stage; the blue
 K-Dock sea-lion sign on its floats and the viewing rail; the sea lions moved from J-Dock to K-Dock where they belong.
+Also: Salt Water Pumping Station No. 2 at the foot of Fort Mason (way/93703732, from the HAER photo); The Wharf Garage
+as a parking structure; Pier 27's cruise terminal (#289). And a crash fix: every water-only model (all the marinas)
+overflowed the call stack once tonight's real boat hulls made them heavy, and took its whole tile's landmarks with it —
+live from the hull commit until 65adba1. If you saw empty marinas or missing landmarks by the water tonight, that was it.
 Please look at / decide:
-- Pier 39: pier39Shop's own awnings and gallery still show in front of the Wipeout and Players fronts; and the stage
-  (pier39Stage) may belong north-west of the carousel — OSM's "Smartwater Stage" node is at 37.81079 −122.41072.
+- Pier 39's stage (pier39Stage) may belong north-west of the carousel — OSM's "Smartwater Stage" node is at 37.81079
+  −122.41072, and the subagent's photo agrees. (pier39Shop's awnings no longer stand in front of the Wipeout and Players
+  fronts: a manifest `bare: [bearing]` keeps a builder off a covered face.)
 - Burgers & Best Pies' theatre marquee (Hotel Zephyr, Mason end) is a GUESS — no photo or listing found.
 - Madame Tussauds' fascia on the Jefferson attractions block: OSM now lists game/escape venues there. Keep or swap?
 - Hotel Zephyr is fitted to its bounding box: the bake replaced relation/1358120 with its one building:part, which leaves
   out the Jefferson & Mason corner.
 - Pier walks now take the LAND's level where a pier leaves from land (52 walks lowered; Pier 45 by the chapel came down
   3.4 m). Pier 14 on the Embarcadero now sits low over the water, level with the promenade — confirm that reads right.
-- Pumping Station No. 2 (foot of Van Ness, HAER photos): not identified in OSM with confidence (way/259857819 is tagged
-  "Aquatic Park Bocce Ball"); not modelled.
 - Anchorage Square: no usable photo found; left generic.
 - Still waiting on you: #282 (where the retaining walls were), #284 (where cable cars got stuck), #301 (confirm).
 - Dandyhorse: restart `make serve` to pick up the end screen / bridge changes.

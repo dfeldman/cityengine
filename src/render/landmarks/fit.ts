@@ -20,4 +20,10 @@ export interface Fit {
    * at the Post Street end as "large red cubes in the street" (owner, 2026-10-04). Absent where not measured.
    */
   groundAt?: (x: number, z: number) => number
+  /**
+   * Faces another model covers (the manifest's `bare`, world bearings each face looks along), as outward unit normals in
+   * the model's own frame: a builder leaves its awnings and galleries off them. Pier 39's own shop builder drew its striped
+   * awnings in front of the Wipeout and Players fronts laid against its walls (2026-10-17).
+   */
+  bare?: { x: number; z: number }[]
 }
