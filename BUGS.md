@@ -10813,7 +10813,7 @@ GAME
   [x] j. the Klamath propeller frame — klamathPropellers stand-in at the hmdb marker; a Tripo model wanted (TRIPO.md #5)
   [x] k. the big Boudin bakery — boudinBakery: the gabled barn of corrugated grey on pale piers, clerestory, gridded gable window, red awnings, balcony band, BOUDIN on the ridge; boudinSilo with the medallion at Jefferson & Taylor (owner's photo)
   [x] l. Musée Mécanique and the Pier 45 sheds — pier45ShedA/B/D (deco heads, sash bands, roll doors; MUSÉE MÉCANIQUE on A); they had been mislabelled 'Fort Mason Shed'
-  [~] m. the survey (DONE: Red & White Fleet booth and mast at Pier 43½, In-N-Out at 333 Jefferson, Scoma's on Pier 47; LEFT: The Anchorage (no photo yet), the Fishermen's and Seamen's Memorial Chapel at Pier 45 (not in OSM's buildings); Hard Rock and the Blue & Gold booth are pier39Shop buildings): every other distinctive Wharf frontage (Wax Museum, Hard Rock, In-N-Out, Blue & Gold / Red & White
+  [~] m. the survey (DONE: Red & White Fleet booth and mast at Pier 43½, In-N-Out at 333 Jefferson, Scoma's on Pier 47, the Fishermen's and Seamen's Memorial Chapel on Pier 45 (way/1092465159, untagged; red boards, stained-glass gables, bell tower, on its plank apron); LEFT: The Anchorage (no photo yet),  Hard Rock and the Blue & Gold booth are pier39Shop buildings): every other distinctive Wharf frontage (Wax Museum, Hard Rock, In-N-Out, Blue & Gold / Red & White
          Fleet ticket booths, Fish Alley, the Maritime Museum bathhouse, Lou's, The Anchorage…)
 - #298 Underground path at 37.790516 −122.410527 (owner, 2026-10-16: "more underground path here"; and "we should do
   some checks for underground paths on steep hills"). FIXED: the bake's last height pass lifts every surface way back onto

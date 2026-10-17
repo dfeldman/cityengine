@@ -28,6 +28,6 @@
   {"osm": ["way/288391504"], "name": "Fish Alley shed (way/288391504)", "procedural": "fishAlleyShed", "note": "Pier 45 / Fish Alley working shed; was a Victorian (2026-10-03)."},
   {"osm": ["way/288391505"], "name": "Fish Alley shed (way/288391505)", "procedural": "fishAlleyShed", "note": "Pier 45 / Fish Alley working shed; was a Victorian (2026-10-03)."},
   {"osm": ["way/1237037627"], "name": "Fish Alley shed (way/1237037627)", "procedural": "fishAlleyShed", "note": "Pier 45 / Fish Alley working shed; was a Victorian (2026-10-03)."},
-  {"osm": ["way/1092465159"], "name": "Fish Alley shed (way/1092465159)", "procedural": "fishAlleyShed", "note": "Pier 45 / Fish Alley working shed; was a Victorian (2026-10-03)."},
+  {"osm": ["way/1092465159"], "name": "Fishermen's and Seamen's Memorial Chapel", "procedural": "memorialChapel", "front": 90, "height": 9, "note": "BUGS.md #290m, 2026-10-17: untagged in OSM, but the 11 x 10 m building where Commons 'Fisherman's and Seamen's Memorial Chapel, San Francisco' was taken (37.809066 -122.417188, 13 m east, looking at the door); was a Fish Alley shed."},
   {"osm": ["way/1232082264"], "name": "Fish Alley shed (way/1232082264)", "procedural": "fishAlleyShed", "note": "Pier 45 / Fish Alley working shed; was a Victorian (2026-10-03)."}
 ]

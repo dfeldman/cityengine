@@ -668,8 +668,81 @@ export function scomas(out: MeshBuilder, fit: Fit): void {
   for (const d of [-2.5, 2.5]) slab(out, { ...back, a: { x: pc.x - back.tx * 4, z: pc.z - back.tz * 4 } }, 4 + d, -0.6, H + 0.35, 0.1, 1.2, 1.2, [0.4, 0.4, 0.42], MT)
 }
 
+/**
+ * THE FISHERMEN'S AND SEAMEN'S MEMORIAL CHAPEL on Pier 45 (way/1092465159, untagged in OSM; Commons "Fisherman's and
+ * Seamen's Memorial Chapel, San Francisco", taken 13 m east of it): a small chapel of barn-red boards under a steep roof
+ * of dark shingles, a tall STAINED-GLASS window filling each gable (blue waves round a ship's wheel), timber knee braces
+ * under the rakes, black double doors with the name on a board above, a plank deck with white-capped rails before the
+ * door, and beside it a free-standing square BELL TOWER of the same boards with louvres and an open belfry under a
+ * pyramid cap. `front` 90: the door gable faces east, the edge facing local −z.
+ */
+export function memorialChapel(out: MeshBuilder, fit: Fit): void {
+  const RED: Rgb = [0.5, 0.2, 0.18], TRIMR: Rgb = [0.42, 0.16, 0.14], SHINGLE: Rgb = [0.3, 0.31, 0.33]
+  const GLASS: Rgb = [0.22, 0.36, 0.62], BLACK: Rgb = [0.08, 0.08, 0.09], DECK: Rgb = [0.55, 0.47, 0.38]
+  const RT = surfaceTag('tile')
+  const hx = Math.min(fit.hx, 5.2), hz = Math.min(fit.hz, 6)
+  const E = 3.4, R = E + hx * 1.05, OV = 0.55
+  box(out, 0, E / 2, 0, hx, E / 2, hz, RED, WT)
+  // the gables and their glass, both ends
+  for (const sz of [-1, 1]) {
+    const z = sz * hz
+    out.quad([[-hx, E, z], [hx, E, z], [0, R, z], [0, R, z]], [0, 0, sz], UVQ, RED, WT)
+    const gz = z + sz * 0.04
+    // the window: a tall pane rising into the gable's point, a black frame and cross
+    const w = 1.25, y0 = 2.95, y1 = E + 1.4, yt = E + 2.7
+    out.quad([[-w, y0, gz], [w, y0, gz], [w, y1, gz], [-w, y1, gz]], [0, 0, sz], UVQ, GLASS, GT)
+    out.quad([[-w, y1, gz], [w, y1, gz], [0, yt, gz], [0, yt, gz]], [0, 0, sz], UVQ, GLASS, GT)
+    box(out, 0, (y0 + yt) / 2, gz + sz * 0.02, 0.06, (yt - y0) / 2, 0.03, BLACK, MT)
+    box(out, 0, y1 - 0.4, gz + sz * 0.02, w, 0.05, 0.03, BLACK, MT)
+    // the barge boards along both rakes, and a knee brace under each
+    for (const sx of [-1, 1]) {
+      const a: V3 = [sx * (hx + OV), E - OV * 1.05, z + sz * 0.35], b: V3 = [0, R + 0.1, z + sz * 0.35]
+      tube(out, a, b, 0.14, 4, TRIMR, WT)
+      tube(out, [sx * (hx - 0.6), E - 1.3, z + sz * 0.3], [sx * (hx - 0.6), E + 0.6, z + sz * 0.3], 0.08, 4, TRIMR, WT)
+    }
+  }
+  // the roof: two slopes of shingle, overhanging all round
+  for (const sx of [-1, 1]) {
+    out.quad([[sx * (hx + OV), E - OV * 1.05, -hz - 0.45], [sx * (hx + OV), E - OV * 1.05, hz + 0.45], [0, R + 0.08, hz + 0.45], [0, R + 0.08, -hz - 0.45]],
+      [sx * 0.7, 0.7, 0], UVQ, SHINGLE, RT)
+  }
+  // the door end: black double doors in a red-brown frame, the name board above, two lamps
+  const fz = -hz - 0.04
+  box(out, 0, 1.3, fz, 1.0, 1.3, 0.04, BLACK, WT)
+  for (const sx of [-1, 1]) box(out, sx * 0.5, 1.3, fz - 0.03, 0.34, 1.05, 0.02, [0.62, 0.36, 0.32], WT)
+  box(out, 0, 1.3, fz - 0.05, 0.03, 1.3, 0.02, BLACK, MT)
+  box(out, 0, 2.78, fz - 0.03, 1.5, 0.16, 0.03, [0.32, 0.22, 0.14], WT)
+  sign(out, { type: 'flat', text: "FISHERMEN'S AND SEAMEN'S MEMORIAL CHAPEL", h: 0.1, w: 2.8, face: 'roman', weight: 'bold', colour: [0.85, 0.75, 0.5], lit: 'front' },
+    { x: 0, y: 2.78, z: fz - 0.07, heading: Math.PI })
+  for (const sx of [-1, 1]) box(out, sx * 1.9, 2.5, fz - 0.12, 0.09, 0.14, 0.09, WARM, EMIT)
+  // the chapel stands on Pier 45's plank apron over the water: a deck round it and the tower, on piles
+  const x0 = -(hx + 3.4), x1 = hx + 0.8, z0 = -hz - 4.6, z1 = hz + 0.8
+  box(out, (x0 + x1) / 2, 0.05, (z0 + z1) / 2, (x1 - x0) / 2, 0.12, (z1 - z0) / 2, [0.5, 0.43, 0.35], WT)
+  for (let x = x0 + 0.3; x <= x1; x += 2.4) for (const z of [z0 + 0.3, z1 - 0.3]) box(out, x, -1.6, z, 0.16, 1.6, 0.16, [0.28, 0.24, 0.2], WT)
+  for (let z = z0 + 2.7; z < z1 - 1; z += 2.4) for (const x of [x0 + 0.3, x1 - 0.3]) box(out, x, -1.6, z, 0.16, 1.6, 0.16, [0.28, 0.24, 0.2], WT)
+  // the deck before the door, rails capped in white
+  box(out, 0, 0.22, -hz - 2.2, 2.6, 0.06, 2.2, DECK, WT)
+  for (const sx of [-1, 1]) {
+    for (const z of [-hz - 0.4, -hz - 2.2, -hz - 4.2]) box(out, sx * 1.4, 0.6, z, 0.07, 0.5, 0.07, DECK, WT)
+    box(out, sx * 1.4, 1.12, -hz - 2.3, 0.1, 0.04, 1.95, WHITE, WT)
+  }
+  // the bell tower, free-standing at the door's left
+  const tx = -(hx + 2.0), tz = -hz + 0.6, TH = 6.8
+  box(out, tx, TH / 2, tz, 0.95, TH / 2, 0.95, RED, WT)
+  for (const [nx, nz] of [[0, -1], [0, 1], [-1, 0], [1, 0]]) {
+    box(out, tx + nx * 0.97, 5.3, tz + nz * 0.97, nz ? 0.5 : 0.02, 0.7, nx ? 0.5 : 0.02, [0.2, 0.12, 0.1], WT)
+  }
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) box(out, tx + sx * 0.8, TH + 0.7, tz + sz * 0.8, 0.1, 0.7, 0.1, TRIMR, WT)
+  box(out, tx, TH + 0.9, tz, 0.22, 0.3, 0.22, [0.45, 0.38, 0.2], MT)
+  box(out, tx, TH + 1.45, tz, 1.15, 0.06, 1.15, TRIMR, WT)
+  for (const [a, b] of [[[-1, -1], [1, -1]], [[1, -1], [1, 1]], [[1, 1], [-1, 1]], [[-1, 1], [-1, -1]]] as [number, number][][]) {
+    out.quad([[tx + a[0] * 1.2, TH + 1.5, tz + a[1] * 1.2], [tx + b[0] * 1.2, TH + 1.5, tz + b[1] * 1.2], [tx, TH + 3.0, tz], [tx, TH + 3.0, tz]],
+      [(a[0] + b[0]) / 2, 0.7, (a[1] + b[1]) / 2], UVQ, SHINGLE, RT)
+  }
+}
+
 export const WHARF_SHOPS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, pretzelKiosk, klamathPropellers,
+  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, pretzelKiosk, klamathPropellers,
   pier45ShedA: pier45Shed('PIER 45', true),
   pier45ShedB: pier45Shed('PIER 45', false),
   pier45ShedD: pier45Shed('PIER 45', false),
