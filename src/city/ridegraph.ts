@@ -809,6 +809,16 @@ function midline(e: RideEdge, f0: RideEdge, ids: Ids, dryRun: boolean)
   for (let i = 0; i < 4; i++) if (distance(at[i], side[i] === 0 ? A : B) > 25) return null
   // a node that is both ends of the pair (a loop) cannot be moved to two places
   if (new Set(ends).size < 4 && (ends[0] === ends[1] || ends[2] === ends[3])) return null
+  /*
+   * …nor two carriageways far apart (owner, 2026-10-17, the Embarcadero: "still need to straighten out the paths"; with
+   * the path lines on: two lines, one each way, converging to one down the F-line's tracks wherever the median narrowed,
+   * then parting again). Over 14 m between them, the median is a place of its own — tracks, a promenade, a park — and
+   * each direction keeps its own line.
+   */
+  {
+    const sp = re.pts.map((p, i) => distance(p, rf.pts[i])).sort((a, b) => a - b)
+    if (sp[Math.floor(sp.length * 0.1)] > 14) return null
+  }
   if (dryRun) return { edge: e, moved: new Map() }
   const na = { id: ids.nextNode(), at: A }
   const nb = { id: ids.nextNode(), at: B }

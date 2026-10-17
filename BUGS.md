@@ -10729,13 +10729,16 @@ DANDYHORSE (~/dandyhorse; the Bridge is likely the player's main control device)
 
 GAME
 - #307 A street with a fire extinguisher (hydrant?) and pedestrians walking down its CENTRE — location unknown (owner could
-  not pause). Find by sweep: walkers/furniture inside carriageways. OPEN.
+  not pause). FIXED by sweep (tools/footways-in-road.ts): 56 alleys mapped twice (a street and a footway down its middle —
+  Spofford, Lynch, Water, Genoa Place…); the bake drops the centreline footway, walkers use the sidewalks.
 - #308 Cars on inclines tilt up far too much — on steep changing grades they look to be tipping over backward (likely the
   #283 deckAt change). FIXED: each wheel read the higher of the ground and the highest carriageway there, so at a junction
   the front wheels stood on the crossing street's plateau. A car now stands on its own street's profile, lifted as a whole
   by at most 0.35 m (front and back within 0.12 m). tools/probe-cars.ts, worst car per frame beyond its street's slope:
   before median 12-17°, max 28°; after median ~4°, max 5°.
-- #309 The Embarcadero's paths — straighten them out (#286 was the jolt; the ways themselves still wander). OPEN.
+- #309 The Embarcadero's paths — straighten them out (#286 was the jolt; the ways themselves still wander). FIXED: with the
+  path lines on (J), the two carriageways' lines converged to one down the F-line tracks wherever the median narrowed
+  (Piers 27, 35) and parted again; the ride graph no longer merges carriageways more than 14 m apart: two lines all along.
 - #310 Fisherman's Wharf to high quality: unique buildings, restaurants, stores, decorations, cobblestones (the #290 list
   and survey). IN PROGRESS. Done 2026-10-17: a `wharf` facade style (painted shiplap, sash windows, seafood/candy/gift
   fascias in poster lettering, awnings, life-rings) on ~84 generic buildings in a box from North Point to the water, Hyde to
@@ -10768,7 +10771,7 @@ GAME
   hides cars below it — a grading fix for the bake (hold the junction level out to the crossing carriageway's edge).
 - **#293 The Sacramento ramp** (owner: "definitely do the sacramento ramp issue too"): grade a steep street into a flat
   junction over more than its last few metres — hold the junction's level out to the crossing carriageway's edge, then
-  ramp. Bake. OPEN.
+  ramp. Bake. FIXED (2026-10-16/17 bakes: junction level held, eased along street chains; Sacramento climbs smoothly into Stockton).
 - **#284 Cable cars get stuck** — probably running the wrong way along their path, always traffic in front. A one-way
   street's track now runs the street's way and keeps its own place (was: the right-of-centre rule, wrong on Jackson/Washington).
   Measured headless (rider idle, 60 s, three spots on the lines): held 1-2 %, none standing over 15 s, mean 2.6-2.9 m/s —
@@ -10781,7 +10784,7 @@ GAME
 - **#287 Overhead-line poles inside furniture** — in an F-line shelter (37.801255 −122.399280), in a toilet kiosk
   (37.799395 −122.397532). FIXED: a pole whose spot is within 1.6 m of point furniture or inside a standalone model's
   footprint (from the manifest, known before placing) goes on along the track to the next clear spot (≤ half a span).
-- **#288 Detailed cable car model** — the streetcar is detailed, the cable car is not. OPEN.
+- **#288 Detailed cable car model** — the streetcar is detailed, the cable car is not. FIXED 2026-10-16 (trains.ts cableCar: arched windows, belt rail, benches, dash, route boards; z-fighting #299 fixed).
 - **#289 Pier 27 cruise terminal** — shape right, feel wrong: raised plaza with a retaining wall (CRUISE TERMINAL PLAZA
   lettering, benches), lawn, cypresses, glass terminal with fins (owner's Street View + aerial). Plaza DONE 2026-10-16:
   `pier27Plaza` (src/render/landmarks/sf/pier27.ts) raises OSM's lawn 1.25 m behind a panelled concrete wall along the
@@ -10827,7 +10830,7 @@ GAME
   dash's, the destination board's on its backing; each layer now stands proud of the one under it.
 - #297 Cars all over a narrow pier at 37.809098 −122.417564 (owner, 2026-10-16, with a screenshot: "tons of cars on a
   narrow pier… which I'm guessing just has shacks for boats on it"; then "that pier does have a big single-story white
-  restaurant. still, not a million cars going there"). OPEN.
+  restaurant. still, not a million cars going there"). FIXED: service lanes (pier roads, alleys, car-park aisles) spawn a quarter of a street's traffic.
 - #296 The footbridge over the Embarcadero by the aquarium (owner, 2026-10-16: "is okay, but it needs some work. in
   particular it doesn't match the OSM paths so pedestrians are floating in the air on the footbridge"). FIXED (general):
   bridge-structures laid a bent outline's structure on its axis — the L's diagonal — and switched off the ways' own decks;

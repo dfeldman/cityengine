@@ -3,7 +3,7 @@
  * look like there" tool (it lived in a scratch folder until a reboot took it, 2026-10-17).
  *
  *   nice -n 20 node --experimental-strip-types tools/look.ts <out.png> [--fov=0.9] [--time=day|night|dusk|dawn]
- *       [--wait=20] camLat,camLon,camY tgtLat,tgtLon,tgtY [cam tgt …]
+ *       [--wait=20] [--keys=j,…] camLat,camLon,camY tgtLat,tgtLon,tgtY [cam tgt …]
  *
  * Heights are metres over the ground at each point. Each pair writes <out>-<k>.png. The game is loaded frozen with no
  * fog and a far plane of 7 km; the browser is closed at the end (never leave a headless Chrome behind).
@@ -30,6 +30,8 @@ try {
   await page.goto(`http://localhost:5200/?city=san-francisco&at=${la},${lo}&freeze=1&fog=off&far=7000&time=${time}`)
   await page.waitForFunction('window.gameReady === true', null, { timeout: 240000 }).catch(() => console.log('(not ready in 4 min)'))
   await page.waitForTimeout(3000)
+  // (keys to press once loaded: `--keys=j` turns on the large path lines)
+  for (const k of opt('keys', '').split(',').filter(Boolean)) { await page.keyboard.press(k); await page.waitForTimeout(500) }
   const fov = Number(opt('fov', '0.9')), wait = Number(opt('wait', '20')) * 1000
   for (let i = 0; i < rest.length; i += 2) {
     await page.evaluate(async ([c, t, f, w]: [number[], number[], number, number]) => {

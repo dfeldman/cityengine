@@ -914,10 +914,12 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       })))(new Projection(pkg.origin))
     : []
   const slowAt = new Map<number, number>()
-  const edgeFactor = (e: { id: number; name?: string; points: { x: number; z: number }[] }): number => {
+  const edgeFactor = (e: { id: number; name?: string; kind?: string; points: { x: number; z: number }[] }): number => {
     let f = slowAt.get(e.id)
     if (f !== undefined) return f
-    f = 1
+    // a SERVICE lane — a pier's road, a car park's aisle, an alley — carries a car or two, not a street's worth (owner,
+    // 2026-10-17, Al Scoma Way on Pier 47: "tons of cars on a narrow pier… not a million cars going there", BUGS.md #297)
+    f = e.kind === 'service' ? 0.25 : 1
     const m = e.points[Math.floor(e.points.length / 2)]
     for (const s of slowSegs) {
       if (s.name !== e.name) continue
