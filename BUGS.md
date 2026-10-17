@@ -10779,6 +10779,10 @@ Also: Salt Water Pumping Station No. 2 at the foot of Fort Mason (way/93703732, 
 as a parking structure; Pier 27's cruise terminal (#289). And a crash fix: every water-only model (all the marinas)
 overflowed the call stack once tonight's real boat hulls made them heavy, and took its whole tile's landmarks with it —
 live from the hull commit until 65adba1. If you saw empty marinas or missing landmarks by the water tonight, that was it.
+Later on the 17th: Jefferson between Jones and Taylor is laid in light/dark concrete bands with cobbles round the
+F-line tracks (Region `stripedStreets`); Aquatic Park's Municipal Pier is a deck on piles with parapets, lamps and a
+locked gate (muni-pier.ts) instead of a lot lying on the water; the Wharf zone is crowd 7 / traffic 0.15 with no joggers
+in the throng; Baker Beach, China Beach and Crissy Field draw as sand.
 Please look at / decide:
 - Pier 39's stage (pier39Stage) may belong north-west of the carousel — OSM's "Smartwater Stage" node is at 37.81079
   −122.41072, and the subagent's photo agrees. (pier39Shop's awnings no longer stand in front of the Wipeout and Players
