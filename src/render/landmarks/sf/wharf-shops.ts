@@ -973,6 +973,66 @@ export function buenaVista(out: MeshBuilder, fit: Fit): void {
 }
 
 /**
+ * CASTAGNOLA'S, Jefferson at Jones (way/229326454; Commons "Castagnola's, San Francisco", "Castagnola's"): the ground floor
+ * in red brick on Jefferson, a row of round-arched bays with teal roll shutters and the green "Since 1916" board over the
+ * door, white boards toward the boats; over it a terrace all round behind a teal railing, the dining room glazed behind
+ * it under a skirt of red tile, and above the tile a cream board parapet with CASTAGNOLA'S in dark raised capitals on
+ * every face. `front` 180: Jefferson is the edge facing local −z.
+ */
+export function castagnolas(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.6, 0.25, 0.18], TEAL: Rgb = [0.18, 0.4, 0.42], TILE: Rgb = [0.7, 0.3, 0.2], CREAM: Rgb = [0.9, 0.87, 0.78]
+  const GREEN: Rgb = [0.1, 0.42, 0.22], INK: Rgb = [0.22, 0.2, 0.2]
+  const ring = towerRing(fit)
+  const e = frontEdge(ring, facingFront(ring, 8))
+  // the ground floor: white boards all round, the brick front laid over them on Jefferson
+  faceBand(out, ring, 0, 3.6, { kind: 'bands', wall: WHITE, glass: DARKGL, floor: 3.6, solid: 0.3, material: 'clapboard' })
+  slab(out, e, e.L / 2, 0.12, 0, e.L, 3.6, 0.24, BRICK, BT)
+  const n = Math.max(3, Math.round(e.L / 4.6)), bw = e.L / n
+  for (let k = 0; k < n; k++) {
+    const u = bw * (k + 0.5)
+    slab(out, e, u, 0.25, 0.1, bw - 0.9, 2.5, 0.04, DARKGL, GT)
+    slab(out, e, u, 0.27, 2.0, bw - 0.9, 0.9, 0.04, TEAL, MT)      // the roll shutter, half up
+    for (let a = 0; a <= 8; a++) {                                  // the arch's brick head
+      const t = (a / 8) * Math.PI
+      slab(out, e, u - Math.cos(t) * (bw - 0.7) / 2, 0.27, 2.6 + Math.sin(t) * 0.55, 0.32, 0.16, 0.06, [0.52, 0.2, 0.14], BT)
+    }
+  }
+  const door = Math.floor(n / 2), du = bw * (door + 0.5)
+  slab(out, e, du, 0.4, 2.75, bw - 0.6, 0.75, 0.08, GREEN, MT)
+  signAt(out, e, du, 3.18, 0.45, { type: 'flat', text: 'Since 1916', h: 0.14, face: 'script', colour: [1, 1, 1], lit: 'front' })
+  signAt(out, e, du, 2.95, 0.45, { type: 'flat', text: "CASTAGNOLA'S", h: 0.22, face: 'grotesque', weight: 'bold', colour: [1, 1, 1], lit: 'front' })
+  slab(out, e, du, 0.42, 2.62, bw - 0.6, 0.16, 0.06, [0.8, 0.12, 0.12], MT)
+  // the terrace: a deck all round at 3.6 m, the railing on its edge
+  const deck = offsetRing(ring, 0.05)
+  capPolygon(out, deck, 3.62, [0.5, 0.44, 0.38], WT)
+  faceBand(out, offsetRing(ring, 0.1), 3.6, 3.9, { kind: 'blank', wall: TEAL, material: 'clapboard' })
+  for (let i = 0; i < ring.length; i++) {
+    const q = edgeAt(ring, i)
+    if (q.L < 1) continue
+    slab(out, q, q.L / 2, 0.1, 4.7, q.L, 0.08, 0.08, TEAL, MT)
+    for (let u = 0.2; u < q.L; u += 0.35) slab(out, q, u, 0.1, 3.9, 0.04, 0.8, 0.04, TEAL, MT)
+  }
+  // the dining room, set back behind the terrace: glass between white posts
+  const room = offsetRing(ring, -2.2)
+  faceBand(out, room, 3.62, 6.4, { kind: 'curtain', wall: WHITE, glass: DARKGL, pitch: 2.2, material: 'clapboard' })
+  // the tile skirt: from the room's eaves out over the terrace, and the cream parapet above it with the name
+  const eave = offsetRing(ring, -0.6)
+  for (let i = 0; i < eave.length; i++) {
+    const j = (i + 1) % eave.length
+    const a = eave[i], b = eave[j], c = room[j], d = room[i]
+    const mx = (a.x + b.x) / 2 - (c.x + d.x) / 2, mz = (a.z + b.z) / 2 - (c.z + d.z) / 2, ml = Math.hypot(mx, mz) || 1
+    out.quad([[a.x, 6.0, a.z], [b.x, 6.0, b.z], [c.x, 7.0, c.z], [d.x, 7.0, d.z]], [(mx / ml) * 0.6, 0.8, (mz / ml) * 0.6], UVQ, TILE, surfaceTag('tile'))
+  }
+  faceBand(out, room, 7.0, 8.6, { kind: 'blank', wall: CREAM, material: 'clapboard' })
+  capPolygon(out, room, 8.6, [0.4, 0.4, 0.4], CT)
+  for (let i = 0; i < room.length; i++) {
+    const q = edgeAt(room, i)
+    if (q.L < 8) continue
+    signAt(out, q, q.L / 2, 7.8, 0.06, { type: 'flat', text: "CASTAGNOLA'S", h: 0.85, w: q.L * 0.8, face: 'didone', weight: 'bold', colour: INK, lit: 'front' })
+  }
+}
+
+/**
  * THE AQUATIC PARK BOATHOUSES: the Dolphin Club (way/288391828) and the South End Rowing Club (way/288391837), side by
  * side on the beach at the foot of Jefferson (Commons "Dolphin Club and South End Rowing Club 20170906-8513"): two storeys
  * of white clapboard with blue trim on every corner, window and rail, a hipped roof of grey shingle, a balcony along the
@@ -1034,7 +1094,7 @@ function boathouse(name: string, sub?: string): (out: MeshBuilder, fit: Fit) => 
 }
 
 export const WHARF_SHOPS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, aliotos, grotto9, chowderHut, buenaVista,
+  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, aliotos, grotto9, chowderHut, buenaVista, castagnolas,
   dolphinClubBoathouse: boathouse('DOLPHIN CLUB'), southEndRowingClub: boathouse('Since 1877', 'SOUTH END ROWING CLUB'), pretzelKiosk, klamathPropellers,
   pier45ShedA: pier45Shed('PIER 45', true),
   pier45ShedB: pier45Shed('PIER 45', false),

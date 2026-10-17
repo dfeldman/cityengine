@@ -20,8 +20,6 @@ export const H2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
    */
   /** Building (unidentified): civic. No photo or name; generic 1900s–1920s guess. */
   buildingUnidentified: fromRecipe('edwardian-terracotta', {}),
-  /** Castagnola's: civic, historic waterfront restaurant. No photo; 1960s-80s commercial era guess. */
-  castagnolaS: fromRecipe('hotel-punched', {}),
   /** Dining Hall: civic, likely campus/institutional building. No photo; 1900s–1920s terracotta era guess. */
   diningHall: fromRecipe('edwardian-terracotta', {}),
   /** Ferry Station Post Office Building: civic, federal building at Ferry Building area. No photo; 1900s–1920s terracotta era guess. */

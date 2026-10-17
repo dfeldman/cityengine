@@ -49,8 +49,11 @@
     "osm": [
       "way/229326454"
     ],
-    "procedural": "castagnolaS",
-    "name": "Castagnola's"
+    "procedural": "castagnolas",
+    "name": "Castagnola's",
+    "front": 180,
+    "height": 9,
+    "note": "BUGS.md #290m, 2026-10-17: brick arches on Jefferson, the green Since 1916 board, terrace and teal railing, red tile skirt, CASTAGNOLA'S on the cream parapet (Commons 'Castagnola's, San Francisco', 'Castagnola's'). Was a hotel recipe, built without a photograph."
   },
   {
     "osm": [
