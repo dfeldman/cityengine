@@ -265,6 +265,18 @@ const KNOWN: Record<string, string[]> = {
     "intersects | The Cannery's olive court and its glass bridge",
     // the Al Scoma Way lagoon overlook (2026): laid on the lagoon edge between Castagnola's and the Fish Alley shed
     'intersects | Lagoon overlook and fish market, Al Scoma Way',
+    // Pier 39's upper galleries (pier39-style.ts, 2026-10-17): one frame in three parts under the triangle budget — their
+    // decks meet, posts stand through them; the Flyer kiosk at OSM's node 6 m from the gate
+    "coplanar | Pier 39 upper deck galleries and stairs, middle",
+    "coplanar | Pier 39 upper deck galleries and stairs, north",
+    "coplanar | Pier 39 upper deck galleries and stairs, south",
+    "duplicate | Pier 39 gate / Pier 39 Flyer ticket kiosk",
+    "duplicate | Pier 39 upper deck galleries and stairs, middle / Pier 39 upper deck galleries and stairs, north",
+    "duplicate | Pier 39 upper deck galleries and stairs, south / Pier 39 upper deck galleries and stairs, middle",
+    "duplicate | Pier 39 upper deck galleries and stairs, south / Pier 39 upper deck galleries and stairs, north",
+    "intersects | Pier 39 upper deck galleries and stairs, middle",
+    "intersects | Pier 39 upper deck galleries and stairs, north",
+    "intersects | Pier 39 upper deck galleries and stairs, south",
   ],
 }
 

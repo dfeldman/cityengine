@@ -1,0 +1,54 @@
+[
+ {
+  "name": "Pier 39 upper deck galleries and stairs, south",
+  "procedural": "pier39GalleriesSouth",
+  "lat": 37.8099,
+  "lon": -122.4104,
+  "baseY": -84.11,
+  "size": [
+   130,
+   260
+  ],
+  "height": 6,
+  "note": "2026-10-17 (owner: \"the second floor walkways are mostly continuous, with zany wood staircases going up and down\"): the timber upper galleries along every OSM level-1 footway on the pier (the bake drew them flat among the shops; suppressed in public/patches/san-francisco.json), the stairs at OSM's highway=steps, the blue lamp posts, benches and barrel planters on the main walk. Data generated into pier39-style.ts (P39_GALLERY, P39_STAIRS, P39_FURNITURE) in this frame: x east, z north from this point. 'deck' in the name keeps the loader from clearing the ground under its 130 x 260 m box. Split in three parts by z (south < −60 ≤ middle < 35 ≤ north) so no one mesh passes the 25 000-triangle budget; this is the south part (the entrance to Building D)."
+ },
+ {
+  "name": "Pier 39 upper deck galleries and stairs, middle",
+  "procedural": "pier39GalleriesMiddle",
+  "lat": 37.8099,
+  "lon": -122.4104,
+  "baseY": -84.11,
+  "size": [
+   130,
+   260
+  ],
+  "height": 6,
+  "note": "The same model as 'Pier 39 upper deck galleries and stairs, south', its the middle (−60 ≤ z < 35) part (Buildings C–G, O, P): pier39-style.ts pier39Galleries, split in three so no one mesh passes the 25 000-triangle budget. Same frame and base."
+ },
+ {
+  "name": "Pier 39 upper deck galleries and stairs, north",
+  "procedural": "pier39GalleriesNorth",
+  "lat": 37.8099,
+  "lon": -122.4104,
+  "baseY": -84.11,
+  "size": [
+   130,
+   260
+  ],
+  "height": 6,
+  "note": "The same model as 'Pier 39 upper deck galleries and stairs, south', its north of z 35 part (Buildings G–N, the carousel plaza): pier39-style.ts pier39Galleries, split in three so no one mesh passes the 25 000-triangle budget. Same frame and base."
+ },
+ {
+  "name": "Pier 39 Flyer ticket kiosk",
+  "procedural": "pier39FlyerKiosk",
+  "lat": 37.808735,
+  "lon": -122.41007,
+  "front": 270,
+  "size": [
+   4.4,
+   3.2
+  ],
+  "height": 3.8,
+  "note": "2026-10-17, owner's photograph from the Embarcadero: a bright blue board-and-batten ticket kiosk with a curved blue roof, FLYER/TICKETS lettering, on the right as you come in (OSM node 11390824789 'Ride the Flyer'). Faces the walk (west)."
+ }
+]

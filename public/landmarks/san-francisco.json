@@ -27,6 +27,9 @@
   "include": "san-francisco/pier39-fronts.json"
  },
  {
+  "include": "san-francisco/pier39-galleries.json"
+ },
+ {
   "include": "san-francisco/golden-gate-park.json"
  },
  {
