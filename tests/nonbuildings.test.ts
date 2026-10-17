@@ -226,6 +226,25 @@ const KNOWN: Record<string, string[]> = {
     'height | One Maritime Plaza Park',
     'intersects | One Maritime Plaza Park',
     'intersects | Oracle Park',
+    // Fisherman's Wharf, 2026-10-17 (#290): the three marinas lay boats along OSM's docks, the box round them reaching the
+    // shore's buildings, and a hull's deck can sit within 2 cm of another's at the same draught; the crab stands (one builder
+    // at three OSM nodes) stand on the sidewalk against their restaurants; the Boudin silo stands in the bakery's corner it
+    // is part of; the Mirror Maze sign hangs on Building O's wall and the Pier 39 street bridge spans the street at the
+    // upper floor — both up in the air by design
+    'coplanar | Fisherman\'s Wharf lagoon fleet',
+    'intersects | Fisherman\'s Wharf lagoon fleet',
+    'coplanar | Hyde Street harbour boats',
+    'intersects | Hyde Street harbour boats',
+    'coplanar | Pier 39 marina boats',
+    'intersects | Pier 39 marina boats',
+    'duplicate | crabStand',
+    'intersects | Crab stand (Fisherman\'s Wharf sidewalk stands)',
+    'intersects | Crab Station',
+    'intersects | Frankie\'s Crab Stand',
+    'intersects | Boudin silo',
+    'height | Mirror Maze sign',
+    'intersects | Mirror Maze sign',
+    'height | Pier 39 street bridge',
   ],
 }
 
