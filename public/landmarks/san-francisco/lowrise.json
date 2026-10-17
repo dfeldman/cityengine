@@ -447,8 +447,9 @@
       "way/288473107"
     ],
     "name": "105-145 Jefferson Street",
-    "restyle": "classical",
+    "procedural": "jeffersonAttractions",
+    "front": 351,
     "height": 12,
-    "note": "Fisherman's Wharf: cream classical front with a great arched window (Mapillary 621076514393452); was brick (Embarcadero sweep 2026-10-03)."
+    "note": "Fisherman's Wharf, the old Wax Museum building: BUGS.md #290i/m, 2026-10-17 own model (wharf-shops.ts) — buff brick, arched windows, IT'SUGAR's magenta marquee and CANDY box sign (Mapillary 1879093319539210), Madame Tussauds' red bulb fascia (Commons 'Madame Tussauds San Francisco'), the San Francisco Chocolate Store. Was restyle classical (Mapillary 621076514393452)."
   }
 ]

@@ -1,0 +1,58 @@
+[
+ {
+  "name": "Hotel Zephyr and its Jefferson Street shops",
+  "osm": [
+   "relation/1358120"
+  ],
+  "procedural": "hotelZephyr",
+  "front": 352,
+  "height": 13,
+  "note": "BUGS.md #290h, 2026-10-17: the row of black board-clad shop boxes with planted roofs along Jefferson (Mapillary 1295248042335348, 512970293136899), the ZEPHYR pylon and light masts, the charcoal hotel set back behind; BURGERS & BEST PIES' theatre marquee at the Mason end (owner's report, no photo found)."
+ },
+ {
+  "name": "In-N-Out Burger, 333 Jefferson (Courtyard Marriott's Jefferson wing)",
+  "osm": [
+   "way/103339434"
+  ],
+  "procedural": "jeffersonInNOut",
+  "front": 352,
+  "height": 12,
+  "note": "BUGS.md #290m, 2026-10-17: yellow stucco hotel wing over shopfronts; In-N-Out's red box with the yellow boomerang canopy at the east corner (Mapillary 374524814224857, 1163130182336946)."
+ },
+ {
+  "name": "Red and White Fleet booth, Pier 43½",
+  "osm": [
+   "way/1092477935"
+  ],
+  "procedural": "redWhiteBooth",
+  "front": 181,
+  "height": 4,
+  "note": "BUGS.md #290m, 2026-10-17: white booth, roof drum, the tall white tripod mast with PIER 43½ / BAY CRUISE & FERRY TERMINAL boards (Mapillary 267159458189554)."
+ },
+ {
+  "name": "Aunt Fanny's Hot Pretzels",
+  "procedural": "pretzelKiosk",
+  "lat": 37.810958,
+  "lon": -122.410737,
+  "rotateDeg": 0,
+  "size": [
+   4.2,
+   4.2
+  ],
+  "height": 5,
+  "note": "BUGS.md #290g, 2026-10-17: red drum, scalloped glass canopy, a pretzel on top (owner's description). OSM node 4611835603 sits inside Building L; the kiosk stands in the walk 6 m west of it."
+ },
+ {
+  "name": "Propellers from Klamath",
+  "procedural": "klamathPropellers",
+  "lat": 37.807583,
+  "lon": -122.421783,
+  "rotateDeg": 180,
+  "size": [
+   7.4,
+   2.6
+  ],
+  "height": 3.6,
+  "note": "BUGS.md #290j, 2026-10-17: the 1925 ferry Klamath's two steel propellers on a frame, at the historical marker's coordinates (hmdb 117351). A stand-in; TRIPO.md row for the real model."
+ }
+]

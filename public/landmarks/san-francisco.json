@@ -18,6 +18,9 @@
   "include": "san-francisco/wharf-carnival.json"
  },
  {
+  "include": "san-francisco/wharf-shops.json"
+ },
+ {
   "include": "san-francisco/golden-gate-park.json"
  },
  {

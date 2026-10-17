@@ -10807,13 +10807,13 @@ GAME
   [x] d. the PIER 39 flag clusters (render/flags.ts: several flags a pole, streamers, black poles, the pier39 design; public/flags/san-francisco-placed.json), and pier39Gate with the blue PIER 39 board
   [~] e. the Pier 39 activity centre — sfCarousel39 (two-tier carousel, striped canopy, turning horses via rotors) and pier39Stage (striped tent stage, booths) DONE; the Pier 39 buildings' own look (siding, awnings, galleries, OSM's shop names) DONE 2026-10-17; the timber bridge over the main street with its blue 39 signs (pier39StreetBridge; the humped generic bridge suppressed in patches) DONE
   [~] f. the marinas full of boats — wharfMarinaPier39 / wharfMarinaWest / wharfLagoon: boats along OSM's own docks (wharf-docks.ts), crab boats in the lagoon; needs a review shot
-  [~] g. the Aquarium of the Bay front — DONE 2026-10-16 (owner: "should have a big aquarium sign like it does irl"): royal-blue wall, AQUARIUM of the BAY in big white serif on the three longest walls, porthole murals (sea lion, fish, crab); the pretzel kiosk by it still to do
-  [ ] h. the black storefronts round Hotel Zephyr, and Burgers & Best Pies' theatre sign
-  [ ] i. the chocolate and candy buildings (Ghirardelli's roof sign, chocolate shops, candy stores)
-  [ ] j. the Klamath propeller frame
+  [x] g. the Aquarium of the Bay front — DONE 2026-10-16 (owner: "should have a big aquarium sign like it does irl"): royal-blue wall, AQUARIUM of the BAY in big white serif on the three longest walls, porthole murals (sea lion, fish, crab); the pretzel kiosk DONE 2026-10-17 (pretzelKiosk at OSM's node, by the carousel; no photo found — from the owner's description)
+  [x] h. the black storefronts round Hotel Zephyr (hotelZephyr: 11 black boxes with OSM's shop names, brick piers, planted roofs, ZEPHYR pylon, light masts); Burgers & Best Pies' marquee is a GUESS (no photo or listing found) — owner to check
+  [x] i. the chocolate and candy buildings — jeffersonAttractions (IT'SUGAR marquee, Madame Tussauds' fascia (OSM now lists game/escape venues there — owner may want it swapped), SF Chocolate Store); Ghirardelli's roof sign is the sign kit's GLB
+  [x] j. the Klamath propeller frame — klamathPropellers stand-in at the hmdb marker; a Tripo model wanted (TRIPO.md #5)
   [x] k. the big Boudin bakery — boudinBakery: the gabled barn of corrugated grey on pale piers, clerestory, gridded gable window, red awnings, balcony band, BOUDIN on the ridge; boudinSilo with the medallion at Jefferson & Taylor (owner's photo)
-  [ ] l. Musée Mécanique and the Pier 45 sheds
-  [ ] m. the survey: every other distinctive Wharf frontage (Wax Museum, Hard Rock, In-N-Out, Blue & Gold / Red & White
+  [x] l. Musée Mécanique and the Pier 45 sheds — pier45ShedA/B/D (deco heads, sash bands, roll doors; MUSÉE MÉCANIQUE on A); they had been mislabelled 'Fort Mason Shed'
+  [~] m. the survey (DONE: Red & White Fleet booth and mast at Pier 43½, In-N-Out at 333 Jefferson; LEFT: Scoma's, The Anchorage; Hard Rock and the Blue & Gold booth are pier39Shop buildings): every other distinctive Wharf frontage (Wax Museum, Hard Rock, In-N-Out, Blue & Gold / Red & White
          Fleet ticket booths, Fish Alley, the Maritime Museum bathhouse, Lou's, The Anchorage…)
 - #298 Underground path at 37.790516 −122.410527 (owner, 2026-10-16: "more underground path here"; and "we should do
   some checks for underground paths on steep hills"). FIXED: the bake's last height pass lifts every surface way back onto
