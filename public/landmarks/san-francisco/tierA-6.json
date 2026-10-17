@@ -16,6 +16,7 @@
   {"osm": ["way/288645261"], "name": "83m tower", "procedural": "unnamedEightyThreeMeterTower", "front": "street", "height": 83, "note": "No name or type on record; recipe midcentury-slab used generically by height."},
   {"osm": ["way/262586259"], "name": "Church of Christ", "restyle": "stucco", "levels": 4, "height": 16, "note": "Ordinary neighbourhood church, plain stucco block."},
   {"osm": ["way/32839432"], "name": "Fontana East", "procedural": "fontanaEast", "front": "street", "height": 55, "note": "1963-64 twin white concrete slab at Aquatic Park; its bulk led to SF's 40-ft waterfront height limit."},
+  {"osm": ["way/32839422"], "name": "Fontana West", "procedural": "fontanaWest", "front": "street", "height": 55, "note": "2026-10-17: the twin of Fontana East (owner: identical in real life); was a haiku chicago reface in brown."},
   {"osm": ["way/1351029672"], "name": "Twelve Hundred California", "procedural": "twelveHundredCalifornia", "front": "street", "height": 88, "note": "2022 Nob Hill condo tower, blue-green glass curtain wall, flat top."},
   {"osm": ["way/436477702"], "name": "Fairmont Hotel Tower", "procedural": "fairmontHotelTower", "front": "street", "height": 108, "note": "1961 tower behind the 1907 Fairmont, own building:part footprint on Nob Hill; cream concrete, punched windows, flat top with flagpole."},
   {"osm": ["way/286098244"], "name": "Historic Fire Station #30", "restyle": "brick", "noShops": true, "levels": 2, "height": 9, "note": "Classic red-brick firehouse."},

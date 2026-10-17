@@ -51,18 +51,6 @@
   },
   {
     "osm": [
-      "way/32839422"
-    ],
-    "name": "Fontana West",
-    "restyle": "chicago",
-    "wall": "#d9cfc0",
-    "by": "haiku",
-    "image": "way-32839422.jpg",
-    "note": "tall with prominent vertical ribbing, regular window pattern, classic chicago proportions",
-    "height": 55
-  },
-  {
-    "osm": [
       "way/243794014"
     ],
     "name": "550 California Street",
