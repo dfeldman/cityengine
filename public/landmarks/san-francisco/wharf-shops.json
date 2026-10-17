@@ -170,11 +170,11 @@
   "osm": [
    "way/103339444"
   ],
-  "name": "Alioto's No. 8",
-  "procedural": "aliotos8",
+  "name": "Alioto's Plaza (where Alioto's No. 8 stood)",
+  "procedural": "aliotosPlaza",
   "front": 90,
-  "height": 15,
-  "note": "Water-side audit 2026-10-17: terracotta stucco, the 8 on the stair tower, the turquoise ALIOTO'S board and green neon script, the green awning 'since 1925' (Mapillary 665751065030692, 668559711440485 Jun 2022; 1526843651633790 Aug 2025). CLOSED 2020 and DEMOLISHED Jan 2026 for Alioto's Plaza (opened 2026-09-02, hoodline/kion) — modelled as it stood; the owner to decide whether to show the plaza."
+  "height": 6,
+  "note": "2026-10-17: Alioto's No. 8 closed 2020, demolished Jan 2026; Alioto's Plaza opened on its footprint 2026-09-02 (sf.gov, KION, Hoodline): pavers, picnic tables, rail on the water sides, festoons, pop-up kiosk; the Taylor entrance faces east. The old building's builder (aliotos8) is in git history."
  },
  {
   "osm": [

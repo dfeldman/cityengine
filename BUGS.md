@@ -10801,8 +10801,8 @@ Logged, not fixed:
   smaller courtyards are not cut (the outline doesn't have them).
 - Owner to pin: "the alley of restaurants at 476 Jefferson" — no 476 exists in OSM or on the web (498 Capurro's, 496 the Bay
   Company, 490 the Port's vacant building, then a lot, then 440 Alioto-Lazio); the only alley there is a service lane.
-- Alioto's No. 8 closed in 2020 and was demolished in January 2026 (Alioto's Plaza opened on the site 2026-09-02); it is
-  modelled as it stood. Keep it, or build the plaza?
+- Alioto's No. 8: replaced 2026-10-17 by Alioto's Plaza as it now is (demolished Jan 2026, plaza opened 2026-09-02); the old
+  building's builder is in git history if you'd rather have it back.
 - #244 re-measured (900 s soak, rider fixed at the origin): 9 vehicles stuck > 60 s at the end, in rings of queues round
   junction clusters with 5 m connectors near the rider — Sacramento & Mason (Mason's 5 m stub between two nodes), Jones
   and Taylor near Washington. The out-of-view release valve cannot retire them because they are in view, by your rule

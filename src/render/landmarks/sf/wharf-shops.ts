@@ -1565,69 +1565,6 @@ export function taylorCorner(out: MeshBuilder, fit: Fit): void {
 function on2(e: Edge, u: number, o: number): P2 { return { x: e.a.x + e.tx * u + e.nx * o, z: e.a.z + e.tz * u + e.nz * o } }
 
 /**
- * ALIOTO'S No. 8, on Taylor between Nick's Lighthouse and the Grotto (way/103339444; Mapillary 665751065030692,
- * 668559711440485 (Jun 2022), 1526843651633790 (Aug 2025)): three storeys of TERRACOTTA-ORANGE stucco; at the Jefferson
- * end a tall plain stair tower with the big turquoise 8 on it; the dining floor above in a band of dark glass under a
- * deep brown bracketed eave, white half-moon valances in its windows; on the roof edge the turquoise ALIOTO'S board and
- * behind it the green neon "Alioto's" script sign; on the street a long dark-green awning "ALIOTO'S since 1925", a little
- * terracotta pediment over the door and a steel stair up the tower's side. Closed 2020 and demolished January 2026 for
- * Alioto's Plaza (opened 2 September 2026) — modelled as it stood, the owner to decide. `front` 90: Taylor is local −z,
- * north the +x end.
- */
-export function aliotos8(out: MeshBuilder, fit: Fit): void {
-  const TC: Rgb = [0.66, 0.37, 0.28], TCD: Rgb = [0.55, 0.3, 0.23], TURQ: Rgb = [0.25, 0.68, 0.66], BROWN: Rgb = [0.3, 0.2, 0.14], GREEN: Rgb = [0.08, 0.26, 0.18]
-  const ring = towerRing(fit)
-  const H = 11
-  faceBand(out, ring, 0, 3.6, { kind: 'blank', wall: TCD, material: 'stucco' })
-  faceBand(out, ring, 3.6, H, { kind: 'punched', wall: TC, glass: DARKGL, floor: (H - 3.6) / 2, pitch: 3.2, solid: 0.55, material: 'stucco' })
-  capPolygon(out, ring, H, [0.45, 0.42, 0.4], CT)
-  const e = frontEdge(ring, facingFront(ring, 8)), L = e.L
-  const south = e.tx > 0 ? 0 : L, nd = e.tx > 0 ? 1 : -1
-  const N = (d: number): number => south + nd * d
-  // the stair tower at the south end, its 8 facing Taylor and Jefferson
-  const TW = 6
-  const tp = on(e, N(TW / 2), 0, -4)
-  boxAlong(out, tp[0], 7.4, tp[2], TW / 2, 7.4, 4, e.heading, TC, ST)
-  signAt(out, e, N(TW / 2), 11.0, 0.06, { type: 'flat', text: '8', h: 3.4, w: 3.6, face: 'grotesque', weight: 'bold', colour: TURQ, halo: [0.1, 0.25, 0.25], lit: 'self' })
-  const sth = edgeToward(ring, -e.tx * nd, -e.tz * nd, 3)
-  signAt(out, sth, sth.L / 2, 11.0, 4 + 0.06 - Math.min(4, sth.L / 2), { type: 'flat', text: '8', h: 3.0, w: 3.2, face: 'grotesque', weight: 'bold', colour: TURQ, lit: 'self' })
-  // the steel stair zigzagging up the tower's north side, on the Taylor face
-  for (let k = 0; k < 3; k++) {
-    const y0 = 3.6 + k * 2.4
-    tube(out, on(e, N(TW + 0.3 + (k % 2 ? 3 : 0)), y0, 0.6), on(e, N(TW + 0.3 + (k % 2 ? 0 : 3)), y0 + 2.4, 0.6), 0.05, 4, [0.25, 0.25, 0.27], MT)
-  }
-  // the dining floor: a band of dark glass between terracotta mullions, white half-moon valances, the brown bracketed eave
-  const g0 = TW + 0.5, g1 = L - 0.5
-  slab(out, e, N((g0 + g1) / 2), 0.04, 6.3, g1 - g0, 3.4, 0.05, DARKGL, GT)
-  for (let d = g0; d <= g1 + 0.01; d += (g1 - g0) / Math.max(1, Math.round((g1 - g0) / 2.4))) slab(out, e, N(d), 0.1, 6.3, 0.3, 3.4, 0.16, TC, ST)
-  for (let d = g0 + 1.2; d < g1; d += 2.4) {
-    for (let s = 0; s < 6; s++) {
-      const a0 = (s / 6) * Math.PI, a1 = ((s + 1) / 6) * Math.PI, c = on(e, N(d), 9.6, 0.12)
-      const P = (a: number): V3 => [c[0] + e.tx * nd * Math.cos(a) * 1.0, 9.6 - Math.sin(a) * 0.7, c[2] + e.tz * nd * Math.cos(a) * 1.0]
-      out.quad([c, P(a0), P(a1), c], [e.nx, 0, e.nz], UVQ, [0.96, 0.95, 0.92], WT)
-    }
-  }
-  slab(out, e, N((g0 + g1) / 2), 0.7, 9.8, g1 - g0 + 0.6, 0.45, 1.4, BROWN, WT)
-  for (let d = g0; d <= g1; d += 1.6) slab(out, e, N(d), 0.55, 9.3, 0.18, 0.5, 1.0, BROWN, WT)
-  // the roof board on the Taylor edge, and the green neon script behind
-  slab(out, e, N((g0 + g1) / 2), 0.1, H, Math.min(13, g1 - g0), 1.7, 0.15, TURQ, MT)
-  signAt(out, e, N((g0 + g1) / 2), H + 0.85, 0.2, { type: 'flat', text: "ALIOTO'S", h: 1.15, w: Math.min(12, g1 - g0 - 1), face: 'didone', weight: 'bold', colour: [0.08, 0.2, 0.2], lit: 'front', tracking: 0.12 })
-  const ns = on(e, N(L * 0.45), 0, -10)
-  const sb = { ...sth, a: { x: ns[0] - sth.tx * 4, z: ns[2] - sth.tz * 4 } }
-  for (const s of [-2.5, 2.5]) tube(out, on(sb, 4 + s, H, -0.4), on(sb, 4 + s, H + 3.0, 0), 0.06, 4, [0.4, 0.4, 0.42], MT)
-  lozenge(out, on(sb, 4, H + 2.6, 0), [sb.tx, 0, sb.tz], [0, 1, 0], [sb.nx, 0, sb.nz], 4.2, 1.1, 0.2, [0.45, 0.72, 0.55], MT, 18)
-  signAt(out, sb, 4, H + 2.6, 0.12, { type: 'flat', text: "Alioto's", h: 0.9, w: 6.6, face: 'script', colour: [0.4, 1.0, 0.55], halo: GREEN, lit: 'self' })
-  // the street: the green awning along Taylor, the terracotta pediment over the door
-  awning(out, e, N((g0 + L * 0.65) / 2), L * 0.65 - g0, 3.0, GREEN, '', WHITE, 1.4)
-  signAt(out, e, N((g0 + L * 0.65) / 2), 3.4, 0.8, { type: 'flat', text: "ALIOTO'S", h: 0.42, w: 5, face: 'roman', colour: [0.95, 0.94, 0.88], lit: 'front', tracking: 0.08 })
-  signAt(out, e, N((g0 + L * 0.65) / 2), 2.95, 1.2, { type: 'flat', text: 'since 1925', h: 0.2, w: 3, face: 'roman', colour: [0.95, 0.94, 0.88], lit: 'front' })
-  const pu = N(L * 0.8)
-  slab(out, e, pu, 0.6, 2.7, 3.6, 1.0, 1.2, TC, ST)
-  for (const s of [-1, 1]) out.quad([on(e, pu - 1.9, 3.7, 1.25 + (s > 0 ? 0 : -1.2)), on(e, pu + 1.9, 3.7, 1.25 + (s > 0 ? 0 : -1.2)), on(e, pu, 5.1, 1.25 + (s > 0 ? 0 : -1.2)), on(e, pu, 5.1, 1.25 + (s > 0 ? 0 : -1.2))], [e.nx * s, 0, e.nz * s], UVQ, TC, ST)
-  awning(out, e, pu, 3.4, 2.6, GREEN, 'CRAB STAND', WHITE, 1.6)
-}
-
-/**
  * THE FRANCISCAN CRAB RESTAURANT, Pier 43½ (way/288472567; Mapillary 1190184554941387, 190325623495572, 1805446189820665,
  * Jun 2022, and two owner photos 2026-10-17): white STREAMLINE MODERNE. At the west, a two-storey ROUNDED PAVILION — a
  * curved wall of tall dark glass between white tapering fins under a deep oversailing roof with three thin dark-blue
@@ -1888,6 +1825,55 @@ const WHARF_ROW = {
 }
 
 /**
+ * ALIOTO'S PLAZA, Taylor Street between Jefferson and the Embarcadero (way/103339444's footprint): Alioto's No. 8 closed in
+ * 2020 and was demolished in January 2026; the city opened the plaza on its site on 2026-09-02 — picnic tables and public
+ * seating looking over the lagoon to the Golden Gate, room for a pop-up stall (sf.gov "Mayor Lurie unveils Alioto's Plaza";
+ * KION 2026-09-02; Hoodline 2026-01). Pavers over the whole footprint, a timber rail on the water sides, picnic tables in
+ * rows, benches, festoon lights on four masts, a little pop-up kiosk, and the name on a board at the Taylor entrance.
+ */
+export function aliotosPlaza(out: MeshBuilder, fit: Fit): void {
+  const ring = towerRing(fit)
+  const PAVE: Rgb = [0.66, 0.6, 0.52], TIMBER: Rgb = [0.5, 0.38, 0.26], GREEN: Rgb = [0.12, 0.38, 0.32]
+  capPolygon(out, ring, 0.08, PAVE, CT)
+  let cx = 0, cz = 0
+  for (const q of ring) { cx += q.x; cz += q.z }
+  cx /= ring.length; cz /= ring.length
+  // the rail round every side but the street (front) one
+  const front = edgeFacing(ring, 180)
+  for (let i = 0; i < ring.length; i++) {
+    if (i === front) continue
+    const e = edgeAt(ring, i)
+    if (e.L < 2) continue
+    slab(out, e, e.L / 2, -0.15, 1.0, e.L, 0.08, 0.12, TIMBER, WT)
+    for (let u = 0.2; u < e.L; u += 2) slab(out, e, u, -0.15, 0.08, 0.1, 1.0, 0.1, TIMBER, WT)
+  }
+  // picnic tables in rows, benches between
+  const hx = fit.hx * 0.7, hz = fit.hz * 0.7
+  for (let x = -hx; x <= hx; x += 4.5) for (let z = -hz; z <= hz; z += 4) {
+    const px = cx + x, pz = cz + z
+    box(out, px, 0.78, pz, 0.9, 0.04, 0.4, TIMBER, WT)
+    for (const sz of [-0.65, 0.65]) box(out, px, 0.45, pz + sz, 0.9, 0.03, 0.15, TIMBER, WT)
+    for (const sx of [-0.7, 0.7]) box(out, px + sx, 0.4, pz, 0.05, 0.38, 0.6, [0.2, 0.2, 0.22], MT)
+  }
+  // festoons between four masts
+  const masts: V3[] = [[cx - fit.hx * 0.85, 0, cz - fit.hz * 0.85], [cx + fit.hx * 0.85, 0, cz - fit.hz * 0.85], [cx + fit.hx * 0.85, 0, cz + fit.hz * 0.85], [cx - fit.hx * 0.85, 0, cz + fit.hz * 0.85]]
+  for (const m of masts) tube(out, m, [m[0], 5.5, m[2]], 0.07, 6, [0.2, 0.2, 0.22], MT)
+  for (let k = 0; k < 4; k++) {
+    const a = masts[k], b = masts[(k + 2) % 4]
+    bulbs(out, [a[0], 5.3, a[2]], [(a[0] + b[0]) / 2, 4.6, (a[2] + b[2]) / 2], 0.8)
+    bulbs(out, [(a[0] + b[0]) / 2, 4.6, (a[2] + b[2]) / 2], [b[0], 5.3, b[2]], 0.8)
+  }
+  // the pop-up kiosk at the back corner
+  box(out, cx + fit.hx * 0.6, 1.3, cz + fit.hz * 0.6, 1.4, 1.3, 1.0, GREEN, WT)
+  box(out, cx + fit.hx * 0.6, 2.75, cz + fit.hz * 0.6, 1.7, 0.15, 1.3, [0.92, 0.9, 0.84], WT)
+  // the name at the street entrance
+  const e = edgeAt(ring, front)
+  slab(out, e, e.L / 2, 0.3, 2.0, 4.2, 0.9, 0.12, GREEN, MT)
+  for (const d of [-1.9, 1.9]) slab(out, e, e.L / 2 + d, 0.3, 0, 0.12, 2.0, 0.12, [0.2, 0.2, 0.22], MT)
+  signAt(out, e, e.L / 2, 2.45, 0.38, { type: 'flat', text: "ALIOTO'S PLAZA", h: 0.4, w: 3.9, face: 'grotesque', weight: 'bold', colour: [0.97, 0.95, 0.88], lit: 'front' })
+}
+
+/**
  * AT THE STREET'S LEVEL: a model's base is the LOWEST ground under its footprint, and on the Wharf a building that stands
  * out over the water has the sea bed under it — Alioto's and the Grotto were built 3–4 m down, their awnings lying on the
  * sidewalk (owner, 2026-10-17: "awnings on the ground on multiple buildings, including Aliotos and No 9"). The builder
@@ -1908,8 +1894,8 @@ function graded(build: (out: MeshBuilder, fit: Fit) => void, skirt: Rgb = [0.42,
 }
 
 export const WHARF_SHOPS: Record<string, (out: MeshBuilder, fit: Fit) => void> = Object.fromEntries(Object.entries({
-  jeffersonAttractions, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, grotto9,
-  capurros, jefferson490, aliotoLazio, taylorCorner, aliotos8, franciscanCrab, chowderHut, buenaVista, castagnolas, longshoremensHall, cioppinos, ...WHARF_ROW, hardRockFront, pumpingStation2,
+  jeffersonAttractions, aliotosPlaza, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, grotto9,
+  capurros, jefferson490, aliotoLazio, taylorCorner, franciscanCrab, chowderHut, buenaVista, castagnolas, longshoremensHall, cioppinos, ...WHARF_ROW, hardRockFront, pumpingStation2,
   dolphinClubBoathouse: boathouse('DOLPHIN CLUB'), southEndRowingClub: boathouse('Since 1877', 'SOUTH END ROWING CLUB'), pretzelKiosk, klamathPropellers,
   pier45ShedA: pier45Shed('PIER 45', true),
   pier45ShedB: pier45Shed('PIER 45', false),
