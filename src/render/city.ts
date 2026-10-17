@@ -23,6 +23,7 @@ import { Clocks } from './clocks.ts'
 import { MeshBuilder, buildBuilding, capPolygon, capPolygonWithHoles, type Arch, type AtlasManifest, type Ring } from './buildings.ts'
 import { archSize, passageArches } from './passages.ts'
 import { inOutline } from './bridge-structures.ts'
+import { straightOutline } from '../city/bridge-axis.ts'
 import { facadeMaterial } from './facade-material.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
 import { court } from './sports.ts'
@@ -1582,6 +1583,8 @@ export class City {
     for (const b of t.bridges ?? []) {
       if (this.outlines.has(b.id)) continue
       const ring = unpackPoints(b.ring)
+      // (a bent outline gets no structure, so its ways keep their own decks: bridge-axis.ts `straightOutline`)
+      if (!straightOutline(ring)) continue
       let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
       for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }
       this.outlines.set(b.id, { ring, x0, x1, z0, z1 })

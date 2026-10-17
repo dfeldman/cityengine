@@ -10762,8 +10762,15 @@ before it is useful.
   [ ] l. Musée Mécanique and the Pier 45 sheds
   [ ] m. the survey: every other distinctive Wharf frontage (Wax Museum, Hard Rock, In-N-Out, Blue & Gold / Red & White
          Fleet ticket booths, Fish Alley, the Maritime Museum bathhouse, Lou's, The Anchorage…)
+- #297 Cars all over a narrow pier at 37.809098 −122.417564 (owner, 2026-10-16, with a screenshot: "tons of cars on a
+  narrow pier… which I'm guessing just has shacks for boats on it"; then "that pier does have a big single-story white
+  restaurant. still, not a million cars going there"). OPEN.
 - #296 The footbridge over the Embarcadero by the aquarium (owner, 2026-10-16: "is okay, but it needs some work. in
-  particular it doesn…" — message cut off). WAITING for the rest.
+  particular it doesn't match the OSM paths so pedestrians are floating in the air on the footbridge"). FIXED (general):
+  bridge-structures laid a bent outline's structure on its axis — the L's diagonal — and switched off the ways' own decks;
+  `straightOutline` (city/bridge-axis.ts) leaves outlines filling < 45 % of their axis rectangle to the ways' decks (19 of
+  101 in SF). Owner then: "we should probably have a custom renderer for that one particular footbridge though since it's
+  so prominent" — IN PROGRESS.
 - #295 Generic building inside a custom one at 37.785565 −122.409141 (owner, 2026-10-16) — FIXED: the Hotel Nikko's
   outline is two OSM parts in an L round Maria Manor; a parts-fitted model takes their convex HULL unless `"plan":
   "union"`, so the tower stood over the notch. Entry given `plan: union`. (Other L/U-shaped parts-fitted landmarks may do

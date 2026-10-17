@@ -43,3 +43,18 @@ export function axisOf(ring: P[]): { o: P; ux: number; uz: number; L: number; ha
   return { o, ux, uz, L: s1 - s0, half: (o1 - o0) / 2 }
 }
 
+
+/**
+ * Is this outline ONE straight bridge, which the structure along `axisOf` describes? An outline that fills under 45 %
+ * of its axis rectangle is bent — Pier 39's footbridge over the Embarcadero is an L (OSM way/555671175: east along the
+ * garage, then north across the road), and its structure was laid on the L's diagonal, across the corner, while the
+ * path's own deck was switched off for it: walkers floated over the road (owner, 2026-10-16, BUGS.md #296). A bent one
+ * is left to its ways' own decks (render/bridges.ts `deck`), which follow them.
+ */
+export function straightOutline(ring: P[]): boolean {
+  const ax = axisOf(ring)
+  if (!ax || ax.L <= 0 || ax.half <= 0) return false
+  let a = 0
+  for (let i = 0; i < ring.length; i++) { const p = ring[i], q = ring[(i + 1) % ring.length]; a += p.x * q.z - q.x * p.z }
+  return Math.abs(a / 2) / (ax.L * 2 * ax.half) >= 0.45
+}

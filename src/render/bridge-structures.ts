@@ -28,7 +28,7 @@ import { cartoonMaterial } from './cartoon-material.ts'
 import type { TileLayer } from './city.ts'
 import { isRaised, unpackPoints, waterLevels, wholeWater, type CityPackage, type PackedBridge, type PackedEdge } from '../city/package.ts'
 import type { Terrain } from '../city/terrain.ts'
-import { axisOf } from '../city/bridge-axis.ts'
+import { axisOf, straightOutline } from '../city/bridge-axis.ts'
 
 type Rgb = [number, number, number]
 type P = { x: number; z: number }
@@ -209,7 +209,7 @@ export const FREEWAY_KINDS = new Set(['motorway', 'motorway_link', 'trunk', 'tru
 function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: PackedEdge[], terrain: Terrain,
   wetAt: (x: number, z: number) => number | null, styles: Record<string, StructureStyle>, waterDefault: StructureStyle = DEFAULT_OVER_WATER): void {
   const ax = axisOf(ring)
-  if (!ax || ax.L < 8) return
+  if (!ax || ax.L < 8 || !straightOutline(ring)) return
   for (const e of edges) {
     if (!FREEWAY_KINDS.has(e.kind) || !isRaised(e)) continue
     const k = Math.floor(e.points.length / 4) * 2
