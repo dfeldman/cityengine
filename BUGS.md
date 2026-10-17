@@ -10759,6 +10759,35 @@ GAME
 - #313 TRIPO.md: a list of organic shapes for the owner to make in Tripo (statues, Lotta's Fountain, lamp posts, ships,
   unique signs, the Japanese Tea Garden drum bridge…). STARTED (TRIPO.md, 12 rows); grows as the Wharf work finds more.
 
+### FOR THE OWNER — overnight 2026-10-17 (what needs your eye; every item deployed, each a commit to back out)
+
+Done tonight, all live (latest deploy 22d2ef7): Pier 39's timber bridge over the main street with its 39 signs; Pier 45's
+sheds and Musée Mécanique; the Memorial Chapel; Hotel Zephyr's black storefronts; the IT'SUGAR / Tussauds block; In-N-Out;
+the Red & White booth; the pretzel kiosk; the Klamath propellers (stand-in); Scoma's; the Haslett Warehouse / Argonaut;
+Alioto's No. 8; Fishermen's Grotto No. 9; the Chowder Hut; the Buena Vista; Castagnola's; Cioppino's and California
+Shellfish Co.; Longshoremen's Hall; the Dolphin Club and South End Rowing Club. The hand-paved squares (Wharf cobbles,
+Ghirardelli and Cannery brick, Pier 39 planks) are drawn for the first time — the tiler had been dropping their surface.
+Shop fascias no longer repeat side by side; Ripley's roof is grey.
+
+Please look at / decide:
+- Burgers & Best Pies' theatre marquee (Hotel Zephyr, Mason end) is a GUESS — no photo or listing found.
+- Madame Tussauds' fascia on the Jefferson attractions block: OSM now lists game/escape venues there. Keep or swap?
+- Hotel Zephyr is fitted to its bounding box: the bake replaced relation/1358120 with its one building:part, which leaves
+  out the Jefferson & Mason corner.
+- Pier walks now take the LAND's level where a pier leaves from land (52 walks lowered; Pier 45 by the chapel came down
+  3.4 m). Pier 14 on the Embarcadero now sits low over the water, level with the promenade — confirm that reads right.
+- Pumping Station No. 2 (foot of Van Ness, HAER photos): not identified in OSM with confidence (way/259857819 is tagged
+  "Aquatic Park Bocce Ball"); not modelled.
+- Anchorage Square: no usable photo found; left generic.
+- Still waiting on you: #282 (where the retaining walls were), #284 (where cable cars got stuck), #301 (confirm).
+- Dandyhorse: restart `make serve` to pick up the end screen / bridge changes.
+
+Logged, not fixed:
+- Birds read as pale grey quads against the night sky (sky.ts: dark instance colour, alpha 0, cartoonSky material) — the
+  sky material does not darken them at night. Frozen shots also catch the wings flat.
+- faceBand kind 'bays' drew the Buena Vista's upper floors as black slabs (worked round with 'punched'); the bay geometry
+  needs a look, as bays are San Francisco's own facade.
+
 ### #282–#294 Owner's reports, 2026-10-16 afternoon — the queue, in the order they are being worked
 
 - **#282 Retaining walls on steep hills, citywide** — pale walls along the sidewalk's building side and across corners
