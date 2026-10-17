@@ -1211,6 +1211,65 @@ export function hardRockFront(out: MeshBuilder, _fit: Fit): void {
 }
 
 /**
+ * SALT WATER PUMPING STATION No. 2, at the foot of Fort Mason by Aquatic Park (way/93703732, the fire department's 1912
+ * high-pressure station; HAER CAL,38-SANFRA,143 and Commons "San Francisco Fire Dept Pumping Station No 2"): white
+ * stucco, tall round-arched windows with many-paned sashes along every face, over each run of them a pent roof of red tile
+ * on carved brackets, a parapet notched like battlements, the corner block stepping up higher, and the tall plain
+ * concrete chimney rising from that corner — the landmark from the cove. Drawn on its box; the door on the shorter side.
+ */
+export function pumpingStation2(out: MeshBuilder, fit: Fit): void {
+  const WALL: Rgb = [0.92, 0.91, 0.87], TILE: Rgb = [0.62, 0.28, 0.2], CON: Rgb = [0.74, 0.73, 0.7], FRAME: Rgb = [0.95, 0.95, 0.93]
+  const hx = fit.hx, hz = fit.hz, H = 8.4
+  box(out, 0, H / 2, 0, hx, H / 2, hz, WALL, ST)
+  capPolygon(out, [{ x: -hx, z: -hz }, { x: hx, z: -hz }, { x: hx, z: hz }, { x: -hx, z: hz }], H, [0.5, 0.5, 0.5], CT)
+  // each face: arched windows, a tile pent over them on brackets, the notched parapet
+  const faces: { c: [number, number]; t: [number, number]; n: [number, number]; L: number; door: boolean }[] = [
+    { c: [0, -hz], t: [1, 0], n: [0, -1], L: hx * 2, door: hx < hz },
+    { c: [0, hz], t: [-1, 0], n: [0, 1], L: hx * 2, door: false },
+    { c: [hx, 0], t: [0, 1], n: [1, 0], L: hz * 2, door: hz <= hx },
+    { c: [-hx, 0], t: [0, -1], n: [-1, 0], L: hz * 2, door: false },
+  ]
+  for (const f of faces) {
+    const P = (u: number, y: number, o: number): V3 => [f.c[0] + f.t[0] * u + f.n[0] * o, y, f.c[1] + f.t[1] * u + f.n[1] * o]
+    const hd = Math.atan2(f.n[0], f.n[1])
+    const n = Math.max(3, Math.floor((f.L - 4) / 3.4)), sp = (f.L - 4) / n
+    for (let k = 0; k < n; k++) {
+      const u = -f.L / 2 + 2 + sp * (k + 0.5)
+      if (f.door && k === Math.floor(n / 2)) {
+        const d = P(u, 1.3, 0.04)
+        boxAlong(out, d[0], d[1], d[2], 0.9, 1.3, 0.04, hd, [0.82, 0.8, 0.74], WT)
+        const c = P(u, 2.9, 0.06)
+        boxAlong(out, c[0], c[1], c[2], 1.1, 0.12, 0.12, hd, FRAME, ST)
+        continue
+      }
+      const w = Math.min(1.5, sp * 0.6)
+      // the sash: glass with a white frame grid, the round head as a fan of panes
+      const g = P(u, 3.2, 0.04)
+      boxAlong(out, g[0], g[1], g[2], w / 2, 2.6, 0.03, hd, DARKGL, GT)
+      for (const yy of [1.4, 2.6, 3.8, 5.0]) { const q = P(u, yy, 0.07); boxAlong(out, q[0], q[1], q[2], w / 2, 0.04, 0.02, hd, FRAME, WT) }
+      for (const uu of [-w / 4, w / 4]) { const q = P(u + uu, 3.2, 0.07); boxAlong(out, q[0], q[1], q[2], 0.03, 2.6, 0.02, hd, FRAME, WT) }
+      for (let a = 0; a < 6; a++) {
+        const t0 = (a / 6) * Math.PI, t1 = ((a + 1) / 6) * Math.PI
+        out.quad([P(u, 5.8, 0.05), P(u - Math.cos(t0) * w / 2, 5.8 + Math.sin(t0) * w / 2, 0.05), P(u - Math.cos(t1) * w / 2, 5.8 + Math.sin(t1) * w / 2, 0.05), P(u, 5.8, 0.05)],
+          [f.n[0], 0, f.n[1]], UVQ, DARKGL, GT)
+      }
+    }
+    // the tile pent on its brackets, the run of the face less the corners
+    const r = f.L / 2 - 1.6
+    out.quad([P(-r, 7.1, 0.05), P(r, 7.1, 0.05), P(r, 6.6, 1.3), P(-r, 6.6, 1.3)], [f.n[0] * 0.5, 0.85, f.n[1] * 0.5], UVQ, TILE, surfaceTag('tile'))
+    for (let u = -r + 0.4; u <= r; u += 1.6) { const q = P(u, 6.55, 0.6); boxAlong(out, q[0], q[1], q[2], 0.08, 0.25, 0.6, hd, FRAME, ST) }
+    // the notched parapet
+    for (let u = -f.L / 2 + 0.8; u < f.L / 2 - 0.4; u += 2.6) { const q = P(u, H + 0.4, 0.0); boxAlong(out, q[0], q[1], q[2], 0.45, 0.4, 0.2, hd, WALL, ST) }
+  }
+  // the corner block, stepping up, and the chimney rising from it
+  const cx = hx - 2.2, cz = hz - 2.2
+  box(out, cx, (H + 2.2) / 2, cz, 2.3, (H + 2.2) / 2, 2.3, WALL, ST)
+  for (const [ox, oz] of [[-1.7, -2.35], [1.7, -2.35], [-2.35, -1.7], [-2.35, 1.7]] as [number, number][]) box(out, cx + ox, H + 2.6, cz + oz, 0.4, 0.4, 0.4, WALL, ST)
+  prism(out, cx, cz, H, H + 21, 1.0, 16, CON, CT)
+  prism(out, cx, cz, H + 21, H + 21.4, 1.08, 16, [0.66, 0.65, 0.62], CT)
+}
+
+/**
  * THE AQUATIC PARK BOATHOUSES: the Dolphin Club (way/288391828) and the South End Rowing Club (way/288391837), side by
  * side on the beach at the foot of Jefferson (Commons "Dolphin Club and South End Rowing Club 20170906-8513"): two storeys
  * of white clapboard with blue trim on every corner, window and rail, a hipped roof of grey shingle, a balcony along the
@@ -1272,7 +1331,7 @@ function boathouse(name: string, sub?: string): (out: MeshBuilder, fit: Fit) => 
 }
 
 export const WHARF_SHOPS: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, aliotos, grotto9, chowderHut, buenaVista, castagnolas, longshoremensHall, cioppinos, shellfishShed, hardRockFront,
+  jeffersonAttractions, hotelZephyr, jeffersonInNOut, redWhiteBooth, scomas, memorialChapel, haslettWarehouse, aliotos, grotto9, chowderHut, buenaVista, castagnolas, longshoremensHall, cioppinos, shellfishShed, hardRockFront, pumpingStation2,
   dolphinClubBoathouse: boathouse('DOLPHIN CLUB'), southEndRowingClub: boathouse('Since 1877', 'SOUTH END ROWING CLUB'), pretzelKiosk, klamathPropellers,
   pier45ShedA: pier45Shed('PIER 45', true),
   pier45ShedB: pier45Shed('PIER 45', false),

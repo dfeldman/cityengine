@@ -1264,8 +1264,10 @@ export class Landmarks {
           const wz = cz + oz + (-px * sr + pz * cr) * sc
           if (!this.dryAt(wx, wz)) keep.push(a, b, c)
         }
-        mb.indices.length = 0
-        mb.indices.push(...keep)
+        // (copied in place, not `push(...keep)`: a spread of a big model's indices overflows the call stack — the Wharf's
+        //  marinas threw 'Maximum call stack size exceeded' and took their tile's landmarks with them, 2026-10-17)
+        mb.indices.length = keep.length
+        for (let i = 0; i < keep.length; i++) mb.indices[i] = keep[i]
       }
       const m = new Mesh(`landmark:${e.name}`, this.scene)
       mb.toVertexData().applyToMesh(m)
