@@ -1,0 +1,44 @@
+[
+ {
+  "name": "Fog Harbor Fish House and Wipeout Bar & Grill frontage (Pier 39, way/128240149 east face)",
+  "procedural": "fogHarborFront",
+  "lat": 37.8090174,
+  "lon": -122.4101683,
+  "rotateDeg": 98.8,
+  "size": [54, 8],
+  "height": 11,
+  "note": "2026-10-17 (owner: 'the pier 39 amusement park stuff needs a lot more work'): Wipeout's blue shopfront and surfboard sign under the timber deck, Fog Harbor's white gabled porch with its navy board, the stair to the plaza, the curved FOG HARBOR FISH HOUSE gable end at the north. Laid against the east wall of way/128240149 (OSM nodes 11423731476, 4259746692). Commons 'Pier 39 at Night, SF, CA, jjron 25.03.2012', 'Wipeout Bar & Grill exterior at San Francisco Pier 39, October 2016'. Which face carries the curved gable end is a guess."
+ },
+ {
+  "name": "Players Sports Grill & Arcade / Bubba Gump frontage (Pier 39, way/128240131 west face)",
+  "procedural": "playersBubbaFront",
+  "lat": 37.8109263,
+  "lon": -122.410662,
+  "rotateDeg": 246.1,
+  "size": [14, 9],
+  "height": 10,
+  "note": "2026-10-17: corrugated-iron upper storey with the Bubba Gump neon window and blue awnings, SPORTSGRILL · ARCADE red awning, brick and glass below, green-glass patio fence, PLAYERS menu board. On the plaza by the stage (OSM nodes 2365845685, 378743791). Commons 'Pier 39 - July 2025 - Sarah Stierch'; badge from 'Sign of Bubba Gump Shrimp Company (TK)'. Stands at the outer edge of pier39Shop's upper gallery on this wall, hiding it (the photo has none)."
+ },
+ {
+  "name": "Pier 39 sign at the sea lions (K-Dock float)",
+  "procedural": "seaLionSign",
+  "lat": 37.8106359,
+  "lon": -122.41158,
+  "rotateDeg": 65.6,
+  "size": [23, 18],
+  "height": 3.5,
+  "deckAbove": 0,
+  "waterOnly": true,
+  "note": "2026-10-17: the blue four-sided PIER 39 board on legs with golden sea lions, and PLEASE DON'T FEED, on a float at OSM node 1417635914. Commons 'San Francisco (CA, USA), Fisherman's Wharf, Pier 39, Sea Lion Viewing Area -- 2022 -- 185143', 'Leoni marini - panoramio'. Seven empty K-Dock floats round it (OSM ways 1103154692–723 are not drawn by the bake). The sea lions themselves are TRIPO.md #6 (seaLionFloats, sights.json), which stands at 37.80965,−122.41135 — J-Dock, ~90 m south of K-Dock; not moved here."
+ },
+ {
+  "name": "Pier 39 sea lion viewing rail and platform (K-Dock)",
+  "procedural": "seaLionViewing",
+  "lat": 37.8107817,
+  "lon": -122.4112674,
+  "rotateDeg": 245.6,
+  "size": [40, 2],
+  "height": 2.5,
+  "note": "2026-10-17: timber rail with wire panels along the pier's west edge (OSM fence way/555946325) beside Building K, a viewing platform on piles over the water with coin-op viewers, two interpretive boards (wording guessed). Commons 'Tourists observing sea lions at Pier 39'."
+ }
+]

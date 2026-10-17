@@ -245,6 +245,13 @@ const KNOWN: Record<string, string[]> = {
     'height | Mirror Maze sign',
     'intersects | Mirror Maze sign',
     'height | Pier 39 street bridge',
+    // Pier 39's frontages (pier39-fronts.ts, 2026-10-17): point models laid against their buildings' walls, the viewing rail
+    // along Building K; standalone fronts within 15 m of the pretzel kiosk and the street bridge
+    "duplicate | Aunt Fanny's Hot Pretzels / Players Sports Grill & Arcade / Bubba Gump frontage (Pier 39, way/128240131 west face)",
+    'duplicate | Pier 39 street bridge / Fog Harbor Fish House and Wipeout Bar & Grill frontage (Pier 39, way/128240149 east face)',
+    'intersects | Fog Harbor Fish House and Wipeout Bar & Grill frontage (Pier 39, way/128240149 east face)',
+    'intersects | Pier 39 sea lion viewing rail and platform (K-Dock)',
+    'intersects | Players Sports Grill & Arcade / Bubba Gump frontage (Pier 39, way/128240131 west face)',
   ],
 }
 

@@ -10772,7 +10772,12 @@ STARS (each lit a whole 0.7° grid cell) — now small soft dots. Pier 39's entr
 blue PIER 39 boards. The `bays` facade kit (tower.ts) drew edge-to-edge glass with every floor's foot left open — black
 slabs; each bay face is now wall with a framed sash set in it (the Buena Vista back on bays; ten landmarks use it).
 
+Also live: Pier 39 frontages (pier39-fronts.ts, by a subagent, reviewed) — Fog Harbor Fish House's porch, deck and stair
+over Wipeout Bar & Grill's surfboard front; Players Sports Grill / Bubba Gump's corrugated front by the stage; the blue
+K-Dock sea-lion sign on its floats and the viewing rail; the sea lions moved from J-Dock to K-Dock where they belong.
 Please look at / decide:
+- Pier 39: pier39Shop's own awnings and gallery still show in front of the Wipeout and Players fronts; and the stage
+  (pier39Stage) may belong north-west of the carousel — OSM's "Smartwater Stage" node is at 37.81079 −122.41072.
 - Burgers & Best Pies' theatre marquee (Hotel Zephyr, Mason end) is a GUESS — no photo or listing found.
 - Madame Tussauds' fascia on the Jefferson attractions block: OSM now lists game/escape venues there. Keep or swap?
 - Hotel Zephyr is fitted to its bounding box: the bake replaced relation/1358120 with its one building:part, which leaves
