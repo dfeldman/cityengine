@@ -245,6 +245,17 @@ vec3 surfaceLook(vec3 c, vec3 n, float sid) {
     float shade = smoothstep(0.0, 0.3, fract(p.y / 0.3)) * 0.2 + 0.8;
     return c * shade * (0.9 + 0.2 * hash2(vec2(row, floor(u)))) * mix(1.0, 0.95, nearFade(20.0, 50.0));
   }
+  if (sid > 13.5) {
+    // 14 PLANKS: a timber deck — boards 0.22 m wide with a dark gap between, each its own tone of weathered wood, butt
+    // joints staggered every 2.4 m (owner, 2026-10-18: "the planks should be visibly wood planks not uniform")
+    float row = floor(p.y / 0.22);
+    float along = p.x + hash2(vec2(row, 3.1)) * 2.4;
+    float seg = floor(along / 2.4);
+    float tone = 0.78 + 0.34 * hash2(vec2(row, seg));
+    float gap = smoothstep(0.0, 0.06, fract(p.y / 0.22)) * smoothstep(0.0, 0.015, fract(along / 2.4));
+    float grain = 0.94 + 0.06 * sin(along * 9.0 + row * 2.3);
+    return c * mix(1.0, tone * grain * (0.55 + 0.45 * gap), nearFade(30.0, 90.0));
+  }
   if (sid > 12.5) {
     // 13 FOLIAGE: ivy and creepers (render/landmarks/ivy.ts) — overlapping leaves about 0.12 m, dark gaps between them,
     // a lighter, yellower face to each leaf, broad clumps of tone; the leaves fade to the clumps with distance
@@ -352,7 +363,7 @@ let registered = false
  * landmark material (in world metres, so every building shares the same brick and stone). A builder passes
  * `surfaceTag(SURFACES.brick)` as the quad's tag. Tag 0 is the old default, pale dressed stone by colour.
  */
-export const SURFACES = { ashlar: 1, brick: 2, granite: 3, terracotta: 4, concrete: 5, glass: 6, metal: 7, stucco: 8, copper: 9, tile: 10, clapboard: 11, rock: 12, foliage: 13 } as const
+export const SURFACES = { ashlar: 1, brick: 2, granite: 3, terracotta: 4, concrete: 5, glass: 6, metal: 7, stucco: 8, copper: 9, tile: 10, clapboard: 11, rock: 12, foliage: 13, planks: 14 } as const
 export type Surface = keyof typeof SURFACES
 export const surfaceTag = (s: Surface): number => SURFACES[s] / 64
 

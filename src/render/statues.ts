@@ -66,7 +66,9 @@ export interface StatueEntry {
   note?: string
 }
 
-export const MAX_LOADED = 3
+/** (3 for the Paris statues, owner 2026-09-22; 4 since Hyde Street Pier's four ships stand within 200 m of each other,
+ *  2026-10-18 — a ship's LOD 0 is ~1 MB of file and one 1024 px texture) */
+export const MAX_LOADED = 4
 
 interface Placement { x: number; y: number; z: number; rotation: number }
 

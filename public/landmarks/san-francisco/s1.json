@@ -59,18 +59,17 @@
   "note": "BUGS.md #290l, 2026-10-17: the Pier 45 transit shed (OSM 'Shed D'; was misnamed Fort Mason and drawn as a plain box by s1_fort_mason_shed_d_25372355) — pilasters, high sash band, roll doors, the art-deco head at the land end (Commons 'Pier 45 (San Francisco)')."
  },
  {
-  "procedural": "s1_hyde_street_pier_25319880",
+  "procedural": "hydeStreetPier",
   "name": "Hyde Street Pier",
-  "height": 4,
+  "kind": "structure",
+  "lat": 37.8087873,
+  "lon": -122.4209278,
+  "rotateDeg": 0,
+  "height": 5,
+  "deckAbove": 2.5,
   "coversRaised": true,
-  "lat": 37.809334,
-  "lon": -122.421679,
-  "size": [
-   154,
-   150
-  ],
-  "note": "placed by lat/lon: way/25319880 is not a building in the bake (pier/footway/ruin), so an osm claim never resolves",
-  "deckAbove": 3.5
+  "sign": false,
+  "note": "hyde-pier.ts, 2026-10-18: the timber deck on its OSM outline (way/456528981), on the deck zone's level (sea + 2.5). Was a 154 x 150 m box placed by a point, whose rails and lamps were beams across the cove."
  },
  {
   "procedural": "pier7Promenade",

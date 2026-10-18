@@ -3,15 +3,132 @@
     "id": "balclutha",
     "name": "Balclutha",
     "asset": "balclutha",
-    "lat": 37.809694,
-    "lon": -122.421922,
+    "lat": 37.809648,
+    "lon": -122.421786,
     "bearing": 134,
     "float": true,
     "lodRanges": [
       280,
       650
     ],
-    "note": "assetkit-models-sf/balclutha (assetkit tools/modelpack): the 1886 full-rigger at Hyde Street Pier, scaled to 92 m overall, its waterline on the sea. Placed on the procedural ship's centre and heading (landmarks/san-francisco/ships.json).",
-    "replaces": "Balclutha"
+    "replaces": "Balclutha",
+    "note": "assetkit-models-sf/balclutha: laid out along Hyde Street Pier (2026-10-18), parallel to it and clear of it and of each other; the owner: 'it's fine for the ships to not be perfectly accurate in location'."
+  },
+  {
+    "id": "ca-thayer",
+    "name": "C.A. Thayer",
+    "asset": "ca-thayer",
+    "lat": 37.809182,
+    "lon": -122.421719,
+    "bearing": 134,
+    "float": true,
+    "lodRanges": [
+      280,
+      650
+    ],
+    "replaces": "C.A. Thayer",
+    "note": "assetkit-models-sf/ca-thayer: laid out along Hyde Street Pier (2026-10-18), parallel to it and clear of it and of each other; the owner: 'it's fine for the ships to not be perfectly accurate in location'."
+  },
+  {
+    "id": "eureka",
+    "name": "Eureka",
+    "asset": "eureka",
+    "lat": 37.809758,
+    "lon": -122.42252,
+    "bearing": 134,
+    "float": true,
+    "lodRanges": [
+      280,
+      650
+    ],
+    "replaces": "Eureka",
+    "note": "assetkit-models-sf/eureka: laid out along Hyde Street Pier (2026-10-18), parallel to it and clear of it and of each other; the owner: 'it's fine for the ships to not be perfectly accurate in location'."
+  },
+  {
+    "id": "hercules",
+    "name": "Hercules",
+    "asset": "hercules",
+    "lat": 37.810137,
+    "lon": -122.422457,
+    "bearing": 134,
+    "float": true,
+    "lodRanges": [
+      220,
+      520
+    ],
+    "replaces": "Hercules",
+    "note": "assetkit-models-sf/hercules: laid out along Hyde Street Pier (2026-10-18), parallel to it and clear of it and of each other; the owner: 'it's fine for the ships to not be perfectly accurate in location'."
+  },
+  {
+    "id": "alma",
+    "name": "Alma",
+    "asset": "alma",
+    "lat": 37.8089,
+    "lon": -122.42127,
+    "bearing": 134,
+    "float": true,
+    "lodRanges": [
+      180,
+      420
+    ],
+    "replaces": "Alma",
+    "note": "assetkit-models-sf/alma: laid out along Hyde Street Pier (2026-10-18), parallel to it and clear of it and of each other; the owner: 'it's fine for the ships to not be perfectly accurate in location'."
+  },
+  {
+    "id": "jeremiah-obrien",
+    "name": "SS Jeremiah O'Brien",
+    "asset": "jeremiah-obrien",
+    "attach": {
+      "to": "SS Jeremiah O'Brien",
+      "at": [
+        0,
+        0,
+        0
+      ],
+      "bearing": 90
+    },
+    "float": true,
+    "lodRanges": [
+      350,
+      800
+    ],
+    "replaces": "SS Jeremiah O'Brien",
+    "note": "assetkit-models-sf/jeremiah-obrien: on the procedural SS Jeremiah O'Brien's own place and heading (its bow at the host's +x), waterline on the sea."
+  },
+  {
+    "id": "pampanito",
+    "name": "USS Pampanito",
+    "asset": "pampanito",
+    "attach": {
+      "to": "USS Pampanito",
+      "at": [
+        0,
+        1.2,
+        0
+      ],
+      "bearing": 90
+    },
+    "float": true,
+    "lodRanges": [
+      280,
+      650
+    ],
+    "replaces": "USS Pampanito",
+    "note": "assetkit-models-sf/pampanito: on the procedural USS Pampanito's own place and heading (its bow at the host's +x), waterline on the sea."
+  },
+  {
+    "id": "taj-mahal-houseboat",
+    "name": "Taj Mahal houseboat",
+    "asset": "taj-mahal-houseboat",
+    "float": true,
+    "lodRanges": [
+      160,
+      380
+    ],
+    "replaces": "Taj Mahal houseboat",
+    "note": "assetkit-models-sf/taj-mahal-houseboat: moored at the end of the dock (OSM way/1273451369), its front door and the two onion domes toward the marina, west (owner, 2026-10-18).",
+    "lat": 37.8611268,
+    "lon": -122.4814948,
+    "bearing": 270
   }
 ]

@@ -254,6 +254,11 @@ const KNOWN: Record<string, string[]> = {
     'height | Municipal Pier, Aquatic Park',
     'coplanar | Municipal Pier, Aquatic Park',
     'intersects | Aquatic Park Bleachers',
+    // by design (2026-10-18): Hyde Street Pier's piles reach under the water, and its deck meets the ships' pier buildings
+    'height | Hyde Street Pier',
+    'intersects | Hyde Street Pier',
+    // the Sausalito docks float on the sea (deckAbove), over a sea bed the check calls ground
+    'height | Sausalito houseboat docks',
     // Pier 39's frontages (pier39-fronts.ts, 2026-10-17): point models laid against their buildings' walls, the viewing rail
     // along Building K; standalone fronts within 15 m of the pretzel kiosk and the street bridge
     "duplicate | Aunt Fanny's Hot Pretzels / Players Sports Grill & Arcade / Bubba Gump frontage (Pier 39, way/128240131 west face)",

@@ -114,6 +114,117 @@
    ]
   },
   {
+   "ref": "hyde-street-pier-deck",
+   "name": "Hyde Street Pier's deck, level at sea + 2.5 m",
+   "note": "2026-10-18: the pier's paths had sunk 2-3 m under the sea (pier walks take the land's level, and the land at its foot is the flattened sea bed). OSM way/456528981.",
+   "priority": 1,
+   "props": {
+    "deck": 2.5
+   },
+   "ring": [
+    [
+     37.8087873,
+     -122.4209278
+    ],
+    [
+     37.8087758,
+     -122.4210114
+    ],
+    [
+     37.8088124,
+     -122.4211318
+    ],
+    [
+     37.8091682,
+     -122.4215645
+    ],
+    [
+     37.8091988,
+     -122.4215261
+    ],
+    [
+     37.809426,
+     -122.4218252
+    ],
+    [
+     37.8096324,
+     -122.4221024
+    ],
+    [
+     37.8100939,
+     -122.4227275
+    ],
+    [
+     37.8100766,
+     -122.422748
+    ],
+    [
+     37.8101468,
+     -122.4228429
+    ],
+    [
+     37.8101653,
+     -122.4228211
+    ],
+    [
+     37.8102105,
+     -122.4228811
+    ],
+    [
+     37.8102497,
+     -122.4228337
+    ],
+    [
+     37.8100836,
+     -122.4226105
+    ],
+    [
+     37.8099581,
+     -122.422442
+    ],
+    [
+     37.8097723,
+     -122.4221923
+    ],
+    [
+     37.8096663,
+     -122.4220434
+    ],
+    [
+     37.8092384,
+     -122.4214653
+    ],
+    [
+     37.8091775,
+     -122.4213682
+    ],
+    [
+     37.8092411,
+     -122.4212412
+    ],
+    [
+     37.8090073,
+     -122.4210732
+    ],
+    [
+     37.8090092,
+     -122.4210562
+    ],
+    [
+     37.8089941,
+     -122.4210535
+    ],
+    [
+     37.8089658,
+     -122.4210485
+    ],
+    [
+     37.8089771,
+     -122.4209684
+    ]
+   ]
+  },
+  {
    "ref": "pier39-deck",
    "name": "Pier 39's deck, level at sea + 0.4 m",
    "note": "2026-10-17: the elevation tiles smeared the pier down toward the sea bed — 6 m under the carousel plaza north of z 110, 1 m round Buildings B-D (the Pier 39 subagent's survey). The boardwalk ring from regions.json pavedSquares, north of the entrance pavers (the land end rises to the Embarcadero for real).",

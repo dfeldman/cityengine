@@ -169,56 +169,6 @@ export const s1_sutro_baths_32776564 = (out: MeshBuilder, fit: Fit): void => {
 }
 
 
-/**
- * Hyde Street Pier (way/25319880) — Promenade pier on actual footprint: deck on piles, railings, lamps.
- */
-export const s1_hyde_street_pier_25319880 = (out: MeshBuilder, fit: Fit): void => {
-  const ring = towerRing(fit)
-  const concrete = surfaceTag('concrete')
-  const metal = surfaceTag('metal')
-
-  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
-  for (const p of ring) {
-    x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x)
-    z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z)
-  }
-  const cx = (x0 + x1) / 2
-  const cz = (z0 + z1) / 2
-  const hx = (x1 - x0) / 2
-  const hz = (z1 - z0) / 2
-  const deckH = 0.4
-  const pillingH = 6
-
-  // Deck surface on the actual footprint
-  faceBand(out, ring, 0, deckH, { kind: 'blank', wall: CONCRETE_GREY, material: 'concrete' })
-
-  // Pilings supporting the deck
-  for (let i = -1; i <= 1; i++) {
-    for (let k = -1; k <= 1; k++) {
-      box(out, cx + i * hx / 2, -pillingH / 2, cz + k * hz / 2, 0.6, pillingH / 2, 0.6, CONCRETE_DARK, concrete)
-    }
-  }
-
-  // Railings along edges of the footprint
-  const railingH = 1.1
-  for (let i = 0; i < ring.length; i++) {
-    const e = edgeAt(ring, i)
-    box(out, e.mid.x + e.nx * 0.15, deckH + railingH / 2, e.mid.z + e.nz * 0.15, e.L / 2, railingH / 2, 0.08, METAL_RAILING, metal)
-    // vertical posts
-    for (let j = 0; j < Math.max(2, Math.round(e.L / 3)); j++) {
-      const u = e.L * (j + 0.5) / Math.max(2, Math.round(e.L / 3))
-      box(out, e.a.x + e.tx * u + e.nx * 0.15, deckH + railingH / 2, e.a.z + e.tz * u + e.nz * 0.15, 0.08, railingH / 2, 0.08, METAL_RAILING, metal)
-    }
-  }
-
-  // Lamp standards
-  for (let i = 0; i < Math.round(hx * 2 / 3); i++) {
-    const x = -hx + (i + 0.5) * (hx * 2 / Math.round(hx * 2 / 3))
-    const lampH = 4
-    box(out, cx + x, deckH + lampH / 2, cz - hz, 0.1, lampH / 2, 0.1, METAL_DARK, metal)
-    box(out, cx + x, deckH + lampH + 0.15, cz - hz, 0.25, 0.15, 0.25, [0.9, 0.85, 0.7], 0)
-  }
-}
 
 /**
  * Pier 7 (way/23605169) — the public fishing and promenade pier north of the Ferry Building: a narrow WOODEN deck some
@@ -309,6 +259,5 @@ export const s1_pier_14_23605173 = (out: MeshBuilder, fit: Fit): void => {
 export const S1 = {
   s1_presidio_theatre_32650566,
   s1_sutro_baths_32776564,
-  s1_hyde_street_pier_25319880,
   pier7Promenade,
 }
