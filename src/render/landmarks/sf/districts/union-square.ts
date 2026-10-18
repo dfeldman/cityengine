@@ -17,7 +17,7 @@ import type { Fit } from '../../fit.ts'
 import { tower, towerRing, faceBand, insetRing, type TowerSpec, type Face } from '../../tower.ts'
 import { prism, strut, EMIT, type Rgb } from '../../../models.ts'
 import { surfaceTag, type Surface } from '../../../cartoon-material.ts'
-import { offsetRing, boxAlong } from '../../parts.ts'
+import { offsetRing, boxAlong, edgeAt, edgeFacing } from '../../parts.ts'
 import { sign } from '../../signage.ts'
 
 type P2 = { x: number; z: number }
@@ -546,7 +546,6 @@ function westinStFrancis(out: MeshBuilder, fit: Fit): void {
 /** way/32863633 */
 const MACYS_REF = [50.2, 41.5, -51.6, 41.0, -51.6, 14.3, -51.5, -0.7, -49.6, -0.7, -49.5, -12.0, -49.4, -19.6, -49.2, -42.0, 9.5, -41.6, 50.9, -41.4]
 
-const MACY_RED: Rgb = [0.8, 0.1, 0.12]
 const WHITE: Rgb = [0.95, 0.95, 0.94]
 
 /**
@@ -571,7 +570,9 @@ function shrinkRing(r: P2[], d: number): P2[] {
 function macys(out: MeshBuilder, fit: Fit): void {
   const f = gridFrame(fit, MACYS_REF, 0, 1)
   const H = fit.height > 30 && fit.height < 70 ? fit.height : 45
-  const MARBLE: Rgb = [0.87, 0.86, 0.83]
+  // (the I. Magnin marble is near white in the owner's photograph from the square, 2026-10-18 — its Geary face is
+  //  always in shade here, and the old 0.87 read as a plain grey block)
+  const MARBLE: Rgb = [0.94, 0.93, 0.9]
   const CREAM: Rgb = [0.8, 0.76, 0.68]
   const GREY_STONE: Rgb = [0.66, 0.65, 0.62]
   const shops: Face = { kind: 'curtain', wall: [0.2, 0.2, 0.21], glass: [0.16, 0.18, 0.2], pitch: 4, floor: 6 }
@@ -590,30 +591,47 @@ function macys(out: MeshBuilder, fit: Fit): void {
   mass(out, clipBox(f.ring, f, 12, 70, 0, 60), H + 1, {
     height: H + 1,
     base: { height: 5.5, face: shops },
-    tiers: [{ to: 1, face: { kind: 'punched', material: 'ashlar', wall: MARBLE, glass: [0.14, 0.15, 0.17], pitch: 4.8, solid: 0.58, floor: 4.3 } }],
+    tiers: [{ to: 1, face: { kind: 'punched', material: 'ashlar', wall: MARBLE, glass: [0.14, 0.15, 0.17], pitch: 4.8, solid: 0.64, floor: 4.3 } }],
     roof: [0.6, 0.6, 0.58],
     crown: { kind: 'parapet', height: 1.4, colour: MARBLE },
   })
-  wallText(out, f, "MACY'S", 31, 41.5, 0, 1, H - 3.2, 2.4, [0.35, 0.35, 0.36])
+  // the lowercase "macy's" in dark grey near the top of the marble's Geary face, left of middle seen from the square
+  // (owner's photograph, 2026-10-18; it stood at the wall's own plane before and showed only as "ACY'S" through it)
+  wallText(out, f, "macy's", 33, 41.95, 0, 1, H - 1.1, 2.1, [0.24, 0.24, 0.26], 0.1, 0)
   // the glass front on Geary, with its stone end piers
   const G = 36
   const gz = 41.2
   mass(out, clipBox(f.ring, f, -70, 12, 0.5, 60), G, {
     height: G,
     base: { height: 6, face: shops, canopy: { depth: 1.5, colour: [0.35, 0.36, 0.38] } },
-    tiers: [{ to: 1, face: { kind: 'curtain', material: 'metal', wall: [0.62, 0.64, 0.66], glass: [0.5, 0.57, 0.63], pitch: 3.2, floor: 4.3 } }],
+    // (the glass reads pale grey in the photograph, the shop floors lit behind it; it is always in shade here)
+    tiers: [{ to: 1, face: { kind: 'curtain', material: 'metal', wall: [0.66, 0.68, 0.7], glass: [0.62, 0.67, 0.71], pitch: 3.2, floor: 4.3 } }],
     roof: [0.5, 0.5, 0.5],
     crown: { kind: 'parapet', height: 1.2, colour: [0.6, 0.62, 0.64] },
   })
-  gbox(out, f, -51.6, -46, gz - 0.2, gz + 0.5, 6, G + 1.2, GREY_STONE, surfaceTag('granite'))
-  gbox(out, f, 6, 12, gz - 0.2, gz + 0.5, 6, G + 1.2, GREY_STONE, surfaceTag('granite'))
-  // the middle bay, stood forward, and the stone band over the door
-  gbox(out, f, -28, -12, gz, gz + 1.6, 7.5, G - 1, [0.5, 0.57, 0.63], surfaceTag('glass'))
-  for (let y = 7.5 + 4.3; y < G - 1; y += 4.3) gbox(out, f, -28.1, -11.9, gz + 1.6, gz + 1.8, y - 0.15, y + 0.15, [0.62, 0.64, 0.66])
-  gbox(out, f, -28.5, -11.5, gz, gz + 2, 6, 7.5, GREY_STONE, surfaceTag('granite'))
-  wallText(out, f, "MACY'S", -20, gz + 0.6, 0, 1, G + 1.3, 2.6, WHITE, 0.3)
-  wallStar(out, f, -20 - lettersWidth("MACY'S", 2.6) / 2 - 1.6, gz + 0.6, 0, 1, G + 2.6, 1.1, MACY_RED)
-  for (const x of [-25.5, -20, -14.5]) gcol(out, f, x, 36, G, G + 9, 0.08, [0.8, 0.8, 0.8], 4)
+  /*
+   * The owner's photograph from the square (2026-10-18): wide plain grey stone piers at both ends, each with two square
+   * plaques; between them the glass grid with its floor slabs showing, and in the middle a shallow BOW of glass bays
+   * standing forward, "macy's" in lowercase across its top floor and a small one over the doors. Flagpoles on the roof.
+   */
+  gbox(out, f, -51.6, -44, gz - 0.2, gz + 0.5, 6, G + 1.2, GREY_STONE, surfaceTag('granite'))
+  gbox(out, f, 4.5, 12, gz - 0.2, gz + 0.5, 6, G + 1.2, GREY_STONE, surfaceTag('granite'))
+  for (const x of [-47.8, 8.25]) for (const y of [G - 9, G - 18]) gbox(out, f, x - 1.6, x + 1.6, gz + 0.5, gz + 0.62, y, y + 3.2, [0.42, 0.42, 0.42], surfaceTag('granite'))
+  // the bow: seven glass facets on a shallow arc, each with the floor slabs across it
+  const bx0 = -23
+  const bx1 = -9
+  const BOW = 1.8
+  for (let k = 0; k < 7; k++) {
+    const xa = bx0 + ((bx1 - bx0) * k) / 7
+    const xb = bx0 + ((bx1 - bx0) * (k + 1)) / 7
+    const d = 0.3 + BOW * Math.sin((Math.PI * (k + 0.5)) / 7)
+    gbox(out, f, xa, xb, gz, gz + d, 7.5, G - 1, [0.64, 0.69, 0.73], surfaceTag('glass'))
+    for (let y = 7.5 + 4.3; y < G - 1; y += 4.3) gbox(out, f, xa, xb, gz + d, gz + d + 0.12, y - 0.15, y + 0.15, [0.62, 0.64, 0.66])
+  }
+  gbox(out, f, bx0 - 0.5, bx1 + 0.5, gz, gz + 2.2, 6, 7.5, GREY_STONE, surfaceTag('granite'))
+  wallText(out, f, "macy's", (bx0 + bx1) / 2, gz + BOW + 0.45, 0, 1, G - 3.6, 2.2, WHITE, 0.1)
+  wallText(out, f, "macy's", (bx0 + bx1) / 2, gz + 2.3, 0, 1, 6.4, 0.8, WHITE, 0.05)
+  for (const x of [-21, -16, -11]) gcol(out, f, x, 36, G, G + 9, 0.08, [0.8, 0.8, 0.8], 4)
   // the O'Farrell blade: dark brown, white letters down both faces, near Stockton
   const bx = 38
   const bz = -41.6
@@ -1290,6 +1308,59 @@ const iMagninGrant = spec({
   roof: [0.55, 0.54, 0.52],
 })
 
+/**
+ * The block on Geary between Macy's and Powell (way/35174693, no name or address in OSM), across Geary from the square:
+ * in the owner's photograph from the square (2026-10-18) a seven-storey beige classical front — punched windows in a
+ * plain grid, a moulded cornice — with a big billboard of fashion models standing on its roof facing the square. Was the
+ * `classical` restyle. The billboard's picture is a generic fashion advertisement (GUESSED: whatever is posted changes).
+ */
+function gearyBillboardBlock(out: MeshBuilder, fit: Fit): void {
+  const H = fit.height > 18 && fit.height < 40 ? fit.height : 27
+  const BEIGE: Rgb = [0.8, 0.72, 0.6]
+  tower(out, fit, {
+    height: H,
+    base: { height: 5, face: { kind: 'curtain', material: 'metal', wall: [0.24, 0.23, 0.22], glass: [0.18, 0.2, 0.22], pitch: 3.4, floor: 5 }, canopy: { depth: 1, colour: [0.25, 0.24, 0.23] } },
+    tiers: [
+      { to: 0.9, face: { kind: 'punched', material: 'terracotta', wall: BEIGE, glass: [0.2, 0.21, 0.23], pitch: 3, solid: 0.5, floor: 3.2 } },
+      { to: 1, face: { kind: 'punched', material: 'terracotta', wall: BEIGE, glass: [0.2, 0.21, 0.23], pitch: 3, solid: 0.55, floor: 3 }, cornice: { depth: 1.1, height: 0.9 } },
+    ],
+    roof: [0.5, 0.48, 0.45],
+  })
+  // the billboard: on steel legs at the front of the roof, facing the square across Geary (`front: 351`: local -z north)
+  const ring = towerRing(fit)
+  const e = edgeAt(ring, edgeFacing(ring, 180))
+  const sgn = e.nz <= 0 ? 1 : -1
+  const nx = e.nx * sgn
+  const nz = e.nz * sgn
+  const w = Math.min(16, e.L * 0.85)
+  // a point `u` along the front, `v` out from it (negative: back over the roof), at height y
+  const P = (u: number, v: number, y: number): [number, number, number] => [e.mid.x + e.tx * u + nx * v, y, e.mid.z + e.tz * u + nz * v]
+  const back = -2.5
+  const y0 = H + 1.5
+  const y1 = y0 + 5.5
+  const STEELG: Rgb = [0.3, 0.3, 0.31]
+  for (const u of [-w / 2 + 1, 0, w / 2 - 1]) {
+    const a = P(u, back - 0.4, 0)
+    const b = P(u, back - 2.2, 0)
+    prism(out, a[0], a[2], H, y0 + 0.2, 0.12, 4, STEELG, surfaceTag('metal'))
+    prism(out, b[0], b[2], H, y0 - 1, 0.1, 4, STEELG, surfaceTag('metal'))
+  }
+  const panel = (ua: number, ub: number, ya: number, yb: number, d: number, c: Rgb, tag = 0): void => {
+    out.quad([P(ua, back + d, ya), P(ub, back + d, ya), P(ub, back + d, yb), P(ua, back + d, yb)], [nx, 0, nz], [[0, 0], [1, 0], [1, 1], [0, 1]], c, tag)
+  }
+  // the board's dark back and frame, a pale ground, the figures standing on it, the brand's mark at the right
+  const m = P(0, back - 0.15, (y0 + y1) / 2)
+  boxAlong(out, m[0], m[1], m[2], w / 2 + 0.2, (y1 - y0) / 2 + 0.2, 0.15, Math.atan2(nx, nz), [0.2, 0.2, 0.21], surfaceTag('metal'))
+  panel(-w / 2, w / 2, y0, y1, 0.02, [0.86, 0.8, 0.74])
+  const figures: Rgb[] = [[0.62, 0.18, 0.2], [0.2, 0.24, 0.4], [0.78, 0.62, 0.5], [0.15, 0.15, 0.17], [0.7, 0.35, 0.22]]
+  for (let i = 0; i < figures.length; i++) {
+    const fu = -w / 2 + w * 0.12 + (i * (w * 0.62)) / (figures.length - 1)
+    panel(fu - 0.55, fu + 0.55, y0 + 0.3, y1 - 1.2, 0.04, figures[i])
+    panel(fu - 0.3, fu + 0.3, y1 - 1.2, y1 - 0.4, 0.04, [0.78, 0.6, 0.5])
+  }
+  panel(w / 2 - 3.4, w / 2 - 1, y0 + 1.6, y0 + 4, 0.04, [0.62, 0.52, 0.46])
+}
+
 /** A flat panel of ground in the grid frame (paving band, lawn panel): one upward quad, nothing more. */
 function gslab(out: MeshBuilder, f: Frame, x0: number, x1: number, z0: number, z1: number, y: number, c: Rgb, tag = 0): void {
   const P = (x: number, z: number): V3 => { const p = f.at(x, z); return [p.x, y, p.z] }
@@ -1299,19 +1370,29 @@ function gslab(out: MeshBuilder, f: Frame, x0: number, x1: number, z0: number, z
 /**
  * Union Square (laid out 1850; rebuilt over its garage in 2002 by April Philips and Michael Fotheringham).
  *
- * What the model has to get right, from the photographs (Commons: "2015 Union Square, San Francisco.jpg" — the
- * column from the paved deck, the maroon lamp standards with their steel globes, the café pavilion and the
- * amphitheatre steps; "2017 Union Square San Francisco 1.jpg" — the banded granite paving, the broad stair with
- * its steel handrails, the trellised pavilion): the square is a GRANITE DECK on the roof of its garage, about
- * 1.5 m over the four streets, not a park at grade. Powell (−x) and Geary (−z) fall to the street in broad
- * flights; Stockton (+x) and Post (+z) are held by a low granite wall with narrow stair cuts; the garage's
- * vehicle ramps go down at two opposite corners. The middle is hard paving — an amphitheatre for the buskers and
- * the art fair — with the lawn as flat panels at the Post and Geary ends, and the Dewey Monument (1903, Robert
- * Aitken and Newton Tharp) on its stepped pedestal in the centre.
+ * THE LEVELS (2026-10-18, the owner's photographs from Macy's and from the square, "the stairs go DOWN on the Saks
+ * side and UP on the Macy's side"; Mapillary panoramas 1001348737138144 from the column, 100315509261783 by Geary,
+ * 1002035460411221 by Post and Stockton): the square is built on the roof of its garage across ~6.5 m of cross slope
+ * (the designers' "over 22 feet"), the ground falling from Post and Powell (high) to Geary and Stockton (low). So it is
+ * not one deck but three levels:
+ *  - the CENTRAL PLAZA, flat granite in a checkerboard of warm cream and dark grey bands, the Dewey Monument in the
+ *    middle — above Geary and Stockton, at about the level of Powell;
+ *  - toward Geary (Macy's), the plaza's edge is a hedge bed with benches in front, and below it lawn terraces step
+ *    DOWN to the Geary pavement, with three broad flights through them — from Geary you go UP into the square;
+ *  - toward Post (Saks), wide stadium steps rise from the plaza to the POST TERRACE of lawns, planting beds and the
+ *    glass café pavilion — from Post you go DOWN into the square; the terrace is level with Post at the Powell end and
+ *    stands over it toward Stockton, where short flights come down to the Post pavement behind a railing;
+ *  - toward Powell the plaza meets the pavement in broad flights; toward Stockton, terraces with one flight on the
+ *    axis of Maiden Lane.
  *
- * The figure on the column is DELIBERATELY PLAIN: Victory is priority 1 in MODELS_NEEDED.md and gets a real model
- * from the user; this is only a bronze mass so the column is not bare. And nothing grows here — the vegetation
- * layer plants the square (docs/BUILDINGS.md, "Never plant anything"); the lawn is flat coloured ground.
+ * The levels are measured, not draped: every level is set from `fit.groundAt` so nothing the model draws lies under
+ * the city's ground (which cannot be dug), and each surface is ONE flat layer — the draped deck it replaces laid its
+ * lawn 4 cm over paving that was tessellated differently, and on the slope the two crossed into the irregular green
+ * and grey patches of the owner's screenshot. The plaza stays at `deck` = the ground under the column + 1.5 m, which is
+ * what the Dewey Monument's statue attaches to (san-francisco-statues.json, `draped`: its ground + 23.65 m).
+ *
+ * The lamp standards are R.M. Fischer's: a maroon post with clusters of globes. Café tables under green umbrellas by
+ * the pavilions. The lawn is flat coloured ground in raised beds; the trees and palms are the vegetation layer's.
  *
  * Grid frame: +x east to Stockton, −x west to Powell, +z north to Post, −z south to Geary.
  */
@@ -1320,7 +1401,6 @@ function unionSquarePlaza(out: MeshBuilder, fit: Fit): void {
   const hz = Math.min(50, Math.max(28, fit.hz || 39))
   const f = ownFrame([{ x: -hx, z: -hz }, { x: hx, z: -hz }, { x: hx, z: hz }, { x: -hx, z: hz }])
   const GRAN = surfaceTag('granite')
-  const CONC = surfaceTag('concrete')
   const MET = surfaceTag('metal')
   const GLS = surfaceTag('glass')
   // (the paving is mostly UP faces, lit by sky and full sun at once — about 1.8× — so pale greys clipped to pure white
@@ -1328,74 +1408,248 @@ function unionSquarePlaza(out: MeshBuilder, fit: Fit): void {
   const DARK: Rgb = [0.36, 0.36, 0.35]
   const MID: Rgb = [0.48, 0.47, 0.45]
   const PALE: Rgb = [0.6, 0.58, 0.55]
+  const CREAM: Rgb = [0.62, 0.56, 0.49]
   const LAWN: Rgb = [0.23, 0.33, 0.17]
+  const HEDGE: Rgb = [0.19, 0.31, 0.15]
   const MAROON: Rgb = [0.33, 0.16, 0.14]
   const STEEL: Rgb = [0.86, 0.87, 0.89]
   const STONE: Rgb = [0.88, 0.86, 0.82]
-  const deck = 1.5
-  // the deck over the garage: back from Powell and Geary to leave room for their flights, close to Stockton and Post
-  const xW = -hx + 7
-  const xE = hx - 2.5
-  const zS = -hz + 7
-  const zN = hz - 2.5
-  gbox(out, f, xW, xE, zS, zN, -0.4, deck, MID, GRAN)
+  const GLOBE: Rgb = [1, 0.95, 0.82]
+  const UMBRELLA: Rgb = [0.12, 0.34, 0.2]
 
-  // the paving: bands of pale and dark granite across the deck, and the wide pale spine down the middle
-  for (let x = xW; x < xE; x += 5.5) {
-    gslab(out, f, x, Math.min(x + 5.5, xE), zS, zN, deck + 0.04, (Math.round((x - xW) / 5.5) % 2 ? MID : DARK), GRAN)
+  // ---- the ground, over the model's base (0 where the loader did not measure it: tests, model shots)
+  const gAt = (x: number, z: number): number => fit.groundAt?.(x, z) ?? 0
+  const sample = (x0: number, x1: number, z0: number, z1: number, hi: boolean): number => {
+    const nx = Math.max(1, Math.ceil((x1 - x0) / 2))
+    const nz = Math.max(1, Math.ceil((z1 - z0) / 2))
+    let v = hi ? -Infinity : Infinity
+    for (let i = 0; i <= nx; i++) {
+      for (let j = 0; j <= nz; j++) {
+        const g = gAt(x0 + ((x1 - x0) * i) / nx, z0 + ((z1 - z0) * j) / nz)
+        v = hi ? Math.max(v, g) : Math.min(v, g)
+      }
+    }
+    return v
   }
-  gslab(out, f, xW, xE, -6.5, 6.5, deck + 0.08, PALE, GRAN)
-  gslab(out, f, -7.5, 7.5, zS, zN, deck + 0.08, PALE, GRAN)
+  const hiG = (x0: number, x1: number, z0: number, z1: number): number => sample(x0, x1, z0, z1, true)
+  const loG = (x0: number, x1: number, z0: number, z1: number): number => sample(x0, x1, z0, z1, false)
 
-  // the lawn panels at the Post and Geary ends: flat coloured ground, nothing planted on them
-  gslab(out, f, -30, 30, zN - 18, zN - 6, deck + 0.12, LAWN)
-  gslab(out, f, -30, 30, zS + 6, zS + 18, deck + 0.12, LAWN)
+  // the plaza: the column's ground + 1.5 m, the level the Dewey statue is attached at (see above)
+  const deck = gAt(0, 0) + 1.5
 
-  // the broad flight down to Powell, and the one down to Geary: four granite treads, nested back to the deck
-  // (each tread its own block, front to the next tread's front — nested back to the deck, all four shared their cheeks
-  // and z-fought in alternating colours down both flights, 2026-10-03)
-  for (let i = 0; i < 4; i++) {
-    const y = (i + 1) * (deck / 4)
-    gbox(out, f, -hx + 1 + i * 1.5, i === 3 ? xW : -hx + 1 + (i + 1) * 1.5, zS + 9, zN - 9, -0.3, y, i % 2 ? PALE : MID, GRAN)
-    gbox(out, f, xW + 12, xE - 12, -hz + 1 + i * 1.5, i === 3 ? zS : -hz + 1 + (i + 1) * 1.5, -0.3, y, i % 2 ? PALE : MID, GRAN)
+  // ---- the kit: a solid block down into the ground (no bottom; a top only where asked), paving, a flight of steps
+  const block = (x0: number, x1: number, z0: number, z1: number, y: number, side: Rgb, top: Rgb | null, topTag = GRAN, sideTag = GRAN): void => {
+    if (x1 - x0 < 0.05 || z1 - z0 < 0.05) return
+    const y0 = Math.min(loG(x0, x1, z0, z1), y) - 0.4
+    const uv: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
+    out.quad([[x0, y0, z0], [x1, y0, z0], [x1, y, z0], [x0, y, z0]], [0, 0, -1], uv, side, sideTag)
+    out.quad([[x1, y0, z1], [x0, y0, z1], [x0, y, z1], [x1, y, z1]], [0, 0, 1], uv, side, sideTag)
+    out.quad([[x0, y0, z1], [x0, y0, z0], [x0, y, z0], [x0, y, z1]], [-1, 0, 0], uv, side, sideTag)
+    out.quad([[x1, y0, z0], [x1, y0, z1], [x1, y, z1], [x1, y, z0]], [1, 0, 0], uv, side, sideTag)
+    if (top) gslab(out, f, x0, x1, z0, z1, y, top, topTag)
   }
-  // their cheek walls, and the steel handrails that split the Geary flight
-  for (const z of [zS + 9, zN - 9]) gbox(out, f, -hx + 1, xW + 0.6, z - 0.55, z + 0.55, -0.3, deck + 0.75, DARK, GRAN)
-  for (const x of [xW + 12, xE - 12]) gbox(out, f, x - 0.55, x + 0.55, -hz + 1, zS + 0.6, -0.3, deck + 0.75, DARK, GRAN)
-  for (const x of [-18, 6]) gstrut(out, f, [x, deck + 1.0, zS + 0.4], [x, 0.95, -hz + 1.4], 0.05, 0.05, STEEL)
-  for (const z of [-12, 12]) gstrut(out, f, [xW + 0.4, deck + 1.0, z], [-hx + 1.4, 0.95, z], 0.05, 0.05, STEEL)
-
-  // Stockton and Post: the low granite wall along the deck's edge, cut by a narrow stair at two places each
-  const cutsX = [-22, 20]
-  const cutsZ = [-16, 16]
-  for (const [a, b] of [[zS, cutsZ[0] - 4], [cutsZ[0] + 4, cutsZ[1] - 4], [cutsZ[1] + 4, zN]] as [number, number][]) {
-    if (b > a) gbox(out, f, xE - 0.7, xE, a, b, deck, deck + 0.55, PALE, GRAN)
+  /** the cut points of a..b on a `c`-metre grid, so paving in neighbouring blocks lines up */
+  const cuts = (a: number, b: number, c: number): number[] => {
+    const r = [a]
+    for (let v = Math.floor(a / c) * c + c; v < b - 0.01; v += c) if (v > a + 0.01) r.push(v)
+    r.push(b)
+    return r
   }
-  for (const [a, b] of [[xW, cutsX[0] - 4], [cutsX[0] + 4, cutsX[1] - 4], [cutsX[1] + 4, xE]] as [number, number][]) {
-    if (b > a) gbox(out, f, a, b, zN - 0.7, zN, deck, deck + 0.55, PALE, GRAN)
+  const pave = (x0: number, x1: number, z0: number, z1: number, y: number, colour: (ix: number, iz: number) => Rgb, cell = 4): void => {
+    const xs = cuts(x0, x1, cell)
+    const zs = cuts(z0, z1, cell)
+    for (let i = 0; i < xs.length - 1; i++) {
+      for (let j = 0; j < zs.length - 1; j++) {
+        const ix = Math.floor((xs[i] + xs[i + 1]) / 2 / cell)
+        const iz = Math.floor((zs[j] + zs[j + 1]) / 2 / cell)
+        gslab(out, f, xs[i], xs[i + 1], zs[j], zs[j + 1], y, colour(ix, iz), GRAN)
+      }
+    }
   }
-  for (let i = 0; i < 3; i++) {
-    const y = (i + 1) * (deck / 3)
-    for (const z of cutsZ) gbox(out, f, i === 2 ? xE : hx - 0.4 - (i + 1) * 0.7, hx - 0.4 - i * 0.7, z - 3.6, z + 3.6, -0.3, y, i % 2 ? MID : PALE, GRAN)
-    for (const x of cutsX) gbox(out, f, x - 3.6, x + 3.6, i === 2 ? zN : hz - 0.4 - (i + 1) * 0.7, hz - 0.4 - i * 0.7, -0.3, y, i % 2 ? MID : PALE, GRAN)
+  const mod = (a: number, n: number): number => ((a % n) + n) % n
+  // the plaza's checkerboard: dark grey bands every third cell both ways over warm cream, a mid grey where they cross
+  const checker = (ix: number, iz: number): Rgb => {
+    const a = mod(ix, 3) === 0
+    const b = mod(iz, 3) === 0
+    return a && b ? MID : a || b ? DARK : CREAM
   }
-
-  /*
-   * The garage: a vehicle entrance at two opposite corners (Geary–Powell, Post–Stockton), each a dark portal in
-   * the deck's flank with its ramp sloping down to it between concrete parapets. Most of the ramp is below the
-   * street and the city's ground covers it; what a rider sees is the portal, the parapets and the dark mouth.
+  const terracePaving = (ix: number, iz: number): Rgb => (mod(ix + iz, 2) ? PALE : CREAM)
+  /**
+   * A flight from its FOOT edge (`foot`: the side of the rectangle, at yFoot) to the opposite edge (at yHead), one
+   * block per tread so no two treads share a face. Up or down: going down from the foot (Powell over the plaza), the
+   * first tread is at the foot's level and the last one riser over the head's.
    */
-  for (const s of [-1, 1]) {
-    const zEdge = s > 0 ? zN : zS
-    const zOut = s > 0 ? hz - 0.5 : -hz + 0.5
-    const x0 = s > 0 ? 40 : -50
-    const x1 = s > 0 ? 50 : -40
-    gbox(out, f, x0 + 0.6, x1 - 0.6, Math.min(zEdge, zEdge + s * 0.7), Math.max(zEdge, zEdge + s * 0.7), -0.4, 1.45, [0.07, 0.07, 0.08], CONC)
-    for (const x of [x0, x1]) gbox(out, f, x - 0.5, x + 0.5, Math.min(zEdge, zOut), Math.max(zEdge, zOut), -0.6, 0.95, [0.58, 0.58, 0.57], CONC)
-    const P = (x: number, y: number, z: number): V3 => { const p = f.at(x, z); return [p.x, y, p.z] }
-    const q: V3[] = [P(x0 + 0.5, 0, zOut), P(x1 - 0.5, 0, zOut), P(x1 - 0.5, -3.2, zEdge), P(x0 + 0.5, -3.2, zEdge)]
-    out.quad((s > 0 ? [q[3], q[2], q[1], q[0]] : q) as V3[], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], [0.22, 0.22, 0.23], CONC)
+  const flight = (x0: number, x1: number, z0: number, z1: number, foot: 'n' | 's' | 'e' | 'w', yFoot: number, yHead: number,
+    riser = 0.16, top: Rgb = PALE, side: Rgb = MID): void => {
+    const rise = yHead - yFoot
+    const n = Math.max(1, Math.round(Math.abs(rise) / riser))
+    const len = foot === 'w' || foot === 'e' ? x1 - x0 : z1 - z0
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * len
+      const b = ((i + 1) / n) * len
+      const y = rise >= 0 ? yFoot + ((i + 1) / n) * rise : yFoot + (i / n) * rise
+      // (never under the city's ground, which cannot be dug: a tread the slope would bury stands just over it)
+      const r: [number, number, number, number] = foot === 's' ? [x0, x1, z0 + a, z0 + b] : foot === 'n' ? [x0, x1, z1 - b, z1 - a]
+        : foot === 'w' ? [x0 + a, x0 + b, z0, z1] : [x1 - b, x1 - a, z0, z1]
+      block(r[0], r[1], r[2], r[3], Math.max(y, hiG(r[0], r[1], r[2], r[3]) + 0.05), side, top)
+    }
   }
+  /** a steel handrail down a flight, on posts, from (x, z) at y0 to (x2, z2) at y1 */
+  const handrail = (x: number, z: number, y0: number, x2: number, z2: number, y1: number): void => {
+    gstrut(out, f, [x, y0 + 0.95, z], [x2, y1 + 0.95, z2], 0.05, 0.05, STEEL)
+    for (const t of [0, 0.5, 1]) {
+      const px = x + (x2 - x) * t
+      const pz = z + (z2 - z) * t
+      const py = y0 + (y1 - y0) * t
+      gcol(out, f, px, pz, py - 0.1, py + 0.95, 0.03, STEEL, 4)
+    }
+  }
+  /** a level tier: granite sides, a lawn top in a granite kerb (one surface each: the kerb is its own block) */
+  const lawnTier = (x0: number, x1: number, z0: number, z1: number, y: number): void => {
+    block(x0, x1, z0, z1, y, PALE, LAWN, 0)
+  }
+  /** the plan's segments of a..b between the cut-outs `holes` (each [from, to]) */
+  const between = (a: number, b: number, holes: [number, number][]): [number, number][] => {
+    const r: [number, number][] = []
+    let at = a
+    for (const [h0, h1] of [...holes].sort((p, q) => p[0] - q[0])) {
+      if (h0 > at + 0.05) r.push([at, Math.min(h0, b)])
+      at = Math.max(at, h1)
+    }
+    if (b > at + 0.05) r.push([at, b])
+    return r
+  }
+
+  // ---- the plan (grid frame, metres)
+  const zP = -hz + 13          // the plaza's Geary edge
+  const zH = zP - 2.5          // the hedge bed in front of it, at the plaza's level
+  const xPW = -hx + 12         // the plaza's Powell edge
+  const xPE = hx - 10          // and its Stockton edge
+  const xSplit = -14           // the Post steps start further north east of here, where the ground under the plaza is lower
+  const zNW = 4                // the plaza's Post edge west of xSplit
+  const zNE = 14               // and east of it
+  const STEPS = 8              // how deep the stadium steps up to the Post terrace are
+
+  // the central plaza: solid down to the ground, its checkerboard on top
+  block(xSplit, xPE, zP, zNE, deck, MID, null)
+  block(xPW, xSplit, zP, zNW, deck, MID, null)
+  pave(xSplit, xPE, zP, zNE, deck, checker)
+  pave(xPW, xSplit, zP, zNW, deck, checker)
+
+  // ---- Geary (Macy's): the hedge bed along the plaza's edge, lawn terraces stepping down, three broad flights up
+  const gearyFlights: [number, number][] = [[-38, -28], [-6, 6], [24, 34]]
+  for (const [a, b] of gearyFlights) {
+    const yF = hiG(a, b, -hz - 2.5, -hz - 1.5)
+    flight(a, b, -hz, zP, 's', yF, deck)
+    for (const x of b - a > 10 ? [a + 0.6, (a + b) / 2, b - 0.6] : [a + 0.6, b - 0.6]) handrail(x, -hz + 0.4, yF, x, zP - 0.3, deck)
+  }
+  for (const [a, b] of between(-hx, hx, gearyFlights)) {
+    const gS = loG(a, b, -hz - 2.5, -hz - 1.5)
+    const d = Math.max(0, deck - gS)
+    block(a, b, zH, zP, deck, MID, null)
+    pave(a, b, zH, zP, deck, () => PALE, 4)
+    // the planted bed: a granite kerb, and the hedge standing in it (photographs: shrubs along the Geary edge)
+    block(a + 0.4, b - 0.4, zH + 0.3, zP - 0.9, deck + 0.4, PALE, PALE)
+    block(a + 0.6, b - 0.6, zH + 0.5, zP - 1.1, deck + 1.05, HEDGE, HEDGE, 0, 0)
+    const L1 = Math.max(deck - d * 0.38, hiG(a, b, zH - 4, zH) + 0.12)
+    const L2 = Math.max(Math.min(deck - d * 0.72, L1), hiG(a, b, zH - 8, zH - 4) + 0.12)
+    const L3 = Math.max(Math.min(gS + 0.45, L2), hiG(a, b, -hz, zH - 8) + 0.12)
+    lawnTier(a, b, zH - 4, zH, L1)
+    lawnTier(a, b, zH - 8, zH - 4, L2)
+    lawnTier(a, b, -hz, zH - 8, L3)
+  }
+
+  // ---- Powell: broad flights between the plaza and the pavement, up or down as the street runs
+  for (const [z0, z1] of [[zP, zP + 10], [zP + 10, zP + 20], [zP + 20, zNW]] as [number, number][]) {
+    if (z1 - z0 < 0.5) continue
+    const yF = hiG(-hx - 2.5, -hx - 1.5, z0, z1)
+    flight(-hx, xPW, z0, z1, 'w', yF, deck)
+    handrail(-hx + 0.4, (z0 + z1) / 2, yF, xPW - 0.3, (z0 + z1) / 2, deck)
+  }
+
+  // ---- Stockton: one flight on the axis of Maiden Lane, terraces either side of it
+  const stocktonFlight: [number, number] = [-7, 7]
+  {
+    const yF = hiG(hx + 1.5, hx + 2.5, stocktonFlight[0], stocktonFlight[1])
+    flight(xPE, hx, stocktonFlight[0], stocktonFlight[1], 'e', yF, deck)
+    for (const z of [stocktonFlight[0] + 0.6, 0, stocktonFlight[1] - 0.6]) handrail(hx - 0.4, z, yF, xPE + 0.3, z, deck)
+  }
+  for (const [a, b] of between(zP, zNE, [stocktonFlight])) {
+    const gE = loG(hx + 1.5, hx + 2.5, a, b)
+    const d = Math.max(0, deck - gE)
+    const L1 = Math.max(deck - d * 0.38, hiG(xPE, xPE + 3.5, a, b) + 0.12)
+    const L2 = Math.max(Math.min(deck - d * 0.72, L1), hiG(xPE + 3.5, xPE + 7, a, b) + 0.12)
+    const L3 = Math.max(Math.min(gE + 0.45, L2), hiG(xPE + 7, hx, a, b) + 0.12)
+    lawnTier(xPE, xPE + 3.5, a, b, L1)
+    lawnTier(xPE + 3.5, xPE + 7, a, b, L2)
+    lawnTier(xPE + 7, hx, a, b, L3)
+  }
+
+  // ---- Post (Saks): the stadium steps up from the plaza to the terrace
+  const TW = Math.max(deck + 1.0, hiG(-hx, xSplit, zNW + STEPS, hz) + 0.15)
+  const TE = Math.max(deck + 1.0, hiG(xSplit, hx, zNE + STEPS, hz) + 0.15, hiG(xPE, hx, zNE, zNE + STEPS) + 0.15)
+  // the seats, broad 0.4 m risers, cut by ordinary stairs with a handrail
+  const westCuts: [number, number][] = [[-42, -38], [-26, -22]]
+  const eastCuts: [number, number][] = [[-2.5, 2.5], [20, 24], [38, 42]]
+  for (const [a, b] of between(-hx, xSplit, westCuts)) flight(a, b, zNW, zNW + STEPS, 's', deck, TW, 0.42, MID, DARK)
+  for (const [a, b] of westCuts) {
+    flight(a, b, zNW, zNW + STEPS, 's', deck, TW, 0.16)
+    handrail((a + b) / 2, zNW + 0.3, deck, (a + b) / 2, zNW + STEPS - 0.3, TW)
+  }
+  for (const [a, b] of between(xSplit, xPE, eastCuts)) flight(a, b, zNE, zNE + STEPS, 's', deck, TE, 0.34, MID, DARK)
+  for (const [a, b] of eastCuts) {
+    flight(a, b, zNE, zNE + STEPS, 's', deck, TE, 0.16)
+    handrail((a + b) / 2, zNE + 0.3, deck, (a + b) / 2, zNE + STEPS - 0.3, TE)
+  }
+  // the Stockton end of the terrace comes down to the steps' level: a block at TE over the Stockton terraces' corner
+  block(xPE, hx, zNE, zNE + STEPS, TE, MID, null)
+  pave(xPE, hx, zNE, zNE + STEPS, TE, terracePaving)
+
+  // ---- the Post terrace, and the flights down from it to the Post pavement where it stands over the street
+  const postFlights: [number, number][] = [[-40, -34], [2, 8], [26, 31]]
+  const Tat = (x: number): number => (x < xSplit ? TW : TE)
+  const runOf = new Map<string, number>()
+  for (const [a, b] of postFlights) {
+    const T = Tat((a + b) / 2)
+    const yF = hiG(a, b, hz + 1.5, hz + 2.5)
+    if (T - yF < 0.3) continue
+    const n = Math.round((T - yF) / 0.16)
+    const run = n * 0.32
+    runOf.set(`${a}`, run)
+    flight(a, b, hz - run, hz, 'n', yF, T)
+    handrail(a + 0.4, hz - 0.3, yF, a + 0.4, hz - run + 0.3, T)
+    handrail(b - 0.4, hz - 0.3, yF, b - 0.4, hz - run + 0.3, T)
+  }
+  const terrace = (x0: number, x1: number, z0: number, T: number): void => {
+    const holes = postFlights.filter(([a]) => runOf.has(`${a}`))
+    // under each flight the terrace stops where the flight begins; elsewhere it runs to the Post edge
+    const xs = [...new Set([x0, x1, ...holes.flatMap(([a, b]) => [a, b]).filter((v) => v > x0 && v < x1)])].sort((p, q) => p - q)
+    for (let i = 0; i < xs.length - 1; i++) {
+      const a = xs[i]
+      const b = xs[i + 1]
+      const fl = holes.find(([p, q]) => p <= a + 0.01 && q >= b - 0.01)
+      const z1 = fl ? hz - runOf.get(`${fl[0]}`)! : hz
+      block(a, b, z0, z1, T, MID, null)
+      pave(a, b, z0, z1, T, terracePaving)
+      if (fl) continue
+      // the edge on Post: the hedge bed, and a railing where the terrace stands over the pavement
+      block(a + 0.3, b - 0.3, hz - 2.4, hz - 0.9, T + 0.85, HEDGE, HEDGE, 0, 0)
+      if (T - loG(a, b, hz + 1.5, hz + 2.5) > 0.5) {
+        gstrut(out, f, [a + 0.1, T + 1.0, hz - 0.2], [b - 0.1, T + 1.0, hz - 0.2], 0.05, 0.05, STEEL)
+        for (const x of cuts(a + 0.1, b - 0.1, 2)) gcol(out, f, x, hz - 0.2, T, T + 1.0, 0.03, STEEL, 4)
+      }
+    }
+  }
+  terrace(-hx, xSplit, zNW + STEPS, TW)
+  terrace(xSplit, hx, zNE + STEPS, TE)
+  // where the west terrace stands over the east one (and the plaza), a railing along its edge
+  if (TW - TE > 0.3) {
+    gstrut(out, f, [xSplit - 0.2, TW + 1.0, zNW + STEPS], [xSplit - 0.2, TW + 1.0, hz - 0.3], 0.05, 0.05, STEEL)
+    for (const z of cuts(zNW + STEPS, hz - 0.3, 2)) gcol(out, f, xSplit - 0.2, z, TW, TW + 1.0, 0.03, STEEL, 4)
+  }
+  // the lawns on the terrace, in raised granite beds
+  block(-hx + 6, -20, zNW + STEPS + 3, hz - 5, TW + 0.4, PALE, LAWN, 0)
+  block(-10, 22, zNE + STEPS + 3, hz - 5, TE + 0.4, PALE, LAWN, 0)
 
   // the Dewey Monument: the stepped base, the pedestal, the granite shaft, its Corinthian capital
   for (let i = 0; i < 3; i++) {
@@ -1412,49 +1666,68 @@ function unionSquarePlaza(out: MeshBuilder, fit: Fit): void {
    */
   gcol(out, f, 0, 0, deck + 5.2, deck + 22.3, 0.93, STONE, 24, 0.75, GRAN)
 
-  // the two glass café pavilions, at opposite corners, each under its metal trellis
-  for (const s of [-1, 1]) {
-    const cx = s * (hx - 16)
-    const cz = s * (hz - 13)
-    gbox(out, f, cx - 6.5, cx + 6.5, cz - 4.5, cz + 4.5, deck, deck + 3.6, [0.42, 0.52, 0.56], GLS)
-    gbox(out, f, cx - 6.9, cx + 6.9, cz - 4.9, cz + 4.9, deck + 3.6, deck + 4.1, [0.22, 0.22, 0.23], MET)
-    for (const dx of [-6.9, 6.9]) for (const dz of [-4.9, 4.9]) gcol(out, f, cx + dx, cz + dz, deck, deck + 4.1, 0.16, [0.22, 0.22, 0.23], 6, 0.16, MET)
-    // the trellis out over the tables, on its posts
-    const tz = cz - s * 8.5
-    gbox(out, f, cx - 6.9, cx + 6.9, Math.min(cz, tz) - 0.2, Math.max(cz, tz) + 0.2, deck + 4.0, deck + 4.16, [0.26, 0.26, 0.27], MET)
-    for (const dx of [-6.4, 0, 6.4]) gcol(out, f, cx + dx, tz, deck, deck + 4.0, 0.14, [0.22, 0.22, 0.23], 6, 0.14, MET)
+  // ---- the glass café pavilion on the Post terrace at the Stockton end, its trellis out over the tables to the west
+  {
+    const cx = hx - 18
+    const cz = zNE + STEPS + 7
+    const y = TE
+    gbox(out, f, cx - 6.5, cx + 6.5, cz - 4.5, cz + 4.5, y, y + 3.6, [0.42, 0.52, 0.56], GLS)
+    gbox(out, f, cx - 6.9, cx + 6.9, cz - 4.9, cz + 4.9, y + 3.6, y + 4.1, [0.22, 0.22, 0.23], MET)
+    for (const dx of [-6.9, 6.9]) for (const dz of [-4.9, 4.9]) gcol(out, f, cx + dx, cz + dz, y, y + 4.1, 0.16, [0.22, 0.22, 0.23], 6, 0.16, MET)
+    const tx = cx - 6.9 - 7.5
+    gbox(out, f, tx - 0.2, cx - 6.9, cz - 4.9, cz + 4.9, y + 4.0, y + 4.16, [0.26, 0.26, 0.27], MET)
+    for (const dz of [-4.4, 0, 4.4]) gcol(out, f, tx, cz + dz, y, y + 4.0, 0.14, [0.22, 0.22, 0.23], 6, 0.14, MET)
+    for (const [x, z] of [[tx + 2, cz - 2.5], [tx + 5, cz - 2.5], [tx + 2, cz + 2.5], [tx + 5, cz + 2.5]]) table(x, z, y, false)
   }
+  // the ticket kiosk on the plaza by Powell
+  gbox(out, f, xPW + 4, xPW + 11, zP + 6, zP + 11, deck, deck + 3.2, [0.42, 0.52, 0.56], GLS)
+  gbox(out, f, xPW + 3.6, xPW + 11.4, zP + 5.6, zP + 11.4, deck + 3.2, deck + 3.6, [0.22, 0.22, 0.23], MET)
 
-  // the stage terrace on the Powell side, two steps up off the plaza
-  for (let i = 0; i < 2; i++) gbox(out, f, xW + 3 - i * 0.9, xW + 17 + i * 0.9, -8 - i * 0.9, 8 + i * 0.9, deck, deck + 0.55 - i * 0.25, i ? MID : DARK, GRAN)
-  // and the seating bank in the Geary–Stockton corner, stepping up away from the plaza
-  for (let i = 0; i < 4; i++) gbox(out, f, 30, 50, zS + 3, zS + 14 - i * 2.4, deck, deck + 0.45 * (i + 1), i % 2 ? MID : DARK, GRAN)
+  /** a café table, and its green umbrella */
+  function table(x: number, z: number, y: number, umbrella = true): void {
+    gcol(out, f, x, z, y, y + 0.72, 0.05, [0.2, 0.22, 0.2], 6, 0.05, MET)
+    gcol(out, f, x, z, y + 0.72, y + 0.76, 0.42, [0.24, 0.3, 0.24], 10, 0.42, MET)
+    if (!umbrella) return
+    gcol(out, f, x, z, y + 0.76, y + 2.2, 0.03, [0.85, 0.85, 0.83], 4)
+    gcol(out, f, x, z, y + 1.85, y + 2.35, 1.3, UMBRELLA, 8, 0.06, 0)
+  }
+  // café tables on the plaza: the east side by Stockton, and round the kiosk
+  for (const x of [32, 38, 44]) for (const z of [-14, -8, -2, 4]) table(x, z, deck)
+  for (const x of [xPW + 4, xPW + 9]) for (const z of [zP + 14, zP + 19]) table(x, z, deck)
 
-  // the granite benches down both sides of the spine, the bollards along the top of the two flights
-  for (const z of [-10.5, 10.5]) for (let x = -26; x <= 26; x += 10.5) gbox(out, f, x - 1.2, x + 1.2, z - 0.28, z + 0.28, deck, deck + 0.46, PALE, GRAN)
-  for (let z = zS + 10; z <= zN - 10; z += 6) gcol(out, f, xW + 0.9, z, deck, deck + 0.85, 0.17, [0.2, 0.2, 0.21], 8, 0.15, MET)
-  for (let x = xW + 13; x <= xE - 13; x += 6) gcol(out, f, x, zS + 0.9, deck, deck + 0.85, 0.17, [0.2, 0.2, 0.21], 8, 0.15, MET)
+  // granite benches in front of the Geary hedge, and round the monument
+  for (const [a, b] of between(-hx + 2, hx - 2, gearyFlights)) {
+    for (const x of cuts(a + 2, b - 2, 9).slice(0, -1)) gbox(out, f, x, x + 2.4, zP + 0.6, zP + 1.15, deck, deck + 0.46, PALE, GRAN)
+  }
+  for (const [x, z] of [[-14, -10], [14, -10], [-14, 10], [14, 10]]) gbox(out, f, x - 1.2, x + 1.2, z - 0.28, z + 0.28, deck, deck + 0.46, PALE, GRAN)
 
-  // the flag poles by the Post lawn
-  for (const x of [-13, 0, 13]) {
-    gbox(out, f, x - 0.7, x + 0.7, zN - 4.3, zN - 2.9, deck, deck + 0.5, PALE, GRAN)
-    gcol(out, f, x, zN - 3.6, deck + 0.5, deck + 16, 0.16, [0.9, 0.9, 0.89], 8, 0.09, MET)
+  // the flag poles at the top of the steps on the axis
+  for (const x of [-7, 0, 7]) {
+    const z = zNE + STEPS + 1.2
+    gbox(out, f, x - 0.7, x + 0.7, z - 0.7, z + 0.7, TE, TE + 0.5, PALE, GRAN)
+    gcol(out, f, x, z, TE + 0.5, TE + 16, 0.16, [0.9, 0.9, 0.89], 8, 0.09, MET)
   }
 
   /*
-   * The lamp standards round the deck: a maroon cast shaft carrying a steel globe, the square's own light
-   * (Commons "2015 Union Square, San Francisco.jpg"). Lit after dark.
+   * The lamp standards: R.M. Fischer's, a maroon post carrying clusters of white globes (the owner's photograph from
+   * the square; Commons "2015 Union Square, San Francisco.jpg"). Lit after dark.
    */
-  const lamps: [number, number][] = []
-  for (let z = zS + 7; z <= zN - 7; z += 13) lamps.push([xW + 2.5, z], [xE - 2.5, z])
-  for (let x = xW + 14; x <= xE - 14; x += 15) lamps.push([x, zS + 2.5], [x, zN - 2.5])
-  for (const [x, z] of lamps) {
-    gcol(out, f, x, z, deck, deck + 0.35, 0.34, MAROON, 8, 0.26, MET)
-    gcol(out, f, x, z, deck + 0.35, deck + 4.3, 0.22, MAROON, 8, 0.17, MET)
-    gcol(out, f, x, z, deck + 4.3, deck + 4.72, 0.18, STEEL, 12, 0.46, MET)
-    gcol(out, f, x, z, deck + 4.72, deck + 5.14, 0.46, STEEL, 12, 0.18, MET)
-    gcol(out, f, x, z, deck + 4.6, deck + 4.84, 0.48, [1, 0.93, 0.76], 12, 0.48, EMIT)
+  const lamp = (x: number, z: number, y: number): void => {
+    gcol(out, f, x, z, y, y + 0.4, 0.32, MAROON, 8, 0.24, MET)
+    gcol(out, f, x, z, y + 0.4, y + 5.4, 0.16, MAROON, 8, 0.12, MET)
+    for (const [h, r] of [[4.1, 0.5], [4.9, 0.38]] as [number, number][]) {
+      for (let k = 0; k < 4; k++) {
+        const ang = (k / 4) * Math.PI * 2 + (h > 4.5 ? Math.PI / 4 : 0)
+        gstrut(out, f, [x, y + h - 0.1, z], [x + Math.cos(ang) * r, y + h - 0.1, z + Math.sin(ang) * r], 0.04, 0.04, MAROON)
+        gcol(out, f, x + Math.cos(ang) * r, z + Math.sin(ang) * r, y + h - 0.1, y + h + 0.24, 0.17, GLOBE, 8, 0.17, EMIT)
+      }
+    }
+    gcol(out, f, x, z, y + 5.4, y + 5.75, 0.2, GLOBE, 8, 0.2, EMIT)
   }
+  for (const x of cuts(-42, 46, 14)) if (!gearyFlights.some(([a, b]) => x > a - 1 && x < b + 1)) lamp(x, zP + 2.6, deck)
+  for (const x of cuts(xSplit + 4, xPE - 4, 14)) if (!eastCuts.some(([a, b]) => x > a - 1 && x < b + 1)) lamp(x, zNE - 1.5, deck)
+  for (const z of [zP + 4, zP + 18]) { lamp(xPW + 1.5, z, deck); lamp(xPE - 1.5, z, deck) }
+  for (const x of [-50, -30]) lamp(x, zNW + STEPS + 1.5, TW)
 }
 
 /**
@@ -1536,5 +1809,6 @@ export const UNION_SQUARE: Record<string, (out: MeshBuilder, fit: Fit) => void> 
   camptonPlace,
   marinesMemorial,
   iMagninGrant,
+  gearyBillboardBlock,
   unionSquarePlaza,
 }

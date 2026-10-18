@@ -88,13 +88,13 @@ const KNOWN: Record<string, string[]> = {
     // (Civic Center Plaza: OSM's own café at 52 Grove and the 1958 garage pay kiosk stand in it, as they do)
     'intersects | Civic Center Plaza',
     // #109 — not on the ground. The Opera Plaza courtyard's +3.80 m is a RAISED DECK and is probably right;
-    // Union Square sunk 3.20 m with 6.0 m of relief across 120 × 78 m is the one to look at first.
+    // (Union Square left this list 2026-10-18: no longer draped or sunk — its levels are set from the ground, and the
+    //  garage ramps that went 3.2 m down are gone)
     'height | Opera Plaza courtyard',
     'height | Union Square Market Street Headhouse',
     'height | Powell Street Station Canopy',
     "height | Cupid's Span",
     'height | Ruth Asawa Mermaid Fountain',
-    'height | Union Square',
     // #110 — z-fighting candidates
     'coplanar | Opera Plaza courtyard',
     'coplanar | Union Square Market Street Headhouse',
