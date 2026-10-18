@@ -76,3 +76,5 @@ public/plants
 # written by tools/typecheck.js (gamekit's location comes from DANDYHORSE_DIR)
 .tsconfig.typecheck.json
 .gamekit-absent.d.ts
+
+incoming_assets/
