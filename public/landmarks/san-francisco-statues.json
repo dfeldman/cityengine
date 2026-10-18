@@ -211,16 +211,16 @@
     "lon": -122.4185377,
     "bearing": 90,
     "plinth": [
-      3.2,
-      3.6,
-      1.8
+      1.95,
+      2.15,
+      2.0
     ],
-    "plinthColour": "#9a958b",
+    "plinthColour": "#b9b6ad",
     "lodRanges": [
       140,
       340
     ],
     "replaces": "Abraham Lincoln statue",
-    "note": "assetkit-models-sf/lincoln-city-hall: OSM node 1901905716, City Hall's Polk Street side, facing east."
+    "note": "assetkit-models-sf/lincoln-city-hall: OSM node 1901905716, City Hall's Polk Street side, facing east; bronze on a pale granite die (owner's photo, 2026-10-18)."
   }
 ]
