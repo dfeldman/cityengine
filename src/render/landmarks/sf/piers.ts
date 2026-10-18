@@ -176,7 +176,11 @@ export const PIERS = {
    */
   pier15: (out: MeshBuilder, fit: Fit): void => {
     pier(out, fit, { number: '15', style: 'mission' })
-    signText(out, 'EXPLORATORIUM', 0, 8.2, fit.hz + 0.2, 1.3, [0.12, 0.13, 0.14])
+    // the name on its own dark band across the bulkhead, standing clear of the pilasters and the arch heads' stepped
+    // ornament, which half hid it when the letters were set in the wall (owner, 2026-10-17: "exploratorium sign is
+    // mostly obscured")
+    box(out, 0, 8.55, fit.hz + 0.75, Math.min(fit.hx * 0.75, 11), 0.85, 0.08, [0.12, 0.13, 0.14], surfaceTag('metal'))
+    signText(out, 'EXPLORATORIUM', 0, 8.55, fit.hz + 0.86, 1.1, [0.95, 0.95, 0.93])
     // at the bay end, from the deck up past the crown of the shed's roof, a little wider than the shed: its glass
     // block (shed 7.5 m to the eaves, the arched roof to ~11 m — piers.ts `pier`)
     const L = Math.min(22, fit.hz * 0.3), W = fit.hx - 1.5 + 0.35
