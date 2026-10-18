@@ -31,7 +31,8 @@
   },
   {
     "osm": [
-      "way/93817366"
+      "way/93817366",
+      "way/1485779621"
     ],
     "name": "611 Folsom Street",
     "procedural": "sixElevenFolsom",
@@ -71,7 +72,12 @@
   },
   {
     "osm": [
-      "way/112774489"
+      "way/112774489",
+      "way/1486849226",
+      "way/1486849227",
+      "way/1486849228",
+      "way/1486849221",
+      "way/1486849222"
     ],
     "name": "303 Second Street",
     "procedural": "threeOThreeSecondStreet", "plan": "union",
