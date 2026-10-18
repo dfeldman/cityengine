@@ -1329,7 +1329,6 @@ function unionSquarePlaza(out: MeshBuilder, fit: Fit): void {
   const MID: Rgb = [0.48, 0.47, 0.45]
   const PALE: Rgb = [0.6, 0.58, 0.55]
   const LAWN: Rgb = [0.23, 0.33, 0.17]
-  const BRONZE: Rgb = [0.3, 0.29, 0.22]
   const MAROON: Rgb = [0.33, 0.16, 0.14]
   const STEEL: Rgb = [0.86, 0.87, 0.89]
   const STONE: Rgb = [0.88, 0.86, 0.82]
@@ -1408,17 +1407,8 @@ function unionSquarePlaza(out: MeshBuilder, fit: Fit): void {
   gcol(out, f, 0, 0, deck + 5.2, deck + 23.2, 1.3, STONE, 24, 1.14, GRAN)
   gcol(out, f, 0, 0, deck + 23.2, deck + 24.7, 1.16, STONE, 16, 2.0, GRAN)         // the capital's bell
   gbox(out, f, -2.1, 2.1, -2.1, 2.1, deck + 24.7, deck + 25.3, STONE, GRAN)        // the abacus
-  /*
-   * Victory, as a PLACEHOLDER only (MODELS_NEEDED.md, SF priority 1: "the figure must be a model"): the bronze
-   * stands on its globe with one arm up, and no more shape than that, so it is obvious what is still to come.
-   */
-  const vy = deck + 25.3
-  gcol(out, f, 0, 0, vy, vy + 0.9, 0.5, BRONZE, 12, 0.85, MET)                     // the globe she stands on
-  gcol(out, f, 0, 0, vy + 0.9, vy + 1.3, 0.85, BRONZE, 12, 0.5, MET)
-  gcol(out, f, 0, 0, vy + 1.3, vy + 2.9, 0.42, BRONZE, 10, 0.5, MET)               // and the figure: a mass, no more
-  gcol(out, f, 0, 0, vy + 2.9, vy + 3.3, 0.5, BRONZE, 10, 0.26, MET)
-  gcol(out, f, 0, 0, vy + 3.3, vy + 3.7, 0.26, BRONZE, 8, 0.22, MET)
-  gstrut(out, f, [0.2, vy + 2.8, 0], [1.0, vy + 4.3, 0], 0.15, 0.15, BRONZE)
+  // (Victory herself, on her globe, is the assetkit model `dewey-victory`, placed on the abacus by
+  //  public/landmarks/san-francisco-statues.json — attach to Union Square at [0, deck + 25.3, 0], 2026-10-18)
 
   // the two glass café pavilions, at opposite corners, each under its metal trellis
   for (const s of [-1, 1]) {

@@ -124,5 +124,102 @@
     "lat": 37.8611268,
     "lon": -122.4814948,
     "bearing": 270
+  },
+  {
+    "id": "dewey-victory",
+    "name": "Victory, Dewey Monument",
+    "asset": "dewey-victory",
+    "attach": {
+      "to": "Union Square",
+      "at": [
+        0,
+        26.8,
+        0
+      ],
+      "bearing": 180,
+      "draped": true
+    },
+    "lodRanges": [
+      500,
+      1200
+    ],
+    "note": "assetkit-models-sf/dewey-victory: on the Dewey Monument's abacus (union-square.ts deck + 25.3 m)."
+  },
+  {
+    "id": "mechanics-monument",
+    "name": "Mechanics Monument",
+    "asset": "mechanics-monument",
+    "lat": 37.7912841,
+    "lon": -122.3992125,
+    "bearing": 225,
+    "plinth": [
+      5.2,
+      5.8,
+      0.6
+    ],
+    "plinthColour": "#9a958b",
+    "lodRanges": [
+      180,
+      420
+    ],
+    "note": "assetkit-models-sf/mechanics-monument: OSM node 358803325, facing down Market Street."
+  },
+  {
+    "id": "gandhi",
+    "name": "Mahatma Gandhi",
+    "asset": "gandhi",
+    "lat": 37.7953304,
+    "lon": -122.3924,
+    "bearing": 225,
+    "plinth": [
+      1.6,
+      1.6,
+      1.1
+    ],
+    "plinthColour": "#9a958b",
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/gandhi: OSM way/174999601, the Ferry Building's bay side."
+  },
+  {
+    "id": "willie-mays",
+    "name": "Willie Mays",
+    "asset": "willie-mays",
+    "lat": 37.7780358,
+    "lon": -122.391382,
+    "bearing": 315,
+    "plinth": [
+      3.2,
+      3.2,
+      1.5
+    ],
+    "plinthColour": "#9a958b",
+    "lodRanges": [
+      140,
+      340
+    ],
+    "note": "assetkit-models-sf/willie-mays: OSM node 4908344426, Willie Mays Plaza, facing 3rd and King."
+  },
+  {
+    "id": "lincoln-city-hall",
+    "name": "Abraham Lincoln",
+    "asset": "lincoln-city-hall",
+    "lat": 37.7789014,
+    "lon": -122.4185377,
+    "bearing": 90,
+    "plinth": [
+      3.2,
+      3.6,
+      1.8
+    ],
+    "plinthColour": "#9a958b",
+    "lodRanges": [
+      140,
+      340
+    ],
+    "replaces": "Abraham Lincoln statue",
+    "note": "assetkit-models-sf/lincoln-city-hall: OSM node 1901905716, City Hall's Polk Street side, facing east."
   }
 ]

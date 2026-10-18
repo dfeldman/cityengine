@@ -29,6 +29,8 @@ import type { Vector3 } from '@babylonjs/core/Maths/math.vector'
 import { Plane } from '@babylonjs/core/Maths/math.plane'
 import { MeshBuilder } from './buildings.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
+import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
+import { Color3 } from '@babylonjs/core/Maths/math.color'
 import { block, hex, shade } from './landmarks/kit.ts'
 import { Projection } from '../city/geo.ts'
 import type { Terrain } from '../city/terrain.ts'
@@ -60,7 +62,7 @@ export interface StatueEntry {
   plinth?: [number, number, number]
   plinthColour?: string
   /** …or on a procedural landmark: at [x, y, z] in its frame (−z is its front), facing `bearing` in that frame */
-  attach?: { to: string; at: [number, number, number]; bearing: number }
+  attach?: { to: string; at: [number, number, number]; bearing: number; draped?: boolean }
   /** how far away it is loaded (m); a tall one is seen from further */
   range?: number
   note?: string
@@ -81,6 +83,38 @@ interface Slot {
   loading: boolean
   failed: boolean
 }
+/**
+ * An UNTEXTURED model's metal (assetkit `extra.model.material`, assetmgr's SHADER_PRESETS): most AI statues are bare
+ * geometry, and a bronze texture would only say "bronze". One shared material per shader, kept with the scene, never
+ * disposed with a model. Colours are the presets' base colours, lifted a little for the cartoon light.
+ */
+const SHADERS: Record<string, { colour: [number, number, number]; spec: number; power: number }> = {
+  bronze: { colour: [0.5, 0.33, 0.17], spec: 0.55, power: 48 },
+  copper: { colour: [0.8, 0.52, 0.4], spec: 0.6, power: 48 },
+  copperoxide: { colour: [0.24, 0.4, 0.34], spec: 0.12, power: 16 },
+  marble: { colour: [0.86, 0.84, 0.8], spec: 0.35, power: 64 },
+  plaster: { colour: [0.86, 0.84, 0.79], spec: 0.05, power: 8 },
+  concrete: { colour: [0.66, 0.65, 0.62], spec: 0.05, power: 8 },
+  whitestone: { colour: [0.86, 0.84, 0.79], spec: 0.08, power: 8 },
+  silver: { colour: [0.78, 0.8, 0.82], spec: 0.8, power: 64 },
+}
+const shaderMats = new Map<string, StandardMaterial>()
+function shaderMaterial(scene: Scene, name: string): StandardMaterial {
+  const key = name in SHADERS ? name : 'bronze'
+  let m = shaderMats.get(key)
+  if (!m || m.getScene() !== scene) {
+    const p = SHADERS[key]
+    m = new StandardMaterial(`statue-shader:${key}`, scene)
+    m.diffuseColor = new Color3(...p.colour)
+    m.specularColor = new Color3(p.spec, p.spec, p.spec)
+    m.specularPower = p.power
+    m.ambientColor = new Color3(p.colour[0] * 0.6, p.colour[1] * 0.6, p.colour[2] * 0.6)
+    m.doNotSerialize = true
+    shaderMats.set(key, m)
+  }
+  return m
+}
+
 /** the margin a LOD boundary is crossed by before the other file is loaded: no flicker at the line */
 const LOD_HYSTERESIS = 0.12
 
@@ -151,7 +185,11 @@ export class Statues {
       const c = Math.cos(host.rotation)
       const sn = Math.sin(host.rotation)
       // the host's frame to the world: rotation.y θ sends local (x, z) to (x cos θ + z sin θ, −x sin θ + z cos θ)
-      s.at = { x: host.x + ax * c + az * sn, y: (host.y ?? this.terrain.heightAt(host.x, host.z)) + ay, z: host.z - ax * sn + az * c,
+      const wx = host.x + ax * c + az * sn, wz = host.z - ax * sn + az * c
+      // (a DRAPED host — `drape: true` in its manifest, Union Square — has its heights over the ground under each point, not
+      //  over its own base: the Dewey Victory stood 3 m down inside her column)
+      const base = s.e.attach.draped ? this.terrain.heightAt(wx, wz) : host.y ?? this.terrain.heightAt(host.x, host.z)
+      s.at = { x: wx, y: base + ay, z: wz,
         rotation: host.rotation + rotationFor(s.e.front ?? '+z', s.e.attach.bearing) }
     }
     const dist = (s: Slot): number => (s.at ? Math.hypot(s.at.x - eye.x, s.at.z - eye.z) : Infinity)
@@ -217,9 +255,12 @@ export class Statues {
       // is cleared before this one, so the hull under the water would otherwise be drawn over it (2026-10-18, the
       // Balclutha's red bottom stood out of the bay). The model itself stays whole: it is a shared asset.
       const cut = s.e.float ? new Plane(0, -1, 0, at.y) : null
+      // (an untextured one: its shared metal, in place of the loader's default grey)
+      const metal = info && info.material !== 'textured' ? shaderMaterial(this.scene, info.material) : null
       for (const m of r.meshes) {
         m.renderingGroupId = 3
         m.isPickable = false
+        if (metal && m.getTotalVertices() > 0) { m.material?.dispose(); m.material = metal }
         if (cut && m instanceof Mesh) {
           m.onBeforeRenderObservable.add(() => { this.scene.clipPlane = cut })
           m.onAfterRenderObservable.add(() => { this.scene.clipPlane = null })
@@ -239,6 +280,8 @@ export class Statues {
 
   private unload(s: Slot): void {
     // meshes, their materials and textures: each model's are its own
+    // (a shared metal is not this model's to dispose: let go of it first)
+    for (const m of s.holder?.getChildMeshes() ?? []) if (m.material && [...shaderMats.values()].includes(m.material as StandardMaterial)) m.material = null
     s.holder?.dispose(false, true)
     s.holder = null
   }

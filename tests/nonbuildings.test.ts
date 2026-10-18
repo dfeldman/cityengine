@@ -261,6 +261,11 @@ const KNOWN: Record<string, string[]> = {
     'height | Sausalito houseboat docks',
     // the houseboat's assetkit model replaces its procedural stand-in when near (statues.ts `replaces`): one place, two entries
     'duplicate | Taj Mahal houseboat / Taj Mahal houseboat',
+    // by design (2026-10-18): Lincoln's model replaces its procedural stand-in at the same place; Gandhi stands on the
+    // Ferry Plaza deck; the Jeremiah O'Brien lies alongside Pier 35, her guard against its fender line
+    'duplicate | Abraham Lincoln statue / Abraham Lincoln',
+    'duplicate | Ferry Plaza deck / Mahatma Gandhi',
+    "intersects | SS Jeremiah O'Brien",
     // Pier 39's frontages (pier39-fronts.ts, 2026-10-17): point models laid against their buildings' walls, the viewing rail
     // along Building K; standalone fronts within 15 m of the pretzel kiosk and the street bridge
     "duplicate | Aunt Fanny's Hot Pretzels / Players Sports Grill & Arcade / Bubba Gump frontage (Pier 39, way/128240131 west face)",
