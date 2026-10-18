@@ -2417,7 +2417,12 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     const dt = Math.min(0.1, (now - last) / 1000)
     last = now
 
-    if (!controls.paused()) {
+    /*
+     * The whole world stops while the big map is open, however it was opened — M, the menu, or the platform bridge's Map
+     * button — and goes on when it shuts (owner, 2026-10-17: "when opening map using the button on the bridge, it should
+     * pause the game, and unpause when closed"). The map is drawn by the paused branch below.
+     */
+    if (!controls.paused() && !minimap.isLarge) {
       /*
        * The transit (sim/transit.ts): which vehicle is near enough to get on, or where the one being ridden
        * has got to. Every frame while aboard — the rider's position comes from it — and a few times a second
