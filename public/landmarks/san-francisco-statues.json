@@ -126,26 +126,6 @@
     "bearing": 270
   },
   {
-    "id": "dewey-victory",
-    "name": "Victory, Dewey Monument",
-    "asset": "dewey-victory",
-    "attach": {
-      "to": "Union Square",
-      "at": [
-        0,
-        27.45,
-        0
-      ],
-      "bearing": 180,
-      "draped": true
-    },
-    "lodRanges": [
-      500,
-      1200
-    ],
-    "note": "assetkit-models-sf/dewey-victory: on the Dewey Monument's abacus (union-square.ts deck + 25.3 m)."
-  },
-  {
     "id": "mechanics-monument",
     "name": "Mechanics Monument",
     "asset": "mechanics-monument",
@@ -222,5 +202,25 @@
     ],
     "replaces": "Abraham Lincoln statue",
     "note": "assetkit-models-sf/lincoln-city-hall: OSM node 1901905716, City Hall's Polk Street side, facing east; bronze on a pale granite die (owner's photo, 2026-10-18)."
+  },
+  {
+    "id": "dewey-monument",
+    "name": "Dewey Monument (capital and Victory)",
+    "asset": "dewey-monument-pbr",
+    "attach": {
+      "to": "Union Square",
+      "at": [
+        0,
+        23.65,
+        0
+      ],
+      "bearing": 180,
+      "draped": true
+    },
+    "lodRanges": [
+      500,
+      1200
+    ],
+    "note": "assetkit-models-sf/dewey-monument-pbr (the PBR variant: darker verdigris, closer to the real near-black): the capital, drum, globe and Victory on the shaft's plain top, sunk 0.15 m into it so no seam shows (owner, 2026-10-18). The model's neck is 1.5 m across, the shaft's top (union-square.ts r 0.75)."
   }
 ]
