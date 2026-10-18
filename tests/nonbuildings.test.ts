@@ -259,6 +259,8 @@ const KNOWN: Record<string, string[]> = {
     'intersects | Hyde Street Pier',
     // the Sausalito docks float on the sea (deckAbove), over a sea bed the check calls ground
     'height | Sausalito houseboat docks',
+    // the houseboat's assetkit model replaces its procedural stand-in when near (statues.ts `replaces`): one place, two entries
+    'duplicate | Taj Mahal houseboat / Taj Mahal houseboat',
     // Pier 39's frontages (pier39-fronts.ts, 2026-10-17): point models laid against their buildings' walls, the viewing rail
     // along Building K; standalone fronts within 15 m of the pretzel kiosk and the street bridge
     "duplicate | Aunt Fanny's Hot Pretzels / Players Sports Grill & Arcade / Bubba Gump frontage (Pier 39, way/128240131 west face)",
