@@ -7,6 +7,8 @@
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { fromRecipe } from '../recipes.ts'
+import { towerRing } from '../../tower.ts'
+import { offsetRing } from '../../parts.ts'
 
 export const FIDI_2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** 150 California Street (1988): pale granite tower, punched windows, cut corner, flat top. */
@@ -38,7 +40,13 @@ export const FIDI_2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** 555 Pine Street (1961): midcentury banded slab, cream precast, dark glass, flat top. */
   fiveFiveFivePine: fromRecipe('midcentury-slab', { height: 90, wall: [0.82, 0.8, 0.75], glass: [0.26, 0.29, 0.32], base: 6 }),
   /** 430;432;444 California Street: pre-war Chicago-frame office block, brick pier grid, heavy cornice. */
-  fourThirtyCalifornia: fromRecipe('chicago-block', { height: 89, wall: [0.68, 0.6, 0.5], glass: [0.24, 0.27, 0.3], base: 7 }),
+  /*
+   * 430 California: its OSM outline reaches to within 3.9 m of Leidesdorff's centre line — over the alley's narrow pavement —
+   * and the Chicago frame's piers stand proud of it, into the lane (owner, 2026-10-17: "due to building footprint too big,
+   * columns in road here 37.793458, -122.402078"). Built 1.2 m inside its outline.
+   */
+  fourThirtyCalifornia: (out: MeshBuilder, fit: Fit): void =>
+    fromRecipe('chicago-block', { height: 89, wall: [0.68, 0.6, 0.5], glass: [0.24, 0.27, 0.3], base: 7 })(out, { ...fit, ring: offsetRing(towerRing(fit), -1.2) }),
   /** Hobart Building (1914, Willis Polk): cream glazed terracotta, curved corner front, moulded cornice. */
   hobartBuilding: fromRecipe('edwardian-terracotta', { height: 86, wall: [0.85, 0.82, 0.73], glass: [0.22, 0.24, 0.26], base: 7 }),
   /** way/148710880, unnamed FiDi tower: midcentury banded slab, flat top. */

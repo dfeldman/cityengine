@@ -9,7 +9,7 @@ import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { tower, towerRing } from '../../tower.ts'
 import { fromRecipe } from '../recipes.ts'
-import { arcade, colonnade, edgeAt, longestEdge } from '../../parts.ts'
+import { arcade, colonnade, edgeAt, edgeFacing, longestEdge } from '../../parts.ts'
 
 export const EXP_9: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** 300 Montgomery: tall pre-war office, 12 storeys, cream terracotta, colonnade base */
@@ -98,9 +98,10 @@ export const EXP_9: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** 32947380 - Wells Fargo: 48m neoclassical, tall Corinthian columns */
   e9_WellsFargo: (out: MeshBuilder, fit: Fit) => {
     tower(out, fit, { height: 48, base: { height: 6, face: { kind: 'curtain', wall: [0.3, 0.3, 0.32], glass: [0.26, 0.3, 0.34], pitch: 3.5, floor: 4.5 } }, tiers: [{ to: 1, face: { kind: 'punched', wall: [0.86, 0.84, 0.78], glass: [0.26, 0.28, 0.3], pitch: 3.2, solid: 0.42, floor: 3.8, material: 'ashlar' }, cornice: { depth: 0.9, height: 0.9 } }], crown: { kind: 'parapet', height: 0.8 }, roof: [0.5, 0.48, 0.45] })
+    // the Bank of California's colonnade fronts CALIFORNIA STREET (to the south) — on the longest edge it stood 1.5 m out
+    // into Leidesdorff alley (owner, 2026-10-17: "columns in road here 37.793458, -122.402078")
     const ring = towerRing(fit)
-    const front = longestEdge(ring)
-    const e = edgeAt(ring, front)
+    const e = edgeAt(ring, edgeFacing(ring, 180))
     colonnade(out, e.a, e.b, 0, 9, 6, { colour: [0.86, 0.84, 0.78], material: 'ashlar', out: 1.5, order: 'corinthian' })
   },
 
