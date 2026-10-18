@@ -10,6 +10,9 @@
  *   assetkit-nature-textures                          their textures (only needed to name them for texture caps)
  *   assetkit-statues-paris                            the packed statues (`extra.streetrunner.packed`)
  *   streetrunner                                      this game's own: SF street trees, signs (`extra.streetrunner.path`)
+ *   assetkit-models-sf                                the AI photogrammetry models of SF landmarks (ships…), one file
+ *                                                     per LOD: `models/sf/<id>.lod<N>.glb`, and their `extra.model`
+ *                                                     metadata (real size, front axis, draft) — `modelInfo(id)`
  *
  * and serves `trees/index.json`, `plants/index.json` and `sftrees/index.json` rebuilt from the entries those
  * indexes keep. Anything not in the bucket (palms, facades, roads, landmarks, the rock surfaces, the city bake)
@@ -23,16 +26,32 @@ import { assetManifest, loadFromBucket, setAssetManifest, setAssetBase, setStudi
 /** The shared asset bucket's public URL. */
 export const ASSET_BUCKET = 'https://pub-32f6f3f21c18414cbeaf4bf0ac34ebe5.r2.dev'
 
-const INDEXES = ['assetkit-trees', 'assetkit-plants', 'assetkit-rocks', 'assetkit-nature-textures', 'assetkit-statues-paris', 'streetrunner'] as const
+const INDEXES = ['assetkit-trees', 'assetkit-plants', 'assetkit-rocks', 'assetkit-nature-textures', 'assetkit-statues-paris', 'streetrunner', 'assetkit-models-sf'] as const
 /** Library folders whose index.json is rebuilt from the bucket (rocks/index.json is this game's own, committed). */
 const LIBRARY: Record<string, string> = { 'assetkit-trees': 'trees', 'assetkit-plants': 'plants', 'assetkit-rocks': 'rocks' }
 
-interface BucketFile { filename: string; isDeleted?: boolean; isProd?: boolean; isSource?: boolean; fileFormat?: string }
+interface BucketFile { filename: string; isDeleted?: boolean; isProd?: boolean; isSource?: boolean; fileFormat?: string; lod?: number }
+/** A landmark model's own facts (assetkit tools/modelpack, `extra.model`): what placing it needs, without opening it */
+export interface ModelInfo {
+  kind: string
+  front: '+z' | '-z' | '+x' | '-x'
+  scale: { axis: 'x' | 'y' | 'z'; metres: number }
+  /** metres from the model's lowest point up to its waterline (ships) */
+  draft?: number
+  plinth?: [number, number, number]
+  material: string
+  /** the LOD files there are (0 = most detailed) */
+  lods: { lod: number; triangles: number; tex: number }[]
+}
+const models = new Map<string, ModelInfo>()
+/** The facts of an assetkit-models-sf model, once initAssets has read the bucket (null before, or without it). */
+export const modelInfo = (id: string): ModelInfo | null => models.get(id) ?? null
 interface BucketAsset {
   isDeleted?: boolean
   isTemp?: boolean
   assetFiles: BucketFile[]
-  extra?: { trailtrainer?: { file?: string; [k: string]: unknown }; streetrunner?: { path?: string; packed?: string; entry?: { file?: string } } }
+  id?: string
+  extra?: { trailtrainer?: { file?: string; [k: string]: unknown }; streetrunner?: { path?: string; packed?: string; entry?: { file?: string } }; model?: ModelInfo }
 }
 
 /** site-relative path (`trees/oak_003.glb`) → bucket URL */
@@ -100,6 +119,10 @@ export function initAssets(): Promise<void> {
         } else if (idx.name === 'assetkit-statues-paris' && sr?.packed) {
           const prod = live.find((f) => f.isProd)
           if (prod) map(sr.packed.replace(/^public\//, ''), `${base}/${prod.filename}`)
+        } else if (idx.name === 'assetkit-models-sf' && a.id && a.extra?.model) {
+          // one file per LOD, asked for as models/sf/<id>.lod<N>.glb (render/statues.ts)
+          for (const f of live) if (f.isProd && f.lod !== undefined) map(`models/sf/${a.id}.lod${f.lod}.glb`, `${base}/${f.filename}`)
+          models.set(a.id, a.extra.model)
         } else if (idx.name === 'streetrunner' && sr?.path && live[0]) {
           map(sr.path, `${base}/${(glb ?? live[0]).filename}`)
           if (sr.entry && sr.path.startsWith('sftrees/')) libs.get('sftrees')!.push(sr.entry)

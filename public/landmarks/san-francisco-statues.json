@@ -1,0 +1,17 @@
+[
+  {
+    "id": "balclutha",
+    "name": "Balclutha",
+    "asset": "balclutha",
+    "lat": 37.809694,
+    "lon": -122.421922,
+    "bearing": 134,
+    "float": true,
+    "lodRanges": [
+      280,
+      650
+    ],
+    "note": "assetkit-models-sf/balclutha (assetkit tools/modelpack): the 1886 full-rigger at Hyde Street Pier, scaled to 92 m overall, its waterline on the sea. Placed on the procedural ship's centre and heading (landmarks/san-francisco/ships.json).",
+    "replaces": "Balclutha"
+  }
+]

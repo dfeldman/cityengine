@@ -778,7 +778,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // each fitted to its own building as the tile with it arrives — the building as baked, before prepare took it out
   // the statues from the user's models, at most three in memory (render/statues.ts)
   const statues = off.has('landmarks') ? null : new Statues(scene, await statueManifest(document.baseURI, opts.city, pkg.region),
-    pkg.origin, city.terrain, new URL('./', document.baseURI).href, () => landmarks?.placed ?? [])
+    pkg.origin, city.terrain, new URL('./', document.baseURI).href, () => landmarks?.placed ?? [], index.sea ?? null)
   ;(window as unknown as { __statues?: unknown }).__statues = statues
   if (landmarks) {
     // a landmark that hand-builds a bridge or canopy suppresses the OSM way under it, the moment it is
