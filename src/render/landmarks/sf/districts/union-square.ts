@@ -1404,11 +1404,36 @@ function unionSquarePlaza(out: MeshBuilder, fit: Fit): void {
   }
   gbox(out, f, -3.2, 3.2, -3.2, 3.2, deck + 1.2, deck + 4.6, STONE, GRAN)
   gbox(out, f, -3.7, 3.7, -3.7, 3.7, deck + 4.6, deck + 5.2, STONE, GRAN)
-  gcol(out, f, 0, 0, deck + 5.2, deck + 23.2, 1.3, STONE, 24, 1.14, GRAN)
-  gcol(out, f, 0, 0, deck + 23.2, deck + 24.7, 1.16, STONE, 16, 2.0, GRAN)         // the capital's bell
-  gbox(out, f, -2.1, 2.1, -2.1, 2.1, deck + 24.7, deck + 25.3, STONE, GRAN)        // the abacus
-  // (Victory herself, on her globe, is the assetkit model `dewey-victory`, placed on the abacus by
-  //  public/landmarks/san-francisco-statues.json — attach to Union Square at [0, deck + 25.3, 0], 2026-10-18)
+  /*
+   * The shaft and its Corinthian capital, in the proportions of the owner's photograph (2026-10-18: "check the width of
+   * the column and size of the square platform. It looks disproportionate"): a slender shaft 5 ft across under the
+   * capital (Wikipedia's width), tapering up from ~1.85 m; a TALL capital — two rows of acanthus round a flaring bell,
+   * volutes under the corners, ~1.85 shaft diameters high — and an abacus with hollowed sides only a little wider than
+   * the leaves (~2.1 diameters), not a broad flat slab. Victory with her globe is ~2.4 diameters tall over it.
+   */
+  const SH0 = deck + 5.2, CAP = deck + 22.3, ABA = deck + 25.2
+  gcol(out, f, 0, 0, SH0, CAP, 0.93, STONE, 24, 0.78, GRAN)
+  gcol(out, f, 0, 0, CAP - 0.25, CAP, 0.86, STONE, 24, 0.86, GRAN)                 // the astragal ring
+  gcol(out, f, 0, 0, CAP, ABA, 0.8, STONE, 20, 1.3, GRAN)                         // the bell
+  for (const [y0, y1, r0, r1] of [[CAP, CAP + 1.0, 0.86, 1.08], [CAP + 0.9, CAP + 2.0, 0.98, 1.3]] as const) {
+    // a row of acanthus: leaves standing out from the bell, curling over at the top
+    for (let k = 0; k < 8; k++) {
+      const a = (k / 8) * Math.PI * 2 + (y0 > CAP ? Math.PI / 8 : 0), ca = Math.cos(a), sa = Math.sin(a)
+      gstrut(out, f, [ca * r0, y0, sa * r0], [ca * r1, y1, sa * r1], 0.42, 0.14, STONE)
+      gstrut(out, f, [ca * r1, y1, sa * r1], [ca * (r1 + 0.18), y1 - 0.3, sa * (r1 + 0.18)], 0.36, 0.12, STONE)
+    }
+  }
+  for (const [sx, sz] of [[1, 1], [1, -1], [-1, 1], [-1, -1]] as const) {
+    // the corner volutes, scrolling out under the abacus's corners
+    gstrut(out, f, [sx * 0.9, CAP + 1.9, sz * 0.9], [sx * 1.45, ABA - 0.15, sz * 1.45], 0.3, 0.3, STONE)
+    gcol(out, f, sx * 1.42, sz * 1.42, ABA - 0.55, ABA - 0.05, 0.2, STONE, 10, 0.2, GRAN)
+  }
+  // the abacus: 3.3 m across its corners' points, its sides hollowed (an octagon whose short sides are the corners)
+  gcol(out, f, 0, 0, ABA, ABA + 0.3, 1.7, STONE, 8, 1.7, GRAN)
+  // the low drum Victory's globe rests on
+  gcol(out, f, 0, 0, ABA + 0.3, ABA + 0.75, 0.5, STONE, 16, 0.42, GRAN)
+  // (Victory herself, on her globe, is the assetkit model `dewey-victory`, placed on the drum over the abacus by
+  //  public/landmarks/san-francisco-statues.json — attach to Union Square at [0, deck + 25.95, 0], 2026-10-18)
 
   // the two glass café pavilions, at opposite corners, each under its metal trellis
   for (const s of [-1, 1]) {
