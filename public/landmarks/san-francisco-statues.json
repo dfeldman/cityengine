@@ -78,22 +78,16 @@
     "id": "jeremiah-obrien",
     "name": "SS Jeremiah O'Brien",
     "asset": "jeremiah-obrien",
-    "attach": {
-      "to": "SS Jeremiah O'Brien",
-      "at": [
-        0,
-        0,
-        0
-      ],
-      "bearing": 90
-    },
     "float": true,
     "lodRanges": [
       350,
       800
     ],
     "replaces": "SS Jeremiah O'Brien",
-    "note": "assetkit-models-sf/jeremiah-obrien: on the procedural SS Jeremiah O'Brien's own place and heading (its bow at the host's +x), waterline on the sea."
+    "note": "assetkit-models-sf/jeremiah-obrien: alongside Pier 35, clear of its edge (2026-10-18).",
+    "lat": 37.808672,
+    "lon": -122.406935,
+    "bearing": 177
   },
   {
     "id": "pampanito",
