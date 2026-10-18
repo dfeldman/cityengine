@@ -172,8 +172,8 @@
     "lon": -122.3924,
     "bearing": 225,
     "plinth": [
-      1.6,
-      1.6,
+      2.6,
+      1.5,
       1.1
     ],
     "plinthColour": "#9a958b",
@@ -181,7 +181,8 @@
       120,
       300
     ],
-    "note": "assetkit-models-sf/gandhi: OSM way/174999601, the Ferry Building's bay side."
+    "note": "assetkit-models-sf/gandhi: OSM way/174999601, on the Ferry Plaza deck (sea + 3.5). 2.4 m (8 ft) bronze on a block with its plaque, raised on two steps (Wikipedia; Commons photo: a long low block, wider than deep).",
+    "deckAbove": 3.5
   },
   {
     "id": "willie-mays",

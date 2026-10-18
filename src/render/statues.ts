@@ -29,7 +29,7 @@ import type { Vector3 } from '@babylonjs/core/Maths/math.vector'
 import { Plane } from '@babylonjs/core/Maths/math.plane'
 import { MeshBuilder } from './buildings.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
-import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
+import { PBRMetallicRoughnessMaterial } from '@babylonjs/core/Materials/PBR/pbrMetallicRoughnessMaterial'
 import { Color3 } from '@babylonjs/core/Maths/math.color'
 import { block, hex, shade } from './landmarks/kit.ts'
 import { Projection } from '../city/geo.ts'
@@ -61,6 +61,9 @@ export interface StatueEntry {
   /** its pedestal: width across its face, depth, height (m); the statue stands on top */
   plinth?: [number, number, number]
   plinthColour?: string
+  /** stands on a deck this many metres above sea level (the landmarks' `deckAbove`): a plaza on piles, which the ground
+   *  under it — the flattened sea bed — knows nothing of (Gandhi on the Ferry Plaza deck, 2026-10-18) */
+  deckAbove?: number
   /** …or on a procedural landmark: at [x, y, z] in its frame (−z is its front), facing `bearing` in that frame */
   attach?: { to: string; at: [number, number, number]; bearing: number; draped?: boolean }
   /** how far away it is loaded (m); a tall one is seen from further */
@@ -86,29 +89,33 @@ interface Slot {
 /**
  * An UNTEXTURED model's metal (assetkit `extra.model.material`, assetmgr's SHADER_PRESETS): most AI statues are bare
  * geometry, and a bronze texture would only say "bronze". One shared material per shader, kept with the scene, never
- * disposed with a model. Colours are the presets' base colours, lifted a little for the cartoon light.
+ * disposed with a model. Real outdoor bronze and verdigris are nearly black (owner, 2026-10-18: "both close to black … they
+ * should be closer"): dark, with a little sheen so the form still reads.
  */
-const SHADERS: Record<string, { colour: [number, number, number]; spec: number; power: number }> = {
-  bronze: { colour: [0.5, 0.33, 0.17], spec: 0.55, power: 48 },
-  copper: { colour: [0.8, 0.52, 0.4], spec: 0.6, power: 48 },
-  copperoxide: { colour: [0.24, 0.4, 0.34], spec: 0.12, power: 16 },
-  marble: { colour: [0.86, 0.84, 0.8], spec: 0.35, power: 64 },
-  plaster: { colour: [0.86, 0.84, 0.79], spec: 0.05, power: 8 },
-  concrete: { colour: [0.66, 0.65, 0.62], spec: 0.05, power: 8 },
-  whitestone: { colour: [0.86, 0.84, 0.79], spec: 0.08, power: 8 },
-  silver: { colour: [0.78, 0.8, 0.82], spec: 0.8, power: 64 },
+/**
+ * PBR, as the trees and the GLB statues are lit (render/vegetation.ts `foliageLights`): a StandardMaterial under those
+ * lights came out three times too bright — a dark bronze shone orange (owner, 2026-10-18: "too light").
+ */
+const SHADERS: Record<string, { colour: [number, number, number]; metallic: number; roughness: number }> = {
+  bronze: { colour: [0.2, 0.14, 0.09], metallic: 0.85, roughness: 0.5 },
+  copper: { colour: [0.6, 0.38, 0.28], metallic: 0.9, roughness: 0.4 },
+  copperoxide: { colour: [0.09, 0.16, 0.13], metallic: 0.2, roughness: 0.75 },
+  marble: { colour: [0.78, 0.76, 0.72], metallic: 0, roughness: 0.35 },
+  plaster: { colour: [0.75, 0.73, 0.68], metallic: 0, roughness: 0.9 },
+  concrete: { colour: [0.5, 0.49, 0.46], metallic: 0, roughness: 0.95 },
+  whitestone: { colour: [0.75, 0.73, 0.68], metallic: 0, roughness: 0.85 },
+  silver: { colour: [0.7, 0.72, 0.74], metallic: 1, roughness: 0.3 },
 }
-const shaderMats = new Map<string, StandardMaterial>()
-function shaderMaterial(scene: Scene, name: string): StandardMaterial {
+const shaderMats = new Map<string, PBRMetallicRoughnessMaterial>()
+function shaderMaterial(scene: Scene, name: string): PBRMetallicRoughnessMaterial {
   const key = name in SHADERS ? name : 'bronze'
   let m = shaderMats.get(key)
   if (!m || m.getScene() !== scene) {
     const p = SHADERS[key]
-    m = new StandardMaterial(`statue-shader:${key}`, scene)
-    m.diffuseColor = new Color3(...p.colour)
-    m.specularColor = new Color3(p.spec, p.spec, p.spec)
-    m.specularPower = p.power
-    m.ambientColor = new Color3(p.colour[0] * 0.6, p.colour[1] * 0.6, p.colour[2] * 0.6)
+    m = new PBRMetallicRoughnessMaterial(`statue-shader:${key}`, scene)
+    m.baseColor = new Color3(...p.colour)
+    m.metallic = p.metallic
+    m.roughness = p.roughness
     m.doNotSerialize = true
     shaderMats.set(key, m)
   }
@@ -145,7 +152,7 @@ export class Statues {
       const e = s.e
       if (e.lat === undefined || e.lon === undefined) continue
       const p = proj.toLocal({ lat: e.lat, lon: e.lon })
-      const ground = e.float && seaLevel !== null ? seaLevel : terrain.heightAt(p.x, p.z)
+      const ground = seaLevel !== null && (e.float || e.deckAbove !== undefined) ? seaLevel + (e.deckAbove ?? 0) : terrain.heightAt(p.x, p.z)
       const top = e.plinth ? e.plinth[2] : 0
       // (an asset's front is its index's, read when it loads: the rotation is finished then)
       s.at = { x: p.x, y: ground + top, z: p.z, rotation: e.front ? rotationFor(e.front, e.bearing ?? 0) : (((e.bearing ?? 0) * Math.PI) / 180) }
@@ -281,7 +288,7 @@ export class Statues {
   private unload(s: Slot): void {
     // meshes, their materials and textures: each model's are its own
     // (a shared metal is not this model's to dispose: let go of it first)
-    for (const m of s.holder?.getChildMeshes() ?? []) if (m.material && [...shaderMats.values()].includes(m.material as StandardMaterial)) m.material = null
+    for (const m of s.holder?.getChildMeshes() ?? []) if (m.material && [...shaderMats.values()].includes(m.material as PBRMetallicRoughnessMaterial)) m.material = null
     s.holder?.dispose(false, true)
     s.holder = null
   }
