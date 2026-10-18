@@ -345,8 +345,12 @@ export class Crowd {
         const road = !e.foot && e.width >= 2.8 && !e.crossing
         const base = { edgeId: e.id, s: s0, dir, at: { x: 0, z: 0 }, heading: 0, back: 0, across: 0, dodge: 0 }
         if (road && roll < 0.15) {
-          // a cyclist, in the road on their right (side = dir), at a town pace
-          this.walkers.push({ ...base, id: nextWalkerId++, side: dir, kind: 'cycle', speed: 4 + r() * 2.5,
+          /*
+           * a cyclist, in the road on their RIGHT, at a town pace. The offset is along the edge's left normal (-dz, dx)
+           * of a→b, so riding a→b (dir +1) their right is side −1: `side = −dir` (owner, 2026-10-17: "npc cyclists are
+           * almost always on the left side of the road from their perspective" — it was `side = dir`)
+           */
+          this.walkers.push({ ...base, id: nextWalkerId++, side: (-dir) as 1 | -1, kind: 'cycle', speed: 4 + r() * 2.5,
             height: 0.95 + r() * 0.15, phase: r() * Math.PI * 2, ...dressed(r, true) })
           continue
         }
