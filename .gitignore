@@ -78,3 +78,8 @@ public/plants
 .gamekit-absent.d.ts
 
 incoming_assets/
+
+# credentials: never committed
+.env
+.env.*
+*.token
