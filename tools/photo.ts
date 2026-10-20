@@ -154,17 +154,16 @@ async function mapillaryApi(url: string): Promise<unknown | null> {
 
 /*
  * The token, from the environment or from a file the user keeps themselves. The file means the token never has
- * to be pasted into a conversation or committed: write it to .mapillary-token in the project root (gitignored)
- * and every tool here picks it up.
+ * to be pasted into a conversation or committed: put it in .env as MAPILLARY_TOKEN (gitignored) and every tool here
+ * picks it up.
  */
 export const mapillaryToken = (): string => {
-  if (process.env.MAPILLARY_TOKEN) return process.env.MAPILLARY_TOKEN
-  // either spelling, because both are the obvious one to somebody writing the file by hand
-  for (const n of ['.mapillary-token', '.mapillary_token']) {
-    const f = resolve(import.meta.dirname, '..', n)
-    if (existsSync(f)) return readFileSync(f, 'utf8').trim()
+  // MAPILLARY_TOKEN, from the environment or the project's .env (the standard since 2026-10-19; names in .env.example)
+  if (!process.env.MAPILLARY_TOKEN) {
+    const f = resolve(import.meta.dirname, '..', '.env')
+    if (existsSync(f)) process.loadEnvFile(f)
   }
-  return ''
+  return process.env.MAPILLARY_TOKEN ?? ''
 }
 
 const metres = (a: [number, number], b: [number, number]): number =>
@@ -879,7 +878,7 @@ if (process.argv[1]?.endsWith('photo.ts')) {
     console.error('usage: tools/photo.ts <lat> <lon> [--name="…"] [--height=30] [--radius=60] [--out=file.jpg]')
     process.exit(1)
   }
-  if (!mapillaryToken()) console.error('(no Mapillary token — put one in .mapillary-token or MAPILLARY_TOKEN; street-level imagery is skipped)')
+  if (!mapillaryToken()) console.error('(no Mapillary token — put MAPILLARY_TOKEN in .env; street-level imagery is skipped)')
   const list = await photosFor(lat, lon, arg('name'), Number(arg('radius', '60')), Number(arg('height', '0')))
   for (const p of list) console.log(`${p.source.padEnd(12)} ${String(p.distance ?? '').padStart(4)} m ${p.off !== undefined ? `${String(p.off).padStart(3)}° off` : '        '}  ${p.ref}`)
   /*

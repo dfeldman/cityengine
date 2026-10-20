@@ -4,7 +4,7 @@
  * rest is the object of that name. Hashed bundles (assets/) and bake-stamped city data (?b=) are cached hard; the page and
  * every index or manifest are private and revalidated, so a new build or bake shows at once, even behind a proxy.
  *
- *   cd worker && npx wrangler deploy     (CLOUDFLARE_ACCOUNT_ID, and CLOUDFLARE_API_KEY + CLOUDFLARE_EMAIL from ../api_key)
+ *   cd worker && npx wrangler deploy     (CLOUDFLARE_API_TOKEN from ../.env: `set -a && . ../.env && set +a` first)
  *   live: https://cycle-dash.dfeldman-mn.workers.dev
  */
 const TYPES = {

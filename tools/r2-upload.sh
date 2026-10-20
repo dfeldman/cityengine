@@ -1,18 +1,19 @@
 #!/bin/sh
-# Mirror the production build (dist/, after `npm run build`: index.html, the bundles and every public file) into the R2 bucket named in ./api_key (gitignored: BUCKET_ACCESS_KEY = a Cloudflare account API token,
+# Mirror the production build (dist/, after `npm run build`: index.html, the bundles and every public file) into the R2 bucket named in .env (DEPLOY_BUCKET) (gitignored: BUCKET_ACCESS_KEY = a Cloudflare account API token,
 # BUCKET_SECRET_KEY = its S3 secret, BUCKET_URL = the account's R2 endpoint, BUCKET_NAME). R2's S3 access key ID is the
 # token's own id, which Cloudflare's verify endpoint returns. Follows the symlinked asset libraries (trees, plants, rocks).
 #   sh tools/r2-upload.sh [--dry-run]
 set -e
 cd "$(dirname "$0")/.."
-set -a; . ./api_key; [ -f .env ] && . ./.env; set +a
+set -a; . ./.env; set +a
+# from .env (names in .env.example): DEPLOY_BUCKET, DEPLOY_ENDPOINT (the account's R2 S3 endpoint) and CLOUDFLARE_API_TOKEN,
+# an account API token with R2 read & write. R2's S3 key id is the token's own id (from tokens/verify, below) and its
+# secret the token's SHA-256 (Cloudflare's derivation).
+BUCKET_NAME=$DEPLOY_BUCKET
+BUCKET_URL=$DEPLOY_ENDPOINT
+BUCKET_ACCESS_KEY=$CLOUDFLARE_API_TOKEN
+BUCKET_SECRET_KEY=$(printf %s "$CLOUDFLARE_API_TOKEN" | shasum -a 256 | cut -d' ' -f1)
 ACCT=$(echo "$BUCKET_URL" | sed -E 's#https?://([^.]+)\..*#\1#')
-# the account API token in .env (CLOUDFLARE_API_TOKEN) wins over api_key's: R2's S3 secret is its SHA-256, the key id
-# its own id (below). Rotated 2026-10-19; api_key keeps only the bucket's name and endpoint.
-if [ -n "$CLOUDFLARE_API_TOKEN" ]; then
-  BUCKET_ACCESS_KEY=$CLOUDFLARE_API_TOKEN
-  BUCKET_SECRET_KEY=$(printf %s "$CLOUDFLARE_API_TOKEN" | shasum -a 256 | cut -d' ' -f1)
-fi
 KID=$(curl -s -H "Authorization: Bearer $BUCKET_ACCESS_KEY" "https://api.cloudflare.com/client/v4/accounts/$ACCT/tokens/verify" \
   | python3 -c "import sys,json; print(json.load(sys.stdin)['result']['id'])")
 export RCLONE_CONFIG_R2_TYPE=s3 RCLONE_CONFIG_R2_PROVIDER=Cloudflare RCLONE_CONFIG_R2_ACCESS_KEY_ID="$KID" \
