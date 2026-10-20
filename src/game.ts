@@ -2263,22 +2263,42 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * MB; `window.__governor()` says what it decided.
    */
   const memBudget = Number(new URLSearchParams(location.search).get('budget')) || tier.memoryBudget
-  if (memBudget) {
-    const last = { estimate: 0, mid: MID, changes: 0 }
-    ;(window as unknown as Record<string, unknown>).__governor = () => ({ ...last, memBudget, held: tileLevel.size })
+  const heapBudget = Number(new URLSearchParams(location.search).get('heapbudget')) || tier.heapBudget
+  if (memBudget || heapBudget) {
+    const last = { estimate: 0, heap: 0, mid: MID, changes: 0, bit: '' }
+    ;(window as unknown as Record<string, unknown>).__governor = () =>
+      ({ ...last, memBudget, heapBudget, held: tileLevel.size })
     setInterval(() => {
       const g = gpuMB(scene)
-      const estimate = Math.round(tier.heapBase + HEAP_PER_TILE_MB * tileLevel.size + g.buffers + g.textures)
+      /*
+       * TWO ESTIMATES, because iOS enforces two different ceilings and they are nowhere near each other:
+       * the JS heap on its own (the owner's 384 MB), and the whole footprint with every GPU buffer and
+       * texture in it (the ~1 GB). Measuring the heap against the footprint's number, or the other way
+       * round, gets one of them badly wrong — which it did: the heap's 384 was being applied to an
+       * estimate that counted every texture, so the rings shut the moment a city loaded.
+       */
+      const heap = Math.round(tier.heapBase + HEAP_PER_TILE_MB * tileLevel.size)
+      const estimate = Math.round(heap + g.buffers + g.textures)
       last.estimate = estimate
+      last.heap = heap
       const grow = (8 * MID + 24) * (HEAP_PER_TILE_MB + GPU_PER_TILE_MB)
-      if (estimate > memBudget && MID > tier.minMid) {
+      const heapGrow = (8 * MID + 24) * HEAP_PER_TILE_MB
+      const overFootprint = !!memBudget && estimate > memBudget
+      const overHeap = !!heapBudget && heap > heapBudget
+      // Room for a bigger ring only when BOTH would still fit: whichever is tighter decides.
+      const roomToGrow = (!memBudget || estimate + grow < memBudget * 0.95)
+        && (!heapBudget || heap + heapGrow < heapBudget * 0.95)
+      if ((overFootprint || overHeap) && MID > tier.minMid) {
         setRings(VIEW, MID - 1)
         last.changes++
-        console.info(`[memory] ~${estimate} MB of ${memBudget}: massing ring in to ${MID}`)
-      } else if (estimate + grow < memBudget * 0.95 && MID < (rings?.[1] ?? tier.mid)) {
+        last.bit = overHeap ? 'heap' : 'footprint'
+        console.info(overHeap
+          ? `[memory] heap ~${heap} MB of ${heapBudget}: massing ring in to ${MID}`
+          : `[memory] ~${estimate} MB of ${memBudget}: massing ring in to ${MID}`)
+      } else if (roomToGrow && MID < (rings?.[1] ?? tier.mid)) {
         setRings(VIEW, MID + 1)
         last.changes++
-        console.info(`[memory] ~${estimate} MB of ${memBudget}: massing ring out to ${MID}`)
+        console.info(`[memory] heap ~${heap} MB, all ~${estimate} MB: massing ring out to ${MID}`)
       }
       last.mid = MID
     }, 5000)

@@ -32,11 +32,22 @@ export interface TierSettings {
    */
   recoverContext: boolean
   /**
-   * The memory GOVERNOR (game.ts): every few seconds the page's footprint is ESTIMATED — Safari tells a page nothing
-   * about its memory — and the massing ring pulled in when it is over this many MB, grown back when there is room.
-   * Null: no governor (the desktop has 3 GB of heap and Chrome's own numbers, render/heap.ts).
+   * The memory GOVERNOR (game.ts): every few seconds the page's footprint is ESTIMATED — Safari tells a page
+   * nothing about its memory — and the massing ring pulled in when it is over this many MB, grown back when
+   * there is room. This one is the WHOLE footprint: the JS heap, every vertex buffer and texture, the
+   * canvases, the framebuffer. Null: no governor (the desktop has 3 GB and Chrome's own numbers).
    */
   memoryBudget: number | null
+  /**
+   * And the JS heap on its own, which on iOS is a separate and much lower ceiling.
+   *
+   * Owner, 2026-10-20: *"it is very close to the edge already. Result is an instant crash when heap
+   * exceeds 384mb."* That is the heap, not the footprint — the ~1 GB figure from 2026-10-01 is the other
+   * limit, and both are real. They were being checked as one number, with the heap's 384 applied to an
+   * estimate that included every GPU buffer, which is why the rings slammed shut the moment anything
+   * loaded. Two limits, two comparisons, and whichever bites first wins.
+   */
+  heapBudget: number | null
   /** the smallest massing ring the governor may pull in to */
   minMid: number
   /** whole subsystems left out (game.ts `off`: the same names as `?without=`) */
@@ -60,13 +71,21 @@ export interface TierSettings {
  * a base that does not shrink with the rings (the index, the ride graphs, the code — 46 MB of it the dev server's
  * module source) plus a cost per tile held; the GPU side is Babylon's own record of every buffer and texture
  * (render/heap.ts `gpuMB`). Rings 1,3 held 99 tiles at 450 MB of heap, rings 1,6 255 tiles at 551 MB.
+ *
+ * `HEAP_PER_TILE_MB` was re-checked on the ultra tier on 2026-10-20 and still fits the near rings (0.69 MB a
+ * tile measured, against 0.65 here); the far massing tiles are cheaper than that, so the model is
+ * conservative out there, which is the right direction for something deciding what to drop.
+ *
+ * The per-tier `heapBase` figures for `desktop` and `phone` have NOT been re-measured since the morph
+ * targets and Babylon's CPU vertex copies were dropped, so both are now overestimates — safe, but worth
+ * re-fitting the same way `ultra` was if either tier ever needs the governor.
  */
 export const HEAP_BASE_MB = 386
 export const HEAP_PER_TILE_MB = 0.65
 export const GPU_PER_TILE_MB = 0.47
 
 export const TIERS: Record<Tier, TierSettings> = {
-  desktop: { view: 3, mid: 6, maxDpr: Infinity, ao: true, textScale: 1, textureCaps: [], bodies: 10, keepGeometry: true, recoverContext: true, memoryBudget: null, minMid: 6, without: [], groundStride: 1, heapBase: 386, expressions: true },
+  desktop: { view: 3, mid: 6, maxDpr: Infinity, ao: true, textScale: 1, textureCaps: [], bodies: 10, keepGeometry: true, recoverContext: true, memoryBudget: null, heapBudget: null, minMid: 6, without: [], groundStride: 1, heapBase: 386, expressions: true },
   /*
    * ULTRA (owner, 2026-10-01: "iOS Safari only supports up to 384 MB"): every iPhone and iPad. The city is the
    * streets, the buildings of the rider's own tile in full, simple massing two tiles out, the landmarks' skyline,
@@ -77,13 +96,25 @@ export const TIERS: Record<Tier, TierSettings> = {
    */
   ultra: { view: 0, mid: 2, maxDpr: 1, ao: false, textScale: 0.35,
     textureCaps: [{ match: /\/(sftrees|trees|plants|palms|mh)\//, max: 256 }, { match: /\/facades\//, max: 1024 }], bodies: 0,
-    keepGeometry: false, recoverContext: false, memoryBudget: 380, minMid: 1, expressions: false,
+    keepGeometry: false, recoverContext: false, memoryBudget: 900, heapBudget: 300, minMid: 1,
+    expressions: false,
     without: ['plants', 'trees', 'crowd', 'furniture', 'signs', 'fountains', 'courts', 'rain'], groundStride: 2,
-    // measured: the production build's live heap ~115 MB on this tier; the dev server's ~170 (its module source)
-    heapBase: 150 },
+    /*
+     * Re-measured 2026-10-20, production build, Chromium at an iPhone viewport, retained after a forced
+     * collection — which is the only number worth fitting to, since live heap wanders by a hundred
+     * megabytes depending on when V8 last felt like collecting:
+     *
+     *     rings 0,1   217 MB        rings 0,2   228 MB        rings 0,4   242 MB
+     *
+     * So the part that does NOT shrink with the rings is about 210 MB, and the ring term sits on top.
+     * The old figure here was 150, from before the morph targets and Babylon's CPU vertex copies were
+     * dropped — stale in the dangerous direction: it had the governor believing there was 60 MB of room
+     * that did not exist, on a device that is killed at 384.
+     */
+    heapBase: 210 },
   phone: { view: 1, mid: 5, maxDpr: 1.5, ao: false, textScale: 0.5,
     // the vegetation libraries' and the avatar kit's images: leaf atlases, barks, skins, clothes
-    textureCaps: [{ match: /\/(sftrees|trees|plants|palms|mh)\//, max: 512 }, { match: /\/facades\//, max: 2048 }], bodies: 4, keepGeometry: false, recoverContext: false, memoryBudget: 1000, minMid: 3, without: [], groundStride: 1, heapBase: 386, expressions: false },
+    textureCaps: [{ match: /\/(sftrees|trees|plants|palms|mh)\//, max: 512 }, { match: /\/facades\//, max: 2048 }], bodies: 4, keepGeometry: false, recoverContext: false, memoryBudget: 1000, heapBudget: 600, minMid: 3, without: [], groundStride: 1, heapBase: 386, expressions: false },
 }
 
 /** The tier asked for, or the one this device looks like: phones and tablets are `phone`. */
