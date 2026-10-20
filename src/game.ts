@@ -3377,7 +3377,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       },
       showMap: (on) => { if (on === minimap.isLarge) return false; toggleMap(); return true },
       // [#303 HOOK] the end screen's numbers: the ride and this session's jobs
-      record: () => ({ travelled: nav.travelled, deliveries: [...sessionJobs], imperial: imperialNow(), place: pkg.name }),
+      record: () => ({ travelled: nav.travelled, deliveries: [...sessionJobs], collisions, imperial: imperialNow(), place: pkg.name }),
     })
   }
 }

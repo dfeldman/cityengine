@@ -29,12 +29,15 @@ export interface EndRecord {
   /** seconds of riding (pauses not counted) */
   seconds: number
   deliveries: EndDelivery[]
+  /** cars and walkers bumped this session (dandyhorse PLAN.md §18.2: the `collisions` stat) */
+  collisions?: number
   imperial: boolean
   /** the city's name, for the subtitle */
   place?: string
 }
 
 export const END_CSS = `
+.sr-standing { margin: 10px 0 0; font-weight: 800; letter-spacing: .01em; }
 .sr-end { position: fixed; inset: 0; z-index: 40; display: none; align-items: center; justify-content: center;
   background: rgba(6, 10, 24, .55); backdrop-filter: blur(3px); font: 600 15px/1.35 var(--font); }
 .sr-end.on { display: flex; }
@@ -150,6 +153,28 @@ export class EndScreen {
     this.root.classList.add('on')
     this.setSeconds(seconds ?? null)
     ;(this.card.querySelector('.done') as HTMLButtonElement | null)?.focus({ preventScroll: true })
+  }
+
+  /**
+   * Where this ride stands among recent rides by people at the same level (dandyhorse PLAN.md §18.3).
+   * It arrives after the card is already up — the platform has to work it out — so it is added rather than
+   * rendered with the rest, and a ride with nobody to compare against simply never gets it.
+   */
+  addStanding(rank: number, of: number, beaten: number): void {
+    if (of < 2 || !this.root.classList.contains('on')) return
+    if (this.card.querySelector('.sr-standing')) return
+    const p = document.createElement('p')
+    p.className = 'sr-standing'
+    const ordinal = (n: number): string => {
+      const rem = n % 100
+      if (rem >= 11 && rem <= 13) return `${n}th`
+      return `${n}${['th', 'st', 'nd', 'rd'][n % 10] ?? 'th'}`
+    }
+    p.textContent = `${ordinal(rank)} of ${of} recent rides at your level`
+      + (beaten > 0 ? `, ahead of ${beaten} of them.` : '.')
+    const done = this.card.querySelector('.done')
+    if (done?.parentElement) done.parentElement.insertBefore(p, done)
+    else this.card.appendChild(p)
   }
 
   /** the platform's own countdown, as it learns it */

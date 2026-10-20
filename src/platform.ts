@@ -11,10 +11,11 @@
  * rider is, how far they have come, the grade under them, and a picture for History.
  */
 import {
-  SessionClient, putSave, menuPrompt, readMenuAnswer,
+  SessionClient, getStanding, putSave, menuPrompt, readMenuAnswer,
   type EndInfo, type GameState, type InputAnswer, type Json, type StartPayload, type TickBody,
 } from '@dandyhorse/gamekit'
 import type { Controls, Measured, Steer } from './controls.ts'
+import { soloMessage, startRival, type RideNow, type RivalHud } from './rival.ts'
 import { EndScreen, type EndRecord } from './ui/end-screen.ts'
 
 /** the game's id on the platform (dandyhorse games/citydash/metadata.json) */
@@ -118,6 +119,10 @@ export class Platform implements Controls {
   private actionsAt = 0
   /** the map was opened because of a pause, so the end of the pause shuts it (#304) */
   private mapForPause = false
+  /** somebody to ride against, and the voice that calls things out (dandyhorse PLAN.md §18.3) */
+  private rival: RivalHud | null = null
+  /** what this ride has counted so far, for the stats and the end-of-session line (§18.2) */
+  private counted: RideNow = { elapsed: 0, distance: 0, deliveries: 0, earned: 0 }
   /** the end screen (#303), made before the game so its keys come first */
   private readonly endScreen: EndScreen | null = null
   private endWatch: { close: () => Promise<void>; stop: () => void } | null = null
@@ -204,6 +209,14 @@ export class Platform implements Controls {
     this.actions = this.currentActions()
     this.refreshPrompt()
     this.client.start()
+    // A debug session is not recorded, so it is not raced either. Nothing waits on this: the ride begins
+    // whether or not the platform has anybody to offer.
+    if (!this.start.debug) {
+      void startRival(this.start.sessionId, this.start.unitSystem, link.city,
+                      this.start.requestedDuration, this.log)
+        .then((r) => { this.rival = r })
+        .catch((e) => this.log(`competitor: ${String(e)}`))
+    }
     // a picture for History now and then, so the one sent at the end is recent without waiting for it then
     const snap = (): void => { void link.screenshot().then((img) => { if (img) this.image = img }) }
     setTimeout(snap, 20_000)
@@ -294,6 +307,11 @@ export class Platform implements Controls {
     this.endWatch = watch
     screen.show({ ...r, seconds: this.elapsedSeconds() }, () => { void watch.close() })
     this.log(`end screen: ${r.deliveries.length} jobs, ${Math.round(r.travelled)} m`)
+    // …and, once the platform has worked it out, where this ride stands among people at the same level
+    // (dandyhorse PLAN.md §18.3). It is a line on an already-finished screen; nothing waits for it.
+    void getStanding(this.start.sessionId)
+      .then((st) => { if (st.rank !== null) screen.addStanding(st.rank, st.of, st.beaten) })
+      .catch((e: unknown) => this.log(`standing: ${String(e)}`))
   }
 
   /** the end screen is up (for the probes) */
@@ -360,7 +378,11 @@ export class Platform implements Controls {
     void (this.link?.screenshot() ?? Promise.resolve(null)).then((img) => {
       if (img) this.image = img
       return this.client.requestTick()
-    }).then(() => this.client.end('complete'))
+    }).then(() => {
+      const message = this.rideMessage()
+      this.rival?.remove()
+      return this.client.end('complete', undefined, { message })
+    })
   }
 
   // --- answers, pause -----------------------------------------------------------------------------
@@ -422,6 +444,33 @@ export class Platform implements Controls {
     this.pending.push(id)
   }
 
+  // --- what the ride counted (dandyhorse PLAN.md §18.2) ---------------------------------------------
+
+  /** The session's deliveries, pay, stars and bumps, from the record the game keeps. */
+  private tally(): { deliveries: number; earned: number; stars: number; collisions: number } {
+    const r = this.link?.record?.()
+    const done = (r?.deliveries ?? []).filter((d) => d.outcome === 'delivered')
+    const earned = done.reduce((n, d) => n + (d.dollars ?? 0), 0)
+    const stars = done.length ? done.reduce((n, d) => n + (d.stars ?? 0), 0) / done.length : 0
+    this.counted = {
+      elapsed: this.elapsedSeconds(),
+      distance: this.link?.travelled() ?? 0,
+      deliveries: done.length,
+      earned: Math.round(earned * 100) / 100,
+    }
+    return { deliveries: done.length, earned, stars: Math.round(stars * 10) / 10,
+             collisions: r?.collisions ?? 0 }
+  }
+
+  /** The line this ride leaves on the player's timeline (dandyhorse PLAN.md §18.2). */
+  private rideMessage(): string {
+    const done = this.tally()
+    const beside = this.rival?.verdict(this.counted, done.collisions)
+    if (beside) return beside
+    return soloMessage(this.counted, done.collisions, this.visited.size,
+                       this.start.unitSystem !== 'metric', this.link?.record?.()?.place ?? null)
+  }
+
   // --- setstate -----------------------------------------------------------------------------------
 
   private buildTick(): TickBody | null {
@@ -441,6 +490,19 @@ export class Platform implements Controls {
       route: link.city,
       custom: { street: w.street ?? null, streets: this.visited.size, of: link.streets },
     }
+    // What the ride has counted (dandyhorse PLAN.md §18.2). The progress counters go in `custom` as well:
+    // that is what a later rider's competitor box reads.
+    const done = this.tally()
+    body.custom = { ...body.custom, deliveries: done.deliveries, earned: Math.round(done.earned * 100) / 100 }
+    this.client.countStats({
+      deliveries: done.deliveries,
+      earned: Math.round(done.earned * 100) / 100,
+      stars: done.stars,
+      collisions: done.collisions,
+      streets: this.visited.size,
+    })
+    // The rival box rides on the 1 Hz tick: somebody else's past ride does not need a frame-rate update.
+    this.rival?.update(this.counted)
     if (this.pending.length) { this.sent = this.pending.splice(0); body.achievements = this.sent }
     return body
   }
