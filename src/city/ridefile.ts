@@ -66,11 +66,26 @@ export function packRide(g: RideGraph, mode: RideMode): RideFile {
 }
 
 export function unpackRide(f: RideFile): RideGraph {
-  const es: RideEdge[] = f.edges.map((e) => {
+  /*
+   * Emptied as it is read, which is the point of the loop rather than a `map`.
+   *
+   * The whole city's ride graph arrives as one JSON file, and unpacking it is the largest single
+   * allocation the game makes — measured at +116 MB of a 377 MB peak on the iOS tier, where the tab is
+   * killed at 384. A `map` holds the entire packed array alive until it returns, so for the length of the
+   * unpacking BOTH forms of every edge are on the heap at once. Dropping each packed edge as its unpacked
+   * one is built lets the collector take them while the loop is still running.
+   *
+   * `f` is the parsed file and nothing else has a reference to it, so emptying it is safe.
+   */
+  const packed = f.edges as (PackedRideEdge | null)[]
+  const es: RideEdge[] = new Array(packed.length)
+  for (let i = 0; i < packed.length; i++) {
+    const e = packed[i]!
+    packed[i] = null
     const points = unpackPoints(e.points)
     const over = []
-    for (let i = 0; i + 2 < e.over.length; i += 3) over.push({ id: e.over[i], reversed: e.over[i + 1] === 1, length: e.over[i + 2] })
-    return { ...e, points, length: lengthOf(points), over }
-  })
+    for (let k = 0; k + 2 < e.over.length; k += 3) over.push({ id: e.over[k], reversed: e.over[k + 1] === 1, length: e.over[k + 2] })
+    es[i] = { ...e, points, length: lengthOf(points), over }
+  }
   return buildGraph(es) as RideGraph
 }
