@@ -83,3 +83,4 @@ incoming_assets/
 .env
 .env.*
 *.token
+!.env.example
