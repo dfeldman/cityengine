@@ -47,6 +47,11 @@ export interface RiderOptions {
   gait?: 'walk' | 'run'
   /** the kit's level of detail; the crowd uses 'low', the player whatever the machine can afford */
   quality?: 'low' | 'medium' | 'high'
+  /**
+   * Build the face's expression morph targets. Off on the phone tiers (tier.ts `expressions`): each one is
+   * another copy of the whole body's vertices, and the rider is seen from behind.
+   */
+  expressions?: boolean
 }
 
 export class Rider {
@@ -86,7 +91,9 @@ export class Rider {
     await initAssets()
     const geometry = await new GeometryService().request(spec, quality)
     if (!geometry) return
-    const avatar = new Avatar(this.scene, spec, { geometry, quality, name: 'player' })
+    const avatar = new Avatar(this.scene, spec, {
+      geometry, quality, name: 'player', expressions: opts.expressions ?? true,
+    })
     /**
      * Straight after the avatar is constructed, not after it is ready.
      *

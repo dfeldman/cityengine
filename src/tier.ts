@@ -45,6 +45,14 @@ export interface TierSettings {
   groundStride: number
   /** the governor's model of the JS heap that does not shrink with the rings, MB (measured per tier, see below) */
   heapBase: number
+  /**
+   * Build the avatars' facial expression morph targets (avatarkit `AvatarOptions.expressions`).
+   *
+   * Babylon wants each expression as a whole set of vertex positions rather than the deltas the kit holds,
+   * so every unit is another copy of the entire body — about forty of them, 20 MB measured on this tier,
+   * for faces nobody sees from behind a rider on a phone.
+   */
+  expressions: boolean
 }
 
 /**
@@ -58,7 +66,7 @@ export const HEAP_PER_TILE_MB = 0.65
 export const GPU_PER_TILE_MB = 0.47
 
 export const TIERS: Record<Tier, TierSettings> = {
-  desktop: { view: 3, mid: 6, maxDpr: Infinity, ao: true, textScale: 1, textureCaps: [], bodies: 10, keepGeometry: true, recoverContext: true, memoryBudget: null, minMid: 6, without: [], groundStride: 1, heapBase: 386 },
+  desktop: { view: 3, mid: 6, maxDpr: Infinity, ao: true, textScale: 1, textureCaps: [], bodies: 10, keepGeometry: true, recoverContext: true, memoryBudget: null, minMid: 6, without: [], groundStride: 1, heapBase: 386, expressions: true },
   /*
    * ULTRA (owner, 2026-10-01: "iOS Safari only supports up to 384 MB"): every iPhone and iPad. The city is the
    * streets, the buildings of the rider's own tile in full, simple massing two tiles out, the landmarks' skyline,
@@ -69,13 +77,13 @@ export const TIERS: Record<Tier, TierSettings> = {
    */
   ultra: { view: 0, mid: 2, maxDpr: 1, ao: false, textScale: 0.35,
     textureCaps: [{ match: /\/(sftrees|trees|plants|palms|mh)\//, max: 256 }, { match: /\/facades\//, max: 1024 }], bodies: 0,
-    keepGeometry: false, recoverContext: false, memoryBudget: 380, minMid: 1,
+    keepGeometry: false, recoverContext: false, memoryBudget: 380, minMid: 1, expressions: false,
     without: ['plants', 'trees', 'crowd', 'furniture', 'signs', 'fountains', 'courts', 'rain'], groundStride: 2,
     // measured: the production build's live heap ~115 MB on this tier; the dev server's ~170 (its module source)
     heapBase: 150 },
   phone: { view: 1, mid: 5, maxDpr: 1.5, ao: false, textScale: 0.5,
     // the vegetation libraries' and the avatar kit's images: leaf atlases, barks, skins, clothes
-    textureCaps: [{ match: /\/(sftrees|trees|plants|palms|mh)\//, max: 512 }, { match: /\/facades\//, max: 2048 }], bodies: 4, keepGeometry: false, recoverContext: false, memoryBudget: 1000, minMid: 3, without: [], groundStride: 1, heapBase: 386 },
+    textureCaps: [{ match: /\/(sftrees|trees|plants|palms|mh)\//, max: 512 }, { match: /\/facades\//, max: 2048 }], bodies: 4, keepGeometry: false, recoverContext: false, memoryBudget: 1000, minMid: 3, without: [], groundStride: 1, heapBase: 386, expressions: false },
 }
 
 /** The tier asked for, or the one this device looks like: phones and tablets are `phone`. */

@@ -1216,7 +1216,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const riderSeed = new URLSearchParams(location.search).get('rider')
   const riderSpec = opts.freeze && riderSeed === null ? undefined
     : (() => { const seed = riderSeed !== null ? Number(riderSeed) : Math.floor(Math.random() * 1e9); return cityClothes(randomSpec(seed), seed, opts.device === 'bike' ? -1 : 0) })()
-  const rider = off.has('rider') ? null : Rider.create(scene, opts.device, riderSpec ? { spec: riderSpec } : {})
+  const rider = off.has('rider') ? null
+    : Rider.create(scene, opts.device, { ...(riderSpec ? { spec: riderSpec } : {}), expressions: tier.expressions })
   /*
    * Every stranger is a real avatar-kit body, drawn by baked vertex animation (render/crowd-baked.ts).
    * The variants are built only once the rider's own body is on screen: the kit builds one body at a
