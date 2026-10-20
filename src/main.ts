@@ -89,6 +89,8 @@ if (params.get('model')) {
   // `?mode=trainer` outside Dandyhorse opens an ad-hoc session on a local Dandyhorse server, as `?dandyhorse=bike` does
   const adHoc = params.get('dandyhorse') ?? (params.get('mode') === 'trainer' ? 'bike' : null)
   let platform: import('./platform.ts').Platform | null = null
+  /** The player's own AvatarSpec from Dandyhorse, where they have one (see below). */
+  let playerAvatar: Record<string, unknown> | null = null
   if (sessionId || adHoc) {
     const [{ startSession, setFetch }, { Platform, GAME_ID }] = await Promise.all([import('@dandyhorse/gamekit'), import('./platform.ts')])
     // framed by Dandyhorse's shim from another origin: the API is reached through it (src/relay.ts)
@@ -100,6 +102,16 @@ if (params.get('model')) {
       platform = new Platform(start, (line) => console.log('citydash:', line))
       // (for the probes that drive it from outside: the platform end-to-end scripts)
       ;(window as unknown as { __platform?: unknown }).__platform = platform
+      /*
+       * THE RIDER IS THE PLAYER (owner, 2026-10-20: "in Trail trainer and cycle dash, the player avatar
+       * should be YOUR specific avatar from dandyhorse, not a random one"). This replaces the random
+       * body per load that used to be the gimmick here. Outside Dandyhorse, and for anybody who has
+       * never made an avatar, the random rider is still what you get.
+       */
+      try {
+        const who = await (await import('@dandyhorse/gamekit')).me()
+        if (who?.avatar) playerAvatar = who.avatar as unknown as Record<string, unknown>
+      } catch { /* a rider is decoration: a failure here must not cost somebody their session */ }
     } catch (e) {
       // say so, in the console's look, rather than sit on "loading…" for ever
       LoadingScreen.dismiss()
@@ -251,5 +263,6 @@ if (params.get('model')) {
     vegMerge: params.get('vegmerge') !== '0',
     turn: (params.get('turn') as 'left' | 'straight' | 'right') ?? undefined,
     platform: platform ?? undefined,
+    playerAvatar: playerAvatar ?? undefined,
   })
 }

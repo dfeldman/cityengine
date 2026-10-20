@@ -76,7 +76,7 @@ import { BakedCrowd, cityClothes, peopleLights } from './render/crowd-baked.ts'
 import { CableRiders } from './render/cable-riders.ts'
 import { FerrisWheel, SKYSTAR } from './render/sf/ferris.ts'
 import { PLAYER_SPOT } from './render/sf/trains.ts'
-import { randomSpec } from 'avatarkit'
+import { normalizeSpec, randomSpec } from 'avatarkit'
 import { Rider } from './render/rider.ts'
 import { Signs, setTextScale, type SignedJunction } from './render/signs.ts'
 import { GPU_PER_TILE_MB, HEAP_PER_TILE_MB, TIERS, type Tier } from './tier.ts'
@@ -156,6 +156,14 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   freeze?: boolean
   /** on Dandyhorse: the session's controls, and what the game tells it (src/platform.ts) */
   platform?: Platform
+  /**
+   * The player's own AvatarSpec from Dandyhorse. The rider is them when this is given.
+   *
+   * Owner, 2026-10-20: *"in Trail trainer and cycle dash, the player avatar should be YOUR specific
+   * avatar from dandyhorse, not a random one"* — which replaces the random-body-per-load below. Absent
+   * (outside Dandyhorse, or they have never made one) the random rider is what you get.
+   */
+  playerAvatar?: Record<string, unknown>
   /** `?paths=1`: start with the ride-graph overlay on (J toggles it; render/pathmap.ts) */
   paths?: boolean
   /**
@@ -1232,14 +1240,22 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // `?without=rider` is how the city is compared with and without the avatar kit, which brings its own
   // lighting and image-processing opinions along with the body
   /*
-   * A DIFFERENT RIDER EVERY LOAD (owner, 2026-10-03: "we had decided to make the avatar random (with random clothes)
-   * on each load. That's a fun little gimmick"): an avatar-kit body from a random seed, dressed for the city — trousers
-   * on a bike (a skirt hangs through the saddle), sports kit on foot. Frozen shots keep the preset, so they repeat;
-   * `?rider=<n>` picks a seed.
+   * WHO THE RIDER IS.
+   *
+   * On Dandyhorse it is the player: their own avatar, so the person on the bike is recognisably them
+   * (owner, 2026-10-20). Their clothes are still dressed for the city — trousers on a bike, because a
+   * skirt hangs through the saddle — since that is about the bike rather than about taste.
+   *
+   * Everywhere else it is a different body every load (owner, 2026-10-03: "we had decided to make the
+   * avatar random (with random clothes) on each load. That's a fun little gimmick"). Frozen shots keep
+   * the preset so they repeat; `?rider=<n>` picks a seed.
    */
   const riderSeed = new URLSearchParams(location.search).get('rider')
-  const riderSpec = opts.freeze && riderSeed === null ? undefined
-    : (() => { const seed = riderSeed !== null ? Number(riderSeed) : Math.floor(Math.random() * 1e9); return cityClothes(randomSpec(seed), seed, opts.device === 'bike' ? -1 : 0) })()
+  const dressFor = opts.device === 'bike' ? -1 : 0
+  const riderSpec = opts.playerAvatar && riderSeed === null
+    ? cityClothes(normalizeSpec(opts.playerAvatar), 0, dressFor)
+    : opts.freeze && riderSeed === null ? undefined
+      : (() => { const seed = riderSeed !== null ? Number(riderSeed) : Math.floor(Math.random() * 1e9); return cityClothes(randomSpec(seed), seed, dressFor) })()
   const rider = off.has('rider') ? null
     : Rider.create(scene, opts.device, { ...(riderSpec ? { spec: riderSpec } : {}), expressions: tier.expressions })
   /*
