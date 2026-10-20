@@ -5,8 +5,14 @@
 #   sh tools/r2-upload.sh [--dry-run]
 set -e
 cd "$(dirname "$0")/.."
-set -a; . ./api_key; set +a
+set -a; . ./api_key; [ -f .env ] && . ./.env; set +a
 ACCT=$(echo "$BUCKET_URL" | sed -E 's#https?://([^.]+)\..*#\1#')
+# the account API token in .env (CLOUDFLARE_API_TOKEN) wins over api_key's: R2's S3 secret is its SHA-256, the key id
+# its own id (below). Rotated 2026-10-19; api_key keeps only the bucket's name and endpoint.
+if [ -n "$CLOUDFLARE_API_TOKEN" ]; then
+  BUCKET_ACCESS_KEY=$CLOUDFLARE_API_TOKEN
+  BUCKET_SECRET_KEY=$(printf %s "$CLOUDFLARE_API_TOKEN" | shasum -a 256 | cut -d' ' -f1)
+fi
 KID=$(curl -s -H "Authorization: Bearer $BUCKET_ACCESS_KEY" "https://api.cloudflare.com/client/v4/accounts/$ACCT/tokens/verify" \
   | python3 -c "import sys,json; print(json.load(sys.stdin)['result']['id'])")
 export RCLONE_CONFIG_R2_TYPE=s3 RCLONE_CONFIG_R2_PROVIDER=Cloudflare RCLONE_CONFIG_R2_ACCESS_KEY_ID="$KID" \
