@@ -58,8 +58,7 @@ export async function startRival(sessionId: string, unitSystem: UnitSystem, city
   const tracker = new CompetitorTracker(rival)
   log(`riding against ${name}${flag ? ` ${flag}` : ''} at ${Math.round(rival.player.fitness)} W`)
   const box: CompetitorBox = competitorBox(document.body, tracker, {
-    imperial, corner: 'top-right',
-    labels: { deliveries: 'Parcels', earned: 'Earned' },
+    imperial, corner: 'left',
     title: 'Their distance',
   })
 
