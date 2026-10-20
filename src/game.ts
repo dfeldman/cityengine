@@ -380,6 +380,30 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       if (info?._positions) info._positions = null
     }
   }, 5000)
+  /*
+   * BABYLON'S CPU COPY OF EVERY STATIC VERTEX BUFFER (measured: 650 of them, 20 MB, on the iOS tier).
+   *
+   * `Buffer` takes the typed array in its constructor and keeps it in `_data`. For an UPDATABLE buffer that
+   * is deliberate — the data is uploaded again on every change — but for a static one `create()` hands the
+   * array to the GPU and simply never lets go of it, whatever `doNotHandleContextLost` says. So the array
+   * sits on the heap for the life of the mesh with nothing to read it.
+   *
+   * Only `_data`, and only where the GPU already has the buffer and it is not updatable. An earlier attempt
+   * used `geometry.clearCachedData()`, which also drops the indices and left the city a blank blue field —
+   * the HUD drew, the streets did not.
+   */
+  if (!tier.keepGeometry) {
+    interface StaticBuffer { _updatable?: boolean; _buffer?: unknown; _data?: unknown }
+    setInterval(() => {
+      for (const m of scene.meshes) {
+        const g = (m as unknown as { geometry?: { getVertexBuffers?: () => Record<string, { _buffer?: StaticBuffer }> } }).geometry
+        for (const vb of Object.values(g?.getVertexBuffers?.() ?? {})) {
+          const buf = vb?._buffer
+          if (buf && !buf._updatable && buf._buffer && buf._data) buf._data = null
+        }
+      }
+    }, 5000)
+  }
   foliageLights(scene)
   if (!tier.recoverContext) {
     // and a texture's own copy of its source bytes (a glTF image's PNG, ~2 MB a leaf atlas) once it is on the GPU
