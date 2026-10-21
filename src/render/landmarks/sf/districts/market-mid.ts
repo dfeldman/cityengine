@@ -135,8 +135,6 @@ const KEARNY_WHITE: Rgb = [0.88, 0.87, 0.84]
 const MUTUAL_GREY: Rgb = [0.72, 0.72, 0.7]
 const PACIFIC_GREEN: Rgb = [0.46, 0.64, 0.55]
 const HUNTER_BUFF: Rgb = [0.8, 0.73, 0.58]
-const PALACE_BRICK: Rgb = [0.7, 0.6, 0.48]
-const PALACE_STONE: Rgb = [0.87, 0.83, 0.75]
 
 export const MARKET_MID: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /**
@@ -172,27 +170,6 @@ export const MARKET_MID: Record<string, (out: MeshBuilder, fit: Fit) => void> = 
     roof: [0.62, 0.52, 0.48],
     crown: { kind: 'parapet', height: 1.2, colour: [0.8, 0.64, 0.58] },
     penthouse: 1,
-  }),
-
-  /**
-   * The Palace Hotel (1909, Trowbridge & Livingston, rebuilt after the fire), Market at New Montgomery: eight
-   * storeys of buff brick on a two-storey base of cream stone with tall dark shopfronts. Windows in even pairs with
-   * little iron balconies; a cream band of panelled stone two floors from the top, the top floor's windows arched
-   * under keystones, and a deep cornice of cream terracotta with a cresting of shells along it. (Commons: "Facade of
-   * the Palace Hotel, San Francisco.jpg", "Palace Hotel SF Market & New Montgomery corner.JPG".)
-   */
-  palaceHotel: spec({
-    height: 37,
-    base: { height: 8, face: { kind: 'punched', wall: PALACE_STONE, material: 'terracotta', glass: [0.12, 0.13, 0.14], pitch: 5.5, solid: 0.42, floor: 8 } },
-    tiers: [
-      { to: 9, face: { kind: 'blank', wall: PALACE_STONE , material: 'ashlar'}, cornice: { depth: 0.35, height: 0.5 } },
-      { to: 26, face: { kind: 'punched', wall: PALACE_BRICK, material: 'brick', glass: [0.37, 0.36, 0.31], pitch: 2.6, solid: 0.5, floor: 3.4 } },
-      { to: 29.6, face: { kind: 'punched', wall: PALACE_STONE, material: 'terracotta', glass: [0.37, 0.36, 0.31], pitch: 2.6, solid: 0.55, floor: 3.6 }, cornice: { depth: 0.3, height: 0.4 } },
-      { to: 33.5, face: { kind: 'punched', wall: PALACE_BRICK, material: 'brick', glass: [0.37, 0.36, 0.31], pitch: 2.6, solid: 0.55, arched: true, floor: 3.9 } },
-      { to: 1, face: { kind: 'blank', wall: PALACE_STONE , material: 'terracotta'}, cornice: { depth: 1.1, height: 1.2 } },
-    ],
-    roof: [0.45, 0.43, 0.41],
-    crown: { kind: 'parapet', height: 0.9, colour: PALACE_STONE },
   }),
 
   /**

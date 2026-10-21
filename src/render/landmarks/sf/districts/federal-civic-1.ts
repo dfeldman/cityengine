@@ -68,22 +68,4 @@ export const FEDERAL_CIVIC_1: Record<string, (out: MeshBuilder, fit: Fit) => voi
     })
   },
 
-  /**
-   * relation/19306325 + way/38612651 — James R. Browning U.S. Court of Appeals Building (9th Circuit).
-   * Rusticated granite base, three storeys of round-arched windows (the 1905 original), a shallower
-   * pedimented-window tier above (the 1933-34 addition), a balustraded roofline. No free-standing colonnade
-   * in any source — Italian-Renaissance palazzo massing on a whole-block footprint.
-   */
-  ninthCircuitCourthouse_19306325: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'rusticated', storeys: 1, material: 'limestone' },
-      shaft: { storeys: 3, windows: 'arched', material: 'limestone' },
-      top: { kind: 'attic', storeys: 2, material: 'limestone' },
-      bands: { aboveGround: 'cornice', belowTop: 'cornice', top: 'dentil' },
-      crown: { kind: 'parapet', height: 0.8, material: 'ashlar' },
-      frame: null,
-      entrance: { at: 'centre', kind: 'portal', steps: 4 },
-      material: 'limestone',
-    })
-  },
 }

@@ -266,15 +266,6 @@
  },
  {
   "osm": [
-   "way/260282390"
-  ],
-  "name": "Shell Building",
-  "procedural": "shellBuilding",
-  "height": 115,
-  "note": "Raised from its own OSM footprint (ring-tower.ts), dressed from photographs."
- },
- {
-  "osm": [
    "way/436648569"
   ],
   "name": "San Francisco Marriott Marquis",

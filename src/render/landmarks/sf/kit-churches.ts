@@ -49,20 +49,6 @@ export function saintDominics(out: MeshBuilder, fit: Fit): void {
   })
 }
 
-/** Temple Sherith Israel (1905), California at Webster: buff sandstone Romanesque, the great round-arched window in
- *  its deep arch over an arcade, a dome over the sanctuary. */
-export function sherithIsrael(out: MeshBuilder, fit: Fit): void {
-  church(out, fit, {
-    nave: { bays: 3, storeys: 2, roof: 'flat', pitch: 'low' },
-    aisles: null,
-    transept: null,
-    chancel: null,
-    tower: { at: 'crossing', stages: 1, plan: 'octagon', top: 'dome' },
-    front: { kind: 'plain', portal: 'triple', window: 'wheel', steps: 3 },
-    walls: { material: 'sandstone', openings: 'round', buttresses: 'none' },
-  })
-}
-
 /** Saint Brigid (1904), Van Ness at Broadway: grey granite Romanesque, tall round-arched windows, a square tower. */
 export function saintBrigid(out: MeshBuilder, fit: Fit): void {
   church(out, fit, {
@@ -300,4 +286,4 @@ export function nineteenthAvenueBaptist(out: MeshBuilder, fit: Fit): void {
   })
 }
 
-export const KIT_CHURCHES: Record<string, (out: MeshBuilder, fit: Fit) => void> = { saintJames, stJohnsPresbyterian, southVanNessBrickChurch, saintMonicas, parkPresidioMethodist, shaarZahav, nineteenthAvenueBaptist, oldSacredHeart, fifthChurchOfChristScientist, shrineOfSaintFrancis, guadalupeChurch, saintDominics, sherithIsrael, saintBrigid, saintVincentDePaul, saintMarksLutheran, firstChurchOfChristScientist, saintAgnes, saintFrancisLutheran, presidioChapel, swedenborgianChurch, centralAdventist }
+export const KIT_CHURCHES: Record<string, (out: MeshBuilder, fit: Fit) => void> = { saintJames, stJohnsPresbyterian, southVanNessBrickChurch, saintMonicas, parkPresidioMethodist, shaarZahav, nineteenthAvenueBaptist, oldSacredHeart, fifthChurchOfChristScientist, shrineOfSaintFrancis, guadalupeChurch, saintDominics, saintBrigid, saintVincentDePaul, saintMarksLutheran, firstChurchOfChristScientist, saintAgnes, saintFrancisLutheran, presidioChapel, swedenborgianChurch, centralAdventist }

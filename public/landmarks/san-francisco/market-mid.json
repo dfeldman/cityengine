@@ -25,7 +25,7 @@
   ],
   "name": "Palace Hotel",
   "procedural": "palaceHotel",
-  "front": "street",
+  "front": 315,
   "height": 37,
   "note": "Tower grammar: buff brick over a cream stone base, cream band and arched top floor, deep cresting cornice (Commons photographs)."
  },

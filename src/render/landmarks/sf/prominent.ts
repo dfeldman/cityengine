@@ -7,7 +7,6 @@ import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
 import { tower, towerRing, faceBand } from '../tower.ts'
 import { capPolygon } from '../../buildings.ts'
-import { facade } from '../facade.ts'
 import { sign } from '../signage.ts'
 import { boxAlong, edgeAt, offsetRing } from '../parts.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
@@ -103,22 +102,6 @@ export function isleHouse(out: MeshBuilder, fit: Fit): void {
     base: { height: 10, face: { kind: 'curtain', wall: [0.78, 0.8, 0.8], glass: [0.3, 0.38, 0.42], pitch: 3.2, floor: 3.4, material: 'glass' } },
     tiers: [{ to: 1, face: { kind: 'fins', wall: [0.9, 0.9, 0.89], glass: [0.42, 0.46, 0.5], pitch: 2.6, solid: 0.55, depth: 0.25, floor: 2.9, material: 'concrete' } }],
     crown: { kind: 'parapet', height: 1.2, colour: [0.9, 0.9, 0.89], material: 'concrete' },
-  })
-}
-
-/** THE FAIRMONT, Nob Hill (Reid Brothers, 1907; relation/16217497): the white Beaux-Arts palace that crowns the hill — a
- *  two-storey rusticated base, five storeys of dressed windows above it, an attic and a balustrade against the sky. It
- *  was baked as a "Victorian" of the footprint's size (OSM says 2 levels). The 1961 tower behind is its own model. */
-export function fairmontHotel(out: MeshBuilder, fit: Fit): void {
-  facade(out, { ...fit, height: 32 }, {
-    ground: { kind: 'rusticated', storeys: 2, material: 'limestone' },
-    shaft: { storeys: 5, windows: 'dressed', material: 'limestone' },
-    top: { kind: 'attic', storeys: 1, material: 'limestone' },
-    bands: { aboveGround: 'string', belowTop: 'string', top: 'cornice' },
-    crown: { kind: 'balustrade', height: 1.1, material: 'ashlar' },
-    frame: null,
-    entrance: { at: 'centre', kind: 'door', steps: 3 },
-    material: 'limestone',
   })
 }
 
@@ -239,4 +222,4 @@ export function warmingHut(out: MeshBuilder, fit: Fit): void {
   })
 }
 
-export const PROMINENT: Record<string, (out: MeshBuilder, fit: Fit) => void> = { pofaHall, fairmontHotel, stRegisTower, montgomeryGlassCube, holidayInnTower, holidayInnPodium, somaGrand, gearyTower, isleHouse, oneMissionBay, symphonyTowers, jfkTowers, folsom230, cruiseTerminal27, cableCarBarn, warmingHut }
+export const PROMINENT: Record<string, (out: MeshBuilder, fit: Fit) => void> = { pofaHall, stRegisTower, montgomeryGlassCube, holidayInnTower, holidayInnPodium, somaGrand, gearyTower, isleHouse, oneMissionBay, symphonyTowers, jfkTowers, folsom230, cruiseTerminal27, cableCarBarn, warmingHut }

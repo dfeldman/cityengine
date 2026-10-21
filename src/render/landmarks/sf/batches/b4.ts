@@ -198,22 +198,4 @@ export const B4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     })
   },
 
-  /**
-   * way/257338315 — Bethlehem Steel Administrative Building (#101), 20th St, industrial, 3 levels, 19 m.
-   * No photograph. Plan is a rectilinear footprint with several small setback-scale notches (a light well
-   * and a stepped corner), not a repeating bay rhythm. Built BLIND as a plain early-20th-century industrial
-   * office/admin building: brick, plain punched windows, no ornament invented.
-   */
-  b4_industrial_257338315: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'plain', storeys: 1, material: 'dark-brick' },
-      shaft: { storeys: 2, windows: 'balanced', material: 'brick' },
-      top: null,
-      bands: { aboveGround: 'string', belowTop: null, top: 'cornice' },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'door', steps: 1 },
-      material: 'brick',
-    })
-  },
 }

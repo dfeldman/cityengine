@@ -186,7 +186,6 @@ export const TOWER_PRESETS = {
   /** the Russ Building (1927): buff terracotta Gothic, stepping in to its tower */
   russBuilding: preset({ height: 133, wall: [0.86, 0.8, 0.68], glass: [0.3, 0.3, 0.3], pattern: 'vertical', pitch: 2.2, solid: 0.55, setbacks: [[0.72, 4], [0.86, 4]], crown: 'stepped' }),
   /** the Shell Building (1929): Art Deco terracotta, setbacks to a crowned top */
-  shellBuilding: preset({ height: 116, wall: [0.86, 0.8, 0.66], glass: [0.3, 0.3, 0.31], pattern: 'vertical', pitch: 2.2, solid: 0.6, setbacks: [[0.75, 3], [0.88, 3]], crown: 'lantern' }),
   /** Westin St. Francis tower (1972): white, banded, beside the old hotel */
   // (westinTower: its own builder now, districts/union-square.ts)
   /** 101 California (1982): a faceted cylinder of glass bands and granite */

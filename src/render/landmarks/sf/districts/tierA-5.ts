@@ -43,9 +43,6 @@ export const TIERA_5: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** 108;110 Sutter Street: a Sutter Street commercial tower of the 1910s–20s, cream terracotta, no reference photo found. */
   oneOhEightSutter: fromRecipe('chicago-block', { height: 39, wall: [0.72, 0.66, 0.56], glass: [0.2, 0.22, 0.24] }),
 
-  /** 552 Montgomery Street (Bank of Italy Building, 1908): white Beaux-Arts granite, round-arched banking floor, deep cornice (Commons photograph). */
-  bankOfItaly: fromRecipe('edwardian-terracotta', { height: 35, wall: [0.84, 0.82, 0.76], glass: [0.18, 0.2, 0.22], base: 9, baseWall: [0.78, 0.76, 0.7], material: 'ashlar' }),
-
   /** 330;332 Pine Street (the Orient Building, 1912, George Applegarth): a tan terracotta commercial highrise, no reference photo found. */
   orientBuilding: fromRecipe('edwardian-terracotta', { height: 38, wall: [0.8, 0.74, 0.6], glass: [0.18, 0.2, 0.22] }),
 }
