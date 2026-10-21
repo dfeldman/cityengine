@@ -164,6 +164,17 @@ export function detectTier(asked: string | null): Tier {
   const ua = navigator.userAgent
   // an iPad asks for the desktop site and calls itself a Mac — but a Mac has no touch screen
   const ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
-  // iOS Safari: 384 MB a tab (owner, 2026-10-01) — the ultra tier; Android's Chrome allows more
-  return ios ? 'ultra' : /Android/.test(ua) ? 'phone' : 'desktop'
+  /*
+   * Every phone gets the `ultra` tier, iOS and Android alike.
+   *
+   * Android used to get `phone`, on the reasoning that Chrome allows more than Safari's 384 MB a tab. It
+   * does, but measured 2026-10-21 that tier runs at about 1.37 GB against the 1000 MB budget it declares,
+   * and the governor cannot get under it because `minMid: 3` floors how far the rings can close. So the
+   * tier Android was being given is one that does not fit its own budget on a desktop, let alone a phone.
+   *
+   * Owner, 2026-10-21: *"I'd be happy to apply the iphone limits to android and call it a day... if we
+   * ever have android users, they'll be on older devices that need the ios-level low limits anyway."*
+   * `phone` stays as the Medium setting somebody can choose by hand; nothing is given it automatically.
+   */
+  return ios || /Android/.test(ua) ? 'ultra' : 'desktop'
 }

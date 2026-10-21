@@ -12,6 +12,7 @@
  *
  * and says so once the ride is up. `?reset=1` clears every setting by hand.
  */
+import { detectTier } from '../tier.ts'
 import { FEATURE_OFF, setSetting, settings, type Feature } from './settings.ts'
 
 const KEY = 'cycledash.lastRun'
@@ -42,8 +43,26 @@ export function recoverFromCrash(): void {
   crashes = (last.crashes ?? 0) + 1
   const s = settings()
   const done: string[] = []
-  if (s.quality === 'desktop' || s.quality === 'phone') { setSetting('quality', 'auto'); done.push('graphics back to Auto') }
-  else if (crashes >= 2 && s.quality !== 'ultra') { setSetting('quality', 'ultra'); done.push('graphics to Low') }
+  /*
+   * HOW FAR DOWN THIS IS ALLOWED TO GO DEPENDS ON THE MACHINE.
+   *
+   * Owner, 2026-10-21: *"Plants are not loading on desktop... It's like we're applying the same memory
+   * limits on desktop now as we have on the phone... on desktop the heap size is 199 MB"* — and in a
+   * private window it was the desktop tier again, which is what gave it away. This did that. It stepped a
+   * desktop down to `ultra`, the mobile tier, wrote it to localStorage and never undid it: 199 MB of heap
+   * and no plants on a browser with gigabytes spare, for ever, over two runs that happened not to end
+   * cleanly. A run counts as a crash merely by not writing `closed`, which an ordinary force-quit manages.
+   *
+   * A desktop crash is almost never the 384 MB ceiling this guard exists for, so on anything that is not a
+   * phone the ladder stops at Medium. The floor is also excluded from the reset above, or the two rules
+   * push against each other and the setting flips between Auto and Medium on alternate crashes.
+   */
+  const floor = detectTier(null) === 'ultra' ? 'ultra' : 'phone'
+  if ((s.quality === 'desktop' || s.quality === 'phone') && s.quality !== floor) { setSetting('quality', 'auto'); done.push('graphics back to Auto') }
+  else if (crashes >= 2 && s.quality !== floor) {
+    setSetting('quality', floor)
+    done.push(floor === 'ultra' ? 'graphics to Low' : 'graphics to Medium')
+  }
   for (const f of Object.keys(FEATURE_OFF) as (keyof typeof FEATURE_OFF)[]) {
     if (s[f] === 'on') { setSetting(f, 'auto' as Feature); done.push(`${f} back to Auto`) }
   }

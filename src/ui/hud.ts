@@ -192,7 +192,16 @@ export class Hud {
     const v = this.imperial ? stats.speed * 2.23694 : stats.speed * 3.6
     const far = this.imperial ? `${(stats.distance / 1609.344).toFixed(2)} mi` : `${(stats.distance / 1000).toFixed(2)} km`
     const [num, unit, dist, watts] = this.speedoEl.children as unknown as HTMLElement[]
-    const vs = v < 10 ? v.toFixed(1) : String(Math.round(v))
+    /*
+     * WHOLE NUMBERS ONLY, and a standstill is zero.
+     *
+     * Owner, 2026-10-21: *"when stopped, the speedometer is near zero, and flashes around a lot with
+     * seemingly-random small numbers."* Below 10 this showed a decimal, so a stationary rider watched the
+     * tenths digit rattle through noise from the trainer. Nobody reads a tenth of a mile an hour off a
+     * speedometer while riding, and the deadband keeps a bike that is held still on exactly 0 rather than
+     * flickering between 0 and 1 — `stats.speed` is metres a second, so this is under a walking pace.
+     */
+    const vs = stats.speed < 0.3 ? '0' : String(Math.round(v))
     if (num.textContent !== vs) num.textContent = vs
     const us = this.imperial ? 'mph' : 'km/h'
     if (unit.textContent !== us) unit.textContent = us
