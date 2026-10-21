@@ -4,7 +4,9 @@ CityEngine is a system for rendering maximally realistic cities, including terra
 
 It's a lot like Google Earth. Unlike Google Earth, it is built only with CC0 or CC-BY-NA base data, so it is copyright-clean. 
 
-There are basically four types of rendering. Generic rendering is for the vast majority of buildings in a city and just guesses a style based on building properties and in some cases custom colors. Bigger or more interesting buildings are called "custom." Custom buildings can use either a building kit, a simple language for building design, OR be entirely hand-coded from images for more complex or important buildings. Finally, objects that are difficult to model like trees, rocks, or statues are rendered from GLB mesh files from AssetKit, which are generated in advance. AssetKit also includes dedicated rendering systems for people (including people on bicycles) and cars. (No buildings come from AssetKit, meaning none are rendered in advance as GLB files. Every building is rendered procedurally within CityEngine.)
+There are basically four types of rendering. Generic rendering is for the vast majority of buildings in a city and just guesses a style based on building properties and in some cases custom colors. Bigger or more interesting buildings are called "custom." Custom buildings can use either a building kit, a simple language for building design, OR be entirely hand-coded from images for more complex or important buildings. Finally, objects that are difficult to model like trees, rocks, or statues are rendered from GLB mesh files from AssetKit, which are generated in advance. AssetKit also includes dedicated rendering systems for people (including people on bicycles) and cars. (No buildings come from AssetKit, meaning no buildings are rendered in advance as GLB files. Every building is rendered procedurally within CityEngine. There is one exception: stationary museum ships which are listed as buildings on OSM are actually rendered with GLB files, since they have curved shapes that are exceptionally difficult to render procedurally.)
+
+Data sources include OpenStreetMaps, USGS LIDAR data, Amazon's global smoothed terrain data (which is satellite-derived), city-specific things like San Francisco's database of trees, Mapillary street views, and Wikimedia Commons images. GLBs for statues are generated automatically using Tripo3D, an image-to-3D VLM. 
 
 > [!WARNING]
 > This is entirely vibecoded. Use at your own risk.
@@ -15,6 +17,12 @@ There are basically four types of rendering. Generic rendering is for the vast m
 > If you want to use this outside my ecosystem of games, please make a copy of those assets. 
 
 
+> [!WARNING]
+> During the build process, this makes thousands of OpenStreetMaps queries.
+> If you attempt to run it on the public query server (Overpass), you'll get blocked.
+> To build, you'll have to set up Osmium as a local server on your own machine, with the
+> tiles for whichever area you want to model.
+>
 
 
 This repo is **cityengine**: a city model built from OpenStreetMap and open elevation data, with its baking tools,
