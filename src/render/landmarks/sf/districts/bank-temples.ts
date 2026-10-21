@@ -60,7 +60,6 @@
 import type { MeshBuilder } from '../../../buildings.ts'
 import type { Fit } from '../../fit.ts'
 import { bankTemple } from '../../facade.ts'
-import { facade } from '../../facade.ts'
 import { towerRing, insetRing, tower } from '../../tower.ts'
 
 export const BANK_TEMPLES: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
@@ -96,7 +95,6 @@ export const BANK_TEMPLES: Record<string, (out: MeshBuilder, fit: Fit) => void> 
     })
   },
 
-
   /** way/32946683 — Savings Union Bank Building. Ionic hexastyle portico, pediment, dome behind. */
   savingsUnionBank_32946683: (out: MeshBuilder, fit: Fit): void => {
     bankTemple(out, fit, {
@@ -124,20 +122,4 @@ export const BANK_TEMPLES: Record<string, (out: MeshBuilder, fit: Fit) => void> 
     })
   },
 
-  /** relation/3492808 — Mills Building (+ Mills Tower). Classical marble ground floor, tall punched shaft, arcaded attic. */
-  millsBuilding_3492808: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: {
-        kind: 'giant-order', columns: 6, storeys: 1, order: 'corinthian', windows: 'dressed',
-        engaged: true, flanks: false, pediment: false, material: 'marble',
-      },
-      shaft: { storeys: Math.max(4, Math.round(fit.height / 3.6) - 3), windows: 'vertical', material: 'terracotta' },
-      top: { kind: 'arcaded', storeys: 2, material: 'terracotta' },
-      bands: { aboveGround: 'cornice', belowTop: 'string', top: 'bracketed' },
-      crown: { kind: 'balustrade', height: 1, material: 'terracotta' },
-      frame: null,
-      entrance: { at: 'centre', kind: 'portal', steps: 2 },
-      material: 'terracotta',
-    })
-  },
 }

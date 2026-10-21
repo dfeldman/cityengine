@@ -24,7 +24,4 @@ export const HARD_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   /** 101 Montgomery (1984): a front of rounded bay windows, floor after floor, the SF bay window at tower scale. */
   montgomery101: fromRecipe('granite-eighties', { height: 123, wall: [0.72, 0.68, 0.64], glass: [0.34, 0.42, 0.5],
     material: 'granite', crown: { kind: 'parapet', height: 1.4, material: 'granite' } }),
-  /** the Hunter-Dulin Building (1926): a Chateauesque block under a steep copper mansard with its dormers. */
-  hunterDulin: fromRecipe('edwardian-terracotta', { height: 94, wall: [0.86, 0.83, 0.75], glass: [0.26, 0.28, 0.3],
-    crown: { kind: 'mansard', height: 9, inset: 3.5, colour: [0.35, 0.55, 0.48], material: 'copper', dormers: 5 } }),
 }

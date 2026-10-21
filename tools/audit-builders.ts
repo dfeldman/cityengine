@@ -354,8 +354,8 @@ export const UNREFERENCED_OK = {
   /**
    * Known-dead, logged as BUGS.md #98. Modelled buildings in real district files that no manifest entry
    * names — several are earlier versions superseded by a differently-named builder for the same building
-   * (`hunterDulin` vs the placed `hunterDulinBuilding`, `oneSansomeStreet` vs `oneSansomeTower`,
-   * `fortyFourMontgomery` vs `montgomery44`); the rest are simply unplaced. Shrink this list, never grow it.
+   * (`oneSansomeStreet` vs `oneSansomeTower`, `fortyFourMontgomery` vs `montgomery44`; `hunterDulin` went
+   * 2026-10-21); the rest are simply unplaced. Shrink this list, never grow it.
    */
   known: [
    
@@ -395,7 +395,7 @@ export const UNREFERENCED_OK = {
     // (EBMUD's injector station is in the East Bay, outside the city: built, never placeable — 2026-10-02)
    
     'fiftyCaliforniaStreet', 'fortyFourMontgomery',
-    'fourTwentyFiveMarket', 'hunterDulin', 'oneSansomeStreet',
+    'fourTwentyFiveMarket', 'oneSansomeStreet',
     'pgeGeneralOffice', 'twoThirtyFivePine', 'twoTwentyFiveBush', 'unnamedNineHundredBlock',
     'unnamedPineStreet', 'unnamedSeventyThreeMeterTower', 'h3_injectorStation_1038340434',
     'unnamedTower256477866', 'usAppraisersBuilding',

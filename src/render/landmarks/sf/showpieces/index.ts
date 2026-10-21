@@ -21,8 +21,16 @@ import { MISSION_DOLORES } from './mission-dolores.ts'
 import { PHELAN_BUILDING } from './phelan-building.ts'
 import { CUSTOM_HOUSE } from './custom-house.ts'
 import { HOLY_VIRGIN } from './holy-virgin.ts'
+import { HUNTER_DULIN } from './hunter-dulin.ts'
+import { MILLS } from './mills.ts'
+import { DE_YOUNG_BUILDING } from './de-young-building.ts'
+import { CATHEDRAL_APARTMENTS } from './cathedral-apartments.ts'
+import { HAAS_LILIENTHAL } from './haas-lilienthal.ts'
+import { ARONSON } from './aronson.ts'
+import { CALIFORNIA_465 } from './california-465.ts'
 
 export const SHOWPIECES: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   ...SHERITH_ISRAEL, ...FAIRMONT, ...PALACE_HOTEL, ...NINTH_CIRCUIT, ...BANK_OF_ITALY, ...BETHLEHEM_STEEL,
   ...GRACE_CATHEDRAL, ...RUSS_BUILDING, ...EMBARCADERO_CENTER, ...ONE_OH_ONE_CALIFORNIA, ...NEW_MONTGOMERY_140, ...MARK_HOPKINS, ...MISSION_DOLORES, ...PHELAN_BUILDING, ...CUSTOM_HOUSE, ...HOLY_VIRGIN,
+  ...HUNTER_DULIN, ...MILLS, ...DE_YOUNG_BUILDING, ...CATHEDRAL_APARTMENTS, ...HAAS_LILIENTHAL, ...ARONSON, ...CALIFORNIA_465,
 }

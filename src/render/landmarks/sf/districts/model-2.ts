@@ -6,13 +6,6 @@ import { spireOn } from '../../parts.ts'
 import { tower, towerRing } from '../../tower.ts'
 
 export const MODEL_2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  /** Cathedral Apartments, 1201 California St (1927, Charles Weeks): 16-storey Gothic Revival, cream terracotta,
-   *  pointed-arch punched windows, a jagged parapet crown. */
-  cathedralApartments: fromRecipe('edwardian-terracotta', {
-    height: 73,
-    wall: [0.86, 0.83, 0.75],
-    crown: { kind: 'sawtooth', height: 1.6, colour: [0.8, 0.77, 0.68] },
-  }),
 
   /** Unnamed tower, no address findable (queue archetype: tower/skyscraper): street photos missed it entirely
    *  (a low market block instead), so modelled generically from the archetype and OSM height only. */

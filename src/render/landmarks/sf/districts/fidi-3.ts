@@ -83,6 +83,4 @@ export const FIDI_3: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
       crown: { kind: 'sliced', height: H * 0.03, colour: darkWall },
     })
   },
-  /** California Bank and Trust / former American Trust Company (1959): pale midcentury office tower, punched window grid, flat top. */
-  californiaBankAndTrust: fromRecipe('midcentury-slab', { height: 61, wall: [0.8, 0.78, 0.73], glass: [0.24, 0.26, 0.29], base: 5 }),
 }

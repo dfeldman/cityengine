@@ -102,24 +102,6 @@ export const B2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   },
 
   /**
-   * way/112878589 — Aronson Building, 706 Mission St, 1903, 55 m, 10 levels, baked style "chicago"/archetype
-   * "prewarOffice". Photographed: a rusticated stone base with round-arched ground-floor openings, a plain
-   * brick shaft with vertical bays, a dentilled cornice. Kept per the owner's triage — kit it as a box.
-   */
-  b2_prewarOffice_112878589: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'rusticated', storeys: 2, material: 'limestone' },
-      shaft: { storeys: 6, windows: 'vertical', material: 'brick' },
-      top: { kind: 'attic', storeys: 2, material: 'limestone' },
-      bands: { aboveGround: 'string', belowTop: 'string', top: 'dentil' },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'recessed', steps: 3 },
-      material: 'brick',
-    })
-  },
-
-  /**
    * way/256029744 — City College of San Francisco Downtown Campus, 88 4th St, 54 m, baked style
    * "chicago"/archetype "prewarOffice". Photographed: a plain tan mid-rise, a canopy/shopfront ground floor,
    * plain punched windows above in horizontal bands, no crown. Kept per the owner's triage — kit it as a box.

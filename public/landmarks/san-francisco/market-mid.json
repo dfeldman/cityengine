@@ -46,8 +46,8 @@
   "name": "de Young Building",
   "procedural": "deYoungBuilding",
   "front": "street",
-  "height": 66,
-  "note": "Tower grammar: the 1890 Chronicle building in red brick and sandstone with its arched floor and copper cornice, and the stepped beige Ritz-Carlton tower on it (Commons photographs)."
+  "height": 95,
+  "note": "showpieces/de-young-building.ts: the 1890 Chronicle Building as it stands since 2007: rock-faced sandstone base, brick arcade of round arches, the canted entrance bay facing Lotta's Fountain, and the stepped Ritz-Carlton Residences tower on top (Commons 2021, Mapillary). The 1890 clock tower burned in 1905; OSM's 66 m was its height."
  },
  {
   "osm": [
@@ -166,7 +166,7 @@
   ],
   "name": "Hunter-Dulin Building",
   "procedural": "hunterDulinBuilding",
-  "front": "street",
+  "front": 351,
   "height": 94,
   "note": "Tower grammar: buff terracotta piers, setback arcaded storeys, steep red-and-copper roofs (Commons photograph)."
  },

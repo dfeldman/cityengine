@@ -31,8 +31,6 @@ export const FIDI_2: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   twoThirtyFivePine: fromRecipe('granite-eighties', { height: 95, wall: [0.58, 0.52, 0.48], glass: [0.3, 0.33, 0.38], base: 8 }),
   /** 100 Spear Street (1984): pale glass curtain tower over Rincon, flat top. */
   oneHundredSpear: fromRecipe('glass-tower', { height: 94, wall: [0.5, 0.52, 0.56], glass: [0.3, 0.4, 0.48], base: 7 }),
-  /** Mills Tower (1918 annex to the Mills Building): cream glazed terracotta, punched piers, moulded cornice. */
-  millsTower: fromRecipe('edwardian-terracotta', { height: 92, wall: [0.83, 0.79, 0.7], glass: [0.24, 0.26, 0.28], base: 7 }),
   /** 601 Montgomery Street (1983): dark curtain-wall office tower, flat top. */
   sixZeroOneMontgomery: fromRecipe('glass-tower', { height: 91, wall: [0.34, 0.36, 0.4], glass: [0.22, 0.3, 0.36], base: 8 }),
   /** 290 Battery Street (1987): blue-green glass curtain tower, flat top. */

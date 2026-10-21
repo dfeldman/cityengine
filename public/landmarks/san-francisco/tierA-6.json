@@ -10,7 +10,7 @@
   {"osm": ["way/256765941"], "name": "New Liberation Presbyterian Church", "restyle": "stucco", "levels": 3, "height": 10, "note": "Ordinary neighbourhood church, plain stucco block."},
   {"osm": ["way/259078177"], "name": "Golden Gate Valley Branch Library", "procedural": "goldenGateValleyLibrary", "front": "street", "height": 9, "note": "1918 Ernest Coxhead Carnegie library: cream Classical Revival, red tile hip roof, entrance colonnade."},
   {"osm": ["way/161502029"], "name": "San Francisco Fire Station 8", "restyle": "brick", "noShops": true, "levels": 2, "height": 10, "note": "Classic red-brick firehouse."},
-  {"osm": ["way/256993595"], "name": "Haas-Lilienthal House", "procedural": "haasLilienthalHouse", "front": "street", "height": 12, "note": "1886 Queen Anne Victorian, San Francisco Heritage's house museum: lavender-grey wood siding, round corner turret."},
+  {"osm": ["way/256993595"], "name": "Haas-Lilienthal House", "procedural": "haasLilienthalHouse", "front": 80, "height": 22, "note": "1886 Queen Anne Victorian, San Francisco Heritage's house museum: lavender-grey wood siding, round corner turret."},
   {"osm": ["way/263349499"], "name": "First Apostolic Faith Church", "restyle": "stucco", "levels": 3, "height": 10, "note": "Ordinary storefront church, plain stucco block."},
   {"osm": ["way/579664204"], "name": "1051 3rd Street", "procedural": "thirdStreetSubstation", "front": "street", "height": 7, "note": "Small Muni/rail substation, roof=pyramidal in OSM: brick box under a pyramid crown."},
   {"osm": ["way/288645261"], "name": "83m tower", "procedural": "unnamedEightyThreeMeterTower", "front": "street", "height": 83, "note": "No name or type on record; recipe midcentury-slab used generically by height."},

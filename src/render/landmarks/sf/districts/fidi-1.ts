@@ -56,7 +56,10 @@ export const FIDI_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   fourZeroOneCalifornia: fromRecipe('midcentury-slab', { height: 109, wall: [0.72, 0.66, 0.56], glass: [0.28, 0.24, 0.2], base: 7, baseWall: [0.5, 0.44, 0.36] }),
   /** 50 Beale Street / Blue Shield Building (1970): dark bronze curtain tower, plain rectangular box, flat top. */
   fiftyBeale: fromRecipe('glass-tower', { height: 105, wall: [0.32, 0.28, 0.24], glass: [0.22, 0.24, 0.26], base: 6, baseWall: [0.28, 0.25, 0.22] }),
-  /** 130 Montgomery Street (1929): narrow buff terracotta Art Deco tower, triple vertical piers, a triple-arched top under a stepped crown. */
+  /**
+   * way/132125163 is 180 Montgomery, a 1979 modern office tower, not the Art Deco "130 Montgomery" this recipe was
+   * written for (the key keeps the old name). A stand-in until there are good photographs of the real building.
+   */
   oneThirtyMontgomery: fromRecipe('deco-setback', { height: 104, wall: [0.83, 0.79, 0.71], glass: [0.2, 0.22, 0.24], base: 5, baseWall: [0.7, 0.66, 0.58], crown: { kind: 'stepped', steps: 1, height: 4, inset: 1.5 } }),
   /** 135 Main Street: no Commons photograph or description found; modelled as a plain 1980s blue glass tower consistent with its Rincon-area neighbours (First Market Tower, One Front Street). */
   oneThirtyFiveMain: fromRecipe('glass-tower', { height: 104, wall: [0.5, 0.54, 0.58], glass: [0.28, 0.38, 0.46], base: 6 }),

@@ -121,8 +121,6 @@ function inRadius(ring: { x: number; z: number }[], x: number, z: number): numbe
 }
 
 const HEARST_WHITE: Rgb = [0.9, 0.89, 0.86]
-const CHRONICLE_BRICK: Rgb = [0.63, 0.33, 0.26]
-const RITZ_BEIGE: Rgb = [0.84, 0.76, 0.62]
 const HUMBOLDT_GREY: Rgb = [0.74, 0.74, 0.72]
 const FLOOD_GREY: Rgb = [0.52, 0.5, 0.46]
 const EMPORIUM_CREAM: Rgb = [0.88, 0.86, 0.8]
@@ -132,7 +130,6 @@ const CENTRAL_WHITE: Rgb = [0.86, 0.85, 0.8]
 const KEARNY_WHITE: Rgb = [0.88, 0.87, 0.84]
 const MUTUAL_GREY: Rgb = [0.72, 0.72, 0.7]
 const PACIFIC_GREEN: Rgb = [0.46, 0.64, 0.55]
-const HUNTER_BUFF: Rgb = [0.8, 0.73, 0.58]
 
 export const MARKET_MID: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
 
@@ -170,29 +167,6 @@ export const MARKET_MID: Record<string, (out: MeshBuilder, fit: Fit) => void> = 
     ],
     roof: [0.5, 0.5, 0.5],
     crown: { kind: 'parapet', height: 0.8, colour: [0.55, 0.65, 0.5] },
-  }),
-
-  /**
-   * The de Young (old Chronicle) Building (1890, Burnham & Root), Market at Kearny and Geary, and the Ritz-Carlton
-   * Club tower raised on it in 2007. The old building is ten storeys of red brick on a two-storey base of brown
-   * sandstone, its seventh floor a row of round arches, a thin green copper cornice on top. The new tower rises
-   * from it in beige render, stepping in three times, each step under a dark projecting cornice. (Its 1890 clock
-   * tower went in 1962; the model is the building as it stands.) (Commons: "Ritz-Carlton Club and Residences, San
-   * Francisco 2021.jpg", "Market Street at Kearny Street, San Francisco (January 2015)(Unsplash).jpg".)
-   */
-  deYoungBuilding: spec({
-    height: 66,
-    base: { height: 7.5, face: { kind: 'punched', wall: [0.5, 0.36, 0.31], material: 'ashlar', glass: [0.16, 0.16, 0.17], pitch: 4, solid: 0.35, floor: 7.5 } },
-    tiers: [
-      { to: 22, face: { kind: 'punched', wall: CHRONICLE_BRICK, material: 'brick', glass: [0.3, 0.33, 0.35], pitch: 2.1, solid: 0.45, floor: 3.6 } },
-      { to: 26.5, face: { kind: 'punched', wall: CHRONICLE_BRICK, material: 'brick', glass: [0.3, 0.33, 0.35], pitch: 3.4, solid: 0.35, arched: true, floor: 4.5 } },
-      { to: 38, face: { kind: 'punched', wall: CHRONICLE_BRICK, material: 'brick', glass: [0.3, 0.33, 0.35], pitch: 2.1, solid: 0.5, floor: 3.6 }, cornice: { depth: 0.8, height: 0.9, colour: [0.33, 0.45, 0.4] } },
-      { to: 49, inset: 1.5, face: { kind: 'punched', wall: RITZ_BEIGE, material: 'stucco', glass: [0.38, 0.45, 0.52], pitch: 2.4, solid: 0.4, floor: 3.2 }, cornice: { depth: 0.9, height: 0.4, colour: [0.25, 0.25, 0.27] } },
-      { to: 57.5, inset: 1.5, face: { kind: 'punched', wall: RITZ_BEIGE, material: 'stucco', glass: [0.38, 0.45, 0.52], pitch: 2.4, solid: 0.4, floor: 3.2 }, cornice: { depth: 0.9, height: 0.4, colour: [0.25, 0.25, 0.27] } },
-      { to: 1, inset: 1.5, face: { kind: 'punched', wall: RITZ_BEIGE, material: 'stucco', glass: [0.38, 0.45, 0.52], pitch: 2.4, solid: 0.4, floor: 3.2 }, cornice: { depth: 1.3, height: 0.5, colour: [0.25, 0.25, 0.27] } },
-    ],
-    roof: [0.4, 0.4, 0.42],
-    penthouse: 1,
   }),
 
   /**
@@ -475,23 +449,6 @@ export const MARKET_MID: Record<string, (out: MeshBuilder, fit: Fit) => void> = 
     roof: [0.45, 0.45, 0.43],
   }),
 
-  /**
-   * The Hunter-Dulin Building (1926, Schultze & Weaver), 111 Sutter at Montgomery: twenty-two storeys of buff
-   * terracotta in a French-Romanesque dress — a granite base, a shaft of narrow piers with arched heads at the
-   * setback storeys — and over it the thing you see from Market: steep copper-green and red-tile roofs with
-   * pinnacles at the corners. (Commons: "Hunter-Dulin Building.jpg".)
-   */
-  hunterDulinBuilding: spec({
-    height: 94,
-    base: { height: 9, face: { kind: 'punched', wall: [0.62, 0.6, 0.55], material: 'granite', glass: [0.2, 0.22, 0.24], pitch: 3.6, solid: 0.35, arched: true, floor: 9 } },
-    tiers: [
-      { to: 0.72, face: { kind: 'fins', wall: HUNTER_BUFF, material: 'terracotta', glass: [0.3, 0.32, 0.34], pitch: 2.6, solid: 0.45, depth: 0.25, floor: 3.5 }, cornice: { depth: 0.6, height: 0.6 } },
-      { to: 0.87, inset: 2.5, face: { kind: 'punched', wall: HUNTER_BUFF, material: 'terracotta', glass: [0.3, 0.32, 0.34], pitch: 2.6, solid: 0.5, floor: 3.5 } },
-      { to: 1, inset: 1.5, face: { kind: 'punched', wall: HUNTER_BUFF, material: 'terracotta', glass: [0.3, 0.32, 0.34], pitch: 2.6, solid: 0.45, arched: true, floor: 4.2 }, cornice: { depth: 0.8, height: 0.8 } },
-    ],
-    roof: [0.5, 0.48, 0.45],
-    crown: { kind: 'mansard', height: 12, inset: 4, colour: [0.55, 0.3, 0.26] },
-  }),
   /**
    * 100 Montgomery Street (1955, the Equitable Life building), at Sutter: twenty-five storeys of white aluminium
    * and glass — the first curtain wall on the street — a fine grid of pale mullions with grey-green glass behind,
