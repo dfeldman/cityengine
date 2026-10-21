@@ -71,16 +71,30 @@ Three real things, worth about 157 MB of GPU and 47 MB of heap between them:
   oversized textures that sent me looking here were the plates, and a `DynamicTexture` never passes through
   the upload hook this works by.
 
-## What is still not explained
+## It works
 
-The retained heap is now ~150 MB with more than 200 MB of headroom under the owner's 384, and it does not
-grow with distance. So if the crash is still a *heap* limit, the mechanism is not anything measured here.
+Owner, 2026-10-20, after this went out: *"It does work on my iphone in safari!"* — so the crash is closed.
+The honest reading is that no single one of the three fixes above was "the" cause: the tier was simply over
+every budget at once, and 157 MB of GPU and 47 MB of heap together brought it back under.
 
-The likelier reading is that the 384 MB ceiling is being hit as a **process footprint**, not as a JS heap:
-footprint was ~660 MB before this work and is ~500 MB after, and the biggest single item left is **205 MB
-of GPU vertex buffers** for 63 tiles held. That is where to look next, and the lever is the mid ring
-(`minMid`, currently 1) rather than anything in the heap.
+Measured on the shipped build, riding the ultra tier at an iPhone viewport, 63 tiles held:
 
-What would settle it: a real device. Everything above is Chromium pretending to be a phone, and the one
-number that matters — whether an actual iPhone still dies a few blocks down the hill — cannot be measured
-from here.
+| | before this work | now |
+|---|---|---|
+| retained heap, riding | 232–258 MB | 158–202 MB |
+| retained heap, forced GC every 120 ms | — | 138–185 MB |
+| GPU buffers | 205 MB | 207 MB |
+| GPU textures | 225 MB | 73 MB |
+| textures loaded | 149 | 66 |
+| materials | 209 | 89 |
+| whole footprint | ~660 MB | ~475 MB |
+
+The owner's note on it — *"of course now most subsystems are disabled even in desktop chrome"* — is fair,
+and the headroom is now large enough to start giving things back. That is its own job, not this one; the
+tier's `without` list is where to start, and `signplates` is the one entry that should stay.
+
+## What is deliberately still wrong
+
+`heapBase: 210` in the ultra tier, against a measured ~110. It is the governor's model of the heap that
+does not shrink with the rings, and it is left pessimistic on purpose — see the comment on it. Too high
+closes the view in sooner than it needs to; too low is a dead tab.
