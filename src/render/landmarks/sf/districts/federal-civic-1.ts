@@ -40,19 +40,6 @@ import type { Fit } from '../../fit.ts'
 import { facade } from '../../facade.ts'
 
 export const FEDERAL_CIVIC_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  /** way/32859013 — US Custom House. Rusticated base, giant composite pilasters at the corners, pedimented windows. */
-  usCustomHouse_32859013: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'rusticated', storeys: 1, material: 'limestone' },
-      shaft: { storeys: 3, windows: 'dressed', material: 'limestone' },
-      top: { kind: 'attic', storeys: 1, material: 'limestone' },
-      bands: { aboveGround: 'cornice', belowTop: 'string', top: 'dentil' },
-      crown: { kind: 'parapet', height: 0.8, material: 'granite' },
-      frame: { verticals: { kind: 'pilaster', width: 1.4, at: 'bays', count: 5, order: 'corinthian' }, horizontals: null, recess: 0, material: 'limestone' },
-      entrance: { at: 'centre', kind: 'portal', steps: 3 },
-      material: 'limestone',
-    })
-  },
 
   /** way/32965865 — US Appraisers Building. Low rusticated block, sculpted pedimented windows, no giant order. */
   usAppraisersBuilding_32965865: (out: MeshBuilder, fit: Fit): void => {

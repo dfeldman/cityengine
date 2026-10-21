@@ -25,8 +25,6 @@ export const FIDI_4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   metropolitanTowerI: fromRecipe('hotel-punched', { height: 102, wall: [0.82, 0.79, 0.72], glass: [0.26, 0.3, 0.33], base: 6, baseWall: [0.6, 0.56, 0.5] }),
   /** Optimizely / 631 Howard (1980s–90s office block): pale curtain-wall office tower, plain grid, flat top. */
   optimizely: fromRecipe('glass-tower', { height: 93, wall: [0.55, 0.56, 0.58], glass: [0.3, 0.36, 0.42], base: 6 }),
-  /** 140 New Montgomery / Pacific Telephone Building (1925, Miller & Pflueger): buff terracotta Art Deco tower, strong vertical piers, a stepped, green-tiled setback crown. */
-  oneFortyNewMontgomery: fromRecipe('deco-setback', { height: 88, wall: [0.82, 0.76, 0.64], glass: [0.24, 0.26, 0.28], base: 8, baseWall: [0.4, 0.36, 0.3], crown: { kind: 'stepped', steps: 3, height: 9, inset: 2.5 } }),
   /** The Charles Schwab Building (office tower near Steuart Street): pale curtain-wall office block, flat top. */
   charlesSchwabBuilding: fromRecipe('glass-tower', { height: 85, wall: [0.56, 0.58, 0.6], glass: [0.3, 0.38, 0.44], base: 6 }),
   /** The Jay, Autograph Collection (1970s hotel tower, Union Square): stucco punched-window hotel slab, flat top. */

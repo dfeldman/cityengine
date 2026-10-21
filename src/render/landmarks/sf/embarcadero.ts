@@ -17,8 +17,8 @@
  * are rendered": a deck fitted to a wrong ring lands slightly off, and the connections between them then have
  * nothing consistent to attach to.
  *
- * What already exists and is NOT touched here: the 5 towers (one `embarcaderoCenter` preset in
- * ring-tower.ts — `way/32612608/520/538`, `616812910`, `32947500`), the Hyatt Regency (`market-east.ts`), One
+ * What already exists and is NOT touched here: the 5 towers (`embarcaderoCenter` in
+ * showpieces/embarcadero-center.ts — `way/32612608/520/538`, `616812910`, `32947500`), the Hyatt Regency (`market-east.ts`), One
  * Maritime Plaza's own tower (`market-east.ts:1055`), and the Vaillancourt Fountain (`sf/art.ts`). Yerba Buena
  * is a different job entirely (a single block overridden wholesale, which OSM footprints ARE good enough
  * for) and is not touched by anything in this file.

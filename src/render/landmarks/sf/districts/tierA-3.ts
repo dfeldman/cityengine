@@ -25,14 +25,6 @@ export const TIERA_3: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     cupola(out, { x: cx, z: cz }, 12, 1.8, { drum: 1.4, dome: 2.6, colour: [0.86, 0.82, 0.72], domeColour: [0.75, 0.62, 0.22], domeMaterial: 'copper' })
   },
 
-  /** InterContinental Mark Hopkins (1926, Nob Hill): cream terracotta French Chateau tower under a steep copper mansard. */
-  intercontinentalMarkHopkins: fromRecipe('edwardian-terracotta', {
-    height: 93,
-    wall: [0.86, 0.81, 0.7],
-    base: 8,
-    crown: { kind: 'mansard', height: 12, inset: 4, colour: [0.32, 0.28, 0.24], material: 'copper', dormers: 6 },
-  }),
-
   /** Stock Exchange Tower, 155 Sansome (1930, Miller & Pflueger): grey granite Art Deco Moderne, setbacks near the top. */
   stockExchangeTower: fromRecipe('deco-setback', { height: 55, wall: [0.62, 0.6, 0.58], baseWall: [0.5, 0.48, 0.46] }),
 

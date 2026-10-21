@@ -14,101 +14,8 @@
  * Registered through ../index.ts; placed by public/landmarks/san-francisco/churches-4.json.
  */
 import { MeshBuilder } from '../../buildings.ts'
-import { prism, type Rgb } from '../../models.ts'
 import type { Fit } from '../fit.ts'
-import { towerRing } from '../tower.ts'
-import { church, crossFinial } from '../church.ts'
-import { placed } from '../kit.ts'
-
-/* ================================================================== the onion-dome kit gap */
-
-/**
- * A Russian Orthodox onion dome on its drum: the shape `church()`'s `Tower.top` cannot say.
- *
- * **The kit-gap check.** `churchTower()`'s only bulbous option is `top: 'dome'`, which calls `kit.ts`'s
- * `dome()` — a quarter-circle profile whose radius is MONOTONICALLY DECREASING from the springing to the
- * point (`dome()`, six rings each `cos(a)` of the last, `a` running 0→90°). That is a hemispherical cap. An
- * onion dome's silhouette is the opposite: the radius first GROWS past the drum's own width (the bulge, at
- * roughly a fifth of the way up) and only then narrows, through a concave neck, to the point. No
- * `Tower['top']` value produces a non-monotonic radius — `'lantern'` and `'dome'` are the only bulbous
- * options at all, and both read as Italianate/Spanish-colonial silhouettes, the wrong religion for a
- * building whose entire identity is its onion domes. Substituting either would be exactly the quiet
- * approximation the brief says not to make.
- *
- * **Reported as a kit gap**: `Tower['top']` needs an `'onion'` case with a non-monotonic (bulge-then-neck)
- * radius profile, or `churchTower()` needs to take an explicit profile.
- *
- * Built here as a stack of `prism` rings following a bulge-then-neck radius profile, axis-symmetric so it
- * takes no heading, capped by a spike and a three-bar Orthodox cross (`crossFinial`, already in the kit).
- */
-function onionDome(out: MeshBuilder, cx: number, cz: number, y0: number, r: number, h: number,
-                   colour: Rgb, trim: Rgb): void {
-  const profile: [number, number][] = [[0, 1.0], [0.16, 1.32], [0.34, 1.18], [0.55, 0.78], [0.78, 0.34], [1, 0.04]]
-  for (let k = 0; k < profile.length - 1; k++) {
-    const [u0, f0] = profile[k]
-    const [u1, f1] = profile[k + 1]
-    prism(out, cx, cz, y0 + u0 * h, y0 + u1 * h, r * f0, 12, colour, 0, r * f1, k === profile.length - 2)
-  }
-  prism(out, cx, cz, y0 + h, y0 + h * 1.1, Math.max(0.08, r * 0.05), 8, trim, 0, 0.01)
-  crossFinial(out, { x: cx, z: cz }, y0 + h * 1.1, Math.max(1, r * 1.15), trim)
-}
-
-/** A drum: the plain cylindrical neck an onion dome always stands on. */
-function drum(out: MeshBuilder, cx: number, cz: number, y0: number, r: number, h: number, colour: Rgb): void {
-  prism(out, cx, cz, y0, y0 + h, r, 12, colour, 0, r, false)
-}
-
-/**
- * Holy Virgin Cathedral ("Joy of All Who Sorrow"), way/286435447 — Russian Orthodox Church Outside Russia,
- * `archetype: church`, baked ring ~19.7 × 29.8 m, 5 levels / 19 m tag. A Russian Orthodox cathedral's
- * silhouette IS its onion domes, so this is `church()` for the hall (nave, front, walls — the parts the kit
- * says perfectly well), **plus a hand-built drum-and-dome group for the one part it cannot say.**
- *
- * `tower: null` in the `church()` call: the dome sits on a drum on the ROOF, not on a `churchTower()` shaft
- * rising from the ground, so it is built separately and placed with the exact same transform `church()` uses
- * internally (`towerRing(fit)` → its bounding box → `placed()` with the same `alongZ`/`cx`/`cz` church()
- * computes), so the dome lands centred on the same footprint the nave was fitted to, not a guess.
- *
- * Restrained without a photograph: real Russian Orthodox cathedrals often cluster five domes (one over the
- * crossing, four smaller at the corners); with nothing here to confirm a count, this uses ONE large dome
- * over the roof's centre — the single most identifying feature — rather than inventing four more nobody
- * confirmed. `front.kind: 'mission'` is the plainest flat-parapet front the kit offers, since nothing argues
- * for Gothic ornament on an Orthodox building; `walls.material: 'stucco'` for a painted masonry cathedral.
- *
- * **Roof-colour kit gap, already recorded, directly relevant here**: `church()`'s stucco roof colour is a
- * fixed terracotta-brown with no gold/gilt option (churches-3.ts's Saint Joseph's note). The real domes are
- * gold-leafed; this hand-built dome reuses that same fixed brown so the building stays internally
- * consistent, rather than inventing an unmatched "gold" RGB found nowhere else in the kit.
- */
-export function holyVirginCathedral(out: MeshBuilder, fit: Fit): void {
-  church(out, fit, {
-    nave: { bays: 3, storeys: 1, roof: 'hip', pitch: 'low' },
-    aisles: null,
-    transept: null,
-    chancel: { kind: 'square' },
-    tower: null,
-    front: { kind: 'mission', portal: 'triple', window: 'oculus', steps: 3 },
-    walls: { material: 'stucco', openings: 'round', buttresses: 'none' },
-  })
-
-  // the same bounding-box + orientation computation church() makes internally (see church.ts's own `church()`)
-  const ring = towerRing(fit)
-  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
-  for (const p of ring) { x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z) }
-  const alongZ = (z1 - z0) >= (x1 - x0)
-  const cx = (x0 + x1) / 2
-  const cz = (z0 + z1) / 2
-  const minSpan = Math.min(x1 - x0, z1 - z0)
-
-  const H = fit.height > 4 ? fit.height : 12
-  const roofBrown: Rgb = [0.45, 0.28, 0.2]
-  const trim: Rgb = [0.72, 0.62, 0.4]
-  const r = Math.max(2.2, minSpan * 0.28)
-  const domeGroup = new MeshBuilder()
-  drum(domeGroup, 0, 0, H * 0.75, r, H * 0.55, roofBrown)
-  onionDome(domeGroup, 0, 0, H * 0.75 + H * 0.55, r, r * 2.1, roofBrown, trim)
-  placed(out, domeGroup, alongZ ? Math.PI : -Math.PI / 2, cx, cz)
-}
+import { church } from '../church.ts'
 
 /**
  * Saint John's Presbyterian Church, way/274615294 — `archetype: church`, baked ring ~38.7 × 22.5 m, 4 levels
@@ -236,7 +143,6 @@ export function way260152155Church(out: MeshBuilder, fit: Fit): void {
 }
 
 export const CHURCHES_4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  holyVirginCathedral,
   saintJohnsPresbyterian,
   starOfTheSea,
   way223211125Church,

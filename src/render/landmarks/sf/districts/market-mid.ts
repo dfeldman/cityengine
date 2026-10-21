@@ -120,8 +120,6 @@ function inRadius(ring: { x: number; z: number }[], x: number, z: number): numbe
   return best
 }
 
-const TERRACOTTA: Rgb = [0.87, 0.83, 0.73]
-const BRONZE: Rgb = [0.17, 0.16, 0.16]
 const HEARST_WHITE: Rgb = [0.9, 0.89, 0.86]
 const CHRONICLE_BRICK: Rgb = [0.63, 0.33, 0.26]
 const RITZ_BEIGE: Rgb = [0.84, 0.76, 0.62]
@@ -137,23 +135,6 @@ const PACIFIC_GREEN: Rgb = [0.46, 0.64, 0.55]
 const HUNTER_BUFF: Rgb = [0.8, 0.73, 0.58]
 
 export const MARKET_MID: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  /**
-   * The Phelan Building (1908), Market at O'Farrell and Grant: an eleven-storey flatiron of cream glazed terracotta
-   * with a rounded prow. Dark bronze shopfronts two storeys high; a moulded band over the third floor; fine piers
-   * up the shaft with the windows paired between them; an arched attic storey under a deep bracketed cornice; the
-   * flag on the prow. (Commons: "Phelan Building 2017.jpg".)
-   */
-  phelanBuilding: spec({
-    height: 42,
-    base: { height: 8, face: { kind: 'curtain', wall: BRONZE, material: 'metal', glass: [0.2, 0.24, 0.27], pitch: 3, floor: 4 } },
-    tiers: [
-      { to: 12, face: { kind: 'punched', wall: TERRACOTTA, material: 'terracotta', pitch: 2, solid: 0.42, floor: 4 }, cornice: { depth: 0.5, height: 0.6 } },
-      { to: 0.9, face: { kind: 'fins', wall: TERRACOTTA, material: 'terracotta', glass: [0.26, 0.28, 0.3], pitch: 1.9, solid: 0.45, depth: 0.18, floor: 3.6 } },
-      { to: 1, face: { kind: 'punched', wall: TERRACOTTA, material: 'terracotta', pitch: 1.9, solid: 0.5, arched: true, floor: 4 }, cornice: { depth: 1.2, height: 1.3 } },
-    ],
-    roof: [0.5, 0.48, 0.45],
-    crown: { kind: 'mast', height: 8, width: 0.15, colour: [0.8, 0.8, 0.8] },
-  }),
 
   /**
    * One Montgomery Tower (1982, Welton Becket), 120 Kearny over the Crocker Galleria: a 38-storey slab of pink

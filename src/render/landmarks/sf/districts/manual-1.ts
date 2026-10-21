@@ -6,7 +6,6 @@ import { boxAlong, edgeAt, edgeFacing, longestEdge, roundRing, spireOn, stripRoo
 import { faceBand, insetRing } from '../../tower.ts'
 import { capPolygon } from '../../../buildings.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
-import { church } from '../../church.ts'
 
 const PRECAST: [number, number, number] = [0.86, 0.85, 0.81]
 const PRECAST_DARK: [number, number, number] = [0.6, 0.59, 0.56]
@@ -196,27 +195,6 @@ export const MANUAL_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     const corner = edgeAt(ring, edgeFacing(ring, 0)).a
     spireOn(out, corner, 0, 2.6, 15.5, 7.5,
       { colour: sage, spireColour: [0.42, 0.24, 0.16], material: 'clapboard', spireMaterial: 'metal', sides: 4 })
-  },
-
-  /**
-   * Mission San Francisco de Asis / Old Mission Dolores, way/256442765 (1776) — the oldest standing building
-   * in San Francisco. Not to be confused with the much larger Mission Dolores Basilica next door
-   * (way/256442760), which is a separate building and stays untouched. No usable street photograph (Mapillary
-   * marked junk), but the form is unambiguous and well documented: a very plain, very low adobe hall with a
-   * flat parapet front pierced by bell niches — the classic mission `espadaña` — no aisles, no transept, no
-   * tower. `church()`'s own `front: { kind: 'mission' }` is that exact shape (its doc comment names this
-   * building), so this is the kit end to end.
-   */
-  missionDolores: (out, fit) => {
-    church(out, fit, {
-      nave: { bays: 4, storeys: 1, roof: 'gable', pitch: 'low' },
-      aisles: null,
-      transept: null,
-      chancel: { kind: 'square' },
-      tower: null,
-      front: { kind: 'mission', portal: 'single', window: 'none', steps: 2 },
-      walls: { material: 'stucco', openings: 'square', buttresses: 'none' },
-    })
   },
 
   /**

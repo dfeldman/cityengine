@@ -57,6 +57,3 @@ export function cathedral(out: MeshBuilder, fit: Fit, c: CathedralSpec): void {
   spireOn(out, at, lift + H - 1, 1.6, 4, c.fleche, { colour: c.colour ?? [0.6, 0.6, 0.58], spireColour: [0.42, 0.45, 0.46], material: 'ashlar', spireMaterial: 'copper', sides: 8 })
 }
 
-export function graceCathedral(out: MeshBuilder, fit: Fit): void {
-  cathedral(out, fit, { bays: 7, towerStages: 6, towerTop: 'flat', material: 'limestone', colour: [0.66, 0.66, 0.63], fleche: 14 })
-}

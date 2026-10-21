@@ -54,7 +54,7 @@
     "name": "Grace Cathedral",
     "procedural": "graceCathedral",
     "front": 81,
-    "height": 30,
+    "height": 75,
     "note": "grace.ts: the generic cathedral() (church kit: twin flat-topped west towers, rose, triple portal, aisled nave with flying buttresses, transept, apse, a crossing fleche), the entrance front faces EAST to Taylor Street and Huntington Park (Taylor runs east of it; Jones west) — bearing 81, not the 261 the Notre-Dame model had needed for its reversed front; height is the nave ridge. Was Notre-Dame's model, which put the front at the wrong end (owner, 2026-10-04)."
   },
   {

@@ -431,8 +431,8 @@
     "name": "Old Mission Dolores",
     "procedural": "missionDolores",
     "front": "street",
-    "height": 8,
-    "note": "Hand-modelled 2026-09-24: 1776 adobe, the oldest building in San Francisco. Very plain, very low, church() with front: 'mission' for the flat espadana parapet and bell niches. Not the neighbouring Mission Dolores Basilica (way/256442760), a separate, much larger building left untouched. No usable street photograph (Mapillary marked junk); form from the building's well-documented history."
+    "height": 13,
+    "note": "showpieces/mission-dolores.ts: the 1791 adobe mission: whitewashed nave under red tile with deep timber eaves, the Dolores Street front of four engaged columns, a timber balcony and three bell openings with bells, the south lean-to (Mapillary 1685559212242153, 924512332876921, 879518820373547, 3634025323529851)."
   },
   {
     "osm": [
