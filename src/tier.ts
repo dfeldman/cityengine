@@ -139,6 +139,16 @@ export const TIERS: Record<Tier, TierSettings> = {
      * The old figure here was 150, from before the morph targets and Babylon's CPU vertex copies were
      * dropped — stale in the dangerous direction: it had the governor believing there was 60 MB of room
      * that did not exist, on a device that is killed at 384.
+     *
+     * LEFT AT 210 THOUGH IT IS NOW PESSIMISTIC. Later the same day, the beach loungers and cable car
+     * passengers stopped being built on this tier and the orphaned morph managers were disposed, and a
+     * harder measurement became possible: forcing a collection every ~120 ms for five minutes of riding,
+     * so garbage never gets a chance to pile up, the floor is 138–185 MB with 60–63 tiles held, never
+     * once over 300. Fitted to that, this would be about 110.
+     *
+     * It stays at 210 deliberately. The owner's crash is not explained yet, the error of being too high
+     * is a view that closes in sooner than it needs to, and the error of being too low is a dead tab.
+     * Move it when a phone has gone a few kilometres without dying, not before.
      */
     heapBase: 210 },
   phone: { view: 1, mid: 5, maxDpr: 1.5, ao: false, textScale: 0.5,
