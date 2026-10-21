@@ -1,5 +1,22 @@
 # cityengine (Street Runner / Cycle Dash)
 
+CityEngine is a system for rendering maximally realistic cities, including terrain, streets, and buildings. It currently includes San Francisco (flagship), Paris (works but more cartoon-style rendering), New York (early stages) and Chicago (even earlier stages). The purpose is to use as a world for games, although it's also fun to just zoom around. 
+
+It's a lot like Google Earth. Unlike Google Earth, it is built only with CC0 or CC-BY-NA base data, so it is copyright-clean. 
+
+There are basically four types of rendering. Generic rendering is for the vast majority of buildings in a city and just guesses a style based on building properties and in some cases custom colors. Bigger or more interesting buildings are called "custom." Custom buildings can use either a building kit, a simple language for building design, OR be entirely hand-coded from images for more complex or important buildings. Finally, objects that are difficult to model like trees, rocks, or statues are rendered from GLB mesh files from assetkit. (No buildings are GLB files.)
+
+> [!WARNING]
+> This is entirely vibecoded. Use at your own risk.
+>
+
+> [!WARNING]
+> Images and models are not in Git at all. They are in my own "assets" R2 bucket, with metadata stored here.
+> If you want to use this outside my ecosystem of games, please make a copy of those assets. 
+
+
+
+
 This repo is **cityengine**: a city model built from OpenStreetMap and open elevation data, with its baking tools,
 landmark builders and renderer. Today its main use is the game Street Runner (public name Cycle Dash), whose code
 lives here too; the engine is meant to serve non-game uses as well. The repo was called `streetrunner` until
