@@ -27,7 +27,6 @@ export const CIVIC_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     colonnade(out, e.a, e.b, 0, 3.6, 4, { colour: CREAM })
   },
 
-
   /**
    * Mount Zion Baptist Church (1321 Oak St at Baker, built 1906): a modest wood-frame neighbourhood church,
    * one tall nave under a gable, a small square bell tower with a short spire beside the entrance.
@@ -51,66 +50,6 @@ export const CIVIC_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
 
   /** City College Chinatown Annex (628 Washington St, 4-storey annex beside the Colombo Building): a plain brick block. */
   ccsfChinatownAnnex: fromRecipe('brick-loft', { height: 14, base: 4, wall: [0.6, 0.42, 0.34] }),
-
-  /**
-   * Nourse Theater (275 Hayes St, 1926, John Reid Jr.), the auditorium of the old High School of Commerce: a
-   * tall plain cream stucco box — ONE storey of auditorium behind the wall — with an exuberant carved
-   * terracotta Spanish Colonial Revival entrance surround and a red canvas awning.
-   */
-  nourseTheater: (out: MeshBuilder, fit: Fit): void => {
-    /*
-     * 275 Hayes (1927), rebuilt from a photograph 2026-09-22. The first pass was a grey box with a small
-     * awning. What you actually see from Hayes Street is a plain CREAM STUCCO wall — correct, the auditorium
-     * is one tall volume — with one extraordinarily rich TERRACOTTA PORTAL set into it: twisted colonettes
-     * each side, a pair of arched windows above, AUDITORIUM carved in the frieze, and a red domed awning over
-     * the doors. The wall being plain is what makes the portal read, so both matter.
-     */
-    const ring = towerRing(fit)
-    // the wall is near-white and the portal distinctly warmer: at 0.88/0.83 they were the same value and the
-    // ornament vanished into the stucco
-    const CREAM: [number, number, number] = [0.93, 0.92, 0.87]
-    const TERRA: [number, number, number] = [0.76, 0.66, 0.48]
-    const H = 16
-    tower(out, fit, {
-      height: H,
-      tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.22, 0.22], pitch: 5.5, floor: H, solid: 0.9, material: 'stucco' } }],
-      crown: { kind: 'parapet', height: 1.1, colour: [0.86, 0.84, 0.77], material: 'stucco' },
-    })
-    const e = edgeAt(ring, edgeFacing(ring, 0))
-    const at = (u: number, o: number): [number, number] =>
-      [e.mid.x + e.tx * u + e.nx * o, e.mid.z + e.tz * u + e.nz * o]
-    // the portal: a terracotta panel standing proud of the stucco, with its colonettes and cornice
-    const pw = Math.min(e.L * 0.34, 8)
-    const ph = 12
-    const [px, pz] = at(0, 0.35)
-    boxAlong(out, px, ph / 2, pz, pw / 2, ph / 2, 0.35, e.heading, TERRA, surfaceTag('terracotta'))
-    for (const sgn of [-1, 1]) {
-      const [cx2, cz2] = at(sgn * (pw / 2 - 0.45), 0.7)
-      boxAlong(out, cx2, ph / 2, cz2, 0.4, ph / 2, 0.3, e.heading, [0.84, 0.77, 0.6], surfaceTag('terracotta'))
-    }
-    const [tx2, tz2] = at(0, 0.75)
-    boxAlong(out, tx2, ph + 0.4, tz2, pw / 2 + 0.3, 0.5, 0.45, e.heading, [0.87, 0.8, 0.66], surfaceTag('terracotta'))
-    // the paired arched windows, and AUDITORIUM in the frieze under them
-    for (const sgn of [-1, 1]) {
-      const [wx, wz] = at(sgn * pw * 0.17, 0.5)
-      const [fx, fz] = at(sgn * pw * 0.17, 0.62)
-      boxAlong(out, fx, 8.4, fz, pw * 0.16, 2.35, 0.1, e.heading, [0.86, 0.8, 0.64], surfaceTag('terracotta'))
-      boxAlong(out, wx, 8.4, wz, pw * 0.13, 2.1, 0.12, e.heading, [0.2, 0.22, 0.23], surfaceTag('glass'))
-    }
-    const [sx, sz] = at(0, 0.52)
-    signText(out, 'AUDITORIUM', sx, 6.0, sz, 0.75, [0.42, 0.31, 0.2], { heading: e.heading })
-    // the red domed awning over the doors, and the bronze doors either side of the portal
-    for (let k = 0; k <= 10; k++) {
-      const t = k / 10
-      const u = (t - 0.5) * pw * 0.78
-      const [ax, az] = at(u, 1.1 + Math.sin(Math.PI * t) * 0.5)
-      boxAlong(out, ax, 4.3 + Math.sin(Math.PI * t) * 0.85, az, pw * 0.05, 0.22, 0.6, e.heading, [0.72, 0.16, 0.16], 0)
-    }
-    for (const sgn of [-1, 1]) {
-      const [dx, dz] = at(sgn * e.L * 0.3, 0.2)
-      boxAlong(out, dx, 1.6, dz, 0.9, 1.6, 0.2, e.heading, [0.33, 0.45, 0.38], surfaceTag('copper'))
-    }
-  },
 
   /**
    * San Francisco Fire Station 35, the Fireboat House at Pier 22½ (1915, Alfred A. Pyle): a two-storey white
@@ -337,18 +276,6 @@ export const CIVIC_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
         prism(out, x, z, HOUSE, HOUSE + 5.5, 0.06, 6, [0.85, 0.85, 0.83], metal)
       }
     }
-  },
-
-  /**
-   * San Francisco Unified School District Administration (the old High School of Commerce, building:levels=3):
-   * a cream Classical Revival block matching its neighbour the Nourse Theater — an entrance colonnade, three
-   * even storeys of punched windows.
-   */
-  sfusdAdministration: (out: MeshBuilder, fit: Fit): void => {
-    fromRecipe('edwardian-terracotta', { height: 10, base: 3, wall: [0.85, 0.83, 0.77], baseWall: [0.5, 0.46, 0.4], material: 'stucco', crown: { kind: 'parapet', height: 0.8 } })(out, fit)
-    const ring = towerRing(fit)
-    const e = edgeAt(ring, edgeFacing(ring, 0))
-    colonnade(out, e.a, e.b, 0, 3, 4, { colour: [0.85, 0.83, 0.77] })
   },
 
   /** 501 Fulton Street (Jehovah's Witness Kingdom Hall, height 9 m): a plain low stucco meeting hall. */

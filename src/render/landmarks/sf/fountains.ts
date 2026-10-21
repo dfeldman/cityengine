@@ -2,10 +2,7 @@
  * SAN FRANCISCO'S DESIGNED FOUNTAINS that OSM maps as areas the city otherwise drew as plain paving or lawn
  * (fountain census, 2026-10-05).
  *
- * UNITED NATIONS PLAZA FOUNTAIN (Lawrence Halprin, 1975; way/128534058, ~39 × 24 m), on Market Street — Commons
- * "UN Plaza Fountain, San Francisco. By Lawrence Halprin": a SUNKEN pool walled and crossed by massive smooth blocks
- * of buff granite, stepped and stacked at every height from a bench to a 4 m slab, the water arching in jets between
- * them and falling over their edges. Fitted to OSM's ring; local frame the fit's.
+ * The United Nations Plaza fountain is in civic/un-plaza.ts with the rest of the Civic Center (2026-10-21).
  */
 import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
@@ -15,48 +12,6 @@ import { capPolygon } from '../../buildings.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 import { towerRing, insetRing, faceBand } from '../tower.ts'
 import { edgeAt, edgeFacing, signText } from '../parts.ts'
-
-const h = (a: number, b: number): number => { const v = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return v - Math.floor(v) }
-
-export function unPlazaFountain(out: MeshBuilder, fit: Fit): void {
-  const GRANITE: Rgb = [0.78, 0.72, 0.6], SHADE: Rgb = [0.66, 0.6, 0.5], WATER: Rgb = [0.42, 0.55, 0.6], FOAM: Rgb = [0.92, 0.95, 0.96]
-  const st = surfaceTag('granite')
-  const ring = towerRing(fit)
-  // the sunken pool: a granite kerb round the outline, the basin a metre and a half down, water in it
-  const inner = insetRing(ring, 1.2)
-  // (the city's ground cannot be cut, so the "sunken" pool is a kerb round water a hand over the ground: the blocks
-  //  stand in it as they stand in the real one)
-  faceBand(out, ring, 0, 0.55, { kind: 'blank', wall: GRANITE, material: 'granite' })
-  capPolygon(out, ring.map((q) => ({ x: q.x, z: q.z })), 0.55, GRANITE, st)
-  void inner
-  capPolygon(out, insetRing(ring, 0.9), 0.58, WATER, surfaceTag('glass'))
-  // the blocks: a jittered grid over the basin, each a smooth granite block, stepped, some stacked, some tall slabs
-  const hx = fit.hx - 2, hz = fit.hz - 2
-  let k = 0
-  for (let x = -hx; x <= hx; x += 3.4) {
-    for (let z = -hz; z <= hz; z += 3.4) {
-      k++
-      if (h(k, 1) < 0.2) continue
-      const w = 1 + h(k, 2) * 1.6, d = 1 + h(k, 3) * 1.6
-      const tall = h(k, 4) < 0.15
-      const top = tall ? 3 + h(k, 5) * 1.6 : 0.9 + h(k, 6) * 1.8
-      const cx = x + (h(k, 7) - 0.5) * 1.2, cz = z + (h(k, 8) - 0.5) * 1.2
-      box(out, cx, (top + 0.6) / 2, cz, w, Math.max(0.3, top - 0.6) / 2 + 0.3, d, h(k, 9) < 0.5 ? GRANITE : SHADE, st)
-      // a smaller block stacked on some, stepping up
-      if (!tall && h(k, 10) < 0.4) box(out, cx + w * 0.3, top + 0.35, cz - d * 0.2, w * 0.55, 0.35, d * 0.55, GRANITE, st)
-      // water falling over the lip of a few, and a jet arching from others
-      if (h(k, 11) < 0.3) box(out, cx + w + 0.03, (top + 0.6) / 2, cz, 0.04, (top - 0.6) / 2, d * 0.7, FOAM, 0)
-      if (h(k, 12) < 0.18) {
-        const a = h(k, 13) * Math.PI * 2, L = 3 + h(k, 14) * 3
-        const p0: [number, number, number] = [cx, top + 0.05, cz]
-        const pm: [number, number, number] = [cx + Math.cos(a) * L * 0.5, top + L * 0.55, cz + Math.sin(a) * L * 0.5]
-        const p1: [number, number, number] = [cx + Math.cos(a) * L, 0.6, cz + Math.sin(a) * L]
-        strut(out, p0, pm, 0.12, 0.12, FOAM, 0, false)
-        strut(out, pm, p1, 0.12, 0.12, FOAM, 0, false)
-      }
-    }
-  }
-}
 
 /**
  * THE YODA FOUNTAIN (Lawrence Noble, 2005; OSM way/1376085479, ~4.6 m round) in the Letterman Digital Arts Center's
@@ -84,7 +39,6 @@ export function yodaFountain(out: MeshBuilder, _fit: Fit): void {
   for (const s of [-1, 1]) strut(out, [s * 0.12, 2.55, 0], [s * 0.5, 2.68, -0.04], 0.16, 0.04, BRONZE, metal)
   strut(out, [0.24, 1.55, 0.16], [0.26, 2.2, 0.14], 0.05, 0.05, BRONZE, metal)
 }
-
 
 /**
  * THE SAN FRANCISCO MINT, 155 Hermann Street (Gilbert Stanley Underwood, 1937; way/115944818). Commons "NRIS 88000026
@@ -206,4 +160,4 @@ export function auroraFountain(out: MeshBuilder, fit: Fit): void {
   }
 }
 
-export const FOUNTAINS: Record<string, (out: MeshBuilder, fit: Fit) => void> = { unPlazaFountain, yodaFountain, sanFranciscoMint, leviPlazaFountain, auroraFountain }
+export const FOUNTAINS: Record<string, (out: MeshBuilder, fit: Fit) => void> = { yodaFountain, sanFranciscoMint, leviPlazaFountain, auroraFountain }

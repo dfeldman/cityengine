@@ -134,17 +134,6 @@ export function pofaHall(out: MeshBuilder, fit: Fit): void {
   })
 }
 
-/** SFPUC HEADQUARTERS, 525 Golden Gate (2012; way/173725078, 13 storeys, 57 m): smooth grey-brown stone panels round
- *  the lower floors and up one end, ribbon windows of blue glass under thin dark sills above them. Mapillary 1260855188665106. */
-export function sfpucHq(out: MeshBuilder, fit: Fit): void {
-  tower(out, { ...fit, height: 57 }, {
-    height: 57,
-    base: { height: 13, face: { kind: 'blank', wall: [0.5, 0.47, 0.45], material: 'granite' } },
-    tiers: [{ to: 1, face: { kind: 'bands', wall: [0.32, 0.32, 0.33], glass: [0.26, 0.4, 0.56], floor: 3.9, solid: 0.22, material: 'metal' } }],
-    crown: { kind: 'parapet', height: 1.6, colour: [0.48, 0.46, 0.44], material: 'granite' },
-  })
-}
-
 /** ONE MISSION BAY (2018; way/563104192, 58 m): two storeys of white panels perforated in a pebble pattern, a white
  *  frame of punched windows, then a pale teal curtain wall in thin white fins. Mapillary 2839126093018170. */
 export function oneMissionBay(out: MeshBuilder, fit: Fit): void {
@@ -250,4 +239,4 @@ export function warmingHut(out: MeshBuilder, fit: Fit): void {
   })
 }
 
-export const PROMINENT: Record<string, (out: MeshBuilder, fit: Fit) => void> = { pofaHall, fairmontHotel, stRegisTower, montgomeryGlassCube, holidayInnTower, holidayInnPodium, somaGrand, gearyTower, isleHouse, sfpucHq, oneMissionBay, symphonyTowers, jfkTowers, folsom230, cruiseTerminal27, cableCarBarn, warmingHut }
+export const PROMINENT: Record<string, (out: MeshBuilder, fit: Fit) => void> = { pofaHall, fairmontHotel, stRegisTower, montgomeryGlassCube, holidayInnTower, holidayInnPodium, somaGrand, gearyTower, isleHouse, oneMissionBay, symphonyTowers, jfkTowers, folsom230, cruiseTerminal27, cableCarBarn, warmingHut }

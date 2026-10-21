@@ -55,24 +55,6 @@ import type { Fit } from '../../fit.ts'
 import { facade } from '../../facade.ts'
 
 export const B4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  /**
-   * way/387313434 — UC Law SF Parking Garage, 376 Larkin St, 46 m. Reference photos
-   * (`batch4/way-387313434.jpg`, `-2.jpg`): a beige precast multi-storey parking structure, small square
-   * screened/punched openings in a tight regular grid, no glazing, vertical precast piers dividing bays,
-   * plain ground floor with a vehicle entrance.
-   */
-  b4_garage_387313434: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'plain', storeys: 1, material: 'precast' },
-      shaft: { storeys: 10, windows: 'small', material: 'precast' },
-      top: null,
-      bands: { aboveGround: 'string', belowTop: null, top: null },
-      crown: null,
-      frame: { verticals: { kind: 'pier', width: 0.4, at: 'bays', count: 8 }, horizontals: null, recess: 0, material: 'precast' },
-      entrance: { at: 'corner', kind: 'door', steps: 0 },
-      material: 'precast',
-    })
-  },
 
   /**
    * way/173237461 — Storek Building, 155 9th St, office, 4 levels, 31 m, brick. No photograph. Plan is a
@@ -150,8 +132,6 @@ export const B4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     })
   },
 
-
-
   /**
    * way/172886856 — The Presidio Landmark, 1801 Wedemeyer St, residential, 25 m. No photograph. A large
    * former hospital (San Francisco Public Health Service Hospital) converted to condos — a 38-vertex plan of
@@ -198,26 +178,6 @@ export const B4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
       material: 'precast',
     })
   },
-
-  /**
-   * way/256720199 — San Francisco Ballet, 455 Franklin St, 22 m. No photograph. Part of the Van Ness Civic
-   * Center performing-arts area; plan is a clean rectilinear footprint. Built BLIND as a plain modern
-   * institutional box — many performance venues are, per the brief, and nothing in tags or plan suggests
-   * otherwise.
-   */
-  b4_ballet_256720199: (out: MeshBuilder, fit: Fit): void => {
-    facade(out, fit, {
-      ground: { kind: 'plain', storeys: 1, material: 'precast' },
-      shaft: { storeys: 4, windows: 'small', material: 'precast' },
-      top: null,
-      bands: { aboveGround: 'string', belowTop: null, top: 'cornice' },
-      crown: null,
-      frame: null,
-      entrance: { at: 'centre', kind: 'recessed', steps: 2 },
-      material: 'precast',
-    })
-  },
-
 
   /**
    * way/256853335 — Redstone Building (San Francisco Labor Temple), 2940 16th St, commercial, 3 levels,

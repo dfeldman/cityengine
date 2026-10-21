@@ -21,12 +21,6 @@ export const MODEL_3: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
     height: 62, wall: [0.83, 0.81, 0.76], glass: [0.24, 0.26, 0.29], pitch: 2.8, solid: 0.5, base: 5,
   }),
 
-  /** Fox Plaza (1966, Victor Gruen), 1390 Market: a bronze curtain tower tapering to a point, 29 floors. */
-  foxPlaza: fromRecipe('glass-tower', {
-    height: 84, wall: [0.34, 0.28, 0.22], glass: [0.16, 0.14, 0.12], pitch: 1.8, solid: 0.3, base: 6,
-    crown: { kind: 'pyramid', height: 10, inset: 8, colour: [0.3, 0.26, 0.2] },
-  }),
-
   /** 1475 O'Farrell Street: a cream stucco apartment tower, punched windows, a roof mast. */
   ofarrell1475: fromRecipe('hotel-punched', {
     height: 61, wall: [0.86, 0.83, 0.75], glass: [0.26, 0.28, 0.3], base: 5,

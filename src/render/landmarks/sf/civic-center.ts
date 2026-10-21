@@ -2,12 +2,7 @@
  * CIVIC CENTER, building by building (the owner's queue: "a close, methodical look at every unique building round City
  * Hall"), 2026-10-04.
  *
- * THE EARL WARREN BUILDING (1922, Bliss & Faville; the Supreme Court of California), 350 McAllister on the north side
- * of Civic Center Plaza — a mechanical rule ("southern SF") had made it a brick block. From Commons ("Earl Warren
- * Building (San Francisco).JPG", "The Earl Warren Building and Courthouse"): pale grey granite, Renaissance Revival; a
- * rusticated ground storey with three great round-arched entrances in the middle of the plaza front, carved
- * surrounds and bronze lanterns; over it the piano nobile, tall arched windows between small pedimented ones over a
- * balustrade; two plain storeys of small square windows under a deep cornice; a low dark roof. Front: the plaza (180).
+ * The Earl Warren Building that began this file is now in civic/state.ts with the rest of the Civic Center (2026-10-21).
  */
 import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
@@ -16,44 +11,6 @@ import { surfaceTag } from '../../cartoon-material.ts'
 import { tower, towerRing } from '../tower.ts'
 import { boxAlong, edgeAt, edgeFacing, cupola } from '../parts.ts'
 import { box, prism } from '../../models.ts'
-
-const GRANITE: Rgb = [0.84, 0.84, 0.82]
-const DARK: Rgb = [0.18, 0.19, 0.2]
-const SLATE: Rgb = [0.32, 0.34, 0.36]
-
-export function earlWarrenBuilding(out: MeshBuilder, fit: Fit): void {
-  const H = 24
-  tower(out, fit, {
-    height: H,
-    base: { height: 7, face: { kind: 'punched', wall: GRANITE, glass: DARK, pitch: 3.6, floor: 3.5, solid: 0.62, material: 'granite' } },
-    tiers: [
-      { to: 15.5, face: { kind: 'punched', wall: GRANITE, glass: [0.22, 0.24, 0.26], pitch: 4.6, floor: 8.5, solid: 0.55, arched: true, material: 'granite' }, cornice: { depth: 0.35, height: 0.4 } },
-      { to: H, face: { kind: 'punched', wall: GRANITE, glass: DARK, pitch: 3.0, floor: 4.2, solid: 0.6, material: 'granite' }, cornice: { depth: 1.0, height: 1.0 } },
-    ],
-    roof: SLATE,
-    crown: { kind: 'hip', height: 2.5, inset: 1.5, colour: SLATE, material: 'tile' },
-  })
-  // the three great arches of the entrance, in the middle of the plaza front: dark openings with round heads in
-  // carved surrounds, a bronze lantern beside each
-  const ring = towerRing(fit)
-  const e = edgeAt(ring, edgeFacing(ring))
-  const g = surfaceTag('granite')
-  const on = (u: number, y: number, o: number, w: number, h: number, d: number, c: Rgb, tag = g): void =>
-    boxAlong(out, e.mid.x + e.tx * u + e.nx * o, y, e.mid.z + e.tz * u + e.nz * o, w / 2, h / 2, d / 2, e.heading, c, tag)
-  for (const u of [-6, 0, 6]) {
-    on(u, 3.4, 0.2, 4.4, 6.8, 0.4, [0.78, 0.78, 0.76])
-    on(u, 2.6, 0.42, 3.0, 5.2, 0.06, DARK, 0)
-    for (let k = 0; k < 5; k++) {
-      const t = (k + 0.5) / 5, w = 3.0 * Math.sqrt(1 - (t * t))
-      on(u, 5.2 + t * 1.5, 0.42, w, 0.32, 0.06, DARK, 0)
-    }
-    for (const s of [-1, 1]) {
-      on(u + s * 2.6, 4.4, 0.6, 0.35, 0.8, 0.35, [0.16, 0.24, 0.2], surfaceTag('metal'))
-    }
-  }
-  // the balustrade under the piano nobile, along the whole front
-  on(0, 7.6, 0.25, e.L - 2, 0.9, 0.5, GRANITE)
-}
 
 /**
  * MISSION DOLORES BASILICA (1918, Churrigueresque), way/256442760 beside the old Mission — "left untouched" by the 2026-09-24
@@ -134,4 +91,4 @@ export function saintNicholasCathedral(out: MeshBuilder, fit: Fit): void {
   box(out, x, 23.5, z, 0.32, 0.05, 0.05, [0.78, 0.65, 0.3], 0)
 }
 
-export const CIVIC_CENTER: Record<string, (out: MeshBuilder, fit: Fit) => void> = { earlWarrenBuilding, missionDoloresBasilica, saintNicholasCathedral }
+export const CIVIC_CENTER: Record<string, (out: MeshBuilder, fit: Fit) => void> = { missionDoloresBasilica, saintNicholasCathedral }

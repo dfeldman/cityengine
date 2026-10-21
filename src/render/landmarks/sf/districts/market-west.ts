@@ -20,7 +20,6 @@ import { faceBand, insetRing, tower, towerRing, type Face, type TowerSpec } from
 import { prism, type Rgb } from '../../../models.ts'
 import { surfaceTag } from '../../../cartoon-material.ts'
 import { boxAlong, edgeAt, longestEdge, offsetRing } from '../../parts.ts'
-import { classicalColumn } from '../../column.ts'
 import { column } from '../../kit.ts'
 import { fromRecipe } from '../recipes.ts'
 import { sign } from '../../signage.ts'
@@ -266,7 +265,6 @@ const specPlus = (s: TowerSpec, extra: (out: MeshBuilder, ring: P2[], H: number)
   extra(out, nudge(towerRing(fit), 0.03), H)
 }
 
-
 /** The middle of the short edges (≤ `max` m) of a ring: a rounded corner, as OSM draws one. */
 function roundCorner(ring: P2[], max: number): { c: P2; toward: P2 } {
   let x = 0
@@ -322,24 +320,6 @@ function endWalls(ring: P2[], min: number): Edge[] {
 /** A strip of the building along an edge, `u0..u1` along it and `d` deep: anticlockwise, like a footprint. */
 const strip = (e: Edge, u0: number, u1: number, d: number): P2[] => [at(e, u0, 0), at(e, u1, 0), at(e, u1, -d), at(e, u0, -d)]
 
-/** The part of a ring more than `d` metres in from an edge's line (Sutherland–Hodgman on one half-plane). */
-function behind(ring: P2[], e: Edge, d: number): P2[] {
-  const o = (p: P2): number => (p.x - e.a.x) * e.nx + (p.z - e.a.z) * e.nz + d
-  const res: P2[] = []
-  for (let i = 0; i < ring.length; i++) {
-    const p = ring[i]
-    const q = ring[(i + 1) % ring.length]
-    const op = o(p)
-    const oq = o(q)
-    if (op <= 0) res.push(p)
-    if ((op < 0 && oq > 0) || (op > 0 && oq < 0)) {
-      const t = op / (op - oq)
-      res.push({ x: p.x + (q.x - p.x) * t, z: p.z + (q.z - p.z) * t })
-    }
-  }
-  return res
-}
-
 /** A mansard (or hip) on a ring at height y: sloping in by `inset` over `h`, capped. */
 function mansardOn(out: MeshBuilder, ring: P2[], y: number, h: number, inset: number, c: Rgb, tag = T.metal, given?: P2[]): void {
   const top = given ?? insetRing(ring, inset)
@@ -356,31 +336,6 @@ function mansardOn(out: MeshBuilder, ring: P2[], y: number, h: number, inset: nu
 function stripRoof(out: MeshBuilder, e: Edge, u0: number, u1: number, d: number, y: number, h: number, inset: number, c: Rgb, tag: number): void {
   const i = Math.min(inset, d / 2 - 0.2)
   mansardOn(out, strip(e, u0, u1, d), y, h, inset, c, tag, [at(e, u0 + i, -i), at(e, u1 - i, -i), at(e, u1 - i, -(d - i)), at(e, u0 + i, -(d - i))])
-}
-
-/**
- * A colonnade standing in front of a wall: round columns `r` thick every `pitch` metres (in pairs `pair` apart
- * when given), `o` out, from y0 to y1, over a darker panel for the loggia behind them.
- */
-function colonnade(out: MeshBuilder, e: Edge, u0: number, u1: number, y0: number, y1: number, o: number, r: number, pitch: number, c: Rgb, tag: number, back?: Rgb, pair = 0): void {
-  if (back) panel(out, e, u0, u1, 0.04, y0, y1, back, tag)
-  const n = Math.max(1, Math.round((u1 - u0) / pitch))
-  const step = (u1 - u0) / n
-  for (let k = 0; k <= n; k++) {
-    for (const d of pair ? [-pair / 2, pair / 2] : [0]) {
-      const u = u0 + k * step + d
-      if (u < u0 - 0.01 || u > u1 + 0.01) continue
-      const p = at(e, u, o)
-      /*
-       * The shared classical column (render/landmarks/column.ts, PLAN.md item Z) rather than three stacked
-       * prisms — entasis, a moulded base, a real capital. The MID tier deliberately: Market Street is lined
-       * with these, and the near tier's modelled capital is for the portico that IS the building.
-       */
-      classicalColumn(out, p.x, p.z, y0, y1, r, c, { order: 'doric', tier: 'mid', tag, heading: Math.atan2(e.nx, e.nz) })
-    }
-  }
-  // the entablature over them
-  slab(out, e, u0, u1, 0, o + r * 1.5, y1, y1 + 1.2, c, tag)
 }
 
 /** A tower spec raised on a ring of the builder's own (a front range, a wing, a tower on its podium). */
@@ -538,49 +493,6 @@ export const MARKET_WEST: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   }),
 
   /**
-   * The Orpheum (1926, B. Marcus Priteca), 1192 Market at Hyde: a Spanish-Plateresque front range of cream
-   * terracotta four tall storeys high under a red tile hip roof: a ground-floor arcade, a row of arched windows
-   * over it, two storeys of big grouped windows between thick ornamented piers, an attic of little oculi. The
-   * bronze ORPHEUM blade stands up past the eaves in the middle of the Market front over a small dark marquee;
-   * the plain auditorium and stage house rise behind. (Commons: "San Francisco Orpheum Theatre 01.jpg",
-   * "Orpheum Theatre Market st.jpg".)
-   */
-  orpheumTheatre: (out: MeshBuilder, fit: Fit): void => {
-    const ring = towerRing(fit)
-    const H = fit.height > 20 && fit.height < 60 ? fit.height : 46
-    const stone: Rgb = [0.89, 0.86, 0.78]
-    const e = edgeNear(ring, 59.6)
-    // the auditorium and stage house: plain, behind
-    raise(out, behind(ring, e, 13.5), Math.min(H, 28), {
-      height: 30,
-      tiers: [{ to: 1, face: { kind: 'blank', material: 'stucco', wall: [0.84, 0.83, 0.79] } }],
-      roof: [0.5, 0.5, 0.5],
-      crown: { kind: 'parapet', height: 0.8, colour: [0.8, 0.79, 0.75] },
-    })
-    raise(out, strip(e, -0.3, e.L + 0.3, 14), 22, {
-      height: 22,
-      base: { height: 7.5, face: { kind: 'punched', material: 'terracotta', wall: stone, glass: [0.2, 0.21, 0.22], pitch: 6.4, solid: 0.2, floor: 7.5, arched: true } },
-      tiers: [
-        { to: 11.5, face: { kind: 'punched', material: 'terracotta', wall: stone, glass: [0.26, 0.29, 0.3], pitch: 3.2, solid: 0.42, floor: 4, arched: true }, cornice: { depth: 0.4, height: 0.5 } },
-        { to: 19.5, face: { kind: 'fins', material: 'terracotta', wall: stone, glass: [0.33, 0.38, 0.4], pitch: 9.6, solid: 0.14, depth: 0.5, floor: 4 } },
-        { to: 1, face: { kind: 'punched', material: 'terracotta', wall: stone, glass: [0.3, 0.3, 0.3], pitch: 4.8, solid: 0.82, floor: 2.5 }, cornice: { depth: 0.9, height: 0.7 } },
-      ],
-      roof: [0.62, 0.3, 0.22],
-    })
-    // the red tile hip roof
-    stripRoof(out, e, -0.3, e.L + 0.3, 14, 22, 3.4, 5.5, [0.62, 0.3, 0.22], T.tile)
-    // the mullions of the big windows
-    faceBand(out, [at(e, 0.2, 0.01), at(e, e.L - 0.2, 0.01), at(e, e.L - 0.2, -1), at(e, 0.2, -1)].slice(0), 11.5, 19.5, { kind: 'fins', material: 'terracotta', wall: stone, glass: [0.33, 0.38, 0.4], pitch: 2.4, solid: 0.08, depth: 0.12, floor: 4 })
-    // the blade, up past the eaves, and its little crowned top; the marquee under it
-    const u = e.L * 0.5
-    const bronze: Rgb = [0.6, 0.52, 0.32]
-    blade(out, e, u, 9.5, 31, 1.5, 0.9, bronze, [0.95, 0.9, 0.72], 'ORPHEUM')
-    slab(out, e, u - 0.7, u + 0.7, 0.2, 2.2, 31, 32.2, bronze, T.metal)
-    prism(out, at(e, u, 1.2).x, at(e, u, 1.2).z, 32.2, 34, 0.5, 4, bronze, T.metal, 0.05)
-    marquee(out, e, u + 1.5, 10, 4.2, 2.2, 2.4, { frame: [0.13, 0.2, 0.18], board: [0.9, 0.85, 0.66], lines: ['ORPHEUM', 'BROADWAY SF'] })
-  },
-
-  /**
    * The Hibernia Bank (1892, Albert Pissis; enlarged 1905), 1 Jones at Market and McAllister: a single tall
    * storey of white granite, pilasters and tall windows down both flanks under a balustrade, and on the rounded
    * corner a portico of four Corinthian columns carrying a drum and the green copper dome with its lantern. The
@@ -634,51 +546,6 @@ export const MARKET_WEST: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   }),
 
   /**
-   * The San Francisco Furniture Mart (1937, Lewis Hobart), 1355 Market: Market Square, Twitter's headquarters from
-   * 2012. A whole block of buff Art Deco terracotta, eleven storeys: deep piers running the full height with
-   * the windows in pairs between them over dark spandrels, a carved frieze over the two-storey base and another
-   * along the parapet, and in the middle of the Market front a wider tower bay that rises two storeys more to a
-   * glazed penthouse set back on it. (Commons: "Twitter Headquarters.jpg", "Twitter headquarters building.JPG",
-   * "TwitterHeadquarters2022.jpg".)
-   */
-  furnitureMart: specPlus({
-    height: 41,
-    base: { height: 9, face: { kind: 'fins', material: 'terracotta', wall: [0.8, 0.72, 0.6], glass: [0.2, 0.21, 0.22], pitch: 4.6, solid: 0.3, depth: 0.5, floor: 4.5 } },
-    tiers: [
-      { to: 10.2, face: { kind: 'blank', material: 'terracotta', wall: [0.76, 0.68, 0.56] } },
-      { to: 0.96, face: { kind: 'fins', material: 'terracotta', wall: [0.8, 0.72, 0.6], glass: [0.27, 0.27, 0.28], pitch: 4.6, solid: 0.36, depth: 0.5, floor: 3.4 } },
-      { to: 1, face: { kind: 'blank', material: 'terracotta', wall: [0.76, 0.68, 0.56] } },
-    ],
-    roof: [0.5, 0.48, 0.46],
-    crown: { kind: 'parapet', height: 1.2, colour: [0.78, 0.7, 0.58] },
-  }, (out, ring, H) => {
-    const buff: Rgb = [0.8, 0.72, 0.6]
-    // the mullion between each pair of windows
-    faceBand(out, ring, 10.2, H * 0.96, { kind: 'fins', material: 'terracotta', wall: buff, glass: [0.27, 0.27, 0.28], pitch: 2.3, solid: 0.07, depth: 0.15, floor: 3.4 })
-    // the tower bay in the middle of the Market front, up two storeys more, the penthouse set back on it
-    // (the frontage's middle is where its 61.7 m and 42.2 m lengths meet)
-    const e = boxed(ring) ? frontOfBox(ring) : edgeNear(ring, 61.7)
-    const g = edgeNear(ring, 42.2)
-    const mid = boxed(ring) ? e.L / 2 : (g.a === e.b || g.b === e.b ? e.L : 0)
-    // (kept inside the building's own outline: on the corner at 10th the strip ran out past the side wall, a 48 m
-    // tower bay standing over Market's pavement and lanes — owner, 2026-10-03)
-    const clipIn = (b: P2[]): P2[] => { for (let i = 0; i < ring.length && b.length >= 3; i++) b = behind(b, edgeOf(ring, i), 0.6); return b }
-    // (the strip is drawn to one side of the frontage; where that side was the street, the other side is the building)
-    let bay = clipIn(strip(e, mid - 12.5, mid + 12.5, 20))
-    if (bay.length < 3) bay = clipIn(strip(e, mid - 12.5, mid + 12.5, -20))
-    if (bay.length < 3) return
-    raise(out, bay, H + 7.5, {
-      height: H + 7.5,
-      tiers: [
-        { to: H - 0.5, face: { kind: 'fins', material: 'terracotta', wall: buff, glass: [0.27, 0.27, 0.28], pitch: 3.2, solid: 0.4, depth: 0.7, floor: 3.4 } },
-        { to: 1, face: { kind: 'fins', material: 'terracotta', wall: buff, glass: [0.27, 0.27, 0.28], pitch: 3.2, solid: 0.5, depth: 0.7, floor: 3.6 } },
-      ],
-      roof: [0.5, 0.48, 0.46],
-      crown: { kind: 'lantern', height: 4, inset: 3.2, face: { kind: 'curtain', wall: [0.3, 0.3, 0.3], glass: [0.3, 0.34, 0.37], pitch: 2, floor: 4 } },
-    })
-  }),
-
-  /**
    * The Hotel Whitcomb (1911, Reid Bros.), 1231 Market: built as the Whitcomb, City Hall while the new one was
    * going up. Nine storeys of pale grey-white, plain punched windows up the shaft, the top floor an arcade of
    * round-headed windows in an ornamented frieze under a heavy bracketed cornice, a glazed mansard penthouse set
@@ -699,38 +566,6 @@ export const MARKET_WEST: Record<string, (out: MeshBuilder, fit: Fit) => void> =
     stripRoof(out, e, 3.5, e.L - 3.5, 14, H, 3.6, 1.8, [0.56, 0.62, 0.64], T.metal)
     blade(out, e, e.L * 0.72, 9.5, 27, 1.3, 0.35, [0.42, 0.14, 0.18], [0.92, 0.78, 0.5])
   }),
-
-  /**
-   * Fox Plaza (1966), 1390 Market on the site of the Fox Theatre: a 29-storey slab of white concrete, its narrow
-   * ends blank but for a strip of windows up the middle, its broad faces a fine grid of glass over the office
-   * floors and, above, the flats' balconies in columns; a plain parapet. (Commons: "Archstone Fox Plaza.jpg", "Fox Plaza San Francisco.jpg".)
-   */
-  foxPlaza: (out: MeshBuilder, fit: Fit): void => {
-    const ring = simplifyRing(towerRing(fit), 1.2)
-    const H = fit.height > 80 && fit.height < 140 ? fit.height : 107
-    const white: Rgb = [0.88, 0.87, 0.83]
-    raise(out, ring, H, {
-      height: H,
-      tiers: [{ to: 1, face: { kind: 'blank', material: 'concrete', wall: white } }],
-      roof: [0.55, 0.55, 0.55],
-      crown: { kind: 'parapet', height: 2.5, colour: white },
-      penthouse: 1,
-    })
-    const office = H * 0.45
-    for (const e of longWalls(ring, 8)) {
-      // the office floors: a fine grid of white mullions over the glass; the flats: balconies in columns
-      faceOn(out, e, 0.6, e.L - 0.6, 7, office, { kind: 'curtain', wall: white, glass: [0.3, 0.36, 0.42], pitch: 1.7, floor: 3.7 })
-      faceOn(out, e, 0.6, e.L - 0.6, office, H - 2, { kind: 'fins', material: 'concrete', wall: white, glass: [0.42, 0.44, 0.45], pitch: 3.2, solid: 0.22, depth: 0.9, floor: 2.9 })
-      faceOn(out, e, 0.6, e.L - 0.6, office, H - 2, { kind: 'bands', material: 'concrete', wall: white, glass: [0.36, 0.38, 0.4], solid: 0.3, floor: 2.9 }, 0.5)
-      faceOn(out, e, 0.6, e.L - 0.6, 0, 7, { kind: 'curtain', wall: [0.3, 0.3, 0.3], glass: [0.2, 0.22, 0.24], pitch: 3, floor: 7 })
-    }
-    for (const e of endWalls(ring, 8)) {
-      // the ends are blank, but for the recess up the middle, glazed floor by floor
-      if (e.L > 10.5) continue
-      faceOn(out, e, 0.4, e.L - 0.4, 7, H - 3, { kind: 'curtain', wall: white, glass: [0.3, 0.36, 0.42], pitch: 1.8, floor: 3.2 })
-      faceOn(out, e, 0.4, e.L - 0.4, 0, 7, { kind: 'curtain', wall: [0.3, 0.3, 0.3], glass: [0.2, 0.22, 0.24], pitch: 2.4, floor: 7 })
-    }
-  },
 
   /**
    * 100 Van Ness (1974 as the AAA building; re-clad as flats in 2015), Van Ness at Hayes: 29 storeys of
@@ -813,213 +648,6 @@ export const MARKET_WEST: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   }),
 
   /**
-   * Dolby's headquarters, 1275 Market (1970s; refitted 2016): sixteen storeys of dark red-brown granite, the
-   * windows in long ribbons of four between broad granite piers and deep spandrels, and two white DOLBY blades.
-   * (Commons: "Dolby Laboratories, Inc. headquarters in San Francisco (TK1).jpg".)
-   */
-  dolbyBuilding: specPlus({
-    height: 64,
-    base: { height: 9, face: { kind: 'fins', material: 'granite', wall: [0.34, 0.3, 0.29], glass: [0.2, 0.22, 0.24], pitch: 7, solid: 0.25, depth: 0.6, floor: 4.5 } },
-    tiers: [
-      { to: 1, face: { kind: 'punched', material: 'granite', wall: [0.33, 0.3, 0.29], glass: [0.3, 0.36, 0.42], pitch: 7, solid: 0.26, floor: 3.45 } },
-    ],
-    roof: [0.4, 0.38, 0.37],
-    crown: { kind: 'parapet', height: 1, colour: [0.36, 0.32, 0.3] },
-    penthouse: 1,
-  }, (out, ring, H) => {
-    const e = edgeNear(ring, 73.9)
-    const white: Rgb = [0.93, 0.93, 0.92]
-    const grey: Rgb = [0.45, 0.46, 0.47]
-    for (const [u, y0, y1] of [[1.2, 12, H * 0.62], [e.L - 1.5, 6, 26]]) {
-      blade(out, e, u, y0, y1, 2.4, 0.5, white, white)
-      // the name down it, dark on the white
-      for (const s of [-1, 1]) {
-        const uu = u + s * 0.3
-        for (let k = 0; k < 5; k++) {
-          const ya = y1 - 1.5 - ((y1 - y0 - 3) / 5) * (k + 1) + 0.4
-          const yb = y1 - 1.5 - ((y1 - y0 - 3) / 5) * k - 0.4
-          const P = (oo: number, y: number): [number, number, number] => [e.a.x + e.tx * uu + e.nx * oo, y, e.a.z + e.tz * uu + e.nz * oo]
-          out.quad([P(1.9, ya), P(1.0, ya), P(1.0, yb), P(1.9, yb)], [e.tx * s, 0, e.tz * s], [[0, 0], [1, 0], [1, 1], [0, 1]], grey, FIXED)
-        }
-      }
-    }
-  }),
-
-  /**
-   * NEMA (2014, Handel Architects), 8 Tenth Street: two towers of dark glass on dark podiums at Market and Tenth,
-   * the north one 37 storeys on a many-sided plan, the south one 24; a grid of thin dark mullions with dark
-   * fins scattered up it in columns, balconies notched into one face. (Commons: "NEMA San Francisco.jpg".)
-   */
-  nemaTower: specPlus({
-    height: 106,
-    base: { height: 6, face: { kind: 'curtain', wall: [0.14, 0.15, 0.16], glass: [0.3, 0.36, 0.38], pitch: 3, floor: 6 } },
-    tiers: [{ to: 1, face: { kind: 'curtain', wall: [0.14, 0.15, 0.17], glass: [0.26, 0.42, 0.5], pitch: 1.5, floor: 2.9 } }],
-    roof: [0.3, 0.3, 0.32],
-    crown: { kind: 'parapet', height: 3.5, colour: [0.28, 0.36, 0.4] },
-  }, (out, ring, H) => {
-    faceBand(out, ring, 6, H, { kind: 'fins', wall: [0.14, 0.15, 0.17], glass: [0.3, 0.4, 0.45], pitch: 4.6, solid: 0.09, depth: 0.25, floor: 2.9 })
-  }),
-  nemaPodium: spec({
-    height: 36,
-    base: { height: 6, face: { kind: 'curtain', wall: [0.14, 0.15, 0.16], glass: [0.3, 0.36, 0.38], pitch: 3, floor: 6 } },
-    tiers: [{ to: 1, face: { kind: 'punched', material: 'metal', wall: [0.19, 0.2, 0.21], glass: [0.4, 0.5, 0.54], pitch: 2.6, solid: 0.35, floor: 3.1 } }],
-    roof: [0.32, 0.32, 0.33],
-    crown: { kind: 'parapet', height: 1.1, colour: [0.2, 0.21, 0.22] },
-  }),
-
-  /**
-   * The Asian Art Museum (1917, George Kelham, as the Main Library; the museum since 2003, Gae Aulenti), 200
-   * Larkin on Civic Center Plaza: grey granite Beaux-Arts, a rusticated ground storey, a piano nobile of tall
-   * round-arched windows down the long sides, the Larkin front a loggia of paired columns under an inscribed
-   * frieze, a mezzanine and a deep bracketed cornice; the 2023 pavilion, a white box, on the Hyde Street wing.
-   * (Commons: "2017 Asian Art Museum.jpg", "Asian Art Museum - San Francisco - Joy of Museums.jpg".)
-   */
-  asianArtMuseum: specPlus({
-    height: 29,
-    base: { height: 10, face: { kind: 'punched', material: 'granite', wall: [0.74, 0.74, 0.72], glass: [0.26, 0.28, 0.3], pitch: 5.4, solid: 0.72, floor: 5 } },
-    tiers: [
-      { to: 22, face: { kind: 'punched', material: 'granite', wall: [0.76, 0.76, 0.74], glass: [0.3, 0.32, 0.33], pitch: 5.4, solid: 0.45, floor: 12, arched: true }, cornice: { depth: 0.4, height: 0.5 } },
-      { to: 1, face: { kind: 'punched', material: 'granite', wall: [0.76, 0.76, 0.74], glass: [0.28, 0.3, 0.31], pitch: 5.4, solid: 0.72, floor: 7 }, cornice: { depth: 1.5, height: 1.4 } },
-    ],
-    roof: [0.55, 0.55, 0.55],
-    crown: { kind: 'parapet', height: 1.2, colour: [0.74, 0.74, 0.72] },
-  }, (out, ring, H) => {
-    const granite: Rgb = [0.78, 0.78, 0.76]
-    // the loggia on Larkin: paired columns across the front's two lengths
-    for (const len of [29.9, 19.1]) {
-      const e = edgeNear(ring, len)
-      colonnade(out, e, 1.5, e.L - 1.5, 10, 21, 1.6, 0.65, 5.2, granite, T.granite, [0.32, 0.33, 0.34], 1.9)
-    }
-    // the 2023 pavilion over the Hyde Street wing: a white box with a band of glass
-    const h = edgeNear(ring, 26)
-    const pav = strip(h, 0.5, h.L - 0.5, 30)
-    faceBand(out, pav, H, H + 2.2, { kind: 'blank', material: 'stucco', wall: [0.88, 0.88, 0.87] })
-    faceBand(out, pav, H + 2.2, H + 5, { kind: 'curtain', material: 'metal', wall: [0.7, 0.72, 0.73], glass: [0.3, 0.4, 0.44], pitch: 2, floor: 2.8 })
-    faceBand(out, pav, H + 5, H + 9, { kind: 'blank', material: 'stucco', wall: [0.93, 0.93, 0.92] })
-    capPolygon(out, pav, H + 9, [0.85, 0.85, 0.84], T.stucco)
-  }),
-
-  /**
-   * The Main Library (1996, Pei Cobb Freed with Simon Martin-Vegue Winkelstein Moris), 100 Larkin: a grey granite
-   * block that answers the old library across Fulton Street: a grid of tall windows between plain piers, a
-   * rusticated base, a thin cornice; the south and east sides are the modern ones. (Commons: "San Francisco
-   * Public Library - Main Branch, exterior, from McAllister and Larkin Street.jpg".)
-   */
-  mainLibrary: spec({
-    height: 38,
-    base: { height: 8, face: { kind: 'punched', material: 'granite', wall: [0.72, 0.73, 0.73], glass: [0.26, 0.29, 0.31], pitch: 4.4, solid: 0.55, floor: 4 } },
-    tiers: [
-      { to: 30, face: { kind: 'punched', material: 'granite', wall: [0.75, 0.76, 0.76], glass: [0.3, 0.33, 0.35], pitch: 4.4, solid: 0.48, floor: 5.5 }, cornice: { depth: 0.4, height: 0.6 } },
-      { to: 1, face: { kind: 'punched', material: 'granite', wall: [0.75, 0.76, 0.76], glass: [0.3, 0.33, 0.35], pitch: 4.4, solid: 0.6, floor: 4 }, cornice: { depth: 0.9, height: 0.8 } },
-    ],
-    roof: [0.55, 0.56, 0.56],
-    crown: { kind: 'parapet', height: 1, colour: [0.72, 0.73, 0.73] },
-  }),
-
-  /**
-   * 50 United Nations Plaza (1936, Arthur Brown Jr.), the Federal Office Building on UN Plaza: six storeys of grey
-   * granite, a rusticated base, a giant order of engaged columns down the long plaza front, rounded corner
-   * pavilions, an attic storey under a balustrade and a low grey roof. (Commons: "2017 50 United Nations Plaza
-   * Federal Office Building.jpg".)
-   */
-  unPlazaFederal: specPlus({
-    height: 29,
-    base: { height: 8.5, face: { kind: 'punched', material: 'granite', wall: [0.72, 0.72, 0.7], glass: [0.26, 0.28, 0.3], pitch: 4.2, solid: 0.62, floor: 4.25 }, canopy: { depth: 0.3, colour: [0.7, 0.7, 0.68] } },
-    tiers: [
-      { to: 22, face: { kind: 'punched', material: 'granite', wall: [0.76, 0.76, 0.74], glass: [0.28, 0.3, 0.32], pitch: 4.2, solid: 0.55, floor: 4.5 }, cornice: { depth: 1.1, height: 1.2 } },
-      { to: 1, face: { kind: 'punched', material: 'granite', wall: [0.76, 0.76, 0.74], glass: [0.28, 0.3, 0.32], pitch: 4.2, solid: 0.6, floor: 4 }, cornice: { depth: 0.4, height: 0.5 } },
-    ],
-    roof: [0.5, 0.52, 0.53],
-    crown: { kind: 'parapet', height: 1.1, colour: [0.74, 0.74, 0.72] },
-  }, (out, ring) => {
-    const granite: Rgb = [0.78, 0.78, 0.76]
-    for (const len of [49.7, 49]) {
-      const e = edgeNear(ring, len)
-      colonnade(out, e, 2, e.L - 2, 8.5, 21, 0.6, 0.55, 4.2, granite, T.granite)
-    }
-  }),
-
-  /**
-   * The War Memorial Opera House (1932, Arthur Brown Jr.) and, beside it, the Veterans Building (the same
-   * architects and the same front, holding the Herbst Theatre and once the Museum of Modern Art): grey granite
-   * on Van Ness, a rusticated ground storey of tall arches, a giant Doric colonnade in front of a loggia, an
-   * attic of little windows under a heavy cornice, and a grey metal mansard. The Opera's stage house stands up
-   * behind. (Commons: "War Memorial Opera House (San Francisco).JPG".)
-   */
-  warMemorialOperaHouse: (out: MeshBuilder, fit: Fit): void => warMemorial(out, fit, 48.7, true),
-  warMemorialVeterans: (out: MeshBuilder, fit: Fit): void => warMemorial(out, fit, 45.5, false),
-
-  /**
-   * The Bill Graham Civic Auditorium (1915, John Galen Howard, Frederick Meyer and John Reid Jr.), 99 Grove on
-   * Civic Center Plaza: grey granite, a long arcade of tall round-arched windows over a rusticated base, a heavy
-   * bracketed cornice, and the shallow lead dome of the hall behind it. (Commons: "Bill Graham Civic Auditorium
-   * from Larkin and Grove St, SF.jpg".)
-   */
-  billGrahamAuditorium: (out: MeshBuilder, fit: Fit): void => {
-    const ring = simplifyRing(towerRing(fit), 1.6)
-    const H = fit.height > 25 && fit.height < 50 ? fit.height : 37
-    const granite: Rgb = [0.78, 0.77, 0.74]
-    raise(out, ring, H, {
-      height: H,
-      base: { height: 9, face: { kind: 'punched', material: 'granite', wall: [0.74, 0.73, 0.71], glass: [0.24, 0.26, 0.28], pitch: 6.6, solid: 0.68, floor: 4.5 } },
-      tiers: [
-        { to: 27, face: { kind: 'punched', material: 'granite', wall: granite, glass: [0.28, 0.3, 0.32], pitch: 6.6, solid: 0.5, floor: 15, arched: true }, cornice: { depth: 0.5, height: 0.6 } },
-        { to: 1, face: { kind: 'punched', material: 'granite', wall: granite, glass: [0.26, 0.28, 0.3], pitch: 6.6, solid: 0.72, floor: 6 }, cornice: { depth: 1.5, height: 1.5 } },
-      ],
-      roof: [0.55, 0.55, 0.54],
-      crown: { kind: 'parapet', height: 1.2, colour: granite },
-    })
-    // the dome over the hall, shallow and lead grey
-    let cx = 0
-    let cz = 0
-    for (const q of ring) { cx += q.x; cz += q.z }
-    cx /= ring.length
-    cz /= ring.length
-    const r = Math.min(...ring.map((q) => Math.hypot(q.x - cx, q.z - cz))) * 0.8
-    dome(out, cx, cz, H, r, 6, [0.6, 0.62, 0.62], 16, T.metal)
-  },
-
-  /**
-   * Louise M. Davies Symphony Hall (1980, SOM), Van Ness at Grove: grey precast concrete, the hall's box behind a
-   * sweep of curved glass wall round the corner, a long tube of a canopy flying across it, and the low pitched
-   * roof over the auditorium. (Commons: "San Francisco Davies Symphony Hall 1.jpg".)
-   */
-  daviesSymphonyHall: (out: MeshBuilder, fit: Fit): void => {
-    const ring = simplifyRing(towerRing(fit), 1.6)
-    const H = fit.height > 22 && fit.height < 45 ? fit.height : 30
-    const precast: Rgb = [0.74, 0.74, 0.72]
-    raise(out, ring, H, {
-      height: H,
-      tiers: [
-        { to: 9, face: { kind: 'bands', material: 'concrete', wall: [0.7, 0.7, 0.68], glass: [0.26, 0.28, 0.3], solid: 0.86, floor: 4.5 } },
-        { to: 1, face: { kind: 'bands', material: 'concrete', wall: precast, glass: [0.28, 0.3, 0.32], solid: 0.88, floor: 5.5 }, cornice: { depth: 0.5, height: 0.7 } },
-      ],
-      roof: [0.55, 0.55, 0.54],
-      crown: { kind: 'parapet', height: 1, colour: [0.72, 0.72, 0.7] },
-    })
-    // the pitched roof over the auditorium, a box in the middle of the block
-    const hall = insetRing(ring, 16)
-    faceBand(out, hall, H, H + 4, { kind: 'blank', material: 'concrete', wall: [0.72, 0.72, 0.7] })
-    mansardOn(out, hall, H + 4, 4.5, 7, [0.5, 0.51, 0.52], T.metal)
-    // the curved front: where the outline turns through a corner in short steps, it is the glass wall, and the
-    // canopy tube runs along it
-    const curved: Edge[] = []
-    for (let i = 0; i < ring.length; i++) {
-      const e = edgeOf(ring, i)
-      const prev = edgeOf(ring, (i + ring.length - 1) % ring.length)
-      const turn = Math.acos(Math.max(-1, Math.min(1, e.tx * prev.tx + e.tz * prev.tz)))
-      if (turn < 0.15 || turn > 1.1 || e.L > 30) continue
-      curved.push(e)
-    }
-    // on a plain fitted box there is no curve to find: the glass wall is the whole front
-    if (curved.length === 0) curved.push(frontOfBox(ring))
-    for (const e of curved) {
-      faceOn(out, e, 0, e.L, 8, H - 3, { kind: 'curtain', material: 'metal', wall: [0.72, 0.73, 0.74], glass: [0.32, 0.44, 0.48], pitch: 2.4, floor: 4.4 }, 0.22)
-      slab(out, e, 0, e.L, 0, 1.3, 17.4, 18.6, [0.8, 0.8, 0.78], T.concrete)
-    }
-  },
-
-  /**
    * 1145 Market Street (1936; the Federal Reserve's old annex is next door): a white terracotta Art Deco front of
    * four wide bays of steel window between fluted piers, dark green spandrels and little balconies, over a black
    * and white banded shopfront; a glazed penthouse of the 1990s steps back on top in three stages. (Commons:
@@ -1062,86 +690,6 @@ export const MARKET_WEST: Record<string, (out: MeshBuilder, fit: Fit) => void> =
     roof: [0.5, 0.5, 0.5],
     crown: { kind: 'parapet', height: 1.2, colour: [0.7, 0.72, 0.72] },
   }),
-
-  /**
-   * The Odd Fellows Temple (1909, Meyer & O'Brien), 26 Seventh at Market: five storeys of tan brick and
-   * terracotta, a run of tall round-arched windows across the top floor, green-painted metal balconies and fire
-   * escapes, a heavy bracketed cornice, and the blue ODD FELLOWS blade on the corner. (Commons: "2017 Odd Fellows
-   * Temple 26 7th Street.jpg".)
-   */
-  oddFellowsTemple: specPlus({
-    height: 27,
-    base: { height: 5.5, face: { kind: 'curtain', material: 'metal', wall: [0.13, 0.22, 0.2], glass: [0.24, 0.28, 0.3], pitch: 3, floor: 5.5 } },
-    tiers: [
-      { to: 19, face: { kind: 'punched', material: 'brick', wall: [0.68, 0.6, 0.48], glass: [0.26, 0.28, 0.3], pitch: 3.2, solid: 0.42, floor: 4.5 }, cornice: { depth: 0.35, height: 0.5, colour: [0.74, 0.68, 0.56] } },
-      { to: 1, face: { kind: 'punched', material: 'brick', wall: [0.68, 0.6, 0.48], glass: [0.24, 0.26, 0.28], pitch: 3.2, solid: 0.38, floor: 6.5, arched: true }, cornice: { depth: 1.2, height: 1.2, colour: [0.2, 0.3, 0.27] } },
-    ],
-    roof: [0.4, 0.4, 0.38],
-  }, (out, ring) => {
-    const e = edgeNear(ring, 42.4)
-    blade(out, e, 2.5, 7, 22, 1.3, 0.35, [0.1, 0.2, 0.42], [0.9, 0.92, 0.95])
-  }),
-
-  /**
-   * The San Francisco Proper Hotel (1904, Albert Pissis), 1100 Market where McAllister and Jones cut it to a
-   * triangle: twelve storeys of dark brick with cream terracotta quoins and trim, arched windows in the top
-   * storey under a bracketed cornice, and the hotel's banner down the prow. (Seen in Commons: "Hibernia Bank
-   * Building San Francisco 2019.jpg".)
-   */
-  properHotel: specPlus({
-    height: 47,
-    base: { height: 7, face: { kind: 'curtain', material: 'granite', wall: [0.25, 0.24, 0.24], glass: [0.24, 0.27, 0.29], pitch: 3.2, floor: 7 } },
-    tiers: [
-      { to: 40, face: { kind: 'punched', material: 'brick', wall: [0.52, 0.42, 0.35], glass: [0.26, 0.28, 0.3], pitch: 3.1, solid: 0.45, floor: 3.4 } },
-      { to: 1, face: { kind: 'punched', material: 'brick', wall: [0.54, 0.44, 0.37], glass: [0.26, 0.28, 0.3], pitch: 3.1, solid: 0.42, floor: 4.5, arched: true }, cornice: { depth: 1.2, height: 1.2, colour: [0.78, 0.74, 0.64] } },
-    ],
-    roof: [0.42, 0.4, 0.38],
-  }, (out, ring) => {
-    const e = edgeNear(ring, 44.7)
-    blade(out, e, 3, 9, 26, 1.1, 0.3, [0.12, 0.12, 0.13], [0.92, 0.9, 0.86])
-  }),
-
-  /**
-   * St Boniface (1900, rebuilt 1908), 133 Golden Gate Avenue: the German parish church of the Tenderloin, a
-   * Romanesque basilica of cream and salmon stucco — round-arched windows in the nave under a corbel table, a
-   * gabled front between two towers with pyramid roofs and a cross over the pointed porch. (Commons: "San
-   * Francisco - Saint Boniface church - 2.jpg".)
-   */
-  saintBoniface: (out: MeshBuilder, fit: Fit): void => {
-    const ring = simplifyRing(towerRing(fit), 1.2)
-    const cream: Rgb = [0.89, 0.85, 0.7]
-    const salmon: Rgb = [0.84, 0.62, 0.55]
-    raise(out, ring, 22, {
-      height: 22,
-      tiers: [
-        { to: 6, face: { kind: 'blank', material: 'stucco', wall: salmon } },
-        { to: 1, face: { kind: 'punched', material: 'stucco', wall: cream, glass: [0.3, 0.33, 0.28], pitch: 4.6, solid: 0.55, floor: 16, arched: true }, cornice: { depth: 0.4, height: 0.6, colour: [0.82, 0.78, 0.64] } },
-      ],
-      roof: [0.5, 0.42, 0.36],
-    })
-    // the front: a gable between two towers, on the street end of the nave
-    let front = edgeOf(ring, 0)
-    for (let i = 1; i < ring.length; i++) {
-      const e = edgeOf(ring, i)
-      if (e.L > 8 && (e.a.z + e.b.z) / 2 < (front.a.z + front.b.z) / 2) front = e
-    }
-    mansardOn(out, ring, 22, 5, 6, [0.52, 0.43, 0.37], T.tile)
-    for (const u of [2.5, front.L - 2.5]) {
-      const c = at(front, u, -3)
-      prism(out, c.x, c.z, 0, 30, 3.4, 4, cream, T.stucco)
-      prism(out, c.x, c.z, 30, 31, 3.9, 4, salmon, T.stucco)
-      prism(out, c.x, c.z, 31, 39, 3.2, 4, [0.55, 0.45, 0.4], T.tile, 0.05)
-    }
-    // the gable and its pointed porch
-    const g = at(front, front.L / 2, 0)
-    slab(out, front, 4, front.L - 4, 0, 0.6, 0, 24, cream, T.stucco)
-    mansardOn(out, [at(front, 4, 0.6), at(front, front.L - 4, 0.6), at(front, front.L - 4, -0.6), at(front, 4, -0.6)], 24, 6, 3, salmon, T.stucco)
-    // the porch, its doors and the rose window over them
-    slab(out, front, front.L / 2 - 3.4, front.L / 2 + 3.4, 0.6, 1.5, 0, 9.5, salmon, T.stucco)
-    panel(out, front, front.L / 2 - 2.2, front.L / 2 + 2.2, 1.55, 0.5, 7.5, [0.22, 0.17, 0.14], T.glass)
-    panel(out, front, front.L / 2 - 2.6, front.L / 2 + 2.6, 0.65, 12, 18, [0.26, 0.3, 0.26], T.glass)
-    void g
-  },
 
   /**
    * CCSF Civic Center, 1170 Market (1960s college block): the owner's own words are "ugly, but unique with a
@@ -1241,27 +789,3 @@ function roundOneCorner(ring: { x: number; z: number }[], i: number, r: number, 
   return out
 }
 
-/** The two War Memorial buildings: the same front, one with the Opera's stage house behind it. */
-function warMemorial(out: MeshBuilder, fit: Fit, frontLen: number, stage: boolean): void {
-  const ring = simplifyRing(towerRing(fit), 1.5)
-  const granite: Rgb = [0.79, 0.78, 0.76]
-  const H = 27
-  raise(out, ring, H, {
-    height: H,
-    base: { height: 10, face: { kind: 'punched', material: 'granite', wall: [0.75, 0.74, 0.72], glass: [0.24, 0.26, 0.28], pitch: 7.6, solid: 0.42, floor: 10, arched: true }, canopy: { depth: 0.4, colour: [0.72, 0.71, 0.69] } },
-    tiers: [
-      { to: 22, face: { kind: 'punched', material: 'granite', wall: granite, glass: [0.28, 0.3, 0.32], pitch: 4.6, solid: 0.62, floor: 12 }, cornice: { depth: 0.4, height: 0.5 } },
-      { to: 1, face: { kind: 'punched', material: 'granite', wall: granite, glass: [0.26, 0.28, 0.3], pitch: 4.6, solid: 0.74, floor: 5 }, cornice: { depth: 1.5, height: 1.4 } },
-    ],
-    roof: [0.5, 0.52, 0.53],
-    crown: { kind: 'mansard', height: 5, inset: 7, colour: [0.52, 0.54, 0.55] },
-  })
-  const front = edgeNear(ring, frontLen)
-  colonnade(out, front, 4, front.L - 4, 10, 22, 1.8, 0.8, 4.6, granite, T.granite, [0.3, 0.31, 0.32])
-  if (stage) {
-    // the stage house: the back half of the block, up to the OSM height
-    // (5 cm inside the hall's own walls, which it shares: they z-fought the whole height of the back)
-    const back = nudge(behind(ring, front, 34), -0.05)
-    if (back.length >= 3) raise(out, back, Math.max(38, fit.height), { height: 40, tiers: [{ to: 1, face: { kind: 'blank', material: 'concrete', wall: [0.72, 0.72, 0.7] } }], roof: [0.5, 0.5, 0.5], crown: { kind: 'parapet', height: 1, colour: [0.7, 0.7, 0.68] } })
-  }
-}
