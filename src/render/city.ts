@@ -1570,6 +1570,8 @@ export class City {
      * all ten surfaces would be 13 MB spent on cobblestones and boards that most cities never show.
      */
     groundLayerMaterial(scene, this.roadAssets, 'asphalt', 'carriage')
+    // …and the pavements' page, which is the grey the owner sees under a road that has not got its own yet
+    groundLayerMaterial(scene, this.roadAssets, 'concrete', 'corridor')
     this.terrain = new Terrain(pkg.terrain, TILE)
     // the streets' own level inside their corridors (BUGS.md #38); the occluder keeps the raw ground (its own Terrain)
     this.terrain.grade = (x, z) => (this.off.has('grade') ? null : this.gradeAt(x, z))

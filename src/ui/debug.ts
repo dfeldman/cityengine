@@ -161,7 +161,7 @@ export class DebugPanel {
       return b
     }
     this.freezeBtn = button('⏸ pause (P)', 'Stop the rider and look around', onFreeze)
-    button('⧉ copy location (⇧C)', 'Copy lat, lon of what the camera is looking at', onCopy)
+    button('⧉ copy location (C)', 'Copy lat, lon of what the camera is looking at', onCopy)
     if (onGo) button('⌖ go to (G)', 'Ride from a "lat, lon" — or just paste one anywhere', onGo)
     if (onPaths) button('⌇ paths (J)', 'Show the paths the rider can take and the junctions where there is a choice', onPaths)
     // keyboard commands for the advanced (owner, 2026-10-01): F C G J; the buttons only with `?buttons=1`
@@ -199,11 +199,12 @@ export class DebugPanel {
       if (welcomeOpen()) return
       /*
        * Space pauses, which is where everybody reaches first (owner, 2026-10-21). P and F still do, since
-       * they always have. Space had been coast; that is C now (src/controls.ts), and copy-location, which
-       * is a developer tool rather than a riding control, gave C up for shift+C.
+       * they always have; none of the three is in the help list, which names space alone. Space had been
+       * coast, and coast is Z now (src/controls.ts) — C stays what it was, because copying the coordinates
+       * under the camera is how the owner goes and looks at a reported spot.
        */
       if (e.code === 'KeyP' || e.code === 'KeyF' || e.code === 'Space') { onFreeze(); e.preventDefault() }
-      if (e.code === 'KeyC' && e.shiftKey) onCopy()
+      if (e.code === 'KeyC') onCopy()
       if (e.code === 'KeyG' && onGo) onGo()
       if (e.code === 'KeyJ' && onPaths) onPaths()
     })

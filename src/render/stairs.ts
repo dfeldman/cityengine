@@ -80,6 +80,26 @@ export function stairsLayer(scene: Scene, terrain: Terrain, named: Record<string
         kept.push(f)
         return true
       })
+        /*
+         * NOTHING THAT BARELY CLIMBS. Owner, 2026-10-21, on a stepped platform with railings standing in
+         * the pavement outside a bakery: *"we could also remove very short flights of stairs, or stairs on
+         * flat ground."*
+         *
+         * Both of those are the same measurement. A staircase exists to gain height, so a mapped `steps`
+         * way that gains almost none is not a staircase: it is a shop's doorstep, or a kerb ramp, or a
+         * mapper marking where a surface changes. Drawn as a flight — treads, risers, a landing and a
+         * handrail down each side — it is a large white object sitting across a pavement for no reason.
+         *
+         * The test is the RISE, not the run: a short flight that genuinely climbs is steep, and a steep
+         * flight is worth drawing. Eighty centimetres is about four steps, under which there is nothing
+         * for a handrail to be for. A flight with no heights of its own is measured off the terrain, which
+         * on flat ground gives zero and drops it, as intended.
+         */
+        .filter((e) => {
+          const p = unpackPoints(e.points)
+          const ys = p.map((q, i) => e.heights?.[i] ?? terrain.heightAt(q.x, q.z))
+          return Math.max(...ys) - Math.min(...ys) >= 0.8
+        })
       if (flights.length === 0) return []
       const out = new MeshBuilder()
       const inRect = (x: number, z: number): boolean => x >= rect.x0 && x < rect.x1 && z >= rect.z0 && z < rect.z1

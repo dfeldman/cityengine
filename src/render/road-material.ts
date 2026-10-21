@@ -267,8 +267,16 @@ export function roadMaterial(scene: Scene, surface: string, assetBase: string,
   const avg = PAGE_AVERAGE[surface]
   if (!avg) mat.setTexture('surfaceTex', tex)
   else {
-    const flat = RawTexture.CreateRGBTexture(
-      new Uint8Array(avg.map((c) => Math.round(c * 255))), 1, 1, scene, false, false, Texture.NEAREST_SAMPLINGMODE)
+    /*
+     * RGBA, not RGB. A one-pixel RGB texture is three bytes, and WebGL's default `UNPACK_ALIGNMENT` is
+     * four — iOS reads the row short and the sampler comes back near-white, which is the very thing this
+     * is here to avoid. Owner, 2026-10-21: *"still have the slow loading asphalt texture on ios. chrome is
+     * fine now"* and *"the light gray color underneath"*, with Chromium measured at a 7% change in road
+     * tone when the page lands against 40% before any of this. Four bytes a pixel costs nothing and is
+     * what every driver agrees about.
+     */
+    const flat = RawTexture.CreateRGBATexture(
+      new Uint8Array([...avg.map((c) => Math.round(c * 255)), 255]), 1, 1, scene, false, false, Texture.NEAREST_SAMPLINGMODE)
     mat.setTexture('surfaceTex', flat)
     const swap = scene.onBeforeRenderObservable.add(() => {
       if (!tex.isReady()) return

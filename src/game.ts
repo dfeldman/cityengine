@@ -1877,6 +1877,23 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       else { mapSearch.value = ''; mapSearch.blur() }
     }
   }
+  /*
+   * A click or tap beside the map closes it (owner, 2026-10-21). The large map is a centred square at 86%
+   * of the shorter edge, so there is always a margin around it, and reaching for that margin is what
+   * anybody does to dismiss a thing that has opened over what they were doing.
+   *
+   * On `pointerdown`, so it closes under the finger rather than a frame later, and in the CAPTURE phase so
+   * it still works when something above the page would otherwise swallow it. The map's own canvas is left
+   * alone — it has its own drag, tap and pinch — and so is any control around it. The landmark search is
+   * an `input` with no class of its own, which is why the list names elements rather than a map-specific
+   * class: buttons and fields have their own jobs and must not double as a way out.
+   */
+  addEventListener('pointerdown', (e) => {
+    if (!minimap.isLarge) return
+    const el = e.target as HTMLElement | null
+    if (el?.id === 'minimap' || el?.closest('#minimap, .sr-menu, .sr-menu-button, input, textarea, button')) return
+    toggleMap()
+  }, true)
   addEventListener('keydown', (e) => {
     // Escape leaves the big map from anywhere — the landmark search has the focus while it is open, and M typed there is
     // a letter (owner, 2026-10-03: "hard to get out of map mode … you should just be able to press escape")
@@ -2345,7 +2362,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     document.documentElement.classList.toggle('sr-minimap', s.minimap)
   })
   /** what a key does, for a menu item that does the same: the key's own handler stays the one place it is done */
-  /** `shift` for the keys that now need it — copy-location gave plain C up to coast (src/controls.ts). */
+  /** `shift` for a binding that wants it; nothing does at the moment, and it costs nothing to keep. */
   const press = (code: string, shift = false): void => {
     const key = code.replace(/^Key/, '').toLowerCase()
     const init = { code, key: shift ? key.toUpperCase() : key, shiftKey: shift, bubbles: true }
@@ -2382,10 +2399,15 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * Everything you can press, in one place (owner, 2026-10-21: "a help screen available on the menu or by
    * pressing ? that just shows available keys OR on mobile a mobile specific help").
    *
-   * Two lists, because a phone and a keyboard have nothing in common here: there is no point telling
-   * somebody with no keyboard that coast is C, and no point telling somebody with no touch screen to
-   * double-tap. `touchScreen()` is read when the menu is opened, not once at startup, so a tablet with a
-   * keyboard plugged in later still gets the right one.
+   * Two lists, because a phone and a keyboard have nothing in common here. `touchScreen()` is read when
+   * the menu is opened, not once at startup, so a tablet with a keyboard plugged in later still gets the
+   * right one.
+   *
+   * Only what somebody would actually look up. Coast (C) and the second and third pause keys (P, F) are
+   * left out although they work — owner, 2026-10-21: *"c to coast on desktop help isnt necsesary to
+   * document"*, *"p, f, c... very rarely used"*. Boarding is off both lists: the ride offers it on screen
+   * at the moment it is possible, which is better than a key in a list somebody has to go and find — and
+   * on a touch screen it is a button, not a tap on the stop, so that line had been wrong as well.
    */
   const helpItems = (): MenuItem[] => touchScreen() ? [
     { label: 'Steer', info: 'touch left or right' },
@@ -2394,16 +2416,13 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     { label: 'Pause', info: 'the ⏸ button' },
     { label: 'Look around', info: 'drag to turn, pinch to zoom' },
     { label: 'Map', info: 'Menu → Map, pinch to zoom' },
-    { label: 'Get on / off', info: 'tap the stop' },
   ] : [
     { label: 'Steer', info: '← →  or  A D' },
     { label: 'Effort', info: '↑ ↓  (hold shift for bigger steps)' },
-    { label: 'Coast', info: 'C' },
-    { label: 'Pause, look around', info: 'space  (or P, F)' },
+    { label: 'Pause, look around', info: 'space' },
     { label: 'While paused', info: 'W A S D to move, Q E down and up, drag to orbit, wheel to zoom' },
     { label: 'Turn around', info: 'U' },
     { label: 'Straight on', info: 'S' },
-    { label: 'Get on / off', info: 'B' },
     { label: 'Map', info: 'M' },
     { label: 'Menu', info: 'Esc' },
     { label: 'This list', info: '?' },
@@ -2460,7 +2479,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       { label: 'Buildings, trees, cars', info: 'made here, CC0' },
     ] },
     ...(devTools ? [{ label: 'Developer', sub: (): MenuItem[] => [
-      { label: 'Copy location', hint: keyHint('⇧C'), run: () => press('KeyC', true) },
+      { label: 'Copy location', hint: keyHint('C'), run: () => press('KeyC') },
       { label: 'Go to…', hint: keyHint('G'), run: () => press('KeyG') },
       { label: 'Paths', hint: keyHint('J'), run: () => press('KeyJ') },
       { label: 'Fog', hint: keyHint('K'), run: () => press('KeyK') },

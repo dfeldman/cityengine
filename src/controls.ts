@@ -87,12 +87,15 @@ export class LocalControls implements Controls {
   private key(e: KeyboardEvent, down: boolean): void {
     const bike = this.deviceType() === 'bike'
     /*
-     * COAST IS C, NOT SPACE. Owner, 2026-10-21: *"Space should pause (standard) we now use F or P (which
-     * we can keep)"* — and Space was coast, which is the sort of thing you only find by reading the key
-     * map. Pause is the more standard claim on the bigger key, so coast moved to the letter that names it.
-     * (Copy-location, a developer tool, moved from C to shift+C to make room: ui/debug.ts.)
+     * COAST IS Z. Owner, 2026-10-21: *"Space should pause (standard)"*, and space had been coast.
+     *
+     * It went to C for a few minutes, which was wrong: C copies the coordinates under the camera, and the
+     * owner uses that constantly to go and look at a spot — *"C to copy coordinates is still very
+     * necessary so I can check appearance"*. So coast has Z, which nothing else wants. An odd key for it,
+     * but coast is rarely reached for and it is deliberately not in the help list; the keys that are worth
+     * learning are, and a list nobody can finish reading teaches nothing.
      */
-    if (e.code === 'KeyC' && !e.shiftKey) { this.coasting = down; e.preventDefault(); return }
+    if (e.code === 'KeyZ') { this.coasting = down; e.preventDefault(); return }
     if (e.code === 'ArrowLeft' || e.code === 'ArrowRight' || e.code === 'KeyA' || e.code === 'KeyD') {
       if (down) this.down.add(e.code); else this.down.delete(e.code)
     }
