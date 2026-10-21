@@ -605,8 +605,19 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       // — on the phone tiers only, whose full ring is the rider's own tile: on a desktop the full ring already reaches
       // 600 m, and ribbons over the whole mid ring were a hundred-odd more draw calls and a pale wash over the distance
       // in the fog — owner, 2026-10-03: "the game suddenly got much slower … everything look washed out")
-      const slim = VIEW > 1 ? [] : ready.edges.filter((e) => !e.bridge && !e.tunnel && (e.layer ?? 0) <= 0)
-        .map((e) => ({ id: e.id, a: e.a, b: e.b, points: e.points, heights: e.heights, width: e.width, walk: e.walk, foot: e.foot, kind: e.kind, layer: e.layer }) as typeof e)
+      /*
+       * RAISED WAYS ARE IN THE SLIM COPY NOW. Owner, 2026-10-20, on an iPhone: "I now see cars flying in
+       * the air near 514 Townsend. I think that's the freeway!" This filter was where the freeway went: it
+       * dropped every bridge and every way on a layer above the ground, so out in the mid ring the
+       * elevated road did not exist, while the traffic drove along it at its mapped heights 17 m up over a
+       * goods yard. A tunnel is still dropped — a bore is under the ground, and its surface drawn would
+       * lay asphalt across whatever sits on top of it.
+       *
+       * `bridge` and `authored` have to be carried for `midRoads` to apply the same exclusions the
+       * full-detail pass does; without them every way looks like a plain surface way to it.
+       */
+      const slim = VIEW > 1 ? [] : ready.edges.filter((e) => !e.tunnel)
+        .map((e) => ({ id: e.id, a: e.a, b: e.b, points: e.points, heights: e.heights, width: e.width, walk: e.walk, foot: e.foot, kind: e.kind, layer: e.layer, bridge: e.bridge, authored: e.authored }) as typeof e)
       // (beside `edges`, not in them: a full tile at the ring's edge reads its neighbours' edges, and these are partial)
       if (tileLevel.get(k) === 'mid') prepared.tiles.set(k, { ...ready, edges: [], midEdges: slim, areas: [], trees: [], pois: [], furniture: [], landmarks: [], rails: [], plantings: [] } as typeof ready)
       spent += performance.now() - t1
