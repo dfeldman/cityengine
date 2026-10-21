@@ -4,7 +4,7 @@ CityEngine is a system for rendering maximally realistic cities, including terra
 
 It's a lot like Google Earth. Unlike Google Earth, it is built only with CC0 or CC-BY-NA base data, so it is copyright-clean. 
 
-There are basically four types of rendering. Generic rendering is for the vast majority of buildings in a city and just guesses a style based on building properties and in some cases custom colors. Bigger or more interesting buildings are called "custom." Custom buildings can use either a building kit, a simple language for building design, OR be entirely hand-coded from images for more complex or important buildings. Finally, objects that are difficult to model like trees, rocks, or statues are rendered from GLB mesh files from assetkit. (No buildings are GLB files.)
+There are basically four types of rendering. Generic rendering is for the vast majority of buildings in a city and just guesses a style based on building properties and in some cases custom colors. Bigger or more interesting buildings are called "custom." Custom buildings can use either a building kit, a simple language for building design, OR be entirely hand-coded from images for more complex or important buildings. Finally, objects that are difficult to model like trees, rocks, or statues are rendered from GLB mesh files from AssetKit, which are generated in advance. AssetKit also includes dedicated rendering systems for people (including people on bicycles) and cars. (No buildings come from AssetKit, meaning none are rendered in advance as GLB files. Every building is rendered procedurally within CityEngine.)
 
 > [!WARNING]
 > This is entirely vibecoded. Use at your own risk.
