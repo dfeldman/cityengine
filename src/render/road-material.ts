@@ -21,6 +21,7 @@
 import { Constants } from '@babylonjs/core/Engines/constants'
 import { Effect } from '@babylonjs/core/Materials/effect'
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial'
+import { RawTexture } from '@babylonjs/core/Materials/Textures/rawTexture'
 import { Texture } from '@babylonjs/core/Materials/Textures/texture'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
 import type { Scene } from '@babylonjs/core/scene'
@@ -209,6 +210,23 @@ let registered = false
 /** The surfaces that carry painted markings; the rest are setts, gravel, dirt or a footway. */
 const MARKED = new Set(['asphalt', 'concrete'])
 
+/**
+ * The mean colour of each page in public/roads, 0..1, measured from the files themselves rather than
+ * guessed. Used as the one-pixel stand-in while a page loads — see `roadMaterial`.
+ */
+const PAGE_AVERAGE: Record<string, [number, number, number]> = {
+  asphalt: [0.260, 0.259, 0.263],
+  brick: [0.543, 0.291, 0.237],
+  cobblestone: [0.400, 0.390, 0.377],
+  concrete: [0.572, 0.564, 0.549],
+  dirt: [0.412, 0.354, 0.291],
+  grass: [0.293, 0.379, 0.206],
+  gravel: [0.549, 0.538, 0.520],
+  sand: [0.756, 0.677, 0.540],
+  sheet: [0.441, 0.409, 0.374],
+  wood: [0.458, 0.358, 0.249],
+}
+
 export function roadMaterial(scene: Scene, surface: string, assetBase: string,
                              variant = ''): ShaderMaterial {
   const name = `road:${surface}${variant ? `:${variant}` : ''}`
@@ -227,10 +245,38 @@ export function roadMaterial(scene: Scene, surface: string, assetBase: string,
       'fogColour', 'fogDensity', 'pageMetres', 'marked', 'night', 'wetness', 'zenith', 'horizon', 'eye'],
     samplers: ['surfaceTex'],
   })
+  /*
+   * A SINGLE PIXEL OF THE PAGE'S OWN AVERAGE COLOUR, until the page itself arrives.
+   *
+   * Owner, 2026-10-21: *"the road texture only loads when the user is on top of the road, leading to a
+   * disconcerting shift... If we lower the asphalt color to be about the same as the texture, the texture
+   * loading will be much less noticeable."* An unloaded sampler reads as white, so the road was laid pale
+   * and went dark the moment the page landed — the whole street changing tone under the rider. Starting it
+   * at the average of the page it is waiting for means only the GRAIN appears when the texture arrives,
+   * which nobody notices, instead of the brightness changing, which everybody does.
+   *
+   * The averages are the real ones, measured off the files in public/roads (a 64x64 box resample of each).
+   * Keep them in step if a page is redrawn; being a little wrong is still far better than white.
+   *
+   * Swapped on a render observer rather than `onLoadObservable`, because a texture whose image is already
+   * in the browser's cache never fires that observable and the road would keep its flat pixel for ever.
+   */
   const tex = new Texture(`${assetBase}${surface}.png`, scene, false, false)
   tex.wrapU = Texture.WRAP_ADDRESSMODE
   tex.wrapV = Texture.WRAP_ADDRESSMODE
-  mat.setTexture('surfaceTex', tex)
+  const avg = PAGE_AVERAGE[surface]
+  if (!avg) mat.setTexture('surfaceTex', tex)
+  else {
+    const flat = RawTexture.CreateRGBTexture(
+      new Uint8Array(avg.map((c) => Math.round(c * 255))), 1, 1, scene, false, false, Texture.NEAREST_SAMPLINGMODE)
+    mat.setTexture('surfaceTex', flat)
+    const swap = scene.onBeforeRenderObservable.add(() => {
+      if (!tex.isReady()) return
+      mat.setTexture('surfaceTex', tex)
+      scene.onBeforeRenderObservable.remove(swap)
+      flat.dispose()
+    })
+  }
   mat.setFloat('pageMetres', ROAD_PAGE_METRES)
   mat.setFloat('marked', MARKED.has(surface) ? 1 : 0)
   applyRoadLook(mat, DAYLIGHT)

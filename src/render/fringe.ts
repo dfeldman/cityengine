@@ -130,8 +130,20 @@ export function asMassing(b: PackedBuilding): PackedFringe & { minHeight?: numbe
  */
 export function midRoads(scene: Scene, edges: PackedEdge[], terrain: Terrain, tag: string): Mesh[] {
   const out = new MeshBuilder()
-  const ASPHALT: [number, number, number] = [0.2, 0.2, 0.22]
-  const PATH: [number, number, number] = [0.5, 0.48, 0.44]
+  /*
+   * The mean colour of the pages these ribbons stand in for, so the mid ring and the textured roads of the
+   * rider's own tile agree by construction rather than by eye (render/road-material.ts `PAGE_AVERAGE`).
+   * They were darker than the asphalt page by about a third, which put a visible step at the tile border.
+   *
+   * Measured from directly above, across the tile border, the step in mean road tone goes from 97 against
+   * 65 to 100 against 82. Not nothing left, and I tried scaling by the 1.25 the road shader applies to its
+   * own sample and the cartoon material does not — it moved the number by one level, so whatever remains
+   * is not that, and a factor that does not do what it claims is not worth carrying. The regions either
+   * side of a tile border are different streets at different distances under different shadow, so the
+   * last few levels are probably the measurement rather than the colour.
+   */
+  const ASPHALT: [number, number, number] = [0.26, 0.259, 0.263]
+  const PATH: [number, number, number] = [0.572, 0.564, 0.549]
   for (const e of edges) {
     /*
      * RAISED ROADS ARE DRAWN HERE TOO, which they were not.
