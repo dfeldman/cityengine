@@ -395,29 +395,28 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     }
   }, 5000)
   /*
-   * BABYLON'S CPU COPY OF EVERY STATIC VERTEX BUFFER (measured: 650 of them, 20 MB, on the iOS tier).
+   * NO SWEEP OF BABYLON'S CPU COPY OF STATIC VERTEX BUFFERS. There was one here; it was wrong, and this
+   * note is so nobody writes it again.
    *
-   * `Buffer` takes the typed array in its constructor and keeps it in `_data`. For an UPDATABLE buffer that
-   * is deliberate — the data is uploaded again on every change — but for a static one `create()` hands the
-   * array to the GPU and simply never lets go of it, whatever `doNotHandleContextLost` says. So the array
-   * sits on the heap for the life of the mesh with nothing to read it.
+   * `Buffer` keeps the typed array it was constructed with in `_data`, and for a static buffer nothing
+   * reads it again after `create()` hands it to the GPU — or so it looked. Nulling it every five seconds
+   * saved about 20 MB on the iOS tier and broke the pavements. Owner, 2026-10-21, with photographs: "the
+   * mysterious chunk of road in the middle of a sidewalk", "areas that used to have sidewalks but don't
+   * anymore", "the displayed sidewalk is below the level of the street, causing the person to walk on
+   * air". Bisected to this sweep, and confirmed by turning this one off and leaving the `_positions` one
+   * above on: the pavements came back.
    *
-   * Only `_data`, and only where the GPU already has the buffer and it is not updatable. An earlier attempt
-   * used `geometry.clearCachedData()`, which also drops the indices and left the city a blank blue field —
-   * the HUD drew, the streets did not.
+   * The reason is that "nothing reads it again" is false. A kerb or a pavement is re-read and re-laid
+   * after it is built — tiles arrive out of order and a street's grade can be filed after the pavement
+   * beside it already exists — and a buffer whose `_data` has been taken away reads back as nothing, so
+   * the geometry is rebuilt from a blank. It fails only where the second pass happens, which is why it
+   * looked fine everywhere I checked and wrong everywhere the owner rode.
+   *
+   * It is not worth finding a narrower version. The 20 MB bought nothing we still need: the tier it was
+   * for retains 158-202 MB against a 384 MB ceiling (docs/IOS_MEMORY.md), with the real savings elsewhere.
+   * The `_positions` sweep above is kept — it is a cache Babylon rebuilds on demand, and with the vertex
+   * data left alone there is now something for it to rebuild from, which there was not before.
    */
-  if (!tier.keepGeometry) {
-    interface StaticBuffer { _updatable?: boolean; _buffer?: unknown; _data?: unknown }
-    setInterval(() => {
-      for (const m of scene.meshes) {
-        const g = (m as unknown as { geometry?: { getVertexBuffers?: () => Record<string, { _buffer?: StaticBuffer }> } }).geometry
-        for (const vb of Object.values(g?.getVertexBuffers?.() ?? {})) {
-          const buf = vb?._buffer
-          if (buf && !buf._updatable && buf._buffer && buf._data) buf._data = null
-        }
-      }
-    }, 5000)
-  }
   foliageLights(scene)
   if (!tier.recoverContext) {
     // and a texture's own copy of its source bytes (a glTF image's PNG, ~2 MB a leaf atlas) once it is on the GPU

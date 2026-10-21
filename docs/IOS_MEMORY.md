@@ -81,7 +81,7 @@ Measured on the shipped build, riding the ultra tier at an iPhone viewport, 63 t
 
 | | before this work | now |
 |---|---|---|
-| retained heap, riding | 232–258 MB | 158–202 MB |
+| retained heap, riding | 232–258 MB | 198–229 MB |
 | retained heap, forced GC every 120 ms | — | 138–185 MB |
 | GPU buffers | 205 MB | 207 MB |
 | GPU textures | 225 MB | 73 MB |
@@ -92,6 +92,19 @@ Measured on the shipped build, riding the ultra tier at an iPhone viewport, 63 t
 The owner's note on it — *"of course now most subsystems are disabled even in desktop chrome"* — is fair,
 and the headroom is now large enough to start giving things back. That is its own job, not this one; the
 tier's `without` list is where to start, and `signplates` is the one entry that should stay.
+
+## One saving was given back
+
+A sweep that nulled Babylon's CPU copy of every static vertex buffer, worth about 30 MB, was removed on
+2026-10-21. It broke the pavements, and the way it broke them is worth remembering: it fails only where a
+mesh is re-read after it is built, which is a minority of places, so it looked fine everywhere I checked
+and wrong everywhere the owner rode — a chunk of road in the middle of a pavement, pavements missing
+entirely, and pavements laid below the roadway with the walkers standing on air above them. Tiles arrive
+out of order and a street's grade can be filed after the pavement beside it exists, and a buffer whose
+`_data` has been taken away reads back as nothing, so the second pass rebuilds from a blank.
+
+The `_positions` sweep beside it is kept: that is a cache Babylon rebuilds on demand, and with the vertex
+data now left alone there is something for it to rebuild from, which there was not before.
 
 ## What is deliberately still wrong
 
