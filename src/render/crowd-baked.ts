@@ -317,6 +317,20 @@ export function instancedParts(scene: Scene, meshes: Mesh[], spec: AvatarSpec, m
   const bottomId = spec.clothes[1]?.id
   for (const m of meshes) {
     const n = m.name
+    /*
+     * The morph targets go first, whatever becomes of the mesh.
+     *
+     * No expressions on a stranger: they cost per vertex, per instance, for nothing, and the pose is baked
+     * into a texture by now anyway, so nothing would move them. But they have to be DISPOSED, not just
+     * unhooked — a MorphTargetManager keeps its targets in a float texture array on the GPU and registers
+     * itself on the scene, so dropping the mesh's reference (or disposing the mesh, which does not take the
+     * manager with it) leaves the texture uploaded for the life of the ride with nothing able to draw it.
+     * Measured on the iOS tier before this: 61 orphaned managers, 23.7 MB of unreachable GPU texture, most
+     * of it belonging to the eyelashes, teeth and tongue that the next few lines throw away outright.
+     */
+    const mgr = m.morphTargetManager
+    m.morphTargetManager = null
+    mgr?.dispose()
     // the tiny transparent layers are not worth a draw call each at crowd distance
     if (n.endsWith('.cornea') || n.includes('.eyelashes.') || n.includes('.tongue.') || n.includes('.teeth.')) {
       m.dispose()
@@ -327,8 +341,6 @@ export function instancedParts(scene: Scene, meshes: Mesh[], spec: AvatarSpec, m
       : topId && n.endsWith(`.clothes.${topId}`) ? 'top'
       : bottomId && n.endsWith(`.clothes.${bottomId}`) ? 'bottom'
       : 'plain'
-    // no expressions on a stranger: the morph targets cost per vertex, per instance, for nothing
-    m.morphTargetManager = null
     m.bakedVertexAnimationManager = manager
     m.thinInstanceRegisterAttribute('bakedVertexAnimationSettingsInstanced', 4)
     m.thinInstanceRegisterAttribute('color', 4)

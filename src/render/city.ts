@@ -63,7 +63,24 @@ export interface TileLayer {
 }
 
 /** Milliseconds a frame may spend building tiles and layers once the city has loaded. */
-const BUILD_MS = 7
+/**
+ * How long a frame may spend building tiles, in milliseconds.
+ *
+ * This is an ALLOCATION RATE, which is what it turned out to matter as. Owner, 2026-10-20: *"Still
+ * always crashes on iOS. It's fine at the beginning but if I go a few blocks down the hill (even slowly)
+ * it always crashes."* Measured at an iPhone viewport while riding: the heap retains a perfectly healthy
+ * 229 MB, and the LIVE heap sawtooths to 737 MB — over 384 on 46% of samples. The city is not holding
+ * too much; it is making garbage faster than the collector takes it away, and desktop V8 hides that by
+ * letting rubbish pile up to gigabytes while a phone is killed at 384 MB.
+ *
+ * Seven milliseconds a frame is 42% of every second spent allocating geometry. Spending less does not
+ * build less in total, it builds it more slowly — which is the whole point, because the collector is
+ * rate-limited and the peak is what kills the tab. A phone pays for it in tiles arriving a little later.
+ */
+let BUILD_MS = 7
+
+/** Per device (tier.ts `buildMs`). Lower where the collector cannot keep up. */
+export function setBuildBudget(ms: number): void { BUILD_MS = Math.max(0.5, ms) }
 /** The mid ring's reach in tiles (PARIS_EXPAND §2: massing out to ~1200 m). Per device: `setRings`. */
 export let MID = 6
 import { onSurface, waterLevels, wholeWater } from '../city/package.ts'

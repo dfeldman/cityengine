@@ -5,6 +5,7 @@
  * platform session and nothing else here changes. See INTEGRATION.md.
  */
 import { CourtPlayers } from './sim/players.ts'
+import { setSignPlates } from './render/sign-plates.ts'
 import { Color4 } from '@babylonjs/core/Maths/math.color'
 import { Engine } from '@babylonjs/core/Engines/engine'
 import { FreeCamera } from '@babylonjs/core/Cameras/freeCamera'
@@ -19,7 +20,7 @@ import { Projection } from './city/geo.ts'
 import { parseLatLon } from './ui/goto.ts'
 import { asMassing, fringeLayer, massing, midRoads } from './render/fringe.ts'
 import { terracesLayer } from './render/terraces.ts'
-import { MID, VIEW, setGroundStride, setRings } from './render/city.ts'
+import { MID, VIEW, setGroundStride, setRings, setBuildBudget } from './render/city.ts'
 import { keyed, touchScreen } from './ui/touch.ts'
 import { Inspector } from './ui/inspector.ts'
 import { flagPoles, flagsLayer } from './render/flags.ts'
@@ -219,6 +220,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // `?rings=2,5` tries other rings on a device without a code change (src/tier.ts has the defaults)
   const rings = new URLSearchParams(location.search).get('rings')?.split(',').map(Number)
   setRings(rings?.[0] ?? tier.view, rings?.[1] ?? tier.mid)
+  // An allocation rate, not a performance knob — see tier.ts `buildMs`.
+  setBuildBudget(Number(new URLSearchParams(location.search).get('buildms')) || tier.buildMs)
   setTextScale(tier.textScale)
   setGroundStride(tier.groundStride)
   setKeepGeometry(tier.keepGeometry)
@@ -236,6 +239,9 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       else if (v === 'on' && !askedWithout.has(n)) off.delete(n)
     }
   }
+  // The buildings' name plates: a DynamicTexture each, sized to its own text (render/sign-plates.ts).
+  // After `off` is finished, not before — the tier's own `without` is merged in just above.
+  setSignPlates(!off.has('signplates'))
   plog('tier', opts.tier ?? 'desktop')
   /*
    * Load-stage timings (tools/measure-load.ts): each mark is the milliseconds the stage since the previous one
@@ -365,7 +371,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   // (`limitDeviceRatio`: an iPhone's 3x is nine times the pixels — the framebuffer and every full-screen target)
   const engine = new Engine(canvas, true, { antialias: true, limitDeviceRatio: tier.maxDpr === Infinity ? undefined : tier.maxDpr,
     doNotHandleContextLost: !tier.recoverContext }, true)
-  capTextures(engine, tier.textureCaps)
+  capTextures(engine, tier.textureCaps, tier.textureMax)
   if (!tier.recoverContext) {
     // nothing kept to rebuild from, so a lost context (iOS can take it from a backgrounded tab) starts again
     canvas.addEventListener('webglcontextlost', () => location.reload())

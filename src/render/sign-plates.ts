@@ -360,7 +360,24 @@ export function plateSize(spec: SignSpec, plate: Plate): { w: number; h: number 
  * The mesh for one flat sign, in the landmark's LOCAL frame — the caller puts the landmark's own position,
  * rotation and scale on it. Two triangles, whatever the word.
  */
+/**
+ * Whether a device draws the buildings' name plates at all (tier.ts `without: ['signplates']`).
+ *
+ * Each plate is a DynamicTexture at the size of its own text, and a long name is a long texture: measured
+ * on the iOS tier after a few minutes of riding, 53 of them held 110 MB — "UNITED STATES POST OFFICE" at
+ * 2552x280, "CHANCELLOR HOTEL" at 192x2659. They are created with an explicit size, so the texture cap
+ * never touched them; it clamps images as they upload and these are drawn, not uploaded.
+ *
+ * The ultra tier already said `without: ['signs']`, but that is the OTHER sign system — the text atlas in
+ * render/signs.ts. These were never gated by anything, on a tier with no plants, no crowd and no
+ * furniture, which is how a phone ended up carrying a hundred megabytes of shop names it cannot read.
+ */
+let PLATES_ON = true
+
+export function setSignPlates(on: boolean): void { PLATES_ON = on }
+
 export function flatSignMesh(scene: Scene, p: PlacedSign, name: string): Mesh | null {
+  if (!PLATES_ON) return null
   const plate = signPlate(scene, p.spec)
   if (!plate) return null
   const { w, h } = plateSize(p.spec, plate)
