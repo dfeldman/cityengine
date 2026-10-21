@@ -76,9 +76,10 @@ export interface TierSettings {
  * tile measured, against 0.65 here); the far massing tiles are cheaper than that, so the model is
  * conservative out there, which is the right direction for something deciding what to drop.
  *
- * The per-tier `heapBase` figures for `desktop` and `phone` have NOT been re-measured since the morph
- * targets and Babylon's CPU vertex copies were dropped, so both are now overestimates — safe, but worth
- * re-fitting the same way `ultra` was if either tier ever needs the governor.
+ * `phone` was re-measured the same way on 2026-10-20: rings 1,3 (99 tiles) retained 304 MB and rings 1,5
+ * retained 329, so its base is about 240 — down from 386, which is the morph targets and Babylon's CPU
+ * vertex copies coming out. `desktop` is left at the old figure on purpose: it runs no governor
+ * (`memoryBudget` and `heapBudget` are both null there), so nothing reads it.
  */
 export const HEAP_BASE_MB = 386
 export const HEAP_PER_TILE_MB = 0.65
@@ -114,7 +115,9 @@ export const TIERS: Record<Tier, TierSettings> = {
     heapBase: 210 },
   phone: { view: 1, mid: 5, maxDpr: 1.5, ao: false, textScale: 0.5,
     // the vegetation libraries' and the avatar kit's images: leaf atlases, barks, skins, clothes
-    textureCaps: [{ match: /\/(sftrees|trees|plants|palms|mh)\//, max: 512 }, { match: /\/facades\//, max: 2048 }], bodies: 4, keepGeometry: false, recoverContext: false, memoryBudget: 1000, heapBudget: 600, minMid: 3, without: [], groundStride: 1, heapBase: 386, expressions: false },
+    textureCaps: [{ match: /\/(sftrees|trees|plants|palms|mh)\//, max: 512 }, { match: /\/facades\//, max: 2048 }], bodies: 4, keepGeometry: false, recoverContext: false, memoryBudget: 1000, heapBudget: 600, minMid: 3, without: [], groundStride: 1,
+    // measured 2026-10-20: rings 1,3 (99 tiles) retained 304 MB, rings 1,5 retained 329 — see above
+    heapBase: 240, expressions: false },
 }
 
 /** The tier asked for, or the one this device looks like: phones and tablets are `phone`. */
