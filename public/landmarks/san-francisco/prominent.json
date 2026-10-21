@@ -34,7 +34,7 @@
   {"name": "Seal Rocks", "procedural": "seaStacks", "lat": 37.778164, "lon": -122.515685, "size": [40, 40], "rotateDeg": 0, "deckAbove": 0, "height": 18, "note": "The largest stack (OSM way/969197372)."},
   {"name": "Seal Rocks (west)", "procedural": "seaStacks", "lat": 37.778374, "lon": -122.516561, "size": [30, 30], "rotateDeg": 40, "deckAbove": 0, "height": 12, "note": "way/969197373"},
   {"name": "Point Lobos stack", "procedural": "seaStacks", "lat": 37.78031, "lon": -122.517428, "size": [26, 26], "rotateDeg": 80, "deckAbove": 0, "height": 10, "note": "way/969197374"},
-  {"osm": ["way/173725078"], "name": "SFPUC Headquarters", "procedural": "sfpucHq", "height": 57, "note": "525 Golden Gate; was a todo tall target drawn generic."},
+  {"osm": ["way/173725078"], "front": 351, "name": "SFPUC Headquarters", "procedural": "sfpucHq", "height": 57, "note": "525 Golden Gate; was a todo tall target drawn generic."},
   {"osm": ["way/563104192"], "name": "One Mission Bay", "procedural": "oneMissionBay", "height": 58, "note": "Mapillary 2839126093018170."},
   {"osm": ["way/256045049"], "name": "Symphony Towers", "procedural": "symphonyTowers", "height": 41, "note": "Ochre stucco and bays; Mapillary 225398422844615."},
   {"osm": ["way/1315380002"], "name": "John F. Kennedy Towers", "procedural": "jfkTowers", "height": 41, "note": "Concave gallery slab; Mapillary 968930874064650."},

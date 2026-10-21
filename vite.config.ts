@@ -92,7 +92,7 @@ export default defineConfig({
    */
   optimizeDeps: {
     entries: ['index.html', 'src/**/*.ts', `${relative(import.meta.dirname, AVATARKIT_DIR)}/src/**/*.ts`],
-    include: ['@babylonjs/core', '@babylonjs/loaders', '@babylonjs/loaders/glTF', 'earcut'],
+    include: ['@babylonjs/core', '@babylonjs/loaders', '@babylonjs/loaders/glTF', 'earcut', 'polygon-clipping'],
   },
   // Babylon arrives through the @babylonjs/core barrel, as in the platform's other games
   // public/ is copied into dist/ by tools/link-assets.js, which skips what the asset bucket serves

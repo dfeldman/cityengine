@@ -243,7 +243,7 @@
       "way/260137839"
     ],
     "name": "Earl Warren Building",
-    "height": 24,
+    "height": 26,
     "note": "civic-center.ts: 1922 granite Renaissance Revival, the three arches on the plaza front (Commons). Was a brick restyle from a mechanical rule (southern SF).",
     "procedural": "earlWarrenBuilding",
     "front": 180
@@ -253,7 +253,8 @@
       "relation/1735766"
     ],
     "name": "State of California Building",
-    "restyle": "bauhaus",
+    "procedural": "stateOfCaliforniaBuilding",
+    "front": "street",
     "height": 27,
     "levels": 6,
     "note": "Modern (Mapillary at Van Ness and McAllister): pale stone panels, ribbon bands of blue-green glass, louvred grilles at street level. Was a brick restyle from a mechanical rule (southern SF), 2026-10-04.",
@@ -275,7 +276,7 @@
     ],
     "name": "San Francisco Civic Center Courthouse",
     "procedural": "sfCivicCenterCourthouse_108389188",
-    "front": "street",
+    "front": 180,
     "height": 25,
     "note": "Rusticated podium, tall round-arched windows, plain upper storeys, balustraded roofline (Mapillary way-108389188-0{1,2,3}.jpg, all kept). The building's rounded corner pavilion carries a small dome the kit has no per-corner crown for; left off rather than invented as a whole-roof dome."
   },
@@ -356,9 +357,10 @@
     "osm": [
       "way/35176281"
     ],
-    "name": "Building 35176281",
-    "restyle": "classical",
-    "height": 20,
+    "name": "101 Grove Street (Department of Public Health)",
+    "procedural": "civicBuilding35176281",
+    "front": "street",
+    "height": 23,
     "note": "grey granite, rusticated base, pedimented windows (Mapillary) — 2026-10-04 (was rule 6: southern SF)",
     "wall": "#a7a8a6"
   },

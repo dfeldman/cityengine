@@ -121,6 +121,7 @@ import { LIBRARIES } from './libraries.ts'
 import { SPEAKER_TOWERS } from './speaker-towers.ts'
 import { FERRY_GATES } from './ferry-gates.ts'
 import { CIVIC_CENTER } from './civic-center.ts'
+import { CIVIC_CORE } from './civic/index.ts'
 import { MASONIC } from './masonic.ts'
 import { ART_INSTITUTE } from './art-institute.ts'
 import { CCSF_MISSION } from './ccsf-mission.ts'
@@ -404,4 +405,6 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   ...SCRATCH_1,
   ...SCRATCH_2,
   ...SCRATCH_3,
+  // last: the Civic Center rebuilt round City Hall replaces the earlier builders of the same names
+  ...CIVIC_CORE,
 }

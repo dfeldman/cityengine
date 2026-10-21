@@ -4,10 +4,9 @@
       "way/35176304"
     ],
     "name": "Hiram W. Johnson State Office Building",
-    "restyle": "brutalist",
-    "wall": "#878783",
-    "by": "haiku",
-    "image": "way-35176304.jpg",
+    "procedural": "hiramJohnsonBuilding",
+    "front": 171,
+    "note": "civic/state.ts, from Mapillary and Commons (Civic Center audit, 2026-10-21).",
     "height": 54
   },
   {
