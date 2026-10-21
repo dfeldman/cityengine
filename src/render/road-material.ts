@@ -21,7 +21,6 @@
 import { Constants } from '@babylonjs/core/Engines/constants'
 import { Effect } from '@babylonjs/core/Materials/effect'
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial'
-import { RawTexture } from '@babylonjs/core/Materials/Textures/rawTexture'
 import { Texture } from '@babylonjs/core/Materials/Textures/texture'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
 import type { Scene } from '@babylonjs/core/scene'
@@ -211,20 +210,30 @@ let registered = false
 const MARKED = new Set(['asphalt', 'concrete'])
 
 /**
- * The mean colour of each page in public/roads, 0..1, measured from the files themselves rather than
- * guessed. Used as the one-pixel stand-in while a page loads — see `roadMaterial`.
+ * Each page in public/roads at 8x8, inlined, as a stand-in until the real one arrives.
+ *
+ * A colour would do the job in principle and did not in practice: a flat RGBA pixel of the page's measured
+ * mean rendered 45% darker than the page itself on the phone tier, so the road still changed tone, just the
+ * other way. Rather than chase the difference — sampling, mip levels and colour space all sit between a
+ * byte and a lit pixel — these go through the EXACT path the real page does, as a `Texture` built from a
+ * data URL, so whatever the engine does to one it does to the other. What appears when the full page lands
+ * is the grain, and nothing else.
+ *
+ * Ten pages, 2.1 KB of bundle in total, generated with a box resample of each file. Regenerate if a page is
+ * redrawn; 8x8 keeps the broad light and shade of the page (a kerbside gutter, a dirt track's centre) that
+ * one averaged pixel throws away.
  */
-const PAGE_AVERAGE: Record<string, [number, number, number]> = {
-  asphalt: [0.260, 0.259, 0.263],
-  brick: [0.543, 0.291, 0.237],
-  cobblestone: [0.400, 0.390, 0.377],
-  concrete: [0.572, 0.564, 0.549],
-  dirt: [0.412, 0.354, 0.291],
-  grass: [0.293, 0.379, 0.206],
-  gravel: [0.549, 0.538, 0.520],
-  sand: [0.756, 0.677, 0.540],
-  sheet: [0.441, 0.409, 0.374],
-  wood: [0.458, 0.358, 0.249],
+const PAGE_THUMB: Record<string, string> = {
+  asphalt: 'iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAYUlEQVR42k3OwQ3CQAADQa+T2qD/fnJeHgiJqWB4vd7nnESnSZK22+7zPIGEXo2GONveU5KCmsSpuhUATAr7aVtAVUOAbedMrUqSZHMbtHC1d/4mbaOjgQLfZyFJrwtw+wBYgVDL9ClNlQAAAABJRU5ErkJggg==',
+  brick: 'iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAaUlEQVR42iXLsUEEQQDDQMl7XxYV0Bktc2sTMPn48/115B0ZlQDK9qy7LMoQ2p0IPJ7QlaGq6cv/uH3kQhjAwJ2Q6Qsk02KFZPjYfo5ve1vwSO/teJq8kBj93UzCVp6PsG17b0/kVnH8AXETRSGqEz/xAAAAAElFTkSuQmCC',
+  cobblestone: 'iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAf0lEQVR42gXBSXIDQQwDMFJLf9OHVP5/ij1lNcUA/P15AXG6DKz0nckIaSszMxOgd6/uOQ1Dq8rI5/N093pJZqTtqoorVTXIOxPkekF7HbpjrL1VVdX3qrIZDIAkg+zu5/kQ+M7oqvqcO7MEd0Hazgx31/v9J4lgVsMSY2ZA/APYkFUTUPwwfQAAAABJRU5ErkJggg==',
+  concrete: 'iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAUklEQVR42l2OQQ7DMAzDKCPfHzD0weEOyoqiulmWTOf6fhL23gCQRFUHVAE1yczMTJKp22zXNVbn/KWCwGn0CA+totqD84W6GnyRkqy7e2dL+gE+gTjIqK+iRQAAAABJRU5ErkJggg==',
+  dirt: 'iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAaklEQVR42gXBwUEEMBADsfEm0Bwl0AH9/y7rQcrf7885Q9ItMDPbfZ83kopES0ICkFy7W+fccy4Jar1nLlj1fXK/pXYh537d1iQJ22cVzqAdUAUCmQmqux2ItiokSaLuvptJuAqSQCZB/AdAdFINMsfk8wAAAABJRU5ErkJggg==',
+  grass: 'iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAX0lEQVR42k2NsRXCQBTDZCcjsQVTsP8KuS+KI3mocGVbeX9eAKTtzFpr2iQ920KSAMrMQI+DKjcCCYDa67pmlqokJN2tJigqO/Zv0qTPXAfoJuFffjc8f16FtFHAtdYXA7s76UvFND0AAAAASUVORK5CYII=',
+  gravel: 'iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAdUlEQVR42iXBQQ4CQRACQKBnTNZvezHxw+4q4MEqvp4PUiCbUIwNcjRr7w3wPN9AiWVHYkjZLiqJWp/rnBnNiNR1XU0Bxt+1NtDRJFnHcW8DYO8bAElOSK7EIIGSsA0CLSk5aSqN7b1vTSm20V9bAEDbNLH9A+8cT7gVxjTVAAAAAElFTkSuQmCC',
+  sand: 'iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAYElEQVR42i2NsQ3DQBDDKPmGzywZwosFPqZ4dwQoULm/n4S0ASAJKkwQimsuABdXWhLOxsVHQy6wAHgyhxVlZsZdX1GIPi+RoCetm5Sku49KIrC/YNsmg6bniXSSJtD+AVROORX8lAcEAAAAAElFTkSuQmCC',
+  sheet: 'iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAAlElEQVR42jXNOQ7CQBAEwO6dWXNJhBxCwF/g/zkZGRESkmXjY/E0AaI+ULxcrof95nw6bnfbvns/7rdP86yicwAAx1IAREQih2Hou9pJkszZp2kyczNLKTG7A1BIEgCSTKnKeTFbuyRBEElKoQgzWy3z7wAIAJIkNW3bvmqXZO6J4J+bVfNFAlDK2PVDRICUFIqxjF+6bU31d72v5AAAAABJRU5ErkJggg==',
+  wood: 'iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAASklEQVR42m2NMQ7AMAwCQWJo5vQxfUi/0c979UCHOpUimQnBCfjcFzoJRl/Mc/aFbQIGuKLPKyJQKQ2zACszN/KfGsfoPyTtfJkXLYQTPA0/w8UAAAAASUVORK5CYII=',
 }
 
 export function roadMaterial(scene: Scene, surface: string, assetBase: string,
@@ -264,25 +273,18 @@ export function roadMaterial(scene: Scene, surface: string, assetBase: string,
   const tex = new Texture(`${assetBase}${surface}.png`, scene, false, false)
   tex.wrapU = Texture.WRAP_ADDRESSMODE
   tex.wrapV = Texture.WRAP_ADDRESSMODE
-  const avg = PAGE_AVERAGE[surface]
-  if (!avg) mat.setTexture('surfaceTex', tex)
+  const thumb = PAGE_THUMB[surface]
+  if (!thumb) mat.setTexture('surfaceTex', tex)
   else {
-    /*
-     * RGBA, not RGB. A one-pixel RGB texture is three bytes, and WebGL's default `UNPACK_ALIGNMENT` is
-     * four — iOS reads the row short and the sampler comes back near-white, which is the very thing this
-     * is here to avoid. Owner, 2026-10-21: *"still have the slow loading asphalt texture on ios. chrome is
-     * fine now"* and *"the light gray color underneath"*, with Chromium measured at a 7% change in road
-     * tone when the page lands against 40% before any of this. Four bytes a pixel costs nothing and is
-     * what every driver agrees about.
-     */
-    const flat = RawTexture.CreateRGBATexture(
-      new Uint8Array([...avg.map((c) => Math.round(c * 255)), 255]), 1, 1, scene, false, false, Texture.NEAREST_SAMPLINGMODE)
-    mat.setTexture('surfaceTex', flat)
+    const small = new Texture(`data:image/png;base64,${thumb}`, scene, false, false)
+    small.wrapU = Texture.WRAP_ADDRESSMODE
+    small.wrapV = Texture.WRAP_ADDRESSMODE
+    mat.setTexture('surfaceTex', small)
     const swap = scene.onBeforeRenderObservable.add(() => {
       if (!tex.isReady()) return
       mat.setTexture('surfaceTex', tex)
       scene.onBeforeRenderObservable.remove(swap)
-      flat.dispose()
+      small.dispose()
     })
   }
   mat.setFloat('pageMetres', ROAD_PAGE_METRES)

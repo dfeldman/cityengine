@@ -919,6 +919,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * MARKET STREET IS CAR-FREE (owner, 2026-10-03: "buses and taxis only … and streetcars … and delivery bikes"): from
    * 10th Street to the Embarcadero since 2020. 10th meets Market at about x = −490 in San Francisco's frame.
    */
+  /** the full-detail ring reaches beyond the rider's own tile, so raised decks are drawn around them */
+  const deckEverywhere = VIEW > 0
   const carFreeX = new Map<number, boolean>()
   const carFree = index.region === 'san-francisco' ? (e: { id: number; name?: string; points: { x: number; z: number }[] }): boolean => {
     if (e.name !== 'Market Street') return false
@@ -926,6 +928,25 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     if (v === undefined) { v = e.points[Math.floor(e.points.length / 2)].x > -490; carFreeX.set(e.id, v) }
     return v
   } : undefined
+  /*
+   * AND NOTHING DRIVES ON AN ELEVATED ROAD ON THE PHONE TIERS.
+   *
+   * Owner, 2026-10-21, with a photograph of cars strung across the sky beside a viaduct that had drawn
+   * properly, pillars and all, a hundred metres nearer: *"I think somehow we have to stop rendering cars
+   * on freeways on iOS unless we fix this."*
+   *
+   * The deck IS drawn out here now — the mid ring stopped skipping raised ways earlier today — but not far
+   * enough. Traffic was measured reaching 318 m from the rider while the mid ring is two tiles, and where
+   * in its tile the rider happens to stand decides whether that 318 m is covered, so the last stretch is
+   * sometimes road and sometimes sky. The owner also reports the ribbon sitting slightly off the real
+   * deck, which is a second reason not to put cars on it: a flat ribbon has no kerb, camber or parapet to
+   * line a car up against.
+   *
+   * So on a tier whose full-detail ring is the rider's own tile, elevated roads carry no traffic at all.
+   * An empty viaduct reads as quiet. Cars hanging over a goods yard read as broken, and they are the first
+   * thing anybody notices. Tunnels are unaffected: a bore is raised in the data but underground in fact,
+   * and nobody can see into one.
+   */
   /*
    * …and NO VEHICLE on a service way mapped THROUGH a building (a passage): a private parking aisle under the Muni
    * yard at Mariposa and York (owner, 2026-10-07: "a tunnel with cars coming out of it … it stores streetcars"), a
@@ -941,7 +962,26 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const dunes = index.region === 'san-francisco'
     ? ((p: Projection) => ({ zN: p.toLocal({ lat: 37.7655, lon: -122.509 }).z, zS: p.toLocal({ lat: 37.7354, lon: -122.507 }).z }))(new Projection(pkg.origin))
     : null
-  const closed = (e: { kind?: string; service?: string; passage?: boolean; name?: string; points?: { x: number; z: number }[] }): boolean => {
+  const closed = (e: { kind?: string; service?: string; passage?: boolean; name?: string; points?: { x: number; z: number }[]
+    raised?: boolean; bore?: boolean }): boolean => {
+    /*
+     * NOTHING DRIVES ON AN ELEVATED ROAD WHERE THE DECK IS NOT DRAWN EVERYWHERE TRAFFIC REACHES.
+     *
+     * Owner, 2026-10-21, with a photograph of cars strung across the sky beside a viaduct that had drawn
+     * properly, pillars and all, a hundred metres nearer: *"I think somehow we have to stop rendering cars
+     * on freeways on iOS unless we fix this."*
+     *
+     * The deck IS drawn out here now — the mid ring stopped skipping raised ways earlier today — but not
+     * far enough. Traffic was measured reaching 318 m from the rider while the mid ring is two tiles, and
+     * where in its tile the rider stands decides whether that 318 m is covered, so the last stretch is
+     * sometimes road and sometimes sky. The owner also reports the ribbon sitting slightly off the real
+     * deck, which is a second reason not to put cars on it.
+     *
+     * `closed`, not `carFree`: car-free only thins a street to buses and taxis at 40% density, which still
+     * leaves things in the air. This excludes the edge outright. Tunnels are unaffected — a bore is raised
+     * in the data but underground in fact, and nobody can see into one.
+     */
+    if (!deckEverywhere && e.raised === true && e.bore !== true) return true
     if (e.passage && e.kind === 'service') return true
     // nor a driveway or a car park's aisle: they lead into a building's garage, and the traffic drove into the wall
     // (owner, 2026-10-15, Minna Street: "truck going into a building … several on this block")

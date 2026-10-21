@@ -132,7 +132,9 @@ export function midRoads(scene: Scene, edges: PackedEdge[], terrain: Terrain, ta
   const out = new MeshBuilder()
   /*
    * The mean colour of the pages these ribbons stand in for, so the mid ring and the textured roads of the
-   * rider's own tile agree by construction rather than by eye (render/road-material.ts `PAGE_AVERAGE`).
+   * rider's own tile agree by construction rather than by eye. (render/road-material.ts stands a page in
+   * for itself while it loads, with an inlined 8x8 of the real thing; out here there is no texture at all,
+   * so a colour is all there is.)
    * They were darker than the asphalt page by about a third, which put a visible step at the tile border.
    *
    * Measured from directly above, across the tile border, the step in mean road tone goes from 97 against
