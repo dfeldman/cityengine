@@ -427,6 +427,21 @@ export const onSurface = (e: { tunnel?: boolean; layer?: number; bridge?: boolea
   !e.tunnel && ((e.layer ?? 0) >= 0 || !!e.bridge || ((e.layer ?? 0) === -1 && SHALLOW.has(e.kind ?? '')))
 
 /**
+ * A way that rises more than it runs: a lift shaft or a stair core OSM filed as a bridge (78924 at
+ * Embarcadero Center climbs 8 m in 4). Drawn as a road surface it is a slab standing on its edge across
+ * the walk beneath, so neither the full-detail tiles (render/city.ts) nor the mid ring (render/fringe.ts)
+ * draws one. Steps are exempt: a flight is meant to climb.
+ */
+export function steeperThanWall(e: PackedEdge): boolean {
+  if (!e.heights || e.kind === 'steps') return false
+  for (let i = 1; i < e.heights.length; i++) {
+    const run = Math.hypot(e.points[i * 2] - e.points[i * 2 - 2], e.points[i * 2 + 1] - e.points[i * 2 - 1])
+    if (Math.abs(e.heights[i] - e.heights[i - 1]) > Math.max(1.5, run)) return true
+  }
+  return false
+}
+
+/**
  * The level of each body of water: its lowest bank less the region's drop — and ONE level for bodies that
  * touch, the lowest of them. OSM maps the Seine as several polygons meeting along lines across the river,
  * each with its own lowest bank; drawn at their own levels they stepped a metre at the seam, and the depth

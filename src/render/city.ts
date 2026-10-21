@@ -83,7 +83,7 @@ let BUILD_MS = 7
 export function setBuildBudget(ms: number): void { BUILD_MS = Math.max(0.5, ms) }
 /** The mid ring's reach in tiles (PARIS_EXPAND §2: massing out to ~1200 m). Per device: `setRings`. */
 export let MID = 6
-import { onSurface, waterLevels, wholeWater } from '../city/package.ts'
+import { onSurface, steeperThanWall, waterLevels, wholeWater } from '../city/package.ts'
 import { buildingFooting, simplifyRing } from '../map/footing.ts'
 import { signalLamps, type SignalHead } from './lamps.ts'
 import { StreetGrade } from '../city/grade.ts'
@@ -1555,6 +1555,21 @@ export class City {
     this.atlas = atlas
     this.assets = assets
     this.roadAssets = new URL('../roads/', assets).href
+    /*
+     * ASK FOR THE ASPHALT NOW, not when the rider is standing on it.
+     *
+     * Owner, 2026-10-20, on an iPhone: *"the road texture only loads when the user is on top of the road,
+     * leading to a disconcerting shift... it's just surprising when it suddenly changes."* It was: a
+     * surface's page is fetched by the first material that wants it, and that material is made when the
+     * first tile containing that surface is built — which, for the road you are riding on, is the moment
+     * you arrive. Over a phone's connection, behind every other asset in the queue, it lands late and the
+     * road changes under you.
+     *
+     * Asked for here it goes into the queue with everything else and is almost always there before the
+     * first tile needs it. Only the carriageway: every road is asphalt, it is one 512px page, and warming
+     * all ten surfaces would be 13 MB spent on cobblestones and boards that most cities never show.
+     */
+    groundLayerMaterial(scene, this.roadAssets, 'asphalt', 'carriage')
     this.terrain = new Terrain(pkg.terrain, TILE)
     // the streets' own level inside their corridors (BUGS.md #38); the occluder keeps the raw ground (its own Terrain)
     this.terrain.grade = (x, z) => (this.off.has('grade') ? null : this.gradeAt(x, z))
@@ -4423,11 +4438,3 @@ function clipToBox(ring: { x: number; z: number }[], x0: number, z0: number, x1:
 }
 
 /** a raised way any of whose segments climbs more than it runs (see the deck loop) */
-function steeperThanWall(e: PackedEdge): boolean {
-  if (!e.heights || e.kind === 'steps') return false
-  for (let i = 1; i < e.heights.length; i++) {
-    const run = Math.hypot(e.points[i * 2] - e.points[i * 2 - 2], e.points[i * 2 + 1] - e.points[i * 2 - 1])
-    if (Math.abs(e.heights[i] - e.heights[i - 1]) > Math.max(1.5, run)) return true
-  }
-  return false
-}

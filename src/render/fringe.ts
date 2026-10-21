@@ -17,7 +17,7 @@ import { MeshBuilder } from './buildings.ts'
 import { buildRoof } from './roofs.ts'
 import { facadeMaterial, KIND_WALL } from './facade-material.ts'
 import { style as styleOf, STYLES, type Palette } from '../city/facade.ts'
-import { unpackPoints, onSurface, type PackedBuilding, type PackedEdge, type PackedFringe } from '../city/package.ts'
+import { unpackPoints, onSurface, steeperThanWall, type PackedBuilding, type PackedEdge, type PackedFringe } from '../city/package.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
 import type { TileLayer } from './city.ts'
 import type { Region } from '../city/region.ts'
@@ -133,7 +133,34 @@ export function midRoads(scene: Scene, edges: PackedEdge[], terrain: Terrain, ta
   const ASPHALT: [number, number, number] = [0.2, 0.2, 0.22]
   const PATH: [number, number, number] = [0.5, 0.48, 0.44]
   for (const e of edges) {
-    if (!onSurface(e) || e.bridge || e.tunnel || (e.layer ?? 0) > 0) continue
+    /*
+     * RAISED ROADS ARE DRAWN HERE TOO, which they were not.
+     *
+     * Owner, 2026-10-20, on an iPhone: *"I now see cars flying in the air near 514 Townsend. I think
+     * that's the freeway! Which renders on desktop but not iOS."* It is the freeway. A raised road's proper
+     * deck — with its underside, its pillars and its parapet — is built in the FULL-detail tile pass
+     * (render/city.ts `build`), and the ultra tier's full ring is `view: 0`: the rider's own tile and
+     * nothing else. Out here this skipped anything raised outright, so the elevated road simply was not
+     * there, and the traffic driving along it at its mapped heights hung in the air over a car park.
+     *
+     * The alternative was to keep cars off raised roads on that tier, which the owner also offered. This is
+     * better and costs almost nothing: the quad's height already comes from the edge's own `heights`, so a
+     * raised edge lands at the right altitude with no new code, no new material and no new texture — only
+     * the few quads the freeway itself is worth. It is a flat ribbon rather than a deck, with no underside
+     * and no pillars, which at mid-ring distance reads as a road on an embankment. A road with no visible
+     * support reads as unfinished; cars suspended over nothing read as broken.
+     *
+     * Tunnels still do not qualify: a bore is under the ground, and drawing its surface would lay a ribbon
+     * of asphalt across whatever sits on top of it.
+     */
+    if (!onSurface(e) || e.tunnel) continue
+    /*
+     * The same two exclusions the full-detail pass makes (render/city.ts `build`), for the same reasons: a
+     * way a hand-built landmark draws itself would be drawn twice here and z-fight with the model, and a
+     * way that climbs faster than it runs is a lift or a stair core OSM filed as a bridge, which as a road
+     * surface is a slab standing on its edge across the path underneath.
+     */
+    if (e.authored || steeperThanWall(e)) continue
     const pts = unpackPoints(e.points)
     const half = e.foot ? Math.max(0.8, e.width / 2) : e.width / 2
     const y = (i: number): number => (e.heights?.[i] ?? terrain.heightAt(pts[i].x, pts[i].z)) + 0.08
