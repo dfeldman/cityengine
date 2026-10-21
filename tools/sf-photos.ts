@@ -217,10 +217,16 @@ const rows = ['osm,name,lat,lon,height,rank,file,distance,bearing,score,visible,
 const byBuilding = new Map<string, { name: string; height: string; files: string[] }>()
 let hits = 0
 for (const r of want) {
-  const [osm, name, , lat, lon, height] = [r[0], r[1].replace(/^"|"$/g, ''), r[2], Number(r[3]), Number(r[4]), r[5]]
+  const [osm, name, height] = [r[0], r[1].replace(/^"|"$/g, ''), r[5]]
+  let [lat, lon] = [Number(r[3]), Number(r[4])]
   let list: Photo[] = []
   const id = Number(osm.split('/')[1])
   const ring = rings.get(id) ?? []
+  // a third of the queue has no lat/lon (blank cells read as 0): the footprint's centroid is the position then
+  if ((!lat && !lon) && ring.length >= 3) {
+    lat = ring.reduce((s, p) => s + p[0], 0) / ring.length
+    lon = ring.reduce((s, p) => s + p[1], 0) / ring.length
+  }
   const h = Number(height) || 0
   const blockers = blockersNear(id, ring, lat, lon, Math.max(120, Math.min(260, h * 1.8)))
   try { list = await photosFor(lat, lon, name, Number(arg('radius', '60')), h, ring, blockers) } catch (e) { console.log(`  ${osm}: ${String(e)}`) }

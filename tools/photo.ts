@@ -868,7 +868,14 @@ export async function photosFor(lat: number, lon: number, name = '', radius = 60
    * away were never candidates. A tall building gets a proportionally wider search; a short one is unchanged.
    */
   const far = Math.max(radius, Math.min(220, height * 1.8), height > 0 ? 70 : 0)
-  return mapillary(lat, lon, far, height, ring, blockers)
+  /*
+   * NO POSITION, NO PHOTOGRAPH. A queue row with its lat/lon left blank arrived here as 0,0 (`Number('')`),
+   * and the search near Null Island came back with the same Hamburg street every time, 14,000 km off and
+   * ranked first because it was the only candidate (2026-10-21: three buildings in a row). So a missing
+   * position is an error, and a frame farther off than the search could ever have meant is dropped.
+   */
+  if (!Number.isFinite(lat) || !Number.isFinite(lon) || (lat === 0 && lon === 0)) throw new Error(`no position (${lat}, ${lon})`)
+  return (await mapillary(lat, lon, far, height, ring, blockers)).filter((p) => p.distance === undefined || p.distance <= far * 3)
 }
 
 if (process.argv[1]?.endsWith('photo.ts')) {
