@@ -86,7 +86,13 @@ export class LocalControls implements Controls {
 
   private key(e: KeyboardEvent, down: boolean): void {
     const bike = this.deviceType() === 'bike'
-    if (e.code === 'Space') { this.coasting = down; e.preventDefault(); return }
+    /*
+     * COAST IS C, NOT SPACE. Owner, 2026-10-21: *"Space should pause (standard) we now use F or P (which
+     * we can keep)"* — and Space was coast, which is the sort of thing you only find by reading the key
+     * map. Pause is the more standard claim on the bigger key, so coast moved to the letter that names it.
+     * (Copy-location, a developer tool, moved from C to shift+C to make room: ui/debug.ts.)
+     */
+    if (e.code === 'KeyC' && !e.shiftKey) { this.coasting = down; e.preventDefault(); return }
     if (e.code === 'ArrowLeft' || e.code === 'ArrowRight' || e.code === 'KeyA' || e.code === 'KeyD') {
       if (down) this.down.add(e.code); else this.down.delete(e.code)
     }

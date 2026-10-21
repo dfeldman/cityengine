@@ -181,6 +181,34 @@ export class Minimap {
     this.canvas.addEventListener('pointerup', up)
     this.canvas.addEventListener('pointercancel', up)
     this.canvas.style.touchAction = 'none'
+    /*
+     * AND SAFARI'S OWN PINCH. Owner, 2026-10-21: *"Make pinch to zoom work on the map on mobile."* The
+     * pointer-event path above is correct — driven with two synthetic pointers it zooms the map by a fifth
+     * of the screen — but iOS Safari also raises its own non-standard `gesture*` events for two fingers,
+     * and when it decides a pinch is a PAGE zoom it keeps the second pointer to itself, so the code above
+     * never sees `fingers.size === 2` and nothing happens. `user-scalable=no` in the viewport meta does
+     * not prevent that on its own.
+     *
+     * So the native path is handled too, and `preventDefault` on `gesturestart` is what actually stops
+     * Safari claiming the gesture. `scale` is 1 at the start and grows as the fingers spread, and the map
+     * zooms IN as its range falls, hence the division. Every other browser never fires these.
+     */
+    interface GestureEvent extends Event { scale: number }
+    let gestureFrom: number | null = null
+    this.canvas.addEventListener('gesturestart', (e) => {
+      if (!this.large) return
+      e.preventDefault()
+      gestureFrom = this.zoom
+    })
+    this.canvas.addEventListener('gesturechange', (e) => {
+      if (!this.large || gestureFrom === null) return
+      e.preventDefault()
+      const { scale } = e as GestureEvent
+      if (!Number.isFinite(scale) || scale <= 0) return
+      this.zoom = Math.max(150, Math.min(this.maxZoom, gestureFrom / scale))
+    })
+    const endGesture = (e: Event): void => { if (gestureFrom !== null) { e.preventDefault(); gestureFrom = null } }
+    this.canvas.addEventListener('gestureend', endGesture)
     this.canvas.addEventListener('wheel', (e) => {
       if (!this.large) return
       e.preventDefault()

@@ -20,6 +20,7 @@
  *   G  go to — paste a "lat, lon" (or paste one anywhere on the page) and ride from the nearest street to
  *      it, in whichever baked city it is in (ui/goto.ts).
  */
+import { welcomeOpen } from './loading.ts'
 import { touchScreen } from './touch.ts'
 
 export interface Look {
@@ -160,7 +161,7 @@ export class DebugPanel {
       return b
     }
     this.freezeBtn = button('⏸ pause (P)', 'Stop the rider and look around', onFreeze)
-    button('⧉ copy location (C)', 'Copy lat, lon of what the camera is looking at', onCopy)
+    button('⧉ copy location (⇧C)', 'Copy lat, lon of what the camera is looking at', onCopy)
     if (onGo) button('⌖ go to (G)', 'Ride from a "lat, lon" — or just paste one anywhere', onGo)
     if (onPaths) button('⌇ paths (J)', 'Show the paths the rider can take and the junctions where there is a choice', onPaths)
     // keyboard commands for the advanced (owner, 2026-10-01): F C G J; the buttons only with `?buttons=1`
@@ -186,8 +187,23 @@ export class DebugPanel {
 
     addEventListener('keydown', (e) => {
       if (e.repeat) return
-      if (e.code === 'KeyP' || e.code === 'KeyF') onFreeze()
-      if (e.code === 'KeyC') onCopy()
+      // not while somebody is typing in the map's search box — space belongs to the text there
+      const el = e.target as HTMLElement | null
+      if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable)) return
+      /*
+       * …and not on the welcome card, where ANY key means "begin" and nothing else. The card dismisses on
+       * a keydown and deliberately does not swallow it (ui/loading.ts: the paste handler and the trainer's
+       * own input have to keep working underneath), which was harmless while space was coast and is not
+       * now that it pauses — the first key of the ride would have started the game and frozen it in one.
+       */
+      if (welcomeOpen()) return
+      /*
+       * Space pauses, which is where everybody reaches first (owner, 2026-10-21). P and F still do, since
+       * they always have. Space had been coast; that is C now (src/controls.ts), and copy-location, which
+       * is a developer tool rather than a riding control, gave C up for shift+C.
+       */
+      if (e.code === 'KeyP' || e.code === 'KeyF' || e.code === 'Space') { onFreeze(); e.preventDefault() }
+      if (e.code === 'KeyC' && e.shiftKey) onCopy()
       if (e.code === 'KeyG' && onGo) onGo()
       if (e.code === 'KeyJ' && onPaths) onPaths()
     })
@@ -196,11 +212,11 @@ export class DebugPanel {
   private pauseBtn: HTMLButtonElement | null = null
 
   frozen(on: boolean): void {
-    this.freezeBtn.textContent = on ? '▶ ride on (P)' : '⏸ pause (P)'
+    this.freezeBtn.textContent = on ? '▶ ride on (space)' : '⏸ pause (space)'
     if (this.pauseBtn) this.pauseBtn.hidden = !on
     this.toast(on
       ? (touchScreen() ? 'paused — arrows to move, drag to turn, pinch to zoom; ▶ to ride on'
-        : 'paused — look around with W A S D, Q/E down and up, drag to orbit, wheel to zoom, shift = fast; P to ride on')
+        : 'paused — look around with W A S D, Q/E down and up, drag to orbit, wheel to zoom, shift = fast; space to ride on')
       : 'riding')
   }
 

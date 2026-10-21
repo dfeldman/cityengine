@@ -96,7 +96,7 @@ import { BeachCrowd } from './render/beach-crowd.ts'
 import { updateWater } from './render/water-material.ts'
 import { Hud } from './ui/hud.ts'
 import { Menu, type MenuItem } from './ui/menu.ts'
-import { recoveryNote, riding as ridingNow } from './ui/crashguard.ts'
+import { autoReduced, recoveryNote, riding as ridingNow } from './ui/crashguard.ts'
 import { FEATURE_OFF, SETTING_DEFS, onSettings, setSetting, settings, type SettingDef } from './ui/settings.ts'
 import { PBR_FOG, photoMode, setRegionFog } from './render/photo.ts'
 import { gpuMB, showMemory, watchHeap } from './render/heap.ts'
@@ -2345,10 +2345,12 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     document.documentElement.classList.toggle('sr-minimap', s.minimap)
   })
   /** what a key does, for a menu item that does the same: the key's own handler stays the one place it is done */
-  const press = (code: string): void => {
+  /** `shift` for the keys that now need it — copy-location gave plain C up to coast (src/controls.ts). */
+  const press = (code: string, shift = false): void => {
     const key = code.replace(/^Key/, '').toLowerCase()
-    dispatchEvent(new KeyboardEvent('keydown', { code, key, bubbles: true }))
-    dispatchEvent(new KeyboardEvent('keyup', { code, key, bubbles: true }))
+    const init = { code, key: shift ? key.toUpperCase() : key, shiftKey: shift, bubbles: true }
+    dispatchEvent(new KeyboardEvent('keydown', init))
+    dispatchEvent(new KeyboardEvent('keyup', init))
   }
   const far = (m: number): string => (imperialNow() ? `${(m / 1609.344).toFixed(2)} mi` : `${(m / 1000).toFixed(2)} km`)
   /** a distance still to go: feet or metres when short, a tenth of a mile or kilometre when not */
@@ -2376,7 +2378,50 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   const groups = [...new Set(SETTING_DEFS.map((d) => d.group))]
   /** a key's name beside an item, where there is a keyboard to press it on */
   const keyHint = (k: string): string | undefined => (document.documentElement.classList.contains('sr-touch-on') ? undefined : k)
+  /*
+   * Everything you can press, in one place (owner, 2026-10-21: "a help screen available on the menu or by
+   * pressing ? that just shows available keys OR on mobile a mobile specific help").
+   *
+   * Two lists, because a phone and a keyboard have nothing in common here: there is no point telling
+   * somebody with no keyboard that coast is C, and no point telling somebody with no touch screen to
+   * double-tap. `touchScreen()` is read when the menu is opened, not once at startup, so a tablet with a
+   * keyboard plugged in later still gets the right one.
+   */
+  const helpItems = (): MenuItem[] => touchScreen() ? [
+    { label: 'Steer', info: 'touch left or right' },
+    { label: 'Effort', info: 'the slider' },
+    { label: 'Turn around', info: 'double-tap low down' },
+    { label: 'Pause', info: 'the ⏸ button' },
+    { label: 'Look around', info: 'drag to turn, pinch to zoom' },
+    { label: 'Map', info: 'Menu → Map, pinch to zoom' },
+    { label: 'Get on / off', info: 'tap the stop' },
+  ] : [
+    { label: 'Steer', info: '← →  or  A D' },
+    { label: 'Effort', info: '↑ ↓  (hold shift for bigger steps)' },
+    { label: 'Coast', info: 'C' },
+    { label: 'Pause, look around', info: 'space  (or P, F)' },
+    { label: 'While paused', info: 'W A S D to move, Q E down and up, drag to orbit, wheel to zoom' },
+    { label: 'Turn around', info: 'U' },
+    { label: 'Straight on', info: 'S' },
+    { label: 'Get on / off', info: 'B' },
+    { label: 'Map', info: 'M' },
+    { label: 'Menu', info: 'Esc' },
+    { label: 'This list', info: '?' },
+  ]
+
+  /** How the graphics setting reads in the menu (ui/settings.ts has the same four). */
+  const QUALITY_NAME: Record<string, string> = { ultra: 'Low', phone: 'Medium', desktop: 'High' }
+
   const menu = new Menu(() => [
+    /*
+     * Said here, at the top, for as long as it is true: the graphics are where they are because a ride
+     * crashed, not because anybody chose it. Nothing at all when the setting is Auto, which is the
+     * default and worth no remark (owner, 2026-10-21). Choosing any quality clears it.
+     */
+    ...((): MenuItem[] => {
+      const q = autoReduced()
+      return q ? [{ label: `Graphics: ${QUALITY_NAME[q] ?? q}`, info: 'lowered after a crash · Settings → Graphics' }] : []
+    })(),
     { label: frozen ? 'Ride on' : 'Resume', run: () => { if (frozen) toggleLook() } },
     { label: 'Map', hint: keyHint('M'), run: toggleMap },
     ...(frozen ? [] : [{ label: 'Look around', hint: keyHint('P'), run: toggleLook }]),
@@ -2407,15 +2452,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       ...(energy ? [{ label: 'Energy', info: `${Math.round(energy.level * 100)}%` }] : []),
     ] },
     { label: 'Settings', sub: (): MenuItem[] => groups.map((g) => ({ label: g, sub: () => settingsGroup(g) })) },
-    { label: 'Help', sub: (): MenuItem[] => touchScreen() ? [
-      { label: 'Steer', info: 'touch left or right' }, { label: 'Effort', info: 'the slider' },
-      { label: 'Turn around', info: 'double-tap low down' }, { label: 'Map', info: 'Menu → Map' },
-      { label: 'Look around', info: 'drag, pinch' },
-    ] : [
-      { label: 'Steer', info: '← →' }, { label: 'Effort', info: '↑ ↓' }, { label: 'Coast', info: 'Space' },
-      { label: 'Turn around', info: 'U' }, { label: 'Get on / off', info: 'B' }, { label: 'Map', info: 'M' },
-      { label: 'Look around', info: 'P' }, { label: 'Menu', info: 'Esc' },
-    ] },
+    { label: 'Help', sub: helpItems },
     { label: 'About', sub: (): MenuItem[] => [
       { label: 'Map data', info: '© OpenStreetMap contributors, ODbL' },
       { label: 'Engine', info: 'Babylon.js, Apache 2.0' },
@@ -2423,7 +2460,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       { label: 'Buildings, trees, cars', info: 'made here, CC0' },
     ] },
     ...(devTools ? [{ label: 'Developer', sub: (): MenuItem[] => [
-      { label: 'Copy location', hint: keyHint('C'), run: () => press('KeyC') },
+      { label: 'Copy location', hint: keyHint('⇧C'), run: () => press('KeyC', true) },
       { label: 'Go to…', hint: keyHint('G'), run: () => press('KeyG') },
       { label: 'Paths', hint: keyHint('J'), run: () => press('KeyJ') },
       { label: 'Fog', hint: keyHint('K'), run: () => press('KeyK') },
@@ -2431,6 +2468,18 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     ] }] : []),
   ])
   menu.onChange = (open) => { menuHeld = open }
+  /*
+   * `?` opens the key list from anywhere (owner, 2026-10-21). Shift and slash on most layouts, but not on
+   * all of them, so this matches the character produced rather than the physical key — on a German or
+   * French keyboard `?` is somewhere else entirely and `Slash` would be the wrong thing to watch.
+   */
+  addEventListener('keydown', (e) => {
+    if (e.key !== '?' || e.repeat || menu.isOpen) return
+    const el = e.target as HTMLElement | null
+    if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable)) return
+    e.preventDefault()
+    menu.push('Help', helpItems)
+  })
   if (!opts.freeze) {
     const b = document.createElement('button')
     b.className = 'sr-menu-button'

@@ -59,7 +59,16 @@ export function settings(): Settings {
   return current
 }
 
+/** Set by the crash guard when IT lowered the graphics, so the ride can say so until somebody chooses. */
+export const REDUCED_KEY = 'cycledash.reducedBy'
+
 export function setSetting<K extends keyof Settings>(key: K, value: Settings[K]): void {
+  /*
+   * Any setting of the quality clears the mark. The crash guard writes it again straight after its own
+   * call (ui/crashguard.ts), so what survives is exactly the case we want to report: the graphics are
+   * where they are because of a crash, and nobody has since said otherwise.
+   */
+  if (key === 'quality') { try { localStorage.removeItem(REDUCED_KEY) } catch { /* private window */ } }
   current = { ...settings(), [key]: value }
   try { localStorage.setItem(KEY, JSON.stringify(current)) } catch { /* private window: this ride only */ }
   for (const f of listeners) f(current)

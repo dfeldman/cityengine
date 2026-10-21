@@ -13,7 +13,7 @@
  * and says so once the ride is up. `?reset=1` clears every setting by hand.
  */
 import { detectTier } from '../tier.ts'
-import { FEATURE_OFF, setSetting, settings, type Feature } from './settings.ts'
+import { FEATURE_OFF, REDUCED_KEY, setSetting, settings, type Feature } from './settings.ts'
 
 const KEY = 'cycledash.lastRun'
 interface Run { state: 'loading' | 'riding' | 'closed'; tier: string; at: number; crashes: number }
@@ -61,6 +61,8 @@ export function recoverFromCrash(): void {
   if ((s.quality === 'desktop' || s.quality === 'phone') && s.quality !== floor) { setSetting('quality', 'auto'); done.push('graphics back to Auto') }
   else if (crashes >= 2 && s.quality !== floor) {
     setSetting('quality', floor)
+    // …and remember that it was us, not the user, so the menu can keep saying so (`autoReduced`)
+    try { localStorage.setItem(REDUCED_KEY, floor) } catch { /* private window */ }
     done.push(floor === 'ultra' ? 'graphics to Low' : 'graphics to Medium')
   }
   for (const f of Object.keys(FEATURE_OFF) as (keyof typeof FEATURE_OFF)[]) {
@@ -94,4 +96,22 @@ export function recoveryNote(): string | null {
   const n = note
   note = null
   return n
+}
+
+/**
+ * The quality the guard chose on the player's behalf, or null.
+ *
+ * Owner, 2026-10-21: *"Add some indication that we are moving to a lower graphics mode based on a cookie
+ * (previous crash) so the user knows what's happening. if there's the default graphics mode, don't display
+ * this indication at all."* The banner the recovery shows is seen once and then the reason is gone for
+ * ever, which is how a desktop can sit on the phone tier for days with nobody knowing why. This is for
+ * saying it somewhere that stays — and it answers null the moment anybody chooses a quality themselves, or
+ * where the setting is Auto, which is the default and worth no remark.
+ */
+export function autoReduced(): string | null {
+  const q = settings().quality
+  if (q === 'auto') return null
+  try {
+    return localStorage.getItem(REDUCED_KEY) === q ? q : null
+  } catch { return null }
 }
