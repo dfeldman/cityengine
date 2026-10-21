@@ -82,10 +82,10 @@ export const TIERA_1: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   oneFifteenSansome: fromRecipe('edwardian-terracotta', { height: 53, wall: [0.78, 0.68, 0.54], baseWall: [0.66, 0.6, 0.5], base: 6 }),
 
   /** 1338 Mission Street, SoMa: a stucco mid-rise of punched windows, flat topped. */
-  thirteenThirtyEightMission: fromRecipe('hotel-punched', { height: 55, wall: [0.76, 0.72, 0.66] }),
+  thirteenThirtyEightMission: fromRecipe('hotel-punched', { wall: [0.76, 0.72, 0.66] }),
 
   /** 1340 Mission Street, SoMa: the twin next door, a shade cooler. */
-  thirteenFortyMission: fromRecipe('hotel-punched', { height: 55, wall: [0.7, 0.7, 0.68] }),
+  thirteenFortyMission: fromRecipe('hotel-punched', { wall: [0.7, 0.7, 0.68] }),
 
   /** 240;244 Kearny Street, Financial District: an ordinary brick-and-stone Chicago-frame block. */
   twoFortyKearny: fromRecipe('chicago-block', { height: 36 }),

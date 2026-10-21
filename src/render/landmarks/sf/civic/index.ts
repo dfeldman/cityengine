@@ -12,7 +12,13 @@ import { UN_PLAZA } from './un-plaza.ts'
 import { STATE_BUILDINGS } from './state.ts'
 import { CIVIC_VENUES } from './venues.ts'
 import { VAN_NESS_CIVIC } from './van-ness.ts'
+import { CIVIC_PALAZZOS } from './palazzos.ts'
+import { MCALLISTER_TOWER } from './mcallister.ts'
+import { MARKET_DECO } from './market-deco.ts'
+import { NEMA_PROPER } from './nema.ts'
+import { SIXTH_STREET } from './sixth-street.ts'
 
 export const CIVIC_CORE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   ...WAR_MEMORIAL, ...AUDITORIUM_SYMPHONY, ...CIVIC_LIBRARIES, ...UN_PLAZA, ...STATE_BUILDINGS, ...CIVIC_VENUES, ...VAN_NESS_CIVIC,
+  ...CIVIC_PALAZZOS, ...MCALLISTER_TOWER, ...MARKET_DECO, ...NEMA_PROPER, ...SIXTH_STREET,
 }

@@ -43,7 +43,7 @@ export const TIERA_3: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   twoThirtyThreeSansome: fromRecipe('midcentury-slab', { height: 53, wall: [0.78, 0.76, 0.72] }),
 
   /** 1310 Mission Street: a contemporary SoMa residential tower, blue-green curtain wall, flat top. */
-  thirteenTenMission: fromRecipe('glass-tower', { height: 55, wall: [0.58, 0.62, 0.66], glass: [0.32, 0.44, 0.54] }),
+  thirteenTenMission: fromRecipe('glass-tower', { wall: [0.58, 0.62, 0.66], glass: [0.32, 0.44, 0.54] }),
 
   /** 417 Montgomery Street: an early-20th-century Financial District office block, cream terracotta over a bronze shopfront base. */
   fourSeventeenMontgomery: fromRecipe('edwardian-terracotta', { height: 41 }),

@@ -16,7 +16,7 @@
   {"osm": ["way/262464467"], "name": "San Francisco Waldorf School", "restyle": "stucco", "levels": 3, "height": 12, "note": "Ordinary school building, stucco block."},
   {"osm": ["way/32863010"], "name": "The Spear", "procedural": "theSpear", "front": "street", "height": 60, "note": "Recipe glass-tower: blue-green curtain-wall residential tower, flat top."},
   {"osm": ["way/332381174"], "name": "70 4th Street", "procedural": "seventyFourthStreet", "front": "street", "height": 54, "note": "Recipe hotel-punched: SoMa stucco mid-rise, punched windows."},
-  {"osm": ["way/256733611"], "name": "98 9th Street", "procedural": "ninetyEightNinthStreet", "front": "street", "height": 55, "note": "Recipe hotel-punched: SoMa stucco mid-rise apartment block."},
+  {"osm": ["way/256733611"], "name": "98 9th Street", "procedural": "ninetyEightNinthStreet", "front": "street", "height": 15, "levels": 4, "note": "Recipe hotel-punched. OSM bulk-tagged the block 55 m. 2026-10-21: DataSF 2010 LiDAR median 12.4 m (max 15.3); Mapillary: the four-storey brick Hotel Potter; Assessor 1908."},
   {"osm": ["way/32947355"], "name": "530;540;546;550 Kearny Street", "procedural": "kearnyStreetBlock", "front": "street", "height": 42, "note": "Recipe chicago-block: Financial District brick-and-stone commercial block."},
   {"osm": ["way/173725096"], "name": "Mint Plaza", "procedural": "mintPlaza", "front": "street", "height": 39, "note": "Recipe glass-tower: modern blue-green curtain-wall infill over the plaza."},
   {"osm": ["way/260286443"], "name": "(unnamed) 51m tower", "procedural": "unnamedFidiTower51m", "front": "street", "height": 51, "note": "Recipe hotel-punched: plain stucco apartment tower, punched windows."}

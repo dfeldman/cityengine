@@ -4,7 +4,7 @@
       "way/35115839"
     ],
     "name": "Mission Substation",
-    "restyle": "brutalist",
+    "front": "street", "procedural": "missionSubstation",
     "noShops": true,
     "height": 36,
     "levels": 10,

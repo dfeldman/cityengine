@@ -1,5 +1,5 @@
 [
-  { "osm": ["way/387313434"], "procedural": "b4_garage_387313434", "name": "UC Law SF Parking Garage", "height": 46 },
+  { "osm": ["way/387313434"], "procedural": "b4_garage_387313434", "name": "UC Law SF Parking Garage", "height": 25 },
   { "osm": ["way/173237461"], "procedural": "b4_office_173237461", "name": "Storek Building", "height": 31 },
   { "osm": ["way/260140489"], "procedural": "b4_apartment_260140489", "name": "Oasis Apartments", "height": 40 },
   { "osm": ["way/32947510"], "procedural": "b4_bank_32947510", "name": "Old Federal Reserve Bank", "height": 28 },

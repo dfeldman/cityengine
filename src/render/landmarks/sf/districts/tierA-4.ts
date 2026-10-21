@@ -33,7 +33,7 @@ export const TIERA_4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   seventyFourthStreet: fromRecipe('hotel-punched', { height: 54, wall: [0.78, 0.76, 0.7] }),
 
   /** 98 9th Street, SoMa: a plain stucco mid-rise apartment block. */
-  ninetyEightNinthStreet: fromRecipe('hotel-punched', { height: 55, wall: [0.74, 0.72, 0.68] }),
+  ninetyEightNinthStreet: fromRecipe('hotel-punched', { wall: [0.74, 0.72, 0.68] }),
 
   /** 530;540;546;550 Kearny Street, Financial District: a Chicago-frame brick-and-stone commercial block. */
   kearnyStreetBlock: fromRecipe('chicago-block', { height: 42 }),
