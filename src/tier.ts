@@ -116,9 +116,16 @@ export const TIERS: Record<Tier, TierSettings> = {
     textureMax: 1024, bodies: 0,
     keepGeometry: false, recoverContext: false, memoryBudget: 900, heapBudget: 300, minMid: 1,
     expressions: false,
-    // 'signs' is the text atlas (render/signs.ts); 'signplates' the buildings' name plates
-    // (render/sign-plates.ts), which are a DynamicTexture each and were measured at 110 MB.
-    without: ['plants', 'trees', 'crowd', 'furniture', 'signs', 'signplates', 'fountains', 'courts', 'rain'],
+    /*
+     * 'signs' is the text atlas (render/signs.ts); 'signplates' the buildings' name plates
+     * (render/sign-plates.ts), which are a DynamicTexture each and were measured at 110 MB.
+     *
+     * 'beachcrowd' because it is gated by its own name rather than by 'crowd': the sand had eight kit
+     * bodies on it on a tier that had asked for `bodies: 0` and no crowd at all. The cable cars' passengers
+     * follow 'crowd' now (game.ts), so they need no name here.
+     */
+    without: ['plants', 'trees', 'crowd', 'beachcrowd', 'furniture', 'signs', 'signplates', 'fountains',
+              'courts', 'rain'],
     groundStride: 2,
     buildMs: 7,
     /*

@@ -1281,8 +1281,15 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     ;(window as unknown as { riderReady?: boolean }).riderReady = true
     if (off.has('life')) return
     const c = new BakedCrowd(scene, opts.bodies ?? tier.bodies)
-    // the cable cars' passengers (render/cable-riders.ts), built after the street crowd: one body at a time
-    void c.ready.then(() => { cableRiders = new CableRiders(scene) })
+    /*
+     * The cable cars' passengers (render/cable-riders.ts), built after the street crowd: one body at a time.
+     *
+     * Off wherever the street crowd is. They were not: `without=crowd` emptied the pavements and the ultra
+     * tier asked for `bodies: 0`, and four full kit bodies were still built to sit in the cable cars —
+     * measured as four more avatars' worth of morph deltas and textures on the tier with the tightest
+     * ceiling of all. A passenger is a stranger like any other.
+     */
+    if (!off.has('crowd') && !off.has('cableriders')) void c.ready.then(() => { cableRiders = new CableRiders(scene) })
     void c.ready.then(() => {
       strangers = c
       ;(window as unknown as { crowdReady?: boolean }).crowdReady = true
