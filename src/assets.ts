@@ -23,8 +23,13 @@
  */
 import { assetManifest, loadFromBucket, setAssetManifest, setAssetBase, setStudioHdri, STUDIO_HDRI } from 'avatarkit'
 
-/** The shared asset bucket's public URL. */
-export const ASSET_BUCKET = 'https://pub-32f6f3f21c18414cbeaf4bf0ac34ebe5.r2.dev'
+/**
+ * The shared asset bucket's public URL: its custom domain (owner, 2026-10-22). The bucket's `r2.dev` address
+ * (pub-32f6f3f21c18414cbeaf4bf0ac34ebe5.r2.dev) serves the same files, but Cloudflare rate-limits r2.dev, and under the
+ * game's burst of texture requests they hung for 25-47 s and the city never finished loading. Same files, same ETags,
+ * same CORS headers on both (checked 2026-10-22).
+ */
+export const ASSET_BUCKET = 'https://assets.dfeldman.org'
 
 const INDEXES = ['assetkit-trees', 'assetkit-plants', 'assetkit-rocks', 'assetkit-nature-textures', 'assetkit-statues-paris', 'streetrunner', 'assetkit-models-sf'] as const
 /** Library folders whose index.json is rebuilt from the bucket (rocks/index.json is this game's own, committed). */
