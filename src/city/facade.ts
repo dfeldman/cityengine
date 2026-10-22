@@ -284,6 +284,12 @@ export interface Dress {
   garageTint?: string
   /** how ornamented the front is (a label's): `rich` puts hoods over the windows of any style */
   ornament?: 'plain' | 'some' | 'rich'
+  /** how much of a label's shop bays is glass: `full` is a modern store's glazed front, `little` a few windows */
+  shopGlass?: 'full' | 'partial' | 'little'
+  /** a fascia band over the shops, in the accent colour, where the shop names go */
+  fascia?: boolean
+  /** raised loading docks along the garage bays */
+  docks?: boolean
 }
 
 export interface GroundMix {
@@ -320,6 +326,7 @@ export function groundBays(bays: number, g: GroundMix): GroundBay[] {
   return out
 }
 
+const GLAZED: StyleId[] = ['bauhaus', 'chicago', 'opera', 'operaGlass', 'skyscraper']
 /** Which styles have each ground painting (the atlas: tools/facadegen). A bay borrows one when its own style has none. */
 const GROUND_ART: Record<Exclude<GroundBay, 'window'>, { element: string; styles: StyleId[] }> = {
   shop: { element: 'shopfront', styles: ['tenement', 'brick', 'chinatown', 'wharf', 'marais', 'haussmann'] },
@@ -329,7 +336,10 @@ const GROUND_ART: Record<Exclude<GroundBay, 'window'>, { element: string; styles
 }
 
 /** The painting for a ground bay: the building's own ground or wall art's when it has one, else the first that does. */
-function groundElement(kind: Exclude<GroundBay, 'window'>, art: StyleId, groundArt: StyleId): string {
+function groundElement(kind: Exclude<GroundBay, 'window'>, art: StyleId, groundArt: StyleId, glass?: Dress['shopGlass']): string {
+  // (a shop that is all glass is a modern store's glazed front; one with little glass, the style's own windows)
+  if (kind === 'shop' && glass === 'full') return `${GLAZED.includes(art) ? art : 'bauhaus'}/glazed`
+  if (kind === 'shop' && glass === 'little') return `${art}/window`
   const g = GROUND_ART[kind]
   const own = g.styles.includes(groundArt) ? groundArt : g.styles.includes(art) ? art : g.styles[0]
   return `${own}/${g.element}`
@@ -762,7 +772,7 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
       const variant = shopGround ? ((rng(seed ^ 0x5e11)() + b * 0.381966) % 1) : vr()
 
       let element: string
-      if (s.kind === 'ground' && mix) element = mix[b] === 'window' ? `${art}/${d?.blank ? 'wall' : 'window'}` : groundElement(mix[b] as Exclude<GroundBay, 'window'>, art, groundArt)
+      if (s.kind === 'ground' && mix) element = mix[b] === 'window' ? `${art}/${d?.blank ? 'wall' : 'window'}` : groundElement(mix[b] as Exclude<GroundBay, 'window'>, art, groundArt, d?.shopGlass)
       else if (s.kind !== 'ground' && d?.blank && shown !== null) element = `${art}/wall`
       else if (s.kind === 'ground' && b === carriageBay) element = `${art}/carriage`
       // ('plain': a ground floor of the style's own windows — a school's, where the style would have shops)
@@ -807,6 +817,20 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
     }
   }
 
+  // a label's fascia over each run of shops, and its loading docks along the garage bays
+  if (mix && plan.storeys[0].kind === 'ground') {
+    const gy = plan.storeys[0].y1
+    for (let b = 0; b < bays; b++) {
+      if (d?.fascia && mix[b] === 'shop' && mix[b - 1] !== 'shop') {
+        let e = b
+        while (mix[e + 1] === 'shop') e++
+        features.push({ kind: 'panel', y0: gy - 0.75, y1: gy - 0.05, depth: 0.12, x0: margin + b * bayW, x1: margin + (e + 1) * bayW, colour: plan.palette.accent })
+      }
+      if (d?.docks && mix[b] === 'garage') {
+        features.push({ kind: 'cornice', y0: 0, y1: 1.15, depth: 1.6, x0: margin + b * bayW, x1: margin + (b + 1) * bayW, colour: '#8a8782' })
+      }
+    }
+  }
   // a label's stoop: a flight of steps up to the door, out over the pavement (wave 7: the painted stoop read as a door)
   if (mix && plan.storeys[0].kind === 'ground') {
     mix.forEach((k, b) => {

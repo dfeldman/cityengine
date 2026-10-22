@@ -8,7 +8,7 @@
  * photographs. Every answer is optional; a building keeps whatever the bake gave it where the label is silent.
  */
 import table from '../../data/appearance/looks/haiku.json' with { type: 'json' }
-import menus from '../../data/appearance/research/menus-v8.json' with { type: 'json' }
+import menus from '../../data/appearance/research/menus-v9.json' with { type: 'json' }
 import type { Dress, Palette, StyleId } from './facade.ts'
 import type { RoofShape } from './package.ts'
 
@@ -54,6 +54,9 @@ export function lookFor(id: number, baked?: StyleId): Look | null {
   // a painted lady is drawn as one, whatever else the type said
   if (known(l.victorian_kind) && l.victorian_kind !== 'none' && (!style || style === 'edwardian' || style === 'flatsstucco')) style = 'victorian'
   if (style && SURFACE[l.surface]?.[style]) style = SURFACE[l.surface]![style]
+  // (big multi-pane industrial or office windows on a front with no homes: the Chicago window's grid, not punched
+  //  openings — wave 8, lofts drawn with small sash)
+  if (l.windows === 'grid' && l.homes_above === 'no' && style && ['brick', 'storefront', 'bauhaus', 'aptbrick', 'aptclassical'].includes(style)) style = 'chicago'
   // (stucco flats draw rectangular sash; arched windows are the Marina's and the Mediterranean block's)
   if (l.windows === 'arched' && style === 'flatsstucco') style = Number(l.storeys) >= 4 ? 'aptmed' : 'stucco'
   if (style && !(baked && KEEP.has(baked))) look.style = style
@@ -98,6 +101,15 @@ export function lookFor(id: number, baked?: StyleId): Look | null {
   }
   if (l.bay_shape === 'angled' || l.bay_shape === 'square' || l.bay_shape === 'rounded') dress.bayShape = l.bay_shape
   if (l.windows === 'few_or_none') dress.blank = true
+  if (l.shop_glass === 'full' || l.shop_glass === 'partial' || l.shop_glass === 'little') dress.shopGlass = l.shop_glass
+  if (l.sign_band === 'fascia') dress.fascia = true
+  else if (l.sign_band === 'raised_panel') dress.cap = 'panel'
+  // an auto shop's open bays and a warehouse's docks: the ground floor is their doors
+  if ((l.service_bays === 'open_bays' || l.service_bays === 'loading_docks') && dress.ground) {
+    dress.ground = { ...dress.ground, garages: Math.max(2, dress.ground.garages) }
+    if (l.service_bays === 'open_bays') dress.garageTint = '#3a3a3c'
+    else dress.docks = true
+  }
   if (l.ornament === 'plain' || l.ornament === 'some' || l.ornament === 'rich') dress.ornament = l.ornament
   if (colour(l.garage_door_colour)) dress.garageTint = colour(l.garage_door_colour)
   if (l.victorian_kind === 'italianate' || l.victorian_kind === 'stick' || l.victorian_kind === 'queen_anne') dress.victorian = l.victorian_kind

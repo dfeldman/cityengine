@@ -15,6 +15,7 @@
  * feed people, then ordinary shops — and never two of the same name within a block.
  */
 import { Constants } from '@babylonjs/core/Engines/constants'
+import { LOOKS_ON, lookFor } from '../city/appearance.ts'
 import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture'
 import { Effect } from '@babylonjs/core/Materials/effect'
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
@@ -485,6 +486,9 @@ export class Signs implements TileLayer {
       const used = new Map<number, { x: number; z: number }[]>()
       for (const b of [...pkg.buildings].sort((p, q) => p.id - q.id)) {
         if (signed.has(b.id)) continue
+        // (a labelled building wears its own sign, read off its photograph — render/city.ts — or none: an invented
+        //  trade's name on a labelled auto shop was a judge's most-cited wrong sign, wave 8)
+        if (LOOKS_ON && lookFor(b.id)) continue
         // only over a shop: a stoop, a plain wall or a glazed lobby does not get a trade's name over it
         if (planOf(b.id)?.ground !== 'shopfront') continue
         // …nor over a commercial building whose ground floor is offices or a warehouse (facade.ts Dress.shops)

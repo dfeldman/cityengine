@@ -320,6 +320,7 @@ renders stay the same buildings from round to round. `tools/appearance/judged.py
 | v5 | ground-floor mix, bay counts, 14 colours | 1.53 (0.61) | 28 of 51 | 44 |
 | v6 | see below | 1.64 (0.62) | 32 of 50 | 43 |
 | v7 | see below | 1.73 (0.69) | 38 of 52 | 47 (5 the same, today never) |
+| v8 | see below | 1.77 (0.62) | 40 of 52 | 44 (6 the same) |
 
 **v6 changes:**
 - **Schema** (`menus-v6.json`):
@@ -383,6 +384,28 @@ renders stay the same buildings from round to round. `tools/appearance/judged.py
   - window hoods on any richly ornamented front;
   - the label's sign text painted over the ground floor, only where there are shopfronts.
 - **Shot:** the wall the photograph looks at (from the capture's camera bearing); a wider lens.
+
+**v8 judged:**
+- The shot now faces the side the photograph shows, and the Queen Anne corner bar is drawn from its long side with
+  its turret.
+- Labels: bays left out (the commonest miss); a storey too many; balconies invented; industrial grid windows drawn as
+  sash.
+- Renderer: the game's own shop-sign generator still invented trade names on labelled buildings (a "taco" sign on an
+  auto body shop); dormers; arched civic windows; glass garage doors.
+
+**v9 changes** (the commercial front, as the owner asked once apartments were good enough):
+- **Schema:**
+  - `shop_glass` (full, partial, little);
+  - `sign_band` (fascia, raised panel);
+  - `service_bays` (open bays, loading docks);
+  - the brief insists on looking for bays on every storey, and counts only full storeys.
+- **Renderer:**
+  - full-glass shop bays drawn glazed, little-glass ones as windows;
+  - a fascia band over each run of shops;
+  - open service bays as dark garage openings;
+  - loading docks as a raised platform;
+  - industrial grid windows on fronts with no homes drawn with the Chicago window;
+  - no invented shop names on labelled buildings.
 
 ## 4. Rendering from the labels (`?labels=1`)
 

@@ -17,13 +17,6 @@ const nearest = (x, z) => { let bd = Infinity, id = null; for (const [rx, rz, i]
 const cell = (x, z) => `${Math.floor(x / 50)},${Math.floor(z / 50)}`
 const grid = new Map()
 for (const b of pkg.buildings) {
-  // the clearest frame's bearing, camera to building (photos.csv)
-  let look = null
-  try {
-    const rows = readFileSync(`${ROOT}tools/cache/appearance-r2/way-${id}/photos.csv`, 'utf8').trim().split('\n').slice(1).map((l) => l.split(','))
-    const r = rows.find((x) => x[6])
-    if (r && Number.isFinite(Number(r[8]))) look = (Number(r[8]) * Math.PI) / 180
-  } catch { /* no capture record: the street decides */ }
   const n = b.ring.length / 2
   let x = 0, z = 0
   for (let i = 0; i < n; i++) { x += b.ring[2 * i]; z += b.ring[2 * i + 1] }
@@ -50,6 +43,13 @@ function inside(x, z, self) {
 for (const id of ids) {
   const b = by.get(Number(id)); if (!b) { console.log(id, 'not in bake'); continue }
   if (existsSync(`${OUT}/${id}-look.png`)) continue
+  // the clearest frame's bearing, camera to building (photos.csv)
+  let look = null
+  try {
+    const rows = readFileSync(`${ROOT}tools/cache/appearance-r2/way-${id}/photos.csv`, 'utf8').trim().split('\n').slice(1).map((l) => l.split(','))
+    const r = rows.find((x) => x[6])
+    if (r && Number.isFinite(Number(r[8]))) look = (Number(r[8]) * Math.PI) / 180
+  } catch { /* no capture record: the street decides */ }
   const n = b.ring.length / 2
   const P = Array.from({ length: n }, (_, i) => [b.ring[2 * i], b.ring[2 * i + 1]])
   const cx = P.reduce((s, p) => s + p[0], 0) / n, cz = P.reduce((s, p) => s + p[1], 0) / n
