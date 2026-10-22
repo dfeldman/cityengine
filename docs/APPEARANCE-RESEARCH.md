@@ -323,6 +323,7 @@ renders stay the same buildings from round to round. `tools/appearance/judged.py
 | v8 | see below | 1.77 (0.62) | 40 of 52 | 44 (6 the same) |
 | v9 | see below | 1.80 (0.61) | 41 of 51, first 3 of 3 | 45 (4 the same) |
 | v10 | see below | 1.82 (0.69) | 42 of 51 | 45 (6 the same, today never) |
+| v11 | see below | 1.77 (0.50) | 40 of 52, one 3 of 3 | 46 (6 the same, today never) |
 
 **v6 changes:**
 - **Schema** (`menus-v6.json`):
@@ -444,6 +445,55 @@ renders stay the same buildings from round to round. `tools/appearance/judged.py
   - bays painted their own colour;
   - a mural-covered front's ground floor painted in bright bands;
   - a label's projecting balconies dropped where it also saw a fire escape.
+
+**v11 judged:** the Apollo block, with its red bays now painted their own colour, rated "a passer-by would say it is that
+building". The remaining misses are now mostly the renderer's (75 of 170, against 57 of 175 in v5):
+- stacked and curved bays across wide fronts;
+- white garage doors;
+- murals;
+- industrial steel windows;
+- mansards with dormers;
+- gables along a roof.
+
+**Where rounds 6–11 leave it:**
+- **Resemblance.** It rose from 1.53 to about 1.8 of 3, and has plateaued there. Today's render scores 0.5–0.7 on the
+  same buildings.
+- **Judge noise.** The judges move about ±0.05 round to round on unchanged renders (today's score ranged 0.50–0.69).
+  Gains under 0.1 are not real.
+- **Recognisable.** Four buildings in five are now "recognisably the same kind in roughly the right colour" (40–42 of
+  51–52, from 28). The labelled render is never worse than today's.
+- **The ceiling is now the renderer and the shot, not Haiku.** Label faults fell from 72 to 63 per round while the
+  questions grew from 20 to 40. The biggest single gains were all renderer or shot fixes:
+  - the shot facing the photographed side;
+  - stucco drawn as stucco;
+  - no invented arches;
+  - storey counts that hold.
+
+**Triage and special cases found** (v11 run, 92 buildings):
+- **Unusual, with the reason:**
+  - 2 rooftop billboards (way/272604446, way/256454788);
+  - 1 mural (way/260177872);
+  - 3 wavy or curved: the O'Connell school roof (way/197053597), a warehouse parapet (way/293604059), a church front
+    (way/1500284340).
+  - No shiny metal cladding in this sample: 1328 Mission is not in it. The question is in the schema for when it is.
+- **Special structures:**
+  - 3 auto repair shops;
+  - 1 school;
+  - 1 police station (`other`).
+  - The judges also found a three-level parking garage the labels called a shop (way/253254850).
+  - Auto shops and parking garages are the first candidates for drawn special cases, then gas stations when a sample
+    has some.
+- **Other reads:** sign text on 30 of 92; Victorian kind on 7 (4 Italianate, 3 Queen Anne).
+
+**Next, when this resumes** (no scale-out or classifier yet, as the owner asked):
+- **Renderer:**
+  - bays on wide fronts;
+  - light garage doors;
+  - a mural painting;
+  - a steel-sash window painting;
+  - dormered mansards.
+- **Shot:** the comparison camera still finds a neighbour for a few buildings (way/71504444, every round).
+- **Special-case models:** auto shop (open bays and a sign band), parking garage (open decks), gas station.
 
 ## 4. Rendering from the labels (`?labels=1`)
 
