@@ -395,7 +395,11 @@ export class Plants {
       for (const species of list) {
         const e = index.trees.find((t) => t.species === species)
         if (!e) { console.warn(`plants: a zone asks for "${species}", which the plant library does not have`); continue }
-        const parts = await this.importModel(e.file)
+        // one file that will not load (listed in an index the bucket has not caught up with) costs that species, not the planting
+        const parts = await this.importModel(e.file).catch((err: unknown) => {
+          console.warn(`plants: "${species}" (${e.file}) did not load:`, err)
+          return [] as Mesh[]
+        })
         // an OWN_SIZE species' typical height: the median over its library entries (the first file is only one of them)
         const hs = OWN_SIZE.has(species) ? index.trees.filter((t) => t.species === species).map((t) => t.height).sort((a, b) => a - b) : []
         if (parts.length) this.models.push({ kind, species, parts, top: e.height || 1, own: hs.length ? hs[hs.length >> 1] : undefined })
