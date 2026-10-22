@@ -296,8 +296,10 @@ export interface GroundMix {
   garages: number
   shops: 'none' | 'one' | 'several' | 'all'
   entrance: 'at_grade' | 'stoop' | 'none'
+  /** the door is an arched opening (a Mediterranean block's, a Beaux-Arts lobby's) */
+  arched?: boolean
 }
-type GroundBay = 'shop' | 'garage' | 'door' | 'stoop' | 'window'
+type GroundBay = 'shop' | 'garage' | 'door' | 'stoop' | 'arch' | 'window'
 
 /**
  * The ground bays of a street front, left to right, from a label's mix: the shops in the middle (all of it, or most, or
@@ -321,7 +323,7 @@ export function groundBays(bays: number, g: GroundMix): GroundBay[] {
     // the door: in the middle when the middle is free, else the free bay nearest it
     const free = out.map((k, b) => (k === 'window' ? b : -1)).filter((b) => b >= 0).sort((a, b) => Math.abs(a - (bays - 1) / 2) - Math.abs(b - (bays - 1) / 2))
     const at = free.length ? free[0] : out.lastIndexOf('garage') >= 0 && out.filter((k) => k === 'garage').length > 1 ? out.lastIndexOf('garage') : -1
-    if (at >= 0) out[at] = g.entrance === 'stoop' ? 'stoop' : 'door'
+    if (at >= 0) out[at] = g.entrance === 'stoop' ? 'stoop' : g.arched ? 'arch' : 'door'
   }
   return out
 }
@@ -333,6 +335,7 @@ const GROUND_ART: Record<Exclude<GroundBay, 'window'>, { element: string; styles
   garage: { element: 'garage', styles: ['edwardian', 'stucco'] },
   stoop: { element: 'stoop', styles: ['victorian', 'presidioStucco', 'presidio', 'presidioBrick', 'brownstone', 'capecod'] },
   door: { element: 'recessed', styles: ['sfapartment', 'towerblock', 'brutalist'] },
+  arch: { element: 'arcade', styles: ['classical', 'vosges'] },
 }
 
 /** The painting for a ground bay: the building's own ground or wall art's when it has one, else the first that does. */
@@ -341,6 +344,9 @@ function groundElement(kind: Exclude<GroundBay, 'window'>, art: StyleId, groundA
   if (kind === 'shop' && glass === 'full') return `${GLAZED.includes(art) ? art : 'bauhaus'}/glazed`
   if (kind === 'shop' && glass === 'little') return `${art}/window`
   const g = GROUND_ART[kind]
+  // (the Marina's garage is an arch: only a building drawn with the Marina's own windows gets one — wave 9, arched
+  //  garages on modern boxes and panel blocks read as invented arches)
+  if (kind === 'garage') return `${art === 'stucco' ? 'stucco' : 'edwardian'}/garage`
   const own = g.styles.includes(groundArt) ? groundArt : g.styles.includes(art) ? art : g.styles[0]
   return `${own}/${g.element}`
 }

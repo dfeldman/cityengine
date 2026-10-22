@@ -4252,7 +4252,9 @@ export class City {
         // (a label's roof: a gable, a hip or a mansard is most of a small building's outline against the sky)
         look?.roof ? { shape: look.roof, height: b.roofHeight ?? Math.min(4, 1.2 + plan.height * 0.18), direction: b.roofDirection, colour: b.roofColour }
           : { shape: b.roof, height: b.roofHeight, direction: b.roofDirection, colour: b.roofColour },
-        this.region.roofscape, (i) => {
+        // (a label's dormers, or none where it saw none)
+        look?.dormers !== undefined && this.region.roofscape ? { ...this.region.roofscape, dormers: look.dormers }
+          : look?.dormers ? { chimneys: false, dormers: true } : this.region.roofscape, (i) => {
           // the ring is anticlockwise, so the outward normal of a→c is (ez, −ex)
           const a = ring[i]
           const c = ring[(i + 1) % ring.length]

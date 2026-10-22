@@ -207,7 +207,7 @@ function wall(
   const groundTint = plan.palette.ground ? rgb(plan.palette.ground) : tint
   const groundEls = new Set([`${groundArtOf(plan.style)}/${plan.ground}`, `${artOf(plan.style)}/carriage`])
   // (…and a label's ground bays, each borrowed from whichever style has the painting: facade.ts Dress.ground)
-  const borrowed = plan.dress?.ground ? /\/(garage|shopfront|stoop|recessed)$/ : null
+  const borrowed = plan.dress?.ground ? /\/(garage|shopfront|stoop|recessed|arcade)$/ : null
   const tintOf = (el: string): [number, number, number] => (groundEls.has(el) || borrowed?.test(el) ? groundTint : tint)
   const at = (t: number, y: number): [number, number, number] => [a.x + ux * t, baseY + y, a.z + uz * t]
 

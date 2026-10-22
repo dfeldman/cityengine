@@ -321,6 +321,7 @@ renders stay the same buildings from round to round. `tools/appearance/judged.py
 | v6 | see below | 1.64 (0.62) | 32 of 50 | 43 |
 | v7 | see below | 1.73 (0.69) | 38 of 52 | 47 (5 the same, today never) |
 | v8 | see below | 1.77 (0.62) | 40 of 52 | 44 (6 the same) |
+| v9 | see below | 1.80 (0.61) | 41 of 51, first 3 of 3 | 45 (4 the same) |
 
 **v6 changes:**
 - **Schema** (`menus-v6.json`):
@@ -406,6 +407,26 @@ renders stay the same buildings from round to round. `tools/appearance/judged.py
   - loading docks as a raised platform;
   - industrial grid windows on fronts with no homes drawn with the Chicago window;
   - no invented shop names on labelled buildings.
+
+**v9 judged:**
+- First "a passer-by would say it is that building": the Space Age Studio's black front.
+- Labels: a dark or painted ground floor called the same colour as the walls; mansards missed; coloured trim and
+  awnings missed.
+- Renderer: every garage borrowed the Marina stucco's arched opening, so modern boxes and panel blocks grew arches the
+  judges blamed on the labels; also box bays, dormers, art deco piers, murals.
+
+**v10 changes:**
+- **Schema:**
+  - `garage_door_style` (solid, glass panels, roll-up);
+  - `entrance_arch`;
+  - `dormers`;
+  - the brief asks for the ground floor's colour on its own, and names the mansard.
+- **Renderer:**
+  - garages arched only on the Marina-stucco styles;
+  - glass-panel and roll-up doors tinted as such;
+  - an arched entry from the classical arcade painting;
+  - the label's dormers;
+  - a stucco house with sash windows drawn with rectangular sash.
 
 ## 4. Rendering from the labels (`?labels=1`)
 

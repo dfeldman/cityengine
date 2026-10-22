@@ -8,7 +8,7 @@
  * photographs. Every answer is optional; a building keeps whatever the bake gave it where the label is silent.
  */
 import table from '../../data/appearance/looks/haiku.json' with { type: 'json' }
-import menus from '../../data/appearance/research/menus-v9.json' with { type: 'json' }
+import menus from '../../data/appearance/research/menus-v10.json' with { type: 'json' }
 import type { Dress, Palette, StyleId } from './facade.ts'
 import type { RoofShape } from './package.ts'
 
@@ -22,6 +22,8 @@ export interface Look {
   roof?: RoofShape
   /** the words on its main sign, as the photograph shows them */
   sign?: string
+  /** dormers in its roof */
+  dormers?: boolean
   palette?: Partial<Palette>
   dress?: Partial<Dress>
 }
@@ -59,11 +61,13 @@ export function lookFor(id: number, baked?: StyleId): Look | null {
   if (l.windows === 'grid' && l.homes_above === 'no' && style && ['brick', 'storefront', 'bauhaus', 'aptbrick', 'aptclassical'].includes(style)) style = 'chicago'
   // (stucco flats draw rectangular sash; arched windows are the Marina's and the Mediterranean block's)
   if (l.windows === 'arched' && style === 'flatsstucco') style = Number(l.storeys) >= 4 ? 'aptmed' : 'stucco'
+  else if (style === 'stucco' && known(l.windows) && l.windows !== 'arched') style = 'flatsstucco'
   if (style && !(baked && KEEP.has(baked))) look.style = style
   const storeys = l.storeys === '8+' ? 8 : Number(l.storeys)
   if (storeys > 0) look.levels = storeys
   const roof: Record<string, RoofShape> = { flat: 'flat', gabled: 'gabled', hipped: 'hipped', mansard: 'mansard' }
   if (roof[l.roof]) look.roof = roof[l.roof]
+  if (l.dormers === 'yes' || l.dormers === 'no') look.dormers = l.dormers === 'yes'
   // (a short sign only: a long reading is usually several signs run together)
   // (and only over a shop: a neighbour's shop sign read into a house's label was painted on the house — wave 7)
   if (l.sign_text && l.sign_text.length <= 40 && l.shopfronts && l.shopfronts !== 'none' && l.shopfronts !== 'cannot_tell') look.sign = l.sign_text
@@ -112,6 +116,10 @@ export function lookFor(id: number, baked?: StyleId): Look | null {
   }
   if (l.ornament === 'plain' || l.ornament === 'some' || l.ornament === 'rich') dress.ornament = l.ornament
   if (colour(l.garage_door_colour)) dress.garageTint = colour(l.garage_door_colour)
+  // (a glass-panel door reads as a pale blue-grey pane, a roll-up as a light grey shutter, whatever its frame's colour)
+  if (l.garage_door_style === 'glass_panels') dress.garageTint = '#a9b8c2'
+  else if (l.garage_door_style === 'roll_up' && !dress.garageTint) dress.garageTint = '#b5b4ae'
+  if (l.entrance_arch === 'yes' && dress.ground) dress.ground = { ...dress.ground, arched: true }
   if (l.victorian_kind === 'italianate' || l.victorian_kind === 'stick' || l.victorian_kind === 'queen_anne') dress.victorian = l.victorian_kind
   if (l.fire_escape === 'yes' || l.fire_escape === 'no') dress.fireEscape = l.fire_escape === 'yes'
   if (l.colour_panels === 'yes' || l.colour_panels === 'no') dress.blocks = l.colour_panels === 'yes'
