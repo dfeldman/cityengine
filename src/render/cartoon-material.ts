@@ -245,6 +245,26 @@ vec3 surfaceLook(vec3 c, vec3 n, float sid) {
     float shade = smoothstep(0.0, 0.3, fract(p.y / 0.3)) * 0.2 + 0.8;
     return c * shade * (0.9 + 0.2 * hash2(vec2(row, floor(u)))) * mix(1.0, 0.95, nearFade(20.0, 50.0));
   }
+  if (sid > 14.5) {
+    // 15 PANEL: reflective metal rainscreen cladding, flat panels 1.5 x 1.65 m (two to a storey) on open joints. Unlike
+    // METAL it is half mirror: the sky, the town and the sun are in it head-on, not only at a glance. Each panel is hung
+    // a little out of true (oil-canning), so its neighbours catch different bits of sky and the wall reads as a
+    // patchwork of brighter and darker panels rather than one painted sheet. What it reflects is tinted by the colour
+    // given, as a coloured metal is, so a silver one goes the colour of the sky.
+    vec2 cell = floor(vec2(p.x / 1.5, p.y / 1.65));
+    vec2 q = vec2(fract(p.x / 1.5), fract(p.y / 1.65));
+    float near = nearFade(25.0, 60.0);
+    float joint = max(step(0.97, q.x), step(0.972, q.y)) * vert * near;
+    vec3 tangent = vec3(-n.z, 0.0, n.x);
+    vec3 nb = normalize(n + tangent * (hash2(cell) - 0.5) * 0.16 * vert + vec3(0.0, (hash2(cell + 7.0) - 0.5) * 0.14 * vert, 0.0));
+    float facing = max(dot(n, -normalize(vView)), 0.0);
+    float fres = 0.42 + 0.4 * pow(1.0 - facing, 3.0);
+    float lum = max(dot(c, vec3(0.3, 0.59, 0.11)), 0.05);
+    vec3 refl = skyReflect(nb) * mix(vec3(1.0), c / lum, 0.6) * (0.75 + 0.5 * lum);
+    // a pale panel keeps its colour and only sheens: it is the darker metals that go to mirror
+    vec3 m = mix(c * (0.96 + 0.08 * hash2(cell + 3.0)), refl, fres * mix(1.0, 0.22, smoothstep(0.45, 0.8, lum)));
+    return m * (1.0 - 0.4 * joint);
+  }
   if (sid > 13.5) {
     // 14 PLANKS: a timber deck — boards 0.22 m wide with a dark gap between, each its own tone of weathered wood, butt
     // joints staggered every 2.4 m (owner, 2026-10-18: "the planks should be visibly wood planks not uniform")
@@ -363,7 +383,7 @@ let registered = false
  * landmark material (in world metres, so every building shares the same brick and stone). A builder passes
  * `surfaceTag(SURFACES.brick)` as the quad's tag. Tag 0 is the old default, pale dressed stone by colour.
  */
-export const SURFACES = { ashlar: 1, brick: 2, granite: 3, terracotta: 4, concrete: 5, glass: 6, metal: 7, stucco: 8, copper: 9, tile: 10, clapboard: 11, rock: 12, foliage: 13, planks: 14 } as const
+export const SURFACES = { ashlar: 1, brick: 2, granite: 3, terracotta: 4, concrete: 5, glass: 6, metal: 7, stucco: 8, copper: 9, tile: 10, clapboard: 11, rock: 12, foliage: 13, planks: 14, panel: 15 } as const
 export type Surface = keyof typeof SURFACES
 export const surfaceTag = (s: Surface): number => SURFACES[s] / 64
 

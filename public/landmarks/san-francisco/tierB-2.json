@@ -21,19 +21,6 @@
   },
   {
     "osm": [
-      "way/227005944"
-    ],
-    "name": "The Margot",
-    "restyle": "stucco",
-    "height": 40,
-    "levels": 11,
-    "note": "Rule check 2026-10-04 (Mapillary): blue-painted stucco with white trim and a red tile awning; was rule 7 brick.",
-    "wall": "#3a5c8e",
-    "trim": "#f0eee8",
-    "roofColour": "#a8452e"
-  },
-  {
-    "osm": [
       "way/260517113"
     ],
     "name": "850 Powell Street",

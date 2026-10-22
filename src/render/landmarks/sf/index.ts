@@ -44,6 +44,7 @@ import { REBUILD_E15 } from './districts/rebuild-e15.ts'
 import { BANK_TEMPLES } from './districts/bank-temples.ts'
 import { FEDERAL_CIVIC_1 } from './districts/federal-civic-1.ts'
 import { ODDITIES } from './oddities.ts'
+import { MARGOT } from './margot.ts'
 import { TIERA_3 } from './districts/tierA-3.ts'
 import { TIERA_4 } from './districts/tierA-4.ts'
 import { NOTABLE } from './districts/notable.ts'
@@ -407,4 +408,5 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   // last: the Civic Center rebuilt round City Hall replaces the earlier builders of the same names
   ...CIVIC_CORE,
   ...SHOWPIECES,
+  ...MARGOT,
 }
