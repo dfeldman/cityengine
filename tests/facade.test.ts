@@ -6,6 +6,11 @@
 import { describe, expect, it } from 'vitest'
 import { MIN_BAY, STYLES, chooseStyle, planFacade, planWall, style } from '../src/city/facade.ts'
 
+/** a street wall of a building whose dressing (facade.ts Dress) puts shops all along it, where the style dresses at all */
+const STREET = { pavement: 3 }
+const allShops = (p: ReturnType<typeof planFacade>): ReturnType<typeof planFacade> =>
+  p.dress ? { ...p, dress: { ...p.dress, shops: 'all' } } : p
+
 const CITY = [
   { id: 'brick' as const, weight: 3 },
   { id: 'brownstone' as const, weight: 2 },
@@ -66,8 +71,8 @@ describe('rule 1: bays line up vertically', () => {
 describe('rule 2: the ground floor and the roofline are not just more wall', () => {
   it('gives every style a distinct ground storey', () => {
     for (const s of STYLES) {
-      const plan = planFacade(s.id, 3, { levels: 5 })
-      const wall = planWall(plan, 16, 3)
+      const plan = allShops(planFacade(s.id, 3, { levels: 5 }))
+      const wall = planWall(plan, 16, 3, STREET)
       const ground = wall.cells.filter((c) => c.y0 === plan.storeys[0].y0 && !c.element.endsWith('/wall'))
       const mid = wall.cells.filter((c) => c.y0 === plan.storeys[1].y0 && !c.element.endsWith('/wall'))
       expect(ground.length, `${s.id} has no ground cells`).toBeGreaterThan(0)
@@ -187,7 +192,7 @@ describe('the new capabilities', () => {
 
 describe('a building with no shops', () => {
   it('draws the style\'s own windows on the ground floor where the style would put shopfronts', () => {
-    const shops = planWall(planFacade('brick', 7, { levels: 3 }), 30, 7)
+    const shops = planWall(allShops(planFacade('brick', 7, { levels: 3 })), 30, 7, STREET)
     expect(shops.cells.some((c) => c.element === 'brick/shopfront')).toBe(true)
     const plan = planFacade('brick', 7, { levels: 3, noShops: true })
     expect(plan.ground).toBe('plain')
@@ -207,3 +212,35 @@ describe('an institution', () => {
     expect(hospital.features.some((f) => f.kind === 'fireEscape')).toBe(false)
   })
 })
+
+describe('a dressed commercial building', () => {
+  const plans = Array.from({ length: 600 }, (_, i) => planFacade('brick', 1000 + i, { levels: 3 }))
+
+  it('is dressed per building, from its own seed, and only in the styles that dress', () => {
+    expect(planFacade('brick', 5, { levels: 3 }).dress).toEqual(planFacade('brick', 5, { levels: 3 }).dress)
+    expect(planFacade('victorian', 5, { levels: 3 }).dress).toBeUndefined()
+    expect(new Set(plans.map((p) => p.dress!.cap)).size).toBe(4)
+  })
+
+  it('has all its shops, one, or none — not a shop in every bay of every building', () => {
+    const n = (k: string) => plans.filter((p) => p.dress!.shops === k).length / plans.length
+    for (const k of ['all', 'one', 'none']) expect(n(k), k).toBeGreaterThan(0.2)
+    const shopBays = (p: ReturnType<typeof planFacade>) =>
+      planWall(p, 30, 9, STREET).cells.filter((c) => c.element === 'brick/shopfront').length
+    const one = plans.find((p) => p.dress!.shops === 'one')!
+    const none = plans.find((p) => p.dress!.shops === 'none')!
+    expect(shopBays(one)).toBeGreaterThanOrEqual(1)
+    expect(shopBays(one)).toBeLessThanOrEqual(2)
+    expect(shopBays(none)).toBe(0)
+  })
+
+  it('keeps shops and ornament off the walls that do not face a street', () => {
+    const p = allShops(plans.find((q) => q.dress!.cap === 'bracket')!)
+    const side = planWall(p, 30, 9)
+    const front = planWall(p, 30, 9, STREET)
+    expect(side.cells.some((c) => c.element.endsWith('/shopfront'))).toBe(false)
+    expect(side.features.some((f) => f.kind === 'bracket')).toBe(false)
+    expect(front.features.some((f) => f.kind === 'bracket')).toBe(true)
+  })
+})
+

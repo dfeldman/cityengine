@@ -487,6 +487,8 @@ export class Signs implements TileLayer {
         if (signed.has(b.id)) continue
         // only over a shop: a stoop, a plain wall or a glazed lobby does not get a trade's name over it
         if (planOf(b.id)?.ground !== 'shopfront') continue
+        // …nor over a commercial building whose ground floor is offices or a warehouse (facade.ts Dress.shops)
+        if (planOf(b.id)?.dress?.shops === 'none') continue
         const spot = frontage(b, streets)
         if (!spot) continue
         // in Chinatown, its own names (offset past the city's in `used`, so the two lists never collide); on the

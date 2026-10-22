@@ -198,7 +198,7 @@ function wall(
   const nx = uz
   const nz = -ux
 
-  const w = planWall(plan, len, seed)
+  const w = planWall(plan, len, seed, street)
   const tint = rgb(plan.palette.wall)
   // the ground storey's own paint, where the palette gives one: its cells are the ones drawn with the style's
   // ground element (a shopfront, an arcade, a stoop, a glazed front) rather than the wall's
@@ -549,7 +549,24 @@ function feature(
   out.quad([at(x0, f.y1, 0), at(x1, f.y1, 0), at(x1, f.y1, d), at(x0, f.y1, d)],
     [0, 1, 0], uvq, tint, KIND_WALL)
   out.quad([at(x0, f.y0, d), at(x1, f.y0, d), at(x1, f.y0, 0), at(x0, f.y0, 0)],
-    [0, -1, 0], uvq, tint, KIND_WALL)
+    [0, -1, 0], uvq, shadeRgb(tint, f.kind === 'canopy' ? 0.7 : 1), KIND_WALL)
+  /*
+   * A dressed building's parts that stand free (dressWall): a pier, a bracket or a canopy is seen from along the street,
+   * so it has ends; a raised parapet or a name panel stands above the roof and is seen from behind, so it has a back.
+   */
+  const ys = (f.y1 - f.y0) / s
+  if (!full && (f.kind === 'pilaster' || f.kind === 'bracket' || f.kind === 'canopy' || f.kind === 'panel')) {
+    out.quad([at(x0, f.y0, 0), at(x0, f.y0, d), at(x0, f.y1, d), at(x0, f.y1, 0)],
+      [-ux, 0, -uz], [[0, 0], [d / s, 0], [d / s, ys], [0, ys]], tint, KIND_WALL)
+    out.quad([at(x1, f.y0, d), at(x1, f.y0, 0), at(x1, f.y1, 0), at(x1, f.y1, d)],
+      [ux, 0, uz], [[0, 0], [d / s, 0], [d / s, ys], [0, ys]], tint, KIND_WALL)
+  }
+  const roofline = plan.height + 0.3
+  if ((f.kind === 'parapet' || f.kind === 'panel') && f.y1 > roofline) {
+    const hy = (f.y1 - plan.height) / s
+    out.quad([at(x1, plan.height, 0), at(x0, plan.height, 0), at(x0, f.y1, 0), at(x1, f.y1, 0)],
+      [-nx, 0, -nz], [[0, 0], [(x1 - x0) / s, 0], [(x1 - x0) / s, hy], [0, hy]], shadeRgb(tint, 0.85), KIND_WALL)
+  }
 }
 
 /**

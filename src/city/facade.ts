@@ -64,6 +64,8 @@ export interface Palette {
    * own colour, as before.
    */
   ground?: string
+  /** how often this palette is drawn against the others in its list (default 1): San Francisco's lofts are mostly red brick */
+  weight?: number
 }
 
 export interface Style {
@@ -146,7 +148,7 @@ export interface Cell {
 }
 
 export type FeatureKind = 'cornice' | 'balcony' | 'stringCourse' | 'sill' | 'slabBand' | 'pilaster' | 'parapet'
-  | 'fireEscape' | 'bay' | 'gable'
+  | 'fireEscape' | 'bay' | 'gable' | 'bracket' | 'canopy' | 'panel'
 
 /** Something that sticks out of the wall. Depth is metres proud of the facade plane. */
 export interface Feature {
@@ -175,6 +177,110 @@ export interface FacadePlan {
   institution?: boolean
   top: TopKind
   hasBalconyAt: (level: number) => boolean
+  /** this building's own dressing, for the styles that have one (`DRESSERS`) */
+  dress?: Dress
+}
+
+/**
+ * What a commercial building wears on its street front, drawn per building from its own seed. Before this every loft in
+ * SoMa had the same flat parapet and every modern block the same white band (owner, 2026-10-21: "make them have a
+ * more realistic variety"): neighbours differed only in paint. The street front is where a building spends its money —
+ * the cornice, the piers, the name panel are on the street wall and the side and back walls are plain — so all of it
+ * except the roof's overhang goes on street-facing walls only, which also keeps it off the phone's triangle budget.
+ */
+export interface Dress {
+  /**
+   * the top: the style's own band (`plain`); a corbelled brick cornice stepping out in three courses; a pressed-metal
+   * cornice on brackets; a raised name panel at the middle of the street front (strip retail's sign board, a loft's
+   * date stone); a flat roof slab overhanging every wall
+   */
+  cap: 'plain' | 'corbel' | 'bracket' | 'panel' | 'overhang'
+  /** metres the parapet rises above the style's usual coping */
+  parapet: number
+  /** brick piers between the bays, from the shop cornice up: the daylight factory's front */
+  piers: boolean
+  /** a band at every floor line above the first: a brick belt course, a modern block's slab edges */
+  belts: boolean
+  /** a cornice over the shop storey */
+  base: boolean
+  /** a flat metal canopy over the glazed ground storey */
+  canopy: boolean
+  fireEscape: boolean
+  /** thin vertical fins between the bays */
+  fins: boolean
+  /** balconies on alternate bays above the ground storey */
+  balconies: boolean
+  /** the name panel's share of the wall */
+  panel: number
+  /**
+   * How much of the street front is shop. Paris is shops all along under cream flats, and the grammar was written there;
+   * San Francisco's commercial buildings very often have no shop at all — an office's or a warehouse's ground floor of
+   * windows — or one, with its door in the middle of the front (owner, 2026-10-21). Walls off the street never have one.
+   */
+  shops: 'all' | 'one' | 'none'
+}
+
+const weighted = <T,>(r: () => number, xs: readonly [T, number][]): T => {
+  let x = r() * xs.reduce((t, [, w]) => t + w, 0)
+  for (const [v, w] of xs) if ((x -= w) <= 0) return v
+  return xs[xs.length - 1][0]
+}
+
+const NO_DRESS: Dress = { cap: 'plain', parapet: 0, piers: false, belts: false, base: false, canopy: false, fireEscape: false,
+  fins: false, balconies: false, panel: 0.5, shops: 'all' }
+
+/**
+ * The styles that dress, and how. The weights are judgement, checked against the 50 SoMa and Mission lofts and 32 modern
+ * blocks labelled from street photographs (data/appearance/training.json): about a third of the "lofts" really are brick
+ * warehouses, the rest one- and two-storey shop buildings with a raised sign parapet or a plain coping.
+ */
+const DRESSERS: Partial<Record<StyleId, (r: () => number, levels: number) => { dress: Dress; groundPaint?: string }>> = {
+  brick: (r, levels) => {
+    const low = levels <= 2
+    const cap = weighted<Dress['cap']>(r, low
+      ? [['plain', 30], ['corbel', 20], ['bracket', 10], ['panel', 40]]
+      : [['plain', 30], ['corbel', 35], ['bracket', 20], ['panel', 15]])
+    const dress: Dress = {
+      ...NO_DRESS,
+      cap,
+      parapet: r() < 0.5 ? 0 : 0.2 + r() * (low ? 1.1 : 0.7),
+      piers: levels >= 2 && r() < 0.35,
+      belts: levels >= 3 && r() < 0.25,
+      base: r() < 0.55,
+      fireEscape: levels >= 3 && r() < 0.35,
+      panel: 0.35 + r() * 0.3,
+      shops: weighted<Dress['shops']>(r, low ? [['all', 45], ['one', 35], ['none', 20]] : [['all', 30], ['one', 35], ['none', 35]]),
+    }
+    const paint = r() < 0.3 ? weighted(r, [['#2b2b2d', 3], ['#3b4a3f', 1.5], ['#5a2a26', 1.5], ['#d8d2c4', 1.5], ['#6e6e6a', 2]]) : undefined
+    return { dress, groundPaint: paint }
+  },
+  bauhaus: (r, levels) => {
+    const cap = weighted<Dress['cap']>(r, [['plain', 50], ['overhang', 25], ['panel', levels <= 2 ? 25 : 8]])
+    const dress: Dress = {
+      ...NO_DRESS,
+      cap,
+      parapet: cap === 'plain' && r() < 0.35 ? 0.4 + r() * 0.6 : 0,
+      belts: levels >= 2 && r() < 0.3,
+      canopy: r() < 0.5,
+      fins: levels >= 2 && r() < 0.2,
+      balconies: levels >= 3 && r() < 0.25,
+      panel: 0.4 + r() * 0.3,
+      shops: weighted<Dress['shops']>(r, [['all', 35], ['one', 30], ['none', 35]]),
+    }
+    const paint = r() < 0.35 ? weighted(r, [['#3a3b3e', 3], ['#5b5d60', 2], ['#8a6a4f', 1.5], ['#2f4f5f', 1]]) : undefined
+    return { dress, groundPaint: paint }
+  },
+}
+
+/** A palette from a list, by weight where the list gives weights. One draw from `r` either way, so nothing downstream moves. */
+export function pickPalette(r: () => number, list: readonly Palette[]): Palette {
+  if (!list.some((p) => p.weight !== undefined)) return pick(r, list)
+  return weighted(r, list.map((p) => [p, p.weight ?? 1] as [Palette, number]))
+}
+
+/** The palette `planFacade` gives building `seed` from this list: what the far city paints it, so it does not change colour as it nears. */
+export function paletteFor(seed: number, list: readonly Palette[]): Palette {
+  return pickPalette(rng(seed), list)
 }
 
 export interface WallPlan {
@@ -269,7 +375,7 @@ export function planFacade(
 ): FacadePlan {
   const st = style(styleId)
   const r = rng(seed)
-  const palette = pick(r, palettes && palettes.length > 0 ? palettes : st.palettes)
+  let palette = pickPalette(r, palettes && palettes.length > 0 ? palettes : st.palettes)
 
   let levels = Math.max(
     1,
@@ -322,6 +428,9 @@ export function planFacade(
   const y = storeys[storeys.length - 1].y1
 
   const balconyLevels = new Set(st.balcony?.levels ?? [])
+  // (its own stream, so the draws above — and every building of the styles that do not dress — stay as they were)
+  const dressed = osm.noShops ? undefined : DRESSERS[styleId]?.(rng(seed ^ 0x0d2e55), levels)
+  if (dressed?.groundPaint && !aloft) palette = { ...palette, ground: dressed.groundPaint }
   return {
     style: styleId,
     palette,
@@ -339,6 +448,7 @@ export function planFacade(
     ...(osm.noShops ? { institution: true } : {}),
     top: st.top,
     hasBalconyAt: (level) => balconyLevels.has(level),
+    ...(dressed && !aloft ? { dress: dressed.dress } : {}),
   }
 }
 
@@ -350,7 +460,9 @@ export function planFacade(
  * the REMAINDER goes into the corner margins rather than into the bays. That is also what real buildings do —
  * the wall returns at the corner in solid masonry, not in half a window.
  */
-export function planWall(plan: FacadePlan, wallLength: number, seed: number): WallPlan {
+export function planWall(plan: FacadePlan, wallLength: number, seed: number,
+  /** this wall faces a street (and how far it is to the kerb): where a dressed building puts its ornament */
+  street: { pavement?: number | null; main?: boolean } | null = null): WallPlan {
   const st = style(plan.style)
   const r = rng(seed)
   const cells: Cell[] = []
@@ -378,6 +490,14 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number): Wa
    */
   const carriageBay = (plan.style === 'haussmann' || plan.style === 'marais') && bays >= 3
     && rng(seed ^ 0x0c0c4e)() < 1 / 3 ? Math.floor(bays / 2) : -1
+  // a dressed building's shops (Dress.shops): on the street front only, and there all of it, or one shop of a bay or two
+  // in the middle, or none
+  const d = plan.dress
+  const oneN = bays >= 4 ? 2 : 1
+  const one0 = Math.floor((bays - oneN) / 2)
+  // (a shopping street's front always has its shop: Mission, 24th, Valencia — the warehouse ground floor is for the side streets)
+  const shops = d?.shops === 'none' && street?.main ? 'one' : d?.shops
+  const shopBay = (b: number): boolean => !d || (street !== null && (shops === 'all' || (shops === 'one' && b >= one0 && b < one0 + oneN)))
 
   for (const s of plan.storeys) {
     // The solid wall either side of the bays, at every storey, so the corners read as masonry.
@@ -396,13 +516,13 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number): Wa
        * the set bay by bay from a seeded start, so no two neighbouring shops are the same. (They went in pairs for a few
        * hours, a shop two bays wide — but each bay paints its own fascia, so the pair read CLAM BAR | CLAM BAR.)
        */
-      const shopGround = s.kind === 'ground' && plan.ground !== 'plain' && b !== carriageBay
+      const shopGround = s.kind === 'ground' && plan.ground !== 'plain' && b !== carriageBay && shopBay(b)
       const variant = shopGround ? ((rng(seed ^ 0x5e11)() + b * 0.381966) % 1) : vr()
 
       let element: string
       if (s.kind === 'ground' && b === carriageBay) element = `${plan.style}/carriage`
       // ('plain': a ground floor of the style's own windows — a school's, where the style would have shops)
-      else if (s.kind === 'ground') element = plan.ground === 'plain' ? `${plan.style}/window` : `${plan.style}/${plan.ground}`
+      else if (s.kind === 'ground') element = plan.ground === 'plain' || !shopBay(b) ? `${plan.style}/window` : `${plan.style}/${plan.ground}`
       else if (s.kind === 'top' && plan.top === 'mansard') element = `${plan.style}/dormer`
       else element = `${plan.style}/window`
 
@@ -504,11 +624,16 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number): Wa
 
   // Everything is closed off at the top, but by what depends on the style: a deep bracketed cornice on a
   // brownstone, a thin coping on a brick parapet, almost nothing on a tower.
-  features.push({
-    kind: plan.top === 'parapet' ? 'parapet' : 'cornice',
-    y0: plan.height - st.cornice.height, y1: plan.height + st.cornice.height * 0.35,
-    depth: st.cornice.depth, colour: plan.palette.trim,
-  })
+  // (a dressed building's parapet may stand higher, and then it is a wall with a back to it: `parapet` draws one)
+  const rise = plan.dress?.parapet ?? 0
+  if (plan.dress?.cap !== 'overhang') {
+    features.push({
+      kind: plan.top === 'parapet' || rise > 0 ? 'parapet' : 'cornice',
+      y0: plan.height - st.cornice.height, y1: plan.height + st.cornice.height * 0.35 + rise,
+      depth: st.cornice.depth, colour: plan.palette.trim,
+    })
+  }
+  if (plan.dress) dressWall(plan, plan.dress, features, wallLength, margin, bayW, bays, street)
   // a Victorian's gable, or its false front, rising above the cornice on the street wall
   if (plan.top === 'gable' && wallLength <= 9.5) {
     features.push({ kind: 'gable', y0: plan.height + st.cornice.height * 0.35, y1: plan.height + 1.9,
@@ -516,4 +641,84 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number): Wa
   }
 
   return { cells, features, bays }
+}
+
+/**
+ * A dressed building's ornament on one wall. Only the overhanging roof slab goes round every wall; everything else is
+ * for the street front, which is what a passer-by sees and what the builder paid to decorate.
+ */
+function dressWall(plan: FacadePlan, d: Dress, features: Feature[], len: number, margin: number, bayW: number, bays: number,
+  street: { pavement?: number | null; main?: boolean } | null): void {
+  const h = plan.height
+  const g = plan.storeys[0]
+  const shop = g.kind === 'ground' && plan.storeys.length > 1
+  const trim = plan.palette.trim
+  const wall = plan.palette.wall
+  if (d.cap === 'overhang') {
+    features.push({ kind: 'cornice', y0: h - 0.05, y1: h + 0.22, depth: 0.9, colour: trim })
+  }
+  if (!street) return
+  const top = h + style(plan.style).cornice.height * 0.35 + d.parapet
+
+  if (d.cap === 'corbel') {
+    // three courses, each a brick further out than the one below, under the coping
+    features.push({ kind: 'cornice', y0: h - 1.0, y1: h - 0.78, depth: 0.08, colour: wall })
+    features.push({ kind: 'cornice', y0: h - 0.78, y1: h - 0.56, depth: 0.16, colour: wall })
+    features.push({ kind: 'cornice', y0: h - 0.56, y1: h - 0.34, depth: 0.24, colour: wall })
+  } else if (d.cap === 'bracket' && bays > 0) {
+    features.push({ kind: 'cornice', y0: h - 0.8, y1: h - 0.32, depth: 0.55, colour: trim })
+    for (let b = 0; b <= bays; b++) {
+      const x = margin + b * bayW
+      features.push({ kind: 'bracket', y0: h - 1.25, y1: h - 0.8, depth: 0.42, x0: x - 0.12, x1: x + 0.12, colour: trim })
+    }
+  } else if (d.cap === 'panel' && len >= 6) {
+    const w = len * d.panel
+    const x0 = (len - w) / 2
+    const y1 = top + 0.7 + d.panel * 1.2
+    features.push({ kind: 'panel', y0: h - 0.3, y1, depth: 0.06, x0, x1: x0 + w, colour: wall })
+    features.push({ kind: 'cornice', y0: y1 - 0.12, y1: y1 + 0.06, depth: 0.16, x0: x0 - 0.1, x1: x0 + w + 0.1, colour: trim })
+  }
+
+  if (shop && d.base) features.push({ kind: 'stringCourse', y0: g.y1 - 0.12, y1: g.y1 + 0.22, depth: 0.22, colour: trim })
+  const shops = d.shops === 'none' && street.main ? 'one' : d.shops
+  if (shop && d.canopy && bays > 0 && shops !== 'none') {
+    const reach = Math.max(0.6, Math.min(1.3, (street.pavement ?? 9) - 0.3))
+    const y0 = Math.max(3.4, g.y1 - 0.3)
+    // over the one shop's bays (planWall's `one0`), or the whole front
+    const n = bays >= 4 ? 2 : 1
+    const b0 = shops === 'one' ? Math.floor((bays - n) / 2) : 0
+    const x0 = shops === 'one' ? margin + b0 * bayW : margin
+    const x1 = shops === 'one' ? margin + (b0 + n) * bayW : len - margin
+    features.push({ kind: 'canopy', y0, y1: y0 + 0.16, depth: reach, x0, x1, colour: plan.palette.accent })
+  }
+  if (d.belts) {
+    for (const s of plan.storeys) {
+      if (s.index < 2) continue
+      features.push({ kind: 'slabBand', y0: s.y0 - 0.12, y1: s.y0 + 0.1, depth: 0.1, colour: trim })
+    }
+  }
+  if (bays >= 2 && (d.piers || d.fins)) {
+    for (let b = d.fins ? 1 : 0; b <= (d.fins ? bays - 1 : bays); b++) {
+      const x = margin + b * bayW
+      const half = d.fins ? 0.07 : 0.28
+      features.push({ kind: 'pilaster', y0: shop ? g.y1 : 0, y1: h - (d.cap === 'corbel' ? 1.0 : 0.3), depth: d.fins ? 0.38 : 0.14,
+        x0: x - half, x1: x + half, colour: d.fins ? trim : wall })
+    }
+  }
+  if (d.fireEscape && bays >= 3 && plan.storeys.length >= 3) {
+    const b0 = Math.floor((bays - 2) / 2)
+    for (const s of plan.storeys) {
+      if (s.index < 1) continue
+      features.push({ kind: 'fireEscape', y0: s.y0, y1: s.y1, depth: 0.9, x0: margin + b0 * bayW, x1: margin + (b0 + 2) * bayW, colour: '#1d1d1f' })
+    }
+  }
+  if (d.balconies && bays >= 2) {
+    for (const s of plan.storeys) {
+      if (s.kind === 'ground') continue
+      for (let b = 0; b < bays; b += 2) {
+        features.push({ kind: 'balcony', y0: s.y0, y1: s.y0 + 1.0, depth: 1.0, x0: margin + b * bayW + 0.1,
+          x1: margin + (b + 1) * bayW - 0.1, colour: plan.palette.accent })
+      }
+    }
+  }
 }

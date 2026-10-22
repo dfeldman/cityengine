@@ -16,7 +16,7 @@ import type { Scene } from '@babylonjs/core/scene'
 import { MeshBuilder } from './buildings.ts'
 import { buildRoof } from './roofs.ts'
 import { facadeMaterial, KIND_WALL } from './facade-material.ts'
-import { style as styleOf, STYLES, type Palette } from '../city/facade.ts'
+import { paletteFor, style as styleOf, STYLES, type Palette } from '../city/facade.ts'
 import { unpackPoints, onSurface, steeperThanWall, type PackedBuilding, type PackedEdge, type PackedFringe } from '../city/package.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
 import type { TileLayer } from './city.ts'
@@ -60,7 +60,8 @@ export function massing(scene: Scene, list: PackedFringe[], reg: Region, terrain
     // than throwing out of the frame loop (owner, 2026-10-02, Sausalito: "Uncaught Error: unknown style undefined")
     if (!f.style || !(f.style in reg.palettes) && !STYLES.some((st) => st.id === f.style)) f = { ...f, style: 'sfapartment' as typeof f.style }
     const palettes: Palette[] = reg.palettes[f.style] ?? styleOf(f.style).palettes
-    const pal = palettes[Math.abs(f.id) % palettes.length]
+    // the palette the near city gives it (facade.ts planFacade), so a building does not change colour as its tile loads
+    const pal = paletteFor(f.id, palettes)
     const tint = rgb(pal.wall)
     // explicit Z (map format v3) when the city was baked with it: the same rule, decided at bake
     let foot = Infinity
