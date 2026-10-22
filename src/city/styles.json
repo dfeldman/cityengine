@@ -2233,6 +2233,512 @@
           "weight": 0.4
         }
       ]
+    },
+    {
+      "id": "aptclassical",
+      "name": "SF apartment hotel",
+      "note": "San Francisco, 1906-1930: the Beaux-Arts apartment hotel of Lower Nob Hill and the Tenderloin — cream or buff terracotta and stucco, a rusticated base round an arched central entry, a heavy bracketed cornice, often a fire escape down the front (owner's photographs, 2026-10-21). Drawn with the Classical style's windows, stone and arched entry (`art`).",
+      "art": "classical",
+      "groundArt": "classical",
+      "levels": [
+        4,
+        9
+      ],
+      "levelHeight": [
+        3.0,
+        3.3
+      ],
+      "groundHeight": [
+        3.8,
+        4.6
+      ],
+      "bayWidth": [
+        2.2,
+        3.0
+      ],
+      "pier": [
+        0.6,
+        1.0
+      ],
+      "window": {
+        "kind": "pedimented",
+        "widthFrac": [
+          0.46,
+          0.58
+        ],
+        "heightFrac": [
+          0.6,
+          0.72
+        ],
+        "sill": 0.16
+      },
+      "ground": "arcade",
+      "top": "cornice",
+      "cornice": {
+        "depth": 0.9,
+        "height": 1.0
+      },
+      "stringCourse": true,
+      "palettes": [
+        {
+          "wall": "#efe6d2",
+          "trim": "#fbf6ea",
+          "roof": "#5a5550",
+          "accent": "#2b2b2d",
+          "weight": 2
+        },
+        {
+          "wall": "#e6d8b8",
+          "trim": "#f7f0de",
+          "roof": "#5a5550",
+          "accent": "#2b2b2d",
+          "weight": 2
+        },
+        {
+          "wall": "#f2efe6",
+          "trim": "#d9d2c2",
+          "roof": "#5a5550",
+          "accent": "#2b2b2d",
+          "weight": 1.5
+        },
+        {
+          "wall": "#e9dca0",
+          "trim": "#fbf6e4",
+          "roof": "#5a5550",
+          "accent": "#2b2b2d",
+          "weight": 0.6
+        },
+        {
+          "wall": "#d9b9a0",
+          "trim": "#f4ebde",
+          "roof": "#5a5550",
+          "accent": "#2b2b2d",
+          "weight": 0.8
+        },
+        {
+          "wall": "#c9cdc6",
+          "trim": "#f2f0ea",
+          "roof": "#5a5550",
+          "accent": "#2b2b2d",
+          "weight": 0.6
+        },
+        {
+          "wall": "#bfd4cf",
+          "trim": "#f4f4ee",
+          "roof": "#5a5550",
+          "accent": "#2b2b2d",
+          "weight": 0.4
+        }
+      ]
+    },
+    {
+      "id": "aptbrick",
+      "name": "SF brick apartments",
+      "note": "San Francisco, 1906-1930: the brick apartment hotel — red, brown or buff brick with cream terracotta trim, sash windows in a flat front, fire escapes zig-zagging down it, a bracketed cornice; the 'tenement' look of the Tenderloin and Nob Hill (owner's photographs, 2026-10-21). Drawn with the Tenement's brick and windows over an arched entry (`art`).",
+      "art": "tenement",
+      "groundArt": "classical",
+      "levels": [
+        4,
+        9
+      ],
+      "levelHeight": [
+        2.9,
+        3.2
+      ],
+      "groundHeight": [
+        3.6,
+        4.2
+      ],
+      "bayWidth": [
+        2.0,
+        2.6
+      ],
+      "pier": [
+        0.5,
+        0.8
+      ],
+      "window": {
+        "kind": "sash",
+        "widthFrac": [
+          0.46,
+          0.56
+        ],
+        "heightFrac": [
+          0.6,
+          0.7
+        ],
+        "sill": 0.14
+      },
+      "ground": "arcade",
+      "top": "cornice",
+      "cornice": {
+        "depth": 0.7,
+        "height": 0.9
+      },
+      "stringCourse": true,
+      "palettes": [
+        {
+          "wall": "#9a4a36",
+          "trim": "#efe6d4",
+          "roof": "#5a5550",
+          "accent": "#1d1d1f",
+          "weight": 2
+        },
+        {
+          "wall": "#8a3f2e",
+          "trim": "#e8dcc4",
+          "roof": "#5a5550",
+          "accent": "#1d1d1f",
+          "weight": 1.6
+        },
+        {
+          "wall": "#a65a3e",
+          "trim": "#f2ead8",
+          "roof": "#5a5550",
+          "accent": "#1d1d1f",
+          "weight": 1.4
+        },
+        {
+          "wall": "#b98a5e",
+          "trim": "#f2ead8",
+          "roof": "#5a5550",
+          "accent": "#1d1d1f",
+          "weight": 1.2
+        },
+        {
+          "wall": "#c9a27a",
+          "trim": "#f4efe4",
+          "roof": "#5a5550",
+          "accent": "#1d1d1f",
+          "weight": 1.0
+        },
+        {
+          "wall": "#7a4a3a",
+          "trim": "#d9cfbd",
+          "roof": "#5a5550",
+          "accent": "#1d1d1f",
+          "weight": 0.8
+        },
+        {
+          "wall": "#c98f86",
+          "trim": "#f4ece2",
+          "roof": "#5a5550",
+          "accent": "#1d1d1f",
+          "weight": 0.5
+        },
+        {
+          "wall": "#9a9a92",
+          "trim": "#efefe8",
+          "roof": "#5a5550",
+          "accent": "#1d1d1f",
+          "weight": 0.4
+        }
+      ]
+    },
+    {
+      "id": "aptmed",
+      "name": "SF Mediterranean apartments",
+      "note": "San Francisco, 1920-1940: the Mediterranean, Spanish and Deco apartment block of the Marina, Pacific Heights and Russian Hill — white, cream or salmon stucco, arched windows, wrought-iron balconettes, a parapet or a tiled coping, the garage and the entry at the pavement (owner's photographs, 2026-10-21). Drawn with the Marina stucco's windows, render and garage (`art`).",
+      "art": "stucco",
+      "groundArt": "stucco",
+      "levels": [
+        3,
+        6
+      ],
+      "levelHeight": [
+        2.9,
+        3.2
+      ],
+      "groundHeight": [
+        3.0,
+        3.4
+      ],
+      "bayWidth": [
+        2.2,
+        3.0
+      ],
+      "pier": [
+        0.5,
+        0.9
+      ],
+      "window": {
+        "kind": "casement",
+        "widthFrac": [
+          0.5,
+          0.62
+        ],
+        "heightFrac": [
+          0.62,
+          0.74
+        ],
+        "sill": 0.1
+      },
+      "ground": "garage",
+      "top": "parapet",
+      "cornice": {
+        "depth": 0.2,
+        "height": 0.5
+      },
+      "stringCourse": false,
+      "palettes": [
+        {
+          "wall": "#f4f1e8",
+          "trim": "#c46a45",
+          "roof": "#a8553a",
+          "accent": "#1d1d1f",
+          "weight": 2
+        },
+        {
+          "wall": "#efe4cc",
+          "trim": "#b85f3e",
+          "roof": "#a8553a",
+          "accent": "#1d1d1f",
+          "weight": 1.6
+        },
+        {
+          "wall": "#e8c7ae",
+          "trim": "#f6efe4",
+          "roof": "#a8553a",
+          "accent": "#1d1d1f",
+          "weight": 1.2
+        },
+        {
+          "wall": "#f0dfc0",
+          "trim": "#7a5a3a",
+          "roof": "#a8553a",
+          "accent": "#1d1d1f",
+          "weight": 1.0
+        },
+        {
+          "wall": "#d8e2d2",
+          "trim": "#f6f4ee",
+          "roof": "#a8553a",
+          "accent": "#1d1d1f",
+          "weight": 0.6
+        },
+        {
+          "wall": "#e6e6e0",
+          "trim": "#3a3b3e",
+          "roof": "#a8553a",
+          "accent": "#1d1d1f",
+          "weight": 0.8
+        },
+        {
+          "wall": "#f2e6b8",
+          "trim": "#f8f4e6",
+          "roof": "#a8553a",
+          "accent": "#1d1d1f",
+          "weight": 0.5
+        },
+        {
+          "wall": "#dcb8b0",
+          "trim": "#f6eee8",
+          "roof": "#a8553a",
+          "accent": "#1d1d1f",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "aptmodern",
+      "name": "SF modern apartments",
+      "note": "San Francisco, 1955 on: the cheap modern block — a box of render or panels, aluminium windows, balconies or none, garages under, and bright colour blocks laid over groups of bays (owner, 2026-10-21: 'cheap modern buildings all are boxy and bright colored'). Drawn with the Bauhaus ribbon windows over the stucco garage (`art`).",
+      "art": "bauhaus",
+      "groundArt": "stucco",
+      "levels": [
+        3,
+        7
+      ],
+      "levelHeight": [
+        2.8,
+        3.1
+      ],
+      "groundHeight": [
+        3.0,
+        3.4
+      ],
+      "bayWidth": [
+        2.6,
+        3.6
+      ],
+      "pier": [
+        0.3,
+        0.6
+      ],
+      "window": {
+        "kind": "ribbon",
+        "widthFrac": [
+          0.6,
+          0.8
+        ],
+        "heightFrac": [
+          0.44,
+          0.56
+        ],
+        "sill": 0.9
+      },
+      "ground": "garage",
+      "top": "flatband",
+      "cornice": {
+        "depth": 0.15,
+        "height": 0.3
+      },
+      "stringCourse": false,
+      "palettes": [
+        {
+          "wall": "#efece4",
+          "trim": "#d8d4cc",
+          "roof": "#7a7874",
+          "accent": "#e0782e",
+          "weight": 1.6
+        },
+        {
+          "wall": "#e4dac4",
+          "trim": "#f4efe4",
+          "roof": "#7a7874",
+          "accent": "#2f6fa8",
+          "weight": 1.4
+        },
+        {
+          "wall": "#cfd0cc",
+          "trim": "#f0f0ec",
+          "roof": "#7a7874",
+          "accent": "#e2b13a",
+          "weight": 1.2
+        },
+        {
+          "wall": "#f2efe8",
+          "trim": "#cfcac0",
+          "roof": "#7a7874",
+          "accent": "#6aa84f",
+          "weight": 1.0
+        },
+        {
+          "wall": "#d6e2ea",
+          "trim": "#f4f6f8",
+          "roof": "#7a7874",
+          "accent": "#c0392b",
+          "weight": 0.8
+        },
+        {
+          "wall": "#9c9d9a",
+          "trim": "#e6e6e2",
+          "roof": "#6a6866",
+          "accent": "#e0782e",
+          "weight": 0.6
+        },
+        {
+          "wall": "#e9d9b8",
+          "trim": "#f6efe0",
+          "roof": "#7a7874",
+          "accent": "#2f6fa8",
+          "weight": 0.8
+        },
+        {
+          "wall": "#c8d8c4",
+          "trim": "#f2f4ee",
+          "roof": "#7a7874",
+          "accent": "#e0782e",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "aptluxe",
+      "name": "SF contemporary apartments",
+      "note": "San Francisco, 1990 on: the better modern block — white render, charcoal panel or warm timber, glass, box bays standing out of the front, glass balconies, a roof slab overhanging (owner, 2026-10-21: 'modern buildings have even more variety, especially nicer ones'). Drawn with the Bauhaus ribbon glass over a glazed base (`art`).",
+      "art": "bauhaus",
+      "groundArt": "bauhaus",
+      "levels": [
+        4,
+        9
+      ],
+      "levelHeight": [
+        3.0,
+        3.3
+      ],
+      "groundHeight": [
+        3.6,
+        4.4
+      ],
+      "bayWidth": [
+        3.0,
+        4.2
+      ],
+      "pier": [
+        0.25,
+        0.5
+      ],
+      "window": {
+        "kind": "ribbon",
+        "widthFrac": [
+          0.82,
+          0.94
+        ],
+        "heightFrac": [
+          0.5,
+          0.62
+        ],
+        "sill": 0.9
+      },
+      "ground": "glazed",
+      "top": "flatband",
+      "cornice": {
+        "depth": 0.2,
+        "height": 0.35
+      },
+      "stringCourse": false,
+      "palettes": [
+        {
+          "wall": "#f2f0ea",
+          "trim": "#3a3b3e",
+          "roof": "#6a6866",
+          "accent": "#8a6a4f",
+          "weight": 2
+        },
+        {
+          "wall": "#3a3b3e",
+          "trim": "#e9e6df",
+          "roof": "#5e5c5a",
+          "accent": "#b5885a",
+          "weight": 1.4
+        },
+        {
+          "wall": "#e4dac4",
+          "trim": "#3a3b3e",
+          "roof": "#6a6866",
+          "accent": "#5b5d60",
+          "weight": 1.2
+        },
+        {
+          "wall": "#9c9d9a",
+          "trim": "#f0f0ec",
+          "roof": "#5e5c5a",
+          "accent": "#b5885a",
+          "weight": 1.0
+        },
+        {
+          "wall": "#8a6a4f",
+          "trim": "#efe8dc",
+          "roof": "#5e5c5a",
+          "accent": "#2b2b2d",
+          "weight": 0.8
+        },
+        {
+          "wall": "#cfd0cc",
+          "trim": "#2b2b2d",
+          "roof": "#6a6866",
+          "accent": "#8a6a4f",
+          "weight": 1.0
+        },
+        {
+          "wall": "#d9cbb4",
+          "trim": "#2f3a40",
+          "roof": "#6a6866",
+          "accent": "#5b5d60",
+          "weight": 0.6
+        }
+      ]
     }
   ]
 }

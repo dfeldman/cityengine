@@ -49,6 +49,9 @@ export type StyleId =
   // San Francisco's commercial streets (owner, 2026-10-21): the shop-and-flats of Mission Street and the one-storey shop
   // building, drawn with other styles' paintings (`Style.art`)
   | 'shopflats' | 'storefront'
+  // …and its apartment blocks (owner, 2026-10-21: the Edwardian bay-window flats were every apartment building in the city):
+  // the Beaux-Arts apartment hotel, the brick one, the Mediterranean, the cheap modern box and the better modern block
+  | 'aptclassical' | 'aptbrick' | 'aptmed' | 'aptmodern' | 'aptluxe'
 
 export type GroundKind = 'shopfront' | 'stoop' | 'arcade' | 'glazed' | 'recessed' | 'plain' | 'garage'
 export type TopKind = 'cornice' | 'parapet' | 'mansard' | 'entablature' | 'flatband' | 'crown' | 'gable'
@@ -167,6 +170,8 @@ export interface Cell {
   element: string
   /** 0–1 into the style's variant set, so neighbouring cells differ */
   variant: number
+  /** this cell's own paint, where it is not the wall's: a modern block's colour panels (Dress.blocks) */
+  tint?: string
 }
 
 export type FeatureKind = 'cornice' | 'balcony' | 'stringCourse' | 'sill' | 'slabBand' | 'pilaster' | 'parapet'
@@ -240,8 +245,10 @@ export interface Dress {
    * windows — or one, with its door in the middle of the front (owner, 2026-10-21). Walls off the street never have one.
    */
   shops: 'all' | 'one' | 'none'
-  /** a bay window up the street front from the first floor, over two bays: the shop-and-flats' */
+  /** bay windows up the street front from the first floor, two bays wide: the shop-and-flats', a modern block's box bays */
   bays: boolean
+  /** groups of bays painted in the accent colour from the first floor up: the cheap modern block's colour panels */
+  blocks: boolean
 }
 
 const weighted = <T,>(r: () => number, xs: readonly [T, number][]): T => {
@@ -251,7 +258,7 @@ const weighted = <T,>(r: () => number, xs: readonly [T, number][]): T => {
 }
 
 const NO_DRESS: Dress = { cap: 'plain', parapet: 0, piers: false, belts: false, base: false, canopy: false, fireEscape: false,
-  fins: false, balconies: false, panel: 0.5, shops: 'all', bays: false }
+  fins: false, balconies: false, panel: 0.5, shops: 'all', bays: false, blocks: false }
 
 /**
  * The styles that dress, and how. The weights are judgement, checked against the 50 SoMa and Mission lofts and 32 modern
@@ -304,6 +311,80 @@ const DRESSERS: Partial<Record<StyleId, (r: () => number, levels: number) => { d
     const paint = r() < 0.3 ? weighted(r, [['#3a3b3e', 2], ['#9a2b25', 1], ['#2f4f5f', 1], ['#d8d2c4', 1]]) : undefined
     return { dress, groundPaint: paint }
   },
+  /*
+   * The apartment blocks. Most have one entrance in the middle of the front, so `shops: 'one'` is their front door
+   * (the style's ground element on one bay or two, the style's windows either side); a garage block's is its row of
+   * garages.
+   */
+  sfapartment: (r) => ({
+    dress: {
+      ...NO_DRESS,
+      cap: weighted<Dress['cap']>(r, [['bracket', 55], ['plain', 25], ['corbel', 20]]),
+      parapet: r() < 0.3 ? 0.2 + r() * 0.5 : 0,
+      fireEscape: r() < 0.5,
+      base: r() < 0.5,
+      belts: r() < 0.2,
+      shops: weighted<Dress['shops']>(r, [['one', 80], ['none', 20]]),
+    },
+    groundPaint: r() < 0.25 ? weighted(r, [['#d8d2c4', 2], ['#9a9a92', 1], ['#3b4a3f', 1], ['#2b3f55', 1]]) : undefined,
+  }),
+  aptclassical: (r) => ({
+    dress: {
+      ...NO_DRESS,
+      cap: weighted<Dress['cap']>(r, [['bracket', 70], ['plain', 30]]),
+      parapet: r() < 0.5 ? 0.3 + r() * 0.7 : 0,
+      base: r() < 0.9,
+      belts: r() < 0.4,
+      fireEscape: r() < 0.55,
+      balconies: r() < 0.25,
+      shops: weighted<Dress['shops']>(r, [['one', 85], ['all', 15]]),
+    },
+  }),
+  aptbrick: (r) => ({
+    dress: {
+      ...NO_DRESS,
+      cap: weighted<Dress['cap']>(r, [['bracket', 60], ['corbel', 30], ['plain', 10]]),
+      parapet: r() < 0.3 ? 0.3 + r() * 0.6 : 0,
+      base: r() < 0.6,
+      belts: r() < 0.3,
+      fireEscape: r() < 0.8,
+      shops: weighted<Dress['shops']>(r, [['one', 70], ['all', 30]]),
+    },
+  }),
+  aptmed: (r) => ({
+    dress: {
+      ...NO_DRESS,
+      cap: weighted<Dress['cap']>(r, [['plain', 75], ['panel', 25]]),
+      parapet: r() < 0.6 ? 0.3 + r() * 0.6 : 0,
+      base: r() < 0.3,
+      balconies: r() < 0.4,
+      panel: 0.3 + r() * 0.3,
+      shops: weighted<Dress['shops']>(r, [['one', 50], ['all', 50]]),
+    },
+  }),
+  aptmodern: (r) => ({
+    dress: {
+      ...NO_DRESS,
+      cap: weighted<Dress['cap']>(r, [['plain', 60], ['overhang', 40]]),
+      belts: r() < 0.25,
+      balconies: r() < 0.45,
+      fins: r() < 0.1,
+      blocks: r() < 0.7,
+      shops: weighted<Dress['shops']>(r, [['all', 50], ['one', 30], ['none', 20]]),
+    },
+  }),
+  aptluxe: (r) => ({
+    dress: {
+      ...NO_DRESS,
+      cap: weighted<Dress['cap']>(r, [['overhang', 55], ['plain', 45]]),
+      belts: r() < 0.3,
+      balconies: r() < 0.45,
+      bays: r() < 0.4,
+      fins: r() < 0.25,
+      canopy: r() < 0.4,
+      shops: weighted<Dress['shops']>(r, [['all', 60], ['one', 40]]),
+    },
+  }),
   bauhaus: (r, levels) => {
     const cap = weighted<Dress['cap']>(r, [['plain', 50], ['overhang', 25], ['panel', levels <= 2 ? 25 : 8]])
     const dress: Dress = {
@@ -559,6 +640,10 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
   const one0 = Math.floor((bays - oneN) / 2)
   // (a shopping street's front always has its shop: Mission, 24th, Valencia — the warehouse ground floor is for the side streets)
   const shops = d?.shops === 'none' && street?.main ? 'one' : d?.shops
+  // a cheap modern block's colour panels: a run of one or two bays in every three or four, on the street front
+  const br = rng(seed ^ 0xb10c)
+  const period = 3 + Math.floor(br() * 2), width = 1 + Math.floor(br() * 2), off = Math.floor(br() * period)
+  const blockBay = (b: number): boolean => !!d?.blocks && street !== null && (b + off) % period < width
   const shopBay = (b: number): boolean => !d || (street !== null && (shops === 'all' || (shops === 'one' && b >= one0 && b < one0 + oneN)))
 
   for (const s of plan.storeys) {
@@ -588,7 +673,7 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
       else if (s.kind === 'top' && plan.top === 'mansard') element = `${art}/dormer`
       else element = `${art}/window`
 
-      cells.push({ x0, x1, y0: s.y0, y1: s.y1, element, variant })
+      cells.push({ x0, x1, y0: s.y0, y1: s.y1, element, variant, ...(blockBay(b) && s.kind !== 'ground' ? { tint: plan.palette.accent } : {}) })
 
       // A window sill is a small ledge, and a row of them is what catches the light on a street.
       if (s.kind !== 'ground' && st.window.sill > 0.1 && plan.style !== 'skyscraper') {
@@ -630,7 +715,7 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
    * is remembered by, and nowhere else has it.
    */
   // (not on a hospital, a school, a church: St Mary's and CPMC wore the tenement's ladders, 2026-10-04)
-  if (st.features?.fireEscape && role.face && !plan.institution && bays >= 3 && plan.storeys.length >= 3) {
+  if (st.features?.fireEscape && (plan.dress?.fireEscape ?? true) && role.face && !plan.institution && bays >= 3 && plan.storeys.length >= 3) {
     const b0 = Math.floor((bays - 2) / 2)
     const fx0 = margin + b0 * bayW
     const fx1 = fx0 + 2 * bayW
@@ -773,7 +858,7 @@ function dressWall(plan: FacadePlan, d: Dress, features: Feature[], len: number,
         x0: x - half, x1: x + half, colour: d.fins ? trim : wall })
     }
   }
-  if (d.fireEscape && bays >= 3 && plan.storeys.length >= 3) {
+  if (d.fireEscape && !style(plan.style).features?.fireEscape && bays >= 3 && plan.storeys.length >= 3) {
     const b0 = Math.floor((bays - 2) / 2)
     for (const s of plan.storeys) {
       if (s.index < 1) continue
@@ -781,17 +866,22 @@ function dressWall(plan: FacadePlan, d: Dress, features: Feature[], len: number,
     }
   }
   if (d.bays && bays >= 3 && plan.storeys.length >= 2) {
-    // over the two bays nearest one end, as on a 25-foot lot; the stair to the flats is at the other
-    for (const s of plan.storeys) {
-      if (s.kind === 'ground') continue
-      features.push({ kind: 'bay', y0: s.y0, y1: s.y1, depth: 0.8, x0: margin, x1: margin + 2 * bayW, colour: trim })
+    // over the two bays nearest one end, as on a 25-foot lot, the stair to the flats at the other; on a wide front, in
+    // stacks of two bays with one between
+    const starts = bays >= 6 ? Array.from({ length: Math.floor((bays + 1) / 3) }, (_, k) => k * 3) : [0]
+    for (const b0 of starts) {
+      for (const s of plan.storeys) {
+        if (s.kind === 'ground') continue
+        features.push({ kind: 'bay', y0: s.y0, y1: s.y1, depth: 0.8, x0: margin + b0 * bayW, x1: margin + (b0 + 2) * bayW, colour: trim })
+      }
     }
   }
   if (d.balconies && bays >= 2) {
     for (const s of plan.storeys) {
       if (s.kind === 'ground') continue
       for (let b = 0; b < bays; b += 2) {
-        features.push({ kind: 'balcony', y0: s.y0, y1: s.y0 + 1.0, depth: 1.0, x0: margin + b * bayW + 0.1,
+        // (a Mediterranean block's are wrought-iron balconettes, a step deep)
+        features.push({ kind: 'balcony', y0: s.y0, y1: s.y0 + 1.0, depth: plan.style === 'aptmed' ? 0.45 : 1.0, x0: margin + b * bayW + 0.1,
           x1: margin + (b + 1) * bayW - 0.1, colour: plan.palette.accent })
       }
     }

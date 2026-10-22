@@ -18,6 +18,8 @@ export type Archetype =
   | 'apartmentTower' | 'presidio' | 'presidioBrick' | 'presidioStucco' | 'capeCod' | 'wharf'
   // the commercial street's own (owner, 2026-10-21): shops under flats, and the one-storey shop building
   | 'shopFlats' | 'storefront'
+  // …and its apartment blocks (owner, 2026-10-21), which `aptLook` draws an `apartment` as
+  | 'aptClassical' | 'aptBrick' | 'aptMed' | 'aptModern' | 'aptLuxe'
 
 export type District = keyof typeof DISTRICTS.districts
 
@@ -370,6 +372,35 @@ export const STYLE_OF: Record<Archetype, StyleId> = {
   contemporary: 'bauhaus',
   shopFlats: 'shopflats',
   storefront: 'storefront',
+  aptClassical: 'aptclassical',
+  aptBrick: 'aptbrick',
+  aptMed: 'aptmed',
+  aptModern: 'aptmodern',
+  aptLuxe: 'aptluxe',
+}
+
+/**
+ * An apartment block's look (owner, 2026-10-21: "start rethinking the generics for apartment buildings … right now our
+ * 'tenement' style is accurate-looking, but extremely repetitive"). Every `apartment` was the Edwardian bay-window flats.
+ * The city's apartment buildings, from the owner's survey of photographs, are those flats; the Beaux-Arts apartment
+ * hotel in cream terracotta; the brick one with its fire escapes; the Mediterranean and Deco stucco block of the
+ * twenties and thirties; and since the war, the cheap box and the better modern block. Drawn by the building's own
+ * roll, leaning on what the record says: its age, its height (a hotel is five storeys or more), its masonry.
+ */
+export function aptLook(roll: number, era: Era | undefined, h: number, masonry: boolean): Archetype {
+  const tall = h >= 15
+  const mix: [Archetype, number][] =
+    era === 'midcentury' ? [['aptModern', 70], ['aptMed', 15], ['apartment', 15]]
+    : era === 'modern' ? [['aptModern', 45], ['aptLuxe', 55]]
+    : era === 'interwar' ? (tall ? [['aptMed', 40], ['aptClassical', 30], ['aptBrick', masonry ? 30 : 15], ['apartment', 10]]
+      : [['aptMed', 55], ['apartment', 25], ['aptClassical', 20]])
+    : era === 'victorian' || era === 'edwardian' ? (tall ? [['apartment', 40], ['aptClassical', 30], ['aptBrick', masonry ? 50 : 25]]
+      : [['apartment', 70], ['aptClassical', 15], ['aptBrick', masonry ? 25 : 10]])
+    : tall ? [['apartment', 40], ['aptClassical', 25], ['aptBrick', 20], ['aptMed', 15]]
+    : [['apartment', 55], ['aptMed', 25], ['aptClassical', 10], ['aptModern', 10]]
+  let x = roll * mix.reduce((t, [, w]) => t + w, 0)
+  for (const [k, w] of mix) if ((x -= w) <= 0) return k
+  return mix[mix.length - 1][0]
 }
 
 /** The smallest enclosing rectangle's sides, for frontage and depth (a ring in metres). */
@@ -400,6 +431,12 @@ export function classifySF(b: { tags: Record<string, string>; ring: { x: number;
   if (b.tags['building:material']) return null
   const { frontage, depth } = lotSides(b.ring)
   const roll = ((Math.imul(b.id ^ 0x2c1b3c6d, 0x297a2d39) >>> 0) % 1000) / 1000
-  const { archetype, district, rule } = archetypeOf({ lat: b.lat, lon: b.lon, height: b.height, levels: b.levels, area: b.area, frontage, depth, tags: b.tags, roll, record: b.record })
+  const got = archetypeOf({ lat: b.lat, lon: b.lon, height: b.height, levels: b.levels, area: b.area, frontage, depth, tags: b.tags, roll, record: b.record })
+  const { district, rule } = got
+  // (an apartment block's look is its own second roll, so the rules above keep the one they had)
+  const roll2 = ((Math.imul(b.id ^ 0x5a17c0de, 0x2c1b3c6d) >>> 0) % 1000) / 1000
+  const h = b.height ?? (b.levels !== undefined ? b.levels * 3.3 : 10)
+  const archetype = got.archetype === 'apartment'
+    ? aptLook(roll2, b.record?.year ? eraOf(b.record.year) : undefined, h, b.record?.construction === 'C') : got.archetype
   return { archetype, style: STYLE_OF[archetype], district, rule }
 }

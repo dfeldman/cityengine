@@ -226,7 +226,7 @@ function wall(
         [at(c.x0, c.y0), at(c.x1, c.y0), at(c.x1, c.y1), at(c.x0, c.y1)],
         [nx, 0, nz],
         [[uv.u0, uv.v1], [uv.u1, uv.v1], [uv.u1, uv.v0], [uv.u0, uv.v0]],
-        tintOf(c.element), KIND_ATLAS,
+        c.tint ? rgb(c.tint) : tintOf(c.element), KIND_ATLAS,
       )
     } else {
       // No painting for this element: fall back to the seamless wall page, in metres so it tiles honestly.
@@ -235,7 +235,7 @@ function wall(
         [at(c.x0, c.y0), at(c.x1, c.y0), at(c.x1, c.y1), at(c.x0, c.y1)],
         [nx, 0, nz],
         [[c.x0 / s, c.y1 / s], [c.x1 / s, c.y1 / s], [c.x1 / s, c.y0 / s], [c.x0 / s, c.y0 / s]],
-        tintOf(c.element), KIND_WALL,
+        c.tint ? rgb(c.tint) : tintOf(c.element), KIND_WALL,
       )
     }
   }
