@@ -322,6 +322,7 @@ renders stay the same buildings from round to round. `tools/appearance/judged.py
 | v7 | see below | 1.73 (0.69) | 38 of 52 | 47 (5 the same, today never) |
 | v8 | see below | 1.77 (0.62) | 40 of 52 | 44 (6 the same) |
 | v9 | see below | 1.80 (0.61) | 41 of 51, first 3 of 3 | 45 (4 the same) |
+| v10 | see below | 1.82 (0.69) | 42 of 51 | 45 (6 the same, today never) |
 
 **v6 changes:**
 - **Schema** (`menus-v6.json`):
@@ -427,6 +428,22 @@ renders stay the same buildings from round to round. `tools/appearance/judged.py
   - an arched entry from the classical arcade painting;
   - the label's dormers;
   - a stucco house with sash windows drawn with rectangular sash.
+
+**v10 judged:**
+- Colours now mostly right (red brick, black cladding, blue, yellow).
+- Labels: fire-escape landings still read as balconies; a dark base still missed now and then; the garage count on a
+  few fronts.
+- Renderer: stacked and curved bays, mansards with dormers, decorative and stepped parapets, murals, exterior steel
+  stairs.
+- One building (way/71504444) renders the same with and without its label in every round: the comparison camera finds
+  a neighbour, not the labelled block.
+
+**v11 changes:**
+- **Schema:** `bay_colour`.
+- **Renderer:**
+  - bays painted their own colour;
+  - a mural-covered front's ground floor painted in bright bands;
+  - a label's projecting balconies dropped where it also saw a fire escape.
 
 ## 4. Rendering from the labels (`?labels=1`)
 

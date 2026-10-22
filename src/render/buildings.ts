@@ -292,6 +292,8 @@ function bay(out: MeshBuilder, f: Feature, at: (t: number, y: number) => [number
     return [q[0] + nx * off, q[1], q[2] + nz * off]
   }
   const uv = uvFor(atlas, `${artOf(plan.style)}/window`, (seed >>> 3) % 97 / 97)
+  // (a label's bays may be painted apart from the wall: red bays on a cream block)
+  if (f.body) tint = rgb(f.body)
   // [t0, off0, t1, off1]: three faces at 45° (angled), a box (square), or a curve in six (rounded)
   const faces: [number, number, number, number][] = f.shape === 'square'
     ? [[x0, 0, x0, d], [x0, d, x1, d], [x1, d, x1, 0]]

@@ -8,7 +8,7 @@
  * photographs. Every answer is optional; a building keeps whatever the bake gave it where the label is silent.
  */
 import table from '../../data/appearance/looks/haiku.json' with { type: 'json' }
-import menus from '../../data/appearance/research/menus-v10.json' with { type: 'json' }
+import menus from '../../data/appearance/research/menus-v11.json' with { type: 'json' }
 import type { Dress, Palette, StyleId } from './facade.ts'
 import type { RoofShape } from './package.ts'
 
@@ -99,10 +99,14 @@ export function lookFor(id: number, baked?: StyleId): Look | null {
   if (known(l.top)) dress.gable = l.top === 'gable'
   if (known(l.bays)) dress.bayStacks = l.bays === 'two_or_more' ? 2 : l.bays === 'one' ? 1 : 0
   if (l.balconies === 'none') dress.balconies = false
+  // (a fire escape's landings read as balconies, wave after wave: with one, the balconies are its)
+  else if (l.balconies === 'projecting' && l.fire_escape === 'yes') dress.balconies = false
   else if (l.balconies === 'balconettes' || l.balconies === 'projecting') {
     dress.balconies = true
     dress.balconyKind = l.balconies
   }
+  if (l.bay_colour !== 'same_as_wall' && colour(l.bay_colour)) dress.bayTint = colour(l.bay_colour)
+  if (l.unusual_kind === 'mural_covered') dress.mural = true
   if (l.bay_shape === 'angled' || l.bay_shape === 'square' || l.bay_shape === 'rounded') dress.bayShape = l.bay_shape
   if (l.windows === 'few_or_none') dress.blank = true
   if (l.shop_glass === 'full' || l.shop_glass === 'partial' || l.shop_glass === 'little') dress.shopGlass = l.shop_glass

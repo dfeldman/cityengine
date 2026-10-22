@@ -191,6 +191,8 @@ export interface Feature {
   colour: string
   /** a bay's plan: three faces at 45° (the default), a box, or a curve */
   shape?: 'angled' | 'square' | 'rounded'
+  /** a bay painted apart from its wall (the wall's colour when absent) */
+  body?: string
 }
 
 export interface FacadePlan {
@@ -290,6 +292,10 @@ export interface Dress {
   fascia?: boolean
   /** raised loading docks along the garage bays */
   docks?: boolean
+  /** the colour a label's bays are painted, where it is not the wall's */
+  bayTint?: string
+  /** a mural over the ground floor: painted in bright bands, a cartoon of one */
+  mural?: boolean
 }
 
 export interface GroundMix {
@@ -329,6 +335,7 @@ export function groundBays(bays: number, g: GroundMix): GroundBay[] {
 }
 
 const GLAZED: StyleId[] = ['bauhaus', 'chicago', 'opera', 'operaGlass', 'skyscraper']
+const MURAL = ['#d9573b', '#e8b33a', '#3f7fb5', '#5aa05a', '#b0498c']
 /** Which styles have each ground painting (the atlas: tools/facadegen). A bay borrows one when its own style has none. */
 const GROUND_ART: Record<Exclude<GroundBay, 'window'>, { element: string; styles: StyleId[] }> = {
   shop: { element: 'shopfront', styles: ['tenement', 'brick', 'chinatown', 'wharf', 'marais', 'haussmann'] },
@@ -786,7 +793,9 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
       else if (s.kind === 'top' && plan.top === 'mansard') element = `${art}/dormer`
       else element = `${art}/window`
 
-      const garageTint = s.kind === 'ground' && mix?.[b] === 'garage' ? d?.garageTint : undefined
+      const garageTint = s.kind === 'ground' && mix?.[b] === 'garage' ? d?.garageTint
+        // (a mural: the ground floor's bays in bright bands, a cartoon of a painted wall)
+        : s.kind === 'ground' && d?.mural && shown !== null ? MURAL[b % MURAL.length] : undefined
       cells.push({ x0, x1, y0: s.y0, y1: s.y1, element, variant, ...(blockBay(b) && s.kind !== 'ground' ? { tint: plan.palette.accent } : garageTint ? { tint: garageTint } : {}) })
 
       // A window sill is a small ledge, and a row of them is what catches the light on a street.
@@ -1030,7 +1039,7 @@ function dressWall(plan: FacadePlan, d: Dress, features: Feature[], len: number,
       for (const s of plan.storeys) {
         if (s.kind === 'ground') continue
         features.push({ kind: 'bay', y0: s.y0, y1: s.y1, depth: 0.8, x0: margin + b0 * bayW, x1: margin + (b0 + w) * bayW, colour: trim,
-          shape: d.bayShape ?? (d.victorian === 'stick' ? 'square' : undefined) })
+          shape: d.bayShape ?? (d.victorian === 'stick' ? 'square' : undefined), ...(d.bayTint ? { body: d.bayTint } : {}) })
       }
     }
   } else if (d.bays && bays >= 3 && plan.storeys.length >= 2) {
