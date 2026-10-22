@@ -104,6 +104,10 @@ export interface Photo {
   fill?: number
   /** did the camera position come from Mapillary's SfM correction, or only from the vector tile? */
   fixed?: boolean
+  /** where the building's silhouette falls across the picture, 0..1 left to right: where `mark` draws its two lines */
+  span?: [number, number]
+  /** where the heading came from: Mapillary's reconstruction, the direction of travel, or the phone's compass */
+  headingFrom?: 'sfm' | 'motion' | 'compass'
 }
 
 /** A neighbouring building, as a footprint and a height: what can stand between a camera and the target. */
@@ -195,7 +199,7 @@ const tileLonLat = (x: number, y: number, px: number, py: number, extent: number
   return [(Math.atan(Math.sinh(t)) * 180) / Math.PI, lon]
 }
 
-interface Frame { id: string; lat: number; lon: number; angle?: number; pano: boolean; quality: number }
+interface Frame { id: string; lat: number; lon: number; angle?: number; pano: boolean; quality: number; seq?: string; t?: number }
 
 /** One tile's image points, fetched at most once ever and kept on disk. */
 async function tileFrames(tx: number, ty: number): Promise<Frame[]> {
@@ -235,9 +239,10 @@ async function tileFrames(tx: number, ty: number): Promise<Frame[]> {
     const f = layer.feature(i)
     const g = f.loadGeometry()[0]?.[0]
     if (!g) continue
-    const p = f.properties as { id?: string | number; compass_angle?: number; is_pano?: boolean; quality_score?: number }
+    const p = f.properties as { id?: string | number; compass_angle?: number; is_pano?: boolean; quality_score?: number; sequence_id?: string; captured_at?: number }
     const [la, lo] = tileLonLat(tx, ty, g.x, g.y, layer.extent)
-    out.push({ id: String(p.id ?? ''), lat: la, lon: lo, angle: p.compass_angle, pano: p.is_pano === true, quality: p.quality_score ?? 0.5 })
+    out.push({ id: String(p.id ?? ''), lat: la, lon: lo, angle: p.compass_angle, pano: p.is_pano === true, quality: p.quality_score ?? 0.5,
+      seq: p.sequence_id, t: p.captured_at })
   }
   return out
 }
@@ -342,6 +347,35 @@ const clearsAbove = (cam: P2, eye: number, to: P2, blockers: { ring: P2[]; heigh
  * rotations are undone) must be clipped rather than drawn — getting that sign wrong is how a church once came
  * back as the car park opposite.
  */
+/*
+ * THE DIRECTION OF TRAVEL, as a heading (owner, 2026-10-21: "I *think* using GPS from motion will be more accurate —
+ * it's not like someone is hand-taking these pictures, they're driving around"). Measured on 37 615 panoramas Mapillary
+ * reconstructed (tools/mapillary-headings.ts): the bearing from the frame before to the frame after agrees with the
+ * reconstruction within 15° for 88% of them, the phone's compass for 62%. Only where the car was moving, in a straight
+ * line, and the two neighbours are close in time.
+ */
+function motionBearings(frames: Frame[]): Map<string, number> {
+  const out = new Map<string, number>()
+  const bySeq = new Map<string, Frame[]>()
+  for (const f of frames) if (f.seq && f.t) (bySeq.get(f.seq) ?? bySeq.set(f.seq, []).get(f.seq)!).push(f)
+  const m = (a: Frame, b: Frame): [number, number] => [(b.lon - a.lon) * 111320 * Math.cos((a.lat * Math.PI) / 180), (b.lat - a.lat) * 111320]
+  for (const l of bySeq.values()) {
+    l.sort((a, b) => a.t! - b.t!)
+    for (let i = 1; i + 1 < l.length; i++) {
+      const a = l[i - 1], b = l[i + 1]
+      if (b.t! - a.t! > 12000) continue
+      const [dx, dy] = m(a, b)
+      const d = Math.hypot(dx, dy)
+      if (d < 3 || d > 60) continue
+      const [ax, ay] = m(a, l[i]), [bx, by] = m(l[i], b)
+      if (Math.hypot(ax, ay) > 1 && Math.hypot(bx, by) > 1
+        && Math.abs(((Math.atan2(bx, by) - Math.atan2(ax, ay)) * 180 / Math.PI + 540) % 360 - 180) > 20) continue
+      out.set(l[i].id, ((Math.atan2(dx, dy) * 180) / Math.PI + 360) % 360)
+    }
+  }
+  return out
+}
+
 const project = (lonDeg: number, latDeg: number, yaw: number, pitch: number, f: number, aspect: number):
   { i: number; j: number } | null => {
   const R = Math.PI / 180
@@ -433,7 +467,7 @@ export async function mapillary(lat: number, lon: number, radius = 60, height = 
    */
   const simulate = (cam: P2, heading: number): {
     score: number; yaw: number; pitch: number; hfov: number; aspect: number
-    vis: number; framed: number; fill: number; dist: number; want: number
+    vis: number; framed: number; fill: number; dist: number; want: number; span: [number, number]
   } | null => {
     const near = nearM(cam)
     if (!near) return null
@@ -506,12 +540,37 @@ export async function mapillary(lat: number, lon: number, radius = 60, height = 
      * the silhouette overlay will use, and it is the only thing that can say "the tower is clipped off the top
      * of this frame" — the failure that put four podium shots at the head of One Maritime Plaza's list.
      */
+    /*
+     * THE WALLS THAT FACE THE CAMERA, for the lines. The silhouette's span takes in every corner of the footprint, and
+     * seen at an angle a deep lot's BACK corners project far along the street, so the lines bracketed two or three
+     * buildings: the reference labeller could not tell which was meant on a quarter of the first research wave
+     * (appearance research, 2026-10-22). The walls whose outward side faces the camera are the facade it can see.
+     */
+    const facing = new Set<P2>()
+    {
+      let area2 = 0
+      for (let i = 0; i < ringM.length; i++) {
+        const a = ringM[i], c = ringM[(i + 1) % ringM.length]
+        area2 += a[0] * c[1] - c[0] * a[1]
+      }
+      const ccw = area2 > 0
+      for (let i = 0; i < ringM.length; i++) {
+        const a = ringM[i], c = ringM[(i + 1) % ringM.length]
+        const ex = c[0] - a[0], ey = c[1] - a[1]
+        const [ox, oy] = ccw ? [ey, -ex] : [-ey, ex]            // the outward normal
+        const mx = (a[0] + c[0]) / 2 - cam[0], my = (a[1] + c[1]) / 2 - cam[1]
+        if (ox * -mx + oy * -my > 0) { facing.add(a); facing.add(c) }
+      }
+    }
     let inside = 0
     let total = 0
     let iMin = Infinity
     let iMax = -Infinity
     let jMin = Infinity
     let jMax = -Infinity
+    // (and, separately, where the walls that FACE the camera fall: the span the lines are drawn at)
+    let fMin = Infinity
+    let fMax = -Infinity
     for (const v of ringM) {
       const dx = v[0] - cam[0]
       const dy = v[1] - cam[1]
@@ -526,6 +585,7 @@ export async function mapillary(lat: number, lon: number, radius = 60, height = 
         if (q.i >= 0 && q.i <= 1 && q.j >= 0 && q.j <= 1) inside++
         iMin = Math.min(iMin, q.i); iMax = Math.max(iMax, q.i)
         jMin = Math.min(jMin, q.j); jMax = Math.max(jMax, q.j)
+        if (facing.has(v)) { fMin = Math.min(fMin, q.i); fMax = Math.max(fMax, q.i) }
       }
     }
     if (total === 0 || !Number.isFinite(iMin)) return null
@@ -551,7 +611,9 @@ export async function mapillary(lat: number, lon: number, radius = 60, height = 
       + (1 - near.facing) * 16                         // edge-on: ranked down, never thrown away
       + (indoors(cam) ? 45 : 0)                        // shot from under somebody's arcade, looking at its ceiling
       + Math.max(0, dist - radius) * 0.5
-    return { score, yaw, pitch, hfov, aspect, vis, framed, fill, dist, want: (want + 360) % 360 }
+    return { score, yaw, pitch, hfov, aspect, vis, framed, fill, dist, want: (want + 360) % 360,
+      span: Number.isFinite(fMin) ? [Math.max(0, Math.min(1, fMin)), Math.max(0, Math.min(1, fMax))]
+        : [Math.max(0, Math.min(1, iMin)), Math.max(0, Math.min(1, iMax))] }
   }
 
   /*
@@ -559,13 +621,15 @@ export async function mapillary(lat: number, lon: number, radius = 60, height = 
    * frames down to a shortlist worth asking about. The tile's GPS drifts badly in a canyon, so nothing is
    * REJECTED here on a threshold that correction could move — the near rule waits for pass two.
    */
+  // (aimed by the direction of travel where the car was moving, not the phone's compass: motionBearings)
+  const moving = motionBearings(frames)
   const coarse: { f: Frame; s: number }[] = []
   for (const f of frames) {
     if (!f.pano) continue                              // a flat frame cannot be re-aimed; only a 360 can be cut
     const cam = toM([f.lat, f.lon])
     const dd = Math.hypot(cam[0], cam[1])
     if (dd > radius + 40) continue
-    const sim = simulate(cam, f.angle ?? 0)
+    const sim = simulate(cam, moving.get(f.id) ?? f.angle ?? 0)
     if (!sim) continue
     if (sim.dist < Math.max(4, height * 0.25)) continue
     coarse.push({ f, s: sim.score + (1 - f.quality) * 12 })
@@ -594,11 +658,17 @@ export async function mapillary(lat: number, lon: number, radius = 60, height = 
   const scored: (Photo & { id: string; want: number; lat: number; lon: number })[] = []
   for (const f of short) {
     const info = await frameInfo(f.id)
-    if (!info.thumb || info.angle === undefined) continue      // without a corrected heading a pano cannot be cut
+    /*
+     * The heading: Mapillary's reconstruction where it made one; where it did not, its `computed_compass_angle` is
+     * only the compass again, and the direction of travel is the better guess (tools/mapillary-headings.ts).
+     */
+    const heading = info.fixed && info.angle !== undefined ? info.angle : moving.get(f.id) ?? info.angle
+    const headingFrom: Photo['headingFrom'] = info.fixed && info.angle !== undefined ? 'sfm' : moving.has(f.id) ? 'motion' : 'compass'
+    if (!info.thumb || heading === undefined) continue          // without a heading a pano cannot be cut
     const la = info.lat ?? f.lat
     const lo = info.lon ?? f.lon
     const cam = toM([la, lo])
-    const sim = simulate(cam, info.angle)
+    const sim = simulate(cam, heading)
     if (!sim) continue
     // the one hard rejection worth keeping: a photograph from ten metres genuinely cannot contain a tall building
     if (sim.dist < Math.max(8, height * 0.5)) continue
@@ -612,7 +682,7 @@ export async function mapillary(lat: number, lon: number, radius = 60, height = 
     scored.push({
       source: 'mapillary', url: info.thumb, ref: `mapillary:${f.id} (360)`, id: f.id,
       distance: Math.round(sim.dist), off: 0, score: Math.round(score), want: sim.want,
-      lat: la, lon: lo, camLat: la, camLon: lo, camAlt: info.alt, heading: info.angle, fixed: info.fixed,
+      lat: la, lon: lo, camLat: la, camLon: lo, camAlt: info.alt, heading, headingFrom, fixed: info.fixed, span: sim.span,
       yaw: sim.yaw, pitch: sim.pitch, fov: sim.hfov, height,
       vis: Math.round(sim.vis * 100) / 100, framed: Math.round(sim.framed * 100) / 100,
       fill: Math.round(sim.fill * 100) / 100,
@@ -649,6 +719,18 @@ export async function mapillary(lat: number, lon: number, radius = 60, height = 
    * actually reads.
    */
   const good = (p: Photo): boolean => (p.vis ?? 1) >= 0.35 && (p.framed ?? 1) >= 0.6
+  /*
+   * STRICT, for labelling (`PHOTO_STRICT=1`; appearance research, 2026-10-21). A modeller can discard a junk frame; a
+   * model asked "what is this building" cannot, and three frames of which one shows the house next door make it answer
+   * about the wrong house. Every frame in the first 40-building wave had an SfM pose, so the confusion was not heading:
+   * it was frames the simulation already knew were poor — a neighbour or a tree in front (visible 0), or 40-90 m from a
+   * seven-metre house, where its neighbours fill the cut. So only frames that are mostly visible, well framed and near
+   * enough for the building's size, even if that leaves one, or none.
+   */
+  if (process.env.PHOTO_STRICT === '1') {
+    const near = (p: Photo): boolean => (p.distance ?? 0) <= Math.max(30, 1.6 * (height || 10) + 12)
+    return apart.filter((p) => (p.vis ?? 0) >= 0.6 && (p.framed ?? 0) >= 0.8 && near(p)).map((p) => ({ ...p }))
+  }
   return [...apart.filter(good), ...apart.filter((p) => !good(p))].map((p) => ({ ...p }))
 }
 
@@ -686,9 +768,9 @@ export async function commonsName(name: string): Promise<Photo[]> {
  * was fetched afresh every time — so re-running the tool over the same buildings, or changing how the flat
  * view is cut, re-downloaded every panorama. Now a frame is pulled once, ever.
  */
-async function panoBytes(p: Photo): Promise<Buffer | null> {
+async function panoBytes(p: Photo, original = false): Promise<Buffer | null> {
   mkdirSync(CACHE, { recursive: true })
-  const key = p.id ? `pano-${p.id}` : `pano-${createHash('sha1').update(p.url).digest('hex')}`
+  const key = p.id ? `pano-${original ? 'orig-' : ''}${p.id}` : `pano-${createHash('sha1').update(p.url).digest('hex')}`
   const cached = resolve(CACHE, `${key}.jpg`)
   if (existsSync(cached)) {
     const buf = readFileSync(cached)
@@ -702,9 +784,24 @@ async function panoBytes(p: Photo): Promise<Buffer | null> {
   return buf
 }
 
+/*
+ * ORIGINAL RESOLUTION, on request (`PHOTO_ORIGINAL=1`). A 2048-wide panorama puts about 450 pixels across a building
+ * in an 85-degree cut, and at that a fire escape or a balcony rail is a smudge (appearance research, 2026-10-21). The
+ * original is often 5760 wide — nearly three times the detail — but several megabytes, so it is asked for only for a
+ * frame that has already been chosen, one request each, and its bytes are cached under their own key.
+ */
+const ORIGINAL = process.env.PHOTO_ORIGINAL === '1'
+async function originalUrl(id: string): Promise<string | null> {
+  const body = await mapillaryApi(`https://graph.mapillary.com/${id}?fields=thumb_original_url`) as { thumb_original_url?: string } | null
+  return body?.thumb_original_url ?? null
+}
+
 export async function fetchPhoto(p: Photo, file: string): Promise<boolean> {
-  const buf = await panoBytes(p)
+  const orig = ORIGINAL && p.id ? await originalUrl(p.id) : null
+  const buf = orig ? await panoBytes({ ...p, url: orig }, true) ?? await panoBytes(p) : await panoBytes(p)
   if (!buf) return false
+  // (and a larger picture to put the extra detail in)
+  if (orig && p.outW && p.outH) { p.outH = Math.round((p.outH * 1600) / p.outW); p.outW = 1600 }
   if (p.yaw === undefined) {
     // a flat frame keeps its own framing; all we add is the corridor, placed by the camera's field of view
     const sharp = (await import('sharp')).default
@@ -720,7 +817,7 @@ export async function fetchPhoto(p: Photo, file: string): Promise<boolean> {
    */
   if (p.fov !== undefined && p.pitch !== undefined && p.outW && p.outH) {
     const flat = await rectilinear(buf, p.yaw, p.pitch, p.fov, p.outW, p.outH)
-    writeFileSync(file, await mark(flat, p.outW, p.outH))
+    writeFileSync(file, await mark(flat, p.outW, p.outH, undefined, p.span))
     return true
   }
   /*
@@ -832,15 +929,28 @@ async function rectilinear(pano: Buffer, yaw: number, pitch: number, fov: number
  * facade we see is nearer, and OSM's height is often a guess — a box drawn round the whole building floats
  * above the roofline and quietly misleads. So: a corridor, not a box.
  */
-async function mark(piece: Buffer, w: number, h: number, dev?: number): Promise<Buffer> {
+async function mark(piece: Buffer, w: number, h: number, dev?: number, span?: [number, number]): Promise<Buffer> {
   if (w === 0 || h === 0) return piece
   const sharp = (await import('sharp')).default
-  // a reprojected view is aimed at the building; a flat frame is not, so shift by where it falls in a ~75 deg lens
-  const centre = w * (0.5 + (dev ?? 0) / 75)
-  if (centre < -w * 0.2 || centre > w * 1.2) return piece
-  const half = Math.round(w * 0.2)
-  const x0 = Math.round(centre - half)
-  const x1 = Math.round(centre + half)
+  /*
+   * At the building's own edges, where the simulation projected its footprint into this cut (Photo.span). They were a
+   * fixed corridor, the middle 40% of the picture, which is right only for a building exactly that wide: a wide one ran
+   * out past the lines and a narrow one sat between them with its neighbours (owner, 2026-10-21: "the red indicator
+   * lines … are sometimes wrong").
+   */
+  let x0: number
+  let x1: number
+  if (span && span[1] - span[0] > 0.02) {
+    x0 = Math.round(span[0] * w)
+    x1 = Math.round(span[1] * w)
+  } else {
+    // a reprojected view is aimed at the building; a flat frame is not, so shift by where it falls in a ~75 deg lens
+    const centre = w * (0.5 + (dev ?? 0) / 75)
+    if (centre < -w * 0.2 || centre > w * 1.2) return piece
+    const half = Math.round(w * 0.2)
+    x0 = Math.round(centre - half)
+    x1 = Math.round(centre + half)
+  }
   const t = Math.max(2, Math.round(w / 240))
   const svg = `<svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
     <g stroke="#ff2d2d" stroke-width="${t}" fill="none" stroke-dasharray="${t * 5} ${t * 4}">

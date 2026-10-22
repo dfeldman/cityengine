@@ -1,0 +1,1174 @@
+{
+ "about": "Appearance research sample (2026-10-21): generic buildings stratified by baked style (residential and commercial), seed 20261023, at least 5 m tall, none claimed by a manifest entry or within 3 m of one, at least 120 m apart, San Francisco only. For measuring what Haiku can read from Mapillary frames.",
+ "buildings": [
+  {
+   "osm": "way/258922186",
+   "style": "victorian",
+   "archetype": "rowhouse",
+   "levels": 3,
+   "height": 10,
+   "x": -1220,
+   "z": -4175
+  },
+  {
+   "osm": "way/261413981",
+   "style": "victorian",
+   "archetype": "rowhouse",
+   "levels": 3,
+   "height": 10,
+   "x": -1570,
+   "z": -2406
+  },
+  {
+   "osm": "way/273191202",
+   "style": "victorian",
+   "archetype": "rowhouse",
+   "levels": 2,
+   "height": 8,
+   "x": -3379,
+   "z": -663
+  },
+  {
+   "osm": "way/261560967",
+   "style": "victorian",
+   "archetype": "rowhouse",
+   "levels": 3,
+   "height": 12,
+   "x": -2553,
+   "z": 505
+  },
+  {
+   "osm": "way/262595907",
+   "style": "victorian",
+   "archetype": "rowhouse",
+   "levels": 2,
+   "height": 7,
+   "x": -2337,
+   "z": -392
+  },
+  {
+   "osm": "way/262680095",
+   "style": "victorian",
+   "archetype": "rowhouse",
+   "levels": 4,
+   "height": 11,
+   "x": -3888,
+   "z": -1998
+  },
+  {
+   "osm": "way/265459916",
+   "style": "victorian",
+   "archetype": "rowhouse",
+   "levels": 2,
+   "height": 9,
+   "x": -1932,
+   "z": -4539
+  },
+  {
+   "osm": "way/286666724",
+   "style": "victorian",
+   "archetype": "rowhouse",
+   "levels": 2,
+   "height": 7,
+   "x": -7510,
+   "z": -1524
+  },
+  {
+   "osm": "way/264623466",
+   "style": "victorian",
+   "archetype": "rowhouse",
+   "levels": 2,
+   "height": 8,
+   "x": -1818,
+   "z": -3935
+  },
+  {
+   "osm": "way/273522891",
+   "style": "victorian",
+   "archetype": "rowhouse",
+   "levels": 2,
+   "height": 9,
+   "x": -3562,
+   "z": -1168
+  },
+  {
+   "osm": "way/258821918",
+   "style": "edwardian",
+   "archetype": "edwardianHouse",
+   "levels": 3,
+   "height": 10,
+   "x": -1373,
+   "z": 624
+  },
+  {
+   "osm": "way/262568551",
+   "style": "edwardian",
+   "archetype": "edwardianHouse",
+   "levels": 2,
+   "height": 9,
+   "x": -3172,
+   "z": -324
+  },
+  {
+   "osm": "way/264356949",
+   "style": "edwardian",
+   "archetype": "edwardianHouse",
+   "levels": 3,
+   "height": 12,
+   "x": -2957,
+   "z": -2575
+  },
+  {
+   "osm": "way/262766954",
+   "style": "edwardian",
+   "archetype": "edwardianHouse",
+   "levels": 3,
+   "height": 12,
+   "x": -1677,
+   "z": -375
+  },
+  {
+   "osm": "way/262435093",
+   "style": "edwardian",
+   "archetype": "edwardianHouse",
+   "levels": 3,
+   "height": 10,
+   "x": -369,
+   "z": 1245
+  },
+  {
+   "osm": "way/257978957",
+   "style": "edwardian",
+   "archetype": "edwardianHouse",
+   "levels": 2,
+   "height": 9,
+   "x": 247,
+   "z": -4634
+  },
+  {
+   "osm": "way/262579831",
+   "style": "edwardian",
+   "archetype": "edwardianHouse",
+   "levels": 3,
+   "height": 10,
+   "x": -63,
+   "z": 800
+  },
+  {
+   "osm": "way/263567848",
+   "style": "edwardian",
+   "archetype": "edwardianHouse",
+   "levels": 3,
+   "height": 10,
+   "x": -4754,
+   "z": -1596
+  },
+  {
+   "osm": "way/260340515",
+   "style": "edwardian",
+   "archetype": "edwardianHouse",
+   "levels": 3,
+   "height": 10,
+   "x": 666,
+   "z": -3514
+  },
+  {
+   "osm": "way/266042965",
+   "style": "edwardian",
+   "archetype": "edwardianHouse",
+   "levels": 2,
+   "height": 9,
+   "x": -4528,
+   "z": -3440
+  },
+  {
+   "osm": "way/129881701",
+   "style": "stucco",
+   "archetype": "marinaHouse",
+   "levels": 2,
+   "height": 6,
+   "x": -6424,
+   "z": -4017
+  },
+  {
+   "osm": "way/129877746",
+   "style": "stucco",
+   "archetype": "marinaHouse",
+   "levels": 3,
+   "height": 12,
+   "x": -6130,
+   "z": -4153
+  },
+  {
+   "osm": "way/263350117",
+   "style": "stucco",
+   "archetype": "marinaHouse",
+   "levels": 3,
+   "height": 12,
+   "x": -2152,
+   "z": 1130
+  },
+  {
+   "osm": "way/285930484",
+   "style": "stucco",
+   "archetype": "marinaHouse",
+   "levels": 2,
+   "height": 6,
+   "x": -7598,
+   "z": -4037
+  },
+  {
+   "osm": "way/287202153",
+   "style": "stucco",
+   "archetype": "marinaHouse",
+   "levels": 2,
+   "height": 6,
+   "x": -8449,
+   "z": -1593
+  },
+  {
+   "osm": "way/268687077",
+   "style": "stucco",
+   "archetype": "marinaHouse",
+   "levels": 2,
+   "height": 7,
+   "x": -5253,
+   "z": -4301
+  },
+  {
+   "osm": "way/285067953",
+   "style": "stucco",
+   "archetype": "marinaHouse",
+   "levels": 2,
+   "height": 6,
+   "x": -7800,
+   "z": -4757
+  },
+  {
+   "osm": "way/264471909",
+   "style": "stucco",
+   "archetype": "marinaHouse",
+   "levels": 2,
+   "height": 6,
+   "x": -2392,
+   "z": -4034
+  },
+  {
+   "osm": "way/274436185",
+   "style": "stucco",
+   "archetype": "marinaHouse",
+   "levels": 2,
+   "height": 9,
+   "x": -2959,
+   "z": -1487
+  },
+  {
+   "osm": "way/266220301",
+   "style": "stucco",
+   "archetype": "marinaHouse",
+   "levels": 2,
+   "height": 9,
+   "x": -1574,
+   "z": -4778
+  },
+  {
+   "osm": "way/206582186",
+   "style": "sfapartment",
+   "archetype": "apartment",
+   "levels": 4,
+   "height": 14,
+   "x": 599,
+   "z": 518
+  },
+  {
+   "osm": "way/268668260",
+   "style": "sfapartment",
+   "archetype": "apartment",
+   "levels": 3,
+   "height": 12,
+   "x": -2657,
+   "z": -4227
+  },
+  {
+   "osm": "way/265704888",
+   "style": "sfapartment",
+   "archetype": "apartment",
+   "levels": 3,
+   "height": 11,
+   "x": -3264,
+   "z": -3772
+  },
+  {
+   "osm": "way/262406504",
+   "style": "sfapartment",
+   "archetype": "apartment",
+   "levels": 3,
+   "height": 11,
+   "x": -2639,
+   "z": 68
+  },
+  {
+   "osm": "way/197614709",
+   "style": "sfapartment",
+   "archetype": "apartment",
+   "levels": 3,
+   "height": 10,
+   "x": -755,
+   "z": -199
+  },
+  {
+   "osm": "way/262458828",
+   "style": "sfapartment",
+   "archetype": "apartment",
+   "levels": 3,
+   "height": 12,
+   "x": -3247,
+   "z": -186
+  },
+  {
+   "osm": "way/262265255",
+   "style": "sfapartment",
+   "archetype": "apartment",
+   "levels": 3,
+   "height": 13,
+   "x": -95,
+   "z": 1259
+  },
+  {
+   "osm": "way/71504444",
+   "style": "sfapartment",
+   "archetype": "apartment",
+   "levels": 4,
+   "height": 16,
+   "x": -335,
+   "z": -437
+  },
+  {
+   "osm": "way/256997181",
+   "style": "sfapartment",
+   "archetype": "apartment",
+   "levels": 3,
+   "height": 13,
+   "x": -2302,
+   "z": -2146
+  },
+  {
+   "osm": "way/288656665",
+   "style": "sfapartment",
+   "archetype": "apartment",
+   "levels": 3,
+   "height": 12,
+   "x": 2084,
+   "z": -3311
+  },
+  {
+   "osm": "way/287794853",
+   "style": "aptclassical",
+   "archetype": "aptClassical",
+   "levels": 4,
+   "height": 16,
+   "x": -3379,
+   "z": -2420
+  },
+  {
+   "osm": "way/264335376",
+   "style": "aptclassical",
+   "archetype": "aptClassical",
+   "levels": 4,
+   "height": 15,
+   "x": -518,
+   "z": -529
+  },
+  {
+   "osm": "way/256764489",
+   "style": "aptclassical",
+   "archetype": "aptClassical",
+   "levels": 3,
+   "height": 12,
+   "x": -2165,
+   "z": -1222
+  },
+  {
+   "osm": "way/272604446",
+   "style": "aptclassical",
+   "archetype": "aptClassical",
+   "levels": 3,
+   "height": 12,
+   "x": -2305,
+   "z": 825
+  },
+  {
+   "osm": "way/288563072",
+   "style": "aptclassical",
+   "archetype": "aptClassical",
+   "levels": 4,
+   "height": 15,
+   "x": -3644,
+   "z": -2950
+  },
+  {
+   "osm": "way/259944364",
+   "style": "aptclassical",
+   "archetype": "aptClassical",
+   "levels": 3,
+   "height": 11,
+   "x": -393,
+   "z": -605
+  },
+  {
+   "osm": "way/259084775",
+   "style": "aptclassical",
+   "archetype": "aptClassical",
+   "levels": 5,
+   "height": 18,
+   "x": -1851,
+   "z": 311
+  },
+  {
+   "osm": "way/260494846",
+   "style": "aptclassical",
+   "archetype": "aptClassical",
+   "levels": 3,
+   "height": 12,
+   "x": -1499,
+   "z": -3124
+  },
+  {
+   "osm": "way/259228669",
+   "style": "aptbrick",
+   "archetype": "aptBrick",
+   "levels": 4,
+   "height": 14,
+   "x": -342,
+   "z": 17
+  },
+  {
+   "osm": "way/262074928",
+   "style": "aptbrick",
+   "archetype": "aptBrick",
+   "levels": 4,
+   "height": 15,
+   "x": -2557,
+   "z": -75
+  },
+  {
+   "osm": "way/263268096",
+   "style": "aptbrick",
+   "archetype": "aptBrick",
+   "levels": 4,
+   "height": 14,
+   "x": -1907,
+   "z": -712
+  },
+  {
+   "osm": "way/259974353",
+   "style": "aptbrick",
+   "archetype": "aptBrick",
+   "levels": 6,
+   "height": 24,
+   "x": -487,
+   "z": -887
+  },
+  {
+   "osm": "way/237549258",
+   "style": "aptbrick",
+   "archetype": "aptBrick",
+   "levels": 4,
+   "height": 16,
+   "x": -426,
+   "z": -4785
+  },
+  {
+   "osm": "way/6886365",
+   "style": "aptbrick",
+   "levels": 4,
+   "height": 16,
+   "x": -1301,
+   "z": -1075
+  },
+  {
+   "osm": "way/259977211",
+   "style": "aptbrick",
+   "archetype": "aptBrick",
+   "levels": 4,
+   "height": 14,
+   "x": -225,
+   "z": -970
+  },
+  {
+   "osm": "way/259736423",
+   "style": "aptbrick",
+   "archetype": "aptBrick",
+   "levels": 4,
+   "height": 16,
+   "x": -213,
+   "z": 413
+  },
+  {
+   "osm": "way/288720830",
+   "style": "aptmed",
+   "archetype": "aptMed",
+   "levels": 2,
+   "height": 9,
+   "x": 593,
+   "z": -1426
+  },
+  {
+   "osm": "way/259126362",
+   "style": "aptmed",
+   "archetype": "aptMed",
+   "levels": 3,
+   "height": 10,
+   "x": -1844,
+   "z": 535
+  },
+  {
+   "osm": "way/265428015",
+   "style": "aptmed",
+   "archetype": "aptMed",
+   "levels": 3,
+   "height": 11,
+   "x": -2295,
+   "z": -4468
+  },
+  {
+   "osm": "way/273359024",
+   "style": "aptmed",
+   "archetype": "aptMed",
+   "levels": 2,
+   "height": 8,
+   "x": -3655,
+   "z": -763
+  },
+  {
+   "osm": "way/263277937",
+   "style": "aptmed",
+   "archetype": "aptMed",
+   "levels": 3,
+   "height": 12,
+   "x": -1666,
+   "z": 1072
+  },
+  {
+   "osm": "way/1159719177",
+   "style": "aptmed",
+   "archetype": "aptMed",
+   "levels": 3,
+   "height": 12,
+   "x": -1638,
+   "z": -2775
+  },
+  {
+   "osm": "way/291189061",
+   "style": "aptmed",
+   "archetype": "aptMed",
+   "levels": 2,
+   "height": 6,
+   "x": 4114,
+   "z": 1853
+  },
+  {
+   "osm": "way/253254850",
+   "style": "aptmed",
+   "archetype": "aptMed",
+   "levels": 2,
+   "height": 7,
+   "x": -765,
+   "z": 208
+  },
+  {
+   "osm": "way/262419179",
+   "style": "aptmodern",
+   "archetype": "aptModern",
+   "levels": 3,
+   "height": 12,
+   "x": -2920,
+   "z": -29
+  },
+  {
+   "osm": "way/273505881",
+   "style": "aptmodern",
+   "archetype": "aptModern",
+   "levels": 1,
+   "height": 5,
+   "x": -3729,
+   "z": -1306
+  },
+  {
+   "osm": "way/158804450",
+   "style": "aptmodern",
+   "archetype": "aptModern",
+   "levels": 2,
+   "height": 7,
+   "x": -4616,
+   "z": -1445
+  },
+  {
+   "osm": "way/262128027",
+   "style": "aptmodern",
+   "archetype": "aptModern",
+   "levels": 3,
+   "height": 10,
+   "x": -2050,
+   "z": 212
+  },
+  {
+   "osm": "way/262437666",
+   "style": "aptmodern",
+   "archetype": "aptModern",
+   "levels": 3,
+   "height": 12,
+   "x": -325,
+   "z": 1078
+  },
+  {
+   "osm": "way/173886725",
+   "style": "aptmodern",
+   "archetype": "aptModern",
+   "levels": 2,
+   "height": 7,
+   "x": 757,
+   "z": -1345
+  },
+  {
+   "osm": "way/273299364",
+   "style": "aptmodern",
+   "archetype": "aptModern",
+   "levels": 2,
+   "height": 9,
+   "x": -4080,
+   "z": -771
+  },
+  {
+   "osm": "way/263882693",
+   "style": "aptmodern",
+   "archetype": "aptModern",
+   "levels": 3,
+   "height": 12,
+   "x": -2529,
+   "z": -2449
+  },
+  {
+   "osm": "way/260329411",
+   "style": "brick",
+   "archetype": "loft",
+   "levels": 3,
+   "height": 12,
+   "x": 883,
+   "z": -1603
+  },
+  {
+   "osm": "way/132605465",
+   "style": "brick",
+   "archetype": "loft",
+   "levels": 2,
+   "height": 7,
+   "x": -285,
+   "z": -2346
+  },
+  {
+   "osm": "way/274353110",
+   "style": "brick",
+   "archetype": "loft",
+   "levels": 3,
+   "height": 12,
+   "x": 1623,
+   "z": -4023
+  },
+  {
+   "osm": "way/243353725",
+   "style": "brick",
+   "archetype": "loft",
+   "levels": 2,
+   "height": 6,
+   "x": 964,
+   "z": -1799
+  },
+  {
+   "osm": "way/243357383",
+   "style": "brick",
+   "archetype": "loft",
+   "levels": 4,
+   "height": 16,
+   "x": 168,
+   "z": -1880
+  },
+  {
+   "osm": "way/256454788",
+   "style": "brick",
+   "archetype": "loft",
+   "levels": 3,
+   "height": 12,
+   "x": -489,
+   "z": -2632
+  },
+  {
+   "osm": "way/1123771525",
+   "style": "brick",
+   "archetype": "loft",
+   "levels": 3,
+   "height": 12,
+   "x": 1131,
+   "z": 692
+  },
+  {
+   "osm": "way/252570880",
+   "style": "brick",
+   "archetype": "loft",
+   "levels": 3,
+   "height": 12,
+   "x": -226,
+   "z": -1974
+  },
+  {
+   "osm": "way/256471154",
+   "style": "brick",
+   "archetype": "loft",
+   "levels": 3,
+   "height": 12,
+   "x": -42,
+   "z": -2105
+  },
+  {
+   "osm": "way/274330829",
+   "style": "brick",
+   "archetype": "loft",
+   "levels": 3,
+   "height": 12,
+   "x": 1864,
+   "z": -4576
+  },
+  {
+   "osm": "way/267551774",
+   "style": "bauhaus",
+   "archetype": "contemporary",
+   "levels": 4,
+   "height": 14,
+   "x": 1186,
+   "z": -3611
+  },
+  {
+   "osm": "way/1410195478",
+   "style": "bauhaus",
+   "archetype": "contemporary",
+   "levels": 3,
+   "height": 12,
+   "x": -2781,
+   "z": -57
+  },
+  {
+   "osm": "way/255958571",
+   "style": "bauhaus",
+   "archetype": "contemporary",
+   "levels": 3,
+   "height": 11,
+   "x": -744,
+   "z": -2305
+  },
+  {
+   "osm": "way/206673320",
+   "style": "bauhaus",
+   "archetype": "contemporary",
+   "levels": 3,
+   "height": 12,
+   "x": -956,
+   "z": 565
+  },
+  {
+   "osm": "way/261270847",
+   "style": "bauhaus",
+   "archetype": "contemporary",
+   "levels": 3,
+   "height": 11,
+   "x": 1022,
+   "z": -3927
+  },
+  {
+   "osm": "way/262260723",
+   "style": "bauhaus",
+   "archetype": "contemporary",
+   "levels": 4,
+   "height": 16,
+   "x": -194,
+   "z": 1152
+  },
+  {
+   "osm": "way/696824166",
+   "style": "bauhaus",
+   "archetype": "contemporary",
+   "levels": 2,
+   "height": 8,
+   "x": -3056,
+   "z": -3263
+  },
+  {
+   "osm": "way/264766043",
+   "style": "bauhaus",
+   "archetype": "contemporary",
+   "levels": 3,
+   "height": 12,
+   "x": -2852,
+   "z": -3284
+  },
+  {
+   "osm": "way/172250617",
+   "style": "bauhaus",
+   "archetype": "contemporary",
+   "levels": 6,
+   "height": 24,
+   "x": 251,
+   "z": -1747
+  },
+  {
+   "osm": "way/264770398",
+   "style": "bauhaus",
+   "archetype": "contemporary",
+   "levels": 3,
+   "height": 10,
+   "x": -1756,
+   "z": -3802
+  },
+  {
+   "osm": "way/260177872",
+   "style": "storefront",
+   "archetype": "storefront",
+   "levels": 2,
+   "height": 7,
+   "x": -668,
+   "z": -3548
+  },
+  {
+   "osm": "way/260503383",
+   "style": "storefront",
+   "archetype": "storefront",
+   "levels": 2,
+   "height": 9,
+   "x": -1403,
+   "z": -3049
+  },
+  {
+   "osm": "way/261126838",
+   "style": "storefront",
+   "archetype": "storefront",
+   "levels": 3,
+   "height": 13,
+   "x": -448,
+   "z": -4019
+  },
+  {
+   "osm": "way/197053597",
+   "style": "storefront",
+   "archetype": "storefront",
+   "levels": 3,
+   "height": 13,
+   "x": -186,
+   "z": -3722
+  },
+  {
+   "osm": "way/264645150",
+   "style": "storefront",
+   "archetype": "storefront",
+   "levels": 3,
+   "height": 12,
+   "x": -3318,
+   "z": -3052
+  },
+  {
+   "osm": "way/218152735",
+   "style": "storefront",
+   "archetype": "storefront",
+   "levels": 2,
+   "height": 6,
+   "x": 846,
+   "z": -3074
+  },
+  {
+   "osm": "way/260958625",
+   "style": "storefront",
+   "archetype": "storefront",
+   "levels": 4,
+   "height": 13,
+   "x": -915,
+   "z": -2992
+  },
+  {
+   "osm": "way/176609154",
+   "style": "storefront",
+   "archetype": "storefront",
+   "levels": 2,
+   "height": 6,
+   "x": -190,
+   "z": -1853
+  },
+  {
+   "osm": "way/243356557",
+   "style": "storefront",
+   "archetype": "storefront",
+   "levels": 3,
+   "height": 12,
+   "x": 621,
+   "z": -1606
+  },
+  {
+   "osm": "way/243464436",
+   "style": "storefront",
+   "archetype": "storefront",
+   "levels": 2,
+   "height": 6,
+   "x": 1136,
+   "z": -1547
+  },
+  {
+   "osm": "way/260188896",
+   "style": "shopflats",
+   "archetype": "shopFlats",
+   "levels": 3,
+   "height": 12,
+   "x": -810,
+   "z": -3605
+  },
+  {
+   "osm": "way/504335246",
+   "style": "shopflats",
+   "archetype": "shopFlats",
+   "levels": 3,
+   "height": 12,
+   "x": -583,
+   "z": -4659
+  },
+  {
+   "osm": "way/256436927",
+   "style": "shopflats",
+   "archetype": "shopFlats",
+   "levels": 2,
+   "height": 9,
+   "x": -745,
+   "z": -2959
+  },
+  {
+   "osm": "way/86285079",
+   "style": "shopflats",
+   "archetype": "shopFlats",
+   "levels": 3,
+   "height": 12,
+   "x": -2087,
+   "z": -4628
+  },
+  {
+   "osm": "way/260345847",
+   "style": "shopflats",
+   "archetype": "shopFlats",
+   "levels": 4,
+   "height": 16,
+   "x": -599,
+   "z": -3314
+  },
+  {
+   "osm": "way/293604059",
+   "style": "shopflats",
+   "archetype": "shopFlats",
+   "levels": 3,
+   "height": 12,
+   "x": 178,
+   "z": -2907
+  },
+  {
+   "osm": "way/261092851",
+   "style": "shopflats",
+   "archetype": "shopFlats",
+   "levels": 3,
+   "height": 12,
+   "x": 408,
+   "z": -2852
+  },
+  {
+   "osm": "way/260368511",
+   "style": "shopflats",
+   "archetype": "shopFlats",
+   "levels": 3,
+   "height": 11,
+   "x": -1028,
+   "z": -3159
+  },
+  {
+   "osm": "way/1500284340",
+   "style": "shopflats",
+   "archetype": "shopFlats",
+   "levels": 3,
+   "height": 12,
+   "x": 390,
+   "z": -4444
+  },
+  {
+   "osm": "way/243353729",
+   "style": "shopflats",
+   "archetype": "shopFlats",
+   "levels": 2,
+   "height": 9,
+   "x": 987,
+   "z": -1385
+  },
+  {
+   "osm": "way/256969671",
+   "style": "chicago",
+   "archetype": "prewarOffice",
+   "levels": 6,
+   "height": 25,
+   "x": 1237,
+   "z": -359
+  },
+  {
+   "osm": "way/112934097",
+   "style": "chicago",
+   "archetype": "prewarOffice",
+   "levels": 6,
+   "height": 24,
+   "x": 1186,
+   "z": -636
+  },
+  {
+   "osm": "way/165480947",
+   "style": "chicago",
+   "archetype": "prewarOffice",
+   "levels": 4,
+   "height": 16,
+   "x": 882,
+   "z": 137
+  },
+  {
+   "osm": "way/32947730",
+   "style": "chicago",
+   "archetype": "prewarOffice",
+   "levels": 5,
+   "height": 21,
+   "x": 860,
+   "z": 769
+  },
+  {
+   "osm": "way/86333738",
+   "style": "chicago",
+   "archetype": "prewarOffice",
+   "levels": 4,
+   "height": 15,
+   "x": -4306,
+   "z": -3475
+  },
+  {
+   "osm": "way/700282613",
+   "style": "chicago",
+   "archetype": "prewarOffice",
+   "levels": 4,
+   "height": 16,
+   "x": 626,
+   "z": 102
+  },
+  {
+   "osm": "way/942674802",
+   "style": "chicago",
+   "archetype": "prewarOffice",
+   "levels": 4,
+   "height": 16,
+   "x": 119,
+   "z": -1029
+  },
+  {
+   "osm": "way/260288448",
+   "style": "chicago",
+   "archetype": "prewarOffice",
+   "levels": 8,
+   "height": 31,
+   "x": 1343,
+   "z": 92
+  },
+  {
+   "osm": "way/260921983",
+   "style": "chinatown",
+   "archetype": "chinatown",
+   "levels": 3,
+   "height": 12,
+   "x": 555,
+   "z": 310
+  },
+  {
+   "osm": "way/256732473",
+   "style": "chinatown",
+   "archetype": "chinatown",
+   "levels": 3,
+   "height": 13,
+   "x": 423,
+   "z": 347
+  },
+  {
+   "osm": "way/256730069",
+   "style": "chinatown",
+   "archetype": "chinatown",
+   "levels": 4,
+   "height": 15,
+   "x": 391,
+   "z": 140
+  },
+  {
+   "osm": "way/260517127",
+   "style": "chinatown",
+   "archetype": "chinatown",
+   "levels": 6,
+   "height": 22,
+   "x": 369,
+   "z": -62
+  },
+  {
+   "osm": "way/260208815",
+   "style": "chinatown",
+   "archetype": "chinatown",
+   "levels": 3,
+   "height": 10,
+   "x": 509,
+   "z": -129
+  },
+  {
+   "osm": "way/256080519",
+   "style": "chinatown",
+   "archetype": "chinatown",
+   "levels": 3,
+   "height": 10,
+   "x": 532,
+   "z": 182
+  },
+  {
+   "osm": "way/262685628",
+   "style": "towerblock",
+   "archetype": "apartmentTower",
+   "levels": 8,
+   "height": 33,
+   "x": -560,
+   "z": 729
+  },
+  {
+   "osm": "way/458781175",
+   "style": "towerblock",
+   "archetype": "apartmentTower",
+   "levels": 8,
+   "height": 32,
+   "x": -804,
+   "z": -2059
+  },
+  {
+   "osm": "way/262686730",
+   "style": "towerblock",
+   "archetype": "apartmentTower",
+   "levels": 9,
+   "height": 30,
+   "x": -1831,
+   "z": 51
+  },
+  {
+   "osm": "way/262740300",
+   "style": "towerblock",
+   "archetype": "apartmentTower",
+   "levels": 8,
+   "height": 32,
+   "x": -1572,
+   "z": 35
+  }
+ ]
+}

@@ -1,0 +1,161 @@
+{
+ "about": "Appearance research schema (2026-10-21): what is asked of a model about one building from street-level Mapillary frames. Every attribute allows 'cannot_tell', and saying so is a correct answer when the photo does not show it. v2 (2026-10-22): style replaced by three independent axes (era, form, material), and shops simplified to none/some/all, because the v1 style menu's entries overlapped (shop-and-flats is Edwardian flats over shops) and most 'errors' were between neighbouring entries.",
+ "attributes": {
+  "usable": {
+   "values": [
+    "yes",
+    "no"
+   ],
+   "says": "yes only if the building between the red dashed lines (the target) is clearly visible: most of its street wall, at least its ground floor and its full height (a one-storey building is fine), not mostly hidden by trees, vehicles, scaffolding or another building"
+  },
+  "storeys": {
+   "values": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8+",
+    "cannot_tell"
+   ],
+   "says": "floors above the street on the target's street wall, counting the ground floor"
+  },
+  "shops": {
+   "values": [
+    "none",
+    "some",
+    "all",
+    "cannot_tell"
+   ],
+   "says": "ground-floor shopfronts (display windows, shop doors, signage) on the visible street wall: none; some (one or a few, the rest is entrance, garage or wall); all (the whole ground floor is shops)"
+  },
+  "awnings": {
+   "values": [
+    "none",
+    "some",
+    "cannot_tell"
+   ],
+   "says": "fabric or metal awnings or canopies over the ground floor"
+  },
+  "balconies": {
+   "values": [
+    "none",
+    "balconettes",
+    "balconies",
+    "cannot_tell"
+   ],
+   "says": "balconettes = shallow railings at windows (Juliet balconies, iron rails); balconies = platforms you can stand on that project from the wall"
+  },
+  "bay_windows": {
+   "values": [
+    "none",
+    "some",
+    "cannot_tell"
+   ],
+   "says": "windows that project out from the wall as a box or angled bay, on upper floors"
+  },
+  "fire_escape": {
+   "values": [
+    "no",
+    "yes",
+    "cannot_tell"
+   ],
+   "says": "metal fire escape stairs/landings on the visible street wall"
+  },
+  "main_colour": {
+   "values": [
+    "white",
+    "cream",
+    "sand",
+    "buff",
+    "lightGrey",
+    "midGrey",
+    "charcoal",
+    "redBrick",
+    "brown",
+    "salmon",
+    "paleYellow",
+    "paleBlue",
+    "paleGreen",
+    "teal",
+    "glassBlue",
+    "black",
+    "cannot_tell"
+   ],
+   "says": "the main wall colour, ignoring windows, signs and the ground floor if it is painted differently; a shaded white wall is still white",
+   "hex": {
+    "white": "#f2f0ea",
+    "cream": "#e9dfc8",
+    "sand": "#d8c6a0",
+    "buff": "#c9a27a",
+    "lightGrey": "#c9c7c1",
+    "midGrey": "#9a9892",
+    "charcoal": "#4a4a48",
+    "redBrick": "#9a4a36",
+    "brown": "#6d4a35",
+    "salmon": "#d9a08a",
+    "paleYellow": "#e8d89a",
+    "paleBlue": "#a9bccb",
+    "paleGreen": "#b4c2a8",
+    "teal": "#3f6a6e",
+    "glassBlue": "#6d8796",
+    "black": "#262626"
+   }
+  },
+  "era": {
+   "values": [
+    "victorian",
+    "edwardian",
+    "interwar",
+    "postwar",
+    "recent",
+    "cannot_tell"
+   ],
+   "says": {
+    "victorian": "1870-1905: ornate wood trim, tall narrow windows, slanted bay windows, gables or false fronts, brackets",
+    "edwardian": "1905-1925: square or rounded bays, classical cornice, simpler trim, flats and apartment blocks of that age, brick and terracotta commercial",
+    "interwar": "1925-1945: stucco, Mediterranean/Spanish/Deco/Streamline, arches, tile, garage under",
+    "postwar": "1945-1985: plain boxes, aluminium or ribbon windows, flat fronts, little ornament",
+    "recent": "1985-today: panels, large glass, box bays, contemporary materials"
+   }
+  },
+  "form": {
+   "values": [
+    "house",
+    "flats",
+    "apartment_block",
+    "commercial",
+    "mixed",
+    "cannot_tell"
+   ],
+   "says": {
+    "house": "a single house or a pair of flats of 1-3 storeys",
+    "flats": "a small residential building of 2-4 storeys with several flats (several doors or bells, bay stacks)",
+    "apartment_block": "a residential block of 4+ storeys",
+    "commercial": "shops, offices, warehouse or workshop, no homes visible above",
+    "mixed": "homes above shops"
+   }
+  },
+  "material": {
+   "values": [
+    "wood",
+    "stucco",
+    "brick",
+    "stone",
+    "glass",
+    "panels",
+    "cannot_tell"
+   ],
+   "says": {
+    "wood": "wood siding or shingles",
+    "stucco": "smooth or textured render",
+    "brick": "exposed brick, painted or not",
+    "stone": "stone or terracotta cladding",
+    "glass": "mostly glass",
+    "panels": "metal, fibre-cement or concrete panels"
+   }
+  }
+ }
+}
