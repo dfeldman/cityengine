@@ -43,6 +43,14 @@ interface Planted { x: number; z: number; s: number; spin: number; kind: 'shrub'
 /** the library's species used, by role */
 const SHRUBS = ['bush_green', 'bush_flowering', 'rhododendron', 'hazel']
 const FLOWERS = ['tulip', 'daisy', 'wildflower', 'lupine', 'poppy']
+/**
+ * Species drawn at their OWN size and without the leafy core: San Francisco's succulents, bunch grasses and silver
+ * plants, its cacti and garden exotics (assetkit plantgen, 2026-10-21). Every other shrub is stretched to a bush's height and given a green mound
+ * inside, which is right for a broadleaf shrub and would make a 15 cm echeveria a 1.7 m green blob, or bury an agave's
+ * blue swords in a hedge. These stand at the library's typical height for the species, varied with the plant's size.
+ */
+const OWN_SIZE = new Set(['agave', 'aloe', 'aeonium', 'echeveria', 'ice_plant', 'nz_flax', 'deer_grass', 'artemisia', 'lavender',
+  'strelitzia', 'agapanthus', 'calla_lily', 'san_pedro', 'golden_barrel', 'prickly_pear', 'barrel_cactus', 'yucca'])
 
 const hash = (x: number, z: number, salt: number): number => {
   let h = Math.imul(Math.round(x * 10) ^ 0x27d4eb2d, 0x9e3779b1) ^ Math.imul(Math.round(z * 10) + salt, 0x85ebca77)
@@ -246,7 +254,7 @@ export class Plants {
   private readonly terrain: Terrain
   private readonly base: string
   readonly byTile = new Map<string, Planted[]>()
-  models: { kind: 'shrub' | 'flower'; species: string; parts: Mesh[]; top: number; named?: boolean }[] = []
+  models: { kind: 'shrub' | 'flower'; species: string; parts: Mesh[]; top: number; named?: boolean; own?: number }[] = []
   /** the city's planting zones, when it has them (map format v3): which shrubs and flowers grow where */
   zones: PlantZones | null = null
   private dirty = false
@@ -388,7 +396,9 @@ export class Plants {
         const e = index.trees.find((t) => t.species === species)
         if (!e) { console.warn(`plants: a zone asks for "${species}", which the plant library does not have`); continue }
         const parts = await this.importModel(e.file)
-        if (parts.length) this.models.push({ kind, species, parts, top: e.height || 1 })
+        // an OWN_SIZE species' typical height: the median over its library entries (the first file is only one of them)
+        const hs = OWN_SIZE.has(species) ? index.trees.filter((t) => t.species === species).map((t) => t.height).sort((a, b) => a - b) : []
+        if (parts.length) this.models.push({ kind, species, parts, top: e.height || 1, own: hs.length ? hs[hs.length >> 1] : undefined })
       }
     }
     /*
@@ -440,11 +450,11 @@ export class Plants {
     const cores: Matrix[] = []
     for (const list of this.byTile.values()) {
       for (const p of list) {
-        // the zone's own species where it names them, else the defaults
+        // the zone's own species where it names them, else the defaults; a name listed twice is picked twice as often
         const z = this.zones?.shrubs(p.x, p.z)
         const names = p.kind === 'shrub' ? z?.shrubs : z?.flowers
         let pool = p.species ? this.models.filter((m) => m.species === p.species)
-          : names && names.length ? this.models.filter((m) => m.kind === p.kind && names.includes(m.species)) : []
+          : names && names.length ? names.flatMap((n) => this.models.filter((m) => m.kind === p.kind && m.species === n)) : []
         if (p.species && !pool.length) continue
         if (!pool.length) pool = this.models.filter((m) => !m.named && m.kind === p.kind && (p.kind === 'shrub' ? SHRUBS : FLOWERS).includes(m.species))
         if (!pool.length) continue
@@ -452,12 +462,12 @@ export class Plants {
         const key = p.kind === 'flower' ? hash(Math.round(p.x / 4) * 4, Math.round(p.z / 4) * 4, 11) : hash(p.x, p.z, 12)
         const model = pool[Math.floor(key * pool.length) % pool.length]
         // (a landmark's named plant carries its height in metres in `s`)
-        const want = p.species ? p.s : p.kind === 'shrub' ? 1.7 * p.s : 0.5 * p.s
+        const want = p.species ? p.s : model.own ? model.own * (0.55 + 0.4 * Math.min(p.s, 2)) : p.kind === 'shrub' ? 1.7 * p.s : 0.5 * p.s
         const k = Math.max(0.2, Math.min(3, want / model.top))
         const mtx = Matrix.Compose(new Vector3(k, k, k), Quaternion.RotationAxis(Vector3.Up(), p.spin),
           new Vector3(p.x, (p.y ?? (p.raw ? this.terrain.rawHeightAt(p.x, p.z) : this.terrain.heightAt(p.x, p.z))) + (p.dy ?? 0) + 0.02, p.z))
         for (const part of model.parts) (buckets.get(part) ?? buckets.set(part, []).get(part)!).push(mtx)
-        if (p.kind === 'shrub' && this.core) {
+        if (p.kind === 'shrub' && this.core && !model.own) {
           const h = want * 1.0
           cores.push(Matrix.Compose(new Vector3(h * 1.35, h, h * 1.35), Quaternion.RotationAxis(Vector3.Up(), p.spin),
             new Vector3(p.x, (p.y ?? (p.raw ? this.terrain.rawHeightAt(p.x, p.z) : this.terrain.heightAt(p.x, p.z))) + (p.dy ?? 0), p.z)))

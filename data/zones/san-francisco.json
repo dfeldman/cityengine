@@ -1184,10 +1184,17 @@
      "shrubs": {
       "density": 1.2,
       "shrubs": [
+       "coyote_brush",
        "bracken",
-       "fern",
+       "ceanothus",
        "juniper_scrub",
-       "bush_green"
+       "artemisia",
+       "toyon",
+       "monkeyflower"
+      ],
+      "flowers": [
+       "poppy",
+       "lupine"
       ]
      }
     }
@@ -2169,14 +2176,20 @@
      },
      "shrubs": {
       "shrubs": [
+       "coyote_brush",
+       "coyote_brush",
+       "echium",
        "juniper_scrub",
+       "artemisia",
        "sagebrush",
-       "bush_green"
+       "toyon",
+       "monkeyflower"
       ],
       "flowers": [
        "poppy",
        "lupine",
-       "wildflower"
+       "wildflower",
+       "ice_plant"
       ]
      }
     }
@@ -3194,11 +3207,25 @@
        "bush_flowering",
        "rhododendron",
        "bush_green",
-       "juniper_scrub"
+       "nz_flax",
+       "agave",
+       "echium",
+       "lavender",
+       "strelitzia",
+       "bougainvillea",
+       "san_pedro",
+       "fuchsia",
+       "oleander",
+       "lantana",
+       "lions_tail",
+       "mexican_sage",
+       "rosemary"
       ],
       "flowers": [
        "daisy",
-       "poppy"
+       "poppy",
+       "agapanthus",
+       "calla_lily"
       ]
      }
     }
@@ -4857,10 +4884,13 @@
      "shrubs": {
       "density": 1.4,
       "shrubs": [
+       "coyote_brush",
        "juniper_scrub",
        "bush_green",
        "sagebrush",
-       "bracken"
+       "bracken",
+       "toyon",
+       "monkeyflower"
       ]
      }
     }
@@ -4986,7 +5016,14 @@
       "shrubs": [
        "bush_green",
        "bramble",
-       "juniper_scrub"
+       "aeonium",
+       "agave",
+       "echium",
+       "fuchsia"
+      ],
+      "flowers": [
+       "calla_lily",
+       "poppy"
       ]
      }
     }
@@ -5637,8 +5674,10 @@
       "shrubs": [
        "dry_grass",
        "lupine",
-       "juniper_scrub",
-       "dry_grass"
+       "artemisia",
+       "coyote_brush",
+       "dry_grass",
+       "deer_grass"
       ]
      }
     }
@@ -5808,7 +5847,7 @@
   {
    "ref": "wharf-crowds",
    "name": "Fisherman's Wharf crowds",
-   "note": "owner, 2026-10-17: 'this area should have low car traffic, and a LOT of NPCs walking around... a fair/festival atmosphere'; 'very few cars on google street view'",
+   "note": "owner, 2026-10-17: 'so many people' — the Wharf's sidewalks, Pier 39 and the courts are thick with visitors",
    "priority": 2,
    "props": {
     "crowd": 7,
@@ -5831,8 +5870,7 @@
      37.8118,
      -122.4245
     ]
-   ],
-   "note": "owner, 2026-10-17: 'so many people' — the Wharf's sidewalks, Pier 39 and the courts are thick with visitors"
+   ]
   },
   {
    "ref": "francisco-park",
@@ -5912,21 +5950,45 @@
      "shrubs": {
       "density": 2.2,
       "shrubs": [
-       "juniper_scrub",
+       "coyote_brush",
+       "coyote_brush",
+       "buckwheat",
+       "buckwheat",
+       "buckwheat",
+       "artemisia",
+       "artemisia",
        "sagebrush",
-       "bush_green",
-       "bush_flowering",
-       "bush_green"
+       "sagebrush",
+       "nz_flax",
+       "nz_flax",
+       "deer_grass",
+       "ceanothus",
+       "toyon",
+       "monkeyflower",
+       "leucadendron",
+       "leucadendron",
+       "westringia",
+       "rockrose",
+       "agave",
+       "agave",
+       "aloe",
+       "aloe",
+       "aeonium",
+       "aeonium",
+       "echium",
+       "golden_barrel",
+       "prickly_pear"
       ],
       "flowers": [
-       "lupine",
-       "poppy",
-       "wildflower"
+       "echeveria",
+       "echeveria",
+       "ice_plant",
+       "agapanthus"
       ]
      }
     }
    },
-   "note": "Francisco Park (2022, the old Francisco Reservoir, Russian Hill): terraced slopes of dense native coastal scrub and grasses in red bark mulch, under big Monterey cypresses and coast live oaks; the fenced lawn the only grass (owner, 2026-10-21: 'should be lush with plants', two Street View photos of Oct 2023). Planted beds over the OSM park (outline traced from the bake), its lawns left mown.",
+   "note": "Francisco Park (2022, the old Francisco Reservoir, Russian Hill): terraced slopes of mounded grey-green and olive coastal scrub (coyote brush, buckwheat, sagebrush, ceanothus, toyon, monkeyflower, yellow leucadendron) and succulents (agave, aloe, aeonium, echeveria, a few cacti) in red bark mulch, flax, deer grass and big silver artemisia along the paths (owner, 2026-10-21: 'mostly succulents and shrubs'), under big Monterey cypresses and coast live oaks; the fenced lawn the only grass (owner, 2026-10-21: 'should be lush with plants', two Street View photos of Oct 2023). Planted beds over the OSM park (outline traced from the bake), its lawns left mown.",
    "ring": [
     [
      37.804046,
