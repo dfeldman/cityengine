@@ -172,7 +172,12 @@ photographs and almost none worse.
    hand-modelling queue (`docs/sf-queue.csv`) instead. It asks for the thing Haiku is good at — noticing an obvious
    oddity — rather than a fine distinction, and it pays off without any scaling: a few hundred flags in the places
    people ride would be worth more than ninety thousand slightly better guesses. The reference labeller already
-   called this one out unprompted ("8 m glass curved front plus 50 m white paneled side").
+   called this one out unprompted ("8 m glass curved front plus 50 m white paneled side"). (The example itself turned
+   out to be demolished — see the next item — so it is not to be modelled; the triage idea stands.)
+0b. **Stale frames.** way/243356557 has been demolished (owner, 2026-10-22), yet OSM still maps it and the Mapillary
+   frames we labelled show it standing. Street imagery can be years old. The tiles carry each frame's `captured_at`:
+   record it with every frame, prefer recent ones, and flag a building whose newest usable frame is old (or whose lot
+   now shows hoardings or a construction site) instead of labelling it.
 1. **Target identity**: tell the labeller which neighbours are NOT the target (their heights and widths are known);
    detect merged footprints (frontage far over the archetype's typical lot) and skip or split them; require two strict
    frames that agree.
