@@ -164,6 +164,15 @@ photographs and almost none worse.
 
 ## 6. Ideas to try next, most promising first
 
+0. **Triage before restyling: flag the buildings no generic style can draw.** way/243356557 (5th and Harrison area,
+   37.7785 −122.4049) is a curved glass corner tower with a long white wall whose top waves, carrying two billboards;
+   the bake calls it a 3-storey storefront and draws a white box over the whole 8 × 50 m lot (owner, 2026-10-22). No
+   label can fix that through the generic renderer — it needs a model of its own. A question like `generic_fit:
+   ordinary / unusual (curved or glass walls, odd shape, signage structures)` would route such buildings to the
+   hand-modelling queue (`docs/sf-queue.csv`) instead. It asks for the thing Haiku is good at — noticing an obvious
+   oddity — rather than a fine distinction, and it pays off without any scaling: a few hundred flags in the places
+   people ride would be worth more than ninety thousand slightly better guesses. The reference labeller already
+   called this one out unprompted ("8 m glass curved front plus 50 m white paneled side").
 1. **Target identity**: tell the labeller which neighbours are NOT the target (their heights and widths are known);
    detect merged footprints (frontage far over the archetype's typical lot) and skip or split them; require two strict
    frames that agree.
