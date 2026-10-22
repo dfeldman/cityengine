@@ -319,6 +319,7 @@ renders stay the same buildings from round to round. `tools/appearance/judged.py
 |---|---|---|---|---|
 | v5 | ground-floor mix, bay counts, 14 colours | 1.53 (0.61) | 28 of 51 | 44 |
 | v6 | see below | 1.64 (0.62) | 32 of 50 | 43 |
+| v7 | see below | 1.73 (0.69) | 38 of 52 | 47 (5 the same, today never) |
 
 **v6 changes:**
 - **Schema** (`menus-v6.json`):
@@ -352,6 +353,36 @@ renders stay the same buildings from round to round. `tools/appearance/judged.py
 - Renderer: Queen Anne turrets were missing. They were planned but wound the wrong way, and culled. Also white garage
   doors drawn dark, and murals.
 - Shot: one camera stood inside the house across the street.
+
+**v7 changes:**
+- **Schema:**
+  - `target` (one, best_fit, none) replaces `target_clear`: where neighbours share the space between the lines, the
+    building that fits the mapped size is still described. A run now describes 81 of 92 buildings, against 57 in v6.
+  - `roof` (flat, gabled, hipped, mansard), drawn with the game's own roof shapes.
+  - `garage_door_colour`.
+  - windows `few_or_none`.
+- **Renderer:**
+  - the turret wound correctly;
+  - stucco flats on the Presidio stucco's rectangular sash, with arches only where the label saw them;
+  - blank upper walls;
+  - tinted garage doors;
+  - the label's storey count holds against the mapped height.
+- **Shot:** never from inside the house across the street.
+
+**v7 judged:**
+- Labels: colours still a shade warm or dark; industrial steel sash drawn as punched windows; a neighbour's shop sign
+  read into a house's label.
+- Renderer: stoops with stairs, angled bays with white trim, murals, decorative parapets, dormers.
+- Shot: still too close on tall fronts, and corner buildings shot on the side the photo does not show.
+
+**v8 changes:**
+- **Schema:** `ornament` (plain, some, rich); a tighter `few_or_none`; lighter beige and grey, a softer red.
+- **Renderer:**
+  - stoop steps up to the door;
+  - a garage row fills the front;
+  - window hoods on any richly ornamented front;
+  - the label's sign text painted over the ground floor, only where there are shopfronts.
+- **Shot:** the wall the photograph looks at (from the capture's camera bearing); a wider lens.
 
 ## 4. Rendering from the labels (`?labels=1`)
 

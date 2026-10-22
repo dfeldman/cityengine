@@ -17,6 +17,13 @@ const nearest = (x, z) => { let bd = Infinity, id = null; for (const [rx, rz, i]
 const cell = (x, z) => `${Math.floor(x / 50)},${Math.floor(z / 50)}`
 const grid = new Map()
 for (const b of pkg.buildings) {
+  // the clearest frame's bearing, camera to building (photos.csv)
+  let look = null
+  try {
+    const rows = readFileSync(`${ROOT}tools/cache/appearance-r2/way-${id}/photos.csv`, 'utf8').trim().split('\n').slice(1).map((l) => l.split(','))
+    const r = rows.find((x) => x[6])
+    if (r && Number.isFinite(Number(r[8]))) look = (Number(r[8]) * Math.PI) / 180
+  } catch { /* no capture record: the street decides */ }
   const n = b.ring.length / 2
   let x = 0, z = 0
   for (let i = 0; i < n; i++) { x += b.ring[2 * i]; z += b.ring[2 * i + 1] }
@@ -54,7 +61,10 @@ for (const id of ids) {
     let nx = (c[1] - a[1]) / len, nz = -(c[0] - a[0]) / len
     if (nx * (mx - cx) + nz * (mz - cz) < 0) { nx = -nx; nz = -nz }
     const [d, edge] = nearest(mx + nx * 6, mz + nz * 6)
-    const score = d - Math.min(len, 20) * 0.15
+    // the wall the photograph looks at, when the capture says where the camera stood (wave 7: a corner building shot
+    // on its narrow end while the photo showed its long side)
+    const facing = look ? -(nx * Math.sin(look) + nz * Math.cos(look)) : 0
+    const score = d - Math.min(len, 20) * 0.15 - facing * 12
     if (!best || score < best.score) best = { score, mx, mz, nx, nz, len, edge }
   }
   const h = b.height ?? 10
@@ -76,7 +86,7 @@ for (const id of ids) {
   const lift = Math.min(14, h * 0.45)
   for (const [tag, extra] of [['base', SCENE], ['look', SCENE + '&labels=1']]) {
     const args = ['--experimental-strip-types', 'tools/look-at.ts', '--city=san-francisco', `--start=${best.edge}`, `--at=${best.mx.toFixed(1)},${best.mz.toFixed(1)}`,
-      `--from=${fx.toFixed(1)},${fz.toFixed(1)},1.7`, `--lift=${lift.toFixed(1)}`, `--out=${OUT}/${id}-${tag}.png`]
+      `--from=${fx.toFixed(1)},${fz.toFixed(1)},1.7`, `--lift=${lift.toFixed(1)}`, '--fov=68', `--out=${OUT}/${id}-${tag}.png`]
     if (extra) args.push(`--extra=${extra}`)
     try { execFileSync('node', args, { cwd: ROOT, stdio: 'pipe', timeout: 240000 }) } catch (e) { console.log(id, tag, 'failed', String(e).slice(0, 160)) }
   }

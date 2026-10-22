@@ -40,6 +40,7 @@ import { region, type Region } from '../city/region.ts'
 import { pointAlong } from '../sim/navigate.ts'
 import { waterMaterial } from './water-material.ts'
 import { LOOKS_ON, lookFor } from '../city/appearance.ts'
+import { flatSignMesh } from './sign-plates.ts'
 import { planFacade, type StyleId } from '../city/facade.ts'
 import { Terrain, type PackedTerrain } from '../city/terrain.ts'
 import { Carriageways } from '../city/carriageways.ts'
@@ -4283,6 +4284,27 @@ export class City {
           for (let k = 0; k < n; k++) if (facesStreet(this.awningStreets, ...t(k), nx, nz)) return { rate: rate * 0.35, main: false, rise, pavement: pavement() }
           return null
         }, this.off.has('courts') ? [] : (b.holes ?? []).map(unpackPoints), this.archesFor(b, ring, plan.height))
+      // a label's sign, read off the photograph, over the ground floor of its longest street wall (`?labels=1`)
+      if (look?.sign) {
+        let best = -1, bestLen = 0
+        for (let i = 0; i < ring.length; i++) {
+          const a = ring[i], c = ring[(i + 1) % ring.length]
+          const len = Math.hypot(c.x - a.x, c.z - a.z)
+          const nx = (c.z - a.z) / (len || 1), nz = -(c.x - a.x) / (len || 1)
+          const near = this.awningStreets && facesStreet(this.awningStreets, (a.x + c.x) / 2, (a.z + c.z) / 2, nx, nz)
+          if (len > 3 && (near ? len + 1000 : len) > bestLen) { best = i; bestLen = near ? len + 1000 : len }
+        }
+        if (best >= 0) {
+          const a = ring[best], c = ring[(best + 1) % ring.length]
+          const len = Math.hypot(c.x - a.x, c.z - a.z)
+          const nx = (c.z - a.z) / len, nz = -(c.x - a.x) / len
+          const m = flatSignMesh(this.scene, {
+            spec: { type: 'flat', text: look.sign, h: 0.42, face: 'grotesque', weight: 'bold', colour: [0.97, 0.96, 0.92], panel: [0.12, 0.12, 0.13], lit: 'none', w: Math.min(len * 0.8, 9) },
+            x: (a.x + c.x) / 2, y: 0.16 + foot + plan.storeys[0].y1 + 0.45, z: (a.z + c.z) / 2, heading: Math.atan2(nx, nz),
+          }, `labelsign:${b.id}`)
+          if (m) { m.renderingGroupId = GROUP.building; meshes.push(m) }
+        }
+      }
       // the shadow this building throws across the street, as geometry; see shadows.ts
       if (!this.off.has('shadows')) {
         addShadow(shadows, ring, plan.height + b.roofHeight * 0.6 + (pad - foot), sunOff, SHADOW_Y)

@@ -8,7 +8,7 @@
  * photographs. Every answer is optional; a building keeps whatever the bake gave it where the label is silent.
  */
 import table from '../../data/appearance/looks/haiku.json' with { type: 'json' }
-import menus from '../../data/appearance/research/menus-v7.json' with { type: 'json' }
+import menus from '../../data/appearance/research/menus-v8.json' with { type: 'json' }
 import type { Dress, Palette, StyleId } from './facade.ts'
 import type { RoofShape } from './package.ts'
 
@@ -20,6 +20,8 @@ export interface Look {
   levels?: number
   /** the roof the photograph shows */
   roof?: RoofShape
+  /** the words on its main sign, as the photograph shows them */
+  sign?: string
   palette?: Partial<Palette>
   dress?: Partial<Dress>
 }
@@ -59,6 +61,9 @@ export function lookFor(id: number, baked?: StyleId): Look | null {
   if (storeys > 0) look.levels = storeys
   const roof: Record<string, RoofShape> = { flat: 'flat', gabled: 'gabled', hipped: 'hipped', mansard: 'mansard' }
   if (roof[l.roof]) look.roof = roof[l.roof]
+  // (a short sign only: a long reading is usually several signs run together)
+  // (and only over a shop: a neighbour's shop sign read into a house's label was painted on the house — wave 7)
+  if (l.sign_text && l.sign_text.length <= 40 && l.shopfronts && l.shopfronts !== 'none' && l.shopfronts !== 'cannot_tell') look.sign = l.sign_text
 
   const wall = colour(l.wall_colour)
   const palette: Partial<Palette> = {}
@@ -93,6 +98,7 @@ export function lookFor(id: number, baked?: StyleId): Look | null {
   }
   if (l.bay_shape === 'angled' || l.bay_shape === 'square' || l.bay_shape === 'rounded') dress.bayShape = l.bay_shape
   if (l.windows === 'few_or_none') dress.blank = true
+  if (l.ornament === 'plain' || l.ornament === 'some' || l.ornament === 'rich') dress.ornament = l.ornament
   if (colour(l.garage_door_colour)) dress.garageTint = colour(l.garage_door_colour)
   if (l.victorian_kind === 'italianate' || l.victorian_kind === 'stick' || l.victorian_kind === 'queen_anne') dress.victorian = l.victorian_kind
   if (l.fire_escape === 'yes' || l.fire_escape === 'no') dress.fireEscape = l.fire_escape === 'yes'

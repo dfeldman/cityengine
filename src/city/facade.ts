@@ -282,6 +282,8 @@ export interface Dress {
   blank?: boolean
   /** a label's garage door colour: the paintings' doors are dark, and a white roll-up door is half of a stucco front */
   garageTint?: string
+  /** how ornamented the front is (a label's): `rich` puts hoods over the windows of any style */
+  ornament?: 'plain' | 'some' | 'rich'
 }
 
 export interface GroundMix {
@@ -303,7 +305,8 @@ export function groundBays(bays: number, g: GroundMix): GroundBay[] {
   const s0 = Math.floor((bays - Math.min(nShop, bays)) / 2)
   for (let b = s0; b < s0 + Math.min(nShop, bays); b++) out[b] = 'shop'
   // garages from the ends inwards, one end then the other
-  let garages = g.garages >= 2 ? Math.max(2, Math.floor(bays / 3)) : g.garages
+  // (two or more: most of what the shops and the door leave — a row of garages is the whole ground floor; wave 7)
+  let garages = g.garages >= 2 ? Math.max(2, Math.round((bays - nShop - (g.entrance === 'none' ? 0 : 1)) * 0.75)) : g.garages
   for (let k = 0; garages > 0 && k < bays; k++) {
     const b = k % 2 === 0 ? k / 2 : bays - 1 - (k - 1) / 2
     if (out[b] === 'window') { out[b] = 'garage'; garages-- }
@@ -804,6 +807,18 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
     }
   }
 
+  // a label's stoop: a flight of steps up to the door, out over the pavement (wave 7: the painted stoop read as a door)
+  if (mix && plan.storeys[0].kind === 'ground') {
+    mix.forEach((k, b) => {
+      if (k !== 'stoop') return
+      const top = Math.min(1.8, plan.storeys[0].y1 * 0.45)
+      for (let i = 0; i < 5; i++) {
+        features.push({ kind: 'cornice', y0: 0, y1: top * (i + 1) / 5, depth: 1.9 * (1 - i / 5), x0: margin + b * bayW + 0.08,
+          x1: margin + (b + 1) * bayW - 0.08, colour: plan.palette.trim })
+      }
+    })
+  }
+
   /*
    * A New York tenement's fire escape: an iron balcony on every storey from the second up, across the
    * centre two bays of a wall broad enough to have them, a stair between each. The thing a New York street
@@ -1012,6 +1027,22 @@ function dressWall(plan: FacadePlan, d: Dress, features: Feature[], len: number,
     }
   }
   if (d.victorian) dressVictorian(plan, d.victorian, features, len, margin, bayW, bays)
+  // a richly ornamented front that is not a painted lady — an Edwardian's, a Beaux-Arts block's — wears the hoods too
+  else if (d.ornament === 'rich') windowHoods(plan, features, margin, bayW, bays, false)
+}
+
+/** A moulded hood over every upper window — a lip, and a second deeper one above it on a grand front. */
+function windowHoods(plan: FacadePlan, features: Feature[], margin: number, bayW: number, bays: number, deep: boolean): void {
+  const winW = bayW * plan.window.widthFrac
+  for (const s of plan.storeys) {
+    if (s.kind === 'ground') continue
+    const y = s.y1 - (s.y1 - s.y0) * 0.14
+    for (let b = 0; b < bays; b++) {
+      const x0 = margin + b * bayW + (bayW - winW) / 2
+      features.push({ kind: 'cornice', y0: y, y1: y + 0.16, depth: 0.16, x0: x0 - 0.12, x1: x0 + winW + 0.12, colour: plan.palette.trim })
+      if (deep) features.push({ kind: 'cornice', y0: y + 0.16, y1: y + 0.26, depth: 0.24, x0: x0 - 0.2, x1: x0 + winW + 0.2, colour: plan.palette.trim })
+    }
+  }
 }
 
 /**
@@ -1024,17 +1055,7 @@ function dressVictorian(plan: FacadePlan, kind: NonNullable<Dress['victorian']>,
   margin: number, bayW: number, bays: number): void {
   const trim = plan.palette.trim
   const h = plan.height
-  const winW = bayW * plan.window.widthFrac
-  for (const s of plan.storeys) {
-    if (s.kind === 'ground') continue
-    const y = s.y1 - (s.y1 - s.y0) * 0.14
-    for (let b = 0; b < bays; b++) {
-      const x0 = margin + b * bayW + (bayW - winW) / 2
-      // a pediment-ish hood: a lip, and on an Italianate a second, deeper one above it
-      features.push({ kind: 'cornice', y0: y, y1: y + 0.16, depth: 0.16, x0: x0 - 0.12, x1: x0 + winW + 0.12, colour: trim })
-      if (kind === 'italianate') features.push({ kind: 'cornice', y0: y + 0.16, y1: y + 0.26, depth: 0.24, x0: x0 - 0.2, x1: x0 + winW + 0.2, colour: trim })
-    }
-  }
+  windowHoods(plan, features, margin, bayW, bays, kind === 'italianate')
   if (kind !== 'queen_anne' && bays > 0) {
     // brackets in pairs under the top, deep on an Italianate
     const big = kind === 'italianate'

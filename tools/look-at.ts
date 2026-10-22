@@ -79,6 +79,8 @@ if (height !== null && pitch !== null && b !== null) {
 await page.evaluate(`(() => {
   const sc = window.__scene
   const cam = sc.activeCamera
+  // --fov=70 widens the lens (degrees, vertical): a whole front from across a narrow street
+  ${arg('fov') ? `cam.fov = ${(Number(arg('fov')) * Math.PI) / 180}` : ''}
   window.__lookHold = () => { cam.position.set(${px}, ${py}, ${pz}); cam.setTarget(new cam.position.constructor(${x}, ${ty} + ${height !== null ? 8 : lift * k}, ${z})) }
   sc.onBeforeRenderObservable.add(window.__lookHold)
 })()`)
