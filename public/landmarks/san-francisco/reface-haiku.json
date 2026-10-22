@@ -167,18 +167,5 @@
     "wall": "#b8b0a0",
     "noShops": true,
     "note": "2026-10-16 (Mapillary, docs/shots/refs/notable/clift): a 1913 seventeen-storey buff-grey brick hotel tower, regular punched windows over an arched stone base — not bays and fire escapes (was the Haiku sfapartment restyle)"
-  },
-  {
-    "osm": [
-      "way/243571728"
-    ],
-    "name": "(unnamed)",
-    "restyle": "bauhaus",
-    "wall": "#d9dcdf",
-    "accent": "#3b4f63",
-    "by": "haiku",
-    "image": "way-243571728-2.jpg",
-    "note": "2026-10-16: modern glass apartments by Van Ness & Market — blue-grey glass in a white frame, no bays (Mapillary); the red stripe in the photo is the neighbour. 2026-10-21: OSM said 55 m (block bulk tag); DataSF 2010 LiDAR median 37.3 m, max 42 m; about thirteen storeys in Mapillary",
-    "height": 40
   }
 ]

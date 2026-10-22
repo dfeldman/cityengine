@@ -26,7 +26,7 @@ import { surfaceTag } from '../../cartoon-material.ts'
 import { boxAlong, edgeAt, signText } from '../parts.ts'
 
 type P2 = { x: number; z: number }
-type Edge = ReturnType<typeof edgeAt>
+export type Edge = ReturnType<typeof edgeAt>
 const FIXED = 0
 const PANEL = surfaceTag('panel')
 const GLASS_T = surfaceTag('glass')
@@ -49,10 +49,10 @@ const G = 5.2
 const FLOORS = 10
 
 /** A point `u` along an edge and `o` out from it. */
-const at = (e: Edge, u: number, o: number): P2 => ({ x: e.a.x + e.tx * u + e.nx * o, z: e.a.z + e.tz * u + e.nz * o })
+export const at = (e: Edge, u: number, o: number): P2 => ({ x: e.a.x + e.tx * u + e.nx * o, z: e.a.z + e.tz * u + e.nz * o })
 
 /** A box on an edge: `u0..u1` along it, `y0..y1` up, standing `o0..o1` out from the wall. */
-function slab(out: MeshBuilder, e: Edge, u0: number, u1: number, y0: number, y1: number, o0: number, o1: number,
+export function slab(out: MeshBuilder, e: Edge, u0: number, u1: number, y0: number, y1: number, o0: number, o1: number,
               c: Rgb, tag: number, turn = 0): void {
   const p = at(e, (u0 + u1) / 2, (o0 + o1) / 2)
   boxAlong(out, p.x, (y0 + y1) / 2, p.z, (u1 - u0) / 2, (y1 - y0) / 2, (o1 - o0) / 2, e.heading + turn, c, tag)
@@ -62,19 +62,20 @@ function slab(out: MeshBuilder, e: Edge, u0: number, u1: number, y0: number, y1:
  * One pane of glass flat on a wall, its uv the window's own (column, floor), so after dark the glass surface lights it
  * as one room.
  */
-function pane(out: MeshBuilder, e: Edge, u: number, y0: number, w: number, h: number, o: number, col: number, row: number): void {
+export function pane(out: MeshBuilder, e: Edge, u: number, y0: number, w: number, h: number, o: number, col: number, row: number,
+                     glass: Rgb = GLASS): void {
   const a = at(e, u - w / 2, o)
   const b = at(e, u + w / 2, o)
   const uv: [number, number] = [col + 0.5, row + 0.5]
-  out.quad([[a.x, y0, a.z], [b.x, y0, b.z], [b.x, y0 + h, b.z], [a.x, y0 + h, a.z]], [e.nx, 0, e.nz], [uv, uv, uv, uv], GLASS, GLASS_T)
+  out.quad([[a.x, y0, a.z], [b.x, y0, b.z], [b.x, y0 + h, b.z], [a.x, y0 + h, a.z]], [e.nx, 0, e.nz], [uv, uv, uv, uv], glass, GLASS_T)
 }
 
 /** A punched window: its frame a few centimetres proud of the cladding, the glass on it. */
 function window_(out: MeshBuilder, e: Edge, u: number, y0: number, w: number, h: number, base: number, col: number, row: number): void {
   slab(out, e, u - w / 2 - 0.08, u + w / 2 + 0.08, y0 - 0.08, y0 + h + 0.08, base, base + 0.05, FRAME, FIXED)
-  pane(out, e, u, y0, w, h, base + 0.06, col, row)
+  pane(out, e, u, y0, w, h, base + 0.12, col, row)
   // the mullion splitting off the opening light
-  slab(out, e, u + w * 0.12 - 0.03, u + w * 0.12 + 0.03, y0, y0 + h, base + 0.06, base + 0.09, FRAME, FIXED)
+  slab(out, e, u + w * 0.12 - 0.03, u + w * 0.12 + 0.03, y0, y0 + h, base + 0.12, base + 0.16, FRAME, FIXED)
 }
 
 /** A wall of cladding from y0 to y1 along a whole edge, with its punched windows staggered floor to floor. */
