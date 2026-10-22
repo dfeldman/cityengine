@@ -2404,6 +2404,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     { label: 'Pause', info: 'the ⏸ button' },
     { label: 'Look around', info: 'drag to turn, pinch to zoom' },
     { label: 'Map', info: 'Menu → Map, pinch to zoom' },
+    { label: 'Search landmarks', info: 'Menu → Search' },
   ] : [
     { label: 'Steer', info: '← →  or  A D' },
     { label: 'Effort', info: '↑ ↓  (hold shift for bigger steps)' },

@@ -71,17 +71,19 @@ const proj = new Projection(m.origin)
 const at: Record<string, [number, number]> = {}
 let missing = 0
 let wanted = 0
+const lost: string[] = []
 for (const e of entries) {
   if (!e.osm || e.lat !== undefined) continue
   for (const ref of Array.isArray(e.osm) ? e.osm : [e.osm]) {
     if (ref in at) continue
     wanted++
     const s = sum.get(packed(ref))
-    if (!s) { missing++; continue }
+    if (!s) { missing++; lost.push(`${ref} ${e.name ?? ''}`); continue }
     const ll = proj.toLatLon({ x: s.x / s.n, z: s.z / s.n })
     at[ref] = [Number(ll.lat.toFixed(6)), Number(ll.lon.toFixed(6))]
   }
 }
 const out = resolve(ROOT, 'public/landmarks', `${region}.where.json`)
 writeFileSync(out, `${JSON.stringify({ bake: m.bake ?? m.baked, at }, null, 0).replace(/],"/g, '],\n"')}\n`)
+for (const l of lost) console.log(`  not in the bake: ${l}`)
 console.log(`${region}: ${wanted - missing} of ${wanted} OSM refs placed from the ${m.bake ?? m.baked} bake (${missing} not in it) → ${out}`)
