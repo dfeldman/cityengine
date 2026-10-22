@@ -96,6 +96,7 @@ import { BeachCrowd } from './render/beach-crowd.ts'
 import { updateWater } from './render/water-material.ts'
 import { Hud } from './ui/hud.ts'
 import { Menu, type MenuItem } from './ui/menu.ts'
+import { SearchScreen, landmarkPlaces, loadWhere } from './ui/search.ts'
 import { autoReduced, recoveryNote, riding as ridingNow } from './ui/crashguard.ts'
 import { FEATURE_OFF, SETTING_DEFS, onSettings, setSetting, settings, type SettingDef } from './ui/settings.ts'
 import { PBR_FOG, photoMode, setRegionFog } from './render/photo.ts'
@@ -1909,13 +1910,6 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     minimap.toggle()
     // (☰ becomes ✕ while it is open: on a phone that is the way out, ui/menu.ts)
     document.documentElement.classList.toggle('sr-map-open', minimap.isLarge)
-    // the landmark search belongs to the large map: it arrives with it and leaves with it
-    if (mapSearch) {
-      mapSearch.classList.toggle('on', minimap.isLarge)
-      // focused on the NEXT tick: focusing inside the keydown puts the M itself into the field
-      if (minimap.isLarge) { const f = mapSearch; setTimeout(() => f.focus(), 0) }
-      else { mapSearch.value = ''; mapSearch.blur() }
-    }
   }
   /*
    * A click or tap beside the map closes it (owner, 2026-10-21). The large map is a centred square at 86%
@@ -2247,69 +2241,23 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     hud.observe(o ? (touchScreen() ? `🔭 ${what[0].toUpperCase()}${what.slice(1)}` : `🔭 Press O to ${what}`) : null, o ? () => goUp(o) : undefined)
   }
   /*
-   * Jump to a landmark: a menu beside the city menu of every modelled landmark, restyled place and named
-   * building, which goes there by the same road as a pasted "lat, lon" (ui/goto.ts).
+   * SEARCH (ui/search.ts; Menu → Search, or /): every landmark in the city, filtered as you type, and the rider goes
+   * there by the same road as a pasted "lat, lon" (ui/goto.ts). It replaces the `?dev=1` box over the large map,
+   * which knew where barely a tenth of them were. The list is built the first time it is opened.
    */
-  /** the landmark search, shown with the large map (M) — for developers only for now (`?dev=1`; owner, 2026-10-14:
-   *  "search landmarks has never worked … hide this box until we know what it's for"). It was also what zoomed iOS:
-   *  focusing a field under 16 px makes Safari zoom the page, and the map focused it on opening. */
-  let mapSearch: HTMLInputElement | null = null
-  if (opts.goTo && new URLSearchParams(location.search).get('dev') === '1') {
-    const where = new Map<string, { x: number; z: number }>()
-    for (const l of landmarks?.placed ?? []) where.set(l.name, l)
-    for (const e of landmarkList) {
-      if (!e.restyle || !e.within || where.has(e.name)) continue
-      const pts = e.within.map(([lat, lon]) => proj.toLocal({ lat, lon }))
-      where.set(e.name, { x: pts.reduce((a, q) => a + q.x, 0) / pts.length, z: pts.reduce((a, q) => a + q.z, 0) / pts.length })
+  const search = opts.goTo ? new SearchScreen(async () => {
+    const where = await loadWhere(document.baseURI, pkg.region ? [opts.city, pkg.region] : [opts.city])
+    return landmarkPlaces(landmarkList, where, pkg.landmarks ?? [], (p) => proj.toLatLon(p))
+  }) : null
+  if (search) {
+    search.onPick = (p) => {
+      const why = opts.goTo!(`${p.lat}, ${p.lon}`, true)
+      if (why) return why
+      // the map gets out of the way: you asked to go there in order to LOOK at it
+      if (minimap.isLarge) toggleMap()
+      hud.banner(p.name, `${p.lat!.toFixed(5)}, ${p.lon!.toFixed(5)}`)
+      return null
     }
-    // every named landmark, not only tier 1: a search copes with hundreds of names where a menu could not
-    for (const l of pkg.landmarks ?? []) if (!where.has(l.name)) where.set(l.name, l)
-    /*
-     * A SEARCH, not a dropdown (BUGS.md #168). Several hundred names in a `<select>` is a scroll nobody
-     * finishes; typing "chase" and pressing Enter is the whole interaction. A `<datalist>` gives the
-     * browser's own prefix/substring matching for free, so this stays a dozen lines.
-     */
-    const pick = document.createElement('input')
-    pick.type = 'search'
-    /*
-     * ON THE MAP, not over the city (owner, 2026-09-24: "we do not need the landmarks dropdown to always be
-     * visible, it can be on the map"). It appears with the large map (M) and goes with it.
-     */
-    pick.className = 'sr-mapsearch'
-    pick.title = 'search the landmarks and go there'
-    pick.placeholder = `search ${where.size} landmarks…`
-    pick.autocomplete = 'off'
-    const list = document.createElement('datalist')
-    list.id = 'sr-landmark-list'
-    for (const name of [...where.keys()].sort((a, b) => a.localeCompare(b, 'fr'))) list.appendChild(new Option(name, name))
-    pick.setAttribute('list', list.id)
-    const goToName = (): void => {
-      const typed = pick.value.trim()
-      if (!typed) return
-      // exact match first, else the first name that contains what was typed — Enter should just work
-      const key = where.has(typed) ? typed
-        : [...where.keys()].find((n) => n.toLowerCase().includes(typed.toLowerCase()))
-      if (!key) { debug.toast(`no landmark matching "${typed}"`); return }
-      const ll = proj.toLatLon(where.get(key)!)
-      pick.value = ''
-      pick.blur()
-      const why = opts.goTo!(`${ll.lat}, ${ll.lon}`, true)
-      if (why) { debug.toast(why); return }
-      // and the map gets out of the way: you asked to go there in order to LOOK at it
-      if (minimap.isLarge) { minimap.toggle(); pick.classList.remove('on') }
-      hud.banner(key, 'M for the map')
-    }
-    // the ride's keys (M, F, G, N, Escape…) must not fire while a name is being typed
-    pick.addEventListener('keydown', (e) => {
-      e.stopPropagation()
-      if (e.key === 'Enter') goToName()
-      if (e.key === 'Escape') { pick.value = ''; pick.blur() }
-    })
-    // picking from the datalist fires `change` without an Enter
-    pick.addEventListener('change', () => { if (where.has(pick.value.trim())) goToName() })
-    document.body.appendChild(list)
-    document.body.appendChild(pick)
-    mapSearch = pick
   }
 
   const label = document.getElementById('label')
@@ -2456,6 +2404,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     { label: 'Pause', info: 'the ⏸ button' },
     { label: 'Look around', info: 'drag to turn, pinch to zoom' },
     { label: 'Map', info: 'Menu → Map, pinch to zoom' },
+    { label: 'Search landmarks', info: 'Menu → Search' },
   ] : [
     { label: 'Steer', info: '← →  or  A D' },
     { label: 'Effort', info: '↑ ↓  (hold shift for bigger steps)' },
@@ -2464,6 +2413,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     { label: 'Turn around', info: 'U' },
     { label: 'Straight on', info: 'S' },
     { label: 'Map', info: 'M' },
+    { label: 'Search landmarks', info: '/' },
     { label: 'Menu', info: 'Esc' },
     { label: 'This list', info: '?' },
   ]
@@ -2483,6 +2433,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     })(),
     { label: frozen ? 'Ride on' : 'Resume', run: () => { if (frozen) toggleLook() } },
     { label: 'Map', hint: keyHint('M'), run: toggleMap },
+    ...(search ? [{ label: 'Search', hint: keyHint('/'), run: () => search.open() }] : []),
     ...(frozen ? [] : [{ label: 'Look around', hint: keyHint('P'), run: toggleLook }]),
     ...(opts.platform ? [] : [{ label: 'End ride', run: endRide }]),
     { label: 'Ride', sub: (): MenuItem[] => [
@@ -2527,6 +2478,15 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     ] }] : []),
   ])
   menu.onChange = (open) => { menuHeld = open }
+  if (search) search.onChange = (open) => { menuHeld = open }
+  // `/` opens it from the ride, as in most things with a search box
+  addEventListener('keydown', (e) => {
+    if (!search || e.key !== '/' || e.repeat || menu.isOpen || search.isOpen) return
+    const el = e.target as HTMLElement | null
+    if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable)) return
+    e.preventDefault()
+    search.open()
+  })
   /*
    * `?` opens the key list from anywhere (owner, 2026-10-21). Shift and slash on most layouts, but not on
    * all of them, so this matches the character produced rather than the physical key — on a German or

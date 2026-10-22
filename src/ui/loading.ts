@@ -153,7 +153,8 @@ const CONTROLS: [string, string][] = [
   ['← →', 'hold to steer; hold into a corner to turn there'],
   ['Y  X', 'take or skip a delivery'],
   ['U', 'turn round'],
-  ['M', 'the map — search a landmark, click to go'],
+  ['M', 'the map — click to go'],
+  ['/', 'search the landmarks and go there'],
 ]
 /** on Dandyhorse the legs are the effort and the phone is the controller (2026-10-17: the card said "↑ ↓ effort — energy bar") */
 const PLATFORM_CONTROLS: [string, string][] = [

@@ -24,6 +24,7 @@ import { initAssets } from './assets.ts'
 import { chooseMode, MODES, type GameMode } from './modes.ts'
 import { COMPACT_CSS, TOUCH_CSS, compactScreen, showTouchWhenUsed, touchControls } from './ui/touch.ts'
 import { MENU_CSS } from './ui/menu.ts'
+import { SEARCH_CSS } from './ui/search.ts'
 import CITIES from './cities.json'
 import { settings } from './ui/settings.ts'
 import { beginRun, recoverFromCrash } from './ui/crashguard.ts'
@@ -32,7 +33,7 @@ const params = new URLSearchParams(location.search)
 const canvas = document.getElementById('view') as HTMLCanvasElement
 
 const style = document.createElement('style')
-style.textContent = HUD_CSS + MINIMAP_CSS + THEME_CSS + LOADING_CSS + WELCOME_CSS + CARD_CSS + DELIVERY_CSS + TOUCH_CSS + COMPACT_CSS + MENU_CSS
+style.textContent = HUD_CSS + MINIMAP_CSS + THEME_CSS + LOADING_CSS + WELCOME_CSS + CARD_CSS + DELIVERY_CSS + TOUCH_CSS + COMPACT_CSS + MENU_CSS + SEARCH_CSS
 document.head.appendChild(style)
 
 // iOS Safari ignores `user-scalable=no` (index.html): a pinch anywhere zoomed the whole game, HUD and all

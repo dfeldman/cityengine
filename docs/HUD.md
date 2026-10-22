@@ -59,7 +59,9 @@ item highlighted: Up/Down moves, Enter chooses, Back/Esc goes up a level, and th
 The type is big enough to read from a bike.
 
 - **Resume**
-- **Map**: the large map, search a landmark, set a destination
+- **Map**: the large map, set a destination
+- **Search** (`/`): every landmark in the city, filtered as you type; choose one to go there. Each row shows the
+  entry's builder, OSM ids, manifest file and coordinates, and all of those are searchable (src/ui/search.ts)
 - **Look around**: the free camera (today's P)
 - **Ride**: turn round, get off / board, coast tips, travel (at a station)
 - **Deliveries**: earnings, level, stars; skip the current job
