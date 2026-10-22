@@ -66,8 +66,12 @@ export interface ZoneProps {
   water?: 'calm' | 'waves' | 'beach'
   /** true: the steep ground here is bare rock, with boulders (render/cliffs.ts — Lands End, the Sutro Baths) */
   cliffs?: boolean
-  /** 'beds': the parks here are planted beds — mulch and low shrubs, the mapped lawns the only grass (Tunnel Tops) */
-  ground?: 'beds'
+  /**
+   * 'beds': the parks here are planted beds — mulch and low shrubs, the mapped lawns the only grass (Tunnel Tops);
+   * 'grass': a lawn laid over the zone's ring where OSM maps none (Francisco Park's dog run, tools/bake.ts);
+   * 'scrub': the mapped lawns here are not lawns — they are planted like the park round them (Francisco Park's upper slope)
+   */
+  ground?: 'beds' | 'grass' | 'scrub'
   park?: Record<string, unknown>
   furniture?: Record<string, unknown>
 }

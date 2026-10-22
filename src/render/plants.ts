@@ -184,13 +184,23 @@ export function plantTile(areas: TileArea[], rect: { x0: number; z0: number; x1:
          */
         if (a.kind === 'park' && a.beds) {
           if (onLawn(jx, jz)) continue
+          /*
+           * (a zone asking for it twice as thick — Francisco Park's terraces of coastal scrub, owner 2026-10-21: "should be
+           * lush with plants" — gets bigger plants and a third to the lattice cell; the Tunnel Tops' zones ask 1.2 and
+           * keep the planting they had)
+           */
+          const lush = thick(jx, jz) >= 2
+          const k = lush ? 1.45 : 1
           const rb = hash(x, z, 3)
-          if (rb < 0.62) out.push({ x: jx, z: jz, s: 0.9 + hash(x, z, 13) * 0.8, spin: hash(x, z, 14) * Math.PI * 2, kind: 'shrub' })
-          else if (rb < 0.7) out.push({ x: jx, z: jz, s: 0.8 + hash(x, z, 7) * 0.4, spin: hash(x, z, 6) * Math.PI * 2, kind: 'flower' })
+          if (rb < (lush ? 0.8 : 0.62)) out.push({ x: jx, z: jz, s: (0.9 + hash(x, z, 13) * 0.8) * k, spin: hash(x, z, 14) * Math.PI * 2, kind: 'shrub' })
+          else if (rb < (lush ? 0.9 : 0.7)) out.push({ x: jx, z: jz, s: 0.8 + hash(x, z, 7) * 0.4, spin: hash(x, z, 6) * Math.PI * 2, kind: 'flower' })
           // and a second, smaller, half a step off: the beds are planted close (about one plant every 3 m)
           const kx = jx + STEP * 0.5, kz = jz + (hash(x, z, 15) - 0.5) * STEP * 0.6
           if (hash(x, z, 16) < 0.65 && inside(a.ring, kx, kz) && !onLawn(kx, kz) && !built(kx, kz))
-            out.push({ x: kx, z: kz, s: 0.7 + hash(x, z, 17) * 0.6, spin: hash(x, z, 18) * Math.PI * 2, kind: 'shrub' })
+            out.push({ x: kx, z: kz, s: (0.7 + hash(x, z, 17) * 0.6) * k, spin: hash(x, z, 18) * Math.PI * 2, kind: 'shrub' })
+          const lx = jx + (hash(x, z, 19) - 0.5) * STEP * 0.6, lz = jz + STEP * 0.5
+          if (lush && hash(x, z, 20) < 0.7 && inside(a.ring, lx, lz) && !onLawn(lx, lz) && !built(lx, lz))
+            out.push({ x: lx, z: lz, s: (0.8 + hash(x, z, 21) * 0.7) * k, spin: hash(x, z, 22) * Math.PI * 2, kind: 'shrub' })
           continue
         }
         const r = hash(x, z, 3) / Math.max(1e-6, thick(jx, jz))

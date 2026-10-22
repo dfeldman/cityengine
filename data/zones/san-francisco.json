@@ -5833,6 +5833,240 @@
     ]
    ],
    "note": "owner, 2026-10-17: 'so many people' — the Wharf's sidewalks, Pier 39 and the courts are thick with visitors"
+  },
+  {
+   "ref": "francisco-park",
+   "name": "Francisco Park",
+   "priority": 150,
+   "props": {
+    "ground": "beds",
+    "plant": {
+     "park": {
+      "density": 0.0045,
+      "clump": 0.6,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 3,
+        "h": [
+         14,
+         22
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 3,
+        "h": [
+         8,
+         13
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 2,
+        "h": [
+         5,
+         9
+        ]
+       },
+       {
+        "form": "olive",
+        "weight": 1,
+        "h": [
+         4,
+         7
+        ]
+       },
+       {
+        "form": "blossom",
+        "weight": 1,
+        "h": [
+         4,
+         7
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0.0004,
+      "clump": 0.4,
+      "species": [
+       {
+        "form": "cypress",
+        "weight": 1,
+        "h": [
+         14,
+         22
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 1,
+        "h": [
+         8,
+         13
+        ]
+       }
+      ]
+     },
+     "shrubs": {
+      "density": 2.2,
+      "shrubs": [
+       "juniper_scrub",
+       "sagebrush",
+       "bush_green",
+       "bush_flowering",
+       "bush_green"
+      ],
+      "flowers": [
+       "lupine",
+       "poppy",
+       "wildflower"
+      ]
+     }
+    }
+   },
+   "note": "Francisco Park (2022, the old Francisco Reservoir, Russian Hill): terraced slopes of dense native coastal scrub and grasses in red bark mulch, under big Monterey cypresses and coast live oaks; the fenced lawn the only grass (owner, 2026-10-21: 'should be lush with plants', two Street View photos of Oct 2023). Planted beds over the OSM park (outline traced from the bake), its lawns left mown.",
+   "ring": [
+    [
+     37.804046,
+     -122.421633
+    ],
+    [
+     37.803983,
+     -122.421657
+    ],
+    [
+     37.803851,
+     -122.421641
+    ],
+    [
+     37.803785,
+     -122.421633
+    ],
+    [
+     37.803694,
+     -122.421616
+    ],
+    [
+     37.803569,
+     -122.42161
+    ],
+    [
+     37.803541,
+     -122.421601
+    ],
+    [
+     37.803503,
+     -122.421568
+    ],
+    [
+     37.803231,
+     -122.421463
+    ],
+    [
+     37.803413,
+     -122.420052
+    ],
+    [
+     37.803633,
+     -122.420098
+    ],
+    [
+     37.803695,
+     -122.42011
+    ],
+    [
+     37.803851,
+     -122.420143
+    ],
+    [
+     37.804096,
+     -122.420194
+    ],
+    [
+     37.804168,
+     -122.420209
+    ],
+    [
+     37.80419,
+     -122.420212
+    ],
+    [
+     37.804259,
+     -122.420226
+    ],
+    [
+     37.804266,
+     -122.420229
+    ],
+    [
+     37.804713,
+     -122.420311
+    ],
+    [
+     37.80451,
+     -122.421727
+    ],
+    [
+     37.804058,
+     -122.421635
+    ]
+   ]
+  },
+  {
+   "ref": "francisco-park-lawn",
+   "name": "Francisco Park dog run",
+   "priority": 150,
+   "props": {
+    "ground": "grass"
+   },
+   "note": "The fenced lawn along Bay Street at the foot of the park, under the boardwalk: the dog run (owner, 2026-10-21: 'the front is a grass dog park', with a Street View photo). OSM maps no grass here, only on the steep upper slope; the ring is the park's low north strip, sampled flat in the terrain (z 1262-1302 local).",
+   "ring": [
+    [
+     37.80437,
+     -122.4216
+    ],
+    [
+     37.80451,
+     -122.4216
+    ],
+    [
+     37.80468,
+     -122.42035
+    ],
+    [
+     37.8044,
+     -122.4203
+    ]
+   ]
+  },
+  {
+   "ref": "francisco-park-slope",
+   "name": "Francisco Park upper slope",
+   "priority": 150,
+   "props": {
+    "ground": "scrub"
+   },
+   "note": "The steep slope down from Chestnut Street that OSM maps as grass is native scrub in red mulch, the path along its top lined with it (owner's Street View photographs, 2026-10-21). Its mapped lawn becomes part of the planted beds.",
+   "ring": [
+    [
+     37.803162,
+     -122.421787
+    ],
+    [
+     37.803162,
+     -122.419966
+    ],
+    [
+     37.803702,
+     -122.419966
+    ],
+    [
+     37.803702,
+     -122.421787
+    ]
+   ]
   }
  ]
 }

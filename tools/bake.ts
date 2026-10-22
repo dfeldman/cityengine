@@ -814,7 +814,7 @@ async function bake(spec: CitySpec): Promise<void> {
     return { r, amenity: c.tags.amenity, x0: Math.min(...xs), x1: Math.max(...xs), z0: Math.min(...zs), z1: Math.max(...zs) }
   })
   const HOME = /^(house|residential|apartments|detached|semidetached_house|terrace|dormitory|garage|garages|shed)$/
-  const HOME_STYLE = new Set<string>(['sfapartment', 'tenement', 'victorian', 'edwardian'])
+  const HOME_STYLE = new Set<string>(['sfapartment', 'tenement', 'victorian', 'edwardian', 'aptclassical', 'aptbrick', 'aptmed', 'aptmodern', 'aptluxe'])
   let campusDressed = 0
   let bigNonHomes = 0
   const campusAmenity = (t: Record<string, string>, r: { x: number; z: number }[], style: string): Record<string, string> => {
@@ -2107,6 +2107,16 @@ async function bake(spec: CitySpec): Promise<void> {
   // the parks a zone says are planted BEDS (`ground: 'beds'`: the Presidio Tunnel Tops) — mulch and low shrubs, the
   // lawns mapped inside them the only grass (PackedArea `beds`)
   {
+    /*
+     * A mapped lawn a zone says is not one (`ground: 'scrub'`): Francisco Park's steep upper slope is grass in OSM and
+     * native scrub on the ground (owner's Street View photographs, 2026-10-21) — it becomes park, and so the beds round it.
+     */
+    const scrubZones = zones.filter((zn) => zn.props.ground === 'scrub')
+    for (const a of areas) {
+      if (a.kind !== 'grass' || !scrubZones.length) continue
+      const c = centroid(unpackPoints(a.ring))
+      if (scrubZones.some((zn) => c.x >= zn.bbox[0] && c.x <= zn.bbox[2] && c.z >= zn.bbox[1] && c.z <= zn.bbox[3] && inRing(zn.ring, c.x, c.z))) a.kind = 'park'
+    }
     const bedZones = zones.filter((zn) => zn.props.ground === 'beds')
     let n = 0
     if (bedZones.length) for (const a of areas) {
@@ -2116,6 +2126,18 @@ async function bake(spec: CitySpec): Promise<void> {
       if (bedZones.some((zn) => c.x >= zn.bbox[0] && c.x <= zn.bbox[2] && c.z >= zn.bbox[1] && c.z <= zn.bbox[3] && inRing(zn.ring, c.x, c.z))) { a.beds = true; n++ }
     }
     if (bedZones.length) console.log(`  ${n} parks laid out as planted beds`)
+    /*
+     * …and a LAWN a zone lays down where OSM maps none (`ground: 'grass'`): the one grass in a park of beds is what OSM
+     * says is grass, and at Francisco Park that is the steep upper slope while the mown lawn — the dog run along Bay
+     * Street — is not mapped at all (owner, 2026-10-21: "the front is a grass dog park").
+     */
+    const lawnZones = zones.filter((zn) => zn.props.ground === 'grass')
+    for (const zn of lawnZones) {
+      const pts: { x: number; z: number }[] = []
+      for (let i = 0; i < zn.ring.length; i += 2) pts.push({ x: zn.ring[i], z: zn.ring[i + 1] })
+      areas.push({ kind: 'grass', ring: packPoints(ccw(pts)) })
+    }
+    if (lawnZones.length) console.log(`  ${lawnZones.length} lawn(s) laid by zone`)
   }
   const layerCaps = (streetRegion.footBridgeLayers ?? []).map((c) => ({ ...proj.toLocal({ lat: c.lat, lon: c.lon }), radius: c.radius, layer: c.layer }))
   // (each way's heights before any bridge lifts them: a bridge found later to be at grade over a cut goes back to them)
