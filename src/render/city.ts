@@ -4232,9 +4232,13 @@ export class City {
         if (ZCHECK) zcheck(b.id, foot, buildingFooting(ring, (x, z) => this.terrain.heightAt(x, z)).foot)
       }
       // (`?labels=1`: a building with a street-photo label is drawn as the label says — src/city/appearance.ts)
-      const look = LOOKS_ON ? lookFor(b.id) : null
+      const look = LOOKS_ON ? lookFor(b.id, b.style) : null
       const styleId = look?.style ?? b.style
-      const plan = planFacade(styleId, b.id, { levels: b.levels, height: b.height, minHeight: b.minHeight, stretch: b.stretch, noShops: b.noShops },
+      // (a label's storey count wins, and the walls are kept within what that many storeys can be: a one-storey shop the
+      //  map calls 12 m — its billboard — was drawn with two rows of windows)
+      const lv = look?.levels
+      const height = lv && b.height ? Math.min(Math.max(b.height, lv * 2.9), lv * 3.7 + 1.2) : b.height
+      const plan = planFacade(styleId, b.id, { levels: lv ?? b.levels, height, minHeight: b.minHeight, stretch: b.stretch, noShops: b.noShops },
         b.palette ? [b.palette] : this.region.palettes[styleId], look ?? undefined)
       const out = byStyle.get(styleId) ?? new MeshBuilder()
       byStyle.set(styleId, out)

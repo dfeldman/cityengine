@@ -236,6 +236,67 @@ What it shows:
 - **Type**: keep it, but render it as a hint combined with the bake's archetype (idea 4). Merge the pairs that are
   confused both ways.
 
+### Wave 5 — schema v5 run, and the render loop (2026-10-22)
+
+`menus-v5.json`, `BRIEF-HAIKU-v5.md`, `BRIEF-GOLD-v5.md`; reference `gold5-*`, Haiku `H5a-*`/`H5b-*`. The v5 plan above,
+as written. On the 58 buildings both references could see, with v4's answers mapped onto v5's coarser values:
+
+- **The questions are as good or better.**
+  - type: 81% when both runs agree;
+  - wall colour: 71% exact on 14 colours;
+  - garage doors: 90%;
+  - shopfronts: 83%;
+  - entrance: 91%;
+  - bays: 84%;
+  - fire escape: 100%.
+  The ground-floor split works: garages and shops are counted, not forced into one choice.
+- **The target is the bottleneck.** The two runs disagree on `target_clear` 16% of the time. Requiring both describes
+  44 of 79 buildings; accepting EITHER describes 60, at the same accuracy per question. 7 of those 60 the reference
+  called unclear. `tools/appearance/looks.py` now takes either, and keeps colours the runs split within one family (a
+  cream/beige split had dropped the colour, and the new style fell back on a random palette: dark green).
+
+**The render loop: the end goal is a building that looks like its photograph** (owner, 2026-10-22). Label accuracy is
+now a diagnostic. The headline is a judge's comparison:
+
+- **The shots.** For each labelled building, the game stands in the street square to its street wall and shoots twice,
+  today and `?labels=1`. The setup is overcast, with no traffic, trees or people
+  (`tools/appearance/elevation.mjs`, composed by `compose.py`). The photo, today's render and the labelled render are composed side by side.
+- **The judge.** An Opus judge (`BRIEF-JUDGE.md`) scores each render 0–3 for resemblance. For every remaining
+  difference it records whether the label, the renderer or the shot is to blame.
+
+**v5 renderer additions** (`src/city/facade.ts`):
+
+- `Dress.ground`: a street front's ground bays, left to right, from garage, shop and entrance counts. Each painting is
+  borrowed from whichever style has it, and the shopping-street rule ("a main street always has a shop") is off for a
+  label.
+- `Dress.bayStacks`: one, or two or more, bay stacks, replacing the style's own bays.
+- `Dress.gable`.
+- Label features go on every wall the building shows the street, not only on the walls the street index found.
+
+**v5 result** (51 of 53 buildings matched to their photo):
+
+| | today | from labels |
+|---|---|---|
+| resemblance, mean of 0–3 | 0.61 | **1.53** |
+| scored 2 or more ("recognisably the same kind, roughly the right colour") | — | 28 |
+| closer of the two | 1 | **44** (6 the same) |
+
+The judges named 175 remaining differences: 72 caused by labels, 57 by the renderer and 46 by the shot.
+
+- **Labels:**
+  - balconies invented (fire-escape landings read as balconies);
+  - storeys wrong, though really the bake's;
+  - stucco drawn as clapboard (the type's style paints wood);
+  - colours too strong.
+- **Renderer:**
+  - arched and industrial windows;
+  - white or glass garage doors;
+  - curved and box bays, turrets, mansards;
+  - murals.
+- **Shot:**
+  - street trees in front;
+  - the camera too close for a tall front.
+
 ## 4. Rendering from the labels (`?labels=1`)
 
 `src/city/appearance.ts` turns a label into a style (`type`), a palette (wall, trim, ground, awning colours) and a

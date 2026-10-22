@@ -1,0 +1,417 @@
+{
+ "about": "Appearance schema v6 (2026-10-22), from the wave-5 renders judged against their photographs. Added: storeys (the bake's are often wrong at the front), victorian_kind and trim_colour (the painted ladies: their own library), unusual_kind (replaces generic_fit: names WHY a building needs its own model, e.g. wavy walls or shiny metal), special_structure (gas stations, parking garages... drawn as special cases later), sign_text. Balconies defined tighter (fire-escape landings are not balconies). Blue, green and yellow paler, as street walls are.",
+ "colours": {
+  "white": "#f2f0ea",
+  "cream": "#e9dfc8",
+  "beige": "#d2b892",
+  "grey": "#b3b1ab",
+  "darkGrey": "#4a4a48",
+  "black": "#262626",
+  "redBrick": "#9a4a36",
+  "brown": "#6d4a35",
+  "yellow": "#e9d88f",
+  "red": "#a8322b",
+  "pink": "#d9a08a",
+  "blue": "#a3b7c9",
+  "green": "#a9bb9c",
+  "purple": "#6e4f86"
+ },
+ "attributes": {
+  "target_clear": {
+   "values": [
+    "yes",
+    "no"
+   ],
+   "says": "yes: ONE building that fits the mapped size fills most of the space between the red lines (slivers of neighbours at the edges do not matter). no: two or more buildings share the space about equally, or the building between the lines clearly does not fit the mapped size, or you cannot tell which building is meant"
+  },
+  "target_hidden": {
+   "values": [
+    "no",
+    "partly",
+    "mostly"
+   ],
+   "says": "how much of the target's street wall is hidden by trees, vehicles, scaffolding or frame edges"
+  },
+  "unusual_kind": {
+   "values": [
+    "none",
+    "wavy_or_curved_walls",
+    "shiny_metal_cladding",
+    "glass_curtain_wall",
+    "tower_dome_or_turret_dominant",
+    "rooftop_billboard_or_sign_frame",
+    "church_or_temple",
+    "mural_covered",
+    "odd_shape_other",
+    "cannot_tell"
+   ],
+   "says": {
+    "none": "an ordinary box of flat walls with windows - most buildings, including plain modern ones with coloured panels and Victorians with one small turret",
+    "wavy_or_curved_walls": "walls or a roofline that curve or wave",
+    "shiny_metal_cladding": "facing of shiny or reflective metal sheets (NOT painted or coloured panels, which are ordinary)",
+    "glass_curtain_wall": "mostly glass from floor to roof",
+    "tower_dome_or_turret_dominant": "a tower, dome or big turret that dominates the building",
+    "rooftop_billboard_or_sign_frame": "a large billboard or sign structure standing on the roof",
+    "church_or_temple": "a church, temple or similar religious front",
+    "mural_covered": "most of the front painted with a mural",
+    "odd_shape_other": "any other shape a box-and-windows game drawing could not show"
+   }
+  },
+  "special_structure": {
+   "values": [
+    "none",
+    "gas_station",
+    "parking_garage",
+    "car_wash",
+    "drive_through_restaurant",
+    "auto_repair_shop",
+    "supermarket_or_big_box",
+    "school",
+    "fire_station",
+    "other",
+    "cannot_tell"
+   ],
+   "says": "a kind of building that looks the same everywhere and that a game would draw from its own model: a gas station (canopy over pumps), an open parking garage (decks without walls), a car wash, a drive-through fast-food restaurant, an auto repair shop (open bays), a supermarket or big-box store with a car park, a school, a fire station. none for houses, flats, shops and offices."
+  },
+  "sign_text": {
+   "values": "free text",
+   "says": "the words on the building's main sign(s), as written (e.g. \"WASH-DRY LAUNDROMAT\"), or \"\" when there is no legible sign"
+  },
+  "homes_above": {
+   "values": [
+    "yes",
+    "no",
+    "cannot_tell"
+   ],
+   "says": "are there homes on the upper floors (curtains, balconies, bay windows, a residential look), as opposed to offices or storage"
+  },
+  "storeys": {
+   "values": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8+",
+    "cannot_tell"
+   ],
+   "says": "the number of storeys on the street front, counting the ground floor, counted from the rows of windows"
+  },
+  "type": {
+   "values": [
+    "painted_wood_rowhouse",
+    "wood_or_stucco_flats",
+    "stucco_house_with_garage",
+    "bay_window_apartment_block",
+    "classic_stone_block",
+    "brick_apartment_block",
+    "spanish_stucco_apartments",
+    "boxy_modern_apartments",
+    "sleek_modern_apartments",
+    "shops_with_flats_above",
+    "one_storey_shop_building",
+    "brick_warehouse_loft",
+    "modern_commercial_box",
+    "glass_tower",
+    "chinatown_building",
+    "other",
+    "cannot_tell"
+   ],
+   "says": {
+    "painted_wood_rowhouse": "a narrow 2-3 storey painted WOOD house, one home: ornate trim, ONE bay, a gable or false front, stairs up to the door. Not flats: one front door.",
+    "wood_or_stucco_flats": "a 2-3 storey house or small block of 2-6 flats, wood or stucco: several doors or bells, square or rounded bays, garages often under. At most 3 storeys; 4+ storeys with bay stacks is bay_window_apartment_block.",
+    "stucco_house_with_garage": "ONE home (one front door), 1-3 storeys, smooth stucco, a garage at street level, arched or picture windows. Several doors or bells: wood_or_stucco_flats.",
+    "bay_window_apartment_block": "a 4-7 storey apartment block with STACKS of bay windows up the front and NO shops at street level (shops underneath: shops_with_flats_above).",
+    "brick_apartment_block": "a 4-9 storey red, brown or buff brick apartment block, flat front, often fire escapes",
+    "spanish_stucco_apartments": "a 3-6 storey stucco apartment block with arches, iron balconettes, tile accents",
+    "boxy_modern_apartments": "a plain modern apartment box: flat render or siding, ordinary aluminium windows, garages under, maybe colour panels. Plain, not much glass.",
+    "sleek_modern_apartments": "a newer apartment block with LARGE GLASS, dark or metal panels or timber, box bays, glass balconies. Glassy and sharp, not plain.",
+    "shops_with_flats_above": "2-4 storeys of HOMES over a row of SHOPS at street level (often bays, wood or stucco). The shops are the difference.",
+    "one_storey_shop_building": "one or two storeys of SHOPS opening onto the street, each with its own door and window, a sign band or raised sign panel. A single big store or office (one entrance, offices, a chain pharmacy) is modern_commercial_box.",
+    "brick_warehouse_loft": "a brick warehouse, loft or workshop: big industrial windows, plain parapet",
+    "modern_commercial_box": "a plain modern NON-residential box (offices, store, school, garage): ribbon or aluminium windows, panels or render, no homes.",
+    "glass_tower": "a high-rise with a glass curtain wall",
+    "chinatown_building": "a Chinatown building: painted balconies, tiled eaves, red, green and gold",
+    "other": "none of these fits",
+    "classic_stone_block": "a 3-12 storey pre-war block in stone, terracotta or smooth cream/buff render with a flat ornamented front and a heavy cornice: apartments, a hotel, an office or a bank (homes_above says which)"
+   },
+   "style": {
+    "painted_wood_rowhouse": "victorian",
+    "wood_or_stucco_flats": "edwardian",
+    "stucco_house_with_garage": "stucco",
+    "bay_window_apartment_block": "sfapartment",
+    "brick_apartment_block": "aptbrick",
+    "spanish_stucco_apartments": "aptmed",
+    "boxy_modern_apartments": "aptmodern",
+    "sleek_modern_apartments": "aptluxe",
+    "shops_with_flats_above": "shopflats",
+    "one_storey_shop_building": "storefront",
+    "brick_warehouse_loft": "brick",
+    "modern_commercial_box": "bauhaus",
+    "glass_tower": "skyscraper",
+    "chinatown_building": "chinatown",
+    "other": null,
+    "classic_stone_block": "aptclassical|chicago"
+   }
+  },
+  "victorian_kind": {
+   "values": [
+    "none",
+    "italianate",
+    "stick",
+    "queen_anne",
+    "cannot_tell"
+   ],
+   "says": {
+    "none": "not a 19th-century ornamented wooden house or flats",
+    "italianate": "1860-80s: a FLAT top on a deep cornice with big paired brackets, SLANTED (angled) bay windows, tall narrow windows with hoods, often a porch with columns",
+    "stick": "1880s: SQUARE bay windows, a false-front or gable top, thin vertical boards and sharp angular trim",
+    "queen_anne": "1885-1905: a corner TURRET or round tower, a big gable often with shingle patterns, curved bays, spindlework, a mix of textures"
+   }
+  },
+  "wall_colour": {
+   "values": [
+    "white",
+    "cream",
+    "beige",
+    "grey",
+    "darkGrey",
+    "black",
+    "redBrick",
+    "brown",
+    "yellow",
+    "red",
+    "pink",
+    "blue",
+    "green",
+    "purple",
+    "cannot_tell"
+   ],
+   "says": "the main wall colour of the upper floors, ignoring windows, trim and signs; a shaded white wall is still white. See colour_says."
+  },
+  "trim_colour": {
+   "values": [
+    "white",
+    "cream",
+    "beige",
+    "grey",
+    "darkGrey",
+    "black",
+    "redBrick",
+    "brown",
+    "yellow",
+    "red",
+    "pink",
+    "blue",
+    "green",
+    "purple",
+    "same_as_wall",
+    "cannot_tell"
+   ],
+   "says": "the colour of the window frames, cornice and ornament where it differs from the wall (a painted lady's trim: white, cream, a dark contrast)"
+  },
+  "ground_colour": {
+   "values": [
+    "white",
+    "cream",
+    "beige",
+    "grey",
+    "darkGrey",
+    "black",
+    "redBrick",
+    "brown",
+    "yellow",
+    "red",
+    "pink",
+    "blue",
+    "green",
+    "purple",
+    "same_as_wall",
+    "cannot_tell"
+   ],
+   "says": "the ground floor's wall colour, if it is painted differently from the floors above"
+  },
+  "surface": {
+   "values": [
+    "wood_siding",
+    "shingle",
+    "stucco",
+    "brick",
+    "stone",
+    "panels",
+    "glass",
+    "cannot_tell"
+   ],
+   "says": {
+    "wood_siding": "horizontal wood boards: thin parallel horizontal lines across the wall, often painted",
+    "shingle": "wood shingles",
+    "stucco": "smooth or textured render with no lines",
+    "brick": "brick, painted or not: a grid of small joints",
+    "stone": "stone or terracotta blocks or ornament",
+    "panels": "large flat panels with visible joints (metal, fibre-cement, concrete)",
+    "glass": "mostly glass curtain wall"
+   }
+  },
+  "windows": {
+   "values": [
+    "tall_sash",
+    "arched",
+    "wide_picture",
+    "ribbon",
+    "grid",
+    "cannot_tell"
+   ],
+   "says": {
+    "tall_sash": "individual tall rectangular windows, taller than wide",
+    "arched": "windows with round-arched tops",
+    "wide_picture": "individual windows wider than tall, large single panes",
+    "ribbon": "continuous horizontal bands of windows",
+    "grid": "large industrial or office windows divided into many small panes"
+   }
+  },
+  "garage_doors": {
+   "values": [
+    "none",
+    "one",
+    "two_or_more",
+    "cannot_tell"
+   ],
+   "says": "garage doors (car-wide doors) on the target's street front"
+  },
+  "shopfronts": {
+   "values": [
+    "none",
+    "one",
+    "several",
+    "all",
+    "cannot_tell"
+   ],
+   "says": "shopfronts (shop or restaurant windows with a door, a sign) at street level: none; one; several but not the whole front; all = the whole frontage is shops"
+  },
+  "entrance": {
+   "values": [
+    "at_grade",
+    "stoop",
+    "none_visible",
+    "cannot_tell"
+   ],
+   "says": "the homes' or building's front door: at street level, or up a flight of steps (stoop); none_visible if the front shows no door"
+  },
+  "top": {
+   "values": [
+    "bracketed_cornice",
+    "plain_cornice",
+    "brick_corbels",
+    "plain_parapet",
+    "sign_panel",
+    "gable",
+    "roof_overhang",
+    "cannot_tell"
+   ],
+   "says": {
+    "bracketed_cornice": "a projecting cornice held on visible brackets",
+    "plain_cornice": "a projecting cornice or moulding band without brackets",
+    "brick_corbels": "brick courses stepping out under the top",
+    "plain_parapet": "the wall simply stops with a thin coping",
+    "sign_panel": "a raised panel at the middle of the top of the front, above the roofline",
+    "gable": "a pointed gable, or a false front hiding one",
+    "roof_overhang": "a flat roof slab overhanging the wall"
+   }
+  },
+  "bays": {
+   "values": [
+    "none",
+    "one",
+    "two_or_more",
+    "cannot_tell"
+   ],
+   "says": "how many vertical STACKS of bay windows project from the upper floors across the target's WHOLE street front, corners included. Count them in seen_bays first."
+  },
+  "bay_shape": {
+   "values": [
+    "angled",
+    "square",
+    "rounded",
+    "none",
+    "cannot_tell"
+   ],
+   "says": "the shape of the bay windows, if any"
+  },
+  "balconies": {
+   "values": [
+    "none",
+    "balconettes",
+    "projecting",
+    "cannot_tell"
+   ],
+   "says": {
+    "none": "no balconies. Fire-escape landings are NOT balconies (that is fire_escape)",
+    "balconettes": "iron railings across the lower part of several windows, flush with the wall",
+    "projecting": "platforms you can stand on, sticking out of the wall, on several floors"
+   }
+  },
+  "fire_escape": {
+   "values": [
+    "no",
+    "yes",
+    "cannot_tell"
+   ],
+   "says": "metal fire escape stairs/landings on the visible street wall"
+  },
+  "awnings": {
+   "values": [
+    "none",
+    "some",
+    "cannot_tell"
+   ],
+   "says": "fabric or metal awnings or canopies over the ground floor"
+  },
+  "awning_colour": {
+   "values": [
+    "white",
+    "cream",
+    "beige",
+    "grey",
+    "darkGrey",
+    "black",
+    "redBrick",
+    "brown",
+    "yellow",
+    "red",
+    "pink",
+    "blue",
+    "green",
+    "purple",
+    "none",
+    "cannot_tell"
+   ],
+   "says": "the main awning colour, if any"
+  },
+  "colour_panels": {
+   "values": [
+    "no",
+    "yes",
+    "cannot_tell"
+   ],
+   "says": "on a modern front: groups of windows set in panels of a different, often bright, colour"
+  }
+ },
+ "colour_says": {
+  "white": "white or off-white",
+  "cream": "cream or ivory: white with a clear warm tint",
+  "beige": "sand, tan, buff or ochre-beige",
+  "grey": "light or mid grey, silver",
+  "darkGrey": "charcoal or slate",
+  "black": "black",
+  "redBrick": "red or red-brown brick, terracotta red",
+  "brown": "brown, chocolate, dark wood",
+  "yellow": "yellow, pale or strong",
+  "red": "a painted red, maroon or orange",
+  "pink": "pink, salmon, peach",
+  "blue": "any blue, pale or strong, blue-grey glass",
+  "green": "any green or teal, pale or strong",
+  "purple": "purple, mauve, lavender"
+ }
+}

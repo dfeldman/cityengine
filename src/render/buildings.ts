@@ -206,7 +206,9 @@ function wall(
   // ground element (a shopfront, an arcade, a stoop, a glazed front) rather than the wall's
   const groundTint = plan.palette.ground ? rgb(plan.palette.ground) : tint
   const groundEls = new Set([`${groundArtOf(plan.style)}/${plan.ground}`, `${artOf(plan.style)}/carriage`])
-  const tintOf = (el: string): [number, number, number] => (groundEls.has(el) ? groundTint : tint)
+  // (…and a label's ground bays, each borrowed from whichever style has the painting: facade.ts Dress.ground)
+  const borrowed = plan.dress?.ground ? /\/(garage|shopfront|stoop|recessed)$/ : null
+  const tintOf = (el: string): [number, number, number] => (groundEls.has(el) || borrowed?.test(el) ? groundTint : tint)
   const at = (t: number, y: number): [number, number, number] => [a.x + ux * t, baseY + y, a.z + uz * t]
 
   // the cells an arch passes through are left out: the opening is a real hole, and what is left of those cells
@@ -266,6 +268,7 @@ function wall(
     // nothing that sticks out may cross the opening (a sill, a string course low enough to cut it)
     if (arches.some((h) => f.y0 < h.top && (f.x1 ?? len) > h.t - h.half && (f.x0 ?? 0) < h.t + h.half)) continue
     if (f.kind === 'bay') bay(out, f, at, ux, uz, nx, nz, plan, atlas, seed, tint)
+    else if (f.kind === 'turret') turret(out, f, at, ux, uz, nx, nz, plan, atlas, seed, tint)
     else if (f.kind === 'fireEscape') fireEscape(out, f, at, nx, nz)
     else if (f.kind === 'gable') gable(out, f, at, nx, nz, len, rgb(plan.palette.trim), depth)
     else feature(out, f, a, b, ux, uz, nx, nz, len, baseY, plan)
@@ -289,10 +292,16 @@ function bay(out: MeshBuilder, f: Feature, at: (t: number, y: number) => [number
     return [q[0] + nx * off, q[1], q[2] + nz * off]
   }
   const uv = uvFor(atlas, `${artOf(plan.style)}/window`, (seed >>> 3) % 97 / 97)
-  const faces: [number, number, number, number][] = [
-    // [t0, off0, t1, off1]
-    [x0, 0, x0 + d, d], [x0 + d, d, x1 - d, d], [x1 - d, d, x1, 0],
-  ]
+  // [t0, off0, t1, off1]: three faces at 45° (angled), a box (square), or a curve in six (rounded)
+  const faces: [number, number, number, number][] = f.shape === 'square'
+    ? [[x0, 0, x0, d], [x0, d, x1, d], [x1, d, x1, 0]]
+    : f.shape === 'rounded'
+      ? Array.from({ length: 6 }, (_, i) => {
+        const a0 = Math.PI * (i / 6), a1 = Math.PI * ((i + 1) / 6)
+        const c = (x0 + x1) / 2, r = (x1 - x0) / 2
+        return [c - Math.cos(a0) * r, Math.sin(a0) * d, c - Math.cos(a1) * r, Math.sin(a1) * d] as [number, number, number, number]
+      })
+      : [[x0, 0, x0 + d, d], [x0 + d, d, x1 - d, d], [x1 - d, d, x1, 0]]
   const trim = rgb(plan.palette.trim)
   for (const [t0, o0, t1, o1] of faces) {
     // outward normal of this face: its direction along the wall turned outward
@@ -314,6 +323,39 @@ function bay(out: MeshBuilder, f: Feature, at: (t: number, y: number) => [number
   // a band of trim between storeys on the bay's front
   out.quad([p(x0 + d, f.y1 - 0.25, d + 0.02), p(x1 - d, f.y1 - 0.25, d + 0.02), p(x1 - d, f.y1, d + 0.02), p(x0 + d, f.y1, d + 0.02)],
     [nx, 0, nz], [[0, 0], [0.3, 0], [0.3, 0.1], [0, 0.1]], trim, KIND_WALL)
+}
+
+/**
+ * A Queen Anne's corner turret (facade.ts dressVictorian): an octagon standing half out of the wall from the first floor
+ * up, windowed with the style's own windows, under a steep eight-sided cap in the roof's colour.
+ */
+function turret(out: MeshBuilder, f: Feature, at: (t: number, y: number) => [number, number, number],
+                ux: number, uz: number, nx: number, nz: number, plan: FacadePlan, atlas: AtlasManifest, seed: number,
+                tint: [number, number, number]): void {
+  const r = (f.x1! - f.x0!) / 2
+  const c = (f.x0! + f.x1!) / 2
+  const out0 = f.depth - r
+  const p = (a: number, y: number, rr = r): [number, number, number] => {
+    const q = at(c + Math.cos(a) * rr, y)
+    const o = out0 + Math.sin(a) * rr
+    return [q[0] + nx * o, q[1], q[2] + nz * o]
+  }
+  const uv = uvFor(atlas, `${artOf(plan.style)}/window`, (seed >>> 5) % 89 / 89)
+  const roof = rgb(plan.palette.roof)
+  const trim = rgb(plan.palette.trim)
+  const apex: [number, number, number] = (() => { const q = at(c, f.y1 + r * 2.4); return [q[0] + nx * out0, q[1], q[2] + nz * out0] })()
+  for (let i = 0; i < 8; i++) {
+    const a0 = (Math.PI * 2 * i) / 8 + Math.PI / 8, a1 = (Math.PI * 2 * (i + 1)) / 8 + Math.PI / 8
+    const m = (a0 + a1) / 2
+    // the outward normal, in world terms: along the wall by cos, out of it by sin
+    const n: [number, number, number] = [ux * Math.cos(m) + nx * Math.sin(m), 0, uz * Math.cos(m) + nz * Math.sin(m)]
+    const quad: [number, number, number][] = [p(a0, f.y0), p(a1, f.y0), p(a1, f.y1), p(a0, f.y1)]
+    if (uv) out.quad(quad, n, [[uv.u0, uv.v1], [uv.u1, uv.v1], [uv.u1, uv.v0], [uv.u0, uv.v0]], tint, KIND_ATLAS)
+    else out.quad(quad, n, [[0, 0], [1, 0], [1, 1], [0, 1]], tint, KIND_WALL)
+    // a band of trim at its top, and the cap: eight steep triangles to a point
+    out.quad([p(a0, f.y1 - 0.3, r + 0.06), p(a1, f.y1 - 0.3, r + 0.06), p(a1, f.y1, r + 0.06), p(a0, f.y1, r + 0.06)], n, [[0, 0], [0.3, 0], [0.3, 0.1], [0, 0.1]], trim, KIND_WALL)
+    out.quad([p(a0, f.y1, r + 0.15), p(a1, f.y1, r + 0.15), apex, apex], [n[0], 0.5, n[2]], [[0, 0], [0.3, 0], [0.3, 0.1], [0, 0.1]], roof, KIND_WALL)
+  }
 }
 
 /** A fire escape storey: an iron platform, its railing, and a stair up to the platform above. */

@@ -20,7 +20,7 @@ FAMILY = {'white': 'light', 'cream': 'light', 'sand': 'light', 'lightGrey': 'lig
           'paleYellow': 'warm', 'brown': 'warm', 'redBrick': 'brick', 'midGrey': 'dark', 'charcoal': 'dark', 'black': 'dark',
           'paleBlue': 'cool', 'paleGreen': 'cool', 'teal': 'cool', 'glassBlue': 'cool',
           'navy': 'blue', 'blue': 'blue', 'green': 'green', 'darkGreen': 'green', 'yellow': 'yellow', 'orange': 'red',
-          'red': 'red', 'pink': 'red', 'purple': 'blue', 'same_as_wall': 'same', 'none': 'none'}
+          'red': 'red', 'pink': 'red', 'purple': 'blue', 'beige': 'light', 'grey': 'light', 'darkGrey': 'dark', 'same_as_wall': 'same', 'none': 'none'}
 ST = {'1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8+': 8}
 NA = ('cannot_tell', None, '')
 
@@ -40,6 +40,9 @@ def load(p):
             if 'usable' not in r and 'buildings_between_lines' in r:
                 ok = r.get('buildings_between_lines') == 'one' and r.get('target_hidden') != 'mostly' and r.get('matches_size') != 'no'
                 r['usable'] = 'yes' if ok else 'no'
+            # v5: one clear target that is not mostly hidden
+            if 'usable' not in r and 'target_clear' in r:
+                r['usable'] = 'yes' if r.get('target_clear') == 'yes' and r.get('target_hidden') != 'mostly' else 'no'
             out[r['osm']] = r
     return out
 

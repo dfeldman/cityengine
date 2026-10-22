@@ -4,7 +4,7 @@
  * visible in a screenshot of a single building.
  */
 import { describe, expect, it } from 'vitest'
-import { MIN_BAY, STYLES, chooseStyle, planFacade, planWall, style } from '../src/city/facade.ts'
+import { MIN_BAY, STYLES, chooseStyle, groundBays, planFacade, planWall, style } from '../src/city/facade.ts'
 
 /** a street wall of a building whose dressing (facade.ts Dress) puts shops all along it, where the style dresses at all */
 const STREET = { pavement: 3 }
@@ -20,7 +20,7 @@ const CITY = [
 describe('the style table', () => {
   it('has every style the game names, each with palettes and a sane level range', () => {
     expect(STYLES.map((s) => s.id).sort()).toEqual(
-      ['bauhaus', 'brick', 'brownstone', 'brutalist', 'chicago', 'classical', 'haussmann', 'marais', 'opera', 'operaGlass', 'presidio', 'presidioBrick', 'presidioStucco', 'capecod', 'skyscraper', 'stucco', 'sfapartment', 'chinatown', 'edwardian', 'tenement', 'towerblock', 'victorian', 'vosges', 'wharf', 'shopflats', 'storefront', 'aptclassical', 'aptbrick', 'aptmed', 'aptmodern', 'aptluxe'].sort(),
+      ['bauhaus', 'brick', 'brownstone', 'brutalist', 'chicago', 'classical', 'haussmann', 'marais', 'opera', 'operaGlass', 'presidio', 'presidioBrick', 'presidioStucco', 'capecod', 'skyscraper', 'stucco', 'sfapartment', 'chinatown', 'edwardian', 'tenement', 'towerblock', 'victorian', 'vosges', 'wharf', 'shopflats', 'storefront', 'aptclassical', 'aptbrick', 'aptmed', 'aptmodern', 'aptluxe', 'flatsstucco', 'shopflatsstucco'].sort(),
     )
     for (const s of STYLES) {
       expect(s.palettes.length, `${s.id} needs more than one palette or every one of them is identical`)
@@ -246,3 +246,21 @@ describe('a dressed commercial building', () => {
   })
 })
 
+
+describe("a label's street front (Dress.ground)", () => {
+  it('puts the shops in the middle, the garages at the ends and the door between', () => {
+    expect(groundBays(3, { garages: 2, shops: 'none', entrance: 'at_grade' })).toEqual(['garage', 'door', 'garage'])
+    expect(groundBays(2, { garages: 1, shops: 'none', entrance: 'stoop' })).toEqual(['garage', 'stoop'])
+    expect(groundBays(5, { garages: 0, shops: 'one', entrance: 'at_grade' })).toEqual(['window', 'shop', 'shop', 'door', 'window'])
+    expect(groundBays(4, { garages: 0, shops: 'all', entrance: 'at_grade' })).toEqual(['shop', 'shop', 'shop', 'shop'])
+  })
+
+  it('draws no shop a photograph showed none of, even on a shopping street', () => {
+    const look = { dress: { ground: { garages: 1, shops: 'none' as const, entrance: 'stoop' as const }, shops: 'none' as const } }
+    const plan = planFacade('shopflats', 7, { levels: 3, height: 10 }, undefined, look)
+    const w = planWall(plan, 8, 7, { main: true }, { front: true, face: true })
+    const ground = w.cells.filter((c) => c.y0 === 0).map((c) => c.element)
+    expect(ground.some((e) => e.endsWith('/shopfront'))).toBe(false)
+    expect(ground.some((e) => e.endsWith('/garage'))).toBe(true)
+  })
+})

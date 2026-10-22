@@ -52,6 +52,8 @@ export type StyleId =
   // …and its apartment blocks (owner, 2026-10-21: the Edwardian bay-window flats were every apartment building in the city):
   // the Beaux-Arts apartment hotel, the brick one, the Mediterranean, the cheap modern box and the better modern block
   | 'aptclassical' | 'aptbrick' | 'aptmed' | 'aptmodern' | 'aptluxe'
+  // …and the same proportions in stucco, for a label that saw render where the style paints wood (appearance research)
+  | 'flatsstucco' | 'shopflatsstucco'
 
 export type GroundKind = 'shopfront' | 'stoop' | 'arcade' | 'glazed' | 'recessed' | 'plain' | 'garage'
 export type TopKind = 'cornice' | 'parapet' | 'mansard' | 'entablature' | 'flatband' | 'crown' | 'gable'
@@ -175,7 +177,7 @@ export interface Cell {
 }
 
 export type FeatureKind = 'cornice' | 'balcony' | 'stringCourse' | 'sill' | 'slabBand' | 'pilaster' | 'parapet'
-  | 'fireEscape' | 'bay' | 'gable' | 'bracket' | 'canopy' | 'panel'
+  | 'fireEscape' | 'bay' | 'gable' | 'bracket' | 'canopy' | 'panel' | 'turret'
 
 /** Something that sticks out of the wall. Depth is metres proud of the facade plane. */
 export interface Feature {
@@ -187,6 +189,8 @@ export interface Feature {
   x0?: number
   x1?: number
   colour: string
+  /** a bay's plan: three faces at 45° (the default), a box, or a curve */
+  shape?: 'angled' | 'square' | 'rounded'
 }
 
 export interface FacadePlan {
@@ -249,6 +253,78 @@ export interface Dress {
   bays: boolean
   /** groups of bays painted in the accent colour from the first floor up: the cheap modern block's colour panels */
   blocks: boolean
+  /**
+   * A label's street front at eye level (appearance research v5): how many garage doors, how much of it is shop, and
+   * whether the door is at the pavement or up a stoop. San Francisco's fronts mix them — a garage, a stoop, a garage
+   * (owner, 2026-10-22: built-in garages are everywhere, houses above all) — so when this is set it decides every ground
+   * bay of the street wall itself, each from whichever style has the painting, and the shopping-street rule does not
+   * apply: a front a photograph shows without a shop gets none.
+   */
+  ground?: GroundMix
+  /** a label's count of bay-window stacks up the street front (2: two or more); replaces the style's own bays */
+  bayStacks?: number
+  /** a label's gable or false front over the street front, or none (false) where the style would draw one */
+  gable?: boolean
+  /** a label's bay plan (Feature.shape) */
+  bayShape?: 'angled' | 'square' | 'rounded'
+  /**
+   * A painted lady (owner, 2026-10-22: the Victorians are rarer than the stucco blocks, but they are what San Francisco
+   * is famous for and what draws the eye — a library of their own, never flattened to a box). The three kinds a
+   * passer-by tells apart: the Italianate's flat top on big brackets over slanted bays; the Stick house's square bays,
+   * false-front gable and vertical trim; the Queen Anne's corner turret, gable and curves. Each is drawn with hoods over
+   * its windows and its trim in its own colour.
+   */
+  victorian?: 'italianate' | 'stick' | 'queen_anne'
+  /** a label's balconies: iron railings at the windows, or platforms to stand on */
+  balconyKind?: 'balconettes' | 'projecting'
+}
+
+export interface GroundMix {
+  garages: number
+  shops: 'none' | 'one' | 'several' | 'all'
+  entrance: 'at_grade' | 'stoop' | 'none'
+}
+type GroundBay = 'shop' | 'garage' | 'door' | 'stoop' | 'window'
+
+/**
+ * The ground bays of a street front, left to right, from a label's mix: the shops in the middle (all of it, or most, or
+ * one or two bays), the garages at the ends, the door beside them. A front too narrow for all of it keeps the shops and
+ * garages and loses the door last of all — a stoop or a lobby always finds a bay when there is one left.
+ */
+export function groundBays(bays: number, g: GroundMix): GroundBay[] {
+  const out: GroundBay[] = Array(bays).fill('window')
+  if (bays === 0) return out
+  const nShop = g.shops === 'all' ? bays : g.shops === 'several' ? Math.max(2, Math.round(bays * 0.6)) : g.shops === 'one' ? (bays >= 5 ? 2 : 1) : 0
+  const s0 = Math.floor((bays - Math.min(nShop, bays)) / 2)
+  for (let b = s0; b < s0 + Math.min(nShop, bays); b++) out[b] = 'shop'
+  // garages from the ends inwards, one end then the other
+  let garages = g.garages >= 2 ? Math.max(2, Math.floor(bays / 3)) : g.garages
+  for (let k = 0; garages > 0 && k < bays; k++) {
+    const b = k % 2 === 0 ? k / 2 : bays - 1 - (k - 1) / 2
+    if (out[b] === 'window') { out[b] = 'garage'; garages-- }
+  }
+  if (g.entrance !== 'none') {
+    // the door: in the middle when the middle is free, else the free bay nearest it
+    const free = out.map((k, b) => (k === 'window' ? b : -1)).filter((b) => b >= 0).sort((a, b) => Math.abs(a - (bays - 1) / 2) - Math.abs(b - (bays - 1) / 2))
+    const at = free.length ? free[0] : out.lastIndexOf('garage') >= 0 && out.filter((k) => k === 'garage').length > 1 ? out.lastIndexOf('garage') : -1
+    if (at >= 0) out[at] = g.entrance === 'stoop' ? 'stoop' : 'door'
+  }
+  return out
+}
+
+/** Which styles have each ground painting (the atlas: tools/facadegen). A bay borrows one when its own style has none. */
+const GROUND_ART: Record<Exclude<GroundBay, 'window'>, { element: string; styles: StyleId[] }> = {
+  shop: { element: 'shopfront', styles: ['tenement', 'brick', 'chinatown', 'wharf', 'marais', 'haussmann'] },
+  garage: { element: 'garage', styles: ['edwardian', 'stucco'] },
+  stoop: { element: 'stoop', styles: ['victorian', 'presidioStucco', 'presidio', 'presidioBrick', 'brownstone', 'capecod'] },
+  door: { element: 'recessed', styles: ['sfapartment', 'towerblock', 'brutalist'] },
+}
+
+/** The painting for a ground bay: the building's own ground or wall art's when it has one, else the first that does. */
+function groundElement(kind: Exclude<GroundBay, 'window'>, art: StyleId, groundArt: StyleId): string {
+  const g = GROUND_ART[kind]
+  const own = g.styles.includes(groundArt) ? groundArt : g.styles.includes(art) ? art : g.styles[0]
+  return `${own}/${g.element}`
 }
 
 const weighted = <T,>(r: () => number, xs: readonly [T, number][]): T => {
@@ -650,6 +726,12 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
   const period = 3 + Math.floor(br() * 2), width = 1 + Math.floor(br() * 2), off = Math.floor(br() * period)
   const blockBay = (b: number): boolean => !!d?.blocks && street !== null && (b + off) % period < width
   const shopBay = (b: number): boolean => !d || (street !== null && (shops === 'all' || (shops === 'one' && b >= one0 && b < one0 + oneN)))
+  // a label's ground floor (Dress.ground): every bay of the street front named, from any style's painting
+  // (on the walls the building shows the street, whether or not the street index found a street there: a label read them
+  // off a photograph of one — wave 5, a corner block's box bays went missing on a side the index had no street for)
+  const labelled = d?.ground !== undefined || d?.bayStacks !== undefined
+  const shown = street ?? (labelled && role.face ? {} : null)
+  const mix = d?.ground && shown !== null ? groundBays(bays, d.ground) : null
 
   for (const s of plan.storeys) {
     // The solid wall either side of the bays, at every storey, so the corners read as masonry.
@@ -668,11 +750,12 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
        * the set bay by bay from a seeded start, so no two neighbouring shops are the same. (They went in pairs for a few
        * hours, a shop two bays wide — but each bay paints its own fascia, so the pair read CLAM BAR | CLAM BAR.)
        */
-      const shopGround = s.kind === 'ground' && plan.ground !== 'plain' && b !== carriageBay && shopBay(b)
+      const shopGround = s.kind === 'ground' && (mix ? mix[b] === 'shop' : plan.ground !== 'plain' && b !== carriageBay && shopBay(b))
       const variant = shopGround ? ((rng(seed ^ 0x5e11)() + b * 0.381966) % 1) : vr()
 
       let element: string
-      if (s.kind === 'ground' && b === carriageBay) element = `${art}/carriage`
+      if (s.kind === 'ground' && mix) element = mix[b] === 'window' ? `${art}/window` : groundElement(mix[b] as Exclude<GroundBay, 'window'>, art, groundArt)
+      else if (s.kind === 'ground' && b === carriageBay) element = `${art}/carriage`
       // ('plain': a ground floor of the style's own windows — a school's, where the style would have shops)
       else if (s.kind === 'ground') element = plan.ground === 'plain' || !shopBay(b) ? `${art}/window` : `${groundArt}/${plan.ground}`
       else if (s.kind === 'top' && plan.top === 'mansard') element = `${art}/dormer`
@@ -739,7 +822,9 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
    * …and the apartment block's: bays in stacks up a wide front, two window bays each with a flat bay between
    * (the fire escape's, when there is one), from the first floor up — the ground storey is the entrance.
    */
-  if (st.features?.bayWindows === 'stacks' && role.face && !plan.institution && bays >= 4 && plan.storeys.length >= 3) {
+  // (a label's count of stacks replaces the style's bays: Dress.bayStacks, drawn in dressWall)
+  const ownBays = plan.dress?.bayStacks === undefined
+  if (ownBays && st.features?.bayWindows === 'stacks' && role.face && !plan.institution && bays >= 4 && plan.storeys.length >= 3) {
     const esc = st.features.fireEscape && bays >= 3 ? Math.floor((bays - 2) / 2) : -99
     for (let b = 0; b + 2 <= bays; b += 3) {
       if (b <= esc + 1 && b + 2 > esc) continue          // not across the fire escape
@@ -749,7 +834,7 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
       }
     }
   }
-  if (st.features?.bayWindows === true && role.front && wallLength <= 9.5 && bays >= 2) {
+  if (ownBays && st.features?.bayWindows === true && role.front && wallLength <= 9.5 && bays >= 2) {
     const n = bays >= 3 ? 2 : 1
     for (const s of plan.storeys) {
       features.push({ kind: 'bay', y0: s.y0 + (s.kind === 'ground' ? 0.4 : 0), y1: s.y1, depth: 0.9,
@@ -791,9 +876,11 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
       features.push({ kind: 'cornice', y0: top - 0.14, y1: top + 0.04, depth: st.cornice.depth + 0.06, colour: plan.palette.trim })
     }
   }
-  if (plan.dress) dressWall(plan, plan.dress, features, wallLength, margin, bayW, bays, street)
-  // a Victorian's gable, or its false front, rising above the cornice on the street wall
-  if (plan.top === 'gable' && role.front && wallLength <= 9.5) {
+  if (plan.dress) dressWall(plan, plan.dress, features, wallLength, margin, bayW, bays, shown)
+  // a Victorian's gable, or its false front, rising above the cornice on the street wall (or a label's, on a front of a
+  // house's width; or none, where the label saw none)
+  const gable = plan.dress?.gable
+  if ((gable ?? plan.top === 'gable') && role.front && wallLength <= (gable ? 12 : 9.5)) {
     features.push({ kind: 'gable', y0: plan.height + st.cornice.height * 0.35, y1: plan.height + 1.9,
       depth: 0.05, colour: plan.palette.wall })
   }
@@ -839,7 +926,18 @@ function dressWall(plan: FacadePlan, d: Dress, features: Feature[], len: number,
 
   if (shop && d.base) features.push({ kind: 'stringCourse', y0: g.y1 - 0.12, y1: g.y1 + 0.22, depth: 0.22, colour: trim })
   const shops = d.shops === 'none' && street.main ? 'one' : d.shops
-  if (shop && d.canopy && bays > 0 && shops !== 'none') {
+  if (shop && d.canopy && bays > 0 && d.ground) {
+    // over each run of a label's shop bays
+    const reach = Math.max(0.6, Math.min(1.3, (street.pavement ?? 9) - 0.3))
+    const y0 = Math.max(3.4, g.y1 - 0.3)
+    const mix = groundBays(bays, d.ground)
+    for (let b = 0; b < bays; b++) {
+      if (mix[b] !== 'shop' || mix[b - 1] === 'shop') continue
+      let e = b
+      while (mix[e + 1] === 'shop') e++
+      features.push({ kind: 'canopy', y0, y1: y0 + 0.16, depth: reach, x0: margin + b * bayW, x1: margin + (e + 1) * bayW, colour: plan.palette.accent })
+    }
+  } else if (shop && d.canopy && bays > 0 && shops !== 'none') {
     const reach = Math.max(0.6, Math.min(1.3, (street.pavement ?? 9) - 0.3))
     const y0 = Math.max(3.4, g.y1 - 0.3)
     // over the one shop's bays (planWall's `one0`), or the whole front
@@ -870,7 +968,20 @@ function dressWall(plan: FacadePlan, d: Dress, features: Feature[], len: number,
       features.push({ kind: 'fireEscape', y0: s.y0, y1: s.y1, depth: 0.9, x0: margin + b0 * bayW, x1: margin + (b0 + 2) * bayW, colour: '#1d1d1f' })
     }
   }
-  if (d.bays && bays >= 3 && plan.storeys.length >= 2) {
+  if (d.bayStacks !== undefined) {
+    // a label's count: one stack at the end of the front, as on a 25-foot lot; two or more spread across it, a bay wide
+    // on a narrow front and two on a wide one
+    const w = bays >= 5 ? 2 : 1
+    const n = Math.min(d.bayStacks <= 1 ? d.bayStacks : Math.max(2, Math.floor((bays + 1) / 3)), Math.floor((bays + 1) / (w + 1)))
+    for (let k = 0; k < n && plan.storeys.length >= 2; k++) {
+      const b0 = n === 1 ? 0 : Math.round((k * (bays - w)) / (n - 1))
+      for (const s of plan.storeys) {
+        if (s.kind === 'ground') continue
+        features.push({ kind: 'bay', y0: s.y0, y1: s.y1, depth: 0.8, x0: margin + b0 * bayW, x1: margin + (b0 + w) * bayW, colour: trim,
+          shape: d.bayShape ?? (d.victorian === 'stick' ? 'square' : undefined) })
+      }
+    }
+  } else if (d.bays && bays >= 3 && plan.storeys.length >= 2) {
     // over the two bays nearest one end, as on a 25-foot lot, the stair to the flats at the other; on a wide front, in
     // stacks of two bays with one between
     const starts = bays >= 6 ? Array.from({ length: Math.floor((bays + 1) / 3) }, (_, k) => k * 3) : [0]
@@ -885,10 +996,57 @@ function dressWall(plan: FacadePlan, d: Dress, features: Feature[], len: number,
     for (const s of plan.storeys) {
       if (s.kind === 'ground') continue
       for (let b = 0; b < bays; b += 2) {
-        // (a Mediterranean block's are wrought-iron balconettes, a step deep)
-        features.push({ kind: 'balcony', y0: s.y0, y1: s.y0 + 1.0, depth: plan.style === 'aptmed' ? 0.45 : 1.0, x0: margin + b * bayW + 0.1,
-          x1: margin + (b + 1) * bayW - 0.1, colour: plan.palette.accent })
+        // (a Mediterranean block's are wrought-iron balconettes, a step deep; so are a label's, in iron — wave 5: the
+        //  accent-coloured platforms read as orange shelves on fronts that have a railing at a window or two)
+        const iron = d.balconyKind === 'balconettes' || (!d.balconyKind && plan.style === 'aptmed')
+        features.push({ kind: 'balcony', y0: s.y0, y1: s.y0 + 1.0, depth: iron ? 0.4 : 1.0, x0: margin + b * bayW + 0.1,
+          x1: margin + (b + 1) * bayW - 0.1, colour: iron ? '#232325' : d.balconyKind ? plan.palette.trim : plan.palette.accent })
       }
     }
+  }
+  if (d.victorian) dressVictorian(plan, d.victorian, features, len, margin, bayW, bays)
+}
+
+/**
+ * A painted lady's ornament on its street front (Dress.victorian): a moulded hood over every upper window, big paired
+ * brackets under the cornice (the Italianate's, and the Stick house's smaller), thin vertical boards at the corners
+ * (Stick), and the Queen Anne's turret on the corner away from the bay. All in the trim colour, which is the point: a
+ * painted lady is two or three colours, and the trim is what reads from across the street.
+ */
+function dressVictorian(plan: FacadePlan, kind: NonNullable<Dress['victorian']>, features: Feature[], len: number,
+  margin: number, bayW: number, bays: number): void {
+  const trim = plan.palette.trim
+  const h = plan.height
+  const winW = bayW * plan.window.widthFrac
+  for (const s of plan.storeys) {
+    if (s.kind === 'ground') continue
+    const y = s.y1 - (s.y1 - s.y0) * 0.14
+    for (let b = 0; b < bays; b++) {
+      const x0 = margin + b * bayW + (bayW - winW) / 2
+      // a pediment-ish hood: a lip, and on an Italianate a second, deeper one above it
+      features.push({ kind: 'cornice', y0: y, y1: y + 0.16, depth: 0.16, x0: x0 - 0.12, x1: x0 + winW + 0.12, colour: trim })
+      if (kind === 'italianate') features.push({ kind: 'cornice', y0: y + 0.16, y1: y + 0.26, depth: 0.24, x0: x0 - 0.2, x1: x0 + winW + 0.2, colour: trim })
+    }
+  }
+  if (kind !== 'queen_anne' && bays > 0) {
+    // brackets in pairs under the top, deep on an Italianate
+    const big = kind === 'italianate'
+    features.push({ kind: 'cornice', y0: h - (big ? 0.9 : 0.6), y1: h - 0.25, depth: big ? 0.7 : 0.45, colour: trim })
+    for (let b = 0; b <= bays; b++) {
+      for (const dx of [-0.22, 0.22]) {
+        const x = margin + b * bayW + dx
+        if (x < 0.1 || x > len - 0.1) continue
+        features.push({ kind: 'bracket', y0: h - (big ? 1.7 : 1.2), y1: h - (big ? 0.9 : 0.6), depth: big ? 0.6 : 0.4, x0: x - 0.08, x1: x + 0.08, colour: trim })
+      }
+    }
+  }
+  if (kind === 'stick') {
+    for (const x of [0.12, len - 0.12]) features.push({ kind: 'pilaster', y0: 0, y1: h, depth: 0.08, x0: x - 0.12, x1: x + 0.12, colour: trim })
+  }
+  if (kind === 'queen_anne' && len >= 5 && plan.storeys.length >= 2) {
+    // the turret, on the corner away from the bay (the bays go from the left), from the first floor to above the roof
+    const r = Math.min(1.6, len * 0.17)
+    features.push({ kind: 'turret', y0: plan.storeys[1].y0, y1: h + 0.8, depth: r * 0.8, x0: len - 2 * r - 0.1, x1: len - 0.1, colour: plan.palette.wall })
+    features.push({ kind: 'cornice', y0: h - 0.5, y1: h - 0.2, depth: 0.35, colour: trim })
   }
 }

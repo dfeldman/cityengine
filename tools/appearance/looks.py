@@ -1,17 +1,24 @@
 #!/usr/bin/env python3
 """
-Turn appearance labels (schema v3, data/appearance/research/menus-v3.json) into the table the renderer reads behind
+Turn appearance labels (schema v3 or v5, data/appearance/research/menus-v*.json) into the table the renderer reads behind
 `?labels=1` (src/city/appearance.ts): osm id → the label's usable answers. Appearance research, 2026-10-22.
 
     python3 -I tools/appearance/looks.py <out.json> <run.jsonl> [<run2.jsonl>]
 
 With two runs, an answer is kept only where both runs gave it (the agreement gate); with one, every answer is kept.
-Only buildings both runs (or the one) call `usable: yes`.
+v3: only buildings both runs call `usable: yes`. v5: buildings EITHER run calls a clear target, not mostly hidden — the
+runs disagree on the target far more than on anything else (wave 5), and taking either describes 60 of 79 buildings
+where requiring both describes 44, at the same accuracy; an answer only one usable run gave is then kept.
 """
 import json
 import sys
 
 NA = ('cannot_tell', None, '')
+# colours the runs may split between and still be right to draw: a near-miss beats the random palette a style falls back on
+# (wave 5: cream against beige dropped the colour, and a cream house was drawn dark green)
+FAMILY = {'white': 'pale', 'cream': 'pale', 'beige': 'pale', 'grey': 'pale', 'darkGrey': 'dark', 'black': 'dark',
+          'redBrick': 'brick', 'brown': 'brick', 'red': 'brick', 'pink': 'pink', 'yellow': 'yellow', 'blue': 'blue',
+          'green': 'green', 'purple': 'purple'}
 
 
 def load(p):
@@ -21,6 +28,8 @@ def load(p):
         if line:
             try:
                 r = json.loads(line)
+                if 'target_clear' in r:
+                    r['usable'] = 'yes' if r['target_clear'] == 'yes' and r.get('target_hidden') != 'mostly' else 'no'
                 out[r['osm']] = r
             except (json.JSONDecodeError, KeyError):
                 pass
@@ -32,14 +41,21 @@ if __name__ == '__main__':
     table = {}
     for osm, a in runs[0].items():
         rs = [a] + [r.get(osm) for r in runs[1:]]
-        if any(r is None or r.get('usable') != 'yes' for r in rs):
+        if 'target_clear' in a:
+            rs = [r for r in rs if r is not None and r.get('usable') == 'yes']
+            if not rs:
+                continue
+        elif any(r is None or r.get('usable') != 'yes' for r in rs):
             continue
         keep = {}
-        for k, v in a.items():
-            if k in ('osm', 'usable') or v in NA:
+        for k in dict.fromkeys(k for r in rs for k in r):
+            if k in ('osm', 'usable', 'target_clear', 'target_hidden') or k.startswith('seen_'):
                 continue
-            if all(r.get(k) == v for r in rs[1:]):
-                keep[k] = v
+            vs = [r.get(k) for r in rs if r.get(k) not in NA]
+            if vs and all(v == vs[0] for v in vs):
+                keep[k] = vs[0]
+            elif vs and k.endswith('colour') and FAMILY.get(vs[0]) and all(FAMILY.get(v) == FAMILY[vs[0]] for v in vs):
+                keep[k] = vs[0]
         if keep:
             table[osm.split('/')[1]] = keep
     json.dump(table, open(sys.argv[1], 'w'), indent=1)

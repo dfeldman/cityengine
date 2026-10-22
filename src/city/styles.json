@@ -2739,6 +2739,225 @@
           "weight": 0.6
         }
       ]
+    },
+    {
+      "id": "flatsstucco",
+      "name": "SF stucco flats",
+      "note": "San Francisco, 1915-1960: the two- and three-storey flats and houses the edwardian proportions built in smooth stucco rather than clapboard - the commonest ordinary front in the Sunset, Richmond and Mission (appearance research, 2026-10-22: a label saying stucco must not be drawn as wood siding). Drawn with the Marina stucco's windows, render and garage (`art`).",
+      "levels": [
+        2,
+        3
+      ],
+      "levelHeight": [
+        3.0,
+        3.3
+      ],
+      "groundHeight": [
+        3.35,
+        3.6
+      ],
+      "bayWidth": [
+        1.7,
+        2.3
+      ],
+      "pier": [
+        0.35,
+        0.55
+      ],
+      "window": {
+        "kind": "sash",
+        "widthFrac": [
+          0.52,
+          0.62
+        ],
+        "heightFrac": [
+          0.66,
+          0.76
+        ],
+        "sill": 0.1
+      },
+      "ground": "garage",
+      "top": "cornice",
+      "cornice": {
+        "depth": 0.55,
+        "height": 0.55
+      },
+      "stringCourse": false,
+      "features": {
+        "bayWindows": true
+      },
+      "palettes": [
+        {
+          "wall": "#efe4cf",
+          "trim": "#b86a4a",
+          "roof": "#9a5a3c",
+          "accent": "#5a4636"
+        },
+        {
+          "wall": "#f1d6c2",
+          "trim": "#f7efe4",
+          "roof": "#a0604a",
+          "accent": "#6b4a3a"
+        },
+        {
+          "wall": "#dfe8d8",
+          "trim": "#f5f2ea",
+          "roof": "#8d8a82",
+          "accent": "#3f5a4a"
+        },
+        {
+          "wall": "#f4ecd9",
+          "trim": "#d8c8a6",
+          "roof": "#a05a3a",
+          "accent": "#4a4038"
+        },
+        {
+          "wall": "#e8d9e2",
+          "trim": "#f7f2f0",
+          "roof": "#8a8580",
+          "accent": "#5a4450"
+        },
+        {
+          "wall": "#f7f5ee",
+          "trim": "#cfd8de",
+          "roof": "#9a9690",
+          "accent": "#3a4a5a"
+        }
+      ],
+      "art": "stucco",
+      "groundArt": "stucco"
+    },
+    {
+      "id": "shopflatsstucco",
+      "name": "SF stucco shop-and-flats",
+      "note": "The shop-and-flats in smooth stucco: two to four storeys of rendered flats over a row of shops - Mission and Geary Boulevard. Drawn with the Marina stucco's windows and render over the generic storefronts (`art`, `groundArt`).",
+      "art": "stucco",
+      "groundArt": "tenement",
+      "levels": [
+        2,
+        4
+      ],
+      "levelHeight": [
+        3.0,
+        3.4
+      ],
+      "groundHeight": [
+        3.6,
+        4.2
+      ],
+      "bayWidth": [
+        1.8,
+        2.4
+      ],
+      "pier": [
+        0.4,
+        0.7
+      ],
+      "window": {
+        "kind": "sash",
+        "widthFrac": [
+          0.5,
+          0.6
+        ],
+        "heightFrac": [
+          0.68,
+          0.78
+        ],
+        "sill": 0.12
+      },
+      "ground": "shopfront",
+      "top": "cornice",
+      "cornice": {
+        "depth": 0.5,
+        "height": 0.6
+      },
+      "stringCourse": true,
+      "palettes": [
+        {
+          "wall": "#e8e1d2",
+          "trim": "#ffffff",
+          "roof": "#5a5550",
+          "accent": "#2b3f55",
+          "weight": 2
+        },
+        {
+          "wall": "#d9d2c3",
+          "trim": "#f4f1ea",
+          "roof": "#5a5550",
+          "accent": "#5a2a26",
+          "weight": 1.5
+        },
+        {
+          "wall": "#c9cdd0",
+          "trim": "#ffffff",
+          "roof": "#5a5550",
+          "accent": "#2b3f55",
+          "weight": 1.5
+        },
+        {
+          "wall": "#e4d4b0",
+          "trim": "#ffffff",
+          "roof": "#5a5550",
+          "accent": "#3b4a3f",
+          "weight": 1.2
+        },
+        {
+          "wall": "#d8a98e",
+          "trim": "#f6efe2",
+          "roof": "#5a5550",
+          "accent": "#3b4a3f",
+          "weight": 1
+        },
+        {
+          "wall": "#a9bccb",
+          "trim": "#ffffff",
+          "roof": "#5a5550",
+          "accent": "#1d2b3a",
+          "weight": 1
+        },
+        {
+          "wall": "#bfcfbe",
+          "trim": "#ffffff",
+          "roof": "#5a5550",
+          "accent": "#5a2a26",
+          "weight": 0.8
+        },
+        {
+          "wall": "#efe6a8",
+          "trim": "#ffffff",
+          "roof": "#5a5550",
+          "accent": "#2b3f55",
+          "weight": 0.5
+        },
+        {
+          "wall": "#8c9a8a",
+          "trim": "#f2efe6",
+          "roof": "#5a5550",
+          "accent": "#5a2a26",
+          "weight": 0.6
+        },
+        {
+          "wall": "#b9a48a",
+          "trim": "#f4ede0",
+          "roof": "#5a5550",
+          "accent": "#2b2b2d",
+          "weight": 0.8
+        },
+        {
+          "wall": "#9a3b33",
+          "trim": "#f2ead8",
+          "roof": "#5a5550",
+          "accent": "#2b2b2d",
+          "weight": 0.4
+        },
+        {
+          "wall": "#7b8fa3",
+          "trim": "#f4f1ea",
+          "roof": "#5a5550",
+          "accent": "#c8a24a",
+          "weight": 0.5
+        }
+      ]
     }
   ]
 }
