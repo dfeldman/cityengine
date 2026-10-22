@@ -1,0 +1,19 @@
+{"osm":"way/25371862","usable":true,"photo":"way-25371862-01.jpg","style":"brickLoft","main":"redBrick","accent":"white","confidence":"high","note":"brick loft, large steel windows, cream sign band, dark base"}
+{"osm":"way/272543643","usable":false,"reason":"street tree covers the centre of the facade; second photo is a garage door and car"}
+{"osm":"way/124903635","usable":true,"photo":"way-124903635-02.jpg","style":"retailBox","main":"black","accent":"white","confidence":"medium","note":"one-storey black shopfront with light-blue trim, flat roof"}
+{"osm":"way/243730692","usable":true,"photo":"way-243730692-01.jpg","style":"edwardianCommercial","main":"cream","accent":"brown","confidence":"medium","note":"2-storey stucco shop, arched windows, brown cornice and balcony"}
+{"osm":"way/32947621","usable":true,"photo":"way-32947621-02.jpg","style":"edwardianCommercial","main":"teal","accent":"white","confidence":"medium","note":"3-storey teal corner block, storefront awnings, red door"}
+{"osm":"way/272632255","usable":false,"reason":"neighbouring buildings and awnings fill both photos; no single facade"}
+{"osm":"way/7330863","usable":true,"photo":"way-7330863-02.jpg","style":"contemporary","main":"white","accent":"darkGrey","confidence":"medium","note":"2-storey white render block, dark window frames, tree at right"}
+{"osm":"way/256051612","usable":true,"photo":"way-256051612-01.jpg","style":"brickLoft","main":"charcoal","accent":"none","confidence":"medium","note":"dark industrial loft, tall windows, ground-floor shopfronts"}
+{"osm":"way/242771059","usable":true,"photo":"way-242771059-01.jpg","style":"edwardianCommercial","main":"white","accent":"black","confidence":"low","note":"white 3-storey block with garage openings and dark sign band"}
+{"osm":"way/260987436","usable":true,"photo":"way-260987436-01.jpg","style":"edwardianCommercial","main":"charcoal","accent":"black","confidence":"low","note":"4-storey grey-blue bay block, tree covers left side"}
+{"osm":"way/242971337","usable":false,"reason":"parked cars hide the wall in one photo; other is a gas station canopy"}
+{"osm":"way/262418258","usable":true,"photo":"way-262418258-02.jpg","style":"victorianCommercial","main":"redBrick","accent":"white","confidence":"medium","note":"3-storey red wood-frame Victorian, bays, white trim"}
+{"osm":"way/148217497","usable":true,"photo":"way-148217497-01.jpg","style":"brickLoft","main":"redBrick","accent":"cream","confidence":"high","note":"2-storey red brick warehouse, big windows, cream plinth"}
+{"osm":"way/263491068","usable":true,"photo":"way-263491068-01.jpg","style":"contemporary","main":"white","accent":"none","confidence":"high","note":"3-storey corner bay block, white render, ground-floor clinic"}
+{"osm":"way/260354470","usable":false,"reason":"trees and a dark side block cover the view; photos frame different buildings"}
+{"osm":"way/260345827","usable":true,"photo":"way-260345827-02.jpg","style":"brickLoft","main":"charcoal","accent":"none","confidence":"medium","note":"dark slate loft block, steel-frame windows, corner site"}
+{"osm":"way/243353716","usable":true,"photo":"way-243353716-01.jpg","style":"retailBox","main":"brown","accent":"white","confidence":"medium","note":"2-storey brown wood-clad shop, signage, flat roof"}
+{"osm":"way/13495347","usable":false,"reason":"blank grey wall hidden behind a poster hoarding in both photos"}
+{"osm":"way/260921987","usable":false,"reason":"shutters and storefront fill the view; upper floors cut off in both photos"}

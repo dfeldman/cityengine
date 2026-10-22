@@ -1,0 +1,30 @@
+{
+  "about": "The only things the appearance training set records per building (owner, 2026-10-21): a main colour and an accent colour from fixed palettes, and a general style from a short menu. Everything else is randomised by the generators. Commercial buildings only for now; the residential rows already look right.",
+  "style": [
+    { "id": "victorianCommercial", "styleId": "victorian", "says": "1870s-1900s wood-frame shop-and-flats: ornate cornice, tall narrow windows, bay windows over a storefront" },
+    { "id": "edwardianCommercial", "styleId": "sfapartment", "says": "1905-1930 masonry or stucco block of 2-6 storeys: storefronts, regular punched windows, a projecting cornice, sometimes bays" },
+    { "id": "brickLoft", "styleId": "brick", "says": "exposed red/brown brick warehouse, loft or workshop: big industrial windows, plain parapet" },
+    { "id": "classicalOffice", "styleId": "classical", "says": "pre-war stone or terracotta office/hotel/bank: Beaux-Arts or Art Deco, piers, carved cornice or setback crown" },
+    { "id": "midcentury", "styleId": "bauhaus", "says": "1945-1975 plain box: ribbon or aluminium windows, panels, flat roof, little ornament" },
+    { "id": "concrete", "styleId": "brutalist", "says": "exposed concrete: heavy piers or fins, deep-set windows, raw grey surfaces" },
+    { "id": "glassTower", "styleId": "skyscraper", "says": "glass curtain wall or mostly-glass high-rise" },
+    { "id": "contemporary", "styleId": "bauhaus", "says": "1990s-today mid-rise: mixed panels, glass and render, ground-floor retail, balconies or bays" },
+    { "id": "retailBox", "styleId": "stucco", "says": "one or two storeys of shop or strip retail: plain stucco or block wall, signage, flat roof" },
+    { "id": "chinatown", "styleId": "chinatown", "says": "Chinatown commercial: painted balconies, tiled eaves or pagoda trim, red/green/gold accents" },
+    { "id": "unclear", "styleId": null, "says": "none of the above fits, or the style can't be told" }
+  ],
+  "main": [
+    { "id": "white", "hex": "#f2f0ea" }, { "id": "cream", "hex": "#e9dfc8" }, { "id": "sand", "hex": "#d8c6a0" },
+    { "id": "buff", "hex": "#c9a27a" }, { "id": "lightGrey", "hex": "#c9c7c1" }, { "id": "midGrey", "hex": "#9a9892" },
+    { "id": "charcoal", "hex": "#4a4a48" }, { "id": "redBrick", "hex": "#9a4a36" }, { "id": "brown", "hex": "#6d4a35" },
+    { "id": "salmon", "hex": "#d9a08a" }, { "id": "paleYellow", "hex": "#e8d89a" }, { "id": "paleBlue", "hex": "#a9bccb" },
+    { "id": "paleGreen", "hex": "#b4c2a8" }, { "id": "teal", "hex": "#3f6a6e" }, { "id": "glassBlue", "hex": "#6d8796" },
+    { "id": "black", "hex": "#262626" }
+  ],
+  "accent": [
+    { "id": "none", "hex": null }, { "id": "white", "hex": "#f6f4ee" }, { "id": "cream", "hex": "#e6dcc4" },
+    { "id": "black", "hex": "#1f1f1f" }, { "id": "darkGrey", "hex": "#55524d" }, { "id": "brown", "hex": "#5a3c2a" },
+    { "id": "red", "hex": "#9b2f2a" }, { "id": "green", "hex": "#2f5a3e" }, { "id": "blue", "hex": "#2f4a6a" },
+    { "id": "gold", "hex": "#c9a34a" }, { "id": "terracotta", "hex": "#b86a4a" }, { "id": "teal", "hex": "#2f6a6a" }
+  ]
+}

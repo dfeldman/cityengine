@@ -1,0 +1,15 @@
+{"osm":"way/260171052","usable":false,"reason":"single-storey bank and neighbouring shops fill the lines; no one clear street wall"}
+{"osm":"way/288647261","usable":false,"reason":"fenced construction lot and two buildings fill the lines in both photos"}
+{"osm":"way/257936075","usable":true,"photo":"way-257936075-02.jpg","style":"victorianCommercial","main":"buff","accent":"cream","confidence":"medium","note":"two-storey Victorian, khaki-tan wall, cream ornate cornice and bays"}
+{"osm":"way/258093099","usable":true,"photo":"way-258093099-01.jpg","style":"edwardianCommercial","main":"paleYellow","accent":"terracotta","confidence":"low","note":"yellow stucco two-storey, brick ground floor, tree partly hides it"}
+{"osm":"way/1167668200","usable":false,"reason":"freeway, billboard and pillars; no building in view"}
+{"osm":"way/262573545","usable":false,"reason":"excavator blocks the view; tree fills the building area in the second photo"}
+{"osm":"way/129879831","usable":false,"reason":"tree covers most of the wall between the lines in both photos"}
+{"osm":"way/1310970699","usable":false,"reason":"parking lot and fence in both photos; no building wall"}
+{"osm":"way/260280327","usable":false,"reason":"truck blocks one photo; the other shows two buildings between the lines"}
+{"osm":"way/260288448","usable":true,"photo":"way-260288448-02.jpg","style":"classicalOffice","main":"white","accent":"none","confidence":"high","note":"eight-storey white block with pilasters, cornice and fire escape"}
+{"osm":"way/252546625","usable":true,"photo":"way-252546625-02.jpg","style":"contemporary","main":"lightGrey","accent":"darkGrey","confidence":"medium","note":"five-storey grey mid-rise, bay windows, dark trim"}
+{"osm":"way/381855138","usable":false,"reason":"two buildings and a carport fill the lines; second photo is mostly tree"}
+{"osm":"way/43100828","usable":false,"reason":"trees, a truck and a freeway pillar block the building between the lines"}
+{"osm":"way/260152451","usable":true,"photo":"way-260152451-01.jpg","style":"edwardianCommercial","main":"lightGrey","accent":"white","confidence":"medium","note":"grey six-storey block, fire escapes, Saigon Sandwich storefront"}
+{"osm":"way/260919164","usable":true,"photo":"way-260919164-02.jpg","style":"edwardianCommercial","main":"paleBlue","accent":"none","confidence":"low","note":"pale blue wall with Chinese-language signs and gold sign band"}

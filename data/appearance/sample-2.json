@@ -1,0 +1,1996 @@
+{
+ "about": "Second appearance sample (2026-10-21): generic buildings whose footprint holds only commercial Assessor parcels (COMR/COMM/COMO/IND/COMH, no SRES/MRES), quotas by use code, seed 20261022, none claimed by a manifest entry or within 3 m of a claimed building, none in sample.json, at least 120 m apart.",
+ "buildings": [
+  {
+   "osm": "way/259255648",
+   "use": "COMR",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 3,
+   "height": 10,
+   "x": -1330,
+   "z": 321
+  },
+  {
+   "osm": "way/25371862",
+   "use": "COMR",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 9,
+   "x": -71,
+   "z": -3020
+  },
+  {
+   "osm": "way/260920349",
+   "use": "COMR",
+   "archetype": "chinatown",
+   "style": "chinatown",
+   "levels": 3,
+   "height": 13,
+   "x": 449,
+   "z": 254
+  },
+  {
+   "osm": "way/256985512",
+   "use": "COMR",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 4,
+   "height": 16,
+   "x": -968,
+   "z": -174
+  },
+  {
+   "osm": "way/7074361",
+   "use": "COMR",
+   "style": "sfapartment",
+   "levels": 4,
+   "height": 16,
+   "x": -2501,
+   "z": -730
+  },
+  {
+   "osm": "way/259944360",
+   "use": "COMR",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 2,
+   "height": 9,
+   "x": -376,
+   "z": -551
+  },
+  {
+   "osm": "way/260177872",
+   "use": "COMR",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 2,
+   "height": 7,
+   "x": -668,
+   "z": -3548
+  },
+  {
+   "osm": "way/254914121",
+   "use": "COMR",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 2,
+   "height": 9,
+   "x": -815,
+   "z": -103
+  },
+  {
+   "osm": "way/256436209",
+   "use": "COMR",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 12,
+   "x": -847,
+   "z": -3074
+  },
+  {
+   "osm": "way/260353679",
+   "use": "COMR",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 2,
+   "height": 8,
+   "x": -693,
+   "z": -3237
+  },
+  {
+   "osm": "way/260960878",
+   "use": "COMR",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 11,
+   "x": -885,
+   "z": -2622
+  },
+  {
+   "osm": "way/272543643",
+   "use": "COMR",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 1,
+   "height": 4,
+   "x": -2171,
+   "z": 480
+  },
+  {
+   "osm": "way/278333568",
+   "use": "COMR",
+   "archetype": "marinaHouse",
+   "style": "stucco",
+   "levels": 1,
+   "height": 5,
+   "x": -6162,
+   "z": -1456
+  },
+  {
+   "osm": "way/264645150",
+   "use": "COMR",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 12,
+   "x": -3318,
+   "z": -3052
+  },
+  {
+   "osm": "way/260955947",
+   "use": "COMR",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 2,
+   "height": 6,
+   "x": -1005,
+   "z": -2979
+  },
+  {
+   "osm": "way/173122159",
+   "use": "COMR",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 1,
+   "height": 5,
+   "x": -623,
+   "z": -4236
+  },
+  {
+   "osm": "way/260924237",
+   "use": "COMR",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 13,
+   "x": 678,
+   "z": 153
+  },
+  {
+   "osm": "way/273290473",
+   "use": "COMR",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 2,
+   "height": 8,
+   "x": -3546,
+   "z": -629
+  },
+  {
+   "osm": "way/261452707",
+   "use": "COMR",
+   "archetype": "chinatown",
+   "style": "chinatown",
+   "levels": 2,
+   "height": 6,
+   "x": 349,
+   "z": 447
+  },
+  {
+   "osm": "way/276540416",
+   "use": "COMR",
+   "archetype": "marinaHouse",
+   "style": "stucco",
+   "levels": 2,
+   "height": 6,
+   "x": -5840,
+   "z": -3259
+  },
+  {
+   "osm": "way/260500562",
+   "use": "COMR",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 6,
+   "x": -389,
+   "z": -2177
+  },
+  {
+   "osm": "way/124903635",
+   "use": "COMR",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 1,
+   "height": 5,
+   "x": 1558,
+   "z": -1473
+  },
+  {
+   "osm": "way/206629801",
+   "use": "COMR",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 2,
+   "height": 8,
+   "x": 411,
+   "z": 571
+  },
+  {
+   "osm": "way/259106331",
+   "use": "COMR",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 2,
+   "height": 6,
+   "x": -1975,
+   "z": 446
+  },
+  {
+   "osm": "way/257965701",
+   "use": "COMR",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 2,
+   "height": 8,
+   "x": -1019,
+   "z": -715
+  },
+  {
+   "osm": "way/259965513",
+   "use": "COMR",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 2,
+   "height": 8,
+   "x": -522,
+   "z": -681
+  },
+  {
+   "osm": "way/258834274",
+   "use": "COMR",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 2,
+   "height": 9,
+   "x": -1557,
+   "z": 559
+  },
+  {
+   "osm": "way/260923878",
+   "use": "COMR",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 2,
+   "height": 6,
+   "x": -1088,
+   "z": -2472
+  },
+  {
+   "osm": "way/263227354",
+   "use": "COMR",
+   "archetype": "midcentury",
+   "style": "bauhaus",
+   "levels": 3,
+   "height": 12,
+   "x": -1888,
+   "z": -916
+  },
+  {
+   "osm": "way/255968613",
+   "use": "COMR",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 1,
+   "height": 5,
+   "x": 464,
+   "z": -1946
+  },
+  {
+   "osm": "way/216220324",
+   "use": "COMR",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 7,
+   "x": 1287,
+   "z": -1595
+  },
+  {
+   "osm": "way/243730692",
+   "use": "COMR",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 3,
+   "height": 12,
+   "x": -937,
+   "z": 680
+  },
+  {
+   "osm": "way/287651039",
+   "use": "COMR",
+   "archetype": "marinaHouse",
+   "style": "stucco",
+   "levels": 1,
+   "height": 5,
+   "x": -7531,
+   "z": -1903
+  },
+  {
+   "osm": "way/1020512100",
+   "use": "COMR",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 1,
+   "height": 4,
+   "x": 291,
+   "z": 657
+  },
+  {
+   "osm": "way/262104200",
+   "use": "COMR",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 3,
+   "height": 12,
+   "x": 338,
+   "z": 882
+  },
+  {
+   "osm": "way/262430979",
+   "use": "COMR",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 11,
+   "x": -398,
+   "z": 1281
+  },
+  {
+   "osm": "way/273143545",
+   "use": "COMR",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 14,
+   "x": -3406,
+   "z": -460
+  },
+  {
+   "osm": "way/258631372",
+   "use": "COMR",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 12,
+   "x": -546,
+   "z": -4379
+  },
+  {
+   "osm": "way/259056917",
+   "use": "COMR",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 7,
+   "x": 448,
+   "z": -4115
+  },
+  {
+   "osm": "way/262754643",
+   "use": "COMR",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 10,
+   "x": -1922,
+   "z": -300
+  },
+  {
+   "osm": "way/285231414",
+   "use": "COMR",
+   "archetype": "marinaHouse",
+   "style": "stucco",
+   "levels": 2,
+   "height": 7,
+   "x": -6962,
+   "z": -4359
+  },
+  {
+   "osm": "way/222937847",
+   "use": "COMR",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 12,
+   "x": -1999,
+   "z": -3595
+  },
+  {
+   "osm": "way/32947621",
+   "use": "COMR",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 12,
+   "x": 953,
+   "z": 527
+  },
+  {
+   "osm": "way/262577261",
+   "use": "COMR",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 10,
+   "x": -3091,
+   "z": -320
+  },
+  {
+   "osm": "way/129880019",
+   "use": "COMR",
+   "archetype": "marinaHouse",
+   "style": "stucco",
+   "levels": 3,
+   "height": 12,
+   "x": -5843,
+   "z": -4293
+  },
+  {
+   "osm": "way/260940128",
+   "use": "COMR",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 2,
+   "height": 6,
+   "x": -1073,
+   "z": -2759
+  },
+  {
+   "osm": "way/243596363",
+   "use": "COMR",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 4,
+   "height": 13,
+   "x": -1075,
+   "z": 951
+  },
+  {
+   "osm": "way/206716621",
+   "use": "COMR",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 3,
+   "height": 12,
+   "x": -847,
+   "z": 405
+  },
+  {
+   "osm": "way/256045023",
+   "use": "COMR",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 1,
+   "height": 5,
+   "x": -608,
+   "z": -1113
+  },
+  {
+   "osm": "way/260191201",
+   "use": "COMR",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 2,
+   "height": 7,
+   "x": -860,
+   "z": -3617
+  },
+  {
+   "osm": "way/258926277",
+   "use": "COMR",
+   "archetype": "marinaHouse",
+   "style": "stucco",
+   "levels": 3,
+   "height": 12,
+   "x": -1700,
+   "z": 537
+  },
+  {
+   "osm": "way/220614240",
+   "use": "COMR",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 1,
+   "height": 5,
+   "x": -3249,
+   "z": -2610
+  },
+  {
+   "osm": "way/272632255",
+   "use": "COMR",
+   "archetype": "marinaHouse",
+   "style": "stucco",
+   "levels": 2,
+   "height": 8,
+   "x": -2536,
+   "z": 769
+  },
+  {
+   "osm": "way/272647189",
+   "use": "COMR",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 2,
+   "height": 8,
+   "x": -2311,
+   "z": 869
+  },
+  {
+   "osm": "way/288517654",
+   "use": "COMR",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 3,
+   "height": 12,
+   "x": -1089,
+   "z": 629
+  },
+  {
+   "osm": "way/260155573",
+   "use": "COMR",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 12,
+   "x": -148,
+   "z": -1205
+  },
+  {
+   "osm": "way/20518793",
+   "use": "COMR",
+   "style": "sfapartment",
+   "levels": 1,
+   "height": 4,
+   "x": -2440,
+   "z": -2380
+  },
+  {
+   "osm": "way/262585105",
+   "use": "COMR",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 1,
+   "height": 5,
+   "x": -23,
+   "z": 949
+  },
+  {
+   "osm": "way/148174270",
+   "use": "COMR",
+   "archetype": "marinaHouse",
+   "style": "stucco",
+   "levels": 3,
+   "height": 11,
+   "x": -4850,
+   "z": -3203
+  },
+  {
+   "osm": "way/286319939",
+   "use": "COMR",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 2,
+   "height": 7,
+   "x": -6333,
+   "z": -1195
+  },
+  {
+   "osm": "way/256093459",
+   "use": "COMM",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 10,
+   "x": 76,
+   "z": -3975
+  },
+  {
+   "osm": "way/256589651",
+   "use": "COMM",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 2,
+   "height": 8,
+   "x": -1281,
+   "z": -1814
+  },
+  {
+   "osm": "way/7330863",
+   "use": "COMM",
+   "style": "stucco",
+   "levels": 2,
+   "height": 8,
+   "x": -5356,
+   "z": -1866
+  },
+  {
+   "osm": "way/243353720",
+   "use": "COMM",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 6,
+   "x": 969,
+   "z": -1440
+  },
+  {
+   "osm": "way/286314787",
+   "use": "COMM",
+   "archetype": "marinaHouse",
+   "style": "stucco",
+   "levels": 1,
+   "height": 4,
+   "x": -6444,
+   "z": -1042
+  },
+  {
+   "osm": "way/260132190",
+   "use": "COMM",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 2,
+   "height": 8,
+   "x": -565,
+   "z": -955
+  },
+  {
+   "osm": "way/259917731",
+   "use": "COMM",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 2,
+   "height": 9,
+   "x": -324,
+   "z": -103
+  },
+  {
+   "osm": "way/162518035",
+   "use": "COMM",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 2,
+   "height": 7,
+   "x": -4641,
+   "z": -1447
+  },
+  {
+   "osm": "way/260018192",
+   "use": "COMM",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 3,
+   "height": 12,
+   "x": -4603,
+   "z": -865
+  },
+  {
+   "osm": "way/261406263",
+   "use": "COMM",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 2,
+   "height": 8,
+   "x": -1828,
+   "z": -2122
+  },
+  {
+   "osm": "way/259969256",
+   "use": "COMM",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 10,
+   "x": -446,
+   "z": -827
+  },
+  {
+   "osm": "way/640785007",
+   "use": "COMM",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 12,
+   "x": -813,
+   "z": -1158
+  },
+  {
+   "osm": "way/256051612",
+   "use": "COMM",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 2,
+   "height": 7,
+   "x": -721,
+   "z": -980
+  },
+  {
+   "osm": "way/260955937",
+   "use": "COMM",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 13,
+   "x": -1050,
+   "z": -3116
+  },
+  {
+   "osm": "way/260530138",
+   "use": "COMM",
+   "archetype": "chinatown",
+   "style": "chinatown",
+   "levels": 3,
+   "height": 13,
+   "x": 538,
+   "z": 111
+  },
+  {
+   "osm": "way/261126833",
+   "use": "COMM",
+   "archetype": "church",
+   "style": "classical",
+   "levels": 2,
+   "height": 7,
+   "x": -477,
+   "z": -4106
+  },
+  {
+   "osm": "way/71208652",
+   "use": "COMM",
+   "archetype": "retailBox",
+   "style": "bauhaus",
+   "levels": 2,
+   "height": 9,
+   "x": -295,
+   "z": -803
+  },
+  {
+   "osm": "way/224921469",
+   "use": "COMM",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 12,
+   "x": -71,
+   "z": -3872
+  },
+  {
+   "osm": "way/256628729",
+   "use": "COMM",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 2,
+   "height": 8,
+   "x": -1705,
+   "z": -2317
+  },
+  {
+   "osm": "way/262583120",
+   "use": "COMM",
+   "style": "stucco",
+   "levels": 5,
+   "height": 19,
+   "x": -3639,
+   "z": -2255
+  },
+  {
+   "osm": "way/251379305",
+   "use": "COMM",
+   "archetype": "midcentury",
+   "style": "bauhaus",
+   "levels": 3,
+   "height": 12,
+   "x": 604,
+   "z": -1614
+  },
+  {
+   "osm": "way/262600157",
+   "use": "COMM",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 3,
+   "height": 13,
+   "x": -3573,
+   "z": -2073
+  },
+  {
+   "osm": "way/242771059",
+   "use": "COMM",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 9,
+   "x": 492,
+   "z": -1462
+  },
+  {
+   "osm": "way/256495486",
+   "use": "COMM",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 1,
+   "height": 4,
+   "x": -940,
+   "z": -1236
+  },
+  {
+   "osm": "way/261114844",
+   "use": "COMM",
+   "archetype": "church",
+   "style": "classical",
+   "levels": 3,
+   "height": 10,
+   "x": -447,
+   "z": -3941
+  },
+  {
+   "osm": "way/260171057",
+   "use": "COMM",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 11,
+   "x": -657,
+   "z": -4026
+  },
+  {
+   "osm": "way/274353764",
+   "use": "COMM",
+   "archetype": "apartment",
+   "style": "stucco",
+   "levels": 3,
+   "height": 11,
+   "x": -3210,
+   "z": -1580
+  },
+  {
+   "osm": "way/170845448",
+   "use": "COMM",
+   "archetype": "edwardianHouse",
+   "style": "edwardian",
+   "levels": 2,
+   "height": 9,
+   "x": -4249,
+   "z": -1123
+  },
+  {
+   "osm": "way/261557609",
+   "use": "COMM",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 2,
+   "height": 6,
+   "x": -2328,
+   "z": -1862
+  },
+  {
+   "osm": "way/225193477",
+   "use": "COMM",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 1,
+   "height": 5,
+   "x": -2675,
+   "z": 697
+  },
+  {
+   "osm": "way/275267533",
+   "use": "COMM",
+   "archetype": "church",
+   "style": "classical",
+   "levels": 2,
+   "height": 6,
+   "x": -5220,
+   "z": -1564
+  },
+  {
+   "osm": "way/256728506",
+   "use": "COMM",
+   "archetype": "chinatown",
+   "style": "chinatown",
+   "levels": 3,
+   "height": 11,
+   "x": 346,
+   "z": 55
+  },
+  {
+   "osm": "way/260987436",
+   "use": "COMM",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 12,
+   "x": -662,
+   "z": -2971
+  },
+  {
+   "osm": "way/257812963",
+   "use": "COMM",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 13,
+   "x": -1135,
+   "z": -519
+  },
+  {
+   "osm": "way/261544699",
+   "use": "COMM",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 4,
+   "height": 16,
+   "x": -2636,
+   "z": -2084
+  },
+  {
+   "osm": "way/259922708",
+   "use": "COMM",
+   "archetype": "retailBox",
+   "style": "bauhaus",
+   "levels": 3,
+   "height": 12,
+   "x": -377,
+   "z": -283
+  },
+  {
+   "osm": "way/258123390",
+   "use": "COMM",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 12,
+   "x": -1064,
+   "z": -1681
+  },
+  {
+   "osm": "way/263273069",
+   "use": "COMM",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 12,
+   "x": -1871,
+   "z": -619
+  },
+  {
+   "osm": "way/267718182",
+   "use": "COMM",
+   "archetype": "marinaHouse",
+   "style": "stucco",
+   "levels": 3,
+   "height": 10,
+   "x": -5604,
+   "z": -3251
+  },
+  {
+   "osm": "way/260986967",
+   "use": "COMM",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 8,
+   "x": 359,
+   "z": -3295
+  },
+  {
+   "osm": "way/276517755",
+   "use": "COMM",
+   "archetype": "church",
+   "style": "classical",
+   "levels": 2,
+   "height": 6,
+   "x": -5593,
+   "z": -1155
+  },
+  {
+   "osm": "way/350719352",
+   "use": "COMM",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 12,
+   "x": -4,
+   "z": -2138
+  },
+  {
+   "osm": "way/256998681",
+   "use": "COMM",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 13,
+   "x": 147,
+   "z": 649
+  },
+  {
+   "osm": "way/242971337",
+   "use": "COMM",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 1,
+   "height": 4,
+   "x": -445,
+   "z": -3133
+  },
+  {
+   "osm": "way/265973092",
+   "use": "COMM",
+   "archetype": "marinaHouse",
+   "style": "stucco",
+   "levels": 3,
+   "height": 12,
+   "x": -4474,
+   "z": -3189
+  },
+  {
+   "osm": "way/288500671",
+   "use": "COMM",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 11,
+   "x": 196,
+   "z": -297
+  },
+  {
+   "osm": "way/71209419",
+   "use": "COMM",
+   "archetype": "retailBox",
+   "style": "bauhaus",
+   "levels": 3,
+   "height": 11,
+   "x": -173,
+   "z": -783
+  },
+  {
+   "osm": "way/261085736",
+   "use": "COMM",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 2,
+   "height": 9,
+   "x": -525,
+   "z": -2970
+  },
+  {
+   "osm": "way/41180247",
+   "use": "COMM",
+   "style": "brick",
+   "levels": 3,
+   "height": 12,
+   "x": 373,
+   "z": -4494
+  },
+  {
+   "osm": "way/277058553",
+   "use": "COMM",
+   "archetype": "marinaHouse",
+   "style": "stucco",
+   "levels": 2,
+   "height": 7,
+   "x": -7630,
+   "z": -3521
+  },
+  {
+   "osm": "way/206621045",
+   "use": "COMO",
+   "archetype": "chinatown",
+   "style": "chinatown",
+   "levels": 2,
+   "height": 7,
+   "x": 644,
+   "z": 494
+  },
+  {
+   "osm": "way/206591570",
+   "use": "COMO",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 7,
+   "x": 838,
+   "z": 583
+  },
+  {
+   "osm": "way/256068367",
+   "use": "COMO",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 11,
+   "x": 843,
+   "z": 161
+  },
+  {
+   "osm": "way/262418258",
+   "use": "COMO",
+   "archetype": "wharf",
+   "style": "wharf",
+   "levels": 3,
+   "height": 12,
+   "x": -666,
+   "z": 1508
+  },
+  {
+   "osm": "way/253254850",
+   "use": "COMO",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 2,
+   "height": 7,
+   "x": -765,
+   "z": 208
+  },
+  {
+   "osm": "way/256484464",
+   "use": "COMO",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 12,
+   "x": 1133,
+   "z": -3285
+  },
+  {
+   "osm": "way/118229926",
+   "use": "COMO",
+   "archetype": "contemporary",
+   "style": "bauhaus",
+   "levels": 4,
+   "height": 16,
+   "x": 949,
+   "z": -1252
+  },
+  {
+   "osm": "way/256022693",
+   "use": "COMO",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 9,
+   "x": 891,
+   "z": -1999
+  },
+  {
+   "osm": "way/273475048",
+   "use": "COMO",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 11,
+   "x": -3909,
+   "z": -1263
+  },
+  {
+   "osm": "way/262285566",
+   "use": "COMO",
+   "archetype": "midcentury",
+   "style": "bauhaus",
+   "levels": 3,
+   "height": 12,
+   "x": -109,
+   "z": 1344
+  },
+  {
+   "osm": "way/159953362",
+   "use": "COMO",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 9,
+   "x": 1253,
+   "z": -1396
+  },
+  {
+   "osm": "way/239622812",
+   "use": "COMO",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 2,
+   "height": 9,
+   "x": -863,
+   "z": -1688
+  },
+  {
+   "osm": "way/256089236",
+   "use": "COMO",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 9,
+   "x": 1031,
+   "z": 654
+  },
+  {
+   "osm": "way/263806345",
+   "use": "COMO",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 2,
+   "height": 9,
+   "x": -2189,
+   "z": -2339
+  },
+  {
+   "osm": "way/148217497",
+   "use": "COMO",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 7,
+   "x": 1460,
+   "z": -1208
+  },
+  {
+   "osm": "way/227005953",
+   "use": "COMO",
+   "archetype": "prewarOffice",
+   "style": "chicago",
+   "levels": 4,
+   "height": 15,
+   "x": -123,
+   "z": -1811
+  },
+  {
+   "osm": "way/260345924",
+   "use": "COMO",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 2,
+   "height": 7,
+   "x": 243,
+   "z": -1504
+  },
+  {
+   "osm": "way/260358481",
+   "use": "COMO",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 12,
+   "x": 369,
+   "z": -1494
+  },
+  {
+   "osm": "way/218184946",
+   "use": "COMO",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 12,
+   "x": 1368,
+   "z": -1853
+  },
+  {
+   "osm": "way/260288454",
+   "use": "COMO",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 11,
+   "x": 1335,
+   "z": 142
+  },
+  {
+   "osm": "way/256981082",
+   "use": "COMO",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 2,
+   "height": 9,
+   "x": 1009,
+   "z": 792
+  },
+  {
+   "osm": "way/260979247",
+   "use": "COMO",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 12,
+   "x": 111,
+   "z": 454
+  },
+  {
+   "osm": "way/245576700",
+   "use": "COMO",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 2,
+   "height": 7,
+   "x": -1054,
+   "z": 383
+  },
+  {
+   "osm": "way/263490220",
+   "use": "COMO",
+   "archetype": "apartment",
+   "style": "bauhaus",
+   "levels": 1,
+   "height": 4,
+   "x": -2299,
+   "z": -998
+  },
+  {
+   "osm": "way/263491068",
+   "use": "COMO",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 13,
+   "x": -2430,
+   "z": -843
+  },
+  {
+   "osm": "way/260469083",
+   "use": "COMO",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 12,
+   "x": 139,
+   "z": -1707
+  },
+  {
+   "osm": "way/218185052",
+   "use": "COMO",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 10,
+   "x": 1148,
+   "z": -2018
+  },
+  {
+   "osm": "way/224771150",
+   "use": "COMO",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 2,
+   "height": 9,
+   "x": -1991,
+   "z": -188
+  },
+  {
+   "osm": "way/256098993",
+   "use": "COMO",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 2,
+   "height": 7,
+   "x": -863,
+   "z": -2843
+  },
+  {
+   "osm": "way/49429835",
+   "use": "COMO",
+   "archetype": "prewarOffice",
+   "style": "chicago",
+   "levels": 7,
+   "height": 27,
+   "x": -1,
+   "z": -494
+  },
+  {
+   "osm": "way/256484448",
+   "use": "COMO",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 11,
+   "x": 977,
+   "z": -3381
+  },
+  {
+   "osm": "way/258676635",
+   "use": "COMO",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 10,
+   "x": -962,
+   "z": -4235
+  },
+  {
+   "osm": "way/256072711",
+   "use": "COMO",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 13,
+   "x": 990,
+   "z": 286
+  },
+  {
+   "osm": "way/288656679",
+   "use": "COMO",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 8,
+   "x": 2067,
+   "z": -3299
+  },
+  {
+   "osm": "way/267298361",
+   "use": "COMO",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 4,
+   "height": 14,
+   "x": 1535,
+   "z": -3146
+  },
+  {
+   "osm": "way/260354470",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 6,
+   "x": 347,
+   "z": -1756
+  },
+  {
+   "osm": "way/255967554",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 1,
+   "height": 5,
+   "x": 366,
+   "z": -2318
+  },
+  {
+   "osm": "way/261100108",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 6,
+   "x": -377,
+   "z": -2882
+  },
+  {
+   "osm": "way/274362628",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 6,
+   "x": 1689,
+   "z": -4067
+  },
+  {
+   "osm": "way/167489678",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 7,
+   "x": 187,
+   "z": -1950
+  },
+  {
+   "osm": "way/261142909",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 7,
+   "x": -640,
+   "z": -280
+  },
+  {
+   "osm": "way/255955783",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 10,
+   "x": -400,
+   "z": -2364
+  },
+  {
+   "osm": "way/132605503",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 12,
+   "x": -258,
+   "z": -2566
+  },
+  {
+   "osm": "way/224938555",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 13,
+   "x": 656,
+   "z": -2224
+  },
+  {
+   "osm": "way/256464141",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 11,
+   "x": 207,
+   "z": -2721
+  },
+  {
+   "osm": "way/260345827",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 10,
+   "x": -590,
+   "z": -3359
+  },
+  {
+   "osm": "way/256471159",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 10,
+   "x": -222,
+   "z": -2439
+  },
+  {
+   "osm": "way/261092378",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 6,
+   "x": 329,
+   "z": -2801
+  },
+  {
+   "osm": "way/274309452",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 1,
+   "height": 5,
+   "x": 1749,
+   "z": -4448
+  },
+  {
+   "osm": "way/149705535",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 7,
+   "x": -835,
+   "z": -511
+  },
+  {
+   "osm": "way/151827241",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 9,
+   "x": -185,
+   "z": -3117
+  },
+  {
+   "osm": "way/274299238",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 11,
+   "x": 1635,
+   "z": -4393
+  },
+  {
+   "osm": "way/165846551",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 8,
+   "x": -414,
+   "z": -1356
+  },
+  {
+   "osm": "way/261093432",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 8,
+   "x": -557,
+   "z": -3221
+  },
+  {
+   "osm": "way/256458237",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 7,
+   "x": -458,
+   "z": -2757
+  },
+  {
+   "osm": "way/261110195",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 10,
+   "x": -300,
+   "z": -3389
+  },
+  {
+   "osm": "way/243353716",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 7,
+   "x": 959,
+   "z": -1730
+  },
+  {
+   "osm": "way/256963178",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 1,
+   "height": 4,
+   "x": 435,
+   "z": -1311
+  },
+  {
+   "osm": "way/243353705",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 12,
+   "x": 886,
+   "z": -1866
+  },
+  {
+   "osm": "way/480545821",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 7,
+   "x": 1923,
+   "z": -3222
+  },
+  {
+   "osm": "way/274325061",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 7,
+   "x": 1989,
+   "z": -4364
+  },
+  {
+   "osm": "way/37574485",
+   "use": "IND",
+   "style": "brick",
+   "levels": 3,
+   "height": 11,
+   "x": -271,
+   "z": -2135
+  },
+  {
+   "osm": "way/274542527",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 7,
+   "x": 1756,
+   "z": -3323
+  },
+  {
+   "osm": "way/218146846",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 12,
+   "x": 844,
+   "z": -2779
+  },
+  {
+   "osm": "way/274546798",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 6,
+   "x": 1937,
+   "z": -3436
+  },
+  {
+   "osm": "way/224921804",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 9,
+   "x": -361,
+   "z": -3604
+  },
+  {
+   "osm": "way/243353707",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 7,
+   "x": 755,
+   "z": -1848
+  },
+  {
+   "osm": "way/267238657",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 7,
+   "x": 1293,
+   "z": -3353
+  },
+  {
+   "osm": "way/218262098",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 11,
+   "x": 955,
+   "z": -2131
+  },
+  {
+   "osm": "way/267447998",
+   "use": "IND",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 3,
+   "height": 12,
+   "x": 1520,
+   "z": -3856
+  },
+  {
+   "osm": "way/13495347",
+   "use": "COMH",
+   "style": "bauhaus",
+   "levels": 3,
+   "height": 12.2,
+   "x": -184,
+   "z": 1466
+  },
+  {
+   "osm": "way/272616971",
+   "use": "COMH",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 13,
+   "x": -2215,
+   "z": 783
+  },
+  {
+   "osm": "way/6978531",
+   "use": "COMH",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 12,
+   "x": -665,
+   "z": -497
+  },
+  {
+   "osm": "way/259977209",
+   "use": "COMH",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 4,
+   "height": 15,
+   "x": -229,
+   "z": -949
+  },
+  {
+   "osm": "way/197168818",
+   "use": "COMH",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 11,
+   "x": 247,
+   "z": 530
+  },
+  {
+   "osm": "way/225193466",
+   "use": "COMH",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 12,
+   "x": -2807,
+   "z": 686
+  },
+  {
+   "osm": "way/287109149",
+   "use": "COMH",
+   "archetype": "marinaHouse",
+   "style": "stucco",
+   "levels": 1,
+   "height": 3,
+   "x": -8535,
+   "z": -1500
+  },
+  {
+   "osm": "way/260142646",
+   "use": "COMH",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 5,
+   "height": 18,
+   "x": -324,
+   "z": -1075
+  },
+  {
+   "osm": "way/260359369",
+   "use": "COMH",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 12,
+   "x": -838,
+   "z": -3226
+  },
+  {
+   "osm": "way/256047641",
+   "use": "COMH",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 12,
+   "x": 13,
+   "z": -1071
+  },
+  {
+   "osm": "way/260921987",
+   "use": "COMH",
+   "archetype": "chinatown",
+   "style": "chinatown",
+   "levels": 2,
+   "height": 9,
+   "x": 559,
+   "z": 331
+  },
+  {
+   "osm": "way/259262596",
+   "use": "COMH",
+   "archetype": "chinatown",
+   "style": "chinatown",
+   "levels": 3,
+   "height": 12,
+   "x": 198,
+   "z": 110
+  },
+  {
+   "osm": "way/256877298",
+   "use": "COMH",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 2,
+   "height": 9,
+   "x": -575,
+   "z": 216
+  },
+  {
+   "osm": "way/148427243",
+   "use": "COMH",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 4,
+   "height": 14,
+   "x": -459,
+   "z": -194
+  },
+  {
+   "osm": "way/269303183",
+   "use": "COMH",
+   "archetype": "loft",
+   "style": "brick",
+   "levels": 2,
+   "height": 8,
+   "x": 567,
+   "z": -4471
+  },
+  {
+   "osm": "way/263523771",
+   "use": "COMH",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 3,
+   "height": 12,
+   "x": -2637,
+   "z": -833
+  },
+  {
+   "osm": "way/220338797",
+   "use": "COMH",
+   "archetype": "rowhouse",
+   "style": "victorian",
+   "levels": 2,
+   "height": 8,
+   "x": -3548,
+   "z": -2657
+  },
+  {
+   "osm": "way/256731472",
+   "use": "COMH",
+   "archetype": "chinatown",
+   "style": "chinatown",
+   "levels": 3,
+   "height": 13,
+   "x": 262,
+   "z": 322
+  },
+  {
+   "osm": "way/442690691",
+   "use": "COMH",
+   "archetype": "apartment",
+   "style": "sfapartment",
+   "levels": 4,
+   "height": 17,
+   "x": 93,
+   "z": -1572
+  },
+  {
+   "osm": "way/7046749",
+   "use": "COMH",
+   "style": "sfapartment",
+   "levels": 3,
+   "height": 12,
+   "x": -2745,
+   "z": -106
+  }
+ ]
+}

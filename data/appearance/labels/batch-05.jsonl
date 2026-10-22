@@ -1,0 +1,15 @@
+{"osm":"way/260482785","usable":true,"photo":"way-260482785-01.jpg","style":"contemporary","main":"black","accent":"terracotta","confidence":"low","note":"Dark five-storey block, orange window trim; van hides ground floor"}
+{"osm":"way/243357060","usable":true,"photo":"way-243357060-01.jpg","style":"brickLoft","main":"black","accent":"red","confidence":"high","note":"Three-storey dark warehouse, big industrial windows, red awnings"}
+{"osm":"way/260925347","usable":true,"photo":"way-260925347-01.jpg","style":"edwardianCommercial","main":"white","accent":"none","confidence":"low","note":"White fire-escape storefront block between the lines; neighbouring low building unlabelled"}
+{"osm":"way/93817362","usable":true,"photo":"way-93817362-02.jpg","style":"midcentury","main":"white","accent":"none","confidence":"medium","note":"Two-storey white box with steel-framed windows, flat roof"}
+{"osm":"way/218184943","usable":true,"photo":"way-218184943-01.jpg","style":"contemporary","main":"charcoal","accent":"brown","confidence":"medium","note":"Five-storey mixed-panel residential block, dark cornice trim"}
+{"osm":"way/262602115","usable":true,"photo":"way-262602115-01.jpg","style":"edwardianCommercial","main":"paleBlue","accent":"white","confidence":"high","note":"Four-storey bay-fronted stucco house, white trim, garage at ground"}
+{"osm":"way/972366451","usable":false,"reason":"garage door and grass only; no street wall in either photo"}
+{"osm":"way/32611662","usable":true,"photo":"way-32611662-02.jpg","style":"edwardianCommercial","main":"cream","accent":"none","confidence":"medium","note":"Five-storey cream stucco block with fire escapes, storefront base"}
+{"osm":"way/71739091","usable":true,"photo":"way-71739091-01.jpg","style":"edwardianCommercial","main":"redBrick","accent":"cream","confidence":"high","note":"Three-storey brick block, dentil cornice, cream window sills"}
+{"osm":"way/276535404","usable":false,"reason":"lines span two adjoining houses in both photos; no single wall"}
+{"osm":"way/218146847","usable":false,"reason":"street trees cover the brick building in both photos"}
+{"osm":"way/148427248","usable":false,"reason":"tree and parked cars hide the shopfronts in both photos"}
+{"osm":"way/1487160484","usable":true,"photo":"way-1487160484-01.jpg","style":"classicalOffice","main":"buff","accent":"none","confidence":"medium","note":"Tall setback tower, tan stone with piers, stepped crown"}
+{"osm":"way/260524899","usable":false,"reason":"signs and an awning fill the view; no single street wall"}
+{"osm":"way/46264105","usable":false,"reason":"two adjoining buildings and trees fill the lines; no single wall"}

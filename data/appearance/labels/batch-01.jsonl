@@ -1,0 +1,15 @@
+{"osm":"way/288672425","usable":false,"reason":"one-storey fenced shed and cars; no multi-storey street wall"}
+{"osm":"way/257972660","usable":true,"photo":"way-257972660-01.jpg","style":"edwardianCommercial","main":"paleGreen","accent":"teal","confidence":"low","note":"3-storey mural-covered facade, teal window frames, mural hides wall colour"}
+{"osm":"way/256086588","usable":true,"photo":"way-256086588-02.jpg","style":"brickLoft","main":"redBrick","accent":"none","confidence":"medium","note":"3-storey red brick warehouse, arched windows, tree in front"}
+{"osm":"way/261095638","usable":true,"photo":"way-261095638-01.jpg","style":"retailBox","main":"teal","accent":"none","confidence":"medium","note":"Two-storey navy garage with signage, flat roof, plain wall"}
+{"osm":"way/257826446","usable":false,"reason":"dark fence and trees; no building wall in either photo"}
+{"osm":"way/264803420","usable":false,"reason":"trees cover the building in both photos"}
+{"osm":"way/273191217","usable":true,"photo":"way-273191217-01.jpg","style":"edwardianCommercial","main":"cream","accent":"none","confidence":"medium","note":"4-storey cream stucco block with bay windows, retail ground floor"}
+{"osm":"way/264335378","usable":false,"reason":"two different buildings fill the space between the lines"}
+{"osm":"way/37126449","usable":true,"photo":"way-37126449-02.jpg","style":"contemporary","main":"white","accent":"darkGrey","confidence":"high","note":"Mid-rise white render, dark glazed bands, ground-floor glass"}
+{"osm":"way/206623943","usable":true,"photo":"way-206623943-02.jpg","style":"contemporary","main":"midGrey","accent":"darkGrey","confidence":"medium","note":"4-storey grey flat-faced mid-rise, punched windows, dark trim"}
+{"osm":"way/257004437","usable":true,"photo":"way-257004437-01.jpg","style":"contemporary","main":"salmon","accent":"cream","confidence":"medium","note":"6-storey salmon and cream mid-rise, balconies, garage ground floor"}
+{"osm":"way/26765512","usable":true,"photo":"way-26765512-02.jpg","style":"concrete","main":"lightGrey","accent":"none","confidence":"low","note":"Exposed concrete parking structure, tree in front"}
+{"osm":"way/263279403","usable":true,"photo":"way-263279403-01.jpg","style":"midcentury","main":"sand","accent":"cream","confidence":"medium","note":"4-storey plain office block, ribbon windows, flat roof"}
+{"osm":"way/258127161","usable":false,"reason":"trees and a low building cover the facade in both photos"}
+{"osm":"way/148666771","usable":true,"photo":"way-148666771-02.jpg","style":"edwardianCommercial","main":"cream","accent":"none","confidence":"medium","note":"3-storey cream block, green storefront awnings, flat cornice"}
