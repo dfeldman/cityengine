@@ -317,8 +317,9 @@ const DRESSERS: Partial<Record<StyleId, (r: () => number, levels: number) => { d
       panel: 0.4 + r() * 0.3,
       shops: weighted<Dress['shops']>(r, [['all', 35], ['one', 30], ['none', 35]]),
     }
-    const paint = r() < 0.35 ? weighted(r, [['#3a3b3e', 3], ['#5b5d60', 2], ['#8a6a4f', 1.5], ['#2f4f5f', 1]]) : undefined
-    return { dress, groundPaint: paint }
+    // (no painted base: a modern block's ground storey is a glazed front, and the paint tinted its glass — a charcoal
+    // shopfront read as a black hole, owner, 2026-10-21)
+    return { dress }
   },
 }
 
@@ -512,7 +513,15 @@ export function planFacade(
  */
 export function planWall(plan: FacadePlan, wallLength: number, seed: number,
   /** this wall faces a street (and how far it is to the kerb): where a dressed building puts its ornament */
-  street: { pavement?: number | null; main?: boolean } | null = null): WallPlan {
+  street: { pavement?: number | null; main?: boolean } | null = null,
+  /**
+   * Which of the building's features this wall carries (render/buildings.ts `fronts`). `front`: the narrow street front
+   * a Victorian's one bay window and gable go on; `face`: a wall the street sees, where an apartment block hangs its fire
+   * escape and its bay stacks. Every wall did both, so a Victorian wore 4.8 gables and 3.2 bays where a real one has one
+   * of each, and the gables over its back and side walls stood as roofs in mid-air (KIT-HARVEST §5.1). Both default to
+   * true for a wall planned alone.
+   */
+  role: { front: boolean; face: boolean } = { front: true, face: true }): WallPlan {
   const st = style(plan.style)
   const r = rng(seed)
   const cells: Cell[] = []
@@ -621,7 +630,7 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
    * is remembered by, and nowhere else has it.
    */
   // (not on a hospital, a school, a church: St Mary's and CPMC wore the tenement's ladders, 2026-10-04)
-  if (st.features?.fireEscape && !plan.institution && bays >= 3 && plan.storeys.length >= 3) {
+  if (st.features?.fireEscape && role.face && !plan.institution && bays >= 3 && plan.storeys.length >= 3) {
     const b0 = Math.floor((bays - 2) / 2)
     const fx0 = margin + b0 * bayW
     const fx1 = fx0 + 2 * bayW
@@ -640,7 +649,7 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
    * …and the apartment block's: bays in stacks up a wide front, two window bays each with a flat bay between
    * (the fire escape's, when there is one), from the first floor up — the ground storey is the entrance.
    */
-  if (st.features?.bayWindows === 'stacks' && !plan.institution && bays >= 4 && plan.storeys.length >= 3) {
+  if (st.features?.bayWindows === 'stacks' && role.face && !plan.institution && bays >= 4 && plan.storeys.length >= 3) {
     const esc = st.features.fireEscape && bays >= 3 ? Math.floor((bays - 2) / 2) : -99
     for (let b = 0; b + 2 <= bays; b += 3) {
       if (b <= esc + 1 && b + 2 > esc) continue          // not across the fire escape
@@ -650,7 +659,7 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
       }
     }
   }
-  if (st.features?.bayWindows === true && wallLength <= 9.5 && bays >= 2) {
+  if (st.features?.bayWindows === true && role.front && wallLength <= 9.5 && bays >= 2) {
     const n = bays >= 3 ? 2 : 1
     for (const s of plan.storeys) {
       features.push({ kind: 'bay', y0: s.y0 + (s.kind === 'ground' ? 0.4 : 0), y1: s.y1, depth: 0.9,
@@ -694,7 +703,7 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
   }
   if (plan.dress) dressWall(plan, plan.dress, features, wallLength, margin, bayW, bays, street)
   // a Victorian's gable, or its false front, rising above the cornice on the street wall
-  if (plan.top === 'gable' && wallLength <= 9.5) {
+  if (plan.top === 'gable' && role.front && wallLength <= 9.5) {
     features.push({ kind: 'gable', y0: plan.height + st.cornice.height * 0.35, y1: plan.height + 1.9,
       depth: 0.05, colour: plan.palette.wall })
   }

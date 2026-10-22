@@ -187,6 +187,8 @@ function wall(
   arches: Arch[] = [],
   /** how far the building runs back behind this wall's middle (a front gable's roof may not run further) */
   depth = Infinity,
+  /** which of the building's features this wall carries (facade.ts planWall `role`; `fronts` below) */
+  role: { front: boolean; face: boolean } = { front: false, face: false },
 ): void {
   const dx = b.x - a.x
   const dz = b.z - a.z
@@ -198,7 +200,7 @@ function wall(
   const nx = uz
   const nz = -ux
 
-  const w = planWall(plan, len, seed, street)
+  const w = planWall(plan, len, seed, street, role)
   const tint = rgb(plan.palette.wall)
   // the ground storey's own paint, where the palette gives one: its cells are the ones drawn with the style's
   // ground element (a shopfront, an arcade, a stoop, a glazed front) rather than the wall's
@@ -722,9 +724,11 @@ export function buildBuilding(
   /** the arches cut through each outer wall i by passages (render/passages.ts `passageArches`) */
   arches?: (i: number) => Arch[],
 ): void {
+  const streets = ring.map((_, i) => facesStreet?.(i) ?? null)
+  const roles = fronts(ring, streets)
   for (let i = 0; i < ring.length; i++) {
     wall(out, ring[i], ring[(i + 1) % ring.length], plan, atlas, seed ^ (i * 0x9e3779b1), baseY,
-      facesStreet?.(i) ?? null, arches?.(i) ?? [], depthBehind(ring, i))
+      streets[i], arches?.(i) ?? [], depthBehind(ring, i), roles[i])
   }
   // the court walls: a clockwise ring's outward normal (uz, −ux) points into the court
   holes.forEach((h, k) => {
@@ -756,6 +760,25 @@ export function buildBuilding(
       dormerUV: uvFor(atlas, `${artOf(plan.style)}/dormer`, 0) ?? uvFor(atlas, `${artOf(plan.style)}/window`, 0),
     })
   }
+}
+
+/**
+ * Which walls carry a building's front (facade.ts planWall `role`). The narrow front — a Victorian's bay window and
+ * gable — is ONE wall: the longest street wall short enough to be a lot's front (≤ 9.5 m, the rule planWall keeps),
+ * preferring a main street on a corner lot. The walls a street sees carry what an apartment block shows the street,
+ * its fire escape and bay stacks. A building no street was found for (set back, or the street index missed it) keeps
+ * one of each on its longest wall rather than losing them, or wearing them all round as before.
+ */
+export function fronts(ring: { x: number; z: number }[], streets: (StreetFacing | null)[]): { front: boolean; face: boolean }[] {
+  const len = (i: number): number => Math.hypot(ring[(i + 1) % ring.length].x - ring[i].x, ring[(i + 1) % ring.length].z - ring[i].z)
+  const idx = ring.map((_, i) => i)
+  const best = (xs: number[]): number => xs.length === 0 ? -1
+    : xs.reduce((a, b) => ((streets[b]?.main ? 1 : 0) - (streets[a]?.main ? 1 : 0) || len(b) - len(a)) > 0 ? b : a)
+  const anyStreet = streets.some((s) => s !== null)
+  const narrow = idx.filter((i) => len(i) <= 9.5 && len(i) >= 3)
+  const front = anyStreet ? best(narrow.filter((i) => streets[i] !== null)) : best(narrow)
+  const longest = best(idx)
+  return idx.map((i) => ({ front: i === front, face: anyStreet ? streets[i] !== null : i === longest }))
 }
 
 /** A rectangular footprint, which is what the showcase uses and what most of OSM looks like anyway. */
