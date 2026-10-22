@@ -140,7 +140,9 @@ export class Menu {
       if (i === lv.focus) { li.classList.add('focus'); if ('choices' in it && it.note) note = it.note }
       if (!('info' in it)) {
         li.setAttribute('role', 'menuitem')
-        li.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse' && lv.focus !== i) { lv.focus = i; this.render() } })
+        // the highlight moves, the rows stay: rebuilding the list here put a new row under a press already begun on
+        // the old one, so the click never arrived (a pointer that lands and presses in the same instant)
+        li.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse' && lv.focus !== i) this.highlight(i) })
         li.addEventListener('click', () => { lv.focus = i; this.activate(1) })
       }
       this.list.appendChild(li)
@@ -148,6 +150,18 @@ export class Menu {
     this.noteEl.textContent = note
     this.noteEl.hidden = !note
     this.list.children[lv.focus]?.scrollIntoView({ block: 'nearest' })
+  }
+
+  /** focus row `i` in place, without rebuilding the list */
+  private highlight(i: number): void {
+    const lv = this.level
+    this.list.children[lv.focus]?.classList.remove('focus')
+    lv.focus = i
+    this.list.children[i]?.classList.add('focus')
+    const it = this.items[i]
+    const note = it && 'choices' in it ? it.note ?? '' : ''
+    this.noteEl.textContent = note
+    this.noteEl.hidden = !note
   }
 
   private move(d: number): void {
