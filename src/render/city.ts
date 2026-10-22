@@ -39,6 +39,7 @@ import { facesStreet, pavementDepth, streetIndex, type StreetIndex } from '../ci
 import { region, type Region } from '../city/region.ts'
 import { pointAlong } from '../sim/navigate.ts'
 import { waterMaterial } from './water-material.ts'
+import { LOOKS_ON, lookFor } from '../city/appearance.ts'
 import { planFacade, type StyleId } from '../city/facade.ts'
 import { Terrain, type PackedTerrain } from '../city/terrain.ts'
 import { Carriageways } from '../city/carriageways.ts'
@@ -4230,12 +4231,15 @@ export class City {
         pad = this.terrain.heightAt(cx / ring.length, cz / ring.length)
         if (ZCHECK) zcheck(b.id, foot, buildingFooting(ring, (x, z) => this.terrain.heightAt(x, z)).foot)
       }
-      const plan = planFacade(b.style, b.id, { levels: b.levels, height: b.height, minHeight: b.minHeight, stretch: b.stretch, noShops: b.noShops },
-        b.palette ? [b.palette] : this.region.palettes[b.style])
-      const out = byStyle.get(b.style) ?? new MeshBuilder()
-      byStyle.set(b.style, out)
+      // (`?labels=1`: a building with a street-photo label is drawn as the label says — src/city/appearance.ts)
+      const look = LOOKS_ON ? lookFor(b.id) : null
+      const styleId = look?.style ?? b.style
+      const plan = planFacade(styleId, b.id, { levels: b.levels, height: b.height, minHeight: b.minHeight, stretch: b.stretch, noShops: b.noShops },
+        b.palette ? [b.palette] : this.region.palettes[styleId], look ?? undefined)
+      const out = byStyle.get(styleId) ?? new MeshBuilder()
+      byStyle.set(styleId, out)
       if (this.pickable) {
-        const spans = (byStyleSpans.get(b.style) ?? byStyleSpans.set(b.style, []).get(b.style)!)
+        const spans = (byStyleSpans.get(styleId) ?? byStyleSpans.set(styleId, []).get(styleId)!)
         spans.push([out.indices.length / 3, b.id])
       }
       buildBuilding(out, ring, plan, this.atlas, b.id, 0.16 + foot,

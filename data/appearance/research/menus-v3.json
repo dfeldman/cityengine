@@ -1,0 +1,363 @@
+{
+ "about": "Appearance schema v3 (2026-10-22): one question per renderer parameter (src/city/facade.ts Dress, the style's art and palette), so a label renders directly. Every attribute allows cannot_tell. `type` is the building's overall look, worded visually; its `style` map gives the renderer style each answer draws with.",
+ "colours": {
+  "white": "#f2f0ea",
+  "cream": "#e9dfc8",
+  "sand": "#d8c6a0",
+  "buff": "#c9a27a",
+  "lightGrey": "#c9c7c1",
+  "midGrey": "#9a9892",
+  "charcoal": "#4a4a48",
+  "redBrick": "#9a4a36",
+  "brown": "#6d4a35",
+  "salmon": "#d9a08a",
+  "paleYellow": "#e8d89a",
+  "paleBlue": "#a9bccb",
+  "paleGreen": "#b4c2a8",
+  "teal": "#3f6a6e",
+  "glassBlue": "#6d8796",
+  "black": "#262626",
+  "navy": "#1f2f4f",
+  "blue": "#3d6fa8",
+  "green": "#3f7a4a",
+  "darkGreen": "#24402c",
+  "yellow": "#e2c13a",
+  "orange": "#d9782e",
+  "red": "#a8322b",
+  "pink": "#d99aa8",
+  "purple": "#6e4f86"
+ },
+ "attributes": {
+  "usable": {
+   "values": [
+    "yes",
+    "no",
+    "several_buildings"
+   ],
+   "says": "yes: the target (between the red lines; its mapped size is given in your task) is clearly visible \u2014 most of its street wall and its full height. several_buildings: what lies between the lines is clearly two or more different buildings (different heights, colours or styles) of which none is the target alone. no: hidden by trees, vehicles, scaffolding, or not visible."
+  },
+  "type": {
+   "values": [
+    "painted_wood_rowhouse",
+    "wood_or_stucco_flats",
+    "stucco_house_with_garage",
+    "bay_window_apartment_block",
+    "classic_stone_apartment_hotel",
+    "brick_apartment_block",
+    "spanish_stucco_apartments",
+    "boxy_modern_apartments",
+    "sleek_modern_apartments",
+    "shops_with_flats_above",
+    "one_storey_shop_building",
+    "brick_warehouse_loft",
+    "modern_commercial_box",
+    "classic_office_block",
+    "glass_tower",
+    "chinatown_building",
+    "other",
+    "cannot_tell"
+   ],
+   "says": {
+    "painted_wood_rowhouse": "a narrow 2-3 storey painted wooden row house: one bay window, ornate trim, a gable or false front, stairs up to the door",
+    "wood_or_stucco_flats": "a 2-3 storey house or flats, wood or stucco, square or rounded bays, a simpler cornice, often a garage under",
+    "stucco_house_with_garage": "a 1-3 storey smooth stucco house with a garage at street level, arched or picture windows",
+    "bay_window_apartment_block": "a 3-7 storey apartment block with stacks of bay windows up the front",
+    "classic_stone_apartment_hotel": "a 4-9 storey cream/buff stone, terracotta or stucco apartment block with a flat ornamented front, heavy cornice, often an arched entry",
+    "brick_apartment_block": "a 4-9 storey red, brown or buff brick apartment block, flat front, often fire escapes",
+    "spanish_stucco_apartments": "a 3-6 storey stucco apartment block with arches, iron balconettes, tile accents",
+    "boxy_modern_apartments": "a plain modern apartment box: aluminium windows, garages under, sometimes colour panels or balconies",
+    "sleek_modern_apartments": "a newer apartment block: large glass, panels or timber, box bays, glass balconies",
+    "shops_with_flats_above": "2-4 storeys of flats (wood or stucco, often bays) over a row of shops",
+    "one_storey_shop_building": "one or two storeys of shops with a plain front and a sign band or raised sign panel",
+    "brick_warehouse_loft": "a brick warehouse, loft or workshop: big industrial windows, plain parapet",
+    "modern_commercial_box": "a plain modern commercial or office box: ribbon or aluminium windows, panels or render",
+    "classic_office_block": "a pre-war office, bank or hotel in stone or terracotta: piers, big windows, a deep cornice",
+    "glass_tower": "a high-rise with a glass curtain wall",
+    "chinatown_building": "a Chinatown building: painted balconies, tiled eaves, red, green and gold",
+    "other": "none of these fits"
+   },
+   "style": {
+    "painted_wood_rowhouse": "victorian",
+    "wood_or_stucco_flats": "edwardian",
+    "stucco_house_with_garage": "stucco",
+    "bay_window_apartment_block": "sfapartment",
+    "classic_stone_apartment_hotel": "aptclassical",
+    "brick_apartment_block": "aptbrick",
+    "spanish_stucco_apartments": "aptmed",
+    "boxy_modern_apartments": "aptmodern",
+    "sleek_modern_apartments": "aptluxe",
+    "shops_with_flats_above": "shopflats",
+    "one_storey_shop_building": "storefront",
+    "brick_warehouse_loft": "brick",
+    "modern_commercial_box": "bauhaus",
+    "classic_office_block": "chicago",
+    "glass_tower": "skyscraper",
+    "chinatown_building": "chinatown",
+    "other": null
+   }
+  },
+  "wall_colour": {
+   "values": [
+    "white",
+    "cream",
+    "sand",
+    "buff",
+    "lightGrey",
+    "midGrey",
+    "charcoal",
+    "redBrick",
+    "brown",
+    "salmon",
+    "paleYellow",
+    "paleBlue",
+    "paleGreen",
+    "teal",
+    "glassBlue",
+    "black",
+    "navy",
+    "blue",
+    "green",
+    "darkGreen",
+    "yellow",
+    "orange",
+    "red",
+    "pink",
+    "purple",
+    "cannot_tell"
+   ],
+   "says": "the main wall colour of the upper floors, ignoring windows, trim and signs; a shaded white wall is still white"
+  },
+  "trim_colour": {
+   "values": [
+    "white",
+    "cream",
+    "sand",
+    "buff",
+    "lightGrey",
+    "midGrey",
+    "charcoal",
+    "redBrick",
+    "brown",
+    "salmon",
+    "paleYellow",
+    "paleBlue",
+    "paleGreen",
+    "teal",
+    "glassBlue",
+    "black",
+    "navy",
+    "blue",
+    "green",
+    "darkGreen",
+    "yellow",
+    "orange",
+    "red",
+    "pink",
+    "purple",
+    "same_as_wall",
+    "cannot_tell"
+   ],
+   "says": "the colour of the cornice, window frames and other trim, if it differs from the wall"
+  },
+  "ground_colour": {
+   "values": [
+    "white",
+    "cream",
+    "sand",
+    "buff",
+    "lightGrey",
+    "midGrey",
+    "charcoal",
+    "redBrick",
+    "brown",
+    "salmon",
+    "paleYellow",
+    "paleBlue",
+    "paleGreen",
+    "teal",
+    "glassBlue",
+    "black",
+    "navy",
+    "blue",
+    "green",
+    "darkGreen",
+    "yellow",
+    "orange",
+    "red",
+    "pink",
+    "purple",
+    "same_as_wall",
+    "cannot_tell"
+   ],
+   "says": "the ground floor's wall colour, if it is painted differently from the floors above"
+  },
+  "surface": {
+   "values": [
+    "wood_siding",
+    "shingle",
+    "stucco",
+    "brick",
+    "stone",
+    "panels",
+    "glass",
+    "cannot_tell"
+   ],
+   "says": {
+    "wood_siding": "horizontal wood boards: thin parallel horizontal lines across the wall, often painted",
+    "shingle": "wood shingles",
+    "stucco": "smooth or textured render with no lines",
+    "brick": "brick, painted or not: a grid of small joints",
+    "stone": "stone or terracotta blocks or ornament",
+    "panels": "large flat panels with visible joints (metal, fibre-cement, concrete)",
+    "glass": "mostly glass curtain wall"
+   }
+  },
+  "windows": {
+   "values": [
+    "tall_sash",
+    "arched",
+    "wide_picture",
+    "ribbon",
+    "grid",
+    "cannot_tell"
+   ],
+   "says": {
+    "tall_sash": "individual tall rectangular windows, taller than wide",
+    "arched": "windows with round-arched tops",
+    "wide_picture": "individual windows wider than tall, large single panes",
+    "ribbon": "continuous horizontal bands of windows",
+    "grid": "large industrial or office windows divided into many small panes"
+   }
+  },
+  "ground_floor": {
+   "values": [
+    "shops_all",
+    "one_shop",
+    "garages",
+    "entrance_only",
+    "blank",
+    "cannot_tell"
+   ],
+   "says": {
+    "shops_all": "the whole street frontage is shopfronts",
+    "one_shop": "one shopfront (or a shop and a door), the rest is wall, entrance or garage",
+    "garages": "garage doors take most of the ground floor",
+    "entrance_only": "just a front door or lobby and ordinary windows",
+    "blank": "blank wall, loading doors or nothing at street level"
+   }
+  },
+  "top": {
+   "values": [
+    "bracketed_cornice",
+    "plain_cornice",
+    "brick_corbels",
+    "plain_parapet",
+    "sign_panel",
+    "gable",
+    "roof_overhang",
+    "cannot_tell"
+   ],
+   "says": {
+    "bracketed_cornice": "a projecting cornice held on visible brackets",
+    "plain_cornice": "a projecting cornice or moulding band without brackets",
+    "brick_corbels": "brick courses stepping out under the top",
+    "plain_parapet": "the wall simply stops with a thin coping",
+    "sign_panel": "a raised panel at the middle of the top of the front, above the roofline",
+    "gable": "a pointed gable, or a false front hiding one",
+    "roof_overhang": "a flat roof slab overhanging the wall"
+   }
+  },
+  "bays": {
+   "values": [
+    "none",
+    "one_stack",
+    "several_stacks",
+    "cannot_tell"
+   ],
+   "says": "bay windows projecting from the upper floors: none; one vertical stack; two or more stacks"
+  },
+  "bay_shape": {
+   "values": [
+    "angled",
+    "square",
+    "rounded",
+    "none",
+    "cannot_tell"
+   ],
+   "says": "the shape of the bay windows, if any"
+  },
+  "balconies": {
+   "values": [
+    "none",
+    "balconettes",
+    "projecting",
+    "cannot_tell"
+   ],
+   "says": "balconettes = shallow railings at windows; projecting = platforms you can stand on"
+  },
+  "fire_escape": {
+   "values": [
+    "no",
+    "yes",
+    "cannot_tell"
+   ],
+   "says": "metal fire escape stairs/landings on the visible street wall"
+  },
+  "awnings": {
+   "values": [
+    "none",
+    "some",
+    "cannot_tell"
+   ],
+   "says": "fabric or metal awnings or canopies over the ground floor"
+  },
+  "awning_colour": {
+   "values": [
+    "white",
+    "cream",
+    "sand",
+    "buff",
+    "lightGrey",
+    "midGrey",
+    "charcoal",
+    "redBrick",
+    "brown",
+    "salmon",
+    "paleYellow",
+    "paleBlue",
+    "paleGreen",
+    "teal",
+    "glassBlue",
+    "black",
+    "navy",
+    "blue",
+    "green",
+    "darkGreen",
+    "yellow",
+    "orange",
+    "red",
+    "pink",
+    "purple",
+    "none",
+    "cannot_tell"
+   ],
+   "says": "the main awning colour, if any"
+  },
+  "piers": {
+   "values": [
+    "no",
+    "yes",
+    "cannot_tell"
+   ],
+   "says": "vertical piers or pilasters running up the front between the window bays"
+  },
+  "colour_panels": {
+   "values": [
+    "no",
+    "yes",
+    "cannot_tell"
+   ],
+   "says": "on a modern front: groups of windows set in panels of a different, often bright, colour"
+  }
+ }
+}

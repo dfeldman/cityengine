@@ -13,10 +13,14 @@ prints their agreement with each other: self-consistency, which needs no referen
 import json
 import sys
 
-ATTRS = ['usable', 'storeys', 'shops', 'awnings', 'balconies', 'bay_windows', 'fire_escape', 'main_colour', 'era', 'form', 'material', 'style']
+# (the questions are whatever the reference answered: v1, v2 and v3 schemas all score)
+ATTRS: list[str] = []
+NOT_ATTRS = {'osm', 'best', 'conf', 'note', 'seen'}
 FAMILY = {'white': 'light', 'cream': 'light', 'sand': 'light', 'lightGrey': 'light', 'buff': 'warm', 'salmon': 'warm',
           'paleYellow': 'warm', 'brown': 'warm', 'redBrick': 'brick', 'midGrey': 'dark', 'charcoal': 'dark', 'black': 'dark',
-          'paleBlue': 'cool', 'paleGreen': 'cool', 'teal': 'cool', 'glassBlue': 'cool'}
+          'paleBlue': 'cool', 'paleGreen': 'cool', 'teal': 'cool', 'glassBlue': 'cool',
+          'navy': 'blue', 'blue': 'blue', 'green': 'green', 'darkGreen': 'green', 'yellow': 'yellow', 'orange': 'red',
+          'red': 'red', 'pink': 'red', 'purple': 'blue', 'same_as_wall': 'same', 'none': 'none'}
 ST = {'1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8+': 8}
 NA = ('cannot_tell', None, '')
 
@@ -37,7 +41,7 @@ def load(p):
 
 
 def close(a, k, g):
-    if k == 'main_colour':
+    if k.endswith('colour'):
         return FAMILY.get(g) is not None and FAMILY.get(g) == FAMILY.get(a)
     if k == 'storeys':
         return g in ST and a in ST and abs(ST[g] - ST[a]) <= 1
@@ -84,6 +88,10 @@ def agree(a, b, name):
 
 if __name__ == '__main__':
     gold = load(sys.argv[1])
+    for r in gold.values():
+        for k in r:
+            if k not in NOT_ATTRS and k not in ATTRS:
+                ATTRS.append(k)
     runs = [(p, load(p)) for p in sys.argv[2:]]
     for p, r in runs:
         score(gold, r, p)

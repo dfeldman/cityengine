@@ -1,0 +1,467 @@
+{
+ "way/258922186": {
+  "frontage": 8,
+  "depth": 23,
+  "height": 10
+ },
+ "way/261560967": {
+  "frontage": 8,
+  "depth": 16,
+  "height": 12
+ },
+ "way/262595907": {
+  "frontage": 7,
+  "depth": 23,
+  "height": 7
+ },
+ "way/262680095": {
+  "frontage": 7,
+  "depth": 14,
+  "height": 11
+ },
+ "way/265459916": {
+  "frontage": 9,
+  "depth": 15,
+  "height": 9
+ },
+ "way/286666724": {
+  "frontage": 13,
+  "depth": 19,
+  "height": 7
+ },
+ "way/273522891": {
+  "frontage": 7,
+  "depth": 11,
+  "height": 9
+ },
+ "way/258821918": {
+  "frontage": 8,
+  "depth": 24,
+  "height": 10
+ },
+ "way/264356949": {
+  "frontage": 12,
+  "depth": 29,
+  "height": 12
+ },
+ "way/262766954": {
+  "frontage": 8,
+  "depth": 17,
+  "height": 12
+ },
+ "way/262435093": {
+  "frontage": 8,
+  "depth": 15,
+  "height": 10
+ },
+ "way/257978957": {
+  "frontage": 10,
+  "depth": 24,
+  "height": 9
+ },
+ "way/263567848": {
+  "frontage": 7,
+  "depth": 15,
+  "height": 10
+ },
+ "way/263350117": {
+  "frontage": 14,
+  "depth": 25,
+  "height": 12
+ },
+ "way/274436185": {
+  "frontage": 11,
+  "depth": 18,
+  "height": 9
+ },
+ "way/266220301": {
+  "frontage": 8,
+  "depth": 12,
+  "height": 9
+ },
+ "way/206582186": {
+  "frontage": 9,
+  "depth": 23,
+  "height": 14
+ },
+ "way/268668260": {
+  "frontage": 11,
+  "depth": 12,
+  "height": 12
+ },
+ "way/262406504": {
+  "frontage": 19,
+  "depth": 20,
+  "height": 11
+ },
+ "way/197614709": {
+  "frontage": 18,
+  "depth": 23,
+  "height": 10
+ },
+ "way/262458828": {
+  "frontage": 27,
+  "depth": 29,
+  "height": 12
+ },
+ "way/262265255": {
+  "frontage": 22,
+  "depth": 27,
+  "height": 13
+ },
+ "way/71504444": {
+  "frontage": 8,
+  "depth": 24,
+  "height": 16
+ },
+ "way/256997181": {
+  "frontage": 15,
+  "depth": 42,
+  "height": 13
+ },
+ "way/288656665": {
+  "frontage": 13,
+  "depth": 23,
+  "height": 12
+ },
+ "way/287794853": {
+  "frontage": 11,
+  "depth": 32,
+  "height": 16
+ },
+ "way/264335376": {
+  "frontage": 9,
+  "depth": 23,
+  "height": 15
+ },
+ "way/256764489": {
+  "frontage": 11,
+  "depth": 12,
+  "height": 12
+ },
+ "way/272604446": {
+  "frontage": 16,
+  "depth": 40,
+  "height": 12
+ },
+ "way/288563072": {
+  "frontage": 24,
+  "depth": 36,
+  "height": 15
+ },
+ "way/259944364": {
+  "frontage": 24,
+  "depth": 42,
+  "height": 11
+ },
+ "way/259084775": {
+  "frontage": 15,
+  "depth": 38,
+  "height": 18
+ },
+ "way/260494846": {
+  "frontage": 15,
+  "depth": 30,
+  "height": 12
+ },
+ "way/259228669": {
+  "frontage": 10,
+  "depth": 27,
+  "height": 14
+ },
+ "way/262074928": {
+  "frontage": 21,
+  "depth": 24,
+  "height": 15
+ },
+ "way/263268096": {
+  "frontage": 8,
+  "depth": 32,
+  "height": 14
+ },
+ "way/259974353": {
+  "frontage": 12,
+  "depth": 24,
+  "height": 24
+ },
+ "way/6886365": {
+  "frontage": 30,
+  "depth": 32,
+  "height": 16
+ },
+ "way/259977211": {
+  "frontage": 15,
+  "depth": 25,
+  "height": 14
+ },
+ "way/259736423": {
+  "frontage": 13,
+  "depth": 20,
+  "height": 16
+ },
+ "way/273359024": {
+  "frontage": 15,
+  "depth": 30,
+  "height": 8
+ },
+ "way/263277937": {
+  "frontage": 16,
+  "depth": 46,
+  "height": 12
+ },
+ "way/253254850": {
+  "frontage": 18,
+  "depth": 39,
+  "height": 7
+ },
+ "way/262419179": {
+  "frontage": 17,
+  "depth": 24,
+  "height": 12
+ },
+ "way/273505881": {
+  "frontage": 21,
+  "depth": 30,
+  "height": 5
+ },
+ "way/158804450": {
+  "frontage": 20,
+  "depth": 30,
+  "height": 7
+ },
+ "way/262128027": {
+  "frontage": 20,
+  "depth": 20,
+  "height": 10
+ },
+ "way/262437666": {
+  "frontage": 15,
+  "depth": 20,
+  "height": 12
+ },
+ "way/173886725": {
+  "frontage": 15,
+  "depth": 24,
+  "height": 7
+ },
+ "way/273299364": {
+  "frontage": 24,
+  "depth": 39,
+  "height": 9
+ },
+ "way/263882693": {
+  "frontage": 25,
+  "depth": 32,
+  "height": 12
+ },
+ "way/260329411": {
+  "frontage": 20,
+  "depth": 27,
+  "height": 12
+ },
+ "way/132605465": {
+  "frontage": 23,
+  "depth": 69,
+  "height": 7
+ },
+ "way/243353725": {
+  "frontage": 9,
+  "depth": 37,
+  "height": 6
+ },
+ "way/243357383": {
+  "frontage": 17,
+  "depth": 32,
+  "height": 16
+ },
+ "way/256454788": {
+  "frontage": 21,
+  "depth": 23,
+  "height": 12
+ },
+ "way/1123771525": {
+  "frontage": 23,
+  "depth": 40,
+  "height": 12
+ },
+ "way/252570880": {
+  "frontage": 7,
+  "depth": 18,
+  "height": 12
+ },
+ "way/256471154": {
+  "frontage": 8,
+  "depth": 29,
+  "height": 12
+ },
+ "way/1410195478": {
+  "frontage": 9,
+  "depth": 22,
+  "height": 12
+ },
+ "way/255958571": {
+  "frontage": 12,
+  "depth": 20,
+  "height": 11
+ },
+ "way/206673320": {
+  "frontage": 27,
+  "depth": 51,
+  "height": 12
+ },
+ "way/262260723": {
+  "frontage": 38,
+  "depth": 49,
+  "height": 16
+ },
+ "way/172250617": {
+  "frontage": 23,
+  "depth": 51,
+  "height": 24
+ },
+ "way/260177872": {
+  "frontage": 8,
+  "depth": 25,
+  "height": 7
+ },
+ "way/261126838": {
+  "frontage": 40,
+  "depth": 43,
+  "height": 13
+ },
+ "way/197053597": {
+  "frontage": 61,
+  "depth": 92,
+  "height": 13
+ },
+ "way/264645150": {
+  "frontage": 15,
+  "depth": 35,
+  "height": 12
+ },
+ "way/260958625": {
+  "frontage": 16,
+  "depth": 44,
+  "height": 13
+ },
+ "way/176609154": {
+  "frontage": 10,
+  "depth": 27,
+  "height": 6
+ },
+ "way/243356557": {
+  "frontage": 8,
+  "depth": 50,
+  "height": 12
+ },
+ "way/243464436": {
+  "frontage": 15,
+  "depth": 27,
+  "height": 6
+ },
+ "way/260188896": {
+  "frontage": 18,
+  "depth": 25,
+  "height": 12
+ },
+ "way/504335246": {
+  "frontage": 20,
+  "depth": 21,
+  "height": 12
+ },
+ "way/293604059": {
+  "frontage": 51,
+  "depth": 92,
+  "height": 12
+ },
+ "way/261092851": {
+  "frontage": 23,
+  "depth": 28,
+  "height": 12
+ },
+ "way/260368511": {
+  "frontage": 22,
+  "depth": 53,
+  "height": 11
+ },
+ "way/1500284340": {
+  "frontage": 7,
+  "depth": 20,
+  "height": 12
+ },
+ "way/256969671": {
+  "frontage": 18,
+  "depth": 19,
+  "height": 25
+ },
+ "way/112934097": {
+  "frontage": 14,
+  "depth": 22,
+  "height": 24
+ },
+ "way/165480947": {
+  "frontage": 12,
+  "depth": 19,
+  "height": 16
+ },
+ "way/32947730": {
+  "frontage": 14,
+  "depth": 34,
+  "height": 21
+ },
+ "way/700282613": {
+  "frontage": 7,
+  "depth": 9,
+  "height": 16
+ },
+ "way/942674802": {
+  "frontage": 10,
+  "depth": 23,
+  "height": 16
+ },
+ "way/260288448": {
+  "frontage": 18,
+  "depth": 21,
+  "height": 31
+ },
+ "way/256732473": {
+  "frontage": 10,
+  "depth": 19,
+  "height": 13
+ },
+ "way/256730069": {
+  "frontage": 16,
+  "depth": 20,
+  "height": 15
+ },
+ "way/260517127": {
+  "frontage": 19,
+  "depth": 25,
+  "height": 22
+ },
+ "way/260208815": {
+  "frontage": 6,
+  "depth": 17,
+  "height": 10
+ },
+ "way/262685628": {
+  "frontage": 20,
+  "depth": 36,
+  "height": 33
+ },
+ "way/458781175": {
+  "frontage": 33,
+  "depth": 37,
+  "height": 32
+ },
+ "way/262686730": {
+  "frontage": 10,
+  "depth": 27,
+  "height": 30
+ },
+ "way/262740300": {
+  "frontage": 15,
+  "depth": 36,
+  "height": 32
+ }
+}

@@ -80,3 +80,48 @@ found the target ambiguous in 6 of 80, and then labels a neighbour with confiden
    attribute on the bake's features (Assessor year, use, units, storeys, construction, district, footprint, OSM tags),
    predicting where it is confident and sampling from the observed distribution where it is not (colour, almost
    certainly).
+
+## Schema v3: one question per renderer parameter (2026-10-22)
+
+The owner: storeys come from other sources and "Edwardian" sets nothing; ask for what the renderer draws, plus a
+visual building type ("brick classic apartment building", "modern glass building") that maps to a renderer style.
+`data/appearance/research/menus-v3.json`; every labeller is told the footprint (narrow x long side) and height, and
+may answer `several_buildings`. 80 reference buildings, two Haiku runs on 93.
+
+| question | one run: agrees with reference | both runs agree: answered / agrees |
+|---|---|---|
+| fire escape | 96% | 64% / 97% |
+| awnings, awning colour | 95%, 91% | 60% / 97%, 94% |
+| colour panels | 96% | 72% / 95% |
+| windows (sash/arched/picture/ribbon/grid) | 87% | 72% / 87% |
+| ground-floor colour | 87% | 55% / 90% |
+| ground floor (shops/garages/entrance) | 77% | 64% / 85% |
+| top (cornice kind) | 74% | 45% / 88% |
+| bays (none/one/several) | 84% | 66% / 87% |
+| bay shape | 68% | 59% / 79% |
+| balconies | 81% | 61% / 86% |
+| surface | 76% | 68% / 82% |
+| piers | 78% | 47% / 78% |
+| trim colour | 77% (85% family) | 31% / 76% (94% family) |
+| wall colour | 56% (77% family) | 47% / 57% (79% family) |
+| type (renderer style) | 60% | 55% / 61% |
+
+Haiku agrees with itself 85-100% on everything but colours (69-71%), type (78%) and `usable` (80% — the
+several-buildings call is the unstable one). The two-run gate is worth it: cornice, ground floor, bay shape and
+balconies all rise 5-14 points for about a third less coverage. **Type stays weak (~60%)**: neighbouring types
+(flats vs a house, a shop-and-flats vs bay apartments) are genuinely hard; it is better taken as a hint than a fact.
+
+## Rendering from the labels (`?labels=1`)
+
+`src/city/appearance.ts` turns a label into a style (type), a palette (wall, trim, ground, awning colours) and a
+dressing (shops, cornice, bays, balconies, fire escape, piers, colour panels, canopy); `planFacade` takes it as a
+`look`. `tools/appearance/looks.py` builds the table (`data/appearance/looks/haiku-v3.json`, 54 buildings that both
+runs call usable, only answers both runs agree on). Shots (local, `docs/shots` is gitignored): `docs/shots/appearance/looks-*.jpg` — photo, today's
+render, labelled render.
+
+Of the 8 buildings the comparison camera framed correctly, 5 are clearly closer to the photograph (red brick where
+the bake drew grey or beige, shopfronts where it drew none, the right colour and bay stacks), 1 is arguably closer,
+and 1 is worse: a Chinatown building typed `shops_with_flats_above` lost the district's own style. Two lessons:
+- a label's type must not replace a district style (Chinatown, the Wharf) — only the generic ones;
+- the renderer's vocabulary is the ceiling: a brick civic building with arched windows gets the office style's big
+  windows, because window art goes with the style. Windows should become their own axis (`windows` is 87% reliable).

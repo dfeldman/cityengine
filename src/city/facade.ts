@@ -504,10 +504,13 @@ export function planFacade(
   osm: { levels?: number; height?: number; minHeight?: number; stretch?: boolean; noShops?: boolean },
   /** a region's own palettes for this style, which replace the style's (Paris is cream) */
   palettes?: Palette[],
+  /** what a street-photo label says about this building, over the draws (src/city/appearance.ts, `?labels=1`) */
+  look?: { palette?: Partial<Palette>; dress?: Partial<Dress> },
 ): FacadePlan {
   const st = style(styleId)
   const r = rng(seed)
   let palette = pickPalette(r, palettes && palettes.length > 0 ? palettes : st.palettes)
+  if (look?.palette) palette = { ...palette, ...look.palette }
 
   let levels = Math.max(
     1,
@@ -561,8 +564,10 @@ export function planFacade(
 
   const balconyLevels = new Set(st.balcony?.levels ?? [])
   // (its own stream, so the draws above — and every building of the styles that do not dress — stay as they were)
-  const dressed = osm.noShops ? undefined : DRESSERS[styleId]?.(rng(seed ^ 0x0d2e55), levels)
-  if (dressed?.groundPaint && !aloft) palette = { ...palette, ground: dressed.groundPaint }
+  const drawn = osm.noShops ? undefined : DRESSERS[styleId]?.(rng(seed ^ 0x0d2e55), levels)
+  // (a label's answers win over the draws, and dress a style that has no dresser of its own)
+  const dressed = look?.dress ? { dress: { ...(drawn?.dress ?? NO_DRESS), ...look.dress }, groundPaint: drawn?.groundPaint } : drawn
+  if (dressed?.groundPaint && !aloft && !look?.palette?.ground) palette = { ...palette, ground: dressed.groundPaint }
   return {
     style: styleId,
     palette,
