@@ -15,7 +15,7 @@ import sys
 
 # (the questions are whatever the reference answered: v1, v2 and v3 schemas all score)
 ATTRS: list[str] = []
-NOT_ATTRS = {'osm', 'best', 'conf', 'note', 'seen', 'seen_top', 'seen_ground', 'seen_bays'}
+NOT_ATTRS = {'osm', 'best', 'conf', 'note', 'seen', 'seen_top', 'seen_ground', 'seen_bays', 'seen_ornament', 'sign_text'}
 FAMILY = {'white': 'light', 'cream': 'light', 'sand': 'light', 'lightGrey': 'light', 'buff': 'warm', 'salmon': 'warm',
           'paleYellow': 'warm', 'brown': 'warm', 'redBrick': 'brick', 'midGrey': 'dark', 'charcoal': 'dark', 'black': 'dark',
           'paleBlue': 'cool', 'paleGreen': 'cool', 'teal': 'cool', 'glassBlue': 'cool',
@@ -41,6 +41,8 @@ def load(p):
                 ok = r.get('buildings_between_lines') == 'one' and r.get('target_hidden') != 'mostly' and r.get('matches_size') != 'no'
                 r['usable'] = 'yes' if ok else 'no'
             # v5: one clear target that is not mostly hidden
+            if 'usable' not in r and 'target' in r:
+                r['usable'] = 'yes' if r.get('target') in ('one', 'best_fit') and r.get('target_hidden') != 'mostly' else 'no'
             if 'usable' not in r and 'target_clear' in r:
                 r['usable'] = 'yes' if r.get('target_clear') == 'yes' and r.get('target_hidden') != 'mostly' else 'no'
             out[r['osm']] = r

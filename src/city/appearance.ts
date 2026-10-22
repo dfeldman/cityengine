@@ -8,8 +8,9 @@
  * photographs. Every answer is optional; a building keeps whatever the bake gave it where the label is silent.
  */
 import table from '../../data/appearance/looks/haiku.json' with { type: 'json' }
-import menus from '../../data/appearance/research/menus-v6.json' with { type: 'json' }
+import menus from '../../data/appearance/research/menus-v7.json' with { type: 'json' }
 import type { Dress, Palette, StyleId } from './facade.ts'
+import type { RoofShape } from './package.ts'
 
 type Label = Record<string, string>
 
@@ -17,6 +18,8 @@ export interface Look {
   style?: StyleId
   /** the storeys the photograph shows (the bake's are often wrong at the front) */
   levels?: number
+  /** the roof the photograph shows */
+  roof?: RoofShape
   palette?: Partial<Palette>
   dress?: Partial<Dress>
 }
@@ -49,9 +52,13 @@ export function lookFor(id: number, baked?: StyleId): Look | null {
   // a painted lady is drawn as one, whatever else the type said
   if (known(l.victorian_kind) && l.victorian_kind !== 'none' && (!style || style === 'edwardian' || style === 'flatsstucco')) style = 'victorian'
   if (style && SURFACE[l.surface]?.[style]) style = SURFACE[l.surface]![style]
+  // (stucco flats draw rectangular sash; arched windows are the Marina's and the Mediterranean block's)
+  if (l.windows === 'arched' && style === 'flatsstucco') style = Number(l.storeys) >= 4 ? 'aptmed' : 'stucco'
   if (style && !(baked && KEEP.has(baked))) look.style = style
   const storeys = l.storeys === '8+' ? 8 : Number(l.storeys)
   if (storeys > 0) look.levels = storeys
+  const roof: Record<string, RoofShape> = { flat: 'flat', gabled: 'gabled', hipped: 'hipped', mansard: 'mansard' }
+  if (roof[l.roof]) look.roof = roof[l.roof]
 
   const wall = colour(l.wall_colour)
   const palette: Partial<Palette> = {}
@@ -85,6 +92,8 @@ export function lookFor(id: number, baked?: StyleId): Look | null {
     dress.balconyKind = l.balconies
   }
   if (l.bay_shape === 'angled' || l.bay_shape === 'square' || l.bay_shape === 'rounded') dress.bayShape = l.bay_shape
+  if (l.windows === 'few_or_none') dress.blank = true
+  if (colour(l.garage_door_colour)) dress.garageTint = colour(l.garage_door_colour)
   if (l.victorian_kind === 'italianate' || l.victorian_kind === 'stick' || l.victorian_kind === 'queen_anne') dress.victorian = l.victorian_kind
   if (l.fire_escape === 'yes' || l.fire_escape === 'no') dress.fireEscape = l.fire_escape === 'yes'
   if (l.colour_panels === 'yes' || l.colour_panels === 'no') dress.blocks = l.colour_panels === 'yes'

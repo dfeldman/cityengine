@@ -30,6 +30,8 @@ def load(p):
                 r = json.loads(line)
                 if 'target_clear' in r:
                     r['usable'] = 'yes' if r['target_clear'] == 'yes' and r.get('target_hidden') != 'mostly' else 'no'
+                elif 'target' in r:  # v7: one building, or the one that fits the mapped size
+                    r['usable'] = 'yes' if r['target'] in ('one', 'best_fit') and r.get('target_hidden') != 'mostly' else 'no'
                 out[r['osm']] = r
             except (json.JSONDecodeError, KeyError):
                 pass
@@ -41,7 +43,7 @@ if __name__ == '__main__':
     table = {}
     for osm, a in runs[0].items():
         rs = [a] + [r.get(osm) for r in runs[1:]]
-        if 'target_clear' in a:
+        if 'target_clear' in a or 'target' in a:
             rs = [r for r in rs if r is not None and r.get('usable') == 'yes']
             if not rs:
                 continue
@@ -49,7 +51,7 @@ if __name__ == '__main__':
             continue
         keep = {}
         for k in dict.fromkeys(k for r in rs for k in r):
-            if k in ('osm', 'usable', 'target_clear', 'target_hidden') or k.startswith('seen_'):
+            if k in ('osm', 'usable', 'target_clear', 'target', 'target_hidden') or k.startswith('seen_'):
                 continue
             vs = [r.get(k) for r in rs if r.get(k) not in NA]
             if vs and all(v == vs[0] for v in vs):

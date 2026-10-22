@@ -349,12 +349,14 @@ function turret(out: MeshBuilder, f: Feature, at: (t: number, y: number) => [num
     const m = (a0 + a1) / 2
     // the outward normal, in world terms: along the wall by cos, out of it by sin
     const n: [number, number, number] = [ux * Math.cos(m) + nx * Math.sin(m), 0, uz * Math.cos(m) + nz * Math.sin(m)]
-    const quad: [number, number, number][] = [p(a0, f.y0), p(a1, f.y0), p(a1, f.y1), p(a0, f.y1)]
+    // (wound as the bay's faces are, left to right seen from outside: the angle runs the other way along the wall, and
+    //  the turret drawn a0 → a1 was culled — wave 6, a Queen Anne with no turret)
+    const quad: [number, number, number][] = [p(a1, f.y0), p(a0, f.y0), p(a0, f.y1), p(a1, f.y1)]
     if (uv) out.quad(quad, n, [[uv.u0, uv.v1], [uv.u1, uv.v1], [uv.u1, uv.v0], [uv.u0, uv.v0]], tint, KIND_ATLAS)
     else out.quad(quad, n, [[0, 0], [1, 0], [1, 1], [0, 1]], tint, KIND_WALL)
     // a band of trim at its top, and the cap: eight steep triangles to a point
-    out.quad([p(a0, f.y1 - 0.3, r + 0.06), p(a1, f.y1 - 0.3, r + 0.06), p(a1, f.y1, r + 0.06), p(a0, f.y1, r + 0.06)], n, [[0, 0], [0.3, 0], [0.3, 0.1], [0, 0.1]], trim, KIND_WALL)
-    out.quad([p(a0, f.y1, r + 0.15), p(a1, f.y1, r + 0.15), apex, apex], [n[0], 0.5, n[2]], [[0, 0], [0.3, 0], [0.3, 0.1], [0, 0.1]], roof, KIND_WALL)
+    out.quad([p(a1, f.y1 - 0.3, r + 0.06), p(a0, f.y1 - 0.3, r + 0.06), p(a0, f.y1, r + 0.06), p(a1, f.y1, r + 0.06)], n, [[0, 0], [0.3, 0], [0.3, 0.1], [0, 0.1]], trim, KIND_WALL)
+    out.quad([p(a1, f.y1, r + 0.15), p(a0, f.y1, r + 0.15), apex, apex], [n[0], 0.5, n[2]], [[0, 0], [0.3, 0], [0.3, 0.1], [0, 0.1]], roof, KIND_WALL)
   }
 }
 

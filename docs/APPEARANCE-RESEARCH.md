@@ -297,6 +297,62 @@ The judges named 175 remaining differences: 72 caused by labels, 57 by the rende
   - street trees in front;
   - the camera too close for a tall front.
 
+### Rounds 6–11: label, render, judge, improve (owner, 2026-10-22)
+
+The owner set the goal for these rounds:
+- each round is one Haiku pass over the same 92 buildings, a render of the same 53, and a judged comparison;
+- several improvements per round, to save tokens;
+- a cartoon likeness at a glance, not photorealism;
+- 12-odd colours are enough, and no pixel sampling;
+- flag the buildings a generic cannot draw (wavy walls, shiny metal), read sign text, and note special structures
+  (gas stations) for later;
+- no large-scale sampling or classifier yet.
+
+The Victorians are rarer than the stucco blocks, but they are what San Francisco is famous for. They get a library of
+their own, so the fun buildings are not flattened (owner, 2026-10-22).
+
+One run per round now. Accepting a target that either run calls clear already made the second run matter much less.
+Where a round's run calls a target unclear that an earlier round described, the earlier labels stand in, so the 53
+renders stay the same buildings from round to round. `tools/appearance/judged.py` summarises a round's judging.
+
+| round | changes | resemblance, labels (today) | ≥ 2 of 3 | closer |
+|---|---|---|---|---|
+| v5 | ground-floor mix, bay counts, 14 colours | 1.53 (0.61) | 28 of 51 | 44 |
+| v6 | see below | 1.64 (0.62) | 32 of 50 | 43 |
+
+**v6 changes:**
+- **Schema** (`menus-v6.json`):
+  - `storeys`;
+  - `victorian_kind` (Italianate, Stick, Queen Anne) and `trim_colour`;
+  - `unusual_kind`, which replaces `generic_fit` and says WHY a building needs its own model (wavy or curved, shiny
+    metal, glass curtain wall, dominant tower, rooftop billboard, church, mural, other odd shape);
+  - `special_structure` (gas station, parking garage, car wash, drive-through, auto repair, big box, school, fire
+    station);
+  - `sign_text`;
+  - balconies defined tighter;
+  - paler blue, green and yellow.
+- **Renderer:**
+  - the Victorian library (`Dress.victorian`): window hoods, paired cornice brackets, Stick corner boards, a Queen
+    Anne corner turret, all in the trim colour;
+  - bays square, angled or rounded;
+  - balconettes in iron;
+  - stucco variants of the flats and shop-and-flats styles (a stucco label had been drawn as clapboard);
+  - the label's storey count;
+  - shots with no trees, people or street furniture, from the far kerb when the front needs it.
+
+**v6 run:**
+- sign text read on 36 of 92 buildings;
+- 10 buildings flagged unusual: 5 wavy or curved, 2 rooftop billboards, 2 murals, 1 tower;
+- special structures: 3 auto repair shops, 1 school;
+- 5 Victorians tagged.
+
+**v6 judged:**
+- Labels: the commonest fault was arched windows on plain fronts. The stucco styles borrow the Marina's arched
+  windows, so a stucco label came out arched. Also windows drawn on blank walls, and invented balconies.
+- Renderer: Queen Anne turrets were missing. They were planned but wound the wrong way, and culled. Also white garage
+  doors drawn dark, and murals.
+- Shot: one camera stood inside the house across the street.
+
 ## 4. Rendering from the labels (`?labels=1`)
 
 `src/city/appearance.ts` turns a label into a style (`type`), a palette (wall, trim, ground, awning colours) and a

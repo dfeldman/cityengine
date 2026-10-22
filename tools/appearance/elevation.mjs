@@ -13,6 +13,33 @@ const by = new Map(pkg.buildings.map((b) => [b.id, b]))
 const roads = []
 for (const e of pkg.edges) if (!e.foot) for (let k = 0; k < e.points.length; k += 2) roads.push([e.points[k], e.points[k + 1], e.id])
 const nearest = (x, z) => { let bd = Infinity, id = null; for (const [rx, rz, i] of roads) { const d = Math.hypot(rx - x, rz - z); if (d < bd) { bd = d; id = i } } return [bd, id] }
+// point in any other building's footprint (the buildings near it: a coarse grid over the bake)
+const cell = (x, z) => `${Math.floor(x / 50)},${Math.floor(z / 50)}`
+const grid = new Map()
+for (const b of pkg.buildings) {
+  const n = b.ring.length / 2
+  let x = 0, z = 0
+  for (let i = 0; i < n; i++) { x += b.ring[2 * i]; z += b.ring[2 * i + 1] }
+  const k = cell(x / n, z / n)
+  if (!grid.has(k)) grid.set(k, [])
+  grid.get(k).push(b)
+}
+function inside(x, z, self) {
+  const [cx, cz] = [Math.floor(x / 50), Math.floor(z / 50)]
+  for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) {
+    for (const b of grid.get(`${cx + i},${cz + j}`) ?? []) {
+      if (String(b.id) === String(self)) continue
+      const r = b.ring, n = r.length / 2
+      let c = false
+      for (let a = 0, p = n - 1; a < n; p = a++) {
+        const [xa, za, xp, zp] = [r[2 * a], r[2 * a + 1], r[2 * p], r[2 * p + 1]]
+        if ((za > z) !== (zp > z) && x < ((xp - xa) * (z - za)) / (zp - za) + xa) c = !c
+      }
+      if (c) return true
+    }
+  }
+  return false
+}
 for (const id of ids) {
   const b = by.get(Number(id)); if (!b) { console.log(id, 'not in bake'); continue }
   if (existsSync(`${OUT}/${id}-look.png`)) continue
@@ -41,7 +68,11 @@ for (const id of ids) {
   }
   // …and back to the far kerb when the building needs it to fit (a tall or wide front seen from mid-street was a wall)
   const back = Math.max(7, tRoad + 2, Math.min(2 * tRoad - 1.5, Math.max(best.len * 0.9, h * 1.0)))
-  const fx = best.mx + best.nx * back, fz = best.mz + best.nz * back
+  // never inside a building across the street (wave 6: a camera in the opposite house shot a purple wall): come back
+  // towards the target until the point is clear of every footprint
+  let stand = back
+  while (stand > 5 && inside(best.mx + best.nx * stand, best.mz + best.nz * stand, id)) stand -= 0.5
+  const fx = best.mx + best.nx * stand, fz = best.mz + best.nz * stand
   const lift = Math.min(14, h * 0.45)
   for (const [tag, extra] of [['base', SCENE], ['look', SCENE + '&labels=1']]) {
     const args = ['--experimental-strip-types', 'tools/look-at.ts', '--city=san-francisco', `--start=${best.edge}`, `--at=${best.mx.toFixed(1)},${best.mz.toFixed(1)}`,

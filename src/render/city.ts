@@ -4237,8 +4237,9 @@ export class City {
       // (a label's storey count wins, and the walls are kept within what that many storeys can be: a one-storey shop the
       //  map calls 12 m — its billboard — was drawn with two rows of windows)
       const lv = look?.levels
-      const height = lv && b.height ? Math.min(Math.max(b.height, lv * 2.9), lv * 3.7 + 1.2) : b.height
-      const plan = planFacade(styleId, b.id, { levels: lv ?? b.levels, height, minHeight: b.minHeight, stretch: b.stretch, noShops: b.noShops },
+      // (and the count holds: `stretch` keeps it however the height stretches the storeys)
+      const height = lv && b.height ? Math.min(Math.max(b.height, lv * 2.9), lv * 3.3 + 0.8) : b.height
+      const plan = planFacade(styleId, b.id, { levels: lv ?? b.levels, height, minHeight: b.minHeight, stretch: b.stretch || !!lv, noShops: b.noShops },
         b.palette ? [b.palette] : this.region.palettes[styleId], look ?? undefined)
       const out = byStyle.get(styleId) ?? new MeshBuilder()
       byStyle.set(styleId, out)
@@ -4247,7 +4248,9 @@ export class City {
         spans.push([out.indices.length / 3, b.id])
       }
       buildBuilding(out, ring, plan, this.atlas, b.id, 0.16 + foot,
-        { shape: b.roof, height: b.roofHeight, direction: b.roofDirection, colour: b.roofColour },
+        // (a label's roof: a gable, a hip or a mansard is most of a small building's outline against the sky)
+        look?.roof ? { shape: look.roof, height: b.roofHeight ?? Math.min(4, 1.2 + plan.height * 0.18), direction: b.roofDirection, colour: b.roofColour }
+          : { shape: b.roof, height: b.roofHeight, direction: b.roofDirection, colour: b.roofColour },
         this.region.roofscape, (i) => {
           // the ring is anticlockwise, so the outward normal of a→c is (ez, −ex)
           const a = ring[i]

@@ -277,6 +277,11 @@ export interface Dress {
   victorian?: 'italianate' | 'stick' | 'queen_anne'
   /** a label's balconies: iron railings at the windows, or platforms to stand on */
   balconyKind?: 'balconettes' | 'projecting'
+  /** a front with no windows above the ground floor, or almost none: a warehouse's, a big store's (wave 6: window rows
+   *  drawn on blank walls) */
+  blank?: boolean
+  /** a label's garage door colour: the paintings' doors are dark, and a white roll-up door is half of a stucco front */
+  garageTint?: string
 }
 
 export interface GroundMix {
@@ -754,17 +759,19 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
       const variant = shopGround ? ((rng(seed ^ 0x5e11)() + b * 0.381966) % 1) : vr()
 
       let element: string
-      if (s.kind === 'ground' && mix) element = mix[b] === 'window' ? `${art}/window` : groundElement(mix[b] as Exclude<GroundBay, 'window'>, art, groundArt)
+      if (s.kind === 'ground' && mix) element = mix[b] === 'window' ? `${art}/${d?.blank ? 'wall' : 'window'}` : groundElement(mix[b] as Exclude<GroundBay, 'window'>, art, groundArt)
+      else if (s.kind !== 'ground' && d?.blank && shown !== null) element = `${art}/wall`
       else if (s.kind === 'ground' && b === carriageBay) element = `${art}/carriage`
       // ('plain': a ground floor of the style's own windows — a school's, where the style would have shops)
       else if (s.kind === 'ground') element = plan.ground === 'plain' || !shopBay(b) ? `${art}/window` : `${groundArt}/${plan.ground}`
       else if (s.kind === 'top' && plan.top === 'mansard') element = `${art}/dormer`
       else element = `${art}/window`
 
-      cells.push({ x0, x1, y0: s.y0, y1: s.y1, element, variant, ...(blockBay(b) && s.kind !== 'ground' ? { tint: plan.palette.accent } : {}) })
+      const garageTint = s.kind === 'ground' && mix?.[b] === 'garage' ? d?.garageTint : undefined
+      cells.push({ x0, x1, y0: s.y0, y1: s.y1, element, variant, ...(blockBay(b) && s.kind !== 'ground' ? { tint: plan.palette.accent } : garageTint ? { tint: garageTint } : {}) })
 
       // A window sill is a small ledge, and a row of them is what catches the light on a street.
-      if (s.kind !== 'ground' && st.window.sill > 0.1 && plan.style !== 'skyscraper') {
+      if (s.kind !== 'ground' && st.window.sill > 0.1 && plan.style !== 'skyscraper' && !(d?.blank && shown !== null)) {
         const winW = bayW * plan.window.widthFrac
         const wx = x0 + (bayW - winW) / 2
         features.push({

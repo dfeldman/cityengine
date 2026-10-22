@@ -2119,7 +2119,7 @@
     {
       "id": "storefront",
       "name": "SF storefront",
-      "note": "San Francisco, 1920-1970: the one- and two-storey shop building of every neighbourhood street — plain stucco or block over a glazed shop, a tall parapet carrying the sign. Drawn with the Marina stucco's windows and render over the generic storefronts (`art`, `groundArt`).",
+      "note": "San Francisco, 1920-1970: the one- and two-storey shop building of every neighbourhood street — plain stucco or block over a glazed shop, a tall parapet carrying the sign. Drawn with the Presidio stucco's sash windows and render over the generic storefronts (`art`, `groundArt`).",
       "art": "stucco",
       "groundArt": "tenement",
       "levels": [
@@ -2743,7 +2743,7 @@
     {
       "id": "flatsstucco",
       "name": "SF stucco flats",
-      "note": "San Francisco, 1915-1960: the two- and three-storey flats and houses the edwardian proportions built in smooth stucco rather than clapboard - the commonest ordinary front in the Sunset, Richmond and Mission (appearance research, 2026-10-22: a label saying stucco must not be drawn as wood siding). Drawn with the Marina stucco's windows, render and garage (`art`).",
+      "note": "San Francisco, 1915-1960: the two- and three-storey flats and houses the edwardian proportions built in smooth stucco rather than clapboard - the commonest ordinary front in the Sunset, Richmond and Mission (appearance research, 2026-10-22: a label saying stucco must not be drawn as wood siding). Drawn with the Presidio stucco's sash windows and render, and the Marina's garage (`art`, `groundArt`; wave 6: the Marina's arched windows went on every plain stucco front).",
       "levels": [
         2,
         3
@@ -2824,14 +2824,14 @@
           "accent": "#3a4a5a"
         }
       ],
-      "art": "stucco",
+      "art": "presidioStucco",
       "groundArt": "stucco"
     },
     {
       "id": "shopflatsstucco",
       "name": "SF stucco shop-and-flats",
       "note": "The shop-and-flats in smooth stucco: two to four storeys of rendered flats over a row of shops - Mission and Geary Boulevard. Drawn with the Marina stucco's windows and render over the generic storefronts (`art`, `groundArt`).",
-      "art": "stucco",
+      "art": "presidioStucco",
       "groundArt": "tenement",
       "levels": [
         2,
