@@ -1983,6 +1983,256 @@
     "accent": "#2a5c46"
    }
   ]
- }
+ },
+    {
+      "id": "shopflats",
+      "name": "SF shop-and-flats",
+      "note": "San Francisco, 1880-1925: the Mission's and Valencia's and Castro's commercial street building — two or three storeys of timber or stucco flats over a row of shops, bay windows up the front, a bracketed cornice or false front. Drawn with the Victorian's windows and clapboard over the generic storefronts (`art`, `groundArt`: no new painting). Owner, 2026-10-21: the Mission was SoMa's brick lofts.",
+      "art": "victorian",
+      "groundArt": "tenement",
+      "levels": [
+        2,
+        4
+      ],
+      "levelHeight": [
+        3.0,
+        3.4
+      ],
+      "groundHeight": [
+        3.6,
+        4.2
+      ],
+      "bayWidth": [
+        1.8,
+        2.4
+      ],
+      "pier": [
+        0.4,
+        0.7
+      ],
+      "window": {
+        "kind": "sash",
+        "widthFrac": [
+          0.5,
+          0.6
+        ],
+        "heightFrac": [
+          0.68,
+          0.78
+        ],
+        "sill": 0.12
+      },
+      "ground": "shopfront",
+      "top": "cornice",
+      "cornice": {
+        "depth": 0.5,
+        "height": 0.6
+      },
+      "stringCourse": true,
+      "palettes": [
+        {
+          "wall": "#e8e1d2",
+          "trim": "#ffffff",
+          "roof": "#5a5550",
+          "accent": "#2b3f55",
+          "weight": 2
+        },
+        {
+          "wall": "#d9d2c3",
+          "trim": "#f4f1ea",
+          "roof": "#5a5550",
+          "accent": "#5a2a26",
+          "weight": 1.5
+        },
+        {
+          "wall": "#c9cdd0",
+          "trim": "#ffffff",
+          "roof": "#5a5550",
+          "accent": "#2b3f55",
+          "weight": 1.5
+        },
+        {
+          "wall": "#e4d4b0",
+          "trim": "#ffffff",
+          "roof": "#5a5550",
+          "accent": "#3b4a3f",
+          "weight": 1.2
+        },
+        {
+          "wall": "#d8a98e",
+          "trim": "#f6efe2",
+          "roof": "#5a5550",
+          "accent": "#3b4a3f",
+          "weight": 1
+        },
+        {
+          "wall": "#a9bccb",
+          "trim": "#ffffff",
+          "roof": "#5a5550",
+          "accent": "#1d2b3a",
+          "weight": 1
+        },
+        {
+          "wall": "#bfcfbe",
+          "trim": "#ffffff",
+          "roof": "#5a5550",
+          "accent": "#5a2a26",
+          "weight": 0.8
+        },
+        {
+          "wall": "#efe6a8",
+          "trim": "#ffffff",
+          "roof": "#5a5550",
+          "accent": "#2b3f55",
+          "weight": 0.5
+        },
+        {
+          "wall": "#8c9a8a",
+          "trim": "#f2efe6",
+          "roof": "#5a5550",
+          "accent": "#5a2a26",
+          "weight": 0.6
+        },
+        {
+          "wall": "#b9a48a",
+          "trim": "#f4ede0",
+          "roof": "#5a5550",
+          "accent": "#2b2b2d",
+          "weight": 0.8
+        },
+        {
+          "wall": "#9a3b33",
+          "trim": "#f2ead8",
+          "roof": "#5a5550",
+          "accent": "#2b2b2d",
+          "weight": 0.4
+        },
+        {
+          "wall": "#7b8fa3",
+          "trim": "#f4f1ea",
+          "roof": "#5a5550",
+          "accent": "#c8a24a",
+          "weight": 0.5
+        }
+      ]
+    },
+    {
+      "id": "storefront",
+      "name": "SF storefront",
+      "note": "San Francisco, 1920-1970: the one- and two-storey shop building of every neighbourhood street — plain stucco or block over a glazed shop, a tall parapet carrying the sign. Drawn with the Marina stucco's windows and render over the generic storefronts (`art`, `groundArt`).",
+      "art": "stucco",
+      "groundArt": "tenement",
+      "levels": [
+        1,
+        2
+      ],
+      "levelHeight": [
+        3.0,
+        3.4
+      ],
+      "groundHeight": [
+        3.8,
+        4.6
+      ],
+      "bayWidth": [
+        2.6,
+        3.6
+      ],
+      "pier": [
+        0.4,
+        0.8
+      ],
+      "window": {
+        "kind": "casement",
+        "widthFrac": [
+          0.5,
+          0.64
+        ],
+        "heightFrac": [
+          0.6,
+          0.72
+        ],
+        "sill": 0.1
+      },
+      "ground": "shopfront",
+      "top": "parapet",
+      "cornice": {
+        "depth": 0.15,
+        "height": 0.5
+      },
+      "stringCourse": false,
+      "palettes": [
+        {
+          "wall": "#efece4",
+          "trim": "#3a3b3e",
+          "roof": "#6a6866",
+          "accent": "#9a2b25",
+          "weight": 2
+        },
+        {
+          "wall": "#e4dac4",
+          "trim": "#6b4a32",
+          "roof": "#6a6866",
+          "accent": "#2f4f5f",
+          "weight": 1.6
+        },
+        {
+          "wall": "#d4c3a3",
+          "trim": "#f2ead8",
+          "roof": "#6a6866",
+          "accent": "#3a3b3e",
+          "weight": 1.6
+        },
+        {
+          "wall": "#cfd0cc",
+          "trim": "#3a3b3e",
+          "roof": "#6a6866",
+          "accent": "#b5793e",
+          "weight": 1.2
+        },
+        {
+          "wall": "#9c9d9a",
+          "trim": "#efefeb",
+          "roof": "#5e5c5a",
+          "accent": "#9a2b25",
+          "weight": 0.8
+        },
+        {
+          "wall": "#5f8f8c",
+          "trim": "#f2f0ea",
+          "roof": "#5e5c5a",
+          "accent": "#c8a24a",
+          "weight": 0.3
+        },
+        {
+          "wall": "#ece4c4",
+          "trim": "#3a3b3e",
+          "roof": "#6a6866",
+          "accent": "#2f4f5f",
+          "weight": 0.5
+        },
+        {
+          "wall": "#d9a38a",
+          "trim": "#f4ece2",
+          "roof": "#6a6866",
+          "accent": "#2b2b2d",
+          "weight": 0.4
+        },
+        {
+          "wall": "#3a3b3e",
+          "trim": "#e9e6df",
+          "roof": "#5e5c5a",
+          "accent": "#c8a24a",
+          "weight": 0.4
+        },
+        {
+          "wall": "#b8c9d6",
+          "trim": "#ffffff",
+          "roof": "#6a6866",
+          "accent": "#2b2b2d",
+          "weight": 0.4
+        }
+      ]
+    }
   ]
 }

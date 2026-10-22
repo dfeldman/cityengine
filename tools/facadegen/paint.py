@@ -88,7 +88,8 @@ def main() -> int:
     ap.add_argument('--seed', type=int, default=20260920)
     args = ap.parse_args()
 
-    styles = json.loads(STYLES_JSON.read_text())['styles']
+    # (a style with `art` paints nothing: it draws with another style's cells and wall page — src/city/facade.ts)
+    styles = [st for st in json.loads(STYLES_JSON.read_text())['styles'] if 'art' not in st]
     (OUT / 'walls').mkdir(parents=True, exist_ok=True)
 
     # ---- the seamless wall materials

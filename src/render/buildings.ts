@@ -24,7 +24,7 @@ import type { WaterFeature } from './water.ts'
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData'
 import earcut from 'earcut'
 import { KIND_ATLAS, KIND_RAIL, KIND_WALL } from './facade-material.ts'
-import { planWall, rng, type Cell, type FacadePlan, type Feature } from '../city/facade.ts'
+import { artOf, groundArtOf, planWall, rng, type Cell, type FacadePlan, type Feature } from '../city/facade.ts'
 import { addRoofscape, buildRoof, buildRoofAroundCourts, type Roofscape } from './roofs.ts'
 import type { RoofShape } from '../city/package.ts'
 import type { PlacedSign } from './landmarks/signage.ts'
@@ -203,7 +203,7 @@ function wall(
   // the ground storey's own paint, where the palette gives one: its cells are the ones drawn with the style's
   // ground element (a shopfront, an arcade, a stoop, a glazed front) rather than the wall's
   const groundTint = plan.palette.ground ? rgb(plan.palette.ground) : tint
-  const groundEls = new Set([`${plan.style}/${plan.ground}`, `${plan.style}/carriage`])
+  const groundEls = new Set([`${groundArtOf(plan.style)}/${plan.ground}`, `${artOf(plan.style)}/carriage`])
   const tintOf = (el: string): [number, number, number] => (groundEls.has(el) ? groundTint : tint)
   const at = (t: number, y: number): [number, number, number] => [a.x + ux * t, baseY + y, a.z + uz * t]
 
@@ -286,7 +286,7 @@ function bay(out: MeshBuilder, f: Feature, at: (t: number, y: number) => [number
     const q = at(t, y)
     return [q[0] + nx * off, q[1], q[2] + nz * off]
   }
-  const uv = uvFor(atlas, `${plan.style}/window`, (seed >>> 3) % 97 / 97)
+  const uv = uvFor(atlas, `${artOf(plan.style)}/window`, (seed >>> 3) % 97 / 97)
   const faces: [number, number, number, number][] = [
     // [t0, off0, t1, off1]
     [x0, 0, x0 + d, d], [x0 + d, d, x1 - d, d], [x1 - d, d, x1, 0],
@@ -753,7 +753,7 @@ export function buildBuilding(
   if (roofscape && !modern && (roofscape.chimneys || roofscape.dormers || roofscape.waterTanks)) {
     addRoofscape(out, ring, spec, roofscape, {
       wall: rgb(plan.palette.wall), bayWidth: plan.bayWidth, seed, levels: plan.levels,
-      dormerUV: uvFor(atlas, `${plan.style}/dormer`, 0) ?? uvFor(atlas, `${plan.style}/window`, 0),
+      dormerUV: uvFor(atlas, `${artOf(plan.style)}/dormer`, 0) ?? uvFor(atlas, `${artOf(plan.style)}/window`, 0),
     })
   }
 }

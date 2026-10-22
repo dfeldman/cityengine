@@ -46,6 +46,9 @@ export type StyleId =
   | 'capecod'
   // Fisherman's Wharf (owner, 2026-10-16): painted timber restaurants and gift shops under striped canvas
   | 'wharf'
+  // San Francisco's commercial streets (owner, 2026-10-21): the shop-and-flats of Mission Street and the one-storey shop
+  // building, drawn with other styles' paintings (`Style.art`)
+  | 'shopflats' | 'storefront'
 
 export type GroundKind = 'shopfront' | 'stoop' | 'arcade' | 'glazed' | 'recessed' | 'plain' | 'garage'
 export type TopKind = 'cornice' | 'parapet' | 'mansard' | 'entablature' | 'flatband' | 'crown' | 'gable'
@@ -91,6 +94,13 @@ export interface Style {
   /** bayWindows: true = a Victorian's one bay on its narrow front; 'stacks' = an apartment block's bays up a wide one */
   features?: { fireEscape?: boolean; bayWindows?: boolean | 'stacks' }
   palettes: Palette[]
+  /**
+   * A style that paints nothing of its own: its windows, wall cells and wall page are this style's, and its ground storey
+   * `groundArt`'s. The atlas is full (159 of 160 cells, 2026-10-21) and a new look is mostly new proportions, palettes
+   * and dressing on paintings that already exist.
+   */
+  art?: StyleId
+  groundArt?: StyleId
 }
 
 export const STYLES = stylesData.styles as unknown as Style[]
@@ -100,6 +110,18 @@ export function style(id: StyleId): Style {
   const s = BY_ID.get(id)
   if (!s) throw new Error(`unknown style ${id}`)
   return s
+}
+
+/** Whose paintings a style's windows and walls are (`Style.art`): its own, unless it borrows. */
+export const artOf = (id: StyleId): StyleId => BY_ID.get(id)?.art ?? id
+/** …and its ground storey's. */
+export const groundArtOf = (id: StyleId): StyleId => BY_ID.get(id)?.groundArt ?? artOf(id)
+
+/** The wall page a material binds for a page name — a style, or a style's `-far` page — following a borrowed style to its art. */
+export function wallPageOf(page: string): string {
+  const far = page.endsWith('-far')
+  const id = (far ? page.slice(0, -4) : page) as StyleId
+  return BY_ID.has(id) ? `${artOf(id)}${far ? '-far' : ''}` : page
 }
 
 /* ------------------------------------------------------------------ randomness
@@ -218,6 +240,8 @@ export interface Dress {
    * windows — or one, with its door in the middle of the front (owner, 2026-10-21). Walls off the street never have one.
    */
   shops: 'all' | 'one' | 'none'
+  /** a bay window up the street front from the first floor, over two bays: the shop-and-flats' */
+  bays: boolean
 }
 
 const weighted = <T,>(r: () => number, xs: readonly [T, number][]): T => {
@@ -227,7 +251,7 @@ const weighted = <T,>(r: () => number, xs: readonly [T, number][]): T => {
 }
 
 const NO_DRESS: Dress = { cap: 'plain', parapet: 0, piers: false, belts: false, base: false, canopy: false, fireEscape: false,
-  fins: false, balconies: false, panel: 0.5, shops: 'all' }
+  fins: false, balconies: false, panel: 0.5, shops: 'all', bays: false }
 
 /**
  * The styles that dress, and how. The weights are judgement, checked against the 50 SoMa and Mission lofts and 32 modern
@@ -252,6 +276,32 @@ const DRESSERS: Partial<Record<StyleId, (r: () => number, levels: number) => { d
       shops: weighted<Dress['shops']>(r, low ? [['all', 45], ['one', 35], ['none', 20]] : [['all', 30], ['one', 35], ['none', 35]]),
     }
     const paint = r() < 0.3 ? weighted(r, [['#2b2b2d', 3], ['#3b4a3f', 1.5], ['#5a2a26', 1.5], ['#d8d2c4', 1.5], ['#6e6e6a', 2]]) : undefined
+    return { dress, groundPaint: paint }
+  },
+  shopflats: (r, levels) => {
+    const dress: Dress = {
+      ...NO_DRESS,
+      cap: weighted<Dress['cap']>(r, [['bracket', 50], ['plain', 30], ['panel', 20]]),
+      parapet: r() < 0.4 ? 0.3 + r() * 0.8 : 0,
+      base: r() < 0.7,
+      bays: levels >= 2 && r() < 0.6,
+      panel: 0.5 + r() * 0.3,
+      shops: weighted<Dress['shops']>(r, [['all', 55], ['one', 35], ['none', 10]]),
+    }
+    const paint = r() < 0.3 ? weighted(r, [['#2b2b2d', 2], ['#3b4a3f', 1.5], ['#5a2a26', 1.5], ['#2b3f55', 1.5]]) : undefined
+    return { dress, groundPaint: paint }
+  },
+  storefront: (r, levels) => {
+    const dress: Dress = {
+      ...NO_DRESS,
+      cap: weighted<Dress['cap']>(r, [['panel', 50], ['plain', 40], ['corbel', 10]]),
+      parapet: 0.3 + r() * (levels <= 1 ? 1.4 : 0.8),
+      base: r() < 0.3,
+      canopy: r() < 0.3,
+      panel: 0.5 + r() * 0.4,
+      shops: weighted<Dress['shops']>(r, [['all', 60], ['one', 30], ['none', 10]]),
+    }
+    const paint = r() < 0.3 ? weighted(r, [['#3a3b3e', 2], ['#9a2b25', 1], ['#2f4f5f', 1], ['#d8d2c4', 1]]) : undefined
     return { dress, groundPaint: paint }
   },
   bauhaus: (r, levels) => {
@@ -467,6 +517,9 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
   const r = rng(seed)
   const cells: Cell[] = []
   const features: Feature[] = []
+  // the paintings this style draws with (`Style.art`)
+  const art = artOf(plan.style)
+  const groundArt = groundArtOf(plan.style)
 
   const minMargin = between(r, st.pier) * 0.9
   const usable = wallLength - 2 * minMargin
@@ -476,7 +529,7 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
   if (bays === 0) {
     // Too narrow for a window: a blank return wall, which is a real thing on the side of a row house.
     for (const s of plan.storeys) {
-      cells.push({ x0: 0, x1: wallLength, y0: s.y0, y1: s.y1, element: `${plan.style}/wall`, variant: 0 })
+      cells.push({ x0: 0, x1: wallLength, y0: s.y0, y1: s.y1, element: `${art}/wall`, variant: 0 })
     }
     return { cells, features, bays: 0 }
   }
@@ -501,8 +554,8 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
 
   for (const s of plan.storeys) {
     // The solid wall either side of the bays, at every storey, so the corners read as masonry.
-    cells.push({ x0: 0, x1: margin, y0: s.y0, y1: s.y1, element: `${plan.style}/wall`, variant: 0 })
-    cells.push({ x0: wallLength - margin, x1: wallLength, y0: s.y0, y1: s.y1, element: `${plan.style}/wall`, variant: 0 })
+    cells.push({ x0: 0, x1: margin, y0: s.y0, y1: s.y1, element: `${art}/wall`, variant: 0 })
+    cells.push({ x0: wallLength - margin, x1: wallLength, y0: s.y0, y1: s.y1, element: `${art}/wall`, variant: 0 })
 
     for (let b = 0; b < bays; b++) {
       const x0 = margin + b * bayW
@@ -520,11 +573,11 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
       const variant = shopGround ? ((rng(seed ^ 0x5e11)() + b * 0.381966) % 1) : vr()
 
       let element: string
-      if (s.kind === 'ground' && b === carriageBay) element = `${plan.style}/carriage`
+      if (s.kind === 'ground' && b === carriageBay) element = `${art}/carriage`
       // ('plain': a ground floor of the style's own windows — a school's, where the style would have shops)
-      else if (s.kind === 'ground') element = plan.ground === 'plain' || !shopBay(b) ? `${plan.style}/window` : `${plan.style}/${plan.ground}`
-      else if (s.kind === 'top' && plan.top === 'mansard') element = `${plan.style}/dormer`
-      else element = `${plan.style}/window`
+      else if (s.kind === 'ground') element = plan.ground === 'plain' || !shopBay(b) ? `${art}/window` : `${groundArt}/${plan.ground}`
+      else if (s.kind === 'top' && plan.top === 'mansard') element = `${art}/dormer`
+      else element = `${art}/window`
 
       cells.push({ x0, x1, y0: s.y0, y1: s.y1, element, variant })
 
@@ -630,8 +683,14 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
     features.push({
       kind: plan.top === 'parapet' || rise > 0 ? 'parapet' : 'cornice',
       y0: plan.height - st.cornice.height, y1: plan.height + st.cornice.height * 0.35 + rise,
-      depth: st.cornice.depth, colour: plan.palette.trim,
+      depth: st.cornice.depth, colour: rise > 0 ? plan.palette.wall : plan.palette.trim,
     })
+    // a raised parapet is more wall, in the wall's colour, with the coping along its top (a storefront's charcoal trim
+    // drawn a metre and a half deep read as a black slab on the roof)
+    if (rise > 0) {
+      const top = plan.height + st.cornice.height * 0.35 + rise
+      features.push({ kind: 'cornice', y0: top - 0.14, y1: top + 0.04, depth: st.cornice.depth + 0.06, colour: plan.palette.trim })
+    }
   }
   if (plan.dress) dressWall(plan, plan.dress, features, wallLength, margin, bayW, bays, street)
   // a Victorian's gable, or its false front, rising above the cornice on the street wall
@@ -710,6 +769,13 @@ function dressWall(plan: FacadePlan, d: Dress, features: Feature[], len: number,
     for (const s of plan.storeys) {
       if (s.index < 1) continue
       features.push({ kind: 'fireEscape', y0: s.y0, y1: s.y1, depth: 0.9, x0: margin + b0 * bayW, x1: margin + (b0 + 2) * bayW, colour: '#1d1d1f' })
+    }
+  }
+  if (d.bays && bays >= 3 && plan.storeys.length >= 2) {
+    // over the two bays nearest one end, as on a 25-foot lot; the stair to the flats is at the other
+    for (const s of plan.storeys) {
+      if (s.kind === 'ground') continue
+      features.push({ kind: 'bay', y0: s.y0, y1: s.y1, depth: 0.8, x0: margin, x1: margin + 2 * bayW, colour: trim })
     }
   }
   if (d.balconies && bays >= 2) {

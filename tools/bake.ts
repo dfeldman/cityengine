@@ -708,8 +708,13 @@ async function bake(spec: CitySpec): Promise<void> {
   /** one row per building: what the classifier decided and which rule decided it (written out below) */
   const audit: string[] = []
   // and the city's own records, where the region has them: SF's Assessor rolls (tools/sf-parcels.ts)
+  // (over a box half a kilometre wider than the detail box: Overpass returns whole buildings, so those on its edge reach
+  // past it, and with the rolls cut at the same line the ~5 900 south of 37.7526 had no record and fell to the default —
+  // 24th Street's houses and shops drawn as SoMa's brick lofts, 2026-10-21)
+  const PAD = 0.005
+  const rollBox = (b: ReturnType<typeof detailBboxOf>) => ({ south: b.south - PAD, west: b.west - PAD, north: b.north + PAD, east: b.east + PAD })
   const recordOf = spec.region === 'san-francisco'
-    ? await import('./sf-parcels.ts').then(async (m) => m.parcelIndex(await m.fetchRolls(detailBboxOf(spec))))
+    ? await import('./sf-parcels.ts').then(async (m) => m.parcelIndex(await m.fetchRolls(rollBox(detailBboxOf(spec)))))
       .catch((e: unknown) => { console.warn(`  sf-parcels: not fetched (${String(e).slice(0, 120)})`); return null })
     : null
   const taggedNear: TaggedNeighbour[] = []

@@ -16,6 +16,8 @@ export type Archetype =
   | 'rowhouse' | 'marinaHouse' | 'apartment' | 'chinatown' | 'loft' | 'prewarOffice' | 'tower' | 'modern'
   | 'retailBox' | 'civic' | 'church' | 'hotel' | 'pier' | 'midcentury' | 'contemporary' | 'edwardianHouse'
   | 'apartmentTower' | 'presidio' | 'presidioBrick' | 'presidioStucco' | 'capeCod' | 'wharf'
+  // the commercial street's own (owner, 2026-10-21): shops under flats, and the one-storey shop building
+  | 'shopFlats' | 'storefront'
 
 export type District = keyof typeof DISTRICTS.districts
 
@@ -63,8 +65,29 @@ export const eraOf = (year: number): Era =>
   year <= 1905 ? 'victorian' : year <= 1924 ? 'edwardian' : year <= 1945 ? 'interwar' : year <= 1979 ? 'midcentury' : 'modern'
 
 const RESIDENTIAL = new Set<District>(['russian', 'nob', 'pacific', 'cowhollow', 'marina', 'western', 'hayes', 'polk',
-  'telegraph', 'northbeach', 'japantown', 'fortmason'])
+  'telegraph', 'northbeach', 'japantown', 'fortmason', 'mission', 'potrero', 'dogpatch'])
 const DOWNTOWN = new Set<District>(['fidi', 'rincon', 'soma', 'yerbabuena', 'embarcadero', 'unionsquare'])
+/** the neighbourhoods south of SoMa whose shop buildings `shopLook` draws */
+const NEIGHBOURHOOD = new Set<District>(['mission', 'potrero', 'dogpatch'])
+
+/**
+ * A commercial building's look, from the mix the labelled photographs show (archetypeOf, 'commercial-street'): a one-storey
+ * building is mostly a storefront, masonry is mostly a loft, a pre-1925 one mostly shops under flats, a post-war one a
+ * storefront or a plain modern box. SoMa leans to its warehouses.
+ */
+function shopLook(roll: number, era: Era | undefined, h: number, masonry: boolean, soma: boolean): Archetype {
+  const mix: [Archetype, number][] =
+    h <= 7 ? [['storefront', 60], ['loft', soma ? 30 : 20], ['midcentury', 15]]
+    : masonry ? [['loft', 60], ['shopFlats', 20], ['storefront', 20]]
+    : era === 'victorian' || era === 'edwardian' ? [['shopFlats', 55], ['loft', soma ? 35 : 25], ['storefront', 20]]
+    : era === 'interwar' ? [['storefront', 40], ['loft', 35], ['shopFlats', 25]]
+    : era === 'midcentury' || era === 'modern' ? [['midcentury', 55], ['storefront', 45]]
+    : soma ? [['loft', 45], ['storefront', 25], ['shopFlats', 15], ['midcentury', 15]]
+    : [['loft', 35], ['shopFlats', 35], ['storefront', 30]]
+  let x = roll * mix.reduce((t, [, w]) => t + w, 0)
+  for (const [k, w] of mix) if ((x -= w) <= 0) return k
+  return mix[mix.length - 1][0]
+}
 
 /**
  * Every rule carries a short name, and the name travels with the building into docs/sf-archetypes.csv at bake
@@ -194,7 +217,8 @@ export function archetypeOf(f: Features): { archetype: Archetype; district: Dist
     // Golden Gate Heights, 2026-10-06)
     if ((era === 'midcentury' || era === 'modern') && house && h <= 13) return a(era === 'modern' && f.roll < 0.4 ? 'contemporary' : 'marinaHouse', 'postwar-house')
     if (use === 'IND' || ((masonry || use === 'COMM') && f.area > 500 && (era === 'victorian' || era === 'edwardian' || era === 'interwar')
-      && (district === 'soma' || district === 'yerbabuena' || district === 'rincon' || district === 'embarcadero' || district === 'northbeach' || district === 'wharf' || district === 'fidi'))) return a('loft', 'industrial-loft')
+      && (district === 'soma' || district === 'yerbabuena' || district === 'rincon' || district === 'embarcadero' || district === 'northbeach' || district === 'wharf' || district === 'fidi'
+        || district === 'potrero' || district === 'dogpatch'))) return a('loft', 'industrial-loft')
     if (era === 'midcentury' && h >= 12) return a(rec!.construction === 'B' && f.area > 1500 ? 'modern' : 'midcentury', 'midcentury-tall')
     if (era === 'modern' && h >= 10) return a(f.area > 3000 && h >= 20 && DOWNTOWN.has(district) ? 'modern' : 'contemporary', 'modern-tall')
     if ((use === 'MRES' || use === 'COMR') && h > 13 && era !== 'midcentury') return a(DOWNTOWN.has(district) && use !== 'MRES' ? 'prewarOffice' : 'apartment', 'mres-comr-mid')
@@ -218,6 +242,17 @@ export function archetypeOf(f: Features): { archetype: Archetype; district: Dist
    */
   if (district === 'fidi' && era && era !== 'midcentury' && era !== 'modern' && use && use !== 'MRES' && use !== 'SRES') {
     return a(masonry || use === 'IND' ? 'loft' : 'prewarOffice', 'downtown-commercial-lowrise')
+  }
+  /*
+   * THE COMMERCIAL STREET (owner, 2026-10-21: "make them have a more realistic variety"). Every shop building in SoMa, and
+   * — with no district of their own — every one in the Mission and on Potrero Hill, was a brick loft. Of 50 such
+   * "lofts" labelled from street photographs (data/appearance/training.json) a third are brick warehouses; the rest are
+   * one- and two-storey shop buildings, timber or stucco shop-and-flats, and post-war boxes. Drawn from that mix by the
+   * building's own roll, leaning on what the record says: its age, its masonry, its height.
+   */
+  const commercial = /^(COMR|COMM|COMO|IND)$/.test(use) || /^(commercial|retail|industrial|warehouse|office)$/.test(t.building ?? '') || !!t.shop
+  if ((district === 'soma' && h < 20) || (NEIGHBOURHOOD.has(district) && (commercial || (!rec && f.area > 500)))) {
+    if (district !== 'soma' || commercial || !rec) return a(shopLook(f.roll, era, h, masonry || use === 'IND', district === 'soma'), 'commercial-street')
   }
   if (DOWNTOWN.has(district)) return a(h >= 20 ? 'prewarOffice' : district === 'soma' ? 'loft' : 'apartment', 'downtown-default')
   if (district === 'tenderloin') return a(h >= 9 ? 'apartment' : 'rowhouse', 'tenderloin')
@@ -333,6 +368,8 @@ export const STYLE_OF: Record<Archetype, StyleId> = {
   wharf: 'wharf',
   midcentury: 'bauhaus',
   contemporary: 'bauhaus',
+  shopFlats: 'shopflats',
+  storefront: 'storefront',
 }
 
 /** The smallest enclosing rectangle's sides, for frontage and depth (a ring in metres). */

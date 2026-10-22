@@ -14,6 +14,8 @@ import type { TreeForm } from '../../city/tree-forms.ts'
 const PALMS: Partial<Record<District, number>> = {
   embarcadero: 0.85, marina: 0.3, wharf: 0.35, fortmason: 0.25, civic: 0.15, soma: 0.1, rincon: 0.12,
   hayes: 0.08, western: 0.06, yerbabuena: 0.12, cowhollow: 0.12,
+  // (the soma figure they had while they were SoMa: Dolores Street's palms are the Mission's)
+  mission: 0.1, potrero: 0.1, dogpatch: 0.1,
 }
 
 /**

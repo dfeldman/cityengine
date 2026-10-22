@@ -20,7 +20,7 @@ const CITY = [
 describe('the style table', () => {
   it('has every style the game names, each with palettes and a sane level range', () => {
     expect(STYLES.map((s) => s.id).sort()).toEqual(
-      ['bauhaus', 'brick', 'brownstone', 'brutalist', 'chicago', 'classical', 'haussmann', 'marais', 'opera', 'operaGlass', 'presidio', 'presidioBrick', 'presidioStucco', 'capecod', 'skyscraper', 'stucco', 'sfapartment', 'chinatown', 'edwardian', 'tenement', 'towerblock', 'victorian', 'vosges', 'wharf'].sort(),
+      ['bauhaus', 'brick', 'brownstone', 'brutalist', 'chicago', 'classical', 'haussmann', 'marais', 'opera', 'operaGlass', 'presidio', 'presidioBrick', 'presidioStucco', 'capecod', 'skyscraper', 'stucco', 'sfapartment', 'chinatown', 'edwardian', 'tenement', 'towerblock', 'victorian', 'vosges', 'wharf', 'shopflats', 'storefront'].sort(),
     )
     for (const s of STYLES) {
       expect(s.palettes.length, `${s.id} needs more than one palette or every one of them is identical`)
@@ -93,7 +93,9 @@ describe('rule 2: the ground floor and the roofline are not just more wall', () 
       const plan = planFacade(s.id, 4, { levels: 4 })
       const wall = planWall(plan, 15, 4)
       const top = wall.features.filter((f) => f.kind === 'cornice' || f.kind === 'parapet')
-      expect(top.length, `${s.id} has no roofline`).toBe(1)
+      // (one, or two where a dressed building's parapet is raised and carries its own coping)
+      expect(top.length, `${s.id} has no roofline`).toBeGreaterThanOrEqual(1)
+      expect(top.length).toBeLessThanOrEqual(plan.dress?.parapet ? 2 : 1)
       expect(top[0].depth).toBeGreaterThan(0)
     }
   })

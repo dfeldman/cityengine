@@ -29,6 +29,7 @@ import { Effect } from '@babylonjs/core/Materials/effect'
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial'
 import { Texture } from '@babylonjs/core/Materials/Textures/texture'
 import type { Scene } from '@babylonjs/core/scene'
+import { wallPageOf } from '../city/facade.ts'
 
 const VERTEX = `
 precision highp float;
@@ -409,7 +410,8 @@ export function facadeMaterial(scene: Scene, styleId: string, assetBase: string,
     samplers: ['wallTex', 'atlasTex'],
   })
 
-  const wall = new Texture(`${assetBase}walls/${styleId}.png`, scene, false, false)
+  // (a style that borrows another's paintings binds that one's page: facade.ts `Style.art`)
+  const wall = new Texture(`${assetBase}walls/${wallPageOf(styleId)}.png`, scene, false, false)
   wall.wrapU = Texture.WRAP_ADDRESSMODE
   wall.wrapV = Texture.WRAP_ADDRESSMODE
   const atlas = new Texture(`${assetBase}atlas.png`, scene, false, false)
