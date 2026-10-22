@@ -142,6 +142,100 @@ The two-run gate is worth it on the middling questions (cornice, ground floor, b
 at about a third less coverage. Type is weak because neighbouring types are genuinely close (small flats or a house; a
 shop-and-flats or a bay-window apartment block).
 
+### Wave 4 — schema v4: find the target, look, then answer (79 reference, two Haiku runs on 92)
+
+`menus-v4.json`, `BRIEF-HAIKU-v4.md`, `BRIEF-GOLD-v4.md`. The same frames and the same buildings as wave 3, less
+way/243356557 (demolished). Changes, each from something waves 1–3 showed:
+
+- **`usable` split into three facts**: `buildings_between_lines` (one / two / three_or_more), `target_hidden` (no /
+  partly / mostly) and `matches_size` (against the mapped footprint and height). With several buildings between the
+  lines, the labeller describes the one that matches the mapped size.
+- **Evidence first**: three short free-text fields (`seen_top`, `seen_ground`, `seen_bays`) are written before the
+  answers.
+- **`generic_fit`** (ordinary / unusual): the triage question from idea 0.
+- **`homes_above`**, and sharper definitions of each `type`.
+- **Dropped**: `trim_colour` (lowest agreement in wave 3) and `piers` (nothing reliable to see).
+
+Before the round, two cheaper ideas were tried offline and dropped:
+
+- **Pixel colour** (median of the wall span in the frame): 8% exact and 30% family, against Haiku's 56% and 77%. The
+  span holds sky, trees, cars and shadow.
+- **The bake's own style**: it matched the reference type only 27% of the time, against Haiku's 60%.
+
+**Like for like.** The v4 reference counts every sliver of a neighbour inside a line as a second building, so it calls
+only 32 of 79 buildings strictly usable (wave 3: 60 of 80). Comparing raw scores across waves would compare different
+buildings. The table therefore scores both waves on the same 70 buildings: the reference saw a target, it was not
+mostly hidden, and its size did not contradict the map. Each cell gives accuracy and coverage. Coverage is the share
+of those buildings that got an answer; under the gate, both runs must give the same answer.
+
+| question | v3, one run | v4, one run | v3, both runs agree | v4, both runs agree |
+|---|---|---|---|---|
+| fire escape | 96%, 86% | 97%, 94% | 97%, 66% | **100%, 86%** |
+| colour panels | 96%, 88% | 96%, 96% | 95%, 71% | **95%, 94%** |
+| windows | 87%, 87% | 93%, 88% | 87%, 72% | **94%, 76%** |
+| balconies | 81%, 84% | 91%, 93% | 86%, 62% | **93%, 81%** |
+| awnings | 95%, 79% | 89%, 94% | 97%, 61% | 93%, 87% |
+| top (cornice kind) | 74%, 78% | 78%, 87% | 88%, 46% | **91%, 68%** |
+| surface | 76%, 89% | 80%, 94% | 82%, 69% | **89%, 81%** |
+| ground colour | 87%, 72% | 81%, 89% | 90%, 56% | 88%, 77% |
+| ground floor | 77%, 85% | 80%, 92% | 85%, 65% | 80%, 77% |
+| bays (none / one / several) | 84%, 86% | 76%, 96% | 86%, 65% | 78%, 84% |
+| bays present at all | | | 92% | 88% |
+| bay shape | 67%, 86% | 74%, 93% | 79%, 58% | 77%, 74% |
+| type | 59%, 86% | 62%, 91% | 59%, 54% | **72%, 68%** |
+| wall colour (family) | 55%, 86% | 60%, 96% | 56% (78%), 46% | **63% (81%), 74%** |
+
+What it shows:
+
+- **Evidence first works.** Gated, v4 answers far more often (about a third more coverage across the board) at equal
+  or better accuracy:
+  - top: 91% correct on 68% of buildings, against 88% on 46%;
+  - wall colour: 63% on 74%, against 56% on 46%;
+  - type: 72% on 68%, against 59% on 54%.
+  Runs agree with each other more, so the gate throws away less.
+- **Bays got worse on the count, not on presence.** Both runs repeatedly call `one_stack` where the reference calls
+  `several_stacks`, and they agree with each other, so the gate cannot catch it. The renderer only uses yes/no, and
+  on that the two waves are close (88–92%). The count should go, or become "bays on most of the front / one bay".
+- **Colour errors are near-misses.** The misses are neighbouring shades the runs agree on: lightGrey vs sand / cream
+  / white, yellow vs paleYellow, brown vs redBrick. The palette is finer than a street photo can settle; the family
+  is right 81% of the time.
+- **Type errors are adjacent types:**
+  - `wood_or_stucco_flats` vs `stucco_house_with_garage` vs `bay_window_apartment_block`;
+  - `one_storey_shop_building` vs `modern_commercial_box`;
+  - `classic_office_block` vs `classic_stone_apartment_hotel`.
+  The reference itself marks most of these low confidence.
+- **Counting buildings is the weak step.**
+  - `buildings_between_lines` agrees with the reference only 69–78% of the time, and run with run 69%.
+  - Whether a neighbour's sliver "counts" is a judgement no one makes the same way twice.
+  - `matches_size` is mostly `cannot_tell` (58–71% answered): from the street, nobody can see a footprint's depth.
+  - The question that matters is narrower: is the building that matches the mapped size clearly identifiable, and is
+    it most of the frame?
+- **`generic_fit` is reliable: 94% against the reference, 96% run against run.** Of the 79 buildings, 14 were flagged
+  unusual by at least one labeller and 5 by all three:
+  - a school's curved roof;
+  - a wavy deco roofline;
+  - a shingle house with cupolas;
+  - a villa with a tower;
+  - way/256454788, flagged for its rooftop billboard.
+  Haiku also flags gentle curved parapets that the reference lets pass. As a triage flag it errs on the safe side.
+
+### v5, planned from wave 4 (not yet run)
+
+- **Target**: replace the count with `target_clear` (yes: one building that fits the mapped size fills most of the
+  space between the lines; no: it is ambiguous, or another building dominates) and keep `target_hidden`. Drop
+  `matches_size` as a separate answer. Its use is in choosing the building, not in reporting.
+- **Ground floor in three parts** (owner, 2026-10-22: built-in garages are everywhere, above all on houses; they are
+  ordinary, not a reason for triage):
+  - `garage_doors`: none / one / two_or_more;
+  - `shopfronts`: none / one / several / all;
+  - `entrance`: at_grade / stoop.
+  These replace the single `ground_floor` choice, which forced "garages" or "one_shop" on a front that has both.
+- **Bays**: `none` / `one` / `most_of_front`, plus the shape.
+- **Colour**: a coarser wall palette of about a dozen values, merging the shades photographs cannot separate. Exact
+  shades come from the district palette around the chosen family.
+- **Type**: keep it, but render it as a hint combined with the bake's archetype (idea 4). Merge the pairs that are
+  confused both ways.
+
 ## 4. Rendering from the labels (`?labels=1`)
 
 `src/city/appearance.ts` turns a label into a style (`type`), a palette (wall, trim, ground, awning colours) and a
@@ -209,7 +303,7 @@ photographs and almost none worse.
 | frames | `tools/cache/appearance-r2/` (gitignored; loose v1 frames in `appearance-r/`, crops in `appearance-r-crop/`) |
 | heading study | `node --experimental-strip-types tools/mapillary-headings.ts` |
 | schemas, briefs | `data/appearance/research/menus*.json`, `BRIEF-GOLD*.md`, `BRIEF-HAIKU*.md`, `hints.json` |
-| labels | `data/appearance/research/labels/` — `gold*`: reference; `A-`/`B-`/`E-`: wave 1 variants; `E2*`: wave 2; `H3a`/`H3b`: wave 3 runs |
+| labels | `data/appearance/research/labels/` — `gold*`: reference; `A-`/`B-`/`E-`: wave 1 variants; `E2*`: wave 2; `H3a`/`H3b`: wave 3 runs; `gold4*`, `H4a*`/`H4b*`: wave 4 |
 | scoring | `python3 -I tools/appearance/score.py <reference.jsonl> <run.jsonl> [<run2.jsonl>]` |
 | crop step | `python3 -I tools/appearance/crop.py <in> <out>` (cropping hurt; kept for the record) |
 | render table | `python3 -I tools/appearance/looks.py data/appearance/looks/haiku-v3.json <runA> <runB>` |

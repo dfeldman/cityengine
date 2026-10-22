@@ -15,7 +15,7 @@ import sys
 
 # (the questions are whatever the reference answered: v1, v2 and v3 schemas all score)
 ATTRS: list[str] = []
-NOT_ATTRS = {'osm', 'best', 'conf', 'note', 'seen'}
+NOT_ATTRS = {'osm', 'best', 'conf', 'note', 'seen', 'seen_top', 'seen_ground', 'seen_bays'}
 FAMILY = {'white': 'light', 'cream': 'light', 'sand': 'light', 'lightGrey': 'light', 'buff': 'warm', 'salmon': 'warm',
           'paleYellow': 'warm', 'brown': 'warm', 'redBrick': 'brick', 'midGrey': 'dark', 'charcoal': 'dark', 'black': 'dark',
           'paleBlue': 'cool', 'paleGreen': 'cool', 'teal': 'cool', 'glassBlue': 'cool',
@@ -36,6 +36,10 @@ def load(p):
         except json.JSONDecodeError:
             continue
         if 'osm' in r:
+            # v4 does not ask `usable`: it is one building between the lines, not mostly hidden, matching the mapped size
+            if 'usable' not in r and 'buildings_between_lines' in r:
+                ok = r.get('buildings_between_lines') == 'one' and r.get('target_hidden') != 'mostly' and r.get('matches_size') != 'no'
+                r['usable'] = 'yes' if ok else 'no'
             out[r['osm']] = r
     return out
 
