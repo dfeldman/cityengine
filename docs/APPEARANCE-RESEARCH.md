@@ -324,6 +324,7 @@ renders stay the same buildings from round to round. `tools/appearance/judged.py
 | v9 | see below | 1.80 (0.61) | 41 of 51, first 3 of 3 | 45 (4 the same) |
 | v10 | see below | 1.82 (0.69) | 42 of 51 | 45 (6 the same, today never) |
 | v11 | see below | 1.77 (0.50) | 40 of 52, one 3 of 3 | 46 (6 the same, today never) |
+| v12 | v11's labels, the renderer fixes below | **1.84** (0.63) | **43 of 51** | 45 (6 the same, today never) |
 
 **v6 changes:**
 - **Schema** (`menus-v6.json`):
@@ -522,8 +523,30 @@ else it said:
 - **Murals:** bright bands over the ground floor, a cartoon of one (v11).
 - **Steel sash:** the Chicago window on non-residential grid fronts (v9).
 
+**Fuel stations and car washes, from the map** (`src/city/specials.ts`, `data/appearance/specials.json` from
+`tools/appearance/specials.py`). OSM tags them outright (`amenity=fuel` / `car_wash`), so they are drawn from a recipe
+always, not only behind `?labels=1`:
+- **Canopy:** a fascia in the brand's colours (Shell, Chevron, 76, Arco, Valero) on a row of columns.
+- **Station shop:** glass under the brand's fascia.
+- **Car wash:** open bays under a sign band.
+
+The cached OSM gives 18 canopies, 1 shop and 3 washes. Three bugs had kept them out:
+- **Every pump canopy in the city was dropped.** The bake makes a canopy a half-metre slab, and tile preparation
+  drops anything 0.5 m deep or less (`render/prepare.ts`).
+- **Raised slabs were drawn a storey deep.** The planner fitted storeys to the mapped height only for spans over a
+  metre.
+- **Footways under a canopy grew passage vaults.**
+
+The fitting fix also corrects every other thin raised part. The labelled sign now goes on the walls the building
+shows the street, by the same test its dressing uses.
+
+**v12** (v11's labels, re-rendered with all of the above): resemblance 1.84, 43 of 51 recognisable. Both are the best
+of any round, and label-caused misses fell to 56. Two things are still wrong:
+- The auto-shop recipe forces every bay open. The one labelled body shop with one open bay and two plain doors judged
+  no better for it.
+- A labelled sign cut short on a narrow front ("MACY" for "PHARMACY").
+
 **Still open:**
-- On one lot the sign plate goes on the street index's longest street wall, which is not the wall the photo shows.
 - Dormers are too small to read at street distance.
 - A mural painting and a true steel-sash painting would need new atlas cells.
 
