@@ -4250,7 +4250,8 @@ export class City {
       }
       buildBuilding(out, ring, plan, this.atlas, b.id, 0.16 + foot,
         // (a label's roof: a gable, a hip or a mansard is most of a small building's outline against the sky)
-        look?.roof ? { shape: look.roof, height: b.roofHeight ?? Math.min(4, 1.2 + plan.height * 0.18), direction: b.roofDirection, colour: b.roofColour }
+        // (a pitched roof the map calls flat has no height of its own: `||`, not `??` — the bake's 0 drew a mansard as nothing)
+        look?.roof ? { shape: look.roof, height: (look.roof !== 'flat' && b.roofHeight) || Math.min(4, 1.2 + plan.height * 0.18), direction: b.roofDirection, colour: b.roofColour }
           : { shape: b.roof, height: b.roofHeight, direction: b.roofDirection, colour: b.roofColour },
         // (a label's dormers, or none where it saw none)
         look?.dormers !== undefined && this.region.roofscape ? { ...this.region.roofscape, dormers: look.dormers }
@@ -4302,7 +4303,8 @@ export class City {
           const nx = (c.z - a.z) / len, nz = -(c.x - a.x) / len
           const m = flatSignMesh(this.scene, {
             spec: { type: 'flat', text: look.sign, h: 0.42, face: 'grotesque', weight: 'bold', colour: [0.97, 0.96, 0.92], panel: [0.12, 0.12, 0.13], lit: 'none', w: Math.min(len * 0.8, 9) },
-            x: (a.x + c.x) / 2, y: 0.16 + foot + plan.storeys[0].y1 + 0.45, z: (a.z + c.z) / 2, heading: Math.atan2(nx, nz),
+            // (just over the ground floor — on a one-storey shop that is above its roof, so on the fascia below the top)
+            x: (a.x + c.x) / 2, y: 0.16 + foot + Math.min(plan.storeys[0].y1 + 0.45, plan.height - 0.55), z: (a.z + c.z) / 2, heading: Math.atan2(nx, nz),
           }, `labelsign:${b.id}`)
           if (m) { m.renderingGroupId = GROUP.building; meshes.push(m) }
         }

@@ -129,8 +129,49 @@ export function lookFor(id: number, baked?: StyleId): Look | null {
   if (l.colour_panels === 'yes' || l.colour_panels === 'no') dress.blocks = l.colour_panels === 'yes'
   if (l.awnings === 'some') dress.canopy = true
   else if (l.awnings === 'none') dress.canopy = false
+  special(l, look, dress)
   if (Object.keys(dress).length) look.dress = dress
   return look
+}
+
+/**
+ * The special cases (owner, 2026-10-22: structures common enough and alike enough to draw from one recipe, which the
+ * generic labels approximate badly). A label that names one gets the whole recipe, over whatever else it said:
+ *
+ * - an AUTO REPAIR SHOP: one or two storeys, the street front a row of open dark bays under a sign band, a plain raised
+ *   panel at the top, no windows above;
+ * - a PARKING GARAGE: the ground floor a wide entry, every storey above an open deck over a solid spandrel, a flat top.
+ *
+ * Gas stations and car washes are next when a sample has some.
+ */
+function special(l: Label, look: Look, dress: Partial<Dress>): void {
+  const auto = l.special_structure === 'auto_repair_shop' || (l.service_bays === 'open_bays' && l.homes_above !== 'yes')
+  if (auto) {
+    // (a plain box: the storefront style borrows the Marina stucco's art, whose garage is an arch)
+    look.style = 'bauhaus'
+    // (its sign is over the bays, not over a shop)
+    if (l.sign_text && l.sign_text.length <= 40) look.sign = l.sign_text
+    // (every bay an open bay: the lobby door's painting is an arch, which read as a church door on a body shop)
+    dress.ground = { garages: 99, shops: 'none', entrance: 'none' }
+    dress.shops = 'none'
+    dress.garageTint = '#2e2e30'
+    dress.fascia = true
+    dress.blank = true
+    if ((look.levels ?? 1) <= 2) dress.cap = 'panel'
+    dress.balconies = false
+    dress.bayStacks = 0
+  }
+  if (l.special_structure === 'parking_garage') {
+    look.style = 'bauhaus'
+    dress.ground = { garages: 99, shops: 'none', entrance: 'none' }
+    dress.garageTint = '#2b2b2d'
+    dress.decks = true
+    dress.cap = 'plain'
+    dress.balconies = false
+    dress.bayStacks = 0
+    dress.fireEscape = false
+    look.roof = 'flat'
+  }
 }
 
 /** `?labels=1`: draw the labelled buildings from their labels. */

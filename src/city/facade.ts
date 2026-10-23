@@ -296,6 +296,11 @@ export interface Dress {
   bayTint?: string
   /** a mural over the ground floor: painted in bright bands, a cartoon of one */
   mural?: boolean
+  /**
+   * An open parking garage (a special case, appearance research 2026-10-22): every storey above the ground an open deck —
+   * a dark opening over a solid spandrel at the floor line — and no windows at all.
+   */
+  decks?: boolean
 }
 
 export interface GroundMix {
@@ -320,7 +325,8 @@ export function groundBays(bays: number, g: GroundMix): GroundBay[] {
   for (let b = s0; b < s0 + Math.min(nShop, bays); b++) out[b] = 'shop'
   // garages from the ends inwards, one end then the other
   // (two or more: most of what the shops and the door leave — a row of garages is the whole ground floor; wave 7)
-  let garages = g.garages >= 2 ? Math.max(2, Math.round((bays - nShop - (g.entrance === 'none' ? 0 : 1)) * 0.75)) : g.garages
+  // (a special case asks for every free bay: garages ≥ 99)
+  let garages = g.garages >= 99 ? bays : g.garages >= 2 ? Math.max(2, Math.round((bays - nShop - (g.entrance === 'none' ? 0 : 1)) * 0.75)) : g.garages
   for (let k = 0; garages > 0 && k < bays; k++) {
     const b = k % 2 === 0 ? k / 2 : bays - 1 - (k - 1) / 2
     if (out[b] === 'window') { out[b] = 'garage'; garages-- }
@@ -336,6 +342,11 @@ export function groundBays(bays: number, g: GroundMix): GroundBay[] {
 
 const GLAZED: StyleId[] = ['bauhaus', 'chicago', 'opera', 'operaGlass', 'skyscraper']
 const MURAL = ['#d9573b', '#e8b33a', '#3f7fb5', '#5aa05a', '#b0498c']
+/** how light a colour is, 0-1 (Rec. 601) */
+const luminance = (hex: string): number => {
+  const n = parseInt(hex.slice(1), 16)
+  return (0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255
+}
 /** Which styles have each ground painting (the atlas: tools/facadegen). A bay borrows one when its own style has none. */
 const GROUND_ART: Record<Exclude<GroundBay, 'window'>, { element: string; styles: StyleId[] }> = {
   shop: { element: 'shopfront', styles: ['tenement', 'brick', 'chinatown', 'wharf', 'marais', 'haussmann'] },
@@ -782,11 +793,13 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
        * hours, a shop two bays wide — but each bay paints its own fascia, so the pair read CLAM BAR | CLAM BAR.)
        */
       const shopGround = s.kind === 'ground' && (mix ? mix[b] === 'shop' : plan.ground !== 'plain' && b !== carriageBay && shopBay(b))
-      const variant = shopGround ? ((rng(seed ^ 0x5e11)() + b * 0.381966) % 1) : vr()
+      // (a label's garage is always the garage door: the edwardian garage painting's second variant is an arched entry up
+      //  steps, and one garage bay in two came out as a church door — the arches judges blamed on the labels, waves 6-11)
+      const variant = shopGround ? ((rng(seed ^ 0x5e11)() + b * 0.381966) % 1) : s.kind === 'ground' && mix?.[b] === 'garage' ? 0 : vr()
 
       let element: string
       if (s.kind === 'ground' && mix) element = mix[b] === 'window' ? `${art}/${d?.blank ? 'wall' : 'window'}` : groundElement(mix[b] as Exclude<GroundBay, 'window'>, art, groundArt, d?.shopGlass)
-      else if (s.kind !== 'ground' && d?.blank && shown !== null) element = `${art}/wall`
+      else if (s.kind !== 'ground' && (d?.blank || d?.decks) && shown !== null) element = `${art}/wall`
       else if (s.kind === 'ground' && b === carriageBay) element = `${art}/carriage`
       // ('plain': a ground floor of the style's own windows — a school's, where the style would have shops)
       else if (s.kind === 'ground') element = plan.ground === 'plain' || !shopBay(b) ? `${art}/window` : `${groundArt}/${plan.ground}`
@@ -795,11 +808,13 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
 
       const garageTint = s.kind === 'ground' && mix?.[b] === 'garage' ? d?.garageTint
         // (a mural: the ground floor's bays in bright bands, a cartoon of a painted wall)
-        : s.kind === 'ground' && d?.mural && shown !== null ? MURAL[b % MURAL.length] : undefined
+        : s.kind === 'ground' && d?.mural && shown !== null ? MURAL[b % MURAL.length]
+        // (an open deck: the dark of the car park behind)
+        : s.kind !== 'ground' && d?.decks && shown !== null ? '#2b2b2d' : undefined
       cells.push({ x0, x1, y0: s.y0, y1: s.y1, element, variant, ...(blockBay(b) && s.kind !== 'ground' ? { tint: plan.palette.accent } : garageTint ? { tint: garageTint } : {}) })
 
       // A window sill is a small ledge, and a row of them is what catches the light on a street.
-      if (s.kind !== 'ground' && st.window.sill > 0.1 && plan.style !== 'skyscraper' && !(d?.blank && shown !== null)) {
+      if (s.kind !== 'ground' && st.window.sill > 0.1 && plan.style !== 'skyscraper' && !((d?.blank || d?.decks) && shown !== null)) {
         const winW = bayW * plan.window.widthFrac
         const wx = x0 + (bayW - winW) / 2
         features.push({
@@ -832,9 +847,28 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
     }
   }
 
+  // a parking garage's spandrels: a solid band at every floor line, the open deck between
+  if (d?.decks && shown !== null) {
+    for (const s of plan.storeys) {
+      if (s.kind === 'ground') continue
+      features.push({ kind: 'slabBand', y0: s.y0 - 0.1, y1: s.y0 + 1.05, depth: 0.18, colour: plan.palette.wall })
+    }
+  }
   // a label's fascia over each run of shops, and its loading docks along the garage bays
   if (mix && plan.storeys[0].kind === 'ground') {
     const gy = plan.storeys[0].y1
+    // a light garage door is drawn as a door, not tinted: the paintings' doors are dark and a tint only darkens them
+    // (wave 10-11: white roll-up and glass doors drawn dark were the commonest renderer miss on stucco fronts)
+    const light = d?.garageTint !== undefined && luminance(d.garageTint) > 0.5
+    for (let b = 0; b < bays && light; b++) {
+      if (mix[b] !== 'garage') continue
+      const x0 = margin + b * bayW + 0.22, x1 = margin + (b + 1) * bayW - 0.22, top = Math.min(2.5, gy * 0.78)
+      features.push({ kind: 'cornice', y0: 0.02, y1: top, depth: 0.05, x0, x1, colour: d!.garageTint! })
+      for (let k = 1; k < 4; k++) {
+        const y = (top * k) / 4
+        features.push({ kind: 'cornice', y0: y - 0.03, y1: y + 0.03, depth: 0.07, x0, x1, colour: '#8d8b86' })
+      }
+    }
     for (let b = 0; b < bays; b++) {
       if (d?.fascia && mix[b] === 'shop' && mix[b - 1] !== 'shop') {
         let e = b
@@ -1040,6 +1074,12 @@ function dressWall(plan: FacadePlan, d: Dress, features: Feature[], len: number,
         if (s.kind === 'ground') continue
         features.push({ kind: 'bay', y0: s.y0, y1: s.y1, depth: 0.8, x0: margin + b0 * bayW, x1: margin + (b0 + w) * bayW, colour: trim,
           shape: d.bayShape ?? (d.victorian === 'stick' ? 'square' : undefined), ...(d.bayTint ? { body: d.bayTint } : {}) })
+      }
+      // …outlined at its edges in the trim colour, so a bay reads from straight in front, where its cheeks vanish
+      // (wave 11: bays the labels gave were judged missing on front-on shots)
+      const top = plan.storeys[plan.storeys.length - 1].y1, base = plan.storeys.find((st) => st.kind !== 'ground')?.y0 ?? 0
+      for (const x of [margin + b0 * bayW, margin + (b0 + w) * bayW]) {
+        features.push({ kind: 'pilaster', y0: base, y1: top, depth: 0.86, x0: x - 0.07, x1: x + 0.07, colour: trim })
       }
     }
   } else if (d.bays && bays >= 3 && plan.storeys.length >= 2) {

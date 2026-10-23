@@ -495,6 +495,38 @@ building". The remaining misses are now mostly the renderer's (75 of 170, agains
 - **Shot:** the comparison camera still finds a neighbour for a few buildings (way/71504444, every round).
 - **Special-case models:** auto shop (open bays and a sign band), parking garage (open decks), gas station.
 
+### After round 11: the first special cases and renderer gaps (owner, 2026-10-22: "both, in that order")
+
+**Special cases** (`src/city/appearance.ts` `special`). A label that names one gets the whole recipe, over whatever
+else it said:
+- **Auto repair shop** (`special_structure: auto_repair_shop`, or open service bays on a front with no homes): a plain
+  box, every street bay a dark open bay, a sign band, a raised panel on a low one, no windows above, and its own sign.
+  The two labelled body shops in the sample read as body shops; today's render drew one as "Lakeside Tacos" and the
+  other as a deli.
+- **Parking garage** (`special_structure: parking_garage`, `Dress.decks`): every storey above the ground an open deck,
+  meaning a dark opening over a solid spandrel at the floor line, with open bays at street level and a flat top. Tested
+  on way/253254850, the three-level garage the judges identified and the labels missed. The test mark was not kept in
+  the table.
+- Gas stations and car washes are next, when a sample has some.
+
+**Renderer gaps closed:**
+- **The "invented arches".** The edwardian garage painting has two variants, and the second is an arched entry up
+  steps. One labelled garage bay in two came out as that arch, across every round. The judges blamed the labels, and v9
+  half-fixed it by blaming the stucco garage. A label's garage now always takes the door variant.
+- **Light garage doors.** A white or cream door is drawn as a door panel with its seams. A tint can only darken the
+  paintings' dark doors.
+- **Bays read from in front.** Each label bay stack is outlined in the trim colour at its edges, so it shows from
+  straight in front, where its cheeks vanish.
+- **Labelled pitched roofs have height.** A mansard or gable on a building the map calls flat had height 0: `||`, not
+  `??`.
+- **Murals:** bright bands over the ground floor, a cartoon of one (v11).
+- **Steel sash:** the Chicago window on non-residential grid fronts (v9).
+
+**Still open:**
+- On one lot the sign plate goes on the street index's longest street wall, which is not the wall the photo shows.
+- Dormers are too small to read at street distance.
+- A mural painting and a true steel-sash painting would need new atlas cells.
+
 ## 4. Rendering from the labels (`?labels=1`)
 
 `src/city/appearance.ts` turns a label into a style (`type`), a palette (wall, trim, ground, awning colours) and a
