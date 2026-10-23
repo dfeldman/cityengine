@@ -63,7 +63,8 @@ def district(lat, lon):
     # (north of the Golden Gate is Marin — Sausalito and the Headlands, which the bake includes; the nearest SF seed
     #  called them the Marina, and San Francisco's Assessor has no record of them)
     if lat > 37.815:
-        return 'marin'
+        # (…except Treasure and Yerba Buena Islands, out in the bay: part of the City and County, on its roll)
+        return 'treasure' if lon > -122.40 else 'marin'
     c = math.cos(math.radians(lat))
     return min(seeds, key=lambda s: (s[1] - lat) ** 2 + ((s[2] - lon) * c) ** 2)[0]
 

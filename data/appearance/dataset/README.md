@@ -47,8 +47,9 @@ here yet.
 - footprints under 30 m².
 
 **Where the records stop:**
-- 480 sampled buildings are in Marin (`district: marin`: Sausalito and the Headlands, north of the Golden Gate), where
-  San Francisco's Assessor has nothing.
+- 447 sampled buildings are in Marin (`district: marin`: Sausalito and the Headlands, north of the Golden Gate), where
+  San Francisco's Assessor has nothing. Treasure and Yerba Buena Islands (`district: treasure`, 33) are the City and
+  County's and are on its roll.
 - Of the 9,520 in San Francisco, 9,066 have a year built (95%). The rest are lots the Assessor does not date, mostly
   public property (`VPUB`: schools, city buildings) and miscellaneous lots.
 - The first version of the sample matched the roll by nearest parcel point and missed condominium lots entirely: 2,354
