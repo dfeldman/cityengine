@@ -7,8 +7,8 @@ labellers, and record the run in runs.json (model, brief and menus with their sh
     python3 -I tools/appearance/batches.py --run h55-v11-a --brief data/appearance/research/BRIEF-HAIKU-v11.md \
         --menus data/appearance/research/menus-v11.json --model "haiku (Claude Code subagent)" --from 0 --to 200
 
-Writes data/appearance/dataset/runs/<run>/batches/NN.txt, one building a line with its mapped size, as the briefs
-expect; the labellers write runs/<run>/raw/NN.jsonl.
+Writes data/appearance/dataset/runs/<run>/batches/<from>-<to>/NN.txt, one building a line with its mapped size, as
+the briefs expect; the labellers write runs/<run>/raw/<from>-<to>/NN.jsonl.
 """
 import argparse
 import hashlib
@@ -42,9 +42,12 @@ if os.path.exists(f'{D}/labels/{args.run}.jsonl'):
 
 pick = sorted((r for o, r in rows.items() if args.start <= r['rank'] < args.to and caps.get(o, {}).get('frames', 0) > 0
                and o not in done), key=lambda r: r['rank'])
-out = f'{D}/runs/{args.run}/batches'
+# (one folder per slice, so a second slice of the same run never renumbers over the first: batches/00 was written
+#  twice, 2026-10-23)
+slice_ = f'{args.start:05d}-{args.to:05d}'
+out = f'{D}/runs/{args.run}/batches/{slice_}'
 os.makedirs(out, exist_ok=True)
-os.makedirs(f'{D}/runs/{args.run}/raw', exist_ok=True)
+os.makedirs(f'{D}/runs/{args.run}/raw/{slice_}', exist_ok=True)
 n = 0
 for i in range(0, len(pick), args.size):
     with open(f'{out}/{i // args.size:02d}.txt', 'w') as f:

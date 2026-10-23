@@ -1,0 +1,3 @@
+way/206629816 (footprint about 20 x 42 m, 12 m tall)
+way/259126345 (footprint about 13 x 17 m, 11 m tall)
+way/256755972 (footprint about 19 x 43 m, 12 m tall)

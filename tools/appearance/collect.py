@@ -26,7 +26,7 @@ have = {json.loads(l)['osm'] for l in open(path)} if os.path.exists(path) else s
 bad = collections.Counter()
 added = 0
 with open(path, 'a') as out:
-    for p in sorted(glob.glob(f'{D}/runs/{args.run}/raw/*.jsonl')):
+    for p in sorted(glob.glob(f'{D}/runs/{args.run}/raw/*.jsonl') + glob.glob(f'{D}/runs/{args.run}/raw/*/*.jsonl')):
         for line in open(p):
             line = line.strip()
             if not line:
