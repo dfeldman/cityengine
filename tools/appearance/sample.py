@@ -64,7 +64,10 @@ def district(lat, lon):
     #  called them the Marina, and San Francisco's Assessor has no record of them)
     if lat > 37.815:
         # (…except Treasure and Yerba Buena Islands, out in the bay: part of the City and County, on its roll)
-        return 'treasure' if lon > -122.40 else 'marin'
+        # (…and Angel Island, a state park in Marin County: its forts and quarantine station, no city records)
+        if lon > -122.40:
+            return 'treasure'
+        return 'angel' if 37.855 < lat < 37.875 and -122.445 < lon < -122.415 else 'marin'
     c = math.cos(math.radians(lat))
     return min(seeds, key=lambda s: (s[1] - lat) ** 2 + ((s[2] - lon) * c) ** 2)[0]
 
