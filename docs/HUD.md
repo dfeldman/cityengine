@@ -33,7 +33,7 @@ The owner's brief:
 | bottom centre | **action chip**: the one thing you can do right now (eat, board/get off, travel, observe, a star junction's exits) | when something is actionable |
 | bottom centre, above the chip | **turn buttons**: ← ↑ → (offered, picked, locked) and ↩ turn round, tappable | always while riding: without them the rider has no idea what's going on (owner) |
 | bottom left | **energy bar**, with the **cash** small beside it | energy in couch mode (a trainer rider has real legs); cash always |
-| bottom corners | **touch controls**: ◀ ▶ and the effort slider | after the screen is touched; gone again after a key press |
+| bottom corners | **touch controls**: ◀ ▶ and the effort slider | after the screen is touched; gone again after a key press; always with Settings → Controls → Touch on any device (a phone streaming the desktop, e.g. Moonlight: clicks count as touches, lists scroll by dragging) |
 | bottom edge | credit line: "© OpenStreetMap contributors" only | always (licence) |
 
 ## What moves to the menu, or goes
@@ -68,9 +68,11 @@ The type is big enough to read from a bike.
 - **Session**: time, distance, average watts, energy, climbing
 - **Rider**: avatar (later)
 - **Settings**: units (mph/km/h), steering (held / at junctions), quality (auto/phone/desktop), traffic and
-  crowds, landmark notes, motion effects (speed lines), on-screen controls (auto/always/never), mode (couch /
+  crowds, landmark notes, motion effects (speed lines), on-screen controls (auto/always/never), touch on any device (off/on), mode (couch /
   trainer). Saved per browser, and URL parameters still win.
 - **Help**: the controls for this device
+- **Gamepad** (ui/gamepad.ts): the standard layout sends the keys — stick or d-pad steers, d-pad ▲ ▼ effort and menu rows,
+  RT/LT the effort outright, A Enter, B / Menu Esc, Y X take / skip, LB U-turn, RB board, View the map
 - **Developer** (`?dev=1`): copy location, go to, paths, fog, draw distance, copy view
 
 ## Order of work

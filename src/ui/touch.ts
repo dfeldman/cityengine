@@ -105,8 +105,8 @@ export function showTouchWhenUsed(asked: string | null): void {
   const html = document.documentElement
   let used = wantsTouch(asked)
   const apply = (): void => {
-    const c = settings().controls
-    html.classList.toggle('sr-touch-on', asked === '1' || (asked !== '0' && (c === 'always' || (c === 'auto' && used))))
+    const { controls: c, touch } = settings()
+    html.classList.toggle('sr-touch-on', asked === '1' || (asked !== '0' && (c === 'always' || (c === 'auto' && (used || touch)))))
   }
   addEventListener('pointerdown', (e) => { if (e.pointerType === 'touch' && !used) { used = true; apply() } }, true)
   // (isTrusted: the buttons themselves send synthetic keys, which must not hide them)
@@ -125,6 +125,8 @@ export function compactScreen(asked: string | null): boolean {
 export function wantsTouch(asked: string | null): boolean {
   if (asked === '1') return true
   if (asked === '0') return false
+  // (Settings → Controls → Touch on any device: a phone streaming the desktop, whose taps arrive as clicks)
+  if (settings().touch) return true
   return (typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches) || navigator.maxTouchPoints > 0 && /iPhone|iPad|iPod|Android/.test(navigator.userAgent)
 }
 
@@ -186,7 +188,8 @@ function touchSteering(send: (type: 'keydown' | 'keyup', code: string, key: stri
   view.addEventListener('pointerdown', (e) => {
     // (whatever Settings → Controls says about the slider: a touch screen with no way to steer is a dead end — the owner
     // turned the buttons off and could not turn at all, 2026-10-14)
-    if (e.pointerType === 'mouse' || html.classList.contains('sr-looking')) return
+    // (a click counts as a touch when Settings → Controls → Touch on any device is on: Moonlight sends taps as clicks)
+    if ((e.pointerType === 'mouse' && !settings().touch) || html.classList.contains('sr-looking')) return
     if (e.clientY > innerHeight * 0.8) {
       const now = performance.now()
       if (now - lowTap < 350) { lowTap = 0; send('keydown', 'KeyU', 'u'); send('keyup', 'KeyU', 'u'); return }
@@ -251,6 +254,40 @@ export function touchControls(opts: { trainer: boolean; watts?: number }): void 
   if (opts.trainer) button(effort, '▲', 'ArrowUp', 'ArrowUp', 'straight')
   else slider(effort, opts.watts ?? 180)
   // (no 🗺 any more: Menu → Map — owner, 2026-10-14: "we don't need the always visible map button")
+}
+
+/**
+ * A LIST A FINGER CAN DRAG (owner, 2026-10-23: "not sure if touch scrolling works on the search list"). A real touch
+ * scrolls an `overflow: auto` list by itself; a phone streaming the desktop (Moonlight) sends its finger as a mouse
+ * drag, which scrolls nothing. With Settings → Controls → Touch on any device on, a mouse drag on the list scrolls it,
+ * and the click that ends a drag is not taken as a choice.
+ */
+export function dragToScroll(el: HTMLElement): void {
+  let start: { y: number; top: number; id: number } | null = null
+  let dragged = false
+  el.addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'mouse' || e.button !== 0 || !settings().touch) return
+    start = { y: e.clientY, top: el.scrollTop, id: e.pointerId }
+    dragged = false
+  })
+  el.addEventListener('pointermove', (e) => {
+    if (!start || e.pointerId !== start.id) return
+    const dy = e.clientY - start.y
+    if (!dragged && Math.abs(dy) > 6) {
+      dragged = true
+      el.setPointerCapture(e.pointerId)
+    }
+    if (dragged) el.scrollTop = start.top - dy
+  })
+  const end = (): void => { start = null }
+  el.addEventListener('pointerup', end)
+  el.addEventListener('pointercancel', end)
+  el.addEventListener('click', (e) => {
+    if (!dragged) return
+    dragged = false
+    e.stopPropagation()
+    e.preventDefault()
+  }, true)
 }
 
 /**

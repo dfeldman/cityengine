@@ -17,6 +17,7 @@
  * its OSM ids, the manifest file it lives in, its coordinates — so it doubles as a way to find an entry to fix.
  */
 import { parseLatLon } from './goto.ts'
+import { dragToScroll } from './touch.ts'
 
 /** one row: a manifest entry, an OSM-named building, or a typed "lat, lon" */
 export interface Place {
@@ -240,6 +241,7 @@ export class SearchScreen {
     this.input = this.el.querySelector('input')!
     this.list = this.el.querySelector('ul')!
     this.countEl = this.el.querySelector('.count')!
+    dragToScroll(this.list)
     this.el.querySelector('.x')!.addEventListener('click', () => this.close())
     this.el.addEventListener('pointerdown', (e) => { if (e.target === this.el) this.close() })
     this.input.addEventListener('input', () => this.refresh())

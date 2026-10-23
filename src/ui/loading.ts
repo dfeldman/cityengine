@@ -11,6 +11,8 @@
  * it eases on toward the stage's end with a CSS transform transition, which the compositor runs even while the
  * main thread is busy building the city.
  */
+import { touchScreen } from './touch.ts'
+
 const STAGES: [name: string, doing: string, seconds: number][] = [
   // (each name is the mark that ENDS the stage; `doing` is what the stage is busy with)
   ['boot', 'Loading the game', 1.1],
@@ -216,7 +218,7 @@ export function welcomeScreen(cityName: string, slowInput = false, platform = fa
   const root = document.createElement('div')
   root.className = 'sr-welcome'
   // slow input (?input=slow, trainers): a press declares the turn at the next junction, well before it
-  const touch = typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches
+  const touch = touchScreen()
   const rows = (platform ? PLATFORM_CONTROLS : CONTROLS).map(([k, d]) => (k === '← →' && slowInput ? [k, 'pick your turn at the next junction, before you reach it'] : [k, d])).map(([k, d]) => `<tr><td class="k"><kbd>${k}</kbd></td><td class="d">${d}</td></tr>`).join('')
   const hl = HIGHLIGHTS.map(([e, t, d]) => `<div><span class="e">${e}</span><div><b>${t}</b><span>${d}</span></div></div>`).join('')
   root.innerHTML = `<div class="sr-card"><span class="sr-pill">Dandyhorse</span><h1>Cycle Dash</h1>

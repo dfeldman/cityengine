@@ -23,6 +23,7 @@ import { detectTier } from './tier.ts'
 import { initAssets } from './assets.ts'
 import { chooseMode, MODES, type GameMode } from './modes.ts'
 import { COMPACT_CSS, TOUCH_CSS, compactScreen, showTouchWhenUsed, touchControls } from './ui/touch.ts'
+import { gamepadControls } from './ui/gamepad.ts'
 import { MENU_CSS } from './ui/menu.ts'
 import { SEARCH_CSS } from './ui/search.ts'
 import CITIES from './cities.json'
@@ -220,6 +221,8 @@ if (params.get('model')) {
     touchControls({ trainer: mode === 'trainer' })
     showTouchWhenUsed(params.get('touch'))
   }
+  // a gamepad (ui/gamepad.ts): its buttons send the keys, so nothing else needs to know
+  gamepadControls()
   document.documentElement.classList.toggle('sr-compact', compactScreen(params.get('compact')))
   // (a URL parameter wins; then Menu → Settings, ui/settings.ts; then the device)
   const tier = detectTier(params.get('tier') ?? (settings().quality === 'auto' ? null : settings().quality))

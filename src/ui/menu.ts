@@ -11,6 +11,8 @@
  *
  * The items are built by whoever opens it (game.ts), each time a list is shown, so what they say is current.
  */
+import { dragToScroll } from './touch.ts'
+
 export type MenuItem =
   /** do something; the menu closes unless `stay` */
   | { label: string; hint?: string; run: () => void; stay?: boolean }
@@ -72,6 +74,7 @@ export class Menu {
     this.titleEl = this.el.querySelector('h2')!
     this.backEl = this.el.querySelector('.back')!
     this.noteEl = this.el.querySelector('.note')!
+    dragToScroll(this.el.querySelector('.panel')!)
     this.backEl.addEventListener('click', () => this.back())
     this.el.querySelector('.x')!.addEventListener('click', () => this.close())
     // a tap on the dimmed scene outside the panel resumes

@@ -13,6 +13,11 @@ export interface Settings {
   /** the touch effort slider: `auto` shows it once the screen is touched and hides it when a key is pressed (touching
    *  the picture steers whatever this says) */
   controls: 'auto' | 'always' | 'never'
+  /** touch on any device (owner, 2026-10-23: "touch controls to be an option under settings even for desktop browsers
+   *  (default off)… testing a lot on my phone with moonlight into my desktop gaming pc"): a streamed phone's taps reach
+   *  the desktop as mouse clicks, so this treats clicks on the picture as touches, shows the touch controls and has the
+   *  prompts say "tap". Off, the device decides, as before. */
+  touch: boolean
   /** steering: held (fast input) or a turn declared at the next junction (slow input); `auto` is the mode's default */
   steering: 'auto' | 'held' | 'junctions'
   /** the device tier (src/tier.ts); `auto` is what the device looks like */
@@ -45,7 +50,7 @@ export const FEATURE_OFF: Record<'trees' | 'people' | 'details', string[]> = {
 }
 
 const KEY = 'cycledash.settings'
-const DEFAULTS: Settings = { units: 'auto', minimap: false, controls: 'auto', steering: 'auto', quality: 'auto', motion: true, fog: true, time: 'auto', weather: 'auto',
+const DEFAULTS: Settings = { units: 'auto', minimap: false, controls: 'auto', touch: false, steering: 'auto', quality: 'auto', motion: true, fog: true, time: 'auto', weather: 'auto',
   trees: 'auto', people: 'auto', cars: 'auto', details: 'auto' }
 
 let current: Settings | null = null
@@ -117,4 +122,6 @@ export const SETTING_DEFS: SettingDef[] = [
     choices: [{ value: 'auto', label: 'Auto' }, { value: 'held', label: 'Hold to steer' }, { value: 'junctions', label: 'Pick at junctions' }] }),
   def({ key: 'controls', group: 'Controls', label: 'Effort slider', applies: 'now',
     choices: [{ value: 'auto', label: 'When touched' }, { value: 'always', label: 'Always' }, { value: 'never', label: 'Never' }] }),
+  def({ key: 'touch', group: 'Controls', label: 'Touch on any device', applies: 'now',
+    choices: [{ value: false, label: 'Off' }, { value: true, label: 'On' }] }),
 ]
