@@ -1,0 +1,24 @@
+[
+ {
+  "run": "h55-v11-a",
+  "started": "2026-10-22",
+  "model": "haiku (Claude Code subagent)",
+  "brief": {
+   "path": "data/appearance/research/BRIEF-HAIKU-v11.md",
+   "sha256": "ea60e61041443a2c"
+  },
+  "menus": {
+   "path": "data/appearance/research/menus-v11.json",
+   "sha256": "3a68376c7cec59c0"
+  },
+  "capture": "r2-strict-original",
+  "ranks": [
+   [
+    0,
+    200
+   ]
+  ],
+  "buildings": 117,
+  "notes": "first dataset run: the v11 brief and menus from rounds 6-11, one run, no cross-check"
+ }
+]
