@@ -24,13 +24,32 @@ when the set is built, from `runs.json`.
 - position and district (nearest seed, `src/city/sf/districts.json`);
 - footprint area, its minimum rectangle's narrow and long sides;
 - the bake's height, levels (and whether they were inferred), roof, style and archetype;
-- the 2025 Assessor roll matched by parcel point: year built, stories, units, use code, construction type (A steel,
-  B concrete, C masonry, D wood frame, S steel);
+- the city's records by PARCEL (`tools/appearance/assessor.py`). The footprint's centre is matched to its base lot
+  (`blklot`, zoning, analysis neighbourhood), and every 2025 roll row on that lot is summarised, condominium units
+  included:
+  - the earliest year built;
+  - the most storeys;
+  - the units, building area, rooms and bedrooms, summed;
+  - the commonest use code and construction type (A steel, B concrete, C masonry, D wood frame, S steel);
+  - lot area, frontage and depth;
+  - property class and Assessor neighbourhood.
+
+  `roll_source` records where the record came from;
 - `stratum` (district|age|archetype) and `age`.
 
 The bake's height and levels are the game's, not raw OSM; OSM's own tags are not in the bake package and are not
 here yet.
 
-**Excluded from the sample:** buildings a landmark manifest names (models, kits, restyles, placeholders), the special
-cases (fuel stations, car washes), raised parts and `building:part`s, and footprints under 30 m². The Assessor rolls
-stop at 37.7476°N, so buildings south of it have no year (`age: unknown`).
+**Excluded from the sample:**
+- buildings a landmark manifest names (models, kits, restyles, placeholders);
+- the special cases (fuel stations, car washes);
+- raised parts and `building:part`s;
+- footprints under 30 m².
+
+**Where the records stop:**
+- 480 sampled buildings are in Marin (`district: marin`: Sausalito and the Headlands, north of the Golden Gate), where
+  San Francisco's Assessor has nothing.
+- Of the 9,520 in San Francisco, 9,066 have a year built (95%). The rest are lots the Assessor does not date, mostly
+  public property (`VPUB`: schools, city buildings) and miscellaneous lots.
+- The first version of the sample matched the roll by nearest parcel point and missed condominium lots entirely: 2,354
+  had no year. `stratum` still records the age class the building was drawn under.

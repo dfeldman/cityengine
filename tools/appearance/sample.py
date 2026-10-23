@@ -60,6 +60,10 @@ seeds = [(d, s[0], s[1]) for d, v in DIST.items() for s in v['seeds']]
 
 
 def district(lat, lon):
+    # (north of the Golden Gate is Marin — Sausalito and the Headlands, which the bake includes; the nearest SF seed
+    #  called them the Marina, and San Francisco's Assessor has no record of them)
+    if lat > 37.815:
+        return 'marin'
     c = math.cos(math.radians(lat))
     return min(seeds, key=lambda s: (s[1] - lat) ** 2 + ((s[2] - lon) * c) ** 2)[0]
 
