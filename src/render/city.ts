@@ -40,6 +40,7 @@ import { region, type Region } from '../city/region.ts'
 import { pointAlong } from '../sim/navigate.ts'
 import { waterMaterial } from './water-material.ts'
 import { LOOKS_ON, lookFor } from '../city/appearance.ts'
+import { specialFor, specialLook } from '../city/specials.ts'
 import { flatSignMesh } from './sign-plates.ts'
 import { planFacade, type StyleId } from '../city/facade.ts'
 import { Terrain, type PackedTerrain } from '../city/terrain.ts'
@@ -4233,14 +4234,18 @@ export class City {
         if (ZCHECK) zcheck(b.id, foot, buildingFooting(ring, (x, z) => this.terrain.heightAt(x, z)).foot)
       }
       // (`?labels=1`: a building with a street-photo label is drawn as the label says — src/city/appearance.ts)
-      const look = LOOKS_ON ? lookFor(b.id, b.style) : null
+      // (…and a fuel canopy, a station shop or a car wash, which the map names outright, from its recipe — city/specials.ts)
+      const special = specialFor(b.id)
+      const look = special ? specialLook(special, LOOKS_ON ? lookFor(b.id, b.style) : null) : LOOKS_ON ? lookFor(b.id, b.style) : null
       const styleId = look?.style ?? b.style
       // (a label's storey count wins, and the walls are kept within what that many storeys can be: a one-storey shop the
       //  map calls 12 m — its billboard — was drawn with two rows of windows)
       const lv = look?.levels
       // (and the count holds: `stretch` keeps it however the height stretches the storeys)
       const height = lv && b.height ? Math.min(Math.max(b.height, lv * 2.9), lv * 3.3 + 0.8) : b.height
-      const plan = planFacade(styleId, b.id, { levels: lv ?? b.levels, height, minHeight: b.minHeight, stretch: b.stretch || !!lv, noShops: b.noShops },
+      // (a pump canopy's edge is a fascia a metre deep, whatever thin slab the map gives it)
+      const minHeight = special?.part === 'canopy' && b.minHeight && b.height ? Math.min(b.minHeight, b.height - 0.9) : b.minHeight
+      const plan = planFacade(styleId, b.id, { levels: lv ?? b.levels, height, minHeight, stretch: b.stretch || !!lv, noShops: b.noShops },
         b.palette ? [b.palette] : this.region.palettes[styleId], look ?? undefined)
       const out = byStyle.get(styleId) ?? new MeshBuilder()
       byStyle.set(styleId, out)
@@ -4287,8 +4292,30 @@ export class City {
           : { shape: b.roof, height: b.roofHeight, direction: b.roofDirection, colour: b.roofColour },
         // (a label's dormers, or none where it saw none)
         look?.dormers !== undefined && this.region.roofscape ? { ...this.region.roofscape, dormers: look.dormers }
-          : look?.dormers ? { chimneys: false, dormers: true } : this.region.roofscape, streetOf, this.off.has('courts') ? [] : (b.holes ?? []).map(unpackPoints), this.archesFor(b, ring, plan.height))
+          : look?.dormers ? { chimneys: false, dormers: true } : this.region.roofscape, streetOf, this.off.has('courts') ? [] : (b.holes ?? []).map(unpackPoints), special?.part === 'canopy' ? () => [] : this.archesFor(b, ring, plan.height))
       // a label's sign, read off the photograph, over the ground floor of its longest street wall (`?labels=1`)
+      // a pump canopy's columns: a pair or a row down its long axis, from the ground to its underside
+      if (special?.part === 'canopy' && minHeight && minHeight > 1.5) {
+        let cx = 0, cz = 0
+        for (const q of ring) { cx += q.x; cz += q.z }
+        cx /= ring.length; cz /= ring.length
+        // the long axis: the ring's longest edge
+        let ax = 1, az = 0, long = 0
+        for (let i = 0; i < ring.length; i++) {
+          const a = ring[i], c = ring[(i + 1) % ring.length]
+          const l = Math.hypot(c.x - a.x, c.z - a.z)
+          if (l > long) { long = l; ax = (c.x - a.x) / l; az = (c.z - a.z) / l }
+        }
+        const n = Math.max(2, Math.min(4, Math.round(long / 7)))
+        const col = planFacade('bauhaus', b.id ^ 0xc01, { levels: 1, height: minHeight, stretch: true },
+          [{ wall: '#d9d8d3', trim: '#bdbcb7', roof: '#9a9994', accent: '#9a9994' }], { dress: { blank: true, cap: 'plain' } })
+        for (let k = 0; k < n; k++) {
+          const t = (k / (n - 1) - 0.5) * Math.max(0, long - 3)
+          const px = cx + ax * t, pz = cz + az * t, r = 0.24
+          buildBuilding(out, [{ x: px - r, z: pz - r }, { x: px + r, z: pz - r }, { x: px + r, z: pz + r }, { x: px - r, z: pz + r }],
+            col, this.atlas, b.id ^ k, 0.16 + foot, { shape: 'flat', height: 0, colour: [0.6, 0.6, 0.58] })
+        }
+      }
       if (look?.sign) {
         // on the walls the building shows the street, by the same test its shopfront and bays were drawn with (render/
         // buildings.ts `fronts`): the longest street index wall was not always the photographed one (an auto shop's sign

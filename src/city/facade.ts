@@ -301,6 +301,8 @@ export interface Dress {
    * a dark opening over a solid spandrel at the floor line — and no windows at all.
    */
   decks?: boolean
+  /** blank on every wall, not only the street's: a pump canopy's edge is a fascia all round */
+  solid?: boolean
 }
 
 export interface GroundMix {
@@ -666,7 +668,8 @@ export function planFacade(
    * base. If stretching would distort the storeys badly, the level count gives way to the height instead.
    */
   const target = osm.height !== undefined ? osm.height - base : undefined
-  if (target !== undefined && target > 1) {
+  // (a raised part is fitted down to a slab: a canopy's 0.9 m fascia kept a whole 3 m storey and hung like a billboard)
+  if (target !== undefined && (target > 1 || (aloft && target > 0.3))) {
     let extent = storeys[storeys.length - 1].y1 - base
     let k = target / extent
     // (a monumental building — a church — keeps its few tall storeys however far they stretch)
@@ -703,7 +706,8 @@ export function planFacade(
     ...(osm.noShops ? { institution: true } : {}),
     top: st.top,
     hasBalconyAt: (level) => balconyLevels.has(level),
-    ...(dressed && !aloft ? { dress: dressed.dress } : {}),
+    // (a raised part has no street front to dress — except a canopy, whose whole edge is its fascia: Dress.solid)
+    ...(dressed && (!aloft || dressed.dress.solid) ? { dress: dressed.dress } : {}),
   }
 }
 
@@ -799,7 +803,7 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
 
       let element: string
       if (s.kind === 'ground' && mix) element = mix[b] === 'window' ? `${art}/${d?.blank ? 'wall' : 'window'}` : groundElement(mix[b] as Exclude<GroundBay, 'window'>, art, groundArt, d?.shopGlass)
-      else if (s.kind !== 'ground' && (d?.blank || d?.decks) && shown !== null) element = `${art}/wall`
+      else if ((s.kind !== 'ground' || d?.solid) && ((d?.blank || d?.decks) && shown !== null || d?.solid)) element = `${art}/wall`
       else if (s.kind === 'ground' && b === carriageBay) element = `${art}/carriage`
       // ('plain': a ground floor of the style's own windows — a school's, where the style would have shops)
       else if (s.kind === 'ground') element = plan.ground === 'plain' || !shopBay(b) ? `${art}/window` : `${groundArt}/${plan.ground}`
@@ -814,7 +818,7 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
       cells.push({ x0, x1, y0: s.y0, y1: s.y1, element, variant, ...(blockBay(b) && s.kind !== 'ground' ? { tint: plan.palette.accent } : garageTint ? { tint: garageTint } : {}) })
 
       // A window sill is a small ledge, and a row of them is what catches the light on a street.
-      if (s.kind !== 'ground' && st.window.sill > 0.1 && plan.style !== 'skyscraper' && !((d?.blank || d?.decks) && shown !== null)) {
+      if (s.kind !== 'ground' && st.window.sill > 0.1 && plan.style !== 'skyscraper' && !((d?.blank || d?.decks) && shown !== null) && !d?.solid) {
         const winW = bayW * plan.window.widthFrac
         const wx = x0 + (bayW - winW) / 2
         features.push({

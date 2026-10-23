@@ -88,6 +88,7 @@ for (const id of ids) {
     const args = ['--experimental-strip-types', 'tools/look-at.ts', '--city=san-francisco', `--start=${best.edge}`, `--at=${best.mx.toFixed(1)},${best.mz.toFixed(1)}`,
       `--from=${fx.toFixed(1)},${fz.toFixed(1)},1.7`, `--lift=${lift.toFixed(1)}`, '--fov=68', `--out=${OUT}/${id}-${tag}.png`]
     if (extra) args.push(`--extra=${extra}`)
+    if (process.env.SHOW) console.log('node', args.join(' '))
     try { execFileSync('node', args, { cwd: ROOT, stdio: 'pipe', timeout: 240000 }) } catch (e) { console.log(id, tag, 'failed', String(e).slice(0, 160)) }
   }
   console.log('shot', id)

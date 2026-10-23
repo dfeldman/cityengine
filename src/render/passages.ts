@@ -10,6 +10,7 @@
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import type { Scene } from '@babylonjs/core/scene'
 import { MeshBuilder } from './buildings.ts'
+import { specialFor } from '../city/specials.ts'
 import { cartoonMaterial } from './cartoon-material.ts'
 import { unpackPoints, type CityPackage } from '../city/package.ts'
 import type { Terrain } from '../city/terrain.ts'
@@ -127,6 +128,8 @@ function buildPassages(scene: Scene, pkg: Pick<CityPackage, 'edges' | 'buildings
   for (const b of pkg.buildings) {
     // on the ground, or a part bridging the passage low enough to be its ceiling
     if ((b.minHeight ?? 0) > 7) continue
+    // (a fuel canopy stands on columns over open ground: a footway under it is not a passage through a building)
+    if (specialFor(b.id)?.part === 'canopy') continue
     const ring = unpackPoints(b.ring)
     let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
     for (const q of ring) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z) }

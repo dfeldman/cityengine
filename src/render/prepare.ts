@@ -4,6 +4,7 @@
  * done once over the whole package at load, which a streamed city does not have.
  */
 import { style as styleOf, type StyleId } from '../city/facade.ts'
+import { specialFor } from '../city/specials.ts'
 import { TILE, type CityIndex, type TileData } from '../city/tiles.ts'
 import { isReplaced, replacedIds, restyles, type LandmarkEntry } from './landmarks.ts'
 import { parkTile, type ParkMap } from '../city/park-area.ts'
@@ -128,7 +129,10 @@ export function tilePreparer(entries: LandmarkEntry[], index: Pick<CityIndex, 'o
     const buildings = (t.buildings.filter((b) => !isReplaced(replaced, b)
       // a part with no height (OSM's height = min_height, round the Vosges arcades) has no walls, but it drew
       // its cornice anyway — a stone band in mid-air, z-fighting with the facade behind it
-      && (b.height ?? Infinity) - (b.minHeight ?? 0) > 0.5
+      && ((b.height ?? Infinity) - (b.minHeight ?? 0) > 0.5
+        // …except a fuel station's canopy, which the bake makes exactly a half-metre slab and city/specials.ts draws on
+        // its columns (appearance research, 2026-10-22: every pump canopy in the city was being dropped here)
+        || specialFor(b.id)?.part === 'canopy')
       && !(restyled.get(b.id)?.dropParts && (b.minHeight ?? 0) > 2.5 && overGround(b) && !overPassage(b))).map((b) => {
       const e = restyled.get(b.id)
       if (!e && b.levelsInferred && (b.minHeight ?? 0) < 1 && footprint(b.ring) < 300 && inPark(b)) {
