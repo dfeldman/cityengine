@@ -20,7 +20,7 @@ import { stopSign, uspsBox, billboard, muniStop, plainStop, newsRacks, parkingMe
 import { streetClockPost } from './street-clock.ts'
 import { clockFace } from './landmarks/parts.ts'
 import { Clocks } from './clocks.ts'
-import { MeshBuilder, buildBuilding, capPolygon, capPolygonWithHoles, type Arch, type AtlasManifest, type Ring } from './buildings.ts'
+import { MeshBuilder, buildBuilding, capPolygon, fronts, type StreetFacing, capPolygonWithHoles, type Arch, type AtlasManifest, type Ring } from './buildings.ts'
 import { archSize, passageArches } from './passages.ts'
 import { inOutline } from './bridge-structures.ts'
 import { straightOutline } from '../city/bridge-axis.ts'
@@ -4248,6 +4248,38 @@ export class City {
         const spans = (byStyleSpans.get(styleId) ?? byStyleSpans.set(styleId, []).get(styleId)!)
         spans.push([out.indices.length / 3, b.id])
       }
+      const streetOf = (i: number): StreetFacing | null => {
+        // the ring is anticlockwise, so the outward normal of a→c is (ez, −ex)
+        const a = ring[i]
+        const c = ring[(i + 1) % ring.length]
+        const len = Math.hypot(c.x - a.x, c.z - a.z) || 1
+        /*
+         * Generous reach: a boulevard's shops stand behind a wide pavement and often a cycle track. And a
+         * street is a main street by its NAME: Rue Saint-Antoine is mapped in pieces — side carriageways as
+         * "residential", a cycle track — whose kinds alone would leave its cafés without their awnings.
+         */
+        if (!this.awningStreets) {
+          const mainNames = new Set(this.nearEdges.filter((e) => MAIN_STREETS.has(e.kind) && e.name).map((e) => e.name))
+          const road = this.nearEdges.filter((e) => !e.foot)
+          this.awningStreets = streetIndex(road, 8)
+          this.mainStreets = streetIndex(road.filter((e) => MAIN_STREETS.has(e.kind) || (e.name && mainNames.has(e.name))), 10)
+        }
+        const nx = (c.z - a.z) / len
+        const nz = -(c.x - a.x) / len
+        const rate = this.region.awnings ?? 0.3
+        const rise = this.terrain.heightAt((a.x + c.x) / 2 + nx * 2, (a.z + c.z) / 2 + nz * 2) - (0.16 + foot)
+        // sampled along the wall, not only at its middle: a block-long facade's midpoint can be further
+        // from the street's indexed segments than the search looks
+        const n = Math.max(1, Math.min(8, Math.round(len / 12)))
+        const t = (k: number): [number, number] => {
+          const f = (k + 0.5) / n
+          return [a.x + (c.x - a.x) * f, a.z + (c.z - a.z) * f]
+        }
+        const pavement = (): number | null => pavementDepth(this.awningStreets!, (a.x + c.x) / 2, (a.z + c.z) / 2, nx, nz)
+        for (let k = 0; k < n; k++) if (facesStreet(this.mainStreets!, ...t(k), nx, nz)) return { rate, main: true, rise, pavement: pavement() }
+        for (let k = 0; k < n; k++) if (facesStreet(this.awningStreets, ...t(k), nx, nz)) return { rate: rate * 0.35, main: false, rise, pavement: pavement() }
+        return null
+      }
       buildBuilding(out, ring, plan, this.atlas, b.id, 0.16 + foot,
         // (a label's roof: a gable, a hip or a mansard is most of a small building's outline against the sky)
         // (a pitched roof the map calls flat has no height of its own: `||`, not `??` — the bake's 0 drew a mansard as nothing)
@@ -4255,57 +4287,24 @@ export class City {
           : { shape: b.roof, height: b.roofHeight, direction: b.roofDirection, colour: b.roofColour },
         // (a label's dormers, or none where it saw none)
         look?.dormers !== undefined && this.region.roofscape ? { ...this.region.roofscape, dormers: look.dormers }
-          : look?.dormers ? { chimneys: false, dormers: true } : this.region.roofscape, (i) => {
-          // the ring is anticlockwise, so the outward normal of a→c is (ez, −ex)
-          const a = ring[i]
-          const c = ring[(i + 1) % ring.length]
-          const len = Math.hypot(c.x - a.x, c.z - a.z) || 1
-          /*
-           * Generous reach: a boulevard's shops stand behind a wide pavement and often a cycle track. And a
-           * street is a main street by its NAME: Rue Saint-Antoine is mapped in pieces — side carriageways as
-           * "residential", a cycle track — whose kinds alone would leave its cafés without their awnings.
-           */
-          if (!this.awningStreets) {
-            const mainNames = new Set(this.nearEdges.filter((e) => MAIN_STREETS.has(e.kind) && e.name).map((e) => e.name))
-            const road = this.nearEdges.filter((e) => !e.foot)
-            this.awningStreets = streetIndex(road, 8)
-            this.mainStreets = streetIndex(road.filter((e) => MAIN_STREETS.has(e.kind) || (e.name && mainNames.has(e.name))), 10)
-          }
-          const nx = (c.z - a.z) / len
-          const nz = -(c.x - a.x) / len
-          const rate = this.region.awnings ?? 0.3
-          const rise = this.terrain.heightAt((a.x + c.x) / 2 + nx * 2, (a.z + c.z) / 2 + nz * 2) - (0.16 + foot)
-          // sampled along the wall, not only at its middle: a block-long facade's midpoint can be further
-          // from the street's indexed segments than the search looks
-          const n = Math.max(1, Math.min(8, Math.round(len / 12)))
-          const t = (k: number): [number, number] => {
-            const f = (k + 0.5) / n
-            return [a.x + (c.x - a.x) * f, a.z + (c.z - a.z) * f]
-          }
-          const pavement = (): number | null => pavementDepth(this.awningStreets!, (a.x + c.x) / 2, (a.z + c.z) / 2, nx, nz)
-          for (let k = 0; k < n; k++) if (facesStreet(this.mainStreets!, ...t(k), nx, nz)) return { rate, main: true, rise, pavement: pavement() }
-          for (let k = 0; k < n; k++) if (facesStreet(this.awningStreets, ...t(k), nx, nz)) return { rate: rate * 0.35, main: false, rise, pavement: pavement() }
-          return null
-        }, this.off.has('courts') ? [] : (b.holes ?? []).map(unpackPoints), this.archesFor(b, ring, plan.height))
+          : look?.dormers ? { chimneys: false, dormers: true } : this.region.roofscape, streetOf, this.off.has('courts') ? [] : (b.holes ?? []).map(unpackPoints), this.archesFor(b, ring, plan.height))
       // a label's sign, read off the photograph, over the ground floor of its longest street wall (`?labels=1`)
       if (look?.sign) {
-        let best = -1, bestLen = 0
-        for (let i = 0; i < ring.length; i++) {
-          const a = ring[i], c = ring[(i + 1) % ring.length]
-          const len = Math.hypot(c.x - a.x, c.z - a.z)
-          const nx = (c.z - a.z) / (len || 1), nz = -(c.x - a.x) / (len || 1)
-          const near = this.awningStreets && facesStreet(this.awningStreets, (a.x + c.x) / 2, (a.z + c.z) / 2, nx, nz)
-          if (len > 3 && (near ? len + 1000 : len) > bestLen) { best = i; bestLen = near ? len + 1000 : len }
-        }
-        if (best >= 0) {
+        // on the walls the building shows the street, by the same test its shopfront and bays were drawn with (render/
+        // buildings.ts `fronts`): the longest street index wall was not always the photographed one (an auto shop's sign
+        // went round the side). One sign a wall, at most two.
+        const roles = fronts(ring, ring.map((_, i) => streetOf(i)))
+        const walls = ring.map((_, i) => i).filter((i) => roles[i].face)
+          .map((i) => ({ i, len: Math.hypot(ring[(i + 1) % ring.length].x - ring[i].x, ring[(i + 1) % ring.length].z - ring[i].z) }))
+          .filter((w) => w.len > 3).sort((p, q) => q.len - p.len).slice(0, 2)
+        for (const { i: best, len } of walls) {
           const a = ring[best], c = ring[(best + 1) % ring.length]
-          const len = Math.hypot(c.x - a.x, c.z - a.z)
           const nx = (c.z - a.z) / len, nz = -(c.x - a.x) / len
           const m = flatSignMesh(this.scene, {
             spec: { type: 'flat', text: look.sign, h: 0.42, face: 'grotesque', weight: 'bold', colour: [0.97, 0.96, 0.92], panel: [0.12, 0.12, 0.13], lit: 'none', w: Math.min(len * 0.8, 9) },
             // (just over the ground floor — on a one-storey shop that is above its roof, so on the fascia below the top)
             x: (a.x + c.x) / 2, y: 0.16 + foot + Math.min(plan.storeys[0].y1 + 0.45, plan.height - 0.55), z: (a.z + c.z) / 2, heading: Math.atan2(nx, nz),
-          }, `labelsign:${b.id}`)
+          }, `labelsign:${b.id}:${best}`)
           if (m) { m.renderingGroupId = GROUP.building; meshes.push(m) }
         }
       }
