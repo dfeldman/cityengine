@@ -20,9 +20,13 @@
    [
     200,
     700
+   ],
+   [
+    700,
+    1500
    ]
   ],
-  "buildings": 420,
+  "buildings": 930,
   "notes": "first dataset run: the v11 brief and menus from rounds 6-11, one run, no cross-check"
  }
 ]
