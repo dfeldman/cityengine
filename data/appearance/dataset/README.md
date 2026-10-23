@@ -34,7 +34,26 @@ when the set is built, from `runs.json`.
   - lot area, frontage and depth;
   - property class and Assessor neighbourhood.
 
-  `roll_source` records where the record came from;
+  `roll_source` records where the record came from. The roll's `roll_stories` leaves out a garage storey: where a
+  photo shows a garage, the photo has one more storey than the roll in most cases (2026-10-23, run h55-v11-a);
+- the building's surroundings (`tools/appearance/context.py`):
+  - `geo_*` from the bake: party walls (`geo_party_share`, `geo_touching`), the nearest street (kind, width,
+    setback), how much of the outline faces it, corners, the street's grade and the ground's height;
+  - `nb_*` the buildings within 60 m (count, median height and levels, height ratio, archetype mix) and the distance
+    to a main street;
+  - `tree_count` street trees within 12 m;
+  - `osm_*` the building's own OpenStreetMap tags (building=, levels, material, colour, roof, start date, name,
+    historic, architect);
+  - `poi_*` OSM shops, amenities and offices on the building, by kind (food, retail, service, auto, civic, health,
+    office, lodging, nightlife), and how many stand within 50 m and 150 m;
+- more city records by lot (`tools/appearance/city.py`):
+  - `hist_*` Planning's historic resource status (CEQA A/B/C and why) and the historic district, its listing and
+    period. Planning's survey forms name styles, but those are not published as data;
+  - `soft_*` the soft-story retrofit list (a weak ground storey: garages or shops under wood-frame flats);
+  - `biz_*` registered businesses located on the lot, by NAICS sector, with parking and hotel tax flags;
+  - `permit_*` building permits on the lot: count, cost, use, construction type, stated storeys, and counts of
+    words in their descriptions (garage door, storefront, sign, awning, bay window, dormer, deck, siding, stucco,
+    seismic, ADU, fire escape, restaurant, change of use…);
 - `stratum` (district|age|archetype) and `age`.
 
 The bake's height and levels are the game's, not raw OSM; OSM's own tags are not in the bake package and are not
