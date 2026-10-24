@@ -622,3 +622,38 @@ photographs and almost none worse.
 | crop step | `python3 -I tools/appearance/crop.py <in> <out>` (cropping hurt; kept for the record) |
 | render table | `python3 -I tools/appearance/looks.py data/appearance/looks/haiku-v3.json <runA> <runB>` |
 | in the city | `?labels=1` (`src/city/appearance.ts`); comparison shots need `?assets=local` only if the bucket is slow |
+
+## 9. The appearance model: imputing every building (2026-10-23)
+
+The owner's aim: photo labels train a model, and the model draws every building, so no building needs Haiku of its
+own. `tools/appearance/impute.py` trains a CHAIN of XGBoost classifiers on the dataset's usable labels (842 at the
+time), one per answer, each fed the static features (`data/appearance/dataset/README.md`: the bake, the Assessor roll,
+the surroundings, OSM tags and amenities, historic status, permits) and its parents' answers (type first; bays given type
+and Victorian style; a garage door's colour given that there is one…). Every eligible building (85,791) gets one DRAW
+from the probabilities, seeded by its id, written to `public/appearance/imputed.json` and drawn behind `?looks=imputed`.
+`?looks=generic` (the default) is the renderer as before; `?looks=labels` (or `?labels=1`) the photo labels.
+
+Not modelled: storeys (the bake's levels: the roll's leave out a garage storey), a special structure (from OSM tags),
+the sign (an OSM shop's name on the building, when the draw gives it a shopfront).
+
+**Held out (5-fold, `data/appearance/dataset/impute-report.json`).** Per building, over repeated draws of the parents, the
+chain's log loss beats a district lookup table on every answer (type 1.70 against 2.42, shopfronts 0.53 against 0.79,
+garage doors 0.76 against 0.93, windows 1.03 against 1.23); colours only just beat the overall frequencies. Each field's
+probabilities are blended with the frequencies by a weight fitted held out (the trees are too sure on 800 rows).
+
+**Judged (`research/labels/judge-imputed1.jsonl`, 16 buildings outside the training labels, Opus, 0–3):**
+
+| render | mean |
+|---|---|
+| today (generic) | 1.00 |
+| model (imputed) | 0.94 |
+| photo labels | 1.88 |
+
+The model draws no better than the generics, per building. What the judge saw it get wrong, commonest first:
+1. **Colour:** a strong colour where the photo is pale; the drawn colours are close to random.
+2. **Style:** Victorian or classical detail on modern or plain buildings, even a garage.
+3. **Ground floor:** a stoop or arched windows where there are garages or shops.
+
+A draw from uncertain probabilities is often wrong for the building in front of you, even when the mix across a district
+is right. The fix to try next is a CONFIDENCE GATE: take the model's answer only where it is sure (shopfronts, signs,
+garages, homes above, the commercial types) and keep the generics' everywhere else, colours included.
