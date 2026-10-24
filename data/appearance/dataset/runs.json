@@ -28,5 +28,23 @@
   ],
   "buildings": 930,
   "notes": "first dataset run: the v11 brief and menus from rounds 6-11, one run, no cross-check"
+ },
+ {
+  "run": "h55-v11-api",
+  "started": "2026-10-24",
+  "model": "claude-haiku-5-5 (OpenRouter, Messages API, thinking off)",
+  "brief": {
+   "path": "data/appearance/research/BRIEF-HAIKU-v11-api.md",
+   "sha256": "4e9a7b6b2c107084"
+  },
+  "menus": {
+   "path": "data/appearance/research/menus-v11.json",
+   "sha256": "3a68376c7cec59c0"
+  },
+  "capture": "r2-strict-original",
+  "ranks": [],
+  "buildings": 0,
+  "px": 1024,
+  "notes": "tier 1; the API route, against the subagents' h55-v11-a"
  }
 ]

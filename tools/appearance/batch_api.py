@@ -14,6 +14,12 @@ $0.0003 a building at batch prices (docs/APPEARANCE-RESEARCH.md §10).
     python -I tools/appearance/batch_api.py plan --tier 1 --n 200 --labelled      # pick, build, size, price; sends nothing
     python -I tools/appearance/batch_api.py submit --run h55-v11-api               # sends the planned batch (ANTHROPIC_API_KEY)
     python -I tools/appearance/batch_api.py collect --run h55-v11-api              # waits, writes raw output and usage
+    python -I tools/appearance/batch_api.py openrouter --run h55-v11-api           # or: the planned requests one by one
+                                                                                    # through OpenRouter (~/.cityengine_openrouter_key)
+
+OpenRouter (owner, 2026-10-24: "use the Openrouter api key") speaks the Messages API, so the same requests go through the
+same SDK pointed at it. Its own batch endpoint takes only public image URLs, and these photographs carry the red target
+lines drawn on them, so they go one request at a time at the full price (twice the batch's), four in flight.
 
 `plan` writes runs/<run>/plan.json (the buildings and why); `submit` records the batch id there and the run in runs.json;
 `collect` writes runs/<run>/raw/api-<batch>.jsonl (collect.py reads it like any raw batch) and the tokens and dollars spent.
@@ -36,7 +42,8 @@ PRICE = {'input': 0.10, 'output': 0.50, 'cache_read': 0.01, 'cache_write': 0.125
 BATCH = 0.5
 
 ap = argparse.ArgumentParser()
-ap.add_argument('step', choices=['plan', 'submit', 'collect'])
+ap.add_argument('step', choices=['plan', 'submit', 'collect', 'openrouter'])
+ap.add_argument('--workers', type=int, default=4)
 ap.add_argument('--run', default='h55-v11-api')
 ap.add_argument('--brief', default='data/appearance/research/BRIEF-HAIKU-v11-api.md')
 ap.add_argument('--menus', default='data/appearance/research/menus-v11.json')
@@ -147,6 +154,63 @@ elif args.step == 'submit':
                      'notes': f"tier {plan['tier']}; the API route, against the subagents' {plan['against']}"})
         json.dump(runs, open(f'{D}/runs.json', 'w'), indent=1)
     print(f'submitted {len(plan["buildings"])} requests as {batch.id} ({batch.processing_status})')
+
+elif args.step == 'openrouter':
+    import anthropic
+    from concurrent.futures import ThreadPoolExecutor
+    plan = json.load(open(f'{RUN}/plan.json'))
+    B = {json.loads(l)['osm']: json.loads(l) for l in open(f'{D}/buildings.jsonl')}
+    client = anthropic.Anthropic(base_url='https://openrouter.ai/api', max_retries=4,
+                                 api_key=open(os.path.expanduser('~/.cityengine_openrouter_key')).read().strip())
+    raw = f"{RUN}/raw/openrouter-{plan.get('started_or') or time.strftime('%Y%m%d-%H%M')}.jsonl"
+    plan['started_or'] = os.path.basename(raw)[11:-6]
+    have = {json.loads(l)['osm'] for l in open(raw)} if os.path.exists(raw) else set()
+    todo = [o for o in plan['buildings'] if o not in have]
+
+    def one(osm):
+        req = request(B[osm])[0]['params']
+        req['model'] = 'anthropic/claude-haiku-5.5'
+        m = client.messages.create(**req)
+        text = next((blk.text for blk in m.content if blk.type == 'text'), '').strip()
+        return osm, text[text.find('{'):text.rfind('}') + 1], m.usage
+
+    use = plan.get('usage_or', {}).get('tokens') or {'input': 0, 'output': 0, 'cache_read': 0, 'cache_write': 0, 'thinking': 0}
+    cost = plan.get('usage_or', {}).get('dollars', 0.0)
+    bad = []
+    with ThreadPoolExecutor(args.workers) as ex, open(raw, 'a') as f:
+        for n, fut in enumerate([ex.submit(one, o) for o in todo], 1):
+            try:
+                osm, text, u = fut.result()
+            except Exception as e:  # noqa: BLE001 - one building's failure is recorded, not fatal
+                bad.append(str(e)[:120])
+                continue
+            use['input'] += u.input_tokens
+            use['output'] += u.output_tokens
+            use['cache_read'] += u.cache_read_input_tokens or 0
+            use['cache_write'] += u.cache_creation_input_tokens or 0
+            use['thinking'] += getattr(getattr(u, 'output_tokens_details', None), 'thinking_tokens', 0) or 0
+            cost += float(getattr(u, 'cost', 0) or 0)
+            try:
+                row = json.loads(text)
+            except json.JSONDecodeError:
+                bad.append(f'{osm}: unparsable')
+                continue
+            row['osm'] = osm
+            f.write(json.dumps(row) + '\n')
+            f.flush()
+            if n % 25 == 0:
+                print(f'  {n}/{len(todo)}, ${cost:.3f} so far', flush=True)
+    answered = sum(1 for _ in open(raw))
+    plan['usage_or'] = {'tokens': use, 'dollars': cost, 'per_building': cost / max(1, answered), 'answered': answered, 'failed': bad}
+    json.dump(plan, open(f'{RUN}/plan.json', 'w'), indent=1)
+    runs = json.load(open(f'{D}/runs.json'))
+    if not any(e['run'] == args.run for e in runs):
+        runs.append({'run': args.run, 'started': time.strftime('%Y-%m-%d'), 'model': 'claude-haiku-5-5 (OpenRouter, Messages API, thinking off)',
+                     'brief': {'path': args.brief, 'sha256': sha(args.brief)}, 'menus': {'path': args.menus, 'sha256': sha(args.menus)},
+                     'capture': 'r2-strict-original', 'ranks': [], 'buildings': 0, 'px': plan['px'],
+                     'notes': f"tier {plan['tier']}; the API route, against the subagents' {plan['against']}"})
+        json.dump(runs, open(f'{D}/runs.json', 'w'), indent=1)
+    print(f'{answered} answered, {len(bad)} failed {bad[:3]}; tokens {use}; ${cost:.3f} (${cost / max(1, answered):.5f} a building, as OpenRouter reports it)')
 
 else:
     import anthropic

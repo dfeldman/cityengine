@@ -216,5 +216,19 @@
   },
   "dollars": 0.054444368166666667,
   "bytes": 97635973
+ },
+ "started_or": "20261024-0834",
+ "usage_or": {
+  "tokens": {
+   "input": 496762,
+   "output": 90007,
+   "cache_read": 1464839,
+   "cache_write": 7361,
+   "thinking": 0
+  },
+  "dollars": 0.110248215,
+  "per_building": 0.000551241075,
+  "answered": 200,
+  "failed": []
  }
 }
