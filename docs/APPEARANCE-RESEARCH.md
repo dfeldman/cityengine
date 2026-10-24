@@ -666,3 +666,46 @@ never a colour, rarely a type (23% of buildings). Judged on the same 16: today 1
 1.94 — gated better than today on 2, the same on 14, worse on none. It is safe and nearly inert: what is wrong today is
 mostly colour and form, and the static features predict neither with confidence. On a commercial street it also took
 shops off neighbours the generics had given them (neighbours are not judged).
+
+## 10. Labelling directly: cost, priorities and the plan (2026-10-24)
+
+The model cannot predict colour or form from the records (§9), and the photo labels are what move the judged score
+(1.88–1.94 against 1.00), so the owner chose to label buildings directly, prioritised.
+
+**Coverage.** Of 85,791 eligible buildings, about 42,400 (49%) have a Mapillary photograph and about 39,100 (46%) would
+get a usable label (the captured sample's rates, reweighted by district and archetype to the city).
+
+**Cost.** Claude Haiku 5.5 is $0.10 / $0.50 per million tokens in / out, cache reads 0.1×, and the Message Batches API
+halves everything. A request is the brief and menus (~7.5k tokens, cached), the photographs (2.4 a building; ~1,500
+tokens each at the API's limit, ~1,000 at 1024 px) and ~400 tokens out with thinking off: about $0.0003 a building at
+batch prices, ~$14 for every photographed building in the city. The Claude Code subagents used so far spend ~15k tokens
+a building (640M for the city): fine for samples, not for the city. The real cost is CAPTURE: ~15 s a building, serial
+and throttled (350 ms between Mapillary requests, ~40 requests a building), ~350 hours for the whole city; Mapillary's
+limits (forum figures, not documented: ~50,000 graph requests a minute, 50,000 tiles a day) are far above this pace.
+Photographs at original size are ~0.44 MB a building on disk.
+
+**Priorities** (`tools/appearance/batch_api.py` `tier()`; photo rates from the captured sample):
+
+| tier | what | buildings | with a photo | capture |
+|---|---|---|---|---|
+| 1 | shopping and main streets: an OSM shop or amenity on it, 3+ within 50 m, within 25 m of a main street, or a commercial roll use | 22,658 | 85% (~19,200) | ~94 h |
+| 2 | historic or old in the central districts: CEQA A, a historic district, or pre-1930 outside the Sunset | 23,270 | 62% (~14,300) | ~97 h |
+| 3a | other residential | 6,300 | 56% | ~26 h |
+| 3b | the Sunset and the outer residential districts | 21,262 | 36% | ~89 h |
+| 4 | no street face (set back 15 m+) or under 60 m² | 6,397 | 33% | ~27 h |
+| 5 | outside San Francisco (Marin, the islands) | 5,904 | 22% | ~25 h |
+
+Tiers 1 and 2 are where people look (the shopping streets' signs, awnings and shopfronts; the Victorian and Edwardian
+neighbourhoods) and where the photographs are: ~33,500 photographed buildings, ~190 h of capture, ~$11. The rest stay
+generic (or the gated model). Assessed value was tried as a sign of architectural interest and rejected: under Prop 13
+it measures how recently a property sold — richly ornamented and Queen Anne fronts are assessed slightly LOWER per
+square foot than plain ones, and pre-1906 buildings range 13× ($32–432 / sq ft).
+
+**The plan.**
+1. A pilot: 200 tier-1 buildings the subagents already labelled (run h55-v11-a), through the Batch API (run
+   h55-v11-api: `BRIEF-HAIKU-v11-api.md`, v11's questions word for word, one building a request; photographs at
+   1024 px; thinking off). It measures the real cost and compares the two routes answer by answer, against the
+   subagents' own test–retest agreement (~85–95%). Planned: 501 photographs, a 98 MB batch, ~$0.05.
+2. If it agrees: capture tier 1 (~4 days serial), label it by batch (~95 batches of 200 at 1024 px, or the Files API),
+   render from the labels (`?looks=labels`), judge a sample.
+3. Then tier 2 the same way.
