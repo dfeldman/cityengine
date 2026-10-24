@@ -726,3 +726,19 @@ thinking off the subagents' answer won 34 to 16 (ornament 7–1, type 6–1, sto
 defensible, 3 neither. Thinking ON reverses it: on the same items the API route now sides with the winner 29 times to
 16. So label with thinking on: ~$0.001 a building, ~$20 for tier 1's ~19,200 photographed buildings, ~$36 for tiers 1
 and 2. Capture remains the cost in time (~94 h serial for tier 1).
+
+**The tier-1 run (started 2026-10-24; run h55-v11-t1).** `capture.py --tier 1` photographs the city's 22,658 tier-1
+buildings (`tools/appearance/tiers.py`) in a seeded random order, one at a time; `batch_api.py label --run h55-v11-t1
+--tier 1 --thinking medium --follow` labels them through OpenRouter as they come in, checking for new photographs every
+10 minutes. Both are built to be stopped and restarted at will:
+- capture records a building only once the photo tool has finished for it; a failure (a crash, a timeout, a Mapillary
+  error, which the tool otherwise answers with "no photographs") leaves it to be tried again, with backoff after five in
+  a row;
+- the labeller writes each answer the moment it comes back, and a building counts as done only once its answer is in
+  `runs/h55-v11-t1/raw/answers.jsonl` (a half-written last line is skipped and asked again); it checks the lower of the
+  account's credit and the key's limit before starting and every 25 answers, stopping with $0.15 left, and stops at once
+  on a 402 (no credit) or a 401/403 (the key); `runs/h55-v11-t1/status.json` records what it answered, what it spent and
+  why it stopped. Tested: a refused key stops it with nothing written; a reserve above the balance stops it before any
+  request; a kill mid-run keeps every answer written, and the restart carries on from there.
+At the start the account had $6.67 left, enough for ~6,300 buildings at $0.00106; rerun the same command after a
+top-up and it continues.

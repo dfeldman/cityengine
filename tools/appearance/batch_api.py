@@ -14,6 +14,8 @@ $0.0003 a building at batch prices (docs/APPEARANCE-RESEARCH.md §10).
     python -I tools/appearance/batch_api.py plan --tier 1 --n 200 --labelled      # pick, build, size, price; sends nothing
     python -I tools/appearance/batch_api.py submit --run h55-v11-api               # sends the planned batch (ANTHROPIC_API_KEY)
     python -I tools/appearance/batch_api.py collect --run h55-v11-api              # waits, writes raw output and usage
+    python -I tools/appearance/batch_api.py label --run h55-v11-t1 --tier 1 --thinking medium --follow
+                                                                                    # the city's tier-1 buildings, as captured
     python -I tools/appearance/batch_api.py openrouter --run h55-v11-api           # or: the planned requests one by one
                                                                                     # through OpenRouter (~/.cityengine_openrouter_key)
 
@@ -42,8 +44,13 @@ PRICE = {'input': 0.10, 'output': 0.50, 'cache_read': 0.01, 'cache_write': 0.125
 BATCH = 0.5
 
 ap = argparse.ArgumentParser()
-ap.add_argument('step', choices=['plan', 'submit', 'collect', 'openrouter'])
+ap.add_argument('step', choices=['plan', 'submit', 'collect', 'openrouter', 'label'])
 ap.add_argument('--workers', type=int, default=4)
+# `label`: the population's buildings of --tier that capture has photographed, through OpenRouter, until done or the money
+# runs out; --follow keeps picking up what capture brings in until capture has finished the tier
+ap.add_argument('--population', default='tools/cache/appearance-population.jsonl')
+ap.add_argument('--follow', action='store_true')
+ap.add_argument('--reserve', type=float, default=0.15)
 ap.add_argument('--run', default='h55-v11-api')
 ap.add_argument('--brief', default='data/appearance/research/BRIEF-HAIKU-v11-api.md')
 ap.add_argument('--menus', default='data/appearance/research/menus-v11.json')
@@ -214,6 +221,158 @@ elif args.step == 'openrouter':
                      'notes': f"tier {plan['tier']}; the API route, against the subagents' {plan['against']}"})
         json.dump(runs, open(f'{D}/runs.json', 'w'), indent=1)
     print(f'{answered} answered, {len(bad)} failed {bad[:3]}; tokens {use}; ${cost:.3f} (${cost / max(1, answered):.5f} a building, as OpenRouter reports it)')
+
+elif args.step == 'label':
+    # RESILIENT (owner, 2026-10-24: "I am probably running out of $ on my Openrouter account so be sure it is resilient to
+    # failures for any reason"):
+    #   - every answer is appended and flushed the moment it comes back, and a building is done only when its answer is in
+    #     raw/: a run stopped for any reason, rerun, picks up exactly where it was;
+    #   - the money: the lower of the account's remaining credit and the key's remaining limit is checked before starting
+    #     and every 25 answers, and the run stops with --reserve still unspent; a 402 (out of credit) stops it at once;
+    #   - a 401/403 (the key) stops it; rate limits and server errors are retried by the SDK with backoff, then the
+    #     building is left for the next pass; ten failures in a row pause the run, longer each time, and three pauses
+    #     with nothing answered in between stop it;
+    #   - runs/<run>/status.json says how far it got, what it spent and why it stopped.
+    import anthropic
+    import urllib.request
+    import sys as _sys
+    _sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from tiers import tier as _tier
+    from concurrent.futures import ThreadPoolExecutor
+    KEY = open(os.path.expanduser(os.environ.get('OPENROUTER_KEY_FILE', '~/.cityengine_openrouter_key'))).read().strip()
+    client = anthropic.Anthropic(base_url='https://openrouter.ai/api', max_retries=4, api_key=KEY, timeout=180)
+    pop = {}
+    for line in open(args.population):
+        b = json.loads(line)
+        if _tier(b) == args.tier:
+            pop[b['osm']] = b
+    status_path = f'{RUN}/status.json'
+    status = json.load(open(status_path)) if os.path.exists(status_path) else {'answered': 0, 'dollars': 0.0, 'tokens': {}}
+    raw = f'{RUN}/raw/answers.jsonl'
+
+    def remaining():
+        """the lower of the account's credit left and the key's limit left, in dollars; None if it cannot be read"""
+        left = []
+        for path, f in (('credits', lambda d: d['total_credits'] - d['total_usage']), ('key', lambda d: d['limit_remaining'])):
+            try:
+                r = urllib.request.urlopen(urllib.request.Request(f'https://openrouter.ai/api/v1/{path}', headers={'Authorization': f'Bearer {KEY}'}), timeout=30)
+                v = f(json.load(r)['data'])
+                if v is not None:
+                    left.append(float(v))
+            except Exception:  # noqa: BLE001 - an unreadable balance is not a reason to stop; the 402 is the backstop
+                pass
+        return min(left) if left else None
+
+    def save(stop=None):
+        status.update({'run': args.run, 'tier': args.tier, 'updated': time.strftime('%Y-%m-%d %H:%M:%S'), 'stopped': stop})
+        json.dump(status, open(status_path, 'w'), indent=1)
+
+    runs = json.load(open(f'{D}/runs.json'))
+    if not any(e['run'] == args.run for e in runs):
+        runs.append({'run': args.run, 'started': time.strftime('%Y-%m-%d'), 'model': f'claude-haiku-5-5 (OpenRouter, thinking {args.thinking})',
+                     'brief': {'path': args.brief, 'sha256': sha(args.brief)}, 'menus': {'path': args.menus, 'sha256': sha(args.menus)},
+                     'capture': 'r2-strict-original', 'ranks': [], 'buildings': 0, 'px': args.px,
+                     'notes': f'the city\'s tier-{args.tier} buildings (tools/appearance/tiers.py), as capture photographs them'})
+        json.dump(runs, open(f'{D}/runs.json', 'w'), indent=1)
+
+    def one(osm):
+        req = request(pop[osm])[0]['params']
+        req['model'] = 'anthropic/claude-haiku-5.5'
+        m = client.messages.create(**req)
+        text = next((blk.text for blk in m.content if blk.type == 'text'), '').strip()
+        return osm, text[text.find('{'):text.rfind('}') + 1], m.usage
+
+    # (a kill can leave a half line with no newline: end it, so the next answer starts a line of its own)
+    if os.path.exists(raw) and os.path.getsize(raw):
+        with open(raw, 'rb+') as f:
+            f.seek(-1, 2)
+            if f.read(1) != b'\n':
+                f.write(b'\n')
+    stop, pauses = None, 0
+    while stop is None:
+        done = set()
+        if os.path.exists(raw):
+            for line in open(raw):
+                try:
+                    done.add(json.loads(line)['osm'])
+                except (json.JSONDecodeError, KeyError):  # (a line half-written when a run was killed: asked again)
+                    pass
+        captured, finished = set(), True
+        for line in open(f'{D}/captures.jsonl'):
+            c = json.loads(line)
+            if c['capture'] == 'r2-strict-original' and c['osm'] in pop and c.get('frames', 0) > 0:
+                captured.add(c['osm'])
+        seen = {json.loads(l)['osm'] for l in open(f'{D}/captures.jsonl')}
+        finished = all(o in seen for o in pop)
+        todo = [o for o in pop if o in captured and o not in done and photos(o)]
+        left = remaining()
+        print(f'{len(todo)} to label ({len(done)} done, {len(captured)} photographed of {len(pop)}); '
+              f'${left:.2f} left' if left is not None else 'balance unknown', flush=True)
+        if left is not None and left < args.reserve:
+            stop = f'money: ${left:.2f} left, under the ${args.reserve:.2f} reserve'
+            break
+        fails = 0
+        for s0 in range(0, len(todo), 25):
+            chunk = todo[s0:s0 + 25]
+            with ThreadPoolExecutor(args.workers) as ex, open(raw, 'a') as f:
+                for fut in [ex.submit(one, o) for o in chunk]:
+                    try:
+                        osm, text, u = fut.result()
+                    except anthropic.APIStatusError as e:
+                        if e.status_code == 402:
+                            stop = 'out of credit (402)'
+                        elif e.status_code in (401, 403):
+                            stop = f'the key was refused ({e.status_code})'
+                        fails += 1
+                        status['last_error'] = f'{e.status_code}: {str(e)[:160]}'
+                        continue
+                    except Exception as e:  # noqa: BLE001 - a connection drop, a timeout: leave it for the next pass
+                        fails += 1
+                        status['last_error'] = str(e)[:160]
+                        continue
+                    try:
+                        row = json.loads(text)
+                    except json.JSONDecodeError:
+                        fails += 1
+                        status['last_error'] = f'{osm}: unparsable answer'
+                        continue
+                    fails = 0
+                    pauses = 0
+                    row['osm'] = osm
+                    f.write(json.dumps(row) + '\n')
+                    f.flush()
+                    status['answered'] += 1
+                    status['dollars'] += float(getattr(u, 'cost', 0) or 0)
+                    t = status['tokens']
+                    for k, v in (('input', u.input_tokens), ('output', u.output_tokens), ('cache_read', u.cache_read_input_tokens or 0),
+                                 ('thinking', getattr(getattr(u, 'output_tokens_details', None), 'thinking_tokens', 0) or 0)):
+                        t[k] = t.get(k, 0) + v
+                    save()
+            print(f'  {status["answered"]} answered, ${status["dollars"]:.3f} spent', flush=True)
+            if stop:
+                break
+            if fails >= 10:
+                pauses += 1
+                if pauses > 3:
+                    stop = f'three pauses with nothing answered; last error: {status.get("last_error")}'
+                    break
+                wait = 300 * pauses
+                print(f'  {fails} failures in a row ({status.get("last_error")}): pausing {wait} s', flush=True)
+                time.sleep(wait)
+            left = remaining()
+            if left is not None and left < args.reserve:
+                stop = f'money: ${left:.2f} left, under the ${args.reserve:.2f} reserve'
+                break
+        if stop:
+            break
+        if not args.follow or (finished and not [o for o in pop if o in captured and o not in done]):
+            stop = 'done' if finished else 'everything captured so far is labelled'
+            if not args.follow or finished:
+                break
+        print('  waiting for capture: 10 min', flush=True)
+        time.sleep(600)
+    save(stop)
+    print(f'stopped: {stop}; {status["answered"]} answered, ${status["dollars"]:.3f} spent', flush=True)
 
 else:
     import anthropic
