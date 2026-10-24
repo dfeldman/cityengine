@@ -53,6 +53,8 @@ ap.add_argument('--n', type=int, default=200)
 ap.add_argument('--labelled', action='store_true')
 ap.add_argument('--against', default='h55-v11-a')
 ap.add_argument('--px', type=int, default=1024)
+# Haiku 5.5's own thinking (adaptive, at this effort) instead of none: the subagents' labels were made with it on
+ap.add_argument('--thinking', choices=['off', 'low', 'medium', 'high'], default='off')
 ap.add_argument('--seed', type=int, default=20261024)
 args = ap.parse_args()
 RUN = f'{D}/runs/{args.run}'
@@ -102,7 +104,8 @@ def request(b):
     h = f", {round(b['height_m'])} m tall" if b.get('height_m') else ''
     text = (f"{b['osm']} (footprint about {round(b['narrow_m'])} x {round(b['long_m'])} m{h}). "
             f"{len(imgs)} photograph{'s' if len(imgs) != 1 else ''} follow, in order.")
-    params = {'model': MODEL, 'max_tokens': 1500, 'thinking': {'type': 'disabled'}, 'system': system_blocks(),
+    think = {'thinking': {'type': 'disabled'}} if args.thinking == 'off' else {'thinking': {'type': 'adaptive'}, 'output_config': {'effort': args.thinking}}
+    params = {'model': MODEL, 'max_tokens': 1500 if args.thinking == 'off' else 12000, **think, 'system': system_blocks(),
               'messages': [{'role': 'user', 'content': [{'type': 'text', 'text': text}] + [blk for blk, _ in imgs]}]}
     return {'custom_id': b['osm'].replace('/', '-'), 'params': params}, [sz for _, sz in imgs]
 

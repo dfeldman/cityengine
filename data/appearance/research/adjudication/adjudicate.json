@@ -1,0 +1,578 @@
+[
+ {
+  "item": "01",
+  "osm": "way/274667475",
+  "field": "type",
+  "A": "bay_window_apartment_block",
+  "B": "wood_or_stucco_flats",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-274667475/"
+ },
+ {
+  "item": "02",
+  "osm": "way/274667475",
+  "field": "wall_colour",
+  "A": "beige",
+  "B": "pink",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-274667475/"
+ },
+ {
+  "item": "03",
+  "osm": "way/274667475",
+  "field": "top",
+  "A": "plain_cornice",
+  "B": "plain_parapet",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-274667475/"
+ },
+ {
+  "item": "04",
+  "osm": "way/274667475",
+  "field": "windows",
+  "A": "tall_sash",
+  "B": "wide_picture",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-274667475/"
+ },
+ {
+  "item": "05",
+  "osm": "way/274667475",
+  "field": "bay_shape",
+  "A": "angled",
+  "B": "square",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-274667475/"
+ },
+ {
+  "item": "06",
+  "osm": "way/288499678",
+  "field": "type",
+  "A": "boxy_modern_apartments",
+  "B": "stucco_house_with_garage",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-288499678/"
+ },
+ {
+  "item": "07",
+  "osm": "way/288499678",
+  "field": "wall_colour",
+  "A": "grey",
+  "B": "white",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-288499678/"
+ },
+ {
+  "item": "08",
+  "osm": "way/261432388",
+  "field": "top",
+  "A": "plain_cornice",
+  "B": "plain_parapet",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-261432388/"
+ },
+ {
+  "item": "09",
+  "osm": "way/260279405",
+  "field": "shopfronts",
+  "A": "one",
+  "B": "several",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-260279405/"
+ },
+ {
+  "item": "10",
+  "osm": "way/260279405",
+  "field": "wall_colour",
+  "A": "redBrick",
+  "B": "white",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-260279405/"
+ },
+ {
+  "item": "11",
+  "osm": "way/260279405",
+  "field": "top",
+  "A": "plain_cornice",
+  "B": "bracketed_cornice",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-260279405/"
+ },
+ {
+  "item": "12",
+  "osm": "way/260279405",
+  "field": "windows",
+  "A": "ribbon",
+  "B": "tall_sash",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-260279405/"
+ },
+ {
+  "item": "13",
+  "osm": "way/257941432",
+  "field": "top",
+  "A": "plain_parapet",
+  "B": "roof_overhang",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-257941432/"
+ },
+ {
+  "item": "14",
+  "osm": "way/257941432",
+  "field": "storeys",
+  "A": "4",
+  "B": "3",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-257941432/"
+ },
+ {
+  "item": "15",
+  "osm": "way/257941432",
+  "field": "windows",
+  "A": "grid",
+  "B": "tall_sash",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-257941432/"
+ },
+ {
+  "item": "16",
+  "osm": "way/179746879",
+  "field": "type",
+  "A": "bay_window_apartment_block",
+  "B": "classic_stone_block",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-179746879/"
+ },
+ {
+  "item": "17",
+  "osm": "way/179746879",
+  "field": "top",
+  "A": "plain_parapet",
+  "B": "plain_cornice",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-179746879/"
+ },
+ {
+  "item": "18",
+  "osm": "way/179746879",
+  "field": "ornament",
+  "A": "rich",
+  "B": "some",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-179746879/"
+ },
+ {
+  "item": "19",
+  "osm": "way/179746879",
+  "field": "bay_shape",
+  "A": "angled",
+  "B": "rounded",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-179746879/"
+ },
+ {
+  "item": "20",
+  "osm": "way/260982581",
+  "field": "type",
+  "A": "sleek_modern_apartments",
+  "B": "boxy_modern_apartments",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-260982581/"
+ },
+ {
+  "item": "21",
+  "osm": "way/260982581",
+  "field": "shopfronts",
+  "A": "one",
+  "B": "none",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-260982581/"
+ },
+ {
+  "item": "22",
+  "osm": "way/260982581",
+  "field": "bay_shape",
+  "A": "angled",
+  "B": "none",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-260982581/"
+ },
+ {
+  "item": "23",
+  "osm": "way/263639317",
+  "field": "type",
+  "A": "painted_wood_rowhouse",
+  "B": "bay_window_apartment_block",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-263639317/"
+ },
+ {
+  "item": "24",
+  "osm": "way/263639317",
+  "field": "wall_colour",
+  "A": "white",
+  "B": "grey",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-263639317/"
+ },
+ {
+  "item": "25",
+  "osm": "way/263639317",
+  "field": "storeys",
+  "A": "4",
+  "B": "3",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-263639317/"
+ },
+ {
+  "item": "26",
+  "osm": "way/263639317",
+  "field": "ornament",
+  "A": "some",
+  "B": "rich",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-263639317/"
+ },
+ {
+  "item": "27",
+  "osm": "way/260354448",
+  "field": "type",
+  "A": "boxy_modern_apartments",
+  "B": "modern_commercial_box",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-260354448/"
+ },
+ {
+  "item": "28",
+  "osm": "way/260354448",
+  "field": "shopfronts",
+  "A": "one",
+  "B": "none",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-260354448/"
+ },
+ {
+  "item": "29",
+  "osm": "way/260354448",
+  "field": "top",
+  "A": "plain_parapet",
+  "B": "roof_overhang",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-260354448/"
+ },
+ {
+  "item": "30",
+  "osm": "way/132605479",
+  "field": "top",
+  "A": "plain_parapet",
+  "B": "gable",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-132605479/"
+ },
+ {
+  "item": "31",
+  "osm": "way/262421893",
+  "field": "type",
+  "A": "stucco_house_with_garage",
+  "B": "wood_or_stucco_flats",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-262421893/"
+ },
+ {
+  "item": "32",
+  "osm": "way/262421893",
+  "field": "wall_colour",
+  "A": "cream",
+  "B": "grey",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-262421893/"
+ },
+ {
+  "item": "33",
+  "osm": "way/262421893",
+  "field": "top",
+  "A": "plain_cornice",
+  "B": "roof_overhang",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-262421893/"
+ },
+ {
+  "item": "34",
+  "osm": "way/262421893",
+  "field": "ornament",
+  "A": "rich",
+  "B": "some",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-262421893/"
+ },
+ {
+  "item": "35",
+  "osm": "way/262421893",
+  "field": "bay_shape",
+  "A": "angled",
+  "B": "square",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-262421893/"
+ },
+ {
+  "item": "36",
+  "osm": "way/243356636",
+  "field": "type",
+  "A": "one_storey_shop_building",
+  "B": "modern_commercial_box",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-243356636/"
+ },
+ {
+  "item": "37",
+  "osm": "way/243356636",
+  "field": "shopfronts",
+  "A": "one",
+  "B": "several",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-243356636/"
+ },
+ {
+  "item": "38",
+  "osm": "way/272647190",
+  "field": "shopfronts",
+  "A": "all",
+  "B": "several",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-272647190/"
+ },
+ {
+  "item": "39",
+  "osm": "way/262601223",
+  "field": "type",
+  "A": "other",
+  "B": "modern_commercial_box",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-262601223/"
+ },
+ {
+  "item": "40",
+  "osm": "way/262601223",
+  "field": "wall_colour",
+  "A": "grey",
+  "B": "green",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-262601223/"
+ },
+ {
+  "item": "41",
+  "osm": "way/262601223",
+  "field": "storeys",
+  "A": "1",
+  "B": "2",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-262601223/"
+ },
+ {
+  "item": "42",
+  "osm": "way/262601223",
+  "field": "windows",
+  "A": "ribbon",
+  "B": "wide_picture",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-262601223/"
+ },
+ {
+  "item": "43",
+  "osm": "way/288500670",
+  "field": "wall_colour",
+  "A": "beige",
+  "B": "grey",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-288500670/"
+ },
+ {
+  "item": "44",
+  "osm": "way/288500670",
+  "field": "storeys",
+  "A": "2",
+  "B": "3",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-288500670/"
+ },
+ {
+  "item": "45",
+  "osm": "way/256582756",
+  "field": "wall_colour",
+  "A": "blue",
+  "B": "cream",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-256582756/"
+ },
+ {
+  "item": "46",
+  "osm": "way/258977225",
+  "field": "shopfronts",
+  "A": "one",
+  "B": "several",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-258977225/"
+ },
+ {
+  "item": "47",
+  "osm": "way/258977225",
+  "field": "top",
+  "A": "plain_parapet",
+  "B": "sign_panel",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-258977225/"
+ },
+ {
+  "item": "48",
+  "osm": "way/258977225",
+  "field": "storeys",
+  "A": "1",
+  "B": "2",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-258977225/"
+ },
+ {
+  "item": "49",
+  "osm": "way/196961242",
+  "field": "shopfronts",
+  "A": "several",
+  "B": "one",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-196961242/"
+ },
+ {
+  "item": "50",
+  "osm": "way/196961242",
+  "field": "ornament",
+  "A": "rich",
+  "B": "some",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-196961242/"
+ },
+ {
+  "item": "51",
+  "osm": "way/196961242",
+  "field": "bay_shape",
+  "A": "square",
+  "B": "angled",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-196961242/"
+ },
+ {
+  "item": "52",
+  "osm": "way/260280327",
+  "field": "ornament",
+  "A": "some",
+  "B": "rich",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-260280327/"
+ },
+ {
+  "item": "53",
+  "osm": "way/274645021",
+  "field": "windows",
+  "A": "wide_picture",
+  "B": "ribbon",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-274645021/"
+ },
+ {
+  "item": "54",
+  "osm": "way/288485995",
+  "field": "shopfronts",
+  "A": "none",
+  "B": "one",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-288485995/"
+ },
+ {
+  "item": "55",
+  "osm": "way/288485995",
+  "field": "ornament",
+  "A": "some",
+  "B": "plain",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-288485995/"
+ },
+ {
+  "item": "56",
+  "osm": "way/288485995",
+  "field": "windows",
+  "A": "wide_picture",
+  "B": "ribbon",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-288485995/"
+ },
+ {
+  "item": "57",
+  "osm": "way/276801867",
+  "field": "bay_shape",
+  "A": "angled",
+  "B": "square",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-276801867/"
+ },
+ {
+  "item": "58",
+  "osm": "way/258818540",
+  "field": "shopfronts",
+  "A": "none",
+  "B": "one",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-258818540/"
+ },
+ {
+  "item": "59",
+  "osm": "way/258818540",
+  "field": "wall_colour",
+  "A": "cream",
+  "B": "beige",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-258818540/"
+ },
+ {
+  "item": "60",
+  "osm": "way/264321516",
+  "field": "windows",
+  "A": "tall_sash",
+  "B": "arched",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-264321516/"
+ },
+ {
+  "item": "61",
+  "osm": "way/258956377",
+  "field": "storeys",
+  "A": "1",
+  "B": "2",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-258956377/"
+ },
+ {
+  "item": "62",
+  "osm": "way/258956377",
+  "field": "ornament",
+  "A": "plain",
+  "B": "some",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-258956377/"
+ },
+ {
+  "item": "63",
+  "osm": "way/258956377",
+  "field": "windows",
+  "A": "wide_picture",
+  "B": "ribbon",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-258956377/"
+ },
+ {
+  "item": "64",
+  "osm": "way/189138938",
+  "field": "storeys",
+  "A": "4",
+  "B": "5",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-189138938/"
+ },
+ {
+  "item": "65",
+  "osm": "way/189138938",
+  "field": "ornament",
+  "A": "plain",
+  "B": "some",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-189138938/"
+ },
+ {
+  "item": "66",
+  "osm": "way/218148103",
+  "field": "windows",
+  "A": "arched",
+  "B": "tall_sash",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-218148103/"
+ },
+ {
+  "item": "67",
+  "osm": "way/48995286",
+  "field": "storeys",
+  "A": "7",
+  "B": "8",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-48995286/"
+ },
+ {
+  "item": "68",
+  "osm": "way/264386803",
+  "field": "bay_shape",
+  "A": "angled",
+  "B": "square",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-264386803/"
+ },
+ {
+  "item": "69",
+  "osm": "way/261107097",
+  "field": "bay_shape",
+  "A": "square",
+  "B": "none",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-261107097/"
+ },
+ {
+  "item": "70",
+  "osm": "way/263224857",
+  "field": "ornament",
+  "A": "some",
+  "B": "rich",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-263224857/"
+ },
+ {
+  "item": "71",
+  "osm": "way/263224857",
+  "field": "bay_shape",
+  "A": "square",
+  "B": "angled",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-263224857/"
+ },
+ {
+  "item": "72",
+  "osm": "way/1311377958",
+  "field": "storeys",
+  "A": "3",
+  "B": "4",
+  "photos": "/Users/dfeldman/cityengine/tools/cache/appearance-r2/way-1311377958/"
+ }
+]

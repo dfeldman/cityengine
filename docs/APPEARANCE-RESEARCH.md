@@ -709,3 +709,20 @@ square foot than plain ones, and pre-1906 buildings range 13× ($32–432 / sq f
 2. If it agrees: capture tier 1 (~4 days serial), label it by batch (~95 batches of 200 at 1024 px, or the Files API),
    render from the labels (`?looks=labels`), judge a sample.
 3. Then tier 2 the same way.
+
+**The pilot (2026-10-24; runs h55-v11-api, -hr, -think; `tools/appearance/batch_api.py openrouter`, `agree.py`;
+`research/adjudication/`).** 200 tier-1 buildings the subagents had labelled, sent one request each through OpenRouter
+(the owner's key; its own batch endpoint takes only public image URLs, and these photographs carry the drawn target
+lines). All 200 answered every time, none failed.
+
+| route | $ a building | agrees with the subagents | on 50 blind-adjudicated disagreements: sides with the winner / loser |
+|---|---|---|---|
+| thinking off, photos at 1024 px | 0.00055 | 83% | 16 / 34 |
+| thinking off, photos at 1568 px | 0.00056 | 83% | (the same input tokens: the API scales both to its own cap) |
+| **thinking on (adaptive, medium)** | **0.00106** | **88%** | **29 / 16** |
+
+(Two subagent runs agree 92% with each other.) Opus judged 72 disagreements blind, the two answers shuffled: with
+thinking off the subagents' answer won 34 to 16 (ornament 7–1, type 6–1, storeys 5–2, windows 4–1), 19 both
+defensible, 3 neither. Thinking ON reverses it: on the same items the API route now sides with the winner 29 times to
+16. So label with thinking on: ~$0.001 a building, ~$20 for tier 1's ~19,200 photographed buildings, ~$36 for tiers 1
+and 2. Capture remains the cost in time (~94 h serial for tier 1).
