@@ -3,9 +3,10 @@
  * Haiku read off its Mapillary frames, turned into the three things the generic renderer draws a building with —
  * a style (its paintings and proportions), a palette, and a dressing (src/city/facade.ts Dress).
  *
- * Experimental: the city applies it only behind `?labels=1`, to the buildings in `data/appearance/looks/haiku.json`
- * (tools/appearance/looks.py: only answers both runs agree on), so a labelled street can be compared with its
- * photographs. Every answer is optional; a building keeps whatever the bake gave it where the label is silent.
+ * Experimental: the city applies it only behind `?looks=labels` (or `?labels=1`), to the buildings in
+ * `data/appearance/looks/haiku.json` (tools/appearance/looks.py), so a labelled street can be compared with its
+ * photographs; or behind `?looks=imputed`, to every building, from the appearance model (`LOOKS_MODE` below). Every
+ * answer is optional; a building keeps whatever the bake gave it where the answers are silent.
  */
 import table from '../../data/appearance/looks/haiku.json' with { type: 'json' }
 import menus from '../../data/appearance/research/menus-v11.json' with { type: 'json' }
@@ -46,9 +47,52 @@ const SURFACE: Record<string, Partial<Record<string, StyleId>>> = {
 const colour = (v?: string): string | undefined => (v && COLOURS[v] ? COLOURS[v] : undefined)
 const known = (v?: string): boolean => v !== undefined && v !== 'cannot_tell'
 
-/** The look a building's label asks for, or null where it has none. */
+/**
+ * WHERE A BUILDING'S ANSWERS COME FROM (owner, 2026-10-23: "don't remove the existing generics system. We want to keep it
+ * for comparison purposes"), by `?looks=`:
+ *
+ * - `generic` (the default): none — every building is the bake's style and the generic draws, as before;
+ * - `labels` (or the old `?labels=1`): the street-photo labels, for the buildings that have one;
+ * - `imputed`: every building's answers drawn from the appearance model (tools/appearance/impute.py) — what it predicts
+ *   from the map and the city's records, one draw per building, seeded by its id. Fetched at load (`loadLooks`) from
+ *   `appearance/imputed.json`, so the default build carries none of it.
+ */
+const params = typeof location !== 'undefined' ? new URLSearchParams(location.search) : null
+export const LOOKS_MODE: 'generic' | 'labels' | 'imputed' =
+  params?.get('looks') === 'imputed' ? 'imputed' : params?.get('looks') === 'labels' || params?.get('labels') === '1' ? 'labels' : 'generic'
+
+interface Imputed { fields: string[]; values: string[][]; rows: Record<string, string>; signs: Record<string, string> }
+let imputed: Imputed | null = null
+/** the code alphabet: a field's answer is its index in `values`, one character each; `.` is no answer */
+const CODES = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+/** Fetch the imputed answers when `?looks=imputed` asks for them; a failed fetch leaves the generics. */
+export async function loadLooks(base: string): Promise<void> {
+  if (LOOKS_MODE !== 'imputed' || imputed) return
+  try {
+    const r = await fetch(new URL('appearance/imputed.json', base))
+    if (r.ok) imputed = await r.json() as Imputed
+  } catch { /* offline, or not deployed: the generics stand */ }
+}
+
+function labelOf(id: number): Label | undefined {
+  if (LOOKS_MODE === 'labels') return LABELS[String(id)]
+  if (LOOKS_MODE !== 'imputed' || !imputed) return undefined
+  const code = imputed.rows[String(id)]
+  if (!code) return undefined
+  const l: Label = {}
+  for (let i = 0; i < imputed.fields.length; i++) {
+    const k = CODES.indexOf(code[i])
+    if (k >= 0) l[imputed.fields[i]] = imputed.values[i][k]
+  }
+  const sign = imputed.signs[String(id)]
+  if (sign) l.sign_text = sign
+  return l
+}
+
+/** The look a building's answers ask for, or null where it has none. */
 export function lookFor(id: number, baked?: StyleId): Look | null {
-  const l = LABELS[String(id)]
+  const l = labelOf(id)
   if (!l) return null
   const look: Look = {}
   // (`classic_stone_block` is the apartment hotel or the office block, as homes_above says)
@@ -174,5 +218,5 @@ function special(l: Label, look: Look, dress: Partial<Dress>): void {
   }
 }
 
-/** `?labels=1`: draw the labelled buildings from their labels. */
-export const LOOKS_ON = typeof location !== 'undefined' && new URLSearchParams(location.search).get('labels') === '1'
+/** `?looks=labels|imputed` (or `?labels=1`): draw the buildings from their answers; otherwise the generics. */
+export const LOOKS_ON = LOOKS_MODE !== 'generic'

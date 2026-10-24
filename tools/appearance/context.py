@@ -24,7 +24,7 @@ buildings.jsonl is updated IN PLACE (rank and stratum are the sample's); rerunni
     osmium tags-filter tools/cache/osm/appearance/sf.osm.pbf nwr/shop nwr/amenity nwr/office nwr/craft nwr/tourism \
         nwr/healthcare nwr/leisure nwr/club nwr/building nwr/historic nwr/heritage -o tools/cache/osm/appearance/sf-tagged.osm.pbf
     osmium export tools/cache/osm/appearance/sf-tagged.osm.pbf -f geojsonseq -a type,id -o tools/cache/osm/appearance/sf-tagged.geojsonseq
-    python3 -I tools/appearance/context.py
+    python3 -I tools/appearance/context.py [buildings.jsonl]
 """
 import collections
 import glob
@@ -32,10 +32,11 @@ import json
 import math
 import re
 import statistics
+import sys
 
 PKG = 'tools/cache/bake/san-francisco/package.json'
 OSM = 'tools/cache/osm/appearance/sf-tagged.geojsonseq'
-OUT = 'data/appearance/dataset/buildings.jsonl'
+OUT = sys.argv[1] if len(sys.argv) > 1 else 'data/appearance/dataset/buildings.jsonl'
 
 pkg = json.load(open(PKG))
 origin = pkg['origin']

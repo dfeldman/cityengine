@@ -17,6 +17,7 @@ import { setTimeOfDay, setWeather, type TimeOfDay, type Weather } from './render
 import { Rain } from './render/rain.ts'
 import { DebugPanel, LookPad, OrbitLook, copyText } from './ui/debug.ts'
 import { Projection } from './city/geo.ts'
+import { loadLooks } from './city/appearance.ts'
 import { parseLatLon } from './ui/goto.ts'
 import { asMassing, fringeLayer, massing, midRoads } from './render/fringe.ts'
 import { terracesLayer } from './render/terraces.ts'
@@ -322,6 +323,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       if (keep.length !== p.length) { t.plantings = keep; if (t.plantingY) t.plantingY = keepY }
     }
   }
+  // (`?looks=imputed`: every building's answers from the appearance model, before any building is drawn — city/appearance.ts)
+  await loadLooks(document.baseURI)
   mark('fetched')
   const index = src.index
   // what the rest of the game reads of the city as a whole: the index's global part

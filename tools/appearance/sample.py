@@ -29,7 +29,11 @@ ap = argparse.ArgumentParser()
 ap.add_argument('--n', type=int, default=10000)
 ap.add_argument('--seed', type=int, default=20261022)
 ap.add_argument('--out', default='data/appearance/dataset/buildings.jsonl')
+# every eligible building, in bake order, unstratified: what the appearance model imputes for (tools/appearance/impute.py)
+ap.add_argument('--all', action='store_true')
 args = ap.parse_args()
+if args.all and args.out == 'data/appearance/dataset/buildings.jsonl':
+    args.out = 'tools/cache/appearance-population.jsonl'
 
 pkg = json.load(open('tools/cache/bake/san-francisco/package.json'))
 origin = pkg['origin']
@@ -162,6 +166,13 @@ for b in pkg['buildings']:
         'roll_construction': r[6] or None if r else None,
         'age': age(r[2] if r else None),
     })
+
+if args.all:
+    with open(args.out, 'w') as f:
+        for rank, r in enumerate(rows):
+            f.write(json.dumps({'rank': rank, **r}) + '\n')
+    print(f'{len(rows)} eligible of {len(pkg["buildings"])} -> {args.out}')
+    raise SystemExit
 
 # ---- stratify
 strata = {}

@@ -13,7 +13,7 @@ More of the city's own records for the appearance dataset's buildings (appearanc
             ground storey — a ground floor of garages or shops — by tier and status.
   biz_*     registered businesses whose location is on the lot (DataSF g8m3-pdis, open locations only): how many,
             by NAICS sector, and whether one pays parking tax (a garage or lot) or hotel tax.
-  permit_*  every building permit filed on the lot (DataSF i98e-djp9): how many, their total estimated cost, the
+  permit_*  every building permit filed on the lot (DataSF i98e-djp9, fetched whole): how many, their total estimated cost, the
             commonest existing use and construction type, the most existing storeys a permit stated, and whether
             any description mentions a garage, garage door, storefront, sign, awning, bay window, dormer, deck,
             roof, solar, siding, stucco, windows, facade, seismic / soft-story work, an ADU, a fire escape,
@@ -22,20 +22,21 @@ More of the city's own records for the appearance dataset's buildings (appearanc
 Each dataset is fetched once, a page at a time with a pause between pages, and cached in tools/cache/ (gitignored);
 the data is the City and County of San Francisco's, under the PDDL. buildings.jsonl is updated IN PLACE.
 
-    python3 -I tools/appearance/city.py
+    python3 -I tools/appearance/city.py [buildings.jsonl]
 """
 import collections
 import gzip
 import json
 import os
 import re
+import sys
 import time
 import urllib.parse
 import urllib.request
 
 CACHE = 'tools/cache'
 UA = {'User-Agent': 'streetrunner-bake/0.1 (offline city bake)'}
-OUT = 'data/appearance/dataset/buildings.jsonl'
+OUT = sys.argv[1] if len(sys.argv) > 1 else 'data/appearance/dataset/buildings.jsonl'
 
 
 def get(dataset, params):
@@ -168,28 +169,12 @@ def sector(code):
             '49': 'transport', '51': 'information'}.get(c, 'other')
 
 
-# ---- building permits on the sampled lots' blocks, a few dozen blocks a query
-blocks = sorted({bl[:-3] for bl in lots})
+# ---- building permits: the whole table, a page at a time (fewer requests than block by block once the
+#      population, not just the sample, is wanted — tools/appearance/impute.py)
 permits = collections.defaultdict(list)
-path = f'{CACHE}/sf-permits-sampled-blocks.jsonl.gz'
-if os.path.exists(path):
-    prows = [json.loads(l) for l in gzip.open(path, 'rt')]
-else:
-    prows = []
-    sel = ('block,lot,description,permit_type_definition,existing_use,proposed_use,number_of_existing_stories,'
-           'existing_construction_type,filed_date,estimated_cost')
-    for i in range(0, len(blocks), 40):
-        chunk = ','.join(f"'{b}'" for b in blocks[i:i + 40])
-        for offset in range(0, 10 ** 7, 50000):
-            got = get('i98e-djp9', {'$select': sel, '$where': f'block in ({chunk})', '$limit': 50000, '$offset': offset, '$order': ':id'})
-            prows += got
-            time.sleep(1.5)
-            if len(got) < 50000:
-                break
-        print(f'  permits: {i + 40} of {len(blocks)} blocks, {len(prows)} rows', flush=True)
-    with gzip.open(path, 'wt') as f:
-        for p in prows:
-            f.write(json.dumps(p) + '\n')
+prows = fetch('i98e-djp9', 'sf-permits-all', page=50000,
+              select='block,lot,description,permit_type_definition,existing_use,proposed_use,number_of_existing_stories,'
+                     'existing_construction_type,filed_date,estimated_cost')
 for p in prows:
     bl = to_base(blklot(p.get('block'), p.get('lot')) or '')
     if bl in lots:

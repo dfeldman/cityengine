@@ -1,5 +1,6 @@
 // For each labelled building: stand square in front of its street wall and shoot the city with and without ?labels=1 (appearance research).
 // node tools/appearance/elevation.mjs <outdir> <id,id,...>   (needs the dev server on :5200)
+// SHOTS=base,look,imputed picks the renders: the generics, the photo labels, the appearance model (default base,look)
 import { readFileSync, mkdirSync, existsSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 const ROOT = '/Users/dfeldman/cityengine/'
@@ -84,7 +85,9 @@ for (const id of ids) {
   while (stand > 5 && inside(best.mx + best.nx * stand, best.mz + best.nz * stand, id)) stand -= 0.5
   const fx = best.mx + best.nx * stand, fz = best.mz + best.nz * stand
   const lift = Math.min(14, h * 0.45)
-  for (const [tag, extra] of [['base', SCENE], ['look', SCENE + '&labels=1']]) {
+  const SHOTS = { base: SCENE, look: SCENE + '&labels=1', imputed: SCENE + '&looks=imputed' }
+  for (const tag of (process.env.SHOTS ?? 'base,look').split(',')) {
+    const extra = SHOTS[tag]
     const args = ['--experimental-strip-types', 'tools/look-at.ts', '--city=san-francisco', `--start=${best.edge}`, `--at=${best.mx.toFixed(1)},${best.mz.toFixed(1)}`,
       `--from=${fx.toFixed(1)},${fz.toFixed(1)},1.7`, `--lift=${lift.toFixed(1)}`, '--fov=68', `--out=${OUT}/${id}-${tag}.png`]
     if (extra) args.push(`--extra=${extra}`)

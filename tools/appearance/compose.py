@@ -1,4 +1,5 @@
-"""photo | today's render | labelled render, one row per building. python3 -I compose.py <elevdir> <gold.jsonl> <out.jpg> [ids]"""
+"""photo | today's render (the generics) | [the appearance model's, where shot] | labelled render, one row per building.
+python3 -I compose.py <elevdir> <gold.jsonl> <out.jpg> [ids]"""
 import json
 import os
 import sys
@@ -17,14 +18,16 @@ for i in ids:
     best = gold.get(i, {}).get('best')
     pics = sorted(f for f in os.listdir(d) if f.endswith('.jpg'))
     photo = d + (best if best in pics else (best + '.jpg' if best and best + '.jpg' in pics else pics[0]))
-    ims = [Image.open(p).convert('RGB') for p in (photo, base, look)]
+    imp = f'{elev}/{i}-imputed.png'
+    paths = (photo, base, imp, look) if os.path.exists(imp) else (photo, base, look)
+    ims = [Image.open(p).convert('RGB') for p in paths]
     ims = [im.resize((int(im.width * H / im.height), H)) for im in ims]
     row = Image.new('RGB', (sum(im.width for im in ims) + 20, H + 22), 'white')
     x = 0
     for im in ims:
         row.paste(im, (x, 22))
         x += im.width + 10
-    ImageDraw.Draw(row).text((4, 4), f'way/{i}   photo | today | from labels', fill='black')
+    ImageDraw.Draw(row).text((4, 4), f'way/{i}   photo | today | ' + ('model | ' if os.path.exists(imp) else '') + 'from labels', fill='black')
     rows.append(row)
     os.makedirs(f'{elev}/rows', exist_ok=True)
     row.save(f'{elev}/rows/{i}.jpg', quality=88)

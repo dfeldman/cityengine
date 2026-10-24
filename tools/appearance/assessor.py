@@ -18,13 +18,14 @@ the data is the City and County of San Francisco's, under the PDDL. buildings.js
 strata are the sample's and do not change; `age` follows the new year, and `roll_source` says where the record came
 from.
 
-    python3 -I tools/appearance/assessor.py
+    python3 -I tools/appearance/assessor.py [buildings.jsonl]
 """
 import collections
 import gzip
 import json
 import math
 import os
+import sys
 import time
 import urllib.parse
 import urllib.request
@@ -156,7 +157,7 @@ def age(y):
     return 'pre1906' if y < 1906 else '1906-1929' if y < 1930 else '1930-1959' if y < 1960 else '1960-1989' if y < 1990 else '1990on'
 
 
-path = 'data/appearance/dataset/buildings.jsonl'
+path = sys.argv[1] if len(sys.argv) > 1 else 'data/appearance/dataset/buildings.jsonl'
 rows = [json.loads(l) for l in open(path)]
 was = collections.Counter(r['age'] for r in rows)
 found = 0
