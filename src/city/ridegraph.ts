@@ -367,14 +367,50 @@ function reattach(edges: RideEdge[], moved: Map<number, { id: number; at: Point 
     if (a === b) continue // a connector inside the cluster, or a stub across a median: it is the junction now
     let points = [...e.points]
     let heights = e.heights && e.heights.length === e.points.length ? [...e.heights] : e.heights
-    if (na) {
+    /*
+     * EASED, NOT KINKED (owner, 2026-10-24: "we should try to make sure there are no sharp turns within N meters of an
+     * intersection"; docs/INTERSECTIONS.md). Moving only the end point onto the junction's centre left a short stub
+     * turned sharply across: Powell's west carriageway, its end moved 8 m onto the centre at Bush, turned 63° nine
+     * metres out. Instead the approach's last stretch is warped across, each point by the shift times a smooth fall-off
+     * from 1 at the junction to 0 at `reach` — 6× the shift, 12 to 30 m, no more than 45% of the edge — so a 4 m shift
+     * becomes a drift of about 12° and the street meets the junction square. Too short an edge to warp falls back to
+     * the old move-and-trim.
+     */
+    const warp = (atEnd: boolean, to: Point): boolean => {
+      const pts = atEnd ? [...points].reverse() : points
+      const hs = heights && heights.length === points.length ? (atEnd ? [...heights].reverse() : heights) : undefined
+      const sx = to.x - pts[0].x, sz = to.z - pts[0].z, d = Math.hypot(sx, sz)
+      const reach = Math.min(30, Math.max(12, 6 * d), 0.45 * lengthOf(pts))
+      if (d < 0.05 || reach < 3 * d || reach < 6) return false
+      const fall = (s: number): number => (s >= reach ? 0 : (1 - s / reach) ** 2 * (1 + 2 * (s / reach)))
+      const out: Point[] = []
+      const hOut: number[] = []
+      let s = 0
+      for (let i = 0; i < pts.length; i++) {
+        const L = i > 0 ? distance(pts[i - 1], pts[i]) : 0
+        // (a vertex at `reach`, where the warp ends, so it ends on the edge's own line)
+        if (i > 0 && s < reach && s + L > reach) {
+          const t = (reach - s) / L
+          out.push({ x: pts[i - 1].x + (pts[i].x - pts[i - 1].x) * t, z: pts[i - 1].z + (pts[i].z - pts[i - 1].z) * t })
+          if (hs) hOut.push(hs[i - 1] + (hs[i] - hs[i - 1]) * t)
+        }
+        s += L
+        const f = fall(s)
+        out.push({ x: pts[i].x + sx * f, z: pts[i].z + sz * f })
+        if (hs) hOut.push(hs[i])
+      }
+      points = atEnd ? out.reverse() : out
+      if (hs) heights = atEnd ? hOut.reverse() : hOut
+      return true
+    }
+    if (na && !warp(false, na.at)) {
       const d = distance(points[0], na.at)
       points[0] = na.at
       const t = trimBehind(points, heights?.length === points.length ? heights : undefined, true, d)
       points = t.points
       if (t.heights) heights = t.heights
     }
-    if (nb) {
+    if (nb && !warp(true, nb.at)) {
       const d = distance(points[points.length - 1], nb.at)
       points[points.length - 1] = nb.at
       const t = trimBehind(points, heights?.length === points.length ? heights : undefined, false, d)
@@ -491,7 +527,48 @@ export function collapseClusters(edges: RideEdge[], ids = new Ids(), wide = fals
     }
     let cx = sx / members.length
     let cz = sz / members.length
-    if (axis !== null) {
+    /*
+     * TWO STREETS THROUGH IT: the centre is where their lines CROSS (owner, 2026-10-24: "a perpendicular intersection
+     * that is not centered in the center of the quad, so creating 4 extra sharp turns on the 4 streets feeding in";
+     * docs/INTERSECTIONS.md). Sliding the centroid onto one street's axis (below) puts it on that street but leaves it
+     * wherever the members' mean happens to fall ALONG it — and a cluster's members are rarely symmetric: at California
+     * and Jones the crosswalk and service-lane nodes run 30 m down Jones and only 13 m up it, so the centroid sat
+     * 5.3 m down Jones, off California, and California kinked 20° twelve metres before the junction and 13° after it.
+     * Each through street's line runs through the mean of its two arms' ends, along their mean direction; with two or
+     * more such lines that are not near parallel (over 30° apart) the centre is their least-squares crossing — kept
+     * inside the cluster (its box, 3 m of slack), else the single-axis rule stands.
+     */
+    // (one line per STREET: every arm along the same axis, both ways, both carriageways of a divided street — so the
+    //  line runs down the MEDIAN, through the mean of all their ends; Powell's two carriageways at Bush are 8 m apart,
+    //  and a line down one of them sent the other 8 m sideways into the junction)
+    const groups: { d: Point; ends: Point[]; pos: boolean; neg: boolean }[] = []
+    for (const arm of arms) {
+      let gr = groups.find((g) => Math.abs(g.d.x * arm.dir.x + g.d.z * arm.dir.z) > Math.cos(25 * DEG))
+      if (!gr) groups.push((gr = { d: arm.dir, ends: [], pos: false, neg: false }))
+      if (gr.d.x * arm.dir.x + gr.d.z * arm.dir.z > 0) gr.pos = true
+      else gr.neg = true
+      gr.ends.push(arm.from)
+    }
+    const lines: { p: Point; d: Point }[] = groups.filter((g) => g.pos && g.neg).map((g) => ({
+      p: { x: g.ends.reduce((s, q) => s + q.x, 0) / g.ends.length, z: g.ends.reduce((s, q) => s + q.z, 0) / g.ends.length },
+      d: g.d,
+    }))
+    let crossed = false
+    // (RIDE_CROSS=0 in the environment turns this off, for comparing: tools/junction-survey.ts)
+    if (lines.length >= 2 && (typeof process === 'undefined' || process.env?.RIDE_CROSS !== '0')) {
+      let a11 = 0, a12 = 0, a22 = 0, b1 = 0, b2 = 0
+      for (const { p, d } of lines) {
+        const m11 = 1 - d.x * d.x, m12 = -d.x * d.z, m22 = 1 - d.z * d.z
+        a11 += m11; a12 += m12; a22 += m22
+        b1 += m11 * p.x + m12 * p.z; b2 += m12 * p.x + m22 * p.z
+      }
+      const det = a11 * a22 - a12 * a12
+      if (Math.abs(det) > 0.05) {
+        const x = (a22 * b1 - a12 * b2) / det, z = (a11 * b2 - a12 * b1) / det
+        if (x > x0 - 3 && x < x1 + 3 && z > z0 - 3 && z < z1 + 3) { cx = x; cz = z; crossed = true }
+      }
+    }
+    if (axis !== null && !crossed) {
       const ax = axis
       /*
        * The line to put the centre on runs through the MEAN of the ends of every arm that runs along the

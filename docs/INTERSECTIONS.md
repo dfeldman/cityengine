@@ -50,10 +50,42 @@ within 110 m. Riding it in the browser (down Sproule, right onto Sacramento, the
 change under 2° per 150 ms over 10 s). So the screenshot's junction is not yet located; it has four or more lanes,
 wider than Sacramento's 9.2 m.
 
+## The owner's example: California and Jones (37.79137, -122.41420)
+
+The drawn streets cross at one clean node (65295328) and run dead straight. The RIDE graph had merged the crosswalk,
+stop-line and service-lane nodes around it into one junction and put it at their centroid — 5.3 m down Jones, because
+those nodes run 30 m down Jones and only 13 m up it. `collapseClusters` slid the centroid onto ONE street's axis (Jones),
+which fixed it sideways but left it off California: California turned 20° twelve metres before the junction and 13°
+after it. Bush and Powell, the other common shape: Powell is two one-way carriageways 8 m apart; the merged junction sat
+on the east one's node, and the west carriageway turned 63° nine metres out to reach it.
+
+## Fix 1 (2026-10-24): centre on the crossing, ease the approach (`src/city/ridegraph.ts`)
+
+- **Centre:** a merged junction with two or more streets through it is placed where their lines cross (least squares),
+  each street's line through the mean of ALL its arms' ends — both carriageways of a divided street, so the line runs
+  down the median — kept inside the cluster's box (3 m slack); otherwise the old single-axis rule.
+- **Ease:** an approach whose end moves onto the junction is warped across over its last 12–30 m (6× the shift, at most
+  45% of the edge) with a smooth fall-off, instead of moving only the end point — a 4 m shift becomes a ~12° drift.
+
+| | before | after |
+|---|---|---|
+| junctions with a turn > 25° within 15 m (ride graph) | 231 | **193** |
+| four-ways jogging > 2 m off a street's line | 234 | **176** |
+| … > 3 m | 163 | **112** |
+| California and Jones | 5.3 m off, 20° and 13° turns | on the crossing, no turn over 5° |
+| Bush and Powell | 63°, 58°, 45° turns | at most 14° (junction on Powell's median) |
+
+Ride-graph tests pass. Rebuilt locally with `npm run bake -- san-francisco --rides` (the game reads the baked
+`ride-bike.json`, so a ride-graph change reaches players only through this and an upload). NOT yet deployed.
+
+What is left is mostly five- and six-way junctions (Market Street's diagonals: 110 of the 193) and boulevards whose
+carriageways the ride graph merges and splits (owner: "the divided streets merging and separating is also annoying").
+The painted lines still follow the map's own edges; where those are clean (most of the city) paint and path now agree.
+
 ## Next
 
-1. Locate the screenshot's junction (the owner's position: Menu → Developer → copy location, with `?dev=1`), and look
-   at it in the game and from above.
+1. Divided streets: where the ride graph merges two carriageways into one path and splits them again, the rider swings
+   across; ease those transitions the same way, or keep the carriageways apart.
 2. Filter degenerate points out of the survey; list the worst real ones by district, with screenshots.
 3. Fix the paint and the ride path together, so the line the bike follows and the lines painted on the road agree —
    candidates: straighten the drawn edges' approaches the way the ride graph's are (at bake time, so the surface, the

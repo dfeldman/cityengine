@@ -148,6 +148,8 @@ const why: Record<string, number> = {}
 const byDeg: Record<string, [number, number]> = {}
 const sharpRows: { at: string; turn: number; dist: number; off: number; reasons: string[]; names: string; deg: number }[] = []
 let withSharp = 0, offOver2 = 0, offOver2Sharp = 0
+const jogs: number[] = []
+const jogRows: { at: string; jog: number; names: string }[] = []
 const angleOff: number[] = []
 for (const n of g.nodes.values()) {
   if (n.edges.length < 3) continue
@@ -167,6 +169,22 @@ for (const n of g.nodes.values()) {
   const off = c ? Math.hypot(c.x - n.at.x, c.z - n.at.z) : NaN
   if (Number.isFinite(off) && off < 30) offs.push(off)
   if (off > 2 && off < 30) offOver2++
+  // the JOG: at a junction with two streets running through, how far the junction sits off each street's line
+  // (sideways) — the owner's "perpendicular intersection not centred in the quad": each street must step across by
+  // this much to reach it, and back
+  {
+    const thr: { p: P; d: P }[] = []
+    for (let i = 0; i < ls.length; i++) for (let j = i + 1; j < ls.length; j++) {
+      if (ls[i].d.x * ls[j].d.x + ls[i].d.z * ls[j].d.z > -Math.cos((20 * Math.PI) / 180)) continue
+      const dx = ls[i].d.x - ls[j].d.x, dz = ls[i].d.z - ls[j].d.z, L = Math.hypot(dx, dz)
+      thr.push({ p: { x: (ls[i].p.x + ls[j].p.x) / 2, z: (ls[i].p.z + ls[j].p.z) / 2 }, d: { x: dx / L, z: dz / L } })
+    }
+    if (thr.length >= 2) {
+      const jog = Math.max(...thr.map(({ p, d }) => Math.abs((n.at.x - p.x) * d.z - (n.at.z - p.z) * d.x)))
+      jogs.push(jog)
+      if (jog > 1.5) jogRows.push({ at: ll(n.at.x, n.at.z), jog, names: [...new Set(streets.map((e) => e.name ?? '?'))].join(' / ') })
+    }
+  }
   // the crossing angle of a four-way: the two through pairs' lines
   if (streets.length === 4 && ls.length === 4) {
     let best = 0
@@ -211,4 +229,6 @@ console.log(`  by number of ways (junctions, with a sharp turn near): ${JSON.str
 console.log(`  why straightenJunctions did not take those: ${JSON.stringify(why)}`)
 console.log(`  off the centre of its streets' lines: median ${q(offs, 0.5).toFixed(2)} m, 90% ${q(offs, 0.9).toFixed(2)}, 99% ${q(offs, 0.99).toFixed(2)}; over 2 m: ${offOver2} (${offOver2Sharp} of them with a sharp turn near)`)
 console.log(`  four-way crossing angle, degrees from 90: median ${q(angleOff.map(Math.abs), 0.5).toFixed(1)}, 90% ${q(angleOff.map(Math.abs), 0.9).toFixed(1)}, 99% ${q(angleOff.map(Math.abs), 0.99).toFixed(1)} (n ${angleOff.length})`)
+console.log(`  JOG at junctions with two streets through (n ${jogs.length}): median ${q(jogs, 0.5).toFixed(2)} m, 90% ${q(jogs, 0.9).toFixed(2)}, 99% ${q(jogs, 0.99).toFixed(2)}; over 1 m ${jogs.filter((j) => j > 1).length}, over 2 m ${jogs.filter((j) => j > 2).length}, over 3 m ${jogs.filter((j) => j > 3).length}`)
+if (process.argv.includes('--jogs')) for (const r of jogRows.sort((a, b) => b.jog - a.jog).slice(0, LIST)) console.log(`  jog ${r.jog.toFixed(1)} m  ${r.at}  ${r.names}`)
 for (const r of sharpRows.slice(0, LIST)) console.log(`  ${r.at}  ${r.turn.toFixed(0)}° at ${r.dist.toFixed(1)} m, off-centre ${Number.isFinite(r.off) ? r.off.toFixed(1) : '?'} m, ${r.deg} ways  ${r.names}  [${r.reasons.join('; ')}]`)
