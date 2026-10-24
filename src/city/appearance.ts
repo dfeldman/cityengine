@@ -55,29 +55,32 @@ const known = (v?: string): boolean => v !== undefined && v !== 'cannot_tell'
  * - `labels` (or the old `?labels=1`): the street-photo labels, for the buildings that have one;
  * - `imputed`: every building's answers drawn from the appearance model (tools/appearance/impute.py) — what it predicts
  *   from the map and the city's records, one draw per building, seeded by its id. Fetched at load (`loadLooks`) from
- *   `appearance/imputed.json`, so the default build carries none of it.
+ *   `appearance/imputed.json`, so the default build carries none of it;
+ * - `gated`: only the answers the model is sure of (calibrated held out), the generics' everywhere else
+ *   (`appearance/gated.json`).
  */
 const params = typeof location !== 'undefined' ? new URLSearchParams(location.search) : null
-export const LOOKS_MODE: 'generic' | 'labels' | 'imputed' =
-  params?.get('looks') === 'imputed' ? 'imputed' : params?.get('looks') === 'labels' || params?.get('labels') === '1' ? 'labels' : 'generic'
+export const LOOKS_MODE: 'generic' | 'labels' | 'imputed' | 'gated' =
+  params?.get('looks') === 'imputed' || params?.get('looks') === 'gated' ? params.get('looks') as 'imputed' | 'gated'
+    : params?.get('looks') === 'labels' || params?.get('labels') === '1' ? 'labels' : 'generic'
 
 interface Imputed { fields: string[]; values: string[][]; rows: Record<string, string>; signs: Record<string, string> }
 let imputed: Imputed | null = null
 /** the code alphabet: a field's answer is its index in `values`, one character each; `.` is no answer */
 const CODES = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
-/** Fetch the imputed answers when `?looks=imputed` asks for them; a failed fetch leaves the generics. */
+/** Fetch the model's answers when `?looks=imputed|gated` asks for them; a failed fetch leaves the generics. */
 export async function loadLooks(base: string): Promise<void> {
-  if (LOOKS_MODE !== 'imputed' || imputed) return
+  if ((LOOKS_MODE !== 'imputed' && LOOKS_MODE !== 'gated') || imputed) return
   try {
-    const r = await fetch(new URL('appearance/imputed.json', base))
+    const r = await fetch(new URL(`appearance/${LOOKS_MODE}.json`, base))
     if (r.ok) imputed = await r.json() as Imputed
   } catch { /* offline, or not deployed: the generics stand */ }
 }
 
 function labelOf(id: number): Label | undefined {
   if (LOOKS_MODE === 'labels') return LABELS[String(id)]
-  if (LOOKS_MODE !== 'imputed' || !imputed) return undefined
+  if (!imputed) return undefined
   const code = imputed.rows[String(id)]
   if (!code) return undefined
   const l: Label = {}

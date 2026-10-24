@@ -23,6 +23,13 @@ the sign (the name of an OSM shop on the building, when the draw gives it a shop
 
 Inputs: data/appearance/dataset/buildings.jsonl and labels/<run>.jsonl (training); the population,
 tools/cache/appearance-population.jsonl (tools/appearance/sample.py --all, then assessor.py, context.py, city.py on it).
+THE GATE (`public/appearance/gated.json`, `?looks=gated`): the draws were judged no better than the generics, building by
+building — an unsure draw often swaps a plausible generic choice for a worse one. So a second table keeps only what the
+model is sure of: down the chain by each answer's LIKELIEST value (a child fed its parents' likeliest), an answer is
+written only where its confidence, CALIBRATED on held-out folds (how often an answer that sure was right), is at least
+--gate and beats by --margin how often the district's commonest answer is right — a stand-in for the generics, which
+draw by district and archetype — and a sub-answer (a bay's shape, a garage door's colour) only where its parent was. Everything else is left to the generics.
+
 Output: public/appearance/imputed.json — the field list, each field's answers, and every building's answers as one
 character per field (src/city/appearance.ts reads it behind `?looks=imputed`) — and a report on stdout.
 
@@ -48,6 +55,12 @@ ap.add_argument('--run', default='h55-v11-a')
 ap.add_argument('--population', default='tools/cache/appearance-population.jsonl')
 ap.add_argument('--out', default='public/appearance/imputed.json')
 ap.add_argument('--folds', type=int, default=5)
+# the gated table: only answers the model is sure of, the generics' elsewhere (owner, 2026-10-23: the draws looked no
+# better than the generics) — an answer passes where its calibrated accuracy is at least --gate and beats the district
+# lookup's by --margin
+ap.add_argument('--out-gated', default='public/appearance/gated.json')
+ap.add_argument('--gate', type=float, default=0.75)
+ap.add_argument('--margin', type=float, default=0.0)
 args = ap.parse_args()
 
 D = 'data/appearance/dataset'
@@ -344,7 +357,7 @@ for fld in fields:
     if k == 0:
         continue
     ok = np.where(fld.y >= 0)[0]
-    fitted = fld.fit(fld.design(X.iloc[ok], [truth[i] for i in ok]), fld.y[ok]) if k > 1 else None
+    fitted = fld.full = fld.fit(fld.design(X.iloc[ok], [truth[i] for i in ok]), fld.y[ok]) if k > 1 else None
     for s in range(0, len(pop), 20000):
         P = Field.proba(fitted, fld.design(XP.iloc[s:s + 20000], answers[s:s + 20000]), k) if k > 1 else np.ones((min(20000, len(pop) - s), 1))
         P = fld.alpha * P + (1 - fld.alpha) * fld.base
@@ -375,6 +388,116 @@ assert all(len(vs) <= len(CODES) for vs in values)
 os.makedirs(os.path.dirname(args.out), exist_ok=True)
 json.dump({'v': 1, 'run': args.run, 'trained_on': len(labels), 'fields': out_fields, 'values': values, 'rows': rows, 'signs': signs},
           open(args.out, 'w'), separators=(',', ':'))
+# ---- THE GATE: likeliest answers down the chain, calibrated held out, written only where sure
+def likeliest_pass(fits, Xs):
+    """each field's likeliest answer (class index) and its probability, a child fed its parents' likeliest"""
+    got = [dict() for _ in range(len(Xs))]
+    out = {}
+    for fld in fields:
+        k = len(fld.classes)
+        if k == 0:
+            continue
+        P = Field.proba(fits.get(fld.name), fld.design(Xs, got), k) if k > 1 else np.ones((len(Xs), 1))
+        P = fld.alpha * P + (1 - fld.alpha) * fld.base
+        c = P.argmax(1)
+        out[fld.name] = (c, P.max(1))
+        for j in range(len(Xs)):
+            v = fld.classes[c[j]]
+            got[j][fld.name] = max(fld.rare, key=fld.rare.get) if v == '_rare' else v
+    return out, got
+
+
+# held out: each field's likeliest, its probability, and whether it was right; and the district lookup's commonest
+cal = {f.name: [] for f in fields if len(f.classes)}
+for tr, te in splits:
+    fits = {}
+    for fld in fields:
+        if len(fld.classes) > 1:
+            ok = tr[fld.y[tr] >= 0]
+            fits[fld.name] = fld.fit(fld.design(X.iloc[ok], [truth[i] for i in ok]), fld.y[ok])
+    out, _ = likeliest_pass(fits, X.iloc[te].reset_index(drop=True))
+    for fld in fields:
+        if fld.name not in out:
+            continue
+        c, pm = out[fld.name]
+        ok = tr[fld.y[tr] >= 0]
+        for j, i in enumerate(te):
+            if fld.y[i] < 0:
+                continue
+            dmask = ok[district[ok] == district[i]]
+            dc = np.bincount(fld.y[dmask], minlength=len(fld.classes)) if len(dmask) else np.bincount(fld.y[ok], minlength=len(fld.classes))
+            cal[fld.name].append((pm[j], c[j] == fld.y[i], dc.argmax() == fld.y[i], c[j]))
+
+
+def threshold(rows):
+    """the least confidence at which the answers at or above it are right at least --gate of the time (and beat the district
+    lookup on the same buildings by --margin); None if no confidence does"""
+    rows = sorted(rows, key=lambda r: -r[0])
+    best = None
+    hit = look = 0
+    for n, r in enumerate(rows, 1):
+        hit += r[1]
+        look += r[2]
+        if n >= 15 and hit / n >= args.gate and hit / n >= look / n + args.margin:
+            best = r[0]
+    return best
+
+
+# a threshold per ANSWER, not per field: a confident "one shopfront" is calibrated on the shopfronts it predicted, apart from
+# the confident "none"s that make up most of the field (and that the generics draw anyway)
+gates = {}
+print(f'\nTHE GATE (calibrated held out, per answer: written at confidence >= t, where such answers are right >= {args.gate:.0%})')
+print(f'{"field":18} {"answer":22} {"t":>5} {"written":>8} {"right":>6} {"lookup":>7}')
+for fld in fields:
+    crow = cal.get(fld.name) or []
+    gates[fld.name] = {}
+    w_all = []
+    for c in sorted({r[3] for r in crow}):
+        rs = [r for r in crow if r[3] == c]
+        t = threshold(rs)
+        if t is None:
+            continue
+        gates[fld.name][c] = t
+        w = [r for r in rs if r[0] >= t]
+        w_all += w
+        print(f'{fld.name:18} {fld.classes[c]:22} {t:5.2f} {len(w) / max(1, len(crow)):8.0%} {sum(r[1] for r in w) / len(w):6.0%} {sum(r[2] for r in w) / len(w):7.0%}')
+    report.setdefault(fld.name, {})['gate'] = {'thresholds': {fld.classes[c]: t for c, t in gates[fld.name].items()},
+                                               'written': len(w_all) / max(1, len(crow)),
+                                               'right': sum(r[1] for r in w_all) / max(1, len(w_all)),
+                                               'lookup': sum(r[2] for r in w_all) / max(1, len(w_all))}
+
+# the population, gated. Only a true sub-answer waits on its parent (a bay's shape on there being bays, a garage door's
+# colour on there being a garage…); the rest may be written over whatever the generics chose for the parent — a garage, or
+# no bays, sits on any style
+HARD = {'shop_glass': 'shopfronts', 'sign_band': 'shopfronts', 'awning_colour': 'awnings', 'garage_door_style': 'garage_doors',
+        'garage_door_colour': 'garage_doors', 'bay_shape': 'bays', 'bay_colour': 'bays', 'dormers': 'roof'}
+out, got = likeliest_pass({f.name: getattr(f, 'full', None) for f in fields}, XP)
+grows, gsigns = {}, {}
+written = collections.Counter()
+for i, b in enumerate(pop):
+    emitted = {}
+    for fld in fields:
+        if fld.name not in out:
+            continue
+        c = out[fld.name][0][i]
+        t = gates[fld.name].get(c)
+        if t is not None and out[fld.name][1][i] >= t and (fld.name not in HARD or HARD[fld.name] in emitted):
+            emitted[fld.name] = got[i][fld.name]
+    tags = set(b.get('poi_on_tags') or [])
+    sp = 'auto_repair_shop' if tags & {'car_repair', 'tyres'} else 'parking_garage' if b.get('osm_building') == 'parking' else None
+    if sp:
+        emitted['special_structure'] = sp
+    written.update(emitted.keys())
+    if not emitted:
+        continue
+    code = ''.join(CODES[vs.index(emitted[f])] if emitted.get(f) in vs else '.' for f, vs in zip(out_fields, values))
+    grows[str(b['bake_id'])] = code
+    if emitted.get('shopfronts') not in (None, 'none') and b.get('poi_on_first') and len(b['poi_on_first']) <= 40:
+        gsigns[str(b['bake_id'])] = b['poi_on_first']
+json.dump({'v': 1, 'run': args.run, 'trained_on': len(labels), 'gate': args.gate, 'margin': args.margin, 'fields': out_fields,
+           'values': values, 'rows': grows, 'signs': gsigns}, open(args.out_gated, 'w'), separators=(',', ':'))
+print(f'\n{len(grows)} buildings with a written answer -> {args.out_gated} ({os.path.getsize(args.out_gated) / 1e6:.1f} MB), {len(gsigns)} signs')
+print('answers written, share of buildings:', {f: f'{n / len(pop):.0%}' for f, n in written.most_common()})
 json.dump(report, open('data/appearance/dataset/impute-report.json', 'w'), indent=1)
 print(f'\n{len(rows)} buildings -> {args.out} ({os.path.getsize(args.out) / 1e6:.1f} MB), {len(signs)} signs')
 for f in ('type', 'victorian_kind', 'shopfronts', 'garage_doors', 'bays', 'wall_colour'):

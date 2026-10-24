@@ -1,6 +1,7 @@
 // For each labelled building: stand square in front of its street wall and shoot the city with and without ?labels=1 (appearance research).
 // node tools/appearance/elevation.mjs <outdir> <id,id,...>   (needs the dev server on :5200)
-// SHOTS=base,look,imputed picks the renders: the generics, the photo labels, the appearance model (default base,look)
+// SHOTS=base,look,imputed,gated picks the renders: the generics, the photo labels, the appearance model's draws, its gated
+// answers (default base,look)
 import { readFileSync, mkdirSync, existsSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 const ROOT = '/Users/dfeldman/cityengine/'
@@ -43,7 +44,8 @@ function inside(x, z, self) {
 }
 for (const id of ids) {
   const b = by.get(Number(id)); if (!b) { console.log(id, 'not in bake'); continue }
-  if (existsSync(`${OUT}/${id}-look.png`)) continue
+  // (done when every shot asked for is there)
+  if ((process.env.SHOTS ?? 'base,look').split(',').every((t) => existsSync(`${OUT}/${id}-${t}.png`))) continue
   // the clearest frame's bearing, camera to building (photos.csv)
   let look = null
   try {
@@ -85,7 +87,7 @@ for (const id of ids) {
   while (stand > 5 && inside(best.mx + best.nx * stand, best.mz + best.nz * stand, id)) stand -= 0.5
   const fx = best.mx + best.nx * stand, fz = best.mz + best.nz * stand
   const lift = Math.min(14, h * 0.45)
-  const SHOTS = { base: SCENE, look: SCENE + '&labels=1', imputed: SCENE + '&looks=imputed' }
+  const SHOTS = { base: SCENE, look: SCENE + '&labels=1', imputed: SCENE + '&looks=imputed', gated: SCENE + '&looks=gated' }
   for (const tag of (process.env.SHOTS ?? 'base,look').split(',')) {
     const extra = SHOTS[tag]
     const args = ['--experimental-strip-types', 'tools/look-at.ts', '--city=san-francisco', `--start=${best.edge}`, `--at=${best.mx.toFixed(1)},${best.mz.toFixed(1)}`,

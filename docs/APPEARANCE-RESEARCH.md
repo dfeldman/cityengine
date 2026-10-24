@@ -657,3 +657,12 @@ The model draws no better than the generics, per building. What the judge saw it
 A draw from uncertain probabilities is often wrong for the building in front of you, even when the mix across a district
 is right. The fix to try next is a CONFIDENCE GATE: take the model's answer only where it is sure (shopfronts, signs,
 garages, homes above, the commercial types) and keep the generics' everywhere else, colours included.
+
+**The gate (`?looks=gated`, `public/appearance/gated.json`; `research/labels/judge-gated1.jsonl`).** Down the chain by each
+answer's likeliest value, an answer is written only where its calibrated held-out precision is at least 75% (per answer:
+a confident "one shopfront" apart from the confident "none"s), a sub-answer only where its parent was. It writes mostly
+confident absences (no Victorian trim, no awnings, no balconies, no shopfront) and the commoner garages and stoops;
+never a colour, rarely a type (23% of buildings). Judged on the same 16: today 1.00, model 0.94, **gated 1.00**, labels
+1.94 — gated better than today on 2, the same on 14, worse on none. It is safe and nearly inert: what is wrong today is
+mostly colour and form, and the static features predict neither with confidence. On a commercial street it also took
+shops off neighbours the generics had given them (neighbours are not judged).
