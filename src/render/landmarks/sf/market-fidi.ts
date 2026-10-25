@@ -1414,6 +1414,52 @@ export function post126(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * Kearny, west side, between Pine and Bush (way/151683977, unnamed, 30 m, 1907): a cream-grey stone block of about
+ * nine storeys with architrave-headed punched windows, a dark green marble shopfront under a black roll grille, and a
+ * deep moulded cornice at the top. Drawn from Mapillary frame 01 (the cream block with the cornice, the marble
+ * shopfront), looking along Kearny; the frame's bearing reads as a north face, so the front is Kearny per the batch.
+ */
+export function kearny151683977(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.86, 0.84, 0.78]
+  tower(out, fit, {
+    height: 30,
+    base: { height: 4, face: { kind: 'punched', wall: [0.16, 0.26, 0.22], glass: [0.14, 0.18, 0.18], floor: 4, pitch: 3.2, solid: 0.5, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.22, 0.25, 0.28], floor: 3.4, pitch: 4, solid: 0.42, material: 'ashlar' }, cornice: { depth: 0.5, height: 0.9, colour: [0.74, 0.72, 0.66] } }],
+    crown: { kind: 'parapet', height: 1.4, colour: CREAM, material: 'ashlar' },
+  })
+}
+
+/**
+ * Kearny at Pine, SW corner (way/151683979, 353-359 Kearny, 18 m, 1907): a painted grey-cream block of five storeys
+ * with double-hung punched windows, a dark ground-floor shopfront row, and a dark band of cornice at the roofline.
+ * Drawn from Mapillary frame 01 (the five-storey block at the Pine corner with its shopfronts), front Kearny (82).
+ */
+export function kearny353(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.84, 0.83, 0.78]
+  tower(out, fit, {
+    height: 18,
+    base: { height: 4, face: { kind: 'punched', wall: [0.22, 0.22, 0.22], glass: [0.2, 0.22, 0.24], floor: 4, pitch: 3.2, solid: 0.5, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: GREY, glass: [0.2, 0.22, 0.26], floor: 3.4, pitch: 2.8, solid: 0.42, head: 'architrave', material: 'stucco' }, cornice: { depth: 0.6, height: 0.9, colour: [0.3, 0.3, 0.3] } }],
+    crown: { kind: 'parapet', height: 1, colour: GREY, material: 'stucco' },
+  })
+}
+
+/**
+ * Kearny at Pine, east side by Belden Place (way/148741772, 14 m, 1908): a three-storey beige stucco block with tall
+ * windows in framed surrounds and a heavy dark cornice, over a dark shopfront row. Drawn from Mapillary frame 01,
+ * whose face is the Pine Street front (bearing 346), the main face in view.
+ */
+export function kearnyPine148741772(out: MeshBuilder, fit: Fit): void {
+  const BEIGE: Rgb = [0.85, 0.79, 0.66]
+  tower(out, fit, {
+    height: 14,
+    base: { height: 3.5, face: { kind: 'punched', wall: [0.3, 0.28, 0.26], glass: [0.18, 0.2, 0.22], floor: 3.5, pitch: 3.4, solid: 0.5, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BEIGE, glass: [0.2, 0.22, 0.25], floor: 3.5, pitch: 3, solid: 0.45, head: 'architrave', material: 'stucco' }, cornice: { depth: 0.8, height: 1.2, colour: [0.32, 0.24, 0.18] } }],
+    crown: { kind: 'parapet', height: 0.8, colour: [0.32, 0.24, 0.18], material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1476,4 +1522,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   pine260282395, pine32859888, battery77,
   sansome407, sansomeSacramento32947521, sansome415,
   kearny123, kearny153, post126,
+  kearny151683977, kearny353, kearnyPine148741772,
 }
