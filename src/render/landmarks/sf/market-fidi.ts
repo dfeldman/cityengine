@@ -3220,6 +3220,77 @@ export function sacramento686Canton(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 90: unnamed, way/939455049, 108 m², 1922. Photo -01: a cream stucco face with punched windows and fire
+ * escapes above a grey ground floor; -02: a grey metal service door. Front taken as Kearny (bearing 261), unsure. */
+export function clayKearnyStucco1922(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.84, 0.78, 0.66], GREY: Rgb = [0.4, 0.42, 0.43], GLASS: Rgb = [0.2, 0.23, 0.26]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 3.4, face: { kind: 'punched', wall: GREY, glass: GLASS, pitch: 3, floor: 3.4, solid: 0.75, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 3, floor: 3, solid: 0.5, material: 'stucco' }, cornice: { depth: 0.3, height: 0.4, colour: [0.9, 0.86, 0.76] } }],
+    crown: { kind: 'parapet', height: 0.8, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** T3 batch 91: unnamed, way/940149660, 267 m², 1913. Photos -01 and -02: a two-storey cream stone front with arched
+ * windows over a granite base, beside the Citibank corner. Front taken as Battery (bearing 261). */
+export function battery261CreamStone1913(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.86, 0.8, 0.62], GRANITE: Rgb = [0.3, 0.29, 0.27], GLASS: Rgb = [0.2, 0.22, 0.2]
+  tower(out, fit, {
+    height: 8,
+    base: { height: 2.6, face: { kind: 'punched', wall: GRANITE, glass: GLASS, pitch: 3, floor: 2.6, solid: 0.5, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: STONE, glass: GLASS, pitch: 3.2, floor: 2.9, solid: 0.4, arched: true, head: 'architrave', material: 'ashlar' }, cornice: { depth: 0.4, height: 0.5, colour: [0.9, 0.86, 0.7] } }],
+    crown: { kind: 'parapet', height: 0.8, colour: STONE, material: 'ashlar' },
+  })
+}
+
+/** T3 batch 92: unnamed, way/1316030009, 220 m², 1971. Photos -01 and -02: a low flat-topped white wall with redwood
+ * trees standing behind it. Front faces Clay (bearing 170). */
+export function clayWhiteWall1971(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.9, 0.9, 0.88]
+  tower(out, fit, {
+    height: 4,
+    tiers: [{ to: 1, face: { kind: 'blank', wall: WHITE, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 0.4, colour: WHITE, material: 'stucco' },
+  })
+}
+
+/** T3 batch 93: unnamed, way/260286444, 890 m², 1991. Photo -01: a pale stone-clad corner with bay windows and a dark
+ * base on Leidesdorff. The photo shows well over 12 m, so the height is taken from it (28 m, unsure). Front Leidesdorff. */
+export function leidesdorffStoneCorner1991(out: MeshBuilder, fit: Fit): void {
+  const PALE: Rgb = [0.84, 0.82, 0.78], BASE: Rgb = [0.32, 0.34, 0.36], GLASS: Rgb = [0.3, 0.36, 0.42]
+  tower(out, fit, {
+    height: 28,
+    base: { height: 4.5, face: { kind: 'punched', wall: BASE, glass: GLASS, pitch: 3, floor: 4.5, solid: 0.5, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'bays', wall: PALE, glass: GLASS, floor: 3.2, pitch: 3.2, solid: 0.4, bay: { depth: 0.9 }, material: 'ashlar' }, cornice: { depth: 0.4, height: 0.6, colour: PALE } }],
+    crown: { kind: 'parapet', height: 1.0, colour: PALE, material: 'ashlar' },
+  })
+}
+
+/** T3 batch 94: 451 Montgomery Street, way/151183781, 474 m², 1907. Photos -01 and -02: a cream stone upper with tall
+ * windows over three bronze-framed glazed entrances. Front Montgomery (bearing 81). */
+export function montgomery451Cream(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.88, 0.82], BRONZE: Rgb = [0.3, 0.26, 0.2], GLASS: Rgb = [0.2, 0.24, 0.25]
+  tower(out, fit, {
+    height: 11,
+    base: { height: 3.5, face: { kind: 'punched', wall: BRONZE, glass: GLASS, pitch: 4, floor: 3.5, solid: 0.3, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 3.2, floor: 3.4, solid: 0.45, head: 'architrave', material: 'ashlar' }, cornice: { depth: 0.35, height: 0.5, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 0.8, colour: CREAM, material: 'ashlar' },
+  })
+}
+
+/** T3 batch 94: unnamed, way/942288403, 123 m², 1907. Photo -01: a red brick block with a dark red shopfront at the
+ * base and a painted sign on the top of the brick; -02: a cream stucco block beyond it. Front Montgomery (bearing 81), unsure. */
+export function montgomeryRedBrick1907(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.5, 0.22, 0.16], DARK: Rgb = [0.3, 0.1, 0.09], GLASS: Rgb = [0.2, 0.22, 0.22]
+  tower(out, fit, {
+    height: 15,
+    base: { height: 3.4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.5, floor: 3.4, solid: 0.35, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: GLASS, pitch: 3.4, floor: 3.4, solid: 0.7, material: 'brick' }, cornice: { depth: 0.3, height: 0.4, colour: [0.78, 0.74, 0.66] } }],
+    crown: { kind: 'parapet', height: 1.0, colour: BRICK, material: 'brick' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -3323,4 +3394,6 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   kearny100Bays, post101Cream, pacific515Stucco, pacific535Grey, montgomery843Arched,
   sacramento576Corinthian, leidesdorffYellowBrick, jackson220Tan, jacksonWhitePilaster, batteryGreyArched,
   belden88WhitePediment, belden88BrickCorner, pine471Bays, commercial88WhiteArched, clay88GateStorefront, sacramento686Canton,
+  clayKearnyStucco1922, battery261CreamStone1913, clayWhiteWall1971, leidesdorffStoneCorner1991,
+  montgomery451Cream, montgomeryRedBrick1907,
 }

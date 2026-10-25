@@ -99,11 +99,11 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 87 | 55 | `way/256086591` (unnamed) · 12 m · generic<br>`way/32947588` 220 Jackson Street · 12 m · generic<br>`way/256086590` (unnamed) · 18 m · generic || done (with 86; photo-less outlines skipped) |
 | 88 | 53 | `way/148741779` (unnamed) · 13 m · generic<br>`way/148741777` (unnamed) · 10 m · generic<br>`way/151185873` 471;473;475 Pine Street · 19 m · generic || done (photo-less outlines skipped) |
 | 89 | 52 | `way/260924241` (unnamed) · ? · generic<br>`way/260924240` (unnamed) · ? · generic<br>`way/260925348` Canton Bazaar — 686 Sacramento Street · ? · generic || done (with 88; photo-less outlines skipped) |
-| 90 | 52 | `way/939455049` (unnamed) · ? · generic | |
-| 91 | 51 | `way/940149660` (unnamed) · 7 m · generic | |
-| 92 | 51 | `way/1316030009` (unnamed) · 4 m · generic | |
-| 93 | 51 | `way/260286444` (unnamed) · ? · generic | |
-| 94 | 49 | `way/151183781` 451 Montgomery Street · 11 m · generic<br>`way/942288403` (unnamed) · ? · generic | |
+| 90 | 52 | `way/939455049` (unnamed) · ? · generic || done (photo-less outlines skipped) |
+| 91 | 51 | `way/940149660` (unnamed) · 7 m · generic || done (with 90; photo-less outlines skipped) |
+| 92 | 51 | `way/1316030009` (unnamed) · 4 m · generic || done (with 90; photo-less outlines skipped) |
+| 93 | 51 | `way/260286444` (unnamed) · ? · generic || done (with 90; photo-less outlines skipped) |
+| 94 | 49 | `way/151183781` 451 Montgomery Street · 11 m · generic<br>`way/942288403` (unnamed) · ? · generic || done (with 90; photo-less outlines skipped) |
 | 95 | 48 | `way/149757920` (unnamed) · 28 m · reface classical | |
 | 96 | 45 | `way/151195273` (unnamed) · ? · generic | |
 | 97 | 45 | `way/256084916` (unnamed) · 13 m · generic<br>`way/260927794` (unnamed) · 13 m · generic<br>`way/260927792` (unnamed) · 13 m · generic | |
