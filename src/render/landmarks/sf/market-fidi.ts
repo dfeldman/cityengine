@@ -2146,6 +2146,36 @@ export function sansome731Bays(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * 333 Pine Street (way/256066239, OSM 22 m, built 1917): Mapillary frames 01 and 02. A cream-grey stone office
+ * block of about six storeys: a dark shopfront base with awnings (a copy-shop ground floor), punched windows in
+ * the upper storeys, a dentilled cornice and a moulded parapet. Front faces Pine (bearing 348).
+ */
+export function pine333Stone(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.84, 0.82, 0.77], GLASS: Rgb = [0.22, 0.25, 0.28], TRIM: Rgb = [0.76, 0.73, 0.67], DARK: Rgb = [0.12, 0.13, 0.14]
+  tower(out, fit, {
+    height: 22,
+    base: { height: 4.2, face: { kind: 'punched', wall: CREAM, glass: DARK, pitch: 3.4, floor: 4.2, solid: 0.45, material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 2.8, floor: 3.4, solid: 0.5, head: 'architrave', material: 'ashlar' }, cornice: { depth: 0.6, height: 0.7, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 1.0, colour: TRIM, material: 'ashlar' },
+  })
+}
+
+/**
+ * 222 Front Street (way/260288447, OSM 23 m, built 1988): Mapillary frames 01 and 02. A red-brick block of seven
+ * storeys with tall multi-pane steel-sash windows in bands, a glazed street level and a plain brick parapet.
+ * Front faces Front Street (bearing 258). Photos uncertain about which facade is this building's.
+ */
+export function front222Brick(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.6, 0.3, 0.22], GLASS: Rgb = [0.2, 0.25, 0.28], DARK: Rgb = [0.12, 0.12, 0.13], CORNICE: Rgb = [0.5, 0.42, 0.36]
+  tower(out, fit, {
+    height: 23,
+    base: { height: 4.4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.4, floor: 4.4, solid: 0.35, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: GLASS, pitch: 3.2, floor: 3.3, solid: 0.42, material: 'brick' }, cornice: { depth: 0.5, height: 0.6, colour: CORNICE } }],
+    crown: { kind: 'parapet', height: 0.9, colour: CORNICE, material: 'brick' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -2227,4 +2257,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   market711, market721, market993, marketJones417216803,
   jackson499Brick, montgomery722Belli, jackson463Grey,
   pacific435Bays, pacific193Arcade, sansome731Bays,
+  pine333Stone, front222Brick,
 }

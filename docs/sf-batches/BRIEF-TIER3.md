@@ -94,7 +94,8 @@ Tokens are limited (the owner: "so as not to exhaust my allocation of tokens"). 
      - one steep shared aerial: h = building height + 110, dist = building height + 40, look = 0.4 × height;
      - one street view per building, IN the street it fronts: dist 25–45 m, h 2, look about a third of its height.
        If a street view shows only a wall or trees, retry it no more than once. The aerial is enough.
-   - **Shoot.** `node --experimental-strip-types tools/views.ts --city=san-francisco --only="T3 <short>"`. The images
+   - **Shoot.** `node --experimental-strip-types tools/views.ts --city=san-francisco --only="T3 <short>"`. `--only` matches
+     by PREFIX, so end it with a space (`--only="T3 B4 "`), or batch 4's shoot also re-shoots batches 40–49. The images
      land in `docs/shots/views/san-francisco/<slug>.png`, plus a sheet `sheet-only-p0.png`.
    - **Compare and fix.** Look at the sheet, compare with the photographs, fix, re-shoot. Stop after three rounds.
      If you see generic boxes drawn through your model (unclaimed OSM parts), say so in the report rather than

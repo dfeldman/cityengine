@@ -56,9 +56,9 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 44 | 105 | `way/332516647` 993 Market Street · 4 m · reface brick || done (with 36) |
 | 45 | 101 | `way/35537113` 499 Jackson Street · 19 m · generic<br>`way/148666785` (unnamed) · 13 m · reface brick<br>`way/35537118` 463;473 Jackson Street · 14 m · reface brick || done |
 | 46 | 100 | `way/256088136` 435;437 Pacific Avenue · ? · generic<br>`way/253609537` Pacific Avenue · ? · generic<br>`way/256088155` 731 Sansome Street · 18 m · reface brick || done |
-| 47 | 98 | `way/256066239` 333 Pine Street · 22 m · generic | |
+| 47 | 98 | `way/256066239` 333 Pine Street · 22 m · generic || done |
 | 48 | 98 | `way/417216803` (unnamed) · 5 m · reface brick || done (with 36) |
-| 49 | 96 | `way/260288458` 234;236 Front Street · 20 m · generic<br>`way/260288447` 222 Front Street · 23 m · generic | |
+| 49 | 96 | `way/260288458` 234;236 Front Street · 20 m · generic<br>`way/260288447` 222 Front Street · 23 m · generic || 222 Front done (with 47); 234-236 Front has no photographs |
 | 50 | 95 | `way/149757917` (unnamed) · 28 m · reface classical<br>`way/149757918` 49 Kearny Street · 34 m · generic<br>`way/149757923` 45;47 Kearny Street · 34 m · reface towerblock | |
 | 51 | 95 | `way/436484312` (unnamed) · 25 m · reface skyscraper | |
 | 52 | 94 | `way/256068384` (unnamed) · 39 m · reface chicago<br>`way/256068383` (unnamed) · 16 m · generic<br>`way/256068367` 554;556 Commercial Street · 11 m · generic | |
