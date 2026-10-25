@@ -262,16 +262,6 @@
   },
   {
     "osm": [
-      "way/32947670"
-    ],
-    "name": "Saybrook University",
-    "restyle": "bauhaus",
-    "wall": "#4a4b4d",
-    "height": 26,
-    "note": "Mapillary 2026-10-04: a converted warehouse, charcoal-painted concrete, wide steel-framed windows, roll-up doors; was rule 8 tenement"
-  },
-  {
-    "osm": [
       "way/108389188"
     ],
     "name": "San Francisco Civic Center Courthouse",

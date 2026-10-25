@@ -497,6 +497,105 @@ function t4b39_79377194(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * 340 Bryant Street (way/112864753): a light grey concrete block of about five storeys, punched windows in long
+ * horizontal bands, its ground floor glazed under the I-80 ramp. OSM says 34 m; the photographs do not show that.
+ */
+function t4b40_112864753(out: MeshBuilder, fit: Fit): void {
+  tower(out, fit, {
+    height: 22,
+    tiers: [{ to: 1, face: { kind: 'punched', wall: [0.8, 0.8, 0.78], glass: [0.2, 0.22, 0.24], pitch: 4.2, floor: 4.4, solid: 0.55, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: [0.8, 0.8, 0.78], material: 'concrete' },
+  })
+}
+
+/**
+ * 195 and 199 Grant Avenue (way/149757921): a cream stucco-faced block of about nine storeys, a moulded cornice
+ * high up, fire escapes on the side, shopfronts at street level (Mapillary 192745923291674, 673119174401379).
+ */
+function t4b41_149757921(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.84, 0.79, 0.68]
+  tower(out, fit, {
+    height: 30,
+    base: { height: 4, face: { kind: 'punched', wall: [0.5, 0.42, 0.34], glass: [0.16, 0.18, 0.2], pitch: 4, floor: 4, solid: 0.4, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.24, 0.28], pitch: 2.8, floor: 3.4, solid: 0.5, material: 'stucco' } }],
+    cornices: [{ at: 26, depth: 0.5, colour: [0.9, 0.86, 0.78] }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/**
+ * 95 Hawthorne Street (way/113347426): a glass tower of about ten storeys, its curtain wall dressed with white
+ * angled fins, on a white concrete base with a recessed entrance (Mapillary 1462379361559423, 477179352040959).
+ */
+function t4b42_113347426(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.86, 0.86, 0.84]
+  tower(out, fit, {
+    height: 39,
+    base: { height: 4, face: { kind: 'punched', wall: WHITE, glass: [0.22, 0.27, 0.32], pitch: 4, floor: 4, solid: 0.6, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'fins', wall: [0.7, 0.74, 0.78], glass: [0.2, 0.28, 0.34], floor: 3.9, pitch: 2.2, solid: 0.4, depth: 0.5, material: 'metal' } }],
+    crown: { kind: 'parapet', height: 1.0, colour: [0.7, 0.74, 0.78], material: 'metal' },
+  })
+}
+
+/**
+ * 620 Folsom Street (way/113347425): a red-brown brick block of about four storeys, tall round-arched windows, a dark
+ * ground floor under street trees (Mapillary 1312116589999498). Photograph 02 shows the neighbour at 606 Howard.
+ */
+function t4b42_113347425(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.5, 0.27, 0.2]
+  tower(out, fit, {
+    height: 16,
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: [0.2, 0.22, 0.22], pitch: 3.4, floor: 4, solid: 0.6, arched: true, material: 'brick' } }],
+    cornices: [{ at: 13.5, depth: 0.2, colour: [0.56, 0.42, 0.34] }],
+    crown: { kind: 'parapet', height: 1, colour: [0.42, 0.26, 0.2], material: 'brick' },
+  })
+}
+
+/**
+ * Saybrook University, 733 Front Street (way/32947670): a charcoal grey block of about six storeys, its upper floors
+ * set back with terraces, punched windows below (Mapillary 4624566957577507). OSM 26 m, agreed by the photographs.
+ */
+function t4b43_32947670(out: MeshBuilder, fit: Fit): void {
+  const CHAR: Rgb = [0.3, 0.31, 0.33]
+  tower(out, fit, {
+    height: 26,
+    tiers: [
+      { to: 0.75, face: { kind: 'punched', wall: CHAR, glass: [0.2, 0.22, 0.25], pitch: 3.4, floor: 3.6, solid: 0.5, material: 'concrete' } },
+      { to: 1, inset: 2, face: { kind: 'bands', wall: CHAR, glass: [0.22, 0.26, 0.3], floor: 3.6, solid: 0.5, material: 'concrete' } },
+    ],
+    crown: { kind: 'parapet', height: 0.8, colour: CHAR, material: 'concrete' },
+  })
+}
+
+/**
+ * Kelly Cullen Community, 220 Golden Gate Avenue (way/260140485): a beige stucco block of about eight storeys with
+ * punched windows in pilaster bays. The photographs were unclear, so the height is OSM's (Mapillary 4201021399975680).
+ */
+function t4b44_260140485(out: MeshBuilder, fit: Fit): void {
+  const BEIGE: Rgb = [0.82, 0.76, 0.64]
+  tower(out, fit, {
+    height: 32,
+    base: { height: 4, face: { kind: 'punched', wall: [0.6, 0.56, 0.5], glass: [0.2, 0.22, 0.24], pitch: 3.6, floor: 4, solid: 0.5, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BEIGE, glass: [0.22, 0.24, 0.26], pitch: 3.2, floor: 3.8, solid: 0.5, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 1.2, colour: BEIGE, material: 'stucco' },
+  })
+}
+
+/**
+ * 145 TL Residences, Leavenworth Street (way/1258857968): a grey stucco residential block of about eight storeys with
+ * black balcony rails, beside the Page Hotel (Mapillary 1954460135096796, 1872781716645666).
+ */
+function t4b44_1258857968(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.58, 0.6, 0.62]
+  tower(out, fit, {
+    height: 28,
+    base: { height: 4, face: { kind: 'punched', wall: [0.36, 0.36, 0.38], glass: [0.2, 0.22, 0.25], pitch: 4, floor: 4, solid: 0.5, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: GREY, glass: [0.18, 0.2, 0.24], pitch: 3.4, floor: 3.1, solid: 0.45, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: GREY, material: 'stucco' },
+  })
+}
+
 export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   t4b1_156123224,
   t4b2_192328858,
@@ -537,4 +636,11 @@ export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t4b38_256720468,
   t4b39_79377152,
   t4b39_79377194,
+  t4b40_112864753,
+  t4b41_149757921,
+  t4b42_113347426,
+  t4b42_113347425,
+  t4b43_32947670,
+  t4b44_260140485,
+  t4b44_1258857968,
 }

@@ -79,17 +79,6 @@
   },
   {
     "osm": [
-      "way/113347426"
-    ],
-    "name": "95 Hawthorne Street",
-    "height": 39,
-    "levels": 11,
-    "restyle": "chicago",
-    "note": "Rule check 2026-10-04 (Mapillary): tan panels; colour from the frame.",
-    "wall": "#c4aa89"
-  },
-  {
-    "osm": [
       "way/148428437"
     ],
     "name": "1200 Van Ness Avenue",
