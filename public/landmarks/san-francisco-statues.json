@@ -487,5 +487,128 @@
     ],
     "replaces": "Lotta's Fountain",
     "note": "assetkit-models-sf/lottas-fountain: OSM node 358803316, Market at Kearny and Geary; the whole ~7.3 m cast-iron column replaces the procedural lottasFountain; four-sided, bearing arbitrary."
+  },
+  {
+    "id": "miguel-hidalgo",
+    "name": "Miguel Hidalgo",
+    "asset": "miguel-hidalgo",
+    "lat": 37.7597368,
+    "lon": -122.4276683,
+    "bearing": 180,
+    "plinth": [
+      1.6,
+      1.6,
+      2.6
+    ],
+    "plinthColour": "#23262c",
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/miguel-hidalgo: OSM node 5566754390, the upper (19th Street) corner of Dolores Park, facing south into the park (a guess); ~3 m bronze on a black granite die ~2.6 m (Commons photo)."
+  },
+  {
+    "id": "pioneer-mother",
+    "name": "Pioneer Mother",
+    "asset": "pioneer-mother",
+    "lat": 37.7708961,
+    "lon": -122.4743035,
+    "bearing": 180,
+    "plinth": [
+      2.6,
+      1.9,
+      3.3
+    ],
+    "plinthColour": "#7a4e42",
+    "lodRanges": [
+      140,
+      340
+    ],
+    "note": "assetkit-models-sf/pioneer-mother: OSM node 5135797823, Golden Gate Park meadow, facing south toward the path (a guess); ~3 m bronze on the red-brown stone base (the model brings the small bronze step above it)."
+  },
+  {
+    "id": "puddle-jumpers",
+    "name": "Puddle Jumpers",
+    "asset": "puddle-jumpers",
+    "lodRanges": [
+      120,
+      300
+    ],
+    "attach": {
+      "to": "Redwood Park pool",
+      "at": [
+        2.2,
+        0.05,
+        0.8
+      ],
+      "bearing": 135,
+      "draped": true
+    },
+    "note": "assetkit-models-sf/puddle-jumpers: Transamerica Redwood Park (37.7951,-122.4027); the procedural pool (art.ts redwoodParkBronzes, built for these figures) stays and the chain of five stands beside it on its puddle discs, running toward the south-east (a guess)."
+  },
+  {
+    "id": "seals-plaza-seal",
+    "name": "Seals Plaza seal",
+    "asset": "lou-seal-plaza",
+    "lat": 37.77855,
+    "lon": -122.38772,
+    "bearing": 90,
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/lou-seal-plaza: OSM node 1137861906 (Marina Gate), Seals Plaza outside Oracle Park's water-side gate; the seal balancing a ball (Alfredo Osorio, 1996), placed ~10 m from the gate, facing away from the park (a guess). The file is called Lou Seal."
+  },
+  {
+    "id": "pier39-crab-topiary",
+    "name": "Pier 39 crab topiary",
+    "asset": "pier39-crab-topiary",
+    "lat": 37.8085082,
+    "lon": -122.410202,
+    "bearing": 180,
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/pier39-crab-topiary: OSM node 5455625122 (artwork, '\"Crab Topiary\" Crab Statue'), facing south (a guess); ~2.5 m (a guess)."
+  },
+  {
+    "id": "guardians-of-the-gate",
+    "name": "Guardians of the Gate",
+    "asset": "guardians-of-the-gate",
+    "lat": 37.8086819,
+    "lon": -122.410767,
+    "bearing": 180,
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/guardians-of-the-gate: OSM node 4149743879, West Park beside Pier 39, facing south to the walk (a guess); Miles Metzger, 1992, 4 ft 6 in x 8 ft x 5 ft."
+  },
+  {
+    "id": "presidio-cannon-west",
+    "name": "Presidio Spanish cannon (west)",
+    "asset": "presidio-spanish-cannon",
+    "lat": 37.7985805,
+    "lon": -122.4586125,
+    "bearing": 90,
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/presidio-spanish-cannon: Pershing Square, Main Post (OSM node 12441100101); the NPS puts the San Francisco and Birgen de Barbaneda cannons either side of the flagpole, so this one stands 2.5 m west of the square's node, muzzle east (direction a guess)."
+  },
+  {
+    "id": "presidio-cannon-east",
+    "name": "Presidio Spanish cannon (east)",
+    "asset": "presidio-spanish-cannon",
+    "lat": 37.7985805,
+    "lon": -122.4585557,
+    "bearing": 90,
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/presidio-spanish-cannon: Pershing Square, Main Post (OSM node 12441100101); 2.5 m east of the node, the other of the pair either side of the flagpole, muzzle east (direction a guess)."
   }
 ]
