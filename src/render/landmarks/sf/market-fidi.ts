@@ -1273,6 +1273,30 @@ export function kearny215(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** Tier 3 batch 14, way 256072716 (named only Clay Street, 15 m, about 1910): a four-storey red brick block with a cream bracketed cornice, cream pilasters and window bands, and a blue painted ground floor with shop entrances; front Clay (164). Photos way-256072716-01 and -02. */
+export function clay256072716(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.6, 0.27, 0.18]
+  const CREAM: Rgb = [0.84, 0.8, 0.7]
+  tower(out, fit, {
+    height: 15,
+    base: { height: 4, face: { kind: 'blank', wall: [0.22, 0.34, 0.62], material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: [0.2, 0.22, 0.25], pitch: 2.8, floor: 3.3, solid: 0.4, head: 'segmental', material: 'brick' }, cornice: { depth: 1, height: 1.2, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 1, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** Tier 3 batch 14, 643;645;647 Clay Street (way 260924226, 12 m, about 1910): a three-storey peach stucco block with white pilasters and fire escapes over dark shopfronts (yellow awning, black fascia); front Clay (342). Photos way-260924226-01 and -02. */
+export function clay643(out: MeshBuilder, fit: Fit): void {
+  const PEACH: Rgb = [0.9, 0.68, 0.56]
+  const CREAM: Rgb = [0.93, 0.89, 0.82]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 3.5, face: { kind: 'blank', wall: [0.2, 0.18, 0.16], material: 'concrete' }, canopy: { depth: 1, colour: [0.9, 0.78, 0.3] } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: PEACH, glass: [0.22, 0.22, 0.25], pitch: 3, floor: 3, solid: 0.45, material: 'stucco' }, cornice: { depth: 0.7, height: 0.7, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 1, colour: CREAM, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1331,4 +1355,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   jackson32858943, jacksonColumbus32858908, jackson530,
   elim16, jessie40,
   kearny200, sutter154, kearny215,
+  clay256072716, clay643,
 }
