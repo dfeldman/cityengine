@@ -21,17 +21,6 @@
   },
   {
     "osm": [
-      "way/35024322"
-    ],
-    "name": "Gaylord Suites",
-    "restyle": "classical",
-    "height": 38,
-    "levels": 11,
-    "note": "Rule check 2026-10-04 (Mapillary): white Spanish Baroque — carved twisted columns at the door, ornamented window heads; was rule 8 chicago.",
-    "wall": "#e8e5dd"
-  },
-  {
-    "osm": [
       "way/288645265"
     ],
     "name": "Building 288645265",

@@ -1710,6 +1710,106 @@ function t4b118_129176905(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * 539 Bryant Street (way/131297949): a tan-buff brick warehouse of five storeys, tall multi-pane windows, arched heads
+ * on the upper floors, a corbelled parapet. (Mapillary 859235062280233 and 1261142479144384.) Front taken as Bryant.
+ */
+function t4b119_131297949(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.74, 0.62, 0.46]
+  tower(out, fit, {
+    height: 19,
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, material: 'brick', glass: [0.2, 0.22, 0.24], pitch: 3.4, solid: 0.45, floor: 3.8, arched: true } }],
+    crown: { kind: 'parapet', height: 1.2, colour: TAN, material: 'brick' },
+  })
+}
+
+/**
+ * 50 Hawthorne Street (way/80296706): a low office block of five storeys in silver-framed dark glass, the mullions
+ * standing proud, a plain metal coping. (Mapillary, two frames.) Front taken as Hawthorne; the photographs are mixed.
+ */
+function t4b120_80296706(out: MeshBuilder, fit: Fit): void {
+  const SILVER: Rgb = [0.62, 0.64, 0.66]
+  tower(out, fit, {
+    height: 18,
+    tiers: [{ to: 1, face: { kind: 'curtain', wall: SILVER, material: 'metal', glass: [0.18, 0.28, 0.3], floor: 3.6, pitch: 1.8 } }],
+    crown: { kind: 'parapet', height: 0.8, colour: [0.5, 0.52, 0.54], material: 'metal' },
+  })
+}
+
+/**
+ * 601–615 Second Street (way/112927451): a grey-beige painted brick block of about six storeys; a dark glazed
+ * shopfront base, then large steel-sashed windows, a parapet on top. (Mapillary 780662207738651, 1098776455676234.)
+ * Front taken as Second Street; unsure.
+ */
+function t4b121_112927451(out: MeshBuilder, fit: Fit): void {
+  const BEIGE: Rgb = [0.7, 0.67, 0.6]
+  tower(out, fit, {
+    height: 23,
+    tiers: [
+      { to: 4.6, face: { kind: 'curtain', wall: [0.14, 0.14, 0.15], material: 'glass', glass: [0.14, 0.18, 0.2], floor: 4.6, pitch: 2.6 } },
+      { to: 1, face: { kind: 'punched', wall: BEIGE, material: 'concrete', glass: [0.16, 0.18, 0.2], pitch: 3.2, solid: 0.4, floor: 3.6 } },
+    ],
+    crown: { kind: 'parapet', height: 1.0, colour: BEIGE, material: 'concrete' },
+  })
+}
+
+/**
+ * Gallo Building, 250 Brannan Street (way/113103850): an orange-buff brick block of three storeys with a corbelled
+ * arcade cornice, double-hung sash windows and a deep storefront base. (Mapillary, two frames.) Front taken as Brannan.
+ */
+function t4b122_113103850(out: MeshBuilder, fit: Fit): void {
+  const ORANGE: Rgb = [0.8, 0.55, 0.3]
+  tower(out, fit, {
+    height: 13,
+    tiers: [{ to: 1, face: { kind: 'punched', wall: ORANGE, material: 'brick', glass: [0.26, 0.3, 0.34], pitch: 3.6, solid: 0.5, floor: 4.2 } }],
+    crown: { kind: 'parapet', height: 1.2, colour: ORANGE, material: 'brick' },
+  })
+}
+
+/**
+ * Unnamed block, way/114709398, between Tehama and First Streets: a dark grey stone-faced art deco block of about six
+ * storeys, arched heads on the top floor, pilasters and a lettered band over a glazed ground floor. (Mapillary, two
+ * frames.) Front taken as Tehama Street, the nearest; unsure.
+ */
+function t4b123_114709398(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.27, 0.27, 0.28]
+  tower(out, fit, {
+    height: 24,
+    tiers: [{ to: 1, face: { kind: 'punched', wall: GREY, material: 'concrete', glass: [0.16, 0.2, 0.24], pitch: 3.6, solid: 0.5, floor: 3.8, arched: true } }],
+    crown: { kind: 'parapet', height: 1.2, colour: GREY, material: 'concrete' },
+  })
+}
+
+/**
+ * WestEd, 730 Harrison Street (way/151979683): an eight-storey block, a patinated green-grey metal skin on its lower
+ * three storeys with a stepped Art Deco entry, glass spandrel bands above. (Mapillary, two frames.) Front taken as Harrison.
+ */
+function t4b124_151979683(out: MeshBuilder, fit: Fit): void {
+  const GREEN: Rgb = [0.34, 0.46, 0.44]
+  tower(out, fit, {
+    height: 25,
+    tiers: [
+      { to: 3.2, face: { kind: 'blank', wall: GREEN, material: 'metal' }, cornice: { depth: 0.3, height: 0.3, colour: GREEN } },
+      { to: 1, face: { kind: 'bands', wall: [0.42, 0.5, 0.48], material: 'glass', glass: [0.25, 0.45, 0.45], floor: 3.4, solid: 0.3 } },
+    ],
+    crown: { kind: 'parapet', height: 0.9, colour: GREEN, material: 'metal' },
+  })
+}
+
+/**
+ * Gaylord Suites, 620 Jones Street (way/35024322): a white stucco-faced hotel of about eleven storeys, its walls
+ * stacked with projecting bay windows all the way up, a deep dentilled cornice and a parapet. (Mapillary, two frames.)
+ * Front taken as Jones Street.
+ */
+function t4b125_35024322(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.92, 0.9, 0.86]
+  tower(out, fit, {
+    height: 38,
+    tiers: [{ to: 1, face: { kind: 'bays', wall: WHITE, material: 'concrete', glass: [0.3, 0.36, 0.4], floor: 3.4, pitch: 3.2, bay: { depth: 0.8 } }, cornice: { depth: 0.6, height: 0.8, colour: WHITE } }],
+    crown: { kind: 'parapet', height: 1.4, colour: WHITE, material: 'concrete' },
+  })
+}
+
 export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   t4b1_156123224,
   t4b2_192328858,
@@ -1830,4 +1930,11 @@ export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t4b116_1258513962,
   t4b117_206621049,
   t4b118_129176905,
+  t4b119_131297949,
+  t4b120_80296706,
+  t4b121_112927451,
+  t4b122_113103850,
+  t4b123_114709398,
+  t4b124_151979683,
+  t4b125_35024322,
 }

@@ -126,13 +126,13 @@ Builders go in `src/render/landmarks/sf/downtown-t4.ts`, manifest entries in `pu
 | 116 | 106 | Tenderloin | `way/1258513962` 180 Jones Street · 36 m · generic || done |
 | 117 | 106 | FiDi | `way/206621049` Westlake Building · 19 m · generic || done |
 | 118 | 105 | SoMa by Market | `way/129176905` Arc Light Co. · 17 m · generic || done |
-| 119 | 105 | SoMa by Market | `way/131297949` 539 Bryant Street · 19 m · generic | |
-| 120 | 105 | SoMa by Market | `way/80296706` 50 Hawthorne Street · 18 m · generic | |
-| 121 | 105 | SoMa by Market | `way/112927451` 601;611;615 2nd Street · 23 m · reface | |
-| 122 | 105 | SoMa by Market | `way/113103850` Gallo Building · 13 m · generic | |
-| 123 | 105 | SoMa by Market | `way/114709398` (unnamed) · 24 m · generic | |
-| 124 | 105 | SoMa by Market | `way/151979683` 730;740 Harrison Street · 25 m · generic | |
-| 125 | 105 | Tenderloin | `way/35024322` Gaylord Suites · 38 m · reface | |
+| 119 | 105 | SoMa by Market | `way/131297949` 539 Bryant Street · 19 m · generic || done |
+| 120 | 105 | SoMa by Market | `way/80296706` 50 Hawthorne Street · 18 m · generic || done |
+| 121 | 105 | SoMa by Market | `way/112927451` 601;611;615 2nd Street · 23 m · reface || done |
+| 122 | 105 | SoMa by Market | `way/113103850` Gallo Building · 13 m · generic || done |
+| 123 | 105 | SoMa by Market | `way/114709398` (unnamed) · 24 m · generic || done |
+| 124 | 105 | SoMa by Market | `way/151979683` 730;740 Harrison Street · 25 m · generic || done |
+| 125 | 105 | Tenderloin | `way/35024322` Gaylord Suites · 38 m · reface || done |
 | 126 | 105 | Tenderloin | `way/35536670` St Anthony's Vera Haile Senior Housing · 32 m · reface | |
 | 127 | 104 | Tenderloin | `way/259974367` 666;670 Ellis Street · 38 m · reface | |
 | 128 | 103 | Civic Center | `way/258127164` 701;711 Van Ness Avenue · 21 m · generic | |
