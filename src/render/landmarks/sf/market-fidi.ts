@@ -2525,6 +2525,42 @@ export function washingtonLouvredConcrete(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+export function kearny219(out: MeshBuilder, fit: Fit): void {
+  // 219-225 Kearny Street (way/260280333, 1907): a cream painted-brick block of about five storeys with arched upper
+  // windows, a tan brick bay with a corbelled cornice, and a dark shopfront under an awning; photos way-260280333-01 and -02
+  const CREAM: Rgb = [0.9, 0.87, 0.8], DARK: Rgb = [0.16, 0.16, 0.15], GLASS: Rgb = [0.18, 0.2, 0.22], TRIM: Rgb = [0.8, 0.76, 0.66]
+  tower(out, fit, {
+    height: 20,
+    base: { height: 4, face: { kind: 'curtain', wall: DARK, glass: GLASS, pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 2.8, floor: 3.4, solid: 0.5, arched: true, material: 'brick' }, cornice: { depth: 0.5, height: 0.6, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 1, colour: CREAM, material: 'brick' },
+  })
+}
+
+export function kearny237(out: MeshBuilder, fit: Fit): void {
+  // 237-241 Kearny Street (way/260280329, 1907): a buff three-storey block with arched brick-panelled heads over the
+  // upper windows, a dentilled cornice and a dark shopfront with a recessed entrance; photos way-260280329-01 and -02
+  const BUFF: Rgb = [0.9, 0.84, 0.66], DARK: Rgb = [0.16, 0.16, 0.15], GLASS: Rgb = [0.18, 0.2, 0.22], TRIM: Rgb = [0.78, 0.72, 0.58]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 4, face: { kind: 'curtain', wall: DARK, glass: GLASS, pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BUFF, glass: GLASS, pitch: 2.8, floor: 3.2, solid: 0.5, arched: true, material: 'stucco' }, cornice: { depth: 0.5, height: 0.6, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 0.8, colour: TRIM, material: 'stucco' },
+  })
+}
+
+export function kearny243(out: MeshBuilder, fit: Fit): void {
+  // 243-245 Kearny Street (way/260280332, 1908): a four-storey buff stucco block with big paired windows, a plain
+  // parapet and a black ground floor with a central doorway; photos way-260280332-01 and -02
+  const BUFF: Rgb = [0.92, 0.88, 0.76], BLACK: Rgb = [0.1, 0.1, 0.11], GLASS: Rgb = [0.18, 0.2, 0.22], TRIM: Rgb = [0.84, 0.8, 0.7]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 4, face: { kind: 'curtain', wall: BLACK, glass: GLASS, pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BUFF, glass: GLASS, pitch: 3, floor: 3.2, solid: 0.4, material: 'stucco' }, cornice: { depth: 0.4, height: 0.5, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 1, colour: TRIM, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -2616,4 +2652,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   montgomery708Arcade, montgomeryCanessaWhite,
   jessie96RedBrick, stevenson79Granite, louvred2002Stone,
   montgomery130Cream, washington520Brick, washingtonItalianate, washingtonLouvredConcrete,
+  kearny219, kearny237, kearny243,
 }
