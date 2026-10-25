@@ -140,10 +140,10 @@ Builders go in `src/render/landmarks/sf/downtown-t4.ts`, manifest entries in `pu
 | 130 | 103 | Union Square | `way/48995284` 663;665;679 Sutter Street · 30 m · reface || done |
 | 131 | 103 | Union Square | `way/256733832` Hotel Emblem San Francisco · 22 m · reface || done |
 | 132 | 103 | FiDi | `way/32947691` 750 Battery Street · 25 m · reface || done |
-| 133 | 102 | SoMa by Market | `way/129176908` (unnamed) · 21 m · reface | |
-| 134 | 102 | SoMa by Market | `way/112759870` 1 South Park · 18 m · generic<br>`way/112758589` 300 Brannan Street · 21 m · generic | |
-| 135 | 102 | Chinatown | `way/260517123` Mei Lun Yuen · 30 m · reface | |
-| 136 | 101 | Union Square | `way/135620233` Metropolitan Club · 23 m · reface | |
+| 133 | 102 | SoMa by Market | `way/129176908` (unnamed) · 21 m · reface || done |
+| 134 | 102 | SoMa by Market | `way/112759870` 1 South Park · 18 m · generic<br>`way/112758589` 300 Brannan Street · 21 m · generic || done |
+| 135 | 102 | Chinatown | `way/260517123` Mei Lun Yuen · 30 m · reface || done |
+| 136 | 101 | Union Square | `way/135620233` Metropolitan Club · 23 m · reface || done |
 | 137 | 101 | Chinatown | `way/104627922` St. Mary's Square · 20 m · generic | |
 | 138 | 100 | Civic Center | `way/165846556` 136;142;146;150;154 McAllister Street · 20 m · generic | |
 | 139 | 100 | Tenderloin | `way/259990935` Presentation Senior Community · 17 m · generic | |

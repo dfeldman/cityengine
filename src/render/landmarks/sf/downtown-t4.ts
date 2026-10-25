@@ -1933,6 +1933,102 @@ function t4b132_32947691(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * Unnamed block at 665 Third Street and Clarence Place (way/129176908), 21 m: a six-storey loft block in cream
+ * painted concrete, big steel-sash windows in a regular grid, a dark brown ground band with a salmon-framed yellow
+ * entrance, and a parapet cornice over a smaller top floor. (Mapillary 1098896628431975, 651426494095209.) Front: 3rd Street.
+ */
+function t4b133_129176908(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.93, 0.91, 0.85]
+  const BROWN: Rgb = [0.36, 0.27, 0.2]
+  tower(out, fit, {
+    height: 21,
+    base: { height: 4.2, face: { kind: 'punched', wall: BROWN, glass: [0.22, 0.25, 0.28], pitch: 4.5, floor: 4.2, solid: 0.3, material: 'concrete' } },
+    tiers: [
+      { to: 0.82, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.24, 0.3], pitch: 4, floor: 3.4, solid: 0.33, depth: 0.4, material: 'concrete' }, cornice: { depth: 0.6, height: 0.6, colour: CREAM } },
+      { to: 1, inset: 0.8, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.24, 0.3], pitch: 3.4, floor: 3.2, solid: 0.4, depth: 0.4, material: 'concrete' } },
+    ],
+    crown: { kind: 'parapet', height: 1, colour: CREAM, material: 'concrete' },
+  })
+}
+
+/**
+ * 1 South Park (way/112759870), 18 m: a three-storey block of pale grey painted concrete, its ground floor a row of
+ * tall arched openings in dark glass, the upper floors in tall steel-sash windows between piers, under a deep cornice.
+ * The 2-storey wing is not drawn (unsure). (Mapillary 628864219907229, 1904252370355670.) Front: South Park, unsure.
+ */
+function t4b134_112759870(out: MeshBuilder, fit: Fit): void {
+  const PALE: Rgb = [0.94, 0.94, 0.92]
+  tower(out, fit, {
+    height: 18,
+    base: { height: 6, face: { kind: 'punched', wall: PALE, glass: [0.14, 0.18, 0.2], pitch: 4.2, floor: 6, solid: 0.3, depth: 0.5, arched: true, material: 'concrete' } },
+    tiers: [
+      { to: 0.7, face: { kind: 'punched', wall: PALE, glass: [0.2, 0.26, 0.3], pitch: 3.2, floor: 3.3, solid: 0.4, depth: 0.4, material: 'concrete' }, cornice: { depth: 0.8, height: 0.6, colour: PALE } },
+      { to: 1, face: { kind: 'punched', wall: PALE, glass: [0.2, 0.26, 0.3], pitch: 3.2, floor: 2.7, solid: 0.4, depth: 0.4, material: 'concrete' } },
+    ],
+    crown: { kind: 'parapet', height: 0.8, colour: PALE, material: 'concrete' },
+  })
+}
+
+/**
+ * 300 Brannan Street (way/112758589), 21 m: a loft block of about six storeys at the Brannan and Second corner, painted
+ * a light grey between dark charcoal window bays, over a two-storey charcoal base of shopfronts and glazing, with
+ * arched heads to the upper windows and a dark parapet. (Mapillary 1132433752114253, 754261343983092.) Front: Brannan Street.
+ */
+function t4b134_112758589(out: MeshBuilder, fit: Fit): void {
+  const CHARCOAL: Rgb = [0.27, 0.29, 0.32]
+  const LIGHT: Rgb = [0.74, 0.76, 0.75]
+  tower(out, fit, {
+    height: 21,
+    base: { height: 8, face: { kind: 'punched', wall: CHARCOAL, glass: [0.16, 0.18, 0.21], pitch: 3.6, floor: 4, solid: 0.45, depth: 0.3, material: 'concrete' } },
+    tiers: [
+      { to: 1, face: { kind: 'punched', wall: LIGHT, glass: [0.2, 0.22, 0.26], pitch: 3.2, floor: 3.2, solid: 0.45, depth: 0.6, arched: true, material: 'concrete' } },
+    ],
+    crown: { kind: 'parapet', height: 1.2, colour: CHARCOAL, material: 'concrete' },
+  })
+}
+
+/**
+ * Mei Lun Yuen (way/260517123), OSM 30 m: a pale pink stucco block with a street-level shopfront and projecting bay
+ * boxes stacked up the front. Only two close photographs; the massing is unsure, and the 14-, 20- and 27-metre parts
+ * in OSM lie outside its outline. (Mapillary 1103316351698020, 158985976342219.) Front: Sacramento Street (352), unsure.
+ */
+function t4b135_260517123(out: MeshBuilder, fit: Fit): void {
+  const PINK: Rgb = [0.9, 0.84, 0.82]
+  tower(out, fit, {
+    height: 30,
+    base: { height: 4.5, face: { kind: 'punched', wall: PINK, glass: [0.2, 0.22, 0.25], pitch: 4, floor: 4.5, solid: 0.55, depth: 0.3, material: 'concrete' } },
+    tiers: [
+      { to: 1, face: { kind: 'bays', wall: PINK, glass: [0.2, 0.23, 0.27], pitch: 3.2, floor: 3.2, bay: { depth: 0.8 }, material: 'concrete' } },
+    ],
+    crown: { kind: 'parapet', height: 1, colour: PINK, material: 'concrete' },
+  })
+}
+
+/**
+ * Metropolitan Club, 640 Sutter Street (way/135620233), 23 m: a red-brown brick palazzo of five storeys, a stone base
+ * course with an arched entrance under a dark awning, arched windows with corbelled balconies, and a colonnade of
+ * paired columns on the top storey under a deep bracketed eave and a hipped tile roof. (Mapillary 1020868583454860,
+ * 525193442027895.) Front: Sutter Street.
+ */
+function t4b136_135620233(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.46, 0.23, 0.18]
+  const STONE: Rgb = [0.84, 0.8, 0.7]
+  const TILE: Rgb = [0.45, 0.25, 0.2]
+  tower(out, fit, {
+    height: 23,
+    base: { height: 4, face: { kind: 'punched', wall: STONE, glass: [0.16, 0.18, 0.2], pitch: 3.4, floor: 4, solid: 0.5, depth: 0.5, arched: true, material: 'ashlar' } },
+    tiers: [
+      { to: 0.82, face: { kind: 'punched', wall: BRICK, glass: [0.2, 0.22, 0.26], pitch: 3, floor: 3.6, solid: 0.45, depth: 0.5, arched: true, material: 'brick' }, cornice: { depth: 0.6, height: 0.5, colour: STONE } },
+      { to: 1, face: { kind: 'punched', wall: BRICK, glass: [0.2, 0.22, 0.26], pitch: 3, floor: 3.4, solid: 0.6, depth: 0.4, material: 'brick' } },
+    ],
+    crown: { kind: 'hip', height: 3, inset: -0.6, colour: TILE, material: 'tile' },
+  })
+  const ring = towerRing(fit), e = edgeAt(ring, edgeFacing(ring, 180))
+  const n = Math.max(4, Math.round(e.L / 2.6))
+  colonnade(out, e.a, e.b, 18.9, 3.6, n, { radius: 0.3, out: 0.5, colour: STONE, material: 'concrete' })
+}
+
 export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   t4b1_156123224,
   t4b2_192328858,
@@ -2067,4 +2163,9 @@ export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t4b130_48995284,
   t4b131_256733832,
   t4b132_32947691,
+  t4b133_129176908,
+  t4b134_112759870,
+  t4b134_112758589,
+  t4b135_260517123,
+  t4b136_135620233,
 }

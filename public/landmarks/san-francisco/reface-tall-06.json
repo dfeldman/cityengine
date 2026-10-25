@@ -6,7 +6,6 @@
 {"osm": ["way/679290110"], "restyle": "brick", "wall": "#9c4a36", "by": "haiku", "image": "way-679290110-02.jpg", "note": "red brick 5-storey, punched windows, recessed glass sections"},
 {"osm": ["way/35024369"], "restyle": "classical", "wall": "#c2a57c", "by": "haiku", "image": "way-35024369-02.jpg", "note": "tan brick 8-storey, arched ground-floor openings, dentilled cornice"},
 {"osm": ["way/939441635"], "restyle": "towerblock", "wall": "#e6e5e1", "groundWall": "#4a4e54", "by": "haiku", "image": "way-939441635-01.jpg", "note": "white/light grey block with grey panel columns and glazed bays; dark ground floor"},
-{"osm": ["way/129176908"], "restyle": "brick", "wall": "#d8cbb0", "groundWall": "#6b4f3a", "by": "haiku", "image": "way-129176908-01.jpg", "note": "cream/beige 6-storey loft-style block, cornice and parapet, dark brown base"},
 {"osm": ["way/35174699"], "restyle": "sfapartment", "wall": "#a8432f", "trim": "#efe3cc", "groundWall": "#2b2623", "by": "haiku", "image": "way-35174699-01.jpg", "note": "red brick 8-storey, stacked corner bays with cream surrounds, dark shopfront"},
 {"osm": ["way/261108904"], "restyle": "sfapartment", "wall": "#ebeae5", "accent": "#2f4b6e", "by": "haiku", "image": "way-261108904-02.jpg", "note": "white render block with stacked projecting blue balconies"},
 {"osm": ["way/1343555796"], "restyle": "brick", "wall": "#b06a4f", "by": "haiku", "image": "way-1343555796-02.jpg", "note": "salmon-red brick 7-storey, punched windows, fire escapes, parapet"},
