@@ -3003,6 +3003,77 @@ export function sacramento648Brick(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * 100 Kearny Street (way/255716897, OSM 19 m, 714 m², the Kearny and Post corner). Photo -02: a cream-buff corner block
+ * of four floors with angled bay windows round the corner, a dark ground floor of glazing. Front faces Kearny (bearing 76).
+ */
+export function kearny100Bays(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.82, 0.76, 0.66], DARK: Rgb = [0.16, 0.15, 0.15], GLASS: Rgb = [0.22, 0.25, 0.28], TRIM: Rgb = [0.7, 0.66, 0.58]
+  tower(out, fit, {
+    height: 19,
+    base: { height: 4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.4, floor: 4, solid: 0.35, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'bays', wall: CREAM, glass: GLASS, pitch: 4, floor: 3.6, solid: 0.5, material: 'ashlar', bay: { depth: 0.8 } }, cornice: { depth: 0.5, height: 0.6, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 0.9, colour: TRIM, material: 'stucco' },
+  })
+}
+
+/**
+ * 101 Post Street (way/149757924, OSM 16 m, 399 m²). Photos -01 and -02: a cream stucco block of four floors over a
+ * dark glazed ground floor, a recessed entrance under a moulded canopy. Front faces Post (bearing 342).
+ */
+export function post101Cream(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.89, 0.85], DARK: Rgb = [0.12, 0.12, 0.13], GLASS: Rgb = [0.22, 0.25, 0.28], TRIM: Rgb = [0.8, 0.77, 0.7]
+  tower(out, fit, {
+    height: 16,
+    base: { height: 4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.2, floor: 4, solid: 0.4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 2.8, floor: 3.2, solid: 0.6, material: 'stucco' }, cornice: { depth: 0.4, height: 0.5, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 0.8, colour: TRIM, material: 'stucco' },
+  })
+}
+
+/**
+ * 515;517 Pacific Avenue (way/256088651, OSM none, 71 m², 1913). Photo -02: a narrow three-storey cream painted front
+ * with a balcony on the upper floor and a dark recessed entrance gate at the ground. Front faces Pacific (bearing 358).
+ */
+export function pacific515Stucco(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.88, 0.84, 0.74], DARK: Rgb = [0.12, 0.12, 0.13], GLASS: Rgb = [0.22, 0.25, 0.28], TRIM: Rgb = [0.78, 0.74, 0.64]
+  tower(out, fit, {
+    height: 11,
+    base: { height: 3, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.4, floor: 3, solid: 0.4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 2.8, floor: 3.2, solid: 0.6, material: 'stucco' }, cornice: { depth: 0.4, height: 0.5, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 0.7, colour: TRIM, material: 'stucco' },
+  })
+}
+
+/**
+ * 535 Pacific Avenue (way/256088648, OSM 17 m, 751 m²). Photo -02: a long dark grey stucco wall with few openings at the
+ * ground and a glazed shopfront to the side, a flat parapet. Front faces Pacific (bearing 356).
+ */
+export function pacific535Grey(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.38, 0.38, 0.39], DARK: Rgb = [0.14, 0.14, 0.15], GLASS: Rgb = [0.22, 0.25, 0.28]
+  tower(out, fit, {
+    height: 17,
+    base: { height: 4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 4, floor: 4, solid: 0.7, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: GREY, glass: GLASS, pitch: 4, floor: 3.4, solid: 0.88, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 0.6, colour: GREY, material: 'stucco' },
+  })
+}
+
+/**
+ * 843;845 Montgomery Street (way/256088656, OSM 18 m, 614 m²). Photo -02: a buff brick front of two storeys with
+ * arched windows and a tall pale parapet behind it. Front faces Montgomery (bearing 82). Photo -01 showed a dark grey
+ * stucco wall, which is not modelled: the facade between the dashed lines in -02 is the buff brick.
+ */
+export function montgomery843Arched(out: MeshBuilder, fit: Fit): void {
+  const BUFF: Rgb = [0.84, 0.76, 0.6], GLASS: Rgb = [0.22, 0.25, 0.28], TRIM: Rgb = [0.66, 0.6, 0.5]
+  tower(out, fit, {
+    height: 18,
+    base: { height: 6, face: { kind: 'punched', wall: BUFF, glass: GLASS, pitch: 2.8, floor: 3, solid: 0.5, arched: true, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BUFF, glass: GLASS, pitch: 2.8, floor: 3.4, solid: 0.5, arched: true, material: 'brick' }, cornice: { depth: 0.5, height: 0.6, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 1.0, colour: TRIM, material: 'brick' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -3103,4 +3174,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   kearny227Arched, sutterStoneGrey, clay671White, commercial685Grey, kearny610Pediment,
   clay689Cream, clay683Teo, sansome140Stone, clay563Arched, washington401Stone,
   kearnyCreamYellow, kearny263Corner, kearny268Black, sacramento171Palio, sacramento648Brick,
+  kearny100Bays, post101Cream, pacific515Stucco, pacific535Grey, montgomery843Arched,
 }
