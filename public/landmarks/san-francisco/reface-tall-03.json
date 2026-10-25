@@ -2,7 +2,6 @@
 {"osm": ["way/288473995"], "restyle": "brick", "wall": "#9b4a32", "by": "haiku", "image": "way-288473995-02.jpg", "note": "red-brown brick block, punched windows, set-back top; dark garage in front of it"},
 {"osm": ["way/259082485"], "restyle": "towerblock", "wall": "#e6e1d6", "by": "haiku", "image": "way-259082485-02.jpg", "note": "cream render with stacked balconies, flat top"},
 {"osm": ["way/1382010214"], "restyle": "bauhaus", "wall": "#eeebe4", "trim": "#c49a66", "by": "haiku", "image": "way-1382010214-01.jpg", "note": "white render with timber balcony boxes, ground-floor shops"},
-{"osm": ["way/260155572"], "restyle": "brick", "wall": "#8f8478", "by": "haiku", "image": "way-260155572-01.jpg", "note": "grey-beige block, punched windows, cornice-like top; not white bauhaus"},
 {"osm": ["way/547181913"], "restyle": "brick", "wall": "#b8704a", "trim": "#e8dcc4", "groundWall": "#3b4048", "by": "haiku", "image": "way-547181913-02.jpg", "note": "terracotta-brown block with cream bands, dark glass ground floor"},
 {"osm": ["way/255652149"], "restyle": "brick", "wall": "#4b3d45", "trim": "#e6e3dc", "by": "haiku", "image": "way-255652149-03.jpg", "note": "dark plum-brown panel wall, white frames, stacked balconies"},
 {"osm": ["way/159280391"], "restyle": "classical", "wall": "#cdbb9c", "groundWall": "#4b4640", "by": "haiku", "image": "way-159280391-02.jpg", "note": "beige stone block with arched upper windows and heavy dark base"},
@@ -12,7 +11,6 @@
 {"osm": ["way/256047252"], "restyle": "tenement", "wall": "#b89b78", "trim": "#2f3b35", "by": "haiku", "image": "way-256047252-02.jpg", "note": "tan brick walk-up with zig-zag fire escapes on the front, dark green cornice"},
 {"osm": ["way/197463900"], "restyle": "bauhaus", "wall": "#ebe6dc", "by": "haiku", "image": "way-197463900-02.jpg", "note": "cream-white render, flat roof, horizontal window bands, glass showroom base"},
 {"osm": ["way/288476696"], "restyle": "towerblock", "wall": "#9d4a34", "trim": "#cfc2a6", "by": "haiku", "image": "way-288476696-02.jpg", "note": "red brick tower with stacked beige balcony slabs, flat top"},
-{"osm": ["way/32947763"], "restyle": "chicago", "wall": "#c7b291", "by": "haiku", "image": "way-32947763-01.jpg", "note": "tan stone office block, punched windows, cornice, KPIX rooftop sign"},
 {"osm": ["way/79377213"], "restyle": "chicago", "wall": "#ebe8e1", "by": "haiku", "image": "way-79377213-01.jpg", "note": "white painted block, grid windows, cornice, shop base"},
 {"osm": ["way/247760730"], "restyle": "sfapartment", "wall": "#e3cfbd", "by": "haiku", "image": "way-247760730-02.jpg", "note": "cream-pink apartment block, arched ground windows, flat top"}
 ]

@@ -7,7 +7,7 @@
 import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
 import { tower, towerRing, type Face } from '../tower.ts'
-import { boxAlong, colonnade, edgeAt, signText } from '../parts.ts'
+import { boxAlong, colonnade, edgeAt, edgeFacing, signText } from '../parts.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 import { box, prism, type Rgb } from '../../models.ts'
 
@@ -814,6 +814,111 @@ function t4b57_80296763(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * Way 260155572, 201 Turk Street, the Chinatown CDC building (OSM 26 m, photographs ~8 storeys and a stepped top): a
+ * taupe-grey stucco block of projecting bay windows, paired and stacked, a brown shopfront base with a takeaway and a
+ * halal shop, and a dentilled cornice at the top (Mapillary 683340666394897, 1118393568862137). Front: Turk Street.
+ */
+function t4b58_260155572(out: MeshBuilder, fit: Fit): void {
+  const TAUPE: Rgb = [0.5, 0.46, 0.42]
+  tower(out, fit, {
+    height: 27,
+    base: { height: 4.5, face: { kind: 'punched', wall: [0.3, 0.22, 0.18], glass: [0.18, 0.2, 0.22], pitch: 4, floor: 4.5, solid: 0.5, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'bays', wall: TAUPE, glass: [0.2, 0.25, 0.3], pitch: 3.2, floor: 3.1, solid: 0.5, material: 'stucco' } }],
+    cornices: [{ at: 0.82, depth: 0.35, height: 0.5, colour: [0.56, 0.52, 0.48] }],
+    crown: { kind: 'parapet', height: 1.4, colour: [0.56, 0.52, 0.48], material: 'stucco' },
+  })
+}
+
+/**
+ * Way 288648571, 2 Townsend Street, South Beach Marina Apartments BLDG 1 (OSM 36 m, about ten storeys): a tall pale
+ * tower of stucco over a dark grey upper block with stacked, recessed balconies, set back from a shorter stucco base
+ * (Mapillary 24347962461524776, 1193217436160957). Front: Townsend Street. Unsure of the exact stepping.
+ */
+function t4b59_288648571(out: MeshBuilder, fit: Fit): void {
+  const PALE: Rgb = [0.8, 0.79, 0.76]
+  tower(out, fit, {
+    height: 36,
+    tiers: [
+      { to: 0.7, face: { kind: 'bays', wall: PALE, glass: [0.2, 0.25, 0.3], pitch: 3.4, floor: 3.2, solid: 0.6, depth: 0.5, material: 'stucco' } },
+      { to: 1, inset: 4, face: { kind: 'punched', wall: [0.4, 0.42, 0.44], glass: [0.16, 0.18, 0.2], pitch: 3.6, floor: 3.2, solid: 0.7, depth: 0.5, material: 'concrete' } },
+    ],
+    crown: { kind: 'parapet', height: 1.2, colour: PALE, material: 'stucco' },
+  })
+}
+
+/**
+ * Way 260142631, 455 Eddy Street, Mosser Towers (OSM 41 m, about twelve storeys): white-grey concrete towers in
+ * stepped blocks, curved fronts with glass bays and grey bands between the floors, a pale stucco base with iron balcony
+ * rails (Mapillary 811428324562774, 1104480550209422). Front: Eddy Street. Its second way, 350 Turk Street (way/260142634,
+ * 41 m, also "Mosser Towers"), is not modelled here.
+ */
+function t4b60_260142631(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.9, 0.89, 0.86]
+  tower(out, fit, {
+    height: 41,
+    base: { height: 4, face: { kind: 'punched', wall: [0.84, 0.82, 0.78], glass: [0.22, 0.26, 0.3], pitch: 3.6, floor: 4, solid: 0.5, material: 'stucco' } },
+    tiers: [
+      { to: 0.55, face: { kind: 'bands', wall: WHITE, glass: [0.42, 0.5, 0.56], floor: 3.2, solid: 0.74, material: 'stucco' } },
+      { to: 1, inset: 2.5, face: { kind: 'bands', wall: WHITE, glass: [0.42, 0.5, 0.56], floor: 3.2, solid: 0.74, material: 'stucco' } },
+    ],
+    cornices: [{ at: 0.55, depth: 0.3, height: 0.4, colour: [0.62, 0.64, 0.66] }],
+    crown: { kind: 'parapet', height: 1, colour: WHITE, material: 'stucco' },
+  })
+}
+
+/**
+ * Way 32947055, 1000 Mason Street, the Brocklebank Apartments (1925, Weeks & Day; OSM 40 m, ten levels): a cream stucco
+ * block round an open court, punched windows with architraves, corbelled cornice bands at the floor lines, a
+ * stepped wing and a tiled hipped crown with turrets (Mapillary 401660938757216, 832156170997069). Front: Mason Street.
+ */
+function t4b61_32947055(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.84, 0.72]
+  tower(out, fit, {
+    height: 38,
+    base: { height: 3.5, face: { kind: 'punched', wall: [0.8, 0.75, 0.64], glass: [0.22, 0.25, 0.28], pitch: 3.4, floor: 3.5, solid: 0.6, material: 'stucco' } },
+    tiers: [
+      { to: 0.7, face: { kind: 'punched', wall: CREAM, glass: [0.24, 0.27, 0.3], pitch: 4, floor: 3.4, solid: 0.62, depth: 0.35, material: 'stucco' }, cornice: { depth: 0.5, height: 0.45, colour: [0.82, 0.76, 0.64] } },
+      { to: 1, inset: 2, face: { kind: 'punched', wall: CREAM, glass: [0.24, 0.27, 0.3], pitch: 4, floor: 3.4, solid: 0.62, depth: 0.35, material: 'stucco' } },
+    ],
+    crown: { kind: 'hip', height: 3.5, inset: 0.6, colour: [0.52, 0.3, 0.22], material: 'tile' },
+  })
+}
+
+/**
+ * Way 32947763, 815-875 Battery Street, KPIX TV (OSM 23 m, five storeys): a tan-grey stone block of about five
+ * storeys on a darker ground floor, deep horizontal rustication, tall windows with dark glass, a pedimented parapet
+ * carrying the station's name on the Battery front and a mast behind (Mapillary 3971769626468138, 471239961566786).
+ * Front: Battery Street.
+ */
+function t4b62_32947763(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.66, 0.61, 0.52]
+  tower(out, fit, {
+    height: 23,
+    base: { height: 4.5, face: { kind: 'punched', wall: [0.34, 0.32, 0.3], glass: [0.14, 0.16, 0.18], pitch: 4.5, floor: 4.5, solid: 0.45, material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: STONE, glass: [0.18, 0.2, 0.22], pitch: 4.5, floor: 4.1, solid: 0.5, depth: 0.5, material: 'ashlar' } }],
+    crown: { kind: 'parapet', height: 1.6, colour: STONE, material: 'ashlar' },
+  })
+  const ring = towerRing(fit), e = edgeAt(ring, edgeFacing(ring, 180))
+  signText(out, 'KPIX', e.mid.x + e.nx * 0.08, 21.6, e.mid.z + e.nz * 0.08, 1.1, [0.95, 0.95, 0.95], { heading: e.heading, lit: true })
+}
+
+/**
+ * Way 25759093, 795 Folsom Street (OSM 24 m, six levels above a ground floor): a white precast office block of seven
+ * storeys with a regular grid of arched recesses, each window a dark square inside a round-headed opening, and a
+ * recessed ground floor with a shop front of arched glass (Mapillary 1069169575285304, 1510932602941561). Front: Folsom
+ * Street.
+ */
+function t4b63_25759093(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.92, 0.92, 0.9]
+  tower(out, fit, {
+    height: 24,
+    base: { height: 4.5, face: { kind: 'punched', wall: WHITE, glass: [0.14, 0.16, 0.18], pitch: 3.2, floor: 4.5, solid: 0.4, depth: 0.5, arched: true, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: [0.14, 0.16, 0.18], pitch: 3.2, floor: 3.3, solid: 0.4, depth: 0.5, arched: true, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 1, colour: WHITE, material: 'concrete' },
+  })
+}
+
 export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   t4b1_156123224,
   t4b2_192328858,
@@ -875,4 +980,10 @@ export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t4b55_147689078,
   t4b56_35536720,
   t4b57_80296763,
+  t4b58_260155572,
+  t4b59_288648571,
+  t4b60_260142631,
+  t4b61_32947055,
+  t4b62_32947763,
+  t4b63_25759093,
 }

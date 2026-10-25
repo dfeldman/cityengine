@@ -65,12 +65,12 @@ Builders go in `src/render/landmarks/sf/downtown-t4.ts`, manifest entries in `pu
 | 55 | 151 | Union Square | `way/33617520` Ellis O'Farrell Garage · 25 m · reface<br>`way/941560578` CitizenM Union Square · 44 m · reface<br>`way/147689078` The Elevated Shops Building · 24 m · reface || done |
 | 56 | 150 | Union Square | `way/35536720` Fashion Institute of Design and Merchandising  · 38 m · reface || done |
 | 57 | 149 | SoMa by Market | `way/80296763` Academy of Art University - Game Development · 31 m · reface || done |
-| 58 | 147 | Tenderloin | `way/260155572` 201 Turk Street · 26 m · reface | |
-| 59 | 146 | SoMa by Market | `way/288648571` 2 Townsend Street · 36 m · reface | |
-| 60 | 146 | Tenderloin | `way/260142631` Mosser Towers · 41 m · reface | |
-| 61 | 146 | Nob Hill | `way/32947055` Brocklebank Apartments · 40 m · reface | |
-| 62 | 145 | FiDi | `way/32947763` KPIX TV · 23 m · reface | |
-| 63 | 142 | SoMa by Market | `way/25759093` 795 Folsom Street · 24 m · reface | |
+| 58 | 147 | Tenderloin | `way/260155572` 201 Turk Street · 26 m · reface || done |
+| 59 | 146 | SoMa by Market | `way/288648571` 2 Townsend Street · 36 m · reface || done |
+| 60 | 146 | Tenderloin | `way/260142631` Mosser Towers · 41 m · reface || done |
+| 61 | 146 | Nob Hill | `way/32947055` Brocklebank Apartments · 40 m · reface || done |
+| 62 | 145 | FiDi | `way/32947763` KPIX TV · 23 m · reface || done |
+| 63 | 142 | SoMa by Market | `way/25759093` 795 Folsom Street · 24 m · reface || done |
 | 64 | 140 | SoMa by Market | `way/939460954` (unnamed) · 28 m · generic | |
 | 65 | 140 | SoMa by Market | `way/1389915136` Folsom Street · 36 m · generic | |
 | 66 | 139 | SoMa by Market | `way/114709400` 77 Dow Place · 42 m · reface | |

@@ -55,17 +55,6 @@
   },
   {
     "osm": [
-      "way/32947055"
-    ],
-    "name": "Brocklebank Apartments",
-    "restyle": "sfapartment",
-    "height": 34,
-    "levels": 10,
-    "note": "Nob Hill apartment tower (Brocklebank, 1926): cream stucco with ornament and a balustraded garden wall (Mapillary) — 2026-10-04 (was rule 1: chinatown zone)",
-    "wall": "#ddd0b8"
-  },
-  {
-    "osm": [
       "way/944981401"
     ],
     "name": "Building 944981401",

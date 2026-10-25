@@ -1,6 +1,5 @@
 [
   
-  {"osm": ["way/25759093"], "name": "795 Folsom Street", "restyle": "bauhaus", "wall": "#eceae4", "accent": "#4c5560", "noShops": true, "note": "Photo pass (TALL-03): a white office, seven storeys of a regular punched window grid, a recessed ground floor."},
   {"osm": ["way/1185421909"], "name": "730 Stanyan Street", "restyle": "bauhaus", "wall": "#e4e4e0", "accent": "#5a6066", "noShops": true, "note": "Photo pass (TALL-03): 2023 affordable housing, white and grey panels, regular windows, eight storeys."},
   {"osm": ["way/1340831358"], "name": "Glass atrium, medical complex by Geary at Webster", "procedural": "glassAtrium_1340831358", "height": 20, "sign": false, "note": "BUGS.md #269 (owner screenshot 2026-10-16: a roof hanging in the air): OSM maps a glass skillion atrium roof (building:part, roof:material=glass, 5-20 m) over the courtyard; the city drew an opaque slab with nothing under it. districts/atria.ts."},
   {"osm": ["way/260924227"], "name": "100-108 Waverly Place", "restyle": "chinatown", "wall": "#2f8a55", "note": "Waverly Place (Commons photos, docs/shots/refs/notable/tin-how; owner #273): the painted row — each front its own bright colour."},
