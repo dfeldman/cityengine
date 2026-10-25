@@ -542,5 +542,5 @@
  {"osm": ["way/436484312"], "name": "Market at Fremont infill", "procedural": "marketFremontBronze", "height": 25, "sign": false, "front": 313, "note": "market-fidi.ts: bronze mirror-glass block over cream stone arcade ground floor; photos way-436484312-01 and -02; front on Market, unsure."},
  {"osm": ["way/256068384"], "name": "Building 256068384", "procedural": "commercialStoneTen", "height": 39, "sign": false, "front": 164, "note": "market-fidi.ts: cream stone office of about eleven storeys with setback top; photos way-256068384-01 and -02, unsure."},
  {"osm": ["way/256068383"], "name": "Building 256068383", "procedural": "commercialArchedStone1906", "height": 16, "sign": false, "front": 168, "note": "market-fidi.ts: 1906 stone classical block, arched ground floor, balustrade; photos way-256068383-01 and -03."},
- {"osm": ["way/256068367"], "name": "554;556 Commercial Street", "procedural": "commercialBuffBrick", "height": 11, "sign": false, "front": 177, "note": "market-fidi.ts: buff brick three-storey front with dark shopfront; photo way-256068367-01 only."}
+ {"osm": ["way/256067718"], "name": "231 Sansome Street", "procedural": "sansome231Brick", "height": 24, "sign": false, "front": 74, "note": "market-fidi.ts: red-brick seven-storey block with arched top windows and stone trim; photo way-256067718-01."}
 ]

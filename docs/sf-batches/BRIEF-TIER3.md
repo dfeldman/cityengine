@@ -44,6 +44,8 @@ Tokens are limited (the owner: "so as not to exhaust my allocation of tokens"). 
    osmium export <scratch>/bb.pbf -f geojson -a type,id -o <scratch>/b.geojson --overwrite
    ```
    Note heights and levels. OSM heights are sometimes wrong; believe the photographs.
+   If the outline is a `building:part` of a bigger building that already has a custom model (grep its parent's id in
+   `public/landmarks/san-francisco/*.json`), do NOT model it: skip it and say so (batch 54: a 4 m part of 300 Montgomery).
 2. **Photographs: check first, fetch only if missing.** Mapillary is throttled and the owner asked never to hammer
    it.
    - Use the cached frames in `tools/cache/appearance-r2/way-<id>/` (`*.jpg`, described in `photos.csv`: distance, and

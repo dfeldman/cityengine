@@ -2290,6 +2290,23 @@ export function commercialBuffBrick(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * 231 Sansome Street (way/256067718, OSM 24 m, built 1925). Photos -01 and -02 (Mapillary, cached). Photo -01 shows the
+ * red-brick block on the north side of the 7-Eleven, seven storeys with stone-trimmed windows and arched heads at the
+ * top floors; that is the facade modelled here. Front faces Sansome Street (bearing 74). Photo -02 is a neighbour's
+ * stone base and was not used.
+ */
+export function sansome231Brick(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.6, 0.3, 0.22], GLASS: Rgb = [0.2, 0.25, 0.28], TRIM: Rgb = [0.8, 0.77, 0.7], DARK: Rgb = [0.12, 0.12, 0.13]
+  tower(out, fit, {
+    height: 24,
+    base: { height: 3.6, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.4, floor: 3.6, solid: 0.4, material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: GLASS, pitch: 2.6, floor: 3.2, solid: 0.42, arched: true, material: 'brick' }, cornice: { depth: 0.6, height: 0.7, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 1.0, colour: TRIM, material: 'ashlar' },
+  })
+}
+
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -2374,4 +2391,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   pine333Stone, front222Brick,
   postCreamBeaux, kearnyCreamTall, kearnyCreamSix,
   marketFremontBronze, commercialStoneTen, commercialArchedStone1906, commercialBuffBrick,
+  sansome231Brick,
 }
