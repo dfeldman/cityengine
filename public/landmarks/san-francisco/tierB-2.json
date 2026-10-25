@@ -21,17 +21,6 @@
   },
   {
     "osm": [
-      "way/260517113"
-    ],
-    "name": "850 Powell Street",
-    "restyle": "classical",
-    "height": 37,
-    "levels": 12,
-    "note": "Rule check 2026-10-04 (Mapillary): cream ornamented stone with arched openings (Nob Hill); was rule 2 chinatown.",
-    "wall": "#e2d4b4"
-  },
-  {
-    "osm": [
       "way/35024322"
     ],
     "name": "Gaylord Suites",

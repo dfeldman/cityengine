@@ -11,7 +11,6 @@
   {"osm": ["way/426895503"], "restyle": "towerblock", "wall": "#f2f0ea", "trim": "#f0bb2e", "by": "haiku", "image": "way-426895503-02.jpg", "note": "white block with stacked balconies, yellow vertical bays and orange top"},
   {"osm": ["way/435831006"], "restyle": "towerblock", "wall": "#ece9e2", "groundWall": "#66635f", "by": "haiku", "image": "way-435831006-01.jpg", "note": "white tower with recessed balconies over dark corrugated concrete podium"},
   {"osm": ["way/35176122"], "restyle": "towerblock", "wall": "#eeece6", "groundWall": "#7d5d4b", "by": "haiku", "image": "way-35176122-02.jpg", "note": "white office block, regular dark square windows, brown shopfront band"},
-  {"osm": ["way/260519112"], "restyle": "brick", "wall": "#a0553f", "trim": "#e9e4d6", "by": "haiku", "image": "way-260519112-01.jpg", "note": "red-brown brick block, regular windows, cream cornice band"},
   {"osm": ["way/149167949"], "restyle": "brick", "wall": "#9b4a36", "by": "haiku", "image": "way-149167949-02.jpg", "note": "red brick block with a glazed top storey"},
   {"osm": ["way/256993578"], "restyle": "towerblock", "wall": "#dadbd6", "by": "haiku", "image": "way-256993578-01.jpg", "note": "grey-white nine-storey block, punched windows and small balconies, decorative corner crown"},
   {"osm": ["way/114711559"], "restyle": "skyscraper", "wall": "#3a3e44", "by": "haiku", "image": "way-114711559-01.jpg", "note": "six-storey dark glass curtain wall with thin frames, stone columns at base"},

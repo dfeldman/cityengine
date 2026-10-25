@@ -208,18 +208,6 @@
   },
   {
     "osm": [
-      "way/403167643"
-    ],
-    "name": "Chinese Hospital",
-    "height": 30,
-    "restyle": "bauhaus",
-    "wall": "#e0d9c8",
-    "accent": "#3a4f66",
-    "noShops": true,
-    "note": "845 Jackson (2016): cream panels, big windows, the bilingual sign over the door (Mapillary 2026-10-16; was a grey Haiku box)"
-  },
-  {
-    "osm": [
       "way/960975186"
     ],
     "name": "Noisebridge",

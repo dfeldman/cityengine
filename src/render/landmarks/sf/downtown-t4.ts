@@ -1430,6 +1430,92 @@ function t4b98_112774496(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * 850 Powell Street (way/260517113): a cream stucco block of about twelve storeys, its punched windows and bays in
+ * regular rows, a moulded cornice over the top, and a stone-faced ground floor. (Mapillary 1499912270358485, 1164159114081223.)
+ */
+function t4b100_260517113(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.88, 0.84, 0.74]
+  tower(out, fit, {
+    height: 37,
+    base: { height: 4, face: { kind: 'punched', wall: [0.8, 0.76, 0.66], material: 'stucco', glass: [0.2, 0.22, 0.25], pitch: 4, solid: 0.5, floor: 4 } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, material: 'concrete', glass: [0.25, 0.3, 0.35], pitch: 3.4, solid: 0.5, floor: 3.1 } }],
+    crown: { kind: 'parapet', height: 1.6, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/**
+ * 720-726 California Street (way/260519112), at Grant: a red-brown brick block of about nine storeys on a cream
+ * ground floor, its punched windows in regular rows and fire escapes on the front. (Mapillary 366418025047647, 382623453991404.)
+ */
+function t4b101_260519112(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.6, 0.33, 0.26]
+  tower(out, fit, {
+    height: 30,
+    base: { height: 4, face: { kind: 'punched', wall: [0.85, 0.8, 0.68], material: 'stucco', glass: [0.2, 0.24, 0.27], pitch: 3.6, solid: 0.5, floor: 4 } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, material: 'brick', glass: [0.22, 0.25, 0.28], pitch: 2.8, solid: 0.55, floor: 3.0 } }],
+    crown: { kind: 'parapet', height: 1.2, colour: [0.85, 0.8, 0.7], material: 'stucco' },
+  })
+}
+
+/**
+ * 274 Brannan Street (way/112775864): a grey-painted loft block of about seven storeys, large steel-sash windows in
+ * a grid, a dark grey garage base with a shopfront. (Mapillary 1734136077263546, 748790084671734.)
+ */
+function t4b102_112775864(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.72, 0.75, 0.77]
+  tower(out, fit, {
+    height: 24,
+    base: { height: 4, face: { kind: 'punched', wall: [0.36, 0.38, 0.41], material: 'concrete', glass: [0.14, 0.15, 0.17], pitch: 4, solid: 0.6, floor: 4 } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: GREY, material: 'concrete', glass: [0.3, 0.35, 0.4], pitch: 3.4, solid: 0.3, floor: 3.3 } }],
+    crown: { kind: 'parapet', height: 1.0, colour: GREY, material: 'concrete' },
+  })
+}
+
+/**
+ * 270 Brannan Street (way/113103851): a newer block of orange terracotta panels in bands between ribbon glass,
+ * a glazed ground floor behind a timber louvre canopy. OSM says 12 m; the photographs show more storeys, so drawn at 18 m.
+ * (Mapillary 1291789729158862, 1149926067156844.)
+ */
+function t4b102_113103851(out: MeshBuilder, fit: Fit): void {
+  const TERRA: Rgb = [0.74, 0.44, 0.28]
+  tower(out, fit, {
+    height: 18,
+    base: { height: 4.5, face: { kind: 'curtain', wall: [0.5, 0.5, 0.52], glass: [0.2, 0.26, 0.3], pitch: 3, floor: 4.5, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: TERRA, material: 'terracotta', glass: [0.22, 0.3, 0.34], floor: 3.4, solid: 0.6 } }],
+    crown: { kind: 'parapet', height: 0.8, colour: [0.6, 0.5, 0.42], material: 'terracotta' },
+  })
+}
+
+/**
+ * 50 Lansing Street (way/260323193): a dark grey block of about eight storeys with a white moulded cornice at the
+ * top. The one photograph is a close-up of the corner and cornice, so the rest is a guess: unsure.
+ * (Mapillary 2063491347787026.)
+ */
+function t4b103_260323193(out: MeshBuilder, fit: Fit): void {
+  const DARK: Rgb = [0.3, 0.31, 0.33]
+  tower(out, fit, {
+    height: 26,
+    base: { height: 4, face: { kind: 'punched', wall: [0.22, 0.23, 0.24], material: 'granite', glass: [0.15, 0.17, 0.2], pitch: 4, solid: 0.5, floor: 4 } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: DARK, material: 'concrete', glass: [0.18, 0.2, 0.24], pitch: 3, solid: 0.55, floor: 3.2 } }],
+    crown: { kind: 'parapet', height: 1.4, colour: [0.85, 0.85, 0.82], material: 'stucco' },
+  })
+}
+
+/**
+ * Chinese Hospital (way/403167643), 845 Jackson Street: a cream panelled hospital block of about eight storeys, its
+ * ground floor a dark driveway under the name in capitals, with a glass-faced side. (Mapillary 1154158446563069, 1799347174353938.)
+ */
+function t4b104_403167643(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.85, 0.81, 0.72]
+  tower(out, fit, {
+    height: 30,
+    base: { height: 5, face: { kind: 'punched', wall: [0.86, 0.82, 0.73], material: 'concrete', glass: [0.2, 0.22, 0.25], pitch: 4, solid: 0.5, floor: 5 } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, material: 'concrete', glass: [0.2, 0.24, 0.28], pitch: 3.4, solid: 0.6, floor: 3.5 } }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'stucco' },
+  })
+}
+
 export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   t4b1_156123224,
   t4b2_192328858,
@@ -1531,4 +1617,10 @@ export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t4b96_149930902,
   t4b97_80296754,
   t4b98_112774496,
+  t4b100_260517113,
+  t4b101_260519112,
+  t4b102_112775864,
+  t4b102_113103851,
+  t4b103_260323193,
+  t4b104_403167643,
 }

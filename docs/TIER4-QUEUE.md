@@ -106,12 +106,12 @@ Builders go in `src/render/landmarks/sf/downtown-t4.ts`, manifest entries in `pu
 | 96 | 119 | Nob Hill | `way/149930902` 1000 Sutter Street · 32 m · generic || done |
 | 97 | 118 | SoMa by Market | `way/80296754` SFMOMA Garage · 26 m · reface || done |
 | 98 | 117 | SoMa by Market | `way/112774496` 600 Folsom Street · 32 m · generic || done |
-| 99 | 115 | SoMa by Market | `way/4023969` (unnamed) · 21 m · generic | |
-| 100 | 115 | Chinatown | `way/260517113` 850 Powell Street · 37 m · reface | |
-| 101 | 115 | Chinatown | `way/260519112` 720;726 California Street · 30 m · reface | |
-| 102 | 114 | SoMa by Market | `way/112775864` 274 Brannan Street · 24 m · reface<br>`way/113103851` 270 Brannan Street · 12 m · generic | |
-| 103 | 114 | SoMa by Market | `way/260323193` 50 Lansing Street · 26 m · generic | |
-| 104 | 114 | Chinatown | `way/403167643` Chinese Hospital · 30 m · reface | |
+| 99 | 115 | SoMa by Market | `way/4023969` (unnamed) · 21 m · generic || done |
+| 100 | 115 | Chinatown | `way/260517113` 850 Powell Street · 37 m · reface || done |
+| 101 | 115 | Chinatown | `way/260519112` 720;726 California Street · 30 m · reface || done |
+| 102 | 114 | SoMa by Market | `way/112775864` 274 Brannan Street · 24 m · reface<br>`way/113103851` 270 Brannan Street · 12 m · generic || done |
+| 103 | 114 | SoMa by Market | `way/260323193` 50 Lansing Street · 26 m · generic || done |
+| 104 | 114 | Chinatown | `way/403167643` Chinese Hospital · 30 m · reface || done |
 | 105 | 113 | Civic Center | `way/35176282` 150 Hayes Street · 24 m · generic | |
 | 106 | 111 | Union Square | `way/147689076` (unnamed) · 30 m · reface | |
 | 107 | 110 | Tenderloin | `way/260126021` O'Farrell Towers · 36 m · reface | |
