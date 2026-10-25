@@ -84,9 +84,9 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 72 | 68 | `way/256067704` 130 Battery Street · 25 m · generic || done (photo-less outlines skipped) |
 | 73 | 65 | `way/148741782` (unnamed) · 10 m · generic<br>`way/148741781` 318;320;322 Kearny Street · 8 m · generic<br>`way/148741771` 334;336 Kearny Street · 13 m · generic || done (with 72; photo-less outlines skipped) |
 | 74 | 65 | `way/151683978` 325;327;329 Kearny Street · 13 m · generic<br>`way/151683980` 321;323 Kearny Street · 13 m · generic<br>`way/151683981` 315;319 Kearny Street · 13 m · generic || done (with 72; photo-less outlines skipped) |
-| 75 | 65 | `way/260280335` 227;229;231 Kearny Street · 13 m · generic<br>`way/1020483120` (unnamed) · ? · generic<br>`way/260280330` (unnamed) · 26 m · reface classical | |
-| 76 | 65 | `way/260924237` 671;677 Clay Street · 13 m · generic<br>`way/260924229` 670;674 Commercial Street · 12 m · generic<br>`way/260925350` 681;683;687 Commercial Street · ? · generic | |
-| 77 | 65 | `way/260925351` 610;612 Kearny Street · ? · generic<br>`way/260925343` 685 Commercial Street · ? · generic<br>`way/260925338` (unnamed) · ? · generic | |
+| 75 | 65 | `way/260280335` 227;229;231 Kearny Street · 13 m · generic<br>`way/1020483120` (unnamed) · ? · generic<br>`way/260280330` (unnamed) · 26 m · reface classical || done (photo-less outlines skipped) |
+| 76 | 65 | `way/260924237` 671;677 Clay Street · 13 m · generic<br>`way/260924229` 670;674 Commercial Street · 12 m · generic<br>`way/260925350` 681;683;687 Commercial Street · ? · generic || done (with 75; photo-less outlines skipped) |
+| 77 | 65 | `way/260925351` 610;612 Kearny Street · ? · generic<br>`way/260925343` 685 Commercial Street · ? · generic<br>`way/260925338` (unnamed) · ? · generic || done (with 75; photo-less outlines skipped) |
 | 78 | 63 | `way/260924236` 689 Clay Street · ? · generic<br>`way/260924239` (unnamed) · ? · generic<br>`way/260924235` 683;685 Clay Street · ? · generic | |
 | 79 | 63 | `way/260282397` 140;142 Sansome Street · 28 m · generic | |
 | 80 | 62 | `way/256068374` 563;565 Clay Street · 9 m · generic | |

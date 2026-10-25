@@ -2814,6 +2814,84 @@ export function kearny315Taupe(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * 227-231 Kearny Street (way/260280335, OSM 13 m, 138 m², 1908). Photos -01 and -02: a cream painted block of
+ * about four storeys, arched window heads, a dentilled cornice, a tan brick bay with a corbelled top beside it,
+ * a glazed shopfront. Front faces Kearny Street (bearing 75).
+ */
+export function kearny227Arched(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.88, 0.82], TAN: Rgb = [0.72, 0.6, 0.42], DARK: Rgb = [0.14, 0.12, 0.11], GLASS: Rgb = [0.22, 0.24, 0.26], TRIM: Rgb = [0.84, 0.8, 0.72]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.2, floor: 4, solid: 0.4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 2.8, floor: 3.1, solid: 0.55, arched: true, material: 'stucco' }, cornice: { depth: 0.6, height: 0.7, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 1, colour: TAN, material: 'stucco' },
+  })
+}
+
+/**
+ * The unnamed grey stone block at Sutter and Kearny (way/260280330, OSM 26 m, 240 m²). Photos
+ * -01 and -02: a grey-stone block of about seven storeys, tall pilasters between vertical window bays, a deep
+ * cornice, a wide glazed ground floor under a slim canopy. Front faces Sutter Street (bearing 180); the entrance
+ * side is not certain.
+ */
+export function sutterStoneGrey(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.66, 0.67, 0.68], GLASS: Rgb = [0.2, 0.24, 0.27], TRIM: Rgb = [0.76, 0.77, 0.77]
+  tower(out, fit, {
+    height: 26,
+    base: { height: 5, face: { kind: 'curtain', wall: TRIM, glass: GLASS, pitch: 3, floor: 5, material: 'metal' } },
+    tiers: [
+      { to: 1, face: { kind: 'bays', wall: GREY, glass: GLASS, pitch: 3.4, floor: 3.4, material: 'granite' }, cornice: { depth: 0.6, height: 0.8, colour: TRIM } },
+    ],
+    crown: { kind: 'parapet', height: 1.2, colour: TRIM, material: 'granite' },
+  })
+}
+
+/**
+ * 671-677 Clay Street (way/260924237, OSM 13 m, 140 m², 1907). Photo -01: a white painted block of about four
+ * storeys with arched window heads and an iron fire escape, over a dark grille-shuttered ground floor. Front
+ * faces Clay Street (bearing 0).
+ */
+export function clay671White(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.84, 0.86, 0.88], DARK: Rgb = [0.1, 0.1, 0.11], GLASS: Rgb = [0.2, 0.22, 0.24], TRIM: Rgb = [0.9, 0.9, 0.9]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.2, floor: 4, solid: 0.5, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: GLASS, pitch: 2.8, floor: 3.1, solid: 0.6, arched: true, material: 'stucco' }, cornice: { depth: 0.5, height: 0.6, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 0.8, colour: TRIM, material: 'stucco' },
+  })
+}
+
+/**
+ * 681-687 Commercial Street (way/260925350, OSM height unknown, 131 m², 1908). Photo -01: a low grey stucco block
+ * of two storeys with a flat parapet, a blue striped awning and a red-framed shopfront at the corner; a yellow
+ * brick wall rises behind. Front faces Commercial Street (bearing 347).
+ */
+export function commercial685Grey(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.62, 0.63, 0.63], GLASS: Rgb = [0.22, 0.25, 0.27], DARK: Rgb = [0.14, 0.14, 0.15]
+  tower(out, fit, {
+    height: 7,
+    base: { height: 3, face: { kind: 'punched', wall: GREY, glass: GLASS, pitch: 3.6, floor: 3, solid: 0.4, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'blank', wall: GREY, material: 'concrete' }, cornice: { depth: 0.3, height: 0.4, colour: DARK } }],
+    crown: { kind: 'parapet', height: 0.5, colour: GREY, material: 'concrete' },
+  })
+}
+
+/**
+ * 610-612 Kearny Street (way/260925351, OSM 16 m, 160 m², 1908). Photos -01: a low classical front with a
+ * pedimented parapet carrying a date panel, a long dentilled cornice and a glazed shopfront under a red sign
+ * band. Front faces Kearny Street (bearing 251). Height taken from the photographs (about 10 m), not OSM.
+ */
+export function kearny610Pediment(out: MeshBuilder, fit: Fit): void {
+  const BUFF: Rgb = [0.78, 0.72, 0.62], GLASS: Rgb = [0.3, 0.52, 0.52], RED: Rgb = [0.5, 0.12, 0.12], TRIM: Rgb = [0.86, 0.82, 0.74]
+  tower(out, fit, {
+    height: 10,
+    base: { height: 4, face: { kind: 'punched', wall: RED, glass: GLASS, pitch: 3.4, floor: 4, solid: 0.3, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BUFF, glass: GLASS, pitch: 3, floor: 3, solid: 0.5, material: 'stucco' }, cornice: { depth: 0.8, height: 0.9, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 1.4, colour: TRIM, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -2911,4 +2989,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   columbus42Cream, montgomeryCreamArched, stevensonGreyPanel, stevenson55Brick,
   jacksonBatteryGrey, jackson350Brick,
   battery130Granite, kearny318White, kearny334Cream, kearny325Buff, kearny321Grey, kearny315Taupe,
+  kearny227Arched, sutterStoneGrey, clay671White, commercial685Grey, kearny610Pediment,
 }
