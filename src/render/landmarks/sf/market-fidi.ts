@@ -1666,6 +1666,30 @@ export function market941560580(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** 576-580 MARKET (way/148712645, 25 m): a cream-tan Beaux-Arts block, dark shopfronts and an arched entrance at street
+ * level under a stone band, punched windows and a heavy cornice over the lower floors, a plain parapet (Mapillary frames 01 and 02). */
+export function market576(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.78, 0.7, 0.58], DARK: Rgb = [0.18, 0.18, 0.19], GLASS: Rgb = [0.2, 0.24, 0.28]
+  tower(out, fit, {
+    height: 25,
+    base: { height: 5, face: { kind: 'curtain', wall: DARK, glass: GLASS, pitch: 3, floor: 5, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: [0.22, 0.26, 0.3], pitch: 3.2, floor: 3.2, solid: 0.5, material: 'ashlar' }, cornice: { depth: 0.7, height: 0.9, colour: TAN } }],
+    crown: { kind: 'parapet', height: 1.2, colour: TAN, material: 'ashlar' },
+  })
+}
+
+/** 572 MARKET (way/148712646, 11 m): a three-storey cream block over a black glazed shopfront, BAY FOOD MINI MARKET on
+ * the fascia, a stone cornice band and fire escapes on the upper floors (Mapillary frames 01 and 02). */
+export function market148712646(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.84, 0.8, 0.7], BLACK: Rgb = [0.1, 0.1, 0.11], GLASS: Rgb = [0.2, 0.24, 0.28]
+  tower(out, fit, {
+    height: 11,
+    base: { height: 3.5, face: { kind: 'curtain', wall: BLACK, glass: GLASS, pitch: 3, floor: 3.5, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.22, 0.26, 0.3], pitch: 3.2, floor: 3.6, solid: 0.5, material: 'ashlar' }, cornice: { depth: 0.5, height: 0.6, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 0.6, colour: CREAM, material: 'ashlar' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1735,4 +1759,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   market1039, market1049, market1055,
   market650, market944, market934,
   marketEllis35174751, market941560580,
+  market576, market148712646,
 }

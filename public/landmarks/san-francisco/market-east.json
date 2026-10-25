@@ -368,15 +368,6 @@
  },
  {
   "osm": [
-   "way/148712645"
-  ],
-  "name": "576-580 Market Street",
-  "restyle": "chicago",
-  "levels": 7,
-  "note": "Its neighbour, same run of early commercial blocks."
- },
- {
-  "osm": [
    "way/148712642"
   ],
   "name": "554 Market Street",
@@ -404,14 +395,6 @@
    "way/148712649"
   ],
   "name": "566 Market Street",
-  "restyle": "chicago",
-  "levels": 3
- },
- {
-  "osm": [
-   "way/148712646"
-  ],
-  "name": "572 Market Street",
   "restyle": "chicago",
   "levels": 3
  },
