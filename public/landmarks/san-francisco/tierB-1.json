@@ -32,15 +32,6 @@
   },
   {
     "osm": [
-      "way/32859888"
-    ],
-    "name": "Building 32859888",
-    "restyle": "chicago",
-    "height": 40,
-    "note": "rule 8: chicago"
-  },
-  {
-    "osm": [
       "way/397182870"
     ],
     "name": "1401;1415 Mission Street",

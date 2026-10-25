@@ -1297,6 +1297,42 @@ export function clay643(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** Pine and Battery (Tier 3 batch 15): tan stone corner block over a black shopfront base, south side of Pine. */
+export function pine260282395(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.78, 0.7, 0.58]
+  const BLACK: Rgb = [0.12, 0.12, 0.13]
+  const CREAM: Rgb = [0.9, 0.86, 0.76]
+  tower(out, fit, {
+    height: 25,
+    base: { height: 6, face: { kind: 'punched', wall: BLACK, glass: [0.2, 0.22, 0.25], pitch: 3.5, floor: 3, solid: 0.6, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: [0.2, 0.22, 0.24], pitch: 3, floor: 3.2, solid: 0.45, material: 'ashlar' }, cornice: { depth: 0.9, height: 1.1, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'ashlar' },
+  })
+}
+
+/** Pine (Tier 3 batch 15): buff stone block with tall many-paned windows, north side of Pine. */
+export function pine32859888(out: MeshBuilder, fit: Fit): void {
+  const BUFF: Rgb = [0.82, 0.74, 0.6]
+  const CREAM: Rgb = [0.92, 0.88, 0.8]
+  tower(out, fit, {
+    height: 40,
+    base: { height: 4.5, face: { kind: 'blank', wall: CREAM, material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BUFF, glass: [0.26, 0.3, 0.32], pitch: 3.2, floor: 4, solid: 0.3, material: 'ashlar' }, cornice: { depth: 0.8, height: 1, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'ashlar' },
+  })
+}
+
+/** 77 Battery Street (Tier 3 batch 15): cream stone block with arched upper windows and a granite entrance base. */
+export function battery77(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.84, 0.82, 0.76]
+  tower(out, fit, {
+    height: 22,
+    base: { height: 4, face: { kind: 'blank', wall: [0.2, 0.2, 0.2], material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.22, 0.25, 0.28], pitch: 3, floor: 3.4, solid: 0.5, arched: true, material: 'stucco' }, cornice: { depth: 0.8, height: 1, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 1.5, colour: CREAM, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1356,4 +1392,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   elim16, jessie40,
   kearny200, sutter154, kearny215,
   clay256072716, clay643,
+  pine260282395, pine32859888, battery77,
 }
