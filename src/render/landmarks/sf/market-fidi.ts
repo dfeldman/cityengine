@@ -7,7 +7,8 @@
 import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
 import { tower, towerRing, type Face } from '../tower.ts'
-import { colonnade, edgeAt } from '../parts.ts'
+import { boxAlong, colonnade, edgeAt, signText } from '../parts.ts'
+import { surfaceTag } from '../../cartoon-material.ts'
 import type { Rgb } from '../../models.ts'
 
 // ---------------------------------------------------------------- Stevenson Place, 71 Stevenson (1980s; way/149840694)
@@ -607,17 +608,70 @@ export function yullyBuilding(out: MeshBuilder, fit: Fit): void {
   })
 }
 
-/** 1017–1019 MARKET: a seven-storey Edwardian hotel block in red brick over a shopfront, a stone band at the base and a stone cornice under the parapet (Mapillary pB0, the brick block with fire escapes). */
+/**
+ * 1017–1019 MARKET, the EASTERN OUTFITTING COMPANY building (1909): a furniture store's temple front, the one
+ * unmistakable thing on this block. Redrawn 2026-10-25 (owner: "this distinctive green one with white columns", from
+ * Apple's 3-D view of the block) — the first version drew a red-brick hotel, from a Mapillary frame (pB0) that showed
+ * its neighbour with the fire escapes instead.
+ *
+ * Over a dark shopfront, TWO COLOSSAL CORINTHIAN COLUMNS stand proud of a white stone front, a fifth of the way in from
+ * each side, and between them the whole height of the front is ONE GREAT WINDOW: green-tinted glass in a dark green grid
+ * of mullions and transoms, five panes across and six up. Over it a deep plain entablature lettered FURNITURE, a heavy
+ * cornice, and a plain parapet. The sides and back are party walls and a plain white box.
+ *
+ * The manifest gives `front: 313` (Market's side of the block, from the footprint), so local −z faces Market — not
+ * `'street'`, which found Stevenson Street: the building runs through the block, and its back is as near a street.
+ */
 export function market1017(out: MeshBuilder, fit: Fit): void {
-  const BRICK: Rgb = [0.6, 0.36, 0.26]
-  const STONE: Rgb = [0.84, 0.8, 0.7]
+  const STONE: Rgb = [0.9, 0.89, 0.85]
+  const SHADE: Rgb = [0.78, 0.77, 0.73]
+  const GLASS: Rgb = [0.42, 0.55, 0.49]
+  const FRAME: Rgb = [0.13, 0.27, 0.2]
+  const G = Math.max(0, fit.grade ?? 0)
+  const H = 27
+  const BASE = 4.6, WIN0 = 5.6, WIN1 = 20.2, ENT0 = 20.6, ENT1 = 23.2
   tower(out, fit, {
-    height: 27,
-    base: { height: 4.5, face: { kind: 'curtain', wall: [0.18, 0.18, 0.18], glass: [0.16, 0.18, 0.2], pitch: 3, floor: 4.5, material: 'metal' } },
-    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: [0.2, 0.23, 0.27], floor: 3.6, pitch: 3, solid: 0.6, material: 'brick' } }],
-    cornices: [{ at: 4.5, depth: 0.35, colour: STONE }, { at: 24.3, depth: 0.5, colour: STONE }],
-    crown: { kind: 'parapet', height: 1.2, colour: STONE, material: 'ashlar' },
+    height: H,
+    base: { height: BASE, face: { kind: 'curtain', wall: [0.16, 0.16, 0.17], glass: [0.15, 0.17, 0.19], pitch: 3, floor: BASE, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'blank', wall: STONE, material: 'ashlar' } }],
+    cornices: [{ at: ENT1, depth: 1.2, height: 0.7, colour: STONE }],
+    crown: { kind: 'parapet', height: 1.4, colour: STONE, material: 'ashlar' },
   })
+  const ring = towerRing(fit)
+  // the street front: the longest edge facing most nearly −z
+  let k = 0, best = -Infinity
+  for (let i = 0; i < ring.length; i++) {
+    const e = edgeAt(ring, i)
+    const d = -e.nz * Math.min(1, e.L / 8)
+    if (d > best) { best = d; k = i }
+  }
+  const e = edgeAt(ring, k)
+  const at = (u: number, out_: number): { x: number; z: number } => ({ x: e.a.x + e.tx * u + e.nx * out_, z: e.a.z + e.tz * u + e.nz * out_ })
+  const L = e.L
+  // the great window between the columns: the glass, then its grid standing on it
+  const w0 = 0.29 * L, w1 = 0.71 * L, wm = (w0 + w1) / 2, ww = w1 - w0
+  {
+    const c = at(wm, 0.06)
+    boxAlong(out, c.x, G + (WIN0 + WIN1) / 2, c.z, ww / 2, (WIN1 - WIN0) / 2, 0.05, e.heading, GLASS, surfaceTag('glass'))
+  }
+  const fr = surfaceTag('metal')
+  for (let i = 0; i <= 5; i++) {
+    const c = at(w0 + (i / 5) * ww, 0.16)
+    boxAlong(out, c.x, G + (WIN0 + WIN1) / 2, c.z, i === 0 || i === 5 ? 0.22 : 0.12, (WIN1 - WIN0) / 2, 0.08, e.heading, FRAME, fr)
+  }
+  for (let j = 0; j <= 6; j++) {
+    const c = at(wm, 0.17)
+    boxAlong(out, c.x, G + WIN0 + (j / 6) * (WIN1 - WIN0), c.z, ww / 2, j === 0 || j === 6 ? 0.22 : 0.11, 0.08, e.heading, FRAME, fr)
+  }
+  // a sill under it, standing out
+  { const c = at(wm, 0.35); boxAlong(out, c.x, G + WIN0 - 0.35, c.z, ww / 2 + 0.6, 0.25, 0.35, e.heading, SHADE, surfaceTag('ashlar')) }
+  // the two colossal columns, a fifth of the way in from each side (`colonnade` sets n columns at (i + ½)/n of its run,
+  // so a run from −0.1 L to 1.1 L puts two at 0.2 L and 0.8 L); their own entablature is drawn below, across the front
+  colonnade(out, at(-0.1 * L, 0), at(1.1 * L, 0), G + BASE + 0.2, ENT0 - BASE - 0.4, 2,
+    { order: 'corinthian', colour: STONE, material: 'ashlar', radius: Math.min(1.05, L * 0.065), out: 1.1, entablature: 0.01, flutes: true })
+  // the entablature across the whole front, lettered FURNITURE
+  { const c = at(L / 2, 0.45); boxAlong(out, c.x, G + (ENT0 + ENT1) / 2, c.z, L / 2, (ENT1 - ENT0) / 2, 0.45, e.heading, STONE, surfaceTag('ashlar')) }
+  { const c = at(L / 2, 0.92); signText(out, 'FURNITURE', c.x, G + ENT0 + (ENT1 - ENT0) * 0.4, c.z, 1.0, [0.36, 0.36, 0.34], { heading: e.heading }) }
 }
 
 /** 1075 MARKET: an eight-storey grey panel-clad loft (Mapillary pB1): a grey shaft over a shopfront, its top two floors set back behind a parapet. */

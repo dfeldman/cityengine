@@ -303,11 +303,12 @@
   "osm": [
    "way/136100940"
   ],
-  "name": "1017 Market Street",
+  "name": "1017 Market Street (Eastern Outfitting Company)",
   "procedural": "market1017",
+  "front": 313,
   "height": 27,
   "sign": false,
-  "note": "market-fidi.ts: 1017-1019 Market, a seven-storey Edwardian hotel block in red brick with a stone band and cornice, shopfront base; Mapillary frame pB0 (the brick block with fire escapes); frame pA0/pA1 did not show it clearly."
+  "note": "market-fidi.ts: the Eastern Outfitting Company building (1909): two colossal Corinthian columns and one great green-framed window over a shopfront, FURNITURE on the entablature. Redrawn 2026-10-25 from the owner's Apple Maps 3-D view; the first version drew the brick neighbour (Mapillary pB0)."
  },
  {
   "osm": [
