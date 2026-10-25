@@ -1876,6 +1876,68 @@ export function market1390(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** Index of the ring edge that faces local −z (the front, once the manifest bearing turns it). */
+const frontEdgeIndex = (ring: { x: number; z: number }[]): number => {
+  let best = 0, bestNz = Infinity
+  for (let i = 0; i < ring.length; i++) { const e = edgeAt(ring, i); if (e.nz < bestNz) { bestNz = e.nz; best = i } }
+  return best
+}
+
+/** 980 Market, Crazy Horse Gentlemen's Club (way/256049055, batch 38): a narrow two-storey front painted oxblood red,
+ *  a black shuttered ground floor with a marquee sign, and a stepped Deco parapet rising in the middle (Mapillary frames 01 and 02). */
+export function crazyHorse980Market(out: MeshBuilder, fit: Fit): void {
+  const OXBLOOD: Rgb = [0.3, 0.08, 0.09], BLACK: Rgb = [0.1, 0.09, 0.09]
+  tower(out, fit, {
+    height: 8,
+    base: { height: 3, face: { kind: 'blank', wall: BLACK, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'blank', wall: OXBLOOD, material: 'stucco' } }],
+    crown: { kind: 'stepped', steps: 2, height: 1.2, inset: 0.9, material: 'stucco' },
+  })
+}
+
+/** 925 Market (way/173725095, batch 38): a cream stucco front with a moulded dentil cornice over two upper floors of
+ *  large windows, and a recessed glazed shopfront (THE MELT). Its neighbour to the east is the dark stepped block (Mapillary frames 01 and 02). */
+export function market925(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.88, 0.86, 0.8], DARK: Rgb = [0.16, 0.18, 0.2]
+  tower(out, fit, {
+    height: 10,
+    base: { height: 3.6, face: { kind: 'punched', wall: CREAM, glass: DARK, pitch: 3.6, floor: 3.6, solid: 0.2, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.3, 0.32, 0.34], pitch: 3.2, floor: 3.2, solid: 0.5, material: 'stucco' }, cornice: { depth: 0.5, height: 0.6, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 0.9, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** 1201 Market (way/35176266, batch 38): a one-storey Moderne pavilion of white stucco with a row of fluted columns along
+ *  its front, a dark blue tiled fascia over them and dark glass behind (Mapillary frames 01 and 02). */
+export function market1201(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.9, 0.9, 0.87], BLUE: Rgb = [0.12, 0.25, 0.5], DARK: Rgb = [0.1, 0.1, 0.12]
+  tower(out, fit, {
+    height: 8,
+    base: { height: 6.2, face: { kind: 'blank', wall: DARK, material: 'glass' } },
+    tiers: [{ to: 1, face: { kind: 'blank', wall: WHITE, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 0.4, colour: WHITE, material: 'stucco' },
+  })
+  const ring = towerRing(fit), e = edgeAt(ring, frontEdgeIndex(ring))
+  // the blue fascia along the front, and six fluted columns standing proud of the glass
+  boxAlong(out, e.mid.x + e.nx * 0.3, 6.9, e.mid.z + e.nz * 0.3, e.L / 2, 0.6, 0.15, e.heading, BLUE, 0)
+  for (let k = 0; k < 6; k++) {
+    const t = (k + 0.5) / 6, x = e.a.x + e.tx * e.L * t + e.nx * 0.35, z = e.a.z + e.tz * e.L * t + e.nz * 0.35
+    boxAlong(out, x, 3.1, z, 0.25, 3.1, 0.25, e.heading, WHITE, surfaceTag('stucco'))
+  }
+}
+
+/** 1200 Market, the Marye Building (way/35112006, batch 38): a two-storey tan brick corner block, paired windows with
+ *  stone sills under a corbelled cornice, and a dark green painted ground floor (Mapillary frames 01 and 02). */
+export function market1200(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.72, 0.58, 0.4], GREEN: Rgb = [0.1, 0.22, 0.2], CREAM: Rgb = [0.82, 0.78, 0.68]
+  tower(out, fit, {
+    height: 11,
+    base: { height: 3.4, face: { kind: 'punched', wall: GREEN, glass: [0.12, 0.16, 0.16], pitch: 3.4, floor: 3.4, solid: 0.3, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: [0.18, 0.2, 0.22], pitch: 3, floor: 3.6, solid: 0.6, material: 'brick' }, cornice: { depth: 0.5, height: 0.7, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 0.8, colour: TAN, material: 'brick' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -1952,4 +2014,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   market1242, market1234, market1220,
   market923, market256037012, market931, market969,
   market1089, market1123, market1390,
+  crazyHorse980Market, market925, market1201, market1200,
 }

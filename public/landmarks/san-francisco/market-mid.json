@@ -263,24 +263,6 @@
  },
  {
   "osm": [
-   "way/173725095"
-  ],
-  "name": "925 Market Street",
-  "restyle": "brick",
-  "note": "Low brick block.",
-  "levels": 4
- },
- {
-  "osm": [
-   "way/256049055"
-  ],
-  "name": "980 Market Street",
-  "restyle": "brick",
-  "note": "Two-storey retail front.",
-  "levels": 2
- },
- {
-  "osm": [
    "way/332516647"
   ],
   "name": "993 Market Street",

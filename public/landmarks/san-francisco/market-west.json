@@ -34,8 +34,6 @@
   {"osm": ["way/417216803"], "name": "Market at Jones shopfront", "restyle": "brick", "levels": 1, "note": "Single-storey shopfront."},
   {"osm": ["way/255960461"], "name": "Strand Theatre", "procedural": "strandTheatre", "front": "street", "height": 16, "note": "A.C.T.'s theatre at 1127 Market: red-painted 4-storey front, shopfront base, marquee and blade (rebuild-e15.ts, from docs/shots/refs/sf-mapillary)."},
   {"osm": ["way/403951329"], "name": "City College of San Francisco Civic Center", "procedural": "ccsfCivicCenter", "front": "street", "levels": 6, "note": "Hand-modelled 2026-09-24 (owner: 'ugly, but unique with a curved corner and arcades'): pale concrete, one rounded corner rising into an open roof-line loggia, ground-floor arched openings (Mapillary way-403951329-01/02/03.jpg). Was restyle 'bauhaus'."},
-  {"osm": ["way/35176266"], "name": "1201 Market Street", "restyle": "brick", "levels": 2, "note": "Two-storey shopfront."},
-  {"osm": ["way/35112006"], "name": "1200 Market Street", "restyle": "brick", "levels": 3, "note": "Brick shopfront block."},
   {"osm": ["way/103538672"], "name": "1455 Market Street podium outline", "restyle": "brutalist", "levels": 6, "note": "The low block round the tower (OSM keeps the outline as well as the parts)."},
   {"osm": ["way/172111606"], "name": "1500 Market Street", "restyle": "brick", "levels": 3, "note": "Brick block."},
   {"osm": ["way/172111612"], "name": "1540 Market Street", "restyle": "brick", "levels": 4, "note": "Brick block."},

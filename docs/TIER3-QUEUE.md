@@ -47,10 +47,10 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 35 | 124 | `way/1288526233` (unnamed) · 7 m · reface brick || done (with 34) |
 | 36 | 123 | `way/149332500` 711 Market Street · 11 m · reface brick<br>`way/149332499` 721 Market Street · ? · reface chicago | |
 | 37 | 121 | `way/256035263` 1089 Market Street · 8 m · reface brick || done (with 34) |
-| 38 | 119 | `way/256049055` Crazy Horse Gentlemen's Club — 980 Market Stre · 8 m · reface brick | |
-| 39 | 119 | `way/35176266` 1201 Market Street · 8 m · reface brick | |
-| 40 | 119 | `way/173725095` 925 Market Street · 13 m · reface brick | |
-| 41 | 118 | `way/35112006` 1200 Market Street · 11 m · reface brick | |
+| 38 | 119 | `way/256049055` Crazy Horse Gentlemen's Club — 980 Market Stre · 8 m · reface brick || done |
+| 39 | 119 | `way/35176266` 1201 Market Street · 8 m · reface brick || done (with 38) |
+| 40 | 119 | `way/173725095` 925 Market Street · 13 m · reface brick || done (with 38) |
+| 41 | 118 | `way/35112006` 1200 Market Street · 11 m · reface brick || done (with 38) |
 | 42 | 113 | `way/148712647` (unnamed) · 14 m · reface chicago<br>`way/148712642` (unnamed) · 15 m · reface chicago<br>`way/148712643` (unnamed) · 10 m · reface chicago | |
 | 43 | 106 | `way/941650784` (unnamed) · ? · generic | |
 | 44 | 105 | `way/332516647` 993 Market Street · 4 m · reface brick | |
