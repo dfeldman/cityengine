@@ -186,18 +186,6 @@
   },
   {
     "osm": [
-      "way/135174116"
-    ],
-    "name": "Hotel Triton",
-    "height": 24,
-    "restyle": "tenement",
-    "wall": "#b8a38a",
-    "levels": 7,
-    "noShops": true,
-    "note": "1913 seven-storey hotel at Grant & Bush, fire escapes (2026-10-16 from Mapillary; was a Haiku office-box recipe built without a photograph)"
-  },
-  {
-    "osm": [
       "way/171178110"
     ],
     "name": "Hotel Union",

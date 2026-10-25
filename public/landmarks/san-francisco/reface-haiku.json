@@ -88,18 +88,6 @@
   },
   {
     "osm": [
-      "way/35174714"
-    ],
-    "name": "1360 Mission Street",
-    "restyle": "towerblock",
-    "wall": "#E8D9C8",
-    "by": "haiku",
-    "image": "way-35174714-2.jpg",
-    "note": "pale rendered building with regular individual window grid, not glass skin. OSM bulk-tagged the block 55 m. 2026-10-21: DataSF 2010 LiDAR median 18.1 m (Assessor four storeys, 1930)",
-    "height": 18
-  },
-  {
-    "osm": [
       "way/35174715"
     ],
     "name": "1366;1370;1372 Mission Street",
@@ -108,18 +96,6 @@
     "by": "haiku",
     "image": "way-35174715-2.jpg",
     "note": "pale rendered facade with individual window grid pattern. OSM bulk-tagged the block 55 m. 2026-10-21: DataSF 2010 LiDAR median 16.3 m (Assessor three storeys, 1907)",
-    "height": 16
-  },
-  {
-    "osm": [
-      "way/173237459"
-    ],
-    "name": "1328 Mission Street",
-    "restyle": "towerblock",
-    "wall": "#DDD5CA",
-    "by": "haiku",
-    "image": "way-173237459-2.jpg",
-    "note": "mostly pale rendered with some modern glazing, primary facade not glass-dominated. OSM bulk-tagged the block 55 m. 2026-10-21: DataSF 2010 LiDAR median 15.8 m (max 18.7; 2001 condominiums)",
     "height": 16
   },
   {

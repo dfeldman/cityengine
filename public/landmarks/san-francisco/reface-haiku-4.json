@@ -22,17 +22,6 @@
   },
   {
     "osm": [
-      "way/79377152"
-    ],
-    "name": "199 New Montgomery Street",
-    "restyle": "chicago",
-    "wall": "#a85645",
-    "by": "haiku",
-    "image": "way-79377152.jpg",
-    "height": 46
-  },
-  {
-    "osm": [
       "way/259925713"
     ],
     "name": "(unnamed)",

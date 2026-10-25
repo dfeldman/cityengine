@@ -43,10 +43,10 @@ Builders go in `src/render/landmarks/sf/downtown-t4.ts`, manifest entries in `pu
 | 33 | 186 | Tenderloin | `way/256058407` Courtyard San Francisco Union Square · 64 m · reface<br>`way/197354891` 747 Post Street · 64 m · reface<br>`way/33570646` Alcazar Theatre · 24 m · reface || done |
 | 34 | 184 | Nob Hill | `way/436474725` (unnamed) · 48 m · reface || done |
 | 35 | 182 | SoMa by Market | `way/32862740` 1 Harrison Street · 33 m · reface || done |
-| 36 | 170 | Civic Center | `way/35174714` 1360 Mission Street · 55 m · reface<br>`way/173237459` 1328 Mission Street · 55 m · reface | |
-| 37 | 168 | Union Square | `way/474341709` Hotel Des Arts · 55 m · reface<br>`way/135174116` Hotel Triton · 27 m · reface | |
-| 38 | 166 | Civic Center | `way/256720468` French American International School · 23 m · reface | |
-| 39 | 166 | SoMa by Market | `way/79377152` 199 New Montgomery Street · 46 m · reface<br>`way/79377194` 606;608;612 Howard Street · 26 m · generic | |
+| 36 | 170 | Civic Center | `way/35174714` 1360 Mission Street · 55 m · reface<br>`way/173237459` 1328 Mission Street · 55 m · reface || done |
+| 37 | 168 | Union Square | `way/474341709` Hotel Des Arts · 55 m · reface<br>`way/135174116` Hotel Triton · 27 m · reface || done |
+| 38 | 166 | Civic Center | `way/256720468` French American International School · 23 m · reface || done |
+| 39 | 166 | SoMa by Market | `way/79377152` 199 New Montgomery Street · 46 m · reface<br>`way/79377194` 606;608;612 Howard Street · 26 m · generic || done |
 | 40 | 165 | SoMa by Market | `way/112864753` 340 Bryant Street · 34 m · generic | |
 | 41 | 165 | Union Square | `way/149757921` 195;199 Grant Avenue · 57 m · reface | |
 | 42 | 164 | SoMa by Market | `way/113347426` 95 Hawthorne Street · 39 m · reface<br>`way/113347425` 620 Folsom Street · 31 m · reface | |

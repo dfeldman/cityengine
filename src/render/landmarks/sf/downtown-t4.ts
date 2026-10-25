@@ -392,6 +392,111 @@ function t4b35Harrison1(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * 1360 Mission Street (way/35174714): a four-storey cream block of 1930, its garage door and blank wall at street level,
+ * and a teal glass-rail roof terrace over it, the rail sitting on a pergola. The OSM 55 m is a bulk tag; the photographs
+ * and the 2010 LiDAR (about 18 m) agree on a low block. (Photographs 01 and 02 of way-35174714.)
+ */
+function t4b36_35174714(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.88, 0.82]
+  tower(out, fit, {
+    height: 18,
+    tiers: [{ to: 1, face: { kind: 'bands', wall: CREAM, glass: [0.5, 0.62, 0.6], floor: 4.5, solid: 0.7, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 1.6, colour: [0.45, 0.66, 0.64], material: 'metal' },
+  })
+}
+
+/**
+ * 1328 Mission Street (way/173237459): a pale rendered block of about four storeys with some modern glazing, its
+ * primary facade not glass-dominated. The OSM 55 m is a bulk tag; the LiDAR gives about 16 m. (Photographs 01 and 02
+ * of way-173237459.)
+ */
+function t4b36_173237459(out: MeshBuilder, fit: Fit): void {
+  const PALE: Rgb = [0.87, 0.84, 0.79]
+  tower(out, fit, {
+    height: 16,
+    base: { height: 4, face: { kind: 'blank', wall: [0.45, 0.42, 0.4], material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: PALE, glass: [0.22, 0.3, 0.36], pitch: 3.4, floor: 3.4, solid: 0.5, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 1, colour: PALE, material: 'stucco' },
+  })
+}
+
+/**
+ * Hotel Des Arts (way/474341709), 447 Bush Street: a narrow post-fire hotel of about seven storeys, its pale painted
+ * walls and tall windows over a shopfront, the fire escape down the front. (Photographs 01 and 02 of way-474341709.)
+ * The OSM 55 m is a bulk tag; the height here is read from the photographs.
+ */
+function t4b37_474341709(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.86, 0.8, 0.7]
+  tower(out, fit, {
+    height: 24,
+    base: { height: 4, face: { kind: 'blank', wall: [0.4, 0.34, 0.3], material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.22, 0.25, 0.3], pitch: 3.2, floor: 3.2, solid: 0.55, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/**
+ * Hotel Triton (way/135174116), 342 Grant Avenue: a brown brick hotel of about eight storeys, its fire escapes and
+ * window air conditioners on the front, a cornice at the top and a dark shopfront with an awning on the ground floor.
+ * (Photographs 01 and 02 of way-135174116.)
+ */
+function t4b37_135174116(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.55, 0.42, 0.32]
+  tower(out, fit, {
+    height: 26,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.3, 0.12, 0.1], glass: [0.2, 0.22, 0.24], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: [0.22, 0.24, 0.26], pitch: 3.2, floor: 3.2, solid: 0.6, material: 'brick' } }],
+    cornices: [{ at: 0.95, depth: 0.6, colour: [0.82, 0.78, 0.7] }],
+    crown: { kind: 'parapet', height: 1.2, colour: [0.82, 0.78, 0.7], material: 'concrete' },
+  })
+}
+
+/**
+ * French American International School (way/256720468), 150 Oak Street: a block of about seven storeys, its upper
+ * walls white with blue-painted bands of windows and a blue lower storey on the Oak side. (Photographs 01 and 02 of
+ * way-256720468.) An earlier note reads it as deep red; the photographs taken for this model show white and blue.
+ */
+function t4b38_256720468(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.9, 0.9, 0.88]
+  tower(out, fit, {
+    height: 23,
+    base: { height: 4, face: { kind: 'blank', wall: [0.2, 0.36, 0.62], material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: WHITE, glass: [0.2, 0.36, 0.6], floor: 3.4, solid: 0.5, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 1, colour: [0.2, 0.36, 0.62], material: 'stucco' },
+  })
+}
+
+/**
+ * 199 New Montgomery Street (way/79377152): a tower of about fifteen storeys on a buff stone base, its walls of red
+ * brick piers between tall dark glazing, with a cornice at the top. (Photographs 01 and 03 of way-79377152.)
+ */
+function t4b39_79377152(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.62, 0.36, 0.28]
+  const TAN: Rgb = [0.78, 0.72, 0.6]
+  tower(out, fit, {
+    height: 46,
+    base: { height: 6, face: { kind: 'punched', wall: TAN, glass: [0.2, 0.22, 0.24], pitch: 4, floor: 3, solid: 0.5, material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: [0.2, 0.24, 0.3], pitch: 4.2, floor: 3.2, solid: 0.3, material: 'brick' } }],
+    cornices: [{ at: 0.93, depth: 0.6, colour: TAN }],
+    crown: { kind: 'parapet', height: 1.5, colour: TAN, material: 'stucco' },
+  })
+}
+
+/**
+ * 606, 608 and 612 Howard Street (way/79377194): a charcoal grey block of about six storeys, its punched windows and
+ * fire escapes on the front, a dark ground floor with a shopfront. (Photographs 01 and 02 of way-79377194.)
+ */
+function t4b39_79377194(out: MeshBuilder, fit: Fit): void {
+  const CHAR: Rgb = [0.36, 0.38, 0.42]
+  tower(out, fit, {
+    height: 26,
+    base: { height: 4, face: { kind: 'punched', wall: [0.3, 0.3, 0.32], glass: [0.2, 0.22, 0.25], pitch: 3.6, floor: 4, solid: 0.5, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CHAR, glass: [0.22, 0.25, 0.3], pitch: 3.2, floor: 3.2, solid: 0.5, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 1, colour: [0.3, 0.32, 0.35], material: 'metal' },
+  })
+}
+
 export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   t4b1_156123224,
   t4b2_192328858,
@@ -425,4 +530,11 @@ export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t4b33Alcazar,
   t4b34SaintFrancisTower,
   t4b35Harrison1,
+  t4b36_35174714,
+  t4b36_173237459,
+  t4b37_474341709,
+  t4b37_135174116,
+  t4b38_256720468,
+  t4b39_79377152,
+  t4b39_79377194,
 }
