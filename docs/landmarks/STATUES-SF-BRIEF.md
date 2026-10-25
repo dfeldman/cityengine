@@ -32,8 +32,10 @@ You get a handful of statues. Work through them one at a time.
      box from `tools/cache/osm/norcal-latest.osm.pbf` with osmium and look for `historic=memorial|monument` or
      `tourism=artwork`. That gives the exact lat/lon.
    - With no folder, use WebSearch (mode standard) for its location and height. One search; two at most.
-   - If it is in a museum courtyard, a building, or outside San Francisco, or you cannot find where it stands to
-     within 20 m, skip it and say so.
+   - If it is indoors, inside a ticketed museum or ballpark, temporary and already gone, or outside the baked city,
+     skip it and say so. But if you know the plaza, park or forecourt it stands in and not the exact spot, PLACE it there
+     where it most likely stands (on the main axis, by the entrance, at the centre of its lawn) and say it is placed by
+     judgement (owner: place the rest of the statues; an approximate spot beats none).
 2. **The model.** The GLBs carry NO size and NO orientation (owner, 2026-10-25): every file is scaled to about
    one unit tall and faces whichever way the generator left it. The real height comes from step 1, the front from
    the preview below. Most are untextured: draw those in `bronze` unless the statue is plainly something else
