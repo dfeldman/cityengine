@@ -1460,6 +1460,42 @@ export function kearnyPine148741772(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 19, 301 Sacramento Street (16 m, SW corner of Sacramento and Front): a four-storey tan brick block with a
+ * corbelled cornice, diamond-patterned brick bands between the floors and a black shopfront (way/260286870; photo way-260286870-01). */
+export function sacramento301(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.8, 0.64, 0.44]
+  tower(out, fit, {
+    height: 16,
+    base: { height: 4, face: { kind: 'blank', wall: [0.1, 0.1, 0.11], material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: [0.2, 0.22, 0.24], pitch: 3.2, floor: 4, solid: 0.55, head: 'architrave', material: 'brick' }, cornice: { depth: 0.9, height: 0.9, colour: [0.82, 0.7, 0.5] } }],
+    crown: { kind: 'parapet', height: 0.9, colour: TAN, material: 'brick' },
+  })
+}
+
+/** T3 batch 19, 333 Sacramento Street (13 m): a two-storey cream stucco front with tall grilled windows over a glazed shopfront,
+ * a recessed doorway and an embossed pilaster at its west edge (way/260286867; photos way-260286867-01, -02). */
+export function sacramento333(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.86, 0.8, 0.68]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.14, 0.14, 0.14], glass: [0.1, 0.1, 0.11], pitch: 2.6, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.22, 0.24, 0.26], pitch: 2.6, floor: 4.5, solid: 0.5, material: 'stucco' }, cornice: { depth: 0.6, height: 0.6, colour: [0.78, 0.72, 0.6] } }],
+    crown: { kind: 'parapet', height: 0.6, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** T3 batch 19, 325 Sacramento Street (11 m): a two-storey front painted dark teal-green, with big shopfront glazing and a
+ * recessed entrance (way/260286872; photo way-260286872-01). */
+export function sacramento325(out: MeshBuilder, fit: Fit): void {
+  const TEAL: Rgb = [0.16, 0.36, 0.33]
+  tower(out, fit, {
+    height: 11,
+    base: { height: 4.5, face: { kind: 'blank', wall: [0.12, 0.3, 0.28], material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TEAL, glass: [0.3, 0.36, 0.36], pitch: 3, floor: 4.5, solid: 0.6, material: 'stucco' }, cornice: { depth: 0.4, height: 0.4, colour: [0.2, 0.42, 0.38] } }],
+    crown: { kind: 'parapet', height: 0.5, colour: TEAL, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1523,4 +1559,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   sansome407, sansomeSacramento32947521, sansome415,
   kearny123, kearny153, post126,
   kearny151683977, kearny353, kearnyPine148741772,
+  sacramento301, sacramento333, sacramento325,
 }
