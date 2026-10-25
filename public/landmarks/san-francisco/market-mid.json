@@ -218,24 +218,6 @@
  },
  {
   "osm": [
-   "way/149332500"
-  ],
-  "name": "711 Market Street",
-  "restyle": "brick",
-  "note": "Low brick shopfront block.",
-  "levels": 3
- },
- {
-  "osm": [
-   "way/149332499"
-  ],
-  "name": "721 Market Street",
-  "restyle": "chicago",
-  "note": "Pre-war commercial block.",
-  "levels": 6
- },
- {
-  "osm": [
    "way/149335988"
   ],
   "name": "2-8 Kearny Street",
@@ -260,15 +242,6 @@
   "restyle": "brick",
   "note": "Low brick block behind the Powell frontage.",
   "levels": 4
- },
- {
-  "osm": [
-   "way/332516647"
-  ],
-  "name": "993 Market Street",
-  "restyle": "brick",
-  "note": "Single-storey retail front.",
-  "levels": 1
  },
  {
   "osm": [

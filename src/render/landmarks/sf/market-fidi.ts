@@ -1993,6 +1993,69 @@ export function market941650784(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+// ---------------------------------------------------------------- Tier 3 batch 36: 711, 721, 993 Market, Market at Jones
+/**
+ * 711 Market (way/149332500, OSM 11 m): Mapillary frame 01 (bearing 135, face 315). A dark granite-clad shopfront
+ * base with a flat fascia sign band ("SUPER DUPER BURGERS"), then a plain cream-grey stucco block of three storeys
+ * with ribbon windows of dark glass and a shallow parapet.
+ */
+export function market711(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.78, 0.75, 0.68], PLINTH: Rgb = [0.4, 0.27, 0.23], GLASS: Rgb = [0.2, 0.24, 0.27]
+  tower(out, fit, {
+    height: 11,
+    base: { height: 3.3, face: { kind: 'punched', wall: PLINTH, glass: [0.12, 0.14, 0.16], pitch: 4, floor: 3.3, solid: 0.4, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: CREAM, glass: GLASS, floor: 2.7, solid: 0.45, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 0.7, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/**
+ * 721 Market (way/149332499, no OSM height): Mapillary frame 01 (bearing 135, face 315). A grey painted ground
+ * floor with arched openings, then cream stone upper floors in paired sash windows under a dentilled cornice.
+ * Height 26 m from the manifest; the neighbour way/149332503 is 26 m in OSM too. Low confidence on the exact
+ * identity of the frontage between the dashed lines.
+ */
+export function market721(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.86, 0.82, 0.72], GREY: Rgb = [0.5, 0.5, 0.48], GLASS: Rgb = [0.22, 0.25, 0.28]
+  tower(out, fit, {
+    height: 26,
+    base: { height: 4.2, face: { kind: 'punched', wall: GREY, glass: [0.12, 0.14, 0.16], pitch: 4.5, floor: 4.2, solid: 0.4, material: 'stucco' } },
+    tiers: [
+      { to: 1, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 2.6, floor: 3.2, solid: 0.5, material: 'ashlar' }, cornice: { depth: 0.5, height: 0.6, colour: CREAM } },
+    ],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'ashlar' },
+  })
+}
+
+/**
+ * 993 Market (way/332516647, OSM 4 m, one storey): Mapillary frame 01 (bearing 149, face 329, front 321 by the
+ * manifest). A pale grey panelled plaque with the "989 Market" address, a blue-grey upper wall with a red fascia
+ * sign (Oxford Street), and a black roll-down shopfront. Low single storey.
+ */
+export function market993(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.66, 0.67, 0.68], BLACK: Rgb = [0.08, 0.08, 0.09], SLATE: Rgb = [0.34, 0.38, 0.42]
+  tower(out, fit, {
+    height: 4,
+    base: { height: 1.4, face: { kind: 'blank', wall: BLACK, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'blank', wall: GREY, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 0.9, colour: SLATE, material: 'concrete' },
+  })
+}
+
+/**
+ * Market at Jones (way/417216803, OSM 5 m, one storey): Mapillary frame 03 (bearing 317, face 137, front 138). A
+ * low single-storey box painted black, with graffiti along its top edge and an oval sign plate, a recessed black
+ * entrance. No windows.
+ */
+export function marketJones417216803(out: MeshBuilder, fit: Fit): void {
+  const BLACK: Rgb = [0.07, 0.07, 0.08]
+  tower(out, fit, {
+    height: 5,
+    tiers: [{ to: 1, face: { kind: 'blank', wall: BLACK, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 0.5, colour: BLACK, material: 'concrete' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -2071,4 +2134,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   market1089, market1123, market1390,
   crazyHorse980Market, market925, market1201, market1200,
   market148712647, market148712643, market148712642, market260318172, market941650784,
+  market711, market721, market993, marketJones417216803,
 }

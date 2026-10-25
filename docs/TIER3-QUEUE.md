@@ -45,7 +45,7 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 33 | 126 | `way/260318172` (unnamed) · 14 m · reface brick || done (with 42) |
 | 34 | 124 | `way/939440535` (unnamed) · 14 m · reface brick || done |
 | 35 | 124 | `way/1288526233` (unnamed) · 7 m · reface brick || done (with 34) |
-| 36 | 123 | `way/149332500` 711 Market Street · 11 m · reface brick<br>`way/149332499` 721 Market Street · ? · reface chicago | |
+| 36 | 123 | `way/149332500` 711 Market Street · 11 m · reface brick<br>`way/149332499` 721 Market Street · ? · reface chicago || done |
 | 37 | 121 | `way/256035263` 1089 Market Street · 8 m · reface brick || done (with 34) |
 | 38 | 119 | `way/256049055` Crazy Horse Gentlemen's Club — 980 Market Stre · 8 m · reface brick || done |
 | 39 | 119 | `way/35176266` 1201 Market Street · 8 m · reface brick || done (with 38) |
@@ -53,11 +53,11 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 41 | 118 | `way/35112006` 1200 Market Street · 11 m · reface brick || done (with 38) |
 | 42 | 113 | `way/148712647` (unnamed) · 14 m · reface chicago<br>`way/148712642` (unnamed) · 15 m · reface chicago<br>`way/148712643` (unnamed) · 10 m · reface chicago || done |
 | 43 | 106 | `way/941650784` (unnamed) · ? · generic || done (with 42) |
-| 44 | 105 | `way/332516647` 993 Market Street · 4 m · reface brick | |
+| 44 | 105 | `way/332516647` 993 Market Street · 4 m · reface brick || done (with 36) |
 | 45 | 101 | `way/35537113` 499 Jackson Street · 19 m · generic<br>`way/148666785` (unnamed) · 13 m · reface brick<br>`way/35537118` 463;473 Jackson Street · 14 m · reface brick | |
 | 46 | 100 | `way/256088136` 435;437 Pacific Avenue · ? · generic<br>`way/253609537` Pacific Avenue · ? · generic<br>`way/256088155` 731 Sansome Street · 18 m · reface brick | |
 | 47 | 98 | `way/256066239` 333 Pine Street · 22 m · generic | |
-| 48 | 98 | `way/417216803` (unnamed) · 5 m · reface brick | |
+| 48 | 98 | `way/417216803` (unnamed) · 5 m · reface brick || done (with 36) |
 | 49 | 96 | `way/260288458` 234;236 Front Street · 20 m · generic<br>`way/260288447` 222 Front Street · 23 m · generic | |
 | 50 | 95 | `way/149757917` (unnamed) · 28 m · reface classical<br>`way/149757918` 49 Kearny Street · 34 m · generic<br>`way/149757923` 45;47 Kearny Street · 34 m · reface towerblock | |
 | 51 | 95 | `way/436484312` (unnamed) · 25 m · reface skyscraper | |
