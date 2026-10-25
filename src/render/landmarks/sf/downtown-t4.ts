@@ -1609,6 +1609,107 @@ function t4b111_24335195(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * 1199 Bush Street (way/179746912): a red-brick block of about six storeys, its upper floors set with tall dark glass
+ * bays, a brick parapet over. (Mapillary 178869224734193, 738017782149344.) Front on Bush Street.
+ */
+function t4b112_179746912(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.66, 0.34, 0.26]
+  tower(out, fit, {
+    height: 26,
+    base: { height: 4, face: { kind: 'punched', wall: [0.42, 0.42, 0.42], material: 'granite', glass: [0.2, 0.22, 0.25], pitch: 4, solid: 0.5, floor: 4 } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, material: 'brick', glass: [0.16, 0.22, 0.3], pitch: 3.2, solid: 0.4, floor: 3.6 } }],
+    crown: { kind: 'parapet', height: 1.2, colour: BRICK, material: 'brick' },
+  })
+}
+
+/**
+ * ABC Broadcast Center, 900 Front Street (way/288481830): a low tan concrete block of three storeys, its horizontal
+ * ribbon windows in dark glass bands, the top floor set back. (Mapillary 2 frames.) Front taken as Green Street, where
+ * the photographs show the entrance face (the address is Front Street); unsure.
+ */
+function t4b113_288481830(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.8, 0.74, 0.62]
+  tower(out, fit, {
+    height: 12,
+    tiers: [
+      { to: 0.75, face: { kind: 'bands', wall: TAN, material: 'concrete', glass: [0.2, 0.25, 0.3], floor: 3.6, solid: 0.45 } },
+      { to: 1, inset: 2.5, face: { kind: 'bands', wall: TAN, material: 'concrete', glass: [0.2, 0.25, 0.3], floor: 3.6, solid: 0.45 } },
+    ],
+    crown: { kind: 'parapet', height: 0.6, colour: TAN, material: 'concrete' },
+  })
+}
+
+/**
+ * 41;77 Van Ness Avenue (way/172111600): a cream stone block of about eight storeys, regular punched windows with
+ * a heavy cornice under a parapet, a darker base. (Mapillary 2 frames.) Front on Van Ness Avenue.
+ */
+function t4b114_172111600(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.84, 0.78, 0.64]
+  tower(out, fit, {
+    height: 27,
+    base: { height: 4, face: { kind: 'punched', wall: [0.7, 0.66, 0.58], material: 'ashlar', glass: [0.2, 0.22, 0.24], pitch: 4, solid: 0.5, floor: 4 } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, material: 'ashlar', glass: [0.26, 0.3, 0.34], pitch: 3, solid: 0.55, floor: 3.4 }, cornice: { depth: 0.6, height: 0.8, colour: [0.9, 0.86, 0.76] } }],
+    crown: { kind: 'parapet', height: 1.5, colour: CREAM, material: 'ashlar' },
+  })
+}
+
+/**
+ * Warrington Apartments (way/197354892): a buff block of about seven or eight storeys, projecting bay windows stacked
+ * all the way up, a fire escape on the front. (Mapillary 2 frames.) Front taken as Post Street; unsure.
+ */
+function t4b115_197354892(out: MeshBuilder, fit: Fit): void {
+  const BUFF: Rgb = [0.84, 0.74, 0.58]
+  tower(out, fit, {
+    height: 25,
+    base: { height: 4, face: { kind: 'punched', wall: [0.4, 0.4, 0.4], material: 'granite', glass: [0.2, 0.22, 0.25], pitch: 4, solid: 0.5, floor: 4 } },
+    tiers: [{ to: 1, face: { kind: 'bays', wall: BUFF, material: 'concrete', glass: [0.26, 0.3, 0.34], floor: 3.1, pitch: 3.5, bay: { depth: 0.9 } } }],
+    crown: { kind: 'parapet', height: 1, colour: BUFF, material: 'concrete' },
+  })
+}
+
+/**
+ * 180 Jones Street (way/1258513962): a white block of about seven storeys over a dark base, grid windows and balconies
+ * in rows. (Mapillary 2 frames.) OSM 36 m disputed by the photographs, drawn 25 m; front on Jones Street; unsure.
+ */
+function t4b116_1258513962(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.92, 0.91, 0.88]
+  tower(out, fit, {
+    height: 25,
+    base: { height: 4, face: { kind: 'blank', wall: [0.3, 0.3, 0.32], material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, material: 'concrete', glass: [0.2, 0.24, 0.28], pitch: 2.8, solid: 0.5, floor: 3.1 } }],
+    crown: { kind: 'parapet', height: 0.8, colour: WHITE, material: 'concrete' },
+  })
+}
+
+/**
+ * Westlake Building (way/206621049): a red-brick block of about five storeys with tall arched upper windows and a
+ * parapet over. (Mapillary 2 frames.) Front taken as Pacific Avenue; the photographs are mixed; unsure.
+ */
+function t4b117_206621049(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.6, 0.28, 0.22]
+  tower(out, fit, {
+    height: 19,
+    base: { height: 4, face: { kind: 'punched', wall: [0.42, 0.42, 0.42], material: 'granite', glass: [0.2, 0.22, 0.25], pitch: 4, solid: 0.5, floor: 4 } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, material: 'brick', glass: [0.2, 0.22, 0.26], pitch: 3, solid: 0.55, floor: 3.6, arched: true } }],
+    crown: { kind: 'parapet', height: 1.2, colour: BRICK, material: 'brick' },
+  })
+}
+
+/**
+ * Arc Light Co. (way/129176905): a red-brick warehouse of about four storeys, a stepped parapet, a tall arched
+ * carriage entrance and a glazed box on the roof. (Mapillary 2 frames.) Front taken as Clarence Place; unsure.
+ */
+function t4b118_129176905(out: MeshBuilder, fit: Fit): void {
+  const RED: Rgb = [0.62, 0.26, 0.2]
+  tower(out, fit, {
+    height: 17,
+    tiers: [{ to: 1, face: { kind: 'punched', wall: RED, material: 'brick', glass: [0.12, 0.14, 0.16], pitch: 3.2, solid: 0.6, floor: 4, arched: true } }],
+    crown: { kind: 'parapet', height: 1.6, colour: RED, material: 'brick' },
+    penthouse: 1,
+  })
+}
+
 export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   t4b1_156123224,
   t4b2_192328858,
@@ -1722,4 +1823,11 @@ export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t4b108_35536855,
   t4b109_113103848,
   t4b111_24335195,
+  t4b112_179746912,
+  t4b113_288481830,
+  t4b114_172111600,
+  t4b115_197354892,
+  t4b116_1258513962,
+  t4b117_206621049,
+  t4b118_129176905,
 }

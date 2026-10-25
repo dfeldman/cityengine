@@ -1,6 +1,5 @@
 [
 {"osm": ["way/149882089"], "restyle": "classical", "wall": "#e9e4d6", "trim": "#f6f3ea", "by": "haiku", "image": "way-149882089-03.jpg", "note": "cream stone block, arched upper windows, pilasters and heavy cornice; not a stucco bay house"},
-{"osm": ["way/197354892"], "restyle": "sfapartment", "wall": "#d2b98f", "by": "haiku", "image": "way-197354892-01.jpg", "note": "tan/buff block, stacked projecting bays, fire escape on the front; 7-8 storeys"},
 {"osm": ["way/679290116"], "restyle": "towerblock", "wall": "#c8c4bb", "by": "haiku", "image": "way-679290116-03.jpg", "note": "pale grey-beige flat-topped block with recessed balconies and dark panel columns; painted/clad, not raw concrete"},
 {"osm": ["way/261142893"], "restyle": "bauhaus", "wall": "#e6dfd0", "by": "haiku", "image": "way-261142893-02.jpg", "note": "pale render, flat roof, horizontal bands and balcony rails"},
 {"osm": ["way/261258553"], "restyle": "classical", "wall": "#e2d7bf", "groundWall": "#4a4744", "by": "haiku", "image": "way-261258553-02.jpg", "note": "cream block, flat top, dark stone base; office-like classical massing"},

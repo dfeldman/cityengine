@@ -119,13 +119,13 @@ Builders go in `src/render/landmarks/sf/downtown-t4.ts`, manifest entries in `pu
 | 109 | 109 | SoMa by Market | `way/113103848` 301 · 31 m · generic || done |
 | 110 | 109 | SoMa by Market | `way/192328863` 444;470 Spear Street · 20 m · generic || done |
 | 111 | 108 | SoMa by Market | `way/24335195` Moscone Center Garage · 17 m · generic || done |
-| 112 | 108 | Nob Hill | `way/179746912` 1199 Bush Street · 26 m · generic | |
-| 113 | 108 | FiDi | `way/288481830` ABC Broadcast Center (KGO/KRON) · 12 m · reface | |
-| 114 | 107 | Civic Center | `way/172111600` 41;77 Van Ness Avenue · 27 m · reface | |
-| 115 | 107 | Tenderloin | `way/197354892` Warrington Apartments · 25 m · reface | |
-| 116 | 106 | Tenderloin | `way/1258513962` 180 Jones Street · 36 m · generic | |
-| 117 | 106 | FiDi | `way/206621049` Westlake Building · 19 m · generic | |
-| 118 | 105 | SoMa by Market | `way/129176905` Arc Light Co. · 17 m · generic | |
+| 112 | 108 | Nob Hill | `way/179746912` 1199 Bush Street · 26 m · generic || done |
+| 113 | 108 | FiDi | `way/288481830` ABC Broadcast Center (KGO/KRON) · 12 m · reface || done |
+| 114 | 107 | Civic Center | `way/172111600` 41;77 Van Ness Avenue · 27 m · reface || done |
+| 115 | 107 | Tenderloin | `way/197354892` Warrington Apartments · 25 m · reface || done |
+| 116 | 106 | Tenderloin | `way/1258513962` 180 Jones Street · 36 m · generic || done |
+| 117 | 106 | FiDi | `way/206621049` Westlake Building · 19 m · generic || done |
+| 118 | 105 | SoMa by Market | `way/129176905` Arc Light Co. · 17 m · generic || done |
 | 119 | 105 | SoMa by Market | `way/131297949` 539 Bryant Street · 19 m · generic | |
 | 120 | 105 | SoMa by Market | `way/80296706` 50 Hawthorne Street · 18 m · generic | |
 | 121 | 105 | SoMa by Market | `way/112927451` 601;611;615 2nd Street · 23 m · reface | |
