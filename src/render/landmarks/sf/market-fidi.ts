@@ -2574,6 +2574,83 @@ export function bush364Taupe(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+export function second30Stucco(out: MeshBuilder, fit: Fit): void {
+  // 30 2nd Street (way/148285582): a grey-taupe stucco block of about three storeys over a dark glazed shopfront,
+  // small punched windows and a plain parapet; faces 2nd Street. Photo way-148285582-03.
+  const STUCCO: Rgb = [0.8, 0.79, 0.74], GLASS: Rgb = [0.18, 0.2, 0.22], DARK: Rgb = [0.2, 0.2, 0.2]
+  tower(out, fit, {
+    height: 9,
+    base: { height: 3, face: { kind: 'curtain', wall: DARK, glass: GLASS, pitch: 2.6, floor: 3, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: STUCCO, glass: GLASS, pitch: 2.6, floor: 3, solid: 0.6, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 0.5, colour: STUCCO, material: 'stucco' },
+  })
+}
+
+export function clayUnnamedCream(out: MeshBuilder, fit: Fit): void {
+  // the unnamed cream painted-brick block on Clay (way/942303810): three storeys of cream brick, large windows in
+  // green frames, a glass-block transom over a glazed ground floor, a string course and a fire escape. Photo -01.
+  const CREAM: Rgb = [0.88, 0.86, 0.8], GREEN: Rgb = [0.16, 0.36, 0.26], GLASS: Rgb = [0.2, 0.3, 0.32]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 3.5, face: { kind: 'curtain', wall: CREAM, glass: GLASS, pitch: 3, floor: 3.5, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: GREEN, pitch: 3.6, floor: 3.5, solid: 0.4, material: 'brick' } }],
+    cornices: [{ at: 3.5, depth: 0.25, height: 0.3, colour: CREAM }],
+    crown: { kind: 'parapet', height: 0.8, colour: CREAM, material: 'brick' },
+  })
+}
+
+export function clay559Ashlar(out: MeshBuilder, fit: Fit): void {
+  // 559 Clay (way/256068366): a rusticated stone block of two to three storeys, an arched ground-floor doorway and
+  // arched upper windows under a dentilled cornice and a plain parapet. Photo way-256068366-01.
+  const STONE: Rgb = [0.8, 0.77, 0.7], GLASS: Rgb = [0.2, 0.24, 0.26], DARK: Rgb = [0.18, 0.18, 0.18]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 3.5, face: { kind: 'curtain', wall: DARK, glass: GLASS, pitch: 2.8, floor: 3.5, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: STONE, glass: GLASS, pitch: 2.8, floor: 4, solid: 0.45, arched: true, material: 'ashlar' } }],
+    cornices: [{ at: 3.5, depth: 0.3, height: 0.4, colour: STONE }],
+    crown: { kind: 'parapet', height: 1, colour: STONE, material: 'ashlar' },
+  })
+}
+
+export function front227Gothic(out: MeshBuilder, fit: Fit): void {
+  // 227 Front Street (way/940149659): a pale grey painted block of about three storeys with tall arched-head windows
+  // in a Gothic-tracery frieze, a dark glazed ground floor and a plain parapet. Photo way-940149659-01.
+  const GREY: Rgb = [0.78, 0.8, 0.8], GLASS: Rgb = [0.3, 0.34, 0.36], DARK: Rgb = [0.2, 0.22, 0.22]
+  tower(out, fit, {
+    height: 10,
+    base: { height: 3, face: { kind: 'curtain', wall: DARK, glass: GLASS, pitch: 3, floor: 3, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: GREY, glass: GLASS, pitch: 2.2, floor: 3.3, solid: 0.5, arched: true, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: GREY, material: 'stucco' },
+  })
+}
+
+export function california212Stone(out: MeshBuilder, fit: Fit): void {
+  // 212-214 California Street (way/260286447): a cream-tan limestone block with a rounded corner bay, dark doorways
+  // at street level and a dentilled band. Photo way-260286447-01. The frame brackets the stone block beside the
+  // "200" building, and the OSM height and date do not match what the lines bracket; this models the lines.
+  const STONE: Rgb = [0.84, 0.8, 0.7], GLASS: Rgb = [0.2, 0.24, 0.26], DARK: Rgb = [0.2, 0.2, 0.2]
+  tower(out, fit, {
+    height: 10,
+    base: { height: 3, face: { kind: 'curtain', wall: DARK, glass: GLASS, pitch: 3.2, floor: 3, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: STONE, glass: GLASS, pitch: 3.2, floor: 3.3, solid: 0.5, material: 'ashlar' } }],
+    cornices: [{ at: 3, depth: 0.35, height: 0.4, colour: STONE }],
+    crown: { kind: 'parapet', height: 0.9, colour: STONE, material: 'ashlar' },
+  })
+}
+
+export function harringtonsBrick(out: MeshBuilder, fit: Fit): void {
+  // the unnamed block with Harrington's Bar and Grill (way/260286866): two brick storeys with large dark-framed
+  // windows over a dark green painted ground floor and sign band. Photo way-260286866-01.
+  const BRICK: Rgb = [0.7, 0.56, 0.4], GREEN: Rgb = [0.14, 0.24, 0.18], GLASS: Rgb = [0.18, 0.22, 0.2]
+  tower(out, fit, {
+    height: 9,
+    base: { height: 3, face: { kind: 'curtain', wall: GREEN, glass: GLASS, pitch: 3, floor: 3, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: GLASS, pitch: 2.8, floor: 3, solid: 0.5, material: 'brick' } }],
+    cornices: [{ at: 3, depth: 0.3, height: 0.4, colour: GREEN }],
+    crown: { kind: 'parapet', height: 0.8, colour: [0.5, 0.4, 0.3], material: 'brick' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -2667,4 +2744,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   montgomery130Cream, washington520Brick, washingtonItalianate, washingtonLouvredConcrete,
   kearny219, kearny237, kearny243,
   bush364Taupe,
+  second30Stucco, clayUnnamedCream, clay559Ashlar, front227Gothic, california212Stone, harringtonsBrick,
 }

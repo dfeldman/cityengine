@@ -74,9 +74,9 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 62 | 76 | `way/148668309` 520;522;524;526;528;530;532;550 Washington Str · 9 m · generic<br>`way/148668322` (unnamed) · ? · generic<br>`way/148668312` (unnamed) · 13 m · reface brick || done (with 61) |
 | 63 | 75 | `way/260280333` 219;225 Kearny Street · 20 m · generic<br>`way/260280329` 237;239;241 Kearny Street · 13 m · generic<br>`way/260280332` 243;245 Kearny Street · 13 m · generic || done |
 | 64 | 74 | `way/148741776` 22 Belden Place · 8 m · generic<br>`way/148741778` 364 Bush Street · 9 m · generic<br>`way/148741775` (unnamed) · ? · generic || 364 Bush done; 148741776 and 148741775 have no photographs |
-| 65 | 73 | `way/148285582` 30 2nd Street · 9 m · generic | |
-| 66 | 71 | `way/942303810` (unnamed) · ? · generic<br>`way/256068366` 559 Clay Street · ? · generic<br>`way/256068369` 564;566 Commercial Street · ? · generic | |
-| 67 | 70 | `way/260286447` 212;214 California Street · 10 m · generic<br>`way/940149659` 227 Front Street · 7 m · generic<br>`way/260286866` (unnamed) · 7 m · generic | |
+| 65 | 73 | `way/148285582` 30 2nd Street · 9 m · generic || done |
+| 66 | 71 | `way/942303810` (unnamed) · ? · generic<br>`way/256068366` 559 Clay Street · ? · generic<br>`way/256068369` 564;566 Commercial Street · ? · generic || 942303810 and 559 Clay done; 564-566 Commercial has no usable photograph |
+| 67 | 70 | `way/260286447` 212;214 California Street · 10 m · generic<br>`way/940149659` 227 Front Street · 7 m · generic<br>`way/260286866` (unnamed) · 7 m · generic || done (with 65) |
 | 68 | 70 | `way/148666782` 42 Columbus Avenue · 4 m · generic<br>`way/35537150` (unnamed) · 19 m · reface brick | |
 | 69 | 70 | `way/149840697` (unnamed) · 22 m · reface brick<br>`way/149840693` 55 Stevenson Street · ? · generic | |
 | 70 | 69 | `way/256087383` (unnamed) · 24 m · reface chicago<br>`way/256087379` 350;368 Jackson Street · 18 m · generic<br>`way/256087384` 710 Sansome Street · 15 m · reface brick | |
