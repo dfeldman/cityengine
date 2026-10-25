@@ -14,7 +14,9 @@ const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=me
 const page = await browser.newPage({ viewport: { width: 800, height: 800 } })
 const tiles: string[] = []
 for (const id of ids) {
-  await page.goto(`http://localhost:5200/glb-preview.html?file=models/paris/${id}.glb`)
+  // (an id with a slash or ending .glb is a site path: a source GLB such as incoming_assets/lone_sailor.glb)
+  const file = id.includes('/') || id.endsWith('.glb') ? id : `models/paris/${id}.glb`
+  await page.goto(`http://localhost:5200/glb-preview.html?file=${file}`)
   await page.waitForFunction('window.__ready === true', null, { timeout: 60_000 })
   for (const [label, a] of [['from +z', Math.PI / 2], ['from +x', 0], ['from −z', -Math.PI / 2], ['from −x', Math.PI]] as const) {
     const url = await page.evaluate(`window.__shoot(${a})`) as string
@@ -23,7 +25,7 @@ for (const id of ids) {
 }
 const sheet = await browser.newPage({ viewport: { width: 1220, height: 100 } })
 await sheet.setContent(`<body style="margin:0;background:#222;color:#eee;font:12px sans-serif;display:grid;grid-template-columns:repeat(4,302px);gap:2px">${tiles.join('')}</body>`)
-const file = resolve(out, `models-${ids.join('_').slice(0, 60)}.png`)
+const file = resolve(out, `models-${ids.map((i) => i.split('/').pop()!.replace('.glb', '')).join('_').slice(0, 60)}.png`)
 await sheet.screenshot({ path: file, fullPage: true })
 console.log(file)
 await browser.close()
