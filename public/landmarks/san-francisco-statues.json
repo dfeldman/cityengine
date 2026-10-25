@@ -610,5 +610,38 @@
       300
     ],
     "note": "assetkit-models-sf/presidio-spanish-cannon: Pershing Square, Main Post (OSM node 12441100101); 2.5 m east of the node, the other of the pair either side of the flagpole, muzzle east (direction a guess)."
+  },
+  {
+    "id": "stevenson-galleon",
+    "name": "Robert Louis Stevenson Memorial galleon",
+    "asset": "stevenson-galleon",
+    "attach": {
+      "to": "Robert Louis Stevenson Memorial",
+      "at": [
+        0,
+        3.9,
+        0
+      ],
+      "bearing": 90,
+      "draped": true
+    },
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/stevenson-galleon: OSM node 9611042258 (tourism=artwork), Portsmouth Square. The procedural stevensonMemorial draws the granite shaft, so the bronze galleon is attached on the shaft's capital (top 3.9 m); its small stand-in galleon is left inside the model's base. Bowsprit toward east (bearing 90) is a guess. 1.1 m high (guess)."
+  },
+  {
+    "id": "roman-gladiator",
+    "name": "Roman Gladiator",
+    "asset": "roman-gladiator",
+    "lat": 37.7707231,
+    "lon": -122.468457,
+    "bearing": 140,
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/roman-gladiator: OSM node 6468818536 (Roman Gladiator memorial), the road verge in front of the de Young, Golden Gate Park. Faces away from the museum (bearing 140, from the Commons photo: the museum is behind it, to the north-west); Georges Geefs 1881, ~2.5 m figure on its pedestal, 4.2 m overall."
   }
 ]
