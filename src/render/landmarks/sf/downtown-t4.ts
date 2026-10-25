@@ -2029,6 +2029,79 @@ function t4b136_135620233(out: MeshBuilder, fit: Fit): void {
   colonnade(out, e.a, e.b, 18.9, 3.6, n, { radius: 0.3, out: 0.5, colour: STONE, material: 'concrete' })
 }
 
+/**
+ * St. Mary's Square building (way/104627922), 20 m: a tan-buff stone-clad block of about six storeys, an angled bay
+ * window stacked up each bay, over a dark glazed shopfront base with stone piers and a deep cornice. (Mapillary
+ * 1205160424478019, 1355928232493475.) Front: Kearny Street (82), unsure.
+ */
+function t4b137_104627922(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.8, 0.68, 0.58]
+  tower(out, fit, {
+    height: 20,
+    base: { height: 4, face: { kind: 'punched', wall: STONE, glass: [0.14, 0.17, 0.2], pitch: 3.2, floor: 4, solid: 0.5, depth: 0.6, material: 'concrete' } },
+    tiers: [
+      { to: 1, face: { kind: 'bays', wall: STONE, glass: [0.22, 0.25, 0.28], pitch: 3.6, floor: 3.2, bay: { depth: 0.9 }, material: 'concrete' }, cornice: { depth: 0.8, height: 0.6, colour: STONE } },
+    ],
+    crown: { kind: 'parapet', height: 1, colour: STONE, material: 'concrete' },
+  })
+}
+
+/**
+ * 136-154 McAllister Street (way/165846556), 20 m: a buff-brown brick block of six storeys, its windows in plain
+ * punched openings with fire escapes on the front, a dentilled cornice under a parapet, and a dark shopfront base.
+ * (Mapillary 1296622275167160, 702368417707485.) Front: McAllister Street (171).
+ */
+function t4b138_165846556(out: MeshBuilder, fit: Fit): void {
+  const BUFF: Rgb = [0.76, 0.64, 0.5]
+  const DARK: Rgb = [0.22, 0.22, 0.24]
+  tower(out, fit, {
+    height: 20,
+    base: { height: 4, face: { kind: 'punched', wall: DARK, glass: [0.18, 0.2, 0.22], pitch: 3.4, floor: 4, solid: 0.4, depth: 0.3, material: 'concrete' } },
+    tiers: [
+      { to: 1, face: { kind: 'punched', wall: BUFF, glass: [0.22, 0.27, 0.34], pitch: 2.8, floor: 3.2, solid: 0.7, depth: 0.4, material: 'brick' }, cornice: { depth: 0.9, height: 0.8, colour: [0.82, 0.74, 0.62] } },
+    ],
+    crown: { kind: 'parapet', height: 1.2, colour: [0.7, 0.6, 0.5], material: 'brick' },
+  })
+}
+
+/**
+ * Presentation Senior Community (way/259990935), 17 m: a cream-mustard stucco block of five storeys over a brick
+ * shopfront base, its front in bay windows with green painted bands, and a green-grey hipped cap on the corner
+ * tower. (Mapillary 386694196213177, 996940267514711.) Front: Taylor Street (82), unsure.
+ */
+function t4b139_259990935(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.84, 0.78, 0.6]
+  const GREEN: Rgb = [0.5, 0.64, 0.52]
+  const BRICK: Rgb = [0.5, 0.26, 0.2]
+  tower(out, fit, {
+    height: 17,
+    base: { height: 4, face: { kind: 'punched', wall: BRICK, glass: [0.2, 0.22, 0.24], pitch: 3.6, floor: 4, solid: 0.5, depth: 0.4, material: 'brick' } },
+    tiers: [
+      { to: 1, face: { kind: 'bays', wall: CREAM, glass: [0.26, 0.3, 0.32], pitch: 3.6, floor: 3, bay: { depth: 0.9 }, material: 'concrete' }, cornice: { depth: 0.5, height: 0.5, colour: GREEN } },
+    ],
+    crown: { kind: 'hip', height: 2.2, inset: 0.6, colour: GREEN, material: 'metal' },
+  })
+}
+
+/**
+ * 48-50 Golden Gate Avenue (way/260129390), 24 m: a cream stucco block with a Spanish arcade of arched openings and
+ * roll-up shutters at street level, arched upper windows with small balconies, and a deep tiled eave on brackets.
+ * (Mapillary 157368859846814, 1211648729308452.) The photographs show only the lower part clearly, so the upper
+ * storeys are unsure. Front: Golden Gate Avenue (171).
+ */
+function t4b140_260129390(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.86, 0.76]
+  const TILE: Rgb = [0.6, 0.42, 0.3]
+  tower(out, fit, {
+    height: 24,
+    base: { height: 8, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.22, 0.24], pitch: 3.6, floor: 4, solid: 0.5, depth: 0.5, arched: true, material: 'concrete' } },
+    tiers: [
+      { to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.22, 0.26, 0.3], pitch: 3, floor: 3.3, solid: 0.55, depth: 0.4, arched: true, material: 'concrete' }, cornice: { depth: 1.2, height: 0.8, colour: TILE } },
+    ],
+    crown: { kind: 'parapet', height: 1, colour: CREAM, material: 'concrete' },
+  })
+}
+
 export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   t4b1_156123224,
   t4b2_192328858,
@@ -2168,4 +2241,8 @@ export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t4b134_112758589,
   t4b135_260517123,
   t4b136_135620233,
+  t4b137_104627922,
+  t4b138_165846556,
+  t4b139_259990935,
+  t4b140_260129390,
 }
