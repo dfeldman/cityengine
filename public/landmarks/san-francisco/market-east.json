@@ -386,15 +386,6 @@
  },
  {
   "osm": [
-   "way/149840697"
-  ],
-  "name": "Stevenson Street block",
-  "restyle": "brick",
-  "levels": 6,
-  "note": "Low brick block behind 555 Market, on Stevenson."
- },
- {
-  "osm": [
    "way/148710880"
   ],
   "name": "Battery Street tower (north)",

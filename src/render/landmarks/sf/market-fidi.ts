@@ -2651,6 +2651,53 @@ export function harringtonsBrick(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+// ---------------------------------------------------------------- T3 batch 68-69 (Haiku, 2026-10-25)
+
+/** 42 Columbus Avenue: a one-storey cream stucco shopfront under a dark glass band, a blank dark wall beside. */
+function columbus42Cream(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.86, 0.82, 0.74]
+  tower(out, fit, {
+    height: 4,
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.24, 0.27], pitch: 4, floor: 3.6, solid: 0.35, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 0.5, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** Unnamed block on Montgomery (way/35537150): cream stucco, arched ground-floor entrance, bronze glass above. */
+function montgomeryCreamArched(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.86, 0.82, 0.72]
+  tower(out, fit, {
+    height: 19,
+    base: { height: 4, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.23, 0.25], pitch: 3.6, floor: 4, solid: 0.4, arched: true, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.36, 0.27, 0.18], pitch: 3.2, floor: 3.5, solid: 0.45, material: 'stucco' } }],
+    cornices: [{ at: 4, depth: 0.3, colour: CREAM }],
+    crown: { kind: 'parapet', height: 1, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** Unnamed block on Stevenson (way/149840697): grey-beige precast panels over a dark granite base. */
+function stevensonGreyPanel(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.72, 0.7, 0.66]
+  tower(out, fit, {
+    height: 22,
+    base: { height: 4, face: { kind: 'punched', wall: [0.3, 0.3, 0.31], glass: [0.2, 0.22, 0.24], pitch: 4, floor: 4, solid: 0.5, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: GREY, glass: [0.25, 0.3, 0.34], pitch: 3.2, floor: 3.6, solid: 0.6, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 1, colour: GREY, material: 'concrete' },
+  })
+}
+
+/** 55 Stevenson Street (1910): narrow cream office face on a brick ground floor, under a fire escape. */
+function stevenson55Brick(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.82, 0.78, 0.7]
+  tower(out, fit, {
+    height: 16,
+    base: { height: 4, face: { kind: 'punched', wall: [0.5, 0.3, 0.24], glass: [0.2, 0.2, 0.2], pitch: 3, floor: 4, solid: 0.5, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.25, 0.27, 0.28], pitch: 2.8, floor: 3.2, solid: 0.5, material: 'stucco' } }],
+    cornices: [{ at: 4, depth: 0.2, colour: CREAM }],
+    crown: { kind: 'parapet', height: 0.8, colour: CREAM, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -2745,4 +2792,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   kearny219, kearny237, kearny243,
   bush364Taupe,
   second30Stucco, clayUnnamedCream, clay559Ashlar, front227Gothic, california212Stone, harringtonsBrick,
+  columbus42Cream, montgomeryCreamArched, stevensonGreyPanel, stevenson55Brick,
 }

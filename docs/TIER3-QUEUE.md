@@ -77,8 +77,8 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 65 | 73 | `way/148285582` 30 2nd Street · 9 m · generic || done |
 | 66 | 71 | `way/942303810` (unnamed) · ? · generic<br>`way/256068366` 559 Clay Street · ? · generic<br>`way/256068369` 564;566 Commercial Street · ? · generic || 942303810 and 559 Clay done; 564-566 Commercial has no usable photograph |
 | 67 | 70 | `way/260286447` 212;214 California Street · 10 m · generic<br>`way/940149659` 227 Front Street · 7 m · generic<br>`way/260286866` (unnamed) · 7 m · generic || done (with 65) |
-| 68 | 70 | `way/148666782` 42 Columbus Avenue · 4 m · generic<br>`way/35537150` (unnamed) · 19 m · reface brick | |
-| 69 | 70 | `way/149840697` (unnamed) · 22 m · reface brick<br>`way/149840693` 55 Stevenson Street · ? · generic | |
+| 68 | 70 | `way/148666782` 42 Columbus Avenue · 4 m · generic<br>`way/35537150` (unnamed) · 19 m · reface brick || done |
+| 69 | 70 | `way/149840697` (unnamed) · 22 m · reface brick<br>`way/149840693` 55 Stevenson Street · ? · generic || done (with 68) |
 | 70 | 69 | `way/256087383` (unnamed) · 24 m · reface chicago<br>`way/256087379` 350;368 Jackson Street · 18 m · generic<br>`way/256087384` 710 Sansome Street · 15 m · reface brick | |
 | 71 | 68 | `way/165480947` 529;531 Commercial Street · ? · generic<br>`way/942303809` (unnamed) · ? · generic | |
 | 72 | 68 | `way/256067704` 130 Battery Street · 25 m · generic | |
