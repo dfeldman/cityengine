@@ -9,7 +9,7 @@ import type { Fit } from '../fit.ts'
 import { tower, towerRing, type Face } from '../tower.ts'
 import { boxAlong, colonnade, edgeAt, signText } from '../parts.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
-import type { Rgb } from '../../models.ts'
+import { box, prism, type Rgb } from '../../models.ts'
 
 // ---------------------------------------------------------------- Stevenson Place, 71 Stevenson (1980s; way/149840694)
 /**
@@ -1496,6 +1496,40 @@ export function sacramento325(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * 1000–1020 MARKET STREET (way/35174707): a white / cream four-storey Edwardian block on the wedge between Market,
+ * Golden Gate and Taylor (photos way-35174707-01 and -02). Punched windows, a dentilled cornice, dark shopfronts,
+ * and a ROUNDED corner at the wedge's sharp east point: a drum rising the full height under a dentilled cap.
+ */
+export function market1000(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.93, 0.91, 0.86], GLASS: Rgb = [0.22, 0.25, 0.28], SHOP: Rgb = [0.12, 0.12, 0.13]
+  tower(out, fit, {
+    height: 15,
+    base: { height: 4, face: { kind: 'blank', wall: SHOP, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 3, floor: 3.6, solid: 0.6, material: 'stucco' }, cornice: { depth: 0.5, height: 0.5, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 0.6, colour: CREAM, material: 'stucco' },
+  })
+  // the rounded corner at the wedge's EAST point, at Taylor and Golden Gate facing the theatre: with the front (−z)
+  // on Market at bearing 129, bearing 44 is local +x, so the vertex furthest along +x (the sharpest vertex was the
+  // wedge's west end, a party wall — the drum stood there in the first render)
+  const ring = towerRing(fit), n = ring.length
+  let best = 0
+  for (let i = 1; i < n; i++) if (ring[i].x > ring[best].x) best = i
+  const v = ring[best]
+  const gx = ring.reduce((s, p) => s + p.x, 0) / n, gz = ring.reduce((s, p) => s + p.z, 0) / n
+  const dl = Math.hypot(gx - v.x, gz - v.z) || 1
+  const R = 3.0, cx = v.x + (gx - v.x) / dl * 2.2, cz = v.z + (gz - v.z) / dl * 2.2
+  const y0 = 0, H = 15 // y 0 is the lowest ground under the fitted outline
+  prism(out, cx, cz, y0, y0 + H, R, 12, CREAM, surfaceTag('stucco'))
+  // the drum's windows, the punched rhythm carried round the curve
+  for (let f = 0; f < 4; f++) for (let k = -2; k <= 2; k++) {
+    const th = k * 0.42, wx = cx + Math.sin(th) * (R + 0.06), wz = cz + Math.cos(th) * (R + 0.06)
+    box(out, wx, y0 + 2.2 + f * 3.6, wz, 0.45, 0.8, 0.05, GLASS, 0)
+  }
+  // a dentilled cap over the drum, a little wider than the shaft
+  prism(out, cx, cz, y0 + H, y0 + H + 0.7, R + 0.4, 12, CREAM, surfaceTag('stucco'))
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1560,4 +1594,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   kearny123, kearny153, post126,
   kearny151683977, kearny353, kearnyPine148741772,
   sacramento301, sacramento333, sacramento325,
+  market1000,
 }
