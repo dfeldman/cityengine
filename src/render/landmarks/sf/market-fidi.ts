@@ -987,6 +987,39 @@ export function leidesdorff215(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 4, Sacramento at Montgomery (1918): the Anglo Bank, a stone classical block with a granite base, Corinthian-capped windows, a deep dentilled cornice and a balustrade (way/942303806; photos way-942303806-01, -03; the grand face is the Montgomery face, its west side). */
+export function angloBankSacramento(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.78, 0.74, 0.66]
+  tower(out, fit, {
+    height: 16,
+    base: { height: 3.6, face: { kind: 'blank', wall: [0.3, 0.29, 0.27], material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: STONE, glass: [0.2, 0.22, 0.24], pitch: 3, floor: 3.8, solid: 0.45, head: 'architrave', material: 'ashlar' }, cornice: { depth: 1, height: 1, colour: [0.84, 0.8, 0.72] } }],
+    crown: { kind: 'balustrade', height: 1.1, colour: STONE, material: 'ashlar', pier: true },
+  })
+}
+
+/** T3 batch 4, Station J annex (PG&E, 1925?): a white stucco front of pilasters and tall windows over a dark base, faces east onto Leidesdorff (way/942303807; photo way-942303807-01). */
+export function stationJAnnex(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.9, 0.89, 0.84]
+  tower(out, fit, {
+    height: 16,
+    base: { height: 3.6, face: { kind: 'blank', wall: [0.14, 0.14, 0.14], material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: [0.2, 0.22, 0.24], pitch: 3.2, floor: 4, solid: 0.5, head: 'architrave', material: 'stucco' }, cornice: { depth: 0.7, height: 0.8, colour: [0.92, 0.9, 0.86] } }],
+    crown: { kind: 'parapet', height: 0.8, colour: WHITE, material: 'stucco' },
+  })
+}
+
+/** T3 batch 4, the unnamed outline at Sacramento and Commercial (1920): a two-storey white stucco front with a dentilled cornice and a corner shopfront (way/942303804; photos way-942303804-01, -02). */
+export function sacramento942303804(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.88, 0.87, 0.82]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 3.2, face: { kind: 'curtain', wall: [0.08, 0.08, 0.08], glass: [0.18, 0.2, 0.22], pitch: 2.6, floor: 3.2, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: [0.2, 0.22, 0.24], pitch: 2.6, floor: 4, solid: 0.5, material: 'stucco' }, cornice: { depth: 0.8, height: 0.8, colour: [0.92, 0.9, 0.86] } }],
+    crown: { kind: 'parapet', height: 0.8, colour: WHITE, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1035,4 +1068,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   market1001Corner, market1005, market1009,
   market1023, artMuseumAmerica1025Market,
   stationJSacramento, wayfareTavern558Sacramento, leidesdorff215,
+  angloBankSacramento, stationJAnnex, sacramento942303804,
 }
