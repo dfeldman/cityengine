@@ -1086,6 +1086,40 @@ export function kearny260(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 8, Buich Building, 240-242 California (11 m, three storeys): a dark green-tiled shopfront (Tadich Grill) under a green bracketed cornice; photo way-260286448-01. */
+export function buichBuilding240California(out: MeshBuilder, fit: Fit): void {
+  const GREEN: Rgb = [0.16, 0.3, 0.26]
+  tower(out, fit, {
+    height: 11,
+    base: { height: 4, face: { kind: 'blank', wall: [0.12, 0.2, 0.18], material: 'tile' }, canopy: { depth: 1.2, colour: [0.1, 0.16, 0.14] } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: [0.42, 0.36, 0.28], glass: [0.2, 0.24, 0.26], pitch: 2.8, floor: 3.4, solid: 0.4, material: 'brick' }, cornice: { depth: 0.9, height: 0.9, colour: GREEN } }],
+    crown: { kind: 'parapet', height: 1, colour: GREEN, material: 'tile' },
+  })
+}
+
+/** T3 batch 8, 244-256 California (32 m, about eight storeys): a tan brick office block over a cream stone ground floor with an arched entrance and a bracketed cornice; photos way-260286441-01 and -02. */
+export function california244(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.78, 0.62, 0.42]
+  tower(out, fit, {
+    height: 32,
+    base: { height: 4.5, face: { kind: 'blank', wall: [0.9, 0.86, 0.76], material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: [0.22, 0.24, 0.26], pitch: 3, floor: 3.6, solid: 0.5, material: 'brick' }, cornice: { depth: 0.9, height: 0.9, colour: [0.9, 0.86, 0.76] } }],
+    cornices: [{ at: 4.5, depth: 0.7, height: 0.6, colour: [0.9, 0.86, 0.76] }],
+    crown: { kind: 'parapet', height: 1.8, colour: TAN, material: 'brick' },
+  })
+}
+
+/** T3 batch 8, 200-210 California (18 m, corner of Front Street): a buff limestone office block of five storeys with a bay on the corner; photo way-260286442-01. */
+export function california200(out: MeshBuilder, fit: Fit): void {
+  const LIMESTONE: Rgb = [0.84, 0.8, 0.7]
+  tower(out, fit, {
+    height: 18,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.2, 0.2, 0.2], glass: [0.3, 0.34, 0.36], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: LIMESTONE, glass: [0.22, 0.24, 0.26], pitch: 3, floor: 3.4, solid: 0.45, material: 'ashlar' }, cornice: { depth: 0.6, height: 0.6, colour: LIMESTONE } }],
+    crown: { kind: 'parapet', height: 1.2, colour: LIMESTONE, material: 'ashlar' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1138,4 +1172,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   belden148741780,
   kearny260280334, fidi151195278, kearny474354577,
   bush151195270, kearny260,
+  buichBuilding240California, california244, california200,
 }
