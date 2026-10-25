@@ -34,7 +34,10 @@ You get a handful of statues. Work through them one at a time.
    - With no folder, use WebSearch (mode standard) for its location and height. One search; two at most.
    - If it is in a museum courtyard, a building, or outside San Francisco, or you cannot find where it stands to
      within 20 m, skip it and say so.
-2. **The model.**
+2. **The model.** The GLBs carry NO size and NO orientation (owner, 2026-10-25): every file is scaled to about
+   one unit tall and faces whichever way the generator left it. The real height comes from step 1, the front from
+   the preview below. Most are untextured: draw those in `bronze` unless the statue is plainly something else
+   (white marble or stone `whitestone`, concrete, stainless `silver`, verdigris `copperoxide`).
    - `node tools/glb/inspect.ts incoming_assets/<file>`: its bounds, and whether it carries textures.
    - `node --experimental-strip-types tools/glb/preview.ts incoming_assets/<file> --out=<scratch>`: four sides on one
      sheet, with a small box on the file's +z side. Read off which model axis the FRONT faces (+z, -z, +x or -x), and
