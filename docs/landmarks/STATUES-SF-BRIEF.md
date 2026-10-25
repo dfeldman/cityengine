@@ -48,8 +48,15 @@ You get a handful of statues. Work through them one at a time.
      `whitestone`, `silver`);
    - `front`; `scale: {axis: "y", metres: <real overall height of what the model shows>}`;
    - `plinth: [w, d, h]` only when the model has no base and the real statue stands on one;
-   - `lods: [{"ratio": 1, "tex": 512}, {"ratio": 0.35, "tex": 256, "error": 0.02}]` (textured), or tex 256 for both
-     (untextured);
+   - `lods`: the source files are far too heavy for the game (Sun Yat-sen: 13 MB, 19 000 triangles, 4k textures), so
+     size each level from the triangle count `inspect` printed (owner, 2026-10-25: "they also need to be compressed
+     or downscaled in the asset pipeline in most cases"):
+     - LOD0 at most **8 000 triangles** for a life-size figure, 15 000 for a big monument or group: `ratio` =
+       target ÷ source triangles (never above 1);
+     - LOD1 at most **2 000 triangles** (4 000 for a big one), `error` 0.02 (0.04 if thin parts stop it simplifying);
+     - `tex` 512 for LOD0 and 256 for LOD1 on a textured model; 256 for both on an untextured one;
+     - after packing, check the LOD files' sizes in the packer's output: LOD0 should be under about 400 KB and LOD1
+       under 150 KB. If not, lower the ratio and pack again;
    - `artist`, `description`, `keywords`, `reference` (the about.md path, if any), `notes` (what you decided and why).
 4. **Pack and upload**, from `../assetkit`:
    - `node tools/modelpack/pack.ts <id>`
