@@ -1748,6 +1748,42 @@ export function market1448(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** 1242 Market (batch 30): a four-storey cream stucco front, paired windows between pilasters, a deep cornice band
+ *  and a red-brick shopfront with a diner sign (Mapillary frame 1131195922281866). */
+export function market1242(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.88, 0.82], RED: Rgb = [0.6, 0.22, 0.17], DARK: Rgb = [0.2, 0.24, 0.28]
+  tower(out, fit, {
+    height: 16,
+    base: { height: 4, face: { kind: 'punched', wall: RED, glass: DARK, pitch: 3, floor: 4, solid: 0.45, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: DARK, pitch: 3.2, floor: 3.4, solid: 0.6, material: 'stucco' }, cornice: { depth: 0.5, height: 0.5, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** 1234 Market (batch 30): a six-storey cream brick block with fire escapes on the front and a dark grey,
+ *  gated ground floor (Mapillary frame 1292035162613311). The OSM outline (no height) is drawn at 24 m. */
+export function market1234(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.88, 0.86, 0.8], GREY: Rgb = [0.34, 0.36, 0.38], DARK: Rgb = [0.2, 0.22, 0.25]
+  tower(out, fit, {
+    height: 24,
+    base: { height: 4, face: { kind: 'blank', wall: GREY, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: DARK, pitch: 3.6, floor: 3.2, solid: 0.7, material: 'brick' }, cornice: { depth: 0.4, height: 0.6, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'brick' },
+  })
+}
+
+/** 1220 Market (batch 30): a two-storey beige block with a continuous ribbon of dark glass over a dark ivy-
+ *  faced restaurant front, red brick piers either side (Mapillary frame 1292035162613311). */
+export function market1220(out: MeshBuilder, fit: Fit): void {
+  const BEIGE: Rgb = [0.8, 0.76, 0.66], DARK: Rgb = [0.14, 0.16, 0.15], RED: Rgb = [0.55, 0.22, 0.16]
+  tower(out, fit, {
+    height: 9,
+    base: { height: 3.5, face: { kind: 'punched', wall: RED, glass: DARK, pitch: 4, floor: 3.5, solid: 0.3, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: BEIGE, glass: [0.22, 0.26, 0.3], floor: 2.75, solid: 0.45, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: BEIGE, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -1821,4 +1857,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   market576, market148712646,
   kearny1Annex,
   market1430, market1438, market1448,
+  market1242, market1234, market1220,
 }
