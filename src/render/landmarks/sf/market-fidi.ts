@@ -2892,6 +2892,62 @@ export function kearny610Pediment(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 78 (2026-10-25): 689 Clay, a two-storey cream stucco front with a green cornice band over a glazed shopfront. */
+export function clay689Cream(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.84, 0.72]
+  const GREEN: Rgb = [0.3, 0.46, 0.4]
+  tower(out, fit, {
+    height: 10,
+    base: { height: 4, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.22, 0.24], pitch: 3.2, floor: 4, solid: 0.35, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.22, 0.26, 0.3], pitch: 2.4, floor: 3.2, solid: 0.6, material: 'stucco' }, cornice: { depth: 0.4, height: 0.5, colour: GREEN } }],
+    crown: { kind: 'parapet', height: 0.8, colour: GREEN, material: 'stucco' },
+  })
+}
+
+/** T3 batch 78: 683-685 Clay, a white painted ground floor with a shopfront over a brick upper wall. */
+export function clay683Teo(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.92, 0.91, 0.87]
+  const BRICK: Rgb = [0.55, 0.36, 0.26]
+  tower(out, fit, {
+    height: 10,
+    base: { height: 4, face: { kind: 'punched', wall: WHITE, glass: [0.18, 0.2, 0.22], pitch: 3, floor: 4, solid: 0.3, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: [0.2, 0.22, 0.24], pitch: 3, floor: 3.2, solid: 0.7, material: 'brick' }, cornice: { depth: 0.5, height: 0.4, colour: WHITE } }],
+    crown: { kind: 'parapet', height: 0.6, colour: WHITE, material: 'stucco' },
+  })
+}
+
+/** T3 batch 79: 140-142 Sansome, a plain pale stone block of about eight storeys with a deep ground floor. */
+export function sansome140Stone(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.72, 0.7, 0.66]
+  tower(out, fit, {
+    height: 28,
+    base: { height: 5, face: { kind: 'punched', wall: STONE, glass: [0.16, 0.18, 0.2], pitch: 4, floor: 5, solid: 0.4, material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: STONE, glass: [0.2, 0.24, 0.27], pitch: 3.6, floor: 3.8, solid: 0.5, material: 'ashlar' }, cornice: { depth: 0.6, height: 0.8, colour: STONE } }],
+    crown: { kind: 'parapet', height: 1.2, colour: STONE, material: 'ashlar' },
+  })
+}
+
+/** T3 batch 80: 563-565 Clay, a low neoclassical stone front with segmental-arched windows and a cornice band. */
+export function clay563Arched(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.86, 0.82, 0.72]
+  tower(out, fit, {
+    height: 9,
+    tiers: [{ to: 1, face: { kind: 'punched', wall: STONE, glass: [0.18, 0.2, 0.22], pitch: 2.8, floor: 3, solid: 0.55, arched: true, head: 'segmental', material: 'ashlar' }, cornice: { depth: 0.6, height: 0.5, colour: STONE } }],
+    crown: { kind: 'parapet', height: 0.9, colour: STONE, material: 'ashlar' },
+  })
+}
+
+/** T3 batch 81: the unnamed grey block between Washington and Merchant, a punched stucco-grey front of about eight storeys. */
+export function washington401Stone(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.66, 0.67, 0.66]
+  tower(out, fit, {
+    height: 24,
+    base: { height: 4, face: { kind: 'punched', wall: GREY, glass: [0.18, 0.2, 0.22], pitch: 3.2, floor: 4, solid: 0.4, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: GREY, glass: [0.22, 0.26, 0.3], pitch: 2.8, floor: 3, solid: 0.55, material: 'concrete' }, cornice: { depth: 0.5, height: 0.6, colour: GREY } }],
+    crown: { kind: 'parapet', height: 1, colour: GREY, material: 'concrete' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -2990,4 +3046,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   jacksonBatteryGrey, jackson350Brick,
   battery130Granite, kearny318White, kearny334Cream, kearny325Buff, kearny321Grey, kearny315Taupe,
   kearny227Arched, sutterStoneGrey, clay671White, commercial685Grey, kearny610Pediment,
+  clay689Cream, clay683Teo, sansome140Stone, clay563Arched, washington401Stone,
 }
