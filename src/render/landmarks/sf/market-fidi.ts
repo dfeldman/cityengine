@@ -931,6 +931,27 @@ export function market1009(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 2, SE side of Market between 6th and 7th: the narrow cream front (1023), and the International Art Museum of America (1025 and 1035, one facade in the photos: one tall arched window per bay over both upper storeys). */
+export function market1023(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.87, 0.78]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 4.2, face: { kind: 'curtain', wall: [0.16, 0.14, 0.13], glass: [0.2, 0.22, 0.24], pitch: 3, floor: 4.2, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.22, 0.24], pitch: 2.8, floor: 3.4, solid: 0.5, material: 'terracotta' }, cornice: { depth: 0.9, height: 0.8, colour: [0.82, 0.76, 0.62] } }],
+    crown: { kind: 'parapet', height: 1, colour: CREAM, material: 'terracotta' },
+  })
+}
+
+export function artMuseumAmerica1025Market(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.92, 0.9, 0.82]
+  tower(out, fit, {
+    height: 11,
+    base: { height: 4.2, face: { kind: 'curtain', wall: [0.16, 0.14, 0.13], glass: [0.18, 0.2, 0.22], pitch: 3.2, floor: 4.2, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.22, 0.24], pitch: 3.8, floor: 6.8, solid: 0.42, arched: true, material: 'terracotta' }, cornice: { depth: 1, height: 0.9, colour: [0.84, 0.78, 0.66] } }],
+    crown: { kind: 'balustrade', height: 1.1, colour: CREAM, material: 'terracotta', pier: true },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -977,4 +998,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   firstNationalBankNorCal,
   market570, citibankDrumm,
   market1001Corner, market1005, market1009,
+  market1023, artMuseumAmerica1025Market,
 }

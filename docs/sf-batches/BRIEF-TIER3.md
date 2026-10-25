@@ -80,8 +80,9 @@ Tokens are limited (the owner: "so as not to exhaust my allocation of tokens"). 
    - **Manifest entry** (in market-fidi.json):
      `{"osm": ["way/<id>"], "name": "<name>", "procedural": "<camelCaseName>", "height": <m>, "sign": false, "front": <bearing or "street">, "note": "market-fidi.ts: <one line on what it is and which photos>"}`.
      Check the procedural name is unused: `grep -rn "<name>" src/render/landmarks`.
-   - **Two OSM ways that are one building** (one facade spanning both in the photos): give one entry listing both
-     ids and draw it once. Say so in the report.
+   - **Two OSM ways that are one building** (one facade spanning both in the photos): give EACH way its own entry
+     naming the same procedural builder. Fitted mode draws one outline per entry, so a second id listed in the same
+     entry stands EMPTY (batch 2, 1035 Market). Say so in the report.
 4. **Verify.**
    - **Typecheck.** `node tools/typecheck.js` must be clean (one pre-existing avatarkit issue is ignored).
    - **Triangle budget.** `npx vitest run --dir tests tests/landmarks.test.ts -t "<procedural name>"` must pass:
