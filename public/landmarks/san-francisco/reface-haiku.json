@@ -156,16 +156,5 @@
     "by": "haiku",
     "image": "way-261302127-2.jpg",
     "note": "simple blue painted church building with regular windows"
-  },
-  {
-    "osm": [
-      "way/71504442"
-    ],
-    "name": "The Clift Royal Sonesta San Francisco",
-    "restyle": "chicago",
-    "height": 64,
-    "wall": "#b8b0a0",
-    "noShops": true,
-    "note": "2026-10-16 (Mapillary, docs/shots/refs/notable/clift): a 1913 seventeen-storey buff-grey brick hotel tower, regular punched windows over an arched stone base — not bays and fire escapes (was the Haiku sfapartment restyle)"
   }
 ]

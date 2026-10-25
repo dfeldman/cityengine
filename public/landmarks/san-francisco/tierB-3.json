@@ -60,19 +60,6 @@
   },
   {
     "osm": [
-      "way/192328858"
-    ],
-    "name": "The Bay Area Metro Center",
-    "height": 43,
-    "levels": 7,
-    "restyle": "bauhaus",
-    "note": "Rule check 2026-10-04 (Mapillary): white panels with blue-tinted ribbon glass — the regional government offices at 375 Beale; was rule 9 tenement.",
-    "wall": "#e7e7e4",
-    "accent": "#3c5f8c",
-    "noShops": true
-  },
-  {
-    "osm": [
       "way/421816058"
     ],
     "name": "333 Main Street",

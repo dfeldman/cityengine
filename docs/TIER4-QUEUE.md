@@ -8,20 +8,20 @@ Builders go in `src/render/landmarks/sf/downtown-t4.ts`, manifest entries in `pu
 
 | batch | rank | area | buildings (OSM, name, height, now) | status |
 |---:|---:|---|---|---|
-| 1 | 397 | SoMa by Market | `way/156123224` 5th and Mission Garage · 36 m · reface | |
-| 2 | 342 | SoMa by Market | `way/192328858` The Bay Area Metro Center · 43 m · reface | |
-| 3 | 324 | SoMa by Market | `way/6985761` (unnamed) · 97 m · reface | |
-| 4 | 314 | Union Square | `way/71504442` The Clift Royal Sonesta San Francisco · 64 m · reface | |
-| 5 | 300 | Civic Center | `way/35176131` BEI Hotel San Francisco · 58 m · reface | |
-| 6 | 291 | SoMa by Market | `way/6985617` (unnamed) · 47 m · generic | |
-| 7 | 270 | SoMa by Market | `way/80296753` 55 Hawthorne Street · 57 m · reface | |
-| 8 | 251 | Civic Center | `way/38619793` (unnamed) · 29 m · generic | |
-| 9 | 251 | SoMa by Market | `way/93817371` 633 Folsom Street · 48 m · reface | |
-| 10 | 247 | SoMa by Market | `way/1258806534` (unnamed) · 68 m · reface | |
-| 11 | 245 | Union Square | `way/19474123` (unnamed) · 24 m · generic<br>`way/19474123` (unnamed) · 24 m · generic | |
-| 12 | 242 | Civic Center | `way/35111958` 1TENth · 40 m · reface | |
-| 13 | 242 | SoMa by Market | `way/80296729` 201 Third Street · 46 m · reface | |
-| 14 | 242 | Union Square | `way/333827281` The White House Building · 32 m · reface | |
+| 1 | 397 | SoMa by Market | `way/156123224` 5th and Mission Garage · 36 m · reface || done |
+| 2 | 342 | SoMa by Market | `way/192328858` The Bay Area Metro Center · 43 m · reface || done |
+| 3 | 324 | SoMa by Market | `way/6985761` (unnamed) · 97 m · reface || done |
+| 4 | 314 | Union Square | `way/71504442` The Clift Royal Sonesta San Francisco · 64 m · reface || done |
+| 5 | 300 | Civic Center | `way/35176131` BEI Hotel San Francisco · 58 m · reface || done |
+| 6 | 291 | SoMa by Market | `way/6985617` (unnamed) · 47 m · generic || done |
+| 7 | 270 | SoMa by Market | `way/80296753` 55 Hawthorne Street · 57 m · reface || done |
+| 8 | 251 | Civic Center | `way/38619793` (unnamed) · 29 m · generic || done |
+| 9 | 251 | SoMa by Market | `way/93817371` 633 Folsom Street · 48 m · reface || done |
+| 10 | 247 | SoMa by Market | `way/1258806534` (unnamed) · 68 m · reface || done |
+| 11 | 245 | Union Square | `way/19474123` (unnamed) · 24 m · generic<br>`way/19474123` (unnamed) · 24 m · generic || done |
+| 12 | 242 | Civic Center | `way/35111958` 1TENth · 40 m · reface || done |
+| 13 | 242 | SoMa by Market | `way/80296729` 201 Third Street · 46 m · reface || done |
+| 14 | 242 | Union Square | `way/333827281` The White House Building · 32 m · reface || done |
 | 15 | 241 | Chinatown | `way/29087099` (unnamed) · 30 m · reface | |
 | 16 | 226 | Union Square | `way/3095925` (unnamed) · 42 m · generic | |
 | 17 | 225 | SoMa by Market | `way/148551352` 219 Brannan Street · 53 m · reface | |

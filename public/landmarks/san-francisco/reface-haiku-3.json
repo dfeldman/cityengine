@@ -51,18 +51,6 @@
   },
   {
     "osm": [
-      "way/1258806534"
-    ],
-    "name": "(unnamed)",
-    "restyle": "towerblock",
-    "wall": "#a8896b",
-    "by": "haiku",
-    "image": "way-1258806534-2.jpg",
-    "note": "Mixed tan/brick residential tower with individual windows in rendered wall; towerblock not skyscraper",
-    "height": 58
-  },
-  {
-    "osm": [
       "way/35115837"
     ],
     "name": "California Institute of Integral Studies",

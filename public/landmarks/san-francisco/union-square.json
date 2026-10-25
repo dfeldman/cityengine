@@ -169,7 +169,6 @@
   {"osm": ["way/333814179"], "name": "266;270;280 Sutter Street", "restyle": "classical", "note": "a stone-fronted commercial block, rusticated base and cornice", "levels": 5},
   {"osm": ["way/333814487"], "name": "256;262 Sutter Street", "restyle": "classical", "note": "a stone-fronted commercial block, rusticated base and cornice", "levels": 7},
   {"osm": ["way/333814736"], "name": "246;248;250 Sutter Street", "restyle": "classical", "note": "a stone-fronted commercial block, rusticated base and cornice", "levels": 7},
-  {"osm": ["way/333827281"], "name": "The White House Building", "restyle": "classical", "note": "the White House department store (1908): white terracotta, rusticated base, cornice", "levels": 9},
   {"osm": ["way/474354570"], "name": "way/474354570", "restyle": "chicago", "note": "a steel-framed commercial block dressed in terracotta", "levels": 12},
   {"osm": ["way/474354572"], "name": "576;578;580;588 Sutter Street", "restyle": "stucco", "note": "a low stuccoed shopfront building"},
   {"osm": ["way/585642018"], "name": "333 Geary Street", "restyle": "stucco", "note": "a low stuccoed shopfront building"},

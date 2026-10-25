@@ -1,19 +1,6 @@
 [
   {
     "osm": [
-      "way/80296729"
-    ],
-    "name": "201 Third Street",
-    "restyle": "towerblock",
-    "wall": "#d9b88f",
-    "groundWall": "#8b7355",
-    "by": "haiku",
-    "image": "way-80296729-2.jpg",
-    "note": "Cream/tan rendered wall with dark shopfront",
-    "height": 46
-  },
-  {
-    "osm": [
       "way/288794277"
     ],
     "name": "150 Otis Street",
@@ -47,17 +34,5 @@
     "image": "way-151316281.jpg",
     "note": "White rendered facade with regular fenestration",
     "height": 45
-  },
-  {
-    "osm": [
-      "way/93817371"
-    ],
-    "name": "633 Folsom Street",
-    "restyle": "bauhaus",
-    "wall": "#bfbbb3",
-    "by": "haiku",
-    "image": "way-93817371-2.jpg",
-    "note": "Modern building with horizontal window bands",
-    "height": 48
   }
 ]

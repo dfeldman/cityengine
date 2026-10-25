@@ -32,29 +32,6 @@
   },
   {
     "osm": [
-      "way/156123224"
-    ],
-    "name": "5th and Mission Garage",
-    "restyle": "brutalist",
-    "height": 36,
-    "levels": 10,
-    "note": "Rule check 2026-10-04 (Mapillary): grey concrete garage decks with white curved spandrels; was rule 7 brick.",
-    "wall": "#a7a49d",
-    "noShops": true
-  },
-  {
-    "osm": [
-      "way/80296753"
-    ],
-    "name": "55 Hawthorne Street",
-    "restyle": "chicago",
-    "height": 57,
-    "levels": 9,
-    "note": "Rule check 2026-10-04 (Mapillary): beige stone and glass office; colour from the frame.",
-    "wall": "#d3c6ac"
-  },
-  {
-    "osm": [
       "way/35024322"
     ],
     "name": "Gaylord Suites",
