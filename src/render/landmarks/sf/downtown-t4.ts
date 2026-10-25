@@ -596,6 +596,113 @@ function t4b44_1258857968(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * Relation 3492934, unnamed parking garage (OSM 28 m): grey concrete decks behind deep horizontal slots between piers,
+ * a dark grille ground floor and a driveway under a red PARK sign (Mapillary 557648302090268, 214309943862148).
+ */
+function t4b46_3492934(out: MeshBuilder, fit: Fit): void {
+  const CONCRETE: Rgb = [0.62, 0.62, 0.6]
+  tower(out, fit, {
+    height: 28,
+    base: { height: 4, face: { kind: 'punched', wall: CONCRETE, glass: [0.3, 0.3, 0.3], pitch: 5, floor: 4, solid: 0.5, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: CONCRETE, glass: [0.14, 0.14, 0.14], floor: 3.2, solid: 0.4, depth: 0.5, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 1, colour: CONCRETE, material: 'concrete' },
+  })
+}
+
+/**
+ * Way 132125160, the Galleria Park Hotel (Hotel Sutter, 1911; OSM 32 m): about ten storeys of tan brick with tall
+ * windows, arched at the top, iron balconies and a dentilled cornice, over a dark stone ground floor with a red awning
+ * (Mapillary 874593757053218, 149460807516467). Front: Sutter Street.
+ */
+function t4b47_132125160(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.72, 0.6, 0.46]
+  const TRIM: Rgb = [0.25, 0.22, 0.22]
+  tower(out, fit, {
+    height: 32,
+    base: { height: 4.5, face: { kind: 'punched', wall: [0.25, 0.25, 0.26], glass: [0.2, 0.2, 0.22], pitch: 4, floor: 4.5, solid: 0.6, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: [0.2, 0.22, 0.25], pitch: 3.2, floor: 3.2, solid: 0.5, depth: 0.4, arched: true, material: 'brick' } }],
+    cornices: [{ at: 0.85, depth: 0.6, height: 0.8, colour: TRIM }],
+    crown: { kind: 'parapet', height: 1.8, colour: TRIM, material: 'concrete' },
+  })
+}
+
+/**
+ * Relation 15336268, 85 Second Street at Mission (OSM 38 m): an eight-storey brown brick office block of the 1910s, two
+ * storeys of pale stone at the base, tall paired windows in piers and a dark dentilled cornice
+ * (Mapillary 1418257265212146, 4310440992517645).
+ */
+function t4b48_15336268(out: MeshBuilder, fit: Fit): void {
+  const BROWN: Rgb = [0.5, 0.36, 0.28]
+  tower(out, fit, {
+    height: 38,
+    base: { height: 8, face: { kind: 'punched', wall: [0.72, 0.72, 0.7], glass: [0.25, 0.28, 0.3], pitch: 3.5, floor: 4, solid: 0.6, material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BROWN, glass: [0.2, 0.22, 0.24], pitch: 3, floor: 3.6, solid: 0.55, depth: 0.4, material: 'brick' } }],
+    crown: { kind: 'parapet', height: 1.5, colour: [0.3, 0.26, 0.24], material: 'concrete' },
+  })
+}
+
+/**
+ * Way 71739089, 840 Post Street at Hyde (OSM building:levels 9, height unclear): a cream brick corner block with a
+ * dark shopfront at street level, a dentilled band over the ground floor and tall sash windows (Mapillary
+ * 4165249430265509, 185795553486613). Trees hide much of the upper floors, so the height is a judgement.
+ */
+function t4b49_71739089(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.86, 0.82, 0.74]
+  tower(out, fit, {
+    height: 24,
+    base: { height: 4, face: { kind: 'punched', wall: [0.2, 0.2, 0.2], glass: [0.2, 0.25, 0.28], pitch: 4, floor: 4, solid: 0.5, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.25, 0.28, 0.32], pitch: 3, floor: 3.2, solid: 0.5, depth: 0.4, material: 'brick' } }],
+    cornices: [{ at: 0.2, depth: 0.5, height: 0.6, colour: CREAM }],
+    crown: { kind: 'parapet', height: 1, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/**
+ * Way 33571523, Mason O'Farrell Garage (325 Mason Street; OSM 25 m, nine levels): a white-grey concrete parking garage
+ * with curved, banded decks round its corner, a rounded tower, a tall SELF PARKING sign and ENTER at the street
+ * (Mapillary 1133772608095765, 1175785819964786). Front: Mason Street.
+ */
+function t4b50_33571523(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.89, 0.85]
+  tower(out, fit, {
+    height: 25,
+    base: { height: 4.5, face: { kind: 'punched', wall: CREAM, glass: [0.15, 0.15, 0.16], pitch: 6, floor: 4.5, solid: 0.5, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: CREAM, glass: [0.3, 0.3, 0.3], floor: 3.2, solid: 0.45, depth: 0.5, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 1.5, colour: CREAM, material: 'concrete' },
+  })
+}
+
+/**
+ * Way 93817363, 600 and 620 Harrison Street (OSM 24 m): a cream stone office block of about six storeys, its upper
+ * corners stepped up into little pavilions, a glass band on the top floors and an arcade of dark glass at street level
+ * (Mapillary 2728216087509511, 1066102998173956). Front: Harrison Street.
+ */
+function t4b51_93817363(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.86, 0.82, 0.72]
+  tower(out, fit, {
+    height: 24,
+    base: { height: 4.5, face: { kind: 'curtain', wall: [0.25, 0.27, 0.3], glass: [0.25, 0.3, 0.34], pitch: 3, floor: 4.5, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: STONE, glass: [0.3, 0.36, 0.4], pitch: 3.2, floor: 3.6, solid: 0.6, depth: 0.4, material: 'ashlar' } }],
+    crown: { kind: 'parapet', height: 1.5, colour: STONE, material: 'ashlar' },
+  })
+}
+
+/**
+ * Way 243356609, the Canopy by Hilton at 250 Fourth Street (OSM 12 levels; height taken as 44 m): a dark teal glass
+ * curtain-wall hotel of about twelve storeys, cream vertical piers between the glass, a concrete base with a glass
+ * canopy (Mapillary 252054650049364, 4143737855746761). Front: Fourth Street.
+ */
+function t4b52_243356609(out: MeshBuilder, fit: Fit): void {
+  const TEAL: Rgb = [0.22, 0.34, 0.36]
+  tower(out, fit, {
+    height: 44,
+    base: { height: 4, face: { kind: 'punched', wall: [0.6, 0.6, 0.58], glass: [0.2, 0.25, 0.28], pitch: 4, floor: 4, solid: 0.5, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'fins', wall: [0.85, 0.84, 0.78], glass: TEAL, floor: 3.6, pitch: 3.5, solid: 0.2, depth: 0.5, material: 'metal' } }],
+    crown: { kind: 'parapet', height: 1.2, colour: [0.8, 0.8, 0.78], material: 'metal' },
+  })
+}
+
 export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   t4b1_156123224,
   t4b2_192328858,
@@ -643,4 +750,11 @@ export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t4b43_32947670,
   t4b44_260140485,
   t4b44_1258857968,
+  t4b46_3492934,
+  t4b47_132125160,
+  t4b48_15336268,
+  t4b49_71739089,
+  t4b50_33571523,
+  t4b51_93817363,
+  t4b52_243356609,
 }

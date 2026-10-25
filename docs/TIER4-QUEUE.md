@@ -52,14 +52,14 @@ Builders go in `src/render/landmarks/sf/downtown-t4.ts`, manifest entries in `pu
 | 42 | 164 | SoMa by Market | `way/113347426` 95 Hawthorne Street · 39 m · reface<br>`way/113347425` 620 Folsom Street · 31 m · reface || done |
 | 43 | 164 | FiDi | `way/32947670` Saybrook University · 26 m · reface || done |
 | 44 | 163 | Civic Center | `way/260140485` Kelly Cullen Community · 32 m · generic<br>`way/1258857968` 145 TL Residences · 32 m · generic || done |
-| 45 | 162 | SoMa by Market | `way/4027383` (unnamed) · 36 m · generic | |
-| 46 | 160 | SoMa by Market | `way/6985869` (unnamed) · 28 m · generic | |
-| 47 | 158 | SoMa by Market | `way/132125160` Galleria Park Hotel · 32 m · reface | |
-| 48 | 158 | SoMa by Market | `way/30672537` (unnamed) · 38 m · generic | |
-| 49 | 158 | Tenderloin | `way/71739089` 840 Post Street · 40 m · generic | |
-| 50 | 158 | Union Square | `way/33571523` Mason O'Farrell Garage · 25 m · reface | |
-| 51 | 157 | SoMa by Market | `way/93817363` 600;620 Harrison Street · 24 m · reface | |
-| 52 | 156 | SoMa by Market | `way/243356609` Canopy by Hilton San Francisco SoMa · 48 m · reface | |
+| 45 | 162 | SoMa by Market | `way/4027383` (unnamed) · 36 m · generic || done |
+| 46 | 160 | SoMa by Market | `way/6985869` (unnamed) · 28 m · generic || done |
+| 47 | 158 | SoMa by Market | `way/132125160` Galleria Park Hotel · 32 m · reface || done |
+| 48 | 158 | SoMa by Market | `way/30672537` (unnamed) · 38 m · generic || done |
+| 49 | 158 | Tenderloin | `way/71739089` 840 Post Street · 40 m · generic || done |
+| 50 | 158 | Union Square | `way/33571523` Mason O'Farrell Garage · 25 m · reface || done |
+| 51 | 157 | SoMa by Market | `way/93817363` 600;620 Harrison Street · 24 m · reface || done |
+| 52 | 156 | SoMa by Market | `way/243356609` Canopy by Hilton San Francisco SoMa · 48 m · reface || done |
 | 53 | 154 | SoMa by Market | `way/173886663` 875 Howard Street · 27 m · reface | |
 | 54 | 154 | Tenderloin | `way/123646088` Hotel Carlton · 38 m · reface | |
 | 55 | 151 | Union Square | `way/33617520` Ellis O'Farrell Garage · 25 m · reface<br>`way/941560578` CitizenM Union Square · 44 m · reface<br>`way/147689078` The Elevated Shops Building · 24 m · reface | |

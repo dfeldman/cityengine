@@ -104,18 +104,7 @@
     "note": "1909 white terra-cotta flatiron with a rounded prow (Paff); three storeys, rusticated arched base, cornice and balustrade; not Club Fugazi",
     "name": "Fugazi Bank Building"
   },
-  {
-    "osm": [
-      "way/132125160"
-    ],
-    "name": "Galleria Park Hotel",
-    "restyle": "chicago",
-    "wall": "#9c8a74",
-    "levels": 8,
-    "height": 28,
-    "noShops": true,
-    "note": "1911 eight-storey brick hotel at Sutter & Kearny (2026-10-16 from Mapillary; was a Haiku office-box recipe built without a photograph)"
-  },
+  
   {
     "osm": [
       "way/288340243"

@@ -56,17 +56,7 @@
     "restyle": "skyscraper",
     "note": "Rule check 2026-10-04 (Mapillary): glass tower on round steel columns; was rule 8 chicago."
   },
-  {
-    "osm": [
-      "way/243356609"
-    ],
-    "name": "Canopy by Hilton San Francisco SoMa",
-    "height": 41,
-    "levels": 12,
-    "restyle": "skyscraper",
-    "note": "Rule check 2026-10-04 (Mapillary): glass bands between beige panels, a modern hotel; was rule 3 chicago.",
-    "wall": "#d8d2c3"
-  },
+  
   {
     "osm": [
       "way/259266718"

@@ -9,16 +9,7 @@
     "levels": 11,
     "note": "rule 8: chicago"
   },
-  {
-    "osm": [
-      "relation/15336268"
-    ],
-    "name": "85 2nd Street",
-    "restyle": "chicago",
-    "height": 38,
-    "levels": 8,
-    "note": "rule 8: chicago"
-  },
+  
   {
     "osm": [
       "way/256072725"

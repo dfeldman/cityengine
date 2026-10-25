@@ -33,7 +33,7 @@
   {"osm": ["way/32946780"], "name": "400 Sutter Street", "restyle": "classical", "note": "a stone-fronted commercial block, rusticated base and cornice", "levels": 4},
   {"osm": ["way/32946790"], "name": "414;418;420;424;428;432 Sutter Street", "restyle": "brick", "note": "an ordinary brick shop-and-loft building", "levels": 3},
   {"osm": ["way/32946882"], "name": "way/32946882", "restyle": "chicago", "note": "a steel-framed commercial block dressed in terracotta", "levels": 9},
-  {"osm": ["way/33571523"], "name": "Mason O'Farrell Garage", "restyle": "brutalist", "note": "concrete parking structure", "levels": 9},
+  
   {"osm": ["way/33617520"], "name": "Ellis O'Farrell Garage", "restyle": "brutalist", "note": "concrete parking structure", "levels": 9},
   {"osm": ["way/35024371"], "name": "Spring Valley Water Co. Building", "restyle": "chicago", "note": "a steel-framed commercial block dressed in terracotta", "levels": 9},
   {"osm": ["way/35024380"], "name": "way/35024380", "restyle": "brick", "note": "an ordinary brick shop-and-loft building", "levels": 3},

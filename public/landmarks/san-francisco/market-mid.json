@@ -368,14 +368,5 @@
   "levels": 8,
   "note": "1968 eight-storey retail and office block (Ross): plain horizontal bands. OSM's 87 m is wrong; it is eight storeys.",
   "eaves": 30
- },
- {
-  "osm": [
-   "relation/3492934"
-  ],
-  "name": "715 Market Street (south side)",
-  "restyle": "chicago",
-  "levels": 8,
-  "note": "Pre-war commercial block behind the Market frontage."
  }
 ]
