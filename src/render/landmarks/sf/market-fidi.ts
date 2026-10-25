@@ -1062,6 +1062,30 @@ export function kearny474354577(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** Bush Street at Kearny, the south side: a tan/beige stone office block of six storeys over a brown granite base
+ *  with a glass-roofed garage entrance (photos way-151195270-02 and -03; the Bush front is the one drawn). */
+export function bush151195270(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.84, 0.78, 0.66]
+  tower(out, fit, {
+    height: 21,
+    base: { height: 4.5, face: { kind: 'blank', wall: [0.36, 0.26, 0.2], material: 'granite' }, canopy: { depth: 1.4, colour: [0.22, 0.2, 0.18] } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: [0.22, 0.25, 0.28], pitch: 3, floor: 3.4, solid: 0.45, material: 'ashlar' }, cornice: { depth: 0.6, height: 0.6, colour: [0.9, 0.85, 0.74] } }],
+    crown: { kind: 'parapet', height: 1.2, colour: TAN, material: 'ashlar' },
+  })
+}
+
+/** 260 Kearny Street: a narrow cream painted-brick block of about five storeys, a bracketed cornice, fire escapes
+ *  and a dark ground-floor shopfront (photos way-151195275-01 and -02). */
+export function kearny260(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.86, 0.82, 0.72]
+  tower(out, fit, {
+    height: 17,
+    base: { height: 4, face: { kind: 'blank', wall: [0.16, 0.14, 0.13], material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.22, 0.24], pitch: 2.8, floor: 3.2, solid: 0.42, material: 'stucco' }, cornice: { depth: 0.6, height: 0.7, colour: [0.9, 0.86, 0.76] } }],
+    crown: { kind: 'parapet', height: 1, colour: CREAM, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1113,4 +1137,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   angloBankSacramento, stationJAnnex, sacramento942303804,
   belden148741780,
   kearny260280334, fidi151195278, kearny474354577,
+  bush151195270, kearny260,
 }
