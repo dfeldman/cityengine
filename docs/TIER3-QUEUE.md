@@ -60,8 +60,8 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 48 | 98 | `way/417216803` (unnamed) · 5 m · reface brick || done (with 36) |
 | 49 | 96 | `way/260288458` 234;236 Front Street · 20 m · generic<br>`way/260288447` 222 Front Street · 23 m · generic || 222 Front done (with 47); 234-236 Front has no photographs |
 | 50 | 95 | `way/149757917` (unnamed) · 28 m · reface classical<br>`way/149757918` 49 Kearny Street · 34 m · generic<br>`way/149757923` 45;47 Kearny Street · 34 m · reface towerblock || done |
-| 51 | 95 | `way/436484312` (unnamed) · 25 m · reface skyscraper | |
-| 52 | 94 | `way/256068384` (unnamed) · 39 m · reface chicago<br>`way/256068383` (unnamed) · 16 m · generic<br>`way/256068367` 554;556 Commercial Street · 11 m · generic | |
+| 51 | 95 | `way/436484312` (unnamed) · 25 m · reface skyscraper || done |
+| 52 | 94 | `way/256068384` (unnamed) · 39 m · reface chicago<br>`way/256068383` (unnamed) · 16 m · generic<br>`way/256068367` 554;556 Commercial Street · 11 m · generic || done (with 51) |
 | 53 | 90 | `way/256067718` 231 Sansome Street · 24 m · generic<br>`way/256067716` 217;221 Sansome Street · 15 m · generic | |
 | 54 | 89 | `way/256067721` 358;360 Pine Street · 29 m · generic<br>`way/944039727` (unnamed) · 4 m · generic | |
 | 55 | 88 | `way/260925341` 660 Sacramento Street · ? · generic<br>`way/260925347` 653 Commercial Street · 12 m · generic<br>`way/1229790537` (unnamed) · ? · generic | |

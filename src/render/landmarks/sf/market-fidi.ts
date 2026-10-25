@@ -2227,6 +2227,69 @@ export function kearnyCreamSix(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * Market at Fremont, unnamed way (way/436484312, OSM 25 m, 1441 m²). Photos -01 and -02: a cream stone ground floor
+ * with an arcade entrance under an overhang, above it a bronze-tinted mirror-glass block in bands with a faceted
+ * corner, and a stone parapet. Front faces Market Street (bearing 313). Unsure which face the entrance is on.
+ */
+export function marketFremontBronze(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.84, 0.8, 0.72], BRONZE: Rgb = [0.3, 0.25, 0.2], GLASS: Rgb = [0.36, 0.3, 0.24], DARK: Rgb = [0.12, 0.12, 0.13]
+  tower(out, fit, {
+    height: 25,
+    base: { height: 6, face: { kind: 'punched', wall: STONE, glass: DARK, pitch: 3.6, floor: 6, solid: 0.5, material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: BRONZE, glass: GLASS, floor: 3.4, solid: 0.4, material: 'metal' }, cornice: { depth: 0.5, height: 0.6, colour: STONE } }],
+    crown: { kind: 'parapet', height: 0.9, colour: STONE, material: 'ashlar' },
+  })
+}
+
+/**
+ * Commercial Street stone block, way/256068384 (OSM 39 m, 585 m²). Photos -01 and -02: a cream stone office of about
+ * eleven storeys, plain punched windows with architraves, a dark granite base and a setback top. Front faces
+ * Commercial Street (bearing 164). Photos are from the far side; the tower's exact frontage is unsure.
+ */
+export function commercialStoneTen(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.87, 0.84, 0.77], GLASS: Rgb = [0.2, 0.24, 0.27], DARK: Rgb = [0.12, 0.12, 0.13], TRIM: Rgb = [0.8, 0.77, 0.7]
+  tower(out, fit, {
+    height: 39,
+    base: { height: 4.2, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.2, floor: 4.2, solid: 0.4, material: 'granite' } },
+    tiers: [
+      { to: 0.8, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 3.8, floor: 3.2, solid: 0.5, material: 'ashlar' }, cornice: { depth: 0.6, height: 0.6, colour: TRIM } },
+      { to: 1, inset: 3, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 3.8, floor: 3.2, solid: 0.5, material: 'ashlar' } },
+    ],
+    crown: { kind: 'parapet', height: 0.9, colour: TRIM, material: 'ashlar' },
+  })
+}
+
+/**
+ * Commercial Street, unnamed way (way/256068383, OSM 16 m, 333 m², built 1906). Photos -01 and -03: a stone
+ * classical block of four storeys, a rusticated arched ground floor with iron grilles over the windows, round-headed
+ * upper windows, and a balustrade above the cornice. Front faces Commercial Street (bearing 168).
+ */
+export function commercialArchedStone1906(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.8, 0.79, 0.74], GLASS: Rgb = [0.22, 0.25, 0.27], DARK: Rgb = [0.12, 0.12, 0.13], TRIM: Rgb = [0.84, 0.82, 0.77]
+  tower(out, fit, {
+    height: 16,
+    base: { height: 4.5, face: { kind: 'punched', wall: STONE, glass: DARK, pitch: 3.4, floor: 4.5, solid: 0.45, arched: true, material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: STONE, glass: GLASS, pitch: 2.8, floor: 3.8, solid: 0.55, arched: true, material: 'ashlar' }, cornice: { depth: 0.5, height: 0.5, colour: TRIM } }],
+    crown: { kind: 'balustrade', height: 1.2, colour: TRIM, material: 'ashlar', pier: true },
+  })
+}
+
+/**
+ * 554;556 Commercial Street (way/256068367, OSM 11 m, 176 m², built 1908). Photo -01 (camera SSE, 14 m): a buff brick
+ * front of three storeys, a dark granite-framed shopfront at street level and a plain brick parapet. Front faces
+ * Commercial Street (bearing 177). One photograph only.
+ */
+export function commercialBuffBrick(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.74, 0.62, 0.5], GLASS: Rgb = [0.2, 0.24, 0.27], DARK: Rgb = [0.12, 0.12, 0.13], TRIM: Rgb = [0.62, 0.52, 0.42]
+  tower(out, fit, {
+    height: 11,
+    base: { height: 3.4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.4, floor: 3.4, solid: 0.3, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: GLASS, pitch: 2.8, floor: 3.8, solid: 0.45, material: 'brick' }, cornice: { depth: 0.4, height: 0.5, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 0.8, colour: TRIM, material: 'brick' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -2310,4 +2373,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   pacific435Bays, pacific193Arcade, sansome731Bays,
   pine333Stone, front222Brick,
   postCreamBeaux, kearnyCreamTall, kearnyCreamSix,
+  marketFremontBronze, commercialStoneTen, commercialArchedStone1906, commercialBuffBrick,
 }

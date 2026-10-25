@@ -9,17 +9,6 @@
   },
   {
     "osm": [
-      "way/256068384"
-    ],
-    "name": "Building 256068384",
-    "height": 39,
-    "levels": 11,
-    "restyle": "chicago",
-    "note": "Rule check 2026-10-04 (Mapillary): plain cream block; colour from the frame.",
-    "wall": "#ddd3c0"
-  },
-  {
-    "osm": [
       "way/1116703327"
     ],
     "name": "Building 1116703327",

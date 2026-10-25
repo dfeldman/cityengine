@@ -404,14 +404,6 @@
  },
  {
   "osm": [
-   "way/436484312"
-  ],
-  "name": "Market at Fremont infill",
-  "restyle": "skyscraper",
-  "levels": 6
- },
- {
-  "osm": [
    "way/148710880"
   ],
   "name": "Battery Street tower (north)",
