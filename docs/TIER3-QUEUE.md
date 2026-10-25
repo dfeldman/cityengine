@@ -81,9 +81,9 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 69 | 70 | `way/149840697` (unnamed) · 22 m · reface brick<br>`way/149840693` 55 Stevenson Street · ? · generic || done (with 68) |
 | 70 | 69 | `way/256087383` (unnamed) · 24 m · reface chicago<br>`way/256087379` 350;368 Jackson Street · 18 m · generic<br>`way/256087384` 710 Sansome Street · 15 m · reface brick || 256087383 and 350 Jackson done; 710 Sansome skipped (its photo is 712) |
 | 71 | 68 | `way/165480947` 529;531 Commercial Street · ? · generic<br>`way/942303809` (unnamed) · ? · generic || skipped: the photos do not show these lots |
-| 72 | 68 | `way/256067704` 130 Battery Street · 25 m · generic | |
-| 73 | 65 | `way/148741782` (unnamed) · 10 m · generic<br>`way/148741781` 318;320;322 Kearny Street · 8 m · generic<br>`way/148741771` 334;336 Kearny Street · 13 m · generic | |
-| 74 | 65 | `way/151683978` 325;327;329 Kearny Street · 13 m · generic<br>`way/151683980` 321;323 Kearny Street · 13 m · generic<br>`way/151683981` 315;319 Kearny Street · 13 m · generic | |
+| 72 | 68 | `way/256067704` 130 Battery Street · 25 m · generic || done (photo-less outlines skipped) |
+| 73 | 65 | `way/148741782` (unnamed) · 10 m · generic<br>`way/148741781` 318;320;322 Kearny Street · 8 m · generic<br>`way/148741771` 334;336 Kearny Street · 13 m · generic || done (with 72; photo-less outlines skipped) |
+| 74 | 65 | `way/151683978` 325;327;329 Kearny Street · 13 m · generic<br>`way/151683980` 321;323 Kearny Street · 13 m · generic<br>`way/151683981` 315;319 Kearny Street · 13 m · generic || done (with 72; photo-less outlines skipped) |
 | 75 | 65 | `way/260280335` 227;229;231 Kearny Street · 13 m · generic<br>`way/1020483120` (unnamed) · ? · generic<br>`way/260280330` (unnamed) · 26 m · reface classical | |
 | 76 | 65 | `way/260924237` 671;677 Clay Street · 13 m · generic<br>`way/260924229` 670;674 Commercial Street · 12 m · generic<br>`way/260925350` 681;683;687 Commercial Street · ? · generic | |
 | 77 | 65 | `way/260925351` 610;612 Kearny Street · ? · generic<br>`way/260925343` 685 Commercial Street · ? · generic<br>`way/260925338` (unnamed) · ? · generic | |

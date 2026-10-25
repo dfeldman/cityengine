@@ -2727,6 +2727,93 @@ export function jackson350Brick(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * 130 Battery Street (way/256067704, OSM 25 m, 531 m², 1986). Photo -01: a tan granite-faced block, a tall glass
+ * lobby at street level under a sign band, granite pilasters between the bays, dark glazing above. Front faces
+ * Battery Street (bearing 255).
+ */
+export function battery130Granite(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.72, 0.66, 0.58], GLASS: Rgb = [0.18, 0.2, 0.22]
+  tower(out, fit, {
+    height: 25,
+    base: { height: 6, face: { kind: 'punched', wall: TAN, glass: GLASS, pitch: 3.6, floor: 6, solid: 0.35, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: GLASS, pitch: 3.2, floor: 3.6, solid: 0.4, material: 'granite' }, cornice: { depth: 0.5, height: 0.6, colour: TAN } }],
+    crown: { kind: 'parapet', height: 1, colour: TAN, material: 'granite' },
+  })
+}
+
+/**
+ * 318-322 Kearny Street (way/148741781, OSM 8 m, 340 m², 1907). Photo -01: a two-storey white stucco front with a
+ * flat parapet and a cornice, a black fascia over the shopfront. Front faces Kearny Street (bearing 269).
+ */
+export function kearny318White(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.9, 0.89, 0.86], DARK: Rgb = [0.1, 0.1, 0.11], GLASS: Rgb = [0.22, 0.25, 0.28]
+  tower(out, fit, {
+    height: 8,
+    base: { height: 3, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.4, floor: 3, solid: 0.3, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: GLASS, pitch: 2.6, floor: 2.6, solid: 0.6, material: 'stucco' }, cornice: { depth: 0.4, height: 0.5, colour: WHITE } }],
+    crown: { kind: 'parapet', height: 0.6, colour: WHITE, material: 'stucco' },
+  })
+}
+
+/**
+ * 334-336 Kearny Street (way/148741771, OSM 13 m, 102 m², 1906). Photo -02: a narrow three-storey cream stucco front,
+ * paired upper windows, a dark-fascia shopfront, a flat parapet. Front faces Kearny Street (bearing 260).
+ */
+export function kearny334Cream(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.86, 0.84, 0.78], DARK: Rgb = [0.12, 0.12, 0.13], GLASS: Rgb = [0.22, 0.25, 0.28], TRIM: Rgb = [0.74, 0.7, 0.62]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.2, floor: 4, solid: 0.4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 2.8, floor: 3.1, solid: 0.55, material: 'stucco' }, cornice: { depth: 0.4, height: 0.5, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 0.8, colour: TRIM, material: 'stucco' },
+  })
+}
+
+/**
+ * 325-329 Kearny Street (way/151683978, OSM 13 m, 139 m², 1907). Photo -02: a three-storey buff painted front with
+ * tall windows under an ornate moulded cornice, a dark shopfront below. Front faces Kearny Street (bearing 74).
+ */
+export function kearny325Buff(out: MeshBuilder, fit: Fit): void {
+  const BUFF: Rgb = [0.74, 0.66, 0.5], DARK: Rgb = [0.12, 0.12, 0.13], GLASS: Rgb = [0.24, 0.26, 0.26], TRIM: Rgb = [0.82, 0.76, 0.6]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.2, floor: 4, solid: 0.4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BUFF, glass: GLASS, pitch: 2.8, floor: 3, solid: 0.5, material: 'stucco' }, cornice: { depth: 0.6, height: 0.8, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 1, colour: TRIM, material: 'stucco' },
+  })
+}
+
+/**
+ * 321-323 Kearny Street, the Muraccis Japanese Curry front (way/151683980, OSM 13 m, 120 m², 1912). Photo -01: a
+ * three-storey grey stucco front with a dentilled cornice, a fire escape across the upper windows, a shopfront with
+ * a painted fascia. Front faces Kearny Street (bearing 90).
+ */
+export function kearny321Grey(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.6, 0.58, 0.55], DARK: Rgb = [0.12, 0.12, 0.13], GLASS: Rgb = [0.22, 0.24, 0.26]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.2, floor: 4, solid: 0.4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: GREY, glass: GLASS, pitch: 2.8, floor: 3.1, solid: 0.6, material: 'stucco' }, cornice: { depth: 0.6, height: 0.7, colour: GREY } }],
+    crown: { kind: 'parapet', height: 1, colour: GREY, material: 'stucco' },
+  })
+}
+
+/**
+ * 315-319 Kearny Street, the Cinta Aveda Institute front (way/151683981, OSM 13 m, 110 m², 1907). Photos -01 and -02:
+ * a plain three-storey taupe stucco block with a flat cornice, punched windows in two rows, a wide signboard band
+ * over the ground floor. Front faces Kearny Street (bearing 84).
+ */
+export function kearny315Taupe(out: MeshBuilder, fit: Fit): void {
+  const TAUPE: Rgb = [0.66, 0.6, 0.55], DARK: Rgb = [0.12, 0.12, 0.13], GLASS: Rgb = [0.22, 0.24, 0.26]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.4, floor: 4, solid: 0.5, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAUPE, glass: GLASS, pitch: 3, floor: 3.1, solid: 0.6, material: 'stucco' }, cornice: { depth: 0.5, height: 0.6, colour: TAUPE } }],
+    crown: { kind: 'parapet', height: 0.9, colour: TAUPE, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -2823,4 +2910,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   second30Stucco, clayUnnamedCream, clay559Ashlar, front227Gothic, california212Stone, harringtonsBrick,
   columbus42Cream, montgomeryCreamArched, stevensonGreyPanel, stevenson55Brick,
   jacksonBatteryGrey, jackson350Brick,
+  battery130Granite, kearny318White, kearny334Cream, kearny325Buff, kearny321Grey, kearny315Taupe,
 }
