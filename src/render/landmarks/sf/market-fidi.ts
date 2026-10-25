@@ -3464,6 +3464,93 @@ export function washington392Victorian(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 102: 65;75 Battery Street, way/260282391, 431 m², 1918, OSM 14 m. Photo -01: a pale grey stone block with
+ * horizontal courses and a dark glazed shopfront (Café Atlas sign). Front Battery (bearing 81), unsure. */
+export function battery65GreyStone(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.74, 0.73, 0.69], DARK: Rgb = [0.18, 0.2, 0.22], GLASS: Rgb = [0.16, 0.2, 0.22]
+  tower(out, fit, {
+    height: 14,
+    base: { height: 3.5, face: { kind: 'curtain', wall: DARK, glass: GLASS, pitch: 3, floor: 3.5, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: STONE, glass: [0.24, 0.27, 0.3], floor: 3.2, solid: 0.6, material: 'ashlar' }, cornice: { depth: 0.4, height: 0.5, colour: [0.8, 0.79, 0.74] } }],
+    crown: { kind: 'parapet', height: 0.8, colour: STONE, material: 'ashlar' },
+  })
+}
+
+/** T3 batch 103: San Francisco Fire Station 13, 530 Sansome Street, way/35266543, 793 m², OSM 10 m. Photos -01, -03: a
+ * two-storey firehouse, dark glazing along the lower storey, a high grey concrete parapet with a red SFFD roundel.
+ * Front Sansome (bearing 262), unsure (photo -03 faces Washington). */
+export function fireStation13Concrete(out: MeshBuilder, fit: Fit): void {
+  const CONCRETE: Rgb = [0.76, 0.76, 0.73], BLACK: Rgb = [0.1, 0.11, 0.13]
+  tower(out, fit, {
+    height: 10,
+    base: { height: 6.2, face: { kind: 'curtain', wall: [0.14, 0.15, 0.16], glass: BLACK, pitch: 2.4, floor: 3.1, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'blank', wall: CONCRETE, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 0.5, colour: [0.66, 0.66, 0.63], material: 'stucco' },
+  })
+}
+
+/** T3 batch 103: unnamed, way/256072718, 385 m², 1907, OSM 12 m. Photo -01: a tan painted-brick block with two tall
+ * arched windows, red-trimmed, a plain entrance under a sign, a cornice at the top. Front Washington (bearing 352),
+ * unsure. */
+export function washington425TanArched(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.74, 0.7, 0.55], DARK: Rgb = [0.2, 0.2, 0.19], GLASS: Rgb = [0.2, 0.22, 0.22]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 3.4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.2, floor: 3.4, solid: 0.4, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: [0.22, 0.2, 0.2], pitch: 3.2, floor: 4.2, solid: 0.5, arched: true, head: 'architrave', material: 'stucco' }, cornice: { depth: 0.35, height: 0.45, colour: [0.82, 0.78, 0.66] } }],
+    crown: { kind: 'parapet', height: 0.8, colour: TAN, material: 'stucco' },
+  })
+}
+
+/** T3 batch 103: unnamed, way/256072708, 438 m², 1907, OSM 8 m. Photo -01: a two-storey red-brick block with three
+ * arched upper windows, a dentilled cornice, a shopfront with a plaque and an arched doorway (Massimo del Panino).
+ * Front Washington (bearing 352), unsure. */
+export function washingtonMassimoBrick(out: MeshBuilder, fit: Fit): void {
+  const RED: Rgb = [0.58, 0.26, 0.18], DARK: Rgb = [0.3, 0.14, 0.1], GLASS: Rgb = [0.18, 0.2, 0.2]
+  tower(out, fit, {
+    height: 8,
+    base: { height: 3, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.2, floor: 3, solid: 0.45, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: RED, glass: GLASS, pitch: 3.2, floor: 2.6, solid: 0.5, arched: true, head: 'architrave', material: 'brick' }, cornice: { depth: 0.4, height: 0.5, colour: [0.64, 0.3, 0.2] } }],
+    crown: { kind: 'parapet', height: 0.6, colour: RED, material: 'brick' },
+  })
+}
+
+/** T3 batch 105: unnamed, way/941854099, 190 m², 1965, OSM height missing (4 m used). Photo -01: a low single-storey
+ * grey stucco pavilion with a flat overhanging roof and pale lattice-patterned screen panels, under trees. Front
+ * Drumm (bearing 80), unsure. */
+export function washingtonPavilionGrey(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.6, 0.61, 0.6]
+  tower(out, fit, {
+    height: 4,
+    tiers: [{ to: 1, face: { kind: 'punched', wall: GREY, glass: [0.3, 0.32, 0.32], pitch: 2.4, floor: 4, solid: 0.7, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 0.5, colour: [0.48, 0.5, 0.5], material: 'concrete' },
+  })
+}
+
+/** T3 batch 105: unnamed, way/588363944, 126 m², 1966, OSM 12 m. Photo -01: a dark brown exposed-aggregate base with
+ * louvred shutters at the ground, white stucco storeys above with balconies and a dark fascia over, the Gateway
+ * apartments. Front Drumm (bearing 82), unsure. */
+export function drummGatewayStucco1966(out: MeshBuilder, fit: Fit): void {
+  const AGG: Rgb = [0.34, 0.27, 0.2], WHITE: Rgb = [0.92, 0.91, 0.88], DARK: Rgb = [0.25, 0.23, 0.22]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 4.5, face: { kind: 'bands', wall: AGG, glass: [0.18, 0.18, 0.18], floor: 4.5, solid: 0.7, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: WHITE, glass: [0.3, 0.34, 0.36], floor: 2.8, solid: 0.6, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 1.0, colour: DARK, material: 'concrete' },
+  })
+}
+
+/** T3 batch 105: unnamed, way/588363945, 60 m², 1966, OSM 8 m. Photo -01 (night): a blank wall of dark brown exposed
+ * aggregate with vertical piers and a grey sill band, a Gateway base. Front Washington (bearing 172), unsure. */
+export function drummGatewayDark1966(out: MeshBuilder, fit: Fit): void {
+  const AGG: Rgb = [0.36, 0.29, 0.22], GREY: Rgb = [0.55, 0.55, 0.53]
+  tower(out, fit, {
+    height: 8,
+    tiers: [{ to: 1, face: { kind: 'fins', wall: AGG, glass: [0.18, 0.17, 0.16], floor: 8, pitch: 2.4, solid: 0.7, depth: 0.25, material: 'concrete' }, cornice: { depth: 0.3, height: 0.4, colour: GREY } }],
+    crown: { kind: 'parapet', height: 0.6, colour: GREY, material: 'concrete' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -3573,4 +3660,6 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   jackson412Brick, sansome705Brick,
   jessieGreyStone2002, montgomery850CreamStucco, montgomeryRedBrickSash, montgomery836Garage,
   columbus53CreamBay, washington646BlueLion, washington392Victorian,
+  battery65GreyStone, fireStation13Concrete, washington425TanArched, washingtonMassimoBrick,
+  washingtonPavilionGrey, drummGatewayStucco1966, drummGatewayDark1966,
 }

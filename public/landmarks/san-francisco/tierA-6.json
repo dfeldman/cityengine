@@ -1,6 +1,5 @@
 [
   {"osm": ["way/550652205"], "name": "Montgomery Street Station", "restyle": "chicago", "levels": 2, "height": 6, "note": "Small Muni/BART station entrance structure, no distinct architecture."},
-  {"osm": ["way/35266543"], "name": "San Francisco Fire Station 13", "restyle": "brick", "noShops": true, "levels": 2, "height": 10, "note": "Classic red-brick firehouse."},
   {"osm": ["way/260155574"], "name": "Larkin Street Youth Services", "restyle": "stucco", "levels": 3, "height": 12, "note": "Ordinary Tenderloin social-services building, plain stucco block."},
   {"osm": ["way/114304294"], "name": "Boys & Girls Club", "restyle": "stucco", "levels": 3, "height": 10, "note": "Ordinary community-services building, stucco block."},
   {"osm": ["way/260369760"], "name": "The Riley Center", "restyle": "stucco", "levels": 3, "height": 10, "note": "Ordinary social-services building, stucco block."},
