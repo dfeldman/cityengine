@@ -3379,6 +3379,91 @@ export function sansome705Brick(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 99: unnamed, way/1010864204, 100 m², 2002, OSM height missing (12 m used). Photo -01: a grey stone block
+ * with a recessed arched glass entrance and a '55' sign at the kerb. Front Jessie (bearing 129), unsure. */
+export function jessieGreyStone2002(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.6, 0.6, 0.58], GLASS: Rgb = [0.2, 0.26, 0.28]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 4, face: { kind: 'punched', wall: GREY, glass: GLASS, pitch: 3.4, floor: 4, solid: 0.5, arched: true, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: GREY, glass: GLASS, pitch: 3.2, floor: 2.7, solid: 0.5, material: 'granite' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: GREY, material: 'granite' },
+  })
+}
+
+/** T3 batch 100: 850;888 Montgomery Street, way/32946057, 707 m², OSM 16 m. Photo -01: a cream stucco upper with tall
+ * arched windows over a brick ground floor of piers and big shop glass. Front Montgomery (bearing 261), unsure. */
+export function montgomery850CreamStucco(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.86, 0.82, 0.72], BRICK: Rgb = [0.5, 0.3, 0.22], GLASS: Rgb = [0.2, 0.22, 0.24]
+  tower(out, fit, {
+    height: 16,
+    base: { height: 4.5, face: { kind: 'punched', wall: BRICK, glass: GLASS, pitch: 3.2, floor: 4.5, solid: 0.3, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 3.2, floor: 3.3, solid: 0.4, arched: true, material: 'stucco' }, cornice: { depth: 0.4, height: 0.6, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** T3 batch 100: Montgomery Street, way/256088141, 542 m², OSM 12 m (10 m used: two storeys and a parapet). Photos
+ * -01, -02: a red brick block with steel-sash many-paned windows and a stone-framed shopfront beside it. Front
+ * Montgomery (bearing 261), unsure. */
+export function montgomeryRedBrickSash(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.56, 0.27, 0.18], STONE: Rgb = [0.75, 0.7, 0.6], GLASS: Rgb = [0.22, 0.26, 0.28]
+  tower(out, fit, {
+    height: 10,
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: GLASS, pitch: 2.6, floor: 3.4, solid: 0.45, material: 'brick' }, cornice: { depth: 0.3, height: 0.5, colour: STONE } }],
+    crown: { kind: 'parapet', height: 1.0, colour: BRICK, material: 'brick' },
+  })
+}
+
+/** T3 batch 100: 836 Montgomery Street, way/256088156, 640 m², OSM 6 m. Photo -01 is a street canyon with the building
+ * barely in frame: a dark fluted concrete garage wall. Front Montgomery (bearing 262), unsure. */
+export function montgomery836Garage(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.4, 0.4, 0.4], DARK: Rgb = [0.22, 0.22, 0.23]
+  tower(out, fit, {
+    height: 6,
+    tiers: [{ to: 1, face: { kind: 'fins', wall: GREY, glass: DARK, floor: 3, pitch: 1.2, solid: 0.5, depth: 0.3, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 0.4, colour: GREY, material: 'concrete' },
+  })
+}
+
+/** T3 batch 101: 53;55 Columbus Avenue, way/256072724, 772 m², OSM 11 m. Photos -01, -02: a cream stucco three-storey
+ * block with a red-trimmed corner bay and a hipped cap, a cream ground floor with a red-framed shopfront. Front
+ * Columbus (bearing 40), unsure. */
+export function columbus53CreamBay(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.84, 0.72], RED: Rgb = [0.55, 0.28, 0.2], GLASS: Rgb = [0.2, 0.2, 0.2]
+  tower(out, fit, {
+    height: 11,
+    base: { height: 3.5, face: { kind: 'bands', wall: CREAM, glass: [0.2, 0.18, 0.16], floor: 3.5, solid: 0.35, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'bays', wall: CREAM, glass: GLASS, floor: 2.6, pitch: 3, bay: { depth: 0.6 }, material: 'stucco' }, cornice: { depth: 0.4, height: 0.5, colour: RED } }],
+    crown: { kind: 'hip', height: 1.6, inset: 0.5, colour: RED, material: 'tile' },
+  })
+}
+
+/** T3 batch 101: 646 Washington Street, way/256072713, 434 m², 1909, OSM 14 m. Photos -01, -02: a dark blue painted
+ * brick block of three storeys with lion-head corbels at the top, retail frontages with 'For Lease' signs below.
+ * Front Washington (bearing 171), unsure. */
+export function washington646BlueLion(out: MeshBuilder, fit: Fit): void {
+  const BLUE: Rgb = [0.12, 0.17, 0.3], DARK: Rgb = [0.08, 0.1, 0.16], GLASS: Rgb = [0.18, 0.2, 0.22]
+  tower(out, fit, {
+    height: 14,
+    base: { height: 4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.2, floor: 4, solid: 0.4, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BLUE, glass: GLASS, pitch: 2.6, floor: 3.3, solid: 0.5, material: 'brick' }, cornice: { depth: 0.5, height: 0.8, colour: DARK } }],
+    crown: { kind: 'parapet', height: 1.0, colour: BLUE, material: 'brick' },
+  })
+}
+
+/** T3 batch 101: unnamed, way/392852707, 325 m², 1907, OSM 12 m. Photo -01: a cream stucco Victorian with fire escapes
+ * on its upper storeys and a shopfront below, next to the blue block. Front Washington (bearing 172), unsure. */
+export function washington392Victorian(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.9, 0.88, 0.82], DARK: Rgb = [0.2, 0.2, 0.2], GLASS: Rgb = [0.2, 0.22, 0.24]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 4, face: { kind: 'punched', wall: WHITE, glass: GLASS, pitch: 3.2, floor: 4, solid: 0.5, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'bays', wall: WHITE, glass: GLASS, floor: 2.7, pitch: 2.8, bay: { depth: 0.5 }, material: 'stucco' }, cornice: { depth: 0.4, height: 0.6, colour: DARK } }],
+    crown: { kind: 'parapet', height: 0.9, colour: WHITE, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -3486,4 +3571,6 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   montgomery451Cream, montgomeryRedBrick1907,
   postVictorianCream, sutterGoldGlass, jacksonAggregate1966, jacksonArchedDark1966, davisLouvredGarage1966,
   jackson412Brick, sansome705Brick,
+  jessieGreyStone2002, montgomery850CreamStucco, montgomeryRedBrickSash, montgomery836Garage,
+  columbus53CreamBay, washington646BlueLion, washington392Victorian,
 }

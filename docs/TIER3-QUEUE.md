@@ -108,9 +108,9 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 96 | 45 | `way/151195273` (unnamed) · ? · generic || done (with 95; photo-less outlines skipped) |
 | 97 | 45 | `way/256084916` (unnamed) · 13 m · generic<br>`way/260927794` (unnamed) · 13 m · generic<br>`way/260927792` (unnamed) · 13 m · generic || done (with 95; photo-less outlines skipped) |
 | 98 | 43 | `way/256088142` 412;414 Jackson Street · 17 m · reface brick<br>`way/260937912` 40 Gold Street · 12 m · reface brick<br>`way/256088146` 705;727;729 Sansome Street · 13 m · reface brick || done (with 95; photo-less outlines skipped) |
-| 99 | 42 | `way/1010864204` (unnamed) · ? · generic | |
-| 100 | 42 | `way/32946057` 850;888 Montgomery Street · ? · reface brick<br>`way/256088141` Montgomery Street · ? · reface brick<br>`way/256088156` 836 Montgomery Street · 6 m · reface brick | |
-| 101 | 41 | `way/256072724` 53;55 Columbus Avenue · 11 m · generic<br>`way/256072713` 646 Washington Street · 14 m · generic<br>`way/392852707` (unnamed) · ? · generic | |
+| 99 | 42 | `way/1010864204` (unnamed) · ? · generic || done (photo-less outlines skipped) |
+| 100 | 42 | `way/32946057` 850;888 Montgomery Street · ? · reface brick<br>`way/256088141` Montgomery Street · ? · reface brick<br>`way/256088156` 836 Montgomery Street · 6 m · reface brick || done (with 99; photo-less outlines skipped) |
+| 101 | 41 | `way/256072724` 53;55 Columbus Avenue · 11 m · generic<br>`way/256072713` 646 Washington Street · 14 m · generic<br>`way/392852707` (unnamed) · ? · generic || done (with 99; photo-less outlines skipped) |
 | 102 | 39 | `way/260282391` 65;75 Battery Street · 14 m · generic | |
 | 103 | 38 | `way/35266543` San Francisco Fire Station 13 — 530 Sansome St · 10 m · reface brick<br>`way/256072718` (unnamed) · 12 m · generic<br>`way/256072708` (unnamed) · 8 m · generic | |
 | 104 | 37 | `way/256086588` 607;611 Front Street · 10 m · generic | |
