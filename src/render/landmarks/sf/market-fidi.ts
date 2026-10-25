@@ -4118,6 +4118,90 @@ export function t3b130_260937908(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 131: way/260288459 (unnamed corner, Drumm Street frontage, bearing 80), 179 m², OSM 11 m. Photo -01: a two-storey
+ * cream stucco restaurant block with green and teal awnings over its shopfronts, a dark-green cornice, and a tall tower
+ * behind. Photo -02: a dark three-storey neighbour with a fire escape, not modelled. */
+export function t3b131_260288459(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.92, 0.89, 0.8], TEAL: Rgb = [0.12, 0.36, 0.38], GREEN: Rgb = [0.5, 0.66, 0.22], GLASS: Rgb = [0.22, 0.25, 0.28]
+  tower(out, fit, {
+    height: 11,
+    base: { height: 3.6, face: { kind: 'curtain', wall: CREAM, glass: GLASS, pitch: 3, floor: 3.6, material: 'stucco' }, canopy: { depth: 1.2, colour: GREEN } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 2.6, floor: 3.7, solid: 0.62, material: 'stucco' }, cornice: { depth: 0.35, height: 0.3, colour: TEAL } }],
+    crown: { kind: 'parapet', height: 0.7, colour: TEAL, material: 'stucco' },
+  })
+}
+
+/** T3 batch 132: way/260280328 (unnamed, Kearny Street frontage, bearing 81), 127 m², OSM 13 m. Photo -01: a tall tan-and-cream
+ * stucco block of four or five storeys with a China Fun Express shopfront under a canopy and a stepped white cornice. Photo -02:
+ * a narrower grey-cream building beside it, not modelled separately. */
+export function t3b132_260280328(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.78, 0.7, 0.58], CREAM: Rgb = [0.9, 0.88, 0.82], BROWN: Rgb = [0.4, 0.3, 0.24], GLASS: Rgb = [0.22, 0.25, 0.28]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 3.8, face: { kind: 'punched', wall: BROWN, glass: GLASS, pitch: 3.2, floor: 3.8, solid: 0.4, material: 'stucco' }, canopy: { depth: 1, colour: BROWN } },
+    tiers: [
+      { to: 0.55, face: { kind: 'punched', wall: TAN, glass: GLASS, pitch: 2.4, floor: 3.2, solid: 0.6, material: 'stucco' }, cornice: { depth: 0.45, height: 0.35, colour: CREAM } },
+      { to: 1, inset: 0.5, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 2.4, floor: 3.2, solid: 0.6, material: 'stucco' } },
+    ],
+    crown: { kind: 'parapet', height: 0.8, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** T3 batch 133: way/260930253 (unnamed Golden Gateway podium, Washington Street frontage, bearing 170), 92 m², OSM 12 m. Photos -01
+ * and -02: a dark brown pebble-aggregate panel wall with louvred vents, a white steel stair and trees in front. */
+export function t3b133_260930253(out: MeshBuilder, fit: Fit): void {
+  const PEBBLE: Rgb = [0.34, 0.28, 0.22], DARK: Rgb = [0.14, 0.14, 0.15]
+  tower(out, fit, {
+    height: 12,
+    tiers: [
+      { to: 0.5, face: { kind: 'punched', wall: PEBBLE, glass: DARK, pitch: 4.5, floor: 4.5, solid: 0.85, material: 'concrete' }, cornice: { depth: 0.6, height: 0.4, colour: DARK } },
+      { to: 1, face: { kind: 'punched', wall: PEBBLE, glass: DARK, pitch: 4, floor: 3.5, solid: 0.8, material: 'concrete' } },
+    ],
+    crown: { kind: 'parapet', height: 0.5, colour: DARK, material: 'concrete' },
+  })
+}
+
+/** T3 batch 134: way/260930248 (unnamed Golden Gateway podium, Washington Street frontage, bearing 170), 87 m², OSM 13 m. Photo -01:
+ * the same dark pebble-aggregate wall with a white stair and trees over it. Modelled on the photograph, not on the neighbour. */
+export function t3b134_260930248(out: MeshBuilder, fit: Fit): void {
+  const PEBBLE: Rgb = [0.34, 0.28, 0.22], DARK: Rgb = [0.14, 0.14, 0.15], WHITE: Rgb = [0.82, 0.82, 0.8]
+  tower(out, fit, {
+    height: 13,
+    tiers: [
+      { to: 0.4, face: { kind: 'punched', wall: PEBBLE, glass: DARK, pitch: 4.5, floor: 4.5, solid: 0.9, material: 'concrete' }, cornice: { depth: 0.5, height: 0.35, colour: WHITE } },
+      { to: 1, face: { kind: 'punched', wall: PEBBLE, glass: DARK, pitch: 4, floor: 3.4, solid: 0.85, material: 'concrete' } },
+    ],
+    crown: { kind: 'parapet', height: 0.5, colour: DARK, material: 'concrete' },
+  })
+}
+
+/** T3 batch 134: way/260930242 (unnamed Golden Gateway podium, Washington Street frontage, bearing 170), 63 m², OSM 13 m. Photo -01:
+ * a dark pebble-aggregate wall of tall recessed panels with louvres, under trees. Modelled on the photograph. */
+export function t3b134_260930242(out: MeshBuilder, fit: Fit): void {
+  const PEBBLE: Rgb = [0.34, 0.28, 0.22], DARK: Rgb = [0.14, 0.14, 0.15]
+  tower(out, fit, {
+    height: 13,
+    tiers: [
+      { to: 0.45, face: { kind: 'punched', wall: PEBBLE, glass: DARK, pitch: 4, floor: 4.5, solid: 0.85, material: 'concrete' }, cornice: { depth: 0.5, height: 0.35, colour: DARK } },
+      { to: 1, face: { kind: 'punched', wall: PEBBLE, glass: DARK, pitch: 4, floor: 3.5, solid: 0.85, material: 'concrete' } },
+    ],
+    crown: { kind: 'parapet', height: 0.5, colour: DARK, material: 'concrete' },
+  })
+}
+
+/** T3 batch 135: way/260930255 (unnamed, Jackson Street frontage, bearing 353), 86 m², OSM 13 m. Photos -01 and -02: a mauve-grey
+ * stucco ground floor under a row of tall white round-headed arches, a colonnade on the pavement, and a white upper storey above
+ * with a glazed bay and a flat roof. */
+export function t3b135_260930255(out: MeshBuilder, fit: Fit): void {
+  const MAUVE: Rgb = [0.42, 0.36, 0.4], WHITE: Rgb = [0.93, 0.93, 0.9], GLASS: Rgb = [0.2, 0.24, 0.28]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 4.2, face: { kind: 'punched', wall: MAUVE, glass: GLASS, pitch: 4, floor: 4.2, solid: 0.5, arched: true, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: GLASS, pitch: 3, floor: 3.1, solid: 0.7, material: 'stucco' }, cornice: { depth: 0.3, height: 0.3, colour: WHITE } }],
+    crown: { kind: 'parapet', height: 0.6, colour: WHITE, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -4239,4 +4323,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t3b121_148666784, t3b121_260937901, t3b122_148668310, t3b123_588363946, t3b123_588363948, t3b123_588363947, t3b124_690663635,
   t3b126_256088650, t3b127_940068788, t3b128_260937903, t3b128_260937910,
   t3b129_260930238, t3b129_260930235, t3b129_260930254, t3b130_260937904, t3b130_260937899, t3b130_260937908,
+  t3b131_260288459, t3b132_260280328, t3b133_260930253, t3b134_260930248, t3b134_260930242, t3b135_260930255,
 }

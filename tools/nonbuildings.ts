@@ -197,6 +197,8 @@ export const BUILDINGS_OK: string[] = [
   'transamericaPyramid',
   // way/1458363734, building=pagoda: a real freestanding building, not a park pavilion
   'peacePagoda',
+  // a one-storey grey stucco shop pavilion in the Golden Gateway podium on Washington (Tier 3, 2026-10-25)
+  'washingtonPavilionGrey',
   /*
    * And the one that matters most: Salesforce Park (BUGS.md #66, #67) is NOT its own builder. It is drawn
    * inside `salesforceTransitCenter` (sf/districts/transbay.ts), whose entry is the Transit Center — a

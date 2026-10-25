@@ -155,7 +155,6 @@
   {"osm": ["way/256917346"], "name": "245;251;253;255 Post Street", "restyle": "classical", "note": "a stone-fronted commercial block, rusticated base and cornice", "levels": 7},
   {"osm": ["way/260175857"], "name": "Mc Alpin Apartments", "restyle": "sfapartment", "note": "an Edwardian apartment block on the hill above the square", "levels": 7},
   {"osm": ["way/260280326"], "name": "W&J Sloane Building", "procedural": "e9_WJSloane_222Sutter", "note": "a steel-framed commercial block dressed in terracotta", "levels": 8},
-  {"osm": ["way/260280328"], "name": "way/260280328", "restyle": "brick", "note": "an ordinary brick shop-and-loft building", "levels": 4},
   {"osm": ["way/274592034"], "name": "way/274592034", "restyle": "brick", "note": "an ordinary brick shop-and-loft building", "levels": 3},
   {"osm": ["way/274592035"], "name": "377 Geary Street", "restyle": "stucco", "note": "a low stuccoed shopfront building", "levels": 2},
   {"osm": ["way/274592036"], "name": "381;383;389 Geary Street", "restyle": "brick", "note": "an ordinary brick shop-and-loft building", "levels": 3},
