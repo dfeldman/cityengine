@@ -1716,6 +1716,38 @@ export function market1278(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** 1430 MARKET: a grey-beige stucco hotel block, four upper floors of plain punched windows under a parapet, over a dark shopfront with a central arched entrance (Mapillary 01, 02). */
+export function market1430(out: MeshBuilder, fit: Fit): void {
+  const BEIGE: Rgb = [0.72, 0.7, 0.66], DARK: Rgb = [0.2, 0.19, 0.18]
+  tower(out, fit, {
+    height: 17,
+    base: { height: 4, face: { kind: 'curtain', wall: DARK, glass: [0.22, 0.25, 0.27], pitch: 3.2, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BEIGE, glass: [0.24, 0.27, 0.3], floor: 3.2, pitch: 3.2, solid: 0.6, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 1.2, colour: BEIGE, material: 'stucco' },
+  })
+}
+
+/** 1438 MARKET: a three-or-four-storey olive-green painted building, continuous bands of dark window over a glazed shopfront (Mapillary 01, 02). */
+export function market1438(out: MeshBuilder, fit: Fit): void {
+  const OLIVE: Rgb = [0.42, 0.44, 0.32], DARK: Rgb = [0.18, 0.2, 0.2]
+  tower(out, fit, {
+    height: 17,
+    base: { height: 4, face: { kind: 'curtain', wall: DARK, glass: [0.2, 0.22, 0.24], pitch: 3.2, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: OLIVE, glass: [0.18, 0.22, 0.26], floor: 3.2, solid: 0.45, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 1, colour: OLIVE, material: 'stucco' },
+  })
+}
+
+/** 1448 MARKET: a low two-storey shopfront under a pale teal corrugated-metal front with a dark glass band (Mapillary 02); the rear on Fell is black-painted (Mapillary 03). */
+export function market1448(out: MeshBuilder, fit: Fit): void {
+  const TEAL: Rgb = [0.5, 0.62, 0.6], DARK: Rgb = [0.16, 0.18, 0.18]
+  tower(out, fit, {
+    height: 9,
+    tiers: [{ to: 1, face: { kind: 'fins', wall: TEAL, glass: DARK, floor: 4.5, pitch: 0.7, depth: 0.12, solid: 0.5, material: 'metal' } }],
+    crown: { kind: 'parapet', height: 0.6, colour: TEAL, material: 'metal' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -1788,4 +1820,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   marketEllis35174751, market941560580,
   market576, market148712646,
   kearny1Annex,
+  market1430, market1438, market1448,
 }
