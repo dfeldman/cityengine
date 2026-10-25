@@ -376,15 +376,6 @@
  },
  {
   "osm": [
-   "way/148710881"
-  ],
-  "name": "32 Battery Street",
-  "restyle": "chicago",
-  "levels": 5,
-  "note": "Low block on the Mechanics Monument plaza, beside the Postal Telegraph Building."
- },
- {
-  "osm": [
    "way/148710885"
   ],
   "name": "One Front Street pavilion (Philz Coffee, First Republic Bank)",

@@ -597,5 +597,38 @@
   "sign": false,
   "front": 87,
   "note": "market-fidi.ts: unnamed 1912 four-storey buff stone block on Drumm, pilaster bands and dark glazed shopfront; photo way-260288456-01 (cam bearing 260)."
+ },
+ {
+  "osm": [
+   "way/260924231"
+  ],
+  "name": "635-639 Clay Street",
+  "procedural": "clay635WhiteFour",
+  "height": 12,
+  "sign": false,
+  "front": "street",
+  "note": "market-fidi.ts: 635-639 Clay, four-storey white painted block over a salmon ground band and dark shopfront; photos way-260924231-01 and -02 (cam bearings 151, 112)."
+ },
+ {
+  "osm": [
+   "way/260924225"
+  ],
+  "name": "667-675 Clay Street",
+  "procedural": "clay667WhiteArched",
+  "height": 13,
+  "sign": false,
+  "front": "street",
+  "note": "market-fidi.ts: 667-675 Clay, pale painted stucco over a slate shopfront with arched upper windows; photos way-260924225-01 and -02 (cam bearings 146, 208)."
+ },
+ {
+  "osm": [
+   "way/148710881"
+  ],
+  "name": "32 Battery Street",
+  "procedural": "battery32Tan",
+  "height": 20,
+  "sign": false,
+  "front": "street",
+  "note": "market-fidi.ts: 32 Battery, tan brick block with a dark shopfront and cream cornice; photos way-148710881-01 and -03 (cam bearings 171, 261)."
  }
 ]

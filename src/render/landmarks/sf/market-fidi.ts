@@ -2384,6 +2384,38 @@ export function drummCreamFour(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+export function clay635WhiteFour(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.9, 0.9, 0.88], SALMON: Rgb = [0.8, 0.56, 0.46], GLASS: Rgb = [0.2, 0.22, 0.24], TRIM: Rgb = [0.92, 0.9, 0.86]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 4, face: { kind: 'punched', wall: SALMON, glass: GLASS, pitch: 3.6, floor: 4, solid: 0.35, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: GLASS, pitch: 2.8, floor: 2.7, solid: 0.5, material: 'stucco' } }],
+    cornices: [{ at: 4, depth: 0.4, height: 0.5, colour: SALMON }],
+    crown: { kind: 'parapet', height: 0.8, colour: TRIM, material: 'stucco' },
+  })
+}
+
+export function clay667WhiteArched(out: MeshBuilder, fit: Fit): void {
+  const PALE: Rgb = [0.8, 0.84, 0.86], SLATE: Rgb = [0.3, 0.36, 0.38], GLASS: Rgb = [0.22, 0.26, 0.3], TRIM: Rgb = [0.86, 0.88, 0.88]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 3.6, face: { kind: 'punched', wall: SLATE, glass: GLASS, pitch: 3.4, floor: 3.6, solid: 0.35, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: PALE, glass: GLASS, pitch: 2.6, floor: 3.2, solid: 0.5, arched: true, material: 'stucco' } }],
+    cornices: [{ at: 3.6, depth: 0.4, height: 0.5, colour: TRIM }],
+    crown: { kind: 'parapet', height: 1, colour: TRIM, material: 'stucco' },
+  })
+}
+
+export function battery32Tan(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.72, 0.6, 0.42], DARK: Rgb = [0.24, 0.24, 0.25], GLASS: Rgb = [0.2, 0.24, 0.28], CREAM: Rgb = [0.82, 0.76, 0.62]
+  tower(out, fit, {
+    height: 20,
+    base: { height: 4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.8, floor: 4, solid: 0.3, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: GLASS, pitch: 3.2, floor: 3.2, solid: 0.45, material: 'brick' }, cornice: { depth: 0.5, height: 0.6, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'ashlar' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -2471,4 +2503,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   sansome231Brick,
   sacramento660Cream, sacramentoBlueInfill,
   california20White, drummWhiteEight, drummCreamFour,
+  clay635WhiteFour, clay667WhiteArched, battery32Tan,
 }
