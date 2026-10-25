@@ -145,8 +145,8 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 133 | 12 | `way/260930245` (unnamed) · 13 m · reface victorian<br>`way/260930251` (unnamed) · 13 m · reface victorian<br>`way/260930253` (unnamed) · 12 m · reface victorian || done (with 131; photo-less outlines skipped) |
 | 134 | 12 | `way/260930248` (unnamed) · 13 m · reface victorian<br>`way/260930247` (unnamed) · ? · reface victorian<br>`way/260930242` (unnamed) · 13 m · reface victorian || done (with 131; photo-less outlines skipped) |
 | 135 | 12 | `way/260930255` (unnamed) · 13 m · reface victorian || done (with 131; photo-less outlines skipped) |
-| 136 | 12 | `way/260930256` (unnamed) · 13 m · reface victorian<br>`way/260930250` (unnamed) · 13 m · reface victorian | |
-| 137 | 6 | `way/944039726` (unnamed) · 4 m · generic | |
-| 138 | 6 | `way/944032193` (unnamed) · 4 m · generic | |
-| 139 | 5 | `way/1279459280` (unnamed) · 4 m · generic | |
-| 140 | 5 | `way/1240834459` (unnamed) · 4 m · generic | |
+| 136 | 12 | `way/260930256` (unnamed) · 13 m · reface victorian<br>`way/260930250` (unnamed) · 13 m · reface victorian || done (with 136; photo-less outlines skipped) |
+| 137 | 6 | `way/944039726` (unnamed) · 4 m · generic || done (with 136; photo-less outlines skipped) |
+| 138 | 6 | `way/944032193` (unnamed) · 4 m · generic || done (with 136; photo-less outlines skipped) |
+| 139 | 5 | `way/1279459280` (unnamed) · 4 m · generic || done (with 136; photo-less outlines skipped) |
+| 140 | 5 | `way/1240834459` (unnamed) · 4 m · generic || done (with 136; photo-less outlines skipped) |

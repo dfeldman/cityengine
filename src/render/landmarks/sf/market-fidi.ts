@@ -4202,6 +4202,57 @@ export function t3b135_260930255(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 136: way/260930256 (unnamed, Washington Street frontage, bearing 170), 86 m², OSM 13 m. Photos -01 and -02: a dark brown
+ * pebble-aggregate podium with louvres and a white exterior stair, over a cream stucco block with arched windows and a gabled roof. */
+export function t3b136_260930256(out: MeshBuilder, fit: Fit): void {
+  const PEBBLE: Rgb = [0.34, 0.28, 0.22], DARK: Rgb = [0.14, 0.14, 0.15], CREAM: Rgb = [0.9, 0.87, 0.8]
+  tower(out, fit, {
+    height: 13,
+    tiers: [
+      { to: 0.35, face: { kind: 'punched', wall: PEBBLE, glass: DARK, pitch: 4.5, floor: 4.5, solid: 0.9, material: 'concrete' }, cornice: { depth: 0.4, height: 0.3, colour: DARK } },
+      { to: 1, face: { kind: 'punched', wall: CREAM, glass: DARK, pitch: 3, floor: 3.2, solid: 0.7, arched: true, material: 'stucco' } },
+    ],
+    crown: { kind: 'parapet', height: 0.8, colour: CREAM, material: 'stucco' },
+  })
+}
+
+
+/** T3 batch 138: way/944032193 (unnamed, Pine Street frontage, bearing 171), 220 m², built 1986, OSM 4 m (modelled at 12 m). Photo -01
+ * only: a tan-brown stone front with a cast-iron fire-escape balcony and a plywood-boarded ground floor under scaffolding. Not shot. */
+export function t3b138_944032193(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.6, 0.52, 0.42], DARK: Rgb = [0.2, 0.2, 0.2]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 4.5, face: { kind: 'punched', wall: TAN, glass: DARK, pitch: 4, floor: 4.5, solid: 0.5, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: DARK, pitch: 3, floor: 3.2, solid: 0.7, material: 'concrete' }, cornice: { depth: 0.4, height: 0.3, colour: TAN } }],
+    crown: { kind: 'parapet', height: 0.6, colour: TAN, material: 'concrete' },
+  })
+}
+
+/** T3 batch 139: way/1279459280 (unnamed, Sacramento Street frontage, bearing 351), 146 m², built 1960, OSM 4 m (modelled at 14 m).
+ * Photos -01 and -02: a grey speckled granite garage front, a vertical PARKING sign, and glazed bays with a recessed entrance. */
+export function t3b139_1279459280(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.4, 0.4, 0.41], GLASS: Rgb = [0.2, 0.24, 0.27]
+  tower(out, fit, {
+    height: 14,
+    base: { height: 5, face: { kind: 'punched', wall: GREY, glass: GLASS, pitch: 4.5, floor: 5, solid: 0.6, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: GREY, glass: GLASS, pitch: 3.6, floor: 3.4, solid: 0.7, material: 'granite' }, cornice: { depth: 0.3, height: 0.25, colour: GREY } }],
+    crown: { kind: 'parapet', height: 0.6, colour: GREY, material: 'granite' },
+  })
+}
+
+/** T3 batch 140: way/1240834459 (unnamed, Halleck Street frontage, bearing 170), 154 m², built 1952, OSM 4 m (modelled at 12 m). Photos
+ * -01 and -03: a pale stone or concrete block with round columns, a dark glazed entrance and a supermarket shopfront on the pavement. */
+export function t3b140_1240834459(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.9, 0.9, 0.88], GLASS: Rgb = [0.18, 0.2, 0.22]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 4.5, face: { kind: 'punched', wall: WHITE, glass: GLASS, pitch: 3.6, floor: 4.5, solid: 0.45, material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'fins', wall: WHITE, glass: GLASS, floor: 3.4, pitch: 3, solid: 0.6, depth: 0.4, material: 'concrete' }, cornice: { depth: 0.35, height: 0.3, colour: WHITE } }],
+    crown: { kind: 'parapet', height: 0.6, colour: WHITE, material: 'concrete' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -4324,4 +4375,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t3b126_256088650, t3b127_940068788, t3b128_260937903, t3b128_260937910,
   t3b129_260930238, t3b129_260930235, t3b129_260930254, t3b130_260937904, t3b130_260937899, t3b130_260937908,
   t3b131_260288459, t3b132_260280328, t3b133_260930253, t3b134_260930248, t3b134_260930242, t3b135_260930255,
+  t3b136_260930256, t3b138_944032193, t3b139_1279459280, t3b140_1240834459,
 }
