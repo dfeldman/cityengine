@@ -1328,6 +1328,108 @@ function t4b91_35024386(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * Sharon Building (way/79377213), 55 New Montgomery Street: a white painted block of about eight storeys, a glazed
+ * shopfront under an awning, grid windows in pilasters and a cornice at the top. (Mapillary, photos 01 and 02.)
+ */
+function t4b92_79377213(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.9, 0.89, 0.86]
+  tower(out, fit, {
+    height: 33,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.3, 0.3, 0.3], glass: [0.3, 0.34, 0.38], pitch: 3.5, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: [0.22, 0.26, 0.3], pitch: 3.2, floor: 3.4, solid: 0.55, material: 'concrete' } }],
+    cornices: [{ at: 0.86, depth: 0.6, height: 1, colour: WHITE }],
+    crown: { kind: 'parapet', height: 1.2, colour: WHITE, material: 'concrete' },
+  })
+}
+
+/**
+ * Unnamed corner block (way/159280391), at Mission and First: a beige stone block of about five storeys with arched
+ * upper windows over a dark shopfront base; the Salesforce Tower rises behind it. (Mapillary, photos 01 and 02.)
+ * The OSM height of 32 m is disputed by the photographs, which show a lower block; the model follows them.
+ */
+function t4b93_159280391(out: MeshBuilder, fit: Fit): void {
+  const BEIGE: Rgb = [0.8, 0.73, 0.6]
+  tower(out, fit, {
+    height: 22,
+    base: { height: 4.2, face: { kind: 'blank', wall: [0.22, 0.2, 0.18], material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BEIGE, glass: [0.22, 0.26, 0.3], pitch: 3.4, floor: 3.6, solid: 0.45, arched: true, material: 'ashlar' } }],
+    crown: { kind: 'parapet', height: 1.2, colour: BEIGE, material: 'ashlar' },
+  })
+}
+
+/**
+ * Townsend Building (way/129176911), Townsend Street: red brick of about six storeys, arched windows, the name on a
+ * dark board along the gabled parapet, a grey loft to its east. (Mapillary, photos 01 and 02.)
+ */
+function t4b94_129176911(out: MeshBuilder, fit: Fit): void {
+  const RED: Rgb = [0.62, 0.22, 0.14]
+  tower(out, fit, {
+    height: 23,
+    base: { height: 3.5, face: { kind: 'blank', wall: [0.25, 0.25, 0.27], material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: RED, glass: [0.2, 0.22, 0.26], pitch: 3.4, floor: 3.8, solid: 0.4, arched: true, material: 'brick' } }],
+    crown: { kind: 'parapet', height: 1.5, colour: RED, material: 'brick' },
+  })
+}
+
+/**
+ * 128 King Street (way/148547440), the Cooperstown hall of fame block: a red brick block of four storeys with a
+ * painted sign band under the cornice, tall dark-framed windows and a dark green garage bay at the side.
+ * (Mapillary, photos 02 and 03.)
+ */
+function t4b94_148547440(out: MeshBuilder, fit: Fit): void {
+  const RED: Rgb = [0.6, 0.24, 0.16]
+  tower(out, fit, {
+    height: 19,
+    base: { height: 3.6, face: { kind: 'blank', wall: [0.22, 0.3, 0.27], material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: RED, glass: [0.22, 0.25, 0.28], pitch: 3.2, floor: 3.9, solid: 0.45, material: 'brick' } }],
+    crown: { kind: 'parapet', height: 0.9, colour: RED, material: 'brick' },
+  })
+}
+
+/**
+ * 1000 Sutter Street (way/149930902), at Hyde: a grey-cream stucco block of about ten storeys, its bay windows and a
+ * ground floor painted grey-green. (Mapillary, photo 02; photo 03 is a neighbour.)
+ */
+function t4b96_149930902(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.72, 0.7, 0.64]
+  tower(out, fit, {
+    height: 32,
+    base: { height: 4, face: { kind: 'blank', wall: [0.4, 0.46, 0.44], material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'bays', wall: CREAM, glass: [0.3, 0.34, 0.38], floor: 3.2, pitch: 3.4, material: 'stucco', bay: { depth: 0.5, round: false } } }],
+    crown: { kind: 'parapet', height: 1, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/**
+ * SFMOMA Garage (way/80296754), 147 Minna Street: a dark grey concrete parking garage of about eight decks, its
+ * openings in a grid of punched piers, a sheer blank side above. (Mapillary, photo 01.)
+ */
+function t4b97_80296754(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.36, 0.36, 0.37]
+  tower(out, fit, {
+    height: 26,
+    tiers: [{ to: 1, face: { kind: 'punched', wall: GREY, glass: [0.12, 0.13, 0.14], pitch: 4, floor: 3.2, solid: 0.5, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 0.6, colour: GREY, material: 'concrete' },
+  })
+}
+
+/**
+ * 600 Folsom Street (way/112774496), at Second: a taupe four-storey Italianate corner block with a cornice, tall
+ * rectangular windows and a white-columned ground floor. The OSM height of 32 m is disputed by the photographs.
+ * (Mapillary, photos 01 and 02.)
+ */
+function t4b98_112774496(out: MeshBuilder, fit: Fit): void {
+  const TAUPE: Rgb = [0.5, 0.45, 0.41]
+  tower(out, fit, {
+    height: 16,
+    base: { height: 4, face: { kind: 'blank', wall: [0.9, 0.88, 0.84], material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAUPE, glass: [0.22, 0.24, 0.27], pitch: 3.2, floor: 3.6, solid: 0.55, material: 'stucco' } }],
+    cornices: [{ at: 0.9, depth: 0.5, height: 0.7, colour: TAUPE }],
+    crown: { kind: 'parapet', height: 0.8, colour: TAUPE, material: 'stucco' },
+  })
+}
+
 export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   t4b1_156123224,
   t4b2_192328858,
@@ -1422,4 +1524,11 @@ export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t4b89_259925713,
   t4b90_114709401,
   t4b91_35024386,
+  t4b92_79377213,
+  t4b93_159280391,
+  t4b94_129176911,
+  t4b94_148547440,
+  t4b96_149930902,
+  t4b97_80296754,
+  t4b98_112774496,
 }

@@ -99,13 +99,13 @@ Builders go in `src/render/landmarks/sf/downtown-t4.ts`, manifest entries in `pu
 | 89 | 123 | Nob Hill | `way/259925713` (unnamed) · 41 m · reface || done |
 | 90 | 122 | SoMa by Market | `way/114709401` Consulate General of Mexico, San Francisco · 21 m · reface || done |
 | 91 | 122 | Union Square | `way/35024386` 347;349;351;353;357;373 Geary Street · 26 m · reface || done |
-| 92 | 121 | SoMa by Market | `way/79377213` Sharon Building · 33 m · reface | |
-| 93 | 120 | SoMa by Market | `way/159280391` (unnamed) · 32 m · reface | |
-| 94 | 119 | SoMa by Market | `way/129176911` Townsend Building · 23 m · reface<br>`way/148547440` 128 King Street · 19 m · generic | |
-| 95 | 119 | SoMa by Market | `way/37057430` 650 Delancey Street · 14 m · generic | |
-| 96 | 119 | Nob Hill | `way/149930902` 1000 Sutter Street · 32 m · generic | |
-| 97 | 118 | SoMa by Market | `way/80296754` SFMOMA Garage · 26 m · reface | |
-| 98 | 117 | SoMa by Market | `way/112774496` 600 Folsom Street · 32 m · generic | |
+| 92 | 121 | SoMa by Market | `way/79377213` Sharon Building · 33 m · reface || done |
+| 93 | 120 | SoMa by Market | `way/159280391` (unnamed) · 32 m · reface || done |
+| 94 | 119 | SoMa by Market | `way/129176911` Townsend Building · 23 m · reface<br>`way/148547440` 128 King Street · 19 m · generic || done |
+| 95 | 119 | SoMa by Market | `way/37057430` 650 Delancey Street · 14 m · generic || done |
+| 96 | 119 | Nob Hill | `way/149930902` 1000 Sutter Street · 32 m · generic || done |
+| 97 | 118 | SoMa by Market | `way/80296754` SFMOMA Garage · 26 m · reface || done |
+| 98 | 117 | SoMa by Market | `way/112774496` 600 Folsom Street · 32 m · generic || done |
 | 99 | 115 | SoMa by Market | `way/4023969` (unnamed) · 21 m · generic | |
 | 100 | 115 | Chinatown | `way/260517113` 850 Powell Street · 37 m · reface | |
 | 101 | 115 | Chinatown | `way/260519112` 720;726 California Street · 30 m · reface | |

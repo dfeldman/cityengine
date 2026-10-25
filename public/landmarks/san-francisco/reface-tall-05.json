@@ -1,7 +1,6 @@
 [
 {"osm": ["way/237549244"], "restyle": "towerblock", "wall": "#dcc9a0", "by": "haiku", "image": "way-237549244-01.jpg", "note": "Tan-cream render tower of about nine storeys, punched windows, flat top. Classifier had brick."},
 {"osm": ["way/18865603"], "restyle": "brick", "wall": "#9a4a36", "trim": "#e6e2d8", "by": "haiku", "image": "way-18865603-03.jpg", "note": "Red brick block of about six storeys with glazed corner bays and white bands. Classifier had bauhaus."},
-{"osm": ["way/129176911"], "restyle": "brick", "wall": "#a4402c", "by": "haiku", "image": "way-129176911-02.jpg", "note": "Townsend Bldg: red brick, arched windows, gabled parapet with sign, fire escapes at side."},
 {"osm": ["way/253124810"], "restyle": "towerblock", "wall": "#f3f2ee", "accent": "#a2623c", "by": "haiku", "image": "way-253124810-02.jpg", "note": "White balconied tower of about fourteen storeys with teak-coloured screen panels across the front."},
 {"osm": ["way/260523197"], "restyle": "classical", "wall": "#9b4b35", "trim": "#d8d0bc", "groundWall": "#b9b09a", "by": "haiku", "image": "way-260523197-01.jpg", "note": "Red brick over a stone base, stone pilasters running up the front, arched entrance, cornice top."},
 {"osm": ["way/634359202"], "restyle": "towerblock", "wall": "#e8e0cf", "accent": "#3f4b5c", "groundWall": "#8f8579", "by": "haiku", "image": "way-634359202-02.jpg", "note": "Cream render of about seven storeys with a blue-grey panel band and brown balcony inserts. Classifier had skyscraper; no glass skin."},
