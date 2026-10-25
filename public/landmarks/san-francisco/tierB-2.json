@@ -115,17 +115,6 @@
   },
   {
     "osm": [
-      "way/288532297"
-    ],
-    "name": "Eastern Park Apartments",
-    "restyle": "towerblock",
-    "height": 36,
-    "levels": 10,
-    "note": "Rule check 2026-10-04 (Mapillary): 1970s tan tower, ribbon windows; was rule 7 brick.",
-    "wall": "#d5c6a3"
-  },
-  {
-    "osm": [
       "way/258017308"
     ],
     "name": "Western Park Apartments",

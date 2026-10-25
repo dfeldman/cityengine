@@ -919,6 +919,97 @@ function t4b63_25759093(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * Beale Street, unnamed in OSM (way/939460954), 28 m: the Natalie Gubb Commons affordable housing, a seven-storey
+ * block in beige-grey stucco, its windows in recessed bays with louvred panels between, over a dark ground floor
+ * with a metal grille. (Mapillary 1961791404557242, 1121771060006331.)
+ */
+function t4b64_939460954(out: MeshBuilder, fit: Fit): void {
+  const BEIGE: Rgb = [0.76, 0.74, 0.7]
+  tower(out, fit, {
+    height: 28,
+    base: { height: 4, face: { kind: 'punched', wall: [0.42, 0.42, 0.42], material: 'concrete', glass: [0.22, 0.24, 0.27], pitch: 4, solid: 0.5, floor: 4 } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: BEIGE, material: 'stucco', glass: [0.3, 0.36, 0.42], floor: 3.2, solid: 0.45 } }],
+    crown: { kind: 'parapet', height: 1, colour: BEIGE, material: 'stucco' },
+  })
+}
+
+/**
+ * Folsom Street, Transbay Block 2 West (way/1389915136), 36 m: a pale grey nine-storey block with a grid of
+ * windows, behind a tensile-canopied plaza and a granite-dark ground floor. The OSM outline is a provisional
+ * construction placeholder, so the massing is taken from the photographs and may be wrong.
+ * (Mapillary 2784160035054264, 153587530716997.)
+ */
+function t4b65_1389915136(out: MeshBuilder, fit: Fit): void {
+  const PALE: Rgb = [0.86, 0.85, 0.82]
+  tower(out, fit, {
+    height: 36,
+    base: { height: 4.5, face: { kind: 'punched', wall: [0.5, 0.5, 0.5], material: 'concrete', glass: [0.2, 0.23, 0.26], pitch: 4, solid: 0.5, floor: 4.5 } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: PALE, material: 'stucco', glass: [0.25, 0.3, 0.36], pitch: 3.2, floor: 3.4, solid: 0.5 } }],
+    crown: { kind: 'parapet', height: 1, colour: PALE, material: 'stucco' },
+  })
+}
+
+/**
+ * 77 Dow Place (way/114709400), 42 m: a striped block with orange-brown vertical bands between cream piers, its
+ * upper storeys set back under a cream parapet. (Mapillary 522353390782684, 779869278404043.)
+ */
+function t4b66_114709400(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.92, 0.9, 0.86], TERRA: Rgb = [0.74, 0.42, 0.28]
+  tower(out, fit, {
+    height: 42,
+    base: { height: 4.5, face: { kind: 'punched', wall: [0.7, 0.66, 0.6], material: 'concrete', glass: [0.2, 0.22, 0.25], pitch: 4, solid: 0.5, floor: 4.5 } },
+    tiers: [
+      { to: 0.64, face: { kind: 'fins', wall: CREAM, glass: TERRA, pitch: 2.6, depth: 0.25, solid: 0.6, floor: 3.4, material: 'terracotta' } },
+      { to: 1, inset: 3, face: { kind: 'punched', wall: CREAM, glass: [0.3, 0.34, 0.4], pitch: 2.8, floor: 3.4, solid: 0.5, material: 'stucco' }, cornice: { depth: 0.5, height: 0.5, colour: CREAM } },
+    ],
+    crown: { kind: 'parapet', height: 1, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/**
+ * The Barnes, 225 Powell Street (way/35024381), 30 m: a cream stucco Beaux-Arts hotel of seven storeys over a tan
+ * stone ground floor, with architraves round the windows and a moulded cornice under a parapet, on the Powell and
+ * O'Farrell corner. (Mapillary 2085621448247025, 1705386196683831.)
+ */
+function t4b67_35024381(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.87, 0.8], TAN: Rgb = [0.78, 0.66, 0.46]
+  tower(out, fit, {
+    height: 30,
+    base: { height: 5, face: { kind: 'punched', wall: TAN, material: 'ashlar', glass: [0.16, 0.18, 0.2], pitch: 4, solid: 0.45, floor: 5 } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, material: 'stucco', glass: [0.2, 0.22, 0.26], pitch: 4, floor: 3.2, solid: 0.45 }, cornice: { depth: 0.7, height: 0.7, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/**
+ * Rincon Green, 333 Harrison Street (relation/19306631), 21 m: a seven-storey cream apartment block with recessed
+ * balcony bays and window bands, and an ochre entrance at street level. (Mapillary 1269521654891486.)
+ */
+function t4b68_19306631(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.89, 0.85]
+  tower(out, fit, {
+    height: 21,
+    base: { height: 4, face: { kind: 'punched', wall: [0.84, 0.72, 0.38], material: 'stucco', glass: [0.22, 0.25, 0.28], pitch: 4, solid: 0.5, floor: 4 } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: CREAM, material: 'stucco', glass: [0.3, 0.34, 0.38], floor: 3, solid: 0.4 } }],
+    crown: { kind: 'parapet', height: 0.8, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/**
+ * Eastern Park Apartments, 640 Polk Street (way/288532297), 36 m: a 1970s tan tower of about twelve storeys with
+ * long ribbons of windows over a plain wall, on the corner of Polk and Eddy. (Mapillary 233293378796095,
+ * 363939151904411.)
+ */
+function t4b69_288532297(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.84, 0.78, 0.66]
+  tower(out, fit, {
+    height: 36,
+    tiers: [{ to: 1, face: { kind: 'bands', wall: TAN, material: 'concrete', glass: [0.22, 0.26, 0.3], floor: 3.2, solid: 0.4 } }],
+    crown: { kind: 'parapet', height: 1, colour: TAN, material: 'concrete' },
+  })
+}
+
 export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   t4b1_156123224,
   t4b2_192328858,
@@ -986,4 +1077,10 @@ export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t4b61_32947055,
   t4b62_32947763,
   t4b63_25759093,
+  t4b64_939460954,
+  t4b65_1389915136,
+  t4b66_114709400,
+  t4b67_35024381,
+  t4b68_19306631,
+  t4b69_288532297,
 }

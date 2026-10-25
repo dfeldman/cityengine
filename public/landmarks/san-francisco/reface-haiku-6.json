@@ -67,19 +67,6 @@
   },
   {
     "osm": [
-      "way/114709400"
-    ],
-    "name": "77 Dow Place",
-    "restyle": "towerblock",
-    "wall": "#ede8e0",
-    "trim": "#8b7f76",
-    "by": "haiku",
-    "image": "way-114709400-2.jpg",
-    "note": "Very tall tower with individual punched windows in white rendered wall. Vertical linear pattern.",
-    "height": 42
-  },
-  {
-    "osm": [
       "way/1122568793"
     ],
     "name": "Vance",

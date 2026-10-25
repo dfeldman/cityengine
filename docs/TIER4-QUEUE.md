@@ -71,12 +71,12 @@ Builders go in `src/render/landmarks/sf/downtown-t4.ts`, manifest entries in `pu
 | 61 | 146 | Nob Hill | `way/32947055` Brocklebank Apartments · 40 m · reface || done |
 | 62 | 145 | FiDi | `way/32947763` KPIX TV · 23 m · reface || done |
 | 63 | 142 | SoMa by Market | `way/25759093` 795 Folsom Street · 24 m · reface || done |
-| 64 | 140 | SoMa by Market | `way/939460954` (unnamed) · 28 m · generic | |
-| 65 | 140 | SoMa by Market | `way/1389915136` Folsom Street · 36 m · generic | |
-| 66 | 139 | SoMa by Market | `way/114709400` 77 Dow Place · 42 m · reface | |
-| 67 | 138 | Union Square | `way/35024381` The Barnes San Francisco, Tapestry Collection  · 30 m · reface | |
-| 68 | 137 | SoMa by Market | `way/38613263` (unnamed) · 21 m · generic | |
-| 69 | 137 | Tenderloin | `way/288532297` Eastern Park Apartments · 36 m · reface | |
+| 64 | 140 | SoMa by Market | `way/939460954` (unnamed) · 28 m · generic || done |
+| 65 | 140 | SoMa by Market | `way/1389915136` Folsom Street · 36 m · generic || done |
+| 66 | 139 | SoMa by Market | `way/114709400` 77 Dow Place · 42 m · reface || done |
+| 67 | 138 | Union Square | `way/35024381` The Barnes San Francisco, Tapestry Collection  · 30 m · reface || done |
+| 68 | 137 | SoMa by Market | `way/38613263` (unnamed) · 21 m · generic || done |
+| 69 | 137 | Tenderloin | `way/288532297` Eastern Park Apartments · 36 m · reface || done |
 | 70 | 136 | Tenderloin | `way/260142634` Mosser Towers · 41 m · reface | |
 | 71 | 135 | Tenderloin | `way/56723860` Geary Courtyard Apartments · 38 m · reface | |
 | 72 | 134 | SoMa by Market | `way/288647982` 2 Townsend Street · 35 m · reface | |

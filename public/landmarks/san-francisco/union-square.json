@@ -36,7 +36,6 @@
   
   {"osm": ["way/35024371"], "name": "Spring Valley Water Co. Building", "restyle": "chicago", "note": "a steel-framed commercial block dressed in terracotta", "levels": 9},
   {"osm": ["way/35024380"], "name": "way/35024380", "restyle": "brick", "note": "an ordinary brick shop-and-loft building", "levels": 3},
-  {"osm": ["way/35024381"], "name": "The Barnes San Francisco, Tapestry Collection by Hilton", "restyle": "tenement", "note": "a post-fire walk-up hotel: brick, shops below, fire escapes down the front", "levels": 9},
   {"osm": ["way/35024383"], "name": "The Bartlett Hotel and Guesthouse", "restyle": "tenement", "note": "a post-fire walk-up hotel: brick, shops below, fire escapes down the front", "levels": 7},
   {"osm": ["way/35024386"], "name": "347;349;351;353;357;373 Geary Street", "restyle": "tenement", "note": "a post-fire walk-up hotel: brick, shops below, fire escapes down the front", "levels": 7},
   {"osm": ["way/35024388"], "name": "way/35024388", "restyle": "classical", "note": "a stone-fronted commercial block, rusticated base and cornice", "levels": 6},
