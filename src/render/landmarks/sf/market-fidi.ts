@@ -3887,6 +3887,97 @@ export function t3b120_260937906(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 121: way/148666784 (unnamed, Montgomery frontage, bearing 260), 301 m², OSM 12 m. Photo -01: a three-storey
+ * orange-red brick block with tall paired windows over a black-framed shopfront, a dark cornice on top, beside a white
+ * Italianate block. */
+export function t3b121_148666784(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.62, 0.32, 0.2], DARK: Rgb = [0.12, 0.12, 0.13], GLASS: Rgb = [0.22, 0.26, 0.3]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 3.6, face: { kind: 'curtain', wall: DARK, glass: GLASS, pitch: 2.6, floor: 3.6, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: GLASS, pitch: 2.4, floor: 2.8, solid: 0.5, material: 'brick' }, cornice: { depth: 0.5, height: 0.6, colour: DARK } }],
+    crown: { kind: 'parapet', height: 0.5, colour: DARK, material: 'metal' },
+  })
+}
+
+/** T3 batch 121: way/260937901 (unnamed, Jackson Street frontage, bearing 171), 118 m², OSM 10 m. Photo -01: a cream
+ * painted two-storey-and-a-bit block with two-pane sash windows over a dark green shopfront and panelled door, beside a
+ * narrow red-brick neighbour. */
+export function t3b121_260937901(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.87, 0.8], GREEN: Rgb = [0.18, 0.24, 0.22], GLASS: Rgb = [0.2, 0.24, 0.26]
+  tower(out, fit, {
+    height: 10,
+    base: { height: 3.2, face: { kind: 'curtain', wall: GREEN, glass: GLASS, pitch: 2.6, floor: 3.2, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 2.6, floor: 3.2, solid: 0.55, head: 'architrave', material: 'stucco' }, cornice: { depth: 0.3, height: 0.3, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 0.5, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** T3 batch 122: way/148668310 (unnamed, Jackson Street frontage, bearing 351), 369 m², OSM 11 m. Photo -01: a red-brick
+ * block of two storeys and a parapet, its tall arched windows in a row along the street, a green sign board on the
+ * corner. */
+export function t3b122_148668310(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.6, 0.3, 0.2], LIGHT: Rgb = [0.78, 0.74, 0.66], GLASS: Rgb = [0.2, 0.22, 0.22]
+  tower(out, fit, {
+    height: 11,
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: GLASS, pitch: 3, floor: 3.6, solid: 0.55, arched: true, material: 'brick' }, cornice: { depth: 0.3, height: 0.4, colour: LIGHT } }],
+    crown: { kind: 'parapet', height: 0.8, colour: BRICK, material: 'brick' },
+  })
+}
+
+/** T3 batch 123: way/588363946 (unnamed, Washington Street frontage, bearing 171), 298 m², 1966, OSM 12 m. Photo -01:
+ * the dark pebble-aggregate panels of the Golden Gateway podium, in long horizontal bands with a pale concrete
+ * string course. */
+export function t3b123_588363946(out: MeshBuilder, fit: Fit): void {
+  const PEBBLE: Rgb = [0.3, 0.22, 0.17], DARK: Rgb = [0.1, 0.1, 0.1], CONCRETE: Rgb = [0.55, 0.55, 0.52]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 1.6, face: { kind: 'blank', wall: DARK, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: PEBBLE, glass: DARK, floor: 3.8, solid: 0.75, material: 'concrete' }, cornice: { depth: 0.5, height: 0.35, colour: CONCRETE } }],
+    crown: { kind: 'parapet', height: 0.6, colour: CONCRETE, material: 'concrete' },
+  })
+}
+
+/** T3 batch 123: way/588363948 (unnamed, Washington Street frontage, bearing 170), 130 m², 1966, OSM 12 m. Photo -01:
+ * dark pebble-aggregate panels set in a grid of rectangles, a plain pale concrete band between them. */
+export function t3b123_588363948(out: MeshBuilder, fit: Fit): void {
+  const PEBBLE: Rgb = [0.3, 0.22, 0.17], DARK: Rgb = [0.1, 0.1, 0.1], CONCRETE: Rgb = [0.55, 0.55, 0.52]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 1.6, face: { kind: 'blank', wall: DARK, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: PEBBLE, glass: DARK, pitch: 4.5, floor: 3.8, solid: 0.9, material: 'concrete' }, cornice: { depth: 0.5, height: 0.35, colour: CONCRETE } }],
+    crown: { kind: 'parapet', height: 0.6, colour: CONCRETE, material: 'concrete' },
+  })
+}
+
+/** T3 batch 123: way/588363947 (unnamed, Washington Street frontage, bearing 171), 61 m², 1966, OSM 8 m. Photo -01: the
+ * same dark pebble panels, a low two-storey block under the trees. */
+export function t3b123_588363947(out: MeshBuilder, fit: Fit): void {
+  const PEBBLE: Rgb = [0.3, 0.22, 0.17], DARK: Rgb = [0.1, 0.1, 0.1], CONCRETE: Rgb = [0.55, 0.55, 0.52]
+  tower(out, fit, {
+    height: 8,
+    base: { height: 1.6, face: { kind: 'blank', wall: DARK, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: PEBBLE, glass: DARK, pitch: 4.5, floor: 3.2, solid: 0.9, material: 'concrete' }, cornice: { depth: 0.5, height: 0.35, colour: CONCRETE } }],
+    crown: { kind: 'parapet', height: 0.6, colour: CONCRETE, material: 'concrete' },
+  })
+}
+
+/** T3 batch 124: way/690663635 (unnamed, Montgomery Street frontage, bearing 261), 312 m², 1959, OSM 24 m. Photo -01:
+ * a stone-faced office block of about seven storeys, its ground floor a dark glazed shopfront under a deep sill, the
+ * upper floors with narrow stone piers, and a stepped-back top. */
+export function t3b124_690663635(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.74, 0.72, 0.68], GLASS: Rgb = [0.2, 0.24, 0.28], DARK: Rgb = [0.14, 0.14, 0.15]
+  tower(out, fit, {
+    height: 24,
+    base: { height: 4.2, face: { kind: 'curtain', wall: DARK, glass: GLASS, pitch: 3, floor: 4.2, material: 'metal' } },
+    tiers: [
+      { to: 0.7, face: { kind: 'punched', wall: STONE, glass: GLASS, pitch: 3.2, floor: 3.3, solid: 0.55, material: 'granite' }, cornice: { depth: 0.4, height: 0.3, colour: STONE } },
+      { to: 1, inset: 2.5, face: { kind: 'punched', wall: STONE, glass: GLASS, pitch: 3.2, floor: 3.3, solid: 0.55, material: 'granite' } },
+    ],
+    crown: { kind: 'parapet', height: 0.9, colour: STONE, material: 'granite' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -4005,4 +4096,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   sacramento672PaintedWhite, sacramento666TanBrick,
   t3b117_260930237, t3b119_148668320, t3b119_148668315, t3b119_148668307,
   t3b120_256088139, t3b120_256088145, t3b120_260937906,
+  t3b121_148666784, t3b121_260937901, t3b122_148668310, t3b123_588363946, t3b123_588363948, t3b123_588363947, t3b124_690663635,
 }

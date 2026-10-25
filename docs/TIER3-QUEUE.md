@@ -130,10 +130,10 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 118 | 22 | `way/256086585` (unnamed) · 6 m · generic || done (with 117; photo-less outlines skipped) |
 | 119 | 22 | `way/148668320` (unnamed) · ? · reface brick<br>`way/148668315` (unnamed) · 11 m · reface brick<br>`way/148668307` (unnamed) · ? · reface brick || done (with 117; photo-less outlines skipped) |
 | 120 | 22 | `way/256088139` 406;408 Jackson Street · ? · reface brick<br>`way/256088145` (unnamed) · 12 m · reface brick<br>`way/260937906` (unnamed) · 9 m · reface brick || done (with 117; photo-less outlines skipped) |
-| 121 | 21 | `way/148666784` (unnamed) · 12 m · reface brick<br>`way/260937901` (unnamed) · 10 m · reface brick | |
-| 122 | 21 | `way/148668310` (unnamed) · 11 m · reface brick | |
-| 123 | 21 | `way/588363946` (unnamed) · ? · generic<br>`way/588363948` (unnamed) · ? · generic<br>`way/588363947` (unnamed) · ? · generic | |
-| 124 | 21 | `way/690663635` (unnamed) · ? · generic | |
+| 121 | 21 | `way/148666784` (unnamed) · 12 m · reface brick<br>`way/260937901` (unnamed) · 10 m · reface brick || done (with 121; photo-less outlines skipped) |
+| 122 | 21 | `way/148668310` (unnamed) · 11 m · reface brick || done (with 121; photo-less outlines skipped) |
+| 123 | 21 | `way/588363946` (unnamed) · ? · generic<br>`way/588363948` (unnamed) · ? · generic<br>`way/588363947` (unnamed) · ? · generic || done (with 121; photo-less outlines skipped) |
+| 124 | 21 | `way/690663635` (unnamed) · ? · generic || done (with 121; photo-less outlines skipped) |
 | 125 | 21 | `way/148712649` (unnamed) · 12 m · reface chicago<br>`way/690644021` (unnamed) · 11 m · reface None<br>`way/690644022` (unnamed) · 7 m · reface None | |
 | 126 | 20 | `way/256088652` 831 Montgomery Street · 7 m · reface brick<br>`way/256088650` 501;503 Pacific Avenue · 5 m · reface brick | |
 | 127 | 19 | `way/940068788` (unnamed) · ? · generic | |
