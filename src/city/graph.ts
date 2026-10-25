@@ -49,6 +49,12 @@ export interface Edge {
    * own carriageway is. Riding the midline itself put the rider on the median (Rue Saint-Antoine).
    */
   lane?: number
+  /**
+   * [reachA, shiftA, reachB, shiftB]: where this edge's path was warped across at an end to meet a merged boulevard's
+   * midline (ridegraph.ts `reattach`), how far (m, right of a→b positive) and over how many metres — so the rider can be
+   * kept on the line their carriageway really runs (sim/navigate.ts `easeAt`) while the path converges under them.
+   */
+  ease?: number[]
   /** ground height at each point, parallel to `points`; absent on a city baked flat */
   heights?: number[]
   /** optional so hand-built test graphs need not say; an edge with no kind counts as a residential street */

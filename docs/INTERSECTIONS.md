@@ -82,10 +82,35 @@ What is left is mostly five- and six-way junctions (Market Street's diagonals: 1
 carriageways the ride graph merges and splits (owner: "the divided streets merging and separating is also annoying").
 The painted lines still follow the map's own edges; where those are clean (most of the city) paint and path now agree.
 
+## Fix 2 (2026-10-24): divided streets, and no sharp turn near any junction
+
+**Divided streets merging and separating** (owner: "also annoying"). A boulevard whose two carriageways are within 14 m
+is one ride path down the middle (`mergeParallel`), the rider put back on their side by the edge's `lane`. Where a merged
+block meets one left as two carriageways (67 places), the carriageways converge onto the midline node and split again,
+and the rider swung in and out. Now: (a) the carriageway's approach is warped across smoothly; (b) the shift is recorded
+on the edge (`ease`: graph.ts), and the navigator puts the rider back by it (`easeAt`, sim/navigate.ts), position and
+heading — so the bike holds its carriageway's line while the path converges under it; (c) the put-back is capped at the
+midline edge's own `lane`, so at the node the two agree and nothing steps; (d) the drawn offset is carried across the
+node (`enter`). Riding straight through every merge (a navigator simulation over the shipped ride file), the sharpest
+heading swing: **median 53° → 6.4°**, 75% 65° → 20°.
+
+**No sharp turn near a junction** (`smoothApproaches`, the last ride-graph pass). For every street approach to a junction
+of three or more ways: the street's own line 12–45 m out (skipped where that stretch curves); if the approach turns over
+12° inside it, the last stretch is rebuilt along the line with the junction's offset faded in over 6× the offset (12–30
+m). It catches a kink whatever made it — a cluster's centre, a carriageway cut short by crosswalk nodes pulled onto a
+midline (Guerrero: 4.5 m across in its last 6 m, a 45° kink, now 13°), or OSM's own geometry.
+
+| junctions with a turn within 15 m (shipped ride file) | before today | now |
+|---|---|---|
+| kink-sized (25–60°) | 143 | **53** |
+| over 60° (mostly real corners: streets that turn just past a junction, service links, Golden Gate Park's knots) | 128 | **95** |
+
+Tests: ride graph, ride file, navigator, junction shape — 64 passed. Deployed 2026-10-24 (ride files rebuilt with
+`npm run bake -- san-francisco --rides`).
+
 ## Next
 
-1. Divided streets: where the ride graph merges two carriageways into one path and splits them again, the rider swings
-   across; ease those transitions the same way, or keep the carriageways apart.
+1. The 53 kinks left: mostly five- and six-way junctions (Market Street's diagonals) — look at each kind.
 2. Filter degenerate points out of the survey; list the worst real ones by district, with screenshots.
 3. Fix the paint and the ride path together, so the line the bike follows and the lines painted on the road agree —
    candidates: straighten the drawn edges' approaches the way the ride graph's are (at bake time, so the surface, the

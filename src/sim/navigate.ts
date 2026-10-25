@@ -480,13 +480,34 @@ export class Navigator {
     return profileAt(e.points, e.heights, Math.max(0, Math.min(e.length, s))).y
   }
 
+  /**
+   * How far right of the path the rider is put back, here, where the path was warped across to meet a merged boulevard's
+   * midline (graph.ts `ease`; owner, 2026-10-24: "the divided streets merging and separating is also annoying"). The
+   * path converges onto the midline over its last metres and the merged edge beyond carries the carriageway offset
+   * (`lane`); without this the rider followed the path in, and the offset carried them back out — a swing in and out at
+   * every merge. With it the rider holds the line their carriageway really runs, through the transition.
+   */
+  private easeAt(s = this.pos.s): number {
+    const ab = this.easeAB(s)
+    return this.pos.reversed ? -ab : ab
+  }
+
+  /** the same, right of a→b (the path moved `shift` right of a→b; the rider is kept where it was, the opposite way) */
+  private easeAB(s: number): number {
+    const ea = this.edge.ease
+    // (NAV_EASE=0 in the environment turns the put-back off, for comparing in tools; never set in the game)
+    if (!ea || (typeof process !== 'undefined' && process.env?.NAV_EASE === '0')) return 0
+    const fall = (d: number, reach: number): number => (reach <= 0 || d >= reach ? 0 : (1 - d / reach) ** 2 * (1 + 2 * (d / reach)))
+    return -(ea[1] * fall(s, ea[0]) + ea[3] * fall(this.edge.length - s, ea[2]))
+  }
+
   /** Where the rider actually is: their side of the road, which is the right one. */
   ridePoint(): Point {
     const p = this.at()
     const h = this.heading()
     // mid-U-turn, still on the old side of the road and drifting across: +1 the new right, −1 the old one
     const t = this.swap * this.swap * (3 - 2 * this.swap)
-    const off = (this.shown ?? this.lateral()) * (1 - 2 * t)
+    const off = (this.shown ?? this.lateral()) * (1 - 2 * t) + this.easeAt()
     // right of the direction of travel: forward is (sin h, cos h), so right is (cos h, −sin h)
     return { x: p.x + Math.cos(h) * off, z: p.z - Math.sin(h) * off }
   }
@@ -494,8 +515,16 @@ export class Navigator {
   /** The direction of travel here, as a bearing. */
   heading(): number {
     const e = this.edge
-    const back = pointAlong(e.points, Math.max(0, this.pos.s - 2))
-    const fwd = pointAlong(e.points, Math.min(e.length, this.pos.s + 2))
+    const s0 = Math.max(0, this.pos.s - 2), s1 = Math.min(e.length, this.pos.s + 2)
+    let back = pointAlong(e.points, s0)
+    let fwd = pointAlong(e.points, s1)
+    // (the line the rider is kept on through an eased merge, not the path converging under them: `easeAt`)
+    if (e.ease) {
+      const dx = fwd.x - back.x, dz = fwd.z - back.z, L = Math.hypot(dx, dz) || 1
+      const rx = dz / L, rz = -dx / L, cb = this.easeAB(s0), cf = this.easeAB(s1)
+      back = { x: back.x + rx * cb, z: back.z + rz * cb }
+      fwd = { x: fwd.x + rx * cf, z: fwd.z + rz * cf }
+    }
     // the polyline always runs a→b; a reversed rider is going the other way along it
     return this.pos.reversed
       ? Math.atan2(back.x - fwd.x, back.z - fwd.z)
@@ -637,7 +666,7 @@ export class Navigator {
         this.handOver(nodeId, xs[0].edgeId)
         const ne = this.g.edges.get(xs[0].edgeId)!
         const rev = ne.b === nodeId
-        this.pos = { edgeId: ne.id, s: rev ? ne.length : 0, reversed: rev }
+        this.enter({ edgeId: ne.id, s: rev ? ne.length : 0, reversed: rev })
         continue
       }
       /*
@@ -680,9 +709,21 @@ export class Navigator {
       const ne = this.g.edges.get(chosen.edgeId)!
       // if the junction is this edge's `b` end, the rider enters at s = length and counts down
       const reversed = ne.b === nodeId
-      this.pos = { edgeId: chosen.edgeId, s: reversed ? ne.length : 0, reversed }
+      this.enter({ edgeId: chosen.edgeId, s: reversed ? ne.length : 0, reversed })
     }
     return crossed
+  }
+
+  /**
+   * Onto the next edge at a node, with the drawn offset carried across where an eased merge's put-back (`easeAt`) stops
+   * on one side of the node and not the other: from a carriageway converging onto a boulevard's midline into the midline
+   * edge, whose `lane` takes over — `shown` takes the difference, so the rider does not jump and then ease back.
+   */
+  private enter(pos: Position): void {
+    const before = this.easeAt()
+    this.pos = pos
+    const after = this.easeAt()
+    if (this.shown !== null && before !== after) this.shown += before - after
   }
 
   /** Latch the choice once the rider is inside the commit distance, so the turn cannot flip under them. */
@@ -770,7 +811,8 @@ export class Navigator {
     const heading = Math.atan2(dx, dz)
     // a merged boulevard's carriageway offset, blended from the edge in to the edge out through the corner
     // the drawn offset, eased (see `shown`) — it carries the carriageway change through the corner smoothly
-    const off = this.shown ?? ((this.edge.lane ?? 0) + this.offset)
+    // (and an eased merge's put-back, `easeAt`, which is greatest at the node the corner turns round)
+    const off = (this.shown ?? ((this.edge.lane ?? 0) + this.offset)) + this.easeAt()
     return { point: { x: point.x + Math.cos(heading) * off, z: point.z - Math.sin(heading) * off }, heading, lean }
   }
 }

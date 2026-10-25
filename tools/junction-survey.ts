@@ -118,6 +118,25 @@ function crossing(ls: { p: P; d: P }[]): P | null {
   return { x: (a22 * b1 - a12 * b2) / det, z: (a11 * b2 - a12 * b1) / det }
 }
 
+// --divided: where a merged boulevard (one path down the middle, `lane` set) meets its own carriageways drawn apart —
+// the path merging and splitting again (owner: "the divided streets merging and separating is also annoying")
+if (process.argv.includes('--divided')) {
+  let merged = 0, trans = 0
+  const rows: string[] = []
+  for (const e of g.edges.values()) if ((e as unknown as { lane?: number }).lane) merged++
+  for (const n of g.nodes.values()) {
+    const es = n.edges.map((id) => g.edges.get(id)!)
+    for (const m of es) {
+      const lane = (m as unknown as { lane?: number }).lane
+      if (!lane || !m.name) continue
+      const split = es.filter((e) => e !== m && e.name === m.name && !(e as unknown as { lane?: number }).lane && e.oneway)
+      if (split.length >= 1) { trans++; if (rows.length < 30) rows.push(`${ll(n.at.x, n.at.z)}  ${m.name}: merged (lane ${lane} m) meets ${split.length} one-way carriageway(s)`) }
+    }
+  }
+  console.log(`merged boulevard edges: ${merged}; places a merged edge meets its own street's separate one-way carriageways: ${trans}`)
+  for (const r of rows) console.log('  ' + r)
+  process.exit(0)
+}
 // --around x,z,r: print every ride edge within r m of a point, with its turns (degrees) and where along it they are
 {
   const i = process.argv.indexOf('--around')

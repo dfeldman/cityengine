@@ -341,7 +341,7 @@ function trimBehind(points: Point[], heights: number[] | undefined, fromStart: b
 }
 
 /** Every edge with a node remapped moved onto its new node; edges left joining a node to itself go. */
-function reattach(edges: RideEdge[], moved: Map<number, { id: number; at: Point }>): RideEdge[] {
+function reattach(edges: RideEdge[], moved: Map<number, { id: number; at: Point }>, record = false): RideEdge[] {
   /*
    * One height at the new node: the mean of the ends moved onto it. Each end had kept its own, from a node up to 20 m
    * away — with a junction's level held into its streets (tools/bake.ts, BUGS.md #293) those part by a metre and more,
@@ -367,6 +367,7 @@ function reattach(edges: RideEdge[], moved: Map<number, { id: number; at: Point 
     if (a === b) continue // a connector inside the cluster, or a stub across a median: it is the junction now
     let points = [...e.points]
     let heights = e.heights && e.heights.length === e.points.length ? [...e.heights] : e.heights
+    let ease = e.ease
     /*
      * EASED, NOT KINKED (owner, 2026-10-24: "we should try to make sure there are no sharp turns within N meters of an
      * intersection"; docs/INTERSECTIONS.md). Moving only the end point onto the junction's centre left a short stub
@@ -401,6 +402,15 @@ function reattach(edges: RideEdge[], moved: Map<number, { id: number; at: Point 
       }
       points = atEnd ? out.reverse() : out
       if (hs) heights = atEnd ? hOut.reverse() : hOut
+      if (record) {
+        // the shift, right of a→b at that end: the rider is kept on the old line by subtracting it (navigate.ts `easeAt`)
+        const q0 = pts[0], q1 = pts.find((q) => distance(q, q0) > 0.5) ?? pts[pts.length - 1]
+        // (pts runs FROM this end inward; a→b at the end is the reverse of that when it is the b end)
+        const fx = (q1.x - q0.x) * (atEnd ? -1 : 1), fz = (q1.z - q0.z) * (atEnd ? -1 : 1), fl = Math.hypot(fx, fz) || 1
+        const lat = Math.round(((sx * fz - sz * fx) / fl) * 100) / 100
+        ease = ease ? [...ease] : [0, 0, 0, 0]
+        if (atEnd) { ease[2] = Math.round(reach * 10) / 10; ease[3] = lat } else { ease[0] = Math.round(reach * 10) / 10; ease[1] = lat }
+      }
       return true
     }
     if (na && !warp(false, na.at)) {
@@ -424,7 +434,7 @@ function reattach(edges: RideEdge[], moved: Map<number, { id: number; at: Point 
       if (lb !== undefined) heights[heights.length - 1] = Math.round(lb * 100) / 100
     }
     out.push({ ...e, a, b, points, length: lengthOf(points),
-      heights: heights && heights.length === points.length ? heights : undefined })
+      heights: heights && heights.length === points.length ? heights : undefined, ...(ease ? { ease } : {}) })
   }
   return out
 }
@@ -607,6 +617,8 @@ export function reverseEdge(e: RideEdge): RideEdge {
     heights: e.heights ? [...e.heights].reverse() : undefined,
     over: [...e.over].reverse().map((o) => ({ ...o, reversed: !o.reversed })),
     ...(e.oneway ? { onewayBack: !e.onewayBack } : {}),
+    // (the ends swap, and "right of a→b" is the other side)
+    ...(e.ease ? { ease: [e.ease[2], -e.ease[3], e.ease[0], -e.ease[1]] } : {}),
   }
 }
 
@@ -625,6 +637,8 @@ function join(e1: RideEdge, e2: RideEdge, node: number, id: number): RideEdge {
     heights,
     name: p.name ?? q.name,
     over: [...p.over, ...q.over],
+    // (the outer ends' warps stand; the inner ends meet in the middle of the new edge)
+    ease: p.ease || q.ease ? [p.ease?.[0] ?? 0, p.ease?.[1] ?? 0, q.ease?.[2] ?? 0, q.ease?.[3] ?? 0] : undefined,
   }
 }
 
@@ -858,7 +872,7 @@ export function mergeParallel(edges: RideEdge[], ids = new Ids(), ground?: (x: n
     }
     if (!pair) return cur
     const m = midline(pair[0], pair[1], ids, false)!
-    cur = reattach(cur.filter((e) => e !== pair![0] && e !== pair![1]), m.moved)
+    cur = reattach(cur.filter((e) => e !== pair![0] && e !== pair![1]), m.moved, true)
     cur.push(m.edge)
   }
   return cur
@@ -1647,7 +1661,137 @@ export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrid
   es = despike(snapEnds(es))
   // …and every ordinary junction's approaches straight, its streets meeting where their lines cross (city/junction-shape.ts)
   if (overrides?.straighten !== false) es = straightenJunctions(es, outsideOf(edges), blocked).edges
+  // …and NO SHARP TURN NEAR ANY JUNCTION, whatever made it (below)
+  if (overrides?.straighten !== false) es = smoothApproaches(es)
   return buildGraph(es) as RideGraph
+}
+
+/**
+ * NO SHARP TURN NEAR A JUNCTION (owner, 2026-10-24: "we should try to make sure there are no sharp turns within N meters
+ * of an intersection … the bike takes a sharp turn back and forth following the lines … the divided streets merging
+ * and separating is also annoying"; docs/INTERSECTIONS.md). The last pass, on the finished graph, so it catches a kink
+ * whatever made it: a cluster's centre (`collapseClusters`), a carriageway pulled onto a boulevard's midline
+ * (`mergeParallel` — on a carriageway cut short by crosswalk nodes there was no room to ease it, and Guerrero's swung
+ * 4.5 m across in its last 6 m, a 45° kink, once `contract` had joined the pieces), or OSM's own geometry.
+ *
+ * For each end of each street edge at a junction (three or more ways): the street's own LINE, from 12 to 45 m out (at
+ * most 70% of the edge) — skipped if that stretch is not straight (a street that really curves); how far the junction
+ * sits off that line; and whether the approach turns sharply (over 12°) inside the span. If it does, the approach is
+ * rebuilt along the line with the offset faded in smoothly over `reach` (6× the offset, 12 to 30 m, at most 45% of
+ * the edge), so the street meets the junction square-on; points beyond `reach` are kept. Where the edge meets its own
+ * street's merged midline (a `lane` edge of the same name at that node), the shift is recorded (`ease`) so the rider
+ * holds their carriageway's line through the transition (navigate.ts `easeAt`) rather than swinging in and out.
+ */
+export function smoothApproaches(edges: RideEdge[]): RideEdge[] {
+  const deg = degrees(edges)
+  const byNode = new Map<number, RideEdge[]>()
+  for (const e of edges) for (const n of [e.a, e.b]) (byNode.get(n) ?? byNode.set(n, []).get(n)!).push(e)
+  const fall = (s: number, reach: number): number => (s >= reach ? 0 : (1 - s / reach) ** 2 * (1 + 2 * (s / reach)))
+  const at = (pts: Point[], d: number): Point => pointAt(pts, Math.max(0, Math.min(lengthOf(pts), d)))
+  const out: RideEdge[] = []
+  for (const e0 of edges) {
+    let e = e0
+    if (e.foot || e.bridge || e.tunnel || e.raised || e.lane || e.a === e.b || e.length < 24) { out.push(clampEase(e, byNode)); continue }
+    for (const atEnd of [false, true]) {
+      const node = atEnd ? e.b : e.a
+      if ((deg.get(node) ?? 0) < 3) continue
+      const pts = atEnd ? [...e.points].reverse() : e.points
+      const len = lengthOf(pts)
+      const hi = Math.min(45, 0.7 * len)
+      if (hi - 12 < 8) continue
+      const p0 = at(pts, 12), p1 = at(pts, hi)
+      const L = distance(p0, p1)
+      if (L < 6) continue
+      const ux = (p1.x - p0.x) / L, uz = (p1.z - p0.z) / L
+      // the line's stretch must be straight: no point of it over 0.8 m off the chord
+      let s = 0, straight = true, sharp = 0
+      for (let i = 1; i < pts.length; i++) {
+        s += distance(pts[i - 1], pts[i])
+        if (s > 12 && s < hi && Math.abs((pts[i].x - p0.x) * uz - (pts[i].z - p0.z) * ux) > 0.8) { straight = false; break }
+      }
+      if (!straight) continue
+      // a sharp turn inside the span the fade would take?
+      s = 0
+      for (let i = 1; i < pts.length - 1 && s < 30; i++) {
+        s += distance(pts[i - 1], pts[i])
+        const ax = pts[i].x - pts[i - 1].x, az = pts[i].z - pts[i - 1].z, bx = pts[i + 1].x - pts[i].x, bz = pts[i + 1].z - pts[i].z
+        const la = Math.hypot(ax, az), lb = Math.hypot(bx, bz)
+        if (la < 0.2 || lb < 0.2) continue
+        sharp = Math.max(sharp, Math.acos(Math.max(-1, Math.min(1, (ax * bx + az * bz) / (la * lb)))) / DEG)
+      }
+      if (sharp <= 12) continue
+      // the junction against the line: where it projects onto it (`t0`, metres along the line from p0, negative), and
+      // how far off it is (`d`, along the left normal (−uz, ux)... signed so that `base + n·d` is the node)
+      const nd = pts[0]
+      const t0 = (nd.x - p0.x) * ux + (nd.z - p0.z) * uz
+      const nx = -uz, nz = ux
+      const d = (nd.x - p0.x) * nx + (nd.z - p0.z) * nz
+      if (Math.abs(d) > 8 || t0 > -4) continue
+      const reach = Math.min(30, Math.max(12, 6 * Math.abs(d)), 0.45 * len, -t0 + 12)
+      // the new approach: along the line from the node's foot, the offset faded out over `reach`
+      const fresh: Point[] = []
+      const step = 2
+      for (let r = 0; r < reach; r += step) {
+        const k = fall(r, reach)
+        fresh.push({ x: p0.x + ux * (t0 + r) + nx * d * k, z: p0.z + uz * (t0 + r) + nz * d * k })
+      }
+      fresh[0] = nd
+      // the rest: the original points beyond `reach` along the line
+      const keepFrom = pts.findIndex((q) => (q.x - p0.x) * ux + (q.z - p0.z) * uz > t0 + reach)
+      if (keepFrom < 1) continue
+      const newPts = [...fresh, ...pts.slice(keepFrom)]
+      // heights: each new point takes the original's height at the same distance from the junction
+      let heights: number[] | undefined
+      if (e.heights && e.heights.length === e.points.length) {
+        const hs = atEnd ? [...e.heights].reverse() : e.heights
+        const cum = [0]
+        for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + distance(pts[i - 1], pts[i]))
+        const hAt = (dd: number): number => {
+          let i = 1
+          while (i < cum.length - 1 && cum[i] < dd) i++
+          const t = cum[i] > cum[i - 1] ? Math.max(0, Math.min(1, (dd - cum[i - 1]) / (cum[i] - cum[i - 1]))) : 0
+          return hs[i - 1] + (hs[i] - hs[i - 1]) * t
+        }
+        heights = [...fresh.map((_, i) => hAt(i * step)), ...hs.slice(keepFrom)]
+        heights[0] = hs[0]
+      }
+      const merging = (byNode.get(node) ?? []).some((f) => f !== e && f.lane && f.name && f.name === e.name)
+      let ease = e.ease ? [...e.ease] : undefined
+      if (merging) {
+        // the shift, right of a→b: the path moved from the line onto the node by `d` along the left normal of the
+        // line's outward direction; right of a→b is the left of outward at the a end, the right of it at the b end
+        const lat = Math.round((atEnd ? -d : d) * -1 * 100) / 100
+        ease = ease ?? [0, 0, 0, 0]
+        if (atEnd) { ease[2] = Math.round(reach * 10) / 10; ease[3] = lat } else { ease[0] = Math.round(reach * 10) / 10; ease[1] = lat }
+      }
+      if (merging && ease) {
+        // (no more than the midline edge's own `lane`: the rider is put back only as far as that edge will carry them, so
+        //  at the node the two agree and nothing steps; the rest of the shift is ridden, along the eased approach)
+        const lane = Math.max(...(byNode.get(node) ?? []).filter((f) => f.lane && f.name === e.name).map((f) => f.lane!))
+        const k = atEnd ? 3 : 1
+        if (Math.abs(ease[k]) > lane) ease[k] = Math.round(Math.sign(ease[k]) * lane * 100) / 100
+      }
+      const finalPts = atEnd ? newPts.reverse() : newPts
+      const finalHs = heights ? (atEnd ? heights.reverse() : heights) : undefined
+      e = { ...e, points: finalPts, length: lengthOf(finalPts), heights: finalHs && finalHs.length === finalPts.length ? finalHs : undefined,
+        ...(ease ? { ease } : {}) }
+    }
+    out.push(clampEase(e, byNode))
+  }
+  return out
+}
+
+/** An edge's recorded put-back (`ease`) at an end where it meets a merged midline, no more than that edge's `lane`. */
+function clampEase(e: RideEdge, byNode: Map<number, RideEdge[]>): RideEdge {
+  if (!e.ease) return e
+  const ease = [...e.ease]
+  for (const [k, node] of [[1, e.a], [3, e.b]] as const) {
+    if (!ease[k]) continue
+    const lanes = (byNode.get(node) ?? []).filter((f) => f !== e && f.lane && f.name === e.name).map((f) => f.lane!)
+    const lane = lanes.length ? Math.max(...lanes) : 0
+    if (Math.abs(ease[k]) > lane) ease[k] = Math.round(Math.sign(ease[k]) * lane * 100) / 100
+  }
+  return { ...e, ease }
 }
 
 const DEG = Math.PI / 180
