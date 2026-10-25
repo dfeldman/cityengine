@@ -687,15 +687,14 @@
     "id": "exploratorium-buckyball",
     "name": "Buckyball, Exploratorium Pier 15",
     "asset": "exploratorium-buckyball",
-    "lat": 37.8012494,
-    "lon": -122.3987696,
+    "lat": 37.801115,
+    "lon": -122.3990118,
     "bearing": 0,
     "lodRanges": [
       180,
       420
     ],
-    "note": "assetkit-models-sf/exploratorium-buckyball: OSM node 6433062291 (Buckyball, Leo Villareal 2016), Pier 15 plaza of the Exploratorium. 7.6 m (25 ft) overall; rotationally symmetric, so the bearing is arbitrary.",
-    "deckAbove": 3.0
+    "note": "assetkit-models-sf/exploratorium-buckyball: OSM node 6433062291 — moved 26 m toward the Embarcadero onto the paved apron between Piers 15 and 17: OSM puts it on the pile-supported plaza between the piers, which the city does not draw, so it stood over the water (owner, 2026-10-25: 'in a wall')."
   },
   {
     "id": "francis-scott-key-monument",
@@ -739,17 +738,16 @@
   },
   {
     "id": "hills-bros-coffee-drinker",
-    "name": "Hills Bros. coffee drinker (roof)",
+    "name": "Hills Bros. Coffee Trademark (the coffee drinker)",
     "asset": "hills-bros-coffee-drinker",
-    "lat": 37.78958,
-    "lon": -122.38893,
+    "lat": 37.7898234,
+    "lon": -122.389483,
     "bearing": 70,
-    "deckAbove": 27,
     "lodRanges": [
       120,
       300
     ],
-    "note": "assetkit-models-sf/hills-bros-coffee-drinker: stands on the Hills Bros. coffee works roof beside the procedural 'Hills Bros. Coffee roof sign' (kept); facing the Embarcadero (bearing 70 by judgement). Trademark artwork is OSM node 10869899386; 3.5 m is a guess. Roof height set by deckAbove."
+    "note": "assetkit-models-sf/hills-bros-coffee-drinker: OSM node 10869899386, 'Hills Bros. Coffee Trademark' (Spero Anagyros), standing in Hills Plaza beside the old coffee works (owner, 2026-10-25: 'in the plaza next to the building'), not on its roof; facing the Embarcadero side (bearing 70, by judgement). 3.5 m is a guess."
   },
   {
     "id": "hope-peace-hands",
