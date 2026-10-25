@@ -310,6 +310,88 @@ function t4b30_12734194(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** 120 Howard Street (way/192026937): a red-brown brick office block of eleven storeys, its top floors glazed in blue, on Howard Street. (Mapillary 1308123510268509, 533670838619176.) */
+function t4b31Howard120(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.6, 0.34, 0.25]
+  const face = { kind: 'punched' as const, wall: BRICK, glass: [0.22, 0.28, 0.34] as Rgb, pitch: 3.6, floor: 4, solid: 0.6, material: 'brick' as const }
+  tower(out, fit, {
+    height: 44,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.2, 0.22, 0.22], glass: [0.25, 0.32, 0.36], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 0.85, face }, { to: 1, inset: 1, face: { kind: 'bands', wall: BRICK, glass: [0.2, 0.3, 0.4], floor: 3.6, solid: 0.45, material: 'metal' } }],
+    crown: { kind: 'parapet', height: 1, colour: [0.5, 0.5, 0.5], material: 'metal' },
+  })
+}
+
+/** Mosso, 900 Folsom Street (way/151980461): a pale grey eight-storey block of flats with balconies in bands and dark teal glazing. (Mapillary 1134070058616705, 2924653254443478.) */
+function t4b32Mosso(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.84, 0.85, 0.83]
+  const face = { kind: 'bands' as const, wall: WHITE, glass: [0.18, 0.3, 0.34] as Rgb, floor: 3.2, solid: 0.5, material: 'stucco' as const }
+  tower(out, fit, {
+    height: 26,
+    tiers: [{ to: 0.75, face }, { to: 1, inset: 1.5, face }],
+    crown: { kind: 'parapet', height: 1.5, colour: [0.35, 0.42, 0.46], material: 'stucco' },
+  })
+}
+
+/** Courtyard by Marriott, 761 Post Street (way/256058407): a grey-buff hotel tower of sixteen storeys with bay windows up its face, on a dark grey arched base. (Mapillary 5584683278266371, 716617371286313.) */
+function t4b33Courtyard761(out: MeshBuilder, fit: Fit): void {
+  const BUFF: Rgb = [0.72, 0.7, 0.66]
+  tower(out, fit, {
+    height: 54,
+    base: { height: 5, face: { kind: 'punched', wall: [0.3, 0.3, 0.32], glass: [0.18, 0.2, 0.22], pitch: 3.6, floor: 5, solid: 0.6, arched: true, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'bays', wall: BUFF, glass: [0.2, 0.24, 0.28], floor: 3.4, pitch: 3.6, material: 'stucco', bay: { depth: 0.8, round: true } } }],
+    crown: { kind: 'parapet', height: 1.5, colour: BUFF, material: 'stucco' },
+  })
+}
+
+/** 747 Post Street (way/197354891): a cream stucco tower of sixteen storeys, its windows small and irregular, stepped back at the top. (Mapillary 1110994654336561, 1286566192952128.) */
+function t4b33Post747(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.88, 0.8]
+  const face = { kind: 'punched' as const, wall: CREAM, glass: [0.2, 0.22, 0.25] as Rgb, pitch: 3.2, floor: 3.4, solid: 0.6, material: 'stucco' as const }
+  tower(out, fit, {
+    height: 54,
+    base: { height: 4, face: { kind: 'punched', wall: [0.6, 0.58, 0.54], glass: [0.2, 0.22, 0.25], pitch: 3.6, floor: 4, solid: 0.5, material: 'granite' } },
+    tiers: [{ to: 0.8, face }, { to: 1, inset: 2, face }],
+    crown: { kind: 'parapet', height: 1.5, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** The Alcazar Theatre, 650 Geary Street (way/33570646): a Moorish-style cream and red-brick theatre of two storeys with arched windows and a dome over the roof. (Mapillary 361431495535509, 4133528923595589.) */
+function t4b33Alcazar(out: MeshBuilder, fit: Fit): void {
+  const BUFF: Rgb = [0.86, 0.8, 0.64]
+  const RED: Rgb = [0.6, 0.3, 0.22]
+  tower(out, fit, {
+    height: 22,
+    base: { height: 3, face: { kind: 'punched', wall: RED, glass: [0.15, 0.15, 0.16], pitch: 3, floor: 3, solid: 0.6, arched: true, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BUFF, glass: [0.2, 0.2, 0.24], pitch: 3, floor: 3.2, solid: 0.6, arched: true, material: 'stucco' } }],
+    crown: { kind: 'dome', height: 5, radius: 4.5, colour: [0.9, 0.88, 0.82], drum: 1 },
+  })
+}
+
+/** Saint Francis Memorial Hospital tower, Hyde at Bush (way/436474725): a cream precast tower of twelve storeys, deep-set windows, over a lower podium. (Mapillary 1110629127691728, 4127803807505281.) */
+function t4b34SaintFrancisTower(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.86, 0.76]
+  const face = { kind: 'punched' as const, wall: CREAM, glass: [0.22, 0.24, 0.26] as Rgb, pitch: 4.2, floor: 3.6, solid: 0.6, material: 'stucco' as const }
+  tower(out, fit, {
+    height: 48,
+    base: { height: 8, face: { kind: 'punched', wall: [0.86, 0.82, 0.72], glass: [0.2, 0.22, 0.24], pitch: 4.2, floor: 3.6, solid: 0.55, material: 'stucco' } },
+    tiers: [{ to: 1, face }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** 1 Harrison Street (way/32862740): a six-storey office block in buff concrete, its floors banded in glass with balconies at the upper levels, on a glazed ground floor. (Mapillary 1039344697975158, 1264269668705238.) */
+function t4b35Harrison1(out: MeshBuilder, fit: Fit): void {
+  const BUFF: Rgb = [0.8, 0.78, 0.72]
+  const face = { kind: 'bands' as const, wall: BUFF, glass: [0.22, 0.28, 0.32] as Rgb, floor: 4.5, solid: 0.5, depth: 0.6, material: 'concrete' as const }
+  tower(out, fit, {
+    height: 27,
+    base: { height: 4.5, face: { kind: 'curtain', wall: [0.2, 0.22, 0.24], glass: [0.25, 0.3, 0.34], pitch: 3, floor: 4.5, material: 'metal' } },
+    tiers: [{ to: 1, face }],
+    crown: { kind: 'parapet', height: 1, colour: BUFF, material: 'concrete' },
+  })
+}
+
 export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   t4b1_156123224,
   t4b2_192328858,
@@ -336,4 +418,11 @@ export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t4b29_112758588,
   t4b30_1487160484,
   t4b30_12734194,
+  t4b31Howard120,
+  t4b32Mosso,
+  t4b33Courtyard761,
+  t4b33Post747,
+  t4b33Alcazar,
+  t4b34SaintFrancisTower,
+  t4b35Harrison1,
 }

@@ -38,11 +38,11 @@ Builders go in `src/render/landmarks/sf/downtown-t4.ts`, manifest entries in `pu
 | 28 | 199 | SoMa by Market | `way/148551351` 239 Brannan Street · 54 m · reface<br>`way/148551346` 229 Brannan Street · 56 m · reface || done |
 | 29 | 193 | SoMa by Market | `way/112758588` 501 2nd Street · 33 m · reface || done |
 | 30 | 192 | SoMa by Market | `way/1487160484` (unnamed) · 60 m · generic<br>`way/25468389` (unnamed) · 20 m · generic || done |
-| 31 | 188 | SoMa by Market | `way/192026937` 120 Howard Street · 44 m · reface | |
-| 32 | 186 | SoMa by Market | `way/151980461` Mosso · 26 m · reface | |
-| 33 | 186 | Tenderloin | `way/256058407` Courtyard San Francisco Union Square · 64 m · reface<br>`way/197354891` 747 Post Street · 64 m · reface<br>`way/33570646` Alcazar Theatre · 24 m · reface | |
-| 34 | 184 | Nob Hill | `way/436474725` (unnamed) · 48 m · reface | |
-| 35 | 182 | SoMa by Market | `way/32862740` 1 Harrison Street · 33 m · reface | |
+| 31 | 188 | SoMa by Market | `way/192026937` 120 Howard Street · 44 m · reface || done |
+| 32 | 186 | SoMa by Market | `way/151980461` Mosso · 26 m · reface || done |
+| 33 | 186 | Tenderloin | `way/256058407` Courtyard San Francisco Union Square · 64 m · reface<br>`way/197354891` 747 Post Street · 64 m · reface<br>`way/33570646` Alcazar Theatre · 24 m · reface || done |
+| 34 | 184 | Nob Hill | `way/436474725` (unnamed) · 48 m · reface || done |
+| 35 | 182 | SoMa by Market | `way/32862740` 1 Harrison Street · 33 m · reface || done |
 | 36 | 170 | Civic Center | `way/35174714` 1360 Mission Street · 55 m · reface<br>`way/173237459` 1328 Mission Street · 55 m · reface | |
 | 37 | 168 | Union Square | `way/474341709` Hotel Des Arts · 55 m · reface<br>`way/135174116` Hotel Triton · 27 m · reface | |
 | 38 | 166 | Civic Center | `way/256720468` French American International School · 23 m · reface | |

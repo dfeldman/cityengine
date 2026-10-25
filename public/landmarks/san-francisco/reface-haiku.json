@@ -136,18 +136,6 @@
   },
   {
     "osm": [
-      "way/33570646"
-    ],
-    "name": "Alcazar Theatre",
-    "restyle": "classical",
-    "wall": "#d4b896",
-    "trim": "#8B7355",
-    "by": "haiku",
-    "image": "way-33570646-2.jpg",
-    "note": "pale stone building with arched windows and ornate architectural details"
-  },
-  {
-    "osm": [
       "way/261302127"
     ],
     "name": "Uptown Church of Christ",

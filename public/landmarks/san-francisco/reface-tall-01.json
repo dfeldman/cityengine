@@ -3,6 +3,5 @@
 {"osm": ["way/29087099"], "restyle": "classical", "wall": "#ebe6da", "trim": "#f7f5ef", "by": "haiku", "image": "way-29087099-01.jpg", "note": "white/cream classical front with pilasters and columns; style kept, colour from photo"},
 {"osm": ["way/1212173437"], "restyle": "towerblock", "wall": "#e4e2da", "accent": "#3b4046", "by": "haiku", "image": "way-1212173437-01.jpg", "note": "off-white flats block with punched dark-framed windows and projecting bays; ground floor grey panels not coloured"},
 {"osm": ["way/240219342"], "restyle": "towerblock", "wall": "#e6e3d8", "trim": "#f5f3ec", "by": "haiku", "image": "way-240219342-02.jpg", "note": "cream stucco flats with fire escape and white window trim; top floors out of frame"},
-{"osm": ["way/160892678"], "restyle": "towerblock", "wall": "#dad2bd", "accent": "#b4553b", "by": "haiku", "image": "way-160892678-01.jpg", "note": "cream flats with balconies and orange-red vertical stripes; flat top"},
-{"osm": ["way/151980461"], "restyle": "towerblock", "wall": "#d6d7d2", "accent": "#3a4a55", "by": "haiku", "image": "way-151980461-01.jpg", "note": "pale grey 8-storey flats with balconies, dark teal glazing; classifier brick is wrong"}
+{"osm": ["way/160892678"], "restyle": "towerblock", "wall": "#dad2bd", "accent": "#b4553b", "by": "haiku", "image": "way-160892678-01.jpg", "note": "cream flats with balconies and orange-red vertical stripes; flat top"}
 ]

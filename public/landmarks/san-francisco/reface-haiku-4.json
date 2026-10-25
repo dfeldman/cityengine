@@ -11,17 +11,6 @@
   },
   {
     "osm": [
-      "way/197354891"
-    ],
-    "name": "747 Post Street",
-    "restyle": "chicago",
-    "wall": "#c27d6f",
-    "by": "haiku",
-    "image": "way-197354891.jpg",
-    "height": 54
-  },
-  {
-    "osm": [
       "way/256877082"
     ],
     "name": "Women's Resource Center",
@@ -30,17 +19,6 @@
     "by": "haiku",
     "image": "way-256877082.jpg",
     "height": 7
-  },
-  {
-    "osm": [
-      "way/256058407"
-    ],
-    "name": "Courtyard San Francisco Union Square",
-    "restyle": "towerblock",
-    "wall": "#d0c8bc",
-    "by": "haiku",
-    "image": "way-256058407.jpg",
-    "height": 54
   },
   {
     "osm": [

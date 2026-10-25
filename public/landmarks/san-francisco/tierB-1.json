@@ -1,17 +1,6 @@
 [
   {
     "osm": [
-      "way/192026937"
-    ],
-    "name": "120 Howard Street",
-    "restyle": "brick",
-    "height": 44,
-    "levels": 11,
-    "note": "Rule check 2026-10-04 (Mapillary on Howard): a red-brick 1920s warehouse with big modern glazing at the foot; was rule 8 chicago.",
-    "wall": "#93533c"
-  },
-  {
-    "osm": [
       "way/79377188"
     ],
     "name": "602;604;606 Mission Street",
