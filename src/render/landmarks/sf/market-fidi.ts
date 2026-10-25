@@ -3551,6 +3551,32 @@ export function drummGatewayDark1966(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 106: 119;129 Sacramento Street (the A. F. Fiorini building), way/260288460, 378 m², 1912, OSM 10 m. Photo -01:
+ * a two-storey tan brick block with a dark shopfront and a door numbered 129 at street level, a painted name along the
+ * parapet, and a vertical PARKING sign on the corner. Front Sacramento (bearing 351), unsure. */
+export function sacramento129BrickFiorini(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.66, 0.5, 0.36], DARK: Rgb = [0.16, 0.16, 0.17], STONE: Rgb = [0.7, 0.64, 0.56]
+  tower(out, fit, {
+    height: 10,
+    base: { height: 3.4, face: { kind: 'curtain', wall: BRICK, glass: DARK, pitch: 2.6, floor: 3.4, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: [0.2, 0.22, 0.24], pitch: 2.8, floor: 3.2, solid: 0.6, arched: true, material: 'brick' }, cornice: { depth: 0.3, height: 0.4, colour: STONE } }],
+    crown: { kind: 'parapet', height: 1, colour: BRICK, material: 'brick' },
+  })
+}
+
+/** T3 batch 106: unnamed, way/260288452 (on Sacramento), 298 m², 1966, OSM 8 m. Photo -01: a
+ * cream panelled block of about three storeys, horizontal bands of raised studs, under a row of blue and green awnings
+ * over restaurant shopfronts with red frames. Front Sacramento (bearing 349), unsure. */
+export function sacramentoCreamBistro(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.87, 0.8], RED: Rgb = [0.5, 0.12, 0.12], GLASS: Rgb = [0.22, 0.26, 0.28]
+  tower(out, fit, {
+    height: 8,
+    base: { height: 3.4, face: { kind: 'curtain', wall: CREAM, glass: GLASS, pitch: 3, floor: 3.4, material: 'stucco' }, canopy: { depth: 1.2, colour: [0.14, 0.32, 0.45] } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: CREAM, glass: [0.2, 0.24, 0.26], floor: 2.4, solid: 0.55, material: 'stucco' }, cornice: { depth: 0.25, height: 0.35, colour: RED } }],
+    crown: { kind: 'parapet', height: 0.6, colour: CREAM, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -3662,4 +3688,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   columbus53CreamBay, washington646BlueLion, washington392Victorian,
   battery65GreyStone, fireStation13Concrete, washington425TanArched, washingtonMassimoBrick,
   washingtonPavilionGrey, drummGatewayStucco1966, drummGatewayDark1966,
+  sacramento129BrickFiorini, sacramentoCreamBistro,
 }

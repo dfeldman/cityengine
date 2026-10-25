@@ -115,7 +115,7 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 103 | 38 | `way/35266543` San Francisco Fire Station 13 — 530 Sansome St · 10 m · reface brick<br>`way/256072718` (unnamed) · 12 m · generic<br>`way/256072708` (unnamed) · 8 m · generic || done (with 102; photo-less outlines skipped) |
 | 104 | 37 | `way/256086588` 607;611 Front Street · 10 m · generic || done (with 102; photo-less outlines skipped) |
 | 105 | 32 | `way/941854099` (unnamed) · ? · generic<br>`way/588363944` (unnamed) · ? · generic<br>`way/588363945` (unnamed) · ? · generic || done (with 102; photo-less outlines skipped) |
-| 106 | 29 | `way/260288452` (unnamed) · 8 m · generic<br>`way/260288460` 119;129 Sacramento Street · 10 m · generic<br>`way/260288454` 41;43 Drumm Street · 11 m · generic | |
+| 106 | 29 | `way/260288452` (unnamed) · 8 m · generic<br>`way/260288460` 119;129 Sacramento Street · 10 m · generic<br>`way/260288454` 41;43 Drumm Street · 11 m · generic || done (with 106; photo-less outlines skipped) |
 | 107 | 29 | `way/148668323` (unnamed) · ? · reface brick<br>`way/148668306` (unnamed) · ? · reface brick<br>`way/148668314` 617;619 Sansome Street · 9 m · reface brick | |
 | 108 | 29 | `way/260288453` 17 Drumm Street · 14 m · generic<br>`way/260288450` 47;49 Drumm Street · 7 m · generic<br>`way/260288455` (unnamed) · 11 m · generic | |
 | 109 | 29 | `way/256087385` (unnamed) · ? · reface brick<br>`way/256087378` 712;714 Sansome Street · 10 m · reface brick | |
