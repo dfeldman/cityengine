@@ -240,7 +240,8 @@
       120,
       300
     ],
-    "note": "assetkit-models-sf/admission-day-miner: OSM node 386573810 (Market, Post and Montgomery). The real monument is Tilden's granite column with the winged figure on top and this bronze miner with his flag at its foot, so the procedural column stays and the miner stands 3.6 m in front of it, facing down Market (bearing 50, from the site)."
+    "note": "assetkit-models-sf/admission-day-miner: OSM node 386573810 (Market, Post and Montgomery). The real monument is Tilden's granite column with the winged figure on top and this bronze miner with his flag at its foot, so the procedural column stays and the miner stands 3.6 m in front of it, facing down Market (bearing 50, from the site).",
+    "beside": "Admission Day Monument (Native Sons)"
   },
   {
     "id": "cider-press",
@@ -395,8 +396,8 @@
     "id": "dragon-gate-lion-west",
     "name": "Dragon Gate guardian lion (west)",
     "asset": "chinatown-guardian-lion",
-    "lat": 37.790651,
-    "lon": -122.405667,
+    "lat": 37.790615,
+    "lon": -122.4056328,
     "bearing": 156,
     "plinth": [
       0.9,
@@ -408,14 +409,14 @@
       120,
       300
     ],
-    "note": "assetkit-models-sf/chinatown-guardian-lion: Dragon Gate (OSM node 65328703, procedural gate front 171), 7 m west of Grant's centreline and 3 m south of the gate, turned 15 deg inward toward the street."
+    "note": "assetkit-models-sf/chinatown-guardian-lion: Dragon Gate (OSM node 65328703, procedural gate front 171), 7 m west of Grant's centreline and 3 m south of the gate, turned 15 deg inward toward the street. Moved in toward Grant and 4 m south onto the gate's Bush Street apron, clear of the corner buildings (2026-10-25)."
   },
   {
     "id": "dragon-gate-lion-east",
     "name": "Dragon Gate guardian lion (east)",
     "asset": "chinatown-guardian-lion",
-    "lat": 37.790671,
-    "lon": -122.40551,
+    "lat": 37.790635,
+    "lon": -122.4055442,
     "bearing": 186,
     "plinth": [
       0.9,
@@ -427,7 +428,7 @@
       120,
       300
     ],
-    "note": "assetkit-models-sf/chinatown-guardian-lion: Dragon Gate (OSM node 65328703, procedural gate front 171), 7 m east of Grant's centreline and 3 m south of the gate, mirror of the west lion."
+    "note": "assetkit-models-sf/chinatown-guardian-lion: Dragon Gate (OSM node 65328703, procedural gate front 171), 7 m east of Grant's centreline and 3 m south of the gate, mirror of the west lion. Moved in toward Grant and 4 m south onto the gate's Bush Street apron, clear of the corner buildings (2026-10-25)."
   },
   {
     "id": "goddess-of-democracy-portsmouth",
@@ -446,7 +447,8 @@
       120,
       300
     ],
-    "note": "assetkit-models-sf/goddess-of-democracy-portsmouth: OSM node 7177796746, Portsmouth Square, facing west toward Chinatown (a guess); ~3 m bronze on a pale granite block (~0.9 m)."
+    "note": "assetkit-models-sf/goddess-of-democracy-portsmouth: OSM node 7177796746, Portsmouth Square, facing west toward Chinatown (a guess); ~3 m bronze on a pale granite block (~0.9 m).",
+    "beside": "Robert Louis Stevenson Memorial"
   },
   {
     "id": "joseph-strauss",
@@ -785,14 +787,14 @@
     "id": "la-chiffonniere",
     "name": "La Chiffonniere (Dubuffet)",
     "asset": "la-chiffonniere",
-    "lat": 37.7947438,
-    "lon": -122.3951937,
+    "lat": 37.7947556,
+    "lon": -122.395163,
     "bearing": 90,
     "lodRanges": [
       180,
       420
     ],
-    "note": "assetkit-models-sf/la-chiffonniere: OSM node 11612234500, Embarcadero Plaza (Justin Herman). 6.7 m (22 ft). Bearing 90 (toward the Ferry Building) is a guess; the piece has no true front."
+    "note": "assetkit-models-sf/la-chiffonniere: OSM node 11612234500, Embarcadero Plaza (Justin Herman). 6.7 m (22 ft). Bearing 90 (toward the Ferry Building) is a guess; the piece has no true front. Moved 3 m out from the tower beside it, whose wall it clipped (2026-10-25)."
   },
   {
     "id": "mckinley-memorial",

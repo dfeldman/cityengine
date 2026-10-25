@@ -53,6 +53,8 @@ export interface StatueEntry {
   float?: boolean
   /** the procedural landmark (its manifest `name`) hidden while this is loaded */
   replaces?: string
+  /** the procedural monument it deliberately stands beside (the audit's 15 m duplicate check lets the pair be) */
+  beside?: string
   /** placed at a point… */
   lat?: number
   lon?: number

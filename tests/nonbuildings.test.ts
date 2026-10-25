@@ -62,7 +62,6 @@ const KNOWN: Record<string, string[]> = {
     // #108 — standing in footprints it does not claim
     'intersects | Opera Plaza courtyard',
     'intersects | Powell Street Station Canopy',
-    'intersects | Ruth Asawa Mermaid Fountain',
     'intersects | Redwood Park pool',
     // the mural alleys (2026-10-04): the murals are painted ON the alleys' walls, so their panels stand at the walls
     'intersects | Balmy Alley murals',
@@ -260,10 +259,8 @@ const KNOWN: Record<string, string[]> = {
     // the Sausalito docks float on the sea (deckAbove), over a sea bed the check calls ground
     'height | Sausalito houseboat docks',
     // the houseboat's assetkit model replaces its procedural stand-in when near (statues.ts `replaces`): one place, two entries
-    'duplicate | Taj Mahal houseboat / Taj Mahal houseboat',
     // by design (2026-10-18): Lincoln's model replaces its procedural stand-in at the same place; Gandhi stands on the
     // Ferry Plaza deck; the Jeremiah O'Brien lies alongside Pier 35, her guard against its fender line
-    'duplicate | Abraham Lincoln statue / Abraham Lincoln',
     'duplicate | Ferry Plaza deck / Mahatma Gandhi',
     "intersects | SS Jeremiah O'Brien",
     // Pier 39's frontages (pier39-fronts.ts, 2026-10-17): point models laid against their buildings' walls, the viewing rail

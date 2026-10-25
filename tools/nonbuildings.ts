@@ -697,10 +697,20 @@ export async function nonbuildingsOf(city: string): Promise<CityNonbuildings> {
    * by lat/lon, and two copies of the same fountain stand inside each other.
    */
   const pts = items.filter((i) => i.lat !== undefined && i.lon !== undefined && i.path !== 'skyline')
+  /*
+   * …unless the two are MEANT to stand together (statues, 2026-10-25): a GLB that `replaces` its own procedural stand-in
+   * (the stand-in only shows beyond the GLB's range), one model placed twice (a pair of gate lions), or a statue that
+   * declares it stands `beside` a procedural monument (the Admission Day miner at the foot of its column).
+   */
+  const meant = (a: Nonbuilding, b: Nonbuilding): boolean => {
+    const ea = a.entry as { replaces?: string; asset?: string; beside?: string }, eb = b.entry as typeof ea
+    return ea.replaces === b.name || eb.replaces === a.name || (!!ea.asset && ea.asset === eb.asset) ||
+      ea.beside === b.name || eb.beside === a.name
+  }
   for (let i = 0; i < pts.length; i++) {
     for (let j = i + 1; j < pts.length; j++) {
       const d = Math.hypot((pts[i].lat! - pts[j].lat!) * 111_320, (pts[i].lon! - pts[j].lon!) * 111_320 * Math.cos((pts[i].lat! * Math.PI) / 180))
-      if (d < 15) issues.push({ check: 'duplicate', name: `${pts[i].name} / ${pts[j].name}`, kind: pts[i].kind, detail: `two standalone nonbuildings ${d.toFixed(1)} m apart (${pts[i].file}, ${pts[j].file}) — the claim loop cannot see this, neither has OSM ids` })
+      if (d < 15 && !meant(pts[i], pts[j])) issues.push({ check: 'duplicate', name: `${pts[i].name} / ${pts[j].name}`, kind: pts[i].kind, detail: `two standalone nonbuildings ${d.toFixed(1)} m apart (${pts[i].file}, ${pts[j].file}) — the claim loop cannot see this, neither has OSM ids` })
     }
   }
 
