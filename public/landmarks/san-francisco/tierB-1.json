@@ -12,16 +12,6 @@
   
   {
     "osm": [
-      "way/256072725"
-    ],
-    "name": "Building 256072725",
-    "restyle": "chinatown",
-    "height": 48,
-    "levels": 14,
-    "note": "rule 2: chinatown"
-  },
-  {
-    "osm": [
       "way/221568041"
     ],
     "name": "Antonia Manor",
@@ -51,16 +41,6 @@
     "height": 36,
     "note": "Rule check 2026-10-04 (Mapillary): brown brick-faced modern tower; was rule 8 chicago.",
     "wall": "#76503e"
-  },
-  {
-    "osm": [
-      "way/56723860"
-    ],
-    "name": "Geary Courtyard Apartments",
-    "restyle": "bauhaus",
-    "height": 38,
-    "note": "Rule check 2026-10-04 (Mapillary): grey-tan 2010s panels and glass; was rule 8 chicago.",
-    "wall": "#aaa298"
   },
   {
     "osm": [

@@ -146,17 +146,6 @@
   },
   {
     "osm": [
-      "way/288647982"
-    ],
-    "name": "2 Townsend Street",
-    "restyle": "bauhaus",
-    "height": 35,
-    "levels": 10,
-    "note": "Rule check 2026-10-04 (Mapillary): pale modern stucco with glass balconies (South Beach); was rule 7 brick.",
-    "wall": "#d3c8c8"
-  },
-  {
-    "osm": [
       "way/259252255"
     ],
     "name": "1960 Broadway",

@@ -77,14 +77,14 @@ Builders go in `src/render/landmarks/sf/downtown-t4.ts`, manifest entries in `pu
 | 67 | 138 | Union Square | `way/35024381` The Barnes San Francisco, Tapestry Collection  · 30 m · reface || done |
 | 68 | 137 | SoMa by Market | `way/38613263` (unnamed) · 21 m · generic || done |
 | 69 | 137 | Tenderloin | `way/288532297` Eastern Park Apartments · 36 m · reface || done |
-| 70 | 136 | Tenderloin | `way/260142634` Mosser Towers · 41 m · reface | |
-| 71 | 135 | Tenderloin | `way/56723860` Geary Courtyard Apartments · 38 m · reface | |
-| 72 | 134 | SoMa by Market | `way/288647982` 2 Townsend Street · 35 m · reface | |
-| 73 | 133 | SoMa by Market | `way/421816058` 333 Main Street · 35 m · reface | |
-| 74 | 133 | Union Square | `way/256499427` Orchard Hotel · 32 m · reface | |
-| 75 | 132 | SoMa by Market | `way/147508936` 500 3rd Street · 23 m · reface | |
-| 76 | 131 | Chinatown | `way/256072725` (unnamed) · 56 m · reface | |
-| 77 | 130 | Union Square | `way/135174117` (unnamed) · 49 m · reface | |
+| 70 | 136 | Tenderloin | `way/260142634` Mosser Towers · 41 m · reface || done |
+| 71 | 135 | Tenderloin | `way/56723860` Geary Courtyard Apartments · 38 m · reface || done |
+| 72 | 134 | SoMa by Market | `way/288647982` 2 Townsend Street · 35 m · reface || done |
+| 73 | 133 | SoMa by Market | `way/421816058` 333 Main Street · 35 m · reface || done |
+| 74 | 133 | Union Square | `way/256499427` Orchard Hotel · 32 m · reface || done |
+| 75 | 132 | SoMa by Market | `way/147508936` 500 3rd Street · 23 m · reface || done |
+| 76 | 131 | Chinatown | `way/256072725` (unnamed) · 56 m · reface || done |
+| 77 | 130 | Union Square | `way/135174117` (unnamed) · 49 m · reface || done |
 | 78 | 130 | Chinatown | `way/288487237` North Ping Yuen · 32 m · reface | |
 | 79 | 129 | SoMa by Market | `way/93817372` 645 Harrison Street · 17 m · generic | |
 | 80 | 128 | Tenderloin | `way/256047252` The Salvation Army Railton Place · 32 m · reface | |

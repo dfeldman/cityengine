@@ -1010,6 +1010,113 @@ function t4b69_288532297(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * Geary Courtyard Apartments (way/56723860), Geary at Jones: a cream stucco apartment block of about seven storeys, its
+ * windows in pairs over a shopfront of halal takeaways and a dark stone-clad ground floor. (Mapillary 1760910134793733,
+ * 670454199360792.)
+ */
+function t4b71_56723860(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.84, 0.82, 0.76]
+  tower(out, fit, {
+    height: 32,
+    base: { height: 4, face: { kind: 'punched', wall: [0.62, 0.6, 0.56], material: 'ashlar', glass: [0.2, 0.22, 0.24], pitch: 4, solid: 0.5, floor: 4 } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, material: 'stucco', glass: [0.26, 0.3, 0.34], pitch: 3, solid: 0.55, floor: 3.2 } }],
+    crown: { kind: 'parapet', height: 1, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/**
+ * 2 Townsend Street (way/288647982): a pale stucco block of about ten storeys on a grey base of tall columns and a
+ * gated courtyard entrance, with horizontal ribbons of windows above. (Mapillary 1308405944232990, one photograph.)
+ */
+function t4b72_288647982(out: MeshBuilder, fit: Fit): void {
+  const PALE: Rgb = [0.86, 0.82, 0.8]
+  tower(out, fit, {
+    height: 35,
+    base: { height: 4, face: { kind: 'blank', wall: [0.6, 0.58, 0.54], material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: PALE, glass: [0.3, 0.36, 0.4], floor: 3.2, solid: 0.55, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 1, colour: PALE, material: 'stucco' },
+  })
+}
+
+/**
+ * 333 Main Street (way/421816058): a glass tower of about eight storeys in long curving ribbons of blue-green glass,
+ * set on a granite base, with a grey panelled block beside it on Main. (Mapillary 559204368454231, 2208969706272805.)
+ */
+function t4b73_421816058(out: MeshBuilder, fit: Fit): void {
+  const STEEL: Rgb = [0.36, 0.44, 0.46]
+  tower(out, fit, {
+    height: 35,
+    base: { height: 6, face: { kind: 'blank', wall: [0.4, 0.4, 0.4], material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'curtain', wall: STEEL, glass: [0.2, 0.38, 0.42], pitch: 3.2, floor: 3.4, material: 'metal' } }],
+    crown: { kind: 'parapet', height: 1, colour: STEEL, material: 'metal' },
+  })
+}
+
+/**
+ * Orchard Hotel (way/256499427), 466 Bush Street: a cream-stucco hotel of about nine storeys with a terracotta band
+ * across the middle, an arched entrance and flagged shopfronts at street level. (Mapillary 758581069964458,
+ * 1191346849689345.)
+ */
+function t4b74_256499427(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.88, 0.84, 0.76]
+  const TERRA: Rgb = [0.7, 0.42, 0.32]
+  tower(out, fit, {
+    height: 32,
+    base: { height: 4, face: { kind: 'punched', wall: TERRA, material: 'brick', glass: [0.22, 0.2, 0.2], pitch: 4, solid: 0.5, arched: true, floor: 4 } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, material: 'stucco', glass: [0.26, 0.3, 0.34], pitch: 3.2, solid: 0.5, floor: 3.2 } }],
+    cornices: [{ at: 0.45, depth: 0.5, height: 0.6, colour: TERRA }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/**
+ * 500 Third Street (way/147508936): a six-storey cream loft with tall many-paned steel-sash windows set in a plain
+ * stucco wall, over a dark grey base of shopfronts. (Mapillary 1488574945895417, 1434473814298601.)
+ */
+function t4b75_147508936(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.84, 0.8, 0.7]
+  tower(out, fit, {
+    height: 23,
+    base: { height: 4, face: { kind: 'blank', wall: [0.3, 0.31, 0.33], material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, material: 'stucco', glass: [0.3, 0.35, 0.4], pitch: 3.4, solid: 0.3, floor: 3.8 } }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/**
+ * Sterne School, Gibb Street (way/256072725): a three-storey tan brick school with a plain row of punched windows,
+ * a deep roof overhang and a glazed top floor set back under it, the entrance under a stone-faced porch. (Mapillary
+ * 1620177758609515, 660152552448628.) OSM gives 56 m, but the photographs show the school alone at about three storeys.
+ */
+function t4b76_256072725(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.76, 0.6, 0.46]
+  tower(out, fit, {
+    height: 16,
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, material: 'brick', glass: [0.2, 0.24, 0.28], pitch: 3.2, solid: 0.5, floor: 3.6 } }],
+    crown: { kind: 'parapet', height: 1, colour: TAN, material: 'brick' },
+  })
+}
+
+/**
+ * An early-century office block on the corner of Post and Grant (way/135174117): a white Beaux-Arts block of about
+ * twelve storeys, its windows in regular bays between pilasters, with a deep modillioned cornice over a set-back top.
+ * (Mapillary 2891196621134196, 1349217525969101.)
+ */
+function t4b77_135174117(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.92, 0.9, 0.86]
+  tower(out, fit, {
+    height: 44,
+    base: { height: 4, face: { kind: 'punched', wall: [0.7, 0.68, 0.64], material: 'ashlar', glass: [0.2, 0.22, 0.25], pitch: 4, solid: 0.45, floor: 4 } },
+    tiers: [
+      { to: 0.8, face: { kind: 'punched', wall: WHITE, material: 'stucco', glass: [0.24, 0.28, 0.32], pitch: 3.6, solid: 0.6, floor: 3.4 } },
+      { to: 1, inset: 1.5, face: { kind: 'punched', wall: WHITE, material: 'stucco', glass: [0.24, 0.28, 0.32], pitch: 3.6, solid: 0.6, floor: 3.4 } },
+    ],
+    cornices: [{ at: 0.8, depth: 0.6, height: 0.8, colour: WHITE }],
+    crown: { kind: 'parapet', height: 2.2, colour: WHITE, material: 'stucco' },
+  })
+}
+
 export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   t4b1_156123224,
   t4b2_192328858,
@@ -1083,4 +1190,11 @@ export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t4b67_35024381,
   t4b68_19306631,
   t4b69_288532297,
+  t4b71_56723860,
+  t4b72_288647982,
+  t4b73_421816058,
+  t4b74_256499427,
+  t4b75_147508936,
+  t4b76_256072725,
+  t4b77_135174117,
 }

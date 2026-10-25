@@ -10,7 +10,6 @@
   {"osm": ["way/257965709"], "restyle": "sfapartment", "wall": "#c4bfb2", "groundWall": "#e0dbcd", "by": "haiku", "image": "way-257965709-01.jpg", "note": "six-storey render block with stacked corner bay windows, garage at ground"},
   {"osm": ["way/426895503"], "restyle": "towerblock", "wall": "#f2f0ea", "trim": "#f0bb2e", "by": "haiku", "image": "way-426895503-02.jpg", "note": "white block with stacked balconies, yellow vertical bays and orange top"},
   {"osm": ["way/435831006"], "restyle": "towerblock", "wall": "#ece9e2", "groundWall": "#66635f", "by": "haiku", "image": "way-435831006-01.jpg", "note": "white tower with recessed balconies over dark corrugated concrete podium"},
-  {"osm": ["way/147508936"], "restyle": "brick", "wall": "#d6d0c2", "groundWall": "#4b4d52", "by": "haiku", "image": "way-147508936-01.jpg", "note": "painted cream loft with tall steel-sash windows and dark grey base"},
   {"osm": ["way/35176122"], "restyle": "towerblock", "wall": "#eeece6", "groundWall": "#7d5d4b", "by": "haiku", "image": "way-35176122-02.jpg", "note": "white office block, regular dark square windows, brown shopfront band"},
   {"osm": ["way/260519112"], "restyle": "brick", "wall": "#a0553f", "trim": "#e9e4d6", "by": "haiku", "image": "way-260519112-01.jpg", "note": "red-brown brick block, regular windows, cream cornice band"},
   {"osm": ["way/149167949"], "restyle": "brick", "wall": "#9b4a36", "by": "haiku", "image": "way-149167949-02.jpg", "note": "red brick block with a glazed top storey"},
