@@ -13,7 +13,7 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 3 | 239 | `way/165480949` Station J · ? · generic<br>`way/308339610` Wayfare Tavern — 558 Sacramento Street · ? · generic<br>`way/256067736` 215 Leidesdorff Street · 14 m · generic || done |
 | 4 | 231 | `way/942303806` Anglo Bank Building · ? · generic<br>`way/942303807` Station J · ? · generic<br>`way/942303804` (unnamed) · ? · generic || done |
 | 5 | 213 | `way/148741774` Cafe Tiramisu — 28 Belden Place · 8 m · generic<br>`way/148741780` (unnamed) · 27 m · generic<br>`way/148741783` (unnamed) · 8 m · generic || 148741780 done; 148741774 and 148741783 have no photographs (a pedestrian lane) |
-| 6 | 213 | `way/260280334` (unnamed) · 34 m · generic<br>`way/151195278` (unnamed) · 30 m · generic<br>`way/474354577` (unnamed) · 13 m · generic | |
+| 6 | 213 | `way/260280334` (unnamed) · 34 m · generic<br>`way/151195278` (unnamed) · 30 m · generic<br>`way/474354577` (unnamed) · 13 m · generic || done |
 | 7 | 209 | `way/151195270` (unnamed) · 21 m · generic<br>`way/151195275` 260 Kearny Street · 17 m · generic | |
 | 8 | 201 | `way/260286448` Buich Building — 240;242 California Street · 11 m · generic<br>`way/260286441` 244;252;256 California Street · 32 m · generic<br>`way/260286442` 200;210 California Street · 18 m · generic | |
 | 9 | 196 | `way/260924232` Clayton · ? · generic<br>`way/260924222` (unnamed) · 15 m · generic<br>`way/260924242` (unnamed) · ? · generic | |

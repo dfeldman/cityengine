@@ -1031,6 +1031,37 @@ export function belden148741780(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+export function kearny260280334(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.8, 0.7, 0.52]
+  tower(out, fit, {
+    height: 34,
+    base: { height: 4.5, face: { kind: 'blank', wall: [0.14, 0.13, 0.12], material: 'concrete' }, canopy: { depth: 1.4, colour: [0.12, 0.12, 0.12] } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: [0.2, 0.22, 0.24], pitch: 3, floor: 3.6, solid: 0.45, material: 'ashlar' }, cornice: { depth: 0.7, height: 0.7, colour: [0.86, 0.8, 0.66] } }],
+    cornices: [{ at: 0.33, depth: 0.4, height: 0.4, colour: [0.86, 0.8, 0.66] }],
+    crown: { kind: 'parapet', height: 1.4, colour: TAN, material: 'ashlar' },
+  })
+}
+
+export function fidi151195278(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.84, 0.82, 0.76]
+  tower(out, fit, {
+    height: 30,
+    base: { height: 4.5, face: { kind: 'blank', wall: [0.16, 0.14, 0.12], material: 'concrete' }, canopy: { depth: 1.2, colour: [0.14, 0.13, 0.12] } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.22, 0.24, 0.26], pitch: 3.2, floor: 3.4, solid: 0.5, material: 'ashlar' }, cornice: { depth: 1.2, height: 1.2, colour: [0.9, 0.88, 0.82] } }],
+    crown: { kind: 'parapet', height: 1.6, colour: CREAM, material: 'ashlar' },
+  })
+}
+
+export function kearny474354577(out: MeshBuilder, fit: Fit): void {
+  const BEIGE: Rgb = [0.68, 0.65, 0.6]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.2, 0.2, 0.2], glass: [0.3, 0.34, 0.36], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BEIGE, glass: [0.2, 0.24, 0.28], pitch: 3, floor: 3.2, solid: 0.5, material: 'stucco' }, cornice: { depth: 0.4, height: 0.4, colour: [0.74, 0.71, 0.66] } }],
+    crown: { kind: 'parapet', height: 0.8, colour: BEIGE, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1081,4 +1112,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   stationJSacramento, wayfareTavern558Sacramento, leidesdorff215,
   angloBankSacramento, stationJAnnex, sacramento942303804,
   belden148741780,
+  kearny260280334, fidi151195278, kearny474354577,
 }
