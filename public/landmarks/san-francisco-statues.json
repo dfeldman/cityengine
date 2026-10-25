@@ -345,5 +345,88 @@
       420
     ],
     "note": "assetkit-models-sf/bufano-st-francis: SE corner of Taylor and Beach, Frank Cresci Plaza (OSM way 817970857, 24 x 35 m; the exact spot within it is a guess). 18 ft (5.5 m); faces northwest, since the front photo looks southeast to Coit Tower and the Pyramid."
+  },
+  {
+    "id": "bufano-penguins",
+    "name": "Bufano Penguins",
+    "asset": "bufano-penguins",
+    "lat": 37.7968665,
+    "lon": -122.3982381,
+    "bearing": 270,
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/bufano-penguins: OSM node 8722065772 'The Penguins', Gateway Commons plaza by Ironship Plaza; faces west toward Davis Court (a guess); ~1.8 m with its base."
+  },
+  {
+    "id": "cervantes-monument",
+    "name": "Cervantes Monument",
+    "asset": "cervantes-monument",
+    "lat": 37.7722401,
+    "lon": -122.466749,
+    "bearing": 180,
+    "lodRanges": [
+      180,
+      420
+    ],
+    "note": "assetkit-models-sf/cervantes-monument: OSM node 1350854580, north edge of the Music Concourse, Golden Gate Park, facing south into it (a guess); about 3.5 m."
+  },
+  {
+    "id": "pershing-golden-gate-park",
+    "name": "General Pershing",
+    "asset": "pershing-golden-gate-park",
+    "lat": 37.7716843,
+    "lon": -122.466043,
+    "bearing": 270,
+    "plinth": [
+      1.9,
+      1.9,
+      3.2
+    ],
+    "plinthColour": "#9a958b",
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/pershing-golden-gate-park: OSM node 3297579562, east side of the Music Concourse, facing west into it (a guess); ~2.6 m bronze on a ~3.2 m granite pedestal."
+  },
+  {
+    "id": "dragon-gate-lion-west",
+    "name": "Dragon Gate guardian lion (west)",
+    "asset": "chinatown-guardian-lion",
+    "lat": 37.790651,
+    "lon": -122.405667,
+    "bearing": 156,
+    "plinth": [
+      0.9,
+      0.7,
+      0.6
+    ],
+    "plinthColour": "#9a958b",
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/chinatown-guardian-lion: Dragon Gate (OSM node 65328703, procedural gate front 171), 7 m west of Grant's centreline and 3 m south of the gate, turned 15 deg inward toward the street."
+  },
+  {
+    "id": "dragon-gate-lion-east",
+    "name": "Dragon Gate guardian lion (east)",
+    "asset": "chinatown-guardian-lion",
+    "lat": 37.790671,
+    "lon": -122.40551,
+    "bearing": 186,
+    "plinth": [
+      0.9,
+      0.7,
+      0.6
+    ],
+    "plinthColour": "#9a958b",
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/chinatown-guardian-lion: Dragon Gate (OSM node 65328703, procedural gate front 171), 7 m east of Grant's centreline and 3 m south of the gate, mirror of the west lion."
   }
 ]
