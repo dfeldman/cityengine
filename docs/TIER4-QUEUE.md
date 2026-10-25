@@ -4,6 +4,8 @@ Owner, 2026-10-25: "Are there other buildings in the downtown area that could us
 
 **Selection:** every building in SoMa by Market (Yerba Buena, Rincon, Transbay), Union Square, the Tenderloin, Civic Center, Chinatown, the FiDi's north edge (Jackson to Broadway) and lower Nob Hill that has no custom model, scoring 100 or more on height × √footprint ÷ 10, +40 OSM heritage/wikidata, +20 a DataSF historic resource, +10 named. Left out: buildings whose middle lies inside an existing custom model, and 799 Market (its reface was kept on purpose). 157 buildings, grouped into batches of up to three neighbours.
 
+**Result (2026-10-25):** the queue is worked through: 142 of the 157 now have custom models in `downtown-t4.ts`. The rest: no usable photographs, photographs of a neighbour only, already modelled under another id (OSM relations the first pass read as ways: the Mills Building, 50 UN Plaza, the Ritz-Carlton, the Phelan Building, 88 Kearny…), or a building part of a modelled building. Haiku subagents, one at a time; most models were checked against their photographs but many street-view renders landed in walls, so colours and storey counts are the weakest part (cream walls drawn as `stucco` read grey — later batches used `concrete`).
+
 Builders go in `src/render/landmarks/sf/downtown-t4.ts`, manifest entries in `public/landmarks/san-francisco/downtown-t4.json`. Brief: [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3.md), with those two files in place of market-fidi's. One Haiku subagent at a time.
 
 | batch | rank | area | buildings (OSM, name, height, now) | status |
