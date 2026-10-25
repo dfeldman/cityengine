@@ -2561,6 +2561,19 @@ export function kearny243(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+export function bush364Taupe(out: MeshBuilder, fit: Fit): void {
+  // 364 Bush Street (way/148741778, 1907): a taupe three-storey block with arched upper windows over a dark marble
+  // ground floor, a dark cornice band between them and a plain parapet; faces Bush. Photo way-148741778-03.
+  const TAUPE: Rgb = [0.6, 0.56, 0.5], MARBLE: Rgb = [0.14, 0.2, 0.18], GLASS: Rgb = [0.18, 0.2, 0.22], TRIM: Rgb = [0.3, 0.3, 0.28]
+  tower(out, fit, {
+    height: 9,
+    base: { height: 3, face: { kind: 'curtain', wall: MARBLE, glass: GLASS, pitch: 3, floor: 3, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAUPE, glass: GLASS, pitch: 2.6, floor: 3, solid: 0.5, arched: true, material: 'stucco' } }],
+    cornices: [{ at: 3, depth: 0.4, height: 0.4, colour: TRIM }],
+    crown: { kind: 'parapet', height: 0.8, colour: TRIM, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -2653,4 +2666,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   jessie96RedBrick, stevenson79Granite, louvred2002Stone,
   montgomery130Cream, washington520Brick, washingtonItalianate, washingtonLouvredConcrete,
   kearny219, kearny237, kearny243,
+  bush364Taupe,
 }
