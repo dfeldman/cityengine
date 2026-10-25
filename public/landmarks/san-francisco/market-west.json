@@ -41,7 +41,6 @@
   {"osm": ["way/35112032"], "name": "1220 Market Street", "restyle": "brick", "levels": 2, "note": "Shopfront."},
   {"osm": ["way/35112065"], "name": "1234 Market Street", "restyle": "brick", "levels": 3, "note": "Brick block."},
   {"osm": ["way/35176510"], "name": "1242 Market Street", "restyle": "chicago", "levels": 5, "note": "Five-storey loft."},
-  {"osm": ["way/35176494"], "name": "1278 Market Street", "restyle": "sfapartment", "levels": 5, "note": "1910s flats."},
   {"osm": ["way/1288526233"], "name": "1390 Market shopfront", "restyle": "brick", "levels": 2, "note": "Low shopfront by Fox Plaza."},
   {"osm": ["way/35111929"], "name": "1430 Market Street", "restyle": "sfapartment", "levels": 5, "note": "Small hotel."},
   {"osm": ["way/35111933"], "name": "1438 Market Street", "restyle": "chicago", "levels": 5, "note": "1910s loft."},

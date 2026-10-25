@@ -37,7 +37,7 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 25 | 151 | `way/35174751` (unnamed) · 19 m · reface brick<br>`way/941560580` (unnamed) · 11 m · reface brick || done |
 | 26 | 149 | `way/148712645` 576;578;580 Market Street · 25 m · reface chicago<br>`way/148712646` (unnamed) · 11 m · reface chicago || done |
 | 27 | 145 | `way/151183777` Market Street · 47 m · reface bauhaus || done |
-| 28 | 143 | `way/35176494` 1278 Market Street · 16 m · reface sfapartment | |
+| 28 | 143 | `way/35176494` 1278 Market Street · 16 m · reface sfapartment || done |
 | 29 | 138 | `way/35111929` (unnamed) · 17 m · reface sfapartment<br>`way/35111933` 1438;1440;1442;1444 Market Street · 17 m · reface chicago<br>`way/35111927` (unnamed) · 9 m · reface brick | |
 | 30 | 137 | `way/35176510` 1242 Market Street · 18 m · reface chicago<br>`way/35112065` 1234 Market Street · ? · reface brick<br>`way/35112032` 1220 Market Street · 9 m · reface brick | |
 | 31 | 137 | `way/332517080` 969 Market Street · 14 m · reface brick | |

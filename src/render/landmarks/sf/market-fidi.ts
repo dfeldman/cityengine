@@ -1704,7 +1704,20 @@ export function kearny1Annex(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** 1278 MARKET (Chase Hotel): a four-storey cream stucco block on the north side at Larkin, a rounded corner, a dark shopfront with an arched entrance, three floors of arched windows under a bracketed cornice (Mapillary 03). */
+export function market1278(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.86, 0.84, 0.78], DARK: Rgb = [0.2, 0.18, 0.16]
+  tower(out, fit, {
+    height: 16,
+    base: { height: 3.5, face: { kind: 'curtain', wall: DARK, glass: [0.22, 0.25, 0.27], pitch: 3.2, floor: 3.5, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.26, 0.3, 0.32], floor: 3.5, pitch: 3, solid: 0.6, arched: true, head: 'architrave', material: 'stucco' } }],
+    cornices: [{ at: 3.5, depth: 0.3, colour: CREAM }],
+    crown: { kind: 'parapet', height: 1.3, colour: CREAM, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
+  market1278,
   stevensonPlace,
   trinityPlace1177,
   unionTrustBank,
