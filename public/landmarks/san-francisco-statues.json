@@ -696,5 +696,104 @@
     ],
     "note": "assetkit-models-sf/exploratorium-buckyball: OSM node 6433062291 (Buckyball, Leo Villareal 2016), Pier 15 plaza of the Exploratorium. 7.6 m (25 ft) overall; rotationally symmetric, so the bearing is arbitrary.",
     "deckAbove": 3.0
+  },
+  {
+    "id": "francis-scott-key-monument",
+    "name": "Francis Scott Key Monument",
+    "asset": "francis-scott-key-monument",
+    "lat": 37.771261,
+    "lon": -122.466641,
+    "bearing": 270,
+    "replaces": "Francis Scott Key Monument canopy",
+    "lodRanges": [
+      180,
+      420
+    ],
+    "note": "assetkit-models-sf/francis-scott-key-monument: OSM node 12780100036 (memorial, Q76376280), east end of the Music Concourse, facing west along the Concourse to the Spreckels Temple of Music (bearing 270 by judgement). ~14.5 m overall (about.md). The model includes the canopy, so it replaces the procedural canopy rather than standing beside it; Key himself was toppled in 2020."
+  },
+  {
+    "id": "georgia-okeeffe",
+    "name": "Portrait of Georgia O'Keeffe",
+    "asset": "georgia-okeeffe",
+    "lat": 37.797447,
+    "lon": -122.3987332,
+    "bearing": 180,
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/georgia-okeeffe: OSM node 8722065769 (Marisol, 1982), Sydney G. Walton Square. Bearing 180 is a guess; 1.8 m is a guess."
+  },
+  {
+    "id": "goldsworthy-spire",
+    "name": "Spire (Goldsworthy)",
+    "asset": "goldsworthy-spire",
+    "lat": 37.7919042,
+    "lon": -122.460019,
+    "bearing": 0,
+    "lodRanges": [
+      250,
+      600
+    ],
+    "note": "assetkit-models-sf/goldsworthy-spire: OSM node 1564470252 (Andy Goldsworthy, 2008, height 30.48), Presidio, on the Ridge Trail. Symmetric, bearing arbitrary."
+  },
+  {
+    "id": "hills-bros-coffee-drinker",
+    "name": "Hills Bros. coffee drinker (roof)",
+    "asset": "hills-bros-coffee-drinker",
+    "lat": 37.78958,
+    "lon": -122.38893,
+    "bearing": 70,
+    "deckAbove": 27,
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/hills-bros-coffee-drinker: stands on the Hills Bros. coffee works roof beside the procedural 'Hills Bros. Coffee roof sign' (kept); facing the Embarcadero (bearing 70 by judgement). Trademark artwork is OSM node 10869899386; 3.5 m is a guess. Roof height set by deckAbove."
+  },
+  {
+    "id": "hope-peace-hands",
+    "name": "Hope / Peace hands, Pier 28",
+    "asset": "hope-peace-hands",
+    "lat": 37.787391,
+    "lon": -122.387575,
+    "bearing": 270,
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/hope-peace-hands: Giuseppe Palumbo, Big Art Loop at Pier 28, map point 37.787391,-122.387466 (bigartloop.org); no OSM node. Placed by judgement facing the Embarcadero promenade (bearing 270); 2.2 m is a guess."
+  },
+  {
+    "id": "junipero-serra",
+    "name": "Padre Junipero Serra",
+    "asset": "junipero-serra",
+    "lat": 37.7718333,
+    "lon": -122.4665672,
+    "bearing": 250,
+    "plinth": [
+      1.6,
+      1.6,
+      4.2
+    ],
+    "plinthColour": "#9a958b",
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/junipero-serra: OSM node 12641813203 (Tilden, 1907), knoll beside the Music Concourse, facing the Concourse (bearing 250 by judgement). 3.8 m bronze on a ~4.2 m granite pedestal (about.md estimates). Toppled in 2020."
+  },
+  {
+    "id": "la-chiffonniere",
+    "name": "La Chiffonniere (Dubuffet)",
+    "asset": "la-chiffonniere",
+    "lat": 37.7947438,
+    "lon": -122.3951937,
+    "bearing": 90,
+    "lodRanges": [
+      180,
+      420
+    ],
+    "note": "assetkit-models-sf/la-chiffonniere: OSM node 11612234500, Embarcadero Plaza (Justin Herman). 6.7 m (22 ft). Bearing 90 (toward the Ferry Building) is a guess; the piece has no true front."
   }
 ]
