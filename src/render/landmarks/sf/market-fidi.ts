@@ -952,6 +952,41 @@ export function artMuseumAmerica1025Market(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 3, Sacramento and Leidesdorff: the PG&E Station J (1925), a cream stucco box with a grey base and a plain parapet (way/165480949; fronts Leidesdorff, its west face). */
+export function stationJSacramento(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.86, 0.84, 0.76]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 3, face: { kind: 'blank', wall: [0.56, 0.56, 0.52], material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.22, 0.24, 0.26], pitch: 4.5, floor: 4.5, solid: 0.78, material: 'stucco' }, cornice: { depth: 0.5, height: 0.6, colour: [0.9, 0.88, 0.8] } }],
+    crown: { kind: 'parapet', height: 0.9, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** T3 batch 3, 558 Sacramento (1907): the Wayfare Tavern, a black-painted shopfront under a striped awning, four storeys of tan brick above (way/308339610; fronts Sacramento, its south face). */
+export function wayfareTavern558Sacramento(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.72, 0.58, 0.42]
+  tower(out, fit, {
+    height: 16,
+    base: { height: 4.2, face: { kind: 'curtain', wall: [0.06, 0.06, 0.06], glass: [0.16, 0.18, 0.2], pitch: 3, floor: 4.2, material: 'metal' }, canopy: { depth: 1.6, colour: [0.1, 0.1, 0.1] } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: [0.2, 0.22, 0.24], pitch: 2.6, floor: 3.4, solid: 0.5, material: 'brick' }, cornice: { depth: 0.6, height: 0.6, colour: [0.78, 0.7, 0.58] } }],
+    crown: { kind: 'parapet', height: 1, colour: TAN, material: 'brick' },
+  })
+}
+
+/** T3 batch 3, 215 Leidesdorff (1909): a tan brick front with an arched shopfront at the foot, and a black-framed glass box on the roof (way/256067736; fronts Leidesdorff, its east face). */
+export function leidesdorff215(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.78, 0.64, 0.46]
+  tower(out, fit, {
+    height: 14,
+    tiers: [
+      { to: 0.66, face: { kind: 'punched', wall: TAN, glass: [0.2, 0.22, 0.24], pitch: 2.6, floor: 3.4, solid: 0.5, arched: true, material: 'brick' }, cornice: { depth: 0.5, height: 0.5, colour: [0.82, 0.74, 0.6] } },
+      { to: 1, inset: 1.2, face: { kind: 'curtain', wall: [0.12, 0.12, 0.12], glass: [0.2, 0.24, 0.28], pitch: 2, floor: 2.8, material: 'glass' } },
+    ],
+    crown: { kind: 'parapet', height: 0.5, colour: [0.12, 0.12, 0.12], material: 'metal' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -999,4 +1034,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   market570, citibankDrumm,
   market1001Corner, market1005, market1009,
   market1023, artMuseumAmerica1025Market,
+  stationJSacramento, wayfareTavern558Sacramento, leidesdorff215,
 }

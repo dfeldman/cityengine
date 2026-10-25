@@ -10,7 +10,7 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 |---:|---:|---|---|
 | 1 | 294 | `way/35115849` (unnamed) · 19 m · generic<br>`way/136100941` (unnamed) · ? · generic<br>`way/136100939` 1009;1011 Market Street · 11 m · generic | done |
 | 2 | 250 | `way/256035270` (unnamed) · 11 m · reface brick<br>`way/136100937` 1023 Market Street · 13 m · reface brick<br>`way/136100936` (unnamed) · 9 m · reface brick || done |
-| 3 | 239 | `way/165480949` Station J · ? · generic<br>`way/308339610` Wayfare Tavern — 558 Sacramento Street · ? · generic<br>`way/256067736` 215 Leidesdorff Street · 14 m · generic | |
+| 3 | 239 | `way/165480949` Station J · ? · generic<br>`way/308339610` Wayfare Tavern — 558 Sacramento Street · ? · generic<br>`way/256067736` 215 Leidesdorff Street · 14 m · generic || done |
 | 4 | 231 | `way/942303806` Anglo Bank Building · ? · generic<br>`way/942303807` Station J · ? · generic<br>`way/942303804` (unnamed) · ? · generic | |
 | 5 | 213 | `way/148741774` Cafe Tiramisu — 28 Belden Place · 8 m · generic<br>`way/148741780` (unnamed) · 27 m · generic<br>`way/148741783` (unnamed) · 8 m · generic | |
 | 6 | 213 | `way/260280334` (unnamed) · 34 m · generic<br>`way/151195278` (unnamed) · 30 m · generic<br>`way/474354577` (unnamed) · 13 m · generic | |
