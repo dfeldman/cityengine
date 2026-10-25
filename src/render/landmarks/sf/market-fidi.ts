@@ -1602,6 +1602,18 @@ export function market1055(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** 650 MARKET, north side between Kearny and Montgomery, beside the de Young (Chronicle) Building: a cream-white stone front of about six storeys over an arched ground floor, tall arched upper windows, a balustraded frieze and a stone parapet (Mapillary frames 01 and 02). */
+export function market650(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.9, 0.89, 0.84], GLASS: Rgb = [0.2, 0.23, 0.27]
+  tower(out, fit, {
+    height: 22,
+    base: { height: 4, face: { kind: 'punched', wall: STONE, glass: GLASS, pitch: 3.4, floor: 4, solid: 0.5, arched: true, material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: STONE, glass: GLASS, pitch: 3, floor: 3.6, solid: 0.6, arched: true, head: 'architrave', material: 'ashlar' } }],
+    cornices: [{ at: 0.84, depth: 0.6, height: 0.7, colour: STONE }],
+    crown: { kind: 'balustrade', height: 1.2, colour: STONE, material: 'ashlar', pier: true },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1669,4 +1681,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   market1000,
   market1059, market1063, market1067,
   market1039, market1049, market1055,
+  market650,
 }

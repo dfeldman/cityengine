@@ -31,7 +31,7 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 19 | 175 | `way/260286870` 301 Sacramento Street · 16 m · generic<br>`way/260286867` 333 Sacramento Street · 13 m · generic<br>`way/260286872` 325 Sacramento Street · 11 m · generic || done |
 | 20 | 222 | `way/35174707` 1000;1010;1020 Market Street · 15 m · reface sfapartment || done |
 | 21 | 205 | `way/256035272` 1067;1071 Market Street · ? · reface brick<br>`way/256035269` 1059;1061 Market Street · 25 m · reface chicago<br>`way/256035275` 1063 Market Street · ? · reface brick || done |
-| 22 | 173 | `way/32946667` 650 Market Street · 22 m · reface classical | |
+| 22 | 173 | `way/32946667` 650 Market Street · 22 m · reface classical || done |
 | 23 | 171 | `way/256035267` 1049;1051 Market Street · 26 m · reface chicago<br>`way/256035271` (unnamed) · ? · reface brick<br>`way/939440533` (unnamed) · ? · reface brick || done |
 | 24 | 161 | `way/35176126` 944 Market Street · 29 m · reface chicago<br>`way/42640325` 934;936 Market Street · 8 m · reface brick | |
 | 25 | 151 | `way/35174751` (unnamed) · 19 m · reface brick<br>`way/941560580` (unnamed) · 11 m · reface brick | |
