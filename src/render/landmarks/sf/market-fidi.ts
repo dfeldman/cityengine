@@ -3811,6 +3811,82 @@ export function sacramento666TanBrick(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** Tier 3 batch 117: the brown aggregate-panelled block on Washington Street (way/260930237), photo -01. */
+export function t3b117_260930237(out: MeshBuilder, fit: Fit): void {
+  const BROWN: Rgb = [0.42, 0.34, 0.26]
+  tower(out, fit, {
+    height: 13,
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BROWN, glass: [0.18, 0.2, 0.22], pitch: 4, floor: 3.4, solid: 0.7, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: [0.85, 0.84, 0.8], material: 'concrete' },
+  })
+}
+
+/** Tier 3 batch 119: the unnamed brick block on the Sansome corner (way/148668320), photo -01. */
+export function t3b119_148668320(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.42, 0.24, 0.2]
+  tower(out, fit, {
+    height: 18,
+    base: { height: 4, face: { kind: 'punched', wall: [0.14, 0.14, 0.15], glass: [0.2, 0.22, 0.24], pitch: 3, floor: 4, solid: 0.3, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: [0.2, 0.22, 0.25], pitch: 3.2, floor: 3.6, solid: 0.6, material: 'brick' } }],
+    crown: { kind: 'parapet', height: 1, colour: [0.36, 0.22, 0.18], material: 'brick' },
+  })
+}
+
+/** Tier 3 batch 119: the cast-iron front on Hotaling Place (way/148668315), photo -01. */
+export function t3b119_148668315(out: MeshBuilder, fit: Fit): void {
+  const STUCCO: Rgb = [0.66, 0.64, 0.58]
+  tower(out, fit, {
+    height: 11,
+    base: { height: 3.5, face: { kind: 'curtain', wall: [0.12, 0.12, 0.13], glass: [0.22, 0.25, 0.28], pitch: 3, floor: 3.5, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: STUCCO, glass: [0.22, 0.26, 0.3], pitch: 2.8, floor: 3.75, solid: 0.5, head: 'architrave', material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: [0.92, 0.9, 0.86], material: 'stucco' },
+  })
+}
+
+/** Tier 3 batch 119: the cream upper storeys over a blue ground floor on Sansome (way/148668307), photo -01. */
+export function t3b119_148668307(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.87, 0.78]
+  tower(out, fit, {
+    height: 10,
+    base: { height: 3.6, face: { kind: 'punched', wall: [0.12, 0.3, 0.55], glass: [0.2, 0.22, 0.25], pitch: 3, floor: 3.6, solid: 0.5, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.25, 0.3, 0.34], pitch: 3, floor: 3.2, solid: 0.5, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** Tier 3 batch 120: 406;408 Jackson Street, a brick block over a black-framed glass ground floor (way/256088139), photo -01. */
+export function t3b120_256088139(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.5, 0.27, 0.2]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.1, 0.1, 0.11], glass: [0.2, 0.24, 0.28], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: [0.2, 0.22, 0.25], pitch: 3, floor: 3.2, solid: 0.6, arched: true, material: 'brick' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: [0.45, 0.24, 0.18], material: 'brick' },
+  })
+}
+
+/** Tier 3 batch 120: the arched red-brick front on Jackson Street (way/256088145), photo -01. */
+export function t3b120_256088145(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.52, 0.3, 0.22]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 3.6, face: { kind: 'punched', wall: [0.4, 0.25, 0.2], glass: [0.18, 0.2, 0.22], pitch: 3.2, floor: 3.6, solid: 0.4, arched: true, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: [0.2, 0.22, 0.25], pitch: 3.2, floor: 3.6, solid: 0.55, arched: true, material: 'brick' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: BRICK, material: 'brick' },
+  })
+}
+
+/** Tier 3 batch 120: the black-glass shopfront under a brick upper wall on Balance Street (way/260937906), photo -01. */
+export function t3b120_260937906(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.6, 0.4, 0.3]
+  tower(out, fit, {
+    height: 9,
+    base: { height: 3.5, face: { kind: 'curtain', wall: [0.1, 0.1, 0.11], glass: [0.14, 0.16, 0.18], pitch: 3, floor: 3.5, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: [0.2, 0.22, 0.25], pitch: 3, floor: 2.9, solid: 0.6, material: 'brick' } }],
+    crown: { kind: 'parapet', height: 0.6, colour: [0.85, 0.8, 0.7], material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -3927,4 +4003,6 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   jackson368BrownBrick, sansome712Ochre, safewayArcadeJackson, safewayArcadeSmall, montgomery809CreamBrick, montgomery853RedBrick,
   jackson99StarbucksArcade, gold56Concrete, front235McDonaldsArcade, ggNorthArcadeTaupe, ggServicePebble,
   sacramento672PaintedWhite, sacramento666TanBrick,
+  t3b117_260930237, t3b119_148668320, t3b119_148668315, t3b119_148668307,
+  t3b120_256088139, t3b120_256088145, t3b120_260937906,
 }
