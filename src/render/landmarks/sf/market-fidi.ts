@@ -1217,6 +1217,28 @@ export function jackson530(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** Tier 3 batch 12, 16 Elim Street (way 149837286, 18 m, 1906): a four-storey red brick warehouse with arched windows over a dark ground floor, a corbelled cornice and a painted ghost sign reading "Entrance ... Ecker St" on its side; front Ecker Street (178). Photos way-149837286-01 and -02. */
+export function elim16(out: MeshBuilder, fit: Fit): void {
+  const RED: Rgb = [0.5, 0.27, 0.2]
+  tower(out, fit, {
+    height: 18,
+    base: { height: 3.5, face: { kind: 'blank', wall: [0.2, 0.19, 0.18], material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: RED, glass: [0.2, 0.22, 0.22], pitch: 3.2, floor: 4.2, solid: 0.6, arched: true, material: 'brick' }, cornice: { depth: 0.6, height: 0.7, colour: [0.6, 0.52, 0.42] } }],
+    crown: { kind: 'parapet', height: 1, colour: RED, material: 'brick' },
+  })
+}
+
+/** Tier 3 batch 12, 40 Jessie Street (way 260298023, 24 m, 2008): a cream stone-clad block of about seven storeys, vertical piers up the front, recessed bronze entrances with red banners at street level; faces Jessie Street (133). Photos way-260298023-01 and -02. */
+export function jessie40(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.86, 0.81, 0.7]
+  tower(out, fit, {
+    height: 24,
+    base: { height: 4.5, face: { kind: 'curtain', wall: [0.3, 0.2, 0.16], glass: [0.16, 0.18, 0.2], pitch: 3, floor: 4.5, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'fins', wall: CREAM, glass: [0.22, 0.25, 0.28], floor: 3.4, pitch: 3.2, solid: 0.6, depth: 0.5, material: 'ashlar' }, cornice: { depth: 0.6, height: 0.7, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'ashlar' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1273,4 +1295,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   claytonClay, clay260924222, commercial260924242,
   second28, second79377209, second44,
   jackson32858943, jacksonColumbus32858908, jackson530,
+  elim16, jessie40,
 }
