@@ -1087,5 +1087,45 @@
       300
     ],
     "note": "assetkit-models-sf/st-francis-hugging-globe: no OSM node; St Mary's Cathedral plaza, Gough at Geary (Timothy Schmalz, 2026), placed by judgement by the entrance steps, facing east to Gough."
+  },
+  {
+    "id": "tea-garden-buddha",
+    "name": "Great Buddha, Japanese Tea Garden",
+    "asset": "tea-garden-buddha",
+    "attach": {
+      "to": "Japanese Tea Garden grounds",
+      "at": [
+        5,
+        1.5,
+        4
+      ],
+      "bearing": 90,
+      "draped": true
+    },
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/tea-garden-buddha: on the stepped stone plinth teaGardenGrounds draws (its old procedural bronze removed, 2026-10-25), facing east down the path."
+  },
+  {
+    "id": "tea-garden-drum-bridge",
+    "name": "Drum bridge, Japanese Tea Garden",
+    "asset": "tea-garden-drum-bridge",
+    "attach": {
+      "to": "Japanese Tea Garden grounds",
+      "at": [
+        21.15,
+        0,
+        -11.75
+      ],
+      "bearing": 15,
+      "draped": true
+    },
+    "lodRanges": [
+      140,
+      340
+    ],
+    "note": "assetkit-models-sf/tea-garden-drum-bridge: over the pool teaGardenGrounds draws, along the old procedural arch's line (OSM bridge way, bearing 15), which is removed (2026-10-25)."
   }
 ]

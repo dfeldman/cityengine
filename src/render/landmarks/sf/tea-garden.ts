@@ -24,7 +24,6 @@ const TILE: Rgb = [0.24, 0.26, 0.25]
 const HINOKI: Rgb = [0.62, 0.48, 0.32]
 const DARKWOOD: Rgb = [0.3, 0.22, 0.15]
 const STONE: Rgb = [0.6, 0.59, 0.55]
-const BRONZE: Rgb = [0.3, 0.27, 0.18]
 const GILT: Rgb = [0.8, 0.64, 0.25]
 const PLASTER: Rgb = [0.9, 0.88, 0.82]
 const BAMBOO: Rgb = [0.6, 0.55, 0.35]
@@ -127,7 +126,7 @@ function lantern(out: MeshBuilder, x: number, z: number): void {
 }
 
 /** the drum bridge: a steep half-moon arch of planks between two rails, over a little pool */
-function drumBridge(out: MeshBuilder, a: [number, number], b: [number, number]): void {
+function drumBridge(out: MeshBuilder, a: [number, number], b: [number, number], withArch = true): void {
   const dx = b[0] - a[0], dz = b[1] - a[1], len = Math.hypot(dx, dz)
   const tx = dx / len, tz = dz / len, nx = -tz, nz = tx
   const span = len + 3, rise = span * 0.45, half = 0.8
@@ -135,6 +134,9 @@ function drumBridge(out: MeshBuilder, a: [number, number], b: [number, number]):
   // the pool it crosses
   const pool = 4.2
   out.quad([[mx - tx * pool - nx * pool, 0.06, mz - tz * pool - nz * pool], [mx + tx * pool - nx * pool, 0.06, mz + tz * pool - nz * pool], [mx + tx * pool + nx * pool, 0.06, mz + tz * pool + nz * pool], [mx - tx * pool + nx * pool, 0.06, mz - tz * pool + nz * pool]], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], WATER, 0)
+  // (the arch itself is the drum-bridge GLB now, assetkit-models-sf/tea-garden-drum-bridge, placed over this pool by
+  //  public/landmarks/san-francisco-statues.json, 2026-10-25; `withArch` keeps the planks for a city without it)
+  if (!withArch) return
   const N = 14
   const P = (s: number, side: number, up: number): [number, number, number] => {
     const u = (s - 0.5) * span
@@ -165,17 +167,14 @@ function plankBridge(out: MeshBuilder, a: [number, number], b: [number, number])
 }
 
 export function teaGardenGrounds(out: MeshBuilder, _fit: Fit): void {
-  drumBridge(out, L(-5089.7, -2544.9), L(-5088.0, -2538.6))
+  drumBridge(out, L(-5089.7, -2544.9), L(-5088.0, -2538.6), false)
   plankBridge(out, L(-5109.4, -2525.4), L(-5122.2, -2540.0))
   for (const [x, z] of LANTERNS) lantern(out, ...L(x, z))
-  // the Buddha: a seated bronze figure on a stepped stone plinth
+  // the Buddha's stepped stone plinth; the seated bronze on it is the GLB (assetkit-models-sf/tea-garden-buddha, placed
+  // by public/landmarks/san-francisco-statues.json at 1.5 m over this ground, 2026-10-25)
   const [bx, bz] = L(-5105, -2526)
   box(out, bx, 0.5, bz, 1.6, 0.5, 1.6, STONE, surfaceTag('granite'))
   box(out, bx, 1.25, bz, 1.2, 0.25, 1.2, STONE, surfaceTag('granite'))
-  prism(out, bx, bz, 1.5, 2.3, 1.0, 12, BRONZE, surfaceTag('metal'), 0.85)
-  prism(out, bx, bz, 2.3, 3.6, 0.7, 10, BRONZE, surfaceTag('metal'), 0.5)
-  prism(out, bx, bz, 3.6, 4.3, 0.42, 10, BRONZE, surfaceTag('metal'), 0.3)
-  prism(out, bx, bz, 4.3, 4.6, 0.2, 8, BRONZE, surfaceTag('metal'), 0.05)
   // the bamboo fence round the garden: posts every 2.5 m, three rails
   for (let i = 1; i < FENCE.length; i++) {
     const a = L(...FENCE[i - 1]), b = L(...FENCE[i])
