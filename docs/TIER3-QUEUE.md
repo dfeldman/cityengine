@@ -95,8 +95,8 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 83 | 61 | `way/260925346` (unnamed) · 17 m · generic<br>`way/1229790674` (unnamed) · ? · generic<br>`way/260925337` San Francisco Evangelical Free Church — 648;65 · 14 m · reface stucco || done (with 82; photo-less outlines skipped) |
 | 84 | 61 | `way/255716897` 100 Kearny Street · 19 m · reface classical<br>`way/149757924` 101 Post Street · 16 m · reface classical || done (photo-less outlines skipped) |
 | 85 | 60 | `way/256088651` 515;517 Pacific Avenue · ? · generic<br>`way/256088648` 535 Pacific Avenue · 17 m · reface brick<br>`way/256088656` 843;845 Montgomery Street · 18 m · reface brick || done (with 84; photo-less outlines skipped) |
-| 86 | 55 | `way/942303805` (unnamed) · ? · generic<br>`way/942303808` (unnamed) · ? · generic | |
-| 87 | 55 | `way/256086591` (unnamed) · 12 m · generic<br>`way/32947588` 220 Jackson Street · 12 m · generic<br>`way/256086590` (unnamed) · 18 m · generic | |
+| 86 | 55 | `way/942303805` (unnamed) · ? · generic<br>`way/942303808` (unnamed) · ? · generic || done (photo-less outlines skipped) |
+| 87 | 55 | `way/256086591` (unnamed) · 12 m · generic<br>`way/32947588` 220 Jackson Street · 12 m · generic<br>`way/256086590` (unnamed) · 18 m · generic || done (with 86; photo-less outlines skipped) |
 | 88 | 53 | `way/148741779` (unnamed) · 13 m · generic<br>`way/148741777` (unnamed) · 10 m · generic<br>`way/151185873` 471;473;475 Pine Street · 19 m · generic | |
 | 89 | 52 | `way/260924241` (unnamed) · ? · generic<br>`way/260924240` (unnamed) · ? · generic<br>`way/260925348` Canton Bazaar — 686 Sacramento Street · ? · generic | |
 | 90 | 52 | `way/939455049` (unnamed) · ? · generic | |

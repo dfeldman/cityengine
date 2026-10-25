@@ -3074,6 +3074,78 @@ export function montgomery843Arched(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * 576 Sacramento Street (way/942303805, OSM none, ~28 m, 151 m²). Photo -01: a cream stone block of eight storeys
+ * over a two-storey base with fluted Corinthian columns and a pilastered shopfront. Front faces Sacramento (bearing 173).
+ */
+export function sacramento576Corinthian(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.84, 0.8, 0.7], GLASS: Rgb = [0.2, 0.22, 0.25], TRIM: Rgb = [0.74, 0.7, 0.62]
+  tower(out, fit, {
+    height: 28,
+    base: { height: 6, face: { kind: 'bands', wall: CREAM, glass: GLASS, floor: 3, solid: 0.6, material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 3.6, floor: 3.2, solid: 0.5, material: 'ashlar' }, cornice: { depth: 0.4, height: 0.5, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 1.2, colour: TRIM, material: 'ashlar' },
+  })
+}
+
+/**
+ * Leidesdorff Street, 1985 (way/942303808, OSM 12 m, 149 m²). Photo -02: a three-storey yellow brick front with a
+ * fire escape, a dark shopfront with a red door, and a cornice band. Front faces Leidesdorff (bearing 76). Uncertain:
+ * the first photo shows the columned block across the way, not this one.
+ */
+export function leidesdorffYellowBrick(out: MeshBuilder, fit: Fit): void {
+  const YELLOW: Rgb = [0.78, 0.68, 0.46], GLASS: Rgb = [0.18, 0.2, 0.22], DARK: Rgb = [0.2, 0.2, 0.2]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 3.6, face: { kind: 'punched', wall: DARK, glass: [0.12, 0.14, 0.16], pitch: 3.6, floor: 3.6, solid: 0.3, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: YELLOW, glass: GLASS, pitch: 3.0, floor: 3.9, solid: 0.4, material: 'brick' }, cornice: { depth: 0.25, height: 0.3, colour: [0.55, 0.45, 0.32] } }],
+    crown: { kind: 'parapet', height: 0.9, colour: [0.5, 0.42, 0.3], material: 'brick' },
+  })
+}
+
+/**
+ * 220 Jackson Street (way/32947588, OSM 12 m, 553 m²). Photos -01 and -03 show a three-storey tan brick front with a
+ * dark ground-floor shopfront and a deep brown cornice. Front faces Jackson (bearing 170), per the address. Uncertain:
+ * the corner with Front Street is visible in -01.
+ */
+export function jackson220Tan(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.72, 0.62, 0.45], DARK: Rgb = [0.25, 0.18, 0.12], GLASS: Rgb = [0.15, 0.17, 0.19]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 3.6, face: { kind: 'punched', wall: DARK, glass: [0.1, 0.12, 0.14], pitch: 4, floor: 3.6, solid: 0.3, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: GLASS, pitch: 3, floor: 4, solid: 0.4, material: 'brick' } }],
+    crown: { kind: 'parapet', height: 1.2, colour: [0.3, 0.2, 0.14], material: 'brick' },
+  })
+}
+
+/**
+ * 256 Jackson Street area, 1913 (way/256086591, OSM 12 m, 1114 m²). Photo -01: a three-storey white stucco front
+ * with grey pilasters and large windows, over a grey ground floor. Front faces Jackson (bearing 169).
+ */
+export function jacksonWhitePilaster(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.9, 0.9, 0.88], GREY: Rgb = [0.5, 0.5, 0.5], GLASS: Rgb = [0.2, 0.24, 0.27]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 3.6, face: { kind: 'punched', wall: GREY, glass: [0.1, 0.12, 0.14], pitch: 4, floor: 3.6, solid: 0.35, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: GLASS, pitch: 3.5, floor: 4, solid: 0.45, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: WHITE, material: 'stucco' },
+  })
+}
+
+/**
+ * Battery Street, grey stucco (way/256086590, OSM 18 m, 622 m²). Photo -01: a grey stucco front with a pointed arched
+ * entrance and a plain grid of windows. Front faces Battery (bearing 262). The arch is not drawn.
+ */
+export function batteryGreyArched(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.5, 0.52, 0.53], GLASS: Rgb = [0.18, 0.2, 0.22]
+  tower(out, fit, {
+    height: 18,
+    base: { height: 4.5, face: { kind: 'punched', wall: GREY, glass: GLASS, pitch: 3.2, floor: 4.5, solid: 0.45, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: GREY, glass: GLASS, pitch: 3.0, floor: 3.6, solid: 0.42, material: 'stucco' }, cornice: { depth: 0.3, height: 0.4, colour: [0.6, 0.6, 0.6] } }],
+    crown: { kind: 'parapet', height: 1.0, colour: GREY, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -3175,4 +3247,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   clay689Cream, clay683Teo, sansome140Stone, clay563Arched, washington401Stone,
   kearnyCreamYellow, kearny263Corner, kearny268Black, sacramento171Palio, sacramento648Brick,
   kearny100Bays, post101Cream, pacific515Stucco, pacific535Grey, montgomery843Arched,
+  sacramento576Corinthian, leidesdorffYellowBrick, jackson220Tan, jacksonWhitePilaster, batteryGreyArched,
 }
