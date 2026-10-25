@@ -4030,6 +4030,94 @@ export function t3b128_260937910(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+// ---------------------------------------------------------------- Golden Gateway pebble podium, Washington and Davis (T3 batches 129-130)
+
+/** T3 batch 129: way/260930238 (unnamed, Washington Street frontage, bearing 172), 198 m², OSM 13 m. Photo -01: a
+ * low dark pebble-aggregate band in tall panels under a deep dark sill, a plain grey stucco wall rising above it, the
+ * Golden Gateway tower behind and the trees of Washington Street in front. */
+export function t3b129_260930238(out: MeshBuilder, fit: Fit): void {
+  const PEBBLE: Rgb = [0.36, 0.3, 0.24], DARK: Rgb = [0.14, 0.14, 0.15], STUCCO: Rgb = [0.72, 0.7, 0.66], GLASS: Rgb = [0.2, 0.23, 0.26]
+  tower(out, fit, {
+    height: 13,
+    tiers: [
+      { to: 0.36, face: { kind: 'punched', wall: PEBBLE, glass: DARK, pitch: 4.5, floor: 4.5, solid: 0.9, material: 'concrete' }, cornice: { depth: 0.5, height: 0.35, colour: DARK } },
+      { to: 1, face: { kind: 'punched', wall: STUCCO, glass: GLASS, pitch: 3, floor: 3, solid: 0.7, material: 'stucco' } },
+    ],
+    crown: { kind: 'parapet', height: 0.6, colour: STUCCO, material: 'stucco' },
+  })
+}
+
+/** T3 batch 129: way/260930235 (unnamed, Washington Street frontage, bearing 171), 170 m², OSM height missing (12 m drawn).
+ * Photo -02: the same dark pebble-panel podium two storeys high, and above it the white Golden Gateway townhouses with
+ * steep roofs and little gables. */
+export function t3b129_260930235(out: MeshBuilder, fit: Fit): void {
+  const PEBBLE: Rgb = [0.36, 0.3, 0.24], DARK: Rgb = [0.14, 0.14, 0.15], CREAM: Rgb = [0.9, 0.88, 0.84], SLATE: Rgb = [0.28, 0.3, 0.32]
+  tower(out, fit, {
+    height: 12,
+    tiers: [
+      { to: 0.55, face: { kind: 'punched', wall: PEBBLE, glass: DARK, pitch: 4.5, floor: 3.6, solid: 0.9, material: 'concrete' }, cornice: { depth: 0.5, height: 0.35, colour: DARK } },
+      { to: 1, inset: 1, face: { kind: 'blank', wall: CREAM, material: 'stucco' } },
+    ],
+    crown: { kind: 'hip', height: 2.5, inset: 0.5, colour: SLATE, material: 'tile' },
+  })
+}
+
+/** T3 batch 129: way/260930254 (unnamed, Washington Street frontage, bearing 171), 94 m², OSM 13 m. Photos -01 and -02:
+ * tall dark pebble-aggregate panels in a grid, dark concrete beams and a cantilevered slab over the pavement, the grey
+ * towers of the Golden Gateway beyond. */
+export function t3b129_260930254(out: MeshBuilder, fit: Fit): void {
+  const PEBBLE: Rgb = [0.36, 0.3, 0.24], DARK: Rgb = [0.14, 0.14, 0.15]
+  tower(out, fit, {
+    height: 13,
+    tiers: [
+      { to: 0.45, face: { kind: 'punched', wall: PEBBLE, glass: DARK, pitch: 3.5, floor: 4.5, solid: 0.9, material: 'concrete' }, cornice: { depth: 0.8, height: 0.5, colour: DARK } },
+      { to: 1, face: { kind: 'punched', wall: PEBBLE, glass: DARK, pitch: 3.5, floor: 3.5, solid: 0.85, material: 'concrete' } },
+    ],
+    crown: { kind: 'parapet', height: 0.6, colour: DARK, material: 'concrete' },
+  })
+}
+
+// ---------------------------------------------------------------- Jackson Street, the block between Gold and Hotaling (T3 batch 130)
+
+/** T3 batch 130: way/260937904 (unnamed, Jackson Street frontage, bearing 170; Gold Street at the back), 328 m², OSM 9 m.
+ * Photos -01 and -02: a corner building of two storeys: a cream stone ground floor of round-headed dark shopfront arches
+ * with pilasters, and a brick upper storey with tall sash windows and a cream band under a plain parapet. */
+export function t3b130_260937904(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.8, 0.77, 0.7], BRICK: Rgb = [0.6, 0.3, 0.22], DARK: Rgb = [0.12, 0.12, 0.13], GLASS: Rgb = [0.2, 0.22, 0.24]
+  tower(out, fit, {
+    height: 9,
+    base: { height: 3.4, face: { kind: 'punched', wall: STONE, glass: DARK, pitch: 3, floor: 3.4, solid: 0.45, arched: true, material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: GLASS, pitch: 2.8, floor: 2.8, solid: 0.6, material: 'brick' }, cornice: { depth: 0.4, height: 0.3, colour: STONE } }],
+    crown: { kind: 'parapet', height: 0.5, colour: STONE, material: 'ashlar' },
+  })
+}
+
+/** T3 batch 130: way/260937899 (unnamed, Jackson Street frontage, bearing 170), 162 m², OSM 11 m. Photo -01: a three-storey
+ * red brick block with tall sash windows and a dentilled brick cornice, beside a cream stucco shopfront under striped
+ * awnings. */
+export function t3b130_260937899(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.6, 0.3, 0.22], CREAM: Rgb = [0.9, 0.88, 0.82], GLASS: Rgb = [0.22, 0.25, 0.28]
+  tower(out, fit, {
+    height: 11,
+    base: { height: 3.4, face: { kind: 'curtain', wall: CREAM, glass: GLASS, pitch: 2.8, floor: 3.4, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: GLASS, pitch: 2.6, floor: 2.6, solid: 0.6, material: 'brick' }, cornice: { depth: 0.4, height: 0.35, colour: BRICK } }],
+    crown: { kind: 'parapet', height: 0.6, colour: BRICK, material: 'brick' },
+  })
+}
+
+/** T3 batch 130: way/260937908 (472 Jackson Street, Jackson Street frontage, bearing 170), 141 m², OSM 8 m. Photo -01: a
+ * two-storey red brick house with tall sash windows and a white-framed door, a white ground floor and white shopfronts
+ * beside it. The old manifest entry (the Solari Building, cream rusticated stone) is deleted: this photograph shows brick. */
+export function t3b130_260937908(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.55, 0.27, 0.2], WHITE: Rgb = [0.9, 0.88, 0.84], GLASS: Rgb = [0.22, 0.25, 0.28]
+  tower(out, fit, {
+    height: 8,
+    base: { height: 2.6, face: { kind: 'punched', wall: WHITE, glass: GLASS, pitch: 2.6, floor: 2.6, solid: 0.5, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: GLASS, pitch: 2.6, floor: 2.7, solid: 0.6, material: 'brick' }, cornice: { depth: 0.25, height: 0.25, colour: WHITE } }],
+    crown: { kind: 'parapet', height: 0.5, colour: BRICK, material: 'brick' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -4150,4 +4238,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t3b120_256088139, t3b120_256088145, t3b120_260937906,
   t3b121_148666784, t3b121_260937901, t3b122_148668310, t3b123_588363946, t3b123_588363948, t3b123_588363947, t3b124_690663635,
   t3b126_256088650, t3b127_940068788, t3b128_260937903, t3b128_260937910,
+  t3b129_260930238, t3b129_260930235, t3b129_260930254, t3b130_260937904, t3b130_260937899, t3b130_260937908,
 }

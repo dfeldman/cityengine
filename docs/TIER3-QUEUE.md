@@ -138,8 +138,8 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 126 | 20 | `way/256088652` 831 Montgomery Street · 7 m · reface brick<br>`way/256088650` 501;503 Pacific Avenue · 5 m · reface brick || done (with 125; photo-less outlines skipped) |
 | 127 | 19 | `way/940068788` (unnamed) · ? · generic || done (with 125; photo-less outlines skipped) |
 | 128 | 19 | `way/256088149` 48 Gold Street · 6 m · reface brick<br>`way/260937903` 440;444 Jackson Street · 5 m · reface brick<br>`way/260937910` 458 Jackson Street · 5 m · reface brick || done (with 125; photo-less outlines skipped) |
-| 129 | 18 | `way/260930238` (unnamed) · 13 m · reface victorian<br>`way/260930235` (unnamed) · ? · reface victorian<br>`way/260930254` (unnamed) · 13 m · reface victorian | |
-| 130 | 16 | `way/260937904` (unnamed) · 9 m · reface brick<br>`way/260937899` (unnamed) · 11 m · reface brick<br>`way/260937908` (unnamed) · 8 m · reface classical | |
+| 129 | 18 | `way/260930238` (unnamed) · 13 m · reface victorian<br>`way/260930235` (unnamed) · ? · reface victorian<br>`way/260930254` (unnamed) · 13 m · reface victorian || done (with 129; photo-less outlines skipped) |
+| 130 | 16 | `way/260937904` (unnamed) · 9 m · reface brick<br>`way/260937899` (unnamed) · 11 m · reface brick<br>`way/260937908` (unnamed) · 8 m · reface classical || done (with 129; photo-less outlines skipped) |
 | 131 | 15 | `way/260288459` (unnamed) · 11 m · generic | |
 | 132 | 15 | `way/260280328` (unnamed) · 13 m · reface brick | |
 | 133 | 12 | `way/260930245` (unnamed) · 13 m · reface victorian<br>`way/260930251` (unnamed) · 13 m · reface victorian<br>`way/260930253` (unnamed) · 12 m · reface victorian | |
