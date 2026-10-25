@@ -37,15 +37,15 @@ You get a handful of statues. Work through them one at a time.
 2. **The model.** The GLBs carry NO size and NO orientation (owner, 2026-10-25): every file is scaled to about
    one unit tall and faces whichever way the generator left it. The real height comes from step 1, the front from
    the preview below. Most are untextured: draw those in `bronze` unless the statue is plainly something else
-   (white marble or stone `whitestone`, concrete, stainless `silver`, verdigris `copperoxide`).
+   (white marble or pale stone `marble`, concrete or granite `plaster`, verdigris `copperoxide`, `copper`). The packer accepts only bronze, copper, copperoxide, marble and plaster.
    - `node tools/glb/inspect.ts incoming_assets/<file>`: its bounds, and whether it carries textures.
    - `node --experimental-strip-types tools/glb/preview.ts incoming_assets/<file> --out=<scratch>`: four sides on one
      sheet, with a small box on the file's +z side. Read off which model axis the FRONT faces (+z, -z, +x or -x), and
      whether the model has its own base or plinth.
 3. **Catalogue entry** in `../assetkit/models/sf-models.json`, in the same shape as `gandhi` and `willie-mays`:
    - `id` (kebab-case), `name`, `file`, `kind` (`statue`, `fountain` or `object`);
-   - `material`: `textured` if the file carries its own texture, else a shader (`bronze`, `copperoxide`, `concrete`,
-     `whitestone`, `silver`);
+   - `material`: `textured` if the file carries its own texture, else a shader the packer knows (`bronze`, `copper`,
+     `copperoxide`, `marble`, `plaster`);
    - `front`; `scale: {axis: "y", metres: <real overall height of what the model shows>}`;
    - `plinth: [w, d, h]` only when the model has no base and the real statue stands on one;
    - `lods`: the source files are far too heavy for the game (Sun Yat-sen: 13 MB, 19 000 triangles, 4k textures), so
@@ -72,6 +72,9 @@ You get a handful of statues. Work through them one at a time.
    - `note`: `assetkit-models-sf/<id>: OSM <node|way> <id>, …` — where, facing what, and the sources.
    - If a procedural landmark already draws this statue (grep its name in `public/landmarks/san-francisco/*.json`),
      add `"replaces": "<that entry's name>"`, as Lincoln does.
+   - But if the procedural landmark draws the statue's SETTING as well (a column the figure stands at, a basin it stands
+     in), do NOT replace it: attach the model to it (`"attach": {"to": "<entry name>", "at": [x, y, z], "bearing": b,
+     "draped": true}`, as the Dewey Victory and the Asawa mermaids do) or stand it beside it (the Admission Day miner).
 6. **Check in place.** Render it from about 12–20 m in front, at eye height:
    `node --experimental-strip-types tools/look-at.ts --city=san-francisco --at=<x>,<z> --from=<x>,<z>,1.7 --lift=<a third of its height> --fov=60 --extra="traffic=none&cars=0&without=trees,plants,crowd,rider,life" --out=<scratch>/<id>.png`
    - The city frame: x = (lon + 122.412) × 88 000 m east; z = (lat − 37.793) × 111 000 m north.
