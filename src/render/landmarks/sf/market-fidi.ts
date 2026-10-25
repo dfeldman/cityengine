@@ -1938,6 +1938,61 @@ export function market1200(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+// ---------------------------------------------------------------- batch 42 (T3): Market north side, Sansome to Battery
+/** 562 Market (way/148712647): tan brick over a glazed shopfront and recessed entry, Mapillary frame 01 (shared with 558). */
+export function market148712647(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.66, 0.54, 0.4]
+  tower(out, fit, {
+    height: 14,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.3, 0.3, 0.3], glass: [0.22, 0.27, 0.3], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: [0.22, 0.24, 0.26], pitch: 3, floor: 3.4, solid: 0.5, material: 'brick' }, cornice: { depth: 0.4, height: 0.6, colour: [0.78, 0.72, 0.6] } }],
+    crown: { kind: 'parapet', height: 0.9, colour: TAN, material: 'brick' },
+  })
+}
+
+/** 558 Market (way/148712643): charcoal-black front with a deep dark cornice, Mapillary frame 01 (shared with 562). */
+export function market148712643(out: MeshBuilder, fit: Fit): void {
+  const CHAR: Rgb = [0.18, 0.18, 0.19]
+  tower(out, fit, {
+    height: 10,
+    base: { height: 3.4, face: { kind: 'curtain', wall: CHAR, glass: [0.2, 0.22, 0.24], pitch: 3, floor: 3.4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CHAR, glass: [0.3, 0.34, 0.36], pitch: 3.2, floor: 3.2, solid: 0.6, material: 'stucco' }, cornice: { depth: 0.5, height: 0.6, colour: [0.12, 0.12, 0.13] } }],
+    crown: { kind: 'parapet', height: 0.6, colour: CHAR, material: 'stucco' },
+  })
+}
+
+/** 554 Market (way/148712642): tan brick, Sutter Street side, Mapillary frames 01 and 02. Cream pilaster rhythm. */
+export function market148712642(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.7, 0.6, 0.46]
+  tower(out, fit, {
+    height: 15,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.28, 0.28, 0.28], glass: [0.22, 0.27, 0.3], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: [0.22, 0.24, 0.26], pitch: 3, floor: 3.5, solid: 0.5, material: 'brick' }, cornice: { depth: 0.5, height: 0.7, colour: [0.82, 0.78, 0.68] } }],
+    crown: { kind: 'parapet', height: 1, colour: TAN, material: 'brick' },
+  })
+}
+
+/** 260318172 (way/260318172): Stevenson Street service face, pale panelled concrete, Mapillary frames 01 and 02. Front faces Stevenson. */
+export function market260318172(out: MeshBuilder, fit: Fit): void {
+  const PALE: Rgb = [0.8, 0.79, 0.76]
+  tower(out, fit, {
+    height: 14,
+    tiers: [{ to: 1, face: { kind: 'bands', wall: PALE, glass: [0.3, 0.32, 0.34], floor: 3.5, solid: 0.7, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: PALE, material: 'concrete' },
+  })
+}
+
+/** 941650784 (way/941650784, no OSM height): pale granite-faced block at the Market plaza, Mapillary frame 01 only. */
+export function market941650784(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.74, 0.73, 0.7]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 3.6, face: { kind: 'curtain', wall: [0.3, 0.3, 0.3], glass: [0.22, 0.27, 0.3], pitch: 3, floor: 3.6, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: STONE, glass: [0.26, 0.3, 0.32], floor: 3.4, solid: 0.6, material: 'granite' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: STONE, material: 'granite' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -2015,4 +2070,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   market923, market256037012, market931, market969,
   market1089, market1123, market1390,
   crazyHorse980Market, market925, market1201, market1200,
+  market148712647, market148712643, market148712642, market260318172, market941650784,
 }

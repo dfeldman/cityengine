@@ -368,30 +368,6 @@
  },
  {
   "osm": [
-   "way/148712642"
-  ],
-  "name": "554 Market Street",
-  "restyle": "chicago",
-  "levels": 4
- },
- {
-  "osm": [
-   "way/148712643"
-  ],
-  "name": "558 Market Street",
-  "restyle": "chicago",
-  "levels": 3
- },
- {
-  "osm": [
-   "way/148712647"
-  ],
-  "name": "562 Market Street",
-  "restyle": "chicago",
-  "levels": 4
- },
- {
-  "osm": [
    "way/148712649"
   ],
   "name": "566 Market Street",
@@ -425,14 +401,6 @@
   "restyle": "brick",
   "levels": 6,
   "note": "Low brick block behind 555 Market, on Stevenson."
- },
- {
-  "osm": [
-   "way/260318172"
-  ],
-  "name": "Stevenson Street shops",
-  "restyle": "brick",
-  "levels": 3
  },
  {
   "osm": [

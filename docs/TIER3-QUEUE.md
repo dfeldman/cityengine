@@ -42,7 +42,7 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 30 | 137 | `way/35176510` 1242 Market Street · 18 m · reface chicago<br>`way/35112065` 1234 Market Street · ? · reface brick<br>`way/35112032` 1220 Market Street · 9 m · reface brick || done |
 | 31 | 137 | `way/332517080` 969 Market Street · 14 m · reface brick || done |
 | 32 | 128 | `way/256037014` 931 Market Street · 13 m · reface brick<br>`way/173725079` 923 Market Street · 18 m · reface chicago<br>`way/256037012` (unnamed) · 21 m · reface chicago || done (with 31) |
-| 33 | 126 | `way/260318172` (unnamed) · 14 m · reface brick | |
+| 33 | 126 | `way/260318172` (unnamed) · 14 m · reface brick || done (with 42) |
 | 34 | 124 | `way/939440535` (unnamed) · 14 m · reface brick || done |
 | 35 | 124 | `way/1288526233` (unnamed) · 7 m · reface brick || done (with 34) |
 | 36 | 123 | `way/149332500` 711 Market Street · 11 m · reface brick<br>`way/149332499` 721 Market Street · ? · reface chicago | |
@@ -51,8 +51,8 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 39 | 119 | `way/35176266` 1201 Market Street · 8 m · reface brick || done (with 38) |
 | 40 | 119 | `way/173725095` 925 Market Street · 13 m · reface brick || done (with 38) |
 | 41 | 118 | `way/35112006` 1200 Market Street · 11 m · reface brick || done (with 38) |
-| 42 | 113 | `way/148712647` (unnamed) · 14 m · reface chicago<br>`way/148712642` (unnamed) · 15 m · reface chicago<br>`way/148712643` (unnamed) · 10 m · reface chicago | |
-| 43 | 106 | `way/941650784` (unnamed) · ? · generic | |
+| 42 | 113 | `way/148712647` (unnamed) · 14 m · reface chicago<br>`way/148712642` (unnamed) · 15 m · reface chicago<br>`way/148712643` (unnamed) · 10 m · reface chicago || done |
+| 43 | 106 | `way/941650784` (unnamed) · ? · generic || done (with 42) |
 | 44 | 105 | `way/332516647` 993 Market Street · 4 m · reface brick | |
 | 45 | 101 | `way/35537113` 499 Jackson Street · 19 m · generic<br>`way/148666785` (unnamed) · 13 m · reface brick<br>`way/35537118` 463;473 Jackson Street · 14 m · reface brick | |
 | 46 | 100 | `way/256088136` 435;437 Pacific Avenue · ? · generic<br>`way/253609537` Pacific Avenue · ? · generic<br>`way/256088155` 731 Sansome Street · 18 m · reface brick | |
