@@ -1831,6 +1831,51 @@ export function market969(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** lettering on the front (local -z) of the fitted outline, centred over it, at height y */
+function frontLettering(out: MeshBuilder, fit: Fit, text: string, y: number, h: number, c: Rgb): void {
+  const ring = towerRing(fit)
+  let minZ = Infinity, cx = 0
+  for (const p of ring) { minZ = Math.min(minZ, p.z); cx += p.x }
+  cx /= ring.length
+  signText(out, text, cx, y, minZ - 0.08, h, c, { heading: Math.PI })
+}
+
+/** 1089 Market (batch 34): a low two-storey tan stucco front, MERRILL'S lettering high on it, black boarded
+ *  shopfronts (Mapillary frames 01 and 02). */
+export function market1089(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.84, 0.76, 0.6], BLACK: Rgb = [0.1, 0.1, 0.1]
+  tower(out, fit, {
+    height: 8,
+    base: { height: 3, face: { kind: 'blank', wall: BLACK, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'blank', wall: TAN, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 0.6, colour: TAN, material: 'stucco' },
+  })
+  frontLettering(out, fit, "MERRILL'S", 6.2, 0.9, [0.95, 0.94, 0.9])
+}
+
+/** 1123 Market (batch 34): a four-storey olive-painted stucco block with a heavy ornate parapet, bay-like
+ *  windows and fire escapes, over a dark grey ground floor with roller shutters (Mapillary frame 01). */
+export function market1123(out: MeshBuilder, fit: Fit): void {
+  const OLIVE: Rgb = [0.5, 0.48, 0.36], PLINTH: Rgb = [0.3, 0.27, 0.22], GLASS: Rgb = [0.3, 0.34, 0.36]
+  tower(out, fit, {
+    height: 14,
+    base: { height: 3.5, face: { kind: 'punched', wall: PLINTH, glass: GLASS, pitch: 3.5, floor: 3.5, solid: 0.3, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: OLIVE, glass: GLASS, pitch: 2.8, floor: 2.7, solid: 0.55, material: 'stucco' }, cornice: { depth: 0.4, height: 0.5, colour: OLIVE } }],
+    crown: { kind: 'parapet', height: 1.4, colour: OLIVE, material: 'stucco' },
+  })
+}
+
+/** 1390 Market (batch 34): a low two-storey shopfront under Fox Plaza, a flat modern front of dark grey and
+ *  black glazed panels, the top edge a pale grey band (Mapillary frames 01 and 03). */
+export function market1390(out: MeshBuilder, fit: Fit): void {
+  const DARK: Rgb = [0.2, 0.2, 0.22], GLASS: Rgb = [0.14, 0.16, 0.18], PALE: Rgb = [0.7, 0.72, 0.72]
+  tower(out, fit, {
+    height: 7,
+    tiers: [{ to: 1, face: { kind: 'curtain', wall: DARK, glass: GLASS, pitch: 3, floor: 3.5, material: 'metal' } }],
+    crown: { kind: 'parapet', height: 0.6, colour: PALE, material: 'metal' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -1906,4 +1951,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   market1430, market1438, market1448,
   market1242, market1234, market1220,
   market923, market256037012, market931, market969,
+  market1089, market1123, market1390,
 }
