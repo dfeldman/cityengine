@@ -2948,6 +2948,61 @@ export function washington401Stone(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 82: an unnamed cream three-storey stucco block with a yellow painted ground floor, facing Kearny (photo way-148741785-02). */
+export function kearnyCreamYellow(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.87, 0.76], YELLOW: Rgb = [0.9, 0.74, 0.25]
+  tower(out, fit, {
+    height: 14,
+    base: { height: 3.5, face: { kind: 'blank', wall: YELLOW, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.24, 0.28], pitch: 2.8, floor: 3.4, solid: 0.5, material: 'stucco' }, cornice: { depth: 0.6, height: 0.8, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 1, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** T3 batch 82: the unnamed tan-based cream corner block on Kearny, with a deep cornice band (photo way-148741773-01). */
+export function kearny263Corner(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.92, 0.9, 0.82], TAN: Rgb = [0.8, 0.72, 0.56]
+  tower(out, fit, {
+    height: 14,
+    base: { height: 3.6, face: { kind: 'punched', wall: TAN, glass: [0.12, 0.14, 0.16], pitch: 3, floor: 3.6, solid: 0.45, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.22, 0.26, 0.3], pitch: 2.6, floor: 3.4, solid: 0.5, head: 'architrave', material: 'stucco' }, cornice: { depth: 0.9, height: 1.2, colour: TAN } }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** T3 batch 82: 342;344 Kearny, a black louvred ground floor under a cream stucco upper with swag panels (photo way-148741784-01). */
+export function kearny268Black(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.88, 0.8], BLACK: Rgb = [0.12, 0.12, 0.13]
+  tower(out, fit, {
+    height: 9,
+    base: { height: 3, face: { kind: 'blank', wall: BLACK, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.22, 0.26, 0.3], pitch: 2.8, floor: 3, solid: 0.5, head: 'architrave', material: 'stucco' }, cornice: { depth: 0.5, height: 0.5, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 0.6, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** T3 batch 83: the unnamed Palio block on Sacramento, a dark shopfront base under two bands of glazing on cream (photo way-260925346-01). */
+export function sacramento171Palio(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.92, 0.91, 0.87], DARK: Rgb = [0.16, 0.16, 0.16]
+  tower(out, fit, {
+    height: 17,
+    base: { height: 3.6, face: { kind: 'blank', wall: DARK, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: CREAM, glass: [0.36, 0.48, 0.46], floor: 4.2, solid: 0.35, material: 'stucco' }, cornice: { depth: 0.4, height: 0.4, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 0.8, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** T3 batch 83: 648-656 Sacramento, the church block: red brick over a grey stucco ground floor (photo way-260925337-01). */
+export function sacramento648Brick(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.5, 0.26, 0.18], GREY: Rgb = [0.56, 0.57, 0.57]
+  tower(out, fit, {
+    height: 14,
+    base: { height: 4, face: { kind: 'punched', wall: GREY, glass: [0.2, 0.2, 0.2], pitch: 3.6, floor: 4, solid: 0.7, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: [0.22, 0.24, 0.26], pitch: 2.6, floor: 3.3, solid: 0.5, material: 'brick' }, cornice: { depth: 0.7, height: 1, colour: [0.52, 0.42, 0.32] } }],
+    crown: { kind: 'parapet', height: 1, colour: BRICK, material: 'brick' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -3047,4 +3102,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   battery130Granite, kearny318White, kearny334Cream, kearny325Buff, kearny321Grey, kearny315Taupe,
   kearny227Arched, sutterStoneGrey, clay671White, commercial685Grey, kearny610Pediment,
   clay689Cream, clay683Teo, sansome140Stone, clay563Arched, washington401Stone,
+  kearnyCreamYellow, kearny263Corner, kearny268Black, sacramento171Palio, sacramento648Brick,
 }

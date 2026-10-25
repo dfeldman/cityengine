@@ -1,6 +1,5 @@
 [
   {"osm": ["way/256720470"], "name": "Nativity of Our Lord Parish", "restyle": "stucco", "levels": 3, "height": 12, "note": "Ordinary Outer Sunset parish church, stucco block."},
-  {"osm": ["way/260925337"], "name": "San Francisco Evangelical Free Church", "restyle": "stucco", "levels": 4, "height": 14, "note": "Ordinary neighbourhood church building."},
   {"osm": ["way/256733189"], "name": "Ma-Tsu Temple", "restyle": "chinatown", "levels": 3, "height": 11, "note": "Taoist temple on the ground floor of an ordinary Chinatown building on Beckett St, known for red lanterns at night, not a distinct structure."},
   {"osm": ["way/161843742"], "name": "San Francisco Fire Station 28", "restyle": "brick", "noShops": true, "levels": 2, "height": 9, "note": "Classic red-brick firehouse."},
   {"osm": ["way/227005952"], "name": "Canon Kip Community House", "restyle": "stucco", "levels": 4, "height": 15, "note": "SoMa social-services building, plain stucco block."},
