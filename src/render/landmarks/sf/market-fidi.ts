@@ -900,6 +900,37 @@ export function citibankDrumm(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 1, SE side of Market at 6th: the corner block (1001 Market), the terracotta front (1005), the dark modernised front (1009). */
+export function market1001Corner(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.5, 0.56, 0.6]
+  tower(out, fit, {
+    height: 19,
+    base: { height: 4.6, face: { kind: 'curtain', wall: [0.1, 0.12, 0.16], glass: [0.16, 0.18, 0.2], pitch: 3, floor: 4.6, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: STONE, glass: [0.2, 0.24, 0.28], pitch: 2.6, floor: 3.6, solid: 0.45, material: 'ashlar' }, cornice: { depth: 1.1, height: 1.0, colour: [0.62, 0.66, 0.68] } }],
+    crown: { kind: 'parapet', height: 1.2, colour: [0.55, 0.6, 0.63], material: 'ashlar' },
+  })
+}
+
+export function market1005(out: MeshBuilder, fit: Fit): void {
+  const TERRA: Rgb = [0.62, 0.38, 0.25]
+  tower(out, fit, {
+    height: 14,
+    base: { height: 4.2, face: { kind: 'blank', wall: [0.22, 0.14, 0.12] }, canopy: { depth: 1.2, colour: [0.72, 0.1, 0.1] } },
+    tiers: [{ to: 1, face: { kind: 'bays', wall: TERRA, glass: [0.3, 0.24, 0.18], floor: 3.4, material: 'terracotta' } }],
+    crown: { kind: 'parapet', height: 1.2, colour: [0.7, 0.45, 0.3], material: 'terracotta' },
+  })
+}
+
+export function market1009(out: MeshBuilder, fit: Fit): void {
+  const DARK: Rgb = [0.3, 0.31, 0.33]
+  tower(out, fit, {
+    height: 11,
+    base: { height: 4.5, face: { kind: 'curtain', wall: [0.14, 0.15, 0.16], glass: [0.2, 0.24, 0.28], pitch: 3.2, floor: 4.5, material: 'glass' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: DARK, glass: [0.22, 0.26, 0.3], floor: 3.2, solid: 0.8, material: 'metal' } }],
+    crown: { kind: 'parapet', height: 1.2, colour: DARK, material: 'metal' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -945,4 +976,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   california550Sacramento, hindBuilding,
   firstNationalBankNorCal,
   market570, citibankDrumm,
+  market1001Corner, market1005, market1009,
 }

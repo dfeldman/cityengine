@@ -433,5 +433,8 @@
   "height": 15,
   "sign": false,
   "note": "market-fidi.ts: four-storey stone-faced bank block on a dark glazed base, no sign or logo; the Mapillary frames showed neighbouring glass towers, so the storeys are OSM's."
- }
+ },
+ {"osm": ["way/35115849"], "name": "1001 Market Street (corner of Sixth)", "procedural": "market1001Corner", "height": 19, "sign": false, "front": 315, "note": "market-fidi.ts: five-storey blue-grey stone corner block with a heavy dentilled cornice and punched windows over a dark shopfront (GAI, Taqueria Can-Cun); photo way-35115849-01."},
+ {"osm": ["way/136100941"], "name": "1005 Market Street", "procedural": "market1005", "height": 14, "sign": false, "front": 315, "note": "market-fidi.ts: narrow terracotta-faced front with a red-trimmed shopfront canopy and bay windows; no OSM height, height guessed from the photo (way-136100941-01)."},
+ {"osm": ["way/136100939"], "name": "1009;1011 Market Street", "procedural": "market1009", "height": 11, "sign": false, "front": 315, "note": "market-fidi.ts: dark grey modernised front with a large glass shopfront and a plain upper band; the '…AWORK' sign high on its wall in the photos is not drawn (way-136100939-01)."}
 ]
