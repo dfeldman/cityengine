@@ -1333,6 +1333,39 @@ export function battery77(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** Tier 3 batch 16, 407;411 Sansome Street (way 165480948, 17 m, 1909): a four-storey tan brick block with a dark granite shopfront, punched windows with architraves and a moulded cornice; front Sansome (78). Photos way-165480948-01 and -02 (fetched). */
+export function sansome407(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.72, 0.6, 0.46]
+  tower(out, fit, {
+    height: 17,
+    base: { height: 4, face: { kind: 'blank', wall: [0.14, 0.13, 0.12], material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: [0.2, 0.22, 0.24], pitch: 3, floor: 3.4, solid: 0.5, head: 'architrave', material: 'brick' }, cornice: { depth: 0.8, height: 1, colour: [0.8, 0.76, 0.68] } }],
+    crown: { kind: 'parapet', height: 1, colour: TAN, material: 'brick' },
+  })
+}
+
+/** Tier 3 batch 16, way 32947521 (unnamed, the NW corner of Sansome and Sacramento, 16 m, 1906): a three-storey ochre brick corner block with arched upper windows on both faces, a bracketed cornice and an orange-fronted ground floor; front Sansome (78). Photos way-32947521-01 and -02. */
+export function sansomeSacramento32947521(out: MeshBuilder, fit: Fit): void {
+  const OCHRE: Rgb = [0.74, 0.6, 0.4]
+  tower(out, fit, {
+    height: 16,
+    base: { height: 4, face: { kind: 'blank', wall: [0.62, 0.4, 0.2], material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: OCHRE, glass: [0.2, 0.22, 0.24], pitch: 3, floor: 3.6, solid: 0.5, arched: true, material: 'brick' }, cornice: { depth: 0.9, height: 1, colour: [0.82, 0.74, 0.6] } }],
+    crown: { kind: 'parapet', height: 1, colour: OCHRE, material: 'brick' },
+  })
+}
+
+/** Tier 3 batch 16, 415;429 Sansome Street (way 165480946, about 12 m from OSM, 1908; manifest height 18 m): a four-storey red-brown brick block with a black Wayfare-style shopfront at street level; front Sansome (80). Photos way-165480946-01 (only frame used; it may show the neighbouring tavern, see report). */
+export function sansome415(out: MeshBuilder, fit: Fit): void {
+  const RED: Rgb = [0.55, 0.3, 0.22]
+  tower(out, fit, {
+    height: 18,
+    base: { height: 4, face: { kind: 'blank', wall: [0.12, 0.1, 0.1], material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: RED, glass: [0.2, 0.22, 0.24], pitch: 3, floor: 3.6, solid: 0.45, head: 'architrave', material: 'brick' }, cornice: { depth: 0.8, height: 1, colour: [0.7, 0.66, 0.6] } }],
+    crown: { kind: 'parapet', height: 1, colour: RED, material: 'brick' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1393,4 +1426,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   kearny200, sutter154, kearny215,
   clay256072716, clay643,
   pine260282395, pine32859888, battery77,
+  sansome407, sansomeSacramento32947521, sansome415,
 }
