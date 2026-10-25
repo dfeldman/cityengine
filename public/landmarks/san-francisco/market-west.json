@@ -60,7 +60,6 @@
   {"osm": ["way/256042679"], "name": "Dorothy Day Community", "restyle": "chicago", "levels": 11, "note": "54 McAllister."},
   {"osm": ["way/256042692"], "name": "60 McAllister Street", "restyle": "tenement", "wall": "#7a4a30", "levels": 5, "height": 18, "note": "2026-10-16 (Mapillary): a five-storey brick walk-up with white bays and fire escapes and a bracketed cornice — not an 11-storey office (stood at OSM's 42 m)."},
   {"osm": ["way/940206079"], "name": "1 Polk Street annexe", "restyle": "skyscraper", "levels": 13, "note": "2010s flats beside the Argenta."},
-  {"osm": ["way/35536670"], "name": "St Anthony's Vera Haile Senior Housing", "restyle": "brutalist", "levels": 10, "note": "121 Golden Gate."},
   {"osm": ["way/230607753"], "name": "Allen Hotel", "restyle": "sfapartment", "levels": 5, "note": "A Market Street SRO."},
   {"osm": ["way/256728885"], "name": "San Francisco Fire Station 36", "restyle": "bauhaus", "levels": 2, "note": "109 Oak Street."},
   {"osm": ["way/256730329"], "name": "Market at Octavia city yard", "restyle": "bauhaus", "levels": 1, "note": "A single-storey city building."},

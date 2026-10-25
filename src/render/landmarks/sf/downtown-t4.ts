@@ -1810,6 +1810,129 @@ function t4b125_35024322(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * 701;711 Van Ness Avenue (way/258127164): a cream-stone office block of four storeys over a shopfront base, a curved
+ * corner and a stone band at each floor, with a 1920s-style flat top. (Mapillary, two frames.)
+ * Front taken as Van Ness Avenue.
+ */
+function t4b128_258127164(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.84, 0.8, 0.7]
+  const GLASS: Rgb = [0.2, 0.23, 0.26]
+  tower(out, fit, {
+    height: 21,
+    base: { height: 4.6, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 4, solid: 0.25, floor: 4.6, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 3.4, floor: 4, solid: 0.35, depth: 0.5, material: 'concrete' }, cornice: { depth: 0.6, height: 0.7, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 0.9, colour: CREAM, material: 'concrete' },
+  })
+}
+
+/**
+ * St Anthony's Vera Haile Senior Housing, 121 Golden Gate Avenue (way/35536670): a tan-buff nine-storey corner block,
+ * projecting dark bay windows stacked up in strips, a storefront base and a set-back top. (Mapillary, two frames.)
+ * Front taken as Golden Gate Avenue.
+ */
+function t4b126_35536670(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.84, 0.78, 0.66]
+  const GLASS: Rgb = [0.22, 0.25, 0.29]
+  tower(out, fit, {
+    height: 32,
+    base: { height: 4.2, face: { kind: 'punched', wall: TAN, glass: GLASS, pitch: 3.2, solid: 0.3, floor: 4.2, material: 'concrete' } },
+    tiers: [
+      { to: 0.8, face: { kind: 'bays', wall: TAN, material: 'concrete', glass: GLASS, floor: 3.2, pitch: 3.2, bay: { depth: 0.8 } }, cornice: { depth: 0.5, height: 0.6, colour: TAN } },
+      { to: 1, inset: 1.2, face: { kind: 'bays', wall: TAN, material: 'concrete', glass: GLASS, floor: 3.2, pitch: 3.2, bay: { depth: 0.8 } } },
+    ],
+    crown: { kind: 'parapet', height: 1, colour: TAN, material: 'concrete' },
+  })
+}
+
+/**
+ * 666;670 Ellis Street (way/259974367): a 1970s grey concrete tower of about eleven storeys, stepped back in
+ * successive volumes with heavy cornice bands and small punched windows. (Mapillary, two frames.)
+ * Front taken as Ellis Street.
+ */
+function t4b127_259974367(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.5, 0.51, 0.52]
+  const GLASS: Rgb = [0.2, 0.22, 0.25]
+  const wall = { kind: 'punched' as const, wall: GREY, glass: GLASS, pitch: 3.6, floor: 3.2, solid: 0.6, depth: 0.4, material: 'concrete' as const }
+  tower(out, fit, {
+    height: 38,
+    tiers: [
+      { to: 0.45, face: wall, cornice: { depth: 0.6, height: 0.7, colour: GREY } },
+      { to: 0.75, inset: 2.5, face: wall, cornice: { depth: 0.5, height: 0.6, colour: GREY } },
+      { to: 1, inset: 2.5, face: wall },
+    ],
+    crown: { kind: 'parapet', height: 1.2, colour: GREY, material: 'concrete' },
+  })
+}
+
+/**
+ * 149 New Montgomery Street (way/79377160): a cream painted block of five storeys and a top floor, arched upper
+ * windows, a dentilled cornice over the fourth and a shopfront base. (Mapillary, two frames.)
+ * Front taken as New Montgomery Street.
+ */
+function t4b129_79377160(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.86, 0.8, 0.66]
+  const GLASS: Rgb = [0.25, 0.28, 0.32]
+  tower(out, fit, {
+    height: 27,
+    base: { height: 4.2, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.22, 0.24], pitch: 3, solid: 0.2, floor: 4.2, material: 'concrete' } },
+    tiers: [
+      { to: 0.8, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 2.8, floor: 4, solid: 0.5, depth: 0.4, arched: true, material: 'concrete' }, cornice: { depth: 0.7, height: 0.8, colour: CREAM } },
+      { to: 1, inset: 0.6, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 2.8, floor: 3.4, solid: 0.5, depth: 0.4, material: 'concrete' } },
+    ],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'concrete' },
+  })
+}
+
+/**
+ * 663;665;679 Sutter Street (way/48995284): a dark charcoal front of about eight storeys, its punched windows and
+ * fire escapes running over a black shopfront base. (Mapillary, two frames; the earlier reface note.)
+ * Front taken as Sutter Street.
+ */
+function t4b130_48995284(out: MeshBuilder, fit: Fit): void {
+  const CHAR: Rgb = [0.3, 0.29, 0.3]
+  tower(out, fit, {
+    height: 30,
+    base: { height: 4.5, face: { kind: 'punched', wall: [0.18, 0.18, 0.19], glass: [0.16, 0.17, 0.19], pitch: 3, solid: 0.3, floor: 4.5, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CHAR, glass: [0.2, 0.22, 0.26], pitch: 2.6, floor: 3.4, solid: 0.5, depth: 0.4, material: 'brick' }, cornice: { depth: 0.6, height: 0.7, colour: CHAR } }],
+    crown: { kind: 'parapet', height: 1.2, colour: CHAR, material: 'brick' },
+  })
+}
+
+/**
+ * Hotel Emblem, 80 Sutter Street (way/256733832): a painted ochre brick hotel of about six storeys, a deep bracketed
+ * cornice, tall windows in rows, and a black-glass ground floor under a dark awning. (Mapillary, two frames.)
+ * Front taken as Sutter Street, the nearest.
+ */
+function t4b131_256733832(out: MeshBuilder, fit: Fit): void {
+  const OCHRE: Rgb = [0.84, 0.72, 0.5]
+  tower(out, fit, {
+    height: 22,
+    base: { height: 4.5, face: { kind: 'punched', wall: [0.78, 0.74, 0.66], glass: [0.18, 0.2, 0.22], pitch: 3.4, solid: 0.25, floor: 4.5, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: OCHRE, glass: [0.22, 0.24, 0.26], pitch: 2.6, floor: 3.4, solid: 0.5, depth: 0.35, material: 'brick' }, cornice: { depth: 0.8, height: 0.9, colour: [0.9, 0.86, 0.76] } }],
+    crown: { kind: 'parapet', height: 1, colour: OCHRE, material: 'brick' },
+  })
+}
+
+/**
+ * 750 Battery Street (way/32947691): a red-brown brick block of five storeys, arched upper windows, a stepped top
+ * floor and a brick parapet on the corner. (Mapillary, two frames.)
+ * Front taken as Battery Street.
+ */
+function t4b132_32947691(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.55, 0.25, 0.18]
+  const GLASS: Rgb = [0.2, 0.23, 0.27]
+  tower(out, fit, {
+    height: 25,
+    base: { height: 4.6, face: { kind: 'punched', wall: BRICK, glass: GLASS, pitch: 4, solid: 0.3, floor: 4.6, arched: true, material: 'brick' } },
+    tiers: [
+      { to: 0.82, face: { kind: 'punched', wall: BRICK, glass: GLASS, pitch: 3, floor: 3.9, solid: 0.5, depth: 0.3, arched: true, material: 'brick' }, cornice: { depth: 0.5, height: 0.6, colour: [0.82, 0.8, 0.74] } },
+      { to: 1, inset: 1.5, face: { kind: 'punched', wall: BRICK, glass: GLASS, pitch: 3, floor: 3.9, solid: 0.5, depth: 0.3, arched: true, material: 'brick' } },
+    ],
+    crown: { kind: 'parapet', height: 0.9, colour: BRICK, material: 'brick' },
+  })
+}
+
 export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   t4b1_156123224,
   t4b2_192328858,
@@ -1937,4 +2060,11 @@ export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t4b123_114709398,
   t4b124_151979683,
   t4b125_35024322,
+  t4b126_35536670,
+  t4b127_259974367,
+  t4b128_258127164,
+  t4b129_79377160,
+  t4b130_48995284,
+  t4b131_256733832,
+  t4b132_32947691,
 }

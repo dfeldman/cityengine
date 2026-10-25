@@ -9,10 +9,8 @@
 {"osm": ["way/129176908"], "restyle": "brick", "wall": "#d8cbb0", "groundWall": "#6b4f3a", "by": "haiku", "image": "way-129176908-01.jpg", "note": "cream/beige 6-storey loft-style block, cornice and parapet, dark brown base"},
 {"osm": ["way/35174699"], "restyle": "sfapartment", "wall": "#a8432f", "trim": "#efe3cc", "groundWall": "#2b2623", "by": "haiku", "image": "way-35174699-01.jpg", "note": "red brick 8-storey, stacked corner bays with cream surrounds, dark shopfront"},
 {"osm": ["way/261108904"], "restyle": "sfapartment", "wall": "#ebeae5", "accent": "#2f4b6e", "by": "haiku", "image": "way-261108904-02.jpg", "note": "white render block with stacked projecting blue balconies"},
-{"osm": ["way/32947691"], "restyle": "brick", "wall": "#8c3d2c", "by": "haiku", "image": "way-32947691-02.jpg", "note": "red-brown brick 5-storey with arched upper windows and a corner parapet"},
 {"osm": ["way/1343555796"], "restyle": "brick", "wall": "#b06a4f", "by": "haiku", "image": "way-1343555796-02.jpg", "note": "salmon-red brick 7-storey, punched windows, fire escapes, parapet"},
 {"osm": ["way/1154189644"], "restyle": "bauhaus", "wall": "#d6cdb8", "accent": "#5f6f80", "by": "haiku", "image": "way-1154189644-02.jpg", "note": "cream render block, horizontal ribbon windows, blue-grey bands"},
 {"osm": ["way/256616020"], "restyle": "classical", "wall": "#b87d4b", "trim": "#e8dcc4", "by": "haiku", "image": "way-256616020-01.jpg", "note": "brown brick 9-10 storey block, heavy cornice, arched top-floor windows, no bays"},
-{"osm": ["way/260183831"], "restyle": "sfapartment", "wall": "#efeae0", "accent": "#a0583f", "by": "haiku", "image": "way-260183831-02.jpg", "note": "cream render 7-8 storey block, stacked projecting balcony bands, rust spandrels"},
-{"osm": ["way/79377160"], "restyle": "classical", "wall": "#d8c9a6", "by": "haiku", "image": "way-79377160-02.jpg", "note": "cream 6-storey block, arched upper windows, pilasters; Academy of Art sign is on the neighbouring building"}
+{"osm": ["way/260183831"], "restyle": "sfapartment", "wall": "#efeae0", "accent": "#a0583f", "by": "haiku", "image": "way-260183831-02.jpg", "note": "cream render 7-8 storey block, stacked projecting balcony bands, rust spandrels"}
 ]

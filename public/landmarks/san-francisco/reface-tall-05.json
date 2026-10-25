@@ -5,6 +5,5 @@
 {"osm": ["way/260523197"], "restyle": "classical", "wall": "#9b4b35", "trim": "#d8d0bc", "groundWall": "#b9b09a", "by": "haiku", "image": "way-260523197-01.jpg", "note": "Red brick over a stone base, stone pilasters running up the front, arched entrance, cornice top."},
 {"osm": ["way/634359202"], "restyle": "towerblock", "wall": "#e8e0cf", "accent": "#3f4b5c", "groundWall": "#8f8579", "by": "haiku", "image": "way-634359202-02.jpg", "note": "Cream render of about seven storeys with a blue-grey panel band and brown balcony inserts. Classifier had skyscraper; no glass skin."},
 {"osm": ["way/273299303"], "restyle": "towerblock", "wall": "#dccfb6", "groundWall": "#5e6d7b", "by": "haiku", "image": "way-273299303-02.jpg", "note": "Cream block of about nine storeys with regular punched windows, flat top, blue-grey base band. Classifier had bauhaus; no ribbon windows."},
-{"osm": ["way/48995284"], "restyle": "brick", "wall": "#2f2f34", "by": "haiku", "image": "way-48995284-01.jpg", "note": "Dark charcoal front of about eight storeys with fire escapes on the face over shopfronts. Classifier had bauhaus."},
 {"osm": ["way/260517123"], "restyle": "sfapartment", "wall": "#e6d5cc", "by": "haiku", "image": "way-260517123-01.jpg", "note": "Pale pink stucco with corner bay boxes and a shopfront at street level. Style right; colour from photo."}
 ]

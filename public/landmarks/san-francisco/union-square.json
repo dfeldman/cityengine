@@ -129,7 +129,6 @@
   {"osm": ["way/256733825"], "name": "600,602 Mason Street", "restyle": "sfapartment", "note": "an Edwardian apartment block on the hill above the square", "levels": 5},
   {"osm": ["way/256733829"], "name": "640 Mason Street", "restyle": "classical", "note": "a stone-fronted commercial block, rusticated base and cornice", "levels": 7},
   {"osm": ["way/256733830"], "name": "540 Sutter Street", "restyle": "stucco", "note": "a low stuccoed shopfront building", "levels": 1},
-  {"osm": ["way/256733832"], "name": "Hotel Emblem San Francisco", "restyle": "tenement", "note": "a post-fire walk-up hotel: brick, shops below, fire escapes down the front", "levels": 6},
   {"osm": ["way/256733833"], "name": "560 Sutter Street", "restyle": "brick", "note": "an ordinary brick shop-and-loft building", "levels": 4},
   {"osm": ["way/256917319"], "name": "118;120 Maiden Lane", "restyle": "brick", "note": "an ordinary brick shop-and-loft building", "levels": 3},
   {"osm": ["way/256917321"], "name": "234;238;240 Stockton Street", "restyle": "chicago", "note": "a steel-framed commercial block dressed in terracotta", "levels": 11},

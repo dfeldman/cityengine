@@ -133,13 +133,13 @@ Builders go in `src/render/landmarks/sf/downtown-t4.ts`, manifest entries in `pu
 | 123 | 105 | SoMa by Market | `way/114709398` (unnamed) · 24 m · generic || done |
 | 124 | 105 | SoMa by Market | `way/151979683` 730;740 Harrison Street · 25 m · generic || done |
 | 125 | 105 | Tenderloin | `way/35024322` Gaylord Suites · 38 m · reface || done |
-| 126 | 105 | Tenderloin | `way/35536670` St Anthony's Vera Haile Senior Housing · 32 m · reface | |
-| 127 | 104 | Tenderloin | `way/259974367` 666;670 Ellis Street · 38 m · reface | |
-| 128 | 103 | Civic Center | `way/258127164` 701;711 Van Ness Avenue · 21 m · generic | |
-| 129 | 103 | SoMa by Market | `way/79377160` 149 New Montgomery Street · 27 m · reface | |
-| 130 | 103 | Union Square | `way/48995284` 663;665;679 Sutter Street · 30 m · reface | |
-| 131 | 103 | Union Square | `way/256733832` Hotel Emblem San Francisco · 22 m · reface | |
-| 132 | 103 | FiDi | `way/32947691` 750 Battery Street · 25 m · reface | |
+| 126 | 105 | Tenderloin | `way/35536670` St Anthony's Vera Haile Senior Housing · 32 m · reface || done |
+| 127 | 104 | Tenderloin | `way/259974367` 666;670 Ellis Street · 38 m · reface || done |
+| 128 | 103 | Civic Center | `way/258127164` 701;711 Van Ness Avenue · 21 m · generic || done |
+| 129 | 103 | SoMa by Market | `way/79377160` 149 New Montgomery Street · 27 m · reface || done |
+| 130 | 103 | Union Square | `way/48995284` 663;665;679 Sutter Street · 30 m · reface || done |
+| 131 | 103 | Union Square | `way/256733832` Hotel Emblem San Francisco · 22 m · reface || done |
+| 132 | 103 | FiDi | `way/32947691` 750 Battery Street · 25 m · reface || done |
 | 133 | 102 | SoMa by Market | `way/129176908` (unnamed) · 21 m · reface | |
 | 134 | 102 | SoMa by Market | `way/112759870` 1 South Park · 18 m · generic<br>`way/112758589` 300 Brannan Street · 21 m · generic | |
 | 135 | 102 | Chinatown | `way/260517123` Mei Lun Yuen · 30 m · reface | |

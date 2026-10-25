@@ -70,17 +70,6 @@
   },
   {
     "osm": [
-      "way/259974367"
-    ],
-    "name": "666;670 Ellis Street",
-    "restyle": "towerblock",
-    "height": 38,
-    "levels": 11,
-    "note": "Rule check 2026-10-04 (Mapillary): 1970s grey concrete tower with balconies; was rule 7 brick.",
-    "wall": "#a7a59d"
-  },
-  {
-    "osm": [
       "way/258017308"
     ],
     "name": "Western Park Apartments",
