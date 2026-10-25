@@ -542,5 +542,27 @@
  {"osm": ["way/436484312"], "name": "Market at Fremont infill", "procedural": "marketFremontBronze", "height": 25, "sign": false, "front": 313, "note": "market-fidi.ts: bronze mirror-glass block over cream stone arcade ground floor; photos way-436484312-01 and -02; front on Market, unsure."},
  {"osm": ["way/256068384"], "name": "Building 256068384", "procedural": "commercialStoneTen", "height": 39, "sign": false, "front": 164, "note": "market-fidi.ts: cream stone office of about eleven storeys with setback top; photos way-256068384-01 and -02, unsure."},
  {"osm": ["way/256068383"], "name": "Building 256068383", "procedural": "commercialArchedStone1906", "height": 16, "sign": false, "front": 168, "note": "market-fidi.ts: 1906 stone classical block, arched ground floor, balustrade; photos way-256068383-01 and -03."},
- {"osm": ["way/256067718"], "name": "231 Sansome Street", "procedural": "sansome231Brick", "height": 24, "sign": false, "front": 74, "note": "market-fidi.ts: red-brick seven-storey block with arched top windows and stone trim; photo way-256067718-01."}
+ {"osm": ["way/256067718"], "name": "231 Sansome Street", "procedural": "sansome231Brick", "height": 24, "sign": false, "front": 74, "note": "market-fidi.ts: red-brick seven-storey block with arched top windows and stone trim; photo way-256067718-01."},
+ {
+  "osm": [
+   "way/260925341"
+  ],
+  "name": "660 Sacramento Street",
+  "procedural": "sacramento660Cream",
+  "height": 16,
+  "sign": false,
+  "front": 177,
+  "note": "market-fidi.ts: 660 Sacramento, 1907 four-storey cream-grey stone block with dark shopfront and rail on top; photo way-260925341-01 (cam bearing 351)."
+ },
+ {
+  "osm": [
+   "way/1229790537"
+  ],
+  "name": "Sacramento Street infill (unnamed)",
+  "procedural": "sacramentoBlueInfill",
+  "height": 8.5,
+  "sign": false,
+  "front": 183,
+  "note": "market-fidi.ts: unnamed 1916 two-storey painted blue-teal brick infill with recessed shopfront; photo way-1229790537-01 (cam bearing 351)."
+ }
 ]

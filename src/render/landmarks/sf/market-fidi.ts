@@ -2307,6 +2307,36 @@ export function sansome231Brick(out: MeshBuilder, fit: Fit): void {
 }
 
 
+/**
+ * 660 Sacramento Street (way/260925341), 1907. Front faces Sacramento Street (bearing 177). Photo -01 (camera
+ * bearing 351) shows the facade between the dashed lines: a four-storey cream-grey stone block, set back at the
+ * top behind a rail, with tall dark windows in the middle bays and a dark shopfront with green awnings at ground.
+ */
+export function sacramento660Cream(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.78, 0.76, 0.7], GLASS: Rgb = [0.2, 0.23, 0.26], DARK: Rgb = [0.14, 0.14, 0.15], TRIM: Rgb = [0.84, 0.82, 0.76]
+  tower(out, fit, {
+    height: 16,
+    base: { height: 3.6, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.4, floor: 3.6, solid: 0.35, material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 3.2, floor: 3.1, solid: 0.5, material: 'ashlar' }, cornice: { depth: 0.4, height: 0.5, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 1.1, colour: TRIM, material: 'ashlar' },
+  })
+}
+
+/**
+ * The unnamed two-storey infill on Sacramento Street (way/1229790537), built 1916. Front faces Sacramento Street
+ * (bearing 183). Photo -01 (camera bearing 351) shows the facade between the dashed lines: a painted blue-teal
+ * brick front, two punched windows over a dark recessed shopfront with a plain cornice band.
+ */
+export function sacramentoBlueInfill(out: MeshBuilder, fit: Fit): void {
+  const BLUE: Rgb = [0.1, 0.36, 0.42], GLASS: Rgb = [0.2, 0.24, 0.27], DARK: Rgb = [0.12, 0.13, 0.14], TRIM: Rgb = [0.12, 0.3, 0.36]
+  tower(out, fit, {
+    height: 8.5,
+    base: { height: 3.2, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.6, floor: 3.2, solid: 0.2, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BLUE, glass: GLASS, pitch: 3.2, floor: 2.7, solid: 0.6, material: 'brick' }, cornice: { depth: 0.5, height: 0.5, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 0.9, colour: TRIM, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -2392,4 +2422,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   postCreamBeaux, kearnyCreamTall, kearnyCreamSix,
   marketFremontBronze, commercialStoneTen, commercialArchedStone1906, commercialBuffBrick,
   sansome231Brick,
+  sacramento660Cream, sacramentoBlueInfill,
 }
