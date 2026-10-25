@@ -254,15 +254,6 @@
  },
  {
   "osm": [
-   "way/151183777"
-  ],
-  "name": "1 Kearny Street (1964 annex)",
-  "restyle": "bauhaus",
-  "note": "Charles Moore's 1964 annex to 1 Kearny: plain modern slab.",
-  "levels": 12
- },
- {
-  "osm": [
    "way/941560579"
   ],
   "name": "55 Cyril Magnin Street",

@@ -1690,6 +1690,20 @@ export function market148712646(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** 1 KEARNY ANNEX (way/151183777), Market at Kearny, the Lotta's Fountain corner: Charles Moore's plain 1964 slab, a thin sliver beside the 2009 One Kearny. Warm tan brick, horizontal ledges, a stepped top with a parapet and corner balcony bands (Mapillary frame 03). */
+export function kearny1Annex(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.66, 0.52, 0.4], GLASS: Rgb = [0.2, 0.23, 0.26]
+  tower(out, fit, {
+    height: 47,
+    tiers: [
+      { to: 0.82, face: { kind: 'punched', wall: TAN, glass: GLASS, floor: 3.4, pitch: 2.8, solid: 0.72, material: 'brick' }, cornice: { depth: 0.5, height: 0.5, colour: TAN } },
+      { to: 1, inset: 1.5, face: { kind: 'punched', wall: TAN, glass: GLASS, floor: 3.4, pitch: 2.8, solid: 0.72, material: 'brick' } },
+    ],
+    crown: { kind: 'parapet', height: 1.2, colour: TAN, material: 'brick' },
+    penthouse: 1,
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1760,4 +1774,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   market650, market944, market934,
   marketEllis35174751, market941560580,
   market576, market148712646,
+  kearny1Annex,
 }
