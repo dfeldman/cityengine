@@ -293,16 +293,6 @@
   },
   {
     "osm": [
-      "way/114709401"
-    ],
-    "name": "Consulate General of Mexico, San Francisco",
-    "restyle": "brick",
-    "noShops": true,
-    "height": 21,
-    "note": "Mapillary 2026-10-04 (532 Folsom): red brick, steel-framed windows; was rule 8 tenement"
-  },
-  {
-    "osm": [
       "way/66643085"
     ],
     "name": "Chinese Independent Baptist Church of San Francisco",

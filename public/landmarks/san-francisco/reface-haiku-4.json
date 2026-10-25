@@ -22,17 +22,6 @@
   },
   {
     "osm": [
-      "way/259925713"
-    ],
-    "name": "(unnamed)",
-    "restyle": "towerblock",
-    "wall": "#c8bfb5",
-    "by": "haiku",
-    "image": "way-259925713.jpg",
-    "height": 41
-  },
-  {
-    "osm": [
       "way/260183824"
     ],
     "name": "665 Pine Street",

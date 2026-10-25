@@ -92,13 +92,13 @@ Builders go in `src/render/landmarks/sf/downtown-t4.ts`, manifest entries in `pu
 | 82 | 126 | SoMa by Market | `way/151980105` 832 Folsom Street · 37 m · reface || done |
 | 83 | 125 | Union Square | `way/135174114` (unnamed) · 27 m · reface || done |
 | 84 | 124 | Civic Center | `way/1059931715` 361 TL Residences · 32 m · generic || done |
-| 85 | 124 | SoMa by Market | `way/346093777` Cruise · 16 m · generic | |
-| 86 | 124 | Tenderloin | `way/260155577` 111 Jones Street · 26 m · generic | |
-| 87 | 123 | SoMa by Market | `way/112927453` 625;635 2nd Street · 16 m · generic | |
-| 88 | 123 | SoMa by Market | `way/192883910` (unnamed) · 20 m · generic | |
-| 89 | 123 | Nob Hill | `way/259925713` (unnamed) · 41 m · reface | |
-| 90 | 122 | SoMa by Market | `way/114709401` Consulate General of Mexico, San Francisco · 21 m · reface | |
-| 91 | 122 | Union Square | `way/35024386` 347;349;351;353;357;373 Geary Street · 26 m · reface | |
+| 85 | 124 | SoMa by Market | `way/346093777` Cruise · 16 m · generic || done |
+| 86 | 124 | Tenderloin | `way/260155577` 111 Jones Street · 26 m · generic || done |
+| 87 | 123 | SoMa by Market | `way/112927453` 625;635 2nd Street · 16 m · generic || done |
+| 88 | 123 | SoMa by Market | `way/192883910` (unnamed) · 20 m · generic || done |
+| 89 | 123 | Nob Hill | `way/259925713` (unnamed) · 41 m · reface || done |
+| 90 | 122 | SoMa by Market | `way/114709401` Consulate General of Mexico, San Francisco · 21 m · reface || done |
+| 91 | 122 | Union Square | `way/35024386` 347;349;351;353;357;373 Geary Street · 26 m · reface || done |
 | 92 | 121 | SoMa by Market | `way/79377213` Sharon Building · 33 m · reface | |
 | 93 | 120 | SoMa by Market | `way/159280391` (unnamed) · 32 m · reface | |
 | 94 | 119 | SoMa by Market | `way/129176911` Townsend Building · 23 m · reface<br>`way/148547440` 128 King Street · 19 m · generic | |

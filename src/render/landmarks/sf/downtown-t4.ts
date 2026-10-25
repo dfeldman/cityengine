@@ -1229,6 +1229,105 @@ function t4b84_1059931715(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * Cruise, Brannan Street (way/346093777): a red-brick office block of five storeys, punched windows in a regular
+ * grid with dark sunshade heads, a glazed ground floor and a blue-fenced terrace on the street. (Mapillary 1536294064396978, 593164780395398.)
+ */
+function t4b85_346093777(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.62, 0.3, 0.2]
+  tower(out, fit, {
+    height: 16,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.2, 0.21, 0.22], glass: [0.3, 0.36, 0.4], pitch: 4, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: [0.22, 0.26, 0.3], pitch: 3.6, floor: 3.2, solid: 0.5, material: 'brick' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: BRICK, material: 'brick' },
+  })
+}
+
+/**
+ * 111 Jones Street (way/260155577): a cream and peach stucco block of about eight storeys at the Golden Gate corner,
+ * its front a run of teal-framed curved bay windows over a dark stone base. (Mapillary 2885772338418851, 161063956131550.)
+ */
+function t4b86_260155577(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.84, 0.74]
+  tower(out, fit, {
+    height: 26,
+    base: { height: 4.5, face: { kind: 'blank', wall: [0.3, 0.26, 0.24], material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'bays', wall: CREAM, glass: [0.18, 0.36, 0.36], floor: 3, pitch: 4, material: 'stucco', bay: { depth: 1, round: true } } }],
+    crown: { kind: 'parapet', height: 1, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/**
+ * 625;635 2nd Street (way/112927453): an 1905 red-brick warehouse of four storeys, round-headed windows, iron fire
+ * escapes on the front and a black painted ground floor with big shopfront glass. (Mapillary 753423557617684, 2171383733332224.)
+ */
+function t4b87_112927453(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.68, 0.3, 0.2]
+  tower(out, fit, {
+    height: 16,
+    base: { height: 4.5, face: { kind: 'blank', wall: [0.16, 0.16, 0.17], material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: [0.22, 0.26, 0.3], pitch: 3.2, floor: 3.4, solid: 0.6, arched: true, material: 'brick' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: BRICK, material: 'brick' },
+  })
+}
+
+/**
+ * Unnamed block between Zeno Place and Beale Street (way/192883910): a tan terracotta-coloured office block of about
+ * five storeys with a dark ground floor and a canopied entrance, the windows in bands. (Mapillary 867377578839576, 570983052270115.)
+ */
+function t4b88_192883910(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.72, 0.52, 0.36]
+  tower(out, fit, {
+    height: 20,
+    base: { height: 4.2, face: { kind: 'curtain', wall: [0.25, 0.25, 0.25], glass: [0.3, 0.34, 0.36], pitch: 4, floor: 4.2, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: [0.22, 0.26, 0.3], pitch: 4, floor: 3.4, solid: 0.5, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: TAN, material: 'concrete' },
+  })
+}
+
+/**
+ * Taylor and Pine (way/259925713): a beige brick-textured residential tower of about fourteen storeys over a garage
+ * podium with a brick-screen wall, its vertical piers and punched windows stepping in its wings. (Mapillary 200630898702566, 302357684975726.)
+ * The stepped wings are drawn as one block; unsure of the setbacks.
+ */
+function t4b89_259925713(out: MeshBuilder, fit: Fit): void {
+  const BEIGE: Rgb = [0.78, 0.74, 0.66]
+  tower(out, fit, {
+    height: 41,
+    base: { height: 4, face: { kind: 'blank', wall: [0.8, 0.77, 0.7], material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BEIGE, glass: [0.3, 0.34, 0.38], pitch: 3.2, floor: 3, solid: 0.45, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 1, colour: BEIGE, material: 'concrete' },
+  })
+}
+
+/**
+ * Consulate General of Mexico (way/114709401): a grey and white clad block of about seven storeys, its ground floor
+ * a dark brick base, under the freeway in the Transbay district. (Mapillary 1232760783834440, 103954909175739.)
+ */
+function t4b90_114709401(out: MeshBuilder, fit: Fit): void {
+  const CLAD: Rgb = [0.82, 0.82, 0.8]
+  tower(out, fit, {
+    height: 21,
+    base: { height: 3.5, face: { kind: 'blank', wall: [0.5, 0.2, 0.16], material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CLAD, glass: [0.3, 0.36, 0.42], pitch: 3.6, floor: 3, solid: 0.6, material: 'clapboard' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: CLAD, material: 'clapboard' },
+  })
+}
+
+/**
+ * Geary Street hotel block (way/35024386, the Union Square Hotel side): a cream stucco post-fire walk-up of about
+ * eight storeys, round bay windows with white balconies and fire escapes, a dark shopfront base. (Mapillary 814837084311042, 3320715811549544.)
+ */
+function t4b91_35024386(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.87, 0.8]
+  tower(out, fit, {
+    height: 26,
+    base: { height: 4.5, face: { kind: 'blank', wall: [0.22, 0.2, 0.2], material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'bays', wall: CREAM, glass: [0.3, 0.34, 0.38], floor: 3, pitch: 3.6, material: 'stucco', bay: { depth: 0.9, round: true } } }],
+    crown: { kind: 'parapet', height: 1, colour: CREAM, material: 'stucco' },
+  })
+}
+
 export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   t4b1_156123224,
   t4b2_192328858,
@@ -1316,4 +1415,11 @@ export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t4b82_151980105,
   t4b83_135174114,
   t4b84_1059931715,
+  t4b85_346093777,
+  t4b86_260155577,
+  t4b87_112927453,
+  t4b88_192883910,
+  t4b89_259925713,
+  t4b90_114709401,
+  t4b91_35024386,
 }
