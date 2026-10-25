@@ -70,8 +70,8 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 58 | 79 | `way/148710881` 32 Battery Street · 20 m · reface chicago || done (with 57) |
 | 59 | 78 | `way/35537088` 708;710 Montgomery Street · 11 m · generic<br>`way/148668302` (unnamed) · ? · generic<br>`way/35537108` (unnamed) · 9 m · generic || 708 Montgomery and 35537108 done; 148668302 has no photographs |
 | 60 | 78 | `way/149840698` 96 Jessie Street · 14 m · generic<br>`way/149840695` 79 Stevenson Street · 11 m · generic<br>`way/149840696` (unnamed) · 9 m · generic || done |
-| 61 | 78 | `way/942665598` 130 Montgomery Street · 22 m · generic | |
-| 62 | 76 | `way/148668309` 520;522;524;526;528;530;532;550 Washington Str · 9 m · generic<br>`way/148668322` (unnamed) · ? · generic<br>`way/148668312` (unnamed) · 13 m · reface brick | |
+| 61 | 78 | `way/942665598` 130 Montgomery Street · 22 m · generic || done |
+| 62 | 76 | `way/148668309` 520;522;524;526;528;530;532;550 Washington Str · 9 m · generic<br>`way/148668322` (unnamed) · ? · generic<br>`way/148668312` (unnamed) · 13 m · reface brick || done (with 61) |
 | 63 | 75 | `way/260280333` 219;225 Kearny Street · 20 m · generic<br>`way/260280329` 237;239;241 Kearny Street · 13 m · generic<br>`way/260280332` 243;245 Kearny Street · 13 m · generic | |
 | 64 | 74 | `way/148741776` 22 Belden Place · 8 m · generic<br>`way/148741778` 364 Bush Street · 9 m · generic<br>`way/148741775` (unnamed) · ? · generic | |
 | 65 | 73 | `way/148285582` 30 2nd Street · 9 m · generic | |

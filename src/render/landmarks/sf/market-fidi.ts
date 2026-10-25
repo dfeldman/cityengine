@@ -2474,6 +2474,57 @@ export function louvred2002Stone(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+export function montgomery130Cream(out: MeshBuilder, fit: Fit): void {
+  // 130 Montgomery Street (way/942665598, six levels): a cream-grey stone podium with long ribbon windows and a
+  // set-back tower of glass behind white blinds; the entrance faces Sutter Street (south). Photos way-942665598-02 and -03
+  const STONE: Rgb = [0.8, 0.77, 0.7], GLASS: Rgb = [0.2, 0.24, 0.28], BLIND: Rgb = [0.62, 0.64, 0.62], DARK: Rgb = [0.12, 0.13, 0.14]
+  tower(out, fit, {
+    height: 28,
+    base: { height: 4.5, face: { kind: 'curtain', wall: DARK, glass: GLASS, pitch: 3, floor: 4.5, material: 'metal' } },
+    tiers: [
+      { to: 0.6, face: { kind: 'bands', wall: STONE, glass: GLASS, floor: 3.6, solid: 0.5, material: 'ashlar' } },
+      { to: 1, inset: 2, face: { kind: 'curtain', wall: BLIND, glass: GLASS, pitch: 2.8, floor: 3.6, material: 'metal' } },
+    ],
+    crown: { kind: 'parapet', height: 1, colour: STONE, material: 'ashlar' },
+  })
+}
+
+export function washington520Brick(out: MeshBuilder, fit: Fit): void {
+  // 520-550 Washington Street (way/148668309): a two-storey painted cream brick block with arched dark-framed upper
+  // windows, a dentil band under the cornice and a dark glazed shopfront; photo way-148668309-02
+  const CREAM: Rgb = [0.84, 0.8, 0.7], DARK: Rgb = [0.16, 0.16, 0.15], GLASS: Rgb = [0.18, 0.2, 0.22], TRIM: Rgb = [0.78, 0.74, 0.64]
+  tower(out, fit, {
+    height: 9,
+    base: { height: 3.2, face: { kind: 'curtain', wall: DARK, glass: GLASS, pitch: 3, floor: 3.2, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 2.6, floor: 3, solid: 0.5, arched: true, material: 'brick' }, cornice: { depth: 0.4, height: 0.5, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 0.8, colour: TRIM, material: 'brick' },
+  })
+}
+
+export function washingtonItalianate(out: MeshBuilder, fit: Fit): void {
+  // the unnamed 1900 block on Washington Street (way/148668322): a stone-grey Italianate ground floor of arched openings
+  // over a pale stucco upper block under a heavy dentilled cornice; photo way-148668322-02
+  const STONE: Rgb = [0.6, 0.58, 0.52], STUCCO: Rgb = [0.74, 0.72, 0.64], GLASS: Rgb = [0.16, 0.18, 0.2], TRIM: Rgb = [0.84, 0.82, 0.74]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 3.6, face: { kind: 'punched', wall: STONE, glass: GLASS, pitch: 3.4, floor: 3.6, solid: 0.45, arched: true, material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: STUCCO, glass: GLASS, pitch: 2.8, floor: 2.8, solid: 0.5, material: 'stucco' }, cornice: { depth: 0.6, height: 0.8, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 1.2, colour: TRIM, material: 'stucco' },
+  })
+}
+
+export function washingtonLouvredConcrete(out: MeshBuilder, fit: Fit): void {
+  // the unnamed block on Washington Street (way/148668312): a glazed shopfront under a concrete upper block with
+  // long horizontal louvred bands; photo way-148668312-02
+  const CONCRETE: Rgb = [0.7, 0.66, 0.6], DARK: Rgb = [0.2, 0.22, 0.24], GLASS: Rgb = [0.2, 0.24, 0.26]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 4, face: { kind: 'curtain', wall: DARK, glass: GLASS, pitch: 3.2, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: CONCRETE, glass: GLASS, floor: 1.6, solid: 0.75, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: CONCRETE, material: 'concrete' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -2564,4 +2615,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   clay635WhiteFour, clay667WhiteArched, battery32Tan,
   montgomery708Arcade, montgomeryCanessaWhite,
   jessie96RedBrick, stevenson79Granite, louvred2002Stone,
+  montgomery130Cream, washington520Brick, washingtonItalianate, washingtonLouvredConcrete,
 }
