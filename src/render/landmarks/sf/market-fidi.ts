@@ -2337,6 +2337,53 @@ export function sacramentoBlueInfill(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * 20–26 California Street (relation/3492879), 7 storeys, 25 m. Front faces California Street, south (bearing 180).
+ * Photos -01 and -02 (camera bearings 270 and 290) show the white painted classical block between the dashed
+ * lines: a plain cornice band over a dark glazed shopfront, paired windows, fire escapes on the upper floors.
+ */
+export function california20White(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.93, 0.92, 0.89], GLASS: Rgb = [0.2, 0.23, 0.26], DARK: Rgb = [0.16, 0.17, 0.18], TRIM: Rgb = [0.88, 0.87, 0.83]
+  tower(out, fit, {
+    height: 25,
+    base: { height: 4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.6, floor: 4, solid: 0.3, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: GLASS, pitch: 3, floor: 3.2, solid: 0.5, material: 'stucco' } }],
+    cornices: [{ at: 4.5, depth: 0.5, height: 0.6, colour: TRIM }],
+    crown: { kind: 'parapet', height: 1, colour: TRIM, material: 'stucco' },
+  })
+}
+
+/**
+ * The unnamed eight-storey white block on Drumm Street (way/260288448), 31 m. Front faces Drumm Street (bearing 92).
+ * Photo -01 (camera bearing 284) shows the facade between the dashed lines: a white painted classical block with
+ * paired windows in grey surrounds, fire escapes down the east face, and a boarded ground floor.
+ */
+export function drummWhiteEight(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.93, 0.93, 0.91], GLASS: Rgb = [0.22, 0.25, 0.28], BOARD: Rgb = [0.82, 0.8, 0.76], TRIM: Rgb = [0.86, 0.86, 0.83]
+  tower(out, fit, {
+    height: 31,
+    base: { height: 4, face: { kind: 'punched', wall: BOARD, glass: GLASS, pitch: 4, floor: 4, solid: 0.45, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: GLASS, pitch: 3.4, floor: 3.4, solid: 0.45, material: 'stucco' } }],
+    cornices: [{ at: 4.6, depth: 0.5, height: 0.6, colour: TRIM }],
+    crown: { kind: 'parapet', height: 1.2, colour: TRIM, material: 'stucco' },
+  })
+}
+
+/**
+ * The unnamed four-storey buff block on Drumm Street (way/260288456), 14 m. Front faces Drumm Street (bearing 87).
+ * Photo -01 (camera bearing 260) shows the facade between the dashed lines: a buff-cream stone block, three bays of
+ * tall grouped windows with pilaster bands, a heavy top cornice, and a dark glazed ground floor.
+ */
+export function drummCreamFour(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.78, 0.74, 0.66], GLASS: Rgb = [0.2, 0.22, 0.24], DARK: Rgb = [0.12, 0.13, 0.14], TRIM: Rgb = [0.84, 0.8, 0.72]
+  tower(out, fit, {
+    height: 14,
+    base: { height: 3.6, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.4, floor: 3.6, solid: 0.3, material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 3.2, floor: 2.6, solid: 0.4, material: 'ashlar' }, cornice: { depth: 0.5, height: 0.6, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 0.8, colour: TRIM, material: 'ashlar' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -2423,4 +2470,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   marketFremontBronze, commercialStoneTen, commercialArchedStone1906, commercialBuffBrick,
   sansome231Brick,
   sacramento660Cream, sacramentoBlueInfill,
+  california20White, drummWhiteEight, drummCreamFour,
 }

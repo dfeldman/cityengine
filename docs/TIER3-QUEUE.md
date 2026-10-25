@@ -65,7 +65,7 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 53 | 90 | `way/256067718` 231 Sansome Street · 24 m · generic<br>`way/256067716` 217;221 Sansome Street · 15 m · generic || 231 Sansome done; 217-221 Sansome has no photographs |
 | 54 | 89 | `way/256067721` 358;360 Pine Street · 29 m · generic<br>`way/944039727` (unnamed) · 4 m · generic || 358-360 Pine has no photographs; 944039727 is a part of 300 Montgomery (modelled), skipped |
 | 55 | 88 | `way/260925341` 660 Sacramento Street · ? · generic<br>`way/260925347` 653 Commercial Street · 12 m · generic<br>`way/1229790537` (unnamed) · ? · generic || 660 Sacramento and 1229790537 done; 653 Commercial has no photographs |
-| 56 | 85 | `relation/3492879` 20;26 California Street · 25 m · generic<br>`way/260288448` (unnamed) · 31 m · generic<br>`way/260288456` (unnamed) · 14 m · generic | |
+| 56 | 85 | `relation/3492879` 20;26 California Street · 25 m · generic<br>`way/260288448` (unnamed) · 31 m · generic<br>`way/260288456` (unnamed) · 14 m · generic || done |
 | 57 | 79 | `way/260924234` 632;634 Commercial Street · 21 m · generic<br>`way/260924231` 635;637;639 Clay Street · 12 m · generic<br>`way/260924225` 667;669;675 Clay Street · 13 m · generic | |
 | 58 | 79 | `way/148710881` 32 Battery Street · 20 m · reface chicago | |
 | 59 | 78 | `way/35537088` 708;710 Montgomery Street · 11 m · generic<br>`way/148668302` (unnamed) · ? · generic<br>`way/35537108` (unnamed) · 9 m · generic | |

@@ -564,5 +564,38 @@
   "sign": false,
   "front": 183,
   "note": "market-fidi.ts: unnamed 1916 two-storey painted blue-teal brick infill with recessed shopfront; photo way-1229790537-01 (cam bearing 351)."
+ },
+ {
+  "osm": [
+   "relation/3492879"
+  ],
+  "name": "20-26 California Street",
+  "procedural": "california20White",
+  "height": 25,
+  "sign": false,
+  "front": 180,
+  "note": "market-fidi.ts: 20-26 California, 7-storey white painted classical block with dark shopfront and fire escapes; photos relation-3492879-01 and -02 (cam bearings 270, 290). Front bearing is a guess: California Street, south."
+ },
+ {
+  "osm": [
+   "way/260288448"
+  ],
+  "name": "Drumm Street (unnamed, 1908)",
+  "procedural": "drummWhiteEight",
+  "height": 31,
+  "sign": false,
+  "front": 92,
+  "note": "market-fidi.ts: unnamed 1908 eight-storey white painted classical block on Drumm, boarded ground floor; photo way-260288448-01 (cam bearing 284)."
+ },
+ {
+  "osm": [
+   "way/260288456"
+  ],
+  "name": "Drumm Street (unnamed, 1912)",
+  "procedural": "drummCreamFour",
+  "height": 14,
+  "sign": false,
+  "front": 87,
+  "note": "market-fidi.ts: unnamed 1912 four-storey buff stone block on Drumm, pilaster bands and dark glazed shopfront; photo way-260288456-01 (cam bearing 260)."
  }
 ]
