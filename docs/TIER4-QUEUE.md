@@ -85,13 +85,13 @@ Builders go in `src/render/landmarks/sf/downtown-t4.ts`, manifest entries in `pu
 | 75 | 132 | SoMa by Market | `way/147508936` 500 3rd Street · 23 m · reface || done |
 | 76 | 131 | Chinatown | `way/256072725` (unnamed) · 56 m · reface || done |
 | 77 | 130 | Union Square | `way/135174117` (unnamed) · 49 m · reface || done |
-| 78 | 130 | Chinatown | `way/288487237` North Ping Yuen · 32 m · reface | |
-| 79 | 129 | SoMa by Market | `way/93817372` 645 Harrison Street · 17 m · generic | |
-| 80 | 128 | Tenderloin | `way/256047252` The Salvation Army Railton Place · 32 m · reface | |
-| 81 | 128 | Union Square | `way/172250614` 150 Post Street · 32 m · reface | |
-| 82 | 126 | SoMa by Market | `way/151980105` 832 Folsom Street · 37 m · reface | |
-| 83 | 125 | Union Square | `way/135174114` (unnamed) · 27 m · reface | |
-| 84 | 124 | Civic Center | `way/1059931715` 361 TL Residences · 32 m · generic | |
+| 78 | 130 | Chinatown | `way/288487237` North Ping Yuen · 32 m · reface || done |
+| 79 | 129 | SoMa by Market | `way/93817372` 645 Harrison Street · 17 m · generic || done |
+| 80 | 128 | Tenderloin | `way/256047252` The Salvation Army Railton Place · 32 m · reface || done |
+| 81 | 128 | Union Square | `way/172250614` 150 Post Street · 32 m · reface || done |
+| 82 | 126 | SoMa by Market | `way/151980105` 832 Folsom Street · 37 m · reface || done |
+| 83 | 125 | Union Square | `way/135174114` (unnamed) · 27 m · reface || done |
+| 84 | 124 | Civic Center | `way/1059931715` 361 TL Residences · 32 m · generic || done |
 | 85 | 124 | SoMa by Market | `way/346093777` Cruise · 16 m · generic | |
 | 86 | 124 | Tenderloin | `way/260155577` 111 Jones Street · 26 m · generic | |
 | 87 | 123 | SoMa by Market | `way/112927453` 625;635 2nd Street · 16 m · generic | |

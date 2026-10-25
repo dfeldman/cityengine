@@ -1117,6 +1117,118 @@ function t4b77_135174117(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * North Ping Yuen (way/288487237): a white render slab of about ten storeys with teal balcony bands, over a blank
+ * ground floor, flat-topped. (Mapillary 1276284967319206, 572060157464655.)
+ */
+function t4b78_288487237(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.92, 0.91, 0.88]
+  tower(out, fit, {
+    height: 32,
+    base: { height: 3, face: { kind: 'blank', wall: [0.7, 0.7, 0.68], material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: WHITE, glass: [0.3, 0.6, 0.57], floor: 3.2, solid: 0.5, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 1, colour: WHITE, material: 'stucco' },
+  })
+}
+
+/**
+ * 645 Harrison Street (way/93817372): a grey painted concrete block of four storeys, its steel-sash windows in long
+ * ribbons, a flat parapet over. (Mapillary 535117415951522, 2254287138333361.)
+ */
+function t4b79_93817372(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.5, 0.52, 0.54]
+  tower(out, fit, {
+    height: 17,
+    tiers: [{ to: 1, face: { kind: 'bands', wall: GREY, glass: [0.42, 0.46, 0.5], floor: 4.2, solid: 0.3, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: [0.4, 0.42, 0.44], material: 'concrete' },
+  })
+}
+
+/**
+ * The Salvation Army Railton Place (way/256047252), on Jones and Turk: a tan brick Edwardian block of six storeys,
+ * a heavy dark green cornice under its top and dark shopfronts at street level. (Mapillary 2887971414799460,
+ * 898992477719021.) OSM gives 32 m; the photographs show about 24 m.
+ */
+function t4b80_256047252(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.74, 0.62, 0.48]
+  const GREEN: Rgb = [0.2, 0.27, 0.22]
+  tower(out, fit, {
+    height: 24,
+    base: { height: 4, face: { kind: 'blank', wall: GREEN, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, material: 'brick', glass: [0.2, 0.24, 0.26], pitch: 3, solid: 0.5, floor: 3.2 } }],
+    cornices: [{ at: 0.9, depth: 0.7, height: 0.9, colour: GREEN }],
+    crown: { kind: 'parapet', height: 1.2, colour: GREEN, material: 'brick' },
+  })
+}
+
+/**
+ * 150 Post Street (way/172250614): a cream stone office block of about nine storeys, its windows in pilastered bays
+ * with architrave heads, over a glazed retail base. (Mapillary 1870777336595233, 1307463840559633.)
+ */
+function t4b81_172250614(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.82, 0.78, 0.68]
+  tower(out, fit, {
+    height: 30,
+    base: { height: 4.5, face: { kind: 'curtain', wall: [0.2, 0.22, 0.22], glass: [0.2, 0.24, 0.28], pitch: 3, floor: 4.5, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: STONE, material: 'ashlar', glass: [0.24, 0.28, 0.32], pitch: 4.2, solid: 0.55, floor: 3.3 } }],
+    cornices: [{ at: 0.92, depth: 0.8, height: 1, colour: STONE }],
+    crown: { kind: 'parapet', height: 1.5, colour: STONE, material: 'ashlar' },
+  })
+}
+
+/**
+ * 832 Folsom Street (way/151980105): a taupe panelled block of about ten storeys, white horizontal bands between its
+ * rows of dark windows, over a brown ground floor. (Mapillary 136543378612459, 540240982482475.)
+ */
+function t4b82_151980105(out: MeshBuilder, fit: Fit): void {
+  const TAUPE: Rgb = [0.62, 0.58, 0.53]
+  const WHITE: Rgb = [0.9, 0.9, 0.88]
+  tower(out, fit, {
+    height: 35,
+    base: { height: 4, face: { kind: 'blank', wall: [0.36, 0.3, 0.26], material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAUPE, material: 'stucco', glass: [0.25, 0.25, 0.27], pitch: 3.2, solid: 0.6, floor: 3.2 } }],
+    cornices: [
+      { at: 0.3, depth: 0.25, height: 0.5, colour: WHITE },
+      { at: 0.6, depth: 0.25, height: 0.5, colour: WHITE },
+      { at: 0.9, depth: 0.25, height: 0.5, colour: WHITE },
+    ],
+    crown: { kind: 'parapet', height: 1.2, colour: TAUPE, material: 'stucco' },
+  })
+}
+
+/**
+ * An early office block at Post and Stockton (way/135174114): a white Beaux-Arts block of six storeys with pilasters,
+ * a deep cornice and a balustrade on top, over a dark granite and glass ground floor. (Mapillary 865009077774593,
+ * 785216741134107.)
+ */
+function t4b83_135174114(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.92, 0.9, 0.86]
+  tower(out, fit, {
+    height: 27,
+    base: { height: 5, face: { kind: 'curtain', wall: [0.14, 0.14, 0.15], glass: [0.2, 0.22, 0.25], pitch: 3.5, floor: 5, material: 'granite' } },
+    tiers: [
+      { to: 0.84, face: { kind: 'punched', wall: WHITE, material: 'stucco', glass: [0.22, 0.25, 0.3], pitch: 4.2, solid: 0.55, floor: 3.6 } },
+      { to: 1, inset: 1, face: { kind: 'punched', wall: WHITE, material: 'stucco', glass: [0.22, 0.25, 0.3], pitch: 4.2, solid: 0.55, floor: 3.6 } },
+    ],
+    cornices: [{ at: 0.84, depth: 0.8, height: 0.9, colour: WHITE }],
+    crown: { kind: 'balustrade', height: 1.6, colour: WHITE, material: 'stucco', pier: true },
+  })
+}
+
+/**
+ * 361 TL Residences (way/1059931715): a narrow cream block of about eight storeys, its front a run of curved bay
+ * windows, with a dark plinth. (Mapillary 620847924428577, 654496813911990.) OSM gives 32 m; the photographs about 26 m.
+ */
+function t4b84_1059931715(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.87, 0.8]
+  tower(out, fit, {
+    height: 26,
+    base: { height: 4, face: { kind: 'blank', wall: [0.25, 0.25, 0.26], material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'bays', wall: CREAM, glass: [0.3, 0.36, 0.4], floor: 3.2, pitch: 3, material: 'stucco', bay: { depth: 0.9, round: true } } }],
+    crown: { kind: 'parapet', height: 1, colour: CREAM, material: 'stucco' },
+  })
+}
+
 export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   t4b1_156123224,
   t4b2_192328858,
@@ -1197,4 +1309,11 @@ export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t4b75_147508936,
   t4b76_256072725,
   t4b77_135174117,
+  t4b78_288487237,
+  t4b79_93817372,
+  t4b80_256047252,
+  t4b81_172250614,
+  t4b82_151980105,
+  t4b83_135174114,
+  t4b84_1059931715,
 }

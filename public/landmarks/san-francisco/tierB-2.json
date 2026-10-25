@@ -82,18 +82,6 @@
   },
   {
     "osm": [
-      "way/151980105"
-    ],
-    "name": "832 Folsom Street",
-    "restyle": "bauhaus",
-    "height": 37,
-    "levels": 10,
-    "note": "Rule check 2026-10-04 (Mapillary): bright yellow and red modern infill with blue frames; was rule 7 brick.",
-    "wall": "#d8bf55",
-    "accent": "#b43a28"
-  },
-  {
-    "osm": [
       "way/1108078698"
     ],
     "name": "Building 1108078698",
