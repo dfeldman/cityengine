@@ -157,16 +157,6 @@
   },
   {
     "osm": [
-      "way/80296763"
-    ],
-    "name": "Academy of Art University - Game Development",
-    "restyle": "chicago",
-    "height": 31,
-    "levels": 8,
-    "note": "rule 7: tall building (levels >= 8)"
-  },
-  {
-    "osm": [
       "way/33808671"
     ],
     "name": "Comfort Inn By the Bay",

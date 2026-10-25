@@ -82,18 +82,6 @@
   },
   {
     "osm": [
-      "way/123646088"
-    ],
-    "name": "Hotel Carlton",
-    "height": 38,
-    "levels": 9,
-    "restyle": "brick",
-    "note": "Rule check 2026-10-04 (Mapillary): red brick with tall arched windows in cream surrounds, an awning at the door; was rule 3 chicago.",
-    "wall": "#8f4b35",
-    "trim": "#e3d8c2"
-  },
-  {
-    "osm": [
       "way/288716389"
     ],
     "name": "Building 288716389",

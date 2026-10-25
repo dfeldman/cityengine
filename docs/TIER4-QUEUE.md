@@ -60,11 +60,11 @@ Builders go in `src/render/landmarks/sf/downtown-t4.ts`, manifest entries in `pu
 | 50 | 158 | Union Square | `way/33571523` Mason O'Farrell Garage · 25 m · reface || done |
 | 51 | 157 | SoMa by Market | `way/93817363` 600;620 Harrison Street · 24 m · reface || done |
 | 52 | 156 | SoMa by Market | `way/243356609` Canopy by Hilton San Francisco SoMa · 48 m · reface || done |
-| 53 | 154 | SoMa by Market | `way/173886663` 875 Howard Street · 27 m · reface | |
-| 54 | 154 | Tenderloin | `way/123646088` Hotel Carlton · 38 m · reface | |
-| 55 | 151 | Union Square | `way/33617520` Ellis O'Farrell Garage · 25 m · reface<br>`way/941560578` CitizenM Union Square · 44 m · reface<br>`way/147689078` The Elevated Shops Building · 24 m · reface | |
-| 56 | 150 | Union Square | `way/35536720` Fashion Institute of Design and Merchandising  · 38 m · reface | |
-| 57 | 149 | SoMa by Market | `way/80296763` Academy of Art University - Game Development · 31 m · reface | |
+| 53 | 154 | SoMa by Market | `way/173886663` 875 Howard Street · 27 m · reface || done |
+| 54 | 154 | Tenderloin | `way/123646088` Hotel Carlton · 38 m · reface || done |
+| 55 | 151 | Union Square | `way/33617520` Ellis O'Farrell Garage · 25 m · reface<br>`way/941560578` CitizenM Union Square · 44 m · reface<br>`way/147689078` The Elevated Shops Building · 24 m · reface || done |
+| 56 | 150 | Union Square | `way/35536720` Fashion Institute of Design and Merchandising  · 38 m · reface || done |
+| 57 | 149 | SoMa by Market | `way/80296763` Academy of Art University - Game Development · 31 m · reface || done |
 | 58 | 147 | Tenderloin | `way/260155572` 201 Turk Street · 26 m · reface | |
 | 59 | 146 | SoMa by Market | `way/288648571` 2 Townsend Street · 36 m · reface | |
 | 60 | 146 | Tenderloin | `way/260142631` Mosser Towers · 41 m · reface | |

@@ -703,6 +703,117 @@ function t4b52_243356609(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * Way 173886663, 875 Howard Street (OSM 27 m): a taupe-grey render block of about seven storeys, its punched
+ * windows in tall pairs, a shopfront with trees at street level (Mapillary 1262146154633121, 695154651966191).
+ * Front: Howard Street.
+ */
+function t4b53_173886663(out: MeshBuilder, fit: Fit): void {
+  const TAUPE: Rgb = [0.55, 0.53, 0.5]
+  tower(out, fit, {
+    height: 27,
+    base: { height: 4, face: { kind: 'punched', wall: [0.2, 0.2, 0.2], glass: [0.2, 0.25, 0.28], pitch: 4, floor: 4, solid: 0.5, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAUPE, glass: [0.3, 0.42, 0.5], pitch: 3, floor: 3.4, solid: 0.6, depth: 0.3, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 1, colour: TAUPE, material: 'concrete' },
+  })
+}
+
+/**
+ * Way 123646088, the Hotel Carlton at 1075 Sutter Street (OSM 38 m): a red brick lower block of about nine storeys
+ * with a cream stucco tower stepped back above it, the name on the roof and a vertical HOTEL CARLTON sign on the brick
+ * (Mapillary 1124349679610449, 1512788483226408). Front: Sutter Street.
+ */
+function t4b54_123646088(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.6, 0.3, 0.22]
+  const CREAM: Rgb = [0.9, 0.86, 0.74]
+  tower(out, fit, {
+    height: 38,
+    base: { height: 4, face: { kind: 'punched', wall: [0.3, 0.25, 0.22], glass: [0.2, 0.22, 0.25], pitch: 4, floor: 4, solid: 0.5, material: 'concrete' } },
+    tiers: [
+      { to: 0.6, face: { kind: 'punched', wall: BRICK, glass: [0.22, 0.24, 0.27], pitch: 3.2, floor: 3.2, solid: 0.6, depth: 0.4, material: 'brick' } },
+      { to: 1, inset: 3, face: { kind: 'punched', wall: CREAM, glass: [0.25, 0.27, 0.3], pitch: 3.6, floor: 3.2, solid: 0.7, depth: 0.3, material: 'stucco' } },
+    ],
+    cornices: [{ at: 0.6, depth: 0.5, height: 0.6, colour: CREAM }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/**
+ * Way 33617520, the Ellis O'Farrell Garage (OSM 25 m, multi-storey parking): a cream concrete garage whose open decks
+ * show as bands, a wide dark opening at the ground floor (Mapillary 1319428179591776, 757609483546063). Front taken as
+ * Ellis Street, the garage's first-named street; not confirmed.
+ */
+function t4b55_33617520(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.82, 0.8, 0.74]
+  tower(out, fit, {
+    height: 25,
+    base: { height: 4.5, face: { kind: 'punched', wall: CREAM, glass: [0.12, 0.12, 0.13], pitch: 6, floor: 4.5, solid: 0.4, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: CREAM, glass: [0.3, 0.3, 0.3], floor: 3.2, solid: 0.45, depth: 0.5, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'concrete' },
+  })
+}
+
+/**
+ * Way 941560578, the CitizenM hotel at 72 Ellis Street (OSM 11 levels; height taken as 44 m): a narrow tower of pale
+ * panels and tall vertical glazing, a dark glass ground floor (Mapillary 983250193688138, 297681015446862). Front: Ellis
+ * Street.
+ */
+function t4b55_941560578(out: MeshBuilder, fit: Fit): void {
+  const PALE: Rgb = [0.86, 0.86, 0.84]
+  tower(out, fit, {
+    height: 44,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.25, 0.27, 0.3], glass: [0.25, 0.3, 0.34], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'curtain', wall: PALE, glass: [0.3, 0.4, 0.48], pitch: 3, floor: 3.4, solid: 0.3, depth: 0.3, material: 'metal' } }],
+    crown: { kind: 'parapet', height: 1.2, colour: PALE, material: 'metal' },
+  })
+}
+
+/**
+ * Way 147689078, the Elevated Shops building (OSM 24 m): a cream stone block of about six storeys on a corner, its
+ * cornice dentilled and a dark glass shopfront below (Mapillary 1117758543133409, 1649515515956605). Front taken as
+ * O'Farrell Street, the nearest street; the Powell Street face is the other.
+ */
+function t4b55_147689078(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.88, 0.85, 0.78]
+  tower(out, fit, {
+    height: 24,
+    base: { height: 4.5, face: { kind: 'punched', wall: [0.2, 0.22, 0.24], glass: [0.2, 0.22, 0.24], pitch: 4, floor: 4.5, solid: 0.5, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.3, 0.34, 0.38], pitch: 3.4, floor: 3.2, solid: 0.55, depth: 0.4, material: 'stucco' } }],
+    cornices: [{ at: 0.85, depth: 0.6, height: 0.8, colour: CREAM }],
+    crown: { kind: 'parapet', height: 1.5, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/**
+ * Way 35536720, the Fashion Institute of Design and Merchandising at 55 Stockton Street (OSM 38 m): a pale grey
+ * concrete block of about seven storeys with a rounded corner, tall windows in deep piers and a black awning over a
+ * dark shopfront (Mapillary 802711638788174, 1355830096099336). Front: Stockton Street. The rounded corner is not drawn.
+ */
+function t4b56_35536720(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.78, 0.78, 0.76]
+  tower(out, fit, {
+    height: 38,
+    base: { height: 4.5, face: { kind: 'punched', wall: [0.2, 0.2, 0.22], glass: [0.15, 0.2, 0.24], pitch: 4, floor: 4.5, solid: 0.5, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: GREY, glass: [0.3, 0.34, 0.38], pitch: 3.4, floor: 3.6, solid: 0.55, depth: 0.5, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 1.5, colour: GREY, material: 'concrete' },
+  })
+}
+
+/**
+ * Way 80296763, the Academy of Art University Game Development building at 180 New Montgomery Street (OSM 31 m, eight
+ * levels): a cream block of about eight storeys with tall punched windows over a brown shopfront, the school's banner
+ * on its face (Mapillary 1195107194415167, 1299197131880920). Front: New Montgomery Street.
+ */
+function t4b57_80296763(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.86, 0.82, 0.74]
+  tower(out, fit, {
+    height: 31,
+    base: { height: 4, face: { kind: 'punched', wall: [0.4, 0.28, 0.2], glass: [0.2, 0.22, 0.24], pitch: 4, floor: 4, solid: 0.5, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.25, 0.28, 0.32], pitch: 3, floor: 3.4, solid: 0.55, depth: 0.4, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'stucco' },
+  })
+}
+
 export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   t4b1_156123224,
   t4b2_192328858,
@@ -757,4 +868,11 @@ export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t4b50_33571523,
   t4b51_93817363,
   t4b52_243356609,
+  t4b53_173886663,
+  t4b54_123646088,
+  t4b55_33617520,
+  t4b55_941560578,
+  t4b55_147689078,
+  t4b56_35536720,
+  t4b57_80296763,
 }
