@@ -1640,6 +1640,32 @@ export function market944(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** 901-915 MARKET, the Powell Street corner block (way/35174751, 19 m): a four-storey cream block with horizontal
+ * glass bands between the floors, a dark glazed shopfront at street level and a plain cream parapet (Mapillary
+ * frames 01 and 03; the Market face is the one that matters). */
+export function marketEllis35174751(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.88, 0.82], DARK: Rgb = [0.14, 0.15, 0.16], GLASS: Rgb = [0.2, 0.25, 0.3]
+  tower(out, fit, {
+    height: 19,
+    base: { height: 4, face: { kind: 'curtain', wall: DARK, glass: GLASS, pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: CREAM, glass: GLASS, floor: 3.8, solid: 0.45, material: 'stucco' } }],
+    cornices: [{ at: 0.9, depth: 0.5, height: 0.5, colour: CREAM }],
+    crown: { kind: 'parapet', height: 0.9, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** 45 CYRIL MAGNIN corner infill (way/941560580, 11 m): a three-storey grey metal-clad block between the Flood
+ * and Powell Street frontages, a black ground floor with a red-framed entrance (Mapillary frames 01 and 02). */
+export function market941560580(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.78, 0.8, 0.8], BLACK: Rgb = [0.1, 0.1, 0.11], GLASS: Rgb = [0.2, 0.24, 0.28]
+  tower(out, fit, {
+    height: 11,
+    base: { height: 3.5, face: { kind: 'curtain', wall: BLACK, glass: GLASS, pitch: 3, floor: 3.5, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: GREY, glass: GLASS, floor: 3.7, solid: 0.5, material: 'metal' } }],
+    crown: { kind: 'parapet', height: 0.6, colour: GREY, material: 'metal' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1708,4 +1734,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   market1059, market1063, market1067,
   market1039, market1049, market1055,
   market650, market944, market934,
+  marketEllis35174751, market941560580,
 }

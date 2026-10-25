@@ -263,30 +263,12 @@
  },
  {
   "osm": [
-   "way/35174751"
-  ],
-  "name": "901-915 Market Street (Powell corner)",
-  "restyle": "brick",
-  "note": "Brick retail block by Powell Street station.",
-  "levels": 5
- },
- {
-  "osm": [
    "way/941560579"
   ],
   "name": "55 Cyril Magnin Street",
   "restyle": "brick",
   "note": "Low brick block behind the Powell frontage.",
   "levels": 4
- },
- {
-  "osm": [
-   "way/941560580"
-  ],
-  "name": "45 Cyril Magnin Street",
-  "restyle": "brick",
-  "note": "Low brick block behind the Powell frontage.",
-  "levels": 3
  },
  {
   "osm": [
