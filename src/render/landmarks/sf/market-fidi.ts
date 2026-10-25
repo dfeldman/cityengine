@@ -1239,6 +1239,40 @@ export function jessie40(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** Tier 3 batch 13, 200;220 Kearny Street (way 151195280, 19 m, 1908): the NE corner of Kearny and Sutter, a five-storey cream Beaux-Arts block with a bracketed cornice, a dark glass shopfront and fire escapes; front Kearny (257). Photos way-151195280-01 and -03. */
+export function kearny200(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.93, 0.91, 0.85]
+  tower(out, fit, {
+    height: 19,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.2, 0.2, 0.2], glass: [0.16, 0.2, 0.22], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.22, 0.25, 0.28], pitch: 3.2, floor: 3.6, solid: 0.5, head: 'architrave', material: 'stucco' }, cornice: { depth: 0.8, height: 1, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 1, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** Tier 3 batch 13, 154-176 Sutter Street (way 151195276, 26 m, 1987): a dark teal-tiled base of two storeys with a green tile cornice band, then white-cream upper storeys in a grid of windows; front Sutter (172). Photos way-151195276-02 and -03. */
+export function sutter154(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.89, 0.85]
+  const TEAL: Rgb = [0.16, 0.26, 0.28]
+  tower(out, fit, {
+    height: 26,
+    base: { height: 7, face: { kind: 'punched', wall: TEAL, glass: [0.2, 0.25, 0.27], pitch: 3.6, floor: 3.4, solid: 0.6, material: 'tile' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.24, 0.27, 0.3], pitch: 3, floor: 3.4, solid: 0.5, material: 'stucco' }, cornice: { depth: 0.6, height: 0.8, colour: TEAL } }],
+    crown: { kind: 'parapet', height: 1, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** Tier 3 batch 13, 215;217 Kearny Street (way 260280331, 12 m, 1907): west side of Kearny, a small three-storey grey stone block with a pediment-like bracketed cornice and a dark shopfront; front Kearny (72). Photos way-260280331-01 and -02. */
+export function kearny215(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.5, 0.48, 0.45]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 3, face: { kind: 'blank', wall: [0.25, 0.18, 0.14], material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: STONE, glass: [0.2, 0.22, 0.24], pitch: 2.8, floor: 3.2, solid: 0.5, head: 'architrave', material: 'granite' }, cornice: { depth: 0.9, height: 1.2, colour: STONE } }],
+    crown: { kind: 'parapet', height: 0.8, colour: STONE, material: 'granite' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1296,4 +1330,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   second28, second79377209, second44,
   jackson32858943, jacksonColumbus32858908, jackson530,
   elim16, jessie40,
+  kearny200, sutter154, kearny215,
 }
