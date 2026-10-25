@@ -3146,6 +3146,80 @@ export function batteryGreyArched(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 88: (unnamed) way/148741779, OSM 13 m, 98 m², 1907. Photo -01: a three-storey white painted front with a stepped
+ * pedimented parapet over the centre bay, arched upper windows and a glazed shopfront. Front faces Pine (bearing 349).
+ * Uncertain: which street the entrance faces. */
+export function belden88WhitePediment(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.9, 0.89, 0.85], GLASS: Rgb = [0.2, 0.23, 0.26], TRIM: Rgb = [0.72, 0.68, 0.6], BROWN: Rgb = [0.3, 0.2, 0.16]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 3.6, face: { kind: 'punched', wall: BROWN, glass: GLASS, pitch: 3.2, floor: 3.6, solid: 0.45, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: GLASS, pitch: 2.8, floor: 3.2, solid: 0.55, head: 'architrave', material: 'stucco' }, cornice: { depth: 0.4, height: 0.5, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 1.2, colour: TRIM, material: 'stucco' },
+  })
+}
+
+/** T3 batch 88: (unnamed) way/148741777, OSM 10 m, 102 m², 1911. Photo -01: a two-storey brick corner with bay windows on
+ * the corner, a dark cornice and a black glazed shopfront, beside a brick side wall on Belden Place. Front faces Belden (bearing 283). */
+export function belden88BrickCorner(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.55, 0.3, 0.22], DARK: Rgb = [0.12, 0.12, 0.12], GLASS: Rgb = [0.18, 0.2, 0.22], CORNICE: Rgb = [0.2, 0.18, 0.18]
+  tower(out, fit, {
+    height: 10,
+    base: { height: 3.4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3, floor: 3.4, solid: 0.3, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: GLASS, pitch: 2.6, floor: 3.3, solid: 0.45, arched: true, material: 'brick' }, cornice: { depth: 0.6, height: 0.6, colour: CORNICE } }],
+    crown: { kind: 'parapet', height: 0.9, colour: CORNICE, material: 'brick' },
+  })
+}
+
+/** T3 batch 88: 471;473;475 Pine Street, way/151185873, OSM 19 m, 194 m², 1911. Photos -01 and -03: a five-storey cream stucco
+ * block with two-storey bay windows up the front, fire escapes, and a dark ground floor under a red awning. Front faces Pine (bearing 349). */
+export function pine471Bays(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.86, 0.82, 0.72], DARK: Rgb = [0.18, 0.16, 0.15], GLASS: Rgb = [0.2, 0.22, 0.25], TRIM: Rgb = [0.7, 0.66, 0.56]
+  tower(out, fit, {
+    height: 19,
+    base: { height: 4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.2, floor: 4, solid: 0.35, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'bays', wall: CREAM, glass: GLASS, pitch: 3.6, floor: 3.1, solid: 0.5, material: 'stucco', bay: { depth: 0.9 } }, cornice: { depth: 0.4, height: 0.5, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 0.8, colour: TRIM, material: 'stucco' },
+  })
+}
+
+/** T3 batch 88: Commercial Street, way/260924241, OSM 8 m, 97 m², 1909. Photo -01: a three-storey white stucco front with
+ * segmental-arched upper windows and a glazed shopfront at the ground. Front faces Commercial (bearing 178). */
+export function commercial88WhiteArched(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.86, 0.87, 0.88], GLASS: Rgb = [0.2, 0.23, 0.26], DARK: Rgb = [0.2, 0.2, 0.2]
+  tower(out, fit, {
+    height: 10,
+    base: { height: 3.4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.4, floor: 3.4, solid: 0.35, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: GLASS, pitch: 2.9, floor: 3.2, solid: 0.5, arched: true, material: 'stucco' }, cornice: { depth: 0.3, height: 0.4, colour: [0.7, 0.7, 0.68] } }],
+    crown: { kind: 'parapet', height: 0.8, colour: WHITE, material: 'stucco' },
+  })
+}
+
+/** T3 batch 88: (unnamed) way/260924240, OSM 8 m, 86 m², 1909. Photo -02: a grey-white two-storey front behind an iron
+ * security grille, with a glazed shopfront and a dark recess at the ground. Front faces Clay (bearing 357). Uncertain: the
+ * photo is taken through the grille, so the upper floors are a guess. */
+export function clay88GateStorefront(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.78, 0.78, 0.76], DARK: Rgb = [0.16, 0.16, 0.17], GLASS: Rgb = [0.2, 0.22, 0.25]
+  tower(out, fit, {
+    height: 9,
+    base: { height: 3.6, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3, floor: 3.6, solid: 0.4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: GREY, glass: GLASS, pitch: 3, floor: 2.8, solid: 0.45, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 0.7, colour: GREY, material: 'stucco' },
+  })
+}
+
+/** T3 batch 88: 686 Sacramento Street, Canton Bazaar, way/260925348, OSM 12 m, 230 m², 1924. Photo -02: a red-and-yellow
+ * shopfront under banners, with plain brick above and a pale mural on the side wall. Front faces Sacramento (bearing 172). */
+export function sacramento686Canton(out: MeshBuilder, fit: Fit): void {
+  const RED: Rgb = [0.55, 0.18, 0.15], BRICK: Rgb = [0.5, 0.32, 0.22], GLASS: Rgb = [0.2, 0.22, 0.2], TRIM: Rgb = [0.78, 0.7, 0.55]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 4.2, face: { kind: 'punched', wall: RED, glass: GLASS, pitch: 3.2, floor: 4.2, solid: 0.35, material: 'terracotta' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: GLASS, pitch: 3.2, floor: 3.6, solid: 0.45, arched: true, material: 'brick' }, cornice: { depth: 0.4, height: 0.5, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 1.0, colour: TRIM, material: 'brick' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -3248,4 +3322,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   kearnyCreamYellow, kearny263Corner, kearny268Black, sacramento171Palio, sacramento648Brick,
   kearny100Bays, post101Cream, pacific515Stucco, pacific535Grey, montgomery843Arched,
   sacramento576Corinthian, leidesdorffYellowBrick, jackson220Tan, jacksonWhitePilaster, batteryGreyArched,
+  belden88WhitePediment, belden88BrickCorner, pine471Bays, commercial88WhiteArched, clay88GateStorefront, sacramento686Canton,
 }
