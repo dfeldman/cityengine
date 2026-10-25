@@ -54,7 +54,7 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 42 | 113 | `way/148712647` (unnamed) · 14 m · reface chicago<br>`way/148712642` (unnamed) · 15 m · reface chicago<br>`way/148712643` (unnamed) · 10 m · reface chicago || done |
 | 43 | 106 | `way/941650784` (unnamed) · ? · generic || done (with 42) |
 | 44 | 105 | `way/332516647` 993 Market Street · 4 m · reface brick || done (with 36) |
-| 45 | 101 | `way/35537113` 499 Jackson Street · 19 m · generic<br>`way/148666785` (unnamed) · 13 m · reface brick<br>`way/35537118` 463;473 Jackson Street · 14 m · reface brick | |
+| 45 | 101 | `way/35537113` 499 Jackson Street · 19 m · generic<br>`way/148666785` (unnamed) · 13 m · reface brick<br>`way/35537118` 463;473 Jackson Street · 14 m · reface brick || done |
 | 46 | 100 | `way/256088136` 435;437 Pacific Avenue · ? · generic<br>`way/253609537` Pacific Avenue · ? · generic<br>`way/256088155` 731 Sansome Street · 18 m · reface brick | |
 | 47 | 98 | `way/256066239` 333 Pine Street · 22 m · generic | |
 | 48 | 98 | `way/417216803` (unnamed) · 5 m · reface brick || done (with 36) |

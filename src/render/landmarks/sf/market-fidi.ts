@@ -2056,6 +2056,51 @@ export function marketJones417216803(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * 499 Jackson (way/35537113, OSM 19 m): the brick block on the south side of Jackson between Montgomery and
+ * Hotaling, four storeys of red brick under a dentilled cornice and a dark shopfront (Mapillary frames 02, 01 was
+ * a tree). Front faces Jackson (bearing 1).
+ */
+export function jackson499Brick(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.6, 0.3, 0.2], DARK: Rgb = [0.12, 0.12, 0.13], CORNICE: Rgb = [0.2, 0.18, 0.17]
+  tower(out, fit, {
+    height: 19,
+    base: { height: 4.2, face: { kind: 'punched', wall: DARK, glass: [0.18, 0.2, 0.22], pitch: 3.2, floor: 4.2, solid: 0.5, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: DARK, pitch: 2.8, floor: 3.6, solid: 0.6, material: 'brick' }, cornice: { depth: 0.6, height: 0.7, colour: CORNICE } }],
+    crown: { kind: 'parapet', height: 1.0, colour: CORNICE, material: 'brick' },
+  })
+}
+
+/**
+ * Belli and Genella Buildings, 722-728 Montgomery (way/148666785, OSM 13 m): Mapillary frame 01. Red brick over a
+ * dark painted iron shopfront, segmental window heads with bracketed lintels, a brick cornice and parapet.
+ * Front faces Montgomery (bearing 265).
+ */
+export function montgomery722Belli(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.55, 0.26, 0.18], IRON: Rgb = [0.1, 0.1, 0.11], CORNICE: Rgb = [0.12, 0.11, 0.11]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 3.6, face: { kind: 'punched', wall: IRON, glass: [0.22, 0.26, 0.3], pitch: 2.8, floor: 3.6, solid: 0.3, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: IRON, pitch: 2.4, floor: 3.1, solid: 0.55, head: 'segmental', material: 'brick' }, cornice: { depth: 0.8, height: 0.8, colour: CORNICE } }],
+    crown: { kind: 'parapet', height: 0.9, colour: CORNICE, material: 'brick' },
+  })
+}
+
+/**
+ * 463-473 Jackson (way/35537118, OSM 14 m): Mapillary frame 02. A pale blue-grey stuccoed block, arched dark
+ * shopfront windows at street level, three tall storeys of segmental-headed windows and a moulded cornice.
+ * Front faces Jackson (bearing 343).
+ */
+export function jackson463Grey(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.7, 0.72, 0.74], DARK: Rgb = [0.16, 0.18, 0.2], TRIM: Rgb = [0.82, 0.82, 0.8]
+  tower(out, fit, {
+    height: 14,
+    base: { height: 4, face: { kind: 'punched', wall: GREY, glass: DARK, pitch: 2.6, floor: 4, solid: 0.45, arched: true, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: GREY, glass: DARK, pitch: 2.6, floor: 3.3, solid: 0.6, head: 'segmental', material: 'stucco' }, cornice: { depth: 0.6, height: 0.6, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 0.9, colour: TRIM, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -2135,4 +2180,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   crazyHorse980Market, market925, market1201, market1200,
   market148712647, market148712643, market148712642, market260318172, market941650784,
   market711, market721, market993, marketJones417216803,
+  jackson499Brick, montgomery722Belli, jackson463Grey,
 }
