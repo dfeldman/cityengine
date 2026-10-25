@@ -24,7 +24,7 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 14 | 182 | `way/256072716` Clay Street · 15 m · generic<br>`way/256072720` 660;662;664;668;670 Clay Street · 11 m · generic<br>`way/260924226` 643;645;647 Clay Street · 12 m · generic || 256072716 and 260924226 done; 256072720 has no photographs |
 | 15 | 178 | `way/260282395` (unnamed) · 25 m · generic<br>`way/32859888` (unnamed) · 40 m · reface chicago<br>`way/260282393` 77 Battery Street · 17 m · generic || done |
 | 16 | 178 | `way/165480948` 407;411 Sansome Street · 17 m · generic<br>`way/32947521` (unnamed) · 16 m · generic<br>`way/165480946` 415;429 Sansome Street · ? · generic || done |
-| 17 | 176 | `way/255716896` 123;125;127;133 Kearny Street · 22 m · generic<br>`way/333823795` 153 Kearny Street · 39 m · reface chicago<br>`way/255716898` 126 Post Street · 28 m · reface classical | |
+| 17 | 176 | `way/255716896` 123;125;127;133 Kearny Street · 22 m · generic<br>`way/333823795` 153 Kearny Street · 39 m · reface chicago<br>`way/255716898` 126 Post Street · 28 m · reface classical || done |
 | 18 | 175 | `way/151683977` (unnamed) · 30 m · generic<br>`way/151683979` 353;355;357;359 Kearny Street · 18 m · generic<br>`way/148741772` (unnamed) · 14 m · generic | |
 | 19 | 175 | `way/260286870` 301 Sacramento Street · 16 m · generic<br>`way/260286867` 333 Sacramento Street · 13 m · generic<br>`way/260286872` 325 Sacramento Street · 11 m · generic | |
 | 20 | 174 | `way/256068383` (unnamed) · 16 m · generic<br>`way/942303810` (unnamed) · ? · generic<br>`way/256068367` 554;556 Commercial Street · 11 m · generic | |

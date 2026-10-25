@@ -1366,6 +1366,54 @@ export function sansome415(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+// ---------------------------------------------------------------- Tier 3 batch 17: Kearny and Post, west side of Kearny between Post and Sutter
+/**
+ * 123-133 Kearny (way/255716896, 22 m): a cream stone block of six storeys, a granite-faced ground floor with the
+ * Walgreens-style shopfronts, tall punched windows under architraves and a dentilled cornice at the top (Mapillary
+ * 2026-10, frame 02, between the dashed lines).
+ */
+export function kearny123(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.83, 0.78, 0.68]
+  tower(out, fit, {
+    height: 22,
+    base: { height: 4, face: { kind: 'punched', wall: [0.7, 0.66, 0.6], glass: [0.2, 0.23, 0.25], floor: 4, pitch: 3.2, solid: 0.4, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.22, 0.25, 0.28], floor: 3.4, pitch: 2.8, solid: 0.42, head: 'architrave', material: 'ashlar' }, cornice: { depth: 0.5, height: 0.8, colour: [0.72, 0.68, 0.6] } }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'ashlar' },
+  })
+}
+
+/**
+ * 153 Kearny (way/333823795, 39 m): a seven-storey cream classical block, a shopfront ground floor under a painted
+ * name board, punched windows with architrave heads and a moulded band at each floor, a dentilled cornice at the
+ * top. Drawn from Mapillary frame 02 (between the dashed lines, the cream block with the fire escape and the bay
+ * windows) and frame 03; the frames are ambiguous about which facade is bracketed, so verify before trusting.
+ */
+export function kearny153(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.85, 0.8, 0.7]
+  tower(out, fit, {
+    height: 39,
+    base: { height: 4.5, face: { kind: 'punched', wall: [0.62, 0.58, 0.52], glass: [0.18, 0.22, 0.22], floor: 4.5, pitch: 3.2, solid: 0.4, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.22, 0.25, 0.28], floor: 4, pitch: 3.6, solid: 0.42, material: 'ashlar' }, cornice: { depth: 0.5, height: 0.8, colour: [0.78, 0.74, 0.66] } }],
+    cornices: [{ at: 0.33, depth: 0.25, colour: [0.74, 0.7, 0.62] }],
+    crown: { kind: 'parapet', height: 1.4, colour: CREAM, material: 'ashlar' },
+  })
+}
+
+/**
+ * 126 Post (way/255716898, 28 m): a cream stone block of eight storeys on Post, a rusticated granite base, plain
+ * punched windows under architraves, a dentilled cornice at the top. Drawn from Mapillary frame 03 (the cream
+ * block with the dentil cornice, the Chipotle ground floor), which is the nearest frame on Post.
+ */
+export function post126(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.8, 0.76, 0.68]
+  tower(out, fit, {
+    height: 28,
+    base: { height: 4, face: { kind: 'blank', wall: [0.6, 0.56, 0.5], material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.22, 0.25, 0.28], floor: 3.8, pitch: 3.6, solid: 0.42, material: 'ashlar' }, cornice: { depth: 0.6, height: 0.9, colour: [0.74, 0.7, 0.62] } }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'ashlar' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1427,4 +1475,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   clay256072716, clay643,
   pine260282395, pine32859888, battery77,
   sansome407, sansomeSacramento32947521, sansome415,
+  kearny123, kearny153, post126,
 }
