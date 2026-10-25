@@ -112,13 +112,13 @@ Builders go in `src/render/landmarks/sf/downtown-t4.ts`, manifest entries in `pu
 | 102 | 114 | SoMa by Market | `way/112775864` 274 Brannan Street · 24 m · reface<br>`way/113103851` 270 Brannan Street · 12 m · generic || done |
 | 103 | 114 | SoMa by Market | `way/260323193` 50 Lansing Street · 26 m · generic || done |
 | 104 | 114 | Chinatown | `way/403167643` Chinese Hospital · 30 m · reface || done |
-| 105 | 113 | Civic Center | `way/35176282` 150 Hayes Street · 24 m · generic | |
-| 106 | 111 | Union Square | `way/147689076` (unnamed) · 30 m · reface | |
-| 107 | 110 | Tenderloin | `way/260126021` O'Farrell Towers · 36 m · reface | |
-| 108 | 110 | Union Square | `way/35536855` Mabrie Facial Institute · 56 m · reface | |
-| 109 | 109 | SoMa by Market | `way/113103848` 301 · 31 m · generic | |
-| 110 | 109 | SoMa by Market | `way/192328863` 444;470 Spear Street · 20 m · generic | |
-| 111 | 108 | SoMa by Market | `way/24335195` Moscone Center Garage · 17 m · generic | |
+| 105 | 113 | Civic Center | `way/35176282` 150 Hayes Street · 24 m · generic || done |
+| 106 | 111 | Union Square | `way/147689076` (unnamed) · 30 m · reface || done |
+| 107 | 110 | Tenderloin | `way/260126021` O'Farrell Towers · 36 m · reface || done |
+| 108 | 110 | Union Square | `way/35536855` Mabrie Facial Institute · 56 m · reface || done |
+| 109 | 109 | SoMa by Market | `way/113103848` 301 · 31 m · generic || done |
+| 110 | 109 | SoMa by Market | `way/192328863` 444;470 Spear Street · 20 m · generic || done |
+| 111 | 108 | SoMa by Market | `way/24335195` Moscone Center Garage · 17 m · generic || done |
 | 112 | 108 | Nob Hill | `way/179746912` 1199 Bush Street · 26 m · generic | |
 | 113 | 108 | FiDi | `way/288481830` ABC Broadcast Center (KGO/KRON) · 12 m · reface | |
 | 114 | 107 | Civic Center | `way/172111600` 41;77 Van Ness Avenue · 27 m · reface | |

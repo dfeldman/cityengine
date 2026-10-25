@@ -34,16 +34,6 @@
   },
   {
     "osm": [
-      "way/260126021"
-    ],
-    "name": "O'Farrell Towers",
-    "restyle": "towerblock",
-    "height": 36,
-    "note": "Rule check 2026-10-04 (Mapillary): brown brick-faced modern tower; was rule 8 chicago.",
-    "wall": "#76503e"
-  },
-  {
-    "osm": [
       "way/42916782"
     ],
     "name": "Building 42916782",

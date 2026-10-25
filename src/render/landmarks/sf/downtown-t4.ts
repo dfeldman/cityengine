@@ -1516,6 +1516,99 @@ function t4b104_403167643(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * 150 Hayes Street (way/35176282): a 1968 office block of about seven storeys, its front on Hayes a grid of teal-glazed
+ * spandrels in ribbon windows over a grey grilled garage ground floor; the flank a plain green-grey panelled wall.
+ * (Mapillary 697124251779660, 1732283854263442.)
+ */
+function t4b105_35176282(out: MeshBuilder, fit: Fit): void {
+  tower(out, fit, {
+    height: 24,
+    base: { height: 4, face: { kind: 'punched', wall: [0.55, 0.6, 0.58], material: 'concrete', glass: [0.2, 0.22, 0.22], pitch: 4, solid: 0.6, floor: 4 } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: [0.58, 0.7, 0.67], material: 'metal', glass: [0.2, 0.5, 0.48], floor: 3.4, solid: 0.45 } }],
+    crown: { kind: 'parapet', height: 0.8, colour: [0.6, 0.7, 0.68], material: 'concrete' },
+  })
+}
+
+/**
+ * The unnamed block at Geary, Grant and Maiden Lane (way/147689076): a cream stone-fronted commercial building of
+ * about nine storeys, a dark-framed shopfront under a moulded cornice, tall windows in bays above and a stone parapet.
+ * (Mapillary 511173684982876, 207815314643201.)
+ */
+function t4b106_147689076(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.92, 0.9, 0.85]
+  tower(out, fit, {
+    height: 30,
+    base: { height: 5, face: { kind: 'punched', wall: CREAM, material: 'concrete', glass: [0.2, 0.22, 0.26], pitch: 4, solid: 0.45, floor: 5 } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, material: 'concrete', glass: [0.3, 0.35, 0.4], pitch: 4, solid: 0.42, floor: 3.4 } }],
+    cornices: [{ at: 5, depth: 0.5, height: 0.6, colour: [0.9, 0.88, 0.82] }],
+    crown: { kind: 'parapet', height: 1.5, colour: CREAM, material: 'concrete' },
+  })
+}
+
+/**
+ * O'Farrell Towers (way/260126021), at O'Farrell and Jones: a brown brick-faced lower block under a pale grey
+ * modern tower of about twelve storeys, its small square windows in regular rows. (Mapillary 903378613613414, 329199422280129.)
+ */
+function t4b107_260126021(out: MeshBuilder, fit: Fit): void {
+  tower(out, fit, {
+    height: 36,
+    base: { height: 4, face: { kind: 'punched', wall: [0.42, 0.3, 0.26], material: 'brick', glass: [0.2, 0.22, 0.25], pitch: 4, solid: 0.6, floor: 4 } },
+    tiers: [
+      { to: 0.7, face: { kind: 'punched', wall: [0.42, 0.3, 0.26], material: 'brick', glass: [0.2, 0.22, 0.25], pitch: 3.2, solid: 0.55, floor: 3.2 } },
+      { to: 1, inset: 2, face: { kind: 'punched', wall: [0.8, 0.82, 0.84], material: 'concrete', glass: [0.22, 0.27, 0.32], pitch: 3, solid: 0.5, floor: 3 } },
+    ],
+    crown: { kind: 'parapet', height: 1, colour: [0.75, 0.77, 0.78], material: 'concrete' },
+  })
+}
+
+/**
+ * Mabrie Facial Institute (way/35536855): a cream-buff terracotta block of about twelve storeys, its punched windows in
+ * regular rows over a stone-faced ground floor, a moulded cornice at the top. OSM says 56 m; drawn at 40 m from the
+ * photographs, which are unsure. (Mapillary 336952201445013, 455554926531896.)
+ */
+function t4b108_35536855(out: MeshBuilder, fit: Fit): void {
+  const BUFF: Rgb = [0.84, 0.76, 0.6]
+  tower(out, fit, {
+    height: 40,
+    base: { height: 5, face: { kind: 'punched', wall: [0.8, 0.74, 0.62], material: 'ashlar', glass: [0.2, 0.22, 0.24], pitch: 3.5, solid: 0.45, floor: 5 } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BUFF, material: 'terracotta', glass: [0.22, 0.25, 0.28], pitch: 2.8, solid: 0.5, floor: 3.4 } }],
+    cornices: [{ at: 5, depth: 0.5, height: 0.6, colour: [0.82, 0.74, 0.6] }],
+    crown: { kind: 'parapet', height: 1.4, colour: [0.75, 0.66, 0.5], material: 'terracotta' },
+  })
+}
+
+/**
+ * 301 (way/113103848), at Delancey: a taupe-grey concrete block of about eleven storeys, its balcony slabs stacked on
+ * the front, ribbon glass on the corners, a glazed garage ground floor. (Mapillary 1073578978178962, 4342134639341630.)
+ */
+function t4b109_113103848(out: MeshBuilder, fit: Fit): void {
+  const TAUPE: Rgb = [0.6, 0.58, 0.54]
+  tower(out, fit, {
+    height: 32,
+    base: { height: 4, face: { kind: 'punched', wall: [0.5, 0.48, 0.45], material: 'concrete', glass: [0.2, 0.24, 0.27], pitch: 4, solid: 0.4, floor: 4 } },
+    tiers: [
+      { to: 0.7, face: { kind: 'punched', wall: TAUPE, material: 'concrete', glass: [0.25, 0.3, 0.35], pitch: 3.2, solid: 0.45, floor: 3.2 } },
+      { to: 1, inset: 2.5, face: { kind: 'punched', wall: TAUPE, material: 'concrete', glass: [0.25, 0.3, 0.35], pitch: 3.2, solid: 0.45, floor: 3.2 } },
+    ],
+    crown: { kind: 'parapet', height: 1, colour: TAUPE, material: 'concrete' },
+  })
+}
+
+/**
+ * Moscone Center Garage (way/24335195), at 3rd Street: a white concrete parking garage of about four storeys, its
+ * open parking slots in bands, a glass canopy and a glazed arcade on the ground floor. (Mapillary 318240576658476, 757811780329383.)
+ */
+function t4b111_24335195(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.94, 0.94, 0.92]
+  tower(out, fit, {
+    height: 17,
+    base: { height: 4, face: { kind: 'punched', wall: WHITE, material: 'concrete', glass: [0.12, 0.13, 0.15], pitch: 6, solid: 0.5, floor: 4 } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: WHITE, material: 'concrete', glass: [0.12, 0.13, 0.15], floor: 3.4, solid: 0.4 } }],
+    crown: { kind: 'parapet', height: 0.8, colour: WHITE, material: 'concrete' },
+  })
+}
+
 export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   t4b1_156123224,
   t4b2_192328858,
@@ -1623,4 +1716,10 @@ export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t4b102_113103851,
   t4b103_260323193,
   t4b104_403167643,
+  t4b105_35176282,
+  t4b106_147689076,
+  t4b107_260126021,
+  t4b108_35536855,
+  t4b109_113103848,
+  t4b111_24335195,
 }
