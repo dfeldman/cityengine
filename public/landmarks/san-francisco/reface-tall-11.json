@@ -5,7 +5,6 @@
 {"osm": ["way/256030635"], "restyle": "bauhaus", "wall": "#2e4a7c", "by": "haiku", "image": "way-256030635-02.jpg", "note": "navy-painted flat-faced block with horizontal ribbon windows, flat roof"},
 {"osm": ["way/256616019"], "restyle": "sfapartment", "wall": "#ebe8df", "by": "haiku", "image": "way-256616019-02.jpg", "note": "white stucco flats with stacked balconies and bay fronts, 7 storeys"},
 {"osm": ["way/262557729"], "restyle": "sfapartment", "wall": "#e8dfcb", "by": "haiku", "image": "way-262557729-01.jpg", "note": "cream stucco, stacked bays, fire escape on front, ornate parapet"},
-{"osm": ["way/256087383"], "restyle": "chicago", "wall": "#7f8790", "by": "haiku", "image": "way-256087383-01.jpg", "note": "slate-grey 6-storey block with cornice and corner bays, painted grey"},
 {"osm": ["way/93817356"], "restyle": "bauhaus", "wall": "#e4e6e6", "groundWall": "#3f4850", "by": "haiku", "image": "way-93817356-01.jpg", "note": "4-storey pale office block, horizontal glazed bands turning the corner, dark charcoal base"},
 {"osm": ["way/69718205"], "restyle": "sfapartment", "wall": "#d9bd78", "groundWall": "#4f5b4c", "by": "haiku", "image": "way-69718205-01.jpg", "note": "ochre-yellow 6-7 storey corner block with cornice, bays and fire escape; dark green-grey base"},
 {"osm": ["way/256032489"], "restyle": "classical", "wall": "#b48e62", "trim": "#e8dcc0", "by": "haiku", "image": "way-256032489-01.jpg", "note": "tan-brown brick hotel, 8 storeys, cornice and arched upper windows"},

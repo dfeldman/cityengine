@@ -2698,6 +2698,35 @@ function stevenson55Brick(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** Batch 70: the slate-grey 1900s block at the Jackson and Battery corner, painted grey, cornice, dark shopfronts. */
+export function jacksonBatteryGrey(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.5, 0.53, 0.56]
+  tower(out, fit, {
+    height: 24,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.3, 0.32, 0.34], glass: [0.2, 0.24, 0.28], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{
+      to: 1,
+      face: { kind: 'punched', wall: GREY, glass: [0.22, 0.27, 0.3], pitch: 3, floor: 3.2, solid: 0.45, material: 'stucco' },
+      cornice: { depth: 0.6, height: 0.7, colour: [0.58, 0.6, 0.63] },
+    }],
+    crown: { kind: 'parapet', height: 1.2, colour: GREY, material: 'stucco' },
+  })
+}
+
+/** Batch 70: the 2006 brick-and-glass block on Jackson Street, a brick band under glazed upper floors. */
+export function jackson350Brick(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.62, 0.36, 0.24]
+  tower(out, fit, {
+    height: 18,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.2, 0.21, 0.22], glass: [0.16, 0.2, 0.24], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [
+      { to: 0.55, face: { kind: 'punched', wall: BRICK, glass: [0.2, 0.23, 0.27], pitch: 3, floor: 3.4, solid: 0.6, material: 'brick' } },
+      { to: 1, face: { kind: 'curtain', wall: [0.2, 0.21, 0.22], glass: [0.18, 0.24, 0.3], pitch: 1.8, floor: 3.4, material: 'glass' } },
+    ],
+    crown: { kind: 'parapet', height: 0.8, colour: BRICK, material: 'brick' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -2793,4 +2822,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   bush364Taupe,
   second30Stucco, clayUnnamedCream, clay559Ashlar, front227Gothic, california212Stone, harringtonsBrick,
   columbus42Cream, montgomeryCreamArched, stevensonGreyPanel, stevenson55Brick,
+  jacksonBatteryGrey, jackson350Brick,
 }

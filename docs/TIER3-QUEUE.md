@@ -79,8 +79,8 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 67 | 70 | `way/260286447` 212;214 California Street · 10 m · generic<br>`way/940149659` 227 Front Street · 7 m · generic<br>`way/260286866` (unnamed) · 7 m · generic || done (with 65) |
 | 68 | 70 | `way/148666782` 42 Columbus Avenue · 4 m · generic<br>`way/35537150` (unnamed) · 19 m · reface brick || done |
 | 69 | 70 | `way/149840697` (unnamed) · 22 m · reface brick<br>`way/149840693` 55 Stevenson Street · ? · generic || done (with 68) |
-| 70 | 69 | `way/256087383` (unnamed) · 24 m · reface chicago<br>`way/256087379` 350;368 Jackson Street · 18 m · generic<br>`way/256087384` 710 Sansome Street · 15 m · reface brick | |
-| 71 | 68 | `way/165480947` 529;531 Commercial Street · ? · generic<br>`way/942303809` (unnamed) · ? · generic | |
+| 70 | 69 | `way/256087383` (unnamed) · 24 m · reface chicago<br>`way/256087379` 350;368 Jackson Street · 18 m · generic<br>`way/256087384` 710 Sansome Street · 15 m · reface brick || 256087383 and 350 Jackson done; 710 Sansome skipped (its photo is 712) |
+| 71 | 68 | `way/165480947` 529;531 Commercial Street · ? · generic<br>`way/942303809` (unnamed) · ? · generic || skipped: the photos do not show these lots |
 | 72 | 68 | `way/256067704` 130 Battery Street · 25 m · generic | |
 | 73 | 65 | `way/148741782` (unnamed) · 10 m · generic<br>`way/148741781` 318;320;322 Kearny Street · 8 m · generic<br>`way/148741771` 334;336 Kearny Street · 13 m · generic | |
 | 74 | 65 | `way/151683978` 325;327;329 Kearny Street · 13 m · generic<br>`way/151683980` 321;323 Kearny Street · 13 m · generic<br>`way/151683981` 315;319 Kearny Street · 13 m · generic | |
