@@ -1530,6 +1530,45 @@ export function market1000(out: MeshBuilder, fit: Fit): void {
   prism(out, cx, cz, y0 + H, y0 + H + 0.7, R + 0.4, 12, CREAM, surfaceTag('stucco'))
 }
 
+/** 1059-1061 MARKET, south-east side between 6th and 7th: a cream 1910s loft of about seven storeys on a shopfront base with grey roller shutters, regular wide punched windows, a dentilled cornice and a parapet (Mapillary frame 01). */
+export function market1059(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.88, 0.8]
+  tower(out, fit, {
+    height: 25,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.42, 0.42, 0.42], glass: [0.18, 0.2, 0.22], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.22, 0.25], floor: 3.6, pitch: 3.4, solid: 0.5, arched: false, material: 'stucco' } }],
+    cornices: [{ at: 0.96, depth: 0.5, colour: CREAM }],
+    crown: { kind: 'parapet', height: 1.1, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** 1063 MARKET, between 1059 and 1067: a narrow cream four-storey front, a metal shutter at the ground, and a recessed glazed upper bay set back over the top two storeys (Mapillary frame 02). */
+export function market1063(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.88, 0.86, 0.78]
+  tower(out, fit, {
+    height: 14,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.42, 0.42, 0.42], glass: [0.18, 0.2, 0.22], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [
+      { to: 0.7, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.22, 0.25], floor: 3.5, pitch: 3.2, solid: 0.55, material: 'stucco' } },
+      { to: 1, inset: 0.8, face: { kind: 'curtain', wall: CREAM, glass: [0.24, 0.28, 0.32], pitch: 2.4, floor: 3.5, material: 'stucco' } },
+    ],
+    cornices: [{ at: 0.7, depth: 0.4, colour: CREAM }],
+    crown: { kind: 'parapet', height: 0.8, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** 1067-1071 MARKET, south-east side between 6th and 7th: a grey, ornate six-storey front with projecting bays and balconies, a heavy cornice and a dark shopfront with a green sign band (Mapillary frame 01). */
+export function market1067(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.6, 0.62, 0.62]
+  tower(out, fit, {
+    height: 21,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.2, 0.2, 0.2], glass: [0.16, 0.18, 0.2], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'bays', wall: GREY, glass: [0.22, 0.25, 0.28], floor: 3.5, pitch: 3.2, solid: 0.45, bay: { depth: 0.8 }, material: 'concrete' } }],
+    cornices: [{ at: 0.95, depth: 0.8, height: 0.8, colour: GREY }],
+    crown: { kind: 'parapet', height: 1.2, colour: GREY, material: 'concrete' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1595,4 +1634,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   kearny151683977, kearny353, kearnyPine148741772,
   sacramento301, sacramento333, sacramento325,
   market1000,
+  market1059, market1063, market1067,
 }
