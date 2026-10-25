@@ -1153,6 +1153,39 @@ export function commercial260924242(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 10, 28 2nd Street (way 148285580, 27 m, eight storeys, 1914): a whitewashed concrete office block with ribbon windows in bands over a dark shopfront; faces 2nd Street. Photos way-148285580-01 and -02. */
+export function second28(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.9, 0.9, 0.88]
+  tower(out, fit, {
+    height: 27,
+    base: { height: 4.5, face: { kind: 'blank', wall: [0.22, 0.23, 0.24], material: 'tile' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: WHITE, glass: [0.34, 0.38, 0.4], floor: 3.4, solid: 0.6, material: 'concrete' }, cornice: { depth: 0.5, height: 0.5, colour: WHITE } }],
+    crown: { kind: 'parapet', height: 1, colour: WHITE, material: 'concrete' },
+  })
+}
+
+/** T3 batch 10, unnamed block (way 79377209, 25 m, 1907): a tan brick block of about eight storeys with punched windows and a heavy bracketed cornice over a dark glass shopfront; faces 2nd Street. Photos way-79377209-01 and -02 (the first only, see report). */
+export function second79377209(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.8, 0.64, 0.44]
+  tower(out, fit, {
+    height: 25,
+    base: { height: 4, face: { kind: 'blank', wall: [0.7, 0.6, 0.46], material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: [0.2, 0.22, 0.25], pitch: 2.8, floor: 3.2, solid: 0.45, material: 'brick' }, cornice: { depth: 0.9, height: 0.9, colour: [0.82, 0.74, 0.6] } }],
+    crown: { kind: 'parapet', height: 1.8, colour: TAN, material: 'brick' },
+  })
+}
+
+/** T3 batch 10, 44 2nd Street (way 79377219, 11 m, three storeys, 1907): a cream stucco front with a moulded cornice and a dark glass shopfront below; faces 2nd Street. Photos way-79377219-01 and -02. */
+export function second44(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.86, 0.76]
+  tower(out, fit, {
+    height: 11,
+    base: { height: 3.5, face: { kind: 'curtain', wall: [0.2, 0.2, 0.2], glass: [0.26, 0.3, 0.32], pitch: 3, floor: 3.5, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.22, 0.24, 0.26], pitch: 2.6, floor: 2.6, solid: 0.5, material: 'stucco' }, cornice: { depth: 0.9, height: 0.9, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 0.8, colour: CREAM, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1207,4 +1240,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   bush151195270, kearny260,
   buichBuilding240California, california244, california200,
   claytonClay, clay260924222, commercial260924242,
+  second28, second79377209, second44,
 }
