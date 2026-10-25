@@ -104,10 +104,10 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 92 | 51 | `way/1316030009` (unnamed) · 4 m · generic || done (with 90; photo-less outlines skipped) |
 | 93 | 51 | `way/260286444` (unnamed) · ? · generic || done (with 90; photo-less outlines skipped) |
 | 94 | 49 | `way/151183781` 451 Montgomery Street · 11 m · generic<br>`way/942288403` (unnamed) · ? · generic || done (with 90; photo-less outlines skipped) |
-| 95 | 48 | `way/149757920` (unnamed) · 28 m · reface classical | |
-| 96 | 45 | `way/151195273` (unnamed) · ? · generic | |
-| 97 | 45 | `way/256084916` (unnamed) · 13 m · generic<br>`way/260927794` (unnamed) · 13 m · generic<br>`way/260927792` (unnamed) · 13 m · generic | |
-| 98 | 43 | `way/256088142` 412;414 Jackson Street · 17 m · reface brick<br>`way/260937912` 40 Gold Street · 12 m · reface brick<br>`way/256088146` 705;727;729 Sansome Street · 13 m · reface brick | |
+| 95 | 48 | `way/149757920` (unnamed) · 28 m · reface classical || done (photo-less outlines skipped) |
+| 96 | 45 | `way/151195273` (unnamed) · ? · generic || done (with 95; photo-less outlines skipped) |
+| 97 | 45 | `way/256084916` (unnamed) · 13 m · generic<br>`way/260927794` (unnamed) · 13 m · generic<br>`way/260927792` (unnamed) · 13 m · generic || done (with 95; photo-less outlines skipped) |
+| 98 | 43 | `way/256088142` 412;414 Jackson Street · 17 m · reface brick<br>`way/260937912` 40 Gold Street · 12 m · reface brick<br>`way/256088146` 705;727;729 Sansome Street · 13 m · reface brick || done (with 95; photo-less outlines skipped) |
 | 99 | 42 | `way/1010864204` (unnamed) · ? · generic | |
 | 100 | 42 | `way/32946057` 850;888 Montgomery Street · ? · reface brick<br>`way/256088141` Montgomery Street · ? · reface brick<br>`way/256088156` 836 Montgomery Street · 6 m · reface brick | |
 | 101 | 41 | `way/256072724` 53;55 Columbus Avenue · 11 m · generic<br>`way/256072713` 646 Washington Street · 14 m · generic<br>`way/392852707` (unnamed) · ? · generic | |

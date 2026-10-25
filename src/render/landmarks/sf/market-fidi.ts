@@ -3291,6 +3291,94 @@ export function montgomeryRedBrick1907(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 95: unnamed, way/149757920, 291 m², OSM 28 m. Photo -01: a tan-cream stone block of four or five
+ * storeys, tall windows in dark bands, a black cast-iron shopfront with a red fabric-shop sign; -02: the same
+ * cream upper with red awnings below. Front Post (bearing 351), unsure. */
+export function postVictorianCream(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.84, 0.78, 0.62], DARK: Rgb = [0.12, 0.12, 0.12], GLASS: Rgb = [0.2, 0.24, 0.27]
+  tower(out, fit, {
+    height: 28,
+    base: { height: 5, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.5, floor: 5, solid: 0.3, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 3.6, floor: 4.5, solid: 0.45, material: 'ashlar' }, cornice: { depth: 0.5, height: 0.8, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'ashlar' },
+  })
+}
+
+/** T3 batch 96: unnamed, way/151195273, 157 m², 1917, OSM height missing (22 m used). Photo -02: a glass-fronted
+ * Victorian block with gold cast-iron cornices banding its upper storeys over a navy shopfront; -01 a dark
+ * doorway, probably a neighbour. Front Sutter (bearing 172), unsure. */
+export function sutterGoldGlass(out: MeshBuilder, fit: Fit): void {
+  const DARK: Rgb = [0.14, 0.18, 0.2], GLASS: Rgb = [0.22, 0.28, 0.32], GOLD: Rgb = [0.75, 0.58, 0.22]
+  tower(out, fit, {
+    height: 22,
+    base: { height: 5, face: { kind: 'curtain', wall: DARK, glass: GLASS, pitch: 3, floor: 5, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: DARK, glass: GLASS, floor: 4, solid: 0.35, material: 'metal' }, cornice: { depth: 0.8, height: 1.2, colour: GOLD } }],
+    crown: { kind: 'parapet', height: 1.5, colour: GOLD, material: 'metal' },
+  })
+}
+
+/** T3 batch 97: unnamed, way/256084916, 541 m², 1966, OSM 13 m. Photo -01: a two-storey block with a brown
+ * aggregate-panel base and a plain white upper storey on top, a gym sign at the entrance; -03 the same white
+ * upper. Front Jackson (bearing 350), unsure. */
+export function jacksonAggregate1966(out: MeshBuilder, fit: Fit): void {
+  const BROWN: Rgb = [0.42, 0.34, 0.24], WHITE: Rgb = [0.92, 0.92, 0.9], GLASS: Rgb = [0.2, 0.22, 0.24]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 4.5, face: { kind: 'bands', wall: BROWN, glass: GLASS, floor: 4.5, solid: 0.8, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: GLASS, pitch: 3.2, floor: 2.8, solid: 0.35, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 0.6, colour: WHITE, material: 'stucco' },
+  })
+}
+
+/** T3 batch 97: unnamed, way/260927794, 170 m², 1966, OSM 13 m. Photo -01: a dark brown ground storey of three big
+ * round-headed arches, over a white stucco upper with gabled bays. Front Jackson (bearing 351), unsure. */
+export function jacksonArchedDark1966(out: MeshBuilder, fit: Fit): void {
+  const BROWN: Rgb = [0.27, 0.23, 0.2], WHITE: Rgb = [0.9, 0.9, 0.88], GLASS: Rgb = [0.16, 0.18, 0.2]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 4, face: { kind: 'punched', wall: BROWN, glass: GLASS, pitch: 4.2, floor: 4, solid: 0.5, arched: true, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: GLASS, pitch: 2.8, floor: 3, solid: 0.35, material: 'stucco' } }],
+    crown: { kind: 'hip', height: 1.5, inset: 0, colour: [0.3, 0.3, 0.3], material: 'tile' },
+  })
+}
+
+/** T3 batch 97: unnamed, way/260927792, 95 m², 1966, OSM 13 m. Photos -01, -02: a dark brown service wall with a
+ * louvred garage door and a bin enclosure in a narrow court. Front Davis Court (bearing 261), unsure. */
+export function davisLouvredGarage1966(out: MeshBuilder, fit: Fit): void {
+  const BROWN: Rgb = [0.3, 0.26, 0.24], GLASS: Rgb = [0.14, 0.15, 0.16]
+  tower(out, fit, {
+    height: 13,
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BROWN, glass: GLASS, pitch: 3.2, floor: 3.2, solid: 0.9, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: BROWN, material: 'concrete' },
+  })
+}
+
+/** T3 batch 98: 412;414 Jackson Street, way/256088142, 373 m², OSM 17 m (13 m used: three storeys). Photo -01: a
+ * red-brown brick block with arched upper windows, a dark ground floor and pink terracotta arch surrounds. Front
+ * Jackson (bearing 170), unsure. */
+export function jackson412Brick(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.55, 0.26, 0.18], TERRA: Rgb = [0.75, 0.5, 0.42], DARK: Rgb = [0.2, 0.14, 0.12], GLASS: Rgb = [0.15, 0.17, 0.18]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.2, floor: 4, solid: 0.4, arched: true, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: GLASS, pitch: 3.2, floor: 3, solid: 0.6, arched: true, material: 'brick' }, cornice: { depth: 0.3, height: 0.4, colour: TERRA } }],
+    crown: { kind: 'parapet', height: 0.9, colour: BRICK, material: 'brick' },
+  })
+}
+
+/** T3 batch 98: 705;727;729 Sansome Street, way/256088146, 428 m², OSM 13 m. Photo -01: a three-storey buff-yellow
+ * brick block with arched openings on the ground floor and a dark corner; the Sansome address on the door frame.
+ * Front Sansome (bearing 82), unsure. */
+export function sansome705Brick(out: MeshBuilder, fit: Fit): void {
+  const BUFF: Rgb = [0.78, 0.6, 0.3], DARK: Rgb = [0.22, 0.18, 0.14], GLASS: Rgb = [0.16, 0.18, 0.2]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.2, floor: 4, solid: 0.4, arched: true, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BUFF, glass: GLASS, pitch: 3.0, floor: 3, solid: 0.55, arched: true, material: 'brick' }, cornice: { depth: 0.3, height: 0.4, colour: [0.85, 0.75, 0.55] } }],
+    crown: { kind: 'parapet', height: 0.9, colour: BUFF, material: 'brick' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -3396,4 +3484,6 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   belden88WhitePediment, belden88BrickCorner, pine471Bays, commercial88WhiteArched, clay88GateStorefront, sacramento686Canton,
   clayKearnyStucco1922, battery261CreamStone1913, clayWhiteWall1971, leidesdorffStoneCorner1991,
   montgomery451Cream, montgomeryRedBrick1907,
+  postVictorianCream, sutterGoldGlass, jacksonAggregate1966, jacksonArchedDark1966, davisLouvredGarage1966,
+  jackson412Brick, sansome705Brick,
 }
