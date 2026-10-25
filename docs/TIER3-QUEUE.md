@@ -68,7 +68,7 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 56 | 85 | `relation/3492879` 20;26 California Street · 25 m · generic<br>`way/260288448` (unnamed) · 31 m · generic<br>`way/260288456` (unnamed) · 14 m · generic || done |
 | 57 | 79 | `way/260924234` 632;634 Commercial Street · 21 m · generic<br>`way/260924231` 635;637;639 Clay Street · 12 m · generic<br>`way/260924225` 667;669;675 Clay Street · 13 m · generic || 635 and 667 Clay done; 632-634 Commercial has no photographs |
 | 58 | 79 | `way/148710881` 32 Battery Street · 20 m · reface chicago || done (with 57) |
-| 59 | 78 | `way/35537088` 708;710 Montgomery Street · 11 m · generic<br>`way/148668302` (unnamed) · ? · generic<br>`way/35537108` (unnamed) · 9 m · generic | |
+| 59 | 78 | `way/35537088` 708;710 Montgomery Street · 11 m · generic<br>`way/148668302` (unnamed) · ? · generic<br>`way/35537108` (unnamed) · 9 m · generic || 708 Montgomery and 35537108 done; 148668302 has no photographs |
 | 60 | 78 | `way/149840698` 96 Jessie Street · 14 m · generic<br>`way/149840695` 79 Stevenson Street · 11 m · generic<br>`way/149840696` (unnamed) · 9 m · generic | |
 | 61 | 78 | `way/942665598` 130 Montgomery Street · 22 m · generic | |
 | 62 | 76 | `way/148668309` 520;522;524;526;528;530;532;550 Washington Str · 9 m · generic<br>`way/148668322` (unnamed) · ? · generic<br>`way/148668312` (unnamed) · 13 m · reface brick | |

@@ -2416,6 +2416,29 @@ export function battery32Tan(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+export function montgomery708Arcade(out: MeshBuilder, fit: Fit): void {
+  // 708-710 Montgomery (way/35537088, 1906 block): cream classical front, arched ground-floor openings, a dentilled band
+  const CREAM: Rgb = [0.86, 0.82, 0.72], GLASS: Rgb = [0.18, 0.22, 0.26]
+  tower(out, fit, {
+    height: 11,
+    base: { height: 3.6, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 3, floor: 3.6, solid: 0.3, arched: true, material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 2.8, floor: 3.6, solid: 0.45, head: 'architrave', material: 'ashlar' }, cornice: { depth: 0.6, height: 0.5, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'ashlar' },
+  })
+}
+
+export function montgomeryCanessaWhite(out: MeshBuilder, fit: Fit): void {
+  // 708-710 Montgomery's neighbour in the photographs (way/35537108): a painted white brick block with round
+  // and arched upper windows, a dark recessed shopfront and a stepped parapet, the sign band over it
+  const WHITE: Rgb = [0.9, 0.89, 0.85], DARK: Rgb = [0.18, 0.18, 0.18], GLASS: Rgb = [0.2, 0.24, 0.28]
+  tower(out, fit, {
+    height: 9,
+    base: { height: 3, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.5, floor: 3, solid: 0.35, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: GLASS, pitch: 2.6, floor: 3, solid: 0.5, arched: true, head: 'architrave', material: 'stucco' }, cornice: { depth: 0.5, height: 0.5, colour: WHITE } }],
+    crown: { kind: 'parapet', height: 1.5, colour: WHITE, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -2504,4 +2527,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   sacramento660Cream, sacramentoBlueInfill,
   california20White, drummWhiteEight, drummCreamFour,
   clay635WhiteFour, clay667WhiteArched, battery32Tan,
+  montgomery708Arcade, montgomeryCanessaWhite,
 }

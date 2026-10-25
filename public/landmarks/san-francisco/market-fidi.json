@@ -630,5 +630,7 @@
   "sign": false,
   "front": "street",
   "note": "market-fidi.ts: 32 Battery, tan brick block with a dark shopfront and cream cornice; photos way-148710881-01 and -03 (cam bearings 171, 261)."
- }
+ },
+ {"osm": ["way/35537088"], "name": "708-710 Montgomery Street", "procedural": "montgomery708Arcade", "height": 11, "sign": false, "front": "street", "note": "market-fidi.ts: 708-710 Montgomery, cream classical block with arched ground-floor openings, architrave windows and a dentilled band; photos way-35537088-01 and -02."},
+ {"osm": ["way/35537108"], "name": "(unnamed) Montgomery Street, next to 708-710", "procedural": "montgomeryCanessaWhite", "height": 9, "sign": false, "front": "street", "note": "market-fidi.ts: painted white brick block with round and arched upper windows, dark recessed shopfront and stepped parapet, the Canessa Printing sign band; photos way-35537108-01 and -02."}
 ]
