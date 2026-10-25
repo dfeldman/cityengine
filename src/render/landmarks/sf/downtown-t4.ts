@@ -203,6 +203,53 @@ function t4b22_256477871(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** Museum Parc Apartments (way/288716386), 300 Third Street at Folsom: a pale grey concrete apartment block of about twelve storeys, its corner rounded, the balconies curving round every floor. (Mapillary 449083788193612, 192500539980638.) */
+function t4b23_288716386(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.66, 0.65, 0.62]
+  tower(out, fit, {
+    height: 40,
+    base: { height: 4, face: { kind: 'punched', wall: [0.42, 0.41, 0.39], glass: [0.2, 0.23, 0.27], pitch: 4, floor: 4, solid: 0.5, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'bays', wall: GREY, glass: [0.25, 0.3, 0.34], pitch: 5, floor: 3.2, material: 'concrete', bay: { depth: 1, round: true } } }],
+    crown: { kind: 'parapet', height: 1.2, colour: GREY, material: 'concrete' },
+  })
+}
+
+/** The Clancy (way/112774492), 299 Second Street: a charcoal punched tower of seventeen storeys, stepped back at the top, over a low base. (Mapillary 573364793800440, 1137873745069540.) */
+function t4b24_112774492(out: MeshBuilder, fit: Fit): void {
+  const CHAR: Rgb = [0.34, 0.34, 0.36]
+  const face = { kind: 'punched' as const, wall: CHAR, glass: [0.2, 0.23, 0.27] as Rgb, pitch: 3.4, floor: 3.2, solid: 0.45, material: 'concrete' as const }
+  tower(out, fit, {
+    height: 50,
+    base: { height: 4, face: { kind: 'punched', wall: [0.5, 0.48, 0.45], glass: [0.2, 0.23, 0.27], pitch: 4, floor: 4, solid: 0.5, material: 'stucco' } },
+    tiers: [{ to: 0.8, face }, { to: 1, inset: 3, face }],
+    crown: { kind: 'parapet', height: 1, colour: CHAR, material: 'concrete' },
+  })
+}
+
+/** 360 Spear Street Data Center (way/192307107): a white block of five floors of large multi-pane windows over a grey base. (Mapillary 1039344697975158, 4156731871261743.) */
+function t4b25_192307107(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.9, 0.9, 0.88]
+  tower(out, fit, {
+    height: 30,
+    base: { height: 4, face: { kind: 'punched', wall: [0.45, 0.46, 0.47], glass: [0.2, 0.24, 0.28], pitch: 4, floor: 4, solid: 0.4, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: [0.22, 0.28, 0.34], pitch: 5, floor: 5.2, solid: 0.35, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 1, colour: WHITE, material: 'stucco' },
+  })
+}
+
+
+/** An unnamed mixed-use block (way/617990577) on Tehama Street: a dark grey panelled block of about ten storeys, stepped back at the top. (Mapillary 608030268857016, 1135342773776664.) */
+function t4b27_617990577(out: MeshBuilder, fit: Fit): void {
+  const DGREY: Rgb = [0.36, 0.37, 0.39]
+  const face = { kind: 'bands' as const, wall: DGREY, glass: [0.2, 0.23, 0.27] as Rgb, floor: 3.4, solid: 0.6, material: 'metal' as const }
+  tower(out, fit, {
+    height: 37,
+    base: { height: 4, face: { kind: 'punched', wall: [0.55, 0.56, 0.55], glass: [0.2, 0.23, 0.27], pitch: 4, floor: 4, solid: 0.5, material: 'concrete' } },
+    tiers: [{ to: 0.8, face }, { to: 1, inset: 2.5, face }],
+    crown: { kind: 'parapet', height: 1.2, colour: [0.3, 0.3, 0.32], material: 'metal' },
+  })
+}
+
 export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   t4b1_156123224,
   t4b2_192328858,
@@ -220,4 +267,8 @@ export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t4b20_32864968,
   t4b21_25759090,
   t4b22_256477871,
+  t4b23_288716386,
+  t4b24_112774492,
+  t4b25_192307107,
+  t4b27_617990577,
 }

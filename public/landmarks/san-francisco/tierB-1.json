@@ -114,16 +114,6 @@
   },
   {
     "osm": [
-      "way/288716386"
-    ],
-    "name": "Museum Parc Apartments",
-    "restyle": "bauhaus",
-    "height": 40,
-    "note": "Rule check 2026-10-04 (Mapillary): cream modern stucco and glass; was rule 7 brick.",
-    "wall": "#d8d0c2"
-  },
-  {
-    "osm": [
       "way/261442893"
     ],
     "name": "720 Haight Street",

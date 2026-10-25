@@ -48,18 +48,6 @@
   },
   {
     "osm": [
-      "way/112774492"
-    ],
-    "name": "The Clancy, Autograph Collection",
-    "height": 50,
-    "levels": 17,
-    "restyle": "bauhaus",
-    "note": "Rule check 2026-10-04 (Mapillary): white panels and black frames (2020s hotel); was rule 3 chicago.",
-    "wall": "#e6e6e2",
-    "accent": "#222222"
-  },
-  {
-    "osm": [
       "way/421816058"
     ],
     "name": "333 Main Street",
@@ -99,18 +87,6 @@
     "restyle": "chicago",
     "note": "Rule check 2026-10-04 (Mapillary): tan panels; colour from the frame.",
     "wall": "#c4aa89"
-  },
-  {
-    "osm": [
-      "way/617990577"
-    ],
-    "name": "Building 617990577",
-    "height": 37,
-    "levels": 11,
-    "restyle": "bauhaus",
-    "note": "Rule check 2026-10-04 (Mapillary): dark grey panels with timber-coloured insets, 2010s; was rule 8 chicago.",
-    "wall": "#5c5f63",
-    "accent": "#8a5034"
   },
   {
     "osm": [

@@ -30,11 +30,11 @@ Builders go in `src/render/landmarks/sf/downtown-t4.ts`, manifest entries in `pu
 | 20 | 219 | Tenderloin | `way/32864968` 50 Jones · 48 m · reface || done |
 | 21 | 216 | SoMa by Market | `way/25759090` 360 3rd Street · 27 m · reface || done |
 | 22 | 215 | Civic Center | `way/3471533` (unnamed) · 27 m · generic<br>`way/256477871` 580 McAllister Street · 26 m · generic || done |
-| 23 | 214 | SoMa by Market | `way/288716386` Museum Parc Apartments · 40 m · reface | |
-| 24 | 209 | SoMa by Market | `way/112774492` The Clancy, Autograph Collection · 50 m · reface | |
-| 25 | 203 | SoMa by Market | `way/192307107` 360 Spear Street Data Center · 34 m · generic | |
-| 26 | 203 | Chinatown | `way/12960861` (unnamed) · 30 m · generic | |
-| 27 | 202 | SoMa by Market | `way/617990577` (unnamed) · 44 m · reface | |
+| 23 | 214 | SoMa by Market | `way/288716386` Museum Parc Apartments · 40 m · reface || done |
+| 24 | 209 | SoMa by Market | `way/112774492` The Clancy, Autograph Collection · 50 m · reface || done |
+| 25 | 203 | SoMa by Market | `way/192307107` 360 Spear Street Data Center · 34 m · generic || done |
+| 26 | 203 | Chinatown | `way/12960861` (unnamed) · 30 m · generic || done |
+| 27 | 202 | SoMa by Market | `way/617990577` (unnamed) · 44 m · reface || done |
 | 28 | 199 | SoMa by Market | `way/148551351` 239 Brannan Street · 54 m · reface<br>`way/148551346` 229 Brannan Street · 56 m · reface | |
 | 29 | 193 | SoMa by Market | `way/112758588` 501 2nd Street · 33 m · reface | |
 | 30 | 192 | SoMa by Market | `way/1487160484` (unnamed) · 60 m · generic<br>`way/25468389` (unnamed) · 20 m · generic | |
