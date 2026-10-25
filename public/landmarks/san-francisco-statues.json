@@ -643,5 +643,58 @@
       300
     ],
     "note": "assetkit-models-sf/roman-gladiator: OSM node 6468818536 (Roman Gladiator memorial), the road verge in front of the de Young, Golden Gate Park. Faces away from the museum (bearing 140, from the Commons photo: the museum is behind it, to the north-west); Georges Geefs 1881, ~2.5 m figure on its pedestal, 4.2 m overall."
+  },
+  {
+    "id": "sutro-heights-lion-east",
+    "name": "Sutro Heights gate lion (east)",
+    "asset": "sutro-heights-lion",
+    "lat": 37.7796275,
+    "lon": -122.5098368,
+    "bearing": 20,
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/sutro-heights-lion: OSM node 12763236291 (artwork, description Lion), one of the pair flanking the gate of Sutro Heights Park at Point Lobos Ave and 48th Ave, facing out toward the road (bearing 20, from OSM's plaque direction 28 and the Commons photo). 1.5 m including its slab (about.md). The source file is named sf_chinatown_stone_lion but is the Sutro Heights lion, not a Chinese guardian lion."
+  },
+  {
+    "id": "sutro-heights-lion-west",
+    "name": "Sutro Heights gate lion (west)",
+    "asset": "sutro-heights-lion",
+    "lat": 37.7796465,
+    "lon": -122.5099151,
+    "bearing": 20,
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/sutro-heights-lion: OSM node 12763253341 (artwork, description Lion), one of the pair flanking the gate of Sutro Heights Park at Point Lobos Ave and 48th Ave, facing out toward the road (bearing 20, from OSM's plaque direction 28 and the Commons photo). 1.5 m including its slab (about.md). The source file is named sf_chinatown_stone_lion but is the Sutro Heights lion, not a Chinese guardian lion."
+  },
+  {
+    "id": "de-young-perry-lion",
+    "name": "Perry's bronze lion, de Young",
+    "asset": "de-young-perry-lion",
+    "lat": 37.7716764,
+    "lon": -122.467386,
+    "bearing": 90,
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/de-young-perry-lion: OSM node 6551999583 (Lion, R. Hinton Perry 1898), by the de Young Museum, Golden Gate Park. Bearing 90 (toward the Music Concourse) is a guess; 1.4 m is a guess; no pedestal drawn (unverified)."
+  },
+  {
+    "id": "exploratorium-buckyball",
+    "name": "Buckyball, Exploratorium Pier 15",
+    "asset": "exploratorium-buckyball",
+    "lat": 37.8012494,
+    "lon": -122.3987696,
+    "bearing": 0,
+    "lodRanges": [
+      180,
+      420
+    ],
+    "note": "assetkit-models-sf/exploratorium-buckyball: OSM node 6433062291 (Buckyball, Leo Villareal 2016), Pier 15 plaza of the Exploratorium. 7.6 m (25 ft) overall; rotationally symmetric, so the bearing is arbitrary.",
+    "deckAbove": 3.0
   }
 ]
