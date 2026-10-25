@@ -48,18 +48,5 @@
     "image": "way-35174716.jpg",
     "note": "Tan brick building with regular window/door pattern; towerblock not glass-skin skyscraper",
     "height": 46
-  },
-  {
-    "osm": [
-      "way/35115837"
-    ],
-    "name": "California Institute of Integral Studies",
-    "restyle": "towerblock",
-    "wall": "#c4a868",
-    "trim": "#e8dcc8",
-    "by": "haiku",
-    "image": "way-35115837-2.jpg",
-    "note": "Tan rendered institutional building with punched windows; towerblock not skyscraper",
-    "height": 43
   }
 ]

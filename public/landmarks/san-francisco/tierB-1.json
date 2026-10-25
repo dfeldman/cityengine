@@ -32,16 +32,6 @@
   },
   {
     "osm": [
-      "way/397182870"
-    ],
-    "name": "1401;1415 Mission Street",
-    "restyle": "bauhaus",
-    "height": 40,
-    "note": "Rule check 2026-10-04 (Mapillary on Mission): a dark grey modern panel box with large glazing; was rule 7 brick.",
-    "wall": "#53585c"
-  },
-  {
-    "osm": [
       "way/256072725"
     ],
     "name": "Building 256072725",

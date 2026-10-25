@@ -136,6 +136,73 @@ function t4b14_333827281(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** 219 Brannan Street (way/148551352): a light grey stucco residential tower of about eighteen storeys, its corner rounded, balconies in columns, over a dark ground floor. (Mapillary 1706367537432692.) */
+function t4b17_148551352(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.76, 0.75, 0.73]
+  tower(out, fit, {
+    height: 53,
+    base: { height: 5, face: { kind: 'blank', wall: [0.3, 0.3, 0.31], material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: GREY, glass: [0.22, 0.3, 0.36], pitch: 3.6, floor: 3.1, solid: 0.5, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 1, colour: GREY, material: 'stucco' },
+  })
+}
+
+/** California Institute of Integral Studies (way/35115837), Mission Street: a cream stucco Beaux-Arts block of six or seven storeys, a red terracotta storefront, a deep dentilled cornice. (Mapillary 204524338632290, 1970394017056717.) */
+function t4b19_35115837(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.85, 0.72]
+  tower(out, fit, {
+    height: 43,
+    base: { height: 5, face: { kind: 'punched', wall: [0.55, 0.3, 0.24], material: 'terracotta', glass: [0.22, 0.24, 0.26], pitch: 4, solid: 0.3, floor: 5 } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.25, 0.28, 0.3], pitch: 3, floor: 3.8, solid: 0.5, material: 'stucco' } }],
+    cornices: [{ at: 0.9, depth: 0.4, colour: CREAM }],
+    crown: { kind: 'parapet', height: 1.5, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** 1401 and 1415 Mission Street (way/397182870), at Tenth: a red-brown framed corner block of about nine storeys, its mullioned blue glass set in deep brown-red piers. (Mapillary 538988697384531, 1736130537045823.) */
+function t4b19_397182870(out: MeshBuilder, fit: Fit): void {
+  const RED: Rgb = [0.5, 0.2, 0.14]
+  tower(out, fit, {
+    height: 40,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.2, 0.12, 0.1], glass: [0.18, 0.22, 0.26], pitch: 4, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: RED, glass: [0.25, 0.35, 0.45], pitch: 4.2, floor: 3.8, solid: 0.22, material: 'terracotta' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: RED, material: 'terracotta' },
+  })
+}
+
+/** 50 Jones Street (way/32864968), at Golden Gate: a white stucco apartment block of about twelve storeys, its windows in regular punched rows, over a plain base. (Mapillary 891230432254711.) No street view stored for this one. */
+function t4b20_32864968(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.92, 0.92, 0.9]
+  tower(out, fit, {
+    height: 48,
+    base: { height: 4, face: { kind: 'blank', wall: [0.5, 0.45, 0.4], material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: [0.2, 0.26, 0.3], pitch: 3.2, floor: 3.2, solid: 0.5, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 1, colour: WHITE, material: 'stucco' },
+  })
+}
+
+/** 360 Third Street (way/25759090): a charcoal office-residential block of about seven storeys, pale concrete ground floor, dark spandrel bands between ribbon windows. (Mapillary 1301354864707821, 914141256849611.) No street view stored for this one. */
+function t4b21_25759090(out: MeshBuilder, fit: Fit): void {
+  const CHAR: Rgb = [0.36, 0.37, 0.39]
+  tower(out, fit, {
+    height: 27,
+    base: { height: 4, face: { kind: 'punched', wall: [0.8, 0.8, 0.78], glass: [0.2, 0.23, 0.27], pitch: 3, floor: 4, solid: 0.45, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: CHAR, glass: [0.2, 0.23, 0.27], floor: 3.6, solid: 0.6, material: 'concrete' } }],
+    crown: { kind: 'parapet', height: 1, colour: CHAR, material: 'concrete' },
+  })
+}
+
+/** 580 McAllister Street (way/256477871), at Franklin: a buff brick apartment block of 1912, its angled bay windows running up the corner under a deep dentilled cornice. (Mapillary 1111936931083709, 1073875107802486.) */
+function t4b22_256477871(out: MeshBuilder, fit: Fit): void {
+  const BUFF: Rgb = [0.7, 0.62, 0.52]
+  tower(out, fit, {
+    height: 26,
+    base: { height: 3, face: { kind: 'punched', wall: [0.66, 0.6, 0.5], glass: [0.22, 0.24, 0.26], pitch: 4, solid: 0.5, floor: 3, material: 'ashlar' } },
+    tiers: [{ to: 1, face: { kind: 'bays', wall: BUFF, glass: [0.22, 0.24, 0.26], pitch: 4, floor: 4.2, material: 'brick', bay: { depth: 0.8 } } }],
+    crown: { kind: 'parapet', height: 1.2, colour: BUFF, material: 'brick' },
+  })
+}
+
 export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   t4b1_156123224,
   t4b2_192328858,
@@ -147,4 +214,10 @@ export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t4b12_35111958,
   t4b13_80296729,
   t4b14_333827281,
+  t4b17_148551352,
+  t4b19_35115837,
+  t4b19_397182870,
+  t4b20_32864968,
+  t4b21_25759090,
+  t4b22_256477871,
 }

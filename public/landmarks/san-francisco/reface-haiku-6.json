@@ -106,19 +106,6 @@
   },
   {
     "osm": [
-      "way/148551352"
-    ],
-    "name": "219 Brannan Street",
-    "restyle": "towerblock",
-    "wall": "#a67c5d",
-    "trim": "#8b6e4f",
-    "by": "haiku",
-    "image": "way-148551352.jpg",
-    "note": "Tall brick tower with punched windows in regular grid. Reddish-brown brick color.",
-    "height": 53
-  },
-  {
-    "osm": [
       "way/148551351"
     ],
     "name": "239 Brannan Street",

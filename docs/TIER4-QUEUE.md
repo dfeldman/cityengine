@@ -22,14 +22,14 @@ Builders go in `src/render/landmarks/sf/downtown-t4.ts`, manifest entries in `pu
 | 12 | 242 | Civic Center | `way/35111958` 1TENth · 40 m · reface || done |
 | 13 | 242 | SoMa by Market | `way/80296729` 201 Third Street · 46 m · reface || done |
 | 14 | 242 | Union Square | `way/333827281` The White House Building · 32 m · reface || done |
-| 15 | 241 | Chinatown | `way/29087099` (unnamed) · 30 m · reface | |
-| 16 | 226 | Union Square | `way/3095925` (unnamed) · 42 m · generic | |
-| 17 | 225 | SoMa by Market | `way/148551352` 219 Brannan Street · 53 m · reface | |
-| 18 | 224 | SoMa by Market | `way/21451853` (unnamed) · 16 m · generic | |
-| 19 | 222 | Civic Center | `way/35115837` California Institute of Integral Studies · 43 m · reface<br>`way/397182870` 1401;1415 Mission Street · 40 m · reface | |
-| 20 | 219 | Tenderloin | `way/32864968` 50 Jones · 48 m · reface | |
-| 21 | 216 | SoMa by Market | `way/25759090` 360 3rd Street · 27 m · reface | |
-| 22 | 215 | Civic Center | `way/3471533` (unnamed) · 27 m · generic<br>`way/256477871` 580 McAllister Street · 26 m · generic | |
+| 15 | 241 | Chinatown | `way/29087099` (unnamed) · 30 m · reface || done |
+| 16 | 226 | Union Square | `way/3095925` (unnamed) · 42 m · generic || done |
+| 17 | 225 | SoMa by Market | `way/148551352` 219 Brannan Street · 53 m · reface || done |
+| 18 | 224 | SoMa by Market | `way/21451853` (unnamed) · 16 m · generic || done |
+| 19 | 222 | Civic Center | `way/35115837` California Institute of Integral Studies · 43 m · reface<br>`way/397182870` 1401;1415 Mission Street · 40 m · reface || done |
+| 20 | 219 | Tenderloin | `way/32864968` 50 Jones · 48 m · reface || done |
+| 21 | 216 | SoMa by Market | `way/25759090` 360 3rd Street · 27 m · reface || done |
+| 22 | 215 | Civic Center | `way/3471533` (unnamed) · 27 m · generic<br>`way/256477871` 580 McAllister Street · 26 m · generic || done |
 | 23 | 214 | SoMa by Market | `way/288716386` Museum Parc Apartments · 40 m · reface | |
 | 24 | 209 | SoMa by Market | `way/112774492` The Clancy, Autograph Collection · 50 m · reface | |
 | 25 | 203 | SoMa by Market | `way/192307107` 360 Spear Street Data Center · 34 m · generic | |
