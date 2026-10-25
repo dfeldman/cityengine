@@ -982,5 +982,110 @@
       420
     ],
     "note": "assetkit-models-sf/skygate: OSM node 6910433490, the Embarcadero; 26 ft; arch plane along the street."
+  },
+  {
+    "id": "time-signature",
+    "name": "Time Signature",
+    "asset": "time-signature",
+    "lat": 37.7886937,
+    "lon": -122.3960591,
+    "bearing": 0,
+    "lodRanges": [
+      200,
+      480
+    ],
+    "note": "assetkit-models-sf/time-signature: OSM node 12403510001 (a rounded lon/lat that falls in the Howard/1st carriageway), moved ~15 m onto the sidewalk in front of 400 Howard by judgement (Richard Deutsch, 2008; 48 ft); abstract, facing north."
+  },
+  {
+    "id": "venus-trinity",
+    "name": "Venus",
+    "asset": "venus-trinity",
+    "lat": 37.7782335,
+    "lon": -122.4131429,
+    "bearing": 30,
+    "lodRanges": [
+      250,
+      600
+    ],
+    "note": "assetkit-models-sf/venus-trinity: OSM node 5441990638, Trinity Place piazza at 8th and Market (Lawrence Argent; 92 ft); facing north-east toward Market Street by judgement."
+  },
+  {
+    "id": "verdi-monument",
+    "name": "Verdi Monument",
+    "asset": "verdi-monument",
+    "lat": 37.7691659,
+    "lon": -122.468342,
+    "bearing": 90,
+    "lodRanges": [
+      180,
+      420
+    ],
+    "note": "assetkit-models-sf/verdi-monument: OSM node 5135754623, west side of the Music Concourse, Golden Gate Park (Grossoni, 1914; ~5 m incl. platform); facing east across the Concourse."
+  },
+  {
+    "id": "volunteer-firemen",
+    "name": "Volunteer Firemen Memorial",
+    "asset": "volunteer-firemen",
+    "lat": 37.8008384,
+    "lon": -122.4106829,
+    "bearing": 90,
+    "plinth": [
+      2.4,
+      2.4,
+      1.5
+    ],
+    "plinthColour": "#cfcbbf",
+    "lodRanges": [
+      150,
+      360
+    ],
+    "note": "assetkit-models-sf/volunteer-firemen: OSM node 411276940, Washington Square (Patigian, 1933; ~3 m group on a round stone pedestal); facing east by judgement."
+  },
+  {
+    "id": "wave-heart",
+    "name": "Wave Heart",
+    "asset": "wave-heart",
+    "lat": 37.7526412,
+    "lon": -122.50889,
+    "bearing": 90,
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/wave-heart: OSM node 12763329591, Ocean Beach (Wesley Skinner, 2025); size not found, 1.4 m by judgement on a low granite block; replaces the procedural blue stand-in heart (art.json); facing inland.",
+    "replaces": "Wave Heart",
+    "plinth": [
+      2.4,
+      0.8,
+      0.4
+    ],
+    "plinthColour": "#8e8a80"
+  },
+  {
+    "id": "yoda-fountain",
+    "name": "Yoda Fountain",
+    "asset": "yoda-fountain",
+    "lat": 37.7988199,
+    "lon": -122.450486,
+    "bearing": 180,
+    "replaces": "Yoda Fountain",
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/yoda-fountain: OSM node 665688981, Letterman Digital Arts Center (Lawrence Noble, 2005); the model is the whole fountain, so it replaces the procedural one; facing south by judgement."
+  },
+  {
+    "id": "st-francis-hugging-globe",
+    "name": "St Francis Hugging the Globe",
+    "asset": "st-francis-hugging-globe",
+    "lat": 37.78435,
+    "lon": -122.42435,
+    "bearing": 90,
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/st-francis-hugging-globe: no OSM node; St Mary's Cathedral plaza, Gough at Geary (Timothy Schmalz, 2026), placed by judgement by the entrance steps, facing east to Gough."
   }
 ]
