@@ -263,45 +263,9 @@
  },
  {
   "osm": [
-   "way/173725079"
-  ],
-  "name": "923 Market Street",
-  "restyle": "chicago",
-  "note": "Pre-war commercial block.",
-  "levels": 5
- },
- {
-  "osm": [
    "way/173725095"
   ],
   "name": "925 Market Street",
-  "restyle": "brick",
-  "note": "Low brick block.",
-  "levels": 4
- },
- {
-  "osm": [
-   "way/256037012"
-  ],
-  "name": "927-929 Market Street",
-  "restyle": "chicago",
-  "note": "Pre-war commercial block.",
-  "levels": 6
- },
- {
-  "osm": [
-   "way/256037014"
-  ],
-  "name": "931 Market Street",
-  "restyle": "brick",
-  "note": "Low brick block.",
-  "levels": 4
- },
- {
-  "osm": [
-   "way/332517080"
-  ],
-  "name": "969 Market Street",
   "restyle": "brick",
   "note": "Low brick block.",
   "levels": 4

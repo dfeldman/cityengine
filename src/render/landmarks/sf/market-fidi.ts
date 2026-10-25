@@ -1784,6 +1784,53 @@ export function market1220(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** 923 Market (batch 31): a five-storey pre-war block, its two lower floors painted olive green over red brick
+ *  above, double-hung windows and a plain parapet (Mapillary frames 01 and 02). */
+export function market923(out: MeshBuilder, fit: Fit): void {
+  const OLIVE: Rgb = [0.42, 0.46, 0.3], RED: Rgb = [0.55, 0.26, 0.19], CREAM: Rgb = [0.86, 0.84, 0.78], DARK: Rgb = [0.2, 0.22, 0.24]
+  tower(out, fit, {
+    height: 18,
+    base: { height: 4, face: { kind: 'punched', wall: OLIVE, glass: DARK, pitch: 3.2, floor: 4, solid: 0.5, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: RED, glass: DARK, pitch: 3, floor: 3.4, solid: 0.6, material: 'brick' }, cornice: { depth: 0.4, height: 0.5, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 1, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** 927-929 Market (way/256037012, batch 31): a stepped, Chicago-style block painted charcoal over brick, with
+ *  fire escapes and a green SHEIKH shop sign on its dark ground floor (Mapillary frames 01 and 03). */
+export function market256037012(out: MeshBuilder, fit: Fit): void {
+  const CHAR: Rgb = [0.2, 0.23, 0.22], DARK: Rgb = [0.16, 0.18, 0.18]
+  tower(out, fit, {
+    height: 21,
+    base: { height: 4, face: { kind: 'blank', wall: DARK, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CHAR, glass: [0.26, 0.3, 0.32], pitch: 3, floor: 3.5, solid: 0.45, material: 'brick' }, cornice: { depth: 0.5, height: 0.6, colour: CHAR } }],
+    crown: { kind: 'stepped', steps: 2, height: 2, inset: 0.8, material: 'brick' },
+  })
+}
+
+/** 931 Market (batch 31): a blue-fascia ground floor under a pale glass curtain wall (Mapillary frame 01). */
+export function market931(out: MeshBuilder, fit: Fit): void {
+  const BLUE: Rgb = [0.12, 0.24, 0.5], GLASS: Rgb = [0.36, 0.46, 0.52], FRAME: Rgb = [0.4, 0.42, 0.44]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 4, face: { kind: 'curtain', wall: BLUE, glass: GLASS, pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'curtain', wall: FRAME, glass: GLASS, pitch: 3, floor: 3.4, material: 'metal' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: FRAME, material: 'metal' },
+  })
+}
+
+/** 969 Market, "The Village" (batch 31): a dark grey panelled block, a black fascia sign over the shopfront and
+ *  two floors of dark ribbon windows under a plain parapet (Mapillary frames 01 and 02). */
+export function market969(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.24, 0.25, 0.26], BLACK: Rgb = [0.1, 0.1, 0.11]
+  tower(out, fit, {
+    height: 14,
+    base: { height: 4, face: { kind: 'curtain', wall: BLACK, glass: [0.2, 0.24, 0.26], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: GREY, glass: [0.22, 0.26, 0.28], floor: 3.4, solid: 0.55, material: 'metal' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: GREY, material: 'metal' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -1858,4 +1905,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   kearny1Annex,
   market1430, market1438, market1448,
   market1242, market1234, market1220,
+  market923, market256037012, market931, market969,
 }
