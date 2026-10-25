@@ -69,9 +69,13 @@ let imputed: Imputed | null = null
 /** the code alphabet: a field's answer is its index in `values`, one character each; `.` is no answer */
 const CODES = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
-/** Fetch the model's answers when `?looks=imputed|gated` asks for them; a failed fetch leaves the generics. */
+/**
+ * Fetch the answers `?looks=` asks for: the model's (`imputed`, `gated`) or the street-photo labels (`labels`, every
+ * labelled building, tools/appearance/labels_file.py). A failed fetch leaves the generics (for `labels`, the bundled
+ * table of the first 81).
+ */
 export async function loadLooks(base: string): Promise<void> {
-  if ((LOOKS_MODE !== 'imputed' && LOOKS_MODE !== 'gated') || imputed) return
+  if (LOOKS_MODE === 'generic' || imputed) return
   try {
     const r = await fetch(new URL(`appearance/${LOOKS_MODE}.json`, base))
     if (r.ok) imputed = await r.json() as Imputed
@@ -79,10 +83,9 @@ export async function loadLooks(base: string): Promise<void> {
 }
 
 function labelOf(id: number): Label | undefined {
-  if (LOOKS_MODE === 'labels') return LABELS[String(id)]
-  if (!imputed) return undefined
+  if (!imputed) return LOOKS_MODE === 'labels' ? LABELS[String(id)] : undefined
   const code = imputed.rows[String(id)]
-  if (!code) return undefined
+  if (!code) return LOOKS_MODE === 'labels' ? LABELS[String(id)] : undefined
   const l: Label = {}
   for (let i = 0; i < imputed.fields.length; i++) {
     const k = CODES.indexOf(code[i])
