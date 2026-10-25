@@ -59,8 +59,11 @@ You get a handful of statues. Work through them one at a time.
      - `tex` 512 for LOD0 and 256 for LOD1 on a textured model; 256 for both on an untextured one;
      - after packing, check the LOD files' sizes in the packer's output: LOD0 should be under about 400 KB and LOD1
        under 150 KB. If not, lower the ratio and pack again;
+     - if the simplifier STALLS (the triangle count barely moves whatever the ratio: a scan whose UV seams lock it), add
+       `"sloppy": true` to that level — meshopt's simplifySloppy, which ignores the topology;
    - `artist`, `description`, `keywords`, `reference` (the about.md path, if any), `notes` (what you decided and why).
-4. **Pack and upload**, from `../assetkit`:
+4. **Pack and upload**, with the shell's working directory IN `../assetkit` (`cd /Users/dfeldman/assetkit && …`; run from
+   this repo, the uploader scans other sessions' worktrees and fails with "5 index files share the name"):
    - `node tools/modelpack/pack.ts <id>`
    - `node ../assetmgr/dist/cli.js upload --only assetkit-models-sf`
    - The game reads the model's facts from the bucket's index, so a statue cannot be checked until it is uploaded.
