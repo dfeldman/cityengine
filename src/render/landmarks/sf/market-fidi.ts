@@ -3978,6 +3978,58 @@ export function t3b124_690663635(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 126: way/256088650 (501;503 Pacific Avenue, front Pacific), 245 m², OSM 5 m. Photos -01 and -02: a
+ * charcoal stucco box of one storey with a glazed shopfront along the ground, a flat parapet, the taller cream
+ * neighbours beside it. */
+export function t3b126_256088650(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.3, 0.3, 0.31], GLASS: Rgb = [0.2, 0.24, 0.28]
+  tower(out, fit, {
+    height: 5,
+    base: { height: 3.2, face: { kind: 'curtain', wall: GREY, glass: GLASS, pitch: 3, floor: 3.2, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'blank', wall: GREY, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 0.6, colour: GREY, material: 'stucco' },
+  })
+}
+
+/** T3 batch 127: way/940068788 (unnamed, Clay Street area, nearest street Clay), 264 m², built 1912, OSM height
+ * missing (11 m drawn). Photos -01 and -02: a charcoal-painted block of about three storeys, its upper floors a
+ * ribbon of big glazed windows, a dentilled cornice, set between cream brick office blocks and a hotel. */
+export function t3b127_940068788(out: MeshBuilder, fit: Fit): void {
+  const CHAR: Rgb = [0.22, 0.22, 0.23], GLASS: Rgb = [0.24, 0.28, 0.3]
+  tower(out, fit, {
+    height: 11,
+    base: { height: 3, face: { kind: 'curtain', wall: CHAR, glass: GLASS, pitch: 3, floor: 3, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'bands', wall: CHAR, glass: GLASS, floor: 3.6, solid: 0.4, material: 'stucco' }, cornice: { depth: 0.4, height: 0.4, colour: CHAR } }],
+    crown: { kind: 'parapet', height: 0.8, colour: CHAR, material: 'stucco' },
+  })
+}
+
+/** T3 batch 128: way/260937903 (440;444 Jackson Street, front Jackson), 247 m², OSM 5 m. Photos -01 and -02: a white
+ * stucco shopfront of one storey and a little more, its tall glazed windows under a plain cornice, the brick
+ * houses of Jackson either side. */
+export function t3b128_260937903(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.88, 0.82], GLASS: Rgb = [0.22, 0.25, 0.28]
+  tower(out, fit, {
+    height: 5,
+    base: { height: 3.6, face: { kind: 'curtain', wall: CREAM, glass: GLASS, pitch: 2.8, floor: 3.6, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'blank', wall: CREAM, material: 'stucco' }, cornice: { depth: 0.3, height: 0.25, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 0.5, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** T3 batch 128: way/260937910 (458 Jackson Street, front Jackson), 268 m², OSM 5 m. Photo -01: a red-brick house of
+ * two storeys with sash windows above a white ground floor and a white-framed door, the white shopfronts of
+ * 440 beside it. Drawn at 7 m, believing the photograph over OSM. */
+export function t3b128_260937910(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.55, 0.27, 0.2], WHITE: Rgb = [0.9, 0.88, 0.84], GLASS: Rgb = [0.22, 0.25, 0.28]
+  tower(out, fit, {
+    height: 7,
+    base: { height: 2.4, face: { kind: 'punched', wall: WHITE, glass: GLASS, pitch: 2.6, floor: 2.4, solid: 0.45, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: GLASS, pitch: 2.6, floor: 3.2, solid: 0.6, material: 'brick' }, cornice: { depth: 0.25, height: 0.25, colour: WHITE } }],
+    crown: { kind: 'parapet', height: 0.5, colour: BRICK, material: 'brick' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -4097,4 +4149,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t3b117_260930237, t3b119_148668320, t3b119_148668315, t3b119_148668307,
   t3b120_256088139, t3b120_256088145, t3b120_260937906,
   t3b121_148666784, t3b121_260937901, t3b122_148668310, t3b123_588363946, t3b123_588363948, t3b123_588363947, t3b124_690663635,
+  t3b126_256088650, t3b127_940068788, t3b128_260937903, t3b128_260937910,
 }

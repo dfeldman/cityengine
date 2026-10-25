@@ -134,10 +134,10 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 122 | 21 | `way/148668310` (unnamed) · 11 m · reface brick || done (with 121; photo-less outlines skipped) |
 | 123 | 21 | `way/588363946` (unnamed) · ? · generic<br>`way/588363948` (unnamed) · ? · generic<br>`way/588363947` (unnamed) · ? · generic || done (with 121; photo-less outlines skipped) |
 | 124 | 21 | `way/690663635` (unnamed) · ? · generic || done (with 121; photo-less outlines skipped) |
-| 125 | 21 | `way/148712649` (unnamed) · 12 m · reface chicago<br>`way/690644021` (unnamed) · 11 m · reface None<br>`way/690644022` (unnamed) · 7 m · reface None | |
-| 126 | 20 | `way/256088652` 831 Montgomery Street · 7 m · reface brick<br>`way/256088650` 501;503 Pacific Avenue · 5 m · reface brick | |
-| 127 | 19 | `way/940068788` (unnamed) · ? · generic | |
-| 128 | 19 | `way/256088149` 48 Gold Street · 6 m · reface brick<br>`way/260937903` 440;444 Jackson Street · 5 m · reface brick<br>`way/260937910` 458 Jackson Street · 5 m · reface brick | |
+| 125 | 21 | `way/148712649` (unnamed) · 12 m · reface chicago<br>`way/690644021` (unnamed) · 11 m · reface None<br>`way/690644022` (unnamed) · 7 m · reface None || done (with 125; photo-less outlines skipped) |
+| 126 | 20 | `way/256088652` 831 Montgomery Street · 7 m · reface brick<br>`way/256088650` 501;503 Pacific Avenue · 5 m · reface brick || done (with 125; photo-less outlines skipped) |
+| 127 | 19 | `way/940068788` (unnamed) · ? · generic || done (with 125; photo-less outlines skipped) |
+| 128 | 19 | `way/256088149` 48 Gold Street · 6 m · reface brick<br>`way/260937903` 440;444 Jackson Street · 5 m · reface brick<br>`way/260937910` 458 Jackson Street · 5 m · reface brick || done (with 125; photo-less outlines skipped) |
 | 129 | 18 | `way/260930238` (unnamed) · 13 m · reface victorian<br>`way/260930235` (unnamed) · ? · reface victorian<br>`way/260930254` (unnamed) · 13 m · reface victorian | |
 | 130 | 16 | `way/260937904` (unnamed) · 9 m · reface brick<br>`way/260937899` (unnamed) · 11 m · reface brick<br>`way/260937908` (unnamed) · 8 m · reface classical | |
 | 131 | 15 | `way/260288459` (unnamed) · 11 m · generic | |
