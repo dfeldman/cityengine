@@ -885,5 +885,102 @@
       300
     ],
     "note": "assetkit-models-sf/philo-farnsworth: OSM node 8893626637, Letterman Digital Arts Center; ~2 m bronze; bearing by judgement."
+  },
+  {
+    "id": "sun-yat-sen",
+    "name": "Sun Yat-sen",
+    "asset": "sun-yat-sen",
+    "lat": 37.7920186,
+    "lon": -122.4054905,
+    "bearing": 90,
+    "lodRanges": [
+      150,
+      360
+    ],
+    "replaces": "Sun Yat-sen statue",
+    "note": "assetkit-models-sf/sun-yat-sen: OSM node 2496738466, St Mary's Square; Bufano's 1937 statue with its own pink granite base; bearing by judgement."
+  },
+  {
+    "id": "thomas-starr-king",
+    "name": "Thomas Starr King",
+    "asset": "thomas-starr-king",
+    "lat": 37.7722869,
+    "lon": -122.466282,
+    "bearing": 180,
+    "plinth": [
+      2.2,
+      2.4,
+      2.4
+    ],
+    "plinthColour": "#7a4e42",
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/thomas-starr-king: OSM node 6468763557, Golden Gate Park (about.md gives -122.4606 near the Conservatory; the OSM node is used); bearing by judgement."
+  },
+  {
+    "id": "sphinx-de-young-north",
+    "name": "Sphinx, de Young Museum (north)",
+    "asset": "sphinx-de-young",
+    "lat": 37.771221,
+    "lon": -122.468295,
+    "bearing": 138,
+    "plinth": [
+      2.8,
+      1.5,
+      0.4
+    ],
+    "plinthColour": "#b8b4aa",
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/sphinx-de-young: no OSM node; one of the pair flanking the de Young's main (south-east) entrance, 9 m either side of the facade centre of OSM way 1652482 (placed by judgement), facing out from the facade."
+  },
+  {
+    "id": "sphinx-de-young-south",
+    "name": "Sphinx, de Young Museum (south)",
+    "asset": "sphinx-de-young",
+    "lat": 37.7711128,
+    "lon": -122.4684477,
+    "bearing": 138,
+    "plinth": [
+      2.8,
+      1.5,
+      0.4
+    ],
+    "plinthColour": "#b8b4aa",
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/sphinx-de-young: no OSM node; the other of the pair, placed by judgement beside the entrance of OSM way 1652482, facing out from the facade."
+  },
+  {
+    "id": "corpus-pier-14",
+    "name": "Corpus",
+    "asset": "corpus-pier-14",
+    "lat": 37.7936492,
+    "lon": -122.391911,
+    "bearing": 90,
+    "lodRanges": [
+      150,
+      360
+    ],
+    "note": "assetkit-models-sf/corpus-pier-14: OSM node 13714595547, Pier 14 (Big Art Loop loan, 2025; 16 ft); facing the Bay by judgement."
+  },
+  {
+    "id": "skygate",
+    "name": "Skygate",
+    "asset": "skygate",
+    "lat": 37.807988,
+    "lon": -122.408126,
+    "bearing": 180,
+    "lodRanges": [
+      180,
+      420
+    ],
+    "note": "assetkit-models-sf/skygate: OSM node 6910433490, the Embarcadero; 26 ft; arch plane along the street."
   }
 ]
