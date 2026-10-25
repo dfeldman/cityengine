@@ -793,5 +793,97 @@
       420
     ],
     "note": "assetkit-models-sf/la-chiffonniere: OSM node 11612234500, Embarcadero Plaza (Justin Herman). 6.7 m (22 ft). Bearing 90 (toward the Ferry Building) is a guess; the piece has no true front."
+  },
+  {
+    "id": "mckinley-memorial",
+    "name": "William McKinley Memorial",
+    "asset": "mckinley-memorial",
+    "lat": 37.7731029,
+    "lon": -122.4414836,
+    "bearing": 90,
+    "replaces": "William McKinley Memorial",
+    "lodRanges": [
+      180,
+      420
+    ],
+    "note": "assetkit-models-sf/mckinley-memorial: OSM node 1155753228, the Panhandle at Baker; replaces the procedural stand-in (steps, pedestal, figure). Bearing 90 along the Panhandle by judgement."
+  },
+  {
+    "id": "naga-sea-serpent",
+    "name": "Naga",
+    "asset": "naga-sea-serpent",
+    "lat": 37.7714253,
+    "lon": -122.4779915,
+    "bearing": 90,
+    "lodRanges": [
+      200,
+      480
+    ],
+    "note": "assetkit-models-sf/naga-sea-serpent: OSM node 13050632310, IN Rainbow Falls Pond by the JFK Promenade, Golden Gate Park, where it was installed in 2025 (Illuminate; 100 ft long, 25 ft tall) — the body lies over the water on purpose. Bearing by judgement."
+  },
+  {
+    "id": "roxy-paine-node",
+    "name": "Node",
+    "asset": "roxy-paine-node",
+    "lat": 37.7823086,
+    "lon": -122.40176,
+    "bearing": 0,
+    "lodRanges": [
+      250,
+      600
+    ],
+    "note": "assetkit-models-sf/roxy-paine-node: OSM node 10857386260, Yerba Buena/Moscone station plaza (4th and Clementina); 102 ft."
+  },
+  {
+    "id": "ordonez-gun",
+    "name": "The Ordonez Gun",
+    "asset": "ordonez-gun",
+    "lat": 37.7997633,
+    "lon": -122.45784,
+    "bearing": 0,
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/ordonez-gun: OSM node 5241902003, Pershing Square, Presidio (a different gun from the Spanish cannons beside the flagpole); muzzle direction by judgement."
+  },
+  {
+    "id": "pardo-van-ness-south",
+    "name": "Van Ness Lighting Sculpture (south)",
+    "asset": "pardo-van-ness-lighting",
+    "lat": 37.7850372,
+    "lon": -122.421302,
+    "bearing": 3,
+    "lodRanges": [
+      160,
+      400
+    ],
+    "note": "assetkit-models-sf/pardo-van-ness-lighting: OSM node 9630202857, Van Ness Ave median; row laid along the street."
+  },
+  {
+    "id": "pardo-van-ness-north",
+    "name": "Van Ness Lighting Sculpture (north)",
+    "asset": "pardo-van-ness-lighting",
+    "lat": 37.7854294,
+    "lon": -122.4212699,
+    "bearing": 3,
+    "lodRanges": [
+      160,
+      400
+    ],
+    "note": "assetkit-models-sf/pardo-van-ness-lighting: OSM node 9630202858, Van Ness Ave median; row laid along the street."
+  },
+  {
+    "id": "philo-farnsworth",
+    "name": "Philo T. Farnsworth",
+    "asset": "philo-farnsworth",
+    "lat": 37.7993338,
+    "lon": -122.448781,
+    "bearing": 180,
+    "lodRanges": [
+      120,
+      300
+    ],
+    "note": "assetkit-models-sf/philo-farnsworth: OSM node 8893626637, Letterman Digital Arts Center; ~2 m bronze; bearing by judgement."
   }
 ]

@@ -83,6 +83,9 @@ You get a handful of statues. Work through them one at a time.
 6. **Check in place.** Render it from about 12–20 m in front, at eye height:
    `node --experimental-strip-types tools/look-at.ts --city=san-francisco --at=<x>,<z> --from=<x>,<z>,1.7 --lift=<a third of its height> --fov=60 --extra="traffic=none&cars=0&without=trees,plants,crowd,rider,life" --out=<scratch>/<id>.png`
    - The city frame: x = (lon + 122.412) × 87 950 m east; z = (lat − 37.793) × 111 000 m north.
+   - Also ONE overhead look (`--from=<x-30>,<z-30>,35 --lift=0`): move it onto drawn ground if it clips a building or
+     stands over water that is not its own (the Buckyball stood on an undrawn pier plaza) — but a piece installed IN a
+     pond or fountain stays in it (Naga lies in Rainbow Falls Pond).
    - Look at it. Is it the right way round? Standing on the ground, not floating or sunk? The right size against
      the people, benches and street around it? Fix the entry and re-check once if not.
 
