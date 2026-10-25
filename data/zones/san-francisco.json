@@ -1430,7 +1430,7 @@
        },
        {
         "form": "eucalyptus",
-        "weight": 2,
+        "weight": 2.5,
         "h": [
          16,
          28
@@ -1438,7 +1438,7 @@
        },
        {
         "form": "oak",
-        "weight": 1,
+        "weight": 0.5,
         "h": [
          10,
          17
@@ -1446,16 +1446,48 @@
        },
        {
         "form": "olive",
-        "weight": 1,
+        "weight": 1.5,
         "h": [
          5,
          9
+        ]
+       },
+       {
+        "form": "myrtle",
+        "weight": 1,
+        "h": [
+         7,
+         12
+        ]
+       },
+       {
+        "form": "spiky",
+        "weight": 0.8,
+        "h": [
+         3,
+         6
+        ]
+       },
+       {
+        "form": "windmill",
+        "weight": 0.4,
+        "h": [
+         4,
+         8
+        ]
+       },
+       {
+        "form": "treefern",
+        "weight": 0.4,
+        "h": [
+         3,
+         6
         ]
        }
       ]
      },
      "lawn": {
-      "density": 0.0007,
+      "density": 0.0008,
       "clump": 0.55,
       "species": [
        {
@@ -1475,13 +1507,71 @@
         ]
        },
        {
-        "form": "oak",
+        "form": "myrtle",
+        "weight": 1.5,
+        "h": [
+         7,
+         12
+        ]
+       },
+       {
+        "form": "spiky",
         "weight": 1,
+        "h": [
+         3,
+         6
+        ]
+       },
+       {
+        "form": "canary",
+        "weight": 0.6,
+        "h": [
+         8,
+         14
+        ]
+       },
+       {
+        "form": "fan",
+        "weight": 0.4,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "oak",
+        "weight": 0.5,
         "h": [
          10,
          17
         ]
+       },
+       {
+        "form": "olive",
+        "weight": 0.8,
+        "h": [
+         5,
+         9
+        ]
        }
+      ]
+     },
+     "shrubs": {
+      "shrubs": [
+       "nz_flax",
+       "nz_flax",
+       "echium",
+       "leucadendron",
+       "agapanthus",
+       "coyote_brush",
+       "fuchsia",
+       "bush_green"
+      ],
+      "flowers": [
+       "tulip",
+       "poppy",
+       "daisy",
+       "lupine"
       ]
      }
     }
@@ -1503,7 +1593,8 @@
      37.776,
      -122.513
     ]
-   ]
+   ],
+   "_note": "2026-10-25: a real tropical-and-temperate mix (owner: \"we didn't actually have any tropical plants … it looks like a cold weather park. The reality is it has an interesting mix of tropical and deciduous trees\"): palms, tree ferns, cabbage trees, pohutukawa and bottlebrush raised to about a third of the lawns and a quarter of the woods east of the windbreak, and a tropical understory (bird of paradise, NZ flax, calla lily, agapanthus, fuchsia, Pride of Madeira)."
   },
   {
    "ref": "plant-ggp-middle",
@@ -1512,7 +1603,7 @@
    "props": {
     "plant": {
      "wood": {
-      "density": 0.005,
+      "density": 0.0055,
       "clump": 0.55,
       "species": [
        {
@@ -1525,7 +1616,7 @@
        },
        {
         "form": "cypress",
-        "weight": 3,
+        "weight": 2.5,
         "h": [
          12,
          20
@@ -1541,7 +1632,7 @@
        },
        {
         "form": "oak",
-        "weight": 2,
+        "weight": 1.5,
         "h": [
          10,
          17
@@ -1549,7 +1640,7 @@
        },
        {
         "form": "laurel",
-        "weight": 2,
+        "weight": 1.5,
         "h": [
          7,
          12
@@ -1557,7 +1648,7 @@
        },
        {
         "form": "plane",
-        "weight": 2,
+        "weight": 1.5,
         "h": [
          11,
          18
@@ -1572,8 +1663,8 @@
         ]
        },
        {
-        "form": "spiky",
-        "weight": 1,
+        "form": "treefern",
+        "weight": 2.2,
         "h": [
          3,
          6
@@ -1581,44 +1672,76 @@
        },
        {
         "form": "canary",
-        "weight": 1,
+        "weight": 1.5,
         "h": [
          8,
-         13
-        ]
-       },
-       {
-        "form": "treefern",
-        "weight": 1,
-        "h": [
-         3,
-         5
+         14
         ]
        },
        {
         "form": "queen",
-        "weight": 0.5,
+        "weight": 0.8,
         "h": [
          8,
          12
+        ]
+       },
+       {
+        "form": "windmill",
+        "weight": 0.8,
+        "h": [
+         4,
+         8
+        ]
+       },
+       {
+        "form": "fan",
+        "weight": 0.8,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "spiky",
+        "weight": 1.2,
+        "h": [
+         3,
+         6
+        ]
+       },
+       {
+        "form": "myrtle",
+        "weight": 1.5,
+        "h": [
+         7,
+         12
+        ]
+       },
+       {
+        "form": "bottlebrush",
+        "weight": 1,
+        "h": [
+         4,
+         7
+        ]
+       },
+       {
+        "form": "weeping",
+        "weight": 0.6,
+        "h": [
+         8,
+         13
         ]
        }
       ]
      },
      "lawn": {
-      "density": 0.0008,
+      "density": 0.0009,
       "clump": 0.45,
       "species": [
        {
         "form": "plane",
-        "weight": 3,
-        "h": [
-         11,
-         18
-        ]
-       },
-       {
-        "form": "deciduous",
         "weight": 2,
         "h": [
          11,
@@ -1627,60 +1750,121 @@
        },
        {
         "form": "oak",
-        "weight": 2,
+        "weight": 1.5,
         "h": [
          10,
          17
         ]
        },
        {
+        "form": "deciduous",
+        "weight": 1.5,
+        "h": [
+         11,
+         18
+        ]
+       },
+       {
         "form": "blossom",
-        "weight": 1,
+        "weight": 1.2,
         "h": [
          5,
          8
         ]
        },
        {
-        "form": "canary",
+        "form": "flowering",
         "weight": 1,
+        "h": [
+         6,
+         10
+        ]
+       },
+       {
+        "form": "myrtle",
+        "weight": 1.5,
+        "h": [
+         7,
+         12
+        ]
+       },
+       {
+        "form": "canary",
+        "weight": 2,
         "h": [
          8,
-         13
+         14
         ]
        },
        {
-        "form": "treefern",
-        "weight": 1,
+        "form": "fan",
+        "weight": 1.5,
         "h": [
-         3,
-         5
-        ]
-       },
-       {
-        "form": "spiky",
-        "weight": 1,
-        "h": [
-         3,
-         5
+         12,
+         20
         ]
        },
        {
         "form": "queen",
-        "weight": 0.5,
+        "weight": 1,
         "h": [
          8,
          12
+        ]
+       },
+       {
+        "form": "treefern",
+        "weight": 1.2,
+        "h": [
+         3,
+         6
+        ]
+       },
+       {
+        "form": "spiky",
+        "weight": 1.2,
+        "h": [
+         3,
+         6
+        ]
+       },
+       {
+        "form": "windmill",
+        "weight": 0.6,
+        "h": [
+         4,
+         8
+        ]
+       },
+       {
+        "form": "weeping",
+        "weight": 0.6,
+        "h": [
+         8,
+         13
         ]
        }
       ]
      },
      "shrubs": {
       "shrubs": [
+       "strelitzia",
+       "strelitzia",
+       "nz_flax",
        "rhododendron",
+       "fuchsia",
        "fern",
-       "bush_green",
-       "hazel"
+       "fern",
+       "calla_lily",
+       "agapanthus",
+       "echium",
+       "hydrangea"
+      ],
+      "flowers": [
+       "tulip",
+       "daisy",
+       "poppy",
+       "lupine"
       ]
      }
     }
@@ -1703,7 +1887,7 @@
      -122.477
     ]
    ],
-   "_note": "2026-10-03: the park's tropical planting added — Canary palms, tree ferns, cabbage trees, queen palms (owner: \"golden gate park is a unique mix of tropical and north american plants\")."
+   "_note": "2026-10-25: a real tropical-and-temperate mix (owner: \"we didn't actually have any tropical plants … it looks like a cold weather park. The reality is it has an interesting mix of tropical and deciduous trees\"): palms, tree ferns, cabbage trees, pohutukawa and bottlebrush raised to about a third of the lawns and a quarter of the woods east of the windbreak, and a tropical understory (bird of paradise, NZ flax, calla lily, agapanthus, fuchsia, Pride of Madeira)."
   },
   {
    "ref": "plant-ggp-east",
@@ -1717,7 +1901,7 @@
       "species": [
        {
         "form": "eucalyptus",
-        "weight": 4,
+        "weight": 3,
         "h": [
          16,
          28
@@ -1725,7 +1909,7 @@
        },
        {
         "form": "cypress",
-        "weight": 3,
+        "weight": 2,
         "h": [
          12,
          20
@@ -1733,7 +1917,7 @@
        },
        {
         "form": "pine",
-        "weight": 2,
+        "weight": 1.5,
         "h": [
          12,
          21
@@ -1741,7 +1925,7 @@
        },
        {
         "form": "oak",
-        "weight": 3,
+        "weight": 2.5,
         "h": [
          10,
          17
@@ -1749,7 +1933,7 @@
        },
        {
         "form": "laurel",
-        "weight": 3,
+        "weight": 2,
         "h": [
          7,
          12
@@ -1757,7 +1941,7 @@
        },
        {
         "form": "plane",
-        "weight": 2,
+        "weight": 1.5,
         "h": [
          11,
          18
@@ -1772,24 +1956,8 @@
         ]
        },
        {
-        "form": "blossom",
-        "weight": 2,
-        "h": [
-         5,
-         8
-        ]
-       },
-       {
-        "form": "myrtle",
-        "weight": 1,
-        "h": [
-         7,
-         12
-        ]
-       },
-       {
-        "form": "spiky",
-        "weight": 1,
+        "form": "treefern",
+        "weight": 3,
         "h": [
          3,
          6
@@ -1797,37 +1965,85 @@
        },
        {
         "form": "canary",
-        "weight": 1,
+        "weight": 1.8,
         "h": [
          8,
-         13
-        ]
-       },
-       {
-        "form": "treefern",
-        "weight": 1,
-        "h": [
-         3,
-         5
+         14
         ]
        },
        {
         "form": "queen",
-        "weight": 0.5,
+        "weight": 1,
         "h": [
          8,
          12
+        ]
+       },
+       {
+        "form": "windmill",
+        "weight": 1,
+        "h": [
+         4,
+         8
+        ]
+       },
+       {
+        "form": "fan",
+        "weight": 1,
+        "h": [
+         12,
+         20
+        ]
+       },
+       {
+        "form": "spiky",
+        "weight": 1.5,
+        "h": [
+         3,
+         6
+        ]
+       },
+       {
+        "form": "myrtle",
+        "weight": 1.5,
+        "h": [
+         7,
+         12
+        ]
+       },
+       {
+        "form": "bottlebrush",
+        "weight": 1,
+        "h": [
+         4,
+         7
+        ]
+       },
+       {
+        "form": "blossom",
+        "weight": 1.5,
+        "h": [
+         5,
+         8
+        ]
+       },
+       {
+        "form": "flowering",
+        "weight": 1,
+        "h": [
+         6,
+         10
         ]
        }
       ]
      },
      "lawn": {
-      "density": 0.001,
+      "density": 0.0011,
       "clump": 0.45,
       "species": [
        {
         "form": "oak",
-        "weight": 3,
+        "weight": 2,
         "h": [
          10,
          17
@@ -1835,7 +2051,7 @@
        },
        {
         "form": "plane",
-        "weight": 2,
+        "weight": 1.5,
         "h": [
          11,
          18
@@ -1843,7 +2059,7 @@
        },
        {
         "form": "deciduous",
-        "weight": 2,
+        "weight": 1.5,
         "h": [
          11,
          18
@@ -1858,59 +2074,100 @@
         ]
        },
        {
+        "form": "flowering",
+        "weight": 1.5,
+        "h": [
+         6,
+         10
+        ]
+       },
+       {
         "form": "myrtle",
-        "weight": 1,
+        "weight": 1.5,
         "h": [
          7,
          12
         ]
        },
        {
+        "form": "bottlebrush",
+        "weight": 0.8,
+        "h": [
+         4,
+         7
+        ]
+       },
+       {
         "form": "canary",
-        "weight": 1,
+        "weight": 2.2,
         "h": [
          8,
-         13
+         14
         ]
        },
        {
-        "form": "treefern",
-        "weight": 1,
+        "form": "fan",
+        "weight": 1.8,
         "h": [
-         3,
-         5
-        ]
-       },
-       {
-        "form": "spiky",
-        "weight": 1,
-        "h": [
-         3,
-         5
+         12,
+         20
         ]
        },
        {
         "form": "queen",
-        "weight": 0.5,
+        "weight": 1.2,
         "h": [
          8,
          12
+        ]
+       },
+       {
+        "form": "treefern",
+        "weight": 1.8,
+        "h": [
+         3,
+         6
+        ]
+       },
+       {
+        "form": "spiky",
+        "weight": 1.4,
+        "h": [
+         3,
+         6
+        ]
+       },
+       {
+        "form": "windmill",
+        "weight": 0.8,
+        "h": [
+         4,
+         8
         ]
        }
       ]
      },
      "shrubs": {
       "shrubs": [
+       "strelitzia",
+       "strelitzia",
        "rhododendron",
        "rhododendron",
+       "hydrangea",
+       "fuchsia",
        "fern",
-       "bush_flowering",
-       "hazel"
+       "calla_lily",
+       "agapanthus",
+       "nz_flax",
+       "bougainvillea",
+       "lantana"
       ],
       "flowers": [
        "tulip",
        "daisy",
-       "poppy"
+       "poppy",
+       "sunflower",
+       "lupine"
       ]
      }
     }
@@ -1933,7 +2190,7 @@
      -122.464
     ]
    ],
-   "_note": "2026-10-03: the park's tropical planting added — Canary palms, tree ferns, cabbage trees, queen palms (owner: \"golden gate park is a unique mix of tropical and north american plants\")."
+   "_note": "2026-10-25: a real tropical-and-temperate mix (owner: \"we didn't actually have any tropical plants … it looks like a cold weather park. The reality is it has an interesting mix of tropical and deciduous trees\"): palms, tree ferns, cabbage trees, pohutukawa and bottlebrush raised to about a third of the lawns and a quarter of the woods east of the windbreak, and a tropical understory (bird of paradise, NZ flax, calla lily, agapanthus, fuchsia, Pride of Madeira)."
   },
   {
    "ref": "plant-the-hills",
