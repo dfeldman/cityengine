@@ -250,6 +250,66 @@ function t4b27_617990577(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** 239 Brannan Street (way/148551351): a light grey stucco residential tower of eighteen storeys over a glazed podium, with rounded balconies at the corner. (Mapillary 1317021873378469, 737060835919391.) */
+function t4b28_148551351(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.78, 0.77, 0.74]
+  const face = { kind: 'punched' as const, wall: GREY, glass: [0.22, 0.27, 0.3] as Rgb, pitch: 3.6, floor: 3, solid: 0.6, material: 'stucco' as const }
+  tower(out, fit, {
+    height: 54,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.2, 0.22, 0.22], glass: [0.2, 0.3, 0.32], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 0.9, face }, { to: 1, inset: 1.5, face }],
+    crown: { kind: 'parapet', height: 1, colour: GREY, material: 'stucco' },
+  })
+}
+
+/** 229 Brannan Street (way/148551346): a tan stone residential tower of about eighteen storeys with horizontal bands of glazing, stepped in at the top. (Mapillary 1606209050374360, 1722338381729281.) */
+function t4b28_148551346(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.72, 0.66, 0.56]
+  const face = { kind: 'bands' as const, wall: TAN, glass: [0.25, 0.3, 0.33] as Rgb, floor: 3.2, solid: 0.55, material: 'stucco' as const }
+  tower(out, fit, {
+    height: 56,
+    base: { height: 4, face: { kind: 'punched', wall: [0.62, 0.58, 0.52], glass: [0.2, 0.23, 0.25], pitch: 4, floor: 4, solid: 0.5, material: 'stucco' } },
+    tiers: [{ to: 0.75, face }, { to: 1, inset: 2, face }],
+    crown: { kind: 'parapet', height: 1.5, colour: [0.55, 0.48, 0.4], material: 'stucco' },
+  })
+}
+
+/** 501 Second Street (way/112758588): a cream stucco block with tall multi-pane windows, a dentilled cornice and a stepped-back top, on a granite base. (Mapillary 1300814448372879, 1118129256925107.) */
+function t4b29_112758588(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.88, 0.82]
+  const face = { kind: 'punched' as const, wall: CREAM, glass: [0.2, 0.24, 0.28] as Rgb, pitch: 3.2, floor: 4, solid: 0.5, material: 'stucco' as const }
+  tower(out, fit, {
+    height: 33,
+    base: { height: 4, face: { kind: 'punched', wall: [0.6, 0.58, 0.54], glass: [0.2, 0.23, 0.26], pitch: 3.2, floor: 4, solid: 0.5, material: 'granite' } },
+    tiers: [{ to: 0.85, face }, { to: 1, inset: 1.5, face }],
+    cornices: [{ at: 0.85, depth: 0.5, colour: CREAM }],
+    crown: { kind: 'parapet', height: 1.2, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** An unnamed tower (way/1487160484, a building:part inside the 345 Spear outline): a buff stone tower of fifteen storeys, stepped back twice at the top. (Mapillary 1712954926220969, 564785099920670.) */
+function t4b30_1487160484(out: MeshBuilder, fit: Fit): void {
+  const BUFF: Rgb = [0.78, 0.7, 0.58]
+  const face = { kind: 'punched' as const, wall: BUFF, glass: [0.2, 0.22, 0.25] as Rgb, pitch: 3.4, floor: 3.6, solid: 0.55, material: 'stucco' as const }
+  tower(out, fit, {
+    height: 60,
+    base: { height: 4, face: { kind: 'punched', wall: [0.5, 0.45, 0.4], glass: [0.2, 0.22, 0.24], pitch: 4, floor: 4, solid: 0.5, material: 'granite' } },
+    tiers: [{ to: 0.75, face }, { to: 0.9, inset: 2.5, face }, { to: 1, inset: 2.5, face }],
+    crown: { kind: 'stepped', steps: 2, height: 2.4, inset: 1.2, face },
+  })
+}
+
+/** An unnamed five-storey brick building (relation/12734194), 345 Spear Street: red brick with tall multi-pane windows under a flat parapet, on the old coffee-works site. (Mapillary 2233593180487972, 2053859341740339.) */
+function t4b30_12734194(out: MeshBuilder, fit: Fit): void {
+  const RED: Rgb = [0.55, 0.28, 0.2]
+  tower(out, fit, {
+    height: 20,
+    tiers: [{ to: 1, face: { kind: 'punched', wall: RED, glass: [0.2, 0.22, 0.22], pitch: 3.2, floor: 4, solid: 0.55, material: 'brick' } }],
+    cornices: [{ at: 0.25, depth: 0.2, colour: [0.7, 0.66, 0.6] }],
+    crown: { kind: 'parapet', height: 1, colour: [0.6, 0.55, 0.5], material: 'concrete' },
+  })
+}
+
 export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   t4b1_156123224,
   t4b2_192328858,
@@ -271,4 +331,9 @@ export const DOWNTOWN_T4: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   t4b24_112774492,
   t4b25_192307107,
   t4b27_617990577,
+  t4b28_148551351,
+  t4b28_148551346,
+  t4b29_112758588,
+  t4b30_1487160484,
+  t4b30_12734194,
 }

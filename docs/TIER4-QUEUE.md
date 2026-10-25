@@ -35,9 +35,9 @@ Builders go in `src/render/landmarks/sf/downtown-t4.ts`, manifest entries in `pu
 | 25 | 203 | SoMa by Market | `way/192307107` 360 Spear Street Data Center · 34 m · generic || done |
 | 26 | 203 | Chinatown | `way/12960861` (unnamed) · 30 m · generic || done |
 | 27 | 202 | SoMa by Market | `way/617990577` (unnamed) · 44 m · reface || done |
-| 28 | 199 | SoMa by Market | `way/148551351` 239 Brannan Street · 54 m · reface<br>`way/148551346` 229 Brannan Street · 56 m · reface | |
-| 29 | 193 | SoMa by Market | `way/112758588` 501 2nd Street · 33 m · reface | |
-| 30 | 192 | SoMa by Market | `way/1487160484` (unnamed) · 60 m · generic<br>`way/25468389` (unnamed) · 20 m · generic | |
+| 28 | 199 | SoMa by Market | `way/148551351` 239 Brannan Street · 54 m · reface<br>`way/148551346` 229 Brannan Street · 56 m · reface || done |
+| 29 | 193 | SoMa by Market | `way/112758588` 501 2nd Street · 33 m · reface || done |
+| 30 | 192 | SoMa by Market | `way/1487160484` (unnamed) · 60 m · generic<br>`way/25468389` (unnamed) · 20 m · generic || done |
 | 31 | 188 | SoMa by Market | `way/192026937` 120 Howard Street · 44 m · reface | |
 | 32 | 186 | SoMa by Market | `way/151980461` Mosso · 26 m · reface | |
 | 33 | 186 | Tenderloin | `way/256058407` Courtyard San Francisco Union Square · 64 m · reface<br>`way/197354891` 747 Post Street · 64 m · reface<br>`way/33570646` Alcazar Theatre · 24 m · reface | |

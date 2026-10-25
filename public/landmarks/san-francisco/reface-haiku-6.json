@@ -106,32 +106,6 @@
   },
   {
     "osm": [
-      "way/148551351"
-    ],
-    "name": "239 Brannan Street",
-    "restyle": "towerblock",
-    "wall": "#b8a896",
-    "trim": "#8b7f76",
-    "by": "haiku",
-    "image": "way-148551351-2.jpg",
-    "note": "Very tall tower with horizontal lineation and punched windows. Tan-brown rendered facade.",
-    "height": 54
-  },
-  {
-    "osm": [
-      "way/148551346"
-    ],
-    "name": "229 Brannan Street",
-    "restyle": "towerblock",
-    "wall": "#8b7355",
-    "accent": "#d4c8b8",
-    "by": "haiku",
-    "image": "way-148551346.jpg",
-    "note": "Tallest building with distinctive two-tone horizontal banding. Brown and tan color scheme.",
-    "height": 56
-  },
-  {
-    "osm": [
       "way/256757161"
     ],
     "name": "1510 Eddy Street",
