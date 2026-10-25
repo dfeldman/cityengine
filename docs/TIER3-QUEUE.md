@@ -121,11 +121,11 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 109 | 29 | `way/256087385` (unnamed) · ? · reface brick<br>`way/256087378` 712;714 Sansome Street · 10 m · reface brick || done (with 109; photo-less outlines skipped) |
 | 110 | 29 | `way/260930249` (unnamed) · 13 m · reface victorian<br>`way/260930243` (unnamed) · 13 m · reface victorian<br>`way/260930246` (unnamed) · ? · reface victorian || done (with 109; photo-less outlines skipped) |
 | 111 | 28 | `way/256088657` 807 Montgomery Street · 10 m · reface brick<br>`way/256088655` 809 Montgomery Street · 11 m · reface brick<br>`way/256088653` 853;855;857 Montgomery Street · 11 m · reface brick || done (with 109; photo-less outlines skipped) |
-| 112 | 27 | `way/260927793` (unnamed) · 13 m · generic | |
-| 113 | 25 | `way/256088154` 56 Gold Street · 9 m · reface brick<br>`way/256088144` 457 Pacific Avenue · 6 m · reface brick<br>`way/256088143` Gold Street · 7 m · reface brick | |
-| 114 | 25 | `way/1279452199` 235 Front Street · 7 m · generic | |
-| 115 | 24 | `way/260930239` (unnamed) · 13 m · reface victorian<br>`way/260930241` (unnamed) · 13 m · reface victorian<br>`way/260930244` (unnamed) · 13 m · reface victorian | |
-| 116 | 23 | `way/260925339` 672;674 Sacramento Street · ? · generic<br>`way/260925340` 666;668 Sacramento Street · ? · generic | |
+| 112 | 27 | `way/260927793` (unnamed) · 13 m · generic || done (with 112; photo-less outlines skipped) |
+| 113 | 25 | `way/256088154` 56 Gold Street · 9 m · reface brick<br>`way/256088144` 457 Pacific Avenue · 6 m · reface brick<br>`way/256088143` Gold Street · 7 m · reface brick || done (with 112; photo-less outlines skipped) |
+| 114 | 25 | `way/1279452199` 235 Front Street · 7 m · generic || done (with 112; photo-less outlines skipped) |
+| 115 | 24 | `way/260930239` (unnamed) · 13 m · reface victorian<br>`way/260930241` (unnamed) · 13 m · reface victorian<br>`way/260930244` (unnamed) · 13 m · reface victorian || done (with 112; photo-less outlines skipped) |
+| 116 | 23 | `way/260925339` 672;674 Sacramento Street · ? · generic<br>`way/260925340` 666;668 Sacramento Street · ? · generic || done (with 112; photo-less outlines skipped) |
 | 117 | 23 | `way/260930252` (unnamed) · ? · reface victorian<br>`way/260930236` (unnamed) · 13 m · reface victorian<br>`way/260930237` (unnamed) · 13 m · reface victorian | |
 | 118 | 22 | `way/256086585` (unnamed) · 6 m · generic | |
 | 119 | 22 | `way/148668320` (unnamed) · ? · reface brick<br>`way/148668315` (unnamed) · 11 m · reface brick<br>`way/148668307` (unnamed) · ? · reface brick | |

@@ -3733,6 +3733,84 @@ export function montgomery853RedBrick(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 112: way/260927793 "(unnamed)", 88 m², a building:part (13 m) of the Gateway Centre garage podium, which
+ * has only a reface (no custom model). Photo -01: a taupe stucco arcade of round white arches under the Starbucks sign,
+ * a white stucco storey and dark balcony rails above. Front Jackson (bearing 351). */
+export function jackson99StarbucksArcade(out: MeshBuilder, fit: Fit): void {
+  const TAUPE: Rgb = [0.38, 0.28, 0.26], WHITE: Rgb = [0.92, 0.91, 0.88], GLASS: Rgb = [0.2, 0.22, 0.24]
+  tower(out, fit, {
+    height: 13,
+    base: { height: 4, face: { kind: 'punched', wall: TAUPE, glass: GLASS, pitch: 4, floor: 4, solid: 0.45, arched: true, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: [0.22, 0.26, 0.3], pitch: 3.2, floor: 3.2, solid: 0.6, material: 'stucco' }, cornice: { depth: 0.35, height: 0.4, colour: WHITE } }],
+    crown: { kind: 'parapet', height: 0.8, colour: WHITE, material: 'stucco' },
+  })
+}
+
+/** T3 batch 112 (see jackson99StarbucksArcade for the photo): way/256088154 "56 Gold Street", 264 m², OSM 9 m. Photo -01
+ * is a grey concrete wall with few windows and a blue sign; the building is drawn as a plain grey concrete block. Front Gold (bearing 171). */
+export function gold56Concrete(out: MeshBuilder, fit: Fit): void {
+  const GREY: Rgb = [0.62, 0.62, 0.6], GLASS: Rgb = [0.2, 0.22, 0.24]
+  tower(out, fit, {
+    height: 9,
+    base: { height: 3.2, face: { kind: 'curtain', wall: [0.3, 0.3, 0.3], glass: GLASS, pitch: 3, floor: 3.2, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: GREY, glass: [0.22, 0.25, 0.28], pitch: 3.6, floor: 3.2, solid: 0.7, material: 'concrete' }, cornice: { depth: 0.3, height: 0.4, colour: GREY } }],
+    crown: { kind: 'parapet', height: 0.6, colour: GREY, material: 'concrete' },
+  })
+}
+
+/** T3 batch 114: way/1279452199 "235 Front Street", 450 m², OSM 7 m. Photo -01: a white-cream two-storey front with
+ * a big round-headed glazed arch over a dark sign band and a stone pilaster either side. Front Front (bearing 81). */
+export function front235McDonaldsArcade(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.88, 0.82], DARK: Rgb = [0.16, 0.17, 0.18], GLASS: Rgb = [0.24, 0.26, 0.28]
+  tower(out, fit, {
+    height: 7,
+    base: { height: 4, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 4.4, floor: 4, solid: 0.35, arched: true, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: DARK, pitch: 3.2, floor: 3, solid: 0.6, material: 'stucco' }, cornice: { depth: 0.35, height: 0.4, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 0.7, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** T3 batch 115: way/260930239 "(unnamed)", 334 m², OSM 13 m, the north Golden Gateway townhouse podium. Photo -01: a
+ * dark taupe arched base with a tall white stucco upper floor and a white bay above. Front Jackson (bearing 350). */
+export function ggNorthArcadeTaupe(out: MeshBuilder, fit: Fit): void {
+  goldenGateArcade(out, fit, 13)
+}
+
+/** T3 batch 115: way/260930244 "(unnamed)", 90 m², OSM 13 m: a service niche with a pebble-aggregate wall and a dark
+ * metal door, the same Golden Gateway garage family. Front Jackson (bearing 351). */
+export function ggServicePebble(out: MeshBuilder, fit: Fit): void {
+  const PEBBLE: Rgb = [0.52, 0.46, 0.38], DARK: Rgb = [0.2, 0.2, 0.2]
+  tower(out, fit, {
+    height: 13,
+    tiers: [{ to: 1, face: { kind: 'punched', wall: PEBBLE, glass: DARK, pitch: 4, floor: 4, solid: 0.8, material: 'rock' } }],
+    crown: { kind: 'parapet', height: 0.5, colour: PEBBLE, material: 'rock' },
+  })
+}
+
+/** T3 batch 116: way/260925339 "672;674 Sacramento Street", 116 m², 1907, OSM 20 m. Photo -01: a white painted
+ * five-storey brick wall with punched windows, fire escapes, and a green sign on a dark ground floor. Front Sacramento (bearing 170). */
+export function sacramento672PaintedWhite(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.9, 0.9, 0.88], DARK: Rgb = [0.14, 0.14, 0.15], GLASS: Rgb = [0.22, 0.26, 0.3]
+  tower(out, fit, {
+    height: 20,
+    base: { height: 3.4, face: { kind: 'curtain', wall: DARK, glass: GLASS, pitch: 2.8, floor: 3.4, material: 'concrete' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: [0.22, 0.25, 0.28], pitch: 2.8, floor: 3.4, solid: 0.6, material: 'stucco' }, cornice: { depth: 0.4, height: 0.5, colour: WHITE } }],
+    crown: { kind: 'parapet', height: 0.8, colour: WHITE, material: 'stucco' },
+  })
+}
+
+/** T3 batch 116: way/260925340 "666;668 Sacramento Street", 103 m², 1910, OSM 16 m. Photo -01: a tan-brown brick
+ * building of four storeys, with a dark ground floor and a red-brown fascia. Front Sacramento (bearing 170). */
+export function sacramento666TanBrick(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.6, 0.48, 0.36], DARK: Rgb = [0.18, 0.15, 0.13], GLASS: Rgb = [0.2, 0.22, 0.24]
+  tower(out, fit, {
+    height: 16,
+    base: { height: 3.6, face: { kind: 'curtain', wall: DARK, glass: GLASS, pitch: 2.8, floor: 3.6, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: [0.2, 0.22, 0.24], pitch: 2.8, floor: 3.4, solid: 0.6, head: 'architrave', material: 'brick' }, cornice: { depth: 0.5, height: 0.6, colour: TAN } }],
+    crown: { kind: 'parapet', height: 0.9, colour: TAN, material: 'brick' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -3847,4 +3925,6 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   sacramento129BrickFiorini, sacramentoCreamBistro,
   jacksonCreamBalconies, hotalingCastIronStore, sansome617BlackBrick, drummZiggysCream, drumm47BlueGrill, drummCreamPalladian,
   jackson368BrownBrick, sansome712Ochre, safewayArcadeJackson, safewayArcadeSmall, montgomery809CreamBrick, montgomery853RedBrick,
+  jackson99StarbucksArcade, gold56Concrete, front235McDonaldsArcade, ggNorthArcadeTaupe, ggServicePebble,
+  sacramento672PaintedWhite, sacramento666TanBrick,
 }
