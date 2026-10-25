@@ -1120,6 +1120,39 @@ export function california200(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 9, Clayton (way 260924232, 12 m, three storeys, 1906): pale blue-grey stucco with arched windows over a dark shopfront; faces Commercial Street; photos way-260924232-01 and -02. */
+export function claytonClay(out: MeshBuilder, fit: Fit): void {
+  const STUCCO: Rgb = [0.66, 0.73, 0.76]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 4, face: { kind: 'blank', wall: [0.16, 0.2, 0.22], material: 'tile' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: STUCCO, glass: [0.2, 0.22, 0.25], pitch: 2.8, floor: 2.7, solid: 0.42, arched: true, material: 'stucco' }, cornice: { depth: 0.8, height: 0.8, colour: [0.42, 0.5, 0.52] } }],
+    crown: { kind: 'parapet', height: 1, colour: STUCCO, material: 'stucco' },
+  })
+}
+
+/** T3 batch 9, unnamed block (way 260924222, 15 m, 1910): a dark red brick block of four storeys over a dark shopfront with a black canopy; faces Commercial Street. Photo way-260924222-01 only, unsure of the upper floors. */
+export function clay260924222(out: MeshBuilder, fit: Fit): void {
+  const BRICK: Rgb = [0.4, 0.22, 0.18]
+  tower(out, fit, {
+    height: 15,
+    base: { height: 4, face: { kind: 'blank', wall: [0.14, 0.1, 0.09], material: 'tile' }, canopy: { depth: 1, colour: [0.08, 0.08, 0.08] } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: [0.2, 0.22, 0.24], pitch: 2.8, floor: 3.3, solid: 0.4, material: 'brick' }, cornice: { depth: 0.8, height: 0.8, colour: [0.5, 0.46, 0.42] } }],
+    crown: { kind: 'parapet', height: 1.2, colour: BRICK, material: 'brick' },
+  })
+}
+
+/** T3 batch 9, unnamed block (way 260924242, 16 m, 1909): a tan brick block of about four storeys with a heavy cornice over a dark shopfront under a black awning; faces Commercial Street. Photo way-260924242-01 only. */
+export function commercial260924242(out: MeshBuilder, fit: Fit): void {
+  const TAN: Rgb = [0.7, 0.58, 0.42]
+  tower(out, fit, {
+    height: 16,
+    base: { height: 4, face: { kind: 'blank', wall: [0.16, 0.14, 0.13], material: 'concrete' }, canopy: { depth: 1.2, colour: [0.1, 0.1, 0.1] } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: [0.22, 0.24, 0.26], pitch: 2.8, floor: 3.2, solid: 0.4, material: 'brick' }, cornice: { depth: 0.9, height: 0.9, colour: [0.6, 0.5, 0.38] } }],
+    crown: { kind: 'parapet', height: 1.4, colour: TAN, material: 'brick' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1173,4 +1206,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   kearny260280334, fidi151195278, kearny474354577,
   bush151195270, kearny260,
   buichBuilding240California, california244, california200,
+  claytonClay, clay260924222, commercial260924242,
 }
