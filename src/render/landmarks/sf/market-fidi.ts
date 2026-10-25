@@ -2439,6 +2439,41 @@ export function montgomeryCanessaWhite(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+export function jessie96RedBrick(out: MeshBuilder, fit: Fit): void {
+  // 96 Jessie Street (way/149840698, 1909): a red-brick block of about four storeys, dark-framed rectangular windows,
+  // a fire escape on the side and a plain brick parapet; photos way-149840698-01 and -02
+  const BRICK: Rgb = [0.56, 0.22, 0.16], TRIM: Rgb = [0.62, 0.32, 0.24], GLASS: Rgb = [0.18, 0.2, 0.2]
+  tower(out, fit, {
+    height: 14,
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BRICK, glass: GLASS, pitch: 2.6, floor: 3.5, solid: 0.4, material: 'brick' }, cornice: { depth: 0.4, height: 0.5, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 0.9, colour: TRIM, material: 'brick' },
+  })
+}
+
+export function stevenson79Granite(out: MeshBuilder, fit: Fit): void {
+  // 79 Stevenson Street (way/149840695, 1920): a low tan granite block of three storeys, a glass shopfront under a
+  // cream cornice band and a cream parapet; photos way-149840695-01 and -02
+  const TAN: Rgb = [0.66, 0.54, 0.4], CREAM: Rgb = [0.84, 0.8, 0.7], GLASS: Rgb = [0.16, 0.2, 0.22]
+  tower(out, fit, {
+    height: 11,
+    base: { height: 3.4, face: { kind: 'curtain', wall: TAN, glass: GLASS, pitch: 3, floor: 3.4, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: TAN, glass: GLASS, pitch: 3, floor: 3.8, solid: 0.5, material: 'granite' } }],
+    cornices: [{ at: 3.4, depth: 0.4, height: 0.5, colour: CREAM }],
+    crown: { kind: 'parapet', height: 0.8, colour: CREAM, material: 'ashlar' },
+  })
+}
+
+export function louvred2002Stone(out: MeshBuilder, fit: Fit): void {
+  // the unnamed 2002 block on Stevenson (way/149840696): a stone-faced service block of two storeys with long
+  // horizontal louvred bands in dark grey metal; photo way-149840696-01
+  const STONE: Rgb = [0.7, 0.66, 0.58], LOUVRE: Rgb = [0.42, 0.45, 0.45]
+  tower(out, fit, {
+    height: 9,
+    tiers: [{ to: 1, face: { kind: 'bands', wall: STONE, glass: LOUVRE, floor: 3, solid: 0.4, material: 'granite' } }],
+    crown: { kind: 'parapet', height: 0.6, colour: STONE, material: 'granite' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -2528,4 +2563,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   california20White, drummWhiteEight, drummCreamFour,
   clay635WhiteFour, clay667WhiteArched, battery32Tan,
   montgomery708Arcade, montgomeryCanessaWhite,
+  jessie96RedBrick, stevenson79Granite, louvred2002Stone,
 }

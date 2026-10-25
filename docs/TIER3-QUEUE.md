@@ -69,7 +69,7 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 57 | 79 | `way/260924234` 632;634 Commercial Street · 21 m · generic<br>`way/260924231` 635;637;639 Clay Street · 12 m · generic<br>`way/260924225` 667;669;675 Clay Street · 13 m · generic || 635 and 667 Clay done; 632-634 Commercial has no photographs |
 | 58 | 79 | `way/148710881` 32 Battery Street · 20 m · reface chicago || done (with 57) |
 | 59 | 78 | `way/35537088` 708;710 Montgomery Street · 11 m · generic<br>`way/148668302` (unnamed) · ? · generic<br>`way/35537108` (unnamed) · 9 m · generic || 708 Montgomery and 35537108 done; 148668302 has no photographs |
-| 60 | 78 | `way/149840698` 96 Jessie Street · 14 m · generic<br>`way/149840695` 79 Stevenson Street · 11 m · generic<br>`way/149840696` (unnamed) · 9 m · generic | |
+| 60 | 78 | `way/149840698` 96 Jessie Street · 14 m · generic<br>`way/149840695` 79 Stevenson Street · 11 m · generic<br>`way/149840696` (unnamed) · 9 m · generic || done |
 | 61 | 78 | `way/942665598` 130 Montgomery Street · 22 m · generic | |
 | 62 | 76 | `way/148668309` 520;522;524;526;528;530;532;550 Washington Str · 9 m · generic<br>`way/148668322` (unnamed) · ? · generic<br>`way/148668312` (unnamed) · 13 m · reface brick | |
 | 63 | 75 | `way/260280333` 219;225 Kearny Street · 20 m · generic<br>`way/260280329` 237;239;241 Kearny Street · 13 m · generic<br>`way/260280332` 243;245 Kearny Street · 13 m · generic | |
