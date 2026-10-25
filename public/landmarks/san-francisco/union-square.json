@@ -101,7 +101,6 @@
   {"osm": ["way/149335983"], "name": "Archer Salon", "restyle": "brick", "note": "an ordinary brick shop-and-loft building", "levels": 4},
   {"osm": ["way/149757915"], "name": "164;166 Grant Avenue", "restyle": "classical", "note": "a stone-fronted commercial block, rusticated base and cornice", "levels": 4},
   {"osm": ["way/149757916"], "name": "way/149757916", "restyle": "classical", "note": "a stone-fronted commercial block, rusticated base and cornice", "levels": 7},
-  {"osm": ["way/149757917"], "name": "way/149757917", "restyle": "classical", "note": "a stone-fronted commercial block, rusticated base and cornice", "levels": 8},
   {"osm": ["way/149757919"], "name": "way/149757919", "restyle": "classical", "note": "a stone-fronted commercial block, rusticated base and cornice", "levels": 8},
   {"osm": ["way/149757920"], "name": "way/149757920", "restyle": "classical", "note": "a stone-fronted commercial block, rusticated base and cornice", "levels": 8},
   {"osm": ["way/149757921"], "name": "195;199 Grant Avenue", "restyle": "chicago", "note": "a steel-framed commercial block dressed in terracotta", "levels": 16},

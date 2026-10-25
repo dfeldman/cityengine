@@ -980,7 +980,7 @@ export function leidesdorff215(out: MeshBuilder, fit: Fit): void {
   tower(out, fit, {
     height: 14,
     tiers: [
-      { to: 0.66, face: { kind: 'punched', wall: TAN, glass: [0.2, 0.22, 0.24], pitch: 2.6, floor: 3.4, solid: 0.5, arched: true, material: 'brick' }, cornice: { depth: 0.5, height: 0.5, colour: [0.82, 0.74, 0.6] } },
+      { to: 0.66, face: { kind: 'punched', wall: TAN, glass: [0.2, 0.22, 0.24], pitch: 3.2, floor: 3.4, solid: 0.5, arched: true, material: 'brick' }, cornice: { depth: 0.5, height: 0.5, colour: [0.82, 0.74, 0.6] } },
       { to: 1, inset: 1.2, face: { kind: 'curtain', wall: [0.12, 0.12, 0.12], glass: [0.2, 0.24, 0.28], pitch: 2, floor: 2.8, material: 'glass' } },
     ],
     crown: { kind: 'parapet', height: 0.5, colour: [0.12, 0.12, 0.12], material: 'metal' },
@@ -2176,6 +2176,57 @@ export function front222Brick(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * Post Street block, unnamed way (way/149757917, OSM 28 m, 1141 m², Union Square). Photos way-149757917-01 (Post
+ * Street face: cream six-storey classical front, pilasters, black-framed ground floor with red awnings) and -02.
+ * Front faces Post Street (bearing 346).
+ */
+export function postCreamBeaux(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.84, 0.7], GLASS: Rgb = [0.2, 0.24, 0.27], DARK: Rgb = [0.1, 0.1, 0.11], TRIM: Rgb = [0.8, 0.74, 0.6]
+  tower(out, fit, {
+    height: 28,
+    base: { height: 4.6, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 4.4, floor: 4.6, solid: 0.3, material: 'granite' }, canopy: { depth: 1.6, colour: [0.7, 0.12, 0.1] } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 3.6, floor: 3.9, solid: 0.5, material: 'ashlar' }, cornice: { depth: 0.8, height: 0.9, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 1.2, colour: TRIM, material: 'ashlar' },
+  })
+}
+
+/**
+ * 49 Kearny Street (way/149757918, OSM 34 m, built 1908, 114 m²). Photo way-149757918-01: a narrow cream render
+ * block of eight storeys, arched top windows under a corbelled cornice, fire escapes down the face, a tall set-back
+ * upper storey and a dark shopfront at street level. Front faces Kearny Street (bearing 79).
+ */
+export function kearnyCreamTall(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.92, 0.88, 0.76], GLASS: Rgb = [0.2, 0.24, 0.27], DARK: Rgb = [0.12, 0.12, 0.13], TRIM: Rgb = [0.84, 0.8, 0.68]
+  tower(out, fit, {
+    height: 34,
+    base: { height: 4, face: { kind: 'punched', wall: CREAM, glass: DARK, pitch: 3, floor: 4, solid: 0.5, material: 'stucco' } },
+    tiers: [
+      { to: 0.82, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 3.2, floor: 3.4, solid: 0.5, arched: true, material: 'stucco' }, cornice: { depth: 0.6, height: 0.6, colour: TRIM } },
+      { to: 1, inset: 2.5, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 3.2, floor: 3.4, solid: 0.7, material: 'stucco' } },
+    ],
+    crown: { kind: 'parapet', height: 0.9, colour: TRIM, material: 'stucco' },
+  })
+}
+
+/**
+ * 45;47 Kearny Street (way/149757923, OSM 34 m, 366 m²). Photo way-149757923-01: a tall cream painted block with
+ * a corbelled top and arched upper windows, fire escapes on its side, a stepped-back top. Front faces Kearny Street
+ * (bearing 84). Photos show the block only from afar; heights and the set-back are from the photograph, unsure.
+ */
+export function kearnyCreamSix(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.88, 0.85, 0.78], GLASS: Rgb = [0.22, 0.25, 0.28], DARK: Rgb = [0.12, 0.12, 0.13], TRIM: Rgb = [0.78, 0.74, 0.66]
+  tower(out, fit, {
+    height: 34,
+    base: { height: 4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.2, floor: 4, solid: 0.4, material: 'metal' } },
+    tiers: [
+      { to: 0.7, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 3.4, floor: 3.4, solid: 0.5, material: 'stucco' }, cornice: { depth: 0.5, height: 0.6, colour: TRIM } },
+      { to: 1, inset: 3, face: { kind: 'punched', wall: CREAM, glass: GLASS, pitch: 3.4, floor: 3.4, solid: 0.65, material: 'stucco' } },
+    ],
+    crown: { kind: 'parapet', height: 0.8, colour: TRIM, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -2258,4 +2309,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   jackson499Brick, montgomery722Belli, jackson463Grey,
   pacific435Bays, pacific193Arcade, sansome731Bays,
   pine333Stone, front222Brick,
+  postCreamBeaux, kearnyCreamTall, kearnyCreamSix,
 }
