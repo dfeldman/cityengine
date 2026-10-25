@@ -2101,6 +2101,51 @@ export function jackson463Grey(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/**
+ * 435;437 Pacific Avenue (way/256088136, OSM no height, sfm 20 m): Mapillary frame 01. A cream stucco block of
+ * five storeys on Pacific, ribbed piers running up it and projecting bay windows with bronze mullions, a dark
+ * base of doors and vents, and a moulded parapet. Front faces Pacific (bearing 356).
+ */
+export function pacific435Bays(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.84, 0.8, 0.72], GLASS: Rgb = [0.2, 0.3, 0.36], TRIM: Rgb = [0.72, 0.68, 0.6], DARK: Rgb = [0.18, 0.18, 0.18]
+  tower(out, fit, {
+    height: 20,
+    base: { height: 4, face: { kind: 'punched', wall: CREAM, glass: DARK, pitch: 3.4, floor: 4, solid: 0.5, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'bays', wall: CREAM, glass: GLASS, floor: 3.2, pitch: 3.4, solid: 0.5, bay: { depth: 0.9 }, material: 'stucco' }, cornice: { depth: 0.6, height: 0.6, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 1.2, colour: TRIM, material: 'stucco' },
+  })
+}
+
+/**
+ * 457-ish Pacific Avenue, the narrow block between 435 and 457 (way/253609537, OSM no height, 193 m2): Mapillary
+ * frame 03. A low two-storey block with a dark painted arcade at street level, pale brick arches, and a
+ * dentilled cornice under a dark parapet. Front faces Pacific (bearing 350). Height from the photograph; unsure.
+ */
+export function pacific193Arcade(out: MeshBuilder, fit: Fit): void {
+  const DARK: Rgb = [0.16, 0.16, 0.17], PALE: Rgb = [0.6, 0.56, 0.5], GLASS: Rgb = [0.12, 0.14, 0.15]
+  tower(out, fit, {
+    height: 8,
+    base: { height: 4.5, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 2.8, floor: 4.5, solid: 0.35, arched: true, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'blank', wall: PALE, material: 'brick' }, cornice: { depth: 0.5, height: 0.5, colour: DARK } }],
+    crown: { kind: 'parapet', height: 0.6, colour: DARK, material: 'brick' },
+  })
+}
+
+/**
+ * 731 Sansome Street (way/256088155, OSM 18 m): Mapillary frame 01. A cream stucco block with tall projecting bay
+ * windows in ribbons up the Sansome face, a dark arched entrance at street level and a moulded parapet. Front
+ * faces Sansome (bearing 86).
+ */
+export function sansome731Bays(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.84, 0.82, 0.78], GLASS: Rgb = [0.2, 0.28, 0.34], TRIM: Rgb = [0.74, 0.7, 0.64], DARK: Rgb = [0.16, 0.17, 0.18]
+  tower(out, fit, {
+    height: 18,
+    base: { height: 4, face: { kind: 'punched', wall: CREAM, glass: DARK, pitch: 3.6, floor: 4, solid: 0.4, arched: true, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'bays', wall: CREAM, glass: GLASS, floor: 3.2, pitch: 3.6, solid: 0.5, bay: { depth: 0.8 }, material: 'stucco' }, cornice: { depth: 0.6, height: 0.6, colour: TRIM } }],
+    crown: { kind: 'parapet', height: 1.0, colour: TRIM, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -2181,4 +2226,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   market148712647, market148712643, market148712642, market260318172, market941650784,
   market711, market721, market993, marketJones417216803,
   jackson499Brick, montgomery722Belli, jackson463Grey,
+  pacific435Bays, pacific193Arcade, sansome731Bays,
 }
