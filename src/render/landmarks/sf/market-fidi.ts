@@ -1569,6 +1569,39 @@ export function market1067(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** 1039 MARKET, south-east side between 6th and 7th: a bright blue four-storey front over a grey shopfront base of large glazed windows (Mapillary frame 01). */
+export function market1039(out: MeshBuilder, fit: Fit): void {
+  const BLUE: Rgb = [0.3, 0.5, 0.82]
+  tower(out, fit, {
+    height: 14,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.3, 0.3, 0.36], glass: [0.18, 0.2, 0.24], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BLUE, glass: [0.2, 0.26, 0.32], floor: 3.3, pitch: 3.2, solid: 0.5, material: 'stucco' } }],
+    crown: { kind: 'parapet', height: 0.8, colour: BLUE, material: 'stucco' },
+  })
+}
+
+/** 1049-1051 MARKET, south-east side between 6th and 7th: an eight-storey cream 1910s loft with a heavy dentilled cornice and regular windows over a glazed ground floor (Mapillary frame 01). */
+export function market1049(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.9, 0.87, 0.78]
+  tower(out, fit, {
+    height: 26,
+    base: { height: 4, face: { kind: 'curtain', wall: [0.35, 0.35, 0.36], glass: [0.18, 0.2, 0.22], pitch: 3, floor: 4, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.22, 0.25], floor: 3.2, pitch: 3.2, solid: 0.5, material: 'stucco' } }],
+    cornices: [{ at: 4, depth: 0.5, colour: CREAM }, { at: 0.93, depth: 0.7, height: 1.2, colour: CREAM }],
+    crown: { kind: 'parapet', height: 1.4, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** 1055 MARKET, south-east side between 6th and 7th: a low black box, one or two storeys, with a bus shelter in front (Mapillary frame 01). */
+export function market1055(out: MeshBuilder, fit: Fit): void {
+  const BLACK: Rgb = [0.1, 0.1, 0.11]
+  tower(out, fit, {
+    height: 7,
+    tiers: [{ to: 1, face: { kind: 'blank', wall: BLACK } }],
+    crown: { kind: 'parapet', height: 0.5, colour: BLACK, material: 'concrete' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1635,4 +1668,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   sacramento301, sacramento333, sacramento325,
   market1000,
   market1059, market1063, market1067,
+  market1039, market1049, market1055,
 }
