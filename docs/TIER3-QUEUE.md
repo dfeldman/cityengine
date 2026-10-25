@@ -18,7 +18,7 @@ One subagent at a time, brief [sf-batches/BRIEF-TIER3.md](sf-batches/BRIEF-TIER3
 | 8 | 201 | `way/260286448` Buich Building — 240;242 California Street · 11 m · generic<br>`way/260286441` 244;252;256 California Street · 32 m · generic<br>`way/260286442` 200;210 California Street · 18 m · generic || done |
 | 9 | 196 | `way/260924232` Clayton · ? · generic<br>`way/260924222` (unnamed) · 15 m · generic<br>`way/260924242` (unnamed) · ? · generic || done |
 | 10 | 195 | `way/148285580` 28 2nd Street · 27 m · generic<br>`way/79377209` (unnamed) · 25 m · generic<br>`way/79377219` 44 2nd Street · 11 m · generic || done |
-| 11 | 192 | `way/32858943` (unnamed) · 19 m · generic<br>`way/32858908` (unnamed) · 12 m · generic<br>`way/32858912` 530;532 Jackson Street · ? · generic | |
+| 11 | 192 | `way/32858943` (unnamed) · 19 m · generic<br>`way/32858908` (unnamed) · 12 m · generic<br>`way/32858912` 530;532 Jackson Street · ? · generic || done |
 | 12 | 189 | `way/149837286` 16 Elim Street · 18 m · generic<br>`way/260298023` 40 Jessie Street · 24 m · generic | |
 | 13 | 184 | `way/151195280` 200;220 Kearny Street · 19 m · generic<br>`way/151195276` 154;160;168;170;176 Sutter Street · 26 m · generic<br>`way/260280331` 215;217 Kearny Street · 12 m · generic | |
 | 14 | 182 | `way/256072716` Clay Street · 15 m · generic<br>`way/256072720` 660;662;664;668;670 Clay Street · 11 m · generic<br>`way/260924226` 643;645;647 Clay Street · 12 m · generic | |
