@@ -3655,6 +3655,84 @@ export function drummCreamPalladian(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 109: way/256087385 "(unnamed)", 368 Jackson, 593 m², OSM 12 m. Photo -02: a dark red-brown brick corner
+ * block, a brick-faced ground floor under a glazed shopfront, punched brick windows above and a dark glass top storey.
+ * Front Jackson (bearing 172). */
+export function jackson368BrownBrick(out: MeshBuilder, fit: Fit): void {
+  const BROWN: Rgb = [0.42, 0.22, 0.17], DARK: Rgb = [0.18, 0.19, 0.2], GLASS: Rgb = [0.2, 0.23, 0.26]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 3.6, face: { kind: 'curtain', wall: BROWN, glass: GLASS, pitch: 2.8, floor: 3.6, material: 'brick' } },
+    tiers: [
+      { to: 0.72, face: { kind: 'punched', wall: BROWN, glass: [0.18, 0.2, 0.22], pitch: 3, floor: 3.2, solid: 0.6, material: 'brick' }, cornice: { depth: 0.3, height: 0.4, colour: BROWN } },
+      { to: 1, face: { kind: 'curtain', wall: DARK, glass: DARK, pitch: 2.4, floor: 3.2, material: 'metal' } },
+    ],
+    crown: { kind: 'parapet', height: 0.5, colour: DARK, material: 'metal' },
+  })
+}
+
+/** T3 batch 109: way/256087378 "712;714 Sansome Street", 315 m², OSM 10 m. The photo is the frame filed under
+ * way/256087385 (-01), where the door reads "712 Sansome Street": a two-storey yellow-ochre brick block with three big
+ * arched ground-floor openings, arched upper windows in black frames and a heavy black moulded cornice. Front Sansome
+ * (bearing 261). */
+export function sansome712Ochre(out: MeshBuilder, fit: Fit): void {
+  const OCHRE: Rgb = [0.84, 0.66, 0.32], BLACK: Rgb = [0.12, 0.12, 0.12]
+  tower(out, fit, {
+    height: 10,
+    base: { height: 3.8, face: { kind: 'punched', wall: OCHRE, glass: BLACK, pitch: 3.6, floor: 3.8, solid: 0.35, arched: true, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: OCHRE, glass: BLACK, pitch: 2.8, floor: 3.2, solid: 0.5, arched: true, material: 'brick' }, cornice: { depth: 0.7, height: 0.6, colour: BLACK } }],
+    crown: { kind: 'parapet', height: 0.8, colour: OCHRE, material: 'brick' },
+  })
+}
+
+/** The Golden Gateway Safeway arcade: a taupe base of round arches with white reveals, a white stucco upper floor and a
+ * shallow roof of gables. Shared by the two pieces on Jackson and Davis (batch 110). */
+function goldenGateArcade(out: MeshBuilder, fit: Fit, height: number): void {
+  const WHITE: Rgb = [0.92, 0.91, 0.88], TAUPE: Rgb = [0.36, 0.28, 0.26], GLASS: Rgb = [0.2, 0.22, 0.24]
+  tower(out, fit, {
+    height,
+    base: { height: 4, face: { kind: 'punched', wall: TAUPE, glass: GLASS, pitch: 4, floor: 4, solid: 0.45, arched: true, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: [0.22, 0.26, 0.3], pitch: 3.2, floor: 3.2, solid: 0.6, material: 'stucco' }, cornice: { depth: 0.35, height: 0.4, colour: WHITE } }],
+    crown: { kind: 'mansard', height: 2.2, inset: 0.8, colour: WHITE, material: 'stucco', dormers: 4 },
+  })
+}
+
+/** T3 batch 110: way/260930249 "(unnamed)", 496 m², OSM 13 m: the Safeway arcade on Jackson. Photo -02: taupe arches
+ * with the SAFEWAY sign under a white stucco upper floor and gabled roof. Front Jackson (bearing 352). */
+export function safewayArcadeJackson(out: MeshBuilder, fit: Fit): void {
+  goldenGateArcade(out, fit, 13)
+}
+
+/** T3 batch 110: way/260930243 "(unnamed)", 80 m², OSM 13 m: a small piece of the same arcade. Photo -01: a dark
+ * taupe wall with a white round-headed arch and a glazed door, white stucco above. Front Jackson (bearing 351). */
+export function safewayArcadeSmall(out: MeshBuilder, fit: Fit): void {
+  goldenGateArcade(out, fit, 13)
+}
+
+/** T3 batch 111: way/256088655 "809 Montgomery Street", 226 m², OSM 11 m. Photo -01: a long cream-yellow brick wall, a
+ * red brick block with a tree at its end, very few windows. Front Montgomery (bearing 80). */
+export function montgomery809CreamBrick(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.84, 0.79, 0.62], RED: Rgb = [0.5, 0.25, 0.18], GLASS: Rgb = [0.2, 0.22, 0.24]
+  tower(out, fit, {
+    height: 11,
+    base: { height: 3.4, face: { kind: 'curtain', wall: RED, glass: GLASS, pitch: 3, floor: 3.4, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.22, 0.24, 0.26], pitch: 3.6, floor: 3.4, solid: 0.8, material: 'brick' }, cornice: { depth: 0.4, height: 0.45, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 0.7, colour: CREAM, material: 'brick' },
+  })
+}
+
+/** T3 batch 111: way/256088653 "853;855;857 Montgomery Street", 166 m², OSM 11 m. Photo -01: a three-storey red brick
+ * block with white-framed windows and a white bracketed cornice, at the corner of Pacific. Front Montgomery (bearing 82). */
+export function montgomery853RedBrick(out: MeshBuilder, fit: Fit): void {
+  const RED: Rgb = [0.52, 0.24, 0.18], WHITE: Rgb = [0.9, 0.89, 0.86], GLASS: Rgb = [0.2, 0.23, 0.25]
+  tower(out, fit, {
+    height: 11,
+    base: { height: 3.4, face: { kind: 'curtain', wall: [0.2, 0.19, 0.19], glass: GLASS, pitch: 2.8, floor: 3.4, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: RED, glass: [0.2, 0.22, 0.24], pitch: 2.6, floor: 3.4, solid: 0.6, head: 'architrave', material: 'brick' }, cornice: { depth: 0.6, height: 0.7, colour: WHITE } }],
+    crown: { kind: 'parapet', height: 0.8, colour: WHITE, material: 'brick' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -3768,4 +3846,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   washingtonPavilionGrey, drummGatewayStucco1966, drummGatewayDark1966,
   sacramento129BrickFiorini, sacramentoCreamBistro,
   jacksonCreamBalconies, hotalingCastIronStore, sansome617BlackBrick, drummZiggysCream, drumm47BlueGrill, drummCreamPalladian,
+  jackson368BrownBrick, sansome712Ochre, safewayArcadeJackson, safewayArcadeSmall, montgomery809CreamBrick, montgomery853RedBrick,
 }
