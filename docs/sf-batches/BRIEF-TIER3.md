@@ -46,8 +46,9 @@ Tokens are limited (the owner: "so as not to exhaust my allocation of tokens"). 
    Note heights and levels. OSM heights are sometimes wrong; believe the photographs.
 2. **Photographs: check first, fetch only if missing.** Mapillary is throttled and the owner asked never to hammer
    it.
-   - Use the cached frames in `tools/cache/appearance-r2/way-<id>/` (`*.jpg`, described in `photos.csv`: distance and
-     bearing from the camera).
+   - Use the cached frames in `tools/cache/appearance-r2/way-<id>/` (`*.jpg`, described in `photos.csv`: distance, and
+     `bearing` = the compass bearing FROM THE CAMERA TO the building, so the face in the frame faces bearing + 180;
+     checked in tools/sf-photos.ts, where the column is `want`, 2026-10-25).
    - The two red dashed lines in each frame bracket THIS building. Anything outside them is a neighbour.
    - Only if the folder is missing or empty, fetch: `PHOTO_STRICT=1 PHOTO_ORIGINAL=1 node --experimental-strip-types tools/sf-photos.ts --osm=way/<id> --each=3 --out=tools/cache/appearance-r2/way-<id>`
      (one building at a time, never in parallel).

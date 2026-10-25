@@ -1614,6 +1614,32 @@ export function market650(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+
+/** 934-936 MARKET, north side between Mason and Turk, a low two-storey cream front with pilasters, a shopfront on dark glass at street level and a cornice over the first floor (Mapillary frames 01 and 02). */
+export function market934(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.84, 0.78, 0.66], DARK: Rgb = [0.1, 0.1, 0.11], GLASS: Rgb = [0.2, 0.23, 0.26]
+  tower(out, fit, {
+    height: 8,
+    base: { height: 3.2, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3, floor: 3.2, solid: 0.2, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.22, 0.25, 0.28], pitch: 2.8, floor: 3.4, solid: 0.5, head: 'architrave', material: 'ashlar' } }],
+    cornices: [{ at: 0.45, depth: 0.4, height: 0.5, colour: CREAM }],
+    crown: { kind: 'parapet', height: 0.8, colour: CREAM, material: 'ashlar' },
+  })
+}
+
+/** 944 MARKET, north side at the Mason and Turk corner: an eight-storey tan stone block with a rounded corner drum at Mason, a dark glazed ground floor on black piers, a dentilled band over the ground floor and a moulded cornice under a parapet (Mapillary frames 01 and 02). The rounded corner is the OSM outline's own curve. OSM's Garfield Building outline
+ * (way/1259112449) overlaps it; both are drawn, since either alone leaves the corner or the Market frontage empty. */
+export function market944(out: MeshBuilder, fit: Fit): void {
+  const STONE: Rgb = [0.8, 0.75, 0.66], DARK: Rgb = [0.12, 0.13, 0.14], GLASS: Rgb = [0.2, 0.24, 0.28]
+  tower(out, fit, {
+    height: 29,
+    base: { height: 4, face: { kind: 'punched', wall: DARK, glass: GLASS, pitch: 3.2, floor: 4, solid: 0.25, material: 'granite' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: STONE, glass: DARK, pitch: 3.2, floor: 3.1, solid: 0.6, material: 'ashlar' } }],
+    cornices: [{ at: 0.14, depth: 0.35, height: 0.5, colour: STONE }, { at: 0.86, depth: 0.5, height: 0.9, colour: STONE }],
+    crown: { kind: 'parapet', height: 1.4, colour: STONE, material: 'ashlar' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1681,5 +1707,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   market1000,
   market1059, market1063, market1067,
   market1039, market1049, market1055,
-  market650,
+  market650, market944, market934,
 }

@@ -290,15 +290,6 @@
  },
  {
   "osm": [
-   "way/42640325"
-  ],
-  "name": "934-936 Market Street",
-  "restyle": "brick",
-  "note": "Two-storey retail front.",
-  "levels": 2
- },
- {
-  "osm": [
    "way/173725079"
   ],
   "name": "923 Market Street",
@@ -332,15 +323,6 @@
   "restyle": "brick",
   "note": "Low brick block.",
   "levels": 4
- },
- {
-  "osm": [
-   "way/35176126"
-  ],
-  "name": "944 Market Street",
-  "restyle": "chicago",
-  "note": "Eight-storey pre-war commercial block.",
-  "levels": 8
  },
  {
   "osm": [

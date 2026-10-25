@@ -267,7 +267,7 @@
   "procedural": "garfieldBuilding",
   "height": 25,
   "sign": false,
-  "note": "market-fidi.ts: Garfield Building, seven storeys of buff brick over a dark granite ground floor with cornice bands; Mapillary frames c0 and c1 (identity of c0 uncertain: its signage reads 944-8)."
+  "note": "market-fidi.ts: Garfield Building, seven storeys of buff brick over a dark granite ground floor with cornice bands; Mapillary frames c0 and c1 (identity of c0 uncertain: its signage reads 944-8). OSM's older outline way/35176126 (944 Market, the rounded Mason corner) overlaps it and is drawn by its own entry: drawing only one left either the Market frontage or the corner empty (2026-10-25)."
  },
  {
   "osm": [
@@ -493,5 +493,7 @@
  {"osm": ["way/256035271"], "name": "1039 Market Street", "procedural": "market1039", "height": 14, "sign": false, "front": 315, "note": "market-fidi.ts: bright blue four-storey front with a grey glazed shopfront base; no OSM height, height from the photo; photo way-256035271-01."},
  {"osm": ["way/256035267"], "name": "1049;1051 Market Street", "procedural": "market1049", "height": 26, "sign": false, "front": 315, "note": "market-fidi.ts: cream eight-storey 1910s loft with a heavy cornice and regular windows over a glazed ground floor; photo way-256035267-01."},
  {"osm": ["way/939440533"], "name": "1055 Market Street", "procedural": "market1055", "height": 7, "sign": false, "front": 315, "note": "market-fidi.ts: low black one-to-two-storey box with a bus shelter in front; no OSM height; photo way-939440533-01."},
- {"osm": ["way/32946667"], "name": "650 Market Street", "procedural": "market650", "height": 22, "sign": false, "front": 142, "note": "market-fidi.ts: cream-white stone Beaux-Arts front of about six storeys, arched ground floor and upper windows, balustraded frieze and parapet; photos way-32946667-01 and -02."}
+ {"osm": ["way/32946667"], "name": "650 Market Street", "procedural": "market650", "height": 22, "sign": false, "front": 142, "note": "market-fidi.ts: cream-white stone Beaux-Arts front of about six storeys, arched ground floor and upper windows, balustraded frieze and parapet; photos way-32946667-01 and -02."},
+  {"osm": ["way/42640325"], "name": "934-936 Market Street", "procedural": "market934", "height": 8, "sign": false, "front": 134, "note": "market-fidi.ts: low two-storey cream front with pilasters and a cornice over the first floor, dark shopfront at street level; photos way-42640325-01 and -02."},
+ {"osm": ["way/35176126"], "name": "944 Market Street", "procedural": "market944", "height": 29, "sign": false, "front": 135, "note": "market-fidi.ts: eight-storey tan stone block at Mason, its rounded corner the OSM outline's own curve; photos way-35176126-01/02. Overlaps the Garfield Building outline (way/1259112449), which is drawn too."}
 ]
