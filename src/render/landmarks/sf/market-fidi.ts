@@ -3577,6 +3577,84 @@ export function sacramentoCreamBistro(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 107: way/148668323 (unnamed, Jackson Street frontage, bearing 350), 582 m², OSM height unknown. Photo -01:
+ * a cream stucco block of three storeys with iron balconies on the upper floors, arched upper windows and an
+ * A.P.C. Surplus shopfront at street level, with a taller parapet over. */
+export function jacksonCreamBalconies(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.92, 0.9, 0.84], DARK: Rgb = [0.18, 0.2, 0.22]
+  tower(out, fit, {
+    height: 14,
+    base: { height: 3.6, face: { kind: 'curtain', wall: CREAM, glass: DARK, pitch: 2.8, floor: 3.6, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.24, 0.28], pitch: 2.8, floor: 3.4, solid: 0.6, arched: true, head: 'architrave', material: 'stucco' }, cornice: { depth: 0.3, height: 0.35, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 0.9, colour: CREAM, material: 'stucco' },
+  })
+}
+
+/** T3 batch 107: way/148668306 (unnamed, Hotaling Place frontage, bearing 262 from the photo), 512 m², OSM height
+ * unknown. Photo -01: a white stucco block with a cast-iron ground floor (white ornate pilasters and a plain
+ * glazed shopfront) and a plain upper storey under a deep cornice. Front bearing 262 is from the photo, unsure. */
+export function hotalingCastIronStore(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.93, 0.92, 0.89], GLASS: Rgb = [0.24, 0.27, 0.3]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 3.8, face: { kind: 'curtain', wall: WHITE, glass: GLASS, pitch: 2.4, floor: 3.8, material: 'metal' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: [0.22, 0.26, 0.3], pitch: 3, floor: 3.4, solid: 0.62, head: 'architrave', material: 'stucco' }, cornice: { depth: 0.5, height: 0.5, colour: WHITE } }],
+    crown: { kind: 'parapet', height: 0.8, colour: WHITE, material: 'stucco' },
+  })
+}
+
+/** T3 batch 107: way/148668314 "617;619 Sansome Street", 245 m², OSM 9 m. Photo -03: a dark brown-black brick block of
+ * two storeys with a white bracketed cornice, arched upper windows and a white-framed shopfront under it. Front
+ * Sansome (bearing 80). */
+export function sansome617BlackBrick(out: MeshBuilder, fit: Fit): void {
+  const BLACK: Rgb = [0.16, 0.13, 0.13], WHITE: Rgb = [0.92, 0.92, 0.9], GLASS: Rgb = [0.2, 0.22, 0.24]
+  tower(out, fit, {
+    height: 9,
+    base: { height: 3.2, face: { kind: 'curtain', wall: BLACK, glass: GLASS, pitch: 2.6, floor: 3.2, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BLACK, glass: [0.22, 0.24, 0.26], pitch: 2.8, floor: 3.2, solid: 0.6, arched: true, material: 'brick' }, cornice: { depth: 0.4, height: 0.6, colour: WHITE } }],
+    crown: { kind: 'parapet', height: 0.6, colour: BLACK, material: 'brick' },
+  })
+}
+
+/** T3 batch 107: way/260288453 "17 Drumm Street", 180 m², 1912, OSM 14 m. Photo -01 and -03: a cream-yellow brick
+ * block of three storeys with a moulded cornice, tall sash windows, a fire escape across the middle and a red-framed
+ * restaurant (Ziggy's Burgers) under it. Front Drumm (bearing 82). */
+export function drummZiggysCream(out: MeshBuilder, fit: Fit): void {
+  const CREAM: Rgb = [0.84, 0.78, 0.6], RED: Rgb = [0.42, 0.14, 0.1], GLASS: Rgb = [0.22, 0.26, 0.28]
+  tower(out, fit, {
+    height: 14,
+    base: { height: 3.6, face: { kind: 'curtain', wall: RED, glass: GLASS, pitch: 2.6, floor: 3.6, material: 'brick' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: CREAM, glass: [0.2, 0.24, 0.26], pitch: 2.6, floor: 3.4, solid: 0.55, material: 'brick' }, cornice: { depth: 0.45, height: 0.5, colour: CREAM } }],
+    crown: { kind: 'parapet', height: 0.9, colour: CREAM, material: 'brick' },
+  })
+}
+
+/** T3 batch 107: way/260288450 "47;49 Drumm Street", 130 m², 1923, OSM 7 m (2 storeys). Photo -01: a white stucco
+ * two-storey block with a painted blue ground floor (Mais Grill) and a tall plain window band above. Front Drumm
+ * (bearing 81). */
+export function drumm47BlueGrill(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.92, 0.92, 0.9], BLUE: Rgb = [0.3, 0.52, 0.72], GLASS: Rgb = [0.2, 0.24, 0.28]
+  tower(out, fit, {
+    height: 8,
+    base: { height: 3.4, face: { kind: 'curtain', wall: BLUE, glass: GLASS, pitch: 3, floor: 3.4, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: [0.22, 0.26, 0.3], pitch: 3, floor: 3.4, solid: 0.6, material: 'stucco' }, cornice: { depth: 0.3, height: 0.35, colour: WHITE } }],
+    crown: { kind: 'parapet', height: 0.6, colour: WHITE, material: 'stucco' },
+  })
+}
+
+/** T3 batch 107: way/260288455 (unnamed, Drumm side, 192 m², 1912, OSM 11 m, 3 storeys). Photo -01: a buff-coloured
+ * three-storey block whose centre bay is framed by a moulded arched surround, with a grey steel grille door at
+ * street level. Front Drumm (bearing 82, nearest street). */
+export function drummCreamPalladian(out: MeshBuilder, fit: Fit): void {
+  const BUFF: Rgb = [0.8, 0.76, 0.66], GREY: Rgb = [0.62, 0.62, 0.6], GLASS: Rgb = [0.18, 0.26, 0.26]
+  tower(out, fit, {
+    height: 12,
+    base: { height: 3.6, face: { kind: 'curtain', wall: GREY, glass: [0.12, 0.13, 0.14], pitch: 3.2, floor: 3.6, material: 'stucco' } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: BUFF, glass: GLASS, pitch: 3.2, floor: 3.4, solid: 0.5, head: 'architrave', material: 'stucco' }, cornice: { depth: 0.4, height: 0.45, colour: BUFF } }],
+    crown: { kind: 'parapet', height: 1.2, colour: BUFF, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   market1278,
   stevensonPlace,
@@ -3689,4 +3767,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   battery65GreyStone, fireStation13Concrete, washington425TanArched, washingtonMassimoBrick,
   washingtonPavilionGrey, drummGatewayStucco1966, drummGatewayDark1966,
   sacramento129BrickFiorini, sacramentoCreamBistro,
+  jacksonCreamBalconies, hotalingCastIronStore, sansome617BlackBrick, drummZiggysCream, drumm47BlueGrill, drummCreamPalladian,
 }
