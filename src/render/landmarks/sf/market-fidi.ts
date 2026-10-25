@@ -1020,6 +1020,17 @@ export function sacramento942303804(out: MeshBuilder, fit: Fit): void {
   })
 }
 
+/** T3 batch 5, Belden Place (27 m, corner): a white stucco block of seven floors over a dark shopfront under a blue awning (way/148741780; photos way-148741780-01, -03). Front bearing uncertain: the photos are taken from the north and north-east. */
+export function belden148741780(out: MeshBuilder, fit: Fit): void {
+  const WHITE: Rgb = [0.92, 0.91, 0.88]
+  tower(out, fit, {
+    height: 27,
+    base: { height: 4.5, face: { kind: 'blank', wall: [0.12, 0.13, 0.15], material: 'concrete' }, canopy: { depth: 1.6, colour: [0.1, 0.42, 0.55] } },
+    tiers: [{ to: 1, face: { kind: 'punched', wall: WHITE, glass: [0.2, 0.24, 0.28], pitch: 4, floor: 3.4, solid: 0.5, material: 'stucco' }, cornice: { depth: 0.6, height: 0.6, colour: [0.9, 0.88, 0.82] } }],
+    crown: { kind: 'parapet', height: 1, colour: WHITE, material: 'stucco' },
+  })
+}
+
 export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   stevensonPlace,
   trinityPlace1177,
@@ -1069,4 +1080,5 @@ export const MARKET_FIDI: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   market1023, artMuseumAmerica1025Market,
   stationJSacramento, wayfareTavern558Sacramento, leidesdorff215,
   angloBankSacramento, stationJAnnex, sacramento942303804,
+  belden148741780,
 }
