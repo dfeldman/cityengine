@@ -5,8 +5,8 @@
  * water since we can use photogrammetry for buildings and statues").
  * The ground, the ponds and the general planting are the bake's (docs/TEA-GARDEN.md); this draws what a zone cannot:
  *
- *  - CLOUD-PRUNED PINES (niwaki): a leaning, curving trunk carrying layered pads of foliage at the ends of its branches,
- *    as the one before the Temple Gate (holymtn.com garden photographs);
+ *  - CLOUD-PRUNED PINES (niwaki), as the one before the Temple Gate (holymtn.com garden photographs): the plant
+ *    library's `niwaki` since 2026-10-26 (assetkit bushgen), placed where the layout puts them;
  *  - the MT FUJI HEDGE (1979, for Makoto Hagiwara): a broad clipped cone with a flat-topped cap, before a bamboo
  *    screen, stones at its foot on the moss; the DRAGON HEDGE on the path to Maple Lane and the NEW DRAGON HEDGE beside
  *    Mt Fuji: long clipped hedges humped like a dragon's back, bamboo behind;
@@ -33,7 +33,7 @@
  */
 import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
-import { prism, strut, type Rgb } from '../../models.ts'
+import { prism, type Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 import { AZALEAS, BAMBOO, DOMES, DRAGON, DRAGON2, DWARF, DWARF_PINES, FALL, FALL2, FERNS, FUJI, FUJI_ROCKS, IRIS, ISLANDS, PADS, PINES, PONDS, POND_ROCKS, REEDS, ROCK_GROUPS, STREAM } from './tea-garden-layout.ts'
 
@@ -44,9 +44,6 @@ const h1 = (a: number, b: number): number => { const v = Math.sin(a * 127.1 + b 
 const shade = (c: Rgb, k: number): Rgb => [c[0] * k, c[1] * k, c[2] * k]
 
 // (the greens set dark: the flat material lights them about 1.6 times — the Mt Fuji hedge at 0.36/0.48 came out lime)
-const PINE: Rgb = [0.08, 0.16, 0.07]
-const PINE_LIGHT: Rgb = [0.11, 0.2, 0.08]
-const TRUNK: Rgb = [0.3, 0.22, 0.16]
 const CLIPPED: Rgb = [0.17, 0.27, 0.1]
 const FUJI_GREEN: Rgb = [0.12, 0.19, 0.06]
 const DRAGON_GREEN: Rgb = [0.15, 0.26, 0.1]
@@ -97,41 +94,6 @@ function lump(out: MeshBuilder, cx: number, cy: number, cz: number, rx: number, 
   }
 }
 
-/**
- * A cloud-pruned pine: a trunk curving away towards `lean`, branches ending in flat layered pads, each a squashed lump
- * with a thinner one over it (the pad's crown of new growth, lighter), a pad at the top. The pads alternate sides and
- * reach farther low on the trunk, as a niwaki's tiers are pruned.
- */
-function niwaki(out: MeshBuilder, x: number, z: number, y: number, h: number, lean: number, seed: number): void {
-  const lx = Math.sin((lean * Math.PI) / 180), lz = Math.cos((lean * Math.PI) / 180)
-  const s = h / 4.5
-  const P = (t: number): V3 => {
-    const off = 0.32 * h * Math.pow(t, 1.25) + 0.35 * s * Math.sin(t * 5 + seed)
-    const side = 0.25 * s * Math.sin(t * 7 + seed * 0.3)
-    return [x + lx * off - lz * side, y + t * h * 0.92, z + lz * off + lx * side]
-  }
-  const N = 5
-  for (let i = 0; i < N; i++) {
-    const a = P(i / N), b = P((i + 1) / N)
-    const w = (0.34 - 0.2 * (i / N)) * s
-    strut(out, a, b, w, w, TRUNK)
-  }
-  const tiers = h > 2.6 ? [0.36, 0.48, 0.6, 0.72, 0.84] : [0.5, 0.74]
-  tiers.forEach((t, k) => {
-    const base = P(t)
-    const ang = seed * 0.7 + k * 2.4 + (k % 2) * Math.PI * 0.85
-    const reach = (1.55 - t) * 1.25 * s
-    const tip: V3 = [base[0] + Math.sin(ang) * reach, base[1] + 0.2 * s, base[2] + Math.cos(ang) * reach]
-    strut(out, base, tip, 0.1 * s, 0.1 * s, TRUNK)
-    const r = (1.3 - t * 0.65) * s
-    const rz = r * (0.8 + 0.3 * h1(seed, k))
-    lump(out, tip[0], tip[1] + 0.1 * s, tip[2], r, 0.42 * s, rz, seed + k * 31, PINE, 0, 0.16, 7, 3, false, 0.35)
-    lump(out, tip[0] + 0.15 * r, tip[1] + 0.3 * s, tip[2] - 0.1 * rz, r * 0.6, 0.26 * s, rz * 0.6, seed + k * 31 + 7, PINE_LIGHT, 0, 0.16, 6, 2, true, 0.2)
-  })
-  const top = P(1)
-  lump(out, top[0], top[1] + 0.08 * s, top[2], 0.85 * s, 0.5 * s, 0.75 * s, seed + 97, PINE, 0, 0.16, 7, 3, false, 0.35)
-}
-
 export function teaGardenLandscape(out: MeshBuilder, fit: Fit): void {
   const g = (x: number, z: number): number => fit.groundAt?.(x, z) ?? 0
   const ROCK = surfaceTag('rock')
@@ -168,10 +130,12 @@ export function teaGardenLandscape(out: MeshBuilder, fit: Fit): void {
     return best
   }
 
-  // ---- the cloud-pruned pines, and the little ones on Waterfall Hill
-  for (const [cx, cz, hh, lean, seed] of [...PINES, ...DWARF_PINES]) {
+  // ---- the cloud-pruned pines, and the little ones on Waterfall Hill: the library's `niwaki` (assetkit bushgen,
+  // 2026-10-26: a crooked trunk, near-level limbs each ending in a flat cloud of needle cards; the builder's own —
+  // struts with lump pads, 9,400 triangles for 21 — read as stacked green plates)
+  for (const [cx, cz, hh, , seed] of [...PINES, ...DWARF_PINES]) {
     const [x, z] = L(cx, cz)
-    niwaki(out, x, z, g(x, z) - 0.1, hh, lean, seed % 1000)
+    out.plants.push({ x, z, species: 'niwaki', h: hh, spin: (seed % 360) * (Math.PI / 180) })
   }
   // ---- the plant library's: the dwarf mugo pines and junipers, the massed azaleas, the irises, the ferns, the reeds
   for (const [cx, cz, species, hh] of DWARF) {
@@ -223,10 +187,10 @@ export function teaGardenLandscape(out: MeshBuilder, fit: Fit): void {
     if (tortoise) {
       // the tortoise's head: a stone standing off one end, its shell the mound
       standing(x + r * 1.05, z, 0.55, Math.PI / 2, seed + 50)
-      niwaki(out, x - r * 0.3, z + r * 0.2, lv + rise - 0.05, 1.7, 200, seed % 1000)
+      out.plants.push({ x: x - r * 0.3, z: z + r * 0.2, species: 'niwaki', h: 1.7, spin: 3.5, dy: lv + rise - 0.05 - g(x - r * 0.3, z + r * 0.2) })
     } else {
       // (the stone pagoda on it is the owner's GLB; a pine leans out over the water beside where it stands)
-      niwaki(out, x + r * 0.45, z - r * 0.3, lv + rise - 0.05, 2.6, 150, seed % 1000)
+      out.plants.push({ x: x + r * 0.45, z: z - r * 0.3, species: 'niwaki', h: 2.6, spin: 2.6, dy: lv + rise - 0.05 - g(x + r * 0.45, z - r * 0.3) })
       lump(out, x - r * 0.4, lv + rise - 0.1, z + r * 0.35, 0.7, 0.45, 0.6, seed + 70, CLIPPED, 0, 0.06, 7, 2, true, 0.3)
     }
   }

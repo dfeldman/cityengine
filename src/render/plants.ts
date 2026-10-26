@@ -52,7 +52,7 @@ const FLOWERS = ['tulip', 'daisy', 'wildflower', 'lupine', 'poppy']
 const OWN_SIZE = new Set(['agave', 'aloe', 'aeonium', 'echeveria', 'ice_plant', 'nz_flax', 'deer_grass', 'artemisia', 'lavender',
   'strelitzia', 'agapanthus', 'calla_lily', 'san_pedro', 'golden_barrel', 'prickly_pear', 'barrel_cactus', 'yucca',
   // the Japanese Tea Garden's (2026-10-26): a bamboo culm and an iris clump, which a green mound inside would bury
-  'bamboo', 'japanese_iris'])
+  'bamboo', 'japanese_iris', 'niwaki'])
 /**
  * …and, when a LANDMARK places them by name (`addPlants`), the library's straps and blades too: reeds and cattails at
  * the Tea Garden's ponds, its sword ferns. A zone that names a fern still grows it the old way (stretched to a bush, a

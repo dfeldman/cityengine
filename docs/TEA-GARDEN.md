@@ -110,9 +110,9 @@ of polys or fewer. look at how plantkit works. prioritize plants, rocks and wate
 buildings and statues."
 
 The budget is `tests/landmarks.test.ts`: every builder under 25,000 triangles. The builder stood at 21,850 and now
-stands at 20,078, with far more in the garden, because everything the PLANT LIBRARY can draw moved out of it:
+stands at 10,166, with far more in the garden, because everything the PLANT LIBRARY can draw moved out of it:
 `MeshBuilder.plants` are instanced GLBs (render/plants.ts) and count for nothing against the ceiling. The landscape
-places 385 of them (it placed 40).
+places 408 of them (it placed 40).
 
 **What was wrong before.** The views showed it: the zone's shrubs (`rhododendron`, `hydrangea`, `bush_flowering`) had
 filled the whole garden with two-metre hydrangea mopheads in pink, blue and white — the real garden is green clipped
@@ -145,8 +145,8 @@ To see them the game must read the assetkit checkout (`?assets=local`): the buck
 from the assetkit checkout (`npm run assets:upload` there, which rebuilds its plants index first). Until then the
 live game, which reads the bucket, skips the three species: the bamboo groves behind the hedges stand empty.
 
-`render/plants.ts`: a plant a landmark places by name gets no leafy core when it is an own-size species (bamboo and
-iris joined the list) or one of the library's straps and blades (reeds, cattail, fern, bracken) — a green mound under
+`render/plants.ts`: a plant a landmark places by name gets no leafy core when it is an own-size species (bamboo, iris
+and niwaki joined the list) or one of the library's straps and blades (reeds, cattail, fern, bracken) — a green mound under
 a cane or a clump of straps was a blob at its foot. Zones that name ferns (the Presidio's, Golden Gate Park's) are
 unchanged.
 
@@ -170,7 +170,12 @@ unchanged.
 - **Rocks** are faceted (6 segments, 3 rings, strongly jittered: 36 triangles, were 56) and set in groups (ishigumi:
   one standing stone, two companions, a small one at the foot) at the Buddha, the drum bridge pool, the Temple Gate,
   the tea house pond, round the Main Pond and in the Sunken Garden.
-- **Niwaki** pads are squashed lumps with a lighter crown of new growth over each, five tiers alternating sides.
+- **Niwaki** are the plant library's since later the same day (owner: "can you model the cloud trees"): assetkit
+  bushgen's `niwaki`, a Japanese black pine on treekit's machinery — a crooked trunk (gnarl, wander, a `return` toward
+  upright), five or six near-level limbs each ending in a fan of twigs that carry the needle cards flat (`frond` cards,
+  tilt 6°, no droop), so each limb ends in a cloud and the top in one; ten entries 2.6–4.8 m
+  (`tools/bushgen/library-teagarden.json`). The builder's own — struts with lump pads — read as stacked green plates
+  and cost 9,400 triangles for 21; gone, the builder stands at 10,166 with 408 library plants.
 - **Lily pads** (43, two triangles each) at the Main Pond's south-west end, the tea house and drum ponds.
 - **The New Dragon Hedge** beside Mt Fuji, on whichever side `layout.py` found clear.
 - **The flowering domes** are library azaleas now; only the green tamamono stay modelled lumps. A flat-lit pink or red
