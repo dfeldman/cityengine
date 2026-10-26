@@ -71,11 +71,22 @@ export const TREES_PER_KM2 = 1000
  * the park scatter then, since a tree that is really there is not one to thin.
  */
 export function plantCity(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Partial<Pick<CityPackage, 'buildings'>>, cap = TREE_CAP,
-                          given?: Planting[], parks?: ParkRule | PlantZones, report?: PlantReport): Planting[] {
+                          given?: Planting[], parks?: ParkRule | PlantZones, report?: PlantReport, hand: Planting[] = []): Planting[] {
+  // (the trees planted by HAND — data/trees/<city>.json: the Japanese Tea Garden's Cherry Tree Lane and Maple Lane —
+  //  come first and are not moved: everything else keeps its spacing from them)
+  if (hand.length) {
+    const rest = plantCity(pkg, cap, given, parks, report)
+    return spaced([...hand, ...rest], report)
+  }
   // zones, where the city has planting zones (data/zones/): the zone-driven pass below
   if (parks && typeof parks !== 'function' && parks.count > 0) return plantZoned(pkg, cap, given, parks, report)
   const rule = typeof parks === 'function' ? parks : undefined
   return spaced(plantLegacy(pkg, cap, given, rule), report)
+}
+
+/** The trees a city's `data/trees/<city>.json` plants by hand, in local metres. */
+export function handTrees(file: { trees: { at: [number, number]; form: string; h: number }[] }, toLocal: (lat: number, lon: number) => { x: number; z: number }): Planting[] {
+  return file.trees.map((t, i) => ({ ...toLocal(t.at[0], t.at[1]), height: t.h, spin: (i * 2.399) % 6.28, park: true, form: formCode(t.form as TreeForm) }))
 }
 
 /** What a planting pass placed, and what it turned away — the bake logs it. */

@@ -68,10 +68,45 @@ The zone `plant-tea-garden` sits at priority 210, above Golden Gate Park's mix.
   garden is laid out as beds: shrubs right through, at the lush density (2.2). The ground is drawn deep moss green
   (`PackedArea.moss`) instead of the beds' mulch.
 
+## Hero plants, rocks and water (2026-10-25, later)
+Owner: "work on the Japanese garden plants, rocks, and water features. Do not attempt sculptures or buildings or other
+constructed objects yet."
+
+`tools/teagarden/layout.py` lays every piece out and writes `src/render/landmarks/sf/tea-garden-layout.ts`. It uses the
+map fit, OSM's paths, buildings and fence, the ponds, and the lidar. It keeps everything off the paths (1.6 m from a
+footway's line) and out of the buildings and, except the waterline rocks, the water. The builder is
+`teaGardenLandscape` (`tea-garden-landscape.ts`), a standalone entry in `parks.json`. It is not draped: each piece
+stands on the ground under it (`fit.groundAt`).
+
+- **Cloud-pruned pines (17).** Each is a leaning, curving trunk with flat foliage pads at the ends of its branches,
+  like the one before the Temple Gate in the garden's photographs. They stand on the ponds' banks, in the pagoda
+  courtyard, by the drum bridge and the tea house pond, at the Hagiwara gate and in the Sunken Garden.
+- **Waterfall Hill.** Hoodline (2017) says the Hagiwara family's dwarf trees are planted on "Waterfall Hill". The
+  map's DWARF TREES are on the pagoda terrace's slope over the Main Pond's north arm, where the lidar falls 2.6 m in
+  7 m. There are 16 dwarf plants from the plant library (`mugo_pine`, `juniper_scrub`, `heather`) and 4 little
+  cloud-pruned pines.
+- **The waterfall** comes down that slope in three ledges into the north arm. Each ledge is a still pool ending in a
+  white drop, with rocks along both banks and at every lip, a heap of stones at the spring, and foam at the foot.
+- **The Mt Fuji Hedge** (1979, for Makoto Hagiwara) is a broad clipped cone, 5.8 m across, with a flat-topped cap.
+  Bamboo stands behind it and three stones sit in front. It is beside the restroom and the Main Gate, as the map draws
+  it. The map is about 7 m out in that corner (its restroom lands 6.7 m from OSM's toilets), so the hedge is moved by
+  that much, then nudged to clear the path.
+- **The Dragon Hedge** is clipped mounds along a line that winds twice, humped, with the head end raised. Bamboo
+  stands behind it.
+- **Round the ponds:** 69 rocks at the waterline, 34 clipped azalea domes (some in pink, magenta or red flower), and
+  reeds and cattails from the plant library.
+- **The stream** joins the drum bridge pond to the Main Pond, as the map draws them: a ribbon of water stepping down,
+  with stones along it.
+- **The lanes are planted at bake time.** Cherry Tree Lane runs along the fence by Martin Luther King Jr Drive
+  (`blossom`), and Maple Lane along the north fence (`flowering`). Both have trees on both sides of the path. They come
+  from `data/trees/san-francisco.json`: trees planted by hand, read by `tools/bake.ts`, placed first by
+  `city/plantings.ts` (`plantCity`'s `hand`) and not moved.
+
+The procedural greens are set dark, because the flat material lights them about 1.6 times.
+
 ## Next
-- **Hero plants.** The cloud-pruned pines (they need a new tree form: pads of foliage on a twisted trunk), the Dragon
-  Hedge and the Mt Fuji Hedge (clipped shapes), the dwarf trees by the Temple Gate, and the Cherry Tree Lane and Maple
-  Lane as rows.
-- **Rocks.** The waterfall and pond-edge stones.
+- **Lily pads** on the ponds. They need the ponds' water level in the builder, which it does not have.
+- **More of the planting by hand**, from photographs: which pines are where, the Sunken Garden's azaleas, and the
+  bonsai.
 - **Buildings and structures.** The owner's GLBs replace the procedural pagoda, gates, tea house, bridges, lanterns and
   fence.

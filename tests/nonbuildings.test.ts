@@ -76,6 +76,8 @@ const KNOWN: Record<string, string[]> = {
     'intersects | Heart, Inner Richmond',
       // the garden's grounds (lanterns, fence, bridges) surround its own buildings, by design (#238)
       'intersects | Japanese Tea Garden grounds',
+      // (the garden's landscape, like its grounds, is one entry over the whole garden: its box takes in the buildings)
+      'intersects | Japanese Tea Garden landscape',
       // the food-truck park and the mini golf surround their own structures (OSM's, modelled), by design (#245)
       'intersects | SPARK Social SF',
       'intersects | Stagecoach Greens',

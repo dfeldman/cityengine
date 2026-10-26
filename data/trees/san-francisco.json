@@ -1,0 +1,203 @@
+{
+ "_note": "Trees planted by hand at bake time (tools/bake.ts \u2192 city/plantings.ts `hand`), ahead of everything else and not moved: the Japanese Tea Garden's Cherry Tree Lane (along the fence by Martin Luther King Jr Drive) and Maple Lane (along the north fence), both sides of their paths. Written by tools/teagarden/layout.py.",
+ "trees": [
+  {
+   "at": [
+    37.7697178,
+    -122.4705097
+   ],
+   "form": "blossom",
+   "h": 5.8,
+   "note": "Japanese Tea Garden: Cherry Tree Lane"
+  },
+  {
+   "at": [
+    37.769751,
+    -122.4704699
+   ],
+   "form": "blossom",
+   "h": 6.0,
+   "note": "Japanese Tea Garden: Cherry Tree Lane"
+  },
+  {
+   "at": [
+    37.7697746,
+    -122.470567
+   ],
+   "form": "blossom",
+   "h": 6.4,
+   "note": "Japanese Tea Garden: Cherry Tree Lane"
+  },
+  {
+   "at": [
+    37.7698025,
+    -122.4705153
+   ],
+   "form": "blossom",
+   "h": 5.9,
+   "note": "Japanese Tea Garden: Cherry Tree Lane"
+  },
+  {
+   "at": [
+    37.7698247,
+    -122.4706084
+   ],
+   "form": "blossom",
+   "h": 6.8,
+   "note": "Japanese Tea Garden: Cherry Tree Lane"
+  },
+  {
+   "at": [
+    37.7698695,
+    -122.4706522
+   ],
+   "form": "blossom",
+   "h": 5.5,
+   "note": "Japanese Tea Garden: Cherry Tree Lane"
+  },
+  {
+   "at": [
+    37.7698939,
+    -122.4706101
+   ],
+   "form": "blossom",
+   "h": 5.7,
+   "note": "Japanese Tea Garden: Cherry Tree Lane"
+  },
+  {
+   "at": [
+    37.7699171,
+    -122.4706928
+   ],
+   "form": "blossom",
+   "h": 6.4,
+   "note": "Japanese Tea Garden: Cherry Tree Lane"
+  },
+  {
+   "at": [
+    37.769959,
+    -122.4707389
+   ],
+   "form": "blossom",
+   "h": 6.1,
+   "note": "Japanese Tea Garden: Cherry Tree Lane"
+  },
+  {
+   "at": [
+    37.769988,
+    -122.4706908
+   ],
+   "form": "blossom",
+   "h": 6.1,
+   "note": "Japanese Tea Garden: Cherry Tree Lane"
+  },
+  {
+   "at": [
+    37.7700056,
+    -122.4707777
+   ],
+   "form": "blossom",
+   "h": 5.9,
+   "note": "Japanese Tea Garden: Cherry Tree Lane"
+  },
+  {
+   "at": [
+    37.7705413,
+    -122.4706027
+   ],
+   "form": "flowering",
+   "h": 6.9,
+   "note": "Japanese Tea Garden: Maple Lane"
+  },
+  {
+   "at": [
+    37.7705861,
+    -122.4705385
+   ],
+   "form": "flowering",
+   "h": 7.4,
+   "note": "Japanese Tea Garden: Maple Lane"
+  },
+  {
+   "at": [
+    37.7705579,
+    -122.470499
+   ],
+   "form": "flowering",
+   "h": 6.4,
+   "note": "Japanese Tea Garden: Maple Lane"
+  },
+  {
+   "at": [
+    37.7706369,
+    -122.4704646
+   ],
+   "form": "flowering",
+   "h": 5.8,
+   "note": "Japanese Tea Garden: Maple Lane"
+  },
+  {
+   "at": [
+    37.7705993,
+    -122.4704449
+   ],
+   "form": "flowering",
+   "h": 6.1,
+   "note": "Japanese Tea Garden: Maple Lane"
+  },
+  {
+   "at": [
+    37.7706714,
+    -122.4704048
+   ],
+   "form": "flowering",
+   "h": 7.0,
+   "note": "Japanese Tea Garden: Maple Lane"
+  },
+  {
+   "at": [
+    37.7706301,
+    -122.4703708
+   ],
+   "form": "flowering",
+   "h": 7.1,
+   "note": "Japanese Tea Garden: Maple Lane"
+  },
+  {
+   "at": [
+    37.7706926,
+    -122.4703588
+   ],
+   "form": "flowering",
+   "h": 5.7,
+   "note": "Japanese Tea Garden: Maple Lane"
+  },
+  {
+   "at": [
+    37.7707293,
+    -122.4702894
+   ],
+   "form": "flowering",
+   "h": 6.9,
+   "note": "Japanese Tea Garden: Maple Lane"
+  },
+  {
+   "at": [
+    37.7707764,
+    -122.4702363
+   ],
+   "form": "flowering",
+   "h": 5.1,
+   "note": "Japanese Tea Garden: Maple Lane"
+  },
+  {
+   "at": [
+    37.7707402,
+    -122.4702029
+   ],
+   "form": "flowering",
+   "h": 6.3,
+   "note": "Japanese Tea Garden: Maple Lane"
+  }
+ ]
+}

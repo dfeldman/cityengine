@@ -37,11 +37,20 @@ import { resolve } from 'node:path'
 import { CITIES, bboxOf, city, detailBboxOf, extentOf, type CitySpec } from './cities.ts'
 import { joinNearMisses } from './gaps.ts'
 import { bridgesQuery, campusQuery, sandQuery, wallsQuery, squaresQuery, stepsQuery, wideQuery, fringeQuery, cityQuery, furnitureQuery, partRelationsQuery, innerRings, outerRings, overpassTiled, type Bbox, type OsmWay, type LatLon } from './overpass.ts'
+
+/** the trees a city plants by hand (data/trees/<city>.json: the Japanese Tea Garden's lanes), local metres */
+function handTreesOf(id: string, toLocal: (lat: number, lon: number) => { x: number; z: number }): Planting[] {
+  const f = resolve(import.meta.dirname, '..', 'data', 'trees', `${id}.json`)
+  if (!existsSync(f)) return []
+  const out = handTrees(JSON.parse(readFileSync(f, 'utf8')) as Parameters<typeof handTrees>[0], toLocal)
+  console.log(`  ${out.length} trees planted by hand (${f})`)
+  return out
+}
 import { Elevation, ATTRIBUTION as TERRAIN_CREDIT, metresPerPixel } from './terrarium.ts'
 import { Terrain, type PackedTerrain } from '../src/city/terrain.ts'
 import { TILE, splitPackage, tilesOfLine, type CityIndex, type TileEntry } from '../src/city/tiles.ts'
 import { waterLookup } from '../src/render/watermask.ts'
-import { MIN_SPACING, TREE_CAP, TREES_PER_KM2, newPlantReport, packPlantings, plantCity, type PlantReport } from '../src/city/plantings.ts'
+import { MIN_SPACING, TREE_CAP, TREES_PER_KM2, newPlantReport, packPlantings, plantCity, handTrees, type Planting, type PlantReport } from '../src/city/plantings.ts'
 import { PlantZones } from '../src/city/zone-planting.ts'
 import { mapEdges, packRide, rideFor } from '../src/city/ridefile.ts'
 import { Projection, haversine } from '../src/city/geo.ts'
@@ -3057,7 +3066,7 @@ async function bake(spec: CitySpec): Promise<void> {
   // zone says the register does not reach. A city with no planting zones keeps the old rules.
   const plantZones = new PlantZones(zones)
   const planted = newPlantReport()
-  pkg.plantings = packPlantings(plantCity(pkg, cap, street, plantZones, planted))
+  pkg.plantings = packPlantings(plantCity(pkg, cap, street, plantZones, planted, handTreesOf(spec.id, (lat, lon) => proj.toLocal({ lat, lon }))))
   logPlanting(pkg.plantings.length / 5, planted, plantZones.count, cap, km2)
   await mkdir(workDir(spec.id), { recursive: true })
   // (bake-private: what the secondary tools read — tools/bake-files.ts; never published)
@@ -3700,7 +3709,7 @@ async function main(): Promise<void> {
         : undefined
       const plantZones = new PlantZones(loadZones(spec, (lat, lon) => proj.toLocal({ lat, lon })))
       const planted = newPlantReport()
-      pkg.plantings = packPlantings(plantCity(pkg, cap, street, plantZones, planted))
+      pkg.plantings = packPlantings(plantCity(pkg, cap, street, plantZones, planted, handTreesOf(spec.id, (lat, lon) => proj.toLocal({ lat, lon }))))
       logPlanting(pkg.plantings.length / 5, planted, plantZones.count, cap, km2)
       console.log(`${spec.id}: ${pkg.plantings.length / 5} trees planted${street ? ` (${street.length} from the city's list)` : ''}`)
       await writeFile(packageFile(spec.id), JSON.stringify(withoutFineGrid(pkg)))

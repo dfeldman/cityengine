@@ -18,6 +18,7 @@ import type { Fit } from '../fit.ts'
 import { box, prism, strut, type Rgb } from '../../models.ts'
 import { roof } from '../kit.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
+import { teaGardenLandscape } from './tea-garden-landscape.ts'
 
 const VERMILION: Rgb = [0.72, 0.2, 0.12]
 const TILE: Rgb = [0.24, 0.26, 0.25]
@@ -188,5 +189,5 @@ export function teaGardenGrounds(out: MeshBuilder, _fit: Fit): void {
 }
 
 export const TEA_GARDEN: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  teaGardenPagoda, teaGardenSouthGate, teaGardenTempleGate, teaGardenTeaHouse, teaGardenGiftShop, teaGardenGrounds,
+  teaGardenPagoda, teaGardenSouthGate, teaGardenTempleGate, teaGardenTeaHouse, teaGardenGiftShop, teaGardenGrounds, teaGardenLandscape,
 }
