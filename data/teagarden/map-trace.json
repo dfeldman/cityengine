@@ -1,0 +1,21 @@
+{
+  "_note": "The Japanese Tea Garden's ponds, traced by eye from the garden's own map (holymtn.com japteamap-1.jpg, 2017) in that map's screen pixels, with control points tying the map to the game (true local metres, x east / z north: OSM building centroids, and tea-garden.ts's drum bridge, Buddha and plank bridge). tools/teagarden/ponds.py fits an affine transform and checks each pond against the lidar ground. The map is schematic: expect +-8 m.",
+  "control": [
+    {"what": "pagoda", "px": [363, 218], "game": [-5137.8, -2548.3]},
+    {"what": "Temple Gate", "px": [315, 272], "game": [-5128.8, -2564.3]},
+    {"what": "tea house", "px": [530, 325], "game": [-5087.8, -2517.2]},
+    {"what": "gift shop", "px": [583, 308], "game": [-5084.8, -2501.2]},
+    {"what": "South Gate", "px": [310, 447], "game": [-5084.8, -2592.4]},
+    {"what": "drum bridge", "px": [453, 357], "game": [-5088.9, -2541.8]},
+    {"what": "Buddha", "px": [472, 288], "game": [-5105.0, -2526.0]},
+    {"what": "long bridge", "px": [435, 260], "game": [-5115.8, -2532.7]}
+  ],
+  "ponds": {
+    "main": [[245,310],[280,300],[325,308],[360,300],[400,290],[412,310],[400,335],[375,340],[365,370],[350,390],[310,410],[270,415],[250,395],[235,360],[230,335]],
+    "drum": [[435,300],[460,310],[475,335],[470,365],[485,385],[505,400],[495,410],[470,395],[450,375],[440,350],[430,320]],
+    "teahouse": [[480,340],[505,335],[515,355],[520,375],[505,385],[490,370]],
+    "sunken": [[565,225],[590,218],[620,230],[645,245],[630,255],[600,250],[575,245]],
+    "west": [[215,338],[240,342],[245,360],[225,365]],
+    "southgate": [[315,430],[340,445],[330,455],[310,445]]
+  }
+}

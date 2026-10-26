@@ -263,6 +263,7 @@ export function splitPackage(pkg: CityPackage, waterLevel: (ring: Point[], area:
           //  Pier 39's planks were baked and never drawn)
           ...(a.surface ? { surface: a.surface } : {}),
           ...(a.beds ? { beds: true } : {}),
+          ...(a.moss ? { moss: true } : {}),
           ...(a.parking ? { parking: true } : {}),
           ...(level !== undefined && Number.isFinite(level) ? { level: Math.round(level * 100) / 100 } : {}),
         })

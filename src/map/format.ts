@@ -70,8 +70,10 @@ export interface ZoneProps {
    * 'beds': the parks here are planted beds — mulch and low shrubs, the mapped lawns the only grass (Tunnel Tops);
    * 'grass': a lawn laid over the zone's ring where OSM maps none (Francisco Park's dog run, tools/bake.ts);
    * 'scrub': the mapped lawns here are not lawns — they are planted like the park round them (Francisco Park's upper slope)
+   * 'garden': both — the mapped lawns are planted ground, and all of it is beds (the Japanese Tea Garden: moss, azaleas
+   *  and clipped shrubs, no mown grass)
    */
-  ground?: 'beds' | 'grass' | 'scrub'
+  ground?: 'beds' | 'grass' | 'scrub' | 'garden'
   park?: Record<string, unknown>
   furniture?: Record<string, unknown>
 }
@@ -118,6 +120,9 @@ export interface ZonePlant {
   street?: StreetPlant
   /** the runtime shrub and flower layer (render/plants.ts): model names from the plant library, and how thick */
   shrubs?: { density?: number; shrubs?: string[]; flowers?: string[] }
+  /** true: a tree OSM maps here with no species takes this zone's park species, not the region's street pool, whose
+   *  palms stood in the Japanese Tea Garden (2026-10-25) */
+  mapped?: boolean
 }
 
 /** A facade cluster (MAP-FORMAT §6.1): one look, shared by many buildings and jittered by seed. */
@@ -297,6 +302,8 @@ export interface Area {
   surface?: 'wood' | 'cobblestone' | 'brick'
   /** a park laid out as planted beds (city/package.ts PackedArea `beds`) */
   beds?: true
+  /** …on moss, not mulch (PackedArea `moss`) */
+  moss?: true
   /** a surface car park (city/package.ts PackedArea `parking`) */
   parking?: true
   /** water: the whole body's level, cm above zFloor */

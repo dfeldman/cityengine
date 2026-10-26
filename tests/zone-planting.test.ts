@@ -7,7 +7,7 @@ import { Projection } from '../src/city/geo.ts'
 import { localZones, type ZoneFile } from '../src/map/zones.ts'
 import { PlantZones } from '../src/city/zone-planting.ts'
 import { Buildings, MIN_SPACING, newPlantReport, plantCity, type Planting } from '../src/city/plantings.ts'
-import { crownRadius } from '../src/city/tree-forms.ts'
+import { crownRadius, formCode } from '../src/city/tree-forms.ts'
 import type { PackedEdge } from '../src/city/package.ts'
 
 const proj = new Projection({ lat: 37.7930, lon: -122.4120 })
@@ -105,5 +105,20 @@ describe('planting by zone', () => {
       expect(palms).toBeLessThan(0.45)
     })
   })
-})
 
+  it('gives a mapped tree the zone species where the zone says `mapped`', () => {
+    const toLocal = (lat: number, lon: number) => ({ x: lon * 1000, z: lat * 1000 })
+    const garden = { density: 0.0001, clump: 0, species: [{ form: 'flowering', weight: 1, h: [4, 5] as [number, number] }] }
+    const z = new PlantZones(localZones([
+      { ref: 'garden', priority: 5, ring: [[0, 0], [0, 0.1], [0.1, 0.1], [0.1, 0]], props: { plant: { park: garden, mapped: true } } },
+      { ref: 'park', priority: 1, ring: [[0, 0], [0, 1], [1, 1], [1, 0]], props: { plant: { park: garden } } },
+    ], toLocal))
+    const pkg = { edges: [] as PackedEdge[], areas: [], trees: [50, 50, 500, 500] }
+    const got = plantCity(pkg, 100000, undefined, z)
+    const at = (x: number) => got.find((p) => p.x === x)!
+    expect(at(50).form).toBe(formCode('flowering'))
+    expect(at(50).height).toBeLessThanOrEqual(5)
+    // outside the garden the mapped tree keeps no form (the region's pools draw it)
+    expect(at(500).form).toBeUndefined()
+  })
+})

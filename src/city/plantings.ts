@@ -123,6 +123,13 @@ function plantZoned(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Partia
     const x = pkg.trees[i]
     const z = pkg.trees[i + 1]
     if (reg.near(x, z, 3)) continue
+    // (where the zone says so, a mapped tree is one of the zone's own species: ZonePlant `mapped`)
+    const spot = zones.at(x, z).find((q) => q.mapped !== undefined)?.mapped ? zones.park(x, z) : null
+    if (spot?.species.length) {
+      const sp = pick(spot.species, r())
+      mapped.push({ x, z, height: sp.h[0] + r() * (sp.h[1] - sp.h[0]), spin: r() * 6.28, park: false, form: formCode(sp.form as TreeForm) })
+      continue
+    }
     mapped.push({ x, z, height: 6.5 + r() * 3, spin: r() * 6.28, park: false })
   }
 

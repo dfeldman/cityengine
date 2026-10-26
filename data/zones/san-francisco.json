@@ -4125,6 +4125,324 @@
    ]
   },
   {
+   "ref": "tea-garden-ground",
+   "name": "Japanese Tea Garden's ground",
+   "priority": 1,
+   "props": {
+    "terrain": "fine",
+    "lidar": true,
+    "relief": "raw"
+   },
+   "note": "Owner, 2026-10-25: 'the terrain is very important ... if the hills are in the wrong places it wont make sense'. The garden is two raised terraces about 3 m over its ponds (the pagoda's, and the tea house and gift shop's), a ridge between the Main Pond and the drum bridge, and the ponds low between them (tools/teagarden/relief.py: 1 m lidar bare earth, 9 ground points per m2 under the canopy). The 60 m opening flattened all of it into a lawn. The ring is OSM's garden (leisure=garden 'Japanese Tea Garden').",
+   "ring": [
+    [
+     37.770154,
+     -122.470891
+    ],
+    [
+     37.770035,
+     -122.470843
+    ],
+    [
+     37.769707,
+     -122.470539
+    ],
+    [
+     37.769684,
+     -122.470487
+    ],
+    [
+     37.769679,
+     -122.470306
+    ],
+    [
+     37.769708,
+     -122.469855
+    ],
+    [
+     37.770512,
+     -122.469213
+    ],
+    [
+     37.771007,
+     -122.4699
+    ],
+    [
+     37.770875,
+     -122.470124
+    ],
+    [
+     37.770432,
+     -122.470828
+    ],
+    [
+     37.770154,
+     -122.470891
+    ]
+   ]
+  },
+  {
+   "ref": "plant-tea-garden",
+   "name": "Japanese Tea Garden's planting",
+   "priority": 210,
+   "props": {
+    "plant": {
+     "park": {
+      "density": 0.0078,
+      "clump": 0.35,
+      "trailside": true,
+      "species": [
+       {
+        "form": "pine",
+        "weight": 3,
+        "h": [
+         3.5,
+         7
+        ]
+       },
+       {
+        "form": "flowering",
+        "weight": 3,
+        "h": [
+         3.5,
+         7
+        ]
+       },
+       {
+        "form": "blossom",
+        "weight": 2.5,
+        "h": [
+         4,
+         7
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 1.5,
+        "h": [
+         4,
+         9
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 2,
+        "h": [
+         3,
+         6
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 0.8,
+        "h": [
+         16,
+         24
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 0.6,
+        "h": [
+         15,
+         22
+        ]
+       }
+      ]
+     },
+     "wood": {
+      "density": 0.0078,
+      "clump": 0.35,
+      "trailside": true,
+      "species": [
+       {
+        "form": "pine",
+        "weight": 3,
+        "h": [
+         3.5,
+         7
+        ]
+       },
+       {
+        "form": "flowering",
+        "weight": 3,
+        "h": [
+         3.5,
+         7
+        ]
+       },
+       {
+        "form": "blossom",
+        "weight": 2.5,
+        "h": [
+         4,
+         7
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 1.5,
+        "h": [
+         4,
+         9
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 2,
+        "h": [
+         3,
+         6
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 0.8,
+        "h": [
+         16,
+         24
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 0.6,
+        "h": [
+         15,
+         22
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0.004,
+      "clump": 0.35,
+      "trailside": true,
+      "species": [
+       {
+        "form": "pine",
+        "weight": 3,
+        "h": [
+         3.5,
+         7
+        ]
+       },
+       {
+        "form": "flowering",
+        "weight": 3,
+        "h": [
+         3.5,
+         7
+        ]
+       },
+       {
+        "form": "blossom",
+        "weight": 2.5,
+        "h": [
+         4,
+         7
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 1.5,
+        "h": [
+         4,
+         9
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 2,
+        "h": [
+         3,
+         6
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 0.8,
+        "h": [
+         16,
+         24
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 0.6,
+        "h": [
+         15,
+         22
+        ]
+       }
+      ]
+     },
+     "shrubs": {
+      "density": 2.2,
+      "shrubs": [
+       "rhododendron",
+       "rhododendron",
+       "rhododendron",
+       "bush_green",
+       "bush_green",
+       "bush_flowering",
+       "hydrangea",
+       "fern"
+      ],
+      "flowers": []
+     },
+     "mapped": true
+    },
+    "ground": "garden"
+   },
+   "note": "Owner, 2026-10-25: model the garden's plants. A Japanese stroll garden, closely planted: low clipped Japanese black pines, Japanese maples (the 'flowering' form), cherries (the Cherry Tree Lane and through the garden), hinoki and juniper ('cypress'), camellia and podocarpus ('laurel') under a few tall pines and cypresses (the lidar canopy reaches 20 m over the pagoda), with azalea mounds and clipped shrubs below. No palms: the Golden Gate Park mix (plant-ggp-*) put canary and queen palms round the pagoda. Hero plants (the cloud-pruned pines, the Dragon and Mt Fuji hedges, the dwarf trees) are a later pass. `mapped`: the 68 trees OSM maps in the garden, which have no species, take this mix too (they were drawn from the city's street pool, palms and all). `ground: garden` lays the whole garden out as planted beds (shrubs right through, OSM's lawns included), and shrub density 2.2 is the lush bed planting.",
+   "ring": [
+    [
+     37.770154,
+     -122.470891
+    ],
+    [
+     37.770035,
+     -122.470843
+    ],
+    [
+     37.769707,
+     -122.470539
+    ],
+    [
+     37.769684,
+     -122.470487
+    ],
+    [
+     37.769679,
+     -122.470306
+    ],
+    [
+     37.769708,
+     -122.469855
+    ],
+    [
+     37.770512,
+     -122.469213
+    ],
+    [
+     37.771007,
+     -122.4699
+    ],
+    [
+     37.770875,
+     -122.470124
+    ],
+    [
+     37.770432,
+     -122.470828
+    ],
+    [
+     37.770154,
+     -122.470891
+    ]
+   ]
+  },
+  {
    "ref": "islands",
    "name": "Yerba Buena and Treasure Island",
    "priority": 5,

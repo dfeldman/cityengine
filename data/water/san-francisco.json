@@ -1,0 +1,119 @@
+{
+ "_note": "Water that OSM does not map, drawn into the bake as natural=water areas (tools/bake.ts, after the OSM areas). Rings are lat/lon. The Japanese Tea Garden's ponds are traced from the garden's own map and put into place by an affine fit to its buildings (data/teagarden/map-trace.json, tools/teagarden/ponds.py; control points within 2.4 m), and checked against the lidar ground: each lies in the low ground. OSM has only the Main Pond.",
+ "ponds": [
+  {
+   "name": "Japanese Tea Garden: drum pond",
+   "note": "the drum bridge's pond, east of the Main Pond in the low ground between the tea house terrace and the ridge",
+   "ring": [
+    [
+     37.7701957,
+     -122.4700476
+    ],
+    [
+     37.7702422,
+     -122.469981
+    ],
+    [
+     37.7702463,
+     -122.469885
+    ],
+    [
+     37.7701972,
+     -122.4698041
+    ],
+    [
+     37.7702076,
+     -122.4697229
+    ],
+    [
+     37.7702361,
+     -122.469649
+    ],
+    [
+     37.7702,
+     -122.4696345
+    ],
+    [
+     37.7701598,
+     -122.4697158
+    ],
+    [
+     37.7701376,
+     -122.4698044
+    ],
+    [
+     37.7701452,
+     -122.4698929
+    ],
+    [
+     37.770159,
+     -122.4699961
+    ]
+   ]
+  },
+  {
+   "name": "Japanese Tea Garden: teahouse pond",
+   "note": "the pond below the tea house, south of its terrace",
+   "ring": [
+    [
+     37.7702519,
+     -122.4698629
+    ],
+    [
+     37.770317,
+     -122.4698405
+    ],
+    [
+     37.7703157,
+     -122.4697667
+    ],
+    [
+     37.7703025,
+     -122.4697004
+    ],
+    [
+     37.7702547,
+     -122.4696933
+    ],
+    [
+     37.770238,
+     -122.4697596
+    ]
+   ]
+  },
+  {
+   "name": "Japanese Tea Garden: sunken pond",
+   "note": "the Sunken Garden's pond, north of the gift shop where the ground falls away to the north",
+   "ring": [
+    [
+     37.7705956,
+     -122.4700753
+    ],
+    [
+     37.7706632,
+     -122.4700587
+    ],
+    [
+     37.7707189,
+     -122.4699788
+    ],
+    [
+     37.7707592,
+     -122.4698975
+    ],
+    [
+     37.7707114,
+     -122.4698904
+    ],
+    [
+     37.7706469,
+     -122.4699496
+    ],
+    [
+     37.7705942,
+     -122.4700016
+    ]
+   ]
+  }
+ ]
+}

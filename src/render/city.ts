@@ -225,6 +225,8 @@ const AREA_TINT: Record<PackedArea['kind'], [number, number, number]> = {
 const SAND_MAX_EDGE = 4
 /** planted beds' ground: pale grey-brown bark mulch between low shrubs (the Tunnel Tops, Commons aerial) */
 const BEDS: [number, number, number] = [0.47, 0.44, 0.37]
+/** …and a Japanese garden's: deep moss green between clipped shrubs and stones, not mown grass (PackedArea `moss`) */
+const MOSS: [number, number, number] = [0.27, 0.36, 0.18]
 /** bare rock at the waterline: dark, wet */
 const WET_ROCK: [number, number, number] = [0.22, 0.21, 0.2]
 // Paving is grey, not white. The brighter value washed out every street it was laid in.
@@ -2626,7 +2628,7 @@ export class City {
           const c = r.reduce((q, p) => ({ x: q.x + p.x / r.length, z: q.z + p.z / r.length }), { x: 0, z: 0 })
           return this.terrain.heightAt(c.x, c.z) <= seaLevel + 0.5
         })()
-        const tint = a.surface ? SURFACE_ON_PAGE[a.surface] : a.kind === 'sand' ? SAND_ON_PAGE : a.brick && this.region.brickStreets ? this.region.brickStreets.colour : a.beds ? BEDS : wet ? WET_ROCK : AREA_TINT[a.kind]
+        const tint = a.surface ? SURFACE_ON_PAGE[a.surface] : a.kind === 'sand' ? SAND_ON_PAGE : a.brick && this.region.brickStreets ? this.region.brickStreets.colour : a.beds ? (a.moss ? MOSS : BEDS) : wet ? WET_ROCK : AREA_TINT[a.kind]
         capPolygonWithHoles(into, [unpackPoints(a.ring), ...(a.holes ?? []).map(unpackPoints)],
           0.02, tint, 0, a.kind === 'sand' || a.surface ? 1 : 2.4, a.kind === 'sand' ? Math.min(AREA_MAX_EDGE, SAND_MAX_EDGE) : AREA_MAX_EDGE)
         /*

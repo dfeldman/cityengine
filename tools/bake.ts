@@ -977,7 +977,14 @@ async function bake(spec: CitySpec): Promise<void> {
     console.warn(`  sand: not fetched (${(e as Error).message.split('\n')[0].slice(0, 120)})`)
     return { ways: [] as OsmWay[], relations: [] as typeof relations }
   })
-  const areaWays = [...ways, ...squares.ways, ...bare.ways]
+  // …and the water OSM does not map, drawn by hand (data/water/<city>.json: the Japanese Tea Garden's ponds, traced from
+  // the garden's own map and checked against the lidar ground — owner, 2026-10-25)
+  const handWaterFile = resolve(import.meta.dirname, '..', 'data', 'water', `${spec.id}.json`)
+  const handWater: OsmWay[] = !existsSync(handWaterFile) ? [] : (JSON.parse(readFileSync(handWaterFile, 'utf8')) as { ponds: { name: string; ring: [number, number][] }[] }).ponds
+    .map((p, k) => ({ type: 'way' as const, id: -1 - k, nodes: [], tags: { natural: 'water', water: 'pond', name: p.name },
+      geometry: [...p.ring, p.ring[0]].map(([lat, lon]) => ({ lat, lon })) }))
+  if (handWater.length) console.log(`  ${handWater.length} ponds drawn by hand (${handWaterFile})`)
+  const areaWays = [...ways, ...squares.ways, ...bare.ways, ...handWater]
   const areaRels = [...relations, ...squares.relations.filter((r) => r.tags.building === undefined),
     ...bare.relations.filter((r) => r.tags.building === undefined)]
   const areas: PackedArea[] = []
@@ -2111,19 +2118,20 @@ async function bake(spec: CitySpec): Promise<void> {
      * A mapped lawn a zone says is not one (`ground: 'scrub'`): Francisco Park's steep upper slope is grass in OSM and
      * native scrub on the ground (owner's Street View photographs, 2026-10-21) — it becomes park, and so the beds round it.
      */
-    const scrubZones = zones.filter((zn) => zn.props.ground === 'scrub')
+    const scrubZones = zones.filter((zn) => zn.props.ground === 'scrub' || zn.props.ground === 'garden')
     for (const a of areas) {
       if (a.kind !== 'grass' || !scrubZones.length) continue
       const c = centroid(unpackPoints(a.ring))
       if (scrubZones.some((zn) => c.x >= zn.bbox[0] && c.x <= zn.bbox[2] && c.z >= zn.bbox[1] && c.z <= zn.bbox[3] && inRing(zn.ring, c.x, c.z))) a.kind = 'park'
     }
-    const bedZones = zones.filter((zn) => zn.props.ground === 'beds')
+    const bedZones = zones.filter((zn) => zn.props.ground === 'beds' || zn.props.ground === 'garden')
     let n = 0
     if (bedZones.length) for (const a of areas) {
       if (a.kind !== 'park') continue
       const r = unpackPoints(a.ring)
       const c = centroid(r)
-      if (bedZones.some((zn) => c.x >= zn.bbox[0] && c.x <= zn.bbox[2] && c.z >= zn.bbox[1] && c.z <= zn.bbox[3] && inRing(zn.ring, c.x, c.z))) { a.beds = true; n++ }
+      const zn = bedZones.find((q) => c.x >= q.bbox[0] && c.x <= q.bbox[2] && c.z >= q.bbox[1] && c.z <= q.bbox[3] && inRing(q.ring, c.x, c.z))
+      if (zn) { a.beds = true; if (zn.props.ground === 'garden') a.moss = true; n++ }
     }
     if (bedZones.length) console.log(`  ${n} parks laid out as planted beds`)
     /*
