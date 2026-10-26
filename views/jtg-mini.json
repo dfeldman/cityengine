@@ -1,0 +1,107 @@
+[
+ {
+  "name": "JTG \u2014 Main Pond from the south bank",
+  "group": "garden",
+  "from": [
+   37.769734,
+   -122.469976,
+   3
+  ],
+  "to": [
+   37.769949,
+   -122.470067,
+   0
+  ],
+  "note": "Japanese Tea Garden landscape (plants, rocks, water): before/after the 2026-10-25 pass"
+ },
+ {
+  "name": "JTG \u2014 drum bridge pond",
+  "group": "garden",
+  "from": [
+   37.770066,
+   -122.46968,
+   3
+  ],
+  "to": [
+   37.770183,
+   -122.469839,
+   0.5
+  ],
+  "note": "Japanese Tea Garden landscape (plants, rocks, water): before/after the 2026-10-25 pass"
+ },
+ {
+  "name": "JTG \u2014 tea house pond",
+  "group": "garden",
+  "from": [
+   37.770264,
+   -122.469646,
+   3
+  ],
+  "to": [
+   37.770336,
+   -122.469805,
+   1
+  ],
+  "note": "Japanese Tea Garden landscape (plants, rocks, water): before/after the 2026-10-25 pass"
+ },
+ {
+  "name": "JTG \u2014 Waterfall Hill from the pond",
+  "group": "garden",
+  "from": [
+   37.770003,
+   -122.469942,
+   2.5
+  ],
+  "to": [
+   37.770102,
+   -122.470112,
+   2
+  ],
+  "note": "Japanese Tea Garden landscape (plants, rocks, water): before/after the 2026-10-25 pass"
+ },
+ {
+  "name": "JTG \u2014 Mt Fuji hedge from the Main Gate",
+  "group": "garden",
+  "from": [
+   37.770551,
+   -122.469259,
+   2.5
+  ],
+  "to": [
+   37.770488,
+   -122.469396,
+   1
+  ],
+  "note": "Japanese Tea Garden landscape (plants, rocks, water): before/after the 2026-10-25 pass"
+ },
+ {
+  "name": "JTG \u2014 Sunken Garden",
+  "group": "garden",
+  "from": [
+   37.770812,
+   -122.469862,
+   3
+  ],
+  "to": [
+   37.770668,
+   -122.469998,
+   0
+  ],
+  "note": "Japanese Tea Garden landscape (plants, rocks, water): before/after the 2026-10-25 pass"
+ },
+ {
+  "name": "JTG \u2014 aerial",
+  "group": "garden",
+  "from": [
+   37.769554,
+   -122.469976,
+   50
+  ],
+  "to": [
+   37.770183,
+   -122.470089,
+   0
+  ],
+  "note": "Japanese Tea Garden landscape (plants, rocks, water): before/after the 2026-10-25 pass"
+ }
+]

@@ -38,7 +38,7 @@ def ground(x, z):
     return float(ZG[int(np.clip(round(z - GY0), 0, ZG.shape[0] - 1)), int(np.clip(round(x - GX0), 0, ZG.shape[1] - 1))])
 
 # ---- OSM: paths, buildings, the Main Pond, the garden fence
-paths, buildings, main = [], [], None
+paths, buildings, main, main_d = [], [], None, 1e9
 garden = None
 for l in open(a.osm):
     f = json.loads(l.strip('\x1e\n'))
@@ -49,7 +49,9 @@ for l in open(a.osm):
         buildings.append(np.array([loc(*c[:2]) for c in g['coordinates'][0][0]]))
     if p.get('natural') == 'water' and g['type'] == 'MultiPolygon':
         r = np.array([loc(*c[:2]) for c in g['coordinates'][0][0]])
-        if -5130 < r[:, 0].mean() < -5080: main = r
+        # (the Main Pond: the water ring nearest the garden's middle — an extract over the park round it has more)
+        d = math.hypot(r[:, 0].mean() + 5105, r[:, 1].mean() + 2567)
+        if d < 25 and (main is None or d < main_d): main, main_d = r, d
     if p.get('name') == 'Japanese Tea Garden' and g['type'] == 'MultiPolygon':
         garden = np.array([loc(*c[:2]) for c in g['coordinates'][0][0]])
 hand = json.loads((ROOT / 'data/water/san-francisco.json').read_text())['ponds']
@@ -212,6 +214,220 @@ trees = {'_note': "Trees planted by hand at bake time (tools/bake.ts → city/pl
 (ROOT / 'data/trees').mkdir(exist_ok=True)
 (ROOT / 'data/trees/san-francisco.json').write_text(json.dumps(trees, indent=1) + '\n')
 
+
+# ======================================================================================================================
+# THE SECOND PASS (2026-10-26, owner: "as beautiful and accurate as possible", plants, rocks and water first): the
+# garden as its own map's text (holymtn.com) and Wikipedia describe it. Its own rng, so nothing above moves.
+#   - the MAIN POND's small island (a stone pagoda stands on it — the owner's GLB; the island is landscape);
+#   - the TEA HOUSE "set beside a waterfall and pond, with a tortoise-shaped island called Horai-jima": a second
+#     waterfall off the tea house terrace (78 m) into the tea house pond (76 m), and the island;
+#   - IRISES and WESTERN SWORD FERNS on the path to the drum bridge; ferns on the crooked path behind the waterfall
+#     and "on the rocks" below the tea house;
+#   - DWARF TREES on the Main Pond's north shore, "a sea of dwarf trees" in the Sunken Garden, the Fraser collection
+#     below the Temple Gate;
+#   - AZALEAS massed everywhere the text puts them (the pond banks, the Buddha, Maple Lane, the Sunken Garden, Waterfall
+#     Hill): the plant library's `azalea` (assetkit plantgen, 2026-10-26), instanced, costing the builder nothing;
+#   - the NEW DRAGON HEDGE "next to the Mt Fuji Hedge, against a bamboo backdrop";
+#   - ROCK GROUPS (ishigumi: three stones, one standing) at the Buddha, the drum bridge pool, the Temple Gate's foot,
+#     the tea house pond; LILY PADS at the ponds' quiet ends;
+#   - and the trees planted by hand: the twisted Monterey pine inside the Main Gate, the tall Monterey pines overhead
+#     ("about sixty feet", pruned in layers), Japanese maples at the tea house, the Buddha, the drum bridge and the
+#     north shore, cherries and wisteria's path under the Long Bridge, a windmill palm by the Temple Gate.
+r2 = np.random.default_rng(1915)  # the pagoda's year
+def free2(x, z, path=1.5, bld=1.0, water=True):
+    return free(x, z, path, water, bld)
+def nearest_on(ring, x, z):
+    r = np.asarray(ring, float)
+    d = np.hypot(r[:, 0] - x, r[:, 1] - z)
+    i = int(np.argmin(d)); return float(r[i, 0]), float(r[i, 1])
+def bank_dist(ring, x, z):
+    r = np.asarray(ring, float)
+    if not np.allclose(r[0], r[-1]): r = np.vstack([r, r[:1]])
+    ax, az, bx, bz = r[:-1, 0], r[:-1, 1], r[1:, 0], r[1:, 1]
+    vx, vz = bx - ax, bz - az
+    t = np.clip(((x - ax) * vx + (z - az) * vz) / np.maximum(vx * vx + vz * vz, 1e-9), 0, 1)
+    return float(np.min(np.hypot(x - ax - vx * t, z - az - vz * t)))
+def island_spot(ring, bias=None):
+    """the point inside the pond farthest from its banks (nudged toward `bias` if given), and that distance"""
+    r = np.asarray(ring, float); best = None
+    for x in np.arange(r[:, 0].min(), r[:, 0].max(), 0.5):
+        for z in np.arange(r[:, 1].min(), r[:, 1].max(), 0.5):
+            if not inside(ring, x, z): continue
+            d = bank_dist(ring, x, z)
+            score = d - (0.12 * math.hypot(x - bias[0], z - bias[1]) if bias else 0)
+            if best is None or score > best[0]: best = (score, x, z, d)
+    return best[1], best[2], best[3]
+
+# ---- the islands: the Main Pond's (toward its wide south half, away from the north arm's waterfall) and Horai-jima
+mx, mz, md = island_spot(ponds['main'], bias=(-5105, -2575))
+tx, tz, td = island_spot(ponds['teahouse'])
+islands = [[round(float(mx), 2), round(float(mz), 2), round(float(min(3.2, md - 2.0)), 2), 'pagoda'], [round(float(tx), 2), round(float(tz), 2), round(float(min(1.7, td - 0.9)), 2), 'tortoise']]
+
+# ---- the tea house waterfall: from the highest free ground 7 m off the tea house pond, down to its nearest bank
+tc = np.asarray(ponds['teahouse'], float).mean(axis=0)
+best = None
+for b in range(0, 360, 10):
+    for rr in np.arange(6.0, 13.1, 1.0):
+        x, z = tc[0] + math.sin(math.radians(b)) * rr, tc[1] + math.cos(math.radians(b)) * rr
+        if not free2(x, z, 1.2, 0.8): continue
+        # (the fall's line must not cross a path or a building either)
+        fx, fz = nearest_on(ponds['teahouse'], x, z)
+        if not all(path_dist(x + (fx - x) * t, z + (fz - z) * t) > 1.0 and not in_building(x + (fx - x) * t, z + (fz - z) * t, 0.5) for t in np.linspace(0, 1, 8)): continue
+        h = ground(x, z) - 0.04 * rr   # the highest ground, a little nearer preferred
+        if best is None or h > best[0]: best = (h, x, z)
+fall2_top = (round(float(best[1]), 2), round(float(best[2]), 2))
+fall2_foot = tuple(round(v, 2) for v in nearest_on(ponds['teahouse'], *fall2_top))
+print('tea house fall from', fall2_top, 'ground', round(best[0], 1), 'to', fall2_foot, 'ground', round(ground(*fall2_foot), 1))
+
+# ---- irises on the path to the drum bridge, at the drum pond's waterline nearest the bridge
+DRUM_BRIDGE = (-5088.9, -2541.8)
+iris = []
+for (p, n) in along(ponds['drum'], 1.5):
+    if math.hypot(p[0] - DRUM_BRIDGE[0], p[1] - DRUM_BRIDGE[1]) > 11 or r2.random() < 0.35: continue
+    x, z = p + n * r2.uniform(0.0, 0.7)
+    if in_garden(x, z) and path_dist(x, z) > 1.0: iris.append([round(x, 2), round(z, 2), round(r2.uniform(0.7, 1.0), 2)])
+
+# ---- ferns: round the drum bridge, behind both waterfalls, below the tea house
+ferns = []
+def fern_patch(cx, cz, radius, n, species=('fern', 'fern', 'bracken')):
+    for k in range(n * 4):
+        if n <= 0: break
+        a, rr = r2.uniform(0, 2 * math.pi), radius * math.sqrt(r2.uniform(0.1, 1))
+        x, z = cx + math.sin(a) * rr, cz + math.cos(a) * rr
+        if free2(x, z, 1.1, 0.6):
+            ferns.append([round(x, 2), round(z, 2), str(r2.choice(species)), round(r2.uniform(0.6, 1.1), 2)]); n -= 1
+fern_patch(*DRUM_BRIDGE, 9, 12)
+fern_patch(FALL_TOP[0] - 2, FALL_TOP[1] + 1, 5, 9)
+fern_patch(fall2_top[0], fall2_top[1], 5, 9)
+tea_house = (-5087.8, -2517.2)
+fern_patch(tea_house[0], tea_house[1] - 4, 8, 10)
+
+# ---- more dwarf trees: the Main Pond's north shore, the Sunken Garden's sea of them, below the Temple Gate
+def dwarf_patch(cx, cz, radius, n, hmin=0.7, hmax=1.4, ring=None, outside=None):
+    for k in range(n * 6):
+        if n <= 0: break
+        a, rr = r2.uniform(0, 2 * math.pi), radius * math.sqrt(r2.uniform(0.05, 1))
+        x, z = cx + math.sin(a) * rr, cz + math.cos(a) * rr
+        if outside is not None and not (0.8 < bank_dist(outside, x, z) < 6.5 and not inside(outside, x, z)): continue
+        if free2(x, z, 1.3):
+            dwarf.append([round(x, 2), round(z, 2), str(r2.choice(['mugo_pine', 'mugo_pine', 'juniper_scrub'])), round(r2.uniform(hmin, hmax), 2)]); n -= 1
+main_c = np.asarray(ponds['main'], float).mean(axis=0)
+dwarf_patch(main_c[0] + 2, main_c[1] + 16, 12, 10, outside=ponds['main'])      # the north shore
+sunk_c = np.asarray(ponds['sunken'], float).mean(axis=0)
+dwarf_patch(sunk_c[0], sunk_c[1], 14, 18, 0.6, 1.3)                               # "a sea of dwarf trees"
+TEMPLE_GATE = (-5128.8, -2564.3)
+dwarf_patch(TEMPLE_GATE[0] + 5, TEMPLE_GATE[1] + 3, 8, 10)                         # the Fraser collection below it
+dwarf_patch(-5110, -2552, 6, 6, 0.6, 1.2)                                          # "irises, dwarf trees" toward the drum bridge
+
+# ---- azaleas, massed (the library's `azalea`): in drifts round the ponds, the Buddha, Maple Lane, the Sunken Garden,
+# Waterfall Hill, under the Long Bridge's path
+azaleas = []
+def azalea_patch(cx, cz, radius, n, path=1.5):
+    for k in range(n * 5):
+        if n <= 0: break
+        a, rr = r2.uniform(0, 2 * math.pi), radius * math.sqrt(r2.uniform(0.05, 1))
+        x, z = cx + math.sin(a) * rr, cz + math.cos(a) * rr
+        if free2(x, z, path, 0.8) and all(math.hypot(x - q[0], z - q[1]) > 1.1 for q in azaleas[-60:]):
+            azaleas.append([round(x, 2), round(z, 2), round(r2.uniform(0.5, 0.9), 2)]); n -= 1
+for name, ring in ponds.items():
+    for (p, n) in along(ring, 2.2):
+        if r2.random() < 0.45: continue
+        x, z = p + n * r2.uniform(1.8, 5.5)
+        if free2(x, z, 1.5, 0.8) and all(math.hypot(x - q[0], z - q[1]) > 1.1 for q in azaleas[-60:]):
+            azaleas.append([round(x, 2), round(z, 2), round(r2.uniform(0.5, 0.9), 2)])
+BUDDHA = (-5105.0, -2526.0)
+azalea_patch(BUDDHA[0], BUDDHA[1], 7, 12)
+azalea_patch(sunk_c[0], sunk_c[1] + 6, 12, 10)
+azalea_patch(-5118, -2560, 8, 10)                                                  # Waterfall Hill
+azalea_patch(-5116, -2533, 7, 8)                                                   # under the Long Bridge
+for t in np.linspace(0.3, 0.85, 9):                                                # Maple Lane, between its trees
+    x, z = -5175.0 + (-5113.1 + 5175.0) * t, -2512.3 + (-2463.0 + 2512.3) * t
+    azalea_patch(x + 4.5, z - 4.5, 3, 2)
+azalea_patch(-5145, -2590, 7, 6)                                                   # the "pink shrub" by the Cherry Tree Lane fork
+
+# ---- the New Dragon Hedge: 9 m beside the Mt Fuji hedge on whichever side is clear, bamboo behind it
+dragon2 = None
+for b in range(0, 360, 15):
+    ux, uz = math.sin(math.radians(b)), math.cos(math.radians(b))
+    a = (FUJI[0] + ux * 4.6, FUJI[1] + uz * 4.6); c = (FUJI[0] + ux * 13.6, FUJI[1] + uz * 13.6)
+    if all(free2(a[0] + (c[0] - a[0]) * t, a[1] + (c[1] - a[1]) * t, 1.7, 1.2) for t in np.linspace(0, 1, 10)):
+        dragon2 = [[round(a[0], 2), round(a[1], 2)], [round(c[0], 2), round(c[1], 2)]]; break
+if dragon2 is None:
+    dragon2 = [[round(FUJI[0] + 4.6, 2), round(FUJI[1], 2)], [round(FUJI[0] + 13.6, 2), round(FUJI[1], 2)]]
+    print('WARNING: no clear side for the New Dragon Hedge; drawn east of Mt Fuji')
+dx2, dz2 = dragon2[1][0] - dragon2[0][0], dragon2[1][1] - dragon2[0][1]
+L2 = math.hypot(dx2, dz2); nx2, nz2 = -dz2 / L2, dx2 / L2
+# (behind: the side away from the Mt Fuji hedge's path — the farther from any path)
+side = 1 if path_dist(dragon2[0][0] + dx2 * .5 + nx2 * 2.5, dragon2[0][1] + dz2 * .5 + nz2 * 2.5) > path_dist(dragon2[0][0] + dx2 * .5 - nx2 * 2.5, dragon2[0][1] + dz2 * .5 - nz2 * 2.5) else -1
+for k in range(60):
+    t = r2.uniform(0, 1); off = r2.uniform(1.6, 3.4) * side
+    x, z = dragon2[0][0] + dx2 * t + nx2 * off, dragon2[0][1] + dz2 * t + nz2 * off
+    if free2(x, z, 1.3, 0.6): bamboo.append([round(x, 2), round(z, 2), round(r2.uniform(4, 6.5), 2), int(r2.integers(0, 1 << 16))])
+
+# ---- rock groups (ishigumi), seeded: x, z, bearing of the standing stone, scale
+rock_groups = []
+def rock_group(x, z, scale=1.0, tries=30):
+    for k in range(tries):
+        dx, dz = (0, 0) if k == 0 else r2.normal(0, 1.5, 2)
+        if free2(x + dx, z + dz, 1.4, 1.0):
+            rock_groups.append([round(x + dx, 2), round(z + dz, 2), int(r2.uniform(0, 360)), round(scale, 2)]); return
+rock_group(BUDDHA[0] + 2.8, BUDDHA[1] - 1.5, 1.0)
+rock_group(BUDDHA[0] - 2.6, BUDDHA[1] + 2.0, 0.8)
+for sd in (-1, 1):                                                                 # beside the drum bridge's pool
+    rock_group(DRUM_BRIDGE[0] + sd * 5.5, DRUM_BRIDGE[1] + 1.0, 0.9)
+rock_group(TEMPLE_GATE[0] + 4, TEMPLE_GATE[1] + 5, 1.1)
+rock_group(TEMPLE_GATE[0] - 4, TEMPLE_GATE[1] + 4, 0.8)
+for (p, n) in along(ponds['teahouse'], 7.0)[:3]:                                   # the tea house pond's banks
+    rock_group(p[0] + n[0] * 1.6, p[1] + n[1] * 1.6, 0.8)
+for (p, n) in along(ponds['main'], 23.0)[:5]:                                      # and the Main Pond's, here and there
+    rock_group(p[0] + n[0] * 2.0, p[1] + n[1] * 2.0, 1.0)
+rock_group(sunk_c[0] + 4, sunk_c[1] - 3, 0.9)
+
+# ---- lily pads: the Main Pond's south-west end and the tea house pond, in clusters a little off the bank
+pads = []
+def pad_cluster(ring, cx, cz, n):
+    for k in range(n * 5):
+        if n <= 0: break
+        x, z = cx + r2.normal(0, 2.2), cz + r2.normal(0, 2.2)
+        if inside(ring, x, z) and bank_dist(ring, x, z) > 1.0 and all(math.hypot(x - q[0], z - q[1]) > 0.55 for q in pads):
+            pads.append([round(x, 2), round(z, 2), round(r2.uniform(0.22, 0.4), 2)]); n -= 1
+mr = np.asarray(ponds['main'], float)
+sw = mr[np.argmin(mr[:, 0] * 0.6 + mr[:, 1])]                                      # the south-west corner
+pad_cluster(ponds['main'], sw[0] + 3.5, sw[1] + 3.5, 22)
+pad_cluster(ponds['main'], mr[:, 0].max() - 4, main_c[1] - 2, 14)
+pad_cluster(ponds['teahouse'], tc[0] - 1.5, tc[1] + 1.5, 10)
+pad_cluster(ponds['drum'], np.asarray(ponds['drum'], float).mean(axis=0)[0], np.asarray(ponds['drum'], float).mean(axis=0)[1] + 3, 8)
+pads = [q for q in pads if all(math.hypot(q[0] - i[0], q[1] - i[1]) > i[2] + 0.8 for i in islands)]
+
+# ---- the trees planted by hand, the rest of them (appended to the lanes: nothing above moves)
+MAIN_GATE = (-5032.9, -2503.4)
+gc = garden.mean(axis=0)
+def hand_tree(x, z, form, h, note, spread=1.5, keep=4.5):
+    for k in range(40):
+        dx, dz = (0, 0) if k == 0 else r2.normal(0, spread, 2)
+        px, pz = x + dx, z + dz
+        if free2(px, pz, 2.0, 2.2) and all(math.hypot(px - q[0], pz - q[1]) > keep for q in placed_trees):
+            placed_trees.append((px, pz)); extra_trees.append({'at': list(latlon(px, pz)), 'form': form, 'h': h, 'note': f'Japanese Tea Garden: {note}'}); return
+    print('WARNING: no room for', note, 'at', (x, z))
+extra_trees = []
+placed_trees = [tuple(loc(t['at'][1], t['at'][0])) for t in cherry + maple]
+ux, uz = gc[0] - MAIN_GATE[0], gc[1] - MAIN_GATE[1]; L = math.hypot(ux, uz); ux, uz = ux / L, uz / L
+hand_tree(MAIN_GATE[0] + ux * 9, MAIN_GATE[1] + uz * 9, 'pine', 14.0, 'the twisted Monterey pine just inside the Main Gate (Hagiwara, 1900)')
+for (x, z) in [(-5141, -2553), (-5074, -2561), (-5152, -2531), (-5118, -2598)]:
+    hand_tree(x, z, 'pine', float(r2.uniform(15, 18)), 'a Monterey pine overhead (about sixty feet, pruned in layers)', 3.0)
+for (x, z) in [(-5081, -2511), (-5099, -2522), (-5100, -2557), (-5094, -2537), (-5146, -2591), (-5070, -2532)]:
+    hand_tree(x, z, 'flowering', float(r2.uniform(4.5, 6.5)), 'a Japanese maple', 2.0)
+LB = ((-5109.4, -2525.4), (-5122.2, -2540.0))
+lx, lz = LB[1][0] - LB[0][0], LB[1][1] - LB[0][1]; LL = math.hypot(lx, lz); pnx, pnz = -lz / LL, lx / LL
+for t in (0.15, 0.5, 0.85):
+    for sd in (-1, 1):
+        hand_tree(LB[0][0] + lx * t + pnx * sd * 5.0, LB[0][1] + lz * t + pnz * sd * 5.0, 'blossom', float(r2.uniform(4.5, 6.0)), "a cherry on the path under the Long Bridge", 2.0)
+hand_tree(TEMPLE_GATE[0] + 7, TEMPLE_GATE[1] - 3, 'windmill', 5.5, 'the windmill palm by the Temple Gate', 2.5)
+hand_tree(tea_house[0] + 6, tea_house[1] + 5, 'laurel', 4.5, 'Camellia sasanqua before the drum bridge view', 2.5)
+trees['trees'] += extra_trees
+(ROOT / 'data/trees/san-francisco.json').write_text(json.dumps(trees, indent=1) + '\n')
+print(f'second pass: islands {islands}, iris {len(iris)}, ferns {len(ferns)}, dwarf now {len(dwarf)}, azaleas {len(azaleas)}, bamboo now {len(bamboo)}, rock groups {len(rock_groups)}, pads {len(pads)}, hand trees +{len(extra_trees)}')
+
 j = lambda v: json.dumps(v, separators=(',', ':'))
 ts = f"""/**
  * The Japanese Tea Garden's hero plants, rocks and water, in city metres (x east, z north). GENERATED by
@@ -240,6 +456,25 @@ export const DRAGON: [number, number][] = {j([list(p) for p in DRAGON])}
 export const BAMBOO: [number, number, number, number][] = {j(bamboo)}
 /** reeds and cattails at the ponds' edges: x, z, species, height */
 export const REEDS: [number, number, string, number][] = {j(reeds)}
+// ---- the second pass (2026-10-26)
+/** the ponds' rings, for the water level each stands at (the lowest bank, as the bake draws it) */
+export const PONDS: Record<string, [number, number][]> = {j({k: [[round(float(x), 2), round(float(z), 2)] for x, z in r] for k, r in ponds.items()})}
+/** the islands: x, z, radius, kind ('pagoda': the Main Pond's, a stone pagoda on it; 'tortoise': Horai-jima) */
+export const ISLANDS: [number, number, number, string][] = {j(islands)}
+/** the tea house waterfall, off its terrace into its pond */
+export const FALL2: {{ top: [number, number]; foot: [number, number] }} = {{ top: {j(list(fall2_top))}, foot: {j(list(fall2_foot))} }}
+/** irises on the path to the drum bridge: x, z, height */
+export const IRIS: [number, number, number][] = {j(iris)}
+/** ferns: x, z, species, height */
+export const FERNS: [number, number, string, number][] = {j(ferns)}
+/** massed azaleas from the plant library: x, z, height */
+export const AZALEAS: [number, number, number][] = {j(azaleas)}
+/** the New Dragon Hedge beside Mt Fuji, tail to head */
+export const DRAGON2: [number, number][] = {j(dragon2)}
+/** rock groups (ishigumi): x, z, the standing stone's bearing, scale */
+export const ROCK_GROUPS: [number, number, number, number][] = {j(rock_groups)}
+/** lily pads: x, z, radius */
+export const PADS: [number, number, number][] = {j(pads)}
 """
 (ROOT / 'src/render/landmarks/sf/tea-garden-layout.ts').write_text(ts)
 print(f'rocks {len(rocks)}, domes {len(domes)}, pines {len(pines)}/{len(PINES_AT)}, dwarf {len(dwarf)}+{len(dwarf_pines)}, bamboo {len(bamboo)}, reeds {len(reeds)}, stream {stream}, cherry {len(cherry)}, maple {len(maple)}')

@@ -50,7 +50,15 @@ const FLOWERS = ['tulip', 'daisy', 'wildflower', 'lupine', 'poppy']
  * blue swords in a hedge. These stand at the library's typical height for the species, varied with the plant's size.
  */
 const OWN_SIZE = new Set(['agave', 'aloe', 'aeonium', 'echeveria', 'ice_plant', 'nz_flax', 'deer_grass', 'artemisia', 'lavender',
-  'strelitzia', 'agapanthus', 'calla_lily', 'san_pedro', 'golden_barrel', 'prickly_pear', 'barrel_cactus', 'yucca'])
+  'strelitzia', 'agapanthus', 'calla_lily', 'san_pedro', 'golden_barrel', 'prickly_pear', 'barrel_cactus', 'yucca',
+  // the Japanese Tea Garden's (2026-10-26): a bamboo culm and an iris clump, which a green mound inside would bury
+  'bamboo', 'japanese_iris'])
+/**
+ * …and, when a LANDMARK places them by name (`addPlants`), the library's straps and blades too: reeds and cattails at
+ * the Tea Garden's ponds, its sword ferns. A zone that names a fern still grows it the old way (stretched to a bush, a
+ * mound inside) — the Presidio's and Golden Gate Park's woods were planted with that look and are not changed here.
+ */
+const NAMED_OWN = new Set([...OWN_SIZE, 'reeds', 'cattail', 'fern', 'bracken'])
 
 const hash = (x: number, z: number, salt: number): number => {
   let h = Math.imul(Math.round(x * 10) ^ 0x27d4eb2d, 0x9e3779b1) ^ Math.imul(Math.round(z * 10) + salt, 0x85ebca77)
@@ -370,9 +378,13 @@ export class Plants {
     if (!this.index) return
     const files = this.index.trees.filter((t) => t.species === species)
     if (!files.length) { console.warn(`plants: a landmark asks for "${species}", which the plant library does not have`); return }
+    // (an own-size species — bamboo culms, irises, reeds — gets no leafy core: the core is a broadleaf shrub's mass, and
+    //  under a cane or a clump of straps it is a green blob at its foot. `own` is what `update` reads for that; a named
+    //  plant's height is still the metres the landmark asked for)
+    const hs = NAMED_OWN.has(species) ? files.map((t) => t.height).sort((a, b) => a - b) : []
     for (const e of files) {
       const parts = await this.importModel(e.file)
-      if (parts.length) this.models.push({ kind: 'shrub', species, parts, top: e.height || 1, named: true })
+      if (parts.length) this.models.push({ kind: 'shrub', species, parts, top: e.height || 1, named: true, own: hs.length ? hs[hs.length >> 1] : undefined })
     }
     this.dirty = true
   }

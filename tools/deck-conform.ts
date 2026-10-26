@@ -64,7 +64,8 @@ function placementOf(region: string, procedural: string, origin: { lat: number; 
  * kind of way and a layer is the nearest node of such a way to it; a free end is shared with whichever other
  * authored way ends within half a metre. The geometry is snapped onto the nodes it joins.
  */
-export function authoredWays(region: string, origin: { lat: number; lon: number }, osm: OsmWay[]): { ways: OsmWay[]; y: Map<number, number> } {
+export function authoredWays(region: string, origin: { lat: number; lon: number }, osm: OsmWay[],
+  box?: { x0: number; x1: number; z0: number; z1: number }): { ways: OsmWay[]; y: Map<number, number> } {
   const spec = REGION_WAYS[region]
   const y = new Map<number, number>()
   if (!spec) return { ways: [], y }
@@ -77,8 +78,11 @@ export function authoredWays(region: string, origin: { lat: number; lon: number 
    * a bake of part of it (a test area such as sausalito-mini) leaves out the ones that are not inside it, instead
    * of failing to find the bridge deck they join (the bake crashed on exactly that, 2026-10-14).
    */
-  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
-  for (const at of nodeAt.values()) {
+  // (the bake's own box where it says — the OSM a test area is given can carry a way that runs far outside it, and the
+  //  box of every node then took in the whole city: jtg-mini, 450 m round the Japanese Tea Garden, reached Salesforce
+  //  Park and crashed on its gondola's end, 2026-10-26)
+  let { x0, x1, z0, z1 } = box ?? { x0: Infinity, x1: -Infinity, z0: Infinity, z1: -Infinity }
+  if (!box) for (const at of nodeAt.values()) {
     const q = proj.toLocal(at)
     x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); z0 = Math.min(z0, q.z); z1 = Math.max(z1, q.z)
   }

@@ -358,7 +358,12 @@ async function bake(spec: CitySpec): Promise<void> {
   console.log(`  ${campusWays.length} hospital / university / college / school grounds`)
   // the region's own AUTHORED ways (src/city/sf/bridges.ts: the Bay Bridge Bikeway), joined to the real junctions
   // they name, their heights their own (kept aside here, put back by tools/deck-conform.ts)
-  const authored = authoredWays(spec.region ?? spec.id, spec.centre, ways)
+  const authored = authoredWays(spec.region ?? spec.id, spec.centre, ways, (() => {
+    // (padded a little: the OSM fetched over `wholeBox` can carry a way's end just past it, and those were always kept)
+    const b = bbox(spec, 150), p = new Projection(spec.centre)
+    const a = p.toLocal({ lat: b.south, lon: b.west }), c = p.toLocal({ lat: b.north, lon: b.east })
+    return { x0: Math.min(a.x, c.x), x1: Math.max(a.x, c.x), z0: Math.min(a.z, c.z), z1: Math.max(a.z, c.z) }
+  })())
   ways.push(...authored.ways)
   if (authored.ways.length) console.log(`  ${authored.ways.length} authored ways of the region's own`)
 
@@ -1598,6 +1603,54 @@ async function bake(spec: CitySpec): Promise<void> {
     }
   }
   /*
+   * POND BEDS (2026-10-26). The lidar has no ground returns over water, and the tiles' height there is a smoothed
+   * blur of the banks round it — so a pond came out as a MOUND under its water plane: in the garden test area the
+   * Japanese Tea Garden's Main Pond's bed stood 1.7 m over its own water (a pond's level is its lowest bank,
+   * city/package.ts waterLevels), and from the south bank the water plane cut across a green hill with the far
+   * bank's rocks in the air over it. A small body of water — a pond, a lake; not the sea or a river, which keep #58's
+   * rule below — has a bed: every fine post well inside its ring goes down to half a metre under its level, the level
+   * taken as waterLevels takes it, off its ring's vertices. Posts within a grid step of the ring are left, so the
+   * vertices' own samples (and so the level) do not move. The coarse grid is averaged down from the fine one later,
+   * and follows.
+   */
+  {
+    const edgeDist = (r: number[], x: number, z: number): number => {
+      let best = Infinity
+      for (let i = 0, j = r.length - 2; i < r.length; j = i, i += 2) {
+        const ax = r[j], az = r[j + 1], dx = r[i] - ax, dz = r[i + 1] - az
+        const t = Math.max(0, Math.min(1, ((x - ax) * dx + (z - az) * dz) / (dx * dx + dz * dz || 1)))
+        best = Math.min(best, Math.hypot(ax + dx * t - x, az + dz * t - z))
+      }
+      return best
+    }
+    let beds = 0, ponds = 0
+    for (const a of areas) {
+      if (a.kind !== 'water' || a.sea) continue
+      const r = a.ring
+      let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity
+      for (let i = 0; i < r.length; i += 2) { x0 = Math.min(x0, r[i]); x1 = Math.max(x1, r[i]); z0 = Math.min(z0, r[i + 1]); z1 = Math.max(z1, r[i + 1]) }
+      // (a lake at most — Stow Lake is 150 m across; the bay and the rivers are kilometres)
+      if ((x1 - x0) * (z1 - z0) > 250_000) continue
+      let lv = Infinity
+      for (let i = 0; i < r.length; i += 2) lv = Math.min(lv, sampleGridF(fineGround, fcols, frows, fx0, fz0, FINE_STEP, r[i], r[i + 1]))
+      if (!Number.isFinite(lv)) continue
+      const bed = lv - 0.5
+      let n = 0
+      for (let rr = Math.max(0, Math.floor((z0 - fz0) / FINE_STEP)); rr <= Math.min(frows - 1, Math.ceil((z1 - fz0) / FINE_STEP)); rr++) {
+        for (let c = Math.max(0, Math.floor((x0 - fx0) / FINE_STEP)); c <= Math.min(fcols - 1, Math.ceil((x1 - fx0) / FINE_STEP)); c++) {
+          const i = rr * fcols + c
+          if (fineGround[i] <= bed) continue
+          const x = fx0 + c * FINE_STEP, z = fz0 + rr * FINE_STEP
+          if (!inRing(r, x, z) || (a.holes ?? []).some((h) => inRing(h, x, z)) || edgeDist(r, x, z) < FINE_STEP * 0.9) continue
+          fineGround[i] = bed
+          n++
+        }
+      }
+      if (n) { beds += n; ponds++ }
+    }
+    if (ponds) console.log(`  pond beds: ${beds} fine posts in ${ponds} ponds lowered to half a metre under their water`)
+  }
+  /*
    * The sea bed is not the ground (BUGS.md #58). The elevation tiles carry BATHYMETRY: off the Embarcadero the
    * bay floor drops to −108 m, so the shoreline came out as a cliff, the water plane sat in a pit far out from
    * the quays, and the piers — which stand on the bed — hung over a canyon or appeared to be on dry land.
@@ -1621,7 +1674,10 @@ async function bake(spec: CitySpec): Promise<void> {
         if (wetBeside) shoreline.push(ground[i])
       }
     }
-    if (shoreline.length > 0) {
+    // (only where there IS a sea: a bake with none — jtg-mini, 450 m round the Japanese Tea Garden — took its "shore"
+    //  from the ponds' own banks and raised every pond's bed to it, 3 m over the water, a mound under each water plane
+    //  with the bank's rocks in the air round it, 2026-10-26)
+    if (shoreline.length > 0 && areas.some((a) => a.kind === 'water' && a.sea)) {
       shoreline.sort((a, b) => a - b)
       const shore = shoreline[Math.floor(shoreline.length * 0.35)]
       shoreRaw = shore

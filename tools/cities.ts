@@ -319,6 +319,27 @@ export const CITIES: CitySpec[] = [
     ],
     note: 'A test area: the street-row planting where no register reaches.',
   },
+  /*
+   * A third test area: the Japanese Tea Garden and the park round it (owner, 2026-10-25: its plants, rocks and water).
+   * Region san-francisco, so it gets the garden's zones — the lidar ground, the planting, the hand-planted lanes and
+   * the hand-drawn ponds — and bakes in a minute where the whole city takes hours.
+   */
+  {
+    id: 'jtg-mini',
+    live: false,
+    test: true,
+    region: 'san-francisco',
+    streetTrees: 'datasf',
+    name: 'SF test area (Japanese Tea Garden)',
+    centre: { lat: 37.770273, lon: -122.470089 },
+    radius: 450,
+    ground: 'grass',
+    styles: [
+      { id: 'victorian', weight: 5 },
+      { id: 'stucco', weight: 2 },
+    ],
+    note: 'A test area: the Japanese Tea Garden, for its landscape (tea-garden-landscape.ts, docs/TEA-GARDEN.md).',
+  },
 ]
 
 export const city = (id: string): CitySpec => {

@@ -198,6 +198,177 @@
    "form": "flowering",
    "h": 6.3,
    "note": "Japanese Tea Garden: Maple Lane"
+  },
+  {
+   "at": [
+    37.7704834,
+    -122.4693088
+   ],
+   "form": "pine",
+   "h": 14.0,
+   "note": "Japanese Tea Garden: the twisted Monterey pine just inside the Main Gate (Hagiwara, 1900)"
+  },
+  {
+   "at": [
+    37.770066,
+    -122.4704417
+   ],
+   "form": "pine",
+   "h": 16.79077085630793,
+   "note": "Japanese Tea Garden: a Monterey pine overhead (about sixty feet, pruned in layers)"
+  },
+  {
+   "at": [
+    37.7699941,
+    -122.4696801
+   ],
+   "form": "pine",
+   "h": 15.105995950245509,
+   "note": "Japanese Tea Garden: a Monterey pine overhead (about sixty feet, pruned in layers)"
+  },
+  {
+   "at": [
+    37.7702636,
+    -122.4705668
+   ],
+   "form": "pine",
+   "h": 15.73089849310596,
+   "note": "Japanese Tea Garden: a Monterey pine overhead (about sixty feet, pruned in layers)"
+  },
+  {
+   "at": [
+    37.7696924,
+    -122.4701526
+   ],
+   "form": "pine",
+   "h": 17.162332673622313,
+   "note": "Japanese Tea Garden: a Monterey pine overhead (about sixty feet, pruned in layers)"
+  },
+  {
+   "at": [
+    37.7704191,
+    -122.469741
+   ],
+   "form": "flowering",
+   "h": 5.232704639478799,
+   "note": "Japanese Tea Garden: a Japanese maple"
+  },
+  {
+   "at": [
+    37.7703163,
+    -122.469981
+   ],
+   "form": "flowering",
+   "h": 5.876194685434191,
+   "note": "Japanese Tea Garden: a Japanese maple"
+  },
+  {
+   "at": [
+    37.770031,
+    -122.4699372
+   ],
+   "form": "flowering",
+   "h": 4.641382575372061,
+   "note": "Japanese Tea Garden: a Japanese maple"
+  },
+  {
+   "at": [
+    37.7702474,
+    -122.4699304
+   ],
+   "form": "flowering",
+   "h": 5.7634715462071275,
+   "note": "Japanese Tea Garden: a Japanese maple"
+  },
+  {
+   "at": [
+    37.7697031,
+    -122.4704205
+   ],
+   "form": "flowering",
+   "h": 6.243867091104612,
+   "note": "Japanese Tea Garden: a Japanese maple"
+  },
+  {
+   "at": [
+    37.7702766,
+    -122.4696049
+   ],
+   "form": "flowering",
+   "h": 4.6703980816102995,
+   "note": "Japanese Tea Garden: a Japanese maple"
+  },
+  {
+   "at": [
+    37.7703146,
+    -122.4701377
+   ],
+   "form": "blossom",
+   "h": 4.501387869329312,
+   "note": "Japanese Tea Garden: a cherry on the path under the Long Bridge"
+  },
+  {
+   "at": [
+    37.7702647,
+    -122.4700616
+   ],
+   "form": "blossom",
+   "h": 5.993165376772133,
+   "note": "Japanese Tea Garden: a cherry on the path under the Long Bridge"
+  },
+  {
+   "at": [
+    37.7702954,
+    -122.470236
+   ],
+   "form": "blossom",
+   "h": 4.565291632025256,
+   "note": "Japanese Tea Garden: a cherry on the path under the Long Bridge"
+  },
+  {
+   "at": [
+    37.7701977,
+    -122.4701324
+   ],
+   "form": "blossom",
+   "h": 5.270056345246458,
+   "note": "Japanese Tea Garden: a cherry on the path under the Long Bridge"
+  },
+  {
+   "at": [
+    37.7702321,
+    -122.4702489
+   ],
+   "form": "blossom",
+   "h": 5.3759652520661305,
+   "note": "Japanese Tea Garden: a cherry on the path under the Long Bridge"
+  },
+  {
+   "at": [
+    37.7701534,
+    -122.4701912
+   ],
+   "form": "blossom",
+   "h": 5.661564319697649,
+   "note": "Japanese Tea Garden: a cherry on the path under the Long Bridge"
+  },
+  {
+   "at": [
+    37.7699376,
+    -122.4702235
+   ],
+   "form": "windmill",
+   "h": 5.5,
+   "note": "Japanese Tea Garden: the windmill palm by the Temple Gate"
+  },
+  {
+   "at": [
+    37.7704558,
+    -122.4698085
+   ],
+   "form": "laurel",
+   "h": 4.5,
+   "note": "Japanese Tea Garden: Camellia sasanqua before the drum bridge view"
   }
  ]
 }

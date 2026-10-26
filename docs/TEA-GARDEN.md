@@ -104,9 +104,103 @@ stands on the ground under it (`fit.groundAt`).
 
 The procedural greens are set dark, because the flat material lights them about 1.6 times.
 
+## The second pass: the garden as its sources describe it (2026-10-26)
+Owner: "improve the japanese tea garden model to make it as beautiful and accurate as possible using the required number
+of polys or fewer. look at how plantkit works. prioritize plants, rocks and water since we can use photogrammetry for
+buildings and statues."
+
+The budget is `tests/landmarks.test.ts`: every builder under 25,000 triangles. The builder stood at 21,850 and now
+stands at 20,078, with far more in the garden, because everything the PLANT LIBRARY can draw moved out of it:
+`MeshBuilder.plants` are instanced GLBs (render/plants.ts) and count for nothing against the ceiling. The landscape
+places 385 of them (it placed 40).
+
+**What was wrong before.** The views showed it: the zone's shrubs (`rhododendron`, `hydrangea`, `bush_flowering`) had
+filled the whole garden with two-metre hydrangea mopheads in pink, blue and white — the real garden is green clipped
+mounds, moss and ferns, with azaleas in flower in March and April — and the cloud-pruned pines' pads read as flat
+green discs.
+
+**Sources for the accuracy.** The garden's own map text (holymtn.com, the map traced in `data/teagarden/`) and
+Wikipedia: the Main Pond has "a stone pagoda on a small island", dwarf trees and a Japanese maple on its north shore; the
+tea house is "set beside a waterfall and pond, with a tortoise-shaped island called Horai-jima"; irises, dwarf trees and
+western sword-ferns line the path to the drum bridge; the Sunken Garden is "a sea of dwarf trees"; the Fraser dwarf-tree
+collection is below the Temple Gate; the New Dragon Hedge is "next to the Mt Fuji Hedge, against a bamboo backdrop"; a
+twisted Monterey pine stands just inside the Main Gate (Hagiwara, 1900); the Monterey pines overhead are "about sixty
+feet", pruned in layers; cherries and wisteria line the path under the Long Bridge; a windmill palm grows by the Temple
+Gate; Camellia sasanqua stands before the drum bridge view.
+
+### Three new library species (assetkit `tools/plantgen`, `library-teagarden.json`)
+`plantkit.py` gained two things a palm needed to be a bamboo culm: `trunk_tint` (the trunk's colour was white, i.e. the
+bark's own) and `frond_at` (where along the trunk the fronds leave it; a palm's all at the top).
+- **`bamboo`**: one culm, a thin straight yellow-green cane with sprays of fine leaves over its upper half, 4–7 m.
+  The builder's 94 culms were struts with lump leaf-clouds (3,200 triangles); now 121 library culms, in groves behind
+  the Mt Fuji, Dragon and New Dragon hedges.
+- **`azalea`**: a clipped evergreen azalea, a low wide dome of dark leaves covered in small pink, rose or blush discs
+  (the hydrangea page's colours), eight entries in flower and four green. In the game every library shrub gets a
+  smooth leafy core inside its cards (render/plants.ts), which is exactly a clipped mound. 111 massed round the ponds,
+  the Buddha, Maple Lane, the Sunken Garden, Waterfall Hill and the Long Bridge, and the zone's shrubs are now
+  azalea, juniper, mugo pine, rhododendron, bush_green, fern and bracken (no hydrangea; density 1.8).
+- **`japanese_iris`**: a clump of straps with violet blooms (the white tulip cup, tinted), twelve at the drum pond's
+  waterline nearest the bridge.
+To see them the game must read the assetkit checkout (`?assets=local`): the bucket gets them when the owner uploads
+from the assetkit checkout (`npm run assets:upload` there, which rebuilds its plants index first). Until then the
+live game, which reads the bucket, skips the three species: the bamboo groves behind the hedges stand empty.
+
+`render/plants.ts`: a plant a landmark places by name gets no leafy core when it is an own-size species (bamboo and
+iris joined the list) or one of the library's straps and blades (reeds, cattail, fern, bracken) — a green mound under
+a cane or a clump of straps was a blob at its foot. Zones that name ferns (the Presidio's, Golden Gate Park's) are
+unchanged.
+
+### The builder (`tea-garden-landscape.ts`)
+- **Water level.** The layout exports the ponds' rings (`PONDS`); the builder takes each pond's level as its lowest
+  bank off `fit.groundAt`, the bake's own rule (`city/package.ts waterLevels`), so the islands and the lily pads stand
+  on the water.
+- **Pond beds (`tools/bake.ts`).** Two bake fixes, found because the test area showed the Main Pond as a 3 m green
+  mound under its water plane, the far bank's rocks in the air round it. (1) The sea-bed rule (BUGS.md #58: wet samples
+  well below the shore come up to just under it) ran in a bake with no sea, took its "shore" from the ponds' own banks,
+  and raised every pond's bed to it; it now runs only where a sea area exists. The city bake was never affected. (2) The
+  lidar has no ground returns over water, so under a pond the bake kept the smoothed tiles' height, a blur of the banks,
+  and the city's Main Pond bed stood 0.44 m over its water; now every fine post well inside a pond or lake (not the sea
+  or a river) is lowered to half a metre under the pond's level, posts within a grid step of the ring left alone so the
+  level, taken off the ring's vertices, does not move. The city bake needs rerunning to get (2).
+- **Islands.** The Main Pond's (3.2 m, a mossy mound ringed with stones, a pine leaning out; the stone pagoda on it is
+  the owner's GLB) and Horai-jima in the tea house pond (lower, longer, a standing stone for the tortoise's head).
+- **The tea house waterfall** off its terrace (77.6 m, the highest clear ground within 13 m of the pond, found by
+  `layout.py`) into its pond, in two ledges; the waterfall function is shared with Waterfall Hill's, and both now end
+  in a white fall into the pond's own water with a standing stone over the spring.
+- **Rocks** are faceted (6 segments, 3 rings, strongly jittered: 36 triangles, were 56) and set in groups (ishigumi:
+  one standing stone, two companions, a small one at the foot) at the Buddha, the drum bridge pool, the Temple Gate,
+  the tea house pond, round the Main Pond and in the Sunken Garden.
+- **Niwaki** pads are squashed lumps with a lighter crown of new growth over each, five tiers alternating sides.
+- **Lily pads** (43, two triangles each) at the Main Pond's south-west end, the tea house and drum ponds.
+- **The New Dragon Hedge** beside Mt Fuji, on whichever side `layout.py` found clear.
+- **The flowering domes** are library azaleas now; only the green tamamono stay modelled lumps. A flat-lit pink or red
+  lump read as plastic whatever its colour was set to (the cartoon material boosts a flat surface's colour).
+
+### Hand-planted trees (`data/trees/san-francisco.json`, bake time)
+Nineteen more: the Monterey pine inside the Main Gate (14 m), four tall Monterey pines overhead (15–18 m; the region's
+pine model has a wide crown, and seven at 20 m roofed the garden), six Japanese maples (tea house, Buddha, north shore,
+drum bridge, Cherry Tree Lane fork), six cherries under the Long Bridge, the windmill palm by the Temple Gate, a camellia
+(`laurel`) before the drum bridge view.
+
+### Seeing it without an hours-long bake
+`jtg-mini` (tools/cities.ts): a 450 m test area round the garden, region san-francisco, baked in about a minute.
+First its lidar ground, which the bake keys by city: `tools/lidar/.venv/bin/python tools/lidar/dtm.py jtg-mini --zones
+san-francisco` (`--zones` is new: a test area reads its region's zones file, and only the zones inside its own box —
+without the file the bake warns and lays the smoothed tiles, and the ponds, the rocks and the paths all sat on the wrong
+ground). Then `npm run bake -- jtg-mini`, and `?city=jtg-mini&assets=local`; `src/cities.json` lists only live cities,
+so add it there by hand to open it (the bake rewrites that file: do not commit the test entry). It turned up a bake bug: `tools/deck-conform.ts` took the bake's box from every OSM node it
+was given, and a way running far outside a test area took in the whole city, so the Salesforce Park gondola's end was
+looked for and the bake crashed; the bake now passes its own box. The seven `garden` views in `views/san-francisco.json`
+(and `views/jtg-mini.json`) are the before/after set.
+
+`tools/teagarden/layout.py` needs an OSM extract over the garden: `osmium extract -b -122.4730,37.7680,-122.4670,37.7722
+tools/cache/osm/norcal-latest.osm.pbf -o jtg.osm.pbf && osmium export jtg.osm.pbf -f geojsonseq -o jtg.geojsonseq`
+(kept in `tools/cache/osm/cuts/`). Its second pass has its own rng, so the first pass's placements did not move.
+
 ## Next
-- **Lily pads** on the ponds. They need the ponds' water level in the builder, which it does not have.
-- **More of the planting by hand**, from photographs: which pines are where, the Sunken Garden's azaleas, and the
-  bonsai.
+- **More of the planting by hand**, from photographs: which pines are where, and the bonsai (the oldest dwarf tree, a
+  Japanese black pine on a bamboo frame by the tea house).
+- **Wisteria** on the tea house roof and under the Long Bridge (no library species yet); the two bronze cranes at the
+  Main Pond's south-west end and the stone pagodas are the owner's GLBs.
 - **Buildings and structures.** The owner's GLBs replace the procedural pagoda, gates, tea house, bridges, lanterns and
   fence.

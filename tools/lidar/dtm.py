@@ -10,6 +10,7 @@ for the bake's 4 m grid and a twentieth of the download — and writes the media
 (NAVD88 metres; empty cells null) on the bake's own fine-grid lattice (multiples of 4 m in the game frame).
 
     tools/lidar/.venv/bin/python tools/lidar/dtm.py san-francisco      # -> tools/cache/lidar/dtm-san-francisco.json
+    tools/lidar/.venv/bin/python tools/lidar/dtm.py jtg-mini --zones san-francisco   # a test area: its region's zones, those in its box
 
 The bake (tools/bake.ts) reads that file when it is there and lays it over the fine ground inside those zones.
 """
@@ -36,14 +37,21 @@ def main():
     ap.add_argument('city')
     ap.add_argument('--depth', type=int, default=7)
     ap.add_argument('--dataset', default='CA_SanFrancisco_1_B23')
+    ap.add_argument('--zones', default=None, help="whose zones file: a test area cut from a city (jtg-mini) reads its region's (san-francisco)")
     a = ap.parse_args()
-    frame, _ = ept.city_frame(a.city)
+    frame, meta = ept.city_frame(a.city)
+    # (a test area's box, where the index has one: the region's other lidar zones — the cliffs at Lands End and Sutro
+    #  for the Japanese Tea Garden's — are left out rather than fetched for a bake that will not cover them)
+    cbox = meta.get('box')
     e = json.loads(ept.get(f'{ept.STORE}/{a.dataset}/ept.json', ept.CACHE / a.dataset / 'ept.json'))
     out = []
-    for name, ring in zones(a.city):
+    for name, ring in zones(a.zones or a.city):
         lats = [q[0] for q in ring]; lons = [q[1] for q in ring]
         x0 = (min(lons) - frame.lon0) * frame.kx; x1 = (max(lons) - frame.lon0) * frame.kx
         z0 = (min(lats) - frame.lat0) * frame.ky; z1 = (max(lats) - frame.lat0) * frame.ky
+        if cbox and (x1 < cbox['x0'] or x0 > cbox['x1'] or z1 < cbox['z0'] or z0 > cbox['z1']):
+            print(f'{name}: outside this city\'s box, skipped', file=sys.stderr)
+            continue
         # on the bake's lattice
         x0 = np.floor(x0 / STEP) * STEP; z0 = np.floor(z0 / STEP) * STEP
         cols = int(np.ceil((x1 - x0) / STEP)) + 1; rows = int(np.ceil((z1 - z0) / STEP)) + 1
