@@ -1,0 +1,79 @@
+[
+ {
+  "osm": [
+   "way/219072560"
+  ],
+  "name": "Safeway, 2020 Market Street",
+  "procedural": "mu_219072560",
+  "height": 6.5,
+  "sign": false,
+  "front": "street",
+  "note": "market-upper.ts: cream-painted windowless box with brown trellis panels and a red SAFEWAY logo; Mapillary frame 02."
+ },
+ {
+  "osm": [
+   "way/208345091"
+  ],
+  "name": "Venn on Market, 1844 Market Street",
+  "procedural": "mu_208345091",
+  "height": 25,
+  "sign": false,
+  "front": "street",
+  "note": "market-upper.ts: eight storeys of grey and pale-grey panel with balcony recesses and a rooftop pergola; Mapillary frame 02."
+ },
+ {
+  "osm": [
+   "way/208345267"
+  ],
+  "name": "Linea, Market at Buchanan",
+  "procedural": "mu_208345267",
+  "height": 30,
+  "sign": false,
+  "front": "street",
+  "note": "market-upper.ts: seven-storey blue-glass office with floors stepped out of line over a dark base; Mapillary frame 01."
+ },
+ {
+  "osm": [
+   "way/208795260"
+  ],
+  "name": "Icon, 2299 Market Street",
+  "procedural": "mu_208795260",
+  "height": 16,
+  "sign": false,
+  "front": "street",
+  "note": "market-upper.ts: charcoal-panelled corner block with orange boxed bays and a silver-glass corner shaft (the owner's 'recessed and protruding bays'); Mapillary frame 02."
+ },
+ {
+  "osm": [
+   "way/252220171"
+  ],
+  "name": "1930 Market Street",
+  "procedural": "mu_252220171",
+  "height": 25,
+  "sign": false,
+  "front": "street",
+  "note": "market-upper.ts: cream Art Deco apartment block: arched arcade, white piers, pointed-fin crown; Mapillary frame 02."
+ },
+ {
+  "osm": [
+   "way/240219341"
+  ],
+  "name": "2027 Market Street",
+  "procedural": "mu_240219341",
+  "height": 15,
+  "sign": false,
+  "front": "street",
+  "note": "market-upper.ts: four storeys of pale-grey stucco over glazing with a row of metal-clad roof dormers; Mapillary frame 02."
+ },
+ {
+  "osm": [
+   "way/115433821"
+  ],
+  "name": "2222 Market Street",
+  "procedural": "mu_115433821",
+  "height": 17,
+  "sign": false,
+  "front": "street",
+  "note": "market-upper.ts: grey-panel five-storey with glass bay boxes over a dark glazed base; Mapillary frame 03 (OSM says 9 m; photo shows about five storeys)."
+ }
+]

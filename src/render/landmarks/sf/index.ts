@@ -172,6 +172,7 @@ import { FIRST_HARRISON } from './first-harrison.ts'
 import { HARRISON_WATERFRONT } from './harrison-waterfront.ts'
 import { MARKET_FIDI } from './market-fidi.ts'
 import { DOWNTOWN_T4 } from './downtown-t4.ts'
+import { MARKET_UPPER } from './market-upper.ts'
 import { DOGPATCH_CORNER } from './dogpatch-corner.ts'
 import { transbayBusRampBridge } from './bus-ramp-bridge.ts'
 import { VENUES } from './districts/venues.ts'
@@ -367,6 +368,7 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   ...HARRISON_WATERFRONT,
   ...MARKET_FIDI,
   ...DOWNTOWN_T4,
+  ...MARKET_UPPER,
   ...DOGPATCH_CORNER,
   fremont181,
   transbayBusRampBridge,
