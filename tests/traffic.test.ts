@@ -126,12 +126,12 @@ describe('the traffic, headless', () => {
   }
 
   /**
-   * A rider stopped in the lane is passed where the street has room (BUGS.md #323): cars on a 9 m and a 14 m street
+   * A rider stopped in the lane is passed where the street has room (BUGS.md #323): cars on an 8 m (into a clear oncoming lane), a 9 m and a 14 m street
    * pull out round them and get by without ever touching their box; on a 6 m street there is no room beside the
    * oncoming lane, and they queue. (`run` counts `hits`, which need a car over 2 m/s: the overlap here is checked
    * every frame on its own, so a car creeping into the bike would count.)
    */
-  for (const [width, passes] of [[9, true], [14, true], [6, false]] as [number, boolean][]) {
+  for (const [width, passes] of [[8, true], [9, true], [14, true], [6, false]] as [number, boolean][]) {
     it(`${passes ? 'passes' : 'queues behind'} a rider stopped in the lane of a ${width} m street, never touching them`, () => {
       const g = crossroads(width)
       const traffic = new Traffic(g, 'dense', { signals: new Signals(g, (id) => id === 0) })

@@ -11005,5 +11005,7 @@ What the geometry gives: a 6 m street queues (the pass would sit 1.3 m into the 
 only while the oncoming lane is clear, 9 m and wider pass; a bus passes on 9 m only while it is clear. After: the 9 m
 street above 32.5% standing (25 vehicles past the rider in 300 s, the rest the light's own queue), a 16 m street 57.4%
 against 49.9% with no rider; no frame in any run with a vehicle's box over the rider's. tests/traffic.test.ts: cars
-on a 9 m and a 14 m crossroads arm pass a rider standing 30 m from the junction without ever touching their box and
-without a car-on-car overlap along the streets; on 6 m nothing passes. `leaderFor` and `weave` are untouched.
+on an 8 m (into the clear oncoming lane), a 9 m and a 14 m crossroads arm pass a rider standing 30 m from the
+junction without ever touching their box and without a car-on-car overlap along the streets; on 6 m nothing passes.
+A pass is dropped the moment the rider is off the street or the two are ignoring each other after a crash, so a car
+never carries a stale offset into the junction's curve. `leaderFor` and `weave` are untouched.

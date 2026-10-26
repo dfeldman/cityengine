@@ -1248,7 +1248,7 @@ export class Traffic {
       // a car AHEAD of a descending rider in their lane gets out of the way
       const behind = (v.s - rider.s) * rider.dir
       if (rider.dir === v.dir && rider.grade < DESCENT && behind > 0 && behind < 60) v0 = Math.max(v0, rider.speed + 1.5)
-    }
+    } else v.pass = undefined   // (the rider gone from this street, or the two ignoring each other after a crash: back in lane)
     // steering across: out to the passing lane, and back to the middle of the lane once the rider is behind
     {
       const want = v.pass ?? laneOf(e)
