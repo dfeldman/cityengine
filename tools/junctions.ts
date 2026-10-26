@@ -41,6 +41,7 @@ const edges: Edge[] = pkg.edges.map((e) => {
     layer: e.layer, bridge: e.bridge, tunnel: e.tunnel, passage: e.passage }
 })
 const g: CityGraph = rideGraph(edges, 'bike', {
+  corridors: ((RIDE_OVERRIDES[city] ?? RIDE_OVERRIDES[pkg.region ?? ''])?.corridors ?? []).map((c) => ({ street: c.street, from: proj.toLocal(c.from), to: proj.toLocal(c.to), lane: c.lane })),
   roundabouts: ((RIDE_OVERRIDES[city] ?? RIDE_OVERRIDES[pkg.region ?? ''])?.roundabouts ?? []).map((r) => {
     const p = proj.toLocal({ lat: r.lat, lon: r.lon })
     return { name: r.name, r: r.r, R: r.R, x: p.x, z: p.z }

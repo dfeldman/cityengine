@@ -8,7 +8,7 @@ import {
   Ids, againstFreeway, classify, collapseClusters, contract, dropSidePaths, locate, mapEdgeAt, mergeParallel, pruneFreewayTraps,
   pruneStubs, rideExits,
   rideGraph,
-  reverseEdge,
+  reverseEdge, straightCorridor,
   type RideEdge,
 } from '../src/city/ridegraph.ts'
 
@@ -239,5 +239,39 @@ describe('freeways', () => {
     const lower = edge(40, 41, [[0, 0], [0, 1000]], { kind: 'motorway', oneway: true, name: 'Bridge', heights: [20, 20], ridden: true })
     const upper = edge(42, 43, [[4, 1000], [4, 0]], { kind: 'motorway', oneway: true, name: 'Bridge', heights: [29.5, 29.5], ridden: true })
     expect(mergeParallel(ride([lower, upper]))).toHaveLength(2)
+  })
+})
+
+describe('straightCorridor', () => {
+  // a divided street (carriageways 16 m apart) from z 0 to 400, entered from the south by both carriageways, and
+  // crossed at z 200 by a street whose two arms end on different carriageways, with a link between them
+  const es = () => ride([
+    edge(1, 10, [[0, -100], [-8, 0]], { name: 'Main' }), edge(1, 20, [[0, -100], [8, 0]], { name: 'Main' }),
+    edge(10, 11, [[-8, 0], [-8, 200]], { name: 'Main' }), edge(11, 12, [[-8, 200], [-8, 400]], { name: 'Main' }),
+    edge(20, 21, [[8, 0], [8, 200]], { name: 'Main' }), edge(21, 22, [[8, 200], [8, 400]], { name: 'Main' }),
+    edge(11, 21, [[-8, 200], [8, 200]]),
+    edge(30, 11, [[-100, 200], [-8, 200]], { name: 'Cross' }), edge(21, 31, [[8, 200], [100, 200]], { name: 'Cross' }),
+  ])
+  const out = straightCorridor(es(), { street: 'Main', from: { x: 0, z: 0 }, to: { x: 0, z: 400 } }, new Ids(), () => 0)
+  const g = buildGraph(out)
+
+  it('rides the street as one path down its middle', () => {
+    const main = out.filter((e) => e.name === 'Main' && e.points.every((p) => p.z >= 0))
+    expect(main).toHaveLength(2)
+    for (const e of main) for (const p of e.points) expect(Math.abs(p.x)).toBeLessThan(0.5)
+    expect(main.every((e) => !e.oneway && e.lane === 7)).toBe(true)
+    // the link between the carriageways is gone
+    expect(out.some((e) => !e.name)).toBe(false)
+  })
+
+  it('meets a cross street at one node, straight over', () => {
+    const arms = out.filter((e) => e.name === 'Cross')
+    const node = (e: RideEdge): number => (e.points[0].x === 0 ? e.a : e.b)
+    expect(node(arms[0])).toBe(node(arms[1]))
+    expect(g.nodes.get(node(arms[0]))!.edges).toHaveLength(4)
+  })
+
+  it('keeps one of two ways into the corridor from the same node', () => {
+    expect(out.filter((e) => e.a === 1 || e.b === 1)).toHaveLength(1)
   })
 })

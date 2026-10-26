@@ -5,9 +5,23 @@
 import type { Roundabout } from './ridegraph.ts'
 
 export interface RoundaboutSpec extends Omit<Roundabout, 'x' | 'z'> { lat: number; lon: number }
+/** a street ridden as one straight path between two points (ridegraph.ts `straightCorridor`) */
+export interface CorridorSpec { street: string; from: { lat: number; lon: number }; to: { lat: number; lon: number }; lane?: number }
 
 /** by city id, else by region: Paris's places are Paris's whichever box they are in */
-export const RIDE_OVERRIDES: Record<string, { roundabouts: RoundaboutSpec[] }> = {
+export const RIDE_OVERRIDES: Record<string, { roundabouts: RoundaboutSpec[]; corridors?: CorridorSpec[] }> = {
+  'san-francisco': {
+    roundabouts: [],
+    corridors: [
+      // Market Street from 8th to Castro: two carriageways parting round boarding islands, crossed on the skew by two
+      // grids, so it rode as 28 junctions in 2.6 km with an 81° turn at Dolores just to stay on Market (owner,
+      // 2026-10-25: "it should be possible to easily ride straight down market street in a straight line in either
+      // direction and easily turn onto any intersecting street with a simple, obvious decision")
+      { street: 'Market Street', from: { lat: 37.7785, lon: -122.4150 }, to: { lat: 37.7626, lon: -122.4352 } },
+      // …and on past Castro, where it bends, to Diamond, where its carriageways meet again (one corridor is one straight line)
+      { street: 'Market Street', from: { lat: 37.7626, lon: -122.4352 }, to: { lat: 37.76189, lon: -122.43733 } },
+    ],
+  },
   paris: {
     roundabouts: [
       // the Place de la Bastille: a circle round the Colonne de Juillet on the ring road's own radius, and a

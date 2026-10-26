@@ -108,6 +108,47 @@ midline (Guerrero: 4.5 m across in its last 6 m, a 45° kink, now 13°), or OSM'
 Tests: ride graph, ride file, navigator, junction shape — 64 passed. Deployed 2026-10-24 (ride files rebuilt with
 `npm run bake -- san-francisco --rides`).
 
+## Fix 3 (2026-10-25): Market Street ridden straight, 8th to Diamond (`straightCorridor`)
+
+Owner, 2026-10-25: "It's impossible to ride straight down market because the paths join and diverge, with many turns
+that are difficult or impossible to make, and many-way intersections. it should be possible to easily ride straight
+down market street in a straight line in either direction and easily turn onto any intersecting street with a simple,
+obvious decision."
+
+Past 8th, Market is two carriageways that part round boarding islands and meet again, crossed on the skew by two street
+grids. `mergeParallel` (14 m) could not hold them together, so the ride graph had nine split and merge points, different
+paths in each direction, and turns of 81° at Dolores, 51° at Church and 42° at Duboce just to stay on Market.
+
+`RIDE_OVERRIDES['san-francisco'].corridors` (`src/city/overrides.ts`) now names two stretches: 8th to Castro, and Castro
+to Diamond. They are two because Market bends at Castro, and one corridor is one straight line. Within each stretch,
+`straightCorridor` (`src/city/ridegraph.ts`, which runs after `dropLoops`) does this:
+- It removes the street's own edges, and the short links between its carriageways.
+- It lays ONE centreline through the middle of them. Their points are binned every 15 m along the stretch, averaged and
+  smoothed. The centreline runs on to the far ends of edges that reach out of the stretch, so it never stops in
+  mid-block.
+- It meets every cross street where the street's own approach line crosses the centreline.
+- It counts as one junction any crossings within 7 m, and a street's two halves or carriageways within 24 m.
+- It folds into that node the 1–3 m scraps of a junction that stood in the median (16th and Noe).
+- Where several ways run from a corridor node to the same node, it keeps one.
+- The rider holds `lane` (half the carriageways' spread, less 1 m: 4.9 m) right of the centreline.
+
+`tools/corridor-survey.ts` walks a street through a stretch, both ways. It reports the splits, the turns needed to stay
+on the street, the clusters, and how far each cross street bends going over. It takes `--before` (without the
+corridors) and `--at=lat,lon` (the nodes and edges there).
+
+| Market, 8th → Diamond (ride graph) | before | now |
+|---|---|---|
+| split / merge points | 9 | **0** |
+| turns over 15° to stay on Market | 8 outbound, 11 inbound (max 81°) | **0** (max 10°, at 9th and at Gough 13°) |
+| same path both ways | no | **yes** |
+| cross streets going straight over | — | Church 1°, 15th, Sanchez and Diamond 0°, 16th 3°, Noe 1° |
+
+Junctions that are still two nodes are two in reality:
+- 14th and Church, 22 m apart;
+- Duboce/Buchanan and Dolores, 50 m apart.
+
+Van Ness keeps its four carriageways (each one-way) at one node.
+
 ## Next
 
 1. The 53 kinks left: mostly five- and six-way junctions (Market Street's diagonals) — look at each kind.

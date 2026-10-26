@@ -65,6 +65,7 @@ const drawnGraph = (): CityGraph => {
 }
 type P = { x: number; z: number }
 const g: CityGraph = DRAWN ? drawnGraph() : rideGraph(edges, 'bike', {
+  corridors: ((RIDE_OVERRIDES[city] ?? RIDE_OVERRIDES[pkg.region ?? ''])?.corridors ?? []).map((c) => ({ street: c.street, from: proj.toLocal(c.from), to: proj.toLocal(c.to), lane: c.lane })),
   roundabouts: ((RIDE_OVERRIDES[city] ?? RIDE_OVERRIDES[pkg.region ?? ''])?.roundabouts ?? []).map((r) => {
     const p = proj.toLocal({ lat: r.lat, lon: r.lon })
     return { name: r.name, r: r.r, R: r.R, x: p.x, z: p.z }

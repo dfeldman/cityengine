@@ -1236,6 +1236,8 @@ export interface RideOverrides {
   ground?: (x: number, z: number) => number
   /** false: leave the junctions' approaches as the passes made them (tools/junctions.ts measures both ways) */
   straighten?: boolean
+  /** streets ridden as one straight path through a stretch (`straightCorridor`) */
+  corridors?: Corridor[]
 }
 
 /** Both crossings of a segment p→q with the circle of radius R round c, as t in 0..1 (may be none). */
@@ -1657,6 +1659,8 @@ export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrid
   if (mode === 'bike') es = linkCarriageways(es, ids, overrides?.ground)
   // and the little loops all that can leave (BUGS.md #44), and the stubs they leave in turn
   es = pruneStubs(dropLoops(es))
+  // …a street ridden straight through its stretch, its cross streets meeting it one node each (straightCorridor)
+  for (const c of overrides?.corridors ?? []) es = pruneStubs(largest(straightCorridor(es, c, ids, overrides!.heightAt)))
   // and last of all, no edge doubling back on itself (BUGS.md #194), and every edge meeting its junction
   es = despike(snapEnds(es))
   // …and every ordinary junction's approaches straight, its streets meeting where their lines cross (city/junction-shape.ts)
@@ -1664,6 +1668,235 @@ export function rideGraph(edges: Edge[], mode: RideMode, overrides?: RideOverrid
   // …and NO SHARP TURN NEAR ANY JUNCTION, whatever made it (below)
   if (overrides?.straighten !== false) es = smoothApproaches(es)
   return buildGraph(es) as RideGraph
+}
+
+/** A stretch of one street ridden as ONE straight path (RideOverrides.corridors; local frame). */
+export interface Corridor {
+  /** the street's name, as OSM has it */
+  street: string
+  /** the stretch's two ends (a point near the street at each) */
+  from: Point
+  to: Point
+  /** how far right of the centreline the rider holds (the edge's `lane`), m; by default where its carriageways ran */
+  lane?: number
+}
+
+/**
+ * A STREET RIDDEN STRAIGHT (owner, 2026-10-25, Market Street past 8th: "it's impossible to ride straight down market
+ * because the paths join and diverge, with many turns that are difficult or impossible to make, and many-way
+ * intersections. it should be possible to easily ride straight down market street in a straight line in either
+ * direction and easily turn onto any intersecting street with a simple, obvious decision"; docs/INTERSECTIONS.md).
+ *
+ * Market from 8th to Castro is two carriageways that part round boarding islands and meet again, crossed by the
+ * grid on the skew, so the passes above leave it as a chain of splits, rejoins and five- to seven-way clusters: 28
+ * junctions in 2.6 km, a turn of 81° at Dolores just to stay on Market. Within a corridor all that is replaced:
+ *
+ *   1. the street's own edges inside the stretch are removed, and with them the short links between its carriageways;
+ *   2. ONE centreline is laid through the middle of all of them (their points binned along the stretch and averaged,
+ *      then smoothed), so the street is a single straight path ridden both ways;
+ *   3. every edge that met the removed street meets the centreline instead, at the point where ITS OWN line crosses it
+ *      (its approach ray, not the old node), so a cross street goes over in one straight line;
+ *   4. crossings within 7 m of each other along the centreline are one junction, and the two halves of a cross street
+ *      (or a street's two carriageways) within 24 m are one junction: a five-way is one node, one decision.
+ *
+ * The later passes (`straightenJunctions`, `smoothApproaches`) then square the cross streets' approaches on to it.
+ */
+export function straightCorridor(edges: RideEdge[], c: Corridor, ids: Ids, heightAt: (x: number, z: number) => number): RideEdge[] {
+  const named = (e: Edge): boolean => !e.foot && (e.name === c.street || (e.name ?? '').split(/;\s*/).includes(c.street))
+  const dx = c.to.x - c.from.x, dz = c.to.z - c.from.z, L = Math.hypot(dx, dz)
+  if (L < 50) return edges
+  const ux = dx / L, uz = dz / L
+  const S = (p: Point): number => (p.x - c.from.x) * ux + (p.z - c.from.z) * uz
+  const O = (p: Point): number => (p.x - c.from.x) * -uz + (p.z - c.from.z) * ux
+  // the street's edges reaching into the stretch, whole: the corridor runs on to their far ends (the junction at
+  // each end), so it never stops in mid-block where the carriageways would fork off it again
+  const inside = (p: Point): boolean => S(p) > 0 && S(p) < L && Math.abs(O(p)) < 70
+  const near = (p: Point): boolean => S(p) > -200 && S(p) < L + 200 && Math.abs(O(p)) < 70
+  const mine = edges.filter((e) => named(e) && e.points.some(inside) && e.points.every(near))
+  if (mine.length < 2) return edges
+  const gone = new Set(mine.map((e) => e.id))
+  const R = new Set<number>()
+  for (const e of mine) { R.add(e.a); R.add(e.b) }
+  // the links between the carriageways: short edges both of whose ends were the street's
+  for (const e of edges) if (!gone.has(e.id) && R.has(e.a) && R.has(e.b) && e.length < 40) gone.add(e.id)
+
+  // ---- the centreline: the street's points every 4 m, binned every 15 m along the stretch, averaged, then smoothed
+  let s0 = Infinity, s1 = -Infinity
+  for (const e of mine) for (const p of e.points) { s0 = Math.min(s0, S(p)); s1 = Math.max(s1, S(p)) }
+  const BIN = 15, nb = Math.ceil((s1 - s0) / BIN) + 1
+  const sx = new Array<number>(nb).fill(0), sz = new Array<number>(nb).fill(0), sn = new Array<number>(nb).fill(0)
+  for (const e of mine) {
+    if (e.length < 20) continue
+    for (let i = 1; i < e.points.length; i++) {
+      const p = e.points[i - 1], q = e.points[i], d = distance(p, q), n = Math.max(1, Math.round(d / 4))
+      for (let k = 0; k <= n; k++) {
+        const x = p.x + ((q.x - p.x) * k) / n, z = p.z + ((q.z - p.z) * k) / n
+        const b = Math.round((Math.max(s0, Math.min(s1, S({ x, z }))) - s0) / BIN)
+        sx[b] += x; sz[b] += z; sn[b]++
+      }
+    }
+  }
+  let line: Point[] = []
+  for (let b = 0; b < nb; b++) if (sn[b]) line.push({ x: sx[b] / sn[b], z: sz[b] / sn[b] })
+  if (line.length < 3) return edges
+  line = line.map((p, i) => {
+    if (i === 0 || i === line.length - 1) return p
+    return { x: (line[i - 1].x + 2 * p.x + line[i + 1].x) / 4, z: (line[i - 1].z + 2 * p.z + line[i + 1].z) / 4 }
+  })
+  // arc length along the centreline, and the point at an arc length
+  const arc: number[] = [0]
+  for (let i = 1; i < line.length; i++) arc.push(arc[i - 1] + distance(line[i - 1], line[i]))
+  const total = arc[arc.length - 1]
+  const at = (s: number): Point => {
+    const t = Math.max(0, Math.min(total, s))
+    let i = 1
+    while (i < line.length - 1 && arc[i] < t) i++
+    const k = (t - arc[i - 1]) / Math.max(1e-6, arc[i] - arc[i - 1])
+    return { x: line[i - 1].x + (line[i].x - line[i - 1].x) * k, z: line[i - 1].z + (line[i].z - line[i - 1].z) * k }
+  }
+  /** the nearest point of the centreline: its arc length and distance */
+  const nearest = (p: Point): { s: number; d: number } => {
+    let best = { s: 0, d: Infinity }
+    for (let i = 1; i < line.length; i++) {
+      const a = line[i - 1], b = line[i], vx = b.x - a.x, vz = b.z - a.z, ll = vx * vx + vz * vz || 1
+      const t = Math.max(0, Math.min(1, ((p.x - a.x) * vx + (p.z - a.z) * vz) / ll))
+      const d = Math.hypot(p.x - a.x - vx * t, p.z - a.z - vz * t)
+      if (d < best.d) best = { s: arc[i - 1] + t * Math.sqrt(ll), d }
+    }
+    return best
+  }
+  /** where the ray from p along (vx, vz) first crosses the centreline within `reach` m, as an arc length */
+  const crossing = (p: Point, vx: number, vz: number, reach: number): number | null => {
+    let best: { s: number; t: number } | null = null
+    for (let i = 1; i < line.length; i++) {
+      const a = line[i - 1], b = line[i], ex = b.x - a.x, ez = b.z - a.z
+      const den = vx * ez - vz * ex
+      if (Math.abs(den) < 1e-9) continue
+      const t = ((a.x - p.x) * ez - (a.z - p.z) * ex) / den
+      const k = ((a.x - p.x) * vz - (a.z - p.z) * vx) / den
+      if (t < -2 || t > reach || k < 0 || k > 1) continue
+      if (!best || t < best.t) best = { s: arc[i - 1] + k * Math.hypot(ex, ez), t }
+    }
+    return best ? best.s : null
+  }
+
+  // ---- every edge that met the removed street: where its own line meets the centreline
+  interface Att { e: RideEdge; atA: boolean; s: number; name?: string }
+  const atts: Att[] = []
+  const kept = edges.filter((e) => !gone.has(e.id))
+  for (const e of kept) {
+    for (const atA of [true, false]) {
+      if (!R.has(atA ? e.a : e.b)) continue
+      const pts = atA ? [...e.points].reverse() : e.points
+      // the approach's direction over its last ~12 m
+      const end = pts[pts.length - 1]
+      let j = pts.length - 2, d = 0
+      while (j > 0 && d < 12) { d += distance(pts[j], pts[j + 1]); j-- }
+      const from = pts[Math.max(0, j)], len = distance(from, end) || 1
+      const s = crossing(from, (end.x - from.x) / len, (end.z - from.z) / len, len + 30) ?? nearest(end).s
+      atts.push({ e, atA, s, name: e.name })
+    }
+  }
+  atts.sort((p, q) => p.s - q.s)
+  // ---- junctions: crossings within 7 m are one node, and a street's halves within 24 m too
+  const groups: Att[][] = []
+  for (const a of atts) {
+    const g = groups.find((gr) => {
+      const m = gr.reduce((t, x) => t + x.s, 0) / gr.length
+      return Math.abs(a.s - m) < 7 || (!!a.name && gr.some((x) => x.name === a.name) && Math.abs(a.s - m) < 24)
+    })
+    if (g) g.push(a)
+    else groups.push([a])
+  }
+  const mean = (gr: Att[]): number => gr.reduce((t, x) => t + x.s, 0) / gr.length
+  // (a group's mean drifts as it grows, so two neighbours can end up closer than 7 m: they are one junction)
+  groups.sort((p, q) => mean(p) - mean(q))
+  for (let i = 1; i < groups.length; i++) {
+    if (mean(groups[i]) - mean(groups[i - 1]) < 7) { groups[i - 1].push(...groups[i]); groups.splice(i, 1); i-- }
+  }
+  const nodes = groups.map((gr) => ({ id: ids.nextNode(), s: mean(gr), gr }))
+  // the ends of the centreline are nodes too, where no street meets them (the street's own edges beyond the stretch do)
+  if (!nodes.length || nodes[0].s > 3) nodes.unshift({ id: ids.nextNode(), s: 0, gr: [] })
+  if (nodes[nodes.length - 1].s < total - 3) nodes.push({ id: ids.nextNode(), s: total, gr: [] })
+  const moved = new Map<RideEdge, RideEdge>()
+  for (const n of nodes) {
+    const p = at(n.s)
+    for (const a of n.gr) {
+      const cur = moved.get(a.e) ?? a.e
+      // the edge's points from its far end, dropping those within 3 m of the centreline, then the node itself
+      const pts = a.atA ? [...cur.points].reverse() : [...cur.points]
+      while (pts.length > 2 && nearest(pts[pts.length - 1]).d < 3) pts.pop()
+      pts.push(p)
+      const out = a.atA ? pts.reverse() : pts
+      moved.set(a.e, { ...cur, points: out, length: lengthOf(out), heights: out.map((q) => heightAt(q.x, q.z)), ...(a.atA ? { a: n.id } : { b: n.id }) })
+    }
+  }
+  // ---- the centreline itself, node to node, carrying the removed edges' map coverage
+  const template = mine.reduce((p, q) => (q.length > p.length ? q : p))
+  // the rider holds where a carriageway ran: half their spread less a metre, as mergeParallel sets `lane`
+  const spread = mine.filter((e) => e.length >= 20).flatMap((e) => e.points.map((p) => nearest(p).d)).sort((p, q) => p - q)
+  const lane = c.lane ?? Math.round(Math.max(0, (spread[Math.floor(spread.length / 2)] ?? 0) - 1) * 100) / 100
+  const spans: RideEdge[] = []
+  for (let i = 1; i < nodes.length; i++) {
+    const s0 = nodes[i - 1].s, s1 = nodes[i].s
+    if (s1 - s0 < 0.5) continue
+    const pts: Point[] = [at(s0)]
+    for (let k = 0; k < line.length; k++) if (arc[k] > s0 + 0.5 && arc[k] < s1 - 0.5) pts.push(line[k])
+    pts.push(at(s1))
+    const cover = mine.filter((e) => { const m = nearest(e.points[Math.floor(e.points.length / 2)]).s; return m >= s0 && m < s1 })
+    const seen = new Set<number>()
+    const over = cover.flatMap((e) => e.over).filter((o) => (seen.has(o.id) ? false : (seen.add(o.id), true)))
+    spans.push({
+      ...template, id: ids.nextEdge(), a: nodes[i - 1].id, b: nodes[i].id, points: pts, length: lengthOf(pts),
+      heights: pts.map((q) => heightAt(q.x, q.z)), name: c.street, oneway: false, onewayBack: undefined,
+      ease: undefined, over, ...(lane > 1 ? { lane } : { lane: undefined }),
+    })
+  }
+  // ---- scraps: a cross street's junction that stood in the street's median leaves 1–3 m pieces lying on the
+  // centreline (16th and Noe); each folds into the corridor's node, so the crossing is one node, not three
+  const out = [...kept.map((e) => moved.get(e) ?? e), ...spans]
+  const where = new Map<number, Point>()
+  for (const n of nodes) where.set(n.id, at(n.s))
+  const root = new Map<number, number>()
+  const find = (n: number): number => { let r = n; while (root.has(r)) r = root.get(r)!; return r }
+  const onLine = (p: Point): boolean => nearest(p).d < 6
+  for (let pass = 0; pass < 4; pass++) {
+    let changed = false
+    for (const e of out) {
+      // (by its ends: a scrap may still loop out along the carriageway it was part of, until the later passes trim it)
+      if (e.name === c.street || e.length > 40 || distance(e.points[0], e.points[e.points.length - 1]) > 12) continue
+      const a = find(e.a), b = find(e.b)
+      if (a === b || !onLine(e.points[0]) || !onLine(e.points[e.points.length - 1])) continue
+      if (!where.has(a) && !where.has(b)) continue
+      // the corridor's node survives
+      if (where.has(a)) root.set(b, a)
+      else root.set(a, b)
+      changed = true
+    }
+    if (!changed) break
+  }
+  const folded = !root.size ? out : out.flatMap((e) => {
+    const a = find(e.a), b = find(e.b)
+    if (a === b) return []
+    if (a === e.a && b === e.b) return [e]
+    const pts = [...e.points]
+    if (a !== e.a) pts[0] = where.get(a) ?? pts[0]
+    if (b !== e.b) pts[pts.length - 1] = where.get(b) ?? pts[pts.length - 1]
+    return [{ ...e, a, b, points: pts, length: lengthOf(pts), heights: pts.map((q) => heightAt(q.x, q.z)) }]
+  })
+  // …and of two or three ways from a corridor node to the same node (a cross street and the links that ran beside it
+  // between the carriageways), the rider sees one: the named one, else the shortest
+  const best = new Map<string, RideEdge>()
+  for (const e of folded) {
+    if (!where.has(e.a) && !where.has(e.b)) continue
+    const k = e.a < e.b ? `${e.a}:${e.b}` : `${e.b}:${e.a}`, o = best.get(k)
+    if (!o || (!!e.name && !o.name) || (!!e.name === !!o.name && e.length < o.length)) best.set(k, e)
+  }
+  return folded.filter((e) => {
+    if (!where.has(e.a) && !where.has(e.b)) return true
+    const o = best.get(e.a < e.b ? `${e.a}:${e.b}` : `${e.b}:${e.a}`)!
+    return o === e || o.length > e.length * 2 || e.length > o.length * 2
+  })
 }
 
 /**
