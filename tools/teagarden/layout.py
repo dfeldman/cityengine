@@ -232,7 +232,7 @@ trees = {'_note': "Trees planted by hand at bake time (tools/bake.ts → city/pl
 #     the tea house pond; LILY PADS at the ponds' quiet ends;
 #   - and the trees planted by hand: the twisted Monterey pine inside the Main Gate, the tall Monterey pines overhead
 #     ("about sixty feet", pruned in layers), Japanese maples at the tea house, the Buddha, the drum bridge and the
-#     north shore, cherries and wisteria's path under the Long Bridge, a windmill palm by the Temple Gate.
+#     north shore, cherries and wisteria's path under the Long Bridge.
 r2 = np.random.default_rng(1915)  # the pagoda's year
 def free2(x, z, path=1.5, bld=1.0, water=True):
     return free(x, z, path, water, bld)
@@ -452,7 +452,7 @@ lx, lz = LB[1][0] - LB[0][0], LB[1][1] - LB[0][1]; LL = math.hypot(lx, lz); pnx,
 for t in (0.15, 0.5, 0.85):
     for sd in (-1, 1):
         hand_tree(LB[0][0] + lx * t + pnx * sd * 5.0, LB[0][1] + lz * t + pnz * sd * 5.0, 'blossom', float(r2.uniform(4.5, 6.0)), "a cherry on the path under the Long Bridge", 2.0)
-hand_tree(TEMPLE_GATE[0] + 7, TEMPLE_GATE[1] - 3, 'windmill', 5.5, 'the windmill palm by the Temple Gate', 2.5)
+# (the map's windmill palm by the Temple Gate is left out: owner, 2026-10-26, "there's still a palm tree")
 hand_tree(tea_house[0] + 6, tea_house[1] + 5, 'laurel', 4.5, 'Camellia sasanqua before the drum bridge view', 2.5)
 trees['trees'] += extra_trees
 (ROOT / 'data/trees/san-francisco.json').write_text(json.dumps(trees, indent=1) + '\n')
