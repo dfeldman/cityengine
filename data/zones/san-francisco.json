@@ -4445,6 +4445,248 @@
    ]
   },
   {
+   "ref": "plant-tea-garden-verge",
+   "name": "Japanese Tea Garden's verge",
+   "priority": 205,
+   "note": "The ten metres of park round the garden's fence (owner, 2026-10-26: \"there's still a palm tree\" — a windmill palm from the Golden Gate Park mix stood 5 m past the south-east fence by the South Gate, and read as the garden's). The garden's tree mix, no palms, and OSM's mapped trees take it too; only the trees — the ground and the shrubs stay the park's, so no moss beds spill onto the drive.",
+   "ring": [
+    [
+     37.770148,
+     -122.471008
+    ],
+    [
+     37.770481,
+     -122.470932
+    ],
+    [
+     37.770946,
+     -122.470193
+    ],
+    [
+     37.771123,
+     -122.469893
+    ],
+    [
+     37.770528,
+     -122.469066
+    ],
+    [
+     37.769622,
+     -122.469789
+    ],
+    [
+     37.769589,
+     -122.470303
+    ],
+    [
+     37.769595,
+     -122.470518
+    ],
+    [
+     37.769638,
+     -122.470616
+    ],
+    [
+     37.769994,
+     -122.470946
+    ]
+   ],
+   "props": {
+    "plant": {
+     "park": {
+      "density": 0.0078,
+      "clump": 0.35,
+      "trailside": true,
+      "species": [
+       {
+        "form": "pine",
+        "weight": 3,
+        "h": [
+         3.5,
+         7
+        ]
+       },
+       {
+        "form": "flowering",
+        "weight": 3,
+        "h": [
+         3.5,
+         7
+        ]
+       },
+       {
+        "form": "blossom",
+        "weight": 2.5,
+        "h": [
+         4,
+         7
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 1.5,
+        "h": [
+         4,
+         9
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 2,
+        "h": [
+         3,
+         6
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 0.8,
+        "h": [
+         16,
+         24
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 0.6,
+        "h": [
+         15,
+         22
+        ]
+       }
+      ]
+     },
+     "wood": {
+      "density": 0.0078,
+      "clump": 0.35,
+      "trailside": true,
+      "species": [
+       {
+        "form": "pine",
+        "weight": 3,
+        "h": [
+         3.5,
+         7
+        ]
+       },
+       {
+        "form": "flowering",
+        "weight": 3,
+        "h": [
+         3.5,
+         7
+        ]
+       },
+       {
+        "form": "blossom",
+        "weight": 2.5,
+        "h": [
+         4,
+         7
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 1.5,
+        "h": [
+         4,
+         9
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 2,
+        "h": [
+         3,
+         6
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 0.8,
+        "h": [
+         16,
+         24
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 0.6,
+        "h": [
+         15,
+         22
+        ]
+       }
+      ]
+     },
+     "lawn": {
+      "density": 0.004,
+      "clump": 0.35,
+      "trailside": true,
+      "species": [
+       {
+        "form": "pine",
+        "weight": 3,
+        "h": [
+         3.5,
+         7
+        ]
+       },
+       {
+        "form": "flowering",
+        "weight": 3,
+        "h": [
+         3.5,
+         7
+        ]
+       },
+       {
+        "form": "blossom",
+        "weight": 2.5,
+        "h": [
+         4,
+         7
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 1.5,
+        "h": [
+         4,
+         9
+        ]
+       },
+       {
+        "form": "laurel",
+        "weight": 2,
+        "h": [
+         3,
+         6
+        ]
+       },
+       {
+        "form": "pine",
+        "weight": 0.8,
+        "h": [
+         16,
+         24
+        ]
+       },
+       {
+        "form": "cypress",
+        "weight": 0.6,
+        "h": [
+         15,
+         22
+        ]
+       }
+      ]
+     },
+     "mapped": true
+    }
+   }
+  },
+  {
    "ref": "islands",
    "name": "Yerba Buena and Treasure Island",
    "priority": 5,
