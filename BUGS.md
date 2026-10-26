@@ -10977,6 +10977,8 @@ is outside the hold and the drive loop's sweep is what protects a standing rider
 reds ignored (a crude proxy): straight through, 6 hits before and 4 after; turning left, 4 before and 7 after;
 standing, 0 and 0. The left turn is a real gap: the rider's path is a straight line along their heading, so a rider
 turning left no longer holds the oncoming straight traffic (its lane is ~4.4 m from theirs on a 9 m street), and the
-drive loop's sweep fires only under 1.5 m/s. Fix direction: `RiderNow` carries the navigator's planned turn and
-`crossesRider` bends the rider's path with it. Still open too: a rider who stops in the lane holds the cars behind
+drive loop's sweep fires only under 1.5 m/s. **Closed the same day:** `RiderNow.turn` carries the navigator's
+`requested` turn (game.ts), and `crossesRider` bends the rider's path 90° at the point abeam of the node for a left or
+right — turning left, 7 → 4 collisions in the soak (the old rules' 4), 49% → 52% standing nearby (the old 53%);
+straight through unchanged at 4 and 44%. Still open: a rider who stops in the lane holds the cars behind
 them for good (`rider in lane`) — mid-block 60% standing nearby either way; drivers would pass a stopped bike.

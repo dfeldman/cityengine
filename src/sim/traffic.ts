@@ -144,6 +144,11 @@ export interface RiderNow {
   grade: number
   box: Box
   /**
+   * The turn the rider has asked for at the junction ahead (the navigator's `requested`), optional: a left-turning
+   * rider crosses the oncoming straight traffic, which `crossesRider` must hold (BUGS.md #322). Straight when absent.
+   */
+  turn?: Turn
+  /**
    * The height of the road under the rider (optional). With it, a vehicle on another LEVEL — a street over a
    * tunnel, a road under a bridge — is not in the rider's way, cannot be hit, and does not wait for them (the
    * Broadway Tunnel, 2026-09-29: six "collisions" in one ride with cars on the streets 25 m overhead).
@@ -1351,11 +1356,24 @@ export class Traffic {
       const a = (1 - w) * (1 - w), b = 2 * w * (1 - w), c = w * w
       path.push({ x: a * k.E.x + b * k.C.x + c * k.X.x, z: a * k.E.z + b * k.C.z + c * k.X.z })
     }
+    // the rider's path: straight along their heading — or, turning, straight to the node's abeam point and then 90°
+    // left or right of that (the navigator's planned turn, `RiderNow.turn`; the curve itself is not known here)
     const r0 = rider.at
-    const r1 = { x: r0.x + Math.sin(rider.heading) * reach, z: r0.z + Math.cos(rider.heading) * reach }
+    const fx = Math.sin(rider.heading), fz = Math.cos(rider.heading)
+    const riderPath: Point[] = [r0]
+    const nd = this.g.nodes.get(node)
+    const turn = rider.turn ?? 'straight'
+    const abeam = nd ? clamp((nd.at.x - r0.x) * fx + (nd.at.z - r0.z) * fz, 0, reach) : reach
+    if (turn !== 'straight' && nd && abeam < reach) {
+      const bend = { x: r0.x + fx * abeam, z: r0.z + fz * abeam }
+      const h = rider.heading + (turn === 'left' ? -Math.PI / 2 : Math.PI / 2)
+      riderPath.push(bend, { x: bend.x + Math.sin(h) * (reach - abeam), z: bend.z + Math.cos(h) * (reach - abeam) })
+    } else riderPath.push({ x: r0.x + fx * reach, z: r0.z + fz * reach })
     // the curve is an approximation of where the body goes, and the rider's path a straight guess: a generous margin
     const near = this.halfWid(v) + SIZE.bike.wid / 2 + 1
-    for (let i = 1; i < path.length; i++) if (segmentDistance(path[i - 1], path[i], r0, r1) < near) return true
+    for (let i = 1; i < path.length; i++) for (let j = 1; j < riderPath.length; j++) {
+      if (segmentDistance(path[i - 1], path[i], riderPath[j - 1], riderPath[j]) < near) return true
+    }
     return false
   }
 

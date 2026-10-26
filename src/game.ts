@@ -3011,7 +3011,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         const street = graph.edges.get(mapId)
         const onIt = street ? onEdge(street, at, heading) : null
         const riderNow: RiderNow | null = street && onIt ? {
-          at, heading, speed: lastState?.speed ?? 0, edgeId: mapId, s: onIt.s, dir: onIt.dir, grade: nav.elevation().grade, y: nav.elevation().y,
+          at, heading, speed: lastState?.speed ?? 0, edgeId: mapId, s: onIt.s, dir: onIt.dir, grade: nav.elevation().grade, y: nav.elevation().y, turn: nav.requested,
           box: boxOf(at.x, at.z, heading, opts.device === 'treadmill' ? SIZE.runner : SIZE.bike),
         } : null
         lastRider = riderNow
