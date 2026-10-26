@@ -399,6 +399,36 @@ pad_cluster(ponds['teahouse'], tc[0] - 1.5, tc[1] + 1.5, 10)
 pad_cluster(ponds['drum'], np.asarray(ponds['drum'], float).mean(axis=0)[0], np.asarray(ponds['drum'], float).mean(axis=0)[1] + 3, 8)
 pads = [q for q in pads if all(math.hypot(q[0] - i[0], q[1] - i[1]) > i[2] + 0.8 for i in islands)]
 
+# ---- more cloud-pruned pines (owner, 2026-10-26: "there are quite a few"): the garden is full of them — along every
+# pond's banks, up the pagoda hill, by the tea house and the Buddha, round the Sunken Garden, along Maple Lane
+r3 = np.random.default_rng(1979)  # the Mt Fuji hedge's year: its own rng, so the hand trees below stay as baked
+niwaki2 = []
+taken = [(p[0], p[1]) for p in pines] + [(p[0], p[1]) for p in dwarf_pines]
+def cloud_pine(x, z, hmin=2.6, hmax=4.6, path=1.8, tries=12, spread=1.6):
+    for k in range(tries):
+        dx, dz = (0, 0) if k == 0 else r3.normal(0, spread, 2)
+        px, pz = x + dx, z + dz
+        if free2(px, pz, path, 1.5) and all(math.hypot(px - q[0], pz - q[1]) > 4.0 for q in taken) \
+                and all(math.hypot(px - q[0], pz - q[1]) > 3.0 for q in placed_trees_now):
+            taken.append((px, pz)); niwaki2.append([round(px, 2), round(pz, 2), round(float(r3.uniform(hmin, hmax)), 2), int(r3.integers(0, 360))]); return True
+    return False
+placed_trees_now = [tuple(loc(t['at'][1], t['at'][0])) for t in cherry + maple]
+for name, ring in ponds.items():
+    for (p, n) in along(ring, 9.0):
+        if r3.random() < 0.3: continue
+        cloud_pine(*(p + n * r3.uniform(2.5, 5.5)))
+for (x, z) in [(-5135, -2560), (-5142, -2548), (-5131, -2552), (-5125, -2545), (-5147, -2558)]:   # the pagoda hill
+    cloud_pine(x, z, 3.0, 4.8)
+for (x, z) in [(-5082, -2516), (-5093, -2521), (-5078, -2522), (-5099, -2531), (-5109, -2528)]:   # tea house, Buddha, Long Bridge
+    cloud_pine(x, z)
+for (x, z) in [(-5095, -2478), (-5108, -2482), (-5104, -2496), (-5091, -2494)]:                   # round the Sunken Garden
+    cloud_pine(x, z, 2.4, 4.0)
+for t in np.linspace(0.35, 0.8, 4):                                                             # Maple Lane
+    cloud_pine(-5175.0 + (-5113.1 + 5175.0) * t + 5.0, -2512.3 + (-2463.0 + 2512.3) * t - 5.0, 2.6, 4.2)
+for (x, z) in [(-5060, -2500), (-5050, -2512), (-5120, -2590), (-5140, -2585), (-5160, -2560)]:   # the Main Gate's court, the south and west walks
+    cloud_pine(x, z)
+print('more cloud pines:', len(niwaki2))
+
 # ---- the trees planted by hand, the rest of them (appended to the lanes: nothing above moves)
 MAIN_GATE = (-5032.9, -2503.4)
 gc = garden.mean(axis=0)
@@ -475,6 +505,8 @@ export const DRAGON2: [number, number][] = {j(dragon2)}
 export const ROCK_GROUPS: [number, number, number, number][] = {j(rock_groups)}
 /** lily pads: x, z, radius */
 export const PADS: [number, number, number][] = {j(pads)}
+/** more cloud-pruned pines through the garden: x, z, height, spin */
+export const NIWAKI2: [number, number, number, number][] = {j(niwaki2)}
 """
 (ROOT / 'src/render/landmarks/sf/tea-garden-layout.ts').write_text(ts)
 print(f'rocks {len(rocks)}, domes {len(domes)}, pines {len(pines)}/{len(PINES_AT)}, dwarf {len(dwarf)}+{len(dwarf_pines)}, bamboo {len(bamboo)}, reeds {len(reeds)}, stream {stream}, cherry {len(cherry)}, maple {len(maple)}')

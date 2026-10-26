@@ -35,7 +35,7 @@ import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
 import { prism, type Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
-import { AZALEAS, BAMBOO, DOMES, DRAGON, DRAGON2, DWARF, DWARF_PINES, FALL, FALL2, FERNS, FUJI, FUJI_ROCKS, IRIS, ISLANDS, PADS, PINES, PONDS, POND_ROCKS, REEDS, ROCK_GROUPS, STREAM } from './tea-garden-layout.ts'
+import { AZALEAS, BAMBOO, DOMES, DRAGON, DRAGON2, DWARF, DWARF_PINES, FALL, FALL2, FERNS, FUJI, FUJI_ROCKS, IRIS, ISLANDS, NIWAKI2, PADS, PINES, PONDS, POND_ROCKS, REEDS, ROCK_GROUPS, STREAM } from './tea-garden-layout.ts'
 
 const MID = { x: -5110, z: -2530 }
 const L = (x: number, z: number): [number, number] => [x - MID.x, z - MID.z]
@@ -136,6 +136,11 @@ export function teaGardenLandscape(out: MeshBuilder, fit: Fit): void {
   for (const [cx, cz, hh, , seed] of [...PINES, ...DWARF_PINES]) {
     const [x, z] = L(cx, cz)
     out.plants.push({ x, z, species: 'niwaki', h: hh, spin: (seed % 360) * (Math.PI / 180) })
+  }
+  // (and the rest of them: the garden is full of cloud-pruned pines — owner, 2026-10-26: "there are quite a few")
+  for (const [cx, cz, hh, spin] of NIWAKI2) {
+    const [x, z] = L(cx, cz)
+    out.plants.push({ x, z, species: 'niwaki', h: hh, spin: spin * (Math.PI / 180) })
   }
   // ---- the plant library's: the dwarf mugo pines and junipers, the massed azaleas, the irises, the ferns, the reeds
   for (const [cx, cz, species, hh] of DWARF) {
