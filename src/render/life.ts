@@ -21,6 +21,7 @@ import { DAYLIGHT } from './facade-material.ts'
 import { blobMaterial, blobQuad, shadowOffset } from './shadows.ts'
 import type { Vehicle } from '../sim/traffic.ts'
 import type { Walker } from '../sim/crowd.ts'
+import type { Ball } from '../sim/players.ts'
 import type { CityPackage } from '../city/package.ts'
 import type { Terrain } from '../city/terrain.ts'
 import { unpackPoints } from '../city/package.ts'
@@ -109,6 +110,24 @@ function strangerBike(out: MeshBuilder): void {
   boxModel(out, 0, 0.62, 0.48, 0.025, 0.22, 0.025, [1, 1, 1], 1)         // fork
 }
 
+/**
+ * A ball, a metre across, to be scaled to the game's: eight segments round and four up, faceted, coloured per copy. A
+ * tennis ball is 67 mm and a basketball 240; both are drawn larger than life (sim/players.ts), as the courts' lines are.
+ */
+function ballModel(out: MeshBuilder): void {
+  const SEG = 8, RINGS = 4
+  const pt = (i: number, j: number): [number, number, number] => {
+    const a = (i / SEG) * Math.PI * 2, b = (j / RINGS) * Math.PI
+    return [Math.sin(b) * Math.cos(a) * 0.5, Math.cos(b) * 0.5, Math.sin(b) * Math.sin(a) * 0.5]
+  }
+  for (let j = 0; j < RINGS; j++) for (let i = 0; i < SEG; i++) {
+    const q = [pt(i, j + 1), pt(i + 1, j + 1), pt(i + 1, j), pt(i, j)]
+    const c = q.reduce((acc, v) => [acc[0] + v[0], acc[1] + v[1], acc[2] + v[2]], [0, 0, 0])
+    const l = Math.hypot(c[0], c[1], c[2]) || 1
+    out.quad(q, [c[0] / l, c[1] / l, c[2] / l], [[0, 0], [1, 0], [1, 1], [0, 1]], [1, 1, 1], 1)
+  }
+}
+
 const build = (fn: (out: MeshBuilder) => void): MeshBuilder => {
   const out = new MeshBuilder()
   fn(out)
@@ -130,6 +149,9 @@ export class Life {
   private readonly hairs: Pool
   /** a stranger's bicycle, frame and wheels, facing +z */
   private readonly bikes: Pool
+  private readonly ballPool: Pool
+  /** the balls on the sports courts near the rider (sim/players.ts), set by the game before each `update` */
+  balls: readonly Ball[] = []
   private readonly blobs: Pool
   private readonly rails: { points: { x: number; z: number }[]; length: number; kind: 0 | 1 | 2 | 3 | 4 | 5; heights?: number[]; stops: number[] }[] = []
   /** a train: where its head is along the rail, which way, its running speed and speed now, its dwell */
@@ -187,6 +209,7 @@ export class Life {
     this.heads = new Pool(scene, 'heads', build(personHead), budget.people)
     this.hairs = new Pool(scene, 'hairs', build(personHair), budget.people)
     this.bikes = new Pool(scene, 'bikes', build(strangerBike), Math.max(40, Math.round(budget.people / 6)))
+    this.ballPool = new Pool(scene, 'balls', build(ballModel), 64)
 
     /**
      * A shadow for everything that moves.
@@ -404,7 +427,7 @@ export class Life {
   }
 
   private pools(): Pool[] {
-    const out = [this.cars, this.buses, this.bodies, this.legs, this.arms, this.heads, this.hairs, this.bikes, this.blobs]
+    const out = [this.cars, this.buses, this.bodies, this.legs, this.arms, this.heads, this.hairs, this.bikes, this.ballPool, this.blobs]
     for (const k of this.stockPools) if (k) for (const v of k.variants) out.push(v.mid, ...(v.head ? [v.head] : []), ...(v.tail ? [v.tail] : []))
     return out
   }
@@ -508,6 +531,12 @@ export class Life {
         this.arms.push(this.m, w.shirt[0], w.shirt[1], w.shirt[2])
       }
     })
+
+    // the games' balls, over the ground, with a shadow under each so its height reads
+    for (const b of this.balls) {
+      Matrix.ComposeToRef(new Vector3(b.d, b.d, b.d), Quaternion.Identity(), new Vector3(b.x, groundAt(b) + b.y, b.z), this.m)
+      if (this.ballPool.push(this.m, b.colour[0], b.colour[1], b.colour[2])) blob(b, 0, b.d * 1.6, b.d * 1.6, b.y * 0.5)
+    }
 
     // trains: they run their line end to end and turn round, which is what a terminus looks like; the métro
     // on its viaduct slows into each station, stands there with its doors open, and pulls away

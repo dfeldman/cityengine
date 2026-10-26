@@ -3136,6 +3136,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         // the car parks' parked cars, refreshed once a second round the rider (city/parking.ts)
         parkClock -= dt
         if (parkClock <= 0) { parkClock = 1; life.park(city.parkedNear(focus.x, focus.z, 260), city.terrain) }
+        life.balls = courtPlayers.balls
         life.update(dt, traffic.all.filter((v) => !tunnels.hides(v.edgeId)), walkers, at, strangers?.drawn, city.terrain, focus)
         cableRiders?.update(dt, life.transitBodies, focus)
         river?.update(dt, focus)
