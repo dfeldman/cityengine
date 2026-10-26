@@ -1006,23 +1006,31 @@ export class Traffic {
         if (room - taken < r + 2 * this.halfLen(v) + v.driver.s0 + 2 && (v.still ?? 0) < 20) { v.refused = 'no room beyond'; return false }
       }
     }
-    // never into a junction the rider is in (collisions stay rare: only a car ALREADY committed can be hit)
-    if (rider) {
+    /*
+     * THE RIDER IN ITS WAY. This used to be two blanket refusals — never into a junction the rider is in, never into
+     * one the rider is about to reach from another arm — written when the rider could not brake. They froze every arm
+     * of a junction the rider stood near, lights green or not: the rider waits at a red (inside the junction's radius
+     * by construction) and nothing moves on any arm; riding up to one from 50 m out held every other arm. Measured on
+     * san-francisco's streets (scratchpad soak, 2026-10-26): 95% of the vehicles within 60 m of a junction standing
+     * with the rider stopped 7 m from its node, 55% with the rider riding at it, 22% with no rider — and the release
+     * valve never fires in view, so what the owner saw was a city that never moved ("practically none of the cars are
+     * ever moving"). Now only a vehicle whose own path through the junction comes within a body's width of the rider
+     * — where they are, and the stretch they will cover while it clears — is held; the rest go. A rider standing at
+     * the corner holds nothing. The drive loop's sweep for a stopped rider, and `rider in lane`, still apply.
+     */
+    // (not for one in the rider's own lane: ahead of the rider it is what they follow, `leaderFor`, and holding it at
+    //  the line for a rider coming up behind froze the rider's own arm in front of them; behind the rider it already
+    //  waits for them, `rider in lane`)
+    if (rider && v.next && !this.otherLevel(rider, v) && !(rider.edgeId === e.id && rider.dir === v.dir)) {
       const nd = this.g.nodes.get(node)
       const cr = this.signals?.control(node).radius ?? 6
-      // (not a rider on another level: in a tunnel under the junction, or on a bridge over it)
-      const sameLevel = !this.otherLevel(rider, v)
-      if (sameLevel && nd && distance(rider.at, nd.at) < cr + 1.5) { v.refused = 'rider in junction'; return false }
-      /*
-       * …nor one the rider is ABOUT to reach, from another arm, before this car would be out of it. The rider could
-       * not brake when this was written, and a car pulling out in front of them was a collision they could not
-       * avoid. Only a car already committed, too close to stop, can still be hit: rare, as the owner asked.
-       */
-      const re = this.g.edges.get(rider.edgeId)
-      if (sameLevel && nd && re && rider.edgeId !== e.id && (rider.dir > 0 ? re.b : re.a) === node) {
-        const clearIn = (stopDist + 2 * cr + 2 * this.halfLen(v)) / Math.max(v.speed, 2.5) + 1
-        if (distance(rider.at, nd.at) / Math.max(rider.speed, 1) < clearIn) { v.refused = 'rider arriving'; return false }
-      }
+      const out = this.g.edges.get(v.next.edgeId)
+      const toNode = nd ? distance(rider.at, nd.at) : Infinity
+      // how long until this vehicle is out of the junction: from a standstill, up to the line, through, and clear
+      const clearIn = (Math.max(0, stopDist) + 2 * cr + 2 * this.halfLen(v)) / Math.max(v.speed, 2.5) + 1
+      // the rider's path over that time, no further than the far side of the junction (a standing rider is a point)
+      const reach = Math.min(rider.speed * clearIn, toNode + cr)
+      if (nd && out && toNode < cr + 1.5 + reach && this.crossesRider(v, e, out, node, rider, reach)) { v.refused = toNode < cr + 1.5 ? 'rider in junction' : 'rider arriving'; return false }
     }
     const clear = !(boxes.get(node) ?? []).some((o) => o !== v && o.inBox && this.conflicts(me, o.inBox, node))
     const c = this.signals?.control(node)
@@ -1331,6 +1339,73 @@ export class Traffic {
   }
 
   /**
+   * Does `v`'s path through the junction at `node` — up its arm `e` to the curve's start, then the curve onto `out` —
+   * come within a body's width of the rider: where they stand, or the `reach` metres ahead of them they will ride?
+   */
+  private crossesRider(v: Vehicle, e: Edge, out: Edge, node: number, rider: RiderNow, reach: number): boolean {
+    const k = this.curveThrough(node, e, out)
+    if (!k) return true
+    const path: Point[] = [{ x: v.at.x, z: v.at.z }, k.E]
+    for (let i = 1; i <= 8; i++) {
+      const w = i / 8
+      const a = (1 - w) * (1 - w), b = 2 * w * (1 - w), c = w * w
+      path.push({ x: a * k.E.x + b * k.C.x + c * k.X.x, z: a * k.E.z + b * k.C.z + c * k.X.z })
+    }
+    const r0 = rider.at
+    const r1 = { x: r0.x + Math.sin(rider.heading) * reach, z: r0.z + Math.cos(rider.heading) * reach }
+    // the curve is an approximation of where the body goes, and the rider's path a straight guess: a generous margin
+    const near = this.halfWid(v) + SIZE.bike.wid / 2 + 1
+    for (let i = 1; i < path.length; i++) if (segmentDistance(path[i - 1], path[i], r0, r1) < near) return true
+    return false
+  }
+
+  /**
+   * The quadratic curve a vehicle follows through the junction at `node`, in on `inE` and out on `outE`: from `E`
+   * (its incoming lane, `radius` out from the node) to `X` (its outgoing lane, `radius` out along the new street)
+   * through `C`, where the two lane lines meet. What `arc` rides, and what `crossesRider` tests.
+   */
+  private curveThrough(node: number, inE: Edge, outE: Edge): { E: Point; C: Point; X: Point } | null {
+    const radius = (n: number, along: Edge | undefined): number => Math.min(this.signals?.control(n).radius ?? 6, along ? along.length / 2 : Infinity)
+    const nd = this.g.nodes.get(node)
+    if (!nd) return null
+    // (in on one street, out on the other: each end of the curve as far along its own street as that street allows)
+    const ri = radius(node, inE)
+    const ro = radius(node, outE)
+    const r = Math.max(ri, ro)
+    // arriving: the direction of travel is back along the incoming street's bearing from the node — read on the street
+    // where the curve meets it, `ri` / `ro` from the node, not on its first segment: OSM puts a node a metre or two from
+    // many corners, and leaving the curve onto a street bent off that first segment snapped the car round (BUGS.md #250)
+    const away = (edge: Edge, d: number): { p: Point; h: number } => {
+      const fromA = edge.a === node
+      const s0 = clamp(fromA ? d : edge.length - d, 0, edge.length)
+      const s1 = clamp(fromA ? d + 1.5 : edge.length - d - 1.5, 0, edge.length)
+      const p = pointAlong(edge.points, s0)
+      const q = pointAlong(edge.points, s1)
+      const h = Math.abs(q.x - p.x) + Math.abs(q.z - p.z) > 1e-6 ? Math.atan2(q.x - p.x, q.z - p.z) : bearingOut(edge, node)
+      return { p, h }
+    }
+    const ai = away(inE, ri)
+    const ao = away(outE, ro)
+    const bi = ai.h + Math.PI
+    const bo = ao.h
+    const di = { x: Math.sin(bi), z: Math.cos(bi) }
+    const dO = { x: Math.sin(bo), z: Math.cos(bo) }
+    const li = laneOf(inE)
+    const lo = laneOf(outE)
+    // the right of each direction of travel is (cos h, −sin h)
+    const E = { x: ai.p.x + Math.cos(bi) * li, z: ai.p.z - Math.sin(bi) * li }
+    const X = { x: ao.p.x + Math.cos(bo) * lo, z: ao.p.z - Math.sin(bo) * lo }
+    // where the incoming lane line (E + t·di) meets the outgoing one (X − k·dO); the middle for a straight run
+    const den = di.x * -dO.z - di.z * -dO.x
+    let C = { x: (E.x + X.x) / 2, z: (E.z + X.z) / 2 }
+    if (Math.abs(den) > 0.2) {
+      const t = ((X.x - E.x) * -dO.z - (X.z - E.z) * -dO.x) / den
+      if (t > 0 && t < 3 * r) C = { x: E.x + di.x * t, z: E.z + di.z * t }
+    }
+    return { E, C, X }
+  }
+
+  /**
    * Where a vehicle is while it crosses a junction: on a quadratic curve from the point it enters (its incoming lane,
    * `radius` out from the node) to where it leaves (its outgoing lane, `radius` out along the new street), through
    * the point where the two lanes would meet. Null outside a junction.
@@ -1374,42 +1449,10 @@ export class Traffic {
       outDir = v.dir
       u = 0.5 + gone / (2 * r)
     } else return null
-    const nd = this.g.nodes.get(node)
-    if (!inE || !outE || !nd) return null
-    // (in on one street, out on the other: each end of the curve as far along its own street as that street allows)
-    const ri = radius(node, inE)
-    const ro = radius(node, outE)
-    const r = Math.max(ri, ro)
-    // arriving: the direction of travel is back along the incoming street's bearing from the node — read on the street
-    // where the curve meets it, `ri` / `ro` from the node, not on its first segment: OSM puts a node a metre or two from
-    // many corners, and leaving the curve onto a street bent off that first segment snapped the car round (BUGS.md #250)
-    const away = (edge: Edge, d: number): { p: Point; h: number } => {
-      const fromA = edge.a === node
-      const s0 = clamp(fromA ? d : edge.length - d, 0, edge.length)
-      const s1 = clamp(fromA ? d + 1.5 : edge.length - d - 1.5, 0, edge.length)
-      const p = pointAlong(edge.points, s0)
-      const q = pointAlong(edge.points, s1)
-      const h = Math.abs(q.x - p.x) + Math.abs(q.z - p.z) > 1e-6 ? Math.atan2(q.x - p.x, q.z - p.z) : bearingOut(edge, node)
-      return { p, h }
-    }
-    const ai = away(inE, ri)
-    const ao = away(outE, ro)
-    const bi = ai.h + Math.PI
-    const bo = ao.h
-    const di = { x: Math.sin(bi), z: Math.cos(bi) }
-    const dO = { x: Math.sin(bo), z: Math.cos(bo) }
-    const li = laneOf(inE)
-    const lo = laneOf(outE)
-    // the right of each direction of travel is (cos h, −sin h)
-    const E = { x: ai.p.x + Math.cos(bi) * li, z: ai.p.z - Math.sin(bi) * li }
-    const X = { x: ao.p.x + Math.cos(bo) * lo, z: ao.p.z - Math.sin(bo) * lo }
-    // where the incoming lane line (E + t·di) meets the outgoing one (X − k·dO); the middle for a straight run
-    const den = di.x * -dO.z - di.z * -dO.x
-    let C = { x: (E.x + X.x) / 2, z: (E.z + X.z) / 2 }
-    if (Math.abs(den) > 0.2) {
-      const t = ((X.x - E.x) * -dO.z - (X.z - E.z) * -dO.x) / den
-      if (t > 0 && t < 3 * r) C = { x: E.x + di.x * t, z: E.z + di.z * t }
-    }
+    if (!inE || !outE) return null
+    const k = this.curveThrough(node, inE, outE)
+    if (!k) return null
+    const { E, C, X } = k
     void outDir
     const w = clamp(u, 0, 1)
     const a = (1 - w) * (1 - w)
@@ -1505,3 +1548,19 @@ export function onEdge(e: Edge, p: Point, heading: number): { s: number; dir: 1 
  * than its distance along the street says.
  */
 const turning = (o: Vehicle): number => ((o.inBox && o.inBox.turn !== 'straight') || (o.next && o.next.turn !== 'straight') ? 2.5 : 0)
+
+/** the shortest distance between the segments p0–p1 and q0–q1 (either may be a point) */
+function segmentDistance(p0: Point, p1: Point, q0: Point, q1: Point): number {
+  const cross = (ax: number, az: number, bx: number, bz: number): number => ax * bz - az * bx
+  const ux = p1.x - p0.x, uz = p1.z - p0.z, vx = q1.x - q0.x, vz = q1.z - q0.z
+  const d1 = cross(ux, uz, q0.x - p0.x, q0.z - p0.z), d2 = cross(ux, uz, q1.x - p0.x, q1.z - p0.z)
+  const d3 = cross(vx, vz, p0.x - q0.x, p0.z - q0.z), d4 = cross(vx, vz, p1.x - q0.x, p1.z - q0.z)
+  if (((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0))) return 0
+  const toSeg = (p: Point, a: Point, b: Point): number => {
+    const dx = b.x - a.x, dz = b.z - a.z
+    const l2 = dx * dx + dz * dz
+    const t = l2 > 0 ? clamp(((p.x - a.x) * dx + (p.z - a.z) * dz) / l2, 0, 1) : 0
+    return Math.hypot(p.x - (a.x + dx * t), p.z - (a.z + dz * t))
+  }
+  return Math.min(toSeg(p0, q0, q1), toSeg(p1, q0, q1), toSeg(q0, p0, p1), toSeg(q1, p0, p1))
+}

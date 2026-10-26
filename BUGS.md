@@ -10947,3 +10947,36 @@ Logged, not fixed:
 - **#321** Lamp posts in the street, 37.774451, -122.419160 ("at least 4"). Same cause as #320: the furniture passes'
   "not in a road" tests saw only their own tile's ways, so a street mapped as two carriageways filed in two tiles had
   one's kerb furniture standing in the other's lanes. Fixed 2026-10-17 (render/city.ts `kerbEdges`, 3x3 tiles).
+
+### #322 "Why is there SO MUCH gridlocked traffic?" — the junction froze round the rider (FIXED 2026-10-26)
+
+The owner: *"practically none of the cars are ever moving. I think that long vehicles like trucks and buses, when
+turning, can rarely successfully turn due to being blocked?"* Measured headless on san-francisco's streets at the
+shipped 80 vehicles/km (a scratchpad copy of tools/traffic-soak.ts with the game's vehicle mix): long vehicles are
+~9% of the fleet and ~13% of the heads of waiting chains, and cutting every vehicle to 4.4 m left the standing share
+unchanged (41% vs 40–44%) — not the cause. Nothing stood 35 s in any run; 40–44% of vehicle-time standing is
+stop-and-go at a 15 s green in a 41 s cycle (33% at 40/km, 40% at 60/km).
+
+**The cause was the rider.** `mayEnter` had two blanket refusals written when the rider could not brake: never into a
+junction the rider is within its radius + 1.5 m of, and never into one the rider is about to reach from another arm.
+A rider waiting at a red is inside that radius by construction, so every arm froze, greens included; riding up to a
+junction held every other arm from ~50 m out; and the 35 s release valve never fires in view. With a rider body at a
+lit junction near the origin, the share of vehicles within 60 m standing: no rider 22%, rider standing 7 m from the
+node 97%, riding through at 5 m/s 59%. The shipped soak's rider is a bodiless point, so it could never show this.
+
+**Fix** (sim/traffic.ts): one geometric test, `crossesRider` — a vehicle is held only if its own path through the
+junction (its lane up to the curve, then the same quadratic curve `arc` rides, now `curveThrough`) comes within a
+body's width of the rider: where they are, plus the stretch they will cover while the vehicle clears, no further than
+the far side of the junction. A standing rider is a point. Vehicles in the rider's own lane are left out (ahead of
+the rider they are followed; behind, `rider in lane` already holds them). After: rider at the node 63% (what is left
+is the queue in the rider's lane behind them), riding through 44% (background 47%); tests/traffic.test.ts' "never
+drives into a rider standing in the junction" still passes (at 9 m streets only: on a 14 m street the lane offset
+is outside the hold and the drive loop's sweep is what protects a standing rider).
+
+**The other side of the trade — collisions**, same soak, the rider riding a loop through the junction every ~24 s,
+reds ignored (a crude proxy): straight through, 6 hits before and 4 after; turning left, 4 before and 7 after;
+standing, 0 and 0. The left turn is a real gap: the rider's path is a straight line along their heading, so a rider
+turning left no longer holds the oncoming straight traffic (its lane is ~4.4 m from theirs on a 9 m street), and the
+drive loop's sweep fires only under 1.5 m/s. Fix direction: `RiderNow` carries the navigator's planned turn and
+`crossesRider` bends the rider's path with it. Still open too: a rider who stops in the lane holds the cars behind
+them for good (`rider in lane`) — mid-block 60% standing nearby either way; drivers would pass a stopped bike.
