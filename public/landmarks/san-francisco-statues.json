@@ -1128,6 +1128,6 @@
       140,
       340
     ],
-    "note": "assetkit-models-sf/tea-garden-drum-bridge: over the pool teaGardenGrounds draws, along the old procedural arch's line (OSM bridge way, bearing 15), which is removed (2026-10-25). The model carries its own size (8 m span, 2.45 m wide: repacked 2026-10-26 after the 0.3 squash pressed its rails to ribbons)."
+    "note": "assetkit-models-sf/tea-garden-drum-bridge: over the pool teaGardenGrounds draws, along the old procedural arch's line (OSM bridge way, bearing 15), which is removed (2026-10-25). The model carries its own size (8 m span, 2.4 m wide, 3.85 m rise). The AI made it on the diagonal, 29° off its axes: the pack now turns it straight first (`yaw`), and the squash that sheared it is gone (2026-10-26)."
   }
 ]
