@@ -74,8 +74,11 @@ export interface StatueEntry {
 }
 
 /** (3 for the Paris statues, owner 2026-09-22; 4 since Hyde Street Pier's four ships stand within 200 m of each other,
- *  2026-10-18 — a ship's LOD 0 is ~1 MB of file and one 1024 px texture) */
-export const MAX_LOADED = 4
+ *  2026-10-18 — a ship's LOD 0 is ~1 MB of file and one 1024 px texture; 24 since the Japanese Tea Garden's twenty
+ *  GLBs — its pagoda, gates, tea house, ten lanterns, the stone pagoda, the tsukubai, the cranes — stand within 100 m of
+ *  each other and the four nearest were all lanterns, so the pagoda showed its stand-in "unless I get extremely close"
+ *  (owner, 2026-10-26). A lantern's LOD 0 is ~250 kB; the ships keep their own short ranges.) */
+export const MAX_LOADED = 24
 
 interface Placement { x: number; y: number; z: number; rotation: number }
 

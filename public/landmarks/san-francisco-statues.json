@@ -1322,13 +1322,13 @@
       90,
       260
     ],
-    "note": "assetkit-models-sf/tea-garden-stone-lantern, one of six at the spots tea-garden.ts's LANTERNS drew (its procedural lanterns are off: HAVE_LANTERN_MODELS).",
+    "note": "assetkit-models-sf/tea-garden-stone-lantern, one of six at the spots tea-garden.ts's LANTERNS drew (its procedural lanterns are off: HAVE_LANTERN_MODELS). Moved off the water onto the bank (its spot predated the hand-drawn ponds).",
     "attach": {
       "to": "Japanese Tea Garden grounds",
       "at": [
-        9.97,
+        9.18,
         0,
-        -9.98
+        -14.64
       ],
       "bearing": 0,
       "draped": true
@@ -1442,13 +1442,13 @@
       90,
       260
     ],
-    "note": "assetkit-models-sf/tea-garden-small-stone-lantern, one of four by the water and the paths.",
+    "note": "assetkit-models-sf/tea-garden-small-stone-lantern, one of four by the water and the paths. Moved off the water onto the bank (its spot predated the hand-drawn ponds).",
     "attach": {
       "to": "Japanese Tea Garden grounds",
       "at": [
-        30.02,
+        30.3,
         0,
-        5.05
+        6.17
       ],
       "bearing": 0,
       "draped": true
