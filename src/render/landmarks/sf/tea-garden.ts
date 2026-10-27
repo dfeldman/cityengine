@@ -3,8 +3,8 @@
  * isn't getting used"). It was: two red boxes with green pyramid lids (districts/parks.ts `spec()` placeholders) and the
  * gift shop and Temple Gate as stucco cottages with orange roofs, a wooden bridge as a white plank in the air.
  *
- * What a visitor knows it by: the FIVE-STOREY PAGODA (1915), square, vermilion posts and rails under five dark tiled
- * roofs each a little smaller, eaves kicked out, a gilt finial; the timber GATES (the South Gate's two stacked
+ * What a visitor knows it by: the FIVE-STOREY PAGODA (1915), square, vermilion fences and rafters under five near-equal
+ * shingle roofs with curling corners, a ringed spire (tea-garden-pagoda.ts); the timber GATES (the South Gate's two stacked
  * roofs over natural hinoki posts; the red Temple Gate); the open TEA HOUSE on its deck under a big low grey roof; the
  * steep half-moon DRUM BRIDGE over the water; stone lanterns; the bronze BUDDHA (1790) on its plinth; the bamboo fence.
  *
@@ -20,12 +20,10 @@ import { roof } from '../kit.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
 import { teaGardenLandscape } from './tea-garden-landscape.ts'
 
-const VERMILION: Rgb = [0.72, 0.2, 0.12]
 const TILE: Rgb = [0.24, 0.26, 0.25]
 const HINOKI: Rgb = [0.62, 0.48, 0.32]
 const DARKWOOD: Rgb = [0.3, 0.22, 0.15]
 const STONE: Rgb = [0.6, 0.59, 0.55]
-const GILT: Rgb = [0.8, 0.64, 0.25]
 const PLASTER: Rgb = [0.9, 0.88, 0.82]
 const BAMBOO: Rgb = [0.6, 0.55, 0.35]
 const WATER: Rgb = [0.16, 0.24, 0.24]
@@ -52,31 +50,12 @@ function posts(out: MeshBuilder, hx: number, hz: number, y0: number, y1: number,
   }
 }
 
-/** the five-storey pagoda: a vermilion storey under a dark flared roof, five times, each smaller; a gilt finial */
-export function teaGardenPagoda(out: MeshBuilder, fit: Fit): void {
-  const base = Math.max(2.5, Math.min(fit.hx, fit.hz) * 0.6)
-  const wood = surfaceTag('clapboard')
-  // the stone podium and its steps
-  box(out, 0, 0.35, 0, base + 1.2, 0.35, base + 1.2, STONE, surfaceTag('granite'))
-  let y = 0.7
-  for (let k = 0; k < 5; k++) {
-    const w = base * (1 - k * 0.11)
-    const h = k === 0 ? 2.6 : 1.7
-    // the storey: plastered walls between vermilion posts, a rail round the upper ones
-    box(out, 0, y + h / 2, 0, w * 0.86, h / 2, w * 0.86, PLASTER, wood)
-    posts(out, w * 0.9, w * 0.9, y, y + h, 2, 0.14, VERMILION)
-    box(out, 0, y + h - 0.15, 0, w * 0.92, 0.15, w * 0.92, VERMILION, wood)
-    if (k > 0) box(out, 0, y + 0.35, 0, w * 0.98, 0.06, w * 0.98, VERMILION, wood)
-    flaredRoof(out, w * 0.9, w * 0.9, y + h, k === 4 ? 1.6 : 0.95, w * 0.45 + 0.5, TILE)
-    y += h + (k === 4 ? 1.6 : 0.95)
-  }
-  // the finial: a stem with nine rings (the sōrin)
-  prism(out, 0, 0, y - 0.3, y + 3.2, 0.12, 8, GILT)
-  for (let i = 0; i < 9; i++) prism(out, 0, 0, y + 0.4 + i * 0.28, y + 0.48 + i * 0.28, 0.32 - i * 0.015, 10, GILT)
-  prism(out, 0, 0, y + 3.2, y + 3.6, 0.2, 8, GILT, 0, 0.02)
-}
+// the pagoda: src/render/landmarks/sf/tea-garden-pagoda.ts (the owner's photographs part by part, 2026-10-27;
+// the kit stand-in that stood here is gone with the AI GLB it was the far stand-in for)
+import { teaGardenPagoda } from './tea-garden-pagoda.ts'
+export { teaGardenPagoda }
 
-/** a timber gate: two (or four) posts, tie beams, a gabled roof along local x; `double` stacks a second, smaller roof */
+/** a timber gate: two (or four) posts, tie beams, a gabled roof along local x; `double` stacks a second, smaller roof (the South Gate) */
 function gate(out: MeshBuilder, fit: Fit, wood: Rgb, double: boolean): void {
   const hx = Math.max(2, fit.hx * 0.8), hz = Math.max(1.2, fit.hz * 0.55)
   const H = 3.6
@@ -91,7 +70,9 @@ function gate(out: MeshBuilder, fit: Fit, wood: Rgb, double: boolean): void {
   }
 }
 export const teaGardenSouthGate = (out: MeshBuilder, fit: Fit): void => gate(out, fit, HINOKI, true)
-export const teaGardenTempleGate = (out: MeshBuilder, fit: Fit): void => gate(out, fit, VERMILION, false)
+// the Temple Gate: src/render/landmarks/sf/tea-garden-temple-gate.ts (the owner's photographs, 2026-10-27)
+import { teaGardenTempleGate } from './tea-garden-temple-gate.ts'
+export { teaGardenTempleGate }
 
 /** the open tea house: a low timber deck, posts, low dark walls at the back, a big low grey hipped roof */
 export function teaGardenTeaHouse(out: MeshBuilder, fit: Fit): void {

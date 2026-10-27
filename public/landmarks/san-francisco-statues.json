@@ -1131,48 +1131,6 @@
     "note": "assetkit-models-sf/tea-garden-drum-bridge: over the pool teaGardenGrounds draws, along the old procedural arch's line (OSM bridge way, bearing 15), which is removed (2026-10-25). The model carries its own size (8 m span, 2.4 m wide, 3.85 m rise). The AI made it on the diagonal, 29\u00b0 off its axes: the pack now turns it straight first (`yaw`), and the squash that sheared it is gone (2026-10-26)."
   },
   {
-    "id": "tea-garden-pagoda",
-    "name": "Pagoda, Japanese Tea Garden",
-    "asset": "tea-garden-pagoda",
-    "lodRanges": [
-      300,
-      900
-    ],
-    "note": "assetkit-models-sf/tea-garden-pagoda at OSM way/34221099's centre, facing down the hill toward the Temple Gate; hides the procedural teaGardenPagoda (2026-10-26). Front and bearing set by eye.",
-    "replaces": "Japanese Tea Garden Pagoda",
-    "attach": {
-      "to": "Japanese Tea Garden grounds",
-      "at": [
-        -28.47,
-        0,
-        -18.55
-      ],
-      "bearing": 150,
-      "draped": true
-    }
-  },
-  {
-    "id": "tea-garden-temple-gate",
-    "name": "Temple Gate, Japanese Tea Garden",
-    "asset": "tea-garden-temple-gate",
-    "lodRanges": [
-      300,
-      900
-    ],
-    "note": "assetkit-models-sf/tea-garden-temple-gate at way/136888944's centre; its passage across the footprint's long axis (115\u00b0); hides the procedural teaGardenTempleGate.",
-    "replaces": "Japanese Tea Garden Temple Gate",
-    "attach": {
-      "to": "Japanese Tea Garden grounds",
-      "at": [
-        -19.33,
-        0,
-        -34.24
-      ],
-      "bearing": 205,
-      "draped": true
-    }
-  },
-  {
     "id": "tea-garden-main-gate",
     "name": "Main Gate, Japanese Tea Garden",
     "asset": "tea-garden-main-gate",
