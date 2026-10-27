@@ -13541,5 +13541,20 @@
    0
   ],
   "note": "Japanese Tea Garden landscape (plants, rocks, water): before/after the 2026-10-25 pass"
+ },
+ {
+  "name": "City Hall \u2014 the dome from Civic Center Plaza",
+  "group": "landmark",
+  "from": [
+   37.77935,
+   -122.4179,
+   2
+  ],
+  "to": [
+   37.77925,
+   -122.41925,
+   60
+  ],
+  "note": "the rebuilt dome stage (docs/sf-batches/MODEL-CITY-HALL-DOME.md): paired columns and pedimented windows on the drum, urns on the attic, gilt rib pairs on the lead dome, the gilt lantern and spire; from the air: __view([37.7790, -122.4172, 85], [37.77925, -122.41925, 70])"
  }
 ]
