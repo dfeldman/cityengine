@@ -429,6 +429,73 @@ for (x, z) in [(-5060, -2500), (-5050, -2512), (-5120, -2590), (-5140, -2585), (
     cloud_pine(x, z)
 print('more cloud pines:', len(niwaki2))
 
+# ---- THE INDIVIDUAL PLANTS (owner, 2026-10-27: "better plants … custom models for some individual plants, not just
+# species"), from the reference photographs in assetkit/items_to_model/tea-garden-plants: the great black pine leaning
+# over the Main Pond (photographs 11, 17), the cloud-clipped junipers on the lawns (24), the red Japanese maples by the
+# Temple Gate and the tea house pond (6, 26), the weeping tree over the drum pond (20), the massed clipped balls
+# (karikomi: 11, 16, 17) and the mondo grass edging the banks and paths (10). Their own rng.
+r4 = np.random.default_rng(1953)   # the Zen garden's year
+hero = []
+taken4 = [(p[0], p[1]) for p in pines] + [(p[0], p[1]) for p in niwaki2]
+def bearing_to(x, z, tx, tz):
+    return int(math.degrees(math.atan2(tx - x, tz - z)) % 360)
+def hero_at(x, z, species, h, face=None, path=1.6, bld=1.2, keep=2.5, tries=40, spread=2.2):
+    for k in range(tries):
+        dx, dz = (0, 0) if k == 0 else r4.normal(0, spread, 2)
+        px, pz = x + dx, z + dz
+        if free2(px, pz, path, bld) and all(math.hypot(px - q[0], pz - q[1]) > keep for q in taken4):
+            taken4.append((px, pz))
+            spin = bearing_to(px, pz, *face) if face else int(r4.uniform(0, 360))
+            hero.append([round(px, 2), round(pz, 2), species, round(h, 2), spin]); return True
+    print('WARNING: no room for', species, 'at', (x, z)); return False
+mr = np.asarray(ponds['main'], float); mc = mr.mean(axis=0)
+# the great pines: on the Main Pond's west and south banks, leaning out over the water (the spin aims the model's lean)
+for (p, n) in along(ponds['main'], 1.0):
+    pass
+west = mr[np.argmin(mr[:, 0])]; south = mr[np.argmin(mr[:, 1] + 0.3 * mr[:, 0])]
+for (bx, bz) in (west, south):
+    out_dir = np.array([bx, bz]) - mc; out_dir /= np.linalg.norm(out_dir)
+    hero_at(bx + out_dir[0] * 2.2, bz + out_dir[1] * 2.2, 'black_pine_grand', float(r4.uniform(6.2, 6.8)), face=(bx - out_dir[0] * 4, bz - out_dir[1] * 4), path=1.4, keep=3.5, spread=3.0)
+# the cloud-clipped junipers on the lawns
+for (x, z) in [(-5134, -2574), (-5076, -2497), (-5108, -2481)]:
+    hero_at(x, z, 'tamazukuri_juniper', float(r4.uniform(3.8, 4.5)), keep=4.0, spread=2.5)
+# the red maples
+for (x, z) in [(-5124, -2569), (-5079, -2534), (-5100, -2531), (-5083, -2549), (-5096, -2496)]:
+    hero_at(x, z, 'red_japanese_maple', float(r4.uniform(4.0, 5.0)), keep=3.5, spread=2.0)
+# the weeping tree over the drum pond, on its west bank, hanging toward the water
+dr = np.asarray(ponds['drum'], float); dc = dr.mean(axis=0)
+wb = dr[np.argmin(dr[:, 0])]; od = (wb - dc) / np.linalg.norm(wb - dc)
+hero_at(wb[0] + od[0] * 1.8, wb[1] + od[1] * 1.8, 'weeping_cherry', 3.6, face=(wb[0] - od[0] * 3, wb[1] - od[1] * 3), path=1.6, keep=3.0)
+# karikomi: clusters of clipped balls a few metres back from the banks, and on Waterfall Hill
+karikomi = []
+for name, ring in ponds.items():
+    for (p, n) in along(ring, 7.5):
+        if r4.random() < 0.4: continue
+        x, z = p + n * r4.uniform(3.0, 5.5)
+        if free2(x, z, 2.0, 1.5) and all(math.hypot(x - q[0], z - q[1]) > 4.0 for q in karikomi) and all(math.hypot(x - q[0], z - q[1]) > 2.5 for q in taken4):
+            karikomi.append([round(x, 2), round(z, 2), round(float(r4.uniform(0.8, 1.1)), 2), int(r4.uniform(0, 360))])
+for (x, z) in [(-5120, -2556), (-5114, -2562), (-5102, -2512), (-5140, -2590), (-5060, -2512)]:
+    if free2(x, z, 2.0, 1.5) and all(math.hypot(x - q[0], z - q[1]) > 4.0 for q in karikomi):
+        karikomi.append([round(x, 2), round(z, 2), round(float(r4.uniform(0.8, 1.1)), 2), int(r4.uniform(0, 360))])
+# mondo grass: tufts along the banks and the path edges
+mondo = []
+for name, ring in ponds.items():
+    for (p, n) in along(ring, 1.3):
+        if r4.random() < 0.45: continue
+        x, z = p + n * r4.uniform(0.6, 1.6)
+        if in_garden(x, z) and path_dist(x, z) > 0.9 and not in_water(x, z): mondo.append([round(x, 2), round(z, 2), round(float(r4.uniform(0.25, 0.4)), 2)])
+for pth in paths:
+    for i in range(len(pth) - 1):
+        a, b = pth[i], pth[i + 1]; L = float(np.hypot(*(b - a)))
+        if L < 1: continue
+        t = (b - a) / L; nrm = np.array([-t[1], t[0]])
+        for sdist in np.arange(1.0, L, 2.4):
+            if r4.random() < 0.5: continue
+            sd = 1 if r4.random() < 0.5 else -1
+            x, z = a + t * sdist + nrm * sd * r4.uniform(1.25, 1.6)
+            if in_garden(x, z) and not in_water(x, z) and not in_building(x, z, 0.5) and len(mondo) < 260: mondo.append([round(x, 2), round(z, 2), round(float(r4.uniform(0.25, 0.4)), 2)])
+print(f'individuals: {len(hero)} hero plants, {len(karikomi)} karikomi clusters, {len(mondo)} mondo tufts')
+
 # ---- the trees planted by hand, the rest of them (appended to the lanes: nothing above moves)
 MAIN_GATE = (-5032.9, -2503.4)
 gc = garden.mean(axis=0)
@@ -507,6 +574,12 @@ export const ROCK_GROUPS: [number, number, number, number][] = {j(rock_groups)}
 export const PADS: [number, number, number][] = {j(pads)}
 /** more cloud-pruned pines through the garden: x, z, height, spin */
 export const NIWAKI2: [number, number, number, number][] = {j(niwaki2)}
+/** the individual plants (2026-10-27): x, z, species, height, spin (the spin aims a model's lean where it has one) */
+export const HERO: [number, number, string, number, number][] = {j(hero)}
+/** karikomi, clusters of clipped balls: x, z, height, spin */
+export const KARIKOMI: [number, number, number, number][] = {j(karikomi)}
+/** mondo grass tufts along the banks and paths: x, z, height */
+export const MONDO: [number, number, number][] = {j(mondo)}
 """
 (ROOT / 'src/render/landmarks/sf/tea-garden-layout.ts').write_text(ts)
 print(f'rocks {len(rocks)}, domes {len(domes)}, pines {len(pines)}/{len(PINES_AT)}, dwarf {len(dwarf)}+{len(dwarf_pines)}, bamboo {len(bamboo)}, reeds {len(reeds)}, stream {stream}, cherry {len(cherry)}, maple {len(maple)}')

@@ -35,7 +35,7 @@ import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
 import { prism, type Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
-import { AZALEAS, BAMBOO, DOMES, DRAGON, DRAGON2, DWARF, DWARF_PINES, FALL, FALL2, FERNS, FUJI, FUJI_ROCKS, IRIS, ISLANDS, NIWAKI2, PADS, PINES, PONDS, POND_ROCKS, REEDS, ROCK_GROUPS, STREAM } from './tea-garden-layout.ts'
+import { AZALEAS, BAMBOO, DOMES, DRAGON, DRAGON2, DWARF, DWARF_PINES, FALL, FALL2, FERNS, FUJI, FUJI_ROCKS, HERO, IRIS, ISLANDS, KARIKOMI, MONDO, NIWAKI2, PADS, PINES, PONDS, POND_ROCKS, REEDS, ROCK_GROUPS, STREAM } from './tea-garden-layout.ts'
 
 const MID = { x: -5110, z: -2530 }
 const L = (x: number, z: number): [number, number] => [x - MID.x, z - MID.z]
@@ -149,6 +149,22 @@ export function teaGardenLandscape(out: MeshBuilder, fit: Fit): void {
   for (const [cx, cz, hh, spin] of NIWAKI2) {
     const [x, z] = L(cx, cz)
     out.plants.push({ x, z, species: 'niwaki', h: hh, spin: spin * (Math.PI / 180) })
+  }
+  // ---- the INDIVIDUAL plants (owner, 2026-10-27: "custom models for some individual plants, not just species"), each
+  // its own library species from the reference photographs (assetkit items_to_model/tea-garden-plants): the great
+  // black pine leaning over the Main Pond, the cloud-clipped junipers, the red Japanese maples, the weeping tree over
+  // the drum pond; then the massed clipped balls (karikomi) and the mondo grass edging the banks and paths
+  for (const [cx, cz, species, hh, spin] of HERO) {
+    const [x, z] = L(cx, cz)
+    out.plants.push({ x, z, species, h: hh, spin: spin * (Math.PI / 180) })
+  }
+  for (const [cx, cz, hh, spin] of KARIKOMI) {
+    const [x, z] = L(cx, cz)
+    out.plants.push({ x, z, species: 'karikomi', h: hh, spin: spin * (Math.PI / 180) })
+  }
+  for (const [cx, cz, hh] of MONDO) {
+    const [x, z] = L(cx, cz)
+    out.plants.push({ x, z, species: 'mondo_grass', h: hh, spin: h1(cx + 9, cz) * Math.PI * 2 })
   }
   // ---- the plant library's: the dwarf mugo pines and junipers, the massed azaleas, the irises, the ferns, the reeds
   for (const [cx, cz, species, hh] of DWARF) {
