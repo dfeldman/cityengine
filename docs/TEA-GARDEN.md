@@ -251,6 +251,6 @@ Torii is away for remodelling and is left out.
 
 ## The bamboo fence and the Main Gate (2026-10-27)
 The real fence is a tall privacy fence; the owner keeps the thin three-rail bamboo fence "for game purposes", but it now
-stops either side of the Main Gate (`FENCE_GAPS` in tea-garden.ts: 11.5 m about the gate's OSM centre, so the gate's
-own walls take over the line). The gate's builder stands on a 1.3 m granite terrace with steps to the concourse,
+runs to the Main Gate's north-east wall end and resumes from its south-west one (the `null` in tea-garden.ts's `FENCE`;
+the wall ends from the game's projection of OSM way/136888948 — a hand projection first put the gap 18 m off). The gate's builder stands on a 1.3 m granite terrace with steps to the concourse,
 since the drape sets a landmark's base at the lowest ground and the ground rises across its front.

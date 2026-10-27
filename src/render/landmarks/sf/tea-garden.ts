@@ -82,9 +82,13 @@ export function teaGardenGiftShop(out: MeshBuilder, fit: Fit): void {
 // the garden's middle, city metres (x east, z north), and what stands in it, about that middle
 const MID = { x: -5110, z: -2530 }
 const L = (x: number, z: number): [number, number] => [x - MID.x, z - MID.z]
-/** where the fence stops: [x, z, radius] about the garden's middle — the Main Gate (OSM way/136888948's centre) and its 9 m walls */
-const FENCE_GAPS: [number, number, number][] = [[L(-5085.4, -2574.0)[0], L(-5085.4, -2574.0)[1], 11.5]]
-const FENCE: [number, number][] = [[-5032.9, -2503.4], [-5089.4, -2592.8], [-5129.0, -2596.1], [-5145.0, -2595.5], [-5149.6, -2592.9], [-5176.3, -2556.4], [-5180.5, -2543.2], [-5175.0, -2512.3], [-5113.1, -2463.0], [-5093.3, -2448.3], [-5032.9, -2503.4]]
+/**
+ * the fence's corners in city metres; `null` is a gap. It runs to the Main Gate's north-east wall end and resumes from
+ * its south-west one (the gate, OSM way/136888948, centre (−5084.0, −2591.9), its walls ±8.0 m along the footprint's
+ * long axis, bearing 45.6° — src/city/geo.ts's projection; a hand projection put the gap 18 m off, owner 2026-10-27:
+ * "hole is not aligned with the gate")
+ */
+const FENCE: ([number, number] | null)[] = [[-5032.9, -2503.4], [-5078.3, -2586.3], null, [-5089.74, -2597.5], [-5129.0, -2596.1], [-5145.0, -2595.5], [-5149.6, -2592.9], [-5176.3, -2556.4], [-5180.5, -2543.2], [-5175.0, -2512.3], [-5113.1, -2463.0], [-5093.3, -2448.3], [-5032.9, -2503.4]]
 const HAVE_LANTERN_MODELS = true
 const LANTERNS: [number, number][] = [[-5100, -2540], [-5094, -2550], [-5118, -2548], [-5132, -2540], [-5080, -2525], [-5123, -2566], [-5140, -2560], [-5098, -2510], [-5152, -2548], [-5070, -2515]]
 
@@ -155,15 +159,15 @@ export function teaGardenGrounds(out: MeshBuilder, _fit: Fit): void {
   // the bamboo fence round the garden: posts every 2.5 m, three rails (the real one is a tall privacy fence; the owner,
   // 2026-10-27, keeps it thin "for game purposes"), with a GAP where the Main Gate and its walls stand on the line
   for (let i = 1; i < FENCE.length; i++) {
-    const a = L(...FENCE[i - 1]), b = L(...FENCE[i])
+    const fa = FENCE[i - 1], fb = FENCE[i]
+    if (!fa || !fb) continue
+    const a = L(...fa), b = L(...fb)
+    for (const y of [0.4, 1.1, 1.7]) strut(out, [a[0], y, a[1]], [b[0], y, b[1]], 0.05, 0.05, BAMBOO)
     const n = Math.max(1, Math.round(Math.hypot(b[0] - a[0], b[1] - a[1]) / 2.5))
-    const at = (t: number): [number, number] => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]
-    const open = (p: [number, number]): boolean => FENCE_GAPS.some(([gx, gz, r]) => Math.hypot(p[0] - gx, p[1] - gz) < r)
-    for (let k = 0; k < n; k++) {
-      const p = at(k / n), q = at((k + 1) / n)
-      if (!open(p)) box(out, p[0], 0.95, p[1], 0.06, 0.95, 0.06, BAMBOO, 0)
-      if (open(p) || open(q)) continue
-      for (const y of [0.4, 1.1, 1.7]) strut(out, [p[0], y, p[1]], [q[0], y, q[1]], 0.05, 0.05, BAMBOO)
+    for (let k = 0; k <= n; k++) {
+      const t = k / n
+      if (k === n && FENCE[i + 1]) continue           // the next segment places this post
+      box(out, a[0] + (b[0] - a[0]) * t, 0.95, a[1] + (b[1] - a[1]) * t, 0.06, 0.95, 0.06, BAMBOO, 0)
     }
   }
 }
