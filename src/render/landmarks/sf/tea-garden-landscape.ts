@@ -96,10 +96,19 @@ function lump(out: MeshBuilder, cx: number, cy: number, cz: number, rx: number, 
 export function teaGardenLandscape(out: MeshBuilder, fit: Fit): void {
   const g = (x: number, z: number): number => fit.groundAt?.(x, z) ?? 0
   const ROCK = surfaceTag('rock')
-  // a stone: a faceted lump, strongly jittered, bedded into the ground — angular, as the garden's set stones are
-  const rock = (x: number, z: number, r: number, hh: number, seed: number, sink = 0.35, y?: number): void => {
-    lump(out, x, (y ?? g(x, z)) - hh * sink, z, r, hh, r * (0.7 + 0.5 * h1(seed, 1)), seed, ROCKS[seed % ROCKS.length], ROCK, 0.36, 6, 3)
+  /**
+   * A stone: one of the ROCK LIBRARY's boulders (render/plants.ts `rock:<species>`: mossy, grey, lichen, dark — textured,
+   * instanced, nothing against this builder's budget), `h` metres tall, bedded by its own buried base. The builder's own
+   * faceted lumps (2026-10-25) read as plastic next to the library's plants (owner, 2026-10-26: "better plants and rocks
+   * to look as much like the real thing as possible"). `y`: stand at this level rather than on the ground (an island's
+   * waterline, a ledge's lip). The STANDING stones stay modelled: the library has no tall narrow ones.
+   */
+  const ROCK_SPECIES = ['rock:mossy', 'rock:mossy', 'rock:grey', 'rock:lichen', 'rock:dark']
+  const rock = (x: number, z: number, r: number, hh: number, seed: number, _sink = 0.35, y?: number): void => {
+    const species = ROCK_SPECIES[Math.floor(h1(seed, 5) * ROCK_SPECIES.length) % ROCK_SPECIES.length]
+    out.plants.push({ x, z, species, h: Math.max(0.3, (r + hh) * 0.7), spin: h1(seed, 6) * Math.PI * 2, dy: y !== undefined ? y - g(x, z) : undefined })
   }
+  void ROCKS
   // a standing stone (tate-ishi): tall, narrow, leaning a little, its foot buried
   const standing = (x: number, z: number, hh: number, bearing: number, seed: number): void => {
     const y = g(x, z)
@@ -265,7 +274,7 @@ export function teaGardenLandscape(out: MeshBuilder, fit: Fit): void {
       out.water.push({ kind: 'splash', at: [f[0], yb + 0.03, f[1]], r: 0.7 })
       for (const sd of [-1, 1]) {
         const [rx, rz] = at(t1, sd * (W + 0.35))
-        lump(out, rx, y - 0.15, rz, 0.55, 0.5, 0.5, seed + k * 7 + (sd > 0 ? 3 : 0), ROCKS[(k + 1) % 4], ROCK, 0.36, 6, 3)
+        rock(rx, rz, 0.55, 0.5, seed + k * 7 + (sd > 0 ? 3 : 0), 0.3, y - 0.1)
       }
     }
     // the banks: rocks the length of it, larger at the top

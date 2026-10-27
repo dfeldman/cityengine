@@ -1527,5 +1527,18 @@
     ],
     "replaces": "Peace Pagoda",
     "note": "assetkit-models-sf/japantown-peace-pagoda in Peace Plaza (1968, Yoshiro Taniguchi); hides the procedural peacePagoda (scratch-1.json). Round: the bearing does not matter."
+  },
+  {
+    "id": "corridor-pin-blue",
+    "name": "Corridor Pin, Blue",
+    "asset": "corridor-pin-blue",
+    "lat": 37.77165,
+    "lon": -122.4695,
+    "bearing": 20,
+    "lodRanges": [
+      200,
+      600
+    ],
+    "note": "assetkit-models-sf/corridor-pin-blue: Claes Oldenburg and Coosje van Bruggen's giant blue safety pin (1999, 21 ft) in the de Young's Barbro Osher Sculpture Garden, west of the museum (position approximate, 2026-10-26)."
   }
 ]

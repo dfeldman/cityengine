@@ -334,8 +334,8 @@ export class Plants {
   }
 
   /** One library file, imported and made ready to instance: its LOD0 parts, flipped, cut out, hidden. */
-  private async importModel(file: string): Promise<Mesh[]> {
-    const r = await SceneLoader.ImportMeshAsync('', ...assetRootAndFile(this.base, file), this.scene)
+  private async importModel(file: string, base = this.base): Promise<Mesh[]> {
+    const r = await SceneLoader.ImportMeshAsync('', ...assetRootAndFile(base, file), this.scene)
     const all = r.meshes.filter((m): m is Mesh => m instanceof Mesh && m.getTotalVertices() > 0)
     // (LOD0, the full plant: LOD1's thinned leaf cards read at rider height as a few broken twigs lying on the lawn —
     //  Embarcadero survey, 2026-10-06 — and LOD0 is at most a thousand triangles a shrub)
@@ -373,7 +373,31 @@ export class Plants {
     this.dirty = true
   }
 
+  /**
+   * `rock:<species>` (and `rock:<species>-group`): a landmark can place the ROCK library's boulders by name too — the
+   * Japanese Tea Garden's set stones and the rocks round its ponds (2026-10-26), textured and mossy where the builder's
+   * own faceted lumps read as plastic. The game's own `rocks/index.json` lists them (the coastal subset boulders.ts
+   * uses, plus the garden's); the GLBs come from the bucket's rock library as the boulders' do. Own size, no core.
+   */
+  // (one fetch of the index, shared: four species asked for at once each found the first fetch under way and gave up)
+  private rocks: Promise<{ rocks: { file: string; species: string; form?: string; bounds: { top: number } }[] } | null> | null = null
+  private async loadRock(name: string): Promise<void> {
+    if (!this.rocks) this.rocks = fetchAssetJson<{ rocks: { file: string; species: string; form?: string; bounds: { top: number } }[] }>(`${this.base.replace(/plants\/$/, 'rocks/')}index.json`).catch(() => null)
+    const index = await this.rocks
+    const m = /^rock:([a-z]+)(-group)?$/.exec(name)
+    if (!index || !m) { console.warn(`plants: a landmark asks for "${name}", which the rock library does not have`); return }
+    const files = index.rocks.filter((r) => r.species === m[1] && (r.form ?? 'single') === (m[2] ? 'group' : 'single'))
+    if (!files.length) { console.warn(`plants: no "${name}" in rocks/index.json`); return }
+    const hs = files.map((r) => r.bounds.top).sort((a, b) => a - b)
+    for (const r of files) {
+      const parts = await this.importModel(r.file, this.base.replace(/plants\/$/, 'rocks/')).catch(() => [] as Mesh[])
+      if (parts.length) this.models.push({ kind: 'shrub', species: name, parts, top: r.bounds.top || 1, named: true, own: hs[hs.length >> 1] })
+    }
+    this.dirty = true
+  }
+
   private async loadNamed(species: string): Promise<void> {
+    if (species.startsWith('rock:')) return this.loadRock(species)
     for (let tries = 0; !this.index && tries < 120; tries++) await new Promise((r) => setTimeout(r, 500))
     if (!this.index) return
     const files = this.index.trees.filter((t) => t.species === species)

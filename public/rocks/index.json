@@ -1,5 +1,5 @@
 {
- "note": "A coastal subset of Trail Trainer's rockgen library (~/trailtrainer/tools/rockgen; Poly Haven CC0 surfaces, textures/CREDITS.md): the GLBs are copied here by hand (gitignored), this index is committed.",
+ "note": "A coastal subset of Trail Trainer's rockgen library (~/trailtrainer/tools/rockgen; Poly Haven CC0 surfaces, textures/CREDITS.md): the GLBs are copied here by hand (gitignored), this index is committed. The Japanese Tea Garden's rocks (2026-10-26): every mossy, grey, lichen, dark and river single and group, placed by name from a landmark builder (render/plants.ts `rock:<species>`).",
  "rocks": [
   {
    "file": "cracked_003.glb",
@@ -139,6 +139,876 @@
     "top": 1.21,
     "radius": 1.71,
     "bottom": -0.08
+   }
+  },
+  {
+   "file": "dark_007.glb",
+   "species": "dark",
+   "form": "group",
+   "bounds": {
+    "top": 1.13,
+    "radius": 1.81,
+    "bottom": -0.12
+   }
+  },
+  {
+   "file": "dark_008.glb",
+   "species": "dark",
+   "form": "single",
+   "bounds": {
+    "top": 1.24,
+    "radius": 1.95,
+    "bottom": -0.11
+   }
+  },
+  {
+   "file": "dark_009.glb",
+   "species": "dark",
+   "form": "single",
+   "bounds": {
+    "top": 1.07,
+    "radius": 0.67,
+    "bottom": -0.04
+   }
+  },
+  {
+   "file": "dark_010.glb",
+   "species": "dark",
+   "form": "single",
+   "bounds": {
+    "top": 0.53,
+    "radius": 1.32,
+    "bottom": -0.06
+   }
+  },
+  {
+   "file": "dark_011.glb",
+   "species": "dark",
+   "form": "single",
+   "bounds": {
+    "top": 0.75,
+    "radius": 0.67,
+    "bottom": -0.04
+   }
+  },
+  {
+   "file": "dark_012.glb",
+   "species": "dark",
+   "form": "single",
+   "bounds": {
+    "top": 0.97,
+    "radius": 0.89,
+    "bottom": -0.06
+   }
+  },
+  {
+   "file": "dark_013.glb",
+   "species": "dark",
+   "form": "group",
+   "bounds": {
+    "top": 1.42,
+    "radius": 1.83,
+    "bottom": -0.1
+   }
+  },
+  {
+   "file": "dark_014.glb",
+   "species": "dark",
+   "form": "single",
+   "bounds": {
+    "top": 1.86,
+    "radius": 1.46,
+    "bottom": -0.12
+   }
+  },
+  {
+   "file": "dark_015.glb",
+   "species": "dark",
+   "form": "group",
+   "bounds": {
+    "top": 3.02,
+    "radius": 3.22,
+    "bottom": -0.12
+   }
+  },
+  {
+   "file": "dark_016.glb",
+   "species": "dark",
+   "form": "group",
+   "bounds": {
+    "top": 1.33,
+    "radius": 1.8,
+    "bottom": -0.09
+   }
+  },
+  {
+   "file": "dark_017.glb",
+   "species": "dark",
+   "form": "single",
+   "bounds": {
+    "top": 2.58,
+    "radius": 0.81,
+    "bottom": -0.08
+   }
+  },
+  {
+   "file": "dark_018.glb",
+   "species": "dark",
+   "form": "group",
+   "bounds": {
+    "top": 0.78,
+    "radius": 1.79,
+    "bottom": -0.1
+   }
+  },
+  {
+   "file": "dark_019.glb",
+   "species": "dark",
+   "form": "single",
+   "bounds": {
+    "top": 1.17,
+    "radius": 2.07,
+    "bottom": -0.15
+   }
+  },
+  {
+   "file": "dark_020.glb",
+   "species": "dark",
+   "form": "single",
+   "bounds": {
+    "top": 0.65,
+    "radius": 2.09,
+    "bottom": -0.09
+   }
+  },
+  {
+   "file": "dark_021.glb",
+   "species": "dark",
+   "form": "single",
+   "bounds": {
+    "top": 0.34,
+    "radius": 0.45,
+    "bottom": -0.03
+   }
+  },
+  {
+   "file": "dark_022.glb",
+   "species": "dark",
+   "form": "group",
+   "bounds": {
+    "top": 0.85,
+    "radius": 1.45,
+    "bottom": -0.12
+   }
+  },
+  {
+   "file": "grey_006.glb",
+   "species": "grey",
+   "form": "single",
+   "bounds": {
+    "top": 1.84,
+    "radius": 1.83,
+    "bottom": -0.11
+   }
+  },
+  {
+   "file": "grey_007.glb",
+   "species": "grey",
+   "form": "group",
+   "bounds": {
+    "top": 1.84,
+    "radius": 2.88,
+    "bottom": -0.12
+   }
+  },
+  {
+   "file": "grey_008.glb",
+   "species": "grey",
+   "form": "group",
+   "bounds": {
+    "top": 0.66,
+    "radius": 1.68,
+    "bottom": -0.12
+   }
+  },
+  {
+   "file": "grey_009.glb",
+   "species": "grey",
+   "form": "group",
+   "bounds": {
+    "top": 0.6,
+    "radius": 1.63,
+    "bottom": -0.08
+   }
+  },
+  {
+   "file": "grey_010.glb",
+   "species": "grey",
+   "form": "single",
+   "bounds": {
+    "top": 1.29,
+    "radius": 1.81,
+    "bottom": -0.11
+   }
+  },
+  {
+   "file": "grey_011.glb",
+   "species": "grey",
+   "form": "group",
+   "bounds": {
+    "top": 0.92,
+    "radius": 1.64,
+    "bottom": -0.11
+   }
+  },
+  {
+   "file": "grey_013.glb",
+   "species": "grey",
+   "form": "group",
+   "bounds": {
+    "top": 0.98,
+    "radius": 1.86,
+    "bottom": -0.1
+   }
+  },
+  {
+   "file": "grey_014.glb",
+   "species": "grey",
+   "form": "single",
+   "bounds": {
+    "top": 3.28,
+    "radius": 2.22,
+    "bottom": -0.16
+   }
+  },
+  {
+   "file": "grey_015.glb",
+   "species": "grey",
+   "form": "single",
+   "bounds": {
+    "top": 1.02,
+    "radius": 1.35,
+    "bottom": -0.08
+   }
+  },
+  {
+   "file": "grey_016.glb",
+   "species": "grey",
+   "form": "group",
+   "bounds": {
+    "top": 1.32,
+    "radius": 2.22,
+    "bottom": -0.1
+   }
+  },
+  {
+   "file": "grey_017.glb",
+   "species": "grey",
+   "form": "group",
+   "bounds": {
+    "top": 1.58,
+    "radius": 2.31,
+    "bottom": -0.12
+   }
+  },
+  {
+   "file": "grey_018.glb",
+   "species": "grey",
+   "form": "single",
+   "bounds": {
+    "top": 1.01,
+    "radius": 0.63,
+    "bottom": -0.05
+   }
+  },
+  {
+   "file": "grey_019.glb",
+   "species": "grey",
+   "form": "single",
+   "bounds": {
+    "top": 2.04,
+    "radius": 1.36,
+    "bottom": -0.11
+   }
+  },
+  {
+   "file": "grey_021.glb",
+   "species": "grey",
+   "form": "single",
+   "bounds": {
+    "top": 1.06,
+    "radius": 1.2,
+    "bottom": -0.07
+   }
+  },
+  {
+   "file": "grey_023.glb",
+   "species": "grey",
+   "form": "single",
+   "bounds": {
+    "top": 1.58,
+    "radius": 2.16,
+    "bottom": -0.13
+   }
+  },
+  {
+   "file": "lichen_001.glb",
+   "species": "lichen",
+   "form": "group",
+   "bounds": {
+    "top": 0.99,
+    "radius": 1.44,
+    "bottom": -0.12
+   }
+  },
+  {
+   "file": "lichen_002.glb",
+   "species": "lichen",
+   "form": "group",
+   "bounds": {
+    "top": 1.23,
+    "radius": 1.67,
+    "bottom": -0.13
+   }
+  },
+  {
+   "file": "lichen_003.glb",
+   "species": "lichen",
+   "form": "group",
+   "bounds": {
+    "top": 0.44,
+    "radius": 1.71,
+    "bottom": -0.1
+   }
+  },
+  {
+   "file": "lichen_004.glb",
+   "species": "lichen",
+   "form": "group",
+   "bounds": {
+    "top": 1.23,
+    "radius": 1.82,
+    "bottom": -0.09
+   }
+  },
+  {
+   "file": "lichen_005.glb",
+   "species": "lichen",
+   "form": "single",
+   "bounds": {
+    "top": 1.99,
+    "radius": 1.4,
+    "bottom": -0.1
+   }
+  },
+  {
+   "file": "lichen_006.glb",
+   "species": "lichen",
+   "form": "single",
+   "bounds": {
+    "top": 1.11,
+    "radius": 2.14,
+    "bottom": -0.14
+   }
+  },
+  {
+   "file": "lichen_007.glb",
+   "species": "lichen",
+   "form": "single",
+   "bounds": {
+    "top": 1.79,
+    "radius": 2.04,
+    "bottom": -0.1
+   }
+  },
+  {
+   "file": "lichen_008.glb",
+   "species": "lichen",
+   "form": "single",
+   "bounds": {
+    "top": 0.65,
+    "radius": 0.89,
+    "bottom": -0.05
+   }
+  },
+  {
+   "file": "lichen_009.glb",
+   "species": "lichen",
+   "form": "single",
+   "bounds": {
+    "top": 2.71,
+    "radius": 1.81,
+    "bottom": -0.1
+   }
+  },
+  {
+   "file": "lichen_010.glb",
+   "species": "lichen",
+   "form": "single",
+   "bounds": {
+    "top": 2.0,
+    "radius": 1.11,
+    "bottom": -0.09
+   }
+  },
+  {
+   "file": "lichen_012.glb",
+   "species": "lichen",
+   "form": "single",
+   "bounds": {
+    "top": 2.2,
+    "radius": 1.66,
+    "bottom": -0.12
+   }
+  },
+  {
+   "file": "lichen_013.glb",
+   "species": "lichen",
+   "form": "single",
+   "bounds": {
+    "top": 3.02,
+    "radius": 1.51,
+    "bottom": -0.09
+   }
+  },
+  {
+   "file": "lichen_014.glb",
+   "species": "lichen",
+   "form": "single",
+   "bounds": {
+    "top": 1.89,
+    "radius": 2.29,
+    "bottom": -0.11
+   }
+  },
+  {
+   "file": "lichen_015.glb",
+   "species": "lichen",
+   "form": "single",
+   "bounds": {
+    "top": 1.51,
+    "radius": 0.63,
+    "bottom": -0.05
+   }
+  },
+  {
+   "file": "lichen_016.glb",
+   "species": "lichen",
+   "form": "group",
+   "bounds": {
+    "top": 3.39,
+    "radius": 3.44,
+    "bottom": -0.12
+   }
+  },
+  {
+   "file": "lichen_017.glb",
+   "species": "lichen",
+   "form": "group",
+   "bounds": {
+    "top": 2.07,
+    "radius": 1.74,
+    "bottom": -0.11
+   }
+  },
+  {
+   "file": "lichen_018.glb",
+   "species": "lichen",
+   "form": "single",
+   "bounds": {
+    "top": 1.11,
+    "radius": 0.54,
+    "bottom": -0.04
+   }
+  },
+  {
+   "file": "lichen_019.glb",
+   "species": "lichen",
+   "form": "single",
+   "bounds": {
+    "top": 2.84,
+    "radius": 1.85,
+    "bottom": -0.15
+   }
+  },
+  {
+   "file": "lichen_021.glb",
+   "species": "lichen",
+   "form": "single",
+   "bounds": {
+    "top": 0.99,
+    "radius": 0.6,
+    "bottom": -0.04
+   }
+  },
+  {
+   "file": "lichen_022.glb",
+   "species": "lichen",
+   "form": "group",
+   "bounds": {
+    "top": 1.96,
+    "radius": 1.89,
+    "bottom": -0.11
+   }
+  },
+  {
+   "file": "lichen_024.glb",
+   "species": "lichen",
+   "form": "single",
+   "bounds": {
+    "top": 1.32,
+    "radius": 1.53,
+    "bottom": -0.08
+   }
+  },
+  {
+   "file": "mossy_001.glb",
+   "species": "mossy",
+   "form": "group",
+   "bounds": {
+    "top": 1.37,
+    "radius": 1.68,
+    "bottom": -0.11
+   }
+  },
+  {
+   "file": "mossy_002.glb",
+   "species": "mossy",
+   "form": "single",
+   "bounds": {
+    "top": 0.31,
+    "radius": 0.74,
+    "bottom": -0.03
+   }
+  },
+  {
+   "file": "mossy_003.glb",
+   "species": "mossy",
+   "form": "single",
+   "bounds": {
+    "top": 1.78,
+    "radius": 1.04,
+    "bottom": -0.08
+   }
+  },
+  {
+   "file": "mossy_004.glb",
+   "species": "mossy",
+   "form": "single",
+   "bounds": {
+    "top": 1.25,
+    "radius": 1.55,
+    "bottom": -0.09
+   }
+  },
+  {
+   "file": "mossy_005.glb",
+   "species": "mossy",
+   "form": "single",
+   "bounds": {
+    "top": 0.36,
+    "radius": 0.57,
+    "bottom": -0.03
+   }
+  },
+  {
+   "file": "mossy_006.glb",
+   "species": "mossy",
+   "form": "single",
+   "bounds": {
+    "top": 1.1,
+    "radius": 0.64,
+    "bottom": -0.04
+   }
+  },
+  {
+   "file": "mossy_007.glb",
+   "species": "mossy",
+   "form": "single",
+   "bounds": {
+    "top": 0.49,
+    "radius": 0.88,
+    "bottom": -0.05
+   }
+  },
+  {
+   "file": "mossy_008.glb",
+   "species": "mossy",
+   "form": "group",
+   "bounds": {
+    "top": 1.97,
+    "radius": 1.8,
+    "bottom": -0.11
+   }
+  },
+  {
+   "file": "mossy_009.glb",
+   "species": "mossy",
+   "form": "single",
+   "bounds": {
+    "top": 1.51,
+    "radius": 2.1,
+    "bottom": -0.11
+   }
+  },
+  {
+   "file": "mossy_010.glb",
+   "species": "mossy",
+   "form": "single",
+   "bounds": {
+    "top": 0.99,
+    "radius": 1.69,
+    "bottom": -0.1
+   }
+  },
+  {
+   "file": "mossy_011.glb",
+   "species": "mossy",
+   "form": "single",
+   "bounds": {
+    "top": 0.91,
+    "radius": 1.39,
+    "bottom": -0.08
+   }
+  },
+  {
+   "file": "mossy_012.glb",
+   "species": "mossy",
+   "form": "single",
+   "bounds": {
+    "top": 0.54,
+    "radius": 0.73,
+    "bottom": -0.04
+   }
+  },
+  {
+   "file": "mossy_013.glb",
+   "species": "mossy",
+   "form": "single",
+   "bounds": {
+    "top": 2.14,
+    "radius": 1.76,
+    "bottom": -0.12
+   }
+  },
+  {
+   "file": "mossy_014.glb",
+   "species": "mossy",
+   "form": "single",
+   "bounds": {
+    "top": 0.52,
+    "radius": 0.85,
+    "bottom": -0.06
+   }
+  },
+  {
+   "file": "mossy_015.glb",
+   "species": "mossy",
+   "form": "group",
+   "bounds": {
+    "top": 0.94,
+    "radius": 1.51,
+    "bottom": -0.12
+   }
+  },
+  {
+   "file": "mossy_016.glb",
+   "species": "mossy",
+   "form": "group",
+   "bounds": {
+    "top": 2.7,
+    "radius": 1.79,
+    "bottom": -0.13
+   }
+  },
+  {
+   "file": "mossy_018.glb",
+   "species": "mossy",
+   "form": "single",
+   "bounds": {
+    "top": 1.04,
+    "radius": 1.14,
+    "bottom": -0.07
+   }
+  },
+  {
+   "file": "mossy_019.glb",
+   "species": "mossy",
+   "form": "group",
+   "bounds": {
+    "top": 1.75,
+    "radius": 1.79,
+    "bottom": -0.08
+   }
+  },
+  {
+   "file": "mossy_020.glb",
+   "species": "mossy",
+   "form": "group",
+   "bounds": {
+    "top": 1.52,
+    "radius": 2.18,
+    "bottom": -0.09
+   }
+  },
+  {
+   "file": "mossy_021.glb",
+   "species": "mossy",
+   "form": "single",
+   "bounds": {
+    "top": 1.3,
+    "radius": 1.07,
+    "bottom": -0.06
+   }
+  },
+  {
+   "file": "mossy_022.glb",
+   "species": "mossy",
+   "form": "group",
+   "bounds": {
+    "top": 2.69,
+    "radius": 3.15,
+    "bottom": -0.13
+   }
+  },
+  {
+   "file": "mossy_023.glb",
+   "species": "mossy",
+   "form": "group",
+   "bounds": {
+    "top": 1.24,
+    "radius": 1.63,
+    "bottom": -0.1
+   }
+  },
+  {
+   "file": "mossy_024.glb",
+   "species": "mossy",
+   "form": "group",
+   "bounds": {
+    "top": 1.44,
+    "radius": 1.89,
+    "bottom": -0.11
+   }
+  },
+  {
+   "file": "river_001.glb",
+   "species": "river",
+   "form": "single",
+   "bounds": {
+    "top": 0.81,
+    "radius": 1.08,
+    "bottom": -0.07
+   }
+  },
+  {
+   "file": "river_004.glb",
+   "species": "river",
+   "form": "single",
+   "bounds": {
+    "top": 0.32,
+    "radius": 0.59,
+    "bottom": -0.04
+   }
+  },
+  {
+   "file": "river_005.glb",
+   "species": "river",
+   "form": "single",
+   "bounds": {
+    "top": 3.38,
+    "radius": 1.98,
+    "bottom": -0.15
+   }
+  },
+  {
+   "file": "river_006.glb",
+   "species": "river",
+   "form": "single",
+   "bounds": {
+    "top": 0.93,
+    "radius": 1.08,
+    "bottom": -0.08
+   }
+  },
+  {
+   "file": "river_008.glb",
+   "species": "river",
+   "form": "single",
+   "bounds": {
+    "top": 1.51,
+    "radius": 0.93,
+    "bottom": -0.07
+   }
+  },
+  {
+   "file": "river_009.glb",
+   "species": "river",
+   "form": "single",
+   "bounds": {
+    "top": 1.83,
+    "radius": 1.23,
+    "bottom": -0.08
+   }
+  },
+  {
+   "file": "river_012.glb",
+   "species": "river",
+   "form": "single",
+   "bounds": {
+    "top": 1.6,
+    "radius": 1.67,
+    "bottom": -0.08
+   }
+  },
+  {
+   "file": "river_014.glb",
+   "species": "river",
+   "form": "single",
+   "bounds": {
+    "top": 1.28,
+    "radius": 0.76,
+    "bottom": -0.06
+   }
+  },
+  {
+   "file": "river_016.glb",
+   "species": "river",
+   "form": "single",
+   "bounds": {
+    "top": 0.59,
+    "radius": 1.0,
+    "bottom": -0.07
+   }
+  },
+  {
+   "file": "river_017.glb",
+   "species": "river",
+   "form": "single",
+   "bounds": {
+    "top": 0.95,
+    "radius": 1.23,
+    "bottom": -0.07
+   }
+  },
+  {
+   "file": "river_022.glb",
+   "species": "river",
+   "form": "single",
+   "bounds": {
+    "top": 2.4,
+    "radius": 1.72,
+    "bottom": -0.12
+   }
+  },
+  {
+   "file": "river_024.glb",
+   "species": "river",
+   "form": "single",
+   "bounds": {
+    "top": 0.72,
+    "radius": 0.48,
+    "bottom": -0.03
    }
   }
  ]
