@@ -13616,5 +13616,35 @@
    12
   ],
   "note": "the back as the Strawberry Hill photograph: the round arcaded apse under its tile cone over the ambulatory ring, the low parish wing, the octagonal crossing drum and lantern, the towers beyond"
+ },
+ {
+  "name": "Peace Pagoda \u2014 from Peace Plaza",
+  "group": "landmark",
+  "from": [
+   37.78537,
+   -122.42966,
+   1.7
+  ],
+  "to": [
+   37.78505,
+   -122.42972,
+   13
+  ],
+  "note": "peace-pagoda.ts (2026-10-27): the five roofs and their bracket wheels from the plaza, as the owner's photographs"
+ },
+ {
+  "name": "Peace Pagoda \u2014 over Japantown from the air",
+  "group": "landmark",
+  "from": [
+   37.78575,
+   -122.429,
+   60
+  ],
+  "to": [
+   37.78505,
+   -122.42972,
+   12
+  ],
+  "note": "peace-pagoda.ts: the pagoda in Peace Plaza between the malls, at the distance a rider passes on Geary"
  }
 ]

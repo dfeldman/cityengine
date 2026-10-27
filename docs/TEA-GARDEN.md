@@ -221,7 +221,7 @@ bridge's way: local metres about the garden's middle, draped; attached entries a
 | stone pagoda (2.8 m) | by the Buddha | — (the island keeps its mound) |
 | tsukubai (1.8 m) | east of the gift shop | — |
 | bronze cranes (1.7 m) | the Main Pond's south-west bank | — |
-| Peace Pagoda, Japantown (30 m) | Peace Plaza | `replaces` the procedural peacePagoda (scratch-1.json) |
+| Peace Pagoda, Japantown (30 m) | Peace Plaza | — **withdrawn 2026-10-27**: the procedural peacePagoda was rebuilt from photographs (docs/sf-batches/MODEL-PEACE-PAGODA.md) and the scan no longer placed |
 
 Sizes are estimates from photographs, marked so in each pack entry; the fronts were set by eye in the game. The heavy
 scans (about 1.9 M triangles: tea house, lanterns, stone pagoda, tsukubai, cranes, Peace Pagoda) pack with meshopt's

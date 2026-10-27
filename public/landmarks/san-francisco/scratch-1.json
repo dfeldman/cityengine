@@ -5,7 +5,7 @@
     "procedural": "peacePagoda",
     "front": "street",
     "height": 30,
-    "note": "sf/scratch-1.ts, hand primitives via new ./pagoda-kit.ts (pagodaTier/pagodaFinial): building=pagoda, a freestanding five-tier tapering spire on a 49-vertex near-circular plan, height tag a nonsense 0.01 so no baked ring exists at all (confirmed absent from every tiles/*.json) -- built round from a fixed radius/height instead of a measured ring. No photograph; restrained to the plain tier taper and eave overhang, height set from the real building's known ~30m. Escalated on FORM: the roof form IS the building, a known kit gap (tiered round taper) recorded in pagoda-kit.ts for reuse by the Japanese Tea Garden's pagoda later."
+    "note": "sf/peace-pagoda.ts, rebuilt from photographs 2026-10-27 (docs/sf-batches/MODEL-PEACE-PAGODA.md): five thin white roofs with dark bronze tops on a slender core, each underside a wheel of 24 brackets forking from the fin columns with a lug on the rim at every end, twelve fins on the ground storey, a dark octagonal plinth, a sorin of nine rings and a gilt crown to 30 m. The height tag is 0.01 and nothing is baked, so it is built round about the way's centre."
   },
   {
     "osm": ["way/35973054"],

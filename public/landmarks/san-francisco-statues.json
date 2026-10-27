@@ -1515,20 +1515,6 @@
     }
   },
   {
-    "id": "japantown-peace-pagoda",
-    "name": "Peace Pagoda, Japantown",
-    "asset": "japantown-peace-pagoda",
-    "lat": 37.78505,
-    "lon": -122.42972,
-    "bearing": 0,
-    "lodRanges": [
-      400,
-      1200
-    ],
-    "replaces": "Peace Pagoda",
-    "note": "assetkit-models-sf/japantown-peace-pagoda in Peace Plaza (1968, Yoshiro Taniguchi); hides the procedural peacePagoda (scratch-1.json). Round: the bearing does not matter."
-  },
-  {
     "id": "corridor-pin-blue",
     "name": "Corridor Pin, Blue",
     "asset": "corridor-pin-blue",
