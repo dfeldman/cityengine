@@ -19,6 +19,32 @@ function street(): ReturnType<typeof buildGraph> {
 }
 
 describe('the crowd', () => {
+  it('leaves the median of a dual carriageway empty (owner, 2026-10-26: "tons of pedestrians in the middle of the street")', () => {
+    // two one-way carriageways 14 m apart: each has a kerb on its outer side and the median on its inner side
+    const mk = (id: number, x: number): Edge => ({
+      id, a: id * 2, b: id * 2 + 1, points: [{ x, z: 0 }, { x, z: 120 }], length: 120,
+      surface: 'asphalt', width: 7, walk: 2, foot: false, name: 'Wide Blvd', oneway: true,
+    } as Edge)
+    const g = buildGraph([mk(1, 0), mk(2, 14)])
+    const crowd = new Crowd(g, 'busy')
+    const near = [...g.edges.values()]
+    crowd.update(0.01, { x: 7, z: 60 }, near)
+    crowd.update(0.1, { x: 7, z: 60 }, near)
+    const walkers = crowd.all.filter((w) => w.kind !== 'cycle')
+    expect(walkers.length).toBeGreaterThan(10)
+    for (const w of walkers) {
+      expect(w.at.x < 0 || w.at.x > 14, `walker ${w.id} at x ${w.at.x.toFixed(1)} is on the median`).toBe(true)
+    }
+    // …and a street on its own still has people on both of its pavements
+    const g1 = buildGraph([mk(3, 0)])
+    const c1 = new Crowd(g1, 'busy')
+    const n1 = [...g1.edges.values()]
+    c1.update(0.01, { x: 0, z: 60 }, n1)
+    c1.update(0.1, { x: 0, z: 60 }, n1)
+    const xs = c1.all.filter((w) => w.kind !== 'cycle').map((w) => w.at.x)
+    expect(xs.some((x) => x < 0) && xs.some((x) => x > 0)).toBe(true)
+  })
+
   it('faces the way it walks, in both directions along a street', () => {
     const g = street()
     const crowd = new Crowd(g, 'busy')

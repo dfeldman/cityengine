@@ -50,7 +50,6 @@ const DRAGON_GREEN: Rgb = [0.15, 0.26, 0.1]
 const MOSS: Rgb = [0.13, 0.23, 0.07]
 const PAD: Rgb = [0.07, 0.16, 0.05]
 const WATER: Rgb = [0.13, 0.2, 0.22]
-const FOAM: Rgb = [0.9, 0.94, 0.95]
 // (dark: the rock material lightens them a good deal — at 0.42 they read cream)
 const ROCKS: Rgb[] = [[0.26, 0.25, 0.23], [0.22, 0.22, 0.2], [0.29, 0.28, 0.25], [0.2, 0.22, 0.18]]
 
@@ -250,17 +249,20 @@ export function teaGardenLandscape(out: MeshBuilder, fit: Fit): void {
     for (let k = 0; k < cuts.length - 1; k++) {
       const t0 = cuts[k], t1 = cuts[k + 1], y = level[k + 1]
       if (k === cuts.length - 2) {
-        // the last reach: from the lip down to the water, a white fall into the pond
-        const a = at(t0, -W * 0.8), b = at(t0, W * 0.8), c = at(t1, W * 0.9), d = at(t1, -W * 0.9)
-        out.quad([[a[0], level[k], a[1]], [b[0], level[k], b[1]], [c[0], y, c[1]], [d[0], y, d[1]]], [ux * 0.5, 0.86, uz * 0.5], UV, FOAM, 0)
+        // the last reach: off the lip down into the pond, MOVING water (render/water.ts, as Huntington Falls: owner,
+        // 2026-10-26, "redo the tea garden waterfall to use our custom waterfall shader"), a splash where it lands
+        const a = at(t0, -W * 0.8), b = at(t0, W * 0.8), f = at(t1 + 0.04, 0)
+        out.water.push({ kind: 'sheet', a: [a[0], level[k], a[1]], b: [b[0], level[k], b[1]], out: 0.6, drop: level[k] - y - 0.02 })
+        out.water.push({ kind: 'splash', at: [f[0], y + 0.03, f[1]], r: 1.0 })
         continue
       }
       const p0 = at(t0, -W), p1 = at(t1, -W), p2 = at(t1, W), p3 = at(t0, W)
       out.quad([[p0[0], y, p0[1]], [p1[0], y, p1[1]], [p2[0], y, p2[1]], [p3[0], y, p3[1]]], [0, 1, 0], UV, WATER, 0)
-      // the drop off this ledge's lip, down to the next
+      // the drop off this ledge's lip, down to the next: a moving sheet, a splash in the pool below
       const yb = level[k + 2]
-      const a = at(t1, -W * 0.8), b = at(t1, W * 0.8)
-      out.quad([[a[0], y, a[1]], [b[0], y, b[1]], [b[0], yb, b[1]], [a[0], yb, a[1]]], [ux, 0, uz], UV, FOAM, 0)
+      const a = at(t1, -W * 0.8), b = at(t1, W * 0.8), f = at(t1 + 0.05, 0)
+      out.water.push({ kind: 'sheet', a: [a[0], y, a[1]], b: [b[0], y, b[1]], out: 0.4, drop: y - yb - 0.02 })
+      out.water.push({ kind: 'splash', at: [f[0], yb + 0.03, f[1]], r: 0.7 })
       for (const sd of [-1, 1]) {
         const [rx, rz] = at(t1, sd * (W + 0.35))
         lump(out, rx, y - 0.15, rz, 0.55, 0.5, 0.5, seed + k * 7 + (sd > 0 ? 3 : 0), ROCKS[(k + 1) % 4], ROCK, 0.36, 6, 3)
@@ -283,8 +285,6 @@ export function teaGardenLandscape(out: MeshBuilder, fit: Fit): void {
     }
     const [sx, sz] = at(-0.2, 0.3)
     standing(sx, sz, 1.5, Math.atan2(ux, uz), seed + 460)
-    const [ex, ez] = at(1.0, 0)
-    lump(out, ex + ux * 0.6, levels[pond] + 0.02, ez + uz * 0.6, 1.1, 0.1, 0.9, seed + 77, FOAM, 0, 0.1, 8, 2, true)
   }
   waterfall(FALL.top, FALL.foot, 'main', [0, 0.32, 0.62, 0.86, 1], 0)
   waterfall(FALL2.top, FALL2.foot, 'teahouse', [0, 0.45, 0.8, 1], 1000)

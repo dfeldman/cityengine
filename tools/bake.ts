@@ -1631,9 +1631,19 @@ async function bake(spec: CitySpec): Promise<void> {
       for (let i = 0; i < r.length; i += 2) { x0 = Math.min(x0, r[i]); x1 = Math.max(x1, r[i]); z0 = Math.min(z0, r[i + 1]); z1 = Math.max(z1, r[i + 1]) }
       // (a lake at most — Stow Lake is 150 m across; the bay and the rivers are kilometres)
       if ((x1 - x0) * (z1 - z0) > 250_000) continue
-      let lv = Infinity
-      for (let i = 0; i < r.length; i += 2) lv = Math.min(lv, sampleGridF(fineGround, fcols, frows, fx0, fz0, FINE_STEP, r[i], r[i + 1]))
+      const hs: number[] = []
+      for (let i = 0; i < r.length; i += 2) hs.push(sampleGridF(fineGround, fcols, frows, fx0, fz0, FINE_STEP, r[i], r[i + 1]))
+      hs.sort((p, q) => p - q)
+      const lv = hs[0]
       if (!Number.isFinite(lv)) continue
+      /*
+       * …and only where the level can be trusted: it is the LOWEST bank vertex (waterLevels), and round Stow Lake the
+       * banks the tiles give run 8 m apart (median 6 m over the lowest), so the lake is drawn 6 m under most of its
+       * shore. Lowering its bed to that cut 5 m cliffs round the lake and left the Golden Gate Pavilion half in the
+       * ground (owner, 2026-10-26). A ring whose median bank stands more than 1.5 m over its lowest has a terrain
+       * problem the bed cannot fix, and is left as it was.
+       */
+      if (hs[hs.length >> 1] - lv > 1.5) continue
       const bed = lv - 0.5
       let n = 0
       for (let rr = Math.max(0, Math.floor((z0 - fz0) / FINE_STEP)); rr <= Math.min(frows - 1, Math.ceil((z1 - fz0) / FINE_STEP)); rr++) {

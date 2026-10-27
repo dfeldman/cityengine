@@ -225,6 +225,51 @@ export class Crowd {
     return v
   }
   private readonly walkableCache = new Map<number, boolean>()
+
+  /**
+   * Which of an edge's two sides has NO pavement because it faces another carriageway of the same street (owner,
+   * 2026-10-26: "on very wide streets, Market but also Lincoln, there are often tons of pedestrians in the middle of the
+   * street … it's a dual carriageway so we're interpreting the center as a spot for walking"). OSM maps Market, Geary
+   * and Lincoln Way as two one-way ways 10–20 m apart, and each got walkers on both sides, so the inner pavements —
+   * the median — carried as many people as the kerbs. A side is a median when, just past where its pavement would be,
+   * a road edge runs by within its own half-width (plus a verge), roughly parallel. Bit 1: side +1 (the left normal
+   * of a→b), bit 2: side −1.
+   */
+  private median(e: Edge): number {
+    let v = this.medianCache.get(e.id)
+    if (v !== undefined) return v
+    v = 0
+    if (!e.foot) {
+      if (!this.roadGrid) this.overRoad(e)
+      const p = e.points
+      const i = Math.max(0, (p.length >> 1) - 1)
+      const a = p[i], b = p[Math.min(p.length - 1, i + 1)]
+      const dx = b.x - a.x, dz = b.z - a.z, l = Math.hypot(dx, dz) || 1
+      const ux = dx / l, uz = dz / l, nx = -uz, nz = ux
+      const m = pointAlong(p, e.length / 2)
+      for (const side of [1, -1] as const) {
+        const reach = e.width / 2 + e.walk + 2.5
+        const q = { x: m.x + nx * side * reach, z: m.z + nz * side * reach }
+        const cx = Math.floor(q.x / 50), cz = Math.floor(q.z / 50)
+        let hit = false
+        for (let ox = -1; ox <= 1 && !hit; ox++) for (let oz = -1; oz <= 1 && !hit; oz++) {
+          for (const r of this.roadGrid!.get(`${cx + ox},${cz + oz}`) ?? []) {
+            if (r.id === e.id || r.width < 2.8) continue
+            const rp = r.points
+            const j = Math.max(0, (rp.length >> 1) - 1)
+            const ra = rp[j], rb = rp[Math.min(rp.length - 1, j + 1)]
+            const rl = Math.hypot(rb.x - ra.x, rb.z - ra.z) || 1
+            if (Math.abs(((rb.x - ra.x) * ux + (rb.z - ra.z) * uz) / rl) < 0.85) continue
+            if (distanceToLine(rp, q) < r.width / 2 + 3) { hit = true; break }
+          }
+        }
+        if (hit) v |= side > 0 ? 1 : 2
+      }
+    }
+    this.medianCache.set(e.id, v)
+    return v
+  }
+  private readonly medianCache = new Map<number, number>()
   /** road edges bucketed by 50 m cell, built the first time a footway is asked about */
   private roadGrid: Map<string, Edge[]> | null = null
 
@@ -340,9 +385,13 @@ export class Crowd {
           while (tries < 8 && distance(pointAlong(e.points, s0), rider) < SPAWN_BEYOND) { s0 = r() * e.length; tries++ }
           if (tries === 8) continue
         }
-        const side = (r() < 0.75 ? dir : (-dir as 1 | -1)) as 1 | -1
+        let side = (r() < 0.75 ? dir : (-dir as 1 | -1)) as 1 | -1
         const roll = r()
         const road = !e.foot && e.width >= 2.8 && !e.crossing
+        // (nobody on the median of a dual carriageway: the side facing the other carriageway has no pavement)
+        const med = this.median(e)
+        if (med === 3 && roll >= 0.15) continue
+        if (med & (side > 0 ? 1 : 2)) side = (-side) as 1 | -1
         const base = { edgeId: e.id, s: s0, dir, at: { x: 0, z: 0 }, heading: 0, back: 0, across: 0, dodge: 0 }
         if (road && roll < 0.15) {
           /*
