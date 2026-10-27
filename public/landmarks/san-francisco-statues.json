@@ -696,7 +696,7 @@
       180,
       420
     ],
-    "note": "assetkit-models-sf/exploratorium-buckyball: OSM node 6433062291 — moved 26 m toward the Embarcadero onto the paved apron between Piers 15 and 17: OSM puts it on the pile-supported plaza between the piers, which the city does not draw, so it stood over the water (owner, 2026-10-25: 'in a wall')."
+    "note": "assetkit-models-sf/exploratorium-buckyball: OSM node 6433062291 \u2014 moved 26 m toward the Embarcadero onto the paved apron between Piers 15 and 17: OSM puts it on the pile-supported plaza between the piers, which the city does not draw, so it stood over the water (owner, 2026-10-25: 'in a wall')."
   },
   {
     "id": "francis-scott-key-monument",
@@ -821,7 +821,7 @@
       200,
       480
     ],
-    "note": "assetkit-models-sf/naga-sea-serpent: OSM node 13050632310, IN Rainbow Falls Pond by the JFK Promenade, Golden Gate Park, where it was installed in 2025 (Illuminate; 100 ft long, 25 ft tall) — the body lies over the water on purpose. Bearing by judgement."
+    "note": "assetkit-models-sf/naga-sea-serpent: OSM node 13050632310, IN Rainbow Falls Pond by the JFK Promenade, Golden Gate Park, where it was installed in 2025 (Illuminate; 100 ft long, 25 ft tall) \u2014 the body lies over the water on purpose. Bearing by judgement."
   },
   {
     "id": "roxy-paine-node",
@@ -1128,6 +1128,404 @@
       140,
       340
     ],
-    "note": "assetkit-models-sf/tea-garden-drum-bridge: over the pool teaGardenGrounds draws, along the old procedural arch's line (OSM bridge way, bearing 15), which is removed (2026-10-25). The model carries its own size (8 m span, 2.4 m wide, 3.85 m rise). The AI made it on the diagonal, 29° off its axes: the pack now turns it straight first (`yaw`), and the squash that sheared it is gone (2026-10-26)."
+    "note": "assetkit-models-sf/tea-garden-drum-bridge: over the pool teaGardenGrounds draws, along the old procedural arch's line (OSM bridge way, bearing 15), which is removed (2026-10-25). The model carries its own size (8 m span, 2.4 m wide, 3.85 m rise). The AI made it on the diagonal, 29\u00b0 off its axes: the pack now turns it straight first (`yaw`), and the squash that sheared it is gone (2026-10-26)."
+  },
+  {
+    "id": "tea-garden-pagoda",
+    "name": "Pagoda, Japanese Tea Garden",
+    "asset": "tea-garden-pagoda",
+    "lodRanges": [
+      300,
+      900
+    ],
+    "note": "assetkit-models-sf/tea-garden-pagoda at OSM way/34221099's centre, facing down the hill toward the Temple Gate; hides the procedural teaGardenPagoda (2026-10-26). Front and bearing set by eye.",
+    "replaces": "Japanese Tea Garden Pagoda",
+    "attach": {
+      "to": "Japanese Tea Garden grounds",
+      "at": [
+        -28.47,
+        0,
+        -18.55
+      ],
+      "bearing": 150,
+      "draped": true
+    }
+  },
+  {
+    "id": "tea-garden-temple-gate",
+    "name": "Temple Gate, Japanese Tea Garden",
+    "asset": "tea-garden-temple-gate",
+    "lodRanges": [
+      300,
+      900
+    ],
+    "note": "assetkit-models-sf/tea-garden-temple-gate at way/136888944's centre; its passage across the footprint's long axis (115\u00b0); hides the procedural teaGardenTempleGate.",
+    "replaces": "Japanese Tea Garden Temple Gate",
+    "attach": {
+      "to": "Japanese Tea Garden grounds",
+      "at": [
+        -19.33,
+        0,
+        -34.24
+      ],
+      "bearing": 205,
+      "draped": true
+    }
+  },
+  {
+    "id": "tea-garden-main-gate",
+    "name": "Main Gate, Japanese Tea Garden",
+    "asset": "tea-garden-main-gate",
+    "lodRanges": [
+      300,
+      900
+    ],
+    "note": "assetkit-models-sf/tea-garden-main-gate at way/136888948's centre (OSM's 'South Gate': the two-storey entrance gate on the Music Concourse side); passage across the long axis (42\u00b0); hides the procedural teaGardenSouthGate.",
+    "replaces": "Japanese Tea Garden South Gate",
+    "attach": {
+      "to": "Japanese Tea Garden grounds",
+      "at": [
+        25.1,
+        0,
+        -62.07
+      ],
+      "bearing": 132,
+      "draped": true
+    }
+  },
+  {
+    "id": "tea-garden-hagiwara-gate",
+    "name": "Hagiwara Gate, Japanese Tea Garden",
+    "asset": "tea-garden-hagiwara-gate",
+    "lodRanges": [
+      150,
+      450
+    ],
+    "note": "assetkit-models-sf/tea-garden-hagiwara-gate on the path between the gift shop and the Sunken Garden's terrace (not in OSM), along the path's bearing.",
+    "attach": {
+      "to": "Japanese Tea Garden grounds",
+      "at": [
+        17.97,
+        0,
+        30.65
+      ],
+      "bearing": 142,
+      "draped": true
+    }
+  },
+  {
+    "id": "tea-garden-tea-house",
+    "name": "Tea House, Japanese Tea Garden",
+    "asset": "tea-garden-tea-house",
+    "lodRanges": [
+      300,
+      900
+    ],
+    "note": "assetkit-models-sf/tea-garden-tea-house at way/34220947's centre, facing its pond; hides the procedural teaGardenTeaHouse.",
+    "replaces": "Japanese Tea Garden Tea House",
+    "attach": {
+      "to": "Japanese Tea Garden grounds",
+      "at": [
+        22.46,
+        0,
+        13.18
+      ],
+      "bearing": 155,
+      "draped": true
+    }
+  },
+  {
+    "id": "tea-garden-lantern-of-peace",
+    "name": "Lantern of Peace, Japanese Tea Garden",
+    "asset": "tea-garden-lantern-of-peace",
+    "lodRanges": [
+      150,
+      450
+    ],
+    "note": "assetkit-models-sf/tea-garden-lantern-of-peace, 9 m before the pagoda on the way down to the Temple Gate (the map: 'in front of the Pagoda').",
+    "attach": {
+      "to": "Japanese Tea Garden grounds",
+      "at": [
+        -23.99,
+        0,
+        -26.34
+      ],
+      "bearing": 150,
+      "draped": true
+    }
+  },
+  {
+    "id": "tea-garden-stone-pagoda",
+    "name": "Stone pagoda, Japanese Tea Garden",
+    "asset": "tea-garden-stone-pagoda",
+    "lodRanges": [
+      150,
+      450
+    ],
+    "note": "assetkit-models-sf/tea-garden-stone-pagoda by the Buddha (the map: 'near azaleas and a stone pagoda').",
+    "attach": {
+      "to": "Japanese Tea Garden grounds",
+      "at": [
+        0.47,
+        0,
+        7.06
+      ],
+      "bearing": 20,
+      "draped": true
+    }
+  },
+  {
+    "id": "tea-garden-tsukubai",
+    "name": "Tsukubai, Japanese Tea Garden",
+    "asset": "tea-garden-tsukubai",
+    "lodRanges": [
+      90,
+      260
+    ],
+    "note": "assetkit-models-sf/tea-garden-tsukubai east of the gift shop.",
+    "attach": {
+      "to": "Japanese Tea Garden grounds",
+      "at": [
+        30.46,
+        0,
+        29.54
+      ],
+      "bearing": 50,
+      "draped": true
+    }
+  },
+  {
+    "id": "tea-garden-cranes",
+    "name": "Bronze cranes, Japanese Tea Garden",
+    "asset": "tea-garden-cranes",
+    "lodRanges": [
+      150,
+      450
+    ],
+    "note": "assetkit-models-sf/tea-garden-cranes on the Main Pond's south-west bank, facing the water.",
+    "attach": {
+      "to": "Japanese Tea Garden grounds",
+      "at": [
+        -11.94,
+        0,
+        -51.83
+      ],
+      "bearing": 57,
+      "draped": true
+    }
+  },
+  {
+    "id": "tea-garden-stone-lantern-1",
+    "name": "Stone lantern 1, Japanese Tea Garden",
+    "asset": "tea-garden-stone-lantern",
+    "lodRanges": [
+      90,
+      260
+    ],
+    "note": "assetkit-models-sf/tea-garden-stone-lantern, one of six at the spots tea-garden.ts's LANTERNS drew (its procedural lanterns are off: HAVE_LANTERN_MODELS).",
+    "attach": {
+      "to": "Japanese Tea Garden grounds",
+      "at": [
+        9.97,
+        0,
+        -9.98
+      ],
+      "bearing": 0,
+      "draped": true
+    }
+  },
+  {
+    "id": "tea-garden-stone-lantern-2",
+    "name": "Stone lantern 2, Japanese Tea Garden",
+    "asset": "tea-garden-stone-lantern",
+    "lodRanges": [
+      90,
+      260
+    ],
+    "note": "assetkit-models-sf/tea-garden-stone-lantern, one of six at the spots tea-garden.ts's LANTERNS drew (its procedural lanterns are off: HAVE_LANTERN_MODELS).",
+    "attach": {
+      "to": "Japanese Tea Garden grounds",
+      "at": [
+        16.04,
+        0,
+        -20.0
+      ],
+      "bearing": 67,
+      "draped": true
+    }
+  },
+  {
+    "id": "tea-garden-stone-lantern-3",
+    "name": "Stone lantern 3, Japanese Tea Garden",
+    "asset": "tea-garden-stone-lantern",
+    "lodRanges": [
+      90,
+      260
+    ],
+    "note": "assetkit-models-sf/tea-garden-stone-lantern, one of six at the spots tea-garden.ts's LANTERNS drew (its procedural lanterns are off: HAVE_LANTERN_MODELS).",
+    "attach": {
+      "to": "Japanese Tea Garden grounds",
+      "at": [
+        -7.98,
+        0,
+        -17.99
+      ],
+      "bearing": 134,
+      "draped": true
+    }
+  },
+  {
+    "id": "tea-garden-stone-lantern-4",
+    "name": "Stone lantern 4, Japanese Tea Garden",
+    "asset": "tea-garden-stone-lantern",
+    "lodRanges": [
+      90,
+      260
+    ],
+    "note": "assetkit-models-sf/tea-garden-stone-lantern, one of six at the spots tea-garden.ts's LANTERNS drew (its procedural lanterns are off: HAVE_LANTERN_MODELS).",
+    "attach": {
+      "to": "Japanese Tea Garden grounds",
+      "at": [
+        -21.96,
+        0,
+        -9.98
+      ],
+      "bearing": 201,
+      "draped": true
+    }
+  },
+  {
+    "id": "tea-garden-stone-lantern-5",
+    "name": "Stone lantern 5, Japanese Tea Garden",
+    "asset": "tea-garden-stone-lantern",
+    "lodRanges": [
+      90,
+      260
+    ],
+    "note": "assetkit-models-sf/tea-garden-stone-lantern, one of six at the spots tea-garden.ts's LANTERNS drew (its procedural lanterns are off: HAVE_LANTERN_MODELS).",
+    "attach": {
+      "to": "Japanese Tea Garden grounds",
+      "at": [
+        -12.99,
+        0,
+        -36.03
+      ],
+      "bearing": 268,
+      "draped": true
+    }
+  },
+  {
+    "id": "tea-garden-stone-lantern-6",
+    "name": "Stone lantern 6, Japanese Tea Garden",
+    "asset": "tea-garden-stone-lantern",
+    "lodRanges": [
+      90,
+      260
+    ],
+    "note": "assetkit-models-sf/tea-garden-stone-lantern, one of six at the spots tea-garden.ts's LANTERNS drew (its procedural lanterns are off: HAVE_LANTERN_MODELS).",
+    "attach": {
+      "to": "Japanese Tea Garden grounds",
+      "at": [
+        -29.97,
+        0,
+        -30.01
+      ],
+      "bearing": 335,
+      "draped": true
+    }
+  },
+  {
+    "id": "tea-garden-small-stone-lantern-1",
+    "name": "Small stone lantern 1, Japanese Tea Garden",
+    "asset": "tea-garden-small-stone-lantern",
+    "lodRanges": [
+      90,
+      260
+    ],
+    "note": "assetkit-models-sf/tea-garden-small-stone-lantern, one of four by the water and the paths.",
+    "attach": {
+      "to": "Japanese Tea Garden grounds",
+      "at": [
+        30.02,
+        0,
+        5.05
+      ],
+      "bearing": 0,
+      "draped": true
+    }
+  },
+  {
+    "id": "tea-garden-small-stone-lantern-2",
+    "name": "Small stone lantern 2, Japanese Tea Garden",
+    "asset": "tea-garden-small-stone-lantern",
+    "lodRanges": [
+      90,
+      260
+    ],
+    "note": "assetkit-models-sf/tea-garden-small-stone-lantern, one of four by the water and the paths.",
+    "attach": {
+      "to": "Japanese Tea Garden grounds",
+      "at": [
+        11.99,
+        0,
+        19.97
+      ],
+      "bearing": 113,
+      "draped": true
+    }
+  },
+  {
+    "id": "tea-garden-small-stone-lantern-3",
+    "name": "Small stone lantern 3, Japanese Tea Garden",
+    "asset": "tea-garden-small-stone-lantern",
+    "lodRanges": [
+      90,
+      260
+    ],
+    "note": "assetkit-models-sf/tea-garden-small-stone-lantern, one of four by the water and the paths.",
+    "attach": {
+      "to": "Japanese Tea Garden grounds",
+      "at": [
+        -42.02,
+        0,
+        -17.99
+      ],
+      "bearing": 226,
+      "draped": true
+    }
+  },
+  {
+    "id": "tea-garden-small-stone-lantern-4",
+    "name": "Small stone lantern 4, Japanese Tea Garden",
+    "asset": "tea-garden-small-stone-lantern",
+    "lodRanges": [
+      90,
+      260
+    ],
+    "note": "assetkit-models-sf/tea-garden-small-stone-lantern, one of four by the water and the paths.",
+    "attach": {
+      "to": "Japanese Tea Garden grounds",
+      "at": [
+        39.96,
+        0,
+        14.96
+      ],
+      "bearing": 339,
+      "draped": true
+    }
+  },
+  {
+    "id": "japantown-peace-pagoda",
+    "name": "Peace Pagoda, Japantown",
+    "asset": "japantown-peace-pagoda",
+    "lat": 37.78505,
+    "lon": -122.42972,
+    "bearing": 0,
+    "lodRanges": [
+      400,
+      1200
+    ],
+    "replaces": "Peace Pagoda",
+    "note": "assetkit-models-sf/japantown-peace-pagoda in Peace Plaza (1968, Yoshiro Taniguchi); hides the procedural peacePagoda (scratch-1.json). Round: the bearing does not matter."
   }
 ]

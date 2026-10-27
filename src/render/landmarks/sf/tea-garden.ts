@@ -114,6 +114,7 @@ export function teaGardenGiftShop(out: MeshBuilder, fit: Fit): void {
 const MID = { x: -5110, z: -2530 }
 const L = (x: number, z: number): [number, number] => [x - MID.x, z - MID.z]
 const FENCE: [number, number][] = [[-5032.9, -2503.4], [-5089.4, -2592.8], [-5129.0, -2596.1], [-5145.0, -2595.5], [-5149.6, -2592.9], [-5176.3, -2556.4], [-5180.5, -2543.2], [-5175.0, -2512.3], [-5113.1, -2463.0], [-5093.3, -2448.3], [-5032.9, -2503.4]]
+const HAVE_LANTERN_MODELS = true
 const LANTERNS: [number, number][] = [[-5100, -2540], [-5094, -2550], [-5118, -2548], [-5132, -2540], [-5080, -2525], [-5123, -2566], [-5140, -2560], [-5098, -2510], [-5152, -2548], [-5070, -2515]]
 
 function lantern(out: MeshBuilder, x: number, z: number): void {
@@ -170,7 +171,10 @@ function plankBridge(out: MeshBuilder, a: [number, number], b: [number, number])
 export function teaGardenGrounds(out: MeshBuilder, _fit: Fit): void {
   drumBridge(out, L(-5089.7, -2544.9), L(-5088.0, -2538.6), false)
   plankBridge(out, L(-5109.4, -2525.4), L(-5122.2, -2540.0))
-  for (const [x, z] of LANTERNS) lantern(out, ...L(x, z))
+  // (the stone lanterns are the owner's GLBs since 2026-10-26 — assetkit-models-sf/tea-garden-stone-lantern and
+  //  -small-stone-lantern, placed at these spots by public/landmarks/san-francisco-statues.json; `lantern` and LANTERNS
+  //  stay for a city without them)
+  if (!HAVE_LANTERN_MODELS) for (const [x, z] of LANTERNS) lantern(out, ...L(x, z))
   // the Buddha's stepped stone plinth; the seated bronze on it is the GLB (assetkit-models-sf/tea-garden-buddha, placed
   // by public/landmarks/san-francisco-statues.json at 1.5 m over this ground, 2026-10-25)
   const [bx, bz] = L(-5105, -2526)

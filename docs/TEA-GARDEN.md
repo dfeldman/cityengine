@@ -202,6 +202,37 @@ looked for and the bake crashed; the bake now passes its own box. The seven `gar
 tools/cache/osm/norcal-latest.osm.pbf -o jtg.osm.pbf && osmium export jtg.osm.pbf -f geojsonseq -o jtg.geojsonseq`
 (kept in `tools/cache/osm/cuts/`). Its second pass has its own rng, so the first pass's placements did not move.
 
+## The owner's models (2026-10-26)
+Nineteen GLBs came in (`incoming_models/`, copied to `incoming_assets/` for the packer): packed into assetkit's
+`assetkit-models-sf` index (`models/sf-models.json`, `node tools/modelpack/pack.ts <ids>`), uploaded, and placed by
+`public/landmarks/san-francisco-statues.json` as attachments to the "Japanese Tea Garden grounds" entry (the drum
+bridge's way: local metres about the garden's middle, draped; attached entries are outside the nonbuildings audit's
+15 m duplicate check, which a dozen lanterns would otherwise trip).
+
+| model | where | what it replaces |
+|---|---|---|
+| pagoda (12 m) | OSM way/34221099, facing the Temple Gate | `replaces` the procedural teaGardenPagoda |
+| Temple Gate (6 m) | way/136888944, passage across its long axis | teaGardenTempleGate |
+| Main Gate (7.5 m) | way/136888948 — OSM calls it the South Gate; it is the two-storey entrance on the Music Concourse side | teaGardenSouthGate |
+| Hagiwara Gate (4.5 m) | on the path between the gift shop and the Sunken Garden's terrace (not in OSM) | — |
+| tea house (9.5 m long) | way/34220947, facing its pond | teaGardenTeaHouse |
+| stone lantern × 6, small stone lantern × 4 | the spots tea-garden.ts's LANTERNS drew | the procedural lanterns (`HAVE_LANTERN_MODELS`) |
+| Lantern of Peace (3 m) | 9 m before the pagoda | — |
+| stone pagoda (2.8 m) | by the Buddha | — (the island keeps its mound) |
+| tsukubai (1.8 m) | east of the gift shop | — |
+| bronze cranes (1.7 m) | the Main Pond's south-west bank | — |
+| Peace Pagoda, Japantown (30 m) | Peace Plaza | `replaces` the procedural peacePagoda (scratch-1.json) |
+
+Sizes are estimates from photographs, marked so in each pack entry; the fronts were set by eye in the game. The heavy
+scans (about 1.9 M triangles: tea house, lanterns, stone pagoda, tsukubai, cranes, Peace Pagoda) pack with meshopt's
+sloppy simplifier to about 10,000 triangles at LOD0.
+
+Packed but not placed: four ships for later (Carnival Luminosa, Queen Mary 2 — the AI made it 95 m tall and 147 m
+wide, so squash before placing — a Blue & Gold ferry, a Golden Gate ferry, the last two at guessed lengths), Corridor
+Pin, Blue (the de Young's safety pin) and a Lalanne ape whose site is unknown. The Eureka's source was replaced by the
+owner's new export (long along z now). Not received: the gift shop, the Long and Wishing bridges, the bamboo fence; the
+Torii is away for remodelling and is left out.
+
 ## Next
 - **More of the planting by hand**, from photographs: which pines are where, and the bonsai (the oldest dwarf tree, a
   Japanese black pine on a bamboo frame by the tea house).
