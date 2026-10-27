@@ -1294,7 +1294,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     // the tram stops first, so the tile's own lines find them
     life.addStops((a.ready.furniture ?? []).filter((f) => f.kind === 'tramstop'))
     life.addRails(a.ready.rails)
-    overhead?.addRails(a.ready.rails)
+    overhead?.addRails(a.ready.rails, a.ready.key)
   })
   mark('life')
   // `?without=rider` is how the city is compared with and without the avatar kit, which brings its own

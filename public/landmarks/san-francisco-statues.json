@@ -1180,7 +1180,7 @@
       300,
       900
     ],
-    "note": "assetkit-models-sf/tea-garden-main-gate at way/136888948's centre (OSM's 'South Gate': the two-storey entrance gate on the Music Concourse side); passage across the long axis (42\u00b0); hides the procedural teaGardenSouthGate.",
+    "note": "assetkit-models-sf/tea-garden-main-gate at way/136888948's centre (OSM's 'South Gate': the two-storey entrance gate on the Music Concourse side); passage along the footprint's long axis (bearing 42: at 132 it stood across the path \u2014 owner, 2026-10-26, \"rotated 90 degrees\"); hides the procedural teaGardenSouthGate.",
     "replaces": "Japanese Tea Garden South Gate",
     "attach": {
       "to": "Japanese Tea Garden grounds",
@@ -1189,7 +1189,7 @@
         0,
         -62.07
       ],
-      "bearing": 132,
+      "bearing": 42,
       "draped": true
     }
   },
