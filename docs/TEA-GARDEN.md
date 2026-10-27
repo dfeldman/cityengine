@@ -87,6 +87,12 @@ stands on the ground under it (`fit.groundAt`).
   cloud-pruned pines.
 - **The waterfall** comes down that slope in three ledges into the north arm. Each ledge is a still pool ending in a
   white drop, with rocks along both banks and at every lip, a heap of stones at the spring, and foam at the foot.
+  The drops are the moving-water shader (as Huntington Falls), and the chute is walled in library boulders a metre
+  and more across with a second rank behind, three clipped pines leaning in over it and a karikomi ball at the foot
+  (the owner's photograph, 2026-10-27: the water threads a stair of large mossy boulders between clipped pines, the
+  Temple Gate above — not the Stow Lake fall that image searches return for the garden). OSM's path up the hill
+  crosses the stream below the third ledge, and the crowd ran that line through the water; five flat stepping
+  slabs on the ledge now carry it.
 - **The Mt Fuji Hedge** (1979, for Makoto Hagiwara) is a broad clipped cone, 5.8 m across, with a flat-topped cap.
   Bamboo stands behind it and three stones sit in front. It is beside the restroom and the Main Gate, as the map draws
   it. The map is about 7 m out in that corner (its restroom lands 6.7 m from OSM's toilets), so the hedge is moved by
@@ -166,7 +172,9 @@ unchanged.
   the owner's GLB) and Horai-jima in the tea house pond (lower, longer, a standing stone for the tortoise's head).
 - **The tea house waterfall** off its terrace (77.6 m, the highest clear ground within 13 m of the pond, found by
   `layout.py`) into its pond, in two ledges; the waterfall function is shared with Waterfall Hill's, and both now end
-  in a white fall into the pond's own water with a standing stone over the spring.
+  in a white fall into the pond's own water with a standing stone over the spring. The first site poured onto the
+  tea house deck with the shader showing through it (owner, 2026-10-27); the foot must now be 2.5 m clear of paths
+  and buildings and is stepped 1.2 m out into the pond, which moved the fall to the pond's east bank.
 - **Rocks** are faceted (6 segments, 3 rings, strongly jittered: 36 triangles, were 56) and set in groups (ishigumi:
   one standing stone, two companions, a small one at the foot) at the Buddha, the drum bridge pool, the Temple Gate,
   the tea house pond, round the Main Pond and in the Sunken Garden.

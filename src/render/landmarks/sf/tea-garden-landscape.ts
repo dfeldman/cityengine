@@ -275,7 +275,7 @@ export function teaGardenLandscape(out: MeshBuilder, fit: Fit): void {
 
   // ---- a waterfall: ledges cut into the slope, each a still pool ending in a white drop, rocks along both banks and
   // at every lip, the last drop into the pond, foam where it meets the water
-  const waterfall = (top: [number, number], foot: [number, number], pond: string, cuts: number[], seed: number): void => {
+  const waterfall = (top: [number, number], foot: [number, number], pond: string, cuts: number[], seed: number, grand = false): { at: (t: number, side: number) => [number, number]; level: number[]; cuts: number[] } => {
     const [tx, tz] = L(...top), [fx, fz] = L(...foot)
     const len = Math.hypot(fx - tx, fz - tz), ux = (fx - tx) / len, uz = (fz - tz) / len, nx = -uz, nz = ux
     const at = (t: number, side: number): [number, number] => [tx + ux * len * t + nx * side, tz + uz * len * t + nz * side]
@@ -305,15 +305,32 @@ export function teaGardenLandscape(out: MeshBuilder, fit: Fit): void {
         rock(rx, rz, 0.55, 0.5, seed + k * 7 + (sd > 0 ? 3 : 0), 0.3, y - 0.1)
       }
     }
-    // the banks: rocks the length of it, larger at the top
+    // the banks: rocks the length of it, larger at the top. Waterfall Hill's (`grand`) is walled in boulders a metre and
+    // more across, moss-topped, with a second rank behind (owner's photograph, 2026-10-27, "this pic shows the main
+    // waterfall better": the water threads a chute of large grey boulders between the clipped pines)
     const nb = Math.max(4, Math.round(len / 1.1))
+    const big = grand ? 1.2 : 1
     for (let i = 0; i <= nb; i++) {
       const t = i / nb
       for (const sd of [-1, 1]) {
         const [rx, rz] = at(t, sd * (W + 0.55 + 0.3 * h1(i, sd)))
-        const r = 0.75 - 0.35 * t + 0.2 * h1(sd, i)
+        const r = (0.75 - 0.35 * t + 0.2 * h1(sd, i)) * big
         rock(rx, rz, r, r * 0.8, seed + 400 + i * 2 + (sd > 0 ? 1 : 0), 0.3)
+        if (grand && i % 2 === 1) {
+          const [qx, qz] = at(t + 0.04, sd * (W + 1.9 + 0.4 * h1(i + 9, sd)))
+          const q = (0.9 - 0.3 * t + 0.25 * h1(sd + 3, i)) * big
+          rock(qx, qz, q, q * 0.9, seed + 500 + i * 2 + (sd > 0 ? 1 : 0), 0.3)
+        }
       }
+    }
+    // the clipped pines leaning in over the chute, one a side, and the karikomi ball under the lower one
+    if (grand) {
+      for (const [t, sd, hh, spin] of [[0.22, -1, 3.1, 40], [0.7, 1, 2.7, 230], [0.48, 1, 2.3, 300]] as const) {
+        const [px, pz] = at(t, sd * (W + 3.1))
+        out.plants.push({ x: px, z: pz, species: 'niwaki', h: hh, spin: spin * (Math.PI / 180) })
+      }
+      const [kx, kz] = at(0.9, -(W + 2.6))
+      out.plants.push({ x: kx, z: kz, species: 'karikomi', h: 0.95, spin: 1.2 })
     }
     // the spring: a heap of stones at the top, one standing over it; the foam at the foot
     for (let k = 0; k < 3; k++) {
@@ -322,9 +339,20 @@ export function teaGardenLandscape(out: MeshBuilder, fit: Fit): void {
     }
     const [sx, sz] = at(-0.2, 0.3)
     standing(sx, sz, 1.5, Math.atan2(ux, uz), seed + 460)
+    return { at, level, cuts }
   }
-  waterfall(FALL.top, FALL.foot, 'main', [0, 0.32, 0.62, 0.86, 1], 0)
+  const hill = waterfall(FALL.top, FALL.foot, 'main', [0, 0.32, 0.62, 0.86, 1], 0, true)
   waterfall(FALL2.top, FALL2.foot, 'teahouse', [0, 0.45, 0.8, 1], 1000)
+  // the stepping stones: OSM's path up Waterfall Hill crosses the stream below the third ledge (its node at
+  // (-5110.1, -2551.0) is on the far bank), and the crowd walked that line through the water (owner, 2026-10-27:
+  // "weirdly an npc is running back and forth over it"). Flat slabs on the ledge along the path's line carry it.
+  {
+    const dx = -0.555, dz = -0.832, [cx, cz] = hill.at(0.67, 0), y = hill.level[3] + 0.1
+    for (let k = -2; k <= 2; k++) {
+      const x = cx + dx * k * 0.75, z = cz + dz * k * 0.75
+      lump(out, x, y, z, 0.42, 0.09, 0.36, 700 + k, ROCKS[(k + 2) % ROCKS.length], ROCK, 0.15, 6, 2)
+    }
+  }
 
   // ---- the brick terrace over the Sunken Garden (where the Hagiwara house stood; the gate on its rim is the owner's
   // GLB, placed at TERRACE by san-francisco-statues.json — owner, 2026-10-27: "on a brick terrace looking out over a

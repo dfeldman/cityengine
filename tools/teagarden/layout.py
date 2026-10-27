@@ -270,13 +270,18 @@ for b in range(0, 360, 10):
     for rr in np.arange(6.0, 13.1, 1.0):
         x, z = tc[0] + math.sin(math.radians(b)) * rr, tc[1] + math.cos(math.radians(b)) * rr
         if not free2(x, z, 1.2, 0.8): continue
-        # (the fall's line must not cross a path or a building either)
+        # (the fall's line must not cross a path or a building either, and its FOOT must land in open water: with the
+        #  nearest bank point beside the tea house's deck, the last sheet poured onto the paving and showed through it —
+        #  owner, 2026-10-27, "facing the wrong direction, and also the shader shows through the concrete")
         fx, fz = nearest_on(ponds['teahouse'], x, z)
+        if path_dist(fx, fz) < 2.5 or in_building(fx, fz, 2.5): continue
         if not all(path_dist(x + (fx - x) * t, z + (fz - z) * t) > 1.0 and not in_building(x + (fx - x) * t, z + (fz - z) * t, 0.5) for t in np.linspace(0, 1, 8)): continue
         h = ground(x, z) - 0.04 * rr   # the highest ground, a little nearer preferred
         if best is None or h > best[0]: best = (h, x, z)
 fall2_top = (round(float(best[1]), 2), round(float(best[2]), 2))
-fall2_foot = tuple(round(v, 2) for v in nearest_on(ponds['teahouse'], *fall2_top))
+_fx, _fz = nearest_on(ponds['teahouse'], *fall2_top)
+_tc = np.asarray(ponds['teahouse'], float).mean(axis=0); _d = np.array([_tc[0] - _fx, _tc[1] - _fz]); _d /= np.linalg.norm(_d) or 1
+fall2_foot = (round(float(_fx + _d[0] * 1.2), 2), round(float(_fz + _d[1] * 1.2), 2))   # a step into the water
 print('tea house fall from', fall2_top, 'ground', round(best[0], 1), 'to', fall2_foot, 'ground', round(ground(*fall2_foot), 1))
 
 # ---- irises on the path to the drum bridge, at the drum pond's waterline nearest the bridge
