@@ -4,11 +4,11 @@
  * gift shop and Temple Gate as stucco cottages with orange roofs, a wooden bridge as a white plank in the air.
  *
  * What a visitor knows it by: the FIVE-STOREY PAGODA (1915), square, vermilion fences and rafters under five near-equal
- * shingle roofs with curling corners, a ringed spire (tea-garden-pagoda.ts); the timber GATES (the South Gate's two stacked
- * roofs over natural hinoki posts; the red Temple Gate); the open TEA HOUSE on its deck under a big low grey roof; the
+ * shingle roofs with curling corners, a ringed spire (tea-garden-pagoda.ts); the two-storey GATES (the Main Gate in
+ * weathered wood under grey tile, tea-garden-main-gate.ts; the red Temple Gate, tea-garden-temple-gate.ts); the open TEA HOUSE on its deck under a big low grey roof; the
  * steep half-moon DRUM BRIDGE over the water; stone lanterns; the bronze BUDDHA (1790) on its plinth; the bamboo fence.
  *
- * The buildings are fitted to OSM's footprints (way/34221099 pagoda, 136888948 South Gate, 136888944 Temple Gate,
+ * The buildings are fitted to OSM's footprints (way/34221099 pagoda, 136888948 Main Gate (OSM: 'South Gate'), 136888944 Temple Gate,
  * 34220947 tea house, 34220963 gift shop); `teaGardenGrounds` is a standalone entry at the garden's middle, DRAPED,
  * its local frame x east / z north (front 180), carrying the bridges, the lanterns, the Buddha and the fence, with
  * the positions copied from OSM in city metres about that middle.
@@ -55,21 +55,9 @@ function posts(out: MeshBuilder, hx: number, hz: number, y0: number, y1: number,
 import { teaGardenPagoda } from './tea-garden-pagoda.ts'
 export { teaGardenPagoda }
 
-/** a timber gate: two (or four) posts, tie beams, a gabled roof along local x; `double` stacks a second, smaller roof (the South Gate) */
-function gate(out: MeshBuilder, fit: Fit, wood: Rgb, double: boolean): void {
-  const hx = Math.max(2, fit.hx * 0.8), hz = Math.max(1.2, fit.hz * 0.55)
-  const H = 3.6
-  for (const sx of [-1, 1]) for (const sz of [-1, 1]) box(out, sx * hx * 0.8, H / 2, sz * hz * 0.6, 0.18, H / 2, 0.18, wood, 0)
-  for (const sz of [-1, 1]) box(out, 0, H - 0.25, sz * hz * 0.6, hx * 0.95, 0.15, 0.12, wood, 0)
-  box(out, 0, H - 0.1, 0, hx * 0.9, 0.12, hz * 0.7, wood, 0)
-  // the gabled roof, ridge along x, deep eaves front and back
-  roof(out, -hx - 0.6, hx + 0.6, -hz - 0.7, hz + 0.7, H, 1.6, 0, hz + 0.7, TILE)
-  if (double) {
-    box(out, 0, H + 1.9, 0, hx * 0.5, 0.35, hz * 0.4, wood, 0)
-    roof(out, -hx * 0.7, hx * 0.7, -hz * 0.6, hz * 0.6, H + 2.2, 1.2, 0, hz * 0.6, TILE)
-  }
-}
-export const teaGardenSouthGate = (out: MeshBuilder, fit: Fit): void => gate(out, fit, HINOKI, true)
+// the Main Gate (OSM's 'South Gate', way/136888948): src/render/landmarks/sf/tea-garden-main-gate.ts (2026-10-27)
+import { teaGardenMainGate } from './tea-garden-main-gate.ts'
+export { teaGardenMainGate }
 // the Temple Gate: src/render/landmarks/sf/tea-garden-temple-gate.ts (the owner's photographs, 2026-10-27)
 import { teaGardenTempleGate } from './tea-garden-temple-gate.ts'
 export { teaGardenTempleGate }
@@ -151,7 +139,8 @@ function plankBridge(out: MeshBuilder, a: [number, number], b: [number, number])
 
 export function teaGardenGrounds(out: MeshBuilder, _fit: Fit): void {
   drumBridge(out, L(-5089.7, -2544.9), L(-5088.0, -2538.6), false)
-  plankBridge(out, L(-5109.4, -2525.4), L(-5122.2, -2540.0))
+  // (the Long Bridge is the landscape's since 2026-10-27, flat between its banks: this draped one bent with the ground)
+  if (!HAVE_LANTERN_MODELS) plankBridge(out, L(-5109.4, -2525.4), L(-5122.2, -2540.0))
   // (the stone lanterns are the owner's GLBs since 2026-10-26 — assetkit-models-sf/tea-garden-stone-lantern and
   //  -small-stone-lantern, placed at these spots by public/landmarks/san-francisco-statues.json; `lantern` and LANTERNS
   //  stay for a city without them)
@@ -174,5 +163,5 @@ export function teaGardenGrounds(out: MeshBuilder, _fit: Fit): void {
 }
 
 export const TEA_GARDEN: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  teaGardenPagoda, teaGardenSouthGate, teaGardenTempleGate, teaGardenTeaHouse, teaGardenGiftShop, teaGardenGrounds, teaGardenLandscape,
+  teaGardenPagoda, teaGardenMainGate, teaGardenTempleGate, teaGardenTeaHouse, teaGardenGiftShop, teaGardenGrounds, teaGardenLandscape,
 }

@@ -33,9 +33,9 @@
  */
 import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
-import { prism, type Rgb } from '../../models.ts'
+import { box, prism, strut, type Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
-import { AZALEAS, BAMBOO, DOMES, DRAGON, DRAGON2, DWARF, DWARF_PINES, FALL, FALL2, FERNS, FUJI, FUJI_ROCKS, HERO, IRIS, ISLANDS, KARIKOMI, MONDO, NIWAKI2, PADS, PINES, PONDS, POND_ROCKS, REEDS, ROCK_GROUPS, STREAM } from './tea-garden-layout.ts'
+import { AZALEAS, BAMBOO, BOULDERS, DOMES, DRAGON, DRAGON2, DWARF, DWARF_PINES, FALL, FALL2, FERNS, FILL, FUJI, FUJI_ROCKS, HERO, IRIS, ISLANDS, KARIKOMI, MONDO, NIWAKI2, PADS, PINES, PONDS, POND_ROCKS, REEDS, ROCK_GROUPS, STREAM, TALL, TERRACE } from './tea-garden-layout.ts'
 
 const MID = { x: -5110, z: -2530 }
 const L = (x: number, z: number): [number, number] => [x - MID.x, z - MID.z]
@@ -165,6 +165,18 @@ export function teaGardenLandscape(out: MeshBuilder, fit: Fit): void {
   for (const [cx, cz, hh] of MONDO) {
     const [x, z] = L(cx, cz)
     out.plants.push({ x, z, species: 'mondo_grass', h: hh, spin: h1(cx + 9, cz) * Math.PI * 2 })
+  }
+  // ---- the CANOPY and the FLOOR (owner, 2026-10-27: "huge trees that shade much of the garden, and little open grass
+  // space except at the edges"): the tree library's pines, cypress-like spruces and firs placed by name (`tree:<species>`,
+  // render/plants.ts), big boulders stacked on Waterfall Hill and along the falls, shrubs and ferns over the open ground
+  for (const [cx, cz, species, hh, spin] of TALL) {
+    const [x, z] = L(cx, cz)
+    out.plants.push({ x, z, species, h: hh, spin: spin * (Math.PI / 180) })
+  }
+  for (const [cx, cz, hh, seed] of BOULDERS) rock(...L(cx, cz), hh * 0.8, hh * 0.6, seed)
+  for (const [cx, cz, species, hh] of FILL) {
+    const [x, z] = L(cx, cz)
+    out.plants.push({ x, z, species, h: hh, spin: h1(cx + 11, cz) * Math.PI * 2 })
   }
   // ---- the plant library's: the dwarf mugo pines and junipers, the massed azaleas, the irises, the ferns, the reeds
   for (const [cx, cz, species, hh] of DWARF) {
@@ -314,6 +326,48 @@ export function teaGardenLandscape(out: MeshBuilder, fit: Fit): void {
   waterfall(FALL.top, FALL.foot, 'main', [0, 0.32, 0.62, 0.86, 1], 0)
   waterfall(FALL2.top, FALL2.foot, 'teahouse', [0, 0.45, 0.8, 1], 1000)
 
+  // ---- the brick terrace over the Sunken Garden (where the Hagiwara house stood; the gate on its rim is the owner's
+  // GLB, placed at TERRACE by san-francisco-statues.json — owner, 2026-10-27: "on a brick terrace looking out over a
+  // sunken garden"): a level brick-paved slab on the slope, a low brick parapet on the garden side
+  {
+    const [x, z] = L(TERRACE.x, TERRACE.z)
+    const b = (TERRACE.bearing * Math.PI) / 180, ux = Math.sin(b), uz = Math.cos(b), nx = uz, nz = -ux
+    const y = Math.max(g(x, z), g(x + ux * 3, z + uz * 3), g(x - ux * 3, z - uz * 3)) + 0.12
+    const BRICK: Rgb = [0.42, 0.26, 0.2], BRICK_DK: Rgb = [0.36, 0.22, 0.17]
+    const c = (a: number, s: number): [number, number, number] => [x + ux * a + nx * s, y, z + uz * a + nz * s]
+    out.quad([c(-3, -5.5), c(3.2, -5.5), c(3.2, 5.5), c(-3, 5.5)], [0, 1, 0], UV, BRICK, surfaceTag('brick'))
+    // the slab's face down to the ground on the garden side, and the parapet along it
+    const [fx, fz] = [x + ux * 3.2, z + uz * 3.2]
+    const yf = Math.min(g(fx - nx * 5.5, fz - nz * 5.5), g(fx + nx * 5.5, fz + nz * 5.5), g(fx, fz)) - 0.3
+    out.quad([[fx - nx * 5.5, yf, fz - nz * 5.5], [fx + nx * 5.5, yf, fz + nz * 5.5], [fx + nx * 5.5, y, fz + nz * 5.5], [fx - nx * 5.5, y, fz - nz * 5.5]], [ux, 0, uz], UV, BRICK_DK, surfaceTag('brick'))
+    for (const sd of [-1, 1]) strut(out, [fx - nx * 5.5 * sd, y + 0.4, fz - nz * 5.5 * sd], [fx - nx * 2.4 * sd, y + 0.4, fz - nz * 2.4 * sd], 0.25, 0.4, BRICK_DK)
+    for (const sd of [-1, 1]) box(out, fx + nx * 2.4 * sd, y + 0.35, fz + nz * 2.4 * sd, 0.25, 0.35, 0.25, BRICK_DK, 0)
+  }
+  // ---- the Long Bridge (1988: "rustic, slightly curved") over the upper pond: a FLAT deck between its two banks, built
+  // here rather than in the draped grounds (owner, 2026-10-27: "the Long Bridge is broken, it's draped over the
+  // landscape instead of being a flat bridge" — the lidar ground and the lowered pond bed under it bent it)
+  {
+    const [ax, az] = L(-5109.4, -2525.4), [bx, bz] = L(-5122.2, -2540.0)
+    const dx = bx - ax, dz = bz - az, len = Math.hypot(dx, dz), nx = -dz / len, nz = dx / len, w = 0.9
+    const y0 = Math.max(g(ax, az), g(bx, bz)) + 0.5
+    const HINOKI: Rgb = [0.62, 0.48, 0.32], DARKWOOD: Rgb = [0.3, 0.22, 0.15]
+    const N = 8
+    const P = (t: number, s: number, up: number): [number, number, number] => [ax + dx * t + nx * s, y0 + up + 0.35 * Math.sin(Math.PI * t), az + dz * t + nz * s]
+    for (let i = 0; i < N; i++) {
+      const t0 = i / N, t1 = (i + 1) / N
+      out.quad([P(t0, -w, 0), P(t1, -w, 0), P(t1, w, 0), P(t0, w, 0)], [0, 1, 0], UV, HINOKI, surfaceTag('clapboard'))
+      for (const s of [-1, 1]) {
+        strut(out, P(t0, w * s, 0.9), P(t1, w * s, 0.9), 0.06, 0.06, DARKWOOD)
+        strut(out, P(t0, w * s, 0.45), P(t1, w * s, 0.45), 0.04, 0.04, DARKWOOD)
+        box(out, ...P(t0, w * s, 0.45), 0.06, 0.45, 0.06, DARKWOOD, 0)
+      }
+    }
+    // the piles down to the water or the ground
+    for (let i = 1; i < N; i += 2) for (const s of [-1, 1]) {
+      const [px, py, pz] = P(i / N, w * 0.8 * s, 0)
+      strut(out, [px, py, pz], [px, g(px, pz) - 0.5, pz], 0.1, 0.1, DARKWOOD)
+    }
+  }
   // ---- the stream between the drum bridge pond and the Main Pond: a ribbon of water a little over the ground,
   // stepping down to the Main Pond, small stones along it
   {

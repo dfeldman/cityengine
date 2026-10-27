@@ -496,6 +496,77 @@ for pth in paths:
             if in_garden(x, z) and not in_water(x, z) and not in_building(x, z, 0.5) and len(mondo) < 260: mondo.append([round(x, 2), round(z, 2), round(float(r4.uniform(0.25, 0.4)), 2)])
 print(f'individuals: {len(hero)} hero plants, {len(karikomi)} karikomi clusters, {len(mondo)} mondo tufts')
 
+# ---- THE CANOPY AND THE FLOOR (owner, 2026-10-27, with photographs: "add more plants and rocks. in reality, there
+# are some huge trees that shade much of the garden, and little open grass space except at the edges"): tall Monterey
+# pines and cypresses and redwoods from the TREE library placed by the builder (no bake for a tree), big mossy boulders
+# stacked on Waterfall Hill and along both falls, and the open ground inside the garden filled with shrubs and ferns.
+r5 = np.random.default_rng(1894)
+tall = []
+big_taken = [(p[0], p[1]) for p in pines] + [(p[0], p[1]) for p in niwaki2] + [(h[0], h[1]) for h in hero] + [tuple(loc(t['at'][1], t['at'][0])) for t in cherry + maple]
+def tall_at(x, z, species, hmin, hmax, keep=7.0, tries=30, spread=3.0):
+    for k in range(tries):
+        dx, dz = (0, 0) if k == 0 else r5.normal(0, spread, 2)
+        px, pz = x + dx, z + dz
+        if free2(px, pz, 2.5, 5.0) and all(math.hypot(px - q[0], pz - q[1]) > keep for q in tall) and all(math.hypot(px - q[0], pz - q[1]) > 3.0 for q in big_taken):
+            tall.append([round(px, 2), round(pz, 2), species, round(float(r5.uniform(hmin, hmax)), 1), int(r5.uniform(0, 360))]); return True
+    return False
+# the ring of giants: Monterey cypress and pine along the fence and through the garden; redwoods and firs behind the
+# pagoda and the tea house (photographs: the pagoda stands against a wall of dark conifers)
+gx0, gz0, gx1, gz1 = garden[:, 0].min(), garden[:, 1].min(), garden[:, 0].max(), garden[:, 1].max()
+for k in range(400):
+    if len(tall) >= 46: break
+    x, z = r5.uniform(gx0, gx1), r5.uniform(gz0, gz1)
+    if not in_garden(x, z): continue
+    near_pagoda = math.hypot(x + 5138, z + 2548) < 26
+    species = r5.choice(['tree:fir', 'tree:spruce', 'tree:spruce'] if near_pagoda else ['tree:scots_pine', 'tree:scots_pine', 'tree:spruce', 'tree:fir', 'tree:black_pine'])
+    hmin, hmax = (24, 32) if species in ('tree:fir', 'tree:spruce') else (17, 25)
+    tall_at(x, z, str(species), hmin, hmax, keep=9.0, tries=1)
+# the boulders of Waterfall Hill and the falls' banks: big, stacked (photograph 4 of the owner's set)
+boulders = []
+def boulder(x, z, hmin, hmax, tries=10, spread=1.2):
+    for k in range(tries):
+        dx, dz = (0, 0) if k == 0 else r5.normal(0, spread, 2)
+        px, pz = x + dx, z + dz
+        if in_garden(px, pz) and path_dist(px, pz) > 1.3 and not in_building(px, pz, 1.0) and not in_water(px, pz) and all(math.hypot(px - q[0], pz - q[1]) > 1.1 for q in boulders):
+            boulders.append([round(px, 2), round(pz, 2), round(float(r5.uniform(hmin, hmax)), 2), int(r5.integers(0, 1 << 16))]); return
+for (fx, fz) in (FALL_TOP, (fall2_top[0], fall2_top[1])):
+    for k in range(14): boulder(fx + r5.normal(0, 3.5), fz + r5.normal(0, 3.5), 0.9, 1.9, tries=4)
+for k in range(22): boulder(r5.uniform(-5127, -5108), r5.uniform(-2568, -2546), 0.6, 1.5, tries=3)   # Waterfall Hill
+for name, ring in ponds.items():                                                                     # more along the banks
+    for (p, n) in along(ring, 4.0):
+        if r5.random() < 0.5: continue
+        x, z = p + n * r5.uniform(0.4, 2.2)
+        boulder(x, z, 0.5, 1.2, tries=2, spread=0.6)
+# the floor: shrubs and ferns over the open ground inside the garden, thinner toward its edges
+fill = []
+for k in range(2600):
+    x, z = r5.uniform(gx0, gx1), r5.uniform(gz0, gz1)
+    if not in_garden(x, z): continue
+    edge = min(abs(x - gx0), abs(x - gx1), abs(z - gz0), abs(z - gz1))
+    if r5.random() < (0.55 if edge < 12 else 0.1): continue
+    if not free2(x, z, 1.4, 1.2): continue
+    if any(math.hypot(x - q[0], z - q[1]) < 1.6 for q in fill[-80:]): continue
+    sp = r5.choice(['azalea', 'azalea', 'fern', 'fern', 'bracken', 'juniper_scrub', 'mugo_pine', 'rhododendron', 'karikomi', 'heather'])
+    h = {'azalea': (0.5, 0.9), 'fern': (0.6, 1.1), 'bracken': (0.7, 1.2), 'juniper_scrub': (0.6, 1.2), 'mugo_pine': (0.9, 1.8), 'rhododendron': (1.2, 2.2), 'karikomi': (0.8, 1.1), 'heather': (0.3, 0.5)}[str(sp)]
+    fill.append([round(x, 2), round(z, 2), str(sp), round(float(r5.uniform(*h)), 2)])
+    if len(fill) >= 700: break
+print(f'canopy and floor: {len(tall)} tall trees, {len(boulders)} boulders, {len(fill)} understorey plants')
+
+# ---- the brick terrace over the Sunken Garden, and the Hagiwara Gate on its rim (owner, 2026-10-27: "the Hagiwara gate
+# I believe is on a brick terrace looking out over a sunken garden"; the map: "leading to a terrace above the Sunken
+# Garden, where the Hagiwara residence once stood"): the highest clear ground 8–11 m from the sunken pond's middle on
+# its gift-shop side, the gate facing the pond
+sunk_c2 = np.asarray(ponds['sunken'], float).mean(axis=0)
+best = None
+for b in range(90, 271, 10):
+    for rr in np.arange(8.0, 11.1, 1.0):
+        x, z = sunk_c2[0] + math.sin(math.radians(b)) * rr, sunk_c2[1] + math.cos(math.radians(b)) * rr
+        if not free2(x, z, 1.2, 1.5): continue
+        h = ground(x, z)
+        if best is None or h > best[0]: best = (h, x, z)
+terrace = {'x': round(float(best[1]), 2), 'z': round(float(best[2]), 2), 'bearing': int(math.degrees(math.atan2(sunk_c2[0] - best[1], sunk_c2[1] - best[2])) % 360)}
+print('terrace at', terrace, 'ground', round(best[0], 1), 'pond', round(ground(*sunk_c2), 1))
+
 # ---- the trees planted by hand, the rest of them (appended to the lanes: nothing above moves)
 MAIN_GATE = (-5032.9, -2503.4)
 gc = garden.mean(axis=0)
@@ -580,6 +651,14 @@ export const HERO: [number, number, string, number, number][] = {j(hero)}
 export const KARIKOMI: [number, number, number, number][] = {j(karikomi)}
 /** mondo grass tufts along the banks and paths: x, z, height */
 export const MONDO: [number, number, number][] = {j(mondo)}
+/** the tall shading trees from the tree library: x, z, species, height, spin */
+export const TALL: [number, number, string, number, number][] = {j(tall)}
+/** big boulders on Waterfall Hill, along the falls and the banks: x, z, height, seed */
+export const BOULDERS: [number, number, number, number][] = {j(boulders)}
+/** the understorey filling the open ground: x, z, species, height */
+export const FILL: [number, number, string, number][] = {j(fill)}
+/** the brick terrace over the Sunken Garden: its middle and the bearing it looks out on (the Hagiwara Gate stands on its rim) */
+export const TERRACE: {{ x: number; z: number; bearing: number }} = {j(terrace)}
 """
 (ROOT / 'src/render/landmarks/sf/tea-garden-layout.ts').write_text(ts)
 print(f'rocks {len(rocks)}, domes {len(domes)}, pines {len(pines)}/{len(PINES_AT)}, dwarf {len(dwarf)}+{len(dwarf_pines)}, bamboo {len(bamboo)}, reeds {len(reeds)}, stream {stream}, cherry {len(cherry)}, maple {len(maple)}')

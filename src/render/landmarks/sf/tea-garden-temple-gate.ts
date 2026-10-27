@@ -21,8 +21,9 @@
  */
 import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
-import { box, prism, strut, type Rgb } from '../../models.ts'
+import { prism, strut, type Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
+import { B, Q, type P3, fan, loft, ring, curl, wave } from './tea-garden-kit.ts'
 
 const HEIGHT = 9.6
 const RED: Rgb = [0.72, 0.16, 0.08]
@@ -34,69 +35,6 @@ const ROOF: Rgb = [0.33, 0.38, 0.42]   // weathered copper, slate-blue
 const SLATE: Rgb = [0.30, 0.33, 0.36]
 const DARK: Rgb = [0.12, 0.09, 0.08]
 const GRANITE: Rgb = [0.60, 0.60, 0.58]
-
-type P3 = [number, number, number]
-
-/** a box from its FOOT: centre (cx, cz), bottom y0, full sizes sx × sz, height h */
-function B(out: MeshBuilder, cx: number, y0: number, cz: number, sx: number, sz: number, h: number, c: Rgb, tag = 0): void {
-  box(out, cx, y0 + h / 2, cz, sx / 2, h / 2, sz / 2, c, tag)
-}
-
-/**
- * a quad whose normal is taken from its own diagonals and turned to face AWAY from the model's vertical axis (every
- * face here looks outward from it; a face centred on the axis — a cap, an underside — gives its normal as `n`)
- */
-function Q(out: MeshBuilder, p: P3[], c: Rgb, tag = 0, n?: P3): void {
-  if (!n) {
-    const d1 = [p[2][0] - p[0][0], p[2][1] - p[0][1], p[2][2] - p[0][2]]
-    const d2 = [p[3][0] - p[1][0], p[3][1] - p[1][1], p[3][2] - p[1][2]]
-    n = [d1[1] * d2[2] - d1[2] * d2[1], d1[2] * d2[0] - d1[0] * d2[2], d1[0] * d2[1] - d1[1] * d2[0]]
-    const cx = (p[0][0] + p[1][0] + p[2][0] + p[3][0]) / 4, cz = (p[0][2] + p[1][2] + p[2][2] + p[3][2]) / 4
-    if (n[0] * cx + n[2] * cz < 0) n = [-n[0], -n[1], -n[2]]
-  }
-  const l = Math.hypot(...n) || 1
-  out.quad(p, [n[0] / l, n[1] / l, n[2] / l], [[0, 0], [1, 0], [1, 1], [0, 1]], c, tag)
-}
-
-const same = (a: P3, b: P3): boolean => a[0] === b[0] && a[1] === b[1] && a[2] === b[2]
-
-/** quads between two rings of the same length (a collapsed edge gives a triangle) */
-function loft(out: MeshBuilder, r0: P3[], r1: P3[], c: Rgb, tag = 0): void {
-  const n = r0.length
-  for (let i = 0; i < n; i++) {
-    const j = (i + 1) % n
-    if (same(r0[i], r0[j]) && same(r1[i], r1[j])) continue
-    Q(out, [r0[i], r0[j], r1[j], r1[i]], c, tag)
-  }
-}
-
-function fan(out: MeshBuilder, pts: P3[], c: Rgb, tag = 0, n?: P3): void {
-  for (let i = 1; i + 1 < pts.length; i += 2) Q(out, [pts[0], pts[i], pts[i + 1], pts[i + 2] ?? pts[0]], c, tag, n)
-}
-
-/** the corner curl, 0 mid-side to 1 at the corners */
-const curl = (u: number): number => Math.max(0, (u - 0.55) / 0.45) ** 2
-/** the karahafu: a cusped wave over the middle of a side, 0 outside |u| < w, 1 at the crest */
-const wave = (u: number, w: number): number => (Math.abs(u) >= w ? 0 : 0.5 + 0.5 * Math.cos(Math.PI * u / w)) ** 1.6
-
-/**
- * a ring round hx × hz at y: nx points along each long (x) side, nz along each short side, clockwise from (+hx, +hz);
- * the corners lifted by `lift`, and the long sides' middles by `bump` (the karahafu) over a fraction `bw` of the side
- */
-function ring(hx: number, hz: number, y: number, lift: number, nx: number, nz: number, bump = 0, bw = 0.4): P3[] {
-  const pts: P3[] = []
-  const cs: [number, number][] = [[hx, hz], [-hx, hz], [-hx, -hz], [hx, -hz]]
-  for (let i = 0; i < 4; i++) {
-    const a = cs[i], b = cs[(i + 1) % 4]
-    const n = i % 2 === 0 ? nx : nz      // sides 0 and 2 run along x (the long sides)
-    for (let j = 0; j < n; j++) {
-      const t = j / n, u = 2 * t - 1
-      const dy = lift * curl(Math.abs(u)) + (i % 2 === 0 ? bump * wave(u, bw) : 0)
-      pts.push([a[0] + (b[0] - a[0]) * t, y + dy, a[1] + (b[1] - a[1]) * t])
-    }
-  }
-  return pts
-}
 
 /** the balcony rail: corner and third posts with caps, a top rail and two slim lower rails */
 function rail(out: MeshBuilder, y: number, hx: number, hz: number, h: number): void {

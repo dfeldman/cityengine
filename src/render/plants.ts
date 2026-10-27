@@ -398,8 +398,30 @@ export class Plants {
     this.dirty = true
   }
 
+  /**
+   * `tree:<species>`: the TREE library's trees by name, the same way (2026-10-27, the Tea Garden's shading trees — the
+   * owner: "there are some huge trees that shade much of the garden" — placed by the builder rather than the bake, so no
+   * rebake for a tree). `trees/index.json` is the library's own index (rebuilt from the bucket when it owns it).
+   */
+  private trees: Promise<{ trees: PlantEntry[] } | null> | null = null
+  private async loadTree(name: string): Promise<void> {
+    if (!this.trees) this.trees = fetchAssetJson<{ trees: PlantEntry[] }>(`${this.base.replace(/plants\/$/, 'trees/')}index.json`).catch(() => null)
+    const index = await this.trees
+    const species = name.slice(5)
+    // (the library's winter entries wear snow: not in a garden)
+    const files = index?.trees.filter((t) => t.species === species && (t as { season?: string }).season !== 'winter') ?? []
+    if (!files.length) { console.warn(`plants: a landmark asks for "${name}", which the tree library does not have`); return }
+    const hs = files.map((t) => t.height).sort((a, b) => a - b)
+    for (const e of files) {
+      const parts = await this.importModel(e.file, this.base.replace(/plants\/$/, 'trees/')).catch(() => [] as Mesh[])
+      if (parts.length) this.models.push({ kind: 'shrub', species: name, parts, top: e.height || 1, named: true, own: hs[hs.length >> 1] })
+    }
+    this.dirty = true
+  }
+
   private async loadNamed(species: string): Promise<void> {
     if (species.startsWith('rock:')) return this.loadRock(species)
+    if (species.startsWith('tree:')) return this.loadTree(species)
     for (let tries = 0; !this.index && tries < 120; tries++) await new Promise((r) => setTimeout(r, 500))
     if (!this.index) return
     const files = this.index.trees.filter((t) => t.species === species)

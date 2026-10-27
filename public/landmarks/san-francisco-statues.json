@@ -1131,27 +1131,6 @@
     "note": "assetkit-models-sf/tea-garden-drum-bridge: over the pool teaGardenGrounds draws, along the old procedural arch's line (OSM bridge way, bearing 15), which is removed (2026-10-25). The model carries its own size (8 m span, 2.4 m wide, 3.85 m rise). The AI made it on the diagonal, 29\u00b0 off its axes: the pack now turns it straight first (`yaw`), and the squash that sheared it is gone (2026-10-26)."
   },
   {
-    "id": "tea-garden-main-gate",
-    "name": "Main Gate, Japanese Tea Garden",
-    "asset": "tea-garden-main-gate",
-    "lodRanges": [
-      300,
-      900
-    ],
-    "note": "assetkit-models-sf/tea-garden-main-gate at way/136888948's centre (OSM's 'South Gate': the two-storey entrance gate on the Music Concourse side); passage along the footprint's long axis (bearing 42: at 132 it stood across the path \u2014 owner, 2026-10-26, \"rotated 90 degrees\"); hides the procedural teaGardenSouthGate.",
-    "replaces": "Japanese Tea Garden South Gate",
-    "attach": {
-      "to": "Japanese Tea Garden grounds",
-      "at": [
-        25.1,
-        0,
-        -62.07
-      ],
-      "bearing": 42,
-      "draped": true
-    }
-  },
-  {
     "id": "tea-garden-hagiwara-gate",
     "name": "Hagiwara Gate, Japanese Tea Garden",
     "asset": "tea-garden-hagiwara-gate",
@@ -1159,15 +1138,15 @@
       150,
       450
     ],
-    "note": "assetkit-models-sf/tea-garden-hagiwara-gate on the path between the gift shop and the Sunken Garden's terrace (not in OSM), along the path's bearing.",
+    "note": "assetkit-models-sf/tea-garden-hagiwara-gate on the rim of the brick terrace over the Sunken Garden (tea-garden-landscape.ts draws the terrace at TERRACE), facing the sunken pond (owner, 2026-10-27: 'on a brick terrace looking out over a sunken garden'; the map: 'leading to a terrace above the Sunken Garden').",
     "attach": {
       "to": "Japanese Tea Garden grounds",
       "at": [
-        17.97,
+        11.02,
         0,
-        30.65
+        36.53
       ],
-      "bearing": 142,
+      "bearing": 349,
       "draped": true
     }
   },

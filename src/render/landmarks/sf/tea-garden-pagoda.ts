@@ -22,8 +22,9 @@
  */
 import type { MeshBuilder } from '../../buildings.ts'
 import type { Fit } from '../fit.ts'
-import { box, prism, strut, type Rgb } from '../../models.ts'
+import { prism, strut, type Rgb } from '../../models.ts'
 import { surfaceTag } from '../../cartoon-material.ts'
+import { B, type P3, fan, loft, ring, squareFrustum, curl } from './tea-garden-kit.ts'
 
 const HEIGHT = 22
 const RED: Rgb = [0.60, 0.11, 0.06]
@@ -37,91 +38,18 @@ const DARK: Rgb = [0.12, 0.08, 0.07]
 const BRONZE: Rgb = [0.32, 0.27, 0.18]
 const VERDIGRIS: Rgb = [0.35, 0.55, 0.48]
 
-type P3 = [number, number, number]
-
-/** a box from its FOOT: centre (cx, cz), bottom y0, full sizes sx × sz, height h */
-function B(out: MeshBuilder, cx: number, y0: number, cz: number, sx: number, sz: number, h: number, c: Rgb, tag = 0): void {
-  box(out, cx, y0 + h / 2, cz, sx / 2, h / 2, sz / 2, c, tag)
-}
-
-/**
- * a quad whose normal is taken from its own diagonals and turned to face AWAY from the model's vertical axis (every
- * face here looks outward from it; a face centred on the axis — a cap, an underside — gives its normal as `n`)
- */
-function Q(out: MeshBuilder, p: P3[], c: Rgb, tag = 0, n?: P3): void {
-  if (!n) {
-    const d1 = [p[2][0] - p[0][0], p[2][1] - p[0][1], p[2][2] - p[0][2]]
-    const d2 = [p[3][0] - p[1][0], p[3][1] - p[1][1], p[3][2] - p[1][2]]
-    n = [d1[1] * d2[2] - d1[2] * d2[1], d1[2] * d2[0] - d1[0] * d2[2], d1[0] * d2[1] - d1[1] * d2[0]]
-    const cx = (p[0][0] + p[1][0] + p[2][0] + p[3][0]) / 4, cz = (p[0][2] + p[1][2] + p[2][2] + p[3][2]) / 4
-    if (n[0] * cx + n[2] * cz < 0) n = [-n[0], -n[1], -n[2]]
-  }
-  const l = Math.hypot(...n) || 1
-  out.quad(p, [n[0] / l, n[1] / l, n[2] / l], [[0, 0], [1, 0], [1, 1], [0, 1]], c, tag)
-}
-
-/** a square frustum with axis-aligned faces: half-width r0 at y0, r1 at y1, capped */
-function squareFrustum(out: MeshBuilder, y0: number, y1: number, r0: number, r1: number, c: Rgb, tag = 0): void {
-  const lo = (sx: number, sz: number): P3 => [sx * r0, y0, sz * r0]
-  const hi = (sx: number, sz: number): P3 => [sx * r1, y1, sz * r1]
-  const cs: [number, number][] = [[1, 1], [-1, 1], [-1, -1], [1, -1]]
-  for (let i = 0; i < 4; i++) {
-    const [ax, az] = cs[i], [bx, bz] = cs[(i + 1) % 4]
-    Q(out, [lo(ax, az), lo(bx, bz), hi(bx, bz), hi(ax, az)], c, tag)
-  }
-  Q(out, [hi(1, 1), hi(-1, 1), hi(-1, -1), hi(1, -1)], c, tag, [0, 1, 0])
-  Q(out, [lo(1, -1), lo(-1, -1), lo(-1, 1), lo(1, 1)], c, tag, [0, -1, 0])
-}
-
-/** the curl: 0 along the middle of a side, rising to 1 at its corners (u = |t| in 0..1 along the side) */
-const curl = (u: number): number => Math.max(0, (u - 0.55) / 0.45) ** 2
-
-/** n points a side round the square hx × hz at y, the corners lifted by `lift`; clockwise from (+hx, +hz) */
-function ring(hx: number, hz: number, y: number, lift: number, n: number): P3[] {
-  const pts: P3[] = []
-  const cs: [number, number][] = [[hx, hz], [-hx, hz], [-hx, -hz], [hx, -hz]]
-  for (let i = 0; i < 4; i++) {
-    const a = cs[i], b = cs[(i + 1) % 4]
-    for (let j = 0; j < n; j++) {
-      const t = j / n
-      pts.push([a[0] + (b[0] - a[0]) * t, y + lift * curl(Math.abs(2 * t - 1)), a[1] + (b[1] - a[1]) * t])
-    }
-  }
-  return pts
-}
-
-/** quads between two rings of the same length; `flip` winds them the other way */
-function loft(out: MeshBuilder, r0: P3[], r1: P3[], c: Rgb, tag: number, flip = false): void {
-  const n = r0.length
-  for (let i = 0; i < n; i++) {
-    const j = (i + 1) % n
-    const p: P3[] = [r0[i], r0[j], r1[j], r1[i]]
-    if (r0[i][0] === r0[j][0] && r0[i][1] === r0[j][1] && r0[i][2] === r0[j][2]) continue   // the collapsed ridge ends
-    if (r1[i][0] === r1[j][0] && r1[i][1] === r1[j][1] && r1[i][2] === r1[j][2] && r0[i][0] === r0[j][0] && r0[i][2] === r0[j][2]) continue
-    Q(out, flip ? p.reverse() : p, c, tag)
-  }
-}
-
-/** a polygon fan (the roof's underside, the ridge cap); wound as given */
-function fan(out: MeshBuilder, pts: P3[], c: Rgb, tag = 0, n?: P3): void {
-  for (let i = 1; i + 1 < pts.length; i += 2) {
-    const d = pts[i + 2] ?? pts[0]
-    Q(out, [pts[0], pts[i], pts[i + 1], d], c, tag, n)
-  }
-}
-
 /**
  * The shingle roof: an eave ring whose corners curl up, a mid ring, then a short ridge (ridgeHalf > 0) or a point;
  * `thick` deep at the eave with a flat underside. Returns the apex y.
  */
 function hipRoof(out: MeshBuilder, y0: number, he: number, rise: number, lift: number, ridgeHalf: number, thick = 0.14): number {
   const n = 8, tag = surfaceTag('tile')
-  const eave = ring(he, he, y0, lift, n)
-  const mid = ring(he * 0.52, he * 0.52, y0 + lift * 0.15 + rise * 0.42, lift * 0.1, n)
-  const top = ring(ridgeHalf, 0, y0 + rise, 0, n)
+  const eave = ring(he, he, y0, lift, n, n)
+  const mid = ring(he * 0.52, he * 0.52, y0 + lift * 0.15 + rise * 0.42, lift * 0.1, n, n)
+  const top = ring(ridgeHalf, 0, y0 + rise, 0, n, n)
   loft(out, eave, mid, SHINGLE, tag)
   loft(out, mid, top, SHINGLE, tag)
-  const under = ring(he, he, y0 - thick, lift, n)
+  const under = ring(he, he, y0 - thick, lift, n, n)
   loft(out, under, eave, SHINGLE, tag)
   fan(out, under, SHINGLE, tag, [0, -1, 0])
   return y0 + rise
@@ -130,8 +58,8 @@ function hipRoof(out: MeshBuilder, y0: number, he: number, rise: number, lift: n
 /** a board following the eave's curve, `h` tall and 0.08 deep, with the white bosses riding on its outer face */
 function fascia(out: MeshBuilder, y: number, he: number, lift: number, h: number): void {
   const n = 8
-  const lo = ring(he, he, y, lift, n), hi = ring(he, he, y + h, lift, n)
-  const li = ring(he - 0.08, he - 0.08, y, lift, n), hi2 = ring(he - 0.08, he - 0.08, y + h, lift, n)
+  const lo = ring(he, he, y, lift, n, n), hi = ring(he, he, y + h, lift, n, n)
+  const li = ring(he - 0.08, he - 0.08, y, lift, n, n), hi2 = ring(he - 0.08, he - 0.08, y + h, lift, n, n)
   loft(out, lo, hi, RED, 0); loft(out, hi2, li, RED, 0); loft(out, hi, hi2, RED, 0); loft(out, li, lo, RED, 0)
 }
 

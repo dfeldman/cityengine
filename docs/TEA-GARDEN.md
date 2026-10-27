@@ -213,7 +213,7 @@ bridge's way: local metres about the garden's middle, draped; attached entries a
 |---|---|---|
 | ~~pagoda (12 m)~~ | OSM way/34221099 | **retired 2026-10-27**: the pagoda is the TS builder `tea-garden-pagoda.ts` (22 m) again, built from the owner's photographs (docs/sf-batches/MODEL-TEA-GARDEN-PAGODA.md); the GLB's placement entry is gone |
 | ~~Temple Gate (6 m)~~ | way/136888944 | **retired 2026-10-27**: the TS builder `tea-garden-temple-gate.ts` (9.6 m) from the owner's photographs (docs/sf-batches/MODEL-TEA-GARDEN-TEMPLE-GATE.md); the GLB's placement entry is gone |
-| Main Gate (7.5 m) | way/136888948 — OSM calls it the South Gate; it is the two-storey entrance on the Music Concourse side | teaGardenSouthGate |
+| ~~Main Gate (7.5 m)~~ | way/136888948 — OSM calls it the South Gate | **retired 2026-10-27**: the TS builder `tea-garden-main-gate.ts` (10.5 m, with the flanking walls) from the owner's photographs (docs/sf-batches/MODEL-TEA-GARDEN-MAIN-GATE.md); the GLB's placement entry is gone. The real South Gate (a single-storey wall gate) is a separate, unmodelled building |
 | Hagiwara Gate (4.5 m) | on the path between the gift shop and the Sunken Garden's terrace (not in OSM) | — |
 | tea house (9.5 m long) | way/34220947, facing its pond | teaGardenTeaHouse |
 | stone lantern × 6, small stone lantern × 4 | the spots tea-garden.ts's LANTERNS drew | the procedural lanterns (`HAVE_LANTERN_MODELS`) |
