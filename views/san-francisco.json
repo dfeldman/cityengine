@@ -13571,5 +13571,50 @@
    60
   ],
   "note": "the rebuilt dome stage (docs/sf-batches/MODEL-CITY-HALL-DOME.md): paired columns and pedimented windows on the drum, urns on the attic, gilt rib pairs on the lead dome, the gilt lantern and spire; from the air: __view([37.7790, -122.4172, 85], [37.77925, -122.41925, 70])"
+ },
+ {
+  "name": "St. Anne of the Sunset \u2014 from Judah at Funston",
+  "group": "landmark",
+  "from": [
+   37.7619,
+   -122.4703,
+   2
+  ],
+  "to": [
+   37.76215,
+   -122.471,
+   14
+  ],
+  "note": "the pink church's front over the N-Judah tracks, from the east as the Inbound-train photograph: twin campaniles, the rose, the hood and the three portals on their steps (sf/st-anne.ts, docs/sf-batches/MODEL-ST-ANNE.md)"
+ },
+ {
+  "name": "St. Anne of the Sunset \u2014 from the south, air",
+  "group": "landmark",
+  "from": [
+   37.761,
+   -122.4708,
+   70
+  ],
+  "to": [
+   37.7623,
+   -122.4708,
+   20
+  ],
+  "note": "the whole from over Judah: towers, nave, crossing drum and lantern, the round apse behind"
+ },
+ {
+  "name": "St. Anne of the Sunset \u2014 from the north, air",
+  "group": "landmark",
+  "from": [
+   37.7632,
+   -122.47085,
+   24
+  ],
+  "to": [
+   37.76262,
+   -122.47085,
+   12
+  ],
+  "note": "the back as the Strawberry Hill photograph: the round arcaded apse under its tile cone over the ambulatory ring, the low parish wing, the octagonal crossing drum and lantern, the towers beyond"
  }
 ]
