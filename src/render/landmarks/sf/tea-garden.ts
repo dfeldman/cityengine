@@ -82,6 +82,8 @@ export function teaGardenGiftShop(out: MeshBuilder, fit: Fit): void {
 // the garden's middle, city metres (x east, z north), and what stands in it, about that middle
 const MID = { x: -5110, z: -2530 }
 const L = (x: number, z: number): [number, number] => [x - MID.x, z - MID.z]
+/** where the fence stops: [x, z, radius] about the garden's middle — the Main Gate (OSM way/136888948's centre) and its 9 m walls */
+const FENCE_GAPS: [number, number, number][] = [[L(-5085.4, -2574.0)[0], L(-5085.4, -2574.0)[1], 11.5]]
 const FENCE: [number, number][] = [[-5032.9, -2503.4], [-5089.4, -2592.8], [-5129.0, -2596.1], [-5145.0, -2595.5], [-5149.6, -2592.9], [-5176.3, -2556.4], [-5180.5, -2543.2], [-5175.0, -2512.3], [-5113.1, -2463.0], [-5093.3, -2448.3], [-5032.9, -2503.4]]
 const HAVE_LANTERN_MODELS = true
 const LANTERNS: [number, number][] = [[-5100, -2540], [-5094, -2550], [-5118, -2548], [-5132, -2540], [-5080, -2525], [-5123, -2566], [-5140, -2560], [-5098, -2510], [-5152, -2548], [-5070, -2515]]
@@ -150,14 +152,18 @@ export function teaGardenGrounds(out: MeshBuilder, _fit: Fit): void {
   const [bx, bz] = L(-5105, -2526)
   box(out, bx, 0.5, bz, 1.6, 0.5, 1.6, STONE, surfaceTag('granite'))
   box(out, bx, 1.25, bz, 1.2, 0.25, 1.2, STONE, surfaceTag('granite'))
-  // the bamboo fence round the garden: posts every 2.5 m, three rails
+  // the bamboo fence round the garden: posts every 2.5 m, three rails (the real one is a tall privacy fence; the owner,
+  // 2026-10-27, keeps it thin "for game purposes"), with a GAP where the Main Gate and its walls stand on the line
   for (let i = 1; i < FENCE.length; i++) {
     const a = L(...FENCE[i - 1]), b = L(...FENCE[i])
-    for (const y of [0.4, 1.1, 1.7]) strut(out, [a[0], y, a[1]], [b[0], y, b[1]], 0.05, 0.05, BAMBOO)
     const n = Math.max(1, Math.round(Math.hypot(b[0] - a[0], b[1] - a[1]) / 2.5))
+    const at = (t: number): [number, number] => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]
+    const open = (p: [number, number]): boolean => FENCE_GAPS.some(([gx, gz, r]) => Math.hypot(p[0] - gx, p[1] - gz) < r)
     for (let k = 0; k < n; k++) {
-      const t = k / n
-      box(out, a[0] + (b[0] - a[0]) * t, 0.95, a[1] + (b[1] - a[1]) * t, 0.06, 0.95, 0.06, BAMBOO, 0)
+      const p = at(k / n), q = at((k + 1) / n)
+      if (!open(p)) box(out, p[0], 0.95, p[1], 0.06, 0.95, 0.06, BAMBOO, 0)
+      if (open(p) || open(q)) continue
+      for (const y of [0.4, 1.1, 1.7]) strut(out, [p[0], y, p[1]], [q[0], y, q[1]], 0.05, 0.05, BAMBOO)
     }
   }
 }

@@ -248,3 +248,9 @@ Torii is away for remodelling and is left out.
   Main Pond's south-west end and the stone pagodas are the owner's GLBs.
 - **Buildings and structures.** The owner's GLBs replace the procedural pagoda, gates, tea house, bridges, lanterns and
   fence.
+
+## The bamboo fence and the Main Gate (2026-10-27)
+The real fence is a tall privacy fence; the owner keeps the thin three-rail bamboo fence "for game purposes", but it now
+stops either side of the Main Gate (`FENCE_GAPS` in tea-garden.ts: 11.5 m about the gate's OSM centre, so the gate's
+own walls take over the line). The gate's builder stands on a 1.3 m granite terrace with steps to the concourse,
+since the drape sets a landmark's base at the lowest ground and the ground rises across its front.
