@@ -13543,6 +13543,21 @@
   "note": "Japanese Tea Garden landscape (plants, rocks, water): before/after the 2026-10-25 pass"
  },
  {
+  "name": "Clarke Mansion \u2014 from Caselli at Douglass",
+  "group": "landmark",
+  "from": [
+   37.75982,
+   -122.43935,
+   2.0
+  ],
+  "to": [
+   37.75962,
+   -122.43957,
+   9
+  ],
+  "note": "Nobby Clarke's Folly, 250 Douglass (sf/clarke-mansion.ts, docs/sf-batches/MODEL-CLARKE-MANSION.md): the Caselli front over its retaining wall \u2014 the twin bell domes, the Corinthian porch and urned balcony, the striped gable with the cupola and chimney behind, the cone at the back-left; from Douglass: __view([37.75948, -122.43912, 2], [37.75961, -122.43955, 10]); from the air: __view([37.76005, -122.43905, 45], [37.7596, -122.43957, 8])"
+ },
+ {
   "name": "City Hall \u2014 the dome from Civic Center Plaza",
   "group": "landmark",
   "from": [

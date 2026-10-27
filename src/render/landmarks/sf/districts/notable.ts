@@ -8893,66 +8893,6 @@ function kearnyTopPlanters(out: MeshBuilder, _fit: Fit): void {
 }
 
 /**
- * The Alfred E. Clarke ("Caselli") Mansion, 250 Douglass (1892; Commons docs/shots/refs/notable/clarke): a big Queen
- * Anne house of pale grey clapboard under a steep dark slate hip roof with front gables, a round bay rising to a
- * bell-shaped dome, a square cupola with a spire on the ridge, a slim corner turret with a gilded ball, a tall red brick
- * chimney. Same all round (the house stands free on its hillside).
- */
-function clarkeMansion_250_Douglass(out: MeshBuilder, fit: Fit): void {
-  const GREY: Rgb = [0.68, 0.72, 0.76], WHITE: Rgb = [0.9, 0.91, 0.92], SLATE: Rgb = [0.3, 0.32, 0.36], DARK: Rgb = [0.16, 0.17, 0.2],
-    BRICK: Rgb = [0.45, 0.22, 0.17], GOLD: Rgb = [0.85, 0.66, 0.25], METAL: Rgb = [0.62, 0.64, 0.66]
-  const CB = surfaceTag('clapboard'), TL = surfaceTag('tile'), GL = surfaceTag('glass')
-  const hx = Math.min(fit.hx, 12), hz = Math.min(fit.hz, 10), E = 9.5
-  box(out, 0, E / 2, 0, hx, E / 2, hz, GREY, CB)
-  for (const [y0, y1] of [[1.0, 3.2], [4.6, 6.8]]) {
-    for (let u = -hx + 1.3; u < hx - 0.8; u += 2.4) for (const sd of [-1, 1]) box(out, u, (y0 + y1) / 2, sd * (hz + 0.02), 0.5, (y1 - y0) / 2, 0.04, DARK, GL)
-    for (let u = -hz + 1.3; u < hz - 0.8; u += 2.4) for (const sd of [-1, 1]) box(out, sd * (hx + 0.02), (y0 + y1) / 2, u, 0.04, (y1 - y0) / 2, 0.5, DARK, GL)
-  }
-  box(out, 0, E, 0, hx + 0.35, 0.18, hz + 0.35, WHITE, CB)
-  // the steep hip
-  {
-    const ex = hx + 0.35, ez = hz + 0.35, r = Math.abs(ex - ez), rise = 7.4, Y = E + 0.1
-    const A: V3 = ex >= ez ? [-r, Y + rise, 0] : [0, Y + rise, -r], B: V3 = ex >= ez ? [r, Y + rise, 0] : [0, Y + rise, r]
-    const c = (x: number, z: number): V3 => [x, Y, z], q: [number, number][] = [[0, 0], [1, 0], [1, 1], [0, 1]]
-    if (ex >= ez) {
-      out.quad([c(-ex, -ez), c(ex, -ez), B, A], [0, ez, -rise], q, SLATE, TL); out.quad([c(ex, ez), c(-ex, ez), A, B], [0, ez, rise], q, SLATE, TL)
-      out.quad([c(ex, -ez), c(ex, ez), B, B], [rise, ex, 0], q, SLATE, TL); out.quad([c(-ex, ez), c(-ex, -ez), A, A], [-rise, ex, 0], q, SLATE, TL)
-    } else {
-      out.quad([c(ex, -ez), c(ex, ez), B, A], [rise, ex, 0], q, SLATE, TL); out.quad([c(-ex, ez), c(-ex, -ez), A, B], [-rise, ex, 0], q, SLATE, TL)
-      out.quad([c(-ex, -ez), c(ex, -ez), A, A], [0, ez, -rise], q, SLATE, TL); out.quad([c(ex, ez), c(-ex, ez), B, B], [0, ez, rise], q, SLATE, TL)
-    }
-  }
-  // front gables on the −z side
-  for (const x of [-hx * 0.5, hx * 0.45]) {
-    box(out, x, E + 1.4, -hz + 0.6, 2.4, 1.4, 1.2, WHITE, CB)
-    prism(out, x, -hz + 0.6, E + 2.8, E + 4.6, 2.7, 4, SLATE, TL, 0.1)
-    box(out, x, E + 1.6, -hz - 0.62, 0.7, 0.8, 0.03, DARK, GL)
-  }
-  // the round bay rising to a bell dome (south-east corner)
-  const bx = hx * 0.35, bz = -hz - 0.8
-  prism(out, bx, bz, 0, E + 1.2, 2.6, 12, WHITE, CB)
-  for (const y of [1.2, 4.8]) for (let k = 0; k < 6; k++) {
-    const a2 = Math.PI + (k - 2.5) * 0.45
-    boxAlong(out, bx + Math.sin(a2) * 2.62, y + 1.1, bz + Math.cos(a2) * 2.62, 0.45, 1.1, 0.04, a2, DARK, GL)
-  }
-  prism(out, bx, bz, E + 1.2, E + 1.6, 2.9, 12, WHITE, CB)
-  for (let k = 0; k < 5; k++) prism(out, bx, bz, E + 1.6 + k * 0.7, E + 2.3 + k * 0.7, 2.6 * Math.cos(k * 0.3), 12, METAL, surfaceTag('metal'), 2.6 * Math.cos((k + 1) * 0.3))
-  prism(out, bx, bz, E + 5.1, E + 5.9, 0.12, 6, GOLD, 0)
-  // the cupola with its spire on the ridge
-  box(out, 0, E + 7.8, 0, 1.2, 1.0, 1.2, WHITE, CB)
-  for (const sd of [-1, 1]) { box(out, 0, E + 7.8, sd * 1.22, 0.6, 0.5, 0.02, DARK, GL); box(out, sd * 1.22, E + 7.8, 0, 0.02, 0.5, 0.6, DARK, GL) }
-  prism(out, 0, 0, E + 8.8, E + 11.5, 1.6, 4, SLATE, TL, 0.05)
-  prism(out, 0, 0, E + 11.5, E + 13, 0.05, 4, DARK, 0)
-  // the slim corner turret with its gilded ball (north-west corner)
-  const tx = -hx + 0.5, tz = hz - 0.5
-  prism(out, tx, tz, 0, E + 4, 1.5, 8, WHITE, CB)
-  prism(out, tx, tz, E + 4, E + 7.5, 1.7, 8, SLATE, TL, 0.08)
-  prism(out, tx, tz, E + 7.5, E + 8.0, 0.3, 8, GOLD, 0, 0.3)
-  // the chimney
-  box(out, hx * 0.15, E + 6, hz * 0.3, 0.6, 2.4, 0.6, BRICK, surfaceTag('brick'))
-}
-
-/**
  * The Greater Farallones visitor center at Crissy Field, the old Coast Guard station (1915; Mapillary
  * docs/shots/refs/notable/farallones): two storeys of white clapboard under a red hipped roof with a glazed watch
  * lookout on the ridge, a red-roofed porch round the ground floor.
@@ -10138,7 +10078,6 @@ export const NOTABLE: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   metroTheatre_2055_Union,
   lightHouse_651_Dolores,
   kearnyTopPlanters,
-  clarkeMansion_250_Douglass,
   coastGuardStation_CrissyField,
   torpedoAssembly_YBI,
   chinatownYWCA_965_Clay,
