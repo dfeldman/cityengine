@@ -20,10 +20,14 @@ function muralAlley(out: MeshBuilder, fit: Fit): void {
   /*
    * ON THE WALLS, flat (2026-10-05, first look): the panels stood as free boards 1.6 m from the centre line — the alley
    * is 7–8 m between the garages and fences, its carriageway 3 m — so one row stood in the road and every panel read as
-   * a billboard on legs. Now the murals lie on the line of the walls, 4.2 m out, as thin paint over a backing the
-   * height of a garage, and the shapes on them are flush patches, not boxes standing off them.
+   * a billboard on legs. Now the murals lie on the line of the walls as thin paint over a backing the height of a
+   * garage, and the shapes on them are flush patches, not boxes standing off them.
+   * WHERE THE WALLS ARE (2026-10-27): they stood 4.2 m out, from a "7–8 m between the walls" no map bears out — OSM's
+   * faces along Clarion are 1.7–2.3 m from the centre line — so with the alley turned true every panel was 2 m inside a
+   * building and the rider saw none. Half the entry's width now, as `size` says: the paint on the nearest face, a
+   * fence across the open lots.
    */
-  const W = 4.2
+  const W = Math.min(fit.hx, fit.hz)
   const B = (x: number, y: number, z: number, hx: number, hy: number, hz: number, c: Rgb): void =>
     along ? box(out, x, y, z, hx, hy, hz, c, 0) : box(out, z, y, x, hz, hy, hx, c, 0)
   for (const side of [-1, 1]) {
