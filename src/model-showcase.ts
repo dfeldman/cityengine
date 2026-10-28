@@ -28,6 +28,7 @@ import { court } from './render/sports.ts'
 import { fitCourt, type CourtSport } from './city/sports.ts'
 import { cartoonMaterial, updateCartoonEye } from './render/cartoon-material.ts'
 import { DAYLIGHT, setTimeOfDay, type TimeOfDay } from './render/facade-material.ts'
+import { Water } from './render/water.ts'
 
 export async function modelShowcase(canvas: HTMLCanvasElement, name: string, size: number, time: TimeOfDay = 'day'): Promise<void> {
   // (the hour first: the landmark material reads it when it is made)
@@ -106,6 +107,13 @@ export async function modelShowcase(canvas: HTMLCanvasElement, name: string, siz
     return signs.length * 2
   }
   let signTris = raiseSigns()
+  // the model's MOVING WATER (render/water.ts), raised as render/landmarks.ts does: parented to the model
+  const water = new Water(scene)
+  const raiseWater = (): void => {
+    for (const w of scene.meshes.filter((q) => q.name.startsWith('water:'))) w.dispose()
+    if (mb.water.length) water.raise(mb.water, m, name)
+  }
+  raiseWater()
   // vertex colours, the tag in alpha ignored
   // (a BODY-tagged panel — alpha 1 — takes a copy's livery in the game; here a maroon stands in for it)
   if (vehicle) {
@@ -152,6 +160,7 @@ export async function modelShowcase(canvas: HTMLCanvasElement, name: string, siz
     if (build) build(mb, fit)
     mb.toVertexData().applyToMesh(m, true)
     signTris = raiseSigns()
+    raiseWater()
     m.refreshBoundingInfo()
     const b = m.getBoundingInfo().boundingBox
     // the signs count: a catalogue that labelled a flat sign "0 tris" would be lying in the useful direction

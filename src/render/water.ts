@@ -15,7 +15,9 @@
  *
  *  - `jet`:    from a nozzle at `at` with velocity `v` (m/s; gravity does the rest): a parabola, as two crossed ribbons
  *              that widen as the water spreads; `width` at the nozzle. A vertical jet (no horizontal velocity) rises,
- *              stalls and falls back on itself as a column, which is what a single-jet fountain looks like.
+ *              stalls and falls back on itself as a column, which is what a single-jet fountain looks like. It ends
+ *              in the highest pool it comes down INTO (the ring its landing point is inside), else on the lowest
+ *              pool, else at 0; `land` says the height outright.
  *  - `sheet`:  a curtain over a lip from `a` to `b`, leaving it at `out` m/s and falling `drop` metres — a basin
  *              overflowing, a cascade, a waterfall.
  *  - `pool`:   a still surface over a ring at height `y`: tinted water that glitters, with the wind's ripples on it.
@@ -32,7 +34,7 @@ import { DAYLIGHT, NIGHT } from './facade-material.ts'
 
 type V3 = [number, number, number]
 export type WaterFeature =
-  | { kind: 'jet'; at: V3; v: V3; width?: number; spread?: number }
+  | { kind: 'jet'; at: V3; v: V3; width?: number; spread?: number; land?: number }
   | { kind: 'sheet'; a: V3; b: V3; out?: number; drop: number; thick?: number }
   | { kind: 'pool'; ring: { x: number; z: number }[]; y: number; colour?: V3 }
   | { kind: 'splash'; at: V3; r: number }
@@ -107,33 +109,47 @@ void main(void) {
 }
 `
 
-/* POOL: a surface; color.rgb its tint. Ripples in the world's own metres. */
+/*
+ * POOL: a surface; color.rgb its tint. Ripples in the world's own metres tilt its normal, and through that normal it
+ * shows its own colour looking down and the SKY at a glancing angle (Fresnel), with the sun glinting in it — which is
+ * what makes a basin read as water and not as a blue floor. (Was a two-tone of the tint with blotchy glints, which
+ * read as camouflage on a 20 m pool.)
+ */
 const POOL_FRAGMENT = `
 precision highp float;
 uniform float time;
 uniform float light;
 uniform vec3 fogColour;
 uniform float fogDensity;
+uniform vec3 cameraPosition;
+uniform vec3 sunDir;
+uniform vec3 skyTop;
+uniform vec3 skyLow;
 varying vec4 vData;
 varying float vDepth;
 varying vec3 vWorld;
 ${COMMON}
+float ripple(vec2 p) {
+  return noise(p * 1.7 + vec2(time * 0.45, time * 0.3)) * 0.6 + noise(p * 4.3 - vec2(time * 0.7, -time * 0.55)) * 0.4;
+}
 void main(void) {
   vec2 p = vWorld.xz;
-  float r1 = noise(p * 1.3 + vec2(time * 0.35, time * 0.2));
-  float r2 = noise(p * 3.1 - vec2(time * 0.5, -time * 0.4));
-  float rip = r1 * 0.6 + r2 * 0.4;
-  vec3 deep = vData.rgb;
-  // (gentle: a blotchy two-tone read as camouflage on a 20 m pool)
-  vec3 c = mix(deep * 0.92, deep * 1.1 + 0.04, smoothstep(0.3, 0.8, rip));
-  // the sky in it, more at a glancing angle than looking down
-  c = mix(c, vec3(0.62, 0.72, 0.8), 0.22);
-  // glints
-  float g = smoothstep(0.86, 0.95, noise(p * 6.0 + time * 0.8) * r2 + 0.3);
-  c += g * 0.35;
+  float e = 0.12, h0 = ripple(p);
+  vec3 n = normalize(vec3((h0 - ripple(p + vec2(e, 0.0))) * 0.7, 1.0, (h0 - ripple(p + vec2(0.0, e))) * 0.7));
+  vec3 V = normalize(cameraPosition - vWorld);
+  float cosT = clamp(dot(n, V), 0.0, 1.0);
+  float fres = 0.06 + 0.94 * pow(1.0 - cosT, 4.0);
+  // the sky it reflects: the horizon's pale at a glancing angle, the zenith's blue looking steeply down
+  vec3 R = reflect(-V, n);
+  vec3 sky = mix(skyLow, skyTop, clamp(R.y * 1.6, 0.0, 1.0));
+  vec3 deep = vData.rgb * (0.85 + 0.3 * h0);
+  vec3 c = mix(deep, sky, clamp(fres, 0.0, 0.8));
+  // the sun in it: a tight glint that breaks up on the ripples
+  float sun = pow(max(dot(R, -normalize(sunDir)), 0.0), 180.0);
+  c += vec3(1.0, 0.97, 0.9) * sun * 1.4;
   c *= light;
   float fog = 1.0 - exp(-vDepth * fogDensity);
-  gl_FragColor = vec4(mix(c, fogColour, clamp(fog, 0.0, 1.0)), 0.9);
+  gl_FragColor = vec4(mix(c, fogColour, clamp(fog, 0.0, 1.0)), 0.92);
 }
 `
 
@@ -183,7 +199,7 @@ function material(scene: Scene, kind: 'flow' | 'pool' | 'splash'): ShaderMateria
   if (have) return have as ShaderMaterial
   const m = new ShaderMaterial(name, scene, { vertex: 'fountainWater', fragment: name }, {
     attributes: ['position', 'uv', 'color'],
-    uniforms: ['world', 'viewProjection', 'time', 'light', 'fogColour', 'fogDensity'],
+    uniforms: ['world', 'viewProjection', 'time', 'light', 'fogColour', 'fogDensity', 'cameraPosition', 'sunDir', 'skyTop', 'skyLow'],
     needAlphaBlending: true,
   })
   m.backFaceCulling = false
@@ -197,6 +213,9 @@ function material(scene: Scene, kind: 'flow' | 'pool' | 'splash'): ShaderMateria
       m.setFloat('light', 1 - 0.7 * NIGHT)
       m.setColor3('fogColour', DAYLIGHT.fogColour)
       m.setFloat('fogDensity', DAYLIGHT.fogDensity)
+      m.setVector3('sunDir', DAYLIGHT.sun)
+      m.setColor3('skyTop', DAYLIGHT.zenith)
+      m.setColor3('skyLow', DAYLIGHT.horizon)
     }
   })
   return m
@@ -298,17 +317,45 @@ function addSplash(g: Geo, sp: Extract<WaterFeature, { kind: 'splash' }>, seed: 
   g.i.push(base, base + 1, base + 2, base, base + 2, base + 3)
 }
 
+type Pool = Extract<WaterFeature, { kind: 'pool' }>
+
+function inside(ring: { x: number; z: number }[], x: number, z: number): boolean {
+  let hit = false
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const a = ring[i], b = ring[j]
+    if ((a.z > z) !== (b.z > z) && x < ((b.x - a.x) * (z - a.z)) / (b.z - a.z) + a.x) hit = !hit
+  }
+  return hit
+}
+
+/**
+ * Where a jet comes down: the highest pool below its apex that its landing point falls inside, else the lowest pool,
+ * else the ground. (Every jet used to end at the HIGHEST pool's level, wherever it fell: the Legion's ring of jets
+ * from the outer rim stopped in mid-air at the height of the bowl in the middle.)
+ */
+function landing(j: Extract<WaterFeature, { kind: 'jet' }>, pools: Pool[]): number {
+  if (j.land !== undefined) return j.land
+  if (!pools.length) return 0
+  const apex = j.at[1] + Math.max(0, j.v[1]) ** 2 / (2 * G)
+  for (const p of [...pools].sort((a, b) => b.y - a.y)) {
+    if (p.y >= apex) continue
+    const q = along(j, flight(j, p.y))
+    if (inside(p.ring, q[0], q[2])) return p.y
+  }
+  return Math.min(...pools.map((p) => p.y))
+}
+
 /** A landmark's water, as meshes parented to it. */
 export class Water {
   constructor(private readonly scene: Scene) {}
 
   raise(features: WaterFeature[], host: Mesh, name: string): void {
     const flow = new Geo(), pool = new Geo(), splash = new Geo()
-    // the jets come down to the pool they fall into (the highest pool under them), else to the ground
-    const pools = features.filter((f): f is Extract<WaterFeature, { kind: 'pool' }> => f.kind === 'pool')
+    // the jets come down to the pool they fall into (`landing`)
+    const pools = features.filter((f): f is Pool => f.kind === 'pool')
     features.forEach((f, k) => {
       const seed = ((k * 0.618) % 1)
-      if (f.kind === 'jet') addJet(flow, f, seed, pools.length ? Math.max(...pools.map((p) => p.y)) : 0)
+      if (f.kind === 'jet') addJet(flow, f, seed, landing(f, pools))
       else if (f.kind === 'sheet') addSheet(flow, f, seed)
       else if (f.kind === 'pool') addPool(pool, f)
       else addSplash(splash, f, seed)

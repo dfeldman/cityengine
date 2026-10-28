@@ -210,7 +210,9 @@ export function musicConcourse(out: MeshBuilder, fit: Fit): void {
         [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], DG, 0)
     }
   }
-  strip(-HL * 0.95, HL * 0.95, -7, 7)
+  // (broken by the Rideout basin, which is wider than it: drawn through, the gravel covered the water)
+  strip(-HL * 0.95, -11.6, -7, 7)
+  strip(11.6, HL * 0.95, -7, 7)
   // the grid: rows across the axis every 8 m, trees every 8 m along each, out to the oval, clear of the promenade and
   // the fountains
   for (let x = -HL + 8; x < HL - 4; x += 8) {
@@ -227,22 +229,57 @@ export function musicConcourse(out: MeshBuilder, fit: Fit): void {
         y, keepOff: 0, trees: true, shrubs: false, spacing: 2 })
     }
   }
-  // the fountains' stone rims (OSM maps the basins' water), and in each a pedestal and a bowl. The middle one is the
-  // RIDEOUT FOUNTAIN (Commons "Rideout Fountain - Golden Gate Park - San Francisco, CA - 01.jpg", 2026-10-05): a
-  // bronze bowl on a pedestal, a stone figure on it wrestling a swan whose neck arches over its head, and a ring of
-  // jets round the pool arching in onto the bowl. It and the side ones were a grey spike in the water.
-  const FOAM: Rgb = [0.93, 0.96, 0.98], BRONZE: Rgb = [0.5, 0.38, 0.2], PALE: Rgb = [0.86, 0.83, 0.76]
+  /*
+   * The fountains: a stone rim round each basin (OSM maps the basins' water), and in each a pedestal and a bronze bowl.
+   * The middle one is the RIDEOUT FOUNTAIN (Commons "Rideout Fountain - Golden Gate Park - San Francisco, CA - 01.jpg",
+   * 2026-10-05): a bronze bowl on a pedestal, a stone figure on it wrestling a swan whose neck arches over its head, and
+   * a ring of jets round the pool arching in onto the bowl. It and the side ones were a grey spike in the water, then
+   * white struts in a glass disc (owner, 2026-10-27: "the large fountains in golden gate park look really bad"); the
+   * water is now MOVING WATER (render/water.ts): the pools, the jets, the bowls overflowing, white where it lands.
+   */
+  const BRONZE: Rgb = [0.5, 0.38, 0.2], PALE: Rgb = [0.86, 0.83, 0.76], FLOOR: Rgb = [0.18, 0.24, 0.25]
+  const ring = (cx: number, r: number, n: number): { x: number; z: number }[] =>
+    Array.from({ length: n }, (_, k) => ({ x: cx + Math.sin((k / n) * Math.PI * 2) * r, z: Math.cos((k / n) * Math.PI * 2) * r }))
   for (const [i, f] of fountains.entries()) {
-    const r = i === 1 ? 11 : 4.5, y = g(f, 0)
-    prism(out, f, 0, y, y + 0.6, r + 0.5, 20, STONE, surfaceTag('granite'), r + 0.5)
-    prism(out, f, 0, y, y + 0.7, r, 20, [0.5, 0.62, 0.68], surfaceTag('glass'))
     const big = i === 1
+    const r = big ? 11 : 4.5
+    // water stands level: the basin stands on the HIGHEST ground round its rim (the terrain under OSM's basin water is
+    // lower than the paving round it, and from the middle the paving stood over the pool), its rim down to the lowest
+    let y = g(f, 0), lo = y
+    for (let k = 0; k < 16; k++) {
+      const a = (k / 16) * Math.PI * 2, q = g(f + Math.sin(a) * (r + 0.5), Math.cos(a) * (r + 0.5))
+      y = Math.max(y, q); lo = Math.min(lo, q)
+    }
+    const RIM = 0.6, WATER_Y = y + 0.45
+    // the rim: a ring of coping stones (open in the middle, so the water shows), and the basin's dark floor
+    const N = big ? 40 : 28
+    for (let k = 0; k < N; k++) {
+      const am = ((k + 0.5) / N) * Math.PI * 2, L = 2 * (r + 0.25) * Math.sin(Math.PI / N)
+      const y0 = lo - 0.3, y1 = y + RIM
+      boxAlong(out, f + Math.sin(am) * (r + 0.25), (y0 + y1) / 2, Math.cos(am) * (r + 0.25), L / 2 + 0.06, (y1 - y0) / 2, 0.25, am, STONE, surfaceTag('granite'))
+    }
+    // (the floor over the promenade's gravel, which runs under the side basins and showed through the water)
+    prism(out, f, 0, lo - 0.2, y + 0.12, r, N, FLOOR, 0)
+    out.water.push({ kind: 'pool', ring: ring(f, r, N), y: WATER_Y, colour: [0.2, 0.34, 0.38] })
+    // the pedestal and the bowl, and the bowl's own water spilling over its lip all round
     const pr = big ? 1 : 0.6, bowlY = y + (big ? 1.9 : 1.3), bowlR = big ? 2.8 : 1.6
-    prism(out, f, 0, y + 0.6, bowlY - 0.3, pr, 10, STONE, surfaceTag('granite'), pr * 0.6)
-    prism(out, f, 0, bowlY - 0.3, bowlY + 0.35, pr * 0.6, 16, BRONZE, surfaceTag('metal'), bowlR)
-    prism(out, f, 0, bowlY + 0.3, bowlY + 0.38, bowlR - 0.15, 16, [0.5, 0.62, 0.68], surfaceTag('glass'))
+    prism(out, f, 0, y + 0.1, bowlY - 0.3, pr, 10, STONE, surfaceTag('granite'), pr * 0.6)
+    prism(out, f, 0, bowlY - 0.3, bowlY + 0.3, pr * 0.6, 16, BRONZE, surfaceTag('metal'), bowlR)
+    // (over the bowl's bronze top, which is solid)
+    const BOWL_Y = bowlY + 0.33
+    out.water.push({ kind: 'pool', ring: ring(f, bowlR - 0.08, 16), y: BOWL_Y, colour: [0.22, 0.36, 0.4] })
+    const S = big ? 16 : 10
+    for (let k = 0; k < S; k++) {
+      const a0 = (k / S) * Math.PI * 2, a1 = ((k + 1) / S) * Math.PI * 2, rl = bowlR + 0.04
+      out.water.push({ kind: 'sheet', a: [f + Math.sin(a1) * rl, BOWL_Y, Math.cos(a1) * rl], b: [f + Math.sin(a0) * rl, BOWL_Y, Math.cos(a0) * rl],
+        out: 0.35, drop: BOWL_Y - WATER_Y })
+    }
+    // a ring of white water round the pedestal's foot, where the curtain lands
+    out.water.push({ kind: 'splash', at: [f, WATER_Y + 0.01, 0], r: bowlR + 0.9 })
     if (!big) {
-      strut(out, [f, bowlY + 0.3, 0], [f, bowlY + 1.6, 0], 0.12, 0.05, FOAM, 0, false)
+      // the side basins: a single jet out of the bowl, standing about 2 m and falling back into it
+      out.water.push({ kind: 'jet', at: [f, BOWL_Y, 0], v: [0, 6.3, 0], width: 0.07, spread: 0.4 })
+      out.water.push({ kind: 'splash', at: [f, BOWL_Y + 0.01, 0], r: 0.7 })
       continue
     }
     // the figure and the swan, pale stone
@@ -254,16 +291,17 @@ export function musicConcourse(out: MeshBuilder, fit: Fit): void {
     strut(out, [f + 0.35, fy + 2.9, 0.1], [f - 0.1, fy + 3.2, 0.05], 0.11, 0.09, PALE, surfaceTag('ashlar'))
     strut(out, [f - 0.1, fy + 3.2, 0.05], [f - 0.35, fy + 2.85, 0], 0.09, 0.06, PALE, surfaceTag('ashlar'))
     for (const sg of [-1, 1]) strut(out, [f + 0.05, fy + 1.8, sg * 0.3], [f + 0.3, fy + 2.7, sg * 0.15], 0.08, 0.07, PALE, surfaceTag('ashlar'))
-    // the ring of jets, from a pipe ring a stride out from the bowl, arching in onto its rim (each a parabola in
-    // five pieces: two straight struts read as a ring of spider's legs)
+    /*
+     * The ring of jets, from nozzles in the pool a stride out from the bowl, each topping out a metre over the bowl's
+     * lip and coming down just inside it. For an apex `h` over the nozzle and a landing `dy` over it: vy = √(2gh), the
+     * flight T = √(2h/g) + √(2(h − dy)/g), and the speed inward is the distance over T.
+     */
+    const r0 = bowlR + 1.3, r1 = bowlR - 0.45, h = bowlY + 1.3 - WATER_Y, dy = BOWL_Y - WATER_Y
+    const T = Math.sqrt((2 * h) / 9.81) + Math.sqrt((2 * (h - dy)) / 9.81), vh = (r0 - r1) / T, vy = Math.sqrt(2 * 9.81 * h)
     for (let k = 0; k < 28; k++) {
-      const a = (k / 28) * Math.PI * 2, c = Math.cos(a), sn = Math.sin(a)
-      const r0 = bowlR + 1.3, r1 = bowlR - 0.2, y0 = y + 0.7, y1 = bowlY + 0.3, top = bowlY + 1.3
-      const at = (t: number): [number, number, number] => {
-        const rr = r0 + (r1 - r0) * t
-        return [f + c * rr, y0 + (y1 - y0) * t + 4 * (top - Math.max(y0, y1)) * t * (1 - t) + (Math.max(y0, y1) - y0) * t * 0, sn * rr]
-      }
-      for (let j = 0; j < 5; j++) strut(out, at(j / 5), at((j + 1) / 5), 0.035, 0.035, FOAM, 0, false)
+      const a = (k / 28) * Math.PI * 2, c = Math.sin(a), sn = Math.cos(a)
+      out.water.push({ kind: 'jet', at: [f + c * r0, WATER_Y, sn * r0], v: [-c * vh, vy, -sn * vh], width: 0.03, spread: 0.12, land: BOWL_Y })
+      out.water.push({ kind: 'splash', at: [f + c * r0, WATER_Y + 0.01, sn * r0], r: 0.3 })
     }
   }
 }
