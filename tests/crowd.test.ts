@@ -7,7 +7,7 @@
  * travel rather than from the street.
  */
 import { describe, expect, it } from 'vitest'
-import { buildGraph, type Edge } from '../src/city/graph.ts'
+import { addEdges, buildGraph, type Edge } from '../src/city/graph.ts'
 import { Crowd } from '../src/sim/crowd.ts'
 
 function street(): ReturnType<typeof buildGraph> {
@@ -43,6 +43,48 @@ describe('the crowd', () => {
     c1.update(0.1, { x: 0, z: 60 }, n1)
     const xs = c1.all.filter((w) => w.kind !== 'cycle').map((w) => w.at.x)
     expect(xs.some((x) => x < 0) && xs.some((x) => x > 0)).toBe(true)
+  })
+
+  it('knows a median in streets loaded after the crowd began (owner, 2026-10-27: "still far too many NPCs walking in the middle of the street")', () => {
+    // the game's graph grows tile by tile: the crowd is first asked about a street somewhere else, then the boulevard comes in
+    // (280 m long, the rider halfway: after the first frame people are only made beyond where they are drawn)
+    const mk = (id: number, x: number, z0 = 0): Edge => ({
+      id, a: id * 2, b: id * 2 + 1, points: [{ x, z: z0 }, { x, z: z0 + 280 }], length: 280,
+      surface: 'asphalt', width: 7, walk: 2, foot: false, name: 'Wide Blvd', oneway: true,
+    } as Edge)
+    const g = buildGraph([mk(9, 2000, 2000)])
+    const crowd = new Crowd(g, 'busy')
+    crowd.update(0.01, { x: 2000, z: 2140 }, [...g.edges.values()])
+    addEdges(g, [mk(1, 0), mk(2, 14)])
+    const near = [g.edges.get(1)!, g.edges.get(2)!]
+    crowd.update(0.1, { x: 7, z: 140 }, near)
+    const walkers = crowd.all.filter((w) => w.kind !== 'cycle' && w.edgeId !== 9)
+    expect(walkers.length).toBeGreaterThan(10)
+    for (const w of walkers) expect(w.at.x < 0 || w.at.x > 14, `walker ${w.id} at x ${w.at.x.toFixed(1)} is on the median`).toBe(true)
+  })
+
+  it('does not walk on from a street onto the median where it splits into two carriageways', () => {
+    // a two-way street (z −60…0) splits at the origin into two one-way carriageways 14 m apart: walkers on its pavements
+    // carry on along the outer kerbs, and the ones that would have come out on the inner side turn back
+    const e = (id: number, a: number, b: number, pts: { x: number; z: number }[], width = 7): Edge => ({
+      id, a, b, points: pts, length: pts.slice(1).reduce((s, p, i) => s + Math.hypot(p.x - pts[i].x, p.z - pts[i].z), 0),
+      surface: 'asphalt', width, walk: 2, foot: false, name: 'Wide Blvd',
+    } as Edge)
+    const g = buildGraph([
+      e(1, 10, 11, [{ x: 7, z: -60 }, { x: 7, z: 0 }], 12),
+      e(2, 11, 12, [{ x: 7, z: 0 }, { x: 0, z: 10 }, { x: 0, z: 140 }]),
+      e(3, 11, 13, [{ x: 7, z: 0 }, { x: 14, z: 10 }, { x: 14, z: 140 }]),
+    ])
+    const crowd = new Crowd(g, 'busy')
+    const near = [g.edges.get(1)!]
+    crowd.update(0.01, { x: 7, z: -30 }, near)
+    for (let k = 0; k < 600; k++) {
+      crowd.update(0.1, { x: 7, z: -30 }, near)
+      for (const w of crowd.all) {
+        if (w.kind === 'cycle' || w.at.z < 30 || w.at.z > 120) continue
+        expect(w.at.x < 0 || w.at.x > 14, `walker ${w.id} at x ${w.at.x.toFixed(1)}, z ${w.at.z.toFixed(0)} is on the median`).toBe(true)
+      }
+    }
   })
 
   it('faces the way it walks, in both directions along a street', () => {

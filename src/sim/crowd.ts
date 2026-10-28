@@ -216,6 +216,7 @@ export class Crowd {
    * tagged. Not a road whose pavement is too narrow to walk. Park paths and pedestrian streets keep their people.
    */
   walkable(e: Edge): boolean {
+    this.roads()
     let v = this.walkableCache.get(e.id)
     if (v !== undefined) return v
     v = !e.crossing && !(e.foot && this.wet(e)) && (e.foot
@@ -236,14 +237,15 @@ export class Crowd {
    * of a→b), bit 2: side −1.
    */
   private median(e: Edge): number {
+    const grid = this.roads()
     let v = this.medianCache.get(e.id)
     if (v !== undefined) return v
     v = 0
     if (!e.foot) {
-      if (!this.roadGrid) this.overRoad(e)
+      // (the street's direction at its middle, and the other road's where it passes: a carriageway that bends where it
+      // splits off, its middle POINT at the bend, had the bend's direction and matched nothing)
       const p = e.points
-      const i = Math.max(0, (p.length >> 1) - 1)
-      const a = p[i], b = p[Math.min(p.length - 1, i + 1)]
+      const a = pointAlong(p, Math.max(0, e.length / 2 - 2)), b = pointAlong(p, Math.min(e.length, e.length / 2 + 2))
       const dx = b.x - a.x, dz = b.z - a.z, l = Math.hypot(dx, dz) || 1
       const ux = dx / l, uz = dz / l, nx = -uz, nz = ux
       const m = pointAlong(p, e.length / 2)
@@ -253,14 +255,11 @@ export class Crowd {
         const cx = Math.floor(q.x / 50), cz = Math.floor(q.z / 50)
         let hit = false
         for (let ox = -1; ox <= 1 && !hit; ox++) for (let oz = -1; oz <= 1 && !hit; oz++) {
-          for (const r of this.roadGrid!.get(`${cx + ox},${cz + oz}`) ?? []) {
+          for (const r of grid.get(`${cx + ox},${cz + oz}`) ?? []) {
             if (r.id === e.id || r.width < 2.8) continue
-            const rp = r.points
-            const j = Math.max(0, (rp.length >> 1) - 1)
-            const ra = rp[j], rb = rp[Math.min(rp.length - 1, j + 1)]
-            const rl = Math.hypot(rb.x - ra.x, rb.z - ra.z) || 1
-            if (Math.abs(((rb.x - ra.x) * ux + (rb.z - ra.z) * uz) / rl) < 0.85) continue
-            if (distanceToLine(rp, q) < r.width / 2 + 3) { hit = true; break }
+            const n = nearest(r.points, q)
+            if (Math.abs(n.ux * ux + n.uz * uz) < 0.85) continue
+            if (n.d < r.width / 2 + 3) { hit = true; break }
           }
         }
         if (hit) v |= side > 0 ? 1 : 2
@@ -270,41 +269,84 @@ export class Crowd {
     return v
   }
   private readonly medianCache = new Map<number, number>()
-  /** road edges bucketed by 50 m cell, built the first time a footway is asked about */
-  private roadGrid: Map<string, Edge[]> | null = null
+  /** road edges bucketed by 50 m cell */
+  private readonly roadGrid = new Map<string, Edge[]>()
+  /** how many of the graph's edges `roadGrid` has seen */
+  private gridded = 0
+
+  /**
+   * The road grid, brought up to date with the graph. The game's graph GROWS tile by tile as the rider moves
+   * (src/game.ts `addEdges`), and the grid used to be built once, from the first tiles in: everywhere the ride went after
+   * that it held no roads at all, so no side of any street was a median and no footway lay over a road (owner,
+   * 2026-10-27: "still far too many NPCs walking in the middle of the street … busy arterials don't normally have dozens
+   * of people walking in them" — the day after the median rule went in). Edges are only ever added, in order, so the
+   * new ones are the last; and what was worked out against the old grid is worked out again.
+   */
+  private roads(): Map<string, Edge[]> {
+    if (this.g.edges.size === this.gridded) return this.roadGrid
+    let i = 0
+    for (const r of this.g.edges.values()) {
+      if (i++ < this.gridded || r.foot) continue
+      const seen = new Set<string>()
+      for (let s = 0; s <= r.length; s += 25) {
+        const p = pointAlong(r.points, s)
+        const k = `${Math.floor(p.x / 50)},${Math.floor(p.z / 50)}`
+        if (seen.has(k)) continue
+        seen.add(k)
+        let list = this.roadGrid.get(k)
+        if (!list) this.roadGrid.set(k, (list = []))
+        list.push(r)
+      }
+    }
+    this.gridded = this.g.edges.size
+    this.walkableCache.clear()
+    this.medianCache.clear()
+    return this.roadGrid
+  }
 
   /**
    * A footway that lies on a carriageway anywhere along it: a crossing drawn diagonally, or a sidewalk
    * mapped as its own way where the street's width puts the road over it. Walking it puts people on the road.
+   *
+   * Or one that runs ALONG a carriageway's kerb for 12 m or more: a sidewalk mapped as its own way with its line on the
+   * kerb, or just inside or outside it (Hoff Street, Geary at Masonic, Irving at 19th) — each walker keeps to their own
+   * side of a path, so half of its people walked in the road. That side's people are on the street's own pavement.
+   * Crossing a road square-on is not running along it: a park path over a drive keeps its people.
    */
   private overRoad(e: Edge): boolean {
-    if (!this.roadGrid) {
-      this.roadGrid = new Map()
-      for (const r of this.g.edges.values()) {
-        if (r.foot) continue
-        const seen = new Set<string>()
-        for (let s = 0; s <= r.length; s += 25) {
-          const p = pointAlong(r.points, s)
-          const k = `${Math.floor(p.x / 50)},${Math.floor(p.z / 50)}`
-          if (seen.has(k)) continue
-          seen.add(k)
-          let list = this.roadGrid.get(k)
-          if (!list) this.roadGrid.set(k, (list = []))
-          list.push(r)
-        }
-      }
-    }
-    for (let s = 0; s <= e.length; s += Math.max(1, e.length / 8)) {
+    const grid = this.roads()
+    const step = Math.max(1, e.length / 8)
+    for (let s = 0; s <= e.length; s += step) {
       const p = pointAlong(e.points, s)
       const cx = Math.floor(p.x / 50)
       const cz = Math.floor(p.z / 50)
       for (let dx = -1; dx <= 1; dx++) {
         for (let dz = -1; dz <= 1; dz++) {
-          for (const r of this.roadGrid.get(`${cx + dx},${cz + dz}`) ?? []) {
+          for (const r of grid.get(`${cx + dx},${cz + dz}`) ?? []) {
             if (distanceToLine(r.points, p) < r.width / 2 - 0.3) return true
           }
         }
       }
+    }
+    let run = 0
+    for (let s = 0; s <= e.length; s += 2) {
+      const p = pointAlong(e.points, s)
+      const p0 = pointAlong(e.points, Math.max(0, s - 1)), p1 = pointAlong(e.points, Math.min(e.length, s + 1))
+      const fx = p1.x - p0.x, fz = p1.z - p0.z, fl = Math.hypot(fx, fz) || 1
+      const cx = Math.floor(p.x / 50)
+      const cz = Math.floor(p.z / 50)
+      let along = false
+      for (let dx = -1; dx <= 1 && !along; dx++) {
+        for (let dz = -1; dz <= 1 && !along; dz++) {
+          for (const r of grid.get(`${cx + dx},${cz + dz}`) ?? []) {
+            if (r.width < 2.8) continue
+            const n = nearest(r.points, p)
+            if (n.d < r.width / 2 + e.width / 2 && Math.abs(fx * n.ux + fz * n.uz) / fl > 0.87) { along = true; break }
+          }
+        }
+      }
+      run = along ? run + 2 : 0
+      if (run >= 12) return true
     }
     return false
   }
@@ -327,7 +369,15 @@ export class Crowd {
     const node = atB ? e.b : e.a
     const xs = exits(this.g, node, e.id).filter((x) => {
       const ne = this.g.edges.get(x.edgeId)!
-      return w.kind === 'cycle' ? !ne.foot && ne.width >= 2.8 && !ne.crossing : this.walkable(ne)
+      if (w.kind === 'cycle') return !ne.foot && ne.width >= 2.8 && !ne.crossing
+      if (!this.walkable(ne)) return false
+      /*
+       * …and not onto a dual carriageway's median: the side they would carry on along must have a pavement. Only the
+       * spawn asked, and walkers coming on from the next edge — where a two-way street splits into its one-way
+       * carriageways, or from a stretch where the other carriageway is further off — walked down the middle of Market.
+       */
+      const side = w.side * w.dir * (ne.a === node ? 1 : -1)
+      return !(this.median(ne) & (side > 0 ? 1 : 2))
     })
     const next = xs.length > 0 && Math.abs(xs[0].angle) < (35 * Math.PI) / 180 ? xs[0] : null
     if (!next) {
@@ -657,6 +707,22 @@ function distanceToLine(points: Point[], p: Point): number {
     const l2 = dx * dx + dz * dz || 1
     const t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.z - a.z) * dz) / l2))
     best = Math.min(best, Math.hypot(p.x - a.x - dx * t, p.z - a.z - dz * t))
+  }
+  return best
+}
+
+/** How far a point is from a line, and the line's direction (a unit vector along its points) where it is nearest. */
+function nearest(points: Point[], p: Point): { d: number; ux: number; uz: number } {
+  let best = { d: Infinity, ux: 1, uz: 0 }
+  for (let i = 1; i < points.length; i++) {
+    const a = points[i - 1]
+    const q = points[i]
+    const dx = q.x - a.x
+    const dz = q.z - a.z
+    const l2 = dx * dx + dz * dz || 1
+    const t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.z - a.z) * dz) / l2))
+    const d = Math.hypot(p.x - a.x - dx * t, p.z - a.z - dz * t)
+    if (d < best.d) { const l = Math.sqrt(l2); best = { d, ux: dx / l, uz: dz / l } }
   }
   return best
 }
