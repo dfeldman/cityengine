@@ -13,6 +13,9 @@
  * corner, checked against the buildings (3 m from the Main Gate at 7 m, hence 10 there) and the roads (16 m from the
  * Drive on the south-east side).
  *
+ * Inside the garden (owner, 2026-10-27, "more fun"): the garden's own OSM footways are opened to bikes by the
+ * `tea-garden-trails` zone, and two ways here carry the loop through the Main Gate onto them.
+ *
  * Three junctions shared by the ways' free ends: the south-east corner (26.5, −72.4), the east corner (86.1, 27.8)
  * and the foot of the street spur on the south side (4, −72.8). The loop is three ways between them so that no two
  * ways of one name join the same two junctions (the ride graph would merge such a "parallel pair").
@@ -40,6 +43,14 @@ export const TEA_GARDEN_LOOP: AuthoredWay[] = [
   { name: TEA_GARDEN_LOOP_NAME, kind: 'cycleway', layer: 0, ground: true, a: FREE, b: FREE, points: xz([26.5, -72.4, 56, -22, 86.1, 27.8]) },
   // the street: south from the loop to Martin Luther King Junior Drive
   { name: 'Tea Garden Loop Access', kind: 'cycleway', layer: 0, ground: true, a: FREE, b: { onto: { kind: 'tertiary', layer: 0 } }, points: xz([4, -72.8, 3.7, -87, 3.3, -101, 2.8, -114]) },
+  // THROUGH THE MAIN GATE (owner, 2026-10-27: "add additional bikeable paths INSIDE the garden - yes this is unrealistic,
+  // but it is more fun. a path should go through the main gate"): from the loop's south-east corner up the gate's steps
+  // to the end of OSM's sidewalk stub in the gate's passage (node 2179343999, way/1428119997 — it stops there: OSM
+  // joins none of the garden's paths to the outside), on north through the passage and west to the first inner path,
+  // way/34220920 at node 7838718741. The inner paths themselves are opened to bikes by the `tea-garden-trails` zone
+  // (data/zones/san-francisco.json, `trails: 'bike'`), which takes in the stub and the crossing to the Drive as well.
+  { name: 'Tea Garden Loop Access', kind: 'cycleway', layer: 0, ground: true, a: FREE, b: { node: 2179343999 }, points: xz([26.5, -72.4, 26.4, -68.5, 26.3, -64.5]) },
+  { name: 'Main Gate Path', kind: 'cycleway', layer: 0, ground: true, a: { node: 2179343999 }, b: { node: 7838718741 }, points: xz([26.3, -64.5, 25.6, -59.5, 23.5, -56, 19.5, -56.5, 15.4, -57.8]) },
   // onto Hagiwara Tea Garden Drive at the south-east corner and at the east corner
   { name: 'Tea Garden Loop Access', kind: 'cycleway', layer: 0, ground: true, a: FREE, b: { onto: { kind: 'service', layer: 0 } }, points: xz([26.5, -72.4, 33, -73.3, 39, -74]) },
   { name: 'Tea Garden Loop Access', kind: 'cycleway', layer: 0, ground: true, a: FREE, b: { onto: { kind: 'service', layer: 0 } }, points: xz([86.1, 27.8, 89, 22.5, 92, 17]) },

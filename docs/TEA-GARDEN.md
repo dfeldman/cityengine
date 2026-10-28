@@ -267,3 +267,12 @@ Garden Drive (the one-way park road beside the garden's south-east side) at the 
 it: `AuthoredWay.ground` — the way is tagged like any OSM path and graded over the terrain by the bake, where the Bay
 Bridge Bikeway and the Pier 39 route are decks held at their own heights. Baked and ridden in `jtg-mini`: the bike
 graph joins it to MLK and to the Drive at both ends. The full San Francisco bake has not been rerun for it.
+
+**Inside the garden too** (owner, 2026-10-27: "add additional bikeable paths INSIDE the garden - yes this is
+unrealistic, but it is more fun. a path should go through the main gate"): the `tea-garden-trails` zone
+(data/zones/san-francisco.json, `trails: 'bike'`, the outline offset 12 m) opens every footway in the garden to bikes
+the way Lands End's trails are opened — 47 edges in the test bake, the steps excepted — and two more authored ways
+carry the loop through the Main Gate: up the gate's steps from the loop's south-east corner to the end of OSM's
+sidewalk stub in the passage (node 2179343999; OSM joins none of the garden's paths to the outside), then through the
+passage and west onto the first inner path (way/34220920 at node 7838718741). In the jtg-mini bike graph the gate path
+and all 47 opened edges are reachable from MLK.

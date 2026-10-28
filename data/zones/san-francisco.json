@@ -6948,6 +6948,61 @@
      -122.421787
     ]
    ]
+  },
+  {
+   "ref": "tea-garden-trails",
+   "name": "Japanese Tea Garden: its paths open to bikes",
+   "note": "owner, 2026-10-27: 'add additional bikeable paths INSIDE the garden - yes this is unrealistic, but it is more fun. a path should go through the main gate'. The garden's OSM outline (way Japanese Tea Garden) offset 12 m, so the sidewalk stub to the Main Gate and the crossing to Hagiwara Tea Garden Drive are in it too; the bake opens every footway inside (not the steps, not the wooden drum bridge: its surface) and src/city/sf/tea-garden-loop.ts joins them to the Tea Garden Loop through the Main Gate.",
+   "priority": 1,
+   "props": {
+    "trails": "bike"
+   },
+   "ring": [
+    [
+     37.770147,
+     -122.471031
+    ],
+    [
+     37.769986,
+     -122.470966
+    ],
+    [
+     37.769625,
+     -122.470632
+    ],
+    [
+     37.769578,
+     -122.470525
+    ],
+    [
+     37.769571,
+     -122.470303
+    ],
+    [
+     37.769605,
+     -122.469776
+    ],
+    [
+     37.77053,
+     -122.469037
+    ],
+    [
+     37.771147,
+     -122.469891
+    ],
+    [
+     37.77096,
+     -122.470207
+    ],
+    [
+     37.770491,
+     -122.470953
+    ],
+    [
+     37.770147,
+     -122.471031
+    ]
+   ]
   }
  ]
 }
