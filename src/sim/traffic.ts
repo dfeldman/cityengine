@@ -195,6 +195,25 @@ const CHOOSE = 40
  */
 const PATIENCE = 8
 
+/**
+ * How far the straight run ahead must reach before a bus is spawned on a street, as a multiple of the populated
+ * range. A bus never turns (`busOnward`), so one spawned where the straight run ends a block away would stand at
+ * that end until the rider went. Out of view it is retired at `range` × 1.4, so the run has to be longer than
+ * that for a bus to leave the city the way it came into it: by driving out of range.
+ */
+const BUS_RUN = 1.6
+
+/**
+ * How often a vehicle is a bus: on a street wide enough for one, and on a car-free street (which carries little
+ * else — Market Street). Both are up from 0.08 and 0.35, to make up for the streets no bus is spawned on at all
+ * now that only a long straight run carries them (BUS_RUN): the city keeps about as many buses as it had, gathered
+ * onto the corridors they would run on. Measured over two minutes with tools/traffic-soak.ts: san-francisco held
+ * 10–12 buses in range before the change and holds 10–13 at these rates; sf-mini, a bake small enough that the
+ * walk ahead runs off the end of the loaded streets, holds 5–9 where it held 8–15.
+ */
+const BUS_SHARE = 0.11
+const BUS_SHARE_CARFREE = 0.42
+
 function rng(seed: number): () => number {
   let a = (seed ^ 0x6d2b79f5) >>> 0
   return () => {
@@ -232,6 +251,8 @@ export class Traffic {
   /** may this vehicle drive this street at all (a private car on a car-free one may not) */
   private mayUse(v: { kind: VehicleKind; taxi?: boolean }, e: Edge): boolean { return !this.closed(e) && (v.kind === 'bus' || !!v.taxi || !this.carFree(e)) }
   private readonly vehicles: Vehicle[] = []
+  /** the `edge:dir` whose straight run ahead is known to be long enough for a bus (`busRun`) */
+  private readonly busRuns = new Map<string, number>()
   /** how many vehicles each street should carry, once it has been seen */
   private readonly target = new Map<number, number>()
   private t = 0
@@ -786,7 +807,9 @@ export class Traffic {
         if (this.t > 1.5 ? !this.hidden(p) : distance(p, at) < 25) continue
         // on a car-free street only buses and taxis
         const free = this.carFree(e)
-        const bus = free ? r() < 0.35 : r() < 0.08 && e.width >= 8
+        // a bus only where the straight run ahead of it is long enough to drive out of range on (BUS_RUN): one
+        // that would reach the end of its run in sight of the rider would stand there, blocking the lane
+        const bus = (free ? r() < BUS_SHARE_CARFREE : r() < BUS_SHARE && e.width >= 8) && this.busRun(e, dir) >= this.cfg.range * BUS_RUN
         // (from the id, not the street's random stream: drawing one more number reshuffled every other choice)
         const taxi = !bus && (free || ((this.nextId * 2654435761) >>> 0) % 100 < 8)
         const half = (bus ? SIZE.bus : SIZE.car).len / 2
@@ -859,21 +882,81 @@ export class Traffic {
   private endNode(v: Vehicle, e: Edge): number { return v.dir > 0 ? e.b : e.a }
   private toGo(v: Vehicle, e: Edge): number { return v.dir > 0 ? e.length - v.s : v.s }
 
+  /**
+   * Where a bus goes at `node`, having arrived on `from`: straight on, or nowhere.
+   *
+   * A BUS NEVER TURNS AT AN INTERSECTION (owner, 2026-10-27: "it always looks bad since they're so long we don't
+   * render the grade realistically. and it blocks traffic. and, in reality, buses do continue mostly straight for
+   * long stretches"). So a junction with no way straight on is the end of that bus's run, not a cue to turn: it
+   * stops at the line (`choose` sets no `next`) and is retired once out of view. `busRun` keeps buses off the
+   * streets where that would happen in front of the rider.
+   *
+   * A BEND IS NOT AN INTERSECTION. Where a street simply becomes another — two arms, one way on — the bus follows
+   * its road round, however far past the 45° that `exits` is willing to call straight; otherwise a bus would stand
+   * at every corner OSM drew sharply.
+   */
+  private busOnward(node: number, from: number): { edgeId: number; dir: 1 | -1; turn: Turn } | null {
+    const xs = exits(this.g, node, from).map((x) => {
+      const n = this.g.edges.get(x.edgeId)!
+      return { x, dir: (n.a === node ? 1 : -1) as 1 | -1, n }
+    }).filter(({ n, dir }) => allowed(n, dir) && !this.closed(n) && !this.blindAlley(n, dir))
+    // (`exits` comes sorted straightest-first)
+    const k = xs.length === 1 && this.arms(node) <= 2 ? xs[0] : xs.find(({ x }) => x.turn === 'straight')
+    return k ? { edgeId: k.x.edgeId, dir: k.dir, turn: k.x.turn } : null
+  }
+
+  /** a junction's arms that are streets at all: two is a bend, three or more an intersection */
+  private arms(node: number): number {
+    const n = this.g.nodes.get(node)
+    return n ? n.edges.filter((id) => { const o = this.g.edges.get(id); return !!o && drives(o) }).length : 0
+  }
+
+  /**
+   * Metres of straight run ahead of a bus setting off along `e` in `dir`, counting whole streets from `e`'s far
+   * end and stopping at `BUS_RUN` (there is no reason to walk a corridor further than the answer needs).
+   */
+  private busRun(e: Edge, dir: 1 | -1): number {
+    const key = `${e.id}:${dir}`
+    const hit = this.busRuns.get(key)
+    if (hit !== undefined) return hit
+    const cap = this.cfg.range * BUS_RUN
+    const seen = new Set<number>([e.id])
+    let node = dir > 0 ? e.b : e.a
+    let from = e.id
+    let total = 0
+    while (total < cap) {
+      const on = this.busOnward(node, from)
+      if (!on) break
+      const n = this.g.edges.get(on.edgeId)
+      // a run that closes into a ring is a run a bus could drive for ever, but it is also one street twice over:
+      // stop counting rather than go round again
+      if (!n || seen.has(n.id)) break
+      seen.add(n.id)
+      total += n.length
+      node = on.dir > 0 ? n.b : n.a
+      from = n.id
+    }
+    // cached only when the run is long ENOUGH: the graph is streamed, so a run that looks short now may be one
+    // whose far end is in a tile that has not loaded yet, and a street written off once would never see a bus again
+    if (total >= cap) this.busRuns.set(key, total)
+    return total
+  }
+
   private choose(v: Vehicle, e: Edge, node: number): void {
     const xs = exits(this.g, node, e.id).map((x) => {
       const n = this.g.edges.get(x.edgeId)!
       return { x, dir: (n.a === node ? 1 : -1) as 1 | -1, n }
     }).filter(({ n, dir }) => allowed(n, dir))
     if (xs.length === 0) return
-    // a bus keeps to its route and goes straight wherever it can: a 12 m bus turning swings its body across the
-    // next lane, which on these streets meant through the cars in it
-    const straight = xs.some(({ x }) => x.turn === 'straight')
+    // a bus goes straight on or it goes nowhere — never a turn (`busOnward`): a 12 m bus turning swings its body
+    // across the next lane, which on these streets meant through the cars in it
+    if (v.kind === 'bus') { v.next = this.busOnward(node, e.id) ?? undefined; return }
     const open = xs.some(({ n, dir }) => !this.blindAlley(n, dir))
     // (a private car never onto a car-free street, unless there is no other way out at all)
     const legal = xs.some(({ n }) => this.mayUse(v, n))
     const w: number[] = xs.map(({ x, n, dir }) => (open && this.blindAlley(n, dir) ? 0
       : legal && !this.mayUse(v, n) ? 0
-      : x.turn === 'straight' ? 6 : v.kind === 'bus' && straight ? 0 : 2))
+      : x.turn === 'straight' ? 6 : 2))
     let u = this.r() * w.reduce((p, q) => p + q, 0)
     let k = 0
     for (; k < xs.length - 1; k++) { u -= w[k]; if (u <= 0) break }
@@ -889,7 +972,11 @@ export class Traffic {
     const xs = exits(this.g, node, e.id).map((x) => {
       const n = this.g.edges.get(x.edgeId)!
       return { x, dir: (n.a === node ? 1 : -1) as 1 | -1, n }
-    }).filter(({ x, n, dir }) => x.edgeId !== was.edgeId && allowed(n, dir) && !this.blindAlley(n, dir) && this.mayUse(v, n))
+    })
+      // a bus does not turn to get out of a queue either: only another way straight on, at a fork, will do, and
+      // where there is none it waits where it is (`busOnward`)
+      .filter(({ x }) => v.kind !== 'bus' || x.turn === 'straight')
+      .filter(({ x, n, dir }) => x.edgeId !== was.edgeId && allowed(n, dir) && !this.blindAlley(n, dir) && this.mayUse(v, n))
       .filter(({ n, dir }) => {
         const q = this.laneCache.get(`${n.id}:${dir}`) ?? []
         const last = q[q.length - 1]
@@ -1274,7 +1361,9 @@ export class Traffic {
         obstacles.push([toGo - this.halfLen(v) - 1 + d.s0, 0]); whys.push('dead end')
         const back = (-v.dir) as 1 | -1
         const room = !(lanes.get(`${e.id}:${back}`) ?? []).some((o) => Math.abs(o.s - v.s) < this.halfLen(v) + this.halfLen(o) + BUMPER + 6)
-        if (toGo - this.halfLen(v) < 2.5 && v.speed < 0.3 && room && allowed(e, back)) {
+        // …but not a bus: a 12 m bus swinging 180° on the spot is worse to look at than the turn it is not making,
+        // so it stands at the end of its run until the 35 s valve in `update` retires it out of view
+        if (v.kind !== 'bus' && toGo - this.halfLen(v) < 2.5 && v.speed < 0.3 && room && allowed(e, back)) {
           v.dir = back
           v.next = undefined
           v.stoppedAt = undefined

@@ -1,0 +1,68 @@
+{
+ "embarcadero-sausalito": {
+  "km": 16.6,
+  "climb": 183,
+  "descent": 181,
+  "steepest": 2.4
+ },
+ "sf-sausalito": {
+  "km": 16.9,
+  "climb": 307,
+  "descent": 323,
+  "steepest": 6.5
+ },
+ "bay-to-breakers": {
+  "km": 13.2,
+  "climb": 104,
+  "descent": 100,
+  "steepest": 6.7
+ },
+ "golden-gate-park": {
+  "km": 13,
+  "climb": 100,
+  "descent": 90,
+  "steepest": 2
+ },
+ "salesforce-sutro": {
+  "km": 14.2,
+  "climb": 224,
+  "descent": 233,
+  "steepest": 2.4
+ },
+ "waterfront": {
+  "km": 8.2,
+  "climb": 26,
+  "descent": 19,
+  "steepest": 1.9
+ },
+ "the-hills": {
+  "km": 8.5,
+  "climb": 224,
+  "descent": 217,
+  "steepest": 7.7
+ },
+ "mission-castro-haight": {
+  "km": 9.6,
+  "climb": 126,
+  "descent": 74,
+  "steepest": 3.8
+ },
+ "twin-peaks": {
+  "km": 12.2,
+  "climb": 412,
+  "descent": 382,
+  "steepest": 8.2
+ },
+ "angel-island": {
+  "km": 10.4,
+  "climb": 256,
+  "descent": 252,
+  "steepest": 4.6
+ },
+ "treasure-island": {
+  "km": 10.4,
+  "climb": 126,
+  "descent": 127,
+  "steepest": 2.3
+ }
+}

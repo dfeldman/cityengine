@@ -56,6 +56,12 @@ const overlapSamples: string[] = []
 const lastHeading = new Map<number, { h: number; edge: number }>()
 const jumps = new Map<string, number>()
 const jumpSamples: string[] = []
+// BUSES NEVER TURN (owner, 2026-10-27: "let's stop buses from ever turning at intersections"): every junction box
+// a bus commits to, by what it did there — straight only, if sim/traffic.ts `busOnward` holds — and the longest any
+// bus stood still, which is what it does instead at the end of a straight run
+const busBoxes = new Set<string>()
+const busTurns = new Map<string, number>()
+let busStood = 0
 for (let t = 0; t < seconds; t += dt) {
   traffic.update(dt, at, edges)
   // DEBUG_EDGE=<id>: every vehicle on that edge (or in a box onto it) every 5 s
@@ -80,6 +86,13 @@ for (let t = 0; t < seconds; t += dt) {
       }
     }
     lastHeading.set(v.id, { h: v.heading, edge: v.edgeId })
+    if (v.kind === 'bus') {
+      if (v.inBox) {
+        const k = `${v.id}:${v.inBox.nodeId}:${v.inBox.from}`
+        if (!busBoxes.has(k)) { busBoxes.add(k); busTurns.set(v.inBox.turn, (busTurns.get(v.inBox.turn) ?? 0) + 1) }
+      }
+      busStood = Math.max(busStood, still.get(v.id) ?? 0)
+    }
   }
   // cars THROUGH cars (owner: "I still see vehicles going through other vehicles, especially at intersections"):
   // every second, each overlapping pair, and where — both in a junction, one, or neither
@@ -109,10 +122,12 @@ for (let t = 0; t < seconds; t += dt) {
     const stuck = traffic.all.filter((v) => (still.get(v.id) ?? 0) > STUCK)
     worst = Math.max(worst, stuck.length)
     const moving = traffic.all.filter((v) => v.speed > 0.5).length
-    console.log(`t=${t.toFixed(0)}s  vehicles ${traffic.all.length}  moving ${moving}  stuck>${STUCK}s ${stuck.length}`)
+    const buses = traffic.all.filter((v) => v.kind === 'bus').length
+    console.log(`t=${t.toFixed(0)}s  vehicles ${traffic.all.length}  buses ${buses}  moving ${moving}  stuck>${STUCK}s ${stuck.length}`)
     jammed = stuck
   }
 }
+console.log(`bus junctions: ${JSON.stringify(Object.fromEntries(busTurns))}; longest a bus stood still: ${busStood.toFixed(0)}s`)
 console.log(`heading jumps > 20° in one step: ${[...jumps.values()].reduce((p, q) => p + q, 0)}`, JSON.stringify(Object.fromEntries(jumps)))
 for (const j of jumpSamples) console.log('  ' + j)
 console.log(`deep overlaps (pair-seconds): ${deep}, distinct pairs ${deepPairs.size}`)

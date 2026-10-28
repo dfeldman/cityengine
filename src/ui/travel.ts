@@ -74,9 +74,11 @@ export class TravelCard {
     const root = document.createElement('div')
     root.className = 'sr-travel'
     const kind = this.here.line === 'ferry' ? 'Ferry' : 'Muni Metro'
+    // a free ride says "free", not "$0.00" (and all travel is free: game/stations.ts FARES)
+    const price = this.fare > 0 ? `$${this.fare.toFixed(2)}` : 'free'
     root.innerHTML = `<div class="card"><h2>Where do you want to go?</h2>
-      <div class="sub">${kind} from ${this.here.name} · $${this.fare.toFixed(2)}</div>
-      ${this.list.map((s, i) => `<button data-i="${i}"><span><span class="k">${i + 1}</span>${s.name}</span><span>$${this.fare.toFixed(2)}</span></button>`).join('')}
+      <div class="sub">${kind} from ${this.here.name} · ${price}</div>
+      ${this.list.map((s, i) => `<button data-i="${i}"><span><span class="k">${i + 1}</span>${s.name}</span><span>${price}</span></button>`).join('')}
       <button class="x">Stay here (Esc)</button></div>`
     root.addEventListener('click', (e) => {
       const b = (e.target as HTMLElement).closest<HTMLElement>('button')

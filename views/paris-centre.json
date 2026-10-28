@@ -3132,7 +3132,7 @@
   "to": [
    48.862838,
    2.342756,
-   15.0
+   15
   ],
   "note": "BUGS.md #102: a restyle entry naming an outline the bake replaced with its building:parts"
  },
@@ -3147,8 +3147,22 @@
   "to": [
    48.862838,
    2.342756,
-   15.0
+   15
   ],
   "note": "BUGS.md #102: a restyle entry naming an outline the bake replaced with its building:parts"
+ },
+ {
+  "name": "",
+  "group": "landmark",
+  "from": [
+   -0.000719,
+   null,
+   3
+  ],
+  "to": [
+   0,
+   null,
+   10
+  ]
  }
 ]

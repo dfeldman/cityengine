@@ -10,6 +10,8 @@
  *   /?session=<id>             on Dandyhorse: the bridge's session (src/platform.ts; INTEGRATION.md)
  *   &host=<origin>             …framed by Dandyhorse's shim from another origin: the API through it (src/relay.ts)
  *   /?dandyhorse=bike|run      an ad-hoc debug session on a local Dandyhorse server
+ *   /?tour=1                   tour mode: a guided tour or a free ride, no deliveries (src/game/tour.ts; on Dandyhorse,
+ *                              the `tour` variant); ?tour=<id> goes straight to one (src/city/sf/tours.ts), ?tour=free
  */
 import { keepFocus, relayFetch, relayHost } from './relay.ts'
 import { goTo, parseLatLon, type CityRef } from './ui/goto.ts'
@@ -26,6 +28,8 @@ import { COMPACT_CSS, TOUCH_CSS, compactScreen, showTouchWhenUsed, touchControls
 import { gamepadControls } from './ui/gamepad.ts'
 import { MENU_CSS } from './ui/menu.ts'
 import { SEARCH_CSS } from './ui/search.ts'
+import { TOUR_CSS, pickTour } from './ui/tour.ts'
+import { toursFor, type Tour } from './game/tour.ts'
 import CITIES from './cities.json'
 import { settings } from './ui/settings.ts'
 import { beginRun, recoverFromCrash } from './ui/crashguard.ts'
@@ -34,7 +38,7 @@ const params = new URLSearchParams(location.search)
 const canvas = document.getElementById('view') as HTMLCanvasElement
 
 const style = document.createElement('style')
-style.textContent = HUD_CSS + MINIMAP_CSS + THEME_CSS + LOADING_CSS + WELCOME_CSS + CARD_CSS + DELIVERY_CSS + TOUCH_CSS + COMPACT_CSS + MENU_CSS + SEARCH_CSS
+style.textContent = HUD_CSS + MINIMAP_CSS + THEME_CSS + LOADING_CSS + WELCOME_CSS + CARD_CSS + DELIVERY_CSS + TOUCH_CSS + COMPACT_CSS + MENU_CSS + SEARCH_CSS + TOUR_CSS
 document.head.appendChild(style)
 
 // iOS Safari ignores `user-scalable=no` (index.html): a pinch anywhere zoomed the whole game, HUD and all
@@ -227,6 +231,25 @@ if (params.get('model')) {
   // (a URL parameter wins; then Menu → Settings, ui/settings.ts; then the device)
   const tier = detectTier(params.get('tier') ?? (settings().quality === 'auto' ? null : settings().quality))
   if (params.get('freeze') !== '1') beginRun(tier)
+  /*
+   * TOUR MODE (src/game/tour.ts; owner, 2026-10-27): `?tour=1`, or Dandyhorse's `tour` variant — its own menu entry
+   * there, so nothing in the delivery game leads here or back. The picker is up before the city loads, so the city
+   * loads round the tour's first stop. `?tour=<id>` (or `free`) skips it, as Dandyhorse's launch option `tour` does.
+   */
+  // (Dandyhorse's options are the game's, not the variant's: the `tour` option counts only when the tour variant was launched)
+  const tourParam = params.get('tour') ?? (platform?.variant === 'tour' ? platform.tourChoice : null)
+  const touring = (tourParam !== null && tourParam !== '0') || platform?.variant === 'tour'
+  let tourPick: Tour | null = null
+  if (touring) {
+    const tours = toursFor(city)
+    tourPick = tours.find((t) => t.id === tourParam) ?? null
+    if (!tourPick && tourParam !== 'free' && tours.length) {
+      // (the tours are all in the United States: miles unless Settings says kilometres)
+      tourPick = await pickTour(tours, { speedup: params.get('speedup') ? Number(params.get('speedup')) : MODES[mode].speedup,
+        imperial: settings().units !== 'kmh', touch: compactScreen(params.get('compact')) || matchMedia('(pointer: coarse)').matches,
+        platform: !!platform })
+    }
+  }
   const { game } = await import('./game.ts')
   void game(canvas, {
     city,
@@ -236,7 +259,10 @@ if (params.get('model')) {
     // ?without=sky,life,trees — for isolating which subsystem is drawing something wrong
     without: new Set((params.get('without') ?? '').split(',').filter(Boolean)),
     startEdge: params.get('start') ? Number(params.get('start')) : undefined,
-    at: parseLatLon(params.get('at') ?? '') ?? platform?.resumeAt(city) ?? undefined,
+    // (a tour starts at its first stop, whatever the save says)
+    at: (tourPick ? { lat: tourPick.stops[0].lat, lon: tourPick.stops[0].lon } : null) ?? parseLatLon(params.get('at') ?? '') ?? platform?.resumeAt(city) ?? undefined,
+    // tour mode, and which tour (null: a free ride)
+    tour: touring ? { pick: tourPick } : undefined,
     // the city's own in-place jump (game.ts `__jump`), so going to a place inside it does not reload the page
     goTo: (text: string, here?: boolean) => goTo(text, cities, here ? city : undefined,
       (ll) => (window as unknown as { __jump?: (lat: number, lon: number) => boolean }).__jump?.(ll.lat, ll.lon) ?? false),

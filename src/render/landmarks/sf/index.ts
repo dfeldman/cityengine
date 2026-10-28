@@ -139,8 +139,8 @@ import { FOUNTAINS } from './fountains.ts'
 import { ST_IGNATIUS } from './st-ignatius.ts'
 import { ST_ANNE } from './st-anne.ts'
 import { BANK_OF_CALIFORNIA } from './bank-of-california.ts'
-import { NEW_MISSION } from './new-mission.ts'
 import { CLARKE_MANSION } from './clarke-mansion.ts'
+import { NEW_MISSION } from './new-mission.ts'
 import { THIRTY_OTIS } from './thirty-otis.ts'
 import { TIBURON_DEPOT } from './tiburon-depot.ts'
 import { WEILL } from './weill.ts'
@@ -158,7 +158,12 @@ import { tiBuildingOne, tiHangar } from './treasure-island.ts'
 import { fireboatStation } from './fireboat-station.ts'
 import { oneHundredFirstPlaza, oneHundredFirstPodium } from './first-plaza.ts'
 import { stMarysCathedral } from './st-marys.ts'
-import { deYoungMuseum } from './de-young.ts'
+import { deYoungMuseum, deYoungHedges } from './de-young.ts'
+import { threeGems, pomodoroSphere } from './de-young-garden.ts'
+import { loveBlocks, wheresTheBall } from './misfit-toys.ts'
+import { garfieldMonument } from './garfield.ts'
+import { millwrightCottage } from './millwright.ts'
+import { dahliaDell } from './dahlia-dell.ts'
 import { alcatrazCellhouse, alcatrazLighthouse, alcatrazWaterTower } from './alcatraz.ts'
 import { legionOfHonor, legionPyramid, legionFountain } from './legion.ts'
 import { tunnelPortal, rampPortal } from './portals.ts'
@@ -329,9 +334,9 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   ...ST_IGNATIUS,
   ...ST_ANNE,
   ...BANK_OF_CALIFORNIA,
+  ...CLARKE_MANSION,
   ...NEW_MISSION,
   ...THIRTY_OTIS,
-  ...CLARKE_MANSION,
   ...TIBURON_DEPOT,
   ...WEILL,
   ...FEDERAL_BUILDING,
@@ -350,7 +355,7 @@ export const SF_BUILDERS: Record<string, (out: MeshBuilder, fit: Fit) => void> =
   oneHundredFirstPlaza,
   oneHundredFirstPodium,
   stMarysCathedral,
-  deYoungMuseum,
+  deYoungMuseum, deYoungHedges, threeGems, pomodoroSphere, loveBlocks, wheresTheBall, garfieldMonument, millwrightCottage, dahliaDell,
   alcatrazCellhouse,
   alcatrazLighthouse,
   alcatrazWaterTower,

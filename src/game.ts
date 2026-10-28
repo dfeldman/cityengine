@@ -57,6 +57,7 @@ import { OverheadLines } from './render/overhead.ts'
 import { streetRailsLayer } from './render/street-rails.ts'
 import { stairsLayer } from './render/stairs.ts'
 import { SF_STAIRWAYS } from './render/landmarks/sf/stairways.ts'
+import { THREE_GEMS_EYE } from './render/landmarks/sf/de-young-garden.ts'
 import { SF_TUNNELS } from './render/landmarks/sf/tunnels.ts'
 import { SF_BRIDGE_DECKS, BAY_CROSSINGS, GONDOLA_NAME, GONDOLA_TRACK, LIFT_NAME } from './city/sf/bridges.ts'
 /** seconds a ride in one of Salesforce Park's lifts takes */
@@ -114,6 +115,8 @@ import { addEdges, departureBearing, exits, resolve, type CityGraph, type Edge }
 import { locate, rideExits, type RideGraph } from './city/ridegraph.ts'
 import { nearestOnGraph, planRoute, type Route } from './sim/route.ts'
 import { SCENIC } from './city/scenic.ts'
+import { Sights, TourGuide, toursFor, type GuideEvent, type Tour } from './game/tour.ts'
+import { TourCard, pickTour } from './ui/tour.ts'
 import { unpackPoints, wholeWater, type CityPackage, type PackedArea, type PackedRail } from './city/package.ts'
 import { loadRide, openCity } from './city/tilestore.ts'
 import { PlantZones } from './city/zone-planting.ts'
@@ -189,6 +192,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * use auto-routing"); manual, finding the way is the game, as it was.
    */
   route?: 'auto' | 'manual'
+  /** TOUR MODE (src/game/tour.ts): no deliveries; `pick` the tour to ride, null for a free ride */
+  tour?: { pick: Tour | null }
   /** how much the device can hold (src/tier.ts); desktop when not said */
   tier?: Tier
   /** couch, trainer or trainer debug (src/modes.ts); trainer debug when not said (the tools' and tests' game) */
@@ -1545,6 +1550,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * jobs. The LEVEL sets how far a drop-off may be (500 m at level 1): it rises every three deliveries in this city
    * (kept in the browser), or `?level=` sets it.
    */
+  /**
+   * Whether THE DELIVERY GAME is on. It is one game played in this world; tour mode (src/game/tour.ts) is another,
+   * and more are coming (owner, 2026-10-27) — each turns this off and brings its own.
+   */
+  const deliveries = !opts.tour
   const kitchens: Source[] = src.index.region === 'san-francisco' ? (() => {
     const pr = new Projection(pkg.origin)
     return SF_KITCHENS.restaurants.map((k) => ({ ...k, ...pr.toLocal({ lat: k.lat, lon: k.lon }) }))
@@ -1603,14 +1613,15 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   }, { crossings, autoAccept: play.autoAccept, sources: kitchens })
   delivery.level = levelFor(delivered)
   const deliveryCard = new DeliveryCard()
-  if (!opts.freeze) {
+  if (!opts.freeze && deliveries) {
     deliveryCard.cash(earned)
     const cash = document.querySelector('.sr-cash')
     if (cash) corner.appendChild(cash)
   }
   /*
-   * FERRIES AND MUNI METRO (game/stations.ts, ui/travel.ts): ride up to a terminal or a stop, pick where to go, pay the
-   * fare from what the deliveries earned (it may go below zero: travel is never refused), fade to black, and arrive.
+   * FERRIES AND MUNI METRO (game/stations.ts, ui/travel.ts): ride up to a terminal or a stop, pick where to go, fade to
+   * black, and arrive. Both lines are free (FARES), so the deliveries' takings are untouched by travelling; the fare
+   * is still taken off them here, against a price going back on a line (it may go below zero: travel is never refused).
    */
   const travel = opts.freeze ? null : new TravelCard()
   const stations: (Station & { x: number; z: number })[] = index.region === 'san-francisco'
@@ -1621,7 +1632,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     earned -= fare
     try { localStorage.setItem(EARNED_KEY, earned.toFixed(2)) } catch { /* fine */ }
     deliveryCard.cash(earned, true)
-    hud.banner(to.line === 'ferry' ? `Ferry to ${to.name}` : `Muni Metro to ${to.name}`, `fare $${fare.toFixed(2)}`)
+    hud.banner(to.line === 'ferry' ? `Ferry to ${to.name}` : `Muni Metro to ${to.name}`, fare > 0 ? `fare $${fare.toFixed(2)}` : 'free')
   }
   // the target building, lit up (render/beacon.ts)
   const beacon = new Beacon(scene)
@@ -1771,7 +1782,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     }
     for (const l of pkg.landmarks ?? []) staticPlaces.push({ name: l.name, x: l.x, z: l.z })
   }
-  const card = opts.freeze ? null : new LandmarkCard(function* () {
+  // (not in tour mode: the stop card, ui/tour.ts, has its corner)
+  const card = opts.freeze || opts.tour ? null : new LandmarkCard(function* () {
     yield* landmarks?.placed ?? []
     yield* staticPlaces
   })
@@ -1875,6 +1887,66 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   }
   // (N only: Escape is the pause menu now, which has Ride → Clear the route)
   addEventListener('keydown', (e) => { if (e.code === 'KeyN' && !(e.target instanceof HTMLElement && e.target.closest('input, textarea, select'))) clearRoute() })
+  /*
+   * TOUR MODE (src/game/tour.ts): no deliveries. A tour's stops are the GPS's destinations one after another — so
+   * the rider's own turn still wins at a junction, and a wrong turn is just a new route — with a card as each announced
+   * stop comes up. Anything that drops the route (boarding a cable car, a jump, N) is undone a frame later: the tour
+   * puts its stop back. A FREE RIDE has no route, and a card at each sight passed.
+   */
+  const tourPr = new Projection(pkg.origin)
+  const tourLocal = (ll: { lat: number; lon: number }): { x: number; z: number } => tourPr.toLocal(ll)
+  let guide: TourGuide | null = opts.tour?.pick ? new TourGuide(opts.tour.pick, tourLocal) : null
+  const sights = opts.tour ? new Sights(toursFor(opts.city), tourLocal) : null
+  const tourCard = opts.tour && !opts.freeze ? new TourCard() : null
+  /** where the tour began, for its summary */
+  let tourFrom = { m: 0, s: 0 }
+  let tourPicking = false
+  const aimGuide = (): void => {
+    const t = guide?.target
+    if (!t) return
+    destination = { x: t.x, z: t.z }
+    tour = null
+    replan()
+  }
+  /** the tour given up or finished: a free ride from here */
+  const endTour = (): void => { guide = null; clearRoute() }
+  const nextNamed = (i: number): string | undefined => guide?.stops.slice(i + 1).find((q) => q.n !== null)?.name
+  const onGuide = (events: (GuideEvent | null)[]): void => {
+    for (const ev of events) {
+      if (!ev || !guide) continue
+      if (ev.kind === 'approach') {
+        const after = nextNamed(ev.stop.i)
+        tourCard?.show(`Stop ${ev.stop.n} of ${guide.count}`, ev.stop.name ?? '', ev.stop.text ?? '', after ? `Next: ${after}` : 'The last stop')
+        continue
+      }
+      if (ev.next) { aimGuide(); continue }
+      // the last stop: how far, how long, and what now (and the free ride's sights not over its card meanwhile)
+      sights?.seen(ev.stop.name)
+      sights?.seen(guide.stops.find((q) => Math.hypot(q.x - ev.stop.x, q.z - ev.stop.z) < 150 && q.name)?.name)
+      const g = guide
+      const summary = `${far(nav.travelled - tourFrom.m)} in ${clock(simSeconds - tourFrom.s)} · ${g.count} stops`
+      setTimeout(() => tourCard?.complete(g.tour.name, summary, () => void chooseTour(),
+        () => hud.banner('Free ride', 'ride wherever you like')), ev.stop.n !== null ? 9000 : 0)
+      endTour()
+    }
+  }
+  // the tour's state, for probes (read-only)
+  ;(window as unknown as Record<string, unknown>).__tour = () => guide ? { id: guide.tour.id, next: guide.next, of: guide.stops.length,
+    target: guide.target?.name ?? null, routeLeft: route ? Math.round(route.length) : null } : (opts.tour ? 'free' : null)
+  /** Menu → Choose a tour, or the end card's button: the picker over the ride, then off to the first stop */
+  const chooseTour = async (): Promise<void> => {
+    if (tourPicking) return
+    tourPicking = true
+    tourCard?.hide()
+    const t = await pickTour(toursFor(opts.city), { speedup: play.speedup, imperial: imperialNow(), touch: touchScreen(), platform: !!opts.platform })
+    tourPicking = false
+    if (!t) { endTour(); hud.banner('Free ride', 'ride wherever you like'); return }
+    const jump = (window as unknown as { __jump?: (lat: number, lon: number) => boolean }).__jump
+    if (!jump?.(t.stops[0].lat, t.stops[0].lon)) { hud.banner('Could not start the tour', 'its first stop is off the streets'); return }
+    guide = new TourGuide(t, tourLocal)
+    tourFrom = { m: nav.travelled, s: simSeconds }
+    hud.banner(t.name, `${guide.count} stops`)
+  }
   // the navigator's steering state, for probes of the two input modes (read-only)
   ;(window as unknown as Record<string, unknown>).__nav = () => {
     const j = nav.next()
@@ -2164,7 +2236,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     { name: 'Coit Tower', lat: 37.80239, lon: -122.40582, top: 62 },
     // (the tower itself, at the museum's north-east corner, from the model's own top: the museum's centre put the eye
     //  over its roof, 65 m from the tower — owner, 2026-10-06)
-    { name: 'the de Young\'s Hamon Tower', lat: 37.772015, lon: -122.468316, top: 47 },
+    // (53: two over the lid of the rebuilt tower, whose glazed floor is 46–50 m — 47 put the eye inside it, 2026-10-27)
+    { name: 'the de Young\'s Hamon Tower', lat: 37.772015, lon: -122.468316, top: 53 },
     { name: 'the Transamerica Pyramid', lat: 37.79519, lon: -122.40279, top: 230 },
     /*
      * Not a top but a dark room (owner, 2026-10-06: "push O to observe in the camera obscura"): the eye at the Giant
@@ -2172,7 +2245,14 @@ export async function game(canvas: HTMLCanvasElement, opts: {
      * (render/obscura.ts). Offered only close to it.
      */
     { name: 'the Camera Obscura', lat: 37.778257, lon: -122.514234, top: 6, obscura: 'Camera Obscura', reach: 45 },
-  ].map((o) => ({ obscura: undefined as string | undefined, reach: 150, ...o, ...proj.toLocal({ lat: o.lat, lon: o.lon }) })) : []
+    /*
+     * Not a top either but a room open to the sky (owner, 2026-10-27: "Three Gems … a tunnel leading to a hemispherical
+     * underground chamber, with a hole in the top, making a 'skyspace'"): the eye seated in Turrell's chamber in the
+     * de Young's garden (render/landmarks/sf/de-young-garden.ts), looking up through the oculus. Offered from 100 m: the
+     * garden's own paths are not on the ride network, and a rider dropped beside it comes out on a way ~100 m off.
+     */
+    { name: 'Three Gems', lat: 37.7710835, lon: -122.4695866, top: THREE_GEMS_EYE, skyspace: 'Three Gems', reach: 100 },
+  ].map((o) => ({ obscura: undefined as string | undefined, skyspace: undefined as string | undefined, reach: 150, ...o, ...proj.toLocal({ lat: o.lat, lon: o.lon }) })) : []
   let observing: string | null = null
   const nearTop = (at: { x: number; z: number }): (typeof OBSERVE)[number] | null =>
     OBSERVE.find((o) => Math.hypot(o.x - at.x, o.z - at.z) < o.reach) ?? null
@@ -2181,6 +2261,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
   /** off the Camera Obscura's table, by whatever way the view ended (O, ⏸, the map) */
   const leaveTable = (): void => {
     table?.dispose(); table = null
+    // (and out of Three Gems: the look tips down again)
+    orbit.pitchRange = [0.02, 1.5]
     if (turning) { scene.onBeforeRenderObservable.removeCallback(turning); turning = null }
   }
   const comeDown = (): void => {
@@ -2204,6 +2286,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     // the eye just over the MODEL's own top where one is placed there (the guessed heights put it inside Coit Tower)
     let topY = city.terrain.heightAt(o.x, o.z) + o.top
     for (const p of landmarks?.placed ?? []) {
+      if (o.skyspace) {
+        // the chamber's middle, wherever the model stands; its floor is the ground there (de-young-garden.ts)
+        if (p.name === o.skyspace) { l.x = p.x; l.z = p.z; topY = city.terrain.heightAt(p.x, p.z) + o.top }
+        continue
+      }
       if (o.obscura) {
         // the lens: just over the camera's own roof, wherever the model stands (not over the Cliff House beside it)
         if (p.name === o.obscura && p.y !== undefined && p.height !== undefined) { l.x = p.x; l.z = p.z; topY = p.y + p.height + 0.6 }
@@ -2227,6 +2314,16 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       hud.banner('Inside the Camera Obscura', touchScreen() ? 'the lens turns slowly · drag to look · ⏸ to come out' : 'the lens turns slowly · drag to look · O to come out', 4500)
       return
     }
+    if (o.skyspace) {
+      // seated in the chamber, the eye under the focus and looking up at it through the oculus; a drag turns the view
+      // round the sky and tips it no lower than the chamber's wall
+      orbit.pitchRange = [-1.5, -0.25]
+      l.pitch = -1.2
+      l.dist = 2.4
+      orbit.lift = topY + l.dist * Math.sin(-l.pitch) - city.terrain.heightAt(l.x, l.z) - 1.5
+      hud.banner('Inside Three Gems', touchScreen() ? 'the sky through the oculus · drag to look · ⏸ to come out' : 'the sky through the oculus · drag to look · O to come out', 4500)
+      return
+    }
     hud.banner(`The top of ${o.name}`, touchScreen() ? 'drag to look round · ⏸ to come down' : 'drag to look round · O to come down', 4500)
   }
   addEventListener('keydown', (e) => {
@@ -2240,7 +2337,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
     // (unpaused some other way — ⏸ on a phone, a jump on the map: the table and its turning go too)
     if (observing && !frozen) { observing = null; leaveTable() }
     const o = frozen ? null : nearTop(at)
-    const what = o?.obscura ? `look in ${o.name}` : `observe from the top of ${o?.name}`
+    const what = o?.obscura ? `look in ${o.name}` : o?.skyspace ? `sit in ${o.name}` : `observe from the top of ${o?.name}`
     hud.observe(o ? (touchScreen() ? `🔭 ${what[0].toUpperCase()}${what.slice(1)}` : `🔭 Press O to ${what}`) : null, o ? () => goUp(o) : undefined)
   }
   /*
@@ -2447,14 +2544,24 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           if (pos) backOnStreet(pos)
           hud.banner('Off the transit', 'put back on the nearest street')
         } }] : transit.boardable ? [{ label: 'Get on', hint: keyHint('B'), run: transitAction }] : []),
-      ...(destination || route ? [{ label: 'Clear the route', hint: keyHint('N'), run: clearRoute }] : []),
+      ...((destination || route) && !guide ? [{ label: 'Clear the route', hint: keyHint('N'), run: clearRoute }] : []),
     ] },
-    { label: 'Deliveries', sub: (): MenuItem[] => [
+    ...(opts.tour ? [{ label: 'Tour', sub: (): MenuItem[] => guide ? [
+      { label: guide.tour.name, info: `stop ${guide.upcoming?.n ?? guide.count} of ${guide.count}` },
+      ...(guide.upcoming ? [{ label: 'Next', info: `${guide.upcoming.name ?? ''}${route ? ` · ${toGo(route.length)}` : ''}` }] : []),
+      { label: 'Skip this stop', run: () => onGuide([guide?.skip() ?? null]) },
+      { label: 'Choose another tour', run: () => void chooseTour() },
+      { label: 'End the tour', hint: 'free ride', run: () => { endTour(); hud.banner('Free ride', 'ride wherever you like') } },
+    ] : [
+      { label: 'Free ride', info: 'no route' },
+      { label: 'Choose a tour', run: () => void chooseTour() },
+    ] }] : []),
+    ...(!deliveries ? [] : [{ label: 'Deliveries', sub: (): MenuItem[] => [
       { label: 'Earned', info: `$${earned.toFixed(2)}` },
       { label: 'Delivered', info: String(delivered) },
       { label: 'Level', info: String(delivery.level) },
       ...(delivery.phase === 'toDropoff' ? [{ label: 'Eat the order', hint: 'full energy, no pay', run: () => onDelivery(delivery.eat()) }] : []),
-    ] },
+    ] }]),
     { label: 'Session', sub: (): MenuItem[] => [
       // (where, for a bug report: "what is this train doing here?")
       { label: 'Where', info: `${placeName(lastAt)} · ${(() => { const ll = proj.toLatLon(lastAt); return `${ll.lat.toFixed(5)}, ${ll.lon.toFixed(5)}` })()}` },
@@ -2699,12 +2806,22 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         const picked = nav.requestedEdge ?? resolve(junction.exits, nav.requested)?.edgeId ?? null
         hud.exits(junction.exits.map((x) => ({ edgeId: x.edgeId, angle: x.angle, name: rides.edges.get(x.edgeId)?.name })), picked)
       } else hud.exits(null, null)
+      // the tour (above): its stop back after anything dropped the route, and whether a stop is coming up or reached
+      // (not under the loading screen: the first stop's card is for a rider who can see it)
+      if (guide && !loading && !tourPicking && !transit.aboard) {
+        const t = guide.target
+        if (t && (!destination || destination.x !== t.x || destination.z !== t.z)) { aimGuide(); routedAt = now }
+        onGuide(guide.update(nav.at(), route ? route.length : null, route ? route.target.at : null))
+      } else if (sights && !guide && !loading && frames % 15 === 0) {
+        const s = sights.update(nav.at())
+        if (s) tourCard?.show('Sight', s.name ?? '', s.text ?? '')
+      }
       // the GPS: keep the route current, and ask for its exit at the junction ahead
       if (destination && now - routedAt > 1000) {
         routedAt = now
         replan()
         // (a delivery's own stop is the delivery's to announce: it says "picked up" and routes on)
-        if (route && route.length < 20 && !deliveryRouted) {
+        if (route && route.length < 20 && !deliveryRouted && !guide) {
           const here = destination!
           const reached = placeName(here)
           if (tour && nextWaypoint()) {
@@ -2734,7 +2851,8 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         const exit = want === undefined || !junction ? undefined : junction.exits.find((x) => x.edgeId === want)
         const left = toGo(route.length)
         const next = route.turnRound ? 'turn round' : exit && junction && exit.turn !== 'straight' ? `${exit.turn} soon` : ''
-        hud.gps(`⌖ ${tour ? `${tour.of - tour.left.length}/${tour.of} · ` : ''}${left}${next ? ` · ${next}` : ''}`)
+        const of = guide ? `${guide.upcoming?.n ?? guide.count}/${guide.count} · ` : tour ? `${tour.of - tour.left.length}/${tour.of} · ` : ''
+        hud.gps(`⌖ ${of}${left}${next ? ` · ${next}` : ''}`)
       } else if (route) hud.gps(null)
       paths.follow(nav.at())
       paths.update(nav.edge.id, junction, nav.requested)
@@ -2777,7 +2895,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         if (welcomePedal > 2 || welcomeFor > 20) closeWelcome()
       }
       // …and while the rider is picking themselves up after a collision (render/rider.ts `tumble`)
-      const hold = frozen || menuHeld || controls.paused() || riding || !!rider?.tumbling || stillInWay(lastRider, now) || welcomeOpen()
+      const hold = frozen || menuHeld || controls.paused() || riding || !!rider?.tumbling || stillInWay(lastRider, now) || welcomeOpen() || tourPicking
         // (waiting at the gondola's station: the cabin is boarded, the track is not ridden; and in a lift)
         || (!riding && nav.edge.name === GONDOLA_NAME)
         || (!riding && nav.edge.name === LIFT_NAME && liftUsed !== nav.position.edgeId)
@@ -3039,7 +3157,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         life.riderAboard = transit.aboard !== null
         const hits = traffic.update(dt, riderNow ?? at, near)
         // the delivery game: its clock runs with the ride (not while frozen or paused), and it watches the rider
-        if (!hold) onDelivery(delivery.update(dt, at))
+        if (!hold && deliveries) onDelivery(delivery.update(dt, at))
         // very late with the order on board (past the one-star mark): offer the pass, for a few seconds every minute
         const veryLate = !hold && delivery.phase === 'toDropoff' && delivery.job && (delivery.elapsed ?? 0) > Delivery.expected(delivery.job, 6.5 * play.speedup) * 1.7
         // the pass, as a button too: a phone has no E (owner, 2026-10-03)
@@ -3308,7 +3426,12 @@ export async function game(canvas: HTMLCanvasElement, opts: {
       const tell = (): void => { if (welcomeOpen()) setTimeout(tell, 500); else hud.banner('Settings changed', recovered!, 9000) }
       if (recovered) setTimeout(tell, 800)
       // and the welcome screen over the city, gone at the first key (BUGS.md #165)
-      if (!opts.freeze) welcomeScreen(src.index?.name ?? opts.city, !nav.fast, !!opts.platform)
+      // (in tour mode the picker was the welcome: main.ts)
+      if (!opts.freeze && !opts.tour) welcomeScreen(src.index?.name ?? opts.city, !nav.fast, !!opts.platform)
+      else if (opts.tour) {
+        tourFrom = { m: nav.travelled, s: simSeconds }
+        hud.banner(guide ? guide.tour.name : 'Free ride', guide ? `${guide.count} stops` : 'ride wherever you like · Esc → Tour to choose one', 6000)
+      }
     }
   }
   /*
@@ -3516,7 +3639,7 @@ export async function game(canvas: HTMLCanvasElement, opts: {
           : `🚋 Board the ${v.name ?? (v.kind === 'cable' ? 'cable car' : 'streetcar')}` })
         const top = !frozen && !transit.aboard ? nearTop(lastAt) : null
         if (observing && frozen) out.push({ id: 'observe', label: '🔭 Come down' })
-        else if (top) out.push({ id: 'observe', label: `🔭 ${top.obscura ? 'Look in' : 'Observe from'} ${top.name.replace(/^the /, '')}` })
+        else if (top) out.push({ id: 'observe', label: `🔭 ${top.obscura ? 'Look in' : top.skyspace ? 'Sit in' : 'Observe from'} ${top.name.replace(/^the /, '')}` })
         if (delivery.phase === 'toDropoff' && delivery.job && (delivery.elapsed ?? 0) > Delivery.expected(delivery.job, 6.5 * play.speedup) * 1.7) {
           out.push({ id: 'eat', label: `${delivery.job.item?.emoji ?? '🍽'} Eat the ${delivery.job.item?.name ?? 'order'}` })
         }

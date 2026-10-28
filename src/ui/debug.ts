@@ -37,6 +37,8 @@ export class OrbitLook {
   active = false
   /** metres above the ground the focus has been flown up (or down) with Q and E */
   lift = 0
+  /** how far a drag may tilt the view: positive looks down on the focus, negative up at it (Three Gems' skyspace) */
+  pitchRange: [number, number] = [0.02, 1.5]
   private readonly held = new Set<string>()
 
   constructor(canvas: HTMLCanvasElement) {
@@ -102,7 +104,7 @@ export class OrbitLook {
         l.z += -dx * k * rz + dy * k * fz
       } else {
         l.yaw -= dx * 0.005
-        l.pitch = Math.max(0.02, Math.min(1.5, l.pitch + dy * 0.005))
+        l.pitch = Math.max(this.pitchRange[0], Math.min(this.pitchRange[1], l.pitch + dy * 0.005))
       }
     })
     canvas.addEventListener('wheel', (e) => {

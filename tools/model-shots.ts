@@ -39,8 +39,20 @@ const SETS: Record<string, V[]> = {
   long: [['city-front', -1.57, 1.45, 260, 0, 25, 0], ['back', 1.57, 1.45, 260, 0, 25, 0], ['three-quarter', -0.9, 1.35, 240, 0, 25, 0], ['tower', -1.4, 1.4, 90, 0, 45, -20]],
   // a 30 m round tower: the elevation of the long-lens photograph, three-quarter from the plaza, and from under the eaves
   pagoda: [['elevation', -1.57, 1.5, 85, 0, 15, 0], ['plaza', -0.9, 1.4, 55, 0, 13, 0], ['under', -1.2, 1.92, 22, 0, 12, 0]],
+  // the de Young (owner's satellite view, 2026-10-27): straight down to compare with it, from the concourse (+z, the
+  // south-east front and its hedges), from the north over the tower, and low by the canopy
+  deyoung: [['top', -1.57, 0.02, 230, 0, 0, 0], ['concourse', 1.15, 1.2, 190, 0, 8, 10], ['tower', -2.2, 1.2, 150, -50, 25, 0], ['canopy', 0.5, 1.45, 70, 55, 6, 10]],
+  // the Millwright's Cottage (millwright.ts): front −z, as the photographs from the windmill see it
+  cottage: [['front', -1.9, 1.4, 26, 0, 3, 0], ['end', -0.4, 1.35, 24, 0, 3, 0]],
+  // the Garfield monument (garfield.ts): its front is local −z, so alpha −π/2 looks at it head-on
+  garfield: [['front', -1.57, 1.45, 16, 0, 4.5, 0], ['three-quarter', -2.2, 1.4, 16, 0, 4.5, 0], ['mourner', -1.57, 1.5, 6, 0, 2.2, -1.5]],
+  // the LOVE Blocks and the jacks (misfit-toys.ts): from the south-west, where the owner's photographs were taken
+  toys: [['sw', -2.2, 1.35, 22, 0, 1, 0], ['low', -2.0, 1.5, 12, 0, 1, 0]],
   // a fire alarm box (us-furniture.ts): its front is +z, so alpha +π/2 looks at it head-on
   callbox: [['front', 1.57, 1.5, 3, 0, 1.1, 0], ['three-quarter', 0.9, 1.35, 3.4, 0, 1.1, 0], ['close', 1.2, 1.3, 1.5, 0, 1.3, 0]],
+  // Pomodoro's sphere (de-young-garden.ts): at the rift (its bearing 150, so alpha −1.05) and from the side
+  sphere: [['rift', -1.05, 1.45, 4.2, 0, 1.75, 0], ['side', 0.3, 1.35, 4.5, 0, 1.6, 0], ['close', -1.05, 1.1, 1.8, 0, 1.75, 0]],
+  gems: [['three-quarter', 0.4, 1.2, 22, 0, 2, 0], ['portal', 0.35, 1.45, 12, 0, 1.5, 0], ['top', 0.4, 0.15, 20, 0, 3, 0], ['inside', 0.4, 2.3, 2.4, 0, 3.4, 0]],
   sign: [['front', -1.57, 1.5, 14, 0, 4.5, 0], ['three-quarter', -1.0, 1.45, 16, 0, 4.5, 0]],
   vehicle: [['side', 0.1, 1.45, 14, 0, 1.5, 0], ['front-three-quarter', 0.9, 1.35, 12, 0, 1.5, 1], ['high', 0.6, 0.95, 16, 0, 1, 0]],
   /*

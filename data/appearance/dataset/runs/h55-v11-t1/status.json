@@ -1,0 +1,14 @@
+{
+ "answered": 5922,
+ "dollars": 6.51286944000001,
+ "tokens": {
+  "input": 14847371,
+  "output": 8608601,
+  "cache_read": 41094684,
+  "thinking": 5930629
+ },
+ "run": "h55-v11-t1",
+ "tier": "1",
+ "updated": "2026-10-25 09:14:20",
+ "stopped": "money: $0.15 left, under the $0.15 reserve"
+}

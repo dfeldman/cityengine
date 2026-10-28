@@ -17,16 +17,24 @@ export interface Station {
   lon: number
   /** for a ferry: the terminals it sails to from here (the boats all run from the Ferry Building) */
   to?: string[]
-  /** an island's terminal: the ferry back from it is free (there is no way to earn a fare on an island) */
+  /** an island's terminal: there is no way to earn a fare on an island, so the boat home was free before all of travel was */
   island?: true
 }
 
-export const FARES: Record<Station['line'], number> = { ferry: 5, metro: 1 }
+/**
+ * ALL TRAVEL IS FREE (owner, 2026-10-27: "transportation should be free, not cost $1" … "make the ferry free as well,
+ * all transportation is free"). The fares the lines opened with — $1 the Metro, $5 the ferry — are kept as the one
+ * place a price would go back, rather than torn out: the card and the banner already say "free" of a fare of 0, and
+ * the deliveries' takings are simply not touched by travelling.
+ */
+export const FARES: Record<Station['line'], number> = { ferry: 0, metro: 0 }
 
 /**
- * The fare from a station: its line's, except the ferry home from an island, which is FREE (owner, 2026-10-06: "the
- * ferry back from any island TO SF should be free. since there's no way to make money on any island, and if you don't
- * have $5, you'd be stuck forever").
+ * The fare from a station: its line's — 0 for both, so 0 from everywhere.
+ *
+ * The island rule is still here under it (owner, 2026-10-06: "the ferry back from any island TO SF should be free.
+ * since there's no way to make money on any island, and if you don't have $5, you'd be stuck forever"): it is what
+ * must hold whatever the ferry costs, and it costs nothing now.
  */
 export function fareFrom(s: Station): number {
   return s.line === 'ferry' && s.island ? 0 : FARES[s.line]

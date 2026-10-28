@@ -1239,13 +1239,13 @@
       150,
       450
     ],
-    "note": "assetkit-models-sf/tea-garden-cranes on the Main Pond's south-west bank, facing the water.",
+    "note": "assetkit-models-sf/tea-garden-cranes standing in the Main Pond's south-west shallows, 1.3 m inside OSM's water outline (way/409163924), facing out across the pond (owner, 2026-10-27: moved off the bank into the water).",
     "attach": {
       "to": "Japanese Tea Garden grounds",
       "at": [
-        -11.94,
+        -9.74,
         0,
-        -51.83
+        -49.53
       ],
       "bearing": 57,
       "draped": true
@@ -1455,13 +1455,13 @@
     "id": "corridor-pin-blue",
     "name": "Corridor Pin, Blue",
     "asset": "corridor-pin-blue",
-    "lat": 37.77165,
-    "lon": -122.4695,
+    "lat": 37.7706935,
+    "lon": -122.469124,
     "bearing": 20,
     "lodRanges": [
       200,
       600
     ],
-    "note": "assetkit-models-sf/corridor-pin-blue: Claes Oldenburg and Coosje van Bruggen's giant blue safety pin (1999, 21 ft) in the de Young's Barbro Osher Sculpture Garden, west of the museum (position approximate, 2026-10-26)."
+    "note": "assetkit-models-sf/corridor-pin-blue: Claes Oldenburg and Coosje van Bruggen's giant blue safety pin (1999, 21 ft) in the de Young's Barbro Osher Sculpture Garden, south-west of the museum by the café. Position: OSM node/6621511985 (2026-10-27; was 120 m off on the museum's north-west side — the owner's satellite view has it by the café)."
   }
 ]

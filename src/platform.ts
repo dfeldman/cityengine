@@ -199,6 +199,16 @@ export class Platform implements Controls {
   get time(): 'day' | 'dawn' | 'dusk' | 'night' { return option(this.start.options, 'time', ['day', 'dawn', 'dusk', 'night'], 'day') as 'day' }
   get weather(): 'clear' | 'overcast' | 'rain' { return option(this.start.options, 'weather', ['clear', 'overcast', 'rain'], 'clear') as 'clear' }
   get device(): 'bike' | 'treadmill' { return this.start.deviceType }
+  /** which of the game's variants Dandyhorse launched (metadata.json): `bike`, or `tour` for tour mode (src/game/tour.ts) */
+  get variant(): string { return this.start.variant }
+  /**
+   * The tour chosen in Dandyhorse's launch dialog (metadata.json option `tour`: a tour's id, or `free`), so a rider on a
+   * trainer with only the phone's d-pad never has to work the in-game picker (src/ui/tour.ts); null: not chosen there.
+   */
+  get tourChoice(): string | null {
+    const v = (this.start.options as Record<string, unknown> | null)?.tour
+    return typeof v === 'string' && v ? v : null
+  }
   /** where to pick up in this city: where the rider was last time */
   resumeAt(city: string): { lat: number; lon: number } | null { return this.save.cities[city]?.at ?? null }
 
