@@ -13,8 +13,7 @@
  *    starts partway up the wall (`DECK_Y`), and everything below it is a blank retaining wall down to grade,
  *    standing for the deck structure the ground model cannot represent. The podium is therefore taller on the
  *    street than it ever reads from the lawn.
- *  - **The signage is the building.** A wall-sized `METREON` wordmark, a several-storeys-tall Target bullseye,
- *    and `AMC`/`IMAX` over a perforated dot panel on the Market corner are what make this box identifiable at
+ *  - **The signage is the building.** A wall-sized `METREON` wordmark and `AMC`/`IMAX` over a perforated dot panel on the Market corner are what make this box identifiable at
  *    all, so they are drawn at the scale the photographs show rather than as a nameplate afterthought.
  *
  * Which ring edge is "the garden side" is read off the footprint rather than typed: it is the LONGEST edge
@@ -26,12 +25,11 @@
  * `fit.hx`/`fit.hz`/`fit.height` — nothing is a typed footprint dimension.
  *
  * Signage (render/landmarks/signage.ts, landed same day): the wordmark and the AMC/IMAX lettering use the new
- * `flat` sign type — one quad, two triangles, lit per the photographs. The Target bullseye and the dot panel
- * are NOT text, and `SignSpec` currently has no way to give a sign a picture: `SignSource`'s `{ kind: 'image' }`
+ * `flat` sign type — one quad, two triangles, lit per the photographs. The dot panel
+ * is NOT text, and `SignSpec` currently has no way to give a sign a picture: `SignSource`'s `{ kind: 'image' }`
  * member is declared in signage.ts but is never referenced by `SignSpec` (`SignSpec.text` is a bare string,
  * not a `SignSource`), and `sign-plates.ts`'s `paint()` only ever lays out text glyphs — there is no image
- * branch to feed a url into. So both logos are drawn as small hand-built geometry instead (see `bullseye()`
- * and `mosaic()` below): cheap, but proof that the mural/billboard path this comment block promises is not
+ * branch to feed a url into. So it is drawn as small hand-built geometry instead (see `mosaic()` below): cheap, but proof that the mural/billboard path this comment block promises is not
  * wired up yet — see the file header of signage.ts, "NOT IMPLEMENTED".
  */
 import type { MeshBuilder } from '../../buildings.ts'
@@ -53,7 +51,6 @@ const MULLION: Rgb = [0.30, 0.31, 0.33]
 const DECK: Rgb = [0.36, 0.35, 0.34]          // the retaining wall down to grade under the raised garden deck
 const ROOF: Rgb = [0.32, 0.31, 0.31]
 const RED: Rgb = [0.80, 0.09, 0.10]
-const WHITE: Rgb = [0.97, 0.97, 0.95]
 const BLUE: Rgb = [0.09, 0.27, 0.60]
 const INK: Rgb = [0.14, 0.14, 0.15]
 const PANEL_MID: Rgb = [0.55, 0.55, 0.55]
@@ -91,36 +88,6 @@ function mosaic(out: MeshBuilder, e: Edge, u0: number, u1: number, y0: number, y
       const u = u0 + c * cw
       const y = y0 + r * ch
       rect(out, e, u + cw * gap * 0.5, u + cw * (1 - gap * 0.5), y + ch * gap * 0.5, y + ch * (1 - gap * 0.5), colour, tag, off)
-    }
-  }
-}
-
-/**
- * The Target bullseye: three concentric rings (red, white, red) standing off the wall a hand's width, drawn as
- * a fan of flat wedges — the whole thing is triangles, no texture, because `SignSpec` has no image source to
- * paint a logo into (see the file header). `segs` wedges per ring is plenty at a rider's distance; the centre
- * disc is a degenerate quad (two shared corners) rather than a true triangle primitive, which this mesh
- * builder has no separate call for.
- */
-function bullseye(out: MeshBuilder, e: Edge, u: number, y: number, r: number, off: number): void {
-  const n: [number, number, number] = [e.nx, 0, e.nz]
-  const P = (rad: number, ang: number): [number, number, number] =>
-    [e.a.x + e.tx * (u + rad * Math.cos(ang)) + e.nx * off, y + rad * Math.sin(ang), e.a.z + e.tz * (u + rad * Math.cos(ang)) + e.nz * off]
-  const segs = 20
-  const rings: [number, Rgb][] = [[1.0, RED], [0.62, WHITE], [0.30, RED]]
-  for (let k = 0; k < rings.length; k++) {
-    const rOut = rings[k][0] * r
-    const rIn = k + 1 < rings.length ? rings[k + 1][0] * r : 0
-    const colour = rings[k][1]
-    for (let s = 0; s < segs; s++) {
-      const a0 = (s / segs) * Math.PI * 2
-      const a1 = ((s + 1) / segs) * Math.PI * 2
-      if (rIn <= 0) {
-        const c = P(0, 0)
-        out.quad([c, P(rOut, a0), P(rOut, a1), P(rOut, a1)], n, [[0.5, 0.5], [1, 0], [1, 1], [1, 1]], colour, T_METAL)
-      } else {
-        out.quad([P(rIn, a0), P(rOut, a0), P(rOut, a1), P(rIn, a1)], n, [[0, 0], [1, 0], [1, 1], [0, 1]], colour, T_METAL)
-      }
     }
   }
 }
@@ -201,7 +168,6 @@ export function metreon_135_fourth(out: MeshBuilder, fit: Fit): void {
   }
   if (cornerEdge < 0) cornerEdge = (mainEdge + 1) % n
 
-  const mainE = edgeAt(ring, mainEdge)
 
   /*
    * The wordmark: dark letters set high on the white wall, `flat` (one quad, a real bold grotesque, two
@@ -210,12 +176,6 @@ export function metreon_135_fourth(out: MeshBuilder, fit: Fit): void {
    */
   sign(out, { type: 'flat', text: 'METREON', h: Math.max(1.8, H * 0.05), face: 'block', weight: 'bold', colour: INK, lit: 'front' },
     { ring, edge: mainEdge, y: roofMain * 0.88, along: 0.5 })
-
-  /*
-   * The bullseye, several storeys across, below the wordmark on the same wall. Geometry, not a sign: see the
-   * file header on why `SignSource`'s image member cannot be used here yet.
-   */
-  bullseye(out, mainE, mainE.L * 0.5, roofMain * 0.42, Math.min(fit.hx, fit.hz) * 0.16, 0.12)
 
   /*
    * The Market Street corner: AMC over IMAX, both self-lit channel letters, over a perforated dot panel that

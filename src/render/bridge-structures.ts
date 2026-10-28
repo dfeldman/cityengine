@@ -28,7 +28,7 @@ import { cartoonMaterial } from './cartoon-material.ts'
 import type { TileLayer } from './city.ts'
 import { isRaised, unpackPoints, waterLevels, wholeWater, type CityPackage, type PackedBridge, type PackedEdge } from '../city/package.ts'
 import type { Terrain } from '../city/terrain.ts'
-import { axisOf, straightOutline } from '../city/bridge-axis.ts'
+import { axisAlong, axisOf, straightOutline } from '../city/bridge-axis.ts'
 
 type Rgb = [number, number, number]
 type P = { x: number; z: number }
@@ -208,13 +208,23 @@ export const FREEWAY_KINDS = new Set(['motorway', 'motorway_link', 'trunk', 'tru
 
 function buildStructure(out: MeshBuilder, b: PackedBridge, ring: P[], edges: PackedEdge[], terrain: Terrain,
   wetAt: (x: number, z: number) => number | null, styles: Record<string, StructureStyle>, waterDefault: StructureStyle = DEFAULT_OVER_WATER): void {
-  const ax = axisOf(ring)
-  if (!ax || ax.L < 8 || !straightOutline(ring)) return
+  const long = axisOf(ring)
+  if (!long || long.L < 8 || !straightOutline(ring)) return
   for (const e of edges) {
     if (!FREEWAY_KINDS.has(e.kind) || !isRaised(e)) continue
     const k = Math.floor(e.points.length / 4) * 2
     if (inOutline(ring, e.points[k], e.points[k + 1], 1.5)) return
   }
+  // along the bridge's own ways, which is not always its long side (bridge-axis.ts `axisAlong`)
+  const own: [P, P][] = []
+  for (const e of edges) {
+    if (!e.bridge || FREEWAY_KINDS.has(e.kind)) continue
+    const pts = unpackPoints(e.points)
+    for (let i = 1; i < pts.length; i++) {
+      if (inOutline(ring, (pts[i - 1].x + pts[i].x) / 2, (pts[i - 1].z + pts[i].z) / 2, 0.5)) own.push([pts[i - 1], pts[i]])
+    }
+  }
+  const ax = axisAlong(long, own)
   const { ux, uz } = ax
   let O = ax.o
   let L = ax.L

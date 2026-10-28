@@ -448,7 +448,9 @@ function childrensCreativityMuseum(out: MeshBuilder, fit: Fit): void {
  *     **not** conical: an earlier note in our own docs said it was, and the close oblique corrects it;
  *   - a low drum under it carrying a decorative painted band;
  *   - a CIRCULAR PLINTH reached by steps ALL ROUND, with the carousel raised on that platform;
- *   - angled BUTTRESS FINS on the retaining walls beside it.
+ *   - angled BUTTRESS FINS on the retaining walls beside it — NOT built (owner, 2026-10-27: "these stairs at YB
+ *     Center make no sense"): placed off a frame edge, the finned wall and its flight up to garden level stood
+ *     alone on the lawn by 4th Street, climbing 4 m to nothing. Nothing at garden level meets this corner.
  *
  * **It stands on TRUE GROUND (`LEVELS.street`)** — it takes a corner out of Moscone, and the museum connects
  * DOWN to it. This is the one fact about this corner that the block's level model turns on, and it is why
@@ -460,7 +462,6 @@ function childrensCreativityMuseum(out: MeshBuilder, fit: Fit): void {
  */
 function leRoyKingCarousel(out: MeshBuilder, fit: Fit): void {
   const ring = planRing(fit)
-  const f = frameOf(ring)
   const c: P2 = { x: ring.reduce((t, p) => t + p.x, 0) / ring.length, z: ring.reduce((t, p) => t + p.z, 0) / ring.length }
   const R = ring.reduce((t, p) => t + Math.hypot(p.x - c.x, p.z - c.z), 0) / ring.length
   const S = LEVELS.street
@@ -533,36 +534,6 @@ function leRoyKingCarousel(out: MeshBuilder, fit: Fit): void {
   // the crown: a pale cap and the finial the aerial shows at the apex
   capPolygon(out, circle(c, rAt(COURSES - 1), N), yAt(COURSES - 1) + 0.02, CREAM, CONC, 2)
   box(out, c.x, y0 + RISE + 0.7, c.z, 0.16, 0.8, 0.16, CREAM, CONC)
-
-  // ---- the retaining wall with ANGLED BUTTRESS FINS, on the side away from the museum
-  {
-    const e = f.e
-    const wall = { x: e.mid.x + e.nx * (R * 1.5), z: e.mid.z + e.nz * (R * 1.5) }
-    boxAlong(out, wall.x, S + 1.6, wall.z, R * 1.5, 1.6, 0.4, e.heading, BOARD_CONC, CONC)
-    const n = 6
-    for (let k = 0; k < n; k++) {
-      const t = -R * 1.5 + (R * 3 * (k + 0.5)) / n
-      const p = { x: wall.x + e.tx * t, z: wall.z + e.tz * t }
-      // a fin: a triangle standing out from the wall, thickening toward its base
-      for (const sg of [1, -1]) {
-        out.quad([
-          [p.x + e.tx * 0.25 * sg, S, p.z + e.tz * 0.25 * sg],
-          [p.x + e.tx * 0.25 * sg + e.nx * -2.4, S, p.z + e.tz * 0.25 * sg + e.nz * -2.4],
-          [p.x + e.tx * 0.25 * sg, S + 3.1, p.z + e.tz * 0.25 * sg],
-          [p.x + e.tx * 0.25 * sg, S + 3.1, p.z + e.tz * 0.25 * sg],
-        ], [e.tx * sg, 0, e.tz * sg], [[0, 0], [1, 0], [1, 1], [0, 1]], PLINTH, CONC)
-      }
-      out.quad([
-        [p.x + e.tx * 0.25 + e.nx * -2.4, S, p.z + e.tz * 0.25 + e.nz * -2.4],
-        [p.x - e.tx * 0.25 + e.nx * -2.4, S, p.z - e.tz * 0.25 + e.nz * -2.4],
-        [p.x - e.tx * 0.25, S + 3.1, p.z - e.tz * 0.25],
-        [p.x + e.tx * 0.25, S + 3.1, p.z + e.tz * 0.25],
-      ], [-e.nx, 0.6, -e.nz], [[0, 0], [1, 0], [1, 1], [0, 1]], BOARD_CONC, CONC)
-    }
-    // and the flight from true ground up to garden level behind it — the museum connects DOWN to this corner
-    stair(out, { x: wall.x - e.tx * R * 0.7, z: wall.z - e.tz * R * 0.7 }, { x: wall.x + e.tx * R * 0.7, z: wall.z + e.tz * R * 0.7 },
-      S, LEVELS.garden, { anchor: 'bottom', rail: 'both', railKind: 'posts', colour: PALE_STONE, treadColour: PALE_STONE })
-  }
 }
 
 /* ------------------------------------------------------------------- C. the South of Market Child Care */

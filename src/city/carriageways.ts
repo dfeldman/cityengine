@@ -7,10 +7,19 @@
  */
 import { onSurface, unpackPoints, type PackedEdge } from './package.ts'
 
-export interface Seg { ax: number; az: number; bx: number; bz: number; half: number; walk: number; edge: number }
+export interface Seg { ax: number; az: number; bx: number; bz: number; half: number; walk: number; edge: number; name?: string; oneway?: boolean }
 export interface Near { s: Seg; d: number; t: number; side: number }
 
 const CELL = 24
+/**
+ * How far across a median the other carriageway of the SAME street is looked for (owner, 2026-10-27: "on 4th street,
+ * there are hundreds of lamp posts, newspaper boxes, fire hydrants and other street furniture in the path of the
+ * streetcar"). South of Brannan 4th Street is two one-way ways with the T's trackbed between them, 15 m apart, and the
+ * median test only looked `reach` past a carriageway's edge — each way's inner pavement passed for a kerb. Two ways of
+ * one name, both ONE-WAY, parallel and apart, are the two halves of one street at any width a median comes in (a two-way
+ * road doubling back on itself — Rodeo Avenue's hairpins — is not).
+ */
+const TWIN_REACH = 24
 
 export class Carriageways {
   private readonly grid = new Map<string, Seg[]>()
@@ -21,14 +30,15 @@ export class Carriageways {
    * "is this point on something built?" (`onPaving`), where a concrete trail counts as much as a road:
    * BUGS.md #196, small plants growing up through the asphalt in Golden Gate Park.
    */
-  constructor(edges: Pick<PackedEdge, 'id' | 'points' | 'width' | 'walk' | 'foot' | 'tunnel' | 'layer' | 'bridge' | 'kind'>[],
+  constructor(edges: Pick<PackedEdge, 'id' | 'points' | 'width' | 'walk' | 'foot' | 'tunnel' | 'layer' | 'bridge' | 'kind' | 'name' | 'oneway'>[],
     includeFoot = false) {
     for (const e of edges) {
       if ((e.foot && !includeFoot) || !onSurface(e)) continue
       const p = unpackPoints(e.points)
       for (let i = 1; i < p.length; i++) {
-        const s: Seg = { ax: p[i - 1].x, az: p[i - 1].z, bx: p[i].x, bz: p[i].z, half: e.width / 2, walk: e.walk, edge: e.id }
-        const r = s.half + s.walk + 3
+        const s: Seg = { ax: p[i - 1].x, az: p[i - 1].z, bx: p[i].x, bz: p[i].z, half: e.width / 2, walk: e.walk, edge: e.id, name: e.name, oneway: e.oneway }
+        // (a named street out as far as its twin's median test looks for it, or the far way is never in the point's cell)
+        const r = s.half + (s.name && s.oneway && !e.foot ? Math.max(s.walk + 3, TWIN_REACH) : s.walk + 3)
         for (let gi = Math.floor((Math.min(s.ax, s.bx) - r) / CELL); gi <= Math.floor((Math.max(s.ax, s.bx) + r) / CELL); gi++) {
           for (let gj = Math.floor((Math.min(s.az, s.bz) - r) / CELL); gj <= Math.floor((Math.max(s.az, s.bz) + r) / CELL); gj++) {
             const k = `${gi},${gj}`
@@ -67,15 +77,18 @@ export class Carriageways {
 
   /** `noFurniture`, and why: in a road, or in a median */
   whyNoFurniture(x: number, z: number, reach = 4): 'road' | 'median' | null {
-    const near = this.near(x, z).filter((n) => n.d < n.s.half + reach)
+    const all = this.near(x, z)
+    const near = all.filter((n) => n.d < n.s.half + reach)
     if (near.some((n) => n.d < n.s.half + 0.15)) return 'road'
-    // a carriageway on EACH side, running the same way (either direction), each within `reach` of its edge: a median
+    // a carriageway on EACH side, running the same way (either direction), each within `reach` of its edge: a median —
+    // or, for the other one-way half of the SAME street, anywhere out to TWIN_REACH (a trackbed or a planted median is wide)
     for (const a of near) {
       const ax = a.s.bx - a.s.ax, az = a.s.bz - a.s.az
       const al = Math.hypot(ax, az) || 1
       const sideA = Math.sign(ax * (z - a.s.az) - az * (x - a.s.ax))
-      for (const b of near) {
+      for (const b of all) {
         if (b.s.edge === a.s.edge) continue
+        if (b.d >= b.s.half + (a.s.name && a.s.name === b.s.name && a.s.oneway && b.s.oneway ? TWIN_REACH : reach)) continue
         const bx = b.s.bx - b.s.ax, bz = b.s.bz - b.s.az
         if (Math.abs((ax * bx + az * bz) / (al * (Math.hypot(bx, bz) || 1))) < 0.85) continue
         // which side of a's line b's nearest point is on

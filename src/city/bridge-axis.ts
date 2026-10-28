@@ -45,6 +45,29 @@ export function axisOf(ring: P[]): { o: P; ux: number; uz: number; L: number; ha
 
 
 /**
+ * The axis turned to run the way the bridge's own ways do. `axisOf` takes the outline's LONG side, which is the bridge's
+ * length for anything spanning a river — but a road bridge over a footpath is wider than it is long: Kezar Drive's over
+ * the path tunnel at the east end of Golden Gate Park is 7 m along the road and 25 m across its two sidewalks, and its
+ * parapets were built along the long side, two stone walls straight across the drive (owner, 2026-10-27: "walkways
+ * that are in osm as elevated but completely block the surface street"). `ways`: the segments of the raised ways on it.
+ */
+export function axisAlong(ax: NonNullable<ReturnType<typeof axisOf>>, ways: [P, P][]): NonNullable<ReturnType<typeof axisOf>> {
+  let along = 0, across = 0
+  for (const [a, b] of ways) {
+    const dx = b.x - a.x, dz = b.z - a.z
+    along += Math.abs(dx * ax.ux + dz * ax.uz)
+    across += Math.abs(dx * -ax.uz + dz * ax.ux)
+  }
+  if (across <= along) return ax
+  // the same rectangle, a quarter turn: the new axis is the old cross direction, starting at the old mid-length
+  const vx = -ax.uz, vz = ax.ux
+  return {
+    o: { x: ax.o.x + ax.ux * ax.L / 2 - vx * ax.half, z: ax.o.z + ax.uz * ax.L / 2 - vz * ax.half },
+    ux: vx, uz: vz, L: ax.half * 2, half: ax.L / 2,
+  }
+}
+
+/**
  * Is this outline ONE straight bridge, which the structure along `axisOf` describes? An outline that fills under 45 %
  * of its axis rectangle is bent — Pier 39's footbridge over the Embarcadero is an L (OSM way/555671175: east along the
  * garage, then north across the road), and its structure was laid on the L's diagonal, across the corner, while the
