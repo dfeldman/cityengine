@@ -13,6 +13,7 @@ import { packPoints, unpackPoints, type PackedEdge } from '../src/city/package.t
 import { BridgeDecks, placement, toWorld, type ConformReport, type DeckDecl, type GraphEdge } from '../src/city/bridge-decks.ts'
 import { SF_BRIDGE_DECKS, BAY_BIKEWAY, BAY_RIDDEN_RAMPS, SALESFORCE_PARK_WAYS, type AuthoredEnd, type AuthoredWay } from '../src/city/sf/bridges.ts'
 import { PIER39_ROUTE, PIER39_ROUTE_MODEL } from '../src/city/sf/pier39-route.ts'
+import { TEA_GARDEN_LOOP, TEA_GARDEN_LOOP_MODEL } from '../src/city/sf/tea-garden-loop.ts'
 import type { OsmWay } from './overpass.ts'
 
 /** the decks each region's bridge models declare, by `procedural` */
@@ -40,11 +41,12 @@ export function decksOf(region: string, origin: { lat: number; lon: number }): B
 /**
  * Each region's authored ways, by the model whose frame they are drawn in (any manifest of the region may place it),
  * and the freeway ramps it rides. The Bay Bridge Bikeway; since 2026-10-02 Salesforce Park's gondola
- * (docs/SALESFORCE-PARK.md); since 2026-10-17 the Pier 39 Bikeway (src/city/sf/pier39-route.ts), on the deck.
+ * (docs/SALESFORCE-PARK.md); since 2026-10-17 the Pier 39 Bikeway (src/city/sf/pier39-route.ts), on the deck; since
+ * 2026-10-27 the Tea Garden Loop (src/city/sf/tea-garden-loop.ts), on the ground.
  */
 const REGION_WAYS: Record<string, { models: { model: string; ways: AuthoredWay[] }[]; ridden: [number, number][] }> = {
   'san-francisco': { models: [{ model: 'bayBridgeNear', ways: BAY_BIKEWAY }, { model: 'salesforceTransitCenter', ways: SALESFORCE_PARK_WAYS },
-    { model: PIER39_ROUTE_MODEL, ways: PIER39_ROUTE }], ridden: BAY_RIDDEN_RAMPS },
+    { model: PIER39_ROUTE_MODEL, ways: PIER39_ROUTE }, { model: TEA_GARDEN_LOOP_MODEL, ways: TEA_GARDEN_LOOP }], ridden: BAY_RIDDEN_RAMPS },
 }
 
 function placementOf(region: string, procedural: string, origin: { lat: number; lon: number }): ReturnType<typeof placement> | null {
@@ -148,8 +150,11 @@ export function authoredWays(region: string, origin: { lat: number; lon: number 
     nodes[nodes.length - 1] = end(w.b, world[world.length - 1])
     const geometry = world.map((q, i) => nodeAt.get(nodes[i]) ?? proj.toLatLon(q))
     nodes.forEach((n, i) => y.set(n, Math.round(world[i].y * 100) / 100))
-    out.push({ type: 'way', id: -(700_000_000 + k), nodes, geometry,
-      tags: { highway: w.kind, name: w.name, bridge: 'yes', layer: String(w.layer ?? 1), width: '4', bicycle: 'designated', 'sr:authored': 'yes' } } as OsmWay)
+    // (a `ground` way is tagged like any OSM path: the bake grades it over the terrain, and nothing holds its heights)
+    const tags: Record<string, string> = w.ground
+      ? { highway: w.kind, name: w.name, width: '3', bicycle: 'designated', surface: 'asphalt' }
+      : { highway: w.kind, name: w.name, bridge: 'yes', layer: String(w.layer ?? 1), width: '4', bicycle: 'designated', 'sr:authored': 'yes' }
+    out.push({ type: 'way', id: -(700_000_000 + k), nodes, geometry, tags } as OsmWay)
     k++
   }
   }

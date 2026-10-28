@@ -175,6 +175,11 @@ export interface AuthoredWay {
   kind: 'cycleway'
   /** its OSM layer (default 1) */
   layer?: number
+  /**
+   * ON THE GROUND: an ordinary path the bake grades over the terrain like OSM's own, not a deck held at its authored
+   * heights (the Tea Garden Loop, tea-garden-loop.ts). `y` is ignored, and no bridge tag is put on it.
+   */
+  ground?: boolean
 }
 export type AuthoredEnd = { node: number } | { onto: { kind: string; layer: number } } | { free: true }
 

@@ -254,3 +254,15 @@ The real fence is a tall privacy fence; the owner keeps the thin three-rail bamb
 runs to the Main Gate's north-east wall end and resumes from its south-west one (the `null` in tea-garden.ts's `FENCE`;
 the wall ends from the game's projection of OSM way/136888948 — a hand projection first put the gap 18 m off). The gate's builder stands on a 1.3 m granite terrace with steps to the concourse,
 since the drape sets a landmark's base at the lowest ground and the ground rises across its front.
+
+## The Tea Garden Loop (2026-10-27)
+
+A fictional cycle path round the outside of the fence (owner: "add a (fictional) cycling loop around the japanese
+garden, with access from the street"): every path round the garden is an OSM footway, which the bike graph does not
+ride. `src/city/sf/tea-garden-loop.ts` draws it as authored ways (`REGION_WAYS` in tools/deck-conform.ts) in the frame
+of the grounds model, 7 m off the garden's OSM outline corner by corner, 10 m past the Main Gate whose terrace and
+steps come 4.4 m out. Three ways off it: south to Martin Luther King Junior Drive, the street, and onto Hagiwara Tea
+Garden Drive (the one-way park road beside the garden's south-east side) at the south-east and east corners. New for
+it: `AuthoredWay.ground` — the way is tagged like any OSM path and graded over the terrain by the bake, where the Bay
+Bridge Bikeway and the Pier 39 route are decks held at their own heights. Baked and ridden in `jtg-mini`: the bike
+graph joins it to MLK and to the Drive at both ends. The full San Francisco bake has not been rerun for it.
