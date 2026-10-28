@@ -61,6 +61,9 @@ export { teaGardenMainGate }
 // the Temple Gate: src/render/landmarks/sf/tea-garden-temple-gate.ts (the owner's photographs, 2026-10-27)
 import { teaGardenTempleGate } from './tea-garden-temple-gate.ts'
 export { teaGardenTempleGate }
+// the South Gate (not in OSM; placed by point at the ring's south-west corner): src/render/landmarks/sf/tea-garden-south-gate.ts
+import { teaGardenSouthGate } from './tea-garden-south-gate.ts'
+export { teaGardenSouthGate }
 
 /** the open tea house: a low timber deck, posts, low dark walls at the back, a big low grey hipped roof */
 export function teaGardenTeaHouse(out: MeshBuilder, fit: Fit): void {
@@ -86,9 +89,10 @@ const L = (x: number, z: number): [number, number] => [x - MID.x, z - MID.z]
  * the fence's corners in city metres; `null` is a gap. It runs to the Main Gate's north-east wall end and resumes from
  * its south-west one (the gate, OSM way/136888948, centre (−5084.0, −2591.9), its walls ±8.0 m along the footprint's
  * long axis, bearing 45.6° — src/city/geo.ts's projection; a hand projection put the gap 18 m off, owner 2026-10-27:
- * "hole is not aligned with the gate")
+ * "hole is not aligned with the gate"). A second gap at the ring's south-west corner node (−5149.6, −2592.9) for the
+ * SOUTH GATE (tea-garden-south-gate.ts), whose walls run ±8 m along the north-west side's bearing (323.8°)
  */
-const FENCE: ([number, number] | null)[] = [[-5032.9, -2503.4], [-5078.3, -2586.3], null, [-5089.74, -2597.5], [-5129.0, -2596.1], [-5145.0, -2595.5], [-5149.6, -2592.9], [-5176.3, -2556.4], [-5180.5, -2543.2], [-5175.0, -2512.3], [-5113.1, -2463.0], [-5093.3, -2448.3], [-5032.9, -2503.4]]
+const FENCE: ([number, number] | null)[] = [[-5032.9, -2503.4], [-5078.3, -2586.3], null, [-5089.74, -2597.5], [-5129.0, -2596.1], [-5144.88, -2599.36], null, [-5154.32, -2586.44], [-5176.3, -2556.4], [-5180.5, -2543.2], [-5175.0, -2512.3], [-5113.1, -2463.0], [-5093.3, -2448.3], [-5032.9, -2503.4]]
 const HAVE_LANTERN_MODELS = true
 const LANTERNS: [number, number][] = [[-5100, -2540], [-5094, -2550], [-5118, -2548], [-5132, -2540], [-5080, -2525], [-5123, -2566], [-5140, -2560], [-5098, -2510], [-5152, -2548], [-5070, -2515]]
 
@@ -157,7 +161,7 @@ export function teaGardenGrounds(out: MeshBuilder, _fit: Fit): void {
   box(out, bx, 0.5, bz, 1.6, 0.5, 1.6, STONE, surfaceTag('granite'))
   box(out, bx, 1.25, bz, 1.2, 0.25, 1.2, STONE, surfaceTag('granite'))
   // the bamboo fence round the garden: posts every 2.5 m, three rails (the real one is a tall privacy fence; the owner,
-  // 2026-10-27, keeps it thin "for game purposes"), with a GAP where the Main Gate and its walls stand on the line
+  // 2026-10-27, keeps it thin "for game purposes"), with GAPS where the Main Gate and the South Gate and their walls stand on the line
   for (let i = 1; i < FENCE.length; i++) {
     const fa = FENCE[i - 1], fb = FENCE[i]
     if (!fa || !fb) continue
@@ -173,5 +177,5 @@ export function teaGardenGrounds(out: MeshBuilder, _fit: Fit): void {
 }
 
 export const TEA_GARDEN: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
-  teaGardenPagoda, teaGardenMainGate, teaGardenTempleGate, teaGardenTeaHouse, teaGardenGiftShop, teaGardenGrounds, teaGardenLandscape,
+  teaGardenPagoda, teaGardenMainGate, teaGardenTempleGate, teaGardenSouthGate, teaGardenTeaHouse, teaGardenGiftShop, teaGardenGrounds, teaGardenLandscape,
 }

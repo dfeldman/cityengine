@@ -728,6 +728,51 @@
   "note": "structure \u00b7 manifest \u00b7 japaneseTeaGardenGate"
  },
  {
+  "name": "NB \u2014 Japanese Tea Garden South Gate",
+  "group": "nonbuilding",
+  "from": [
+   37.76957,
+   -122.470778,
+   3.0
+  ],
+  "to": [
+   37.769708,
+   -122.470539,
+   2.5
+  ],
+  "note": "structure \u00b7 manifest \u00b7 teaGardenSouthGate, from Hagiwara Tea Garden Drive"
+ },
+ {
+  "name": "NB \u2014 Japanese Tea Garden South Gate (inside)",
+  "group": "nonbuilding",
+  "from": [
+   37.769824,
+   -122.470338,
+   3.0
+  ],
+  "to": [
+   37.769708,
+   -122.470539,
+   2.5
+  ],
+  "note": "the South Gate from the garden side: the fence should meet its wall ends"
+ },
+ {
+  "name": "NB \u2014 Japanese Tea Garden South Gate (top)",
+  "group": "nonbuilding",
+  "from": [
+   37.769708,
+   -122.470539,
+   60.0
+  ],
+  "to": [
+   37.769709,
+   -122.470539,
+   0.0
+  ],
+  "note": "straight down on the South Gate: its walls on the fence line, the path through its doors"
+ },
+ {
   "name": "NB \u2014 Dutch Windmill",
   "group": "nonbuilding",
   "from": [
