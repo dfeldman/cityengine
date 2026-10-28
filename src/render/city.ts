@@ -16,7 +16,7 @@ import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData'
 import type { Scene } from '@babylonjs/core/scene'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { Color3 } from '@babylonjs/core/Maths/math.color'
-import { stopSign, uspsBox, billboard, muniStop, plainStop, newsRacks, parkingMeter, utilityPole, pathOfGold, bikeRack, tripleBin, posterBoard, mapKiosk, cafeSet, planterBox } from './us-furniture.ts'
+import { stopSign, uspsBox, sfFireAlarmBox, nycFireAlarmBox, billboard, muniStop, plainStop, newsRacks, parkingMeter, utilityPole, pathOfGold, bikeRack, tripleBin, posterBoard, mapKiosk, cafeSet, planterBox } from './us-furniture.ts'
 import { streetClockPost } from './street-clock.ts'
 import { clockFace } from './landmarks/parts.ts'
 import { Clocks } from './clocks.ts'
@@ -1343,6 +1343,9 @@ function groundOccluder(scene: Scene, pkg: CityPackage, drop = 0, fine?: Terrain
 /** what `Carriageways.noFurniture` kept off the road, for probes (`window.__furnitureSkipped`) */
 const SKIPPED: { n: number; at: [number, number, string][] } = { n: 0, at: [] }
 if (typeof window !== 'undefined') (window as unknown as Record<string, unknown>).__furnitureSkipped = SKIPPED
+/** where the corner fill put a fire alarm box (Region `pointFurniture.callBoxFill`), for the shot tools: the first 500 */
+const CALLBOX_FILL: [number, number][] = []
+if (typeof window !== 'undefined') (window as unknown as Record<string, unknown>).__callBoxFill = CALLBOX_FILL
 function skippedIf(why: string | null, x: number, z: number, what: string): boolean {
   if (why === null) return false
   SKIPPED.n++
@@ -3349,6 +3352,65 @@ export class City {
     }
 
     /*
+     * THE FIRE ALARM BOXES OSM HAS NOT MAPPED (owner, 2026-10-27: the corner fill). San Francisco has a box at ~2,000
+     * corners and OSM maps 188 of them (the bake's `callbox`, drawn with the point furniture): so a share of the street
+     * junctions (Region `pointFurniture.callBoxFill`) get one too, on a corner of one of their streets, just past the
+     * kerb's curve, facing the road. Chosen by the junction's own position, so the same corners every time; none within
+     * 60 m of a mapped box, none in a park, none at a junction of fewer than three streets.
+     */
+    const fill = this.region.pointFurniture.callBox ? this.region.pointFurniture.callBoxFill ?? 0 : 0
+    if (fill > 0) {
+      const boxModel = this.region.pointFurniture.callBox === 'nyc' ? nycFireAlarmBox : sfFireAlarmBox
+      const roads = new Carriageways(kerbEdges)
+      const mapped: { x: number; z: number }[] = []
+      for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {
+        for (const f of this.pointsIn.get(key(ktx + dx, ktz + dz)) ?? []) if (f.kind === 'callbox') mapped.push(f)
+      }
+      const hash = (a: number, b: number): number => ((Math.imul(a ^ Math.imul(b, 0x27d4eb2d), 0x9e3779b1) >>> 0) % 10000) / 10000
+      const pick = (j: Junction): number | null => {
+        if (j.park || j.arms.filter((a) => !a.foot && !a.raised).length < 3) return null
+        const h = hash(Math.round(j.at.x), Math.round(j.at.z))
+        return h < fill ? h : null
+      }
+      // (and one box to a crossing: a street mapped as two ways meets its cross street at two junctions 15–25 m apart, and
+      //  both were picked. Of picked junctions within 50 m of each other, the lowest hash keeps the box)
+      const picked: { x: number; z: number; h: number }[] = []
+      for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {
+        for (const id of this.nodesIn.get(key(ktx + dx, ktz + dz)) ?? []) {
+          const j = this.nodes.get(id)!
+          const h = pick(j)
+          if (h !== null) picked.push({ x: j.at.x, z: j.at.z, h })
+        }
+      }
+      for (const id of this.nodesIn.get(k) ?? []) {
+        const j = this.nodes.get(id)!
+        const h = pick(j)
+        if (h === null) continue
+        if (picked.some((q) => q.h < h && Math.hypot(q.x - j.at.x, q.z - j.at.z) < 50)) continue
+        if (mapped.some((m) => Math.hypot(m.x - j.at.x, m.z - j.at.z) < 60)) continue
+        const streets = j.arms.filter((a) => !a.foot && !a.raised).sort((a, b) => (a.edgeId ?? 0) - (b.edgeId ?? 0))
+        const hx = Math.round(j.at.x), hz = Math.round(j.at.z)
+        // which street and which side of it, by the same hash: the first that has a pavement to stand on
+        const h2 = hash(hz + 7, hx - 3)
+        for (let t = 0; t < streets.length * 2; t++) {
+          const arm = streets[(Math.floor(h2 * streets.length * 2) + t) % streets.length]
+          const side = (Math.floor(h2 * 1000) + t) % 2 ? 1 : -1
+          const e = kerbEdges.find((q) => q.id === arm.edgeId)
+          if (!e || e.foot || e.walk < 1.5) continue
+          const s = j.radius + 2.5
+          const off = arm.half + 0.45
+          const px = j.at.x + arm.ux * s - arm.uz * off * side
+          const pz = j.at.z + arm.uz * s + arm.ux * off * side
+          if (roads.whyNoFurniture(px, pz) !== null || insideTwin(e, unpackPoints(e.points), px, pz) || nearStairMouth(px, pz)) continue
+          // facing the road: the model's +z toward the street's centre line
+          placeModel(furniture, boxModel, px, 0.15, pz, Math.atan2(arm.uz * side, -arm.ux * side))
+          if (CALLBOX_FILL.length < 500) CALLBOX_FILL.push([Math.round(px * 10) / 10, Math.round(pz * 10) / 10])
+          break
+        }
+      }
+    }
+
+    /*
      * The busy American pavement (region `furniture.clutter`; user, 2026-09-22: "there is SO MUCH street furniture…
      * some places the sidewalk is quite cluttered with benches, newspaper boxes, ads, utility poles, and trees").
      * Near each corner of a main street a bank of newspaper racks or a green can; parking meters down the kerbs of
@@ -4017,7 +4079,7 @@ export class City {
     // signals, tram and bus stops and métro entrances do stand in the middle of a road)
     // (from this tile and its neighbours: a stop near the edge of the tile stands by a street that may be in the next one)
     const pointKerb = new Carriageways(around.filter((e) => !this.raisedIds.has(e.id)))
-    const kerbOnly = new Set(['column', 'kiosk', 'billboard', 'postbox', 'hydrant', 'bikeshare', 'fountain'])
+    const kerbOnly = new Set(['column', 'kiosk', 'billboard', 'postbox', 'hydrant', 'callbox', 'bikeshare', 'fountain'])
     // (one billboard where OSM maps two a few metres apart — the two faces of one sign, or one sign twice: 14.6 m boards
     //  2-8 m apart stood through each other and fought — owner, 2026-10-06, "billboards have z fighting")
     const boards: { x: number; z: number }[] = []
@@ -4040,6 +4102,7 @@ export class City {
         // the American street's (render/us-furniture.ts), in the regions that have one
         : pf.american && f.kind === 'stop' ? stopSign
         : pf.american && f.kind === 'postbox' ? uspsBox
+        : f.kind === 'callbox' && pf.callBox ? (pf.callBox === 'nyc' ? nycFireAlarmBox : sfFireAlarmBox)
         : pf.american && f.kind === 'billboard' ? (o: MeshBuilder) => billboard(o, Math.round(f.x * 7 + f.z * 13))
         : f.kind === 'busstop' && pf.busStop ? (pf.busStop === 'muni' ? muniStop : plainStop)
         : null          // (drawn elsewhere: tram stops by the trams, hydrants along every pavement)

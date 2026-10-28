@@ -2782,6 +2782,8 @@ async function bake(spec: CitySpec): Promise<void> {
         : t.highway === 'bus_stop' ? 'busstop'
         : t.amenity === 'post_box' ? 'postbox'
         : t.emergency === 'fire_hydrant' ? 'hydrant'
+        // the street fire alarm box (render/us-furniture.ts); one inside a building is a pull station on a wall
+        : t.emergency === 'fire_alarm_box' && t.indoor !== 'yes' ? 'callbox'
         // a street clock on a post (owner, 2026-10-04: the sidewalk clock by Union Square); a wall clock needs its wall
         : t.amenity === 'clock' && /^(pole|ground|pedestal)$/.test(t.support ?? '') ? 'clock' : null
       if (!kind) continue
@@ -2793,7 +2795,7 @@ async function bake(spec: CitySpec): Promise<void> {
     console.log(`  furniture: ${count('metro')} métro entrances, ${count('fountain')} fountains `
       + `(${furniture.filter((x) => x.wallace).length} Wallace), ${count('column')} columns, ${count('kiosk')} kiosks, `
       + `${count('bikeshare')} bike docks, ${count('signals')} signal nodes, ${count('tramstop')} tram stops, `
-      + `${count('billboard')} billboards, ${count('stop')} stop signs, ${count('busstop')} bus stops, ${count('postbox')} post boxes, ${count('hydrant')} hydrants`)
+      + `${count('billboard')} billboards, ${count('stop')} stop signs, ${count('busstop')} bus stops, ${count('postbox')} post boxes, ${count('hydrant')} hydrants, ${count('callbox')} fire alarm boxes`)
   }
 
   const trees = nodes.filter((n) => n.tags.natural === 'tree')
@@ -2869,7 +2871,7 @@ async function bake(spec: CitySpec): Promise<void> {
    * (city/carriageways.ts `toPavement`), and dropped when there is none to move to.
    */
   {
-    const KERB_ONLY = new Set(['column', 'kiosk', 'postbox', 'hydrant', 'bikeshare', 'fountain', 'billboard'])
+    const KERB_ONLY = new Set(['column', 'kiosk', 'postbox', 'hydrant', 'callbox', 'bikeshare', 'fountain', 'billboard'])
     const lanes = new Carriageways(kept.filter((e) => !e.bridge && !e.tunnel && !e.bore))
     let moved = 0, dropped = 0
     const keepF = furniture.filter((f) => {

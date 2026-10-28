@@ -94,7 +94,7 @@ const RAD_TO_CDEG = 18000 / Math.PI
 export const FURNITURE_TYPE: Record<string, string> = {
   metro: 'metro.entrance', fountain: 'fountain', column: 'column.advert', kiosk: 'kiosk', bikeshare: 'bikeshare',
   signals: 'signals', tramstop: 'tramstop', billboard: 'billboard', stop: 'sign.stop', busstop: 'busstop',
-  postbox: 'postbox', hydrant: 'hydrant', clock: 'clock.street',
+  postbox: 'postbox', hydrant: 'hydrant', clock: 'clock.street', callbox: 'callbox.fire',
 }
 
 export function convertTile(t: TileData, ctx: ConvertContext): MapTile {

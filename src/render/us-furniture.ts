@@ -8,7 +8,9 @@
  *   sign; a shelter where the stop is a big one;
  * - **the billboard**: a big panel on its steel post and catwalk, the ad on it a composition of colour blocks and
  *   "type" that varies board to board — the rhythm of a billboard, which is all a rider reads at 20 km/h;
- * - **the post box**: the USPS blue box on its legs.
+ * - **the post box**: the USPS blue box on its legs;
+ * - **the fire alarm box** (kind `callbox`): San Francisco's gabled Gamewell head on its post, New York's tall post
+ *   with the ERS box and the torch.
  *
  * Local frames: +z toward the street, the foot at the origin.
  */
@@ -155,6 +157,120 @@ export function uspsBox(out: MeshBuilder): void {
   prism(out, 0, 0, 1.2, 1.36, 0.3, 10, blue, FIXED, 0.22)
   box(out, 0, 1.0, 0.27, 0.18, 0.04, 0.01, [0.72, 0.72, 0.7], FIXED)
   box(out, 0, 0.6, 0.265, 0.12, 0.08, 0.005, WHITE, FIXED)                        // the eagle
+}
+
+/*
+ * THE FIRE ALARM BOX (owner, 2026-10-27: "add the famous SF fire call boxes (we'll need these for NYC too)"). OSM's
+ * `emergency=fire_alarm_box`, placed where it is mapped (191 in San Francisco's cut, of the ~2,000 corners that have
+ * one). The region picks the city's design (`pointFurniture.callBox`).
+ */
+const ALARM_RED: Rgb = [0.74, 0.07, 0.05]
+const ALARM_SHADE: Rgb = [0.56, 0.05, 0.04]
+
+/** A gable roof, its ridge along z: the two slopes over a slab `t` thick, from the eaves at `ye` up to the ridge at `yr`. */
+function gableRoof(out: MeshBuilder, ye: number, yr: number, hw: number, hd: number, t: number, c: Rgb): void {
+  const s = Math.hypot(hw, yr - ye)
+  for (const sx of [-1, 1]) {
+    const n: [number, number, number] = [sx * (yr - ye) / s, hw / s, 0]
+    const top: [number, number, number][] = [[0, yr, hd], [sx * hw, ye, hd], [sx * hw, ye, -hd], [0, yr, -hd]]
+    out.quad(sx > 0 ? top : [top[3], top[2], top[1], top[0]], n, [[0, 0], [1, 0], [1, 1], [0, 1]], c, FIXED)
+    const under = top.map(([x, y, z]) => [x, y - t, z] as [number, number, number])
+    out.quad(sx > 0 ? [under[3], under[2], under[1], under[0]] : under, [-n[0], -n[1], 0], [[0, 0], [1, 0], [1, 1], [0, 1]], c, FIXED)
+    // the eave's edge, along the side
+    out.quad(sx > 0 ? [[hw, ye - t, hd], [hw, ye - t, -hd], [hw, ye, -hd], [hw, ye, hd]] : [[-hw, ye - t, -hd], [-hw, ye - t, hd], [-hw, ye, hd], [-hw, ye, -hd]],
+      [sx, 0, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], c, FIXED)
+  }
+  // the slab's edge round the two gable ends: a thin chevron, front and back
+  for (const sz of [-1, 1]) for (const sx of [-1, 1]) {
+    const q: [number, number, number][] = [[0, yr - t, sz * hd], [sx * hw, ye - t, sz * hd], [sx * hw, ye, sz * hd], [0, yr, sz * hd]]
+    out.quad(sx * sz > 0 ? q : [q[3], q[2], q[1], q[0]], [0, 0, sz], [[0, 0], [1, 0], [1, 1], [0, 1]], c, FIXED)
+  }
+}
+
+/** A gable end: the triangle under the roof, its base at `y0` from −hw to hw, its apex `h` above, on the plane z = `z`. */
+function pediment(out: MeshBuilder, y0: number, h: number, hw: number, z: number, sz: number, c: Rgb): void {
+  const q: [number, number, number][] = [[-hw, y0, z], [hw, y0, z], [0, y0 + h, z], [0, y0 + h, z]]
+  out.quad(sz > 0 ? q : [q[1], q[0], q[3], q[2]], [0, 0, sz], [[0, 0], [1, 0], [0.5, 1], [0.5, 1]], c, FIXED)
+}
+
+/**
+ * SAN FRANCISCO'S GAMEWELL BOX (the Department of Electricity's, from Commons photographs: "SF fire alarm box.jpg",
+ * "San Francisco fire alarm call boxe.jpg"; the SF Standard, 2024: "tiny gabled roofs", "foliate molding", "flame-shaped
+ * finials"): a little red cast-iron house on a turned post. The head ~0.4 m wide and 0.6 m tall to the ridge, its gable
+ * to the front, the roof overhanging all round; a raised panel on the door, the projecting hood of the BREAK GLASS window
+ * with the hook dark behind it, the hinge down one side, a moulded ledge under it; the post round, with a flared foot, a
+ * collar part-way and a fat neck under the head. ~1.55 m to the ridge, ~1.65 m to the finial. Front +z.
+ */
+export function sfFireAlarmBox(out: MeshBuilder): void {
+  const R = ALARM_RED, D = ALARM_SHADE
+  // the post: foot, shaft, a collar, the neck that takes the head
+  prism(out, 0, 0, 0, 0.08, 0.15, 10, D, FIXED, 0.13)
+  prism(out, 0, 0, 0.08, 0.2, 0.12, 10, R, FIXED, 0.085)
+  prism(out, 0, 0, 0.2, 0.84, 0.088, 10, R, FIXED, 0.082)
+  prism(out, 0, 0, 0.5, 0.56, 0.105, 10, R, FIXED)
+  prism(out, 0, 0, 0.84, 0.92, 0.082, 10, R, FIXED, 0.11)
+  prism(out, 0, 0, 0.92, 0.96, 0.115, 10, D, FIXED)
+  // the moulded ledge the head stands on
+  box(out, 0, 0.975, 0, 0.215, 0.015, 0.135, D, FIXED)
+  box(out, 0, 0.995, 0, 0.2, 0.01, 0.125, R, FIXED)
+  // the body, and the gable over it (the attic: a triangle front and back, filled across between them)
+  const bw = 0.18, bd = 0.11, y0 = 1.0, y1 = 1.42, gh = 0.12
+  box(out, 0, (y0 + y1) / 2, 0, bw, (y1 - y0) / 2, bd, R, FIXED)
+  for (const sz of [-1, 1]) pediment(out, y1, gh, bw, sz * bd, sz, R)
+  for (const sx of [-1, 1]) {
+    const q: [number, number, number][] = [[0, y1 + gh, bd], [sx * bw, y1, bd], [sx * bw, y1, -bd], [0, y1 + gh, -bd]]
+    out.quad(sx > 0 ? q : [q[3], q[2], q[1], q[0]], [sx * 0.55, 0.83, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], R, FIXED)
+  }
+  // the roof, overhanging the body 3 cm at the sides and the front and back
+  gableRoof(out, y1 - 0.005, y1 + gh + 0.03, bw + 0.035, bd + 0.03, 0.025, R)
+  // the door's raised panel border and its field; the hood of the glass, the dark window with the hook in it
+  const fz = bd
+  box(out, 0, y1 - 0.02, fz + 0.008, bw - 0.015, 0.01, 0.008, D, FIXED)
+  box(out, 0, y0 + 0.035, fz + 0.008, bw - 0.015, 0.012, 0.008, D, FIXED)
+  for (const sx of [-1, 1]) box(out, sx * (bw - 0.025), (y0 + y1) / 2, fz + 0.008, 0.01, (y1 - y0) / 2 - 0.02, 0.008, D, FIXED)
+  box(out, 0, 1.235, fz + 0.022, 0.055, 0.075, 0.022, R, FIXED)
+  box(out, 0, 1.235, fz + 0.045, 0.035, 0.05, 0.002, [0.08, 0.06, 0.06], FIXED)
+  box(out, 0, 1.225, fz + 0.047, 0.008, 0.022, 0.002, [0.7, 0.7, 0.68], FIXED)      // the hook
+  // the raised letters, FIRE ALARM over the window and PULL HOOK DOWN ONCE under it: lines of type, a shade darker
+  box(out, 0, 1.36, fz + 0.012, 0.13, 0.016, 0.004, D, FIXED)
+  box(out, 0, 1.12, fz + 0.012, 0.085, 0.012, 0.004, D, FIXED)
+  box(out, 0, 1.085, fz + 0.012, 0.095, 0.012, 0.004, D, FIXED)
+  // the hinge down the right side, the keyhole on the left (the face is read looking down −z: the reader's right is −x)
+  box(out, -bw - 0.006, (y0 + y1) / 2, fz - 0.01, 0.006, 0.17, 0.012, D, FIXED)
+  box(out, bw - 0.04, 1.27, fz + 0.012, 0.006, 0.01, 0.004, [0.1, 0.08, 0.08], FIXED)
+  // the finial on the ridge's front end: a knob and its flame
+  const ridge = y1 + gh + 0.03
+  prism(out, 0, bd - 0.01, ridge - 0.01, ridge + 0.03, 0.025, 8, R, FIXED, 0.03)
+  prism(out, 0, bd - 0.01, ridge + 0.03, ridge + 0.1, 0.03, 8, R, FIXED, 0.004)
+}
+
+/**
+ * NEW YORK'S ALARM POST (from descriptions, not yet a photograph: Untapped Cities, Forgotten New York — "a stand-alone,
+ * rounded post", "a red torch on top"; Manhattan's boxes all ERS, two buttons, FIRE and POLICE, and a speaker): the tall
+ * round cast-iron post, ringed, with the ERS box bolted to its face at chest height and the post running on above it to
+ * the torch. ~2.4 m. Front +z.
+ */
+export function nycFireAlarmBox(out: MeshBuilder): void {
+  const R = ALARM_RED, D = ALARM_SHADE
+  // the post: a flared, ringed foot, the shaft, rings above and below the box, a cap
+  prism(out, 0, 0, 0, 0.12, 0.2, 12, D, FIXED, 0.17)
+  prism(out, 0, 0, 0.12, 0.42, 0.15, 12, R, FIXED, 0.1)
+  prism(out, 0, 0, 0.42, 0.48, 0.12, 12, D, FIXED)
+  prism(out, 0, 0, 0.48, 2.05, 0.085, 12, R, FIXED, 0.075)
+  for (const y of [0.92, 1.72]) prism(out, 0, 0, y, y + 0.05, 0.1, 12, D, FIXED)
+  prism(out, 0, 0, 2.05, 2.12, 0.11, 12, D, FIXED)
+  // the torch: a cup, and the flame out of it
+  prism(out, 0, 0, 2.12, 2.24, 0.06, 10, R, FIXED, 0.1)
+  prism(out, 0, 0, 2.24, 2.42, 0.08, 10, R, FIXED, 0.006)
+  // the ERS box: a red cabinet on the post's face, its pale face plate, the two buttons, the speaker grille
+  box(out, 0, 1.32, 0.15, 0.17, 0.25, 0.08, R, FIXED)
+  box(out, 0, 1.6, 0.15, 0.18, 0.02, 0.09, D, FIXED)
+  box(out, 0, 1.3, 0.233, 0.13, 0.19, 0.004, [0.82, 0.82, 0.8], FIXED)
+  box(out, 0, 1.44, 0.239, 0.1, 0.025, 0.003, R, FIXED)                         // FIRE, red
+  box(out, 0.06, 1.33, 0.245, 0.035, 0.035, 0.01, [0.86, 0.12, 0.08], FIXED)     // its button (on the reader's left: −z view)
+  box(out, -0.06, 1.33, 0.245, 0.035, 0.035, 0.01, [0.12, 0.28, 0.66], FIXED)    // POLICE's, blue
+  box(out, 0, 1.2, 0.239, 0.1, 0.025, 0.003, [0.12, 0.28, 0.66], FIXED)
+  for (let k = 0; k < 4; k++) box(out, 0, 1.15 - k * 0.022, 0.238, 0.05, 0.004, 0.003, [0.2, 0.2, 0.22], FIXED)
 }
 
 /**

@@ -251,6 +251,8 @@ export interface PackedFurniture {
     // and the American street's (SF_PLAN.md §6): a streetcar stop, a billboard, a stop sign, a bus stop, a post box,
     // a fire hydrant
     | 'tramstop' | 'billboard' | 'stop' | 'busstop' | 'postbox' | 'hydrant'
+    // a street fire alarm box (emergency=fire_alarm_box), in the city's own design (Region pointFurniture.callBox)
+    | 'callbox'
     // a street clock on its post (amenity=clock, support=pole), whose dials tell the real time (render/clocks.ts)
     | 'clock'
   /** a Wallace fountain, as opposed to any drinking tap */

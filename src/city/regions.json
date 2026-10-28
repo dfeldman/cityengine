@@ -245,7 +245,7 @@
       "maxLevels": 8
     },
     "pointFurniture": { "american": true, "busStop": "plain",
-      "metro": "nyc",
+      "metro": "nyc", "callBox": "nyc", "callBoxFill": 0.4,
       "bikeColour": "#1f6fb8"
     },
     "centreLine": "doubleYellow",
@@ -306,7 +306,7 @@
     "ferryIslands": [{ "name": "Alcatraz", "lat": 37.8267, "lon": -122.4229, "radius": 350 }, { "name": "Angel Island", "lat": 37.8609, "lon": -122.4326, "radius": 1300 }],
     "footBridgeLayers": [{ "name": "Market Street overpass and its spiral ramp, at Clayton/Corbett (Mapillary: one deck ~5 m over the road)", "lat": 37.75215, "lon": -122.44279, "radius": 45, "layer": 1 }],
     "furniture": { "clutter": true },
-    "pointFurniture": { "metro": "bart", "american": true, "busStop": "muni" },
+    "pointFurniture": { "metro": "bart", "american": true, "busStop": "muni", "callBox": "sf", "callBoxFill": 0.25 },
     "note": "Nob Hill: houses and small apartment blocks, with a few hotels on the crest. The building type decides first and the neighbours are asked over a shorter distance, because a hotel tower on the corner says nothing about the Victorians down the hill. The rest of the profile is item G.",
     "defaultLevels": {
       "residential": 3,
