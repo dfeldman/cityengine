@@ -20,19 +20,32 @@ import { edgeAt, edgeFacing, signText } from '../parts.ts'
  * faces, and on top the bronze Yoda, a metre tall, leaning on his cane. Standalone.
  */
 export function yodaFountain(out: MeshBuilder, _fit: Fit): void {
-  const STONE: Rgb = [0.6, 0.55, 0.48], TAN: Rgb = [0.72, 0.64, 0.52], WATER: Rgb = [0.45, 0.58, 0.64], BRONZE: Rgb = [0.38, 0.4, 0.33]
+  const STONE: Rgb = [0.6, 0.55, 0.48], TAN: Rgb = [0.72, 0.64, 0.52], FLOOR: Rgb = [0.2, 0.25, 0.26], BRONZE: Rgb = [0.38, 0.4, 0.33]
   const st = surfaceTag('granite'), metal = surfaceTag('metal')
-  // the basin wall (a ring of segments) and the water inside it
+  // the basin wall (a ring of segments), its dark floor, and the water inside it (render/water.ts; was a glass disc)
   const n = 20
   for (let i = 0; i < n; i++) {
     const a = ((i + 0.5) / n) * Math.PI * 2
     box(out, Math.cos(a) * 2.15, 0.27, Math.sin(a) * 2.15, 0.36, 0.27, 0.22, STONE, st)
   }
-  prism(out, 0, 0, 0.02, 0.3, 1.95, 20, WATER, surfaceTag('glass'))
-  // the pedestal: a broad faceted block, then a narrower cap, water down the front faces
-  prism(out, 0, 0, 0.3, 1.25, 0.95, 6, TAN, st, 0.75)
+  prism(out, 0, 0, 0, 0.06, 1.97, 20, FLOOR, 0)
+  const POOL = 0.3
+  out.water.push({ kind: 'pool', ring: Array.from({ length: 20 }, (_, k) => ({ x: Math.sin((k / 20) * Math.PI * 2) * 1.97, z: Math.cos((k / 20) * Math.PI * 2) * 1.97 })), y: POOL })
+  // the pedestal: a broad faceted block, then a narrower cap
+  prism(out, 0, 0, POOL, 1.25, 0.95, 6, TAN, st, 0.75)
   prism(out, 0, 0, 1.25, 1.55, 0.6, 6, TAN, st, 0.55)
-  for (const a of [0.3, 2.4, 4.5]) box(out, Math.cos(a) * 0.82, 0.8, Math.sin(a) * 0.82, 0.18, 0.45, 0.04, [0.88, 0.92, 0.94], 0)
+  /*
+   * The water out from under the cap, sheeting down every face of the block into the basin (were white boxes standing
+   * off three faces). Each sheet leaves the block's top edge just fast enough to follow the face out 0.2 m as it falls.
+   */
+  const lip = (k: number): [number, number, number] => [Math.sin((k / 6) * Math.PI * 2) * 0.77, 1.25, Math.cos((k / 6) * Math.PI * 2) * 0.77]
+  for (let k = 0; k < 6; k++) {
+    const p = lip(k + 1), q = lip(k)
+    const a: [number, number, number] = [p[0] * 0.92 + q[0] * 0.08, 1.25, p[2] * 0.92 + q[2] * 0.08]
+    const b: [number, number, number] = [q[0] * 0.92 + p[0] * 0.08, 1.25, q[2] * 0.92 + p[2] * 0.08]
+    out.water.push({ kind: 'sheet', a, b, out: 0.5, drop: 1.25 - POOL })
+  }
+  out.water.push({ kind: 'splash', at: [0, POOL + 0.01, 0], r: 1.35 })
   // Yoda: the robe, the head with its long ears, the cane
   prism(out, 0, 0, 1.55, 2.35, 0.36, 8, BRONZE, metal, 0.2)
   prism(out, 0, 0, 2.35, 2.65, 0.2, 8, BRONZE, metal, 0.17)
@@ -83,7 +96,7 @@ export function sanFranciscoMint(out: MeshBuilder, fit: Fit): void {
  */
 export function leviPlazaFountain(out: MeshBuilder, fit: Fit): void {
   const CONC: Rgb = [0.74, 0.72, 0.68], GRANITE: Rgb = [0.4, 0.33, 0.28], PALE: Rgb = [0.68, 0.64, 0.58]
-  const WATER: Rgb = [0.4, 0.5, 0.5], FOAM: Rgb = [0.92, 0.95, 0.96], HEDGE: Rgb = [0.2, 0.33, 0.18]
+  const FLOOR: Rgb = [0.24, 0.28, 0.27], HEDGE: Rgb = [0.2, 0.33, 0.18]
   const conc = surfaceTag('concrete'), st = surfaceTag('granite')
   const hx = Math.max(8, fit.hx), hz = Math.max(6, fit.hz)
   const ring = towerRing(fit)
@@ -96,23 +109,49 @@ export function leviPlazaFountain(out: MeshBuilder, fit: Fit): void {
       out.quad([[p.x, 0.5, p.z], [q.x, 0.5, q.z], [Q.x, 0.5, Q.z], [P.x, 0.5, P.z]], [0, 1, 0], [[0, 0], [1, 0], [1, 1], [0, 1]], CONC, conc)
     }
   }
-  capPolygon(out, insetRing(ring, 0.6), 0.38, WATER, surfaceTag('glass'))
-  // the stepped pyramid at the head, a stair up its front, the jet on top
+  /*
+   * THE WATER is moving water (render/water.ts), as the Music Concourse's: the pool, the jet, and sheets over every lip
+   * — the pyramid's tiers and the weirs — white where they land. (Were a glass-tagged cap, a white stick with four
+   * white struts falling off it, and white boxes standing on the stone.)
+   */
+  const POOL = 0.38
+  capPolygon(out, insetRing(ring, 0.6), 0.05, FLOOR, 0)
+  out.water.push({ kind: 'pool', ring: insetRing(ring, 0.6).map((p) => ({ x: p.x, z: p.z })), y: POOL, colour: [0.2, 0.32, 0.33] })
+  /** a sheet over a straight lip centred on (x, z), `half` long, leaving square to it toward (nx, nz) */
+  const over = (x: number, y: number, z: number, nx: number, nz: number, half: number, drop: number): void => {
+    out.water.push({ kind: 'sheet', a: [x + nz * half, y, z - nx * half], b: [x - nz * half, y, z + nx * half], out: 0.4, drop })
+  }
+  // the stepped pyramid at the head, a stair up its front
   const px = hx - 5
   const tiers = [[4.2, 0.7], [3.3, 1.3], [2.4, 1.9], [1.5, 2.5]]
   let y0 = 0
   for (const [r, y1] of tiers) { box(out, px, (y0 + y1) / 2, 0, r, (y1 - y0) / 2, r, GRANITE, st); y0 = y1 }
   for (let k = 0; k < 6; k++) box(out, px - 4.2 - 0.35 - k * 0.45, 0.25 + (5 - k) * 0.38, 0, 0.23, 0.25 + (5 - k) * 0.19 + 0.01, 1.1, PALE, conc)
-  strut(out, [px, 2.5, 0], [px, 5.2, 0], 0.16, 0.06, FOAM, 0, false)
-  for (const a of [0, 1.57, 3.14, 4.71]) strut(out, [px, 4.6, 0], [px + Math.cos(a) * 1.3, 2.55, Math.sin(a) * 1.3], 0.07, 0.07, FOAM, 0, false)
-  // sheets down the pyramid's tiers on the three water sides
-  for (const [r] of tiers) for (const sg of [-1, 1]) box(out, px, 0.9, sg * (r + 0.03), r * 0.6, 0.5, 0.03, FOAM, 0)
-  // the weirs: low brown granite walls across the pool, the water sheeting over them
+  // the jet on top, standing 2.7 m and falling back onto it (vy = √(2gh))
+  const TOP = 2.5 + 0.02
+  out.water.push({ kind: 'jet', at: [px, TOP, 0], v: [0, Math.sqrt(2 * 9.81 * 2.7), 0], width: 0.1, spread: 0.6, land: TOP })
+  out.water.push({ kind: 'splash', at: [px, TOP + 0.01, 0], r: 1.1 })
+  // the water running off it down the tiers on the three water sides (the stair side is dry): a skin of water on each
+  // tread, a sheet over each tier's edge onto the one below, the lowest into the pool
+  for (const [i, [r, y1]] of tiers.entries()) {
+    const yw = y1 + 0.02, below = i === 0 ? POOL : tiers[i - 1][1] + 0.02
+    const ru = i + 1 < tiers.length ? tiers[i + 1][0] : 0
+    const rect = (x0: number, x1: number, z0: number, z1: number): void =>
+      void out.water.push({ kind: 'pool', ring: [{ x: px + x0, z: z0 }, { x: px + x1, z: z0 }, { x: px + x1, z: z1 }, { x: px + x0, z: z1 }], y: yw })
+    if (ru) { rect(-r, r, ru, r); rect(-r, r, -r, -ru); rect(ru, r, -ru, ru) } else rect(-r, r, -r, r)
+    over(px + r + 0.02, yw, 0, 1, 0, r * 0.85, yw - below)
+    for (const sg of [-1, 1]) over(px + r * 0.1, yw, sg * (r + 0.02), 0, sg, r * 0.85, yw - below)
+    if (i === 0) for (const sg of [-1, 1]) out.water.push({ kind: 'splash', at: [px, POOL + 0.01, sg * (r + 0.3)], r: 1.2 })
+  }
+  out.water.push({ kind: 'splash', at: [px + 4.5, POOL + 0.01, 0], r: 1.2 })
+  // the weirs: low brown granite walls across the pool, the water running over their tops and sheeting down the far face
   const weirs: [number, number, number, number][] = [[-hx * 0.15, -hz * 0.35, hz * 0.5, 0.85], [hx * 0.25, hz * 0.3, hz * 0.45, 0.75], [-hx * 0.55, hz * 0.2, hz * 0.4, 0.65]]
   for (const [x, z, half, top] of weirs) {
     box(out, x, top / 2, z, 0.45, top / 2, half, GRANITE, st)
-    box(out, x - 0.48, top / 2 + 0.1, z, 0.03, top / 2 - 0.15, half * 0.85, FOAM, 0)
-    box(out, x + 0.5, 0.42, z, 0.35, 0.03, half * 0.85, FOAM, 0)
+    const yw = top + 0.02, h = half * 0.85
+    out.water.push({ kind: 'pool', ring: [{ x: x - 0.45, z: z - h }, { x: x + 0.45, z: z - h }, { x: x + 0.45, z: z + h }, { x: x - 0.45, z: z + h }], y: yw })
+    over(x - 0.47, yw, z, -1, 0, h, yw - POOL)
+    for (let k = -1; k <= 1; k++) out.water.push({ kind: 'splash', at: [x - 0.75, POOL + 0.01, z + k * h * 0.6], r: 0.6 })
   }
   // the stepping slabs and the planter block
   for (let k = 0; k < 7; k++) box(out, -hx * 0.8 + k * 1.5, 0.45, -hz * 0.65 + (k % 2) * 0.6, 0.6, 0.07, 0.6, PALE, conc)

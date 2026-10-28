@@ -352,12 +352,12 @@ export function unPlazaFountain(out: MeshBuilder, fit: Fit): void {
   const BUFF: Rgb = [0.76, 0.68, 0.56]
   const WET: Rgb = [0.66, 0.55, 0.42]
   const SPLIT: Rgb = [0.66, 0.63, 0.58]
-  const WATER: Rgb = [0.4, 0.5, 0.49]
-  const FOAM: Rgb = [0.9, 0.94, 0.96]
+  const FLOOR: Rgb = [0.26, 0.27, 0.25]
   const st = surfaceTag('granite')
   const sx = Math.max(0.6, fit.hx / 17)
   const sz = Math.max(0.6, fit.hz / 12.5)
   const ring = towerRing(fit)
+  const v0 = out.positions.length, w0 = out.water.length
 
   // the coping and the steps down inside it to the water
   const COPE = 0.5
@@ -373,11 +373,18 @@ export function unPlazaFountain(out: MeshBuilder, fit: Fit): void {
   }
   faceBand(out, [...steps[3]].reverse(), y - 0.06, y, { kind: 'blank', wall: SPLIT, material: 'granite' })
   y -= 0.06
-  capPolygon(out, steps[3], y, WATER, 0)
   const W = y     // the water's surface
+  const F = W - 0.06
+  // the pool's dark floor, and the water: MOVING WATER (render/water.ts), as the Music Concourse's (was a flat cap and
+  // white struts)
+  capPolygon(out, steps[3], F, FLOOR, 0)
+  out.water.push({ kind: 'pool', ring: steps[3].map((p) => ({ x: p.x, z: p.z })), y: W, colour: [0.22, 0.32, 0.32] })
 
-  const blk = (u: number, v: number, hw: number, hd: number, y0: number, y1: number, c: Rgb, tag = st): void =>
-    box(out, u * sx, (y0 + y1) / 2 + (y0 === 0 ? W / 2 : 0), v * sz, hw * sx, (y1 - y0) / 2 - (y0 === 0 ? W / 2 : 0), hd * sz, c, tag)
+  // (the blocks standing in the pool go down to its floor, which shows through the water)
+  const blk = (u: number, v: number, hw: number, hd: number, y0: number, y1: number, c: Rgb, tag = st): void => {
+    const b = y0 === 0 ? F : y0
+    box(out, u * sx, (b + y1) / 2, v * sz, hw * sx, (y1 - b) / 2, hd * sz, c, tag)
+  }
   // [u, v, half-width, half-depth, y0, y1, colour]: laid out from the photographs on a 34 × 25 m plan
   const BLOCKS: [number, number, number, number, number, number, Rgb][] = [
     // the cliff of tall slabs along +z at the −x end
@@ -409,30 +416,55 @@ export function unPlazaFountain(out: MeshBuilder, fit: Fit): void {
   // the long slab tilted down into the water
   strut(out, [-8.2 * sx, 1.7, -4.4 * sz], [-2.6 * sx, W + 0.1, -5.0 * sz], 1.7 * sz, 0.6, WET, st)
 
-  // the water: vertical jets from the low blocks' tops, arcs off the high ones, sheets down the faces
+  /*
+   * The water: vertical jets from the low blocks' tops, falling back onto them; arcs off the high ones into the pool;
+   * sheets over the lips of the stacked blocks. A jet's apex `h` over its nozzle gives vy = √(2gh); an arc's flight
+   * T = √(2h/g) + √(2(h + top − W)/g) down to the water, and its speed across is the distance over T.
+   */
+  const G = 9.81
   const jets: [number, number, number, number][] = [[0.2, 2.9, 1.2, 3.4], [-4.4, -0.2, 0.8, 2.6], [-1.4, -1.6, 1.0, 2.2],
     [2.9, 0.4, 0.7, 3.0], [5.6, -3.0, 0.8, 2.4]]
   for (const [u, v, top, h] of jets) {
-    // a jet: a thin column of water, and the spray falling off its head in a ring of short arcs
-    strut(out, [u * sx, top, v * sz], [u * sx, top + h, v * sz], 0.1, 0.1, FOAM, 0, false)
-    for (let k = 0; k < 4; k++) {
-      const a = (k / 4) * Math.PI * 2 + 0.4
-      strut(out, [u * sx, top + h, v * sz], [u * sx + Math.cos(a) * 0.7, top + h * 0.55, v * sz + Math.sin(a) * 0.7], 0.06, 0.06, FOAM, 0, false)
-    }
+    out.water.push({ kind: 'jet', at: [u * sx, top + 0.01, v * sz], v: [0, Math.sqrt(2 * G * h), 0], width: 0.08, spread: 0.55, land: top + 0.01 })
+    out.water.push({ kind: 'splash', at: [u * sx, top + 0.02, v * sz], r: 0.8 })
   }
   const arcsOf: [number, number, number, number, number][] = [[-5.6, 3.6, 2.5, 0.9, 2.6], [7.6, 4.6, 2.5, -2.0, 3.5],
     [-2.7, 6.3, 3.4, -1.0, 4.0], [11.9, 7.0, 1.9, -2.6, 3.0]]
   for (const [u, v, top, du, dv] of arcsOf) {
-    const p0: V3 = [u * sx, top, v * sz]
-    const pm: V3 = [(u + du * 0.5) * sx, top + 1.1, (v + dv * 0.5) * sz]
-    const p1: V3 = [(u + du) * sx, W, (v + dv) * sz]
-    strut(out, p0, pm, 0.1, 0.1, FOAM, 0, false)
-    strut(out, pm, p1, 0.1, 0.1, FOAM, 0, false)
+    const h = 1.1, T = Math.sqrt((2 * h) / G) + Math.sqrt((2 * (h + top - W)) / G)
+    out.water.push({ kind: 'jet', at: [u * sx, top, v * sz], v: [(du * sx) / T, Math.sqrt(2 * G * h), (dv * sz) / T], width: 0.09, spread: 0.3, land: W })
+    out.water.push({ kind: 'splash', at: [(u + du) * sx, W + 0.01, (v + dv) * sz], r: 0.7 })
   }
-  // sheets falling over the lips of the stacked blocks
-  for (const [u, v, hw, hd, y0, y1] of [[-5.6, 3.6, 1.5, 1.0, W, 2.5], [7.6, 4.6, 3.4, 2.2, W, 1.4], [11.9, 7.0, 3.0, 2.6, W, 1.0], [-12.5, 5.6, 1.2, 0.9, 2.5, 3.2]]) {
-    box(out, u * sx, (y0 + y1) / 2, (v - hd - 0.04) * sz, hw * 0.75 * sx, (y1 - y0) / 2, 0.02, FOAM, 0)
+  // sheets over the front (−v) lips of the stacked blocks and the cantilevered slabs: [u, v, half-width, half-depth,
+  // the lip's height, the height it falls to]
+  const sheets: [number, number, number, number, number, number][] = [[-5.6, 3.6, 1.5, 1.0, 2.5, W], [7.6, 4.6, 3.4, 2.2, 2.5, W],
+    [11.9, 7.0, 3.0, 2.6, 1.9, W], [-12.5, 5.6, 1.2, 0.9, 3.2, 2.5], [-12.3, 5.4, 1.7, 1.3, 2.5, W]]
+  for (const [u, v, hw, hd, top, to] of sheets) {
+    const z = (v - hd) * sz - 0.02
+    out.water.push({ kind: 'sheet', a: [(u - hw * 0.75) * sx, top + 0.01, z], b: [(u + hw * 0.75) * sx, top + 0.01, z], out: 0.6, drop: top - to })
+    if (to === W) out.water.push({ kind: 'splash', at: [u * sx, W + 0.01, z - 0.4], r: Math.min(1.6, hw * sx * 0.7) })
   }
+  /*
+   * Water stands level, so the fountain stands on the HIGHEST ground round its coping, its outer face down to the base
+   * (as art.ts `standOnHighest` does for a round basin): from the base — the lowest ground under the box — the plaza's
+   * fall across it buried the pool, and the lawn the city draws there showed through between the blocks.
+   */
+  const g = fit.groundAt
+  if (!g) return
+  let lift = 0
+  for (let i = 0; i < ring.length; i++) {
+    const p = ring[i], q = ring[(i + 1) % ring.length]
+    for (let k = 0; k < 4; k++) lift = Math.max(lift, g(p.x + ((q.x - p.x) * k) / 4, p.z + ((q.z - p.z) * k) / 4))
+  }
+  if (lift <= 0.02) return
+  for (let i = v0; i < out.positions.length; i += 3) out.positions[i + 1] += lift
+  for (let i = w0; i < out.water.length; i++) {
+    const f = out.water[i]
+    if (f.kind === 'pool') f.y += lift
+    else if (f.kind === 'sheet') { f.a[1] += lift; f.b[1] += lift }
+    else f.at[1] += lift
+  }
+  faceBand(out, ring, -0.3, lift, { kind: 'blank', wall: PALE, material: 'granite' })
 }
 
 /**

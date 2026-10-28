@@ -69,8 +69,6 @@ const PAVING_DK: Rgb = [0.3, 0.29, 0.29]
 const GRANITE: Rgb = [0.58, 0.56, 0.53]
 const GRANITE_LT: Rgb = [0.72, 0.7, 0.66]
 const GRANITE_DK: Rgb = [0.31, 0.3, 0.29]
-const WATER: Rgb = [0.46, 0.62, 0.66]
-const FOAM: Rgb = [0.78, 0.86, 0.87]
 const DARKFRAME: Rgb = [0.14, 0.14, 0.13]
 const GREENGLASS: Rgb = [0.18, 0.28, 0.26]
 const PALEMETAL: Rgb = [0.78, 0.79, 0.79]
@@ -522,6 +520,15 @@ const MLK_POOL: P2[] = ([
 ] as [number, number][]).map(([x, z]) => ({ x, z }))
 
 /**
+ * `way/25298444` (`amenity=fountain`, `natural=water`), same frame: the fountain's own water, from the wall's foot (its
+ * first eight corners are the wall's) out to the near edge of the ponds — what the falls drop into.
+ */
+const MLK_FALLS_WATER: P2[] = ([
+  [23.9, 24.0], [18.5, 14.4], [12.6, 5.8], [6.7, -1.5], [-1.3, -9.2], [-9.2, -15.6], [-15.6, -19.8], [-23.9, -24.0],
+  [-14.4, -14.4], [-13.4, -13.5], [-14.2, -12.7], [-2.9, -1.3], [-2.0, -2.1], [-1.1, -1.1],
+] as [number, number][]).map(([x, z]) => ({ x, z }))
+
+/**
  * The memorial, cut into a level change of its own. The lawn arrives at `DECK_H`; the pool is at lawn level
  * and the walk BEHIND the wall is higher, which is why the owner's photograph looks down onto the water.
  *
@@ -538,9 +545,16 @@ export function mlkWaterfall(out: MeshBuilder, _fit?: Fit): void {
   const H = PATIO_H - DECK_H
   const walk = PATIO_H
 
-  // ---- the pool: a shallow basin at lawn level, its water just under the rim
+  /*
+   * ---- the water is MOVING WATER (render/water.ts), as the Music Concourse's: the ponds, the fountain's own water
+   * from the wall's foot out to them that the falls drop into, the falls themselves, white where they land. (Were a
+   * flat cap over the ponds only, and a white box behind each pane.)
+   */
+  const POOL = DECK_H + 0.28
   capPolygon(out, MLK_POOL, DECK_H + 0.04, GRANITE_DK, GRAN_TAG, 4)
-  capPolygon(out, MLK_POOL, DECK_H + 0.28, WATER, 0, 4)
+  out.water.push({ kind: 'pool', ring: MLK_POOL, y: POOL, colour: [0.22, 0.34, 0.36] })
+  capPolygon(out, MLK_FALLS_WATER, DECK_H + 0.04, GRANITE_DK, GRAN_TAG, 4)
+  out.water.push({ kind: 'pool', ring: MLK_FALLS_WATER, y: POOL, colour: [0.22, 0.34, 0.36] })
 
   // ---- the wall: piers along the polyline, gaps between them where the water falls
   for (let i = 0; i < MLK_WALL.length - 1; i++) {
@@ -561,14 +575,17 @@ export function mlkWaterfall(out: MeshBuilder, _fit?: Fit): void {
       }
       /*
        * The fall in the gap to this pier's left. The owner's close oblique settles what this is: a long
-       * GREEN GLASS wall with the water behind it, not an open sheet — so the pane is the outer face and
-       * the foam is a bright line read through it.
+       * GREEN GLASS wall, not an open sheet — so the pane stays, and the water now falls past it from the wall's
+       * top, a moving sheet into the channel (it was a white box behind the pane, which read as a stripe).
        */
       const ug = k * w
       boxAlong(out, e.a.x + e.tx * ug - e.nx * 0.1, DECK_H + H / 2, e.a.z + e.tz * ug - e.nz * 0.1,
         0.55, H / 2, 0.06, ang, MEMGLASS, GLASS_TAG)
-      boxAlong(out, e.a.x + e.tx * ug, DECK_H + H / 2 - 0.2, e.a.z + e.tz * ug,
-        0.42, H / 2 - 0.3, 0.05, ang, FOAM, 0)
+      const lip = { x: e.a.x + e.tx * ug - e.nx * 0.25, z: e.a.z + e.tz * ug - e.nz * 0.25 }, top = DECK_H + H - 0.25
+      out.water.push({ kind: 'sheet', a: [lip.x + e.tx * 0.45, top, lip.z + e.tz * 0.45], b: [lip.x - e.tx * 0.45, top, lip.z - e.tz * 0.45],
+        out: 0.5, drop: top - POOL })
+      const reach = 0.5 * Math.sqrt((2 * (top - POOL)) / 9.81) + 0.1
+      out.water.push({ kind: 'splash', at: [lip.x - e.nx * reach, POOL + 0.01, lip.z - e.nz * reach], r: 0.7 })
     }
     // the backing mass behind the piers, holding the walk up
     boxAlong(out, e.a.x + e.tx * (e.L / 2) + e.nx * 1.9, DECK_H + H / 2, e.a.z + e.tz * (e.L / 2) + e.nz * 1.9,

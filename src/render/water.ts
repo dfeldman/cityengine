@@ -20,7 +20,8 @@
  *              pool, else at 0; `land` says the height outright.
  *  - `sheet`:  a curtain over a lip from `a` to `b`, leaving it at `out` m/s and falling `drop` metres — a basin
  *              overflowing, a cascade, a waterfall.
- *  - `pool`:   a still surface over a ring at height `y`: tinted water that glitters, with the wind's ripples on it.
+ *  - `pool`:   a still surface over a ring (any simple polygon) at height `y`: tinted water that glitters, with the
+ *              wind's ripples on it.
  *  - `splash`: where falling water lands, a disc of radius `r` of white churn and rings running out.
  *
  * Heights are in the model's frame (its base at 0). Lit by the city's light and fog (NIGHT dims it).
@@ -30,6 +31,7 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData'
 import { Effect } from '@babylonjs/core/Materials/effect'
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial'
+import earcut from 'earcut'
 import { DAYLIGHT, NIGHT } from './facade-material.ts'
 
 type V3 = [number, number, number]
@@ -302,13 +304,10 @@ function addSheet(g: Geo, sh: Extract<WaterFeature, { kind: 'sheet' }>, seed: nu
 
 function addPool(g: Geo, pl: Extract<WaterFeature, { kind: 'pool' }>): void {
   const c = pl.colour ?? [0.18, 0.34, 0.38]
-  const n = pl.ring.length
-  let cx = 0, cz = 0
-  for (const q of pl.ring) { cx += q.x / n; cz += q.z / n }
-  const centre = g.v(cx, pl.y, cz, 0, 0, [c[0], c[1], c[2], 1])
+  // (earcut, not a fan from the centre: a fan covered the outside of a pond that is not convex — the MLK Memorial's)
   const first = g.p.length / 3
   for (const q of pl.ring) g.v(q.x, pl.y, q.z, 0, 0, [c[0], c[1], c[2], 1])
-  for (let k = 0; k < n; k++) g.i.push(centre, first + k, first + ((k + 1) % n))
+  for (const k of earcut(pl.ring.flatMap((q) => [q.x, q.z]))) g.i.push(first + k)
 }
 
 function addSplash(g: Geo, sp: Extract<WaterFeature, { kind: 'splash' }>, seed: number): void {

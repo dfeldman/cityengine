@@ -216,11 +216,12 @@ export class Statues {
       if (far || crowded) this.unload(s)
     }
     // the procedural stand-ins: hidden while the model is in, shown again when it goes (re-applied every tick: the
-    // landmarks of a tile are rebuilt when it comes back into range)
+    // landmarks of a tile are rebuilt when it comes back into range). With its moving water (render/water.ts): the Yoda
+    // Fountain's sheets stood on in the air round the model's pedestal
     for (const s of this.slots) {
       if (!s.e.replaces) continue
-      const name = `landmark:${s.e.replaces}`
-      for (const m of this.scene.meshes) if (m.name === name || m.name === `landmark:shadow:${s.e.replaces}`) m.isVisible = !s.holder
+      const names = new Set([`landmark:${s.e.replaces}`, `landmark:shadow:${s.e.replaces}`, ...['pool', 'splash', 'flow'].map((k) => `water:${k}:${s.e.replaces}`)])
+      for (const m of this.scene.meshes) if (names.has(m.name)) m.isVisible = !s.holder
     }
     if (this.slots.some((s) => s.loading)) return
     // a loaded asset whose distance now asks for another LOD: that file is loaded, then swapped in
