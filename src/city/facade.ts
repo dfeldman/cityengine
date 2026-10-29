@@ -1305,7 +1305,7 @@ function dressParis(plan: FacadePlan, p: ParisDress, features: Feature[], margin
       }
     }
   }
-  // the rusticated lower storeys: a groove every 45 cm across the solid stone — the corner piers on the shop floor, the
+  // the rusticated lower storeys: a groove every 60 cm across the solid stone — the corner piers on the shop floor, the
   // piers between the windows above it
   if (p.rustic > 0) {
     const groove = shadeHex(plan.palette.wall, 0.8)
@@ -1318,7 +1318,7 @@ function dressParis(plan: FacadePlan, p: ParisDress, features: Feature[], margin
         for (let b = 0; b < bays; b++) { const x0 = margin + b * bayW + (bayW - winW) / 2 - 0.14; spans.push([x, x0]); x = x0 + winW + 0.28 }
         spans.push([x, margin * 2 + bays * bayW])
       }
-      for (let y = s.y0 + 0.45; y < s.y1 - 0.2; y += 0.45) {
+      for (let y = s.y0 + 0.6; y < s.y1 - 0.2; y += 0.6) {
         for (const [a, b] of spans) if (b - a > 0.15) features.push({ kind: 'cornice', y0: y, y1: y + 0.035, depth: 0.015, x0: a, x1: b, colour: groove })
       }
     }
@@ -1343,10 +1343,11 @@ function dressParis(plan: FacadePlan, p: ParisDress, features: Feature[], margin
       for (const x of [x0 - 0.1, x0 + winW + 0.1]) features.push({ kind: 'bracket', y0: s.y0 - 0.42, y1: s.y0, depth: 0.4, x0: x - 0.09, x1: x + 0.09, colour: plan.palette.trim })
     }
   }
-  // the small consoles under the main cornice, every 0.7 m
+  // the small consoles under the main cornice, every metre (every 0.7 m doubled a front's triangles for a detail a rider
+  // cannot count)
   if (p.modillions) {
     const y = plan.height - style(plan.style).cornice.height
-    const n = Math.floor((bays * bayW) / 0.7)
+    const n = Math.floor((bays * bayW) / 1.0)
     for (let i = 0; i <= n; i++) {
       const x = margin + (i * bays * bayW) / Math.max(1, n)
       features.push({ kind: 'bracket', y0: y - 0.28, y1: y, depth: 0.32, x0: x - 0.07, x1: x + 0.07, colour: plan.palette.trim })
