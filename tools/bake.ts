@@ -730,6 +730,10 @@ async function bake(spec: CitySpec): Promise<void> {
   const recordOf = spec.region === 'san-francisco'
     ? await import('./sf-parcels.ts').then(async (m) => m.parcelIndex(await m.fetchRolls(rollBox(detailBboxOf(spec)))))
       .catch((e: unknown) => { console.warn(`  sf-parcels: not fetched (${String(e).slice(0, 120)})`); return null })
+    // Paris: every building's age and whether it is a public facility, from APUR (tools/paris-apur.ts)
+    : spec.region === 'paris'
+      ? await import('./paris-apur.ts').then(async (m) => m.apurIndex(await m.fetchApur()))
+        .catch((e: unknown) => { console.warn(`  apur: not fetched (${String(e).slice(0, 120)})`); return null })
     : null
   const taggedNear: TaggedNeighbour[] = []
   const ringOfWay = (w: OsmWay): { x: number; z: number }[] | null =>
@@ -2872,7 +2876,7 @@ async function bake(spec: CitySpec): Promise<void> {
        */
       const outside = furniture.filter((f) => keep.has(f.kind) || f.kind === 'signals' || !mask(f.x, f.z))
       furniture.length = 0
-      furniture.push(...outside)
+      for (const f of outside) furniture.push(f)
       console.log(`  open country: ${touched} ways restyled at source (${fixed} from a photographed row in `
         + `city/park-roads.json), ${before - outside.length} pieces of street furniture dropped inside it`)
     }
@@ -2899,7 +2903,7 @@ async function bake(spec: CitySpec): Promise<void> {
       return true
     })
     furniture.length = 0
-    furniture.push(...keepF)
+    for (const f of keepF) furniture.push(f)
     console.log(`  kerb-side furniture: ${moved} moved out of the road onto the pavement, ${dropped} with none near dropped`)
   }
 
@@ -2987,7 +2991,8 @@ async function bake(spec: CitySpec): Promise<void> {
     if (dropped.size) {
       const keepE = kept.filter((e) => !dropped.has(e.id))
       kept.length = 0
-      kept.push(...keepE)
+      // (not `push(...keepE)`: Paris's edges as arguments overflowed the stack)
+      for (const e of keepE) kept.push(e)
     }
     console.log(`  ${before - kept.length} foot ways dropped that ran down a street's own centreline (the same alley mapped twice)`)
   }
@@ -3044,7 +3049,7 @@ async function bake(spec: CitySpec): Promise<void> {
 
   const nested = insetNested(buildings)
   buildings.length = 0
-  buildings.push(...nested)
+  for (const b of nested) buildings.push(b)
   /*
    * A BUILDING IN THE AIR with nothing under it (BUGS.md #279, 2026-10-16): OSM raises a whole building by
    * `building:min_level` where its shop floor is a separate way — or is not mapped at all, and then the apartments over
@@ -3137,7 +3142,8 @@ async function bake(spec: CitySpec): Promise<void> {
   // 1,900 would have left twenty square kilometres of central Paris almost bare
   const ex = extentOf(spec)
   const km2 = ((ex.west + ex.east) * (ex.south + ex.north)) / 1e6
-  const cap = Math.max(TREE_CAP, Math.round(TREES_PER_KM2 * km2))
+  // (Paris twice over: OSM maps 166 000 of its trees — the city's own register — before the Bois's forest is planted)
+  const cap = Math.max(TREE_CAP, Math.round(TREES_PER_KM2 * km2 * (spec.region === 'paris' ? 2 : 1)))
   // the city's own record of its street trees, where the region has one (SF: tools/sf-trees.ts), in place of the
   // mapped and the guessed ones
   const street = spec.streetTrees === 'datasf'
@@ -3783,7 +3789,7 @@ async function main(): Promise<void> {
       const proj = new Projection(pkg.origin)
       const ex = extentOf(spec)
       const km2 = ((ex.west + ex.east) * (ex.south + ex.north)) / 1e6
-      const cap = Math.max(TREE_CAP, Math.round(TREES_PER_KM2 * km2))
+      const cap = Math.max(TREE_CAP, Math.round(TREES_PER_KM2 * km2 * (spec.region === 'paris' ? 2 : 1)))
       const street = spec.streetTrees === 'datasf'
         ? await Promise.all([import('./sf-trees.ts'), import('../src/city/sf/trees.ts')])
           // (clipped to the package's own extent: it may be from before the box grew)

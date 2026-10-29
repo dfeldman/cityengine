@@ -101,13 +101,28 @@ describe('rule 2: the ground floor and the roofline are not just more wall', () 
   })
 
   it('gives Haussmann its continuous balconies and Brutalism its slab bands', () => {
-    const h = planWall(planFacade('haussmann', 1, { levels: 6 }), 20, 1)
-    const balconies = h.features.filter((f) => f.kind === 'balcony')
-    expect(balconies.length).toBe(2)
-    for (const b of balconies) expect(b.x0, 'a Haussmann balcony runs the whole wall').toBeUndefined()
+    // on its street front: the continuous balconies its own dress chose (ParisDress), each the whole wall
+    const plan = planFacade('haussmann', 1, { levels: 6 })
+    const h = planWall(plan, 20, 1, {})
+    const continuous = h.features.filter((f) => f.kind === 'balcony' && f.x0 === undefined)
+    expect(continuous.length).toBe(plan.dress!.paris!.balconies.length)
+    expect(continuous.length).toBeGreaterThan(0)
+    // …and none on a courtyard or a party wall
+    expect(planWall(plan, 20, 1, null).features.filter((f) => f.kind === 'balcony')).toHaveLength(0)
 
     const b = planWall(planFacade('brutalist', 1, { levels: 8 }), 20, 1)
     expect(b.features.filter((f) => f.kind === 'slabBand').length).toBe(7)
+  })
+})
+
+describe('a Haussmann street is the same parts combined differently', () => {
+  it('varies balconies, railings, hoods and consoles front to front', () => {
+    const kinds = new Set<string>()
+    for (let seed = 1; seed <= 40; seed++) {
+      const p = planFacade('haussmann', seed, { levels: 7 }).dress!.paris!
+      kinds.add(`${p.balconies.join(',')}|${p.centre.join(',')}|${p.railings}|${p.hoods.join(',')}|${p.deep}|${p.consoles}`)
+    }
+    expect(kinds.size).toBeGreaterThan(10)
   })
 })
 

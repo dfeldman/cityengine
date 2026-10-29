@@ -227,6 +227,32 @@ the Fondation Louis Vuitton; the Palais des Congrès at the Porte Maillot; the C
 core, still to do: the Palais du Luxembourg (and its Médicis fountain), the Élysée, the Palais Bourbon in full, the
 Invalides in full, the Panthéon in full, the Portes Saint-Denis and Saint-Martin, the Arc du Carrousel (§4).
 
+### The landmark programme, by family (2026-10-29)
+
+> "carefully prioritize which landmarks you do. prominent, unusual, and important are different axes. But all train
+> stations, museums, palaces, major government buildings should be done as they are usually all 3. Also large monuments
+> like the Arc d'Triomphe. Things someone would actually notice when they bike by."
+
+Each family has its own folder (`src/render/landmarks/paris/<family>/`) and manifest (`public/landmarks/paris/<family>.json`),
+worked by at most four agents at a time. In order within each:
+
+- **Stations** (all): Gare du Nord, Gare de l'Est, Saint-Lazare, Gare de Lyon (and its clock tower), Austerlitz,
+  Montparnasse, Bercy — the fronts and the sheds; the platforms with trains standing (with the stock: render/paris/trains.ts).
+- **Palaces and government** (all): the Palais du Luxembourg (the Senate) with its garden front and the Médicis fountain;
+  the Hôtel des Invalides in full; the Palais Bourbon in full; the Élysée; the Hôtel Matignon; the Quai d'Orsay ministry;
+  the Ministry of Finance at Bercy; the Banque de France; the Palais-Royal and the Conseil d'État; the Palais Brongniart; the
+  Palais de la Légion d'Honneur; the Palais de Tokyo.
+- **Museums** (all): the Orangerie and the Jeu de Paume; the Musée Rodin; Cluny; the Musée Picasso; the Quai Branly; the
+  Grande Galerie de l'Évolution; the Arts et Métiers; the Institut du monde arabe; the Fondation Louis Vuitton; Guimet and the
+  Musée d'Art Moderne; the Cité des Sciences and the Philharmonie at La Villette; the BnF François-Mitterrand. (Done: the
+  Louvre, Orsay, the Grand and Petit Palais, Pompidou, Carnavalet's court.)
+- **Monuments and churches**: Sacré-Cœur; the Panthéon in full; the Arc du Carrousel; the Portes Saint-Denis and
+  Saint-Martin; the Triomphe de la République at the Nation; the Lion de Belfort; the Tour Montparnasse as a model (it is
+  inside the box now); then the churches a rider sees: Saint-Sulpice, Saint-Eustache, Saint-Germain-des-Prés, Saint-Roch,
+  Saint-Germain-l'Auxerrois, Saint-Étienne-du-Mont, La Trinité, Saint-Augustin, Sainte-Clotilde; the Grande Mosquée.
+- **Sports venues and the parks' structures**: the Parc des Princes; Roland-Garros's courts; the Accor Arena at Bercy; the
+  Stade Charléty; the Stade Jean-Bouin; the Buttes-Chaumont's temple and cliffs; the Bois's Pré Catelan and Bagatelle.
+
 ## 5. Already planned (PARIS_EXPAND.md §8)
 
 The progress log's own next steps, still open: the Step 3 ride-graph overrides (Étoile, Concorde, Trocadéro, Opéra,

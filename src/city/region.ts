@@ -193,7 +193,7 @@ export interface Region {
     /** the American street's mapped furniture (render/us-furniture.ts): stop signs, post boxes, billboards */
     american?: boolean
     /** what a bus stop is: Muni's yellow-banded pole, or a plain pole with a flag */
-    busStop?: 'muni' | 'plain'
+    busStop?: 'muni' | 'plain' | 'paris'
     /** the street fire alarm box (render/us-furniture.ts): San Francisco's gabled Gamewell head, New York's ERS post */
     callBox?: 'sf' | 'nyc'
     /** the share of street junctions (three streets or more) that get a box where OSM has mapped none near: 0–1 */

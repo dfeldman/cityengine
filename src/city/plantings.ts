@@ -308,7 +308,9 @@ function plantLegacy(pkg: Pick<CityPackage, 'trees' | 'areas' | 'edges'> & Parti
      * with trees round its edge and along its paths, not a canopy.
      */
     const density = a.kind === 'wood' ? 0.006 : a.kind === 'park' ? 0.0018 : 0.0007
-    const want = Math.min(70, Math.floor(span * density))
+    // (no ceiling of seventy on a Paris wood or park: the Bois de Boulogne is the city's forest — owner, 2026-10-29: "a
+    //  golden gate style large natural park" — and the Luxembourg is 23 hectares, not a square)
+    const want = Math.min(mature ? (a.kind === 'wood' ? 60000 : 4000) : 70, Math.floor(span * density))
     for (let i = 0, tries = 0; i < want && tries < want * 8; tries++) {
       const x = minx + r() * (maxx - minx)
       const z = minz + r() * (maxz - minz)

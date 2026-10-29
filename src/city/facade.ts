@@ -303,6 +303,28 @@ export interface Dress {
   decks?: boolean
   /** blank on every wall, not only the street's: a pump canopy's edge is a fascia all round */
   solid?: boolean
+  /** a Haussmann front's own variations (`ParisDress`) */
+  paris?: ParisDress
+}
+
+/**
+ * A Haussmann front, building by building (owner, 2026-10-29: "The most important improvement is to improve the facade
+ * generator since it's used everywhere. Buildings are very similar but not all the same with different balconies and
+ * decorations and awnings at street level"). Every one had the same two continuous balconies on every wall and nothing
+ * else; the street is made of the same parts, combined differently front to front:
+ */
+export interface ParisDress {
+  /** the storeys (by index) with the continuous iron balcony: the étage noble's and the one under the mansard, or one */
+  balconies: number[]
+  /** a balcony across the middle bays only, on these storeys: the richer fronts' */
+  centre: number[]
+  /** the iron rail in every other upper window (the garde-corps at a French window), in some of them, or none */
+  railings: 'all' | 'some' | 'none'
+  /** a moulded cornice over the windows of these storeys; `deep`, two-tiered */
+  hoods: number[]
+  deep: boolean
+  /** the carved consoles under the first balcony */
+  consoles: boolean
 }
 
 export interface GroundMix {
@@ -386,6 +408,28 @@ const NO_DRESS: Dress = { cap: 'plain', parapet: 0, piers: false, belts: false, 
  * warehouses, the rest one- and two-storey shop buildings with a raised sign parapet or a plain coping.
  */
 const DRESSERS: Partial<Record<StyleId, (r: () => number, levels: number) => { dress: Dress; groundPaint?: string }>> = {
+  /*
+   * Haussmann's fronts (ParisDress). Storey 0 is the shops, the étage noble is the second floor above the entresol
+   * where the building has one (storey 2 of six or more; 1 of fewer), and the mansard is the top storey; the last
+   * full storey under it carries the second balcony. The schemes, by how often a street shows them: the classic pair;
+   * the étage noble alone; the plainer late-century front, a balcony only under the mansard; the rich front, with a
+   * balcony across the middle on the floor above the noble one too.
+   */
+  haussmann: (r, levels) => {
+    const noble = levels >= 6 ? 2 : 1
+    const under = levels - 2
+    const scheme = weighted(r, [['classic', 45], ['noble', 20], ['late', 20], ['rich', 15]] as const)
+    const pair = under > noble ? [noble, under] : [noble]
+    const paris: ParisDress = {
+      balconies: scheme === 'noble' ? [noble] : scheme === 'late' ? (under > noble ? [under] : [noble]) : pair,
+      centre: scheme === 'rich' && noble + 1 < under ? [noble + 1] : [],
+      railings: weighted(r, scheme === 'late' ? [['all', 40], ['some', 40], ['none', 20]] : [['all', 70], ['some', 25], ['none', 5]]),
+      hoods: scheme === 'late' ? [] : scheme === 'rich' ? [noble, noble + 1] : r() < 0.7 ? [noble] : [],
+      deep: scheme === 'rich' || r() < 0.3,
+      consoles: scheme !== 'late' && r() < 0.65,
+    }
+    return { dress: { ...NO_DRESS, paris } }
+  },
   brick: (r, levels) => {
     const low = levels <= 2
     const cap = weighted<Dress['cap']>(r, low
@@ -683,9 +727,10 @@ export function planFacade(
   }
   const y = storeys[storeys.length - 1].y1
 
-  const balconyLevels = new Set(st.balcony?.levels ?? [])
   // (its own stream, so the draws above — and every building of the styles that do not dress — stay as they were)
   const drawn = osm.noShops ? undefined : DRESSERS[styleId]?.(rng(seed ^ 0x0d2e55), levels)
+  // (a Haussmann front's balconies are its own: ParisDress)
+  const balconyLevels = new Set(drawn?.dress.paris?.balconies ?? st.balcony?.levels ?? [])
   // (a label's answers win over the draws, and dress a style that has no dresser of its own)
   const dressed = look?.dress ? { dress: { ...(drawn?.dress ?? NO_DRESS), ...look.dress }, groundPaint: drawn?.groundPaint } : drawn
   if (dressed?.groundPaint && !aloft && !look?.palette?.ground) palette = { ...palette, ground: dressed.groundPaint }
@@ -830,7 +875,8 @@ export function planWall(plan: FacadePlan, wallLength: number, seed: number,
 
     // Balconies: the continuous ones run the whole wall (Haussmann's defining feature); the others sit on
     // their own bay.
-    if (plan.hasBalconyAt(s.index) && st.balcony) {
+    // (a dressed Haussmann front's on its street walls only: the courtyard and the party walls are plain)
+    if (plan.hasBalconyAt(s.index) && st.balcony && !(plan.dress?.paris && shown === null)) {
       if (st.balcony.continuous) {
         features.push({
           kind: 'balcony', y0: s.y0, y1: s.y0 + 1.0, depth: st.balcony.depth, colour: plan.palette.accent,
@@ -1002,6 +1048,7 @@ function dressWall(plan: FacadePlan, d: Dress, features: Feature[], len: number,
     features.push({ kind: 'cornice', y0: h - 0.05, y1: h + 0.22, depth: 0.9, colour: trim })
   }
   if (!street) return
+  if (d.paris) dressParis(plan, d.paris, features, margin, bayW, bays)
   const top = h + style(plan.style).cornice.height * 0.35 + d.parapet
 
   if (d.cap === 'corbel') {
@@ -1115,6 +1162,50 @@ function dressWall(plan: FacadePlan, d: Dress, features: Feature[], len: number,
 }
 
 /** A moulded hood over every upper window — a lip, and a second deeper one above it on a grand front. */
+/** A Haussmann street front's own parts (ParisDress): the railings, the hoods, the consoles, the central balconies. */
+function dressParis(plan: FacadePlan, p: ParisDress, features: Feature[], margin: number, bayW: number, bays: number): void {
+  const st = style(plan.style)
+  const winW = bayW * plan.window.widthFrac
+  const iron = plan.palette.accent
+  const top = plan.storeys.length - 1
+  for (const s of plan.storeys) {
+    if (s.kind === 'ground' || (s.index === top && plan.top === 'mansard')) continue
+    const h = s.y1 - s.y0
+    // the iron rail across each French window of a storey without its own balcony, flush with the wall
+    if (!plan.hasBalconyAt(s.index) && !p.centre.includes(s.index) && p.railings !== 'none') {
+      for (let b = 0; b < bays; b++) {
+        if (p.railings === 'some' && (b + s.index) % 2 === 1) continue
+        const x0 = margin + b * bayW + (bayW - winW) / 2
+        features.push({ kind: 'balcony', y0: s.y0 + 0.04, y1: s.y0 + 1.0, depth: 0.07, x0: x0 - 0.04, x1: x0 + winW + 0.04, colour: iron })
+      }
+    }
+    // a balcony across the middle bays (a third of the front, at least one bay)
+    if (p.centre.includes(s.index) && bays >= 3) {
+      const n = Math.max(1, Math.round(bays / 3)), b0 = Math.floor((bays - n) / 2)
+      features.push({ kind: 'balcony', y0: s.y0, y1: s.y0 + 1.0, depth: 0.5, x0: margin + b0 * bayW + 0.1, x1: margin + (b0 + n) * bayW - 0.1, colour: iron })
+    }
+    // the hoods over the windows: a moulded cornice, two-tiered on the richer fronts
+    if (p.hoods.includes(s.index)) {
+      // (just over the window's head; bold enough to read from the street — at 14 cm of cream on cream they did not)
+      const y = s.y1 - h * 0.13
+      for (let b = 0; b < bays; b++) {
+        const x0 = margin + b * bayW + (bayW - winW) / 2
+        features.push({ kind: 'cornice', y0: y, y1: y + 0.2, depth: 0.2, x0: x0 - 0.14, x1: x0 + winW + 0.14, colour: plan.palette.trim })
+        if (p.deep) features.push({ kind: 'cornice', y0: y + 0.2, y1: y + 0.34, depth: 0.3, x0: x0 - 0.24, x1: x0 + winW + 0.24, colour: plan.palette.trim })
+      }
+    }
+  }
+  // the consoles under the first balcony: a carved bracket at every pier, carrying the slab
+  const first = Math.min(...p.balconies)
+  const s = plan.storeys[first]
+  if (p.consoles && s && st.balcony) {
+    for (let b = 0; b <= bays; b++) {
+      const x = margin + b * bayW
+      features.push({ kind: 'bracket', y0: s.y0 - 0.5, y1: s.y0, depth: st.balcony.depth * 0.85, x0: x - 0.13, x1: x + 0.13, colour: plan.palette.trim })
+    }
+  }
+}
+
 function windowHoods(plan: FacadePlan, features: Feature[], margin: number, bayW: number, bays: number, deep: boolean): void {
   const winW = bayW * plan.window.widthFrac
   for (const s of plan.storeys) {

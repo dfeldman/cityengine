@@ -12,6 +12,11 @@
 import type { MeshBuilder } from '../buildings.ts'
 import type { Fit } from './fit.ts'
 import { SF_BUILDERS } from './sf/index.ts'
+import { PARIS_STATIONS } from './paris/stations/index.ts'
+import { PARIS_PALACES } from './paris/palaces/index.ts'
+import { PARIS_MONUMENTS } from './paris/monuments/index.ts'
+import { PARIS_VENUES } from './paris/venues/index.ts'
+import { PARIS_MUSEUMS } from './paris/museums/index.ts'
 import { colonneDeJuillet } from './paris/colonne-de-juillet.ts'
 import { pompidou } from './paris/pompidou.ts'
 import { eiffelTower } from './paris/eiffel-tower.ts'
@@ -63,5 +68,7 @@ export type { Fit }
 export const PROCEDURAL: Record<string, (out: MeshBuilder, fit: Fit) => void> = {
   // San Francisco's (render/landmarks/sf/index.ts)
   ...SF_BUILDERS,
+  // Paris's families (PARIS_PARITY.md): each its own folder and its own manifest file
+  ...PARIS_STATIONS, ...PARIS_PALACES, ...PARIS_MONUMENTS, ...PARIS_VENUES, ...PARIS_MUSEUMS,
   colonneDeJuillet, pompidou, eiffelTower, eiffelTowerFull, arcDeTriomphe, louvrePyramid, notreDameFull, invalidesDome, museeOrsay, palaisGarnier, placeConcorde, monumentRepublique, montparnasse, sacreCoeur, pantheon, notreDame, saintPaul, hotelDeSens, tourSaintJacques, hotelDeVille, operaArch, synagogueGuimard, synagogueTournelles, vosgesGarden, templeMarais, saintGervais, cirqueHiver, saintDenysPortico, saintLouisSpire, sullyCourt, soubiseCourt, carnavaletCourt, saintMerri, flamelHouse, trocaderoParvis, grandPalais, colonneVendome, sainteChapelle, madeleine, assembleePortico, institutDome, petitPalais, burenColumns, ecoleMilitairePortico, fontaineInnocents, fontaineSaintMichel, flammeLiberte, cornerDome, louisXIV, fochTrocadero,
 }

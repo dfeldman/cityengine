@@ -5,6 +5,7 @@
  */
 import type { StyleId } from './facade.ts'
 import { classifySF } from './sf/btype.ts'
+import { classifyParis } from './paris/btype.ts'
 
 export interface BuildingFacts {
   tags: Record<string, string>
@@ -21,6 +22,6 @@ export interface BuildingFacts {
 }
 export type Classifier = (b: BuildingFacts) => { archetype: string; style: StyleId; district: string; rule: string } | null
 
-const CLASSIFIERS: Record<string, Classifier> = { 'san-francisco': classifySF }
+const CLASSIFIERS: Record<string, Classifier> = { 'san-francisco': classifySF, paris: classifyParis }
 
 export const classifierFor = (region: string | undefined): Classifier | null => CLASSIFIERS[region ?? ''] ?? null

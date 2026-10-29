@@ -27,6 +27,7 @@ export async function showcase(canvas: HTMLCanvasElement, only?: string): Promis
   const scene = new Scene(engine)
   scene.clearColor = new Color4(0.72, 0.76, 0.82, 1)
 
+  const street = new URLSearchParams(location.search).get('street') === '1'
   const ids: StyleId[] = only && STYLES.some((s) => s.id === only)
     ? (Array(8).fill(only) as StyleId[])
     : STYLES.map((s) => s.id)
@@ -43,7 +44,11 @@ export async function showcase(canvas: HTMLCanvasElement, only?: string): Promis
     widths.push(w)
     const out = byStyle.get(id) ?? new MeshBuilder()
     byStyle.set(id, out)
-    buildBuilding(out, rectangle(w, depth, x + w / 2, 0), plan, atlas, seed)
+    // (`&street=1`: every wall a street front, so a dressed style's street ornament and the shop awnings show — a bench for
+    //  the Haussmann fronts, ParisDress)
+    // (the fronts on one line, as a street's are — owner, 2026-10-29: "the faces are mostly even against the sidewalk")
+    buildBuilding(out, rectangle(w, depth, x + w / 2, depth / 2), plan, atlas, seed, 0, undefined, undefined,
+      street ? () => ({ rate: 0.9, main: true, rise: 0, pavement: 4 }) : undefined)
     x += w + 0.6
   })
 
@@ -83,6 +88,7 @@ export async function showcase(canvas: HTMLCanvasElement, only?: string): Promis
       : `${ids.join('  ·  ')} — ${tris.toLocaleString()} triangles`
   }
   // the shot tool waits on this
+  ;(window as unknown as { showcaseReady?: boolean; __showcaseScene?: Scene }).__showcaseScene = scene
   ;(window as unknown as { showcaseReady?: boolean }).showcaseReady = true
   void chooseStyle
   void Color3

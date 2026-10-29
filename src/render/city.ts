@@ -32,7 +32,7 @@ import { addShadow, shadowMaterial, shadowOffset, SHADOW_Y } from './shadows.ts'
 import { DAYLIGHT } from './facade-material.ts'
 import {
   bench, bikeDocks, bollard, hydrant, ctaEntrance, drinkingTap, genericEntrance, guimardEntrance, kiosk, lampPost,
-  morrisColumn, nycSubwayEntrance, parisNewsstand, trafficLight, trafficLightMast, trafficLightParis, wallaceFountain,
+  morrisColumn, parisBusStop, nycSubwayEntrance, parisNewsstand, trafficLight, trafficLightMast, trafficLightParis, wallaceFountain,
   wallLamp, strut, prism, FIXED,
 } from './models.ts'
 import { facesStreet, pavementDepth, streetIndex, type StreetIndex } from '../city/frontage.ts'
@@ -4104,7 +4104,7 @@ export class City {
         : pf.american && f.kind === 'postbox' ? uspsBox
         : f.kind === 'callbox' && pf.callBox ? (pf.callBox === 'nyc' ? nycFireAlarmBox : sfFireAlarmBox)
         : pf.american && f.kind === 'billboard' ? (o: MeshBuilder) => billboard(o, Math.round(f.x * 7 + f.z * 13))
-        : f.kind === 'busstop' && pf.busStop ? (pf.busStop === 'muni' ? muniStop : plainStop)
+        : f.kind === 'busstop' && pf.busStop ? (pf.busStop === 'muni' ? muniStop : pf.busStop === 'paris' ? parisBusStop : plainStop)
         : null          // (drawn elsewhere: tram stops by the trams, hydrants along every pavement)
       /*
        * A street clock on its post (OSM amenity=clock, support=pole): the dark iron column, the drum head and its four

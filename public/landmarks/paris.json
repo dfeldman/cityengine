@@ -1199,5 +1199,20 @@
     "rotateDeg": 134,
     "stone": false,
     "note": "Stand-in for the user's model (MODELS_NEEDED.md): Foch on horseback, facing the Eiffel Tower."
+  },
+  {
+    "include": "paris/stations.json"
+  },
+  {
+    "include": "paris/palaces.json"
+  },
+  {
+    "include": "paris/monuments.json"
+  },
+  {
+    "include": "paris/venues.json"
+  },
+  {
+    "include": "paris/museums.json"
   }
 ]

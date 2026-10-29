@@ -832,6 +832,37 @@ export function morrisColumn(out: MeshBuilder): void {
 }
 
 /**
+ * A Paris bus stop (owner, 2026-10-29, from street view: Paris has "bus stops", and there were none): Norman Foster's
+ * JCDecaux abribus — a thin pale roof on slender dark legs, a glass back, the route map at one end and a lit poster at
+ * the other, a bench in the shelter — and beside it RATP's stop post, the grey pole with its flag. Local frame: +z
+ * toward the street, the shelter's open side; about 3.4 m long.
+ */
+export function parisBusStop(out: MeshBuilder): void {
+  const leg: Rgb = [0.2, 0.21, 0.22]
+  const glass: Rgb = [0.6, 0.68, 0.72]
+  const roof: Rgb = [0.86, 0.87, 0.86]
+  box(out, 0, 2.52, -0.1, 1.75, 0.04, 0.8, roof, FIXED)
+  for (const x of [-1.62, 1.62]) box(out, x, 1.25, -0.72, 0.035, 1.25, 0.035, leg, FIXED)
+  box(out, 0, 1.4, -0.75, 1.58, 0.95, 0.012, glass, FIXED)
+  // the route map's panel at one end (dark, a pale map on its inner face), the lit poster at the other
+  box(out, -1.62, 1.3, -0.35, 0.03, 0.95, 0.38, leg, FIXED)
+  box(out, -1.58, 1.4, -0.35, 0.005, 0.6, 0.3, [0.9, 0.9, 0.86], FIXED)
+  box(out, 1.62, 1.3, -0.35, 0.06, 0.95, 0.38, leg, FIXED)
+  box(out, 1.69, 1.35, -0.35, 0.005, 0.85, 0.32, [0.95, 0.88, 0.7], EMIT)
+  box(out, 1.55, 1.35, -0.35, 0.005, 0.85, 0.32, [0.7, 0.82, 0.92], EMIT)
+  // the bench, on two brackets off the back
+  box(out, 0.1, 0.47, -0.55, 1.0, 0.03, 0.16, [0.55, 0.47, 0.36], FIXED)
+  for (const x of [-0.7, 0.9]) box(out, x, 0.24, -0.62, 0.03, 0.22, 0.03, leg, FIXED)
+  // RATP's stop post past the open end: the grey pole, the flag with its green band and the white "bus" plate
+  box(out, 2.15, 1.45, 0.25, 0.035, 1.45, 0.035, [0.45, 0.47, 0.49], FIXED)
+  box(out, 2.15, 2.72, 0.25, 0.02, 0.26, 0.24, [0.18, 0.2, 0.24], FIXED)
+  for (const sx of [-1, 1]) {
+    box(out, 2.15 + sx * 0.022, 2.85, 0.25, 0.002, 0.07, 0.22, [0.0, 0.6, 0.5], FIXED)
+    box(out, 2.15 + sx * 0.022, 2.65, 0.25, 0.002, 0.09, 0.16, [0.95, 0.95, 0.93], FIXED)
+  }
+}
+
+/**
  * A Paris news kiosque, after Davioud's: hexagonal, dark green, a frieze of posters, a scalloped canopy and a
  * small dome. Its counter faces the pavement (+x) and it stands along the street.
  */

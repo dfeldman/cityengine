@@ -81,6 +81,7 @@
     "timeZone": "Europe/Paris",
     "note": "Paris. Cream limestone almost everywhere (Haussmann's city is one colour, and that colour is what makes it Paris), slate-blue zinc roofs and black ironwork. No lamp posts on the pavement edge: Paris street lamps hang from the buildings. Black bollards (potelets) line the narrow pavements to keep cars off them. Crossings are the passage piéton: broad white bands, wider apart than a zebra (crossings: bands).",
     "palettes": {
+      "brick": [{"wall": "#9a4d38", "trim": "#e3d8bf", "roof": "#6b7780", "accent": "#1e2022", "ground": "#e6dbc2"}, {"wall": "#8a4434", "trim": "#dcd0b4", "roof": "#6b7780", "accent": "#1e2022", "ground": "#e2d6bb"}, {"wall": "#a85c42", "trim": "#e6dcc6", "roof": "#6b7780", "accent": "#1e2022", "ground": "#ebe0c8"}, {"wall": "#7c4a3a", "trim": "#d8ccb0", "roof": "#6b7780", "accent": "#1e2022", "ground": "#ded2b6"}, {"wall": "#b07a58", "trim": "#e8decb", "roof": "#6b7780", "accent": "#1e2022", "ground": "#ece2cc"}],
       "haussmann": [
         {
           "wall": "#ece2cc",
@@ -223,7 +224,8 @@
       "metro": "guimard",
       "fountain": "wallace",
       "kiosk": "paris",
-      "bikeColour": "#4d5a60"
+      "bikeColour": "#4d5a60",
+      "busStop": "paris"
     },
     "landmarkPlate": {
       "fill": "#e9e0cc",
