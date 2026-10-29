@@ -192,8 +192,8 @@
     "crossings": "bands",
     "shopNames": "fr",
     "defaultLevels": {
-      "residential": 5,
-      "commercial": 6,
+      "residential": 7,
+      "commercial": 7,
       "house": 2,
       "industrial": 2
     },

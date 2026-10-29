@@ -1324,6 +1324,9 @@ async function bake(spec: CitySpec): Promise<void> {
       kind: r === 'tram' || r === 'light_rail' ? 'tram' : r === 'subway' ? 'subway' : 'rail',
       ...(r === 'tram' && w.tags.electrified === 'no' ? { cable: true as const } : {}),
       ...(r === 'light_rail' ? { light: true as const } : {}),
+      // (the Montmartre funicular: one cabin a track shuttling up and down the butte, boarded like a cable car — its
+      //  heights are the ground's, laid below once the ground is sampled)
+      ...(r === 'funicular' ? { funicular: true as const } : {}),
       ...(w.tags.bridge && w.tags.bridge !== 'no' ? { bridge: true } : {}),
       ...(Number.isFinite(layer) && layer !== 0 ? { layer } : {}),
     })
@@ -1905,6 +1908,8 @@ async function bake(spec: CitySpec): Promise<void> {
   console.log(`  terrain model: ${zones.length} zone(s); ${fineTiles.size} of ${blockTiles.length} tiles ship fine ground `
     + `(${FINE_STEP} m), the rest coarse (${STEP} m)`)
   const groundFine = (x: number, z: number): number => shipped.heightAt(x, z)
+  // a funicular climbs the ground it is laid on: its heights from the same grid the streets take theirs from
+  for (const r of rails) if (r.funicular) r.heights = unpackPoints(r.points).map((q) => Math.round(groundFine(q.x, q.z) * 100) / 100)
 
   /*
    * Street heights come from the SAME grid, not from the tiles directly. Two samplings of one noisy

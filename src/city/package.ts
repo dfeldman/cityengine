@@ -329,6 +329,8 @@ export interface PackedRail {
   light?: true
   /** a gondola's inclined track (not baked: game.ts adds Salesforce Park's), its heights absolute */
   gondola?: true
+  /** a funicular (OSM railway=funicular: Montmartre's), its heights the ground's: drawn and boarded as a gondola */
+  funicular?: true
 }
 
 export interface CityPackage {

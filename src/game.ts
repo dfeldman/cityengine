@@ -34,7 +34,7 @@ import { plog } from './profile.ts'
 import { quaysLayer } from './render/quays.ts'
 import { LoadingScreen, closeWelcome, welcomeOpen, welcomeScreen } from './ui/loading.ts'
 import { TravelCard } from './ui/travel.ts'
-import { SF_STATIONS, fareFrom, destinations, type Station } from './game/stations.ts'
+import { stationsFor, metroName, fareFrom, destinations, type Station } from './game/stations.ts'
 import { LandmarkCard } from './ui/landmark-card.ts'
 import { Plants } from './render/plants.ts'
 import { quickMarksLayer } from './render/quickmarks.ts'
@@ -1628,15 +1628,16 @@ export async function game(canvas: HTMLCanvasElement, opts: {
    * is still taken off them here, against a price going back on a line (it may go below zero: travel is never refused).
    */
   const travel = opts.freeze ? null : new TravelCard()
-  const stations: (Station & { x: number; z: number })[] = index.region === 'san-francisco'
-    ? SF_STATIONS.map((st) => ({ ...st, ...new Projection(pkg.origin).toLocal({ lat: st.lat, lon: st.lon }) })) : []
+  const stations: (Station & { x: number; z: number })[] = stationsFor(index.region)
+    .map((st) => ({ ...st, ...new Projection(pkg.origin).toLocal({ lat: st.lat, lon: st.lon }) }))
+  travel?.setMetroName(metroName(index.region))
   if (travel) travel.onGo = (to, fare) => {
     const jump = (window as unknown as { __jump?: (lat: number, lon: number) => boolean }).__jump
     if (!jump?.(to.lat, to.lon)) return
     earned -= fare
     try { localStorage.setItem(EARNED_KEY, earned.toFixed(2)) } catch { /* fine */ }
     deliveryCard.cash(earned, true)
-    hud.banner(to.line === 'ferry' ? `Ferry to ${to.name}` : `Muni Metro to ${to.name}`, fare > 0 ? `fare $${fare.toFixed(2)}` : 'free')
+    hud.banner(to.line === 'ferry' ? `Ferry to ${to.name}` : `${metroName(index.region)} to ${to.name}`, fare > 0 ? `fare $${fare.toFixed(2)}` : 'free')
   }
   // the target building, lit up (render/beacon.ts)
   const beacon = new Beacon(scene)
@@ -2153,7 +2154,11 @@ export async function game(canvas: HTMLCanvasElement, opts: {
         // boarded with B rather than by waiting at the station: it still puts the rider off at the other end
         const a = transit.aboard!
         gondolaFrom = { x: a.x, z: a.z }
-        hud.banner('Aboard the gondola', a.y - city.terrain.heightAt(a.x, a.z) > 8 ? 'down to Salesforce Plaza' : 'up to Salesforce Park')
+        if (pkg.region === 'paris') {
+          // the Montmartre funicular, on the ground's own heights: up or down by which end it was boarded at
+          const top = life.gondolaTop(a.x, a.z)
+          hud.banner('Aboard the funicular', top !== null && a.y < top - 10 ? 'up to the Sacré-Cœur' : 'down to the Place Saint-Pierre')
+        } else hud.banner('Aboard the gondola', a.y - city.terrain.heightAt(a.x, a.z) > 8 ? 'down to Salesforce Plaza' : 'up to Salesforce Park')
       } else hud.banner(`Aboard the ${v.name ?? (v.kind === 'cable' ? 'cable car' : 'streetcar')}`, `${keyed('B', 'get off')} anywhere there is a street`)
     }
   }

@@ -856,6 +856,19 @@ export function isParallelPair(e: RideEdge, f: RideEdge, ground?: (x: number, z:
  */
 export function mergeParallel(edges: RideEdge[], ids = new Ids(), ground?: (x: number, z: number) => number): RideEdge[] {
   let cur = edges
+  /*
+   * The pairs already found NOT to merge, by the edges themselves. Each pass merges one pair and searches again from the
+   * top, and it re-tested every pair of every street's pieces each time: Paris's run graph — long boulevards in hundreds
+   * of pieces, named pavements along them — sat here for half an hour (2026-10-29). `reattach` hands back a NEW edge for
+   * every edge it changes and the same one for every edge it does not, so a pair of unchanged edges fails again for
+   * certain and is skipped; anything a merge touched is tested afresh. The pair found first, and so the result, is the same.
+   */
+  const failed = new WeakMap<RideEdge, WeakSet<RideEdge>>()
+  const fail = (a: RideEdge, b: RideEdge): void => {
+    let s = failed.get(a)
+    if (!s) failed.set(a, (s = new WeakSet()))
+    s.add(b)
+  }
   for (let guard = 0; guard < 5000; guard++) {
     const byName = new Map<string, RideEdge[]>()
     for (const e of cur) {
@@ -868,7 +881,9 @@ export function mergeParallel(edges: RideEdge[], ids = new Ids(), ground?: (x: n
     search: for (const g of byName.values()) {
       for (let i = 0; i < g.length; i++) {
         for (let j = i + 1; j < g.length; j++) {
+          if (failed.get(g[i])?.has(g[j])) continue
           if (isParallelPair(g[i], g[j], ground) && midline(g[i], g[j], ids, true)) { pair = [g[i], g[j]]; break search }
+          fail(g[i], g[j])
         }
       }
     }

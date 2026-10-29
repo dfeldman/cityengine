@@ -418,6 +418,30 @@ function parisMainLine(points: { x: number; z: number }[]): number | null {
   return pick[h % pick.length]
 }
 
+/**
+ * The MONTMARTRE FUNICULAR's cabin (owner, 2026-10-29: "we should definitely include the funicular, like the cable car in
+ * SF"): Poma's 1991 cars, glass nearly all over in a pale grey frame, the floor stepped down the slope in four
+ * compartments so it stays level while the track climbs 30% — drawn as a level body, the floor kept flat on its carriage
+ * as Salesforce Park's gondola keeps it. About 9 m long, 2.5 m wide. Boarded at either station like a cable car.
+ */
+function funicularCabin(out: MeshBuilder): void {
+  const frame: Rgb = [0.84, 0.85, 0.86]
+  const glass: Rgb = [0.42, 0.55, 0.6]
+  // the glazed saloon, in four bays down its length
+  box(out, 0, 1.65, 0, 1.2, 1.15, 4.4, glass, FIXED)
+  box(out, 0, 0.42, 0, 1.28, 0.12, 4.55, frame, FIXED)
+  box(out, 0, 2.9, 0, 1.28, 0.12, 4.55, frame, FIXED)
+  for (const z of [-4.45, -2.2, 0, 2.2, 4.45]) for (const x of [-1.22, 1.22]) box(out, x, 1.65, z, 0.06, 1.15, 0.07, frame, FIXED)
+  // the ends: a deeper frame round the end glass, and the lamps
+  for (const e of [-1, 1]) {
+    box(out, 0, 1.65, e * 4.5, 1.25, 1.2, 0.06, frame, FIXED)
+    box(out, 0, 1.65, e * 4.53, 1.0, 0.95, 0.02, glass, FIXED)
+    for (const x of [-0.8, 0.8]) box(out, x, 0.7, e * 4.56, 0.12, 0.06, 0.02, LAMP, EMIT)
+  }
+  // the carriage and its wheels on the rails, under the level floor
+  box(out, 0, 0.12, 0, 0.95, 0.18, 4.0, [0.32, 0.33, 0.35], FIXED)
+}
+
 export const PARIS_STOCK: RegionStock = {
   rail: {
     // the Z 2N (variant 0), and the others — five model cars to a train whatever it is (see above)
@@ -448,4 +472,6 @@ export const PARIS_STOCK: RegionStock = {
   // a line, not a scrap: trains shuttling up and down 45 m of track at a tunnel mouth or a station throat
   // (the RER C by the Quai Saint-Bernard) looked like toys (BUGS.md #34)
   minLine: 400,
+  // the Montmartre funicular (108 m up the butte in about 90 s; deck: where the rider stands)
+  gondola: { mid: funicularCabin, cars: 1, pitch: 10, speed: 1.2, deck: 0.5, colour: [1, 1, 1], shadow: [9, 2.6, 3.2], capacity: 2, stops: true },
 }

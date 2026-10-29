@@ -30,6 +30,9 @@ export class TravelCard {
   private here: Station | null = null
   private list: Station[] = []
   private fare = 0
+  private metro = 'Muni Metro'
+  /** what the region calls its metro (game/stations.ts `metroName`) */
+  setMetroName(name: string): void { this.metro = name }
   /** picked: where to */
   onGo: ((to: Station, fare: number) => void) | null = null
 
@@ -73,7 +76,7 @@ export class TravelCard {
     if (!this.here || this.panel) return
     const root = document.createElement('div')
     root.className = 'sr-travel'
-    const kind = this.here.line === 'ferry' ? 'Ferry' : 'Muni Metro'
+    const kind = this.here.line === 'ferry' ? 'Ferry' : this.metro
     // a free ride says "free", not "$0.00" (and all travel is free: game/stations.ts FARES)
     const price = this.fare > 0 ? `$${this.fare.toFixed(2)}` : 'free'
     root.innerHTML = `<div class="card"><h2>Where do you want to go?</h2>

@@ -66,6 +66,39 @@ export const SF_STATIONS: Station[] = [
   { name: 'Chase Center', line: 'metro', lat: 37.76860, lon: -122.38960 },
 ]
 
+/**
+ * The PARIS MÉTRO, select stations (owner, 2026-10-29: "like the muni metro, you should be able to travel with metro... but
+ * only to select stations, including every single station would be a huge list in paris"; "no need for longer-distance
+ * trains since the box is pretty small"). Chosen for where a rider would go across the box: the river, the big squares,
+ * the great stations, Montmartre (Anvers, under the Sacré-Cœur and the funicular), the Bois (Porte Maillot). At the
+ * stations' own entrances, from OSM.
+ */
+export const PARIS_STATIONS: Station[] = [
+  { name: 'Châtelet', line: 'metro', lat: 48.85840, lon: 2.34750 },
+  { name: 'Concorde', line: 'metro', lat: 48.86560, lon: 2.32120 },
+  { name: 'Charles de Gaulle – Étoile', line: 'metro', lat: 48.87380, lon: 2.29500 },
+  { name: 'Trocadéro', line: 'metro', lat: 48.86310, lon: 2.28700 },
+  { name: 'Bir-Hakeim (Tour Eiffel)', line: 'metro', lat: 48.85390, lon: 2.28940 },
+  { name: 'Opéra', line: 'metro', lat: 48.87110, lon: 2.33160 },
+  { name: 'Gare du Nord', line: 'metro', lat: 48.88090, lon: 2.35530 },
+  { name: 'Anvers (Sacré-Cœur)', line: 'metro', lat: 48.88280, lon: 2.34410 },
+  { name: 'République', line: 'metro', lat: 48.86750, lon: 2.36370 },
+  { name: 'Bastille', line: 'metro', lat: 48.85310, lon: 2.36910 },
+  { name: 'Nation', line: 'metro', lat: 48.84830, lon: 2.39580 },
+  { name: 'Gare de Lyon', line: 'metro', lat: 48.84430, lon: 2.37400 },
+  { name: "Place d'Italie", line: 'metro', lat: 48.83100, lon: 2.35550 },
+  { name: 'Montparnasse – Bienvenüe', line: 'metro', lat: 48.84290, lon: 2.32120 },
+  { name: 'Porte Maillot (Bois de Boulogne)', line: 'metro', lat: 48.87800, lon: 2.28250 },
+]
+
+/** a region's stations */
+export function stationsFor(region: string | undefined): Station[] {
+  return region === 'san-francisco' ? SF_STATIONS : region === 'paris' ? PARIS_STATIONS : []
+}
+
+/** what a metro line is called in the region: the card's title and the banner */
+export const metroName = (region: string | undefined): string => (region === 'paris' ? 'Métro' : 'Muni Metro')
+
 /** where a station's line goes from it */
 export function destinations(from: Station, all: Station[]): Station[] {
   if (from.line === 'ferry') return all.filter((s) => s.line === 'ferry' && (from.to ?? []).includes(s.name))

@@ -281,6 +281,17 @@ export class Life {
   }
 
   /** Railways arriving with streamed tiles, each once, with its trains. */
+  /** the upper station's height on the gondola or funicular track nearest (x, z), or null (game.ts: which way it is going) */
+  gondolaTop(x: number, z: number): number | null {
+    let best: number | null = null, bd = Infinity
+    for (const r of this.rails) {
+      if (r.kind !== 5 || !r.heights) continue
+      const d = Math.min(...r.points.map((p) => Math.hypot(p.x - x, p.z - z)))
+      if (d < bd) { bd = d; best = Math.max(...r.heights) }
+    }
+    return best
+  }
+
   addRails(rails: CityPackage['rails']): void {
     // Only the railways a rider can actually see. A subway is underground: putting a train on it would mean
     // a train sliding through the road surface, which is worse than no train at all.
@@ -291,7 +302,8 @@ export class Life {
       if ((r.kind === 'subway' && !r.heights) || this.railIds.has(r.id)) continue
       // (a cable-car or light-rail track takes its own stock where the region has one, else the tram's)
       // (and a GONDOLA — Salesforce Park's, docs/SALESFORCE-PARK.md — on its own inclined track, kind 5)
-      const kind: 0 | 1 | 2 | 3 | 4 | 5 = r.gondola ? 5 : r.kind === 'tram'
+      // (and a FUNICULAR, Montmartre's, as one: two stations, a cabin shuttling between them on the ground's own heights)
+      const kind: 0 | 1 | 2 | 3 | 4 | 5 = r.gondola || (r.funicular && r.heights) ? 5 : r.kind === 'tram'
         ? (r.cable && this.stockPools[3] ? 3 : r.light && this.stockPools[4] ? 4 : 2)
         : r.kind === 'subway' ? 1 : 0
       if (!this.stockPools[kind]) continue
